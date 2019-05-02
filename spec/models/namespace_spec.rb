@@ -743,22 +743,25 @@ describe Namespace do
     end
   end
 
-  describe '#full_path_was' do
+  describe '#full_path_before_last_save' do
     context 'when the group has no parent' do
-      it 'returns the path was' do
-        group = create(:group, parent: nil)
-        expect(group.full_path_was).to eq(group.path_was)
+      it 'returns the path before last save' do
+        group = create(:group)
+
+        group.update(parent: nil)
+
+        expect(group.full_path_before_last_save).to eq(group.path_before_last_save)
       end
     end
 
     context 'when a parent is assigned to a group with no previous parent' do
-      it 'returns the path was' do
+      it 'returns the path before last save' do
         group = create(:group, parent: nil)
-
         parent = create(:group)
-        group.parent = parent
 
-        expect(group.full_path_was).to eq("#{group.path_was}")
+        group.update(parent: parent)
+
+        expect(group.full_path_before_last_save).to eq("#{group.path_before_last_save}")
       end
     end
 
@@ -766,9 +769,10 @@ describe Namespace do
       it 'returns the parent full path' do
         parent = create(:group)
         group = create(:group, parent: parent)
-        group.parent = nil
 
-        expect(group.full_path_was).to eq("#{parent.full_path}/#{group.path}")
+        group.update(parent: nil)
+
+        expect(group.full_path_before_last_save).to eq("#{parent.full_path}/#{group.path}")
       end
     end
 
@@ -777,8 +781,10 @@ describe Namespace do
         parent = create(:group)
         group = create(:group, parent: parent)
         new_parent = create(:group)
-        group.parent = new_parent
-        expect(group.full_path_was).to eq("#{parent.full_path}/#{group.path}")
+
+        group.update(parent: new_parent)
+
+        expect(group.full_path_before_last_save).to eq("#{parent.full_path}/#{group.path}")
       end
     end
   end

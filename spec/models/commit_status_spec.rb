@@ -449,7 +449,7 @@ describe CommitStatus do
       end
 
       it "lock" do
-        is_expected.to be true
+        is_expected.to be_truthy
       end
 
       it "raise exception when trying to update" do
@@ -463,7 +463,7 @@ describe CommitStatus do
       end
 
       it "do not lock" do
-        is_expected.to be false
+        is_expected.to be_falsey
       end
 
       it "save correctly" do
