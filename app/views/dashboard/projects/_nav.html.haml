@@ -4,7 +4,7 @@
 - is_explore_trending = project_tab_filter == :explore_trending
 - feature_project_list_filter_bar = Feature.enabled?(:project_list_filter_bar)
 
-.nav-block{ class: Feature.enabled?(:project_list_filter_bar) ? "w-100" : "" }
+.nav-block{ class: ("w-100" if feature_project_list_filter_bar) }
   - if feature_project_list_filter_bar
     .btn-group.button-filter-group.d-flex.m-0.p-0
       - if project_tab_filter == :explore || is_explore_trending

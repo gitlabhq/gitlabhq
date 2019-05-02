@@ -1,7 +1,8 @@
 - has_label = local_assigns.fetch(:has_label, false)
+- feature_project_list_filter_bar = Feature.enabled?(:project_list_filter_bar)
 
 - if current_user
-  .dropdown.js-project-filter-dropdown-wrap
+  .dropdown.js-project-filter-dropdown-wrap{ class: ('d-flex flex-grow-1 flex-shrink-1' if feature_project_list_filter_bar) }
     %button.dropdown-menu-toggle{ href: '#', "data-toggle" => "dropdown", 'data-display' => 'static' }
       - unless has_label
         = icon('globe', class: 'mt-1')

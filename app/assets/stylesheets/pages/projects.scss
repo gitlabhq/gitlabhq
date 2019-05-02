@@ -1476,10 +1476,16 @@ pre.light-well {
 
   .filtered-search {
     min-width: 30%;
-    flex: 1 1 0;
+    flex-basis: 0;
 
     .project-filter-form .project-filter-form-field {
-      padding-right: 8px;
+      padding-right: $gl-padding-8;
+    }
+
+    .filtered-search,
+    .filtered-search-nav,
+    .filtered-search-dropdown {
+      flex-basis: 0;
     }
 
     @include media-breakpoint-down(lg) {
@@ -1495,16 +1501,12 @@ pre.light-well {
     }
   }
 
-  .qa-reverse-sort {
-    max-width: 38px;
-  }
-
   .filtered-search-box {
     border-radius: 3px 0 0 3px;
   }
 
   .dropdown-menu-toggle {
-    margin-left: 8px;
+    margin-left: $gl-padding-8;
   }
 
   @include media-breakpoint-down(md) {
@@ -1514,27 +1516,15 @@ pre.light-well {
 
     .filtered-search-dropdown {
       width: 50%;
-    }
 
-    .filtered-search-dropdown .dropdown {
-      display: flex;
-      flex: 1 1 0;
-    }
-
-    .filtered-search-dropdown .dropdown button {
-      width: 100%;
+      .dropdown-menu-toggle {
+        width: 100%;
+      }
     }
   }
 
   @include media-breakpoint-down(xs) {
-    .dropdown-menu-toggle {
-      width: 100%;
-    }
-
-    .filtered-search,
-    .filtered-search-nav,
     .filtered-search-dropdown {
-      flex: 1 1 0;
       width: 100%;
     }
   }
