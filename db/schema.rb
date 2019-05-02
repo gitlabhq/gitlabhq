@@ -1738,7 +1738,6 @@ ActiveRecord::Schema.define(version: 20190426180107) do
     t.string "import_type"
     t.string "import_source"
     t.text "import_error"
-    t.integer "ci_id"
     t.boolean "shared_runners_enabled", default: true, null: false
     t.string "runners_token"
     t.string "build_coverage_regex"
@@ -1777,7 +1776,6 @@ ActiveRecord::Schema.define(version: 20190426180107) do
     t.string "bfg_object_map"
     t.boolean "detected_repository_languages"
     t.string "external_authorization_classification_label"
-    t.index ["ci_id"], name: "index_projects_on_ci_id", using: :btree
     t.index ["created_at"], name: "index_projects_on_created_at", using: :btree
     t.index ["creator_id"], name: "index_projects_on_creator_id", using: :btree
     t.index ["description"], name: "index_projects_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}
