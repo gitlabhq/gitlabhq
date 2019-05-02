@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Admin::Clusters::ApplicationsController < Clusters::ApplicationsController
+  include EnforcesAdminAuthentication
+
   private
 
   def clusterable
