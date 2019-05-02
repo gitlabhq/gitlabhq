@@ -38,7 +38,7 @@ module DeploymentPlatform
   end
 
   def find_instance_cluster_platform_kubernetes_with_feature_guard(environment: nil)
-    return unless instance_clusters_enabled?
+    return unless Clusters::Instance.enabled?
 
     find_instance_cluster_platform_kubernetes(environment: environment)
   end
@@ -47,10 +47,6 @@ module DeploymentPlatform
   def find_instance_cluster_platform_kubernetes(environment: nil)
     Clusters::Instance.new.clusters.enabled.default_environment
       .first&.platform_kubernetes
-  end
-
-  def instance_clusters_enabled?
-    Feature.enabled?(:instance_clusters, default_enabled: true)
   end
 
   def find_kubernetes_service_integration

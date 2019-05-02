@@ -6,7 +6,7 @@ module Clusters
 
     condition(:has_clusters, scope: :subject) { clusterable_has_clusters? }
     condition(:can_have_multiple_clusters) { multiple_clusters_available? }
-    condition(:instance_clusters_enabled, scope: :subject) { @subject.instance_clusters_enabled? }
+    condition(:instance_clusters_enabled) { Instance.enabled? }
 
     rule { admin & instance_clusters_enabled }.policy do
       enable :read_cluster
