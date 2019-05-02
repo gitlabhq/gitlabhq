@@ -197,6 +197,7 @@ module Gitlab
                                    start_repository: start_repository)
       end
 
+      # DEPRECATED: https://gitlab.com/gitlab-org/gitaly/issues/1628
       def user_rebase(user, rebase_id, branch:, branch_sha:, remote_repository:, remote_branch:)
         request = Gitaly::UserRebaseRequest.new(
           repository: @gitaly_repo,
@@ -223,6 +224,49 @@ module Gitlab
         else
           response.rebase_sha
         end
+      end
+
+      def rebase(user, rebase_id, branch:, branch_sha:, remote_repository:, remote_branch:)
+        request_enum = QueueEnumerator.new
+        rebase_sha = nil
+
+        response_enum = GitalyClient.call(
+          @repository.storage,
+          :operation_service,
+          :user_rebase_confirmable,
+          request_enum.each,
+          remote_storage: remote_repository.storage
+        )
+
+        # First request
+        request_enum.push(
+          Gitaly::UserRebaseConfirmableRequest.new(
+            header: Gitaly::UserRebaseConfirmableRequest::Header.new(
+              repository: @gitaly_repo,
+              user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
+              rebase_id: rebase_id.to_s,
+              branch: encode_binary(branch),
+              branch_sha: branch_sha,
+              remote_repository: remote_repository.gitaly_repository,
+              remote_branch: encode_binary(remote_branch)
+            )
+          )
+        )
+
+        perform_next_gitaly_rebase_request(response_enum) do |response|
+          rebase_sha = response.rebase_sha
+        end
+
+        yield rebase_sha
+
+        # Second request confirms with gitaly to finalize the rebase
+        request_enum.push(Gitaly::UserRebaseConfirmableRequest.new(apply: true))
+
+        perform_next_gitaly_rebase_request(response_enum)
+
+        rebase_sha
+      ensure
+        request_enum.close
       end
 
       def user_squash(user, squash_id, branch, start_sha, end_sha, author, message)
@@ -345,6 +389,20 @@ module Gitlab
       end
 
       private
+
+      def perform_next_gitaly_rebase_request(response_enum)
+        response = response_enum.next
+
+        if response.pre_receive_error.present?
+          raise Gitlab::Git::PreReceiveError, response.pre_receive_error
+        elsif response.git_error.present?
+          raise Gitlab::Git::Repository::GitError, response.git_error
+        end
+
+        yield response if block_given?
+
+        response
+      end
 
       def call_cherry_pick_or_revert(rpc, user:, commit:, branch_name:, message:, start_branch_name:, start_repository:)
         request_class = "Gitaly::User#{rpc.to_s.camelcase}Request".constantize

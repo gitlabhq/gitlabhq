@@ -73,7 +73,7 @@ describe MergeRequests::RebaseService do
     end
 
     context 'valid params' do
-      describe 'successful rebase' do
+      shared_examples_for 'a service that can execute a successful rebase' do
         before do
           service.execute(merge_request)
         end
@@ -97,6 +97,22 @@ describe MergeRequests::RebaseService do
           expect(head_commit.committer_email).to eq(user.email)
           expect(head_commit.committer_name).to eq(user.name)
         end
+      end
+
+      context 'when the two_step_rebase feature is enabled' do
+        before do
+          stub_feature_flags(two_step_rebase: true)
+        end
+
+        it_behaves_like 'a service that can execute a successful rebase'
+      end
+
+      context 'when the two_step_rebase feature is disabled' do
+        before do
+          stub_feature_flags(two_step_rebase: false)
+        end
+
+        it_behaves_like 'a service that can execute a successful rebase'
       end
 
       context 'fork' do

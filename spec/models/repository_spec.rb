@@ -1451,6 +1451,91 @@ describe Repository do
     end
   end
 
+  describe '#rebase' do
+    let(:merge_request) { create(:merge_request, source_branch: 'feature', target_branch: 'master', source_project: project) }
+
+    shared_examples_for 'a method that can rebase successfully' do
+      it 'returns the rebase commit sha' do
+        rebase_commit_sha = repository.rebase(user, merge_request)
+        head_sha = merge_request.source_project.repository.commit(merge_request.source_branch).sha
+
+        expect(rebase_commit_sha).to eq(head_sha)
+      end
+
+      it 'sets the `rebase_commit_sha` for the given merge request' do
+        rebase_commit_sha = repository.rebase(user, merge_request)
+
+        expect(rebase_commit_sha).not_to be_nil
+        expect(merge_request.rebase_commit_sha).to eq(rebase_commit_sha)
+      end
+    end
+
+    context 'when two_step_rebase feature is enabled' do
+      before do
+        stub_feature_flags(two_step_rebase: true)
+      end
+
+      it_behaves_like 'a method that can rebase successfully'
+
+      it 'executes the new Gitaly RPC' do
+        expect_any_instance_of(Gitlab::GitalyClient::OperationService).to receive(:rebase)
+        expect_any_instance_of(Gitlab::GitalyClient::OperationService).not_to receive(:user_rebase)
+
+        repository.rebase(user, merge_request)
+      end
+
+      describe 'rolling back the `rebase_commit_sha`' do
+        let(:new_sha) { Digest::SHA1.hexdigest('foo') }
+
+        it 'does not rollback when there are no errors' do
+          second_response = double(pre_receive_error: nil, git_error: nil)
+          mock_gitaly(second_response)
+
+          repository.rebase(user, merge_request)
+
+          expect(merge_request.reload.rebase_commit_sha).to eq(new_sha)
+        end
+
+        it 'does rollback when an error is encountered in the second step' do
+          second_response = double(pre_receive_error: 'my_error', git_error: nil)
+          mock_gitaly(second_response)
+
+          expect do
+            repository.rebase(user, merge_request)
+          end.to raise_error(Gitlab::Git::PreReceiveError)
+
+          expect(merge_request.reload.rebase_commit_sha).to be_nil
+        end
+
+        def mock_gitaly(second_response)
+          responses = [
+            double(rebase_sha: new_sha).as_null_object,
+            second_response
+          ]
+
+          expect_any_instance_of(
+            Gitaly::OperationService::Stub
+          ).to receive(:user_rebase_confirmable).and_return(responses.each)
+        end
+      end
+    end
+
+    context 'when two_step_rebase feature is disabled' do
+      before do
+        stub_feature_flags(two_step_rebase: false)
+      end
+
+      it_behaves_like 'a method that can rebase successfully'
+
+      it 'executes the deprecated Gitaly RPC' do
+        expect_any_instance_of(Gitlab::GitalyClient::OperationService).to receive(:user_rebase)
+        expect_any_instance_of(Gitlab::GitalyClient::OperationService).not_to receive(:rebase)
+
+        repository.rebase(user, merge_request)
+      end
+    end
+  end
+
   describe '#revert' do
     let(:new_image_commit) { repository.commit('33f3729a45c02fc67d00adb1b8bca394b0e761d9') }
     let(:update_image_commit) { repository.commit('2f63565e7aac07bcdadb654e253078b727143ec4') }
