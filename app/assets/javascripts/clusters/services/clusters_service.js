@@ -29,6 +29,10 @@ export default class ClusterService {
     return axios.patch(this.appUpdateEndpointMap[appId], params);
   }
 
+  uninstallApplication(appId, params) {
+    return axios.delete(this.appInstallEndpointMap[appId], params);
+  }
+
   static updateCluster(endpoint, data) {
     return axios.put(endpoint, data);
   }

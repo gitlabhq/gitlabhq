@@ -34,10 +34,10 @@
 .modal-body {
   background-color: $modal-body-bg;
   line-height: $line-height-base;
-  min-height: $modal-body-height;
   position: relative;
   padding: #{3 * $grid-size} #{2 * $grid-size};
   text-align: left;
+  white-space: normal;
 
   .form-actions {
     margin: #{2 * $grid-size} #{-2 * $grid-size} #{-2 * $grid-size};

@@ -1,5 +1,10 @@
 import transitionApplicationState from '~/clusters/services/application_state_machine';
-import { APPLICATION_STATUS, UPDATE_EVENT, INSTALL_EVENT } from '~/clusters/constants';
+import {
+  APPLICATION_STATUS,
+  UNINSTALL_EVENT,
+  UPDATE_EVENT,
+  INSTALL_EVENT,
+} from '~/clusters/constants';
 
 const {
   NO_STATUS,
@@ -12,6 +17,8 @@ const {
   UPDATING,
   UPDATED,
   UPDATE_ERRORED,
+  UNINSTALLING,
+  UNINSTALL_ERRORED,
 } = APPLICATION_STATUS;
 
 const NO_EFFECTS = 'no effects';
@@ -21,16 +28,18 @@ describe('applicationStateMachine', () => {
 
   describe(`current state is ${NO_STATUS}`, () => {
     it.each`
-      expectedState      | event              | effects
-      ${INSTALLING}      | ${SCHEDULED}       | ${NO_EFFECTS}
-      ${NOT_INSTALLABLE} | ${NOT_INSTALLABLE} | ${NO_EFFECTS}
-      ${INSTALLABLE}     | ${INSTALLABLE}     | ${NO_EFFECTS}
-      ${INSTALLING}      | ${INSTALLING}      | ${NO_EFFECTS}
-      ${INSTALLED}       | ${INSTALLED}       | ${NO_EFFECTS}
-      ${INSTALLABLE}     | ${ERROR}           | ${{ installFailed: true }}
-      ${UPDATING}        | ${UPDATING}        | ${NO_EFFECTS}
-      ${INSTALLED}       | ${UPDATED}         | ${NO_EFFECTS}
-      ${INSTALLED}       | ${UPDATE_ERRORED}  | ${{ updateFailed: true }}
+      expectedState      | event                | effects
+      ${INSTALLING}      | ${SCHEDULED}         | ${NO_EFFECTS}
+      ${NOT_INSTALLABLE} | ${NOT_INSTALLABLE}   | ${NO_EFFECTS}
+      ${INSTALLABLE}     | ${INSTALLABLE}       | ${NO_EFFECTS}
+      ${INSTALLING}      | ${INSTALLING}        | ${NO_EFFECTS}
+      ${INSTALLED}       | ${INSTALLED}         | ${NO_EFFECTS}
+      ${INSTALLABLE}     | ${ERROR}             | ${{ installFailed: true }}
+      ${UPDATING}        | ${UPDATING}          | ${NO_EFFECTS}
+      ${INSTALLED}       | ${UPDATED}           | ${NO_EFFECTS}
+      ${INSTALLED}       | ${UPDATE_ERRORED}    | ${{ updateFailed: true }}
+      ${UNINSTALLING}    | ${UNINSTALLING}      | ${NO_EFFECTS}
+      ${INSTALLED}       | ${UNINSTALL_ERRORED} | ${{ uninstallFailed: true }}
     `(`transitions to $expectedState on $event event and applies $effects`, data => {
       const { expectedState, event, effects } = data;
       const currentAppState = {
@@ -99,8 +108,9 @@ describe('applicationStateMachine', () => {
 
   describe(`current state is ${INSTALLED}`, () => {
     it.each`
-      expectedState | event           | effects
-      ${UPDATING}   | ${UPDATE_EVENT} | ${{ updateFailed: false, updateSuccessful: false }}
+      expectedState   | event              | effects
+      ${UPDATING}     | ${UPDATE_EVENT}    | ${{ updateFailed: false, updateSuccessful: false }}
+      ${UNINSTALLING} | ${UNINSTALL_EVENT} | ${{ uninstallFailed: false, uninstallSuccessful: false }}
     `(`transitions to $expectedState on $event event and applies $effects`, data => {
       const { expectedState, event, effects } = data;
       const currentAppState = {
@@ -123,6 +133,24 @@ describe('applicationStateMachine', () => {
       const { expectedState, event, effects } = data;
       const currentAppState = {
         status: UPDATING,
+      };
+
+      expect(transitionApplicationState(currentAppState, event)).toEqual({
+        status: expectedState,
+        ...effects,
+      });
+    });
+  });
+
+  describe(`current state is ${UNINSTALLING}`, () => {
+    it.each`
+      expectedState  | event                | effects
+      ${INSTALLABLE} | ${INSTALLABLE}       | ${{ uninstallSuccessful: true }}
+      ${INSTALLED}   | ${UNINSTALL_ERRORED} | ${{ uninstallFailed: true }}
+    `(`transitions to $expectedState on $event event and applies $effects`, data => {
+      const { expectedState, event, effects } = data;
+      const currentAppState = {
+        status: UNINSTALLING,
       };
 
       expect(transitionApplicationState(currentAppState, event)).toEqual({
