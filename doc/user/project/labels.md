@@ -42,7 +42,7 @@ Group labels appear in every label list page of the group's child projects.
 
 ### New project label from sidebar
 
-From the sidebar of an issue or a merge request, you can create a create a new **project label** inline immediately, instead of navigating to the project label list page.
+From the sidebar of an issue or a merge request, you can create a new **project label** inline immediately, instead of navigating to the project label list page.
 
 ![Labels inline](img/new_label_from_sidebar.gif)
 
