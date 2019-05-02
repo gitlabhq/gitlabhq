@@ -3,6 +3,7 @@
 import $ from 'jquery';
 import Api from '../api';
 import TemplateSelector from '../blob/template_selector';
+import { __ } from '~/locale';
 
 export default class IssuableTemplateSelector extends TemplateSelector {
   constructor(...args) {
@@ -25,7 +26,7 @@ export default class IssuableTemplateSelector extends TemplateSelector {
     $('.no-template', this.dropdown.parent()).on('click', () => {
       this.currentTemplate.content = '';
       this.setInputValueToTemplateContent();
-      $('.dropdown-toggle-text', this.dropdown).text('Choose a template');
+      $('.dropdown-toggle-text', this.dropdown).text(__('Choose a template'));
     });
   }
 
