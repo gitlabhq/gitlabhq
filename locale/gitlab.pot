@@ -1740,6 +1740,9 @@ msgstr ""
 msgid "Choose a role permission"
 msgstr ""
 
+msgid "Choose a template"
+msgstr ""
+
 msgid "Choose a template..."
 msgstr ""
 
@@ -2604,6 +2607,9 @@ msgid "Connect"
 msgstr ""
 
 msgid "Connect repositories from GitHub"
+msgstr ""
+
+msgid "Connection failure"
 msgstr ""
 
 msgid "Container Registry"
