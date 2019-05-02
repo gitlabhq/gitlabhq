@@ -24,6 +24,7 @@ describe EnforcesAdminAuthentication do
 
       it 'renders ok' do
         get :index
+
         expect(response).to have_gitlab_http_status(200)
       end
     end
@@ -31,6 +32,7 @@ describe EnforcesAdminAuthentication do
     context 'as a user' do
       it 'renders a 404' do
         get :index
+
         expect(response).to have_gitlab_http_status(404)
       end
     end

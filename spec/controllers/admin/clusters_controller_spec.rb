@@ -12,7 +12,7 @@ describe Admin::ClustersController do
     sign_in(admin)
   end
 
-  describe 'GET index' do
+  describe 'GET #index' do
     def get_index(params = {})
       get :index, params: params
     end
@@ -22,7 +22,7 @@ describe Admin::ClustersController do
         stub_feature_flags(instance_clusters: false)
       end
 
-      it 'renders 404' do
+      it 'responds with not found' do
         get_index
 
         expect(response).to have_gitlab_http_status(404)
@@ -90,7 +90,7 @@ describe Admin::ClustersController do
     end
   end
 
-  describe 'GET new' do
+  describe 'GET #new' do
     def get_new
       get :new
     end
@@ -166,7 +166,7 @@ describe Admin::ClustersController do
     end
   end
 
-  describe 'POST create for new cluster' do
+  describe 'POST #create_gcp' do
     let(:legacy_abac_param) { 'true' }
     let(:params) do
       {
@@ -251,7 +251,7 @@ describe Admin::ClustersController do
     end
   end
 
-  describe 'POST create for existing cluster' do
+  describe 'POST #create_user' do
     let(:params) do
       {
         cluster: {
@@ -321,7 +321,7 @@ describe Admin::ClustersController do
     end
   end
 
-  describe 'GET cluster_status' do
+  describe 'GET #cluster_status' do
     let(:cluster) { create(:cluster, :providing_by_gcp, :instance) }
 
     def get_cluster_status
@@ -354,7 +354,7 @@ describe Admin::ClustersController do
     end
   end
 
-  describe 'GET show' do
+  describe 'GET #show' do
     let(:cluster) { create(:cluster, :provided_by_gcp, :instance) }
 
     def get_show
@@ -365,7 +365,7 @@ describe Admin::ClustersController do
     end
 
     describe 'functionality' do
-      it 'renders view' do
+      it 'responds successfully' do
         get_show
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -380,7 +380,7 @@ describe Admin::ClustersController do
     end
   end
 
-  describe 'PUT update' do
+  describe 'PUT #update' do
     def put_update(format: :html)
       put :update, params: params.merge(
         id: cluster,
@@ -476,7 +476,7 @@ describe Admin::ClustersController do
     end
   end
 
-  describe 'DELETE destroy' do
+  describe 'DELETE #destroy' do
     let!(:cluster) { create(:cluster, :provided_by_gcp, :production_environment, :instance) }
 
     def delete_destroy
