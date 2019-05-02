@@ -14,6 +14,8 @@
 
     = render 'shared/members/requests', membership_source: @group, requesters: @requesters
 
+  = render_if_exists 'groups/group_members/ldap_sync'
+
   .clearfix
     %h5.member.existing-title
       Existing members
