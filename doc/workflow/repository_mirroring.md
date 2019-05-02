@@ -222,8 +222,10 @@ being injected into your mirror, or your password being stolen.
 ### SSH public key authentication
 
 To use SSH public key authentication, you'll also need to choose that option
-from the **Authentication method** dropdown. GitLab will generate a 4096-bit RSA
-key and display the public component of that key to you.
+from the **Authentication method** dropdown. When the mirror is created,
+GitLab generates a 4096-bit RSA key that can be copied by clicking the **Copy SSH public key** button.
+
+![Repository mirroring copy SSH public key to clipboard button](img/copy_ssh_public_key_button.png)
 
 You then need to add the public SSH key to the other repository's configuration:
 
