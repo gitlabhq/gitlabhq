@@ -4066,6 +4066,9 @@ msgstr ""
 msgid "Failed to remove user key."
 msgstr ""
 
+msgid "Failed to save merge conflicts resolutions. Please try again!"
+msgstr ""
+
 msgid "Failed to save new settings"
 msgstr ""
 
@@ -5641,6 +5644,30 @@ msgid "Merge requests are a place to propose changes you've made to a project an
 msgstr ""
 
 msgid "Merge when pipeline succeeds"
+msgstr ""
+
+msgid "MergeConflict|Commit to source branch"
+msgstr ""
+
+msgid "MergeConflict|Committing..."
+msgstr ""
+
+msgid "MergeConflict|HEAD//our changes"
+msgstr ""
+
+msgid "MergeConflict|Use ours"
+msgstr ""
+
+msgid "MergeConflict|Use theirs"
+msgstr ""
+
+msgid "MergeConflict|conflict"
+msgstr ""
+
+msgid "MergeConflict|conflicts"
+msgstr ""
+
+msgid "MergeConflict|origin//their changes"
 msgstr ""
 
 msgid "MergeRequests|Add a reply"
