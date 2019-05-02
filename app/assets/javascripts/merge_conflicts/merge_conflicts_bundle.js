@@ -8,6 +8,7 @@ import './components/diff_file_editor';
 import './components/inline_conflict_lines';
 import './components/parallel_conflict_lines';
 import syntaxHighlight from '../syntax_highlight';
+import { __ } from '~/locale';
 
 export default function initMergeConflicts() {
   const INTERACTIVE_RESOLVE_MODE = 'interactive';
@@ -92,7 +93,7 @@ export default function initMergeConflicts() {
           })
           .catch(() => {
             mergeConflictsStore.setSubmitState(false);
-            createFlash('Failed to save merge conflicts resolutions. Please try again!');
+            createFlash(__('Failed to save merge conflicts resolutions. Please try again!'));
           });
       },
     },
