@@ -6,7 +6,7 @@
 
 .use-pg-10: &use-pg-10
   services:
-    - postgres:10.0
+    - postgres:10.7
     - redis:alpine
 
 .use-mysql: &use-mysql
