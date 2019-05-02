@@ -43,6 +43,11 @@ detail below.
 
 ##  Enabling and disabling terminal support
 
+NOTE: **Note:** AWS Elastic Load Balancers (ELBs) do not support web sockets. 
+AWS Application Load Balancers (ALBs) must be used if you want web terminals
+to work. See [AWS Elastic Load Balancing Product Comparison](https://aws.amazon.com/elasticloadbalancing/features/#compare)
+for more information.
+
 As web terminals use WebSockets, every HTTP/HTTPS reverse proxy in front of
 Workhorse needs to be configured to pass the `Connection` and `Upgrade` headers
 through to the next one in the chain. If you installed GitLab using Omnibus, or
