@@ -58,5 +58,9 @@ module Ci
         statuses.latest.failed_but_allowed.any?
       end
     end
+
+    def manual_playable?
+      %[manual scheduled skipped].include?(status.to_s)
+    end
   end
 end

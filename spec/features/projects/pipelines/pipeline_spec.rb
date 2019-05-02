@@ -236,6 +236,20 @@ describe 'Pipeline', :js do
       end
     end
 
+    context 'when the pipeline has manual stage' do
+      before do
+        create(:ci_build, :manual, pipeline: pipeline, stage: 'publish', name: 'CentOS')
+        create(:ci_build, :manual, pipeline: pipeline, stage: 'publish', name: 'Debian')
+        create(:ci_build, :manual, pipeline: pipeline, stage: 'publish', name: 'OpenSUDE')
+
+        visit_pipeline
+      end
+
+      it 'displays play all button' do
+        expect(page).to have_selector('.js-stage-action')
+      end
+    end
+
     context 'page tabs' do
       before do
         visit_pipeline

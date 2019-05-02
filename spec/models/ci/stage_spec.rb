@@ -285,4 +285,6 @@ describe Ci::Stage, :models do
       end
     end
   end
+
+  it_behaves_like 'manual playable stage', :ci_stage_entity
 end

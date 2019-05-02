@@ -2942,4 +2942,36 @@ describe Ci::Pipeline, :mailer do
       end
     end
   end
+
+  describe '#find_stage_by_name' do
+    let(:pipeline) { create(:ci_pipeline) }
+    let(:stage_name) { 'test' }
+
+    let(:stage) do
+      create(:ci_stage_entity,
+             pipeline: pipeline,
+             project: pipeline.project,
+             name: 'test')
+    end
+
+    before do
+      create_list(:ci_build, 2, pipeline: pipeline, stage: stage.name)
+    end
+
+    subject { pipeline.find_stage_by_name!(stage_name) }
+
+    context 'when stage exists' do
+      it { is_expected.to eq(stage) }
+    end
+
+    context 'when stage does not exist' do
+      let(:stage_name) { 'build' }
+
+      it 'raises an ActiveRecord exception' do
+        expect do
+          subject
+        end.to raise_exception(ActiveRecord::RecordNotFound)
+      end
+    end
+  end
 end
