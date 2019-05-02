@@ -84,6 +84,11 @@ msgid_plural "%d metrics"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d more comment"
+msgid_plural "%d more comments"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d staged change"
 msgid_plural "%d staged changes"
 msgstr[0] ""
@@ -816,6 +821,12 @@ msgid "An error occurred previewing the blob"
 msgstr ""
 
 msgid "An error occurred when toggling the notification subscription"
+msgstr ""
+
+msgid "An error occurred when trying to resolve a comment. Please try again."
+msgstr ""
+
+msgid "An error occurred when trying to resolve a discussion. Please try again."
 msgstr ""
 
 msgid "An error occurred while detecting host keys"
@@ -5251,6 +5262,12 @@ msgstr ""
 msgid "July"
 msgstr ""
 
+msgid "Jump to first unresolved discussion"
+msgstr ""
+
+msgid "Jump to next unresolved discussion"
+msgstr ""
+
 msgid "Jun"
 msgstr ""
 
@@ -5592,6 +5609,9 @@ msgid "Mar"
 msgstr ""
 
 msgid "March"
+msgstr ""
+
+msgid "Mark as resolved"
 msgstr ""
 
 msgid "Mark this issue as a duplicate of another issue"
@@ -7904,6 +7924,9 @@ msgstr ""
 msgid "Resolved all discussions."
 msgstr ""
 
+msgid "Resolved by %{resolvedByName}"
+msgstr ""
+
 msgid "Response metrics (AWS ELB)"
 msgstr ""
 
@@ -10066,6 +10089,9 @@ msgid "Unable to load the diff. %{button_try_again}"
 msgstr ""
 
 msgid "Unable to regenerate public ssh key."
+msgstr ""
+
+msgid "Unable to resolve"
 msgstr ""
 
 msgid "Unable to schedule a pipeline to run immediately"
