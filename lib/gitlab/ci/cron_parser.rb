@@ -13,7 +13,7 @@ module Gitlab
 
       def next_time_from(time)
         @cron_line ||= try_parse_cron(@cron, @cron_timezone)
-        @cron_line.next_time(time).utc.in_time_zone(Time.zone) if @cron_line.present?
+        find_next_time(time) if @cron_line.present?
       end
 
       def cron_valid?
@@ -48,6 +48,14 @@ module Gitlab
       # https://github.com/rails/rails/blob/master/activesupport/lib/active_support/values/time_zone.rb
       def try_parse_cron(cron, cron_timezone)
         Fugit::Cron.parse("#{cron} #{cron_timezone}")
+      end
+
+      def find_next_time(time)
+        @cron_line.next_time(time).utc.in_time_zone(Time.zone)
+      rescue RuntimeError => error
+        raise error unless error.message =~ /too many loops/
+        # Fugit::Cron raises a RuntimeError if :next_time does not find the next schedule 
+        # given an invalid pattern - E.g. try_parse_cron('0 12 31 2 *')
       end
     end
   end
