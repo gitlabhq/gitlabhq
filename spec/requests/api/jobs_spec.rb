@@ -863,7 +863,7 @@ describe API::Jobs do
   end
 
   describe 'POST /projects/:id/jobs/:job_id/retry' do
-    let(:job) { create(:ci_build, :canceled, pipeline: pipeline) }
+    let(:job) { create(:ci_build, :failed, pipeline: pipeline) }
 
     before do
       post api("/projects/#{project.id}/jobs/#{job.id}/retry", api_user)
@@ -873,7 +873,7 @@ describe API::Jobs do
       context 'user with :update_build permission' do
         it 'retries non-running job' do
           expect(response).to have_gitlab_http_status(201)
-          expect(project.builds.first.status).to eq('canceled')
+          expect(project.builds.first.status).to eq('failed')
           expect(json_response['status']).to eq('pending')
         end
       end

@@ -163,11 +163,11 @@ describe Gitlab::Ci::Status::Build::Factory do
 
     it 'matches correct extended statuses' do
       expect(factory.extended_statuses)
-        .to eq [Gitlab::Ci::Status::Build::Canceled, Gitlab::Ci::Status::Build::Retryable]
+        .to eq [Gitlab::Ci::Status::Build::Canceled]
     end
 
-    it 'fabricates a retryable build status' do
-      expect(status).to be_a Gitlab::Ci::Status::Build::Retryable
+    it 'does not fabricate a retryable build status' do
+      expect(status).not_to be_a Gitlab::Ci::Status::Build::Retryable
     end
 
     it 'fabricates status with correct details' do
@@ -177,7 +177,7 @@ describe Gitlab::Ci::Status::Build::Factory do
       expect(status.illustration).to include(:image, :size, :title)
       expect(status.label).to eq 'canceled'
       expect(status).to have_details
-      expect(status).to have_action
+      expect(status).not_to have_action
     end
   end
 

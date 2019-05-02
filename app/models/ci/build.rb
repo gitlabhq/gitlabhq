@@ -352,7 +352,7 @@ module Ci
     end
 
     def retryable?
-      !archived? && (success? || failed? || canceled?)
+      !archived? && (success? || failed?)
     end
 
     def retries_count
