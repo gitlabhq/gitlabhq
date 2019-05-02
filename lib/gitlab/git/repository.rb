@@ -834,13 +834,28 @@ module Gitlab
         gitaly_repository_client.create_from_snapshot(url, auth)
       end
 
-      def rebase(user, rebase_id, branch:, branch_sha:, remote_repository:, remote_branch:)
+      # DEPRECATED: https://gitlab.com/gitlab-org/gitaly/issues/1628
+      def rebase_deprecated(user, rebase_id, branch:, branch_sha:, remote_repository:, remote_branch:)
         wrapped_gitaly_errors do
           gitaly_operation_client.user_rebase(user, rebase_id,
                                             branch: branch,
                                             branch_sha: branch_sha,
                                             remote_repository: remote_repository,
                                             remote_branch: remote_branch)
+        end
+      end
+
+      def rebase(user, rebase_id, branch:, branch_sha:, remote_repository:, remote_branch:, &block)
+        wrapped_gitaly_errors do
+          gitaly_operation_client.rebase(
+            user,
+            rebase_id,
+            branch: branch,
+            branch_sha: branch_sha,
+            remote_repository: remote_repository,
+            remote_branch: remote_branch,
+            &block
+          )
         end
       end
 
