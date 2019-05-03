@@ -70,8 +70,11 @@ module Banzai
       # Build the raw <a> tag just with a link as href and content if
       # it's originally a link pattern. We shouldn't return a plain text href.
       original_link =
-        if link_reference == 'true' && href = original_content
-          %(<a href="#{href}">#{href}</a>)
+        if link_reference == 'true'
+          href = node.attr('href')
+          content = original_content
+
+          %(<a href="#{href}">#{content}</a>)
         end
 
       # The reference should be replaced by the original link's content,
