@@ -161,6 +161,7 @@ Parameters:
 | `name` | String | yes | The name of the cluster |
 | `domain` | String | no | The [base domain](../user/project/clusters/index.md#base-domain) of the cluster |
 | `enabled` | Boolean | no | Determines if cluster is active or not, defaults to true |
+| `managed` | Boolean | no | Determines if GitLab will manage namespaces and service accounts for this cluster, defaults to true |
 | `platform_kubernetes_attributes[api_url]` | String | yes | The URL to access the Kubernetes API |
 | `platform_kubernetes_attributes[token]` | String | yes | The token to authenticate against Kubernetes |
 | `platform_kubernetes_attributes[ca_cert]` | String | no | TLS certificate (needed if API is using a self-signed TLS certificate |

@@ -331,6 +331,18 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
             { key: 'KUBE_TOKEN', value: kubernetes.token, public: false }
           )
         end
+
+        context 'the cluster is not managed' do
+          let!(:cluster) { create(:cluster, :group, :not_managed, platform_kubernetes: kubernetes) }
+
+          it_behaves_like 'setting variables'
+
+          it 'sets KUBE_TOKEN' do
+            expect(subject).to include(
+              { key: 'KUBE_TOKEN', value: kubernetes.token, public: false, masked: true }
+            )
+          end
+        end
       end
 
       context 'kubernetes namespace exists for the project' do
