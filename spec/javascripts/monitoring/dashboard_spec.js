@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import Dashboard from '~/monitoring/components/dashboard.vue';
-import { timeWindows } from '~/monitoring/constants';
+import { timeWindows, timeWindowsKeyNames } from '~/monitoring/constants';
 import axios from '~/lib/utils/axios_utils';
 import { metricsGroupsAPIResponse, mockApiEndpoint, environmentData } from './mock_data';
 
@@ -244,6 +244,41 @@ describe('Dashboard', () => {
 
         expect(timeWindowDropdown).not.toBeNull();
         expect(timeWindowDropdownEls.length).toEqual(numberOfTimeWindows);
+
+        done();
+      });
+    });
+
+    it('shows a specific time window selected from the url params', done => {
+      spyOnDependency(Dashboard, 'getParameterValues').and.returnValue(['thirtyMinutes']);
+
+      const component = new DashboardComponent({
+        el: document.querySelector('.prometheus-graphs'),
+        propsData: { ...propsData, hasMetrics: true, showTimeWindowDropdown: true },
+      });
+
+      setTimeout(() => {
+        const selectedTimeWindow = component.$el.querySelector(
+          '.js-time-window-dropdown [active="true"]',
+        );
+
+        expect(selectedTimeWindow.textContent.trim()).toEqual('30 minutes');
+        done();
+      });
+    });
+
+    it('defaults to the eight hours time window for non valid url parameters', done => {
+      spyOnDependency(Dashboard, 'getParameterValues').and.returnValue([
+        '<script>alert("XSS")</script>',
+      ]);
+
+      const component = new DashboardComponent({
+        el: document.querySelector('.prometheus-graphs'),
+        propsData: { ...propsData, hasMetrics: true, showTimeWindowDropdown: true },
+      });
+
+      Vue.nextTick(() => {
+        expect(component.selectedTimeWindowKey).toEqual(timeWindowsKeyNames.eightHours);
 
         done();
       });
