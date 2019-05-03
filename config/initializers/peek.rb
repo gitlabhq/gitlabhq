@@ -10,6 +10,18 @@ elsif Gitlab::Database.postgresql?
   require 'peek-pg'
   PEEK_DB_CLIENT = ::PG::Connection
   PEEK_DB_VIEW = Peek::Views::PG
+
+  # Remove once we have https://github.com/peek/peek-pg/pull/10
+  module ::Peek::PGInstrumented
+    def exec_params(*args)
+      start = Time.now
+      super(*args)
+    ensure
+      duration = (Time.now - start)
+      PEEK_DB_CLIENT.query_time.update { |value| value + duration }
+      PEEK_DB_CLIENT.query_count.update { |value| value + 1 }
+    end
+  end
 else
   raise "Unsupported database adapter for peek!"
 end
