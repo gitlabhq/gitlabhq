@@ -21,6 +21,7 @@ import { localTimeAgo } from './lib/utils/datetime_utility';
 import syntaxHighlight from './syntax_highlight';
 import Notes from './notes';
 import { polyfillSticky } from './lib/utils/sticky';
+import { __ } from './locale';
 
 // MergeRequestTabs
 //
@@ -326,7 +327,7 @@ export default class MergeRequestTabs {
       })
       .catch(() => {
         this.toggleLoading(false);
-        flash('An error occurred while fetching this tab.');
+        flash(__('An error occurred while fetching this tab.'));
       });
   }
 
@@ -416,7 +417,7 @@ export default class MergeRequestTabs {
       })
       .catch(() => {
         this.toggleLoading(false);
-        flash('An error occurred while fetching this tab.');
+        flash(__('An error occurred while fetching this tab.'));
       });
   }
 

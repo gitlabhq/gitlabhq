@@ -853,6 +853,9 @@ msgstr ""
 msgid "An error occurred while fetching the board lists. Please try again."
 msgstr ""
 
+msgid "An error occurred while fetching the builds."
+msgstr ""
+
 msgid "An error occurred while fetching the job log."
 msgstr ""
 
@@ -866,6 +869,9 @@ msgid "An error occurred while fetching the pipeline."
 msgstr ""
 
 msgid "An error occurred while fetching the releases. Please try again."
+msgstr ""
+
+msgid "An error occurred while fetching this tab."
 msgstr ""
 
 msgid "An error occurred while getting projects"
@@ -950,6 +956,9 @@ msgid "Anti-spam verification"
 msgstr ""
 
 msgid "Any"
+msgstr ""
+
+msgid "Any Milestone"
 msgstr ""
 
 msgid "Any encrypted tokens"
@@ -3816,6 +3825,9 @@ msgid "Error loading markdown preview"
 msgstr ""
 
 msgid "Error loading merge requests."
+msgstr ""
+
+msgid "Error loading milestone tab"
 msgstr ""
 
 msgid "Error loading project data. Please try again."
@@ -10919,6 +10931,9 @@ msgid "You must have permission to create a project in a namespace before forkin
 msgstr ""
 
 msgid "You need permission."
+msgstr ""
+
+msgid "You need to be logged in."
 msgstr ""
 
 msgid "You need to register a two-factor authentication app before you can set up a U2F device."
