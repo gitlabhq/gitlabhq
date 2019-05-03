@@ -7,7 +7,12 @@ import { handleLocationHash, historyPushState, scrollToElement } from '~/lib/uti
 import { mergeUrlParams, getLocationHash } from '~/lib/utils/url_utility';
 import TreeWorker from '../workers/tree_worker';
 import eventHub from '../../notes/event_hub';
-import { getDiffPositionByLineCode, getNoteFormData } from './utils';
+import {
+  getDiffPositionByLineCode,
+  getNoteFormData,
+  convertExpandLines,
+  idleCallback,
+} from './utils';
 import * as types from './mutation_types';
 import {
   PARALLEL_DIFF_VIEW_TYPE,
@@ -17,6 +22,16 @@ import {
   TREE_LIST_STORAGE_KEY,
   WHITESPACE_STORAGE_KEY,
   TREE_LIST_WIDTH_STORAGE_KEY,
+  OLD_LINE_KEY,
+  NEW_LINE_KEY,
+  TYPE_KEY,
+  LEFT_LINE_KEY,
+  MAX_RENDERING_DIFF_LINES,
+  MAX_RENDERING_BULK_ROWS,
+  MIN_RENDERING_MS,
+  START_RENDERING_INDEX,
+  INLINE_DIFF_LINES_KEY,
+  PARALLEL_DIFF_LINES_KEY,
 } from '../constants';
 import { diffViewerModes } from '~/ide/constants';
 
@@ -313,11 +328,96 @@ export const cacheTreeListWidth = (_, size) => {
 };
 
 export const requestFullDiff = ({ commit }, filePath) => commit(types.REQUEST_FULL_DIFF, filePath);
-export const receiveFullDiffSucess = ({ commit }, { filePath, data }) =>
-  commit(types.RECEIVE_FULL_DIFF_SUCCESS, { filePath, data });
+export const receiveFullDiffSucess = ({ commit }, { filePath }) =>
+  commit(types.RECEIVE_FULL_DIFF_SUCCESS, { filePath });
 export const receiveFullDiffError = ({ commit }, filePath) => {
   commit(types.RECEIVE_FULL_DIFF_ERROR, filePath);
   createFlash(s__('MergeRequest|Error loading full diff. Please try again.'));
+};
+
+export const setExpandedDiffLines = ({ commit, state }, { file, data }) => {
+  const expandedDiffLines = {
+    highlighted_diff_lines: convertExpandLines({
+      diffLines: file.highlighted_diff_lines,
+      typeKey: TYPE_KEY,
+      oldLineKey: OLD_LINE_KEY,
+      newLineKey: NEW_LINE_KEY,
+      data,
+      mapLine: ({ line, oldLine, newLine }) =>
+        Object.assign(line, {
+          old_line: oldLine,
+          new_line: newLine,
+          line_code: `${file.file_hash}_${oldLine}_${newLine}`,
+        }),
+    }),
+    parallel_diff_lines: convertExpandLines({
+      diffLines: file.parallel_diff_lines,
+      typeKey: [LEFT_LINE_KEY, TYPE_KEY],
+      oldLineKey: [LEFT_LINE_KEY, OLD_LINE_KEY],
+      newLineKey: [LEFT_LINE_KEY, NEW_LINE_KEY],
+      data,
+      mapLine: ({ line, oldLine, newLine }) => ({
+        left: {
+          ...line,
+          old_line: oldLine,
+          line_code: `${file.file_hash}_${oldLine}_${newLine}`,
+        },
+        right: {
+          ...line,
+          new_line: newLine,
+          line_code: `${file.file_hash}_${newLine}_${oldLine}`,
+        },
+      }),
+    }),
+  };
+  const currentDiffLinesKey =
+    state.diffViewType === INLINE_DIFF_VIEW_TYPE ? INLINE_DIFF_LINES_KEY : PARALLEL_DIFF_LINES_KEY;
+  const hiddenDiffLinesKey =
+    state.diffViewType === INLINE_DIFF_VIEW_TYPE ? PARALLEL_DIFF_LINES_KEY : INLINE_DIFF_LINES_KEY;
+
+  commit(types.SET_HIDDEN_VIEW_DIFF_FILE_LINES, {
+    filePath: file.file_path,
+    lines: expandedDiffLines[hiddenDiffLinesKey],
+  });
+
+  if (expandedDiffLines[currentDiffLinesKey].length > MAX_RENDERING_DIFF_LINES) {
+    let index = START_RENDERING_INDEX;
+    commit(types.SET_CURRENT_VIEW_DIFF_FILE_LINES, {
+      filePath: file.file_path,
+      lines: expandedDiffLines[currentDiffLinesKey].slice(0, index),
+    });
+    commit(types.TOGGLE_DIFF_FILE_RENDERING_MORE, file.file_path);
+
+    const idleCb = t => {
+      const startIndex = index;
+
+      while (
+        t.timeRemaining() >= MIN_RENDERING_MS &&
+        index !== expandedDiffLines[currentDiffLinesKey].length &&
+        index - startIndex !== MAX_RENDERING_BULK_ROWS
+      ) {
+        const line = expandedDiffLines[currentDiffLinesKey][index];
+
+        if (line) {
+          commit(types.ADD_CURRENT_VIEW_DIFF_FILE_LINES, { filePath: file.file_path, line });
+          index += 1;
+        }
+      }
+
+      if (index !== expandedDiffLines[currentDiffLinesKey].length) {
+        idleCallback(idleCb);
+      } else {
+        commit(types.TOGGLE_DIFF_FILE_RENDERING_MORE, file.file_path);
+      }
+    };
+
+    idleCallback(idleCb);
+  } else {
+    commit(types.SET_CURRENT_VIEW_DIFF_FILE_LINES, {
+      filePath: file.file_path,
+      lines: expandedDiffLines[currentDiffLinesKey],
+    });
+  }
 };
 
 export const fetchFullDiff = ({ dispatch }, file) =>
@@ -328,8 +428,10 @@ export const fetchFullDiff = ({ dispatch }, file) =>
         from_merge_request: true,
       },
     })
-    .then(({ data }) => dispatch('receiveFullDiffSucess', { filePath: file.file_path, data }))
-    .then(() => scrollToElement(`#${file.file_hash}`))
+    .then(({ data }) => {
+      dispatch('receiveFullDiffSucess', { filePath: file.file_path });
+      dispatch('setExpandedDiffLines', { file, data });
+    })
     .catch(() => dispatch('receiveFullDiffError', file.file_path));
 
 export const toggleFullDiff = ({ dispatch, getters, state }, filePath) => {
@@ -340,7 +442,6 @@ export const toggleFullDiff = ({ dispatch, getters, state }, filePath) => {
   if (file.isShowingFullFile) {
     dispatch('loadCollapsedDiff', file)
       .then(() => dispatch('assignDiscussionsToDiff', getters.getDiffFileDiscussions(file)))
-      .then(() => scrollToElement(`#${file.file_hash}`))
       .catch(() => dispatch('receiveFullDiffError', filePath));
   } else {
     dispatch('fetchFullDiff', file);

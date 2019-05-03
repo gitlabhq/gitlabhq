@@ -89,17 +89,19 @@ export default {
     classNameMap() {
       const { type } = this.line;
 
-      return {
-        hll: this.isHighlighted,
-        [type]: type,
-        [LINE_UNFOLD_CLASS_NAME]: this.isMatchLine,
-        [LINE_HOVER_CLASS_NAME]:
-          this.isLoggedIn &&
-          this.isHover &&
-          !this.isMatchLine &&
-          !this.isContextLine &&
-          !this.isMetaLine,
-      };
+      return [
+        type,
+        {
+          hll: this.isHighlighted,
+          [LINE_UNFOLD_CLASS_NAME]: this.isMatchLine,
+          [LINE_HOVER_CLASS_NAME]:
+            this.isLoggedIn &&
+            this.isHover &&
+            !this.isMatchLine &&
+            !this.isContextLine &&
+            !this.isMetaLine,
+        },
+      ];
     },
     lineNumber() {
       return this.lineType === OLD_LINE_TYPE ? this.line.old_line : this.line.new_line;
