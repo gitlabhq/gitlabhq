@@ -959,7 +959,9 @@ describe API::Internal do
 
       it 'creates a new merge request' do
         expect do
-          post api('/internal/post_receive'), params: valid_params
+          Sidekiq::Testing.fake! do
+            post api('/internal/post_receive'), params: valid_params
+          end
         end.to change { MergeRequest.count }.by(1)
       end
 
