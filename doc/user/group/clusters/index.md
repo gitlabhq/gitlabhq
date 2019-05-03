@@ -72,6 +72,29 @@ Add another cluster similar to the first one and make sure to
 [set an environment scope](#environment-scopes-premium) that will
 differentiate the new cluster from the rest.
 
+## Gitlab-managed clusters
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22011) in GitLab 11.5.
+> Became [optional](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/26565) in GitLab 11.11.
+
+NOTE: **Note:**
+Only available when creating clusters. Existing clusters not managed by GitLab
+cannot become GitLab-managed later.
+
+You can choose to allow GitLab to manage your cluster for you. If your cluster is
+managed by GitLab, resources for your projects will be automatically created. See the
+[Access controls](../../project/clusters/index.md#access-controls) section for details on which resources will
+be created.
+
+If you choose to manage your own cluster, project-specific resources will not be created
+automatically. If you are using [Auto DevOps](../../../topics/autodevops/index.md), you will
+need to explicitly provide the `KUBE_NAMESPACE` [deployment variable](../../project/clusters/index.md#deployment-variables)
+that will be used by your deployment jobs.
+
+NOTE: **Note:**
+If you [install applications](#installing-applications) on your cluster, GitLab will create
+the resources required to run these even if you have chosen to manage your own cluster.
+
 ## Base domain
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/24580) in GitLab 11.8.

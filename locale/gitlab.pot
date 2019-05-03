@@ -2017,6 +2017,9 @@ msgstr ""
 msgid "ClusterIntegration|All data will be deleted and cannot be restored."
 msgstr ""
 
+msgid "ClusterIntegration|Allow GitLab to manage namespace and service accounts for this cluster."
+msgstr ""
+
 msgid "ClusterIntegration|Alternatively"
 msgstr ""
 
@@ -2138,6 +2141,9 @@ msgid "ClusterIntegration|GitLab Runner"
 msgstr ""
 
 msgid "ClusterIntegration|GitLab Runner connects to the repository and executes CI/CD jobs, pushing results back and deploying applications to production."
+msgstr ""
+
+msgid "ClusterIntegration|GitLab-managed cluster"
 msgstr ""
 
 msgid "ClusterIntegration|Google Cloud Platform project"
