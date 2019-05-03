@@ -378,7 +378,7 @@ describe API::Tags do
         post api(route, user), params: { description: description }
 
         expect(response).to have_gitlab_http_status(201)
-        expect(response).to match_response_schema('public_api/v4/release')
+        expect(response).to match_response_schema('public_api/v4/release/tag_release')
         expect(json_response['tag_name']).to eq(tag_name)
         expect(json_response['description']).to eq(description)
       end

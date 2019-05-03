@@ -1,12 +1,33 @@
 {
   "type": "object",
-  "required" : [
-    "tag_name",
-    "description"
-  ],
-  "properties" : {
-    "tag_name": { "type": ["string", "null"] },
-    "description": { "type": "string" }
+  "required": ["name", "tag_name", "commit"],
+  "properties": {
+    "name": { "type": "string" },
+    "tag_name": { "type": "string" },
+    "description": { "type": "string" },
+    "description_html": { "type": "string" },
+    "created_at": { "type": "date" },
+    "commit": {
+      "oneOf": [{ "type": "null" }, { "$ref": "commit/basic.json" }]
+    },
+    "author": {
+      "oneOf": [{ "type": "null" }, { "$ref": "user/basic.json" }]
+    },
+    "assets": {
+      "required": ["count", "links", "sources"],
+      "properties": {
+        "count": { "type": "integer" },
+        "links": { "$ref": "../../release/links.json" },
+        "sources": {
+          "type": "array",
+          "items": {
+            "format": "zip",
+            "url": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    }
   },
   "additionalProperties": false
 }

@@ -24,8 +24,7 @@ RSpec.shared_context 'ProjectPolicy context' do
       download_code fork_project create_project_snippet update_issue
       admin_issue admin_label admin_list read_commit_status read_build
       read_container_image read_pipeline read_environment read_deployment
-      read_merge_request download_wiki_code read_sentry_issue read_release
-      read_prometheus
+      read_merge_request download_wiki_code read_sentry_issue read_prometheus
     ]
   end
 

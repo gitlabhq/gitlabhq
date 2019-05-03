@@ -31,8 +31,11 @@ class Release < ApplicationRecord
     actual_tag.nil?
   end
 
-  def assets_count
-    links.count + sources.count
+  def assets_count(except: [])
+    links_count = links.count
+    sources_count = except.include?(:sources) ? 0 : sources.count
+
+    links_count + sources_count
   end
 
   def sources

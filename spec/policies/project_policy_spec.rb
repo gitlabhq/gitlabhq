@@ -17,7 +17,7 @@ describe ProjectPolicy do
       read_project_for_iids read_issue_iid read_label
       read_milestone read_project_snippet read_project_member read_note
       create_project create_issue create_note upload_file create_merge_request_in
-      award_emoji
+      award_emoji read_release
     ]
   end
 
@@ -26,7 +26,7 @@ describe ProjectPolicy do
       download_code fork_project create_project_snippet update_issue
       admin_issue admin_label admin_list read_commit_status read_build
       read_container_image read_pipeline read_environment read_deployment
-      read_merge_request download_wiki_code read_sentry_issue read_release
+      read_merge_request download_wiki_code read_sentry_issue
     ]
   end
 
