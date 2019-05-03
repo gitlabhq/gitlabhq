@@ -5,7 +5,7 @@ module RuboCop
     def in_qa_file?(node)
       path = node.location.expression.source_buffer.name
 
-      path.start_with?(File.join(Dir.pwd, 'qa'))
+      path.start_with?(File.join(RuboCop::PathUtil.pwd, 'qa'))
     end
   end
 end
