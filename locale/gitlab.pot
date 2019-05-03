@@ -4196,6 +4196,9 @@ msgstr ""
 msgid "Failed to remove user key."
 msgstr ""
 
+msgid "Failed to save comment!"
+msgstr ""
+
 msgid "Failed to save merge conflicts resolutions. Please try again!"
 msgstr ""
 

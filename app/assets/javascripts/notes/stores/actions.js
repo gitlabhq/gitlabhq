@@ -268,11 +268,20 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
     const { errors } = res;
     const commandsChanges = res.commands_changes;
 
-    if (hasQuickActions && errors && Object.keys(errors).length) {
-      eTagPoll.makeRequest();
+    if (errors && Object.keys(errors).length) {
+      /*
+       The following reply means that quick actions have been successfully applied:
 
-      $('.js-gfm-input').trigger('clear-commands-cache.atwho');
-      Flash(__('Commands applied'), 'notice', noteData.flashContainer);
+       {"commands_changes":{},"valid":false,"errors":{"commands_only":["Commands applied"]}}
+       */
+      if (hasQuickActions) {
+        eTagPoll.makeRequest();
+
+        $('.js-gfm-input').trigger('clear-commands-cache.atwho');
+        Flash(__('Commands applied'), 'notice', noteData.flashContainer);
+      } else {
+        throw new Error(__('Failed to save comment!'));
+      }
     }
 
     if (commandsChanges) {
