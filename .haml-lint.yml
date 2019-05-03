@@ -94,6 +94,7 @@ linters:
 
       # These cops should eventually get enabled
       - Cop/LineBreakAroundConditionalBlock
+      - Cop/LineBreakAfterGuardClauses
       - Cop/ProjectPathHelper
       - GitlabSecurity/PublicSend
       - Layout/EmptyLineAfterGuardClause
@@ -112,6 +113,7 @@ linters:
       - Lint/LiteralInInterpolation
       - Lint/ParenthesesAsGroupedExpression
       - Lint/RedundantWithIndex
+      - Lint/SafeNavigationConsistency
       - Lint/Syntax
       - Metrics/BlockNesting
       - Naming/VariableName
