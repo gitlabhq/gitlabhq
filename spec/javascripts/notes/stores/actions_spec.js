@@ -794,6 +794,51 @@ describe('Actions Notes Store', () => {
     });
   });
 
+  describe('saveNote', () => {
+    const payload = { endpoint: TEST_HOST, data: { 'note[note]': 'some text' } };
+
+    describe('if response contains errors', () => {
+      const res = { errors: { something: ['went wrong'] } };
+
+      it('throws an error', done => {
+        actions
+          .saveNote(
+            {
+              commit() {},
+              dispatch: () => Promise.resolve(res),
+            },
+            payload,
+          )
+          .then(() => done.fail('Expected error to be thrown!'))
+          .catch(error => {
+            expect(error.message).toBe('Failed to save comment!');
+          })
+          .then(done)
+          .catch(done.fail);
+      });
+    });
+
+    describe('if response contains no errors', () => {
+      const res = { valid: true };
+
+      it('returns the response', done => {
+        actions
+          .saveNote(
+            {
+              commit() {},
+              dispatch: () => Promise.resolve(res),
+            },
+            payload,
+          )
+          .then(data => {
+            expect(data).toBe(res);
+          })
+          .then(done)
+          .catch(done.fail);
+      });
+    });
+  });
+
   describe('submitSuggestion', () => {
     const discussionId = 'discussion-id';
     const noteId = 'note-id';
