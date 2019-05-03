@@ -976,6 +976,9 @@ msgstr ""
 msgid "Any"
 msgstr ""
 
+msgid "Any Label"
+msgstr ""
+
 msgid "Any Milestone"
 msgstr ""
 
@@ -5523,6 +5526,9 @@ msgstr ""
 msgid "Labels|Promoting %{labelTitle} will make it available for all projects inside %{groupName}. Existing project labels with the same title will be merged. This action cannot be reversed."
 msgstr ""
 
+msgid "Labels|and %{count} more"
+msgstr ""
+
 msgid "Language"
 msgstr ""
 
@@ -6289,6 +6295,9 @@ msgid "No"
 msgstr ""
 
 msgid "No %{providerTitle} repositories available to import"
+msgstr ""
+
+msgid "No Label"
 msgstr ""
 
 msgid "No Milestone"
@@ -10356,6 +10365,9 @@ msgid "Unable to resolve"
 msgstr ""
 
 msgid "Unable to schedule a pipeline to run immediately"
+msgstr ""
+
+msgid "Unable to update label prioritization at this time"
 msgstr ""
 
 msgid "Unable to update this issue at this time."
