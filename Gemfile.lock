@@ -297,7 +297,7 @@ GEM
     gitlab-markup (1.7.0)
     gitlab-sidekiq-fetcher (0.4.0)
       sidekiq (~> 5)
-    gitlab-styles (2.6.1)
+    gitlab-styles (2.6.2)
       rubocop (~> 0.68.1)
       rubocop-gitlab-security (~> 0.1.0)
       rubocop-performance (~> 1.1.0)
