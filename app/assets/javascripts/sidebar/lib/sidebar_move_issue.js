@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import _ from 'underscore';
+import { __ } from '~/locale';
 
 function isValidProjectId(id) {
   return id > 0;
@@ -40,7 +41,9 @@ class SidebarMoveIssue {
         this.mediator
           .fetchAutocompleteProjects(searchTerm)
           .then(callback)
-          .catch(() => new window.Flash('An error occurred while fetching projects autocomplete.'));
+          .catch(
+            () => new window.Flash(__('An error occurred while fetching projects autocomplete.')),
+          );
       },
       renderRow: project => `
         <li>
@@ -72,7 +75,7 @@ class SidebarMoveIssue {
       this.$confirmButton.disable().addClass('is-loading');
 
       this.mediator.moveIssue().catch(() => {
-        window.Flash('An error occurred while moving the issue.');
+        window.Flash(__('An error occurred while moving the issue.'));
         this.$confirmButton.enable().removeClass('is-loading');
       });
     }
