@@ -126,19 +126,6 @@ label {
   }
 }
 
-.select-wrapper {
-  position: relative;
-
-  .fa-chevron-down {
-    position: absolute;
-    font-size: 10px;
-    right: 10px;
-    top: 12px;
-    color: $gray-darkest;
-    pointer-events: none;
-  }
-}
-
 .select-control {
   padding-left: 10px;
   padding-right: 10px;
@@ -241,16 +228,26 @@ label {
   }
 }
 
-.input-icon-wrapper {
+.input-icon-wrapper,
+.select-wrapper {
   position: relative;
+}
 
-  .input-icon-right {
-    position: absolute;
-    right: 0.8em;
-    top: 50%;
-    transform: translateY(-50%);
-    color: $gray-600;
-  }
+.select-wrapper > .fa-chevron-down {
+  position: absolute;
+  font-size: 10px;
+  right: 10px;
+  top: 12px;
+  color: $gray-darkest;
+  pointer-events: none;
+}
+
+.input-icon-wrapper > .input-icon-right {
+  position: absolute;
+  right: 0.8em;
+  top: 50%;
+  transform: translateY(-50%);
+  color: $gray-600;
 }
 
 .input-md {
