@@ -36,6 +36,7 @@ import actions, {
   fetchFullDiff,
   toggleFullDiff,
   setFileCollapsed,
+  setExpandedDiffLines,
 } from '~/diffs/store/actions';
 import eventHub from '~/notes/event_hub';
 import * as types from '~/diffs/store/mutation_types';
@@ -879,9 +880,9 @@ describe('DiffsStoreActions', () => {
     it('commits REQUEST_FULL_DIFF', done => {
       testAction(
         receiveFullDiffSucess,
-        { filePath: 'test', data: 'test' },
+        { filePath: 'test' },
         {},
-        [{ type: types.RECEIVE_FULL_DIFF_SUCCESS, payload: { filePath: 'test', data: 'test' } }],
+        [{ type: types.RECEIVE_FULL_DIFF_SUCCESS, payload: { filePath: 'test' } }],
         [],
         done,
       );
@@ -903,11 +904,8 @@ describe('DiffsStoreActions', () => {
 
   describe('fetchFullDiff', () => {
     let mock;
-    let scrollToElementSpy;
 
     beforeEach(() => {
-      scrollToElementSpy = spyOnDependency(actions, 'scrollToElement').and.stub();
-
       mock = new MockAdapter(axios);
     });
 
@@ -921,27 +919,22 @@ describe('DiffsStoreActions', () => {
       });
 
       it('dispatches receiveFullDiffSucess', done => {
+        const file = {
+          context_lines_path: `${gl.TEST_HOST}/context`,
+          file_path: 'test',
+          file_hash: 'test',
+        };
         testAction(
           fetchFullDiff,
-          { context_lines_path: `${gl.TEST_HOST}/context`, file_path: 'test', file_hash: 'test' },
+          file,
           null,
           [],
-          [{ type: 'receiveFullDiffSucess', payload: { filePath: 'test', data: ['test'] } }],
+          [
+            { type: 'receiveFullDiffSucess', payload: { filePath: 'test' } },
+            { type: 'setExpandedDiffLines', payload: { file, data: ['test'] } },
+          ],
           done,
         );
-      });
-
-      it('scrolls to element', done => {
-        fetchFullDiff(
-          { dispatch() {} },
-          { context_lines_path: `${gl.TEST_HOST}/context`, file_path: 'test', file_hash: 'test' },
-        )
-          .then(() => {
-            expect(scrollToElementSpy).toHaveBeenCalledWith('#test');
-
-            done();
-          })
-          .catch(done.fail);
       });
     });
 
@@ -994,6 +987,65 @@ describe('DiffsStoreActions', () => {
         { filePath: 'test', collapsed: true },
         null,
         [{ type: types.SET_FILE_COLLAPSED, payload: { filePath: 'test', collapsed: true } }],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('setExpandedDiffLines', () => {
+    beforeEach(() => {
+      spyOnDependency(actions, 'idleCallback').and.callFake(cb => {
+        cb({ timeRemaining: () => 50 });
+      });
+    });
+
+    it('commits SET_CURRENT_VIEW_DIFF_FILE_LINES when lines less than MAX_RENDERING_DIFF_LINES', done => {
+      spyOnDependency(actions, 'convertExpandLines').and.callFake(() => ['test']);
+
+      testAction(
+        setExpandedDiffLines,
+        { file: { file_path: 'path' }, data: [] },
+        { diffViewType: 'inline' },
+        [
+          {
+            type: 'SET_HIDDEN_VIEW_DIFF_FILE_LINES',
+            payload: { filePath: 'path', lines: ['test'] },
+          },
+          {
+            type: 'SET_CURRENT_VIEW_DIFF_FILE_LINES',
+            payload: { filePath: 'path', lines: ['test'] },
+          },
+        ],
+        [],
+        done,
+      );
+    });
+
+    it('commits ADD_CURRENT_VIEW_DIFF_FILE_LINES when lines more than MAX_RENDERING_DIFF_LINES', done => {
+      const lines = new Array(501).fill().map((_, i) => `line-${i}`);
+      spyOnDependency(actions, 'convertExpandLines').and.callFake(() => lines);
+
+      testAction(
+        setExpandedDiffLines,
+        { file: { file_path: 'path' }, data: [] },
+        { diffViewType: 'inline' },
+        [
+          {
+            type: 'SET_HIDDEN_VIEW_DIFF_FILE_LINES',
+            payload: { filePath: 'path', lines },
+          },
+          {
+            type: 'SET_CURRENT_VIEW_DIFF_FILE_LINES',
+            payload: { filePath: 'path', lines: lines.slice(0, 200) },
+          },
+          { type: 'TOGGLE_DIFF_FILE_RENDERING_MORE', payload: 'path' },
+          ...new Array(301).fill().map((_, i) => ({
+            type: 'ADD_CURRENT_VIEW_DIFF_FILE_LINES',
+            payload: { filePath: 'path', line: `line-${i + 200}` },
+          })),
+          { type: 'TOGGLE_DIFF_FILE_RENDERING_MORE', payload: 'path' },
+        ],
         [],
         done,
       );

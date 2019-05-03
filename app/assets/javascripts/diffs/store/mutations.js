@@ -6,10 +6,8 @@ import {
   addContextLines,
   prepareDiffData,
   isDiscussionApplicableToLine,
-  convertExpandLines,
 } from './utils';
 import * as types from './mutation_types';
-import { OLD_LINE_KEY, NEW_LINE_KEY, TYPE_KEY, LEFT_LINE_KEY } from '../constants';
 
 export default {
   [types.SET_BASE_CONFIG](state, options) {
@@ -265,45 +263,11 @@ export default {
 
     file.isLoadingFullFile = false;
   },
-  [types.RECEIVE_FULL_DIFF_SUCCESS](state, { filePath, data }) {
+  [types.RECEIVE_FULL_DIFF_SUCCESS](state, { filePath }) {
     const file = findDiffFile(state.diffFiles, filePath, 'file_path');
 
     file.isShowingFullFile = true;
     file.isLoadingFullFile = false;
-
-    file.highlighted_diff_lines = convertExpandLines({
-      diffLines: file.highlighted_diff_lines,
-      typeKey: [TYPE_KEY],
-      oldLineKey: [OLD_LINE_KEY],
-      newLineKey: [NEW_LINE_KEY],
-      data,
-      mapLine: ({ line, oldLine, newLine }) => ({
-        ...line,
-        old_line: oldLine,
-        new_line: newLine,
-        line_code: `${file.file_hash}_${oldLine}_${newLine}`,
-      }),
-    });
-
-    file.parallel_diff_lines = convertExpandLines({
-      diffLines: file.parallel_diff_lines,
-      typeKey: [LEFT_LINE_KEY, TYPE_KEY],
-      oldLineKey: [LEFT_LINE_KEY, OLD_LINE_KEY],
-      newLineKey: [LEFT_LINE_KEY, NEW_LINE_KEY],
-      data,
-      mapLine: ({ line, oldLine, newLine }) => ({
-        left: {
-          ...line,
-          old_line: oldLine,
-          line_code: `${file.file_hash}_${oldLine}_${newLine}`,
-        },
-        right: {
-          ...line,
-          new_line: newLine,
-          line_code: `${file.file_hash}_${newLine}_${oldLine}`,
-        },
-      }),
-    });
   },
   [types.SET_FILE_COLLAPSED](state, { filePath, collapsed }) {
     const file = state.diffFiles.find(f => f.file_path === filePath);
@@ -311,5 +275,31 @@ export default {
     if (file && file.viewer) {
       file.viewer.collapsed = collapsed;
     }
+  },
+  [types.SET_HIDDEN_VIEW_DIFF_FILE_LINES](state, { filePath, lines }) {
+    const file = state.diffFiles.find(f => f.file_path === filePath);
+    const hiddenDiffLinesKey =
+      state.diffViewType === 'inline' ? 'parallel_diff_lines' : 'highlighted_diff_lines';
+
+    file[hiddenDiffLinesKey] = lines;
+  },
+  [types.SET_CURRENT_VIEW_DIFF_FILE_LINES](state, { filePath, lines }) {
+    const file = state.diffFiles.find(f => f.file_path === filePath);
+    const currentDiffLinesKey =
+      state.diffViewType === 'inline' ? 'highlighted_diff_lines' : 'parallel_diff_lines';
+
+    file[currentDiffLinesKey] = lines;
+  },
+  [types.ADD_CURRENT_VIEW_DIFF_FILE_LINES](state, { filePath, line }) {
+    const file = state.diffFiles.find(f => f.file_path === filePath);
+    const currentDiffLinesKey =
+      state.diffViewType === 'inline' ? 'highlighted_diff_lines' : 'parallel_diff_lines';
+
+    file[currentDiffLinesKey].push(line);
+  },
+  [types.TOGGLE_DIFF_FILE_RENDERING_MORE](state, filePath) {
+    const file = state.diffFiles.find(f => f.file_path === filePath);
+
+    file.renderingLines = !file.renderingLines;
   },
 };
