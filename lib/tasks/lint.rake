@@ -36,6 +36,7 @@ unless Rails.env.production?
         gettext:updated_check
         lint:static_verification
       ].each do |task|
+        warn "#{Time.now} Running #{task}\n"
         pid = Process.fork do
           rd_out, wr_out = IO.pipe
           rd_err, wr_err = IO.pipe
