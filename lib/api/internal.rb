@@ -265,6 +265,8 @@ module API
           params[:changes], push_options.as_json)
 
         if Feature.enabled?(:mr_push_options, default_enabled: true)
+          Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/61359')
+
           mr_options = push_options.get(:merge_request)
           output.merge!(process_mr_push_options(mr_options, project, user, params[:changes])) if mr_options.present?
         end
