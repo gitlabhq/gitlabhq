@@ -529,6 +529,9 @@ msgstr ""
 msgid "Add bold text"
 msgstr ""
 
+msgid "Add comment now"
+msgstr ""
+
 msgid "Add header and footer to emails. Please note that color settings will only be applied within the application interface"
 msgstr ""
 
@@ -560,6 +563,9 @@ msgid "Add reaction"
 msgstr ""
 
 msgid "Add to project"
+msgstr ""
+
+msgid "Add to review"
 msgstr ""
 
 msgid "Add todo"
@@ -8862,6 +8868,9 @@ msgid "Start a %{new_merge_request} with these changes"
 msgstr ""
 
 msgid "Start a new merge request"
+msgstr ""
+
+msgid "Start a review"
 msgstr ""
 
 msgid "Start and due date"
