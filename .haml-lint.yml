@@ -93,8 +93,8 @@ linters:
       - Style/WhileUntilModifier
 
       # These cops should eventually get enabled
-      - Cop/LineBreakAroundConditionalBlock
       - Cop/LineBreakAfterGuardClauses
+      - Cop/LineBreakAroundConditionalBlock
       - Cop/ProjectPathHelper
       - GitlabSecurity/PublicSend
       - Layout/EmptyLineAfterGuardClause
