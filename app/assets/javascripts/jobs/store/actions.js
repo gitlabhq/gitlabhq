@@ -186,7 +186,7 @@ export const fetchStages = ({ state, dispatch }) => {
   dispatch('requestStages');
 
   axios
-    .get(`${state.job.pipeline.path}.json`)
+    .get(`${state.job.pipeline_path}.json`)
     .then(({ data }) => {
       // Set selected stage
       dispatch('receiveStagesSuccess', data.details.stages);
