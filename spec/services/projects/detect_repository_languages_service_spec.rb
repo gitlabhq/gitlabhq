@@ -5,7 +5,7 @@ require 'spec_helper'
 describe Projects::DetectRepositoryLanguagesService, :clean_gitlab_redis_shared_state do
   set(:project) { create(:project, :repository) }
 
-  subject { described_class.new(project, project.owner) }
+  subject { described_class.new(project) }
 
   describe '#execute' do
     context 'without previous detection' do

@@ -28,6 +28,21 @@ describe Projects::GraphsController do
   end
 
   describe 'charts' do
+    context 'with an anonymous user' do
+      let(:project) { create(:project, :repository, :public) }
+
+      before do
+        sign_out(user)
+      end
+
+      it 'renders charts with 200 status code' do
+        get(:charts, params: { namespace_id: project.namespace.path, project_id: project.path, id: 'master' })
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to render_template(:charts)
+      end
+    end
+
     context 'when languages were previously detected' do
       let(:project) { create(:project, :repository, detected_repository_languages: true) }
       let!(:repository_language) { create(:repository_language, project: project) }
