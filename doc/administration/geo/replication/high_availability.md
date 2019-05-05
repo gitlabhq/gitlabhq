@@ -101,10 +101,44 @@ documentation:
 ### Step 2: Configure the main read-only replica PostgreSQL database on the **secondary** node
 
 NOTE: **Note:** The following documentation assumes the database will be run on
-only a single machine, rather than as a PostgreSQL cluster.
+a single node only, rather than as a PostgreSQL cluster.
 
 Configure the [**secondary** database](database.md) as a read-only replica of
-the **primary** database.
+the **primary** database. Use the following as a guide.
+
+1. Edit `/etc/gitlab/gitlab.rb` in the replica database machine, and add the
+    following:
+
+    ```ruby
+    ##
+    ## Configure the PostgreSQL role
+    ##
+    roles ['postgres_role']
+
+    ##
+    ## Secondary address
+    ## - replace '<secondary_node_ip>' with the public or VPC address of your Geo secondary node
+    ## - replace '<tracking_database_ip>' with the public or VPC address of your Geo tracking database node
+    ##
+    postgresql['listen_address'] = '<secondary_node_ip>'
+    postgresql['md5_auth_cidr_addresses'] = ['<secondary_node_ip>/32', '<tracking_database_ip>/32']
+
+    ##
+    ## Database credentials password (defined previously in primary node)
+    ## - replicate same values here as defined in primary node
+    ##
+    postgresql['sql_user_password'] = '<md5_hash_of_your_password>'
+    gitlab_rails['db_password'] = '<your_password_here>'
+
+    ##
+    ## When running the Geo tracking database on a separate machine, disable it
+    ## here and allow connections from the tracking database host. And ensure
+    ## the tracking database IP is in postgresql['md5_auth_cidr_addresses'] above.
+    ##
+    geo_postgresql['enable'] = false
+    ```
+
+After making these changes, [reconfigure GitLab][gitlab-reconfigure] so the changes take effect.
 
 If using an external PostgreSQL instance, refer also to
 [Geo with external PostgreSQL instances](external_database.md).
@@ -124,10 +158,42 @@ Configure the tracking database.
     ## Enable the Geo secondary tracking database
     ##
     geo_postgresql['enable'] = true
-    geo_postgresql['ha'] = true
+    geo_postgresql['listen_address'] = '<ip_address_of_this_host>'
+    geo_postgresql['sql_user_password'] = '<tracking_database_password_md5_hash>'
+
+    ##
+    ## Configure FDW connection to the replica database
+    ##
+    geo_secondary['db_fdw'] = true
+    geo_postgresql['fdw_external_password'] = '<replica_database_password_plaintext>'
+    geo_postgresql['md5_auth_cidr_addresses'] = ['<replica_database_ip>/32']
+    gitlab_rails['db_host'] = '<replica_database_ip>'
+
+    # Prevent reconfigure from attempting to run migrations on the replica DB
+    gitlab_rails['auto_migrate'] = false
+
+    ##
+    ## Disable all other services that aren't needed, since we don't have a role
+    ## that does this.
+    ##
+    alertmanager['enable'] = false
+    consul['enable'] = false
+    gitaly['enable'] = false
+    gitlab_monitor['enable'] = false
+    gitlab_workhorse['enable'] = false
+    nginx['enable'] = false
+    node_exporter['enable'] = false
+    pgbouncer_exporter['enable'] = false
+    postgresql['enable'] = false
+    prometheus['enable'] = false
+    redis['enable'] = false
+    redis_exporter['enable'] = false
+    repmgr['enable'] = false
+    sidekiq['enable'] = false
+    unicorn['enable'] = false
     ```
 
-After making these changes [Reconfigure GitLab][gitlab-reconfigure] so the changes take effect.
+After making these changes, [reconfigure GitLab][gitlab-reconfigure] so the changes take effect.
 
 If using an external PostgreSQL instance, refer also to
 [Geo with external PostgreSQL instances](external_database.md).
@@ -189,6 +255,7 @@ following modifications:
     registry['uid'] = 9002
     registry['gid'] = 9002
     ```
+
 NOTE: **Note:**
 If you had set up PostgreSQL cluster using the omnibus package and you had set
 up `postgresql['sql_user_password'] = 'md5 digest of secret'` setting, keep in
