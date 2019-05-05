@@ -155,7 +155,7 @@ the contribution acceptance criteria below:
      restarting the failing CI job, rebasing from master to bring in updates that
      may resolve the failure, or if it has not been fixed yet, ask a developer to
      help you fix the test.
-1. The MR initially contains a a few logically organized commits.
+1. The MR initially contains a few logically organized commits.
 1. The changes can merge without problems. If not, you should rebase if you're the
    only one working on your feature branch, otherwise merge `master`.
 1. Only one specific issue is fixed or one specific feature is implemented. Do not
