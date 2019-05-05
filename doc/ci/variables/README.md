@@ -366,6 +366,25 @@ Protected variables can be added by going to your project's
 
 Once you set them, they will be available for all subsequent pipelines.
 
+### Limiting environment scopes of environment variables **[PREMIUM]**
+
+> [Introduced][ee-2112] in [GitLab Premium](https://about.gitlab.com/pricing/) 9.4.
+
+You can limit the environment scope of a variable by
+[defining which environments][envs] it can be available for.
+
+Wildcards can be used, and the default environment scope is `*` which means
+any jobs will have this variable, not matter if an environment is defined or
+not.
+
+For example, if the environment scope is `production`, then only the jobs
+having the environment `production` defined would have this specific variable.
+Wildcards (`*`) can be used along with the environment name, therefore if the
+environment scope is `review/*` then any jobs with environment names starting
+with `review/` would have that particular variable.
+
+To learn more about about scoping environments, see [Scoping environments with specs](../environments.md#scoping-environments-with-specs-premium).
+
 ### Deployment environment variables
 
 > Introduced in GitLab 8.15.
@@ -677,13 +696,15 @@ MIIFQzCCBCugAwIBAgIRAL/ElDjuf15xwja1ZnCocWAwDQYJKoZIhvcNAQELBQAw'
 ...
 ```
 
+[ee-2112]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2112
 [ce-13784]: https://gitlab.com/gitlab-org/gitlab-ce/issues/13784 "Simple protection of CI variables"
-[eep]: https://about.gitlab.com/pricing/ "Available only in GitLab Premium"
 [envs]: ../environments.md
 [protected branches]: ../../user/project/protected_branches.md
 [protected tags]: ../../user/project/protected_tags.md
 [shellexecutors]: https://docs.gitlab.com/runner/executors/
 [triggered]: ../triggers/README.md
+[trigger-job-token]: ../triggers/README.md#ci-job-token
 [gitlab-deploy-token]: ../../user/project/deploy_tokens/index.md#gitlab-deploy-token
 [registry]: ../../user/project/container_registry.md
 [dependent-repositories]: ../../user/project/new_ci_build_permissions_model.md#dependent-repositories
+[get-job-artifacts]:  ../../api/jobs.html#get-job-artifacts
