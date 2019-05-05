@@ -33,7 +33,7 @@ module Banzai
           (?<new_link>.+?)
           (?<title>\ ".+?")?
         \)
-      }x
+      }x.freeze
 
       # Text matching LINK_OR_IMAGE_PATTERN inside these elements will not be linked
       IGNORE_PARENTS = %w(a code kbd pre script style).to_set

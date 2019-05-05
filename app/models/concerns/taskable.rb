@@ -19,7 +19,7 @@ module Taskable
     \s+                       # whitespace prefix has to be always presented for a list item
     (\[\s\]|\[[xX]\])         # checkbox
     (\s.+)                    # followed by whitespace and some text.
-  }x
+  }x.freeze
 
   def self.get_tasks(content)
     content.to_s.scan(ITEM_PATTERN).map do |checkbox, label|

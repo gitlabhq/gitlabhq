@@ -9,7 +9,7 @@ module Gitlab
 
       class Scrubber < Loofah::Scrubber
         # http://www.whatwg.org/specs/web-apps/current-work/multipage/elements.html#embedding-custom-non-visible-data-with-the-data-*-attributes
-        DATA_ATTR_PATTERN = /\Adata-(?!xml)[a-z_][\w.\u00E0-\u00F6\u00F8-\u017F\u01DD-\u02AF-]*\z/u
+        DATA_ATTR_PATTERN = /\Adata-(?!xml)[a-z_][\w.\u00E0-\u00F6\u00F8-\u017F\u01DD-\u02AF-]*\z/u.freeze
 
         def scrub(node)
           unless Whitelist::ALLOWED_ELEMENTS.include?(node.name)

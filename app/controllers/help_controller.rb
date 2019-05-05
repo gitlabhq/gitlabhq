@@ -7,7 +7,7 @@ class HelpController < ApplicationController
 
   # Taken from Jekyll
   # https://github.com/jekyll/jekyll/blob/3.5-stable/lib/jekyll/document.rb#L13
-  YAML_FRONT_MATTER_REGEXP = /\A(---\s*\n.*?\n?)^((---|\.\.\.)\s*$\n?)/m
+  YAML_FRONT_MATTER_REGEXP = /\A(---\s*\n.*?\n?)^((---|\.\.\.)\s*$\n?)/m.freeze
 
   def index
     # Remove YAML frontmatter so that it doesn't look weird

@@ -3,8 +3,8 @@
 class Environment < ApplicationRecord
   include Gitlab::Utils::StrongMemoize
   # Used to generate random suffixes for the slug
-  LETTERS = 'a'..'z'
-  NUMBERS = '0'..'9'
+  LETTERS = ('a'..'z').freeze
+  NUMBERS = ('0'..'9').freeze
   SUFFIX_CHARS = LETTERS.to_a + NUMBERS.to_a
 
   belongs_to :project, required: true

@@ -11,8 +11,8 @@ module Gitlab
           ParserError = Class.new(StandardError)
           InvalidStreamError = Class.new(StandardError)
 
-          VERSION_PATTERN = /^[\w\s]+(\d+\.\d+\.\d+)/
-          INVALID_PATH_PATTERN = %r{(^\.?\.?/)|(/\.?\.?/)}
+          VERSION_PATTERN = /^[\w\s]+(\d+\.\d+\.\d+)/.freeze
+          INVALID_PATH_PATTERN = %r{(^\.?\.?/)|(/\.?\.?/)}.freeze
 
           attr_reader :stream, :path, :full_version
 

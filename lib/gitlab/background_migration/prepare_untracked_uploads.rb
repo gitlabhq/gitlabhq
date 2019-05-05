@@ -16,7 +16,7 @@ module Gitlab
         RELATIVE_UPLOAD_DIR
       )
       FOLLOW_UP_MIGRATION = 'PopulateUntrackedUploads'.freeze
-      START_WITH_ROOT_REGEX = %r{\A#{Gitlab.config.uploads.storage_path}/}
+      START_WITH_ROOT_REGEX = %r{\A#{Gitlab.config.uploads.storage_path}/}.freeze
       EXCLUDED_HASHED_UPLOADS_PATH = "#{ABSOLUTE_UPLOAD_DIR}/@hashed/*".freeze
       EXCLUDED_TMP_UPLOADS_PATH = "#{ABSOLUTE_UPLOAD_DIR}/tmp/*".freeze
 
