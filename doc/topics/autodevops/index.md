@@ -179,7 +179,7 @@ Those environments are tied to jobs that use [Auto Deploy](#auto-deploy), so
 except for the environment scope, they would also need to have a different
 domain they would be deployed to. This is why you need to define a separate
 `KUBE_INGRESS_BASE_DOMAIN` variable for all the above
-[based on the environment](https://docs.gitlab.com/ee/ci/variables/index.html#limiting-environment-scopes-of-variables-premium).
+[based on the environment](https://docs.gitlab.com/ee/ci/variables/#limiting-environment-scopes-of-environment-variables-premium).
 
 The following table is an example of how the three different clusters would
 be configured.
@@ -377,8 +377,8 @@ analysis on the current code and checks for potential security issues. Once the
 report is created, it's uploaded as an artifact which you can later download and
 check out.
 
-Any security warnings are also
-[shown in the merge request widget](https://docs.gitlab.com/ee//user/project/merge_requests/sast.html).
+Any security warnings are also shown in the merge request widget. Read more how
+[SAST works](https://docs.gitlab.com/ee/user/application_security/sast/index.html).
 
 NOTE: **Note:**
 The Auto SAST stage will be skipped on licenses other than Ultimate.
@@ -396,8 +396,8 @@ to run analysis on the project dependencies and checks for potential security is
 report is created, it's uploaded as an artifact which you can later download and
 check out.
 
-Any security warnings are also
-[shown in the merge request widget](https://docs.gitlab.com/ee//user/project/merge_requests/dependency_scanning.html).
+Any security warnings are also shown in the merge request widget. Read more about
+[Dependency Scanning](https://docs.gitlab.com/ee/user/application_security/dependency_scanning/index.html).
 
 NOTE: **Note:**
 The Auto Dependency Scanning stage will be skipped on licenses other than Ultimate.
@@ -415,8 +415,8 @@ to search the project dependencies for their license. Once the
 report is created, it's uploaded as an artifact which you can later download and
 check out.
 
-Any licenses are also
-[shown in the merge request widget](https://docs.gitlab.com/ee//user/project/merge_requests/license_management.html).
+Any licenses are also shown in the merge request widget. Read more how
+[License Management works](https://docs.gitlab.com/ee/user/application_security/license_management/index.html).
 
 NOTE: **Note:**
 The Auto License Management stage will be skipped on licenses other than Ultimate.
@@ -431,8 +431,8 @@ Docker image and checks for potential security issues. Once the report is
 created, it's uploaded as an artifact which you can later download and
 check out.
 
-Any security warnings are also
-[shown in the merge request widget](https://docs.gitlab.com/ee//user/project/merge_requests/container_scanning.html).
+Any security warnings are also shown in the merge request widget. Read more how
+[Container Scanning works](https://docs.gitlab.com/ee/user/application_security/container_scanning/index.html).
 
 NOTE: **Note:**
 The Auto Container Scanning stage will be skipped on licenses other than Ultimate.
@@ -487,8 +487,8 @@ to perform an analysis on the current code and checks for potential security
 issues. Once the report is created, it's uploaded as an artifact which you can
 later download and check out.
 
-Any security warnings are also
-[shown in the merge request widget](https://docs.gitlab.com/ee//user/project/merge_requests/dast.html).
+Any security warnings are also shown in the merge request widget. Read how
+[DAST works](https://docs.gitlab.com/ee/user/application_security/dast/index.html).
 
 NOTE: **Note:**
 The Auto DAST stage will be skipped on licenses other than Ultimate.

@@ -105,8 +105,10 @@ features of GitLab work with MySQL/MariaDB:
 
 1. MySQL support for subgroups was [dropped with GitLab 9.3][post].
    See [issue #30472][30472] for more information.
-1. Geo does [not support MySQL](https://docs.gitlab.com/ee/administration/geo/replication/database.html#mysql-replication). This means no supported Disaster Recovery solution if using MySQL. **[PREMIUM ONLY]**
+1. Geo does [not support MySQL](https://docs.gitlab.com/ee/administration/geo/replication/database.html). This means no supported Disaster Recovery solution if using MySQL. **[PREMIUM ONLY]**
 1. [Zero downtime migrations](../update/README.md#upgrading-without-downtime) do not work with MySQL.
+1. [Database load balancing](https://docs.gitlab.com/ee/administration/database_load_balancing.html) is
+   supported only for PostgreSQL. **[PREMIUM ONLY]**
 1. GitLab [optimizes the loading of dashboard events](https://gitlab.com/gitlab-org/gitlab-ce/issues/31806) using [PostgreSQL LATERAL JOINs](https://blog.heapanalytics.com/postgresqls-powerful-new-join-type-lateral/).
 1. In general, SQL optimized for PostgreSQL may run much slower in MySQL due to
    differences in query planners. For example, subqueries that work well in PostgreSQL
@@ -141,7 +143,17 @@ On some systems you may need to install an additional package (e.g.
 
 #### Additional requirements for GitLab Geo
 
-If you are using [GitLab Geo](https://docs.gitlab.com/ee/development/geo.html), the [tracking database](https://docs.gitlab.com/ee/development/geo.html#geo-tracking-database) also requires the `postgres_fdw` extension.
+If you are using [GitLab Geo](https://docs.gitlab.com/ee/development/geo.html):
+
+- We strongly recommend running Omnibus-managed instances as they are actively
+  developed and tested. We aim to be compatible with most external (not managed
+  by Omnibus) databases (for example, AWS RDS) but we do not guarantee
+  compatibility.
+- The
+  [tracking database](https://docs.gitlab.com/ee/development/geo.html#geo-tracking-database)
+  requires the
+  [postgres_fdw](https://www.postgresql.org/docs/9.6/static/postgres-fdw.html)
+  extension.
 
 ```
 CREATE EXTENSION postgres_fdw;
