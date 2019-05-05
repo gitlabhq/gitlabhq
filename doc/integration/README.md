@@ -15,7 +15,9 @@ See the documentation below for details on how to configure these services.
 - [CAS](cas.md) Configure GitLab to sign in using CAS
 - [External issue tracker](external-issue-tracker.md) Redmine, JIRA, etc.
 - [Gmail actions buttons](gmail_action_buttons_for_gitlab.md) Adds GitLab actions to messages
+- [Jenkins](jenkins.md) Integrate with the Jenkins CI
 - [JIRA](../user/project/integrations/jira.md) Integrate with the JIRA issue tracker
+- [Kerberos](kerberos.md) Integrate with Kerberos
 - [LDAP](ldap.md) Set up sign in via LDAP
 - [OAuth2 provider](oauth_provider.md) OAuth2 application creation
 - [OmniAuth](omniauth.md) Sign in via Twitter, GitHub, GitLab.com, Google, Bitbucket, Facebook, Shibboleth, SAML, Crowd, Azure and Authentiq ID
