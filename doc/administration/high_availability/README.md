@@ -42,8 +42,6 @@ Follow the steps below to configure an active/active setup:
 1. [Configure the GitLab application servers](gitlab.md)
 1. [Configure the load balancers](load_balancer.md)
 
-![Active/Active HA Diagram](../img/high_availability/active-active-diagram.png)
-
 ### Active/Passive
 
 For pure high-availability/failover with no scaling you can use an
@@ -59,5 +57,3 @@ or in different cloud availability zones.
   root cause is identified as DRBD, we will not troubleshoot further.
 
 Components/Servers Required: 2 servers/virtual machines (one active/one passive)
-
-![Active/Passive HA Diagram](../img/high_availability/active-passive-diagram.png)

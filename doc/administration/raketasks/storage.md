@@ -43,6 +43,9 @@ If you find it necessary, you can run this migration script again to schedule mi
 
 Any error or warning will be logged in Sidekiq's log file.
 
+NOTE: **Note:**
+If Geo is enabled, each project that is successfully migrated generates an event to replicate the changes on any **secondary** nodes.
+
 You only need the `gitlab:storage:migrate_to_hashed` rake task to migrate your repositories, but we have additional
 commands below that helps you inspect projects and attachments in both legacy and hashed storage.
 
