@@ -1,8 +1,4 @@
-# Configuring GitLab for HA
-
-Assuming you have already configured a [database](database.md), [Redis](redis.md), and [NFS](nfs.md), you can
-configure the GitLab application server(s) now. Complete the steps below
-for each GitLab application server in your environment.
+# Configuring GitLab Scaling and High Availability
 
 > **Note:** There is some additional configuration near the bottom for
   additional GitLab application servers. It's important to read and understand
