@@ -42,9 +42,9 @@ Set up your project's merge request settings:
 
 ![project's merge request settings](img/merge_requests_settings.png)
 
-### Service Desk
+### Service Desk **[PREMIUM]**
 
-Enable [Service Desk](https://docs.gitlab.com/ee/user/project/service_desk.html) for your project to offer customer support. Service Desk is available in [GitLab Premium](https://about.gitlab.com/pricing/).
+Enable [Service Desk](https://docs.gitlab.com/ee/user/project/service_desk.html) for your project to offer customer support.
 
 ### Export project
 
@@ -128,3 +128,7 @@ namespace if needed.
 ### Error Tracking
 
 Configure Error Tracking to discover and view [Sentry errors within GitLab](../operations/error_tracking.md).
+
+### Jaeger tracing **[ULTIMATE]**
+
+Add the URL of a Jaeger server to allow your users to [easily access the Jaeger UI from within GitLab](../operations/tracing.md).
