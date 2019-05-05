@@ -51,19 +51,20 @@ With GitLab Enterprise Edition, you can also:
 
 - Provide support with [Service Desk](https://docs.gitlab.com/ee/user/project/service_desk.html).
 - Improve collaboration with
-  [Merge Request Approvals](https://docs.gitlab.com/ee/user/project/merge_requests/index.html#merge-request-approvals),
+  [Merge Request Approvals](https://docs.gitlab.com/ee/user/project/merge_requests/index.html#merge-request-approvals-starter),
   [Multiple Assignees for Issues](https://docs.gitlab.com/ee/user/project/issues/multiple_assignees_for_issues.html),
   and [Multiple Issue Boards](project/issue_board.md#multiple-issue-boards-starter).
 - Create formal relationships between issues with [Related Issues](https://docs.gitlab.com/ee/user/project/issues/related_issues.html).
 - Use [Burndown Charts](https://docs.gitlab.com/ee/user/project/milestones/burndown_charts.html) to track progress during a sprint or while working on a new version of their software.
-- Leverage [Elasticsearch](https://docs.gitlab.com/ee/integration/elasticsearch.html) with [Advanced Global Search](https://docs.gitlab.com/ee/user/search/advanced_global_search.html) and [Advanced Syntax Search](https://docs.gitlab.com/ee/user/search/advanced_search_syntax.html) for faster, more advanced code search across your entire GitLab instance.
+- Leverage [Elasticsearch](https://docs.gitlab.com/ee/integration/elasticsearch.html) with [Advanced Global Search](search/advanced_global_search.md) and [Advanced Syntax Search](search/advanced_search_syntax.md) for faster, more advanced code search across your entire GitLab instance.
 - [Authenticate users with Kerberos](https://docs.gitlab.com/ee/integration/kerberos.html).
-- [Mirror a repository](https://docs.gitlab.com/ee/workflow/repository_mirroring.html) from elsewhere on your local server.
+- [Mirror a repository](../workflow/repository_mirroring.md) from elsewhere on your local server.
 - [Export issues as CSV](https://docs.gitlab.com/ee/user/project/issues/csv_export.html).
 - View your entire CI/CD pipeline involving more than one project with [Multiple-Project Pipelines](https://docs.gitlab.com/ee/ci/multi_project_pipeline_graphs.html).
 - [Lock files](https://docs.gitlab.com/ee/user/project/file_lock.html) to prevent conflicts.
 - View the current health and status of each CI environment running on Kubernetes with [Deploy Boards](https://docs.gitlab.com/ee/user/project/deploy_boards.html).
 - Leverage continuous delivery method with [Canary Deployments](https://docs.gitlab.com/ee/user/project/canary_deployments.html).
+- Scan your code for vulnerabilities and [display them in merge requests](https://docs.gitlab.com/ee/user/application_security/sast/index.html).
 
 You can also [integrate](project/integrations/project_services.md) GitLab with numerous third-party applications, such as Mattermost, Microsoft Teams, HipChat, Trello, Slack, Bamboo CI, JIRA, and a lot more.
 
@@ -106,8 +107,8 @@ to enjoy the best of GitLab.
 - [Permissions](permissions.md): Learn the different set of permissions levels for each
   user type (guest, reporter, developer, maintainer, owner).
 - [Feature highlight](feature_highlight.md): Learn more about the little blue dots
-  around the app that explain certain features
-- [Abuse reports](abuse_reports.md): Report abuse from users to GitLab administrators
+  around the app that explain certain features.
+- [Abuse reports](abuse_reports.md): Report abuse from users to GitLab administrators.
 
 ## Groups
 
@@ -171,3 +172,8 @@ Learn what is [Git](../topics/git/index.md) and its best practices.
 ## Instance statistics
 
 See [various statistics](instance_statistics/index.md) of your GitLab instance.
+
+## Operations Dashboard **[PREMIUM]**
+
+See [Operations Dashboard](operations_dashboard/index.md) for a summary of each
+project's operational health.
