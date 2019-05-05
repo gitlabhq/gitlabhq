@@ -25,9 +25,8 @@ will still be shown in the body of the _To do_ tab.
 
 A Todo appears in your Todos dashboard when:
 
-- an issue or merge request is assigned to you,
-- you are `@mentioned` in an issue or merge request, be it the description of
-  the issue/merge request or in a comment,
+- an issue or merge request is assigned to you
+- you are `@mentioned` in the description or in a comment of an issue, merge request, or epic **[ULTIMATE]**
 - you are `@mentioned` in a comment on a commit,
 - a job in the CI pipeline running for your merge request failed, but this
   job is not allowed to fail.
@@ -63,14 +62,14 @@ for filtering; otherwise, they appear as normal.
 
 ### Manually creating a Todo
 
-You can also add an issue or merge request to your Todos dashboard by clicking
-the "Add todo" button in the issue or merge request sidebar.
+You can also add an issue, merge request or epic to your Todos dashboard by clicking
+the "Add todo" button in the sidebar of the issue, merge request, or epic **[ULTIMATE]**.
 
 ![Adding a Todo from the issuable sidebar](img/todos_add_todo_sidebar.png)
 
 ## Marking a Todo as done
 
-Any action to the corresponding issue or merge request will mark your Todo as
+Any action to the corresponding issue, merge request or epic **[ULTIMATE]** will mark your Todo as
 **Done**. Actions that dismiss Todos include:
 
 - changing the assignee
@@ -84,10 +83,10 @@ Todos are personal, and they're only marked as done if the action is coming from
 you. If you close the issue or merge request, your Todo will automatically
 be marked as done.
 
-If someone else closes, merges, or takes action on the issue or merge
+If someone else closes, merges, or takes action on the issue, epic or merge
 request, your Todo will remain pending. This prevents other users from closing issues without you being notified.
 
-There is just one Todo per issue or merge request, so mentioning a user a
+There is just one Todo per issue, epic or merge request, so mentioning a user a
 hundred times in an issue will only trigger one Todo.
 
 ---
@@ -97,7 +96,7 @@ corresponding **Done** button, and it will disappear from your Todo list.
 
 ![A Todo in the Todos dashboard](img/todo_list_item.png)
 
-A Todo can also be marked as done from the issue or merge request sidebar using
+A Todo can also be marked as done from the issue, merge request or epic sidebar using
 the "Mark todo as done" button.
 
 ![Mark todo as done from the issuable sidebar](img/todos_mark_done_sidebar.png)
@@ -114,7 +113,7 @@ There are four kinds of filters you can use on your Todos dashboard.
 | Project | Filter by project |
 | Group   | Filter by group |
 | Author  | Filter by the author that triggered the Todo |
-| Type    | Filter by issue or merge request |
+| Type    | Filter by issue, merge request, or epic **[ULTIMATE]** |
 | Action  | Filter by the action that triggered the Todo |
 
 You can also filter by more than one of these at the same time. The possible Actions are `Any Action`, `Assigned`, `Mentioned`, `Added`, `Pipelines`, and `Directly Addressed`, [as described above](#what-triggers-a-todo).
