@@ -6,6 +6,7 @@ instance like sign-up restrictions, account limits and quota, metrics, etc.
 Navigate to it by going to **Admin area > Settings**. Some of the settings
 include:
 
+- [Account and limit settings](account_and_limit_settings.md) **[STARTER]**
 - [Continuous Integration and Deployment](continuous_integration.md)
 - [Email](email.md)
 - [Sign up restrictions](sign_up_restrictions.md)
@@ -13,6 +14,7 @@ include:
 - [Third party offers](third_party_offers.md)
 - [Usage statistics](usage_statistics.md)
 - [Visibility and access controls](visibility_and_access_controls.md)
+- [Custom templates repository](instance_template_repository.md) **[PREMIUM]**
 
 NOTE: **Note:**
 You can change the [first day of the week](../../profile/preferences.md) for the entire GitLab instance
