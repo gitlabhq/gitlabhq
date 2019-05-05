@@ -1,0 +1,5 @@
+---
+redirect_to: 'https://docs.gitlab.com/ee/administration/geo/replication/using_a_geo_server.md'
+---
+
+This document was moved to [another location](https://docs.gitlab.com/ee/administration/geo/replication/using_a_geo_server.md).
