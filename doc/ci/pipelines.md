@@ -19,7 +19,7 @@ If all the jobs in a stage:
 - Fail, the next stage is not (usually) executed and the pipeline ends early.
 
 NOTE: **Note:**
-If you have a [mirrored repository that GitLab pulls from](https://docs.gitlab.com/ee/workflow/repository_mirroring.html#pulling-from-a-remote-repository-starter),
+If you have a [mirrored repository that GitLab pulls from](../workflow/repository_mirroring.md#pulling-from-a-remote-repository-starter),
 you may need to enable pipeline triggering in your project's
 **Settings > Repository > Pull from a remote repository > Trigger pipelines for mirror updates**.
 
@@ -220,7 +220,7 @@ For information on adding pipeline badges to projects, see [Pipeline badges](../
 
 Pipelines for different projects can be combined and visualized together.
 
-For more information, see [Multi-project pipelines](https://docs.gitlab.com/ee/ci/multi_project_pipelines.html).
+For more information, see [Multi-project pipelines](multi_project_pipelines.md).
 
 ## Working with pipelines
 
