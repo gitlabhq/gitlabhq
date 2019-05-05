@@ -42,8 +42,7 @@ The following table depicts the various user permission levels in a project.
 | Create confidential issue             | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
 | View confidential issues              | (✓) [^2] | ✓         | ✓           | ✓        | ✓      |
 | Leave comments                        | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
-| Lock issue discussions                |         | ✓          | ✓           | ✓        | ✓      |
-| Lock merge request discussions        |         |            | ✓           | ✓        | ✓      |
+| See related issues                    | ✓       | ✓          | ✓           | ✓        | ✓      |
 | See a list of jobs                    | ✓ [^3]  | ✓          | ✓           | ✓        | ✓      |
 | See a job log                         | ✓ [^3]  | ✓          | ✓           | ✓        | ✓      |
 | Download and browse job artifacts     | ✓ [^3]  | ✓          | ✓           | ✓        | ✓      |
@@ -87,11 +86,12 @@ The following table depicts the various user permission levels in a project.
 | Update a container registry           |         |            | ✓           | ✓        | ✓      |
 | Remove a container registry image     |         |            | ✓           | ✓        | ✓      |
 | Create/edit/delete project milestones |         |            | ✓           | ✓        | ✓      |
-| View approved/blacklisted licenses **[ULTIMATE]** |         |            | ✓           | ✓        | ✓      |
+| View approved/blacklisted licenses **[ULTIMATE]** | ✓       | ✓          | ✓           | ✓        | ✓      |
 | Use security dashboard **[ULTIMATE]** |         |            | ✓           | ✓        | ✓      |
 | Dismiss vulnerability **[ULTIMATE]**  |         |            | ✓           | ✓        | ✓      |
 | Apply code change suggestions         |         |            | ✓           | ✓        | ✓      |
 | Use environment terminals             |         |            |             | ✓        | ✓      |
+| Run Web IDE's Interactive Web Terminals **[ULTIMATE ONLY]** | |            |          | ✓      | ✓      |
 | Add new team members                  |         |            |             | ✓        | ✓      |
 | Push to protected branches            |         |            |             | ✓        | ✓      |
 | Enable/disable branch protection      |         |            |             | ✓        | ✓      |
@@ -120,6 +120,7 @@ The following table depicts the various user permission levels in a project.
 | Remove protected branches [^4]        |         |            |             |          |        |
 | View project Audit Events             |         |            |             | ✓        | ✓      |
 | View project statistics               |         | ✓          | ✓           | ✓        | ✓      |
+| View Insights charts **[ULTIMATE]**   | ✓       | ✓         | ✓           | ✓        | ✓      |
 
 ## Project features permissions
 
@@ -204,6 +205,7 @@ group.
 | Create/edit group epic **[ULTIMATE]**  |         | ✓        | ✓         | ✓      | ✓     |
 | Delete group epic **[ULTIMATE]**       |         |          |           |        | ✓     |
 | View group Audit Events  |         |          |           |        | ✓     |
+| View Insights charts **[ULTIMATE]** | ✓       | ✓         | ✓           | ✓        | ✓      |
 
 ### Subgroup permissions
 
@@ -348,7 +350,7 @@ for details about the pipelines security model.
 ## LDAP users permissions
 
 Since GitLab 8.15, LDAP user permissions can now be manually overridden by an admin user.
-Read through the documentation on [LDAP users permissions](https://docs.gitlab.com/ee/articles/how_to_configure_ldap_gitlab_ee/index.html#updating-user-permissions-new-feature) to learn more.
+Read through the documentation on [LDAP users permissions](https://docs.gitlab.com/ee/administration/auth/how_to_configure_ldap_gitlab_ee/index.html) to learn more.
 
 [^1]: On public and internal projects, all users are able to perform this action
 [^2]: Guest users can only view the confidential issues they created themselves
