@@ -30,6 +30,19 @@ instructions will break installations using older versions of OpenSSH, such as
 those included with CentOS 6 as of September 2017. If you want to use this
 feature for CentOS 6, follow [the instructions on how to build and install a custom OpenSSH package](#compiling-a-custom-version-of-openssh-for-centos-6) before continuing.
 
+## Fast lookup is required for Geo **[PREMIUM]**
+
+By default, GitLab manages an `authorized_keys` file, which contains all the
+public SSH keys for users allowed to access GitLab. However, to maintain a
+single source of truth, [Geo](https://docs.gitlab.com/ee/administration/geo/replication/index.html) needs to be configured to perform SSH fingerprint
+lookups via database lookup.
+
+As part of [setting up Geo](https://docs.gitlab.com/ee/administration/geo/replication/index.html#setup-instructions),
+you will be required to follow the steps outlined below for both the primary and
+secondary nodes, but note that the `Write to "authorized keys" file` checkbox
+only needs to be unchecked on the primary node since it will be reflected
+automatically on the secondary if database replication is working.
+
 ## Setting up fast lookup via GitLab Shell
 
 GitLab Shell provides a way to authorize SSH users via a fast, indexed lookup
@@ -69,7 +82,7 @@ file will still be scanned. So git SSH performance will still be slow for many
 users as long as a large file exists.
 
 You can disable any more writes to the `authorized_keys` file by unchecking
-`Write to "authorized_keys" file` in the Application Settings of your GitLab
+`Write to "authorized_keys" file` in the **Admin Area > Settings > Network > Performance optimization** of your GitLab
 installation.
 
 ![Write to authorized keys setting](img/write_to_authorized_keys_setting.png)
