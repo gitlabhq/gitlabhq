@@ -8,19 +8,14 @@ class BuildDetailsEntity < JobEntity
   expose :stuck?, as: :stuck
   expose :user, using: UserEntity
   expose :runner, using: RunnerEntity
-
-  # expose :pipeline, using: PipelineEntity
-  expose :pipeline_path do |build|
-    project_pipeline_path(build.project, build.pipeline)
-  end
+  expose :metadata, using: BuildMetadataEntity
+  expose :pipeline, using: PipelineEntity
 
   expose :deployment_status, if: -> (*) { build.starts_environment? } do
     expose :deployment_status, as: :status
 
     expose :persisted_environment, as: :environment, with: EnvironmentEntity
   end
-
-  expose :metadata, using: BuildMetadataEntity
 
   expose :artifact, if: -> (*) { can?(current_user, :read_build, build) } do
     expose :download_path, if: -> (*) { build.artifacts? } do |build|

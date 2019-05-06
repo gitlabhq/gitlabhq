@@ -48,8 +48,8 @@ describe PipelineEntity do
       it 'contains flags' do
         expect(subject).to include :flags
         expect(subject[:flags])
-          .to include :latest, :stuck, :auto_devops,
-                      :yaml_errors, :retryable, :cancelable, :merge_request
+          .to include :stuck, :auto_devops, :yaml_errors,
+                      :retryable, :cancelable, :merge_request
       end
     end
 

@@ -184,16 +184,9 @@ export const receiveTraceError = ({ commit }) => {
 export const requestStages = ({ commit }) => commit(types.REQUEST_STAGES);
 export const fetchStages = ({ state, dispatch }) => {
   dispatch('requestStages');
-
-  axios
-    .get(`${state.job.pipeline_path}.json`)
-    .then(({ data }) => {
-      // Set selected stage
-      dispatch('receiveStagesSuccess', data.details.stages);
-      const selectedStage = data.details.stages.find(stage => stage.name === state.selectedStage);
-      dispatch('fetchJobsForStage', selectedStage);
-    })
-    .catch(() => dispatch('receiveStagesError'));
+  dispatch('receiveStagesSuccess', state.job.pipeline.details.stages);
+  const selectedStage = state.job.pipeline.details.stages.find(stage => stage.name === state.selectedStage);
+  dispatch('fetchJobsForStage', selectedStage);
 };
 export const receiveStagesSuccess = ({ commit }, data) =>
   commit(types.RECEIVE_STAGES_SUCCESS, data);
