@@ -1,0 +1,5 @@
+---
+title: Remove leading / trailing spaces from heading when generating header ids
+merge_request: 27025
+author: Willian Balmant
+type: fixed

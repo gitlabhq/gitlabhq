@@ -31,6 +31,7 @@ module Banzai
           if header_content = node.children.first
             id = node
               .text
+              .strip
               .downcase
               .gsub(PUNCTUATION_REGEXP, '') # remove punctuation
               .tr(' ', '-') # replace spaces with dash
