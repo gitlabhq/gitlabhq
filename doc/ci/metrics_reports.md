@@ -34,6 +34,7 @@ For example:
 metrics:
   script:
     - echo 'metric_name metric_value' > metrics.txt
-  reports:
-    metrics: metrics.txt
+  artifacts:
+    reports:
+      metrics: metrics.txt
 ```
