@@ -294,6 +294,7 @@ describe API::Pipelines do
 
         expect(variable.key).to eq(expected_variable['key'])
         expect(variable.value).to eq(expected_variable['value'])
+        expect(variable.variable_type).to eq(expected_variable['variable_type'])
       end
     end
 
@@ -314,7 +315,7 @@ describe API::Pipelines do
         end
 
         context 'variables given' do
-          let(:variables) { [{ 'key' => 'UPLOAD_TO_S3', 'value' => 'true' }] }
+          let(:variables) { [{ 'variable_type' => 'file', 'key' => 'UPLOAD_TO_S3', 'value' => 'true' }] }
 
           it 'creates and returns a new pipeline using the given variables' do
             expect do
@@ -330,7 +331,7 @@ describe API::Pipelines do
         end
 
         describe 'using variables conditions' do
-          let(:variables) { [{ 'key' => 'STAGING', 'value' => 'true' }] }
+          let(:variables) { [{ 'variable_type' => 'env_var', 'key' => 'STAGING', 'value' => 'true' }] }
 
           before do
             config = YAML.dump(test: { script: 'test', only: { variables: ['$STAGING'] } })
@@ -467,7 +468,7 @@ describe API::Pipelines do
           subject
 
           expect(response).to have_gitlab_http_status(200)
-          expect(json_response).to contain_exactly({ "key" => "foo", "value" => "bar" })
+          expect(json_response).to contain_exactly({ "variable_type" => "env_var", "key" => "foo", "value" => "bar" })
         end
       end
     end
@@ -488,7 +489,7 @@ describe API::Pipelines do
           subject
 
           expect(response).to have_gitlab_http_status(200)
-          expect(json_response).to contain_exactly({ "key" => "foo", "value" => "bar" })
+          expect(json_response).to contain_exactly({ "variable_type" => "env_var", "key" => "foo", "value" => "bar" })
         end
       end
 

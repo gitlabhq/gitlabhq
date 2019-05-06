@@ -51,6 +51,7 @@ describe API::GroupVariables do
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['value']).to eq(variable.value)
         expect(json_response['protected']).to eq(variable.protected?)
+        expect(json_response['variable_type']).to eq(variable.variable_type)
       end
 
       it 'responds with 404 Not Found if requesting non-existing variable' do
@@ -94,17 +95,19 @@ describe API::GroupVariables do
         expect(json_response['key']).to eq('TEST_VARIABLE_2')
         expect(json_response['value']).to eq('PROTECTED_VALUE_2')
         expect(json_response['protected']).to be_truthy
+        expect(json_response['variable_type']).to eq('env_var')
       end
 
       it 'creates variable with optional attributes' do
         expect do
-          post api("/groups/#{group.id}/variables", user), params: { key: 'TEST_VARIABLE_2', value: 'VALUE_2' }
+          post api("/groups/#{group.id}/variables", user), params: { variable_type: 'file', key: 'TEST_VARIABLE_2', value: 'VALUE_2' }
         end.to change {group.variables.count}.by(1)
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['key']).to eq('TEST_VARIABLE_2')
         expect(json_response['value']).to eq('VALUE_2')
         expect(json_response['protected']).to be_falsey
+        expect(json_response['variable_type']).to eq('file')
       end
 
       it 'does not allow to duplicate variable key' do
@@ -145,7 +148,7 @@ describe API::GroupVariables do
         initial_variable = group.variables.reload.first
         value_before = initial_variable.value
 
-        put api("/groups/#{group.id}/variables/#{variable.key}", user), params: { value: 'VALUE_1_UP', protected: true }
+        put api("/groups/#{group.id}/variables/#{variable.key}", user), params: { variable_type: 'file', value: 'VALUE_1_UP', protected: true }
 
         updated_variable = group.variables.reload.first
 
@@ -153,6 +156,7 @@ describe API::GroupVariables do
         expect(value_before).to eq(variable.value)
         expect(updated_variable.value).to eq('VALUE_1_UP')
         expect(updated_variable).to be_protected
+        expect(json_response['variable_type']).to eq('file')
       end
 
       it 'responds with 404 Not Found if requesting non-existing variable' do

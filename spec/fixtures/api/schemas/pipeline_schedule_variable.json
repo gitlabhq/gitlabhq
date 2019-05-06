@@ -1,8 +1,14 @@
 {
-  "type": ["object", "null"],
+  "type": "object",
+  "required": [
+    "key",
+    "value",
+    "variable_type"
+  ],
   "properties": {
     "key": { "type": "string" },
-    "value": { "type": "string" }
+    "value": { "type": "string" },
+    "variable_type": { "type": "string" }
   },
   "additionalProperties": false
 }

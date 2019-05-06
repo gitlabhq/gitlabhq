@@ -91,6 +91,7 @@ describe API::PipelineSchedules do
     let(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project, owner: developer) }
 
     before do
+      pipeline_schedule.variables << build(:ci_pipeline_schedule_variable)
       pipeline_schedule.pipelines << build(:ci_pipeline, project: project)
     end
 
@@ -331,13 +332,14 @@ describe API::PipelineSchedules do
         it 'creates pipeline_schedule_variable' do
           expect do
             post api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/variables", developer),
-              params: params
+              params: params.merge(variable_type: 'file')
           end.to change { pipeline_schedule.variables.count }.by(1)
 
           expect(response).to have_gitlab_http_status(:created)
           expect(response).to match_response_schema('pipeline_schedule_variable')
           expect(json_response['key']).to eq(params[:key])
           expect(json_response['value']).to eq(params[:value])
+          expect(json_response['variable_type']).to eq('file')
         end
       end
 
@@ -389,11 +391,12 @@ describe API::PipelineSchedules do
     context 'authenticated user with valid permissions' do
       it 'updates pipeline_schedule_variable' do
         put api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/variables/#{pipeline_schedule_variable.key}", developer),
-          params: { value: 'updated_value' }
+          params: { value: 'updated_value', variable_type: 'file' }
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('pipeline_schedule_variable')
         expect(json_response['value']).to eq('updated_value')
+        expect(json_response['variable_type']).to eq('file')
       end
     end
 
