@@ -240,6 +240,9 @@ export default {
         :request-reason="applications.helm.requestReason"
         :installed="applications.helm.installed"
         :install-failed="applications.helm.installFailed"
+        :uninstallable="applications.helm.uninstallable"
+        :uninstall-successful="applications.helm.uninstallSuccessful"
+        :uninstall-failed="applications.helm.uninstallFailed"
         class="rounded-top"
         title-link="https://docs.helm.sh/"
       >
@@ -269,6 +272,9 @@ export default {
         :request-reason="applications.ingress.requestReason"
         :installed="applications.ingress.installed"
         :install-failed="applications.ingress.installFailed"
+        :uninstallable="applications.ingress.uninstallable"
+        :uninstall-successful="applications.ingress.uninstallSuccessful"
+        :uninstall-failed="applications.ingress.uninstallFailed"
         :disabled="!helmInstalled"
         title-link="https://kubernetes.io/docs/concepts/services-networking/ingress/"
       >
@@ -312,9 +318,9 @@ export default {
                 generated endpoint in order to access
                 your application after it has been deployed.`)
                 }}
-                <a :href="ingressDnsHelpPath" target="_blank" rel="noopener noreferrer">
-                  {{ __('More information') }}
-                </a>
+                <a :href="ingressDnsHelpPath" target="_blank" rel="noopener noreferrer">{{
+                  __('More information')
+                }}</a>
               </p>
             </div>
 
@@ -324,9 +330,9 @@ export default {
               the process of being assigned. Please check your Kubernetes
               cluster or Quotas on Google Kubernetes Engine if it takes a long time.`)
               }}
-              <a :href="ingressDnsHelpPath" target="_blank" rel="noopener noreferrer">
-                {{ __('More information') }}
-              </a>
+              <a :href="ingressDnsHelpPath" target="_blank" rel="noopener noreferrer">{{
+                __('More information')
+              }}</a>
             </p>
           </template>
           <template v-if="!ingressInstalled">
@@ -345,6 +351,9 @@ export default {
         :installed="applications.cert_manager.installed"
         :install-failed="applications.cert_manager.installFailed"
         :install-application-request-params="{ email: applications.cert_manager.email }"
+        :uninstallable="applications.cert_manager.uninstallable"
+        :uninstall-successful="applications.cert_manager.uninstallSuccessful"
+        :uninstall-failed="applications.cert_manager.uninstallFailed"
         :disabled="!helmInstalled"
         title-link="https://cert-manager.readthedocs.io/en/latest/#"
       >
@@ -352,9 +361,9 @@ export default {
           <div slot="description">
             <p v-html="certManagerDescription"></p>
             <div class="form-group">
-              <label for="cert-manager-issuer-email">
-                {{ s__('ClusterIntegration|Issuer Email') }}
-              </label>
+              <label for="cert-manager-issuer-email">{{
+                s__('ClusterIntegration|Issuer Email')
+              }}</label>
               <div class="input-group">
                 <input
                   v-model="applications.cert_manager.email"
@@ -391,6 +400,9 @@ export default {
         :request-reason="applications.prometheus.requestReason"
         :installed="applications.prometheus.installed"
         :install-failed="applications.prometheus.installFailed"
+        :uninstallable="applications.prometheus.uninstallable"
+        :uninstall-successful="applications.prometheus.uninstallSuccessful"
+        :uninstall-failed="applications.prometheus.uninstallFailed"
         :disabled="!helmInstalled"
         title-link="https://prometheus.io/docs/introduction/overview/"
       >
@@ -411,6 +423,9 @@ export default {
         :install-failed="applications.runner.installFailed"
         :update-successful="applications.runner.updateSuccessful"
         :update-failed="applications.runner.updateFailed"
+        :uninstallable="applications.runner.uninstallable"
+        :uninstall-successful="applications.runner.uninstallSuccessful"
+        :uninstall-failed="applications.runner.uninstallFailed"
         :disabled="!helmInstalled"
         title-link="https://docs.gitlab.com/runner/"
       >
@@ -434,6 +449,9 @@ export default {
         :request-reason="applications.jupyter.requestReason"
         :installed="applications.jupyter.installed"
         :install-failed="applications.jupyter.installFailed"
+        :uninstallable="applications.jupyter.uninstallable"
+        :uninstall-successful="applications.jupyter.uninstallSuccessful"
+        :uninstall-failed="applications.jupyter.uninstallFailed"
         :install-application-request-params="{ hostname: applications.jupyter.hostname }"
         :disabled="!helmInstalled"
         title-link="https://jupyterhub.readthedocs.io/en/stable/"
@@ -474,9 +492,9 @@ export default {
                   s__(`ClusterIntegration|Replace this with your own hostname if you want.
                 If you do so, point hostname to Ingress IP Address from above.`)
                 }}
-                <a :href="ingressDnsHelpPath" target="_blank" rel="noopener noreferrer">
-                  {{ __('More information') }}
-                </a>
+                <a :href="ingressDnsHelpPath" target="_blank" rel="noopener noreferrer">{{
+                  __('More information')
+                }}</a>
               </p>
             </div>
           </template>
@@ -494,6 +512,9 @@ export default {
         :installed="applications.knative.installed"
         :install-failed="applications.knative.installFailed"
         :install-application-request-params="{ hostname: applications.knative.hostname }"
+        :uninstallable="applications.knative.uninstallable"
+        :uninstall-successful="applications.knative.uninstallSuccessful"
+        :uninstall-failed="applications.knative.uninstallFailed"
         :disabled="!helmInstalled"
         v-bind="applications.knative"
         title-link="https://github.com/knative/docs"
@@ -505,9 +526,9 @@ export default {
                 s__(`ClusterIntegration|You must have an RBAC-enabled cluster
               to install Knative.`)
               }}
-              <a :href="helpPath" target="_blank" rel="noopener noreferrer">
-                {{ __('More information') }}
-              </a>
+              <a :href="helpPath" target="_blank" rel="noopener noreferrer">{{
+                __('More information')
+              }}</a>
             </p>
             <br />
           </span>
@@ -572,9 +593,9 @@ export default {
                     `ClusterIntegration|To access your application after deployment, point a wildcard DNS to the Knative Endpoint.`,
                   )
                 }}
-                <a :href="ingressDnsHelpPath" target="_blank" rel="noopener noreferrer">
-                  {{ __('More information') }}
-                </a>
+                <a :href="ingressDnsHelpPath" target="_blank" rel="noopener noreferrer">{{
+                  __('More information')
+                }}</a>
               </p>
 
               <p

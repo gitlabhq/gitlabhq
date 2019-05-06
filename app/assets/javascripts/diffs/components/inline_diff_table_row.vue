@@ -1,12 +1,11 @@
 <script>
-import { mapGetters, mapActions, mapState } from 'vuex';
+import { mapActions, mapState } from 'vuex';
 import DiffTableCell from './diff_table_cell.vue';
 import {
   NEW_LINE_TYPE,
   OLD_LINE_TYPE,
   CONTEXT_LINE_TYPE,
   CONTEXT_LINE_CLASS_NAME,
-  PARALLEL_DIFF_VIEW_TYPE,
   LINE_POSITION_LEFT,
   LINE_POSITION_RIGHT,
 } from '../constants';
@@ -45,16 +44,16 @@ export default {
         return this.line.line_code !== null && this.line.line_code === state.diffs.highlightedRow;
       },
     }),
-    ...mapGetters('diffs', ['isInlineView']),
     isContextLine() {
       return this.line.type === CONTEXT_LINE_TYPE;
     },
     classNameMap() {
-      return {
-        [this.line.type]: this.line.type,
-        [CONTEXT_LINE_CLASS_NAME]: this.isContextLine,
-        [PARALLEL_DIFF_VIEW_TYPE]: this.isParallelView,
-      };
+      return [
+        this.line.type,
+        {
+          [CONTEXT_LINE_CLASS_NAME]: this.isContextLine,
+        },
+      ];
     },
     inlineRowId() {
       return this.line.line_code || `${this.fileHash}_${this.line.old_line}_${this.line.new_line}`;

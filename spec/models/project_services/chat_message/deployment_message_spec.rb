@@ -89,8 +89,10 @@ describe ChatMessage::DeploymentMessage do
           name: "Jane Person",
           username: "jane"
         },
+        user_url: "user_url",
         short_sha: "12345678",
-        commit_url: "commit_url"
+        commit_url: "commit_url",
+        commit_title: "commit title text"
       }.merge(params)
     end
 
@@ -104,12 +106,13 @@ describe ChatMessage::DeploymentMessage do
       deployment = create(:deployment, :success, deployable: ci_build, environment: environment, project: project, user: user, sha: commit.sha)
       job_url = Gitlab::Routing.url_helpers.project_job_url(project, ci_build)
       commit_url = Gitlab::UrlBuilder.build(deployment.commit)
+      user_url = Gitlab::Routing.url_helpers.user_url(user)
       data = Gitlab::DataBuilder::Deployment.build(deployment)
 
       message = described_class.new(data)
 
       expect(message.attachments).to eq([{
-        text: "[myspace/myproject](#{project.web_url})\n[Job ##{ci_build.id}](#{job_url}), SHA [#{deployment.short_sha}](#{commit_url}), by John Smith (smith)",
+        text: "[myspace/myproject](#{project.web_url}) with job [##{ci_build.id}](#{job_url}) by [John Smith (smith)](#{user_url})\n[#{deployment.short_sha}](#{commit_url}): #{commit.title}",
         color: "good"
       }])
     end
@@ -120,7 +123,7 @@ describe ChatMessage::DeploymentMessage do
       message = described_class.new(data)
 
       expect(message.attachments).to eq([{
-        text: "[project_path_with_namespace](project_web_url)\n[Job #3](deployable_url), SHA [12345678](commit_url), by Jane Person (jane)",
+        text: "[project_path_with_namespace](project_web_url) with job [#3](deployable_url) by [Jane Person (jane)](user_url)\n[12345678](commit_url): commit title text",
         color: "danger"
       }])
     end
@@ -131,7 +134,7 @@ describe ChatMessage::DeploymentMessage do
       message = described_class.new(data)
 
       expect(message.attachments).to eq([{
-        text: "[project_path_with_namespace](project_web_url)\n[Job #3](deployable_url), SHA [12345678](commit_url), by Jane Person (jane)",
+        text: "[project_path_with_namespace](project_web_url) with job [#3](deployable_url) by [Jane Person (jane)](user_url)\n[12345678](commit_url): commit title text",
         color: "warning"
       }])
     end
@@ -142,7 +145,7 @@ describe ChatMessage::DeploymentMessage do
       message = described_class.new(data)
 
       expect(message.attachments).to eq([{
-        text: "[project_path_with_namespace](project_web_url)\n[Job #3](deployable_url), SHA [12345678](commit_url), by Jane Person (jane)",
+        text: "[project_path_with_namespace](project_web_url) with job [#3](deployable_url) by [Jane Person (jane)](user_url)\n[12345678](commit_url): commit title text",
         color: "#334455"
       }])
     end

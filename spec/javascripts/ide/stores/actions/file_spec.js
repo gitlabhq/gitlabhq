@@ -10,11 +10,19 @@ import eventHub from '~/ide/eventhub';
 import { file, resetStore } from '../../helpers';
 import testAction from '../../../helpers/vuex_action_helper';
 
+const RELATIVE_URL_ROOT = '/gitlab';
+
 describe('IDE store file actions', () => {
   let mock;
+  let originalGon;
 
   beforeEach(() => {
     mock = new MockAdapter(axios);
+    originalGon = window.gon;
+    window.gon = {
+      ...window.gon,
+      relative_url_root: RELATIVE_URL_ROOT,
+    };
 
     spyOn(router, 'push');
   });
@@ -22,6 +30,7 @@ describe('IDE store file actions', () => {
   afterEach(() => {
     mock.restore();
     resetStore(store);
+    window.gon = originalGon;
   });
 
   describe('closeFile', () => {
@@ -173,13 +182,13 @@ describe('IDE store file actions', () => {
       spyOn(service, 'getFileData').and.callThrough();
 
       localFile = file(`newCreate-${Math.random()}`);
-      localFile.url = `${gl.TEST_HOST}/getFileDataURL`;
+      localFile.url = `project/getFileDataURL`;
       store.state.entries[localFile.path] = localFile;
     });
 
     describe('success', () => {
       beforeEach(() => {
-        mock.onGet(`${gl.TEST_HOST}/getFileDataURL`).replyOnce(
+        mock.onGet(`${RELATIVE_URL_ROOT}/project/getFileDataURL`).replyOnce(
           200,
           {
             blame_path: 'blame_path',
@@ -200,7 +209,9 @@ describe('IDE store file actions', () => {
         store
           .dispatch('getFileData', { path: localFile.path })
           .then(() => {
-            expect(service.getFileData).toHaveBeenCalledWith(`${gl.TEST_HOST}/getFileDataURL`);
+            expect(service.getFileData).toHaveBeenCalledWith(
+              `${RELATIVE_URL_ROOT}/project/getFileDataURL`,
+            );
 
             done();
           })
@@ -266,7 +277,7 @@ describe('IDE store file actions', () => {
 
     describe('error', () => {
       beforeEach(() => {
-        mock.onGet(`${gl.TEST_HOST}/getFileDataURL`).networkError();
+        mock.onGet(`project/getFileDataURL`).networkError();
       });
 
       it('dispatches error action', done => {

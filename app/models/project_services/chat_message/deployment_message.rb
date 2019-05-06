@@ -2,27 +2,31 @@
 
 module ChatMessage
   class DeploymentMessage < BaseMessage
+    attr_reader :commit_title
     attr_reader :commit_url
     attr_reader :deployable_id
     attr_reader :deployable_url
     attr_reader :environment
     attr_reader :short_sha
     attr_reader :status
+    attr_reader :user_url
 
     def initialize(data)
       super
 
+      @commit_title = data[:commit_title]
       @commit_url = data[:commit_url]
       @deployable_id = data[:deployable_id]
       @deployable_url = data[:deployable_url]
       @environment = data[:environment]
       @short_sha = data[:short_sha]
       @status = data[:status]
+      @user_url = data[:user_url]
     end
 
     def attachments
       [{
-        text: "#{project_link}\n#{deployment_link}, SHA #{commit_link}, by #{user_combined_name}",
+        text: "#{project_link} with job #{deployment_link} by #{user_link}\n#{commit_link}: #{commit_title}",
         color: color
       }]
     end
@@ -55,7 +59,11 @@ module ChatMessage
     end
 
     def deployment_link
-      link("Job ##{deployable_id}", deployable_url)
+      link("##{deployable_id}", deployable_url)
+    end
+
+    def user_link
+      link(user_combined_name, user_url)
     end
 
     def commit_link

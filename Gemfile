@@ -258,8 +258,7 @@ gem 'chronic_duration', '~> 0.10.6'
 gem 'webpack-rails', '~> 0.9.10'
 gem 'rack-proxy', '~> 0.6.0'
 
-gem 'sass-rails', '~> 5.0.6'
-gem 'sass', '~> 3.5'
+gem 'sassc-rails', '~> 2.1.0'
 gem 'uglifier', '~> 2.7.2'
 
 gem 'addressable', '~> 2.5.2'
@@ -276,7 +275,7 @@ gem 'sentry-raven', '~> 2.7'
 gem 'premailer-rails', '~> 1.9.7'
 
 # LabKit: Tracing and Correlation
-gem 'gitlab-labkit', '~> 0.1.2'
+gem 'gitlab-labkit', '~> 0.2.0'
 
 # I18n
 gem 'ruby_parser', '~> 3.8', require: false
@@ -417,7 +416,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 1.26.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 1.27.0', require: 'gitaly'
 
 gem 'grpc', '~> 1.19.0'
 

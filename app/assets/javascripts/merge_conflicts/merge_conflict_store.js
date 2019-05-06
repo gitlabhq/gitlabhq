@@ -3,15 +3,16 @@
 import $ from 'jquery';
 import Vue from 'vue';
 import Cookies from 'js-cookie';
+import { s__ } from '~/locale';
 
 (global => {
   global.mergeConflicts = global.mergeConflicts || {};
 
   const diffViewType = Cookies.get('diff_view');
-  const HEAD_HEADER_TEXT = 'HEAD//our changes';
-  const ORIGIN_HEADER_TEXT = 'origin//their changes';
-  const HEAD_BUTTON_TITLE = 'Use ours';
-  const ORIGIN_BUTTON_TITLE = 'Use theirs';
+  const HEAD_HEADER_TEXT = s__('MergeConflict|HEAD//our changes');
+  const ORIGIN_HEADER_TEXT = s__('MergeConflict|origin//their changes');
+  const HEAD_BUTTON_TITLE = s__('MergeConflict|Use ours');
+  const ORIGIN_BUTTON_TITLE = s__('MergeConflict|Use theirs');
   const INTERACTIVE_RESOLVE_MODE = 'interactive';
   const EDIT_RESOLVE_MODE = 'edit';
   const DEFAULT_RESOLVE_MODE = INTERACTIVE_RESOLVE_MODE;
@@ -173,7 +174,7 @@ import Cookies from 'js-cookie';
 
     getConflictsCountText() {
       const count = this.getConflictsCount();
-      const text = count > 1 ? 'conflicts' : 'conflict';
+      const text = count > 1 ? s__('MergeConflict|conflicts') : s__('MergeConflict|conflict');
 
       return `${count} ${text}`;
     },
@@ -348,8 +349,8 @@ import Cookies from 'js-cookie';
     },
 
     getCommitButtonText() {
-      const initial = 'Commit to source branch';
-      const inProgress = 'Committing...';
+      const initial = s__('MergeConflict|Commit to source branch');
+      const inProgress = s__('MergeConflict|Committing...');
 
       return this.state ? (this.state.isSubmitting ? inProgress : initial) : initial;
     },

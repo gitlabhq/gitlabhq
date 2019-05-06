@@ -79,7 +79,7 @@ For example, only two pipelines will be created per day if:
 
 To change the Sidekiq worker's frequency:
 
-1. Edit the `pipeline_schedule_worker_cron` value in your instance's `gitlab.rb` file.
+1. Edit the `gitlab_rails['pipeline_schedule_worker_cron']` value in your instance's `gitlab.rb` file.
 1. [Restart GitLab](../../../administration/restart_gitlab.md).
 
 For GitLab.com, refer to the [dedicated settings page](../../gitlab_com/index.md#cron-jobs).

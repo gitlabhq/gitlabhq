@@ -30,7 +30,7 @@ module Storage
     end
 
     def rename_repo(old_full_path: nil, new_full_path: nil)
-      old_full_path ||= project.full_path_was
+      old_full_path ||= project.full_path_before_last_save
       new_full_path ||= project.build_full_path
 
       if gitlab_shell.mv_repository(repository_storage, old_full_path, new_full_path)

@@ -2,6 +2,7 @@ import { visitUrl } from '../lib/utils/url_utility';
 import Flash from '../flash';
 import Service from './services/sidebar_service';
 import Store from './stores/sidebar_store';
+import { __ } from '~/locale';
 
 export default class SidebarMediator {
   constructor(options) {
@@ -45,7 +46,7 @@ export default class SidebarMediator {
       .then(data => {
         this.processFetchedData(data);
       })
-      .catch(() => new Flash('Error occurred when fetching sidebar data'));
+      .catch(() => new Flash(__('Error occurred when fetching sidebar data')));
   }
 
   processFetchedData(data) {

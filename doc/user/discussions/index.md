@@ -5,6 +5,7 @@ The ability to contribute conversationally is offered throughout GitLab.
 You can leave a comment in the following places:
 
 - issues
+- epics **[ULTIMATE]**
 - merge requests
 - snippets
 - commits
@@ -278,6 +279,75 @@ edit existing comments. Non-team members are restricted from adding or editing c
 | ![Comment form member](img/lock_form_member.png) | ![Comment form non-member](img/lock_form_non_member.png) |
 
 Additionally, locked issues and merge requests can not be reopened.
+
+## Merge Request Reviews **[PREMIUM]**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/4213) in GitLab 11.4.
+
+When looking at a Merge Request diff, you are able to start a review.
+This allows you to create comments inside a Merge Request that are **only visible to you** until published,
+in order to allow you to submit them all as a single action.
+
+### Starting a review
+
+In order to start a review, simply write a comment on a diff as normal under the **Changes** tab
+in an MR and click on the **Start a review** button.
+
+![Starting a review](img/mr_review_start.png)
+
+Once a review is started, you will see any comments that are part of this review marked `Pending`.
+All comments that are part of a review show two buttons:
+
+- **Submit review**: Submits all comments that are part of the review, making them visible to other users.
+- **Add comment now**: Submits the specific comment as a regular comment instead of as part of the review.
+
+![A comment that is part of a review](img/pending_review_comment.png)
+
+You can use [quick actions] inside review comments. The comment will show the actions that will be performed once published.
+
+![A review comment with quick actions](img/review_comment_quickactions.png)
+
+To add more comments to a review, start writing a comment as normal and click the **Add to review** button.
+
+![Adding a second comment to a review](img/mr_review_second_comment.png)
+
+This will add the comment to the review.
+
+![Second review comment](img/mr_review_second_comment_added.png)
+
+### Resolving/Unresolving discussions
+
+Review comments can also resolve/unresolve [resolvable discussions](#resolvable-comments-and-discussions).
+When replying to a comment, you will see a checkbox that you can click in order to resolve or unresolve
+the discussion once published.
+
+![Resolve checkbox](img/mr_review_resolve.png)
+![Unresolve checkbox](img/mr_review_unresolve.png)
+
+If a particular pending comment will resolve or unresolve the discussion, this will be shown on the pending
+comment itself.
+
+![Resolve status](img/mr_review_resolve2.png)
+![Unresolve status](img/mr_review_unresolve2.png)
+
+### Submitting a review
+
+If you have any comments that have not been submitted, you will see a bar at the
+bottom of the screen with two buttons:
+
+- **Discard**: Discards all comments that have not been submitted.
+- **Finish review**: Opens a list of comments ready to be submitted for review.
+   Clicking **Submit review** will publish all comments. Any quick actions
+   submitted are performed at this time.
+
+Alternatively, every pending comment has a button to finish the entire review.
+
+![Review submission](img/review_preview.png)
+
+Submitting the review will send a single email to every notifiable user of the
+merge request with all the comments associated to it.
+
+Replying to this email will, consequentially, create a new comment on the associated merge request.
 
 ## Filtering notes
 

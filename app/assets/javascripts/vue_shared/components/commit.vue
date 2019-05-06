@@ -133,7 +133,7 @@ export default {
 };
 </script>
 <template>
-  <div class="branch-commit">
+  <div class="branch-commit cgray">
     <template v-if="shouldShowRefInfo">
       <div class="icon-container">
         <icon v-if="tag" name="tag" />
@@ -174,7 +174,7 @@ export default {
           :tooltip-text="author.username"
           class="avatar-image-container"
         />
-        <gl-link :href="commitUrl" class="commit-row-message"> {{ title }} </gl-link>
+        <gl-link :href="commitUrl" class="commit-row-message cgray"> {{ title }} </gl-link>
       </span>
       <span v-else> Can't find HEAD commit for this branch </span>
     </div>

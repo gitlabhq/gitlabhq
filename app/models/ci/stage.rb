@@ -120,5 +120,9 @@ module Ci
         .new(self, current_user)
         .fabricate!
     end
+
+    def manual_playable?
+      blocked? || skipped?
+    end
   end
 end

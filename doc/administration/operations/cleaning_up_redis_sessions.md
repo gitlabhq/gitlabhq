@@ -27,7 +27,7 @@ rcli() {
   # This example works for Omnibus installations of GitLab 7.3 or newer. For an
   # installation from source you will have to change the socket path and the
   # path to redis-cli.
-  sudo /opt/gitlab/embedded/bin/redis-cli -s /var/opt/gitlab/redis/redis.socket "$@"
+  sudo /opt/gitlab/embedded/bin/redis-cli -s /var/opt/gitlab/redis/redis.shared_state.socket "$@"
 }
 
 # test the new shell function; the response should be PONG

@@ -73,15 +73,10 @@
               = @project.repository.relative_path
 
           %li
-            %span.light Storage used:
+            %span.light= _('Storage:')
             %strong= storage_counter(@project.statistics.storage_size)
             (
-            = storage_counter(@project.statistics.repository_size)
-            repository,
-            = storage_counter(@project.statistics.build_artifacts_size)
-            build artifacts,
-            = storage_counter(@project.statistics.lfs_objects_size)
-            LFS
+            = storage_counters_details(@project.statistics)
             )
 
           %li

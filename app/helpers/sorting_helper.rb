@@ -142,7 +142,9 @@ module SortingHelper
     {
       sort_value_oldest_created => sort_value_created_date,
       sort_value_oldest_updated => sort_value_recently_updated,
-      sort_value_milestone_later => sort_value_milestone
+      sort_value_milestone_later => sort_value_milestone,
+      sort_value_due_date_later => sort_value_due_date,
+      sort_value_least_popular => sort_value_popularity
     }
   end
 
@@ -151,7 +153,11 @@ module SortingHelper
       sort_value_created_date => sort_value_oldest_created,
       sort_value_recently_created => sort_value_oldest_created,
       sort_value_recently_updated => sort_value_oldest_updated,
-      sort_value_milestone => sort_value_milestone_later
+      sort_value_milestone => sort_value_milestone_later,
+      sort_value_due_date => sort_value_due_date_later,
+      sort_value_due_date_soon => sort_value_due_date_later,
+      sort_value_popularity => sort_value_least_popular,
+      sort_value_most_popular => sort_value_least_popular
     }.merge(issuable_sort_option_overrides)
   end
 
@@ -418,6 +424,14 @@ module SortingHelper
 
   def sort_value_popularity
     'popularity'
+  end
+
+  def sort_value_most_popular
+    'popularity_desc'
+  end
+
+  def sort_value_least_popular
+    'popularity_asc'
   end
 
   def sort_value_priority

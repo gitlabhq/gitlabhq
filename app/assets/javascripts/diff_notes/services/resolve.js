@@ -3,6 +3,7 @@
 import Vue from 'vue';
 import Flash from '../../flash';
 import '../../vue_shared/vue_resource_interceptor';
+import { __ } from '~/locale';
 
 window.gl = window.gl || {};
 
@@ -49,7 +50,8 @@ class ResolveServiceClass {
         discussion.updateHeadline(data);
       })
       .catch(
-        () => new Flash('An error occurred when trying to resolve a discussion. Please try again.'),
+        () =>
+          new Flash(__('An error occurred when trying to resolve a discussion. Please try again.')),
       );
   }
 

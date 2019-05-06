@@ -50,3 +50,10 @@ export const LEFT_LINE_KEY = 'left';
 
 export const CENTERED_LIMITED_CONTAINER_CLASSES =
   'container-limited limit-container-width mx-lg-auto px-3';
+
+export const MAX_RENDERING_DIFF_LINES = 500;
+export const MAX_RENDERING_BULK_ROWS = 30;
+export const MIN_RENDERING_MS = 2;
+export const START_RENDERING_INDEX = 200;
+export const INLINE_DIFF_LINES_KEY = 'highlighted_diff_lines';
+export const PARALLEL_DIFF_LINES_KEY = 'parallel_diff_lines';

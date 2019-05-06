@@ -201,6 +201,12 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           get :failures
           get :status
         end
+
+        member do
+          resources :stages, only: [], param: :name do
+            post :play_manual
+          end
+        end
       end
 
       resources :pipeline_schedules, except: [:show] do

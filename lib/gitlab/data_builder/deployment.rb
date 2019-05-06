@@ -15,7 +15,9 @@ module Gitlab
           project: deployment.project.hook_attrs,
           short_sha: deployment.short_sha,
           user: deployment.user.hook_attrs,
-          commit_url: Gitlab::UrlBuilder.build(deployment.commit)
+          user_url: Gitlab::UrlBuilder.build(deployment.user),
+          commit_url: Gitlab::UrlBuilder.build(deployment.commit),
+          commit_title: deployment.commit.title
         }
       end
     end

@@ -255,7 +255,7 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
       eTagPoll.makeRequest();
 
       $('.js-gfm-input').trigger('clear-commands-cache.atwho');
-      Flash('Commands applied', 'notice', noteData.flashContainer);
+      Flash(__('Commands applied'), 'notice', noteData.flashContainer);
     }
 
     if (commandsChanges) {
@@ -269,7 +269,7 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
           })
           .catch(() => {
             Flash(
-              'Something went wrong while adding your award. Please try again.',
+              __('Something went wrong while adding your award. Please try again.'),
               'alert',
               noteData.flashContainer,
             );
@@ -311,7 +311,7 @@ export const poll = ({ commit, state, getters, dispatch }) => {
     data: state,
     successCallback: resp =>
       resp.json().then(data => pollSuccessCallBack(data, commit, state, getters, dispatch)),
-    errorCallback: () => Flash('Something went wrong while fetching latest comments.'),
+    errorCallback: () => Flash(__('Something went wrong while fetching latest comments.')),
   });
 
   if (!Visibility.hidden()) {
@@ -347,7 +347,7 @@ export const fetchData = ({ commit, state, getters }) => {
     .poll(requestData)
     .then(resp => resp.json)
     .then(data => pollSuccessCallBack(data, commit, state, getters))
-    .catch(() => Flash('Something went wrong while fetching latest comments.'));
+    .catch(() => Flash(__('Something went wrong while fetching latest comments.')));
 };
 
 export const toggleAward = ({ commit, getters }, { awardName, noteId }) => {

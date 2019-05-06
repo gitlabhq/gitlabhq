@@ -1,5 +1,5 @@
 .table-mobile-content
-  .branch-commit
+  .branch-commit.cgray
     - if deployment.ref
       %span.icon-container
         = deployment.tag? ? icon('tag') : sprite_icon('fork', css_class: 'sprite')
@@ -12,6 +12,6 @@
       %span.flex-truncate-child
         - if commit_title = deployment.commit_title
           = author_avatar(deployment.commit, size: 20)
-          = link_to_markdown commit_title, project_commit_path(@project, deployment.sha), class: "commit-row-message"
+          = link_to_markdown commit_title, project_commit_path(@project, deployment.sha), class: "commit-row-message cgray"
         - else
           = _("Can't find HEAD commit for this branch")

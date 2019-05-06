@@ -23,7 +23,7 @@ module API
       get ':id/releases' do
         releases = ::ReleasesFinder.new(user_project, current_user).execute
 
-        present paginate(releases), with: Entities::Release
+        present paginate(releases), with: Entities::Release, current_user: current_user
       end
 
       desc 'Get a single project release' do
@@ -34,9 +34,9 @@ module API
         requires :tag_name, type: String, desc: 'The name of the tag', as: :tag
       end
       get ':id/releases/:tag_name', requirements: RELEASE_ENDPOINT_REQUIREMETS do
-        authorize_read_release!
+        authorize_download_code!
 
-        present release, with: Entities::Release
+        present release, with: Entities::Release, current_user: current_user
       end
 
       desc 'Create a new release' do
@@ -63,7 +63,7 @@ module API
           .execute
 
         if result[:status] == :success
-          present result[:release], with: Entities::Release
+          present result[:release], with: Entities::Release, current_user: current_user
         else
           render_api_error!(result[:message], result[:http_status])
         end
@@ -86,7 +86,7 @@ module API
           .execute
 
         if result[:status] == :success
-          present result[:release], with: Entities::Release
+          present result[:release], with: Entities::Release, current_user: current_user
         else
           render_api_error!(result[:message], result[:http_status])
         end
@@ -107,7 +107,7 @@ module API
           .execute
 
         if result[:status] == :success
-          present result[:release], with: Entities::Release
+          present result[:release], with: Entities::Release, current_user: current_user
         else
           render_api_error!(result[:message], result[:http_status])
         end
@@ -133,6 +133,10 @@ module API
 
       def authorize_destroy_release!
         authorize! :destroy_release, release
+      end
+
+      def authorize_download_code!
+        authorize! :download_code, release
       end
 
       def release

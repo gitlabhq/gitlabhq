@@ -3,6 +3,7 @@
 
 import $ from 'jquery';
 import Vue from 'vue';
+import { __ } from '~/locale';
 
 const CommentAndResolveBtn = Vue.extend({
   props: {
@@ -31,15 +32,15 @@ const CommentAndResolveBtn = Vue.extend({
     buttonText: function() {
       if (this.isDiscussionResolved) {
         if (this.textareaIsEmpty) {
-          return 'Unresolve discussion';
+          return __('Unresolve discussion');
         } else {
-          return 'Comment & unresolve discussion';
+          return __('Comment & unresolve discussion');
         }
       } else {
         if (this.textareaIsEmpty) {
-          return 'Resolve discussion';
+          return __('Resolve discussion');
         } else {
-          return 'Comment & resolve discussion';
+          return __('Comment & resolve discussion');
         }
       }
     },

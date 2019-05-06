@@ -41,7 +41,7 @@ shared_examples_for 'inherited access level as a member of entity' do
 
       member.update(access_level: Gitlab::Access::REPORTER)
 
-      expect(member.errors.full_messages).to eq(["Access level should be higher than Developer inherited membership from group #{parent_entity.name}"])
+      expect(member.errors.full_messages).to eq(["Access level should be greater than or equal to Developer inherited membership from group #{parent_entity.name}"])
     end
 
     it 'allows changing the level from a non existing member' do

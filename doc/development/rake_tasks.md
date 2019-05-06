@@ -28,6 +28,24 @@ bin/rake "gitlab:seed:issues[group-path/project-path]"
 By default, this seeds an average of 2 issues per week for the last 5 weeks per
 project.
 
+#### Seeding issues for Insights charts **[ULTIMATE]**
+
+You can seed issues specifically for working with the
+[Insights charts](https://docs.gitlab.com/ee/user/group/insights/index.html) with the
+`gitlab:seed:insights:issues` task:
+
+```shell
+# All projects
+bin/rake gitlab:seed:insights:issues
+
+# A specific project
+bin/rake "gitlab:seed:insights:issues[group-path/project-path]"
+```
+
+By default, this seeds an average of 10 issues per week for the last 52 weeks
+per project. All issues will also be randomly labeled with team, type, severity,
+and priority.
+
 ### Automation
 
 If you're very sure that you want to **wipe the current database** and refill

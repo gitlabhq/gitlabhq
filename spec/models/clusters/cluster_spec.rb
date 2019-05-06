@@ -95,6 +95,24 @@ describe Clusters::Cluster do
     it { is_expected.to contain_exactly(cluster) }
   end
 
+  describe '.managed' do
+    subject do
+      described_class.managed
+    end
+
+    context 'cluster is not managed' do
+      let!(:cluster) { create(:cluster, :not_managed) }
+
+      it { is_expected.not_to include(cluster) }
+    end
+
+    context 'cluster is managed' do
+      let!(:cluster) { create(:cluster) }
+
+      it { is_expected.to include(cluster) }
+    end
+  end
+
   describe '.missing_kubernetes_namespace' do
     let!(:cluster) { create(:cluster, :provided_by_gcp, :project) }
     let(:project) { cluster.project }

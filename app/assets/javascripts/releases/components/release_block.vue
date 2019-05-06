@@ -86,7 +86,7 @@ export default {
       </div>
 
       <div
-        v-if="assets.links.length || assets.sources.length"
+        v-if="assets.links.length || (assets.sources && assets.sources.length)"
         class="card-text prepend-top-default"
       >
         <b>
@@ -103,7 +103,7 @@ export default {
           </li>
         </ul>
 
-        <div v-if="assets.sources.length" class="dropdown">
+        <div v-if="assets.sources && assets.sources.length" class="dropdown">
           <button
             type="button"
             class="btn btn-link"

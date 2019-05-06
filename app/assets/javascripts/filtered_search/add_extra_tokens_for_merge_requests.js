@@ -1,3 +1,5 @@
+import { __ } from '~/locale';
+
 export default IssuableTokenKeys => {
   const wipToken = {
     key: 'wip',
@@ -5,7 +7,7 @@ export default IssuableTokenKeys => {
     param: '',
     symbol: '',
     icon: 'admin',
-    tag: 'Yes or No',
+    tag: __('Yes or No'),
     lowercaseValueOnSubmit: true,
     uppercaseTokenName: true,
     capitalizeTokenValue: true,

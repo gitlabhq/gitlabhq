@@ -92,7 +92,7 @@ Parameters:
 - `description` (optional) - The description of a milestone
 - `due_date` (optional) - The due date of the milestone
 - `start_date` (optional) - The start date of the milestone
-- `state_event` (optional) - The state event of the milestone (close|activate)
+- `state_event` (optional) - The state event of the milestone (close or activate)
 
 ## Delete project milestone
 

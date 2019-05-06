@@ -1715,6 +1715,7 @@ ActiveRecord::Schema.define(version: 20190426180107) do
     t.bigint "repository_size", default: 0, null: false
     t.bigint "lfs_objects_size", default: 0, null: false
     t.bigint "build_artifacts_size", default: 0, null: false
+    t.bigint "packages_size"
     t.index ["namespace_id"], name: "index_project_statistics_on_namespace_id", using: :btree
     t.index ["project_id"], name: "index_project_statistics_on_project_id", unique: true, using: :btree
   end
@@ -1737,7 +1738,6 @@ ActiveRecord::Schema.define(version: 20190426180107) do
     t.string "import_type"
     t.string "import_source"
     t.text "import_error"
-    t.integer "ci_id"
     t.boolean "shared_runners_enabled", default: true, null: false
     t.string "runners_token"
     t.string "build_coverage_regex"
@@ -1776,7 +1776,6 @@ ActiveRecord::Schema.define(version: 20190426180107) do
     t.string "bfg_object_map"
     t.boolean "detected_repository_languages"
     t.string "external_authorization_classification_label"
-    t.index ["ci_id"], name: "index_projects_on_ci_id", using: :btree
     t.index ["created_at"], name: "index_projects_on_created_at", using: :btree
     t.index ["creator_id"], name: "index_projects_on_creator_id", using: :btree
     t.index ["description"], name: "index_projects_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}

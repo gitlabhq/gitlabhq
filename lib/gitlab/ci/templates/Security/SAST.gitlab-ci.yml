@@ -20,18 +20,30 @@ sast:
           export DOCKER_HOST='tcp://localhost:2375'
         fi
       fi
+    - | # this is required to avoid undesirable reset of Docker image ENV variables being set on build stage
+      function propagate_env_vars() {
+        CURRENT_ENV=$(printenv)
+
+        for VAR_NAME; do
+          echo $CURRENT_ENV | grep "${VAR_NAME}=" > /dev/null && echo "--env $VAR_NAME "
+        done
+      }
     - |
       docker run \
-        --env SAST_ANALYZER_IMAGES \
-        --env SAST_ANALYZER_IMAGE_PREFIX \
-        --env SAST_ANALYZER_IMAGE_TAG \
-        --env SAST_DEFAULT_ANALYZERS \
-        --env SAST_BRAKEMAN_LEVEL \
-        --env SAST_GOSEC_LEVEL \
-        --env SAST_FLAWFINDER_LEVEL \
-        --env SAST_DOCKER_CLIENT_NEGOTIATION_TIMEOUT \
-        --env SAST_PULL_ANALYZER_IMAGE_TIMEOUT \
-        --env SAST_RUN_ANALYZER_TIMEOUT \
+        $(propagate_env_vars \
+          SAST_ANALYZER_IMAGES \
+          SAST_ANALYZER_IMAGE_PREFIX \
+          SAST_ANALYZER_IMAGE_TAG \
+          SAST_DEFAULT_ANALYZERS \
+          SAST_EXCLUDED_PATHS \
+          SAST_BANDIT_EXCLUDED_PATHS \
+          SAST_BRAKEMAN_LEVEL \
+          SAST_GOSEC_LEVEL \
+          SAST_FLAWFINDER_LEVEL \
+          SAST_DOCKER_CLIENT_NEGOTIATION_TIMEOUT \
+          SAST_PULL_ANALYZER_IMAGE_TIMEOUT \
+          SAST_RUN_ANALYZER_TIMEOUT \
+        ) \
         --volume "$PWD:/code" \
         --volume /var/run/docker.sock:/var/run/docker.sock \
         "registry.gitlab.com/gitlab-org/security-products/sast:$SAST_VERSION" /app/bin/run /code
