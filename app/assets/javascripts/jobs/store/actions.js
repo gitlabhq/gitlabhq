@@ -179,23 +179,6 @@ export const receiveTraceError = ({ commit }) => {
 };
 
 /**
- * Stages dropdown on sidebar
- */
-export const requestStages = ({ commit }) => commit(types.REQUEST_STAGES);
-export const fetchStages = ({ state, dispatch }) => {
-  dispatch('requestStages');
-  dispatch('receiveStagesSuccess', state.job.pipeline.details.stages);
-  const selectedStage = state.job.pipeline.details.stages.find(stage => stage.name === state.selectedStage);
-  dispatch('fetchJobsForStage', selectedStage);
-};
-export const receiveStagesSuccess = ({ commit }, data) =>
-  commit(types.RECEIVE_STAGES_SUCCESS, data);
-export const receiveStagesError = ({ commit }) => {
-  commit(types.RECEIVE_STAGES_ERROR);
-  flash(__('An error occurred while fetching stages.'));
-};
-
-/**
  * Jobs list on sidebar - depend on stages dropdown
  */
 export const requestJobsForStage = ({ commit }, stage) =>

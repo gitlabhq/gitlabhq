@@ -86,6 +86,7 @@ export default {
       'isScrollTopDisabled',
       'isScrolledToBottomBeforeReceivingTrace',
       'hasError',
+      'selectedStage',
     ]),
     ...mapGetters([
       'headerTime',
@@ -121,7 +122,9 @@ export default {
     // fetch the stages for the dropdown on the sidebar
     job(newVal, oldVal) {
       if (_.isEmpty(oldVal) && !_.isEmpty(newVal.pipeline)) {
-        this.fetchStages();
+        this.fetchJobsForStage(
+          this.job.pipeline.details.stages.find(stage => stage && stage.name === this.selectedStage),
+        );
       }
 
       if (newVal.archived) {
@@ -160,7 +163,7 @@ export default {
       'setJobEndpoint',
       'setTraceOptions',
       'fetchJob',
-      'fetchStages',
+      'fetchJobsForStage',
       'hideSidebar',
       'showSidebar',
       'toggleSidebar',

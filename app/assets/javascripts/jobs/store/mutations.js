@@ -65,6 +65,8 @@ export default {
     state.isLoading = false;
     state.job = job;
 
+    state.stages = job.pipeline.details.stages || [];
+
     /**
      * We only update it on the first request
      * The dropdown can be changed by the user
@@ -99,18 +101,6 @@ export default {
 
   [types.TOGGLE_IS_SCROLL_IN_BOTTOM_BEFORE_UPDATING_TRACE](state, toggle) {
     state.isScrolledToBottomBeforeReceivingTrace = toggle;
-  },
-
-  [types.REQUEST_STAGES](state) {
-    state.isLoadingStages = true;
-  },
-  [types.RECEIVE_STAGES_SUCCESS](state, stages) {
-    state.isLoadingStages = false;
-    state.stages = stages;
-  },
-  [types.RECEIVE_STAGES_ERROR](state) {
-    state.isLoadingStages = false;
-    state.stages = [];
   },
 
   [types.REQUEST_JOBS_FOR_STAGE](state, stage) {
