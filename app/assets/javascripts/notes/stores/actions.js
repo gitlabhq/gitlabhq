@@ -142,6 +142,23 @@ export const createNewNote = ({ commit, dispatch }, { endpoint, data }) =>
 
 export const removePlaceholderNotes = ({ commit }) => commit(types.REMOVE_PLACEHOLDER_NOTES);
 
+export const resolveDiscussion = ({ state, dispatch, getters }, { discussionId }) => {
+  const discussion = utils.findNoteObjectById(state.discussions, discussionId);
+  const isResolved = getters.isDiscussionResolved(discussionId);
+
+  if (!discussion) {
+    return Promise.reject();
+  } else if (isResolved) {
+    return Promise.resolve();
+  }
+
+  return dispatch('toggleResolveNote', {
+    endpoint: discussion.resolve_path,
+    isResolved,
+    discussion: true,
+  });
+};
+
 export const toggleResolveNote = ({ commit, dispatch }, { endpoint, isResolved, discussion }) =>
   service
     .toggleResolveNote(endpoint, isResolved)
@@ -420,15 +437,13 @@ export const updateResolvableDiscussonsCounts = ({ commit }) =>
   commit(types.UPDATE_RESOLVABLE_DISCUSSIONS_COUNTS);
 
 export const submitSuggestion = (
-  { commit },
-  { discussionId, noteId, suggestionId, flashContainer, callback },
-) => {
+  { commit, dispatch },
+  { discussionId, noteId, suggestionId, flashContainer },
+) =>
   service
     .applySuggestion(suggestionId)
-    .then(() => {
-      commit(types.APPLY_SUGGESTION, { discussionId, noteId, suggestionId });
-      callback();
-    })
+    .then(() => commit(types.APPLY_SUGGESTION, { discussionId, noteId, suggestionId }))
+    .then(() => dispatch('resolveDiscussion', { discussionId }).catch(() => {}))
     .catch(err => {
       const defaultMessage = __(
         'Something went wrong while applying the suggestion. Please try again.',
@@ -436,9 +451,7 @@ export const submitSuggestion = (
       const flashMessage = err.response.data ? `${err.response.data.message}.` : defaultMessage;
 
       Flash(__(flashMessage), 'alert', flashContainer);
-      callback();
     });
-};
 
 export const convertToDiscussion = ({ commit }, noteId) =>
   commit(types.CONVERT_TO_DISCUSSION, noteId);
