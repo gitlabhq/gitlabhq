@@ -138,11 +138,11 @@ describe BuildDetailsEntity do
         allow(request).to receive(:project).and_return(project)
       end
 
-      it 'does not serialize latest deployment commit' do
+      it 'does not serialize latest deployment commit and associated builds' do
         response = subject.with_indifferent_access
 
         response.dig(:deployment_status, :environment, :last_deployment).tap do |deployment|
-          expect(deployment).not_to include(:commit)
+          expect(deployment).not_to include(:commit, :deployable, :manual_actions, :scheduled_actions)
         end
       end
     end

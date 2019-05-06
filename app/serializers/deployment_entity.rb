@@ -20,14 +20,18 @@ class DeploymentEntity < Grape::Entity
   expose :created_at
   expose :tag
   expose :last?
-
   expose :user, using: UserEntity
-  expose :commit, using: CommitEntity
-  expose :deployable, using: JobEntity
-  expose :manual_actions, using: JobEntity, if: -> (*) { can_create_deployment? }
-  expose :scheduled_actions, using: JobEntity, if: -> (*) { can_create_deployment? }
+
+  expose :commit, using: CommitEntity, if: -> (*) { include_details? }
+  expose :deployable, using: JobEntity, if: -> (*) { include_details? }
+  expose :manual_actions, using: JobEntity, if: -> (*) { include_details? && can_create_deployment? }
+  expose :scheduled_actions, using: JobEntity, if: -> (*) { include_details? && can_create_deployment? }
 
   private
+
+  def include_details?
+    options.fetch(:deployment_details, true)
+  end
 
   def can_create_deployment?
     can?(request.current_user, :create_deployment, request.project)

@@ -253,13 +253,13 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
       end
 
       context 'with deployment' do
-        before do
-          create(:deployment, :success, environment: environment, project: project)
-        end
-
         let(:merge_request) { create(:merge_request, source_project: project) }
         let(:environment) { create(:environment, project: project, name: 'staging', state: :available) }
         let(:job) { create(:ci_build, :running, environment: environment.name, pipeline: pipeline) }
+
+        before do
+          create(:deployment, :success, environment: environment, project: project)
+        end
 
         it 'exposes the deployment information' do
           get_show_json
