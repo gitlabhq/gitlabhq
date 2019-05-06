@@ -1,5 +1,5 @@
 package-and-qa:
-  image: ruby:2.5-alpine
+  image: ruby:2.6-alpine
   stage: qa
   when: manual
   before_script: []
