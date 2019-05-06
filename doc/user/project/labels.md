@@ -53,7 +53,7 @@ be able to advance workflow states consistently in issues themselves.
 ## Creating labels
 
 >**Note:**
-A permission level of `Developer` or higher is required to create labels.
+A permission level of Reporter or higher is required to create labels.
 
 ### New project label
 
@@ -91,7 +91,7 @@ From the sidebar of an issue or a merge request, you can create a new **project 
 ## Editing labels
 
 NOTE: **Note:**
-A permission level of `Developer` or higher is required to edit labels.
+A permission level of Reporter or higher is required to edit labels.
 
 You can update a label by navigating to **Issues > Labels** in the project or group and clicking the pencil icon.
 
