@@ -47,7 +47,7 @@
 
 build-qa-image:
   <<: *review-docker
-  stage: prepare
+  stage: test
   script:
     - time docker build --cache-from ${LATEST_QA_IMAGE} --tag ${QA_IMAGE} ./qa/
     - echo "${CI_JOB_TOKEN}" | docker login --username gitlab-ci-token --password-stdin ${CI_REGISTRY}
