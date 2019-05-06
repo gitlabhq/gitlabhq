@@ -4872,6 +4872,12 @@ msgstr ""
 msgid "If enabled, access to projects will be validated on an external service using their classification label."
 msgstr ""
 
+msgid "If this was a mistake you can %{leave_link_start}leave the %{source_type}%{link_end}."
+msgstr ""
+
+msgid "If this was a mistake you can leave the %{source_type}."
+msgstr ""
+
 msgid "If your HTTP repository is not publicly accessible, add authentication information to the URL: <code>https://username:password@gitlab.company.com/group/project.git</code>."
 msgstr ""
 
@@ -10933,6 +10939,9 @@ msgstr ""
 msgid "You do not have any subscriptions yet"
 msgstr ""
 
+msgid "You do not have permission to leave this %{namespaceType}."
+msgstr ""
+
 msgid "You don't have any applications"
 msgstr ""
 
@@ -10940,6 +10949,12 @@ msgid "You don't have any authorized applications"
 msgstr ""
 
 msgid "You don't have any deployments right now."
+msgstr ""
+
+msgid "You have been granted %{access_level} access to the %{source_link} %{source_type}."
+msgstr ""
+
+msgid "You have been granted %{access_level} access to the %{source_name} %{source_type}."
 msgstr ""
 
 msgid "You have been granted %{member_human_access} access to %{label}."
