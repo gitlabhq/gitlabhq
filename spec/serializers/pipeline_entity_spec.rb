@@ -64,6 +64,12 @@ describe PipelineEntity do
         create(:ci_build, :failed, pipeline: pipeline)
       end
 
+      it 'does not serialize stage builds' do
+        subject.with_indifferent_access.dig(:details, :stages, 0).tap do |stage|
+          expect(stage).not_to include(:groups, :latest_statuses, :retries)
+        end
+      end
+
       context 'user has ability to retry pipeline' do
         before do
           project.add_developer(user)
@@ -90,6 +96,12 @@ describe PipelineEntity do
 
       before do
         create(:ci_build, :pending, pipeline: pipeline)
+      end
+
+      it 'does not serialize stage builds' do
+        subject.with_indifferent_access.dig(:details, :stages, 0).tap do |stage|
+          expect(stage).not_to include(:groups, :latest_statuses, :retries)
+        end
       end
 
       context 'user has ability to cancel pipeline' do
