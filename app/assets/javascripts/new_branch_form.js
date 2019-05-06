@@ -2,6 +2,7 @@
 
 import $ from 'jquery';
 import RefSelectDropdown from './ref_select_dropdown';
+import { s__ } from './locale';
 
 export default class NewBranchForm {
   constructor(form, availableRefs) {
@@ -29,23 +30,23 @@ export default class NewBranchForm {
     var endsWith, invalid, single, startsWith;
     startsWith = {
       pattern: /^(\/|\.)/g,
-      prefix: "can't start with",
-      conjunction: 'or',
+      prefix: s__("BranchValidation|can't start with"),
+      conjunction: s__('BranchValidation|or'),
     };
     endsWith = {
       pattern: /(\/|\.|\.lock)$/g,
-      prefix: "can't end in",
-      conjunction: 'or',
+      prefix: s__("BranchValidation|can't end in"),
+      conjunction: s__('BranchValidation|or'),
     };
     invalid = {
       pattern: /(\s|~|\^|:|\?|\*|\[|\\|\.\.|@\{|\/{2,}){1}/g,
-      prefix: "can't contain",
+      prefix: s__("BranchValidation|can't contain"),
       conjunction: ', ',
     };
     single = {
       pattern: /^@+$/g,
-      prefix: "can't be",
-      conjunction: 'or',
+      prefix: s__("BranchValidation|can't be"),
+      conjunction: s__('BranchValidation|or'),
     };
     return (this.restrictions = [startsWith, invalid, endsWith, single]);
   }
@@ -66,9 +67,9 @@ export default class NewBranchForm {
       formatted = values.map(function(value) {
         switch (false) {
           case !/\s/.test(value):
-            return 'spaces';
+            return s__('BranchValidation|spaces');
           case !/\/{2,}/g.test(value):
-            return 'consecutive slashes';
+            return s__('BranchValidation|consecutive slashes');
           default:
             return "'" + value + "'";
         }
