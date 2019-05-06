@@ -10,11 +10,44 @@
       color: $gray-600;
     }
   }
+
+  &.blue {
+    background-color: $blue-600;
+
+    .popover-body {
+      color: $white-light;
+    }
+
+    &.bs-popover-bottom {
+      .arrow::after {
+        border-bottom-color: $blue-600;
+      }
+    }
+
+    &.bs-popover-top {
+      .arrow::after {
+        border-top-color: $blue-600;
+      }
+    }
+  }
 }
 
 .mr-popover {
   .text-secondary {
     font-size: 12px;
     line-height: 1.33;
+  }
+}
+
+.onboarding-welcome-page {
+  .popover {
+    min-width: auto;
+    max-width: 40%;
+
+    .popover-body {
+      padding-top: $gl-padding;
+      padding-bottom: $gl-padding;
+      font-size: $gl-font-size-small;
+    }
   }
 }
