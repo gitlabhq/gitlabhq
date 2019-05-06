@@ -4762,9 +4762,6 @@ msgstr ""
 msgid "Help page text and support page url."
 msgstr ""
 
-msgid "Here is the public SSH key that needs to be added to the remote server. For more information, please refer to the documentation."
-msgstr ""
-
 msgid "Hide archived projects"
 msgstr ""
 
