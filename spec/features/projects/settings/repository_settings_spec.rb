@@ -217,5 +217,24 @@ describe 'Projects > Settings > Repository settings' do
         expect(RepositoryCleanupWorker.jobs.count).to eq(1)
       end
     end
+
+    context 'with an existing mirror', :js do
+      let(:mirrored_project) { create(:project, :repository, :remote_mirror) }
+
+      before do
+        mirrored_project.add_maintainer(user)
+
+        visit project_settings_repository_path(mirrored_project)
+      end
+
+      it 'delete remote mirrors' do
+        expect(mirrored_project.remote_mirrors.count).to eq(1)
+
+        find('.js-delete-mirror').click
+        wait_for_requests
+
+        expect(mirrored_project.remote_mirrors.count).to eq(0)
+      end
+    end
   end
 end

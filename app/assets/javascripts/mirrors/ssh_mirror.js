@@ -24,12 +24,6 @@ export default class SSHMirror {
 
     this.$wellAuthTypeChanging = this.$form.find('.js-well-changing-auth');
     this.$wellPasswordAuth = this.$form.find('.js-well-password-auth');
-    this.$wellSSHAuth = this.$form.find('.js-well-ssh-auth');
-    this.$sshPublicKeyWrap = this.$form.find('.js-ssh-public-key-wrap');
-    this.$regeneratePublicSshKeyButton = this.$wellSSHAuth.find('.js-btn-regenerate-ssh-key');
-    this.$regeneratePublicSshKeyModal = this.$wellSSHAuth.find(
-      '.js-regenerate-public-ssh-key-confirm-modal',
-    );
   }
 
   init() {
@@ -40,15 +34,6 @@ export default class SSHMirror {
     this.$dropdownAuthType.on('change', e => this.handleAuthTypeChange(e));
     this.$btnDetectHostKeys.on('click', e => this.handleDetectHostKeys(e));
     this.$btnSSHHostsShowAdvanced.on('click', e => this.handleSSHHostsAdvanced(e));
-    this.$regeneratePublicSshKeyButton.on('click', () =>
-      this.$regeneratePublicSshKeyModal.toggle(true),
-    );
-    $('.js-confirm', this.$regeneratePublicSshKeyModal).on('click', e =>
-      this.regeneratePublicSshKey(e),
-    );
-    $('.js-cancel', this.$regeneratePublicSshKeyModal).on('click', () =>
-      this.$regeneratePublicSshKeyModal.toggle(false),
-    );
   }
 
   /**
@@ -162,54 +147,11 @@ export default class SSHMirror {
    * Authentication method dropdown change event listener
    */
   handleAuthTypeChange() {
-    const projectMirrorAuthTypeEndpoint = `${this.$form.attr('action')}.json`;
-    const $sshPublicKey = this.$sshPublicKeyWrap.find('.ssh-public-key');
     const selectedAuthType = this.$dropdownAuthType.val();
 
     this.$wellPasswordAuth.collapse('hide');
-    this.$wellSSHAuth.collapse('hide');
     this.updateHiddenAuthType(selectedAuthType);
-
-    // This request should happen only if selected Auth type was SSH
-    // and SSH Public key was not present on page load
-    if (selectedAuthType === AUTH_METHOD.SSH && !$sshPublicKey.text().trim()) {
-      if (!this.$wellSSHAuth.length) return;
-
-      // Construct request body
-      const authTypeData = {
-        project: {
-          ...this.$regeneratePublicSshKeyButton.data().projectData,
-        },
-      };
-
-      this.$wellAuthTypeChanging.collapse('show');
-      this.$dropdownAuthType.disable();
-
-      axios
-        .put(projectMirrorAuthTypeEndpoint, JSON.stringify(authTypeData), {
-          headers: {
-            'Content-Type': 'application/json; charset=utf-8',
-          },
-        })
-        .then(({ data }) => {
-          // Show SSH public key container and fill in public key
-          this.toggleAuthWell(selectedAuthType);
-          this.toggleSSHAuthWellMessage(true);
-          this.setSSHPublicKey(data.import_data_attributes.ssh_public_key);
-
-          this.$wellAuthTypeChanging.collapse('hide');
-          this.$dropdownAuthType.enable();
-        })
-        .catch(() => {
-          Flash(__('Something went wrong on our end.'));
-
-          this.$wellAuthTypeChanging.collapse('hide');
-          this.$dropdownAuthType.enable();
-        });
-    } else {
-      this.toggleAuthWell(selectedAuthType);
-      this.$wellSSHAuth.find('.js-ssh-public-key-present').collapse('show');
-    }
+    this.toggleAuthWell(selectedAuthType);
   }
 
   /**
@@ -235,7 +177,6 @@ export default class SSHMirror {
    */
   toggleAuthWell(authType) {
     this.$wellPasswordAuth.collapse(authType === AUTH_METHOD.PASSWORD ? 'show' : 'hide');
-    this.$wellSSHAuth.collapse(authType === AUTH_METHOD.SSH ? 'show' : 'hide');
     this.updateHiddenAuthType(authType);
   }
 
@@ -244,64 +185,11 @@ export default class SSHMirror {
     this.$hiddenAuthType.prop('disabled', authType === AUTH_METHOD.SSH);
   }
 
-  /**
-   * Toggle SSH auth information message
-   */
-  toggleSSHAuthWellMessage(sshKeyPresent) {
-    this.$sshPublicKeyWrap.collapse(sshKeyPresent ? 'show' : 'hide');
-    this.$wellSSHAuth.find('.js-ssh-public-key-present').collapse(sshKeyPresent ? 'show' : 'hide');
-    this.$regeneratePublicSshKeyButton.collapse(sshKeyPresent ? 'show' : 'hide');
-    this.$wellSSHAuth.find('.js-ssh-public-key-pending').collapse(sshKeyPresent ? 'hide' : 'show');
-  }
-
-  /**
-   * Sets SSH Public key to Clipboard button and shows it on UI.
-   */
-  setSSHPublicKey(sshPublicKey) {
-    this.$sshPublicKeyWrap.find('.ssh-public-key').text(sshPublicKey);
-    this.$sshPublicKeyWrap
-      .find('.btn-copy-ssh-public-key')
-      .attr('data-clipboard-text', sshPublicKey);
-  }
-
-  regeneratePublicSshKey(event) {
-    event.preventDefault();
-
-    this.$regeneratePublicSshKeyModal.toggle(false);
-
-    const button = this.$regeneratePublicSshKeyButton;
-    const spinner = $('.js-spinner', button);
-    const endpoint = button.data('endpoint');
-    const authTypeData = {
-      project: {
-        ...this.$regeneratePublicSshKeyButton.data().projectData,
-      },
-    };
-
-    button.attr('disabled', 'disabled');
-    spinner.removeClass('d-none');
-
-    axios
-      .patch(endpoint, authTypeData)
-      .then(({ data }) => {
-        button.removeAttr('disabled');
-        spinner.addClass('d-none');
-
-        this.setSSHPublicKey(data.import_data_attributes.ssh_public_key);
-      })
-      .catch(() => {
-        Flash(__('Unable to regenerate public ssh key.'));
-      });
-  }
-
   destroy() {
     this.$repositoryUrl.off('keyup');
     this.$form.find('.js-known-hosts').off('keyup');
     this.$dropdownAuthType.off('change');
     this.$btnDetectHostKeys.off('click');
     this.$btnSSHHostsShowAdvanced.off('click');
-    this.$regeneratePublicSshKeyButton.off('click');
-    $('.js-confirm', this.$regeneratePublicSshKeyModal).off('click');
-    $('.js-cancel', this.$regeneratePublicSshKeyModal).off('click');
   }
 }

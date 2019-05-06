@@ -811,9 +811,6 @@ msgstr ""
 msgid "Amount of time (in hours) that users are allowed to skip forced configuration of two-factor authentication"
 msgstr ""
 
-msgid "An SSH key will be automatically generated when the form is submitted. For more information, please refer to the documentation."
-msgstr ""
-
 msgid "An application called %{link_to_client} is requesting access to your GitLab account."
 msgstr ""
 
@@ -2811,9 +2808,6 @@ msgstr ""
 msgid "Copy SSH public key"
 msgstr ""
 
-msgid "Copy SSH public key to clipboard"
-msgstr ""
-
 msgid "Copy URL to clipboard"
 msgstr ""
 
@@ -4760,9 +4754,6 @@ msgid "Help page"
 msgstr ""
 
 msgid "Help page text and support page url."
-msgstr ""
-
-msgid "Here is the public SSH key that needs to be added to the remote server. For more information, please refer to the documentation."
 msgstr ""
 
 msgid "Hide file browser"
@@ -10152,9 +10143,6 @@ msgid "Unable to connect to server: %{error}"
 msgstr ""
 
 msgid "Unable to load the diff. %{button_try_again}"
-msgstr ""
-
-msgid "Unable to regenerate public ssh key."
 msgstr ""
 
 msgid "Unable to resolve"
