@@ -86,25 +86,8 @@ label {
     border: 1px solid $border-color;
   }
 
-  .text-block {
-    line-height: 0.8;
-    padding-top: 9px;
-
-    code {
-      line-height: 1.8;
-    }
-
-    img {
-      margin-right: $gl-padding;
-    }
-  }
-
   @include media-breakpoint-down(xs) {
     padding: 0 $gl-padding;
-
-    .text-block {
-      padding-left: 0;
-    }
   }
 }
 
