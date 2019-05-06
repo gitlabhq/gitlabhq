@@ -384,14 +384,12 @@ CAUTION: **Warning:** GitLab will not backup Docker images that are not stored o
 filesystem. Remember to enable backups with your object storage provider if
 desired.
 
----
+NOTE: **Note:**
+`regionendpoint` is only required when configuring an S3 compatible service such as Minio. It takes a URL such as `http://127.0.0.1:9000`.
 
 **Omnibus GitLab installations**
 
-> **Note:**
-`regionendpoint` is only required when configuring an S3 compatible service such as Minio, by entering a URL such as http://127.0.0.1:9000
-
-To configure the storage driver in Omnibus:
+To configure the `s3` storage driver in Omnibus:
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -409,16 +407,14 @@ To configure the storage driver in Omnibus:
 
 1. Save the file and [reconfigure GitLab][] for the changes to take effect.
 
----
-
 **Installations from source**
 
 Configuring the storage driver is done in your registry config YML file created
 when you [deployed your docker registry][registry-deploy].
 
-Example:
+`s3` storage driver example:
 
-```
+```yml
 storage:
   s3:
     accesskey: 'AKIAKIAKI'
