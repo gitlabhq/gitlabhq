@@ -3,6 +3,7 @@
 - only_key_value = local_assigns.fetch(:only_key_value, false)
 
 - id = variable&.id
+- variable_type = variable&.variable_type
 - key = variable&.key
 - value = variable&.value
 - is_protected_default = ci_variable_protected_by_default?
@@ -12,6 +13,7 @@
 
 - id_input_name = "#{form_field}[variables_attributes][][id]"
 - destroy_input_name = "#{form_field}[variables_attributes][][_destroy]"
+- variable_type_input_name = "#{form_field}[variables_attributes][][variable_type]"
 - key_input_name = "#{form_field}[variables_attributes][][key]"
 - value_input_name = "#{form_field}[variables_attributes][][secret_value]"
 - protected_input_name = "#{form_field}[variables_attributes][][protected]"
@@ -21,6 +23,8 @@
   .ci-variable-row-body
     %input.js-ci-variable-input-id{ type: "hidden", name: id_input_name, value: id }
     %input.js-ci-variable-input-destroy{ type: "hidden", name: destroy_input_name }
+    %select.js-ci-variable-input-variable-type.ci-variable-body-item.form-control.select-control{ name: variable_type_input_name }
+      = options_for_select(ci_variable_type_options, variable_type)
     %input.js-ci-variable-input-key.ci-variable-body-item.qa-ci-variable-input-key.form-control{ type: "text",
       name: key_input_name,
       value: key,

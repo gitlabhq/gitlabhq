@@ -98,7 +98,7 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
   def schedule_params
     params.require(:schedule)
       .permit(:description, :cron, :cron_timezone, :ref, :active,
-        variables_attributes: [:id, :key, :secret_value, :_destroy] )
+        variables_attributes: [:id, :variable_type, :key, :secret_value, :_destroy] )
   end
 
   def authorize_play_pipeline_schedule!

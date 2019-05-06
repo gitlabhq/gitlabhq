@@ -26,6 +26,10 @@ export default class VariableList {
         selector: '.js-ci-variable-input-id',
         default: '',
       },
+      variable_type: {
+        selector: '.js-ci-variable-input-variable-type',
+        default: 'env_var',
+      },
       key: {
         selector: '.js-ci-variable-input-key',
         default: '',
