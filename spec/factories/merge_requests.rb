@@ -119,7 +119,7 @@ FactoryBot.define do
 
     trait :with_legacy_detached_merge_request_pipeline do
       after(:create) do |merge_request|
-        merge_request.merge_request_pipelines << create(:ci_pipeline,
+        merge_request.pipelines_for_merge_request << create(:ci_pipeline,
           source: :merge_request_event,
           merge_request: merge_request,
           project: merge_request.source_project,
@@ -130,7 +130,7 @@ FactoryBot.define do
 
     trait :with_detached_merge_request_pipeline do
       after(:create) do |merge_request|
-        merge_request.merge_request_pipelines << create(:ci_pipeline,
+        merge_request.pipelines_for_merge_request << create(:ci_pipeline,
           source: :merge_request_event,
           merge_request: merge_request,
           project: merge_request.source_project,
@@ -147,7 +147,7 @@ FactoryBot.define do
       end
 
       after(:create) do |merge_request, evaluator|
-        merge_request.merge_request_pipelines << create(:ci_pipeline,
+        merge_request.pipelines_for_merge_request << create(:ci_pipeline,
           source: :merge_request_event,
           merge_request: merge_request,
           project: merge_request.source_project,
