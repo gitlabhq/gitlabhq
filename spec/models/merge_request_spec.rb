@@ -32,14 +32,25 @@ describe MergeRequest do
   end
 
   describe 'locking' do
-    it 'works when a merge request has a NULL lock_version' do
-      merge_request = create(:merge_request)
+    using RSpec::Parameterized::TableSyntax
 
-      described_class.where(id: merge_request.id).update_all('lock_version = NULL')
+    where(:lock_version) do
+      [
+        [0],
+        ["0"]
+      ]
+    end
 
-      merge_request.update!(lock_version: 0, title: 'locking test')
+    with_them do
+      it 'works when a merge request has a NULL lock_version' do
+        merge_request = create(:merge_request)
 
-      expect(merge_request.reload.title).to eq('locking test')
+        described_class.where(id: merge_request.id).update_all('lock_version = NULL')
+
+        merge_request.update!(lock_version: lock_version, title: 'locking test')
+
+        expect(merge_request.reload.title).to eq('locking test')
+      end
     end
   end
 

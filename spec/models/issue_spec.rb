@@ -56,14 +56,25 @@ describe Issue do
   end
 
   describe 'locking' do
-    it 'works when an issue has a NULL lock_version' do
-      issue = create(:issue)
+    using RSpec::Parameterized::TableSyntax
 
-      described_class.where(id: issue.id).update_all('lock_version = NULL')
+    where(:lock_version) do
+      [
+        [0],
+        ["0"]
+      ]
+    end
 
-      issue.update!(lock_version: 0, title: 'locking test')
+    with_them do
+      it 'works when an issue has a NULL lock_version' do
+        issue = create(:issue)
 
-      expect(issue.reload.title).to eq('locking test')
+        described_class.where(id: issue.id).update_all('lock_version = NULL')
+
+        issue.update!(lock_version: lock_version, title: 'locking test')
+
+        expect(issue.reload.title).to eq('locking test')
+      end
     end
   end
 

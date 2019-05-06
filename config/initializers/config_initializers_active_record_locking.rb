@@ -1,4 +1,8 @@
 # frozen_string_literal: true
+
+# ensure ActiveRecord's version has been required already
+require 'active_record/locking/optimistic'
+
 # rubocop:disable Lint/RescueException
 module ActiveRecord
   module Locking
@@ -16,7 +20,7 @@ module ActiveRecord
           self[locking_column] += 1
 
           # Patched because when `lock_version` is read as `0`, it may actually be `NULL` in the DB.
-          possible_previous_lock_value = previous_lock_value == 0 ? [nil, 0] : previous_lock_value
+          possible_previous_lock_value = previous_lock_value.to_i == 0 ? [nil, 0] : previous_lock_value
 
           affected_rows = self.class.unscoped._update_record(
             arel_attributes_with_values(attribute_names),
