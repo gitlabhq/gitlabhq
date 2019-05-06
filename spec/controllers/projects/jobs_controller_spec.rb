@@ -148,6 +148,12 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
         get_show(id: job.id, format: :json)
       end
 
+      it 'does not serialize builds in exposed stages' do
+        json_response.dig('pipeline', 'details', 'stages').tap do |stages|
+          expect(stages.map(&:keys).flatten).to eq %w[name title status path dropdown_path]
+        end
+      end
+
       context 'when job failed' do
         it 'exposes needed information' do
           expect(response).to have_gitlab_http_status(:ok)
