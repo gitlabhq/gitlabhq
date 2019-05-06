@@ -118,7 +118,7 @@ describe QA::Git::Repository do
       end
 
       it 'adds credentials with special characters' do
-        password = %q(!"#$%&'()*+,-./:;<=>?)
+        password = %q[!"#$%&')(*+,-./:;<=>?]
         repository.username = 'user'
         repository.password = password
 
