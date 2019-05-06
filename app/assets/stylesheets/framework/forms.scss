@@ -79,13 +79,6 @@ label {
     font-family: $monospace-font;
   }
 
-  .input-group-prepend .btn,
-  .input-group-append .btn {
-    padding: 3px $gl-btn-padding;
-    background-color: $gray-light;
-    border: 1px solid $border-color;
-  }
-
   @include media-breakpoint-down(xs) {
     padding: 0 $gl-padding;
   }
