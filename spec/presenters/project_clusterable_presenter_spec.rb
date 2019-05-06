@@ -82,4 +82,10 @@ describe ProjectClusterablePresenter do
 
     it { is_expected.to eq(project_cluster_path(project, cluster)) }
   end
+
+  describe '#clusters_path' do
+    subject { presenter.clusters_path }
+
+    it { is_expected.to eq(project_clusters_path(project)) }
+  end
 end
