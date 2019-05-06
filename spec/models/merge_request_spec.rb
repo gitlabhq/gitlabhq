@@ -31,6 +31,18 @@ describe MergeRequest do
     end
   end
 
+  describe 'locking' do
+    it 'works when a merge request has a NULL lock_version' do
+      merge_request = create(:merge_request)
+
+      described_class.where(id: merge_request.id).update_all('lock_version = NULL')
+
+      merge_request.update!(lock_version: 0, title: 'locking test')
+
+      expect(merge_request.reload.title).to eq('locking test')
+    end
+  end
+
   describe '#squash_in_progress?' do
     let(:repo_path) do
       Gitlab::GitalyClient::StorageSettings.allow_disk_access do

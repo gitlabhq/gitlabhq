@@ -55,6 +55,18 @@ describe Issue do
     end
   end
 
+  describe 'locking' do
+    it 'works when an issue has a NULL lock_version' do
+      issue = create(:issue)
+
+      described_class.where(id: issue.id).update_all('lock_version = NULL')
+
+      issue.update!(lock_version: 0, title: 'locking test')
+
+      expect(issue.reload.title).to eq('locking test')
+    end
+  end
+
   describe '#order_by_position_and_priority' do
     let(:project) { create :project }
     let(:p1) { create(:label, title: 'P1', project: project, priority: 1) }
