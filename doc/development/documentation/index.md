@@ -52,6 +52,58 @@ Adhere to the [Documentation Style Guide](styleguide.md). If a style standard is
 
 See the [Structure](styleguide.md#structure) section of the [Documentation Style Guide](styleguide.md).
 
+## Single codebase
+
+We currently maintain two sets of docs: one in the
+[gitlab-ce](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc) repo and
+one in [gitlab-ee](https://gitlab.com/gitlab-org/gitlab-ee/tree/master/doc).
+They are similar, and most pages are identical, but they are different repositories.
+With the single codebase effort, we want to make those two sets identical, so when the
+time comes to have only one codebase, we'll be ready.
+
+Here are some links to get you up to speed with the current effort:
+
+- [CE/EE codebases blueprint](https://about.gitlab.com/handbook/engineering/infrastructure/blueprint/ce-ee-codebases/)
+- [CE/EE codebases merge design](https://about.gitlab.com/handbook/engineering/infrastructure/design/merge-ce-ee-codebases/)
+- [Single docs codebase epic](https://gitlab.com/groups/gitlab-org/-/epics/199)
+- [Issue board of related issues](https://gitlab.com/groups/gitlab-org/-/boards/981090?&label_name[]=Documentation&label_name[]=single%20codebase)
+- [Related merge requests](https://gitlab.com/groups/gitlab-org/-/merge_requests?scope=all&utf8=%E2%9C%93&state=all&label_name[]=Documentation&label_name[]=single%20codebase)
+- [Visualize the existing diffs](https://leipert-projects.gitlab.io/is-gitlab-pretty-yet/diff/?search=%5Edoc)
+
+### CE first
+
+After a given documentation path is aligned across CE and EE, all merge requests
+affecting that path must be submitted to CE, regardless of the content it has.
+This means that for EE-only features which are being added only to the EE codebase,
+you have to submit a separate merge request in CE that contains the docs.
+This might seem like a duplicate effort, but it's for the short term.
+A list of the already aligned docs can be found in
+[the epic description](https://gitlab.com/groups/gitlab-org/-/epics/199#ee-specific-lines-check).
+
+Since the docs will be combined, it's crucial to add the relevant
+[product badges](styleguide.md#product-badges) for all EE documentation, so that
+we can discern which features belong to which tier.
+
+### EE specific lines check
+
+There's a special test in place
+([`ee_specific_check.rb`](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/scripts/ee_specific_check/ee_specific_check.rb)),
+which, among others, checks and prevents creating/editing new files and directories
+in EE under `doc/`.
+
+We have a long list of documentation paths that are either whitelisted or not.
+Paths in the whitelist (not commented out) will not be subject to the test,
+which means you are allowed to create/change docs content in EE for the time
+being. The goal is to not have any doc whitelisted.
+
+At the time of this writing, the only items left to be aligned are:
+
+- `doc/api/*` ([issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/60045) / [merge request](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/27491))
+- `doc/README.md`
+
+Eventually, once all docs are aligned, we'll remove any doc reference from that
+script, so it catches everything.
+
 ## Changing document location
 
 Changing a document's location requires specific steps to be followed to ensure that
@@ -438,6 +490,10 @@ Currently, the following tests are in place:
     As CE is merged into EE once a day, it's important to avoid merge conflicts.
     Submitting an EE-equivalent merge request cherry-picking all commits from CE to EE is
     essential to avoid them.
+1. [`ee-files-location-check`/`ee-specific-lines-check`](#ee-specific-lines-check) (runs on EE only):
+   This test ensures that no new files/directories are created/changed in EE.
+   All docs should be submitted in CE instead, regardless the tier they are on.
+   This is for the [single codebase](#single-codebase) effort.
 1. In a full pipeline, tests for [`/help`](#gitlab-help-tests).
 
 ### Linting
