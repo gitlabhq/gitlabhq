@@ -13,7 +13,6 @@ class BuildDetailsEntity < JobEntity
 
   expose :deployment_status, if: -> (*) { build.starts_environment? } do
     expose :deployment_status, as: :status
-
     expose :persisted_environment, as: :environment, with: EnvironmentEntity
   end
 

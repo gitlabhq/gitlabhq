@@ -253,6 +253,10 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
       end
 
       context 'with deployment' do
+        before do
+          create(:deployment, :success, environment: environment, project: project)
+        end
+
         let(:merge_request) { create(:merge_request, source_project: project) }
         let(:environment) { create(:environment, project: project, name: 'staging', state: :available) }
         let(:job) { create(:ci_build, :running, environment: environment.name, pipeline: pipeline) }
@@ -262,8 +266,9 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response).to match_schema('job/job_details')
-          expect(json_response['deployment_status']["status"]).to eq 'creating'
-          expect(json_response['deployment_status']["environment"]).not_to be_nil
+          expect(json_response.dig('deployment_status', 'status')).to eq 'creating'
+          expect(json_response.dig('deployment_status', 'environment')).not_to be_nil
+          expect(json_response.dig('deployment_status', 'environment', 'last_deployment')).not_to be_nil
         end
       end
 
