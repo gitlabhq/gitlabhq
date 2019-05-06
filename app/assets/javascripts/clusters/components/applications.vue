@@ -389,7 +389,6 @@ export default {
         </template>
       </application-row>
       <application-row
-        v-if="isProjectCluster"
         id="prometheus"
         :logo-url="prometheusLogo"
         :title="applications.prometheus.title"
