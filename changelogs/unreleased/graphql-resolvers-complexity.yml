@@ -1,0 +1,6 @@
+---
+title: 'GraphQL: improve evaluation of query complexity based on arguments and query
+  limits.'
+merge_request: 28017
+author:
+type: added
