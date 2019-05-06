@@ -6,7 +6,7 @@ module Gitlab
       extend ActiveSupport::Concern
 
       MIN_CHARS_FOR_PARTIAL_MATCHING = 3
-      REGEX_QUOTED_WORD = /(?<=\A| )"[^"]+"(?= |\z)/
+      REGEX_QUOTED_WORD = /(?<=\A| )"[^"]+"(?= |\z)/.freeze
 
       class_methods do
         def fuzzy_search(query, columns)

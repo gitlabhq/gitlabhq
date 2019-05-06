@@ -26,7 +26,7 @@ module Gitlab
       end
     end
 
-    PEM_REGEX = /\-+BEGIN CERTIFICATE\-+.+?\-+END CERTIFICATE\-+/m
+    PEM_REGEX = /\-+BEGIN CERTIFICATE\-+.+?\-+END CERTIFICATE\-+/m.freeze
     SERVER_VERSION_FILE = 'GITALY_SERVER_VERSION'
     MAXIMUM_GITALY_CALLS = 30
     CLIENT_NAME = (Sidekiq.server? ? 'gitlab-sidekiq' : 'gitlab-web').freeze

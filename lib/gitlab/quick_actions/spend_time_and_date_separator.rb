@@ -11,7 +11,7 @@ module Gitlab
     # if date doesn't present return time with current date
     # in other cases return nil
     class SpendTimeAndDateSeparator
-      DATE_REGEX = %r{(\d{2,4}[/\-.]\d{1,2}[/\-.]\d{1,2})}
+      DATE_REGEX = %r{(\d{2,4}[/\-.]\d{1,2}[/\-.]\d{1,2})}.freeze
 
       def initialize(spend_command_arg)
         @spend_arg = spend_command_arg

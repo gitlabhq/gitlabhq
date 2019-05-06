@@ -2,13 +2,13 @@
 
 module Banzai
   module ColorParser
-    ALPHA = /0(?:\.\d+)?|\.\d+|1(?:\.0+)?/ # 0.0..1.0
-    PERCENTS = /(?:\d{1,2}|100)%/ # 00%..100%
-    ALPHA_CHANNEL = /(?:,\s*(?:#{ALPHA}|#{PERCENTS}))?/
-    BITS = /\d{1,2}|1\d\d|2(?:[0-4]\d|5[0-5])/ # 00..255
-    DEGS = /-?\d+(?:deg)?/i # [-]digits[deg]
-    RADS = /-?(?:\d+(?:\.\d+)?|\.\d+)rad/i # [-](digits[.digits] OR .digits)rad
-    HEX_FORMAT = /\#(?:\h{3}|\h{4}|\h{6}|\h{8})/
+    ALPHA = /0(?:\.\d+)?|\.\d+|1(?:\.0+)?/.freeze # 0.0..1.0
+    PERCENTS = /(?:\d{1,2}|100)%/.freeze # 00%..100%
+    ALPHA_CHANNEL = /(?:,\s*(?:#{ALPHA}|#{PERCENTS}))?/.freeze
+    BITS = /\d{1,2}|1\d\d|2(?:[0-4]\d|5[0-5])/.freeze # 00..255
+    DEGS = /-?\d+(?:deg)?/i.freeze # [-]digits[deg]
+    RADS = /-?(?:\d+(?:\.\d+)?|\.\d+)rad/i.freeze # [-](digits[.digits] OR .digits)rad
+    HEX_FORMAT = /\#(?:\h{3}|\h{4}|\h{6}|\h{8})/.freeze
     RGB_FORMAT = %r{
       (?:rgba?
         \(
@@ -20,7 +20,7 @@ module Banzai
           #{ALPHA_CHANNEL}
         \)
       )
-    }xi
+    }xi.freeze
     HSL_FORMAT = %r{
       (?:hsla?
         \(
@@ -28,11 +28,11 @@ module Banzai
           #{ALPHA_CHANNEL}
         \)
       )
-    }xi
+    }xi.freeze
 
     FORMATS = [HEX_FORMAT, RGB_FORMAT, HSL_FORMAT].freeze
 
-    COLOR_FORMAT = /\A(#{Regexp.union(FORMATS)})\z/ix
+    COLOR_FORMAT = /\A(#{Regexp.union(FORMATS)})\z/ix.freeze
 
     # Public: Analyzes whether the String is a color code.
     #
