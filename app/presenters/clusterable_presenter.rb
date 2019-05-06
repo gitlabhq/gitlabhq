@@ -52,6 +52,10 @@ class ClusterablePresenter < Gitlab::View::Presenter::Delegated
     raise NotImplementedError
   end
 
+  def clusters_path(params = {})
+    raise NotImplementedError
+  end
+
   def empty_state_help_text
     nil
   end
