@@ -66,6 +66,10 @@ module HasStatus
     def all_state_names
       state_machines.values.flat_map(&:states).flat_map { |s| s.map(&:name) }
     end
+
+    def completed_statuses
+      COMPLETED_STATUSES.map(&:to_sym)
+    end
   end
 
   included do
