@@ -5,6 +5,7 @@ import PipelinesArtifactsComponent from './pipelines_artifacts.vue';
 import CiBadge from '../../vue_shared/components/ci_badge_link.vue';
 import PipelineStage from './stage.vue';
 import PipelineUrl from './pipeline_url.vue';
+import PipelineTriggerer from './pipeline_triggerer.vue';
 import PipelinesTimeago from './time_ago.vue';
 import CommitComponent from '../../vue_shared/components/commit.vue';
 import LoadingButton from '../../vue_shared/components/loading_button.vue';
@@ -23,6 +24,7 @@ export default {
     CommitComponent,
     PipelineStage,
     PipelineUrl,
+    PipelineTriggerer,
     CiBadge,
     PipelinesTimeago,
     LoadingButton,
@@ -264,8 +266,9 @@ export default {
     </div>
 
     <pipeline-url :pipeline="pipeline" :auto-devops-help-path="autoDevopsHelpPath" />
+    <pipeline-triggerer :pipeline="pipeline" />
 
-    <div class="table-section section-20">
+    <div class="table-section section-wrap section-20">
       <div class="table-mobile-header" role="rowheader">{{ s__('Pipeline|Commit') }}</div>
       <div class="table-mobile-content">
         <commit-component
@@ -281,7 +284,7 @@ export default {
       </div>
     </div>
 
-    <div class="table-section section-wrap section-20 stage-cell">
+    <div class="table-section section-wrap section-15 stage-cell">
       <div class="table-mobile-header" role="rowheader">{{ s__('Pipeline|Stages') }}</div>
       <div class="table-mobile-content">
         <template v-if="pipeline.details.stages.length > 0">

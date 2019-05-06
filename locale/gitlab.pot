@@ -6719,6 +6719,9 @@ msgstr ""
 msgid "Pipelines settings for '%{project_name}' were successfully updated."
 msgstr ""
 
+msgid "Pipelines|API"
+msgstr ""
+
 msgid "Pipelines|Build with confidence"
 msgstr ""
 
@@ -6795,6 +6798,9 @@ msgid "Pipeline|Stop pipeline"
 msgstr ""
 
 msgid "Pipeline|Stop pipeline #%{pipelineId}?"
+msgstr ""
+
+msgid "Pipeline|Triggerer"
 msgstr ""
 
 msgid "Pipeline|Variables"
