@@ -269,6 +269,8 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
           expect(json_response.dig('deployment_status', 'status')).to eq 'creating'
           expect(json_response.dig('deployment_status', 'environment')).not_to be_nil
           expect(json_response.dig('deployment_status', 'environment', 'last_deployment')).not_to be_nil
+          expect(json_response.dig('deployment_status', 'environment', 'last_deployment'))
+            .not_to include('commit')
         end
       end
 
