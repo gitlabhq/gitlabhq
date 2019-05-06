@@ -150,6 +150,12 @@ module API
         given elasticsearch_indexing: ->(val) { val } do
           optional :elasticsearch_search, type: Boolean, desc: 'Enable Elasticsearch search'
           requires :elasticsearch_url, type: String, desc: 'The url to use for connecting to Elasticsearch. Use a comma-separated list to support clustering (e.g., "http://localhost:9200, http://localhost:9201")'
+          optional :elasticsearch_limit_indexing, type: Boolean, desc: 'Limit Elasticsearch to index certain namespaces and projects'
+        end
+
+        given elasticsearch_limit_indexing: ->(val) { val } do
+          optional :elasticsearch_namespace_ids, type: Array[Integer], coerce_with: Validations::Types::LabelsList.coerce, desc: 'The namespace ids to index with Elasticsearch.'
+          optional :elasticsearch_project_ids, type: Array[Integer], coerce_with: Validations::Types::LabelsList.coerce, desc: 'The project ids to index with Elasticsearch.'
         end
 
         optional :email_additional_text, type: String, desc: 'Additional text added to the bottom of every email for legal/auditing/compliance reasons'
