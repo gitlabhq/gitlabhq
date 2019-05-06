@@ -153,7 +153,8 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab
 
 ### Add note to existing issue discussion
 
-Adds a new note to the discussion.
+Adds a new note to the discussion. This can also
+[create a discussion from a single comment](../user/discussions/#start-a-discussion-by-replying-to-a-standard-comment).
 
 ```
 POST /projects/:id/issues/:issue_iid/discussions/:discussion_id/notes
@@ -652,7 +653,8 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.
 
 ### Add note to existing merge request discussion
 
-Adds a new note to the discussion.
+Adds a new note to the discussion. This can also
+[create a discussion from a single comment](../user/discussions/#start-a-discussion-by-replying-to-a-standard-comment).
 
 ```
 POST /projects/:id/merge_requests/:merge_request_iid/discussions/:discussion_id/notes
