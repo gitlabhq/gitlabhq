@@ -201,6 +201,7 @@ dependency_scanning:
       --env DS_ANALYZER_IMAGE_PREFIX \
       --env DS_ANALYZER_IMAGE_TAG \
       --env DS_DEFAULT_ANALYZERS \
+      --env DS_EXCLUDED_PATHS \
       --env DEP_SCAN_DISABLE_REMOTE_CHECKS \
       --env DS_DOCKER_CLIENT_NEGOTIATION_TIMEOUT \
       --env DS_PULL_ANALYZER_IMAGE_TIMEOUT \

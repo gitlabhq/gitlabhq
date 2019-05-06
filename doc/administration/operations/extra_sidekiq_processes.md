@@ -93,11 +93,11 @@ This tells the additional processes how often to check for enqueued jobs.
 ## Starting extra processes via command line
 
 Starting extra Sidekiq processes can be done using the command
-`/opt/gitlab/embedded/service/gitlab-rails/bin/sidekiq-cluster`. This command
+`/opt/gitlab/embedded/service/gitlab-rails/ee/bin/sidekiq-cluster`. This command
 takes arguments using the following syntax:
 
 ```bash
-/opt/gitlab/embedded/service/gitlab-rails/bin/sidekiq-cluster [QUEUE,QUEUE,...] [QUEUE, ...]
+/opt/gitlab/embedded/service/gitlab-rails/ee/bin/sidekiq-cluster [QUEUE,QUEUE,...] [QUEUE, ...]
 ```
 
 Each separate argument denotes a group of queues that have to be processed by a
@@ -115,14 +115,14 @@ For example, say you want to start 2 extra processes: one to process the
 done as follows:
 
 ```bash
-/opt/gitlab/embedded/service/gitlab-rails/bin/sidekiq-cluster process_commit post_receive
+/opt/gitlab/embedded/service/gitlab-rails/ee/bin/sidekiq-cluster process_commit post_receive
 ```
 
 If you instead want to start one process processing both queues you'd use the
 following syntax:
 
 ```bash
-/opt/gitlab/embedded/service/gitlab-rails/bin/sidekiq-cluster process_commit,post_receive
+/opt/gitlab/embedded/service/gitlab-rails/ee/bin/sidekiq-cluster process_commit,post_receive
 ```
 
 If you want to have one Sidekiq process process the "process_commit" and
@@ -130,7 +130,7 @@ If you want to have one Sidekiq process process the "process_commit" and
 you'd use the following:
 
 ```bash
-/opt/gitlab/embedded/service/gitlab-rails/bin/sidekiq-cluster process_commit,post_receive gitlab_shell
+/opt/gitlab/embedded/service/gitlab-rails/ee/bin/sidekiq-cluster process_commit,post_receive gitlab_shell
 ```
 
 ### Monitoring
@@ -162,7 +162,7 @@ file is written, but this can be changed by passing the `--pidfile` option to
 `sidekiq-cluster`. For example:
 
 ```bash
-/opt/gitlab/embedded/service/gitlab-rails/bin/sidekiq-cluster --pidfile /var/run/gitlab/sidekiq_cluster.pid process_commit
+/opt/gitlab/embedded/service/gitlab-rails/ee/bin/sidekiq-cluster --pidfile /var/run/gitlab/sidekiq_cluster.pid process_commit
 ```
 
 Keep in mind that the PID file will contain the PID of the `sidekiq-cluster`
@@ -199,7 +199,7 @@ one thread per queue up to a maximum of 50. If you wish to change the cap, use
 the `-m N` option. For example, this would cap the maximum number of threads to 1:
 
 ```bash
-/opt/gitlab/embedded/service/gitlab-rails/bin/sidekiq-cluster process_commit,post_receive -m 1
+/opt/gitlab/embedded/service/gitlab-rails/ee/bin/sidekiq-cluster process_commit,post_receive -m 1
 ```
 
 For each queue group, the concurrency factor will be set to min(number of

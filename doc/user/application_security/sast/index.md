@@ -171,6 +171,8 @@ sast:
         --env SAST_ANALYZER_IMAGE_PREFIX \
         --env SAST_ANALYZER_IMAGE_TAG \
         --env SAST_DEFAULT_ANALYZERS \
+        --env SAST_EXCLUDED_PATHS \
+        --env SAST_BANDIT_EXCLUDED_PATHS \
         --env SAST_BRAKEMAN_LEVEL \
         --env SAST_GOSEC_LEVEL \
         --env SAST_FLAWFINDER_LEVEL \
