@@ -373,6 +373,22 @@ describe RemoteMirror, :mailer do
     end
   end
 
+  describe '#disabled?' do
+    subject { remote_mirror.disabled? }
+
+    context 'when disabled' do
+      let(:remote_mirror) { build(:remote_mirror, enabled: false) }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when enabled' do
+      let(:remote_mirror) { build(:remote_mirror, enabled: true) }
+
+      it { is_expected.to be_falsy }
+    end
+  end
+
   def create_mirror(params)
     project = FactoryBot.create(:project, :repository)
     project.remote_mirrors.create!(params)
