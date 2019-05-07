@@ -29,6 +29,7 @@
 #     updated_after: datetime
 #     updated_before: datetime
 #     attempt_group_search_optimizations: boolean
+#     attempt_project_search_optimizations: boolean
 #
 class IssuableFinder
   prepend FinderWithCrossProjectAccess
@@ -184,7 +185,6 @@ class IssuableFinder
     @project = project
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def projects
     return @projects if defined?(@projects)
 
@@ -192,17 +192,25 @@ class IssuableFinder
 
     projects =
       if current_user && params[:authorized_only].presence && !current_user_related?
-        current_user.authorized_projects
+        current_user.authorized_projects(min_access_level)
       elsif group
-        finder_options = { include_subgroups: params[:include_subgroups], only_owned: true }
-        GroupProjectsFinder.new(group: group, current_user: current_user, options: finder_options).execute # rubocop: disable CodeReuse/Finder
+        find_group_projects
       else
-        ProjectsFinder.new(current_user: current_user).execute # rubocop: disable CodeReuse/Finder
+        Project.public_or_visible_to_user(current_user, min_access_level)
       end
 
-    @projects = projects.with_feature_available_for_user(klass, current_user).reorder(nil)
+    @projects = projects.with_feature_available_for_user(klass, current_user).reorder(nil) # rubocop: disable CodeReuse/ActiveRecord
   end
-  # rubocop: enable CodeReuse/ActiveRecord
+
+  def find_group_projects
+    return Project.none unless group
+
+    if params[:include_subgroups]
+      Project.where(namespace_id: group.self_and_descendants) # rubocop: disable CodeReuse/ActiveRecord
+    else
+      group.projects
+    end.public_or_visible_to_user(current_user, min_access_level)
+  end
 
   def search
     params[:search].presence
@@ -569,5 +577,9 @@ class IssuableFinder
   def current_user_related?
     scope = params[:scope]
     scope == 'created_by_me' || scope == 'authored' || scope == 'assigned_to_me'
+  end
+
+  def min_access_level
+    ProjectFeature.required_minimum_access_level(klass)
   end
 end

@@ -641,9 +641,7 @@ describe IssuesFinder do
         end
 
         it 'filters by confidentiality' do
-          expect(Issue).to receive(:where).with(a_string_matching('confidential'), anything)
-
-          subject
+          expect(subject.to_sql).to match("issues.confidential")
         end
       end
 
@@ -660,9 +658,7 @@ describe IssuesFinder do
         end
 
         it 'filters by confidentiality' do
-          expect(Issue).to receive(:where).with(a_string_matching('confidential'), anything)
-
-          subject
+          expect(subject.to_sql).to match("issues.confidential")
         end
       end
 
