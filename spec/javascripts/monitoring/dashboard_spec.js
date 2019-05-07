@@ -20,6 +20,9 @@ const propsData = {
   emptyUnableToConnectSvgPath: '/path/to/unable-to-connect.svg',
   environmentsEndpoint: '/root/hello-prometheus/environments/35',
   currentEnvironmentName: 'production',
+  customMetricsAvailable: false,
+  customMetricsPath: '',
+  validateQueryPath: '',
 };
 
 export default propsData;
@@ -163,7 +166,7 @@ describe('Dashboard', () => {
       });
     });
 
-    it('renders the environments dropdown with a single is-active element', done => {
+    it('renders the environments dropdown with a single active element', done => {
       const component = new DashboardComponent({
         el: document.querySelector('.prometheus-graphs'),
         propsData: {
@@ -178,7 +181,7 @@ describe('Dashboard', () => {
 
       setTimeout(() => {
         const dropdownItems = component.$el.querySelectorAll(
-          '.js-environments-dropdown .dropdown-item.is-active',
+          '.js-environments-dropdown .dropdown-item[active="true"]',
         );
 
         expect(dropdownItems.length).toEqual(1);

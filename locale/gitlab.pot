@@ -5911,6 +5911,9 @@ msgstr ""
 msgid "Metrics for environment"
 msgstr ""
 
+msgid "Metrics|Add metric"
+msgstr ""
+
 msgid "Metrics|Check out the CI/CD documentation on deploying to an environment"
 msgstr ""
 
