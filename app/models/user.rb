@@ -761,11 +761,15 @@ class User < ApplicationRecord
 
   # Typically used in conjunction with projects table to get projects
   # a user has been given access to.
+  # The param `related_project_column` is the column to compare to the
+  # project_authorizations. By default is projects.id
   #
   # Example use:
   # `Project.where('EXISTS(?)', user.authorizations_for_projects)`
-  def authorizations_for_projects(min_access_level: nil)
-    authorizations = project_authorizations.select(1).where('project_authorizations.project_id = projects.id')
+  def authorizations_for_projects(min_access_level: nil, related_project_column: 'projects.id')
+    authorizations = project_authorizations
+                      .select(1)
+                      .where("project_authorizations.project_id = #{related_project_column}")
 
     return authorizations unless min_access_level.present?
 
