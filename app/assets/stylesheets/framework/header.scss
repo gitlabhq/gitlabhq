@@ -95,15 +95,14 @@
           &:hover,
           &:active,
           &:focus {
-            background-color: #1aaa55;
+            background-color: $green-500;
           }
           
           span {
             line-height: 15px;
-            
-            &:hover {
+          }
+          span:hover {
               text-decoration: none;
-            }
           }
         }
       }
