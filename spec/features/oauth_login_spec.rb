@@ -14,7 +14,7 @@ describe 'OAuth Login', :js, :allow_forgery_protection do
   end
 
   providers = [:github, :twitter, :bitbucket, :gitlab, :google_oauth2,
-               :facebook, :cas3, :auth0, :authentiq]
+               :facebook, :cas3, :auth0, :authentiq, :salesforce]
 
   before(:all) do
     # The OmniAuth `full_host` parameter doesn't get set correctly (it gets set to something like `http://localhost`

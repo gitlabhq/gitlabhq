@@ -35,6 +35,7 @@ contains some settings that are common for all providers.
 - [JWT](../administration/auth/jwt.md)
 - [OpenID Connect](../administration/auth/oidc.md)
 - [UltraAuth](ultra_auth.md)
+- [SalesForce](salesforce.md)
 
 ## Initial OmniAuth Configuration
 
