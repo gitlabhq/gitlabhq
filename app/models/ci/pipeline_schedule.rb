@@ -5,6 +5,7 @@ module Ci
     extend Gitlab::Ci::Model
     include Importable
     include IgnorableColumn
+    include StripAttribute
 
     ignore_column :deleted_at
 
@@ -21,6 +22,8 @@ module Ci
     validates :variables, variable_duplicates: true
 
     before_save :set_next_run_at
+
+    strip_attributes :cron
 
     scope :active, -> { where(active: true) }
     scope :inactive, -> { where(active: false) }
