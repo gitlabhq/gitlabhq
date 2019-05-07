@@ -325,6 +325,15 @@ describe Clusters::Cluster do
       end
     end
 
+    context 'when group and instance have configured kubernetes clusters' do
+      let(:project) { create(:project, group: group) }
+      let!(:instance_cluster) { create(:cluster, :provided_by_gcp, :instance) }
+
+      it 'returns clusters in order, descending the hierachy' do
+        is_expected.to eq([group_cluster, instance_cluster])
+      end
+    end
+
     context 'when sub-group has configured kubernetes cluster', :nested_groups do
       let(:sub_group_cluster) { create(:cluster, :provided_by_gcp, :group) }
       let(:sub_group) { sub_group_cluster.group }

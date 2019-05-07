@@ -115,10 +115,12 @@ module Clusters
     }
 
     def self.ancestor_clusters_for_clusterable(clusterable, hierarchy_order: :asc)
+      return [] if clusterable.is_a?(Instance)
+
       hierarchy_groups = clusterable.ancestors_upto(hierarchy_order: hierarchy_order).eager_load(:clusters)
       hierarchy_groups = hierarchy_groups.merge(current_scope) if current_scope
 
-      hierarchy_groups.flat_map(&:clusters)
+      hierarchy_groups.flat_map(&:clusters) + Instance.new.clusters
     end
 
     def status_name
@@ -176,6 +178,10 @@ module Clusters
       end
     end
     alias_method :group, :first_group
+
+    def instance
+      Instance.new if instance_type?
+    end
 
     def kubeclient
       platform_kubernetes.kubeclient if kubernetes?

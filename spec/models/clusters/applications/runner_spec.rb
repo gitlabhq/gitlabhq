@@ -69,8 +69,8 @@ describe Clusters::Applications::Runner do
       expect(values).to include('privileged: true')
       expect(values).to include('image: ubuntu:16.04')
       expect(values).to include('resources')
-      expect(values).to match(/runnerToken: '?#{ci_runner.token}/)
-      expect(values).to match(/gitlabUrl: '?#{Gitlab::Routing.url_helpers.root_url}/)
+      expect(values).to match(/runnerToken: '?#{Regexp.escape(ci_runner.token)}/)
+      expect(values).to match(/gitlabUrl: '?#{Regexp.escape(Gitlab::Routing.url_helpers.root_url)}/)
     end
 
     context 'without a runner' do
@@ -83,7 +83,7 @@ describe Clusters::Applications::Runner do
         end
 
         it 'uses the new runner token' do
-          expect(values).to match(/runnerToken: '?#{runner.token}/)
+          expect(values).to match(/runnerToken: '?#{Regexp.escape(runner.token)}/)
         end
       end
 
@@ -112,6 +112,18 @@ describe Clusters::Applications::Runner do
 
           expect(runner).to be_group_type
           expect(runner.groups).to eq [group]
+        end
+      end
+
+      context 'instance cluster' do
+        let(:cluster) { create(:cluster, :with_installed_helm, :instance) }
+
+        include_examples 'runner creation'
+
+        it 'creates an instance runner' do
+          subject
+
+          expect(runner).to be_instance_type
         end
       end
     end

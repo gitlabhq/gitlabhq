@@ -82,10 +82,4 @@ describe GroupClusterablePresenter do
 
     it { is_expected.to eq(group_cluster_path(group, cluster)) }
   end
-
-  describe '#clusters_path' do
-    subject { presenter.clusters_path }
-
-    it { is_expected.to eq(group_clusters_path(group)) }
-  end
 end
