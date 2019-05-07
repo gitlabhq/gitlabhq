@@ -1,5 +1,5 @@
 <script>
-import { GlDropdown, GlDropdownItem, GlLink } from '@gitlab/ui';
+import { GlButton, GlDropdown, GlDropdownItem, GlLink } from '@gitlab/ui';
 import _ from 'underscore';
 import { s__ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
@@ -23,12 +23,18 @@ export default {
     GraphGroup,
     EmptyState,
     Icon,
+    GlButton,
     GlDropdown,
     GlDropdownItem,
     GlLink,
   },
 
   props: {
+    externalDashboardPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
     hasMetrics: {
       type: Boolean,
       required: false,
@@ -241,6 +247,15 @@ export default {
           >
         </gl-dropdown>
       </div>
+      <gl-button
+        v-if="externalDashboardPath.length"
+        class="js-external-dashboard-link"
+        variant="primary"
+        :href="externalDashboardPath"
+      >
+        {{ __('View full dashboard') }}
+        <icon name="external-link" />
+      </gl-button>
     </div>
     <graph-group
       v-for="(groupData, index) in store.groups"
