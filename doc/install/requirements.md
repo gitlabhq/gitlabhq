@@ -169,7 +169,7 @@ So for a machine with 2 cores, 3 unicorn workers is ideal.
 For all machines that have 2GB and up we recommend a minimum of three unicorn workers.
 If you have a 1GB machine we recommend to configure only two Unicorn workers to prevent excessive swapping.
 
-To change the Unicorn workers when you have the Omnibus package (which defaults to the recommendation above) please see [the Unicorn settings in the Omnibus GitLab documentation](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/settings/unicorn.md#unicorn-settings).
+To change the Unicorn workers when you have the Omnibus package (which defaults to the recommendation above) please see [the Unicorn settings in the Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/settings/unicorn.html).
 
 ## Redis and Sidekiq
 
@@ -201,13 +201,12 @@ you decide to run GitLab Runner and the GitLab Rails application on the same
 machine.
 
 It is also not safe to install everything on a single machine, because of the
-[security reasons] - especially when you plan to use shell executor with GitLab
+[security reasons](https://docs.gitlab.com/runner/security/) 
+- especially when you plan to use shell executor with GitLab
 Runner.
 
 We recommend using a separate machine for each GitLab Runner, if you plan to
 use the CI features.
-
-[security reasons]: https://gitlab.com/gitlab-org/gitlab-runner/blob/master/docs/security/index.md
 
 ## Supported web browsers
 
