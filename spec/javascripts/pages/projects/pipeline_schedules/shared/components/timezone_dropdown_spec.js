@@ -3,6 +3,7 @@ import GLDropdown from '~/gl_dropdown'; // eslint-disable-line no-unused-vars
 import TimezoneDropdown, {
   formatUtcOffset,
   formatTimezone,
+  findTimezoneByIdentifier,
 } from '~/pages/projects/pipeline_schedules/shared/components/timezone_dropdown';
 
 describe('Timezone Dropdown', function() {
@@ -12,6 +13,7 @@ describe('Timezone Dropdown', function() {
   let $dropdownEl = null;
   let $wrapper = null;
   const tzListSel = '.dropdown-content ul li a.is-active';
+  const tzDropdownToggleText = '.dropdown-toggle-text';
 
   describe('Initialize', () => {
     describe('with dropdown already loaded', () => {
@@ -94,6 +96,36 @@ describe('Timezone Dropdown', function() {
 
         expect(onSelectTimezone).toHaveBeenCalled();
       });
+
+      it('will correctly set the dropdown label if a timezone identifier is set on the inputEl', () => {
+        $inputEl.val('America/St_Johns');
+
+        // eslint-disable-next-line no-new
+        new TimezoneDropdown({
+          $inputEl,
+          $dropdownEl,
+          displayFormat: selectedItem => formatTimezone(selectedItem),
+        });
+
+        expect($wrapper.find(tzDropdownToggleText).html()).toEqual('[UTC - 2.5] Newfoundland');
+      });
+
+      it('will call a provided `displayFormat` handler to format the dropdown value', () => {
+        const displayFormat = jasmine.createSpy('displayFormat');
+        // eslint-disable-next-line no-new
+        new TimezoneDropdown({
+          $inputEl,
+          $dropdownEl,
+          displayFormat,
+        });
+
+        $wrapper
+          .find(tzListSel)
+          .first()
+          .trigger('click');
+
+        expect(displayFormat).toHaveBeenCalled();
+      });
     });
   });
 
@@ -162,6 +194,51 @@ describe('Timezone Dropdown', function() {
           identifier: 'Africa/Accra',
         }),
       ).toEqual('[UTC 0] Accra');
+    });
+  });
+
+  describe('findTimezoneByIdentifier', () => {
+    const tzList = [
+      {
+        identifier: 'Asia/Tokyo',
+        name: 'Sapporo',
+        offset: 32400,
+      },
+      {
+        identifier: 'Asia/Hong_Kong',
+        name: 'Hong Kong',
+        offset: 28800,
+      },
+      {
+        identifier: 'Asia/Dhaka',
+        name: 'Dhaka',
+        offset: 21600,
+      },
+    ];
+
+    const identifier = 'Asia/Dhaka';
+    it('returns the correct object if the identifier exists', () => {
+      const res = findTimezoneByIdentifier(tzList, identifier);
+
+      expect(res).toBeTruthy();
+      expect(res).toBe(tzList[2]);
+    });
+
+    it('returns null if it doesnt find the identifier', () => {
+      const res = findTimezoneByIdentifier(tzList, 'Australia/Melbourne');
+
+      expect(res).toBeNull();
+    });
+
+    it('returns null if there is no identifier given', () => {
+      expect(findTimezoneByIdentifier(tzList)).toBeNull();
+      expect(findTimezoneByIdentifier(tzList, '')).toBeNull();
+    });
+
+    it('returns null if there is an empty or invalid array given', () => {
+      expect(findTimezoneByIdentifier([], identifier)).toBeNull();
+      expect(findTimezoneByIdentifier(null, identifier)).toBeNull();
+      expect(findTimezoneByIdentifier(undefined, identifier)).toBeNull();
     });
   });
 });

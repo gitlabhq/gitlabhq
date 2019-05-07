@@ -6974,10 +6974,31 @@ msgstr ""
 msgid "Preferences saved."
 msgstr ""
 
+msgid "Preferences|Display time in 24-hour format"
+msgstr ""
+
+msgid "Preferences|For example: 30 mins ago."
+msgstr ""
+
 msgid "Preferences|Navigation theme"
 msgstr ""
 
+msgid "Preferences|These settings will update how dates and times are displayed for you."
+msgstr ""
+
 msgid "Preferences|This feature is experimental and translations are not complete yet"
+msgstr ""
+
+msgid "Preferences|Time display"
+msgstr ""
+
+msgid "Preferences|Time format"
+msgstr ""
+
+msgid "Preferences|Time preferences"
+msgstr ""
+
+msgid "Preferences|Use relative times"
 msgstr ""
 
 msgid "Press %{key}-C to copy"
@@ -7190,6 +7211,9 @@ msgstr ""
 msgid "Profiles|This information will appear on your profile"
 msgstr ""
 
+msgid "Profiles|Time settings"
+msgstr ""
+
 msgid "Profiles|Two-Factor Authentication"
 msgstr ""
 
@@ -7230,6 +7254,9 @@ msgid "Profiles|You can change your avatar here"
 msgstr ""
 
 msgid "Profiles|You can change your avatar here or remove the current avatar to revert to %{gravatar_link}"
+msgstr ""
+
+msgid "Profiles|You can set your current timezone here"
 msgstr ""
 
 msgid "Profiles|You can upload your avatar here"

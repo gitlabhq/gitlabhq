@@ -44,7 +44,9 @@ class Profiles::PreferencesController < Profiles::ApplicationController
       :project_view,
       :theme_id,
       :first_day_of_week,
-      :preferred_language
+      :preferred_language,
+      :time_display_relative,
+      :time_format_in_24h
     ]
   end
 end

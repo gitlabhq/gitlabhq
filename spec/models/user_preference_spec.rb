@@ -73,4 +73,10 @@ describe UserPreference do
       it_behaves_like 'a sort_by preference'
     end
   end
+
+  describe '#timezone' do
+    it 'returns server time as default' do
+      expect(user_preference.timezone).to eq(Time.zone.tzinfo.name)
+    end
+  end
 end
