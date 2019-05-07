@@ -66,12 +66,6 @@
       margin-top: $grid-size;
     }
   }
-
-  @include media-breakpoint-up(sm) {
-    .btn:nth-child(1) {
-      margin-left: auto;
-    }
-  }
 }
 
 body.modal-open {
