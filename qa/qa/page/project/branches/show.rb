@@ -7,6 +7,7 @@ module QA
         class Show < Page::Base
           view 'app/views/projects/branches/_branch.html.haml' do
             element :remove_btn
+            element :branch_name
           end
           view 'app/views/projects/branches/_panel.html.haml' do
             element :all_branches
@@ -29,7 +30,7 @@ module QA
 
           def has_no_branch?(branch_name)
             within_element(:all_branches) do
-              has_no_css?(".js-branch-#{branch_name}", wait: Support::Waiter::DEFAULT_MAX_WAIT_TIME)
+              has_no_element?(:branch_name, text: branch_name, wait: Support::Waiter::DEFAULT_MAX_WAIT_TIME)
             end
           end
 
