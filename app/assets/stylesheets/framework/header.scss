@@ -475,9 +475,9 @@
 
   .canary-badge {
     .badge {
-      font-size: 12px;
-      line-height: 16px;
-      padding: 0 8px;
+      font-size: $gl-font-size-small;
+      line-height: $gl-line-height;
+      padding: 0 $grid-size;
     }
 
     &:hover {
@@ -486,7 +486,7 @@
       .badge {
         text-decoration: none;
       }
-    } 
+    }
   }
 }
 
