@@ -85,26 +85,6 @@
         padding: 2px 8px;
         margin: 5px 2px 5px -8px;
         border-radius: $border-radius-default;
-
-        &.badge {
-          font-size: 12px;
-          border-radius: 100px;
-          margin-top: 6px;
-
-          &:hover,
-          &:active,
-          &:focus {
-            background-color: $green-500;
-          }
-
-          .color-label {
-            line-height: 15px;
-          }
-
-          .color-label:hover {
-              text-decoration: none;
-          }
-        }
       }
 
       .project-item-select {
@@ -491,6 +471,22 @@
     &.todos-count {
       background-color: $blue-500;
     }
+  }
+
+  .canary-badge {
+    .badge {
+      font-size: 12px;
+      line-height: 16px;
+      padding: 0 8px;
+    }
+
+    &:hover {
+      text-decoration: none;
+
+      .badge {
+        text-decoration: none;
+      }
+    } 
   }
 }
 
