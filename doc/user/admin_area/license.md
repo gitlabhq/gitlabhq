@@ -2,7 +2,8 @@
 
 To activate all GitLab Enterprise Edition (EE) functionality, you need to upload
 a license. Once you've received your license from GitLab Inc., you can upload it
-by **signing into your GitLab instance as an admin**.
+by **signing into your GitLab instance as an admin** or add it at
+installation time.
 
 The license has the form of a base64 encoded ASCII text with a `.gitlab-license`
 extension and can be obtained when you [purchase one][pricing] or when you sign
@@ -41,6 +42,36 @@ Otherwise, you can:
     If you've received your license as plain text, you need to select the
     "Enter license key" option, copy the license, paste it into the "License key"
     field and click **Upload license**.
+
+## Add your license at install time
+
+The license may be automatically injected during installation using one of
+two methods.
+
+The first requires a license file named `Gitlab.gitlab-release`.
+
+Place it in the `config/` directory if installing from source or in the
+`/etc/gitlab/` directory if installing Omnibus.
+
+The second allows the administrator to configure the location and
+filename of the license.
+
+Source installations should set the `GITLAB_LICENSE_FILE` environment
+variable with the path to a valid GitLab Enterprise Edition license.
+
+```sh
+export GITLAB_LICENSE_FILE="/path/to/license/file"
+```
+
+Omnibus installations should add this entry to `gitlab.rb`:
+
+```ruby
+gitlab_rails['license_file'] = "/path/to/license/file"
+```
+
+CAUTION:: **Caution:**
+These methods will only add a license at the time of installation. Use the
+admin area in the web ui to renew or upgrade licenses.
 
 ---
 
