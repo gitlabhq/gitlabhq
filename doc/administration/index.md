@@ -40,6 +40,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [Geo](https://docs.gitlab.com/ee/administration/geo/replication/index.html): Replicate your GitLab instance to other geographic locations as a read-only fully operational version. **[PREMIUM ONLY]**
 - [Disaster Recovery](https://docs.gitlab.com/ee/administration/geo/disaster_recovery/index.html): Quickly fail-over to a different site with minimal effort in a disaster situation. **[PREMIUM ONLY]**
 - [Pivotal Tile](https://docs.gitlab.com/ee/install/pivotal/index.html): Deploy GitLab as a pre-configured appliance using Ops Manager (BOSH) for Pivotal Cloud Foundry. **[PREMIUM ONLY]**
+- [Add License](../user/admin_area/license.md): Upload a license at install time to unlock features that are in paid tiers of GitLab. **[STARTER ONLY]**
 
 ### Configuring GitLab
 
