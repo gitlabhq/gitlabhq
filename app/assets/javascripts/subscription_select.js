@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import { __ } from './locale';
 
 export default function subscriptionSelect() {
   $('.js-subscription-event').each((i, element) => {
@@ -8,7 +9,7 @@ export default function subscriptionSelect() {
       selectable: true,
       fieldName,
       toggleLabel(selected, el, instance) {
-        let label = 'Subscription';
+        let label = __('Subscription');
         const $item = instance.dropdown.find('.is-active');
         if ($item.length) {
           label = $item.text();
