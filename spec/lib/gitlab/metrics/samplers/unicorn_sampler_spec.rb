@@ -39,8 +39,8 @@ describe Gitlab::Metrics::Samplers::UnicornSampler do
         it 'updates metrics type unix and with addr' do
           labels = { socket_type: 'unix', socket_address: socket_address }
 
-          expect(subject).to receive_message_chain(:unicorn_active_connections, :set).with(labels, 'active')
-          expect(subject).to receive_message_chain(:unicorn_queued_connections, :set).with(labels, 'queued')
+          expect(subject.metrics[:unicorn_active_connections]).to receive(:set).with(labels, 'active')
+          expect(subject.metrics[:unicorn_queued_connections]).to receive(:set).with(labels, 'queued')
 
           subject.sample
         end
@@ -50,7 +50,6 @@ describe Gitlab::Metrics::Samplers::UnicornSampler do
     context 'unicorn listens on tcp sockets' do
       let(:tcp_socket_address) { '0.0.0.0:8080' }
       let(:tcp_sockets) { [tcp_socket_address] }
-
       before do
         allow(unicorn).to receive(:listener_names).and_return(tcp_sockets)
       end
@@ -71,11 +70,27 @@ describe Gitlab::Metrics::Samplers::UnicornSampler do
         it 'updates metrics type unix and with addr' do
           labels = { socket_type: 'tcp', socket_address: tcp_socket_address }
 
-          expect(subject).to receive_message_chain(:unicorn_active_connections, :set).with(labels, 'active')
-          expect(subject).to receive_message_chain(:unicorn_queued_connections, :set).with(labels, 'queued')
+          expect(subject.metrics[:unicorn_active_connections]).to receive(:set).with(labels, 'active')
+          expect(subject.metrics[:unicorn_queued_connections]).to receive(:set).with(labels, 'queued')
 
           subject.sample
         end
+      end
+    end
+
+    context 'additional metrics' do
+      let(:unicorn_workers) { 2 }
+
+      before do
+        allow(unicorn).to receive(:listener_names).and_return([""])
+        allow(::Gitlab::Metrics::System).to receive(:cpu_time).and_return(3.14)
+        allow(subject).to receive(:unicorn_workers_count).and_return(unicorn_workers)
+      end
+
+      it "sets additional metrics" do
+        expect(subject.metrics[:unicorn_workers]).to receive(:set).with({}, unicorn_workers)
+
+        subject.sample
       end
     end
   end
