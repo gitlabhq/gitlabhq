@@ -396,13 +396,10 @@ the Merge Request authored by the user that applied them.
 
     ![Apply suggestions](img/suggestion.png)
 
-    > **Note:**
-    Discussions are _not_ automatically resolved. Will be introduced by
-    [#54405](https://gitlab.com/gitlab-org/gitlab-ce/issues/54405).
-
 Once the author applies a suggestion, it will be marked with the **Applied** label,
-and GitLab will create a new commit with the message `Apply suggestion to <file-name>`
-and push the suggested change directly into the codebase in the merge request's branch.
+the discussion will be automatically resolved, and GitLab will create a new commit
+with the message `Apply suggestion to <file-name>` and push the suggested change
+directly into the codebase in the merge request's branch.
 [Developer permission](../permissions.md) is required to do so.
 
 > **Note:**

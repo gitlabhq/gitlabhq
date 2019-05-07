@@ -1027,6 +1027,9 @@ msgstr ""
 msgid "Applying multiple commands"
 msgstr ""
 
+msgid "Applying suggestion"
+msgstr ""
+
 msgid "Apr"
 msgstr ""
 
@@ -9584,6 +9587,9 @@ msgid "This GitLab instance does not provide any shared Runners yet. Instance ad
 msgstr ""
 
 msgid "This action can lead to data loss. To prevent accidental actions we ask you to confirm your intention."
+msgstr ""
+
+msgid "This also resolves the discussion"
 msgstr ""
 
 msgid "This application was created by %{link_to_owner}."
