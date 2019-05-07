@@ -504,8 +504,9 @@ describe API::Projects do
           project4.add_reporter(user2)
         end
 
-        it 'returns an array of groups the user has at least developer access' do
+        it 'returns an array of projects the user has at least developer access' do
           get api('/projects', user2), params: { min_access_level: 30 }
+
           expect(response).to have_gitlab_http_status(200)
           expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
