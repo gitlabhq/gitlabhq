@@ -111,7 +111,7 @@ sudo apt-get install -y libcurl4-openssl-dev libexpat1-dev gettext libz-dev libs
 # Download and compile from source
 cd /tmp
 curl --remote-name --location --progress https://www.kernel.org/pub/software/scm/git/git-2.21.0.tar.gz
-echo '85eca51c7404da75e353eba587f87fea9481ba41e162206a6f70ad8118147bee'  git-2.21.0.tar.gz' | shasum -a256 -c - && tar -xzf git-2.21.0.tar.gz
+echo '85eca51c7404da75e353eba587f87fea9481ba41e162206a6f70ad8118147bee  git-2.21.0.tar.gz' | shasum -a256 -c - && tar -xzf git-2.21.0.tar.gz
 cd git-2.21.0/
 ./configure
 make prefix=/usr/local all
