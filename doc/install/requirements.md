@@ -87,7 +87,7 @@ if your available memory changes. We also recommend [configuring the kernel's sw
 to a low value like `10` to make the most of your RAM while still having the swap
 available when needed.
 
-Notice: The 25 workers of Sidekiq will show up as separate processes in your process overview (such as `top` or `htop`) but they share the same RAM allocation since Sidekiq is a multithreaded application. Please see the section below about Unicorn workers for information about how many you need of those.
+NOTE: **Note:** The 25 workers of Sidekiq will show up as separate processes in your process overview (such as `top` or `htop`) but they share the same RAM allocation since Sidekiq is a multithreaded application. Please see the section below about Unicorn workers for information about how many you need of those.
 
 ## Database
 
@@ -224,5 +224,5 @@ Support is only provided for the current minor version of the major version you 
 
 Each time a new browser version is released, we begin supporting that version and stop supporting the third most recent version.
 
-Note: We do not support running GitLab with JavaScript disabled in the browser and have no plans of supporting that
+NOTE: **Note:** We do not support running GitLab with JavaScript disabled in the browser and have no plans of supporting that
 in the future because we have features such as Issue Boards which require JavaScript extensively.
