@@ -85,16 +85,22 @@
         padding: 2px 8px;
         margin: 5px 2px 5px -8px;
         border-radius: $border-radius-default;
+        
         &.js-canary-badge {
           padding: 0;
           font-size: 12px;
           border-radius: 100px;
           margin-top: 6px;
-          &:hover, &:active, &:focus {
+          
+          &:hover, 
+          &:active, 
+          &:focus {
             background-color: #1aaa55;
           }
+          
           span {
             line-height: 15px;
+            
             &:hover {
               text-decoration: none;
             }
