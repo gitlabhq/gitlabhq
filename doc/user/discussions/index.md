@@ -385,11 +385,6 @@ the Merge Request authored by the user that applied them.
 
     ![Add a new comment](img/insert_suggestion.png)
 
-    > **Note:**
-    The suggestion will only affect the commented line. Multi-line
-    suggestions are currently not supported. Will be introduced by
-    [#53310](https://gitlab.com/gitlab-org/gitlab-ce/issues/53310).
-
 1. In the comment, add your suggestion to the pre-populated code block:
 
     ![Add a suggestion into a code block tagged properly](img/make_suggestion.png)
