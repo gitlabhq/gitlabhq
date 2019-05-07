@@ -2,9 +2,9 @@ require 'spec_helper'
 
 describe 'Dashboard > User filters projects' do
   let(:user) { create(:user) }
-  let(:project) { create(:project, name: 'Victorialand', namespace: user.namespace) }
+  let(:project) { create(:project, name: 'Victorialand', namespace: user.namespace, created_at: 2.seconds.ago, updated_at: 2.seconds.ago) }
   let(:user2) { create(:user) }
-  let(:project2) { create(:project, name: 'Treasure', namespace: user2.namespace) }
+  let(:project2) { create(:project, name: 'Treasure', namespace: user2.namespace, created_at: 1.second.ago, updated_at: 1.second.ago) }
 
   before do
     project.add_maintainer(user)
@@ -129,7 +129,7 @@ describe 'Dashboard > User filters projects' do
 
         list = page.all('.projects-list .project-name').map(&:text)
 
-        expect(list).to match(["Private project", "Treasure", "Victorialand"])
+        expect(list).to contain_exactly("Private project", "Treasure", "Victorialand")
       end
 
       it 'filters internal projects only' do
@@ -139,14 +139,14 @@ describe 'Dashboard > User filters projects' do
 
         list = page.all('.projects-list .project-name').map(&:text)
 
-        expect(list).to match(['Internal project'])
+        expect(list).to contain_exactly('Internal project')
       end
 
       it 'filters any project' do
         select_dropdown_option '#filtered-search-visibility-dropdown', 'Any'
         list = page.all('.projects-list .project-name').map(&:text)
 
-        expect(list).to match(["Internal project", "Private project", "Treasure", "Victorialand"])
+        expect(list).to contain_exactly("Internal project", "Private project", "Treasure", "Victorialand")
       end
     end
 
