@@ -4208,6 +4208,9 @@ msgstr ""
 msgid "Failed to save preferences."
 msgstr ""
 
+msgid "Failed to update branch!"
+msgstr ""
+
 msgid "Failed to update issues, please try again."
 msgstr ""
 
@@ -7653,6 +7656,9 @@ msgid "Prompt users to upload SSH keys"
 msgstr ""
 
 msgid "Protected"
+msgstr ""
+
+msgid "Protected Branch"
 msgstr ""
 
 msgid "Protected Tag"
