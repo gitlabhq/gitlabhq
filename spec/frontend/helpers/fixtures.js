@@ -3,10 +3,8 @@ import path from 'path';
 
 import { ErrorWithStack } from 'jest-util';
 
-const fixturesBasePath = path.join(process.cwd(), 'spec', 'javascripts', 'fixtures');
-
 export function getFixture(relativePath) {
-  const absolutePath = path.join(fixturesBasePath, relativePath);
+  const absolutePath = path.join(global.fixturesBasePath, relativePath);
   if (!fs.existsSync(absolutePath)) {
     throw new ErrorWithStack(
       `Fixture file ${relativePath} does not exist.
