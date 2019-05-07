@@ -4115,6 +4115,18 @@ msgstr ""
 msgid "ExternalAuthorizationService|When no classification label is set the default label `%{default_label}` will be used."
 msgstr ""
 
+msgid "ExternalMetrics|Add a button to the metrics dashboard linking directly to your existing external dashboards."
+msgstr ""
+
+msgid "ExternalMetrics|Enter the URL of the dashboard you want to link to"
+msgstr ""
+
+msgid "ExternalMetrics|External Dashboard"
+msgstr ""
+
+msgid "ExternalMetrics|Full dashboard URL"
+msgstr ""
+
 msgid "ExternalWikiService|External Wiki"
 msgstr ""
 
@@ -10563,6 +10575,9 @@ msgid "View details: %{details_url}"
 msgstr ""
 
 msgid "View file @ "
+msgstr ""
+
+msgid "View full dashboard"
 msgstr ""
 
 msgid "View group labels"
