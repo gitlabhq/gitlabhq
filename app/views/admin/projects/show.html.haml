@@ -100,6 +100,8 @@
             %span.light archived:
             %strong project is read-only
 
+        = render_if_exists "shared_runner_status", project: @project
+
         %li
           %span.light access:
           %strong
