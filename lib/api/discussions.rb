@@ -134,9 +134,13 @@ module API
         post ":id/#{noteables_path}/:noteable_id/discussions/:discussion_id/notes" do
           noteable = find_noteable(parent_type, noteables_str, params[:noteable_id])
           notes = readable_discussion_notes(noteable, params[:discussion_id])
+          first_note = notes.first
 
           break not_found!("Discussion") if notes.empty?
-          break bad_request!("Discussion is an individual note.") unless notes.first.part_of_discussion?
+
+          unless first_note.part_of_discussion? || first_note.to_discussion.can_convert_to_discussion?
+            break bad_request!("Discussion can not be replied to.")
+          end
 
           opts = {
             note: params[:body],
