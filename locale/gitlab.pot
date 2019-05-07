@@ -5773,6 +5773,9 @@ msgstr ""
 msgid "Mark as resolved"
 msgstr ""
 
+msgid "Mark comment as resolved"
+msgstr ""
+
 msgid "Mark this issue as a duplicate of another issue"
 msgstr ""
 
@@ -8165,6 +8168,9 @@ msgid "Resolved 1 discussion."
 msgstr ""
 
 msgid "Resolved all discussions."
+msgstr ""
+
+msgid "Resolved by %{name}"
 msgstr ""
 
 msgid "Resolved by %{resolvedByName}"
