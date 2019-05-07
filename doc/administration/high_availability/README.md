@@ -171,7 +171,7 @@ prior to certification based on performance testing.
 - 3 PostgreSQL - 4 CPU, 8GB RAM
 - 1 PgBouncer - 2 CPU, 4GB RAM
 - 2 Redis - 2 CPU, 8GB RAM
-- 3 Consul/Sentinel - 2 CPU, 2GB
+- 3 Consul/Sentinel - 2 CPU, 2GB RAM
 - 4 Sidekiq - 4 CPU, 8GB RAM
 - 5 GitLab application nodes - 20 CPU, 64GB RAM
 - 1 Gitaly - 20 CPU, 64GB RAM
