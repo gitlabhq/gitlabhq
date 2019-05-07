@@ -35,8 +35,10 @@ RSpec.configure do |config|
   # show exception that triggers a retry if verbose_retry is set to true
   config.display_try_failure_messages = true
 
-  config.around do |example|
-    retry_times = example.metadata.keys.include?(:quarantine) ? 1 : 2
-    example.run_with_retry retry: retry_times
+  if ENV['CI']
+    config.around do |example|
+      retry_times = example.metadata.keys.include?(:quarantine) ? 1 : 2
+      example.run_with_retry retry: retry_times
+    end
   end
 end
