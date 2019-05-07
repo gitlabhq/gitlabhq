@@ -1,6 +1,21 @@
-.nav-block
-  %ul.nav-links.mobile-separator.nav.nav-tabs
-    = nav_link(html_options: { class: ("active" unless params[:personal].present?) }) do
-      = link_to s_('DashboardProjects|All'), dashboard_projects_path
-    = nav_link(html_options: { class: ("active" if params[:personal].present?) }) do
-      = link_to s_('DashboardProjects|Personal'), filter_projects_path(personal: true)
+- inactive_class = 'btn p-2'
+- active_class = 'btn p-2 active'
+- project_tab_filter = local_assigns.fetch(:project_tab_filter, "")
+- is_explore_trending = project_tab_filter == :explore_trending
+- feature_project_list_filter_bar = Feature.enabled?(:project_list_filter_bar)
+
+.nav-block{ class: ("w-100" if feature_project_list_filter_bar) }
+  - if feature_project_list_filter_bar
+    .btn-group.button-filter-group.d-flex.m-0.p-0
+      - if project_tab_filter == :explore || is_explore_trending
+        = link_to s_('DashboardProjects|Trending'), trending_explore_projects_path, class: is_explore_trending ? active_class : inactive_class
+        = link_to s_('DashboardProjects|All'), explore_projects_path, class: is_explore_trending ? inactive_class : active_class
+      - else
+        = link_to s_('DashboardProjects|All'), dashboard_projects_path, class: params[:personal].present? ? inactive_class : active_class
+        = link_to s_('DashboardProjects|Personal'), filter_projects_path(personal: true), class: params[:personal].present? ? active_class : inactive_class
+  - else
+    %ul.nav-links.mobile-separator.nav.nav-tabs
+      = nav_link(html_options: { class: ("active" unless params[:personal].present?) }) do
+        = link_to s_('DashboardProjects|All'), dashboard_projects_path
+      = nav_link(html_options: { class: ("active" if params[:personal].present?) }) do
+        = link_to s_('DashboardProjects|Personal'), filter_projects_path(personal: true)

@@ -754,6 +754,9 @@ msgstr ""
 msgid "All merge conflicts were resolved. The merge request can now be merged."
 msgstr ""
 
+msgid "All projects"
+msgstr ""
+
 msgid "All todos were marked as done."
 msgstr ""
 
@@ -3072,6 +3075,9 @@ msgstr ""
 msgid "DashboardProjects|Personal"
 msgstr ""
 
+msgid "DashboardProjects|Trending"
+msgstr ""
+
 msgid "Data is still calculating..."
 msgstr ""
 
@@ -4756,7 +4762,13 @@ msgstr ""
 msgid "Help page text and support page url."
 msgstr ""
 
+msgid "Hide archived projects"
+msgstr ""
+
 msgid "Hide file browser"
+msgstr ""
+
+msgid "Hide group projects"
 msgstr ""
 
 msgid "Hide host keys manual input"
@@ -4766,6 +4778,9 @@ msgid "Hide marketing-related entries from help"
 msgstr ""
 
 msgid "Hide payload"
+msgstr ""
+
+msgid "Hide shared projects"
 msgstr ""
 
 msgid "Hide value"
@@ -6527,6 +6542,12 @@ msgstr ""
 msgid "Overview"
 msgstr ""
 
+msgid "Owned by anyone"
+msgstr ""
+
+msgid "Owned by me"
+msgstr ""
+
 msgid "Owner"
 msgstr ""
 
@@ -8229,6 +8250,9 @@ msgstr ""
 msgid "Search projects"
 msgstr ""
 
+msgid "Search projects..."
+msgstr ""
+
 msgid "Search users"
 msgstr ""
 
@@ -8526,6 +8550,12 @@ msgstr ""
 msgid "Show all activity"
 msgstr ""
 
+msgid "Show archived projects"
+msgstr ""
+
+msgid "Show archived projects only"
+msgstr ""
+
 msgid "Show command"
 msgstr ""
 
@@ -8790,6 +8820,12 @@ msgid "SortOptions|Recent last activity"
 msgstr ""
 
 msgid "SortOptions|Recent sign in"
+msgstr ""
+
+msgid "SortOptions|Sort direction"
+msgstr ""
+
+msgid "SortOptions|Stars"
 msgstr ""
 
 msgid "SortOptions|Start later"
@@ -10548,6 +10584,9 @@ msgid "View the documentation"
 msgstr ""
 
 msgid "Viewing commit"
+msgstr ""
+
+msgid "Visibility"
 msgstr ""
 
 msgid "Visibility and access controls"

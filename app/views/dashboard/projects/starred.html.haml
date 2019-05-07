@@ -8,7 +8,7 @@
 
 %div{ class: container_class }
   = render "projects/last_push"
-  = render 'dashboard/projects_head'
+  = render 'dashboard/projects_head', project_tab_filter: :starred
 
   - if params[:filter_projects] || any_projects?(@projects)
     = render 'projects'

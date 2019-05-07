@@ -1446,3 +1446,86 @@ pre.light-well {
     }
   }
 }
+
+.project-filters {
+  .btn svg {
+    color: $gl-gray-700;
+  }
+
+  .button-filter-group {
+    .btn {
+      width: 96px;
+    }
+
+    a {
+      color: $black;
+    }
+
+    .active {
+      background: $btn-active-gray;
+    }
+  }
+
+  .filtered-search-dropdown-label {
+    min-width: 68px;
+
+    @include media-breakpoint-down(xs) {
+      min-width: 60px;
+    }
+  }
+
+  .filtered-search {
+    min-width: 30%;
+    flex-basis: 0;
+
+    .project-filter-form .project-filter-form-field {
+      padding-right: $gl-padding-8;
+    }
+
+    .filtered-search,
+    .filtered-search-nav,
+    .filtered-search-dropdown {
+      flex-basis: 0;
+    }
+
+    @include media-breakpoint-down(lg) {
+      min-width: 15%;
+
+      .project-filter-form-field {
+        min-width: 150px;
+      }
+    }
+
+    @include media-breakpoint-down(md) {
+      min-width: 30%;
+    }
+  }
+
+  .filtered-search-box {
+    border-radius: 3px 0 0 3px;
+  }
+
+  .dropdown-menu-toggle {
+    margin-left: $gl-padding-8;
+  }
+
+  @include media-breakpoint-down(md) {
+    .extended-filtered-search-box {
+      min-width: 55%;
+    }
+
+    .filtered-search-dropdown {
+      width: 50%;
+
+      .dropdown-menu-toggle {
+        width: 100%;
+      }
+    }
+  }
+
+  @include media-breakpoint-down(xs) {
+    .filtered-search-dropdown {
+      width: 100%;
+    }
+  }
+}
