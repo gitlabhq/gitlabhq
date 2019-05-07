@@ -1,0 +1,5 @@
+---
+title: Use a path for the related merge requests endpoint
+merge_request: 28171
+author:
+type: fixed
