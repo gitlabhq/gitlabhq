@@ -1,0 +1,5 @@
+---
+title: Render Next badge only for gitlab.com
+merge_request: 28056
+author:
+type: fixed
