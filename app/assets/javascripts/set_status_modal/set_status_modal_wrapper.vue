@@ -178,7 +178,7 @@ export default {
       />
       <div ref="userStatusForm" class="form-group position-relative m-0">
         <div class="input-group">
-          <span class="input-group-btn">
+          <span class="input-group-prepend">
             <button
               ref="toggleEmojiMenuButton"
               v-gl-tooltip.bottom
@@ -211,7 +211,7 @@ export default {
             @keyup.enter.prevent
             @click="hideEmojiMenu"
           />
-          <span v-show="isDirty" class="input-group-btn">
+          <span v-show="isDirty" class="input-group-append">
             <button
               v-gl-tooltip.bottom
               :title="s__('SetStatusModal|Clear status')"
