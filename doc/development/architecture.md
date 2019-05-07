@@ -1,3 +1,6 @@
+<script src="https://unpkg.com/mermaid@8.0.0/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({startOnLoad:true});</script>
+
 # GitLab Architecture Overview
 
 ## Software delivery
@@ -210,7 +213,7 @@ To serve repositories over SSH there's an add-on application called gitlab-shell
 
 ### Components
 
-```mermaid
+<div class="mermaid">
 graph TB
 
   HTTP[HTTP/HTTPS] -- TCP 80, 443 --> NGINX(NGINX)
@@ -310,7 +313,7 @@ class Alertmanager defaultoff
 class SMTP defaultoff
 class ObjectStorage defaultoff
 class Geo defaultoff
-```
+</div>
 
 **Legend**:
 
