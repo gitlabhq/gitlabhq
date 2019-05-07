@@ -2078,8 +2078,8 @@ of the `group/my-project`:
 
 ```yaml
 include:
-  - local: : /templates/docker-build.yml
-  - local: : /templates/docker-testing.yml
+  - local: /templates/docker-build.yml
+  - local: /templates/docker-testing.yml
 ```
 
 Our `/templates/docker-build.yml` present in `group/my-project` adds a `docker-build` job:
