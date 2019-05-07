@@ -1495,6 +1495,33 @@ describe API::MergeRequests do
       expect(json_response['merge_when_pipeline_succeeds']).to eq(true)
     end
 
+    context 'when the MR requires pipeline success' do
+      it 'returns 405 if the pipeline is missing' do
+        allow_any_instance_of(MergeRequest)
+          .to receive(:merge_when_pipeline_succeeds).and_return(true)
+        allow_any_instance_of(MergeRequest).to receive(:head_pipeline).and_return(nil)
+
+        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user)
+
+        expect(response).to have_gitlab_http_status(405)
+        expect(json_response['message']).to eq('Not allowed: pipeline does not exist')
+      end
+    end
+
+    context 'when the request requires pipeline success' do
+      it 'returns 405 if the pipeline is missing' do
+        allow_any_instance_of(MergeRequest)
+          .to receive(:merge_when_pipeline_succeeds).and_return(true)
+        allow_any_instance_of(MergeRequest).to receive(:head_pipeline).and_return(nil)
+
+        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user),
+              params: { merge_when_pipeline_succeeds: true }
+
+        expect(response).to have_gitlab_http_status(405)
+        expect(json_response['message']).to eq('Not allowed: pipeline does not exist')
+      end
+    end
+
     it "returns 404 for an invalid merge request IID" do
       put api("/projects/#{project.id}/merge_requests/12345/merge", user)
 
