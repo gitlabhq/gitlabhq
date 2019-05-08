@@ -10,14 +10,14 @@ module Clusters
 
     PROJECT_ONLY_APPLICATIONS = {
       Applications::Jupyter.application_name => Applications::Jupyter,
-      Applications::Knative.application_name => Applications::Knative,
-      Applications::Prometheus.application_name => Applications::Prometheus
+      Applications::Knative.application_name => Applications::Knative
     }.freeze
     APPLICATIONS = {
       Applications::Helm.application_name => Applications::Helm,
       Applications::Ingress.application_name => Applications::Ingress,
       Applications::CertManager.application_name => Applications::CertManager,
-      Applications::Runner.application_name => Applications::Runner
+      Applications::Runner.application_name => Applications::Runner,
+      Applications::Prometheus.application_name => Applications::Prometheus
     }.merge(PROJECT_ONLY_APPLICATIONS).freeze
     DEFAULT_ENVIRONMENT = '*'.freeze
     KUBE_INGRESS_BASE_DOMAIN = 'KUBE_INGRESS_BASE_DOMAIN'.freeze
@@ -115,10 +115,12 @@ module Clusters
     }
 
     def self.ancestor_clusters_for_clusterable(clusterable, hierarchy_order: :asc)
+      return [] if clusterable.is_a?(Instance)
+
       hierarchy_groups = clusterable.ancestors_upto(hierarchy_order: hierarchy_order).eager_load(:clusters)
       hierarchy_groups = hierarchy_groups.merge(current_scope) if current_scope
 
-      hierarchy_groups.flat_map(&:clusters)
+      hierarchy_groups.flat_map(&:clusters) + Instance.new.clusters
     end
 
     def status_name
@@ -176,6 +178,10 @@ module Clusters
       end
     end
     alias_method :group, :first_group
+
+    def instance
+      Instance.new if instance_type?
+    end
 
     def kubeclient
       platform_kubernetes.kubeclient if kubernetes?

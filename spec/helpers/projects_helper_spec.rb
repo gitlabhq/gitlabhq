@@ -445,6 +445,10 @@ describe ProjectsHelper do
       Project.all
     end
 
+    before do
+      stub_feature_flags(project_list_filter_bar: false)
+    end
+
     it 'returns true when there are projects' do
       expect(helper.show_projects?(projects, {})).to eq(true)
     end

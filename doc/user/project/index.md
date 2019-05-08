@@ -13,7 +13,7 @@ the number of private projects you create.
 When you create a project in GitLab, you'll have access to a large number of
 [features](https://about.gitlab.com/features/):
 
-**Issues and merge requests:**
+**Repositories:**
 
 - [Issue tracker](issues/index.md): Discuss implementations with your team within issues
   - [Issue Boards](issue_board.md): Organize and prioritize your workflow
@@ -28,6 +28,13 @@ When you create a project in GitLab, you'll have access to a large number of
   permission to create tags, and prevent accidental update or deletion
   - [Signing commits](gpg_signed_commits/index.md): use GPG to sign your commits
   - [Deploy tokens](deploy_tokens/index.md): Manage project-based deploy tokens that allow permanent access to the repository and Container Registry.
+- [Web IDE](web_ide/index.md)
+
+**Issues and merge requests:**
+
+- [Issue tracker](issues/index.md): Discuss implementations with your team within issues
+  - [Issue Boards](issue_board.md): Organize and prioritize your workflow
+  - [Multiple Issue Boards](issue_board.md#multiple-issue-boards-starter): Allow your teams to create their own workflows (Issue Boards) for the same project **[STARTER]**
 - [Merge Requests](merge_requests/index.md): Apply your branching
   strategy and get reviewed by your team
   - [Merge Request Approvals](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html): Ask for approval before
@@ -67,6 +74,8 @@ When you create a project in GitLab, you'll have access to a large number of
      timeout (defines the maximum amount of time in minutes that a job is able run), custom path for `.gitlab-ci.yml`, test coverage parsing, pipeline's visibility, and much more
   - [Kubernetes cluster integration](clusters/index.md): Connecting your GitLab project
     with a Kubernetes cluster
+  - [Feature Flags](https://docs.gitlab.com/ee/user/project/operations/feature_flags.html): Feature flags allow you to ship a project in
+    different flavors by dynamically toggling certain functionality **[PREMIUM]**
 - [GitLab Pages](pages/index.md): Build, test, and deploy your static
   website with GitLab Pages
 
@@ -75,12 +84,17 @@ When you create a project in GitLab, you'll have access to a large number of
 - [Wiki](wiki/index.md): document your GitLab project in an integrated Wiki.
 - [Snippets](../snippets.md): store, share and collaborate on code snippets.
 - [Cycle Analytics](cycle_analytics.md): review your development lifecycle.
+- [Security Dashboard](security_dashboard.md): Security Dashboard. **[ULTIMATE]**
 - [Syntax highlighting](highlighting.md): an alternative to customize
   your code blocks, overriding GitLab's default choice of language.
 - [Badges](badges.md): badges for the project overview.
 - [Releases](releases/index.md): a way to track deliverables in your project as snapshot in time of
   the source, build output, and other metadata or artifacts
   associated with a released version of your code.
+- [Maven packages](https://docs.gitlab.com/ee/user/project/packages/maven_repository.html): your private Maven repository in GitLab. **[PREMIUM]**
+- [NPM packages](https://docs.gitlab.com/ee/user/project/packages/npm_registry.html): your private NPM package registry in GitLab. **[PREMIUM]**
+- [Code owners](code_owners.md): specify code owners for certain files **[STARTER]**
+- [License Management](https://docs.gitlab.com/ee/user/application_security/license_management/index.html): approve and blacklist licenses for projects. **[ULTIMATE]**
 
 ### Project integrations
 
@@ -115,6 +129,13 @@ Read through the documentation on [project settings](settings/index.md).
   - [FogBugz to GitLab](import/fogbugz.md)
 - [Export a project from GitLab](settings/import_export.md#exporting-a-project-and-its-data)
 - [Importing and exporting projects between GitLab instances](settings/import_export.md)
+
+## CI/CD for external repositories **[PREMIUM]**
+
+Instead of importing a repository directly to GitLab, you can connect your repository
+as a CI/CD project.
+
+Read through the documentation on [CI/CD for external repositories](https://docs.gitlab.com/ee/ci/ci_cd_for_external_repos/index.html).
 
 ## Project members
 

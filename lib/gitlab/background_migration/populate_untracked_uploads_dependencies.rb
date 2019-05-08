@@ -8,8 +8,8 @@ module Gitlab
         self.table_name = 'untracked_files_for_uploads'
 
         # Ends with /:random_hex/:filename
-        FILE_UPLOADER_PATH = %r{/\h+/[^/]+\z}
-        FULL_PATH_CAPTURE = /\A(.+)#{FILE_UPLOADER_PATH}/
+        FILE_UPLOADER_PATH = %r{/\h+/[^/]+\z}.freeze
+        FULL_PATH_CAPTURE = /\A(.+)#{FILE_UPLOADER_PATH}/.freeze
 
         # These regex patterns are tested against a relative path, relative to
         # the upload directory.

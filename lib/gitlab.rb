@@ -36,8 +36,8 @@ module Gitlab
   end
 
   COM_URL = 'https://gitlab.com'.freeze
-  APP_DIRS_PATTERN = %r{^/?(app|config|ee|lib|spec|\(\w*\))}
-  SUBDOMAIN_REGEX = %r{\Ahttps://[a-z0-9]+\.gitlab\.com\z}
+  APP_DIRS_PATTERN = %r{^/?(app|config|ee|lib|spec|\(\w*\))}.freeze
+  SUBDOMAIN_REGEX = %r{\Ahttps://[a-z0-9]+\.gitlab\.com\z}.freeze
   VERSION = File.read(root.join("VERSION")).strip.freeze
   INSTALLATION_TYPE = File.read(root.join("INSTALLATION_TYPE")).strip.freeze
 
@@ -59,7 +59,11 @@ module Gitlab
   end
 
   def self.ee?
-    Object.const_defined?(:License)
+    if ENV['IS_GITLAB_EE'].present?
+      Gitlab::Utils.to_boolean(ENV['IS_GITLAB_EE'])
+    else
+      Object.const_defined?(:License)
+    end
   end
 
   def self.process_name

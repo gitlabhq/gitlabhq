@@ -17,7 +17,7 @@ shared_examples 'variable list' do
     visit page_path
 
     # We check the first row because it re-sorts to alphabetical order on refresh
-    page.within('.js-ci-variable-list-section .js-row:nth-child(1)') do
+    page.within('.js-ci-variable-list-section .js-row:nth-child(2)') do
       expect(find('.js-ci-variable-input-key').value).to eq('key')
       expect(find('.js-ci-variable-input-value', visible: false).value).to eq('key_value')
     end
@@ -38,7 +38,7 @@ shared_examples 'variable list' do
     visit page_path
 
     # We check the first row because it re-sorts to alphabetical order on refresh
-    page.within('.js-ci-variable-list-section .js-row:nth-child(1)') do
+    page.within('.js-ci-variable-list-section .js-row:nth-child(2)') do
       expect(find('.js-ci-variable-input-key').value).to eq('key')
       expect(find('.js-ci-variable-input-value', visible: false).value).to eq('key_value')
       expect(find('.js-ci-variable-input-protected', visible: false).value).to eq('true')
@@ -59,7 +59,7 @@ shared_examples 'variable list' do
     visit page_path
 
     # We check the first row because it re-sorts to alphabetical order on refresh
-    page.within('.js-ci-variable-list-section .js-row:nth-child(1)') do
+    page.within('.js-ci-variable-list-section .js-row:nth-child(2)') do
       expect(find('.js-ci-variable-input-key').value).to eq('key')
       expect(find('.js-ci-variable-input-value', visible: false).value).to eq('key_value')
       expect(find('.js-ci-variable-input-masked', visible: false).value).to eq('true')
@@ -116,19 +116,19 @@ shared_examples 'variable list' do
     page.within('.js-ci-variable-list-section') do
       expect(first('.js-ci-variable-input-key').value).to eq(variable.key)
       expect(first('.js-ci-variable-input-value', visible: false).value).to eq(variable.value)
-      expect(page).to have_content('*' * 20)
+      expect(page).to have_content('*' * 17)
 
       click_button('Reveal value')
 
       expect(first('.js-ci-variable-input-key').value).to eq(variable.key)
       expect(first('.js-ci-variable-input-value').value).to eq(variable.value)
-      expect(page).not_to have_content('*' * 20)
+      expect(page).not_to have_content('*' * 17)
 
       click_button('Hide value')
 
       expect(first('.js-ci-variable-input-key').value).to eq(variable.key)
       expect(first('.js-ci-variable-input-value', visible: false).value).to eq(variable.value)
-      expect(page).to have_content('*' * 20)
+      expect(page).to have_content('*' * 17)
     end
   end
 
@@ -149,7 +149,7 @@ shared_examples 'variable list' do
     page.within('.js-ci-variable-list-section') do
       click_button('Reveal value')
 
-      page.within('.js-row:nth-child(1)') do
+      page.within('.js-row:nth-child(2)') do
         find('.js-ci-variable-input-key').set('new_key')
         find('.js-ci-variable-input-value').set('new_value')
       end
@@ -159,7 +159,7 @@ shared_examples 'variable list' do
 
       visit page_path
 
-      page.within('.js-row:nth-child(1)') do
+      page.within('.js-row:nth-child(2)') do
         expect(find('.js-ci-variable-input-key').value).to eq('new_key')
         expect(find('.js-ci-variable-input-value', visible: false).value).to eq('new_value')
       end
@@ -181,7 +181,7 @@ shared_examples 'variable list' do
     visit page_path
 
     # We check the first row because it re-sorts to alphabetical order on refresh
-    page.within('.js-ci-variable-list-section .js-row:nth-child(2)') do
+    page.within('.js-ci-variable-list-section .js-row:nth-child(3)') do
       find('.ci-variable-protected-item .js-project-feature-toggle').click
 
       expect(find('.js-ci-variable-input-protected', visible: false).value).to eq('true')
@@ -193,7 +193,7 @@ shared_examples 'variable list' do
     visit page_path
 
     # We check the first row because it re-sorts to alphabetical order on refresh
-    page.within('.js-ci-variable-list-section .js-row:nth-child(2)') do
+    page.within('.js-ci-variable-list-section .js-row:nth-child(3)') do
       expect(find('.js-ci-variable-input-key').value).to eq('unprotected_key')
       expect(find('.js-ci-variable-input-value', visible: false).value).to eq('unprotected_value')
       expect(find('.js-ci-variable-input-protected', visible: false).value).to eq('true')
@@ -215,7 +215,7 @@ shared_examples 'variable list' do
 
     visit page_path
 
-    page.within('.js-ci-variable-list-section .js-row:nth-child(1)') do
+    page.within('.js-ci-variable-list-section .js-row:nth-child(2)') do
       find('.ci-variable-protected-item .js-project-feature-toggle').click
 
       expect(find('.js-ci-variable-input-protected', visible: false).value).to eq('false')
@@ -226,7 +226,7 @@ shared_examples 'variable list' do
 
     visit page_path
 
-    page.within('.js-ci-variable-list-section .js-row:nth-child(1)') do
+    page.within('.js-ci-variable-list-section .js-row:nth-child(2)') do
       expect(find('.js-ci-variable-input-key').value).to eq('protected_key')
       expect(find('.js-ci-variable-input-value', visible: false).value).to eq('protected_value')
       expect(find('.js-ci-variable-input-protected', visible: false).value).to eq('false')
@@ -234,7 +234,7 @@ shared_examples 'variable list' do
   end
 
   it 'edits variable to be unmasked' do
-    page.within('.js-ci-variable-list-section .js-row:nth-child(1)') do
+    page.within('.js-ci-variable-list-section .js-row:nth-child(2)') do
       expect(find('.js-ci-variable-input-masked', visible: false).value).to eq('true')
 
       find('.ci-variable-masked-item .js-project-feature-toggle').click
@@ -247,13 +247,13 @@ shared_examples 'variable list' do
 
     visit page_path
 
-    page.within('.js-ci-variable-list-section .js-row:nth-child(1)') do
+    page.within('.js-ci-variable-list-section .js-row:nth-child(2)') do
       expect(find('.js-ci-variable-input-masked', visible: false).value).to eq('false')
     end
   end
 
   it 'edits variable to be masked' do
-    page.within('.js-ci-variable-list-section .js-row:nth-child(1)') do
+    page.within('.js-ci-variable-list-section .js-row:nth-child(2)') do
       expect(find('.js-ci-variable-input-masked', visible: false).value).to eq('true')
 
       find('.ci-variable-masked-item .js-project-feature-toggle').click
@@ -266,7 +266,7 @@ shared_examples 'variable list' do
 
     visit page_path
 
-    page.within('.js-ci-variable-list-section .js-row:nth-child(1)') do
+    page.within('.js-ci-variable-list-section .js-row:nth-child(2)') do
       expect(find('.js-ci-variable-input-masked', visible: false).value).to eq('false')
 
       find('.ci-variable-masked-item .js-project-feature-toggle').click
@@ -279,7 +279,7 @@ shared_examples 'variable list' do
 
     visit page_path
 
-    page.within('.js-ci-variable-list-section .js-row:nth-child(1)') do
+    page.within('.js-ci-variable-list-section .js-row:nth-child(2)') do
       expect(find('.js-ci-variable-input-masked', visible: false).value).to eq('true')
     end
   end
@@ -302,7 +302,7 @@ shared_examples 'variable list' do
       expect(page).to have_selector('.js-row', count: 4)
 
       # Remove the `akey` variable
-      page.within('.js-row:nth-child(2)') do
+      page.within('.js-row:nth-child(3)') do
         first('.js-row-remove-button').click
       end
 

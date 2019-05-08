@@ -66,5 +66,21 @@ describe Clusters::ClusterPolicy, :models do
         it { expect(policy).to be_disallowed :admin_cluster }
       end
     end
+
+    context 'instance cluster' do
+      let(:cluster) { create(:cluster, :instance) }
+
+      context 'when user' do
+        it { expect(policy).to be_disallowed :update_cluster }
+        it { expect(policy).to be_disallowed :admin_cluster }
+      end
+
+      context 'when admin' do
+        let(:user) { create(:admin) }
+
+        it { expect(policy).to be_allowed :update_cluster }
+        it { expect(policy).to be_allowed :admin_cluster }
+      end
+    end
   end
 end

@@ -385,11 +385,6 @@ the Merge Request authored by the user that applied them.
 
     ![Add a new comment](img/insert_suggestion.png)
 
-    > **Note:**
-    The suggestion will only affect the commented line. Multi-line
-    suggestions are currently not supported. Will be introduced by
-    [#53310](https://gitlab.com/gitlab-org/gitlab-ce/issues/53310).
-
 1. In the comment, add your suggestion to the pre-populated code block:
 
     ![Add a suggestion into a code block tagged properly](img/make_suggestion.png)
@@ -401,13 +396,10 @@ the Merge Request authored by the user that applied them.
 
     ![Apply suggestions](img/suggestion.png)
 
-    > **Note:**
-    Discussions are _not_ automatically resolved. Will be introduced by
-    [#54405](https://gitlab.com/gitlab-org/gitlab-ce/issues/54405).
-
 Once the author applies a suggestion, it will be marked with the **Applied** label,
-and GitLab will create a new commit with the message `Apply suggestion to <file-name>`
-and push the suggested change directly into the codebase in the merge request's branch.
+the discussion will be automatically resolved, and GitLab will create a new commit
+with the message `Apply suggestion to <file-name>` and push the suggested change
+directly into the codebase in the merge request's branch.
 [Developer permission](../permissions.md) is required to do so.
 
 > **Note:**

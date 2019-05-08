@@ -62,7 +62,7 @@ class ProjectsFinder < UnionFinder
     collection = by_personal(collection)
     collection = by_starred(collection)
     collection = by_trending(collection)
-    collection = by_visibilty_level(collection)
+    collection = by_visibility_level(collection)
     collection = by_tags(collection)
     collection = by_search(collection)
     collection = by_archived(collection)
@@ -71,12 +71,11 @@ class ProjectsFinder < UnionFinder
     collection
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def collection_with_user
     if owned_projects?
       current_user.owned_projects
     elsif min_access_level?
-      current_user.authorized_projects.where('project_authorizations.access_level >= ?', params[:min_access_level])
+      current_user.authorized_projects(params[:min_access_level])
     else
       if private_only?
         current_user.authorized_projects
@@ -85,7 +84,6 @@ class ProjectsFinder < UnionFinder
       end
     end
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   # Builds a collection for an anonymous user.
   def collection_without_user
@@ -131,7 +129,7 @@ class ProjectsFinder < UnionFinder
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
-  def by_visibilty_level(items)
+  def by_visibility_level(items)
     params[:visibility_level].present? ? items.where(visibility_level: params[:visibility_level]) : items
   end
   # rubocop: enable CodeReuse/ActiveRecord

@@ -105,6 +105,7 @@ describe Gitlab::BitbucketServerImport::Importer do
       expect(merge_request.metrics.merged_by).to eq(project.owner)
       expect(merge_request.metrics.merged_at).to eq(@merge_event.merge_timestamp)
       expect(merge_request.merge_commit_sha).to eq('12345678')
+      expect(merge_request.state_id).to eq(3)
     end
 
     it 'imports comments' do

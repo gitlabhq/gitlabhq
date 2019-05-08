@@ -905,6 +905,12 @@ module Gitlab
         end
       end
 
+      def remove_foreign_key_if_exists(*args)
+        if foreign_key_exists?(*args)
+          remove_foreign_key(*args)
+        end
+      end
+
       def remove_foreign_key_without_error(*args)
         remove_foreign_key(*args)
       rescue ArgumentError

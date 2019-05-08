@@ -14,8 +14,8 @@ class FileUploader < GitlabUploader
   include ObjectStorage::Concern
   prepend ObjectStorage::Extension::RecordsUploads
 
-  MARKDOWN_PATTERN = %r{\!?\[.*?\]\(/uploads/(?<secret>[0-9a-f]{32})/(?<file>.*?)\)}
-  DYNAMIC_PATH_PATTERN = %r{.*(?<secret>\h{32})/(?<identifier>.*)}
+  MARKDOWN_PATTERN = %r{\!?\[.*?\]\(/uploads/(?<secret>[0-9a-f]{32})/(?<file>.*?)\)}.freeze
+  DYNAMIC_PATH_PATTERN = %r{.*(?<secret>\h{32})/(?<identifier>.*)}.freeze
 
   after :remove, :prune_store_dir
 

@@ -38,6 +38,8 @@ module Clusters
         { cluster_type: :project_type, projects: [clusterable] }
       when ::Group
         { cluster_type: :group_type, groups: [clusterable] }
+      when Instance
+        { cluster_type: :instance_type }
       else
         raise NotImplementedError
       end

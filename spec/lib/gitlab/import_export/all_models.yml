@@ -99,7 +99,7 @@ merge_requests:
 - timelogs
 - head_pipeline
 - latest_merge_request_diff
-- merge_request_pipelines
+- pipelines_for_merge_request
 - merge_request_assignees
 - suggestions
 - assignees

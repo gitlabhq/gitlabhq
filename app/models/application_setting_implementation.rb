@@ -8,7 +8,7 @@ module ApplicationSettingImplementation
                             \s              # any whitespace character
                             |               # or
                             [\r\n]          # any number of newline characters
-                          }x
+                          }x.freeze
 
   # Setting a key restriction to `-1` means that all keys of this type are
   # forbidden.

@@ -1,4 +1,4 @@
-shared_examples 'discussions API' do |parent_type, noteable_type, id_name|
+shared_examples 'discussions API' do |parent_type, noteable_type, id_name, can_reply_to_invididual_notes: false|
   describe "GET /#{parent_type}/:id/#{noteable_type}/:noteable_id/discussions" do
     it "returns an array of discussions" do
       get api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/discussions", user)
@@ -136,13 +136,25 @@ shared_examples 'discussions API' do |parent_type, noteable_type, id_name|
       expect(response).to have_gitlab_http_status(400)
     end
 
-    it "returns a 400 bad request error if discussion is individual note" do
-      note.update_attribute(:type, nil)
+    context 'when the discussion is an individual note' do
+      before do
+        note.update!(type: nil)
 
-      post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/"\
-               "discussions/#{note.discussion_id}/notes", user), params: { body: 'hi!' }
+        post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/"\
+                 "discussions/#{note.discussion_id}/notes", user), params: { body: 'hi!' }
+      end
 
-      expect(response).to have_gitlab_http_status(400)
+      if can_reply_to_invididual_notes
+        it 'creates a new discussion' do
+          expect(response).to have_gitlab_http_status(201)
+          expect(json_response['body']).to eq('hi!')
+          expect(json_response['type']).to eq('DiscussionNote')
+        end
+      else
+        it 'returns 400 bad request' do
+          expect(response).to have_gitlab_http_status(400)
+        end
+      end
     end
   end
 

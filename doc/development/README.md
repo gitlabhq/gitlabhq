@@ -104,6 +104,10 @@ description: 'Learn how to contribute to GitLab.'
 - [Query Count Limits](query_count_limits.md)
 - [Database helper modules](database_helpers.md)
 
+## Integration guides
+
+- [Jira Connect app](integrations/jira_connect.md)
+
 ## Testing guides
 
 - [Testing standards and style guidelines](testing_guide/index.md)

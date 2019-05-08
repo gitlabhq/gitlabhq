@@ -16,6 +16,7 @@ To create a project in GitLab:
    - [Import a project](../user/project/import/index.md) from a different repository,
      if enabled on your GitLab instance. Contact your GitLab admin if this
      is unavailable.
+   - Run [CI/CD pipelines for external repositories](https://docs.gitlab.com/ee/ci/ci_cd_for_external_repos/index.html). **[PREMIUM]**
 
 ## Blank projects
 
@@ -57,7 +58,7 @@ Built-in templates are project templates that are:
 
 To use a built-in template on the **New project** page:
 
-1. On the **Create from template** tab.
+1. On the **Create from template** tab, select the **Built-in** tab.
 1. From the list of available built-in templates, click the:
     - **Preview** button to look at the template source itself.
     - **Use template** button to start creating the project.

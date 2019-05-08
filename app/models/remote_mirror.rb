@@ -133,6 +133,10 @@ class RemoteMirror < ApplicationRecord
   end
   alias_method :enabled?, :enabled
 
+  def disabled?
+    !enabled?
+  end
+
   def updated_since?(timestamp)
     last_update_started_at && last_update_started_at > timestamp && !update_failed?
   end

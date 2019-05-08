@@ -209,7 +209,7 @@ namespace :gemojione do
     image.destroy!
   end
 
-  EMOJI_IMAGE_PATH_RE = /(.*?)(([0-9a-f]-?)+)\.png$/i
+  EMOJI_IMAGE_PATH_RE = /(.*?)(([0-9a-f]-?)+)\.png$/i.freeze
   def rename_to_named_emoji_image!(emoji_unicode_string_to_name_map, image_path)
     # Rename file from unicode to emoji name
     matches = EMOJI_IMAGE_PATH_RE.match(image_path)

@@ -940,6 +940,10 @@ test:
           app_id: 'YOUR_CLIENT_ID',
           app_secret: 'YOUR_CLIENT_SECRET',
           args: { scope: 'aq:name email~rs address aq:push' } }
+      - { name: 'salesforce',
+          app_id: 'YOUR_CLIENT_ID',
+          app_secret: 'YOUR_CLIENT_SECRET'
+        }
   ldap:
     enabled: false
     servers:

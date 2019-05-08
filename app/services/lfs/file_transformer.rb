@@ -24,7 +24,7 @@ module Lfs
 
     def new_file(file_path, file_content, encoding: nil)
       if project.lfs_enabled? && lfs_file?(file_path)
-        file_content = Base64.decode64(file_content) if encoding == 'base64'
+        file_content = parse_file_content(file_content, encoding: encoding)
         lfs_pointer_file = Gitlab::Git::LfsPointerFile.new(file_content)
         lfs_object = create_lfs_object!(lfs_pointer_file, file_content)
 
@@ -65,6 +65,13 @@ module Lfs
 
     def link_lfs_object!(lfs_object)
       project.lfs_objects << lfs_object
+    end
+
+    def parse_file_content(file_content, encoding: nil)
+      return file_content.read if file_content.respond_to?(:read)
+      return Base64.decode64(file_content) if encoding == 'base64'
+
+      file_content
     end
   end
 end

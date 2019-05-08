@@ -48,6 +48,10 @@
   color: $brand-info;
 }
 
+.bg-gray-light {
+  background-color: $gray-light;
+}
+
 .text-break-word {
   word-break: break-all;
 }
@@ -446,19 +450,13 @@ img.emoji {
 }
 
 /** COMMON SPACING CLASSES **/
-.gl-pl-0 { padding-left: 0; }
-.gl-pl-1 { padding-left: #{0.5 * $grid-size}; }
-.gl-pl-2 { padding-left: $grid-size; }
-.gl-pl-3 { padding-left: #{2 * $grid-size}; }
-.gl-pl-4 { padding-left: #{3 * $grid-size}; }
-.gl-pl-5 { padding-left: #{4 * $grid-size}; }
-
-.gl-pr-0 { padding-right: 0; }
-.gl-pr-1 { padding-right: #{0.5 * $grid-size}; }
-.gl-pr-2 { padding-right: $grid-size; }
-.gl-pr-3 { padding-right: #{2 * $grid-size}; }
-.gl-pr-4 { padding-right: #{3 * $grid-size}; }
-.gl-pr-5 { padding-right: #{4 * $grid-size}; }
+@each $index, $padding in $spacing-scale {
+  #{'.gl-p-#{$index}'} { padding: $padding; }
+  #{'.gl-pl-#{$index}'} { padding-left: $padding; }
+  #{'.gl-pr-#{$index}'} { padding-right: $padding; }
+  #{'.gl-pt-#{$index}'} { padding-top: $padding; }
+  #{'.gl-pb-#{$index}'} { padding-bottom: $padding; }
+}
 
 /**
  * Removes browser specific clear icon from input fields in

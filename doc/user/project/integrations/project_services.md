@@ -34,10 +34,12 @@ Click on the service links to see further configuration instructions and details
 | [Emails on push](emails_on_push.md) | Email the commits and diff of each push to a list of recipients |
 | External Wiki | Replaces the link to the internal wiki with a link to an external wiki |
 | Flowdock | Flowdock is a collaboration web app for technical teams |
+| [GitHub](github.md) **[PREMIUM]** | Sends pipeline notifications to GitHub |
 | [Hangouts Chat](hangouts_chat.md) | Receive events notifications in Google Hangouts Chat |
 | [HipChat](hipchat.md) | Private group chat and IM |
 | [Irker (IRC gateway)](irker.md) | Send IRC messages, on update, to a list of recipients through an Irker gateway |
 | [JIRA](jira.md) | JIRA issue tracker |
+| [Jenkins](https://docs.gitlab.com/ee/integration/jenkins.html) **[STARTER]** | An extendable open source continuous integration server |
 | JetBrains TeamCity CI | A continuous integration and build server |
 | [Mattermost slash commands](mattermost_slash_commands.md) | Mattermost chat and ChatOps slash commands |
 | [Mattermost Notifications](mattermost.md) | Receive event notifications in Mattermost |

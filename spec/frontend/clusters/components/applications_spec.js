@@ -75,7 +75,7 @@ describe('Applications', () => {
     });
 
     it('renders a row for Prometheus', () => {
-      expect(vm.$el.querySelector('.js-cluster-application-row-prometheus')).toBeNull();
+      expect(vm.$el.querySelector('.js-cluster-application-row-prometheus')).not.toBeNull();
     });
 
     it('renders a row for GitLab Runner', () => {

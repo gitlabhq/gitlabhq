@@ -64,6 +64,18 @@
           prepend: emoji_button,
           append: reset_message_button,
           placeholder: s_("Profiles|What's your status?")
+  - if Feature.enabled?(:user_time_settings)
+    %hr
+    .row.user-time-preferences
+      .col-lg-4.profile-settings-sidebar
+        %h4.prepend-top-0= s_("Profiles|Time settings")
+        %p= s_("Profiles|You can set your current timezone here")
+      .col-lg-8
+        -# TODO: might need an entry in user/profile.md to describe some of these settings
+        -# https://gitlab.com/gitlab-org/gitlab-ce/issues/60070
+        %h5= ("Time zone")
+        = dropdown_tag(_("Select a timezone"), options: { toggle_class: 'btn js-timezone-dropdown input-lg', title: _("Select a timezone"), filter: true, placeholder: s_("OfSearchInADropdown|Filter"), data: { data: timezone_data } } )
+        %input.hidden{ :type => 'hidden', :id => 'user_timezone', :name => 'user[timezone]', value: @user.timezone }
 
   %hr
   .row

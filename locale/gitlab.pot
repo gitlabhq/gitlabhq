@@ -754,6 +754,9 @@ msgstr ""
 msgid "All merge conflicts were resolved. The merge request can now be merged."
 msgstr ""
 
+msgid "All projects"
+msgstr ""
+
 msgid "All todos were marked as done."
 msgstr ""
 
@@ -809,9 +812,6 @@ msgid "Alternatively, you can use a %{personal_access_token_link}. When you crea
 msgstr ""
 
 msgid "Amount of time (in hours) that users are allowed to skip forced configuration of two-factor authentication"
-msgstr ""
-
-msgid "An SSH key will be automatically generated when the form is submitted. For more information, please refer to the documentation."
 msgstr ""
 
 msgid "An application called %{link_to_client} is requesting access to your GitLab account."
@@ -1025,6 +1025,9 @@ msgid "Applying command to %{commandDescription}"
 msgstr ""
 
 msgid "Applying multiple commands"
+msgstr ""
+
+msgid "Applying suggestion"
 msgstr ""
 
 msgid "Apr"
@@ -1891,7 +1894,22 @@ msgstr ""
 msgid "CiVariables|Input variable value"
 msgstr ""
 
+msgid "CiVariables|Key"
+msgstr ""
+
+msgid "CiVariables|Masked"
+msgstr ""
+
 msgid "CiVariables|Remove variable row"
+msgstr ""
+
+msgid "CiVariables|State"
+msgstr ""
+
+msgid "CiVariables|Type"
+msgstr ""
+
+msgid "CiVariables|Value"
 msgstr ""
 
 msgid "CiVariable|* (All environments)"
@@ -2026,7 +2044,13 @@ msgstr ""
 msgid "ClusterIntegration|Adding a Kubernetes cluster to your group will automatically share the cluster across all your projects. Use review apps, deploy your applications, and easily run your pipelines for all projects using the same cluster."
 msgstr ""
 
+msgid "ClusterIntegration|Adding a Kubernetes cluster will automatically share the cluster across all projects. Use review apps, deploy your applications, and easily run your pipelines for all projects using the same cluster."
+msgstr ""
+
 msgid "ClusterIntegration|Adding an integration to your group will share the cluster across all your projects."
+msgstr ""
+
+msgid "ClusterIntegration|Adding an integration will share the cluster across all projects."
 msgstr ""
 
 msgid "ClusterIntegration|Advanced options on this Kubernetes cluster's integration"
@@ -2209,6 +2233,9 @@ msgstr ""
 msgid "ClusterIntegration|Installing Knative may incur additional costs. Learn more about %{pricingLink}."
 msgstr ""
 
+msgid "ClusterIntegration|Instance cluster"
+msgstr ""
+
 msgid "ClusterIntegration|Integrate Kubernetes cluster automation"
 msgstr ""
 
@@ -2273,6 +2300,9 @@ msgid "ClusterIntegration|Learn more about Kubernetes"
 msgstr ""
 
 msgid "ClusterIntegration|Learn more about group Kubernetes clusters"
+msgstr ""
+
+msgid "ClusterIntegration|Learn more about instance Kubernetes clusters"
 msgstr ""
 
 msgid "ClusterIntegration|Let's Encrypt"
@@ -2811,9 +2841,6 @@ msgstr ""
 msgid "Copy SSH public key"
 msgstr ""
 
-msgid "Copy SSH public key to clipboard"
-msgstr ""
-
 msgid "Copy URL to clipboard"
 msgstr ""
 
@@ -3076,6 +3103,9 @@ msgid "DashboardProjects|All"
 msgstr ""
 
 msgid "DashboardProjects|Personal"
+msgstr ""
+
+msgid "DashboardProjects|Trending"
 msgstr ""
 
 msgid "Data is still calculating..."
@@ -3387,6 +3417,9 @@ msgid "Disable shared Runners"
 msgstr ""
 
 msgid "Disabled"
+msgstr ""
+
+msgid "Disabled mirrors can only be enabled by instance owners. It is recommended that you delete them."
 msgstr ""
 
 msgid "Discard"
@@ -4100,6 +4133,18 @@ msgstr ""
 msgid "ExternalAuthorizationService|When no classification label is set the default label `%{default_label}` will be used."
 msgstr ""
 
+msgid "ExternalMetrics|Add a button to the metrics dashboard linking directly to your existing external dashboards."
+msgstr ""
+
+msgid "ExternalMetrics|Enter the URL of the dashboard you want to link to"
+msgstr ""
+
+msgid "ExternalMetrics|External Dashboard"
+msgstr ""
+
+msgid "ExternalMetrics|Full dashboard URL"
+msgstr ""
+
 msgid "ExternalWikiService|External Wiki"
 msgstr ""
 
@@ -4166,6 +4211,9 @@ msgstr ""
 msgid "Failed to remove user key."
 msgstr ""
 
+msgid "Failed to save comment!"
+msgstr ""
+
 msgid "Failed to save merge conflicts resolutions. Please try again!"
 msgstr ""
 
@@ -4176,6 +4224,9 @@ msgid "Failed to save preferences (%{error_message})."
 msgstr ""
 
 msgid "Failed to save preferences."
+msgstr ""
+
+msgid "Failed to update branch!"
 msgstr ""
 
 msgid "Failed to update issues, please try again."
@@ -4762,10 +4813,13 @@ msgstr ""
 msgid "Help page text and support page url."
 msgstr ""
 
-msgid "Here is the public SSH key that needs to be added to the remote server. For more information, please refer to the documentation."
+msgid "Hide archived projects"
 msgstr ""
 
 msgid "Hide file browser"
+msgstr ""
+
+msgid "Hide group projects"
 msgstr ""
 
 msgid "Hide host keys manual input"
@@ -4775,6 +4829,9 @@ msgid "Hide marketing-related entries from help"
 msgstr ""
 
 msgid "Hide payload"
+msgstr ""
+
+msgid "Hide shared projects"
 msgstr ""
 
 msgid "Hide value"
@@ -4879,6 +4936,12 @@ msgid "If enabled"
 msgstr ""
 
 msgid "If enabled, access to projects will be validated on an external service using their classification label."
+msgstr ""
+
+msgid "If this was a mistake you can %{leave_link_start}leave the %{source_type}%{link_end}."
+msgstr ""
+
+msgid "If this was a mistake you can leave the %{source_type}."
 msgstr ""
 
 msgid "If your HTTP repository is not publicly accessible, add authentication information to the URL: <code>https://username:password@gitlab.company.com/group/project.git</code>."
@@ -5866,6 +5929,9 @@ msgstr ""
 msgid "Metrics for environment"
 msgstr ""
 
+msgid "Metrics|Add metric"
+msgstr ""
+
 msgid "Metrics|Check out the CI/CD documentation on deploying to an environment"
 msgstr ""
 
@@ -6530,6 +6596,12 @@ msgstr ""
 msgid "Overview"
 msgstr ""
 
+msgid "Owned by anyone"
+msgstr ""
+
+msgid "Owned by me"
+msgstr ""
+
 msgid "Owner"
 msgstr ""
 
@@ -6719,6 +6791,9 @@ msgstr ""
 msgid "Pipelines settings for '%{project_name}' were successfully updated."
 msgstr ""
 
+msgid "Pipelines|API"
+msgstr ""
+
 msgid "Pipelines|Build with confidence"
 msgstr ""
 
@@ -6795,6 +6870,9 @@ msgid "Pipeline|Stop pipeline"
 msgstr ""
 
 msgid "Pipeline|Stop pipeline #%{pipelineId}?"
+msgstr ""
+
+msgid "Pipeline|Triggerer"
 msgstr ""
 
 msgid "Pipeline|Variables"
@@ -6914,10 +6992,31 @@ msgstr ""
 msgid "Preferences saved."
 msgstr ""
 
+msgid "Preferences|Display time in 24-hour format"
+msgstr ""
+
+msgid "Preferences|For example: 30 mins ago."
+msgstr ""
+
 msgid "Preferences|Navigation theme"
 msgstr ""
 
+msgid "Preferences|These settings will update how dates and times are displayed for you."
+msgstr ""
+
 msgid "Preferences|This feature is experimental and translations are not complete yet"
+msgstr ""
+
+msgid "Preferences|Time display"
+msgstr ""
+
+msgid "Preferences|Time format"
+msgstr ""
+
+msgid "Preferences|Time preferences"
+msgstr ""
+
+msgid "Preferences|Use relative times"
 msgstr ""
 
 msgid "Press %{key}-C to copy"
@@ -7130,6 +7229,9 @@ msgstr ""
 msgid "Profiles|This information will appear on your profile"
 msgstr ""
 
+msgid "Profiles|Time settings"
+msgstr ""
+
 msgid "Profiles|Two-Factor Authentication"
 msgstr ""
 
@@ -7170,6 +7272,9 @@ msgid "Profiles|You can change your avatar here"
 msgstr ""
 
 msgid "Profiles|You can change your avatar here or remove the current avatar to revert to %{gravatar_link}"
+msgstr ""
+
+msgid "Profiles|You can set your current timezone here"
 msgstr ""
 
 msgid "Profiles|You can upload your avatar here"
@@ -7599,6 +7704,9 @@ msgid "Prompt users to upload SSH keys"
 msgstr ""
 
 msgid "Protected"
+msgstr ""
+
+msgid "Protected Branch"
 msgstr ""
 
 msgid "Protected Tag"
@@ -8226,6 +8334,9 @@ msgstr ""
 msgid "Search projects"
 msgstr ""
 
+msgid "Search projects..."
+msgstr ""
+
 msgid "Search users"
 msgstr ""
 
@@ -8523,6 +8634,12 @@ msgstr ""
 msgid "Show all activity"
 msgstr ""
 
+msgid "Show archived projects"
+msgstr ""
+
+msgid "Show archived projects only"
+msgstr ""
+
 msgid "Show command"
 msgstr ""
 
@@ -8787,6 +8904,12 @@ msgid "SortOptions|Recent last activity"
 msgstr ""
 
 msgid "SortOptions|Recent sign in"
+msgstr ""
+
+msgid "SortOptions|Sort direction"
+msgstr ""
+
+msgid "SortOptions|Stars"
 msgstr ""
 
 msgid "SortOptions|Start later"
@@ -9520,6 +9643,9 @@ msgstr ""
 msgid "This action can lead to data loss. To prevent accidental actions we ask you to confirm your intention."
 msgstr ""
 
+msgid "This also resolves the discussion"
+msgstr ""
+
 msgid "This application was created by %{link_to_owner}."
 msgstr ""
 
@@ -10148,9 +10274,6 @@ msgstr ""
 msgid "Unable to load the diff. %{button_try_again}"
 msgstr ""
 
-msgid "Unable to regenerate public ssh key."
-msgstr ""
-
 msgid "Unable to resolve"
 msgstr ""
 
@@ -10514,6 +10637,9 @@ msgstr ""
 msgid "View file @ "
 msgstr ""
 
+msgid "View full dashboard"
+msgstr ""
+
 msgid "View group labels"
 msgstr ""
 
@@ -10548,6 +10674,9 @@ msgid "View the documentation"
 msgstr ""
 
 msgid "Viewing commit"
+msgstr ""
+
+msgid "Visibility"
 msgstr ""
 
 msgid "Visibility and access controls"
@@ -10939,6 +11068,9 @@ msgstr ""
 msgid "You do not have any subscriptions yet"
 msgstr ""
 
+msgid "You do not have permission to leave this %{namespaceType}."
+msgstr ""
+
 msgid "You don't have any applications"
 msgstr ""
 
@@ -10946,6 +11078,12 @@ msgid "You don't have any authorized applications"
 msgstr ""
 
 msgid "You don't have any deployments right now."
+msgstr ""
+
+msgid "You have been granted %{access_level} access to the %{source_link} %{source_type}."
+msgstr ""
+
+msgid "You have been granted %{access_level} access to the %{source_name} %{source_type}."
 msgstr ""
 
 msgid "You have been granted %{member_human_access} access to %{label}."

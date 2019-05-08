@@ -4,10 +4,7 @@
 #
 # Automatically sets the layout and ensures an administrator is logged in
 class Admin::ApplicationController < ApplicationController
-  before_action :authenticate_admin!
-  layout 'admin'
+  include EnforcesAdminAuthentication
 
-  def authenticate_admin!
-    render_404 unless current_user.admin?
-  end
+  layout 'admin'
 end

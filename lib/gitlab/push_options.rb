@@ -15,7 +15,7 @@ module Gitlab
       mr: :merge_request
     }).freeze
 
-    OPTION_MATCHER = /(?<namespace>[^\.]+)\.(?<key>[^=]+)=?(?<value>.*)/
+    OPTION_MATCHER = /(?<namespace>[^\.]+)\.(?<key>[^=]+)=?(?<value>.*)/.freeze
 
     attr_reader :options
 

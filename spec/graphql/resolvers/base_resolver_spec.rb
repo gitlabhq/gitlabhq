@@ -28,4 +28,19 @@ describe Resolvers::BaseResolver do
       expect(result).to eq(test: 1)
     end
   end
+
+  it 'increases complexity based on arguments' do
+    field = Types::BaseField.new(name: 'test', type: GraphQL::STRING_TYPE, resolver_class: described_class, null: false, max_page_size: 1)
+
+    expect(field.to_graphql.complexity.call({}, { sort: 'foo' }, 1)).to eq 3
+    expect(field.to_graphql.complexity.call({}, { search: 'foo' }, 1)).to eq 7
+  end
+
+  it 'does not increase complexity when filtering by iids' do
+    field = Types::BaseField.new(name: 'test', type: GraphQL::STRING_TYPE, resolver_class: described_class, null: false, max_page_size: 100)
+
+    expect(field.to_graphql.complexity.call({}, { sort: 'foo' }, 1)).to eq 6
+    expect(field.to_graphql.complexity.call({}, { sort: 'foo', iid: 1 }, 1)).to eq 3
+    expect(field.to_graphql.complexity.call({}, { sort: 'foo', iids: [1, 2, 3] }, 1)).to eq 3
+  end
 end

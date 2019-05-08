@@ -120,10 +120,10 @@ describe Gitlab::PathRegex do
   # - Followed by one or more path-parts not starting with `:` or `*`
   # - Followed by a path-part that includes a wildcard parameter `*`
   # At the time of writing these routes match: http://rubular.com/r/Rv2pDE5Dvw
-  STARTING_WITH_NAMESPACE = %r{^/\*namespace_id/:(project_)?id}
-  NON_PARAM_PARTS = %r{[^:*][a-z\-_/]*}
-  ANY_OTHER_PATH_PART = %r{[a-z\-_/:]*}
-  WILDCARD_SEGMENT = /\*/
+  STARTING_WITH_NAMESPACE = %r{^/\*namespace_id/:(project_)?id}.freeze
+  NON_PARAM_PARTS = %r{[^:*][a-z\-_/]*}.freeze
+  ANY_OTHER_PATH_PART = %r{[a-z\-_/:]*}.freeze
+  WILDCARD_SEGMENT = /\*/.freeze
   let(:namespaced_wildcard_routes) do
     routes_without_format.select do |p|
       p =~ %r{#{STARTING_WITH_NAMESPACE}/#{NON_PARAM_PARTS}/#{ANY_OTHER_PATH_PART}#{WILDCARD_SEGMENT}}
@@ -144,7 +144,7 @@ describe Gitlab::PathRegex do
     end.uniq
   end
 
-  STARTING_WITH_GROUP = %r{^/groups/\*(group_)?id/}
+  STARTING_WITH_GROUP = %r{^/groups/\*(group_)?id/}.freeze
   let(:group_routes) do
     routes_without_format.select do |path|
       path =~ STARTING_WITH_GROUP

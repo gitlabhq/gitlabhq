@@ -41,8 +41,10 @@ gem 'omniauth-shibboleth', '~> 1.3.0'
 gem 'omniauth-twitter', '~> 1.4'
 gem 'omniauth_crowd', '~> 2.2.0'
 gem 'omniauth-authentiq', '~> 0.3.3'
+gem 'omniauth_openid_connect', '~> 0.3.0'
+gem "omniauth-ultraauth", '~> 0.0.2'
+gem 'omniauth-salesforce', '~> 1.0.5'
 gem 'rack-oauth2', '~> 1.9.3'
-gem "omniauth-ultraauth", '~> 0.0.1'
 gem 'jwt', '~> 2.1.0'
 
 # Spam and anti-bot protection
@@ -349,13 +351,14 @@ group :development, :test do
   gem 'spring', '~> 2.0.0'
   gem 'spring-commands-rspec', '~> 1.0.4'
 
-  gem 'gitlab-styles', '~> 2.5', require: false
+  gem 'gitlab-styles', '~> 2.6', require: false
   # Pin these dependencies, otherwise a new rule could break the CI pipelines
-  gem 'rubocop', '~> 0.54.0'
+  gem 'rubocop', '~> 0.68.1'
+  gem 'rubocop-performance', '~> 1.1.0'
   gem 'rubocop-rspec', '~> 1.22.1'
 
   gem 'scss_lint', '~> 0.56.0', require: false
-  gem 'haml_lint', '~> 0.28.0', require: false
+  gem 'haml_lint', '~> 0.30.0', require: false
   gem 'simplecov', '~> 0.14.0', require: false
   gem 'bundler-audit', '~> 0.5.0', require: false
 
@@ -404,6 +407,7 @@ gem 'health_check', '~> 2.6.0'
 # System information
 gem 'vmstat', '~> 2.3.0'
 gem 'sys-filesystem', '~> 1.1.6'
+gem 'sys-proctable', '~> 1.2'
 
 # SSH host key support
 gem 'net-ssh', '~> 5.0'

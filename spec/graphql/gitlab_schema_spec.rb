@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 describe GitlabSchema do
+  let(:user) { build :user }
+
   it 'uses batch loading' do
     expect(field_instrumenters).to include(BatchLoader::GraphQL)
   end
@@ -33,43 +35,75 @@ describe GitlabSchema do
     expect(connection).to eq(Gitlab::Graphql::Connections::KeysetConnection)
   end
 
-  context 'for different types of users' do
-    it 'returns DEFAULT_MAX_COMPLEXITY for no context' do
-      expect(GraphQL::Schema)
-        .to receive(:execute)
-        .with('query', hash_including(max_complexity: GitlabSchema::DEFAULT_MAX_COMPLEXITY))
+  describe '.execute' do
+    context 'for different types of users' do
+      context 'when no context' do
+        it 'returns DEFAULT_MAX_COMPLEXITY' do
+          expect(GraphQL::Schema)
+            .to receive(:execute)
+            .with('query', hash_including(max_complexity: GitlabSchema::DEFAULT_MAX_COMPLEXITY))
 
-      described_class.execute('query')
-    end
+          described_class.execute('query')
+        end
+      end
 
-    it 'returns DEFAULT_MAX_COMPLEXITY for no user' do
-      expect(GraphQL::Schema)
-        .to receive(:execute)
-        .with('query', hash_including(max_complexity: GitlabSchema::DEFAULT_MAX_COMPLEXITY))
+      context 'when no user' do
+        it 'returns DEFAULT_MAX_COMPLEXITY' do
+          expect(GraphQL::Schema)
+            .to receive(:execute)
+            .with('query', hash_including(max_complexity: GitlabSchema::DEFAULT_MAX_COMPLEXITY))
 
-      described_class.execute('query', context: {})
-    end
+          described_class.execute('query', context: {})
+        end
 
-    it 'returns AUTHENTICATED_COMPLEXITY for a logged in user' do
-      user = build :user
+        it 'returns ANONYMOUS_MAX_DEPTH' do
+          expect(GraphQL::Schema)
+            .to receive(:execute)
+            .with('query', hash_including(max_depth: GitlabSchema::ANONYMOUS_MAX_DEPTH))
 
-      expect(GraphQL::Schema).to receive(:execute).with('query', hash_including(max_complexity: GitlabSchema::AUTHENTICATED_COMPLEXITY))
+          described_class.execute('query', context: {})
+        end
+      end
 
-      described_class.execute('query', context: { current_user: user })
-    end
+      context 'when a logged in user' do
+        it 'returns AUTHENTICATED_COMPLEXITY' do
+          expect(GraphQL::Schema).to receive(:execute).with('query', hash_including(max_complexity: GitlabSchema::AUTHENTICATED_COMPLEXITY))
 
-    it 'returns ADMIN_COMPLEXITY for an admin user' do
-      user = build :user, :admin
+          described_class.execute('query', context: { current_user: user })
+        end
 
-      expect(GraphQL::Schema).to receive(:execute).with('query', hash_including(max_complexity: GitlabSchema::ADMIN_COMPLEXITY))
+        it 'returns AUTHENTICATED_MAX_DEPTH' do
+          expect(GraphQL::Schema).to receive(:execute).with('query', hash_including(max_depth: GitlabSchema::AUTHENTICATED_MAX_DEPTH))
 
-      described_class.execute('query', context: { current_user: user })
-    end
+          described_class.execute('query', context: { current_user: user })
+        end
+      end
 
-    it 'returns what was passed on the query' do
-      expect(GraphQL::Schema).to receive(:execute).with('query', { max_complexity: 1234 })
+      context 'when an admin user' do
+        it 'returns ADMIN_COMPLEXITY' do
+          user = build :user, :admin
 
-      described_class.execute('query', max_complexity: 1234)
+          expect(GraphQL::Schema).to receive(:execute).with('query', hash_including(max_complexity: GitlabSchema::ADMIN_COMPLEXITY))
+
+          described_class.execute('query', context: { current_user: user })
+        end
+      end
+
+      context 'when max_complexity passed on the query' do
+        it 'returns what was passed on the query' do
+          expect(GraphQL::Schema).to receive(:execute).with('query', hash_including(max_complexity: 1234))
+
+          described_class.execute('query', max_complexity: 1234)
+        end
+      end
+
+      context 'when max_depth passed on the query' do
+        it 'returns what was passed on the query' do
+          expect(GraphQL::Schema).to receive(:execute).with('query', hash_including(max_depth: 1234))
+
+          described_class.execute('query', max_depth: 1234)
+        end
+      end
     end
   end
 

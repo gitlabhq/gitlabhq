@@ -471,6 +471,11 @@ $note-form-margin-left: 72px;
         vertical-align: top;
         white-space: normal;
 
+        // Fixes subpixel rounding issue https://gitlab.com/gitlab-org/gitlab-ce/issues/53973
+        // background-color is needed for dark code preference
+        padding-bottom: 1px;
+        background-color: $white-light;
+
         &.parallel {
           border-width: 1px;
 

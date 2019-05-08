@@ -231,4 +231,34 @@ describe Gitlab::GitalyClient::RepositoryService do
       client.raw_changes_between('deadbeef', 'deadpork')
     end
   end
+
+  describe '#disconnect_alternates' do
+    let(:project) { create(:project, :repository) }
+    let(:repository) { project.repository }
+    let(:repository_path) { File.join(TestEnv.repos_path, repository.relative_path) }
+    let(:pool_repository) { create(:pool_repository) }
+    let(:object_pool) { pool_repository.object_pool }
+    let(:object_pool_service) { Gitlab::GitalyClient::ObjectPoolService.new(object_pool) }
+
+    before do
+      object_pool_service.create(repository)
+      object_pool_service.link_repository(repository)
+    end
+
+    it 'deletes the alternates file' do
+      repository.disconnect_alternates
+
+      alternates_file = File.join(repository_path, "objects", "info", "alternates")
+
+      expect(File.exist?(alternates_file)).to be_falsey
+    end
+
+    context 'when called twice' do
+      it "doesn't raise an error" do
+        repository.disconnect_alternates
+
+        expect { repository.disconnect_alternates }.not_to raise_error
+      end
+    end
+  end
 end

@@ -15,7 +15,7 @@ module Gitlab
           |GROUP\s+BY
           |ORDER\s+BY
           |LIMIT
-          |OFFSET)\s+}ix # Vim indent breaks when this is on a newline :<
+          |OFFSET)\s+}ix.freeze # Vim indent breaks when this is on a newline :<
 
       # Creates a new Query using a String and a separate Array of bindings.
       #

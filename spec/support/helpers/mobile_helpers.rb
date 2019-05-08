@@ -8,7 +8,7 @@ module MobileHelpers
   end
 
   def restore_window_size
-    resize_window(1366, 768)
+    resize_window(*CAPYBARA_WINDOW_SIZE)
   end
 
   def resize_window(width, height)

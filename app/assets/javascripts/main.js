@@ -136,10 +136,22 @@ function deferredInitialisation() {
 
   loadAwardsHandler();
 
-  // Toggle Canary Badge
+  /**
+   * Toggle Canary Badge
+   *
+   * For GitLab.com only, when the user is using canary
+   * we render a Next badge and hide the option to switch
+   * to canay
+   */
   if (Cookies.get('gitlab_canary') && Cookies.get('gitlab_canary') === 'true') {
-    document.querySelector('.js-canary-badge').classList.remove('hidden');
-    document.querySelector('.js-canary-link').classList.add('hidden');
+    const canaryBadge = document.querySelector('.js-canary-badge');
+    const canaryLink = document.querySelector('.js-canary-link');
+    if (canaryBadge) {
+      canaryBadge.classList.remove('hidden');
+    }
+    if (canaryLink) {
+      canaryLink.classList.add('hidden');
+    }
   }
 }
 
