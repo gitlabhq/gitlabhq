@@ -7,6 +7,9 @@ class GitlabSchema < GraphQL::Schema
   AUTHENTICATED_COMPLEXITY = 250
   ADMIN_COMPLEXITY         = 300
 
+  ANONYMOUS_MAX_DEPTH = 10
+  AUTHENTICATED_MAX_DEPTH = 15
+
   use BatchLoader::GraphQL
   use Gitlab::Graphql::Authorize
   use Gitlab::Graphql::Present
@@ -23,21 +26,36 @@ class GitlabSchema < GraphQL::Schema
 
   mutation(Types::MutationType)
 
-  def self.execute(query_str = nil, **kwargs)
-    kwargs[:max_complexity] ||= max_query_complexity(kwargs[:context])
+  class << self
+    def execute(query_str = nil, **kwargs)
+      kwargs[:max_complexity] ||= max_query_complexity(kwargs[:context])
+      kwargs[:max_depth] ||= max_query_depth(kwargs[:context])
 
-    super(query_str, **kwargs)
-  end
+      super(query_str, **kwargs)
+    end
 
-  def self.max_query_complexity(ctx)
-    current_user = ctx&.fetch(:current_user, nil)
+    private
 
-    if current_user&.admin
-      ADMIN_COMPLEXITY
-    elsif current_user
-      AUTHENTICATED_COMPLEXITY
-    else
-      DEFAULT_MAX_COMPLEXITY
+    def max_query_complexity(ctx)
+      current_user = ctx&.fetch(:current_user, nil)
+
+      if current_user&.admin
+        ADMIN_COMPLEXITY
+      elsif current_user
+        AUTHENTICATED_COMPLEXITY
+      else
+        DEFAULT_MAX_COMPLEXITY
+      end
+    end
+
+    def max_query_depth(ctx)
+      current_user = ctx&.fetch(:current_user, nil)
+
+      if current_user
+        AUTHENTICATED_MAX_DEPTH
+      else
+        ANONYMOUS_MAX_DEPTH
+      end
     end
   end
 end
