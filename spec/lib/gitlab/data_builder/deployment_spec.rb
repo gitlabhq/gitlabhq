@@ -19,6 +19,7 @@ describe Gitlab::DataBuilder::Deployment do
       deployment = create(:deployment, status: :failed, environment: environment, sha: commit.sha, project: project)
       deployable = deployment.deployable
       expected_deployable_url = Gitlab::Routing.url_helpers.project_job_url(deployable.project, deployable)
+      expected_user_url = Gitlab::Routing.url_helpers.user_url(deployment.user)
       expected_commit_url = Gitlab::UrlBuilder.build(commit)
 
       data = described_class.build(deployment)
@@ -30,7 +31,9 @@ describe Gitlab::DataBuilder::Deployment do
       expect(data[:project]).to eq(project.hook_attrs)
       expect(data[:short_sha]).to eq(deployment.short_sha)
       expect(data[:user]).to eq(deployment.user.hook_attrs)
+      expect(data[:user_url]).to eq(expected_user_url)
       expect(data[:commit_url]).to eq(expected_commit_url)
+      expect(data[:commit_title]).to eq(commit.title)
     end
   end
 end

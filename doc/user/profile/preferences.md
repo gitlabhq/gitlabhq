@@ -79,6 +79,7 @@ You have 8 options here that you can use for your default dashboard view:
 - Your [Todos](../../workflow/todos.md)
 - Assigned Issues
 - Assigned Merge Requests
+- Operations Dashboard **[PREMIUM]**
 
 ### Project overview content
 

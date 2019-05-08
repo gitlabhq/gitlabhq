@@ -253,6 +253,7 @@ export function prepareDiffData(diffData) {
       isShowingFullFile: false,
       isLoadingFullFile: false,
       discussions: [],
+      renderingLines: false,
     });
   }
 }
@@ -423,27 +424,33 @@ export const convertExpandLines = ({
   mapLine,
 }) => {
   const dataLength = data.length;
+  const lines = [];
 
-  return diffLines.reduce((acc, line, i) => {
+  for (let i = 0, diffLinesLength = diffLines.length; i < diffLinesLength; i += 1) {
+    const line = diffLines[i];
+
     if (_.property(typeKey)(line) === 'match') {
       const beforeLine = diffLines[i - 1];
       const afterLine = diffLines[i + 1];
-      const beforeLineIndex = _.property(newLineKey)(beforeLine) || 0;
-      const afterLineIndex = _.property(newLineKey)(afterLine) - 1 || dataLength;
+      const newLineProperty = _.property(newLineKey);
+      const beforeLineIndex = newLineProperty(beforeLine) || 0;
+      const afterLineIndex = newLineProperty(afterLine) - 1 || dataLength;
 
-      acc.push(
-        ...data.slice(beforeLineIndex, afterLineIndex).map((l, index) => ({
-          ...mapLine({
-            line: { ...l, hasForm: false, discussions: [] },
+      lines.push(
+        ...data.slice(beforeLineIndex, afterLineIndex).map((l, index) =>
+          mapLine({
+            line: Object.assign(l, { hasForm: false, discussions: [] }),
             oldLine: (_.property(oldLineKey)(beforeLine) || 0) + index + 1,
-            newLine: (_.property(newLineKey)(beforeLine) || 0) + index + 1,
+            newLine: (newLineProperty(beforeLine) || 0) + index + 1,
           }),
-        })),
+        ),
       );
     } else {
-      acc.push(line);
+      lines.push(line);
     }
+  }
 
-    return acc;
-  }, []);
+  return lines;
 };
+
+export const idleCallback = cb => requestIdleCallback(cb);

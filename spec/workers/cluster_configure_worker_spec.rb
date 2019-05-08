@@ -68,6 +68,16 @@ describe ClusterConfigureWorker, '#perform' do
     it_behaves_like 'configured cluster'
   end
 
+  context 'when cluster is not managed' do
+    let(:cluster) { create(:cluster, :not_managed) }
+
+    it 'does not configure the cluster' do
+      expect(Clusters::RefreshService).not_to receive(:create_or_update_namespaces_for_cluster)
+
+      described_class.new.perform(cluster.id)
+    end
+  end
+
   context 'when cluster does not exist' do
     it 'does not provision a cluster' do
       expect_any_instance_of(Clusters::Gcp::Kubernetes::CreateOrUpdateNamespaceService).not_to receive(:execute)

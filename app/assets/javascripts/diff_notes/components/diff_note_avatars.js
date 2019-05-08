@@ -5,6 +5,7 @@ import Vue from 'vue';
 import collapseIcon from '../icons/collapse_icon.svg';
 import Notes from '../../notes';
 import userAvatarImage from '../../vue_shared/components/user_avatar/user_avatar_image.vue';
+import { n__ } from '~/locale';
 
 const DiffNoteAvatars = Vue.extend({
   components: {
@@ -44,7 +45,7 @@ const DiffNoteAvatars = Vue.extend({
       if (this.discussion) {
         const extra = this.discussion.notesCount() - this.shownAvatars;
 
-        return `${extra} more comment${extra > 1 ? 's' : ''}`;
+        return n__('%d more comment', '%d more comments', extra);
       }
 
       return '';

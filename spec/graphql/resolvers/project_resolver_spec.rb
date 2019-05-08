@@ -26,6 +26,14 @@ describe Resolvers::ProjectResolver do
     end
   end
 
+  it 'does not increase complexity depending on number of load limits' do
+    field1 = Types::BaseField.new(name: 'test', type: GraphQL::STRING_TYPE, resolver_class: described_class, null: false, max_page_size: 100)
+    field2 = Types::BaseField.new(name: 'test', type: GraphQL::STRING_TYPE, resolver_class: described_class, null: false, max_page_size: 1)
+
+    expect(field1.to_graphql.complexity.call({}, {}, 1)).to eq 2
+    expect(field2.to_graphql.complexity.call({}, {}, 1)).to eq 2
+  end
+
   def resolve_project(full_path)
     resolve(described_class, args: { full_path: full_path })
   end

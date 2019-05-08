@@ -85,6 +85,14 @@ You can see GitLab's keyboard shortcuts by using 'shift + ?'
 | <kbd>]</kbd> or <kbd>j</kbd> | Move to next file |
 | <kbd>[</kbd> or <kbd>k</kbd> | Move to previous file |
 
+## Epics **[ULTIMATE]**
+
+| Keyboard Shortcut | Description |
+| ----------------- | ----------- |
+| <kbd>r</kbd> | Reply (quoting selected text) |
+| <kbd>e</kbd> | Edit description |
+| <kbd>l</kbd> | Change label |
+
 ## Wiki pages
 
 | Keyboard Shortcut | Description |

@@ -7,7 +7,7 @@ class PersonalSnippetPolicy < BasePolicy
 
   rule { public_snippet }.policy do
     enable :read_personal_snippet
-    enable :comment_personal_snippet
+    enable :create_note
   end
 
   rule { is_author }.policy do
@@ -15,7 +15,7 @@ class PersonalSnippetPolicy < BasePolicy
     enable :update_personal_snippet
     enable :destroy_personal_snippet
     enable :admin_personal_snippet
-    enable :comment_personal_snippet
+    enable :create_note
   end
 
   rule { ~anonymous }.enable :create_personal_snippet
@@ -23,15 +23,12 @@ class PersonalSnippetPolicy < BasePolicy
 
   rule { internal_snippet & ~external_user }.policy do
     enable :read_personal_snippet
-    enable :comment_personal_snippet
-  end
-
-  rule { anonymous }.prevent :comment_personal_snippet
-
-  rule { can?(:comment_personal_snippet) }.policy do
     enable :create_note
-    enable :award_emoji
   end
+
+  rule { anonymous }.prevent :create_note
+
+  rule { can?(:create_note) }.enable :award_emoji
 
   rule { full_private_access }.enable :read_personal_snippet
 end

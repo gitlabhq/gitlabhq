@@ -1,3 +1,5 @@
+import { __ } from '~/locale';
+
 export default class FilteredSearchTokenKeys {
   constructor(tokenKeys = [], alternativeTokenKeys = [], conditions = []) {
     this.tokenKeys = tokenKeys;
@@ -79,7 +81,7 @@ export default class FilteredSearchTokenKeys {
       param: '',
       symbol: '',
       icon: 'eye-slash',
-      tag: 'Yes or No',
+      tag: __('Yes or No'),
       lowercaseValueOnSubmit: true,
       uppercaseTokenName: false,
       capitalizeTokenValue: true,

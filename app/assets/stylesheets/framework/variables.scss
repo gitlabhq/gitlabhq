@@ -11,6 +11,14 @@ $default-transition-duration: 0.15s;
 $contextual-sidebar-width: 220px;
 $contextual-sidebar-collapsed-width: 50px;
 $toggle-sidebar-height: 48px;
+$spacing-scale: (
+  0: 0,
+  1: #{0.5 * $grid-size},
+  2: $grid-size,
+  3: #{2 * $grid-size},
+  4: #{3 * $grid-size},
+  5: #{4 * $grid-size}
+);
 
 /*
  * Color schema

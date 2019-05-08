@@ -1,0 +1,5 @@
+---
+title: Fix update head pipeline process of Pipelines for merge requests
+merge_request: 28057
+author:
+type: fixed

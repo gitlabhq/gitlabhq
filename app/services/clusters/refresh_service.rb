@@ -22,9 +22,9 @@ module Clusters
 
     def self.clusters_with_missing_kubernetes_namespaces_for_project(project)
       if Feature.enabled?(:ci_preparing_state, default_enabled: true)
-        project.clusters.missing_kubernetes_namespace(project.kubernetes_namespaces)
+        project.clusters.managed.missing_kubernetes_namespace(project.kubernetes_namespaces)
       else
-        project.all_clusters.missing_kubernetes_namespace(project.kubernetes_namespaces)
+        project.all_clusters.managed.missing_kubernetes_namespace(project.kubernetes_namespaces)
       end
     end
 

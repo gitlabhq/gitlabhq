@@ -1,16 +1,24 @@
 <script>
-import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import {
+  GlButton,
+  GlDropdown,
+  GlDropdownItem,
+  GlModal,
+  GlModalDirective,
+  GlLink,
+} from '@gitlab/ui';
 import _ from 'underscore';
 import { s__ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
 import '~/vue_shared/mixins/is_ee';
+import { getParameterValues } from '~/lib/utils/url_utility';
 import Flash from '../../flash';
 import MonitoringService from '../services/monitoring_service';
 import MonitorAreaChart from './charts/area.vue';
 import GraphGroup from './graph_group.vue';
 import EmptyState from './empty_state.vue';
 import MonitoringStore from '../stores/monitoring_store';
-import { timeWindows } from '../constants';
+import { timeWindows, timeWindowsKeyNames } from '../constants';
 import { getTimeDiff } from '../utils';
 
 const sidebarAnimationDuration = 150;
@@ -22,11 +30,21 @@ export default {
     GraphGroup,
     EmptyState,
     Icon,
+    GlButton,
     GlDropdown,
     GlDropdownItem,
+    GlLink,
+    GlModal,
   },
-
+  directives: {
+    GlModalDirective,
+  },
   props: {
+    externalDashboardPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
     hasMetrics: {
       type: Boolean,
       required: false,
@@ -94,6 +112,19 @@ export default {
       type: Boolean,
       required: true,
     },
+    customMetricsAvailable: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    customMetricsPath: {
+      type: String,
+      required: true,
+    },
+    validateQueryPath: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
@@ -102,7 +133,14 @@ export default {
       showEmptyState: true,
       elWidth: 0,
       selectedTimeWindow: '',
+      selectedTimeWindowKey: '',
+      formIsValid: null,
     };
+  },
+  computed: {
+    canAddMetrics() {
+      return this.customMetricsAvailable && this.customMetricsPath.length;
+    },
   },
   created() {
     this.service = new MonitoringService({
@@ -110,9 +148,16 @@ export default {
       deploymentEndpoint: this.deploymentEndpoint,
       environmentsEndpoint: this.environmentsEndpoint,
     });
-
     this.timeWindows = timeWindows;
-    this.selectedTimeWindow = this.timeWindows.eightHours;
+    this.selectedTimeWindowKey =
+      _.escape(getParameterValues('time_window')[0]) || timeWindowsKeyNames.eightHours;
+
+    // Set default time window if the selectedTimeWindowKey is bogus
+    if (!Object.keys(this.timeWindows).includes(this.selectedTimeWindowKey)) {
+      this.selectedTimeWindowKey = timeWindowsKeyNames.eightHours;
+    }
+
+    this.selectedTimeWindow = this.timeWindows[this.selectedTimeWindowKey];
   },
   beforeDestroy() {
     if (sidebarMutationObserver) {
@@ -120,9 +165,10 @@ export default {
     }
   },
   mounted() {
+    const startEndWindow = getTimeDiff(this.timeWindows[this.selectedTimeWindowKey]);
     this.servicePromises = [
       this.service
-        .getGraphsData()
+        .getGraphsData(startEndWindow)
         .then(data => this.store.storeMetrics(data))
         .catch(() => Flash(s__('Metrics|There was an error while retrieving metrics'))),
       this.service
@@ -176,73 +222,117 @@ export default {
           this.state = 'unableToConnect';
         });
     },
-    getGraphsDataWithTime(timeFrame) {
-      this.state = 'loading';
-      this.showEmptyState = true;
-      this.service
-        .getGraphsData(getTimeDiff(this.timeWindows[timeFrame]))
-        .then(data => {
-          this.store.storeMetrics(data);
-          this.selectedTimeWindow = this.timeWindows[timeFrame];
-        })
-        .catch(() => {
-          Flash(s__('Metrics|Not enough data to display'));
-        })
-        .finally(() => {
-          this.showEmptyState = false;
-        });
+    hideAddMetricModal() {
+      this.$refs.addMetricModal.hide();
     },
     onSidebarMutation() {
       setTimeout(() => {
         this.elWidth = this.$el.clientWidth;
       }, sidebarAnimationDuration);
     },
+    setFormValidity(isValid) {
+      this.formIsValid = isValid;
+    },
+    submitCustomMetricsForm() {
+      this.$refs.customMetricsForm.submit();
+    },
     activeTimeWindow(key) {
       return this.timeWindows[key] === this.selectedTimeWindow;
     },
+    setTimeWindowParameter(key) {
+      return `?time_window=${key}`;
+    },
+  },
+  addMetric: {
+    title: s__('Metrics|Add metric'),
+    modalId: 'add-metric',
   },
 };
 </script>
 
 <template>
-  <div v-if="!showEmptyState" class="prometheus-graphs prepend-top-default">
-    <div
-      v-if="environmentsEndpoint"
-      class="dropdowns d-flex align-items-center justify-content-between"
-    >
-      <div class="d-flex align-items-center">
-        <strong>{{ s__('Metrics|Environment') }}</strong>
-        <gl-dropdown
-          class="prepend-left-10 js-environments-dropdown"
-          toggle-class="dropdown-menu-toggle"
-          :text="currentEnvironmentName"
-          :disabled="store.environmentsData.length === 0"
-        >
-          <gl-dropdown-item
-            v-for="environment in store.environmentsData"
-            :key="environment.id"
-            :href="environment.metrics_path"
-            :active="environment.name === currentEnvironmentName"
-            active-class="is-active"
-            >{{ environment.name }}</gl-dropdown-item
+  <div v-if="!showEmptyState" class="prometheus-graphs">
+    <div class="gl-p-3 border-bottom bg-gray-light d-flex justify-content-between">
+      <div
+        v-if="environmentsEndpoint"
+        class="dropdowns d-flex align-items-center justify-content-between"
+      >
+        <div class="d-flex align-items-center">
+          <strong>{{ s__('Metrics|Environment') }}</strong>
+          <gl-dropdown
+            class="prepend-left-10 js-environments-dropdown"
+            toggle-class="dropdown-menu-toggle"
+            :text="currentEnvironmentName"
+            :disabled="store.environmentsData.length === 0"
           >
-        </gl-dropdown>
+            <gl-dropdown-item
+              v-for="environment in store.environmentsData"
+              :key="environment.id"
+              :active="environment.name === currentEnvironmentName"
+              active-class="is-active"
+              >{{ environment.name }}</gl-dropdown-item
+            >
+          </gl-dropdown>
+        </div>
+        <div v-if="showTimeWindowDropdown" class="d-flex align-items-center">
+          <strong>{{ s__('Metrics|Show last') }}</strong>
+          <gl-dropdown
+            class="prepend-left-10 js-time-window-dropdown"
+            toggle-class="dropdown-menu-toggle"
+            :text="selectedTimeWindow"
+          >
+            <gl-dropdown-item
+              v-for="(value, key) in timeWindows"
+              :key="key"
+              :active="activeTimeWindow(key)"
+              ><gl-link :href="setTimeWindowParameter(key)">{{ value }}</gl-link></gl-dropdown-item
+            >
+          </gl-dropdown>
+        </div>
       </div>
-      <div v-if="showTimeWindowDropdown" class="d-flex align-items-center">
-        <strong>{{ s__('Metrics|Show last') }}</strong>
-        <gl-dropdown
-          class="prepend-left-10 js-time-window-dropdown"
-          toggle-class="dropdown-menu-toggle"
-          :text="selectedTimeWindow"
-        >
-          <gl-dropdown-item
-            v-for="(value, key) in timeWindows"
-            :key="key"
-            :active="activeTimeWindow(key)"
-            @click="getGraphsDataWithTime(key)"
-            >{{ value }}</gl-dropdown-item
+      <div class="d-flex">
+        <div v-if="isEE && canAddMetrics">
+          <gl-button
+            v-gl-modal-directive="$options.addMetric.modalId"
+            class="js-add-metric-button text-success border-success"
           >
-        </gl-dropdown>
+            {{ $options.addMetric.title }}
+          </gl-button>
+          <gl-modal
+            ref="addMetricModal"
+            :modal-id="$options.addMetric.modalId"
+            :title="$options.addMetric.title"
+          >
+            <form ref="customMetricsForm" :action="customMetricsPath" method="post">
+              <custom-metrics-form-fields
+                :validate-query-path="validateQueryPath"
+                form-operation="post"
+                @formValidation="setFormValidity"
+              />
+            </form>
+            <div slot="modal-footer">
+              <gl-button @click="hideAddMetricModal">
+                {{ __('Cancel') }}
+              </gl-button>
+              <gl-button
+                :disabled="!formIsValid"
+                variant="success"
+                @click="submitCustomMetricsForm"
+              >
+                {{ __('Save changes') }}
+              </gl-button>
+            </div>
+          </gl-modal>
+        </div>
+        <gl-button
+          v-if="externalDashboardPath.length"
+          class="js-external-dashboard-link prepend-left-8"
+          variant="primary"
+          :href="externalDashboardPath"
+        >
+          {{ __('View full dashboard') }}
+          <icon name="external-link" />
+        </gl-button>
       </div>
     </div>
     <graph-group

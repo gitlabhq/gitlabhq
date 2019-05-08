@@ -1,12 +1,13 @@
 import $ from 'jquery';
 import Autosave from '../../autosave';
 import { capitalizeFirstCharacter } from '../../lib/utils/text_utility';
+import { s__ } from '~/locale';
 
 export default {
   methods: {
     initAutoSave(noteable, extraKeys = []) {
       let keys = [
-        'Note',
+        s__('Autosave|Note'),
         capitalizeFirstCharacter(noteable.noteable_type || noteable.noteableType),
         noteable.id,
       ];

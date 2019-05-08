@@ -7,8 +7,6 @@ describe Gitlab::Git::ObjectPool do
 
   let(:pool_repository) { create(:pool_repository) }
   let(:source_repository) { pool_repository.source_project.repository }
-  let(:source_repository_path) { File.join(TestEnv.repos_path, source_repository.relative_path) }
-  let(:source_repository_rugged) { Rugged::Repository.new(source_repository_path) }
 
   subject { pool_repository.object_pool }
 
@@ -82,6 +80,8 @@ describe Gitlab::Git::ObjectPool do
   end
 
   describe '#fetch' do
+    let(:source_repository_path) { File.join(TestEnv.repos_path, source_repository.relative_path) }
+    let(:source_repository_rugged) { Rugged::Repository.new(source_repository_path) }
     let(:commit_count) { source_repository.commit_count }
 
     context "when the object's pool repository exists" do
@@ -98,7 +98,7 @@ describe Gitlab::Git::ObjectPool do
       it "re-creates the object pool's repository" do
         subject.fetch
 
-        expect(subject.repository.exists?).to be(true)
+        expect(subject.repository.exists?).to be true
       end
 
       it 'does not raise an error' do

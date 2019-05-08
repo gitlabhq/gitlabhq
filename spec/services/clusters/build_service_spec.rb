@@ -21,5 +21,13 @@ describe Clusters::BuildService do
         is_expected.to be_group_type
       end
     end
+
+    describe 'when cluster subject is an instance' do
+      let(:cluster_subject) { Clusters::Instance.new }
+
+      it 'sets the cluster_type to instance_type' do
+        is_expected.to be_instance_type
+      end
+    end
   end
 end

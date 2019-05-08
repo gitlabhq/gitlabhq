@@ -18,3 +18,12 @@ export const timeWindows = {
   threeDays: __('3 days'),
   oneWeek: __('1 week'),
 };
+
+export const timeWindowsKeyNames = {
+  thirtyMinutes: 'thirtyMinutes',
+  threeHours: 'threeHours',
+  eightHours: 'eightHours',
+  oneDay: 'oneDay',
+  threeDays: 'threeDays',
+  oneWeek: 'oneWeek',
+};

@@ -6,14 +6,16 @@ module RuboCop
     # Returns true if the given node originated from the spec directory.
     def in_spec?(node)
       path = node.location.expression.source_buffer.name
+      pwd = RuboCop::PathUtil.pwd
 
       !SPEC_HELPERS.include?(File.basename(path)) &&
-        path.start_with?(File.join(Dir.pwd, 'spec'), File.join(Dir.pwd, 'ee', 'spec'))
+        path.start_with?(File.join(pwd, 'spec'), File.join(pwd, 'ee', 'spec'))
     end
 
     def migration_directories
       @migration_directories ||= MIGRATION_SPEC_DIRECTORIES.map do |dir|
-        [File.join(Dir.pwd, dir), File.join(Dir.pwd, 'ee', dir)]
+        pwd = RuboCop::PathUtil.pwd
+        [File.join(pwd, dir), File.join(pwd, 'ee', dir)]
       end.flatten
     end
 

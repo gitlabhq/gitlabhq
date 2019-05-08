@@ -98,6 +98,12 @@ up its own internal state, maximizing the space saved.
     `git gc` against the repository. You will receive an email once it has
     completed.
 
+This process will remove some copies of the rewritten commits from GitLab's
+cache and database, but there are still numerous gaps in coverage - at present,
+some of the copies may persist indefinitely. [Clearing the instance cache]
+(../../../administration/raketasks/maintenance.md#clear-redis-cache) may help to
+remove some of them, but it should not be depended on for security purposes!
+
 ## Using `git filter-branch`
 
 1. Navigate to your repository:

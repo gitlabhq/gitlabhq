@@ -140,7 +140,7 @@ class CommitStatus < ApplicationRecord
   end
 
   def locking_enabled?
-    status_changed?
+    will_save_change_to_status?
   end
 
   def before_sha

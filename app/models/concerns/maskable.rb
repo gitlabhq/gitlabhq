@@ -9,7 +9,7 @@ module Maskable
   # * No spaces
   # * Minimal length of 8 characters
   # * Absolutely no fun is allowed
-  REGEX = /\A\w{8,}\z/
+  REGEX = /\A\w{8,}\z/.freeze
 
   included do
     validates :masked, inclusion: { in: [true, false] }

@@ -19,7 +19,7 @@ To get the credentials (a pair of Client ID and Client Secret), you must registe
 
 1.  Provide the required details.
     - Application name: This can be anything. Consider something like `<Organization>'s GitLab` or `<Your Name>'s GitLab` or something else descriptive.
-    - Homepage URL: the URL to your GitLab installation. e.g., `https://gitlab.company.com`
+    - Homepage URL: The URL of your GitLab installation. For example, `https://gitlab.example.com`.
     - Application description: Fill this in if you wish.
     - Authorization callback URL: `http(s)://${YOUR_DOMAIN}/users/auth/github/callback`. Please make sure the port is included if your GitLab instance is not configured on default port.
     ![Register OAuth App](img/github_register_app.png)

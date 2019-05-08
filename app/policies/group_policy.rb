@@ -129,6 +129,10 @@ class GroupPolicy < BasePolicy
   def access_level
     return GroupMember::NO_ACCESS if @user.nil?
 
-    @access_level ||= @subject.max_member_access_for_user(@user)
+    @access_level ||= lookup_access_level!
+  end
+
+  def lookup_access_level!
+    @subject.max_member_access_for_user(@user)
   end
 end

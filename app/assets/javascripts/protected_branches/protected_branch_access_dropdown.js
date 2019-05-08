@@ -1,3 +1,5 @@
+import { __ } from '~/locale';
+
 export default class ProtectedBranchAccessDropdown {
   constructor(options) {
     this.options = options;
@@ -15,7 +17,7 @@ export default class ProtectedBranchAccessDropdown {
         if ($el.is('.is-active')) {
           return item.text;
         }
-        return 'Select';
+        return __('Select');
       },
       clicked(options) {
         options.e.preventDefault();

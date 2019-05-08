@@ -29,6 +29,10 @@ describe('DiffContent', () => {
     });
   });
 
+  afterEach(() => {
+    vm.$destroy();
+  });
+
   describe('text based files', () => {
     it('should render diff inline view', done => {
       vm.$store.state.diffs.diffViewType = 'inline';
@@ -45,6 +49,16 @@ describe('DiffContent', () => {
 
       vm.$nextTick(() => {
         expect(vm.$el.querySelectorAll('.parallel').length).toEqual(18);
+
+        done();
+      });
+    });
+
+    it('renders rendering more lines loading icon', done => {
+      vm.diffFile.renderingLines = true;
+
+      vm.$nextTick(() => {
+        expect(vm.$el.querySelector('.loading-container')).not.toBe(null);
 
         done();
       });

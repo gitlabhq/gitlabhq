@@ -1434,7 +1434,7 @@ describe Ci::Build do
             build.cancel!
           end
 
-          it { is_expected.to be_retryable }
+          it { is_expected.not_to be_retryable }
         end
       end
 
@@ -1964,7 +1964,7 @@ describe Ci::Build do
       context 'when build has been canceled' do
         subject { build_stubbed(:ci_build, :manual, status: :canceled) }
 
-        it { is_expected.to be_playable }
+        it { is_expected.not_to be_playable }
       end
 
       context 'when build is successful' do
@@ -2817,7 +2817,7 @@ describe Ci::Build do
 
     context 'when ref is merge request' do
       let(:merge_request) { create(:merge_request, :with_detached_merge_request_pipeline) }
-      let(:pipeline) { merge_request.merge_request_pipelines.first }
+      let(:pipeline) { merge_request.pipelines_for_merge_request.first }
       let(:build) { create(:ci_build, ref: merge_request.source_branch, tag: false, pipeline: pipeline, project: project) }
 
       context 'when ref is protected' do
@@ -2875,7 +2875,7 @@ describe Ci::Build do
 
     context 'when ref is merge request' do
       let(:merge_request) { create(:merge_request, :with_detached_merge_request_pipeline) }
-      let(:pipeline) { merge_request.merge_request_pipelines.first }
+      let(:pipeline) { merge_request.pipelines_for_merge_request.first }
       let(:build) { create(:ci_build, ref: merge_request.source_branch, tag: false, pipeline: pipeline, project: project) }
 
       context 'when ref is protected' do

@@ -21,7 +21,7 @@ class EmojiChecker
   # alone is not enough, as we'd match `:foo:bar:baz`. Instead, we use this
   # regex to save us from having to check for all possible emoji names when we
   # know one definitely is not included.
-  LIKELY_EMOJI = /:[\+a-z0-9_\-]+:/
+  LIKELY_EMOJI = /:[\+a-z0-9_\-]+:/.freeze
 
   def initialize
     names = JSON.parse(File.read(DIGESTS)).keys +

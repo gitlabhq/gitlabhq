@@ -63,7 +63,7 @@ class Namespace < ApplicationRecord
 
   # Legacy Storage specific hooks
 
-  after_update :move_dir, if: :path_or_parent_changed?
+  after_update :move_dir, if: :saved_change_to_path_or_parent?
   before_destroy(prepend: true) { prepare_for_destroy }
   after_destroy :rm_dir
 
@@ -77,7 +77,8 @@ class Namespace < ApplicationRecord
         'COALESCE(SUM(ps.storage_size), 0) AS storage_size',
         'COALESCE(SUM(ps.repository_size), 0) AS repository_size',
         'COALESCE(SUM(ps.lfs_objects_size), 0) AS lfs_objects_size',
-        'COALESCE(SUM(ps.build_artifacts_size), 0) AS build_artifacts_size'
+        'COALESCE(SUM(ps.build_artifacts_size), 0) AS build_artifacts_size',
+        'COALESCE(SUM(ps.packages_size), 0) AS packages_size'
       )
   end
 
@@ -144,7 +145,7 @@ class Namespace < ApplicationRecord
 
   def send_update_instructions
     projects.each do |project|
-      project.send_move_instructions("#{full_path_was}/#{project.path}")
+      project.send_move_instructions("#{full_path_before_last_save}/#{project.path}")
     end
   end
 
@@ -229,10 +230,6 @@ class Namespace < ApplicationRecord
     [owner_id]
   end
 
-  def parent_changed?
-    parent_id_changed?
-  end
-
   # Includes projects from this namespace and projects from all subgroups
   # that belongs to this namespace
   def all_projects
@@ -262,12 +259,12 @@ class Namespace < ApplicationRecord
     false
   end
 
-  def full_path_was
-    if parent_id_was.nil?
-      path_was
+  def full_path_before_last_save
+    if parent_id_before_last_save.nil?
+      path_before_last_save
     else
-      previous_parent = Group.find_by(id: parent_id_was)
-      previous_parent.full_path + '/' + path_was
+      previous_parent = Group.find_by(id: parent_id_before_last_save)
+      previous_parent.full_path + '/' + path_before_last_save
     end
   end
 
@@ -293,7 +290,15 @@ class Namespace < ApplicationRecord
 
   private
 
-  def path_or_parent_changed?
+  def parent_changed?
+    parent_id_changed?
+  end
+
+  def saved_change_to_parent?
+    saved_change_to_parent_id?
+  end
+
+  def saved_change_to_path_or_parent?
     saved_change_to_path? || saved_change_to_parent_id?
   end
 

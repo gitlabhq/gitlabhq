@@ -239,6 +239,12 @@ module Gitlab
         messages
       end
 
+      def pack_refs
+        request = Gitaly::PackRefsRequest.new(repository: @gitaly_repo)
+
+        GitalyClient.call(@storage, :ref_service, :pack_refs, request)
+      end
+
       private
 
       def consume_refs_response(response)

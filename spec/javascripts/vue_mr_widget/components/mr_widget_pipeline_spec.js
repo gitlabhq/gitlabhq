@@ -78,6 +78,19 @@ describe('MRWidgetPipeline', () => {
       );
     });
 
+    it('should render CI error when no pipeline is provided', () => {
+      vm = mountComponent(Component, {
+        pipeline: {},
+        hasCi: true,
+        ciStatus: 'success',
+        troubleshootingDocsPath: 'help',
+      });
+
+      expect(vm.$el.querySelector('.media-body').textContent.trim()).toContain(
+        'Could not retrieve the pipeline status. For troubleshooting steps, read the documentation.',
+      );
+    });
+
     describe('with a pipeline', () => {
       beforeEach(() => {
         vm = mountComponent(Component, {

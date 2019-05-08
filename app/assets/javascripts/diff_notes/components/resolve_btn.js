@@ -4,6 +4,7 @@
 import $ from 'jquery';
 import Vue from 'vue';
 import Flash from '../../flash';
+import { sprintf, __ } from '~/locale';
 
 const ResolveBtn = Vue.extend({
   props: {
@@ -55,12 +56,14 @@ const ResolveBtn = Vue.extend({
     },
     buttonText() {
       if (this.isResolved) {
-        return `Resolved by ${this.resolvedByName}`;
+        return sprintf(__('Resolved by %{resolvedByName}'), {
+          resolvedByName: this.resolvedByName,
+        });
       } else if (this.canResolve) {
-        return 'Mark as resolved';
+        return __('Mark as resolved');
       }
 
-      return 'Unable to resolve';
+      return __('Unable to resolve');
     },
     isResolved() {
       if (this.note) {
@@ -132,7 +135,8 @@ const ResolveBtn = Vue.extend({
           this.updateTooltip();
         })
         .catch(
-          () => new Flash('An error occurred when trying to resolve a comment. Please try again.'),
+          () =>
+            new Flash(__('An error occurred when trying to resolve a comment. Please try again.')),
         );
     },
   },

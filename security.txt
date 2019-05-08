@@ -1,0 +1,6 @@
+Contact: security@gitlab.com
+Acknowledgments: https://about.gitlab.com/security/vulnerability-acknowledgements/
+Preferred-Languages: en
+Canonical: https://about.gitlab.com/security/disclosure/
+Policy: https://hackerone.com/gitlab
+Hiring: https://about.gitlab.com/jobs/

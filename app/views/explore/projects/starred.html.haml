@@ -5,9 +5,9 @@
 = render_dashboard_gold_trial(current_user)
 
 - if current_user
-  = render 'dashboard/projects_head'
+  = render 'dashboard/projects_head', project_tab_filter: :starred
 - else
   = render 'explore/head'
 
-= render 'explore/projects/nav'
+= render 'explore/projects/nav' unless Feature.enabled?(:project_list_filter_bar) && current_user
 = render 'projects', projects: @projects

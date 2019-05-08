@@ -1,0 +1,5 @@
+---
+title: disable SSH key validation in key details view
+merge_request: 28180
+author: Roger Meier
+type: fixed

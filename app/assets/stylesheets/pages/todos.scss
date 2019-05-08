@@ -110,45 +110,38 @@
   }
 
   .todo-body {
-    .todo-note {
-      word-wrap: break-word;
+    .badge.badge-pill,
+    p {
+      color: $gl-text-color;
+    }
 
-      .md {
-        color: $gl-grayish-blue;
-        font-size: $gl-font-size;
+    .md {
+      color: $gl-grayish-blue;
+      font-size: $gl-font-size;
+    }
 
-        .badge.badge-pill {
-          color: $gl-text-color;
-        }
+    code {
+      white-space: pre-wrap;
+    }
 
-        p {
-          color: $gl-text-color;
-        }
-      }
+    pre {
+      border: 0;
+      background: $gray-light;
+      border-radius: 0;
+      color: $gl-gray-500;
+      margin: 0 20px;
+      overflow: hidden;
+    }
 
-      code {
-        white-space: pre-wrap;
-      }
+    .note-image-attach {
+      margin-top: 4px;
+      margin-left: 0;
+      max-width: 200px;
+      float: none;
+    }
 
-      pre {
-        border: 0;
-        background: $gray-light;
-        border-radius: 0;
-        color: $gl-gray-500;
-        margin: 0 20px;
-        overflow: hidden;
-      }
-
-      .note-image-attach {
-        margin-top: 4px;
-        margin-left: 0;
-        max-width: 200px;
-        float: none;
-      }
-
-      p:last-child {
-        margin-bottom: 0;
-      }
+    p:last-child {
+      margin-bottom: 0;
     }
   }
 }

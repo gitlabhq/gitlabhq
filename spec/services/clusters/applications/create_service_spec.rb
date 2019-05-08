@@ -151,8 +151,8 @@ describe Clusters::Applications::CreateService do
         'helm'       | :application_helm       | true | false
         'ingress'    | :application_ingress    | true | true
         'runner'     | :application_runner     | true | true
+        'prometheus' | :application_prometheus | true | true
         'jupyter'    | :application_jupyter    | false | true
-        'prometheus' | :application_prometheus | false | true
       end
 
       with_them do

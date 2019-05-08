@@ -33,7 +33,7 @@ module Banzai
       # https://github.com/vmg/rinku/blob/v2.0.1/ext/rinku/autolink.c#L65
       #
       # Rubular: http://rubular.com/r/nrL3r9yUiq
-      LINK_PATTERN = %r{([a-z][a-z0-9\+\.-]+://[^\s>]+)(?<!\?|!|\.|,|:)}
+      LINK_PATTERN = %r{([a-z][a-z0-9\+\.-]+://[^\s>]+)(?<!\?|!|\.|,|:)}.freeze
 
       # Text matching LINK_PATTERN inside these elements will not be linked
       IGNORE_PARENTS = %w(a code kbd pre script style).to_set

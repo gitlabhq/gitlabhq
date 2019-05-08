@@ -56,8 +56,9 @@ class UploadsController < ApplicationController
   def authorize_create_access!
     return unless model
 
-    # for now we support only personal snippets comments
-    authorized = can?(current_user, :comment_personal_snippet, model)
+    # for now we support only personal snippets comments. Only personal_snippet
+    # is allowed as a model to #create through routing.
+    authorized = can?(current_user, :create_note, model)
 
     render_unauthorized unless authorized
   end

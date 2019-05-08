@@ -210,6 +210,12 @@ describe Clusters::ClusterPresenter do
 
       it { is_expected.to eq('Group cluster') }
     end
+
+    context 'instance_type cluster' do
+      let(:cluster) { create(:cluster, :provided_by_gcp, :instance) }
+
+      it { is_expected.to eq('Instance cluster') }
+    end
   end
 
   describe '#show_path' do
@@ -226,6 +232,12 @@ describe Clusters::ClusterPresenter do
       let(:cluster) { create(:cluster, :provided_by_gcp, :group) }
 
       it { is_expected.to eq(group_cluster_path(group, cluster)) }
+    end
+
+    context 'instance_type cluster' do
+      let(:cluster) { create(:cluster, :provided_by_gcp, :instance) }
+
+      it { is_expected.to eq(admin_cluster_path(cluster)) }
     end
   end
 

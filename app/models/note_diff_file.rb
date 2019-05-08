@@ -7,6 +7,10 @@ class NoteDiffFile < ApplicationRecord
     joins(:diff_note).where("resolved_at IS NULL OR noteable_type = 'Commit'")
   end
 
+  scope :referencing_sha, -> (oids, project_id:) do
+    joins(:diff_note).where(notes: { project_id: project_id, commit_id: oids })
+  end
+
   delegate :original_position, :project, to: :diff_note
 
   belongs_to :diff_note, inverse_of: :note_diff_file

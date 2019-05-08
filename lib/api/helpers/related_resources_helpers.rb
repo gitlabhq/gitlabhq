@@ -13,6 +13,10 @@ module API
         available?(:merge_requests, project, options[:current_user])
       end
 
+      def expose_path(path)
+        Gitlab::Utils.append_path(Gitlab.config.gitlab.relative_url_root, path)
+      end
+
       def expose_url(path)
         url_options = Gitlab::Application.routes.default_url_options
         protocol, host, port, script_name = url_options.values_at(:protocol, :host, :port, :script_name)

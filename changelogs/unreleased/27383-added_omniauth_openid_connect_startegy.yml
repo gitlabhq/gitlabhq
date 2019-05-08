@@ -1,0 +1,5 @@
+---
+title: Added OmniAuth OpenID Connect strategy
+merge_request: 27383
+author: Horatiu Eugen Vlad
+type: added

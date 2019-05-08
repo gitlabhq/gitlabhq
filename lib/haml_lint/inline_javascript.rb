@@ -1,4 +1,3 @@
-# rubocop:disable Naming/FileName
 # frozen_string_literal: true
 
 unless Rails.env.production?

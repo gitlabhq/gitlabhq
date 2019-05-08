@@ -224,6 +224,7 @@ Settings['sentry'] ||= Settingslogic.new({})
 Settings.sentry['enabled'] ||= false
 Settings.sentry['dsn'] ||= nil
 Settings.sentry['environment'] ||= nil
+Settings.sentry['clientside_dsn'] ||= nil
 
 #
 # Pages

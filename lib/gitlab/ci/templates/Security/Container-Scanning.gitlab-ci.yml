@@ -22,7 +22,7 @@ container_scanning:
     DOCKER_SERVICE: docker
     DOCKER_HOST: tcp://${DOCKER_SERVICE}:2375/
     # https://hub.docker.com/r/arminc/clair-local-scan/tags
-    CLAIR_LOCAL_SCAN_VERSION: v2.0.6
+    CLAIR_LOCAL_SCAN_VERSION: v2.0.8_fe9b059d930314b54c78f75afe265955faf4fdc1
   allow_failure: true
   services:
     - docker:stable-dind

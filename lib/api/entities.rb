@@ -1156,21 +1156,32 @@ module API
       end
     end
 
-    class Release < TagRelease
+    class Release < Grape::Entity
       expose :name
+      expose :tag, as: :tag_name, if: lambda { |_, _| can_download_code? }
+      expose :description
       expose :description_html do |entity|
         MarkupHelper.markdown_field(entity, :description)
       end
       expose :created_at
       expose :author, using: Entities::UserBasic, if: -> (release, _) { release.author.present? }
-      expose :commit, using: Entities::Commit
+      expose :commit, using: Entities::Commit, if: lambda { |_, _| can_download_code? }
 
       expose :assets do
-        expose :assets_count, as: :count
-        expose :sources, using: Entities::Releases::Source
+        expose :assets_count, as: :count do |release, _|
+          assets_to_exclude = can_download_code? ? [] : [:sources]
+          release.assets_count(except: assets_to_exclude)
+        end
+        expose :sources, using: Entities::Releases::Source, if: lambda { |_, _| can_download_code? }
         expose :links, using: Entities::Releases::Link do |release, options|
           release.links.sorted
         end
+      end
+
+      private
+
+      def can_download_code?
+        Ability.allowed?(options[:current_user], :download_code, object.project)
       end
     end
 
@@ -1277,7 +1288,7 @@ module API
     end
 
     class Variable < Grape::Entity
-      expose :key, :value
+      expose :variable_type, :key, :value
       expose :protected?, as: :protected, if: -> (entity, _) { entity.respond_to?(:protected?) }
     end
 

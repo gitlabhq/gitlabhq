@@ -115,11 +115,11 @@ describe 'Pipeline', :js do
           end
         end
 
-        it 'cancels the running build and shows retry button' do
+        it 'cancels the running build and does not show retry button' do
           find('#ci-badge-deploy .ci-action-icon-container').click
 
           page.within('#ci-badge-deploy') do
-            expect(page).to have_css('.js-icon-retry')
+            expect(page).not_to have_css('.js-icon-retry')
           end
         end
       end
@@ -133,11 +133,11 @@ describe 'Pipeline', :js do
           end
         end
 
-        it 'cancels the preparing build and shows retry button' do
+        it 'cancels the preparing build and does not show retry button' do
           find('#ci-badge-deploy .ci-action-icon-container').click
 
           page.within('#ci-badge-deploy') do
-            expect(page).to have_css('.js-icon-retry')
+            expect(page).not_to have_css('.js-icon-retry')
           end
         end
       end
@@ -233,6 +233,20 @@ describe 'Pipeline', :js do
           expect(page).to have_content('jenkins')
           expect(page).to have_link('jenkins', href: 'http://gitlab.com/status')
         end
+      end
+    end
+
+    context 'when the pipeline has manual stage' do
+      before do
+        create(:ci_build, :manual, pipeline: pipeline, stage: 'publish', name: 'CentOS')
+        create(:ci_build, :manual, pipeline: pipeline, stage: 'publish', name: 'Debian')
+        create(:ci_build, :manual, pipeline: pipeline, stage: 'publish', name: 'OpenSUDE')
+
+        visit_pipeline
+      end
+
+      it 'displays play all button' do
+        expect(page).to have_selector('.js-stage-action')
       end
     end
 

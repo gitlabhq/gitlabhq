@@ -1,4 +1,4 @@
-import { APPLICATION_STATUS, UPDATE_EVENT, INSTALL_EVENT } from '../constants';
+import { APPLICATION_STATUS, UPDATE_EVENT, INSTALL_EVENT, UNINSTALL_EVENT } from '../constants';
 
 const {
   NO_STATUS,
@@ -11,6 +11,8 @@ const {
   UPDATING,
   UPDATED,
   UPDATE_ERRORED,
+  UNINSTALLING,
+  UNINSTALL_ERRORED,
 } = APPLICATION_STATUS;
 
 const applicationStateMachine = {
@@ -50,6 +52,15 @@ const applicationStateMachine = {
         target: INSTALLED,
         effects: {
           updateFailed: true,
+        },
+      },
+      [UNINSTALLING]: {
+        target: UNINSTALLING,
+      },
+      [UNINSTALL_ERRORED]: {
+        target: INSTALLED,
+        effects: {
+          uninstallFailed: true,
         },
       },
     },
@@ -97,6 +108,13 @@ const applicationStateMachine = {
           updateSuccessful: false,
         },
       },
+      [UNINSTALL_EVENT]: {
+        target: UNINSTALLING,
+        effects: {
+          uninstallFailed: false,
+          uninstallSuccessful: false,
+        },
+      },
     },
   },
   [UPDATING]: {
@@ -112,6 +130,22 @@ const applicationStateMachine = {
         target: INSTALLED,
         effects: {
           updateFailed: true,
+        },
+      },
+    },
+  },
+  [UNINSTALLING]: {
+    on: {
+      [INSTALLABLE]: {
+        target: INSTALLABLE,
+        effects: {
+          uninstallSuccessful: true,
+        },
+      },
+      [UNINSTALL_ERRORED]: {
+        target: INSTALLED,
+        effects: {
+          uninstallFailed: true,
         },
       },
     },

@@ -55,6 +55,7 @@ module API
         requires :key, type: String, desc: 'The key of the variable'
         requires :value, type: String, desc: 'The value of the variable'
         optional :protected, type: String, desc: 'Whether the variable is protected'
+        optional :variable_type, type: String, values: Ci::Variable.variable_types.keys, desc: 'The type of variable, must be one of env_var or file. Defaults to env_var'
 
         if Gitlab.ee?
           optional :environment_scope, type: String, desc: 'The environment_scope of the variable'
@@ -80,6 +81,7 @@ module API
         optional :key, type: String, desc: 'The key of the variable'
         optional :value, type: String, desc: 'The value of the variable'
         optional :protected, type: String, desc: 'Whether the variable is protected'
+        optional :variable_type, type: String, values: Ci::Variable.variable_types.keys, desc: 'The type of variable, must be one of env_var or file'
 
         if Gitlab.ee?
           optional :environment_scope, type: String, desc: 'The environment_scope of the variable'

@@ -92,11 +92,12 @@ module Clusters
 
           if kubernetes_namespace = cluster.kubernetes_namespaces.has_service_account_token.find_by(project: project)
             variables.concat(kubernetes_namespace.predefined_variables)
-          elsif cluster.project_type?
-            # From 11.5, every Clusters::Project should have at least one
-            # Clusters::KubernetesNamespace, so once migration has been completed,
-            # this 'else' branch will be removed. For more information, please see
-            # https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22433
+          elsif cluster.project_type? || !cluster.managed?
+            # As of 11.11 a user can create a cluster that they manage themselves,
+            # which replicates the existing project-level cluster behaviour.
+            # Once we have marked all project-level clusters that make use of this
+            # behaviour as "unmanaged", we can remove the `cluster.project_type?`
+            # check here.
             variables
               .append(key: 'KUBE_URL', value: api_url)
               .append(key: 'KUBE_TOKEN', value: token, public: false, masked: true)

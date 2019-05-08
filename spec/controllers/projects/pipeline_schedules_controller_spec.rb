@@ -91,7 +91,7 @@ describe Projects::PipelineSchedulesController do
       context 'when variables_attributes has one variable' do
         let(:schedule) do
           basic_param.merge({
-            variables_attributes: [{ key: 'AAA', secret_value: 'AAA123' }]
+            variables_attributes: [{ key: 'AAA', secret_value: 'AAA123', variable_type: 'file' }]
           })
         end
 
@@ -105,6 +105,7 @@ describe Projects::PipelineSchedulesController do
           Ci::PipelineScheduleVariable.last.tap do |v|
             expect(v.key).to eq("AAA")
             expect(v.value).to eq("AAA123")
+            expect(v.variable_type).to eq("file")
           end
         end
       end

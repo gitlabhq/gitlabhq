@@ -80,13 +80,13 @@ describe('Pipelines Table Row', () => {
       it('should render user information', () => {
         expect(
           component.$el
-            .querySelector('.table-section:nth-child(2) a:nth-child(3)')
+            .querySelector('.table-section:nth-child(3) .js-pipeline-url-user')
             .getAttribute('href'),
         ).toEqual(pipeline.user.path);
 
         expect(
           component.$el
-            .querySelector('.table-section:nth-child(2) .js-user-avatar-image-toolip')
+            .querySelector('.table-section:nth-child(3) .js-user-avatar-image-toolip')
             .textContent.trim(),
         ).toEqual(pipeline.user.name);
       });

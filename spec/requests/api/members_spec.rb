@@ -236,7 +236,7 @@ describe API::Members do
                params: { user_id: stranger.id, access_level: Member::REPORTER }
 
           expect(response).to have_gitlab_http_status(400)
-          expect(json_response['message']['access_level']).to eq(["should be higher than Developer inherited membership from group #{parent.name}"])
+          expect(json_response['message']['access_level']).to eq(["should be greater than or equal to Developer inherited membership from group #{parent.name}"])
         end
 
         it 'creates the member if group level is lower', :nested_groups do

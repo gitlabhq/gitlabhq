@@ -132,6 +132,19 @@
                 = _('Abuse Reports')
               %span.badge.badge-pill.count.merge_counter.js-merge-counter.fly-out-badge= number_with_delimiter(AbuseReport.count(:all))
 
+      - if instance_clusters_enabled?
+        = nav_link(controller: :clusters) do
+          = link_to admin_clusters_path do
+            .nav-icon-container
+              = sprite_icon('cloud-gear')
+            %span.nav-item-name
+              = _('Kubernetes')
+          %ul.sidebar-sub-level-items.is-fly-out-only
+            = nav_link(controller: :clusters, html_options: { class: "fly-out-top-item" } ) do
+              = link_to admin_clusters_path do
+                %strong.fly-out-top-item-name
+                  = _('Kubernetes')
+
       - if akismet_enabled?
         = nav_link(controller: :spam_logs) do
           = link_to admin_spam_logs_path do

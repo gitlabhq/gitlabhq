@@ -210,11 +210,121 @@ To serve repositories over SSH there's an add-on application called gitlab-shell
 
 ### Components
 
-<img src="https://docs.google.com/drawings/d/1fBzAyklyveF-i-2q-OHUIqDkYfjjxC4mq5shwKSZHLs/pub?w=987&amp;h=797">
+```mermaid
+graph TB
 
-_[edit diagram (for GitLab team members only)](https://docs.google.com/drawings/d/1fBzAyklyveF-i-2q-OHUIqDkYfjjxC4mq5shwKSZHLs/edit)_
+  HTTP[HTTP/HTTPS] -- TCP 80, 443 --> NGINX[NGINX]
+  SSH -- TCP 22 --> GitLabShell[GitLab Shell]
+  SMTP[SMTP Gateway]
+  Geo[GitLab Geo Node] -- TCP 22, 80, 443 --> NGINX
+
+  GitLabShell --TCP 8080 -->Unicorn["Unicorn (GitLab Rails)"]
+  GitLabShell --> Gitaly
+  GitLabShell --> Redis
+  Unicorn --> PgBouncer[PgBouncer]
+  Unicorn --> Redis
+  Unicorn --> Gitaly
+  Redis --> Sidekiq
+  Sidekiq["Sidekiq (GitLab Rails, ES Indexer)"] --> PgBouncer
+  GitLabWorkhorse[GitLab Workhorse] --> Unicorn
+  GitLabWorkhorse --> Redis
+  GitLabWorkhorse --> Gitaly
+  Gitaly --> Redis
+  NGINX --> GitLabWorkhorse
+  NGINX -- TCP 8090 --> GitLabPages[GitLab Pages]
+  NGINX --> Grafana[Grafana]
+  Grafana -- TCP 9090 --> Prometheus[Prometheus]
+  Prometheus -- TCP 80, 443 --> Unicorn
+  RedisExporter[Redis Exporter] --> Redis
+  Prometheus -- TCP 9121 --> RedisExporter
+  PostgreSQLExporter[PostgreSQL Exporter] --> PostgreSQL
+  PgBouncerExporter[PgBouncer Exporter] --> PgBouncer
+  Prometheus -- TCP 9187 --> PostgreSQLExporter
+  Prometheus -- TCP 9100 --> NodeExporter[Node Exporter]
+  Prometheus -- TCP 9168 --> GitLabMonito[GitLab Monitor]
+  Prometheus -- TCP 9127 --> PgBouncerExporter
+  GitLabMonitor --> PostgreSQL
+  GitLabMonitor --> GitLabShell
+  GitLabMonitor --> Sidekiq
+  PgBouncer --> Consul
+  PostgreSQL --> Consul
+  PgBouncer --> PostgreSQL
+  NGINX --> Registry
+  Unicorn --> Registry
+  NGINX --> Mattermost
+  Mattermost --- Unicorn
+  Prometheus --> Alertmanager
+  Migrations --> PostgreSQL
+  Runner -- TCP 443 --> NGINX
+  Unicorn -- TCP 9200 --> ElasticSearch
+  Sidekiq -- TCP 9200 --> ElasticSearch
+  Sidekiq -- TCP 80, 443 --> Sentry
+  Unicorn -- TCP 80, 443 --> Sentry
+  Sidekiq -- UDP 6831 --> Jaeger
+  Unicorn -- UDP 6831 --> Jaeger
+  Gitaly -- UDP 6831 --> Jaeger
+  GitLabShell -- UDP 6831 --> Jaeger
+  GitLabWorkhorse -- UDP 6831 --> Jaeger
+  Alertmanager -- TCP 25 --> SMTP
+  Sidekiq -- TCP 25 --> SMTP
+  Unicorn -- TCP 25 --> SMTP
+  Unicorn -- TCP 369 --> LDAP
+  Sidekiq -- TCP 369 --> LDAP
+  Unicorn -- TCP 443 --> ObjectStorage["Object Storage"]
+  Sidekiq -- TCP 443 --> ObjectStorage
+  GitLabWorkhorse -- TCP 443 --> ObjectStorage
+  Registry -- TCP 443 --> ObjectStorage
+  Geo -- TCP 5432 --> PostgreSQL
+
+```
+
+**Legend**:
+
+* ✅ - Automatically configured
+* ⚙ - Requires additional configuration
+* ⤓ - Additional software/service required
+* ❌ - Not available
+
+| Component | Description | [Omnibus GitLab](https://docs.gitlab.com/omnibus/README.html) | [GitLab chart](https://docs.gitlab.com/charts/) | [Minikube Minimal](https://docs.gitlab.com/charts/development/minikube/#deploying-gitlab-with-minimal-settings) | [GitLab.com](https://gitlab.com) | CE/EE |
+| --------- | ----------- |:--------------------:|:------------------:|:-----:|:--------:|:--------:|
+| NGINX | Routes requests to appropriate components, terminates SSL | [✅](https://docs.gitlab.com/omnibus/settings/nginx.html) | [✅](https://docs.gitlab.com/charts/charts/nginx/index.html) | [⚙](https://docs.gitlab.com/charts/charts/nginx/index.html) | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production-architecture/#service-architecture) | CE & EE |
+| Unicorn (GitLab Rails) | Handles requests for the web interface and API | [✅](https://docs.gitlab.com/omnibus/settings/unicorn.html) | [✅](https://docs.gitlab.com/charts/charts/gitlab/unicorn/index.html) | [✅](https://docs.gitlab.com/charts/charts/gitlab/unicorn/index.html) | [✅](https://docs.gitlab.com/ee/user/gitlab_com/#unicorn) | CE & EE |
+| Sidekiq | Background jobs processor | [✅](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-config-template/gitlab.rb.template) | [✅](https://docs.gitlab.com/charts/charts/gitlab/sidekiq/index.html) | [✅](https://docs.gitlab.com/charts/charts/gitlab/sidekiq/index.html) | [✅](https://docs.gitlab.com/ee/user/gitlab_com/#sidekiq) | CE & EE |
+| Gitaly | Git RPC service for handling all git calls made by GitLab | [✅](https://docs.gitlab.com/ee/administration/gitaly/) | [✅](https://docs.gitlab.com/charts/charts/gitlab/gitaly/index.html) | [✅](https://docs.gitlab.com/charts/charts/gitlab/gitaly/index.html) | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production-architecture/#service-architecture) | CE & EE |
+| GitLab Workhorse | Smart reverse proxy, handles large HTTP requests | [✅](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-config-template/gitlab.rb.template) | [✅](https://docs.gitlab.com/charts/charts/gitlab/unicorn/index.html) | [✅](https://docs.gitlab.com/charts/charts/gitlab/unicorn/index.html) | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production-architecture/#service-architecture) | CE & EE |
+| GitLab Shell | Handles `git` over SSH sessions | [✅](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-config-template/gitlab.rb.template) | [✅](https://docs.gitlab.com/charts/charts/gitlab/gitlab-shell/index.html) | [✅](https://docs.gitlab.com/charts/charts/gitlab/gitlab-shell/index.html) | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production-architecture/#service-architecture) | CE & EE |
+| GitLab Pages | Hosts static websites | [⚙](https://docs.gitlab.com/ee/administration/pages/) | [❌](https://gitlab.com/charts/gitlab/issues/37) | [❌](https://gitlab.com/charts/gitlab/issues/37) | [✅](https://docs.gitlab.com/ee/user/gitlab_com/#gitlab-pages) | CE & EE  |
+| Registry | Container registry, allows pushing and pulling of images | [⚙](https://docs.gitlab.com/ee/administration/container_registry.html#container-registry-domain-configuration) | [✅](https://docs.gitlab.com/charts/charts/registry/index.html) | [✅](https://docs.gitlab.com/charts/charts/registry/index.html) | [✅](https://docs.gitlab.com/ee/user/project/container_registry.html#build-and-push-images) | CE & EE  |
+| Redis | Caching service | [✅](https://docs.gitlab.com/omnibus/settings/redis.html) | [✅](https://docs.gitlab.com/charts/charts/redis/index.html) | [✅](https://docs.gitlab.com/charts/charts/redis/index.html) | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production-architecture/#service-architecture) | CE & EE |
+| PostgreSQL | Database | [✅](https://docs.gitlab.com/omnibus/settings/database.html) | [✅](https://github.com/helm/charts/tree/master/stable/postgresql) | [✅](https://github.com/helm/charts/tree/master/stable/postgresql) | [✅](https://docs.gitlab.com/ee/user/gitlab_com/#postgresql) | CE & EE |
+| PgBouncer | Database connection pooling, failover | [⚙](https://docs.gitlab.com/ee/administration/high_availability/pgbouncer.html) | [❌](https://docs.gitlab.com/charts/installation/deployment.html#postgresql) | [❌](https://docs.gitlab.com/charts/installation/deployment.html#postgresql) | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production-architecture/#database-architecture) | EE Only |
+| Consul | Database node discovery, failover | [⚙](https://docs.gitlab.com/ee/administration/high_availability/consul.html) | [❌](https://docs.gitlab.com/charts/installation/deployment.html#postgresql) | [❌](https://docs.gitlab.com/charts/installation/deployment.html#postgresql) | [✅](https://docs.gitlab.com/ee/user/gitlab_com/#consul) | EE Only |
+| Prometheus | Time-series database, metrics collection, and query service | [✅](https://docs.gitlab.com/ee/administration/monitoring/prometheus/) | [✅](https://github.com/helm/charts/tree/master/stable/prometheus) | [⚙](https://github.com/helm/charts/tree/master/stable/prometheus) | [✅](https://docs.gitlab.com/ee/user/gitlab_com/#prometheus) | CE & EE |
+| Prometheus Alertmanager | Deduplicates, groups, and routes alerts from Prometheus | [✅](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-config-template/gitlab.rb.template) | [✅](https://github.com/helm/charts/tree/master/stable/prometheus) |  [✅](https://github.com/helm/charts/tree/master/stable/prometheus) | [✅](https://about.gitlab.com/handbook/engineering/monitoring/) | CE & EE |
+| Grafana | Metrics dashboard | [⚙](https://docs.gitlab.com/ee/administration/monitoring/performance/grafana_configuration.html) | [⤓](https://github.com/helm/charts/tree/master/stable/grafana) |  [⤓](https://github.com/helm/charts/tree/master/stable/grafana) | [✅](https://dashboards.gitlab.com/d/RZmbBr7mk/gitlab-triage?refresh=30s) | CE & EE |
+| Redis Exporter | Prometheus endpoint with Redis metrics | [✅](https://docs.gitlab.com/ee/administration/monitoring/prometheus/redis_exporter.html) | [✅](https://docs.gitlab.com/charts/charts/redis/index.html) | [✅](https://docs.gitlab.com/charts/charts/redis/index.html) | [✅](https://about.gitlab.com/handbook/engineering/monitoring/) | CE & EE |
+| PostgreSQL Exporter | Prometheus endpoint with PostgreSQL metrics | [✅](https://docs.gitlab.com/ee/administration/monitoring/prometheus/postgres_exporter.html) | [✅](https://github.com/helm/charts/tree/master/stable/postgresql) | [✅](https://github.com/helm/charts/tree/master/stable/postgresql) | [✅](https://about.gitlab.com/handbook/engineering/monitoring/) | CE & EE |
+| PgBouncer Exporter | Prometheus endpoint with PgBouncer metrics | [⚙](https://docs.gitlab.com/ee/administration/monitoring/prometheus/pgbouncer_exporter.html) | [❌](https://docs.gitlab.com/charts/installation/deployment.html#postgresql) | [❌](https://docs.gitlab.com/charts/installation/deployment.html#postgresql) | [✅](https://about.gitlab.com/handbook/engineering/monitoring/) | CE & EE |
+| GitLab Monitor | Tracks a variety of GitLab metrics | [✅](https://docs.gitlab.com/ee/administration/monitoring/prometheus/gitlab_monitor_exporter.html) | [❌](https://gitlab.com/charts/gitlab/issues/319) | [❌](https://gitlab.com/charts/gitlab/issues/319) | [✅](https://about.gitlab.com/handbook/engineering/monitoring/) | CE & EE |
+| Mattermost | Open-source Slack alternative | [⚙](https://docs.gitlab.com/omnibus/gitlab-mattermost/) | [⤓](https://docs.mattermost.com/install/install-mmte-helm-gitlab-helm.html) | [⤓](https://docs.mattermost.com/install/install-mmte-helm-gitlab-helm.html) | [⤓](https://docs.gitlab.com/ee/user/project/integrations/mattermost_slash_commands.html#manual-configuration), [⤓](https://docs.gitlab.com/ee/user/project/integrations/mattermost.html) | CE & EE |
+| Minio | Object storage service | [⤓](https://min.io/download) | [✅](https://docs.gitlab.com/charts/charts/minio/index.html) | [✅](https://docs.gitlab.com/charts/charts/minio/index.html) | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production-architecture/#storage-architecture) | CE & EE |
+| Runner | Executes GitLab CI jobs | [⤓](https://docs.gitlab.com/runner/) | [✅](https://docs.gitlab.com/runner/) | [⚙](https://docs.gitlab.com/runner/) | [✅](https://docs.gitlab.com/ee/user/gitlab_com/#shared-runners) | CE & EE |
+| Migrations | Database migrations | [✅](https://docs.gitlab.com/omnibus/settings/database.html#disabling-automatic-database-migration) | [✅](https://docs.gitlab.com/charts/charts/gitlab/migrations/index.html) | [✅](https://docs.gitlab.com/charts/charts/gitlab/migrations/index.html) | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production-architecture/#database-architecture) | CE & EE |
+| Certificate Management | TLS Settings, Let's Encrypt | [✅](https://docs.gitlab.com/omnibus/settings/ssl.html) | [✅](https://docs.gitlab.com/charts/installation/tls.html) | [⚙](https://docs.gitlab.com/charts/installation/tls.html) | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production-architecture/#secrets-management) | CE & EE |
+| GitLab Geo Node | Geographically distributed GitLab nodes | [⚙](https://docs.gitlab.com/ee/administration/geo/replication/index.html#setup-instructions) | [❌](https://gitlab.com/charts/gitlab/issues/8) | [❌](https://gitlab.com/charts/gitlab/issues/8) | ✅ | EE Only |
+| LDAP Authentication | Authenticate users against centralized LDAP directory | [⤓](https://docs.gitlab.com/ee/administration/auth/ldap.html) | [⤓](https://docs.gitlab.com/charts/charts/globals.html#ldap) | [⤓](https://docs.gitlab.com/charts/charts/globals.html#ldap) | [❌](https://about.gitlab.com/pricing/#gitlab-com) | CE & EE |
+| Outbound email (SMTP) | Send email messages to users | [⤓](https://docs.gitlab.com/omnibus/settings/smtp.html) | [⤓](https://docs.gitlab.com/charts/installation/command-line-options.html#outgoing-email-configuration) | [⤓](https://docs.gitlab.com/charts/installation/command-line-options.html#outgoing-email-configuration) | [✅](https://docs.gitlab.com/ee/user/gitlab_com/#mail-configuration) | CE & EE |
+| Inbound email (SMTP) | Receive messages to update issues | [⤓](https://docs.gitlab.com/ee/administration/incoming_email.html) | [⤓](https://docs.gitlab.com/charts/installation/command-line-options.html#incoming-email-configuration) | [⤓](https://docs.gitlab.com/charts/installation/command-line-options.html#incoming-email-configuration) | [✅](https://docs.gitlab.com/ee/user/gitlab_com/#mail-configuration) | CE & EE |
+| ElasticSearch | Improved search within GitLab | [⤓](https://docs.gitlab.com/ee/integration/elasticsearch.html) | [⤓](https://docs.gitlab.com/ee/integration/elasticsearch.html) | [⤓](https://docs.gitlab.com/ee/integration/elasticsearch.html) | [❌](https://gitlab.com/groups/gitlab-org/-/epics/153) | EE Only |
+| Sentry: GitLab instance | Tracking errors generated by the GitLab instance | [⤓](https://docs.gitlab.com/omnibus/settings/configuration.html#error-reporting-and-logging-with-sentry) | [❌](https://gitlab.com/charts/gitlab/issues/1319) | [❌](https://gitlab.com/charts/gitlab/issues/1319) | [✅](https://about.gitlab.com/handbook/support/workflows/services/gitlab_com/500_errors.html#searching-sentry) | CE & EE |
+| Jaeger: GitLab instance | View traces generated by the GitLab instance | [❌](https://gitlab.com/gitlab-org/omnibus-gitlab/issues/4104) | [❌](https://gitlab.com/charts/gitlab/issues/1320) | [❌](https://gitlab.com/charts/gitlab/issues/1320) | [❌](https://gitlab.com/gitlab-org/omnibus-gitlab/issues/4104) | CE & EE |
+| Sentry: deployed apps | Error tracking for deployed apps | [⤓](https://docs.gitlab.com/ee/user/project/operations/error_tracking.html) | [⤓](https://docs.gitlab.com/ee/user/project/operations/error_tracking.html) | [⤓](https://docs.gitlab.com/ee/user/project/operations/error_tracking.html) | [⤓](https://docs.gitlab.com/ee/user/project/operations/error_tracking.html) | CE & EE |
+| Jaeger: deployed apps | Distributed tracing for deployed apps | [⤓](https://docs.gitlab.com/ee/user/project/operations/tracing.html) | [⤓](https://docs.gitlab.com/ee/user/project/operations/tracing.html) | [⤓](https://docs.gitlab.com/ee/user/project/operations/tracing.html) | [⤓](https://docs.gitlab.com/ee/user/project/operations/tracing.html) | EE Only |
+| Kubernetes cluster apps | Deploy [Helm](https://docs.helm.sh/), [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/), [Cert-Manager](https://docs.cert-manager.io/en/latest/), [Prometheus](https://prometheus.io/docs/introduction/overview/), a [Runner](https://docs.gitlab.com/runner/), [JupyterHub](http://jupyter.org/), [Knative](https://cloud.google.com/knative) to a cluster | [⤓](https://docs.gitlab.com/ee/user/project/clusters/#installing-applications) | [⤓](https://docs.gitlab.com/ee/user/project/clusters/#installing-applications) | [⤓](https://docs.gitlab.com/ee/user/project/clusters/#installing-applications) | [⤓](https://docs.gitlab.com/ee/user/project/clusters/#installing-applications) | CE & EE |
 
 A typical install of GitLab will be on GNU/Linux. It uses Nginx or Apache as a web front end to proxypass the Unicorn web server. By default, communication between Unicorn and the front end is via a Unix domain socket but forwarding requests via TCP is also supported. The web front end accesses `/home/git/gitlab/public` bypassing the Unicorn server to serve static pages, uploads (e.g. avatar images or attachments), and precompiled assets. GitLab serves web pages and a [GitLab API](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/api) using the Unicorn web server. It uses Sidekiq as a job queue which, in turn, uses redis as a non-persistent database backend for job information, meta data, and incoming jobs.
+
+We also support deploying GitLab on Kubernetes using our [gitlab Helm chart](https://docs.gitlab.com/charts/).
 
 The GitLab web app uses MySQL or PostgreSQL for persistent database information (e.g. users, permissions, issues, other meta data). GitLab stores the bare git repositories it serves in `/home/git/repositories` by default. It also keeps default branch and hook information with the bare repository.
 

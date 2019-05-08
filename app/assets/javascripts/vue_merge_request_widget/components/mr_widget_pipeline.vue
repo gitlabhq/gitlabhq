@@ -94,8 +94,8 @@ export default {
 </script>
 
 <template>
-  <div v-if="hasPipeline || hasCIError" class="ci-widget media js-ci-widget">
-    <template v-if="hasCIError">
+  <div class="ci-widget media js-ci-widget">
+    <template v-if="!hasPipeline || hasCIError">
       <div
         class="add-border ci-status-icon ci-status-icon-failed ci-error js-ci-error append-right-default"
       >

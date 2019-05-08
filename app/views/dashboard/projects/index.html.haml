@@ -13,7 +13,7 @@
   = render "projects/last_push"
   - if show_projects?(@projects, params)
     = render 'dashboard/projects_head'
-    = render 'nav'
+    = render 'nav' unless Feature.enabled?(:project_list_filter_bar)
     = render 'projects'
   - else
     = render "zero_authorized_projects"

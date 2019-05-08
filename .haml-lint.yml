@@ -97,6 +97,7 @@ linters:
       - Cop/LineBreakAroundConditionalBlock
       - Cop/ProjectPathHelper
       - GitlabSecurity/PublicSend
+      - Layout/EmptyLineAfterGuardClause
       - Layout/LeadingCommentSpace
       - Layout/SpaceAfterColon
       - Layout/SpaceAfterComma
@@ -112,11 +113,13 @@ linters:
       - Lint/LiteralInInterpolation
       - Lint/ParenthesesAsGroupedExpression
       - Lint/RedundantWithIndex
+      - Lint/SafeNavigationConsistency
       - Lint/Syntax
       - Metrics/BlockNesting
       - Naming/VariableName
       - Performance/RedundantMatch
       - Performance/StringReplacement
+      - Rails/LinkToBlank
       - Rails/Presence
       - Rails/RequestReferer
       - Style/AndOr
@@ -134,6 +137,7 @@ linters:
       - Style/TernaryParentheses
       - Style/TrailingCommaInHashLiteral
       - Style/UnlessElse
+      - Style/UnneededCondition
       - Style/WordArray
       - Style/ZeroLengthPredicate
 

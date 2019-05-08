@@ -329,14 +329,6 @@ shared_examples_for 'trace with disabled live trace feature' do
       it_behaves_like 'read successfully with IO'
     end
 
-    context 'when current_path (with project_ci_id) exists' do
-      before do
-        expect(trace).to receive(:deprecated_path) { expand_fixture_path('trace/sample_trace') }
-      end
-
-      it_behaves_like 'read successfully with IO'
-    end
-
     context 'when db trace exists' do
       before do
         build.send(:write_attribute, :trace, "data")
@@ -393,37 +385,6 @@ shared_examples_for 'trace with disabled live trace feature' do
       it "can be erased" do
         trace.erase!
         expect(trace.exist?).to be(false)
-      end
-    end
-
-    context 'deprecated path' do
-      let(:path) { trace.send(:deprecated_path) }
-
-      context 'with valid ci_id' do
-        before do
-          build.project.update(ci_id: 1000)
-
-          FileUtils.mkdir_p(File.dirname(path))
-
-          File.open(path, "w") do |file|
-            file.write("data")
-          end
-        end
-
-        it "trace exist" do
-          expect(trace.exist?).to be(true)
-        end
-
-        it "can be erased" do
-          trace.erase!
-          expect(trace.exist?).to be(false)
-        end
-      end
-
-      context 'without valid ci_id' do
-        it "does not return deprecated path" do
-          expect(path).to be_nil
-        end
       end
     end
 

@@ -2215,4 +2215,43 @@ describe Gitlab::Git::Repository, :seed_helper do
       line.split("\t").last
     end
   end
+
+  describe '#disconnect_alternates' do
+    let(:project) { create(:project, :repository) }
+    let(:pool_repository) { create(:pool_repository) }
+    let(:repository) { project.repository }
+    let(:repository_path) { File.join(TestEnv.repos_path, repository.relative_path) }
+    let(:object_pool) { pool_repository.object_pool }
+    let(:object_pool_path) { File.join(TestEnv.repos_path, object_pool.repository.relative_path) }
+    let(:object_pool_rugged) { Rugged::Repository.new(object_pool_path) }
+
+    before do
+      object_pool.create
+    end
+
+    it 'does not raise an error when disconnecting a non-linked repository' do
+      expect { repository.disconnect_alternates }.not_to raise_error
+    end
+
+    it 'removes the alternates file' do
+      object_pool.link(repository)
+
+      alternates_file = File.join(repository_path, "objects", "info", "alternates")
+      expect(File.exist?(alternates_file)).to be_truthy
+
+      repository.disconnect_alternates
+
+      expect(File.exist?(alternates_file)).to be_falsey
+    end
+
+    it 'can still access objects in the object pool' do
+      object_pool.link(repository)
+      new_commit = new_commit_edit_old_file(object_pool_rugged)
+      expect(repository.commit(new_commit.oid).id).to eq(new_commit.oid)
+
+      repository.disconnect_alternates
+
+      expect(repository.commit(new_commit.oid).id).to eq(new_commit.oid)
+    end
+  end
 end

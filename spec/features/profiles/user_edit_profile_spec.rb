@@ -327,5 +327,37 @@ describe 'User edit profile' do
         end
       end
     end
+
+    context 'User time preferences', :js do
+      let(:issue) { create(:issue, project: project)}
+      let(:project) { create(:project) }
+
+      before do
+        stub_feature_flags(user_time_settings: true)
+      end
+
+      it 'shows the user time preferences form' do
+        expect(page).to have_content('Time settings')
+      end
+
+      it 'allows the user to select a time zone from a dropdown list of options' do
+        expect(page.find('.user-time-preferences .dropdown')).not_to have_css('.show')
+
+        page.find('.user-time-preferences .js-timezone-dropdown').click
+
+        expect(page.find('.user-time-preferences .dropdown')).to have_css('.show')
+
+        page.find("a", text: "Nuku'alofa").click
+
+        tz = page.find('.user-time-preferences #user_timezone', visible: false)
+
+        expect(tz.value).to eq('Pacific/Tongatapu')
+      end
+
+      it 'timezone defaults to servers default' do
+        timezone_name = Time.zone.tzinfo.name
+        expect(page.find('.user-time-preferences #user_timezone', visible: false).value).to eq(timezone_name)
+      end
+    end
   end
 end

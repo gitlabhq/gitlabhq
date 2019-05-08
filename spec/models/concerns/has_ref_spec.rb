@@ -19,7 +19,7 @@ describe HasRef do
 
       context 'when it was triggered by merge request' do
         let(:merge_request) { create(:merge_request, :with_detached_merge_request_pipeline) }
-        let(:pipeline) { merge_request.merge_request_pipelines.first }
+        let(:pipeline) { merge_request.pipelines_for_merge_request.first }
         let(:build) { create(:ci_build, pipeline: pipeline) }
 
         it 'returns false' do
@@ -68,7 +68,7 @@ describe HasRef do
 
     context 'when it is triggered by a merge request' do
       let(:merge_request) { create(:merge_request, :with_detached_merge_request_pipeline) }
-      let(:pipeline) { merge_request.merge_request_pipelines.first }
+      let(:pipeline) { merge_request.pipelines_for_merge_request.first }
       let(:build) { create(:ci_build, tag: false, pipeline: pipeline) }
 
       it 'returns nil' do

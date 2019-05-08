@@ -15,8 +15,8 @@ class Import::BitbucketServerController < Import::BaseController
   # (https://community.atlassian.com/t5/Answers-Developer-Questions/stash-repository-names/qaq-p/499054)
   #
   # Bitbucket Server starts personal project names with a tilde.
-  VALID_BITBUCKET_PROJECT_CHARS = /\A~?[\w\-\.\s]+\z/
-  VALID_BITBUCKET_CHARS = /\A[\w\-\.\s]+\z/
+  VALID_BITBUCKET_PROJECT_CHARS = /\A~?[\w\-\.\s]+\z/.freeze
+  VALID_BITBUCKET_CHARS = /\A[\w\-\.\s]+\z/.freeze
 
   def new
   end

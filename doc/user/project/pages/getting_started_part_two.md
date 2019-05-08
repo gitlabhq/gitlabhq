@@ -94,8 +94,9 @@ You can also take some **optional** further steps:
 
 - _Make it a user or group website._ To turn a **project website** forked
 from the Pages group into a **user/group** website, you'll need to:
-    - Rename it to `namespace.gitlab.io`: navigate to project's **Settings** >
-    expand **Advanced settings** > and scroll down to **Rename repository**.
+    - Rename it to `namespace.gitlab.io`: go to your project's
+    **Settings > General** and expand **Advanced**. Scroll down to
+    **Rename repository** and change the path to `namespace.gitlab.io`.
     - Adjust your SSG's [base URL](#urls-and-baseurls) from `"project-name"` to
     `""`. This setting will be at a different place for each SSG, as each of them
     have their own structure and file tree. Most likely, it will be in the SSG's

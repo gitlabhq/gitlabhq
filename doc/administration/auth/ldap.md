@@ -14,7 +14,7 @@ including group membership syncing as well as multiple LDAP servers support.
 
 The information on this page is relevant for both GitLab CE and EE. For more
 details about EE-specific LDAP features, see the
-[LDAP Enterprise Edition documentation](https://docs.gitlab.com/ee/administration/auth/ldap-ee.html).
+[LDAP Enterprise Edition documentation](ldap-ee.md). **[STARTER ONLY]**
 
 ## Security
 
@@ -30,16 +30,16 @@ the LDAP server.
 
 ### User deletion
 
-If a user is deleted from the LDAP server, they will be blocked in GitLab, as
+If a user is deleted from the LDAP server, they will be blocked in GitLab as
 well. Users will be immediately blocked from logging in. However, there is an
-LDAP check cache time (sync time) of one hour (see note). This means users that
+LDAP check cache time of one hour (see note) which means users that
 are already logged in or are using Git over SSH will still be able to access
 GitLab for up to one hour. Manually block the user in the GitLab Admin area to
 immediately block all access.
 
 NOTE: **Note**:
 GitLab Enterprise Edition Starter supports a
-[configurable sync time](https://docs.gitlab.com/ee/administration/auth/ldap-ee.html#adjusting-ldap-user-and-group-sync-schedules),
+[configurable sync time](ldap-ee.md#adjusting-ldap-user-sync-schedule),
 with a default of one hour.
 
 ## Git password authentication
@@ -64,6 +64,7 @@ to connect to one GitLab server.
 
 For a complete guide on configuring LDAP with GitLab Community Edition, please check
 the admin guide [How to configure LDAP with GitLab CE](how_to_configure_ldap_gitlab_ce/index.md).
+For GitLab Enterprise Editions, see also [How to configure LDAP with GitLab EE](how_to_configure_ldap_gitlab_ee/index.md). **[STARTER ONLY]**
 
 To enable LDAP integration you need to add your LDAP server settings in
 `/etc/gitlab/gitlab.rb` or `/home/git/gitlab/config/gitlab.yml` for Omnibus
@@ -388,7 +389,7 @@ group, you can use the following syntax:
 Find more information about this "LDAP_MATCHING_RULE_IN_CHAIN" filter at
 <https://docs.microsoft.com/en-us/windows/desktop/ADSI/search-filter-syntax>. Support for
 nested members in the user filter should not be confused with
-[group sync nested groups support (EE only)](https://docs.gitlab.com/ee/administration/auth/ldap-ee.html#supported-ldap-group-types-attributes).
+[group sync nested groups support](ldap-ee.md#supported-ldap-group-typesattributes). **[STARTER ONLY]**
 
 Please note that GitLab does not support the custom filter syntax used by
 omniauth-ldap.

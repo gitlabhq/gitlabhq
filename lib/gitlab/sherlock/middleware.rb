@@ -4,9 +4,9 @@ module Gitlab
   module Sherlock
     # Rack middleware used for tracking request metrics.
     class Middleware
-      CONTENT_TYPES = %r{text/html|application/json}i
+      CONTENT_TYPES = %r{text/html|application/json}i.freeze
 
-      IGNORE_PATHS = %r{^/sherlock}
+      IGNORE_PATHS = %r{^/sherlock}.freeze
 
       def initialize(app)
         @app = app

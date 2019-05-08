@@ -209,10 +209,7 @@ module Gitlab
       end
 
       def paths
-        [
-          default_path,
-          deprecated_path
-        ].compact
+        [default_path]
       end
 
       def default_directory
@@ -225,15 +222,6 @@ module Gitlab
 
       def default_path
         File.join(default_directory, "#{job.id}.log")
-      end
-
-      def deprecated_path
-        File.join(
-          Settings.gitlab_ci.builds_path,
-          job.created_at.utc.strftime("%Y_%m"),
-          job.project.ci_id.to_s,
-          "#{job.id}.log"
-        ) if job.project&.ci_id
       end
 
       def trace_artifact
