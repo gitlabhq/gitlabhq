@@ -1,6 +1,5 @@
 - issues_count = group_issues_count(state: 'opened')
 - merge_requests_count = group_merge_requests_count(state: 'opened')
-- issues_sub_menu_items = ['groups#issues', 'labels#index', 'milestones#index', 'boards#index', 'boards#show']
 
 .nav-sidebar{ class: ("sidebar-collapsed-desktop" if collapsed_sidebar?) }
   .nav-sidebar-inner-scroll
@@ -51,7 +50,7 @@
       = render_if_exists "layouts/nav/ee/epic_link", group: @group
 
       - if group_sidebar_link?(:issues)
-        = nav_link(path: issues_sub_menu_items) do
+        = nav_link(path: group_issues_sub_menu_items) do
           = link_to issues_group_path(@group) do
             .nav-icon-container
               = sprite_icon('issues')

@@ -28,6 +28,8 @@
             = link_to profile_account_path do
               %strong.fly-out-top-item-name
                 = _('Account')
+
+      = render_if_exists 'layouts/nav/sidebar/profile_billing_link'
       = nav_link(controller: 'oauth/applications') do
         = link_to applications_profile_path do
           .nav-icon-container
@@ -150,5 +152,7 @@
             = link_to audit_log_profile_path do
               %strong.fly-out-top-item-name
                 = _('Authentication Log')
+
+      = render_if_exists 'layouts/nav/sidebar/profile_pipeline_quota_link'
 
     = render 'shared/sidebar_toggle_button'
