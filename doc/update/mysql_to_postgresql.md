@@ -45,6 +45,22 @@ For other distributions, follow the instructions in PostgreSQL's
 [download page](https://www.postgresql.org/download/) to add their repository
 and then install `pgloader`.
 
+If you are migrating to a Docker based installation, you will need to install
+pgloader within the container as it is not included in the container image.
+
+1. Start a shell session in the context of the running container:
+
+   ``` bash
+   docker exec -it gitlab bash
+   ```
+
+1. Install pgloader:
+    
+   ``` bash
+   apt-get update
+   apt-get -y install pgloader
+   ```
+
 ## Omnibus GitLab installations
 
 For [Omnibus GitLab packages](https://about.gitlab.com/install/), you'll first
