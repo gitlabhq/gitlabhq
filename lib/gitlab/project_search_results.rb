@@ -145,5 +145,9 @@ module Gitlab
     def repository_wiki_ref
       @repository_wiki_ref ||= repository_ref || project.wiki.default_branch
     end
+
+    def issuable_params
+      super.merge(project_id: project.id)
+    end
   end
 end

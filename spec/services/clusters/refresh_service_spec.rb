@@ -121,5 +121,11 @@ describe Clusters::RefreshService do
         end
       end
     end
+
+    context 'cluster is not managed' do
+      let!(:cluster) { create(:cluster, :project, :not_managed, projects: [project]) }
+
+      include_examples 'does not create a kubernetes namespace'
+    end
   end
 end

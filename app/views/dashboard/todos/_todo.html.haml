@@ -34,7 +34,7 @@
         = todo_due_date(todo)
 
     .todo-body
-      .todo-note
+      .todo-note.break-word
         .md
           = first_line_in_markdown(todo, :body, 150, project: todo.project)
 

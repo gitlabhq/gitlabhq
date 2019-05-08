@@ -604,41 +604,49 @@ The following are recommended verbs for specific uses.
 
 ## GitLab versions and tiers
 
-- Every piece of documentation that comes with a new feature should declare the
-  GitLab version that feature got introduced. Right below the heading add a
-  blockquote:
+Tagged and released versions of GitLab documentation are available:
+
+- In the [documentation archives](https://docs.gitlab.com/archives/).
+- At the `/help` URL for any GitLab installation.
+
+The version introducing a new feature is added to the top of the topic in the documentation to provide
+a helpful link back to how the feature was developed.
+
+### Text for documentation requiring version text
+
+- For features that need to declare the GitLab version that the feature was introduced. Text similar
+  to the following should be added immediately below the heading as a blockquote:
 
     ```md
-    > Introduced in GitLab 8.3.
+    > Introduced in GitLab 11.3.
     ```
 
-- Whenever possible, every feature should have a link to the issue, MR or epic
-  (in that order) that introduced it. The above quote would be then transformed to:
+- Whenever possible, version text should have a link to the issue, merge request, or epic that introduced the feature.
+  An issue is preferred over a merge request, and a merge request is preferred over an epic. For example:
 
     ```md
-    > [Introduced](<link-to-issue>) in GitLab 8.3.
+    > [Introduced](<link-to-issue>) in GitLab 11.3.
     ```
 
-- If the feature is only available in GitLab Enterprise Edition, don't forget to mention
+- If the feature is only available in GitLab Enterprise Edition, mention
   the [paid tier](https://about.gitlab.com/handbook/marketing/product-marketing/#tiers)
   the feature is available in:
 
     ```md
-    > [Introduced](<link-to-issue>) in [GitLab Starter](https://about.gitlab.com/pricing/) 10.3.
+    > [Introduced](<link-to-issue>) in [GitLab Starter](https://about.gitlab.com/pricing/) 11.3.
     ```
 
-### Early versions of EE
+### Removing version text
 
-If the feature was created before GitLab 9.2 (before [different EE tiers were introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1851)):
+Over time, version text will reference a progressively older version of GitLab. In cases where version text
+refers to versions of GitLab four or more major versions back, consider removing the text.
 
-- Declare it as "Introduced in GitLab Enterprise Edition X.Y".
-- Note which tier the feature is available in.
+For example, if the current major version is 11.x, version text referencing versions of GitLab 7.x
+and older are candidates for removal.
 
-For example:
-
-```md
-> [Introduced](<link-to-issue>) in GitLab Enterprise Edition 9.0. Available in [GitLab Premium](https://about.gitlab.com/pricing/).
-```
+NOTE: **Note:**
+This guidance applies to any text that mentions a GitLab version, not just "Introduced in... " text.
+Other text includes deprecation notices and version-specific how-to information.
 
 ## Product badges
 

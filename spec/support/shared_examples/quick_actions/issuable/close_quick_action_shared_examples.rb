@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 shared_examples 'close quick action' do |issuable_type|
+  include Spec::Support::Helpers::Features::NotesHelpers
+
   before do
     project.add_maintainer(maintainer)
     gitlab_sign_in(maintainer)
@@ -76,10 +78,7 @@ shared_examples 'close quick action' do |issuable_type|
     it 'explains close quick action' do
       visit public_send("project_#{issuable_type}_path", project, issuable)
 
-      page.within('.js-main-target-form') do
-        fill_in 'note[note]', with: "this is done, close\n/close"
-        click_on 'Preview'
-
+      preview_note("this is done, close\n/close") do
         expect(page).not_to have_content '/close'
         expect(page).to have_content 'this is done, close'
         expect(page).to have_content "Closes this #{issuable_type.to_s.humanize.downcase}."

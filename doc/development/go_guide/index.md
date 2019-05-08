@@ -93,7 +93,7 @@ become available, you will be able to share job templates like this
 
 Dependencies should be kept to the minimum. The introduction of a new
 dependency should be argued in the merge request, as per our [Approval
-Guidelines](../code_review.html#approval-guidelines). Both [License
+Guidelines](../code_review.md#approval-guidelines). Both [License
 Management](https://docs.gitlab.com/ee/user/project/merge_requests/license_management.html)
 **[ULTIMATE]** and [Dependency
 Scanning](https://docs.gitlab.com/ee/user/project/merge_requests/dependency_scanning.html)

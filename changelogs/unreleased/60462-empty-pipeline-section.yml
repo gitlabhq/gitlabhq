@@ -1,0 +1,5 @@
+---
+title: Fix empty block in MR widget when user doesn't have permission
+merge_request: 27462
+author:
+type: fixed

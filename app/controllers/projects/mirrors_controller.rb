@@ -81,6 +81,7 @@ class Projects::MirrorsController < Projects::ApplicationController
         password
         ssh_known_hosts
         regenerate_ssh_private_key
+        _destroy
       ]
     ]
   end

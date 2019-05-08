@@ -128,15 +128,9 @@ module NotesHelper
   end
 
   def can_create_note?
-    issuable = @issue || @merge_request
+    noteable = @issue || @merge_request || @snippet || @project
 
-    if @snippet.is_a?(PersonalSnippet)
-      can?(current_user, :comment_personal_snippet, @snippet)
-    elsif issuable
-      can?(current_user, :create_note, issuable)
-    else
-      can?(current_user, :create_note, @project)
-    end
+    can?(current_user, :create_note, noteable)
   end
 
   def initial_notes_data(autocomplete)

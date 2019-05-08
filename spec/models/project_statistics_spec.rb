@@ -124,16 +124,30 @@ describe ProjectStatistics do
   end
 
   describe '.increment_statistic' do
-    it 'increases the statistic by that amount' do
-      expect { described_class.increment_statistic(project.id, :build_artifacts_size, 13) }
-        .to change { statistics.reload.build_artifacts_size }
-        .by(13)
+    shared_examples 'a statistic that increases storage_size' do
+      it 'increases the statistic by that amount' do
+        expect { described_class.increment_statistic(project.id, stat, 13) }
+          .to change { statistics.reload.send(stat) || 0 }
+          .by(13)
+      end
+
+      it 'increases also storage size by that amount' do
+        expect { described_class.increment_statistic(project.id, stat, 20) }
+         .to change { statistics.reload.storage_size }
+         .by(20)
+      end
     end
 
-    it 'increases also storage size by that amount' do
-      expect { described_class.increment_statistic(project.id, :build_artifacts_size, 20) }
-        .to change { statistics.reload.storage_size }
-        .by(20)
+    context 'when adjusting :build_artifacts_size' do
+      let(:stat) { :build_artifacts_size }
+
+      it_behaves_like 'a statistic that increases storage_size'
+    end
+
+    context 'when adjusting :packages_size' do
+      let(:stat) { :packages_size }
+
+      it_behaves_like 'a statistic that increases storage_size'
     end
 
     context 'when the amount is 0' do

@@ -34,10 +34,10 @@
 .modal-body {
   background-color: $modal-body-bg;
   line-height: $line-height-base;
-  min-height: $modal-body-height;
   position: relative;
   padding: #{3 * $grid-size} #{2 * $grid-size};
   text-align: left;
+  white-space: normal;
 
   .form-actions {
     margin: #{2 * $grid-size} #{-2 * $grid-size} #{-2 * $grid-size};
@@ -64,12 +64,6 @@
     .btn + .btn-group {
       margin-left: 0;
       margin-top: $grid-size;
-    }
-  }
-
-  @include media-breakpoint-up(sm) {
-    .btn:nth-child(1) {
-      margin-left: auto;
     }
   }
 }

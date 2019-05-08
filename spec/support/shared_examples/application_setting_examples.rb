@@ -260,6 +260,7 @@ RSpec.shared_examples 'application settings examples' do
 
         allow(Gitlab.config.sentry).to receive(:enabled).and_return(false)
         allow(Gitlab.config.sentry).to receive(:dsn).and_return(nil)
+        allow(Gitlab.config.sentry).to receive(:clientside_dsn).and_return(nil)
 
         expect(setting.sentry_enabled).to eq true
         expect(setting.sentry_dsn).to eq 'https://b44a0828b72421a6d8e99efd68d44fa8@example.com/40'
@@ -277,12 +278,13 @@ RSpec.shared_examples 'application settings examples' do
 
         allow(Gitlab.config.sentry).to receive(:enabled).and_return(true)
         allow(Gitlab.config.sentry).to receive(:dsn).and_return('https://b44a0828b72421a6d8e99efd68d44fa8@example.com/42')
+        allow(Gitlab.config.sentry).to receive(:clientside_dsn).and_return('https://b44a0828b72421a6d8e99efd68d44fa8@example.com/43')
 
         expect(setting).not_to receive(:read_attribute)
         expect(setting.sentry_enabled).to eq true
         expect(setting.sentry_dsn).to eq 'https://b44a0828b72421a6d8e99efd68d44fa8@example.com/42'
         expect(setting.clientside_sentry_enabled).to eq true
-        expect(setting.clientside_sentry_dsn). to eq 'https://b44a0828b72421a6d8e99efd68d44fa8@example.com/42'
+        expect(setting.clientside_sentry_dsn). to eq 'https://b44a0828b72421a6d8e99efd68d44fa8@example.com/43'
       end
     end
   end

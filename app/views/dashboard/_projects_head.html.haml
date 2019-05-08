@@ -1,3 +1,6 @@
+- project_tab_filter = local_assigns.fetch(:project_tab_filter, "")
+- feature_project_list_filter_bar = Feature.enabled?(:project_list_filter_bar)
+
 = content_for :flash_message do
   = render 'shared/project_limit'
 
@@ -6,24 +9,27 @@
 
   - if current_user.can_create_project?
     .page-title-controls
-      = link_to "New project", new_project_path, class: "btn btn-success"
+      = link_to _("New project"), new_project_path, class: "btn btn-success"
 
 .top-area.scrolling-tabs-container.inner-page-scroll-tabs
   .fade-left= icon('angle-left')
   .fade-right= icon('angle-right')
-  %ul.nav-links.scrolling-tabs.mobile-separator.nav.nav-tabs
+  %ul.nav-links.scrolling-tabs.mobile-separator.nav.nav-tabs{ class: ('border-0' if feature_project_list_filter_bar) }
     = nav_link(page: [dashboard_projects_path, root_path]) do
       = link_to dashboard_projects_path, class: 'shortcuts-activity', data: {placement: 'right'} do
-        Your projects
+        = _("Your projects")
         %span.badge.badge-pill= limited_counter_with_delimiter(@total_user_projects_count)
     = nav_link(page: starred_dashboard_projects_path) do
       = link_to starred_dashboard_projects_path, data: {placement: 'right'} do
-        Starred projects
+        = _("Starred projects")
         %span.badge.badge-pill= limited_counter_with_delimiter(@total_starred_projects_count)
     = nav_link(page: [explore_root_path, trending_explore_projects_path, starred_explore_projects_path, explore_projects_path]) do
       = link_to explore_root_path, data: {placement: 'right'} do
-        Explore projects
-
-  .nav-controls
-    = render 'shared/projects/search_form'
-    = render 'shared/projects/dropdown'
+        = _("Explore projects")
+  - unless feature_project_list_filter_bar
+    .nav-controls
+      = render 'shared/projects/search_form'
+      = render 'shared/projects/dropdown'
+- if feature_project_list_filter_bar
+  .project-filters
+    = render 'shared/projects/search_bar', project_tab_filter: project_tab_filter

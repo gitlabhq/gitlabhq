@@ -49,6 +49,11 @@ RSpec.describe Release do
       it 'counts the link as an asset' do
         is_expected.to eq(1 + Releases::Source::FORMATS.count)
       end
+
+      it "excludes sources count when asked" do
+        assets_count = release.assets_count(except: [:sources])
+        expect(assets_count).to eq(1)
+      end
     end
   end
 

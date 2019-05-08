@@ -113,9 +113,10 @@ export default {
         <commit-pipeline-status
           v-if="commit.pipeline_status_path"
           :endpoint="commit.pipeline_status_path"
+          class="d-inline-flex"
         />
         <div class="commit-sha-group">
-          <div class="label label-monospace" v-text="commit.short_id"></div>
+          <div class="label label-monospace monospace" v-text="commit.short_id"></div>
           <clipboard-button
             :text="commit.id"
             :title="__('Copy commit SHA to clipboard')"

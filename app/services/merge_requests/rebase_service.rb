@@ -20,17 +20,7 @@ module MergeRequests
         return false
       end
 
-      log_prefix = "#{self.class.name} info (#{merge_request.to_reference(full: true)}):"
-
-      Gitlab::GitLogger.info("#{log_prefix} rebase started")
-
-      rebase_sha = repository.rebase(current_user, merge_request)
-
-      Gitlab::GitLogger.info("#{log_prefix} rebased to #{rebase_sha}")
-
-      merge_request.update(rebase_commit_sha: rebase_sha)
-
-      Gitlab::GitLogger.info("#{log_prefix} rebase SHA saved: #{rebase_sha}")
+      repository.rebase(current_user, merge_request)
 
       true
     rescue => e

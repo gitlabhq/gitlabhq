@@ -41,7 +41,7 @@ module Groups
     end
 
     def variable_params_attributes
-      %i[id key secret_value protected masked _destroy]
+      %i[id variable_type key secret_value protected masked _destroy]
     end
 
     def authorize_admin_build!

@@ -28,6 +28,7 @@ deployments.
 | [Helm Tiller](https://docs.helm.sh)                                        | 11.6+          | Helm is a package manager for Kubernetes and is required to install all the other applications. It is installed in its own pod inside the cluster which can run the `helm` CLI in a safe environment. | n/a |
 | [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress) | 11.6+          | Ingress can provide load balancing, SSL termination, and name-based virtual hosting. It acts as a web proxy for your applications and is useful if you want to use [Auto DevOps](../../../topics/autodevops/index.md) or deploy your own web apps. | [stable/nginx-ingress](https://github.com/helm/charts/tree/master/stable/nginx-ingress) |
 | [Cert-Manager](https://docs.cert-manager.io/en/latest/) | 11.6+ | Cert-Manager is a native Kubernetes certificate management controller that helps with issuing certificates. Installing Cert-Manager on your cluster will issue a certificate by [Let's Encrypt](https://letsencrypt.org/) and ensure that certificates are valid and up-to-date. | [stable/cert-manager](https://github.com/helm/charts/tree/master/stable/cert-manager) |
+| [Prometheus](https://prometheus.io/docs/introduction/overview/) | 11.11+ | Prometheus is an open-source monitoring and alerting system useful to supervise your deployed applications. | [stable/prometheus](https://github.com/helm/charts/tree/master/stable/prometheus) |
 | [GitLab Runner](https://docs.gitlab.com/runner/) | 11.10+ | GitLab Runner is the open source project that is used to run your jobs and send the results back to GitLab. It is used in conjunction with [GitLab CI/CD](../../../ci/README.md), the open-source continuous integration service included with GitLab that coordinates the jobs. When installing the GitLab Runner via the applications, it will run in **privileged mode** by default. Make sure you read the [security implications](../../project/clusters/index.md#security-implications) before doing so. | [runner/gitlab-runner](https://gitlab.com/charts/gitlab-runner) |
 
 NOTE: **Note:**
@@ -38,8 +39,6 @@ applications in a group-level cluster is planned for future releases. For update
 
 - Support installing [JupyterHub in group-level
   clusters](https://gitlab.com/gitlab-org/gitlab-ce/issues/51989)
-- Support installing [Prometheus in group-level
-  clusters](https://gitlab.com/gitlab-org/gitlab-ce/issues/51963)
 
 ## RBAC compatibility
 
@@ -72,6 +71,29 @@ Add another cluster similar to the first one and make sure to
 [set an environment scope](#environment-scopes-premium) that will
 differentiate the new cluster from the rest.
 
+## Gitlab-managed clusters
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22011) in GitLab 11.5.
+> Became [optional](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/26565) in GitLab 11.11.
+
+NOTE: **Note:**
+Only available when creating clusters. Existing clusters not managed by GitLab
+cannot become GitLab-managed later.
+
+You can choose to allow GitLab to manage your cluster for you. If your cluster is
+managed by GitLab, resources for your projects will be automatically created. See the
+[Access controls](../../project/clusters/index.md#access-controls) section for details on which resources will
+be created.
+
+If you choose to manage your own cluster, project-specific resources will not be created
+automatically. If you are using [Auto DevOps](../../../topics/autodevops/index.md), you will
+need to explicitly provide the `KUBE_NAMESPACE` [deployment variable](../../project/clusters/index.md#deployment-variables)
+that will be used by your deployment jobs.
+
+NOTE: **Note:**
+If you [install applications](#installing-applications) on your cluster, GitLab will create
+the resources required to run these even if you have chosen to manage your own cluster.
+
 ## Base domain
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/24580) in GitLab 11.8.
@@ -88,7 +110,7 @@ The domain should have a wildcard DNS configured to the Ingress IP address.
 When adding more than one Kubernetes cluster to your project, you need to differentiate
 them with an environment scope. The environment scope associates clusters with
 [environments](../../../ci/environments.md) similar to how the
-[environment-specific variables](https://docs.gitlab.com/ee/ci/variables/README.html#limiting-environment-scopes-of-variables-premium)
+[environment-specific variables](https://docs.gitlab.com/ee/ci/variables/#limiting-environment-scopes-of-environment-variables-premium)
 work.
 
 While evaluating which environment matches the environment scope of a

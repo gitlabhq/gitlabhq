@@ -17,8 +17,9 @@
             - if logo_text.present?
               %span.logo-text.d-none.d-lg-block.prepend-left-8
                 = logo_text
-          %span.js-canary-badge.badge.badge-pill.green-badge.align-self-center
-            = _('Next')
+          - if Gitlab.com?
+            %span.js-canary-badge.badge.badge-pill.green-badge.align-self-center
+              = _('Next')
 
         - if current_user
           = render "layouts/nav/dashboard"

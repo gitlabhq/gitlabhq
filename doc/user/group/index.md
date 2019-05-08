@@ -5,9 +5,11 @@ and grant members access to several projects at once.
 
 Groups can also be nested in [subgroups](subgroups/index.md).
 
-Find your groups by expanding the left menu and clicking **Groups**:
+Find your groups by clicking **Groups** in the top navigation.
 
 ![GitLab Groups](img/groups.png)
+
+> The groups dropdown in the top navigation was [introduced][ce-36234] in [GitLab 11.1](https://about.gitlab.com/2018/07/22/gitlab-11-1-released/#groups-dropdown-in-navigation).
 
 The Groups page displays all groups you are a member of, how many projects it holds,
 how many members it has, the group visibility, and, if you have enough permissions,
@@ -44,7 +46,7 @@ For example, consider a user named Alex:
 
 1. Alex creates an account on GitLab.com with the username `alex`;
    their profile will be accessed under `https://gitlab.example.com/alex`
-1. Alex creates a group for their team with the groupname `alex-team`;
+1. Alex creates a group for their team with the group name `alex-team`;
    the group and its projects will be accessed under `https://gitlab.example.com/alex-team`
 1. Alex creates a subgroup of `alex-team` with the subgroup name `marketing`;
    this subgroup and its projects will be accessed under `https://gitlab.example.com/alex-team/marketing`
@@ -160,6 +162,10 @@ There are two different ways to add a new project to a group:
 
 ### Default project creation level
 
+> [Introduced][ee-2534] in [GitLab Premium][ee] 10.5.
+> Brought to [GitLab Starter][ee] in 10.7.
+> [Moved](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/25975) to [GitLab Core](https://about.gitlab.com/pricing/) in 11.10.
+
 Group owners or administrators can allow users with the
 Developer role to create projects under groups.
 
@@ -184,6 +190,32 @@ Alternatively, you can [lock the sharing with group feature](#share-with-group-l
 
 In GitLab Enterprise Edition it is possible to manage GitLab group memberships using LDAP groups.
 See [the GitLab Enterprise Edition documentation](../../integration/ldap.md) for more information.
+
+## Epics **[ULTIMATE]**
+
+> Introduced in [GitLab Ultimate][ee] 10.2.
+
+Epics let you manage your portfolio of projects more efficiently and with less
+effort by tracking groups of issues that share a theme, across projects and
+milestones.
+
+[Learn more about Epics.](epics/index.md)
+
+## Group Security Dashboard **[ULTIMATE]**
+
+Get an overview of the vulnerabilities of all the projects in a group and its subgroups.
+
+[Learn more about the Group Security Dashboard.](security_dashboard/index.md)
+
+## Insights **[ULTIMATE]**
+
+> Introduced in [GitLab Ultimate][ee] 11.9 behind the `insights` feature flag.
+
+Configure the Insights that matter for your groups or projects to explore data
+such as triage hygiene, issues created/closed per a given period, average time
+for merge requests to be merged and much more.
+
+[Learn more about Insights](insights/index.md).
 
 ## Transferring groups
 
@@ -257,7 +289,7 @@ working together in a project.
 To inherit the group membership, you share the project between the
 two groups A and B. **Share with group lock** prevents any project within
 the group from being shared with another group. By doing so, you
-guarantee only the right group members have access to that projects.
+guarantee only the right group members have access to those projects.
 
 To enable this feature, navigate to the group settings page. Select
 **Share with group lock** and **Save the group**.
@@ -266,17 +298,50 @@ To enable this feature, navigate to the group settings page. Select
 
 #### Member Lock **[STARTER]**
 
-With **Member Lock** it is possible to lock membership in project to the
-level of members in group.
+With Member lock, it is possible to lock membership in a project to the
+level of members in the group.
 
-Learn more about [Member Lock](https://docs.gitlab.com/ee/user/group/index.html#member-lock).
+Member lock lets a group owner lock down any new project membership to all the
+projects within the group, allowing tighter control over project membership.
 
-#### Group-level file templates **[PREMIUM]**
+For instance, if you want to lock the group for an [Audit Event](https://docs.gitlab.com/ee/administration/audit_events.html),
+you enable Member lock to guarantee that membership of a project cannot be modified during that audit.
 
-Group-level file templates allow you to share a set of templates for common file
-types with every project in a group.
+To enable this feature:
 
-Learn more about [Group-level file templates](https://docs.gitlab.com/ee/user/group/index.html#group-level-file-templates-premium).
+1. Navigate to the group's **Settings > General** page.
+1. Expand the **Permissions, LFS, 2FA** section and select **Member lock**.
+1. Click the **Save changes** button.
+
+![Checkbox for membership lock](img/member_lock.png)
+
+This will disable the option for all users who previously had permissions to
+operate project memberships so no new users can be added. Furthermore, any
+request to add a new user to a project through API will not be possible.
+
+#### Group file templates **[PREMIUM]**
+
+Group file templates allow you to share a set of templates for common file
+types with every project in a group. It is analogous to the
+[instance template repository](https://docs.gitlab.com/ee/user/admin_area/settings/instance_template_repository.html)
+feature, and the selected project should follow the same naming conventions as
+are documented on that page.
+
+Only projects that are in the group may be chosen as the source of templates.
+This includes projects shared with the group, but **excludes** projects in
+subgroups or parent groups of the group being configured.
+
+This feature may be configured for subgroups as well as parent groups. A project
+in a subgroup will have access to the templates for that subgroup, as well as
+any parent groups.
+
+![Group file template dropdown](img/group_file_template_dropdown.png)
+
+To enable this feature, navigate to the group settings page, expand the
+**Templates** section, choose a project to act as the template repository, and
+**Save group**.
+
+![Group file template settings](img/group_file_template_settings.png)
 
 #### Group-level project templates **[PREMIUM]**
 
@@ -289,6 +354,19 @@ Define project templates at a group-level by setting a group as a template sourc
   access each project's settings, and remove any project from the same screen.
 - **Webhooks**: configure [webhooks](../project/integrations/webhooks.md) to your group.
 - **Kubernetes cluster integration**: connect your GitLab group with [Kubernetes clusters](clusters/index.md).
-- **Audit Events**: view [Audit Events](https://docs.gitlab.com/ee/administration/audit_events.html#audit-events)
+- **Audit Events**: view [Audit Events](https://docs.gitlab.com/ee/administration/audit_events.html)
   for the group. **[STARTER ONLY]**
 - **Pipelines quota**: keep track of the [pipeline quota](../admin_area/settings/continuous_integration.md) for the group.
+
+## User contribution analysis **[STARTER]**
+
+With [GitLab Contribution Analytics](contribution_analytics/index.md)
+you have an overview of the contributions (pushes, merge requests,
+and issues) performed by your group members.
+
+## Issues analytics **[PREMIUM]**
+
+With [GitLab Issues Analytics](issues_analytics/index.md), in groups, you can see a bar chart of the number of issues created each month.
+
+[ee]: https://about.gitlab.com/pricing/
+[ee-2534]: https://gitlab.com/gitlab-org/gitlab-ee/issues/2534

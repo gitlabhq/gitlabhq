@@ -88,6 +88,7 @@ curl --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" "https://gitlab.example.com/
     "variables": [
         {
             "key": "TEST_VARIABLE_1",
+            "variable_type": "env_var",
             "value": "TEST_1"
         }
     ]
@@ -296,6 +297,7 @@ POST /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables
 | `pipeline_schedule_id` | integer        | yes      | The pipeline schedule id |
 | `key`                  | string         | yes      | The `key` of a variable; must have no more than 255 characters; only `A-Z`, `a-z`, `0-9`, and `_` are allowed |
 | `value`                | string         | yes      | The `value` of a variable |
+| `variable_type`        | string         | no       | The type of a variable. Available types are: `env_var` (default) and `file` |
 
 ```sh
 curl --request POST --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" --form "key=NEW_VARIABLE" --form "value=new value" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules/13/variables"
@@ -304,6 +306,7 @@ curl --request POST --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" --form "key=N
 ```json
 {
     "key": "NEW_VARIABLE",
+    "variable_type": "env_var",
     "value": "new value"
 }
 ```
@@ -322,6 +325,7 @@ PUT /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables/:key
 | `pipeline_schedule_id` | integer        | yes      | The pipeline schedule id |
 | `key`                  | string         | yes      | The `key` of a variable   |
 | `value`                | string         | yes      | The `value` of a variable |
+| `variable_type`        | string         | no       | The type of a variable. Available types are: `env_var` (default) and `file` |
 
 ```sh
 curl --request PUT --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" --form "value=updated value" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules/13/variables/NEW_VARIABLE"
@@ -331,6 +335,7 @@ curl --request PUT --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" --form "value=
 {
     "key": "NEW_VARIABLE",
     "value": "updated value"
+    "variable_type": "env_var",
 }
 ```
 

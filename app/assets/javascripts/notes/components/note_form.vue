@@ -8,6 +8,7 @@ import issuableStateMixin from '../mixins/issuable_state';
 import resolvable from '../mixins/resolvable';
 import { __ } from '~/locale';
 import { getDraft, updateDraft } from '~/lib/utils/autosave';
+import noteFormMixin from 'ee_else_ce/notes/mixins/note_form';
 
 export default {
   name: 'NoteForm',
@@ -15,7 +16,7 @@ export default {
     issueWarning,
     markdownField,
   },
-  mixins: [issuableStateMixin, resolvable],
+  mixins: [issuableStateMixin, resolvable, noteFormMixin],
   props: {
     noteBody: {
       type: String,
@@ -195,21 +196,6 @@ export default {
 
       return shouldResolve || shouldToggleState;
     },
-    handleKeySubmit() {
-      this.handleUpdate();
-    },
-    handleUpdate(shouldResolve) {
-      const beforeSubmitDiscussionState = this.discussionResolved;
-      this.isSubmitting = true;
-
-      this.$emit('handleFormUpdate', this.updatedNoteBody, this.$refs.editNoteForm, () => {
-        this.isSubmitting = false;
-
-        if (this.shouldToggleResolved(shouldResolve, beforeSubmitDiscussionState)) {
-          this.resolveHandler(beforeSubmitDiscussionState);
-        }
-      });
-    },
     editMyLastNote() {
       if (this.updatedNoteBody === '') {
         const lastNoteInDiscussion = this.getDiscussionLastNote(this.discussion);
@@ -279,28 +265,74 @@ export default {
         ></textarea>
       </markdown-field>
       <div class="note-form-actions clearfix">
-        <button
-          :disabled="isDisabled"
-          type="button"
-          class="js-vue-issue-save btn btn-success js-comment-button qa-reply-comment-button"
-          @click="handleUpdate()"
-        >
-          {{ saveButtonTitle }}
-        </button>
-        <button
-          v-if="discussion.resolvable"
-          class="btn btn-nr btn-default append-right-10 js-comment-resolve-button"
-          @click.prevent="handleUpdate(true)"
-        >
-          {{ resolveButtonTitle }}
-        </button>
-        <button
-          class="btn btn-cancel note-edit-cancel js-close-discussion-note-form"
-          type="button"
-          @click="cancelHandler()"
-        >
-          Cancel
-        </button>
+        <template v-if="showBatchCommentsActions">
+          <p v-if="showResolveDiscussionToggle">
+            <label>
+              <template v-if="discussionResolved">
+                <input
+                  v-model="isUnresolving"
+                  type="checkbox"
+                  class="qa-unresolve-review-discussion"
+                />
+                {{ __('Unresolve discussion') }}
+              </template>
+              <template v-else>
+                <input v-model="isResolving" type="checkbox" class="qa-resolve-review-discussion" />
+                {{ __('Resolve discussion') }}
+              </template>
+            </label>
+          </p>
+          <div>
+            <button
+              :disabled="isDisabled"
+              type="button"
+              class="btn btn-success qa-start-review"
+              @click="handleAddToReview"
+            >
+              <template v-if="hasDrafts">{{ __('Add to review') }}</template>
+              <template v-else>{{ __('Start a review') }}</template>
+            </button>
+            <button
+              :disabled="isDisabled"
+              type="button"
+              class="btn qa-comment-now"
+              @click="handleUpdate()"
+            >
+              {{ __('Add comment now') }}
+            </button>
+            <button
+              class="btn btn-cancel note-edit-cancel js-close-discussion-note-form"
+              type="button"
+              @click="cancelHandler()"
+            >
+              {{ __('Cancel') }}
+            </button>
+          </div>
+        </template>
+        <template v-else>
+          <button
+            :disabled="isDisabled"
+            type="button"
+            class="js-vue-issue-save btn btn-success js-comment-button qa-reply-comment-button"
+            @click="handleUpdate()"
+          >
+            {{ saveButtonTitle }}
+          </button>
+          <button
+            v-if="discussion.resolvable"
+            class="btn btn-nr btn-default append-right-10 js-comment-resolve-button"
+            @click.prevent="handleUpdate(true)"
+          >
+            {{ resolveButtonTitle }}
+          </button>
+          <button
+            class="btn btn-cancel note-edit-cancel js-close-discussion-note-form"
+            type="button"
+            @click="cancelHandler()"
+          >
+            Cancel
+          </button>
+        </template>
       </div>
     </form>
   </div>

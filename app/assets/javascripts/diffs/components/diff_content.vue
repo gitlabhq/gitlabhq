@@ -1,5 +1,6 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
+import { GlLoadingIcon } from '@gitlab/ui';
 import diffLineNoteFormMixin from 'ee_else_ce/notes/mixins/diff_line_note_form';
 import draftCommentsMixin from 'ee_else_ce/diffs/mixins/draft_comments';
 import DiffViewer from '~/vue_shared/components/diff_viewer/diff_viewer.vue';
@@ -16,6 +17,7 @@ import { diffViewerModes } from '~/ide/constants';
 
 export default {
   components: {
+    GlLoadingIcon,
     InlineDiffView,
     ParallelDiffView,
     DiffViewer,
@@ -108,6 +110,7 @@ export default {
           :diff-lines="diffFile.parallel_diff_lines || []"
           :help-page-path="helpPagePath"
         />
+        <gl-loading-icon v-if="diffFile.renderingLines" size="md" class="mt-3" />
       </template>
       <not-diffable-viewer v-else-if="notDiffable" />
       <no-preview-viewer v-else-if="noPreview" />

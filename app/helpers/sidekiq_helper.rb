@@ -8,7 +8,7 @@ module SidekiqHelper
     (?<state>[DIEKNRSTVWXZNLpsl\+<>/\d]+)\s+
     (?<start>.+?)\s+
     (?<command>(?:ruby\d+:\s+)?sidekiq.*\].*)
-    \z}x
+    \z}x.freeze
 
   def parse_sidekiq_ps(line)
     match = line.strip.match(SIDEKIQ_PS_REGEXP)

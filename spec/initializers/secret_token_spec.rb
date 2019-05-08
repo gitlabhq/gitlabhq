@@ -6,8 +6,8 @@ describe 'create_tokens' do
 
   let(:secrets) { ActiveSupport::OrderedOptions.new }
 
-  HEX_KEY = /\h{128}/
-  RSA_KEY = /\A-----BEGIN RSA PRIVATE KEY-----\n.+\n-----END RSA PRIVATE KEY-----\n\Z/m
+  HEX_KEY = /\h{128}/.freeze
+  RSA_KEY = /\A-----BEGIN RSA PRIVATE KEY-----\n.+\n-----END RSA PRIVATE KEY-----\n\Z/m.freeze
 
   before do
     allow(File).to receive(:write)

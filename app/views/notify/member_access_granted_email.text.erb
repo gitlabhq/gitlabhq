@@ -1,3 +1,8 @@
-You have been granted <%= member.human_access %> access to the <%= member_source.human_name %> <%= member_source.model_name.singular %>.
+<% source_type = member_source.model_name.singular %>
+<%= _('You have been granted %{access_level} access to the %{source_name} %{source_type}.') % { access_level: member.human_access, source_name: member_source.human_name, source_type: source_type  } %>
 
 <%= member_source.web_url %>
+
+<%= _('If this was a mistake you can leave the %{source_type}.') % { source_type: source_type  } %>
+
+<%= polymorphic_url([member_source], leave: 1) %>

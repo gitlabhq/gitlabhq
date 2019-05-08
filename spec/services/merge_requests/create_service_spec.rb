@@ -195,7 +195,7 @@ describe MergeRequests::CreateService do
             expect(merge_request).to be_persisted
 
             merge_request.reload
-            expect(merge_request.merge_request_pipelines.count).to eq(1)
+            expect(merge_request.pipelines_for_merge_request.count).to eq(1)
             expect(merge_request.actual_head_pipeline).to be_detached_merge_request_pipeline
           end
 
@@ -247,7 +247,7 @@ describe MergeRequests::CreateService do
               expect(merge_request).to be_persisted
 
               merge_request.reload
-              expect(merge_request.merge_request_pipelines.count).to eq(0)
+              expect(merge_request.pipelines_for_merge_request.count).to eq(0)
             end
           end
 
@@ -281,7 +281,7 @@ describe MergeRequests::CreateService do
             expect(merge_request).to be_persisted
 
             merge_request.reload
-            expect(merge_request.merge_request_pipelines.count).to eq(0)
+            expect(merge_request.pipelines_for_merge_request.count).to eq(0)
           end
         end
       end

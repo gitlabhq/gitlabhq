@@ -670,4 +670,26 @@ describe 'Merge request > User sees merge widget', :js do
       end
     end
   end
+
+  context 'when MR has pipeline but user does not have permission' do
+    let(:sha) { project.commit(merge_request.source_branch).sha }
+    let!(:pipeline) { create(:ci_pipeline_without_jobs, status: 'success', sha: sha, project: project, ref: merge_request.source_branch) }
+
+    before do
+      project.update(
+        visibility_level: Gitlab::VisibilityLevel::PUBLIC,
+        public_builds: false
+      )
+      merge_request.update!(head_pipeline: pipeline)
+      sign_out(:user)
+
+      visit project_merge_request_path(project, merge_request)
+    end
+
+    it 'renders a CI pipeline error' do
+      within '.ci-widget' do
+        expect(page).to have_content('Could not retrieve the pipeline status.')
+      end
+    end
+  end
 end

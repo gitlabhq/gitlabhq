@@ -1,0 +1,5 @@
+---
+title: Switch to sassc-rails for faster stylesheet compilation
+merge_request: 26224
+author:
+type: changed

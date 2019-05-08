@@ -565,6 +565,7 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    line-height: 2.2em;
   }
 
   .build {
@@ -700,6 +701,11 @@
         }
       }
     }
+  }
+
+  .stage-action svg {
+    left: 1px;
+    top: -2px;
   }
 }
 

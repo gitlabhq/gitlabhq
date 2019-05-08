@@ -251,7 +251,7 @@ module QA
       end
 
       def netrc_already_contains_content?
-        read_netrc_content.grep(/^#{netrc_content}$/).any?
+        read_netrc_content.grep(/^#{Regexp.escape(netrc_content)}$/).any?
       end
     end
   end

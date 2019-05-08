@@ -123,7 +123,7 @@ export default () => {
           this.loading = false;
         })
         .catch(() => {
-          Flash('An error occurred while fetching the board lists. Please try again.');
+          Flash(__('An error occurred while fetching the board lists. Please try again.'));
         });
     },
     methods: {
@@ -223,7 +223,7 @@ export default () => {
         },
         tooltipTitle() {
           if (this.disabled) {
-            return 'Please add a list to your board first';
+            return __('Please add a list to your board first');
           }
 
           return '';

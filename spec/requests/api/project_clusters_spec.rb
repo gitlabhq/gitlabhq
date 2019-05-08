@@ -189,6 +189,7 @@ describe API::ProjectClusters do
       {
         name: 'test-cluster',
         domain: 'domain.example.com',
+        managed: false,
         platform_kubernetes_attributes: platform_kubernetes_attributes
       }
     end
@@ -220,6 +221,7 @@ describe API::ProjectClusters do
           expect(cluster_result.project).to eq(project)
           expect(cluster_result.name).to eq('test-cluster')
           expect(cluster_result.domain).to eq('domain.example.com')
+          expect(cluster_result.managed).to be_falsy
           expect(platform_kubernetes.rbac?).to be_truthy
           expect(platform_kubernetes.api_url).to eq(api_url)
           expect(platform_kubernetes.namespace).to eq(namespace)

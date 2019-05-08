@@ -46,13 +46,15 @@ discussions, and descriptions:
 | `/remove_due_date`         | Remove due date                | ✓     |               |
 | `/weight 0,1,2, ...`       | Set weight **[STARTER]**       | ✓     |               |
 | `/clear_weight`            | Clears weight **[STARTER]**    | ✓     |               |
-| `/epic <group&epic &#124; Epic URL>` | Add to epic **[ULTIMATE]** | ✓ |             |
+| `/epic <&epic &#124; group&epic &#124; Epic URL>` | Add to epic **[ULTIMATE]** | ✓ |             |
 | `/remove_epic`             | Removes from epic **[ULTIMATE]** | ✓   |               |
+| `/promote`                 | Promote issue to epic **[ULTIMATE]** | ✓   |               |
 | `/confidential`            | Make confidential              | ✓     |               |
 | `/duplicate #issue`        | Mark this issue as a duplicate of another issue | ✓    |
 | `/move path/to/project`    | Move this issue to another project | ✓ |               |
 | `/target_branch <Local branch Name>` | Set target branch    |       | ✓             |
 | `/wip`                     | Toggle the Work In Progress status |   | ✓             |
+| `/approve`                 | Approve the merge request      |       | ✓             |
 | `/merge`                   | Merge (when pipeline succeeds) |       | ✓             |
 | `/create_merge_request <branch name>` | Create a new merge request starting from the current issue | ✓ | |
 

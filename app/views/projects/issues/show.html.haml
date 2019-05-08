@@ -79,7 +79,7 @@
 
     = render_if_exists 'projects/issues/related_issues'
 
-    #js-related-merge-requests{ data: { endpoint: expose_url(api_v4_projects_issues_related_merge_requests_path(id: @project.id, issue_iid: @issue.iid)), project_namespace: @project.namespace.path, project_path: @project.path } }
+    #js-related-merge-requests{ data: { endpoint: expose_path(api_v4_projects_issues_related_merge_requests_path(id: @project.id, issue_iid: @issue.iid)), project_namespace: @project.namespace.path, project_path: @project.path } }
 
     - if can?(current_user, :download_code, @project)
       #related-branches{ data: { url: related_branches_project_issue_path(@project, @issue) } }

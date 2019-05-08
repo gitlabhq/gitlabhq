@@ -27,6 +27,7 @@ class ApplicationController < ActionController::Base
   before_action :check_impersonation_availability
 
   around_action :set_locale
+  around_action :set_session_storage
 
   after_action :set_page_title_header, if: :json_request?
   after_action :limit_unauthenticated_session_times
@@ -432,6 +433,10 @@ class ApplicationController < ActionController::Base
 
   def set_locale(&block)
     Gitlab::I18n.with_user_locale(current_user, &block)
+  end
+
+  def set_session_storage(&block)
+    Gitlab::Session.with_session(session, &block)
   end
 
   def set_page_title_header

@@ -16,10 +16,12 @@ New utility classes should be added to [`utilities.scss`](https://gitlab.com/git
 
 **Background color**: `.bg-variant-shade` e.g. `.bg-warning-400`  
 **Text color**: `.text-variant-shade` e.g. `.text-success-500` 
+
 - variant is one of 'primary', 'secondary', 'success', 'warning', 'error'
 - shade is on of the shades listed on [colors](https://design.gitlab.com/foundations/colors/)
 
 **Font size**: `.text-size` e.g. `.text-2`
+
 - **size** is number from 1-6 from our [Type scale](https://design.gitlab.com/foundations/typography)
 
 ### Naming

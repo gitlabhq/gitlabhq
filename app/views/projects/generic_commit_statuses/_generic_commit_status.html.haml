@@ -5,11 +5,11 @@
 - pipeline_link = local_assigns.fetch(:pipeline_link, false)
 - stage = local_assigns.fetch(:stage, false)
 
-%tr.generic_commit_status{ class: ('retried' if retried) }
+%tr.generic-commit-status{ class: ('retried' if retried) }
   %td.status
     = render 'ci/status/badge', status: generic_commit_status.detailed_status(current_user)
 
-  %td.generic_commit_status-link
+  %td.generic-commit-status-link
     - if can?(current_user, :read_commit_status, generic_commit_status) && generic_commit_status.target_url
       = link_to generic_commit_status.target_url do
         %span.build-link ##{generic_commit_status.id}

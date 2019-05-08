@@ -773,7 +773,7 @@ describe Ci::CreatePipelineService do
       end
     end
 
-    describe 'Merge request pipelines' do
+    describe 'Pipelines for merge requests' do
       let(:pipeline) do
         execute_service(source: source,
                         merge_request: merge_request,
@@ -817,12 +817,14 @@ describe Ci::CreatePipelineService do
             let(:merge_request) do
               create(:merge_request,
                 source_project: project,
-                source_branch: Gitlab::Git.ref_name(ref_name),
+                source_branch: 'feature',
                 target_project: project,
                 target_branch: 'master')
             end
 
-            it 'creates a merge request pipeline' do
+            let(:ref_name) { merge_request.ref_path }
+
+            it 'creates a detached merge request pipeline' do
               expect(pipeline).to be_persisted
               expect(pipeline).to be_merge_request_event
               expect(pipeline.merge_request).to eq(merge_request)
@@ -835,6 +837,13 @@ describe Ci::CreatePipelineService do
 
             it 'does not persist target sha for detached merge request pipeline' do
               expect(pipeline.target_sha).to be_nil
+            end
+
+            it 'schedules update for the head pipeline of the merge request' do
+              expect(UpdateHeadPipelineForMergeRequestWorker)
+                .to receive(:perform_async).with(merge_request.id)
+
+              pipeline
             end
 
             context 'when target sha is specified' do
@@ -858,15 +867,16 @@ describe Ci::CreatePipelineService do
               let(:merge_request) do
                 create(:merge_request,
                   source_project: project,
-                  source_branch: Gitlab::Git.ref_name(ref_name),
+                  source_branch: 'feature',
                   target_project: target_project,
                   target_branch: 'master')
               end
 
+              let(:ref_name) { 'refs/heads/feature' }
               let!(:project) { fork_project(target_project, nil, repository: true) }
               let!(:target_project) { create(:project, :repository) }
 
-              it 'creates a merge request pipeline in the forked project' do
+              it 'creates a legacy detached merge request pipeline in the forked project' do
                 expect(pipeline).to be_persisted
                 expect(project.ci_pipelines).to eq([pipeline])
                 expect(target_project.ci_pipelines).to be_empty
@@ -884,7 +894,7 @@ describe Ci::CreatePipelineService do
                 }
               end
 
-              it 'does not create a merge request pipeline' do
+              it 'does not create a detached merge request pipeline' do
                 expect(pipeline).not_to be_persisted
                 expect(pipeline.errors[:base]).to eq(["No stages / jobs for this pipeline."])
               end
@@ -894,7 +904,7 @@ describe Ci::CreatePipelineService do
           context 'when merge request is not specified' do
             let(:merge_request) { nil }
 
-            it 'does not create a merge request pipeline' do
+            it 'does not create a detached merge request pipeline' do
               expect(pipeline).not_to be_persisted
               expect(pipeline.errors[:merge_request]).to eq(["can't be blank"])
             end
@@ -928,7 +938,7 @@ describe Ci::CreatePipelineService do
                 target_branch: 'master')
             end
 
-            it 'does not create a merge request pipeline' do
+            it 'does not create a detached merge request pipeline' do
               expect(pipeline).not_to be_persisted
 
               expect(pipeline.errors[:base])
@@ -939,7 +949,7 @@ describe Ci::CreatePipelineService do
           context 'when merge request is not specified' do
             let(:merge_request) { nil }
 
-            it 'does not create a merge request pipeline' do
+            it 'does not create a detached merge request pipeline' do
               expect(pipeline).not_to be_persisted
 
               expect(pipeline.errors[:base])
@@ -968,7 +978,7 @@ describe Ci::CreatePipelineService do
                 target_branch: 'master')
             end
 
-            it 'does not create a merge request pipeline' do
+            it 'does not create a detached merge request pipeline' do
               expect(pipeline).not_to be_persisted
 
               expect(pipeline.errors[:base])
@@ -999,7 +1009,7 @@ describe Ci::CreatePipelineService do
                 target_branch: 'master')
             end
 
-            it 'does not create a merge request pipeline' do
+            it 'does not create a detached merge request pipeline' do
               expect(pipeline).not_to be_persisted
 
               expect(pipeline.errors[:base])
@@ -1028,7 +1038,7 @@ describe Ci::CreatePipelineService do
                 target_branch: 'master')
             end
 
-            it 'does not create a merge request pipeline' do
+            it 'does not create a detached merge request pipeline' do
               expect(pipeline).not_to be_persisted
 
               expect(pipeline.errors[:base])

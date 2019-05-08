@@ -65,7 +65,7 @@ FactoryBot.define do
       domain 'example.com'
     end
 
-    trait :user_managed do
+    trait :not_managed do
       managed false
     end
   end

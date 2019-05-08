@@ -58,6 +58,11 @@ describe Banzai::Filter::TableOfContentsFilter do
         expect(doc.css('h1 a').first.attr('href')).to eq '#this-header-is-filled-with-punctuation'
       end
 
+      it 'removes any leading or trailing spaces' do
+        doc = filter(header(1, " \r\n\tTitle with spaces\r\n\t "))
+        expect(doc.css('h1 a').first.attr('href')).to eq '#title-with-spaces'
+      end
+
       it 'appends a unique number to duplicates' do
         doc = filter(header(1, 'One') + header(2, 'One'))
 

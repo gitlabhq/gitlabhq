@@ -14,6 +14,7 @@ import FilteredSearchTokenizer from './filtered_search_tokenizer';
 import FilteredSearchDropdownManager from './filtered_search_dropdown_manager';
 import FilteredSearchVisualTokens from './filtered_search_visual_tokens';
 import DropdownUtils from './dropdown_utils';
+import { __ } from '~/locale';
 
 export default class FilteredSearchManager {
   constructor({
@@ -64,7 +65,7 @@ export default class FilteredSearchManager {
       .catch(error => {
         if (error.name === 'RecentSearchesServiceError') return undefined;
         // eslint-disable-next-line no-new
-        new Flash('An error occurred while parsing recent searches');
+        new Flash(__('An error occurred while parsing recent searches'));
         // Gracefully fail to empty array
         return [];
       })
@@ -340,7 +341,7 @@ export default class FilteredSearchManager {
 
   handleInputPlaceholder() {
     const query = DropdownUtils.getSearchQuery();
-    const placeholder = 'Search or filter results...';
+    const placeholder = __('Search or filter results...');
     const currentPlaceholder = this.filteredSearchInput.placeholder;
 
     if (query.length === 0 && currentPlaceholder !== placeholder) {

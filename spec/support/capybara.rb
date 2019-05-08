@@ -17,6 +17,8 @@ JS_CONSOLE_FILTER = Regexp.union([
   "Download the Vue Devtools extension"
 ])
 
+CAPYBARA_WINDOW_SIZE = [1366, 768].freeze
+
 Capybara.register_driver :chrome do |app|
   capabilities = Selenium::WebDriver::Remote::Capabilities.chrome(
     # This enables access to logs with `page.driver.manage.get_log(:browser)`
@@ -29,7 +31,7 @@ Capybara.register_driver :chrome do |app|
   )
 
   options = Selenium::WebDriver::Chrome::Options.new
-  options.add_argument("window-size=1240,1400")
+  options.add_argument("window-size=#{CAPYBARA_WINDOW_SIZE.join(',')}")
 
   # Chrome won't work properly in a Docker container in sandbox mode
   options.add_argument("no-sandbox")
@@ -78,8 +80,11 @@ RSpec.configure do |config|
       protocol: 'http')
 
     # reset window size between tests
-    unless session.current_window.size == [1240, 1400]
-      session.current_window.resize_to(1240, 1400) rescue nil
+    unless session.current_window.size == CAPYBARA_WINDOW_SIZE
+      begin
+        session.current_window.resize_to(*CAPYBARA_WINDOW_SIZE)
+      rescue # ?
+      end
     end
   end
 

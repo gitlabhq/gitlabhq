@@ -756,4 +756,98 @@ describe('DiffsStoreMutations', () => {
       expect(state.diffFiles[0].viewer.collapsed).toBe(true);
     });
   });
+
+  describe('SET_HIDDEN_VIEW_DIFF_FILE_LINES', () => {
+    [
+      { current: 'highlighted', hidden: 'parallel', diffViewType: 'inline' },
+      { current: 'parallel', hidden: 'highlighted', diffViewType: 'parallel' },
+    ].forEach(({ current, hidden, diffViewType }) => {
+      it(`sets the ${hidden} lines when diff view is ${diffViewType}`, () => {
+        const file = { file_path: 'test', parallel_diff_lines: [], highlighted_diff_lines: [] };
+        const state = {
+          diffFiles: [file],
+          diffViewType,
+        };
+
+        mutations[types.SET_HIDDEN_VIEW_DIFF_FILE_LINES](state, {
+          filePath: 'test',
+          lines: ['test'],
+        });
+
+        expect(file[`${current}_diff_lines`]).toEqual([]);
+        expect(file[`${hidden}_diff_lines`]).toEqual(['test']);
+      });
+    });
+  });
+
+  describe('SET_CURRENT_VIEW_DIFF_FILE_LINES', () => {
+    [
+      { current: 'highlighted', hidden: 'parallel', diffViewType: 'inline' },
+      { current: 'parallel', hidden: 'highlighted', diffViewType: 'parallel' },
+    ].forEach(({ current, hidden, diffViewType }) => {
+      it(`sets the ${current} lines when diff view is ${diffViewType}`, () => {
+        const file = { file_path: 'test', parallel_diff_lines: [], highlighted_diff_lines: [] };
+        const state = {
+          diffFiles: [file],
+          diffViewType,
+        };
+
+        mutations[types.SET_CURRENT_VIEW_DIFF_FILE_LINES](state, {
+          filePath: 'test',
+          lines: ['test'],
+        });
+
+        expect(file[`${current}_diff_lines`]).toEqual(['test']);
+        expect(file[`${hidden}_diff_lines`]).toEqual([]);
+      });
+    });
+  });
+
+  describe('ADD_CURRENT_VIEW_DIFF_FILE_LINES', () => {
+    [
+      { current: 'highlighted', hidden: 'parallel', diffViewType: 'inline' },
+      { current: 'parallel', hidden: 'highlighted', diffViewType: 'parallel' },
+    ].forEach(({ current, hidden, diffViewType }) => {
+      it(`pushes to ${current} lines when diff view is ${diffViewType}`, () => {
+        const file = { file_path: 'test', parallel_diff_lines: [], highlighted_diff_lines: [] };
+        const state = {
+          diffFiles: [file],
+          diffViewType,
+        };
+
+        mutations[types.ADD_CURRENT_VIEW_DIFF_FILE_LINES](state, {
+          filePath: 'test',
+          line: 'test',
+        });
+
+        expect(file[`${current}_diff_lines`]).toEqual(['test']);
+        expect(file[`${hidden}_diff_lines`]).toEqual([]);
+
+        mutations[types.ADD_CURRENT_VIEW_DIFF_FILE_LINES](state, {
+          filePath: 'test',
+          line: 'test2',
+        });
+
+        expect(file[`${current}_diff_lines`]).toEqual(['test', 'test2']);
+        expect(file[`${hidden}_diff_lines`]).toEqual([]);
+      });
+    });
+  });
+
+  describe('TOGGLE_DIFF_FILE_RENDERING_MORE', () => {
+    it('toggles renderingLines on file', () => {
+      const file = { file_path: 'test', renderingLines: false };
+      const state = {
+        diffFiles: [file],
+      };
+
+      mutations[types.TOGGLE_DIFF_FILE_RENDERING_MORE](state, 'test');
+
+      expect(file.renderingLines).toBe(true);
+
+      mutations[types.TOGGLE_DIFF_FILE_RENDERING_MORE](state, 'test');
+
+      expect(file.renderingLines).toBe(false);
+    });
+  });
 });

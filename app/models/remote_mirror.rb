@@ -22,8 +22,8 @@ class RemoteMirror < ApplicationRecord
   before_save :set_new_remote_name, if: :mirror_url_changed?
 
   after_save :set_override_remote_mirror_available, unless: -> { Gitlab::CurrentSettings.current_application_settings.mirror_available }
-  after_save :refresh_remote, if: :mirror_url_changed?
-  after_update :reset_fields, if: :mirror_url_changed?
+  after_save :refresh_remote, if: :saved_change_to_mirror_url?
+  after_update :reset_fields, if: :saved_change_to_mirror_url?
 
   after_commit :remove_remote, on: :destroy
 
@@ -132,6 +132,10 @@ class RemoteMirror < ApplicationRecord
     true
   end
   alias_method :enabled?, :enabled
+
+  def disabled?
+    !enabled?
+  end
 
   def updated_since?(timestamp)
     last_update_started_at && last_update_started_at > timestamp && !update_failed?
@@ -264,5 +268,9 @@ class RemoteMirror < ApplicationRecord
 
   def mirror_url_changed?
     url_changed? || credentials_changed?
+  end
+
+  def saved_change_to_mirror_url?
+    saved_change_to_url? || saved_change_to_credentials?
   end
 end

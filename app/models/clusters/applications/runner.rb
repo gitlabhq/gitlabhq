@@ -69,10 +69,12 @@ module Clusters
         }
 
         if cluster.group_type?
-          attributes.merge(groups: [group])
+          attributes[:groups] = [group]
         elsif cluster.project_type?
-          attributes.merge(projects: [project])
+          attributes[:projects] = [project]
         end
+
+        attributes
       end
 
       def gitlab_url

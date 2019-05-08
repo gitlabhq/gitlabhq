@@ -20,4 +20,11 @@ module CiVariablesHelper
       true
     end
   end
+
+  def ci_variable_type_options
+    [
+      %w(Variable env_var),
+      %w(File file)
+    ]
+  end
 end

@@ -22,7 +22,7 @@ function MarkdownPreview() {}
 
 // Minimum number of users referenced before triggering a warning
 MarkdownPreview.prototype.referenceThreshold = 10;
-MarkdownPreview.prototype.emptyMessage = 'Nothing to preview.';
+MarkdownPreview.prototype.emptyMessage = __('Nothing to preview.');
 
 MarkdownPreview.prototype.ajaxCache = {};
 
@@ -40,7 +40,7 @@ MarkdownPreview.prototype.showPreview = function($form) {
     preview.text(this.emptyMessage);
     this.hideReferencedUsers($form);
   } else {
-    preview.addClass('md-preview-loading').text('Loading...');
+    preview.addClass('md-preview-loading').text(__('Loading...'));
     this.fetchMarkdownPreview(
       mdText,
       url,

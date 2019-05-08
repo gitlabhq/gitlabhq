@@ -16,6 +16,9 @@ If the highest number stable branch is unclear please check the
 [GitLab Blog](https://about.gitlab.com/blog/archives.html) for installation
 guide links by version.
 
+If you are changing from GitLab Community Edition to GitLab Enterprise Edition, see
+the [Upgrading from CE to EE](upgrading_from_ce_to_ee.md) documentation.
+
 ## Guidelines for all versions
 
 This section contains all the steps necessary to upgrade Community Edition or

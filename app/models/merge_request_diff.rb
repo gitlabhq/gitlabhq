@@ -51,6 +51,10 @@ class MergeRequestDiff < ApplicationRecord
     joins(:merge_request_diff_commits).where(merge_request_diff_commits: { sha: sha }).reorder(nil)
   end
 
+  scope :by_project_id, -> (project_id) do
+    joins(:merge_request).where(merge_requests: { target_project_id: project_id })
+  end
+
   scope :recent, -> { order(id: :desc).limit(100) }
   scope :files_in_database, -> { where(stored_externally: [false, nil]) }
 
@@ -134,7 +138,7 @@ class MergeRequestDiff < ApplicationRecord
   # It allows you to override variables like head_commit_sha before getting diff.
   after_create :save_git_content, unless: :importing?
 
-  after_save :update_external_diff_store, if: -> { !importing? && external_diff_changed? }
+  after_save :update_external_diff_store, if: -> { !importing? && saved_change_to_external_diff? }
 
   def self.find_by_diff_refs(diff_refs)
     find_by(start_commit_sha: diff_refs.start_sha, head_commit_sha: diff_refs.head_sha, base_commit_sha: diff_refs.base_sha)
@@ -154,7 +158,14 @@ class MergeRequestDiff < ApplicationRecord
     ensure_commit_shas
     save_commits
     save_diffs
+
+    # Another set of `after_save` hooks will be called here when we update the record
     save
+    # We need to reset so that dirty tracking is reset when running the original set
+    # of `after_save` hooks that come after this `after_create` hook. Otherwise, the
+    # hooks that run when an attribute was changed are run twice.
+    reset
+
     keep_around_commits
   end
 
@@ -348,7 +359,7 @@ class MergeRequestDiff < ApplicationRecord
       has_attribute?(:external_diff_store)
   end
 
-  def external_diff_changed?
+  def saved_change_to_external_diff?
     super if has_attribute?(:external_diff)
   end
 

@@ -1,12 +1,13 @@
 <script>
 /* eslint-disable vue/require-default-prop */
-import { GlLink } from '@gitlab/ui';
+import { GlLink, GlModalDirective } from '@gitlab/ui';
 import TimeagoTooltip from '../../vue_shared/components/time_ago_tooltip.vue';
 import { s__, sprintf } from '../../locale';
 import eventHub from '../event_hub';
 import identicon from '../../vue_shared/components/identicon.vue';
 import loadingButton from '../../vue_shared/components/loading_button.vue';
 import UninstallApplicationButton from './uninstall_application_button.vue';
+import UninstallApplicationConfirmationModal from './uninstall_application_confirmation_modal.vue';
 
 import { APPLICATION_STATUS } from '../constants';
 
@@ -17,6 +18,10 @@ export default {
     TimeagoTooltip,
     GlLink,
     UninstallApplicationButton,
+    UninstallApplicationConfirmationModal,
+  },
+  directives: {
+    GlModalDirective,
   },
   props: {
     id: {
@@ -90,6 +95,16 @@ export default {
       default: false,
     },
     updateFailed: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    uninstallFailed: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    uninstallSuccessful: {
       type: Boolean,
       required: false,
       default: false,
@@ -170,10 +185,21 @@ export default {
     manageButtonLabel() {
       return s__('ClusterIntegration|Manage');
     },
+    hasError() {
+      return this.installFailed || this.uninstallFailed;
+    },
     generalErrorDescription() {
-      return sprintf(s__('ClusterIntegration|Something went wrong while installing %{title}'), {
-        title: this.title,
-      });
+      let errorDescription;
+
+      if (this.installFailed) {
+        errorDescription = s__('ClusterIntegration|Something went wrong while installing %{title}');
+      } else if (this.uninstallFailed) {
+        errorDescription = s__(
+          'ClusterIntegration|Something went wrong while uninstalling %{title}',
+        );
+      }
+
+      return sprintf(errorDescription, { title: this.title });
     },
     versionLabel() {
       if (this.updateFailed) {
@@ -214,11 +240,21 @@ export default {
       //     AND new upgrade is unavailable AND version information is present.
       return (this.updateSuccessful || this.updateFailed) && !this.upgradeAvailable && this.version;
     },
+    uninstallSuccessDescription() {
+      return sprintf(s__('ClusterIntegration|%{title} uninstalled successfully.'), {
+        title: this.title,
+      });
+    },
   },
   watch: {
-    updateSuccessful() {
-      if (this.updateSuccessful) {
+    updateSuccessful(updateSuccessful) {
+      if (updateSuccessful) {
         this.$toast.show(this.upgradeSuccessDescription);
+      }
+    },
+    uninstallSuccessful(uninstallSuccessful) {
+      if (uninstallSuccessful) {
+        this.$toast.show(this.uninstallSuccessDescription);
       }
     },
   },
@@ -233,6 +269,11 @@ export default {
       eventHub.$emit('upgradeApplication', {
         id: this.id,
         params: this.installApplicationRequestParams,
+      });
+    },
+    uninstallConfirmed() {
+      eventHub.$emit('uninstallApplication', {
+        id: this.id,
       });
     },
   },
@@ -271,10 +312,7 @@ export default {
           <span v-else class="js-cluster-application-title">{{ title }}</span>
         </strong>
         <slot name="description"></slot>
-        <div
-          v-if="installFailed || isUnknownStatus"
-          class="cluster-application-error text-danger prepend-top-10"
-        >
+        <div v-if="hasError" class="cluster-application-error text-danger prepend-top-10">
           <p class="js-cluster-application-general-error-message append-bottom-0">
             {{ generalErrorDescription }}
           </p>
@@ -325,9 +363,9 @@ export default {
         role="gridcell"
       >
         <div v-if="showManageButton" class="btn-group table-action-buttons">
-          <a :href="manageLink" :class="{ disabled: disabled }" class="btn">
-            {{ manageButtonLabel }}
-          </a>
+          <a :href="manageLink" :class="{ disabled: disabled }" class="btn">{{
+            manageButtonLabel
+          }}</a>
         </div>
         <div class="btn-group table-action-buttons">
           <loading-button
@@ -340,7 +378,14 @@ export default {
           />
           <uninstall-application-button
             v-if="displayUninstallButton"
+            v-gl-modal-directive="'uninstall-' + id"
+            :status="status"
             class="js-cluster-application-uninstall-button"
+          />
+          <uninstall-application-confirmation-modal
+            :application="id"
+            :application-title="title"
+            @confirm="uninstallConfirmed()"
           />
         </div>
       </div>

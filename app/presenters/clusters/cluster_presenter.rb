@@ -35,6 +35,8 @@ module Clusters
         s_("ClusterIntegration|Project cluster")
       elsif cluster.group_type?
         s_("ClusterIntegration|Group cluster")
+      elsif cluster.instance_type?
+        s_("ClusterIntegration|Instance cluster")
       end
     end
 
@@ -43,6 +45,8 @@ module Clusters
         project_cluster_path(project, cluster)
       elsif cluster.group_type?
         group_cluster_path(group, cluster)
+      elsif cluster.instance_type?
+        admin_cluster_path(cluster)
       else
         raise NotImplementedError
       end

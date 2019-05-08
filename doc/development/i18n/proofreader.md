@@ -43,6 +43,7 @@ are very appreciative of the work done by translators and proofreaders!
   - Pedro Garcia - [GitLab](https://gitlab.com/pedgarrod), [Crowdin](https://crowdin.com/profile/breaking_pitt)
 - German
   - Michael Hahnle - [GitLab](https://gitlab.com/mhah), [Crowdin](https://crowdin.com/profile/mhah)
+  - Katrin Leinweber - [GitLab](https://gitlab.com/katrinleinweber/), [Crowdin](https://crowdin.com/profile/katrinleinweber)
 - Greek
   - Proofreaders needed.
 - Hebrew

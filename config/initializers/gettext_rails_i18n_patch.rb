@@ -2,7 +2,7 @@ require 'gettext_i18n_rails/haml_parser'
 require 'gettext_i18n_rails_js/parser/javascript'
 require 'json'
 
-VUE_TRANSLATE_REGEX = /((%[\w.-]+)(?:\s))?{{ (N|n|s)?__\((.*)\) }}/
+VUE_TRANSLATE_REGEX = /((%[\w.-]+)(?:\s))?{{ (N|n|s)?__\((.*)\) }}/.freeze
 
 module GettextI18nRails
   class HamlParser

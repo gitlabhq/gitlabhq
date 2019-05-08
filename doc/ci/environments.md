@@ -669,7 +669,7 @@ fetch = +refs/environments/*:refs/remotes/origin/environments/*
 
 Some GitLab [Enterprise Edition](https://about.gitlab.com/pricing/) features can
 behave differently for each environment. For example, you can
-[create a secret variable to be injected only into a production environment](https://docs.gitlab.com/ee/ci/variables/README.md#limiting-environment-scopes-of-environment-variables-premium).
+[create a secret variable to be injected only into a production environment](variables/README.md#limiting-environment-scopes-of-environment-variables-premium).
 
 In most cases, these features use the _environment specs_ mechanism, which offers
 an efficient way to implement scoping within each environment group.

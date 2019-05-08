@@ -121,7 +121,7 @@ describe 'User comments on a diff', :js do
   end
 
   context 'multi-line suggestions' do
-    it 'suggestion is presented' do
+    before do
       click_diff_line(find("[id='#{sample_compare.changes[1][:line_code]}']"))
 
       page.within('.js-discussion-note-form') do
@@ -130,7 +130,9 @@ describe 'User comments on a diff', :js do
       end
 
       wait_for_requests
+    end
 
+    it 'suggestion is presented' do
       page.within('.diff-discussions') do
         expect(page).to have_button('Apply suggestion')
         expect(page).to have_content('Suggested change')
@@ -160,15 +162,6 @@ describe 'User comments on a diff', :js do
     end
 
     it 'suggestion is appliable' do
-      click_diff_line(find("[id='#{sample_compare.changes[1][:line_code]}']"))
-
-      page.within('.js-discussion-note-form') do
-        fill_in('note_note', with: "```suggestion:-3+5\n# change to a\n# comment\n# with\n# broken\n# lines\n```")
-        click_button('Comment')
-      end
-
-      wait_for_requests
-
       page.within('.diff-discussions') do
         expect(page).not_to have_content('Applied')
 
@@ -176,6 +169,17 @@ describe 'User comments on a diff', :js do
         wait_for_requests
 
         expect(page).to have_content('Applied')
+      end
+    end
+
+    it 'resolves discussion when applied' do
+      page.within('.diff-discussions') do
+        expect(page).not_to have_content('Unresolve discussion')
+
+        click_button('Apply suggestion')
+        wait_for_requests
+
+        expect(page).to have_content('Unresolve discussion')
       end
     end
   end

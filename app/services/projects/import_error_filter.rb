@@ -4,7 +4,7 @@ module Projects
   # Used by project imports, it removes any potential paths
   # included in an error message that could be stored in the DB
   class ImportErrorFilter
-    ERROR_MESSAGE_FILTER = /[^\s]*#{File::SEPARATOR}[^\s]*(?=(\s|\z))/
+    ERROR_MESSAGE_FILTER = /[^\s]*#{File::SEPARATOR}[^\s]*(?=(\s|\z))/.freeze
     FILTER_MESSAGE = '[FILTERED]'
 
     def self.filter_message(message)

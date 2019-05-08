@@ -137,7 +137,7 @@ describe PipelineEntity do
     context 'when pipeline is detached merge request pipeline' do
       let(:merge_request) { create(:merge_request, :with_detached_merge_request_pipeline) }
       let(:project) { merge_request.target_project }
-      let(:pipeline) { merge_request.merge_request_pipelines.first }
+      let(:pipeline) { merge_request.pipelines_for_merge_request.first }
 
       it 'makes detached flag true' do
         expect(subject[:flags][:detached_merge_request_pipeline]).to be_truthy
@@ -185,7 +185,7 @@ describe PipelineEntity do
     context 'when pipeline is merge request pipeline' do
       let(:merge_request) { create(:merge_request, :with_merge_request_pipeline, merge_sha: 'abc') }
       let(:project) { merge_request.target_project }
-      let(:pipeline) { merge_request.merge_request_pipelines.first }
+      let(:pipeline) { merge_request.pipelines_for_merge_request.first }
 
       it 'makes detached flag false' do
         expect(subject[:flags][:detached_merge_request_pipeline]).to be_falsy

@@ -132,6 +132,7 @@ export default class Clusters {
     eventHub.$on('dismissUpgradeSuccess', appId => this.dismissUpgradeSuccess(appId));
     eventHub.$on('saveKnativeDomain', data => this.saveKnativeDomain(data));
     eventHub.$on('setKnativeHostname', data => this.setKnativeHostname(data));
+    eventHub.$on('uninstallApplication', data => this.uninstallApplication(data));
   }
 
   removeListeners() {
@@ -141,6 +142,7 @@ export default class Clusters {
     eventHub.$off('dismissUpgradeSuccess', this.dismissUpgradeSuccess);
     eventHub.$off('saveKnativeDomain');
     eventHub.$off('setKnativeHostname');
+    eventHub.$off('uninstallApplication');
   }
 
   initPolling() {
@@ -249,19 +251,34 @@ export default class Clusters {
     }
   }
 
-  installApplication(data) {
-    const appId = data.id;
+  installApplication({ id: appId, params }) {
     this.store.updateAppProperty(appId, 'requestReason', null);
     this.store.updateAppProperty(appId, 'statusReason', null);
 
     this.store.installApplication(appId);
 
-    return this.service.installApplication(appId, data.params).catch(() => {
+    return this.service.installApplication(appId, params).catch(() => {
       this.store.notifyInstallFailure(appId);
       this.store.updateAppProperty(
         appId,
         'requestReason',
         s__('ClusterIntegration|Request to begin installing failed'),
+      );
+    });
+  }
+
+  uninstallApplication({ id: appId }) {
+    this.store.updateAppProperty(appId, 'requestReason', null);
+    this.store.updateAppProperty(appId, 'statusReason', null);
+
+    this.store.uninstallApplication(appId);
+
+    return this.service.uninstallApplication(appId).catch(() => {
+      this.store.notifyUninstallFailure(appId);
+      this.store.updateAppProperty(
+        appId,
+        'requestReason',
+        s__('ClusterIntegration|Request to begin uninstalling failed'),
       );
     });
   }
