@@ -1,0 +1,5 @@
+---
+title: Use FindOrCreateService to create labels and check for existing ones
+merge_request: 27987
+author: Matt Duren
+type: fixed
