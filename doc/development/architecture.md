@@ -213,103 +213,69 @@ To serve repositories over SSH there's an add-on application called gitlab-shell
 ```mermaid
 graph TB
 
-  HTTP[HTTP/HTTPS] -- TCP 80, 443 --> NGINX(NGINX)
-  SSH --TCP 22 --> GitLabShell(GitLab Shell)
-  SMTP(SMTP Gateway)
-  Geo(GitLab Geo Node) -- TCP 22, 80, 443 --> NGINX
+  HTTP[HTTP/HTTPS] -- TCP 80, 443 --> NGINX[NGINX]
+  SSH -- TCP 22 --> GitLabShell[GitLab Shell]
+  SMTP[SMTP Gateway]
+  Geo[GitLab Geo Node] -- TCP 22, 80, 443 --> NGINX
 
-  subgraph GitLab
-    GitLabShell --TCP 8080 -->Unicorn["Unicorn (GitLab Rails)"]
-    GitLabShell --> Gitaly
-    GitLabShell --> Redis
-    Unicorn --> PgBouncer(PgBouncer)
-    Unicorn --> Redis
-    Unicorn --> Gitaly
-    Redis --> Sidekiq
-    Sidekiq("Sidekiq (GitLab Rails, ES Indexer)") --> PgBouncer
-    GitLabWorkhorse(GitLab Workhorse) --> Unicorn
-    GitLabWorkhorse --> Redis
-    GitLabWorkhorse --> Gitaly
-    Gitaly --> Redis
-    NGINX --> GitLabWorkhorse
-    NGINX -- TCP 8090 --> GitLabPages(GitLab Pages)
-    NGINX --> Grafana(Grafana)
-    Grafana -- TCP 9090 --> Prometheus(Prometheus)
-    Prometheus -- TCP 80, 443 --> Unicorn
-    RedisExporter(Redis Exporter) --> Redis
-    Prometheus -- TCP 9121 --> RedisExporter
-    PostgreSQLExporter(PostgreSQL Exporter) --> PostgreSQL
-    PgBouncerExporter(PgBouncer Exporter) --> PgBouncer
-    Prometheus -- TCP 9187 --> PostgreSQLExporter
-    Prometheus -- TCP 9100 --> NodeExporter(Node Exporter)
-    Prometheus -- TCP 9168 --> GitLabMonitor(GitLab Monitor)
-    Prometheus -- TCP 9127 --> PgBouncerExporter
-    GitLabMonitor --> PostgreSQL
-    GitLabMonitor --> GitLabShell
-    GitLabMonitor --> Sidekiq
-    PgBouncer --> Consul(Consul)
-    PostgreSQL --> Consul
-    PgBouncer --> PostgreSQL
-    NGINX --> Registry(Registry)
-    Unicorn --> Registry
-    NGINX --> Mattermost(Mattermost)
-    Mattermost --- Unicorn
-    Prometheus --> Alertmanager
-    Migrations --> PostgreSQL
-    Runner(Runner) --> NGINX
-    Unicorn -- TCP 9200 --> ElasticSearch
-    Sidekiq -- TCP 9200 --> ElasticSearch
-    Sidekiq -- TCP 80, 443 --> Sentry
-    Unicorn -- TCP 80, 443 --> Sentry
-    Sidekiq -- UDP 6831 --> Jaeger
-    Unicorn -- UDP 6831 --> Jaeger
-    Gitaly -- UDP 6831 --> Jaeger
-    GitLabShell -- UDP 6831 --> Jaeger
-    GitLabWorkhorse -- UDP 6831 --> Jaeger
-    Alertmanager -- TCP 25 --> SMTP
-    Sidekiq -- TCP 25 --> SMTP
-    Unicorn -- TCP 25 --> SMTP
-    Unicorn -- TCP 369 --> LDAP
-    Sidekiq -- TCP 369 --> LDAP
-    Unicorn -- TCP 443 --> ObjectStorage("Object Storage")
-    Sidekiq -- TCP 443 --> ObjectStorage
-    GitLabWorkhorse -- TCP 443 --> ObjectStorage
-    Registry -- TCP 443 --> ObjectStorage
-    Geo -- TCP 5432 --> PostgreSQL
-  end
+  GitLabShell --TCP 8080 -->Unicorn["Unicorn (GitLab Rails)"]
+  GitLabShell --> Gitaly
+  GitLabShell --> Redis
+  Unicorn --> PgBouncer[PgBouncer]
+  Unicorn --> Redis
+  Unicorn --> Gitaly
+  Redis --> Sidekiq
+  Sidekiq["Sidekiq (GitLab Rails, ES Indexer)"] --> PgBouncer
+  GitLabWorkhorse[GitLab Workhorse] --> Unicorn
+  GitLabWorkhorse --> Redis
+  GitLabWorkhorse --> Gitaly
+  Gitaly --> Redis
+  NGINX --> GitLabWorkhorse
+  NGINX -- TCP 8090 --> GitLabPages[GitLab Pages]
+  NGINX --> Grafana[Grafana]
+  Grafana -- TCP 9090 --> Prometheus[Prometheus]
+  Prometheus -- TCP 80, 443 --> Unicorn
+  RedisExporter[Redis Exporter] --> Redis
+  Prometheus -- TCP 9121 --> RedisExporter
+  PostgreSQLExporter[PostgreSQL Exporter] --> PostgreSQL
+  PgBouncerExporter[PgBouncer Exporter] --> PgBouncer
+  Prometheus -- TCP 9187 --> PostgreSQLExporter
+  Prometheus -- TCP 9100 --> NodeExporter[Node Exporter]
+  Prometheus -- TCP 9168 --> GitLabMonito[GitLab Monitor]
+  Prometheus -- TCP 9127 --> PgBouncerExporter
+  GitLabMonitor --> PostgreSQL
+  GitLabMonitor --> GitLabShell
+  GitLabMonitor --> Sidekiq
+  PgBouncer --> Consul
+  PostgreSQL --> Consul
+  PgBouncer --> PostgreSQL
+  NGINX --> Registry
+  Unicorn --> Registry
+  NGINX --> Mattermost
+  Mattermost --- Unicorn
+  Prometheus --> Alertmanager
+  Migrations --> PostgreSQL
+  Runner -- TCP 443 --> NGINX
+  Unicorn -- TCP 9200 --> ElasticSearch
+  Sidekiq -- TCP 9200 --> ElasticSearch
+  Sidekiq -- TCP 80, 443 --> Sentry
+  Unicorn -- TCP 80, 443 --> Sentry
+  Sidekiq -- UDP 6831 --> Jaeger
+  Unicorn -- UDP 6831 --> Jaeger
+  Gitaly -- UDP 6831 --> Jaeger
+  GitLabShell -- UDP 6831 --> Jaeger
+  GitLabWorkhorse -- UDP 6831 --> Jaeger
+  Alertmanager -- TCP 25 --> SMTP
+  Sidekiq -- TCP 25 --> SMTP
+  Unicorn -- TCP 25 --> SMTP
+  Unicorn -- TCP 369 --> LDAP
+  Sidekiq -- TCP 369 --> LDAP
+  Unicorn -- TCP 443 --> ObjectStorage["Object Storage"]
+  Sidekiq -- TCP 443 --> ObjectStorage
+  GitLabWorkhorse -- TCP 443 --> ObjectStorage
+  Registry -- TCP 443 --> ObjectStorage
+  Geo -- TCP 5432 --> PostgreSQL
 
-  HTTPK8s(HTTP/HTTPS) -- TCP 80, 443 --> LoadBalancerK8s(Load Balancer)
-  LoadBalancerK8s -- TCP 80, 443 --> nginx-ingressK8s
-  subgraph Kubernetes
-    PrometheusK8s(Prometheus)
-    TillerK8s(Tiller)
-    nginx-ingressK8s(NGINX Ingress)
-    Cert-ManagerK8s(Cert-Manager)
-    GitLabRunnerK8s(GitLab Runner)
-    GitLabRunnerK8s --> NGINX
-    JupyterHubK8s(JupyterHub)
-    nginx-ingressK8s --> JupyterHubK8s
-    KnativeK8s(Knative)
-  end
-
-classDef defaultoff stroke-dasharray: 5, 5
-class ElasticSearch defaultoff
-class Grafana defaultoff
-class PrometheusK8s defaultoff
-class TillerK8s defaultoff
-class nginx-ingressK8s defaultoff
-class Cert-ManagerK8s defaultoff
-class GitLabRunnerK8s defaultoff
-class JupyterHubK8s defaultoff
-class KnativeK8s defaultoff
-class HTTPK8s defaultoff
-class LoadBalancerK8s defaultoff
-class Sentry defaultoff
-class Jaeger defaultoff
-class Alertmanager defaultoff
-class SMTP defaultoff
-class ObjectStorage defaultoff
-class Geo defaultoff
 ```
 
 **Legend**:
@@ -321,7 +287,7 @@ class Geo defaultoff
 
 | Component | Description | [Omnibus GitLab](https://docs.gitlab.com/omnibus/README.html) | [GitLab chart](https://docs.gitlab.com/charts/) | [Minikube Minimal](https://docs.gitlab.com/charts/development/minikube/#deploying-gitlab-with-minimal-settings) | [GitLab.com](https://gitlab.com) | CE/EE |
 | --------- | ----------- |:--------------------:|:------------------:|:-----:|:--------:|:--------:|
-| NGINX | Routes requests to appropriate components, terminates SSL | [✅](https://docs.gitlab.com/omnibus/settings/nginx.html) | [✅](https://docs.gitlab.com/charts/charts/nginx/index.html) | [⚙](https://docs.gitlab.com/charts/charts/nginx/index.html) | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production-architecture/#service-architecture) |CE & EE |
+| NGINX | Routes requests to appropriate components, terminates SSL | [✅](https://docs.gitlab.com/omnibus/settings/nginx.html) | [✅](https://docs.gitlab.com/charts/charts/nginx/index.html) | [⚙](https://docs.gitlab.com/charts/charts/nginx/index.html) | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production-architecture/#service-architecture) | CE & EE |
 | Unicorn (GitLab Rails) | Handles requests for the web interface and API | [✅](https://docs.gitlab.com/omnibus/settings/unicorn.html) | [✅](https://docs.gitlab.com/charts/charts/gitlab/unicorn/index.html) | [✅](https://docs.gitlab.com/charts/charts/gitlab/unicorn/index.html) | [✅](https://docs.gitlab.com/ee/user/gitlab_com/#unicorn) | CE & EE |
 | Sidekiq | Background jobs processor | [✅](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-config-template/gitlab.rb.template) | [✅](https://docs.gitlab.com/charts/charts/gitlab/sidekiq/index.html) | [✅](https://docs.gitlab.com/charts/charts/gitlab/sidekiq/index.html) | [✅](https://docs.gitlab.com/ee/user/gitlab_com/#sidekiq) | CE & EE |
 | Gitaly | Git RPC service for handling all git calls made by GitLab | [✅](https://docs.gitlab.com/ee/administration/gitaly/) | [✅](https://docs.gitlab.com/charts/charts/gitlab/gitaly/index.html) | [✅](https://docs.gitlab.com/charts/charts/gitlab/gitaly/index.html) | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production-architecture/#service-architecture) | CE & EE |
@@ -341,7 +307,7 @@ class Geo defaultoff
 | PgBouncer Exporter | Prometheus endpoint with PgBouncer metrics | [⚙](https://docs.gitlab.com/ee/administration/monitoring/prometheus/pgbouncer_exporter.html) | [❌](https://docs.gitlab.com/charts/installation/deployment.html#postgresql) | [❌](https://docs.gitlab.com/charts/installation/deployment.html#postgresql) | [✅](https://about.gitlab.com/handbook/engineering/monitoring/) | CE & EE |
 | GitLab Monitor | Tracks a variety of GitLab metrics | [✅](https://docs.gitlab.com/ee/administration/monitoring/prometheus/gitlab_monitor_exporter.html) | [❌](https://gitlab.com/charts/gitlab/issues/319) | [❌](https://gitlab.com/charts/gitlab/issues/319) | [✅](https://about.gitlab.com/handbook/engineering/monitoring/) | CE & EE |
 | Mattermost | Open-source Slack alternative | [⚙](https://docs.gitlab.com/omnibus/gitlab-mattermost/) | [⤓](https://docs.mattermost.com/install/install-mmte-helm-gitlab-helm.html) | [⤓](https://docs.mattermost.com/install/install-mmte-helm-gitlab-helm.html) | [⤓](https://docs.gitlab.com/ee/user/project/integrations/mattermost_slash_commands.html#manual-configuration), [⤓](https://docs.gitlab.com/ee/user/project/integrations/mattermost.html) | CE & EE |
-| Minio | Object storage service | [⤓](https://min.io/download) | [✅](https://docs.gitlab.com/charts/charts/minio/index.html) | [✅](https://docs.gitlab.com/charts/charts/minio/index.html) | [❌](https://about.gitlab.com/handbook/engineering/infrastructure/production-architecture/#storage-architecture) | CE & EE |
+| Minio | Object storage service | [⤓](https://min.io/download) | [✅](https://docs.gitlab.com/charts/charts/minio/index.html) | [✅](https://docs.gitlab.com/charts/charts/minio/index.html) | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production-architecture/#storage-architecture) | CE & EE |
 | Runner | Executes GitLab CI jobs | [⤓](https://docs.gitlab.com/runner/) | [✅](https://docs.gitlab.com/runner/) | [⚙](https://docs.gitlab.com/runner/) | [✅](https://docs.gitlab.com/ee/user/gitlab_com/#shared-runners) | CE & EE |
 | Migrations | Database migrations | [✅](https://docs.gitlab.com/omnibus/settings/database.html#disabling-automatic-database-migration) | [✅](https://docs.gitlab.com/charts/charts/gitlab/migrations/index.html) | [✅](https://docs.gitlab.com/charts/charts/gitlab/migrations/index.html) | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production-architecture/#database-architecture) | CE & EE |
 | Certificate Management | TLS Settings, Let's Encrypt | [✅](https://docs.gitlab.com/omnibus/settings/ssl.html) | [✅](https://docs.gitlab.com/charts/installation/tls.html) | [⚙](https://docs.gitlab.com/charts/installation/tls.html) | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production-architecture/#secrets-management) | CE & EE |
