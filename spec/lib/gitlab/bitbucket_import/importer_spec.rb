@@ -222,6 +222,46 @@ describe Gitlab::BitbucketImport::Importer do
                   body: {}.to_json)
     end
 
+    context 'creating labels on project' do
+      before do
+        allow(importer).to receive(:import_wiki)
+      end
+
+      it 'creates labels as expected' do
+        expect { importer.execute }.to change { Label.count }.from(0).to(Gitlab::BitbucketImport::Importer::LABELS.size)
+      end
+
+      it 'does not fail if label is already existing' do
+        label = Gitlab::BitbucketImport::Importer::LABELS.first
+        ::Labels::CreateService.new(label).execute(project: project)
+
+        expect { importer.execute }.not_to raise_error
+      end
+
+      it 'does not create new labels' do
+        Gitlab::BitbucketImport::Importer::LABELS.each do |label|
+          create(:label, project: project, title: label[:title])
+        end
+
+        expect { importer.execute }.not_to change { Label.count }
+      end
+
+      it 'does not update existing ones' do
+        label_title = Gitlab::BitbucketImport::Importer::LABELS.first[:title]
+        existing_label = create(:label, project: project, title: label_title)
+        # Reload label from database so we avoid timestamp comparison issues related to time precision when comparing
+        # attributes later.
+        existing_label.reload
+
+        Timecop.freeze(Time.now + 1.minute) do
+          importer.execute
+
+          label_after_import = project.labels.find(existing_label.id)
+          expect(label_after_import.attributes).to eq(existing_label.attributes)
+        end
+      end
+    end
+
     it 'maps statuses to open or closed' do
       allow(importer).to receive(:import_wiki)
 
