@@ -99,7 +99,20 @@ sudo apt-get install -y git-core
 git --version
 ```
 
-Is the system packaged Git too old? Remove it and compile from source.
+Starting with GitLab 12.0, Git is required to be compiled with `libpcre2`.
+Find out if that's the case:
+
+```sh
+ldd /usr/local/bin/git | grep pcre2
+```
+
+The output should be similar to:
+
+```
+libpcre2-8.so.0 => /usr/lib/libpcre2-8.so.0 (0x00007f08461c3000)
+```
+
+Is the system packaged Git too old, or not compiled with pcre2? Remove it and compile from source:
 
 ```sh
 # Remove packaged Git
@@ -108,12 +121,21 @@ sudo apt-get remove git-core
 # Install dependencies
 sudo apt-get install -y libcurl4-openssl-dev libexpat1-dev gettext libz-dev libssl-dev build-essential
 
+# Download and compile pcre2 from source
+curl --silent --show-error --location https://ftp.pcre.org/pub/pcre/pcre2-10.33.tar.gz --output pcre2.tar.gz
+tar -xzf pcre2.tar.gz
+cd pcre2-10.33
+chmod +x configure
+./configure --prefix=/usr --enable-jit
+make
+make install
+
 # Download and compile from source
 cd /tmp
 curl --remote-name --location --progress https://www.kernel.org/pub/software/scm/git/git-2.21.0.tar.gz
 echo '85eca51c7404da75e353eba587f87fea9481ba41e162206a6f70ad8118147bee  git-2.21.0.tar.gz' | shasum -a256 -c - && tar -xzf git-2.21.0.tar.gz
 cd git-2.21.0/
-./configure
+./configure --with-libpcre
 make prefix=/usr/local all
 
 # Install into /usr/local/bin
