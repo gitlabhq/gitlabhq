@@ -465,7 +465,7 @@ class Repository
   def after_import
     expire_content_cache
 
-    DetectRepositoryLanguagesWorker.perform_async(project.id, project.owner.id)
+    DetectRepositoryLanguagesWorker.perform_async(project.id)
   end
 
   # Runs code after a new commit has been pushed.

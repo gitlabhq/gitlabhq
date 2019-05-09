@@ -11,7 +11,7 @@ module Projects
 
     def perform_language_detection
       if persisted_repository_languages.blank?
-        ::DetectRepositoryLanguagesWorker.perform_async(project.id, current_user.id)
+        ::DetectRepositoryLanguagesWorker.perform_async(project.id)
       else
         project.update_column(:detected_repository_languages, true)
       end
