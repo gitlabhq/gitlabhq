@@ -20,6 +20,11 @@ namespace :gitlab do
       backup.pack
       backup.cleanup
       backup.remove_old
+
+      puts "Warning: Your gitlab.rb and gitlab-secrets.json files contain sensitive data \n" \
+           "and are not included in this backup. You will need these files to restore a backup.\n" \
+           "Please back them up manually.".color(:red)
+      puts "Backup task is done."
     end
 
     # Restore backup of GitLab system
@@ -68,6 +73,9 @@ namespace :gitlab do
       Rake::Task['cache:clear'].invoke
 
       backup.cleanup
+      puts "Warning: Your gitlab.rb and gitlab-secrets.json files contain sensitive data \n" \
+           "and are not included in this backup. You will need to restore these files manually.".color(:red)
+      puts "Restore task is done."
     end
 
     namespace :repo do
