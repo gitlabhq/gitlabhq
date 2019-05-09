@@ -92,8 +92,8 @@
           = f.text_field :name, required: true, readonly: true, wrapper: { class: 'col-md-9 qa-full-name' },
           help: s_("Profiles|Your name was automatically set based on your %{provider_label} account, so people you know can recognize you") % { provider_label: attribute_provider_label(:name) }
         - else
-          = f.text_field :name, label: 'Full name', required: true, title: s_("Profiles|Using emojis in names seems fun, but please try to set a status message instead"), wrapper: { class: 'col-md-9 qa-full-name' }, help: s_("Profiles|Enter your name, so people you know can recognize you")
-        = f.text_field :id, readonly: true, label: 'User ID', wrapper: { class: 'col-md-3' }
+          = f.text_field :name, label: s_('Profiles|Full name'), required: true, title: s_("Profiles|Using emojis in names seems fun, but please try to set a status message instead"), wrapper: { class: 'col-md-9 qa-full-name' }, help: s_("Profiles|Enter your name, so people you know can recognize you")
+        = f.text_field :id, readonly: true, label: s_('Profiles|User ID'), wrapper: { class: 'col-md-3' }
 
       = render_if_exists 'profiles/email_settings', form: f
       = f.text_field :skype, class: 'input-md', placeholder: s_("Profiles|username")
@@ -103,18 +103,18 @@
       - if @user.read_only_attribute?(:location)
         = f.text_field :location, readonly: true, help: s_("Profiles|Your location was automatically set based on your %{provider_label} account") % { provider_label: attribute_provider_label(:location) }
       - else
-        = f.text_field :location, class: 'input-lg', placeholder: s_("Profiles|City, country")
-      = f.text_field :organization, class: 'input-md', help: s_("Profiles|Who you represent or work for")
-      = f.text_area :bio, rows: 4, maxlength: 250, help: s_("Profiles|Tell us about yourself in fewer than 250 characters")
+        = f.text_field :location, label: s_('Profiles|Location'), class: 'input-lg', placeholder: s_("Profiles|City, country")
+      = f.text_field :organization, label: s_('Profiles|Organization'), class: 'input-md', help: s_("Profiles|Who you represent or work for")
+      = f.text_area :bio, label: s_('Profiles|Bio'), rows: 4, maxlength: 250, help: s_("Profiles|Tell us about yourself in fewer than 250 characters")
       %hr
-      %h5= ("Private profile")
+      %h5= s_("Private profile")
       .checkbox-icon-inline-wrapper
         - private_profile_label = capture do
           = s_("Profiles|Don't display activity-related personal information on your profiles")
         = f.check_box :private_profile, label: private_profile_label, inline: true, wrapper_class: 'mr-0'
         = link_to icon('question-circle'), help_page_path('user/profile/index.md', anchor: 'private-profile')
       %h5= s_("Profiles|Private contributions")
-      = f.check_box :include_private_contributions, label: 'Include private contributions on my profile', wrapper_class: 'mb-2', inline: true
+      = f.check_box :include_private_contributions, label: s_('Profiles|Include private contributions on my profile'), wrapper_class: 'mb-2', inline: true
       .help-block
         = s_("Profiles|Choose to show contributions of private projects on your public profile without any project, repository or organization information")
       .prepend-top-default.append-bottom-default
