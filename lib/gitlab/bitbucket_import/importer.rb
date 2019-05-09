@@ -135,7 +135,7 @@ module Gitlab
 
       def create_labels
         LABELS.each do |label_params|
-          label = ::Labels::CreateService.new(label_params).execute(project: project)
+          label = ::Labels::FindOrCreateService.new(nil, project, label_params).execute(skip_authorization: true)
           if label.valid?
             @labels[label_params[:title]] = label
           else

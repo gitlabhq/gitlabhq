@@ -1,4 +1,4 @@
-import { mount, createLocalVue } from '@vue/test-utils';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
 import '~/behaviors/markdown/render_gfm';
 import { SYSTEM_NOTE } from '~/notes/constants';
 import DiscussionNotes from '~/notes/components/discussion_notes.vue';
@@ -8,6 +8,7 @@ import PlaceholderSystemNote from '~/vue_shared/components/notes/placeholder_sys
 import SystemNote from '~/vue_shared/components/notes/system_note.vue';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import createStore from '~/notes/stores';
+import { setTestTimeout } from 'helpers/timeout';
 import {
   noteableDataMock,
   discussionMock,
@@ -17,6 +18,8 @@ import {
 const localVue = createLocalVue();
 
 describe('DiscussionNotes', () => {
+  setTestTimeout(500);
+
   let wrapper;
 
   const createComponent = props => {
@@ -24,7 +27,7 @@ describe('DiscussionNotes', () => {
     store.dispatch('setNoteableData', noteableDataMock);
     store.dispatch('setNotesData', notesDataMock);
 
-    wrapper = mount(DiscussionNotes, {
+    wrapper = shallowMount(DiscussionNotes, {
       localVue,
       store,
       propsData: {
