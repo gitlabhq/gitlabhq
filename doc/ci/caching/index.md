@@ -289,7 +289,7 @@ jobs inherit it. Gems are installed in `vendor/ruby/` and are cached per-branch:
 #
 # https://gitlab.com/gitlab-org/gitlab-ce/tree/master/lib/gitlab/ci/templates/Ruby.gitlab-ci.yml
 #
-image: ruby:2.5
+image: ruby:2.6
 
 # Cache gems in between builds
 cache:

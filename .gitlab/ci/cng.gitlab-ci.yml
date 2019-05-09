@@ -1,5 +1,5 @@
 cloud-native-image:
-  image: ruby:2.5-alpine
+  image: ruby:2.6-alpine
   before_script: []
   dependencies: []
   stage: post-test

@@ -54,7 +54,7 @@ build-qa-image:
     - time docker push ${QA_IMAGE}
 
 .review-build-cng-base: &review-build-cng-base
-  image: ruby:2.5-alpine
+  image: ruby:2.6-alpine
   stage: test
   when: manual
   before_script:
