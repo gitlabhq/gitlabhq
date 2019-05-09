@@ -56,10 +56,10 @@ describe GitlabSchema do
           described_class.execute('query', context: {})
         end
 
-        it 'returns ANONYMOUS_MAX_DEPTH' do
+        it 'returns DEFAULT_MAX_DEPTH' do
           expect(GraphQL::Schema)
             .to receive(:execute)
-            .with('query', hash_including(max_depth: GitlabSchema::ANONYMOUS_MAX_DEPTH))
+            .with('query', hash_including(max_depth: GitlabSchema::DEFAULT_MAX_DEPTH))
 
           described_class.execute('query', context: {})
         end

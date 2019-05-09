@@ -48,6 +48,14 @@ A first iteration of a GraphQL API includes the following queries
 1. `project` : Within a project it is also possible to fetch a `mergeRequest` by IID.
 1. `group` : Only basic group information is currently supported.
 
+### Multiplex queries
+
+GitLab supports batching queries into a single request using
+[apollo-link-batch-http](https://www.apollographql.com/docs/link/links/batch-http). More
+info about multiplexed queries is also available for
+[graphql-ruby](https://graphql-ruby.org/queries/multiplex.html) the
+library GitLab uses on the backend.
+
 ## GraphiQL
 
 The API can be explored by using the GraphiQL IDE, it is available on your
