@@ -1,5 +1,11 @@
 module ProjectForksHelper
   def fork_project(project, user = nil, params = {})
+    Gitlab::GitalyClient.allow_n_plus_1_calls do
+      fork_project_direct(project, user, params)
+    end
+  end
+
+  def fork_project_direct(project, user = nil, params = {})
     # Load the `fork_network` for the project to fork as there might be one that
     # wasn't loaded yet.
     project.reload unless project.fork_network
@@ -44,11 +50,16 @@ module ProjectForksHelper
   end
 
   def fork_project_with_submodules(project, user = nil, params = {})
-    forked_project = fork_project(project, user, params)
-    TestEnv.copy_repo(forked_project,
-                      bare_repo: TestEnv.forked_repo_path_bare,
-                      refs: TestEnv::FORKED_BRANCH_SHA)
-    forked_project.repository.after_import
-    forked_project
+    Gitlab::GitalyClient.allow_n_plus_1_calls do
+      forked_project = fork_project_direct(project, user, params)
+      TestEnv.copy_repo(
+        forked_project,
+        bare_repo: TestEnv.forked_repo_path_bare,
+        refs: TestEnv::FORKED_BRANCH_SHA
+      )
+      forked_project.repository.after_import
+
+      forked_project
+    end
   end
 end
