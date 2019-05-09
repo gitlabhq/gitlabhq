@@ -4,14 +4,30 @@ require 'rails_helper'
 
 describe SentNotificationsController do
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
-  let(:sent_notification) { create(:sent_notification, project: project, noteable: issue, recipient: user) }
+  let(:project) { create(:project, :public) }
+  let(:private_project) { create(:project, :private) }
+  let(:sent_notification) { create(:sent_notification, project: target_project, noteable: noteable, recipient: user) }
 
   let(:issue) do
-    create(:issue, project: project, author: user) do |issue|
-      issue.subscriptions.create(user: user, project: project, subscribed: true)
+    create(:issue, project: target_project) do |issue|
+      issue.subscriptions.create(user: user, project: target_project, subscribed: true)
     end
   end
+
+  let(:confidential_issue) do
+    create(:issue, project: target_project, confidential: true) do |issue|
+      issue.subscriptions.create(user: user, project: target_project, subscribed: true)
+    end
+  end
+
+  let(:merge_request) do
+    create(:merge_request, source_project: target_project, target_project: target_project) do |mr|
+      mr.subscriptions.create(user: user, project: target_project, subscribed: true)
+    end
+  end
+
+  let(:noteable) { issue }
+  let(:target_project) { project }
 
   describe 'GET unsubscribe' do
     context 'when the user is not logged in' do
@@ -34,20 +50,93 @@ describe SentNotificationsController do
       end
 
       context 'when the force param is not passed' do
+        render_views
+
         before do
           get(:unsubscribe, params: { id: sent_notification.reply_key })
         end
 
-        it 'does not unsubscribe the user' do
-          expect(issue.subscribed?(user, project)).to be_truthy
+        shared_examples 'unsubscribing as anonymous' do
+          it 'does not unsubscribe the user' do
+            expect(noteable.subscribed?(user, target_project)).to be_truthy
+          end
+
+          it 'does not set the flash message' do
+            expect(controller).not_to set_flash[:notice]
+          end
+
+          it 'renders unsubscribe page' do
+            expect(response.status).to eq(200)
+            expect(response).to render_template :unsubscribe
+          end
         end
 
-        it 'does not set the flash message' do
-          expect(controller).not_to set_flash[:notice]
+        context 'when project is public' do
+          context 'when unsubscribing from issue' do
+            let(:noteable) { issue }
+
+            it 'shows issue title' do
+              expect(response.body).to include(issue.title)
+            end
+
+            it_behaves_like 'unsubscribing as anonymous'
+          end
+
+          context 'when unsubscribing from confidential issue' do
+            let(:noteable) { confidential_issue }
+
+            it 'does not show issue title' do
+              expect(response.body).not_to include(confidential_issue.title)
+              expect(response.body).to include(confidential_issue.to_reference)
+            end
+
+            it_behaves_like 'unsubscribing as anonymous'
+          end
+
+          context 'when unsubscribing from merge request' do
+            let(:noteable) { merge_request }
+
+            it 'shows merge request title' do
+              expect(response.body).to include(merge_request.title)
+            end
+
+            it_behaves_like 'unsubscribing as anonymous'
+          end
         end
 
-        it 'redirects to the login page' do
-          expect(response).to render_template :unsubscribe
+        context 'when project is not public' do
+          let(:target_project) { private_project }
+
+          context 'when unsubscribing from issue' do
+            let(:noteable) { issue }
+
+            it 'shows issue title' do
+              expect(response.body).not_to include(issue.title)
+            end
+
+            it_behaves_like 'unsubscribing as anonymous'
+          end
+
+          context 'when unsubscribing from confidential issue' do
+            let(:noteable) { confidential_issue }
+
+            it 'does not show issue title' do
+              expect(response.body).not_to include(confidential_issue.title)
+              expect(response.body).to include(confidential_issue.to_reference)
+            end
+
+            it_behaves_like 'unsubscribing as anonymous'
+          end
+
+          context 'when unsubscribing from merge request' do
+            let(:noteable) { merge_request }
+
+            it 'shows merge request title' do
+              expect(response.body).not_to include(merge_request.title)
+            end
+
+            it_behaves_like 'unsubscribing as anonymous'
+          end
         end
       end
     end

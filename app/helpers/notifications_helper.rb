@@ -100,4 +100,8 @@ module NotificationsHelper
       css_class: "icon notifications-icon js-notifications-icon"
     )
   end
+
+  def show_unsubscribe_title?(noteable)
+    can?(current_user, "read_#{noteable.to_ability_name}".to_sym, noteable)
+  end
 end
