@@ -15,6 +15,6 @@
       = form.check_box :allow_collaboration, disabled: !issuable.can_allow_collaboration?(current_user), class: 'form-check-input'
       = form.label :allow_collaboration, class: 'form-check-label' do
         = _('Allow commits from members who can merge to the target branch.')
-        = link_to 'About this feature', help_page_path('user/project/merge_requests/allow_collaboration')
+        = link_to 'About this feature', help_page_path('user/project/merge_requests/allow_collaboration'), target: '_blank', rel: 'noopener noreferrer nofollow'
         .form-text.text-muted
           = allow_collaboration_unavailable_reason(issuable)
