@@ -1,6 +1,6 @@
 - noteable = @sent_notification.noteable
 - noteable_type = @sent_notification.noteable_type.titleize.downcase
-- noteable_text = %(#{noteable.title} (#{noteable.to_reference}))
+- noteable_text = show_unsubscribe_title?(noteable) ? %(#{noteable.title} (#{noteable.to_reference})) : %(#{noteable.to_reference})
 - page_title _("Unsubscribe"), noteable_text, noteable_type.pluralize, @sent_notification.project.full_name
 
 %h3.page-title
