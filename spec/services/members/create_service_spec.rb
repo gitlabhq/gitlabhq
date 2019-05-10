@@ -44,7 +44,18 @@ describe Members::CreateService do
     result = described_class.new(user, params).execute(project)
 
     expect(result[:status]).to eq(:error)
-    expect(result[:message]).to include(project_user.username)
+    expect(result[:message]).to include("#{project_user.username}: Access level is not included in the list")
     expect(project.users).not_to include project_user
+  end
+
+  it 'does not add a member with an existing invite' do
+    invited_member = create(:project_member, :invited, project: project)
+
+    params = { user_ids: invited_member.invite_email,
+               access_level: Gitlab::Access::GUEST }
+    result = described_class.new(user, params).execute(project)
+
+    expect(result[:status]).to eq(:error)
+    expect(result[:message]).to eq('Invite email has already been taken')
   end
 end

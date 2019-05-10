@@ -1,0 +1,5 @@
+---
+title: Fix Error 500 when inviting user already present
+merge_request: 28198
+author:
+type: fixed
