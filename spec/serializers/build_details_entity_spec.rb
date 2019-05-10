@@ -142,7 +142,7 @@ describe BuildDetailsEntity do
         response = subject.with_indifferent_access
 
         response.dig(:deployment_status, :environment, :last_deployment).tap do |deployment|
-          expect(deployment).not_to include(:commit, :deployable, :manual_actions, :scheduled_actions)
+          expect(deployment).not_to include(:commit, :manual_actions, :scheduled_actions)
         end
       end
     end

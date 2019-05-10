@@ -93,13 +93,22 @@ describe DeploymentEntity do
   end
 
   context 'when deployment details serialization was disabled' do
+    include Gitlab::Routing
+
     let(:entity) do
       described_class.new(deployment, request: request, deployment_details: false)
     end
 
     it 'does not serialize deployment details' do
       expect(subject.with_indifferent_access)
-        .not_to include(:commit, :deployable, :manual_actions, :scheduled_actions)
+        .not_to include(:commit, :manual_actions, :scheduled_actions)
+    end
+
+    it 'only exposes deployable name and path' do
+      project_job_path(project, deployment.deployable).tap do |path|
+        expect(subject.fetch(:deployable))
+          .to eq('name' => 'test', 'build_path' => path)
+      end
     end
   end
 end
