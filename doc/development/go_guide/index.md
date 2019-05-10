@@ -40,7 +40,7 @@ of possible security breaches in our code:
 - SQL injections
 
 Remember to run
-[SAST](https://docs.gitlab.com/ee/user/project/merge_requests/sast.html)
+[SAST](https://docs.gitlab.com/ee/user/application_security/sast/index)
 **[ULTIMATE]** on your project (or at least the [gosec
 analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/gosec)),
 and to follow our [Security
@@ -96,7 +96,7 @@ dependency should be argued in the merge request, as per our [Approval
 Guidelines](../code_review.md#approval-guidelines). Both [License
 Management](https://docs.gitlab.com/ee/user/project/merge_requests/license_management.html)
 **[ULTIMATE]** and [Dependency
-Scanning](https://docs.gitlab.com/ee/user/project/merge_requests/dependency_scanning.html)
+Scanning](https://docs.gitlab.com/ee/user/application_security/dependency_scanning/index)
 **[ULTIMATE]** should be activated on all projects to ensure new dependencies
 security status and license compatibility.
 
