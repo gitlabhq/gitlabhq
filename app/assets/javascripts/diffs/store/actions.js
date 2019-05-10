@@ -52,7 +52,7 @@ export const fetchDiffFiles = ({ state, commit }) => {
   });
 
   return axios
-    .get(state.endpoint, { params: { w: state.showWhitespace ? null : '1' } })
+    .get(mergeUrlParams({ w: state.showWhitespace ? '0' : '1' }, state.endpoint))
     .then(res => {
       commit(types.SET_LOADING, false);
       commit(types.SET_MERGE_REQUEST_DIFFS, res.data.merge_request_diffs || []);
@@ -125,7 +125,8 @@ export const startRenderDiffsQueue = ({ state, commit }) => {
     new Promise(resolve => {
       const nextFile = state.diffFiles.find(
         file =>
-          !file.renderIt && (!file.viewer.collapsed || !file.viewer.name === diffViewerModes.text),
+          !file.renderIt &&
+          (file.viewer && (!file.viewer.collapsed || !file.viewer.name === diffViewerModes.text)),
       );
 
       if (nextFile) {
@@ -315,8 +316,10 @@ export const setShowWhitespace = ({ commit }, { showWhitespace, pushState = fals
   localStorage.setItem(WHITESPACE_STORAGE_KEY, showWhitespace);
 
   if (pushState) {
-    historyPushState(showWhitespace ? '?w=0' : '?w=1');
+    historyPushState(mergeUrlParams({ w: showWhitespace ? '0' : '1' }, window.location.href));
   }
+
+  eventHub.$emit('refetchDiffData');
 };
 
 export const toggleFileFinder = ({ commit }, visible) => {

@@ -82,7 +82,7 @@ describe('DiffsStoreActions', () => {
 
   describe('fetchDiffFiles', () => {
     it('should fetch diff files', done => {
-      const endpoint = '/fetch/diff/files';
+      const endpoint = '/fetch/diff/files?w=1';
       const mock = new MockAdapter(axios);
       const res = { diff_files: 1, merge_request_diffs: [] };
       mock.onGet(endpoint).reply(200, res);
@@ -828,6 +828,10 @@ describe('DiffsStoreActions', () => {
   });
 
   describe('setShowWhitespace', () => {
+    beforeEach(() => {
+      spyOn(eventHub, '$emit').and.stub();
+    });
+
     it('commits SET_SHOW_WHITESPACE', done => {
       testAction(
         setShowWhitespace,
@@ -854,6 +858,30 @@ describe('DiffsStoreActions', () => {
       setShowWhitespace({ commit() {} }, { showWhitespace: true, pushState: true });
 
       expect(window.history.pushState).toHaveBeenCalled();
+    });
+
+    it('calls history pushState with merged params', () => {
+      const originalPushState = window.history;
+
+      originalPushState.pushState({}, '', '?test=1');
+
+      spyOn(localStorage, 'setItem').and.stub();
+      spyOn(window.history, 'pushState').and.stub();
+
+      setShowWhitespace({ commit() {} }, { showWhitespace: true, pushState: true });
+
+      expect(window.history.pushState.calls.mostRecent().args[2]).toMatch(/(.*)\?test=1&w=0/);
+
+      originalPushState.pushState({}, '', '?');
+    });
+
+    it('emits eventHub event', () => {
+      spyOn(localStorage, 'setItem').and.stub();
+      spyOn(window.history, 'pushState').and.stub();
+
+      setShowWhitespace({ commit() {} }, { showWhitespace: true, pushState: true });
+
+      expect(eventHub.$emit).toHaveBeenCalledWith('refetchDiffData');
     });
   });
 
