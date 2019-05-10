@@ -33,7 +33,10 @@ describe Projects::LfsPointers::LfsDownloadLinkListService do
 
   before do
     allow(project).to receive(:lfs_enabled?).and_return(true)
-    allow(Gitlab::HTTP).to receive(:post).and_return(objects_response)
+    response = instance_double(HTTParty::Response)
+    allow(response).to receive(:body).and_return(objects_response.to_json)
+    allow(response).to receive(:success?).and_return(true)
+    allow(Gitlab::HTTP).to receive(:post).and_return(response)
   end
 
   describe '#execute' do
@@ -89,6 +92,21 @@ describe Projects::LfsPointers::LfsDownloadLinkListService do
 
       expect { subject.send(:get_download_links, new_oids) }.to raise_error(described_class::DownloadLinksError)
     end
+
+    shared_examples 'JSON parse errors' do |body|
+      it 'raises error' do
+        response = instance_double(HTTParty::Response)
+        allow(response).to receive(:body).and_return(body)
+        allow(response).to receive(:success?).and_return(true)
+        allow(Gitlab::HTTP).to receive(:post).and_return(response)
+
+        expect { subject.send(:get_download_links, new_oids) }.to raise_error(described_class::DownloadLinksError)
+      end
+    end
+
+    it_behaves_like 'JSON parse errors', '{'
+    it_behaves_like 'JSON parse errors', '{}'
+    it_behaves_like 'JSON parse errors', '{ foo: 123 }'
   end
 
   describe '#parse_response_links' do
