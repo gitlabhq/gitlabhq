@@ -166,6 +166,13 @@ describe JiraService do
         ).once
       end
 
+      it 'does not fail if remote_link.all on issue returns nil' do
+        allow(JIRA::Resource::Remotelink).to receive(:all).and_return(nil)
+
+        expect { @jira_service.close_issue(resource, ExternalIssue.new('JIRA-123', project)) }
+            .not_to raise_error(NoMethodError)
+      end
+
       # Check https://developer.atlassian.com/jiradev/jira-platform/guides/other/guide-jira-remote-issue-links/fields-in-remote-issue-links
       # for more information
       it 'creates Remote Link reference in JIRA for comment' do
