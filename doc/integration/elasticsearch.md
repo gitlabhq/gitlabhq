@@ -85,7 +85,7 @@ To build and install the indexer, run:
 
 ```sh
 git clone https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer.git
-cd /gitlab-elasticsearch-indexer
+cd gitlab-elasticsearch-indexer
 make
 sudo make install
 ```
