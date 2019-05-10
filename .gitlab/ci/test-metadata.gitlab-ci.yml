@@ -56,7 +56,7 @@ update-tests-metadata:
 
 flaky-examples-check:
   extends: .dedicated-runner
-  image: ruby:2.5-alpine
+  image: ruby:2.6-alpine
   services: []
   before_script: []
   variables:

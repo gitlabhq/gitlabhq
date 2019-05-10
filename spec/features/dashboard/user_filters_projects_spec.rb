@@ -151,34 +151,22 @@ describe 'Dashboard > User filters projects' do
     end
 
     describe 'Sorting' do
-      before do
-        [
-          { name: 'Red ribbon army', created_at: 2.days.ago },
-          { name: 'Cell saga', created_at: Time.now },
-          { name: 'Frieza saga', created_at: 10.days.ago }
-        ].each do |item|
-          project = create(:project, name: item[:name], namespace: user.namespace, created_at: item[:created_at])
-          project.add_developer(user)
-        end
+      let(:desc_sorted_project_names) { %w[Treasure Victorialand] }
 
+      before do
         user.toggle_star(project)
         user.toggle_star(project2)
         user2.toggle_star(project2)
       end
 
-      it 'includes sorting direction' do
+      it 'has all sorting options', :js do
         sorting_dropdown = page.find('.filtered-search-block #filtered-search-sorting-dropdown')
 
         expect(sorting_dropdown).to have_css '.reverse-sort-btn'
-      end
-
-      it 'has all sorting options', :js do
-        sorting_dropdown = page.find('.filtered-search-block #filtered-search-sorting-dropdown')
-        sorting_option_labels = ['Last updated', 'Created date', 'Name', 'Stars']
 
         sorting_dropdown.click
 
-        sorting_option_labels.each do |label|
+        ['Last updated', 'Created date', 'Name', 'Stars'].each do |label|
           expect(sorting_dropdown).to have_content(label)
         end
       end
@@ -194,16 +182,11 @@ describe 'Dashboard > User filters projects' do
         it 'sorts the project list' do
           select_dropdown_option '#filtered-search-sorting-dropdown', 'Name'
 
-          desc = ['Victorialand', 'Treasure', 'Red ribbon army', 'Frieza saga', 'Cell saga']
-          asc = ['Cell saga', 'Frieza saga', 'Red ribbon army', 'Treasure', 'Victorialand']
+          expect_to_see_projects(desc_sorted_project_names)
 
           click_sort_direction
 
-          expect_to_see_projects(desc)
-
-          click_sort_direction
-
-          expect_to_see_projects(asc)
+          expect_to_see_projects(desc_sorted_project_names.reverse)
         end
       end
 
@@ -211,16 +194,11 @@ describe 'Dashboard > User filters projects' do
         it 'sorts the project list' do
           select_dropdown_option '#filtered-search-sorting-dropdown', 'Last updated'
 
-          desc = ["Frieza saga", "Red ribbon army", "Victorialand", "Treasure", "Cell saga"]
-          asc = ["Cell saga", "Treasure", "Victorialand", "Red ribbon army", "Frieza saga"]
+          expect_to_see_projects(desc_sorted_project_names)
 
           click_sort_direction
 
-          expect_to_see_projects(desc)
-
-          click_sort_direction
-
-          expect_to_see_projects(asc)
+          expect_to_see_projects(desc_sorted_project_names.reverse)
         end
       end
 
@@ -228,16 +206,11 @@ describe 'Dashboard > User filters projects' do
         it 'sorts the project list' do
           select_dropdown_option '#filtered-search-sorting-dropdown', 'Created date'
 
-          desc = ["Frieza saga", "Red ribbon army", "Victorialand", "Treasure", "Cell saga"]
-          asc = ["Cell saga", "Treasure", "Victorialand", "Red ribbon army", "Frieza saga"]
+          expect_to_see_projects(desc_sorted_project_names)
 
           click_sort_direction
 
-          expect_to_see_projects(desc)
-
-          click_sort_direction
-
-          expect_to_see_projects(asc)
+          expect_to_see_projects(desc_sorted_project_names.reverse)
         end
       end
 
@@ -245,16 +218,11 @@ describe 'Dashboard > User filters projects' do
         it 'sorts the project list' do
           select_dropdown_option '#filtered-search-sorting-dropdown', 'Stars'
 
-          desc = ["Red ribbon army", "Cell saga", "Frieza saga", "Victorialand", "Treasure"]
-          asc = ["Treasure", "Victorialand", "Red ribbon army", "Cell saga", "Frieza saga"]
+          expect_to_see_projects(desc_sorted_project_names)
 
           click_sort_direction
 
-          expect_to_see_projects(desc)
-
-          click_sort_direction
-
-          expect_to_see_projects(asc)
+          expect_to_see_projects(desc_sorted_project_names.reverse)
         end
       end
     end

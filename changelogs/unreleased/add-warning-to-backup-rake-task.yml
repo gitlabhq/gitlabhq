@@ -1,0 +1,5 @@
+---
+title: Add warning that gitlab-secrets isn't included in backup
+merge_request:
+author:
+type: other

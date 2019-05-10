@@ -45,11 +45,21 @@ describe 'create_tokens' do
         expect(keys).to all(match(RSA_KEY))
       end
 
+      it "generates private key for Let's Encrypt" do
+        create_tokens
+
+        keys = secrets.values_at(:lets_encrypt_private_key)
+
+        expect(keys.uniq).to eq(keys)
+        expect(keys).to all(match(RSA_KEY))
+      end
+
       it 'warns about the secrets to add to secrets.yml' do
         expect(self).to receive(:warn_missing_secret).with('secret_key_base')
         expect(self).to receive(:warn_missing_secret).with('otp_key_base')
         expect(self).to receive(:warn_missing_secret).with('db_key_base')
         expect(self).to receive(:warn_missing_secret).with('openid_connect_signing_key')
+        expect(self).to receive(:warn_missing_secret).with('lets_encrypt_private_key')
 
         create_tokens
       end
@@ -78,6 +88,7 @@ describe 'create_tokens' do
       before do
         secrets.db_key_base = 'db_key_base'
         secrets.openid_connect_signing_key = 'openid_connect_signing_key'
+        secrets.lets_encrypt_private_key = 'lets_encrypt_private_key'
 
         allow(File).to receive(:exist?).with('.secret').and_return(true)
         allow(File).to receive(:read).with('.secret').and_return('file_key')
