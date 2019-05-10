@@ -9,7 +9,7 @@ module Projects
     end
 
     def execute
-      Projects::HousekeepingService.new(@project, :gc).execute do
+      Projects::HousekeepingService.new(@project).execute do
         repository.delete_all_refs_except(RESERVED_REF_PREFIXES)
       end
     rescue Projects::HousekeepingService::LeaseTaken => e
