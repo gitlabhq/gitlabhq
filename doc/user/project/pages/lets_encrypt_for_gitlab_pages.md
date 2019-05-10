@@ -145,8 +145,8 @@ Now that your certificate has been issued, let's add it to your Pages site:
 1. Visit your website at `https://example.com`.
 
 To force `https` connections on your site, navigate to your
-project's **Settings > Pages** and check **Force domains with SSL
-certificates to use HTTPS**.
+project's **Settings > Pages** and check **Force HTTPS (requires
+valid certificates)**.
 
 ## Renewal
 
