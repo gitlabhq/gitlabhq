@@ -21,26 +21,26 @@ describe Projects::IssuesController, '(JavaScript fixtures)', type: :controller 
     remove_repository(project)
   end
 
-  it 'issues/open-issue.html' do |example|
-    render_issue(example.description, create(:issue, project: project))
+  it 'issues/open-issue.html' do
+    render_issue(create(:issue, project: project))
   end
 
-  it 'issues/closed-issue.html' do |example|
-    render_issue(example.description, create(:closed_issue, project: project))
+  it 'issues/closed-issue.html' do
+    render_issue(create(:closed_issue, project: project))
   end
 
-  it 'issues/issue-with-task-list.html' do |example|
+  it 'issues/issue-with-task-list.html' do
     issue = create(:issue, project: project, description: '- [ ] Task List Item')
-    render_issue(example.description, issue)
+    render_issue(issue)
   end
 
-  it 'issues/issue_with_comment.html' do |example|
+  it 'issues/issue_with_comment.html' do
     issue = create(:issue, project: project)
     create(:note, project: project, noteable: issue, note: '- [ ] Task List Item').save
-    render_issue(example.description, issue)
+    render_issue(issue)
   end
 
-  it 'issues/issue_list.html' do |example|
+  it 'issues/issue_list.html' do
     create(:issue, project: project)
 
     get :index, params: {
@@ -49,12 +49,11 @@ describe Projects::IssuesController, '(JavaScript fixtures)', type: :controller 
     }
 
     expect(response).to be_success
-    store_frontend_fixture(response, example.description)
   end
 
   private
 
-  def render_issue(fixture_file_name, issue)
+  def render_issue(issue)
     get :show, params: {
       namespace_id: project.namespace.to_param,
       project_id: project,
@@ -62,7 +61,6 @@ describe Projects::IssuesController, '(JavaScript fixtures)', type: :controller 
     }
 
     expect(response).to be_success
-    store_frontend_fixture(response, fixture_file_name)
   end
 end
 
@@ -89,7 +87,7 @@ describe API::Issues, '(JavaScript fixtures)', type: :request do
     end
   end
 
-  it 'issues/related_merge_requests.json' do |example|
+  it 'issues/related_merge_requests.json' do
     user = create(:user)
     project = create(:project, :public, creator_id: user.id, namespace: user.namespace)
     issue_title = 'foo'
@@ -120,6 +118,5 @@ describe API::Issues, '(JavaScript fixtures)', type: :request do
     get_related_merge_requests(project.id, issue.iid, user)
 
     expect(response).to be_success
-    store_frontend_fixture(response, example.description)
   end
 end

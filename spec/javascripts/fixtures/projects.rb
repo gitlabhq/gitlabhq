@@ -28,49 +28,45 @@ describe 'Projects (JavaScript fixtures)', type: :controller do
   end
 
   describe ProjectsController, '(JavaScript fixtures)', type: :controller do
-    it 'projects/dashboard.html' do |example|
+    it 'projects/dashboard.html' do
       get :show, params: {
         namespace_id: project.namespace.to_param,
         id: project
       }
 
       expect(response).to be_success
-      store_frontend_fixture(response, example.description)
     end
 
-    it 'projects/overview.html' do |example|
+    it 'projects/overview.html' do
       get :show, params: {
         namespace_id: project_with_repo.namespace.to_param,
         id: project_with_repo
       }
 
       expect(response).to be_success
-      store_frontend_fixture(response, example.description)
     end
 
-    it 'projects/edit.html' do |example|
+    it 'projects/edit.html' do
       get :edit, params: {
         namespace_id: project.namespace.to_param,
         id: project
       }
 
       expect(response).to be_success
-      store_frontend_fixture(response, example.description)
     end
   end
 
   describe Projects::Settings::CiCdController, '(JavaScript fixtures)', type: :controller do
-    it 'projects/ci_cd_settings.html' do |example|
+    it 'projects/ci_cd_settings.html' do
       get :show, params: {
         namespace_id: project.namespace.to_param,
         project_id: project
       }
 
       expect(response).to be_success
-      store_frontend_fixture(response, example.description)
     end
 
-    it 'projects/ci_cd_settings_with_variables.html' do |example|
+    it 'projects/ci_cd_settings_with_variables.html' do
       create(:ci_variable, project: project_variable_populated)
       create(:ci_variable, project: project_variable_populated)
 
@@ -80,7 +76,6 @@ describe 'Projects (JavaScript fixtures)', type: :controller do
       }
 
       expect(response).to be_success
-      store_frontend_fixture(response, example.description)
     end
   end
 end

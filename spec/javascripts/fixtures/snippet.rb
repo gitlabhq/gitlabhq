@@ -23,12 +23,11 @@ describe SnippetsController, '(JavaScript fixtures)', type: :controller do
     remove_repository(project)
   end
 
-  it 'snippets/show.html' do |example|
+  it 'snippets/show.html' do
     create(:discussion_note_on_snippet, noteable: snippet, project: project, author: admin, note: '- [ ] Task List Item')
 
     get(:show, params: { id: snippet.to_param })
 
     expect(response).to be_success
-    store_frontend_fixture(response, example.description)
   end
 end

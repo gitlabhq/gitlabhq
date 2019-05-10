@@ -18,10 +18,9 @@ describe Admin::AbuseReportsController, '(JavaScript fixtures)', type: :controll
     sign_in(admin)
   end
 
-  it 'abuse_reports/abuse_reports_list.html' do |example|
+  it 'abuse_reports/abuse_reports_list.html' do
     get :index
 
     expect(response).to be_success
-    store_frontend_fixture(response, example.description)
   end
 end

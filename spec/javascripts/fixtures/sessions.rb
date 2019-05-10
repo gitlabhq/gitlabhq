@@ -16,11 +16,10 @@ describe 'Sessions (JavaScript fixtures)' do
       set_devise_mapping(context: @request)
     end
 
-    it 'sessions/new.html' do |example|
+    it 'sessions/new.html' do
       get :new
 
       expect(response).to be_success
-      store_frontend_fixture(response, example.description)
     end
   end
 end

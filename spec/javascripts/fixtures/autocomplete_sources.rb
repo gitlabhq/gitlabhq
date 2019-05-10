@@ -18,7 +18,7 @@ describe Projects::AutocompleteSourcesController, '(JavaScript fixtures)', type:
     sign_in(admin)
   end
 
-  it 'autocomplete_sources/labels.json' do |example|
+  it 'autocomplete_sources/labels.json' do
     issue.labels << create(:label, project: project, title: 'bug')
     issue.labels << create(:label, project: project, title: 'critical')
 
@@ -35,6 +35,5 @@ describe Projects::AutocompleteSourcesController, '(JavaScript fixtures)', type:
         }
 
     expect(response).to be_success
-    store_frontend_fixture(response, example.description)
   end
 end

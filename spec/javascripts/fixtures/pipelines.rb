@@ -23,13 +23,12 @@ describe Projects::PipelinesController, '(JavaScript fixtures)', type: :controll
     sign_in(admin)
   end
 
-  it 'pipelines/pipelines.json' do |example|
+  it 'pipelines/pipelines.json' do
     get :index, params: {
       namespace_id: namespace,
       project_id: project
     }, format: :json
 
     expect(response).to be_success
-    store_frontend_fixture(response, example.description)
   end
 end

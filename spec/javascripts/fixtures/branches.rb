@@ -21,13 +21,12 @@ describe Projects::BranchesController, '(JavaScript fixtures)', type: :controlle
     remove_repository(project)
   end
 
-  it 'branches/new_branch.html' do |example|
+  it 'branches/new_branch.html' do
     get :new, params: {
       namespace_id: project.namespace.to_param,
       project_id: project
     }
 
     expect(response).to be_success
-    store_frontend_fixture(response, example.description)
   end
 end

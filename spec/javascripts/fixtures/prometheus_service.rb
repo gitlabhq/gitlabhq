@@ -22,7 +22,7 @@ describe Projects::ServicesController, '(JavaScript fixtures)', type: :controlle
     remove_repository(project)
   end
 
-  it 'services/prometheus/prometheus_service.html' do |example|
+  it 'services/prometheus/prometheus_service.html' do
     get :edit, params: {
       namespace_id: namespace,
       project_id: project,
@@ -30,6 +30,5 @@ describe Projects::ServicesController, '(JavaScript fixtures)', type: :controlle
     }
 
     expect(response).to be_success
-    store_frontend_fixture(response, example.description)
   end
 end
