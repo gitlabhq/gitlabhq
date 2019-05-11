@@ -265,6 +265,7 @@ class JiraService < IssueTrackerService
 
   def find_remote_link(issue, url)
     links = jira_request { issue.remotelink.all }
+    return unless links
 
     links.find { |link| link.object["url"] == url }
   end

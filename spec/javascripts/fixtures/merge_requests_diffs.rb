@@ -34,29 +34,29 @@ describe Projects::MergeRequests::DiffsController, '(JavaScript fixtures)', type
     remove_repository(project)
   end
 
-  it 'merge_request_diffs/with_commit.json' do |example|
+  it 'merge_request_diffs/with_commit.json' do
     # Create a user that matches the selected commit author
     # This is so that the "author" information will be populated
     create(:user, email: selected_commit.author_email, name: selected_commit.author_name)
 
-    render_merge_request(example.description, merge_request, commit_id: selected_commit.sha)
+    render_merge_request(merge_request, commit_id: selected_commit.sha)
   end
 
-  it 'merge_request_diffs/inline_changes_tab_with_comments.json' do |example|
+  it 'merge_request_diffs/inline_changes_tab_with_comments.json' do
     create(:diff_note_on_merge_request, project: project, author: admin, position: position, noteable: merge_request)
     create(:note_on_merge_request, author: admin, project: project, noteable: merge_request)
-    render_merge_request(example.description, merge_request)
+    render_merge_request(merge_request)
   end
 
-  it 'merge_request_diffs/parallel_changes_tab_with_comments.json' do |example|
+  it 'merge_request_diffs/parallel_changes_tab_with_comments.json' do
     create(:diff_note_on_merge_request, project: project, author: admin, position: position, noteable: merge_request)
     create(:note_on_merge_request, author: admin, project: project, noteable: merge_request)
-    render_merge_request(example.description, merge_request, view: 'parallel')
+    render_merge_request(merge_request, view: 'parallel')
   end
 
   private
 
-  def render_merge_request(fixture_file_name, merge_request, view: 'inline', **extra_params)
+  def render_merge_request(merge_request, view: 'inline', **extra_params)
     get :show, params: {
       namespace_id: project.namespace.to_param,
       project_id: project,
@@ -66,6 +66,5 @@ describe Projects::MergeRequests::DiffsController, '(JavaScript fixtures)', type
     }, format: :json
 
     expect(response).to be_success
-    store_frontend_fixture(response, fixture_file_name)
   end
 end

@@ -22,7 +22,7 @@ describe Projects::ClustersController, '(JavaScript fixtures)', type: :controlle
     remove_repository(project)
   end
 
-  it 'clusters/show_cluster.html' do |example|
+  it 'clusters/show_cluster.html' do
     get :show, params: {
       namespace_id: project.namespace.to_param,
       project_id: project,
@@ -30,6 +30,5 @@ describe Projects::ClustersController, '(JavaScript fixtures)', type: :controlle
     }
 
     expect(response).to be_success
-    store_frontend_fixture(response, example.description)
   end
 end

@@ -17,13 +17,12 @@ describe Projects::BoardsController, '(JavaScript fixtures)', type: :controller 
     sign_in(admin)
   end
 
-  it 'boards/show.html' do |example|
+  it 'boards/show.html' do
     get(:index, params: {
       namespace_id: project.namespace,
       project_id: project
     })
 
     expect(response).to be_success
-    store_frontend_fixture(response, example.description)
   end
 end

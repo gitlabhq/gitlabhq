@@ -26,11 +26,10 @@ describe 'Todos (JavaScript fixtures)' do
       sign_in(admin)
     end
 
-    it 'todos/todos.html' do |example|
+    it 'todos/todos.html' do
       get :index
 
       expect(response).to be_success
-      store_frontend_fixture(response, example.description)
     end
   end
 
@@ -41,7 +40,7 @@ describe 'Todos (JavaScript fixtures)' do
       sign_in(admin)
     end
 
-    it 'todos/todos.json' do |example|
+    it 'todos/todos.json' do
       post :create, params: {
         namespace_id: namespace,
         project_id: project,
@@ -50,7 +49,6 @@ describe 'Todos (JavaScript fixtures)' do
       }, format: 'json'
 
       expect(response).to be_success
-      store_frontend_fixture(response, example.description)
     end
   end
 end

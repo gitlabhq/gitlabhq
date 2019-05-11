@@ -18,20 +18,18 @@ describe 'Groups (JavaScript fixtures)', type: :controller do
   end
 
   describe GroupsController, '(JavaScript fixtures)', type: :controller do
-    it 'groups/edit.html' do |example|
+    it 'groups/edit.html' do
       get :edit, params: { id: group }
 
       expect(response).to be_success
-      store_frontend_fixture(response, example.description)
     end
   end
 
   describe Groups::Settings::CiCdController, '(JavaScript fixtures)', type: :controller do
-    it 'groups/ci_cd_settings.html' do |example|
+    it 'groups/ci_cd_settings.html' do
       get :show, params: { group_id: group }
 
       expect(response).to be_success
-      store_frontend_fixture(response, example.description)
     end
   end
 end

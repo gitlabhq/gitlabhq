@@ -23,12 +23,11 @@ describe Admin::ApplicationSettingsController, '(JavaScript fixtures)', type: :c
     remove_repository(project)
   end
 
-  it 'application_settings/accounts_and_limit.html' do |example|
+  it 'application_settings/accounts_and_limit.html' do
     stub_application_setting(user_default_external: false)
 
     get :show
 
     expect(response).to be_success
-    store_frontend_fixture(response, example.description)
   end
 end
