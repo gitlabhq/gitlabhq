@@ -21,4 +21,10 @@ describe DashboardHelper do
       expect(helper.dashboard_nav_links).not_to include(:activity, :milestones)
     end
   end
+
+  describe '.has_start_trial?' do
+    subject { helper.has_start_trial? }
+
+    it { is_expected.to eq(false) }
+  end
 end
