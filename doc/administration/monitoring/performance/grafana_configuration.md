@@ -3,7 +3,7 @@
 [Grafana](http://grafana.org/) is a tool that allows you to visualize time
 series metrics through graphs and dashboards. It supports several backend
 data stores, including InfluxDB. GitLab writes performance data to InfluxDB
-and Grafana will allow you to query InfluxDB to display useful graphs.
+and Grafana will allow you to query to display useful graphs.
 
 For the easiest installation and configuration, install Grafana on the same
 server as InfluxDB. For larger installations, you may want to split out these
@@ -11,11 +11,13 @@ services.
 
 ## Installation
 
-Grafana supplies package repositories (Yum/Apt) for easy installation.
+[GitLab Omnibus can help you install Grafana (recommended)](https://docs.gitlab.com/omnibus/settings/grafana.html)
+or Grafana supplies package repositories (Yum/Apt) for easy installation.
 See [Grafana installation documentation](http://docs.grafana.org/installation/)
 for detailed steps.
 
-> **Note**: Before starting Grafana for the first time, set the admin user
+NOTE: **Note:**
+Before starting Grafana for the first time, set the admin user
 and password in `/etc/grafana/grafana.ini`. Otherwise, the default password
 will be `admin`.
 
