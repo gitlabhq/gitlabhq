@@ -20,7 +20,7 @@ class PersonalFileUploader < FileUploader
   def self.model_path_segment(model)
     return 'temp/' unless model
 
-    File.join(model.class.to_s.underscore, model.id.to_s)
+    File.join(model.class.underscore, model.id.to_s)
   end
 
   def object_store

@@ -41,4 +41,8 @@ class ApplicationRecord < ActiveRecord::Base
       find_or_create_by(*args)
     end
   end
+
+  def self.underscore
+    Gitlab::SafeRequestStore.fetch("model:#{self}:underscore") { self.to_s.underscore }
+  end
 end

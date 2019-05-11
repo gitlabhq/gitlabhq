@@ -52,4 +52,10 @@ describe ApplicationRecord do
       expect { Suggestion.find_or_create_by!(note: nil) }.to raise_error(ActiveRecord::RecordInvalid)
     end
   end
+
+  describe '.underscore' do
+    it 'returns the underscored value of the class as a string' do
+      expect(MergeRequest.underscore).to eq('merge_request')
+    end
+  end
 end
