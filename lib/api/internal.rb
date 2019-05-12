@@ -264,12 +264,8 @@ module API
         PostReceive.perform_async(params[:gl_repository], params[:identifier],
           params[:changes], push_options.as_json)
 
-        if Feature.enabled?(:mr_push_options, default_enabled: true)
-          Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/61359')
-
-          mr_options = push_options.get(:merge_request)
-          output.merge!(process_mr_push_options(mr_options, project, user, params[:changes])) if mr_options.present?
-        end
+        mr_options = push_options.get(:merge_request)
+        output.merge!(process_mr_push_options(mr_options, project, user, params[:changes])) if mr_options.present?
 
         broadcast_message = BroadcastMessage.current&.last&.message
         reference_counter_decreased = Gitlab::ReferenceCounter.new(params[:gl_repository]).decrease
