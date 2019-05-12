@@ -19,4 +19,6 @@ describe GitlabSchema.types['Project'] do
   it { is_expected.to have_graphql_field(:pipelines) }
 
   it { is_expected.to have_graphql_field(:repository) }
+
+  it { is_expected.to have_graphql_field(:statistics) }
 end

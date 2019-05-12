@@ -5,7 +5,17 @@ describe GitlabSchema.types['Query'] do
     expect(described_class.graphql_name).to eq('Query')
   end
 
-  it { is_expected.to have_graphql_fields(:project, :group, :echo, :metadata) }
+  it { is_expected.to have_graphql_fields(:project, :namespace, :group, :echo, :metadata) }
+
+  describe 'namespace field' do
+    subject { described_class.fields['namespace'] }
+
+    it 'finds namespaces by full path' do
+      is_expected.to have_graphql_arguments(:full_path)
+      is_expected.to have_graphql_type(Types::NamespaceType)
+      is_expected.to have_graphql_resolver(Resolvers::NamespaceResolver)
+    end
+  end
 
   describe 'project field' do
     subject { described_class.fields['project'] }
