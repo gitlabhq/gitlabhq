@@ -1,15 +1,15 @@
 # SalesForce OmniAuth Provider
 
-You can integrate your GitLab instance with [SalesForce](https://www.salesforce.com/) to enable users to  login to your GitLab instance with their SalesForce account.
+You can integrate your GitLab instance with [SalesForce](https://www.salesforce.com/) to enable users to login to your GitLab instance with their SalesForce account.
 
 ## Create SalesForce Application
 
 To enable SalesForce OmniAuth provider, you must use SalesForce's credentials for your GitLab instance.
-To get the credentials (a pair of Client ID and Client Secret), you must register an application on UltraAuth.
+To get the credentials (a pair of Client ID and Client Secret), you must register an application on SalesForces.
 
 1.  Sign in to [SalesForce](https://www.salesforce.com/).
 
-1.  Navigate to **Platform Tools/Apps** and click on **New Connected App**.
+1.  Navigate to **Platform Tools/Apps/App Manager** and click on **New Connected App**.
 
 1.  Fill in the application details into the following fields:
     - **Connected App Name** and **API Name**: Set to any value but consider something like `<Organization>'s GitLab`, `<Your Name>'s GitLab`, or something else that is descriptive.
@@ -64,7 +64,7 @@ To get the credentials (a pair of Client ID and Client Secret), you must registe
         }
     ```
 1.  Change `SALESFORCE_CLIENT_ID` to the Consumer Key from the SalesForce connected application page.
-1.  Change `SALESFORCE_CLIENT_SECRET` to the Client Secret from the SalesForce connected application page.
+1.  Change `SALESFORCE_CLIENT_SECRET` to the Consumer Secret from the SalesForce connected application page.
     ![SalesForce App Secret Details](img/salesforce_app_secret_details.png)
 
 1.  Save the configuration file.
