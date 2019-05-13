@@ -121,6 +121,8 @@ module Gitlab
           \.prettierrc |
           \.scss-lint.yml |
           \.stylelintrc |
+          \.haml-lint.yml |
+          \.haml-lint_todo.yml |
           babel\.config\.js |
           jest\.config\.js |
           karma\.config\.js |
