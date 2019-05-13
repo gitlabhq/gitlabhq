@@ -3,13 +3,13 @@
 module RoutableActions
   extend ActiveSupport::Concern
 
-  def find_routable!(routable_klass, requested_full_path, extra_authorization_proc: nil, not_found_or_authorized_proc: nil)
+  def find_routable!(routable_klass, requested_full_path, extra_authorization_proc: nil)
     routable = routable_klass.find_by_full_path(requested_full_path, follow_redirects: request.get?)
     if routable_authorized?(routable, extra_authorization_proc)
       ensure_canonical_path(routable, requested_full_path)
       routable
     else
-      perform_not_found_actions(routable, [not_found_or_authorized_proc])
+      perform_not_found_actions(routable, not_found_actions)
 
       route_not_found unless performed?
 
@@ -17,11 +17,15 @@ module RoutableActions
     end
   end
 
+  def not_found_actions
+    [ProjectUnauthorized::ControllerActions.on_routable_not_found]
+  end
+
   def perform_not_found_actions(routable, actions)
-    actions.compact.each do |action|
+    actions.each do |action|
       break if performed?
 
-      action.call(routable)
+      instance_exec(routable, &action)
     end
   end
 

@@ -116,4 +116,41 @@ describe RoutableActions do
       end
     end
   end
+
+  describe '#perform_not_found_actions' do
+    let(:routable) { create(:project) }
+
+    before do
+      sign_in(create(:user))
+    end
+
+    it 'performs multiple checks' do
+      last_check_called = false
+      checks = [proc {}, proc { last_check_called = true }]
+      allow(subject).to receive(:not_found_actions).and_return(checks)
+
+      get_routable(routable)
+
+      expect(last_check_called).to eq(true)
+    end
+
+    it 'performs checks in the context of the controller' do
+      check = lambda { |routable| redirect_to routable }
+      allow(subject).to receive(:not_found_actions).and_return([check])
+
+      get_routable(routable)
+
+      expect(response.location).to end_with(routable.to_param)
+    end
+
+    it 'skips checks once one has resulted in a render/redirect' do
+      first_check = proc { render plain: 'first' }
+      second_check = proc { render plain: 'second' }
+      allow(subject).to receive(:not_found_actions).and_return([first_check, second_check])
+
+      get_routable(routable)
+
+      expect(response.body).to eq('first')
+    end
+  end
 end
