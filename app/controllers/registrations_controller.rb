@@ -4,6 +4,7 @@ class RegistrationsController < Devise::RegistrationsController
   include Recaptcha::Verify
   include AcceptsPendingInvitations
 
+  prepend_before_action :check_captcha, only: :create
   before_action :whitelist_query_limiting, only: [:destroy]
   before_action :ensure_terms_accepted,
                 if: -> { Gitlab::CurrentSettings.current_application_settings.enforce_terms? },
@@ -21,15 +22,10 @@ class RegistrationsController < Devise::RegistrationsController
       params[resource_name] = params.delete(:"new_#{resource_name}")
     end
 
-    if !Gitlab::Recaptcha.load_configurations! || verify_recaptcha
-      accept_pending_invitations
-      super do |new_user|
-        persist_accepted_terms_if_required(new_user)
-      end
-    else
-      flash[:alert] = s_('Profiles|There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.')
-      flash.delete :recaptcha_error
-      render action: 'new'
+    accept_pending_invitations
+
+    super do |new_user|
+      persist_accepted_terms_if_required(new_user)
     end
   rescue Gitlab::Access::AccessDeniedError
     redirect_to(new_user_session_path)
@@ -88,6 +84,17 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   private
+
+  def check_captcha
+    return unless Feature.enabled?(:registrations_recaptcha, default_enabled: true)
+    return unless Gitlab::Recaptcha.load_configurations!
+
+    return if verify_recaptcha
+
+    flash[:alert] = _('There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.')
+    flash.delete :recaptcha_error
+    render action: 'new'
+  end
 
   def sign_up_params
     params.require(:user).permit(:username, :email, :email_confirmation, :name, :password)

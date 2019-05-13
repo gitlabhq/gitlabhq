@@ -7238,9 +7238,6 @@ msgstr ""
 msgid "Profiles|The maximum file size allowed is 200KB."
 msgstr ""
 
-msgid "Profiles|There was an error with the reCAPTCHA. Please solve the reCAPTCHA again."
-msgstr ""
-
 msgid "Profiles|This doesn't look like a public SSH key, are you sure you want to add it?"
 msgstr ""
 
