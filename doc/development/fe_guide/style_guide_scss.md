@@ -9,20 +9,25 @@ easy to maintain, and performant for the end-user.
 As part of the effort for [cleaning up our CSS and moving our components into GitLab-UI](https://gitlab.com/groups/gitlab-org/-/epics/950)
 led by the [GitLab UI WG](https://gitlab.com/gitlab-com/www-gitlab-com/merge_requests/20623) we prefer the use of utility classes over adding new CSS. However, complex CSS can be addressed by adding component classes.
 
-We have a few internal utility classes in [`common.scss`](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/app/assets/stylesheets/framework/common.scss)
-and we use [Bootstrap's Utility Classes](https://getbootstrap.com/docs/4.3/utilities/)
+#### Where are utility classes defined?
+
+- [Bootstrap's Utility Classes](https://getbootstrap.com/docs/4.3/utilities/)
+- [`common.scss`](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/app/assets/stylesheets/framework/common.scss) (old)
+- [`utilities.scss`](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/app/assets/stylesheets/utilities.scss) (new)
+
+#### Where should I put new utility classes?
 
 New utility classes should be added to [`utilities.scss`](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/app/assets/stylesheets/utilities.scss). Existing classes include:
 
-**Background color**: `.bg-variant-shade` e.g. `.bg-warning-400`  
-**Text color**: `.text-variant-shade` e.g. `.text-success-500` 
+| Name | Pattern | Example |
+|------|---------|---------|
+| Background color | `.bg-{variant}-{shade}` | `.bg-warning-400` |
+| Text color | `.text-{variant}-{shade}` | `.text-success-500` |
+| Font size | `.text-{size}` | `.text-2` |
 
-- variant is one of 'primary', 'secondary', 'success', 'warning', 'error'
-- shade is on of the shades listed on [colors](https://design.gitlab.com/foundations/colors/)
-
-**Font size**: `.text-size` e.g. `.text-2`
-
-- **size** is number from 1-6 from our [Type scale](https://design.gitlab.com/foundations/typography)
+- `{variant}` is one of 'primary', 'secondary', 'success', 'warning', 'error'
+- `{shade}` is on of the shades listed on [colors](https://design.gitlab.com/foundations/colors/)
+- `{size}` is a number from 1-6 from our [Type scale](https://design.gitlab.com/foundations/typography)
 
 ### Naming
 
