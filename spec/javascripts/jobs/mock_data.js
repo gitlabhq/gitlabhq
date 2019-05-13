@@ -995,7 +995,7 @@ export default {
       },
       duration: 6,
       finished_at: '2017-06-01T17:32:00.042Z',
-      stages: stages,
+      stages,
     },
     ref: {
       name: 'abc',

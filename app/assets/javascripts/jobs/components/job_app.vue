@@ -123,7 +123,9 @@ export default {
     job(newVal, oldVal) {
       if (_.isEmpty(oldVal) && !_.isEmpty(newVal.pipeline)) {
         this.fetchJobsForStage(
-          this.job.pipeline.details.stages.find(stage => stage && stage.name === this.selectedStage),
+          this.job.pipeline.details.stages.find(
+            stage => stage && stage.name === this.selectedStage,
+          ),
         );
       }
 

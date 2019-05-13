@@ -107,7 +107,7 @@ describe DeploymentEntity do
     it 'only exposes deployable name and path' do
       project_job_path(project, deployment.deployable).tap do |path|
         expect(subject.fetch(:deployable))
-          .to eq('name' => 'test', 'build_path' => path)
+          .to eq(name: 'test', build_path: path)
       end
     end
   end
