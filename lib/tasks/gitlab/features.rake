@@ -17,7 +17,7 @@ namespace :gitlab do
       if status
         Feature.enable(flag)
       else
-        Feature.disable(flag)
+        Feature.get(flag).remove
       end
     end
   end
