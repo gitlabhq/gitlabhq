@@ -45,7 +45,7 @@ module Members
     def delete_subgroup_members(member)
       groups = member.group.descendants
 
-      GroupMember.in_groups(groups).with_user(member.user).each do |group_member|
+      GroupMember.of_groups(groups).with_user(member.user).each do |group_member|
         self.class.new(current_user).execute(group_member, skip_authorization: @skip_auth, skip_subresources: true)
       end
     end

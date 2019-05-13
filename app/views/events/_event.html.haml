@@ -3,11 +3,11 @@
     .event-item-timestamp
       #{time_ago_with_tooltip(event.created_at)}
 
-    - if event.created_project?
+    - if event.created_project_action?
       = render "events/event/created_project", event: event
-    - elsif event.push?
+    - elsif event.push_action?
       = render "events/event/push", event: event
-    - elsif event.commented?
+    - elsif event.commented_action?
       = render "events/event/note", event: event
     - else
       = render "events/event/common", event: event

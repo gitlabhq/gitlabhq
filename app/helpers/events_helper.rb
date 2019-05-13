@@ -68,7 +68,7 @@ module EventsHelper
   end
 
   def event_preposition(event)
-    if event.push? || event.commented? || event.target
+    if event.push_action? || event.commented_action? || event.target
       "at"
     elsif event.milestone?
       "in"
@@ -80,11 +80,11 @@ module EventsHelper
     words << event.author_name
     words << event_action_name(event)
 
-    if event.push?
+    if event.push_action?
       words << event.ref_type
       words << event.ref_name
       words << "at"
-    elsif event.commented?
+    elsif event.commented_action?
       words << event.note_target_reference
       words << "at"
     elsif event.milestone?
@@ -121,9 +121,9 @@ module EventsHelper
       if event.note_target
         event_note_target_url(event)
       end
-    elsif event.push?
+    elsif event.push_action?
       push_event_feed_url(event)
-    elsif event.created_project?
+    elsif event.created_project_action?
       project_url(event.project)
     end
   end
@@ -147,7 +147,7 @@ module EventsHelper
   def event_feed_summary(event)
     if event.issue?
       render "events/event_issue", issue: event.issue
-    elsif event.push?
+    elsif event.push_action?
       render "events/event_push", event: event
     elsif event.merge_request?
       render "events/event_merge_request", merge_request: event.merge_request
