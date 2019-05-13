@@ -448,6 +448,18 @@ sudo -u git cp config/database.yml.postgresql config/database.yml
 # MySQL only:
 sudo -u git cp config/database.yml.mysql config/database.yml
 
+# PostgreSQL only:
+# Remove host, username, and password lines from config/database.yml.
+# Once modified, the `production` settings will be as follows:
+#
+#   production:
+#     adapter: postgresql
+#     encoding: unicode
+#     database: gitlabhq_production
+#     pool: 10
+#
+sudo -u git -H editor config/database.yml
+
 # MySQL and remote PostgreSQL only:
 # Update username/password in config/database.yml.
 # You only need to adapt the production settings (first part).
@@ -565,6 +577,18 @@ sudo -u git -H editor config.toml
 For more information about configuring Gitaly see
 [doc/administration/gitaly](../administration/gitaly).
 
+### Start Gitaly
+
+Gitaly must be running for the next section.
+
+```sh
+gitlab_path=/home/git/gitlab
+gitaly_path=/home/git/gitaly
+
+sudo -u git -H $gitlab_path/bin/daemon_with_pidfile $gitlab_path/tmp/pids/gitaly.pid \
+  $gitaly_path/gitaly $gitaly_path/config.toml >> $gitlab_path/log/gitaly.log 2>&1 &
+```
+
 ### Initialize Database and Activate Advanced Features
 
 ```sh
@@ -638,6 +662,12 @@ sudo -u git -H bundle exec rake gettext:compile RAILS_ENV=production
 ```sh
 sudo -u git -H yarn install --production --pure-lockfile
 sudo -u git -H bundle exec rake gitlab:assets:compile RAILS_ENV=production NODE_ENV=production
+```
+
+If `rake` fails with `JavaScript heap out of memory` error, try to run it with `NODE_OPTIONS` set as follows.
+
+```sh
+sudo -u git -H bundle exec rake gitlab:assets:compile RAILS_ENV=production NODE_ENV=production NODE_OPTIONS="--max_old_space_size=4096"
 ```
 
 ### Start Your GitLab Instance
