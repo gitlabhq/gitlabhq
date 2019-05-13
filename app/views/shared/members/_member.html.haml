@@ -53,7 +53,7 @@
           = time_ago_with_tooltip(member.created_at)
   - if show_roles
     - current_resource = @project || @group
-    .controls.member-controls.row
+    .controls.member-controls
       - if show_controls && member.source == current_resource
 
         - if member.can_resend_invite?

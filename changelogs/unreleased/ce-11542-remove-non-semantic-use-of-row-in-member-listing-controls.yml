@@ -1,0 +1,5 @@
+---
+title: Remove non-semantic use of `.row` in member listing controls
+merge_request: 28204
+author:
+type: fixed
