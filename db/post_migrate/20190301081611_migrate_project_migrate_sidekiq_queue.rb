@@ -5,8 +5,6 @@ class MigrateProjectMigrateSidekiqQueue < ActiveRecord::Migration[5.0]
 
   DOWNTIME = false
 
-  DOWNTIME = false
-
   def up
     sidekiq_queue_migrate 'project_migrate_hashed_storage', to: 'hashed_storage:hashed_storage_project_migrate'
   end
