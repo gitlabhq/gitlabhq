@@ -138,6 +138,10 @@ class Group < Namespace
       .order("ordered_groups.depth #{hierarchy_order}")
   end
 
+  def notification_settings_for(user, hierarchy_order: nil)
+    notification_settings(hierarchy_order: hierarchy_order).where(user: user)
+  end
+
   def to_reference(_from = nil, full: nil)
     "#{self.class.reference_prefix}#{full_path}"
   end

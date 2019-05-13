@@ -82,7 +82,7 @@ class Notify < BaseMailer
     group_notification_email = nil
 
     if notification_group
-      notification_settings = notification_group.notification_settings(hierarchy_order: :asc).where(user: @current_user) # rubocop: disable CodeReuse/ActiveRecord
+      notification_settings = notification_group.notification_settings_for(@current_user, hierarchy_order: :asc)
       group_notification_email = notification_settings.find { |n| n.notification_email.present? }&.notification_email
     end
 
