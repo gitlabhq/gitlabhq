@@ -93,7 +93,14 @@ describe QA::Support::Page::Logging do
     allow(page).to receive(:has_no_css?).and_return(true)
 
     expect { subject.has_no_element?(:element) }
-      .to output(/has_no_element\? :element returned true/).to_stdout_from_any_process
+      .to output(/has_no_element\? :element \(wait: 2\) returned: true/).to_stdout_from_any_process
+  end
+
+  it 'logs has_no_element? with text' do
+    allow(page).to receive(:has_no_css?).and_return(true)
+
+    expect { subject.has_no_element?(:element, text: "more text") }
+      .to output(/has_no_element\? :element with text \"more text\" \(wait: 2\) returned: true/).to_stdout_from_any_process
   end
 
   it 'logs has_text?' do

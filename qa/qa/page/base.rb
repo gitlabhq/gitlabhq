@@ -113,8 +113,8 @@ module QA
         has_css?(element_selector_css(name), wait: wait, text: text)
       end
 
-      def has_no_element?(name, wait: Capybara.default_max_wait_time)
-        has_no_css?(element_selector_css(name), wait: wait)
+      def has_no_element?(name, text: nil, wait: Capybara.default_max_wait_time)
+        has_no_css?(element_selector_css(name), wait: wait, text: text)
       end
 
       def has_text?(text)
@@ -129,8 +129,8 @@ module QA
         has_no_css?('.fa-spinner', wait: Capybara.default_max_wait_time)
       end
 
-      def within_element(name)
-        page.within(element_selector_css(name)) do
+      def within_element(name, text: nil)
+        page.within(element_selector_css(name), text: text) do
           yield
         end
       end

@@ -7,6 +7,7 @@ module QA
         class Show < Page::Base
           view 'app/views/projects/branches/_branch.html.haml' do
             element :remove_btn
+            element :branch_name
           end
           view 'app/views/projects/branches/_panel.html.haml' do
             element :all_branches
@@ -27,11 +28,9 @@ module QA
             finished_loading?
           end
 
-          def has_branch_title?(branch_title)
+          def has_no_branch?(branch_name)
             within_element(:all_branches) do
-              within(".item-title") do
-                has_text?(branch_title)
-              end
+              has_no_element?(:branch_name, text: branch_name, wait: Support::Waiter::DEFAULT_MAX_WAIT_TIME)
             end
           end
 
@@ -47,15 +46,6 @@ module QA
             accept_alert do
               click_element(:delete_merged_branches)
             end
-          end
-
-          def wait_for_texts_not_to_be_visible(texts)
-            text_not_visible = wait do
-              texts.all? do |text|
-                has_no_text?(text)
-              end
-            end
-            raise "Expected text(s) #{texts} not to be visible" unless text_not_visible
           end
         end
       end
