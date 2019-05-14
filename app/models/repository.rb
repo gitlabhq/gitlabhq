@@ -1050,7 +1050,7 @@ class Repository
 
     # To support the full deprecated behaviour, set the
     # `rebase_commit_sha` for the merge_request here and return the value
-    merge_request.update(rebase_commit_sha: rebase_sha)
+    merge_request.update(rebase_commit_sha: rebase_sha, merge_error: nil)
 
     rebase_sha
   end
@@ -1069,7 +1069,7 @@ class Repository
         remote_repository: merge_request.target_project.repository.raw,
         remote_branch: merge_request.target_branch
       ) do |commit_id|
-        merge_request.update!(rebase_commit_sha: commit_id)
+        merge_request.update!(rebase_commit_sha: commit_id, merge_error: nil)
       end
     end
   end
