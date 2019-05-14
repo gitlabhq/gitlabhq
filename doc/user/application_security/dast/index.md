@@ -138,7 +138,7 @@ variables:
 
 #### Customizing the DAST settings
 
-The SAST settings can be changed through environment variables by using the
+The DAST settings can be changed through environment variables by using the
 [`variables`](../../../ci/yaml/README.md#variables) parameter in `.gitlab-ci.yml`.
 These variables are documented in the [DAST README](https://gitlab.com/gitlab-org/security-products/dast#settings).
 
