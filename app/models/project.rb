@@ -336,8 +336,8 @@ class Project < ApplicationRecord
   validates :star_count, numericality: { greater_than_or_equal_to: 0 }
   validate :check_personal_projects_limit, on: :create
   validate :check_repository_path_availability, on: :update, if: ->(project) { project.renamed? }
-  validate :visibility_level_allowed_by_group, if: -> { changes.has_key?(:visibility_level) }
-  validate :visibility_level_allowed_as_fork, if: -> { changes.has_key?(:visibility_level) }
+  validate :visibility_level_allowed_by_group, if: :should_validate_visibility_level?
+  validate :visibility_level_allowed_as_fork, if: :should_validate_visibility_level?
   validate :check_wiki_path_conflict
   validate :validate_pages_https_only, if: -> { changes.has_key?(:pages_https_only) }
   validates :repository_storage,
@@ -889,6 +889,10 @@ class Project < ApplicationRecord
       end
 
     self.errors.add(:limit_reached, error % { limit: limit })
+  end
+
+  def should_validate_visibility_level?
+    new_record? || changes.has_key?(:visibility_level)
   end
 
   def visibility_level_allowed_by_group
