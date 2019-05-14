@@ -175,6 +175,40 @@ describe Projects::MilestonesController do
       end
     end
 
+    describe '#labels' do
+      render_views
+
+      context 'as json' do
+        let!(:guest) { create(:user, username: 'guest1') }
+        let!(:group) { create(:group, :public) }
+        let!(:project) { create(:project, :public, group: group) }
+        let!(:label) { create(:label, title: 'test_label_on_private_issue', project: project) }
+        let!(:confidential_issue) { create(:labeled_issue, confidential: true, project: project, milestone: milestone, labels: [label]) }
+
+        it 'does not render labels of private issues if user has no access' do
+          sign_in(guest)
+
+          get :labels, params: { namespace_id: group.id, project_id: project.id, id: milestone.iid }, format: :json
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(response.content_type).to eq 'application/json'
+
+          expect(json_response['html']).not_to include(label.title)
+        end
+
+        it 'does render labels of private issues if user has access' do
+          sign_in(user)
+
+          get :labels, params: { namespace_id: group.id, project_id: project.id, id: milestone.iid }, format: :json
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(response.content_type).to eq 'application/json'
+
+          expect(json_response['html']).to include(label.title)
+        end
+      end
+    end
+
     context 'promotion succeeds' do
       before do
         group.add_developer(user)
