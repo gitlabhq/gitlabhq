@@ -181,7 +181,7 @@ Currently gitlab-shell has a boolean return code, preventing GitLab from specify
 
 ## Delete existing file in repository
 
-This allows you to delete a single file. For deleting multiple files with a singleh request see the [commits API](commits.html#create-a-commit-with-multiple-files-and-actions).
+This allows you to delete a single file. For deleting multiple files with a single request, see the [commits API](commits.html#create-a-commit-with-multiple-files-and-actions).
 
 ```
 DELETE /projects/:id/repository/files/:file_path
