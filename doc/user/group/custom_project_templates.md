@@ -1,4 +1,4 @@
-# Custom group-level project templates **[PREMIUM ONLY]**
+# Custom group-level project templates **[PREMIUM]**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/6861) in [GitLab Premium](https://about.gitlab.com/pricing) 11.6.
 
