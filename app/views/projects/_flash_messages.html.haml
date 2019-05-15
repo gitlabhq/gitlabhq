@@ -7,3 +7,4 @@
     = render 'shared/no_password'
     - unless project.empty_repo?
       = render 'shared/auto_devops_implicitly_enabled_banner', project: project
+    = render_if_exists 'projects/above_size_limit_warning', project: project
