@@ -1504,7 +1504,9 @@ export default class Notes {
         tempFormContent = __('Applying multiple commands');
       } else {
         const commandDescription = executedCommands[0].description.toLowerCase();
-        tempFormContent = __(`Applying command to ${commandDescription}`);
+        tempFormContent = sprintf(__('Applying command to %{commandDescription}'), {
+          commandDescription,
+        });
       }
     } else {
       tempFormContent = __('Applying command');

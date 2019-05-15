@@ -1462,27 +1462,6 @@ msgstr ""
 msgid "BranchSwitcherTitle|Switch branch"
 msgstr ""
 
-msgid "BranchValidation|can't be"
-msgstr ""
-
-msgid "BranchValidation|can't contain"
-msgstr ""
-
-msgid "BranchValidation|can't end in"
-msgstr ""
-
-msgid "BranchValidation|can't start with"
-msgstr ""
-
-msgid "BranchValidation|consecutive slashes"
-msgstr ""
-
-msgid "BranchValidation|or"
-msgstr ""
-
-msgid "BranchValidation|spaces"
-msgstr ""
-
 msgid "Branches"
 msgstr ""
 
