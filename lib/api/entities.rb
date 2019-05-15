@@ -279,6 +279,7 @@ module API
         project.build_allow_git_fetch ? 'fetch' : 'clone'
       end
       expose :build_timeout
+      expose :build_coverage_regex
       expose :ci_config_path, if: -> (project, options) { Ability.allowed?(options[:current_user], :download_code, project) }
       expose :shared_with_groups do |project, options|
         SharedGroup.represent(project.project_group_links, options)
