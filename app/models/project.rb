@@ -15,6 +15,7 @@ class Project < ApplicationRecord
   include CaseSensitivity
   include TokenAuthenticatable
   include ValidAttribute
+  include ProjectAPICompatibility
   include ProjectFeaturesCompatibility
   include SelectForProjectAuthorization
   include Presentable

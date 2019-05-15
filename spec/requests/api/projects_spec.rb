@@ -1929,6 +1929,24 @@ describe API::Projects do
         expect(json_response['builds_access_level']).to eq('private')
       end
 
+      it 'updates build_git_strategy' do
+        project_param = { build_git_strategy: 'clone' }
+
+        put api("/projects/#{project3.id}", user), params: project_param
+
+        expect(response).to have_gitlab_http_status(200)
+
+        expect(json_response['build_git_strategy']).to eq('clone')
+      end
+
+      it 'rejects to update build_git_strategy when build_git_strategy is invalid' do
+        project_param = { build_git_strategy: 'invalid' }
+
+        put api("/projects/#{project3.id}", user), params: project_param
+
+        expect(response).to have_gitlab_http_status(400)
+      end
+
       it 'updates merge_method' do
         project_param = { merge_method: 'ff' }
 
