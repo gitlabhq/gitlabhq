@@ -41,7 +41,6 @@ options:
 
 NOTE: **Note:**
 This is only available starting in certain versions of GitLab:
-
   * 11.5.11
   * 11.6.11
   * 11.7.12
@@ -59,13 +58,13 @@ details.
 To do this, run the Rake task:
 
 ```sh
-gitlab-rake gitlab:features:enable_rugged
+sudo gitlab-rake gitlab:features:enable_rugged
 ```
 
 If you need to undo this setting for some reason, run:
 
 ```sh
-gitlab-rake gitlab:features:disable_rugged
+sudo gitlab-rake gitlab:features:disable_rugged
 ```
 
 ### Known issues
