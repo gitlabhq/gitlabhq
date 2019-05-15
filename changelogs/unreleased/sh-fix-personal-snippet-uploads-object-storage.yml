@@ -1,0 +1,5 @@
+---
+title: Fix incorrect prefix used in new uploads for personal snippets
+merge_request: 28337
+author:
+type: fixed
