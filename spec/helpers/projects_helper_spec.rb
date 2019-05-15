@@ -799,4 +799,24 @@ describe ProjectsHelper do
       it { is_expected.to eq(result) }
     end
   end
+
+  describe '#can_import_members?' do
+    let(:project) { create(:project) }
+    let(:user) { create(:user) }
+    let(:owner) { project.owner }
+
+    before do
+      helper.instance_variable_set(:@project, project)
+    end
+
+    it 'returns false if user cannot admin_project_member' do
+      allow(helper).to receive(:current_user) { user }
+      expect(helper.can_import_members?).to eq false
+    end
+
+    it 'returns true if user can admin_project_member' do
+      allow(helper).to receive(:current_user) { owner }
+      expect(helper.can_import_members?).to eq true
+    end
+  end
 end

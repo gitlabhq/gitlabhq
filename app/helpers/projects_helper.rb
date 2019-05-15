@@ -315,6 +315,10 @@ module ProjectsHelper
     ) % { default_label: default_label }
   end
 
+  def can_import_members?
+    Ability.allowed?(current_user, :admin_project_member, @project)
+  end
+
   private
 
   def get_project_nav_tabs(project, current_user)
