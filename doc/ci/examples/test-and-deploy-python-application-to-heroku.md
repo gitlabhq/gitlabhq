@@ -9,7 +9,12 @@ You can checkout the [example source](https://gitlab.com/ayufan/python-getting-s
 This is what the `.gitlab-ci.yml` file looks like for this project:
 
 ```yaml
+stages:
+  - test
+  - deploy
+
 test:
+  stage: test
   script:
   # this configures Django application to use attached postgres database that is run on `postgres` host
   - export DATABASE_URL=postgres://postgres:@postgres:5432/python-test-app
@@ -19,7 +24,7 @@ test:
   - python manage.py test
 
 staging:
-  type: deploy
+  stage: deploy
   script:
   - apt-get update -qy
   - apt-get install -y ruby-dev
@@ -29,7 +34,7 @@ staging:
   - master
 
 production:
-  type: deploy
+  stage: deploy
   script:
   - apt-get update -qy
   - apt-get install -y ruby-dev
