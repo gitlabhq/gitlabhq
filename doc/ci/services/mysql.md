@@ -17,8 +17,8 @@ services:
 
 variables:
   # Configure mysql environment variables (https://hub.docker.com/_/mysql/)
-  MYSQL_DATABASE: el_duderino
-  MYSQL_ROOT_PASSWORD: mysql_strong_password
+  MYSQL_DATABASE: "<your_mysql_database>"
+  MYSQL_ROOT_PASSWORD: "mysql_strong_password"
 ```
 
 And then configure your application to use the database, for example:
