@@ -878,7 +878,7 @@ module API
       expose :push_event_payload,
         as: :push_data,
         using: PushEventPayload,
-        if: -> (event, _) { event.push? }
+        if: -> (event, _) { event.push_action? }
 
       expose :author_username do |event, options|
         event.author&.username

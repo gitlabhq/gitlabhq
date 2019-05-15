@@ -73,9 +73,8 @@ module QA
 
         Page::Project::Branches::Show.perform do |branches_view|
           branches_view.delete_branch(third_branch)
+          expect(branches_view).to have_no_branch(third_branch)
         end
-
-        expect(page).not_to have_content(third_branch)
 
         Page::Project::Branches::Show.perform(&:delete_merged_branches)
 
@@ -85,8 +84,7 @@ module QA
 
         page.refresh
         Page::Project::Branches::Show.perform do |branches_view|
-          branches_view.wait_for_texts_not_to_be_visible([commit_message_of_second_branch])
-          expect(branches_view).not_to have_branch_title(second_branch)
+          expect(branches_view).to have_no_branch(second_branch)
         end
       end
     end

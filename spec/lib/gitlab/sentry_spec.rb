@@ -2,12 +2,15 @@ require 'spec_helper'
 
 describe Gitlab::Sentry do
   describe '.context' do
-    it 'adds the locale to the tags' do
+    it 'adds the expected tags' do
       expect(described_class).to receive(:enabled?).and_return(true)
+      allow(Labkit::Correlation::CorrelationId).to receive(:current_id).and_return('cid')
 
       described_class.context(nil)
 
       expect(Raven.tags_context[:locale].to_s).to eq(I18n.locale.to_s)
+      expect(Raven.tags_context[Labkit::Correlation::CorrelationId::LOG_KEY.to_sym].to_s)
+        .to eq('cid')
     end
   end
 

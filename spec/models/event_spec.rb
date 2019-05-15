@@ -88,7 +88,7 @@ describe Event do
     let(:event) { create_push_event(project, user) }
 
     it do
-      expect(event.push?).to be_truthy
+      expect(event.push_action?).to be_truthy
       expect(event.visible_to_user?(user)).to be_truthy
       expect(event.visible_to_user?(nil)).to be_falsey
       expect(event.tag?).to be_falsey

@@ -45,7 +45,7 @@ class UploadsController < ApplicationController
       when Appearance
         true
       else
-        permission = "read_#{model.class.to_s.underscore}".to_sym
+        permission = "read_#{model.class.underscore}".to_sym
 
         can?(current_user, permission, model)
       end

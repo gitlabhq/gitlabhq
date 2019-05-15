@@ -16,7 +16,12 @@
           = ssh_clone_button(project)
         %li
           = http_clone_button(project)
+        = render_if_exists 'shared/kerberos_clone_button', project: project
 
   = text_field_tag :project_clone, default_url_to_repo(project), class: "js-select-on-focus form-control", readonly: true, aria: { label: 'Project clone URL' }
   .input-group-append
     = clipboard_button(target: '#project_clone', title: _("Copy URL to clipboard"), class: "input-group-text btn-default btn-clipboard")
+
+    = render_if_exists 'shared/geo_modal_button'
+
+= render_if_exists 'shared/geo_modal', project: project

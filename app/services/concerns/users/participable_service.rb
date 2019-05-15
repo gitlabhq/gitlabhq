@@ -29,7 +29,7 @@ module Users
 
     def groups
       group_counts = GroupMember
-                       .in_groups(current_user.authorized_groups)
+                       .of_groups(current_user.authorized_groups)
                        .non_request
                        .count_users_by_group_id
 

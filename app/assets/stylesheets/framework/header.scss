@@ -472,6 +472,22 @@
       background-color: $blue-500;
     }
   }
+
+  .canary-badge {
+    .badge {
+      font-size: $gl-font-size-small;
+      line-height: $gl-line-height;
+      padding: 0 $grid-size;
+    }
+
+    &:hover {
+      text-decoration: none;
+
+      .badge {
+        text-decoration: none;
+      }
+    }
+  }
 }
 
 @include media-breakpoint-down(xs) {

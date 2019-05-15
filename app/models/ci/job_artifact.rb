@@ -99,7 +99,7 @@ module Ci
       raw: 1,
       zip: 2,
       gzip: 3
-    }
+    }, _suffix: true
 
     # `file_location` indicates where actual files are stored.
     # Ideally, actual files should be stored in the same directory, and use the same

@@ -18,8 +18,9 @@
               %span.logo-text.d-none.d-lg-block.prepend-left-8
                 = logo_text
           - if Gitlab.com?
-            %span.js-canary-badge.badge.badge-pill.green-badge.align-self-center
-              = _('Next')
+            = link_to 'https://next.gitlab.com', class: 'label-link js-canary-badge canary-badge bg-transparent', target: :_blank do
+              %span.color-label.has-tooltip.badge.badge-pill.green-badge
+                = _('Next')
 
         - if current_user
           = render "layouts/nav/dashboard"

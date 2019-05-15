@@ -214,6 +214,13 @@ describe Project do
       expect(project2).not_to be_valid
     end
 
+    it 'validates the visibility' do
+      expect_any_instance_of(described_class).to receive(:visibility_level_allowed_as_fork).and_call_original
+      expect_any_instance_of(described_class).to receive(:visibility_level_allowed_by_group).and_call_original
+
+      create(:project)
+    end
+
     describe 'wiki path conflict' do
       context "when the new path has been used by the wiki of other Project" do
         it 'has an error on the name attribute' do

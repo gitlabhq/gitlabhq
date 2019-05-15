@@ -480,7 +480,7 @@ GitLab 10.3.
 > If this is not rendered correctly, see
 https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#mermaid
 
-It is possible to generate diagrams and flowcharts from text using [Mermaid][mermaid].
+It is possible to generate diagrams and flowcharts from text using [Mermaid](https://mermaidjs.github.io/).
 
 In order to generate a diagram or flowchart, you should write your text inside the `mermaid` block.
 
@@ -496,9 +496,15 @@ Example:
 
 Becomes:
 
-<img src="./img/mermaid_diagram_render_gfm.png" width="200px" height="400px">
+```mermaid
+graph TD;
+  A-->B;
+  A-->C;
+  B-->D;
+  C-->D;
+```
 
-For details see the [Mermaid official page][mermaid].
+For details see the [Mermaid official page](https://mermaidjs.github.io/).
 
 ### Front matter
 
@@ -1072,7 +1078,6 @@ A link starting with a `/` is relative to the wiki root.
 [^2]: This is my awesome footnote.
 
 [markdown.md]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md
-[mermaid]: https://mermaidjs.github.io/ "Mermaid website"
 [rouge]: http://rouge.jneen.net/ "Rouge website"
 [redcarpet]: https://github.com/vmg/redcarpet "Redcarpet website"
 [katex]: https://github.com/Khan/KaTeX "KaTeX website"

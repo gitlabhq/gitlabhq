@@ -197,3 +197,7 @@ module GraphqlHelpers
     allow(GitlabSchema).to receive(:max_query_depth).with(any_args).and_return nil
   end
 end
+
+# This warms our schema, doing this as part of loading the helpers to avoid
+# duplicate loading error when Rails tries autoload the types.
+GitlabSchema.graphql_definition

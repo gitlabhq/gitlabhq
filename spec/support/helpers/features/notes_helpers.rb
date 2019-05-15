@@ -25,12 +25,10 @@ module Spec
             page.within('.js-main-target-form') do
               filled_text = fill_in('note[note]', with: text)
 
-              begin
-                # Dismiss quick action prompt if it appears
-                filled_text.parent.send_keys(:escape)
-              rescue Selenium::WebDriver::Error::ElementNotInteractableError
-                # It's fine if we can't escape when there's no prompt.
-              end
+              # Wait for quick action prompt to load and then dismiss it with ESC
+              # because it may block the Preview button
+              wait_for_requests
+              filled_text.send_keys(:escape)
 
               click_on('Preview')
 
