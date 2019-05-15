@@ -294,6 +294,10 @@ module API
         options[:statistics] && Ability.allowed?(options[:current_user], :read_statistics, project)
       }
       expose :external_authorization_classification_label
+      expose :auto_devops_enabled?, as: :auto_devops_enabled
+      expose :auto_devops_deploy_strategy do |project, options|
+        project.auto_devops.nil? ? 'continuous' : project.auto_devops.deploy_strategy
+      end
 
       # rubocop: disable CodeReuse/ActiveRecord
       def self.preload_relation(projects_relation, options = {})

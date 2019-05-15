@@ -44,6 +44,8 @@ module API
         optional :initialize_with_readme, type: Boolean, desc: "Initialize a project with a README.md"
         optional :external_authorization_classification_label, type: String, desc: 'The classification label for the project'
         optional :ci_default_git_depth, type: Integer, desc: 'Default number of revisions for shallow cloning'
+        optional :auto_devops_enabled, type: Boolean, desc: 'Flag indication if Auto DevOps is enabled'
+        optional :auto_devops_deploy_strategy, type: String, values: %w(continuous manual timed_incremental), desc: 'Auto Deploy strategy'
       end
 
       params :optional_project_params_ee do
@@ -62,6 +64,8 @@ module API
 
       def self.update_params_at_least_one_of
         [
+          :auto_devops_enabled,
+          :auto_devops_deploy_strategy,
           :auto_cancel_pending_pipelines,
           :build_coverage_regex,
           :build_git_strategy,

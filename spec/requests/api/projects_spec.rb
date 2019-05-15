@@ -1980,6 +1980,26 @@ describe API::Projects do
                                                   '-/system/project/avatar/'\
                                                   "#{project3.id}/banana_sample.gif")
       end
+
+      it 'updates auto_devops_deploy_strategy' do
+        project_param = { auto_devops_deploy_strategy: 'timed_incremental' }
+
+        put api("/projects/#{project3.id}", user), params: project_param
+
+        expect(response).to have_gitlab_http_status(200)
+
+        expect(json_response['auto_devops_deploy_strategy']).to eq('timed_incremental')
+      end
+
+      it 'updates auto_devops_enabled' do
+        project_param = { auto_devops_enabled: false }
+
+        put api("/projects/#{project3.id}", user), params: project_param
+
+        expect(response).to have_gitlab_http_status(200)
+
+        expect(json_response['auto_devops_enabled']).to eq(false)
+      end
     end
 
     context 'when authenticated as project maintainer' do

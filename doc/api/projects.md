@@ -738,6 +738,8 @@ POST /projects
 | `auto_cancel_pending_pipelines` | string | no | Auto-cancel pending pipelines (Note: this is not a boolean, but enabled/disabled |
 | `build_coverage_regex` | string | no | Test coverage parsing |
 | `ci_config_path` | string | no | The path to CI config file |
+| `auto_devops_enabled` | boolean | no | Enable Auto DevOps for this project |
+| `auto_devops_deploy_strategy` | string | no | Auto Deploy strategy (`continuous`, `manual` or `timed_incremental`) |
 | `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
 | `approvals_before_merge` | integer | no | **[STARTER]** How many approvers should approve merge requests by default |
 | `mirror` | boolean | no | **[STARTER]** Enables pull mirroring in a project |
@@ -793,6 +795,8 @@ POST /projects/user/:user_id
 | `auto_cancel_pending_pipelines` | string | no | Auto-cancel pending pipelines (Note: this is not a boolean, but enabled/disabled |
 | `build_coverage_regex` | string | no | Test coverage parsing |
 | `ci_config_path` | string | no | The path to CI config file |
+| `auto_devops_enabled` | boolean | no | Enable Auto DevOps for this project |
+| `auto_devops_deploy_strategy` | string | no | Auto Deploy strategy (`continuous`, `manual` or `timed_incremental`) |
 | `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
 | `approvals_before_merge` | integer | no | **[STARTER]** How many approvers should approve merge requests by default |
 | `external_authorization_classification_label` | string | no | **[CORE ONLY]** The classification label for the project |
@@ -848,6 +852,8 @@ PUT /projects/:id
 | `build_coverage_regex` | string | no | Test coverage parsing |
 | `ci_config_path` | string | no | The path to CI config file |
 | `ci_default_git_depth` | integer | no | Default number of revisions for [shallow cloning](../user/project/pipelines/settings.md#git-shallow-clone) |
+| `auto_devops_enabled` | boolean | no | Enable Auto DevOps for this project |
+| `auto_devops_deploy_strategy` | string | no | Auto Deploy strategy (`continuous`, `manual` or `timed_incremental`) |
 | `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
 | `approvals_before_merge` | integer | no | **[STARTER]** How many approvers should approve merge request by default |
 | `external_authorization_classification_label` | string | no | **[CORE ONLY]** The classification label for the project |
