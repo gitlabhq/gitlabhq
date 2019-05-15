@@ -1446,7 +1446,7 @@ be automatically shown in merge requests.
 
 > Introduced in GitLab 11.5. Requires GitLab Runner 11.5 and above.
 
-The `sast` report collects [SAST vulnerabilities](https://docs.gitlab.com/ee/user/project/merge_requests/sast.html)
+The `sast` report collects [SAST vulnerabilities](https://docs.gitlab.com/ee/user/application_security/sast/index.html)
 as artifacts.
 
 The collected SAST report will be uploaded to GitLab as an artifact and will
