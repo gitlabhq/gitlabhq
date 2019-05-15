@@ -735,6 +735,7 @@ POST /projects
 | `printing_merge_request_link_enabled` | boolean | no | Show link to create/view merge request when pushing from the command line |
 | `build_git_strategy` | string | no | The Git strategy. Defaults to `fetch` |
 | `build_timeout` | integer | no | The maximum amount of time in minutes that a job is able run (in seconds) |
+| `auto_cancel_pending_pipelines` | string | no | Auto-cancel pending pipelines (Note: this is not a boolean, but enabled/disabled |
 | `build_coverage_regex` | string | no | Test coverage parsing |
 | `ci_config_path` | string | no | The path to CI config file |
 | `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
@@ -789,6 +790,7 @@ POST /projects/user/:user_id
 | `printing_merge_request_link_enabled` | boolean | no | Show link to create/view merge request when pushing from the command line |
 | `build_git_strategy` | string | no | The Git strategy. Defaults to `fetch` |
 | `build_timeout` | integer | no | The maximum amount of time in minutes that a job is able run (in seconds) |
+| `auto_cancel_pending_pipelines` | string | no | Auto-cancel pending pipelines (Note: this is not a boolean, but enabled/disabled |
 | `build_coverage_regex` | string | no | Test coverage parsing |
 | `ci_config_path` | string | no | The path to CI config file |
 | `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
@@ -842,6 +844,7 @@ PUT /projects/:id
 | `avatar`    | mixed   | no      | Image file for avatar of the project                |
 | `build_git_strategy` | string | no | The Git strategy. Defaults to `fetch` |
 | `build_timeout` | integer | no | The maximum amount of time in minutes that a job is able run (in seconds) |
+| `auto_cancel_pending_pipelines` | string | no | Auto-cancel pending pipelines (Note: this is not a boolean, but enabled/disabled |
 | `build_coverage_regex` | string | no | Test coverage parsing |
 | `ci_config_path` | string | no | The path to CI config file |
 | `ci_default_git_depth` | integer | no | Default number of revisions for [shallow cloning](../user/project/pipelines/settings.md#git-shallow-clone) |

@@ -10,6 +10,7 @@ module API
         optional :description, type: String, desc: 'The description of the project'
         optional :build_git_strategy, type: String, values: %w(fetch clone), desc: 'The Git strategy. Defaults to `fetch`'
         optional :build_timeout, type: Integer, desc: 'Build timeout'
+        optional :auto_cancel_pending_pipelines, type: String, values: %w(disabled enabled), desc: 'Auto-cancel pending pipelines'
         optional :build_coverage_regex, type: String, desc: 'Test coverage parsing'
         optional :ci_config_path, type: String, desc: 'The path to CI config file. Defaults to `.gitlab-ci.yml`'
 
@@ -61,6 +62,7 @@ module API
 
       def self.update_params_at_least_one_of
         [
+          :auto_cancel_pending_pipelines,
           :build_coverage_regex,
           :build_git_strategy,
           :build_timeout,
