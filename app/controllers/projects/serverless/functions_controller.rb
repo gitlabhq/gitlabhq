@@ -3,8 +3,6 @@
 module Projects
   module Serverless
     class FunctionsController < Projects::ApplicationController
-      include ProjectUnauthorized
-
       before_action :authorize_read_cluster!
 
       def index

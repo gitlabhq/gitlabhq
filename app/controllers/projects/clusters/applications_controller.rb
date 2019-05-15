@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class Projects::Clusters::ApplicationsController < Clusters::ApplicationsController
-  include ProjectUnauthorized
-
   prepend_before_action :project
 
   private
@@ -12,6 +10,6 @@ class Projects::Clusters::ApplicationsController < Clusters::ApplicationsControl
   end
 
   def project
-    @project ||= find_routable!(Project, File.join(params[:namespace_id], params[:project_id]), not_found_or_authorized_proc: project_unauthorized_proc)
+    @project ||= find_routable!(Project, File.join(params[:namespace_id], params[:project_id]))
   end
 end
