@@ -1764,9 +1764,6 @@ TIP: **Tip:**
 Use merging to customize and override included CI/CD configurations with local
 definitions.
 
-Recursive includes are not supported. Your external files should not use the
-`include` keyword as it will be ignored.
-
 NOTE: **Note:**
 Using YAML aliases across different YAML files sourced by `include` is not
 supported. You must only refer to aliases in the same file. Instead
