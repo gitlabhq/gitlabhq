@@ -31,6 +31,7 @@ import initPerformanceBar from './performance_bar';
 import initSearchAutocomplete from './search_autocomplete';
 import GlFieldErrors from './gl_field_errors';
 import initUserPopovers from './user_popovers';
+import { __ } from './locale';
 
 // expose jQuery as global (TODO: remove these)
 window.jQuery = jQuery;
@@ -219,9 +220,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const ref = xhrObj.status;
 
     if (ref === 401) {
-      Flash('You need to be logged in.');
+      Flash(__('You need to be logged in.'));
     } else if (ref === 404 || ref === 500) {
-      Flash('Something went wrong on our end.');
+      Flash(__('Something went wrong on our end.'));
     }
   });
 
