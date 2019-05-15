@@ -50,4 +50,16 @@ describe NavHelper do
       expect(helper.header_links).to contain_exactly(:sign_in, :search)
     end
   end
+
+  context '.admin_monitoring_nav_links' do
+    subject { helper.admin_monitoring_nav_links }
+
+    it { is_expected.to all(be_a(String)) }
+  end
+
+  context '.group_issues_sub_menu_items' do
+    subject { helper.group_issues_sub_menu_items }
+
+    it { is_expected.to all(be_a(String)) }
+  end
 end

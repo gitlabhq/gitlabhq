@@ -95,3 +95,4 @@
       = link_to sherlock_transactions_path, class: 'admin-icon d-none d-lg-block d-xl-block', title: _('Sherlock Transactions'),
         data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
         = icon('tachometer fw')
+  = render_if_exists 'layouts/nav/geo_primary_node_url'
