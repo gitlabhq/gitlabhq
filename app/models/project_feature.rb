@@ -24,6 +24,12 @@ class ProjectFeature < ApplicationRecord
 
   FEATURES = %i(issues merge_requests wiki snippets builds repository pages).freeze
   PRIVATE_FEATURES_MIN_ACCESS_LEVEL = { merge_requests: Gitlab::Access::REPORTER }.freeze
+  STRING_OPTIONS = HashWithIndifferentAccess.new({
+    'disabled' => DISABLED,
+    'private'  => PRIVATE,
+    'enabled'  => ENABLED,
+    'public'   => PUBLIC
+  }).freeze
 
   class << self
     def access_level_attribute(feature)
@@ -43,6 +49,14 @@ class ProjectFeature < ApplicationRecord
       feature = ensure_feature!(feature)
 
       PRIVATE_FEATURES_MIN_ACCESS_LEVEL.fetch(feature, Gitlab::Access::GUEST)
+    end
+
+    def access_level_from_str(level)
+      STRING_OPTIONS.fetch(level)
+    end
+
+    def str_from_access_level(level)
+      STRING_OPTIONS.key(level)
     end
 
     private
@@ -81,6 +95,10 @@ class ProjectFeature < ApplicationRecord
 
   def access_level(feature)
     public_send(ProjectFeature.access_level_attribute(feature)) # rubocop:disable GitlabSecurity/PublicSend
+  end
+
+  def string_access_level(feature)
+    ProjectFeature.str_from_access_level(access_level(feature))
   end
 
   def builds_enabled?

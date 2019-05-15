@@ -708,11 +708,17 @@ POST /projects
 | `namespace_id` | integer | no | Namespace for the new project (defaults to the current user's namespace) |
 | `default_branch` | string | no | `master` by default |
 | `description` | string | no | Short project description |
-| `issues_enabled` | boolean | no | Enable issues for this project |
-| `merge_requests_enabled` | boolean | no | Enable merge requests for this project |
-| `jobs_enabled` | boolean | no | Enable jobs for this project |
-| `wiki_enabled` | boolean | no | Enable wiki for this project |
-| `snippets_enabled` | boolean | no | Enable snippets for this project |
+| `issues_enabled` | boolean | no | (deprecated) Enable issues for this project. Use `issues_access_level` instead |
+| `merge_requests_enabled` | boolean | no | (deprecated) Enable merge requests for this project. Use `merge_requests_access_level` instead |
+| `jobs_enabled` | boolean | no | (deprecated) Enable jobs for this project. Use `builds_access_level` instead |
+| `wiki_enabled` | boolean | no | (deprecated) Enable wiki for this project. Use `wiki_access_level` instead |
+| `snippets_enabled` | boolean | no | (deprecated) Enable snippets for this project. Use `snippets_access_level` instead |
+| `issues_access_level` | string | no | One of `disabled`, `private` or `enabled` |
+| `repository_access_level` | string | no | One of `disabled`, `private` or `enabled` |
+| `merge_requests_access_level` | string | no | One of `disabled`, `private` or `enabled` |
+| `builds_access_level` | string | no | One of `disabled`, `private` or `enabled` |
+| `wiki_access_level` | string | no | One of `disabled`, `private` or `enabled` |
+| `snippets_access_level` | string | no | One of `disabled`, `private` or `enabled` |
 | `resolve_outdated_diff_discussions` | boolean | no | Automatically resolve merge request diffs discussions on lines changed with a push |
 | `container_registry_enabled` | boolean | no | Enable container registry for this project |
 | `shared_runners_enabled` | boolean | no | Enable shared runners for this project |
@@ -753,11 +759,17 @@ POST /projects/user/:user_id
 | `path` | string | no | Custom repository name for new project. By default generated based on name |
 | `namespace_id` | integer | no | Namespace for the new project (defaults to the current user's namespace) |
 | `description` | string | no | Short project description |
-| `issues_enabled` | boolean | no | Enable issues for this project |
-| `merge_requests_enabled` | boolean | no | Enable merge requests for this project |
-| `jobs_enabled` | boolean | no | Enable jobs for this project |
-| `wiki_enabled` | boolean | no | Enable wiki for this project |
-| `snippets_enabled` | boolean | no | Enable snippets for this project |
+| `issues_enabled` | boolean | no | (deprecated) Enable issues for this project. Use `issues_access_level` instead |
+| `merge_requests_enabled` | boolean | no | (deprecated) Enable merge requests for this project. Use `merge_requests_access_level` instead |
+| `jobs_enabled` | boolean | no | (deprecated) Enable jobs for this project. Use `builds_access_level` instead |
+| `wiki_enabled` | boolean | no | (deprecated) Enable wiki for this project. Use `wiki_access_level` instead |
+| `snippets_enabled` | boolean | no | (deprecated) Enable snippets for this project. Use `snippets_access_level` instead |
+| `issues_access_level` | string | no | One of `disabled`, `private` or `enabled` |
+| `repository_access_level` | string | no | One of `disabled`, `private` or `enabled` |
+| `merge_requests_access_level` | string | no | One of `disabled`, `private` or `enabled` |
+| `builds_access_level` | string | no | One of `disabled`, `private` or `enabled` |
+| `wiki_access_level` | string | no | One of `disabled`, `private` or `enabled` |
+| `snippets_access_level` | string | no | One of `disabled`, `private` or `enabled` |
 | `resolve_outdated_diff_discussions` | boolean | no | Automatically resolve merge request diffs discussions on lines changed with a push |
 | `container_registry_enabled` | boolean | no | Enable container registry for this project |
 | `shared_runners_enabled` | boolean | no | Enable shared runners for this project |
@@ -798,11 +810,17 @@ PUT /projects/:id
 | `path` | string | no | Custom repository name for the project. By default generated based on name |
 | `default_branch` | string | no | `master` by default |
 | `description` | string | no | Short project description |
-| `issues_enabled` | boolean | no | Enable issues for this project |
-| `merge_requests_enabled` | boolean | no | Enable merge requests for this project |
-| `jobs_enabled` | boolean | no | Enable jobs for this project |
-| `wiki_enabled` | boolean | no | Enable wiki for this project |
-| `snippets_enabled` | boolean | no | Enable snippets for this project |
+| `issues_enabled` | boolean | no | (deprecated) Enable issues for this project. Use `issues_access_level` instead |
+| `merge_requests_enabled` | boolean | no | (deprecated) Enable merge requests for this project. Use `merge_requests_access_level` instead |
+| `jobs_enabled` | boolean | no | (deprecated) Enable jobs for this project. Use `builds_access_level` instead |
+| `wiki_enabled` | boolean | no | (deprecated) Enable wiki for this project. Use `wiki_access_level` instead |
+| `snippets_enabled` | boolean | no | (deprecated) Enable snippets for this project. Use `snippets_access_level` instead |
+| `issues_access_level` | string | no | One of `disabled`, `private` or `enabled` |
+| `repository_access_level` | string | no | One of `disabled`, `private` or `enabled` |
+| `merge_requests_access_level` | string | no | One of `disabled`, `private` or `enabled` |
+| `builds_access_level` | string | no | One of `disabled`, `private` or `enabled` |
+| `wiki_access_level` | string | no | One of `disabled`, `private` or `enabled` |
+| `snippets_access_level` | string | no | One of `disabled`, `private` or `enabled` |
 | `resolve_outdated_diff_discussions` | boolean | no | Automatically resolve merge request diffs discussions on lines changed with a push |
 | `container_registry_enabled` | boolean | no | Enable container registry for this project |
 | `shared_runners_enabled` | boolean | no | Enable shared runners for this project |

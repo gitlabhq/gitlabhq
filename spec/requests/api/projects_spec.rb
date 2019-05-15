@@ -1102,6 +1102,12 @@ describe API::Projects do
         expect(json_response['wiki_enabled']).to be_present
         expect(json_response['jobs_enabled']).to be_present
         expect(json_response['snippets_enabled']).to be_present
+        expect(json_response['snippets_access_level']).to be_present
+        expect(json_response['repository_access_level']).to be_present
+        expect(json_response['issues_access_level']).to be_present
+        expect(json_response['merge_requests_access_level']).to be_present
+        expect(json_response['wiki_access_level']).to be_present
+        expect(json_response['builds_access_level']).to be_present
         expect(json_response['resolve_outdated_diff_discussions']).to eq(project.resolve_outdated_diff_discussions)
         expect(json_response['container_registry_enabled']).to be_present
         expect(json_response['created_at']).to be_present
@@ -1911,6 +1917,16 @@ describe API::Projects do
         project_param.each_pair do |k, v|
           expect(json_response[k.to_s]).to eq(v)
         end
+      end
+
+      it 'updates builds_access_level' do
+        project_param = { builds_access_level: 'private' }
+
+        put api("/projects/#{project3.id}", user), params: project_param
+
+        expect(response).to have_gitlab_http_status(200)
+
+        expect(json_response['builds_access_level']).to eq('private')
       end
 
       it 'updates merge_method' do
