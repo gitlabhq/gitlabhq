@@ -1,0 +1,5 @@
+---
+title: Upgrade dependencies for node 12 compatibility
+merge_request: 28323
+author:
+type: fixed
