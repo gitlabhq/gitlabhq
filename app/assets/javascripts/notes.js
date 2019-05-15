@@ -35,7 +35,7 @@ import {
 } from './lib/utils/common_utils';
 import imageDiffHelper from './image_diff/helpers/index';
 import { localTimeAgo } from './lib/utils/datetime_utility';
-import { s__, __ } from './locale';
+import { sprintf, s__, __ } from './locale';
 
 window.autosize = Autosize;
 
@@ -1261,12 +1261,19 @@ export default class Notes {
 
   putConflictEditWarningInPlace(noteEntity, $note) {
     if ($note.find('.js-conflict-edit-warning').length === 0) {
+      const open_link = `<a href="#note_${
+        noteEntity.id
+      }" target="_blank" rel="noopener noreferrer">`;
       const $alert = $(`<div class="js-conflict-edit-warning alert alert-danger">
-        ${__('This comment has changed since you started editing, please review the')}
-        <a href="#note_${noteEntity.id}" target="_blank" rel="noopener noreferrer">
-          ${__('updated comment')}
-        </a>
-        ${__('to ensure information is not lost')}
+        ${sprintf(
+          s__(
+            'Notes|This comment has changed since you started editing, please review the %{open_link}updated comment%{close_link} to ensure information is not lost',
+          ),
+          {
+            open_link,
+            close_link: '</a>',
+          },
+        )}
       </div>`);
       $alert.insertAfter($note.find('.note-text'));
     }
