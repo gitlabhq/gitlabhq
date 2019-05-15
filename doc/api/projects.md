@@ -734,6 +734,7 @@ POST /projects
 | `avatar`    | mixed   | no      | Image file for avatar of the project                |
 | `printing_merge_request_link_enabled` | boolean | no | Show link to create/view merge request when pushing from the command line |
 | `build_git_strategy` | string | no | The Git strategy. Defaults to `fetch` |
+| `build_timeout` | integer | no | The maximum amount of time in minutes that a job is able run (in seconds) |
 | `ci_config_path` | string | no | The path to CI config file |
 | `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
 | `approvals_before_merge` | integer | no | **[STARTER]** How many approvers should approve merge requests by default |
@@ -786,6 +787,7 @@ POST /projects/user/:user_id
 | `avatar`    | mixed   | no      | Image file for avatar of the project                |
 | `printing_merge_request_link_enabled` | boolean | no | Show link to create/view merge request when pushing from the command line |
 | `build_git_strategy` | string | no | The Git strategy. Defaults to `fetch` |
+| `build_timeout` | integer | no | The maximum amount of time in minutes that a job is able run (in seconds) |
 | `ci_config_path` | string | no | The path to CI config file |
 | `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
 | `approvals_before_merge` | integer | no | **[STARTER]** How many approvers should approve merge requests by default |
@@ -837,6 +839,7 @@ PUT /projects/:id
 | `tag_list`    | array   | no       | The list of tags for a project; put array of tags, that should be finally assigned to a project |
 | `avatar`    | mixed   | no      | Image file for avatar of the project                |
 | `build_git_strategy` | string | no | The Git strategy. Defaults to `fetch` |
+| `build_timeout` | integer | no | The maximum amount of time in minutes that a job is able run (in seconds) |
 | `ci_config_path` | string | no | The path to CI config file |
 | `ci_default_git_depth` | integer | no | Default number of revisions for [shallow cloning](../user/project/pipelines/settings.md#git-shallow-clone) |
 | `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |

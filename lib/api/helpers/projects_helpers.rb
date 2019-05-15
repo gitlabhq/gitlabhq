@@ -9,6 +9,7 @@ module API
       params :optional_project_params_ce do
         optional :description, type: String, desc: 'The description of the project'
         optional :build_git_strategy, type: String, values: %w(fetch clone), desc: 'The Git strategy. Defaults to `fetch`'
+        optional :build_timeout, type: Integer, desc: 'Build timeout'
         optional :ci_config_path, type: String, desc: 'The path to CI config file. Defaults to `.gitlab-ci.yml`'
 
         # TODO: remove in API v5, replaced by *_access_level
@@ -60,6 +61,7 @@ module API
       def self.update_params_at_least_one_of
         [
           :build_git_strategy,
+          :build_timeout,
           :builds_access_level,
           :ci_config_path,
           :container_registry_enabled,

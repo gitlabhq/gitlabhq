@@ -278,6 +278,7 @@ module API
       expose :build_git_strategy, if: lambda { |project, options| options[:user_can_admin_project] } do |project, options|
         project.build_allow_git_fetch ? 'fetch' : 'clone'
       end
+      expose :build_timeout
       expose :ci_config_path, if: -> (project, options) { Ability.allowed?(options[:current_user], :download_code, project) }
       expose :shared_with_groups do |project, options|
         SharedGroup.represent(project.project_group_links, options)
