@@ -360,7 +360,7 @@ group :development, :test do
   gem 'rubocop-rspec', '~> 1.22.1'
 
   gem 'scss_lint', '~> 0.56.0', require: false
-  gem 'haml_lint', '~> 0.30.0', require: false
+  gem 'haml_lint', '~> 0.31.0', require: false
   gem 'simplecov', '~> 0.14.0', require: false
   gem 'bundler-audit', '~> 0.5.0', require: false
 
