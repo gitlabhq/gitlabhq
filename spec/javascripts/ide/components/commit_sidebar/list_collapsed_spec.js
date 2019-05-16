@@ -3,7 +3,7 @@ import store from '~/ide/stores';
 import listCollapsed from '~/ide/components/commit_sidebar/list_collapsed.vue';
 import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import { file } from '../../helpers';
-import { removeWhitespace } from '../../../helpers/vue_component_helper';
+import { removeWhitespace } from '../../../helpers/text_helper';
 
 describe('Multi-file editor commit sidebar list collapsed', () => {
   let vm;

@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import PipelineFailed from '~/vue_merge_request_widget/components/states/pipeline_failed.vue';
-import { removeBreakLine } from 'spec/helpers/vue_component_helper';
+import { removeBreakLine } from 'spec/helpers/text_helper';
 
 describe('PipelineFailed', () => {
   describe('template', () => {

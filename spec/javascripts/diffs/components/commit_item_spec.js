@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import { TEST_HOST } from 'spec/test_constants';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
-import { trimText } from 'spec/helpers/vue_component_helper';
+import { trimText } from 'spec/helpers/text_helper';
 import { getTimeago } from '~/lib/utils/datetime_utility';
 import CommitItem from '~/diffs/components/commit_item.vue';
 import getDiffWithCommit from '../mock_data/diff_with_commit';

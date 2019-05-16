@@ -2,7 +2,7 @@ import Vue from 'vue';
 import IdeReview from '~/ide/components/ide_review.vue';
 import store from '~/ide/stores';
 import { createComponentWithStore } from '../../helpers/vue_mount_component_helper';
-import { trimText } from '../../helpers/vue_component_helper';
+import { trimText } from '../../helpers/text_helper';
 import { resetStore, file } from '../helpers';
 import { projectData } from '../mock_data';
 
