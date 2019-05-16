@@ -24,30 +24,34 @@ module KubernetesHelpers
     WebMock.stub_request(:get, api_url + '/apis/serving.knative.dev/v1alpha1').to_return(kube_response(kube_v1alpha1_serving_knative_discovery_body))
   end
 
-  def stub_kubeclient_service_pods(response = nil)
+  def stub_kubeclient_service_pods(status: nil)
     stub_kubeclient_discover(service.api_url)
     pods_url = service.api_url + "/api/v1/pods"
+    response = { status: status } if status
 
     WebMock.stub_request(:get, pods_url).to_return(response || kube_pods_response)
   end
 
-  def stub_kubeclient_pods(response = nil)
+  def stub_kubeclient_pods(namespace, status: nil)
     stub_kubeclient_discover(service.api_url)
-    pods_url = service.api_url + "/api/v1/namespaces/#{service.actual_namespace}/pods"
+    pods_url = service.api_url + "/api/v1/namespaces/#{namespace}/pods"
+    response = { status: status } if status
 
     WebMock.stub_request(:get, pods_url).to_return(response || kube_pods_response)
   end
 
-  def stub_kubeclient_logs(pod_name, response = nil)
+  def stub_kubeclient_logs(pod_name, namespace, status: nil)
     stub_kubeclient_discover(service.api_url)
-    logs_url = service.api_url + "/api/v1/namespaces/#{service.actual_namespace}/pods/#{pod_name}/log?tailLines=#{Clusters::Platforms::Kubernetes::LOGS_LIMIT}"
+    logs_url = service.api_url + "/api/v1/namespaces/#{namespace}/pods/#{pod_name}/log?tailLines=#{Clusters::Platforms::Kubernetes::LOGS_LIMIT}"
+    response = { status: status } if status
 
     WebMock.stub_request(:get, logs_url).to_return(response || kube_logs_response)
   end
 
-  def stub_kubeclient_deployments(response = nil)
+  def stub_kubeclient_deployments(namespace, status: nil)
     stub_kubeclient_discover(service.api_url)
-    deployments_url = service.api_url + "/apis/extensions/v1beta1/namespaces/#{service.actual_namespace}/deployments"
+    deployments_url = service.api_url + "/apis/extensions/v1beta1/namespaces/#{namespace}/deployments"
+    response = { status: status } if status
 
     WebMock.stub_request(:get, deployments_url).to_return(response || kube_deployments_response)
   end
@@ -250,10 +254,11 @@ module KubernetesHelpers
 
   # This is a partial response, it will have many more elements in reality but
   # these are the ones we care about at the moment
-  def kube_pod(name: "kube-pod", environment_slug: "production", project_slug: "project-path-slug", status: "Running", track: nil)
+  def kube_pod(name: "kube-pod", environment_slug: "production", namespace: "project-namespace", project_slug: "project-path-slug", status: "Running", track: nil)
     {
       "metadata" => {
         "name" => name,
+        "namespace" => namespace,
         "generate_name" => "generated-name-with-suffix",
         "creationTimestamp" => "2016-11-25T19:55:19Z",
         "annotations" => {
@@ -369,12 +374,13 @@ module KubernetesHelpers
 
   def kube_terminals(service, pod)
     pod_name = pod['metadata']['name']
+    pod_namespace = pod['metadata']['namespace']
     containers = pod['spec']['containers']
 
     containers.map do |container|
       terminal = {
         selectors: { pod: pod_name, container: container['name'] },
-        url:  container_exec_url(service.api_url, service.actual_namespace, pod_name, container['name']),
+        url:  container_exec_url(service.api_url, pod_namespace, pod_name, container['name']),
         subprotocols: ['channel.k8s.io'],
         headers: { 'Authorization' => ["Bearer #{service.token}"] },
         created_at: DateTime.parse(pod['metadata']['creationTimestamp']),

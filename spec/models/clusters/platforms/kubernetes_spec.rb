@@ -15,10 +15,8 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
   it { is_expected.to validate_presence_of(:api_url) }
   it { is_expected.to validate_presence_of(:token) }
 
-  it { is_expected.to delegate_method(:project).to(:cluster) }
   it { is_expected.to delegate_method(:enabled?).to(:cluster) }
   it { is_expected.to delegate_method(:provided_by_user?).to(:cluster) }
-  it { is_expected.to delegate_method(:kubernetes_namespace).to(:cluster) }
 
   it_behaves_like 'having unique enum values'
 
@@ -209,7 +207,7 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
     it { is_expected.to be_truthy }
   end
 
-  describe '#actual_namespace' do
+  describe '#kubernetes_namespace_for' do
     let(:cluster) { create(:cluster, :project) }
     let(:project) { cluster.project }
 
@@ -219,7 +217,7 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
              namespace: namespace)
     end
 
-    subject { platform.actual_namespace }
+    subject { platform.kubernetes_namespace_for(project) }
 
     context 'with a namespace assigned' do
       let(:namespace) { 'namespace-123' }
@@ -305,8 +303,6 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
     end
 
     context 'no namespace provided' do
-      let(:namespace) { kubernetes.actual_namespace }
-
       it_behaves_like 'setting variables'
 
       it 'sets KUBE_TOKEN' do
@@ -389,7 +385,7 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
     end
 
     context 'with valid pods' do
-      let(:pod) { kube_pod(environment_slug: environment.slug, project_slug: project.full_path_slug) }
+      let(:pod) { kube_pod(environment_slug: environment.slug, namespace: cluster.kubernetes_namespace_for(project), project_slug: project.full_path_slug) }
       let(:pod_with_no_terminal) { kube_pod(environment_slug: environment.slug, project_slug: project.full_path_slug, status: "Pending") }
       let(:terminals) { kube_terminals(service, pod) }
 
@@ -419,6 +415,7 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
     let!(:cluster) { create(:cluster, :project, enabled: enabled, platform_kubernetes: service) }
     let(:service) { create(:cluster_platform_kubernetes, :configured) }
     let(:enabled) { true }
+    let(:namespace) { cluster.kubernetes_namespace_for(cluster.project) }
 
     context 'when cluster is disabled' do
       let(:enabled) { false }
@@ -428,8 +425,8 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
 
     context 'when kubernetes responds with valid pods and deployments' do
       before do
-        stub_kubeclient_pods
-        stub_kubeclient_deployments
+        stub_kubeclient_pods(namespace)
+        stub_kubeclient_deployments(namespace)
       end
 
       it { is_expected.to include(pods: [kube_pod]) }
@@ -437,8 +434,8 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
 
     context 'when kubernetes responds with 500s' do
       before do
-        stub_kubeclient_pods(status: 500)
-        stub_kubeclient_deployments(status: 500)
+        stub_kubeclient_pods(namespace, status: 500)
+        stub_kubeclient_deployments(namespace, status: 500)
       end
 
       it { expect { subject }.to raise_error(Kubeclient::HttpError) }
@@ -446,9 +443,15 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
 
     context 'when kubernetes responds with 404s' do
       before do
-        stub_kubeclient_pods(status: 404)
-        stub_kubeclient_deployments(status: 404)
+        stub_kubeclient_pods(namespace, status: 404)
+        stub_kubeclient_deployments(namespace, status: 404)
       end
+
+      it { is_expected.to include(pods: []) }
+    end
+
+    context 'when the cluster is not project level' do
+      let(:cluster) { create(:cluster, :group, platform_kubernetes: service) }
 
       it { is_expected.to include(pods: []) }
     end

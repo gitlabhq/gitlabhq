@@ -17,7 +17,6 @@ describe Clusters::Cluster do
   it { is_expected.to have_one(:application_prometheus) }
   it { is_expected.to have_one(:application_runner) }
   it { is_expected.to have_many(:kubernetes_namespaces) }
-  it { is_expected.to have_one(:kubernetes_namespace) }
   it { is_expected.to have_one(:cluster_project) }
 
   it { is_expected.to delegate_method(:status).to(:provider) }

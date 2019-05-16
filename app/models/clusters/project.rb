@@ -8,6 +8,5 @@ module Clusters
     belongs_to :project, class_name: '::Project'
 
     has_many :kubernetes_namespaces, class_name: 'Clusters::KubernetesNamespace', foreign_key: :cluster_project_id
-    has_one :kubernetes_namespace, -> { order(id: :desc) }, class_name: 'Clusters::KubernetesNamespace', foreign_key: :cluster_project_id
   end
 end
