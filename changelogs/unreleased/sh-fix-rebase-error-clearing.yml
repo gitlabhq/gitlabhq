@@ -1,0 +1,5 @@
+---
+title: Properly clear the merge error upon rebase failure
+merge_request: 28319
+author:
+type: fixed
