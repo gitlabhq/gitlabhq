@@ -982,6 +982,9 @@ msgstr ""
 msgid "Any encrypted tokens"
 msgstr ""
 
+msgid "Any namespace"
+msgstr ""
+
 msgid "Appearance"
 msgstr ""
 
@@ -1067,6 +1070,12 @@ msgid "Are you sure that you want to archive this project?"
 msgstr ""
 
 msgid "Are you sure that you want to unarchive this project?"
+msgstr ""
+
+msgid "Are you sure you want to cancel creating this comment?"
+msgstr ""
+
+msgid "Are you sure you want to cancel editing this comment?"
 msgstr ""
 
 msgid "Are you sure you want to delete this list?"
@@ -2585,6 +2594,9 @@ msgid "Comment & unresolve discussion"
 msgstr ""
 
 msgid "Comment form position"
+msgstr ""
+
+msgid "Comment is being updated"
 msgstr ""
 
 msgid "Comments"
@@ -6399,6 +6411,9 @@ msgstr ""
 msgid "Note: Consider asking your GitLab administrator to configure %{github_integration_link}, which will allow login via GitHub and allow importing repositories without generating a Personal Access Token."
 msgstr ""
 
+msgid "NoteForm|Note"
+msgstr ""
+
 msgid "Notes|Are you sure you want to cancel creating this comment?"
 msgstr ""
 
@@ -6412,6 +6427,9 @@ msgid "Notes|Show comments only"
 msgstr ""
 
 msgid "Notes|Show history only"
+msgstr ""
+
+msgid "Notes|This comment has changed since you started editing, please review the %{open_link}updated comment%{close_link} to ensure information is not lost"
 msgstr ""
 
 msgid "Nothing to preview."
@@ -11288,6 +11306,12 @@ msgid "Your changes have been saved"
 msgstr ""
 
 msgid "Your changes have been successfully committed."
+msgstr ""
+
+msgid "Your comment could not be submitted! Please check your network connection and try again."
+msgstr ""
+
+msgid "Your comment could not be updated! Please check your network connection and try again."
 msgstr ""
 
 msgid "Your comment will not be visible to the public."
