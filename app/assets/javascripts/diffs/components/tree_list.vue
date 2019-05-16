@@ -1,6 +1,7 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { GlTooltipDirective } from '@gitlab/ui';
+import { s__, sprintf } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
 import FileRow from '~/vue_shared/components/file_row.vue';
 import FileRowStats from './file_row_stats.vue';
@@ -57,6 +58,9 @@ export default {
       this.search = '';
     },
   },
+  searchPlaceholder: sprintf(s__('MergeRequest|Filter files or search with %{modifier_key}+p'), {
+    modifier_key: /Mac/i.test(navigator.userAgent) ? 'cmd' : 'ctrl',
+  }),
 };
 </script>
 
@@ -65,10 +69,13 @@ export default {
     <div class="append-bottom-8 position-relative tree-list-search d-flex">
       <div class="flex-fill d-flex">
         <icon name="search" class="position-absolute tree-list-icon" />
+        <label for="diff-tree-search" class="sr-only">{{ $options.searchPlaceholder }}</label>
         <input
+          id="diff-tree-search"
           v-model="search"
-          :placeholder="s__('MergeRequest|Filter files')"
+          :placeholder="$options.searchPlaceholder"
           type="search"
+          name="diff-tree-search"
           class="form-control"
         />
         <button
