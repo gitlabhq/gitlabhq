@@ -147,11 +147,6 @@ table {
   pointer-events: none;
 }
 
-.popover,
-.popover-header {
-  font-size: 14px;
-}
-
 @each $breakpoint in map-keys($grid-breakpoints) {
   @include media-breakpoint-up($breakpoint) {
     $infix: breakpoint-infix($breakpoint, $grid-breakpoints);
