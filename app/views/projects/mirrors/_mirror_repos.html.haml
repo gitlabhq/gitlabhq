@@ -29,7 +29,7 @@
           .form-check.append-bottom-10
             = check_box_tag :only_protected_branches, '1', false, class: 'js-mirror-protected form-check-input'
             = label_tag :only_protected_branches, _('Only mirror protected branches'), class: 'form-check-label'
-            = link_to icon('question-circle'), help_page_path('user/project/protected_branches')
+            = link_to icon('question-circle'), help_page_path('user/project/protected_branches'), target: '_blank'
 
         .panel-footer
           = f.submit _('Mirror repository'), class: 'btn btn-success js-mirror-submit qa-mirror-repository-button', name: :update_remote_mirror
