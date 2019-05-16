@@ -4905,7 +4905,7 @@ msgstr ""
 msgid "I accept the|Terms of Service and Privacy Policy"
 msgstr ""
 
-msgid "I have read and agree to the Let's Encrypt Terms of Service"
+msgid "I have read and agree to the Let's Encrypt %{link_start}Terms of Service%{link_end}"
 msgstr ""
 
 msgid "ID"

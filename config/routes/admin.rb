@@ -111,6 +111,7 @@ namespace :admin do
     put :reset_health_check_token
     put :clear_repository_check_states
     get :integrations, :repository, :templates, :ci_cd, :reporting, :metrics_and_profiling, :network, :geo, :preferences
+    get :lets_encrypt_terms_of_service
   end
 
   resources :labels
