@@ -1,11 +1,9 @@
 <script>
-import getRef from '../queries/getRef.graphql';
+import FileTable from '../components/table/index.vue';
 
 export default {
-  apollo: {
-    ref: {
-      query: getRef,
-    },
+  components: {
+    FileTable,
   },
   data() {
     return {
@@ -16,9 +14,5 @@ export default {
 </script>
 
 <template>
-  <div>
-    <router-link :to="{ path: `/tree/${ref}/app` }">
-      Go to tree
-    </router-link>
-  </div>
+  <file-table path="/" />
 </template>
