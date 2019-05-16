@@ -22,6 +22,8 @@
       %p.light
         Regular users have access to their groups and projects
 
+      = render_if_exists 'admin/users/auditor_access_level_radio', f: f, disabled: editing_current_user
+
       = f.radio_button :access_level, :admin, disabled: editing_current_user
       = label_tag :admin, class: 'font-weight-bold' do
         Admin
