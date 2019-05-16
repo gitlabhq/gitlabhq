@@ -58,14 +58,14 @@ module Emails
       }))
     end
 
-    def closed_merge_request_email(recipient_id, merge_request_id, updated_by_user_id, reason = nil)
+    def closed_merge_request_email(recipient_id, merge_request_id, updated_by_user_id, reason: nil, closed_via: nil)
       setup_merge_request_mail(merge_request_id, recipient_id)
 
       @updated_by = User.find(updated_by_user_id)
       mail_answer_thread(@merge_request, merge_request_thread_options(updated_by_user_id, recipient_id, reason))
     end
 
-    def merged_merge_request_email(recipient_id, merge_request_id, updated_by_user_id, reason = nil)
+    def merged_merge_request_email(recipient_id, merge_request_id, updated_by_user_id, reason: nil, closed_via: nil)
       setup_merge_request_mail(merge_request_id, recipient_id)
 
       mail_answer_thread(@merge_request, merge_request_thread_options(updated_by_user_id, recipient_id, reason))
