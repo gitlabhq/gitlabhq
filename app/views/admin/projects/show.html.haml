@@ -74,10 +74,10 @@
 
           %li
             %span.light= _('Storage:')
-            %strong= storage_counter(@project.statistics.storage_size)
-            (
-            = storage_counters_details(@project.statistics)
-            )
+            %strong= storage_counter(@project.statistics&.storage_size)
+            - if @project.statistics
+              = surround '(', ')' do
+                = storage_counters_details(@project.statistics)
 
           %li
             %span.light last commit:

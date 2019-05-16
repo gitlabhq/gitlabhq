@@ -13,7 +13,7 @@
 
           .stats
             %span.badge.badge-pill
-              = storage_counter(project.statistics.storage_size)
+              = storage_counter(project.statistics&.storage_size)
             - if project.archived
               %span.badge.badge-warning archived
           .title
