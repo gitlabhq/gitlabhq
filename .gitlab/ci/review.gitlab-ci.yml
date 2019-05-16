@@ -78,7 +78,6 @@ schedule:review-build-cng:
   <<: *review-base
   stage: review
   retry: 2
-  allow_failure: true
   variables:
     HOST_SUFFIX: "${CI_ENVIRONMENT_SLUG}"
     DOMAIN: "-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}"
@@ -130,7 +129,6 @@ review-stop:
 .review-qa-base: &review-qa-base
   <<: *review-docker
   stage: qa
-  allow_failure: true
   variables:
     <<: *review-docker-variables
     QA_ARTIFACTS_DIR: "${CI_PROJECT_DIR}/qa"
@@ -165,13 +163,14 @@ review-qa-smoke:
 
 review-qa-all:
   <<: *review-qa-base
+  allow_failure: true
   when: manual
   script:
     - gitlab-qa Test::Instance::Any "${QA_IMAGE}" "${CI_ENVIRONMENT_URL}"
 
 .review-performance-base: &review-performance-base
   <<: *review-qa-base
-  stage: qa
+  allow_failure: true
   before_script:
     - export CI_ENVIRONMENT_URL="$(cat review_app_url.txt)"
     - echo "${CI_ENVIRONMENT_URL}"
