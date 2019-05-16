@@ -382,7 +382,7 @@ rollout 100%:
         --set application.database_url="$DATABASE_URL" \
         --set application.secretName="$APPLICATION_SECRET_NAME" \
         --set application.secretChecksum="$APPLICATION_SECRET_CHECKSUM" \
-        --set service.commonName="le.$KUBE_INGRESS_BASE_DOMAIN" \
+        --set service.commonName="le-$CI_PROJECT_ID.$KUBE_INGRESS_BASE_DOMAIN" \
         --set service.url="$CI_ENVIRONMENT_URL" \
         --set service.additionalHosts="$additional_hosts" \
         --set replicaCount="$replicas" \
@@ -423,7 +423,7 @@ rollout 100%:
         --set application.database_url="$DATABASE_URL" \
         --set application.secretName="$APPLICATION_SECRET_NAME" \
         --set application.secretChecksum="$APPLICATION_SECRET_CHECKSUM" \
-        --set service.commonName="le.$KUBE_INGRESS_BASE_DOMAIN" \
+        --set service.commonName="le-$CI_PROJECT_ID.$KUBE_INGRESS_BASE_DOMAIN" \
         --set service.url="$CI_ENVIRONMENT_URL" \
         --set service.additionalHosts="$additional_hosts" \
         --set replicaCount="$replicas" \
