@@ -3,11 +3,13 @@
 require 'spec_helper'
 
 describe Issues::CloseService do
-  let(:user) { create(:user) }
-  let(:user2) { create(:user) }
+  let(:project) { create(:project, :repository) }
+  let(:user) { create(:user, email: "user@example.com") }
+  let(:user2) { create(:user, email: "user2@example.com") }
   let(:guest) { create(:user) }
-  let(:issue) { create(:issue, assignees: [user2], author: create(:user)) }
-  let(:project) { issue.project }
+  let(:issue) { create(:issue, title: "My issue", project: project, assignees: [user2], author: create(:user)) }
+  let(:closing_merge_request) { create(:merge_request, source_project: project) }
+  let(:closing_commit) { create(:commit, project: project) }
   let!(:todo) { create(:todo, :assigned, user: user, project: project, target: issue, author: user2) }
 
   before do
@@ -39,7 +41,7 @@ describe Issues::CloseService do
         .and_return(true)
 
       expect(service).to receive(:close_issue)
-        .with(issue, commit: nil, notifications: true, system_note: true)
+        .with(issue, closed_via: nil, notifications: true, system_note: true)
 
       service.execute(issue)
     end
@@ -57,6 +59,38 @@ describe Issues::CloseService do
   end
 
   describe '#close_issue' do
+    context "closed by a merge request" do
+      before do
+        perform_enqueued_jobs do
+          described_class.new(project, user).close_issue(issue, closed_via: closing_merge_request)
+        end
+      end
+
+      it 'mentions closure via a merge request' do
+        email = ActionMailer::Base.deliveries.last
+
+        expect(email.to.first).to eq(user2.email)
+        expect(email.subject).to include(issue.title)
+        expect(email.body.parts.map(&:body)).to all(include(closing_merge_request.to_reference))
+      end
+    end
+
+    context "closed by a commit" do
+      before do
+        perform_enqueued_jobs do
+          described_class.new(project, user).close_issue(issue, closed_via: closing_commit)
+        end
+      end
+
+      it 'mentions closure via a commit' do
+        email = ActionMailer::Base.deliveries.last
+
+        expect(email.to.first).to eq(user2.email)
+        expect(email.subject).to include(issue.title)
+        expect(email.body.parts.map(&:body)).to all(include(closing_commit.id))
+      end
+    end
+
     context "valid params" do
       before do
         perform_enqueued_jobs do

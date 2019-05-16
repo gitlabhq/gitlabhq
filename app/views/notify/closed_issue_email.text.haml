@@ -1,3 +1,3 @@
-Issue was closed by #{sanitize_name(@updated_by.name)}
+Issue was closed by #{sanitize_name(@updated_by.name)} #{closure_reason_text(@closed_via, format: formats.first)}.
 
 Issue ##{@issue.iid}: #{project_issue_url(@issue.project, @issue)}

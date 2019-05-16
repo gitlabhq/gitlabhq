@@ -1,0 +1,5 @@
+---
+title: Include information if issue was clossed via merge request or commit
+merge_request: 15610
+author: Michał Zając
+type: changed
