@@ -47,6 +47,7 @@
   display: flex;
   align-items: flex-start;
   width: 100%;
+  padding-bottom: $gl-padding;
 
   @include media-breakpoint-down(xs) {
     display: block;

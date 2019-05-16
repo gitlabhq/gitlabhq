@@ -488,6 +488,10 @@ class ProjectPolicy < BasePolicy
   def team_access_level
     return -1 if @user.nil?
 
+    lookup_access_level!
+  end
+
+  def lookup_access_level!
     # NOTE: max_member_access has its own cache
     project.team.max_member_access(@user.id)
   end

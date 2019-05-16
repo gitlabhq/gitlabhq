@@ -157,6 +157,42 @@ For wikis:
     sudo -u git -H bundle exec rake geo:verification:wiki:reset RAILS_ENV=production
     ```
 
+## Reconcile differences with checksum mismatches
+
+If the **primary** and **secondary** nodes have a checksum verification mismatch, the cause may not be apparent. To find the cause of a checksum mismatch:
+
+1. Navigate to the **Admin Area > Projects** dashboard on the **primary** node, find the
+   project that you want to check the checksum differences and click on the
+   **Edit** button:
+   ![Projects dashboard](img/checksum-differences-admin-projects.png)
+
+1. On the project admin page get the **Gitaly storage name**, and **Gitaly relative path**:
+   ![Project admin page](img/checksum-differences-admin-project-page.png)
+
+1. Navigate to the project's repository directory on both **primary** and **secondary** nodes. For an installation from source, the path is usually `/home/git/repositories`. For Omnibus installs, the path is usually `/var/opt/gitlab/git-data/repositories`. Note that if `git_data_dirs` is customized, check the directory layout on your server to be sure.
+
+    ```sh
+    cd /var/opt/gitlab/git-data/repositories
+    ```
+
+1. Run the following command on the **primary** node, redirecting the output to a file:
+
+   ```sh
+   git show-ref --head | grep -E "HEAD|(refs/(heads|tags|keep-around|merge-requests|environments|notes)/)" > primary-node-refs
+   ```
+
+1. Run the following command on the **secondary** node, redirecting the output to a file:
+
+   ```sh
+   git show-ref --head | grep -E "HEAD|(refs/(heads|tags|keep-around|merge-requests|environments|notes)/)" > secondary-node-refs
+   ```
+
+1. Copy the files from the previous steps on the same system, and do a diff between the contents:
+
+   ```sh
+   diff primary-node-refs secondary-node-refs
+   ```
+
 ## Current limitations
 
 Until [issue #5064][ee-5064] is completed, background verification doesn't cover

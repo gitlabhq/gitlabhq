@@ -98,8 +98,7 @@ the group.
 NOTE: **Note:**
 Only available on GitLab.com.
 
-If you have a Group with a [paid plan](https://about.gitlab.com/pricing/#gitlab-com) on GitLab.com,
-then you can purchase additional CI minutes so your pipelines will not be blocked after you have
+You can purchase additional CI minutes so your pipelines will not be blocked after you have
 used all your CI minutes from your main quota.
 
 In order to purchase additional minutes, you should follow these steps:

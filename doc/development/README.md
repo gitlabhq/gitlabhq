@@ -44,6 +44,7 @@ description: 'Learn how to contribute to GitLab.'
 - [`Gemfile` guidelines](gemfile.md)
 - [Pry debugging](pry_debugging.md)
 - [Sidekiq debugging](sidekiq_debugging.md)
+- [Accessing session data](session.md)
 - [Gotchas](gotchas.md) to avoid
 - [Avoid modules with instance variables](module_with_instance_variables.md) if possible
 - [How to dump production data to staging](db_dump.md)
