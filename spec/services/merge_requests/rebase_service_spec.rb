@@ -58,7 +58,7 @@ describe MergeRequests::RebaseService do
 
     context 'with deprecated step rebase feature' do
       before do
-        allow(Feature).to receive(:disabled?).with(:two_step_rebase, anything).and_return(true)
+        stub_feature_flags(two_step_rebase: false)
       end
 
       it_behaves_like 'sequence of failure and success'
