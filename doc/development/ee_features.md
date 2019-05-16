@@ -446,6 +446,16 @@ The disadvantage of this:
   port `render_if_exists` to CE.
 - If we have typos in the partial name, it would be silently ignored.
 
+The `render_if_exists` view path argument must be relative to `app/views/` and `ee/app/views`.
+Resolving an EE template path that is relative to the CE view path will not work.
+
+```haml
+- # app/views/projects/index.html.haml
+
+= render_if_exists 'button' # Will not render `ee/app/views/projects/_button` and quietly fail
+= render_if_exists 'projects/button' # Will render `ee/app/views/projects/_button`
+```
+
 #### Using `render_ce`
 
 For `render` and `render_if_exists`, they search for the EE partial first,
