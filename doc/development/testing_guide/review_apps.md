@@ -78,17 +78,27 @@ subgraph CNG-mirror pipeline
 
 **Additional notes:**
 
-- The Kubernetes cluster is connected to the `gitlab-{ce,ee}` projects using
-  [GitLab's Kubernetes integration][gitlab-k8s-integration]. This basically
-  allows to have a link to the Review App directly from the merge request
-  widget.
-- If the Review App deployment fails, you can simply retry it (there's no need
-  to run the [`review-stop`][gitlab-ci-yml] job first).
+- If the `review-deploy` job keep failing (note that we already retry it twice),
+  please post a message in the `#quality` channel and/or create a ~Quality ~bug
+  issue with a link to your merge request. Note that the deployment failure can
+  reveal an actual problem introduced in your merge request (i.e. this isn't
+  necessarily a transient failure)!
+- If the `review-qa-smoke` job keep failing (note that we already retry it twice),
+  please check the job's logs: you could discover an actual problem introduced in
+  your merge request. You can also download the artifacts to see screenshots of
+  the page at the time the failures occurred. If you don't find the cause of the
+  failure or if it seems unrelated to your change, please post a message in the
+  `#quality` channel and/or create a ~Quality ~bug issue with a link to your
+  merge request.
 - The manual [`review-stop`][gitlab-ci-yml] in the `test` stage can be used to
   stop a Review App manually, and is also started by GitLab once a merge
   request's branch is deleted after being merged.
 - Review Apps are cleaned up regularly via a pipeline schedule that runs
   the [`schedule:review-cleanup`][gitlab-ci-yml] job.
+- The Kubernetes cluster is connected to the `gitlab-{ce,ee}` projects using
+  [GitLab's Kubernetes integration][gitlab-k8s-integration]. This basically
+  allows to have a link to the Review App directly from the merge request
+  widget.
 
 ## QA runs
 
