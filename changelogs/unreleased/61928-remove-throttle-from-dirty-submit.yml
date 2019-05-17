@@ -1,0 +1,6 @@
+---
+title: Fix issue that causes "Save changes" button in project settings pages to be
+  enabled/disabled incorrectly when changes are made to the form
+merge_request: 28377
+author:
+type: fixed
