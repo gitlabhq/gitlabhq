@@ -151,7 +151,7 @@ export default {
         <button
           v-if="isCollapsible"
           type="button"
-          class="js-collapse-btn btn float-right btn-sm"
+          class="js-collapse-btn btn float-right btn-sm qa-expand-report"
           @click="toggleCollapsed"
         >
           {{ collapseText }}
