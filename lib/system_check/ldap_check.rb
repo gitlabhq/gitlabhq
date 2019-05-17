@@ -33,8 +33,13 @@ module SystemCheck
             $stdout.puts "LDAP users with access to your GitLab server (only showing the first #{limit} results)"
 
             users = adapter.users(adapter.config.uid, '*', limit)
-            users.each do |user|
-              $stdout.puts "\tDN: #{user.dn}\t #{adapter.config.uid}: #{user.uid}"
+
+            if should_sanitize?
+              $stdout.puts "\tUser output sanitized. Found #{users.length} users of #{limit} limit."
+            else
+              users.each do |user|
+                $stdout.puts "\tDN: #{user.dn}\t #{adapter.config.uid}: #{user.uid}"
+              end
             end
           end
         rescue Net::LDAP::ConnectionRefusedError, Errno::ECONNREFUSED => e

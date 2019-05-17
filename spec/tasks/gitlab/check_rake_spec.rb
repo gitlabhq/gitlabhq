@@ -96,6 +96,15 @@ describe 'check.rake' do
 
         subject
       end
+
+      it 'sanitizes output' do
+        user = double(dn: 'uid=fake_user1', uid: 'fake_user1')
+        allow(adapter).to receive(:users).and_return([user])
+        stub_env('SANITIZE', 'true')
+
+        expect { subject }.to output(/User output sanitized/).to_stdout
+        expect { subject }.not_to output('fake_user1').to_stdout
+      end
     end
   end
 end
