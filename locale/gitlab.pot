@@ -6058,6 +6058,9 @@ msgstr ""
 msgid "Mirroring settings were successfully updated."
 msgstr ""
 
+msgid "Missing commit signatures endpoint!"
+msgstr ""
+
 msgid "MissingSSHKeyWarningLink|add an SSH key"
 msgstr ""
 
@@ -8374,6 +8377,9 @@ msgid "Search branches and tags"
 msgstr ""
 
 msgid "Search files"
+msgstr ""
+
+msgid "Search for a group"
 msgstr ""
 
 msgid "Search for projects, issues, etc."
