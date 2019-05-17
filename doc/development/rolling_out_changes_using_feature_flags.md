@@ -65,15 +65,14 @@ the worst case scenario, which we should optimise for, our total cost is now 20.
 If we had used a feature flag, things would have been very different. We don't
 need to revert a release, and because feature flags are disabled by default we
 don't need to revert and pick any Git commits. In fact, all we have to do is
-disable the feature, and _maybe_ perform some cleanup. Let's say that the cost
-of this is 1. In this case, our best case cost is 11: 10 to build the feature,
-and 1 to add the feature flag. The worst case cost is now 12: 10 to build the
-feature, 1 to add the feature flag, and 1 to disable it.
+disable the feature, and in the worst case, perform cleanup. Let's say that 
+the cost of this is 2. In this case, our best case cost is 11: 10 to build the 
+feature, and 1 to add the feature flag. The worst case cost is now 13: 10 to 
+build the feature, 1 to add the feature flag, and 2 to disable and clean up.
 
 Here we can see that in the best case scenario the work necessary is only a tiny
 bit more compared to not using a feature flag. Meanwhile, the process of
-reverting our changes has been made significantly cheaper, to the point of being
-trivial.
+reverting our changes has been made significantly and reliably cheaper.
 
 In other words, feature flags do not slow down the development process. Instead,
 they speed up the process as managing incidents now becomes _much_ easier. Once
