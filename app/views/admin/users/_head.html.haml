@@ -6,6 +6,7 @@
     %span.cred (Internal)
   - if @user.admin
     %span.cred (Admin)
+  = render_if_exists 'admin/users/audtior_user_badge'
 
   .float-right
     - if impersonation_enabled? && @user != current_user && @user.can?(:log_in)
