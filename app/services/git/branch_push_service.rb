@@ -27,7 +27,6 @@ module Git
       execute_related_hooks
       perform_housekeeping
 
-      update_remote_mirrors
       stop_environments
 
       true
