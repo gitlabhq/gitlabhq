@@ -22,7 +22,12 @@ class DropProjectsCiId < ActiveRecord::Migration[5.1]
   end
 
   def down
-    add_column :projects, :ci_id, :integer
-    add_concurrent_index :projects, :ci_id
+    unless column_exists?(:projects, :ci_id)
+      add_column :projects, :ci_id, :integer
+    end
+
+    unless index_exists?(:projects, :ci_id)
+      add_concurrent_index :projects, :ci_id
+    end
   end
 end
