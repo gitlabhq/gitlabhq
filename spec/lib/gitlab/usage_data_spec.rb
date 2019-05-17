@@ -63,12 +63,7 @@ describe Gitlab::UsageData do
     end
 
     it "gathers usage counts" do
-      count_data = subject[:counts]
-
-      expect(count_data[:boards]).to eq(1)
-      expect(count_data[:projects]).to eq(3)
-
-      expect(count_data.keys).to include(*%i(
+      expected_keys = %i(
         assignee_lists
         boards
         ci_builds
@@ -112,6 +107,7 @@ describe Gitlab::UsageData do
         milestone_lists
         milestones
         notes
+        pool_repositories
         projects
         projects_imported_from_github
         projects_jira_active
@@ -132,7 +128,14 @@ describe Gitlab::UsageData do
         uploads
         web_hooks
         user_preferences
-      ))
+      )
+
+      count_data = subject[:counts]
+
+      expect(count_data[:boards]).to eq(1)
+      expect(count_data[:projects]).to eq(3)
+      expect(count_data.keys).to include(*expected_keys)
+      expect(expected_keys - count_data.keys).to be_empty
     end
 
     it 'does not gather user preferences usage data when the feature is disabled' do
@@ -211,7 +214,7 @@ describe Gitlab::UsageData do
     it "gathers license data" do
       expect(subject[:uuid]).to eq(Gitlab::CurrentSettings.uuid)
       expect(subject[:version]).to eq(Gitlab::VERSION)
-      expect(subject[:installation_type]).to eq(Gitlab::INSTALLATION_TYPE)
+      expect(subject[:installation_type]).to eq('gitlab-development-kit')
       expect(subject[:active_user_count]).to eq(User.active.count)
       expect(subject[:recorded_at]).to be_a(Time)
     end
