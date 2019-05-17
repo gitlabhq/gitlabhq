@@ -6,12 +6,8 @@ module API
       def self.coerce
         lambda do |value|
           case value
-          when String
-            [value]
-          when Array
-            value
-          when CheckAssigneesCount
-            value
+          when String, Array
+            Array.wrap(value)
           else
             []
           end
@@ -19,11 +15,11 @@ module API
       end
 
       def validate_param!(attr_name, params)
-        unless param_allowed?(attr_name, params)
-          raise Grape::Exceptions::Validation,
-                params: [@scope.full_name(attr_name)],
-                message: "allows one value, but found #{params[attr_name].size}: #{params[attr_name].join(", ")}"
-        end
+        return if param_allowed?(attr_name, params)
+
+        raise Grape::Exceptions::Validation,
+              params: [@scope.full_name(attr_name)],
+              message: "allows one value, but found #{params[attr_name].size}: #{params[attr_name].join(", ")}"
       end
 
       private

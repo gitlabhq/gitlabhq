@@ -28,15 +28,15 @@ shared_examples 'labeled issues with labels and label_name params' do
     it_behaves_like 'returns label names'
   end
 
-  context 'when with_labels_data provided' do
+  context 'when with_labels_details provided' do
     context 'array of labeled issues when all labels match' do
-      let(:params) { { labels: "#{label.title},#{label_b.title},#{label_c.title}", with_labels_data: true } }
+      let(:params) { { labels: "#{label.title},#{label_b.title},#{label_c.title}", with_labels_details: true } }
 
       it_behaves_like 'returns basic label entity'
     end
 
     context 'array of labeled issues when all labels match with labels param as array' do
-      let(:params) { { labels: [label.title, label_b.title, label_c.title], with_labels_data: true } }
+      let(:params) { { labels: [label.title, label_b.title, label_c.title], with_labels_details: true } }
 
       it_behaves_like 'returns basic label entity'
     end

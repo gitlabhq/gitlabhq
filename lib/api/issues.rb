@@ -51,7 +51,7 @@ module API
       end
 
       params :issues_params do
-        optional :with_labels_data, type: Boolean, desc: 'Return more label data than just lable title', default: false
+        optional :with_labels_details, type: Boolean, desc: 'Return more label data than just lable title', default: false
         optional :state, type: String, values: %w[opened closed all], default: 'all',
                  desc: 'Return opened, closed, or all issues'
         optional :order_by, type: String, values: %w[created_at updated_at], default: 'created_at',
@@ -80,15 +80,13 @@ module API
     desc "Get currently authenticated user's issues statistics"
     params do
       use :issues_stats_params
-      optional :scope, type: String, values: %w[created-by-me assigned-to-me created_by_me assigned_to_me all], default: 'created_by_me',
+      optional :scope, type: String, values: %w[created_by_me assigned_to_me all], default: 'created_by_me',
                        desc: 'Return issues for the given scope: `created_by_me`, `assigned_to_me` or `all`'
     end
     get '/issues_statistics' do
       authenticate! unless params[:scope] == 'all'
 
-      stats = issues_statistics
-
-      present stats, with: Grape::Presenters::Presenter
+      present issues_statistics, with: Grape::Presenters::Presenter
     end
 
     resource :issues do
@@ -106,7 +104,7 @@ module API
 
         options = {
           with: Entities::Issue,
-          with_labels_data: declared_params[:with_labels_data],
+          with_labels_details: declared_params[:with_labels_details],
           current_user: current_user,
           issuable_metadata: issuable_meta_data(issues, 'Issue')
         }
@@ -132,7 +130,7 @@ module API
 
         options = {
           with: Entities::Issue,
-          with_labels_data: declared_params[:with_labels_data],
+          with_labels_details: declared_params[:with_labels_details],
           current_user: current_user,
           issuable_metadata: issuable_meta_data(issues, 'Issue')
         }
@@ -147,9 +145,7 @@ module API
       get ":id/issues_statistics" do
         group = find_group!(params[:id])
 
-        stats = issues_statistics(group_id: group.id, include_subgroups: true)
-
-        present stats, with: Grape::Presenters::Presenter
+        present issues_statistics(group_id: group.id, include_subgroups: true), with: Grape::Presenters::Presenter
       end
     end
 
@@ -172,7 +168,7 @@ module API
 
         options = {
           with: Entities::Issue,
-          with_labels_data: declared_params[:with_labels_data],
+          with_labels_details: declared_params[:with_labels_details],
           current_user: current_user,
           project: user_project,
           issuable_metadata: issuable_meta_data(issues, 'Issue')
@@ -188,9 +184,7 @@ module API
       get ":id/issues_statistics" do
         project = find_project!(params[:id])
 
-        stats = issues_statistics(project_id: project.id)
-
-        present stats, with: Grape::Presenters::Presenter
+        present issues_statistics(project_id: project.id), with: Grape::Presenters::Presenter
       end
 
       desc 'Get a single project issue' do

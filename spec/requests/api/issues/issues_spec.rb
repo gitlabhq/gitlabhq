@@ -122,25 +122,25 @@ describe API::Issues do
         expect_paginated_array_response([issue.id, closed_issue.id])
       end
 
-      it 'returns authentication error without any scope' do
-        get api('/issues_statistics')
-
-        expect(response).to have_http_status(401)
-      end
-
-      it 'returns authentication error when scope is assigned-to-me' do
-        get api('/issues_statistics'), params: { scope: 'assigned-to-me' }
-
-        expect(response).to have_http_status(401)
-      end
-
-      it 'returns authentication error when scope is created-by-me' do
-        get api('/issues_statistics'), params: { scope: 'created-by-me' }
-
-        expect(response).to have_http_status(401)
-      end
-
       context 'issues_statistics' do
+        it 'returns authentication error without any scope' do
+          get api('/issues_statistics')
+
+          expect(response).to have_http_status(401)
+        end
+
+        it 'returns authentication error when scope is assigned_to_me' do
+          get api('/issues_statistics'), params: { scope: 'assigned_to_me' }
+
+          expect(response).to have_http_status(401)
+        end
+
+        it 'returns authentication error when scope is created_by_me' do
+          get api('/issues_statistics'), params: { scope: 'created_by_me' }
+
+          expect(response).to have_http_status(401)
+        end
+
         context 'no state is treated as all state' do
           let(:params) { {} }
           let(:counts) { { all: 2, closed: 1, opened: 1 } }
@@ -386,6 +386,31 @@ describe API::Issues do
       end
 
       context 'filter by labels or label_name param' do
+        context 'N+1' do
+          let(:label_b) { create(:label, title: 'foo', project: project) }
+          let(:label_c) { create(:label, title: 'bar', project: project) }
+
+          before do
+            create(:label_link, label: label_b, target: issue)
+            create(:label_link, label: label_c, target: issue)
+          end
+          it 'tests N+1' do
+            control = ActiveRecord::QueryRecorder.new do
+              get api('/issues', user), params: { labels: [label.title, label_b.title, label_c.title] }
+            end
+
+            label_d = create(:label, title: 'dar', project: project)
+            label_e = create(:label, title: 'ear', project: project)
+            create(:label_link, label: label_d, target: issue)
+            create(:label_link, label: label_e, target: issue)
+
+            expect do
+              get api('/issues', user), params: { labels: [label.title, label_b.title, label_c.title] }
+            end.not_to exceed_query_limit(control)
+            expect(issue.labels.count).to eq(5)
+          end
+        end
+
         it 'returns an array of labeled issues' do
           get api('/issues', user), params: { labels: label.title }
 

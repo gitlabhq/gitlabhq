@@ -31,12 +31,10 @@ module API
       end
 
       def find_issues(args = {})
-        # rubocop: disable CodeReuse/ActiveRecord
         finder = issue_finder(args)
         issues = finder.execute.with_api_entity_associations
 
-        issues.reorder(order_options_with_tie_breaker)
-        # rubocop: enable CodeReuse/ActiveRecord
+        issues.reorder(order_options_with_tie_breaker) # rubocop: disable CodeReuse/ActiveRecord
       end
 
       def issues_statistics(args = {})
