@@ -1443,6 +1443,9 @@ msgstr ""
 msgid "Begin with the selected commit"
 msgstr ""
 
+msgid "Behavior"
+msgstr ""
+
 msgid "Below are examples of regex for existing tools:"
 msgstr ""
 
@@ -1848,6 +1851,9 @@ msgstr ""
 msgid "Choose between <code>clone</code> or <code>fetch</code> to get the recent application code"
 msgstr ""
 
+msgid "Choose between fixed (max. 1280px) and fluid (100%%) application layout."
+msgstr ""
+
 msgid "Choose file…"
 msgstr ""
 
@@ -1855,6 +1861,9 @@ msgid "Choose the top-level group for your repository imports."
 msgstr ""
 
 msgid "Choose visibility level, enable/disable project features (issues, repository, wiki, snippets) and set permissions."
+msgstr ""
+
+msgid "Choose what content you want to see on a project’s overview page."
 msgstr ""
 
 msgid "Choose your merge method, options, checks, and set up a default merge request description template."
@@ -3110,6 +3119,9 @@ msgstr ""
 msgid "Customize language and region related settings."
 msgstr ""
 
+msgid "Customize the appearance of the application header and navigation sidebar."
+msgstr ""
+
 msgid "Customize your pipeline configuration, view your pipeline status and coverage report."
 msgstr ""
 
@@ -3195,6 +3207,9 @@ msgid "Default artifacts expiration"
 msgstr ""
 
 msgid "Default classification label"
+msgstr ""
+
+msgid "Default dashboard"
 msgstr ""
 
 msgid "Default first day of the week"
@@ -5623,6 +5638,9 @@ msgstr ""
 msgid "Latest pipeline for this branch"
 msgstr ""
 
+msgid "Layout width"
+msgstr ""
+
 msgid "Lead"
 msgstr ""
 
@@ -7534,6 +7552,9 @@ msgstr ""
 msgid "Project name"
 msgstr ""
 
+msgid "Project overview content"
+msgstr ""
+
 msgid "Project slug"
 msgstr ""
 
@@ -9316,6 +9337,9 @@ msgstr ""
 msgid "Switch to the source to copy it to the clipboard"
 msgstr ""
 
+msgid "Syntax highlighting theme"
+msgstr ""
+
 msgid "System Hooks"
 msgstr ""
 
@@ -9994,6 +10018,12 @@ msgid "This repository is currently empty. A new Auto DevOps pipeline will be cr
 msgstr ""
 
 msgid "This runner will only run on pipelines triggered on protected branches"
+msgstr ""
+
+msgid "This setting allows you to customize the appearance of the syntax."
+msgstr ""
+
+msgid "This setting allows you to customize the behavior of the system layout and default views."
 msgstr ""
 
 msgid "This setting can be overridden in each project."
