@@ -268,33 +268,6 @@ describe Projects::CreateService, '#execute' do
     end
   end
 
-  context 'when group has kubernetes cluster' do
-    let(:group_cluster) { create(:cluster, :group, :provided_by_gcp) }
-    let(:group) { group_cluster.group }
-
-    let(:token) { 'aaaa' }
-    let(:service_account_creator) { double(Clusters::Gcp::Kubernetes::CreateOrUpdateServiceAccountService, execute: true) }
-    let(:secrets_fetcher) { double(Clusters::Gcp::Kubernetes::FetchKubernetesTokenService, execute: token) }
-
-    before do
-      group.add_owner(user)
-
-      stub_feature_flags(ci_preparing_state: false)
-      expect(Clusters::Gcp::Kubernetes::CreateOrUpdateServiceAccountService).to receive(:namespace_creator).and_return(service_account_creator)
-      expect(Clusters::Gcp::Kubernetes::FetchKubernetesTokenService).to receive(:new).and_return(secrets_fetcher)
-    end
-
-    it 'creates kubernetes namespace for the project' do
-      project = create_project(user, opts.merge!(namespace_id: group.id))
-
-      expect(project).to be_valid
-
-      kubernetes_namespace = group_cluster.kubernetes_namespaces.first
-      expect(kubernetes_namespace).to be_present
-      expect(kubernetes_namespace.project).to eq(project)
-    end
-  end
-
   context 'when there is an active service template' do
     before do
       create(:service, project: nil, template: true, active: true)
