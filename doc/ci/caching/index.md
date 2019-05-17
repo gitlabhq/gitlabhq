@@ -100,7 +100,7 @@ From the perspective of the Runner, in order for cache to work effectively, one
 of the following must be true:
 
 - Use a single Runner for all your jobs.
-- Use multiple Runners (in autoscale mode or not) that use.
+- Use multiple Runners (in autoscale mode or not) that use
   [distributed caching](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching),
   where the cache is stored in S3 buckets (like shared Runners on GitLab.com).
 - Use multiple Runners (not in autoscale mode) of the same architecture that
