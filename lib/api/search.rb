@@ -112,12 +112,13 @@ module API
           type: String,
           desc: 'The scope of the search',
           values: Helpers::SearchHelpers.project_search_scopes
+        optional :ref, type: String, desc: 'The name of a repository branch or tag. If not given, the default branch is used'
         use :pagination
       end
       get ':id/(-/)search' do
         check_users_search_allowed!
 
-        present search(project_id: user_project.id), with: entity
+        present search({ project_id: user_project.id, repository_ref: params[:ref] }), with: entity
       end
     end
   end

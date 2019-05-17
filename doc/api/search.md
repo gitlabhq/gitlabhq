@@ -556,6 +556,7 @@ GET /projects/:id/search
 | `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user                |
 | `scope`       | string   | yes        | The scope to search in                |
 | `search`      | string   | yes        | The search query  |
+| `ref`         | string   | no         | The name of a repository branch or tag to search on. The project's default branch is used by default. This is only applicable for scopes: commits, blobs, and wiki_blobs.  |
 
 Search the expression within the specified scope. Currently these scopes are supported: issues, merge_requests, milestones, notes, wiki_blobs, commits, blobs, users.
 
@@ -850,7 +851,7 @@ Blobs searches are performed on both filenames and contents. Search results:
   times in the content.
 
 ```bash
-curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/6/search?scope=blobs&search=installation
+curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/6/search?scope=blobs&search=installation&ref=feature
 ```
 
 Example response:
@@ -863,7 +864,7 @@ Example response:
     "data": "```\n\n## Installation\n\nQuick start using the [pre-built",
     "filename": "README.md",
     "id": null,
-    "ref": "master",
+    "ref": "feature",
     "startline": 46,
     "project_id": 6
   }
