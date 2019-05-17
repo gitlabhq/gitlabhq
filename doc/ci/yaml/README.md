@@ -1510,6 +1510,8 @@ be automatically shown in merge requests.
 
 ##### `artifacts:reports:metrics` **[PREMIUM]**
 
+> Introduced in GitLab 11.10.
+
 The `metrics` report collects [Metrics](../../ci/metrics_reports.md)
 as artifacts.
 
