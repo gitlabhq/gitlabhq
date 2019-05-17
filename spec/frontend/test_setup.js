@@ -15,7 +15,7 @@ afterEach(() =>
   }),
 );
 
-initializeTestTimeout(300);
+initializeTestTimeout(500);
 
 // fail tests for unmocked requests
 beforeEach(done => {
