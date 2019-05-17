@@ -18,30 +18,30 @@ Examples are available in several forms. As a collection of:
 
 The following table lists examples for different use cases:
 
-| Use case                                       | Resource                                                                                                             |
-|:-----------------------------------------------|:---------------------------------------------------------------------------------------------------------------------|
-| Browser performance testing                    | [Browser Performance Testing with the Sitespeed.io container](browser_performance.md).                               |
-| Clojure                                        | [Test a Clojure application with GitLab CI/CD](test-clojure-application.md).                                         |
-| Code quality analysis                          | [Analyze your project's Code Quality](code_quality.md). **[STARTER]**                                                |
-| Container scanning                             | [Container Scanning with GitLab CI/CD](container_scanning.md).                                                       |
-| Dependency scanning                            | [Dependency Scanning with GitLab CI/CD](dependency_scanning.md). **[ULTIMATE]**                                      |
-| Deployment with `dpl`                          | [Using `dpl` as deployment tool](deployment/README.md).                                                              |
-| Dynamic application<br>security testing (DAST) | [Dynamic Application Security Testing with GitLab CI/CD](dast.md) **[ULTIMATE]**                                     |
-| Elixir                                         | [Testing a Phoenix application with GitLab CI/CD](test_phoenix_app_with_gitlab_ci_cd/index.md).                      |
-| Game development                               | [DevOps and Game Dev with GitLab CI/CD](devops_and_game_dev_with_gitlab_ci_cd/index.md).                             |
-| GitLab Pages                                   | See the [GitLab Pages](../../user/project/pages/index.md) documentation for a complete example.                      |
-| Java                                           | [Deploy a Spring Boot application to Cloud Foundry with GitLab CI/CD](deploy_spring_boot_to_cloud_foundry/index.md). |
-| JUnit                                          | [JUnit test reports](../junit_test_reports.md).                                                                      |
-| License management                             | [Dependencies license management with GitLab CI/CD](license_management.md) **[ULTIMATE]**                            |
-| Maven                                          | [How to deploy Maven projects to Artifactory with GitLab CI/CD](artifactory_and_gitlab/index.md).                    |
-| PHP                                            | [Testing PHP projects](php.md).                                                                                      |
-| PHP                                            | [Running Composer and NPM scripts with deployment via SCP in GitLab CI/CD](deployment/composer-npm-deploy.md).       |
-| PHP                                            | [Test and deploy Laravel applications with GitLab CI/CD and Envoy](laravel_with_gitlab_and_envoy/index.md).          |
-| Python                                         | [Test and deploy a Python application with GitLab CI/CD](test-and-deploy-python-application-to-heroku.md).           |
-| Ruby                                           | [Test and deploy a Ruby application with GitLab CI/CD](test-and-deploy-ruby-application-to-heroku.md).               |
-| Scala                                          | [Test and deploy a Scala application to Heroku](test-scala-application.md).                                          |
-| Static application<br>security testing (SAST)  | [Static Application Security Testing with GitLab CI/CD](sast.md) **[ULTIMATE]**                                      |
-| Testing                                        | [End-to-end testing with GitLab CI/CD and WebdriverIO](end_to_end_testing_webdriverio/index.md).                     |
+| Use case                                       | Resource                                                                                                                |
+|:-----------------------------------------------|:------------------------------------------------------------------------------------------------------------------------|
+| Browser performance testing                    | [Browser Performance Testing with the Sitespeed.io container](browser_performance.md).                                  |
+| Clojure                                        | [Test a Clojure application with GitLab CI/CD](test-clojure-application.md).                                            |
+| Code quality analysis                          | [Analyze your project's Code Quality](code_quality.md). **[STARTER]**                                                   |
+| Container scanning                             | [Container Scanning with GitLab CI/CD](../../user/application_security/container_scanning/index.md). **[ULTIMATE]**     |
+| Dependency scanning                            | [Dependency Scanning with GitLab CI/CD](../../user/application_security/dependency_scanning/index.md). **[ULTIMATE]**   |
+| Deployment with `dpl`                          | [Using `dpl` as deployment tool](deployment/README.md).                                                                 |
+| Dynamic application<br>security testing (DAST) | [Dynamic Application Security Testing with GitLab CI/CD](../../user/application_security/dast/index.md). **[ULTIMATE]** |
+| Elixir                                         | [Testing a Phoenix application with GitLab CI/CD](test_phoenix_app_with_gitlab_ci_cd/index.md).                         |
+| Game development                               | [DevOps and Game Dev with GitLab CI/CD](devops_and_game_dev_with_gitlab_ci_cd/index.md).                                |
+| GitLab Pages                                   | See the [GitLab Pages](../../user/project/pages/index.md) documentation for a complete example.                         |
+| Java                                           | [Deploy a Spring Boot application to Cloud Foundry with GitLab CI/CD](deploy_spring_boot_to_cloud_foundry/index.md).    |
+| JUnit                                          | [JUnit test reports](../junit_test_reports.md).                                                                         |
+| License management                             | [Dependencies license management with GitLab CI/CD](../../user/application_security/license_management/index.md). **[ULTIMATE]** |
+| Maven                                          | [How to deploy Maven projects to Artifactory with GitLab CI/CD](artifactory_and_gitlab/index.md).                       |
+| PHP                                            | [Testing PHP projects](php.md).                                                                                         |
+| PHP                                            | [Running Composer and NPM scripts with deployment via SCP in GitLab CI/CD](deployment/composer-npm-deploy.md).          |
+| PHP                                            | [Test and deploy Laravel applications with GitLab CI/CD and Envoy](laravel_with_gitlab_and_envoy/index.md).             |
+| Python                                         | [Test and deploy a Python application with GitLab CI/CD](test-and-deploy-python-application-to-heroku.md).              |
+| Ruby                                           | [Test and deploy a Ruby application with GitLab CI/CD](test-and-deploy-ruby-application-to-heroku.md).                  |
+| Scala                                          | [Test and deploy a Scala application to Heroku](test-scala-application.md).                                             |
+| Static application<br>security testing (SAST)  | [Static Application Security Testing with GitLab CI/CD](../../user/application_security/sast/index.md). **[ULTIMATE]**  |
+| Testing                                        | [End-to-end testing with GitLab CI/CD and WebdriverIO](end_to_end_testing_webdriverio/index.md).                        |
 
 ### Contributing examples
 
