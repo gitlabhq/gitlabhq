@@ -268,7 +268,7 @@ For the value of:
   which receives the value of the branch name.
 - `environment:url`, we want a specific and distinct URL for each branch. `$CI_COMMIT_REF_NAME`
   may contain a `/` or other characters that would be invalid in a domain name or URL,
-  so we use `$CI_ENVIRONMENT_SLUG` to get a "clean" or "safe" URL.
+  so we use `$CI_ENVIRONMENT_SLUG` to guarantee that we get a valid URL.
 
   For example, given a `$CI_COMMIT_REF_NAME` of `100-Do-The-Thing`, the URL will be something
   like `https://100-do-the-4f99a2.example.com`. Again, the way you set up
@@ -351,7 +351,7 @@ deploy_prod:
 ```
 
 A more realistic example would also include copying files to a location where a
-webserver (for example, NGINX) could then acess and serve them.
+webserver (for example, NGINX) could then access and serve them.
 
 The example below will copy the `public` directory to `/srv/nginx/$CI_COMMIT_REF_SLUG/public`:
 
