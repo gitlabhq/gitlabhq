@@ -47,6 +47,7 @@ the `author` field. GitLab team members **should not**.
 - Performance improvements **should** have a changelog entry.
 - Any change that introduces a database migration **must** have a
   changelog entry.
+- Any change behind a feature flag **should not** have a changelog entry. The entry should be added in the merge request removing the feature flags.
 
 ## Writing good changelog entries
 
