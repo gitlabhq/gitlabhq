@@ -108,11 +108,11 @@ so we make sure behavior under feature flag doesn't go untested in some non-spec
 contexts.
 
 Whenever a feature flag is present, make sure to test _both_ states of the
-feature flag. You can stub a feature flag as follows:
+feature flag.
 
-```ruby
-stub_feature_flags(my_feature_flag: false)
-```
+See the
+[testing guide](testing_guide/best_practices.html#feature-flags-in-tests)
+for information and examples on how to stub feature flags in tests.
 
 ## Enabling a feature flag (in development)
 

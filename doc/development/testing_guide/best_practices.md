@@ -240,6 +240,36 @@ it 'is overdue' do
 end
 ```
 
+### Feature flags in tests
+
+All feature flags are stubbed to be enabled by default in our Ruby-based
+tests.
+
+To disable a feature flag in a test, use the `stub_feature_flags`
+helper. For example, to globally disable the `ci_live_trace` feature
+flag in a test:
+
+```ruby
+stub_feature_flags(ci_live_trace: false)
+
+Feature.enabled?(:ci_live_trace) # => false
+```
+
+If you wish to set up a test where a feature flag is disabled for some
+actors and not others, you can specify this in options passed to the
+helper. For example, to disable the `ci_live_trace` feature flag for a
+specifc project:
+
+```ruby
+project1, project2 = build_list(:project, 2)
+
+# Feature will only be disabled for project1
+stub_feature_flags(ci_live_trace: { enabled: false, thing: project1 })
+
+Feature.enabled?(:ci_live_trace, project1) # => false
+Feature.enabled?(:ci_live_trace, project2) # => true
+```
+
 ### Pristine test environments
 
 The code exercised by a single GitLab test may access and modify many items of
