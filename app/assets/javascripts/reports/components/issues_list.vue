@@ -52,6 +52,11 @@ export default {
       required: false,
       default: '',
     },
+    showReportSectionStatus: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   computed: {
     issuesWithState() {
@@ -81,6 +86,7 @@ export default {
       :status="wrapped.status"
       :component="component"
       :is-new="wrapped.isNew"
+      :show-report-section-status="showReportSectionStatus"
     />
   </smart-virtual-list>
 </template>
