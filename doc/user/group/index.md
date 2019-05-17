@@ -368,5 +368,9 @@ and issues) performed by your group members.
 
 With [GitLab Issues Analytics](issues_analytics/index.md), in groups, you can see a bar chart of the number of issues created each month.
 
+## Dependency Proxy **[PREMIUM]**
+
+Use GitLab as a [dependency proxy](dependency_proxy/index.md) for upstream Docker images.
+
 [ee]: https://about.gitlab.com/pricing/
 [ee-2534]: https://gitlab.com/gitlab-org/gitlab-ee/issues/2534
