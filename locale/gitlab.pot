@@ -751,6 +751,9 @@ msgstr ""
 msgid "After a successful password update you will be redirected to login screen."
 msgstr ""
 
+msgid "After a successful password update, you will be redirected to the login page where you can log in with your new password."
+msgstr ""
+
 msgid "All"
 msgstr ""
 
@@ -1768,6 +1771,9 @@ msgid "Change this value to influence how frequently the GitLab UI polls for upd
 msgstr ""
 
 msgid "Change title"
+msgstr ""
+
+msgid "Change your password"
 msgstr ""
 
 msgid "ChangeTypeActionLabel|Pick into branch"
@@ -3101,6 +3107,9 @@ msgstr ""
 msgid "Current Branch"
 msgstr ""
 
+msgid "Current password"
+msgstr ""
+
 msgid "CurrentUser|Profile"
 msgstr ""
 
@@ -3605,6 +3614,9 @@ msgid "Edit Label"
 msgstr ""
 
 msgid "Edit Milestone"
+msgstr ""
+
+msgid "Edit Password"
 msgstr ""
 
 msgid "Edit Pipeline Schedule %{id}"
@@ -4988,6 +5000,9 @@ msgstr ""
 msgid "I accept the|Terms of Service and Privacy Policy"
 msgstr ""
 
+msgid "I forgot my password"
+msgstr ""
+
 msgid "I have read and agree to the Let's Encrypt %{link_start}Terms of Service%{link_end}"
 msgstr ""
 
@@ -6359,6 +6374,9 @@ msgstr ""
 msgid "New milestone"
 msgstr ""
 
+msgid "New password"
+msgstr ""
+
 msgid "New pipelines will cancel older, pending pipelines on the same branch"
 msgstr ""
 
@@ -6812,6 +6830,15 @@ msgid "Password"
 msgstr ""
 
 msgid "Password authentication is unavailable."
+msgstr ""
+
+msgid "Password confirmation"
+msgstr ""
+
+msgid "Password successfully changed"
+msgstr ""
+
+msgid "Password was successfully updated. Please login with it"
 msgstr ""
 
 msgid "Past due"
@@ -8475,6 +8502,9 @@ msgid "Save changes"
 msgstr ""
 
 msgid "Save comment"
+msgstr ""
+
+msgid "Save password"
 msgstr ""
 
 msgid "Save pipeline schedule"
@@ -11026,6 +11056,9 @@ msgstr ""
 msgid "We heard back from your U2F device. You have been authenticated."
 msgstr ""
 
+msgid "We sent you an email with reset password instructions"
+msgstr ""
+
 msgid "We want to be sure it is you, please confirm you are not a robot."
 msgstr ""
 
@@ -11434,6 +11467,12 @@ msgid "You must have maintainer access to force delete a lock"
 msgstr ""
 
 msgid "You must have permission to create a project in a namespace before forking."
+msgstr ""
+
+msgid "You must provide a valid current password"
+msgstr ""
+
+msgid "You must provide your current password in order to change it."
 msgstr ""
 
 msgid "You need permission."
@@ -12061,6 +12100,9 @@ msgid "nounSeries|%{item}, and %{lastItem}"
 msgstr ""
 
 msgid "or"
+msgstr ""
+
+msgid "or recover your current one"
 msgstr ""
 
 msgid "out of %d total test"
