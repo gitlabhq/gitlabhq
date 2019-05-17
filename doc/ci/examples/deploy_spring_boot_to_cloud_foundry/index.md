@@ -4,6 +4,7 @@ author_gitlab: DylanGriffith
 level: intermediate
 article_type: tutorial
 date: 2018-06-07
+last_updated: 2019-04-08
 description: "Continuous Deployment of a Spring Boot application to Cloud Foundry with GitLab CI/CD"
 ---
 
@@ -77,7 +78,10 @@ image: java:8
 stages:
   - build
   - deploy
-
+  
+before_script:
+  - chmod +x mvnw
+  
 build:
   stage: build
   script: ./mvnw package
