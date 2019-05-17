@@ -58,6 +58,7 @@ module Gitlab
       uploads
       users
       v2
+      visual-review-toolbar.js
     ].freeze
 
     # This list should contain all words following `/*namespace_id/:project_id` in
