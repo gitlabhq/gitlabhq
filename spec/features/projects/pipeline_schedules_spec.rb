@@ -225,7 +225,7 @@ describe 'Pipeline Schedules', :js do
     context 'when active is true and next_run_at is NULL' do
       before do
         create(:ci_pipeline_schedule, project: project, owner: user).tap do |pipeline_schedule|
-          pipeline_schedule.update_attribute(:cron, nil) # Consequently next_run_at will be nil
+          pipeline_schedule.update_attribute(:next_run_at, nil) # Consequently next_run_at will be nil
         end
       end
 
