@@ -674,11 +674,6 @@ To remove the Kubernetes cluster integration from your project, simply click the
 **Remove integration** button. You will then be able to follow the procedure
 and add a Kubernetes cluster again.
 
-## View Kubernetes pod logs from GitLab **[ULTIMATE]**
-
-Learn how to easily
-[view the logs of running pods in connected Kubernetes clusters](kubernetes_pod_logs.md).
-
 ## What you can get with the Kubernetes integration
 
 Here's what you can do with GitLab if you enable the Kubernetes integration.
@@ -700,6 +695,12 @@ and visualize your canary deployments right inside the Deploy Board, without
 the need to leave GitLab.
 
 [Read more about Canary Deployments](https://docs.gitlab.com/ee/user/project/canary_deployments.html)
+
+### Pod logs **[ULTIMATE]**
+
+GitLab makes it easy to view the logs of running pods in connected Kubernetes clusters. By displaying the logs directly in GitLab, developers can avoid having to manage console tools or jump to a different interface.
+
+[Read more about Kubernetes pod logs](kubernetes_pod_logs.md)
 
 ### Kubernetes monitoring
 
