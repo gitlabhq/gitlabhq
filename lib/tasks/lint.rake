@@ -37,32 +37,15 @@ unless Rails.env.production?
         lint:static_verification
       ].each do |task|
         pid = Process.fork do
-          rd_out, wr_out = IO.pipe
-          rd_err, wr_err = IO.pipe
-          stdout = $stdout.dup
-          stderr = $stderr.dup
-          $stdout.reopen(wr_out)
-          $stderr.reopen(wr_err)
+          puts "*** Running rake task: #{task} ***"
 
-          begin
-            Rake::Task[task].invoke
-          rescue SystemExit => ex
-            msg = "*** Rake task #{task} exited:"
-            raise ex
-          rescue => ex
-            msg = "*** Rake task #{task} raised #{ex.class}:"
-            raise ex
-          ensure
-            $stdout.reopen(stdout)
-            $stderr.reopen(stderr)
-            wr_out.close
-            wr_err.close
-
-            warn "\n#{msg}\n\n" if msg
-
-            IO.copy_stream(rd_out, $stdout)
-            IO.copy_stream(rd_err, $stderr)
-          end
+          Rake::Task[task].invoke
+        rescue SystemExit => ex
+          warn "!!! Rake task #{task} exited:"
+          raise ex
+        rescue StandardError, ScriptError => ex
+          warn "!!! Rake task #{task} raised #{ex.class}:"
+          raise ex
         end
 
         Process.waitpid(pid)
