@@ -96,10 +96,9 @@ Paths in the whitelist (not commented out) will not be subject to the test,
 which means you are allowed to create/change docs content in EE for the time
 being. The goal is to not have any doc whitelisted.
 
-At the time of this writing, the only items left to be aligned are:
+At the time of this writing, the only items left to be aligned are the API docs:
 
 - `doc/api/*` ([issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/60045) / [merge request](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/27491))
-- `doc/README.md`
 
 Eventually, once all docs are aligned, we'll remove any doc reference from that
 script, so it catches everything.
