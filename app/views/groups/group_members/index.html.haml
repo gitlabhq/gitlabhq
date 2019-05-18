@@ -36,4 +36,25 @@
           = render 'shared/members/sort_dropdown'
     %ul.content-list.members-list
       = render partial: 'shared/members/member', collection: @members, as: :member
-    = paginate @members, theme: 'gitlab'
+  = paginate @members, theme: 'gitlab'
+
+  - if can_manage_members && @invited_members.exists?
+    .clearfix
+      %h5.member.existing-title
+        Invited members
+    .card
+      .card-header.flex-project-members-panel
+        %span.flex-project-title
+          Pending members to
+          %strong= @group.name
+        %span.badge.badge-pill= @invited_members.total_count
+        = form_tag group_group_members_path(@group), method: :get, class: 'form-inline member-search-form flex-project-members-form' do
+          .form-group
+            .position-relative.append-right-8
+              = search_field_tag :search_invited, params[:search_invited], { placeholder: 'Find invited members by e-mail', class: 'form-control', spellcheck: false }
+              %button.member-search-btn{ type: "submit", "aria-label" => "Submit search" }
+                = icon("search")
+            = render 'shared/members/sort_dropdown'
+      %ul.content-list.invited-members-list
+        = render partial: 'shared/members/member', collection: @invited_members, as: :member
+    = paginate @invited_members, param_name: 'invited_members_page', theme: 'gitlab'

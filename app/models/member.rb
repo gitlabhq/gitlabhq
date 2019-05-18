@@ -107,6 +107,10 @@ class Member < ApplicationRecord
       joins(:user).merge(User.search(query))
     end
 
+    def search_invited(query)
+      invite.where(['invite_email ILIKE ?', "%#{query}%"])
+    end
+
     def filter_by_2fa(value)
       case value
       when 'enabled'

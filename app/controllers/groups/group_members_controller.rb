@@ -5,6 +5,8 @@ class Groups::GroupMembersController < Groups::ApplicationController
   include MembersPresentation
   include SortingHelper
 
+  MEMBER_PER_PAGE_LIMIT = 50
+
   def self.admin_not_required_endpoints
     %i[index leave request_access]
   end
@@ -24,7 +26,14 @@ class Groups::GroupMembersController < Groups::ApplicationController
     @project = @group.projects.find(params[:project_id]) if params[:project_id]
 
     @members = GroupMembersFinder.new(@group).execute
-    @members = @members.non_invite unless can_manage_members
+
+    if can_manage_members
+      @invited_members = @members.invite
+      @invited_members = @invited_members.search_invited(params[:search_invited]) if params[:search_invited].present?
+      @invited_members = present_members(@invited_members.page(params[:invited_members_page]).per(MEMBER_PER_PAGE_LIMIT))
+    end
+
+    @members = @members.non_invite
     @members = @members.search(params[:search]) if params[:search].present?
     @members = @members.sort_by_attribute(@sort)
 
@@ -32,7 +41,7 @@ class Groups::GroupMembersController < Groups::ApplicationController
       @members = @members.filter_by_2fa(params[:two_factor])
     end
 
-    @members = @members.page(params[:page]).per(50)
+    @members = @members.page(params[:page]).per(MEMBER_PER_PAGE_LIMIT)
     @members = present_members(@members)
 
     @requesters = present_members(

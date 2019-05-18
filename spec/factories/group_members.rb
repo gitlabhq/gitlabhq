@@ -16,7 +16,9 @@ FactoryBot.define do
     trait(:invited) do
       user_id nil
       invite_token 'xxx'
-      invite_email 'email@email.com'
+      sequence :invite_email do |n|
+        "email#{n}@email.com"
+      end
     end
   end
 end
