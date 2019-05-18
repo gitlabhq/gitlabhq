@@ -91,6 +91,28 @@ module EmailsHelper
     ].join(';')
   end
 
+  def closure_reason_text(closed_via, format: nil)
+    case closed_via
+    when MergeRequest
+      merge_request = MergeRequest.find(closed_via[:id]).present
+
+      case format
+      when :html
+        " via merge request #{link_to(merge_request.to_reference, merge_request.web_url)}"
+      else
+        # If it's not HTML nor text then assume it's text to be safe
+        " via merge request #{merge_request.to_reference} (#{merge_request.web_url})"
+      end
+    when String
+      # Technically speaking this should be Commit but per
+      # https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/15610#note_163812339
+      # we can't deserialize Commit without custom serializer for ActiveJob
+      " via #{closed_via}"
+    else
+      ""
+    end
+  end
+
   # "You are receiving this email because #{reason}"
   def notification_reason_text(reason)
     string = case reason

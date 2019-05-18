@@ -270,6 +270,8 @@
                         %span= _("Got it!")
                         = sprite_icon('thumb-up')
 
+            = render_if_exists 'layouts/nav/sidebar/project_feature_flags_link'
+
       - if project_nav_tab? :container_registry
         = nav_link(controller: %w[projects/registry/repositories]) do
           = link_to project_container_registry_index_path(@project), class: 'shortcuts-container-registry' do
@@ -283,7 +285,9 @@
                 %strong.fly-out-top-item-name
                   = _('Registry')
 
-      - if project_nav_tab?(:wiki)
+      = render_if_exists 'layouts/nav/sidebar/project_packages_link'
+
+      - if project_nav_tab? :wiki
         - wiki_url = project_wiki_path(@project, :home)
         = nav_link(controller: :wikis) do
           = link_to wiki_url, class: 'shortcuts-wiki qa-wiki-link' do

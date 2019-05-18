@@ -7,6 +7,7 @@ class DeviseMailer < Devise::Mailer
   layout 'mailer/devise'
 
   helper EmailsHelper
+  helper ApplicationHelper
 
   protected
 

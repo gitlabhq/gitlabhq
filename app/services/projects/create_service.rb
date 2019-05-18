@@ -100,8 +100,6 @@ module Projects
       current_user.invalidate_personal_projects_count
 
       create_readme if @initialize_with_readme
-
-      configure_group_clusters_for_project
     end
 
     # Refresh the current user's authorizations inline (so they can access the
@@ -125,10 +123,6 @@ module Projects
       }
 
       Files::CreateService.new(@project, current_user, commit_attrs).execute
-    end
-
-    def configure_group_clusters_for_project
-      ClusterProjectConfigureWorker.perform_async(@project.id)
     end
 
     def skip_wiki?

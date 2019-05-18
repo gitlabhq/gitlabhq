@@ -1,0 +1,5 @@
+---
+title: Remove Content-Type override for Mattermost OAuth login
+merge_request:
+author: Harrison Healey
+type: removed

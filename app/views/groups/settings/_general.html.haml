@@ -17,17 +17,17 @@
         = f.label :description, _('Group description (optional)'), class: 'label-bold'
         = f.text_area :description, class: 'form-control', rows: 3, maxlength: 250
 
-    = render_if_exists 'shared/repository_size_limit_setting', form: f, type: :group
+  = render_if_exists 'shared/repository_size_limit_setting', form: f, type: :group
 
-    .form-group.prepend-top-default.append-bottom-20
-      .avatar-container.rect-avatar.s90
-        = group_icon(@group, alt: '', class: 'avatar group-avatar s90')
-      = f.label :avatar, _('Group avatar'), class: 'label-bold d-block'
-      = render 'shared/choose_avatar_button', f: f
-      - if @group.avatar?
-        %hr
-        = link_to _('Remove avatar'), group_avatar_path(@group.to_param), data: { confirm: _('Avatar will be removed. Are you sure?')}, method: :delete, class: 'btn btn-link'
+  .form-group.prepend-top-default.append-bottom-20
+    .avatar-container.rect-avatar.s90
+      = group_icon(@group, alt: '', class: 'avatar group-avatar s90')
+    = f.label :avatar, _('Group avatar'), class: 'label-bold d-block'
+    = render 'shared/choose_avatar_button', f: f
+    - if @group.avatar?
+      %hr
+      = link_to _('Remove avatar'), group_avatar_path(@group.to_param), data: { confirm: _('Avatar will be removed. Are you sure?')}, method: :delete, class: 'btn btn-link'
 
-    = render 'shared/visibility_level', f: f, visibility_level: @group.visibility_level, can_change_visibility_level: can_change_group_visibility_level?(@group), form_model: @group
+  = render 'shared/visibility_level', f: f, visibility_level: @group.visibility_level, can_change_visibility_level: can_change_group_visibility_level?(@group), form_model: @group
 
   = f.submit _('Save changes'), class: 'btn btn-success mt-4 js-dirty-submit'

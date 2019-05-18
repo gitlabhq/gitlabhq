@@ -118,7 +118,15 @@ will be synced to your Group and you can visualize it from  the
 
     ![Additional minutes](img/additional_minutes.png)
 
-NOTE: **Important note**: If you have some minutes used over your default quota, these minutes will
+Be aware that:
+
+1. If you have purchased extra CI minutes before the purchase of a paid plan,
+we will calculate a pro-rated charge for your paid plan. That means you may
+be charged for less than one year since your subscription was previously
+created with the extra CI minutes.
+1. Once the extra CI minutes has been assigned to a Group they cannot be transferred
+to a different Group.
+1. If you have some minutes used over your default quota, these minutes will
 be deducted from your Additional Minutes quota immediately after your purchase of additional
 minutes.
 

@@ -107,6 +107,8 @@ module.exports = function(config) {
           // chrome cannot run in sandboxed mode inside a docker container unless it is run with
           // escalated kernel privileges (e.g. docker run --cap-add=CAP_SYS_ADMIN)
           '--no-sandbox',
+          // https://bugs.chromium.org/p/chromedriver/issues/detail?id=2870
+          '--enable-features=NetworkService,NetworkServiceInProcess',
         ],
       },
     },

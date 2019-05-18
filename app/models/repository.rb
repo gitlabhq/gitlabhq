@@ -283,14 +283,19 @@ class Repository
   end
 
   def diverging_commit_counts(branch)
+    return diverging_commit_counts_without_max(branch) if Feature.enabled?('gitaly_count_diverging_commits_no_max')
+
+    ## TODO: deprecate the below code after 12.0
     @root_ref_hash ||= raw_repository.commit(root_ref).id
     cache.fetch(:"diverging_commit_counts_#{branch.name}") do
       # Rugged seems to throw a `ReferenceError` when given branch_names rather
       # than SHA-1 hashes
+      branch_sha = branch.dereferenced_target.sha
+
       number_commits_behind, number_commits_ahead =
         raw_repository.diverging_commit_count(
           @root_ref_hash,
-          branch.dereferenced_target.sha,
+          branch_sha,
           max_count: MAX_DIVERGING_COUNT)
 
       if number_commits_behind + number_commits_ahead >= MAX_DIVERGING_COUNT
@@ -298,6 +303,22 @@ class Repository
       else
         { behind: number_commits_behind, ahead: number_commits_ahead }
       end
+    end
+  end
+
+  def diverging_commit_counts_without_max(branch)
+    @root_ref_hash ||= raw_repository.commit(root_ref).id
+    cache.fetch(:"diverging_commit_counts_without_max_#{branch.name}") do
+      # Rugged seems to throw a `ReferenceError` when given branch_names rather
+      # than SHA-1 hashes
+      branch_sha = branch.dereferenced_target.sha
+
+      number_commits_behind, number_commits_ahead =
+        raw_repository.diverging_commit_count(
+          @root_ref_hash,
+          branch_sha)
+
+      { behind: number_commits_behind, ahead: number_commits_ahead }
     end
   end
 
@@ -1050,7 +1071,7 @@ class Repository
 
     # To support the full deprecated behaviour, set the
     # `rebase_commit_sha` for the merge_request here and return the value
-    merge_request.update(rebase_commit_sha: rebase_sha)
+    merge_request.update(rebase_commit_sha: rebase_sha, merge_error: nil)
 
     rebase_sha
   end
@@ -1069,7 +1090,7 @@ class Repository
         remote_repository: merge_request.target_project.repository.raw,
         remote_branch: merge_request.target_branch
       ) do |commit_id|
-        merge_request.update!(rebase_commit_sha: commit_id)
+        merge_request.update!(rebase_commit_sha: commit_id, merge_error: nil)
       end
     end
   end

@@ -1,8 +1,8 @@
 #! /bin/sh
 
 # GITLAB
-# Maintainer: @randx
-# Authors: rovanion.luckey@gmail.com, @randx
+# Maintainer: @dzaporozhets
+# Authors: rovanion.luckey@gmail.com, @dzaporozhets
 
 ### BEGIN INIT INFO
 # Provides:          gitlab
@@ -26,6 +26,7 @@
 
 ### Environment variables
 RAILS_ENV="production"
+EXPERIMENTAL_PUMA=""
 
 # Script variable names should be lower-case not to conflict with
 # internal /bin/sh variables such as PATH, EDITOR or SHELL.
@@ -75,7 +76,7 @@ check_pids(){
     echo "Could not create the path $pid_path needed to store the pids."
     exit 1
   fi
-  # If there exists a file which should hold the value of the Unicorn pid: read it.
+  # If there exists a file which should hold the value of the web server pid: read it.
   if [ -f "$web_server_pid_path" ]; then
     wpid=$(cat "$web_server_pid_path")
   else
@@ -198,7 +199,7 @@ check_stale_pids(){
   # If there is a pid it is something else than 0, the service is running if
   # *_status is == 0.
   if [ "$wpid" != "0" ] && [ "$web_status" != "0" ]; then
-    echo "Removing stale Unicorn web server pid. This is most likely caused by the web server crashing the last time it ran."
+    echo "Removing stale web server pid. This is most likely caused by the web server crashing the last time it ran."
     if ! rm "$web_server_pid_path"; then
       echo "Unable to remove stale pid, exiting."
       exit 1
@@ -250,12 +251,12 @@ exit_if_not_running(){
   fi
 }
 
-## Starts Unicorn and Sidekiq if they're not running.
+## Starts web server and Sidekiq if they're not running.
 start_gitlab() {
   check_stale_pids
 
   if [ "$web_status" != "0" ]; then
-    echo "Starting GitLab Unicorn"
+    echo "Starting GitLab web server"
   fi
   if [ "$sidekiq_status" != "0" ]; then
     echo "Starting GitLab Sidekiq"
@@ -275,12 +276,12 @@ start_gitlab() {
 
   # Then check if the service is running. If it is: don't start again.
   if [ "$web_status" = "0" ]; then
-    echo "The Unicorn web server already running with pid $wpid, not restarting."
+    echo "The web server already running with pid $wpid, not restarting."
   else
     # Remove old socket if it exists
     rm -f "$rails_socket" 2>/dev/null
     # Start the web server
-    RAILS_ENV=$RAILS_ENV bin/web start
+    RAILS_ENV=$RAILS_ENV EXPERIMENTAL_PUMA=$EXPERIMENTAL_PUMA bin/web start
   fi
 
   # If sidekiq is already running, don't start it again.
@@ -336,13 +337,13 @@ start_gitlab() {
   print_status
 }
 
-## Asks Unicorn, Sidekiq and MailRoom if they would be so kind as to stop, if not kills them.
+## Asks web server, Sidekiq and MailRoom if they would be so kind as to stop, if not kills them.
 stop_gitlab() {
   exit_if_not_running
 
   if [ "$web_status" = "0" ]; then
-    echo "Shutting down GitLab Unicorn"
-    RAILS_ENV=$RAILS_ENV bin/web stop
+    echo "Shutting down GitLab web server"
+    RAILS_ENV=$RAILS_ENV EXPERIMENTAL_PUMA=$EXPERIMENTAL_PUMA bin/web stop
   fi
   if [ "$sidekiq_status" = "0" ]; then
     echo "Shutting down GitLab Sidekiq"
@@ -398,9 +399,9 @@ print_status() {
     return
   fi
   if [ "$web_status" = "0" ]; then
-      echo "The GitLab Unicorn web server with pid $wpid is running."
+      echo "The GitLab web server with pid $wpid is running."
   else
-      printf "The GitLab Unicorn web server is \033[31mnot running\033[0m.\n"
+      printf "The GitLab web server is \033[31mnot running\033[0m.\n"
   fi
   if [ "$sidekiq_status" = "0" ]; then
       echo "The GitLab Sidekiq job dispatcher with pid $spid is running."
@@ -438,15 +439,15 @@ print_status() {
   fi
 }
 
-## Tells unicorn to reload its config and Sidekiq to restart
+## Tells web server to reload its config and Sidekiq to restart
 reload_gitlab(){
   exit_if_not_running
   if [ "$wpid" = "0" ];then
-    echo "The GitLab Unicorn Web server is not running thus its configuration can't be reloaded."
+    echo "The GitLab web server Web server is not running thus its configuration can't be reloaded."
     exit 1
   fi
-  printf "Reloading GitLab Unicorn configuration... "
-  RAILS_ENV=$RAILS_ENV bin/web reload
+  printf "Reloading GitLab web server configuration... "
+  RAILS_ENV=$RAILS_ENV EXPERIMENTAL_PUMA=$EXPERIMENTAL_PUMA bin/web reload
   echo "Done."
 
   echo "Restarting GitLab Sidekiq since it isn't capable of reloading its config..."
@@ -461,7 +462,7 @@ reload_gitlab(){
   print_status
 }
 
-## Restarts Sidekiq and Unicorn.
+## Restarts Sidekiq and web server.
 restart_gitlab(){
   check_status
   if [ "$web_status" = "0" ] || [ "$sidekiq_status" = "0" ] || [ "$gitlab_workhorse" = "0" ] || { [ "$mail_room_enabled" = true ] && [ "$mail_room_status" = "0" ]; } || { [ "$gitlab_pages_enabled" = true ] && [ "$gitlab_pages_status" = "0" ]; } || { [ "$gitaly_enabled" = true ] && [ "$gitaly_status" = "0" ]; }; then

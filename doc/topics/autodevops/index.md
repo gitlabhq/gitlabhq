@@ -1099,3 +1099,7 @@ curl --data "value=true" --header "PRIVATE-TOKEN: personal_access_token" https:/
 [ee]: https://about.gitlab.com/pricing/
 [ce-21955]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/21955
 [ce-19507]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/19507
+
+## Development guides
+
+Configuring [GDK for Auto DevOps](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/auto_devops.md).

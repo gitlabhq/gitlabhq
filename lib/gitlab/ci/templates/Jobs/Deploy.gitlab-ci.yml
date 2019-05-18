@@ -338,7 +338,6 @@ rollout 100%:
       image_tag=${CI_APPLICATION_TAG:-$CI_COMMIT_TAG}
     fi
 
-    replicas="1"
     service_enabled="true"
     postgres_enabled="$POSTGRES_ENABLED"
 

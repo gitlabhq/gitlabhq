@@ -13,9 +13,11 @@ button (you'll have to paste it on your shell in the next step).
 
 ![Copy the HTTPS or SSH](img/project_clone_url.png)
 
-## On the command line
+## Working with project files on the command line
 
 This section has examples of some basic shell commands that you might find useful. For more information, search the web for _bash commands_.
+
+Alternatively, you can edit files using your choice of editor (IDE) or the GitLab user interface.
 
 ### Clone your project
 

@@ -48,7 +48,7 @@
               %span
                 = _('Gitaly Servers')
 
-      = nav_link(controller: %w(system_info background_jobs logs health_check requests_profiles)) do
+      = nav_link(controller: admin_monitoring_nav_links) do
         = link_to admin_system_info_path do
           .nav-icon-container
             = sprite_icon('monitor')
@@ -81,6 +81,7 @@
             = link_to admin_requests_profiles_path, title: _('Requests Profiles') do
               %span
                 = _('Requests Profiles')
+          = render_if_exists 'layouts/nav/ee/admin/new_monitoring_sidebar'
 
       = nav_link(controller: :broadcast_messages) do
         = link_to admin_broadcast_messages_path do
@@ -132,6 +133,8 @@
                 = _('Abuse Reports')
               %span.badge.badge-pill.count.merge_counter.js-merge-counter.fly-out-badge= number_with_delimiter(AbuseReport.count(:all))
 
+      = render_if_exists 'layouts/nav/sidebar/licenses_link'
+
       - if instance_clusters_enabled?
         = nav_link(controller: :clusters) do
           = link_to admin_clusters_path do
@@ -157,6 +160,10 @@
               = link_to admin_spam_logs_path do
                 %strong.fly-out-top-item-name
                   = _('Spam Logs')
+
+      = render_if_exists 'layouts/nav/sidebar/push_rules_link'
+
+      = render_if_exists 'layouts/nav/ee/admin/geo_sidebar'
 
       = nav_link(controller: :deploy_keys) do
         = link_to admin_deploy_keys_path do

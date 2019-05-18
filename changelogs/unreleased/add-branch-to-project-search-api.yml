@@ -1,0 +1,5 @@
+---
+title: Added ref querystring parameter to project search API to allow searching on branches/tags other than the default
+merge_request: 28069
+author: Lee Tickett
+type: added

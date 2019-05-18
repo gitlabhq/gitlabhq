@@ -109,10 +109,18 @@ class FileUploader < GitlabUploader
   def upload_path
     if file_storage?
       # Legacy path relative to project.full_path
-      File.join(dynamic_segment, identifier)
+      local_storage_path(identifier)
     else
-      File.join(store_dir, identifier)
+      remote_storage_path(identifier)
     end
+  end
+
+  def local_storage_path(file_identifier)
+    File.join(dynamic_segment, file_identifier)
+  end
+
+  def remote_storage_path(file_identifier)
+    File.join(store_dir, file_identifier)
   end
 
   def store_dirs

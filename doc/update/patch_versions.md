@@ -67,7 +67,7 @@ sudo -u git -H bundle exec rake gettext:pack RAILS_ENV=production
 sudo -u git -H bundle exec rake gettext:po_to_json RAILS_ENV=production
 
 # Clean up assets and cache
-sudo -u git -H bundle exec rake yarn:install gitlab:assets:clean gitlab:assets:compile cache:clear RAILS_ENV=production NODE_ENV=production
+sudo -u git -H bundle exec rake yarn:install gitlab:assets:clean gitlab:assets:compile cache:clear RAILS_ENV=production NODE_ENV=production NODE_OPTIONS="--max_old_space_size=4096"
 ```
 
 ### 4. Update gitlab-workhorse to the corresponding version

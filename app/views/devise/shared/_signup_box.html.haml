@@ -29,6 +29,7 @@
             - terms_link = link_to s_("I accept the|Terms of Service and Privacy Policy"), terms_path, target: "_blank"
             - accept_terms_label = _("I accept the %{terms_link}") % { terms_link: terms_link }
             = accept_terms_label.html_safe
+      = render_if_exists 'devise/shared/email_opted_in', f: f
       %div
       - if Gitlab::Recaptcha.enabled?
         = recaptcha_tags

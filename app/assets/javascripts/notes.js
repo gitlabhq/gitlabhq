@@ -35,6 +35,7 @@ import {
 } from './lib/utils/common_utils';
 import imageDiffHelper from './image_diff/helpers/index';
 import { localTimeAgo } from './lib/utils/datetime_utility';
+import { sprintf, s__, __ } from './locale';
 
 window.autosize = Autosize;
 
@@ -253,7 +254,7 @@ export default class Notes {
         discussionNoteForm = $textarea.closest('.js-discussion-note-form');
         if (discussionNoteForm.length) {
           if ($textarea.val() !== '') {
-            if (!window.confirm('Are you sure you want to cancel creating this comment?')) {
+            if (!window.confirm(__('Are you sure you want to cancel creating this comment?'))) {
               return;
             }
           }
@@ -265,7 +266,7 @@ export default class Notes {
           originalText = $textarea.closest('form').data('originalNote');
           newText = $textarea.val();
           if (originalText !== newText) {
-            if (!window.confirm('Are you sure you want to cancel editing this comment?')) {
+            if (!window.confirm(__('Are you sure you want to cancel editing this comment?'))) {
               return;
             }
           }
@@ -636,7 +637,7 @@ export default class Notes {
     this.glForm = new GLForm(form, enableGFM);
     textarea = form.find('.js-note-text');
     key = [
-      'Note',
+      s__('NoteForm|Note'),
       form.find('#note_noteable_type').val(),
       form.find('#note_noteable_id').val(),
       form.find('#note_commit_id').val(),
@@ -670,7 +671,9 @@ export default class Notes {
       formParentTimeline = $form.closest('.discussion-notes').find('.notes');
     }
     return this.addFlash(
-      'Your comment could not be submitted! Please check your network connection and try again.',
+      __(
+        'Your comment could not be submitted! Please check your network connection and try again.',
+      ),
       'alert',
       formParentTimeline.get(0),
     );
@@ -679,7 +682,7 @@ export default class Notes {
   updateNoteError($parentTimeline) {
     // eslint-disable-next-line no-new
     new Flash(
-      'Your comment could not be updated! Please check your network connection and try again.',
+      __('Your comment could not be updated! Please check your network connection and try again.'),
     );
   }
 
@@ -1258,12 +1261,19 @@ export default class Notes {
 
   putConflictEditWarningInPlace(noteEntity, $note) {
     if ($note.find('.js-conflict-edit-warning').length === 0) {
+      const open_link = `<a href="#note_${
+        noteEntity.id
+      }" target="_blank" rel="noopener noreferrer">`;
       const $alert = $(`<div class="js-conflict-edit-warning alert alert-danger">
-        This comment has changed since you started editing, please review the
-        <a href="#note_${noteEntity.id}" target="_blank" rel="noopener noreferrer">
-          updated comment
-        </a>
-        to ensure information is not lost
+        ${sprintf(
+          s__(
+            'Notes|This comment has changed since you started editing, please review the %{open_link}updated comment%{close_link} to ensure information is not lost',
+          ),
+          {
+            open_link,
+            close_link: '</a>',
+          },
+        )}
       </div>`);
       $alert.insertAfter($note.find('.note-text'));
     }
@@ -1491,13 +1501,15 @@ export default class Notes {
 
     if (executedCommands && executedCommands.length) {
       if (executedCommands.length > 1) {
-        tempFormContent = 'Applying multiple commands';
+        tempFormContent = __('Applying multiple commands');
       } else {
         const commandDescription = executedCommands[0].description.toLowerCase();
-        tempFormContent = `Applying command to ${commandDescription}`;
+        tempFormContent = sprintf(__('Applying command to %{commandDescription}'), {
+          commandDescription,
+        });
       }
     } else {
-      tempFormContent = 'Applying command';
+      tempFormContent = __('Applying command');
     }
 
     return tempFormContent;
@@ -1817,7 +1829,9 @@ export default class Notes {
     $editingNote
       .find('.note-headline-meta a')
       .html(
-        '<i class="fa fa-spinner fa-spin" aria-label="Comment is being updated" aria-hidden="true"></i>',
+        `<i class="fa fa-spinner fa-spin" aria-label="${__(
+          'Comment is being updated',
+        )}" aria-hidden="true"></i>`,
       );
 
     // Make request to update comment on server

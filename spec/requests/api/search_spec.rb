@@ -414,6 +414,13 @@ describe API::Search do
             expect(response).to have_gitlab_http_status(200)
             expect(json_response.size).to eq(11)
           end
+
+          it 'by ref' do
+            get api("/projects/#{repo_project.id}/search", user), params: { scope: 'blobs', search: 'This file is used in tests for ci_environments_status', ref: 'pages-deploy' }
+
+            expect(response).to have_gitlab_http_status(200)
+            expect(json_response.size).to eq(1)
+          end
         end
       end
     end

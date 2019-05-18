@@ -25,13 +25,7 @@ This section contains all the steps necessary to upgrade Community Edition or
 Enterprise Edition, regardless of the version you are upgrading to. Version
 specific guidelines (should there be any) are covered separately.
 
-### 1. Stop server
-
-```bash
-sudo service gitlab stop
-```
-
-### 2. Backup
+### 1. Backup
 
 NOTE: If you installed GitLab from source, make sure `rsync` is installed.
 
@@ -39,6 +33,12 @@ NOTE: If you installed GitLab from source, make sure `rsync` is installed.
 cd /home/git/gitlab
 
 sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production
+```
+
+### 2. Stop server
+
+```bash
+sudo service gitlab stop
 ```
 
 ### 3. Update Ruby
@@ -314,7 +314,7 @@ sudo -u git -H bundle exec rake db:migrate RAILS_ENV=production
 sudo -u git -H bundle exec rake gettext:compile RAILS_ENV=production
 
 # Update node dependencies and recompile assets
-sudo -u git -H bundle exec rake yarn:install gitlab:assets:clean gitlab:assets:compile RAILS_ENV=production NODE_ENV=production
+sudo -u git -H bundle exec rake yarn:install gitlab:assets:clean gitlab:assets:compile RAILS_ENV=production NODE_ENV=production NODE_OPTIONS="--max_old_space_size=4096"
 
 # Clean up cache
 sudo -u git -H bundle exec rake cache:clear RAILS_ENV=production

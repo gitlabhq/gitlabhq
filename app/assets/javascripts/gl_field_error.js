@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import { __ } from '~/locale';
 
 /**
  * This class overrides the browser's validation error bubbles, displaying custom
@@ -61,7 +62,7 @@ export default class GlFieldError {
     this.inputElement = $(input);
     this.inputDomElement = this.inputElement.get(0);
     this.form = formErrors;
-    this.errorMessage = this.inputElement.attr('title') || 'This field is required.';
+    this.errorMessage = this.inputElement.attr('title') || __('This field is required.');
     this.fieldErrorElement = $(`<p class='${errorMessageClass} hidden'>${this.errorMessage}</p>`);
 
     this.state = {

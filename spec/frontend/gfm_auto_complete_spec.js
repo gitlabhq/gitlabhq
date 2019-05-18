@@ -7,10 +7,7 @@ import 'jquery.caret';
 import 'at.js';
 
 import { TEST_HOST } from 'helpers/test_constants';
-import { setTestTimeout } from 'helpers/timeout';
 import { getJSONFixture } from 'helpers/fixtures';
-
-setTestTimeout(500);
 
 const labelsFixture = getJSONFixture('autocomplete_sources/labels.json');
 

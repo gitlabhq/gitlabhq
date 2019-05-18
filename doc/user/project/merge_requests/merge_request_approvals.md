@@ -77,7 +77,7 @@ request approval rules:
 
 1. Navigate to your project's **Settings > General** and expand **Merge request approvals**.
 1. Click **Add approvers** to create a new approval rule.
-1. Just like in [GitLab Starter](#editing-approvals), select the approval members and aprovals required.
+1. Just like in [GitLab Starter](#editing-approvals), select the approval members and approvals required.
 1. Give the approval rule a name that describes the set of approvers selected.
 1. Click **Add approvers** to submit the new rule.
 
@@ -173,8 +173,7 @@ the merge request. To enable this feature:
 
 1. Navigate to your project's **Settings > General** and expand
    **Merge request approvals**.
-1. Tick the **Require approval from code owners** checkbox
-   checkbox.
+1. Tick the **Require approval from code owners** checkbox.
 1. Click **Save changes**.
 
 When this feature is enabled, all merge requests will need approval
@@ -292,6 +291,18 @@ enabling [**Prevent approval of merge requests by their committers**](#prevent-a
 
 1. Navigate to your project's **Settings > General** and expand **Merge request approvals**.
 1. Tick the checkbox **Prevent approval of merge requests by their committers**.
+1. Click **Save changes**.
+
+## Require authentication when approving a merge request **[STARTER]**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/5981) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.0.
+
+You can force the approver to enter a password in order to authenticate who is approving the merge request by
+enabling **Require user password to approve**. This enables an Electronic Signature
+for approvals such as the one defined by [CFR Part 11](https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfcfr/CFRSearch.cfm?CFRPart=11&showFR=1&subpartNode=21:1.0.1.1.8.3)):
+
+1. Navigate to your project's **Settings > General** and expand **Merge request approvals**.
+1. Tick the checkbox **Require user password to approve**.
 1. Click **Save changes**.
 
 ## Merge requests with different source branch and target branch projects
