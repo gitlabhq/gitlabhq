@@ -31,7 +31,7 @@ module MilestoneActions
       format.html { redirect_to milestone_redirect_path }
       format.json do
         render json: tabs_json("shared/milestones/_labels_tab", {
-          labels: @milestone.labels # rubocop:disable Gitlab/ModuleWithInstanceVariables
+          labels: @milestone.issue_labels_visible_by_user(current_user) # rubocop:disable Gitlab/ModuleWithInstanceVariables
         })
       end
     end
