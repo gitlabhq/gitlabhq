@@ -28,11 +28,11 @@ We have split this stage in steps so it is easier to follow.
      ![Jira create new user](img/jira_create_new_user.png)
 
 1. Create a `gitlab-developers` group (We will give write access to this group
-   to projects in Jira in a later step). Go to the **Groups** tab and select **Create group**.
+   to projects in Jira in a later step). Go to the **Groups** tab on the left, and select **Add group**.
 
      ![Jira create new user](img/jira_create_new_group.png)
 
-     Give it a name and click **Create group**.
+     Give it a name and click **Add group**.
 
 1. Add the `gitlab` user to the `gitlab-developers` group by clicking **Edit members** 
    The `gitlab-developers` group should be selected on the left hand box. Under **Add members to selected group(s)**,
