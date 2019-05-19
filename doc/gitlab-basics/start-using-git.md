@@ -71,6 +71,18 @@ git config --global --list
 Start using Git via the command line with the most basic
 commands as described below.
 
+## Initialize a local directory for Git version control
+
+If you have an existing local directory that you want to *initialize* for version control, use the `init` command to instruct Git to begin tracking the directory:
+
+```bash
+git init
+```
+
+This creates a `.git` directory that contains the Git configuration files.
+
+Once the directory has been initialized, you can [add a remote repository](#add-a-remote-repository) and [send changes to GitLab.com](#send-changes-to-gitlabcom). View the instructions on [Create a project](../gitlab-basics/create-project.html#push-to-create-a-new-project) to create a new project on GitLab with your changes.
+
 ### Clone a repository
 
 To start working locally on an existing remote repository,
@@ -140,6 +152,16 @@ To view your remote repositories, type:
 git remote -v
 ```
 
+### Add a remote repository
+
+To add a link to a remote repository:
+
+```bash
+git remote add SOURCE-NAME REPOSITORY-PATH
+```
+
+You'll use this source name every time you [push changes to GitLab.com](#send-changes-to-gitlabcom), so use something easy to remember and type.
+
 ### Create a branch
 
 To create a branch, type the following (spaces won't be recognized in the branch name, so you will need to use a hyphen or underscore):
@@ -193,7 +215,7 @@ git commit -m "COMMENT TO DESCRIBE THE INTENTION OF THE COMMIT"
 NOTE: **Note:**
 The `.` character typically means _all_ in Git.
 
-### Send changes to gitlab.com
+### Send changes to GitLab.com
 
 To push all local commits to the remote repository:
 
