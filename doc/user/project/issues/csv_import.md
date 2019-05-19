@@ -1,17 +1,23 @@
-# Importing Issues from CSV
+# Importing issues from CSV
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/23532) in GitLab 11.7.
 
-Issues can be imported to a project by uploading a CSV file. Supported fields are
-`title` and `description`.
+Issues can be imported to a project by uploading a CSV file with the columns
+`title` and `description`, in that order.
 
 The user uploading the CSV file will be set as the author of the imported issues.
 
 > **Note:** A permission level of `Developer` or higher is required to import issues.
 
+## Prepare for the import
+
+- Consider importing a test file containing only a few issues. There is no way to undo a large import without using the GitLab API.
+- Ensure your CSV file meets the [file format](#csv-file-format) requirements.
+
+## Import the file
+
 To import issues:
 
-1. Ensure your CSV file meets the [file format](#csv-file-format) requirements.
 1. Navigate to a project's Issues list page.
 1. If existing issues are present, click the import icon at the top right, next to the **Edit issues** button.
 1. For a project without any issues, click the button labeled **Import CSV** in the middle of the page.
@@ -20,11 +26,11 @@ To import issues:
 The file is processed in the background and a notification email is sent
 to you once the import is completed.
 
-## CSV File Format
+## CSV file format
 
 ### Header row
 
-CSV files must contain a header row beginning with at least two columns, `title` and `description`, in that order.
+CSV files must contain a header row where the first column header is `title` and the second is `description`.
 If additional columns are present, they will be ignored.
 
 ### Column separator
@@ -53,7 +59,7 @@ The limit depends on the configuration value of Max Attachment Size for the GitL
 
 For GitLab.com, it is set to 10 MB.
 
-## Sample Data
+## Sample data
 
 ```csv
 title,description
