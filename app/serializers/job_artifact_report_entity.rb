@@ -8,8 +8,6 @@ class JobArtifactReportEntity < Grape::Entity
   expose :size
 
   expose :download_path do |artifact|
-    download_project_job_artifacts_path(job.project, job, file_type: artifact.file_format)
+    download_project_job_artifacts_path(artifact.job.project, artifact.job, file_type: artifact.file_format)
   end
-
-  alias_method :job, :object
 end

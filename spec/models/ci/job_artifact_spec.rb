@@ -23,10 +23,10 @@ describe Ci::JobArtifact do
 
   it_behaves_like 'having unique enum values'
 
-  describe '.with_all_reports' do
+  describe '.with_reports' do
     let!(:artifact) { create(:ci_job_artifact, :archive) }
 
-    subject { described_class.with_all_reports }
+    subject { described_class.with_reports }
 
     it { is_expected.to be_empty }
 
