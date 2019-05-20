@@ -18,6 +18,12 @@ describe Git::TagHooksService, :service do
     described_class.new(project, user, oldrev: oldrev, newrev: newrev, ref: ref)
   end
 
+  it 'update remote mirrors' do
+    expect(service).to receive(:update_remote_mirrors).and_call_original
+
+    service.execute
+  end
+
   describe 'System hooks' do
     it 'Executes system hooks' do
       push_data = service.execute

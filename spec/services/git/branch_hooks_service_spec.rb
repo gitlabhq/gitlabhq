@@ -18,6 +18,12 @@ describe Git::BranchHooksService do
     described_class.new(project, user, oldrev: oldrev, newrev: newrev, ref: ref)
   end
 
+  it 'update remote mirrors' do
+    expect(service).to receive(:update_remote_mirrors).and_call_original
+
+    service.execute
+  end
+
   describe "Git Push Data" do
     subject(:push_data) { service.execute }
 
