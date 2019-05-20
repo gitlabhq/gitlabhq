@@ -5,7 +5,7 @@ and grant members access to several projects at once.
 
 Groups can also be nested in [subgroups](subgroups/index.md).
 
-Find your groups by clicking **Groups** and then selecting **Your Groups** in the top navigation.
+Find your groups by clicking **Groups** and then **Your Groups** in the top navigation.
 
 ![GitLab Groups](img/groups.png)
 
