@@ -1,0 +1,5 @@
+---
+title: Fix Rugged get_tree_entries recursive flag not working
+merge_request: 28494
+author:
+type: fixed
