@@ -196,7 +196,7 @@ export default class VariableList {
   validateMaskability($row) {
     const invalidInputClass = 'gl-field-error-outline';
 
-    const maskableRegex = /^\w{8,}$/; // Eight or more alphanumeric characters plus underscores
+    const maskableRegex = /^[a-zA-Z0-9_+=/-]{8,}$/; // Eight or more characters, from the Base64 alphabet (RFC4648)
     const variableValue = $row.find(this.inputMap.secret_value.selector).val();
     const isValueMaskable = maskableRegex.test(variableValue) || variableValue === '';
     const isMaskedChecked = $row.find(this.inputMap.masked.selector).val() === 'true';

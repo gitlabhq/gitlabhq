@@ -95,6 +95,7 @@ though it must match certain requirements to do so:
 - The value must contain only letters, numbers, or underscores.
 - The value must be at least 8 characters long.
 - The value must not use variables.
+- The value must only consist of characters from the Base64 alphabet, defined in [RFC4648](https://tools.ietf.org/html/rfc4648).
 
 If the value does not meet the requirements above, then the CI variable will fail to save.
 In order to save, either alter the value to meet the masking requirements
