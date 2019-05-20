@@ -3,7 +3,7 @@ import sidebarDetailsBlock from '~/jobs/components/sidebar.vue';
 import createStore from '~/jobs/store';
 import job, { stages, jobsInStage } from '../mock_data';
 import { mountComponentWithStore } from '../../helpers/vue_mount_component_helper';
-import { trimText } from '../../helpers/vue_component_helper';
+import { trimText } from '../../helpers/text_helper';
 
 describe('Sidebar details block', () => {
   const SidebarComponent = Vue.extend(sidebarDetailsBlock);
