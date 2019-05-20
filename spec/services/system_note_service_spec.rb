@@ -132,7 +132,7 @@ describe SystemNoteService do
     end
 
     it 'sets the note text' do
-      link = "http://localhost/#{project.full_path}/tags/#{tag_name}"
+      link = "http://localhost/#{project.full_path}/-/tags/#{tag_name}"
 
       expect(subject.note).to eq "tagged commit #{noteable.sha} to [`#{tag_name}`](#{link})"
     end
