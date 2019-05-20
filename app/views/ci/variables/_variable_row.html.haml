@@ -23,7 +23,7 @@
   .ci-variable-row-body.border-bottom
     %input.js-ci-variable-input-id{ type: "hidden", name: id_input_name, value: id }
     %input.js-ci-variable-input-destroy{ type: "hidden", name: destroy_input_name }
-    %select.js-ci-variable-input-variable-type.ci-variable-body-item.form-control.select-control.table-section.section-15{ name: variable_type_input_name }
+    %select.js-ci-variable-input-variable-type.ci-variable-body-item.form-control.select-control.custom-select.table-section.section-15{ name: variable_type_input_name }
       = options_for_select(ci_variable_type_options, variable_type)
     %input.js-ci-variable-input-key.ci-variable-body-item.qa-ci-variable-input-key.form-control.table-section.section-15{ type: "text",
       name: key_input_name,
