@@ -4,6 +4,7 @@
 - project = local_assigns.fetch(:project) { @project }
 - content_url = local_assigns.fetch(:content_url) { @tree.readme ? project_blob_path(@project, tree_join(@ref, @tree.readme.path)) : project_tree_path(@project, @ref) }
 - show_auto_devops_callout = show_auto_devops_callout?(@project)
+- vue_file_list = Feature.enabled?(:vue_file_list, @project)
 
 #tree-holder.tree-holder.clearfix
   .nav-block
@@ -13,7 +14,12 @@
     = render 'shared/commit_well', commit: commit, ref: ref, project: project
 
   - if is_project_overview
-    .project-buttons.append-bottom-default
+    .project-buttons.append-bottom-default{ class: ("js-hide-on-navigation" if vue_file_list) }
       = render 'stat_anchor_list', anchors: @project.statistics_buttons(show_auto_devops_callout: show_auto_devops_callout)
 
-  = render 'projects/tree/tree_content', tree: @tree, content_url: content_url
+  - if vue_file_list
+    #js-tree-list{ data: { project_path: @project.full_path, ref: ref } }
+    - if @tree.readme
+      = render "projects/tree/readme", readme: @tree.readme
+  - else
+    = render 'projects/tree/tree_content', tree: @tree, content_url: content_url

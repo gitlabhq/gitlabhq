@@ -1,0 +1,3 @@
+query getRef {
+  ref @client
+}

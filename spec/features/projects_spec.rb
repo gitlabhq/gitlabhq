@@ -5,6 +5,7 @@ describe 'Project' do
   include MobileHelpers
 
   before do
+    stub_feature_flags(vue_file_list: false)
     stub_feature_flags(approval_rules: false)
   end
 
