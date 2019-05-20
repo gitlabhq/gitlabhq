@@ -40,4 +40,12 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   GpgBadges.fetch();
+
+  if (document.getElementById('js-tree-list')) {
+    import('~/repository')
+      .then(m => m.default())
+      .catch(e => {
+        throw e;
+      });
+  }
 });

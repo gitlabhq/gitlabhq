@@ -1,0 +1,5 @@
+---
+title: Fix padding of unclickable pipeline dropdown items to match links
+merge_request:
+author:
+type: fixed

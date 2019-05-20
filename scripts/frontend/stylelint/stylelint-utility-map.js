@@ -29,7 +29,7 @@ sass.render(
     // We just use postcss to create a CSS tree
     postcss([])
       .process(cssResult, {
-        // This supresses a postcss warning
+        // This suppresses a postcss warning
         from: undefined,
       })
       .then(result => {

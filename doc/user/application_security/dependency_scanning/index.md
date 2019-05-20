@@ -19,8 +19,9 @@ merge request.
 
 ![Dependency Scanning Widget](img/dependency_scanning.png)
 
-The results are sorted by the priority of the vulnerability:
+The results are sorted by the severity of the vulnerability:
 
+1. Critical
 1. High
 1. Medium
 1. Low

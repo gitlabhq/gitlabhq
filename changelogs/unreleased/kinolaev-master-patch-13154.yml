@@ -1,0 +1,5 @@
+---
+title: 'Auto-DevOps: allow to disable rollout status check'
+merge_request: 28130
+author: Sergej Nikolaev <kinolaev@gmail.com>
+type: fixed

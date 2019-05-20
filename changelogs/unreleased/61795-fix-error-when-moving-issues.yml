@@ -1,0 +1,5 @@
+---
+title: Remove unintended error message shown when moving issues
+merge_request: 28317
+author:
+type: fixed

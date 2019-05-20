@@ -45,7 +45,7 @@ module Gitlab
 
     def self.redirect_legacy_paths(router, *paths)
       build_redirect_path = lambda do |request, _params, path|
-        # Only replace the last occurence of `path`.
+        # Only replace the last occurrence of `path`.
         #
         # `request.fullpath` includes the querystring
         new_path = request.path.sub(%r{/#{path}(/*)(?!.*#{path})}, "/-/#{path}\\1")

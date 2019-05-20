@@ -98,6 +98,7 @@ module API
           optional :certificate, type: String, desc: %q(Session's certificate)
           optional :authorization, type: String, desc: %q(Session's authorization)
         end
+        optional :job_age, type: Integer, desc: %q(Job should be older than passed age in seconds to be ran on runner)
       end
       post '/request' do
         authenticate_runner!

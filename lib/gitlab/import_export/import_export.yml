@@ -176,6 +176,8 @@ excluded_attributes:
     - :enabled
 
 methods:
+  notes:
+    - :type
   labels:
     - :type
   label:

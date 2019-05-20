@@ -5,10 +5,10 @@
 
 ## Overview
 
-Similar to [project Kubernetes
-clusters](../../project/clusters/index.md), Group-level Kubernetes
-clusters allow you to connect a Kubernetes cluster to your group,
-enabling you to use the same cluster across multiple projects.
+Similar to [project-level](../../project/clusters/index.md) and
+[instance-level](../../instance/clusters/index.md) Kubernetes clusters,
+group-level Kubernetes clusters allow you to connect a Kubernetes cluster to
+your group, enabling you to use the same cluster across multiple projects.
 
 ## Installing applications
 

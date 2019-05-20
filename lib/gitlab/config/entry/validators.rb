@@ -36,10 +36,10 @@ module Gitlab
 
         class AllowedArrayValuesValidator < ActiveModel::EachValidator
           def validate_each(record, attribute, value)
-            unkown_values = value - options[:in]
-            unless unkown_values.empty?
+            unknown_values = value - options[:in]
+            unless unknown_values.empty?
               record.errors.add(attribute, "contains unknown values: " +
-                                            unkown_values.join(', '))
+                                            unknown_values.join(', '))
             end
           end
         end

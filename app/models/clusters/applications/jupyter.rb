@@ -39,7 +39,7 @@ module Clusters
       end
 
       # Will be addressed in future MRs
-      # We need to investigate and document what will be permenantly deleted.
+      # We need to investigate and document what will be permanently deleted.
       def allowed_to_uninstall?
         false
       end

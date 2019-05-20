@@ -2,7 +2,7 @@
 # the extension of the full URL path if no explicit `format` param or `Accept`
 # header is provided, like when simply browsing to a page in your browser.
 #
-# This is undesireable in GitLab, because many of our paths will end in a ref or
+# This is undesirable in GitLab, because many of our paths will end in a ref or
 # blob name that can end with any extension, while these pages should still be
 # presented as HTML unless otherwise specified.
 

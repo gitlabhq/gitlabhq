@@ -148,7 +148,7 @@ function deferredInitialisation() {
     const canaryBadge = document.querySelector('.js-canary-badge');
     const canaryLink = document.querySelector('.js-canary-link');
     if (canaryBadge) {
-      canaryBadge.classList.add('hidden');
+      canaryBadge.classList.remove('hidden');
     }
     if (canaryLink) {
       canaryLink.classList.add('hidden');
