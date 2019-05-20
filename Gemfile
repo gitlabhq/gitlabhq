@@ -409,7 +409,6 @@ gem 'health_check', '~> 2.6.0'
 # System information
 gem 'vmstat', '~> 2.3.0'
 gem 'sys-filesystem', '~> 1.1.6'
-gem 'sys-proctable', '~> 1.2'
 
 # SSH host key support
 gem 'net-ssh', '~> 5.0'
