@@ -1,7 +1,7 @@
 export default {
   computed: {
     resolveButtonTitle() {
-      let title = 'Mark as resolved';
+      let title = 'Mark comment as resolved';
 
       if (this.resolvedBy) {
         title = `Resolved by ${this.resolvedBy.name}`;
