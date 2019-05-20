@@ -43,6 +43,8 @@ module Gitlab
                 ordered_entries.concat(tree_entries_from_rugged(repository, sha, entry.path, true))
               end
             end
+
+            ordered_entries
           end
 
           def rugged_populate_flat_path(repository, sha, path, entries)
