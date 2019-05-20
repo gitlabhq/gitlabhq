@@ -83,7 +83,7 @@ module Gitlab
       end
 
       def self.clk_tck
-        @clk_tck ||= `genconf CLK_TCK`.to_i
+        @clk_tck ||= `getconf CLK_TCK`.to_i
       end
     end
   end
