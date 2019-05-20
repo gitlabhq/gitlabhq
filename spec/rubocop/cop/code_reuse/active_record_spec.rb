@@ -14,7 +14,7 @@ describe RuboCop::Cop::CodeReuse::ActiveRecord do
     expect_offense(<<~SOURCE)
     def foo
       User.where
-           ^^^^^ This method can only be used inside an ActiveRecord model
+           ^^^^^ This method can only be used inside an ActiveRecord model: https://gitlab.com/gitlab-org/gitlab-ce/issues/49653
     end
     SOURCE
   end
@@ -23,7 +23,7 @@ describe RuboCop::Cop::CodeReuse::ActiveRecord do
     expect_offense(<<~SOURCE)
     def foo
       User.where(id: 10)
-           ^^^^^ This method can only be used inside an ActiveRecord model
+           ^^^^^ This method can only be used inside an ActiveRecord model: https://gitlab.com/gitlab-org/gitlab-ce/issues/49653
     end
     SOURCE
   end
@@ -40,7 +40,7 @@ describe RuboCop::Cop::CodeReuse::ActiveRecord do
     expect_offense(<<~SOURCE)
     def foo
       project.group(:name)
-              ^^^^^ This method can only be used inside an ActiveRecord model
+              ^^^^^ This method can only be used inside an ActiveRecord model: https://gitlab.com/gitlab-org/gitlab-ce/issues/49653
     end
     SOURCE
   end
