@@ -221,7 +221,6 @@ class Projects::EnvironmentsController < Projects::ApplicationController
 
   def metrics_params
     return unless Feature.enabled?(:metrics_time_window, project)
-    return unless params[:start].present? || params[:end].present?
 
     params.require([:start, :end])
   end
