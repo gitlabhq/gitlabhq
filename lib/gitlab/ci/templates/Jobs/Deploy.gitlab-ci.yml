@@ -439,7 +439,9 @@ rollout 100%:
         chart/
     fi
 
-    kubectl rollout status -n "$KUBE_NAMESPACE" -w "$ROLLOUT_RESOURCE_TYPE/$name"
+    if [[ -z "$ROLLOUT_STATUS_DISABLED" ]]; then
+      kubectl rollout status -n "$KUBE_NAMESPACE" -w "$ROLLOUT_RESOURCE_TYPE/$name"
+    fi
   }
 
   function scale() {
