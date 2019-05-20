@@ -4,6 +4,8 @@ module Banzai
   module Filter
     class WikiLinkFilter < HTML::Pipeline::Filter
       class Rewriter
+        UNSAFE_SLUG_REGEXES = [/\Ajavascript:/i].freeze
+
         def initialize(link_string, wiki:, slug:)
           @uri = Addressable::URI.parse(link_string)
           @wiki_base_path = wiki && wiki.wiki_base_path
@@ -35,6 +37,8 @@ module Banzai
 
         # Of the form `./link`, `../link`, or similar
         def apply_hierarchical_link_rules!
+          return if slug_considered_unsafe?
+
           @uri = Addressable::URI.join(@slug, @uri) if @uri.to_s[0] == '.'
         end
 
@@ -53,6 +57,10 @@ module Banzai
 
         def repository_upload?
           @uri.relative? && @uri.path.starts_with?(Wikis::CreateAttachmentService::ATTACHMENT_PATH)
+        end
+
+        def slug_considered_unsafe?
+          UNSAFE_SLUG_REGEXES.any? { |r| r.match?(@slug) }
         end
       end
     end
