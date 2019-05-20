@@ -40,6 +40,11 @@ export default () => ({
         text: s__('Reports|Class'),
         type: fieldTypes.link,
       },
+      classname: {
+        value: null,
+        text: s__('Reports|Classname'),
+        type: fieldTypes.text,
+      },
       execution_time: {
         value: null,
         text: s__('Reports|Execution time'),
