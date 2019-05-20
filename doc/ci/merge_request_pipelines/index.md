@@ -193,5 +193,5 @@ By using pipelines for merge requests, GitLab exposes additional predefined vari
 Those variables contain information of the associated merge request, so that it's useful
 to integrate your job with [GitLab Merge Request API](../../api/merge_requests.md).
 
-You can find the list of avilable variables in [the reference sheet](../variables/predefined_variables.md).
+You can find the list of available variables in [the reference sheet](../variables/predefined_variables.md).
 The variable names begin with the `CI_MERGE_REQUEST_` prefix.

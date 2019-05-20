@@ -131,7 +131,7 @@ From the project issue list page and the project merge request list page, you ca
 
 From the group issue list page and the group merge request list page, you can [filter](../search/index.md#issues-and-merge-requests) by both group labels (including subgroup ancestors and subgroup descendants) and project labels.
 
-From the group epic list page, you can [filter](../search/index.md#issues-and-merge-requests) by both current group labels as well as decendent group labels.
+From the group epic list page, you can [filter](../search/index.md#issues-and-merge-requests) by both current group labels as well as descendant group labels.
 
 ![Labels group issues](img/labels_group_issues.png)
 
