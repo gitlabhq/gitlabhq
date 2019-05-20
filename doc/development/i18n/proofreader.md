@@ -58,6 +58,7 @@ are very appreciative of the work done by translators and proofreaders!
 - Japanese
   - Yamana Tokiuji - [GitLab](https://gitlab.com/tokiuji), [Crowdin](https://crowdin.com/profile/yamana)
   - Hiroyuki Sato - [GitLab](https://gitlab.com/hiroponz), [Crowdin](https://crowdin.com/profile/hiroponz)
+  - Tomo Dote - [Gitlab](https://gitlab.com/fu7mu4), [Crowdin](https://crowdin.com/profile/fu7mu4)
 - Korean
   - Chang-Ho Cha - [GitLab](https://gitlab.com/changho-cha), [Crowdin](https://crowdin.com/profile/zzazang)
   - Ji Hun Oh - [GitLab](https://gitlab.com/Baw-Appie), [Crowdin](https://crowdin.com/profile/BawAppie)
