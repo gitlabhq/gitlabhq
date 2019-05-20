@@ -43,10 +43,11 @@ The following metrics are available:
 | redis_ping_latency_seconds        | Gauge     | 9.4   | Round trip time of the redis ping |
 | user_session_logins_total         | Counter   | 9.4   | Counter of how many users have logged in |
 | upload_file_does_not_exist        | Counter   | 10.7 in EE, 11.5 in CE  | Number of times an upload record could not find its file |
-| failed_login_captcha_total        | Gauge | 11.0 | Counter of failed CAPTCHA attempts during login |
-| successful_login_captcha_total    | Gauge | 11.0 | Counter of successful CAPTCHA attempts during login |
-| unicorn_active_connections        | Gauge | 11.0 | The number of active Unicorn connections (workers) |
-| unicorn_queued_connections        | Gauge | 11.0 | The number of queued Unicorn connections |
+| failed_login_captcha_total        | Gauge | 11.0  | Counter of failed CAPTCHA attempts during login |
+| successful_login_captcha_total    | Gauge | 11.0  | Counter of successful CAPTCHA attempts during login |
+| unicorn_active_connections        | Gauge | 11.0  | The number of active Unicorn connections (workers) |
+| unicorn_queued_connections        | Gauge | 11.0  | The number of queued Unicorn connections |
+| unicorn_workers                   | Gauge | 11.11 | The number of Unicorn workers |
 
 ## Sidekiq Metrics available for Geo **[PREMIUM]**
 
@@ -100,6 +101,10 @@ Some basic Ruby runtime metrics are available:
 | ruby_file_descriptors                  | Gauge     | 11.1  | File descriptors per process |
 | ruby_memory_bytes                      | Gauge     | 11.1  | Memory usage by process |
 | ruby_sampler_duration_seconds_total    | Counter   | 11.1  | Time spent collecting stats |
+| ruby_process_cpu_seconds_total         | Gauge     | 11.11 | Total amount of CPU time per process |
+| ruby_process_max_fds                   | Gauge     | 11.11 | Maximum number of open file descriptors per process |
+| ruby_process_resident_memory_bytes     | Gauge     | 11.11 | Memory usage by process, measured in bytes |
+| ruby_process_start_time_seconds        | Gauge     | 11.11 | The elapsed time between system boot and the process started, measured in seconds |
 
 [GC.stat]: https://ruby-doc.org/core-2.3.0/GC.html#method-c-stat
 
