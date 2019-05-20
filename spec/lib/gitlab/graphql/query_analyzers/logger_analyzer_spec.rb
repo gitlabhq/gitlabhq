@@ -3,7 +3,6 @@
 require 'spec_helper'
 
 describe Gitlab::Graphql::QueryAnalyzers::LoggerAnalyzer do
-
   subject { described_class.new }
   let(:query_string) { "abc" }
   let(:provided_variables) { { a: 1, b: 2, c: 3 } }
@@ -20,6 +19,24 @@ describe Gitlab::Graphql::QueryAnalyzers::LoggerAnalyzer do
   end
   before do
     allow(Gitlab::Metrics::System).to receive(:monotonic_time).and_return(now)
+  end
+
+  describe '#analyze?' do
+    context 'feature flag disabled' do
+      before do
+        stub_feature_flags(graphql_logging: false)
+      end
+
+      specify do
+        expect(subject.analyze?(anything)).to be_falsey
+      end
+    end
+
+    context 'feature flag enabled by default' do
+      specify do
+        expect(subject.analyze?(anything)).to be_truthy
+      end
+    end
   end
 
   describe '#initial_value' do

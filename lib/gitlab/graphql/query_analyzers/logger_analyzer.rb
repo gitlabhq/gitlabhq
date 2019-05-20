@@ -7,7 +7,7 @@ module Gitlab
         # Called before initializing the analyzer.
         # Returns true to run this analyzer, or false to skip it.
         def analyze?(query)
-          true # unless there's some reason why we wouldn't log?
+          Feature.enabled?(:graphql_logging, default_enabled: true)
         end
 
         # Called before the visit.
