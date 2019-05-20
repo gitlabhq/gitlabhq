@@ -507,23 +507,13 @@ rollout 100%:
     kubectl describe namespace "$KUBE_NAMESPACE" || kubectl create namespace "$KUBE_NAMESPACE"
   }
 
-  # Function to ensure backwards compatibility with AUTO_DEVOPS_DOMAIN
-  function ensure_kube_ingress_base_domain() {
-    if [ -z ${KUBE_INGRESS_BASE_DOMAIN+x} ] && [ -n "$AUTO_DEVOPS_DOMAIN" ] ; then
-      export KUBE_INGRESS_BASE_DOMAIN=$AUTO_DEVOPS_DOMAIN
-    fi
-  }
-
   function check_kube_domain() {
-    ensure_kube_ingress_base_domain
-
     if [[ -z "$KUBE_INGRESS_BASE_DOMAIN" ]]; then
       echo "In order to deploy or use Review Apps,"
-      echo "AUTO_DEVOPS_DOMAIN or KUBE_INGRESS_BASE_DOMAIN variables must be set"
+      echo "KUBE_INGRESS_BASE_DOMAIN variables must be set"
       echo "From 11.8, you can set KUBE_INGRESS_BASE_DOMAIN in cluster settings"
       echo "or by defining a variable at group or project level."
       echo "You can also manually add it in .gitlab-ci.yml"
-      echo "AUTO_DEVOPS_DOMAIN support will be dropped on 12.0"
       false
     else
       true

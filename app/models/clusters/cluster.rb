@@ -204,7 +204,7 @@ module Clusters
     end
 
     def kube_ingress_domain
-      @kube_ingress_domain ||= domain.presence || instance_domain || legacy_auto_devops_domain
+      @kube_ingress_domain ||= domain.presence || instance_domain
     end
 
     def predefined_variables
@@ -219,24 +219,6 @@ module Clusters
 
     def instance_domain
       @instance_domain ||= Gitlab::CurrentSettings.auto_devops_domain
-    end
-
-    # To keep backward compatibility with AUTO_DEVOPS_DOMAIN
-    # environment variable, we need to ensure KUBE_INGRESS_BASE_DOMAIN
-    # is set if AUTO_DEVOPS_DOMAIN is set on any of the following options:
-    # ProjectAutoDevops#Domain, project variables or group variables,
-    # as the AUTO_DEVOPS_DOMAIN is needed for CI_ENVIRONMENT_URL
-    #
-    # This method should is scheduled to be removed on
-    # https://gitlab.com/gitlab-org/gitlab-ce/issues/56959
-    def legacy_auto_devops_domain
-      if project_type?
-        project&.auto_devops&.domain.presence ||
-          project.variables.find_by(key: 'AUTO_DEVOPS_DOMAIN')&.value.presence ||
-          project.group&.variables&.find_by(key: 'AUTO_DEVOPS_DOMAIN')&.value.presence
-      elsif group_type?
-        group.variables.find_by(key: 'AUTO_DEVOPS_DOMAIN')&.value.presence
-      end
     end
 
     def restrict_modification
