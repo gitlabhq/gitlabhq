@@ -32,6 +32,12 @@ An issue, epic, or merge request cannot have two scoped labels with the same key
 For example, if an issue is already labeled `priority::3` and you apply the label `priority::2` to it,
 `priority::3` is automatically removed.
 
+NOTE: **Note:**
+In the case where labels have multiple sets of `::`, the longest path is used
+for mutual exclusivity check. For example, for label `some::key::value` we
+would check for exclusivity on `some::key::` level instead of `some::` - this
+allows finer grained organization.
+
 ### Workflows with scoped labels **[PREMIUM]**
 
 Suppose you wanted a custom field in issues to track the platform operating system
