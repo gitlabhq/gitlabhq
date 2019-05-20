@@ -9,24 +9,9 @@ describe PagesDomainRemovalCronWorker do
     context 'when there is domain which should be removed' do
       let!(:domain_for_removal) { create(:pages_domain, :should_be_removed) }
 
-      before do
-        stub_feature_flags(remove_disabled_domains: true)
-      end
-
       it 'removes domain' do
         expect { worker.perform }.to change { PagesDomain.count }.by(-1)
         expect(PagesDomain.exists?).to eq(false)
-      end
-
-      context 'when domain removal is disabled' do
-        before do
-          stub_feature_flags(remove_disabled_domains: false)
-        end
-
-        it 'does not remove pages domain' do
-          expect { worker.perform }.not_to change { PagesDomain.count }
-          expect(PagesDomain.find_by(domain: domain_for_removal.domain)).to be_present
-        end
       end
     end
 
