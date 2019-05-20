@@ -4,17 +4,24 @@
 
 CAUTION: **Beta:**
 Insights is considered beta, and is not ready for production use.
-Follow [gitlab-org&725](https://gitlab.com/groups/gitlab-org/-/epics/725) for
-updates.
+Follow [gitlab-org/quality/team-tasks#137](https://gitlab.com/gitlab-org/quality/team-tasks/issues/137#general-availability)
+for updates.
 
 Configure the Insights that matter for your projects to explore data such as
 triage hygiene, issues created/closed per a given period, average time for merge
 requests to be merged and much more.
 
-![Insights example stacked bar chart](img/project_insights.png)
+![Insights example bar chart](img/project_insights.png)
 
 NOTE: **Note:**
 This feature is [also available at the group level](https://docs.gitlab.com/ee/user/group/insights/index.html).
+
+## View your project's Insights
+
+You can access your project's Insights by clicking the **Project > Insights**
+link in the left sidebar:
+
+![Insights sidebar link](img/insights_sidebar_link.png)
 
 ## Configure your Insights
 
@@ -74,8 +81,7 @@ Each chart definition is made up of a hash composed of key-value pairs.
 For example, here's single chart definition:
 
 ```yaml
-monthlyBugsCreated:
-  title: Monthly Bugs Created (bar)
+- title: Monthly Bugs Created (bar)
   type: bar
   query:
     issuable_type: issue
