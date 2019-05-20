@@ -39,7 +39,7 @@ scope format: false do
     end
   end
 
-  scope constraints: { id: Gitlab::PathRegex.git_reference_regex } do
+  scope path: '-', constraints: { id: Gitlab::PathRegex.git_reference_regex } do
     resources :network, only: [:show]
 
     resources :graphs, only: [:show] do

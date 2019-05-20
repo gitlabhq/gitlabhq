@@ -1,0 +1,5 @@
+---
+title: Move some project routes under /-/ scope
+merge_request: 28435
+author:
+type: changed
