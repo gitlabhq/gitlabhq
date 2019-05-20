@@ -36,6 +36,11 @@ module Ci
         builds = builds.with_any_tags
       end
 
+      # pick builds that older than specified age
+      if params.key?(:job_age)
+        builds = builds.queued_before(params[:job_age].seconds.ago)
+      end
+
       builds.each do |build|
         next unless runner.can_pick?(build)
 
