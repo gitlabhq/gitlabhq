@@ -442,16 +442,23 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
         end
       end
-      namespace :settings do
-        get :members, to: redirect("%{namespace_id}/%{project_id}/project_members")
-        resource :ci_cd, only: [:show, :update], controller: 'ci_cd' do
-          post :reset_cache
-          put :reset_registration_token
-        end
-        resource :integrations, only: [:show]
-        resource :repository, only: [:show], controller: :repository do
-          post :create_deploy_token, path: 'deploy_token/create'
-          post :cleanup
+
+      scope '-' do
+        namespace :settings do
+          get :members, to: redirect("%{namespace_id}/%{project_id}/project_members")
+
+          resource :ci_cd, only: [:show, :update], controller: 'ci_cd' do
+            post :reset_cache
+            put :reset_registration_token
+          end
+
+          resource :operations, only: [:show, :update]
+          resource :integrations, only: [:show]
+
+          resource :repository, only: [:show], controller: :repository do
+            post :create_deploy_token, path: 'deploy_token/create'
+            post :cleanup
+          end
         end
       end
 
@@ -465,10 +472,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       # its preferable to keep it below all other project routes
       draw :wiki
       draw :repository
-
-      namespace :settings do
-        resource :operations, only: [:show, :update]
-      end
     end
 
     resources(:projects,
