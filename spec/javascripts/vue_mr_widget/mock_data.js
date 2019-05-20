@@ -235,11 +235,44 @@ export default {
   troubleshooting_docs_path: 'help',
   merge_request_pipelines_docs_path: '/help/ci/merge_request_pipelines/index.md',
   squash: true,
+  visual_review_app_available: true,
 };
 
 export const mockStore = {
-  pipeline: { id: 0 },
-  mergePipeline: { id: 1 },
+  pipeline: {
+    id: 0,
+    details: {
+      status: {
+        details_path: '/root/review-app-tester/pipelines/66',
+        favicon:
+          '/assets/ci_favicons/favicon_status_success-8451333011eee8ce9f2ab25dc487fe24a8758c694827a582f17f42b0a90446a2. png',
+        group: 'success-with-warnings',
+        has_details: true,
+        icon: 'status_warning',
+        illustration: null,
+        label: 'passed with warnings',
+        text: 'passed',
+        tooltip: 'passed',
+      },
+    },
+  },
+  mergePipeline: {
+    id: 1,
+    details: {
+      status: {
+        details_path: '/root/review-app-tester/pipelines/66',
+        favicon:
+          '/assets/ci_favicons/favicon_status_success-8451333011eee8ce9f2ab25dc487fe24a8758c694827a582f17f42b0a90446a2. png',
+        group: 'success-with-warnings',
+        has_details: true,
+        icon: 'status_warning',
+        illustration: null,
+        label: 'passed with warnings',
+        text: 'passed',
+        tooltip: 'passed',
+      },
+    },
+  },
   targetBranch: 'target-branch',
   sourceBranch: 'source-branch',
   sourceBranchLink: 'source-branch-link',
