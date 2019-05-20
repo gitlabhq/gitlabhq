@@ -397,6 +397,14 @@ GitLab can scan and report any vulnerabilities found in your project.
 
 [Read more about security reports.](https://docs.gitlab.com/ee/user/application_security/index.html)
 
+## JUnit test reports
+
+Configure your CI jobs to use JUnit test reports, and let GitLab display a report
+on the merge request so that it’s easier and faster to identify the failure
+without having to check the entire job log.
+
+[Read more about JUnit test reports](../../../ci/junit_test_reports.md).
+
 ## Live preview with Review Apps
 
 If you configured [Review Apps](https://about.gitlab.com/features/review-apps/) for your project,
