@@ -425,9 +425,9 @@ To uninstall an application:
 1. Select your cluster.
 1. Click the **Uninstall** button for the application.
 
-Support for uninstalling all applications will be progressively
-introduced (see [related
-epic](https://gitlab.com/groups/gitlab-org/-/epics/1201)).
+Support for uninstalling all applications is planned for progressive rollout.
+To follow progress, see [the relevant
+epic](https://gitlab.com/groups/gitlab-org/-/epics/1201).
 
 ### Troubleshooting applications
 
