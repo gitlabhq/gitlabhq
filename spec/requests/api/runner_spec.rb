@@ -542,6 +542,30 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
             end
           end
 
+          context 'when job filtered by job_age' do
+            let!(:job) { create(:ci_build, :tag, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0, queued_at: 60.seconds.ago) }
+
+            context 'job is queued less than job_age parameter' do
+              let(:job_age) { 120 }
+
+              it 'gives 204' do
+                request_job(job_age: job_age)
+
+                expect(response).to have_gitlab_http_status(204)
+              end
+            end
+
+            context 'job is queued more than job_age parameter' do
+              let(:job_age) { 30 }
+
+              it 'picks a job' do
+                request_job(job_age: job_age)
+
+                expect(response).to have_gitlab_http_status(201)
+              end
+            end
+          end
+
           context 'when job is made for branch' do
             it 'sets tag as ref_type' do
               request_job
