@@ -20,20 +20,19 @@ module API
         optional :share_with_group_lock, type: Boolean, desc: 'Prevent sharing a project with another group within this group'
       end
 
-      if Gitlab.ee?
-        params :optional_params_ee do
-          optional :membership_lock, type: Boolean, desc: 'Prevent adding new members to project membership within this group'
-          optional :ldap_cn, type: String, desc: 'LDAP Common Name'
-          optional :ldap_access, type: Integer, desc: 'A valid access level'
-          optional :shared_runners_minutes_limit, type: Integer, desc: '(admin-only) Pipeline minutes quota for this group'
-          optional :extra_shared_runners_minutes_limit, type: Integer, desc: '(admin-only) Extra pipeline minutes quota for this group'
-          all_or_none_of :ldap_cn, :ldap_access
-        end
+      params :optional_params_ee do
       end
 
+      params :optional_update_params_ee do
+      end
+    end
+
+    include ::API::Helpers::GroupsHelpers
+
+    helpers do
       params :optional_params do
         use :optional_params_ce
-        use :optional_params_ee if Gitlab.ee?
+        use :optional_params_ee
       end
 
       params :statistics_params do
@@ -176,10 +175,7 @@ module API
         optional :name, type: String, desc: 'The name of the group'
         optional :path, type: String, desc: 'The path of the group'
         use :optional_params
-
-        if Gitlab.ee?
-          optional :file_template_project_id, type: Integer, desc: 'The ID of a project to use for custom templates in this group'
-        end
+        use :optional_update_params_ee
       end
       put ':id' do
         group = find_group!(params[:id])
