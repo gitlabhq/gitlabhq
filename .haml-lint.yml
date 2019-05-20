@@ -153,7 +153,7 @@ linters:
 
   Indentation:
     enabled: true
-    character: space # or tab
+    character: space  # or tab
 
   TagName:
     enabled: true
