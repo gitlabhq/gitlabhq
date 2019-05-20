@@ -11,7 +11,7 @@ Rails.application.configure do
   # and recreated between test runs. Don't rely on the data there!
 
   # Enabling caching of classes slows start-up time because all controllers
-  # are loaded at initalization, but it reduces memory and load because files
+  # are loaded at initialization, but it reduces memory and load because files
   # are not reloaded with every request. For example, caching is not necessary
   # for loading database migrations but useful for handling Knapsack specs.
   config.cache_classes = ENV['CACHE_CLASSES'] == 'true'

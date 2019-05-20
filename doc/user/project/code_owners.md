@@ -43,7 +43,7 @@ Example `CODEOWNERS` file:
 
 # app/ @commented-rule
 
-# We can specifiy a default match using wildcards:
+# We can specify a default match using wildcards:
 * @default-codeowner
 
 # Rules defined later in the file take precedence over the rules

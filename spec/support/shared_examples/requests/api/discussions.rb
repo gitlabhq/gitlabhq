@@ -1,4 +1,4 @@
-shared_examples 'discussions API' do |parent_type, noteable_type, id_name, can_reply_to_invididual_notes: false|
+shared_examples 'discussions API' do |parent_type, noteable_type, id_name, can_reply_to_individual_notes: false|
   describe "GET /#{parent_type}/:id/#{noteable_type}/:noteable_id/discussions" do
     it "returns an array of discussions" do
       get api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/discussions", user)
@@ -144,7 +144,7 @@ shared_examples 'discussions API' do |parent_type, noteable_type, id_name, can_r
                  "discussions/#{note.discussion_id}/notes", user), params: { body: 'hi!' }
       end
 
-      if can_reply_to_invididual_notes
+      if can_reply_to_individual_notes
         it 'creates a new discussion' do
           expect(response).to have_gitlab_http_status(201)
           expect(json_response['body']).to eq('hi!')

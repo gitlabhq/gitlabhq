@@ -67,7 +67,7 @@ apt-get install nfs-common
 
 ### Step 2 - Create Mount Points on Client
 
-Create a directroy on the client that we can mount the shared directory from the host.
+Create a directory on the client that we can mount the shared directory from the host.
 Please note that if your mount point directory contains any files they will be hidden
 once the remote shares are mounted. An empty/new directory on the client is recommended
 for this purpose.

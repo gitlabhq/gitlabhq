@@ -7,11 +7,11 @@ module Gitlab
         module Limit
           class Size < Chain::Base
             def perform!
-              # to be overriden in EE
+              # to be overridden in EE
             end
 
             def break?
-              false # to be overriden in EE
+              false # to be overridden in EE
             end
           end
         end

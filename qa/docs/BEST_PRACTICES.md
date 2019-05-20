@@ -6,7 +6,7 @@ A good example is a user being logged in as a pre-condition for testing the feat
 
 But if the login feature is already covered with end-to-end tests through the GUI, there is no reason to perform such an expensive task to test the functionality of creating a project, or importing a repo, even if this features depend on a user being logged in. Let's see an example to make things clear.
 
-Let's say that, on average, the process to perform a successfull login through the GUI takes 2 seconds.
+Let's say that, on average, the process to perform a successful login through the GUI takes 2 seconds.
 
 Now, realize that almost all tests need the user to be logged in, and that we need every test to run in isolation, meaning that tests cannot interfere with each other. This would  mean that for every test the user needs to log in, and "waste 2 seconds".
 

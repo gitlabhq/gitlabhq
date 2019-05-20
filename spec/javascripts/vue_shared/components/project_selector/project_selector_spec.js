@@ -99,7 +99,7 @@ describe('ProjectSelector component', () => {
     expect(trimText(noResultsEl.text())).toEqual('Sorry, no projects matched your search');
   });
 
-  it(`shows a "minimum seach query" message if showMinimumSearchQueryMessage === true`, () => {
+  it(`shows a "minimum search query" message if showMinimumSearchQueryMessage === true`, () => {
     wrapper.setProps({ showMinimumSearchQueryMessage: true });
 
     expect(wrapper.contains('.js-minimum-search-query-message')).toBe(true);

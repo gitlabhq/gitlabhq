@@ -46,7 +46,7 @@ module Resolvers
     def resolve(**args)
       # The project could have been loaded in batch by `BatchLoader`.
       # At this point we need the `id` of the project to query for issues, so
-      # make sure it's loaded and not `nil` before continueing.
+      # make sure it's loaded and not `nil` before continuing.
       project.sync if project.respond_to?(:sync)
       return Issue.none if project.nil?
 

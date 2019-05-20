@@ -80,7 +80,7 @@ describe Banzai::Filter::SyntaxHighlightFilter do
       let(:lang) { 'suggestion' }
       let(:lang_params) { '-1+10' }
 
-      it "delimits on the first appearence" do
+      it "delimits on the first appearance" do
         result = filter(%{<pre><code lang="#{lang}#{delimiter}#{lang_params}#{delimiter}more-things">This is a test</code></pre>})
 
         expect(result.to_html).to eq(%{<pre class="code highlight js-syntax-highlight #{lang}" lang="#{lang}" #{data_attr}="#{lang_params}#{delimiter}more-things" v-pre="true"><code><span id="LC1" class="line" lang="#{lang}">This is a test</span></code></pre>})

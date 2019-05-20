@@ -121,7 +121,7 @@ module SystemCheck
     #
     # @see #try_fixing_it
     # @see #fix_and_rerun
-    # @see #for_more_infromation
+    # @see #for_more_information
     def show_error
       raise NotImplementedError
     end
