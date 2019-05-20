@@ -23,7 +23,16 @@ module Members
 
       members.each do |member|
         if member.errors.any?
-          errors << "#{member.user.username}: #{member.errors.full_messages.to_sentence}"
+          current_error =
+            # Invited users may not have an associated user
+            if member.user.present?
+              "#{member.user.username}: "
+            else
+              ""
+            end
+
+          current_error += member.errors.full_messages.to_sentence
+          errors << current_error
         else
           after_execute(member: member)
         end
