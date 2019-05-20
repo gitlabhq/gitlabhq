@@ -103,6 +103,10 @@ This feature disabled by default until we resolve issues with [contention handli
 
 ![Merge request pipeline config](img/merge_request_pipeline_config.png)
 
+CAUTION: **Warning:**
+Make sure your `gitlab-ci.yml` file is [configured properly for pipelines for merge requests](#configuring-pipelines-for-merge-requests),
+otherwise pipelines for merged results won't run and your merge requests will be stuck in an unresolved state.
+
 ### Pipelines for Merged Result's limitations
 
 - This feature requires [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-runner) 11.9 or newer.
