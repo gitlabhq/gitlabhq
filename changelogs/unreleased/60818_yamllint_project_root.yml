@@ -1,0 +1,5 @@
+---
+title: Fix yaml linting for project root *.yml files
+merge_request: 27579
+author: Will Hall
+type: fixed
