@@ -11,6 +11,7 @@ describe "User browses files" do
   let(:user) { project.owner }
 
   before do
+    stub_feature_flags(vue_file_list: false)
     stub_feature_flags(csslab: false)
     sign_in(user)
   end
