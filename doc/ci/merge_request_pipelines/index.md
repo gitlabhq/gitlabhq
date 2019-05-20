@@ -70,15 +70,18 @@ when a merge request was created or updated. For example:
 ## Pipelines for Merged Results **[PREMIUM]**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/7380) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.10.
+> This feature is disabled by default until we resolve issues with [contention handling](https://gitlab.com/gitlab-org/gitlab-ee/issues/9186), but [can be enabled manually](#enabling-pipelines-for-merged-results).
 
 It's possible for your source and target branches to diverge, which can result
 in the scenario that source branch's pipeline was green, the target's pipeline was green,
-but the combined output fails. By having your merge request pipeline automatically
+but the combined output fails.
+
+By having your merge request pipeline automatically
 create a new ref that contains the merge result of the source and target branch
 (then running a pipeline on that ref), we can better test that the combined result
 is also valid.
 
-From GitLab 11.10, pipelines for merge requests run by default
+GitLab can run pipelines for merge requests
 on this merged result. That is, where the source and target branches are combined into a
 new ref and a pipeline for this ref validates the result prior to merging.
 
@@ -95,7 +98,7 @@ get out of WIP status or resolve merge conflicts as soon as possible.
 
 ### Enabling Pipelines for Merged Results
 
-This feature disabled by default until we resolve issues with [contention handling](https://gitlab.com/gitlab-org/gitlab-ee/issues/9186). It can be enabled at the project level:
+To enable pipelines on merged results at the project level:
 
 1. Visit your project's **Settings > General** and expand **Merge requests**.
 1. Check **Merge pipelines will try to validate the post-merge result prior to merging**.
