@@ -3,27 +3,12 @@
 module API
   class Issues < Grape::API
     include PaginationParams
+    helpers Helpers::IssuesHelpers
+    helpers ::Gitlab::IssuableMetadata
 
     before { authenticate_non_get! }
 
-    helpers ::Gitlab::IssuableMetadata
-
     helpers do
-      # rubocop: disable CodeReuse/ActiveRecord
-      def find_issues(args = {})
-        args = declared_params.merge(args)
-
-        args.delete(:id)
-        args[:milestone_title] = args.delete(:milestone)
-        args[:label_name] = args.delete(:labels)
-        args[:scope] = args[:scope].underscore if args[:scope]
-
-        issues = IssuesFinder.new(current_user, args).execute
-                   .with_api_entity_associations
-        issues.reorder(order_options_with_tie_breaker)
-      end
-      # rubocop: enable CodeReuse/ActiveRecord
-
       if Gitlab.ee?
         params :issues_params_ee do
           optional :weight, types: [Integer, String], integer_none_any: true, desc: 'The weight of the issue'
@@ -34,13 +19,9 @@ module API
         end
       end
 
-      params :issues_params do
+      params :issues_stats_params do
         optional :labels, type: Array[String], coerce_with: Validations::Types::LabelsList.coerce, desc: 'Comma-separated list of label names'
         optional :milestone, type: String, desc: 'Milestone title'
-        optional :order_by, type: String, values: %w[created_at updated_at], default: 'created_at',
-                            desc: 'Return issues ordered by `created_at` or `updated_at` fields.'
-        optional :sort, type: String, values: %w[asc desc], default: 'desc',
-                        desc: 'Return issues sorted in `asc` or `desc` order.'
         optional :milestone, type: String, desc: 'Return issues for a specific milestone'
         optional :iids, type: Array[Integer], desc: 'The IID array of issues'
         optional :search, type: String, desc: 'Search issues for text present in the title, description, or any combination of these'
@@ -49,16 +30,37 @@ module API
         optional :created_before, type: DateTime, desc: 'Return issues created before the specified time'
         optional :updated_after, type: DateTime, desc: 'Return issues updated after the specified time'
         optional :updated_before, type: DateTime, desc: 'Return issues updated before the specified time'
+
         optional :author_id, type: Integer, desc: 'Return issues which are authored by the user with the given ID'
+        optional :author_username, type: String, desc: 'Return issues which are authored by the user with the given username'
+        mutually_exclusive :author_id, :author_username
+
         optional :assignee_id, types: [Integer, String], integer_none_any: true,
                                desc: 'Return issues which are assigned to the user with the given ID'
+        optional :assignee_username, type: Array[String], check_assignees_count: true,
+                                     coerce_with: Validations::CheckAssigneesCount.coerce,
+                                     desc: 'Return issues which are assigned to the user with the given username'
+        mutually_exclusive :assignee_id, :assignee_username
+
         optional :scope, type: String, values: %w[created-by-me assigned-to-me created_by_me assigned_to_me all],
                          desc: 'Return issues for the given scope: `created_by_me`, `assigned_to_me` or `all`'
         optional :my_reaction_emoji, type: String, desc: 'Return issues reacted by the authenticated user by the given emoji'
         optional :confidential, type: Boolean, desc: 'Filter confidential or public issues'
-        use :pagination
 
         use :issues_params_ee if Gitlab.ee?
+      end
+
+      params :issues_params do
+        optional :with_labels_details, type: Boolean, desc: 'Return more label data than just lable title', default: false
+        optional :state, type: String, values: %w[opened closed all], default: 'all',
+                 desc: 'Return opened, closed, or all issues'
+        optional :order_by, type: String, values: %w[created_at updated_at], default: 'created_at',
+                 desc: 'Return issues ordered by `created_at` or `updated_at` fields.'
+        optional :sort, type: String, values: %w[asc desc], default: 'desc',
+                 desc: 'Return issues sorted in `asc` or `desc` order.'
+
+        use :issues_stats_params
+        use :pagination
       end
 
       params :issue_params do
@@ -75,13 +77,23 @@ module API
       end
     end
 
+    desc "Get currently authenticated user's issues statistics"
+    params do
+      use :issues_stats_params
+      optional :scope, type: String, values: %w[created_by_me assigned_to_me all], default: 'created_by_me',
+                       desc: 'Return issues for the given scope: `created_by_me`, `assigned_to_me` or `all`'
+    end
+    get '/issues_statistics' do
+      authenticate! unless params[:scope] == 'all'
+
+      present issues_statistics, with: Grape::Presenters::Presenter
+    end
+
     resource :issues do
       desc "Get currently authenticated user's issues" do
-        success Entities::IssueBasic
+        success Entities::Issue
       end
       params do
-        optional :state, type: String, values: %w[opened closed all], default: 'all',
-                         desc: 'Return opened, closed, or all issues'
         use :issues_params
         optional :scope, type: String, values: %w[created-by-me assigned-to-me created_by_me assigned_to_me all], default: 'created_by_me',
                          desc: 'Return issues for the given scope: `created_by_me`, `assigned_to_me` or `all`'
@@ -91,7 +103,8 @@ module API
         issues = paginate(find_issues)
 
         options = {
-          with: Entities::IssueBasic,
+          with: Entities::Issue,
+          with_labels_details: declared_params[:with_labels_details],
           current_user: current_user,
           issuable_metadata: issuable_meta_data(issues, 'Issue')
         }
@@ -105,11 +118,9 @@ module API
     end
     resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Get a list of group issues' do
-        success Entities::IssueBasic
+        success Entities::Issue
       end
       params do
-        optional :state, type: String, values: %w[opened closed all], default: 'all',
-                         desc: 'Return opened, closed, or all issues'
         use :issues_params
       end
       get ":id/issues" do
@@ -118,12 +129,23 @@ module API
         issues = paginate(find_issues(group_id: group.id, include_subgroups: true))
 
         options = {
-          with: Entities::IssueBasic,
+          with: Entities::Issue,
+          with_labels_details: declared_params[:with_labels_details],
           current_user: current_user,
           issuable_metadata: issuable_meta_data(issues, 'Issue')
         }
 
         present issues, options
+      end
+
+      desc 'Get statistics for the list of group issues'
+      params do
+        use :issues_stats_params
+      end
+      get ":id/issues_statistics" do
+        group = find_group!(params[:id])
+
+        present issues_statistics(group_id: group.id, include_subgroups: true), with: Grape::Presenters::Presenter
       end
     end
 
@@ -134,11 +156,9 @@ module API
       include TimeTrackingEndpoints
 
       desc 'Get a list of project issues' do
-        success Entities::IssueBasic
+        success Entities::Issue
       end
       params do
-        optional :state, type: String, values: %w[opened closed all], default: 'all',
-                         desc: 'Return opened, closed, or all issues'
         use :issues_params
       end
       get ":id/issues" do
@@ -147,13 +167,24 @@ module API
         issues = paginate(find_issues(project_id: project.id))
 
         options = {
-          with: Entities::IssueBasic,
+          with: Entities::Issue,
+          with_labels_details: declared_params[:with_labels_details],
           current_user: current_user,
           project: user_project,
           issuable_metadata: issuable_meta_data(issues, 'Issue')
         }
 
         present issues, options
+      end
+
+      desc 'Get statistics for the list of project issues'
+      params do
+        use :issues_stats_params
+      end
+      get ":id/issues_statistics" do
+        project = find_project!(params[:id])
+
+        present issues_statistics(project_id: project.id), with: Grape::Presenters::Presenter
       end
 
       desc 'Get a single project issue' do

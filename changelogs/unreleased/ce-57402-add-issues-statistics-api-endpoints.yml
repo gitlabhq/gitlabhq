@@ -1,0 +1,5 @@
+---
+title: Add issues_statistics api endpoints and extend issues search api
+merge_request: 27366
+author:
+type: added
