@@ -7,7 +7,7 @@
  *
  * @example
  * <clipboard-button
- *   title="Copy to clipbard"
+ *   title="Copy to clipboard"
  *   text="Content to be copied"
  *    css-class="btn-transparent"
  * />
