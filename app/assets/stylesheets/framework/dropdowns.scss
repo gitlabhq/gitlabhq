@@ -570,10 +570,10 @@
 }
 
 .dropdown-menu-close {
-  right: 5px;
+  top: $gl-padding-4;
+  right: $gl-padding-8;
   width: 20px;
   height: 20px;
-  top: -1px;
 }
 
 .dropdown-menu-close-icon {

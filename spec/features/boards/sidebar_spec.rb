@@ -352,6 +352,8 @@ describe 'Issue Boards', :js do
 
       page.within('.labels') do
         click_link 'Edit'
+        wait_for_requests
+
         click_link 'Create project label'
         fill_in 'new_label_name', with: 'test label'
         first('.suggest-colors-dropdown a').click
@@ -368,6 +370,8 @@ describe 'Issue Boards', :js do
 
       page.within('.labels') do
         click_link 'Edit'
+        wait_for_requests
+
         click_link 'Create project label'
         fill_in 'new_label_name', with: 'test label'
         first('.suggest-colors-dropdown a').click
