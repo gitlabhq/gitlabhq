@@ -1,3 +1,5 @@
+import { __ } from '~/locale';
+
 export const namespaceSelectOptions = state => {
   const serializedNamespaces = state.namespaces.map(({ fullPath }) => ({
     id: fullPath,
@@ -5,9 +7,9 @@ export const namespaceSelectOptions = state => {
   }));
 
   return [
-    { text: 'Groups', children: serializedNamespaces },
+    { text: __('Groups'), children: serializedNamespaces },
     {
-      text: 'Users',
+      text: __('Users'),
       children: [{ id: state.defaultTargetNamespace, text: state.defaultTargetNamespace }],
     },
   ];
