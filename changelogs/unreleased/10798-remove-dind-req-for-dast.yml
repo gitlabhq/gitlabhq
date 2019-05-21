@@ -1,0 +1,5 @@
+---
+title: Remove dind from DAST template
+merge_request: 28083
+author:
+type: changed
