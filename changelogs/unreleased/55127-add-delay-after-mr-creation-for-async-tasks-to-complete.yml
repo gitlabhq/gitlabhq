@@ -1,5 +1,0 @@
----
-title: Wait for pipeline creation to complete before accepting a MR via API
-merge_request: 27978
-author: kerrizor
-type: fixed
