@@ -5,8 +5,8 @@ module TodosDestroyer
     include ApplicationWorker
     include TodosDestroyerQueue
 
-    def perform(issue_id)
-      ::Todos::Destroy::ConfidentialIssueService.new(issue_id).execute
+    def perform(issue_id = nil, project_id = nil)
+      ::Todos::Destroy::ConfidentialIssueService.new(issue_id: issue_id, project_id: project_id).execute
     end
   end
 end
