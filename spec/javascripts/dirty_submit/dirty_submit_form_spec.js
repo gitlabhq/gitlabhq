@@ -1,3 +1,4 @@
+import _ from 'underscore';
 import DirtySubmitForm from '~/dirty_submit/dirty_submit_form';
 import { getInputValue, setInputValue, createForm } from './helper';
 
@@ -13,46 +14,100 @@ function expectToToggleDisableOnDirtyUpdate(submit, input) {
 }
 
 describe('DirtySubmitForm', () => {
-  DirtySubmitForm.THROTTLE_DURATION = 0;
+  const originalThrottleDuration = DirtySubmitForm.THROTTLE_DURATION;
 
-  it('disables submit until there are changes', done => {
-    const { form, input, submit } = createForm();
+  describe('submit button tests', () => {
+    beforeEach(() => {
+      DirtySubmitForm.THROTTLE_DURATION = 0;
+    });
 
-    new DirtySubmitForm(form); // eslint-disable-line no-new
+    afterEach(() => {
+      DirtySubmitForm.THROTTLE_DURATION = originalThrottleDuration;
+    });
 
-    return expectToToggleDisableOnDirtyUpdate(submit, input)
-      .then(done)
-      .catch(done.fail);
+    it('disables submit until there are changes', done => {
+      const { form, input, submit } = createForm();
+
+      new DirtySubmitForm(form); // eslint-disable-line no-new
+
+      return expectToToggleDisableOnDirtyUpdate(submit, input)
+        .then(done)
+        .catch(done.fail);
+    });
+
+    it('disables submit until there are changes when initializing with a falsy value', done => {
+      const { form, input, submit } = createForm();
+      input.value = '';
+
+      new DirtySubmitForm(form); // eslint-disable-line no-new
+
+      return expectToToggleDisableOnDirtyUpdate(submit, input)
+        .then(done)
+        .catch(done.fail);
+    });
+
+    it('disables submit until there are changes for radio inputs', done => {
+      const { form, input, submit } = createForm('radio');
+
+      new DirtySubmitForm(form); // eslint-disable-line no-new
+
+      return expectToToggleDisableOnDirtyUpdate(submit, input)
+        .then(done)
+        .catch(done.fail);
+    });
+
+    it('disables submit until there are changes for checkbox inputs', done => {
+      const { form, input, submit } = createForm('checkbox');
+
+      new DirtySubmitForm(form); // eslint-disable-line no-new
+
+      return expectToToggleDisableOnDirtyUpdate(submit, input)
+        .then(done)
+        .catch(done.fail);
+    });
   });
 
-  it('disables submit until there are changes when initializing with a falsy value', done => {
-    const { form, input, submit } = createForm();
-    input.value = '';
+  describe('throttling tests', () => {
+    beforeEach(() => {
+      jasmine.clock().install();
+      DirtySubmitForm.THROTTLE_DURATION = 100;
+    });
 
-    new DirtySubmitForm(form); // eslint-disable-line no-new
+    afterEach(() => {
+      jasmine.clock().uninstall();
+      DirtySubmitForm.THROTTLE_DURATION = originalThrottleDuration;
+    });
 
-    return expectToToggleDisableOnDirtyUpdate(submit, input)
-      .then(done)
-      .catch(done.fail);
-  });
+    it('throttles updates when rapid changes are made to a single form element', () => {
+      const { form, input } = createForm();
+      const updateDirtyInputSpy = spyOn(new DirtySubmitForm(form), 'updateDirtyInput');
 
-  it('disables submit until there are changes for radio inputs', done => {
-    const { form, input, submit } = createForm('radio');
+      _.range(10).forEach(i => {
+        setInputValue(input, `change ${i}`, false);
+      });
 
-    new DirtySubmitForm(form); // eslint-disable-line no-new
+      jasmine.clock().tick(101);
 
-    return expectToToggleDisableOnDirtyUpdate(submit, input)
-      .then(done)
-      .catch(done.fail);
-  });
+      expect(updateDirtyInputSpy).toHaveBeenCalledTimes(2);
+    });
 
-  it('disables submit until there are changes for checkbox inputs', done => {
-    const { form, input, submit } = createForm('checkbox');
+    it('does not throttle updates when rapid changes are made to different form elements', () => {
+      const form = document.createElement('form');
+      const range = _.range(10);
+      range.forEach(i => {
+        form.innerHTML += `<input type="text" name="input-${i}" class="js-input-${i}"/>`;
+      });
 
-    new DirtySubmitForm(form); // eslint-disable-line no-new
+      const updateDirtyInputSpy = spyOn(new DirtySubmitForm(form), 'updateDirtyInput');
 
-    return expectToToggleDisableOnDirtyUpdate(submit, input)
-      .then(done)
-      .catch(done.fail);
+      range.forEach(i => {
+        const input = form.querySelector(`.js-input-${i}`);
+        setInputValue(input, `change`, false);
+      });
+
+      jasmine.clock().tick(101);
+
+      expect(updateDirtyInputSpy).toHaveBeenCalledTimes(range.length);
+    });
   });
 });
