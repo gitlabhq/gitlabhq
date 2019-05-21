@@ -343,7 +343,7 @@ Define project templates at a group level by setting a group as the template sou
 ### Advanced settings
 
 - **Projects**: View all projects within that group, add members to each project,
-  access each project's settings, and remove any project&mdash;all from the same screen.
+  access each project's settings, and remove any project, all from the same screen.
 - **Webhooks**: Configure [webhooks](../project/integrations/webhooks.md) for your group.
 - **Kubernetes cluster integration**: Connect your GitLab group with [Kubernetes clusters](clusters/index.md).
 - **Audit Events**: View [Audit Events](https://docs.gitlab.com/ee/administration/audit_events.html)
