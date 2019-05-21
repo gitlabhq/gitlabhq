@@ -11250,6 +11250,12 @@ msgstr ""
 msgid "You can invite a new member to <strong>%{project_name}</strong> or invite another group."
 msgstr ""
 
+msgid "You can invite a new member to <strong>%{project_name}</strong>."
+msgstr ""
+
+msgid "You can invite another group to <strong>%{project_name}</strong>."
+msgstr ""
+
 msgid "You can move around the graph by using the arrow keys."
 msgstr ""
 
