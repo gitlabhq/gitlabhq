@@ -340,10 +340,30 @@ curl --request PUT localhost:9200/gitlab-production/_settings --data '{
     } }'
 ```
 
-A force merge should be called after enabling the refreshing above:
+A force merge should be called after enabling the refreshing above.
+
+For Elasticsearch 6.x, before proceeding with the force merge, the index should be in read-only mode:
 
 ```bash
-curl --request POST 'http://localhost:9200/_forcemerge?max_num_segments=5'
+curl --request PUT localhost:9200/gitlab-production/_settings --data '{
+  "settings": {
+    "index.blocks.write": true 
+  } }'
+```
+
+Then, initiate the force merge:
+
+```bash
+curl --request POST 'http://localhost:9200/gitlab-production/_forcemerge?max_num_segments=5'
+```
+
+After this, if your index is in read-only, switch back to read-write:
+
+```bash
+curl --request PUT localhost:9200/gitlab-production/_settings --data '{
+  "settings": {
+    "index.blocks.write": false 
+  } }'
 ```
 
 Enable Elasticsearch search in **Admin > Settings > Integrations**. That's it. Enjoy it!
