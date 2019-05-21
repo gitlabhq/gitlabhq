@@ -547,13 +547,13 @@ Add the following alias to your `~/.gitconfig`:
 
 Now you can check out a particular merge request from any repository and any
 remote. For example, to check out the merge request with ID 5 as shown in GitLab
-from the `upstream` remote, do:
+from the `origin` remote, do:
 
 ```
-git mr upstream 5
+git mr origin 5
 ```
 
-This will fetch the merge request into a local `mr-upstream-5` branch and check
+This will fetch the merge request into a local `mr-origin-5` branch and check
 it out.
 
 #### Checkout locally by modifying `.git/config` for a given repository
