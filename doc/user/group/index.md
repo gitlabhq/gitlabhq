@@ -225,7 +225,7 @@ From GitLab 10.5, you can transfer groups in the following ways:
 
 When transferring groups, note:
 
-- Changing a group's parent can have unintended side effects. See [redirects when changing repository paths](../project/index.md#redirects-when-changing-repository-paths).
+- Changing a group's parent can have unintended side effects. See [Redirects when changing repository paths](../project/index.md#redirects-when-changing-repository-paths).
 - You can only transfer groups to groups you manage.
 - You must update your local repositories to point to the new location.
 - If the parent group's visibility is lower than the group's current visibility, visibility levels for subgroups and projects will change to match the new parent group's visibility.
