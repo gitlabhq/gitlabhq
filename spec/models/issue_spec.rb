@@ -93,6 +93,21 @@ describe Issue do
     end
   end
 
+  describe '#sort' do
+    let(:project) { create(:project) }
+
+    context "by relative_position" do
+      let!(:issue)  { create(:issue, project: project) }
+      let!(:issue2) { create(:issue, project: project, relative_position: 2) }
+      let!(:issue3) { create(:issue, project: project, relative_position: 1) }
+
+      it "sorts asc with nulls at the end" do
+        issues = project.issues.sort_by_attribute('relative_position')
+        expect(issues).to eq([issue3, issue2, issue])
+      end
+    end
+  end
+
   describe '#card_attributes' do
     it 'includes the author name' do
       allow(subject).to receive(:author).and_return(double(name: 'Robert'))
