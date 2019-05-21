@@ -22,7 +22,9 @@ body,
 .form-control,
 .search form {
   // Override default font size used in non-csslab UI
-  font-size: 14px;
+  // Use rem to keep default font-size at 14px on body so 1rem still
+  // fits 8px grid, but also allow users to change browser font size
+  font-size: .875rem;
 }
 
 legend {
