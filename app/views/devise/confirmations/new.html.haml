@@ -3,7 +3,7 @@
   .login-body
     = form_for(resource, as: resource_name, url: confirmation_path(resource_name), html: { method: :post, class: 'gl-show-field-errors' }) do |f|
       .devise-errors
-        = devise_error_messages!
+        = render "devise/shared/error_messages", resource: resource
       .form-group
         = f.label :email
         = f.email_field :email, class: "form-control", required: true, title: 'Please provide a valid email address.'

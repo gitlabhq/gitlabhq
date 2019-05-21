@@ -23,7 +23,7 @@ gem 'grape-path-helpers', '~> 1.1'
 gem 'faraday', '~> 0.12'
 
 # Authentication libraries
-gem 'devise', '~> 4.4'
+gem 'devise', '~> 4.6'
 gem 'doorkeeper', '~> 4.3'
 gem 'doorkeeper-openid_connect', '~> 1.5'
 gem 'omniauth', '~> 1.8'
