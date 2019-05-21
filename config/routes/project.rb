@@ -496,4 +496,18 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       end
     end
   end
+
+  # Legacy routes.
+  # Introduced in 12.0.
+  # Should be removed after 12.1
+  scope(path: '*namespace_id',
+        as: :namespace,
+        namespace_id: Gitlab::PathRegex.full_namespace_route_regex) do
+    scope(path: ':project_id',
+          constraints: { project_id: Gitlab::PathRegex.project_route_regex },
+          module: :projects,
+          as: :project) do
+      Gitlab::Routing.redirect_legacy_paths(self, :settings, :branches, :tags)
+    end
+  end
 end

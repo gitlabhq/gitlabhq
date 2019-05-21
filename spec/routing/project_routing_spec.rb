@@ -212,6 +212,8 @@ describe 'project routing' do
       expect(delete('/gitlab/gitlabhq/-/branches/feature%2B45/foo/bar/baz')).to route_to('projects/branches#destroy', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'feature+45/foo/bar/baz')
       expect(delete('/gitlab/gitlabhq/-/branches/feature@45/foo/bar/baz')).to route_to('projects/branches#destroy', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'feature@45/foo/bar/baz')
     end
+
+    it_behaves_like 'redirecting a legacy project path', "/gitlab/gitlabhq/branches", "/gitlab/gitlabhq/-/branches"
   end
 
   describe Projects::TagsController, 'routing' do
@@ -597,6 +599,8 @@ describe 'project routing' do
       expect(get('/gitlab/gitlabhq/-/network/ends-with.json')).to route_to('projects/network#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'ends-with.json')
       expect(get('/gitlab/gitlabhq/-/network/master?format=json')).to route_to('projects/network#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master', format: 'json')
     end
+
+    it_behaves_like 'redirecting a legacy project path', "/gitlab/gitlabhq/network/master", "/gitlab/gitlabhq/-/network/master"
   end
 
   describe Projects::GraphsController, 'routing' do
@@ -661,5 +665,13 @@ describe 'project routing' do
                            id: '-rc1')
       end
     end
+  end
+
+  describe Projects::Settings::RepositoryController, 'routing' do
+    it 'to #show' do
+      expect(get('/gitlab/gitlabhq/-/settings/repository')).to route_to('projects/settings/repository#show', namespace_id: 'gitlab', project_id: 'gitlabhq')
+    end
+
+    it_behaves_like 'redirecting a legacy project path', "/gitlab/gitlabhq/settings/repository", "/gitlab/gitlabhq/-/settings/repository"
   end
 end
