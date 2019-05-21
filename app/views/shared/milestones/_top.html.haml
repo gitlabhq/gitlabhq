@@ -4,10 +4,7 @@
 - group = local_assigns[:group]
 - is_dynamic_milestone = milestone.legacy_group_milestone? || milestone.dashboard_milestone?
 
-.detail-page-header
-  %a.btn.btn-default.btn-grouped.float-right.d-block.d-sm-none.js-sidebar-toggle{ href: "#" }
-    = icon('angle-double-left')
-
+.detail-page-header.milestone-page-header
   .status-box{ class: "status-box-#{milestone.closed? ? 'closed' : 'open'}" }
     - if milestone.closed?
       Closed
@@ -15,14 +12,17 @@
       Expired
     - else
       Open
-  %span.identifier
-    Milestone #{milestone.title}
-  - if milestone.due_date || milestone.start_date
-    %span.creator
-      &nbsp;&middot;
-      = milestone_date_range(milestone)
-  - if group
-    .float-right
+
+  .header-text-content
+    %span.identifier
+      Milestone #{milestone.title}
+    - if milestone.due_date || milestone.start_date
+      %span.creator
+        &nbsp;&middot;
+        = milestone_date_range(milestone)
+
+  .milestone-buttons
+    - if group
       - if can?(current_user, :admin_milestone, group)
         - if milestone.group_milestone?
           = link_to edit_group_milestone_path(group, milestone), class: "btn btn btn-grouped" do
@@ -34,6 +34,9 @@
 
         - unless is_dynamic_milestone
           = render 'shared/milestones/delete_button'
+
+    %a.btn.btn-default.btn-grouped.float-right.d-block.d-sm-none.js-sidebar-toggle{ href: "#" }
+      = icon('angle-double-left')
 
 = render 'shared/milestones/deprecation_message' if is_dynamic_milestone
 
