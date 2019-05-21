@@ -11,9 +11,15 @@ Find your groups by clicking **Groups > Your Groups** in the top navigation.
 
 > The groups dropdown in the top navigation was [introduced][ce-36234] in [GitLab 11.1](https://about.gitlab.com/2018/07/22/gitlab-11-1-released/#groups-dropdown-in-navigation).
 
-The Groups page displays all groups you are a member of, how many projects each group contains,
-how many members a group has, the group visibility, and, if you have enough permissions,
-a link to the group settings. By clicking the last button, you can leave that group.
+The Groups page displays:
+
+- All groups you are a member of.
+- How many projects each group contains.
+- How many members a group has.
+- The group visibility.
+- A link to the group settings if you have sufficient permissions.
+
+By clicking the last button, you can leave that group.
 
 ## Use cases
 
