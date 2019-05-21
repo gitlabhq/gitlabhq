@@ -27,9 +27,11 @@ There, you will see a checkbox with the following events that can be triggered:
 - Confidential issue
 - Merge request
 - Note
+- Confidential note
 - Tag push
 - Pipeline
 - Wiki page
+- Deployment
 
 Below each of these event checkboxes, you have an input field to enter
 which Mattermost channel you want to send that event message. Enter your preferred channel handle (the hash sign `#` is optional).
