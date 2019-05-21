@@ -61,16 +61,32 @@ Click the **All**, **Private**, **Internal**, or **Public** tab to list only pro
 criteria.
 
 By default, all projects are listed, in reverse order of when they were last updated. For each
-project, the name, namespace, description, and size is listed, also options to **Edit** or
-**Delete** it.
+project, the following information is listed:
 
-Sort projects by **Name**, **Last created**, **Oldest created**, **Last updated**, **Oldest
-updated**, **Owner**, and choose to hide or show archived projects.
+- Name.
+- Namespace.
+- Description.
+- Size, updated every 15 minutes at most.
+
+Projects can be edited or deleted.
+
+The list of projects can be sorted by:
+
+- Name.
+- Last created.
+- Oldest created.
+- Last updated.
+- Oldest updated.
+- Owner.
+
+A user can choose to hide or show archived projects in the list.
 
 In the **Filter by name** field, type the project name you want to find, and GitLab will filter
 them as you type.
 
 Select from the **Namespace** dropdown to filter only projects in that namespace.
 
-You can combine the filter options. For example, click the **Public** tab, and enter `score` in
-the **Filter by name...** input box to list only public projects with `score` in their name.
+You can combine the filter options. For example, to list only public projects with `score` in their name:
+
+1. Click the **Public** tab.
+1. Enter `score` in the **Filter by name...** input box.
