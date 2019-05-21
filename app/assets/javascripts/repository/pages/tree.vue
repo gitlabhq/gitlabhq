@@ -1,5 +1,10 @@
 <script>
+import FileTable from '../components/table/index.vue';
+
 export default {
+  component: {
+    FileTable,
+  },
   props: {
     path: {
       type: String,
@@ -11,5 +16,5 @@ export default {
 </script>
 
 <template>
-  <div>{{ path }}</div>
+  <file-table :path="path" />
 </template>

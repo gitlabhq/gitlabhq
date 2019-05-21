@@ -4327,6 +4327,9 @@ msgstr ""
 msgid "Files"
 msgstr ""
 
+msgid "Files, directories, and submodules in the path %{path} for commit reference %{ref}"
+msgstr ""
+
 msgid "Filter"
 msgstr ""
 
