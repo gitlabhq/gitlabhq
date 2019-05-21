@@ -13,7 +13,8 @@ module QA
         expect(page).to have_content(issue_title)
       end
 
-      context 'when using attachments in comments', :object_storage do
+      # Failure issue: https://gitlab.com/gitlab-org/quality/nightly/issues/101
+      context 'when using attachments in comments', :object_storage, :quarantine do
         let(:file_to_attach) do
           File.absolute_path(File.join('spec', 'fixtures', 'banana_sample.gif'))
         end
