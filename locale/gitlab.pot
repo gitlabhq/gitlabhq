@@ -1186,6 +1186,14 @@ msgstr ""
 msgid "Attach a file by drag &amp; drop or %{upload_link}"
 msgstr ""
 
+msgid "Attaching a file"
+msgid_plural "Attaching %d files"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Attaching the file failed."
+msgstr ""
+
 msgid "Aug"
 msgstr ""
 
@@ -4205,6 +4213,12 @@ msgstr ""
 msgid "Failed to connect to the prometheus server"
 msgstr ""
 
+msgid "Failed to create Merge Request. Please try again."
+msgstr ""
+
+msgid "Failed to create a branch for this issue. Please try again."
+msgstr ""
+
 msgid "Failed to create repository via gitlab-shell"
 msgstr ""
 
@@ -4212,6 +4226,9 @@ msgid "Failed to create resources"
 msgstr ""
 
 msgid "Failed to deploy to"
+msgstr ""
+
+msgid "Failed to get ref."
 msgstr ""
 
 msgid "Failed to install."
