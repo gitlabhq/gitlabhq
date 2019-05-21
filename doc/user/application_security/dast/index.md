@@ -47,10 +47,7 @@ applications while you are developing and testing your applications.
 ## Requirements
 
 To run a DAST job, you need GitLab Runner with the
-[`docker`](https://docs.gitlab.com/runner/executors/docker.html#use-docker-in-docker-with-privileged-mode) or
-[`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html#running-privileged-containers-for-the-runners)
-executor running in privileged mode. If you're using the shared Runners on GitLab.com,
-this is enabled by default.
+[`docker` executor](https://docs.gitlab.com/runner/executors/docker.html).
 
 ## Configuring DAST
 
