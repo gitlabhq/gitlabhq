@@ -7564,6 +7564,12 @@ msgstr ""
 msgid "ProjectPage|Project ID: %{project_id}"
 msgstr ""
 
+msgid "ProjectSelect| or group"
+msgstr ""
+
+msgid "ProjectSelect|Search for project"
+msgstr ""
+
 msgid "ProjectSettings|Additional merge request capabilities that influence how and when merges will be performed"
 msgstr ""
 
@@ -8253,6 +8259,12 @@ msgid "Revoked impersonation token %{token_name}!"
 msgstr ""
 
 msgid "Revoked personal access token %{personal_access_token_name}!"
+msgstr ""
+
+msgid "RightSidebar|adding a"
+msgstr ""
+
+msgid "RightSidebar|deleting the"
 msgstr ""
 
 msgid "Run housekeeping"
@@ -9694,6 +9706,9 @@ msgid "There is already a repository with that name on disk"
 msgstr ""
 
 msgid "There was a problem communicating with your device."
+msgstr ""
+
+msgid "There was an error %{message} todo."
 msgstr ""
 
 msgid "There was an error loading users activity calendar."
