@@ -231,6 +231,10 @@ class MergeRequest < ApplicationRecord
     end
   end
 
+  def merge_ref_auto_sync_enabled?
+    Feature.enabled?(:merge_ref_auto_sync, project, default_enabled: true)
+  end
+
   # Use this method whenever you need to make sure the head_pipeline is synced with the
   # branch head commit, for example checking if a merge request can be merged.
   # For more information check: https://gitlab.com/gitlab-org/gitlab-ce/issues/40004
@@ -725,19 +729,16 @@ class MergeRequest < ApplicationRecord
 
     MergeRequests::ReloadDiffsService.new(self, current_user).execute
   end
+
+  def check_mergeability
+    MergeRequests::MergeabilityCheckService.new(self).execute
+  end
   # rubocop: enable CodeReuse/ServiceClass
 
-  def check_if_can_be_merged
-    return unless self.class.state_machines[:merge_status].check_state?(merge_status) && Gitlab::Database.read_write?
-
-    can_be_merged =
-      !broken? && project.repository.can_be_merged?(diff_head_sha, target_branch)
-
-    if can_be_merged
-      mark_as_mergeable
-    else
-      mark_as_unmergeable
-    end
+  # Returns boolean indicating the merge_status should be rechecked in order to
+  # switch to either can_be_merged or cannot_be_merged.
+  def recheck_merge_status?
+    self.class.state_machines[:merge_status].check_state?(merge_status)
   end
 
   def merge_event
@@ -763,7 +764,7 @@ class MergeRequest < ApplicationRecord
   def mergeable?(skip_ci_check: false)
     return false unless mergeable_state?(skip_ci_check: skip_ci_check)
 
-    check_if_can_be_merged
+    check_mergeability
 
     can_be_merged? && !should_be_rebased?
   end
@@ -776,15 +777,6 @@ class MergeRequest < ApplicationRecord
     return false unless skip_discussions_check || mergeable_discussions_state?
 
     true
-  end
-
-  def mergeable_to_ref?
-    return false unless mergeable_state?(skip_ci_check: true, skip_discussions_check: true)
-
-    # Given the `merge_ref_path` will have the same
-    # state the `target_branch` would have. Ideally
-    # we need to check if it can be merged to it.
-    project.repository.can_be_merged?(diff_head_sha, target_branch)
   end
 
   def ff_merge_possible?
@@ -1097,6 +1089,12 @@ class MergeRequest < ApplicationRecord
 
   def fetch_ref!
     target_project.repository.fetch_source_branch!(source_project.repository, source_branch, ref_path)
+  end
+
+  # Returns the current merge-ref HEAD commit.
+  #
+  def merge_ref_head
+    project.repository.commit(merge_ref_path)
   end
 
   def ref_path
