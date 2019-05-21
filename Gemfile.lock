@@ -158,7 +158,7 @@ GEM
     descendants_tracker (0.0.4)
       thread_safe (~> 0.3, >= 0.3.1)
     device_detector (1.0.0)
-    devise (4.4.3)
+    devise (4.6.2)
       bcrypt (~> 3.0)
       orm_adapter (~> 0.1)
       railties (>= 4.1.0, < 6.0)
@@ -1035,7 +1035,7 @@ DEPENDENCIES
   database_cleaner (~> 1.7.0)
   deckar01-task_list (= 2.2.0)
   device_detector
-  devise (~> 4.4)
+  devise (~> 4.6)
   devise-two-factor (~> 3.0.0)
   diffy (~> 3.1.0)
   discordrb-webhooks-blackst0ne (~> 3.3)
