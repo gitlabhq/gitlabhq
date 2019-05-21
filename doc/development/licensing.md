@@ -88,9 +88,11 @@ Definitions
 
 GitLab means GitLab Inc. and its affiliates and subsidiaries.
 
-## Requesting Approval for Licenses
+## Requesting Approval for Licenses or any other Intellectual Property
 
-Libraries that are not listed in the [Acceptable Licenses][Acceptable-Licenses] or [Unacceptable Licenses][Unacceptable-Licenses] list can be submitted to the legal team for review. Please email `legal@gitlab.com` with the details. After a decision has been made, the original requestor is responsible for updating this document.
+Libraries that are not already approved on the [Acceptable Licenses][Acceptable-Licenses] or that may be listed on the [Unacceptable Licenses][Unacceptable-Licenses] list may be submitted to the legal team for review and use on a case by case basis. Please email `legal@gitlab.com` with the details of how the software will be used, whether it will be modified or not, and how it will be distributed (if at all). After a decision has been made, the original requestor is responsible for updating this document, if applicable. Not all approvals will be approved for universal use and may continue to remain on the Unacceptable License list.
+
+All inquiries relating to patents should be directed to the Legal team.
 
 ## Notes
 
