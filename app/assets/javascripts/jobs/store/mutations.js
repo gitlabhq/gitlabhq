@@ -65,7 +65,7 @@ export default {
     state.isLoading = false;
     state.job = job;
 
-    state.stages = job.pipeline.details.stages || [];
+    state.stages = ((job.pipeline || {}).details || {}).stages || [];
 
     /**
      * We only update it on the first request
