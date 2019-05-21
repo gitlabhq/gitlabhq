@@ -115,7 +115,7 @@ Select the [permission level](../permissions.md#permissions), and add the new me
 Consider a group with two projects:
 
 - On the **Group Members** page, you can now add a new user to the group.
-- Now, because this user is a **Developer** member of the group, he automatically
+- Now, because this user is a **Developer** member of the group, they automatically
   gets **Developer** access to **all projects** within that group.
 
 To increase the access level of an existing user for a specific project,
