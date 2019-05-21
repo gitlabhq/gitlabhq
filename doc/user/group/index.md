@@ -206,8 +206,12 @@ Get an overview of the vulnerabilities of all the projects in a group and its su
 > Introduced in [GitLab Ultimate][ee] 11.9 behind the `insights` feature flag.
 
 Configure the Insights that matter for your groups or projects, allowing users to explore data
-such as: triage hygiene, issues created/closed per a given period, average time
-for merge requests to be merged, and much more.
+such as: 
+
+- Triage hygiene
+- Issues created/closed per a given period
+- Average time for merge requests to be merged
+- Much more
 
 [Learn more about Insights](insights/index.md).
 
