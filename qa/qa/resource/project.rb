@@ -7,6 +7,7 @@ module QA
     class Project < Base
       include Events::Project
 
+      attribute :id
       attribute :name
       attribute :description
 
