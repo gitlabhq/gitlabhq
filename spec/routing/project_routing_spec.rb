@@ -609,6 +609,8 @@ describe 'project routing' do
       expect(get('/gitlab/gitlabhq/-/graphs/ends-with.json')).to route_to('projects/graphs#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'ends-with.json')
       expect(get('/gitlab/gitlabhq/-/graphs/master?format=json')).to route_to('projects/graphs#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master', format: 'json')
     end
+
+    it_behaves_like 'redirecting a legacy project path', "/gitlab/gitlabhq/graphs/master", "/gitlab/gitlabhq/-/graphs/master"
   end
 
   describe Projects::ForksController, 'routing' do

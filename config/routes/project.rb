@@ -507,7 +507,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           constraints: { project_id: Gitlab::PathRegex.project_route_regex },
           module: :projects,
           as: :project) do
-      Gitlab::Routing.redirect_legacy_paths(self, :settings, :branches, :tags)
+      Gitlab::Routing.redirect_legacy_paths(self, :settings, :branches, :tags, :network, :graphs)
     end
   end
 end
