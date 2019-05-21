@@ -19,8 +19,10 @@ or provide the credentials to an [existing Kubernetes cluster](#adding-an-existi
 
 NOTE: **Note:**
 From [GitLab 11.6](https://gitlab.com/gitlab-org/gitlab-ce/issues/34758) you
-can also associate a Kubernetes cluster to your groups. Learn more about
-[group Kubernetes clusters](../../group/clusters/index.md).
+can also associate a Kubernetes cluster to your groups and from
+[GitLab 11.11](https://gitlab.com/gitlab-org/gitlab-ce/issues/39840),
+to the GitLab instance. Learn more about [group-level](../../group/clusters/index.md)
+and [instance-level](../../instance/clusters/index.md) Kubernetes clusters.
 
 ## Adding and creating a new GKE cluster via GitLab
 
@@ -423,9 +425,9 @@ To uninstall an application:
 1. Select your cluster.
 1. Click the **Uninstall** button for the application.
 
-Support for uninstalling all applications will be progressively
-introduced (see [related
-epic](https://gitlab.com/groups/gitlab-org/-/epics/1201)).
+Support for uninstalling all applications is planned for progressive rollout.
+To follow progress, see [the relevant
+epic](https://gitlab.com/groups/gitlab-org/-/epics/1201).
 
 ### Troubleshooting applications
 

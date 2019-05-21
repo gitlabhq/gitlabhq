@@ -19,7 +19,9 @@ describe Gitlab::Git::Tree, :seed_helper do
     it 'returns a list of tree objects' do
       entries = described_class.where(repository, SeedRepo::Commit::ID, 'files', true)
 
-      expect(entries.count).to be >= 5
+      expect(entries.map(&:path)).to include('files/html',
+                                             'files/markdown/ruby-style-guide.md')
+      expect(entries.count).to be >= 10
       expect(entries).to all(be_a(Gitlab::Git::Tree))
     end
 
