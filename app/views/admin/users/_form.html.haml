@@ -48,6 +48,10 @@
 
     = render partial: 'access_levels', locals: { f: f }
 
+    = render_if_exists 'admin/users/namespace_plan_fieldset', f: f
+
+    = render_if_exists 'admin/users/limits', f: f
+
     %fieldset
       %legend Profile
       .form-group.row
@@ -72,6 +76,8 @@
         .col-sm-2.text-right
           = f.label :website_url, 'Website', class: 'col-form-label'
         .col-sm-10= f.text_field :website_url, class: 'form-control'
+
+    = render_if_exists 'admin/users/admin_notes', f: f
 
     .form-actions
       - if @user.new_record?
