@@ -4,14 +4,21 @@
 
 CAUTION: **Beta:**
 Insights is considered beta, and is not ready for production use.
-Follow [gitlab-org&725](https://gitlab.com/groups/gitlab-org/-/epics/725) for
-updates.
+Follow [gitlab-org/quality/team-tasks#137](https://gitlab.com/gitlab-org/quality/team-tasks/issues/137#general-availability)
+for updates.
 
 Configure the Insights that matter for your groups to explore data such as
 triage hygiene, issues created/closed per a given period, average time for merge
 requests to be merged and much more.
 
 ![Insights example stacked bar chart](img/insights_example_stacked_bar_chart.png)
+
+## View your group's Insights
+
+You can access your group's Insights by clicking the **Overview > Insights**
+link in the left sidebar:
+
+![Insights sidebar link](img/insights_sidebar_link.png)
 
 ## Configure your Insights
 
