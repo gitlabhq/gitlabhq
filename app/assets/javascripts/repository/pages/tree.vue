@@ -2,7 +2,7 @@
 import FileTable from '../components/table/index.vue';
 
 export default {
-  component: {
+  components: {
     FileTable,
   },
   props: {

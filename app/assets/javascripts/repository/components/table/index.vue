@@ -4,11 +4,13 @@ import { sprintf, __ } from '../../../locale';
 import getRefMixin from '../../mixins/get_ref';
 import getFiles from '../../queries/getFiles.graphql';
 import TableHeader from './header.vue';
+import TableRow from './row.vue';
 
 export default {
   components: {
     GlLoadingIcon,
     TableHeader,
+    TableRow,
   },
   mixins: [getRefMixin],
   apollo: {
@@ -57,7 +59,15 @@ export default {
           }}
         </caption>
         <table-header />
-        <tbody></tbody>
+        <tbody>
+          <table-row
+            v-for="entry in files"
+            :id="entry.id"
+            :key="entry.id"
+            :path="entry.flatPath"
+            :type="entry.type"
+          />
+        </tbody>
       </table>
       <gl-loading-icon v-if="isLoadingFiles" class="my-3" size="md" />
     </div>
