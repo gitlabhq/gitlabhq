@@ -70,7 +70,7 @@ together in a single list view.
 > For a list of words that are not allowed to be used as group names see the
 > [reserved names](../reserved_names.md).
 
-To create a new Group:
+To create a new Group, either:
 
 - In the top menu, click **Groups** and then **Your Groups**, and click the green button **New group**.
 
