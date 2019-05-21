@@ -1266,7 +1266,7 @@ module API
     end
 
     class JobBasic < Grape::Entity
-      expose :id, :status, :stage, :name, :ref, :tag, :coverage
+      expose :id, :status, :stage, :name, :ref, :tag, :coverage, :allow_failure
       expose :created_at, :started_at, :finished_at
       expose :duration
       expose :user, with: User
