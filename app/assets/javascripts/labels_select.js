@@ -4,7 +4,7 @@
 
 import $ from 'jquery';
 import _ from 'underscore';
-import { sprintf, __ } from './locale';
+import { sprintf, s__, __ } from './locale';
 import axios from './lib/utils/axios_utils';
 import IssuableBulkUpdateActions from './issuable_bulk_update_actions';
 import CreateLabelDropdown from './create_label';
@@ -178,7 +178,7 @@ export default class LabelsSelect {
                 });
               }
             } else {
-              template = '<span class="no-value">None</span>';
+              template = `<span class="no-value">${__('None')}</span>`;
             }
             $value.removeAttr('style').html(template);
             $sidebarCollapsedValue.text(labelCount);
@@ -190,7 +190,9 @@ export default class LabelsSelect {
 
               if (labelTitles.length > 5) {
                 labelTitles = labelTitles.slice(0, 5);
-                labelTitles.push('and ' + (data.labels.length - 5) + ' more');
+                labelTitles.push(
+                  sprintf(s__('Labels|and %{count} more'), { count: data.labels.length - 5 }),
+                );
               }
 
               labelTooltipTitle = labelTitles.join(', ');
@@ -219,13 +221,13 @@ export default class LabelsSelect {
                 if (showNo) {
                   extraData.unshift({
                     id: 0,
-                    title: 'No Label',
+                    title: __('No Label'),
                   });
                 }
                 if (showAny) {
                   extraData.unshift({
                     isAny: true,
-                    title: 'Any Label',
+                    title: __('Any Label'),
                   });
                 }
                 if (extraData.length) {
@@ -341,7 +343,7 @@ export default class LabelsSelect {
 
           if (selected && selected.id === 0) {
             this.selected = [];
-            return 'No Label';
+            return __('No Label');
           } else if (isSelected) {
             this.selected.push(title);
           } else if (!isSelected && title) {
@@ -579,7 +581,7 @@ export default class LabelsSelect {
     if ($('.selected-issuable:checked').length) {
       return;
     }
-    return $('.issues-bulk-update .labels-filter .dropdown-toggle-text').text('Label');
+    return $('.issues-bulk-update .labels-filter .dropdown-toggle-text').text(__('Label'));
   }
   // eslint-disable-next-line class-methods-use-this
   enableBulkLabelDropdown() {
