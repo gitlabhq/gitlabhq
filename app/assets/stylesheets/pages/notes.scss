@@ -107,6 +107,7 @@ $note-form-margin-left: 72px;
 
     &.collapsed {
       color: $gl-text-color-secondary;
+      border-radius: 0 0 $border-radius-default $border-radius-default;
 
       svg {
         float: left;
