@@ -15,16 +15,25 @@ information on general testing practices at GitLab.
 
 ## Jest
 
-GitLab has started to migrate tests to the [Jest](https://jestjs.io)
-testing framework. You can read a [detailed evaluation](https://gitlab.com/gitlab-org/gitlab-ce/issues/49171)
-of Jest compared to our use of Karma and Jasmine. In summary, it will allow us
-to improve the performance and consistency of our frontend tests.
+We have started to migrate frontend tests to the [Jest](https://jestjs.io) testing framework (see also the corresponding
+[epic](https://gitlab.com/groups/gitlab-org/-/epics/895)).
 
 Jest tests can be found in `/spec/frontend` and `/ee/spec/frontend` in EE.
 
 It is not yet a requirement to use Jest. You can view the
 [epic](https://gitlab.com/groups/gitlab-org/-/epics/873) of issues
 we need to solve before being able to use Jest for all our needs.
+
+### Differences to Karma
+
+- Jest runs in a Node.js environment, not in a browser. Support for running Jest tests in a browser [is planned](https://gitlab.com/gitlab-org/gitlab-ce/issues/58205).
+- Because Jest runs in a Node.js environment, it uses [jsdom](https://github.com/jsdom/jsdom) by default.
+- All calls to `setTimeout` and `setInterval` are mocked away. See also [Jest Timer Mocks](https://jestjs.io/docs/en/timer-mocks).
+- `rewire` is not required because Jest supports mocking modules. See also [Manual Mocks](https://jestjs.io/docs/en/manual-mocks).
+- The following will cause tests to fail in Jest:
+  - Unmocked requests.
+  - Unhandled Promise rejections.
+  - Calls to `console.warn`, including warnings from libraries like Vue.
 
 ### Debugging Jest tests
 
