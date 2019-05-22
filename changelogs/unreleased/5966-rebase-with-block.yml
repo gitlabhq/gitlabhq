@@ -1,5 +1,0 @@
----
-title: Fix approvals sometimes being reset after a merge request is rebased
-merge_request: 27446
-author:
-type: fixed

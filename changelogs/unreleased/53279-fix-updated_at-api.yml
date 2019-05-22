@@ -1,5 +1,0 @@
----
-title: "Respect updated_at attribute in notes produced by API calls"
-merge_request: 27124
-author: Ben Gamari
-type: fixed

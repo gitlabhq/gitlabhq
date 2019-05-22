@@ -1,5 +1,0 @@
----
-title: Fix the bug that the project statistics is not updated
-merge_request: 26854
-author: Hiroyuki Sato
-type: fixed

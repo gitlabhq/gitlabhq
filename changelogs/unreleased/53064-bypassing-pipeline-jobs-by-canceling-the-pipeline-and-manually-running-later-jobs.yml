@@ -1,5 +1,0 @@
----
-title: Make canceled jobs not retryable
-merge_request: 27503
-author:
-type: changed

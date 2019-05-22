@@ -1,5 +1,0 @@
----
-title: Fix duplicate merge request pipelines created by Sidekiq worker retry
-merge_request: 26643
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Always use internal ID tables in development and production
-merge_request: 27544
-author:
-type: fixed

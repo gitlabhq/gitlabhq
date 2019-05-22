@@ -1,5 +1,0 @@
----
-title: Fix issuables state_id nil when importing projects from GitHub
-merge_request: 28027
-author:
-type: fixed

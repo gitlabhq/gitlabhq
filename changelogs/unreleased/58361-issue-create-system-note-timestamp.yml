@@ -1,5 +1,0 @@
----
-title: Fix system notes timestamp when creating issue in the past
-merge_request: 27406
-author:
-type: fixed

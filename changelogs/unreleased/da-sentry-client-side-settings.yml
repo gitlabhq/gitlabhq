@@ -1,5 +1,0 @@
----
-title: Allow Sentry client-side DSN to be passed on gitlab.yml
-merge_request: 27967
-author:
-type: added
