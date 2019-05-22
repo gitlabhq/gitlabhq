@@ -188,6 +188,27 @@ rspec system mysql:
   <<: *only-schedules-master
   parallel: 24
 
+.rspec-mysql-on-demand: &rspec-mysql-on-demand
+  only:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /\[run mysql\]/i
+      - $CI_COMMIT_REF_NAME =~ /mysql/
+
+rspec unit mysql on-demand:
+  <<: *rspec-metadata-mysql
+  <<: *rspec-mysql-on-demand
+  parallel: 20
+
+rspec integration mysql on-demand:
+  <<: *rspec-metadata-mysql
+  <<: *rspec-mysql-on-demand
+  parallel: 6
+
+rspec system mysql on-demand:
+  <<: *rspec-metadata-mysql
+  <<: *rspec-mysql-on-demand
+  parallel: 24
+
 rspec-fast-spec-helper:
   <<: *rspec-metadata-pg
   script:
@@ -200,14 +221,15 @@ rspec-fast-spec-helper:
     - scripts/gitaly-test-spawn
     - bin/rspec --color --format documentation --tag quarantine -- spec/
 
-rspec-pg-quarantine:
+rspec quarantine pg:
   <<: *rspec-metadata-pg
   <<: *rspec-quarantine
   allow_failure: true
 
-rspec-mysql-quarantine:
+rspec quarantine mysql:
   <<: *rspec-metadata-mysql
   <<: *rspec-quarantine
+  <<: *only-schedules-master
   allow_failure: true
 
 static-analysis:
