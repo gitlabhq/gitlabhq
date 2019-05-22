@@ -38,29 +38,4 @@ describe Gitlab::Graphql::QueryAnalyzers::LoggerAnalyzer do
       end
     end
   end
-
-  describe '#initial_value' do
-    it 'assembles a hash with initial values' do
-      query = OpenStruct.new(query_string: query_string, provided_variables: provided_variables)
-
-      expect(subject.initial_value(query)).to eq initial_values
-    end
-  end
-
-  describe '#call' do
-    before do
-      # some statements to fudge the complexity and depth
-    end
-
-    it 'sets the complexity and depth' do
-      expected_hash = { time_started: now,
-                        query_string: query_string,
-                        variables: provided_variables,
-                        complexity: nil,
-                        depth: depth,
-                        duration: complexity }
-
-      expect(subject.call(initial_values, nil, nil)).to eq expected_hash
-    end
-  end
 end

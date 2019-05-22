@@ -23,7 +23,7 @@ describe 'GraphQL' do
 
     context 'with no variables' do
       let(:expected) do
-        { query_string: query, variables: {}, duration: anything, depth: 0, complexity: 0 }
+        { query_string: query, variables: {}, duration: anything, depth: 1, complexity: 1 }
       end
 
       it 'logs the query' do
@@ -33,10 +33,10 @@ describe 'GraphQL' do
 
     context 'with variables' do
       let!(:variables) do
-        { foo: "bar" }
+        { "foo" => "bar" }
       end
       let(:expected) do
-        { query_string: query, variables: variables, duration: anything, depth: 0, complexity: 0 }
+        { query_string: query, variables: variables, duration: anything, depth: 1, complexity: 1 }
       end
 
       it 'logs the query' do

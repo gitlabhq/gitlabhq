@@ -84,10 +84,18 @@ describe 'GitlabSchema configurations' do
   end
 
   context 'logging' do
-    it 'writes to the GraphQL log' do
-      expect(Gitlab::GraphqlLogger).to receive(:info)
+    let(:query) { File.read(Rails.root.join('spec/fixtures/api/graphql/introspection.graphql')) }
 
-      query = File.read(Rails.root.join('spec/fixtures/api/graphql/introspection.graphql'))
+    it 'logs the query complexity' do
+      analyzer_memo = {
+          query_string: query,
+          variables: {},
+          complexity: 181,
+          depth: 0,
+          duration: "7ms"
+      }
+      expect_any_instance_of(Gitlab::Graphql::QueryAnalyzers::LoggerAnalyzer).to receive(:duration).and_return(7)
+      expect(Gitlab::GraphqlLogger).to receive(:info).with(analyzer_memo)
 
       post_graphql(query, current_user: nil)
     end
