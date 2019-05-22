@@ -13,8 +13,10 @@ variables:
   BUILD_ASSETS_IMAGE: "false"
 
 before_script:
+  - bundle --version
   - date
   - source scripts/utils.sh
+  - date
   - source scripts/prepare_build.sh
   - date
 
