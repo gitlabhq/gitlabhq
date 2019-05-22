@@ -121,6 +121,27 @@ The Stage labels are used to generate the [direction pages][direction-pages] aut
 [devops-stages]: https://about.gitlab.com/direction/#devops-stages
 [direction-pages]: https://about.gitlab.com/direction/
 
+## Group labels
+
+Group labels specify which [groups][structure-groups] the issue belongs to.
+
+Examples include:
+
+- ~"group:control"
+- ~"group:editor"
+
+These labels should be mutually exclusive. If an issue belongs to multiple
+groups, the most relevant should be used.
+
+Groups are nested beneath a particular stage, so only one stage label and one group label
+should be applied to a single issue. You can find the groups listed in the
+[Product Categories pages][product-categories]. For example, ~"group:control" and
+~"group:framework" labels can be applied to issues related to the [Manage stage][manage-stage].
+
+[structure-groups]: https://about.gitlab.com/company/team/structure/#groups
+[product-categories]: https://about.gitlab.com/handbook/product/categories/
+[manage-stage]: https://about.gitlab.com/handbook/product/categories/#manage-stage
+
 ## Release Scoping labels
 
 Release Scoping labels help us clearly communicate expectations of the work for the
