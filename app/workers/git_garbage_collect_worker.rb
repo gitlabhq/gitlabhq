@@ -23,7 +23,9 @@ class GitGarbageCollectWorker
     end
 
     task = task.to_sym
-    project.link_pool_repository
+
+    ::Projects::GitDeduplicationService.new(project).execute
+
     gitaly_call(task, project.repository.raw_repository)
 
     # Refresh the branch cache in case garbage collection caused a ref lookup to fail
