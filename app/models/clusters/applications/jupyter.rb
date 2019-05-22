@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'securerandom'
+
 module Clusters
   module Applications
     class Jupyter < ApplicationRecord
@@ -80,6 +82,9 @@ module Clusters
             "secretToken" => secret_token
           },
           "auth" => {
+            "state" => {
+              "cryptoKey" => crypto_key
+            },
             "gitlab" => {
               "clientId" => oauth_application.uid,
               "clientSecret" => oauth_application.secret,
@@ -93,6 +98,10 @@ module Clusters
             }
           }
         }
+      end
+
+      def crypto_key
+        @crypto_key ||= SecureRandom.hex(32)
       end
 
       def project_id
