@@ -1,0 +1,6 @@
+---
+title: Fix performance issue with large Markdown content in issue or merge request
+  description
+merge_request: 28597
+author:
+type: performance
