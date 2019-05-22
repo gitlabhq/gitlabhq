@@ -80,7 +80,7 @@ describe('ReadyToMerge', () => {
     it('should have default data', () => {
       expect(vm.mergeWhenBuildSucceeds).toBeFalsy();
       expect(vm.useCommitMessageWithDescription).toBeFalsy();
-      expect(vm.setToMergeWhenPipelineSucceeds).toBeFalsy();
+      expect(vm.setToAutoMerge).toBeFalsy();
       expect(vm.showCommitMessageEditor).toBeFalsy();
       expect(vm.isMakingRequest).toBeFalsy();
       expect(vm.isMergingImmediately).toBeFalsy();
@@ -91,17 +91,17 @@ describe('ReadyToMerge', () => {
   });
 
   describe('computed', () => {
-    describe('shouldShowMergeWhenPipelineSucceedsText', () => {
+    describe('shouldShowAutoMergeText', () => {
       it('should return true with active pipeline', () => {
         vm.mr.isPipelineActive = true;
 
-        expect(vm.shouldShowMergeWhenPipelineSucceedsText).toBeTruthy();
+        expect(vm.shouldShowAutoMergeText).toBeTruthy();
       });
 
       it('should return false with inactive pipeline', () => {
         vm.mr.isPipelineActive = false;
 
-        expect(vm.shouldShowMergeWhenPipelineSucceedsText).toBeFalsy();
+        expect(vm.shouldShowAutoMergeText).toBeFalsy();
       });
     });
 
@@ -325,7 +325,7 @@ describe('ReadyToMerge', () => {
         vm.handleMergeButtonClick(true);
 
         setTimeout(() => {
-          expect(vm.setToMergeWhenPipelineSucceeds).toBeTruthy();
+          expect(vm.setToAutoMerge).toBeTruthy();
           expect(vm.isMakingRequest).toBeTruthy();
           expect(eventHub.$emit).toHaveBeenCalledWith('MRWidgetUpdateRequested');
 
@@ -345,7 +345,7 @@ describe('ReadyToMerge', () => {
         vm.handleMergeButtonClick(false, true);
 
         setTimeout(() => {
-          expect(vm.setToMergeWhenPipelineSucceeds).toBeFalsy();
+          expect(vm.setToAutoMerge).toBeFalsy();
           expect(vm.isMakingRequest).toBeTruthy();
           expect(eventHub.$emit).toHaveBeenCalledWith('FailedToMerge', undefined);
 
@@ -363,7 +363,7 @@ describe('ReadyToMerge', () => {
         vm.handleMergeButtonClick();
 
         setTimeout(() => {
-          expect(vm.setToMergeWhenPipelineSucceeds).toBeFalsy();
+          expect(vm.setToAutoMerge).toBeFalsy();
           expect(vm.isMakingRequest).toBeTruthy();
           expect(vm.initiateMergePolling).toHaveBeenCalled();
 

@@ -23,7 +23,7 @@ export default function deviseState(data) {
     return stateKey.pipelineBlocked;
   } else if (this.isSHAMismatch) {
     return stateKey.shaMismatch;
-  } else if (this.mergeWhenPipelineSucceeds) {
+  } else if (this.autoMergeEnabled) {
     return this.mergeError ? stateKey.autoMergeFailed : stateKey.mergeWhenPipelineSucceeds;
   } else if (!this.canMerge) {
     return stateKey.notAllowedToMerge;

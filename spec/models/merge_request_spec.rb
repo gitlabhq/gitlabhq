@@ -1038,14 +1038,28 @@ describe MergeRequest do
     end
   end
 
-  describe "#reset_merge_when_pipeline_succeeds" do
+  describe "#auto_merge_strategy" do
+    subject { merge_request.auto_merge_strategy }
+
+    let(:merge_request) { create(:merge_request, :merge_when_pipeline_succeeds) }
+
+    it { is_expected.to eq('merge_when_pipeline_succeeds') }
+
+    context 'when auto merge is disabled' do
+      let(:merge_request) { create(:merge_request) }
+
+      it { is_expected.to be_nil }
+    end
+  end
+
+  describe "#reset_auto_merge" do
     let(:merge_if_green) do
       create :merge_request, merge_when_pipeline_succeeds: true, merge_user: create(:user),
                              merge_params: { "should_remove_source_branch" => "1", "commit_message" => "msg" }
     end
 
     it "sets the item to false" do
-      merge_if_green.reset_merge_when_pipeline_succeeds
+      merge_if_green.reset_auto_merge
       merge_if_green.reload
 
       expect(merge_if_green.merge_when_pipeline_succeeds).to be_falsey

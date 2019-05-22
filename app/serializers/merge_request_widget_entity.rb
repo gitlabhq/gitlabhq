@@ -9,7 +9,11 @@ class MergeRequestWidgetEntity < IssuableEntity
   expose :merge_params
   expose :merge_status
   expose :merge_user_id
-  expose :merge_when_pipeline_succeeds
+  expose :auto_merge_enabled
+  expose :auto_merge_strategy
+  expose :available_auto_merge_strategies do |merge_request|
+    AutoMergeService.new(merge_request.project, current_user).available_strategies(merge_request) # rubocop: disable CodeReuse/ServiceClass
+  end
   expose :source_branch
   expose :source_branch_protected do |merge_request|
     merge_request.source_project.present? && ProtectedBranch.protected?(merge_request.source_project, merge_request.source_branch)
@@ -182,8 +186,8 @@ class MergeRequestWidgetEntity < IssuableEntity
     presenter(merge_request).remove_wip_path
   end
 
-  expose :cancel_merge_when_pipeline_succeeds_path do |merge_request|
-    presenter(merge_request).cancel_merge_when_pipeline_succeeds_path
+  expose :cancel_auto_merge_path do |merge_request|
+    presenter(merge_request).cancel_auto_merge_path
   end
 
   expose :create_issue_to_resolve_discussions_path do |merge_request|

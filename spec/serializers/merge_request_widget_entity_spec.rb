@@ -297,4 +297,50 @@ describe MergeRequestWidgetEntity do
       end
     end
   end
+
+  describe 'auto merge' do
+    context 'when auto merge is enabled' do
+      let(:resource) { create(:merge_request, :merge_when_pipeline_succeeds) }
+
+      it 'returns auto merge related information' do
+        expect(subject[:auto_merge_enabled]).to be_truthy
+        expect(subject[:auto_merge_strategy]).to eq('merge_when_pipeline_succeeds')
+      end
+    end
+
+    context 'when auto merge is not enabled' do
+      let(:resource) { create(:merge_request) }
+
+      it 'returns auto merge related information' do
+        expect(subject[:auto_merge_enabled]).to be_falsy
+        expect(subject[:auto_merge_strategy]).to be_nil
+      end
+    end
+
+    context 'when head pipeline is running' do
+      before do
+        create(:ci_pipeline, :running, project: project,
+                                       ref: resource.source_branch,
+                                       sha: resource.diff_head_sha)
+        resource.update_head_pipeline
+      end
+
+      it 'returns available auto merge strategies' do
+        expect(subject[:available_auto_merge_strategies]).to eq(%w[merge_when_pipeline_succeeds])
+      end
+    end
+
+    context 'when head pipeline is finished' do
+      before do
+        create(:ci_pipeline, :success, project: project,
+                                       ref: resource.source_branch,
+                                       sha: resource.diff_head_sha)
+        resource.update_head_pipeline
+      end
+
+      it 'returns available auto merge strategies' do
+        expect(subject[:available_auto_merge_strategies]).to be_empty
+      end
+    end
+  end
 end

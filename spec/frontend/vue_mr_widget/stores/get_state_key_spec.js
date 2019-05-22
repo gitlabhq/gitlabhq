@@ -31,7 +31,7 @@ describe('getStateKey', () => {
 
     expect(bound()).toEqual('notAllowedToMerge');
 
-    context.mergeWhenPipelineSucceeds = true;
+    context.autoMergeEnabled = true;
 
     expect(bound()).toEqual('mergeWhenPipelineSucceeds');
 

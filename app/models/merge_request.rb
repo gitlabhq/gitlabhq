@@ -165,7 +165,7 @@ class MergeRequest < ApplicationRecord
   validates :source_branch, presence: true
   validates :target_project, presence: true
   validates :target_branch, presence: true
-  validates :merge_user, presence: true, if: :merge_when_pipeline_succeeds?, unless: :importing?
+  validates :merge_user, presence: true, if: :auto_merge_enabled?, unless: :importing?
   validate :validate_branches, unless: [:allow_broken, :importing?, :closed_without_fork?]
   validate :validate_fork, unless: :closed_without_fork?
   validate :validate_target_project, on: :create
@@ -196,6 +196,7 @@ class MergeRequest < ApplicationRecord
 
   alias_attribute :project, :target_project
   alias_attribute :project_id, :target_project_id
+  alias_attribute :auto_merge_enabled, :merge_when_pipeline_succeeds
 
   def self.reference_prefix
     '!'
@@ -391,7 +392,7 @@ class MergeRequest < ApplicationRecord
   def merge_participants
     participants = [author]
 
-    if merge_when_pipeline_succeeds? && !participants.include?(merge_user)
+    if auto_merge_enabled? && !participants.include?(merge_user)
       participants << merge_user
     end
 
@@ -782,7 +783,7 @@ class MergeRequest < ApplicationRecord
     project.ff_merge_must_be_possible? && !ff_merge_possible?
   end
 
-  def can_cancel_merge_when_pipeline_succeeds?(current_user)
+  def can_cancel_auto_merge?(current_user)
     can_be_merged_by?(current_user) || self.author == current_user
   end
 
@@ -799,6 +800,16 @@ class MergeRequest < ApplicationRecord
 
   def force_remove_source_branch?
     Gitlab::Utils.to_boolean(merge_params['force_remove_source_branch'])
+  end
+
+  def auto_merge_strategy
+    return unless auto_merge_enabled?
+
+    merge_params['auto_merge_strategy'] || AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS
+  end
+
+  def auto_merge_strategy=(strategy)
+    merge_params['auto_merge_strategy'] = strategy
   end
 
   def remove_source_branch?
@@ -973,15 +984,16 @@ class MergeRequest < ApplicationRecord
     end
   end
 
-  def reset_merge_when_pipeline_succeeds
-    return unless merge_when_pipeline_succeeds?
+  def reset_auto_merge
+    return unless auto_merge_enabled?
 
-    self.merge_when_pipeline_succeeds = false
+    self.auto_merge_enabled = false
     self.merge_user = nil
     if merge_params
       merge_params.delete('should_remove_source_branch')
       merge_params.delete('commit_message')
       merge_params.delete('squash_commit_message')
+      merge_params.delete('auto_merge_strategy')
     end
 
     self.save
