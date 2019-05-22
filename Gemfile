@@ -379,7 +379,7 @@ group :development, :test do
 end
 
 group :test do
-  gem 'shoulda-matchers', '~> 3.1.2', require: false
+  gem 'shoulda-matchers', '~> 4.0.1', require: false
   gem 'email_spec', '~> 2.2.0'
   gem 'json-schema', '~> 2.8.0'
   gem 'webmock', '~> 3.5.1'
