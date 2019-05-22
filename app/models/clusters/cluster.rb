@@ -45,7 +45,6 @@ module Clusters
     has_one :application_knative, class_name: 'Clusters::Applications::Knative'
 
     has_many :kubernetes_namespaces
-    has_one :kubernetes_namespace, -> { order(id: :desc) }, class_name: 'Clusters::KubernetesNamespace'
 
     accepts_nested_attributes_for :provider_gcp, update_only: true
     accepts_nested_attributes_for :platform_kubernetes, update_only: true
@@ -108,7 +107,7 @@ module Clusters
 
     scope :preload_knative, -> {
       preload(
-        :kubernetes_namespace,
+        :kubernetes_namespaces,
         :platform_kubernetes,
         :application_knative
       )
@@ -187,16 +186,16 @@ module Clusters
       platform_kubernetes.kubeclient if kubernetes?
     end
 
+    def kubernetes_namespace_for(project)
+      find_or_initialize_kubernetes_namespace_for_project(project).namespace
+    end
+
     def find_or_initialize_kubernetes_namespace_for_project(project)
-      if project_type?
-        kubernetes_namespaces.find_or_initialize_by(
-          project: project,
-          cluster_project: cluster_project
-        )
-      else
-        kubernetes_namespaces.find_or_initialize_by(
-          project: project
-        )
+      attributes = { project: project }
+      attributes[:cluster_project] = cluster_project if project_type?
+
+      kubernetes_namespaces.find_or_initialize_by(attributes).tap do |namespace|
+        namespace.set_defaults
       end
     end
 

@@ -161,8 +161,8 @@ describe KubernetesService, :use_clean_rails_memory_store_caching do
     end
   end
 
-  describe '#actual_namespace' do
-    subject { service.actual_namespace }
+  describe '#kubernetes_namespace_for' do
+    subject { service.kubernetes_namespace_for(project) }
 
     shared_examples 'a correctly formatted namespace' do
       it 'returns a valid Kubernetes namespace name' do
@@ -298,7 +298,7 @@ describe KubernetesService, :use_clean_rails_memory_store_caching do
     end
 
     context 'no namespace provided' do
-      let(:namespace) { subject.actual_namespace }
+      let(:namespace) { subject.kubernetes_namespace_for(project) }
 
       it_behaves_like 'setting variables'
 
@@ -325,7 +325,7 @@ describe KubernetesService, :use_clean_rails_memory_store_caching do
     end
 
     context 'with valid pods' do
-      let(:pod) { kube_pod(environment_slug: environment.slug, project_slug: project.full_path_slug) }
+      let(:pod) { kube_pod(environment_slug: environment.slug, namespace: service.kubernetes_namespace_for(project), project_slug: project.full_path_slug) }
       let(:pod_with_no_terminal) { kube_pod(environment_slug: environment.slug, project_slug: project.full_path_slug, status: "Pending") }
       let(:terminals) { kube_terminals(service, pod) }
 
@@ -352,6 +352,8 @@ describe KubernetesService, :use_clean_rails_memory_store_caching do
   describe '#calculate_reactive_cache' do
     subject { service.calculate_reactive_cache }
 
+    let(:namespace) { service.kubernetes_namespace_for(project) }
+
     context 'when service is inactive' do
       before do
         service.active = false
@@ -362,8 +364,8 @@ describe KubernetesService, :use_clean_rails_memory_store_caching do
 
     context 'when kubernetes responds with valid pods' do
       before do
-        stub_kubeclient_pods
-        stub_kubeclient_deployments # Used by EE
+        stub_kubeclient_pods(namespace)
+        stub_kubeclient_deployments(namespace) # Used by EE
       end
 
       it { is_expected.to include(pods: [kube_pod]) }
@@ -371,8 +373,8 @@ describe KubernetesService, :use_clean_rails_memory_store_caching do
 
     context 'when kubernetes responds with 500s' do
       before do
-        stub_kubeclient_pods(status: 500)
-        stub_kubeclient_deployments(status: 500) # Used by EE
+        stub_kubeclient_pods(namespace, status: 500)
+        stub_kubeclient_deployments(namespace, status: 500) # Used by EE
       end
 
       it { expect { subject }.to raise_error(Kubeclient::HttpError) }
@@ -380,8 +382,8 @@ describe KubernetesService, :use_clean_rails_memory_store_caching do
 
     context 'when kubernetes responds with 404s' do
       before do
-        stub_kubeclient_pods(status: 404)
-        stub_kubeclient_deployments(status: 404) # Used by EE
+        stub_kubeclient_pods(namespace, status: 404)
+        stub_kubeclient_deployments(namespace, status: 404) # Used by EE
       end
 
       it { is_expected.to include(pods: []) }
