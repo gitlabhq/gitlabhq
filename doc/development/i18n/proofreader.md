@@ -72,6 +72,7 @@ are very appreciative of the work done by translators and proofreaders!
   - Maksymilian Roman - [GitLab](https://gitlab.com/villaincandle), [Crowdin](https://crowdin.com/profile/villaincandle)
 - Portuguese
   - Proofreaders needed.
+  - Diogo Trindade - [GitLab](https://gitlab.com/luisdiogo2071317), [Crowdin](https://crowdin.com/profile/ldiogotrindade)
 - Portuguese, Brazilian
   - Paulo George Gomes Bezerra - [GitLab](https://gitlab.com/paulobezerra), [Crowdin](https://crowdin.com/profile/paulogomes.rep)
   - André Gama - [GitLab](https://gitlab.com/andregamma), [Crowdin](https://crowdin.com/profile/ToeOficial)

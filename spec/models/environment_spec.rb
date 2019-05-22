@@ -592,9 +592,7 @@ describe Environment do
 
       shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
         it 'returns the terminals from the deployment service' do
-          deployment_platform_target = Gitlab.ee? ? environment : project
-
-          expect(deployment_platform_target.deployment_platform)
+          expect(environment.deployment_platform)
             .to receive(:terminals).with(environment)
             .and_return(:fake_terminals)
 

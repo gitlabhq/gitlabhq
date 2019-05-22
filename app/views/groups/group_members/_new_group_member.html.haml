@@ -1,7 +1,7 @@
 = form_for @group_member, url: group_group_members_path(@group), html: { class: 'users-project-form users-group-form' } do |f|
   .row
     .col-md-4.col-lg-6
-      = users_select_tag(:user_ids, multiple: true, class: 'input-clamp', scope: :all, email_user: true)
+      = users_select_tag(:user_ids, group_member_select_options)
       .form-text.text-muted.append-bottom-10
         Search for members by name, username, or email, or invite new ones using their email address.
 

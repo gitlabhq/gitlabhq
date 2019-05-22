@@ -53,7 +53,8 @@
   flex-direction: row;
 
   .btn + .btn:not(.dropdown-toggle-split),
-  .btn + .btn-group {
+  .btn + .btn-group,
+  .btn-group + .btn {
     margin-left: $grid-size;
   }
 
@@ -61,7 +62,8 @@
     flex-direction: column;
 
     .btn + .btn:not(.dropdown-toggle-split),
-    .btn + .btn-group {
+    .btn + .btn-group,
+    .btn-group + .btn {
       margin-left: 0;
       margin-top: $grid-size;
     }

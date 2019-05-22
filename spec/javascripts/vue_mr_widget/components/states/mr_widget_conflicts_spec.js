@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import ConflictsComponent from '~/vue_merge_request_widget/components/states/mr_widget_conflicts.vue';
-import { removeBreakLine } from 'spec/helpers/vue_component_helper';
+import { removeBreakLine } from 'spec/helpers/text_helper';
 
 describe('MRWidgetConflicts', () => {
   let vm;

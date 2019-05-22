@@ -28,6 +28,7 @@
     "ref": { "type": "string" },
     "tag": { "type": "boolean" },
     "coverage": { "type": ["number", "null"] },
+    "allow_failure": { "type": "boolean" },
     "created_at": { "type": "string" },
     "started_at": { "type": ["null", "string"] },
     "finished_at": { "type": ["null", "string"] },

@@ -16,6 +16,20 @@ added to the API without creating breaking changes. This allows us to
 have a versionless API as described in [the GraphQL
 documentation](https://graphql.org/learn/best-practices/#versioning).
 
+## Vision
+
+We want the GraphQL API to be the **primary** means of interacting
+programmatically with GitLab. To achieve this, it needs full coverage - anything
+possible in the REST API should also be possible in the GraphQL API.
+
+To help us meet this vision, the frontend should use GraphQL in preference to
+the REST API for new features, although the alpha status of GraphQL may prevent
+this from being a possibility at times.
+
+There are no plans to deprecate the REST API. To reduce the technical burden of
+supporting two APIs in parallel, they should share implementations as much as
+possible.
+
 ## Enabling the GraphQL feature
 
 The GraphQL API itself is currently in Alpha, and therefore hidden behind a
@@ -32,7 +46,6 @@ curl --data "value=100" --header "PRIVATE-TOKEN: <your_access_token>" https://gi
 A first iteration of a GraphQL API includes the following queries
 
 1. `project` : Within a project it is also possible to fetch a `mergeRequest` by IID.
-
 1. `group` : Only basic group information is currently supported.
 
 ## GraphiQL

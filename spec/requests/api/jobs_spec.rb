@@ -286,6 +286,7 @@ describe API::Jobs do
         expect(json_response['ref']).to eq(job.ref)
         expect(json_response['tag']).to eq(job.tag)
         expect(json_response['coverage']).to eq(job.coverage)
+        expect(json_response['allow_failure']).to eq(job.allow_failure)
         expect(Time.parse(json_response['created_at'])).to be_like_time(job.created_at)
         expect(Time.parse(json_response['started_at'])).to be_like_time(job.started_at)
         expect(Time.parse(json_response['finished_at'])).to be_like_time(job.finished_at)

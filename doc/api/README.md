@@ -186,6 +186,8 @@ curl "https://gitlab.example.com/api/v4/projects"
 The API uses JSON to serialize data. You don't need to specify `.json` at the
 end of an API URL.
 
+All of the API endpoints that use the `POST`, `PUT` or `PATCH` method support params in the request body, with `Content-Type` `application/x-www-form-urlencoded`, `multipart/form-data` or `application/json`.
+
 ## Authentication
 
 Most API requests require authentication, or will only return public data when

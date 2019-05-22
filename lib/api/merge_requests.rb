@@ -367,10 +367,6 @@ module API
         merge_request = find_project_merge_request(params[:merge_request_iid])
         merge_when_pipeline_succeeds = to_boolean(params[:merge_when_pipeline_succeeds])
 
-        if merge_when_pipeline_succeeds || merge_request.merge_when_pipeline_succeeds
-          render_api_error!('Not allowed: pipeline does not exist', 405) unless merge_request.head_pipeline
-        end
-
         # Merge request can not be merged
         # because user dont have permissions to push into target branch
         unauthorized! unless merge_request.can_be_merged_by?(current_user)

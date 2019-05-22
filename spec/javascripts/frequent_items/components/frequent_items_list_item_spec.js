@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import frequentItemsListItemComponent from '~/frequent_items/components/frequent_items_list_item.vue';
 import { shallowMount } from '@vue/test-utils';
-import { trimText } from 'spec/helpers/vue_component_helper';
+import { trimText } from 'spec/helpers/text_helper';
 import { mockProject } from '../mock_data'; // can also use 'mockGroup', but not useful to test here
 
 const createComponent = () => {
