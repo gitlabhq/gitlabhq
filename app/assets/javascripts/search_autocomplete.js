@@ -407,6 +407,7 @@ export class SearchAutocomplete {
     if (this.searchInput.val() === '') {
       return this.restoreOriginalState();
     }
+    this.dropdownMenu.removeClass('show');
   }
 
   restoreOriginalState() {
