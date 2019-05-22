@@ -5,7 +5,6 @@ export USE_BUNDLE_INSTALL=${USE_BUNDLE_INSTALL:-true}
 export BUNDLE_INSTALL_FLAGS="--without=production --jobs=$(nproc) --path=vendor --retry=3 --quiet"
 
 if [ "$USE_BUNDLE_INSTALL" != "false" ]; then
-  bundle --version
   bundle install --clean $BUNDLE_INSTALL_FLAGS && bundle check
 fi
 
