@@ -16,14 +16,6 @@ class ProjectAutoDevops < ApplicationRecord
 
   after_save :create_gitlab_deploy_token, if: :needs_to_create_deploy_token?
 
-  def instance_domain
-    Gitlab::CurrentSettings.auto_devops_domain
-  end
-
-  def has_domain?
-    domain.present? || instance_domain.present?
-  end
-
   def predefined_variables
     Gitlab::Ci::Variables::Collection.new.tap do |variables|
       variables.concat(deployment_strategy_default_variables)
