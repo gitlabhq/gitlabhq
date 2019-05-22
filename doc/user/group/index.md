@@ -5,33 +5,35 @@ and grant members access to several projects at once.
 
 Groups can also be nested in [subgroups](subgroups/index.md).
 
-Find your groups by clicking **Groups** in the top navigation.
+Find your groups by clicking **Groups > Your Groups** in the top navigation.
 
 ![GitLab Groups](img/groups.png)
 
 > The groups dropdown in the top navigation was [introduced][ce-36234] in [GitLab 11.1](https://about.gitlab.com/2018/07/22/gitlab-11-1-released/#groups-dropdown-in-navigation).
 
-The Groups page displays all groups you are a member of, how many projects it holds,
-how many members it has, the group visibility, and, if you have enough permissions,
-a link to the group settings. By clicking the last button you can leave that group.
+The Groups page displays:
+
+- All groups you are a member of.
+- How many projects each group contains.
+- How many members a group has.
+- The group visibility.
+- A link to the group settings if you have sufficient permissions.
+
+By clicking the last button, you can leave that group.
 
 ## Use cases
 
-You can create groups for numerous reasons. To name a few:
+You can create groups for numerous reasons. To name a couple:
 
-- Organize related projects under the same [namespace](#namespaces), add members to that
-  group and grant access to all their projects at once
-- Create a group, include members of your team, and make it easier to
-  `@mention` all the team at once in issues and merge requests
-  - Create a group for your company members, and create [subgroups](subgroups/index.md)
-    for each individual team. Let's say you create a group called `company-team`, and among others,
-    you created subgroups in this group for each individual team `backend-team`,
-    `frontend-team`, and `production-team`:
-     1. When you start a new implementation from an issue, you add a comment:
+- Grant access to multiple projects and multiple team members in fewer steps by organizing related projects under the same [namespace](#namespaces) and adding members to the top-level group.
+- Make it easier to `@mention` all of your team at once in issues and merge requests by creating a group and including the appropriate members.
+
+For example, you could create a group for your company members, and create a [subgroup](subgroups/index.md) for each individual team. Let's say you create a group called `company-team`, and you create subgroups in this group for the individual teams `backend-team`, `frontend-team`, and `production-team`.
+    - When you start a new implementation from an issue, you add a comment:
         _"`@company-team`, let's do it! `@company-team/backend-team` you're good to go!"_
-     1. When your backend team needs help from frontend, they add a comment:
+    - When your backend team needs help from frontend, they add a comment:
         _"`@company-team/frontend-team` could you help us here please?"_
-     1. When the frontend team completes their implementation, they comment:
+    - When the frontend team completes their implementation, they comment:
         _"`@company-team/backend-team`, it's done! Let's ship it `@company-team/production-team`!"_
 
 ## Namespaces
@@ -59,8 +61,8 @@ By doing so:
 
 ## Issues and merge requests within a group
 
-Issues and merge requests are part of projects. For a given group, view all the
-[issues](../project/issues/index.md#issues-list) and [merge requests](../project/merge_requests/index.md#merge-requests-per-group) across all the projects in that group,
+Issues and merge requests are part of projects. For a given group, you can view all of the
+[issues](../project/issues/index.md#issues-list) and [merge requests](../project/merge_requests/index.md#merge-requests-per-group) across all projects in that group,
 together in a single list view.
 
 ## Create a new group
@@ -68,13 +70,13 @@ together in a single list view.
 > For a list of words that are not allowed to be used as group names see the
 > [reserved names](../reserved_names.md).
 
-You can create a group in GitLab from:
+To create a new Group, either:
 
-1. The Groups page: from the top menu, click **Groups**, and click the green button **New group**:
+- In the top menu, click **Groups** and then **Your Groups**, and click the green button **New group**.
 
     ![new group from groups page](img/new_group_from_groups.png)
 
-1. Elsewhere: expand the `plus` sign button on the top navbar and choose **New group**:
+- Or, in the top menu, expand the `plus` sign and choose **New group**.
 
     ![new group from elsewhere](img/new_group_from_other_pages.png)
 
@@ -82,18 +84,18 @@ Add the following information:
 
 ![new group info](img/create_new_group_info.png)
 
-1. The **Group name** will populate the URL automatically. Optionally, you can change it.
-   This is the name that is displayed in the group views.
+1. The **Group name** will automatically populate the URL. Optionally, you can change it.
+   This is the name that displays in group views.
    The name can contain only:
-     - Alphanumeric characters.
-     - Underscores.
-     - Dashes and dots.
-     - Spaces.
-1. The **Group URL**, which will be the namespace under which your projects will be hosted.
+     - Alphanumeric characters
+     - Underscores
+     - Dashes and dots
+     - Spaces
+1. The **Group URL** is the namespace under which your projects will be hosted.
    The URL can contain only:
-     - Alphanumeric characters.
-     - Underscores.
-     - Dashes and dots. It cannot start with dashes or end in dot.
+     - Alphanumeric characters
+     - Underscores
+     - Dashes and dots (it cannot start with dashes or end in a dot)
 1. Optionally, you can add a brief description to tell others
    what this group is about.
 1. Optionally, choose an avatar for your group.
@@ -101,44 +103,38 @@ Add the following information:
 
 ## Add users to a group
 
-Add members to a group by navigating to the group's dashboard, and clicking **Members**:
+A benefit of putting multiple projects in one group is that you can
+give a user to access to all projects in the group with one action.
+
+Add members to a group by navigating to the group's dashboard and clicking **Members**.
 
 ![add members to group](img/add_new_members.png)
 
-Select the [permission level](../permissions.md#permissions) and add the new member. You can also set the expiring
-date for that user, from which they will no longer have access to your group.
+Select the [permission level](../permissions.md#permissions), and add the new member. You can also set the expiring date for that user; this is the date on which they will no longer have access to your group.
 
-One of the benefits of putting multiple projects in one group is that you can
-give a user to access to all projects in the group with one action.
+Consider a group with two projects:
 
-Consider we have a group with two projects:
-
-- On the **Group Members** page we can now add a new user to the group.
-- Now because this user is a **Developer** member of the group, he automatically
+- On the **Group Members** page, you can now add a new user to the group.
+- Now, because this user is a **Developer** member of the group, they automatically
   gets **Developer** access to **all projects** within that group.
 
-If necessary, you can increase the access level of an individual user for a specific project,
-by adding them again as a new member to the project with the new permission levels.
+To increase the access level of an existing user for a specific project,
+add them again as a new member to the project with the desired permission level.
 
 ## Request access to a group
 
-As a group owner you can enable or disable non members to request access to
-your group. Go to the group settings and click on **Allow users to request access**.
+As a group owner, you can enable or disable the ability for non members to request access to
+your group. Go to the group settings, and click **Allow users to request access**.
 
-As a user, you can request to be a member of a group. Go to the group you'd
-like to be a member of, and click the **Request Access** button on the right
+As a user, you can request to be a member of a group, if that setting is enabled. Go to the group for which you'd like to be a member, and click the **Request Access** button on the right
 side of your screen.
 
 ![Request access button](img/request_access_button.png)
-
----
 
 Group owners and maintainers will be notified of your request and will be able to approve or
 decline it on the members page.
 
 ![Manage access requests](img/access_requests_management.png)
-
----
 
 If you change your mind before your request is approved, just click the
 **Withdraw Access Request** button.
@@ -149,29 +145,27 @@ If you change your mind before your request is approved, just click the
 
 There are two different ways to add a new project to a group:
 
-- Select a group and then click on the **New project** button.
+- Select a group, and then click **New project**. You can then continue [creating your project](../../gitlab-basics/create-project.md).
 
     ![New project](img/create_new_project_from_group.png)
-
-    You can then continue on [creating a project](../../gitlab-basics/create-project.md).
 
 - While you are creating a project, select a group namespace
   you've already created from the dropdown menu.
 
     ![Select group](img/select_group_dropdown.png)
 
-### Default project creation level
+### Default project-creation level
 
 > [Introduced][ee-2534] in [GitLab Premium][ee] 10.5.
 > Brought to [GitLab Starter][ee] in 10.7.
 > [Moved](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/25975) to [GitLab Core](https://about.gitlab.com/pricing/) in 11.10.
 
-Group owners or administrators can allow users with the
+Group owners and administrators can allow users with the
 Developer role to create projects under groups.
 
-By default, [Developers and Maintainers](../permissions.md#group-members-permissions) can create projects under a group, but this can be changed either within the group settings for a group, or
-be set globally by a GitLab administrator in the Admin area
-at **Settings > General > Visibility and access controls**.
+By default, [Developers and Maintainers](../permissions.md#group-members-permissions) can create projects under a group. You can change this setting for a specific group within the group settings, or
+you can set this option globally in the Admin area
+at **Settings > General > Visibility and access controls** (you must be a GitLab administrator).
 
 Available settings are `No one`, `Maintainers`, or `Developers + Maintainers`.
 
@@ -182,13 +176,13 @@ Learn how to [transfer a project into a group](../project/settings/index.md#tran
 ## Sharing a project with a group
 
 You can [share your projects with a group](../project/members/share_project_with_groups.md)
-and give your group members access to the project all at once.
+and give all group members access to the project at once.
 
 Alternatively, you can [lock the sharing with group feature](#share-with-group-lock).
 
 ## Manage group memberships via LDAP
 
-In GitLab Enterprise Edition it is possible to manage GitLab group memberships using LDAP groups.
+In GitLab Enterprise Edition, it is possible to manage GitLab group memberships using LDAP groups.
 See [the GitLab Enterprise Edition documentation](../../integration/ldap.md) for more information.
 
 ## Epics **[ULTIMATE]**
@@ -211,38 +205,42 @@ Get an overview of the vulnerabilities of all the projects in a group and its su
 
 > Introduced in [GitLab Ultimate][ee] 11.9 behind the `insights` feature flag.
 
-Configure the Insights that matter for your groups or projects to explore data
-such as triage hygiene, issues created/closed per a given period, average time
-for merge requests to be merged and much more.
+Configure the Insights that matter for your groups or projects, allowing users to explore data
+such as: 
+
+- Triage hygiene
+- Issues created/closed per a given period
+- Average time for merge requests to be merged
+- Much more
 
 [Learn more about Insights](insights/index.md).
 
 ## Transferring groups
 
-From GitLab 10.5, groups can be transferred in the following ways:
+From GitLab 10.5, you can transfer groups in the following ways:
 
-- Top-level groups can be transferred to a group, converting them into subgroups.
-- Subgroups can be transferred to a new parent group.
-- Subgroups can be transferred out from a parent group, converting them into top-level groups.
+- Transfer a subgroup to a new parent group.
+- Convert a top-level group into a subgroup by transfering it to the desired group.
+- Convert a subgroup into a top-level group by transfering it out of its current group.
 
 When transferring groups, note:
 
 - Changing a group's parent can have unintended side effects. See [Redirects when changing repository paths](../project/index.md#redirects-when-changing-repository-paths).
 - You can only transfer groups to groups you manage.
-- You will need to update your local repositories to point to the new location.
-- If the parent group's visibility is lower than the group's current visibility, visibility levels for subgroups and projects will be changed to match the new parent group's visibility.
-- Only explicit group membership is transferred, not inherited membership. If the group's owners have only inherited membership, this would leave the group without an owner. In this case, the user transferring the group becomes the group's owner.
+- You must update your local repositories to point to the new location.
+- If the parent group's visibility is lower than the group's current visibility, visibility levels for subgroups and projects will change to match the new parent group's visibility.
+- Only explicit group membership is transferred, not inherited membership. If the group's owners have only inherited membership, this leaves the group without an owner. In this case, the user transferring the group becomes the group's owner.
 
 ## Group settings
 
-Once you have created a group, you can manage its settings by navigating to
+After creating a group, you can manage its settings by navigating to
 the group's dashboard, and clicking **Settings**.
 
 ![group settings](img/group_settings.png)
 
 ### General settings
 
-Besides giving you the option to edit any settings you've previously
+In addition to editing any settings you previously
 set when [creating the group](#create-a-new-group), you can also
 access further configurations for your group.
 
@@ -253,14 +251,14 @@ Changing a group's path can have unintended side effects. Read
 before proceeding.
 
 If you are vacating the path so it can be claimed by another group or user,
-you may need to rename the group name as well since both names and paths must
+you may need to rename the group, too, since both names and paths must
 be unique.
 
 To change your group path:
 
 1. Navigate to your group's **Settings > General**.
-1. Enter a new name under "Group path".
-1. Hit **Save group**.
+1. Enter a new name under **Group path**.
+1. Click **Save group**.
 
 CAUTION: **Caution:**
 It is currently not possible to rename a namespace if it contains a
@@ -276,20 +274,17 @@ username, you can create a new group and transfer projects to it.
 
 Add a security layer to your group by
 [enforcing two-factor authentication (2FA)](../../security/two_factor_authentication.md#enforcing-2fa-for-all-users-in-a-group)
-to all group members.
+for all group members.
 
 #### Share with group lock
 
 Prevent projects in a group from [sharing
-a project with another group](../project/members/share_project_with_groups.md).
-This allows for tighter control over project access.
+a project with another group](../project/members/share_project_with_groups.md) to enable tighter control over project access.
 
-For example, consider you have two distinct teams (Group A and Group B)
-working together in a project.
-To inherit the group membership, you share the project between the
+For example, let's say you have two distinct teams (Group A and Group B) working together in a project, and to inherit the group membership, you share the project between the
 two groups A and B. **Share with group lock** prevents any project within
-the group from being shared with another group. By doing so, you
-guarantee only the right group members have access to those projects.
+the group from being shared with another group,
+guaranteeing that only the right group members have access to those projects.
 
 To enable this feature, navigate to the group settings page. Select
 **Share with group lock** and **Save the group**.
@@ -298,25 +293,22 @@ To enable this feature, navigate to the group settings page. Select
 
 #### Member Lock **[STARTER]**
 
-With Member lock, it is possible to lock membership in a project to the
-level of members in the group.
+Member lock lets a group owner prevent any new project membership to all of the
+projects within a group, allowing tighter control over project membership.
 
-Member lock lets a group owner lock down any new project membership to all the
-projects within the group, allowing tighter control over project membership.
-
-For instance, if you want to lock the group for an [Audit Event](https://docs.gitlab.com/ee/administration/audit_events.html),
-you enable Member lock to guarantee that membership of a project cannot be modified during that audit.
+For example, if you want to lock the group for an [Audit Event](https://docs.gitlab.com/ee/administration/audit_events.html),
+enable Member lock to guarantee that project membership cannot be modified during that audit.
 
 To enable this feature:
 
 1. Navigate to the group's **Settings > General** page.
-1. Expand the **Permissions, LFS, 2FA** section and select **Member lock**.
-1. Click the **Save changes** button.
+1. Expand the **Permissions, LFS, 2FA** section, and select **Member lock**.
+1. Click **Save changes**.
 
 ![Checkbox for membership lock](img/member_lock.png)
 
 This will disable the option for all users who previously had permissions to
-operate project memberships so no new users can be added. Furthermore, any
+operate project memberships, so no new users can be added. Furthermore, any
 request to add a new user to a project through API will not be possible.
 
 #### Group file templates **[PREMIUM]**
@@ -327,11 +319,11 @@ types with every project in a group. It is analogous to the
 feature, and the selected project should follow the same naming conventions as
 are documented on that page.
 
-Only projects that are in the group may be chosen as the source of templates.
-This includes projects shared with the group, but **excludes** projects in
+You can only choose projects in the group as the template source.
+This includes projects shared with the group, but it **excludes** projects in
 subgroups or parent groups of the group being configured.
 
-This feature may be configured for subgroups as well as parent groups. A project
+You can configure this feature for both subgroups and parent groups. A project
 in a subgroup will have access to the templates for that subgroup, as well as
 any parent groups.
 
@@ -345,28 +337,28 @@ To enable this feature, navigate to the group settings page, expand the
 
 #### Group-level project templates **[PREMIUM]**
 
-Define project templates at a group-level by setting a group as a template source.
+Define project templates at a group level by setting a group as the template source.
 [Learn more about group-level project templates](custom_project_templates.md).
 
 ### Advanced settings
 
-- **Projects**: view all projects within that group, add members to each project,
-  access each project's settings, and remove any project from the same screen.
-- **Webhooks**: configure [webhooks](../project/integrations/webhooks.md) to your group.
-- **Kubernetes cluster integration**: connect your GitLab group with [Kubernetes clusters](clusters/index.md).
-- **Audit Events**: view [Audit Events](https://docs.gitlab.com/ee/administration/audit_events.html)
+- **Projects**: View all projects within that group, add members to each project,
+  access each project's settings, and remove any project, all from the same screen.
+- **Webhooks**: Configure [webhooks](../project/integrations/webhooks.md) for your group.
+- **Kubernetes cluster integration**: Connect your GitLab group with [Kubernetes clusters](clusters/index.md).
+- **Audit Events**: View [Audit Events](https://docs.gitlab.com/ee/administration/audit_events.html)
   for the group. **[STARTER ONLY]**
-- **Pipelines quota**: keep track of the [pipeline quota](../admin_area/settings/continuous_integration.md) for the group.
+- **Pipelines quota**: Keep track of the [pipeline quota](../admin_area/settings/continuous_integration.md) for the group.
 
 ## User contribution analysis **[STARTER]**
 
-With [GitLab Contribution Analytics](contribution_analytics/index.md)
+With [GitLab Contribution Analytics](contribution_analytics/index.md),
 you have an overview of the contributions (pushes, merge requests,
 and issues) performed by your group members.
 
 ## Issues analytics **[PREMIUM]**
 
-With [GitLab Issues Analytics](issues_analytics/index.md), in groups, you can see a bar chart of the number of issues created each month.
+With [GitLab Issues Analytics](issues_analytics/index.md), you can see a bar chart of the number of issues created each month in your groups.
 
 ## Dependency Proxy **[PREMIUM]**
 
