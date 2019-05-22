@@ -7,7 +7,7 @@ exclude:
   - 'vendor/**/*'
   - 'spec/**/*'
 require:
-  - './lib/haml_lint/linter/no_plain_nodes.rb'
+  - './haml_lint/linter/no_plain_nodes.rb'
 
 linters:
   AltText:

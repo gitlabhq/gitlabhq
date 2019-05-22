@@ -3,6 +3,7 @@
 require 'spec_helper'
 require 'haml_lint'
 require 'haml_lint/spec'
+require Rails.root.join('haml_lint/linter/no_plain_nodes')
 
 describe HamlLint::Linter::NoPlainNodes do
   include_context 'linter'

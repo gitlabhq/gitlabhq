@@ -5,7 +5,7 @@ require 'active_support/core_ext/array/grouping'
 module HamlLint
   class Linter
     class NoPlainNodes < Linter
-      include LinterRegistry
+      include ::HamlLint::LinterRegistry
 
       def visit_tag(node)
         if inline_plain_node?(node)
