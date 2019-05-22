@@ -1,8 +1,7 @@
 query getFiles($path: String!, $ref: String!) {
   files(path: $path, ref: $ref) @client {
     id
-    name
-    fullPath
+    flatPath
     type
   }
 }
