@@ -109,7 +109,7 @@ describe Projects::Settings::CiCdController do
     end
 
     context 'when updating the auto_devops settings' do
-      let(:params) { { auto_devops_attributes: { enabled: '', domain: 'mepmep.md' } } }
+      let(:params) { { auto_devops_attributes: { enabled: '' } } }
 
       context 'following the instance default' do
         let(:params) { { auto_devops_attributes: { enabled: '' } } }
