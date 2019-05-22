@@ -2,9 +2,13 @@
 
 require 'spec_helper'
 
-describe Environment do
+describe Environment, :use_clean_rails_memory_store_caching do
+  include ReactiveCachingHelpers
+
   let(:project) { create(:project, :stubbed_repository) }
   subject(:environment) { create(:environment, project: project) }
+
+  it { is_expected.to be_kind_of(ReactiveCaching) }
 
   it { is_expected.to belong_to(:project).required }
   it { is_expected.to have_many(:deployments) }
@@ -573,28 +577,61 @@ describe Environment do
   describe '#terminals' do
     subject { environment.terminals }
 
-    context 'when the environment has terminals' do
-      before do
-        allow(environment).to receive(:has_terminals?).and_return(true)
-      end
-
-      context 'when user configured kubernetes from CI/CD > Clusters' do
-        let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
-        let(:project) { cluster.project }
-
-        it 'returns the terminals from the deployment service' do
-          expect(environment.deployment_platform)
-            .to receive(:terminals).with(environment)
-            .and_return(:fake_terminals)
-
-          is_expected.to eq(:fake_terminals)
-        end
-      end
+    before do
+      allow(environment).to receive(:deployment_platform).and_return(double)
     end
 
-    context 'when the environment does not have terminals' do
+    context 'reactive cache is empty' do
+      before do
+        stub_reactive_cache(environment, nil)
+      end
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'reactive cache has pod data' do
+      let(:cache_data) { Hash(pods: %w(pod1 pod2)) }
+
+      before do
+        stub_reactive_cache(environment, cache_data)
+      end
+
+      it 'retrieves terminals from the deployment platform' do
+        expect(environment.deployment_platform)
+          .to receive(:terminals).with(environment, cache_data)
+          .and_return(:fake_terminals)
+
+        is_expected.to eq(:fake_terminals)
+      end
+    end
+  end
+
+  describe '#calculate_reactive_cache' do
+    let(:cluster) { create(:cluster, :project, :provided_by_user) }
+    let(:project) { cluster.project }
+    let(:environment) { create(:environment, project: project) }
+    let!(:deployment) { create(:deployment, :success, environment: environment) }
+
+    subject { environment.calculate_reactive_cache }
+
+    it 'returns cache data from the deployment platform' do
+      expect(environment.deployment_platform).to receive(:calculate_reactive_cache_for)
+        .with(environment).and_return(pods: %w(pod1 pod2))
+
+      is_expected.to eq(pods: %w(pod1 pod2))
+    end
+
+    context 'environment does not have terminals available' do
       before do
         allow(environment).to receive(:has_terminals?).and_return(false)
+      end
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'project is pending deletion' do
+      before do
+        allow(environment.project).to receive(:pending_delete?).and_return(true)
       end
 
       it { is_expected.to be_nil }

@@ -4,7 +4,6 @@ module Clusters
   module Platforms
     class Kubernetes < ApplicationRecord
       include Gitlab::Kubernetes
-      include ReactiveCaching
       include EnumWithNil
       include AfterCommitQueue
 
@@ -45,8 +44,6 @@ module Clusters
       validates :ca_cert, certificate: true, allow_blank: true, if: :ca_cert_changed?
 
       validate :prevent_modification, on: :update
-
-      after_save :clear_reactive_cache!
 
       alias_attribute :ca_pem, :ca_cert
 
@@ -96,27 +93,16 @@ module Clusters
         end
       end
 
-      # Constructs a list of terminals from the reactive cache
-      #
-      # Returns nil if the cache is empty, in which case you should try again a
-      # short time later
-      def terminals(environment)
-        with_reactive_cache do |data|
-          project = environment.project
-
-          pods = filter_by_project_environment(data[:pods], project.full_path_slug, environment.slug)
-          terminals = pods.flat_map { |pod| terminals_for_pod(api_url, cluster.kubernetes_namespace_for(project), pod) }.compact
-          terminals.each { |terminal| add_terminal_auth(terminal, terminal_auth) }
-        end
-      end
-
-      # Caches resources in the namespace so other calls don't need to block on
-      # network access
-      def calculate_reactive_cache
+      def calculate_reactive_cache_for(environment)
         return unless enabled?
 
-        # We may want to cache extra things in the future
-        { pods: read_pods }
+        { pods: read_pods(environment.deployment_namespace) }
+      end
+
+      def terminals(environment, data)
+        pods = filter_by_project_environment(data[:pods], environment.project.full_path_slug, environment.slug)
+        terminals = pods.flat_map { |pod| terminals_for_pod(api_url, environment.deployment_namespace, pod) }.compact
+        terminals.each { |terminal| add_terminal_auth(terminal, terminal_auth) }
       end
 
       def kubeclient
@@ -133,6 +119,12 @@ module Clusters
           ca_pem: ca_pem)
       end
 
+      def read_pods(namespace)
+        kubeclient.get_pods(namespace: namespace).as_json
+      rescue Kubeclient::ResourceNotFoundError
+        []
+      end
+
       def build_kube_client!
         raise "Incomplete settings" unless api_url
 
@@ -146,19 +138,6 @@ module Clusters
           ssl_options: kubeclient_ssl_options,
           http_proxy_uri: ENV['http_proxy']
         )
-      end
-
-      # Returns a hash of all pods in the namespace
-      def read_pods
-        # TODO: The project lookup here should be moved (to environment?),
-        # which will enable reading pods from the correct namespace for group
-        # and instance clusters.
-        # This will be done in https://gitlab.com/gitlab-org/gitlab-ce/issues/61156
-        return [] unless cluster.project_type?
-
-        kubeclient.get_pods(namespace: cluster.kubernetes_namespace_for(cluster.first_project)).as_json
-      rescue Kubeclient::ResourceNotFoundError
-        []
       end
 
       def kubeclient_ssl_options
