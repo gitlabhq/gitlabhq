@@ -7,7 +7,7 @@ unless Rails.env.production?
 
   module HamlLint
     class Linter::InlineJavaScript < Linter
-      include LinterRegistry
+      include ::HamlLint::LinterRegistry
 
       def visit_filter(node)
         return unless node.filter_type == 'javascript'
