@@ -18,3 +18,6 @@
           = import_will_timeout_message(ci_cd_only)
         %li
           = import_svn_message(ci_cd_only)
+        = render_if_exists 'shared/ci_cd_only_link', ci_cd_only: ci_cd_only
+
+= render_if_exists 'shared/ee/import_form', f: f, ci_cd_only: ci_cd_only
