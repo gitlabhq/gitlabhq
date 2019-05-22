@@ -84,7 +84,7 @@ module QA
 
         page.refresh
         Page::Project::Branches::Show.perform do |branches_view|
-          expect(branches_view).to have_no_branch(second_branch)
+          expect(branches_view).to have_no_branch(second_branch, reload: true)
         end
       end
     end
