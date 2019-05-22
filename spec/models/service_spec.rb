@@ -6,6 +6,8 @@ describe Service do
   describe "Associations" do
     it { is_expected.to belong_to :project }
     it { is_expected.to have_one :service_hook }
+    it { is_expected.to have_one :jira_tracker_data }
+    it { is_expected.to have_one :issue_tracker_data }
   end
 
   describe 'Validations' do
