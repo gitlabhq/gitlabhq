@@ -1,5 +1,0 @@
----
-title: Added list_pages method to avoid loading all wiki pages content
-merge_request: 22801
-author:
-type: performance

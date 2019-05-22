@@ -1,5 +1,0 @@
----
-title: Adds if InfluxDB and Prometheus metrics are enabled to usage ping data
-merge_request: 27238
-author:
-type: added

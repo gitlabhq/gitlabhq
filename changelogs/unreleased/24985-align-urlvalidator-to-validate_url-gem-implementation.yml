@@ -1,5 +1,0 @@
----
-title: "Align UrlValidator to validate_url gem implementation"
-merge_request: 27194
-author: Horatiu Eugen Vlad
-type: fixed

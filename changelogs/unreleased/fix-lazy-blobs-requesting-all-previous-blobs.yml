@@ -1,6 +1,0 @@
----
-title: Fix Blob.lazy always loading all previously-requested blobs when a new request
-  is made
-merge_request:
-author:
-type: performance

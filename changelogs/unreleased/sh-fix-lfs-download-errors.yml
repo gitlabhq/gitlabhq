@@ -1,5 +1,0 @@
----
-title: Properly handle LFS Batch API response in project import
-merge_request: 28223
-author:
-type: fixed

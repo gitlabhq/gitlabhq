@@ -1,5 +1,0 @@
----
-title: Only escape Markdown emphasis characters in autocomplete when necessary
-merge_request: 27457
-author:
-type: changed

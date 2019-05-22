@@ -1,5 +1,0 @@
----
-title: Expose pipeline variables via API
-merge_request: 26501
-author: Agustin Henze <tin@redhat.com>
-type: added
