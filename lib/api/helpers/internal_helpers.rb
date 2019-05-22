@@ -46,6 +46,8 @@ module API
       def process_mr_push_options(push_options, project, user, changes)
         output = {}
 
+        Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/61359')
+
         service = ::MergeRequests::PushOptionsHandlerService.new(
           project,
           user,
