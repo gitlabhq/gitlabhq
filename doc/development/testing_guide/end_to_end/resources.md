@@ -5,11 +5,11 @@ be created via the API or the CLI.
 
 ## How to properly implement a resource class?
 
-All resource classes should inherit from [`Resource::Base`](./base.rb).
+All resource classes should inherit from `Resource::Base`.
 
 There is only one mandatory method to implement to define a resource class.
 This is the `#fabricate!` method, which is used to build the resource via the
-browser UI. Note that you should only use [Page objects](../page/README.md) to
+browser UI. Note that you should only use [Page objects](page_objects.md) to
 interact with a Web page in this method.
 
 Here is an imaginary example:
@@ -74,7 +74,7 @@ module QA
 end
 ```
 
-The [`Project` resource](./project.rb) is a good real example of Browser
+The `Project` resource is a good real example of Browser
 UI and API implementations.
 
 #### Resource attributes

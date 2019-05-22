@@ -17,7 +17,7 @@ Currently, our suite consists of this basic functionality coverage:
 
 Smoke tests have the `:smoke` RSpec metadata.
 
-See [End-to-end Testing](./end_to_end_tests.md) for more details about
+See [End-to-end Testing](end_to_end/index.md) for more details about
 end-to-end tests.
 
 ---
