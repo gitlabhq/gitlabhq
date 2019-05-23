@@ -185,7 +185,7 @@ export const requestJobsForStage = ({ commit }, stage) =>
   commit(types.REQUEST_JOBS_FOR_STAGE, stage);
 
 // On stage click, set selected stage + fetch job
-export const fetchJobsForStage = ({ dispatch }, stage) => {
+export const fetchJobsForStage = ({ dispatch }, stage = {}) => {
   dispatch('requestJobsForStage', stage);
 
   axios

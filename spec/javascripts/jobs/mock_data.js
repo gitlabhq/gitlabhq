@@ -995,7 +995,33 @@ export default {
       },
       duration: 6,
       finished_at: '2017-06-01T17:32:00.042Z',
-      stages,
+      stages: [
+        {
+          dropdown_path: '/jashkenas/underscore/pipelines/16/stage.json?stage=build',
+          name: 'build',
+          path: '/jashkenas/underscore/pipelines/16#build',
+          status: {
+            icon: 'status_success',
+            text: 'passed',
+            label: 'passed',
+            group: 'success',
+            tooltip: 'passed',
+          },
+          title: 'build: passed',
+        },
+        {
+          dropdown_path: '/jashkenas/underscore/pipelines/16/stage.json?stage=test',
+          name: 'test',
+          path: '/jashkenas/underscore/pipelines/16#test',
+          status: {
+            icon: 'status_warning',
+            text: 'passed',
+            label: 'passed with warnings',
+            group: 'success-with-warnings',
+          },
+          title: 'test: passed with warnings',
+        },
+      ],
     },
     ref: {
       name: 'abc',

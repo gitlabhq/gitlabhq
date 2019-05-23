@@ -65,7 +65,10 @@ export default {
     state.isLoading = false;
     state.job = job;
 
-    state.stages = ((job.pipeline || {}).details || {}).stages || [];
+    state.stages =
+      job.pipeline && job.pipeline.details && job.pipeline.details.stages
+        ? job.pipeline.details.stages
+        : [];
 
     /**
      * We only update it on the first request
@@ -103,7 +106,7 @@ export default {
     state.isScrolledToBottomBeforeReceivingTrace = toggle;
   },
 
-  [types.REQUEST_JOBS_FOR_STAGE](state, stage) {
+  [types.REQUEST_JOBS_FOR_STAGE](state, stage = {}) {
     state.isLoadingJobs = true;
     state.selectedStage = stage.name;
   },
