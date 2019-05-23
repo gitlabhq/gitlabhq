@@ -127,8 +127,8 @@ Group labels specify which [groups][structure-groups] the issue belongs to.
 
 Examples include:
 
-- ~"group:control"
-- ~"group:editor"
+- ~"group::control"
+- ~"group::editor"
 
 These labels should be mutually exclusive. If an issue belongs to multiple
 groups, the most relevant should be used.
