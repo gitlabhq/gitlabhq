@@ -241,6 +241,7 @@
      */
     &.code {
       padding: 0;
+      border-radius: 0 0 $border-radius-default $border-radius-default;
     }
 
     .list-inline.previews {

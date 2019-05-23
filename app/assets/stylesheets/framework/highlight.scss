@@ -8,7 +8,7 @@
   pre {
     padding: 10px 0;
     border: 0;
-    border-radius: 0;
+    border-radius: 0 0 $border-radius-default $border-radius-default;
     font-family: $monospace-font;
     font-size: $code-font-size;
     line-height: 19px;
@@ -42,6 +42,7 @@
     padding: 10px;
     text-align: right;
     float: left;
+    border-bottom-left-radius: $border-radius-default;
 
     a {
       font-family: $monospace-font;
