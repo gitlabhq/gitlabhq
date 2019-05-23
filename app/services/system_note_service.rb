@@ -25,7 +25,7 @@ module SystemNoteService
 
     text_parts = ["added #{commits_text}"]
     text_parts << commits_list(noteable, new_commits, existing_commits, oldrev)
-    text_parts << "[Compare with previous version](#{diff_comparison_url(noteable, project, oldrev)})"
+    text_parts << "[Compare with previous version](#{diff_comparison_path(noteable, project, oldrev)})"
 
     body = text_parts.join("\n\n")
 
@@ -41,7 +41,7 @@ module SystemNoteService
   #
   # Returns the created Note object
   def tag_commit(noteable, project, author, tag_name)
-    link = url_helpers.project_tag_url(project, id: tag_name)
+    link = url_helpers.project_tag_path(project, id: tag_name)
     body = "tagged commit #{noteable.sha} to [`#{tag_name}`](#{link})"
 
     create_note(NoteSummary.new(noteable, project, author, body, action: 'tag'))
@@ -272,7 +272,7 @@ module SystemNoteService
     text_parts = ["changed this line in"]
     if version_params = merge_request.version_params_for(diff_refs)
       line_code = change_position.line_code(project.repository)
-      url = url_helpers.diffs_project_merge_request_url(project, merge_request, version_params.merge(anchor: line_code))
+      url = url_helpers.diffs_project_merge_request_path(project, merge_request, version_params.merge(anchor: line_code))
 
       text_parts << "[version #{version_index} of the diff](#{url})"
     else
@@ -405,7 +405,7 @@ module SystemNoteService
   #
   #   "created branch `201-issue-branch-button`"
   def new_issue_branch(issue, project, author, branch)
-    link = url_helpers.project_compare_url(project, from: project.default_branch, to: branch)
+    link = url_helpers.project_compare_path(project, from: project.default_branch, to: branch)
 
     body = "created branch [`#{branch}`](#{link}) to address this issue"
 
@@ -668,10 +668,10 @@ module SystemNoteService
     @url_helpers ||= Gitlab::Routing.url_helpers
   end
 
-  def diff_comparison_url(merge_request, project, oldrev)
+  def diff_comparison_path(merge_request, project, oldrev)
     diff_id = merge_request.merge_request_diff.id
 
-    url_helpers.diffs_project_merge_request_url(
+    url_helpers.diffs_project_merge_request_path(
       project,
       merge_request,
       diff_id: diff_id,
