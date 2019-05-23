@@ -271,7 +271,7 @@ end
 
 In the `before :all` block we create all the application state needed for the tests to run. We do that by fabricating resources via APIs (`project`, `@issue`, and `@labels`), by using the `Runtime::Browser.visit` method to go to the login page, and by performing a `sign_in_using_credentials` from the `Login` Page Object.
 
-> When creating the resources, notice that when calling the `fabricate_via_api` method, we pass some attribute:values, like `name` for the `project` resoruce, `project`, `title`, and `labels` for the the issue resource, and `project`, and `title` for `label` resources.
+> When creating the resources, notice that when calling the `fabricate_via_api` method, we pass some attribute:values, like `name` for the `project` resource; `project`, `title`, and `labels` for the `issue` resource; and `project`, and `title` for `label` resources.
 
 > What's important to understand here is that by creating the application state mostly using the public APIs we save a lot of time in the test suite setup stage.
 
@@ -279,7 +279,7 @@ In the `before :all` block we create all the application state needed for the te
 
 ### 6. Optimization
 
-As already mentioned in the [best practices](./BEST_PRACTICES.md) document, end-to-end tests are very costly in terms of execution time, and it's our responsibility as software engineers to ensure that we optimize them as max as possible.
+As already mentioned in the [best practices](./BEST_PRACTICES.md) document, end-to-end tests are very costly in terms of execution time, and it's our responsibility as software engineers to ensure that we optimize them as much as possible.
 
 > Differently than unit tests, that exercise every little piece of the application in isolation, usually having only one assertion per test, and being very fast to run, end-to-end tests can have more actions and assertions in a single test to help on speeding up the test's feedback since they are much slower when comparing to unit tests.
 
@@ -367,7 +367,7 @@ With that in mind, resources can be a project, an epic, an issue, a label, a com
 
 As you saw in the tests' pre-conditions and the optimization sections, we're already creating some of these resources, and we are doing that by calling the `fabricate_via_api!` method.
 
-> We could be using the `fabricate!` method instead, which would use the `fabricate_via_api!` method if it exists, and fallback to GUI fabrication otherwise, but we recommend being explicit to make it clear what the test does. Also, we always recommend fabricating resources via API since this makes tests faster and more reliable.
+> We could be using the `fabricate!` method instead, which would use the `fabricate_via_api!` method if it exists, and fallback to GUI fabrication otherwise, but we recommend being explicit to make it clear what the test does. Also, we recommend fabricating resources via API since this makes tests faster and more reliable, unless the test is focusing on the GUI itself, or there's no GUI coverage for that specific part in any other test.
 
 For our test suite example, the [project resource](https://gitlab.com/gitlab-org/gitlab-ee/blob/d3584e80b4236acdf393d815d604801573af72cc/qa/qa/resource/project.rb#L55) already had a `fabricate_via_api!` method available, while other resources don't have it, so we will have to create them, like for the issue and label resources. Also, we will have to make a small change in the project resource to expose its `id` attribute so that we can refer to it when fabricating the issue.
 
