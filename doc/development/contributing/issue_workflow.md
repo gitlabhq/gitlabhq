@@ -92,20 +92,21 @@ Stage labels specify which [DevOps stage][devops-stages] the issue belongs to.
 
 The current stage labels are:
 
-- ~"devops:manage"
-- ~"devops:plan"
-- ~"devops:create"
-- ~"devops:verify"
-- ~"devops:package"
-- ~"devops:release"
-- ~"devops:configure"
-- ~"devops:monitor"
-- ~"devops:secure"
-- ~"devops:defend"
-- ~"devops:enablement"
+- ~"devops::manage"
+- ~"devops::plan"
+- ~"devops::create"
+- ~"devops::verify"
+- ~"devops::package"
+- ~"devops::release"
+- ~"devops::configure"
+- ~"devops::monitor"
+- ~"devops::secure"
+- ~"devops::defend"
+- ~"devops::growth"
+- ~"devops::enablement"
 
-These labels should be mutually exclusive. If an issue belongs to multiple
-stages, the most relevant should be used.
+These labels are [scoped labels](../../user/project/labels.md#scoped-labels-premium)
+and thus are mutually exclusive.
 
 They differ from the [Team labels](#team-labels) because teams may work on
 issues outside their stage.
@@ -130,17 +131,15 @@ Examples include:
 - ~"group::control"
 - ~"group::editor"
 
-These labels should be mutually exclusive. If an issue belongs to multiple
-groups, the most relevant should be used.
+These labels are [scoped labels](../../user/project/labels.md#scoped-labels-premium)
+and thus are mutually exclusive.
 
 Groups are nested beneath a particular stage, so only one stage label and one group label
-should be applied to a single issue. You can find the groups listed in the
-[Product Categories pages][product-categories]. For example, ~"group:control" and
-~"group:framework" labels can be applied to issues related to the [Manage stage][manage-stage].
+can be applied to a single issue. You can find the groups listed in the
+[Product Categories pages][product-categories].
 
 [structure-groups]: https://about.gitlab.com/company/team/structure/#groups
 [product-categories]: https://about.gitlab.com/handbook/product/categories/
-[manage-stage]: https://about.gitlab.com/handbook/product/categories/#manage-stage
 
 ## Release Scoping labels
 
