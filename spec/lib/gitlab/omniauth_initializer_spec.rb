@@ -38,6 +38,28 @@ describe Gitlab::OmniauthInitializer do
       subject.execute([hash_config])
     end
 
+    it 'normalizes a String strategy_class' do
+      hash_config = { 'name' => 'hash', 'args' => { strategy_class: 'OmniAuth::Strategies::OAuth2Generic' } }
+
+      expect(devise_config).to receive(:omniauth).with(:hash, strategy_class: OmniAuth::Strategies::OAuth2Generic)
+
+      subject.execute([hash_config])
+    end
+
+    it 'allows a class to be specified in strategy_class' do
+      hash_config = { 'name' => 'hash', 'args' => { strategy_class: OmniAuth::Strategies::OAuth2Generic } }
+
+      expect(devise_config).to receive(:omniauth).with(:hash, strategy_class: OmniAuth::Strategies::OAuth2Generic)
+
+      subject.execute([hash_config])
+    end
+
+    it 'throws an error for an invalid strategy_class' do
+      hash_config = { 'name' => 'hash', 'args' => { strategy_class: 'OmniAuth::Strategies::Bogus' } }
+
+      expect { subject.execute([hash_config]) }.to raise_error(NameError)
+    end
+
     it 'configures fail_with_empty_uid for shibboleth' do
       shibboleth_config = { 'name' => 'shibboleth', 'args' => {} }
 
