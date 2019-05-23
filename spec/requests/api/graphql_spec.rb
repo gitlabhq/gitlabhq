@@ -19,16 +19,21 @@ describe 'GraphQL' do
   context 'logging' do
     shared_examples 'logging a graphql query' do
       let(:expected_params) do
-        { query_string: query, variables: variables.to_json, duration: anything, depth: 1, complexity: 1 }
+        { query_string: query, variables: variables.to_s, duration: anything, depth: 1, complexity: 1 }
       end
 
       it 'logs a query with the expected params' do
+        expect(Gitlab::GraphqlLogger).to receive(:info).with(expected_params).once
+
         post_graphql(query, variables: variables)
       end
-    end
 
-    before do
-      expect(Gitlab::GraphqlLogger).to receive(:info).with(expected_params).once
+      it 'does not instantiate any query analyzers' do # they are static and re-used
+        expect(GraphQL::Analysis::QueryComplexity).not_to receive(:new)
+        expect(GraphQL::Analysis::QueryDepth).not_to receive(:new)
+
+        2.times { post_graphql(query, variables: variables) }
+      end
     end
 
     context 'with no variables' do
@@ -43,6 +48,19 @@ describe 'GraphQL' do
       end
 
       it_behaves_like 'logging a graphql query'
+    end
+
+    context 'when there is an error in the logger' do
+      before do
+        allow_any_instance_of(Gitlab::Graphql::QueryAnalyzers::LoggerAnalyzer).to receive(:process_variables).and_raise(StandardError.new("oh noes!"))
+      end
+
+      it 'logs the exception in Sentry and continues with the request' do
+        expect(Gitlab::Sentry).to receive(:track_exception).at_least(1).times
+        expect(Gitlab::GraphqlLogger).to receive(:info)
+
+        post_graphql(query, variables: {})
+      end
     end
   end
 

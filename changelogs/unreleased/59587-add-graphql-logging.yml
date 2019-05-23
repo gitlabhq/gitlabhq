@@ -1,5 +1,5 @@
 ---
 title: Add dedicated logging for GraphQL queries
 merge_request: 27885
-author: Charlie Ablett
+author:
 type: other

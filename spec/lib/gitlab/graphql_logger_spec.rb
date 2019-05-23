@@ -19,15 +19,16 @@ describe Gitlab::GraphqlLogger do
 
     it 'logs a query from JSON' do
       analyzer_memo = {
-          query_string: query,
-          variables: {},
-          complexity: 181,
-          depth: 0,
-          duration: 7
+        query_string: query,
+        variables: {},
+        complexity: 181,
+        depth: 0,
+        duration: 7
       }
-      output = subject.format_message('INFO', now, 'test', analyzer_memo)
-      data = JSON.parse(output)
 
+      output = subject.format_message('INFO', now, 'test', analyzer_memo)
+
+      data = JSON.parse(output)
       expect(data['severity']).to eq('INFO')
       expect(data['time']).to eq(now.utc.iso8601(3))
       expect(data['complexity']).to eq(181)
