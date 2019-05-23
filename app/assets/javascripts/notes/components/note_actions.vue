@@ -148,12 +148,9 @@ export default {
         href="#"
         title="Add reaction"
       >
-        <icon
-          css-classes="link-highlight award-control-icon-neutral"
-          name="emoji_slightly_smiling_face"
-        />
-        <icon css-classes="link-highlight award-control-icon-positive" name="emoji_smiley" />
-        <icon css-classes="link-highlight award-control-icon-super-positive" name="emoji_smiley" />
+        <icon css-classes="link-highlight award-control-icon-neutral" name="slight-smile" />
+        <icon css-classes="link-highlight award-control-icon-positive" name="smiley" />
+        <icon css-classes="link-highlight award-control-icon-super-positive" name="smiley" />
       </a>
     </div>
     <reply-button
