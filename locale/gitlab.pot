@@ -193,6 +193,18 @@ msgstr ""
 msgid "%{service_title} settings saved, but not activated."
 msgstr ""
 
+msgid "%{size} GiB"
+msgstr ""
+
+msgid "%{size} KiB"
+msgstr ""
+
+msgid "%{size} MiB"
+msgstr ""
+
+msgid "%{size} bytes"
+msgstr ""
+
 msgid "%{spammable_titlecase} was submitted to Akismet successfully."
 msgstr ""
 
@@ -4480,6 +4492,9 @@ msgid "Found errors in your %{gitlab_ci_yml}:"
 msgstr ""
 
 msgid "Found errors in your .gitlab-ci.yml:"
+msgstr ""
+
+msgid "Friday"
 msgstr ""
 
 msgid "From %{providerTitle}"
@@ -9984,6 +9999,9 @@ msgstr ""
 msgid "This will remove the fork relationship to source project"
 msgstr ""
 
+msgid "Thursday"
+msgstr ""
+
 msgid "Time before an issue gets scheduled"
 msgstr ""
 
@@ -10385,6 +10403,9 @@ msgid "Try to fork again"
 msgstr ""
 
 msgid "Trying to communicate with your device. Plug it in (if you haven't already) and press the button on the device now."
+msgstr ""
+
+msgid "Tuesday"
 msgstr ""
 
 msgid "Twitter"
@@ -10877,6 +10898,9 @@ msgid "Webhooks"
 msgstr ""
 
 msgid "Webhooks Help"
+msgstr ""
+
+msgid "Wednesday"
 msgstr ""
 
 msgid "Welcome to your Issue Board!"
