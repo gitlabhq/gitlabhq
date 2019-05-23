@@ -271,7 +271,7 @@ end
 
 In the `before :all` block we create all the application state needed for the tests to run. We do that by fabricating resources via APIs (`project`, `@issue`, and `@labels`), by using the `Runtime::Browser.visit` method to go to the login page, and by performing a `sign_in_using_credentials` from the `Login` Page Object.
 
-> When creating the resources, notice that when calling the `fabricate_via_api` method, we pass some attribute:values, like `name` for the `project` resource; `project`, `title`, and `labels` for the the `issue` resource; and `project`, and `title` for `label` resources.
+> When creating the resources, notice that when calling the `fabricate_via_api` method, we pass some attribute:values, like `name` for the `project` resource; `project`, `title`, and `labels` for the `issue` resource; and `project`, and `title` for `label` resources.
 
 > What's important to understand here is that by creating the application state mostly using the public APIs we save a lot of time in the test suite setup stage.
 
