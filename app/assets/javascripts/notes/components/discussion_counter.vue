@@ -57,7 +57,7 @@ export default {
           class="line-resolve-btn is-disabled"
           type="button"
         >
-          <icon name="check-circle" />
+          <icon :name="allResolved ? 'check-circle-filled' : 'check-circle'" />
         </span>
         <span class="line-resolve-text">
           {{ resolvedDiscussionsCount }}/{{ resolvableDiscussionsCount }}
