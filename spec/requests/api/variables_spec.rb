@@ -43,6 +43,7 @@ describe API::Variables do
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['value']).to eq(variable.value)
         expect(json_response['protected']).to eq(variable.protected?)
+        expect(json_response['masked']).to eq(variable.masked?)
         expect(json_response['variable_type']).to eq('env_var')
       end
 
@@ -74,13 +75,14 @@ describe API::Variables do
     context 'authorized user with proper permissions' do
       it 'creates variable' do
         expect do
-          post api("/projects/#{project.id}/variables", user), params: { key: 'TEST_VARIABLE_2', value: 'PROTECTED_VALUE_2', protected: true }
+          post api("/projects/#{project.id}/variables", user), params: { key: 'TEST_VARIABLE_2', value: 'PROTECTED_VALUE_2', protected: true, masked: true }
         end.to change {project.variables.count}.by(1)
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['key']).to eq('TEST_VARIABLE_2')
         expect(json_response['value']).to eq('PROTECTED_VALUE_2')
         expect(json_response['protected']).to be_truthy
+        expect(json_response['masked']).to be_truthy
         expect(json_response['variable_type']).to eq('env_var')
       end
 
@@ -93,6 +95,7 @@ describe API::Variables do
         expect(json_response['key']).to eq('TEST_VARIABLE_2')
         expect(json_response['value']).to eq('VALUE_2')
         expect(json_response['protected']).to be_falsey
+        expect(json_response['masked']).to be_falsey
         expect(json_response['variable_type']).to eq('file')
       end
 
