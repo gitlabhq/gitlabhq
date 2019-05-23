@@ -72,7 +72,8 @@ module Gitlab
       CATEGORY_LABELS = {
         docs: "~Documentation", # Docs are reviewed along DevOps stages, so don't need roulette for now.
         none: "",
-        qa: "~QA"
+        qa: "~QA",
+        test: "~test for `spec/features/*`"
       }.freeze
       CATEGORIES = {
         %r{\Adoc/} => :none, # To reinstate roulette for documentation, set to `:docs`.
@@ -104,6 +105,7 @@ module Gitlab
 
         %r{\A(ee/)?app/(?!assets|views)[^/]+} => :backend,
         %r{\A(ee/)?(bin|config|danger|generator_templates|lib|rubocop|scripts)/} => :backend,
+        %r{\A(ee/)?spec/features/} => :test,
         %r{\A(ee/)?spec/(?!javascripts|frontend)[^/]+} => :backend,
         %r{\A(ee/)?vendor/(?!assets)[^/]+} => :backend,
         %r{\A(ee/)?vendor/(languages\.yml|licenses\.csv)\z} => :backend,
