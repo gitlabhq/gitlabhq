@@ -27,7 +27,7 @@ are very appreciative of the work done by translators and proofreaders!
 - Czech
   - Proofreaders needed.
 - Danish
-  - Proofreaders needed.
+  - Saederup92 - [GitLab](https://gitlab.com/Saederup92), [Crowdin](https://crowdin.com/profile/Saederup92)
 - Dutch
   - Emily Hendle - [GitLab](https://gitlab.com/pundachan), [Crowdin](https://crowdin.com/profile/pandachan)
 - Esperanto
