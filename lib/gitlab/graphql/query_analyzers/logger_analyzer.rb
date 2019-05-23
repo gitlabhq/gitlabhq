@@ -9,14 +9,11 @@ module Gitlab
         end
 
         def initial_value(query)
-          analyzers = [complexity_analyzer, depth_analyzer]
-          complexity, depth = GraphQL::Analysis.analyze_query(query, analyzers)
           {
             time_started: Gitlab::Metrics::System.monotonic_time,
             query_string: query.query_string,
+            query: query,
             variables: process_variables(query.provided_variables),
-            complexity: complexity,
-            depth: depth,
             duration: nil
           }
         end
@@ -26,16 +23,21 @@ module Gitlab
         end
 
         def final_value(memo)
-          memo[:duration] = "#{duration(memo[:time_started]).round(1)}ms"
-          GraphqlLogger.info(memo.except!(:time_started))
-          memo
+          analyzers = [complexity_analyzer, depth_analyzer]
+          complexity, depth = GraphQL::Analysis.analyze_query(memo[:query], analyzers)
+
+          memo[:depth] = depth
+          memo[:complexity] = complexity
+          memo[:duration] = duration(memo[:time_started]).round(1)
+
+          GraphqlLogger.info(memo.except!(:time_started, :query))
         end
 
         private
 
         def process_variables(variables)
-          if variables.respond_to?(:to_unsafe_h)
-            variables.to_unsafe_h
+          if variables.respond_to?(:to_json)
+            variables.to_json
           else
             variables
           end

@@ -17,31 +17,32 @@ describe 'GraphQL' do
   end
 
   context 'logging' do
+    shared_examples 'logging a graphql query' do
+      let(:expected_params) do
+        { query_string: query, variables: variables.to_json, duration: anything, depth: 1, complexity: 1 }
+      end
+
+      it 'logs a query with the expected params' do
+        post_graphql(query, variables: variables)
+      end
+    end
+
     before do
-      expect(Gitlab::GraphqlLogger).to receive(:info).with(expected)
+      expect(Gitlab::GraphqlLogger).to receive(:info).with(expected_params).once
     end
 
     context 'with no variables' do
-      let(:expected) do
-        { query_string: query, variables: {}, duration: anything, depth: 1, complexity: 1 }
-      end
+      let(:variables) { {} }
 
-      it 'logs the query' do
-        post_graphql(query)
-      end
+      it_behaves_like 'logging a graphql query'
     end
 
     context 'with variables' do
-      let!(:variables) do
+      let(:variables) do
         { "foo" => "bar" }
       end
-      let(:expected) do
-        { query_string: query, variables: variables, duration: anything, depth: 1, complexity: 1 }
-      end
 
-      it 'logs the query' do
-        post_graphql(query, variables: variables)
-      end
+      it_behaves_like 'logging a graphql query'
     end
   end
 
