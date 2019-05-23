@@ -131,9 +131,9 @@ module Gitlab
 
         def on_109(_) set_bg_color(9, 'l') end
 
-        attr_accessor :offset, :n_open_tags, :fg_color, :bg_color, :style_mask
+        attr_accessor :offset, :n_open_tags, :fg_color, :bg_color, :style_mask, :sections, :lineno_in_section
 
-        STATE_PARAMS = [:offset, :n_open_tags, :fg_color, :bg_color, :style_mask].freeze
+        STATE_PARAMS = [:offset, :n_open_tags, :fg_color, :bg_color, :style_mask, :sections, :lineno_in_section].freeze
 
         def convert(stream, new_state)
           reset_state
@@ -153,12 +153,9 @@ module Gitlab
 
           start_offset = @offset
 
-          open_new_tag
-
           stream.each_line do |line|
             s = StringScanner.new(line)
             until s.eos?
-
               if s.scan(Gitlab::Regex.build_trace_section_regex)
                 handle_section(s)
               elsif s.scan(/\e([@-_])(.*?)([@-~])/)
@@ -166,11 +163,11 @@ module Gitlab
               elsif s.scan(/\e(([@-_])(.*?)?)?$/)
                 break
               elsif s.scan(/</)
-                @out << '&lt;'
+                write_in_tag '&lt;'
               elsif s.scan(/\r?\n/)
-                @out << '<br>'
+                handle_new_line
               else
-                @out << s.scan(/./m)
+                write_in_tag s.scan(/./m)
               end
 
               @offset += s.matched_size
@@ -190,13 +187,102 @@ module Gitlab
           )
         end
 
+        def handle_new_line
+          css_classes = []
+
+          if @sections.any?
+            css_classes << "section"
+            css_classes += sections.map { |section| "s_#{section}" }
+            css_classes << "line"
+          end
+
+          write_in_tag %{<br/>}
+          write_raw %{<span class="#{css_classes.join(' ')}"></span>} if css_classes.any?
+          @lineno_in_section += 1
+          open_new_tag
+        end
+
         def handle_section(scanner)
           action = scanner[1]
           timestamp = scanner[2]
           section = scanner[3]
           line = scanner.matched[0...-5] # strips \r\033[0K
 
-          @out << %{<div class="hidden" data-action="#{action}" data-timestamp="#{timestamp}" data-section="#{section}">#{line}</div>}
+          # generate section class
+          normalized_section = section.to_s.downcase.gsub(/[^a-z0-9]/, '-')
+
+          if action == "start"
+            handle_section_start(normalized_section, timestamp, line)
+          elsif action == "end"
+            handle_section_end(normalized_section, timestamp)
+          end
+        end
+
+        def handle_section_start(section, timestamp, line)
+          return if @sections.include?(section)
+
+          js_add_css_class = <<-EOF.strip_heredoc
+            var div = document.getElementById('id_#{section}');
+            var open = div.classList.toggle('open');
+
+            var spans = document.getElementsByClassName('s_#{section}');
+            for (var i = 0; i < spans.length; i++) {
+              if (open) {
+                spans[i].classList.add('open');
+              } else {
+                spans[i].classList.remove('open');
+              }
+            }
+          EOF
+
+          js_add_css_style = <<-EOF.strip_heredoc
+            var div = document.getElementById('id_#{section}');
+            var open = div.classList.toggle('open');
+
+            if (open) {
+              div.classList.remove('fa-caret-right');
+              div.classList.add('fa-caret-down');
+            } else {
+              div.classList.add('fa-caret-right');
+              div.classList.remove('fa-caret-down');
+            }
+
+            var style = document.getElementById('style_#{section}');
+            if (!style && !open) {
+              style = document.createElement('style');
+              style.type = 'text/css';
+              style.id = 'style_#{section}';
+              document.getElementsByClassName('bash')[0].appendChild(style);
+            }
+
+            if (style) {
+              if (open) {
+                style.innerHTML = '';
+              } else {
+                style.innerHTML = '.s_#{section}:not(.section-header):not(.open) { display: none; }';
+              }
+            }
+          EOF
+
+          @sections << section
+          write_raw %{<div class="section-start fa fa-caret-down open" id="id_#{section}" data-action="start" data-timestamp="#{timestamp}" data-section="#{data_section_names}" onclick="#{js_add_css_style}"></div>}
+          @lineno_in_section = 0
+        end
+
+        def handle_section_end(section, timestamp)
+          return unless @sections.include?(section)
+
+          # close all sections up to section
+          until @sections.empty?
+            write_raw %{<div class="section-end" data-action="end" data-timestamp="#{timestamp}" data-section="#{data_section_names}"></div>}
+
+            last_section = @sections.pop
+            break if section == last_section
+          end
+        end
+
+        def data_section_names
+          @sections.join(" ")
         end
 
         def handle_sequence(scanner)
@@ -217,8 +303,6 @@ module Gitlab
           end
 
           evaluate_command_stack(commands)
-
-          open_new_tag
         end
 
         def evaluate_command_stack(stack)
@@ -229,6 +313,20 @@ module Gitlab
           end
 
           evaluate_command_stack(stack)
+        end
+
+        def write_in_tag(data)
+          ensure_open_new_tag
+          @out << data
+        end
+
+        def write_raw(data)
+          close_open_tags
+          @out << data
+        end
+
+        def ensure_open_new_tag
+          open_new_tag if @n_open_tags == 0
         end
 
         def open_new_tag
@@ -251,7 +349,11 @@ module Gitlab
             css_classes << "term-#{css_class}" if @style_mask & flag != 0
           end
 
-          return if css_classes.empty?
+          if @sections.any?
+            css_classes << "section"
+            css_classes << "section-header" if @lineno_in_section == 0
+            css_classes += sections.map { |section| "s_#{section}" }
+          end
 
           @out << %{<span class="#{css_classes.join(' ')}">}
           @n_open_tags += 1
@@ -268,6 +370,8 @@ module Gitlab
           @offset = 0
           @n_open_tags = 0
           @out = +''
+          @sections = []
+          @lineno_in_section = 0
           reset
         end
 
