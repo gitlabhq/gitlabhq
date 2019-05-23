@@ -1,6 +1,8 @@
 - page_title "Members"
 - can_manage_members = can?(current_user, :admin_group_member, @group)
 - show_invited_members = can_manage_members && @invited_members.exists?
+- total_members = @members.total_count
+- total_members += @invited_members.total_count if show_invited_members
 
 .project-members-page.prepend-top-default
   %h4
@@ -19,10 +21,16 @@
 
   %ul.nav-links.mobile-separator.nav.nav-tabs.clearfix
     %li.nav-item
-      = link_to "Existing members", "#existing_members", class: "nav-link active", 'data-toggle' => 'tab'
+      = link_to "#existing_members", class: "nav-link active", 'data-toggle' => 'tab' do
+        %span
+          Existing members
+        %span.badge.badge-pill= @members.total_count
     - if show_invited_members
       %li.nav-item
-        = link_to "Invited members", "#invited_members", class: "nav-link", 'data-toggle' => 'tab'
+        = link_to "#invited_members", class: "nav-link", 'data-toggle' => 'tab' do
+          %span
+            Pending
+          %span.badge.badge-pill= @invited_members.total_count
 
   .tab-content
     #existing_members.tab-pane.active
@@ -31,7 +39,7 @@
           %span.flex-project-title
             Members with access to
             %strong= @group.name
-          %span.badge.badge-pill= @members.total_count
+          %span.badge.badge-pill= total_members
           = form_tag group_group_members_path(@group), method: :get, class: 'form-inline member-search-form flex-project-members-form' do
             .form-group
               .position-relative.append-right-8
@@ -50,9 +58,9 @@
         .card
           .card-header.flex-project-members-panel
             %span.flex-project-title
-              Pending members to
+              Members with access to
               %strong= @group.name
-            %span.badge.badge-pill= @invited_members.total_count
+            %span.badge.badge-pill= total_members
             = form_tag group_group_members_path(@group), method: :get, class: 'form-inline member-search-form flex-project-members-form' do
               .form-group
                 .position-relative.append-right-8
