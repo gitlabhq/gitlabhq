@@ -7,7 +7,7 @@ scheduling into milestones. Labelling is a task for everyone.
 Most issues will have labels for at least one of the following:
 
 - Type: ~feature, ~bug, ~customer, etc.
-- Subject: ~wiki, ~"container registry", ~ldap, ~api, ~frontend, etc.
+- Subject: ~wiki, ~"Container Registry", ~ldap, ~api, ~frontend, etc.
 - Team: ~Plan, ~Manage, ~Quality, etc.
 - Stage: ~"devops:plan", ~"devops:create", etc.
 - Release Scoping: ~Deliverable, ~Stretch, ~"Next Patch Release"
@@ -44,7 +44,7 @@ Subject labels are labels that define what area or feature of GitLab this issue
 hits. They are not always necessary, but very convenient.
 
 Examples of subject labels are ~wiki, ~ldap, ~api,
-~issues, ~"merge requests", ~labels, and ~"container registry".
+~issues, ~"merge requests", ~labels, and ~"Container Registry".
 
 If you are an expert in a particular area, it makes it easier to find issues to
 work on. You can also subscribe to those labels to receive an email each time an
