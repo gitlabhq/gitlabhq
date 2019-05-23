@@ -1,0 +1,5 @@
+---
+title: Display improvements for cycle analytics - stop casting to integers
+merge_request: 28507
+author:
+type: fixed
