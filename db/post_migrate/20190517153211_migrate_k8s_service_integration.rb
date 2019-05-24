@@ -75,11 +75,13 @@ class MigrateK8sServiceIntegration < ActiveRecord::Migration[5.1]
   end
 
   def up
+    has_instance_cluster = Cluster.instance_type.where(enabled: true).exists?
+
     MigrateK8sServiceIntegration::Service.kubernetes_service_templates.find_each do |service|
       next unless service.api_url && service.token
 
       MigrateK8sServiceIntegration::Cluster.create!(
-        enabled: service.active,
+        enabled: !has_instance_cluster && service.active,
         managed: false,
         name: 'KubernetesService',
         cluster_type: 'instance_type',
