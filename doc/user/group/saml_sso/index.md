@@ -15,7 +15,7 @@ SAML SSO for groups is used only as a convenient way to add users and does not s
 ## Configuring your Identity Provider
 
 1. Navigate to the group and click **Settings > SAML SSO**.
-1. Configure your SAML server using the **Assertion consumer service URL** and **Issuer**. See [your identity provider's documentation](#providers) for more details.
+1. Configure your SAML server using the **Assertion consumer service URL** and **Issuer**. Alternatively GitLab provides [metadata XML configuration](#metadata-configuration). See [your identity provider's documentation](#providers) for more details.
 1. Configure the SAML response to include a NameID that uniquely identifies each user.
 1. Configure required assertions using the [table below](#assertions).
 1. Once the identity provider is set up, move on to [configuring GitLab](#configuring-gitlab).
@@ -49,6 +49,14 @@ GitLab.com uses the SAML NameID to identify users. The NameID element:
 | Full Name | `name` |  |
 | First Name | `first_name`, `firstname`, `firstName` |  |
 | Last Name | `last_name`, `lastname`, `lastName` |  |
+
+## Metadata configuration
+
+GitLab provides metadata XML that can be used to configure your Identity Provider.
+
+1. Navigate to the group and click **Settings > SAML SSO**.
+1. Copy the provided **GitLab metadata URL**
+1. Follow your Identity Provider's documentation and paste the metadata URL when it is requested.
 
 ## Configuring GitLab
 
