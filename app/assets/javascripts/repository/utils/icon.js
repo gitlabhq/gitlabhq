@@ -1,5 +1,5 @@
 const entryTypeIcons = {
-  folder: 'folder',
+  tree: 'folder',
   commit: 'archive',
 };
 

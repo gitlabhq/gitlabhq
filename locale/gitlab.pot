@@ -835,6 +835,9 @@ msgstr ""
 msgid "An error has occurred"
 msgstr ""
 
+msgid "An error occurding while fetching folder content."
+msgstr ""
+
 msgid "An error occurred creating the new branch."
 msgstr ""
 
