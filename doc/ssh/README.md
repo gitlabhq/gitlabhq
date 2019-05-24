@@ -1,3 +1,7 @@
+---
+type: howto, reference
+---
+
 # GitLab and SSH keys
 
 Git is a distributed version control system, which means you can work locally
@@ -50,8 +54,7 @@ more information, you can read this
 We'll focus on ED25519 and RSA and here.
 
 NOTE: **Note:**
-As an admin, you can restrict
-[which keys should be permitted and their minimum length](../security/ssh_keys_restrictions.md).
+As an admin, you can [restrict which keys should be permitted and their minimum length](../security/ssh_keys_restrictions.md).
 By default, all keys are permitted, which is also the case for
 [GitLab.com](../user/gitlab_com/index.md#ssh-host-keys-fingerprints).
 
@@ -91,9 +94,8 @@ ssh-keygen -o -f ~/.ssh/id_rsa
 
 ## Generating a new SSH key pair
 
-Before creating an SSH key pair, make sure to read about the
-[different types of keys](#types-of-ssh-keys-and-which-to-choose) to understand
-their differences.
+Before creating an SSH key pair, make sure to understand the
+[different types of keys](#types-of-ssh-keys-and-which-to-choose).
 
 To create a new SSH key pair:
 
@@ -332,7 +334,7 @@ not implicitly give any access just by setting them up.
 
 ### Eclipse
 
-How to add your SSH key to Eclipse: <https://wiki.eclipse.org/EGit/User_Guide#Eclipse_SSH_Configuration>
+If you are using [EGit](https://www.eclipse.org/egit/), you can [add your SSH key to Eclipse](https://wiki.eclipse.org/EGit/User_Guide#Eclipse_SSH_Configuration).
 
 ## SSH on the GitLab server
 

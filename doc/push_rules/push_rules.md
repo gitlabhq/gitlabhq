@@ -1,6 +1,11 @@
+---
+type: reference, howto
+---
+
 # Push Rules **[STARTER]**
 
-Gain additional control over pushes to your repository.
+Gain additional control over what can and can't be pushed to your repository by using
+regular expressions to reject pushes based on commit contents, branch names or file details.
 
 ## Overview
 
@@ -33,7 +38,7 @@ will be accepted.
 
 ### Restrict branch names
 
-Let's assume there's a strictly policy for branch names in your company, and
+Let's assume there's a strict policy for branch names in your company, and
 you want the branches to start with a certain name because you have different
 GitLab CI jobs (`feature`, `hotfix`, `docker`, `android`, etc.) that rely on the
 branch name.
@@ -72,7 +77,7 @@ The following options are available.
 | Maximum file size | **Starter** 7.12 | Pushes that contain added or updated files that exceed this file size (in MB) are rejected. Set to 0 to allow files of any size. |
 
 >**Tip:**
-GitLab uses [RE2 syntax](https://github.com/google/re2/wiki/Syntax) for regular expressions in push rules. You can check your regular expressions at <https://regex-golang.appspot.com>.
+GitLab uses [RE2 syntax](https://github.com/google/re2/wiki/Syntax) for regular expressions in push rules, and you can test them at the [GoLang regex tester](https://regex-golang.appspot.com).
 
 ## Prevent pushing secrets to the repository
 
@@ -147,6 +152,18 @@ id_ecdsa
 pry.history
 bash_history
 ```
+
+<!-- ## Troubleshooting
+
+Include any troubleshooting steps that you can foresee. If you know beforehand what issues
+one might have when setting this up, or when something is changed, or on upgrading, it's
+important to describe those, too. Think of things that may go wrong and include them here.
+This is important to minimize requests for support, and to avoid doc comments with
+questions that you know someone might ask.
+
+Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+If you have none to add when creating a doc, leave this section in place
+but commented out to help encourage others to add to it in the future. -->
 
 [protected-branches]: ../user/project/protected_branches.md
 [signing-commits]: ../user/project/repository/gpg_signed_commits/index.md
