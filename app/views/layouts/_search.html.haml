@@ -16,7 +16,7 @@
                                               mr_path: merge_requests_dashboard_path },
                                             aria: { label: _('Search or jump to…') }
           %button.hidden.js-dropdown-search-toggle{ type: 'button', data: { toggle: 'dropdown' } }
-          .dropdown-menu.dropdown-select
+          .dropdown-menu.dropdown-select.js-dashboard-search-options
             = dropdown_content do
               %ul
                 %li.dropdown-menu-empty-item

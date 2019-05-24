@@ -25,4 +25,18 @@ describe 'Global search' do
       expect(page).to have_selector('.gl-pagination .next')
     end
   end
+
+  it 'closes the dropdown on blur', :js do
+    visit dashboard_projects_path
+
+    fill_in 'search', with: "a"
+    dropdown = find('.js-dashboard-search-options')
+
+    expect(dropdown[:class]).to include 'show'
+
+    find('#search').send_keys(:backspace)
+    find('body').click
+
+    expect(dropdown[:class]).not_to include 'show'
+  end
 end
