@@ -1,3 +1,7 @@
+---
+type: index
+---
+
 # Install GitLab with Docker
 
 [Docker](https://www.docker.com) and container technology have been revolutionizing the software world for the past few years. They combine the performance and efficiency of native execution with the abstraction, security, and immutability of virtualization.
@@ -16,4 +20,4 @@ A [complete usage guide](https://docs.gitlab.com/omnibus/docker/) to these image
 
 ## Cloud native images
 
-GitLab is also working towards a [cloud native set of containers](https://gitlab.com/charts/helm.gitlab.io#docker-container-images), with a single image for each component service. We intend for these images to eventually replace the [Omnibus GitLab based images](#omnibus-gitlab-based-images).
+GitLab is also working towards a [cloud native set of containers](https://docs.gitlab.com/charts/), with a single image for each component service. We intend for these images to eventually replace the [Omnibus GitLab based images](#omnibus-gitlab-based-images).

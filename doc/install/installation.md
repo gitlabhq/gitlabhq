@@ -1,4 +1,27 @@
+---
+type: howto
+---
+
 # Installation from source
+
+This is the official installation guide to set up a production GitLab server
+using the source files. To set up a **development installation** or for many
+other installation options, see the [main installation page](index.md).
+It was created for and tested on **Debian/Ubuntu** operating systems.
+Read [requirements.md](requirements.md) for hardware and operating system requirements.
+If you want to install on RHEL/CentOS, we recommend using the
+[Omnibus packages](https://about.gitlab.com/downloads/).
+
+This guide is long because it covers many cases and includes all commands you
+need, this is [one of the few installation scripts that actually works out of the box](https://twitter.com/robinvdvleuten/status/424163226532986880).
+The following steps have been known to work. **Use caution when you deviate**
+from this guide. Make sure you don't violate any assumptions GitLab makes about
+its environment. For example, many people run into permission problems because
+they changed the location of directories or run services as the wrong user.
+
+If you find a bug/error in this guide, **submit a merge request**
+following the
+[contributing guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md).
 
 ## Consider the Omnibus package installation
 
@@ -12,26 +35,42 @@ After this termination Runit will detect Sidekiq is not running and will start i
 Since installations from source don't use Runit for process supervision, Sidekiq
 can't be terminated and its memory usage will grow over time.
 
-## Select Version to Install
+## Select version to install
 
 Make sure you view [this installation guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/install/installation.md) from the branch (version) of GitLab you would like to install (e.g., `11-7-stable`).
 You can select the branch in the version dropdown in the top left corner of GitLab (below the menu bar).
 
 If the highest number stable branch is unclear, check the [GitLab blog](https://about.gitlab.com/blog/) for installation guide links by version.
 
-## Important Notes
+## GitLab directory structure
 
-This guide is long because it covers many cases and includes all commands you need, this is [one of the few installation scripts that actually works out of the box](https://twitter.com/robinvdvleuten/status/424163226532986880).
+This is the main directory structure you will end up with following the instructions
+of this page:
 
-This installation guide was created for and tested on **Debian/Ubuntu** operating systems. Read [requirements.md](requirements.md) for hardware and operating system requirements. If you want to install on RHEL/CentOS, we recommend using the [Omnibus packages](https://about.gitlab.com/downloads/).
+```
+|-- home
+|   |-- git
+|       |-- .ssh
+|       |-- gitlab
+|       |-- gitlab-shell
+|       |-- repositories
+```
 
-This is the official installation guide to set up a production server. To set up a **development installation** or for many other installation options, see [the installation section of the README](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/README.md#installation).
+- `/home/git/.ssh` - Contains OpenSSH settings. Specifically the `authorized_keys`
+  file managed by gitlab-shell.
+- `/home/git/gitlab` - GitLab core software.
+- `/home/git/gitlab-shell` - Core add-on component of GitLab. Maintains SSH
+  cloning and other functionality.
+- `/home/git/repositories` - Bare repositories for all projects organized by
+  namespace. This is where the git repositories which are pushed/pulled are
+  maintained for all projects. **This area contains critical data for projects.
+  [Keep a backup](../raketasks/backup_restore.md).**
 
-The following steps have been known to work. **Use caution when you deviate** from this guide. Make sure you don't violate any assumptions GitLab makes about its environment. For example, many people run into permission problems because they changed the location of directories or run services as the wrong user.
+NOTE: **Note:**
+The default locations for repositories can be configured in `config/gitlab.yml`
+of GitLab and `config.yml` of gitlab-shell.
 
-If you find a bug/error in this guide, **submit a merge request**
-following the
-[contributing guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md).
+For a more in-depth overview, see the [GitLab architecture doc](../development/architecture.md).
 
 ## Overview
 
@@ -324,9 +363,7 @@ Redis 2.8 with:
 sudo apt-get install redis-server
 ```
 
-If you are using Debian 7 or Ubuntu 12.04, follow the special documentation
-on [an alternate Redis installation](redis.md). Once done, follow the rest of
-the guide here.
+Once done, you can configure Redis:
 
 ```sh
 # Configure redis to use sockets
@@ -930,8 +967,50 @@ and correctly [configured Nginx](#site-configuration).
 ### google-protobuf "LoadError: /lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.14' not found"
 
 This can happen on some platforms for some versions of the
-google-protobuf gem. The workaround is to [install a source-only
-version of this gem](google-protobuf.md).
+`google-protobuf` gem. The workaround is to install a source-only
+version of this gem.
+
+First, you must find the exact version of `google-protobuf` that your
+GitLab installation requires:
+
+```sh
+cd /home/git/gitlab
+
+# Only one of the following two commands will print something. It
+# will look like: * google-protobuf (3.2.0)
+bundle list | grep google-protobuf
+bundle check | grep google-protobuf
+```
+
+Below, `3.2.0` is used as an example. Replace it with the version number
+you found above:
+
+```sh
+cd /home/git/gitlab
+sudo -u git -H gem install google-protobuf --version 3.2.0 --platform ruby
+```
+
+Finally, you can test whether `google-protobuf` loads correctly. The
+following should print 'OK'.
+
+```sh
+sudo -u git -H bundle exec ruby -rgoogle/protobuf -e 'puts :OK'
+```
+
+If the `gem install` command fails, you may need to install the developer
+tools of your OS.
+
+On Debian/Ubuntu:
+
+```sh
+sudo apt-get install build-essential libgmp-dev
+```
+
+On RedHat/CentOS:
+
+```sh
+sudo yum groupinstall 'Development Tools'
+```
 
 [RVM]: https://rvm.io/ "RVM Homepage"
 [rbenv]: https://github.com/sstephenson/rbenv "rbenv on GitHub"

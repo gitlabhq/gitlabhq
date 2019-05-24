@@ -1,8 +1,11 @@
+---
+type: howto
+---
+
 # Digital Ocean and Docker Machine test environment
 
-CAUTION: **Caution:**
-This guide is for quickly testing different versions of GitLab and not recommended for ease of
-future upgrades or keeping the data you create.
+This guide is for quickly testing different versions of GitLab and not
+recommended for ease of future upgrades or keeping the data you create.
 
 ## Initial setup
 
@@ -28,7 +31,7 @@ locally on either macOS or Linux.
 NOTE: **Note:**
 The rest of the steps are identical for macOS and Linux.
 
-### Create new docker host
+## Create new docker host
 
 1. Login to Digital Ocean.
 1. Generate a new API token at <https://cloud.digitalocean.com/settings/api/tokens>.
@@ -60,9 +63,9 @@ The rest of the steps are identical for macOS and Linux.
 
 Resource: <https://docs.docker.com/machine/drivers/digital-ocean/>.
 
-### Creating GitLab test instance
+## Creating GitLab test instance
 
-#### Connect your shell to the new machine
+### Connect your shell to the new machine
 
 In this example we'll create a GitLab EE 8.10.8 instance.
 
@@ -74,7 +77,7 @@ eval "$(docker-machine env gitlab-test-env-do)"
 
 You can add this to your `~/.bash_profile` file to ensure the `docker` client uses the `gitlab-test-env-do` docker host
 
-#### Create new GitLab container
+### Create new GitLab container
 
 - HTTP port: `8888`
 - SSH port: `2222`
@@ -83,7 +86,7 @@ You can add this to your `~/.bash_profile` file to ensure the `docker` client us
 - Container name: `gitlab-test-8.10`
 - GitLab version: **EE** `8.10.8-ee.0`
 
-##### Set up container settings
+#### Set up container settings
 
 ```sh
 export SSH_PORT=2222
@@ -92,7 +95,7 @@ export VERSION=8.10.8-ee.0
 export NAME=gitlab-test-8.10
 ```
 
-##### Create container
+#### Create container
 
 ```sh
 docker run --detach \
@@ -103,9 +106,9 @@ docker run --detach \
 gitlab/gitlab-ee:$VERSION
 ```
 
-#### Connect to the GitLab container
+### Connect to the GitLab container
 
-##### Retrieve the docker host IP
+#### Retrieve the docker host IP
 
 ```sh
 docker-machine ip gitlab-test-env-do
@@ -114,7 +117,7 @@ docker-machine ip gitlab-test-env-do
 
 Browse to: <http://192.168.151.134:8888/>.
 
-##### Execute interactive shell/edit configuration
+#### Execute interactive shell/edit configuration
 
 ```sh
 docker exec -it $NAME /bin/bash
@@ -126,8 +129,20 @@ root@192:/# vi /etc/gitlab/gitlab.rb
 root@192:/# gitlab-ctl reconfigure
 ```
 
-#### Resources
+### Resources
 
 - <https://docs.gitlab.com/omnibus/docker/>.
 - <https://docs.docker.com/machine/get-started/>.
 - <https://docs.docker.com/machine/reference/ip/>.
+
+<!-- ## Troubleshooting
+
+Include any troubleshooting steps that you can foresee. If you know beforehand what issues
+one might have when setting this up, or when something is changed, or on upgrading, it's
+important to describe those, too. Think of things that may go wrong and include them here.
+This is important to minimize requests for support, and to avoid doc comments with
+questions that you know someone might ask.
+
+Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+If you have none to add when creating a doc, leave this section in place
+but commented out to help encourage others to add to it in the future. -->
