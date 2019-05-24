@@ -363,6 +363,14 @@ module Banzai
 
         group_ref
       end
+
+      def unescape_html_entities(text)
+        CGI.unescapeHTML(text.to_s)
+      end
+
+      def escape_html_entities(text)
+        CGI.escapeHTML(text.to_s)
+      end
     end
   end
 end
