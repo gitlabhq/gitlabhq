@@ -5267,6 +5267,9 @@ msgstr ""
 msgid "Invite"
 msgstr ""
 
+msgid "Invite \"%{trimmed}\" by email"
+msgstr ""
+
 msgid "Invite group"
 msgstr ""
 
@@ -8453,6 +8456,9 @@ msgstr ""
 msgid "Search for a group"
 msgstr ""
 
+msgid "Search for a user"
+msgstr ""
+
 msgid "Search for projects, issues, etc."
 msgstr ""
 
@@ -8945,6 +8951,9 @@ msgid "Something went wrong, unable to search projects"
 msgstr ""
 
 msgid "Something went wrong. Please try again."
+msgstr ""
+
+msgid "Something went wrong. Try again later."
 msgstr ""
 
 msgid "Sorry, no projects matched your search"
@@ -10754,6 +10763,21 @@ msgid "Users requesting access to"
 msgstr ""
 
 msgid "Users were successfully added."
+msgstr ""
+
+msgid "UsersSelect|%{name} + %{length} more"
+msgstr ""
+
+msgid "UsersSelect|Any User"
+msgstr ""
+
+msgid "UsersSelect|Assignee"
+msgstr ""
+
+msgid "UsersSelect|No assignee - %{openingTag} assign yourself %{closingTag}"
+msgstr ""
+
+msgid "UsersSelect|Unassigned"
 msgstr ""
 
 msgid "Using required encryption strategy when encrypted field is missing!"

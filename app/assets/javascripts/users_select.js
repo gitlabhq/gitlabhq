@@ -5,7 +5,7 @@
 import $ from 'jquery';
 import _ from 'underscore';
 import axios from './lib/utils/axios_utils';
-import { __ } from './locale';
+import { s__, __, sprintf } from './locale';
 import ModalStore from './boards/stores/modal_store';
 
 // TODO: remove eventHub hack after code splitting refactor
@@ -157,14 +157,20 @@ function UsersSelect(currentUser, els, options = {}) {
             .get(0);
 
           if (selectedUsers.length === 0) {
-            return 'Unassigned';
+            return s__('UsersSelect|Unassigned');
           } else if (selectedUsers.length === 1) {
             return firstUser.name;
           } else if (isSelected) {
             const otherSelected = selectedUsers.filter(s => s !== selectedUser.id);
-            return `${selectedUser.name} + ${otherSelected.length} more`;
+            return sprintf(s__('UsersSelect|%{name} + %{length} more'), {
+              name: selectedUser.name,
+              length: otherSelected.length,
+            });
           } else {
-            return `${firstUser.name} + ${selectedUsers.length - 1} more`;
+            return sprintf(s__('UsersSelect|%{name} + %{length} more'), {
+              name: firstUser.name,
+              length: selectedUsers.length - 1,
+            });
           }
         };
 
@@ -218,11 +224,11 @@ function UsersSelect(currentUser, els, options = {}) {
               tooltipTitle = _.escape(user.name);
             } else {
               user = {
-                name: 'Unassigned',
+                name: s__('UsersSelect|Unassigned'),
                 username: '',
                 avatar: '',
               };
-              tooltipTitle = __('Assignee');
+              tooltipTitle = s__('UsersSelect|Assignee');
             }
             $value.html(assigneeTemplate(user));
             $collapsedSidebar.attr('title', tooltipTitle).tooltip('_fixTitle');
@@ -233,7 +239,11 @@ function UsersSelect(currentUser, els, options = {}) {
           '<% if( avatar ) { %> <a class="author-link" href="/<%- username %>"> <img width="24" class="avatar avatar-inline s24" alt="" src="<%- avatar %>"> </a> <% } else { %> <i class="fa fa-user"></i> <% } %>',
         );
         assigneeTemplate = _.template(
-          '<% if (username) { %> <a class="author-link bold" href="/<%- username %>"> <% if( avatar ) { %> <img width="32" class="avatar avatar-inline s32" alt="" src="<%- avatar %>"> <% } %> <span class="author"><%- name %></span> <span class="username"> @<%- username %> </span> </a> <% } else { %> <span class="no-value assign-yourself"> No assignee - <a href="#" class="js-assign-yourself"> assign yourself </a> </span> <% } %>',
+          `<% if (username) { %> <a class="author-link bold" href="/<%- username %>"> <% if( avatar ) { %> <img width="32" class="avatar avatar-inline s32" alt="" src="<%- avatar %>"> <% } %> <span class="author"><%- name %></span> <span class="username"> @<%- username %> </span> </a> <% } else { %> <span class="no-value assign-yourself"> 
+          ${sprintf(s__('UsersSelect|No assignee - %{openingTag} assign yourself %{closingTag}'), {
+            openingTag: '<a href="#" class="js-assign-yourself">',
+            closingTag: '</a>',
+          })}</span> <% } %>`,
         );
         return $dropdown.glDropdown({
           showMenuAbove: showMenuAbove,
@@ -302,7 +312,7 @@ function UsersSelect(currentUser, els, options = {}) {
                 showDivider += 1;
                 users.unshift({
                   beforeDivider: true,
-                  name: 'Unassigned',
+                  name: s__('UsersSelect|Unassigned'),
                   id: 0,
                 });
               }
@@ -310,7 +320,7 @@ function UsersSelect(currentUser, els, options = {}) {
                 showDivider += 1;
                 name = showAnyUser;
                 if (name === true) {
-                  name = 'Any User';
+                  name = s__('UsersSelect|Any User');
                 }
                 anyUser = {
                   beforeDivider: true,
@@ -596,7 +606,7 @@ function UsersSelect(currentUser, els, options = {}) {
             showEmailUser = $(select).data('emailUser');
             firstUser = $(select).data('firstUser');
             return $(select).select2({
-              placeholder: 'Search for a user',
+              placeholder: __('Search for a user'),
               multiple: $(select).hasClass('multiselect'),
               minimumInputLength: 0,
               query: function(query) {
@@ -621,7 +631,7 @@ function UsersSelect(currentUser, els, options = {}) {
                     }
                     if (showNullUser) {
                       nullUser = {
-                        name: 'Unassigned',
+                        name: s__('UsersSelect|Unassigned'),
                         id: 0,
                       };
                       data.results.unshift(nullUser);
@@ -629,7 +639,7 @@ function UsersSelect(currentUser, els, options = {}) {
                     if (showAnyUser) {
                       name = showAnyUser;
                       if (name === true) {
-                        name = 'Any User';
+                        name = s__('UsersSelect|Any User');
                       }
                       anyUser = {
                         name: name,
@@ -645,7 +655,7 @@ function UsersSelect(currentUser, els, options = {}) {
                   ) {
                     var trimmed = query.term.trim();
                     emailUser = {
-                      name: 'Invite "' + trimmed + '" by email',
+                      name: sprintf(__('Invite "%{trimmed}" by email'), { trimmed }),
                       username: trimmed,
                       id: trimmed,
                       invite: true,
@@ -688,7 +698,7 @@ UsersSelect.prototype.initSelection = function(element, callback) {
   id = $(element).val();
   if (id === '0') {
     nullUser = {
-      name: 'Unassigned',
+      name: s__('UsersSelect|Unassigned'),
     };
     return callback(nullUser);
   } else if (id !== '') {
