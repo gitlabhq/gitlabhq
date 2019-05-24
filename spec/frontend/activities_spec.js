@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-expressions, no-prototype-builtins, no-new, no-shadow */
 
 import $ from 'jquery';
-import 'vendor/jquery.endless-scroll';
 import Activities from '~/activities';
 import Pager from '~/pager';
 
@@ -40,7 +39,7 @@ describe('Activities', () => {
 
   beforeEach(() => {
     loadFixtures(fixtureTemplate);
-    spyOn(Pager, 'init').and.stub();
+    jest.spyOn(Pager, 'init').mockImplementation(() => {});
     new Activities();
   });
 
