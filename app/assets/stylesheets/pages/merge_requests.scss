@@ -87,6 +87,11 @@
   padding: $gl-padding;
 }
 
+.mr-widget-info {
+  padding-left: $gl-padding-50 - $gl-padding-32;
+  padding-right: $gl-padding;
+}
+
 .mr-state-widget {
   color: $gl-text-color;
 
@@ -560,6 +565,10 @@
 
 .mr-links {
   padding-left: $status-icon-size + $gl-btn-padding;
+
+  &:last-child {
+    padding-bottom: $gl-padding;
+  }
 }
 
 .mr-info-list {
@@ -1028,11 +1037,6 @@
   position: fixed;
   z-index: 99999;
   background: $black-transparent;
-}
-
-.source-branch-removal-status {
-  padding-left: 50px;
-  padding-bottom: $gl-padding;
 }
 
 .mr-compare {
