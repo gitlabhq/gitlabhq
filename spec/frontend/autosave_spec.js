@@ -1,16 +1,19 @@
 import $ from 'jquery';
 import Autosave from '~/autosave';
 import AccessorUtilities from '~/lib/utils/accessor';
+import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 
 describe('Autosave', () => {
+  useLocalStorageSpy();
+
   let autosave;
   const field = $('<textarea></textarea>');
   const key = 'key';
 
   describe('class constructor', () => {
     beforeEach(() => {
-      spyOn(AccessorUtilities, 'isLocalStorageAccessSafe').and.returnValue(true);
-      spyOn(Autosave.prototype, 'restore');
+      jest.spyOn(AccessorUtilities, 'isLocalStorageAccessSafe').mockReturnValue(true);
+      jest.spyOn(Autosave.prototype, 'restore').mockImplementation(() => {});
     });
 
     it('should set .isLocalStorageAvailable', () => {
@@ -27,8 +30,6 @@ describe('Autosave', () => {
         field,
         key,
       };
-
-      spyOn(window.localStorage, 'getItem');
     });
 
     describe('if .isLocalStorageAvailable is `false`', () => {
@@ -55,7 +56,7 @@ describe('Autosave', () => {
       });
 
       it('triggers jquery event', () => {
-        spyOn(autosave.field, 'trigger').and.callThrough();
+        jest.spyOn(autosave.field, 'trigger').mockImplementation(() => {});
 
         Autosave.prototype.restore.call(autosave);
 
@@ -77,7 +78,7 @@ describe('Autosave', () => {
       });
 
       it('does not trigger event', () => {
-        spyOn(field, 'trigger').and.callThrough();
+        jest.spyOn(field, 'trigger');
 
         expect(field.trigger).not.toHaveBeenCalled();
       });
@@ -86,11 +87,9 @@ describe('Autosave', () => {
 
   describe('save', () => {
     beforeEach(() => {
-      autosave = jasmine.createSpyObj('autosave', ['reset']);
+      autosave = { reset: jest.fn() };
       autosave.field = field;
       field.val('value');
-
-      spyOn(window.localStorage, 'setItem');
     });
 
     describe('if .isLocalStorageAvailable is `false`', () => {
@@ -123,8 +122,6 @@ describe('Autosave', () => {
       autosave = {
         key,
       };
-
-      spyOn(window.localStorage, 'removeItem');
     });
 
     describe('if .isLocalStorageAvailable is `false`', () => {
