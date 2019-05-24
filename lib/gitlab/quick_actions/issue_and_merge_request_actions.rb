@@ -102,7 +102,7 @@ module Gitlab
           @updates[:milestone_id] = nil
         end
 
-        desc _('Copy labels and milestone from other issue or merge request')
+        desc _('Copy labels and milestone from other issue or merge request in this project')
         explanation do |source_issuable|
           _("Copy labels and milestone from %{source_issuable_reference}.") % { source_issuable_reference: source_issuable.to_reference }
         end

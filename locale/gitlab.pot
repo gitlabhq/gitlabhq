@@ -2906,7 +2906,7 @@ msgstr ""
 msgid "Copy labels and milestone from %{source_issuable_reference}."
 msgstr ""
 
-msgid "Copy labels and milestone from other issue or merge request"
+msgid "Copy labels and milestone from other issue or merge request in this project"
 msgstr ""
 
 msgid "Copy link"
