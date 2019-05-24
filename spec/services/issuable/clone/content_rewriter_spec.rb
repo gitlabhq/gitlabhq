@@ -150,12 +150,12 @@ describe Issuable::Clone::ContentRewriter do
       end
     end
 
-    context 'notes with uploads' do
+    context 'notes with upload' do
       let(:uploader) { build(:file_uploader, project: project1) }
       let(:text) { "Simple text with image: #{uploader.markdown_link} "}
       let!(:note) { create(:note, noteable: original_issue, note: text, project: project1) }
 
-      it 'rewrites note content correclty' do
+      it 'rewrites note content correctly' do
         subject.execute
         new_note = new_issue.notes.first
 
