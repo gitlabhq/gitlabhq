@@ -1,28 +1,111 @@
+$avatar-sizes: (
+  16: (
+    font-size: 10px,
+    line-height: 16px,
+    border-radius: $border-radius-small
+  ),
+  18: (
+    border-radius: $border-radius-small
+  ),
+  19: (
+    border-radius: $border-radius-small
+  ),
+  20: (
+    border-radius: $border-radius-small
+  ),
+  24: (
+    font-size: 12px,
+    line-height: 24px,
+    border-radius: $border-radius-default
+  ),
+  26: (
+    font-size: 20px,
+    line-height: 1.33,
+    border-radius: $border-radius-default
+  ),
+  32: (
+    font-size: 14px,
+    line-height: 32px,
+    border-radius: $border-radius-default
+  ),
+  36: (
+    border-radius: $border-radius-default
+  ),
+  40: (
+    font-size: 16px,
+    line-height: 38px,
+    border-radius: $border-radius-default
+  ),
+  46: (
+    border-radius: $border-radius-default
+  ),
+  48: (
+    font-size: 20px,
+    line-height: 48px,
+    border-radius: $border-radius-large
+  ),
+  60: (
+    font-size: 32px,
+    line-height: 58px,
+    border-radius: $border-radius-large
+  ),
+  64: (
+    font-size: 28px,
+    line-height: 64px,
+    border-radius: $border-radius-large
+  ),
+  70: (
+    font-size: 34px,
+    line-height: 70px,
+    border-radius: $border-radius-large
+  ),
+  90: (
+    font-size: 36px,
+    line-height: 88px,
+    border-radius: $border-radius-large
+  ),
+  96: (
+    font-size: 48px,
+    line-height: 96px,
+    border-radius: $border-radius-large
+  ),
+  100: (
+    font-size: 36px,
+    line-height: 98px,
+    border-radius: $border-radius-large
+  ),
+  110: (
+    font-size: 40px,
+    line-height: 108px,
+    font-weight: $gl-font-weight-normal,
+    border-radius: $border-radius-large
+  ),
+  140: (
+    font-size: 72px,
+    line-height: 138px,
+    border-radius: $border-radius-large
+  ),
+  160: (
+    font-size: 96px,
+    line-height: 158px,
+    border-radius: $border-radius-large
+  )
+);
+
+$identicon-backgrounds: $identicon-red, $identicon-purple, $identicon-indigo, $identicon-blue, $identicon-teal,
+  $identicon-orange, $gray-darker;
+
 .avatar-circle {
   float: left;
   margin-right: 15px;
   border-radius: $avatar-radius;
   border: 1px solid $gray-normal;
-  &.s16 { @include avatar-size(16px, 8px); }
-  &.s18 { @include avatar-size(18px, 8px); }
-  &.s19 { @include avatar-size(19px, 8px); }
-  &.s20 { @include avatar-size(20px, 8px); }
-  &.s24 { @include avatar-size(24px, 8px); }
-  &.s26 { @include avatar-size(26px, 8px); }
-  &.s32 { @include avatar-size(32px, 8px); }
-  &.s36 { @include avatar-size(36px, 16px); }
-  &.s40 { @include avatar-size(40px, 16px); }
-  &.s46 { @include avatar-size(46px, 16px); }
-  &.s48 { @include avatar-size(48px, 16px); }
-  &.s60 { @include avatar-size(60px, 16px); }
-  &.s64 { @include avatar-size(64px, 16px); }
-  &.s70 { @include avatar-size(70px, 16px); }
-  &.s90 { @include avatar-size(90px, 16px); }
-  &.s96 { @include avatar-size(96px, 16px); }
-  &.s100 { @include avatar-size(100px, 16px); }
-  &.s110 { @include avatar-size(110px, 16px); }
-  &.s140 { @include avatar-size(140px, 16px); }
-  &.s160 { @include avatar-size(160px, 16px); }
+
+  @each $size, $size-config in $avatar-sizes {
+    &.s#{$size} {
+      @include avatar-size(#{$size}px, if($size < 36, 8px, 16px));
+    }
+  }
 }
 
 .avatar {
@@ -42,8 +125,13 @@
     margin-left: 2px;
     flex-shrink: 0;
 
-    &.s16 { margin-right: 4px; }
-    &.s24 { margin-right: 4px; }
+    &.s16 {
+      margin-right: 4px;
+    }
+
+    &.s24 {
+      margin-right: 4px;
+    }
   }
 
   &.center {
@@ -69,60 +157,25 @@
   background-color: $gray-darker;
 
   // Sizes
-  &.s16 { font-size: 10px;
-    line-height: 16px; }
+  @each $size, $size-config in $avatar-sizes {
+    $keys: map-keys($size-config);
 
-  &.s24 { font-size: 12px;
-    line-height: 24px; }
-
-  &.s26 { font-size: 20px;
-    line-height: 1.33; }
-
-  &.s32 { font-size: 14px;
-    line-height: 32px; }
-
-  &.s40 { font-size: 16px;
-    line-height: 38px; }
-
-  &.s48 { font-size: 20px;
-    line-height: 48px; }
-
-  &.s60 { font-size: 32px;
-    line-height: 58px; }
-
-  &.s64 { font-size: 28px;
-    line-height: 64px; }
-
-  &.s70 { font-size: 34px;
-    line-height: 70px; }
-
-  &.s90 { font-size: 36px;
-    line-height: 88px; }
-
-  &.s96 { font-size: 48px;
-    line-height: 96px; }
-
-  &.s100 { font-size: 36px;
-    line-height: 98px; }
-
-  &.s110 { font-size: 40px;
-    line-height: 108px;
-    font-weight: $gl-font-weight-normal; }
-
-  &.s140 { font-size: 72px;
-    line-height: 138px; }
-
-  &.s160 { font-size: 96px;
-    line-height: 158px; }
+    &.s#{$size} {
+      @each $key in $keys {
+        // We don't want `border-radius` to be included here.
+        @if ($key != 'border-radius') {
+          #{$key}: map-get($size-config, #{$key});
+        }
+      }
+    }
+  }
 
   // Background colors
-  &.bg1 { background-color: $identicon-red; }
-  &.bg2 { background-color: $identicon-purple; }
-  &.bg3 { background-color: $identicon-indigo; }
-  &.bg4 { background-color: $identicon-blue; }
-  &.bg5 { background-color: $identicon-teal; }
-  &.bg6 { background-color: $identicon-orange; }
-  &.bg7 { background-color: $gray-darker; }
+  @for $i from 1 through length($identicon-backgrounds) {
+    &.bg#{$i} {
+      background-color: nth($identicon-backgrounds, $i);
+    }
+  }
 }
 
 .avatar-container {
@@ -139,41 +192,32 @@
 
   .avatar {
     border-radius: 0;
+    border: 0;
     height: auto;
     width: 100%;
     margin: 0;
     align-self: center;
   }
 
-  &.s40 { min-width: 40px;
-    min-height: 40px; }
+  &.s40 {
+    min-width: 40px;
+    min-height: 40px;
+  }
 
-  &.s64 { min-width: 64px;
-    min-height: 64px; }
+  &.s64 {
+    min-width: 64px;
+    min-height: 64px;
+  }
 }
 
 .rect-avatar {
   border-radius: $border-radius-small;
-  &.s16 { border-radius: $border-radius-small; }
-  &.s18 { border-radius: $border-radius-small; }
-  &.s19 { border-radius: $border-radius-small; }
-  &.s20 { border-radius: $border-radius-small; }
-  &.s24 { border-radius: $border-radius-default; }
-  &.s26 { border-radius: $border-radius-default; }
-  &.s32 { border-radius: $border-radius-default; }
-  &.s36 { border-radius: $border-radius-default; }
-  &.s40 { border-radius: $border-radius-default; }
-  &.s46 { border-radius: $border-radius-default; }
-  &.s48 { border-radius: $border-radius-large; }
-  &.s60 { border-radius: $border-radius-large; }
-  &.s64 { border-radius: $border-radius-large; }
-  &.s70 { border-radius: $border-radius-large; }
-  &.s90 { border-radius: $border-radius-large; }
-  &.s96 { border-radius: $border-radius-large; }
-  &.s100 { border-radius: $border-radius-large; }
-  &.s110 { border-radius: $border-radius-large; }
-  &.s140 { border-radius: $border-radius-large; }
-  &.s160 { border-radius: $border-radius-large; }
+
+  @each $size, $size-config in $avatar-sizes {
+    &.s#{$size} {
+      border-radius: map-get($size-config, 'border-radius');
+    }
+  }
 }
 
 .avatar-counter {
