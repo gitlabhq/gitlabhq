@@ -1,7 +1,7 @@
 - filter = params[:two_factor] || 'everyone'
 - filter_options = { 'everyone' => _('Everyone'), 'enabled' => _('Enabled'), 'disabled' => _('Disabled') }
 .dropdown.inline.member-filter-2fa-dropdown
-  = dropdown_toggle('2FA: ' + filter_options[filter], { toggle: 'dropdown' })
+  = dropdown_toggle(filter_options[filter], { toggle: 'dropdown' })
   %ul.dropdown-menu.dropdown-menu-align-right.dropdown-menu-selectable
     %li.dropdown-header
       = _("Filter by two-factor authentication")

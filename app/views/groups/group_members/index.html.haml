@@ -3,6 +3,7 @@
 - show_invited_members = can_manage_members && @invited_members.exists?
 - total_members = @members.total_count
 - total_members += @invited_members.total_count if show_invited_members
+- pending_active = params[:search_invited].present?
 
 .project-members-page.prepend-top-default
   %h4
@@ -21,32 +22,32 @@
 
   %ul.nav-links.mobile-separator.nav.nav-tabs.clearfix
     %li.nav-item
-      = link_to "#existing_members", class: "nav-link active", 'data-toggle' => 'tab' do
+      = link_to "#existing_members", class: ["nav-link", ("active" unless pending_active)] , 'data-toggle' => 'tab' do
         %span
-          Existing members
+          Existing
         %span.badge.badge-pill= @members.total_count
     - if show_invited_members
       %li.nav-item
-        = link_to "#invited_members", class: "nav-link", 'data-toggle' => 'tab' do
+        = link_to "#invited_members", class: ["nav-link", ("active" if pending_active)], 'data-toggle' => 'tab' do
           %span
             Pending
           %span.badge.badge-pill= @invited_members.total_count
 
   .tab-content
-    #existing_members.tab-pane.active
+    #existing_members.tab-pane{ :class => ("active" unless pending_active) }
       .card
         .card-header.flex-project-members-panel
           %span.flex-project-title
             Members with access to
             %strong= @group.name
-          %span.badge.badge-pill= total_members
           = form_tag group_group_members_path(@group), method: :get, class: 'form-inline member-search-form flex-project-members-form' do
             .form-group
               .position-relative.append-right-8
-                = search_field_tag :search, params[:search], { placeholder: 'Find existing members by name', class: 'form-control', spellcheck: false }
+                = search_field_tag :search, params[:search], { placeholder: 'Search', class: 'form-control', spellcheck: false }
                 %button.member-search-btn{ type: "submit", "aria-label" => "Submit search" }
                   = icon("search")
               - if can_manage_members
+                = label_tag '2fa', '2FA', class: 'col-form-label label-bold pl-2 pr-2'
                 = render 'shared/members/filter_2fa_dropdown'
               = render 'shared/members/sort_dropdown'
         %ul.content-list.members-list
@@ -54,20 +55,18 @@
       = paginate @members, theme: 'gitlab'
 
     - if show_invited_members
-      #invited_members.tab-pane
+      #invited_members.tab-pane{ :class => ("active" if pending_active) }
         .card
           .card-header.flex-project-members-panel
             %span.flex-project-title
-              Members with access to
+              Members with pending access to
               %strong= @group.name
-            %span.badge.badge-pill= total_members
             = form_tag group_group_members_path(@group), method: :get, class: 'form-inline member-search-form flex-project-members-form' do
               .form-group
                 .position-relative.append-right-8
-                  = search_field_tag :search_invited, params[:search_invited], { placeholder: 'Find invited members by e-mail', class: 'form-control', spellcheck: false }
+                  = search_field_tag :search_invited, params[:search_invited], { placeholder: 'Search', class: 'form-control', spellcheck: false }
                   %button.member-search-btn{ type: "submit", "aria-label" => "Submit search" }
                     = icon("search")
-                = render 'shared/members/sort_dropdown'
           %ul.content-list.invited-members-list
             = render partial: 'shared/members/member', collection: @invited_members, as: :member
         = paginate @invited_members, param_name: 'invited_members_page', theme: 'gitlab'
