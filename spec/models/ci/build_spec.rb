@@ -2604,30 +2604,6 @@ describe Ci::Build do
       it { is_expected.to include(ci_config_path) }
     end
 
-    context 'when using auto devops' do
-      context 'and is enabled' do
-        before do
-          project.create_auto_devops!(enabled: true, domain: 'example.com')
-        end
-
-        it "includes AUTO_DEVOPS_DOMAIN" do
-          is_expected.to include(
-            { key: 'AUTO_DEVOPS_DOMAIN', value: 'example.com', public: true, masked: false })
-        end
-      end
-
-      context 'and is disabled' do
-        before do
-          project.create_auto_devops!(enabled: false, domain: 'example.com')
-        end
-
-        it "includes AUTO_DEVOPS_DOMAIN" do
-          is_expected.not_to include(
-            { key: 'AUTO_DEVOPS_DOMAIN', value: 'example.com', public: true, masked: false })
-        end
-      end
-    end
-
     context 'when pipeline variable overrides build variable' do
       before do
         build.yaml_variables = [{ key: 'MYVAR', value: 'myvar', public: true }]
