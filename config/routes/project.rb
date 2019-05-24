@@ -26,6 +26,64 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           module: :projects,
           as: :project) do
 
+      scope '-' do
+        get 'archive/*id', constraints: { format: Gitlab::PathRegex.archive_formats_regex, id: /.+?/ }, to: 'repositories#archive', as: 'archive'
+
+        resources :jobs, only: [:index, :show], constraints: { id: /\d+/ } do
+          collection do
+            resources :artifacts, only: [] do
+              collection do
+                get :latest_succeeded,
+                  path: '*ref_name_and_path',
+                  format: false
+              end
+            end
+          end
+
+          member do
+            get :status
+            post :cancel
+            post :unschedule
+            post :retry
+            post :play
+            post :erase
+            get :trace, defaults: { format: 'json' }
+            get :raw
+            get :terminal
+            get '/terminal.ws/authorize', to: 'jobs#terminal_websocket_authorize', constraints: { format: nil }
+          end
+
+          resource :artifacts, only: [] do
+            get :download
+            get :browse, path: 'browse(/*path)', format: false
+            get :file, path: 'file/*path', format: false
+            get :raw, path: 'raw/*path', format: false
+            post :keep
+          end
+        end
+
+        namespace :ci do
+          resource :lint, only: [:show, :create]
+        end
+
+        namespace :settings do
+          get :members, to: redirect("%{namespace_id}/%{project_id}/project_members")
+
+          resource :ci_cd, only: [:show, :update], controller: 'ci_cd' do
+            post :reset_cache
+            put :reset_registration_token
+          end
+
+          resource :operations, only: [:show, :update]
+          resource :integrations, only: [:show]
+
+          resource :repository, only: [:show], controller: :repository do
+            post :create_deploy_token, path: 'deploy_token/create'
+            post :cleanup
+          end
+        end
+      end
+
       resources :autocomplete_sources, only: [] do
         collection do
           get 'members'
@@ -267,47 +325,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         resources :functions, only: [:index]
       end
 
-      scope '-' do
-        get 'archive/*id', constraints: { format: Gitlab::PathRegex.archive_formats_regex, id: /.+?/ }, to: 'repositories#archive', as: 'archive'
-
-        resources :jobs, only: [:index, :show], constraints: { id: /\d+/ } do
-          collection do
-            resources :artifacts, only: [] do
-              collection do
-                get :latest_succeeded,
-                  path: '*ref_name_and_path',
-                  format: false
-              end
-            end
-          end
-
-          member do
-            get :status
-            post :cancel
-            post :unschedule
-            post :retry
-            post :play
-            post :erase
-            get :trace, defaults: { format: 'json' }
-            get :raw
-            get :terminal
-            get '/terminal.ws/authorize', to: 'jobs#terminal_websocket_authorize', constraints: { format: nil }
-          end
-
-          resource :artifacts, only: [] do
-            get :download
-            get :browse, path: 'browse(/*path)', format: false
-            get :file, path: 'file/*path', format: false
-            get :raw, path: 'raw/*path', format: false
-            post :keep
-          end
-        end
-
-        namespace :ci do
-          resource :lint, only: [:show, :create]
-        end
-      end
-
       draw :legacy_builds
 
       resources :hooks, only: [:index, :create, :edit, :update, :destroy], constraints: { id: /\d+/ } do
@@ -439,25 +456,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
               get :pipeline
               get :coverage
             end
-          end
-        end
-      end
-
-      scope '-' do
-        namespace :settings do
-          get :members, to: redirect("%{namespace_id}/%{project_id}/project_members")
-
-          resource :ci_cd, only: [:show, :update], controller: 'ci_cd' do
-            post :reset_cache
-            put :reset_registration_token
-          end
-
-          resource :operations, only: [:show, :update]
-          resource :integrations, only: [:show]
-
-          resource :repository, only: [:show], controller: :repository do
-            post :create_deploy_token, path: 'deploy_token/create'
-            post :cleanup
           end
         end
       end
