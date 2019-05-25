@@ -35,8 +35,7 @@ module Gitlab
     end
 
     def token_valid?(token_to_check)
-      HMACToken.new(actor).token_valid?(token_to_check) ||
-        LegacyRedisDeviseToken.new(actor).token_valid?(token_to_check)
+      HMACToken.new(actor).token_valid?(token_to_check)
     end
 
     def deploy_key_pushable?(project)
@@ -101,45 +100,6 @@ module Gitlab
         # Take 16 characters of attr_encrypted_db_key_base, as that's what the
         # cipher needs exactly
         Settings.attr_encrypted_db_key_base.first(16)
-      end
-    end
-
-    # TODO: LegacyRedisDeviseToken and references need to be removed after
-    # next released milestone
-    #
-    class LegacyRedisDeviseToken
-      TOKEN_LENGTH = 50
-      DEFAULT_EXPIRY_TIME = 1800 * 1000 # 30 mins
-
-      def initialize(actor)
-        @actor = actor
-      end
-
-      def token_valid?(token_to_check)
-        Devise.secure_compare(stored_token, token_to_check)
-      end
-
-      def stored_token
-        Gitlab::Redis::SharedState.with { |redis| redis.get(state_key) }
-      end
-
-      # This method exists purely to facilitate legacy testing to ensure the
-      # same redis key is used.
-      #
-      def store_new_token(expiry_time_in_ms = DEFAULT_EXPIRY_TIME)
-        Gitlab::Redis::SharedState.with do |redis|
-          new_token = Devise.friendly_token(TOKEN_LENGTH)
-          redis.set(state_key, new_token, px: expiry_time_in_ms)
-          new_token
-        end
-      end
-
-      private
-
-      attr_reader :actor
-
-      def state_key
-        "gitlab:lfs_token:#{actor.class.name.underscore}_#{actor.id}"
       end
     end
   end

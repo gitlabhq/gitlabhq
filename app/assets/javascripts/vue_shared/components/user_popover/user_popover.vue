@@ -71,11 +71,15 @@ export default {
         </div>
         <div class="text-secondary">
           <div v-if="user.bio" class="js-bio d-flex mb-1">
-            <icon name="profile" css-classes="category-icon" />
+            <icon name="profile" css-classes="category-icon flex-shrink-0" />
             <span class="ml-1">{{ user.bio }}</span>
           </div>
           <div v-if="user.organization" class="js-organization d-flex mb-1">
-            <icon v-show="!jobInfoIsLoading" name="work" css-classes="category-icon" />
+            <icon
+              v-show="!jobInfoIsLoading"
+              name="work"
+              css-classes="category-icon flex-shrink-0"
+            />
             <span class="ml-1">{{ user.organization }}</span>
           </div>
           <gl-skeleton-loading
@@ -88,7 +92,7 @@ export default {
           <icon
             v-show="!locationIsLoading && user.location"
             name="location"
-            css-classes="category-icon"
+            css-classes="category-icon flex-shrink-0"
           />
           <span class="ml-1">{{ user.location }}</span>
           <gl-skeleton-loading

@@ -1,5 +1,0 @@
----
-title: Add CI_COMMIT_REF_PROTECTED CI variable
-merge_request: 26716
-author: Jason van den Hurk
-type: added

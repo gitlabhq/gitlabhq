@@ -12,6 +12,7 @@ xml.entry do
 
   xml.summary issue.title
   xml.description issue.description if issue.description
+  xml.content issue.description if issue.description
   xml.milestone issue.milestone.title if issue.milestone
   xml.due_date issue.due_date if issue.due_date
 

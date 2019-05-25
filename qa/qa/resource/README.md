@@ -1,7 +1,7 @@
 # Resource class in GitLab QA
 
 Resources are primarily created using Browser UI steps, but can also
-be created via the API.
+be created via the API or the CLI.
 
 ## How to properly implement a resource class?
 

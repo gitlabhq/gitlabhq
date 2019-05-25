@@ -280,6 +280,14 @@ installations from source.
 Currently it logs the progress of project imports from the Bitbucket Server
 importer. Future importers may use this file.
 
+## `auth.log`
+
+Introduced in GitLab 12.0. This file lives in `/var/log/gitlab/gitlab-rails/auth.log` for
+Omnibus GitLab packages or in `/home/git/gitlab/log/auth.log` for
+installations from source.
+
+It logs information whenever [Rack Attack] registers an abusive request.
+
 ## Reconfigure Logs
 
 Reconfigure log files live in `/var/log/gitlab/reconfigure` for Omnibus GitLab
@@ -298,3 +306,4 @@ Omnibus GitLab packages or in `/home/git/gitlab/log/sidekiq_exporter.log` for
 installations from source.
 
 [repocheck]: repository_checks.md
+[Rack Attack]: ../security/rack_attack.md

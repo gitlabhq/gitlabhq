@@ -188,7 +188,7 @@ def select_label_and_refresh(label)
 end
 ```
 
-By creating a reusable `select_label_and_refresh` method we remove the code duplication, and later we can move this method to a Page Object class that will be created for easier maintenance purposes.
+By creating a reusable `select_label_and_refresh` method, we remove the code duplication, and later we can move this method to a Page Object class that will be created for easier maintenance purposes.
 
 > Notice that the reusable method is created in the bottom of the file. The reason for that is that reading the code should be similar to reading a newspaper, where high-level information is at the top, like the title and summary of the news, while low level, or more specific information, is at the bottom.
 
@@ -271,7 +271,7 @@ end
 
 In the `before :all` block we create all the application state needed for the tests to run. We do that by fabricating resources via APIs (`project`, `@issue`, and `@labels`), by using the `Runtime::Browser.visit` method to go to the login page, and by performing a `sign_in_using_credentials` from the `Login` Page Object.
 
-> When creating the resources, notice that when calling the `fabricate_via_api` method, we pass some attribute:values, like `name` for the `project` resoruce, `project`, `title`, and `labels` for the the issue resource, and `project`, and `title` for `label` resources.
+> When creating the resources, notice that when calling the `fabricate_via_api` method, we pass some attribute:values, like `name` for the `project` resource; `project`, `title`, and `labels` for the `issue` resource; and `project`, and `title` for `label` resources.
 
 > What's important to understand here is that by creating the application state mostly using the public APIs we save a lot of time in the test suite setup stage.
 
@@ -279,7 +279,7 @@ In the `before :all` block we create all the application state needed for the te
 
 ### 6. Optimization
 
-As already mentioned in the [best practices](./BEST_PRACTICES.md) document, end-to-end tests are very costly in terms of execution time, and it's our responsibility as software engineers to ensure that we optimize them as max as possible.
+As already mentioned in the [best practices](./BEST_PRACTICES.md) document, end-to-end tests are very costly in terms of execution time, and it's our responsibility as software engineers to ensure that we optimize them as much as possible.
 
 > Differently than unit tests, that exercise every little piece of the application in isolation, usually having only one assertion per test, and being very fast to run, end-to-end tests can have more actions and assertions in a single test to help on speeding up the test's feedback since they are much slower when comparing to unit tests.
 
@@ -361,7 +361,109 @@ Finally, the `select_label_and_refresh` method is changed to `select_labels_and_
 
 ### 7. Resources
 
-TBD.
+You can think of resources as anything that can be created on GitLab CE or EE, either through the GUI, the API, or the CLI.
+
+With that in mind, resources can be a project, an epic, an issue, a label, a commit, etc.
+
+As you saw in the tests' pre-conditions and the optimization sections, we're already creating some of these resources, and we are doing that by calling the `fabricate_via_api!` method.
+
+> We could be using the `fabricate!` method instead, which would use the `fabricate_via_api!` method if it exists, and fallback to GUI fabrication otherwise, but we recommend being explicit to make it clear what the test does. Also, we recommend fabricating resources via API since this makes tests faster and more reliable, unless the test is focusing on the GUI itself, or there's no GUI coverage for that specific part in any other test.
+
+For our test suite example, the [project resource](https://gitlab.com/gitlab-org/gitlab-ee/blob/d3584e80b4236acdf393d815d604801573af72cc/qa/qa/resource/project.rb#L55) already had a `fabricate_via_api!` method available, while other resources don't have it, so we will have to create them, like for the issue and label resources. Also, we will have to make a small change in the project resource to expose its `id` attribute so that we can refer to it when fabricating the issue.
+
+#### Implementation
+
+Following we describe the changes needed in every of the before-mentioned resource files.
+
+**Project resource**
+
+Let's start with the smallest change.
+
+In the [project resource](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/qa/qa/resource/project.rb), let's expose its `id` attribute.
+
+Add the following `attribute :id` right below the [`attribute :description`](https://gitlab.com/gitlab-org/gitlab-ee/blob/d3584e80b4236acdf393d815d604801573af72cc/qa/qa/resource/project.rb#L11).
+
+> This line is needed to allow for issues and labels to be automatically added to a project when fabricating them via API.
+
+**Issue resource**
+
+Now, let's make it possible to create an issue resource through the API.
+
+First, in the [issue resource](https://gitlab.com/gitlab-org/gitlab-ee/blob/d3584e80b4236acdf393d815d604801573af72cc/qa/qa/resource/issue.rb), let's expose its labels attribute.
+
+Add the following `attribute :labels` right below the [`attribute :title`](https://gitlab.com/gitlab-org/gitlab-ee/blob/d3584e80b4236acdf393d815d604801573af72cc/qa/qa/resource/issue.rb#L15).
+
+> This line is needed to allow for labels to be automatically added to an issue when fabricating it via API.
+
+Next, add the following code right below the [`fabricate!`](https://gitlab.com/gitlab-org/gitlab-ee/blob/d3584e80b4236acdf393d815d604801573af72cc/qa/qa/resource/issue.rb#L27) method.
+
+```ruby
+def api_get_path
+  "/projects/#{project.id}/issues/#{id}"
+end
+
+def api_post_path
+  "/projects/#{project.id}/issues"
+end
+
+def api_post_body
+  {
+    title: title,
+    labels: [labels]
+  }
+end
+```
+
+By defining the `api_get_path` method, we allow the [`ApiFabricator`](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/qa/qa/resource/api_fabricator.rb) module to know which path to use to get a single issue.
+
+> This `GET` path can be found in the [public API documentation](https://docs.gitlab.com/ee/api/issues.html#single-issue).
+
+By defining the `api_post_path` method, we allow the [`ApiFabricator`](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/qa/qa/resource/api_fabricator.rb) module to know which path to use to create a new issue in a specific project.
+
+> This `POST` path can be found in the [public API documentation](https://docs.gitlab.com/ee/api/issues.html#new-issue).
+
+By defining the `api_post_body` method, we allow the [`ApiFabricator.api_post`](https://gitlab.com/gitlab-org/gitlab-ee/blob/a9177ca1812bac57e2b2fa4560e1d5dd8ffac38b/qa/qa/resource/api_fabricator.rb#L68) method to know which data to send when making the `POST` request.
+
+> Notice that we pass both `title` and `labels` attributes in the `api_post_body`, where `labels` receives an array of labels, and [`title` is required](https://docs.gitlab.com/ee/api/issues.html#new-issue).
+
+**Label resource**
+
+Finally, let's make it possible to create label resources through the API.
+
+Add the following code right below the [`fabricate!`](https://gitlab.com/gitlab-org/gitlab-ee/blob/a9177ca1812bac57e2b2fa4560e1d5dd8ffac38b/qa/qa/resource/label.rb#L36) method.
+
+```ruby
+def resource_web_url(resource)
+  super
+rescue ResourceURLMissingError
+  # this particular resource does not expose a web_url property
+end
+
+def api_get_path
+  raise NotImplementedError, "The Labels API doesn't expose a single-resource endpoint so this method cannot be properly implemented."
+end
+
+def api_post_path
+  "/projects/#{project}/labels"
+end
+
+def api_post_body
+  {
+    name: @title,
+    color: @color
+  }
+end
+```
+
+By defining the `resource_web_url(resource)` method, we override the one from the [`ApiFabricator`](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/qa/qa/resource/api_fabricator.rb#L44) module. We do that to avoid failing the test due to this particular resource not exposing a `web_url` property.
+
+By defining the `api_get_path` method, we **would** allow for the [`ApiFabricator`](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/qa/qa/resource/api_fabricator.rb) module to know which path to use to get a single label, but since there's no path available for that in the publich API, we raise a `NotImplementedError` instead.
+
+By defining the `api_post_path` method, we allow for the [`ApiFabricator `](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/qa/qa/resource/api_fabricator.rb) module to know which path to use to create a new label in a specific project.
+
+By defining the `api_post_body` method, we we allow for the [`ApiFabricator.api_post`](https://gitlab.com/gitlab-org/gitlab-ee/blob/a9177ca1812bac57e2b2fa4560e1d5dd8ffac38b/qa/qa/resource/api_fabricator.rb#L68) method to know which data to send when making the `POST` request.
+
+> Notice that we pass both `name` and `color` attributes in the `api_post_body` since [those are required](https://docs.gitlab.com/ee/api/labels.html#create-a-new-label).
 
 ### 8. Page Objects
 

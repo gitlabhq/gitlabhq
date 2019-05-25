@@ -1,0 +1,5 @@
+---
+title: Better isolated `Docker.gitlab-ci.yml` to avoid interference with other job configurations.
+merge_request: 28213
+author: lrkwz
+type: changed

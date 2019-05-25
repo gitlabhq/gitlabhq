@@ -35,7 +35,7 @@ discussions, and descriptions:
 | `/label ~label1 ~label2`   | Add label(s). Label names can also start without ~ but mixed syntax is not supported.                   | ✓     | ✓             |
 | `/unlabel ~label1 ~label2` | Remove all or specific label(s)| ✓     | ✓             |
 | `/relabel ~label1 ~label2` | Replace label                  | ✓     | ✓             |
-| <code>/copy_metadata #issue &#124; !merge_request</code> | Copy labels and milestone from other issue or merge request | ✓     | ✓             |
+| <code>/copy_metadata #issue &#124; !merge_request</code> | Copy labels and milestone from other issue or merge request in the project | ✓     | ✓             |
 | <code>/estimate &lt;1w 3d 2h 14m&gt;</code> | Set time estimate | ✓     | ✓             |
 | `/remove_estimate`       | Remove time estimate             | ✓     | ✓             |
 | <code>/spend &lt;time(1h 30m &#124; -1h 5m)&gt; &lt;date(YYYY-MM-DD)&gt;</code> | Add or subtract spent time; optionally, specify the date that time was spent on | ✓     | ✓             |

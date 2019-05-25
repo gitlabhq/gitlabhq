@@ -3,6 +3,8 @@
 module Projects
   module Serverless
     class FunctionsFinder
+      attr_reader :project
+
       def initialize(project)
         @clusters = project.clusters
         @project = project
@@ -27,7 +29,7 @@ module Projects
           environment_scope == c.environment_scope
         end
 
-        func = ::Serverless::Function.new(@project, name, cluster.platform_kubernetes&.actual_namespace)
+        func = ::Serverless::Function.new(project, name, cluster.kubernetes_namespace_for(project))
         prometheus_adapter.query(:knative_invocation, func)
       end
 
@@ -43,7 +45,7 @@ module Projects
         clusters_with_knative_installed.preload_knative.map do |cluster|
           next if environment_scope != cluster.environment_scope
 
-          services = cluster.application_knative.services_for(ns: cluster.platform_kubernetes&.actual_namespace)
+          services = cluster.application_knative.services_for(ns: cluster.kubernetes_namespace_for(project))
             .select { |svc| svc["metadata"]["name"] == name }
 
           add_metadata(cluster, services).first unless services.nil?
@@ -52,7 +54,7 @@ module Projects
 
       def knative_services
         clusters_with_knative_installed.preload_knative.map do |cluster|
-          services = cluster.application_knative.services_for(ns: cluster.platform_kubernetes&.actual_namespace)
+          services = cluster.application_knative.services_for(ns: cluster.kubernetes_namespace_for(project))
           add_metadata(cluster, services) unless services.nil?
         end
       end
@@ -64,7 +66,7 @@ module Projects
 
           if services.length == 1
             s["podcount"] = cluster.application_knative.service_pod_details(
-              cluster.platform_kubernetes&.actual_namespace,
+              cluster.kubernetes_namespace_for(project),
               s["metadata"]["name"]).length
           end
         end
@@ -76,7 +78,7 @@ module Projects
 
       # rubocop: disable CodeReuse/ServiceClass
       def prometheus_adapter
-        @prometheus_adapter ||= ::Prometheus::AdapterService.new(@project).prometheus_adapter
+        @prometheus_adapter ||= ::Prometheus::AdapterService.new(project).prometheus_adapter
       end
       # rubocop: enable CodeReuse/ServiceClass
     end

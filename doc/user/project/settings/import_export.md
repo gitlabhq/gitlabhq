@@ -2,10 +2,11 @@
 
 >**Notes:**
 >
->  - [Introduced][ce-3050] in GitLab 8.9.
+>  - [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/3050) in GitLab 8.9.
 >  - Importing will not be possible if the import instance version differs from
 >    that of the exporter.
->  - For GitLab admins, please read through [Project import/export administration](../../../administration/raketasks/project_import_export.md).
+>  - For GitLab admins, please read through 
+>    [Project import/export administration](../../../administration/raketasks/project_import_export.md).
 >  - For existing installations, the project import option has to be enabled in
 >    application settings (`/admin/application_settings`) under 'Import sources'.
 >    Ask your administrator if you don't see the **GitLab export** button when
@@ -14,15 +15,15 @@
 >    on the GitLab instance in application settings (`/admin/application_settings`)
 >    under 'Visibility and Access Controls'.
 >  - You can find some useful raketasks if you are an administrator in the
->    [import_export](../../../administration/raketasks/project_import_export.md)
->    raketask.
->  - The exports are stored in a temporary [shared directory][tmp] and are deleted
->    every 24 hours by a specific worker.
+>    [import_export](../../../administration/raketasks/project_import_export.md) raketask.
+>  - The exports are stored in a temporary [shared directory](../../../development/shared_files.md) 
+>    and are deleted every 24 hours by a specific worker.
 >  - Group members will get exported as project members, as long as the user has
 >    maintainer or admin access to the group where the exported project lives. An admin
 >    in the import side is required to map the users, based on email or username.
 >    Otherwise, a supplementary comment is left to mention the original author and
 >    the MRs, notes or issues will be owned by the importer.
+>  - Project members with owner access will get imported as maintainers.
 >  - Control project Import/Export with the [API](../../../api/project_import_export.md).
 >  - If an imported project contains merge requests originated from forks, 
 >    then new branches associated with such merge requests will be created 
@@ -76,9 +77,9 @@ The following items will NOT be exported:
 
 ## Exporting a project and its data
 
-1. Go to the project settings page by clicking on **Edit Project**:
+1. Go to your project's homepage.
 
-    ![Project settings button](img/settings_edit_button.png)
+1. Click **Settings** in the sidebar.
 
 1. Scroll down to find the **Export project** button:
 
@@ -97,19 +98,14 @@ The following items will NOT be exported:
 
 ## Importing the project
 
-1. The new GitLab project import feature is at the far right of the import
-   options when creating a New Project. Make sure you are in the right namespace
-   and you have entered a project name. Click on **GitLab export**:
+1. The GitLab project import feature is the first import option when creating a 
+   new project. Click on **GitLab export**:
 
     ![New project](img/import_export_new_project.png)
 
-1. You can see where the project will be imported to. You can now select file
-   exported previously:
+1. Enter your project name and URL. Then select the file you exported previously:
 
     ![Select file](img/import_export_select_file.png)
 
 1. Click on **Import project** to begin importing. Your newly imported project
    page will appear soon.
-
-[ce-3050]: https://gitlab.com/gitlab-org/gitlab-ce/issues/3050
-[tmp]: ../../../development/shared_files.md

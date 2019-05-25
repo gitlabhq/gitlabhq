@@ -1,6 +1,0 @@
----
-title: Catch and report OpenSSL exceptions while fetching external configuration files
-  in CI::Config
-merge_request: 26750
-author: Drew Cimino
-type: fixed

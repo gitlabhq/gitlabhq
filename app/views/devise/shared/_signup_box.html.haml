@@ -2,7 +2,7 @@
   .login-body
     = form_for(resource, as: "new_#{resource_name}", url: registration_path(resource_name), html: { class: "new_new_user gl-show-field-errors", "aria-live" => "assertive" }) do |f|
       .devise-errors
-        = devise_error_messages!
+        = render "devise/shared/error_messages", resource: resource
       .name.form-group
         = f.label :name, 'Full name', class: 'label-bold'
         = f.text_field :name, class: "form-control top qa-new-user-name js-block-emoji", required: true, title: _("This field is required.")

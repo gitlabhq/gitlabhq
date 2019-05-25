@@ -1,6 +1,0 @@
----
-title: Allow linking to a private helm repository by providing credentials, and customisation
-  of repository name
-merge_request: 27123
-author: Stuart Moore @stjm-cc
-type: added

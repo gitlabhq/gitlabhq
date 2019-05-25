@@ -113,7 +113,7 @@ describe Clusters::Gcp::Kubernetes::CreateOrUpdateNamespaceService, '#execute' d
       it 'does not create any Clusters::KubernetesNamespace' do
         subject
 
-        expect(cluster.kubernetes_namespace).to eq(kubernetes_namespace)
+        expect(cluster.kubernetes_namespaces).to eq([kubernetes_namespace])
       end
 
       it 'creates project service account' do

@@ -71,7 +71,7 @@ new Kubernetes cluster to your project:
    - **Number of nodes** - Enter the number of nodes you wish the cluster to have.
    - **Machine type** - The [machine type](https://cloud.google.com/compute/docs/machine-types)
      of the Virtual Machine instance that the cluster will be based on.
-   - **RBAC-enabled cluster** - Leave this checked if using default GKE creation options, see the [RBAC section](#role-based-access-control-rbac) for more information.
+   - **RBAC-enabled cluster** - Leave this checked if using default GKE creation options, see the [RBAC section](#rbac-cluster-resources) for more information.
    - **GitLab-managed cluster** - Leave this checked if you want GitLab to manage namespaces and service accounts for this cluster. See the [Managed clusters section](#gitlab-managed-clusters) for more information.
 1. Finally, click the **Create Kubernetes cluster** button.
 
@@ -263,65 +263,66 @@ you can either:
 
 ## Access controls
 
-When creating a cluster in GitLab, you will be asked if you would like to create an
-[Attribute-based access control (ABAC)](https://kubernetes.io/docs/admin/authorization/abac/) cluster, or
-a [Role-based access control (RBAC)](https://kubernetes.io/docs/admin/authorization/rbac/) one.
+When creating a cluster in GitLab, you will be asked if you would like to create either:
+
+- An [Attribute-based access control (ABAC)](https://kubernetes.io/docs/admin/authorization/abac/) cluster.
+- A [Role-based access control (RBAC)](https://kubernetes.io/docs/admin/authorization/rbac/) cluster.
 
 NOTE: **Note:**
-[RBAC](#role-based-access-control-rbac) is recommended and the GitLab default.
+[RBAC](#rbac-cluster-resources) is recommended and the GitLab default.
 
-Whether [ABAC](#attribute-based-access-control-abac) or [RBAC](#role-based-access-control-rbac) is enabled,
-GitLab will create the necessary service accounts and privileges in order to install and run
-[GitLab managed applications](#installing-applications):
+GitLab creates the necessary service accounts and privileges to install and run
+[GitLab managed applications](#installing-applications). When GitLab creates the cluster:
 
-- If GitLab is creating the cluster, a `gitlab` service account with
-  `cluster-admin` privileges will be created in the `default` namespace,
-  which will be used by GitLab to manage the newly created cluster.
-
+- A `gitlab` service account with `cluster-admin` privileges is created in the `default` namespace
+  to manage the newly created cluster.
 - A project service account with [`edit`
   privileges](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles)
-  will be created in the project namespace (also created by GitLab), which will
-  be used in [deployment jobs](#deployment-variables).
+  is created in the GitLab-created project namespace for [deployment jobs](#deployment-variables).
 
   NOTE: **Note:**
   Restricted service account for deployment was [introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/51716) in GitLab 11.5.
 
-- When you install Helm into your cluster, the `tiller` service account
-  will be created with `cluster-admin` privileges in the `gitlab-managed-apps`
-  namespace. This service account will be added to the installed Helm Tiller and will
-  be used by Helm to install and run [GitLab managed applications](#installing-applications).
-  Helm will also create additional service accounts and other resources for each
-  installed application. Consult the documentation of the Helm charts for each application
-  for details.
+When you install Helm into your cluster, the `tiller` service account
+is created with `cluster-admin` privileges in the `gitlab-managed-apps`
+namespace. This service account will be added to the installed Helm Tiller and will
+be used by Helm to install and run [GitLab managed applications](#installing-applications).
+Helm will also create additional service accounts and other resources for each
+installed application. Consult the documentation of the Helm charts for each application
+for details.
 
 If you are [adding an existing Kubernetes cluster](#adding-an-existing-kubernetes-cluster),
 ensure the token of the account has administrator privileges for the cluster.
 
-The following sections summarize which resources will be created on ABAC/RBAC clusters.
+The resources created by GitLab differ depending on the type of cluster.
 
-### Attribute-based access control (ABAC)
+### ABAC cluster resources
 
-| Name              | Kind                 | Details                           | Created when                      |
-| ---               | ---                  | ---                               | ---                               |
-| `gitlab`          | `ServiceAccount`     | `default` namespace               | Creating a new GKE Cluster        |
-| `gitlab-token`    | `Secret`             | Token for `gitlab` ServiceAccount | Creating a new GKE Cluster        |
-| `tiller`          | `ServiceAccount`     | `gitlab-managed-apps` namespace   | Installing Helm Tiller            |
-| `tiller-admin`    | `ClusterRoleBinding` | `cluster-admin` roleRef           | Installing Helm Tiller            |
-| Project namespace | `ServiceAccount`     | Uses namespace of Project         | Deploying to a cluster |
-| Project namespace | `Secret`             | Token for project ServiceAccount  | Deploying to a cluster |
+GitLab creates the following resources for ABAC clusters.
 
-### Role-based access control (RBAC)
+| Name              | Type                 | Details                           | Created when               |
+|:------------------|:---------------------|:----------------------------------|:---------------------------|
+| `gitlab`          | `ServiceAccount`     | `default` namespace               | Creating a new GKE Cluster |
+| `gitlab-token`    | `Secret`             | Token for `gitlab` ServiceAccount | Creating a new GKE Cluster |
+| `tiller`          | `ServiceAccount`     | `gitlab-managed-apps` namespace   | Installing Helm Tiller     |
+| `tiller-admin`    | `ClusterRoleBinding` | `cluster-admin` roleRef           | Installing Helm Tiller     |
+| Project namespace | `ServiceAccount`     | Uses namespace of Project         | Deploying to a cluster     |
+| Project namespace | `Secret`             | Token for project ServiceAccount  | Deploying to a cluster     |
 
-| Name                | Kind                 | Details                           | Created when                      |
-| ---                 | ---                  | ---                               | ---                               |
-| `gitlab`            | `ServiceAccount`     | `default` namespace               | Creating a new GKE Cluster        |
-| `gitlab-admin`      | `ClusterRoleBinding` | [`cluster-admin`](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles) roleRef           | Creating a new GKE Cluster |
-| `gitlab-token`      | `Secret`             | Token for `gitlab` ServiceAccount | Creating a new GKE Cluster        |
-| `tiller`            | `ServiceAccount`     | `gitlab-managed-apps` namespace   | Installing Helm Tiller            |
-| `tiller-admin`      | `ClusterRoleBinding` | `cluster-admin` roleRef           | Installing Helm Tiller            |
-| Project namespace   | `ServiceAccount`     | Uses namespace of Project         | Deploying to a cluster |
-| Project namespace   | `Secret`             | Token for project ServiceAccount  | Deploying to a cluster |
-| Project namespace   | `RoleBinding`        | [`edit`](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles) roleRef                  | Deploying to a cluster |
+### RBAC cluster resources
+
+GitLab creates the following resources for RBAC clusters.
+
+| Name              | Type                 | Details                                                                                                    | Created when               |
+|:------------------|:---------------------|:-----------------------------------------------------------------------------------------------------------|:---------------------------|
+| `gitlab`          | `ServiceAccount`     | `default` namespace                                                                                        | Creating a new GKE Cluster |
+| `gitlab-admin`    | `ClusterRoleBinding` | [`cluster-admin`](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles) roleRef | Creating a new GKE Cluster |
+| `gitlab-token`    | `Secret`             | Token for `gitlab` ServiceAccount                                                                          | Creating a new GKE Cluster |
+| `tiller`          | `ServiceAccount`     | `gitlab-managed-apps` namespace                                                                            | Installing Helm Tiller     |
+| `tiller-admin`    | `ClusterRoleBinding` | `cluster-admin` roleRef                                                                                    | Installing Helm Tiller     |
+| Project namespace | `ServiceAccount`     | Uses namespace of Project                                                                                  | Deploying to a cluster     |
+| Project namespace | `Secret`             | Token for project ServiceAccount                                                                           | Deploying to a cluster     |
+| Project namespace | `RoleBinding`        | [`edit`](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles) roleRef          | Deploying to a cluster     |
 
 NOTE: **Note:**
 Project-specific resources are only created if your cluster is [managed by GitLab](#gitlab-managed-clusters).
@@ -375,7 +376,7 @@ by GitLab before installing any of the applications.
 | [Prometheus](https://prometheus.io/docs/introduction/overview/) | 10.4+ | Prometheus is an open-source monitoring and alerting system useful to supervise your deployed applications. | [stable/prometheus](https://github.com/helm/charts/tree/master/stable/prometheus) |
 | [GitLab Runner](https://docs.gitlab.com/runner/) | 10.6+ | GitLab Runner is the open source project that is used to run your jobs and send the results back to GitLab. It is used in conjunction with [GitLab CI/CD](../../../ci/README.md), the open-source continuous integration service included with GitLab that coordinates the jobs. When installing the GitLab Runner via the applications, it will run in **privileged mode** by default. Make sure you read the [security implications](#security-implications) before doing so. | [runner/gitlab-runner](https://gitlab.com/charts/gitlab-runner) |
 | [JupyterHub](http://jupyter.org/) | 11.0+ | [JupyterHub](https://jupyterhub.readthedocs.io/en/stable/) is a multi-user service for managing notebooks across a team. [Jupyter Notebooks](https://jupyter-notebook.readthedocs.io/en/latest/) provide a web-based interactive programming environment used for data analysis, visualization, and machine learning. We use a [custom Jupyter image](https://gitlab.com/gitlab-org/jupyterhub-user-image/blob/master/Dockerfile) that installs additional useful packages on top of the base Jupyter. Authentication will be enabled only for [project members](../members/index.md) with [Developer or higher](../../permissions.md) access to the project. You will also see ready-to-use DevOps Runbooks built with Nurtch's [Rubix library](https://github.com/amit1rrr/rubix). More information on creating executable runbooks can be found in [our Nurtch documentation](runbooks/index.md#nurtch-executable-runbooks). Note that Ingress must be installed and have an IP address assigned before JupyterHub can be installed. | [jupyter/jupyterhub](https://jupyterhub.github.io/helm-chart/) |
-| [Knative](https://cloud.google.com/knative) | 11.5+ | Knative provides a platform to create, deploy, and manage serverless workloads from a Kubernetes cluster. It is used in conjunction with, and includes [Istio](https://istio.io) to provide an external IP address for all programs hosted by Knative. You will be prompted to enter a wildcard domain where your applications will be exposed. Configure your DNS server to use the external IP address for that domain. For any application created and installed, they will be accessible as `<program_name>.<kubernetes_namespace>.<domain_name>`. This will require your kubernetes cluster to have [RBAC enabled](#role-based-access-control-rbac). | [knative/knative](https://storage.googleapis.com/triggermesh-charts)
+| [Knative](https://cloud.google.com/knative) | 11.5+ | Knative provides a platform to create, deploy, and manage serverless workloads from a Kubernetes cluster. It is used in conjunction with, and includes [Istio](https://istio.io) to provide an external IP address for all programs hosted by Knative. You will be prompted to enter a wildcard domain where your applications will be exposed. Configure your DNS server to use the external IP address for that domain. For any application created and installed, they will be accessible as `<program_name>.<kubernetes_namespace>.<domain_name>`. This will require your kubernetes cluster to have [RBAC enabled](#rbac-cluster-resources). | [knative/knative](https://storage.googleapis.com/triggermesh-charts)
 
 With the exception of Knative, the applications will be installed in a dedicated
 namespace called `gitlab-managed-apps`.

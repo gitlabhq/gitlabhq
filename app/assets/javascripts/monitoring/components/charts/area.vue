@@ -125,17 +125,17 @@ export default {
     },
     earliestDatapoint() {
       return this.chartData.reduce((acc, series) => {
-        if (!series.data.length) {
+        const { data } = series;
+        const { length } = data;
+        if (!length) {
           return acc;
         }
-        const [[timestamp]] = series.data.sort(([a], [b]) => {
-          if (a < b) {
-            return -1;
-          }
-          return a > b ? 1 : 0;
-        });
 
-        return timestamp < acc || acc === null ? timestamp : acc;
+        const [first] = data[0];
+        const [last] = data[length - 1];
+        const seriesEarliest = first < last ? first : last;
+
+        return seriesEarliest < acc || acc === null ? seriesEarliest : acc;
       }, null);
     },
     isMultiSeries() {

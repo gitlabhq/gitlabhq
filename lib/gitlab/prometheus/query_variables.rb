@@ -5,8 +5,7 @@ module Gitlab
     module QueryVariables
       def self.call(environment)
         deployment_platform = environment.deployment_platform
-        namespace = deployment_platform&.namespace_for(environment.project) ||
-          deployment_platform&.actual_namespace || ''
+        namespace = deployment_platform&.kubernetes_namespace_for(environment.project) || ''
 
         {
           ci_environment_slug: environment.slug,

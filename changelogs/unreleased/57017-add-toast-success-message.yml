@@ -1,5 +1,0 @@
----
-title: Display a toast message when the Kubernetes runner has successfully upgraded.
-merge_request: 27206
-author:
-type: changed

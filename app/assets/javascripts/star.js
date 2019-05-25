@@ -31,7 +31,7 @@ export default class Star {
             $this.prepend(spriteIcon('star', iconClasses));
           }
         })
-        .catch(() => Flash('Star toggle failed. Try again later.'));
+        .catch(() => Flash(__('Star toggle failed. Try again later.')));
     });
   }
 }

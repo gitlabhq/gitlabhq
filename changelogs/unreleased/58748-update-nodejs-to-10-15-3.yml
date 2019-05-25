@@ -1,5 +1,0 @@
----
-title: Update node.js to 10.15.3 in CI template for Hexo
-merge_request: 25943
-author: Takuya Noguchi
-type: other

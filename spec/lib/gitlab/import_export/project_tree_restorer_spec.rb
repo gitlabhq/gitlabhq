@@ -328,6 +328,19 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
     end
 
     context 'when the project has overridden params in import data' do
+      it 'handles string versions of visibility_level' do
+        # Project needs to be in a group for visibility level comparison
+        # to happen
+        group = create(:group)
+        project.group = group
+
+        project.create_import_data(data: { override_params: { visibility_level: Gitlab::VisibilityLevel::INTERNAL.to_s } })
+
+        restored_project_json
+
+        expect(project.visibility_level).to eq(Gitlab::VisibilityLevel::INTERNAL)
+      end
+
       it 'overwrites the params stored in the JSON' do
         project.create_import_data(data: { override_params: { description: "Overridden" } })
 

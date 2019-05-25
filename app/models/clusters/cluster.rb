@@ -45,7 +45,6 @@ module Clusters
     has_one :application_knative, class_name: 'Clusters::Applications::Knative'
 
     has_many :kubernetes_namespaces
-    has_one :kubernetes_namespace, -> { order(id: :desc) }, class_name: 'Clusters::KubernetesNamespace'
 
     accepts_nested_attributes_for :provider_gcp, update_only: true
     accepts_nested_attributes_for :platform_kubernetes, update_only: true
@@ -108,7 +107,7 @@ module Clusters
 
     scope :preload_knative, -> {
       preload(
-        :kubernetes_namespace,
+        :kubernetes_namespaces,
         :platform_kubernetes,
         :application_knative
       )
@@ -187,16 +186,16 @@ module Clusters
       platform_kubernetes.kubeclient if kubernetes?
     end
 
+    def kubernetes_namespace_for(project)
+      find_or_initialize_kubernetes_namespace_for_project(project).namespace
+    end
+
     def find_or_initialize_kubernetes_namespace_for_project(project)
-      if project_type?
-        kubernetes_namespaces.find_or_initialize_by(
-          project: project,
-          cluster_project: cluster_project
-        )
-      else
-        kubernetes_namespaces.find_or_initialize_by(
-          project: project
-        )
+      attributes = { project: project }
+      attributes[:cluster_project] = cluster_project if project_type?
+
+      kubernetes_namespaces.find_or_initialize_by(attributes).tap do |namespace|
+        namespace.set_defaults
       end
     end
 
@@ -205,7 +204,7 @@ module Clusters
     end
 
     def kube_ingress_domain
-      @kube_ingress_domain ||= domain.presence || instance_domain || legacy_auto_devops_domain
+      @kube_ingress_domain ||= domain.presence || instance_domain
     end
 
     def predefined_variables
@@ -220,24 +219,6 @@ module Clusters
 
     def instance_domain
       @instance_domain ||= Gitlab::CurrentSettings.auto_devops_domain
-    end
-
-    # To keep backward compatibility with AUTO_DEVOPS_DOMAIN
-    # environment variable, we need to ensure KUBE_INGRESS_BASE_DOMAIN
-    # is set if AUTO_DEVOPS_DOMAIN is set on any of the following options:
-    # ProjectAutoDevops#Domain, project variables or group variables,
-    # as the AUTO_DEVOPS_DOMAIN is needed for CI_ENVIRONMENT_URL
-    #
-    # This method should is scheduled to be removed on
-    # https://gitlab.com/gitlab-org/gitlab-ce/issues/56959
-    def legacy_auto_devops_domain
-      if project_type?
-        project&.auto_devops&.domain.presence ||
-          project.variables.find_by(key: 'AUTO_DEVOPS_DOMAIN')&.value.presence ||
-          project.group&.variables&.find_by(key: 'AUTO_DEVOPS_DOMAIN')&.value.presence
-      elsif group_type?
-        group.variables.find_by(key: 'AUTO_DEVOPS_DOMAIN')&.value.presence
-      end
     end
 
     def restrict_modification

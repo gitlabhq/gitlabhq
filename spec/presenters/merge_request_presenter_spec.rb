@@ -403,7 +403,7 @@ describe MergeRequestPresenter do
         allow(resource).to receive(:source_branch_exists?) { true }
 
         is_expected
-          .to eq("/#{resource.source_project.full_path}/branches/#{resource.source_branch}")
+          .to eq("/#{resource.source_project.full_path}/-/branches/#{resource.source_branch}")
       end
     end
 
@@ -426,7 +426,7 @@ describe MergeRequestPresenter do
         allow(resource).to receive(:target_branch_exists?) { true }
 
         is_expected
-          .to eq("/#{resource.source_project.full_path}/branches/#{resource.target_branch}")
+          .to eq("/#{resource.source_project.full_path}/-/branches/#{resource.target_branch}")
       end
     end
 

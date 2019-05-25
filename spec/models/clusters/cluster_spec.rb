@@ -5,6 +5,8 @@ require 'spec_helper'
 describe Clusters::Cluster do
   it_behaves_like 'having unique enum values'
 
+  subject { build(:cluster) }
+
   it { is_expected.to belong_to(:user) }
   it { is_expected.to have_many(:cluster_projects) }
   it { is_expected.to have_many(:projects) }
@@ -17,7 +19,6 @@ describe Clusters::Cluster do
   it { is_expected.to have_one(:application_prometheus) }
   it { is_expected.to have_one(:application_runner) }
   it { is_expected.to have_many(:kubernetes_namespaces) }
-  it { is_expected.to have_one(:kubernetes_namespace) }
   it { is_expected.to have_one(:cluster_project) }
 
   it { is_expected.to delegate_method(:status).to(:provider) }
@@ -556,62 +557,15 @@ describe Clusters::Cluster do
     end
 
     context 'with no domain on cluster' do
-      context 'with a project cluster' do
-        let(:cluster) { create(:cluster, :project, :provided_by_gcp) }
-        let(:project) { cluster.project }
+      let(:cluster) { create(:cluster, :project, :provided_by_gcp) }
+      let(:project) { cluster.project }
 
-        context 'with domain set at instance level' do
-          before do
-            stub_application_setting(auto_devops_domain: 'global_domain.com')
-
-            it { is_expected.to eq('global_domain.com') }
-          end
+      context 'with domain set at instance level' do
+        before do
+          stub_application_setting(auto_devops_domain: 'global_domain.com')
         end
 
-        context 'with domain set on ProjectAutoDevops' do
-          before do
-            auto_devops = project.build_auto_devops(domain: 'legacy-ado-domain.com')
-            auto_devops.save
-          end
-
-          it { is_expected.to eq('legacy-ado-domain.com') }
-        end
-
-        context 'with domain set as environment variable on project' do
-          before do
-            variable = project.variables.build(key: 'AUTO_DEVOPS_DOMAIN', value: 'project-ado-domain.com')
-            variable.save
-          end
-
-          it { is_expected.to eq('project-ado-domain.com') }
-        end
-
-        context 'with domain set as environment variable on the group project' do
-          let(:group) { create(:group) }
-
-          before do
-            project.update(parent_id: group.id)
-            variable = group.variables.build(key: 'AUTO_DEVOPS_DOMAIN', value: 'group-ado-domain.com')
-            variable.save
-          end
-
-          it { is_expected.to eq('group-ado-domain.com') }
-        end
-      end
-
-      context 'with a group cluster' do
-        let(:cluster) { create(:cluster, :group, :provided_by_gcp) }
-
-        context 'with domain set as environment variable for the group' do
-          let(:group) { cluster.group }
-
-          before do
-            variable = group.variables.build(key: 'AUTO_DEVOPS_DOMAIN', value: 'group-ado-domain.com')
-            variable.save
-          end
-
-          it { is_expected.to eq('group-ado-domain.com') }
-        end
+        it { is_expected.to eq('global_domain.com') }
       end
     end
   end

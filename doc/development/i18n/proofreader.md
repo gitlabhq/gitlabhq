@@ -27,7 +27,7 @@ are very appreciative of the work done by translators and proofreaders!
 - Czech
   - Proofreaders needed.
 - Danish
-  - Proofreaders needed.
+  - Saederup92 - [GitLab](https://gitlab.com/Saederup92), [Crowdin](https://crowdin.com/profile/Saederup92)
 - Dutch
   - Emily Hendle - [GitLab](https://gitlab.com/pundachan), [Crowdin](https://crowdin.com/profile/pandachan)
 - Esperanto
@@ -56,7 +56,6 @@ are very appreciative of the work done by translators and proofreaders!
 - Italian
   - Paolo Falomo - [GitLab](https://gitlab.com/paolofalomo), [Crowdin](https://crowdin.com/profile/paolo.falomo)
 - Japanese
-  - Yamana Tokiuji - [GitLab](https://gitlab.com/tokiuji), [Crowdin](https://crowdin.com/profile/yamana)
   - Hiroyuki Sato - [GitLab](https://gitlab.com/hiroponz), [Crowdin](https://crowdin.com/profile/hiroponz)
   - Tomo Dote - [Gitlab](https://gitlab.com/fu7mu4), [Crowdin](https://crowdin.com/profile/fu7mu4)
 - Korean

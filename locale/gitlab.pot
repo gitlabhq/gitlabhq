@@ -193,6 +193,18 @@ msgstr ""
 msgid "%{service_title} settings saved, but not activated."
 msgstr ""
 
+msgid "%{size} GiB"
+msgstr ""
+
+msgid "%{size} KiB"
+msgstr ""
+
+msgid "%{size} MiB"
+msgstr ""
+
+msgid "%{size} bytes"
+msgstr ""
+
 msgid "%{spammable_titlecase} was submitted to Akismet successfully."
 msgstr ""
 
@@ -823,6 +835,9 @@ msgstr ""
 msgid "An error has occurred"
 msgstr ""
 
+msgid "An error occurding while fetching folder content."
+msgstr ""
+
 msgid "An error occurred creating the new branch."
 msgstr ""
 
@@ -974,6 +989,9 @@ msgid "Anti-spam verification"
 msgstr ""
 
 msgid "Any"
+msgstr ""
+
+msgid "Any Label"
 msgstr ""
 
 msgid "Any Milestone"
@@ -2888,7 +2906,7 @@ msgstr ""
 msgid "Copy labels and milestone from %{source_issuable_reference}."
 msgstr ""
 
-msgid "Copy labels and milestone from other issue or merge request"
+msgid "Copy labels and milestone from other issue or merge request in this project"
 msgstr ""
 
 msgid "Copy link"
@@ -4479,6 +4497,9 @@ msgstr ""
 msgid "Found errors in your .gitlab-ci.yml:"
 msgstr ""
 
+msgid "Friday"
+msgstr ""
+
 msgid "From %{providerTitle}"
 msgstr ""
 
@@ -5246,6 +5267,9 @@ msgstr ""
 msgid "Invite"
 msgstr ""
 
+msgid "Invite \"%{trimmed}\" by email"
+msgstr ""
+
 msgid "Invite group"
 msgstr ""
 
@@ -5543,6 +5567,9 @@ msgstr ""
 msgid "Labels|Promoting %{labelTitle} will make it available for all projects inside %{groupName}. Existing project labels with the same title will be merged. This action cannot be reversed."
 msgstr ""
 
+msgid "Labels|and %{count} more"
+msgstr ""
+
 msgid "Language"
 msgstr ""
 
@@ -5788,6 +5815,9 @@ msgid "March"
 msgstr ""
 
 msgid "Mark as resolved"
+msgstr ""
+
+msgid "Mark comment as resolved"
 msgstr ""
 
 msgid "Mark this issue as a duplicate of another issue"
@@ -6312,6 +6342,9 @@ msgid "No"
 msgstr ""
 
 msgid "No %{providerTitle} repositories available to import"
+msgstr ""
+
+msgid "No Label"
 msgstr ""
 
 msgid "No Milestone"
@@ -8193,6 +8226,9 @@ msgstr ""
 msgid "Resolved all discussions."
 msgstr ""
 
+msgid "Resolved by %{name}"
+msgstr ""
+
 msgid "Resolved by %{resolvedByName}"
 msgstr ""
 
@@ -8418,6 +8454,9 @@ msgid "Search files"
 msgstr ""
 
 msgid "Search for a group"
+msgstr ""
+
+msgid "Search for a user"
 msgstr ""
 
 msgid "Search for projects, issues, etc."
@@ -8914,6 +8953,9 @@ msgstr ""
 msgid "Something went wrong. Please try again."
 msgstr ""
 
+msgid "Something went wrong. Try again later."
+msgstr ""
+
 msgid "Sorry, no projects matched your search"
 msgstr ""
 
@@ -9091,6 +9133,9 @@ msgstr ""
 msgid "Star a label to make it a priority label. Order the prioritized labels to change their relative priority, by dragging."
 msgstr ""
 
+msgid "Star toggle failed. Try again later."
+msgstr ""
+
 msgid "StarProject|Star"
 msgstr ""
 
@@ -9221,6 +9266,9 @@ msgid "Subscribe to calendar"
 msgstr ""
 
 msgid "Subscribed"
+msgstr ""
+
+msgid "Subscription"
 msgstr ""
 
 msgid "Subtracts"
@@ -9969,6 +10017,9 @@ msgstr ""
 msgid "This will remove the fork relationship to source project"
 msgstr ""
 
+msgid "Thursday"
+msgstr ""
+
 msgid "Time before an issue gets scheduled"
 msgstr ""
 
@@ -10372,6 +10423,9 @@ msgstr ""
 msgid "Trying to communicate with your device. Plug it in (if you haven't already) and press the button on the device now."
 msgstr ""
 
+msgid "Tuesday"
+msgstr ""
+
 msgid "Twitter"
 msgstr ""
 
@@ -10397,6 +10451,9 @@ msgid "Unable to resolve"
 msgstr ""
 
 msgid "Unable to schedule a pipeline to run immediately"
+msgstr ""
+
+msgid "Unable to update label prioritization at this time"
 msgstr ""
 
 msgid "Unable to update this issue at this time."
@@ -10708,6 +10765,21 @@ msgstr ""
 msgid "Users were successfully added."
 msgstr ""
 
+msgid "UsersSelect|%{name} + %{length} more"
+msgstr ""
+
+msgid "UsersSelect|Any User"
+msgstr ""
+
+msgid "UsersSelect|Assignee"
+msgstr ""
+
+msgid "UsersSelect|No assignee - %{openingTag} assign yourself %{closingTag}"
+msgstr ""
+
+msgid "UsersSelect|Unassigned"
+msgstr ""
+
 msgid "Using required encryption strategy when encrypted field is missing!"
 msgstr ""
 
@@ -10859,6 +10931,9 @@ msgid "Webhooks"
 msgstr ""
 
 msgid "Webhooks Help"
+msgstr ""
+
+msgid "Wednesday"
 msgstr ""
 
 msgid "Welcome to your Issue Board!"
