@@ -42,9 +42,10 @@ class BuildDetailsEntity < JobEntity
     end
   end
 
-  expose :reports, if: -> (*) { can?(current_user, :read_build, build) }, using: JobArtifactReportEntity do |build|
-    build.job_artifacts.with_reports
-  end
+  expose :report_artifacts,
+    as: :reports,
+    using: JobArtifactReportEntity,
+    if: -> (*) { can?(current_user, :read_build, build) }
 
   expose :erased_by, if: -> (*) { build.erased? }, using: UserEntity
   expose :erase_path, if: -> (*) { build.erasable? && can?(current_user, :erase_build, build) } do |build|

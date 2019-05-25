@@ -765,6 +765,10 @@ module Ci
       end
     end
 
+    def report_artifacts
+      job_artifacts.with_reports
+    end
+
     # Virtual deployment status depending on the environment status.
     def deployment_status
       return unless starts_environment?

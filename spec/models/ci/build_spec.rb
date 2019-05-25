@@ -3490,6 +3490,18 @@ describe Ci::Build do
     end
   end
 
+  describe '#report_artifacts' do
+    subject { build.report_artifacts }
+
+    context 'when the build has reports' do
+      let!(:report) { create(:ci_job_artifact, :codequality, job: build) }
+
+      it 'returns the artifacts with reports' do
+        expect(subject).to contain_exactly(report)
+      end
+    end
+  end
+
   describe '#artifacts_metadata_entry' do
     set(:build) { create(:ci_build, project: project) }
     let(:path) { 'other_artifacts_0.1.2/another-subdirectory/banana_sample.gif' }

@@ -151,7 +151,8 @@ describe BuildDetailsEntity do
       let!(:report) { create(:ci_job_artifact, :codequality, job: build) }
 
       it 'exposes the report artifacts' do
-        expect(subject[:reports]).not_to be_empty
+        expect(subject[:reports].count).to eq(1)
+        expect(subject[:reports].first[:file_type]).to eq('codequality')
       end
     end
   end
