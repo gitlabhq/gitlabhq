@@ -19,7 +19,7 @@ module QA
 
         Page::Project::Settings::CICD.perform do |setting|
           setting.expand_ci_variables do |page|
-            page.fill_variable(key, value)
+            page.fill_variable(key, value, masked)
 
             page.save_variables
           end
