@@ -1,4 +1,4 @@
-- visibility_level = params.dig(:project, :visibility_level) || default_project_visibility
+- visibility_level = selected_visibility_level(@project, params.dig(:project, :visibility_level))
 - ci_cd_only = local_assigns.fetch(:ci_cd_only, false)
 - hide_init_with_readme = local_assigns.fetch(:hide_init_with_readme, false)
 - track_label = local_assigns.fetch(:track_label, 'blank_project')
