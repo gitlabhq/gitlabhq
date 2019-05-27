@@ -5,22 +5,22 @@
         %p= msg
 
 .form-group.row
-  = f.label :domain, class: 'col-form-label col-sm-2' do
-    = _("Domain")
+  .col-sm-2.col-form-label
+    = f.label :domain, _("Domain")
   .col-sm-10
     = f.text_field :domain, required: true, autocomplete: 'off', class: 'form-control', disabled: @domain.persisted?
 
 - if Gitlab.config.pages.external_https
   .form-group.row
-    = f.label :certificate, class: 'col-form-label col-sm-2' do
-      = _("Certificate (PEM)")
+    .col-sm-2.col-form-label
+      = f.label :certificate, _("Certificate (PEM)")
     .col-sm-10
       = f.text_area :certificate, rows: 5, class: 'form-control'
       %span.help-inline= _("Upload a certificate for your domain with all intermediates")
 
   .form-group.row
-    = f.label :key, class: 'col-form-label col-sm-2' do
-      = _("Key (PEM)")
+    .col-sm-2.col-form-label
+      = f.label :key, _("Key (PEM)")
     .col-sm-10
       = f.text_area :key, rows: 5, class: 'form-control'
       %span.help-inline= _("Upload a private key for your certificate")
