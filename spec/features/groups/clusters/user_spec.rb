@@ -14,6 +14,7 @@ describe 'User Cluster', :js do
 
     allow(Groups::ClustersController).to receive(:STATUS_POLLING_INTERVAL) { 100 }
     allow_any_instance_of(Clusters::Gcp::Kubernetes::CreateOrUpdateNamespaceService).to receive(:execute)
+    allow_any_instance_of(Clusters::Cluster).to receive(:retrieve_connection_status).and_return(:connected)
   end
 
   context 'when user does not have a cluster and visits cluster index page' do
