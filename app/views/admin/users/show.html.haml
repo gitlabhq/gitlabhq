@@ -124,6 +124,8 @@
           %strong
             = Gitlab::Access.human_access_with_none(@user.highest_role)
 
+        = render_if_exists 'admin/users/using_license_seat', user: @user
+
         - if @user.ldap_user?
           %li
             %span.light LDAP uid:
