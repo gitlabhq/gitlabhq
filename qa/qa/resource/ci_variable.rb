@@ -3,7 +3,7 @@
 module QA
   module Resource
     class CiVariable < Base
-      attr_accessor :key, :value
+      attr_accessor :key, :value, :masked
 
       attribute :project do
         Project.fabricate! do |resource|
@@ -19,7 +19,7 @@ module QA
 
         Page::Project::Settings::CICD.perform do |setting|
           setting.expand_ci_variables do |page|
-            page.fill_variable(key, value)
+            page.fill_variable(key, value, masked)
 
             page.save_variables
           end
@@ -49,7 +49,8 @@ module QA
       def api_post_body
         {
           key: key,
-          value: value
+          value: value,
+          masked: masked
         }
       end
     end
