@@ -1,0 +1,5 @@
+---
+title: Remove the circuit breaker API
+merge_request: 28669
+author:
+type: removed
