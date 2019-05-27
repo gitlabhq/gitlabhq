@@ -99,6 +99,7 @@ The repository will push soon. To force a push, click the appropriate button.
 ## Pulling from a remote repository **[STARTER]**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/51) in GitLab Enterprise Edition 8.2.
+> [Added Git LFS support](https://gitlab.com/gitlab-org/gitlab-ee/issues/10871) in [GitLab Starter](https://about.gitlab.com/pricing/) 11.11.
 
 You can set up a repository to automatically have its branches, tags, and commits updated from an
 upstream repository.
