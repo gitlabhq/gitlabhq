@@ -1,7 +1,7 @@
 %tr.tag
   %td
     = escape_once(tag.name)
-    = clipboard_button(text: "docker pull #{tag.location}")
+    = clipboard_button(text: "#{tag.location}")
   %td
     - if tag.revision
       %span.has-tooltip{ title: "#{tag.revision}" }
