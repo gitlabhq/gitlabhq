@@ -376,6 +376,7 @@ Follow the steps below to configure GitLab Pages in a separate server.
     gitaly['enable'] = false
     alertmanager['enable'] = false
     node_exporter['enable'] = false
+    gitlab_rails['auto_migrate'] = false
     ```
 1. Run `sudo gitlab-ctl reconfigure`.
 1. On `app1` apply the following changes to `/etc/gitlab/gitlab.rb`:
