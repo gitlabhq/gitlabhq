@@ -1,0 +1,5 @@
+---
+title: Disable two-step rebase which could cause rebases to hang
+merge_request: 28778
+author:
+type: other
