@@ -67,9 +67,6 @@ Remember that the performance of each test depends on the environment.
 
 GitLab uses the [Karma][karma] test runner with [Jasmine] as its test
 framework for our JavaScript unit and integration tests.
-We generate HTML and JSON fixtures from backend views and controllers
-using RSpec (see `spec/javascripts/fixtures/*.rb` for examples).
-Fixtures are served during testing by the [jasmine-jquery][jasmine-jquery] plugin.
 
 JavaScript tests live in `spec/javascripts/`, matching the folder structure
 of `app/assets/javascripts/`: `app/assets/javascripts/behaviors/autosize.js`
@@ -421,7 +418,7 @@ See this [section][vue-test].
 
 For running the frontend tests, you need the following commands:
 
-- `rake karma:fixtures` (re-)generates fixtures.
+- `rake karma:fixtures` (re-)generates [fixtures](#frontend-test-fixtures).
 - `yarn test` executes the tests.
 
 As long as the fixtures don't change, `yarn test` is sufficient (and saves you some time).
@@ -469,6 +466,48 @@ yarn karma -f 'spec/javascripts/ide/**/file_spec.js'
 Information on setting up and running RSpec integration tests with
 [Capybara] can be found in the [Testing Best Practices](best_practices.md).
 
+## Frontend test fixtures
+
+Code that is added to HAML templates (in `app/views/`) or makes Ajax requests to the backend has tests that require HTML or JSON from the backend.
+Fixtures for these tests are located at:
+
+- `spec/javascripts/fixtures/`, for running tests in CE.
+- `ee/spec/javascripts/fixtures/`, for running tests in EE.
+
+Fixture files in:
+
+- The Karma test suite are served by [jasmine-jquery](https://github.com/velesin/jasmine-jquery).
+- Jest use `spec/frontend/helpers/fixtures.js`.
+
+The following are examples of tests that work for both Karma and Jest:
+
+```javascript
+it('makes a request', () => {
+  const responseBody = getJSONFixture('some/fixture.json'); // loads spec/javascripts/fixtures/some/fixture.json
+  axiosMock.onGet(endpoint).reply(200, responseBody);
+  
+  myButton.click();
+  
+  // ...
+});
+
+it('uses some HTML element', () => {
+  loadFixtures('some/page.html'); // loads spec/javascripts/fixtures/some/page.html and adds it to the DOM
+  
+  const element = document.getElementById('#my-id');
+  
+  // ...
+});
+```
+
+HTML and JSON fixtures are generated from backend views and controllers using RSpec (see `spec/javascripts/fixtures/*.rb`).
+
+For each fixture, the content of the `response` variable is stored in the output file.
+This variable gets automagically set if the test is marked as `type: :request` or `type: :controller`.
+Fixtures are regenerated using the `bin/rake karma:fixtures` command but you can also generate them individually,
+for example `bin/rspec spec/javascripts/fixtures/merge_requests.rb`.
+When creating a new fixture, it often makes sense to take a look at the corresponding tests for the endpoint in `(ee/)spec/controllers/` or `(ee/)spec/requests/`.
+
 ## Gotchas
 
 ### RSpec errors due to JavaScript
@@ -501,7 +540,6 @@ end
 ```
 
 [jasmine-focus]: https://jasmine.github.io/2.5/focused_specs.html
-[jasmine-jquery]: https://github.com/velesin/jasmine-jquery
 [karma]: http://karma-runner.github.io/
 [vue-test]: https://docs.gitlab.com/ce/development/fe_guide/vue.html#testing-vue-components
 [rspec]: https://github.com/rspec/rspec-rails#feature-specs
