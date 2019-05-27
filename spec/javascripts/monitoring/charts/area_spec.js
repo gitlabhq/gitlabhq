@@ -2,7 +2,8 @@ import { shallowMount } from '@vue/test-utils';
 import { GlAreaChart, GlChartSeriesLabel } from '@gitlab/ui/dist/charts';
 import { shallowWrapperContainsSlotText } from 'spec/helpers/vue_test_utils_helper';
 import Area from '~/monitoring/components/charts/area.vue';
-import MonitoringStore from '~/monitoring/stores/monitoring_store';
+import { createStore } from '~/monitoring/stores';
+import * as types from '~/monitoring/stores/mutation_types';
 import MonitoringMock, { deploymentData } from '../mock_data';
 
 describe('Area component', () => {
@@ -13,17 +14,18 @@ describe('Area component', () => {
   let spriteSpy;
 
   beforeEach(() => {
-    const store = new MonitoringStore();
-    store.storeMetrics(MonitoringMock.data);
-    store.storeDeploymentData(deploymentData);
+    const store = createStore();
 
-    [mockGraphData] = store.groups[0].metrics;
+    store.commit(`monitoringDashboard/${types.RECEIVE_METRICS_DATA_SUCCESS}`, MonitoringMock.data);
+    store.commit(`monitoringDashboard/${types.RECEIVE_DEPLOYMENTS_DATA_SUCCESS}`, deploymentData);
+
+    [mockGraphData] = store.state.monitoringDashboard.groups[0].metrics;
 
     areaChart = shallowMount(Area, {
       propsData: {
         graphData: mockGraphData,
         containerWidth: 0,
-        deploymentData: store.deploymentData,
+        deploymentData: store.state.monitoringDashboard.deploymentData,
       },
       slots: {
         default: mockWidgets,
