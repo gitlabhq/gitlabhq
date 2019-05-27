@@ -3,9 +3,12 @@
 module QA
   module Resource
     class File < Base
-      attr_accessor :name,
+      attr_accessor :author_email,
+                    :author_name,
+                    :branch,
                     :content,
-                    :commit_message
+                    :commit_message,
+                    :name
 
       attribute :project do
         Project.fabricate! do |resource|
@@ -30,6 +33,30 @@ module QA
           page.add_commit_message(@commit_message)
           page.commit_changes
         end
+      end
+
+      def resource_web_url(resource)
+        super
+      rescue ResourceURLMissingError
+        # this particular resource does not expose a web_url property
+      end
+
+      def api_get_path
+        "/projects/#{CGI.escape(project.path_with_namespace)}/repository/files/#{CGI.escape(@name)}"
+      end
+
+      def api_post_path
+        api_get_path
+      end
+
+      def api_post_body
+        {
+          branch: @branch || "master",
+          author_email: @author_email || Runtime::User.default_email,
+          author_name: @author_name || Runtime::User.username,
+          content: content,
+          commit_message: commit_message
+        }
       end
     end
   end
