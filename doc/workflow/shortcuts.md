@@ -1,6 +1,6 @@
 # GitLab keyboard shortcuts
 
-You can see GitLab's keyboard shortcuts by using 'shift + ?'
+You can see GitLab's keyboard shortcuts by using <kbd>shift</kbd> + <kbd>?</kbd>
 
 ## Global Shortcuts
 
