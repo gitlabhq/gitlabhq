@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 describe 'Clusterable > Show page' do
+  include KubernetesHelpers
+
   let(:current_user) { create(:user) }
   let(:cluster_ingress_help_text_selector) { '.js-ingress-domain-help-text' }
   let(:hide_modifier_selector) { '.hide' }
@@ -83,6 +85,7 @@ describe 'Clusterable > Show page' do
 
   shared_examples 'editing a user-provided cluster' do
     before do
+      stub_kubeclient_discover(cluster.platform.api_url)
       clusterable.add_maintainer(current_user)
       visit cluster_path
     end

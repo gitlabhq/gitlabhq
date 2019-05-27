@@ -2,7 +2,10 @@
 
 require 'spec_helper'
 
-describe Clusters::Cluster do
+describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
+  include ReactiveCachingHelpers
+  include KubernetesHelpers
+
   it_behaves_like 'having unique enum values'
 
   subject { build(:cluster) }
@@ -23,7 +26,6 @@ describe Clusters::Cluster do
 
   it { is_expected.to delegate_method(:status).to(:provider) }
   it { is_expected.to delegate_method(:status_reason).to(:provider) }
-  it { is_expected.to delegate_method(:status_name).to(:provider) }
   it { is_expected.to delegate_method(:on_creation?).to(:provider) }
   it { is_expected.to delegate_method(:active?).to(:platform_kubernetes).with_prefix }
   it { is_expected.to delegate_method(:rbac?).to(:platform_kubernetes).with_prefix }
@@ -501,28 +503,6 @@ describe Clusters::Cluster do
     end
   end
 
-  describe '#created?' do
-    let(:cluster) { create(:cluster, :provided_by_gcp) }
-
-    subject { cluster.created? }
-
-    context 'when status_name is :created' do
-      before do
-        allow(cluster).to receive_message_chain(:provider, :status_name).and_return(:created)
-      end
-
-      it { is_expected.to eq(true) }
-    end
-
-    context 'when status_name is not :created' do
-      before do
-        allow(cluster).to receive_message_chain(:provider, :status_name).and_return(:creating)
-      end
-
-      it { is_expected.to eq(false) }
-    end
-  end
-
   describe '#allow_user_defined_namespace?' do
     let(:cluster) { create(:cluster, :provided_by_gcp) }
 
@@ -615,6 +595,141 @@ describe Clusters::Cluster do
       let(:cluster) { create(:cluster, :provided_by_user) }
 
       it { is_expected.to be_truthy }
+    end
+  end
+
+  describe '#status_name' do
+    subject { cluster.status_name }
+
+    context 'the cluster has a provider' do
+      let(:cluster) { create(:cluster, :provided_by_gcp) }
+
+      before do
+        cluster.provider.make_errored!
+      end
+
+      it { is_expected.to eq :errored }
+    end
+
+    context 'there is a cached connection status' do
+      let(:cluster) { create(:cluster, :provided_by_user) }
+
+      before do
+        allow(cluster).to receive(:connection_status).and_return(:connected)
+      end
+
+      it { is_expected.to eq :connected }
+    end
+
+    context 'there is no connection status in the cache' do
+      let(:cluster) { create(:cluster, :provided_by_user) }
+
+      before do
+        allow(cluster).to receive(:connection_status).and_return(nil)
+      end
+
+      it { is_expected.to eq :created }
+    end
+  end
+
+  describe '#connection_status' do
+    let(:cluster) { create(:cluster) }
+    let(:status) { :connected }
+
+    subject { cluster.connection_status }
+
+    it { is_expected.to be_nil }
+
+    context 'with a cached status' do
+      before do
+        stub_reactive_cache(cluster, connection_status: status)
+      end
+
+      it { is_expected.to eq(status) }
+    end
+  end
+
+  describe '#calculate_reactive_cache' do
+    subject { cluster.calculate_reactive_cache }
+
+    context 'cluster is disabled' do
+      let(:cluster) { create(:cluster, :disabled) }
+
+      it 'does not populate the cache' do
+        expect(cluster).not_to receive(:retrieve_connection_status)
+
+        is_expected.to be_nil
+      end
+    end
+
+    context 'cluster is enabled' do
+      let(:cluster) { create(:cluster, :provided_by_user, :group) }
+
+      context 'connection to the cluster is successful' do
+        before do
+          stub_kubeclient_discover(cluster.platform.api_url)
+        end
+
+        it { is_expected.to eq(connection_status: :connected) }
+      end
+
+      context 'cluster cannot be reached' do
+        before do
+          allow(cluster.kubeclient.core_client).to receive(:discover)
+            .and_raise(SocketError)
+        end
+
+        it { is_expected.to eq(connection_status: :unreachable) }
+      end
+
+      context 'cluster cannot be authenticated to' do
+        before do
+          allow(cluster.kubeclient.core_client).to receive(:discover)
+            .and_raise(OpenSSL::X509::CertificateError.new("Certificate error"))
+        end
+
+        it { is_expected.to eq(connection_status: :authentication_failure) }
+      end
+
+      describe 'Kubeclient::HttpError' do
+        let(:error_code) { 403 }
+        let(:error_message) { "Forbidden" }
+
+        before do
+          allow(cluster.kubeclient.core_client).to receive(:discover)
+            .and_raise(Kubeclient::HttpError.new(error_code, error_message, nil))
+        end
+
+        it { is_expected.to eq(connection_status: :authentication_failure) }
+
+        context 'generic timeout' do
+          let(:error_message) { 'Timed out connecting to server'}
+
+          it { is_expected.to eq(connection_status: :unreachable) }
+        end
+
+        context 'gateway timeout' do
+          let(:error_message) { '504 Gateway Timeout for GET https://kubernetes.example.com/api/v1'}
+
+          it { is_expected.to eq(connection_status: :unreachable) }
+        end
+      end
+
+      context 'an uncategorised error is raised' do
+        before do
+          allow(cluster.kubeclient.core_client).to receive(:discover)
+            .and_raise(StandardError)
+        end
+
+        it { is_expected.to eq(connection_status: :unknown_failure) }
+
+        it 'notifies Sentry' do
+          expect(Gitlab::Sentry).to receive(:track_acceptable_exception)
+            .with(instance_of(StandardError), hash_including(extra: { cluster_id: cluster.id }))
+
+          subject
+        end
+      end
     end
   end
 end
