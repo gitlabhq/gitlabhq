@@ -4,13 +4,11 @@ type: concepts, howto
 
 # Health Check
 
-> NOTE: **Note:**
->
->   - Liveness and readiness probes were [introduced][ce-10416] in GitLab 9.1.
->   - The `health_check` endpoint was [introduced][ce-3888] in GitLab 8.8 and was
->     be deprecated in GitLab 9.1.
->   - [Access token](#access-token-deprecated) has been deprecated in GitLab 9.4
->     in favor of [IP whitelist](#ip-whitelist).
+> - Liveness and readiness probes were [introduced][ce-10416] in GitLab 9.1.
+> - The `health_check` endpoint was [introduced][ce-3888] in GitLab 8.8 and was
+>   be deprecated in GitLab 9.1.
+> - [Access token](#access-token-deprecated) has been deprecated in GitLab 9.4
+>   in favor of [IP whitelist](#ip-whitelist).
 
 GitLab provides liveness and readiness probes to indicate service health and
 reachability to required services. These probes report on the status of the
@@ -33,7 +31,7 @@ With default whitelist settings, the probes can be accessed from localhost using
 
 The first endpoint, `health`, only checks whether the application server is running. It does not verify the database or other services are running. A successful response will return a 200 status code with the following message:
 
-```
+```text
 GitLab OK
 ```
 
@@ -101,7 +99,7 @@ accepted token can be found under the **Admin area ➔ Monitoring ➔ Health che
 
 The access token can be passed as a URL parameter:
 
-```
+```text
 https://gitlab.example.com/-/readiness?token=ACCESS_TOKEN
 ```
 
