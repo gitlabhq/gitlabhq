@@ -80,8 +80,9 @@ Planning time: 2.861 ms
 Execution time: 3428.596 ms
 ```
 
-For more information, refer to the official [EXPLAIN
-documentation](https://www.postgresql.org/docs/current/static/sql-explain.html).
+For more information, refer to the official
+[`EXPLAIN` documentation](https://www.postgresql.org/docs/current/sql-explain.html)
+and [using `EXPLAIN` guide](https://www.postgresql.org/docs/current/using-explain.html).
 
 ## Nodes
 
@@ -674,3 +675,9 @@ For more information about the available options, run:
 ```
 /chatops run explain --help
 ```
+
+## Further reading
+
+A more extensive guide on understanding query plans can be found in
+the [presentation](https://www.dalibo.org/_media/understanding_explain.pdf)
+from [Dalibo.org](https://www.dalibo.org/en/).
