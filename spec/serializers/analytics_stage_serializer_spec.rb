@@ -27,7 +27,7 @@ describe AnalyticsStageSerializer do
       allow_any_instance_of(Gitlab::CycleAnalytics::BaseStage).to receive(:median).and_return(0)
     end
 
-    it 'value is nil' do
+    it 'sets the value to nil' do
       expect(subject.fetch(:value)).to be_nil
     end
   end
@@ -37,18 +37,18 @@ describe AnalyticsStageSerializer do
       allow_any_instance_of(Gitlab::CycleAnalytics::BaseStage).to receive(:median).and_return(0.12)
     end
 
-    it 'value is equal to median' do
+    it 'sets the value to equal to median' do
       expect(subject.fetch(:value)).to eq('less than a minute')
     end
   end
 
   context 'when median is above 1' do
     before do
-      allow_any_instance_of(Gitlab::CycleAnalytics::BaseStage).to receive(:median).and_return(1.12)
+      allow_any_instance_of(Gitlab::CycleAnalytics::BaseStage).to receive(:median).and_return(60.12)
     end
 
-    it 'value is equal to median' do
-      expect(subject.fetch(:value)).to eq('less than a minute')
+    it 'sets the value to equal to median' do
+      expect(subject.fetch(:value)).to eq('1 minute')
     end
   end
 end
