@@ -32,7 +32,7 @@ clicking `Pause sync` on the [Crowdin integration settings
 page](https://translate.gitlab.com/project/gitlab-ee/settings#integration).
 
 When all failures are resolved, the translations need to be double
-checked once more as discussed in [confidential issue](https://docs.gitlab.com/ee/user/project/issues/confidential_issues.html) `https://gitlab.com/gitlab-org/gitlab-ce/issues/37850`.
+checked once more as discussed in [confidential issue](../../user/project/issues/confidential_issues.md) `https://gitlab.com/gitlab-org/gitlab-ce/issues/37850`.
 
 ## Merging translations
 

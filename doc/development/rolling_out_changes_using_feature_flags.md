@@ -102,7 +102,7 @@ GitLab's feature library (using
 [Flipper](https://github.com/jnunemaker/flipper), and covered in the [Feature
 Flags](feature_flags.md) guide) supports rolling out changes to a percentage of
 users. This in turn can be controlled using [GitLab
-chatops](https://docs.gitlab.com/ee/ci/chatops/).
+chatops](../ci/chatops/README.md).
 
 For an up to date list of feature flag commands please see [the source
 code](https://gitlab.com/gitlab-com/chatops/blob/master/lib/chatops/commands/feature.rb).
