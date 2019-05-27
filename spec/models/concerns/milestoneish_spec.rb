@@ -194,58 +194,6 @@ describe Milestone, 'Milestoneish' do
     end
   end
 
-  describe '#closed_items_count' do
-    it 'does not count confidential issues for non project members' do
-      expect(milestone.closed_items_count(non_member)).to eq 2
-    end
-
-    it 'does not count confidential issues for project members with guest role' do
-      expect(milestone.closed_items_count(guest)).to eq 2
-    end
-
-    it 'counts confidential issues for author' do
-      expect(milestone.closed_items_count(author)).to eq 4
-    end
-
-    it 'counts confidential issues for assignee' do
-      expect(milestone.closed_items_count(assignee)).to eq 4
-    end
-
-    it 'counts confidential issues for project members' do
-      expect(milestone.closed_items_count(member)).to eq 6
-    end
-
-    it 'counts all issues for admin' do
-      expect(milestone.closed_items_count(admin)).to eq 6
-    end
-  end
-
-  describe '#total_items_count' do
-    it 'does not count confidential issues for non project members' do
-      expect(milestone.total_items_count(non_member)).to eq 4
-    end
-
-    it 'does not count confidential issues for project members with guest role' do
-      expect(milestone.total_items_count(guest)).to eq 4
-    end
-
-    it 'counts confidential issues for author' do
-      expect(milestone.total_items_count(author)).to eq 7
-    end
-
-    it 'counts confidential issues for assignee' do
-      expect(milestone.total_items_count(assignee)).to eq 7
-    end
-
-    it 'counts confidential issues for project members' do
-      expect(milestone.total_items_count(member)).to eq 10
-    end
-
-    it 'counts all issues for admin' do
-      expect(milestone.total_items_count(admin)).to eq 10
-    end
-  end
-
   describe '#complete?' do
     it 'returns false when has items opened' do
       expect(milestone.complete?(non_member)).to eq false
@@ -260,28 +208,42 @@ describe Milestone, 'Milestoneish' do
   end
 
   describe '#percent_complete' do
+    context 'division by zero' do
+      let(:new_milestone) { build_stubbed(:milestone) }
+
+      it { expect(new_milestone.percent_complete(admin)).to eq(0) }
+    end
+  end
+
+  describe '#count_issues_by_state' do
     it 'does not count confidential issues for non project members' do
-      expect(milestone.percent_complete(non_member)).to eq 50
+      expect(milestone.closed_issues_count(non_member)).to eq 2
+      expect(milestone.total_issues_count(non_member)).to eq 3
     end
 
     it 'does not count confidential issues for project members with guest role' do
-      expect(milestone.percent_complete(guest)).to eq 50
+      expect(milestone.closed_issues_count(guest)).to eq 2
+      expect(milestone.total_issues_count(guest)).to eq 3
     end
 
     it 'counts confidential issues for author' do
-      expect(milestone.percent_complete(author)).to eq 57
+      expect(milestone.closed_issues_count(author)).to eq 4
+      expect(milestone.total_issues_count(author)).to eq 6
     end
 
     it 'counts confidential issues for assignee' do
-      expect(milestone.percent_complete(assignee)).to eq 57
+      expect(milestone.closed_issues_count(assignee)).to eq 4
+      expect(milestone.total_issues_count(assignee)).to eq 6
     end
 
     it 'counts confidential issues for project members' do
-      expect(milestone.percent_complete(member)).to eq 60
+      expect(milestone.closed_issues_count(member)).to eq 6
+      expect(milestone.total_issues_count(member)).to eq 9
     end
 
     it 'counts confidential issues for admin' do
-      expect(milestone.percent_complete(admin)).to eq 60
+      expect(milestone.closed_issues_count(admin)).to eq 6
+      expect(milestone.total_issues_count(admin)).to eq 9
     end
   end
 
