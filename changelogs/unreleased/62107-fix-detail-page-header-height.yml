@@ -1,0 +1,5 @@
+---
+title: Fix the height of the page headers on issues/merge request/snippets pages
+merge_request: 28650
+author: Erik van der Gaag
+type: fixed

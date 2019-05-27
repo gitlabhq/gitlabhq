@@ -90,9 +90,12 @@ describe('Job App ', () => {
 
       describe('triggered job', () => {
         beforeEach(() => {
+          const aYearAgo = new Date();
+          aYearAgo.setFullYear(aYearAgo.getFullYear() - 1);
+
           mock
             .onGet(props.endpoint)
-            .replyOnce(200, Object.assign({}, job, { started: '2017-05-24T10:59:52.000+01:00' }));
+            .replyOnce(200, Object.assign({}, job, { started: aYearAgo.toISOString() }));
           vm = mountComponentWithStore(Component, { props, store });
         });
 

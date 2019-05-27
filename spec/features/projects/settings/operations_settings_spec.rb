@@ -46,6 +46,9 @@ describe 'Projects > Settings > For a forked project', :js do
 
           wait_for_requests
 
+          within '.js-error-tracking-settings' do
+            click_button('Expand')
+          end
           expect(page).to have_content('Sentry API URL')
           expect(page.body).to include('Error Tracking')
           expect(page).to have_button('Connect')
@@ -86,6 +89,9 @@ describe 'Projects > Settings > For a forked project', :js do
 
           wait_for_requests
 
+          within '.js-error-tracking-settings' do
+            click_button('Expand')
+          end
           check('Active')
           fill_in('error-tracking-api-host', with: 'http://sentry.example.com')
           fill_in('error-tracking-token', with: 'token')

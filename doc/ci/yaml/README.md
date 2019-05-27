@@ -1986,7 +1986,7 @@ production:
     - deploy
   environment:
     name: production
-    url: https://$CI_PROJECT_PATH_SLUG.$AUTO_DEVOPS_DOMAIN
+    url: https://$CI_PROJECT_PATH_SLUG.$KUBE_INGRESS_BASE_DOMAIN
   only:
     - master
 ```

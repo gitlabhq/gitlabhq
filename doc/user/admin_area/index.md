@@ -1,3 +1,7 @@
+---
+type: reference
+---
+
 # GitLab Admin Area **[CORE ONLY]**
 
 The Admin Area provides a web UI for administering some features of GitLab self-managed instances.

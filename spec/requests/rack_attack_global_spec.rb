@@ -182,6 +182,17 @@ describe 'Rack Attack global throttles' do
           end
         end
       end
+
+      it 'logs RackAttack info into structured logs' do
+        requests_per_period.times do
+          get url_that_does_not_require_authentication
+          expect(response).to have_http_status 200
+        end
+
+        expect(Gitlab::AuthLogger).to receive(:error).once
+
+        get url_that_does_not_require_authentication
+      end
     end
 
     context 'when the throttle is disabled' do
@@ -326,6 +337,17 @@ describe 'Rack Attack global throttles' do
         expect_any_instance_of(Rack::Attack::Request).to receive(:ip).and_return('1.2.3.4')
 
         expect_rejection { get url_that_requires_authentication }
+      end
+
+      it 'logs RackAttack info into structured logs' do
+        requests_per_period.times do
+          get url_that_requires_authentication
+          expect(response).to have_http_status 200
+        end
+
+        expect(Gitlab::AuthLogger).to receive(:error).once
+
+        get url_that_requires_authentication
       end
     end
 

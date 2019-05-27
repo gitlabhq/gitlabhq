@@ -4,12 +4,14 @@
 
 _This diagram demonstrates the relative priority of each test type we use. `e2e` stands for end-to-end._
 
-As of 2019-04-16, we have the following distribution of tests per level:
+As of 2019-05-01, we have the following distribution of tests per level:
 
-- 67 black-box tests at the system level (aka end-to-end or QA tests) in CE, 98 in EE. This represents 0.3% of all the CE tests (0.3% in EE).
-- 5,457 white-box tests at the system level (aka system or feature tests) in CE, 6,585 in EE. This represents 24.6% of all the CE tests (20.3% in EE).
-- 8,298 integration tests in CE, 10,633 in EE: 0.3% of all the CE tests (0.3% in EE). This represents 37.2% of all the CE tests (32.8% in EE).
-- 8,403 unit tests in CE, 15,090 in EE: 0.3% of all the CE tests (0.3% in EE). This represents 37.8% of all the CE tests (46.6% in EE).
+| Test level | Community Edition | Enterprise Edition  | Community + Enterprise Edition |
+| --------- | ---------- | -------------- | ----- |
+| Black-box tests at the system level (aka end-to-end or QA tests) | 68 (0.14%) | 31 (0.2%) | 99 (0.17%) |
+| White-box tests at the system level (aka system or feature tests) | 5,471 (11.9%) | 969 (7.4%) | 6440 (10.9%) |
+| Integration tests | 8,333 (18.2%) | 2,244 (17.2%) | 10,577 (17.9%) |
+| Unit tests | 32,031 (69.7%) | 9,778 (75.1%) | 41,809 (71%) |
 
 ## Unit tests
 

@@ -3,7 +3,7 @@ import _ from 'underscore';
 import timeago from 'timeago.js';
 import dateFormat from 'dateformat';
 import { pluralize } from './text_utility';
-import { languageCode, s__ } from '../../locale';
+import { languageCode, s__, __ } from '../../locale';
 
 window.timeago = timeago;
 
@@ -63,7 +63,15 @@ export const pad = (val, len = 2) => `0${val}`.slice(-len);
  * @returns {String}
  */
 export const getDayName = date =>
-  ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][date.getDay()];
+  [
+    __('Sunday'),
+    __('Monday'),
+    __('Tuesday'),
+    __('Wednesday'),
+    __('Thursday'),
+    __('Friday'),
+    __('Saturday'),
+  ][date.getDay()];
 
 /**
  * @example
@@ -320,13 +328,13 @@ export const getSundays = date => {
   }
 
   const daysToSunday = [
-    'Saturday',
-    'Friday',
-    'Thursday',
-    'Wednesday',
-    'Tuesday',
-    'Monday',
-    'Sunday',
+    __('Saturday'),
+    __('Friday'),
+    __('Thursday'),
+    __('Wednesday'),
+    __('Tuesday'),
+    __('Monday'),
+    __('Sunday'),
   ];
 
   const month = date.getMonth();
@@ -336,7 +344,7 @@ export const getSundays = date => {
 
   while (dateOfMonth.getMonth() === month) {
     const dayName = getDayName(dateOfMonth);
-    if (dayName === 'Sunday') {
+    if (dayName === __('Sunday')) {
       sundays.push(new Date(dateOfMonth.getTime()));
     }
 

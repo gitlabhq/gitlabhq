@@ -23,6 +23,8 @@ to help identify if something is wrong:
 
 ![Geo health check](img/geo_node_healthcheck.png)
 
+For information on how to resolve common errors reported from the UI, see [common errors](#common-errors).
+
 If the UI is not working, or you are unable to log in, you can run the Geo
 health check manually to get this information as well as a few more details.
 This rake task can be run on an app node in the **primary** or **secondary**
@@ -40,7 +42,8 @@ Checking Geo ...
 GitLab Geo is available ... yes
 GitLab Geo is enabled ... yes
 GitLab Geo secondary database is correctly configured ... yes
-Using database streaming replication? ... yes
+Database replication enabled? ... yes
+Database replication working? ... yes
 GitLab Geo tracking database is configured to use Foreign Data Wrapper? ... yes
 GitLab Geo tracking database Foreign Data Wrapper schema is up-to-date? ... yes
 GitLab Geo HTTP(S) connectivity ...
@@ -68,22 +71,22 @@ Example output:
 ```
 http://secondary.example.com/
 -----------------------------------------------------
-                        GitLab Version: 11.8.1-ee
+                        GitLab Version: 11.10.4-ee
                               Geo Role: Secondary
                          Health Status: Healthy
-                          Repositories: 190/190 (100%)
-                 Verified Repositories: 190/190 (100%)
-                                 Wikis: 190/190 (100%)
-                        Verified Wikis: 190/190 (100%)
-                           LFS Objects: 35/35 (100%)
-                           Attachments: 528/528 (100%)
-                      CI job artifacts: 477/477 (100%)
-                  Repositories Checked: 0/190 (0%)
+                          Repositories: 289/289 (100%)
+                 Verified Repositories: 289/289 (100%)
+                                 Wikis: 289/289 (100%)
+                        Verified Wikis: 289/289 (100%)
+                           LFS Objects: 8/8 (100%)
+                           Attachments: 5/5 (100%)
+                      CI job artifacts: 0/0 (0%)
+                  Repositories Checked: 0/289 (0%)
                          Sync Settings: Full
               Database replication lag: 0 seconds
-       Last event ID seen from primary: 2158 (about 2 minute ago)
-     Last event ID processed by cursor: 2158 (about 2 minute ago)
-                Last status report was: 4 minutes ago
+       Last event ID seen from primary: 10215 (about 2 minutes ago)
+     Last event ID processed by cursor: 10215 (about 2 minutes ago)
+                Last status report was: 2 minutes ago
 ```
 
 ## Is Postgres replication working?
@@ -455,3 +458,57 @@ reload of the FDW schema. To manually reload the FDW schema:
 
 [database-start-replication]: database.md#step-3-initiate-the-replication-process
 [database-pg-replication]: database.md#postgresql-replication
+
+## Common errors
+
+This section documents common errors reported in the admin UI and how to fix them.
+
+### Geo database configuration file is missing
+
+GitLab cannot find or doesn't have permission to access the `database_geo.yml` configuration file.
+
+In an Omnibus GitLab installation, the file should be in `/var/opt/gitlab/gitlab-rails/etc`.
+If it doesn't exist or inadvertent changes have been made to it, run `sudo gitlab-ctl reconfigure` to restore it to its correct state.
+
+
+If this path is mounted on a remote volume, please check your volume configuration and that it has correct permissions.
+
+### Geo node has a database that is writable which is an indication it is not configured for replication with the primary node.
+
+This error refers to a problem with the database replica on a **secondary** node,
+which Geo expects to have access to. It usually means, either:
+
+- An unsupported replication method was used (for example, logical replication).
+- The instructions to setup a [Geo database replication](database.md) were not followed correctly.
+
+A common source of confusion with **secondary** nodes is that it requires two separate
+PostgreSQL instances:
+
+- A read-only replica of the **primary** node.
+- A regular, writable instance that holds replication metadata. That is, the Geo tracking database.
+
+### Geo node does not appear to be replicating the database from the primary node.
+
+The most common problems that prevent the database from replicating correctly are:
+
+- **Secondary** nodes cannot reach the **primary** node. Check credentials, firewall rules, etc.
+- SSL certificate problems. Make sure you copied `/etc/gitlab/gitlab-secrets.json` from the **primary** node.
+- Database storage disk is full.
+- Database replication slot is misconfigured.
+- Database is not using a replication slot or another alternative and cannot catch-up because WAL files were purged.
+
+Make sure you follow the [Geo database replication](database.md) instructions for supported configuration.
+
+### Geo database version (...) does not match latest migration (...)
+
+If you are using GitLab Omnibus installation, something might have failed during upgrade. You can:
+
+- Run `sudo gitlab-ctl reconfigure`. 
+- Manually trigger the database migration by running: `sudo gitlab-rake geo:db:migrate` as root on the **secondary** node.
+
+### Geo database is not configured to use Foreign Data Wrapper
+
+This error means the Geo Tracking Database doesn't have the FDW server and credentials
+configured.
+
+See [How do I fix a "Foreign Data Wrapper (FDW) is not configured" error?](#how-do-i-fix-a-foreign-data-wrapper-fdw-is-not-configured-error).

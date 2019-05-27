@@ -209,6 +209,22 @@ describe('Clusters', () => {
         expect(cluster.errorContainer.classList.contains('hidden')).toBeFalsy();
       });
     });
+
+    describe('when cluster is unreachable', () => {
+      it('should show the unreachable warning container', () => {
+        cluster.updateContainer(null, 'unreachable');
+
+        expect(cluster.unreachableContainer.classList.contains('hidden')).toBe(false);
+      });
+    });
+
+    describe('when cluster has an authentication failure', () => {
+      it('should show the authentication failure warning container', () => {
+        cluster.updateContainer(null, 'authentication_failure');
+
+        expect(cluster.authenticationFailureContainer.classList.contains('hidden')).toBe(false);
+      });
+    });
   });
 
   describe('installApplication', () => {

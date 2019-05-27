@@ -60,6 +60,7 @@ module QA
             resource.project = @project
             resource.key = deploy_key_name
             resource.value = key.private_key
+            resource.masked = false
           end
 
           gitlab_ci = <<~YAML

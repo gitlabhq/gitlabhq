@@ -193,6 +193,18 @@ msgstr ""
 msgid "%{service_title} settings saved, but not activated."
 msgstr ""
 
+msgid "%{size} GiB"
+msgstr ""
+
+msgid "%{size} KiB"
+msgstr ""
+
+msgid "%{size} MiB"
+msgstr ""
+
+msgid "%{size} bytes"
+msgstr ""
+
 msgid "%{spammable_titlecase} was submitted to Akismet successfully."
 msgstr ""
 
@@ -821,6 +833,9 @@ msgid "An empty GitLab User field will add the FogBugz user's full name (e.g. \"
 msgstr ""
 
 msgid "An error has occurred"
+msgstr ""
+
+msgid "An error occurding while fetching folder content."
 msgstr ""
 
 msgid "An error occurred creating the new branch."
@@ -2490,6 +2505,9 @@ msgstr ""
 msgid "ClusterIntegration|The endpoint is in the process of being assigned. Please check your Kubernetes cluster or Quotas on Google Kubernetes Engine if it takes a long time."
 msgstr ""
 
+msgid "ClusterIntegration|There was a problem authenticating with your cluster. Please ensure your CA Certificate and Token are valid."
+msgstr ""
+
 msgid "ClusterIntegration|This account must have permissions to create a Kubernetes cluster in the %{link_to_container_project} specified below"
 msgstr ""
 
@@ -2542,6 +2560,9 @@ msgid "ClusterIntegration|You must have an RBAC-enabled cluster to install Knati
 msgstr ""
 
 msgid "ClusterIntegration|Your account must have %{link_to_kubernetes_engine}"
+msgstr ""
+
+msgid "ClusterIntegration|Your cluster API is unreachable. Please ensure your API URL is correct."
 msgstr ""
 
 msgid "ClusterIntegration|Zone"
@@ -2891,7 +2912,7 @@ msgstr ""
 msgid "Copy labels and milestone from %{source_issuable_reference}."
 msgstr ""
 
-msgid "Copy labels and milestone from other issue or merge request"
+msgid "Copy labels and milestone from other issue or merge request in this project"
 msgstr ""
 
 msgid "Copy link"
@@ -4482,6 +4503,9 @@ msgstr ""
 msgid "Found errors in your .gitlab-ci.yml:"
 msgstr ""
 
+msgid "Friday"
+msgstr ""
+
 msgid "From %{providerTitle}"
 msgstr ""
 
@@ -5249,6 +5273,9 @@ msgstr ""
 msgid "Invite"
 msgstr ""
 
+msgid "Invite \"%{trimmed}\" by email"
+msgstr ""
+
 msgid "Invite group"
 msgstr ""
 
@@ -5794,6 +5821,9 @@ msgid "March"
 msgstr ""
 
 msgid "Mark as resolved"
+msgstr ""
+
+msgid "Mark comment as resolved"
 msgstr ""
 
 msgid "Mark this issue as a duplicate of another issue"
@@ -8202,6 +8232,9 @@ msgstr ""
 msgid "Resolved all discussions."
 msgstr ""
 
+msgid "Resolved by %{name}"
+msgstr ""
+
 msgid "Resolved by %{resolvedByName}"
 msgstr ""
 
@@ -8427,6 +8460,9 @@ msgid "Search files"
 msgstr ""
 
 msgid "Search for a group"
+msgstr ""
+
+msgid "Search for a user"
 msgstr ""
 
 msgid "Search for projects, issues, etc."
@@ -8921,6 +8957,9 @@ msgid "Something went wrong, unable to search projects"
 msgstr ""
 
 msgid "Something went wrong. Please try again."
+msgstr ""
+
+msgid "Something went wrong. Try again later."
 msgstr ""
 
 msgid "Sorry, no projects matched your search"
@@ -9984,6 +10023,9 @@ msgstr ""
 msgid "This will remove the fork relationship to source project"
 msgstr ""
 
+msgid "Thursday"
+msgstr ""
+
 msgid "Time before an issue gets scheduled"
 msgstr ""
 
@@ -10387,6 +10429,9 @@ msgstr ""
 msgid "Trying to communicate with your device. Plug it in (if you haven't already) and press the button on the device now."
 msgstr ""
 
+msgid "Tuesday"
+msgstr ""
+
 msgid "Twitter"
 msgstr ""
 
@@ -10726,6 +10771,21 @@ msgstr ""
 msgid "Users were successfully added."
 msgstr ""
 
+msgid "UsersSelect|%{name} + %{length} more"
+msgstr ""
+
+msgid "UsersSelect|Any User"
+msgstr ""
+
+msgid "UsersSelect|Assignee"
+msgstr ""
+
+msgid "UsersSelect|No assignee - %{openingTag} assign yourself %{closingTag}"
+msgstr ""
+
+msgid "UsersSelect|Unassigned"
+msgstr ""
+
 msgid "Using required encryption strategy when encrypted field is missing!"
 msgstr ""
 
@@ -10877,6 +10937,9 @@ msgid "Webhooks"
 msgstr ""
 
 msgid "Webhooks Help"
+msgstr ""
+
+msgid "Wednesday"
 msgstr ""
 
 msgid "Welcome to your Issue Board!"

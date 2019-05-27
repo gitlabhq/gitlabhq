@@ -1,0 +1,1 @@
+{"__schema":{"types":[{"kind":"INTERFACE","name":"Entry","possibleTypes":[{"name":"Blob"},{"name":"Submodule"},{"name":"TreeEntry"}]}]}}

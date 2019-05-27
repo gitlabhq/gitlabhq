@@ -1,5 +1,6 @@
 import Visibility from 'visibilityjs';
 import Vue from 'vue';
+import AccessorUtilities from '~/lib/utils/accessor';
 import { GlToast } from '@gitlab/ui';
 import PersistentUserCallout from '../persistent_user_callout';
 import { s__, sprintf } from '../locale';
@@ -43,8 +44,10 @@ export default class Clusters {
       helpPath,
       ingressHelpPath,
       ingressDnsHelpPath,
+      clusterId,
     } = document.querySelector('.js-edit-cluster-form').dataset;
 
+    this.clusterId = clusterId;
     this.store = new ClustersStore();
     this.store.setHelpPaths(helpPath, ingressHelpPath, ingressDnsHelpPath);
     this.store.setManagePrometheusPath(managePrometheusPath);
@@ -69,6 +72,10 @@ export default class Clusters {
     this.errorContainer = document.querySelector('.js-cluster-error');
     this.successContainer = document.querySelector('.js-cluster-success');
     this.creatingContainer = document.querySelector('.js-cluster-creating');
+    this.unreachableContainer = document.querySelector('.js-cluster-api-unreachable');
+    this.authenticationFailureContainer = document.querySelector(
+      '.js-cluster-authentication-failure',
+    );
     this.errorReasonContainer = this.errorContainer.querySelector('.js-error-reason');
     this.successApplicationContainer = document.querySelector('.js-cluster-application-notice');
     this.showTokenButton = document.querySelector('.js-show-cluster-token');
@@ -125,6 +132,13 @@ export default class Clusters {
     PersistentUserCallout.factory(callout);
   }
 
+  addBannerCloseHandler(el, status) {
+    el.querySelector('.js-close-banner').addEventListener('click', () => {
+      el.classList.add('hidden');
+      this.setBannerDismissedState(status, true);
+    });
+  }
+
   addListeners() {
     if (this.showTokenButton) this.showTokenButton.addEventListener('click', this.showToken);
     eventHub.$on('installApplication', this.installApplication);
@@ -133,6 +147,9 @@ export default class Clusters {
     eventHub.$on('saveKnativeDomain', data => this.saveKnativeDomain(data));
     eventHub.$on('setKnativeHostname', data => this.setKnativeHostname(data));
     eventHub.$on('uninstallApplication', data => this.uninstallApplication(data));
+    // Add event listener to all the banner close buttons
+    this.addBannerCloseHandler(this.unreachableContainer, 'unreachable');
+    this.addBannerCloseHandler(this.authenticationFailureContainer, 'authentication_failure');
   }
 
   removeListeners() {
@@ -205,6 +222,8 @@ export default class Clusters {
     this.errorContainer.classList.add('hidden');
     this.successContainer.classList.add('hidden');
     this.creatingContainer.classList.add('hidden');
+    this.unreachableContainer.classList.add('hidden');
+    this.authenticationFailureContainer.classList.add('hidden');
   }
 
   checkForNewInstalls(prevApplicationMap, newApplicationMap) {
@@ -228,8 +247,31 @@ export default class Clusters {
     }
   }
 
+  setBannerDismissedState(status, isDismissed) {
+    if (AccessorUtilities.isLocalStorageAccessSafe()) {
+      window.localStorage.setItem(
+        `cluster_${this.clusterId}_banner_dismissed`,
+        `${status}_${isDismissed}`,
+      );
+    }
+  }
+
+  isBannerDismissed(status) {
+    let bannerState;
+    if (AccessorUtilities.isLocalStorageAccessSafe()) {
+      bannerState = window.localStorage.getItem(`cluster_${this.clusterId}_banner_dismissed`);
+    }
+
+    return bannerState === `${status}_true`;
+  }
+
   updateContainer(prevStatus, status, error) {
     this.hideAll();
+
+    if (this.isBannerDismissed(status)) {
+      return;
+    }
+    this.setBannerDismissedState(status, false);
 
     // We poll all the time but only want the `created` banner to show when newly created
     if (this.store.state.status !== 'created' || prevStatus !== this.store.state.status) {
@@ -240,6 +282,12 @@ export default class Clusters {
         case 'errored':
           this.errorContainer.classList.remove('hidden');
           this.errorReasonContainer.textContent = error;
+          break;
+        case 'unreachable':
+          this.unreachableContainer.classList.remove('hidden');
+          break;
+        case 'authentication_failure':
+          this.authenticationFailureContainer.classList.remove('hidden');
           break;
         case 'scheduled':
         case 'creating':

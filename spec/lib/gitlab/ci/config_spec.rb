@@ -190,7 +190,6 @@ describe Gitlab::Ci::Config do
     let(:remote_file_content) do
       <<~HEREDOC
       variables:
-        AUTO_DEVOPS_DOMAIN: domain.example.com
         POSTGRES_USER: user
         POSTGRES_PASSWORD: testing-password
         POSTGRES_ENABLED: "true"
@@ -232,7 +231,6 @@ describe Gitlab::Ci::Config do
           "bundle install --jobs $(nproc)  \"${FLAGS[@]}\""
         ]
         variables = {
-          AUTO_DEVOPS_DOMAIN: "domain.example.com",
           POSTGRES_USER: "user",
           POSTGRES_PASSWORD: "testing-password",
           POSTGRES_ENABLED: "true",

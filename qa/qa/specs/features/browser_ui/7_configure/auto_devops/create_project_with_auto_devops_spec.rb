@@ -34,6 +34,7 @@ module QA
             resource.project = @project
             resource.key = 'CODE_QUALITY_DISABLED'
             resource.value = '1'
+            resource.masked = false
           end
 
           # Set an application secret CI variable (prefixed with K8S_SECRET_)
@@ -41,6 +42,7 @@ module QA
             resource.project = @project
             resource.key = 'K8S_SECRET_OPTIONAL_MESSAGE'
             resource.value = 'you_can_see_this_variable'
+            resource.masked = false
           end
 
           # Connect K8s cluster

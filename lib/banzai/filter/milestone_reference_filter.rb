@@ -51,13 +51,13 @@ module Banzai
         # default implementation.
         return super(text, pattern) if pattern != Milestone.reference_pattern
 
-        text.gsub(pattern) do |match|
+        unescape_html_entities(text).gsub(pattern) do |match|
           milestone = find_milestone($~[:project], $~[:namespace], $~[:milestone_iid], $~[:milestone_name])
 
           if milestone
             yield match, milestone.id, $~[:project], $~[:namespace], $~
           else
-            match
+            escape_html_entities(match)
           end
         end
       end

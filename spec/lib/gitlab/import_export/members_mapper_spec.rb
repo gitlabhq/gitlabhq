@@ -73,6 +73,13 @@ describe Gitlab::ImportExport::MembersMapper do
       expect(user2.authorized_project?(project)).to be true
     end
 
+    it 'maps an owner as a maintainer' do
+      exported_members.first['access_level'] = ProjectMember::OWNER
+
+      expect(members_mapper.map[exported_user_id]).to eq(user2.id)
+      expect(ProjectMember.find_by_user_id(user2.id).access_level).to eq(ProjectMember::MAINTAINER)
+    end
+
     context 'user is not an admin' do
       let(:user) { create(:user) }
 
