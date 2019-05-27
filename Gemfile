@@ -400,7 +400,8 @@ gem 'html2text'
 
 gem 'ruby-prof', '~> 0.17.0'
 gem 'rbtrace', '~> 0.4', require: false
-gem 'memory_profiler', require: false
+gem 'memory_profiler', '~> 0.9', require: false
+gem 'benchmark-memory', '~> 0.1', require: false
 
 # OAuth
 gem 'oauth2', '~> 1.4'
