@@ -166,6 +166,16 @@ module Ci
         end
       end
 
+      after_transition any => ::Ci::Pipeline.completed_statuses do |pipeline|
+        pipeline.run_after_commit do
+          pipeline.all_merge_requests.each do |merge_request|
+            next unless merge_request.auto_merge_enabled?
+
+            AutoMergeProcessWorker.perform_async(merge_request.id)
+          end
+        end
+      end
+
       after_transition any => [:success, :failed] do |pipeline|
         pipeline.run_after_commit do
           PipelineNotificationWorker.perform_async(pipeline.id)
