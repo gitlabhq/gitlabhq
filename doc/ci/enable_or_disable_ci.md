@@ -1,3 +1,7 @@
+---
+type: reference
+---
+
 # How to enable or disable GitLab CI/CD
 
 To effectively use GitLab CI/CD, you need a valid [`.gitlab-ci.yml`](yaml/README.md)
