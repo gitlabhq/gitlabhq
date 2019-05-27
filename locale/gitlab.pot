@@ -1812,6 +1812,9 @@ msgstr ""
 msgid "Checking branch availability..."
 msgstr ""
 
+msgid "Checking username availability..."
+msgstr ""
+
 msgid "Cherry-pick this commit"
 msgstr ""
 
@@ -4533,6 +4536,9 @@ msgstr ""
 msgid "From the Kubernetes cluster details view, install Runner from the applications list"
 msgstr ""
 
+msgid "Full name"
+msgstr ""
+
 msgid "GPG Key ID:"
 msgstr ""
 
@@ -6102,6 +6108,12 @@ msgstr ""
 msgid "Milestones|This action cannot be reversed."
 msgstr ""
 
+msgid "Minimum length is %{minimum_password_length} characters"
+msgstr ""
+
+msgid "Minimum length is %{minimum_password_length} characters."
+msgstr ""
+
 msgid "Mirror a repository"
 msgstr ""
 
@@ -7072,6 +7084,12 @@ msgstr ""
 msgid "Please note that this application is not provided by GitLab and you should verify its authenticity before allowing access."
 msgstr ""
 
+msgid "Please provide a valid email address."
+msgstr ""
+
+msgid "Please retype the email address."
+msgstr ""
+
 msgid "Please select a file"
 msgstr ""
 
@@ -7981,6 +7999,9 @@ msgid "Regenerate key"
 msgstr ""
 
 msgid "Regex pattern"
+msgstr ""
+
+msgid "Register"
 msgstr ""
 
 msgid "Register / Sign In"
@@ -10766,6 +10787,12 @@ msgid "UserProfile|You haven't created any snippets."
 msgstr ""
 
 msgid "UserProfile|Your projects can be available publicly, internally, or privately, at your choice."
+msgstr ""
+
+msgid "Username is already taken."
+msgstr ""
+
+msgid "Username is available."
 msgstr ""
 
 msgid "Users"
