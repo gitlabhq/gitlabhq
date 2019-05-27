@@ -48,7 +48,7 @@ export default {
     visualReviewAppMeta() {
       return {
         appUrl: this.mr.appUrl,
-        issueId: this.mr.iid,
+        mergeRequestId: this.mr.iid,
         sourceProjectId: this.mr.sourceProjectId,
       };
     },

@@ -333,41 +333,45 @@ export default {
       <div class="mr-widget-section">
         <component :is="componentName" :mr="mr" :service="service" />
 
-        <section v-if="shouldRenderCollaborationStatus" class="mr-info-list mr-links">
-          {{ s__('mrWidget|Allows commits from members who can merge to the target branch') }}
-        </section>
+        <div class="mr-widget-info">
+          <section v-if="shouldRenderCollaborationStatus" class="mr-info-list mr-links">
+            <p>
+              {{ s__('mrWidget|Allows commits from members who can merge to the target branch') }}
+            </p>
+          </section>
 
-        <mr-widget-related-links
-          v-if="shouldRenderRelatedLinks"
-          :state="mr.state"
-          :related-links="mr.relatedLinks"
-        />
+          <mr-widget-related-links
+            v-if="shouldRenderRelatedLinks"
+            :state="mr.state"
+            :related-links="mr.relatedLinks"
+          />
 
-        <mr-widget-alert-message
-          v-if="showMergePipelineForkWarning"
-          type="warning"
-          :help-path="mr.mergeRequestPipelinesHelpPath"
-        >
-          {{
-            s__(
-              'mrWidget|Fork merge requests do not create merge request pipelines which validate a post merge result',
-            )
-          }}
-        </mr-widget-alert-message>
+          <mr-widget-alert-message
+            v-if="showMergePipelineForkWarning"
+            type="warning"
+            :help-path="mr.mergeRequestPipelinesHelpPath"
+          >
+            {{
+              s__(
+                'mrWidget|Fork merge requests do not create merge request pipelines which validate a post merge result',
+              )
+            }}
+          </mr-widget-alert-message>
 
-        <mr-widget-alert-message
-          v-if="showTargetBranchAdvancedError"
-          type="danger"
-          :help-path="mr.mergeRequestPipelinesHelpPath"
-        >
-          {{
-            s__(
-              'mrWidget|The target branch has advanced, which invalidates the merge request pipeline. Please update the source branch and retry merging',
-            )
-          }}
-        </mr-widget-alert-message>
+          <mr-widget-alert-message
+            v-if="showTargetBranchAdvancedError"
+            type="danger"
+            :help-path="mr.mergeRequestPipelinesHelpPath"
+          >
+            {{
+              s__(
+                'mrWidget|The target branch has advanced, which invalidates the merge request pipeline. Please update the source branch and retry merging',
+              )
+            }}
+          </mr-widget-alert-message>
 
-        <source-branch-removal-status v-if="shouldRenderSourceBranchRemovalStatus" />
+          <source-branch-removal-status v-if="shouldRenderSourceBranchRemovalStatus" />
+        </div>
       </div>
       <div v-if="shouldRenderMergeHelp" class="mr-widget-footer"><mr-widget-merge-help /></div>
     </div>

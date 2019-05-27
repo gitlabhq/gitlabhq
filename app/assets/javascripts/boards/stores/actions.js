@@ -1,5 +1,7 @@
+import { __ } from '~/locale';
+
 const notImplemented = () => {
-  throw new Error('Not implemented!');
+  throw new Error(__('Not implemented!'));
 };
 
 export default {

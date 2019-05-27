@@ -376,3 +376,12 @@
     }
   }
 }
+
+/*
+* Mixin that handles the size and right margin of avatars.
+*/
+@mixin avatar-size($size, $margin-right) {
+  width: $size;
+  height: $size;
+  margin-right: $margin-right;
+}

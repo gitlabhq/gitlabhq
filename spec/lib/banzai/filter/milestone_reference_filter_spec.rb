@@ -295,6 +295,25 @@ describe Banzai::Filter::MilestoneReferenceFilter do
     end
   end
 
+  shared_examples 'references with HTML entities' do
+    before do
+      milestone.update!(title: '&lt;html&gt;')
+    end
+
+    it 'links to a valid reference' do
+      doc = reference_filter('See %"&lt;html&gt;"')
+
+      expect(doc.css('a').first.attr('href')).to eq urls.milestone_url(milestone)
+      expect(doc.text).to eq 'See %<html>'
+    end
+
+    it 'ignores invalid milestone names and escapes entities' do
+      act = %(Milestone %"&lt;non valid&gt;")
+
+      expect(reference_filter(act).to_html).to eq act
+    end
+  end
+
   shared_context 'project milestones' do
     let(:reference) { milestone.to_reference(format: :iid) }
 
@@ -307,6 +326,7 @@ describe Banzai::Filter::MilestoneReferenceFilter do
     it_behaves_like 'cross-project / cross-namespace complete reference'
     it_behaves_like 'cross-project / same-namespace complete reference'
     it_behaves_like 'cross project shorthand reference'
+    it_behaves_like 'references with HTML entities'
   end
 
   shared_context 'group milestones' do
@@ -317,6 +337,7 @@ describe Banzai::Filter::MilestoneReferenceFilter do
     it_behaves_like 'String-based single-word references'
     it_behaves_like 'String-based multi-word references in quotes'
     it_behaves_like 'referencing a milestone in a link href'
+    it_behaves_like 'references with HTML entities'
 
     it 'does not support references by IID' do
       doc = reference_filter("See #{Milestone.reference_prefix}#{milestone.iid}")

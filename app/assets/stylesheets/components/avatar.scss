@@ -1,33 +1,28 @@
-@mixin avatar-size($size, $margin-right) {
-  width: $size;
-  height: $size;
-  margin-right: $margin-right;
-}
-
 .avatar-circle {
   float: left;
   margin-right: 15px;
   border-radius: $avatar-radius;
   border: 1px solid $gray-normal;
-  &.s16 { @include avatar-size(16px, 6px); }
-  &.s18 { @include avatar-size(18px, 6px); }
-  &.s19 { @include avatar-size(19px, 6px); }
-  &.s20 { @include avatar-size(20px, 7px); }
+  &.s16 { @include avatar-size(16px, 8px); }
+  &.s18 { @include avatar-size(18px, 8px); }
+  &.s19 { @include avatar-size(19px, 8px); }
+  &.s20 { @include avatar-size(20px, 8px); }
   &.s24 { @include avatar-size(24px, 8px); }
   &.s26 { @include avatar-size(26px, 8px); }
-  &.s32 { @include avatar-size(32px, 10px); }
-  &.s36 { @include avatar-size(36px, 10px); }
-  &.s40 { @include avatar-size(40px, 10px); }
-  &.s46 { @include avatar-size(46px, 15px); }
-  &.s48 { @include avatar-size(48px, 10px); }
-  &.s60 { @include avatar-size(60px, 12px); }
-  &.s64 { @include avatar-size(64px, 14px); }
-  &.s70 { @include avatar-size(70px, 14px); }
-  &.s90 { @include avatar-size(90px, 15px); }
-  &.s100 { @include avatar-size(100px, 15px); }
-  &.s110 { @include avatar-size(110px, 15px); }
-  &.s140 { @include avatar-size(140px, 15px); }
-  &.s160 { @include avatar-size(160px, 20px); }
+  &.s32 { @include avatar-size(32px, 8px); }
+  &.s36 { @include avatar-size(36px, 16px); }
+  &.s40 { @include avatar-size(40px, 16px); }
+  &.s46 { @include avatar-size(46px, 16px); }
+  &.s48 { @include avatar-size(48px, 16px); }
+  &.s60 { @include avatar-size(60px, 16px); }
+  &.s64 { @include avatar-size(64px, 16px); }
+  &.s70 { @include avatar-size(70px, 16px); }
+  &.s90 { @include avatar-size(90px, 16px); }
+  &.s96 { @include avatar-size(96px, 16px); }
+  &.s100 { @include avatar-size(100px, 16px); }
+  &.s110 { @include avatar-size(110px, 16px); }
+  &.s140 { @include avatar-size(140px, 16px); }
+  &.s160 { @include avatar-size(160px, 16px); }
 }
 
 .avatar {
@@ -39,6 +34,7 @@
   padding: 0;
   background: $gray-lightest;
   overflow: hidden;
+  border-color: rgba($black, $gl-avatar-border-opacity);
 
   &.avatar-inline {
     float: none;
@@ -64,41 +60,37 @@
   &.avatar-placeholder {
     border: 0;
   }
-
-  &:not([href]):hover {
-    border-color: darken($gray-normal, 10%);
-  }
 }
 
 .identicon {
   text-align: center;
   vertical-align: top;
-  color: $gl-gray-700;
+  color: $gray-800;
   background-color: $gray-darker;
 
   // Sizes
-  &.s16 { font-size: 12px;
-    line-height: 1.33; }
+  &.s16 { font-size: 10px;
+    line-height: 16px; }
 
-  &.s24 { font-size: 13px;
-    line-height: 1.8; }
+  &.s24 { font-size: 12px;
+    line-height: 24px; }
 
   &.s26 { font-size: 20px;
     line-height: 1.33; }
 
-  &.s32 { font-size: 20px;
-    line-height: 30px; }
+  &.s32 { font-size: 14px;
+    line-height: 32px; }
 
   &.s40 { font-size: 16px;
     line-height: 38px; }
 
   &.s48 { font-size: 20px;
-    line-height: 46px; }
+    line-height: 48px; }
 
   &.s60 { font-size: 32px;
     line-height: 58px; }
 
-  &.s64 { font-size: 32px;
+  &.s64 { font-size: 28px;
     line-height: 64px; }
 
   &.s70 { font-size: 34px;
@@ -106,6 +98,9 @@
 
   &.s90 { font-size: 36px;
     line-height: 88px; }
+
+  &.s96 { font-size: 48px;
+    line-height: 96px; }
 
   &.s100 { font-size: 36px;
     line-height: 98px; }
@@ -144,7 +139,6 @@
 
   .avatar {
     border-radius: 0;
-    border: 0;
     height: auto;
     width: 100%;
     margin: 0;

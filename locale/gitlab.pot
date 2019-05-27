@@ -835,6 +835,9 @@ msgstr ""
 msgid "An error has occurred"
 msgstr ""
 
+msgid "An error occurding while fetching folder content."
+msgstr ""
+
 msgid "An error occurred creating the new branch."
 msgstr ""
 
@@ -2499,6 +2502,9 @@ msgstr ""
 msgid "ClusterIntegration|The endpoint is in the process of being assigned. Please check your Kubernetes cluster or Quotas on Google Kubernetes Engine if it takes a long time."
 msgstr ""
 
+msgid "ClusterIntegration|There was a problem authenticating with your cluster. Please ensure your CA Certificate and Token are valid."
+msgstr ""
+
 msgid "ClusterIntegration|This account must have permissions to create a Kubernetes cluster in the %{link_to_container_project} specified below"
 msgstr ""
 
@@ -2551,6 +2557,9 @@ msgid "ClusterIntegration|You must have an RBAC-enabled cluster to install Knati
 msgstr ""
 
 msgid "ClusterIntegration|Your account must have %{link_to_kubernetes_engine}"
+msgstr ""
+
+msgid "ClusterIntegration|Your cluster API is unreachable. Please ensure your API URL is correct."
 msgstr ""
 
 msgid "ClusterIntegration|Zone"
@@ -2900,7 +2909,7 @@ msgstr ""
 msgid "Copy labels and milestone from %{source_issuable_reference}."
 msgstr ""
 
-msgid "Copy labels and milestone from other issue or merge request"
+msgid "Copy labels and milestone from other issue or merge request in this project"
 msgstr ""
 
 msgid "Copy link"
@@ -4641,6 +4650,9 @@ msgstr ""
 msgid "Go to %{link_to_google_takeout}."
 msgstr ""
 
+msgid "Go to parent"
+msgstr ""
+
 msgid "Go to project"
 msgstr ""
 
@@ -5261,6 +5273,9 @@ msgstr ""
 msgid "Invite"
 msgstr ""
 
+msgid "Invite \"%{trimmed}\" by email"
+msgstr ""
+
 msgid "Invite group"
 msgstr ""
 
@@ -5806,6 +5821,9 @@ msgid "March"
 msgstr ""
 
 msgid "Mark as resolved"
+msgstr ""
+
+msgid "Mark comment as resolved"
 msgstr ""
 
 msgid "Mark this issue as a duplicate of another issue"
@@ -6450,6 +6468,9 @@ msgid "Not enough data"
 msgstr ""
 
 msgid "Not found."
+msgstr ""
+
+msgid "Not implemented!"
 msgstr ""
 
 msgid "Not now"
@@ -8214,6 +8235,9 @@ msgstr ""
 msgid "Resolved all discussions."
 msgstr ""
 
+msgid "Resolved by %{name}"
+msgstr ""
+
 msgid "Resolved by %{resolvedByName}"
 msgstr ""
 
@@ -8439,6 +8463,9 @@ msgid "Search files"
 msgstr ""
 
 msgid "Search for a group"
+msgstr ""
+
+msgid "Search for a user"
 msgstr ""
 
 msgid "Search for projects, issues, etc."
@@ -8933,6 +8960,9 @@ msgid "Something went wrong, unable to search projects"
 msgstr ""
 
 msgid "Something went wrong. Please try again."
+msgstr ""
+
+msgid "Something went wrong. Try again later."
 msgstr ""
 
 msgid "Sorry, no projects matched your search"
@@ -10742,6 +10772,21 @@ msgid "Users requesting access to"
 msgstr ""
 
 msgid "Users were successfully added."
+msgstr ""
+
+msgid "UsersSelect|%{name} + %{length} more"
+msgstr ""
+
+msgid "UsersSelect|Any User"
+msgstr ""
+
+msgid "UsersSelect|Assignee"
+msgstr ""
+
+msgid "UsersSelect|No assignee - %{openingTag} assign yourself %{closingTag}"
+msgstr ""
+
+msgid "UsersSelect|Unassigned"
 msgstr ""
 
 msgid "Using required encryption strategy when encrypted field is missing!"

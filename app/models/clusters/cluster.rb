@@ -5,8 +5,10 @@ module Clusters
     include Presentable
     include Gitlab::Utils::StrongMemoize
     include FromUnion
+    include ReactiveCaching
 
     self.table_name = 'clusters'
+    self.reactive_cache_key = -> (cluster) { [cluster.class.model_name.singular, cluster.id] }
 
     PROJECT_ONLY_APPLICATIONS = {
       Applications::Jupyter.application_name => Applications::Jupyter,
@@ -56,6 +58,8 @@ module Clusters
     validate :restrict_modification, on: :update
     validate :no_groups, unless: :group_type?
     validate :no_projects, unless: :project_type?
+
+    after_save :clear_reactive_cache!
 
     delegate :status, to: :provider, allow_nil: true
     delegate :status_reason, to: :provider, allow_nil: true
@@ -123,15 +127,19 @@ module Clusters
     end
 
     def status_name
-      if provider
-        provider.status_name
-      else
-        :created
+      provider&.status_name || connection_status.presence || :created
+    end
+
+    def connection_status
+      with_reactive_cache do |data|
+        data[:connection_status]
       end
     end
 
-    def created?
-      status_name == :created
+    def calculate_reactive_cache
+      return unless enabled?
+
+      { connection_status: retrieve_connection_status }
     end
 
     def applications
@@ -219,6 +227,51 @@ module Clusters
 
     def instance_domain
       @instance_domain ||= Gitlab::CurrentSettings.auto_devops_domain
+    end
+
+    def retrieve_connection_status
+      kubeclient.core_client.discover
+    rescue *Gitlab::Kubernetes::Errors::CONNECTION
+      :unreachable
+    rescue *Gitlab::Kubernetes::Errors::AUTHENTICATION
+      :authentication_failure
+    rescue Kubeclient::HttpError => e
+      kubeclient_error_status(e.message)
+    rescue => e
+      Gitlab::Sentry.track_acceptable_exception(e, extra: { cluster_id: id })
+
+      :unknown_failure
+    else
+      :connected
+    end
+
+    # KubeClient uses the same error class
+    # For connection errors (eg. timeout) and
+    # for Kubernetes errors.
+    def kubeclient_error_status(message)
+      if message&.match?(/timed out|timeout/i)
+        :unreachable
+      else
+        :authentication_failure
+      end
+    end
+
+    # To keep backward compatibility with AUTO_DEVOPS_DOMAIN
+    # environment variable, we need to ensure KUBE_INGRESS_BASE_DOMAIN
+    # is set if AUTO_DEVOPS_DOMAIN is set on any of the following options:
+    # ProjectAutoDevops#Domain, project variables or group variables,
+    # as the AUTO_DEVOPS_DOMAIN is needed for CI_ENVIRONMENT_URL
+    #
+    # This method should is scheduled to be removed on
+    # https://gitlab.com/gitlab-org/gitlab-ce/issues/56959
+    def legacy_auto_devops_domain
+      if project_type?
+        project&.auto_devops&.domain.presence ||
+          project.variables.find_by(key: 'AUTO_DEVOPS_DOMAIN')&.value.presence ||
+          project.group&.variables&.find_by(key: 'AUTO_DEVOPS_DOMAIN')&.value.presence
+      elsif group_type?
+        group.variables.find_by(key: 'AUTO_DEVOPS_DOMAIN')&.value.presence
+      end
     end
 
     def restrict_modification

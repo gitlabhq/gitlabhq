@@ -13,6 +13,7 @@ class Identity < ApplicationRecord
   before_save :ensure_normalized_extern_uid, if: :extern_uid_changed?
   after_destroy :clear_user_synced_attributes, if: :user_synced_attributes_metadata_from_provider?
 
+  scope :for_user, ->(user) { where(user: user) }
   scope :with_provider, ->(provider) { where(provider: provider) }
   scope :with_extern_uid, ->(provider, extern_uid) do
     iwhere(extern_uid: normalize_uid(provider, extern_uid)).with_provider(provider)
