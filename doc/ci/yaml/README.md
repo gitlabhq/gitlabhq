@@ -386,16 +386,11 @@ job:
     - branches@gitlab-org/gitlab-ce
   except:
     - master@gitlab-org/gitlab-ce
-    - release/.*@gitlab-org/gitlab-ce
+    - /^release/.*$/@gitlab-org/gitlab-ce
 ```
 
 The above example will run `job` for all branches on `gitlab-org/gitlab-ce`,
 except `master` and those with names prefixed with `release/`.
-
-NOTE: **Note:**
-Because `@` is used to denote the beginning of a ref's repository path,
-matching a ref name containing the `@` character in a regular expression
-requires the use of the hex character code match `\x40`.
 
 If a job does not have an `only` rule, `only: ['branches', 'tags']` is set by
 default. If it doesn't have an `except` rule, it is empty.
@@ -414,6 +409,28 @@ job:
   script: echo 'test'
   only: ['branches', 'tags']
 ```
+
+#### Regular expressions
+
+Because `@` is used to denote the beginning of a ref's repository path,
+matching a ref name containing the `@` character in a regular expression
+requires the use of the hex character code match `\x40`.
+
+Only the tag or branch name can be matched by a regular expression.
+The repository path, if given, is always matched literally.
+
+If a regular expression shall be used to match the tag or branch name,
+the entire ref name part of the pattern has to be a regular expression,
+and must be surrounded by `/`.
+(With regular expression flags appended after the closing `/`.)
+So `issue-/.*/` won't work to match all tag names or branch names
+that begin with `issue-`.
+
+TIP: **Tip**
+Use anchors `^` and `$` to avoid the regular expression
+matching only a substring of the tag name or branch name.
+For example, `/^issue-.*$/` is equivalent to `/^issue-/`,
+while just `/issue/` would also match a branch called `severe-issues`.
 
 ### Supported `only`/`except` regexp syntax
 
