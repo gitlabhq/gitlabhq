@@ -1,0 +1,5 @@
+---
+title: Protect Gitlab::HTTP against DNS rebinding attack
+merge_request:
+author:
+type: security

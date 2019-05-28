@@ -10,17 +10,18 @@
 #
 # This option will take precedence over the global setting.
 module Gitlab
-  class ProxyHTTPConnectionAdapter < HTTParty::ConnectionAdapter
+  class HTTPConnectionAdapter < HTTParty::ConnectionAdapter
     def connection
-      unless allow_local_requests?
-        begin
-          Gitlab::UrlBlocker.validate!(uri, allow_local_network: false)
-        rescue Gitlab::UrlBlocker::BlockedUrlError => e
-          raise Gitlab::HTTP::BlockedUrlError, "URL '#{uri}' is blocked: #{e.message}"
-        end
+      begin
+        @uri, hostname = Gitlab::UrlBlocker.validate!(uri, allow_local_network: allow_local_requests?,
+                                                           allow_localhost: allow_local_requests?)
+      rescue Gitlab::UrlBlocker::BlockedUrlError => e
+        raise Gitlab::HTTP::BlockedUrlError, "URL '#{uri}' is blocked: #{e.message}"
       end
 
-      super
+      super.tap do |http|
+        http.hostname_override = hostname if hostname
+      end
     end
 
     private

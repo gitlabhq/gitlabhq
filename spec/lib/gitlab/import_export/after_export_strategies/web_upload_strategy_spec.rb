@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Gitlab::ImportExport::AfterExportStrategies::WebUploadStrategy do
+  include StubRequests
+
   let(:example_url) { 'http://www.example.com' }
   let(:strategy) { subject.new(url: example_url, http_method: 'post') }
   let!(:project) { create(:project, :with_export) }
@@ -35,7 +37,7 @@ describe Gitlab::ImportExport::AfterExportStrategies::WebUploadStrategy do
 
     context 'when upload fails' do
       it 'stores the export error' do
-        stub_request(:post, example_url).to_return(status: [404, 'Page not found'])
+        stub_full_request(example_url, method: :post).to_return(status: [404, 'Page not found'])
 
         strategy.execute(user, project)
 
