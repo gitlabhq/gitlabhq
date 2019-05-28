@@ -5,7 +5,7 @@ module LabelsHelper
   include ActionView::Helpers::TagHelper
 
   def show_label_issuables_link?(label, issuables_type, current_user: nil, project: nil)
-    return true if label.is_a?(GroupLabel)
+    return true unless label.project_label?
     return true unless project
 
     project.feature_available?(issuables_type, current_user)
@@ -159,13 +159,6 @@ module LabelsHelper
     label.subscribed?(current_user, project) ? 'Unsubscribe' : 'Subscribe'
   end
 
-  def label_deletion_confirm_text(label)
-    case label
-    when GroupLabel then _('Remove this label? This will affect all projects within the group. Are you sure?')
-    when ProjectLabel then _('Remove this label? Are you sure?')
-    end
-  end
-
   def create_label_title(subject)
     case subject
     when Group
@@ -200,7 +193,7 @@ module LabelsHelper
   end
 
   def label_status_tooltip(label, status)
-    type = label.is_a?(ProjectLabel) ? 'project' : 'group'
+    type = label.project_label? ? 'project' : 'group'
     level = status.unsubscribed? ? type : status.sub('-level', '')
     action = status.unsubscribed? ? 'Subscribe' : 'Unsubscribe'
 
