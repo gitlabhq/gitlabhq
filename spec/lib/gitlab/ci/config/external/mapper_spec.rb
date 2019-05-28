@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Config::External::Mapper do
+  include StubRequests
+
   set(:project) { create(:project, :repository) }
   set(:user) { create(:user) }
 
@@ -18,7 +20,7 @@ describe Gitlab::Ci::Config::External::Mapper do
   end
 
   before do
-    WebMock.stub_request(:get, remote_url).to_return(body: file_content)
+    stub_full_request(remote_url).to_return(body: file_content)
   end
 
   describe '#process' do

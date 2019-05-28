@@ -4,6 +4,7 @@ require 'spec_helper'
 
 describe TeamcityService, :use_clean_rails_memory_store_caching do
   include ReactiveCachingHelpers
+  include StubRequests
 
   let(:teamcity_url) { 'http://gitlab.com/teamcity' }
 
@@ -212,7 +213,7 @@ describe TeamcityService, :use_clean_rails_memory_store_caching do
 
     body ||= %Q({"build":{"status":"#{build_status}","id":"666"}})
 
-    WebMock.stub_request(:get, teamcity_full_url).with(basic_auth: auth).to_return(
+    stub_full_request(teamcity_full_url).with(basic_auth: auth).to_return(
       status: status,
       headers: { 'Content-Type' => 'application/json' },
       body: body
