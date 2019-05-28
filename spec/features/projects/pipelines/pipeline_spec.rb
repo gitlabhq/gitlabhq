@@ -328,6 +328,12 @@ describe 'Pipeline', :js do
         expect(page).not_to have_link(pipeline.ref)
         expect(page).to have_content(pipeline.ref)
       end
+
+      it 'does not render render raw HTML to the pipeline ref' do
+        page.within '.pipeline-info' do
+          expect(page).not_to have_content('<span class="ref-name"')
+        end
+      end
     end
 
     context 'when pipeline is detached merge request pipeline' do
