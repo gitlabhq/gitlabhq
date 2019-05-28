@@ -53,7 +53,8 @@ class GraphqlController < ApplicationController
       {
         query: single_query_info[:query],
         variables: build_variables(single_query_info[:variables]),
-        operation_name: single_query_info[:operationName]
+        operation_name: single_query_info[:operationName],
+        context: context
       }
     end
   end

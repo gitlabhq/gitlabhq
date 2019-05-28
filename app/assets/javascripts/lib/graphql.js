@@ -1,6 +1,8 @@
 import { ApolloClient } from 'apollo-client';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { createUploadLink } from 'apollo-upload-client';
+import { ApolloLink } from 'apollo-link';
+import { BatchHttpLink } from 'apollo-link-batch-http';
 import csrf from '~/lib/utils/csrf';
 
 export default (resolvers = {}, config = {}) => {
@@ -11,13 +13,19 @@ export default (resolvers = {}, config = {}) => {
     uri = `${config.baseUrl}${uri}`.replace(/\/{3,}/g, '/');
   }
 
+  const httpOptions = {
+    uri,
+    headers: {
+      [csrf.headerKey]: csrf.token,
+    },
+  };
+
   return new ApolloClient({
-    link: createUploadLink({
-      uri,
-      headers: {
-        [csrf.headerKey]: csrf.token,
-      },
-    }),
+    link: ApolloLink.split(
+      operation => operation.getContext().hasUpload,
+      createUploadLink(httpOptions),
+      new BatchHttpLink(httpOptions),
+    ),
     cache: new InMemoryCache(config.cacheConfig),
     resolvers,
   });
