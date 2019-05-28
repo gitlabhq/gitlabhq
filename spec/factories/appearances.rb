@@ -15,6 +15,10 @@ FactoryBot.define do
     header_logo { fixture_file_upload('spec/fixtures/dk.png') }
   end
 
+  trait :with_favicon do
+    favicon { fixture_file_upload('spec/fixtures/dk.png') }
+  end
+
   trait :with_logos do
     with_logo
     with_header_logo

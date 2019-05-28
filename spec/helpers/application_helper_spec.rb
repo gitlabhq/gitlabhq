@@ -168,6 +168,21 @@ describe ApplicationHelper do
     end
   end
 
+  describe '#client_class_list' do
+    it 'returns string containing CSS classes representing client browser and platform' do
+      class_list = helper.client_class_list
+      expect(class_list).to eq('gl-browser-generic gl-platform-other')
+    end
+  end
+
+  describe '#client_js_flags' do
+    it 'returns map containing JS flags representing client browser and platform' do
+      flags_list = helper.client_js_flags
+      expect(flags_list[:isGeneric]).to eq(true)
+      expect(flags_list[:isOther]).to eq(true)
+    end
+  end
+
   describe '#autocomplete_data_sources' do
     let(:project) { create(:project) }
     let(:noteable_type) { Issue }

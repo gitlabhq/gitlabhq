@@ -178,6 +178,7 @@ describe('Issue model', () => {
       spyOn(Vue.http, 'patch').and.callFake((url, data) => {
         expect(data.issue.assignee_ids).toEqual([1]);
         done();
+        return Promise.resolve();
       });
 
       issue.update('url');
@@ -187,6 +188,7 @@ describe('Issue model', () => {
       spyOn(Vue.http, 'patch').and.callFake((url, data) => {
         expect(data.issue.assignee_ids).toEqual([0]);
         done();
+        return Promise.resolve();
       });
 
       issue.removeAllAssignees();

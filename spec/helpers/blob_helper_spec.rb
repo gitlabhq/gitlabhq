@@ -50,12 +50,20 @@ describe BlobHelper do
     end
 
     it 'returns a link with the proper route' do
+      stub_feature_flags(web_ide_default: false)
       link = edit_blob_button(project, 'master', 'README.md')
 
       expect(Capybara.string(link).find_link('Edit')[:href]).to eq("/#{project.full_path}/edit/master/README.md")
     end
 
+    it 'returns a link with a Web IDE route' do
+      link = edit_blob_button(project, 'master', 'README.md')
+
+      expect(Capybara.string(link).find_link('Edit')[:href]).to eq("/-/ide/project/#{project.full_path}/edit/master/-/README.md")
+    end
+
     it 'returns a link with the passed link_opts on the expected route' do
+      stub_feature_flags(web_ide_default: false)
       link = edit_blob_button(project, 'master', 'README.md', link_opts: { mr_id: 10 })
 
       expect(Capybara.string(link).find_link('Edit')[:href]).to eq("/#{project.full_path}/edit/master/README.md?mr_id=10")
@@ -221,6 +229,19 @@ describe BlobHelper do
       Rails.application.routes.default_url_options[:script_name] = "/gitlab"
 
       expect(helper.ide_edit_path(project, "master", "")).to eq("/gitlab/-/ide/project/#{project.namespace.path}/#{project.path}/edit/master")
+    end
+
+    it 'escapes special characters' do
+      Rails.application.routes.default_url_options[:script_name] = nil
+
+      expect(helper.ide_edit_path(project, "testing/#hashes", "readme.md#test")).to eq("/-/ide/project/#{project.namespace.path}/#{project.path}/edit/testing/#hashes/-/readme.md%23test")
+      expect(helper.ide_edit_path(project, "testing/#hashes", "src#/readme.md#test")).to eq("/-/ide/project/#{project.namespace.path}/#{project.path}/edit/testing/#hashes/-/src%23/readme.md%23test")
+    end
+
+    it 'does not escape "/" character' do
+      Rails.application.routes.default_url_options[:script_name] = nil
+
+      expect(helper.ide_edit_path(project, "testing/slashes", "readme.md/")).to eq("/-/ide/project/#{project.namespace.path}/#{project.path}/edit/testing/slashes/-/readme.md/")
     end
   end
 end

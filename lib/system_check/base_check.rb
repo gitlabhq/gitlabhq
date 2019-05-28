@@ -70,18 +70,14 @@ module SystemCheck
     # multiple reasons why a check can fail
     #
     # @param [String] reason to be displayed
-    def skip_reason=(reason)
-      @skip_reason = reason
-    end
+    attr_writer :skip_reason
 
     # Skip reason defined during runtime
     #
     # This value have precedence over the one defined in the subclass
     #
     # @return [String] the reason
-    def skip_reason
-      @skip_reason
-    end
+    attr_reader :skip_reason
 
     # Does the check support automatically repair routine?
     #
@@ -125,7 +121,7 @@ module SystemCheck
     #
     # @see #try_fixing_it
     # @see #fix_and_rerun
-    # @see #for_more_infromation
+    # @see #for_more_information
     def show_error
       raise NotImplementedError
     end

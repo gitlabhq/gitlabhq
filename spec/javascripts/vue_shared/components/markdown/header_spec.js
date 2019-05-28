@@ -98,7 +98,7 @@ describe('Markdown field header component', () => {
   it('renders suggestion template', () => {
     vm.lineContent = 'Some content';
 
-    expect(vm.mdSuggestion).toEqual('```suggestion\n{text}\n```');
+    expect(vm.mdSuggestion).toEqual('```suggestion:-0+0\n{text}\n```');
   });
 
   it('does not render suggestion button if `canSuggest` is set to false', () => {

@@ -4,6 +4,7 @@ import $ from 'jquery';
 import Api from './api';
 import { mergeUrlParams } from './lib/utils/url_utility';
 import { parseBoolean } from '~/lib/utils/common_utils';
+import { __ } from './locale';
 
 export default class NamespaceSelect {
   constructor(opts) {
@@ -29,7 +30,7 @@ export default class NamespaceSelect {
         return Api.namespaces(term, function(namespaces) {
           if (isFilter) {
             const anyNamespace = {
-              text: 'Any namespace',
+              text: __('Any namespace'),
               id: null,
             };
             namespaces.unshift(anyNamespace);

@@ -25,12 +25,12 @@ describe 'Database schema' do
     events: %w[target_id],
     forked_project_links: %w[forked_from_project_id],
     identities: %w[user_id],
-    issues: %w[last_edited_by_id],
+    issues: %w[last_edited_by_id state_id],
     keys: %w[user_id],
     label_links: %w[target_id],
     lfs_objects_projects: %w[lfs_object_id project_id],
     members: %w[source_id created_by_id],
-    merge_requests: %w[last_edited_by_id],
+    merge_requests: %w[last_edited_by_id state_id],
     namespaces: %w[owner_id parent_id],
     notes: %w[author_id commit_id noteable_id updated_by_id resolved_by_id discussion_id],
     notification_settings: %w[source_id],
@@ -64,12 +64,19 @@ describe 'Database schema' do
         let(:indexes) { connection.indexes(table) }
         let(:columns) { connection.columns(table) }
         let(:foreign_keys) { connection.foreign_keys(table) }
+        let(:primary_key_column) { connection.primary_key(table) }
 
         context 'all foreign keys' do
           # for index to be effective, the FK constraint has to be at first place
           it 'are indexed' do
             first_indexed_column = indexes.map(&:columns).map(&:first)
             foreign_keys_columns = foreign_keys.map(&:column)
+
+            # Add the primary key column to the list of indexed columns because
+            # postgres and mysql both automatically create an index on the primary
+            # key. Also, the rails connection.indexes() method does not return
+            # automatically generated indexes (like the primary key index).
+            first_indexed_column = first_indexed_column.push(primary_key_column)
 
             expect(first_indexed_column.uniq).to include(*foreign_keys_columns)
           end

@@ -4,6 +4,7 @@ import $ from 'jquery';
 import _ from 'underscore';
 import axios from './lib/utils/axios_utils';
 import Flash from './flash';
+import { __ } from './locale';
 
 export default {
   init({ container, form, issues, prefixId } = {}) {
@@ -32,7 +33,7 @@ export default {
 
   onFormSubmitFailure() {
     this.form.find('[type="submit"]').enable();
-    return new Flash('Issue update failed');
+    return new Flash(__('Issue update failed'));
   },
 
   getSelectedIssues() {
@@ -81,9 +82,6 @@ export default {
     const formData = {
       update: {
         state_event: this.form.find('input[name="update[state_event]"]').val(),
-        // For Merge Requests
-        assignee_id: this.form.find('input[name="update[assignee_id]"]').val(),
-        // For Issues
         assignee_ids: [this.form.find('input[name="update[assignee_ids][]"]').val()],
         milestone_id: this.form.find('input[name="update[milestone_id]"]').val(),
         issuable_ids: this.form.find('input[name="update[issuable_ids]"]').val(),

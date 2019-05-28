@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe HelpController do
@@ -37,13 +39,53 @@ describe HelpController do
         expect(assigns[:help_index]).to eq '[external](https://some.external.link)'
       end
     end
+
+    context 'when relative url with external on same line' do
+      it 'prefix it with /help/' do
+        stub_readme("[API](api/README.md) [external](https://some.external.link)")
+
+        get :index
+
+        expect(assigns[:help_index]).to eq '[API](/help/api/README.md) [external](https://some.external.link)'
+      end
+    end
+
+    context 'when relative url with http:// in query' do
+      it 'prefix it with /help/' do
+        stub_readme("[API](api/README.md?go=https://example.com/)")
+
+        get :index
+
+        expect(assigns[:help_index]).to eq '[API](/help/api/README.md?go=https://example.com/)'
+      end
+    end
+
+    context 'when mailto URL' do
+      it 'do not change it' do
+        stub_readme("[report bug](mailto:bugs@example.com)")
+
+        get :index
+
+        expect(assigns[:help_index]).to eq '[report bug](mailto:bugs@example.com)'
+      end
+    end
+
+    context 'when protocol-relative link' do
+      it 'do not change it' do
+        stub_readme("[protocol-relative](//example.com)")
+
+        get :index
+
+        expect(assigns[:help_index]).to eq '[protocol-relative](//example.com)'
+      end
+    end
   end
 
   describe 'GET #show' do
     context 'for Markdown formats' do
       context 'when requested file exists' do
         before do
-          get :show, path: 'ssh/README', format: :md
+          get :show, params: { path: 'ssh/README' }, format: :md
         end
 
         it 'assigns to @markdown' do
@@ -58,7 +100,7 @@ describe HelpController do
 
       context 'when requested file is missing' do
         it 'renders not found' do
-          get :show, path: 'foo/bar', format: :md
+          get :show, params: { path: 'foo/bar' }, format: :md
           expect(response).to be_not_found
         end
       end
@@ -68,7 +110,9 @@ describe HelpController do
       context 'when requested file exists' do
         it 'renders the raw file' do
           get :show,
-              path: 'user/project/img/labels_default',
+              params: {
+                path: 'user/project/img/labels_default'
+              },
               format: :png
           expect(response).to be_success
           expect(response.content_type).to eq 'image/png'
@@ -79,7 +123,9 @@ describe HelpController do
       context 'when requested file is missing' do
         it 'renders not found' do
           get :show,
-              path: 'foo/bar',
+              params: {
+                path: 'foo/bar'
+              },
               format: :png
           expect(response).to be_not_found
         end
@@ -89,7 +135,9 @@ describe HelpController do
     context 'for other formats' do
       it 'always renders not found' do
         get :show,
-            path: 'ssh/README',
+            params: {
+              path: 'ssh/README'
+            },
             format: :foo
         expect(response).to be_not_found
       end

@@ -38,8 +38,8 @@ export default {
     },
   },
   computed: {
-    ...mapState('commit', ['commitAction']),
-    ...mapGetters('commit', ['newBranchName']),
+    ...mapState('commit', ['commitAction', 'newBranchName']),
+    ...mapGetters('commit', ['placeholderBranchName']),
     tooltipTitle() {
       return this.disabled ? this.title : '';
     },
@@ -65,7 +65,7 @@ export default {
         :disabled="disabled"
         type="radio"
         name="commit-action"
-        @change="updateCommitAction($event.target.value);"
+        @change="updateCommitAction($event.target.value)"
       />
       <span class="prepend-left-10">
         <span v-if="label" class="ide-radio-label"> {{ label }} </span> <slot v-else></slot>
@@ -73,10 +73,11 @@ export default {
     </label>
     <div v-if="commitAction === value && showInput" class="ide-commit-new-branch">
       <input
-        :placeholder="newBranchName"
+        :placeholder="placeholderBranchName"
+        :value="newBranchName"
         type="text"
         class="form-control monospace"
-        @input="updateBranchName($event.target.value);"
+        @input="updateBranchName($event.target.value)"
       />
     </div>
   </fieldset>

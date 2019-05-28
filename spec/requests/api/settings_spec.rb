@@ -42,30 +42,36 @@ describe API::Settings, 'Settings' do
 
       it "updates application settings" do
         put api("/application/settings", admin),
-          default_projects_limit: 3,
-          password_authentication_enabled_for_web: false,
-          repository_storages: ['custom'],
-          plantuml_enabled: true,
-          plantuml_url: 'http://plantuml.example.com',
-          default_snippet_visibility: 'internal',
-          restricted_visibility_levels: ['public'],
-          default_artifacts_expire_in: '2 days',
-          help_page_text: 'custom help text',
-          help_page_hide_commercial_content: true,
-          help_page_support_url: 'http://example.com/help',
-          project_export_enabled: false,
-          rsa_key_restriction: ApplicationSetting::FORBIDDEN_KEY_VALUE,
-          dsa_key_restriction: 2048,
-          ecdsa_key_restriction: 384,
-          ed25519_key_restriction: 256,
-          enforce_terms: true,
-          terms: 'Hello world!',
-          performance_bar_allowed_group_path: group.full_path,
-          instance_statistics_visibility_private: true,
-          diff_max_patch_bytes: 150_000
+          params: {
+            default_projects_limit: 3,
+            default_project_creation: 2,
+            password_authentication_enabled_for_web: false,
+            repository_storages: ['custom'],
+            plantuml_enabled: true,
+            plantuml_url: 'http://plantuml.example.com',
+            default_snippet_visibility: 'internal',
+            restricted_visibility_levels: ['public'],
+            default_artifacts_expire_in: '2 days',
+            help_page_text: 'custom help text',
+            help_page_hide_commercial_content: true,
+            help_page_support_url: 'http://example.com/help',
+            project_export_enabled: false,
+            rsa_key_restriction: ApplicationSetting::FORBIDDEN_KEY_VALUE,
+            dsa_key_restriction: 2048,
+            ecdsa_key_restriction: 384,
+            ed25519_key_restriction: 256,
+            enforce_terms: true,
+            terms: 'Hello world!',
+            performance_bar_allowed_group_path: group.full_path,
+            instance_statistics_visibility_private: true,
+            diff_max_patch_bytes: 150_000,
+            default_branch_protection: ::Gitlab::Access::PROTECTION_DEV_CAN_MERGE,
+            local_markdown_version: 3
+          }
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['default_projects_limit']).to eq(3)
+        expect(json_response['default_project_creation']).to eq(::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS)
         expect(json_response['password_authentication_enabled_for_web']).to be_falsey
         expect(json_response['repository_storages']).to eq(['custom'])
         expect(json_response['plantuml_enabled']).to be_truthy
@@ -86,12 +92,14 @@ describe API::Settings, 'Settings' do
         expect(json_response['performance_bar_allowed_group_id']).to eq(group.id)
         expect(json_response['instance_statistics_visibility_private']).to be(true)
         expect(json_response['diff_max_patch_bytes']).to eq(150_000)
+        expect(json_response['default_branch_protection']).to eq(Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
+        expect(json_response['local_markdown_version']).to eq(3)
       end
     end
 
     it "supports legacy performance_bar_allowed_group_id" do
       put api("/application/settings", admin),
-        performance_bar_allowed_group_id: group.full_path
+        params: { performance_bar_allowed_group_id: group.full_path }
 
       expect(response).to have_gitlab_http_status(200)
       expect(json_response['performance_bar_allowed_group_id']).to eq(group.id)
@@ -99,16 +107,51 @@ describe API::Settings, 'Settings' do
 
     it "supports legacy performance_bar_enabled" do
       put api("/application/settings", admin),
-        performance_bar_enabled: false,
-        performance_bar_allowed_group_id: group.full_path
+        params: {
+          performance_bar_enabled: false,
+          performance_bar_allowed_group_id: group.full_path
+        }
 
       expect(response).to have_gitlab_http_status(200)
       expect(json_response['performance_bar_allowed_group_id']).to be_nil
     end
 
+    context 'external policy classification settings' do
+      let(:settings) do
+        {
+          external_authorization_service_enabled: true,
+          external_authorization_service_url: 'https://custom.service/',
+          external_authorization_service_default_label: 'default',
+          external_authorization_service_timeout: 9.99,
+          external_auth_client_cert: File.read('spec/fixtures/passphrase_x509_certificate.crt'),
+          external_auth_client_key: File.read('spec/fixtures/passphrase_x509_certificate_pk.key'),
+          external_auth_client_key_pass: "5iveL!fe"
+        }
+      end
+      let(:attribute_names) { settings.keys.map(&:to_s) }
+
+      it 'includes the attributes in the API' do
+        get api("/application/settings", admin)
+
+        expect(response).to have_gitlab_http_status(200)
+        attribute_names.each do |attribute|
+          expect(json_response.keys).to include(attribute)
+        end
+      end
+
+      it 'allows updating the settings' do
+        put api("/application/settings", admin), params: settings
+
+        expect(response).to have_gitlab_http_status(200)
+        settings.each do |attribute, value|
+          expect(ApplicationSetting.current.public_send(attribute)).to eq(value)
+        end
+      end
+    end
+
     context "missing plantuml_url value when plantuml_enabled is true" do
       it "returns a blank parameter error message" do
-        put api("/application/settings", admin), plantuml_enabled: true
+        put api("/application/settings", admin), params: { plantuml_enabled: true }
 
         expect(response).to have_gitlab_http_status(400)
         expect(json_response['error']).to eq('plantuml_url is missing')

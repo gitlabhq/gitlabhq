@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require Rails.root.join('config', 'object_store_settings.rb')
 
 describe ObjectStoreSettings do
   describe '.parse' do
-    it 'should set correct default values' do
+    it 'sets correct default values' do
       settings = described_class.parse(nil)
 
       expect(settings['enabled']).to be false

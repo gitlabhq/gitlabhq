@@ -12,22 +12,27 @@ module Projects
   #
   #     Projects::AfterRenameService.new(project).execute
   class AfterRenameService
-    attr_reader :project, :full_path_before, :full_path_after, :path_before
+    # @return [String] The Project being renamed.
+    attr_reader :project
+
+    # @return [String] The path slug the project was using, before the rename took place.
+    attr_reader :path_before
+
+    # @return [String] The full path of the namespace + project, before the rename took place.
+    attr_reader :full_path_before
+
+    # @return [String] The full path of the namespace + project, after the rename took place.
+    attr_reader :full_path_after
 
     RenameFailedError = Class.new(StandardError)
 
-    # @param [Project] project The Project of the repository to rename.
-    def initialize(project)
+    # @param [Project] project The Project being renamed.
+    # @param [String] path_before The path slug the project was using, before the rename took place.
+    def initialize(project, path_before:, full_path_before:)
       @project = project
-
-      # The full path of the namespace + project, before the rename took place.
-      @full_path_before = project.full_path_was
-
-      # The full path of the namespace + project, after the rename took place.
-      @full_path_after = project.build_full_path
-
-      # The path of just the project, before the rename took place.
-      @path_before = project.path_was
+      @path_before = path_before
+      @full_path_before = full_path_before
+      @full_path_after = project.full_path
     end
 
     def execute
@@ -57,11 +62,11 @@ module Projects
     def rename_or_migrate_repository!
       success =
         if migrate_to_hashed_storage?
-          ::Projects::HashedStorageMigrationService
+          ::Projects::HashedStorage::MigrationService
             .new(project, full_path_before)
             .execute
         else
-          project.storage.rename_repo
+          project.storage.rename_repo(old_full_path: full_path_before, new_full_path: full_path_after)
         end
 
       rename_failed! unless success
@@ -81,6 +86,7 @@ module Projects
     def update_repository_configuration
       project.reload_repository!
       project.write_repository_config
+      project.track_project_repository
     end
 
     def rename_transferred_documents

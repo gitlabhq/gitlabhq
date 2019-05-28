@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Create' do
+  # Git protocol v2 is temporarily disabled
+  # https://gitlab.com/gitlab-org/gitlab-ce/issues/55769 (confidential)
+  context 'Create', :quarantine do
     describe 'Push over SSH using Git protocol version 2', :requires_git_protocol_v2 do
       # Note: If you run this test against GDK make sure you've enabled sshd and
       # enabled setting the Git protocol by adding `AcceptEnv GIT_PROTOCOL` to
@@ -29,7 +31,7 @@ module QA
 
         # Remove the SSH key
         login
-        Page::Main::Menu.perform(&:go_to_profile_settings)
+        Page::Main::Menu.perform(&:click_settings_link)
         Page::Profile::Menu.perform(&:click_ssh_keys)
         Page::Profile::SSHKeys.perform do |ssh_keys|
           ssh_keys.remove_key(key_title)
@@ -70,7 +72,7 @@ module QA
         end
 
         project.visit!
-        Page::Project::Show.perform(&:wait_for_push)
+        project.wait_for_push_new_branch
 
         # Check that the push worked
         expect(page).to have_content(file_name)

@@ -7,7 +7,7 @@ describe MergeRequestTargetProjectFinder do
   subject(:finder) { described_class.new(current_user: user, source_project: forked_project) }
 
   shared_examples 'finding related projects' do
-    it 'finds sibling projects and base project'  do
+    it 'finds sibling projects and base project' do
       other_fork
 
       expect(finder.execute).to contain_exactly(base_project, other_fork, forked_project)

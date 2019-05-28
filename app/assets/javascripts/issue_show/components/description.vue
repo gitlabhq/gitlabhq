@@ -1,5 +1,7 @@
 <script>
 import $ from 'jquery';
+import { s__, sprintf } from '~/locale';
+import createFlash from '~/flash';
 import animateMixin from '../mixins/animate';
 import TaskList from '../../task_list';
 import recaptchaModalImplementor from '../../vue_shared/mixins/recaptcha_modal_implementor';
@@ -35,6 +37,11 @@ export default {
       required: false,
       default: null,
     },
+    lockVersion: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
   },
   data() {
     return {
@@ -67,8 +74,10 @@ export default {
         new TaskList({
           dataType: this.issuableType,
           fieldName: 'description',
+          lockVersion: this.lockVersion,
           selector: '.detail-page-description',
           onSuccess: this.taskListUpdateSuccess.bind(this),
+          onError: this.taskListUpdateError.bind(this),
         });
       }
     },
@@ -80,6 +89,21 @@ export default {
       } catch (error) {
         if (error && error.name === 'SpamError') this.openRecaptcha();
       }
+    },
+
+    taskListUpdateError() {
+      createFlash(
+        sprintf(
+          s__(
+            'Someone edited this %{issueType} at the same time you did. The description has been updated and you will need to make your changes again.',
+          ),
+          {
+            issueType: this.issuableType,
+          },
+        ),
+      );
+
+      this.$emit('taskListUpdateFailed');
     },
 
     updateTaskStatusText() {
@@ -116,14 +140,16 @@ export default {
         'issue-realtime-pre-pulse': preAnimation,
         'issue-realtime-trigger-pulse': pulseAnimation,
       }"
-      class="wiki"
+      class="md"
       v-html="descriptionHtml"
     ></div>
     <textarea
       v-if="descriptionText"
+      ref="textarea"
       v-model="descriptionText"
       :data-update-url="updateUrl"
       class="hidden js-task-list-field"
+      dir="auto"
     >
     </textarea>
 

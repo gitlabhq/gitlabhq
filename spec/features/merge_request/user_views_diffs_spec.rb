@@ -23,6 +23,8 @@ describe 'User views diffs', :js do
   end
 
   it 'shows diffs' do
+    find('.js-show-diff-settings').click
+
     expect(page).to have_css('.tab-content #diffs.active')
     expect(page).to have_css('#parallel-diff-btn', count: 1)
     expect(page).to have_css('#inline-diff-btn', count: 1)
@@ -32,12 +34,24 @@ describe 'User views diffs', :js do
     expect(page).not_to have_selector('.mr-loading-status .loading', visible: true)
   end
 
+  it 'expands all diffs' do
+    first('#a5cc2925ca8258af241be7e5b0381edf30266302 .js-file-title').click
+
+    expect(page).to have_button('Expand all')
+
+    click_button 'Expand all'
+
+    expect(page).not_to have_button('Expand all')
+  end
+
   context 'when in the inline view' do
     include_examples 'unfold diffs'
   end
 
   context 'when in the side-by-side view' do
     before do
+      find('.js-show-diff-settings').click
+
       click_button 'Side-by-side'
 
       wait_for_requests

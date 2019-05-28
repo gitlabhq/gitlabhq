@@ -1,11 +1,15 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Groups::SharedProjectsController do
   def get_shared_projects(params = {})
-    get :index, params.reverse_merge(format: :json, group_id: group.full_path)
+    get :index, params: params.reverse_merge(format: :json, group_id: group.full_path)
   end
 
   def share_project(project)
+    group.add_developer(user)
+
     Projects::GroupLinks::CreateService.new(
       project,
       user,

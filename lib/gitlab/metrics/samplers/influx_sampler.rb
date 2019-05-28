@@ -10,7 +10,7 @@ module Gitlab
       # statistics, etc.
       class InfluxSampler < BaseSampler
         # interval - The sampling interval in seconds.
-        def initialize(interval = Metrics.settings[:sample_interval])
+        def initialize(interval = ::Gitlab::Metrics.settings[:sample_interval])
           super(interval)
           @last_step = nil
 
@@ -32,7 +32,7 @@ module Gitlab
         end
 
         def flush
-          Metrics.submit_metrics(@metrics.map(&:to_hash))
+          ::Gitlab::Metrics.submit_metrics(@metrics.map(&:to_hash))
         end
 
         def sample_memory_usage

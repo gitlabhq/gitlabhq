@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Generated HTML is transformed back to GFM by app/assets/javascripts/behaviors/markdown/nodes/emoji.js
 module Banzai
   module Filter
     # HTML filter that replaces :emoji: and unicode with images.

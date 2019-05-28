@@ -192,7 +192,7 @@ describe Gitlab::BareRepositoryImport::Importer, :seed_helper do
     let(:project_path) { 'a-group/a-sub-group/a-project' }
 
     before do
-      expect(Group).to receive(:supports_nested_groups?) { false }
+      expect(Group).to receive(:supports_nested_objects?) { false }
     end
 
     describe '#create_project_if_needed' do

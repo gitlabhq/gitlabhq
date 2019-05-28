@@ -5,12 +5,6 @@ require 'rails/all'
 Bundler.require(:default, Rails.env)
 
 module Gitlab
-  # This method is used for smooth upgrading from the current Rails 4.x to Rails 5.0.
-  # https://gitlab.com/gitlab-org/gitlab-ce/issues/14286
-  def self.rails5?
-    true
-  end
-
   class Application < Rails::Application
     require_dependency Rails.root.join('lib/gitlab/redis/wrapper')
     require_dependency Rails.root.join('lib/gitlab/redis/cache')
@@ -100,10 +94,11 @@ module Gitlab
     # - Webhook URLs (:hook)
     # - Sentry DSN (:sentry_dsn)
     # - File content from Web Editor (:content)
+    # - Jira shared secret (:sharedSecret)
     #
     # NOTE: It is **IMPORTANT** to also update gitlab-workhorse's filter when adding parameters here to not
     #       introduce another security vulnerability: https://gitlab.com/gitlab-org/gitlab-workhorse/issues/182
-    config.filter_parameters += [/token$/, /password/, /secret/, /key$/]
+    config.filter_parameters += [/token$/, /password/, /secret/, /key$/, /^note$/, /^text$/]
     config.filter_parameters += %i(
       certificate
       encrypted_key
@@ -114,6 +109,7 @@ module Gitlab
       trace
       variables
       content
+      sharedSecret
     )
 
     # Enable escaping HTML in JSON.
@@ -153,6 +149,8 @@ module Gitlab
     config.assets.precompile << "errors.css"
     config.assets.precompile << "csslab.css"
 
+    config.assets.precompile << "highlight/themes/*.css"
+
     # Import gitlab-svgs directly from vendored directory
     config.assets.paths << "#{config.root}/node_modules/@gitlab/svgs/dist"
     config.assets.precompile << "icons.svg"
@@ -165,8 +163,6 @@ module Gitlab
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
-
-    config.action_view.sanitized_allowed_protocols = %w(smb)
 
     # Nokogiri is significantly faster and uses less memory than REXML
     ActiveSupport::XmlMini.backend = 'Nokogiri'

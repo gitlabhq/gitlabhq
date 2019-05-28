@@ -10,5 +10,19 @@ describe Banzai::Pipeline::EmailPipeline do
       expect(described_class.filters).not_to be_empty
       expect(described_class.filters).not_to include(Banzai::Filter::ImageLazyLoadFilter)
     end
+
+    it 'shows punycode for autolinks' do
+      examples = %W[
+        http://one😄two.com
+        http://\u0261itlab.com
+      ]
+
+      examples.each do |markdown|
+        result = described_class.call(markdown, project: nil)[:output]
+        link   = result.css('a').first
+
+        expect(link.content).to include('http://xn--')
+      end
+    end
   end
 end

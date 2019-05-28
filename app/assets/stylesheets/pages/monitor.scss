@@ -1,0 +1,5 @@
+.chart-tooltip > .popover {
+  min-width: 0;
+  width: max-content;
+  max-width: $chart-tooltip-max-width;
+}

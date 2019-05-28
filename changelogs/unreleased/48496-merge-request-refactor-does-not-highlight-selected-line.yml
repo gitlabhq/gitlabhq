@@ -1,5 +1,0 @@
----
-title: When user clicks linenumber in MR changes, highlight that line
-merge_request:
-author:
-type: fixed

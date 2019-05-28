@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class WebHook < ActiveRecord::Base
+class WebHook < ApplicationRecord
   include Sortable
 
   attr_encrypted :token,

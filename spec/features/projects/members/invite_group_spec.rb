@@ -27,6 +27,7 @@ describe 'Project > Members > Invite group', :js do
 
       before do
         project.add_maintainer(maintainer)
+        group_to_share_with.add_guest(maintainer)
         sign_in(maintainer)
       end
 
@@ -112,6 +113,7 @@ describe 'Project > Members > Invite group', :js do
 
     before do
       project.add_maintainer(maintainer)
+      group.add_guest(maintainer)
       sign_in(maintainer)
 
       visit project_settings_members_path(project)
@@ -157,7 +159,7 @@ describe 'Project > Members > Invite group', :js do
         open_select2 '#link_group_id'
       end
 
-      it 'should infinitely scroll' do
+      it 'infinitely scrolls' do
         expect(find('.select2-drop .select2-results')).to have_selector('.select2-result', count: 1)
 
         scroll_select2_to_bottom('.select2-drop .select2-results:visible')

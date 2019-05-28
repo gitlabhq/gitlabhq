@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Lfs::UnlockFileService do
@@ -62,7 +64,7 @@ describe Lfs::UnlockFileService do
 
       context 'when forced' do
         let(:developer) { create(:user) }
-        let(:maintainer)    { create(:user) }
+        let(:maintainer) { create(:user) }
 
         before do
           project.add_developer(developer)

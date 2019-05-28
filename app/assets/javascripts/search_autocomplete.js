@@ -2,7 +2,7 @@
 
 import $ from 'jquery';
 import { escape, throttle } from 'underscore';
-import { s__, sprintf } from '~/locale';
+import { s__, __, sprintf } from '~/locale';
 import { getIdenticonBackgroundClass, getIdenticonTitle } from '~/helpers/avatar_helper';
 import axios from './lib/utils/axios_utils';
 import DropdownUtils from './filtered_search/dropdown_utils';
@@ -407,6 +407,7 @@ export class SearchAutocomplete {
     if (this.searchInput.val() === '') {
       return this.restoreOriginalState();
     }
+    this.dropdownMenu.removeClass('show');
   }
 
   restoreOriginalState() {
@@ -439,7 +440,7 @@ export class SearchAutocomplete {
 
   restoreMenu() {
     var html;
-    html = '<ul><li class="dropdown-menu-empty-item"><a>Loading...</a></li></ul>';
+    html = `<ul><li class="dropdown-menu-empty-item"><a>${__('Loading...')}</a></li></ul>`;
     return this.dropdownContent.html(html);
   }
 

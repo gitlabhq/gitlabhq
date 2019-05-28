@@ -5,8 +5,9 @@
 - page_title "#{@merge_request.title} (#{@merge_request.to_reference})", "Merge Requests"
 - page_description @merge_request.description
 - page_card_attributes @merge_request.card_attributes
+- suggest_changes_help_path = help_page_path('user/discussions/index.md', anchor: 'suggest-changes')
 
-.merge-request{ data: { mr_action: j(params[:tab].presence || 'show'), url: merge_request_path(@merge_request, format: :json), project_path: project_path(@merge_request.project) } }
+.merge-request{ data: { mr_action: j(params[:tab].presence || 'show'), url: merge_request_path(@merge_request, format: :json), project_path: project_path(@merge_request.project), lock_version: @merge_request.lock_version } }
   = render "projects/merge_requests/mr_title"
 
   .merge-request-details.issuable-details{ data: { id: @merge_request.project.id } }
@@ -36,21 +37,21 @@
           %ul.merge-request-tabs.nav-tabs.nav.nav-links.scrolling-tabs
             %li.notes-tab.qa-notes-tab
               = tab_link_for @merge_request, :show, force_link: @commit.present? do
-                Discussion
+                = _("Discussion")
                 %span.badge.badge-pill= @merge_request.related_notes.user.count
             - if @merge_request.source_project
               %li.commits-tab
                 = tab_link_for @merge_request, :commits do
-                  Commits
+                  = _("Commits")
                   %span.badge.badge-pill= @commits_count
             - if @pipelines.any?
               %li.pipelines-tab
                 = tab_link_for @merge_request, :pipelines do
-                  Pipelines
+                  = _("Pipelines")
                   %span.badge.badge-pill.js-pipelines-mr-count= @pipelines.size
             %li.diffs-tab.qa-diffs-tab
               = tab_link_for @merge_request, :diffs do
-                Changes
+                = _("Changes")
                 %span.badge.badge-pill= @merge_request.diff_size
         .d-inline-flex.flex-wrap
           #js-vue-discussion-filter{ data: { default_filter: current_user&.notes_filter_for(@merge_request),
@@ -58,6 +59,7 @@
           #js-vue-discussion-counter
 
     .tab-content#diff-notes-app
+      #js-diff-file-finder
       #notes.notes.tab-pane.voting_notes
         .row
           %section.col-md-12
@@ -67,7 +69,7 @@
                 noteable_data: serialize_issuable(@merge_request),
                 noteable_type: 'MergeRequest',
                 target_type: 'merge_request',
-                help_page_path: nil,
+                help_page_path: suggest_changes_help_path,
                 current_user_data: UserSerializer.new(project: @project).represent(current_user, {}, MergeRequestUserEntity).to_json} }
 
       #commits.commits.tab-pane
@@ -77,15 +79,17 @@
           = render 'projects/commit/pipelines_list', disable_initialization: true, endpoint: pipelines_project_merge_request_path(@project, @merge_request)
       #js-diffs-app.diffs.tab-pane{ data: { "is-locked" => @merge_request.discussion_locked?,
         endpoint: diffs_project_merge_request_path(@project, @merge_request, 'json', request.query_parameters),
-        help_page_path: nil,
+        help_page_path: suggest_changes_help_path,
         current_user_data: UserSerializer.new(project: @project).represent(current_user, {}, MergeRequestUserEntity).to_json,
         project_path: project_path(@merge_request.project),
-        changes_empty_state_illustration: image_path('illustrations/merge_request_changes_empty.svg') } }
+        changes_empty_state_illustration: image_path('illustrations/merge_request_changes_empty.svg'),
+        is_fluid_layout: fluid_layout.to_s } }
 
     .mr-loading-status
       = spinner
 
-= render 'shared/issuable/sidebar', issuable: @merge_request
+= render 'shared/issuable/sidebar', issuable_sidebar: @issuable_sidebar, assignees: @merge_request.assignees
+
 - if @merge_request.can_be_reverted?(current_user)
   = render "projects/commit/change", type: 'revert', commit: @merge_request.merge_commit, title: @merge_request.title
 - if @merge_request.can_be_cherry_picked?

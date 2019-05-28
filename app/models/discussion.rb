@@ -116,6 +116,10 @@ class Discussion
     false
   end
 
+  def can_convert_to_discussion?
+    false
+  end
+
   def new_discussion?
     notes.length == 1
   end

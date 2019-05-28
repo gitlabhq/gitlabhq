@@ -18,7 +18,6 @@ module Gitlab
           end
 
           def details_path
-            raise NotImplementedError
           end
         end
       end

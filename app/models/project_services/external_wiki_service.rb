@@ -6,11 +6,11 @@ class ExternalWikiService < Service
   validates :external_wiki_url, presence: true, public_url: true, if: :activated?
 
   def title
-    'External Wiki'
+    s_('ExternalWikiService|External Wiki')
   end
 
   def description
-    'Replaces the link to the internal wiki with a link to an external wiki.'
+    s_('ExternalWikiService|Replaces the link to the internal wiki with a link to an external wiki.')
   end
 
   def self.to_param
@@ -19,7 +19,7 @@ class ExternalWikiService < Service
 
   def fields
     [
-      { type: 'text', name: 'external_wiki_url', placeholder: 'The URL of the external Wiki', required: true }
+      { type: 'text', name: 'external_wiki_url', placeholder: s_('ExternalWikiService|The URL of the external Wiki'), required: true }
     ]
   end
 

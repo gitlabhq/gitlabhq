@@ -4,6 +4,7 @@ class Notify < BaseMailer
   include ActionDispatch::Routing::PolymorphicRoutes
   include GitlabRoutingHelper
   include EmailsHelper
+  include IssuablesHelper
 
   include Emails::Issues
   include Emails::MergeRequests
@@ -16,6 +17,7 @@ class Notify < BaseMailer
   include Emails::AutoDevops
   include Emails::RemoteMirrors
 
+  helper MilestonesHelper
   helper MergeRequestsHelper
   helper DiffHelper
   helper BlobHelper
@@ -23,6 +25,7 @@ class Notify < BaseMailer
   helper MembersHelper
   helper AvatarsHelper
   helper GitlabRoutingHelper
+  helper IssuablesHelper
 
   def test_email(recipient_email, subject, body)
     mail(to: recipient_email,

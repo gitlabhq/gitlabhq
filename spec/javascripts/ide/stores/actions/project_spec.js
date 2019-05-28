@@ -249,6 +249,7 @@ describe('IDE store project actions', () => {
             ['setCurrentBranchId', branch.branchId],
             ['getBranchData', branch],
             ['getFiles', branch],
+            ['getMergeRequestsForBranch', branch],
           ]);
         })
         .then(done)
@@ -274,6 +275,23 @@ describe('IDE store project actions', () => {
             'handleTreeEntryAction',
             jasmine.anything(),
           );
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+
+    it('creates a new file supplied via URL if the file does not exist yet', done => {
+      openBranch(store, { ...branch, basePath: 'not-existent.md' })
+        .then(() => {
+          expect(store.dispatch).not.toHaveBeenCalledWith(
+            'handleTreeEntryAction',
+            jasmine.anything(),
+          );
+
+          expect(store.dispatch).toHaveBeenCalledWith('createTempEntry', {
+            name: 'not-existent.md',
+            type: 'blob',
+          });
         })
         .then(done)
         .catch(done.fail);

@@ -625,9 +625,9 @@ This is a bit of a difficult question to answer, because the definition of "bad"
 is relative to the problem you are trying to solve. However, some patterns are
 best avoided in most cases, such as:
 
-* Sequential scans on large tables
-* Filters that remove a lot of rows
-* Performing a certain step (e.g. an index scan) that requires _a lot_ of
+- Sequential scans on large tables
+- Filters that remove a lot of rows
+- Performing a certain step (e.g. an index scan) that requires _a lot_ of
   buffers (e.g. more than 512 MB for GitLab.com).
 
 As a general guideline, aim for a query that:
@@ -650,8 +650,8 @@ different queries. The only _rule_ is that you _must always measure_ your query
 (preferably using a production-like database) using `EXPLAIN (ANALYZE, BUFFERS)`
 and related tools such as:
 
-* <https://explain.depesz.com/>
-* <http://tatiyants.com/postgres-query-plan-visualization/>
+- <https://explain.depesz.com/>
+- <http://tatiyants.com/postgres-query-plan-visualization/>
 
 GitLab employees can also use our chatops solution, available in Slack using the
 `/chatops` slash command. You can use chatops to get a query plan by running the

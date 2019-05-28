@@ -1,0 +1,5 @@
+---
+title: "Fix 500 error when accessing charts with an anonymous user"
+merge_request: 28091
+author: Diego Silva
+type: fixed

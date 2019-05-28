@@ -16,13 +16,11 @@ module PreviewMarkdown
       else {}
       end
 
-    markdown_params[:markdown_engine] = result[:markdown_engine]
-
     render json: {
       body: view_context.markdown(result[:text], markdown_params),
       references: {
         users: result[:users],
-        suggestions: result[:suggestions],
+        suggestions: SuggestionSerializer.new.represent_diff(result[:suggestions]),
         commands: view_context.markdown(result[:commands])
       }
     }

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe HipchatService do
@@ -96,12 +98,11 @@ describe HipchatService do
     context 'tag_push events' do
       let(:push_sample_data) do
         Gitlab::DataBuilder::Push.build(
-          project,
-          user,
-          Gitlab::Git::BLANK_SHA,
-          '1' * 40,
-          'refs/tags/test',
-          [])
+          project: project,
+          user: user,
+          oldrev: Gitlab::Git::BLANK_SHA,
+          newrev: '1' * 40,
+          ref: 'refs/tags/test')
       end
 
       it "calls Hipchat API for tag push events" do
@@ -391,7 +392,7 @@ describe HipchatService do
   context 'with UrlBlocker' do
     let(:user)    { create(:user) }
     let(:project) { create(:project, :repository) }
-    let(:hipchat) { described_class.new(project: project) }
+    let(:hipchat) { create(:hipchat_service, project: project, properties: { room: 'test' }) }
     let(:push_sample_data) { Gitlab::DataBuilder::Push.build_sample(project, user) }
 
     describe '#execute' do

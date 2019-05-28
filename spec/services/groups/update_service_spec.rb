@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Groups::UpdateService do
@@ -56,7 +58,7 @@ describe Groups::UpdateService do
           create(:project, :private, group: internal_group)
 
           expect(TodosDestroyer::GroupPrivateWorker).to receive(:perform_in)
-            .with(1.hour, internal_group.id)
+            .with(Todo::WAIT_FOR_DELETE, internal_group.id)
         end
 
         it "changes permission level to private" do

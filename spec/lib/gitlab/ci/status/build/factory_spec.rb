@@ -123,6 +123,35 @@ describe Gitlab::Ci::Status::Build::Factory do
         expect(status.action_path).to include 'retry'
       end
     end
+
+    context 'when build has unmet prerequisites' do
+      let(:build) { create(:ci_build, :prerequisite_failure) }
+
+      it 'matches correct core status' do
+        expect(factory.core_status).to be_a Gitlab::Ci::Status::Failed
+      end
+
+      it 'matches correct extended statuses' do
+        expect(factory.extended_statuses)
+          .to eq [Gitlab::Ci::Status::Build::Retryable,
+                  Gitlab::Ci::Status::Build::FailedUnmetPrerequisites]
+      end
+
+      it 'fabricates a failed with unmet prerequisites build status' do
+        expect(status).to be_a Gitlab::Ci::Status::Build::FailedUnmetPrerequisites
+      end
+
+      it 'fabricates status with correct details' do
+        expect(status.text).to eq 'failed'
+        expect(status.icon).to eq 'status_failed'
+        expect(status.favicon).to eq 'favicon_status_failed'
+        expect(status.label).to eq 'failed'
+        expect(status).to have_details
+        expect(status).to have_action
+        expect(status.action_title).to include 'Retry'
+        expect(status.action_path).to include 'retry'
+      end
+    end
   end
 
   context 'when build is a canceled' do
@@ -134,11 +163,11 @@ describe Gitlab::Ci::Status::Build::Factory do
 
     it 'matches correct extended statuses' do
       expect(factory.extended_statuses)
-        .to eq [Gitlab::Ci::Status::Build::Canceled, Gitlab::Ci::Status::Build::Retryable]
+        .to eq [Gitlab::Ci::Status::Build::Canceled]
     end
 
-    it 'fabricates a retryable build status' do
-      expect(status).to be_a Gitlab::Ci::Status::Build::Retryable
+    it 'does not fabricate a retryable build status' do
+      expect(status).not_to be_a Gitlab::Ci::Status::Build::Retryable
     end
 
     it 'fabricates status with correct details' do
@@ -148,7 +177,7 @@ describe Gitlab::Ci::Status::Build::Factory do
       expect(status.illustration).to include(:image, :size, :title)
       expect(status.label).to eq 'canceled'
       expect(status).to have_details
-      expect(status).to have_action
+      expect(status).not_to have_action
     end
   end
 

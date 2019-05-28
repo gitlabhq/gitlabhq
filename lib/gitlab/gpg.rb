@@ -73,13 +73,7 @@ module Gitlab
       if MUTEX.locked? && MUTEX.owned?
         optimistic_using_tmp_keychain(&block)
       else
-        if Gitlab.rails5?
-          ActiveSupport::Dependencies.interlock.permit_concurrent_loads do
-            MUTEX.synchronize do
-              optimistic_using_tmp_keychain(&block)
-            end
-          end
-        else
+        ActiveSupport::Dependencies.interlock.permit_concurrent_loads do
           MUTEX.synchronize do
             optimistic_using_tmp_keychain(&block)
           end

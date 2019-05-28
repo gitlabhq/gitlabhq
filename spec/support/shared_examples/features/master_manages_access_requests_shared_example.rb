@@ -19,7 +19,7 @@ RSpec.shared_examples 'Maintainer manages access requests' do
 
     expect_visible_access_request(entity, user)
 
-    accept_confirm { click_on 'Grant access' }
+    click_on 'Grant access'
 
     expect_no_visible_access_request(entity, user)
 
@@ -40,13 +40,11 @@ RSpec.shared_examples 'Maintainer manages access requests' do
   end
 
   def expect_visible_access_request(entity, user)
-    expect(entity.requesters.exists?(user_id: user)).to be_truthy
     expect(page).to have_content "Users requesting access to #{entity.name} 1"
     expect(page).to have_content user.name
   end
 
   def expect_no_visible_access_request(entity, user)
-    expect(entity.requesters.exists?(user_id: user)).to be_falsy
     expect(page).not_to have_content "Users requesting access to #{entity.name}"
   end
 end

@@ -11,8 +11,8 @@ import $ from 'jquery';
 import _ from 'underscore';
 import Cookies from 'js-cookie';
 import Autosize from 'autosize';
-import 'vendor/jquery.caret'; // required by jquery.atwho
-import 'vendor/jquery.atwho';
+import 'jquery.caret'; // required by at.js
+import 'at.js';
 import AjaxCache from '~/lib/utils/ajax_cache';
 import Vue from 'vue';
 import syntaxHighlight from '~/syntax_highlight';
@@ -35,6 +35,7 @@ import {
 } from './lib/utils/common_utils';
 import imageDiffHelper from './image_diff/helpers/index';
 import { localTimeAgo } from './lib/utils/datetime_utility';
+import { sprintf, s__, __ } from './locale';
 
 window.autosize = Autosize;
 
@@ -138,8 +139,6 @@ export default class Notes {
     this.$wrapperEl.on('click', '.js-note-delete', this.removeNote);
     // delete note attachment
     this.$wrapperEl.on('click', '.js-note-attachment-delete', this.removeAttachment);
-    // reset main target form when clicking discard
-    this.$wrapperEl.on('click', '.js-note-discard', this.resetMainTargetForm);
     // update the file name when an attachment is selected
     this.$wrapperEl.on('change', '.js-note-attachment-input', this.updateFormAttachment);
     // reply to diff/discussion notes
@@ -191,7 +190,6 @@ export default class Notes {
     this.$wrapperEl.off('keyup input', '.js-note-text');
     this.$wrapperEl.off('click', '.js-note-target-reopen');
     this.$wrapperEl.off('click', '.js-note-target-close');
-    this.$wrapperEl.off('click', '.js-note-discard');
     this.$wrapperEl.off('keydown', '.js-note-text');
     this.$wrapperEl.off('click', '.js-comment-resolve-button');
     this.$wrapperEl.off('click', '.system-note-commit-list-toggler');
@@ -256,7 +254,7 @@ export default class Notes {
         discussionNoteForm = $textarea.closest('.js-discussion-note-form');
         if (discussionNoteForm.length) {
           if ($textarea.val() !== '') {
-            if (!window.confirm('Are you sure you want to cancel creating this comment?')) {
+            if (!window.confirm(__('Are you sure you want to cancel creating this comment?'))) {
               return;
             }
           }
@@ -268,7 +266,7 @@ export default class Notes {
           originalText = $textarea.closest('form').data('originalNote');
           newText = $textarea.val();
           if (originalText !== newText) {
-            if (!window.confirm('Are you sure you want to cancel editing this comment?')) {
+            if (!window.confirm(__('Are you sure you want to cancel editing this comment?'))) {
               return;
             }
           }
@@ -509,7 +507,7 @@ export default class Notes {
           var contentContainerClass =
             '.' +
             $notes
-              .closest('.notes_content')
+              .closest('.notes-content')
               .attr('class')
               .split(' ')
               .join('.');
@@ -639,7 +637,7 @@ export default class Notes {
     this.glForm = new GLForm(form, enableGFM);
     textarea = form.find('.js-note-text');
     key = [
-      'Note',
+      s__('NoteForm|Note'),
       form.find('#note_noteable_type').val(),
       form.find('#note_noteable_id').val(),
       form.find('#note_commit_id').val(),
@@ -673,7 +671,9 @@ export default class Notes {
       formParentTimeline = $form.closest('.discussion-notes').find('.notes');
     }
     return this.addFlash(
-      'Your comment could not be submitted! Please check your network connection and try again.',
+      __(
+        'Your comment could not be submitted! Please check your network connection and try again.',
+      ),
       'alert',
       formParentTimeline.get(0),
     );
@@ -682,7 +682,7 @@ export default class Notes {
   updateNoteError($parentTimeline) {
     // eslint-disable-next-line no-new
     new Flash(
-      'Your comment could not be updated! Please check your network connection and try again.',
+      __('Your comment could not be updated! Please check your network connection and try again.'),
     );
   }
 
@@ -986,11 +986,9 @@ export default class Notes {
     form.find('#note_position').val(dataHolder.attr('data-position'));
 
     form
-      .find('.js-note-discard')
+      .find('.js-close-discussion-note-form')
       .show()
-      .removeClass('js-note-discard')
-      .addClass('js-close-discussion-note-form')
-      .text(form.find('.js-close-discussion-note-form').data('cancelText'));
+      .removeClass('hide');
     form.find('.js-note-target-close').remove();
     form.find('.js-note-new-discussion').remove();
     this.setupNoteForm(form);
@@ -1074,14 +1072,14 @@ export default class Notes {
     addForm = false;
     let lineTypeSelector = '';
     rowCssToAdd =
-      '<tr class="notes_holder js-temp-notes-holder"><td class="notes_content" colspan="3"><div class="content"></div></td></tr>';
+      '<tr class="notes_holder js-temp-notes-holder"><td class="notes-content" colspan="3"><div class="content"></div></td></tr>';
     // In parallel view, look inside the correct left/right pane
     if (this.isParallelView()) {
       lineTypeSelector = `.${lineType}`;
       rowCssToAdd =
-        '<tr class="notes_holder js-temp-notes-holder"><td class="notes_line old"></td><td class="notes_content parallel old"><div class="content"></div></td><td class="notes_line new"></td><td class="notes_content parallel new"><div class="content"></div></td></tr>';
+        '<tr class="notes_holder js-temp-notes-holder"><td class="notes_line old"></td><td class="notes-content parallel old"><div class="content"></div></td><td class="notes_line new"></td><td class="notes-content parallel new"><div class="content"></div></td></tr>';
     }
-    const notesContentSelector = `.notes_content${lineTypeSelector} .content`;
+    const notesContentSelector = `.notes-content${lineTypeSelector} .content`;
     let notesContent = targetRow.find(notesContentSelector);
 
     if (hasNotes && showReplyInput) {
@@ -1194,12 +1192,11 @@ export default class Notes {
   }
 
   updateTargetButtons(e) {
-    var closebtn, closetext, discardbtn, form, reopenbtn, reopentext, textarea;
+    var closebtn, closetext, form, reopenbtn, reopentext, textarea;
     textarea = $(e.target);
     form = textarea.parents('form');
     reopenbtn = form.find('.js-note-target-reopen');
     closebtn = form.find('.js-note-target-close');
-    discardbtn = form.find('.js-note-discard');
 
     if (textarea.val().trim().length > 0) {
       reopentext = reopenbtn.attr('data-alternative-text');
@@ -1216,9 +1213,6 @@ export default class Notes {
       if (closebtn.is(':not(.btn-comment-and-close)')) {
         closebtn.addClass('btn-comment-and-close');
       }
-      if (discardbtn.is(':hidden')) {
-        return discardbtn.show();
-      }
     } else {
       reopentext = reopenbtn.data('originalText');
       closetext = closebtn.data('originalText');
@@ -1234,9 +1228,6 @@ export default class Notes {
       if (closebtn.is('.btn-comment-and-close')) {
         closebtn.removeClass('btn-comment-and-close');
       }
-      if (discardbtn.is(':visible')) {
-        return discardbtn.hide();
-      }
     }
   }
 
@@ -1251,15 +1242,13 @@ export default class Notes {
     var postUrl = $originalContentEl.data('postUrl');
     var targetId = $originalContentEl.data('targetId');
     var targetType = $originalContentEl.data('targetType');
-    var markdownVersion = $originalContentEl.data('markdownVersion');
 
     this.glForm = new GLForm($editForm.find('form'), this.enableGFM);
 
     $editForm
       .find('form')
       .attr('action', `${postUrl}?html=true`)
-      .attr('data-remote', 'true')
-      .attr('data-markdown-version', markdownVersion);
+      .attr('data-remote', 'true');
     $editForm.find('.js-form-target-id').val(targetId);
     $editForm.find('.js-form-target-type').val(targetType);
     $editForm
@@ -1272,12 +1261,19 @@ export default class Notes {
 
   putConflictEditWarningInPlace(noteEntity, $note) {
     if ($note.find('.js-conflict-edit-warning').length === 0) {
+      const open_link = `<a href="#note_${
+        noteEntity.id
+      }" target="_blank" rel="noopener noreferrer">`;
       const $alert = $(`<div class="js-conflict-edit-warning alert alert-danger">
-        This comment has changed since you started editing, please review the
-        <a href="#note_${noteEntity.id}" target="_blank" rel="noopener noreferrer">
-          updated comment
-        </a>
-        to ensure information is not lost
+        ${sprintf(
+          s__(
+            'Notes|This comment has changed since you started editing, please review the %{open_link}updated comment%{close_link} to ensure information is not lost',
+          ),
+          {
+            open_link,
+            close_link: '</a>',
+          },
+        )}
       </div>`);
       $alert.insertAfter($note.find('.note-text'));
     }
@@ -1505,13 +1501,15 @@ export default class Notes {
 
     if (executedCommands && executedCommands.length) {
       if (executedCommands.length > 1) {
-        tempFormContent = 'Applying multiple commands';
+        tempFormContent = __('Applying multiple commands');
       } else {
         const commandDescription = executedCommands[0].description.toLowerCase();
-        tempFormContent = `Applying command to ${commandDescription}`;
+        tempFormContent = sprintf(__('Applying command to %{commandDescription}'), {
+          commandDescription,
+        });
       }
     } else {
-      tempFormContent = 'Applying command';
+      tempFormContent = __('Applying command');
     }
 
     return tempFormContent;
@@ -1831,7 +1829,9 @@ export default class Notes {
     $editingNote
       .find('.note-headline-meta a')
       .html(
-        '<i class="fa fa-spinner fa-spin" aria-label="Comment is being updated" aria-hidden="true"></i>',
+        `<i class="fa fa-spinner fa-spin" aria-label="${__(
+          'Comment is being updated',
+        )}" aria-hidden="true"></i>`,
       );
 
     // Make request to update comment on server

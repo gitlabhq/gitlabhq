@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class List < ActiveRecord::Base
+class List < ApplicationRecord
   belongs_to :board
   belongs_to :label
 
@@ -54,6 +54,6 @@ class List < ActiveRecord::Base
   private
 
   def can_be_destroyed
-    destroyable?
+    throw(:abort) unless destroyable?
   end
 end

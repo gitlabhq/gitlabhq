@@ -3,6 +3,7 @@ import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import environmentsFolderViewComponent from '~/environments/folder/environments_folder_view.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import { removeBreakLine, removeWhitespace } from 'spec/helpers/text_helper';
 import { environmentsList } from '../mock_data';
 
 describe('Environments Folder View', () => {
@@ -13,9 +14,13 @@ describe('Environments Folder View', () => {
   const mockData = {
     endpoint: 'environments.json',
     folderName: 'review',
-    canCreateDeployment: true,
     canReadEnvironment: true,
     cssContainerClass: 'container',
+    canaryDeploymentFeatureId: 'canary_deployment',
+    showCanaryDeploymentCallout: true,
+    userCalloutsPath: '/callouts',
+    lockPromotionSvgPath: '/assets/illustrations/lock-promotion.svg',
+    helpCanaryDeploymentsPath: 'help/canary-deployments',
   };
 
   beforeEach(() => {
@@ -90,9 +95,11 @@ describe('Environments Folder View', () => {
 
     it('should render parent folder name', done => {
       setTimeout(() => {
-        expect(component.$el.querySelector('.js-folder-name').textContent.trim()).toContain(
-          'Environments / review',
-        );
+        expect(
+          removeBreakLine(
+            removeWhitespace(component.$el.querySelector('.js-folder-name').textContent.trim()),
+          ),
+        ).toContain('Environments / review');
         done();
       }, 0);
     });
@@ -108,7 +115,7 @@ describe('Environments Folder View', () => {
       it('should make an API request when changing page', done => {
         spyOn(component, 'updateContent');
         setTimeout(() => {
-          component.$el.querySelector('.gl-pagination .js-last-button a').click();
+          component.$el.querySelector('.gl-pagination .js-last-button .page-link').click();
 
           expect(component.updateContent).toHaveBeenCalledWith({
             scope: component.scope,

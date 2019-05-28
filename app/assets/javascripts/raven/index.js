@@ -4,8 +4,11 @@ const index = function index() {
   RavenConfig.init({
     sentryDsn: gon.sentry_dsn,
     currentUserId: gon.current_user_id,
-    whitelistUrls: [gon.gitlab_url],
-    isProduction: process.env.NODE_ENV,
+    whitelistUrls:
+      process.env.NODE_ENV === 'production'
+        ? [gon.gitlab_url]
+        : [gon.gitlab_url, 'webpack-internal://'],
+    environment: gon.sentry_environment,
     release: gon.revision,
     tags: {
       revision: gon.revision,

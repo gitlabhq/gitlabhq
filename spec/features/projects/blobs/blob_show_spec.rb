@@ -5,8 +5,8 @@ describe 'File blob', :js do
 
   let(:project) { create(:project, :public, :repository) }
 
-  def visit_blob(path, anchor: nil, ref: 'master', legacy_render: nil)
-    visit project_blob_path(project, File.join(ref, path), anchor: anchor, legacy_render: legacy_render)
+  def visit_blob(path, anchor: nil, ref: 'master')
+    visit project_blob_path(project, File.join(ref, path), anchor: anchor)
 
     wait_for_requests
   end
@@ -168,21 +168,6 @@ describe 'File blob', :js do
         aggregate_failures do
           expect(page).to have_content("sublist")
           expect(page).not_to have_xpath("//ol//li//ul")
-        end
-      end
-    end
-
-    context 'when rendering legacy markdown' do
-      before do
-        visit_blob('files/commonmark/file.md', legacy_render: 1)
-
-        wait_for_requests
-      end
-
-      it 'renders using RedCarpet' do
-        aggregate_failures do
-          expect(page).to have_content("sublist")
-          expect(page).to have_xpath("//ol//li//ul")
         end
       end
     end
@@ -563,10 +548,7 @@ describe 'File blob', :js do
     it 'displays an auxiliary viewer' do
       aggregate_failures do
         # shows names of dependency manager and package
-        expect(page).to have_content('This project manages its dependencies using RubyGems and defines a gem named activerecord.')
-
-        # shows a link to the gem
-        expect(page).to have_link('activerecord', href: 'https://rubygems.org/gems/activerecord')
+        expect(page).to have_content('This project manages its dependencies using RubyGems.')
 
         # shows a learn more link
         expect(page).to have_link('Learn more', href: 'https://rubygems.org/')
@@ -590,7 +572,7 @@ describe 'File blob', :js do
       visit_blob('files/ruby/test.rb', ref: 'feature')
     end
 
-    it 'should show the realtime pipeline status' do
+    it 'shows the realtime pipeline status' do
       page.within('.commit-actions') do
         expect(page).to have_css('.ci-status-icon')
         expect(page).to have_css('.ci-status-icon-running')

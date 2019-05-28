@@ -36,7 +36,7 @@ describe 'Download buttons in tags page' do
       it 'shows download artifacts button' do
         href = latest_succeeded_project_artifacts_path(project, "#{tag}/download", job: 'build')
 
-        expect(page).to have_link "Download '#{build.name}'", href: href
+        expect(page).to have_link build.name, href: href
       end
     end
   end

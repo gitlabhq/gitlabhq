@@ -5,9 +5,11 @@ module IssuableActions
   include Gitlab::Utils::StrongMemoize
 
   included do
-    before_action :labels, only: [:show, :new, :edit]
     before_action :authorize_destroy_issuable!, only: :destroy
     before_action :authorize_admin_issuable!, only: :bulk_update
+    before_action only: :show do
+      push_frontend_feature_flag(:scoped_labels, default_enabled: true)
+    end
   end
 
   def permitted_keys
@@ -25,7 +27,10 @@ module IssuableActions
 
   def show
     respond_to do |format|
-      format.html
+      format.html do
+        @issuable_sidebar = serializer.represent(issuable, serializer: 'sidebar') # rubocop:disable Gitlab/ModuleWithInstanceVariables
+      end
+
       format.json do
         render json: serializer.represent(issuable, serializer: params[:serializer])
       end
@@ -56,7 +61,8 @@ module IssuableActions
       title_text: issuable.title,
       description: view_context.markdown_field(issuable, :description),
       description_text: issuable.description,
-      task_status: issuable.task_status
+      task_status: issuable.task_status,
+      lock_version: issuable.lock_version
     }
 
     if issuable.edited?
@@ -168,10 +174,6 @@ module IssuableActions
     end
   end
 
-  def labels
-    @labels ||= LabelsFinder.new(current_user, project_id: @project.id).execute # rubocop:disable Gitlab/ModuleWithInstanceVariables
-  end
-
   def authorize_destroy_issuable!
     unless can?(current_user, :"destroy_#{issuable.to_ability_name}", issuable)
       return access_denied!
@@ -190,12 +192,7 @@ module IssuableActions
 
   def bulk_update_params
     permitted_keys_array = permitted_keys.dup
-
-    if resource_name == 'issue'
-      permitted_keys_array << { assignee_ids: [] }
-    else
-      permitted_keys_array.unshift(:assignee_id)
-    end
+    permitted_keys_array << { assignee_ids: [] }
 
     params.require(:update).permit(permitted_keys_array)
   end

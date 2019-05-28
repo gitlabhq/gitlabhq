@@ -3,11 +3,11 @@
 # The PoolRepository model is the database equivalent of an ObjectPool for Gitaly
 # That is; PoolRepository is the record in the database, ObjectPool is the
 # repository on disk
-class PoolRepository < ActiveRecord::Base
+class PoolRepository < ApplicationRecord
   include Shardable
   include AfterCommitQueue
 
-  has_one :source_project, class_name: 'Project'
+  belongs_to :source_project, class_name: 'Project'
   validates :source_project, presence: true
 
   has_many :member_projects, class_name: 'Project'
@@ -18,6 +18,7 @@ class PoolRepository < ActiveRecord::Base
     state :scheduled
     state :ready
     state :failed
+    state :obsolete
 
     event :schedule do
       transition none: :scheduled
@@ -29,6 +30,10 @@ class PoolRepository < ActiveRecord::Base
 
     event :mark_failed do
       transition all => :failed
+    end
+
+    event :mark_obsolete do
+      transition all => :obsolete
     end
 
     state all - [:ready] do
@@ -54,6 +59,12 @@ class PoolRepository < ActiveRecord::Base
         ::ObjectPool::ScheduleJoinWorker.perform_async(pool.id)
       end
     end
+
+    after_transition any => :obsolete do |pool, _|
+      pool.run_after_commit do
+        ::ObjectPool::DestroyWorker.perform_async(pool.id)
+      end
+    end
   end
 
   def create_object_pool
@@ -70,22 +81,26 @@ class PoolRepository < ActiveRecord::Base
     object_pool.link(repository.raw)
   end
 
-  # This RPC can cause data loss, as not all objects are present the local repository
-  # No execution path yet, will be added through:
-  # https://gitlab.com/gitlab-org/gitaly/issues/1415
-  def delete_repository_alternate(repository)
-    object_pool.unlink_repository(repository.raw)
+  def mark_obsolete_if_last(repository)
+    if member_projects.where.not(id: repository.project.id).exists?
+      true
+    else
+      mark_obsolete
+    end
   end
 
   def object_pool
     @object_pool ||= Gitlab::Git::ObjectPool.new(
       shard.name,
       disk_path + '.git',
-      source_project.repository.raw)
+      source_project.repository.raw,
+      source_project.full_path
+    )
   end
 
   def inspect
-    "#<#{self.class.name} id:#{id} state:#{state} disk_path:#{disk_path} source_project: #{source_project.full_path}>"
+    source = source_project ? source_project.full_path : 'nil'
+    "#<#{self.class.name} id:#{id} state:#{state} disk_path:#{disk_path} source_project: #{source}>"
   end
 
   private

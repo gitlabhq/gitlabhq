@@ -15,7 +15,7 @@ class Projects::RunnersController < Projects::ApplicationController
 
   def update
     if Ci::UpdateRunnerService.new(@runner).update(runner_params)
-      redirect_to project_runner_path(@project, @runner), notice: 'Runner was successfully updated.'
+      redirect_to project_runner_path(@project, @runner), notice: _('Runner was successfully updated.')
     else
       render 'edit'
     end
@@ -31,17 +31,17 @@ class Projects::RunnersController < Projects::ApplicationController
 
   def resume
     if Ci::UpdateRunnerService.new(@runner).update(active: true)
-      redirect_to project_runners_path(@project), notice: 'Runner was successfully updated.'
+      redirect_to project_runners_path(@project), notice: _('Runner was successfully updated.')
     else
-      redirect_to project_runners_path(@project), alert: 'Runner was not updated.'
+      redirect_to project_runners_path(@project), alert: _('Runner was not updated.')
     end
   end
 
   def pause
     if Ci::UpdateRunnerService.new(@runner).update(active: false)
-      redirect_to project_runners_path(@project), notice: 'Runner was successfully updated.'
+      redirect_to project_runners_path(@project), notice: _('Runner was successfully updated.')
     else
-      redirect_to project_runners_path(@project), alert: 'Runner was not updated.'
+      redirect_to project_runners_path(@project), alert: _('Runner was not updated.')
     end
   end
 

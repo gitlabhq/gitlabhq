@@ -21,11 +21,6 @@ module QA
           repository_clone_location(:ssh_clone_url)
         end
 
-        def wait_for_push
-          sleep 5
-          refresh
-        end
-
         private
 
         def repository_clone_location(kind)

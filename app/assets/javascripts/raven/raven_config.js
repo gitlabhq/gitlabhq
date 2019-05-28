@@ -1,5 +1,6 @@
 import Raven from 'raven-js';
 import $ from 'jquery';
+import { __ } from '~/locale';
 
 const IGNORE_ERRORS = [
   // Random plugins/extensions
@@ -9,9 +10,9 @@ const IGNORE_ERRORS = [
   'canvas.contentDocument',
   'MyApp_RemoveAllHighlights',
   'http://tt.epicplay.com',
-  "Can't find variable: ZiteReader",
-  'jigsaw is not defined',
-  'ComboSearch is not defined',
+  __("Can't find variable: ZiteReader"),
+  __('jigsaw is not defined'),
+  __('ComboSearch is not defined'),
   'http://loading.retry.widdit.com/',
   'atomicFindClose',
   // Facebook borked
@@ -61,7 +62,7 @@ const RavenConfig = {
       release: this.options.release,
       tags: this.options.tags,
       whitelistUrls: this.options.whitelistUrls,
-      environment: this.options.isProduction ? 'production' : 'development',
+      environment: this.options.environment,
       ignoreErrors: this.IGNORE_ERRORS,
       ignoreUrls: this.IGNORE_URLS,
       shouldSendCallback: this.shouldSendSample.bind(this),
@@ -80,7 +81,7 @@ const RavenConfig = {
 
   handleRavenErrors(event, req, config, err) {
     const error = err || req.statusText;
-    const responseText = req.responseText || 'Unknown response text';
+    const responseText = req.responseText || __('Unknown response text');
 
     Raven.captureMessage(error, {
       extra: {

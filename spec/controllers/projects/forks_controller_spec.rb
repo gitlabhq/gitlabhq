@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Projects::ForksController do
@@ -13,8 +15,10 @@ describe Projects::ForksController do
   describe 'GET index' do
     def get_forks
       get :index,
-        namespace_id: project.namespace,
-        project_id: project
+        params: {
+          namespace_id: project.namespace,
+          project_id: project
+        }
     end
 
     context 'when fork is public' do
@@ -83,8 +87,10 @@ describe Projects::ForksController do
   describe 'GET new' do
     def get_new
       get :new,
-        namespace_id: project.namespace,
-        project_id: project
+        params: {
+          namespace_id: project.namespace,
+          project_id: project
+        }
     end
 
     context 'when user is signed in' do
@@ -111,9 +117,11 @@ describe Projects::ForksController do
   describe 'POST create' do
     def post_create
       post :create,
-        namespace_id: project.namespace,
-        project_id: project,
-        namespace_key: user.namespace.id
+        params: {
+          namespace_id: project.namespace,
+          project_id: project,
+          namespace_key: user.namespace.id
+        }
     end
 
     context 'when user is signed in' do

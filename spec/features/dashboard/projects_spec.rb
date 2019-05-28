@@ -91,6 +91,7 @@ describe 'Dashboard Projects' do
       visit dashboard_projects_path
 
       expect(page).to have_content(project.name)
+      expect(find('.nav-links li:nth-child(1) .badge-pill')).to have_content(1)
     end
 
     it 'shows personal projects on personal projects tab', :js do
@@ -111,9 +112,26 @@ describe 'Dashboard Projects' do
 
       expect(first('.project-row')).to have_content(project_with_most_stars.title)
     end
+
+    it 'shows tabs to filter by all projects or personal' do
+      visit dashboard_projects_path
+      segmented_button = page.find('.filtered-search-nav .button-filter-group')
+
+      expect(segmented_button).to have_content 'All'
+      expect(segmented_button).to have_content 'Personal'
+    end
   end
 
-  context 'when on Starred projects tab' do
+  context 'when on Starred projects tab', :js do
+    it 'shows the empty state when there are no starred projects' do
+      visit(starred_dashboard_projects_path)
+
+      element = page.find('.row.empty-state')
+
+      expect(element).to have_content("You don't have starred projects yet.")
+      expect(element.find('.svg-content img')['src']).to have_content('illustrations/starred_empty')
+    end
+
     it 'shows only starred projects' do
       user.toggle_star(project2)
 
@@ -121,6 +139,14 @@ describe 'Dashboard Projects' do
 
       expect(page).not_to have_content(project.name)
       expect(page).to have_content(project2.name)
+      expect(find('.nav-links li:nth-child(1) .badge-pill')).to have_content(1)
+      expect(find('.nav-links li:nth-child(2) .badge-pill')).to have_content(1)
+    end
+
+    it 'does not show tabs to filter by all projects or personal' do
+      visit(starred_dashboard_projects_path)
+
+      expect(page).not_to have_content '.filtered-search-nav'
     end
   end
 
@@ -142,6 +168,27 @@ describe 'Dashboard Projects' do
         expect(page).to have_css('.ci-status-link')
         expect(page).to have_css('.ci-status-icon-success')
         expect(page).to have_link('Commit: passed')
+      end
+    end
+
+    context 'guest user of project and project has private pipelines' do
+      let(:guest_user) { create(:user) }
+
+      before do
+        project.update(public_builds: false)
+        project.add_guest(guest_user)
+        sign_in(guest_user)
+      end
+
+      it 'shows that the last pipeline passed' do
+        visit dashboard_projects_path
+
+        page.within('.controls') do
+          expect(page).not_to have_xpath("//a[@href='#{pipelines_project_commit_path(project, project.commit, ref: pipeline.ref)}']")
+          expect(page).not_to have_css('.ci-status-link')
+          expect(page).not_to have_css('.ci-status-icon-success')
+          expect(page).not_to have_link('Commit: passed')
+        end
       end
     end
   end

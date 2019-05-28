@@ -1,7 +1,7 @@
 # Analyze your project's Code Quality
 
 CAUTION: **Caution:**
-The job definition shown below is supported on GitLab 11.5 and later versions.
+The job definition shown below is supported on GitLab 11.11 and later versions.
 It also requires the GitLab Runner 11.5 or later.
 For earlier versions, use the [previous job definitions](#previous-job-definitions).
 
@@ -11,8 +11,34 @@ and Docker.
 First, you need GitLab Runner with
 [docker-in-docker executor](../docker/using_docker_build.md#use-docker-in-docker-executor).
 
-Once you set up the Runner, add a new job to `.gitlab-ci.yml` that
-generates the expected report:
+Once you set up the Runner, include the CodeQuality template in your CI config:
+
+```yaml
+include:
+  - template: Code-Quality.gitlab-ci.yml
+```
+
+The above example will create a `code_quality` job in your CI/CD pipeline which
+will scan your source code for code quality issues. The report will be saved as a
+[Code Quality report artifact](../yaml/README.md#artifactsreportscodequality-starter)
+that you can later download and analyze.
+Due to implementation limitations we always take the latest Code Quality artifact available.
+
+TIP: **Tip:**
+For [GitLab Starter][ee] users, this information will be automatically
+extracted and shown right in the merge request widget.
+[Learn more on Code Quality in merge requests](https://docs.gitlab.com/ee/user/project/merge_requests/code_quality.html).
+
+## Previous job definitions
+
+CAUTION: **Caution:**
+Before GitLab 11.5, Code Quality job and artifact had to be named specifically
+to automatically extract report data and show it in the merge request widget.
+While these old job definitions are still maintained they have been deprecated
+and may be removed in next major release, GitLab 12.0.
+You are advised to update your current `.gitlab-ci.yml` configuration to reflect that change.
+
+For GitLab 11.5 and earlier, the job should look like:
 
 ```yaml
 code_quality:
@@ -33,26 +59,6 @@ code_quality:
     reports:
       codequality: gl-code-quality-report.json
 ```
-
-The above example will create a `code_quality` job in your CI/CD pipeline which
-will scan your source code for code quality issues. The report will be saved as a
-[Code Quality report artifact](../../ci/yaml/README.md#artifactsreportscodequality)
-that you can later download and analyze.
-Due to implementation limitations we always take the latest Code Quality artifact available.
-
-TIP: **Tip:**
-For [GitLab Starter][ee] users, this information will be automatically
-extracted and shown right in the merge request widget.
-[Learn more on Code Quality in merge requests](https://docs.gitlab.com/ee/user/project/merge_requests/code_quality.html).
-
-## Previous job definitions
-
-CAUTION: **Caution:**
-Before GitLab 11.5, Code Quality job and artifact had to be named specifically
-to automatically extract report data and show it in the merge request widget.
-While these old job definitions are still maintained they have been deprecated
-and may be removed in next major release, GitLab 12.0.
-You are advised to update your current `.gitlab-ci.yml` configuration to reflect that change.
 
 For GitLab 11.4 and earlier, the job should look like:
 

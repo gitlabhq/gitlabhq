@@ -36,6 +36,15 @@ label {
   }
 }
 
+.label-wrapper {
+  display: block;
+  margin: 0;
+}
+
+.form-label {
+  @extend label;
+}
+
 .form-control-label {
   @extend .col-md-2;
 }
@@ -119,7 +128,7 @@ label {
 
 .form-control {
   @include box-shadow(none);
-  border-radius: 2px;
+  border-radius: $border-radius-default;
   padding: $gl-vert-padding $gl-input-padding;
 
   &.input-short {
@@ -147,9 +156,11 @@ label {
 .select-control {
   padding-left: 10px;
   padding-right: 10px;
+  appearance: none;
+  /* stylelint-disable property-no-vendor-prefix */
   -webkit-appearance: none;
   -moz-appearance: none;
-  appearance: none;
+  /* stylelint-enable property-no-vendor-prefix */
 
   &::-ms-expand {
     display: none;
@@ -169,7 +180,8 @@ label {
   font-weight: $gl-font-weight-normal;
 }
 
-.form-control::-webkit-input-placeholder {
+
+.form-control::placeholder {
   color: $gl-text-color-tertiary;
 }
 
@@ -194,10 +206,13 @@ label {
 .form-text.text-muted {
   margin-bottom: 0;
   margin-top: #{$grid-size / 2};
+  font-size: $gl-font-size;
 }
 
-.gl-field-error {
+.gl-field-error,
+.invalid-feedback {
   color: $red-500;
+  font-size: $gl-font-size;
 }
 
 .gl-show-field-errors {
@@ -252,11 +267,20 @@ label {
     right: 0.8em;
     top: 50%;
     transform: translateY(-50%);
-    color: $theme-gray-600;
+    color: $gray-600;
   }
 }
 
-.input-lg {
-  max-width: 320px;
+.input-md {
+  max-width: $input-md-width;
   width: 100%;
+}
+
+.input-lg {
+  max-width: $input-lg-width;
+  width: 100%;
+}
+
+.input-group-text {
+  max-height: $input-height;
 }

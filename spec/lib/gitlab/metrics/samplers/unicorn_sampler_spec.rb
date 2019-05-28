@@ -37,7 +37,7 @@ describe Gitlab::Metrics::Samplers::UnicornSampler do
         end
 
         it 'updates metrics type unix and with addr' do
-          labels = { type: 'unix', address: socket_address }
+          labels = { socket_type: 'unix', socket_address: socket_address }
 
           expect(subject).to receive_message_chain(:unicorn_active_connections, :set).with(labels, 'active')
           expect(subject).to receive_message_chain(:unicorn_queued_connections, :set).with(labels, 'queued')
@@ -69,7 +69,7 @@ describe Gitlab::Metrics::Samplers::UnicornSampler do
         end
 
         it 'updates metrics type unix and with addr' do
-          labels = { type: 'tcp', address: tcp_socket_address }
+          labels = { socket_type: 'tcp', socket_address: tcp_socket_address }
 
           expect(subject).to receive_message_chain(:unicorn_active_connections, :set).with(labels, 'active')
           expect(subject).to receive_message_chain(:unicorn_queued_connections, :set).with(labels, 'queued')

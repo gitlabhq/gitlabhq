@@ -1,0 +1,24 @@
+{
+  "type": "object",
+  "required": [
+    "id",
+    "description",
+    "ip_address",
+    "active",
+    "is_shared",
+    "name",
+    "online",
+    "status"
+  ],
+  "properties": {
+    "id": { "type": "integer" },
+    "description": { "type": "string" },
+    "ip_address": { "type": "string" },
+    "active": { "type": "boolean" },
+    "is_shared": { "type": "boolean" },
+    "name": { "type": ["null", "string"] },
+    "online": { "type": "boolean" },
+    "status": { "type": "string" }
+  },
+  "additionalProperties": false
+}

@@ -19,14 +19,20 @@ describe "User browses artifacts" do
       visit(browse_project_job_artifacts_path(project, job))
     end
 
+    it "renders a link to the job in the breadcrumbs" do
+      page.within('.js-breadcrumbs-list') do
+        expect(page).to have_link("##{job.id}", href: project_job_path(project, job))
+      end
+    end
+
     it "shows artifacts" do
       expect(page).not_to have_selector(".build-sidebar")
 
       page.within(".tree-table") do
         expect(page).to have_no_content("..")
                    .and have_content("other_artifacts_0.1.2")
-                   .and have_content("ci_artifacts.txt")
-                   .and have_content("rails_sample.jpg")
+                   .and have_content("ci_artifacts.txt 27 Bytes")
+                   .and have_content("rails_sample.jpg 34.4 KB")
       end
 
       page.within(".build-header") do

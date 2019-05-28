@@ -75,6 +75,14 @@ describe Ci::PipelinePolicy, :models do
       end
     end
 
+    context 'when user does not have access to internal CI' do
+      let(:project) { create(:project, :builds_disabled, :public) }
+
+      it 'disallows the user from reading the pipeline' do
+        expect(policy).to be_disallowed :read_pipeline
+      end
+    end
+
     describe 'destroy_pipeline' do
       let(:project) { create(:project, :public) }
 
@@ -89,6 +97,52 @@ describe Ci::PipelinePolicy, :models do
       context 'when user is not owner' do
         it 'is disabled' do
           expect(policy).not_to be_allowed :destroy_pipeline
+        end
+      end
+    end
+
+    describe 'read_pipeline_variable' do
+      let(:project) { create(:project, :public) }
+
+      context 'when user has owner access' do
+        let(:user) { project.owner }
+
+        it 'is enabled' do
+          expect(policy).to be_allowed :read_pipeline_variable
+        end
+      end
+
+      context 'when user is developer and the creator of the pipeline' do
+        let(:pipeline) { create(:ci_empty_pipeline, project: project, user: user) }
+
+        before do
+          project.add_developer(user)
+          create(:protected_branch, :developers_can_merge,
+                 name: pipeline.ref, project: project)
+        end
+
+        it 'is enabled' do
+          expect(policy).to be_allowed :read_pipeline_variable
+        end
+      end
+
+      context 'when user is developer and it is not the creator of the pipeline' do
+        let(:pipeline) { create(:ci_empty_pipeline, project: project, user: project.owner) }
+
+        before do
+          project.add_developer(user)
+          create(:protected_branch, :developers_can_merge,
+                 name: pipeline.ref, project: project)
+        end
+
+        it 'is disabled' do
+          expect(policy).to be_disallowed :read_pipeline_variable
+        end
+      end
+
+      context 'when user is not owner nor developer' do
+        it 'is disabled' do
+          expect(policy).not_to be_allowed :read_pipeline_variable
         end
       end
     end

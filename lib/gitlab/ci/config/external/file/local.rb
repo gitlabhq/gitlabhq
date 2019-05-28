@@ -8,11 +8,8 @@ module Gitlab
           class Local < Base
             include Gitlab::Utils::StrongMemoize
 
-            attr_reader :project, :sha
-
-            def initialize(location, opts = {})
-              @project = opts.fetch(:project)
-              @sha = opts.fetch(:sha)
+            def initialize(params, context)
+              @location = params[:local]
 
               super
             end
@@ -24,7 +21,9 @@ module Gitlab
             private
 
             def validate_content!
-              if content.nil?
+              if context.project&.repository.nil?
+                errors.push("Local file `#{location}` does not have project!")
+              elsif content.nil?
                 errors.push("Local file `#{location}` does not exist!")
               elsif content.blank?
                 errors.push("Local file `#{location}` is empty!")
@@ -32,7 +31,14 @@ module Gitlab
             end
 
             def fetch_local_content
-              project.repository.blob_data_at(sha, location)
+              context.project.repository.blob_data_at(context.sha, location)
+            end
+
+            def expand_context
+              super.merge(
+                project: context.project,
+                sha: context.sha,
+                user: context.user)
             end
           end
         end

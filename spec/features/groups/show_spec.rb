@@ -65,7 +65,7 @@ describe 'Group show page' do
 
     context 'when subgroups are supported', :js, :nested_groups do
       before do
-        allow(Group).to receive(:supports_nested_groups?) { true }
+        allow(Group).to receive(:supports_nested_objects?) { true }
         visit path
       end
 
@@ -76,7 +76,7 @@ describe 'Group show page' do
 
     context 'when subgroups are not supported' do
       before do
-        allow(Group).to receive(:supports_nested_groups?) { false }
+        allow(Group).to receive(:supports_nested_objects?) { false }
         visit path
       end
 

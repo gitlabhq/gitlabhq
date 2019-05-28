@@ -6,35 +6,35 @@ engines:
     enabled: true
     config:
       languages:
-      - ruby
-      - javascript
+        - ruby
+        - javascript
 ratings:
   paths:
-  - Gemfile.lock
-  - "**.erb"
-  - "**.haml"
-  - "**.rb"
-  - "**.rhtml"
-  - "**.slim"
-  - "**.inc"
-  - "**.js"
-  - "**.jsx"
-  - "**.module"
+    - Gemfile.lock
+    - "**.erb"
+    - "**.haml"
+    - "**.rb"
+    - "**.rhtml"
+    - "**.slim"
+    - "**.inc"
+    - "**.js"
+    - "**.jsx"
+    - "**.module"
 exclude_paths:
-- config/
-- db/
-- features/
-- node_modules/
-- spec/
-- vendor/
-- .yarn-cache/
-- tmp/
-- builds/
-- coverage/
-- public/
-- shared/
-- webpack-report/
-- log/
-- backups/
-- coverage-javascript/
-- plugins/
+  - config/
+  - db/
+  - features/
+  - node_modules/
+  - spec/
+  - vendor/
+  - .yarn-cache/
+  - tmp/
+  - builds/
+  - coverage/
+  - public/
+  - shared/
+  - webpack-report/
+  - log/
+  - backups/
+  - coverage-javascript/
+  - plugins/

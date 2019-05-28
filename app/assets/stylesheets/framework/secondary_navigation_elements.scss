@@ -181,6 +181,33 @@
         margin: 0;
         width: 100%;
       }
+
+      &.inline {
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: space-between;
+
+        > .btn,
+        > .btn-container,
+        > .dropdown,
+        > input,
+        > form {
+          flex: 1 1 auto;
+          margin: 0 0 10px;
+          margin-left: $gl-padding-top;
+          width: auto;
+
+          &:first-child {
+            margin-left: 0;
+            float: none;
+          }
+        }
+
+        .btn-full {
+          flex: 1 1 100%;
+          margin-left: 0;
+        }
+      }
     }
   }
 

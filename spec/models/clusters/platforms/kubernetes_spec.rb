@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching do
@@ -13,10 +15,8 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
   it { is_expected.to validate_presence_of(:api_url) }
   it { is_expected.to validate_presence_of(:token) }
 
-  it { is_expected.to delegate_method(:project).to(:cluster) }
   it { is_expected.to delegate_method(:enabled?).to(:cluster) }
-  it { is_expected.to delegate_method(:managed?).to(:cluster) }
-  it { is_expected.to delegate_method(:kubernetes_namespace).to(:cluster) }
+  it { is_expected.to delegate_method(:provided_by_user?).to(:cluster) }
 
   it_behaves_like 'having unique enum values'
 
@@ -98,6 +98,22 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
 
         it { expect(kubernetes.save).to be_truthy }
       end
+
+      context 'when api_url is localhost' do
+        let(:api_url) { 'http://localhost:22' }
+
+        it { expect(kubernetes.save).to be_falsey }
+
+        context 'Application settings allows local requests' do
+          before do
+            allow(ApplicationSetting)
+              .to receive(:current)
+              .and_return(ApplicationSetting.build_from_defaults(allow_local_requests_from_hooks_and_services: true))
+          end
+
+          it { expect(kubernetes.save).to be_truthy }
+        end
+      end
     end
 
     context 'when validates token' do
@@ -111,6 +127,36 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
         let(:token) { nil }
 
         it { expect(kubernetes.save).to be_falsey }
+      end
+    end
+
+    context 'ca_cert' do
+      let(:kubernetes) { build(:cluster_platform_kubernetes, ca_pem: ca_pem) }
+
+      context 'with a valid certificate' do
+        let(:ca_pem) { File.read(Rails.root.join('spec/fixtures/clusters/sample_cert.pem')) }
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'with an invalid certificate' do
+        let(:ca_pem) { "invalid" }
+
+        it { is_expected.to be_falsey }
+
+        context 'but the certificate is not being updated' do
+          before do
+            allow(kubernetes).to receive(:ca_cert_changed?).and_return(false)
+          end
+
+          it { is_expected.to be_truthy }
+        end
+      end
+
+      context 'with no certificate' do
+        let(:ca_pem) { "" }
+
+        it { is_expected.to be_truthy }
       end
     end
 
@@ -154,22 +200,14 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
   end
 
   describe '#rbac?' do
-    subject { kubernetes.rbac? }
-
     let(:kubernetes) { build(:cluster_platform_kubernetes, :configured) }
 
-    context 'when authorization type is rbac' do
-      let(:kubernetes) { build(:cluster_platform_kubernetes, :rbac_enabled, :configured) }
+    subject { kubernetes.rbac? }
 
-      it { is_expected.to be_truthy }
-    end
-
-    context 'when authorization type is nil' do
-      it { is_expected.to be_falsey }
-    end
+    it { is_expected.to be_truthy }
   end
 
-  describe '#actual_namespace' do
+  describe '#kubernetes_namespace_for' do
     let(:cluster) { create(:cluster, :project) }
     let(:project) { cluster.project }
 
@@ -179,7 +217,7 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
              namespace: namespace)
     end
 
-    subject { platform.actual_namespace }
+    subject { platform.kubernetes_namespace_for(project) }
 
     context 'with a namespace assigned' do
       let(:namespace) { 'namespace-123' }
@@ -210,7 +248,7 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
     let!(:cluster) { create(:cluster, :project, platform_kubernetes: kubernetes) }
     let(:kubernetes) { create(:cluster_platform_kubernetes, api_url: api_url, ca_cert: ca_pem) }
     let(:api_url) { 'https://kube.domain.com' }
-    let(:ca_pem) { 'CA PEM DATA' }
+    let(:ca_pem) { File.read(Rails.root.join('spec/fixtures/clusters/sample_cert.pem')) }
 
     subject { kubernetes.predefined_variables(project: cluster.project) }
 
@@ -231,7 +269,7 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
 
       it 'sets KUBE_TOKEN' do
         expect(subject).to include(
-          { key: 'KUBE_TOKEN', value: kubernetes.token, public: false }
+          { key: 'KUBE_TOKEN', value: kubernetes.token, public: false, masked: true }
         )
       end
     end
@@ -243,7 +281,7 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
 
       it 'sets KUBE_TOKEN' do
         expect(subject).to include(
-          { key: 'KUBE_TOKEN', value: kubernetes_namespace.service_account_token, public: false }
+          { key: 'KUBE_TOKEN', value: kubernetes_namespace.service_account_token, public: false, masked: true }
         )
       end
     end
@@ -259,19 +297,17 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
 
       it 'sets KUBE_TOKEN' do
         expect(subject).to include(
-          { key: 'KUBE_TOKEN', value: kubernetes.token, public: false }
+          { key: 'KUBE_TOKEN', value: kubernetes.token, public: false, masked: true }
         )
       end
     end
 
     context 'no namespace provided' do
-      let(:namespace) { kubernetes.actual_namespace }
-
       it_behaves_like 'setting variables'
 
       it 'sets KUBE_TOKEN' do
         expect(subject).to include(
-          { key: 'KUBE_TOKEN', value: kubernetes.token, public: false }
+          { key: 'KUBE_TOKEN', value: kubernetes.token, public: false, masked: true }
         )
       end
     end
@@ -291,6 +327,18 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
             { key: 'KUBE_TOKEN', value: kubernetes.token, public: false }
           )
         end
+
+        context 'the cluster is not managed' do
+          let!(:cluster) { create(:cluster, :group, :not_managed, platform_kubernetes: kubernetes) }
+
+          it_behaves_like 'setting variables'
+
+          it 'sets KUBE_TOKEN' do
+            expect(subject).to include(
+              { key: 'KUBE_TOKEN', value: kubernetes.token, public: false, masked: true }
+            )
+          end
+        end
       end
 
       context 'kubernetes namespace exists for the project' do
@@ -300,9 +348,22 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
 
         it 'sets KUBE_TOKEN' do
           expect(subject).to include(
-            { key: 'KUBE_TOKEN', value: kubernetes_namespace.service_account_token, public: false }
+            { key: 'KUBE_TOKEN', value: kubernetes_namespace.service_account_token, public: false, masked: true }
           )
         end
+      end
+    end
+
+    context 'with a domain' do
+      let!(:cluster) do
+        create(:cluster, :provided_by_gcp, :with_domain,
+               platform_kubernetes: kubernetes)
+      end
+
+      it 'sets KUBE_INGRESS_BASE_DOMAIN' do
+        expect(subject).to include(
+          { key: 'KUBE_INGRESS_BASE_DOMAIN', value: cluster.domain, public: true }
+        )
       end
     end
   end
@@ -324,13 +385,14 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
     end
 
     context 'with valid pods' do
-      let(:pod) { kube_pod(app: environment.slug) }
+      let(:pod) { kube_pod(environment_slug: environment.slug, namespace: cluster.kubernetes_namespace_for(project), project_slug: project.full_path_slug) }
+      let(:pod_with_no_terminal) { kube_pod(environment_slug: environment.slug, project_slug: project.full_path_slug, status: "Pending") }
       let(:terminals) { kube_terminals(service, pod) }
 
       before do
         stub_reactive_cache(
           service,
-          pods: [pod, pod, kube_pod(app: "should-be-filtered-out")]
+          pods: [pod, pod, pod_with_no_terminal, kube_pod(environment_slug: "should-be-filtered-out")]
         )
       end
 
@@ -353,6 +415,7 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
     let!(:cluster) { create(:cluster, :project, enabled: enabled, platform_kubernetes: service) }
     let(:service) { create(:cluster_platform_kubernetes, :configured) }
     let(:enabled) { true }
+    let(:namespace) { cluster.kubernetes_namespace_for(cluster.project) }
 
     context 'when cluster is disabled' do
       let(:enabled) { false }
@@ -362,8 +425,8 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
 
     context 'when kubernetes responds with valid pods and deployments' do
       before do
-        stub_kubeclient_pods
-        stub_kubeclient_deployments
+        stub_kubeclient_pods(namespace)
+        stub_kubeclient_deployments(namespace)
       end
 
       it { is_expected.to include(pods: [kube_pod]) }
@@ -371,8 +434,8 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
 
     context 'when kubernetes responds with 500s' do
       before do
-        stub_kubeclient_pods(status: 500)
-        stub_kubeclient_deployments(status: 500)
+        stub_kubeclient_pods(namespace, status: 500)
+        stub_kubeclient_deployments(namespace, status: 500)
       end
 
       it { expect { subject }.to raise_error(Kubeclient::HttpError) }
@@ -380,9 +443,15 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
 
     context 'when kubernetes responds with 404s' do
       before do
-        stub_kubeclient_pods(status: 404)
-        stub_kubeclient_deployments(status: 404)
+        stub_kubeclient_pods(namespace, status: 404)
+        stub_kubeclient_deployments(namespace, status: 404)
       end
+
+      it { is_expected.to include(pods: []) }
+    end
+
+    context 'when the cluster is not project level' do
+      let(:cluster) { create(:cluster, :group, platform_kubernetes: service) }
 
       it { is_expected.to include(pods: []) }
     end
@@ -393,8 +462,8 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
     let(:platform) { cluster.platform }
 
     context 'when namespace is updated' do
-      it 'should call ConfigureWorker' do
-        expect(ClusterPlatformConfigureWorker).to receive(:perform_async).with(cluster.id).once
+      it 'calls ConfigureWorker' do
+        expect(ClusterConfigureWorker).to receive(:perform_async).with(cluster.id).once
 
         platform.namespace = 'new-namespace'
         platform.save
@@ -402,8 +471,8 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
     end
 
     context 'when namespace is not updated' do
-      it 'should not call ConfigureWorker' do
-        expect(ClusterPlatformConfigureWorker).not_to receive(:perform_async)
+      it 'does not call ConfigureWorker' do
+        expect(ClusterConfigureWorker).not_to receive(:perform_async)
 
         platform.username = "new-username"
         platform.save

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Oauth::AuthorizationsController do
@@ -30,7 +32,7 @@ describe Oauth::AuthorizationsController do
       render_views
 
       it 'returns 200 code and renders view' do
-        get :new, params
+        get :new, params: params
 
         expect(response).to have_gitlab_http_status(200)
         expect(response).to render_template('doorkeeper/authorizations/new')
@@ -40,7 +42,7 @@ describe Oauth::AuthorizationsController do
         application.update(trusted: true)
         request.session['user_return_to'] = 'http://example.com'
 
-        get :new, params
+        get :new, params: params
 
         expect(request.session['user_return_to']).to be_nil
         expect(response).to have_gitlab_http_status(302)
@@ -57,7 +59,7 @@ describe Oauth::AuthorizationsController do
           end
 
           it 'authorizes the request and redirects' do
-            get :new, params
+            get :new, params: params
 
             expect(request.session['user_return_to']).to be_nil
             expect(response).to have_gitlab_http_status(302)

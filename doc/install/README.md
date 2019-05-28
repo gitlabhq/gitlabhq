@@ -3,7 +3,7 @@ comments: false
 description: Read through the GitLab installation methods.
 ---
 
-# Installation
+# Installation **[CORE ONLY]**
 
 GitLab can be installed in most GNU/Linux distributions and in a number
 of cloud providers. To get the best experience from GitLab you need to balance
@@ -55,9 +55,9 @@ need to be aware of:
 - It can be more expensive for smaller installations. The default installation
   requires more resources than a single node Omnibus deployment, as most services
   are deployed in a redundant fashion.
-- There are some feature [limitations to be aware of](kubernetes/gitlab_chart.md#limitations).
+- There are some feature [limitations to be aware of](https://docs.gitlab.com/charts/#limitations).
 
-[**> Install GitLab on Kubernetes using the GitLab Helm charts.**](kubernetes/index.md)
+[**> Install GitLab on Kubernetes using the GitLab Helm charts.**](https://docs.gitlab.com/charts/)
 
 ## Installing GitLab with Docker
 

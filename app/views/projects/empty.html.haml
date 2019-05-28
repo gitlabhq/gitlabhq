@@ -7,89 +7,64 @@
 %div{ class: [container_class, ("limit-container-width" unless fluid_layout)] }
   = render "home_panel"
 
-  .project-empty-note-panel
-    %h4.append-bottom-20
-      = _('The repository for this project is empty')
+  %h4.prepend-top-0.append-bottom-8
+    = _('The repository for this project is empty')
 
-    - if @project.can_current_user_push_code?
-      %p
-        - link_to_cli = link_to _('command line instructions'), '#repo-command-line-instructions'
-        = _('If you already have files you can push them using the %{link_to_cli} below.').html_safe % { link_to_cli: link_to_cli }
-      %p
-        %em
-          - link_to_protected_branches = link_to _('Learn more about protected branches'), help_page_path('user/project/protected_branches')
-          = _('Note that the master branch is automatically protected. %{link_to_protected_branches}').html_safe % { link_to_protected_branches: link_to_protected_branches }
+  - if @project.can_current_user_push_code?
+    %p.append-bottom-0
+      = _('You can create files directly in GitLab using one of the following options.')
 
-      %hr
-      %p
-        - link_to_auto_devops_settings = link_to(s_('AutoDevOps|enable Auto DevOps'), project_settings_ci_cd_path(@project, anchor: 'autodevops-settings'))
-        - link_to_add_kubernetes_cluster = link_to(s_('AutoDevOps|add a Kubernetes cluster'), new_project_cluster_path(@project))
-        = s_('AutoDevOps|You can automatically build and test your application if you %{link_to_auto_devops_settings} for this project. You can automatically deploy it as well, if you %{link_to_add_kubernetes_cluster}.').html_safe % { link_to_auto_devops_settings: link_to_auto_devops_settings, link_to_add_kubernetes_cluster: link_to_add_kubernetes_cluster }
-
-      %hr
-      %p
-        = _('Otherwise it is recommended you start with one of the options below.')
-      .prepend-top-20
-
-  %nav.project-buttons
-    .scrolling-tabs-container.inner-page-scroll-tabs.is-smaller.qa-quick-actions
-      .fade-left= icon('angle-left')
-      .fade-right= icon('angle-right')
-      .nav-links.scrolling-tabs.quick-links
-        = render 'stat_anchor_list', anchors: @project.empty_repo_statistics_buttons
+  .project-buttons.qa-quick-actions
+    = render 'stat_anchor_list', anchors: @project.empty_repo_statistics_buttons
 
   - if can?(current_user, :push_code, @project)
-    %div
-      .prepend-top-20
-      .empty_wrapper
-        %h3#repo-command-line-instructions.page-title-empty
-          = _('Command line instructions')
-        .git-empty.js-git-empty
-          %fieldset
-            %h5= _('Git global setup')
-            %pre.bg-light
-              :preserve
-                git config --global user.name "#{h git_user_name}"
-                git config --global user.email "#{h git_user_email}"
+    .empty-wrapper.prepend-top-32
+      %h3#repo-command-line-instructions.page-title-empty
+        = _('Command line instructions')
+      %p
+        = _('You can also upload existing files from your computer using the instructions below.')
+      .git-empty.js-git-empty
+        %fieldset
+          %h5= _('Git global setup')
+          %pre.bg-light
+            :preserve
+              git config --global user.name "#{h git_user_name}"
+              git config --global user.email "#{h git_user_email}"
 
-          %fieldset
-            %h5= _('Create a new repository')
-            %pre.bg-light
-              :preserve
-                git clone #{ content_tag(:span, default_url_to_repo, class: 'js-clone')}
-                cd #{h @project.path}
-                touch README.md
-                git add README.md
-                git commit -m "add README"
-              - if @project.can_current_user_push_to_default_branch?
-                %span><
-                  git push -u origin master
+        %fieldset
+          %h5= _('Create a new repository')
+          %pre.bg-light
+            :preserve
+              git clone #{ content_tag(:span, default_url_to_repo, class: 'js-clone')}
+              cd #{h @project.path}
+              touch README.md
+              git add README.md
+              git commit -m "add README"
+            - if @project.can_current_user_push_to_default_branch?
+              %span><
+                git push -u origin master
 
-          %fieldset
-            %h5= _('Existing folder')
-            %pre.bg-light
-              :preserve
-                cd existing_folder
-                git init
-                git remote add origin #{ content_tag(:span, default_url_to_repo, class: 'js-clone')}
-                git add .
-                git commit -m "Initial commit"
-              - if @project.can_current_user_push_to_default_branch?
-                %span><
-                  git push -u origin master
+        %fieldset
+          %h5= _('Push an existing folder')
+          %pre.bg-light
+            :preserve
+              cd existing_folder
+              git init
+              git remote add origin #{ content_tag(:span, default_url_to_repo, class: 'js-clone')}
+              git add .
+              git commit -m "Initial commit"
+            - if @project.can_current_user_push_to_default_branch?
+              %span><
+                git push -u origin master
 
-          %fieldset
-            %h5= _('Existing Git repository')
-            %pre.bg-light
-              :preserve
-                cd existing_repo
-                git remote rename origin old-origin
-                git remote add origin #{ content_tag(:span, default_url_to_repo, class: 'js-clone')}
-              - if @project.can_current_user_push_to_default_branch?
-                %span><
-                  git push -u origin --all
-                  git push -u origin --tags
-
-            - if can? current_user, :remove_project, @project
-              .prepend-top-20
-                = link_to _('Remove project'), [@project.namespace.becomes(Namespace), @project], data: { confirm: remove_project_message(@project)}, method: :delete, class: "btn btn-inverted btn-remove float-right"
+        %fieldset
+          %h5= _('Push an existing Git repository')
+          %pre.bg-light
+            :preserve
+              cd existing_repo
+              git remote rename origin old-origin
+              git remote add origin #{ content_tag(:span, default_url_to_repo, class: 'js-clone')}
+            - if @project.can_current_user_push_to_default_branch?
+              %span><
+                git push -u origin --all
+                git push -u origin --tags

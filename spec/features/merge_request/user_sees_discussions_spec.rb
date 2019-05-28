@@ -88,5 +88,17 @@ describe 'Merge request > User sees discussions', :js do
         expect(page).to have_content "started a discussion on commit #{note.commit_id[0...7]}"
       end
     end
+
+    context 'a commit non-diff discussion' do
+      let(:note) { create(:discussion_note_on_commit, project: project) }
+
+      it 'displays correct header' do
+        page.within(find("#note_#{note.id}", match: :first)) do
+          refresh # Trigger a refresh of notes.
+          wait_for_requests
+          expect(page).to have_content "commented on commit #{note.commit_id[0...7]}"
+        end
+      end
+    end
   end
 end

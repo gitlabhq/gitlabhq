@@ -1,6 +1,5 @@
 # rubocop:disable Migration/UpdateLargeTable
 class MigrateUserActivitiesToUsersLastActivityOn < ActiveRecord::Migration[4.2]
-  include Gitlab::Database::ArelMethods
   include Gitlab::Database::MigrationHelpers
 
   disable_ddl_transaction!
@@ -40,7 +39,7 @@ class MigrateUserActivitiesToUsersLastActivityOn < ActiveRecord::Migration[4.2]
     activities = activities(day.at_beginning_of_day, day.at_end_of_day, page: page)
 
     update_sql =
-      arel_update_manager
+      Arel::UpdateManager.new
         .table(users_table)
         .set(users_table[:last_activity_on] => day.to_date)
         .where(users_table[:username].in(activities.map(&:first)))

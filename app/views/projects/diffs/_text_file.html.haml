@@ -1,7 +1,7 @@
 - too_big = diff_file.diff_lines.count > Commit::DIFF_SAFE_LINES
 - if too_big
   .suppressed-container
-    %a.show-suppressed-diff.js-show-suppressed-diff= _("Changes suppressed. Click to show.")
+    %a.show-suppressed-diff.cursor-pointer.js-show-suppressed-diff= _("Changes suppressed. Click to show.")
 
 %table.text-file.diff-wrap-lines.code.js-syntax-highlight.commit-diff{ data: diff_view_data, class: too_big ? 'hide' : '' }
   = render partial: "projects/diffs/line",

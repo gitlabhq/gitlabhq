@@ -9,13 +9,13 @@ describe 'Projects > Settings > User tags a project' do
     visit edit_project_path(project)
   end
 
-  it 'sets project tags' do
-    fill_in 'Tags', with: 'tag1, tag2'
+  it 'sets project topics' do
+    fill_in 'Topics', with: 'topic1, topic2'
 
     page.within '.general-settings' do
       click_button 'Save changes'
     end
 
-    expect(find_field('Tags').value).to eq 'tag1, tag2'
+    expect(find_field('Topics').value).to eq 'topic1, topic2'
   end
 end

@@ -10,6 +10,10 @@ There is a `Gitlab::Profiler.profile` method, and corresponding
 `bin/profile-url` script, that enable profiling a GET or POST request to a
 specific URL, either as an anonymous user (the default) or as a specific user.
 
+NOTE: **Note:** The first argument to the profiler is either a full URL
+(including the instance hostname) or an absolute path, including the
+leading slash.
+
 When using the script, command-line documentation is available by passing no
 arguments.
 
@@ -72,16 +76,22 @@ Gitlab::Profiler.print_by_total_time(result, max_percent: 60, min_percent: 2)
 #   0.02      0.865     0.000     0.000     0.864      638  *Enumerable#inject
 ```
 
+To print the profile in HTML format, use the following example:
+
+```ruby
+result = Gitlab::Profiler.profile('/my-user')
+
+printer = RubyProf::CallStackPrinter.new(result)
+printer.print(File.open('/tmp/profile.html', 'w'))
+```
+
 [GitLab-Profiler](https://gitlab.com/gitlab-com/gitlab-profiler) is a project
 that builds on this to add some additional niceties, such as allowing
 configuration with a single Yaml file for multiple URLs, and uploading of the
 profile and log output to S3.
 
-For GitLab.com, currently the latest profiling data has been [moved from
-Redash to Looker](https://gitlab.com/gitlab-com/Product/issues/5#note_121194467).
-We are [currently investigating how to make this data
-public](https://gitlab.com/meltano/looker/issues/294).
-
+For GitLab.com, you can find the latest results here:
+<http://redash.gitlab.com/dashboard/gitlab-profiler-statistics>
 
 ## Sherlock
 

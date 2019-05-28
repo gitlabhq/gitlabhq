@@ -8,8 +8,28 @@ hub:
   extraConfig: |
     c.KubeSpawner.cmd = ['jupyter-labhub']
 
+    async def add_auth_env(spawner):
+      '''
+      We set user's id, login and access token on single user image to
+      enable repository integration for JupyterHub.
+      See: https://gitlab.com/gitlab-org/gitlab-ce/issues/47138#note_154294790
+      '''
+      auth_state = await spawner.user.get_auth_state()
+
+      if not auth_state:
+          spawner.log.warning("No auth state for %s", spawner.user)
+          return
+
+      spawner.environment['GITLAB_ACCESS_TOKEN'] = auth_state['access_token']
+      spawner.environment['GITLAB_USER_LOGIN'] = auth_state['gitlab_user']['username']
+      spawner.environment['GITLAB_USER_ID'] = str(auth_state['gitlab_user']['id'])
+
+    c.KubeSpawner.pre_spawn_hook = add_auth_env
+
 auth:
   type: gitlab
+  state:
+    enabled: true
 
 singleuser:
   defaultUrl: "/lab"

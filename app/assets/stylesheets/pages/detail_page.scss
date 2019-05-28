@@ -21,7 +21,6 @@
 
 .detail-page-header-body {
   position: relative;
-  line-height: 35px;
   display: flex;
   flex: 1 1;
   min-width: 0;
@@ -34,7 +33,6 @@
 
 .detail-page-header-actions {
   align-self: center;
-  flex-shrink: 0;
   flex: 0 0 auto;
 
   @include media-breakpoint-down(xs) {

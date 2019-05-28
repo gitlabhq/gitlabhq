@@ -1,10 +1,6 @@
 /**
  * Note Form
  */
-.comment-btn {
-  @extend .btn-success;
-}
-
 .diff-file .diff-content {
   tr.line_holder:hover > td .line_note_link {
     opacity: 1;
@@ -62,7 +58,7 @@
     border: 1px solid $border-color;
     border-radius: $border-radius-base;
     transition: border-color ease-in-out 0.15s,
-                box-shadow ease-in-out 0.15s;
+      box-shadow ease-in-out 0.15s;
 
     &.is-focused {
       @extend .form-control:focus;
@@ -76,7 +72,7 @@
     &.is-dropzone-hover {
       border-color: $green-500;
       box-shadow: 0 0 2px $black-transparent,
-                  0 0 4px $green-500-focus;
+        0 0 4px $green-500-focus;
 
       .comment-toolbar,
       .nav-links {
@@ -88,9 +84,7 @@
 
 .md-header .nav-links {
   display: flex;
-  display: -webkit-flex;
   flex-flow: row wrap;
-  -webkit-flex-flow: row wrap;
   width: 100%;
 
   .float-right {
@@ -151,7 +145,7 @@
   }
 
   .sidebar-item-value & {
-    fill: $theme-gray-700;
+    fill: $gray-700;
   }
 }
 
@@ -386,7 +380,7 @@ table {
 }
 
 .comment-type-dropdown {
-  .comment-btn {
+  .btn-success {
     width: auto;
   }
 
@@ -417,7 +411,7 @@ table {
     width: 100%;
     margin-bottom: 10px;
 
-    .comment-btn {
+    .btn-success {
       flex-grow: 1;
       flex-shrink: 0;
       width: auto;
@@ -448,7 +442,7 @@ table {
 .uploading-error-message {
   @include media-breakpoint-down(xs) {
     &::after {
-      content: "\a";
+      content: '\a';
       white-space: pre;
     }
   }

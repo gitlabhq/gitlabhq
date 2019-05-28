@@ -25,13 +25,13 @@ module BitbucketServer
     end
 
     def prev_page
-      return nil unless current_page > 1
+      return unless current_page > 1
 
       current_page - 1
     end
 
     def next_page
-      return nil unless has_next_page?
+      return unless has_next_page?
 
       current_page + 1
     end

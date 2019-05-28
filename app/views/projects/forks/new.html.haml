@@ -1,13 +1,11 @@
-- page_title "Fork project"
+- page_title _("Fork project")
 
 .row.prepend-top-default
   .col-lg-3
     %h4.prepend-top-0
-      Fork project
+      = _("Fork project")
     %p
-      A fork is a copy of a project.
-      %br
-      Forking a repository allows you to make changes without affecting the original project.
+      = _("A fork is a copy of a project.<br />Forking a repository allows you to make changes without affecting the original project.").html_safe
   .col-lg-9
     - if @namespaces.present?
       .fork-thumbnail-container.js-fork-content
@@ -17,13 +15,13 @@
           = render 'fork_button', namespace: namespace
     - else
       %strong
-        No available namespaces to fork the project.
+        = _("No available namespaces to fork the project.")
       %p.prepend-top-default
-        You must have permission to create a project in a namespace before forking.
+        = _("You must have permission to create a project in a namespace before forking.")
 
     .save-project-loader.hide.js-fork-content
       %h2.text-center
         = icon('spinner spin')
-        Forking repository
+        = _("Forking repository")
       %p.text-center
-        Please wait a moment, this page will automatically refresh when ready.
+        = _("Please wait a moment, this page will automatically refresh when ready.")

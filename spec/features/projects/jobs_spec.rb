@@ -2,6 +2,9 @@ require 'spec_helper'
 require 'tempfile'
 
 describe 'Jobs', :clean_gitlab_redis_shared_state do
+  include Gitlab::Routing
+  include ProjectForksHelper
+
   let(:user) { create(:user) }
   let(:user_access_level) { :developer }
   let(:project) { create(:project, :repository) }
@@ -28,7 +31,6 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
       end
 
       it "shows Pending tab jobs" do
-        expect(page).to have_link 'Cancel running'
         expect(page).to have_selector('.nav-links li.active', text: 'Pending')
         expect(page).to have_content job.short_sha
         expect(page).to have_content job.ref
@@ -44,7 +46,6 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
 
       it "shows Running tab jobs" do
         expect(page).to have_selector('.nav-links li.active', text: 'Running')
-        expect(page).to have_link 'Cancel running'
         expect(page).to have_content job.short_sha
         expect(page).to have_content job.ref
         expect(page).to have_content job.name
@@ -60,7 +61,6 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
       it "shows Finished tab jobs" do
         expect(page).to have_selector('.nav-links li.active', text: 'Finished')
         expect(page).to have_content 'No jobs to show'
-        expect(page).to have_link 'Cancel running'
       end
     end
 
@@ -75,7 +75,6 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
         expect(page).to have_content job.short_sha
         expect(page).to have_content job.ref
         expect(page).to have_content job.name
-        expect(page).not_to have_link 'Cancel running'
       end
     end
 
@@ -94,23 +93,6 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
     end
   end
 
-  describe "POST /:project/jobs/:id/cancel_all" do
-    before do
-      job.run!
-      visit project_jobs_path(project)
-      click_link "Cancel running"
-    end
-
-    it 'shows all necessary content' do
-      expect(page).to have_selector('.nav-links li.active', text: 'All')
-      expect(page).to have_content 'canceled'
-      expect(page).to have_content job.short_sha
-      expect(page).to have_content job.ref
-      expect(page).to have_content job.name
-      expect(page).not_to have_link 'Cancel running'
-    end
-  end
-
   describe "GET /:project/jobs/:id" do
     context "Job from project" do
       let(:job) { create(:ci_build, :success, :trace_live, pipeline: pipeline) }
@@ -124,7 +106,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
       end
 
       it 'shows commit`s data', :js do
-        requests = inspect_requests() do
+        requests = inspect_requests do
           visit project_job_path(project, job)
         end
 
@@ -139,6 +121,112 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
 
         wait_for_requests
         expect(page).to have_selector('.build-job.active')
+      end
+    end
+
+    context 'pipeline info block', :js do
+      it 'shows pipeline id and source branch' do
+        visit project_job_path(project, job)
+
+        within '.js-pipeline-info' do
+          expect(page).to have_content("Pipeline ##{pipeline.id} for #{pipeline.ref}")
+        end
+      end
+
+      context 'when pipeline is detached merge request pipeline' do
+        let(:merge_request) do
+          create(:merge_request,
+            :with_detached_merge_request_pipeline,
+            target_project: target_project,
+            source_project: source_project)
+        end
+
+        let(:source_project) { project }
+        let(:target_project) { project }
+        let(:pipeline) { merge_request.all_pipelines.last }
+        let(:job) { create(:ci_build, pipeline: pipeline) }
+
+        it 'shows merge request iid and source branch' do
+          visit project_job_path(project, job)
+
+          within '.js-pipeline-info' do
+            expect(page).to have_content("for !#{pipeline.merge_request.iid} " \
+                                         "with #{pipeline.merge_request.source_branch}")
+            expect(page).to have_link("!#{pipeline.merge_request.iid}",
+              href: project_merge_request_path(project, merge_request))
+            expect(page).to have_link(pipeline.merge_request.source_branch,
+              href: project_commits_path(project, merge_request.source_branch))
+          end
+        end
+
+        context 'when source project is a forked project' do
+          let(:source_project) { fork_project(project, user, repository: true) }
+          let(:target_project) { project }
+
+          it 'shows merge request iid and source branch' do
+            visit project_job_path(source_project, job)
+
+            within '.js-pipeline-info' do
+              expect(page).to have_content("for !#{pipeline.merge_request.iid} " \
+                                           "with #{pipeline.merge_request.source_branch}")
+              expect(page).to have_link("!#{pipeline.merge_request.iid}",
+                href: project_merge_request_path(project, merge_request))
+              expect(page).to have_link(pipeline.merge_request.source_branch,
+                href: project_commits_path(source_project, merge_request.source_branch))
+            end
+          end
+        end
+      end
+
+      context 'when pipeline is merge request pipeline' do
+        let(:merge_request) do
+          create(:merge_request,
+            :with_merge_request_pipeline,
+            target_project: target_project,
+            source_project: source_project)
+        end
+
+        let(:source_project) { project }
+        let(:target_project) { project }
+        let(:pipeline) { merge_request.all_pipelines.last }
+        let(:job) { create(:ci_build, pipeline: pipeline) }
+
+        it 'shows merge request iid and source branch' do
+          visit project_job_path(project, job)
+
+          within '.js-pipeline-info' do
+            expect(page).to have_content("for !#{pipeline.merge_request.iid} " \
+                                         "with #{pipeline.merge_request.source_branch} " \
+                                         "into #{pipeline.merge_request.target_branch}")
+            expect(page).to have_link("!#{pipeline.merge_request.iid}",
+              href: project_merge_request_path(project, merge_request))
+            expect(page).to have_link(pipeline.merge_request.source_branch,
+              href: project_commits_path(project, merge_request.source_branch))
+            expect(page).to have_link(pipeline.merge_request.target_branch,
+              href: project_commits_path(project, merge_request.target_branch))
+          end
+        end
+
+        context 'when source project is a forked project' do
+          let(:source_project) { fork_project(project, user, repository: true) }
+          let(:target_project) { project }
+
+          it 'shows merge request iid and source branch' do
+            visit project_job_path(source_project, job)
+
+            within '.js-pipeline-info' do
+              expect(page).to have_content("for !#{pipeline.merge_request.iid} " \
+                                           "with #{pipeline.merge_request.source_branch} " \
+                                           "into #{pipeline.merge_request.target_branch}")
+              expect(page).to have_link("!#{pipeline.merge_request.iid}",
+                href: project_merge_request_path(project, merge_request))
+              expect(page).to have_link(pipeline.merge_request.source_branch,
+                href: project_commits_path(source_project, merge_request.source_branch))
+              expect(page).to have_link(pipeline.merge_request.target_branch,
+                href: project_commits_path(project, merge_request.target_branch))
+            end
+          end
+        end
       end
     end
 
@@ -191,7 +279,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
 
           href = new_project_issue_path(project, options)
 
-          page.within('.header-action-buttons') do
+          page.within('.build-sidebar') do
             expect(find('.js-new-issue')['href']).to include(href)
           end
         end
@@ -235,13 +323,13 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
       end
 
       it 'downloads the zip file when user clicks the download button' do
-        requests = inspect_requests() do
+        requests = inspect_requests do
           click_link 'Download'
         end
 
         artifact_request = requests.find { |req| req.url.match(%r{artifacts/download}) }
 
-        expect(artifact_request.response_headers["Content-Disposition"]).to eq(%Q{attachment; filename="#{job.artifacts_file.filename}"})
+        expect(artifact_request.response_headers["Content-Disposition"]).to eq(%Q{attachment; filename*=UTF-8''#{job.artifacts_file.filename}; filename="#{job.artifacts_file.filename}"})
         expect(artifact_request.response_headers['Content-Transfer-Encoding']).to eq("binary")
         expect(artifact_request.response_headers['Content-Type']).to eq("image/gif")
         expect(artifact_request.body).to eq(job.artifacts_file.file.read.b)
@@ -351,8 +439,8 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
       context 'when user is a maintainer' do
         shared_examples 'no reveal button variables behavior' do
           it 'renders a hidden value with no reveal values button', :js do
-            expect(page).to have_content('Token')
-            expect(page).to have_content('Variables')
+            expect(page).to have_content('Trigger token')
+            expect(page).to have_content('Trigger variables')
 
             expect(page).not_to have_css('.js-reveal-variables')
 
@@ -389,8 +477,8 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
 
         shared_examples 'reveal button variables behavior' do
           it 'renders a hidden value with a reveal values button', :js do
-            expect(page).to have_content('Token')
-            expect(page).to have_content('Variables')
+            expect(page).to have_content('Trigger token')
+            expect(page).to have_content('Trigger variables')
 
             expect(page).to have_css('.js-reveal-variables')
 
@@ -845,11 +933,11 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
       before do
         job.run!
         visit project_job_path(project, job)
-        find('.js-cancel-job').click()
+        find('.js-cancel-job').click
       end
 
-      it 'loads the page and shows all needed controls' do
-        expect(page).to have_content 'Retry'
+      it 'loads the page and shows no controls' do
+        expect(page).not_to have_content 'Retry'
       end
     end
   end
@@ -858,7 +946,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
     context "Job from project", :js do
       before do
         job.run!
-        job.cancel!
+        job.drop!(:script_failure)
         visit project_job_path(project, job)
         wait_for_requests
 
@@ -905,7 +993,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
       end
 
       it do
-        requests = inspect_requests() do
+        requests = inspect_requests do
           visit download_project_job_artifacts_path(project, job2)
         end
 

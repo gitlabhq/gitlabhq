@@ -3,8 +3,8 @@ import Timeago from 'timeago.js';
 import _ from 'underscore';
 import { GlTooltipDirective } from '@gitlab/ui';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
-import { humanize } from '~/lib/utils/text_utility';
 import Icon from '~/vue_shared/components/icon.vue';
+import environmentItemMixin from 'ee_else_ce/environments/mixins/environment_item_mixin';
 import ActionsComponent from './environment_actions.vue';
 import ExternalUrlComponent from './environment_external_url.vue';
 import StopComponent from './environment_stop.vue';
@@ -14,6 +14,7 @@ import MonitoringButtonComponent from './environment_monitoring.vue';
 import CommitComponent from '../../vue_shared/components/commit.vue';
 import eventHub from '../event_hub';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { CLUSTER_TYPE } from '~/clusters/constants';
 
 /**
  * Environment Item Component
@@ -34,22 +35,16 @@ export default {
     TerminalButtonComponent,
     MonitoringButtonComponent,
   },
-
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [environmentItemMixin],
 
   props: {
     model: {
       type: Object,
       required: true,
       default: () => ({}),
-    },
-
-    canCreateDeployment: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
 
     canReadEnvironment: {
@@ -82,6 +77,15 @@ export default {
      */
     isProtected() {
       return this.model && this.model.is_protected;
+    },
+
+    /**
+     * Hide group cluster features which are not currently implemented.
+     *
+     * @returns {Boolean}
+     */
+    disableGroupClusterFeatures() {
+      return this.model && this.model.cluster_type === CLUSTER_TYPE.GROUP;
     },
 
     /**
@@ -141,7 +145,7 @@ export default {
     },
 
     actions() {
-      if (!this.model || !this.model.last_deployment || !this.canCreateDeployment) {
+      if (!this.model || !this.model.last_deployment) {
         return [];
       }
 
@@ -152,7 +156,7 @@ export default {
       const combinedActions = (manualActions || []).concat(scheduledActions || []);
       return combinedActions.map(action => ({
         ...action,
-        name: humanize(action.name),
+        name: action.name,
       }));
     },
 
@@ -455,19 +459,37 @@ export default {
     class="gl-responsive-table-row"
     role="row"
   >
-    <div
-      v-gl-tooltip
-      :title="model.name"
-      class="table-section section-wrap section-15 text-truncate"
-      role="gridcell"
-    >
+    <div class="table-section section-wrap section-15 text-truncate" role="gridcell">
       <div v-if="!model.isFolder" class="table-mobile-header" role="rowheader">
         {{ s__('Environments|Environment') }}
       </div>
-      <span v-if="!model.isFolder" class="environment-name table-mobile-content">
-        <a class="qa-environment-link" :href="environmentPath"> {{ model.name }} </a>
+
+      <span v-if="shouldRenderDeployBoard" class="deploy-board-icon" @click="toggleDeployBoard">
+        <icon :name="deployIconName" />
       </span>
-      <span v-else class="folder-name" role="button" @click="onClickFolder">
+
+      <span
+        v-if="!model.isFolder"
+        v-gl-tooltip
+        :title="model.name"
+        class="environment-name table-mobile-content"
+      >
+        <a class="qa-environment-link" :href="environmentPath">
+          <span v-if="model.size === 1">{{ model.name }}</span>
+          <span v-else>{{ model.name_without_type }}</span>
+        </a>
+        <span v-if="isProtected" class="badge badge-success">
+          {{ s__('Environments|protected') }}
+        </span>
+      </span>
+      <span
+        v-else
+        v-gl-tooltip
+        :title="model.folderName"
+        class="folder-name"
+        role="button"
+        @click="onClickFolder"
+      >
         <icon :name="folderIconName" class="folder-icon" />
 
         <icon name="folder" class="folder-icon" />
@@ -482,22 +504,28 @@ export default {
       class="table-section section-10 deployment-column d-none d-sm-none d-md-block"
       role="gridcell"
     >
-      <span v-if="shouldRenderDeploymentID"> {{ deploymentInternalId }} </span>
+      <span v-if="shouldRenderDeploymentID" class="text-break-word">
+        {{ deploymentInternalId }}
+      </span>
 
-      <span v-if="!model.isFolder && deploymentHasUser">
+      <span v-if="!model.isFolder && deploymentHasUser" class="text-break-word">
         by
         <user-avatar-link
           :link-href="deploymentUser.web_url"
           :img-src="deploymentUser.avatar_url"
           :img-alt="userImageAltDescription"
           :tooltip-text="deploymentUser.username"
-          class="js-deploy-user-container"
+          class="js-deploy-user-container float-none"
         />
       </span>
     </div>
 
     <div class="table-section section-15 d-none d-sm-none d-md-block" role="gridcell">
-      <a v-if="shouldRenderBuildName" :href="buildPath" class="build-link flex-truncate-parent">
+      <a
+        v-if="shouldRenderBuildName"
+        :href="buildPath"
+        class="build-link cgray flex-truncate-parent"
+      >
         <span class="flex-truncate-child">{{ buildName }}</span>
       </a>
     </div>
@@ -547,10 +575,12 @@ export default {
         <terminal-button-component
           v-if="model && model.terminal_path"
           :terminal-path="model.terminal_path"
+          :disabled="disableGroupClusterFeatures"
         />
 
         <rollback-component
-          v-if="canRetry && canCreateDeployment"
+          v-if="canRetry"
+          :environment="model"
           :is-last-deployment="isLastDeployment"
           :retry-url="retryUrl"
         />

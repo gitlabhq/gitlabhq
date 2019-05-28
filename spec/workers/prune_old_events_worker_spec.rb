@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe PruneOldEventsWorker do
@@ -5,8 +7,8 @@ describe PruneOldEventsWorker do
     let(:user) { create(:user) }
 
     let!(:expired_event) { create(:event, :closed, author: user, created_at: 25.months.ago) }
-    let!(:not_expired_1_day_event) { create(:event, :closed, author: user,  created_at: 1.day.ago) }
-    let!(:not_expired_13_month_event) { create(:event, :closed, author: user,  created_at: 13.months.ago) }
+    let!(:not_expired_1_day_event) { create(:event, :closed, author: user, created_at: 1.day.ago) }
+    let!(:not_expired_13_month_event) { create(:event, :closed, author: user, created_at: 13.months.ago) }
     let!(:not_expired_2_years_event) { create(:event, :closed, author: user, created_at: 2.years.ago) }
 
     it 'prunes events older than 2 years' do

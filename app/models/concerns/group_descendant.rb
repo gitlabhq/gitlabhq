@@ -22,7 +22,7 @@ module GroupDescendant
     return [] if descendants.empty?
 
     unless descendants.all? { |hierarchy| hierarchy.is_a?(GroupDescendant) }
-      raise ArgumentError.new('element is not a hierarchy')
+      raise ArgumentError.new(_('element is not a hierarchy'))
     end
 
     all_hierarchies = descendants.map do |descendant|
@@ -56,7 +56,7 @@ module GroupDescendant
     end
 
     if parent.nil? && hierarchy_top.present?
-      raise ArgumentError.new('specified top is not part of the tree')
+      raise ArgumentError.new(_('specified top is not part of the tree'))
     end
 
     if parent && parent != hierarchy_top

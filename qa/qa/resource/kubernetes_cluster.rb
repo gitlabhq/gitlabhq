@@ -6,7 +6,7 @@ module QA
   module Resource
     class KubernetesCluster < Base
       attr_writer :project, :cluster,
-        :install_helm_tiller, :install_ingress, :install_prometheus, :install_runner
+        :install_helm_tiller, :install_ingress, :install_prometheus, :install_runner, :domain
 
       attribute :ingress_ip do
         Page::Project::Operations::Kubernetes::Show.perform(&:ingress_ip)
@@ -16,7 +16,7 @@ module QA
         @project.visit!
 
         Page::Project::Menu.perform(
-          &:click_operations_kubernetes)
+          &:go_to_operations_kubernetes)
 
         Page::Project::Operations::Kubernetes::Index.perform(
           &:add_kubernetes_cluster)
@@ -29,7 +29,7 @@ module QA
           page.set_api_url(@cluster.api_url)
           page.set_ca_certificate(@cluster.ca_certificate)
           page.set_token(@cluster.token)
-          page.check_rbac! if @cluster.rbac
+          page.uncheck_rbac! unless @cluster.rbac
           page.add_cluster!
         end
 
@@ -49,6 +49,12 @@ module QA
             page.await_installed(:ingress) if @install_ingress
             page.await_installed(:prometheus) if @install_prometheus
             page.await_installed(:runner) if @install_runner
+
+            if @install_ingress
+              populate(:ingress_ip)
+              page.set_domain("#{ingress_ip}.nip.io")
+              page.save_domain
+            end
           end
         end
       end

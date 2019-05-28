@@ -4,12 +4,18 @@ require 'rails_helper'
 require Rails.root.join("db", "importers", "common_metrics_importer.rb")
 
 describe Importers::PrometheusMetric do
+  let(:existing_group_titles) do
+    ::PrometheusMetric::GROUP_DETAILS.each_with_object({}) do |(key, value), memo|
+      memo[key] = value[:group_title]
+    end
+  end
+
   it 'group enum equals ::PrometheusMetric' do
     expect(described_class.groups).to eq(::PrometheusMetric.groups)
   end
 
   it 'GROUP_TITLES equals ::PrometheusMetric' do
-    expect(described_class::GROUP_TITLES).to eq(::PrometheusMetric::GROUP_TITLES)
+    expect(described_class::GROUP_TITLES).to eq(existing_group_titles)
   end
 end
 
@@ -17,10 +23,10 @@ describe Importers::CommonMetricsImporter do
   subject { described_class.new }
 
   context "does import common_metrics.yml" do
-    let(:groups) { subject.content }
-    let(:metrics) { groups.map { |group| group['metrics'] }.flatten }
-    let(:queries) { metrics.map { |group| group['queries'] }.flatten }
-    let(:query_ids) { queries.map { |query| query['id'] } }
+    let(:groups) { subject.content['panel_groups'] }
+    let(:panels) { groups.map { |group| group['panels'] }.flatten }
+    let(:metrics) { panels.map { |group| group['metrics'] }.flatten }
+    let(:metric_ids) { metrics.map { |metric| metric['id'] } }
 
     before do
       subject.execute
@@ -30,20 +36,20 @@ describe Importers::CommonMetricsImporter do
       expect(PrometheusMetric.common.group(:group).count.count).to eq(groups.count)
     end
 
-    it "has the same amount of metrics" do
-      expect(PrometheusMetric.common.group(:group, :title).count.count).to eq(metrics.count)
+    it "has the same amount of panels" do
+      expect(PrometheusMetric.common.group(:group, :title).count.count).to eq(panels.count)
     end
 
-    it "has the same amount of queries" do
-      expect(PrometheusMetric.common.count).to eq(queries.count)
+    it "has the same amount of metrics" do
+      expect(PrometheusMetric.common.count).to eq(metrics.count)
     end
 
     it "does not have duplicate IDs" do
-      expect(query_ids).to eq(query_ids.uniq)
+      expect(metric_ids).to eq(metric_ids.uniq)
     end
 
     it "imports all IDs" do
-      expect(PrometheusMetric.common.pluck(:identifier)).to contain_exactly(*query_ids)
+      expect(PrometheusMetric.common.pluck(:identifier)).to contain_exactly(*metric_ids)
     end
   end
 
@@ -59,24 +65,26 @@ describe Importers::CommonMetricsImporter do
 
   context 'does import properly all fields' do
     let(:query_identifier) { 'response-metric' }
-    let(:group) do
+    let(:dashboard) do
       {
-        group: 'Response metrics (NGINX Ingress)',
-        metrics: [{
-          title: "Throughput",
-          y_label: "Requests / Sec",
-          queries: [{
-            id: query_identifier,
-            query_range: 'my-query',
-            unit: 'my-unit',
-            label: 'status code'
+        panel_groups: [{
+          group: 'Response metrics (NGINX Ingress)',
+          panels: [{
+            title: "Throughput",
+            y_label: "Requests / Sec",
+            metrics: [{
+              id: query_identifier,
+              query_range: 'my-query',
+              unit: 'my-unit',
+              label: 'status code'
+            }]
           }]
         }]
       }
     end
 
     before do
-      expect(subject).to receive(:content) { [group.deep_stringify_keys] }
+      expect(subject).to receive(:content) { dashboard.deep_stringify_keys }
     end
 
     shared_examples 'stores metric' do

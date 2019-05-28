@@ -141,3 +141,105 @@ serverFiles:
             - __meta_kubernetes_pod_name
             action: replace
             target_label: kubernetes_pod_name
+      # Sourced from Knative monitoring config: https://github.com/knative/serving/blob/master/config/monitoring/metrics/prometheus/100-prometheus-scrape-config.yaml
+      - job_name: autoscaler
+        scrape_interval: 3s
+        scrape_timeout: 3s
+        kubernetes_sd_configs:
+        - role: pod
+        relabel_configs:
+        # Scrape only the the targets matching the following metadata
+        - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_pod_label_app, __meta_kubernetes_pod_container_port_name]
+          action: keep
+          regex: knative-serving;autoscaler;metrics
+        # Rename metadata labels to be reader friendly
+        - source_labels: [__meta_kubernetes_namespace]
+          target_label: namespace
+        - source_labels: [__meta_kubernetes_pod_name]
+          target_label: pod
+        - source_labels: [__meta_kubernetes_service_name]
+          target_label: service
+      - job_name: activator
+        scrape_interval: 3s
+        scrape_timeout: 3s
+        kubernetes_sd_configs:
+        - role: pod
+        relabel_configs:
+        # Scrape only the the targets matching the following metadata
+        - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_pod_label_app, __meta_kubernetes_pod_container_port_name]
+          action: keep
+          regex: knative-serving;activator;metrics-port
+        # Rename metadata labels to be reader friendly
+        - source_labels: [__meta_kubernetes_namespace]
+          target_label: namespace
+        - source_labels: [__meta_kubernetes_pod_name]
+          target_label: pod
+        - source_labels: [__meta_kubernetes_service_name]
+          target_label: service
+      # Istio mesh
+      - job_name: istio-mesh
+        scrape_interval: 5s
+        kubernetes_sd_configs:
+        - role: endpoints
+        relabel_configs:
+        # Scrape only the the targets matching the following metadata
+        - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
+          action: keep
+          regex: istio-system;istio-telemetry;prometheus
+        # Rename metadata labels to be reader friendly
+        - source_labels: [__meta_kubernetes_namespace]
+          target_label: namespace
+        - source_labels: [__meta_kubernetes_pod_name]
+          target_label: pod
+        - source_labels: [__meta_kubernetes_service_name]
+          target_label: service
+      - job_name: istio-policy
+        scrape_interval: 5s
+        kubernetes_sd_configs:
+        - role: endpoints
+        relabel_configs:
+        # Scrape only the the targets matching the following metadata
+        - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
+          action: keep
+          regex: istio-system;istio-policy;http-monitoring
+        # Rename metadata labels to be reader friendly
+        - source_labels: [__meta_kubernetes_namespace]
+          target_label: namespace
+        - source_labels: [__meta_kubernetes_pod_name]
+          target_label: pod
+        - source_labels: [__meta_kubernetes_service_name]
+          target_label: service
+      # Istio telemetry
+      - job_name: istio-telemetry
+        scrape_interval: 5s
+        kubernetes_sd_configs:
+        - role: endpoints
+        relabel_configs:
+        # Scrape only the the targets matching the following metadata
+        - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
+          action: keep
+          regex: istio-system;istio-telemetry;http-monitoring
+        # Rename metadata labels to be reader friendly
+        - source_labels: [__meta_kubernetes_namespace]
+          target_label: namespace
+        - source_labels: [__meta_kubernetes_pod_name]
+          target_label: pod
+        - source_labels: [__meta_kubernetes_service_name]
+          target_label: service
+      # Istio pilot
+      - job_name: istio-pilot
+        scrape_interval: 5s
+        kubernetes_sd_configs:
+        - role: endpoints
+        relabel_configs:
+        # Scrape only the the targets matching the following metadata
+        - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
+          action: keep
+          regex: istio-system;istio-pilot;http-monitoring
+        # Rename metadata labels to be reader friendly
+        - source_labels: [__meta_kubernetes_namespace]
+          target_label: namespace
+        - source_labels: [__meta_kubernetes_pod_name]
+          target_label: pod
+        - source_labels: [__meta_kubernetes_service_name]
+          target_label: service

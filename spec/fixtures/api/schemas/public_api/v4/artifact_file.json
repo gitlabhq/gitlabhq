@@ -1,0 +1,12 @@
+{
+  "type": "object",
+  "required": [
+    "filename",
+    "size"
+  ],
+  "properties": {
+    "filename": { "type": "string"},
+    "size": { "type": "integer"}
+  },
+  "additionalProperties": false
+}

@@ -121,9 +121,7 @@ Parameters:
 
 ## Get user agent details
 
-> **Notes:**
 > [Introduced][ce-29508] in GitLab 9.4.
-
 
 Available only for admins.
 
@@ -137,7 +135,7 @@ GET /projects/:id/snippets/:snippet_id/user_agent_detail
 | `snippet_id`  | Integer | yes      | The ID of a snippet                  |
 
 ```bash
-curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/1/snippets/2/user_agent_detail
+curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/snippets/2/user_agent_detail
 ```
 
 Example response:

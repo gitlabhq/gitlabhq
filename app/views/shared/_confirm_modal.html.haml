@@ -2,8 +2,7 @@
   .modal-dialog
     .modal-content
       .modal-header
-        %h3.page-title
-          Confirmation required
+        %h3.page-title= _('Confirmation required')
         %button.close{ type: "button", "data-dismiss": "modal", "aria-label" => _('Close') }
           %span{ "aria-hidden": true } &times;
 
@@ -11,8 +10,7 @@
         %p.text-danger.js-confirm-text
 
         %p
-          This action can lead to data loss.
-          To prevent accidental actions we ask you to confirm your intention.
+          %span.js-warning-text= _('This action can lead to data loss. To prevent accidental actions we ask you to confirm your intention.')
           %br
           Please type
           %code.js-confirm-danger-match= phrase
@@ -21,4 +19,4 @@
         .form-group
           = text_field_tag 'confirm_name_input', '', class: 'form-control js-confirm-danger-input'
         .form-actions
-          = submit_tag 'Confirm', class: "btn btn-danger js-confirm-danger-submit"
+          = submit_tag _('Confirm'), class: "btn btn-danger js-confirm-danger-submit"

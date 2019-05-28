@@ -4,7 +4,8 @@ export const isParallelView = state => state.diffViewType === PARALLEL_DIFF_VIEW
 
 export const isInlineView = state => state.diffViewType === INLINE_DIFF_VIEW_TYPE;
 
-export const hasCollapsedFile = state => state.diffFiles.some(file => file.collapsed);
+export const hasCollapsedFile = state =>
+  state.diffFiles.some(file => file.viewer && file.viewer.collapsed);
 
 export const commitId = state => (state.commit && state.commit.id ? state.commit.id : null);
 
@@ -74,12 +75,37 @@ export const getDiffFileDiscussions = (state, getters, rootState, rootGetters) =
 export const getDiffFileByHash = state => fileHash =>
   state.diffFiles.find(file => file.file_hash === fileHash);
 
-export const allBlobs = state => Object.values(state.treeEntries).filter(f => f.type === 'blob');
+export const flatBlobsList = state =>
+  Object.values(state.treeEntries).filter(f => f.type === 'blob');
+
+export const allBlobs = (state, getters) =>
+  getters.flatBlobsList.reduce((acc, file) => {
+    const { parentPath } = file;
+
+    if (parentPath && !acc.some(f => f.path === parentPath)) {
+      acc.push({
+        path: parentPath,
+        isHeader: true,
+        tree: [],
+      });
+    }
+
+    acc.find(f => f.path === parentPath).tree.push(file);
+
+    return acc;
+  }, []);
 
 export const diffFilesLength = state => state.diffFiles.length;
 
 export const getCommentFormForDiffFile = state => fileHash =>
   state.commentForms.find(form => form.fileHash === fileHash);
+
+/**
+ * Returns index of a currently selected diff in diffFiles
+ * @returns {number}
+ */
+export const currentDiffIndex = state =>
+  Math.max(0, state.diffFiles.findIndex(diff => diff.file_hash === state.currentDiffFileId));
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};

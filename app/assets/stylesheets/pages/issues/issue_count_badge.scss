@@ -1,11 +1,13 @@
-.issue-count-badge {
+.issue-count-badge,
+.mr-count-badge {
   display: inline-flex;
   border-radius: $border-radius-base;
   border: 1px solid $border-color;
   padding: 5px $gl-padding-8;
 }
 
-.issue-count-badge-count {
+.issue-count-badge-count,
+.mr-count-badge-count {
   display: inline-flex;
   align-items: center;
 }

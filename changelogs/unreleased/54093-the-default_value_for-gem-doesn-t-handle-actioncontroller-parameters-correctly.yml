@@ -1,7 +1,0 @@
----
-title: Fixes an issue where default values from models would override values set in
-  the interface (e.g. users would be set to external even though their emails matches
-  the internal email address pattern)
-merge_request: 23114
-author:
-type: fixed

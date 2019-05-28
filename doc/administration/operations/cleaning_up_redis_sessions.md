@@ -20,7 +20,6 @@ configuration settings if you have used the advanced Redis
 settings outlined in
 [Configuration Files Documentation](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/config/README.md).
 
-
 First we define a shell function with the proper Redis connection details.
 
 ```
@@ -28,7 +27,7 @@ rcli() {
   # This example works for Omnibus installations of GitLab 7.3 or newer. For an
   # installation from source you will have to change the socket path and the
   # path to redis-cli.
-  sudo /opt/gitlab/embedded/bin/redis-cli -s /var/opt/gitlab/redis/redis.socket "$@"
+  sudo /opt/gitlab/embedded/bin/redis-cli -s /var/opt/gitlab/redis/redis.shared_state.socket "$@"
 }
 
 # test the new shell function; the response should be PONG

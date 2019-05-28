@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Groups::NestedCreateService do
@@ -30,7 +32,7 @@ describe Groups::NestedCreateService do
     let(:params) { { group_path: 'a-group' } }
 
     before do
-      allow(Group).to receive(:supports_nested_groups?) { false }
+      allow(Group).to receive(:supports_nested_objects?) { false }
     end
 
     it 'creates the group' do

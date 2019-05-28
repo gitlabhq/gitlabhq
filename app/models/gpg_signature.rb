@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class GpgSignature < ActiveRecord::Base
+class GpgSignature < ApplicationRecord
   include ShaAttribute
 
   sha_attribute :commit_sha
@@ -31,6 +31,20 @@ class GpgSignature < ActiveRecord::Base
         arel_table[:gpg_key_subkey_id].in(subkey_ids)
       )
     )
+  end
+
+  def self.safe_create!(attributes)
+    create_with(attributes)
+      .safe_find_or_create_by!(commit_sha: attributes[:commit_sha])
+  end
+
+  # Find commits that are lacking a signature in the database at present
+  def self.unsigned_commit_shas(commit_shas)
+    return [] if commit_shas.empty?
+
+    signed = GpgSignature.where(commit_sha: commit_shas).pluck(:commit_sha)
+
+    commit_shas - signed
   end
 
   def gpg_key=(model)

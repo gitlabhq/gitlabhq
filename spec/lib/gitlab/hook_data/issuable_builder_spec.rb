@@ -97,13 +97,13 @@ describe Gitlab::HookData::IssuableBuilder do
     end
 
     context 'merge_request is assigned' do
-      let(:merge_request) { create(:merge_request, assignee: user) }
+      let(:merge_request) { create(:merge_request, assignees: [user]) }
       let(:data) { described_class.new(merge_request).build(user: user) }
 
       it 'returns correct hook data' do
         expect(data[:object_attributes]['assignee_id']).to eq(user.id)
-        expect(data[:assignee]).to eq(user.hook_attrs)
-        expect(data).not_to have_key(:assignees)
+        expect(data[:assignees].first).to eq(user.hook_attrs)
+        expect(data).not_to have_key(:assignee)
       end
     end
   end

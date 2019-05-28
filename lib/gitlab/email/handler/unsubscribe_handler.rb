@@ -2,14 +2,28 @@
 
 require 'gitlab/email/handler/base_handler'
 
+# handles unsubscribe emails with these formats:
+#   incoming+1234567890abcdef1234567890abcdef-unsubscribe@incoming.gitlab.com
+#   incoming+1234567890abcdef1234567890abcdef+unsubscribe@incoming.gitlab.com (legacy)
 module Gitlab
   module Email
     module Handler
       class UnsubscribeHandler < BaseHandler
         delegate :project, to: :sent_notification, allow_nil: true
 
+        HANDLER_REGEX_FOR    = -> (suffix) { /\A(?<reply_token>\w+)#{Regexp.escape(suffix)}\z/ }.freeze
+        HANDLER_REGEX        = HANDLER_REGEX_FOR.call(Gitlab::IncomingEmail::UNSUBSCRIBE_SUFFIX).freeze
+        HANDLER_REGEX_LEGACY = HANDLER_REGEX_FOR.call(Gitlab::IncomingEmail::UNSUBSCRIBE_SUFFIX_LEGACY).freeze
+
+        def initialize(mail, mail_key)
+          super(mail, mail_key)
+
+          matched = HANDLER_REGEX.match(mail_key.to_s) || HANDLER_REGEX_LEGACY.match(mail_key.to_s)
+          @reply_token = matched[:reply_token] if matched
+        end
+
         def can_handle?
-          mail_key =~ /\A\w+#{Regexp.escape(Gitlab::IncomingEmail::UNSUBSCRIBE_SUFFIX)}\z/
+          reply_token.present?
         end
 
         def execute
@@ -24,12 +38,10 @@ module Gitlab
 
         private
 
-        def sent_notification
-          @sent_notification ||= SentNotification.for(reply_key)
-        end
+        attr_reader :reply_token
 
-        def reply_key
-          mail_key.sub(Gitlab::IncomingEmail::UNSUBSCRIBE_SUFFIX, '')
+        def sent_notification
+          @sent_notification ||= SentNotification.for(reply_token)
         end
       end
     end

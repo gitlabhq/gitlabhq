@@ -1,7 +1,7 @@
 .nav-block.activities
   = render 'shared/event_filter'
   .controls
-    = link_to group_path(@group, rss_url_options), class: 'btn rss-btn has-tooltip' , title: 'Subscribe' do
+    = link_to group_path(@group, rss_url_options), class: 'btn d-none d-sm-inline-block has-tooltip' , title: 'Subscribe' do
       %i.fa.fa-rss
 
 .content_list

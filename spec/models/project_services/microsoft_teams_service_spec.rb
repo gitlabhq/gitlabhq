@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe MicrosoftTeamsService do
@@ -25,6 +27,12 @@ describe MicrosoftTeamsService do
       end
 
       it { is_expected.not_to validate_presence_of(:webhook) }
+    end
+  end
+
+  describe '.supported_events' do
+    it 'does not support deployment_events' do
+      expect(described_class.supported_events).not_to include('deployment')
     end
   end
 

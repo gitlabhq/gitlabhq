@@ -13,7 +13,6 @@ image: java:8
 variables:
     JBAKE_VERSION: 2.5.1
 
-
 # We use SDKMan as tool for managing versions
 before_script:
    - apt-get update -qq && apt-get install -y -qq unzip zip

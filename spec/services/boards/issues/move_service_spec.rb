@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Boards::Issues::MoveService do
@@ -10,7 +12,7 @@ describe Boards::Issues::MoveService do
 
       let(:bug) { create(:label, project: project, name: 'Bug') }
       let(:development) { create(:label, project: project, name: 'Development') }
-      let(:testing)  { create(:label, project: project, name: 'Testing') }
+      let(:testing) { create(:label, project: project, name: 'Testing') }
       let(:regression) { create(:label, project: project, name: 'Regression') }
 
       let!(:list1)   { create(:list, board: board1, label: development, position: 0) }
@@ -35,7 +37,7 @@ describe Boards::Issues::MoveService do
 
       let(:bug) { create(:group_label, group: group, name: 'Bug') }
       let(:development) { create(:group_label, group: group, name: 'Development') }
-      let(:testing)  { create(:group_label, group: group, name: 'Testing') }
+      let(:testing) { create(:group_label, group: group, name: 'Testing') }
       let(:regression) { create(:group_label, group: group, name: 'Regression') }
 
       let!(:list1)   { create(:list, board: board1, label: development, position: 0) }

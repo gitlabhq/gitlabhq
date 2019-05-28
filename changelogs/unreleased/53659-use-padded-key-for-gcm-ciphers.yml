@@ -1,5 +1,0 @@
----
-title: Fix web hook functionality when the database encryption key is too short
-merge_request: 23573
-author:
-type: fixed

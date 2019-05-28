@@ -1,13 +1,13 @@
+- label = label.present(issuable_subject: local_assigns[:subject])
 - label_css_id = dom_id(label)
 - status = label_subscription_status(label, @project).inquiry if current_user
-- subject = local_assigns[:subject]
 - use_label_priority = local_assigns.fetch(:use_label_priority, false)
 - force_priority = local_assigns.fetch(:force_priority, use_label_priority ? label.priority.present? : false)
 - toggle_subscription_path = toggle_subscription_label_path(label, @project) if current_user
 - tooltip_title = label_status_tooltip(label, status) if status
 
 %li.label-list-item{ id: label_css_id, data: { id: label.id } }
-  = render "shared/label_row", label: label, subject: subject, force_priority: force_priority
+  = render "shared/label_row", label: label, force_priority: force_priority
   %ul.label-actions-list
     - if @project
       %li.inline
@@ -21,7 +21,7 @@
           = sprite_icon('star')
     - if can?(current_user, :admin_label, label)
       %li.inline
-        = link_to edit_label_path(label), class: 'btn btn-transparent label-action edit has-tooltip', title: _('Edit'), data: { placement: 'bottom' }, aria_label: _('Edit') do
+        = link_to label.edit_path, class: 'btn btn-transparent label-action edit has-tooltip', title: _('Edit'), data: { placement: 'bottom' }, aria_label: _('Edit') do
           = sprite_icon('pencil')
     - if can?(current_user, :admin_label, label)
       %li.inline
@@ -30,7 +30,7 @@
             = sprite_icon('ellipsis_v')
           .dropdown-menu.dropdown-open-left
             %ul
-              - if label.is_a?(ProjectLabel) && label.project.group && can?(current_user, :admin_label, label.project.group)
+              - if label.project_label? && label.project.group && can?(current_user, :admin_label, label.project.group)
                 %li
                   %button.js-promote-project-label-button.btn.btn-transparent.btn-action{ disabled: true, type: 'button',
                     data: { url: promote_project_label_path(label.project, label),
@@ -48,7 +48,7 @@
                     %button.text-danger.remove-row{ type: 'button' }= _('Delete')
     - if current_user
       %li.inline.label-subscription
-        - if can_subscribe_to_label_in_different_levels?(label)
+        - if label.can_subscribe_to_label_in_different_levels?
           %button.js-unsubscribe-button.label-subscribe-button.btn.btn-default{ class: ('hidden' if status.unsubscribed?), data: { url: toggle_subscription_path, toggle: 'tooltip' }, title: tooltip_title }
             %span= _('Unsubscribe')
           .dropdown.dropdown-group-label{ class: ('hidden' unless status.unsubscribed?) }

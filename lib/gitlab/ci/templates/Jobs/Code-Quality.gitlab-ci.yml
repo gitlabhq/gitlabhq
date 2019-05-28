@@ -1,0 +1,27 @@
+code_quality:
+  stage: test
+  image: docker:stable
+  allow_failure: true
+  services:
+    - docker:stable-dind
+  script:
+    - export CQ_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
+    - |
+      if ! docker info &>/dev/null; then
+        if [ -z "$DOCKER_HOST" -a "$KUBERNETES_PORT" ]; then
+          export DOCKER_HOST='tcp://localhost:2375'
+        fi
+      fi
+    - |
+      docker run --env SOURCE_CODE="$PWD" \
+            --volume "$PWD":/code \
+            --volume /var/run/docker.sock:/var/run/docker.sock \
+            "registry.gitlab.com/gitlab-org/security-products/codequality:$CQ_VERSION" /code
+  artifacts:
+    paths: [gl-code-quality-report.json]
+  only:
+    - branches
+    - tags
+  except:
+    variables:
+      - $CODE_QUALITY_DISABLED

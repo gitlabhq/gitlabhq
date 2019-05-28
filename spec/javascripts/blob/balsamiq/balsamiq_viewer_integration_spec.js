@@ -1,15 +1,17 @@
 import BalsamiqViewer from '~/blob/balsamiq/balsamiq_viewer';
-import bmprPath from '../../fixtures/blob/balsamiq/test.bmpr';
+import { FIXTURES_PATH } from 'spec/test_constants';
+
+const bmprPath = `${FIXTURES_PATH}/blob/balsamiq/test.bmpr`;
 
 describe('Balsamiq integration spec', () => {
   let container;
   let endpoint;
   let balsamiqViewer;
 
-  preloadFixtures('static/balsamiq_viewer.html.raw');
+  preloadFixtures('static/balsamiq_viewer.html');
 
   beforeEach(() => {
-    loadFixtures('static/balsamiq_viewer.html.raw');
+    loadFixtures('static/balsamiq_viewer.html');
 
     container = document.getElementById('js-balsamiq-viewer');
     balsamiqViewer = new BalsamiqViewer(container);

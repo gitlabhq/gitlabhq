@@ -33,7 +33,8 @@ describe Gitlab::DependencyLinker::PackageJsonLinker do
             "express": "4.2.x",
             "bigpipe": "bigpipe/pagelet",
             "plates": "https://github.com/flatiron/plates/tarball/master",
-            "karma": "^1.4.1"
+            "karma": "^1.4.1",
+            "random": "git+https://EdOverflow@github.com/example/example.git"
           },
           "devDependencies": {
             "vows": "^0.7.0",
@@ -51,8 +52,8 @@ describe Gitlab::DependencyLinker::PackageJsonLinker do
       %{<a href="#{url}" rel="nofollow noreferrer noopener" target="_blank">#{name}</a>}
     end
 
-    it 'links the module name' do
-      expect(subject).to include(link('module-name', 'https://npmjs.com/package/module-name'))
+    it 'does not link the module name' do
+      expect(subject).not_to include(link('module-name', 'https://npmjs.com/package/module-name'))
     end
 
     it 'links the homepage' do
@@ -71,12 +72,19 @@ describe Gitlab::DependencyLinker::PackageJsonLinker do
       expect(subject).to include(link('primus', 'https://npmjs.com/package/primus'))
       expect(subject).to include(link('async', 'https://npmjs.com/package/async'))
       expect(subject).to include(link('express', 'https://npmjs.com/package/express'))
-      expect(subject).to include(link('bigpipe', 'https://npmjs.com/package/bigpipe'))
-      expect(subject).to include(link('plates', 'https://npmjs.com/package/plates'))
       expect(subject).to include(link('karma', 'https://npmjs.com/package/karma'))
       expect(subject).to include(link('vows', 'https://npmjs.com/package/vows'))
       expect(subject).to include(link('assume', 'https://npmjs.com/package/assume'))
       expect(subject).to include(link('pre-commit', 'https://npmjs.com/package/pre-commit'))
+    end
+
+    it 'links dependencies to URL detected on value' do
+      expect(subject).to include(link('bigpipe', 'https://github.com/bigpipe/pagelet'))
+      expect(subject).to include(link('plates', 'https://github.com/flatiron/plates/tarball/master'))
+    end
+
+    it 'does not link to NPM when invalid git URL' do
+      expect(subject).not_to include(link('random', 'https://npmjs.com/package/random'))
     end
 
     it 'links GitHub repos' do

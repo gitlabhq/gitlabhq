@@ -13,7 +13,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   presents :project
 
   AnchorData = Struct.new(:is_link, :label, :link, :class_modifier, :icon)
-  MAX_TAGS_TO_SHOW = 3
+  MAX_TOPICS_TO_SHOW = 3
 
   def statistic_icon(icon_name = 'plus-square-o')
     sprite_icon(icon_name, size: 16, css_class: 'icon append-right-4')
@@ -37,16 +37,12 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
       autodevops_anchor_data(show_auto_devops_callout: show_auto_devops_callout),
       kubernetes_cluster_anchor_data,
       gitlab_ci_anchor_data
-    ].compact.reject(&:is_link)
+    ].compact.reject(&:is_link).sort_by.with_index { |item, idx| [item.class_modifier ? 0 : 1, idx] }
   end
 
   def empty_repo_statistics_anchors
     [
-      license_anchor_data,
-      commits_anchor_data,
-      branches_anchor_data,
-      tags_anchor_data,
-      files_anchor_data
+      license_anchor_data
     ].compact.select { |item| item.is_link }
   end
 
@@ -55,9 +51,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
       new_file_anchor_data,
       readme_anchor_data,
       changelog_anchor_data,
-      contribution_guide_anchor_data,
-      autodevops_anchor_data,
-      kubernetes_cluster_anchor_data
+      contribution_guide_anchor_data
     ].compact.reject { |item| item.is_link }
   end
 
@@ -256,7 +250,8 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     elsif repository.contribution_guide.present?
       AnchorData.new(false,
                      statistic_icon('doc-text') + _('CONTRIBUTING'),
-                     contribution_guide_path)
+                     contribution_guide_path,
+                     'default')
     end
   end
 
@@ -264,7 +259,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     if current_user && can?(current_user, :admin_pipeline, project) && repository.gitlab_ci_yml.blank? && !show_auto_devops_callout
       if auto_devops_enabled?
         AnchorData.new(false,
-                       statistic_icon('doc-text') + _('Auto DevOps enabled'),
+                       statistic_icon('settings') + _('Auto DevOps enabled'),
                        project_settings_ci_cd_path(project, anchor: 'autodevops-settings'),
                        'default')
       else
@@ -310,20 +305,24 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     end
   end
 
-  def tags_to_show
-    project.tag_list.take(MAX_TAGS_TO_SHOW) # rubocop: disable CodeReuse/ActiveRecord
+  def topics_to_show
+    project.tag_list.take(MAX_TOPICS_TO_SHOW) # rubocop: disable CodeReuse/ActiveRecord
   end
 
-  def count_of_extra_tags_not_shown
-    if project.tag_list.count > MAX_TAGS_TO_SHOW
-      project.tag_list.count - MAX_TAGS_TO_SHOW
+  def topics_not_shown
+    project.tag_list - topics_to_show
+  end
+
+  def count_of_extra_topics_not_shown
+    if project.tag_list.count > MAX_TOPICS_TO_SHOW
+      project.tag_list.count - MAX_TOPICS_TO_SHOW
     else
       0
     end
   end
 
-  def has_extra_tags?
-    count_of_extra_tags_not_shown > 0
+  def has_extra_topics?
+    count_of_extra_topics_not_shown > 0
   end
 
   private

@@ -26,17 +26,11 @@ describe('Multi-file store tree mutations', () => {
   });
 
   describe('SET_DIRECTORY_DATA', () => {
-    const data = [
-      {
-        name: 'tree',
-      },
-      {
-        name: 'submodule',
-      },
-      {
-        name: 'blob',
-      },
-    ];
+    let data;
+
+    beforeEach(() => {
+      data = [file('tree'), file('foo'), file('blob')];
+    });
 
     it('adds directory data', () => {
       localState.trees['project/master'] = {
@@ -52,7 +46,7 @@ describe('Multi-file store tree mutations', () => {
 
       expect(tree.tree.length).toBe(3);
       expect(tree.tree[0].name).toBe('tree');
-      expect(tree.tree[1].name).toBe('submodule');
+      expect(tree.tree[1].name).toBe('foo');
       expect(tree.tree[2].name).toBe('blob');
     });
 
@@ -64,6 +58,49 @@ describe('Multi-file store tree mutations', () => {
       });
 
       expect(localState.trees['project/master'].loading).toBe(true);
+    });
+
+    it('does not override tree already in state, but merges the two with correct order', () => {
+      const openedFile = file('new');
+
+      localState.trees['project/master'] = {
+        loading: true,
+        tree: [openedFile],
+      };
+
+      mutations.SET_DIRECTORY_DATA(localState, {
+        data,
+        treePath: 'project/master',
+      });
+
+      const { tree } = localState.trees['project/master'];
+
+      expect(tree.length).toBe(4);
+      expect(tree[0].name).toBe('blob');
+      expect(tree[1].name).toBe('foo');
+      expect(tree[2].name).toBe('new');
+      expect(tree[3].name).toBe('tree');
+    });
+
+    it('returns tree unchanged if the opened file is already in the tree', () => {
+      const openedFile = file('foo');
+      localState.trees['project/master'] = {
+        loading: true,
+        tree: [openedFile],
+      };
+
+      mutations.SET_DIRECTORY_DATA(localState, {
+        data,
+        treePath: 'project/master',
+      });
+
+      const { tree } = localState.trees['project/master'];
+
+      expect(tree.length).toBe(3);
+
+      expect(tree[0].name).toBe('tree');
+      expect(tree[1].name).toBe('foo');
+      expect(tree[2].name).toBe('blob');
     });
   });
 

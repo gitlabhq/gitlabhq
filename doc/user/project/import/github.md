@@ -18,16 +18,16 @@ GitHub without the constraints of a Sidekiq worker.
 
 The following aspects of a project are imported:
 
-  * Repository description (GitLab.com & 7.7+)
-  * Git repository data (GitLab.com & 7.7+)
-  * Issues (GitLab.com & 7.7+)
-  * Pull requests (GitLab.com & 8.4+)
-  * Wiki pages (GitLab.com & 8.4+)
-  * Milestones (GitLab.com & 8.7+)
-  * Labels (GitLab.com & 8.7+)
-  * Release note descriptions (GitLab.com & 8.12+)
-  * Pull request review comments (GitLab.com & 10.2+)
-  * Regular issue and pull request comments
+- Repository description (GitLab.com & 7.7+)
+- Git repository data (GitLab.com & 7.7+)
+- Issues (GitLab.com & 7.7+)
+- Pull requests (GitLab.com & 8.4+)
+- Wiki pages (GitLab.com & 8.4+)
+- Milestones (GitLab.com & 8.7+)
+- Labels (GitLab.com & 8.7+)
+- Release note descriptions (GitLab.com & 8.12+)
+- Pull request review comments (GitLab.com & 10.2+)
+- Regular issue and pull request comments
 
 References to pull requests and issues are preserved (GitLab.com & 8.7+), and
 each imported repository maintains visibility level unless that [visibility
@@ -67,7 +67,7 @@ developer documentation.
 Before you begin, ensure that any GitHub users who you want to map to GitLab users have either:
 
 - A GitLab account that has logged in using the GitHub icon
-\- or -
+  \- or -
 - A GitLab account with an email address that matches the [public email address](https://help.github.com/articles/setting-your-commit-email-address-on-github/) of the GitHub user
 
 User-matching attempts occur in that order, and if a user is not identified either way, the activity is associated with
@@ -92,7 +92,7 @@ integration enabled, that should be the preferred method to import your reposito
 
 If you are not using the GitHub integration, you can still perform an authorization with GitHub to grant GitLab access your repositories:
 
-1. Go to https://github.com/settings/tokens/new
+1. Go to <https://github.com/settings/tokens/new>
 1. Enter a token description.
 1. Select the repo scope.
 1. Click **Generate token**.
@@ -132,8 +132,8 @@ Admin access to the GitLab server is required.
 For large projects it may take a while to import all data. To reduce the time necessary, you can increase the number of
 Sidekiq workers that process the following queues:
 
-* `github_importer`
-* `github_importer_advance_stage`
+- `github_importer`
+- `github_importer_advance_stage`
 
 For an optimal experience, it's recommended having at least 4 Sidekiq processes (each running a number of threads equal
 to the number of CPU cores) that *only* process these queues. It's also recommended that these processes run on separate

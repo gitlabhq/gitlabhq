@@ -1,9 +1,9 @@
-- page_title "CI Lint"
-- page_description "Validate your GitLab CI configuration file"
+- page_title _("CI Lint")
+- page_description _("Validate your GitLab CI configuration file")
 - content_for :library_javascripts do
   = page_specific_javascript_tag('lib/ace.js')
 
-%h2.pt-3.pb-3 Check your .gitlab-ci.yml
+%h2.pt-3.pb-3= _("Check your .gitlab-ci.yml")
 
 .project-ci-linter
   = form_tag project_ci_lint_path(@project), method: :post do
@@ -11,14 +11,14 @@
       .col-sm-12
         .file-holder
           .js-file-title.file-title.clearfix
-            Content of .gitlab-ci.yml
+            = _("Contents of .gitlab-ci.yml")
           #ci-editor.ci-editor= @content
         = text_area_tag(:content, @content, class: 'hidden form-control span1', rows: 7, require: true)
       .col-sm-12
         .float-left.prepend-top-10
-          = submit_tag('Validate', class: 'btn btn-success submit-yml')
+          = submit_tag(_('Validate'), class: 'btn btn-success submit-yml')
         .float-right.prepend-top-10
-          = button_tag('Clear', type: 'button', class: 'btn btn-default clear-yml')
+          = button_tag(_('Clear'), type: 'button', class: 'btn btn-default clear-yml')
 
   .row.prepend-top-20
     .col-sm-12

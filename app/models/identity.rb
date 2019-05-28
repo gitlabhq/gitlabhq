@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Identity < ActiveRecord::Base
+class Identity < ApplicationRecord
   include Sortable
   include CaseSensitivity
 
@@ -8,11 +8,12 @@ class Identity < ActiveRecord::Base
 
   validates :provider, presence: true
   validates :extern_uid, allow_blank: true, uniqueness: { scope: UniquenessScopes.scopes, case_sensitive: false }
-  validates :user_id, uniqueness: { scope: UniquenessScopes.scopes }
+  validates :user, uniqueness: { scope: UniquenessScopes.scopes }
 
   before_save :ensure_normalized_extern_uid, if: :extern_uid_changed?
   after_destroy :clear_user_synced_attributes, if: :user_synced_attributes_metadata_from_provider?
 
+  scope :for_user, ->(user) { where(user: user) }
   scope :with_provider, ->(provider) { where(provider: provider) }
   scope :with_extern_uid, ->(provider, extern_uid) do
     iwhere(extern_uid: normalize_uid(provider, extern_uid)).with_provider(provider)

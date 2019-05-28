@@ -6,9 +6,10 @@ module API
 
     LOG_FILENAME = Rails.root.join("log", "api_json.log")
 
-    NO_SLASH_URL_PART_REGEX = %r{[^/]+}
+    NO_SLASH_URL_PART_REGEX = %r{[^/]+}.freeze
     NAMESPACE_OR_PROJECT_REQUIREMENTS = { id: NO_SLASH_URL_PART_REGEX }.freeze
     COMMIT_ENDPOINT_REQUIREMENTS = NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(sha: NO_SLASH_URL_PART_REGEX).freeze
+    USER_REQUIREMENTS = { user_id: NO_SLASH_URL_PART_REGEX }.freeze
 
     insert_before Grape::Middleware::Error,
                   GrapeLogging::Middleware::RequestLogger,
@@ -97,9 +98,9 @@ module API
     mount ::API::Boards
     mount ::API::Branches
     mount ::API::BroadcastMessages
-    mount ::API::CircuitBreakers
     mount ::API::Commits
     mount ::API::CommitStatuses
+    mount ::API::ContainerRegistry
     mount ::API::DeployKeys
     mount ::API::Deployments
     mount ::API::Environments
@@ -107,9 +108,11 @@ module API
     mount ::API::Features
     mount ::API::Files
     mount ::API::GroupBoards
+    mount ::API::GroupLabels
     mount ::API::GroupMilestones
     mount ::API::Groups
     mount ::API::GroupVariables
+    mount ::API::ImportGithub
     mount ::API::Internal
     mount ::API::Issues
     mount ::API::JobArtifacts
@@ -129,6 +132,8 @@ module API
     mount ::API::PagesDomains
     mount ::API::Pipelines
     mount ::API::PipelineSchedules
+    mount ::API::ProjectClusters
+    mount ::API::ProjectEvents
     mount ::API::ProjectExport
     mount ::API::ProjectImport
     mount ::API::ProjectHooks
@@ -136,9 +141,12 @@ module API
     mount ::API::Projects
     mount ::API::ProjectSnapshots
     mount ::API::ProjectSnippets
+    mount ::API::ProjectStatistics
     mount ::API::ProjectTemplates
     mount ::API::ProtectedBranches
     mount ::API::ProtectedTags
+    mount ::API::Releases
+    mount ::API::Release::Links
     mount ::API::Repositories
     mount ::API::Runner
     mount ::API::Runners

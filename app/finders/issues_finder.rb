@@ -14,6 +14,7 @@
 #     milestone_title: string
 #     assignee_id: integer
 #     search: string
+#     in: 'title', 'description', or a string joining them with comma
 #     label_name: string
 #     sort: string
 #     my_reaction_emoji: string
@@ -47,9 +48,9 @@ class IssuesFinder < IssuableFinder
       OR (issues.confidential = TRUE
         AND (issues.author_id = :user_id
           OR EXISTS (SELECT TRUE FROM issue_assignees WHERE user_id = :user_id AND issue_id = issues.id)
-          OR issues.project_id IN(:project_ids)))',
+          OR EXISTS (:authorizations)))',
       user_id: current_user.id,
-      project_ids: current_user.authorized_projects(CONFIDENTIAL_ACCESS_LEVEL).select(:id))
+      authorizations: current_user.authorizations_for_projects(min_access_level: CONFIDENTIAL_ACCESS_LEVEL, related_project_column: "issues.project_id"))
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
@@ -68,7 +69,16 @@ class IssuesFinder < IssuableFinder
   end
 
   def filter_items(items)
-    by_due_date(super)
+    issues = super
+    issues = by_due_date(issues)
+    issues = by_confidential(issues)
+    issues
+  end
+
+  def by_confidential(items)
+    return items if params[:confidential].nil?
+
+    params[:confidential] ? items.confidential_only : items.public_only
   end
 
   def by_due_date(items)
@@ -133,19 +143,5 @@ class IssuesFinder < IssuableFinder
     return false if user_can_see_all_confidential_issues?
 
     current_user.blank?
-  end
-
-  def by_assignee(items)
-    if filter_by_no_assignee?
-      items.unassigned
-    elsif filter_by_any_assignee?
-      items.assigned
-    elsif assignee
-      items.assigned_to(assignee)
-    elsif assignee_id? || assignee_username? # assignee not found
-      items.none
-    else
-      items
-    end
   end
 end

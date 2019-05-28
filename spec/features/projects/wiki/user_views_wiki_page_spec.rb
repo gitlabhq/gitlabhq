@@ -22,12 +22,7 @@ describe 'User views a wiki page' do
       visit(project_wikis_path(project))
       click_link "Create your first page"
 
-      click_on('New page')
-
-      page.within('#modal-new-wiki') do
-        fill_in(:new_wiki_path, with: 'one/two/three-test')
-        click_on('Create page')
-      end
+      fill_in(:wiki_title, with: 'one/two/three-test')
 
       page.within('.wiki-form') do
         fill_in(:wiki_content, with: 'wiki content')

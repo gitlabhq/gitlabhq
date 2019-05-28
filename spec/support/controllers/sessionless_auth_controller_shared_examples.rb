@@ -16,14 +16,14 @@ shared_examples 'authenticates sessionless user' do |path, format, params|
               .and increment(:user_session_override_counter)
                      .and increment(:user_sessionless_authentication_counter)
 
-      get path, default_params.merge(private_token: personal_access_token.token)
+      get path, params: default_params.merge(private_token: personal_access_token.token)
 
       expect(response).to have_gitlab_http_status(200)
       expect(controller.current_user).to eq(user)
     end
 
     it 'does not log the user in if page is public', if: params[:public] do
-      get path, default_params
+      get path, params: default_params
 
       expect(response).to have_gitlab_http_status(200)
       expect(controller.current_user).to be_nil
@@ -37,7 +37,7 @@ shared_examples 'authenticates sessionless user' do |path, format, params|
 
       personal_access_token.update(scopes: [:read_user])
 
-      get path, default_params.merge(private_token: personal_access_token.token)
+      get path, params: default_params.merge(private_token: personal_access_token.token)
 
       expect(response).not_to have_gitlab_http_status(200)
     end
@@ -51,7 +51,7 @@ shared_examples 'authenticates sessionless user' do |path, format, params|
                      .and increment(:user_sessionless_authentication_counter)
 
       @request.headers['PRIVATE-TOKEN'] = personal_access_token.token
-      get path, default_params
+      get path, params: default_params
 
       expect(response).to have_gitlab_http_status(200)
     end
@@ -64,7 +64,7 @@ shared_examples 'authenticates sessionless user' do |path, format, params|
               .and increment(:user_session_override_counter)
                      .and increment(:user_sessionless_authentication_counter)
 
-      get path, default_params.merge(feed_token: user.feed_token)
+      get path, params: default_params.merge(feed_token: user.feed_token)
 
       expect(response).to have_gitlab_http_status 200
     end
@@ -75,7 +75,7 @@ shared_examples 'authenticates sessionless user' do |path, format, params|
       expect(authentication_metrics)
         .to increment(:user_unauthenticated_counter)
 
-      get path, default_params.merge(feed_token: 'token')
+      get path, params: default_params.merge(feed_token: 'token')
 
       expect(response.status).not_to eq 200
     end
@@ -85,7 +85,7 @@ shared_examples 'authenticates sessionless user' do |path, format, params|
     expect(authentication_metrics)
       .to increment(:user_unauthenticated_counter)
 
-    get path, default_params.merge(private_token: 'token')
+    get path, params: default_params.merge(private_token: 'token')
 
     expect(response.status).not_to eq(200)
   end

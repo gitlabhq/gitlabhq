@@ -1,6 +1,2 @@
 .nothing-here-block
-  = _("This %{viewer} could not be displayed because %{reason}.") % { viewer: viewer.switcher_title, reason: diff_render_error_reason(viewer) }
-
-  You can
-  = diff_render_error_options(viewer).to_sentence(two_words_connector: ' or ', last_word_connector: ', or ').html_safe
-  instead.
+  = viewer.render_error_message.html_safe

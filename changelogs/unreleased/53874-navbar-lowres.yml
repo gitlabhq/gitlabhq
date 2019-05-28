@@ -1,5 +1,0 @@
----
-title: "Fix overlapping navbar separator and overflowing navbar dropdown on small displays"
-merge_request: 23126
-author: Thomas Pathier
-type: fix

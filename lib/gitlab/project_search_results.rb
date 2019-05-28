@@ -22,9 +22,15 @@ module Gitlab
         paginated_blobs(wiki_blobs, page)
       when 'commits'
         Kaminari.paginate_array(commits).page(page).per(per_page)
+      when 'users'
+        users.page(page).per(per_page)
       else
         super(scope, page, false)
       end
+    end
+
+    def users
+      super.where(id: @project.team.members) # rubocop:disable CodeReuse/ActiveRecord
     end
 
     def blobs_count
@@ -138,6 +144,10 @@ module Gitlab
 
     def repository_wiki_ref
       @repository_wiki_ref ||= repository_ref || project.wiki.default_branch
+    end
+
+    def issuable_params
+      super.merge(project_id: project.id)
     end
   end
 end

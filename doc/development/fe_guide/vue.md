@@ -6,9 +6,9 @@ To get started with Vue, read through [their documentation][vue-docs].
 
 What is described in the following sections can be found in these examples:
 
-- web ide: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/app/assets/javascripts/ide/stores
-- security products: https://gitlab.com/gitlab-org/gitlab-ee/tree/master/ee/app/assets/javascripts/vue_shared/security_reports
-- registry: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/app/assets/javascripts/registry/stores
+- web ide: <https://gitlab.com/gitlab-org/gitlab-ce/tree/master/app/assets/javascripts/ide/stores>
+- security products: <https://gitlab.com/gitlab-org/gitlab-ee/tree/master/ee/app/assets/javascripts/vue_shared/security_reports>
+- registry: <https://gitlab.com/gitlab-org/gitlab-ce/tree/master/app/assets/javascripts/registry/stores>
 
 ## Vue architecture
 
@@ -38,7 +38,7 @@ _For consistency purposes, we recommend you to follow the same structure._
 
 Let's look into each of them:
 
-### A `index.js` file
+### An `index.js` file
 
 This is the index file of your new feature. This is where the root Vue instance
 of the new feature should be.
@@ -46,7 +46,7 @@ of the new feature should be.
 The Store and the Service should be imported and initialized in this file and
 provided as a prop to the main component.
 
-Don't forget to follow [these steps][page_specific_javascript].
+Be sure to read about [page-specific JavaScript][page_specific_javascript].
 
 ### Bootstrapping Gotchas
 #### Providing data from HAML to JavaScript
@@ -120,9 +120,16 @@ You can read more about components in Vue.js site, [Component System][component-
 #### Vuex
 Check this [page](vuex.md) for more details.
 
+### Mixing Vue and jQuery
+
+- Mixing Vue and jQuery is not recommended.
+- If you need to use a specific jQuery plugin in Vue, [create a wrapper around it][https://vuejs.org/v2/examples/select2.html].
+- It is acceptable for Vue to listen to existing jQuery events using jQuery event listeners.
+- It is not recommended to add new jQuery events for Vue to interact with jQuery.
+
 ## Style guide
 
-Please refer to the Vue section of our [style guide](style_guide_js.md#vue-js)
+Please refer to the Vue section of our [style guide](style_guide_js.md#vuejs)
 for best practices while writing your Vue components and templates.
 
 ## Testing Vue Components
@@ -132,7 +139,7 @@ Each Vue component has a unique output. This output is always present in the ren
 Although we can test each method of a Vue component individually, our goal must be to test the output
 of the render/template function, which represents the state at all times.
 
-Make use of the [axios mock adapter](axios.md#mock-axios-response-on-tests) to mock data returned.
+Make use of the [axios mock adapter](axios.md#mock-axios-response-in-tests) to mock data returned.
 
 Here's how we would test the Todo App above:
 
@@ -223,17 +230,17 @@ need to test the rendered output. [Vue][vue-test] guide's to unit test show us e
 
 ## Vue.js Expert Role
 One should apply to be a Vue.js expert by opening an MR when the Merge Request's they create and review show:
+
 - Deep understanding of Vue and Vuex reactivy
 - Vue and Vuex code are structured according to both official and our guidelines
 - Full understanding of testing a Vue and Vuex application
 - Vuex code follows the [documented pattern](./vuex.md#actions-pattern-request-and-receive-namespaces)
 - Knowledge about the existing Vue and Vuex applications and existing reusable components
 
-
 [vue-docs]: http://vuejs.org/guide/index.html
 [issue-boards]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/app/assets/javascripts/boards
 [environments-table]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/app/assets/javascripts/environments
-[page_specific_javascript]: https://docs.gitlab.com/ce/development/frontend.html#page-specific-javascript
+[page_specific_javascript]: ./performance.md#page-specific-javascript
 [component-system]: https://vuejs.org/v2/guide/#Composing-with-Components
 [state-management]: https://vuejs.org/v2/guide/state-management.html#Simple-State-Management-from-Scratch
 [one-way-data-flow]: https://vuejs.org/v2/guide/components.html#One-Way-Data-Flow

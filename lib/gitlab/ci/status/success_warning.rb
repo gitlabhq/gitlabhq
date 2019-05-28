@@ -21,7 +21,7 @@ module Gitlab
         end
 
         def group
-          'success_with_warnings'
+          'success-with-warnings'
         end
 
         def self.matches?(subject, user)

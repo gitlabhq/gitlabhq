@@ -2,6 +2,7 @@
   - if crowd_enabled?
     %li.nav-item
       = link_to "Crowd", "#crowd", class: "nav-link #{active_when(form_based_auth_provider_has_active_class?(:crowd))}", 'data-toggle' => 'tab'
+  = render_if_exists "devise/shared/kerberos_tab"
   - @ldap_servers.each_with_index do |server, i|
     %li.nav-item
       = link_to server['label'], "##{server['provider_name']}", class: "nav-link #{active_when(i.zero? && form_based_auth_provider_has_active_class?(:ldapmain))} qa-ldap-tab", 'data-toggle' => 'tab'

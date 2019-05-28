@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import DiffFileComponent from '~/diffs/components/diff_file.vue';
-import store from '~/mr_notes/stores';
+import { diffViewerModes, diffViewerErrors } from '~/ide/constants';
+import store from 'ee_else_ce/mr_notes/stores';
 import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import diffFileMockData from '../mock_data/diff_file';
 
@@ -27,7 +28,6 @@ describe('DiffFile', () => {
       expect(el.querySelector('.file-title-name').innerText.indexOf(file_path)).toBeGreaterThan(-1);
       expect(el.querySelector('.js-syntax-highlight')).toBeDefined();
 
-      expect(vm.file.renderIt).toEqual(false);
       vm.file.renderIt = true;
 
       vm.$nextTick(() => {
@@ -38,8 +38,8 @@ describe('DiffFile', () => {
     describe('collapsed', () => {
       it('should not have file content', done => {
         expect(vm.$el.querySelectorAll('.diff-content').length).toEqual(1);
-        expect(vm.file.collapsed).toEqual(false);
-        vm.file.collapsed = true;
+        expect(vm.isCollapsed).toEqual(false);
+        vm.isCollapsed = true;
         vm.file.renderIt = true;
 
         vm.$nextTick(() => {
@@ -50,9 +50,8 @@ describe('DiffFile', () => {
       });
 
       it('should have collapsed text and link', done => {
-        vm.file.renderIt = true;
-        vm.file.collapsed = false;
-        vm.file.highlighted_diff_lines = null;
+        vm.renderIt = true;
+        vm.isCollapsed = true;
 
         vm.$nextTick(() => {
           expect(vm.$el.innerText).toContain('This diff is collapsed');
@@ -63,8 +62,8 @@ describe('DiffFile', () => {
       });
 
       it('should have collapsed text and link even before rendered', done => {
-        vm.file.renderIt = false;
-        vm.file.collapsed = true;
+        vm.renderIt = false;
+        vm.isCollapsed = true;
 
         vm.$nextTick(() => {
           expect(vm.$el.innerText).toContain('This diff is collapsed');
@@ -75,10 +74,10 @@ describe('DiffFile', () => {
       });
 
       it('should be collapsed for renamed files', done => {
-        vm.file.renderIt = true;
-        vm.file.collapsed = false;
+        vm.renderIt = true;
+        vm.isCollapsed = false;
         vm.file.highlighted_diff_lines = null;
-        vm.file.renamed_file = true;
+        vm.file.viewer.name = diffViewerModes.renamed;
 
         vm.$nextTick(() => {
           expect(vm.$el.innerText).not.toContain('This diff is collapsed');
@@ -88,10 +87,10 @@ describe('DiffFile', () => {
       });
 
       it('should be collapsed for mode changed files', done => {
-        vm.file.renderIt = true;
-        vm.file.collapsed = false;
+        vm.renderIt = true;
+        vm.isCollapsed = false;
         vm.file.highlighted_diff_lines = null;
-        vm.file.mode_changed = true;
+        vm.file.viewer.name = diffViewerModes.mode_changed;
 
         vm.$nextTick(() => {
           expect(vm.$el.innerText).not.toContain('This diff is collapsed');
@@ -101,11 +100,36 @@ describe('DiffFile', () => {
       });
 
       it('should have loading icon while loading a collapsed diffs', done => {
-        vm.file.collapsed = true;
+        vm.isCollapsed = true;
         vm.isLoadingCollapsedDiff = true;
 
         vm.$nextTick(() => {
           expect(vm.$el.querySelectorAll('.diff-content.loading').length).toEqual(1);
+
+          done();
+        });
+      });
+
+      it('should update store state', done => {
+        spyOn(vm.$store, 'dispatch');
+
+        vm.isCollapsed = true;
+
+        vm.$nextTick(() => {
+          expect(vm.$store.dispatch).toHaveBeenCalledWith('diffs/setFileCollapsed', {
+            filePath: vm.file.file_path,
+            collapsed: true,
+          });
+
+          done();
+        });
+      });
+
+      it('updates local state when changing file state', done => {
+        vm.file.viewer.collapsed = true;
+
+        vm.$nextTick(() => {
+          expect(vm.isCollapsed).toBe(true);
 
           done();
         });
@@ -116,18 +140,16 @@ describe('DiffFile', () => {
   describe('too large diff', () => {
     it('should have too large warning and blob link', done => {
       const BLOB_LINK = '/file/view/path';
-      vm.file.too_large = true;
+      vm.file.viewer.error = diffViewerErrors.too_large;
+      vm.file.viewer.error_message =
+        'This source diff could not be displayed because it is too large';
       vm.file.view_path = BLOB_LINK;
+      vm.file.renderIt = true;
 
       vm.$nextTick(() => {
         expect(vm.$el.innerText).toContain(
           'This source diff could not be displayed because it is too large',
         );
-
-        expect(vm.$el.querySelector('.js-too-large-diff')).toBeDefined();
-        expect(
-          vm.$el.querySelector('.js-too-large-diff a').href.indexOf(BLOB_LINK),
-        ).toBeGreaterThan(-1);
 
         done();
       });
@@ -140,11 +162,11 @@ describe('DiffFile', () => {
 
       vm.file.highlighted_diff_lines = undefined;
       vm.file.parallel_diff_lines = [];
-      vm.file.collapsed = true;
+      vm.isCollapsed = true;
 
       vm.$nextTick()
         .then(() => {
-          vm.file.collapsed = false;
+          vm.isCollapsed = false;
 
           return vm.$nextTick();
         })

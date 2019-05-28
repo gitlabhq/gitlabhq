@@ -4,14 +4,14 @@ describe Gitlab::RepositoryCache do
   let(:backend) { double('backend').as_null_object }
   let(:project) { create(:project) }
   let(:repository) { project.repository }
-  let(:namespace) { "project:#{project.id}" }
+  let(:namespace) { "#{repository.full_path}:#{project.id}" }
   let(:cache) { described_class.new(repository, backend: backend) }
 
   describe '#cache_key' do
     subject { cache.cache_key(:foo) }
 
     it 'includes the namespace' do
-      expect(subject).to eq "#{namespace}:foo"
+      expect(subject).to eq "foo:#{namespace}"
     end
 
     context 'with a given namespace' do
@@ -22,7 +22,7 @@ describe Gitlab::RepositoryCache do
       end
 
       it 'includes the full namespace' do
-        expect(subject).to eq "#{namespace}:#{extra_namespace}:foo"
+        expect(subject).to eq "foo:#{namespace}:#{extra_namespace}"
       end
     end
   end
@@ -30,21 +30,21 @@ describe Gitlab::RepositoryCache do
   describe '#expire' do
     it 'expires the given key from the cache' do
       cache.expire(:foo)
-      expect(backend).to have_received(:delete).with("#{namespace}:foo")
+      expect(backend).to have_received(:delete).with("foo:#{namespace}")
     end
   end
 
   describe '#fetch' do
     it 'fetches the given key from the cache' do
       cache.fetch(:bar)
-      expect(backend).to have_received(:fetch).with("#{namespace}:bar")
+      expect(backend).to have_received(:fetch).with("bar:#{namespace}")
     end
 
     it 'accepts a block' do
       p = -> {}
 
       cache.fetch(:baz, &p)
-      expect(backend).to have_received(:fetch).with("#{namespace}:baz", &p)
+      expect(backend).to have_received(:fetch).with("baz:#{namespace}", &p)
     end
   end
 
@@ -67,7 +67,7 @@ describe Gitlab::RepositoryCache do
         end
 
         it 'caches the value' do
-          expect(backend).to receive(:write).with("#{namespace}:#{key}", true)
+          expect(backend).to receive(:write).with("#{key}:#{namespace}", true)
 
           cache.fetch_without_caching_false(key) { true }
         end
@@ -83,7 +83,7 @@ describe Gitlab::RepositoryCache do
         end
 
         it 'does not cache the value' do
-          expect(backend).not_to receive(:write).with("#{namespace}:#{key}", true)
+          expect(backend).not_to receive(:write).with("#{key}:#{namespace}", true)
 
           cache.fetch_without_caching_false(key, &p)
         end
@@ -92,7 +92,7 @@ describe Gitlab::RepositoryCache do
 
     context 'when the cached value is truthy' do
       before do
-        backend.write("#{namespace}:#{key}", true)
+        backend.write("#{key}:#{namespace}", true)
       end
 
       it 'returns the cached value' do
@@ -116,7 +116,7 @@ describe Gitlab::RepositoryCache do
 
     context 'when the cached value is falsey' do
       before do
-        backend.write("#{namespace}:#{key}", false)
+        backend.write("#{key}:#{namespace}", false)
       end
 
       it 'returns the result of the block' do
@@ -126,7 +126,7 @@ describe Gitlab::RepositoryCache do
       end
 
       it 'writes the truthy value to the cache' do
-        expect(backend).to receive(:write).with("#{namespace}:#{key}", 'block result')
+        expect(backend).to receive(:write).with("#{key}:#{namespace}", 'block result')
 
         cache.fetch_without_caching_false(key) { 'block result' }
       end

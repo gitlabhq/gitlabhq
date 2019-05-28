@@ -16,16 +16,12 @@ consider adding any of the %<labels>s labels.
 #{SEE_DOC}
 MSG
 
-def ee?
-  ENV['CI_PROJECT_NAME'] == 'gitlab-ee' || File.exist?('../../CHANGELOG-EE.md')
-end
-
 def ee_changelog?(changelog_path)
   changelog_path =~ /unreleased-ee/
 end
 
 def ce_port_changelog?(changelog_path)
-  ee? && !ee_changelog?(changelog_path)
+  helper.ee? && !ee_changelog?(changelog_path)
 end
 
 def check_changelog(path)

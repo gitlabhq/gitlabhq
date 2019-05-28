@@ -7,6 +7,8 @@ describe Types::PermissionTypes::Issue do
       :create_note, :reopen_issue
     ]
 
-    expect(described_class).to have_graphql_fields(expected_permissions)
+    expected_permissions.each do |permission|
+      expect(described_class).to have_graphql_field(permission)
+    end
   end
 end

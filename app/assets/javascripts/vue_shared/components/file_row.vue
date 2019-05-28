@@ -1,11 +1,13 @@
 <script>
 import Icon from '~/vue_shared/components/icon.vue';
+import FileHeader from '~/vue_shared/components/file_row_header.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import ChangedFileIcon from '~/vue_shared/components/changed_file_icon.vue';
 
 export default {
   name: 'FileRow',
   components: {
+    FileHeader,
     FileIcon,
     Icon,
     ChangedFileIcon,
@@ -34,21 +36,10 @@ export default {
       required: false,
       default: false,
     },
-    displayTextKey: {
-      type: String,
-      required: false,
-      default: 'name',
-    },
-    shouldTruncateStart: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
   data() {
     return {
-      mouseOver: false,
-      truncateStart: 0,
+      dropdownOpen: false,
     };
   },
   computed: {
@@ -60,7 +51,7 @@ export default {
     },
     levelIndentation() {
       return {
-        marginLeft: `${this.level * 16}px`,
+        marginLeft: this.level ? `${this.level * 16}px` : null,
       };
     },
     fileClass() {
@@ -71,14 +62,8 @@ export default {
         'is-open': this.file.opened,
       };
     },
-    outputText() {
-      const text = this.file[this.displayTextKey];
-
-      if (this.truncateStart === 0) {
-        return text;
-      }
-
-      return `...${text.substring(this.truncateStart, text.length)}`;
+    childFilesLevel() {
+      return this.file.isHeader ? 0 : this.level + 1;
     },
   },
   watch: {
@@ -91,15 +76,6 @@ export default {
   mounted() {
     if (this.hasPathAtCurrentRoute()) {
       this.scrollIntoView(true);
-    }
-
-    if (this.shouldTruncateStart) {
-      const { scrollWidth, offsetWidth } = this.$refs.textOutput;
-      const textOverflow = scrollWidth - offsetWidth;
-
-      if (textOverflow > 0) {
-        this.truncateStart = Math.ceil(textOverflow / 5) + 3;
-      }
     }
   },
   methods: {
@@ -147,8 +123,8 @@ export default {
 
       return this.$router.currentRoute.path === `/project${this.file.url}`;
     },
-    toggleHover(over) {
-      this.mouseOver = over;
+    toggleDropdown(val) {
+      this.dropdownOpen = val;
     },
   },
 };
@@ -156,13 +132,15 @@ export default {
 
 <template>
   <div>
+    <file-header v-if="file.isHeader" :path="file.path" />
     <div
+      v-else
       :class="fileClass"
+      :title="file.name"
       class="file-row"
       role="button"
       @click="clickFile"
-      @mouseover="toggleHover(true);"
-      @mouseout="toggleHover(false);"
+      @mouseleave="toggleDropdown(false)"
     >
       <div class="file-row-name-container">
         <span ref="textOutput" :style="levelIndentation" class="file-row-name str-truncated">
@@ -175,27 +153,26 @@ export default {
             :size="16"
           />
           <changed-file-icon v-else :file="file" :size="16" class="append-right-5" />
-          {{ outputText }}
+          {{ file.name }}
         </span>
         <component
           :is="extraComponent"
           v-if="extraComponent && !(hideExtraOnTree && file.type === 'tree')"
           :file="file"
-          :mouse-over="mouseOver"
+          :dropdown-open="dropdownOpen"
+          @toggle="toggleDropdown($event)"
         />
       </div>
     </div>
-    <template v-if="file.opened">
+    <template v-if="file.opened || file.isHeader">
       <file-row
         v-for="childFile in file.tree"
         :key="childFile.key"
         :file="childFile"
-        :level="level + 1"
+        :level="childFilesLevel"
         :hide-extra-on-tree="hideExtraOnTree"
         :extra-component="extraComponent"
         :show-changed-icon="showChangedIcon"
-        :display-text-key="displayTextKey"
-        :should-truncate-start="shouldTruncateStart"
         @toggleTreeOpen="toggleTreeOpen"
         @clickFile="clickedFile"
       />

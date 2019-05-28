@@ -391,9 +391,9 @@ CI jobs:
    from `Dockerfile` that may be overridden in `.gitlab-ci.yml`)
 1. The Runner attaches itself to a running container.
 1. The Runner prepares a script (the combination of
-   [`before_script`](../yaml/README.md#before_script),
+   [`before_script`](../yaml/README.md#before_script-and-after_script),
    [`script`](../yaml/README.md#script),
-   and [`after_script`](../yaml/README.md#after_script)).
+   and [`after_script`](../yaml/README.md#before_script-and-after_script)).
 1. The Runner sends the script to the container's shell STDIN and receives the
    output.
 
@@ -500,7 +500,7 @@ To configure access for `registry.example.com:5000`, follow these steps:
         bXlfdXNlcm5hbWU6bXlfcGFzc3dvcmQ=
         ```
 
-1. Create a [variable] `DOCKER_AUTH_CONFIG` with the content of the
+1. Create a [variable](../variables/README.md#gitlab-cicd-environment-variables) `DOCKER_AUTH_CONFIG` with the content of the
    Docker configuration file as the value:
 
     ```json
@@ -642,7 +642,6 @@ creation.
 [postgres-hub]: https://hub.docker.com/r/_/postgres/
 [mysql-hub]: https://hub.docker.com/r/_/mysql/
 [runner-priv-reg]: http://docs.gitlab.com/runner/configuration/advanced-configuration.html#using-a-private-container-registry
-[variable]: ../variables/README.md#variables
 [entrypoint]: https://docs.docker.com/engine/reference/builder/#entrypoint
 [cmd]: https://docs.docker.com/engine/reference/builder/#cmd
 [register]: https://docs.gitlab.com/runner/register/

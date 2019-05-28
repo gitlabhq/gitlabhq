@@ -1,0 +1,43 @@
+# Insurance in case a gem needed by one of our releases gets yanked from
+# rubygems.org in the future.
+cache gems:
+  extends: .dedicated-no-docs-no-db-pull-cache-job
+  script:
+    - bundle package --all --all-platforms
+  artifacts:
+    paths:
+      - vendor/cache
+  only:
+    - master@gitlab-org/gitlab-ce
+    - master@gitlab-org/gitlab-ee
+    - tags
+  dependencies:
+    - setup-test-env
+
+gitlab_git_test:
+  extends: .dedicated-runner
+  variables:
+    SETUP_DB: "false"
+  before_script: []
+  dependencies: []
+  cache: {}
+  script:
+    - spec/support/prepare-gitlab-git-test-for-commit --check-for-changes
+  except:
+    - /(^docs[\/-].*|.*-docs$)/
+    - /(^qa[\/-].*|.*-qa$)/
+
+no_ee_check:
+  extends: .dedicated-runner
+  variables:
+    SETUP_DB: "false"
+  before_script: []
+  dependencies: []
+  cache: {}
+  script:
+    - scripts/no-ee-check
+  only:
+    - /.+/@gitlab-org/gitlab-ce
+  except:
+    - /(^docs[\/-].*|.*-docs$)/
+    - /(^qa[\/-].*|.*-qa$)/

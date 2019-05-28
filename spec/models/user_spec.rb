@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe User do
@@ -96,6 +98,11 @@ describe User do
   end
 
   describe 'validations' do
+    describe 'name' do
+      it { is_expected.to validate_presence_of(:name) }
+      it { is_expected.to validate_length_of(:name).is_at_most(128) }
+    end
+
     describe 'username' do
       it 'validates presence' do
         expect(subject).to validate_presence_of(:username)
@@ -660,6 +667,68 @@ describe User do
     end
   end
 
+  describe '#highest_role' do
+    let(:user) { create(:user) }
+
+    let(:group) { create(:group) }
+
+    it 'returns NO_ACCESS if none has been set' do
+      expect(user.highest_role).to eq(Gitlab::Access::NO_ACCESS)
+    end
+
+    it 'returns MAINTAINER if user is maintainer of a project' do
+      create(:project, group: group) do |project|
+        project.add_maintainer(user)
+      end
+
+      expect(user.highest_role).to eq(Gitlab::Access::MAINTAINER)
+    end
+
+    it 'returns the highest role if user is member of multiple projects' do
+      create(:project, group: group) do |project|
+        project.add_maintainer(user)
+      end
+
+      create(:project, group: group) do |project|
+        project.add_developer(user)
+      end
+
+      expect(user.highest_role).to eq(Gitlab::Access::MAINTAINER)
+    end
+
+    it 'returns MAINTAINER if user is maintainer of a group' do
+      create(:group) do |group|
+        group.add_user(user, GroupMember::MAINTAINER)
+      end
+
+      expect(user.highest_role).to eq(Gitlab::Access::MAINTAINER)
+    end
+
+    it 'returns the highest role if user is member of multiple groups' do
+      create(:group) do |group|
+        group.add_user(user, GroupMember::MAINTAINER)
+      end
+
+      create(:group) do |group|
+        group.add_user(user, GroupMember::DEVELOPER)
+      end
+
+      expect(user.highest_role).to eq(Gitlab::Access::MAINTAINER)
+    end
+
+    it 'returns the highest role if user is member of multiple groups and projects' do
+      create(:group) do |group|
+        group.add_user(user, GroupMember::DEVELOPER)
+      end
+
+      create(:project, group: group) do |project|
+        project.add_maintainer(user)
+      end
+
+      expect(user.highest_role).to eq(Gitlab::Access::MAINTAINER)
+    end
+  end
+
   describe '#update_tracked_fields!', :clean_gitlab_redis_shared_state do
     let(:request) { OpenStruct.new(remote_ip: "127.0.0.1") }
     let(:user) { create(:user) }
@@ -925,6 +994,21 @@ describe User do
           expect(user.manageable_groups).to contain_exactly(group, subgroup)
         end
       end
+
+      describe '#manageable_groups_with_routes' do
+        it 'eager loads routes from manageable groups' do
+          control_count =
+            ActiveRecord::QueryRecorder.new(skip_cached: false) do
+              user.manageable_groups_with_routes.map(&:route)
+            end.count
+
+          create(:group, parent: subgroup)
+
+          expect do
+            user.manageable_groups_with_routes.map(&:route)
+          end.not_to exceed_all_query_limit(control_count)
+        end
+      end
     end
   end
 
@@ -961,43 +1045,43 @@ describe User do
     end
   end
 
-  describe '.filter' do
+  describe '.filter_items' do
     let(:user) { double }
 
     it 'filters by active users by default' do
       expect(described_class).to receive(:active).and_return([user])
 
-      expect(described_class.filter(nil)).to include user
+      expect(described_class.filter_items(nil)).to include user
     end
 
     it 'filters by admins' do
       expect(described_class).to receive(:admins).and_return([user])
 
-      expect(described_class.filter('admins')).to include user
+      expect(described_class.filter_items('admins')).to include user
     end
 
     it 'filters by blocked' do
       expect(described_class).to receive(:blocked).and_return([user])
 
-      expect(described_class.filter('blocked')).to include user
+      expect(described_class.filter_items('blocked')).to include user
     end
 
     it 'filters by two_factor_disabled' do
       expect(described_class).to receive(:without_two_factor).and_return([user])
 
-      expect(described_class.filter('two_factor_disabled')).to include user
+      expect(described_class.filter_items('two_factor_disabled')).to include user
     end
 
     it 'filters by two_factor_enabled' do
       expect(described_class).to receive(:with_two_factor).and_return([user])
 
-      expect(described_class.filter('two_factor_enabled')).to include user
+      expect(described_class.filter_items('two_factor_enabled')).to include user
     end
 
     it 'filters by wop' do
       expect(described_class).to receive(:without_projects).and_return([user])
 
-      expect(described_class.filter('wop')).to include user
+      expect(described_class.filter_items('wop')).to include user
     end
   end
 
@@ -1966,7 +2050,7 @@ describe User do
 
     subject { user.membership_groups }
 
-    if Group.supports_nested_groups?
+    if Group.supports_nested_objects?
       it { is_expected.to contain_exactly parent_group, child_group }
     else
       it { is_expected.to contain_exactly parent_group }
@@ -1996,6 +2080,33 @@ describe User do
 
       expect(subject).to include(accessible)
       expect(subject).not_to include(other)
+    end
+
+    context 'with min_access_level' do
+      let!(:user) { create(:user) }
+      let!(:project) { create(:project, :private, namespace: user.namespace) }
+
+      before do
+        project.add_developer(user)
+      end
+
+      subject { Project.where("EXISTS (?)", user.authorizations_for_projects(min_access_level: min_access_level)) }
+
+      context 'when developer access' do
+        let(:min_access_level) { Gitlab::Access::DEVELOPER }
+
+        it 'includes projects a user has access to' do
+          expect(subject).to include(project)
+        end
+      end
+
+      context 'when owner access' do
+        let(:min_access_level) { Gitlab::Access::OWNER }
+
+        it 'does not include projects with higher access level' do
+          expect(subject).not_to include(project)
+        end
+      end
     end
   end
 
@@ -2347,7 +2458,7 @@ describe User do
         group.add_owner(user)
       end
 
-      if Group.supports_nested_groups?
+      if Group.supports_nested_objects?
         it 'returns all groups' do
           is_expected.to match_array [
             group,
@@ -2705,9 +2816,9 @@ describe User do
       project = create(:project, :public)
       archived_project = create(:project, :public, :archived)
 
-      create(:merge_request, source_project: project, author: user, assignee: user)
-      create(:merge_request, :closed, source_project: project, author: user, assignee: user)
-      create(:merge_request, source_project: archived_project, author: user, assignee: user)
+      create(:merge_request, source_project: project, author: user, assignees: [user])
+      create(:merge_request, :closed, source_project: project, author: user, assignees: [user])
+      create(:merge_request, source_project: archived_project, author: user, assignees: [user])
 
       expect(user.assigned_open_merge_requests_count(force: true)).to eq 1
     end

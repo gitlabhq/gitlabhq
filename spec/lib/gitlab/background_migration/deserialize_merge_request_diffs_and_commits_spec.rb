@@ -1,5 +1,6 @@
 require 'spec_helper'
 
+# rubocop:disable RSpec/FactoriesInMigrationSpecs
 describe Gitlab::BackgroundMigration::DeserializeMergeRequestDiffsAndCommits, :migration, schema: 20171114162227 do
   include GitHelpers
 
@@ -171,14 +172,12 @@ describe Gitlab::BackgroundMigration::DeserializeMergeRequestDiffsAndCommits, :m
         let(:exception) { ActiveRecord::RecordNotFound }
 
         let(:perform_ignoring_exceptions) do
-          begin
-            subject.perform(start_id, stop_id)
-          rescue described_class::Error
-          end
+          subject.perform(start_id, stop_id)
+        rescue described_class::Error
         end
 
         before do
-          allow_any_instance_of(described_class::MergeRequestDiff::ActiveRecord_Relation)
+          allow_any_instance_of(ActiveRecord::Relation)
             .to receive(:update_all).and_raise(exception)
         end
 
@@ -324,3 +323,4 @@ describe Gitlab::BackgroundMigration::DeserializeMergeRequestDiffsAndCommits, :m
     end
   end
 end
+# rubocop:enable RSpec/FactoriesInMigrationSpecs

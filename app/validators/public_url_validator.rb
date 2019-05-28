@@ -2,7 +2,7 @@
 
 # PublicUrlValidator
 #
-# Custom validator for URLs. This validator works like UrlValidator but
+# Custom validator for URLs. This validator works like AddressableUrlValidator but
 # it blocks by default urls pointing to localhost or the local network.
 #
 # This validator accepts the same params UrlValidator does.
@@ -12,17 +12,20 @@
 #   class User < ActiveRecord::Base
 #     validates :personal_url, public_url: true
 #
-#     validates :ftp_url, public_url: { protocols: %w(ftp) }
+#     validates :ftp_url, public_url: { schemes: %w(ftp) }
 #
 #     validates :git_url, public_url: { allow_localhost: true, allow_local_network: true}
 #   end
 #
-class PublicUrlValidator < UrlValidator
-  private
+class PublicUrlValidator < AddressableUrlValidator
+  DEFAULT_OPTIONS = {
+    allow_localhost: false,
+    allow_local_network: false
+  }.freeze
 
-  def default_options
-    # By default block all urls pointing to localhost or the local network
-    super.merge(allow_localhost: false,
-                allow_local_network: false)
+  def initialize(options)
+    options.reverse_merge!(DEFAULT_OPTIONS)
+
+    super(options)
   end
 end

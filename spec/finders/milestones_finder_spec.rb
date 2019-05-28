@@ -9,7 +9,7 @@ describe MilestonesFinder do
   let!(:milestone_3) { create(:milestone, project: project_1, state: 'active', due_date: Date.tomorrow) }
   let!(:milestone_4) { create(:milestone, project: project_2, state: 'active') }
 
-  it 'it returns milestones for projects' do
+  it 'returns milestones for projects' do
     result = described_class.new(project_ids: [project_1.id, project_2.id], state: 'all').execute
 
     expect(result).to contain_exactly(milestone_3, milestone_4)
@@ -66,6 +66,12 @@ describe MilestonesFinder do
 
     it 'filters by title' do
       result = described_class.new(params.merge(title: 'one test')).execute
+
+      expect(result.to_a).to contain_exactly(milestone_1)
+    end
+
+    it 'filters by search_title' do
+      result = described_class.new(params.merge(search_title: 'one t')).execute
 
       expect(result.to_a).to contain_exactly(milestone_1)
     end

@@ -1,5 +1,0 @@
----
-title: Handle force_remove_source_branch when creating merge request
-merge_request: 23281
-author:
-type: fixed

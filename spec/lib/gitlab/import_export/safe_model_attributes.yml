@@ -11,6 +11,7 @@ Issue:
 - branch_name
 - description
 - state
+- state_id
 - iid
 - updated_by_id
 - confidential
@@ -120,6 +121,13 @@ Release:
 - project_id
 - created_at
 - updated_at
+Releases::Link:
+- id
+- release_id
+- url
+- name
+- created_at
+- updated_at
 ProjectMember:
 - id
 - access_level
@@ -151,6 +159,7 @@ MergeRequest:
 - created_at
 - updated_at
 - state
+- state_id
 - merge_status
 - target_project_id
 - iid
@@ -228,6 +237,8 @@ Ci::Pipeline:
 - ref
 - sha
 - before_sha
+- source_sha
+- target_sha
 - push_data
 - created_at
 - updated_at
@@ -412,6 +423,7 @@ Service:
 - wiki_page_events
 - confidential_issues_events
 - confidential_note_events
+- deployment_events
 ProjectHook:
 - id
 - url
@@ -485,6 +497,7 @@ Project:
 - merge_requests_ff_only_enabled
 - merge_requests_rebase_enabled
 - jobs_cache_index
+- external_authorization_classification_label
 - pages_https_only
 Author:
 - name
@@ -593,3 +606,28 @@ ResourceLabelEvent:
 - label_id
 - user_id
 - created_at
+ErrorTracking::ProjectErrorTrackingSetting:
+- api_url
+- project_id
+- project_name
+- organization_name
+Suggestion:
+- id
+- note_id
+- relative_order
+- applied
+- commit_id
+- from_content
+- to_content
+- outdated
+- lines_above
+- lines_below
+MergeRequestAssignee:
+- id
+- user_id
+- merge_request_id
+ProjectMetricsSetting:
+- project_id
+- external_dashboard_url
+- created_at
+- updated_at

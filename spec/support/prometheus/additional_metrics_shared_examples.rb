@@ -46,7 +46,7 @@ RSpec.shared_examples 'additional metrics query' do
     describe 'project has Kubernetes service' do
       shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
         let(:environment) { create(:environment, slug: 'environment-slug', project: project) }
-        let(:kube_namespace) { project.deployment_platform.actual_namespace }
+        let(:kube_namespace) { project.deployment_platform.kubernetes_namespace_for(project) }
 
         it_behaves_like 'query context containing environment slug and filter'
 

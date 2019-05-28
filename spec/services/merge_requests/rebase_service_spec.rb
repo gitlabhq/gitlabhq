@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe MergeRequests::RebaseService do
@@ -36,6 +38,32 @@ describe MergeRequests::RebaseService do
       end
     end
 
+    shared_examples 'sequence of failure and success' do
+      it 'properly clears the error message' do
+        allow(repository).to receive(:gitaly_operation_client).and_raise('Something went wrong')
+
+        service.execute(merge_request)
+
+        expect(merge_request.reload.merge_error).to eq described_class::REBASE_ERROR
+
+        allow(repository).to receive(:gitaly_operation_client).and_call_original
+
+        service.execute(merge_request)
+
+        expect(merge_request.reload.merge_error).to eq nil
+      end
+    end
+
+    it_behaves_like 'sequence of failure and success'
+
+    context 'with deprecated step rebase feature' do
+      before do
+        stub_feature_flags(two_step_rebase: false)
+      end
+
+      it_behaves_like 'sequence of failure and success'
+    end
+
     context 'when unexpected error occurs' do
       before do
         allow(repository).to receive(:gitaly_operation_client).and_raise('Something went wrong')
@@ -71,7 +99,7 @@ describe MergeRequests::RebaseService do
     end
 
     context 'valid params' do
-      describe 'successful rebase' do
+      shared_examples_for 'a service that can execute a successful rebase' do
         before do
           service.execute(merge_request)
         end
@@ -95,6 +123,22 @@ describe MergeRequests::RebaseService do
           expect(head_commit.committer_email).to eq(user.email)
           expect(head_commit.committer_name).to eq(user.name)
         end
+      end
+
+      context 'when the two_step_rebase feature is enabled' do
+        before do
+          stub_feature_flags(two_step_rebase: true)
+        end
+
+        it_behaves_like 'a service that can execute a successful rebase'
+      end
+
+      context 'when the two_step_rebase feature is disabled' do
+        before do
+          stub_feature_flags(two_step_rebase: false)
+        end
+
+        it_behaves_like 'a service that can execute a successful rebase'
       end
 
       context 'fork' do

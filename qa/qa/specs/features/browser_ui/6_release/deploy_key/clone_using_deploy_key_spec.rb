@@ -3,11 +3,12 @@
 require 'digest/sha1'
 
 module QA
-  context 'Release', :docker do
+  # Failure issue: https://gitlab.com/gitlab-org/quality/nightly/issues/70
+  context 'Release', :docker, :quarantine do
     describe 'Git clone using a deploy key' do
       def login
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.act { sign_in_using_credentials }
+        Page::Main::Login.perform(&:sign_in_using_credentials)
       end
 
       before(:all) do
@@ -28,7 +29,7 @@ module QA
           resource.image = 'gitlab/gitlab-runner:ubuntu'
         end
 
-        Page::Main::Menu.act { sign_out }
+        Page::Main::Menu.perform(&:sign_out)
       end
 
       after(:all) do
@@ -59,6 +60,7 @@ module QA
             resource.project = @project
             resource.key = deploy_key_name
             resource.value = key.private_key
+            resource.masked = false
           end
 
           gitlab_ci = <<~YAML
@@ -89,17 +91,12 @@ module QA
 
           sha1sum = Digest::SHA1.hexdigest(gitlab_ci)
 
-          Page::Project::Show.act { wait_for_push }
-          Page::Project::Menu.act { click_ci_cd_pipelines }
-          Page::Project::Pipeline::Index.act { go_to_latest_pipeline }
-          Page::Project::Pipeline::Show.act { go_to_first_job }
+          Page::Project::Menu.perform(&:click_ci_cd_pipelines)
+          Page::Project::Pipeline::Index.perform(&:click_on_latest_pipeline)
+          Page::Project::Pipeline::Show.perform(&:click_on_first_job)
 
           Page::Project::Job::Show.perform do |job|
-            job.wait(reload: false) do
-              job.completed? && !job.trace_loading?
-            end
-
-            expect(job.passed?).to be_truthy, "Job status did not become \"passed\"."
+            expect(job).to be_successful
             expect(job.output).to include(sha1sum)
           end
         end

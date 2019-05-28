@@ -35,9 +35,6 @@ msgid_plural "%d pipelines"
 msgstr[0] "1 pipeline"
 msgstr[1] "%d pipelines"
 
-msgid "A collection of graphs regarding Continuous Integration"
-msgstr "Una colección de gráficos sobre Integración Continua"
-
 msgid "About auto deploy"
 msgstr "Acerca del auto despliegue"
 

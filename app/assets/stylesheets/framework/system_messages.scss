@@ -1,0 +1,111 @@
+.header-message,
+.footer-message {
+  padding: 0 15px;
+  border: 1px solid transparent;
+  border-radius: 0;
+  position: fixed;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  margin: 0;
+  z-index: 1000;
+
+  p {
+    @include str-truncated(100%);
+    margin-top: -1px;
+    margin-bottom: 0;
+    font-size: $gl-font-size-small;
+  }
+}
+
+.header-message {
+  top: 0;
+  height: $system-header-height;
+  line-height: $system-header-height;
+}
+
+.footer-message {
+  bottom: 0;
+  height: $system-footer-height;
+  line-height: $system-footer-height;
+}
+
+.with-performance-bar {
+  .header-message {
+    top: $performance-bar-height;
+  }
+}
+
+// System Header
+.with-system-header {
+  // main navigation
+  // login page
+  .navbar-gitlab,
+  .fixed-top {
+    top: $system-header-height;
+  }
+
+  // left sidebar eg: project page
+  // right sidebar eg: MR page
+  .nav-sidebar,
+  .right-sidebar {
+    top: $system-header-height + $header-height;
+  }
+
+  .content-wrapper {
+    margin-top: $system-header-height + $header-height;
+  }
+
+  // Performance Bar
+  // System Header
+  &.with-performance-bar {
+    // main navigation
+    header.navbar-gitlab {
+      top: $performance-bar-height + $system-header-height;
+    }
+
+    .layout-page {
+      margin-top: $header-height + $performance-bar-height + $system-header-height;
+    }
+
+    // left sidebar eg: project page
+    // right sidebar eg: MR page
+    .nav-sidebar,
+    .right-sidebar {
+      top: $header-height + $performance-bar-height + $system-header-height;
+    }
+  }
+}
+
+// System Footer
+.with-system-footer {
+  // left sidebar eg: project page
+  // right sidebar eg: mr page
+  .nav-sidebar,
+  .right-sidebar,
+    // navless pages' footer eg: login page
+    // navless pages' footer border eg: login page
+  &.devise-layout-html body .footer-container,
+  &.devise-layout-html body hr.footer-fixed {
+    bottom: $system-footer-height;
+  }
+}
+
+.fullscreen-layout {
+  .header-message,
+  .footer-message {
+    position: static;
+    top: auto;
+    bottom: auto;
+  }
+
+  .content-wrapper {
+    .with-system-header & {
+      margin-top: 0;
+    }
+
+    .with-system-footer & {
+      margin-top: 0;
+    }
+  }
+}

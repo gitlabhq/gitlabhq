@@ -28,6 +28,22 @@ describe 'issuable list' do
       expect(first('.fa-thumbs-down').find(:xpath, '..')).to have_content(1)
       expect(first('.fa-comments').find(:xpath, '..')).to have_content(2)
     end
+
+    it 'sorts labels alphabetically' do
+      label1 = create(:label, project: project, title: 'a')
+      label2 = create(:label, project: project, title: 'z')
+      label3 = create(:label, project: project, title: 'X')
+      label4 = create(:label, project: project, title: 'B')
+      issuable = create_issuable(issuable_type)
+      issuable.labels << [label1, label2, label3, label4]
+
+      visit_issuable_list(issuable_type)
+
+      expect(all('.label-link')[0].text).to have_content('B')
+      expect(all('.label-link')[1].text).to have_content('X')
+      expect(all('.label-link')[2].text).to have_content('a')
+      expect(all('.label-link')[3].text).to have_content('z')
+    end
   end
 
   it "counts merge requests closing issues icons for each issue" do
@@ -42,6 +58,14 @@ describe 'issuable list' do
       visit project_issues_path(project)
     else
       visit project_merge_requests_path(project)
+    end
+  end
+
+  def create_issuable(issuable_type)
+    if issuable_type == :issue
+      create(:issue, project: project)
+    else
+      create(:merge_request, source_project: project)
     end
   end
 

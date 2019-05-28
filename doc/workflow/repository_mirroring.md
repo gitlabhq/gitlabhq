@@ -55,7 +55,7 @@ When push mirroring is enabled, only push commits directly to the mirrored repos
 mirror diverging. All changes will end up in the mirrored repository whenever:
 
 - Commits are pushed to GitLab.
-- A [forced update](#forcing-an-update) is initiated.
+- A [forced update](#forcing-an-update-core) is initiated.
 
 Changes pushed to files in the repository are automatically pushed to the remote mirror at least:
 
@@ -80,14 +80,26 @@ mirror.
 To set up a mirror from GitLab to GitHub, you need to follow these steps:
 
 1. Create a [GitHub personal access token](https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/) with the `public_repo` box checked.
-1. Fill in the **Git repository URL** field, with the personal access token instead of a password.
-   For example: `https://<GitHubUsername>:<GitHubPersonalAccessToken>@github.com/group/project.git`.
+1. Fill in the **Git repository URL** field using this format: `https://<your_github_username>@github.com/<your_github_group>/<your_github_project>.git`.
+1. Fill in **Password** field with your GitHub personal access token.
 1. Click the **Mirror repository** button.
-1. Wait, or click the update button.
+
+The mirrored repository will be listed. For example, `https://*****:*****@github.com/<your_github_group>/<your_github_project>.git`.
+
+The repository will push soon. To force a push, click the appropriate button.
+
+## Setting up a push mirror to another GitLab instance with 2FA activated
+
+1. On the destination GitLab instance, create a [personal access token](../user/profile/personal_access_tokens.md) with `API` scope.
+1. On the source GitLab instance:
+    1. Fill in the **Git repository URL** field using this format: `https://oauth2@<destination host>/<your_gitlab_group_or_name>/<your_gitlab_project>.git`.
+    1. Fill in **Password** field with the GitLab personal access token created on the destination GitLab instance.
+    1. Click the **Mirror repository** button.
 
 ## Pulling from a remote repository **[STARTER]**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/51) in GitLab Enterprise Edition 8.2.
+> [Added Git LFS support](https://gitlab.com/gitlab-org/gitlab-ee/issues/10871) in [GitLab Starter](https://about.gitlab.com/pricing/) 11.11.
 
 You can set up a repository to automatically have its branches, tags, and commits updated from an
 upstream repository.
@@ -119,7 +131,7 @@ directly to the repository on GitLab. Instead, any commits should be pushed to t
 Changes pushed to the upstream repository will be pulled into the GitLab repository, either:
 
 - Automatically within a certain period of time.
-- When a [forced update](#forcing-an-update) is initiated.
+- When a [forced update](#forcing-an-update-core) is initiated.
 
 CAUTION: **Caution:**
 If you do manually update a branch in the GitLab repository, the branch will become diverged from
@@ -127,18 +139,23 @@ upstream and GitLab will no longer automatically update this branch to prevent a
 
 ### How it works
 
-Once you activate the pull mirroring feature, the mirror will be inserted into a queue. A scheduler
-will start every minute and schedule a fixed number of mirrors for update, based on the configured maximum capacity.
+Once the pull mirroring feature has been enabled for a repository, the repository is added to a queue.
 
-If the mirror updates successfully, it will be enqueued once again with a small backoff period.
+Once per minute, a Sidekiq cron job schedules repository mirrors to update, based on:
 
-If the mirror fails (for example, a branch diverged from upstream), the project's backoff period is
-increased each time it fails, up to a maximum amount of time.
+- The capacity available. This is determined by Sidekiq settings. For GitLab.com, see [GitLab.com Sidekiq settings](../user/gitlab_com/index.md#sidekiq).
+- The number of repository mirrors already in the queue that are due to be updated. Being due depends on when the repository mirror was last updated and how many times it's been retried.
+
+Repository mirrors are updated as Sidekiq becomes available to process them. If the process of updating the repository mirror:
+
+- Succeeds, an update will be enqueued again with at least a 30 minute wait.
+- Fails (for example, a branch diverged from upstream), it will be attempted again later. Mirrors can fail
+  up to 14 times before they will not be enqueued for update again.
 
 ### SSH authentication
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2551) for Push mirroring in [GitLab Starter](https://about.gitlab.com/pricing/) 9.5.
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22982) for Pull mirroring in [GitLab Core](https://about.gitlab.com/pricing/) 11.6
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2551) for Pull mirroring in [GitLab Starter](https://about.gitlab.com/pricing/) 9.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22982) for Push mirroring in [GitLab Core](https://about.gitlab.com/pricing/) 11.6
 
 SSH authentication is mutual:
 
@@ -206,8 +223,10 @@ being injected into your mirror, or your password being stolen.
 ### SSH public key authentication
 
 To use SSH public key authentication, you'll also need to choose that option
-from the **Authentication method** dropdown. GitLab will generate a 4096-bit RSA
-key and display the public component of that key to you.
+from the **Authentication method** dropdown. When the mirror is created,
+GitLab generates a 4096-bit RSA key that can be copied by clicking the **Copy SSH public key** button.
+
+![Repository mirroring copy SSH public key to clipboard button](img/copy_ssh_public_key_button.png)
 
 You then need to add the public SSH key to the other repository's configuration:
 
@@ -256,7 +275,7 @@ failed. This will become visible in either the:
 - Pull mirror settings page.
 
 When a project is hard failed, it will no longer get picked up for mirroring. A user can resume the
-project mirroring again by [Forcing an update](#forcing-an-update).
+project mirroring again by [Forcing an update](#forcing-an-update-core).
 
 ### Trigger update using API **[STARTER]**
 
@@ -289,8 +308,8 @@ them and how they will be resolved.
 Rewriting any mirrored commit on either remote will cause conflicts and mirroring to fail. This can
 be prevented by:
 
-- [Pulling only protected branches](#pull-only-protected-branches).
-- [Pushing only protected branches](#push-only-protected-branches).
+- [Pulling only protected branches](#only-mirror-protected-branches-starter).
+- [Pushing only protected branches](#push-only-protected-branches-core).
 
 You should [protect the branches](../user/project/protected_branches.md) you wish to mirror on both
 remotes to prevent conflicts caused by rewriting history.
@@ -397,3 +416,11 @@ settings are recommended:
   Perforce Helix.
 
 Read about [Git Fusion settings on Perforce.com](https://www.perforce.com/perforce/doc.current/manuals/git-fusion/Content/Git-Fusion/section_vss_bdw_w3.html#section_zdp_zz1_3l).
+
+## Troubleshooting
+
+Should an error occur during a push, GitLab will display an "Error" highlight for that repository. Details on the error can then be seen by hovering over the highlight text.
+
+### 13:Received RST_STREAM with error code 2 with GitHub
+
+If you receive an "13:Received RST_STREAM with error code 2" while mirroring to a GitHub repository, your GitHub settings might be set to block pushes that expose your email address used in commits. Either set your email address on GitHub to be public, or disable the [Block command line pushes that expose my email](http://github.com/settings/emails) setting.

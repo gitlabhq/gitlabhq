@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class UserSyncedAttributesMetadata < ActiveRecord::Base
+class UserSyncedAttributesMetadata < ApplicationRecord
   belongs_to :user
 
   validates :user, presence: true

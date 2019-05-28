@@ -1,5 +1,0 @@
----
-title: Improve memory performance by reducing dirty pages after fork()
-merge_request: 23169
-author:
-type: performance

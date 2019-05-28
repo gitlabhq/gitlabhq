@@ -68,6 +68,66 @@ git config --global --list
 
 ## Basic Git commands
 
+Start using Git via the command line with the most basic
+commands as described below.
+
+## Initialize a local directory for Git version control
+
+If you have an existing local directory that you want to *initialize* for version control, use the `init` command to instruct Git to begin tracking the directory:
+
+```bash
+git init
+```
+
+This creates a `.git` directory that contains the Git configuration files.
+
+Once the directory has been initialized, you can [add a remote repository](#add-a-remote-repository) and [send changes to GitLab.com](#send-changes-to-gitlabcom). View the instructions on [Create a project](../gitlab-basics/create-project.html#push-to-create-a-new-project) to create a new project on GitLab with your changes.
+
+### Clone a repository
+
+To start working locally on an existing remote repository,
+clone it with the command `git clone <repository path>`.
+By cloning a repository, you'll download a copy of its
+files into your local computer, preserving the Git
+connection with the remote repository.
+
+You can either clone it via HTTPS or [SSH](../ssh/README.md).
+If you chose to clone it via HTTPS, you'll have to enter your
+credentials every time you pull and push. With SSH, you enter
+your credentials once and can pull and push straightaway.
+
+You can find both paths (HTTPS and SSH) by navigating to
+your project's landing page and clicking **Clone**. GitLab
+will prompt you with both paths, from which you can copy
+and paste in your command line.
+
+As an example, consider a repository path:
+
+- HTTPS: `https://gitlab.com/gitlab-org/gitlab-ce.git`
+- SSH: `` git@gitlab.com:gitlab-org/gitlab-ce.git ``
+
+To get started, open a terminal window in the directory
+you wish to clone the repository files into, and run one
+of the following commands.
+
+Clone via HTTPS:
+
+```bash
+git clone https://gitlab.com/gitlab-org/gitlab-ce.git
+```
+
+Clone via SSH:
+
+```bash
+git clone git@gitlab.com:gitlab-org/gitlab-ce.git
+```
+
+Both commands will download a copy of the files in a
+folder named after the project's name.
+
+You can then navigate to the directory and start working
+on it locally.
+
 ### Go to the master branch to pull the latest changes from there
 
 ```bash
@@ -91,6 +151,16 @@ To view your remote repositories, type:
 ```bash
 git remote -v
 ```
+
+### Add a remote repository
+
+To add a link to a remote repository:
+
+```bash
+git remote add SOURCE-NAME REPOSITORY-PATH
+```
+
+You'll use this source name every time you [push changes to GitLab.com](#send-changes-to-gitlabcom), so use something easy to remember and type.
 
 ### Create a branch
 
@@ -145,7 +215,7 @@ git commit -m "COMMENT TO DESCRIBE THE INTENTION OF THE COMMIT"
 NOTE: **Note:**
 The `.` character typically means _all_ in Git.
 
-### Send changes to gitlab.com
+### Send changes to GitLab.com
 
 To push all local commits to the remote repository:
 

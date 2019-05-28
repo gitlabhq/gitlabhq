@@ -4,7 +4,7 @@
   }
 
   // Diff is side by side
-  .notes_content.parallel & {
+  .notes-content.parallel & {
     // We hide at double what we normally hide at because
     // there are two columns of notes
     @media (#{$condition}-width: (2 * $breakpoint-width)) {

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module QA
   module Page
     module File
@@ -6,7 +8,7 @@ module QA
 
         view 'app/helpers/blob_helper.rb' do
           element :edit_button, "_('Edit')" # rubocop:disable QA/ElementWithPattern
-          element :delete_button, /label:\s+"Delete"/ # rubocop:disable QA/ElementWithPattern
+          element :delete_button, '_("Delete")' # rubocop:disable QA/ElementWithPattern
         end
 
         view 'app/views/projects/blob/_remove.html.haml' do

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe RemoteMirror, :mailer do
@@ -5,14 +7,14 @@ describe RemoteMirror, :mailer do
 
   describe 'URL validation' do
     context 'with a valid URL' do
-      it 'should be valid' do
+      it 'is valid' do
         remote_mirror = build(:remote_mirror)
         expect(remote_mirror).to be_valid
       end
     end
 
     context 'with an invalid URL' do
-      it 'should not be valid' do
+      it 'is not valid' do
         remote_mirror = build(:remote_mirror, url: 'ftp://invalid.invalid')
 
         expect(remote_mirror).not_to be_valid
@@ -23,6 +25,20 @@ describe RemoteMirror, :mailer do
 
         expect(remote_mirror).to be_invalid
         expect(remote_mirror.errors[:url].first).to include('Username needs to start with an alphanumeric character')
+      end
+
+      it 'does not allow url pointing to localhost' do
+        remote_mirror = build(:remote_mirror, url: 'http://127.0.0.2/t.git')
+
+        expect(remote_mirror).to be_invalid
+        expect(remote_mirror.errors[:url].first).to include('Requests to loopback addresses are not allowed')
+      end
+
+      it 'does not allow url pointing to the local network' do
+        remote_mirror = build(:remote_mirror, url: 'https://192.168.1.1')
+
+        expect(remote_mirror).to be_invalid
+        expect(remote_mirror.errors[:url].first).to include('Requests to the local network are not allowed')
       end
     end
   end
@@ -289,6 +305,25 @@ describe RemoteMirror, :mailer do
     end
   end
 
+  context '#url=' do
+    let(:remote_mirror) { create(:project, :repository, :remote_mirror).remote_mirrors.first }
+
+    it 'resets all the columns when URL changes' do
+      remote_mirror.update(last_error: Time.now,
+                           last_update_at: Time.now,
+                           last_successful_update_at: Time.now,
+                           update_status: 'started',
+                           error_notification_sent: true)
+
+      expect { remote_mirror.update_attribute(:url, 'http://new.example.com') }
+        .to change { remote_mirror.last_error }.to(nil)
+        .and change { remote_mirror.last_update_at }.to(nil)
+        .and change { remote_mirror.last_successful_update_at }.to(nil)
+        .and change { remote_mirror.update_status }.to('finished')
+        .and change { remote_mirror.error_notification_sent }.to(false)
+    end
+  end
+
   context '#updated_since?' do
     let(:remote_mirror) { create(:project, :repository, :remote_mirror).remote_mirrors.first }
     let(:timestamp) { Time.now - 5.minutes }
@@ -335,6 +370,22 @@ describe RemoteMirror, :mailer do
       expect(mirror.sync).to be_nil
       expect(mirror.valid?).to be_truthy
       expect(mirror.update_status).to eq('finished')
+    end
+  end
+
+  describe '#disabled?' do
+    subject { remote_mirror.disabled? }
+
+    context 'when disabled' do
+      let(:remote_mirror) { build(:remote_mirror, enabled: false) }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when enabled' do
+      let(:remote_mirror) { build(:remote_mirror, enabled: true) }
+
+      it { is_expected.to be_falsy }
     end
   end
 

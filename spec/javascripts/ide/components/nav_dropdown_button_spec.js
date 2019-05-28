@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import NavDropdownButton from '~/ide/components/nav_dropdown_button.vue';
 import store from '~/ide/stores';
-import { trimText } from 'spec/helpers/vue_component_helper';
+import { trimText } from 'spec/helpers/text_helper';
 import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import { resetStore } from '../helpers';
 

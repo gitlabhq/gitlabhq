@@ -1,4 +1,3 @@
-# rubocop:disable Naming/FileName
 # frozen_string_literal: true
 
 module Gitlab
@@ -7,10 +6,11 @@ module Gitlab
       module Chain
         Command = Struct.new(
           :source, :project, :current_user,
-          :origin_ref, :checkout_sha, :after_sha, :before_sha,
+          :origin_ref, :checkout_sha, :after_sha, :before_sha, :source_sha, :target_sha,
           :trigger_request, :schedule, :merge_request,
           :ignore_skip_ci, :save_incompleted,
-          :seeds_block, :variables_attributes
+          :seeds_block, :variables_attributes, :push_options,
+          :chat_data, :allow_mirror_update
         ) do
           include Gitlab::Utils::StrongMemoize
 
@@ -29,6 +29,13 @@ module Gitlab
           def tag_exists?
             strong_memoize(:is_tag) do
               project.repository.tag_exists?(ref)
+            end
+          end
+
+          def merge_request_ref_exists?
+            strong_memoize(:merge_request_ref_exists) do
+              MergeRequest.merge_request_ref?(origin_ref) &&
+                project.repository.ref_exists?(origin_ref)
             end
           end
 
@@ -54,7 +61,13 @@ module Gitlab
 
           def protected_ref?
             strong_memoize(:protected_ref) do
-              project.protected_for?(ref)
+              project.protected_for?(origin_ref)
+            end
+          end
+
+          def ambiguous_ref?
+            strong_memoize(:ambiguous_ref) do
+              project.repository.ambiguous_ref?(origin_ref)
             end
           end
         end

@@ -23,7 +23,10 @@
 }
 
 .settings {
-  border-bottom: 1px solid $gray-darker;
+  // border-top for each item except the top one
+  + .settings {
+    border-top: 1px solid $border-color;
+  }
 
   &:first-of-type {
     margin-top: 10px;
@@ -36,7 +39,7 @@
 
 .settings-header {
   position: relative;
-  padding: 20px 110px 10px 0;
+  padding: 20px 110px 0 0;
 
   h4 {
     margin-top: 0;
@@ -167,12 +170,14 @@
       font-weight: $gl-font-weight-normal;
       display: inline-block;
       color: $gl-text-color;
+      vertical-align: top;
     }
 
     .option-description,
     .option-disabled-reason {
       margin-left: 30px;
       color: $project-option-descr-color;
+      margin-top: -5px;
     }
 
     .option-disabled-reason {
@@ -211,6 +216,31 @@
   }
 }
 
+.nested-settings {
+  padding-left: 20px;
+}
+
+.input-btn-group {
+  display: flex;
+
+  .input-large {
+    flex: 1;
+  }
+
+  .btn {
+    margin-left: 10px;
+  }
+}
+
+.content-list > .settings-flex-row {
+  display: flex;
+  align-items: center;
+
+  .float-right {
+    margin-left: auto;
+  }
+}
+
 .prometheus-metrics-monitoring {
   .card {
     .card-toggle {
@@ -238,6 +268,27 @@
       .flash-notice {
         border-radius: 0;
       }
+    }
+  }
+
+  .custom-monitored-metrics {
+    .card-title {
+      display: flex;
+      align-items: center;
+
+      > .btn-success {
+        margin-left: auto;
+      }
+    }
+
+    .custom-metric {
+      display: flex;
+      align-items: center;
+    }
+
+    .custom-metric-link-bold {
+      font-weight: $gl-font-weight-bold;
+      text-decoration: none;
     }
   }
 
@@ -275,6 +326,12 @@
   }
 }
 
+.saml-settings.info-well {
+  .form-control[readonly] {
+    background: $white-light;
+  }
+}
+
 .modal-doorkeepr-auth {
   .modal-body {
     padding: $gl-padding;
@@ -297,7 +354,7 @@
 
   .btn-clipboard {
     background-color: $white-light;
-    border: 1px solid $theme-gray-200;
+    border: 1px solid $gray-200;
   }
 
   .deploy-token-help-block {
@@ -314,8 +371,4 @@
 
 .push-pull-table {
   margin-top: 1em;
-
-  .mirror-action-buttons {
-    padding-right: 0;
-  }
 }

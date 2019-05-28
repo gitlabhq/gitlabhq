@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe OmniauthCallbacksController, type: :controller do
@@ -7,8 +9,12 @@ describe OmniauthCallbacksController, type: :controller do
     let(:user) { create(:omniauth_user, extern_uid: extern_uid, provider: provider) }
 
     before do
-      mock_auth_hash(provider.to_s, extern_uid, user.email)
+      @original_env_config_omniauth_auth = mock_auth_hash(provider.to_s, +extern_uid, user.email)
       stub_omniauth_provider(provider, context: request)
+    end
+
+    after do
+      Rails.application.env_config['omniauth.auth'] = @original_env_config_omniauth_auth
     end
 
     context 'when the user is on the last sign in attempt' do
@@ -45,6 +51,63 @@ describe OmniauthCallbacksController, type: :controller do
       end
     end
 
+    context 'when sign in fails' do
+      include RoutesHelpers
+
+      let(:extern_uid) { 'my-uid' }
+      let(:provider) { :saml }
+
+      def stub_route_as(path)
+        allow(@routes).to receive(:generate_extras) { [path, []] }
+      end
+
+      it 'calls through to the failure handler' do
+        request.env['omniauth.error'] = OneLogin::RubySaml::ValidationError.new("Fingerprint mismatch")
+        request.env['omniauth.error.strategy'] = OmniAuth::Strategies::SAML.new(nil)
+        stub_route_as('/users/auth/saml/callback')
+
+        ForgeryProtection.with_forgery_protection do
+          post :failure
+        end
+
+        expect(flash[:alert]).to match(/Fingerprint mismatch/)
+      end
+    end
+
+    context 'when a redirect fragment is provided' do
+      let(:provider) { :jwt }
+      let(:extern_uid) { 'my-uid' }
+
+      before do
+        request.env['omniauth.params'] = { 'redirect_fragment' => 'L101' }
+      end
+
+      context 'when a redirect url is stored' do
+        it 'redirects with fragment' do
+          post provider, session: { user_return_to: '/fake/url' }
+
+          expect(response).to redirect_to('/fake/url#L101')
+        end
+      end
+
+      context 'when a redirect url with a fragment is stored' do
+        it 'redirects with the new fragment' do
+          post provider, session: { user_return_to: '/fake/url#replaceme' }
+
+          expect(response).to redirect_to('/fake/url#L101')
+        end
+      end
+
+      context 'when no redirect url is stored' do
+        it 'does not redirect with the fragment' do
+          post provider
+
+          expect(response.redirect?).to be true
+          expect(response.location).not_to include('#L101')
+        end
+      end
+    end
+
     context 'strategies' do
       context 'github' do
         let(:extern_uid) { 'my-uid' }
@@ -56,8 +119,35 @@ describe OmniauthCallbacksController, type: :controller do
           expect(request.env['warden']).to be_authenticated
         end
 
+        context 'when user has no linked provider' do
+          let(:user) { create(:user) }
+
+          before do
+            sign_in user
+          end
+
+          it 'links identity' do
+            expect do
+              post provider
+              user.reload
+            end.to change { user.identities.count }.by(1)
+          end
+
+          context 'and is not allowed to link the provider' do
+            before do
+              allow_any_instance_of(IdentityProviderPolicy).to receive(:can?).with(:link).and_return(false)
+            end
+
+            it 'returns 403' do
+              post provider
+
+              expect(response).to have_gitlab_http_status(403)
+            end
+          end
+        end
+
         shared_context 'sign_up' do
-          let(:user) { double(email: 'new@example.com') }
+          let(:user) { double(email: +'new@example.com') }
 
           before do
             stub_omniauth_setting(block_auto_created_users: false)
@@ -136,7 +226,7 @@ describe OmniauthCallbacksController, type: :controller do
     before do
       stub_omniauth_saml_config({ enabled: true, auto_link_saml_user: true, allow_single_sign_on: ['saml'],
                                   providers: [saml_config] })
-      mock_auth_hash('saml', 'my-uid', user.email, mock_saml_response)
+      mock_auth_hash_with_saml_xml('saml', +'my-uid', user.email, mock_saml_response)
       request.env["devise.mapping"] = Devise.mappings[:user]
       request.env['omniauth.auth'] = Rails.application.env_config['omniauth.auth']
       post :saml, params: { SAMLResponse: mock_saml_response }

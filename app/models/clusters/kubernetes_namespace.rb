@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Clusters
-  class KubernetesNamespace < ActiveRecord::Base
+  class KubernetesNamespace < ApplicationRecord
     include Gitlab::Kubernetes
 
     self.table_name = 'clusters_kubernetes_namespaces'
@@ -37,7 +37,7 @@ module Clusters
         variables
           .append(key: 'KUBE_SERVICE_ACCOUNT', value: service_account_name.to_s)
           .append(key: 'KUBE_NAMESPACE', value: namespace.to_s)
-          .append(key: 'KUBE_TOKEN', value: service_account_token.to_s, public: false)
+          .append(key: 'KUBE_TOKEN', value: service_account_token.to_s, public: false, masked: true)
           .append(key: 'KUBECONFIG', value: kubeconfig, public: false, file: true)
       end
     end

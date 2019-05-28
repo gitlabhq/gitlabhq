@@ -38,20 +38,28 @@ description: 'Learn how to contribute to GitLab.'
 - [Sidekiq guidelines](sidekiq_style_guide.md) for working with Sidekiq workers
 - [Working with Gitaly](gitaly.md)
 - [Manage feature flags](feature_flags.md)
+- [Licensed feature availability](licensed_feature_availability.md)
 - [View sent emails or preview mailers](emails.md)
 - [Shell commands](shell_commands.md) in the GitLab codebase
 - [`Gemfile` guidelines](gemfile.md)
 - [Pry debugging](pry_debugging.md)
 - [Sidekiq debugging](sidekiq_debugging.md)
+- [Accessing session data](session.md)
 - [Gotchas](gotchas.md) to avoid
 - [Avoid modules with instance variables](module_with_instance_variables.md) if possible
 - [How to dump production data to staging](db_dump.md)
 - [Working with the GitHub importer](github_importer.md)
+- [Import/Export development documentation](import_export.md)
+- [Elasticsearch integration docs](elasticsearch.md)
 - [Working with Merge Request diffs](diffs.md)
+- [Kubernetes integration guidelines](kubernetes.md)
 - [Permissions](permissions.md)
 - [Prometheus metrics](prometheus_metrics.md)
 - [Guidelines for reusing abstractions](reusing_abstractions.md)
 - [DeclarativePolicy framework](policies.md)
+- [How Git object deduplication works in GitLab](git_object_deduplication.md)
+- [Geo development](geo.md)
+- [Routing](routing.md)
 
 ## Performance guides
 
@@ -98,6 +106,10 @@ description: 'Learn how to contribute to GitLab.'
 - [Query Count Limits](query_count_limits.md)
 - [Database helper modules](database_helpers.md)
 
+## Integration guides
+
+- [Jira Connect app](integrations/jira_connect.md)
+
 ## Testing guides
 
 - [Testing standards and style guidelines](testing_guide/index.md)
@@ -122,3 +134,12 @@ description: 'Learn how to contribute to GitLab.'
 ## Compliance
 
 - [Licensing](licensing.md) for ensuring license compliance
+
+## Go guides
+
+- [Go Guidelines](go_guide/index.md)
+
+## Other GitLab Development Kit (GDK) guides
+
+- [Run full Auto DevOps cycle in a GDK instance](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/auto_devops.md)
+- [Using GitLab Runner with GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/runner.md)

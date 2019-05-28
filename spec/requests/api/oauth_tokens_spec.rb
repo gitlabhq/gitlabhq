@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'OAuth tokens' do
   context 'Resource Owner Password Credentials' do
     def request_oauth_token(user)
-      post '/oauth/token', username: user.username, password: user.password, grant_type: 'password'
+      post '/oauth/token', params: { username: user.username, password: user.password, grant_type: 'password' }
     end
 
     context 'when user has 2FA enabled' do

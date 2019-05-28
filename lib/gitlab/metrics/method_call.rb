@@ -65,7 +65,7 @@ module Gitlab
       # Returns true if the total runtime of this method exceeds the method call
       # threshold.
       def above_threshold?
-        real_time.in_milliseconds >= Metrics.method_call_threshold
+        real_time.in_milliseconds >= ::Gitlab::Metrics.method_call_threshold
       end
     end
   end

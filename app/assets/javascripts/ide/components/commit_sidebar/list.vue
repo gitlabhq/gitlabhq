@@ -87,7 +87,7 @@ export default {
     },
   },
   discardModalText: __(
-    "You will loose all the unstaged changes you've made in this project. This action cannot be undone.",
+    "You will lose all the unstaged changes you've made in this project. This action cannot be undone.",
   ),
 };
 </script>

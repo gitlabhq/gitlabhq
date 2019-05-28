@@ -6,6 +6,7 @@ module API
     include Helpers::Pagination
 
     SUDO_HEADER = "HTTP_SUDO".freeze
+    GITLAB_SHARED_SECRET_HEADER = "Gitlab-Shared-Secret".freeze
     SUDO_PARAM = :sudo
     API_USER_ENV = 'gitlab.api.user'.freeze
 
@@ -66,10 +67,6 @@ module API
       initial_current_user != current_user
     end
 
-    def user_namespace
-      @user_namespace ||= find_namespace!(params[:id])
-    end
-
     def user_group
       @group ||= find_group!(params[:id])
     end
@@ -84,8 +81,8 @@ module API
       page || not_found!('Wiki Page')
     end
 
-    def available_labels_for(label_parent)
-      search_params = { include_ancestor_groups: true }
+    def available_labels_for(label_parent, include_ancestor_groups: true)
+      search_params = { include_ancestor_groups: include_ancestor_groups }
 
       if label_parent.is_a?(Project)
         search_params[:project_id] = label_parent.id
@@ -163,16 +160,11 @@ module API
     end
 
     def find_branch!(branch_name)
-      user_project.repository.find_branch(branch_name) || not_found!('Branch')
-    rescue Gitlab::Git::CommandError
-      render_api_error!('The branch refname is invalid', 400)
-    end
-
-    def find_project_label(id)
-      labels = available_labels_for(user_project)
-      label = labels.find_by_id(id) || labels.find_by_title(id)
-
-      label || not_found!('Label')
+      if Gitlab::GitRefValidator.validate(branch_name)
+        user_project.repository.find_branch(branch_name) || not_found!('Branch')
+      else
+        render_api_error!('The branch refname is invalid', 400)
+      end
     end
 
     # rubocop: disable CodeReuse/ActiveRecord
@@ -217,10 +209,12 @@ module API
     end
 
     def authenticate_by_gitlab_shell_token!
-      input = params['secret_token'].try(:chomp)
-      unless Devise.secure_compare(secret_token, input)
-        unauthorized!
-      end
+      input = params['secret_token']
+      input ||= Base64.decode64(headers[GITLAB_SHARED_SECRET_HEADER]) if headers.key?(GITLAB_SHARED_SECRET_HEADER)
+
+      input&.chomp!
+
+      unauthorized! unless Devise.secure_compare(secret_token, input)
     end
 
     def authenticated_with_full_private_access!
@@ -233,8 +227,8 @@ module API
       forbidden! unless current_user.admin?
     end
 
-    def authorize!(action, subject = :global)
-      forbidden! unless can?(current_user, action, subject)
+    def authorize!(action, subject = :global, reason = nil)
+      forbidden!(reason) unless can?(current_user, action, subject)
     end
 
     def authorize_push_project
@@ -247,6 +241,10 @@ module API
 
     def authorize_read_builds!
       authorize! :read_build, user_project
+    end
+
+    def authorize_destroy_artifacts!
+      authorize! :destroy_artifacts, user_project
     end
 
     def authorize_update_builds!
@@ -291,7 +289,7 @@ module API
         end
       end
       permitted_attrs = ActionController::Parameters.new(attrs).permit!
-      Gitlab.rails5? ? permitted_attrs.to_h : permitted_attrs
+      permitted_attrs.to_h
     end
 
     # rubocop: disable CodeReuse/ActiveRecord
@@ -300,8 +298,20 @@ module API
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
+    def filter_by_title(items, title)
+      items.where(title: title)
+    end
+    # rubocop: enable CodeReuse/ActiveRecord
+
     def filter_by_search(items, text)
       items.search(text)
+    end
+
+    def order_options_with_tie_breaker
+      order_options = { params[:order_by] => params[:sort] }
+      order_options['id'] ||= 'desc'
+      order_options
     end
 
     # error helpers
@@ -398,7 +408,7 @@ module API
 
     # rubocop: disable CodeReuse/ActiveRecord
     def reorder_projects(projects)
-      projects.reorder(params[:order_by] => params[:sort])
+      projects.reorder(order_options_with_tie_breaker)
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
@@ -420,7 +430,7 @@ module API
 
     def present_disk_file!(path, filename, content_type = 'application/octet-stream')
       filename ||= File.basename(path)
-      header['Content-Disposition'] = "attachment; filename=#{filename}"
+      header['Content-Disposition'] = ::Gitlab::ContentDisposition.format(disposition: 'attachment', filename: filename)
       header['Content-Transfer-Encoding'] = 'binary'
       content_type content_type
 
@@ -494,7 +504,11 @@ module API
     def send_git_blob(repository, blob)
       env['api.format'] = :txt
       content_type 'text/plain'
-      header['Content-Disposition'] = "attachment; filename=#{blob.name.inspect}"
+      header['Content-Disposition'] = ::Gitlab::ContentDisposition.format(disposition: 'inline', filename: blob.name)
+
+      # Let Workhorse examine the content and determine the better content disposition
+      header[Gitlab::Workhorse::DETECT_HEADER] = "true"
+
       header(*Gitlab::Workhorse.send_git_blob(repository, blob))
     end
 
@@ -510,7 +524,7 @@ module API
     # `request`. We workaround this by defining methods that returns the right
     # values.
     def define_params_for_grape_middleware
-      self.define_singleton_method(:request) { Rack::Request.new(env) }
+      self.define_singleton_method(:request) { ActionDispatch::Request.new(env) }
       self.define_singleton_method(:params) { request.params.symbolize_keys }
     end
 

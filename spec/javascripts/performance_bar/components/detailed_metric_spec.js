@@ -27,8 +27,8 @@ describe('detailedMetric', () => {
 
   describe('when the current request has details', () => {
     const requestDetails = [
-      { duration: '100', feature: 'find_commit', request: 'abcdef' },
-      { duration: '23', feature: 'rebase_in_progress', request: '' },
+      { duration: '100', feature: 'find_commit', request: 'abcdef', backtrace: ['hello', 'world'] },
+      { duration: '23', feature: 'rebase_in_progress', request: '', backtrace: ['world', 'hello'] },
     ];
 
     beforeEach(() => {
@@ -54,9 +54,11 @@ describe('detailedMetric', () => {
     });
 
     it('adds a modal with a table of the details', () => {
-      vm.$el.querySelectorAll('.performance-bar-modal td strong').forEach((duration, index) => {
-        expect(duration.innerText).toContain(requestDetails[index].duration);
-      });
+      vm.$el
+        .querySelectorAll('.performance-bar-modal td:nth-child(1)')
+        .forEach((duration, index) => {
+          expect(duration.innerText).toContain(requestDetails[index].duration);
+        });
 
       vm.$el
         .querySelectorAll('.performance-bar-modal td:nth-child(2)')
@@ -65,10 +67,16 @@ describe('detailedMetric', () => {
         });
 
       vm.$el
-        .querySelectorAll('.performance-bar-modal td:nth-child(3)')
+        .querySelectorAll('.performance-bar-modal td:nth-child(2)')
         .forEach((request, index) => {
-          expect(request.innerText).toEqual(requestDetails[index].request);
+          expect(request.innerText).toContain(requestDetails[index].request);
         });
+
+      expect(vm.$el.querySelector('.text-expander.js-toggle-button')).not.toBeNull();
+
+      vm.$el.querySelectorAll('.performance-bar-modal td:nth-child(2)').forEach(request => {
+        expect(request.innerText).toContain('world');
+      });
     });
 
     it('displays the metric name', () => {

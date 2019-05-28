@@ -8,7 +8,8 @@ module API
         requires :content, type: String, desc: 'Content of .gitlab-ci.yml'
       end
       post '/lint' do
-        error = Gitlab::Ci::YamlProcessor.validation_message(params[:content])
+        error = Gitlab::Ci::YamlProcessor.validation_message(params[:content],
+          user: current_user)
 
         status 200
 

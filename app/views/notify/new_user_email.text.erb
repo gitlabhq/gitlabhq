@@ -1,4 +1,4 @@
-Hi <%= @user.name %>!
+Hi <%= sanitize_name(@user.name) %>!
 
 The Administrator created an account for you. Now you are a member of the company GitLab application.
 

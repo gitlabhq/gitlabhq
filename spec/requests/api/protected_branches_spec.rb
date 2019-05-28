@@ -14,7 +14,7 @@ describe API::ProtectedBranches do
 
     shared_examples_for 'protected branches' do
       it 'returns the protected branches' do
-        get api(route, user), per_page: 100
+        get api(route, user), params: { per_page: 100 }
 
         expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
@@ -114,7 +114,7 @@ describe API::ProtectedBranches do
       end
 
       it 'protects a single branch' do
-        post post_endpoint, name: branch_name
+        post post_endpoint, params: { name: branch_name }
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['name']).to eq(branch_name)
@@ -123,7 +123,7 @@ describe API::ProtectedBranches do
       end
 
       it 'protects a single branch and developers can push' do
-        post post_endpoint, name: branch_name, push_access_level: 30
+        post post_endpoint, params: { name: branch_name, push_access_level: 30 }
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['name']).to eq(branch_name)
@@ -132,7 +132,7 @@ describe API::ProtectedBranches do
       end
 
       it 'protects a single branch and developers can merge' do
-        post post_endpoint, name: branch_name, merge_access_level: 30
+        post post_endpoint, params: { name: branch_name, merge_access_level: 30 }
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['name']).to eq(branch_name)
@@ -141,7 +141,7 @@ describe API::ProtectedBranches do
       end
 
       it 'protects a single branch and developers can push and merge' do
-        post post_endpoint, name: branch_name, push_access_level: 30, merge_access_level: 30
+        post post_endpoint, params: { name: branch_name, push_access_level: 30, merge_access_level: 30 }
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['name']).to eq(branch_name)
@@ -150,7 +150,7 @@ describe API::ProtectedBranches do
       end
 
       it 'protects a single branch and no one can push' do
-        post post_endpoint, name: branch_name, push_access_level: 0
+        post post_endpoint, params: { name: branch_name, push_access_level: 0 }
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['name']).to eq(branch_name)
@@ -159,7 +159,7 @@ describe API::ProtectedBranches do
       end
 
       it 'protects a single branch and no one can merge' do
-        post post_endpoint, name: branch_name, merge_access_level: 0
+        post post_endpoint, params: { name: branch_name, merge_access_level: 0 }
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['name']).to eq(branch_name)
@@ -168,7 +168,7 @@ describe API::ProtectedBranches do
       end
 
       it 'protects a single branch and no one can push or merge' do
-        post post_endpoint, name: branch_name, push_access_level: 0, merge_access_level: 0
+        post post_endpoint, params: { name: branch_name, push_access_level: 0, merge_access_level: 0 }
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['name']).to eq(branch_name)
@@ -177,7 +177,7 @@ describe API::ProtectedBranches do
       end
 
       it 'returns a 409 error if the same branch is protected twice' do
-        post post_endpoint, name: protected_name
+        post post_endpoint, params: { name: protected_name }
 
         expect(response).to have_gitlab_http_status(409)
       end
@@ -186,7 +186,7 @@ describe API::ProtectedBranches do
         let(:branch_name) { 'feature/*' }
 
         it "protects multiple branches with a wildcard in the name" do
-          post post_endpoint, name: branch_name
+          post post_endpoint, params: { name: branch_name }
 
           expect_protection_to_be_successful
           expect(json_response['push_access_levels'][0]['access_level']).to eq(Gitlab::Access::MAINTAINER)
@@ -201,7 +201,7 @@ describe API::ProtectedBranches do
         end
 
         it "prevents deletion of the protected branch rule" do
-          post post_endpoint, name: branch_name
+          post post_endpoint, params: { name: branch_name }
 
           expect(response).to have_gitlab_http_status(403)
         end
@@ -214,7 +214,7 @@ describe API::ProtectedBranches do
       end
 
       it "returns a 403 error if guest" do
-        post post_endpoint, name: branch_name
+        post post_endpoint, params: { name: branch_name }
 
         expect(response).to have_gitlab_http_status(403)
       end

@@ -2,7 +2,6 @@
 - page_title _("Environments")
 
 #environments-list-view{ data: { environments_data: environments_list_data,
-  "can-create-deployment" => can?(current_user, :create_deployment, @project).to_s,
   "can-read-environment" => can?(current_user, :read_environment, @project).to_s,
   "can-create-environment" => can?(current_user, :create_environment, @project).to_s,
   "new-environment-path" => new_project_environment_path(@project),

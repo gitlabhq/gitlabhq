@@ -73,22 +73,26 @@ describe 'Admin::Hooks' do
   end
 
   describe 'Remove existing hook', :js do
+    let(:hook_url) { generate(:url) }
+
     before do
-      create(:system_hook)
+      create(:system_hook, url: hook_url)
     end
 
     context 'removes existing hook' do
       it 'from hooks list page' do
         visit admin_hooks_path
 
-        expect { accept_confirm { find(:link, 'Remove').send_keys(:return) } }.to change(SystemHook, :count).by(-1)
+        accept_confirm { click_link 'Remove' }
+        expect(page).not_to have_content(hook_url)
       end
 
       it 'from hook edit page' do
         visit admin_hooks_path
         click_link 'Edit'
 
-        expect { accept_confirm { find(:link, 'Remove').send_keys(:return) } }.to change(SystemHook, :count).by(-1)
+        accept_confirm { click_link 'Remove' }
+        expect(page).not_to have_content(hook_url)
       end
     end
   end

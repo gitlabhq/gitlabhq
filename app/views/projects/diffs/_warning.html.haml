@@ -9,4 +9,4 @@
         = link_to _("Plain diff"), merge_request_path(@merge_request, format: :diff), class: "btn btn-sm"
         = link_to _("Email patch"), merge_request_path(@merge_request, format: :patch), class: "btn btn-sm"
   %p
-    = _("To preserve performance only <strong>%{display_size} of ${real_size}</strong> files are displayed.").html_safe % { display_size: diff_files.size, real_size: diff_files.real_size }
+    = _("To preserve performance only <strong>%{display_size} of %{real_size}</strong> files are displayed.").html_safe % { display_size: diff_files.size, real_size: diff_files.real_size }

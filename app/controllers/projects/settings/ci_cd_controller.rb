@@ -13,13 +13,13 @@ module Projects
         Projects::UpdateService.new(project, current_user, update_params).tap do |service|
           result = service.execute
           if result[:status] == :success
-            flash[:notice] = "Pipelines settings for '#{@project.name}' were successfully updated."
+            flash[:notice] = _("Pipelines settings for '%{project_name}' were successfully updated.") % { project_name: @project.name }
 
             run_autodevops_pipeline(service)
 
             redirect_to project_settings_ci_cd_path(@project)
           else
-            render 'show'
+            redirect_to project_settings_ci_cd_path(@project), alert: result[:message]
           end
         end
       end
@@ -39,7 +39,7 @@ module Projects
       def reset_registration_token
         @project.reset_runners_token!
 
-        flash[:notice] = 'New runners registration token has been generated!'
+        flash[:notice] = _('New runners registration token has been generated!')
         redirect_to namespace_project_settings_ci_cd_path
       end
 
@@ -58,7 +58,7 @@ module Projects
         return unless service.run_auto_devops_pipeline?
 
         if @project.empty_repo?
-          flash[:warning] = "This repository is currently empty. A new Auto DevOps pipeline will be created after a new file has been pushed to a branch."
+          flash[:warning] = _("This repository is currently empty. A new Auto DevOps pipeline will be created after a new file has been pushed to a branch.")
           return
         end
 
@@ -99,7 +99,9 @@ module Projects
 
       def define_triggers_variables
         @triggers = @project.triggers
+          .present(current_user: current_user)
         @trigger = ::Ci::Trigger.new
+          .present(current_user: current_user)
       end
 
       def define_badges_variables

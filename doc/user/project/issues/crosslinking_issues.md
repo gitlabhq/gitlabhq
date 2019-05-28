@@ -48,13 +48,12 @@ issues in merge requests.
 
 ## From Merge Requests
 
-Mentioning issues in merge request comments work exactly the same way
+Mentioning issues in merge request comments works exactly the same way as
 they do for [related issues](#from-related-issues). 
 
-When you mention an issue in a merge request description, you can either
-[close the issue as soon as the merge request is merged](closing_issues.md#via-merge-request),
-or simply link both issue and merge request as described in the
-[closing issues documentation](closing_issues.md#from-related-issues).
+When you mention an issue in a merge request description, it will simply
+[link the issue and merge request together](#from-related-issues). Additionally,
+you can also [set an issue to close as soon as the merge request is merged](closing_issues.md#via-merge-request).
 
 ![issue mentioned in MR](img/mention_in_merge_request.png)
 

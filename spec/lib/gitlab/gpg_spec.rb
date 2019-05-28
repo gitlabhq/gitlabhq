@@ -137,7 +137,7 @@ describe Gitlab::Gpg do
           described_class.using_tmp_keychain do
           end
         end
-      end.not_to raise_error(ThreadError)
+      end.not_to raise_error
     end
   end
 end

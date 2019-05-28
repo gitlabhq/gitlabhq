@@ -32,8 +32,8 @@ These logs suffer from a number of problems:
 1. They often lack timestamps or other contextual information (e.g. project ID, user)
 2. They may span multiple lines, which make them hard to find via Elasticsearch.
 3. They lack a common structure, which make them hard to parse by log
-forwarders, such as Logstash or Fluentd. This also makes them hard to
-search.
+   forwarders, such as Logstash or Fluentd. This also makes them hard to
+   search.
 
 Note that currently on GitLab.com, any messages in `production.log` will
 NOT get indexed by Elasticsearch due to the sheer volume and noise. They
@@ -61,12 +61,12 @@ importer. You want to log issues created, merge requests, etc. as the
 importer progresses. Here's what to do:
 
 1. Look at [the list of GitLab Logs](../administration/logs.md) to see
-if your log message might belong with one of the existing log files.
+   if your log message might belong with one of the existing log files.
 1. If there isn't a good place, consider creating a new filename, but
-check with a maintainer if it makes sense to do so. A log file should
-make it easy for people to search pertinent logs in one place. For
-example, `geo.log` contains all logs pertaining to GitLab Geo.
-To create a new file:
+   check with a maintainer if it makes sense to do so. A log file should
+   make it easy for people to search pertinent logs in one place. For
+   example, `geo.log` contains all logs pertaining to GitLab Geo.
+   To create a new file:
     1. Choose a filename (e.g. `importer_json.log`).
     1. Create a new subclass of `Gitlab::JsonLogger`:
 
@@ -130,15 +130,15 @@ To create a new file:
 ## Additional steps with new log files
 
 1. Consider log retention settings. By default, Omnibus will rotate any
-logs in `/var/log/gitlab/gitlab-rails/*.log` every hour and [keep at
-most 30 compressed files](https://docs.gitlab.com/omnibus/settings/logs.html#logrotate).
-On GitLab.com, that setting is only 6 compressed files. These settings should suffice
-for most users, but you may need to tweak them in [omnibus-gitlab](https://gitlab.com/gitlab-org/omnibus-gitlab).
+   logs in `/var/log/gitlab/gitlab-rails/*.log` every hour and [keep at
+   most 30 compressed files](https://docs.gitlab.com/omnibus/settings/logs.html#logrotate).
+   On GitLab.com, that setting is only 6 compressed files. These settings should suffice
+   for most users, but you may need to tweak them in [omnibus-gitlab](https://gitlab.com/gitlab-org/omnibus-gitlab).
 
 1. If you add a new file, submit an issue to the [production
-tracker](https://gitlab.com/gitlab-com/gl-infra/production/issues) or
-a merge request to the [gitlab_fluentd](https://gitlab.com/gitlab-cookbooks/gitlab_fluentd)
-project. See [this example](https://gitlab.com/gitlab-cookbooks/gitlab_fluentd/merge_requests/51/diffs).
+   tracker](https://gitlab.com/gitlab-com/gl-infra/production/issues) or
+   a merge request to the [gitlab_fluentd](https://gitlab.com/gitlab-cookbooks/gitlab_fluentd)
+   project. See [this example](https://gitlab.com/gitlab-cookbooks/gitlab_fluentd/merge_requests/51/diffs).
 
 1. Be sure to update the [GitLab CE/EE documentation](../administration/logs.md) and the [GitLab.com
-runbooks](https://gitlab.com/gitlab-com/runbooks/blob/master/howto/logging.md).
+   runbooks](https://gitlab.com/gitlab-com/runbooks/blob/master/howto/logging.md).

@@ -9,6 +9,11 @@ module API
         @current_setting ||=
           (ApplicationSetting.current_without_cache || ApplicationSetting.create_from_defaults)
       end
+
+      def filter_attributes_using_license(attrs)
+        # This method will be redefined in EE.
+        attrs
+      end
     end
 
     desc 'Get the current application settings' do
@@ -35,7 +40,8 @@ module API
       end
       optional :container_registry_token_expire_delay, type: Integer, desc: 'Authorization token duration (minutes)'
       optional :default_artifacts_expire_in, type: String, desc: "Set the default expiration time for each job's artifacts"
-      optional :default_branch_protection, type: Integer, values: [0, 1, 2], desc: 'Determine if developers can push to master'
+      optional :default_project_creation, type: Integer, values: ::Gitlab::Access.project_creation_values, desc: 'Determine if developers can create projects in the group'
+      optional :default_branch_protection, type: Integer, values: ::Gitlab::Access.protection_values, desc: 'Determine if developers can push to master'
       optional :default_group_visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'The default group visibility'
       optional :default_project_visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'The default project visibility'
       optional :default_projects_limit, type: Integer, desc: 'The maximum number of personal projects'
@@ -121,6 +127,7 @@ module API
       optional :terminal_max_session_time, type: Integer, desc: 'Maximum time for web terminal websocket connection (in seconds). Set to 0 for unlimited time.'
       optional :usage_ping_enabled, type: Boolean, desc: 'Every week GitLab will report license usage back to GitLab, Inc.'
       optional :instance_statistics_visibility_private, type: Boolean, desc: 'When set to `true` Instance statistics will only be available to admins'
+      optional :local_markdown_version, type: Integer, desc: "Local markdown version, increase this value when any cached markdown should be invalidated"
 
       ApplicationSetting::SUPPORTED_KEY_TYPES.each do |type|
         optional :"#{type}_key_restriction",
@@ -129,7 +136,51 @@ module API
                  desc: "Restrictions on the complexity of uploaded #{type.upcase} keys. A value of #{ApplicationSetting::FORBIDDEN_KEY_VALUE} disables all #{type.upcase} keys."
       end
 
-      optional_attributes = ::ApplicationSettingsHelper.visible_attributes << :performance_bar_allowed_group_id
+      if Gitlab.ee?
+        optional :elasticsearch_aws, type: Boolean, desc: 'Enable support for AWS hosted elasticsearch'
+
+        given elasticsearch_aws: ->(val) { val } do
+          optional :elasticsearch_aws_access_key, type: String, desc: 'AWS IAM access key'
+          requires :elasticsearch_aws_region, type: String, desc: 'The AWS region the elasticsearch domain is configured'
+          optional :elasticsearch_aws_secret_access_key, type: String, desc: 'AWS IAM secret access key'
+        end
+
+        optional :elasticsearch_indexing, type: Boolean, desc: 'Enable Elasticsearch indexing'
+
+        given elasticsearch_indexing: ->(val) { val } do
+          optional :elasticsearch_search, type: Boolean, desc: 'Enable Elasticsearch search'
+          requires :elasticsearch_url, type: String, desc: 'The url to use for connecting to Elasticsearch. Use a comma-separated list to support clustering (e.g., "http://localhost:9200, http://localhost:9201")'
+          optional :elasticsearch_limit_indexing, type: Boolean, desc: 'Limit Elasticsearch to index certain namespaces and projects'
+        end
+
+        given elasticsearch_limit_indexing: ->(val) { val } do
+          optional :elasticsearch_namespace_ids, type: Array[Integer], coerce_with: Validations::Types::LabelsList.coerce, desc: 'The namespace ids to index with Elasticsearch.'
+          optional :elasticsearch_project_ids, type: Array[Integer], coerce_with: Validations::Types::LabelsList.coerce, desc: 'The project ids to index with Elasticsearch.'
+        end
+
+        optional :email_additional_text, type: String, desc: 'Additional text added to the bottom of every email for legal/auditing/compliance reasons'
+        optional :help_text, type: String, desc: 'GitLab server administrator information'
+        optional :repository_size_limit, type: Integer, desc: 'Size limit per repository (MB)'
+        optional :file_template_project_id, type: Integer, desc: 'ID of project where instance-level file templates are stored.'
+        optional :repository_storages, type: Array[String], desc: 'A list of names of enabled storage paths, taken from `gitlab.yml`. New projects will be created in one of these stores, chosen at random.'
+        optional :snowplow_enabled, type: Boolean, desc: 'Enable Snowplow'
+
+        given snowplow_enabled: ->(val) { val } do
+          requires :snowplow_collector_uri, type: String, desc: 'Snowplow Collector URI'
+          optional :snowplow_cookie_domain, type: String, desc: 'Snowplow cookie domain'
+          optional :snowplow_site_id, type: String, desc: 'Snowplow Site/Application ID'
+        end
+
+        optional :usage_ping_enabled, type: Boolean, desc: 'Every week GitLab will report license usage back to GitLab, Inc.'
+      end
+
+      optional_attributes = [*::ApplicationSettingsHelper.visible_attributes,
+                             *::ApplicationSettingsHelper.external_authorization_service_attributes,
+                             :performance_bar_allowed_group_id]
+
+      if Gitlab.ee?
+        optional_attributes += EE::ApplicationSettingsHelper.possible_licensed_attributes
+      end
 
       optional(*optional_attributes)
       at_least_one_of(*optional_attributes)
@@ -154,6 +205,8 @@ module API
       elsif attrs.has_key?(:password_authentication_enabled)
         attrs[:password_authentication_enabled_for_web] = attrs.delete(:password_authentication_enabled)
       end
+
+      attrs = filter_attributes_using_license(attrs)
 
       if ApplicationSettings::UpdateService.new(current_settings, current_user, attrs).execute
         present current_settings, with: Entities::ApplicationSetting

@@ -23,7 +23,7 @@ module FakeBlobHelpers
       0
     end
 
-    def binary?
+    def binary_in_repo?
       @binary
     end
 

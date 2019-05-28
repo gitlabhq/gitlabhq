@@ -118,7 +118,7 @@ export default class CreateMergeRequestDropdown {
         this.branchCreated = true;
         window.location.href = data.url;
       })
-      .catch(() => Flash('Failed to create a branch for this issue. Please try again.'));
+      .catch(() => Flash(__('Failed to create a branch for this issue. Please try again.')));
   }
 
   createMergeRequest() {
@@ -130,7 +130,7 @@ export default class CreateMergeRequestDropdown {
         this.mergeRequestCreated = true;
         window.location.href = data.url;
       })
-      .catch(() => Flash('Failed to create Merge Request. Please try again.'));
+      .catch(() => Flash(__('Failed to create Merge Request. Please try again.')));
   }
 
   disable() {
@@ -227,7 +227,7 @@ export default class CreateMergeRequestDropdown {
       .catch(() => {
         this.unavailable();
         this.disable();
-        new Flash('Failed to get ref.');
+        new Flash(__('Failed to get ref.'));
 
         this.isGettingRef = false;
 

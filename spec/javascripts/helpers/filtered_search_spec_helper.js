@@ -5,7 +5,7 @@ export default class FilteredSearchSpecHelper {
 
   static createFilterVisualToken(name, value, isSelected = false) {
     const li = document.createElement('li');
-    li.classList.add('js-visual-token', 'filtered-search-token');
+    li.classList.add('js-visual-token', 'filtered-search-token', `search-token-${name}`);
 
     li.innerHTML = `
       <div class="selectable ${isSelected ? 'selected' : ''}" role="button">

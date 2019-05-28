@@ -8,6 +8,8 @@ class SessionsController < Devise::SessionsController
   include Recaptcha::Verify
 
   skip_before_action :check_two_factor_requirement, only: [:destroy]
+  # replaced with :require_no_authentication_without_flash
+  skip_before_action :require_no_authentication, only: [:new, :create]
 
   prepend_before_action :check_initial_setup, only: [:new]
   prepend_before_action :authenticate_with_two_factor,
@@ -15,6 +17,8 @@ class SessionsController < Devise::SessionsController
   prepend_before_action :check_captcha, only: [:create]
   prepend_before_action :store_redirect_uri, only: [:new]
   prepend_before_action :ldap_servers, only: [:new, :create]
+  prepend_before_action :require_no_authentication_without_flash, only: [:new, :create]
+
   before_action :auto_sign_in_with_provider, only: [:new]
   before_action :load_recaptcha
 
@@ -54,6 +58,14 @@ class SessionsController < Devise::SessionsController
 
   private
 
+  def require_no_authentication_without_flash
+    require_no_authentication
+
+    if flash[:alert] == I18n.t('devise.failure.already_authenticated')
+      flash[:alert] = nil
+    end
+  end
+
   def captcha_enabled?
     request.headers[CAPTCHA_HEADER] && Gitlab::Recaptcha.enabled?
   end
@@ -70,7 +82,7 @@ class SessionsController < Devise::SessionsController
       increment_failed_login_captcha_counter
 
       self.resource = resource_class.new
-      flash[:alert] = 'There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.'
+      flash[:alert] = _('There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.')
       flash.delete :recaptcha_error
 
       respond_with_navigational(resource) { render :new }
@@ -122,7 +134,7 @@ class SessionsController < Devise::SessionsController
     end
 
     redirect_to edit_user_password_path(reset_password_token: @token),
-      notice: "Please create a password for your new account."
+      notice: _("Please create a password for your new account.")
   end
   # rubocop: enable CodeReuse/ActiveRecord
 

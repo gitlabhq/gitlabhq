@@ -35,6 +35,10 @@ module Gitlab
       matches
     end
 
+    def match?(text)
+      text.present? && scan(text).present?
+    end
+
     def replace(text, rewrite)
       RE2.Replace(text, regexp, rewrite)
     end
@@ -54,24 +58,6 @@ module Gitlab
       UntrustedRegexp.new(pattern, multiline: multiline)
     rescue RegexpError
       Regexp.new(pattern)
-    end
-
-    def self.valid?(pattern)
-      !!self.fabricate(pattern)
-    rescue RegexpError
-      false
-    end
-
-    def self.fabricate(pattern)
-      matches = pattern.match(%r{^/(?<regexp>.+)/(?<flags>[ismU]*)$})
-
-      raise RegexpError, 'Invalid regular expression!' if matches.nil?
-
-      expression = matches[:regexp]
-      flags = matches[:flags]
-      expression.prepend("(?#{flags})") if flags.present?
-
-      self.new(expression, multiline: false)
     end
 
     private

@@ -1,1 +1,5 @@
-This document was moved to [testing_guide/index.md](testing_guide/index.md).
+---
+redirect_to: 'testing_guide/index.md'
+---
+
+This document was moved to [another location](testing_guide/index.md).

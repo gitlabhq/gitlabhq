@@ -1,5 +1,6 @@
 require 'spec_helper'
 
+# rubocop:disable RSpec/FactoriesInMigrationSpecs
 describe Gitlab::BackgroundMigration::MovePersonalSnippetFiles do
   let(:test_dir) { File.join(Rails.root, 'tmp', 'tests', 'move_snippet_files_test') }
   let(:old_uploads_dir) { File.join('uploads', 'system', 'personal_snippet') }
@@ -70,3 +71,4 @@ describe Gitlab::BackgroundMigration::MovePersonalSnippetFiles do
     "[an upload](#{path})"
   end
 end
+# rubocop:enable RSpec/FactoriesInMigrationSpecs

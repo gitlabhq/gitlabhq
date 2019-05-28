@@ -1,5 +1,0 @@
----
-title: Improves performance of Project#readme_url by caching the README path
-merge_request: 23357
-author:
-type: performance

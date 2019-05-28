@@ -62,7 +62,8 @@ sudo gitlab-ctl status
 
 Notice that all services say `ok: run`.
 
-Sometimes, components time out during the restart and sometimes they get stuck.
+Sometimes, components time out (look for `timeout` in the logs) during the
+restart and sometimes they get stuck.
 In that case, you can use `gitlab-ctl kill <service>` to send the `SIGKILL`
 signal to the service, for example `sidekiq`. After that, a restart should
 perform fine.
@@ -135,7 +136,6 @@ your server in `/etc/init.d/gitlab`.
 If you are using other init systems, like systemd, you can check the
 [GitLab Recipes][gl-recipes] repository for some unofficial services. These are
 **not** officially supported so use them at your own risk.
-
 
 [omnibus-dl]: https://about.gitlab.com/downloads/ "Download the Omnibus packages"
 [install]: ../install/installation.md "Documentation to install GitLab from source"

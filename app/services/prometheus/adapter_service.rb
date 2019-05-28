@@ -30,7 +30,7 @@ module Prometheus
       return unless deployment_platform.respond_to?(:cluster)
 
       cluster = deployment_platform.cluster
-      return unless cluster.application_prometheus&.ready?
+      return unless cluster.application_prometheus&.available?
 
       cluster.application_prometheus
     end

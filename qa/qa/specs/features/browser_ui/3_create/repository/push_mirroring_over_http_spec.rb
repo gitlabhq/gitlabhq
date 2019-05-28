@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Create' do
+  # https://gitlab.com/gitlab-org/quality/staging/issues/40
+  context 'Create', :quarantine do
     describe 'Push mirror a repository over HTTP' do
-      it 'configures and syncs a (push) mirrored repository'  do
+      it 'configures and syncs a (push) mirrored repository' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
         Page::Main::Login.perform(&:sign_in_using_credentials)
 
@@ -20,9 +21,7 @@ module QA
         end
         source_project_push.project.visit!
 
-        Page::Project::Show.perform(&:wait_for_push)
-
-        Page::Project::Menu.perform(&:click_repository_settings)
+        Page::Project::Menu.perform(&:go_to_repository_settings)
         Page::Project::Settings::Repository.perform do |settings|
           settings.expand_mirroring_repositories do |mirror_settings|
             # Configure the source project to push to the target project

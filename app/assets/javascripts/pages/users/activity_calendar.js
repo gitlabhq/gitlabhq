@@ -6,9 +6,15 @@ import dateFormat from 'dateformat';
 import { getDayName, getDayDifference } from '~/lib/utils/datetime_utility';
 import axios from '~/lib/utils/axios_utils';
 import flash from '~/flash';
-import { __ } from '~/locale';
+import { n__, s__, __ } from '~/locale';
 
 const d3 = { select, scaleLinear, scaleThreshold };
+
+const firstDayOfWeekChoices = Object.freeze({
+  sunday: 0,
+  monday: 1,
+  saturday: 6,
+});
 
 const LOADING_HTML = `
   <div class="text-center">
@@ -29,9 +35,9 @@ function formatTooltipText({ date, count }) {
   const dateDayName = getDayName(dateObject);
   const dateText = dateFormat(dateObject, 'mmm d, yyyy');
 
-  let contribText = 'No contributions';
+  let contribText = __('No contributions');
   if (count > 0) {
-    contribText = `${count} contribution${count > 1 ? 's' : ''}`;
+    contribText = n__('%d contribution', '%d contributions', count);
   }
   return `${contribText}<br />${dateDayName} ${dateText}`;
 }
@@ -49,7 +55,7 @@ export default class ActivityCalendar {
     timestamps,
     calendarActivitiesPath,
     utcOffset = 0,
-    firstDayOfWeek = 0,
+    firstDayOfWeek = firstDayOfWeekChoices.sunday,
     monthsAgo = 12,
   ) {
     this.calendarActivitiesPath = calendarActivitiesPath;
@@ -59,18 +65,18 @@ export default class ActivityCalendar {
     this.daySize = 15;
     this.daySizeWithSpace = this.daySize + this.daySpace * 2;
     this.monthNames = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
+      __('Jan'),
+      __('Feb'),
+      __('Mar'),
+      __('Apr'),
+      __('May'),
+      __('Jun'),
+      __('Jul'),
+      __('Aug'),
+      __('Sep'),
+      __('Oct'),
+      __('Nov'),
+      __('Dec'),
     ];
     this.months = [];
     this.firstDayOfWeek = firstDayOfWeek;
@@ -159,7 +165,7 @@ export default class ActivityCalendar {
       .append('g')
       .attr('transform', (group, i) => {
         _.each(group, (stamp, a) => {
-          if (a === 0 && stamp.day === 0) {
+          if (a === 0 && stamp.day === this.firstDayOfWeek) {
             const month = stamp.date.getMonth();
             const x = this.daySizeWithSpace * i + 1 + this.daySizeWithSpace;
             const lastMonth = _.last(this.months);
@@ -193,18 +199,31 @@ export default class ActivityCalendar {
   renderDayTitles() {
     const days = [
       {
-        text: 'M',
+        text: s__('DayTitle|M'),
         y: 29 + this.dayYPos(1),
       },
       {
-        text: 'W',
+        text: s__('DayTitle|W'),
         y: 29 + this.dayYPos(3),
       },
       {
-        text: 'F',
+        text: s__('DayTitle|F'),
         y: 29 + this.dayYPos(5),
       },
     ];
+
+    if (this.firstDayOfWeek === firstDayOfWeekChoices.monday) {
+      days.push({
+        text: s__('DayTitle|S'),
+        y: 29 + this.dayYPos(7),
+      });
+    } else if (this.firstDayOfWeek === firstDayOfWeekChoices.saturday) {
+      days.push({
+        text: s__('DayTitle|S'),
+        y: 29 + this.dayYPos(6),
+      });
+    }
+
     this.svg
       .append('g')
       .selectAll('text')
@@ -234,11 +253,11 @@ export default class ActivityCalendar {
 
   renderKey() {
     const keyValues = [
-      'no contributions',
-      '1-9 contributions',
-      '10-19 contributions',
-      '20-29 contributions',
-      '30+ contributions',
+      __('no contributions'),
+      __('1-9 contributions'),
+      __('10-19 contributions'),
+      __('20-29 contributions'),
+      __('30+ contributions'),
     ];
     const keyColors = [
       '#ededed',

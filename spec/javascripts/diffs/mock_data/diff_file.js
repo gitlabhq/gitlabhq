@@ -25,6 +25,8 @@ export default {
   text: true,
   viewer: {
     name: 'text',
+    error: null,
+    collapsed: false,
   },
   added_lines: 2,
   removed_lines: 0,
@@ -238,4 +240,5 @@ export default {
     },
   ],
   discussions: [],
+  renderingLines: false,
 };

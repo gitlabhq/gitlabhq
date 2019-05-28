@@ -24,7 +24,7 @@ class Projects::DeployKeysController < Projects::ApplicationController
   end
 
   def create
-    @key = DeployKeys::CreateService.new(current_user, create_params).execute
+    @key = DeployKeys::CreateService.new(current_user, create_params).execute(project: @project)
 
     unless @key.valid?
       flash[:alert] = @key.errors.full_messages.join(', ').html_safe
@@ -38,7 +38,7 @@ class Projects::DeployKeysController < Projects::ApplicationController
 
   def update
     if deploy_key.update(update_params)
-      flash[:notice] = 'Deploy key was successfully updated.'
+      flash[:notice] = _('Deploy key was successfully updated.')
       redirect_to_repository_settings(@project, anchor: 'js-deploy-keys-settings')
     else
       render 'edit'

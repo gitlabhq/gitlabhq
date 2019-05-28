@@ -1,3 +1,11 @@
+- users = capture_haml do
+  - if search_tabs?(:members)
+    %li{ class: active_when(@scope == 'users') }
+      = link_to search_filter_path(scope: 'users') do
+        Users
+        %span.badge.badge-pill
+          = limited_count(@search_results.limited_users_count)
+
 .scrolling-tabs-container.inner-page-scroll-tabs.is-smaller
   .fade-left= icon('angle-left')
   .fade-right= icon('angle-right')
@@ -6,75 +14,77 @@
       - if project_search_tabs?(:blobs)
         %li{ class: active_when(@scope == 'blobs') }
           = link_to search_filter_path(scope: 'blobs') do
-            Code
+            = _("Code")
             %span.badge.badge-pill
               = @search_results.blobs_count
       - if project_search_tabs?(:issues)
         %li{ class: active_when(@scope == 'issues') }
           = link_to search_filter_path(scope: 'issues') do
-            Issues
+            = _("Issues")
             %span.badge.badge-pill
               = limited_count(@search_results.limited_issues_count)
       - if project_search_tabs?(:merge_requests)
         %li{ class: active_when(@scope == 'merge_requests') }
           = link_to search_filter_path(scope: 'merge_requests') do
-            Merge requests
+            = _("Merge requests")
             %span.badge.badge-pill
               = limited_count(@search_results.limited_merge_requests_count)
       - if project_search_tabs?(:milestones)
         %li{ class: active_when(@scope == 'milestones') }
           = link_to search_filter_path(scope: 'milestones') do
-            Milestones
+            = _("Milestones")
             %span.badge.badge-pill
               = limited_count(@search_results.limited_milestones_count)
       - if project_search_tabs?(:notes)
         %li{ class: active_when(@scope == 'notes') }
           = link_to search_filter_path(scope: 'notes') do
-            Comments
+            = _("Comments")
             %span.badge.badge-pill
               = limited_count(@search_results.limited_notes_count)
       - if project_search_tabs?(:wiki)
         %li{ class: active_when(@scope == 'wiki_blobs') }
           = link_to search_filter_path(scope: 'wiki_blobs') do
-            Wiki
+            = _("Wiki")
             %span.badge.badge-pill
               = @search_results.wiki_blobs_count
       - if project_search_tabs?(:commits)
         %li{ class: active_when(@scope == 'commits') }
           = link_to search_filter_path(scope: 'commits') do
-            Commits
+            = _("Commits")
             %span.badge.badge-pill
               = @search_results.commits_count
+      = users
 
     - elsif @show_snippets
       %li{ class: active_when(@scope == 'snippet_blobs') }
         = link_to search_filter_path(scope: 'snippet_blobs', snippets: true, group_id: nil, project_id: nil) do
-          Snippet Contents
+          = _("Snippet Contents")
           %span.badge.badge-pill
             = @search_results.snippet_blobs_count
       %li{ class: active_when(@scope == 'snippet_titles') }
         = link_to search_filter_path(scope: 'snippet_titles', snippets: true, group_id: nil, project_id: nil) do
-          Titles and Filenames
+          = _("Titles and Filenames")
           %span.badge.badge-pill
             = @search_results.snippet_titles_count
     - else
       %li{ class: active_when(@scope == 'projects') }
         = link_to search_filter_path(scope: 'projects') do
-          Projects
+          = _("Projects")
           %span.badge.badge-pill
             = limited_count(@search_results.limited_projects_count)
       %li{ class: active_when(@scope == 'issues') }
         = link_to search_filter_path(scope: 'issues') do
-          Issues
+          = _("Issues")
           %span.badge.badge-pill
             = limited_count(@search_results.limited_issues_count)
       %li{ class: active_when(@scope == 'merge_requests') }
         = link_to search_filter_path(scope: 'merge_requests') do
-          Merge requests
+          = _("Merge requests")
           %span.badge.badge-pill
             = limited_count(@search_results.limited_merge_requests_count)
       %li{ class: active_when(@scope == 'milestones') }
         = link_to search_filter_path(scope: 'milestones') do
-          Milestones
+          = _("Milestones")
           %span.badge.badge-pill
             = limited_count(@search_results.limited_milestones_count)
+      = users

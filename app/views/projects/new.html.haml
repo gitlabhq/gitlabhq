@@ -16,6 +16,10 @@
         = _('A project is where you house your files (repository), plan your work (issues), and publish your documentation (wiki), %{among_other_things_link}.').html_safe % { among_other_things_link: among_other_things_link }
       %p
         = _('All features are enabled for blank projects, from templates, or when importing, but you can disable them afterward in the project settings.')
+      = render_if_exists 'projects/new_ci_cd_banner_external_repo'
+      %p
+        - pages_getting_started_guide = link_to _('Pages getting started guide'), help_page_path("user/project/pages/getting_started_part_two", anchor: "fork-a-project-to-get-started-from"), target: '_blank'
+        = _('Information about additional Pages templates and how to install them can be found in our %{pages_getting_started_guide}.').html_safe % { pages_getting_started_guide: pages_getting_started_guide }
       .md
         = brand_new_project_guidelines
       %p
@@ -33,19 +37,25 @@
             %span.d-block.d-sm-none Blank
         %li.nav-item{ role: 'presentation' }
           %a.nav-link{ href: '#create-from-template-pane', id: 'create-from-template-tab', data: { toggle: 'tab', track_label: 'create_from_template', track_event: "click_tab" }, role: 'tab' }
-            %span.d-none.d-sm-block Create from template
+            %span.d-none.d-sm-block.qa-project-create-from-template-tab Create from template
             %span.d-block.d-sm-none Template
         %li.nav-item{ role: 'presentation' }
           %a.nav-link{ href: '#import-project-pane', id: 'import-project-tab', data: { toggle: 'tab', track_label: 'import_project', track_event: "click_tab" }, role: 'tab' }
             %span.d-none.d-sm-block Import project
             %span.d-block.d-sm-none Import
+        = render_if_exists 'projects/new_ci_cd_only_project_tab', active_tab: active_tab
 
       .tab-content.gitlab-tab-content
         .tab-pane{ id: 'blank-project-pane', class: active_when(active_tab == 'blank'), role: 'tabpanel' }
           = form_for @project, html: { class: 'new_project' } do |f|
             = render 'new_project_fields', f: f, project_name_id: "blank-project-name"
 
-        .tab-pane.no-padding{ id: 'create-from-template-pane', class: active_when(active_tab == 'template'), role: 'tabpanel' }
+        #create-from-template-pane.tab-pane.px-0.pb-0{ class: active_when(active_tab == 'template'), role: 'tabpanel' }
+          .card-slim.m-4.p-4
+            %div
+              - contributing_templates_url = 'https://gitlab.com/gitlab-org/project-templates/contributing'
+              - link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: contributing_templates_url }
+              = _('Learn how to %{link_start}contribute to the built-in templates%{link_end}').html_safe % { link_start: link_start, link_end: '</a>'.html_safe }
           = form_for @project, html: { class: 'new_project' } do |f|
             .project-template
               .form-group
@@ -59,6 +69,8 @@
             .nothing-here-block
               %h4 No import options available
               %p Contact an administrator to enable options for importing your project.
+
+        = render_if_exists 'projects/new_ci_cd_only_project_pane', active_tab: active_tab
 
 .save-project-loader.d-none
   .center

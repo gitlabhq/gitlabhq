@@ -2,7 +2,7 @@
 
 %aside.issues-bulk-update.js-right-sidebar.right-sidebar{ "aria-live" => "polite", data: { 'signed-in': current_user.present? } }
   .issuable-sidebar.hidden
-    = form_tag [:bulk_update, @project.namespace.becomes(Namespace), @project, type], method: :post, class: "bulk-update"  do
+    = form_tag [:bulk_update, @project.namespace.becomes(Namespace), @project, type], method: :post, class: "bulk-update" do
       .block.issuable-sidebar-header
         .filter-item.inline.update-issues-btn.float-left
           = button_tag "Update all", class: "btn update-selected-issues btn-info", disabled: true
@@ -21,10 +21,7 @@
         .title
           Assignee
         .filter-item
-          - if type == :issues
-            - field_name = "update[assignee_ids][]"
-          - else
-            - field_name = "update[assignee_id]"
+          - field_name = "update[assignee_ids][]"
           = dropdown_tag("Select assignee", options: { toggle_class: "js-user-search js-update-assignee js-filter-submit js-filter-bulk-update", title: "Assign to", filter: true, dropdown_class: "dropdown-menu-user dropdown-menu-selectable",
             placeholder: "Search authors", data: { first_user: (current_user.username if current_user), null_user: true, current_user: true, project_id: @project.id, field_name: field_name } })
       .block
@@ -50,4 +47,3 @@
 
       = hidden_field_tag "update[issuable_ids]", []
       = hidden_field_tag :state_event, params[:state_event]
-

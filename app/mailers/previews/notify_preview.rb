@@ -76,6 +76,10 @@ class NotifyPreview < ActionMailer::Preview
     Notify.changed_milestone_issue_email(user.id, issue.id, milestone, user.id)
   end
 
+  def import_issues_csv_email
+    Notify.import_issues_csv_email(user, project, { success: 3, errors: [5, 6, 7], valid_file: true })
+  end
+
   def closed_merge_request_email
     Notify.closed_merge_request_email(user.id, issue.id, user.id).message
   end

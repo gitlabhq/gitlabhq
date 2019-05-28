@@ -298,7 +298,12 @@ describe('Multi-file store mutations', () => {
     });
 
     it('creates new renamed entry', () => {
-      mutations.RENAME_ENTRY(localState, { path: 'oldPath', name: 'newPath' });
+      mutations.RENAME_ENTRY(localState, {
+        path: 'oldPath',
+        name: 'newPath',
+        entryPath: null,
+        parentPath: '',
+      });
 
       expect(localState.entries.newPath).toEqual({
         ...localState.entries.oldPath,
@@ -335,7 +340,12 @@ describe('Multi-file store mutations', () => {
         ...file(),
       };
 
-      mutations.RENAME_ENTRY(localState, { path: 'oldPath', name: 'newPath' });
+      mutations.RENAME_ENTRY(localState, {
+        path: 'oldPath',
+        name: 'newPath',
+        entryPath: null,
+        parentPath: 'parentPath',
+      });
 
       expect(localState.entries.parentPath.tree.length).toBe(1);
     });

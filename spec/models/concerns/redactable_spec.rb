@@ -1,6 +1,12 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Redactable do
+  before do
+    stub_commonmark_sourcepos_disabled
+  end
+
   shared_examples 'model with redactable field' do
     it 'redacts unsubscribe token' do
       model[field] = 'some text /sent_notifications/00000000000000000000000000000000/unsubscribe more text'

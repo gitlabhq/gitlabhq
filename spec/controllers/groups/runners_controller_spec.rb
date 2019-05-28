@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Groups::RunnersController do
@@ -22,7 +24,7 @@ describe Groups::RunnersController do
       new_desc = runner.description.swapcase
 
       expect do
-        post :update, params.merge(runner: { description: new_desc } )
+        post :update, params: params.merge(runner: { description: new_desc } )
       end.to change { runner.ensure_runner_queue_value }
 
       runner.reload
@@ -34,7 +36,7 @@ describe Groups::RunnersController do
 
   describe '#destroy' do
     it 'destroys the runner' do
-      delete :destroy, params
+      delete :destroy, params: params
 
       expect(response).to have_gitlab_http_status(302)
       expect(Ci::Runner.find_by(id: runner.id)).to be_nil
@@ -46,7 +48,7 @@ describe Groups::RunnersController do
       runner.update(active: false)
 
       expect do
-        post :resume, params
+        post :resume, params: params
       end.to change { runner.ensure_runner_queue_value }
 
       runner.reload
@@ -61,7 +63,7 @@ describe Groups::RunnersController do
       runner.update(active: true)
 
       expect do
-        post :pause, params
+        post :pause, params: params
       end.to change { runner.ensure_runner_queue_value }
 
       runner.reload

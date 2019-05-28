@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe ChecksCollaboration do
@@ -22,7 +24,7 @@ describe ChecksCollaboration do
       end
     end
 
-    it 'is true if the user can push to the project'  do
+    it 'is true if the user can push to the project' do
       project.add_developer(user)
 
       expect(helper.can_collaborate_with_project?(project)).to be_truthy

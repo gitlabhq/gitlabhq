@@ -10,12 +10,14 @@ module Gitlab
         InvalidError = Class.new(StandardError)
 
         attr_reader :config, :metadata
-        attr_accessor :key, :parent, :description
+        attr_accessor :key, :parent, :default, :description
 
         def initialize(config, **metadata)
           @config = config
           @metadata = metadata
           @entries = {}
+
+          yield(self) if block_given?
 
           self.class.aspects.to_a.each do |aspect|
             instance_exec(&aspect)
@@ -42,6 +44,12 @@ module Gitlab
 
         def ancestors
           @parent ? @parent.ancestors + [@parent] : []
+        end
+
+        def opt(key)
+          opt = metadata[key]
+          opt = @parent.opt(key) if opt.nil? && @parent
+          opt
         end
 
         def valid?
@@ -85,7 +93,19 @@ module Gitlab
           "#<#{self.class.name} #{unspecified}{#{key}: #{val.inspect}}>"
         end
 
-        def self.default
+        def hash?
+          @config.is_a?(Hash)
+        end
+
+        def string?
+          @config.is_a?(String)
+        end
+
+        def integer?
+          @config.is_a?(Integer)
+        end
+
+        def self.default(**)
         end
 
         def self.aspects

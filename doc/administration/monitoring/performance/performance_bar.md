@@ -10,11 +10,11 @@ It allows you to see (from left to right):
 - the current host serving the page
 - the timing of the page (backend, frontend)
 - time taken and number of DB queries, click through for details of these queries
-![SQL profiling using the Performance Bar](img/performance_bar_sql_queries.png)
+  ![SQL profiling using the Performance Bar](img/performance_bar_sql_queries.png)
 - time taken and number of [Gitaly] calls, click through for details of these calls
-![Gitaly profiling using the Performance Bar](img/performance_bar_gitaly_calls.png)
+  ![Gitaly profiling using the Performance Bar](img/performance_bar_gitaly_calls.png)
 - profile of the code used to generate the page, line by line. In the profile view, the numbers in the left panel represent wall time, cpu time, and number of calls (based on [rblineprof](https://github.com/tmm1/rblineprof)).
-![Line profiling using the Performance Bar](img/performance_bar_line_profiling.png)
+  ![Line profiling using the Performance Bar](img/performance_bar_line_profiling.png)
 - time taken and number of calls to Redis
 - time taken and number of background jobs created by Sidekiq
 - time taken and number of Ruby GC calls

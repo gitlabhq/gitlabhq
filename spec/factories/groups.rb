@@ -4,6 +4,7 @@ FactoryBot.define do
     path { name.downcase.gsub(/\s/, '_') }
     type 'Group'
     owner nil
+    project_creation_level ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS
 
     after(:create) do |group|
       if group.owner
@@ -35,6 +36,14 @@ FactoryBot.define do
 
     trait :nested do
       parent factory: :group
+    end
+
+    trait :auto_devops_enabled do
+      auto_devops_enabled true
+    end
+
+    trait :auto_devops_disabled do
+      auto_devops_enabled false
     end
   end
 end

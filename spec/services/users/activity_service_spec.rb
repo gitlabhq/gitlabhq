@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Users::ActivityService do
@@ -26,6 +28,12 @@ describe Users::ActivityService do
                 .from(last_activity_on)
                 .to(Date.today)
       end
+
+      it 'tries to obtain ExclusiveLease' do
+        expect(Gitlab::ExclusiveLease).to receive(:new).and_call_original
+
+        subject.execute
+      end
     end
 
     context 'when a bad object is passed' do
@@ -46,6 +54,12 @@ describe Users::ActivityService do
       it 'does not update last_activity_on' do
         expect { subject.execute }.not_to change(user, :last_activity_on)
       end
+
+      it 'does not try to obtain ExclusiveLease' do
+        expect(Gitlab::ExclusiveLease).not_to receive(:new)
+
+        subject.execute
+      end
     end
 
     context 'when in GitLab read-only instance' do
@@ -64,7 +78,7 @@ describe Users::ActivityService do
       let(:last_activity_on) { nil }
 
       it 'does not update last_activity_on' do
-        stub_exclusive_lease_taken("acitvity_service:#{user.id}", timeout: 1.minute.to_i)
+        stub_exclusive_lease_taken("activity_service:#{user.id}", timeout: 1.minute.to_i)
 
         expect { subject.execute }.not_to change(user, :last_activity_on)
       end

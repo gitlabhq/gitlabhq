@@ -38,7 +38,7 @@ describe 'Group merge requests page' do
 
   context 'when merge request assignee to user' do
     before do
-      issuable.update!(assignee: user)
+      issuable.update!(assignees: [user])
 
       visit path
     end

@@ -2,7 +2,7 @@
 - show_whitespace_toggle = local_assigns.fetch(:show_whitespace_toggle, true)
 - can_create_note = !@diff_notes_disabled && can?(current_user, :create_note, diffs.project)
 - diff_files = diffs.diff_files
-- is_commit = local_assigns.fetch(:is_commit, false)
+- diff_page_context = local_assigns.fetch(:diff_page_context, nil)
 
 .content-block.oneline-block.files-changed.diff-files-changed.js-diff-files-changed
   .files-changed-inner
@@ -25,4 +25,4 @@
   = render 'projects/diffs/warning', diff_files: diffs
 
 .files{ data: { can_create_note: can_create_note } }
-  = render partial: 'projects/diffs/file', collection: diff_files, as: :diff_file, locals: { project: diffs.project, environment: environment, is_commit: is_commit }
+  = render partial: 'projects/diffs/file', collection: diff_files, as: :diff_file, locals: { project: diffs.project, environment: environment, diff_page_context: diff_page_context }

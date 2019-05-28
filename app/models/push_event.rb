@@ -69,7 +69,7 @@ class PushEvent < Event
     PUSHED
   end
 
-  def push?
+  def push_action?
     true
   end
 

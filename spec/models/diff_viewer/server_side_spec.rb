@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe DiffViewer::ServerSide do
@@ -29,6 +31,26 @@ describe DiffViewer::ServerSide do
 
       it 'return :server_side_but_stored_externally' do
         expect(subject.render_error).to eq(:server_side_but_stored_externally)
+      end
+    end
+  end
+
+  describe '#render_error_reason' do
+    context 'when the diff file is stored externally' do
+      before do
+        allow(diff_file).to receive(:stored_externally?).and_return(true)
+      end
+
+      it 'returns error message if stored in LFS' do
+        allow(diff_file).to receive(:external_storage).and_return(:lfs)
+
+        expect(subject.render_error_message).to include('it is stored in LFS')
+      end
+
+      it 'returns error message if stored externally' do
+        allow(diff_file).to receive(:external_storage).and_return(:foo)
+
+        expect(subject.render_error_message).to include('it is stored externally')
       end
     end
   end

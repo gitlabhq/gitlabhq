@@ -23,7 +23,7 @@ const assertSidebarState = function(state) {
 
 describe('RightSidebar', function() {
   describe('fixture tests', () => {
-    const fixtureName = 'issues/open-issue.html.raw';
+    const fixtureName = 'issues/open-issue.html';
     preloadFixtures(fixtureName);
     loadJSONFixtures('todos/todos.json');
     let mock;

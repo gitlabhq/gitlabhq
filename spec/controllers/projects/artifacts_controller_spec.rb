@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Projects::ArtifactsController do
@@ -22,12 +24,19 @@ describe Projects::ArtifactsController do
     def download_artifact(extra_params = {})
       params = { namespace_id: project.namespace, project_id: project, job_id: job }.merge(extra_params)
 
-      get :download, params
+      get :download, params: params
     end
 
     context 'when no file type is supplied' do
+      let(:filename) { job.artifacts_file.filename }
+
       it 'sends the artifacts file' do
-        expect(controller).to receive(:send_file).with(job.artifacts_file.path, hash_including(disposition: 'attachment')).and_call_original
+        # Notice the filename= is omitted from the disposition; this is because
+        # Rails 5 will append this header in send_file
+        expect(controller).to receive(:send_file)
+                          .with(
+                            job.artifacts_file.file.path,
+                            hash_including(disposition: %Q(attachment; filename*=UTF-8''#{filename}))).and_call_original
 
         download_artifact
       end
@@ -46,6 +55,7 @@ describe Projects::ArtifactsController do
 
       context 'when codequality file type is supplied' do
         let(:file_type) { 'codequality' }
+        let(:filename) { job.job_artifacts_codequality.filename }
 
         context 'when file is stored locally' do
           before do
@@ -53,7 +63,11 @@ describe Projects::ArtifactsController do
           end
 
           it 'sends the codequality report' do
-            expect(controller).to receive(:send_file).with(job.job_artifacts_codequality.file.path, hash_including(disposition: 'attachment')).and_call_original
+            # Notice the filename= is omitted from the disposition; this is because
+            # Rails 5 will append this header in send_file
+            expect(controller).to receive(:send_file)
+                              .with(job.job_artifacts_codequality.file.path,
+                                    hash_including(disposition: %Q(attachment; filename*=UTF-8''#{filename}))).and_call_original
 
             download_artifact(file_type: file_type)
           end
@@ -86,7 +100,7 @@ describe Projects::ArtifactsController do
   describe 'GET browse' do
     context 'when the directory exists' do
       it 'renders the browse view' do
-        get :browse, namespace_id: project.namespace, project_id: project, job_id: job, path: 'other_artifacts_0.1.2'
+        get :browse, params: { namespace_id: project.namespace, project_id: project, job_id: job, path: 'other_artifacts_0.1.2' }
 
         expect(response).to render_template('projects/artifacts/browse')
       end
@@ -94,7 +108,7 @@ describe Projects::ArtifactsController do
 
     context 'when the directory does not exist' do
       it 'responds Not Found' do
-        get :browse, namespace_id: project.namespace, project_id: project, job_id: job, path: 'unknown'
+        get :browse, params: { namespace_id: project.namespace, project_id: project, job_id: job, path: 'unknown' }
 
         expect(response).to be_not_found
       end
@@ -113,7 +127,7 @@ describe Projects::ArtifactsController do
 
       context 'when the file exists' do
         it 'renders the file view' do
-          get :file, namespace_id: project.namespace, project_id: project, job_id: job, path: 'ci_artifacts.txt'
+          get :file, params: { namespace_id: project.namespace, project_id: project, job_id: job, path: 'ci_artifacts.txt' }
 
           expect(response).to have_gitlab_http_status(302)
         end
@@ -121,7 +135,7 @@ describe Projects::ArtifactsController do
 
       context 'when the file does not exist' do
         it 'responds Not Found' do
-          get :file, namespace_id: project.namespace, project_id: project, job_id: job, path: 'unknown'
+          get :file, params: { namespace_id: project.namespace, project_id: project, job_id: job, path: 'unknown' }
 
           expect(response).to be_not_found
         end
@@ -131,7 +145,7 @@ describe Projects::ArtifactsController do
     context 'when the file is served through Rails' do
       context 'when the file exists' do
         it 'renders the file view' do
-          get :file, namespace_id: project.namespace, project_id: project, job_id: job, path: 'ci_artifacts.txt'
+          get :file, params: { namespace_id: project.namespace, project_id: project, job_id: job, path: 'ci_artifacts.txt' }
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to render_template('projects/artifacts/file')
@@ -140,7 +154,7 @@ describe Projects::ArtifactsController do
 
       context 'when the file does not exist' do
         it 'responds Not Found' do
-          get :file, namespace_id: project.namespace, project_id: project, job_id: job, path: 'unknown'
+          get :file, params: { namespace_id: project.namespace, project_id: project, job_id: job, path: 'unknown' }
 
           expect(response).to be_not_found
         end
@@ -159,7 +173,7 @@ describe Projects::ArtifactsController do
       end
 
       it 'does not redirect the request' do
-        get :file, namespace_id: private_project.namespace, project_id: private_project, job_id: job, path: 'ci_artifacts.txt'
+        get :file, params: { namespace_id: private_project.namespace, project_id: private_project, job_id: job, path: 'ci_artifacts.txt' }
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to render_template('projects/artifacts/file')
@@ -168,7 +182,7 @@ describe Projects::ArtifactsController do
   end
 
   describe 'GET raw' do
-    subject { get(:raw, namespace_id: project.namespace, project_id: project, job_id: job, path: path) }
+    subject { get(:raw, params: { namespace_id: project.namespace, project_id: project, job_id: job, path: path }) }
 
     context 'when the file exists' do
       let(:path) { 'ci_artifacts.txt' }
@@ -239,7 +253,7 @@ describe Projects::ArtifactsController do
 
       context 'has no such ref' do
         before do
-          get :latest_succeeded, params_from_ref('TAIL', job.name)
+          get :latest_succeeded, params: params_from_ref('TAIL', job.name)
         end
 
         it_behaves_like 'not found'
@@ -247,7 +261,7 @@ describe Projects::ArtifactsController do
 
       context 'has no such job' do
         before do
-          get :latest_succeeded, params_from_ref(pipeline.ref, 'NOBUILD')
+          get :latest_succeeded, params: params_from_ref(pipeline.ref, 'NOBUILD')
         end
 
         it_behaves_like 'not found'
@@ -255,7 +269,7 @@ describe Projects::ArtifactsController do
 
       context 'has no path' do
         before do
-          get :latest_succeeded, params_from_ref(pipeline.sha, job.name, '')
+          get :latest_succeeded, params: params_from_ref(pipeline.sha, job.name, '')
         end
 
         it_behaves_like 'not found'
@@ -276,7 +290,7 @@ describe Projects::ArtifactsController do
           pipeline.update(ref: 'master',
                           sha: project.commit('master').sha)
 
-          get :latest_succeeded, params_from_ref('master')
+          get :latest_succeeded, params: params_from_ref('master')
         end
 
         it_behaves_like 'redirect to the job'
@@ -287,7 +301,7 @@ describe Projects::ArtifactsController do
           pipeline.update(ref: 'improve/awesome',
                           sha: project.commit('improve/awesome').sha)
 
-          get :latest_succeeded, params_from_ref('improve/awesome')
+          get :latest_succeeded, params: params_from_ref('improve/awesome')
         end
 
         it_behaves_like 'redirect to the job'
@@ -298,7 +312,7 @@ describe Projects::ArtifactsController do
           pipeline.update(ref: 'improve/awesome',
                           sha: project.commit('improve/awesome').sha)
 
-          get :latest_succeeded, params_from_ref('improve/awesome', job.name, 'file/README.md')
+          get :latest_succeeded, params: params_from_ref('improve/awesome', job.name, 'file/README.md')
         end
 
         it 'redirects' do

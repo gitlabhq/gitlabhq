@@ -1,0 +1,180 @@
+diff --git a/yarn.lock b/yarn.lock
+index 0ecc92f..7fa4554 100644
+--- a/yarn.lock
++++ b/yarn.lock
+@@ -2,103 +2,124 @@
+ # yarn lockfile v1
+ 
+ 
+-async@~0.2.7:
+-  version "0.2.10"
+-  resolved "http://registry.npmjs.org/async/-/async-0.2.10.tgz#b6bbe0b0674b9d719708ca38de8c237cb526c3d1"
+-
+-async@~1.5.2:
+-  version "1.5.2"
+-  resolved "http://registry.npmjs.org/async/-/async-1.5.2.tgz#ec6a61ae56480c0c3cb241c95618e20892f9672a"
++async@^2.1.5, async@^2.5.0:
++  version "2.6.1"
++  resolved "https://registry.yarnpkg.com/async/-/async-2.6.1.tgz#b245a23ca71930044ec53fa46aa00a3e87c6a610"
++  integrity sha512-fNEiL2+AZt6AlAw/29Cr0UDe4sRAHCpEHh54WMz+Bb7QfNcFw4h3loofyJpLeQs4Yx7yuqu/2dLgM5hKOs6HlQ==
++  dependencies:
++    lodash "^4.17.10"
+ 
+-debug@^1.0.4:
+-  version "1.0.5"
+-  resolved "https://registry.yarnpkg.com/debug/-/debug-1.0.5.tgz#f7241217430f99dec4c2b473eab92228e874c2ac"
++debug@^2.6.0:
++  version "2.6.9"
++  resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.9.tgz#5d128515df134ff327e90a4c93f4e077a536341f"
++  integrity sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==
+   dependencies:
+     ms "2.0.0"
+ 
+-ejs@~0.8.3:
+-  version "0.8.8"
+-  resolved "https://registry.yarnpkg.com/ejs/-/ejs-0.8.8.tgz#ffdc56dcc35d02926dd50ad13439bbc54061d598"
++ejs@^2.5.6:
++  version "2.6.1"
++  resolved "https://registry.yarnpkg.com/ejs/-/ejs-2.6.1.tgz#498ec0d495655abc6f23cd61868d926464071aa0"
++  integrity sha512-0xy4A/twfrRCnkhfk8ErDi5DqdAsAqeGxht4xkCUrsvhhbQNs7E+4jV0CN7+NKIY0aHE72+XvqtBIXzD31ZbXQ==
++
++lodash-node@~2.4.1:
++  version "2.4.1"
++  resolved "https://registry.yarnpkg.com/lodash-node/-/lodash-node-2.4.1.tgz#ea82f7b100c733d1a42af76801e506105e2a80ec"
++  integrity sha1-6oL3sQDHM9GkKvdoAeUGEF4qgOw=
++
++lodash@^4.17.10:
++  version "4.17.11"
++  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.11.tgz#b39ea6229ef607ecd89e2c8df12536891cac9b8d"
++  integrity sha512-cQKh8igo5QUhZ7lg38DYWAxMvjSAKG0A8wGSVimP07SIUEK2UO+arSRKbRZWtelMtN5V0Hkwh5ryOto/SshYIg==
+ 
+ ms@2.0.0:
+   version "2.0.0"
+   resolved "https://registry.yarnpkg.com/ms/-/ms-2.0.0.tgz#5608aeadfc00be6c2901df5f9861788de0d597c8"
++  integrity sha1-VgiurfwAvmwpAd9fmGF4jeDVl8g=
+ 
+-node-forge@0.2.24:
+-  version "0.2.24"
+-  resolved "https://registry.yarnpkg.com/node-forge/-/node-forge-0.2.24.tgz#fa6f846f42fa93f63a0a30c9fbff7b4e130e0858"
++node-forge@^0.7.0:
++  version "0.7.6"
++  resolved "https://registry.yarnpkg.com/node-forge/-/node-forge-0.7.6.tgz#fdf3b418aee1f94f0ef642cd63486c77ca9724ac"
++  integrity sha512-sol30LUpz1jQFBjOKwbjxijiE3b6pjd74YwfD0fJOKPjF+fONKb2Yg8rYgS6+bK6VDl+/wfr4IYpC7jDzLUIfw==
+ 
+ saml2-js@^1.5.0:
+-  version "1.5.0"
+-  resolved "https://registry.yarnpkg.com/saml2-js/-/saml2-js-1.5.0.tgz#c0d2268a179e7329d29eb25aa82df5503774b0d9"
++  version "1.12.4"
++  resolved "https://registry.yarnpkg.com/saml2-js/-/saml2-js-1.12.4.tgz#c288f20bda6d2b91073b16c94ea72f22349ac3b3"
++  integrity sha1-wojyC9ptK5EHOxbJTqcvIjSaw7M=
+   dependencies:
+-    async "~1.5.2"
+-    debug "^1.0.4"
+-    underscore "~1.6.0"
+-    xml-crypto "^0.8.1"
+-    xml-encryption "~0.7.4"
+-    xml2js "~0.4.1"
+-    xmlbuilder "~2.1.0"
+-    xmldom "~0.1.19"
++    async "^2.5.0"
++    debug "^2.6.0"
++    underscore "^1.8.0"
++    xml-crypto "^0.10.0"
++    xml-encryption "^0.11.0"
++    xml2js "^0.4.0"
++    xmlbuilder "~2.2.0"
++    xmldom "^0.1.0"
+ 
+ sax@>=0.6.0:
+   version "1.2.4"
+   resolved "https://registry.yarnpkg.com/sax/-/sax-1.2.4.tgz#2816234e2378bddc4e5354fab5caa895df7100d9"
++  integrity sha512-NqVDv9TpANUjFm0N8uM5GxL36UgKi9/atZw+x7YFnQ8ckwFGKrl4xX4yWtrey3UJm5nP1kUbnYgLopqWNSRhWw==
+ 
+-underscore@>=1.5.x:
++underscore@^1.8.0:
+   version "1.9.1"
+   resolved "https://registry.yarnpkg.com/underscore/-/underscore-1.9.1.tgz#06dce34a0e68a7babc29b365b8e74b8925203961"
++  integrity sha512-5/4etnCkd9c8gwgowi5/om/mYO5ajCaOgdzj/oW+0eQV9WxKBDZw5+ycmKmeaTXjInS/W0BzpGLo2xR2aBwZdg==
+ 
+-underscore@~1.6.0:
+-  version "1.6.0"
+-  resolved "https://registry.yarnpkg.com/underscore/-/underscore-1.6.0.tgz#8b38b10cacdef63337b8b24e4ff86d45aea529a8"
+-
+-xml-crypto@^0.8.1:
+-  version "0.8.5"
+-  resolved "http://registry.npmjs.org/xml-crypto/-/xml-crypto-0.8.5.tgz#2bbcfb3eb33f3a82a218b822bf672b6b1c20e538"
++xml-crypto@^0.10.0:
++  version "0.10.1"
++  resolved "https://registry.yarnpkg.com/xml-crypto/-/xml-crypto-0.10.1.tgz#f832f74ccf56f24afcae1163a1fcab44d96774a8"
++  integrity sha1-+DL3TM9W8kr8rhFjofyrRNlndKg=
+   dependencies:
+     xmldom "=0.1.19"
+     xpath.js ">=0.0.3"
+ 
+-xml-encryption@~0.7.4:
+-  version "0.7.4"
+-  resolved "https://registry.yarnpkg.com/xml-encryption/-/xml-encryption-0.7.4.tgz#42791ec64d556d2455dcb9da0a54123665ac65c7"
++xml-encryption@^0.11.0:
++  version "0.11.2"
++  resolved "https://registry.yarnpkg.com/xml-encryption/-/xml-encryption-0.11.2.tgz#c217f5509547e34b500b829f2c0bca85cca73a21"
++  integrity sha512-jVvES7i5ovdO7N+NjgncA326xYKjhqeAnnvIgRnY7ROLCfFqEDLwP0Sxp/30SHG0AXQV1048T5yinOFyvwGFzg==
+   dependencies:
+-    async "~0.2.7"
+-    ejs "~0.8.3"
+-    node-forge "0.2.24"
++    async "^2.1.5"
++    ejs "^2.5.6"
++    node-forge "^0.7.0"
+     xmldom "~0.1.15"
+-    xpath "0.0.5"
++    xpath "0.0.27"
+ 
+-xml2js@~0.4.1:
++xml2js@^0.4.0:
+   version "0.4.19"
+   resolved "https://registry.yarnpkg.com/xml2js/-/xml2js-0.4.19.tgz#686c20f213209e94abf0d1bcf1efaa291c7827a7"
++  integrity sha512-esZnJZJOiJR9wWKMyuvSE1y6Dq5LCuJanqhxslH2bxM6duahNZ+HMpCLhBQGZkbX6xRf8x1Y2eJlgt2q3qo49Q==
+   dependencies:
+     sax ">=0.6.0"
+     xmlbuilder "~9.0.1"
+ 
+-xmlbuilder@~2.1.0:
+-  version "2.1.0"
+-  resolved "http://registry.npmjs.org/xmlbuilder/-/xmlbuilder-2.1.0.tgz#6ddae31683b6df12100b29fc8a0d4f46349abbed"
++xmlbuilder@~2.2.0:
++  version "2.2.1"
++  resolved "https://registry.yarnpkg.com/xmlbuilder/-/xmlbuilder-2.2.1.tgz#9326430f130d87435d4c4086643aa2926e105a32"
++  integrity sha1-kyZDDxMNh0NdTECGZDqikm4QWjI=
+   dependencies:
+-    underscore ">=1.5.x"
++    lodash-node "~2.4.1"
+ 
+ xmlbuilder@~9.0.1:
+   version "9.0.7"
+-  resolved "http://registry.npmjs.org/xmlbuilder/-/xmlbuilder-9.0.7.tgz#132ee63d2ec5565c557e20f4c22df9aca686b10d"
++  resolved "https://registry.yarnpkg.com/xmlbuilder/-/xmlbuilder-9.0.7.tgz#132ee63d2ec5565c557e20f4c22df9aca686b10d"
++  integrity sha1-Ey7mPS7FVlxVfiD0wi35rKaGsQ0=
+ 
+ xmldom@=0.1.19:
+   version "0.1.19"
+   resolved "https://registry.yarnpkg.com/xmldom/-/xmldom-0.1.19.tgz#631fc07776efd84118bf25171b37ed4d075a0abc"
++  integrity sha1-Yx/Ad3bv2EEYvyUXGzftTQdaCrw=
+ 
+-xmldom@~0.1.15, xmldom@~0.1.19:
++xmldom@^0.1.0, xmldom@~0.1.15:
+   version "0.1.27"
+   resolved "https://registry.yarnpkg.com/xmldom/-/xmldom-0.1.27.tgz#d501f97b3bdb403af8ef9ecc20573187aadac0e9"
++  integrity sha1-1QH5ezvbQDr4757MIFcxh6rawOk=
+ 
+ xpath.js@>=0.0.3:
+   version "1.1.0"
+   resolved "https://registry.yarnpkg.com/xpath.js/-/xpath.js-1.1.0.tgz#3816a44ed4bb352091083d002a383dd5104a5ff1"
++  integrity sha512-jg+qkfS4K8E7965sqaUl8mRngXiKb3WZGfONgE18pr03FUQiuSV6G+Ej4tS55B+rIQSFEIw3phdVAQ4pPqNWfQ==
+ 
+-xpath@0.0.5:
+-  version "0.0.5"
+-  resolved "https://registry.yarnpkg.com/xpath/-/xpath-0.0.5.tgz#454036f6ef0f3df5af5d4ba4a119fb75674b3e6c"
++xpath@0.0.27:
++  version "0.0.27"
++  resolved "https://registry.yarnpkg.com/xpath/-/xpath-0.0.27.tgz#dd3421fbdcc5646ac32c48531b4d7e9d0c2cfa92"
++  integrity sha512-fg03WRxtkCV6ohClePNAECYsmpKKTv5L8y/X3Dn1hQrec3POx2jHZ/0P2qQ6HvsrU1BmeqXcof3NGGueG6LxwQ==

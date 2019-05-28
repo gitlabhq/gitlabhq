@@ -6,6 +6,8 @@ class Projects::TreeController < Projects::ApplicationController
   include CreatesCommit
   include ActionView::Helpers::SanitizeHelper
 
+  around_action :allow_gitaly_ref_name_caching, only: [:show]
+
   before_action :require_non_empty_project, except: [:new, :create]
   before_action :assign_ref_vars
   before_action :assign_dir_vars, only: [:create_dir]
@@ -31,27 +33,13 @@ class Projects::TreeController < Projects::ApplicationController
         lfs_blob_ids
         @last_commit = @repository.last_commit_for_path(@commit.id, @tree.path) || @commit
       end
-
-      format.js do
-        # Disable cache so browser history works
-        no_cache_headers
-      end
-
-      format.json do
-        page_title @path.presence || _("Files"), @ref, @project.full_name
-
-        # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/38261
-        Gitlab::GitalyClient.allow_n_plus_1_calls do
-          render json: TreeSerializer.new(project: @project, repository: @repository, ref: @ref).represent(@tree)
-        end
-      end
     end
   end
 
   def create_dir
     return render_404 unless @commit_params.values.all?
 
-    create_commit(Files::CreateDirService,  success_notice: "The directory has been successfully created.",
+    create_commit(Files::CreateDirService,  success_notice: _("The directory has been successfully created."),
                                             success_path: project_tree_path(@project, File.join(@branch_name, @dir_name)),
                                             failure_path: project_tree_path(@project, @ref))
   end

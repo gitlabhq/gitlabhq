@@ -15,6 +15,17 @@ module Gitlab
           end
         end
 
+        class DisallowedKeysValidator < ActiveModel::EachValidator
+          def validate_each(record, attribute, value)
+            present_keys = value.try(:keys).to_a & options[:in]
+
+            if present_keys.any?
+              record.errors.add(attribute, "contains disallowed keys: " +
+                present_keys.join(', '))
+            end
+          end
+        end
+
         class AllowedValuesValidator < ActiveModel::EachValidator
           def validate_each(record, attribute, value)
             unless options[:in].include?(value.to_s)
@@ -25,10 +36,10 @@ module Gitlab
 
         class AllowedArrayValuesValidator < ActiveModel::EachValidator
           def validate_each(record, attribute, value)
-            unkown_values = value - options[:in]
-            unless unkown_values.empty?
+            unknown_values = value - options[:in]
+            unless unknown_values.empty?
               record.errors.add(attribute, "contains unknown values: " +
-                                            unkown_values.join(', '))
+                                            unknown_values.join(', '))
             end
           end
         end
@@ -39,6 +50,14 @@ module Gitlab
           def validate_each(record, attribute, value)
             unless validate_array_of_strings(value)
               record.errors.add(attribute, 'should be an array of strings')
+            end
+          end
+        end
+
+        class ArrayOrStringValidator < ActiveModel::EachValidator
+          def validate_each(record, attribute, value)
+            unless value.is_a?(Array) || value.is_a?(String)
+              record.errors.add(attribute, 'should be an array or a string')
             end
           end
         end
@@ -118,19 +137,21 @@ module Gitlab
             end
           end
 
+          protected
+
+          def fallback
+            false
+          end
+
           private
 
-          def look_like_regexp?(value)
-            value.is_a?(String) && value.start_with?('/') &&
-              value.end_with?('/')
+          def matches_syntax?(value)
+            Gitlab::UntrustedRegexp::RubySyntax.matches_syntax?(value)
           end
 
           def validate_regexp(value)
-            look_like_regexp?(value) &&
-              Regexp.new(value.to_s[1...-1]) &&
-              true
-          rescue RegexpError
-            false
+            matches_syntax?(value) &&
+              Gitlab::UntrustedRegexp::RubySyntax.valid?(value, fallback: fallback)
           end
         end
 
@@ -149,8 +170,16 @@ module Gitlab
 
           def validate_string_or_regexp(value)
             return false unless value.is_a?(String)
-            return validate_regexp(value) if look_like_regexp?(value)
+            return validate_regexp(value) if matches_syntax?(value)
 
+            true
+          end
+        end
+
+        class ArrayOfStringsOrRegexpsWithFallbackValidator < ArrayOfStringsOrRegexpsValidator
+          protected
+
+          def fallback
             true
           end
         end
@@ -188,6 +217,97 @@ module Gitlab
             unless validate_variables(value)
               record.errors.add(attribute, 'should be a hash of key value pairs')
             end
+          end
+        end
+
+        class PortNamePresentAndUniqueValidator < ActiveModel::EachValidator
+          def validate_each(record, attribute, value)
+            return unless value.is_a?(Array)
+
+            ports_size = value.count
+            return if ports_size <= 1
+
+            named_ports = value.select { |e| e.is_a?(Hash) }.map { |e| e[:name] }.compact.map(&:downcase)
+
+            if ports_size != named_ports.size
+              record.errors.add(attribute, 'when there is more than one port, a unique name should be added')
+            end
+
+            if ports_size != named_ports.uniq.size
+              record.errors.add(attribute, 'each port name must be different')
+            end
+          end
+        end
+
+        class PortUniqueValidator < ActiveModel::EachValidator
+          def validate_each(record, attribute, value)
+            value = ports(value)
+            return unless value.is_a?(Array)
+
+            ports_size = value.count
+            return if ports_size <= 1
+
+            if transform_ports(value).size != ports_size
+              record.errors.add(attribute, 'each port number can only be referenced once')
+            end
+          end
+
+          private
+
+          def ports(current_data)
+            current_data
+          end
+
+          def transform_ports(raw_ports)
+            raw_ports.map do |port|
+              case port
+              when Integer
+                port
+              when Hash
+                port[:number]
+              end
+            end.uniq
+          end
+        end
+
+        class JobPortUniqueValidator < PortUniqueValidator
+          private
+
+          def ports(current_data)
+            return unless current_data.is_a?(Hash)
+
+            (image_ports(current_data) + services_ports(current_data)).compact
+          end
+
+          def image_ports(current_data)
+            return [] unless current_data[:image].is_a?(Hash)
+
+            current_data.dig(:image, :ports).to_a
+          end
+
+          def services_ports(current_data)
+            current_data.dig(:services).to_a.flat_map { |service| service.is_a?(Hash) ? service[:ports] : nil }
+          end
+        end
+
+        class ServicesWithPortsAliasUniqueValidator < ActiveModel::EachValidator
+          def validate_each(record, attribute, value)
+            current_aliases = aliases(value)
+            return if current_aliases.empty?
+
+            unless aliases_unique?(current_aliases)
+              record.errors.add(:config, 'alias must be unique in services with ports')
+            end
+          end
+
+          private
+
+          def aliases(value)
+            value.select { |s| s.is_a?(Hash) && s[:ports] }.pluck(:alias) # rubocop:disable CodeReuse/ActiveRecord
+          end
+
+          def aliases_unique?(aliases)
+            aliases.size == aliases.uniq.size
           end
         end
       end

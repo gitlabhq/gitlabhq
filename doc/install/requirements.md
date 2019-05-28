@@ -33,7 +33,7 @@ Please consider using a virtual machine to run GitLab.
 
 ## Ruby versions
 
-GitLab requires Ruby (MRI) 2.3. Support for Ruby versions below 2.3 (2.1, 2.2) will stop with GitLab 8.13.
+GitLab requires Ruby (MRI) 2.5. Support for Ruby versions below 2.5 (2.3, 2.4) will stop with GitLab 11.6.
 
 You will have to use the standard MRI implementation of Ruby.
 We love [JRuby](https://www.jruby.org/) and [Rubinius](https://rubinius.com) but GitLab
@@ -50,6 +50,8 @@ If you want to be flexible about growing your hard drive space in the future con
 Apart from a local hard drive you can also mount a volume that supports the network file system (NFS) protocol. This volume might be located on a file server, a network attached storage (NAS) device, a storage area network (SAN) or on an Amazon Web Services (AWS) Elastic Block Store (EBS) volume.
 
 If you have enough RAM memory and a recent CPU the speed of GitLab is mainly limited by hard drive seek times. Having a fast drive (7200 RPM and up) or a solid state drive (SSD) will improve the responsiveness of GitLab.
+
+NOTE: **Note:** Since file system performance may affect GitLab's overall performance, we do not recommend using EFS for storage. See the [relevant documentation](../administration/high_availability/nfs.md#avoid-using-awss-elastic-file-system-efs) for more details.
 
 ### CPU
 
@@ -85,7 +87,7 @@ if your available memory changes. We also recommend [configuring the kernel's sw
 to a low value like `10` to make the most of your RAM while still having the swap
 available when needed.
 
-Notice: The 25 workers of Sidekiq will show up as separate processes in your process overview (such as `top` or `htop`) but they share the same RAM allocation since Sidekiq is a multithreaded application. Please see the section below about Unicorn workers for information about how many you need of those.
+NOTE: **Note:** The 25 workers of Sidekiq will show up as separate processes in your process overview (such as `top` or `htop`) but they share the same RAM allocation since Sidekiq is a multithreaded application. Please see the section below about Unicorn workers for information about how many you need of those.
 
 ## Database
 
@@ -103,8 +105,10 @@ features of GitLab work with MySQL/MariaDB:
 
 1. MySQL support for subgroups was [dropped with GitLab 9.3][post].
    See [issue #30472][30472] for more information.
-1. Geo does [not support MySQL](https://docs.gitlab.com/ee/administration/geo/replication/database.html#mysql-replication). This means no supported Disaster Recovery solution if using MySQL. **[PREMIUM ONLY]**
+1. Geo does [not support MySQL](https://docs.gitlab.com/ee/administration/geo/replication/database.html). This means no supported Disaster Recovery solution if using MySQL. **[PREMIUM ONLY]**
 1. [Zero downtime migrations](../update/README.md#upgrading-without-downtime) do not work with MySQL.
+1. [Database load balancing](https://docs.gitlab.com/ee/administration/database_load_balancing.html) is
+   supported only for PostgreSQL. **[PREMIUM ONLY]**
 1. GitLab [optimizes the loading of dashboard events](https://gitlab.com/gitlab-org/gitlab-ce/issues/31806) using [PostgreSQL LATERAL JOINs](https://blog.heapanalytics.com/postgresqls-powerful-new-join-type-lateral/).
 1. In general, SQL optimized for PostgreSQL may run much slower in MySQL due to
    differences in query planners. For example, subqueries that work well in PostgreSQL
@@ -139,7 +143,17 @@ On some systems you may need to install an additional package (e.g.
 
 #### Additional requirements for GitLab Geo
 
-If you are using [GitLab Geo](https://docs.gitlab.com/ee/development/geo.html), the [tracking database](https://docs.gitlab.com/ee/development/geo.html#geo-tracking-database) also requires the `postgres_fdw` extension.
+If you are using [GitLab Geo](https://docs.gitlab.com/ee/development/geo.html):
+
+- We strongly recommend running Omnibus-managed instances as they are actively
+  developed and tested. We aim to be compatible with most external (not managed
+  by Omnibus) databases (for example, AWS RDS) but we do not guarantee
+  compatibility.
+- The
+  [tracking database](https://docs.gitlab.com/ee/development/geo.html#geo-tracking-database)
+  requires the
+  [postgres_fdw](https://www.postgresql.org/docs/9.6/static/postgres-fdw.html)
+  extension.
 
 ```
 CREATE EXTENSION postgres_fdw;
@@ -155,7 +169,7 @@ So for a machine with 2 cores, 3 unicorn workers is ideal.
 For all machines that have 2GB and up we recommend a minimum of three unicorn workers.
 If you have a 1GB machine we recommend to configure only two Unicorn workers to prevent excessive swapping.
 
-To change the Unicorn workers when you have the Omnibus package (which defaults to the recommendation above) please see [the Unicorn settings in the Omnibus GitLab documentation](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/settings/unicorn.md#unicorn-settings).
+To change the Unicorn workers when you have the Omnibus package (which defaults to the recommendation above) please see [the Unicorn settings in the Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/settings/unicorn.html).
 
 ## Redis and Sidekiq
 
@@ -187,13 +201,12 @@ you decide to run GitLab Runner and the GitLab Rails application on the same
 machine.
 
 It is also not safe to install everything on a single machine, because of the
-[security reasons] - especially when you plan to use shell executor with GitLab
+[security reasons](https://docs.gitlab.com/runner/security/) 
+- especially when you plan to use shell executor with GitLab
 Runner.
 
 We recommend using a separate machine for each GitLab Runner, if you plan to
 use the CI features.
-
-[security reasons]: https://gitlab.com/gitlab-org/gitlab-runner/blob/master/docs/security/index.md
 
 ## Supported web browsers
 
@@ -205,7 +218,10 @@ We support the current and the previous major release of:
 - Microsoft Edge
 - Internet Explorer 11
 
+The browser vendors release regular minor version updates with important bug fixes and security updates.
+Support is only provided for the current minor version of the major version you are running.
+
 Each time a new browser version is released, we begin supporting that version and stop supporting the third most recent version.
 
-Note: We do not support running GitLab with JavaScript disabled in the browser and have no plans of supporting that
+NOTE: **Note:** We do not support running GitLab with JavaScript disabled in the browser and have no plans of supporting that
 in the future because we have features such as Issue Boards which require JavaScript extensively.

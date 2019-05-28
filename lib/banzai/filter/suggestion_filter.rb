@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Generated HTML is transformed back to GFM by app/assets/javascripts/behaviors/markdown/nodes/code_block.js
 module Banzai
   module Filter
     class SuggestionFilter < HTML::Pipeline::Filter
@@ -7,7 +8,6 @@ module Banzai
       TAG_CLASS = 'js-render-suggestion'.freeze
 
       def call
-        return doc unless Suggestion.feature_enabled?
         return doc unless suggestions_filter_enabled?
 
         doc.search('pre.suggestion > code').each do |node|
@@ -19,6 +19,12 @@ module Banzai
 
       def suggestions_filter_enabled?
         context[:suggestions_filter_enabled]
+      end
+
+      private
+
+      def project
+        context[:project]
       end
     end
   end

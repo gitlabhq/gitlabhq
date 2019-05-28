@@ -15,7 +15,7 @@ class Admin::ProjectsController < Admin::ApplicationController
       format.html
       format.json do
         render json: {
-          html: view_to_html_string("admin/projects/_projects", locals: { projects: @projects })
+          html: view_to_html_string("admin/projects/_projects", projects: @projects)
         }
       end
     end
@@ -40,7 +40,7 @@ class Admin::ProjectsController < Admin::ApplicationController
     namespace = Namespace.find_by(id: params[:new_namespace_id])
     ::Projects::TransferService.new(@project, current_user, params.dup).execute(namespace)
 
-    @project.reload
+    @project.reset
     redirect_to admin_project_path(@project)
   end
   # rubocop: enable CodeReuse/ActiveRecord
@@ -50,7 +50,7 @@ class Admin::ProjectsController < Admin::ApplicationController
 
     redirect_to(
       admin_project_path(@project),
-      notice: 'Repository check was triggered.'
+      notice: _('Repository check was triggered.')
     )
   end
 

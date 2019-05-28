@@ -73,11 +73,16 @@ FactoryBot.define do
       end
 
       after(:create) do |user, evaluator|
-        user.identities << create(
-          :identity,
+        identity_attrs = {
           provider: evaluator.provider,
           extern_uid: evaluator.extern_uid
-        )
+        }
+
+        if evaluator.respond_to?(:saml_provider)
+          identity_attrs[:saml_provider] = evaluator.saml_provider
+        end
+
+        user.identities << create(:identity, identity_attrs)
       end
     end
 

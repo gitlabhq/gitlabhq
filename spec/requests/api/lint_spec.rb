@@ -8,7 +8,7 @@ describe API::Lint do
       end
 
       it 'passes validation' do
-        post api('/ci/lint'), { content: yaml_content }
+        post api('/ci/lint'), params: { content: yaml_content }
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Hash
@@ -19,7 +19,7 @@ describe API::Lint do
 
     context 'with an invalid .gitlab_ci.yml' do
       it 'responds with errors about invalid syntax' do
-        post api('/ci/lint'), { content: 'invalid content' }
+        post api('/ci/lint'), params: { content: 'invalid content' }
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['status']).to eq('invalid')
@@ -27,7 +27,7 @@ describe API::Lint do
       end
 
       it "responds with errors about invalid configuration" do
-        post api('/ci/lint'), { content: '{ image: "ruby:2.1",  services: ["postgres"] }' }
+        post api('/ci/lint'), params: { content: '{ image: "ruby:2.1",  services: ["postgres"] }' }
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['status']).to eq('invalid')

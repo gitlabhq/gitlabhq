@@ -8,7 +8,8 @@ require:
   - rubocop-rspec
 
 AllCops:
-  TargetRailsVersion: 4.2
+  TargetRubyVersion: 2.5
+  TargetRailsVersion: 5.0
   Exclude:
     - 'vendor/**/*'
     - 'node_modules/**/*'
@@ -74,6 +75,7 @@ Naming/FileName:
     - 'qa/spec/**/*'
     - 'qa/qa/specs/**/*'
     - 'qa/bin/*'
+    - 'ee/bin/*'
     - 'config/**/*'
     - 'ee/config/**/*'
     - 'lib/generators/**/*'
@@ -143,6 +145,21 @@ Naming/FileName:
     - XMPP
     - XSRF
     - XSS
+    - GRPC
+
+Rails/ApplicationRecord:
+  Enabled: true
+  Exclude:
+    # Models in database migrations should not subclass from ApplicationRecord
+    # as they need to be as decoupled from application code as possible
+    - db/**/*.rb
+    - lib/gitlab/background_migration/**/*.rb
+    - lib/gitlab/database/**/*.rb
+    - spec/**/*.rb
+    - ee/db/**/*.rb
+    - ee/lib/gitlab/background_migration/**/*.rb
+    - ee/lib/ee/gitlab/background_migration/**/*.rb
+    - ee/spec/**/*.rb
 
 # GitLab ###################################################################
 
@@ -173,4 +190,24 @@ GitlabSecurity/PublicSend:
     - 'spec/**/*'
     - 'ee/db/**/*'
     - 'ee/lib/**/*.rake'
+    - 'ee/spec/**/*'
+
+Cop/InjectEnterpriseEditionModule:
+  Enabled: true
+  Exclude:
+    - 'spec/**/*'
+    - 'ee/spec/**/*'
+
+Style/ReturnNil:
+  Enabled: true
+
+# It isn't always safe to replace `=~` with `.match?`, especially when there are
+# nil values on the left hand side
+Performance/RegexpMatch:
+  Enabled: false
+
+ActiveRecordAssociationReload:
+  Enabled: true
+  Exclude:
+    - 'spec/**/*'
     - 'ee/spec/**/*'

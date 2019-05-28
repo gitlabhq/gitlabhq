@@ -20,9 +20,9 @@ describe API::Labels do
       create(:labeled_merge_request, labels: [priority_label], author: user, source_project: project )
 
       expected_keys = %w(
-        id name color description
+        id name color text_color description
         open_issues_count closed_issues_count open_merge_requests_count
-        subscribed priority
+        subscribed priority is_project_label
       )
 
       get api("/projects/#{project.id}/labels", user)
@@ -43,37 +43,45 @@ describe API::Labels do
       expect(label1_response['open_merge_requests_count']).to eq(0)
       expect(label1_response['name']).to eq(label1.name)
       expect(label1_response['color']).to be_present
+      expect(label1_response['text_color']).to be_present
       expect(label1_response['description']).to be_nil
       expect(label1_response['priority']).to be_nil
       expect(label1_response['subscribed']).to be_falsey
+      expect(label1_response['is_project_label']).to be_truthy
 
       expect(group_label_response['open_issues_count']).to eq(1)
       expect(group_label_response['closed_issues_count']).to eq(0)
       expect(group_label_response['open_merge_requests_count']).to eq(0)
       expect(group_label_response['name']).to eq(group_label.name)
       expect(group_label_response['color']).to be_present
+      expect(group_label_response['text_color']).to be_present
       expect(group_label_response['description']).to be_nil
       expect(group_label_response['priority']).to be_nil
       expect(group_label_response['subscribed']).to be_falsey
+      expect(group_label_response['is_project_label']).to be_falsey
 
       expect(priority_label_response['open_issues_count']).to eq(0)
       expect(priority_label_response['closed_issues_count']).to eq(0)
       expect(priority_label_response['open_merge_requests_count']).to eq(1)
       expect(priority_label_response['name']).to eq(priority_label.name)
       expect(priority_label_response['color']).to be_present
+      expect(priority_label_response['text_color']).to be_present
       expect(priority_label_response['description']).to be_nil
       expect(priority_label_response['priority']).to eq(3)
       expect(priority_label_response['subscribed']).to be_falsey
+      expect(priority_label_response['is_project_label']).to be_truthy
     end
   end
 
   describe 'POST /projects/:id/labels' do
     it 'returns created label when all params' do
       post api("/projects/#{project.id}/labels", user),
-           name: 'Foo',
-           color: '#FFAABB',
-           description: 'test',
-           priority: 2
+           params: {
+             name: 'Foo',
+             color: '#FFAABB',
+             description: 'test',
+             priority: 2
+           }
 
       expect(response).to have_gitlab_http_status(201)
       expect(json_response['name']).to eq('Foo')
@@ -84,8 +92,10 @@ describe API::Labels do
 
     it 'returns created label when only required params' do
       post api("/projects/#{project.id}/labels", user),
-           name: 'Foo & Bar',
-           color: '#FFAABB'
+           params: {
+             name: 'Foo & Bar',
+             color: '#FFAABB'
+           }
 
       expect(response.status).to eq(201)
       expect(json_response['name']).to eq('Foo & Bar')
@@ -96,9 +106,11 @@ describe API::Labels do
 
     it 'creates a prioritized label' do
       post api("/projects/#{project.id}/labels", user),
-           name: 'Foo & Bar',
-           color: '#FFAABB',
-           priority: 3
+           params: {
+             name: 'Foo & Bar',
+             color: '#FFAABB',
+             priority: 3
+           }
 
       expect(response.status).to eq(201)
       expect(json_response['name']).to eq('Foo & Bar')
@@ -108,35 +120,41 @@ describe API::Labels do
     end
 
     it 'returns a 400 bad request if name not given' do
-      post api("/projects/#{project.id}/labels", user), color: '#FFAABB'
+      post api("/projects/#{project.id}/labels", user), params: { color: '#FFAABB' }
       expect(response).to have_gitlab_http_status(400)
     end
 
     it 'returns a 400 bad request if color not given' do
-      post api("/projects/#{project.id}/labels", user), name: 'Foobar'
+      post api("/projects/#{project.id}/labels", user), params: { name: 'Foobar' }
       expect(response).to have_gitlab_http_status(400)
     end
 
     it 'returns 400 for invalid color' do
       post api("/projects/#{project.id}/labels", user),
-           name: 'Foo',
-           color: '#FFAA'
+           params: {
+             name: 'Foo',
+             color: '#FFAA'
+           }
       expect(response).to have_gitlab_http_status(400)
       expect(json_response['message']['color']).to eq(['must be a valid color code'])
     end
 
     it 'returns 400 for too long color code' do
       post api("/projects/#{project.id}/labels", user),
-           name: 'Foo',
-           color: '#FFAAFFFF'
+           params: {
+             name: 'Foo',
+             color: '#FFAAFFFF'
+           }
       expect(response).to have_gitlab_http_status(400)
       expect(json_response['message']['color']).to eq(['must be a valid color code'])
     end
 
     it 'returns 400 for invalid name' do
       post api("/projects/#{project.id}/labels", user),
-           name: ',',
-           color: '#FFAABB'
+           params: {
+             name: ',',
+             color: '#FFAABB'
+           }
       expect(response).to have_gitlab_http_status(400)
       expect(json_response['message']['title']).to eq(['is invalid'])
     end
@@ -147,8 +165,10 @@ describe API::Labels do
       project.update(group: group)
 
       post api("/projects/#{project.id}/labels", user),
-           name: group_label.name,
-           color: '#FFAABB'
+           params: {
+             name: group_label.name,
+             color: '#FFAABB'
+           }
 
       expect(response).to have_gitlab_http_status(409)
       expect(json_response['message']).to eq('Label already exists')
@@ -156,17 +176,21 @@ describe API::Labels do
 
     it 'returns 400 for invalid priority' do
       post api("/projects/#{project.id}/labels", user),
-           name: 'Foo',
-           color: '#FFAAFFFF',
-           priority: 'foo'
+           params: {
+             name: 'Foo',
+             color: '#FFAAFFFF',
+             priority: 'foo'
+           }
 
       expect(response).to have_gitlab_http_status(400)
     end
 
     it 'returns 409 if label already exists in project' do
       post api("/projects/#{project.id}/labels", user),
-           name: 'label1',
-           color: '#FFAABB'
+           params: {
+             name: 'label1',
+             color: '#FFAABB'
+           }
       expect(response).to have_gitlab_http_status(409)
       expect(json_response['message']).to eq('Label already exists')
     end
@@ -174,13 +198,13 @@ describe API::Labels do
 
   describe 'DELETE /projects/:id/labels' do
     it 'returns 204 for existing label' do
-      delete api("/projects/#{project.id}/labels", user), name: 'label1'
+      delete api("/projects/#{project.id}/labels", user), params: { name: 'label1' }
 
       expect(response).to have_gitlab_http_status(204)
     end
 
     it 'returns 404 for non existing label' do
-      delete api("/projects/#{project.id}/labels", user), name: 'label2'
+      delete api("/projects/#{project.id}/labels", user), params: { name: 'label2' }
       expect(response).to have_gitlab_http_status(404)
       expect(json_response['message']).to eq('404 Label Not Found')
     end
@@ -199,10 +223,12 @@ describe API::Labels do
   describe 'PUT /projects/:id/labels' do
     it 'returns 200 if name and colors and description are changed' do
       put api("/projects/#{project.id}/labels", user),
-          name: 'label1',
-          new_name: 'New Label',
-          color: '#FFFFFF',
-          description: 'test'
+          params: {
+            name: 'label1',
+            new_name: 'New Label',
+            color: '#FFFFFF',
+            description: 'test'
+          }
       expect(response).to have_gitlab_http_status(200)
       expect(json_response['name']).to eq('New Label')
       expect(json_response['color']).to eq('#FFFFFF')
@@ -211,8 +237,10 @@ describe API::Labels do
 
     it 'returns 200 if name is changed' do
       put api("/projects/#{project.id}/labels", user),
-          name: 'label1',
-          new_name: 'New Label'
+          params: {
+            name: 'label1',
+            new_name: 'New Label'
+          }
       expect(response).to have_gitlab_http_status(200)
       expect(json_response['name']).to eq('New Label')
       expect(json_response['color']).to eq(label1.color)
@@ -220,8 +248,10 @@ describe API::Labels do
 
     it 'returns 200 if colors is changed' do
       put api("/projects/#{project.id}/labels", user),
-          name: 'label1',
-          color: '#FFFFFF'
+          params: {
+            name: 'label1',
+            color: '#FFFFFF'
+          }
       expect(response).to have_gitlab_http_status(200)
       expect(json_response['name']).to eq(label1.name)
       expect(json_response['color']).to eq('#FFFFFF')
@@ -229,8 +259,10 @@ describe API::Labels do
 
     it 'returns 200 if description is changed' do
       put api("/projects/#{project.id}/labels", user),
-          name: 'bug',
-          description: 'test'
+          params: {
+            name: 'bug',
+            description: 'test'
+          }
 
       expect(response).to have_gitlab_http_status(200)
       expect(json_response['name']).to eq(priority_label.name)
@@ -240,8 +272,10 @@ describe API::Labels do
 
     it 'returns 200 if priority is changed' do
       put api("/projects/#{project.id}/labels", user),
-           name: 'bug',
-           priority: 10
+           params: {
+             name: 'bug',
+             priority: 10
+           }
 
       expect(response.status).to eq(200)
       expect(json_response['name']).to eq(priority_label.name)
@@ -250,8 +284,10 @@ describe API::Labels do
 
     it 'returns 200 if a priority is added' do
       put api("/projects/#{project.id}/labels", user),
-           name: 'label1',
-           priority: 3
+           params: {
+             name: 'label1',
+             priority: 3
+           }
 
       expect(response.status).to eq(200)
       expect(json_response['name']).to eq(label1.name)
@@ -260,8 +296,10 @@ describe API::Labels do
 
     it 'returns 200 if the priority is removed' do
       put api("/projects/#{project.id}/labels", user),
-          name: priority_label.name,
-          priority: nil
+          params: {
+            name: priority_label.name,
+            priority: nil
+          }
 
       expect(response.status).to eq(200)
       expect(json_response['name']).to eq(priority_label.name)
@@ -270,19 +308,21 @@ describe API::Labels do
 
     it 'returns 404 if label does not exist' do
       put api("/projects/#{project.id}/labels", user),
-          name: 'label2',
-          new_name: 'label3'
+          params: {
+            name: 'label2',
+            new_name: 'label3'
+          }
       expect(response).to have_gitlab_http_status(404)
     end
 
     it 'returns 400 if no label name given' do
-      put api("/projects/#{project.id}/labels", user), new_name: 'label2'
+      put api("/projects/#{project.id}/labels", user), params: { new_name: 'label2' }
       expect(response).to have_gitlab_http_status(400)
       expect(json_response['error']).to eq('name is missing')
     end
 
     it 'returns 400 if no new parameters given' do
-      put api("/projects/#{project.id}/labels", user), name: 'label1'
+      put api("/projects/#{project.id}/labels", user), params: { name: 'label1' }
       expect(response).to have_gitlab_http_status(400)
       expect(json_response['error']).to eq('new_name, color, description, priority are missing, '\
                                            'at least one parameter must be provided')
@@ -290,33 +330,41 @@ describe API::Labels do
 
     it 'returns 400 for invalid name' do
       put api("/projects/#{project.id}/labels", user),
-          name: 'label1',
-          new_name: ',',
-          color: '#FFFFFF'
+          params: {
+            name: 'label1',
+            new_name: ',',
+            color: '#FFFFFF'
+          }
       expect(response).to have_gitlab_http_status(400)
       expect(json_response['message']['title']).to eq(['is invalid'])
     end
 
     it 'returns 400 when color code is too short' do
       put api("/projects/#{project.id}/labels", user),
-          name: 'label1',
-          color: '#FF'
+          params: {
+            name: 'label1',
+            color: '#FF'
+          }
       expect(response).to have_gitlab_http_status(400)
       expect(json_response['message']['color']).to eq(['must be a valid color code'])
     end
 
     it 'returns 400 for too long color code' do
       put api("/projects/#{project.id}/labels", user),
-           name: 'label1',
-           color: '#FFAAFFFF'
+           params: {
+             name: 'label1',
+             color: '#FFAAFFFF'
+           }
       expect(response).to have_gitlab_http_status(400)
       expect(json_response['message']['color']).to eq(['must be a valid color code'])
     end
 
     it 'returns 400 for invalid priority' do
       put api("/projects/#{project.id}/labels", user),
-           name: 'label1',
-           priority: 'foo'
+           params: {
+             name: 'label1',
+             priority: 'foo'
+           }
 
       expect(response).to have_gitlab_http_status(400)
     end

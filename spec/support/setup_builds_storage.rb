@@ -11,7 +11,7 @@ RSpec.configure do |config|
     FileUtils.mkdir_p(builds_path)
   end
 
-  config.before(:each) do
+  config.before do
     FileUtils.rm_rf(builds_path)
     FileUtils.mkdir_p(builds_path)
   end

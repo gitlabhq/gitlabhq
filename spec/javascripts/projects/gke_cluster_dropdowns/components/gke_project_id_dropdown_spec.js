@@ -53,36 +53,32 @@ describe('GkeProjectIdDropdown', () => {
     });
 
     it('returns default toggle text', done =>
-      vm
-        .$nextTick()
-        .then(() => {
-          vm.setItem(emptyProjectMock);
+      setTimeout(() => {
+        vm.setItem(emptyProjectMock);
 
-          expect(vm.toggleText).toBe(LABELS.DEFAULT);
-          done();
-        })
-        .catch(done.fail));
+        expect(vm.toggleText).toBe(LABELS.DEFAULT);
+
+        done();
+      }));
 
     it('returns project name if project selected', done =>
-      vm
-        .$nextTick()
-        .then(() => {
-          expect(vm.toggleText).toBe(selectedProjectMock.name);
-          done();
-        })
-        .catch(done.fail));
+      setTimeout(() => {
+        vm.isLoading = false;
+
+        expect(vm.toggleText).toBe(selectedProjectMock.name);
+
+        done();
+      }));
 
     it('returns empty toggle text', done =>
-      vm
-        .$nextTick()
-        .then(() => {
-          vm.$store.commit(SET_PROJECTS, null);
-          vm.setItem(emptyProjectMock);
+      setTimeout(() => {
+        vm.$store.commit(SET_PROJECTS, null);
+        vm.setItem(emptyProjectMock);
 
-          expect(vm.toggleText).toBe(LABELS.EMPTY);
-          done();
-        })
-        .catch(done.fail));
+        expect(vm.toggleText).toBe(LABELS.EMPTY);
+
+        done();
+      }));
   });
 
   describe('selectItem', () => {

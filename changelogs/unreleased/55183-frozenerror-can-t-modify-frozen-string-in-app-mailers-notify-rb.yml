@@ -1,5 +1,0 @@
----
-title: Fix a potential frozen string error in app/mailers/notify.rb
-merge_request: 23728
-author:
-type: fixed

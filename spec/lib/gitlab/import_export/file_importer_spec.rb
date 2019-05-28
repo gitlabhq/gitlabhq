@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Gitlab::ImportExport::FileImporter do
+  include ExportFileHelper
+
   let(:shared) { Gitlab::ImportExport::Shared.new(nil) }
   let(:storage_path) { "#{Dir.tmpdir}/file_importer_spec" }
   let(:valid_file) { "#{shared.export_path}/valid.json" }
@@ -8,6 +10,7 @@ describe Gitlab::ImportExport::FileImporter do
   let(:hidden_symlink_file) { "#{shared.export_path}/.hidden" }
   let(:subfolder_symlink_file) { "#{shared.export_path}/subfolder/invalid.json" }
   let(:evil_symlink_file) { "#{shared.export_path}/.\nevil" }
+  let(:custom_mode_symlink_file) { "#{shared.export_path}/symlink.mode" }
 
   before do
     stub_const('Gitlab::ImportExport::FileImporter::MAX_RETRIES', 0)
@@ -45,8 +48,16 @@ describe Gitlab::ImportExport::FileImporter do
       expect(File.exist?(subfolder_symlink_file)).to be false
     end
 
+    it 'removes symlinks without any file permissions' do
+      expect(File.exist?(custom_mode_symlink_file)).to be false
+    end
+
     it 'does not remove a valid file' do
       expect(File.exist?(valid_file)).to be true
+    end
+
+    it 'does not change a valid file permissions' do
+      expect(file_permissions(valid_file)).not_to eq(0000)
     end
 
     it 'creates the file in the right subfolder' do
@@ -84,5 +95,7 @@ describe Gitlab::ImportExport::FileImporter do
     FileUtils.ln_s(valid_file, subfolder_symlink_file)
     FileUtils.ln_s(valid_file, hidden_symlink_file)
     FileUtils.ln_s(valid_file, evil_symlink_file)
+    FileUtils.ln_s(valid_file, custom_mode_symlink_file)
+    FileUtils.chmod_R(0000, custom_mode_symlink_file)
   end
 end

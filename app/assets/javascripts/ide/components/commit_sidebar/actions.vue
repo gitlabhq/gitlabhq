@@ -1,9 +1,13 @@
 <script>
 import _ from 'underscore';
-import { mapActions, mapState, mapGetters } from 'vuex';
+import { mapActions, mapState, mapGetters, createNamespacedHelpers } from 'vuex';
 import { sprintf, __ } from '~/locale';
-import * as consts from '../../stores/modules/commit/constants';
+import consts from '../../stores/modules/commit/constants';
 import RadioGroup from './radio_group.vue';
+
+const { mapState: mapCommitState, mapGetters: mapCommitGetters } = createNamespacedHelpers(
+  'commit',
+);
 
 export default {
   components: {
@@ -11,7 +15,9 @@ export default {
   },
   computed: {
     ...mapState(['currentBranchId', 'changedFiles', 'stagedFiles']),
-    ...mapGetters(['currentProject', 'currentBranch']),
+    ...mapCommitState(['commitAction', 'shouldCreateMR', 'shouldDisableNewMrOption']),
+    ...mapGetters(['currentProject', 'currentBranch', 'currentMergeRequest']),
+    ...mapCommitGetters(['shouldDisableNewMrOption']),
     commitToCurrentBranchText() {
       return sprintf(
         __('Commit to %{branchName} branch'),
@@ -32,7 +38,7 @@ export default {
     this.updateSelectedCommitAction();
   },
   methods: {
-    ...mapActions('commit', ['updateCommitAction']),
+    ...mapActions('commit', ['updateCommitAction', 'toggleShouldCreateMR']),
     updateSelectedCommitAction() {
       if (this.currentBranch && !this.currentBranch.can_push) {
         this.updateCommitAction(consts.COMMIT_TO_NEW_BRANCH);
@@ -43,7 +49,6 @@ export default {
   },
   commitToCurrentBranch: consts.COMMIT_TO_CURRENT_BRANCH,
   commitToNewBranch: consts.COMMIT_TO_NEW_BRANCH,
-  commitToNewBranchMR: consts.COMMIT_TO_NEW_BRANCH_MR,
   currentBranchPermissionsTooltip: __(
     "This option is disabled as you don't have write permissions for the current branch",
   ),
@@ -64,13 +69,17 @@ export default {
       :label="__('Create a new branch')"
       :show-input="true"
     />
-    <radio-group
-      v-if="currentProject.merge_requests_enabled"
-      :value="$options.commitToNewBranchMR"
-      :label="__('Create a new branch and merge request')"
-      :title="__('This option is disabled while you still have unstaged changes')"
-      :show-input="true"
-      :disabled="disableMergeRequestRadio"
-    />
+    <hr class="my-2" />
+    <label class="mb-0">
+      <input
+        :checked="shouldCreateMR"
+        :disabled="shouldDisableNewMrOption"
+        type="checkbox"
+        @change="toggleShouldCreateMR"
+      />
+      <span class="prepend-left-10" :class="{ 'text-secondary': shouldDisableNewMrOption }">
+        {{ __('Start a new merge request') }}
+      </span>
+    </label>
   </div>
 </template>

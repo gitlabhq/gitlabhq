@@ -4,10 +4,10 @@ import $ from 'jquery';
 import GlFieldErrors from '~/gl_field_errors';
 
 describe('GL Style Field Errors', function() {
-  preloadFixtures('static/gl_field_errors.html.raw');
+  preloadFixtures('static/gl_field_errors.html');
 
   beforeEach(function() {
-    loadFixtures('static/gl_field_errors.html.raw');
+    loadFixtures('static/gl_field_errors.html');
     const $form = $('form.gl-show-field-errors');
 
     this.$form = $form;

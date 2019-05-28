@@ -8,7 +8,7 @@ module UsersHelper
   end
 
   def user_email_help_text(user)
-    return 'We also use email for avatar detection if no avatar is uploaded.' unless user.unconfirmed_email.present?
+    return 'We also use email for avatar detection if no avatar is uploaded' unless user.unconfirmed_email.present?
 
     confirmation_link = link_to 'Resend confirmation e-mail', user_confirmation_path(user: { email: @user.unconfirmed_email }), method: :post
 
@@ -72,6 +72,15 @@ module UsersHelper
 
   def impersonation_enabled?
     Gitlab.config.gitlab.impersonation_enabled
+  end
+
+  def user_badges_in_admin_section(user)
+    [].tap do |badges|
+      badges << { text: s_('AdminUsers|Blocked'), variant: 'danger' } if user.blocked?
+      badges << { text: s_('AdminUsers|Admin'), variant: 'success' } if user.admin?
+      badges << { text: s_('AdminUsers|External'), variant: 'secondary' } if user.external?
+      badges << { text: s_("AdminUsers|It's you!"), variant: nil } if current_user == user
+    end
   end
 
   private

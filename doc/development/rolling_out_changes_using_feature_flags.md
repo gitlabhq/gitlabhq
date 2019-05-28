@@ -10,12 +10,12 @@ disable those changes, without having to revert an entire release.
 Starting with GitLab 11.4, developers are required to use feature flags for
 non-trivial changes. Such changes include:
 
-* New features (e.g. a new merge request widget, epics, etc).
-* Complex performance improvements that may require additional testing in
+- New features (e.g. a new merge request widget, epics, etc).
+- Complex performance improvements that may require additional testing in
   production, such as rewriting complex queries.
-* Invasive changes to the user interface, such as a new navigation bar or the
+- Invasive changes to the user interface, such as a new navigation bar or the
   removal of a sidebar.
-* Adding support for importing projects from a third-party service.
+- Adding support for importing projects from a third-party service.
 
 In all cases, those working on the changes can best decide if a feature flag is
 necessary. For example, changing the color of a button doesn't need a feature
@@ -65,15 +65,14 @@ the worst case scenario, which we should optimise for, our total cost is now 20.
 If we had used a feature flag, things would have been very different. We don't
 need to revert a release, and because feature flags are disabled by default we
 don't need to revert and pick any Git commits. In fact, all we have to do is
-disable the feature, and _maybe_ perform some cleanup. Let's say that the cost
-of this is 1. In this case, our best case cost is 11: 10 to build the feature,
-and 1 to add the feature flag. The worst case cost is now 12: 10 to build the
-feature, 1 to add the feature flag, and 1 to disable it.
+disable the feature, and in the worst case, perform cleanup. Let's say that 
+the cost of this is 2. In this case, our best case cost is 11: 10 to build the 
+feature, and 1 to add the feature flag. The worst case cost is now 13: 10 to 
+build the feature, 1 to add the feature flag, and 2 to disable and clean up.
 
 Here we can see that in the best case scenario the work necessary is only a tiny
 bit more compared to not using a feature flag. Meanwhile, the process of
-reverting our changes has been made significantly cheaper, to the point of being
-trivial.
+reverting our changes has been made significantly and reliably cheaper.
 
 In other words, feature flags do not slow down the development process. Instead,
 they speed up the process as managing incidents now becomes _much_ easier. Once
@@ -103,7 +102,21 @@ GitLab's feature library (using
 [Flipper](https://github.com/jnunemaker/flipper), and covered in the [Feature
 Flags](feature_flags.md) guide) supports rolling out changes to a percentage of
 users. This in turn can be controlled using [GitLab
-chatops](https://docs.gitlab.com/ee/ci/chatops/).
+chatops](../ci/chatops/README.md).
+
+For an up to date list of feature flag commands please see [the source
+code](https://gitlab.com/gitlab-com/chatops/blob/master/lib/chatops/commands/feature.rb).
+Note that all the examples in that file must be preceded by
+`/chatops run`.
+
+If you get an error "Whoops! This action is not allowed. This incident
+will be reported." that means your Slack account is not allowed to
+change feature flags. To test if you are allowed to do anything at all,
+run:
+
+```
+/chatops run feature --help
+```
 
 For example, to enable a feature for 25% of all users, run the following in
 Slack:
@@ -134,6 +147,20 @@ may differ. For some features a few minutes is enough, while for others you may
 want to wait several hours or even days. This is entirely up to you, just make
 sure it is clearly communicated to your team, and the Production team if you
 anticipate any potential problems.
+
+Feature gates can also be actor based, for example a feature could first be
+enabled for only the `gitlab-ce` project. The project is passed by supplying a
+`--project` flag:
+
+```
+/chatops run feature set --project=gitlab-org/gitlab-ce some_feature true
+```
+
+For groups the `--group` flag is available:
+
+```
+/chatops run feature set --group=gitlab-org some_feature true
+```
 
 Once a change is deemed stable, submit a new merge request to remove the
 feature flag. This ensures the change is available to all users and self-hosted
@@ -188,3 +215,12 @@ to be shipped. You can do this via ChatOps:
 
 Note that you can do this at any time, even before the merge request using the
 flag has been merged!
+
+### Cleaning up
+
+When a feature gate has been removed from the code base, the value still exists
+in the database. This can be removed through ChatOps:
+
+```
+/chatops run feature delete some_feature
+```

@@ -61,7 +61,7 @@ describe('Commit component', () => {
     });
 
     it('should render a tag icon if it represents a tag', () => {
-      expect(component.$el.querySelector('.icon-container i').classList).toContain('fa-tag');
+      expect(component.$el.querySelector('.icon-container svg.ic-tag')).not.toBeNull();
     });
 
     it('should render a link to the ref url', () => {
@@ -141,6 +141,94 @@ describe('Commit component', () => {
       expect(component.$el.querySelector('.commit-title span').textContent).toContain(
         "Can't find HEAD commit for this branch",
       );
+    });
+  });
+
+  describe('When commit ref is provided, but merge ref is not', () => {
+    it('should render the commit ref', () => {
+      props = {
+        tag: false,
+        commitRef: {
+          name: 'master',
+          ref_url: 'http://localhost/namespace2/gitlabhq/tree/master',
+        },
+        commitUrl:
+          'https://gitlab.com/gitlab-org/gitlab-ce/commit/b7836eddf62d663c665769e1b0960197fd215067',
+        shortSha: 'b7836edd',
+        title: null,
+        author: {},
+      };
+
+      component = mountComponent(CommitComponent, props);
+      const refEl = component.$el.querySelector('.ref-name');
+
+      expect(refEl.textContent).toContain('master');
+
+      expect(refEl.href).toBe(props.commitRef.ref_url);
+
+      expect(refEl.getAttribute('data-original-title')).toBe(props.commitRef.name);
+
+      expect(component.$el.querySelector('.icon-container .ic-branch')).not.toBeNull();
+    });
+  });
+
+  describe('When both commit and merge ref are provided', () => {
+    it('should render the merge ref', () => {
+      props = {
+        tag: false,
+        commitRef: {
+          name: 'master',
+          ref_url: 'http://localhost/namespace2/gitlabhq/tree/master',
+        },
+        commitUrl:
+          'https://gitlab.com/gitlab-org/gitlab-ce/commit/b7836eddf62d663c665769e1b0960197fd215067',
+        mergeRequestRef: {
+          iid: 1234,
+          path: 'https://example.com/path/to/mr',
+          title: 'Test MR',
+        },
+        shortSha: 'b7836edd',
+        title: null,
+        author: {},
+      };
+
+      component = mountComponent(CommitComponent, props);
+      const refEl = component.$el.querySelector('.ref-name');
+
+      expect(refEl.textContent).toContain('1234');
+
+      expect(refEl.href).toBe(props.mergeRequestRef.path);
+
+      expect(refEl.getAttribute('data-original-title')).toBe(props.mergeRequestRef.title);
+
+      expect(component.$el.querySelector('.icon-container .ic-git-merge')).not.toBeNull();
+    });
+  });
+
+  describe('When showRefInfo === false', () => {
+    it('should not render any ref info', () => {
+      props = {
+        tag: false,
+        commitRef: {
+          name: 'master',
+          ref_url: 'http://localhost/namespace2/gitlabhq/tree/master',
+        },
+        commitUrl:
+          'https://gitlab.com/gitlab-org/gitlab-ce/commit/b7836eddf62d663c665769e1b0960197fd215067',
+        mergeRequestRef: {
+          iid: 1234,
+          path: '/path/to/mr',
+          title: 'Test MR',
+        },
+        shortSha: 'b7836edd',
+        title: null,
+        author: {},
+        showRefInfo: false,
+      };
+
+      component = mountComponent(CommitComponent, props);
+
+      expect(component.$el.querySelector('.ref-name')).toBeNull();
     });
   });
 });

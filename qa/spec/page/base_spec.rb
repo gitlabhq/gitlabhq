@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe QA::Page::Base do
   describe 'page helpers' do
     it 'exposes helpful page helpers' do
@@ -56,6 +58,36 @@ describe QA::Page::Base do
       it 'appends an error about missing views / elements block' do
         expect(described_class.errors)
           .to include 'Page class does not have views / elements defined!'
+      end
+    end
+  end
+
+  describe '#wait' do
+    subject { Class.new(described_class).new }
+
+    context 'when the condition is true' do
+      it 'does not refresh' do
+        expect(subject).not_to receive(:refresh)
+
+        subject.wait(max: 0.01) { true }
+      end
+
+      it 'returns true' do
+        expect(subject.wait(max: 0.1) { true }).to be_truthy
+      end
+    end
+
+    context 'when the condition is false' do
+      it 'refreshes' do
+        expect(subject).to receive(:refresh).at_least(:once)
+
+        subject.wait(max: 0.01) { false }
+      end
+
+      it 'returns false' do
+        allow(subject).to receive(:refresh)
+
+        expect(subject.wait(max: 0.01) { false }).to be_falsey
       end
     end
   end

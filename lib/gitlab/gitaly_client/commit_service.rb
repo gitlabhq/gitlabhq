@@ -79,7 +79,7 @@ module Gitlab
 
       def tree_entry(ref, path, limit = nil)
         if Pathname.new(path).cleanpath.to_s.start_with?('../')
-          # The TreeEntry RPC should return an empty reponse in this case but in
+          # The TreeEntry RPC should return an empty response in this case but in
           # Gitaly 0.107.0 and earlier we get an exception instead. This early return
           # saves us a Gitaly roundtrip while also avoiding the exception.
           return
@@ -150,6 +150,17 @@ module Gitlab
         GitalyClient.call(@repository.storage, :commit_service, :count_commits, request, timeout: GitalyClient.medium_timeout).count
       end
 
+      def diverging_commit_count(from, to, max_count:)
+        request = Gitaly::CountDivergingCommitsRequest.new(
+          repository: @gitaly_repo,
+          from: encode_binary(from),
+          to: encode_binary(to),
+          max_count: max_count
+        )
+        response = GitalyClient.call(@repository.storage, :commit_service, :count_diverging_commits, request, timeout: GitalyClient.medium_timeout)
+        [response.left_count, response.right_count]
+      end
+
       def list_last_commits_for_tree(revision, path, offset: 0, limit: 25)
         request = Gitaly::ListLastCommitsForTreeRequest.new(
           repository: @gitaly_repo,
@@ -163,7 +174,7 @@ module Gitlab
 
         response.each_with_object({}) do |gitaly_response, hsh|
           gitaly_response.commits.each do |commit_for_tree|
-            hsh[commit_for_tree.path] = Gitlab::Git::Commit.new(@repository, commit_for_tree.commit)
+            hsh[commit_for_tree.path_bytes] = Gitlab::Git::Commit.new(@repository, commit_for_tree.commit)
           end
         end
       end
@@ -275,7 +286,7 @@ module Gitlab
           commit = call_find_commit(revision)
           return unless commit
 
-          key[:commit_id] = commit.id
+          key[:commit_id] = commit.id unless GitalyClient.ref_name_caching_allowed?
           Gitlab::SafeRequestStore[key] = commit
         else
           call_find_commit(revision)

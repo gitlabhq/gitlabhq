@@ -46,7 +46,7 @@ describe Gitlab::GitalyClient::WikiService do
     end
   end
 
-  describe '#get_all_pages' do
+  describe '#load_all_pages' do
     let(:page_2_info) { { title: 'My Page 2', raw_data: 'c', version: page_version } }
     let(:response) do
       [
@@ -63,7 +63,7 @@ describe Gitlab::GitalyClient::WikiService do
     let(:wiki_page_2) { subject[1].first }
     let(:wiki_page_2_version) { subject[1].last }
 
-    subject { client.get_all_pages }
+    subject { client.load_all_pages }
 
     it 'sends a wiki_get_all_pages message' do
       expect_any_instance_of(Gitaly::WikiService::Stub)
@@ -99,7 +99,7 @@ describe Gitlab::GitalyClient::WikiService do
     end
 
     context 'with limits' do
-      subject { client.get_all_pages(limit: 1) }
+      subject { client.load_all_pages(limit: 1) }
 
       it 'sends a request with the limit' do
         expect_any_instance_of(Gitaly::WikiService::Stub)

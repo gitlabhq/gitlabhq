@@ -3,7 +3,7 @@ require "spec_helper"
 describe Gitlab::Git::Commit, :seed_helper do
   include GitHelpers
 
-  let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '') }
+  let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '', 'group/project') }
   let(:rugged_repo) do
     Rugged::Repository.new(File.join(TestEnv.repos_path, TEST_REPO_PATH))
   end
@@ -112,14 +112,14 @@ describe Gitlab::Git::Commit, :seed_helper do
   end
 
   context 'Class methods' do
-    describe '.find' do
-      it "should return first head commit if without params" do
+    shared_examples '.find' do
+      it "returns first head commit if without params" do
         expect(described_class.last(repository).id).to eq(
           rugged_repo.head.target.oid
         )
       end
 
-      it "should return valid commit" do
+      it "returns valid commit" do
         expect(described_class.find(repository, SeedRepo::Commit::ID)).to be_valid_commit
       end
 
@@ -127,31 +127,45 @@ describe Gitlab::Git::Commit, :seed_helper do
         expect(described_class.find(repository, SeedRepo::Commit::ID).parent_ids).to be_an(Array)
       end
 
-      it "should return valid commit for tag" do
+      it "returns valid commit for tag" do
         expect(described_class.find(repository, 'v1.0.0').id).to eq('6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9')
       end
 
-      it "should return nil for non-commit ids" do
+      it "returns nil for non-commit ids" do
         blob = Gitlab::Git::Blob.find(repository, SeedRepo::Commit::ID, "files/ruby/popen.rb")
         expect(described_class.find(repository, blob.id)).to be_nil
       end
 
-      it "should return nil for parent of non-commit object" do
+      it "returns nil for parent of non-commit object" do
         blob = Gitlab::Git::Blob.find(repository, SeedRepo::Commit::ID, "files/ruby/popen.rb")
         expect(described_class.find(repository, "#{blob.id}^")).to be_nil
       end
 
-      it "should return nil for nonexisting ids" do
+      it "returns nil for nonexisting ids" do
         expect(described_class.find(repository, "+123_4532530XYZ")).to be_nil
       end
 
       context 'with broken repo' do
-        let(:repository) { Gitlab::Git::Repository.new('default', TEST_BROKEN_REPO_PATH, '') }
+        let(:repository) { Gitlab::Git::Repository.new('default', TEST_BROKEN_REPO_PATH, '', 'group/project') }
 
         it 'returns nil' do
           expect(described_class.find(repository, SeedRepo::Commit::ID)).to be_nil
         end
       end
+    end
+
+    describe '.find with Gitaly enabled' do
+      it_should_behave_like '.find'
+    end
+
+    describe '.find with Rugged enabled', :enable_rugged do
+      it 'calls out to the Rugged implementation' do
+        allow_any_instance_of(Rugged).to receive(:rev_parse).with(SeedRepo::Commit::ID).and_call_original
+
+        described_class.find(repository, SeedRepo::Commit::ID)
+      end
+
+      it_should_behave_like '.find'
     end
 
     describe '.last_for_path' do
@@ -314,7 +328,7 @@ describe Gitlab::Git::Commit, :seed_helper do
     end
 
     describe '.find_all' do
-      it 'should return a return a collection of commits' do
+      it 'returns a return a collection of commits' do
         commits = described_class.find_all(repository)
 
         expect(commits).to all( be_a_kind_of(described_class) )
@@ -366,13 +380,48 @@ describe Gitlab::Git::Commit, :seed_helper do
       end
     end
 
-    describe '#batch_by_oid' do
+    shared_examples '.batch_by_oid' do
+      context 'with multiple OIDs' do
+        let(:oids) { [SeedRepo::Commit::ID, SeedRepo::FirstCommit::ID] }
+
+        it 'returns multiple commits' do
+          commits = described_class.batch_by_oid(repository, oids)
+
+          expect(commits.count).to eq(2)
+          expect(commits).to all( be_a(Gitlab::Git::Commit) )
+          expect(commits.first.sha).to eq(SeedRepo::Commit::ID)
+          expect(commits.second.sha).to eq(SeedRepo::FirstCommit::ID)
+        end
+      end
+
+      context 'when oids is empty' do
+        it 'returns empty commits' do
+          commits = described_class.batch_by_oid(repository, [])
+
+          expect(commits.count).to eq(0)
+        end
+      end
+    end
+
+    describe '.batch_by_oid with Gitaly enabled' do
+      it_should_behave_like '.batch_by_oid'
+
       context 'when oids is empty' do
         it 'makes no Gitaly request' do
           expect(Gitlab::GitalyClient).not_to receive(:call)
 
           described_class.batch_by_oid(repository, [])
         end
+      end
+    end
+
+    describe '.batch_by_oid with Rugged enabled', :enable_rugged do
+      it_should_behave_like '.batch_by_oid'
+
+      it 'calls out to the Rugged implementation' do
+        allow_any_instance_of(Rugged).to receive(:rev_parse).with(SeedRepo::Commit::ID).and_call_original
+
+        described_class.batch_by_oid(repository, [SeedRepo::Commit::ID])
       end
     end
 
@@ -520,6 +569,18 @@ describe Gitlab::Git::Commit, :seed_helper do
     describe '#total' do
       subject { super().total }
       it { is_expected.to eq(17) }
+    end
+  end
+
+  describe '#gitaly_commit?' do
+    context 'when the commit data comes from gitaly' do
+      it { expect(commit.gitaly_commit?).to eq(true) }
+    end
+
+    context 'when the commit data comes from a Hash' do
+      let(:commit) { described_class.new(repository, sample_commit_hash) }
+
+      it { expect(commit.gitaly_commit?).to eq(false) }
     end
   end
 

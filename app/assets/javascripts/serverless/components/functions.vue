@@ -1,20 +1,18 @@
 <script>
-import { GlSkeletonLoading } from '@gitlab/ui';
+import { mapState, mapActions, mapGetters } from 'vuex';
+import { GlLoadingIcon } from '@gitlab/ui';
 import FunctionRow from './function_row.vue';
+import EnvironmentRow from './environment_row.vue';
 import EmptyState from './empty_state.vue';
 
 export default {
   components: {
+    EnvironmentRow,
     FunctionRow,
     EmptyState,
-    GlSkeletonLoading,
+    GlLoadingIcon,
   },
   props: {
-    functions: {
-      type: Array,
-      required: true,
-      default: () => [],
-    },
     installed: {
       type: Boolean,
       required: true,
@@ -27,16 +25,22 @@ export default {
       type: String,
       required: true,
     },
-    loadingData: {
-      type: Boolean,
-      required: false,
-      default: true,
+    statusPath: {
+      type: String,
+      required: true,
     },
-    hasFunctionData: {
-      type: Boolean,
-      required: false,
-      default: true,
-    },
+  },
+  computed: {
+    ...mapState(['isLoading', 'hasFunctionData']),
+    ...mapGetters(['getFunctions']),
+  },
+  created() {
+    this.fetchFunctions({
+      functionsPath: this.statusPath,
+    });
+  },
+  methods: {
+    ...mapActions(['fetchFunctions']),
   },
 };
 </script>
@@ -45,30 +49,23 @@ export default {
   <section id="serverless-functions">
     <div v-if="installed">
       <div v-if="hasFunctionData">
-        <div class="ci-table js-services-list function-element">
-          <div class="gl-responsive-table-row table-row-header" role="row">
-            <div class="table-section section-20" role="rowheader">
-              {{ s__('Serverless|Function') }}
-            </div>
-            <div class="table-section section-50" role="rowheader">
-              {{ s__('Serverless|Domain') }}
-            </div>
-            <div class="table-section section-20" role="rowheader">
-              {{ s__('Serverless|Runtime') }}
-            </div>
-            <div class="table-section section-10" role="rowheader">
-              {{ s__('Serverless|Last Update') }}
-            </div>
+        <gl-loading-icon
+          v-if="isLoading"
+          :size="2"
+          class="prepend-top-default append-bottom-default"
+        />
+        <template v-else>
+          <div class="groups-list-tree-container">
+            <ul class="content-list group-list-tree">
+              <environment-row
+                v-for="(env, index) in getFunctions"
+                :key="index"
+                :env="env"
+                :env-name="index"
+              />
+            </ul>
           </div>
-          <template v-if="loadingData">
-            <div v-for="j in 3" :key="j" class="gl-responsive-table-row">
-              <gl-skeleton-loading />
-            </div>
-          </template>
-          <template v-else>
-            <function-row v-for="f in functions" :key="f.name" :func="f" />
-          </template>
-        </div>
+        </template>
       </div>
       <div v-else class="empty-state js-empty-state">
         <div class="text-content">
@@ -81,7 +78,7 @@ export default {
           </p>
           <ul>
             <li>Your repository does not have a corresponding <code>serverless.yml</code> file.</li>
-            <li>Your <code>gitlab-ci.yml</code> file is not properly configured.</li>
+            <li>Your <code>.gitlab-ci.yml</code> file is not properly configured.</li>
             <li>
               The functions listed in the <code>serverless.yml</code> file don't match the namespace
               of your cluster.
@@ -108,16 +105,3 @@ export default {
     <empty-state v-else :clusters-path="clustersPath" :help-path="helpPath" />
   </section>
 </template>
-
-<style>
-.top-area {
-  border-bottom: 0;
-}
-
-.function-element {
-  border-bottom: 1px solid #e5e5e5;
-  border-bottom-color: rgb(229, 229, 229);
-  border-bottom-style: solid;
-  border-bottom-width: 1px;
-}
-</style>

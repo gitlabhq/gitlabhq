@@ -62,7 +62,7 @@ module Gitlab
         end
 
         branch = response.branch
-        return nil unless branch
+        return unless branch
 
         target_commit = Gitlab::Git::Commit.decorate(@repository, branch.target_commit)
         Gitlab::Git::Branch.new(@repository, branch.name, target_commit.id, target_commit)
@@ -98,6 +98,25 @@ module Gitlab
         if pre_receive_error = response.pre_receive_error.presence
           raise Gitlab::Git::PreReceiveError, pre_receive_error
         end
+      end
+
+      def user_merge_to_ref(user, source_sha, branch, target_ref, message)
+        request = Gitaly::UserMergeToRefRequest.new(
+          repository: @gitaly_repo,
+          source_sha: source_sha,
+          branch: encode_binary(branch),
+          target_ref: encode_binary(target_ref),
+          user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
+          message: message
+        )
+
+        response = GitalyClient.call(@repository.storage, :operation_service, :user_merge_to_ref, request)
+
+        if pre_receive_error = response.pre_receive_error.presence
+          raise Gitlab::Git::PreReceiveError, pre_receive_error
+        end
+
+        response.commit_id
       end
 
       def user_merge_branch(user, source_sha, target_branch, message)
@@ -178,6 +197,7 @@ module Gitlab
                                    start_repository: start_repository)
       end
 
+      # DEPRECATED: https://gitlab.com/gitlab-org/gitaly/issues/1628
       def user_rebase(user, rebase_id, branch:, branch_sha:, remote_repository:, remote_branch:)
         request = Gitaly::UserRebaseRequest.new(
           repository: @gitaly_repo,
@@ -204,6 +224,49 @@ module Gitlab
         else
           response.rebase_sha
         end
+      end
+
+      def rebase(user, rebase_id, branch:, branch_sha:, remote_repository:, remote_branch:)
+        request_enum = QueueEnumerator.new
+        rebase_sha = nil
+
+        response_enum = GitalyClient.call(
+          @repository.storage,
+          :operation_service,
+          :user_rebase_confirmable,
+          request_enum.each,
+          remote_storage: remote_repository.storage
+        )
+
+        # First request
+        request_enum.push(
+          Gitaly::UserRebaseConfirmableRequest.new(
+            header: Gitaly::UserRebaseConfirmableRequest::Header.new(
+              repository: @gitaly_repo,
+              user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
+              rebase_id: rebase_id.to_s,
+              branch: encode_binary(branch),
+              branch_sha: branch_sha,
+              remote_repository: remote_repository.gitaly_repository,
+              remote_branch: encode_binary(remote_branch)
+            )
+          )
+        )
+
+        perform_next_gitaly_rebase_request(response_enum) do |response|
+          rebase_sha = response.rebase_sha
+        end
+
+        yield rebase_sha
+
+        # Second request confirms with gitaly to finalize the rebase
+        request_enum.push(Gitaly::UserRebaseConfirmableRequest.new(apply: true))
+
+        perform_next_gitaly_rebase_request(response_enum)
+
+        rebase_sha
+      ensure
+        request_enum.close
       end
 
       def user_squash(user, squash_id, branch, start_sha, end_sha, author, message)
@@ -258,14 +321,14 @@ module Gitlab
         end
       end
 
+      # rubocop:disable Metrics/ParameterLists
       def user_commit_files(
         user, branch_name, commit_message, actions, author_email, author_name,
-        start_branch_name, start_repository)
-
+        start_branch_name, start_repository, force = false)
         req_enum = Enumerator.new do |y|
           header = user_commit_files_request_header(user, branch_name,
           commit_message, actions, author_email, author_name,
-          start_branch_name, start_repository)
+          start_branch_name, start_repository, force)
 
           y.yield Gitaly::UserCommitFilesRequest.new(header: header)
 
@@ -275,7 +338,7 @@ module Gitlab
               action: Gitaly::UserCommitFilesAction.new(header: action_header)
             )
 
-            reader = binary_stringio(action[:content])
+            reader = binary_io(action[:content])
 
             until reader.eof?
               chunk = reader.read(MAX_MSG_SIZE)
@@ -300,6 +363,7 @@ module Gitlab
 
         Gitlab::Git::OperationService::BranchUpdate.from_gitaly(response.branch_update)
       end
+      # rubocop:enable Metrics/ParameterLists
 
       def user_commit_patches(user, branch_name, patches)
         header = Gitaly::UserApplyPatchRequest::Header.new(
@@ -307,7 +371,7 @@ module Gitlab
           user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
           target_branch: encode_binary(branch_name)
         )
-        reader = binary_stringio(patches)
+        reader = binary_io(patches)
 
         chunks = Enumerator.new do |chunk|
           chunk.yield Gitaly::UserApplyPatchRequest.new(header: header)
@@ -325,6 +389,20 @@ module Gitlab
       end
 
       private
+
+      def perform_next_gitaly_rebase_request(response_enum)
+        response = response_enum.next
+
+        if response.pre_receive_error.present?
+          raise Gitlab::Git::PreReceiveError, response.pre_receive_error
+        elsif response.git_error.present?
+          raise Gitlab::Git::Repository::GitError, response.git_error
+        end
+
+        yield response if block_given?
+
+        response
+      end
 
       def call_cherry_pick_or_revert(rpc, user:, commit:, branch_name:, message:, start_branch_name:, start_repository:)
         request_class = "Gitaly::User#{rpc.to_s.camelcase}Request".constantize
@@ -363,9 +441,10 @@ module Gitlab
         Gitlab::Git::OperationService::BranchUpdate.from_gitaly(response.branch_update)
       end
 
+      # rubocop:disable Metrics/ParameterLists
       def user_commit_files_request_header(
         user, branch_name, commit_message, actions, author_email, author_name,
-        start_branch_name, start_repository)
+        start_branch_name, start_repository, force)
 
         Gitaly::UserCommitFilesRequestHeader.new(
           repository: @gitaly_repo,
@@ -375,9 +454,11 @@ module Gitlab
           commit_author_name: encode_binary(author_name),
           commit_author_email: encode_binary(author_email),
           start_branch_name: encode_binary(start_branch_name),
-          start_repository: start_repository.gitaly_repository
+          start_repository: start_repository.gitaly_repository,
+          force: force
         )
       end
+      # rubocop:enable Metrics/ParameterLists
 
       def user_commit_files_action_header(action)
         Gitaly::UserCommitFilesActionHeader.new(

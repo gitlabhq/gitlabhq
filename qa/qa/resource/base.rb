@@ -27,6 +27,10 @@ module QA
         attributes.each(&method(:public_send))
       end
 
+      def wait(max: 60, interval: 0.1)
+        QA::Support::Waiter.wait(max: max, interval: interval)
+      end
+
       private
 
       def populate_attribute(name, block)
@@ -116,27 +120,13 @@ module QA
       end
       private_class_method :evaluator
 
-      def self.dynamic_attributes
-        const_get(:DynamicAttributes)
-      rescue NameError
-        mod = const_set(:DynamicAttributes, Module.new)
-
-        include mod
-
-        mod
-      end
-
-      def self.attributes_names
-        dynamic_attributes.instance_methods(false).sort.grep_v(/=$/)
-      end
-
       class DSL
         def initialize(base)
           @base = base
         end
 
         def attribute(name, &block)
-          @base.dynamic_attributes.module_eval do
+          @base.module_eval do
             attr_writer(name)
 
             define_method(name) do

@@ -16,6 +16,10 @@ module API
         def public_snippets
           SnippetsFinder.new(current_user, scope: :are_public).execute
         end
+
+        def snippets
+          SnippetsFinder.new(current_user).execute
+        end
       end
 
       desc 'Get a snippets list for authenticated user' do
@@ -48,7 +52,10 @@ module API
         requires :id, type: Integer, desc: 'The ID of a snippet'
       end
       get ':id' do
-        snippet = snippets_for_current_user.find(params[:id])
+        snippet = snippets.find_by_id(params[:id])
+
+        break not_found!('Snippet') unless snippet
+
         present snippet, with: Entities::PersonalSnippet
       end
 
@@ -94,9 +101,8 @@ module API
                               desc: 'The visibility of the snippet'
         at_least_one_of :title, :file_name, :content, :visibility
       end
-      # rubocop: disable CodeReuse/ActiveRecord
       put ':id' do
-        snippet = snippets_for_current_user.find_by(id: params.delete(:id))
+        snippet = snippets_for_current_user.find_by_id(params.delete(:id))
         break not_found!('Snippet') unless snippet
 
         authorize! :update_personal_snippet, snippet
@@ -113,7 +119,6 @@ module API
           render_validation_error!(snippet)
         end
       end
-      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Remove snippet' do
         detail 'This feature was introduced in GitLab 8.15.'
@@ -122,16 +127,14 @@ module API
       params do
         requires :id, type: Integer, desc: 'The ID of a snippet'
       end
-      # rubocop: disable CodeReuse/ActiveRecord
       delete ':id' do
-        snippet = snippets_for_current_user.find_by(id: params.delete(:id))
+        snippet = snippets_for_current_user.find_by_id(params.delete(:id))
         break not_found!('Snippet') unless snippet
 
         authorize! :destroy_personal_snippet, snippet
 
         destroy_conditionally!(snippet)
       end
-      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Get a raw snippet' do
         detail 'This feature was introduced in GitLab 8.15.'
@@ -139,9 +142,8 @@ module API
       params do
         requires :id, type: Integer, desc: 'The ID of a snippet'
       end
-      # rubocop: disable CodeReuse/ActiveRecord
       get ":id/raw" do
-        snippet = snippets_for_current_user.find_by(id: params.delete(:id))
+        snippet = snippets.find_by_id(params.delete(:id))
         break not_found!('Snippet') unless snippet
 
         env['api.format'] = :txt
@@ -149,7 +151,6 @@ module API
         header['Content-Disposition'] = 'attachment'
         present snippet.content
       end
-      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Get the user agent details for a snippet' do
         success Entities::UserAgentDetail
@@ -157,17 +158,15 @@ module API
       params do
         requires :id, type: Integer, desc: 'The ID of a snippet'
       end
-      # rubocop: disable CodeReuse/ActiveRecord
       get ":id/user_agent_detail" do
         authenticated_as_admin!
 
-        snippet = Snippet.find_by!(id: params[:id])
+        snippet = Snippet.find_by_id!(params[:id])
 
         break not_found!('UserAgentDetail') unless snippet.user_agent_detail
 
         present snippet.user_agent_detail, with: Entities::UserAgentDetail
       end
-      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

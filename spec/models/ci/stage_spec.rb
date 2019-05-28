@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Ci::Stage, :models do
@@ -283,4 +285,6 @@ describe Ci::Stage, :models do
       end
     end
   end
+
+  it_behaves_like 'manual playable stage', :ci_stage_entity
 end

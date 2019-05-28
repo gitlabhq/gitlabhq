@@ -38,7 +38,6 @@ For example, you host a service on `http://libravatar.example.com` the `plain_ur
 
 `http://libravatar.example.com/avatar/%{hash}?s=%{size}&d=identicon`
 
-
 ## Omnibus-gitlab example
 
 In `/etc/gitlab/gitlab.rb`:
@@ -57,9 +56,7 @@ gitlab_rails['gravatar_enabled'] = true
 gitlab_rails['gravatar_ssl_url'] = "https://seccdn.libravatar.org/avatar/%{hash}?s=%{size}&d=identicon"
 ```
 
-
 Run `sudo gitlab-ctl reconfigure` for changes to take effect.
-
 
 ## Default URL for missing images
 
@@ -67,7 +64,6 @@ Run `sudo gitlab-ctl reconfigure` for changes to take effect.
 
 In order to use a different set other than `identicon`, replace `&d=identicon` portion of the URL with another supported set.
 For example, you can use `retro` set in which case the URL would look like: `plain_url: "http://cdn.libravatar.org/avatar/%{hash}?s=%{size}&d=retro"`
-
 
 ## Usage examples
 

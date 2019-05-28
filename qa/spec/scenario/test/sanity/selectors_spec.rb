@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe QA::Scenario::Test::Sanity::Selectors do
   let(:validator) { spy('validator') }
 

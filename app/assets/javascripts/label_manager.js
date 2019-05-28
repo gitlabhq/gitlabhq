@@ -5,22 +5,26 @@ import Sortable from 'sortablejs';
 
 import flash from './flash';
 import axios from './lib/utils/axios_utils';
+import { __ } from './locale';
 
 export default class LabelManager {
   constructor({ togglePriorityButton, prioritizedLabels, otherLabels } = {}) {
     this.togglePriorityButton = togglePriorityButton || $('.js-toggle-priority');
     this.prioritizedLabels = prioritizedLabels || $('.js-prioritized-labels');
     this.otherLabels = otherLabels || $('.js-other-labels');
-    this.errorMessage = 'Unable to update label prioritization at this time';
+    this.errorMessage = __('Unable to update label prioritization at this time');
     this.emptyState = document.querySelector('#js-priority-labels-empty-state');
     this.$badgeItemTemplate = $('#js-badge-item-template');
-    this.sortable = Sortable.create(this.prioritizedLabels.get(0), {
-      filter: '.empty-message',
-      forceFallback: true,
-      fallbackClass: 'is-dragging',
-      dataIdAttr: 'data-id',
-      onUpdate: this.onPrioritySortUpdate.bind(this),
-    });
+
+    if ('sortable' in this.prioritizedLabels.data()) {
+      Sortable.create(this.prioritizedLabels.get(0), {
+        filter: '.empty-message',
+        forceFallback: true,
+        fallbackClass: 'is-dragging',
+        dataIdAttr: 'data-id',
+        onUpdate: this.onPrioritySortUpdate.bind(this),
+      });
+    }
     this.bindEvents();
   }
 
@@ -70,7 +74,18 @@ export default class LabelManager {
 
     const $detachedLabel = $label.detach();
     this.toggleLabelPriorityBadge($detachedLabel, action);
-    $detachedLabel.appendTo($target);
+
+    const $labelEls = $target.find('li.label-list-item');
+
+    /*
+     * If there is a label element in the target, we'd want to
+     * append the new label just right next to it.
+     */
+    if ($labelEls.length) {
+      $labelEls.last().after($detachedLabel);
+    } else {
+      $detachedLabel.appendTo($target);
+    }
 
     if ($from.find('li').length) {
       $from.find('.empty-message').removeClass('hidden');

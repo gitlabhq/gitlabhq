@@ -9,7 +9,10 @@ class RemoteMirrorNotificationWorker
     # We check again if there's an error because a newer run since this job was
     # fired could've completed successfully.
     return unless remote_mirror && remote_mirror.last_error.present?
+    return if remote_mirror.error_notification_sent?
 
     NotificationService.new.remote_mirror_update_failed(remote_mirror)
+
+    remote_mirror.after_sent_notification
   end
 end

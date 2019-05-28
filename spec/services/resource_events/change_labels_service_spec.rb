@@ -10,7 +10,7 @@ describe ResourceEvents::ChangeLabelsService do
   describe '.change_labels' do
     subject { described_class.new(resource, author).execute(added_labels: added, removed_labels: removed) }
 
-    let(:labels)  { create_list(:label, 2, project: project) }
+    let(:labels) { create_list(:label, 2, project: project) }
 
     def expect_label_event(event, label, action)
       expect(event.user).to eq(author)

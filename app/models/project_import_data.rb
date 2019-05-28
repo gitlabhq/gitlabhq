@@ -2,7 +2,7 @@
 
 require 'carrierwave/orm/activerecord'
 
-class ProjectImportData < ActiveRecord::Base
+class ProjectImportData < ApplicationRecord
   belongs_to :project, inverse_of: :import_data
   attr_encrypted :credentials,
                  key: Settings.attr_encrypted_db_key_base,
@@ -29,5 +29,9 @@ class ProjectImportData < ActiveRecord::Base
 
   def merge_credentials(hash)
     self.credentials = credentials.to_h.merge(hash) unless hash.empty?
+  end
+
+  def clear_credentials
+    self.credentials = {}
   end
 end

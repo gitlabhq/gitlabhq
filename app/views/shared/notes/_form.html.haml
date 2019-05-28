@@ -1,7 +1,7 @@
 - supports_autocomplete = local_assigns.fetch(:supports_autocomplete, true)
 - supports_quick_actions = note_supports_quick_actions?(@note)
 - if supports_quick_actions
-  - preview_url = preview_markdown_path(@project, quick_actions_target_type: @note.noteable_type, quick_actions_target_id: @note.noteable_id)
+  - preview_url = preview_markdown_path(@project, target_type: @note.noteable_type, target_id: @note.noteable_id)
 - else
   - preview_url = preview_markdown_path(@project)
 
@@ -29,7 +29,7 @@
       = render 'projects/zen', f: f,
         attr: :note,
         classes: 'note-textarea js-note-text',
-        placeholder: "Write a comment or drag your files here…",
+        placeholder: _("Write a comment or drag your files here…"),
         supports_quick_actions: supports_quick_actions,
         supports_autocomplete: supports_autocomplete
       = render 'shared/notes/hints', supports_quick_actions: supports_quick_actions
@@ -40,5 +40,5 @@
 
       = yield(:note_actions)
 
-      %a.btn.btn-cancel.js-note-discard{ role: "button", data: {cancel_text: "Cancel" } }
-        Discard draft
+      %a.btn.btn-cancel.js-close-discussion-note-form.hide{ role: "button", data: { cancel_text: _("Cancel") } }
+        = _('Cancel')

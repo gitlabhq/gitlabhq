@@ -9,9 +9,9 @@ import '~/lib/utils/text_utility';
 describe('Issue', function() {
   let $boxClosed, $boxOpen, $btn;
 
-  preloadFixtures('issues/closed-issue.html.raw');
-  preloadFixtures('issues/issue-with-task-list.html.raw');
-  preloadFixtures('issues/open-issue.html.raw');
+  preloadFixtures('issues/closed-issue.html');
+  preloadFixtures('issues/issue-with-task-list.html');
+  preloadFixtures('issues/open-issue.html');
 
   function expectErrorMessage() {
     const $flashMessage = $('div.flash-alert');
@@ -105,15 +105,14 @@ describe('Issue', function() {
 
       beforeEach(function() {
         if (isIssueInitiallyOpen) {
-          loadFixtures('issues/open-issue.html.raw');
+          loadFixtures('issues/open-issue.html');
         } else {
-          loadFixtures('issues/closed-issue.html.raw');
+          loadFixtures('issues/closed-issue.html');
         }
 
         mock = new MockAdapter(axios);
 
         mock.onGet(/(.*)\/related_branches$/).reply(200, {});
-        mock.onGet(/(.*)\/referenced_merge_requests$/).reply(200, {});
 
         findElements(isIssueInitiallyOpen);
         this.issue = new Issue();

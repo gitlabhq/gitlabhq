@@ -71,7 +71,7 @@ export default {
       <span class="inline add-issues-footer-to-list"> to list </span>
       <lists-dropdown />
     </div>
-    <button class="btn btn-default float-right" type="button" @click="toggleModal(false);">
+    <button class="btn btn-default float-right" type="button" @click="toggleModal(false)">
       Cancel
     </button>
   </footer>

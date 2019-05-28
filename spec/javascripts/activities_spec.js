@@ -7,7 +7,7 @@ import Pager from '~/pager';
 
 describe('Activities', () => {
   window.gon || (window.gon = {});
-  const fixtureTemplate = 'static/event_filter.html.raw';
+  const fixtureTemplate = 'static/event_filter.html';
   const filters = [
     {
       id: 'all',

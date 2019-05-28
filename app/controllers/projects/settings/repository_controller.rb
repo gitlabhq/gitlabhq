@@ -5,7 +5,6 @@ module Projects
     class RepositoryController < Projects::ApplicationController
       before_action :authorize_admin_project!
       before_action :remote_mirror, only: [:show]
-      before_action :check_cleanup_feature_flag!, only: :cleanup
 
       def show
         render_show
@@ -36,10 +35,6 @@ module Projects
       end
 
       private
-
-      def check_cleanup_feature_flag!
-        render_404 unless ::Feature.enabled?(:project_cleanup, project)
-      end
 
       def render_show
         @deploy_keys = DeployKeysPresenter.new(@project, current_user: current_user)

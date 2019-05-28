@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module QA
   module Page
     module MergeRequest
@@ -26,7 +28,7 @@ module QA
           element :issuable_label
         end
 
-        view 'app/views/shared/issuable/form/_metadata_merge_request_assignee.html.haml' do
+        view 'app/views/shared/issuable/form/_metadata_issuable_assignee.html.haml' do
           element :assign_to_me_link
         end
 

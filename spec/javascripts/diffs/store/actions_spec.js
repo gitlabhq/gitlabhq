@@ -27,6 +27,16 @@ import actions, {
   scrollToFile,
   toggleShowTreeList,
   renderFileForDiscussionId,
+  setRenderTreeList,
+  setShowWhitespace,
+  setRenderIt,
+  requestFullDiff,
+  receiveFullDiffSucess,
+  receiveFullDiffError,
+  fetchFullDiff,
+  toggleFullDiff,
+  setFileCollapsed,
+  setExpandedDiffLines,
 } from '~/diffs/store/actions';
 import eventHub from '~/notes/event_hub';
 import * as types from '~/diffs/store/mutation_types';
@@ -72,7 +82,7 @@ describe('DiffsStoreActions', () => {
 
   describe('fetchDiffFiles', () => {
     it('should fetch diff files', done => {
-      const endpoint = '/fetch/diff/files';
+      const endpoint = '/fetch/diff/files?w=1';
       const mock = new MockAdapter(axios);
       const res = { diff_files: 1, merge_request_diffs: [] };
       mock.onGet(endpoint).reply(200, res);
@@ -97,9 +107,10 @@ describe('DiffsStoreActions', () => {
   });
 
   describe('setHighlightedRow', () => {
-    it('should set lineHash and fileHash of highlightedRow', () => {
+    it('should mark currently selected diff and set lineHash and fileHash of highlightedRow', () => {
       testAction(setHighlightedRow, 'ABC_123', {}, [
         { type: types.SET_HIGHLIGHTED_ROW, payload: 'ABC_123' },
+        { type: types.UPDATE_CURRENT_DIFF_FILE_ID, payload: 'ABC' },
       ]);
     });
   });
@@ -260,12 +271,16 @@ describe('DiffsStoreActions', () => {
           {
             id: 1,
             renderIt: false,
-            collapsed: false,
+            viewer: {
+              collapsed: false,
+            },
           },
           {
             id: 2,
             renderIt: false,
-            collapsed: false,
+            viewer: {
+              collapsed: false,
+            },
           },
         ],
       };
@@ -706,22 +721,6 @@ describe('DiffsStoreActions', () => {
 
       expect(commit).toHaveBeenCalledWith(types.UPDATE_CURRENT_DIFF_FILE_ID, 'test');
     });
-
-    it('resets currentDiffId after timeout', () => {
-      const state = {
-        treeEntries: {
-          path: {
-            fileHash: 'test',
-          },
-        },
-      };
-
-      scrollToFile({ state, commit }, 'path');
-
-      jasmine.clock().tick(1000);
-
-      expect(commit.calls.argsFor(1)).toEqual([types.UPDATE_CURRENT_DIFF_FILE_ID, '']);
-    });
   });
 
   describe('toggleShowTreeList', () => {
@@ -735,6 +734,14 @@ describe('DiffsStoreActions', () => {
       toggleShowTreeList({ commit() {}, state: { showTreeList: true } });
 
       expect(localStorage.setItem).toHaveBeenCalledWith('mr_tree_show', true);
+    });
+
+    it('does not update localStorage', () => {
+      spyOn(localStorage, 'setItem');
+
+      toggleShowTreeList({ commit() {}, state: { showTreeList: true } }, false);
+
+      expect(localStorage.setItem).not.toHaveBeenCalled();
     });
   });
 
@@ -764,7 +771,9 @@ describe('DiffsStoreActions', () => {
       diffFiles: [
         {
           file_hash: 'HASH',
-          collapsed,
+          viewer: {
+            collapsed,
+          },
           renderIt,
         },
       ],
@@ -794,6 +803,280 @@ describe('DiffsStoreActions', () => {
       expect(commit).not.toHaveBeenCalled();
       expect($emit).toHaveBeenCalledTimes(1);
       expect(scrollToElement).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('setRenderTreeList', () => {
+    it('commits SET_RENDER_TREE_LIST', done => {
+      testAction(
+        setRenderTreeList,
+        true,
+        {},
+        [{ type: types.SET_RENDER_TREE_LIST, payload: true }],
+        [],
+        done,
+      );
+    });
+
+    it('sets localStorage', () => {
+      spyOn(localStorage, 'setItem').and.stub();
+
+      setRenderTreeList({ commit() {} }, true);
+
+      expect(localStorage.setItem).toHaveBeenCalledWith('mr_diff_tree_list', true);
+    });
+  });
+
+  describe('setShowWhitespace', () => {
+    beforeEach(() => {
+      spyOn(eventHub, '$emit').and.stub();
+    });
+
+    it('commits SET_SHOW_WHITESPACE', done => {
+      testAction(
+        setShowWhitespace,
+        { showWhitespace: true },
+        {},
+        [{ type: types.SET_SHOW_WHITESPACE, payload: true }],
+        [],
+        done,
+      );
+    });
+
+    it('sets localStorage', () => {
+      spyOn(localStorage, 'setItem').and.stub();
+
+      setShowWhitespace({ commit() {} }, { showWhitespace: true });
+
+      expect(localStorage.setItem).toHaveBeenCalledWith('mr_show_whitespace', true);
+    });
+
+    it('calls history pushState', () => {
+      spyOn(localStorage, 'setItem').and.stub();
+      spyOn(window.history, 'pushState').and.stub();
+
+      setShowWhitespace({ commit() {} }, { showWhitespace: true, pushState: true });
+
+      expect(window.history.pushState).toHaveBeenCalled();
+    });
+
+    it('calls history pushState with merged params', () => {
+      const originalPushState = window.history;
+
+      originalPushState.pushState({}, '', '?test=1');
+
+      spyOn(localStorage, 'setItem').and.stub();
+      spyOn(window.history, 'pushState').and.stub();
+
+      setShowWhitespace({ commit() {} }, { showWhitespace: true, pushState: true });
+
+      expect(window.history.pushState.calls.mostRecent().args[2]).toMatch(/(.*)\?test=1&w=0/);
+
+      originalPushState.pushState({}, '', '?');
+    });
+
+    it('emits eventHub event', () => {
+      spyOn(localStorage, 'setItem').and.stub();
+      spyOn(window.history, 'pushState').and.stub();
+
+      setShowWhitespace({ commit() {} }, { showWhitespace: true, pushState: true });
+
+      expect(eventHub.$emit).toHaveBeenCalledWith('refetchDiffData');
+    });
+  });
+
+  describe('setRenderIt', () => {
+    it('commits RENDER_FILE', done => {
+      testAction(setRenderIt, 'file', {}, [{ type: types.RENDER_FILE, payload: 'file' }], [], done);
+    });
+  });
+
+  describe('requestFullDiff', () => {
+    it('commits REQUEST_FULL_DIFF', done => {
+      testAction(
+        requestFullDiff,
+        'file',
+        {},
+        [{ type: types.REQUEST_FULL_DIFF, payload: 'file' }],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('receiveFullDiffSucess', () => {
+    it('commits REQUEST_FULL_DIFF', done => {
+      testAction(
+        receiveFullDiffSucess,
+        { filePath: 'test' },
+        {},
+        [{ type: types.RECEIVE_FULL_DIFF_SUCCESS, payload: { filePath: 'test' } }],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('receiveFullDiffError', () => {
+    it('commits REQUEST_FULL_DIFF', done => {
+      testAction(
+        receiveFullDiffError,
+        'file',
+        {},
+        [{ type: types.RECEIVE_FULL_DIFF_ERROR, payload: 'file' }],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('fetchFullDiff', () => {
+    let mock;
+
+    beforeEach(() => {
+      mock = new MockAdapter(axios);
+    });
+
+    afterEach(() => {
+      mock.restore();
+    });
+
+    describe('success', () => {
+      beforeEach(() => {
+        mock.onGet(`${gl.TEST_HOST}/context`).replyOnce(200, ['test']);
+      });
+
+      it('dispatches receiveFullDiffSucess', done => {
+        const file = {
+          context_lines_path: `${gl.TEST_HOST}/context`,
+          file_path: 'test',
+          file_hash: 'test',
+        };
+        testAction(
+          fetchFullDiff,
+          file,
+          null,
+          [],
+          [
+            { type: 'receiveFullDiffSucess', payload: { filePath: 'test' } },
+            { type: 'setExpandedDiffLines', payload: { file, data: ['test'] } },
+          ],
+          done,
+        );
+      });
+    });
+
+    describe('error', () => {
+      beforeEach(() => {
+        mock.onGet(`${gl.TEST_HOST}/context`).replyOnce(500);
+      });
+
+      it('dispatches receiveFullDiffError', done => {
+        testAction(
+          fetchFullDiff,
+          { context_lines_path: `${gl.TEST_HOST}/context`, file_path: 'test', file_hash: 'test' },
+          null,
+          [],
+          [{ type: 'receiveFullDiffError', payload: 'test' }],
+          done,
+        );
+      });
+    });
+  });
+
+  describe('toggleFullDiff', () => {
+    let state;
+
+    beforeEach(() => {
+      state = {
+        diffFiles: [{ file_path: 'test', isShowingFullFile: false }],
+      };
+    });
+
+    it('dispatches fetchFullDiff when file is not expanded', done => {
+      testAction(
+        toggleFullDiff,
+        'test',
+        state,
+        [],
+        [
+          { type: 'requestFullDiff', payload: 'test' },
+          { type: 'fetchFullDiff', payload: state.diffFiles[0] },
+        ],
+        done,
+      );
+    });
+  });
+
+  describe('setFileCollapsed', () => {
+    it('commits SET_FILE_COLLAPSED', done => {
+      testAction(
+        setFileCollapsed,
+        { filePath: 'test', collapsed: true },
+        null,
+        [{ type: types.SET_FILE_COLLAPSED, payload: { filePath: 'test', collapsed: true } }],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('setExpandedDiffLines', () => {
+    beforeEach(() => {
+      spyOnDependency(actions, 'idleCallback').and.callFake(cb => {
+        cb({ timeRemaining: () => 50 });
+      });
+    });
+
+    it('commits SET_CURRENT_VIEW_DIFF_FILE_LINES when lines less than MAX_RENDERING_DIFF_LINES', done => {
+      spyOnDependency(actions, 'convertExpandLines').and.callFake(() => ['test']);
+
+      testAction(
+        setExpandedDiffLines,
+        { file: { file_path: 'path' }, data: [] },
+        { diffViewType: 'inline' },
+        [
+          {
+            type: 'SET_HIDDEN_VIEW_DIFF_FILE_LINES',
+            payload: { filePath: 'path', lines: ['test'] },
+          },
+          {
+            type: 'SET_CURRENT_VIEW_DIFF_FILE_LINES',
+            payload: { filePath: 'path', lines: ['test'] },
+          },
+        ],
+        [],
+        done,
+      );
+    });
+
+    it('commits ADD_CURRENT_VIEW_DIFF_FILE_LINES when lines more than MAX_RENDERING_DIFF_LINES', done => {
+      const lines = new Array(501).fill().map((_, i) => `line-${i}`);
+      spyOnDependency(actions, 'convertExpandLines').and.callFake(() => lines);
+
+      testAction(
+        setExpandedDiffLines,
+        { file: { file_path: 'path' }, data: [] },
+        { diffViewType: 'inline' },
+        [
+          {
+            type: 'SET_HIDDEN_VIEW_DIFF_FILE_LINES',
+            payload: { filePath: 'path', lines },
+          },
+          {
+            type: 'SET_CURRENT_VIEW_DIFF_FILE_LINES',
+            payload: { filePath: 'path', lines: lines.slice(0, 200) },
+          },
+          { type: 'TOGGLE_DIFF_FILE_RENDERING_MORE', payload: 'path' },
+          ...new Array(301).fill().map((_, i) => ({
+            type: 'ADD_CURRENT_VIEW_DIFF_FILE_LINES',
+            payload: { filePath: 'path', line: `line-${i + 200}` },
+          })),
+          { type: 'TOGGLE_DIFF_FILE_RENDERING_MORE', payload: 'path' },
+        ],
+        [],
+        done,
+      );
     });
   });
 });

@@ -29,7 +29,7 @@ You can either use the user interface (UI), or connect your local computer
 with GitLab [through the command line](../../../gitlab-basics/command-line-commands.md#start-working-on-your-project).
 
 To configure [GitLab CI/CD](../../../ci/README.md) to build, test, and deploy
-you code, add a file called [.`gitlab-ci.yml`](../../../ci/quick_start/README.md)
+you code, add a file called [`.gitlab-ci.yml`](../../../ci/quick_start/README.md)
 to your repository's root.
 
 **From the user interface:**
@@ -97,7 +97,7 @@ Some things to note about precedence:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/2508) in GitLab 9.1
 
-[Jupyter][jupyter] Notebook (previously IPython Notebook) files are used for
+[Jupyter](https://jupyter.org) Notebook (previously IPython Notebook) files are used for
 interactive computing in many fields and contain a complete record of the
 user's sessions and include code, narrative text, equations and rich output.
 
@@ -146,9 +146,9 @@ you are introducing those changes to your branch.
 Via command line, you can commit multiple times before pushing.
 
 - **Commit message:**
-A commit message is important to identity what is being changed and,
-more importantly, why. In GitLab, you can add keywords to the commit
-message that will perform one of the actions below:
+  A commit message is important to identity what is being changed and,
+  more importantly, why. In GitLab, you can add keywords to the commit
+  message that will perform one of the actions below:
   - **Trigger a GitLab CI/CD pipeline:**
   If you have your project configured with [GitLab CI/CD](../../../ci/README.md),
   you will trigger a pipeline per push, not per commit.
@@ -162,22 +162,26 @@ message that will perform one of the actions below:
   If you mention an issue or a merge request in a commit message, they will be shown
   on their respective thread.
 - **Cherry-pick a commit:**
-In GitLab, you can
-[cherry-pick a commit](../merge_requests/cherry_pick_changes.md#cherry-picking-a-commit)
-right from the UI.
+  In GitLab, you can
+  [cherry-pick a commit](../merge_requests/cherry_pick_changes.md#cherry-picking-a-commit)
+  right from the UI.
 - **Revert a commit:**
-Easily [revert a commit](../merge_requests/revert_changes.md#reverting-a-commit)
-from the UI to a selected branch.
+  Easily [revert a commit](../merge_requests/revert_changes.md#reverting-a-commit)
+  from the UI to a selected branch.
 - **Sign a commit:**
-Use GPG to [sign your commits](gpg_signed_commits/index.md).
+  Use GPG to [sign your commits](gpg_signed_commits/index.md).
 
 ## Repository size
 
-On GitLab.com, your [repository size limit is 10GB](../../gitlab_com/index.md#repository-size-limit)
-(including LFS). For other instances, the repository size is limited by your
-system administrators.
+A project's repository size is reported on the project's **Details** page. The reported size is
+updated every 15 minutes at most, so may not reflect recent activity.
 
-You can also [reduce a repository size using Git](reducing_the_repo_size_using_git.md).
+The repository size for:
+
+- GitLab.com [is set by GitLab](../../gitlab_com/index.md#repository-size-limit).
+- Self-managed instances is set by your GitLab administrators.
+
+You can [reduce a repository's size using Git](reducing_the_repo_size_using_git.md).
 
 ## Contributors
 
@@ -220,14 +224,10 @@ Select branches to compare using the [branch filter search box](branches/index.m
 
 Find it under your project's **Repository > Compare**.
 
-## Locked files
+## Locked files **[PREMIUM]**
 
-> Available in [GitLab Premium](https://about.gitlab.com/pricing/).
-
-Lock your files to prevent any conflicting changes.
-
-[File Locking](https://docs.gitlab.com/ee/user/project/file_lock.html) is available only in
-[GitLab Premium](https://about.gitlab.com/pricing/).
+Use [File Locking](https://docs.gitlab.com/ee/user/project/file_lock.html) to
+lock your files to prevent any conflicting changes.
 
 ## Repository's API
 
@@ -241,4 +241,21 @@ Projects that contain a `.xcodeproj` or `.xcworkspace` directory can now be clon
 in Xcode using the new **Open in Xcode** button, located next to the Git URL
 used for cloning your project. The button is only shown on macOS.
 
-[jupyter]: https://jupyter.org
+## Download Source Code
+
+> Support for directory download was [introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/24704) in GitLab 11.11.
+
+The source code stored in a repository can be downloaded from the UI.
+By clicking the download icon, a dropdown will open with links to download the following:
+
+![Download source code](img/download_source_code.png)
+
+- **Source code:**
+  allows users to download the source code on branch they're currently
+  viewing. Available extensions: `zip`, `tar`, `tar.gz`, and `tar.bz2`.
+- **Directory:**
+  only shows up when viewing a sub-directory. This allows users to download
+  the specific directory they're currently viewing. Also available in `zip`,
+  `tar`, `tar.gz`, and `tar.bz2`.
+- **Artifacts:**
+  allows users to download the artifacts of the latest CI build.

@@ -1,12 +1,13 @@
 <script>
 import { GlPopover, GlSkeletonLoading } from '@gitlab/ui';
-import { __, sprintf } from '~/locale';
+import Icon from '~/vue_shared/components/icon.vue';
 import UserAvatarImage from '../user_avatar/user_avatar_image.vue';
 import { glEmojiTag } from '../../../emoji';
 
 export default {
   name: 'UserPopover',
   components: {
+    Icon,
     GlPopover,
     GlSkeletonLoading,
     UserAvatarImage,
@@ -28,24 +29,11 @@ export default {
     },
   },
   computed: {
-    jobLine() {
-      if (this.user.bio && this.user.organization) {
-        return sprintf(__('%{bio} at %{organization}'), {
-          bio: this.user.bio,
-          organization: this.user.organization,
-        });
-      } else if (this.user.bio) {
-        return this.user.bio;
-      } else if (this.user.organization) {
-        return this.user.organization;
-      }
-      return null;
-    },
     statusHtml() {
-      if (this.user.status.emoji && this.user.status.message) {
-        return `${glEmojiTag(this.user.status.emoji)} ${this.user.status.message}`;
-      } else if (this.user.status.message) {
-        return this.user.status.message;
+      if (this.user.status.emoji && this.user.status.message_html) {
+        return `${glEmojiTag(this.user.status.emoji)} ${this.user.status.message_html}`;
+      } else if (this.user.status.message_html) {
+        return this.user.status.message_html;
       }
       return '';
     },
@@ -82,15 +70,31 @@ export default {
           <gl-skeleton-loading v-else :lines="1" class="animation-container-small mb-1" />
         </div>
         <div class="text-secondary">
-          {{ jobLine }}
+          <div v-if="user.bio" class="js-bio d-flex mb-1">
+            <icon name="profile" css-classes="category-icon flex-shrink-0" />
+            <span class="ml-1">{{ user.bio }}</span>
+          </div>
+          <div v-if="user.organization" class="js-organization d-flex mb-1">
+            <icon
+              v-show="!jobInfoIsLoading"
+              name="work"
+              css-classes="category-icon flex-shrink-0"
+            />
+            <span class="ml-1">{{ user.organization }}</span>
+          </div>
           <gl-skeleton-loading
             v-if="jobInfoIsLoading"
             :lines="1"
             class="animation-container-small mb-1"
           />
         </div>
-        <div class="text-secondary">
-          {{ user.location }}
+        <div class="js-location text-secondary d-flex">
+          <icon
+            v-show="!locationIsLoading && user.location"
+            name="location"
+            css-classes="category-icon flex-shrink-0"
+          />
+          <span class="ml-1">{{ user.location }}</span>
           <gl-skeleton-loading
             v-if="locationIsLoading"
             :lines="1"

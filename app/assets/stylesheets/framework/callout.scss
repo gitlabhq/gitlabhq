@@ -28,6 +28,10 @@
   background-color: $red-100;
   border-color: $red-200;
   color: $red-700;
+
+  a {
+    color: $red-700;
+  }
 }
 
 .bs-callout-warning {

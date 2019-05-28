@@ -71,7 +71,7 @@ export default class SidebarStore {
   }
 
   findAssignee(findAssignee) {
-    return this.assignees.filter(assignee => assignee.id === findAssignee.id)[0];
+    return this.assignees.find(assignee => assignee.id === findAssignee.id);
   }
 
   removeAssignee(removeAssignee) {

@@ -1,6 +1,6 @@
 - can_admin_project = can?(current_user, :admin_project, @project)
 
-%tr.js-protected-branch-edit-form{ data: { url: namespace_project_protected_branch_path(@project.namespace, @project, protected_branch) } }
+%tr.qa-protected-branch.js-protected-branch-edit-form{ data: { url: namespace_project_protected_branch_path(@project.namespace, @project, protected_branch) } }
   %td
     %span.ref-name= protected_branch.name
 
@@ -15,7 +15,7 @@
         = link_to(commit.short_id, namespace_project_commit_path(@project.namespace, @project, commit.id), class: 'commit-sha')
         = time_ago_with_tooltip(commit.committed_date)
       - else
-        (branch was removed from repository)
+        (branch was deleted from repository)
 
   = yield
 

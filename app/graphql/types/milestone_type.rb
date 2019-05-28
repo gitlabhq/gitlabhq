@@ -4,6 +4,8 @@ module Types
   class MilestoneType < BaseObject
     graphql_name 'Milestone'
 
+    authorize :read_milestone
+
     field :description, GraphQL::STRING_TYPE, null: true
     field :title, GraphQL::STRING_TYPE, null: false
     field :state, GraphQL::STRING_TYPE, null: false

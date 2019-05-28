@@ -80,13 +80,13 @@ describe('Pipelines Table Row', () => {
       it('should render user information', () => {
         expect(
           component.$el
-            .querySelector('.table-section:nth-child(2) a:nth-child(3)')
+            .querySelector('.table-section:nth-child(3) .js-pipeline-url-user')
             .getAttribute('href'),
         ).toEqual(pipeline.user.path);
 
         expect(
           component.$el
-            .querySelector('.table-section:nth-child(2) .js-user-avatar-image-toolip')
+            .querySelector('.table-section:nth-child(3) .js-user-avatar-image-toolip')
             .textContent.trim(),
         ).toEqual(pipeline.user.name);
       });
@@ -195,8 +195,10 @@ describe('Pipelines Table Row', () => {
 
     it('emits `openConfirmationModal` event when cancel button is clicked and toggles loading', () => {
       eventHub.$once('openConfirmationModal', data => {
+        const { id, ref, commit } = pipeline;
+
         expect(data.endpoint).toEqual('/cancel');
-        expect(data.pipelineId).toEqual(pipeline.id);
+        expect(data.pipeline).toEqual(jasmine.objectContaining({ id, ref, commit }));
       });
 
       component.$el.querySelector('.js-pipelines-cancel-button').click();

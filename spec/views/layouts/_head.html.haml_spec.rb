@@ -62,6 +62,14 @@ describe 'layouts/_head' do
     end
   end
 
+  it 'adds selected syntax highlight stylesheet' do
+    allow_any_instance_of(PreferencesHelper).to receive(:user_color_scheme).and_return("solarised-light")
+
+    render
+
+    expect(rendered).to match('<link rel="stylesheet" media="all" href="/stylesheets/highlight/themes/solarised-light.css" />')
+  end
+
   def stub_helper_with_safe_string(method)
     allow_any_instance_of(PageLayoutHelper).to receive(method)
       .and_return(%q{foo" http-equiv="refresh}.html_safe)

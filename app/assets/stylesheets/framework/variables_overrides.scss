@@ -5,11 +5,11 @@
 
 $secondary: $gray-light;
 $input-disabled-bg: $gray-light;
-$input-border-color: $theme-gray-200;
+$input-border-color: $gray-200;
 $input-color: $gl-text-color;
+$input-font-size: $gl-font-size;
 $font-family-sans-serif: $regular-font;
 $font-family-monospace: $monospace-font;
-$input-line-height: 20px;
 $btn-line-height: 20px;
 $table-accent-bg: $gray-light;
 $card-border-color: $border-color;
@@ -20,7 +20,7 @@ $warning: $orange-500;
 $danger: $red-500;
 $zindex-modal-backdrop: 1040;
 $nav-divider-margin-y: ($grid-size / 2);
-$dropdown-divider-bg: $theme-gray-200;
+$dropdown-divider-bg: $gray-200;
 $dropdown-item-padding-y: 8px;
 $dropdown-item-padding-x: 12px;
 $popover-max-width: 300px;
@@ -28,3 +28,23 @@ $popover-border-width: 1px;
 $popover-border-color: $border-color;
 $popover-box-shadow: 0 $border-radius-small $border-radius-default 0 $shadow-color;
 $popover-arrow-outer-color: $shadow-color;
+$h1-font-size: 14px * 2.5;
+$h2-font-size: 14px * 2;
+$h3-font-size: 14px * 1.75;
+$h4-font-size: 14px * 1.5;
+$h5-font-size: 14px * 1.25;
+$h6-font-size: 14px;
+$spacer: $grid-size;
+$spacers: (
+  0: 0,
+  1: ($spacer * 0.5),
+  2: ($spacer),
+  3: ($spacer * 2),
+  4: ($spacer * 3),
+  5: ($spacer * 4),
+  6: ($spacer * 5),
+  7: ($spacer * 6),
+  8: ($spacer * 7),
+  9: ($spacer * 8)
+);
+$pagination-color: $gl-text-color;

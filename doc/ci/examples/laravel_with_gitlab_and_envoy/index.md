@@ -2,9 +2,10 @@
 redirect_from: 'https://docs.gitlab.com/ee/articles/laravel_with_gitlab_and_envoy/index.html'
 author: Mehran Rasulian
 author_gitlab: mehranrasulian
-level: intermediary
+level: intermediate
 article_type: tutorial
 date: 2017-08-31
+last_updated: 2019-03-06
 ---
 
 # Test and deploy Laravel applications with GitLab CI/CD and Envoy
@@ -68,7 +69,6 @@ Since we have our app up and running locally, it's time to push the codebase to 
 Let's create [a new project](../../../gitlab-basics/create-project.md) in GitLab named `laravel-sample`.
 After that, follow the command line instructions displayed on the project's homepage to initiate the repository on our machine and push the first commit.
 
-
 ```bash
 cd laravel-sample
 git init
@@ -116,7 +116,7 @@ cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 cat ~/.ssh/id_rsa
 ```
 
-Now, let's add it to your GitLab project as a [variable](../../variables/README.md#variables).
+Now, let's add it to your GitLab project as a [variable](../../variables/README.md#gitlab-cicd-environment-variables).
 Variables are user-defined variables and are stored out of `.gitlab-ci.yml`, for security purposes.
 They can be added per project by navigating to the project's **Settings** > **CI/CD**.
 
@@ -126,7 +126,6 @@ We'll use this variable in the `.gitlab-ci.yml` later, to easily connect to our 
 ![variables page](img/variables_page.png)
 
 We also need to add the public key to **Project** > **Settings** > **Repository** as a [Deploy Key](../../../ssh/README.md#deploy-keys), which gives us the ability to access our repository from the server through [SSH protocol](../../../gitlab-basics/command-line-commands.md#start-working-on-your-project).
-
 
 ```bash
 # As the deployer user on the server
@@ -186,7 +185,6 @@ To use Envoy, we should first install it on our local machine [using the given i
 The pros of Envoy is that it doesn't require Blade engine, it just uses Blade syntax to define tasks.
 To start, we create an `Envoy.blade.php` in the root of our app with a simple task to test Envoy.
 
-
 ```php
 @servers(['web' => 'remote_username@remote_host'])
 
@@ -220,7 +218,6 @@ Our deployment plan is to clone the latest release from GitLab repository, insta
 The first step of our deployment process is to define a set of variables within [@setup](https://laravel.com/docs/envoy/#setup) directive.
 You may change the `app` to your application's name:
 
-
 ```php
 ...
 
@@ -245,7 +242,6 @@ You may change the `app` to your application's name:
 
 The [@story](https://laravel.com/docs/envoy/#stories) directive allows us define a list of tasks that can be run as a single task.
 Here we have three tasks called `clone_repository`, `run_composer`, `update_symlinks`. These variables are usable to making our task's codes more cleaner:
-
 
 ```php
 ...
@@ -273,7 +269,7 @@ The `releases` directory will hold all our deployments:
     echo 'Cloning repository'
     [ -d {{ $releases_dir }} ] || mkdir {{ $releases_dir }}
     git clone --depth 1 {{ $repository }} {{ $new_release_dir }}
-    cd {{ $releases_dir }}
+    cd {{ $new_release_dir }}
     git reset --hard {{ $commit }}
 @endtask
 
@@ -351,7 +347,7 @@ At the end, our `Envoy.blade.php` file will look like this:
     echo 'Cloning repository'
     [ -d {{ $releases_dir }} ] || mkdir {{ $releases_dir }}
     git clone --depth 1 {{ $repository }} {{ $new_release_dir }}
-    cd {{ $releases_dir }}
+    cd {{ $new_release_dir }}
     git reset --hard {{ $commit }}
 @endtask
 
@@ -379,7 +375,7 @@ You might want to create another Envoy task to do that for you.
 We also create the `.env` file in the same path to set up our production environment variables for Laravel.
 These are persistent data and will be shared to every new release.
 
-Now, we would need to deploy our app by running `envoy run deploy`, but it won't be necessary since GitLab can handle that for us with CI's [environments](../../environments.md), which will be described [later](#setting-up-gitlab-ci-cd) in this tutorial.
+Now, we would need to deploy our app by running `envoy run deploy`, but it won't be necessary since GitLab can handle that for us with CI's [environments](../../environments.md), which will be described [later](#setting-up-gitlab-cicd) in this tutorial.
 
 Now it's time to commit [Envoy.blade.php](https://gitlab.com/mehranrasulian/laravel-sample/blob/master/Envoy.blade.php) and push it to the `master` branch.
 To keep things simple, we commit directly to `master`, without using [feature-branches](../../../workflow/gitlab_flow.md#github-flow-as-a-simpler-alternative) since collaboration is beyond the scope of this tutorial.
@@ -562,7 +558,7 @@ So we should adjust the configuration of MySQL instance by defining `MYSQL_DATAB
 Find out more about MySQL variables at the [official MySQL Docker Image](https://hub.docker.com/r/_/mysql/).
 
 Also set the variables `DB_HOST` to `mysql` and `DB_USERNAME` to `root`, which are Laravel specific variables.
-We define `DB_HOST` as `mysql` instead of `127.0.0.1`, as we use MySQL Docker image as a service which [is linked to the main Docker image](../../docker/using_docker_images.md#how-services-are-linked-to-the-build).
+We define `DB_HOST` as `mysql` instead of `127.0.0.1`, as we use MySQL Docker image as a service which [is linked to the main Docker image](../../docker/using_docker_images.md#how-services-are-linked-to-the-job).
 
 ```yaml
 ...
@@ -618,7 +614,7 @@ Lastly, `when: manual` is used to turn the job from running automatically to a m
 
 deploy_production:
   script:
-    # Add the private SSH key to the build environment 
+    # Add the private SSH key to the build environment
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
     - eval $(ssh-agent -s)
     - ssh-add <(echo "$SSH_PRIVATE_KEY")

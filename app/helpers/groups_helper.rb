@@ -4,6 +4,7 @@ module GroupsHelper
   def group_overview_nav_link_paths
     %w[
       groups#show
+      groups#details
       groups#activity
       groups#subgroups
       analytics#show
@@ -117,16 +118,17 @@ module GroupsHelper
   end
 
   def parent_group_options(current_group)
-    groups = current_user.owned_groups.sort_by(&:human_name).map do |group|
+    exclude_groups = current_group.self_and_descendants.pluck_primary_key
+    exclude_groups << current_group.parent_id if current_group.parent_id
+    groups = GroupsFinder.new(current_user, min_access_level: Gitlab::Access::OWNER, exclude_group_ids: exclude_groups).execute.sort_by(&:human_name).map do |group|
       { id: group.id, text: group.human_name }
     end
 
-    groups.delete_if { |group| group[:id] == current_group.id }
     groups.to_json
   end
 
   def supports_nested_groups?
-    Group.supports_nested_groups?
+    Group.supports_nested_objects?
   end
 
   private

@@ -16,7 +16,7 @@ describe API::Keys do
 
     context 'when authenticated' do
       it 'returns 404 for non-existing key' do
-        get api('/keys/999999', admin)
+        get api('/keys/0', admin)
         expect(response).to have_gitlab_http_status(404)
         expect(json_response['message']).to eq('404 Not found')
       end

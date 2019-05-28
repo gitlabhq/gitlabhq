@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::Graphql::Connections::KeysetConnection do
   let(:nodes) { Project.all.order(id: :asc) }
-  let(:arguments) {  {} }
+  let(:arguments) { {} }
   subject(:connection) do
     described_class.new(nodes, arguments, max_page_size: 3)
   end
@@ -83,6 +83,11 @@ describe Gitlab::Graphql::Connections::KeysetConnection do
 
     it 'returns the collection limited to max page size' do
       expect(subject.paged_nodes.size).to eq(3)
+    end
+
+    it 'is a loaded memoized array' do
+      expect(subject.paged_nodes).to be_an(Array)
+      expect(subject.paged_nodes.object_id).to eq(subject.paged_nodes.object_id)
     end
 
     context 'when `first` is passed' do

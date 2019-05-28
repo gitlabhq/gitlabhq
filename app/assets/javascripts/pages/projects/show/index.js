@@ -9,6 +9,7 @@ import Activities from '~/activities';
 import { ajaxGet } from '~/lib/utils/common_utils';
 import GpgBadges from '~/gpg_badges';
 import initReadMore from '~/read_more';
+import leaveByUrl from '~/namespaces/leave_by_url';
 import Star from '../../../star';
 import notificationsDropdown from '../../../notifications_dropdown';
 
@@ -44,4 +45,13 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   GpgBadges.fetch();
+  leaveByUrl('project');
+
+  if (document.getElementById('js-tree-list')) {
+    import('~/repository')
+      .then(m => m.default())
+      .catch(e => {
+        throw e;
+      });
+  }
 });

@@ -1,5 +1,0 @@
----
-title: Validate foreign keys being created and indexed for column with _id 
-merge_request: 22808
-author:
-type: performance

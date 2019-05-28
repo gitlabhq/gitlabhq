@@ -43,6 +43,8 @@ describe API::Variables do
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['value']).to eq(variable.value)
         expect(json_response['protected']).to eq(variable.protected?)
+        expect(json_response['masked']).to eq(variable.masked?)
+        expect(json_response['variable_type']).to eq('env_var')
       end
 
       it 'responds with 404 Not Found if requesting non-existing variable' do
@@ -73,29 +75,33 @@ describe API::Variables do
     context 'authorized user with proper permissions' do
       it 'creates variable' do
         expect do
-          post api("/projects/#{project.id}/variables", user), key: 'TEST_VARIABLE_2', value: 'VALUE_2', protected: true
+          post api("/projects/#{project.id}/variables", user), params: { key: 'TEST_VARIABLE_2', value: 'PROTECTED_VALUE_2', protected: true, masked: true }
         end.to change {project.variables.count}.by(1)
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['key']).to eq('TEST_VARIABLE_2')
-        expect(json_response['value']).to eq('VALUE_2')
+        expect(json_response['value']).to eq('PROTECTED_VALUE_2')
         expect(json_response['protected']).to be_truthy
+        expect(json_response['masked']).to be_truthy
+        expect(json_response['variable_type']).to eq('env_var')
       end
 
       it 'creates variable with optional attributes' do
         expect do
-          post api("/projects/#{project.id}/variables", user), key: 'TEST_VARIABLE_2', value: 'VALUE_2'
+          post api("/projects/#{project.id}/variables", user), params: { variable_type: 'file',  key: 'TEST_VARIABLE_2', value: 'VALUE_2' }
         end.to change {project.variables.count}.by(1)
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['key']).to eq('TEST_VARIABLE_2')
         expect(json_response['value']).to eq('VALUE_2')
         expect(json_response['protected']).to be_falsey
+        expect(json_response['masked']).to be_falsey
+        expect(json_response['variable_type']).to eq('file')
       end
 
       it 'does not allow to duplicate variable key' do
         expect do
-          post api("/projects/#{project.id}/variables", user), key: variable.key, value: 'VALUE_2'
+          post api("/projects/#{project.id}/variables", user), params: { key: variable.key, value: 'VALUE_2' }
         end.to change {project.variables.count}.by(0)
 
         expect(response).to have_gitlab_http_status(400)
@@ -125,7 +131,7 @@ describe API::Variables do
         initial_variable = project.variables.reload.first
         value_before = initial_variable.value
 
-        put api("/projects/#{project.id}/variables/#{variable.key}", user), value: 'VALUE_1_UP', protected: true
+        put api("/projects/#{project.id}/variables/#{variable.key}", user), params: { variable_type: 'file', value: 'VALUE_1_UP', protected: true }
 
         updated_variable = project.variables.reload.first
 
@@ -133,6 +139,7 @@ describe API::Variables do
         expect(value_before).to eq(variable.value)
         expect(updated_variable.value).to eq('VALUE_1_UP')
         expect(updated_variable).to be_protected
+        expect(updated_variable.variable_type).to eq('file')
       end
 
       it 'responds with 404 Not Found if requesting non-existing variable' do

@@ -21,23 +21,23 @@ describe Projects::PipelineSchedulesController, '(JavaScript fixtures)', type: :
     sign_in(admin)
   end
 
-  it 'pipeline_schedules/edit.html.raw' do |example|
-    get :edit,
+  it 'pipeline_schedules/edit.html' do
+    get :edit, params: {
       namespace_id: project.namespace.to_param,
       project_id: project,
       id: pipeline_schedule.id
+    }
 
     expect(response).to be_success
-    store_frontend_fixture(response, example.description)
   end
 
-  it 'pipeline_schedules/edit_with_variables.html.raw' do |example|
-    get :edit,
+  it 'pipeline_schedules/edit_with_variables.html' do
+    get :edit, params: {
       namespace_id: project.namespace.to_param,
       project_id: project,
       id: pipeline_schedule_populated.id
+    }
 
     expect(response).to be_success
-    store_frontend_fixture(response, example.description)
   end
 end

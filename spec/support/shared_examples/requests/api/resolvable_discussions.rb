@@ -2,7 +2,7 @@ shared_examples 'resolvable discussions API' do |parent_type, noteable_type, id_
   describe "PUT /#{parent_type}/:id/#{noteable_type}/:noteable_id/discussions/:discussion_id" do
     it "resolves discussion if resolved is true" do
       put api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/"\
-              "discussions/#{note.discussion_id}", user), resolved: true
+              "discussions/#{note.discussion_id}", user), params: { resolved: true }
 
       expect(response).to have_gitlab_http_status(200)
       expect(json_response['notes'].size).to eq(1)
@@ -11,7 +11,7 @@ shared_examples 'resolvable discussions API' do |parent_type, noteable_type, id_
 
     it "unresolves discussion if resolved is false" do
       put api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/"\
-              "discussions/#{note.discussion_id}", user), resolved: false
+              "discussions/#{note.discussion_id}", user), params: { resolved: false }
 
       expect(response).to have_gitlab_http_status(200)
       expect(json_response['notes'].size).to eq(1)
@@ -27,14 +27,14 @@ shared_examples 'resolvable discussions API' do |parent_type, noteable_type, id_
 
     it "returns a 401 unauthorized error if user is not authenticated" do
       put api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/"\
-              "discussions/#{note.discussion_id}"), resolved: true
+              "discussions/#{note.discussion_id}"), params: { resolved: true }
 
       expect(response).to have_gitlab_http_status(401)
     end
 
     it "returns a 403 error if user resolves discussion of someone else" do
       put api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/"\
-              "discussions/#{note.discussion_id}", private_user), resolved: true
+              "discussions/#{note.discussion_id}", private_user), params: { resolved: true }
 
       expect(response).to have_gitlab_http_status(403)
     end
@@ -46,7 +46,7 @@ shared_examples 'resolvable discussions API' do |parent_type, noteable_type, id_
 
       it 'responds with 404' do
         put api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/"\
-                "discussions/#{note.discussion_id}", private_user), resolved: true
+                "discussions/#{note.discussion_id}", private_user), params: { resolved: true }
 
         expect(response).to have_gitlab_http_status(404)
       end
@@ -56,7 +56,7 @@ shared_examples 'resolvable discussions API' do |parent_type, noteable_type, id_
   describe "PUT /#{parent_type}/:id/#{noteable_type}/:noteable_id/discussions/:discussion_id/notes/:note_id" do
     it 'returns resolved note when resolved parameter is true' do
       put api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/"\
-              "discussions/#{note.discussion_id}/notes/#{note.id}", user), resolved: true
+              "discussions/#{note.discussion_id}/notes/#{note.id}", user), params: { resolved: true }
 
       expect(response).to have_gitlab_http_status(200)
       expect(json_response['resolved']).to eq(true)
@@ -65,7 +65,7 @@ shared_examples 'resolvable discussions API' do |parent_type, noteable_type, id_
     it 'returns a 404 error when note id not found' do
       put api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/"\
               "discussions/#{note.discussion_id}/notes/12345", user),
-              body: 'Hello!'
+              params: { body: 'Hello!' }
 
       expect(response).to have_gitlab_http_status(404)
     end
@@ -79,7 +79,7 @@ shared_examples 'resolvable discussions API' do |parent_type, noteable_type, id_
 
     it "returns a 403 error if user resolves note of someone else" do
       put api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/"\
-              "discussions/#{note.discussion_id}/notes/#{note.id}", private_user), resolved: true
+              "discussions/#{note.discussion_id}/notes/#{note.id}", private_user), params: { resolved: true }
 
       expect(response).to have_gitlab_http_status(403)
     end

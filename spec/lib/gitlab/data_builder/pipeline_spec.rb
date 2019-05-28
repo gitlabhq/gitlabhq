@@ -37,7 +37,7 @@ describe Gitlab::DataBuilder::Pipeline do
     context 'pipeline without variables' do
       it 'has empty variables hash' do
         expect(attributes[:variables]).to be_a(Array)
-        expect(attributes[:variables]).to be_empty()
+        expect(attributes[:variables]).to be_empty
       end
     end
 
@@ -49,6 +49,15 @@ describe Gitlab::DataBuilder::Pipeline do
 
       it { expect(attributes[:variables]).to be_a(Array) }
       it { expect(attributes[:variables]).to contain_exactly({ key: 'TRIGGER_KEY_1', value: 'TRIGGER_VALUE_1' }) }
+    end
+
+    context 'when pipeline is a detached merge request pipeline' do
+      let(:merge_request) { create(:merge_request, :with_detached_merge_request_pipeline) }
+      let(:pipeline) { merge_request.all_pipelines.first }
+
+      it 'returns a source ref' do
+        expect(attributes[:ref]).to eq(merge_request.source_branch)
+      end
     end
   end
 end

@@ -2,7 +2,7 @@
 
 module Clusters
   module Platforms
-    class Kubernetes < ActiveRecord::Base
+    class Kubernetes < ApplicationRecord
       include Gitlab::Kubernetes
       include ReactiveCaching
       include EnumWithNil
@@ -41,8 +41,9 @@ module Clusters
       validate :no_namespace, unless: :allow_user_defined_namespace?
 
       # We expect to be `active?` only when enabled and cluster is created (the api_url is assigned)
-      validates :api_url, url: true, presence: true
+      validates :api_url, public_url: true, presence: true
       validates :token, presence: true
+      validates :ca_cert, certificate: true, allow_blank: true, if: :ca_cert_changed?
 
       validate :prevent_modification, on: :update
 
@@ -51,11 +52,14 @@ module Clusters
 
       alias_attribute :ca_pem, :ca_cert
 
-      delegate :project, to: :cluster, allow_nil: true
       delegate :enabled?, to: :cluster, allow_nil: true
-      delegate :managed?, to: :cluster, allow_nil: true
+      delegate :provided_by_user?, to: :cluster, allow_nil: true
       delegate :allow_user_defined_namespace?, to: :cluster, allow_nil: true
-      delegate :kubernetes_namespace, to: :cluster
+
+      # This is just to maintain compatibility with KubernetesService, which
+      # will be removed in https://gitlab.com/gitlab-org/gitlab-ce/issues/39217.
+      # It can be removed once KubernetesService is gone.
+      delegate :kubernetes_namespace_for, to: :cluster, allow_nil: true
 
       alias_method :active?, :enabled?
 
@@ -65,13 +69,7 @@ module Clusters
         abac: 2
       }
 
-      def actual_namespace
-        if namespace.present?
-          namespace
-        else
-          default_namespace
-        end
-      end
+      default_value_for :authorization_type, :rbac
 
       def predefined_variables(project:)
         Gitlab::Ci::Variables::Collection.new.tap do |variables|
@@ -85,17 +83,22 @@ module Clusters
 
           if kubernetes_namespace = cluster.kubernetes_namespaces.has_service_account_token.find_by(project: project)
             variables.concat(kubernetes_namespace.predefined_variables)
-          elsif cluster.project_type?
-            # From 11.5, every Clusters::Project should have at least one
-            # Clusters::KubernetesNamespace, so once migration has been completed,
-            # this 'else' branch will be removed. For more information, please see
-            # https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22433
+          elsif cluster.project_type? || !cluster.managed?
+            # As of 11.11 a user can create a cluster that they manage themselves,
+            # which replicates the existing project-level cluster behaviour.
+            # Once we have marked all project-level clusters that make use of this
+            # behaviour as "unmanaged", we can remove the `cluster.project_type?`
+            # check here.
+            project_namespace = cluster.kubernetes_namespace_for(project)
+
             variables
               .append(key: 'KUBE_URL', value: api_url)
-              .append(key: 'KUBE_TOKEN', value: token, public: false)
-              .append(key: 'KUBE_NAMESPACE', value: actual_namespace)
-              .append(key: 'KUBECONFIG', value: kubeconfig, public: false, file: true)
+              .append(key: 'KUBE_TOKEN', value: token, public: false, masked: true)
+              .append(key: 'KUBE_NAMESPACE', value: project_namespace)
+              .append(key: 'KUBECONFIG', value: kubeconfig(project_namespace), public: false, file: true)
           end
+
+          variables.concat(cluster.predefined_variables)
         end
       end
 
@@ -105,8 +108,10 @@ module Clusters
       # short time later
       def terminals(environment)
         with_reactive_cache do |data|
-          pods = filter_by_label(data[:pods], app: environment.slug)
-          terminals = pods.flat_map { |pod| terminals_for_pod(api_url, actual_namespace, pod) }
+          project = environment.project
+
+          pods = filter_by_project_environment(data[:pods], project.full_path_slug, environment.slug)
+          terminals = pods.flat_map { |pod| terminals_for_pod(api_url, cluster.kubernetes_namespace_for(project), pod) }.compact
           terminals.each { |terminal| add_terminal_auth(terminal, terminal_auth) }
         end
       end
@@ -114,7 +119,7 @@ module Clusters
       # Caches resources in the namespace so other calls don't need to block on
       # network access
       def calculate_reactive_cache
-        return unless enabled? && project && !project.pending_delete?
+        return unless enabled?
 
         # We may want to cache extra things in the future
         { pods: read_pods }
@@ -126,33 +131,16 @@ module Clusters
 
       private
 
-      def kubeconfig
+      def kubeconfig(namespace)
         to_kubeconfig(
           url: api_url,
-          namespace: actual_namespace,
+          namespace: namespace,
           token: token,
           ca_pem: ca_pem)
       end
 
-      def default_namespace
-        kubernetes_namespace&.namespace.presence || fallback_default_namespace
-      end
-
-      # DEPRECATED
-      #
-      # On 11.4 Clusters::KubernetesNamespace was introduced, this model will allow to
-      # have multiple namespaces per project. This method will be removed after migration
-      # has been completed.
-      def fallback_default_namespace
-        return unless project
-
-        slug = "#{project.path}-#{project.id}".downcase
-        Gitlab::NamespaceSanitizer.sanitize(slug)
-      end
-
       def build_kube_client!
         raise "Incomplete settings" unless api_url
-        raise "No namespace" if cluster.project_type? && actual_namespace.empty?  # can probably remove this line once we remove #actual_namespace
 
         unless (username && password) || token
           raise "Either username/password or token is required to access API"
@@ -168,9 +156,13 @@ module Clusters
 
       # Returns a hash of all pods in the namespace
       def read_pods
-        kubeclient = build_kube_client!
+        # TODO: The project lookup here should be moved (to environment?),
+        # which will enable reading pods from the correct namespace for group
+        # and instance clusters.
+        # This will be done in https://gitlab.com/gitlab-org/gitlab-ce/issues/61156
+        return [] unless cluster.project_type?
 
-        kubeclient.get_pods(namespace: actual_namespace).as_json
+        kubeclient.get_pods(namespace: cluster.kubernetes_namespace_for(cluster.first_project)).as_json
       rescue Kubeclient::ResourceNotFoundError
         []
       end
@@ -214,7 +206,7 @@ module Clusters
       end
 
       def prevent_modification
-        return unless managed?
+        return if provided_by_user?
 
         if api_url_changed? || token_changed? || ca_pem_changed?
           errors.add(:base, _('Cannot modify managed Kubernetes cluster'))
@@ -225,10 +217,10 @@ module Clusters
       end
 
       def update_kubernetes_namespace
-        return unless namespace_changed?
+        return unless saved_change_to_namespace?
 
         run_after_commit do
-          ClusterPlatformConfigureWorker.perform_async(cluster_id)
+          ClusterConfigureWorker.perform_async(cluster_id)
         end
       end
     end

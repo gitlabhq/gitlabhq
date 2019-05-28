@@ -1,8 +1,15 @@
-require_relative '../qa'
+# frozen_string_literal: true
 
-Dir[::File.join(__dir__, 'support', '**', '*.rb')].each { |f| require f }
+require_relative '../qa'
+require 'rspec/retry'
+
+%w[helpers shared_examples].each do |d|
+  Dir[::File.join(__dir__, d, '**', '*.rb')].each { |f| require f }
+end
 
 RSpec.configure do |config|
+  QA::Specs::Helpers::Quarantine.configure_rspec
+
   config.before do |example|
     QA::Runtime::Logger.debug("Starting test: #{example.full_description}") if QA::Runtime::Env.debug?
   end
@@ -21,4 +28,17 @@ RSpec.configure do |config|
   config.profile_examples = 10
   config.order = :random
   Kernel.srand config.seed
+
+  # show retry status in spec process
+  config.verbose_retry = true
+
+  # show exception that triggers a retry if verbose_retry is set to true
+  config.display_try_failure_messages = true
+
+  if ENV['CI']
+    config.around do |example|
+      retry_times = example.metadata.keys.include?(:quarantine) ? 1 : 2
+      example.run_with_retry retry: retry_times
+    end
+  end
 end

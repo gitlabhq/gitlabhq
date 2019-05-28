@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe BroadcastMessage do
@@ -49,7 +51,7 @@ describe BroadcastMessage do
     it 'caches the output of the query' do
       create(:broadcast_message)
 
-      expect(described_class).to receive(:where).and_call_original.once
+      expect(described_class).to receive(:current_and_future_messages).and_call_original.once
 
       described_class.current
 
@@ -93,26 +95,11 @@ describe BroadcastMessage do
       expect(Rails.cache).to receive(:delete).with(described_class::LEGACY_CACHE_KEY)
       expect(described_class.current.length).to eq(0)
     end
+  end
 
-    it 'gracefully handles bad cache entry' do
-      allow(described_class).to receive(:current_and_future_messages).and_return('{')
-
-      expect(described_class.current).to be_empty
-    end
-
-    it 'gracefully handles an empty hash' do
-      allow(described_class).to receive(:current_and_future_messages).and_return('{}')
-
-      expect(described_class.current).to be_empty
-    end
-
-    it 'gracefully handles unknown attributes' do
-      message = create(:broadcast_message)
-
-      allow(described_class).to receive(:current_and_future_messages)
-                                 .and_return([{ bad_attr: 1 }, message])
-
-      expect(described_class.current).to eq([message])
+  describe '#attributes' do
+    it 'includes message_html field' do
+      expect(subject.attributes.keys).to include("cached_markdown_version", "message_html")
     end
   end
 

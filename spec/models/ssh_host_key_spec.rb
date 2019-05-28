@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe SshHostKey do
@@ -49,6 +51,35 @@ describe SshHostKey do
   let(:project) { build(:project) }
 
   subject(:ssh_host_key) { described_class.new(project: project, url: 'ssh://example.com:2222', compare_host_keys: compare_host_keys) }
+
+  describe '.primary_key' do
+    it 'returns a symbol' do
+      expect(described_class.primary_key).to eq(:id)
+    end
+  end
+
+  describe '.find_by' do
+    let(:project) { create(:project) }
+    let(:url) { 'ssh://invalid.invalid:2222' }
+
+    let(:finding_id) { [project.id, url].join(':') }
+
+    it 'accepts a string key' do
+      result = described_class.find_by('id' => finding_id)
+
+      expect(result).to be_a(described_class)
+      expect(result.project).to eq(project)
+      expect(result.url.to_s).to eq(url)
+    end
+
+    it 'accepts a symbol key' do
+      result = described_class.find_by(id: finding_id)
+
+      expect(result).to be_a(described_class)
+      expect(result.project).to eq(project)
+      expect(result.url.to_s).to eq(url)
+    end
+  end
 
   describe '#fingerprints', :use_clean_rails_memory_store_caching do
     it 'returns an array of indexed fingerprints when the cache is filled' do

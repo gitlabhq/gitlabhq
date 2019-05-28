@@ -1,5 +1,0 @@
----
-title: Fix stored XSS for Environments
-merge_request:
-author:
-type: security

@@ -11,7 +11,8 @@ module JSONWebToken
 
     def encoded
       headers = {
-        kid: kid
+        kid: kid,
+        typ: 'JWT'
       }
       JWT.encode(payload, key, 'RS256', headers)
     end

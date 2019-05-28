@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::DataBuilder::Push do
   let(:project) { create(:project, :repository) }
-  let(:user) { create(:user) }
+  let(:user) { build(:user, public_email: 'public-email@example.com') }
 
   describe '.build_sample' do
     let(:data) { described_class.build_sample(project, user) }
@@ -23,9 +23,12 @@ describe Gitlab::DataBuilder::Push do
 
   describe '.build' do
     let(:data) do
-      described_class.build(project, user, Gitlab::Git::BLANK_SHA,
-                            '8a2a6eb295bb170b34c24c76c49ed0e9b2eaf34b',
-                            'refs/tags/v1.1.0')
+      described_class.build(
+        project: project,
+        user: user,
+        oldrev: Gitlab::Git::BLANK_SHA,
+        newrev: '8a2a6eb295bb170b34c24c76c49ed0e9b2eaf34b',
+        ref: 'refs/tags/v1.1.0')
     end
 
     it { expect(data).to be_a(Hash) }
@@ -36,7 +39,7 @@ describe Gitlab::DataBuilder::Push do
     it { expect(data[:user_id]).to eq(user.id) }
     it { expect(data[:user_name]).to eq(user.name) }
     it { expect(data[:user_username]).to eq(user.username) }
-    it { expect(data[:user_email]).to eq(user.email) }
+    it { expect(data[:user_email]).to eq(user.public_email) }
     it { expect(data[:user_avatar]).to eq(user.avatar_url) }
     it { expect(data[:project_id]).to eq(project.id) }
     it { expect(data[:project]).to be_a(Hash) }
@@ -47,7 +50,7 @@ describe Gitlab::DataBuilder::Push do
     include_examples 'deprecated repository hook data'
 
     it 'does not raise an error when given nil commits' do
-      expect { described_class.build(spy, spy, spy, spy, 'refs/tags/v1.1.0', nil) }
+      expect { described_class.build(project: spy, user: spy, ref: 'refs/tags/v1.1.0', commits: nil) }
         .not_to raise_error
     end
   end

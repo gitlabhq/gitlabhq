@@ -2,10 +2,10 @@
 
 module Clusters
   module Applications
-    class Prometheus < ActiveRecord::Base
+    class Prometheus < ApplicationRecord
       include PrometheusAdapter
 
-      VERSION = '6.7.3'.freeze
+      VERSION = '6.7.3'
 
       self.table_name = 'clusters_applications_prometheus'
 
@@ -16,20 +16,14 @@ module Clusters
 
       default_value_for :version, VERSION
 
+      after_destroy :disable_prometheus_integration
+
       state_machine :status do
         after_transition any => [:installed] do |application|
           application.cluster.projects.each do |project|
-            project.find_or_initialize_service('prometheus').update(active: true)
+            project.find_or_initialize_service('prometheus').update!(active: true)
           end
         end
-      end
-
-      def ready_status
-        [:installed]
-      end
-
-      def ready?
-        ready_status.include?(status_name)
       end
 
       def chart
@@ -50,8 +44,35 @@ module Clusters
           version: VERSION,
           rbac: cluster.platform_kubernetes_rbac?,
           chart: chart,
+          files: files,
+          postinstall: install_knative_metrics
+        )
+      end
+
+      def uninstall_command
+        Gitlab::Kubernetes::Helm::DeleteCommand.new(
+          name: name,
+          rbac: cluster.platform_kubernetes_rbac?,
           files: files
         )
+      end
+
+      def upgrade_command(values)
+        ::Gitlab::Kubernetes::Helm::InstallCommand.new(
+          name: name,
+          version: VERSION,
+          rbac: cluster.platform_kubernetes_rbac?,
+          chart: chart,
+          files: files_with_replaced_values(values)
+        )
+      end
+
+      # Returns a copy of files where the values of 'values.yaml'
+      # are replaced by the argument.
+      #
+      # See #values for the data format required
+      def files_with_replaced_values(replaced_values)
+        files.merge('values.yaml': replaced_values)
       end
 
       def prometheus_client
@@ -71,8 +92,18 @@ module Clusters
 
       private
 
+      def disable_prometheus_integration
+        cluster.projects.each do |project|
+          project.prometheus_service&.update!(active: false)
+        end
+      end
+
       def kube_client
         cluster&.kubeclient&.core_client
+      end
+
+      def install_knative_metrics
+        ["kubectl apply -f #{Clusters::Applications::Knative::METRICS_CONFIG}"] if cluster.application_knative_available?
       end
     end
   end

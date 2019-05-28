@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "spec_helper"
 
 describe WikiPage do
@@ -18,12 +20,18 @@ describe WikiPage do
     context 'when there are pages' do
       before do
         create_page('dir_1/dir_1_1/page_3', 'content')
-        create_page('dir_1/page_2', 'content')
-        create_page('dir_2/page_5', 'content')
-        create_page('dir_2/page_4', 'content')
         create_page('page_1', 'content')
+        create_page('dir_1/page_2', 'content')
+        create_page('dir_2', 'page with dir name')
+        create_page('dir_2/page_5', 'content')
+        create_page('page_6', 'content')
+        create_page('dir_2/page_4', 'content')
       end
+
       let(:page_1) { wiki.find_page('page_1') }
+      let(:page_6) { wiki.find_page('page_6') }
+      let(:page_dir_2) { wiki.find_page('dir_2') }
+
       let(:dir_1) do
         WikiDirectory.new('dir_1', [wiki.find_page('dir_1/page_2')])
       end
@@ -36,34 +44,49 @@ describe WikiPage do
         WikiDirectory.new('dir_2', pages)
       end
 
-      it 'returns an array with pages and directories' do
-        expected_grouped_entries = [page_1, dir_1, dir_1_1, dir_2]
+      context "#list_pages" do
+        context 'sort by title' do
+          let(:grouped_entries) { described_class.group_by_directory(wiki.list_pages) }
+          let(:expected_grouped_entries) { [dir_1_1, dir_1, page_dir_2, dir_2, page_1, page_6] }
 
-        grouped_entries = described_class.group_by_directory(wiki.pages)
+          it 'returns an array with pages and directories' do
+            grouped_entries.each_with_index do |page_or_dir, i|
+              expected_page_or_dir = expected_grouped_entries[i]
+              expected_slugs = get_slugs(expected_page_or_dir)
+              slugs = get_slugs(page_or_dir)
 
-        grouped_entries.each_with_index do |page_or_dir, i|
-          expected_page_or_dir = expected_grouped_entries[i]
-          expected_slugs = get_slugs(expected_page_or_dir)
-          slugs = get_slugs(page_or_dir)
-
-          expect(slugs).to match_array(expected_slugs)
-        end
-      end
-
-      it 'returns an array sorted by alphabetical position' do
-        # Directories and pages within directories are sorted alphabetically.
-        # Pages at root come before everything.
-        expected_order = ['page_1', 'dir_1/page_2', 'dir_1/dir_1_1/page_3',
-                          'dir_2/page_4', 'dir_2/page_5']
-
-        grouped_entries = described_class.group_by_directory(wiki.pages)
-
-        actual_order =
-          grouped_entries.map do |page_or_dir|
-            get_slugs(page_or_dir)
+              expect(slugs).to match_array(expected_slugs)
+            end
           end
-          .flatten
-        expect(actual_order).to eq(expected_order)
+        end
+
+        context 'sort by created_at' do
+          let(:grouped_entries) { described_class.group_by_directory(wiki.list_pages(sort: 'created_at')) }
+          let(:expected_grouped_entries) { [dir_1_1, page_1, dir_1, page_dir_2, dir_2, page_6] }
+
+          it 'returns an array with pages and directories' do
+            grouped_entries.each_with_index do |page_or_dir, i|
+              expected_page_or_dir = expected_grouped_entries[i]
+              expected_slugs = get_slugs(expected_page_or_dir)
+              slugs = get_slugs(page_or_dir)
+
+              expect(slugs).to match_array(expected_slugs)
+            end
+          end
+        end
+
+        it 'returns an array with retained order with directories at the top' do
+          expected_order = ['dir_1/dir_1_1/page_3', 'dir_1/page_2', 'dir_2', 'dir_2/page_4', 'dir_2/page_5', 'page_1', 'page_6']
+
+          grouped_entries = described_class.group_by_directory(wiki.list_pages)
+
+          actual_order =
+            grouped_entries.map do |page_or_dir|
+              get_slugs(page_or_dir)
+            end
+            .flatten
+          expect(actual_order).to eq(expected_order)
+        end
       end
     end
   end
@@ -365,7 +388,7 @@ describe WikiPage do
 
     it "deletes the page" do
       @page.delete
-      expect(wiki.pages).to be_empty
+      expect(wiki.list_pages).to be_empty
     end
 
     it "returns true" do

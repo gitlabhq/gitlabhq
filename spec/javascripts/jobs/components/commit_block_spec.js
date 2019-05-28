@@ -9,6 +9,7 @@ describe('Commit block', () => {
   const props = {
     commit: {
       short_id: '1f0fb84f',
+      id: '1f0fb84fb6770d74d97eee58118fd3909cd4f48c',
       commit_path: 'commit/1f0fb84fb6770d74d97eee58118fd3909cd4f48c',
       title: 'Update README.md',
     },
@@ -42,7 +43,7 @@ describe('Commit block', () => {
 
     it('renders clipboard button', () => {
       expect(vm.$el.querySelector('button').getAttribute('data-clipboard-text')).toEqual(
-        props.commit.short_id,
+        props.commit.id,
       );
     });
   });

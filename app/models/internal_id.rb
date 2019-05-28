@@ -15,7 +15,7 @@
 # In order to leverage InternalId for other usages, the idea is to
 # * Add `usage` value to enum
 # * (Optionally) add columns to `internal_ids` if needed for scope.
-class InternalId < ActiveRecord::Base
+class InternalId < ApplicationRecord
   belongs_to :project
   belongs_to :namespace
 
@@ -55,7 +55,8 @@ class InternalId < ActiveRecord::Base
     def track_greatest(subject, scope, usage, new_value, init)
       return new_value unless available?
 
-      InternalIdGenerator.new(subject, scope, usage, init).track_greatest(new_value)
+      InternalIdGenerator.new(subject, scope, usage)
+        .track_greatest(init, new_value)
     end
 
     def generate_next(subject, scope, usage, init)
@@ -63,16 +64,39 @@ class InternalId < ActiveRecord::Base
       # This can be the case in other (unrelated) migration specs
       return (init.call(subject) || 0) + 1 unless available?
 
-      InternalIdGenerator.new(subject, scope, usage, init).generate
+      InternalIdGenerator.new(subject, scope, usage)
+        .generate(init)
+    end
+
+    def reset(subject, scope, usage, value)
+      return false unless available?
+
+      InternalIdGenerator.new(subject, scope, usage)
+        .reset(value)
+    end
+
+    # Flushing records is generally safe in a sense that those
+    # records are going to be re-created when needed.
+    #
+    # A filter condition has to be provided to not accidentally flush
+    # records for all projects.
+    def flush_records!(filter)
+      raise ArgumentError, "filter cannot be empty" if filter.blank?
+
+      where(filter).delete_all
     end
 
     def available?
-      @available_flag ||= ActiveRecord::Migrator.current_version >= REQUIRED_SCHEMA_VERSION # rubocop:disable Gitlab/PredicateMemoization
+      return true unless Rails.env.test?
+
+      Gitlab::SafeRequestStore.fetch(:internal_ids_available_flag) do
+        ActiveRecord::Migrator.current_version >= REQUIRED_SCHEMA_VERSION
+      end
     end
 
     # Flushes cached information about schema
     def reset_column_information
-      @available_flag = nil
+      Gitlab::SafeRequestStore[:internal_ids_available_flag] = nil
       super
     end
   end
@@ -92,14 +116,11 @@ class InternalId < ActiveRecord::Base
     # subject: The instance we're generating an internal id for. Gets passed to init if called.
     # scope: Attributes that define the scope for id generation.
     # usage: Symbol to define the usage of the internal id, see InternalId.usages
-    # init: Block that gets called to initialize InternalId record if not present
-    #       Make sure to not throw exceptions in the absence of records (if this is expected).
-    attr_reader :subject, :scope, :init, :scope_attrs, :usage
+    attr_reader :subject, :scope, :scope_attrs, :usage
 
-    def initialize(subject, scope, usage, init)
+    def initialize(subject, scope, usage)
       @subject = subject
       @scope = scope
-      @init = init
       @usage = usage
 
       raise ArgumentError, 'Scope is not well-defined, need at least one column for scope (given: 0)' if scope.empty?
@@ -110,23 +131,40 @@ class InternalId < ActiveRecord::Base
     end
 
     # Generates next internal id and returns it
-    def generate
-      InternalId.transaction do
+    # init: Block that gets called to initialize InternalId record if not present
+    #       Make sure to not throw exceptions in the absence of records (if this is expected).
+    def generate(init)
+      subject.transaction do
         # Create a record in internal_ids if one does not yet exist
         # and increment its last value
         #
         # Note this will acquire a ROW SHARE lock on the InternalId record
-        (lookup || create_record).increment_and_save!
+        (lookup || create_record(init)).increment_and_save!
       end
+    end
+
+    # Reset tries to rewind to `value-1`. This will only succeed,
+    # if `value` stored in database is equal to `last_value`.
+    # value: The expected last_value to decrement
+    def reset(value)
+      return false unless value
+
+      updated =
+        InternalId
+          .where(**scope, usage: usage_value)
+          .where(last_value: value)
+          .update_all('last_value = last_value - 1')
+
+      updated > 0
     end
 
     # Create a record in internal_ids if one does not yet exist
     # and set its new_value if it is higher than the current last_value
     #
     # Note this will acquire a ROW SHARE lock on the InternalId record
-    def track_greatest(new_value)
-      InternalId.transaction do
-        (lookup || create_record).track_greatest_and_save!(new_value)
+    def track_greatest(init, new_value)
+      subject.transaction do
+        (lookup || create_record(init)).track_greatest_and_save!(new_value)
       end
     end
 
@@ -147,8 +185,8 @@ class InternalId < ActiveRecord::Base
     # was faster in doing this, we'll realize once we hit the unique key constraint
     # violation. We can safely roll-back the nested transaction and perform
     # a lookup instead to retrieve the record.
-    def create_record
-      InternalId.transaction(requires_new: true) do
+    def create_record(init)
+      subject.transaction(requires_new: true) do
         InternalId.create!(
           **scope,
           usage: usage_value,

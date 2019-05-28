@@ -38,7 +38,6 @@ To enable the CAS OmniAuth provider you must register your application with your
         }
       ]
     ```
-    
 
     For installations from source:
 
@@ -65,4 +64,3 @@ On the sign in page there should now be a CAS tab in the sign in form.
 
 [reconfigure]: ../administration/restart_gitlab.md#omnibus-gitlab-reconfigure
 [restart GitLab]: ../administration/restart_gitlab.md#installations-from-source
-

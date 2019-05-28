@@ -17,6 +17,10 @@ describe "Groups", "routing" do
     expect(get("/#{group_path}")).to route_to('groups#show', id: group_path)
   end
 
+  it "to #details" do
+    expect(get("/groups/#{group_path}/-/details")).to route_to('groups#details', id: group_path)
+  end
+
   it "to #activity" do
     expect(get("/groups/#{group_path}/-/activity")).to route_to('groups#activity', id: group_path)
   end
@@ -127,6 +131,20 @@ describe "Groups", "routing" do
       it_behaves_like 'redirecting a legacy path', "/groups/activity/activity", "/groups/activity/-/activity" do
         let!(:parent) { create(:group, path: 'activity') }
         let(:resource) { create(:group, parent: parent, path: 'activity') }
+      end
+    end
+
+    describe 'subgroup "boards"' do
+      it 'shows group show page' do
+        allow(Group).to receive(:find_by_full_path).with('gitlabhq/boards', any_args).and_return(true)
+
+        expect(get('/groups/gitlabhq/boards')).to route_to('groups#show', id: 'gitlabhq/boards')
+      end
+
+      it 'shows boards index page' do
+        allow(Group).to receive(:find_by_full_path).with('gitlabhq', any_args).and_return(true)
+
+        expect(get('/groups/gitlabhq/-/boards')).to route_to('groups/boards#index', group_id: 'gitlabhq')
       end
     end
   end

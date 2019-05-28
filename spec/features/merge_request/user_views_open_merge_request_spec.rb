@@ -13,7 +13,7 @@ describe 'User views an open merge request' do
     end
 
     it 'renders both the title and the description' do
-      node = find('.wiki h1 a#user-content-description-header')
+      node = find('.md h1 a#user-content-description-header')
       expect(node[:href]).to end_with('#description-header')
 
       # Work around a weird Capybara behavior where calling `parent` on a node

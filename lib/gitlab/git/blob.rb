@@ -23,6 +23,10 @@ module Gitlab
 
       class << self
         def find(repository, sha, path, limit: MAX_DATA_DISPLAY_SIZE)
+          tree_entry(repository, sha, path, limit)
+        end
+
+        def tree_entry(repository, sha, path, limit)
           return unless path
 
           path = path.sub(%r{\A/*}, '')
@@ -100,7 +104,7 @@ module Gitlab
         @loaded_all_data = @loaded_size == size
       end
 
-      def binary?
+      def binary_in_repo?
         @binary.nil? ? super : @binary == true
       end
 
@@ -174,8 +178,10 @@ module Gitlab
       private
 
       def has_lfs_version_key?
-        !empty? && text? && data.start_with?("version https://git-lfs.github.com/spec")
+        !empty? && text_in_repo? && data.start_with?("version https://git-lfs.github.com/spec")
       end
     end
   end
 end
+
+Gitlab::Git::Blob.singleton_class.prepend Gitlab::Git::RuggedImpl::Blob::ClassMethods

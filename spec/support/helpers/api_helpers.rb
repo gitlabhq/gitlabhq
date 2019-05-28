@@ -36,4 +36,11 @@ module ApiHelpers
 
     full_path
   end
+
+  def expect_paginated_array_response(items)
+    expect(response).to have_gitlab_http_status(200)
+    expect(response).to include_pagination_headers
+    expect(json_response).to be_an Array
+    expect(json_response.map { |item| item['id'] }).to eq(Array(items))
+  end
 end

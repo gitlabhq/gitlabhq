@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "spec_helper"
 
 describe Lfs::FileTransformer do
@@ -60,6 +62,25 @@ describe Lfs::FileTransformer do
         result = subject.new_file(file_path, file_content, encoding: 'base64')
 
         expect(result.encoding).to eq('text')
+      end
+
+      context 'when an actual file is passed' do
+        let(:file) { Tempfile.new(file_path) }
+
+        before do
+          file.write(file_content)
+          file.rewind
+        end
+
+        after do
+          file.unlink
+        end
+
+        it "creates an LfsObject with the file's content" do
+          subject.new_file(file_path, file)
+
+          expect(LfsObject.last.file.read).to eq file_content
+        end
       end
 
       context "when doesn't use LFS" do

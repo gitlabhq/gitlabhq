@@ -13,6 +13,6 @@ describe Banzai::Filter::BlockquoteFenceFilter do
   end
 
   it 'allows trailing whitespace on blockquote fence lines' do
-    expect(filter(">>> \ntest\n>>> ")).to eq("> test")
+    expect(filter(">>> \ntest\n>>> ")).to eq("\n> test\n")
   end
 end

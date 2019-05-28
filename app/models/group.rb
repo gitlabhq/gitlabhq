@@ -10,6 +10,7 @@ class Group < Namespace
   include Referable
   include SelectForProjectAuthorization
   include LoadedInGroupList
+  include Descendant
   include GroupDescendant
   include TokenAuthenticatable
   include WithUploads
@@ -55,18 +56,14 @@ class Group < Namespace
 
   validates :two_factor_grace_period, presence: true, numericality: { greater_than_or_equal_to: 0 }
 
-  add_authentication_token_field :runners_token, encrypted: true, migrating: true
+  add_authentication_token_field :runners_token, encrypted: -> { Feature.enabled?(:groups_tokens_optional_encryption, default_enabled: true) ? :optional : :required }
 
   after_create :post_create_hook
   after_destroy :post_destroy_hook
   after_save :update_two_factor_requirement
-  after_update :path_changed_hook, if: :path_changed?
+  after_update :path_changed_hook, if: :saved_change_to_path?
 
   class << self
-    def supports_nested_groups?
-      Gitlab::Database.postgresql?
-    end
-
     def sort_by_attribute(method)
       if method == 'storage_size_desc'
         # storage_size is a virtual column so we need to
@@ -101,7 +98,7 @@ class Group < Namespace
     def select_for_project_authorization
       if current_scope.joins_values.include?(:shared_projects)
         joins('INNER JOIN namespaces project_namespace ON project_namespace.id = projects.namespace_id')
-          .where('project_namespace.share_with_group_lock = ?',  false)
+          .where('project_namespace.share_with_group_lock = ?', false)
           .select("projects.id AS project_id, LEAST(project_group_links.group_access, members.access_level) AS access_level")
       else
         super
@@ -231,22 +228,21 @@ class Group < Namespace
   def has_owner?(user)
     return false unless user
 
-    members_with_parents.owners.where(user_id: user).any?
+    members_with_parents.owners.exists?(user_id: user)
   end
 
   def has_maintainer?(user)
     return false unless user
 
-    members_with_parents.maintainers.where(user_id: user).any?
+    members_with_parents.maintainers.exists?(user_id: user)
   end
 
   # @deprecated
   alias_method :has_master?, :has_maintainer?
 
   # Check if user is a last owner of the group.
-  # Parent owners are ignored for nested groups.
   def last_owner?(user)
-    owners.include?(user) && owners.size == 1
+    has_owner?(user) && members_with_parents.owners.size == 1
   end
 
   def ldap_synced?
@@ -385,6 +381,10 @@ class Group < Namespace
     end
   end
 
+  def highest_group_member(user)
+    GroupMember.where(source_id: self_and_ancestors_ids, user_id: user.id).order(:access_level).last
+  end
+
   def hashed_storage?(_feature)
     false
   end
@@ -404,10 +404,14 @@ class Group < Namespace
     Feature.enabled?(:group_clusters, root_ancestor, default_enabled: true)
   end
 
+  def project_creation_level
+    super || ::Gitlab::CurrentSettings.default_project_creation
+  end
+
   private
 
   def update_two_factor_requirement
-    return unless require_two_factor_authentication_changed? || two_factor_grace_period_changed?
+    return unless saved_change_to_require_two_factor_authentication? || saved_change_to_two_factor_grace_period?
 
     users.find_each(&:update_two_factor_requirement)
   end

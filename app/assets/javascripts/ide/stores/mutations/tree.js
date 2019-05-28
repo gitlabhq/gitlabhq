@@ -1,5 +1,5 @@
 import * as types from '../mutation_types';
-import { sortTree } from '../utils';
+import { sortTree, mergeTrees } from '../utils';
 
 export default {
   [types.TOGGLE_TREE_OPEN](state, path) {
@@ -23,9 +23,15 @@ export default {
     });
   },
   [types.SET_DIRECTORY_DATA](state, { data, treePath }) {
-    Object.assign(state.trees[treePath], {
-      tree: data,
-    });
+    const selectedTree = state.trees[treePath];
+
+    // If we opened files while loading the tree, we need to merge them
+    // Otherwise, simply overwrite the tree
+    const tree = !selectedTree.tree.length
+      ? data
+      : selectedTree.loading && mergeTrees(selectedTree.tree, data);
+
+    Object.assign(selectedTree, { tree });
   },
   [types.SET_LAST_COMMIT_URL](state, { tree = state, url }) {
     Object.assign(tree, {

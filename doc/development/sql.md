@@ -155,6 +155,21 @@ The _only_ time you should use `pluck` is when you actually need to operate on
 the values in Ruby itself (e.g. write them to a file). In almost all other cases
 you should ask yourself "Can I not just use a sub-query?".
 
+In line with our `CodeReuse/ActiveRecord` cop, you should only use forms like
+`pluck(:id)` or `pluck(:user_id)` within model code. In the former case, you can
+use the `ApplicationRecord`-provided `.pluck_primary_key` helper method instead.
+In the latter, you should add a small helper method to the relevant model.
+
+## Inherit from ApplicationRecord
+
+Most models in the GitLab codebase should inherit from `ApplicationRecord`,
+rather than from `ActiveRecord::Base`. This allows helper methods to be easily
+added.
+
+An exception to this rule exists for models created in database migrations. As
+these should be isolated from application code, they should continue to subclass
+from `ActiveRecord::Base`.
+
 ## Use UNIONs
 
 UNIONs aren't very commonly used in most Rails applications but they're very
@@ -256,32 +271,12 @@ violation, for example.
 
 Using transactions does not solve this problem.
 
-The following pattern should be used to avoid the problem:
+To solve this we've added the `ApplicationRecord.safe_find_or_create_by`.
 
-```ruby
-Project.transaction do
-  begin
-    User.find_or_create_by(username: "foo")
-  rescue ActiveRecord::RecordNotUnique
-    retry
-  end
-end
-```
+This method can be used just as you would the normal
+`find_or_create_by` but it wraps the call in a *new* transaction and
+retries if it were to fail because of an
+`ActiveRecord::RecordNotUnique` error.
 
-If the above block is run inside a transaction and hits the race
-condition, the transaction is aborted and we cannot simply retry (any
-further queries inside the aborted transaction are going to fail). We
-can employ [nested transactions](http://api.rubyonrails.org/classes/ActiveRecord/Transactions/ClassMethods.html#module-ActiveRecord::Transactions::ClassMethods-label-Nested+transactions)
-here to only rollback the "inner transaction". Note that `requires_new: true` is required here.
-
-```ruby
-Project.transaction do
-  begin
-    User.transaction(requires_new: true) do
-      User.find_or_create_by(username: "foo")
-    end
-  rescue ActiveRecord::RecordNotUnique
-    retry
-  end
-end
-```
+To be able to use this method, make sure the model you want to use
+this on inherits from `ApplicationRecord`.

@@ -19,8 +19,12 @@ module BlobHelper
 
   def ide_edit_path(project = @project, ref = @ref, path = @path, options = {})
     segments = [ide_path, 'project', project.full_path, 'edit', ref]
-    segments.concat(['-', path]) if path.present?
+    segments.concat(['-', encode_ide_path(path)]) if path.present?
     File.join(segments)
+  end
+
+  def encode_ide_path(path)
+    url_encode(path).gsub('%2F', '/')
   end
 
   def edit_blob_button(project = @project, ref = @ref, path = @path, options = {})
@@ -31,12 +35,13 @@ module BlobHelper
     edit_button_tag(blob,
                     common_classes,
                     _('Edit'),
-                    edit_blob_path(project, ref, path, options),
+                    Feature.enabled?(:web_ide_default) ? ide_edit_path(project, ref, path, options) : edit_blob_path(project, ref, path, options),
                     project,
                     ref)
   end
 
   def ide_edit_button(project = @project, ref = @ref, path = @path, options = {})
+    return if Feature.enabled?(:web_ide_default)
     return unless blob = readable_blob(options, path, project, ref)
 
     edit_button_tag(blob,
@@ -72,7 +77,7 @@ module BlobHelper
       project,
       ref,
       path,
-      label:      "Replace",
+      label:      _("Replace"),
       action:     "replace",
       btn_class:  "default",
       modal_type: "upload"
@@ -84,7 +89,7 @@ module BlobHelper
       project,
       ref,
       path,
-      label:      "Delete",
+      label:      _("Delete"),
       action:     "delete",
       btn_class:  "remove",
       modal_type: "remove"
@@ -96,14 +101,14 @@ module BlobHelper
   end
 
   def leave_edit_message
-    "Leave edit mode?\nAll unsaved changes will be lost."
+    _("Leave edit mode? All unsaved changes will be lost.")
   end
 
   def editing_preview_title(filename)
     if Gitlab::MarkupHelper.previewable?(filename)
-      'Preview'
+      _('Preview')
     else
-      'Preview changes'
+      _('Preview changes')
     end
   end
 
@@ -138,36 +143,6 @@ module BlobHelper
   # and may omit some elements.
   def sanitize_svg_data(data)
     Gitlab::Sanitizers::SVG.clean(data)
-  end
-
-  # Remove once https://gitlab.com/gitlab-org/gitlab-ce/issues/36103 is closed
-  # and :workhorse_set_content_type flag is removed
-  # If we blindly set the 'real' content type when serving a Git blob we
-  # are enabling XSS attacks. An attacker could upload e.g. a Javascript
-  # file to a Git repository, trick the browser of a victim into
-  # downloading the blob, and then the 'application/javascript' content
-  # type would tell the browser to execute the attacker's Javascript. By
-  # overriding the content type and setting it to 'text/plain' (in the
-  # example of Javascript) we tell the browser of the victim not to
-  # execute untrusted data.
-  def safe_content_type(blob)
-    if blob.extension == 'svg'
-      blob.mime_type
-    elsif blob.text?
-      'text/plain; charset=utf-8'
-    elsif blob.image?
-      blob.content_type
-    else
-      'application/octet-stream'
-    end
-  end
-
-  def content_disposition(blob, inline)
-    # Remove the following line when https://gitlab.com/gitlab-org/gitlab-ce/issues/36103
-    # is closed and :workhorse_set_content_type flag is removed
-    return 'attachment' if blob.extension == 'svg'
-
-    inline ? 'inline' : 'attachment'
   end
 
   def ref_project
@@ -207,7 +182,8 @@ module BlobHelper
       'relative-url-root' => Rails.application.config.relative_url_root,
       'assets-prefix' => Gitlab::Application.config.assets.prefix,
       'blob-filename' => @blob && @blob.path,
-      'project-id' => project.id
+      'project-id' => project.id,
+      'is-markdown' => @blob && @blob.path && Gitlab::MarkupHelper.gitlab_markdown?(@blob.path)
     }
   end
 
@@ -223,16 +199,16 @@ module BlobHelper
 
   def open_raw_blob_button(blob)
     return if blob.empty?
-    return if blob.raw_binary? || blob.stored_externally?
+    return if blob.binary? || blob.stored_externally?
 
-    title = 'Open raw'
+    title = _('Open raw')
     link_to icon('file-code-o'), blob_raw_path, class: 'btn btn-sm has-tooltip', target: '_blank', rel: 'noopener noreferrer', title: title, data: { container: 'body' }
   end
 
   def download_blob_button(blob)
     return if blob.empty?
 
-    title = 'Download'
+    title = _('Download')
     link_to sprite_icon('download'), blob_raw_path(inline: false), download: @path, class: 'btn btn-sm has-tooltip', target: '_blank', rel: 'noopener noreferrer', title: title, data: { container: 'body' }
   end
 

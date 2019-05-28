@@ -28,8 +28,8 @@ GET /projects/:id/members
 | `query`   | string | no     | A query string to search for members |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/:id/members
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/:id/members
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/:id/members
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/:id/members
 ```
 
 Example response:
@@ -62,7 +62,9 @@ Example response:
 ## List all members of a group or project including inherited members
 
 Gets a list of group or project members viewable by the authenticated user, including inherited members through ancestor groups.
-Returns multiple times the same user (with different member attributes) when the user is a member of the project/group and of one or more ancestor group.
+When a user is a member of the project/group and of one or more ancestor groups the user is returned only once with the project access_level (if exists)
+or the access_level for the user in the first group which he belongs to in the project groups ancestors chain.
+**Note:** We plan to [change](https://gitlab.com/gitlab-org/gitlab-ce/issues/62284) this behavior to return highest access_level instead.
 
 ```
 GET /groups/:id/members/all
@@ -75,8 +77,8 @@ GET /projects/:id/members/all
 | `query`   | string | no     | A query string to search for members |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/:id/members/all
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/:id/members/all
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/:id/members/all
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/:id/members/all
 ```
 
 Example response:
@@ -131,8 +133,8 @@ GET /projects/:id/members/:user_id
 | `user_id` | integer | yes   | The user ID of the member |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/:id/members/:user_id
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/:id/members/:user_id
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/:id/members/:user_id
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/:id/members/:user_id
 ```
 
 Example response:
@@ -167,8 +169,8 @@ POST /projects/:id/members
 | `expires_at` | string | no | A date string in the format YEAR-MONTH-DAY |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --data "user_id=1&access_level=30" https://gitlab.example.com/api/v4/groups/:id/members
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --data "user_id=1&access_level=30" https://gitlab.example.com/api/v4/projects/:id/members
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --data "user_id=1&access_level=30" https://gitlab.example.com/api/v4/groups/:id/members
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --data "user_id=1&access_level=30" https://gitlab.example.com/api/v4/projects/:id/members
 ```
 
 Example response:
@@ -203,8 +205,8 @@ PUT /projects/:id/members/:user_id
 | `expires_at` | string | no | A date string in the format YEAR-MONTH-DAY |
 
 ```bash
-curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/:id/members/:user_id?access_level=40
-curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/:id/members/:user_id?access_level=40
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/:id/members/:user_id?access_level=40
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/:id/members/:user_id?access_level=40
 ```
 
 Example response:
@@ -237,8 +239,8 @@ DELETE /projects/:id/members/:user_id
 | `user_id` | integer | yes   | The user ID of the member |
 
 ```bash
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/:id/members/:user_id
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/:id/members/:user_id
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/:id/members/:user_id
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/:id/members/:user_id
 ```
 
 ## Give a group access to a project

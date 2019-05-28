@@ -1,5 +1,0 @@
----
-title: Redact sensitive information on gitlab-workhorse log
-merge_request:
-author:
-type: security

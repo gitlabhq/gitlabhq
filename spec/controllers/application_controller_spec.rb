@@ -1,4 +1,5 @@
 # coding: utf-8
+# frozen_string_literal: true
 require 'spec_helper'
 
 describe ApplicationController do
@@ -205,8 +206,19 @@ describe ApplicationController do
     describe '#check_two_factor_requirement' do
       subject { controller.send :check_two_factor_requirement }
 
+      it 'does not redirect if user has temporary oauth email' do
+        oauth_user = create(:user, email: 'temp-email-for-oauth@email.com')
+        allow(controller).to receive(:two_factor_authentication_required?).and_return(true)
+        allow(controller).to receive(:current_user).and_return(oauth_user)
+
+        expect(controller).not_to receive(:redirect_to)
+
+        subject
+      end
+
       it 'does not redirect if 2FA is not required' do
         allow(controller).to receive(:two_factor_authentication_required?).and_return(false)
+
         expect(controller).not_to receive(:redirect_to)
 
         subject
@@ -215,6 +227,7 @@ describe ApplicationController do
       it 'does not redirect if user is not logged in' do
         allow(controller).to receive(:two_factor_authentication_required?).and_return(true)
         allow(controller).to receive(:current_user).and_return(nil)
+
         expect(controller).not_to receive(:redirect_to)
 
         subject
@@ -222,8 +235,9 @@ describe ApplicationController do
 
       it 'does not redirect if user has 2FA enabled' do
         allow(controller).to receive(:two_factor_authentication_required?).and_return(true)
-        allow(controller).to receive(:current_user).twice.and_return(user)
+        allow(controller).to receive(:current_user).thrice.and_return(user)
         allow(user).to receive(:two_factor_enabled?).and_return(true)
+
         expect(controller).not_to receive(:redirect_to)
 
         subject
@@ -231,9 +245,10 @@ describe ApplicationController do
 
       it 'does not redirect if 2FA setup can be skipped' do
         allow(controller).to receive(:two_factor_authentication_required?).and_return(true)
-        allow(controller).to receive(:current_user).twice.and_return(user)
+        allow(controller).to receive(:current_user).thrice.and_return(user)
         allow(user).to receive(:two_factor_enabled?).and_return(false)
         allow(controller).to receive(:skip_two_factor?).and_return(true)
+
         expect(controller).not_to receive(:redirect_to)
 
         subject
@@ -241,10 +256,11 @@ describe ApplicationController do
 
       it 'redirects to 2FA setup otherwise' do
         allow(controller).to receive(:two_factor_authentication_required?).and_return(true)
-        allow(controller).to receive(:current_user).twice.and_return(user)
+        allow(controller).to receive(:current_user).thrice.and_return(user)
         allow(user).to receive(:two_factor_enabled?).and_return(false)
         allow(controller).to receive(:skip_two_factor?).and_return(false)
         allow(controller).to receive(:profile_two_factor_auth_path)
+
         expect(controller).to receive(:redirect_to)
 
         subject
@@ -423,7 +439,7 @@ describe ApplicationController do
         enforce_terms
       end
 
-      it 'redirects if the user did not accept the terms'  do
+      it 'redirects if the user did not accept the terms' do
         get :index
 
         expect(response).to have_gitlab_http_status(302)
@@ -461,7 +477,7 @@ describe ApplicationController do
     end
 
     it 'does log correlation id' do
-      Gitlab::CorrelationId.use_id('new-id') do
+      Labkit::Correlation::CorrelationId.use_id('new-id') do
         get :index
       end
 
@@ -519,16 +535,18 @@ describe ApplicationController do
       get :index
 
       expect(response).to have_gitlab_http_status(404)
+      expect(response).to render_template('errors/not_found')
     end
 
     it 'renders a 403 when a message is passed to access denied' do
-      get :index, message: 'None shall pass'
+      get :index, params: { message: 'None shall pass' }
 
       expect(response).to have_gitlab_http_status(403)
+      expect(response).to render_template('errors/access_denied')
     end
 
     it 'renders a status passed to access denied' do
-      get :index, status: 401
+      get :index, params: { status: 401 }
 
       expect(response).to have_gitlab_http_status(401)
     end
@@ -548,34 +566,18 @@ describe ApplicationController do
     end
 
     context 'html' do
-      subject { get :index, text: "hi \255" }
+      subject { get :index, params: { text: "hi \255" } }
 
       it 'renders 412' do
-        if Gitlab.rails5?
-          expect { subject }.to raise_error(ActionController::BadRequest)
-        else
-          subject
-
-          expect(response).to have_gitlab_http_status(412)
-          expect(response).to render_template :precondition_failed
-        end
+        expect { subject }.to raise_error(ActionController::BadRequest)
       end
     end
 
     context 'js' do
-      subject { get :index, text: "hi \255", format: :js }
+      subject { get :index, format: :js, params: { text: "hi \255" } }
 
       it 'renders 412' do
-        if Gitlab.rails5?
-          expect { subject }.to raise_error(ActionController::BadRequest)
-        else
-          subject
-
-          json_response = JSON.parse(response.body)
-
-          expect(response).to have_gitlab_http_status(412)
-          expect(json_response['error']).to eq('Invalid UTF-8')
-        end
+        expect { subject }.to raise_error(ActionController::BadRequest)
       end
     end
   end
@@ -678,6 +680,14 @@ describe ApplicationController do
         get :index
 
         expect(response.headers['Cache-Control']).to eq 'max-age=0, private, must-revalidate, no-store'
+      end
+
+      it 'does not set the "no-store" header for XHR requests' do
+        sign_in(user)
+
+        get :index, xhr: true
+
+        expect(response.headers['Cache-Control']).to eq 'max-age=0, private, must-revalidate'
       end
     end
   end

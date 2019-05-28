@@ -120,7 +120,7 @@ describe('MRWidgetFailedToMerge', () => {
 
     it('renders given error', () => {
       expect(vm.$el.querySelector('.has-error-message').textContent.trim()).toEqual(
-        'Merge error happened.',
+        'Merge error happened',
       );
     });
 

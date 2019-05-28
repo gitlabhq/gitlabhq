@@ -1,9 +1,10 @@
 import Vue from 'vue';
 import FileRow from '~/vue_shared/components/file_row.vue';
+import FileRowExtra from '~/ide/components/file_row_extra.vue';
 import { file } from 'spec/ide/helpers';
 import mountComponent from '../../helpers/vue_mount_component_helper';
 
-describe('RepoFile', () => {
+describe('File row component', () => {
   let vm;
 
   function createComponent(propsData) {
@@ -15,6 +16,10 @@ describe('RepoFile', () => {
   afterEach(() => {
     vm.$destroy();
   });
+
+  const findNewDropdown = () => vm.$el.querySelector('.ide-new-btn .dropdown');
+  const findNewDropdownButton = () => vm.$el.querySelector('.ide-new-btn .dropdown button');
+  const findFileRow = () => vm.$el.querySelector('.file-row');
 
   it('renders name', () => {
     createComponent({
@@ -72,38 +77,70 @@ describe('RepoFile', () => {
     expect(vm.$el.querySelector('.file-row-name').style.marginLeft).toBe('32px');
   });
 
-  describe('outputText', () => {
-    beforeEach(done => {
+  it('renders header for file', () => {
+    createComponent({
+      file: {
+        isHeader: true,
+        path: 'app/assets',
+        tree: [],
+      },
+      level: 0,
+    });
+
+    expect(vm.$el.querySelector('.js-file-row-header')).not.toBe(null);
+  });
+
+  describe('new dropdown', () => {
+    beforeEach(() => {
       createComponent({
-        file: {
-          ...file(),
-          path: 'app/assets/index.js',
-        },
-        level: 0,
-      });
-
-      vm.displayTextKey = 'path';
-
-      vm.$nextTick(done);
-    });
-
-    it('returns text if truncateStart is 0', done => {
-      vm.truncateStart = 0;
-
-      vm.$nextTick(() => {
-        expect(vm.outputText).toBe('app/assets/index.js');
-
-        done();
+        file: file('t5'),
+        level: 1,
+        extraComponent: FileRowExtra,
       });
     });
 
-    it('returns text truncated at start', done => {
-      vm.truncateStart = 5;
+    it('renders in extra component', () => {
+      expect(findNewDropdown()).not.toBe(null);
+    });
 
-      vm.$nextTick(() => {
-        expect(vm.outputText).toBe('...ssets/index.js');
+    it('is hidden at start', () => {
+      expect(findNewDropdown()).not.toHaveClass('show');
+    });
 
-        done();
+    it('is opened when button is clicked', done => {
+      expect(vm.dropdownOpen).toBe(false);
+      findNewDropdownButton().dispatchEvent(new Event('click'));
+
+      vm.$nextTick()
+        .then(() => {
+          expect(vm.dropdownOpen).toBe(true);
+          expect(findNewDropdown()).toHaveClass('show');
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+
+    describe('when opened', () => {
+      beforeEach(() => {
+        vm.dropdownOpen = true;
+      });
+
+      it('stays open when button triggers mouseout', () => {
+        findNewDropdownButton().dispatchEvent(new Event('mouseout'));
+
+        expect(vm.dropdownOpen).toBe(true);
+      });
+
+      it('stays open when button triggers mouseleave', () => {
+        findNewDropdownButton().dispatchEvent(new Event('mouseleave'));
+
+        expect(vm.dropdownOpen).toBe(true);
+      });
+
+      it('closes when row triggers mouseleave', () => {
+        findFileRow().dispatchEvent(new Event('mouseleave'));
+
+        expect(vm.dropdownOpen).toBe(false);
       });
     });
   });

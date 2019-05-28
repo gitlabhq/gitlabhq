@@ -19,7 +19,7 @@ export default {
   data() {
     return {
       script: {},
-      scriptSrc: 'https://www.google.com/recaptcha/api.js',
+      scriptSrc: 'https://www.recaptcha.net/recaptcha/api.js',
     };
   },
 

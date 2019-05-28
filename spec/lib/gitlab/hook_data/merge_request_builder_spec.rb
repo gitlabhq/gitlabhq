@@ -10,6 +10,7 @@ describe Gitlab::HookData::MergeRequestBuilder do
     it 'includes safe attribute' do
       %w[
         assignee_id
+        assignee_ids
         author_id
         created_at
         description

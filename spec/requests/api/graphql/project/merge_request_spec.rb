@@ -70,13 +70,13 @@ describe 'getting merge request information nested in a project' do
 
   context 'when there are pipelines' do
     before do
-      pipeline = create(
+      create(
         :ci_pipeline,
         project: merge_request.source_project,
         ref: merge_request.source_branch,
         sha: merge_request.diff_head_sha
       )
-      merge_request.update!(head_pipeline: pipeline)
+      merge_request.update_head_pipeline
     end
 
     it 'has a head pipeline' do

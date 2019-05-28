@@ -4,8 +4,9 @@
 import { __ } from '~/locale';
 import ListLabel from '~/vue_shared/models/label';
 import ListAssignee from '~/vue_shared/models/assignee';
-import { urlParamsToObject } from '~/lib/utils/common_utils';
+import { isEE, urlParamsToObject } from '~/lib/utils/common_utils';
 import boardsStore from '../stores/boards_store';
+import ListMilestone from './milestone';
 
 const PER_PAGE = 20;
 
@@ -51,6 +52,9 @@ class List {
     } else if (obj.user) {
       this.assignee = new ListAssignee(obj.user);
       this.title = this.assignee.name;
+    } else if (isEE && obj.milestone) {
+      this.milestone = new ListMilestone(obj.milestone);
+      this.title = this.milestone.title;
     }
 
     if (!typeInfo.isBlank && this.id) {
@@ -69,12 +73,14 @@ class List {
   }
 
   save() {
-    const entity = this.label || this.assignee;
+    const entity = this.label || this.assignee || this.milestone;
     let entityType = '';
     if (this.label) {
       entityType = 'label_id';
-    } else {
+    } else if (this.assignee) {
       entityType = 'assignee_id';
+    } else if (isEE && this.milestone) {
+      entityType = 'milestone_id';
     }
 
     return gl.boardService
@@ -84,6 +90,7 @@ class List {
         this.id = data.id;
         this.type = data.list_type;
         this.position = data.position;
+        this.label = data.label;
 
         return this.getIssues();
       });
@@ -192,6 +199,13 @@ class List {
         issue.addAssignee(this.assignee);
       }
 
+      if (isEE && this.milestone) {
+        if (listFrom && listFrom.type === 'milestone') {
+          issue.removeMilestone(listFrom.milestone);
+        }
+        issue.addMilestone(this.milestone);
+      }
+
       if (listFrom) {
         this.issuesSize += 1;
 
@@ -244,6 +258,7 @@ class List {
     issue.project = data.project;
     issue.path = data.real_path;
     issue.referencePath = data.reference_path;
+    issue.assignableLabelsEndpoint = data.assignable_labels_endpoint;
 
     if (this.issuesSize > 1) {
       const moveBeforeId = this.issues[1].id;

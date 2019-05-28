@@ -20,11 +20,6 @@ export default {
       type: String,
       required: true,
     },
-    markdownVersion: {
-      type: Number,
-      required: false,
-      default: 0,
-    },
     canAttachFile: {
       type: Boolean,
       required: false,
@@ -48,7 +43,6 @@ export default {
     <markdown-field
       :markdown-preview-path="markdownPreviewPath"
       :markdown-docs-path="markdownDocsPath"
-      :markdown-version="markdownVersion"
       :can-attach-file="canAttachFile"
       :enable-autocomplete="enableAutocomplete"
     >
@@ -59,6 +53,7 @@ export default {
         v-model="formState.description"
         class="note-textarea js-gfm-input js-autosize markdown-area
         qa-description-textarea"
+        dir="auto"
         data-supports-quick-actions="false"
         aria-label="Description"
         placeholder="Write a comment or drag your files here…"

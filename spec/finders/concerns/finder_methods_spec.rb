@@ -12,7 +12,7 @@ describe FinderMethods do
       end
 
       def execute
-        Project.all
+        Project.all.order(id: :desc)
       end
     end
   end
@@ -37,6 +37,16 @@ describe FinderMethods do
 
     it 'raises not found the user does not have access' do
       expect { finder.find_by!(id: unauthorized_project.id) }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it 'ignores ordering' do
+      # Memoise the finder result so we can add message expectations to it
+      relation = finder.execute
+      allow(finder).to receive(:execute).and_return(relation)
+
+      expect(relation).to receive(:reorder).with(nil).and_call_original
+
+      finder.find_by!(id: authorized_project.id)
     end
   end
 
@@ -65,6 +75,16 @@ describe FinderMethods do
 
     it 'returns nil when the user does not have access' do
       expect(finder.find_by(id: unauthorized_project.id)).to be_nil
+    end
+
+    it 'ignores ordering' do
+      # Memoise the finder result so we can add message expectations to it
+      relation = finder.execute
+      allow(finder).to receive(:execute).and_return(relation)
+
+      expect(relation).to receive(:reorder).with(nil).and_call_original
+
+      finder.find_by(id: authorized_project.id)
     end
   end
 end

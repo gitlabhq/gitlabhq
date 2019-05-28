@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe InstanceConfiguration do
@@ -30,8 +32,8 @@ describe InstanceConfiguration do
         end
 
         def stub_pub_file(exist: true)
-          path = 'spec/fixtures/ssh_host_example_key.pub'
-          path << 'random' unless exist
+          path = exist ? 'spec/fixtures/ssh_host_example_key.pub' : 'spec/fixtures/ssh_host_example_key.pub.random'
+
           allow(subject).to receive(:ssh_algorithm_file).and_return(Rails.root.join(path))
         end
       end
@@ -79,6 +81,13 @@ describe InstanceConfiguration do
 
         it 'returns the key artifacts_max_size' do
           expect(gitlab_ci.keys).to include(:artifacts_max_size)
+        end
+
+        it 'returns the key artifacts_max_size with values' do
+          stub_application_setting(max_artifacts_size: 200)
+
+          expect(gitlab_ci[:artifacts_max_size][:default]).to eq(100.megabytes)
+          expect(gitlab_ci[:artifacts_max_size][:value]).to eq(200.megabytes)
         end
       end
     end

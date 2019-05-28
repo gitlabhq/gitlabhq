@@ -50,22 +50,22 @@ export default {
 </script>
 <template>
   <div>
-    <header class="add-issues-header form-actions">
-      <h2>
+    <header class="add-issues-header border-top-0 form-actions">
+      <h2 class="m-0">
         Add issues
         <button
           type="button"
           class="close"
           data-dismiss="modal"
           aria-label="Close"
-          @click="toggleModal(false);"
+          @click="toggleModal(false)"
         >
           <span aria-hidden="true">×</span>
         </button>
       </h2>
     </header>
     <modal-tabs v-if="!loading && issuesCount > 0" />
-    <div v-if="showSearch" class="add-issues-search append-bottom-10">
+    <div v-if="showSearch" class="d-flex append-bottom-10">
       <modal-filters :store="filter" />
       <button
         ref="selectAllBtn"

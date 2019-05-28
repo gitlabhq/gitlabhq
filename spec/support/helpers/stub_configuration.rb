@@ -2,7 +2,8 @@ require 'active_support/core_ext/hash/transform_values'
 require 'active_support/hash_with_indifferent_access'
 require 'active_support/dependencies'
 
-require_dependency 'gitlab'
+# check gets rid of already initialized constant warnings when using spring
+require_dependency 'gitlab' unless defined?(Gitlab)
 
 module StubConfiguration
   def stub_application_setting(messages)
@@ -56,6 +57,10 @@ module StubConfiguration
     allow(Gitlab.config.lfs).to receive_messages(to_settings(messages))
   end
 
+  def stub_external_diffs_setting(messages)
+    allow(Gitlab.config.external_diffs).to receive_messages(to_settings(messages))
+  end
+
   def stub_artifacts_setting(messages)
     allow(Gitlab.config.artifacts).to receive_messages(to_settings(messages))
   end
@@ -78,6 +83,10 @@ module StubConfiguration
 
   def stub_kerberos_setting(messages)
     allow(Gitlab.config.kerberos).to receive_messages(to_settings(messages))
+  end
+
+  def stub_gitlab_shell_setting(messages)
+    allow(Gitlab.config.gitlab_shell).to receive_messages(to_settings(messages))
   end
 
   private
@@ -112,3 +121,6 @@ module StubConfiguration
     end
   end
 end
+
+require_relative '../../../ee/spec/support/helpers/ee/stub_configuration' if
+  Dir.exist?("#{__dir__}/../../../ee")

@@ -14,6 +14,11 @@ class GroupClusterablePresenter < ClusterablePresenter
     install_applications_group_cluster_path(clusterable, cluster, application)
   end
 
+  override :update_applications_cluster_path
+  def update_applications_cluster_path(cluster, application)
+    update_applications_group_cluster_path(clusterable, cluster, application)
+  end
+
   override :cluster_path
   def cluster_path(cluster, params = {})
     group_cluster_path(clusterable, cluster, params)

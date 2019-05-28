@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Ci
-  class BuildTraceChunk < ActiveRecord::Base
+  class BuildTraceChunk < ApplicationRecord
     include FastDestroyAll
     include ::Gitlab::ExclusiveLeaseHelpers
     extend Gitlab::Ci::Model
@@ -18,7 +18,7 @@ module Ci
     FailedToPersistDataError = Class.new(StandardError)
 
     # Note: The ordering of this enum is related to the precedence of persist store.
-    # The bottom item takes the higest precedence, and the top item takes the lowest precedence.
+    # The bottom item takes the highest precedence, and the top item takes the lowest precedence.
     enum data_store: {
       redis: 1,
       database: 2,
@@ -115,7 +115,7 @@ module Ci
       current_data = get_data
 
       unless current_data&.bytesize.to_i == CHUNK_SIZE
-        raise FailedToPersistDataError, 'Data is not fullfilled in a bucket'
+        raise FailedToPersistDataError, 'Data is not fulfilled in a bucket'
       end
 
       old_store_class = self.class.get_store_class(data_store)

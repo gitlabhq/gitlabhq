@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import { mergeUrlParams, removeParams } from '~/lib/utils/url_utility';
 
 /**
  * OAuth-based login buttons have a separate "remember me" checkbox.
@@ -24,9 +25,9 @@ export default class OAuthRememberMe {
       const href = $(element).attr('href');
 
       if (rememberMe) {
-        $(element).attr('href', `${href}?remember_me=1`);
+        $(element).attr('href', mergeUrlParams({ remember_me: 1 }, href));
       } else {
-        $(element).attr('href', href.replace('?remember_me=1', ''));
+        $(element).attr('href', removeParams(['remember_me'], href));
       }
     });
   }

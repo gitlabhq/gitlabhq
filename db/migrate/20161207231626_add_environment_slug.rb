@@ -2,7 +2,6 @@
 # for more information on how to write migrations for GitLab.
 
 class AddEnvironmentSlug < ActiveRecord::Migration[4.2]
-  include Gitlab::Database::ArelMethods
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = true
@@ -20,7 +19,7 @@ class AddEnvironmentSlug < ActiveRecord::Migration[4.2]
     finder = environments.project(:id, :name)
 
     connection.exec_query(finder.to_sql).rows.each do |id, name|
-      updater = arel_update_manager
+      updater = Arel::UpdateManager.new
         .table(environments)
         .set(environments[:slug] => generate_slug(name))
         .where(environments[:id].eq(id))

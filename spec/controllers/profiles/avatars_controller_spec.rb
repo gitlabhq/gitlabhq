@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Profiles::AvatarsController do
-  let(:user)    { create(:user, avatar: fixture_file_upload("spec/fixtures/dk.png")) }
+  let(:user) { create(:user, avatar: fixture_file_upload("spec/fixtures/dk.png")) }
 
   before do
     sign_in(user)

@@ -1,5 +1,0 @@
----
-title: Prevent a path traversal attack on global file templates
-merge_request:
-author:
-type: security

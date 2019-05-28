@@ -33,7 +33,7 @@ module Banzai
           (?<new_link>.+?)
           (?<title>\ ".+?")?
         \)
-      }x
+      }x.freeze
 
       # Text matching LINK_OR_IMAGE_PATTERN inside these elements will not be linked
       IGNORE_PARENTS = %w(a code kbd pre script style).to_set
@@ -45,8 +45,6 @@ module Banzai
       ]).freeze
 
       def call
-        return doc if context[:markdown_engine] == :redcarpet
-
         doc.xpath(TEXT_QUERY).each do |node|
           content = node.to_html
 
@@ -73,7 +71,8 @@ module Banzai
         html = Banzai::Filter::MarkdownFilter.call(transform_markdown(match), context)
 
         # link is wrapped in a <p>, so strip that off
-        html.sub('<p>', '').chomp('</p>')
+        p_node = Nokogiri::HTML.fragment(html).at_css('p')
+        p_node ? p_node.children.to_html : html
       end
 
       def spaced_link_filter(text)

@@ -13,10 +13,12 @@ module Gitlab
           @project = project
         end
 
+        def lfs_download_object
+          LfsDownloadObject.new(oid: lfs_object.oid, size: lfs_object.size, link: lfs_object.link)
+        end
+
         def execute
-          Projects::LfsPointers::LfsDownloadService
-            .new(project)
-            .execute(lfs_object.oid, lfs_object.download_link)
+          Projects::LfsPointers::LfsDownloadService.new(project, lfs_download_object).execute
         end
       end
     end

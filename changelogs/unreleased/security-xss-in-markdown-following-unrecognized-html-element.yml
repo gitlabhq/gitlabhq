@@ -1,5 +1,0 @@
----
-title: Fix possible XSS attack in Markdown urls with spaces
-merge_request: 2599
-author:
-type: security

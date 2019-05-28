@@ -10,7 +10,8 @@ Currently supported exporters are:
 
 - [Kubernetes](kubernetes.md)
 - [NGINX](nginx.md)
-- [NGINX Ingress Controller](nginx_ingress.md)
+- [NGINX Ingress Controller 0.9.0-0.15.x](nginx_ingress_vts.md)
+- [NGINX Ingress Controller 0.16.0+](nginx_ingress.md)
 - [HAProxy](haproxy.md)
 - [Amazon Cloud Watch](cloudwatch.md)
 
@@ -28,6 +29,6 @@ In order to isolate and only display relevant metrics for a given environment,
 GitLab needs a method to detect which labels are associated. To do that,
 GitLab uses the defined queries and fills in the environment specific variables.
 Typically this involves looking for the
-[`$CI_ENVIRONMENT_SLUG`](../../../../ci/variables/README.md#predefined-variables-environment-variables),
+[`$CI_ENVIRONMENT_SLUG`](../../../../ci/variables/README.md#predefined-environment-variables),
 but may also include other information such as the project's Kubernetes namespace.
 Each search query is defined in the [exporter specific documentation](#exporters).

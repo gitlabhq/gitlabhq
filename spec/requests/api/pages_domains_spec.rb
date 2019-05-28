@@ -236,7 +236,7 @@ describe API::PagesDomains do
 
     shared_examples_for 'post pages domains' do
       it 'creates a new pages domain' do
-        post api(route, user), params
+        post api(route, user), params: params
         pages_domain = PagesDomain.find_by(domain: json_response['domain'])
 
         expect(response).to have_gitlab_http_status(201)
@@ -247,7 +247,7 @@ describe API::PagesDomains do
       end
 
       it 'creates a new secure pages domain' do
-        post api(route, user), params_secure
+        post api(route, user), params: params_secure
         pages_domain = PagesDomain.find_by(domain: json_response['domain'])
 
         expect(response).to have_gitlab_http_status(201)
@@ -258,13 +258,13 @@ describe API::PagesDomains do
       end
 
       it 'fails to create pages domain without key' do
-        post api(route, user), pages_domain_secure_params.slice(:domain, :certificate)
+        post api(route, user), params: pages_domain_secure_params.slice(:domain, :certificate)
 
         expect(response).to have_gitlab_http_status(400)
       end
 
       it 'fails to create pages domain with key missmatch' do
-        post api(route, user), pages_domain_secure_key_missmatch_params.slice(:domain, :certificate, :key)
+        post api(route, user), params: pages_domain_secure_key_missmatch_params.slice(:domain, :certificate, :key)
 
         expect(response).to have_gitlab_http_status(400)
       end
@@ -284,7 +284,7 @@ describe API::PagesDomains do
       end
 
       it_behaves_like '403 response' do
-        let(:request) { post api(route, user), params }
+        let(:request) { post api(route, user), params: params }
       end
     end
 
@@ -294,7 +294,7 @@ describe API::PagesDomains do
       end
 
       it_behaves_like '403 response' do
-        let(:request) { post api(route, user), params }
+        let(:request) { post api(route, user), params: params }
       end
     end
 
@@ -304,13 +304,13 @@ describe API::PagesDomains do
       end
 
       it_behaves_like '403 response' do
-        let(:request) { post api(route, user), params }
+        let(:request) { post api(route, user), params: params }
       end
     end
 
     context 'when user is not a member' do
       it_behaves_like '404 response' do
-        let(:request) { post api(route, user), params }
+        let(:request) { post api(route, user), params: params }
       end
     end
   end
@@ -331,7 +331,7 @@ describe API::PagesDomains do
       end
 
       it 'updates pages domain adding certificate' do
-        put api(route_domain, user), params_secure
+        put api(route_domain, user), params: params_secure
         pages_domain.reload
 
         expect(response).to have_gitlab_http_status(200)
@@ -341,7 +341,7 @@ describe API::PagesDomains do
       end
 
       it 'updates pages domain with expired certificate' do
-        put api(route_expired_domain, user), params_secure
+        put api(route_expired_domain, user), params: params_secure
         pages_domain_expired.reload
 
         expect(response).to have_gitlab_http_status(200)
@@ -351,7 +351,7 @@ describe API::PagesDomains do
       end
 
       it 'updates pages domain with expired certificate not updating key' do
-        put api(route_secure_domain, user), params_secure_nokey
+        put api(route_secure_domain, user), params: params_secure_nokey
         pages_domain_secure.reload
 
         expect(response).to have_gitlab_http_status(200)
@@ -360,19 +360,19 @@ describe API::PagesDomains do
       end
 
       it 'fails to update pages domain adding certificate without key' do
-        put api(route_domain, user), params_secure_nokey
+        put api(route_domain, user), params: params_secure_nokey
 
         expect(response).to have_gitlab_http_status(400)
       end
 
       it 'fails to update pages domain adding certificate with missing chain' do
-        put api(route_domain, user), pages_domain_secure_missing_chain_params.slice(:certificate)
+        put api(route_domain, user), params: pages_domain_secure_missing_chain_params.slice(:certificate)
 
         expect(response).to have_gitlab_http_status(400)
       end
 
       it 'fails to update pages domain with key missmatch' do
-        put api(route_secure_domain, user), pages_domain_secure_key_missmatch_params.slice(:certificate, :key)
+        put api(route_secure_domain, user), params: pages_domain_secure_key_missmatch_params.slice(:certificate, :key)
 
         expect(response).to have_gitlab_http_status(400)
       end

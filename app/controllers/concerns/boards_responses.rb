@@ -34,15 +34,11 @@ module BoardsResponses
   end
 
   def authorize_read_list
-    ability = board.group_board? ? :read_group : :read_list
-
-    authorize_action_for!(board.parent, ability)
+    authorize_action_for!(board, :read_list)
   end
 
   def authorize_read_issue
-    ability = board.group_board? ? :read_group : :read_issue
-
-    authorize_action_for!(board.parent, ability)
+    authorize_action_for!(board, :read_issue)
   end
 
   def authorize_update_issue
@@ -57,7 +53,7 @@ module BoardsResponses
   end
 
   def authorize_admin_list
-    authorize_action_for!(board.parent, :admin_list)
+    authorize_action_for!(board, :admin_list)
   end
 
   def authorize_action_for!(resource, ability)

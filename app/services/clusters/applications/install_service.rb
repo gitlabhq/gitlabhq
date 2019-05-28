@@ -6,19 +6,26 @@ module Clusters
       def execute
         return unless app.scheduled?
 
-        begin
-          app.make_installing!
-          helm_api.install(install_command)
+        app.make_installing!
 
-          ClusterWaitForAppInstallationWorker.perform_in(
-            ClusterWaitForAppInstallationWorker::INTERVAL, app.name, app.id)
-        rescue Kubeclient::HttpError => e
-          log_error(e)
-          app.make_errored!("Kubernetes error: #{e.error_code}")
-        rescue StandardError => e
-          log_error(e)
-          app.make_errored!("Can't start installation process.")
-        end
+        install
+      end
+
+      private
+
+      def install
+        log_event(:begin_install)
+        helm_api.install(install_command)
+
+        log_event(:schedule_wait_for_installation)
+        ClusterWaitForAppInstallationWorker.perform_in(
+          ClusterWaitForAppInstallationWorker::INTERVAL, app.name, app.id)
+      rescue Kubeclient::HttpError => e
+        log_error(e)
+        app.make_errored!(_('Kubernetes error: %{error_code}') % { error_code: e.error_code })
+      rescue StandardError => e
+        log_error(e)
+        app.make_errored!(_('Failed to install.'))
       end
     end
   end

@@ -49,12 +49,12 @@ class TodoService
     todo_users.each(&:update_todos_count_cache)
   end
 
-  # When we reassign an issue we should:
+  # When we reassign an issuable we should:
   #
-  #  * create a pending todo for new assignee if issue is assigned
+  #  * create a pending todo for new assignee if issuable is assigned
   #
-  def reassigned_issue(issue, current_user, old_assignees = [])
-    create_assignment_todo(issue, current_user, old_assignees)
+  def reassigned_issuable(issuable, current_user, old_assignees = [])
+    create_assignment_todo(issuable, current_user, old_assignees)
   end
 
   # When create a merge request we should:
@@ -80,14 +80,6 @@ class TodoService
   #
   def close_merge_request(merge_request, current_user)
     mark_pending_todos_as_done(merge_request, current_user)
-  end
-
-  # When we reassign a merge request we should:
-  #
-  #  * creates a pending todo for new assignee if merge request is assigned
-  #
-  def reassigned_merge_request(merge_request, current_user)
-    create_assignment_todo(merge_request, current_user)
   end
 
   # When merge a merge request we should:

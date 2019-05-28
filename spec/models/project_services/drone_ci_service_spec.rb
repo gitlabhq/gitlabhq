@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe DroneCiService, :use_clean_rails_memory_store_caching do
@@ -117,7 +119,7 @@ describe DroneCiService, :use_clean_rails_memory_store_caching do
   describe "execute" do
     include_context :drone_ci_service
 
-    let(:user)    { create(:user, username: 'username') }
+    let(:user) { create(:user, username: 'username') }
     let(:push_sample_data) do
       Gitlab::DataBuilder::Push.build_sample(project, user)
     end

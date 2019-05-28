@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe 'Protected Branches', :js do
+  include ProtectedBranchHelpers
+
   let(:user) { create(:user) }
   let(:admin) { create(:admin) }
   let(:project) { create(:project, :repository) }
@@ -97,7 +99,7 @@ describe 'Protected Branches', :js do
         set_protected_branch_name('some-branch')
         click_on "Protect"
 
-        within(".protected-branches-list") { expect(page).to have_content('branch was removed') }
+        within(".protected-branches-list") { expect(page).to have_content('branch was deleted') }
       end
     end
 
@@ -150,27 +152,11 @@ describe 'Protected Branches', :js do
     end
 
     describe "access control" do
+      before do
+        stub_licensed_features(protected_refs_for_users: false)
+      end
+
       include_examples "protected branches > access control > CE"
-    end
-  end
-
-  def set_protected_branch_name(branch_name)
-    find(".js-protected-branch-select").click
-    find(".dropdown-input-field").set(branch_name)
-    click_on("Create wildcard #{branch_name}")
-  end
-
-  def set_defaults
-    find(".js-allowed-to-merge").click
-    within('.qa-allowed-to-merge-dropdown') do
-      expect(first("li")).to have_content("Roles")
-      find(:link, 'No one').click
-    end
-
-    find(".js-allowed-to-push").click
-    within('.qa-allowed-to-push-dropdown') do
-      expect(first("li")).to have_content("Roles")
-      find(:link, 'No one').click
     end
   end
 end

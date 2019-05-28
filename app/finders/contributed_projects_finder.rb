@@ -14,6 +14,9 @@ class ContributedProjectsFinder < UnionFinder
   # Returns an ActiveRecord::Relation.
   # rubocop: disable CodeReuse/ActiveRecord
   def execute(current_user = nil)
+    # Do not show contributed projects if the user profile is private.
+    return Project.none unless can_read_profile?(current_user)
+
     segments = all_projects(current_user)
 
     find_union(segments, Project).includes(:namespace).order_id_desc
@@ -21,6 +24,10 @@ class ContributedProjectsFinder < UnionFinder
   # rubocop: enable CodeReuse/ActiveRecord
 
   private
+
+  def can_read_profile?(current_user)
+    Ability.allowed?(current_user, :read_user_profile, @user)
+  end
 
   def all_projects(current_user)
     projects = []

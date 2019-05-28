@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Ci
-  class Runner < ActiveRecord::Base
+  class Runner < ApplicationRecord
     extend Gitlab::Ci::Model
     include Gitlab::SQL::Pattern
     include IgnorableColumn
@@ -10,7 +10,7 @@ module Ci
     include FromUnion
     include TokenAuthenticatable
 
-    add_authentication_token_field :token, encrypted: true, migrating: true
+    add_authentication_token_field :token, encrypted: -> { Feature.enabled?(:ci_runners_tokens_optional_encryption, default_enabled: true) ? :optional : :required }
 
     enum access_level: {
       not_protected: 0,
@@ -58,8 +58,7 @@ module Ci
 
     # BACKWARD COMPATIBILITY: There are needed to maintain compatibility with `AVAILABLE_SCOPES` used by `lib/api/runners.rb`
     scope :deprecated_shared, -> { instance_type }
-    # this should get replaced with `project_type.or(group_type)` once using Rails5
-    scope :deprecated_specific, -> { where(runner_type: [runner_types[:project_type], runner_types[:group_type]]) }
+    scope :deprecated_specific, -> { project_type.or(group_type) }
 
     scope :belonging_to_project, -> (project_id) {
       joins(:runner_projects).where(ci_runner_projects: { project_id: project_id })
@@ -67,7 +66,7 @@ module Ci
 
     scope :belonging_to_parent_group_of_project, -> (project_id) {
       project_groups = ::Group.joins(:projects).where(projects: { id: project_id })
-      hierarchy_groups = Gitlab::GroupHierarchy.new(project_groups).base_and_ancestors
+      hierarchy_groups = Gitlab::ObjectHierarchy.new(project_groups).base_and_ancestors
 
       joins(:groups).where(namespaces: { id: hierarchy_groups })
     }
@@ -98,6 +97,7 @@ module Ci
 
     scope :order_contacted_at_asc, -> { order(contacted_at: :asc) }
     scope :order_created_at_desc, -> { order(created_at: :desc) }
+    scope :with_tags, -> { preload(:tags) }
 
     validate :tag_constraints
     validates :access_level, presence: true
@@ -255,6 +255,10 @@ module Ci
       if can_pick?(build)
         tick_runner_queue
       end
+    end
+
+    def uncached_contacted_at
+      read_attribute(:contacted_at)
     end
 
     private

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Profiles::NotificationsController do
@@ -24,7 +26,7 @@ describe Profiles::NotificationsController do
     it 'updates only permitted attributes' do
       sign_in(user)
 
-      put :update, user: { notification_email: 'new@example.com', notified_of_own_activity: true, admin: true }
+      put :update, params: { user: { notification_email: 'new@example.com', notified_of_own_activity: true, admin: true } }
 
       user.reload
       expect(user.notification_email).to eq('new@example.com')
@@ -36,7 +38,7 @@ describe Profiles::NotificationsController do
     it 'shows an error message if the params are invalid' do
       sign_in(user)
 
-      put :update, user: { notification_email: '' }
+      put :update, params: { user: { notification_email: '' } }
 
       expect(user.reload.notification_email).to eq('original@example.com')
       expect(controller).to set_flash[:alert].to('Failed to save new settings')

@@ -9,8 +9,8 @@ To measure the impact of a merge request you can use
 [Sherlock](profiling.md#sherlock). It's also highly recommended that you read
 the following guides:
 
-* [Performance Guidelines](performance.md)
-* [What requires downtime?](what_requires_downtime.md)
+- [Performance Guidelines](performance.md)
+- [What requires downtime?](what_requires_downtime.md)
 
 ## Impact Analysis
 

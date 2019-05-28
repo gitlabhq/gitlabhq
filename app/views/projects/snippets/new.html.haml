@@ -1,8 +1,8 @@
 - add_to_breadcrumbs _("Snippets"), project_snippets_path(@project)
 - breadcrumb_title _("New")
-- page_title _("New Snippets")
+- page_title _("New Snippet")
 
 %h3.page-title
-  = _('New Snippet')
+  = _("New Snippet")
 %hr
 = render "shared/snippets/form", url: project_snippets_path(@project, @snippet)

@@ -1,6 +1,0 @@
----
-title: Updates service to update Kubernetes project namespaces and restricted service
-  account if present
-merge_request: 23525
-author:
-type: changed

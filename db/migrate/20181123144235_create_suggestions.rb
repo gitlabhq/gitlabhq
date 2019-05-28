@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class CreateSuggestions < ActiveRecord::Migration
+class CreateSuggestions < ActiveRecord::Migration[5.0]
   DOWNTIME = false
 
   def change

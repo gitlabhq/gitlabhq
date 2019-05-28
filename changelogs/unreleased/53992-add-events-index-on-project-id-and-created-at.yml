@@ -1,5 +1,0 @@
----
-title: Add index for events on project_id and created_at
-merge_request: 23354
-author:
-type: performance

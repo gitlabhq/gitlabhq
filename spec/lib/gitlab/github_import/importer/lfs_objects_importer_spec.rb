@@ -5,7 +5,15 @@ describe Gitlab::GithubImport::Importer::LfsObjectsImporter do
   let(:client) { double(:client) }
   let(:download_link) { "http://www.gitlab.com/lfs_objects/oid" }
 
-  let(:github_lfs_object) { ['oid', download_link] }
+  let(:lfs_attributes) do
+    {
+      oid: 'oid',
+      size: 1,
+      link: 'http://www.gitlab.com/lfs_objects/oid'
+    }
+  end
+
+  let(:lfs_download_object) { LfsDownloadObject.new(lfs_attributes) }
 
   describe '#parallel?' do
     it 'returns true when running in parallel mode' do
@@ -48,7 +56,7 @@ describe Gitlab::GithubImport::Importer::LfsObjectsImporter do
 
       allow(importer)
         .to receive(:each_object_to_import)
-        .and_yield(['oid', download_link])
+        .and_yield(lfs_download_object)
 
       expect(Gitlab::GithubImport::Importer::LfsObjectImporter)
         .to receive(:new)
@@ -71,7 +79,7 @@ describe Gitlab::GithubImport::Importer::LfsObjectsImporter do
 
       allow(importer)
         .to receive(:each_object_to_import)
-        .and_yield(github_lfs_object)
+        .and_yield(lfs_download_object)
 
       expect(Gitlab::GithubImport::ImportLfsObjectWorker)
         .to receive(:perform_async)

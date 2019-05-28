@@ -6,7 +6,7 @@
 
 %div{ class: div_class }
   = form.text_field :title, required: true, maxlength: 255, autofocus: true,
-      autocomplete: 'off', class: 'form-control pad qa-issuable-form-title', placeholder: _('Title')
+      autocomplete: 'off', class: 'form-control pad qa-issuable-form-title', placeholder: _('Title'), dir: 'auto'
 
   - if issuable.respond_to?(:work_in_progress?)
     .form-text.text-muted

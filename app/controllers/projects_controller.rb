@@ -6,19 +6,23 @@ class ProjectsController < Projects::ApplicationController
   include ExtractsPath
   include PreviewMarkdown
   include SendFileUpload
+  include RecordUserLastActivity
 
   prepend_before_action(only: [:show]) { authenticate_sessionless_user!(:rss) }
 
+  around_action :allow_gitaly_ref_name_caching, only: [:index, :show]
+
   before_action :whitelist_query_limiting, only: [:create]
-  before_action :authenticate_user!, except: [:index, :show, :activity, :refs]
+  before_action :authenticate_user!, except: [:index, :show, :activity, :refs, :resolve]
   before_action :redirect_git_extension, only: [:show]
-  before_action :project, except: [:index, :new, :create]
-  before_action :repository, except: [:index, :new, :create]
+  before_action :project, except: [:index, :new, :create, :resolve]
+  before_action :repository, except: [:index, :new, :create, :resolve]
   before_action :assign_ref_vars, only: [:show], if: :repo_exists?
   before_action :tree, only: [:show], if: [:repo_exists?, :project_view_files?]
   before_action :lfs_blob_ids, only: [:show], if: [:repo_exists?, :project_view_files?]
   before_action :project_export_enabled, only: [:export, :download_export, :remove_export, :generate_new_export]
   before_action :present_project, only: [:edit]
+  before_action :authorize_download_code!, only: [:refs]
 
   # Authorize
   before_action :authorize_admin_project!, only: [:edit, :update, :housekeeping, :download_export, :export, :remove_export, :generate_new_export]
@@ -32,10 +36,10 @@ class ProjectsController < Projects::ApplicationController
 
   # rubocop: disable CodeReuse/ActiveRecord
   def new
-    namespace = Namespace.find_by(id: params[:namespace_id]) if params[:namespace_id]
-    return access_denied! if namespace && !can?(current_user, :create_projects, namespace)
+    @namespace = Namespace.find_by(id: params[:namespace_id]) if params[:namespace_id]
+    return access_denied! if @namespace && !can?(current_user, :create_projects, @namespace)
 
-    @project = Project.new(namespace_id: namespace&.id)
+    @project = Project.new(namespace_id: @namespace&.id)
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
@@ -45,7 +49,7 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def create
-    @project = ::Projects::CreateService.new(current_user, project_params).execute
+    @project = ::Projects::CreateService.new(current_user, project_params(attributes: project_params_create_attributes)).execute
 
     if @project.saved?
       cookies[:issue_board_welcome_hidden] = { path: project_path(@project), value: nil, expires: Time.at(0) }
@@ -233,7 +237,7 @@ class ProjectsController < Projects::ApplicationController
 
   def toggle_star
     current_user.toggle_star(@project)
-    @project.reload
+    @project.reset
 
     render json: {
       star_count: @project.star_count
@@ -326,9 +330,9 @@ class ProjectsController < Projects::ApplicationController
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
-  def project_params
+  def project_params(attributes: [])
     params.require(:project)
-      .permit(project_params_attributes)
+      .permit(project_params_attributes + attributes)
   end
 
   def project_params_attributes
@@ -341,17 +345,17 @@ class ProjectsController < Projects::ApplicationController
       :container_registry_enabled,
       :default_branch,
       :description,
+      :external_authorization_classification_label,
       :import_url,
       :issues_tracker,
       :issues_tracker_id,
       :last_activity_at,
       :lfs_enabled,
       :name,
-      :namespace_id,
       :only_allow_merge_if_all_discussions_are_resolved,
       :only_allow_merge_if_pipeline_succeeds,
-      :printing_merge_request_link_enabled,
       :path,
+      :printing_merge_request_link_enabled,
       :public_builds,
       :request_access_enabled,
       :runners_token,
@@ -371,6 +375,10 @@ class ProjectsController < Projects::ApplicationController
         pages_access_level
       ]
     ]
+  end
+
+  def project_params_create_attributes
+    [:namespace_id]
   end
 
   def custom_import_params
@@ -440,5 +448,15 @@ class ProjectsController < Projects::ApplicationController
 
   def present_project
     @project = @project.present(current_user: current_user)
+  end
+
+  def resolve
+    @project = Project.find(params[:id])
+
+    if can?(current_user, :read_project, @project)
+      redirect_to @project
+    else
+      render_404
+    end
   end
 end

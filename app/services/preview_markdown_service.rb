@@ -10,15 +10,14 @@ class PreviewMarkdownService < BaseService
       text: text,
       users: users,
       suggestions: suggestions,
-      commands: commands.join(' '),
-      markdown_engine: markdown_engine
+      commands: commands.join(' ')
     )
   end
 
   private
 
   def explain_quick_actions(text)
-    return text, [] unless %w(Issue MergeRequest Commit).include?(commands_target_type)
+    return text, [] unless %w(Issue MergeRequest Commit).include?(target_type)
 
     quick_actions_service = QuickActions::InterpretService.new(project, current_user)
     quick_actions_service.explain(text, find_commands_target)
@@ -31,30 +30,34 @@ class PreviewMarkdownService < BaseService
   end
 
   def find_suggestions(text)
-    return [] unless params[:preview_suggestions]
+    return [] unless preview_sugestions?
 
-    Banzai::SuggestionsParser.parse(text)
+    position = Gitlab::Diff::Position.new(new_path: params[:file_path],
+                                          new_line: params[:line].to_i,
+                                          base_sha: params[:base_sha],
+                                          head_sha: params[:head_sha],
+                                          start_sha: params[:start_sha])
+
+    Gitlab::Diff::SuggestionsParser.parse(text, position: position, project: project)
+  end
+
+  def preview_sugestions?
+    params[:preview_suggestions] &&
+      target_type == 'MergeRequest' &&
+      Ability.allowed?(current_user, :download_code, project)
   end
 
   def find_commands_target
     QuickActions::TargetService
       .new(project, current_user)
-      .execute(commands_target_type, commands_target_id)
+      .execute(target_type, target_id)
   end
 
-  def commands_target_type
-    params[:quick_actions_target_type]
+  def target_type
+    params[:target_type]
   end
 
-  def commands_target_id
-    params[:quick_actions_target_id]
-  end
-
-  def markdown_engine
-    if params[:legacy_render]
-      :redcarpet
-    else
-      CacheMarkdownField::MarkdownEngine.from_version(params[:markdown_version].to_i)
-    end
+  def target_id
+    params[:target_id]
   end
 end

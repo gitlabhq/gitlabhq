@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Admin::HooksController do
@@ -20,7 +22,7 @@ describe Admin::HooksController do
         merge_requests_events: true
       }
 
-      post :create, hook: hook_params
+      post :create, params: { hook: hook_params }
 
       expect(response).to have_gitlab_http_status(302)
       expect(SystemHook.all.size).to eq(1)

@@ -1,7 +1,9 @@
 # Linter Documentation:
 # https://github.com/brigade/scss-lint/blob/master/lib/scss_lint/linter/README.md
 
-scss_files: 'app/assets/stylesheets/**/*.scss'
+scss_files:
+  - 'app/assets/stylesheets/**/*.scss'
+  - 'ee/app/assets/stylesheets/**/*.scss'
 
 exclude:
   - 'app/assets/stylesheets/pages/emojis.scss'

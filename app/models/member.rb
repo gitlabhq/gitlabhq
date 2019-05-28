@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Member < ActiveRecord::Base
+class Member < ApplicationRecord
   include AfterCommitQueue
   include Sortable
   include Importable
@@ -28,7 +28,7 @@ class Member < ActiveRecord::Base
     presence: {
       if: :invite?
     },
-    email: {
+    devise_email: {
       allow_nil: true
     },
     uniqueness: {
@@ -76,13 +76,18 @@ class Member < ActiveRecord::Base
   scope :maintainers, -> { active.where(access_level: MAINTAINER) }
   scope :masters, -> { maintainers } # @deprecated
   scope :owners,  -> { active.where(access_level: OWNER) }
-  scope :owners_and_maintainers,  -> { active.where(access_level: [OWNER, MAINTAINER]) }
+  scope :owners_and_maintainers, -> { active.where(access_level: [OWNER, MAINTAINER]) }
   scope :owners_and_masters,  -> { owners_and_maintainers } # @deprecated
+  scope :with_user, -> (user) { where(user: user) }
+
+  scope :with_source_id, ->(source_id) { where(source_id: source_id) }
 
   scope :order_name_asc, -> { left_join_users.reorder(Gitlab::Database.nulls_last_order('users.name', 'ASC')) }
   scope :order_name_desc, -> { left_join_users.reorder(Gitlab::Database.nulls_last_order('users.name', 'DESC')) }
   scope :order_recent_sign_in, -> { left_join_users.reorder(Gitlab::Database.nulls_last_order('users.last_sign_in_at', 'DESC')) }
   scope :order_oldest_sign_in, -> { left_join_users.reorder(Gitlab::Database.nulls_last_order('users.last_sign_in_at', 'ASC')) }
+
+  scope :on_project_and_ancestors, ->(project) { where(source: [project] + project.ancestors) }
 
   before_validation :generate_invite_token, on: :create, if: -> (member) { member.invite_email.present? }
 
@@ -443,10 +448,10 @@ class Member < ActiveRecord::Base
   end
 
   def higher_access_level_than_group
-    if highest_group_member && highest_group_member.access_level >= access_level
+    if highest_group_member && highest_group_member.access_level > access_level
       error_parameters = { access: highest_group_member.human_access, group_name: highest_group_member.group.name }
 
-      errors.add(:access_level, s_("should be higher than %{access} inherited membership from group %{group_name}") % error_parameters)
+      errors.add(:access_level, s_("should be greater than or equal to %{access} inherited membership from group %{group_name}") % error_parameters)
     end
   end
 end

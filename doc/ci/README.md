@@ -3,133 +3,165 @@ comments: false
 description: "Learn how to use GitLab CI/CD, the GitLab built-in Continuous Integration, Continuous Deployment, and Continuous Delivery toolset to build, test, and deploy your application."
 ---
 
-# GitLab Continuous Integration (GitLab CI/CD)
+# GitLab CI/CD
 
-![Pipeline graph](img/cicd_pipeline_infograph.png)
+GitLab CI/CD is a tool built into GitLab for software development
+through the [continuous methodologies](introduction/index.md#introduction-to-cicd-methodologies):
 
-The benefits of Continuous Integration are huge when automation plays an
-integral part of your workflow. GitLab comes with built-in Continuous
-Integration, Continuous Deployment, and Continuous Delivery support
-to build, test, and deploy your application.
+- Continuous Integration (CI)
+- Continuous Delivery (CD)
+- Continuous Deployment (CD)
 
-Here's some info we've gathered to get you started.
+## Overview
+
+Continuous Integration works by pushing small code chunks to your
+application's code base hosted in a Git repository, and, to every
+push, run a pipeline of scripts to build, test, and validate the
+code changes before merging them into the main branch.
+
+Continuous Delivery and Deployment consist of a step further CI,
+deploying your application to production at every
+push to the default branch of the repository.
+
+These methodologies allow you to catch bugs and errors early in
+the development cycle, ensuring that all the code deployed to
+production complies with the code standards you established for
+your app.
+
+For a complete overview of these methodologies and GitLab CI/CD,
+read the [Introduction to CI/CD with GitLab](introduction/index.md).
 
 ## Getting started
 
-The first steps towards your GitLab CI/CD journey.
+GitLab CI/CD is configured by a file called `.gitlab-ci.yml` placed
+at the repository's root. The scripts set in this file are executed
+by the [GitLab Runner](https://docs.gitlab.com/runner/).
 
-- [Getting started with GitLab CI/CD](quick_start/README.md): understand how GitLab CI/CD works.
-- [GitLab CI/CD configuration file: `.gitlab-ci.yml`](yaml/README.md) - Learn all about the ins and outs of `.gitlab-ci.yml`.
-- [Pipelines and jobs](pipelines.md): configure your GitLab CI/CD pipelines to build, test, and deploy your application.
-- Runners: The [GitLab Runner](https://docs.gitlab.com/runner/) is responsible by running the jobs in your CI/CD pipeline. On GitLab.com, Shared Runners are enabled by default, so
-you don't need to set up anything to start to use them with GitLab CI/CD.
+To get started with GitLab CI/CD, we recommend you read through
+the following documents:
 
-### Introduction to GitLab CI/CD
+- [How GitLab CI/CD works](introduction/index.md#how-gitlab-cicd-works).
+- [GitLab CI/CD basic workflow](introduction/index.md#basic-cicd-workflow).
+- [Step-by-step guide for writing `.gitlab-ci.yml` for the first time](../user/project/pages/getting_started_part_four.md).
 
-- Article (2016-08-05): [Continuous Integration, Delivery, and Deployment with GitLab - Intro to CI/CD](https://about.gitlab.com/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/)
-- Article (2015-12-14): [Getting started with GitLab and GitLab CI - Intro to CI](https://about.gitlab.com/2015/12/14/getting-started-with-gitlab-and-gitlab-ci/)
-- Article (2017-07-13): [Making CI Easier with GitLab](https://about.gitlab.com/2017/07/13/making-ci-easier-with-gitlab/)
-- Article (2017-05-22): [Fast and Natural Continuous Integration with GitLab CI](https://about.gitlab.com/2017/05/22/fast-and-natural-continuous-integration-with-gitlab-ci/)
-- **Videos:**
-  - Demo (Streamed live on Jul 17, 2017): [GitLab CI/CD Deep Dive](https://youtu.be/pBe4t1CD8Fc?t=195)
-  - Demo (March, 2017): [How to get started using CI/CD with GitLab](https://about.gitlab.com/2017/03/13/ci-cd-demo/)
-  - Webcast (April, 2016): [Getting started with CI in GitLab](https://about.gitlab.com/2016/04/20/webcast-recording-and-slides-introduction-to-ci-in-gitlab/)
-- **Third-party videos:**
-  - [Intégration continue avec GitLab (September, 2016)](https://www.youtube.com/watch?v=URcMBXjIr24&t=13s)
-  - [GitLab CI for Minecraft Plugins (July, 2016)](https://www.youtube.com/watch?v=Z4pcI9F8yf8)
+You can also get started by using one of the
+[`.gitlab-ci.yml` templates](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/lib/gitlab/ci/templates)
+available through the UI. You can use them by creating a new file,
+choosing a template that suits your application, and adjusting it
+to your needs:
 
-### Why GitLab CI/CD?
+![Use a .gitlab-ci.yml template](img/add_file_template_11_10.png)
 
-  - Article (2016-10-17): [Why We Chose GitLab CI for our CI/CD Solution](https://about.gitlab.com/2016/10/17/gitlab-ci-oohlala/)
-  - Article (2016-07-22): [Building our web-app on GitLab CI: 5 reasons why Captain Train migrated from Jenkins to GitLab CI](https://about.gitlab.com/2016/07/22/building-our-web-app-on-gitlab-ci/)
+For a broader overview, see the [CI/CD getting started](quick_start/README.md) guide.
 
-## Exploring GitLab CI/CD
+Once you're familiar with how GitLab CI/CD works, see the
+[`. gitlab-ci.yml` full reference](yaml/README.md)
+for all the attributes you can set and use.
 
-- [CI/CD Variables](variables/README.md) - Learn how to use variables defined in
-  your `.gitlab-ci.yml` or the ones defined in your project's settings
-  - [Where variables can be used](variables/where_variables_can_be_used.md) - A
-    deeper look on where and how the CI/CD variables can be used
-- **The permissions model** - Learn about the access levels a user can have for
-  performing certain CI actions
-  - [User permissions](../user/permissions.md#gitlab-ci)
-  - [Job permissions](../user/permissions.md#job-permissions)
-- [Configure a Runner, the application that runs your jobs](runners/README.md)
-- Article (2016-03-01): [Setting up GitLab Runner For Continuous Integration](https://about.gitlab.com/2016/03/01/gitlab-runner-with-docker/)
-- Article (2016-07-29): [GitLab CI: Run jobs sequentially, in parallel, or build a custom pipeline](https://about.gitlab.com/2016/07/29/the-basics-of-gitlab-ci/)
-- Article (2016-08-26): [GitLab CI: Deployment & environments](https://about.gitlab.com/2016/08/26/ci-deployment-and-environments/)
-- Article (2016-05-23): [Introduction to GitLab Container Registry](https://about.gitlab.com/2016/05/23/gitlab-container-registry/)
+NOTE: **Note:**
+GitLab CI/CD and [shared runners](runners/README.md#shared-specific-and-group-runners) are enabled in GitLab.com and available for all users, limited only to the [user's pipelines quota](https://docs.gitlab.com/ee/user/admin_area/settings/continuous_integration.html#extra-shared-runners-pipeline-minutes-quota).
 
-## Advanced use
+## Configuration
 
-Once you get familiar with the basics of GitLab CI/CD, it's time to dive in and
-learn how to leverage its potential even more.
+GitLab CI/CD supports numerous configuration options:
 
-- [Environments and deployments](environments.md): Separate your jobs into
-  environments and use them for different purposes like testing, building and
-  deploying
-- [Job artifacts](../user/project/pipelines/job_artifacts.md)
-- [Caching dependencies](caching/index.md)
-- [Git submodules](git_submodules.md) - How to run your CI jobs when Git
-  submodules are involved
-- [Pipelines for merge requests](merge_request_pipelines/index.md)
-- [Use SSH keys in your build environment](ssh_keys/README.md)
-- [Trigger pipelines through the GitLab API](triggers/README.md)
-- [Trigger pipelines on a schedule](../user/project/pipelines/schedules.md)
-- [Kubernetes clusters](../user/project/clusters/index.md) - Integrate one or
-  more Kubernetes clusters to your project
-- [Interactive web terminal](interactive_web_terminal/index.md) - Open an interactive
-  web terminal to debug the running jobs
+| Configuration | Description  |
+|:--------------|:-------------|
+| [Pipelines](pipelines.md) | Structure your CI/CD process through pipelines. |
+| [Environment variables](variables/README.md) | Reuse values based on a variable/value key pair. |
+| [Environments](environments.md) | Deploy your application to different environments (e.g., staging, production). |
+| [Job artifacts](../user/project/pipelines/job_artifacts.md) | Output, use, and reuse job artifacts. |
+| [Cache dependencies](caching/index.md) | Cache your dependencies for a faster execution. |
+| [Schedule pipelines](../user/project/pipelines/schedules.md) | Schedule pipelines to run as often as you need. |
+| [Custom path for `.gitlab-ci.yml`](../user/project/pipelines/settings.md#custom-ci-config-path) | Define a custom path for the CI/CD configuration file. |
+| [Git submodules for CI/CD](git_submodules.md) | Configure jobs for using Git submodules.|
+| [SSH keys for CI/CD](ssh_keys/README.md) | Using SSH keys in your CI pipelines. |
+| [Pipelines triggers](triggers/README.md) | Trigger pipelines through the API. |
+| [Integrate with Kubernetes clusters](../user/project/clusters/index.md) | Connect your project to Google Kubernetes Engine (GKE) or an existing Kubernetes cluster. |
+| [GitLab Runner](https://docs.gitlab.com/runner/) | Configure your own GitLab Runners to execute your scripts. |
+| [Optimize GitLab and Runner for large repositories](large_repositories/index.md) | Recommended strategies for handling large repos. |
+| [`.gitlab-ci.yml` full reference](yaml/README.md) | All the attributes you can use with GitLab CI/CD. |
 
-## GitLab CI/CD for Docker
+Note that certain operations can only be performed according to the
+[user](../user/permissions.md#gitlab-cicd-permissions) and [job](../user/permissions.md#job-permissions) permissions.
 
-Leverage the power of Docker to run your CI pipelines.
+## Feature set
 
-- [Use Docker images with GitLab Runner](docker/using_docker_images.md)
-- [Use CI to build Docker images](docker/using_docker_build.md)
-- [CI services (linked Docker containers)](services/README.md)
-- Article (2016-03-01): [Setting up GitLab Runner For Continuous Integration](https://about.gitlab.com/2016/03/01/gitlab-runner-with-docker/)
+Use the vast GitLab CI/CD to easily configure it for specific purposes.
+Its feature set is listed on the table below according to DevOps stages.
 
-## Review Apps
-
-- [Review Apps documentation](review_apps/index.md)
-- Article (2016-11-22): [Introducing Review Apps](https://about.gitlab.com/2016/11/22/introducing-review-apps/)
-- [Example project that shows how to use Review Apps](https://gitlab.com/gitlab-examples/review-apps-nginx/)
-
-## Auto DevOps
-
-- [Auto DevOps](../topics/autodevops/index.md): Auto DevOps automatically detects, builds, tests, deploys, and monitors your applications.
-
-## GitLab CI for GitLab Pages
-
-See the documentation on [GitLab Pages](../user/project/pages/index.md).
+| Feature | Description |
+|:--------|:------------|
+| **Configure** ||
+| [Auto DevOps](../topics/autodevops/index.md) | Set up your app's entire lifecycle. |
+| [ChatOps](chatops/README.md) | Trigger CI jobs from chat, with results sent back to the channel. |
+|---+---|
+| **Verify** ||
+| [Browser Performance Testing](https://docs.gitlab.com/ee/user/project/merge_requests/browser_performance_testing.html) | Quickly determine the performance impact of pending code changes. |
+| [CI services](services/README.md) | Link Docker containers with your base image.|
+| [Code Quality](https://docs.gitlab.com/ee/user/project/merge_requests/code_quality.html) **[STARTER]** | Analyze your source code quality. |
+| [GitLab CI/CD for external repositories](https://docs.gitlab.com/ee/ci/ci_cd_for_external_repos/) **[PREMIUM]** | Get the benefits of GitLab CI/CD combined with repositories in GitHub and BitBucket Cloud. |
+| [Interactive Web Terminals](interactive_web_terminal/index.md) **[CORE ONLY]** | Open an interactive web terminal to debug the running jobs. |
+| [JUnit tests](junit_test_reports.md) | Identify script failures directly on merge requests. |
+| [Using Docker images](docker/using_docker_images.md) | Use GitLab and GitLab Runner with Docker to build and test applications. |
+|---+---|
+| **Release** ||
+| [Auto Deploy](../topics/autodevops/index.md#auto-deploy) | Deploy your application to a production environment in a Kubernetes cluster. |
+| [Building Docker images](docker/using_docker_build.md) | Maintain Docker-based projects using GitLab CI/CD. |
+| [Canary Deployments](https://docs.gitlab.com/ee/user/project/canary_deployments.html) **[PREMIUM]** | Ship features to only a portion of your pods and let a percentage of your user base to visit the temporarily deployed feature. |
+| [Deploy Boards](https://docs.gitlab.com/ee/user/project/deploy_boards.html) **[PREMIUM]** | Check the current health and status of each CI/CD environment running on Kubernetes. |
+| [Feature Flags](https://docs.gitlab.com/ee/user/project/operations/feature_flags.html) **[PREMIUM]** | Deploy your features behind Feature Flags. |
+| [GitLab Pages](../user/project/pages/index.md) | Deploy static websites. |
+| [GitLab Releases](../user/project/releases/index.md) | Add release notes to Git tags. |
+| [Review Apps](review_apps/index.md) | Configure GitLab CI/CD to preview code changes. |
+|---+---|
+| **Secure** ||
+| [Container Scanning](https://docs.gitlab.com/ee/ci/examples/container_scanning.html) **[ULTIMATE]** | Check your Docker containers for known vulnerabilities.|
+| [Dependency Scanning](https://docs.gitlab.com/ee/ci/examples/dependency_scanning.html) **[ULTIMATE]** | Analyze your dependencies for known vulnerabilities. |
+| [License Management](https://docs.gitlab.com/ee/user/application_security/license_management/) **[ULTIMATE]** | Search your project dependencies for their licenses. |
+| [Security Test reports](https://docs.gitlab.com/ee/user/project/merge_requests/#security-reports-ultimate) **[ULTIMATE]** | Check for app vulnerabilities. |
 
 ## Examples
 
-Check the [GitLab CI/CD examples](examples/README.md) for a collection of tutorials and guides on setting up your CI/CD pipeline for various programming languages, frameworks,
-and operating systems.
+GitLab provides examples of configuring GitLab CI/CD in the form of:
 
-## Integrations
+- A collection of [examples and other resources](examples/README.md).
+- Example projects that are available at the [`gitlab-examples`](https://gitlab.com/gitlab-examples) group. For example, see:
+  - [`multi-project-pipelines`](https://gitlab.com/gitlab-examples/multi-project-pipelines) for examples of implementing multi-project pipelines.
+  - [`review-apps-nginx`](https://gitlab.com/gitlab-examples/review-apps-nginx/) provides an example of using Review Apps.
 
-- Article (2016-06-09): [Continuous Delivery with GitLab and Convox](https://about.gitlab.com/2016/06/09/continuous-delivery-with-gitlab-and-convox/)
-- Article (2016-05-05): [Getting Started with GitLab and Shippable Continuous Integration](https://about.gitlab.com/2016/05/05/getting-started-gitlab-and-shippable/)
-- Article (2016-04-19): [GitLab Partners with DigitalOcean to make Continuous Integration faster, safer, and more affordable](https://about.gitlab.com/2016/04/19/gitlab-partners-with-digitalocean-to-make-continuous-integration-faster-safer-and-more-affordable/)
+## Administration **[CORE ONLY]**
 
-## Special configuration (GitLab admin)
+As a GitLab administrator, you can change the default behavior
+of GitLab CI/CD for:
 
-As a GitLab administrator, you can change the default behavior of GitLab CI/CD in
-your whole GitLab instance as well as in each project.
+- An [entire GitLab instance](../user/admin_area/settings/continuous_integration.md).
+- Specific projects, using [pipelines settings](../user/project/pipelines/settings.md).
 
-- [Continuous Integration admin settings](../administration/index.md#continuous-integration-settings)
-- **Project specific:**
-  - [Pipelines settings](../user/project/pipelines/settings.md)
-  - [Learn how to enable or disable GitLab CI](enable_or_disable_ci.md)
-- **Affecting the whole GitLab instance:**
-  - [Continuous Integration admin settings](../user/admin_area/settings/continuous_integration.md)
+See also:
 
-## Breaking changes
+- [How to enable or disable GitLab CI/CD](enable_or_disable_ci.md).
+- Other [CI administration settings](../administration/index.md#continuous-integration-settings).
 
-- [CI variables renaming for GitLab 9.0](variables/README.md#9-0-renaming) Read about the
+## References
+
+### Why GitLab CI/CD?
+
+The following articles explain reasons to use GitLab CI/CD
+for your CI/CD infrastructure:
+
+- [Why we chose GitLab CI for our CI/CD solution](https://about.gitlab.com/2016/10/17/gitlab-ci-oohlala/)
+- [Building our web-app on GitLab CI](https://about.gitlab.com/2016/07/22/building-our-web-app-on-gitlab-ci/)
+
+See also the [Why CI/CD?](https://docs.google.com/presentation/d/1OGgk2Tcxbpl7DJaIOzCX4Vqg3dlwfELC3u2jEeCBbDk) presentation.
+
+### Breaking changes
+
+As GitLab CI/CD has evolved, certain breaking changes have
+been necessary. These are:
+
+- [CI variables renaming for GitLab 9.0](variables/deprecated_variables.md#gitlab-90-renamed-variables). Read about the
   deprecated CI variables and what you should use for GitLab 9.0+.
-- [New CI job permissions model](../user/project/new_ci_build_permissions_model.md)
-  Read about what changed in GitLab 8.12 and how that affects your jobs.
+- [New CI job permissions model](../user/project/new_ci_build_permissions_model.md).
+  See what changed in GitLab 8.12 and how that affects your jobs.
   There's a new way to access your Git submodules and LFS objects in jobs.

@@ -4,9 +4,18 @@
 
 _This diagram demonstrates the relative priority of each test type we use. `e2e` stands for end-to-end._
 
+As of 2019-05-01, we have the following distribution of tests per level:
+
+| Test level | Community Edition | Enterprise Edition  | Community + Enterprise Edition |
+| --------- | ---------- | -------------- | ----- |
+| Black-box tests at the system level (aka end-to-end or QA tests) | 68 (0.14%) | 31 (0.2%) | 99 (0.17%) |
+| White-box tests at the system level (aka system or feature tests) | 5,471 (11.9%) | 969 (7.4%) | 6440 (10.9%) |
+| Integration tests | 8,333 (18.2%) | 2,244 (17.2%) | 10,577 (17.9%) |
+| Unit tests | 32,031 (69.7%) | 9,778 (75.1%) | 41,809 (71%) |
+
 ## Unit tests
 
-Formal definition: https://en.wikipedia.org/wiki/Unit_testing
+Formal definition: <https://en.wikipedia.org/wiki/Unit_testing>
 
 These kind of tests ensure that a single unit of code (a method) works as
 expected (given an input, it has a predictable output). These tests should be
@@ -16,23 +25,35 @@ records should use stubs/doubles as much as possible.
 
 | Code path | Tests path | Testing engine | Notes |
 | --------- | ---------- | -------------- | ----- |
+| `app/assets/javascripts/` | `spec/javascripts/`, `spec/frontend/` | Karma & Jest | More details in the [Frontend Testing guide](frontend_testing.md) section. |
 | `app/finders/` | `spec/finders/` | RSpec | |
+| `app/graphql/` | `spec/graphql/` | RSpec | |
 | `app/helpers/` | `spec/helpers/` | RSpec | |
-| `app/db/{post_,}migrate/` | `spec/migrations/` | RSpec | More details at [`spec/migrations/README.md`](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/spec/migrations/README.md). |
+| `app/models/` | `spec/models/` | RSpec | |
 | `app/policies/` | `spec/policies/` | RSpec | |
 | `app/presenters/` | `spec/presenters/` | RSpec | |
-| `app/routing/` | `spec/routing/` | RSpec | |
 | `app/serializers/` | `spec/serializers/` | RSpec | |
 | `app/services/` | `spec/services/` | RSpec | |
-| `app/tasks/` | `spec/tasks/` | RSpec | |
 | `app/uploaders/` | `spec/uploaders/` | RSpec | |
+| `app/validators/` | `spec/validators/` | RSpec | |
 | `app/views/` | `spec/views/` | RSpec | |
 | `app/workers/` | `spec/workers/` | RSpec | |
-| `app/assets/javascripts/` | `spec/javascripts/` | Karma | More details in the [Frontend Testing guide](frontend_testing.md) section. |
+| `bin/` | `spec/bin/` | RSpec | |
+| `config/` | `spec/config/` | RSpec | |
+| `config/initializers/` | `spec/initializers/` | RSpec | |
+| `config/routes.rb`, `config/routes/` | `spec/routing/` | RSpec | |
+| `config/puma.example.development.rb`, `config/unicorn.rb.example` | `spec/rack_servers/` | RSpec | |
+| `db/` | `spec/db/` | RSpec | |
+| `db/{post_,}migrate/` | `spec/migrations/` | RSpec | More details at [`spec/migrations/README.md`](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/spec/migrations/README.md). |
+| `Gemfile` | `spec/dependencies/`, `spec/sidekiq/` | RSpec | |
+| `lib/` | `spec/lib/` | RSpec | |
+| `lib/tasks/` | `spec/tasks/` | RSpec | |
+| `rubocop/` | `spec/rubocop/` | RSpec | |
+| `spec/factories` | `spec/factories_spec.rb` | RSpec | |
 
 ## Integration tests
 
-Formal definition: https://en.wikipedia.org/wiki/Integration_testing
+Formal definition: <https://en.wikipedia.org/wiki/Integration_testing>
 
 These kind of tests ensure that individual parts of the application work well
 together, without the overhead of the actual app environment (i.e. the browser).
@@ -46,7 +67,7 @@ They're useful to test permissions, redirections, what view is rendered etc.
 | `app/mailers/` | `spec/mailers/` | RSpec | |
 | `lib/api/` | `spec/requests/api/` | RSpec | |
 | `lib/ci/api/` | `spec/requests/ci/api/` | RSpec | |
-| `app/assets/javascripts/` | `spec/javascripts/` | Karma | More details in the [JavaScript](#javascript) section. |
+| `app/assets/javascripts/` | `spec/javascripts/`, `spec/frontend/` | Karma & Jest | More details in the [Frontend Testing guide](frontend_testing.md) section. |
 
 ### About controller tests
 
@@ -75,8 +96,8 @@ of multiple components).
 
 Formal definitions:
 
-- https://en.wikipedia.org/wiki/System_testing
-- https://en.wikipedia.org/wiki/White-box_testing
+- <https://en.wikipedia.org/wiki/System_testing>
+- <https://en.wikipedia.org/wiki/White-box_testing>
 
 These kind of tests ensure the GitLab *Rails* application (i.e.
 `gitlab-ce`/`gitlab-ee`) works as expected from a *browser* point of view.
@@ -135,8 +156,8 @@ The reasons why we should follow these best practices are as follows:
 
 Formal definitions:
 
-- https://en.wikipedia.org/wiki/System_testing
-- https://en.wikipedia.org/wiki/Black-box_testing
+- <https://en.wikipedia.org/wiki/System_testing>
+- <https://en.wikipedia.org/wiki/Black-box_testing>
 
 GitLab consists of [multiple pieces] such as [GitLab Shell], [GitLab Workhorse],
 [Gitaly], [GitLab Pages], [GitLab Runner], and GitLab Rails. All theses pieces
@@ -158,6 +179,10 @@ Every new feature should come with a [test plan].
 | `qa/qa/specs/features/` | [Capybara] + [RSpec] + Custom QA framework | Tests should be placed under their corresponding [Product category] |
 
 > See [end-to-end tests](end_to_end_tests.md) for more information.
+
+Note that `qa/spec` contains unit tests of the QA framework itself, not to be
+confused with the application's [unit tests](#unit-tests) or
+[end-to-end tests](#black-box-tests-at-the-system-level-aka-end-to-end-tests).
 
 [multiple pieces]: ../architecture.md#components
 [GitLab Shell]: https://gitlab.com/gitlab-org/gitlab-shell
@@ -206,7 +231,7 @@ trade-off:
 - Integration tests are a bit more expensive, but don't abuse them. A system test
   is often better than an integration test that is stubbing a lot of internals.
 - System tests are expensive (compared to unit tests), even more if they require
-  a JavaScript driver. Make sure to follow the guidelines in the [Speed](#test-speed)
+  a JavaScript driver. Make sure to follow the guidelines in the [Speed](best_practices.md#test-speed)
   section.
 
 Another way to see it is to think about the "cost of tests", this is well
@@ -230,6 +255,8 @@ you should write an integration test using Jasmine.
 [big]: https://twitter.com/timbray/status/822470746773409794
 [picture]: https://twitter.com/withzombies/status/829716565834752000
 [tests-cost]: https://medium.com/table-xi/high-cost-tests-and-high-value-tests-a86e27a54df#.2ulyh3a4e
+[RSpec]: https://github.com/rspec/rspec-rails#feature-specs
+[Capybara]: https://github.com/teamcapybara/capybara
 
 ---
 

@@ -12,6 +12,8 @@ describe 'Projects > Files > User creates files' do
   let(:user) { create(:user) }
 
   before do
+    stub_feature_flags(web_ide_default: false)
+
     project.add_maintainer(user)
     sign_in(user)
   end

@@ -66,6 +66,9 @@ snippets:
 releases:
 - author
 - project
+- links
+links:
+- release
 project_members:
 - created_by
 - user
@@ -96,7 +99,10 @@ merge_requests:
 - timelogs
 - head_pipeline
 - latest_merge_request_diff
-- merge_request_pipelines
+- pipelines_for_merge_request
+- merge_request_assignees
+- suggestions
+- assignees
 merge_request_diff:
 - merge_request
 - merge_request_diff_commits
@@ -111,6 +117,7 @@ ci_pipelines:
 - stages
 - statuses
 - builds
+- processables
 - trigger_requests
 - variables
 - auto_canceled_by
@@ -123,10 +130,11 @@ ci_pipelines:
 - scheduled_actions
 - artifacts
 - pipeline_schedule
-- merge_requests
+- merge_requests_as_head_pipeline
 - merge_request
 - deployments
 - environments
+- chat_data
 pipeline_variables:
 - pipeline
 stages:
@@ -134,6 +142,7 @@ stages:
 - pipeline
 - statuses
 - builds
+- bridges
 statuses:
 - project
 - pipeline
@@ -228,6 +237,7 @@ project:
 - pushover_service
 - jira_service
 - redmine_service
+- youtrack_service
 - custom_issue_tracker_service
 - bugzilla_service
 - gitlab_issue_tracker_service
@@ -311,6 +321,8 @@ project:
 - repository_languages
 - pool_repository
 - kubernetes_namespaces
+- error_tracking_setting
+- metrics_setting
 award_emoji:
 - awardable
 - user
@@ -327,6 +339,9 @@ push_event_payload:
 issue_assignees:
 - issue
 - assignee
+merge_request_assignees:
+- merge_request
+- assignee
 lfs_file_locks:
 - user
 project_badges:
@@ -342,3 +357,9 @@ resource_label_events:
 - merge_request
 - epic
 - label
+error_tracking_setting:
+- project
+suggestions:
+- note
+metrics_setting:
+- project

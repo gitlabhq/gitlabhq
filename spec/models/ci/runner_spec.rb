@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Ci::Runner do
@@ -70,10 +72,9 @@ describe Ci::Runner do
         expect(instance_runner.errors.full_messages).to include('Runner cannot have projects assigned')
       end
 
-      it 'should fail to save a group assigned to a project runner even if the runner is already saved' do
-        group_runner
-
-        expect { create(:group, runners: [project_runner]) }
+      it 'fails to save a group assigned to a project runner even if the runner is already saved' do
+        group.runners << project_runner
+        expect { group.save! }
           .to raise_error(ActiveRecord::RecordInvalid)
       end
     end
@@ -816,5 +817,14 @@ describe Ci::Runner do
 
       expect(runners).to eq([runner2, runner1])
     end
+  end
+
+  describe '#uncached_contacted_at' do
+    let(:contacted_at_stored) { 1.hour.ago.change(usec: 0) }
+    let(:runner) { create(:ci_runner, contacted_at: contacted_at_stored) }
+
+    subject { runner.uncached_contacted_at }
+
+    it { is_expected.to eq(contacted_at_stored) }
   end
 end

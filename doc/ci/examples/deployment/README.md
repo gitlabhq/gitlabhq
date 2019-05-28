@@ -6,7 +6,7 @@ used with GitLab CI.
 
 >**Note:**
 We recommend to use Dpl if you're deploying to any of these services:
-https://github.com/travis-ci/dpl#supported-providers.
+<https://github.com/travis-ci/dpl#supported-providers>.
 
 ## Requirements
 
@@ -34,7 +34,7 @@ The Dpl provides support for vast number of services, including: Heroku, Cloud F
 To use it simply define provider and any additional parameters required by the provider.
 
 For example if you want to use it to deploy your application to heroku, you need to specify `heroku` as provider, specify `api-key` and `app`.
-There's more and all possible parameters can be found here: https://github.com/travis-ci/dpl#heroku
+There's more and all possible parameters can be found here: <https://github.com/travis-ci/dpl#heroku>.
 
 ```yaml
 staging:

@@ -1,5 +1,6 @@
 require 'spec_helper'
 
+# rubocop:disable RSpec/FactoriesInMigrationSpecs
 describe Gitlab::BackgroundMigration::MigrateEventsToPushEventPayloads::Event, :migration, schema: 20170608152748 do
   describe '#commit_title' do
     it 'returns nil when there are no commits' do
@@ -429,3 +430,4 @@ describe Gitlab::BackgroundMigration::MigrateEventsToPushEventPayloads, :migrati
     end
   end
 end
+# rubocop:enable RSpec/FactoriesInMigrationSpecs

@@ -8,7 +8,7 @@ class Projects::Ci::LintsController < Projects::ApplicationController
 
   def create
     @content = params[:content]
-    @error = Gitlab::Ci::YamlProcessor.validation_message(@content,  yaml_processor_options)
+    @error = Gitlab::Ci::YamlProcessor.validation_message(@content, yaml_processor_options)
     @status = @error.blank?
 
     if @error.blank?
@@ -24,6 +24,10 @@ class Projects::Ci::LintsController < Projects::ApplicationController
   private
 
   def yaml_processor_options
-    { project: @project, sha: project.repository.commit.sha }
+    {
+      project: @project,
+      user: current_user,
+      sha: project.repository.commit.sha
+    }
   end
 end

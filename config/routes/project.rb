@@ -2,6 +2,8 @@ resources :projects, only: [:index, :new, :create]
 
 draw :git_http
 
+get '/projects/:id' => 'projects#resolve'
+
 constraints(::Constraints::ProjectUrlConstrainer.new) do
   # If the route has a wildcard segment, the segment has a regex constraint,
   # the segment is potentially followed by _another_ wildcard segment, and
@@ -24,17 +26,106 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           module: :projects,
           as: :project) do
 
-      resources :autocomplete_sources, only: [] do
-        collection do
-          get 'members'
-          get 'issues'
-          get 'merge_requests'
-          get 'labels'
-          get 'milestones'
-          get 'commands'
-          get 'snippets'
+      # Begin of the /-/ scope.
+      # Use this scope for all new project routes.
+      scope '-' do
+        get 'archive/*id', constraints: { format: Gitlab::PathRegex.archive_formats_regex, id: /.+?/ }, to: 'repositories#archive', as: 'archive'
+
+        resources :jobs, only: [:index, :show], constraints: { id: /\d+/ } do
+          collection do
+            resources :artifacts, only: [] do
+              collection do
+                get :latest_succeeded,
+                  path: '*ref_name_and_path',
+                  format: false
+              end
+            end
+          end
+
+          member do
+            get :status
+            post :cancel
+            post :unschedule
+            post :retry
+            post :play
+            post :erase
+            get :trace, defaults: { format: 'json' }
+            get :raw
+            get :terminal
+            get '/terminal.ws/authorize', to: 'jobs#terminal_websocket_authorize', constraints: { format: nil }
+          end
+
+          resource :artifacts, only: [] do
+            get :download
+            get :browse, path: 'browse(/*path)', format: false
+            get :file, path: 'file/*path', format: false
+            get :raw, path: 'raw/*path', format: false
+            post :keep
+          end
+        end
+
+        namespace :ci do
+          resource :lint, only: [:show, :create]
+        end
+
+        namespace :settings do
+          get :members, to: redirect("%{namespace_id}/%{project_id}/project_members")
+
+          resource :ci_cd, only: [:show, :update], controller: 'ci_cd' do
+            post :reset_cache
+            put :reset_registration_token
+          end
+
+          resource :operations, only: [:show, :update]
+          resource :integrations, only: [:show]
+
+          resource :repository, only: [:show], controller: :repository do
+            post :create_deploy_token, path: 'deploy_token/create'
+            post :cleanup
+          end
+        end
+
+        resources :autocomplete_sources, only: [] do
+          collection do
+            get 'members'
+            get 'issues'
+            get 'merge_requests'
+            get 'labels'
+            get 'milestones'
+            get 'commands'
+            get 'snippets'
+          end
+        end
+
+        resources :project_members, except: [:show, :new, :edit], constraints: { id: %r{[a-zA-Z./0-9_\-#%+]+} }, concerns: :access_requestable do
+          collection do
+            delete :leave
+
+            # Used for import team
+            # from another project
+            get :import
+            post :apply_import
+          end
+
+          member do
+            post :resend_invite
+          end
+        end
+
+        resources :deploy_keys, constraints: { id: /\d+/ }, only: [:index, :new, :create, :edit, :update] do
+          member do
+            put :enable
+            put :disable
+          end
+        end
+
+        resources :deploy_tokens, constraints: { id: /\d+/ }, only: [] do
+          member do
+            put :revoke
+          end
         end
       end
+      # End of the /-/ scope.
 
       #
       # Templates
@@ -82,19 +173,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
       end
 
-      resources :deploy_keys, constraints: { id: /\d+/ }, only: [:index, :new, :create, :edit, :update] do
-        member do
-          put :enable
-          put :disable
-        end
-      end
-
-      resources :deploy_tokens, constraints: { id: /\d+/ }, only: [] do
-        member do
-          put :revoke
-        end
-      end
-
+      resources :releases, only: [:index]
       resources :forks, only: [:index, :new, :create]
       resource :import, only: [:new, :create, :show]
 
@@ -198,6 +277,12 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           get :failures
           get :status
         end
+
+        member do
+          resources :stages, only: [], param: :name do
+            post :play_manual
+          end
+        end
       end
 
       resources :pipeline_schedules, except: [:show] do
@@ -215,12 +300,16 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           get :terminal
           get :metrics
           get :additional_metrics
+          get :metrics_dashboard
           get '/terminal.ws/authorize', to: 'environments#terminal_websocket_authorize', constraints: { format: nil }
+
+          get '/prometheus/api/v1/*proxy_path', to: 'environments/prometheus_api#proxy'
         end
 
         collection do
           get :metrics, action: :metrics_redirect
           get :folder, path: 'folders/*id', constraints: { format: /(html|json)/ }
+          get :search
         end
 
         resources :deployments, only: [:index] do
@@ -246,50 +335,12 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       end
 
       namespace :serverless do
+        scope :functions do
+          get '/:environment_id/:id', to: 'functions#show'
+          get '/:environment_id/:id/metrics', to: 'functions#metrics', as: :metrics
+        end
+
         resources :functions, only: [:index]
-      end
-
-      scope '-' do
-        get 'archive/*id', constraints: { format: Gitlab::PathRegex.archive_formats_regex, id: /.+?/ }, to: 'repositories#archive', as: 'archive'
-
-        resources :jobs, only: [:index, :show], constraints: { id: /\d+/ } do
-          collection do
-            post :cancel_all
-
-            resources :artifacts, only: [] do
-              collection do
-                get :latest_succeeded,
-                  path: '*ref_name_and_path',
-                  format: false
-              end
-            end
-          end
-
-          member do
-            get :status
-            post :cancel
-            post :unschedule
-            post :retry
-            post :play
-            post :erase
-            get :trace, defaults: { format: 'json' }
-            get :raw
-            get :terminal
-            get '/terminal.ws/authorize', to: 'jobs#terminal_websocket_authorize', constraints: { format: nil }
-          end
-
-          resource :artifacts, only: [] do
-            get :download
-            get :browse, path: 'browse(/*path)', format: false
-            get :file, path: 'file/*path', format: false
-            get :raw, path: 'raw/*path', format: false
-            post :keep
-          end
-        end
-
-        namespace :ci do
-          resource :lint, only: [:show, :create]
-        end
       end
 
       draw :legacy_builds
@@ -351,7 +402,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           post :toggle_subscription
           post :mark_as_spam
           post :move
-          get :referenced_merge_requests
           get :related_branches
           get :can_create_branch
           get :realtime_changes
@@ -360,21 +410,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
         collection do
           post :bulk_update
-        end
-      end
-
-      resources :project_members, except: [:show, :new, :edit], constraints: { id: %r{[a-zA-Z./0-9_\-#%+]+} }, concerns: :access_requestable do
-        collection do
-          delete :leave
-
-          # Used for import team
-          # from another project
-          get :import
-          post :apply_import
-        end
-
-        member do
-          post :resend_invite
+          post :import_csv
         end
       end
 
@@ -390,8 +426,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
       get 'noteable/:target_type/:target_id/notes' => 'notes#index', as: 'noteable_notes'
 
-      # On CE only index and show are needed
-      resources :boards, only: [:index, :show]
+      resources :boards, only: [:index, :show], constraints: { id: /\d+/ }
 
       resources :todos, only: [:create]
 
@@ -427,16 +462,10 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
         end
       end
-      namespace :settings do
-        get :members, to: redirect("%{namespace_id}/%{project_id}/project_members")
-        resource :ci_cd, only: [:show, :update], controller: 'ci_cd' do
-          post :reset_cache
-          put :reset_registration_token
-        end
-        resource :integrations, only: [:show]
-        resource :repository, only: [:show], controller: :repository do
-          post :create_deploy_token, path: 'deploy_token/create'
-          post :cleanup
+
+      resources :error_tracking, only: [:index], controller: :error_tracking do
+        collection do
+          post :list_projects
         end
       end
 
@@ -466,6 +495,22 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         get :refs
         put :new_issuable_address
       end
+    end
+  end
+
+  # Legacy routes.
+  # Introduced in 12.0.
+  # Should be removed after 12.1
+  scope(path: '*namespace_id',
+        as: :namespace,
+        namespace_id: Gitlab::PathRegex.full_namespace_route_regex) do
+    scope(path: ':project_id',
+          constraints: { project_id: Gitlab::PathRegex.project_route_regex },
+          module: :projects,
+          as: :project) do
+      Gitlab::Routing.redirect_legacy_paths(self, :settings, :branches, :tags,
+                                            :network, :graphs, :autocomplete_sources,
+                                            :project_members, :deploy_keys, :deploy_tokens)
     end
   end
 end

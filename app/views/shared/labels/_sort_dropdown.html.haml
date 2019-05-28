@@ -6,4 +6,4 @@
   %ul.dropdown-menu.dropdown-menu-right.dropdown-menu-sort
     %li
       - label_sort_options_hash.each do |value, title|
-        = sortable_item(title, page_filter_path(sort: value, label: true, subscribed: params[:subscribed]), sort_title)
+        = sortable_item(title, page_filter_path(sort: value), sort_title)

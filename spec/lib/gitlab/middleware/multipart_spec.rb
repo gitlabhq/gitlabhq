@@ -10,7 +10,9 @@ describe Gitlab::Middleware::Multipart do
   shared_examples_for 'multipart upload files' do
     it 'opens top-level files' do
       Tempfile.open('top-level') do |tempfile|
-        env = post_env({ 'file' => tempfile.path }, { 'file.name' => original_filename, 'file.path' => tempfile.path, 'file.remote_id' => remote_id }, Gitlab::Workhorse.secret, 'gitlab-workhorse')
+        rewritten = { 'file' => tempfile.path }
+        in_params = { 'file.name' => original_filename, 'file.path' => tempfile.path, 'file.remote_id' => remote_id }
+        env = post_env(rewritten, in_params, Gitlab::Workhorse.secret, 'gitlab-workhorse')
 
         expect_uploaded_file(tempfile, %w(file))
 
@@ -21,7 +23,8 @@ describe Gitlab::Middleware::Multipart do
     it 'opens files one level deep' do
       Tempfile.open('one-level') do |tempfile|
         in_params = { 'user' => { 'avatar' => { '.name' => original_filename, '.path' => tempfile.path, '.remote_id' => remote_id } } }
-        env = post_env({ 'user[avatar]' => tempfile.path }, in_params, Gitlab::Workhorse.secret, 'gitlab-workhorse')
+        rewritten = { 'user[avatar]' => tempfile.path }
+        env = post_env(rewritten, in_params, Gitlab::Workhorse.secret, 'gitlab-workhorse')
 
         expect_uploaded_file(tempfile, %w(user avatar))
 
@@ -32,7 +35,8 @@ describe Gitlab::Middleware::Multipart do
     it 'opens files two levels deep' do
       Tempfile.open('two-levels') do |tempfile|
         in_params = { 'project' => { 'milestone' => { 'themesong' => { '.name' => original_filename, '.path' => tempfile.path, '.remote_id' => remote_id } } } }
-        env = post_env({ 'project[milestone][themesong]' => tempfile.path }, in_params, Gitlab::Workhorse.secret, 'gitlab-workhorse')
+        rewritten = { 'project[milestone][themesong]' => tempfile.path }
+        env = post_env(rewritten, in_params, Gitlab::Workhorse.secret, 'gitlab-workhorse')
 
         expect_uploaded_file(tempfile, %w(project milestone themesong))
 
@@ -42,7 +46,7 @@ describe Gitlab::Middleware::Multipart do
 
     def expect_uploaded_file(tempfile, path, remote: false)
       expect(app).to receive(:call) do |env|
-        file = Rack::Request.new(env).params.dig(*path)
+        file = get_params(env).dig(*path)
         expect(file).to be_a(::UploadedFile)
         expect(file.path).to eq(tempfile.path)
         expect(file.original_filename).to eq(original_filename)
@@ -87,7 +91,7 @@ describe Gitlab::Middleware::Multipart do
         env = post_env({ 'file' => tempfile.path }, { 'file.name' => original_filename, 'file.path' => tempfile.path }, Gitlab::Workhorse.secret, 'gitlab-workhorse')
 
         expect(app).to receive(:call) do |env|
-          expect(Rack::Request.new(env).params['file']).to be_a(::UploadedFile)
+          expect(get_params(env)['file']).to be_a(::UploadedFile)
         end
 
         middleware.call(env)
@@ -115,11 +119,19 @@ describe Gitlab::Middleware::Multipart do
       allow(Dir).to receive(:tmpdir).and_return(File.join(Dir.tmpdir, 'tmpsubdir'))
 
       expect(app).to receive(:call) do |env|
-        expect(Rack::Request.new(env).params['file']).to be_a(::UploadedFile)
+        expect(get_params(env)['file']).to be_a(::UploadedFile)
       end
 
       middleware.call(env)
     end
+  end
+
+  # Rails 5 doesn't combine the GET/POST parameters in
+  # ActionDispatch::HTTP::Parameters if action_dispatch.request.parameters is set:
+  # https://github.com/rails/rails/blob/aea6423f013ca48f7704c70deadf2cd6ac7d70a1/actionpack/lib/action_dispatch/http/parameters.rb#L41
+  def get_params(env)
+    req = ActionDispatch::Request.new(env)
+    req.GET.merge(req.POST)
   end
 
   def post_env(rewritten_fields, params, secret, issuer)

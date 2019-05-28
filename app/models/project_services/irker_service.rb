@@ -59,7 +59,7 @@ class IrkerService < Service
         ' append "?key=secretpassword" to the URI (Note that due to a bug, if you ' \
         ' want to use a password, you have to omit the "#" on the channel). If you ' \
         ' specify a default IRC URI to prepend before each recipient, you can just ' \
-        ' give a channel name.'  },
+        ' give a channel name.' },
       { type: 'checkbox', name: 'colorize_messages' }
     ]
   end
@@ -112,7 +112,7 @@ class IrkerService < Service
   end
 
   def consider_uri(uri)
-    return nil if uri.scheme.nil?
+    return if uri.scheme.nil?
 
     # Authorize both irc://domain.com/#chan and irc://domain.com/chan
     if uri.is_a?(URI) && uri.scheme[/^ircs?\z/] && !uri.path.nil?

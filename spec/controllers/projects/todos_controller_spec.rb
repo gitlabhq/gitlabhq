@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require('spec_helper')
 
 describe Projects::TodosController do
@@ -29,10 +31,12 @@ describe Projects::TodosController do
     describe 'POST create' do
       def post_create
         post :create,
-          namespace_id: project.namespace,
-          project_id: project,
-          issuable_id: issue.id,
-          issuable_type: 'issue',
+          params: {
+            namespace_id: project.namespace,
+            project_id: project,
+            issuable_id: issue.id,
+            issuable_type: 'issue'
+          },
           format: 'html'
       end
 
@@ -44,10 +48,12 @@ describe Projects::TodosController do
     describe 'POST create' do
       def post_create
         post :create,
-          namespace_id: project.namespace,
-          project_id: project,
-          issuable_id: merge_request.id,
-          issuable_type: 'merge_request',
+          params: {
+            namespace_id: project.namespace,
+            project_id: project,
+            issuable_id: merge_request.id,
+            issuable_type: 'merge_request'
+          },
           format: 'html'
       end
 

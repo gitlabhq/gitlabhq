@@ -116,7 +116,7 @@ module Auth
         build_can_pull?(requested_project) || user_can_pull?(requested_project) || deploy_token_can_pull?(requested_project)
       when 'push'
         build_can_push?(requested_project) || user_can_push?(requested_project)
-      when '*'
+      when '*', 'delete'
         user_can_admin?(requested_project)
       else
         false
@@ -160,7 +160,8 @@ module Auth
     ##
     # We still support legacy pipeline triggers which do not have associated
     # actor. New permissions model and new triggers are always associated with
-    # an actor, so this should be improved in 10.0 version of GitLab.
+    # an actor. So this should be improved once
+    # https://gitlab.com/gitlab-org/gitlab-ce/issues/37452 is resolved.
     #
     def build_can_push?(requested_project)
       # Build can push only to the project from which it originates

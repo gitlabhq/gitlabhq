@@ -92,7 +92,7 @@ export default {
 </script>
 <template>
   <div id="js-peek" :class="env">
-    <div v-if="currentRequest" class="d-flex container-fluid container-limited">
+    <div v-if="currentRequest" class="d-flex container-fluid container-limited qa-performance-bar">
       <div id="peek-view-host" class="view">
         <span
           v-if="hasHost"
@@ -133,6 +133,13 @@ export default {
           <span title="Invoke Time">{{ currentRequest.details.gc.gc_time }}</span
           >ms / <span title="Invoke Count">{{ currentRequest.details.gc.invokes }}</span> gc
         </span>
+      </div>
+      <div
+        v-if="currentRequest.details && currentRequest.details.tracing"
+        id="peek-view-trace"
+        class="view"
+      >
+        <a :href="currentRequest.details.tracing.tracing_url"> trace </a>
       </div>
       <request-selector
         v-if="currentRequest"

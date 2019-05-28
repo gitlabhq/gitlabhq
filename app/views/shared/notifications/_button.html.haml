@@ -1,7 +1,7 @@
 - btn_class = local_assigns.fetch(:btn_class, nil)
 
 - if notification_setting
-  .js-notification-dropdown.notification-dropdown.project-action-button.dropdown.inline
+  .js-notification-dropdown.notification-dropdown.home-panel-action-button.dropdown.inline
     = form_for notification_setting, remote: true, html: { class: "inline notification-form" } do |f|
       = hidden_setting_source_input(notification_setting)
       = f.hidden_field :level, class: "notification_setting_level"
@@ -15,7 +15,7 @@
               = icon('caret-down')
               .sr-only Toggle dropdown
           - else
-            %button.dropdown-new.btn.btn-default.has-tooltip.notifications-btn#notifications-button{ type: "button", title: "Notification setting", class: "#{btn_class}", "aria-label" => "Notification setting: #{notification_title(notification_setting.level)}", data: { container: "body", toggle: "dropdown", target: notifications_menu_identifier("dropdown", notification_setting), flip: "false" } }
+            %button.dropdown-new.btn.btn-default.has-tooltip.notifications-btn#notifications-button{ type: "button", title: _("Notification setting"), class: "#{btn_class}", "aria-label" => _("Notification setting - %{notification_title}") % { notification_title: notification_title(notification_setting.level) }, data: { container: "body", toggle: "dropdown", target: notifications_menu_identifier("dropdown", notification_setting), flip: "false" } }
               = icon("bell", class: "js-notification-loading")
               = notification_title(notification_setting.level)
               = icon("caret-down")

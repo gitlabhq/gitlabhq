@@ -1,9 +1,8 @@
-image: ruby:2.1
+image: ruby:2.6
 services:
   - postgres
 
 before_script:
-  - gem install bundler
   - bundle install
   - bundle exec rake db:create
 

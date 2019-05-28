@@ -25,7 +25,7 @@ module SystemNoteService
 
     text_parts = ["added #{commits_text}"]
     text_parts << commits_list(noteable, new_commits, existing_commits, oldrev)
-    text_parts << "[Compare with previous version](#{diff_comparison_url(noteable, project, oldrev)})"
+    text_parts << "[Compare with previous version](#{diff_comparison_path(noteable, project, oldrev)})"
 
     body = text_parts.join("\n\n")
 
@@ -41,7 +41,7 @@ module SystemNoteService
   #
   # Returns the created Note object
   def tag_commit(noteable, project, author, tag_name)
-    link = url_helpers.project_tag_url(project, id: tag_name)
+    link = url_helpers.project_tag_path(project, id: tag_name)
     body = "tagged commit #{noteable.sha} to [`#{tag_name}`](#{link})"
 
     create_note(NoteSummary.new(noteable, project, author, body, action: 'tag'))
@@ -69,7 +69,7 @@ module SystemNoteService
 
   # Called when the assignees of an Issue is changed or removed
   #
-  # issue - Issue object
+  # issuable - Issuable object (responds to assignees)
   # project  - Project owning noteable
   # author   - User performing the change
   # assignees - Users being assigned, or nil
@@ -85,9 +85,9 @@ module SystemNoteService
   #   "assigned to @user1 and @user2"
   #
   # Returns the created Note object
-  def change_issue_assignees(issue, project, author, old_assignees)
-    unassigned_users = old_assignees - issue.assignees
-    added_users = issue.assignees.to_a - old_assignees
+  def change_issuable_assignees(issuable, project, author, old_assignees)
+    unassigned_users = old_assignees - issuable.assignees
+    added_users = issuable.assignees.to_a - old_assignees
 
     text_parts = []
     text_parts << "assigned to #{added_users.map(&:to_reference).to_sentence}" if added_users.any?
@@ -95,7 +95,7 @@ module SystemNoteService
 
     body = text_parts.join(' and ')
 
-    create_note(NoteSummary.new(issue, project, author, body, action: 'assignee'))
+    create_note(NoteSummary.new(issuable, project, author, body, action: 'assignee'))
   end
 
   # Called when the milestone of a Noteable is changed
@@ -258,7 +258,7 @@ module SystemNoteService
     body = "created #{issue.to_reference} to continue this discussion"
     note_attributes = discussion.reply_attributes.merge(project: project, author: author, note: body)
 
-    note = Note.create(note_attributes.merge(system: true))
+    note = Note.create(note_attributes.merge(system: true, created_at: issue.system_note_timestamp))
     note.system_note_metadata = SystemNoteMetadata.new(action: 'discussion')
 
     note
@@ -272,7 +272,7 @@ module SystemNoteService
     text_parts = ["changed this line in"]
     if version_params = merge_request.version_params_for(diff_refs)
       line_code = change_position.line_code(project.repository)
-      url = url_helpers.diffs_project_merge_request_url(project, merge_request, version_params.merge(anchor: line_code))
+      url = url_helpers.diffs_project_merge_request_path(project, merge_request, version_params.merge(anchor: line_code))
 
       text_parts << "[version #{version_index} of the diff](#{url})"
     else
@@ -360,7 +360,7 @@ module SystemNoteService
   # author      - User performing the change
   # branch_type - 'source' or 'target'
   # old_branch  - old branch name
-  # new_branch  - new branch nmae
+  # new_branch  - new branch name
   #
   # Example Note text:
   #
@@ -405,7 +405,7 @@ module SystemNoteService
   #
   #   "created branch `201-issue-branch-button`"
   def new_issue_branch(issue, project, author, branch)
-    link = url_helpers.project_compare_url(project, from: project.default_branch, to: branch)
+    link = url_helpers.project_compare_path(project, from: project.default_branch, to: branch)
 
     body = "created branch [`#{branch}`](#{link}) to address this issue"
 
@@ -668,10 +668,10 @@ module SystemNoteService
     @url_helpers ||= Gitlab::Routing.url_helpers
   end
 
-  def diff_comparison_url(merge_request, project, oldrev)
+  def diff_comparison_path(merge_request, project, oldrev)
     diff_id = merge_request.merge_request_diff.id
 
-    url_helpers.diffs_project_merge_request_url(
+    url_helpers.diffs_project_merge_request_path(
       project,
       merge_request,
       diff_id: diff_id,

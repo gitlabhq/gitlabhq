@@ -50,7 +50,7 @@ module Boards
 
         if move_between_ids
           attrs[:move_between_ids] = move_between_ids
-          attrs[:board_group_id] =  board.group&.id
+          attrs[:board_group_id] = board.group&.id
         end
 
         attrs

@@ -1,5 +1,0 @@
----
-title: Remove unnecessary div from MarkdownField to apply list styles correctly
-merge_request: 23733
-author:
-type: fixed

@@ -70,14 +70,18 @@ module ServiceParams
 
   def service_params
     dynamic_params = @service.event_channel_names + @service.event_names # rubocop:disable Gitlab/ModuleWithInstanceVariables
-    service_params = params.permit(:id, service: ALLOWED_PARAMS_CE + dynamic_params)
+    service_params = params.permit(:id, service: allowed_service_params + dynamic_params)
 
-    if service_params[:service].is_a?(Hash)
+    if service_params[:service].is_a?(ActionController::Parameters)
       FILTER_BLANK_PARAMS.each do |param|
         service_params[:service].delete(param) if service_params[:service][param].blank?
       end
     end
 
     service_params
+  end
+
+  def allowed_service_params
+    ALLOWED_PARAMS_CE
   end
 end

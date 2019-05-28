@@ -1,3 +1,3 @@
-import groupAvatar from '~/group_avatar';
+import initAvatarPicker from '~/avatar_picker';
 
-document.addEventListener('DOMContentLoaded', groupAvatar);
+document.addEventListener('DOMContentLoaded', initAvatarPicker);

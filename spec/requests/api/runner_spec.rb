@@ -25,7 +25,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
 
       context 'when invalid token is provided' do
         it 'returns 403 error' do
-          post api('/runners'), token: 'invalid'
+          post api('/runners'), params: { token: 'invalid' }
 
           expect(response).to have_gitlab_http_status 403
         end
@@ -33,7 +33,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
 
       context 'when valid token is provided' do
         it 'creates runner with default values' do
-          post api('/runners'), token: registration_token
+          post api('/runners'), params: { token: registration_token }
 
           runner = Ci::Runner.first
 
@@ -50,7 +50,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
           let(:project) { create(:project) }
 
           it 'creates project runner' do
-            post api('/runners'), token: project.runners_token
+            post api('/runners'), params: { token: project.runners_token }
 
             expect(response).to have_gitlab_http_status 201
             expect(project.runners.size).to eq(1)
@@ -65,10 +65,10 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
           let(:group) { create(:group) }
 
           it 'creates a group runner' do
-            post api('/runners'), token: group.runners_token
+            post api('/runners'), params: { token: group.runners_token }
 
             expect(response).to have_http_status 201
-            expect(group.runners.size).to eq(1)
+            expect(group.runners.reload.size).to eq(1)
             runner = Ci::Runner.first
             expect(runner.token).not_to eq(registration_token)
             expect(runner.token).not_to eq(group.runners_token)
@@ -79,8 +79,10 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
 
       context 'when runner description is provided' do
         it 'creates runner' do
-          post api('/runners'), token: registration_token,
-                                description: 'server.hostname'
+          post api('/runners'), params: {
+                                  token: registration_token,
+                                  description: 'server.hostname'
+                                }
 
           expect(response).to have_gitlab_http_status 201
           expect(Ci::Runner.first.description).to eq('server.hostname')
@@ -89,8 +91,10 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
 
       context 'when runner tags are provided' do
         it 'creates runner' do
-          post api('/runners'), token: registration_token,
-                                tag_list: 'tag1, tag2'
+          post api('/runners'), params: {
+                                  token: registration_token,
+                                  tag_list: 'tag1, tag2'
+                                }
 
           expect(response).to have_gitlab_http_status 201
           expect(Ci::Runner.first.tag_list.sort).to eq(%w(tag1 tag2))
@@ -100,9 +104,11 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
       context 'when option for running untagged jobs is provided' do
         context 'when tags are provided' do
           it 'creates runner' do
-            post api('/runners'), token: registration_token,
-                                  run_untagged: false,
-                                  tag_list: ['tag']
+            post api('/runners'), params: {
+                                    token: registration_token,
+                                    run_untagged: false,
+                                    tag_list: ['tag']
+                                  }
 
             expect(response).to have_gitlab_http_status 201
             expect(Ci::Runner.first.run_untagged).to be false
@@ -112,8 +118,10 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
 
         context 'when tags are not provided' do
           it 'returns 400 error' do
-            post api('/runners'), token: registration_token,
-                                  run_untagged: false
+            post api('/runners'), params: {
+                                    token: registration_token,
+                                    run_untagged: false
+                                  }
 
             expect(response).to have_gitlab_http_status 400
             expect(json_response['message']).to include(
@@ -124,8 +132,10 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
 
       context 'when option for locking Runner is provided' do
         it 'creates runner' do
-          post api('/runners'), token: registration_token,
-                                locked: true
+          post api('/runners'), params: {
+                                  token: registration_token,
+                                  locked: true
+                                }
 
           expect(response).to have_gitlab_http_status 201
           expect(Ci::Runner.first.locked).to be true
@@ -135,8 +145,10 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
       context 'when option for activating a Runner is provided' do
         context 'when active is set to true' do
           it 'creates runner' do
-            post api('/runners'), token: registration_token,
-                                  active: true
+            post api('/runners'), params: {
+                                    token: registration_token,
+                                    active: true
+                                  }
 
             expect(response).to have_gitlab_http_status 201
             expect(Ci::Runner.first.active).to be true
@@ -145,8 +157,10 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
 
         context 'when active is set to false' do
           it 'creates runner' do
-            post api('/runners'), token: registration_token,
-                                  active: false
+            post api('/runners'), params: {
+                                    token: registration_token,
+                                    active: false
+                                  }
 
             expect(response).to have_gitlab_http_status 201
             expect(Ci::Runner.first.active).to be false
@@ -154,10 +168,38 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
         end
       end
 
+      context 'when access_level is provided for Runner' do
+        context 'when access_level is set to ref_protected' do
+          it 'creates runner' do
+            post api('/runners'), params: {
+                                    token: registration_token,
+                                    access_level: 'ref_protected'
+                                  }
+
+            expect(response).to have_gitlab_http_status 201
+            expect(Ci::Runner.first.ref_protected?).to be true
+          end
+        end
+
+        context 'when access_level is set to not_protected' do
+          it 'creates runner' do
+            post api('/runners'), params: {
+                                    token: registration_token,
+                                    access_level: 'not_protected'
+                                  }
+
+            expect(response).to have_gitlab_http_status 201
+            expect(Ci::Runner.first.ref_protected?).to be false
+          end
+        end
+      end
+
       context 'when maximum job timeout is specified' do
         it 'creates runner' do
-          post api('/runners'), token: registration_token,
-                                maximum_timeout: 9000
+          post api('/runners'), params: {
+                                  token: registration_token,
+                                  maximum_timeout: 9000
+                                }
 
           expect(response).to have_gitlab_http_status 201
           expect(Ci::Runner.first.maximum_timeout).to eq(9000)
@@ -165,8 +207,10 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
 
         context 'when maximum job timeout is empty' do
           it 'creates runner' do
-            post api('/runners'), token: registration_token,
-                                  maximum_timeout: ''
+            post api('/runners'), params: {
+                                    token: registration_token,
+                                    maximum_timeout: ''
+                                  }
 
             expect(response).to have_gitlab_http_status 201
             expect(Ci::Runner.first.maximum_timeout).to be_nil
@@ -179,8 +223,10 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
           let(:value) { "#{param}_value" }
 
           it "updates provided Runner's parameter" do
-            post api('/runners'), token: registration_token,
-                                  info: { param => value }
+            post api('/runners'), params: {
+                                    token: registration_token,
+                                    info: { param => value }
+                                  }
 
             expect(response).to have_gitlab_http_status 201
             expect(Ci::Runner.first.read_attribute(param.to_sym)).to eq(value)
@@ -190,8 +236,8 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
 
       it "sets the runner's ip_address" do
         post api('/runners'),
-          { token: registration_token },
-          { 'REMOTE_ADDR' => '123.111.123.111' }
+             params: { token: registration_token },
+             headers: { 'X-Forwarded-For' => '123.111.123.111' }
 
         expect(response).to have_gitlab_http_status 201
         expect(Ci::Runner.first.ip_address).to eq('123.111.123.111')
@@ -209,7 +255,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
 
       context 'when invalid token is provided' do
         it 'returns 403 error' do
-          delete api('/runners'), token: 'invalid'
+          delete api('/runners'), params: { token: 'invalid' }
 
           expect(response).to have_gitlab_http_status 403
         end
@@ -219,7 +265,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
         let(:runner) { create(:ci_runner) }
 
         it 'deletes Runner' do
-          delete api('/runners'), token: runner.token
+          delete api('/runners'), params: { token: runner.token }
 
           expect(response).to have_gitlab_http_status 204
           expect(Ci::Runner.count).to eq(0)
@@ -245,7 +291,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
 
       context 'when invalid token is provided' do
         it 'returns 403 error' do
-          post api('/runners/verify'), token: 'invalid-token'
+          post api('/runners/verify'), params: { token: 'invalid-token' }
 
           expect(response).to have_gitlab_http_status 403
         end
@@ -253,7 +299,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
 
       context 'when valid token is provided' do
         it 'verifies Runner credentials' do
-          post api('/runners/verify'), token: runner.token
+          post api('/runners/verify'), params: { token: runner.token }
 
           expect(response).to have_gitlab_http_status 200
         end
@@ -267,7 +313,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
     let(:runner) { create(:ci_runner, :project, projects: [project]) }
     let(:job) do
       create(:ci_build, :artifacts, :extended_options,
-             pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0, commands: "ls\ndate")
+             pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0)
     end
 
     describe 'POST /api/v4/jobs/request' do
@@ -342,7 +388,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
 
       context 'when invalid token is provided' do
         it 'returns 403 error' do
-          post api('/jobs/request'), token: 'invalid'
+          post api('/jobs/request'), params: { token: 'invalid' }
 
           expect(response).to have_gitlab_http_status 403
         end
@@ -397,12 +443,14 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
               'ref' => job.ref,
               'sha' => job.sha,
               'before_sha' => job.before_sha,
-              'ref_type' => 'branch' }
+              'ref_type' => 'branch',
+              'refspecs' => %w[+refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/*],
+              'depth' => 0 }
           end
 
           let(:expected_steps) do
             [{ 'name' => 'script',
-               'script' => %w(ls date),
+               'script' => %w(echo),
                'timeout' => job.metadata_timeout,
                'when' => 'on_success',
                'allow_failure' => false },
@@ -414,9 +462,9 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
           end
 
           let(:expected_variables) do
-            [{ 'key' => 'CI_JOB_NAME', 'value' => 'spinach', 'public' => true },
-             { 'key' => 'CI_JOB_STAGE', 'value' => 'test', 'public' => true },
-             { 'key' => 'DB_NAME', 'value' => 'postgres', 'public' => true }]
+            [{ 'key' => 'CI_JOB_NAME', 'value' => 'spinach', 'public' => true, 'masked' => false },
+             { 'key' => 'CI_JOB_STAGE', 'value' => 'test', 'public' => true, 'masked' => false },
+             { 'key' => 'DB_NAME', 'value' => 'postgres', 'public' => true, 'masked' => false }]
           end
 
           let(:expected_artifacts) do
@@ -448,11 +496,11 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
             expect(json_response['token']).to eq(job.token)
             expect(json_response['job_info']).to eq(expected_job_info)
             expect(json_response['git_info']).to eq(expected_git_info)
-            expect(json_response['image']).to eq({ 'name' => 'ruby:2.1', 'entrypoint' => '/bin/sh' })
+            expect(json_response['image']).to eq({ 'name' => 'ruby:2.1', 'entrypoint' => '/bin/sh', 'ports' => [] })
             expect(json_response['services']).to eq([{ 'name' => 'postgres', 'entrypoint' => nil,
-                                                       'alias' => nil, 'command' => nil },
+                                                       'alias' => nil, 'command' => nil, 'ports' => [] },
                                                      { 'name' => 'docker:stable-dind', 'entrypoint' => '/bin/sh',
-                                                       'alias' => 'docker', 'command' => 'sleep 30' }])
+                                                       'alias' => 'docker', 'command' => 'sleep 30', 'ports' => [] }])
             expect(json_response['steps']).to eq(expected_steps)
             expect(json_response['artifacts']).to eq(expected_artifacts)
             expect(json_response['cache']).to eq(expected_cache)
@@ -469,6 +517,53 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
               expect(response).to have_gitlab_http_status(201)
               expect(json_response['git_info']['ref_type']).to eq('tag')
             end
+
+            context 'when GIT_DEPTH is specified' do
+              before do
+                create(:ci_pipeline_variable, key: 'GIT_DEPTH', value: 1, pipeline: pipeline)
+              end
+
+              it 'specifies refspecs' do
+                request_job
+
+                expect(response).to have_gitlab_http_status(201)
+                expect(json_response['git_info']['refspecs']).to include("+refs/tags/#{job.ref}:refs/tags/#{job.ref}")
+              end
+            end
+
+            context 'when GIT_DEPTH is not specified' do
+              it 'specifies refspecs' do
+                request_job
+
+                expect(response).to have_gitlab_http_status(201)
+                expect(json_response['git_info']['refspecs'])
+                  .to contain_exactly('+refs/tags/*:refs/tags/*', '+refs/heads/*:refs/remotes/origin/*')
+              end
+            end
+          end
+
+          context 'when job filtered by job_age' do
+            let!(:job) { create(:ci_build, :tag, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0, queued_at: 60.seconds.ago) }
+
+            context 'job is queued less than job_age parameter' do
+              let(:job_age) { 120 }
+
+              it 'gives 204' do
+                request_job(job_age: job_age)
+
+                expect(response).to have_gitlab_http_status(204)
+              end
+            end
+
+            context 'job is queued more than job_age parameter' do
+              let(:job_age) { 30 }
+
+              it 'picks a job' do
+                request_job(job_age: job_age)
+
+                expect(response).to have_gitlab_http_status(201)
+              end
+            end
           end
 
           context 'when job is made for branch' do
@@ -477,6 +572,55 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
 
               expect(response).to have_gitlab_http_status(201)
               expect(json_response['git_info']['ref_type']).to eq('branch')
+            end
+
+            context 'when GIT_DEPTH is specified' do
+              before do
+                create(:ci_pipeline_variable, key: 'GIT_DEPTH', value: 1, pipeline: pipeline)
+              end
+
+              it 'specifies refspecs' do
+                request_job
+
+                expect(response).to have_gitlab_http_status(201)
+                expect(json_response['git_info']['refspecs']).to include("+refs/heads/#{job.ref}:refs/remotes/origin/#{job.ref}")
+              end
+            end
+
+            context 'when GIT_DEPTH is not specified' do
+              it 'specifies refspecs' do
+                request_job
+
+                expect(response).to have_gitlab_http_status(201)
+                expect(json_response['git_info']['refspecs'])
+                  .to contain_exactly('+refs/tags/*:refs/tags/*', '+refs/heads/*:refs/remotes/origin/*')
+              end
+            end
+          end
+
+          context 'when job is made for merge request' do
+            let(:pipeline) { create(:ci_pipeline_without_jobs, source: :merge_request_event, project: project, ref: 'feature', merge_request: merge_request) }
+            let!(:job) { create(:ci_build, pipeline: pipeline, name: 'spinach', ref: 'feature', stage: 'test', stage_idx: 0) }
+            let(:merge_request) { create(:merge_request) }
+
+            it 'sets branch as ref_type' do
+              request_job
+
+              expect(response).to have_gitlab_http_status(201)
+              expect(json_response['git_info']['ref_type']).to eq('branch')
+            end
+
+            context 'when GIT_DEPTH is specified' do
+              before do
+                create(:ci_pipeline_variable, key: 'GIT_DEPTH', value: 1, pipeline: pipeline)
+              end
+
+              it 'returns the overwritten git depth for merge request refspecs' do
+                request_job
+
+                expect(response).to have_gitlab_http_status(201)
+                expect(json_response['git_info']['depth']).to eq(1)
+              end
             end
           end
 
@@ -499,8 +643,17 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
 
           it "sets the runner's ip_address" do
             post api('/jobs/request'),
-              { token: runner.token },
-              { 'User-Agent' => user_agent, 'REMOTE_ADDR' => '123.222.123.222' }
+              params: { token: runner.token },
+              headers: { 'User-Agent' => user_agent, 'X-Forwarded-For' => '123.222.123.222' }
+
+            expect(response).to have_gitlab_http_status 201
+            expect(runner.reload.ip_address).to eq('123.222.123.222')
+          end
+
+          it "handles multiple X-Forwarded-For addresses" do
+            post api('/jobs/request'),
+              params: { token: runner.token },
+              headers: { 'User-Agent' => user_agent, 'X-Forwarded-For' => '123.222.123.222, 127.0.0.1' }
 
             expect(response).to have_gitlab_http_status 201
             expect(runner.reload.ip_address).to eq('123.222.123.222')
@@ -568,7 +721,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
             let!(:test_job) do
               create(:ci_build, pipeline: pipeline, token: 'test-job-token', name: 'deploy',
                                 stage: 'deploy', stage_idx: 1,
-                                options: { dependencies: [job2.name] })
+                                options: { script: ['bash'], dependencies: [job2.name] })
             end
 
             before do
@@ -592,7 +745,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
             let!(:empty_dependencies_job) do
               create(:ci_build, pipeline: pipeline, token: 'test-job-token', name: 'empty_dependencies_job',
                                 stage: 'deploy', stage_idx: 1,
-                                options: { dependencies: [] })
+                                options: { script: ['bash'], dependencies: [] })
             end
 
             before do
@@ -637,12 +790,12 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
 
           context 'when triggered job is available' do
             let(:expected_variables) do
-              [{ 'key' => 'CI_JOB_NAME', 'value' => 'spinach', 'public' => true },
-               { 'key' => 'CI_JOB_STAGE', 'value' => 'test', 'public' => true },
-               { 'key' => 'CI_PIPELINE_TRIGGERED', 'value' => 'true', 'public' => true },
-               { 'key' => 'DB_NAME', 'value' => 'postgres', 'public' => true },
-               { 'key' => 'SECRET_KEY', 'value' => 'secret_value', 'public' => false },
-               { 'key' => 'TRIGGER_KEY_1', 'value' => 'TRIGGER_VALUE_1', 'public' => false }]
+              [{ 'key' => 'CI_JOB_NAME', 'value' => 'spinach', 'public' => true, 'masked' => false },
+               { 'key' => 'CI_JOB_STAGE', 'value' => 'test', 'public' => true, 'masked' => false },
+               { 'key' => 'CI_PIPELINE_TRIGGERED', 'value' => 'true', 'public' => true, 'masked' => false },
+               { 'key' => 'DB_NAME', 'value' => 'postgres', 'public' => true, 'masked' => false },
+               { 'key' => 'SECRET_KEY', 'value' => 'secret_value', 'public' => false, 'masked' => false },
+               { 'key' => 'TRIGGER_KEY_1', 'value' => 'TRIGGER_VALUE_1', 'public' => false, 'masked' => false }]
             end
 
             let(:trigger) { create(:ci_trigger, project: project) }
@@ -750,9 +903,59 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
           end
         end
 
+        describe 'port support' do
+          let(:job) { create(:ci_build, pipeline: pipeline, options: options) }
+
+          context 'when job image has ports' do
+            let(:options) do
+              {
+                image: {
+                  name: 'ruby',
+                  ports: [80]
+                },
+                services: ['mysql']
+              }
+            end
+
+            it 'returns the image ports' do
+              request_job
+
+              expect(response).to have_http_status(:created)
+              expect(json_response).to include(
+                'id' => job.id,
+                'image' => a_hash_including('name' => 'ruby', 'ports' => [{ 'number' => 80, 'protocol' => 'http', 'name' => 'default_port' }]),
+                'services' => all(a_hash_including('name' => 'mysql')))
+            end
+          end
+
+          context 'when job services settings has ports' do
+            let(:options) do
+              {
+                image: 'ruby',
+                services: [
+                  {
+                    name: 'tomcat',
+                    ports: [{ number: 8081, protocol: 'http', name: 'custom_port' }]
+                  }
+                ]
+              }
+            end
+
+            it 'returns the service ports' do
+              request_job
+
+              expect(response).to have_http_status(:created)
+              expect(json_response).to include(
+                'id' => job.id,
+                'image' => a_hash_including('name' => 'ruby'),
+                'services' => all(a_hash_including('name' => 'tomcat', 'ports' => [{ 'number' => 8081, 'protocol' => 'http', 'name' => 'custom_port' }])))
+            end
+          end
+        end
+
         def request_job(token = runner.token, **params)
           new_params = params.merge(token: token, last_update: last_update)
-          post api('/jobs/request'), new_params, { 'User-Agent' => user_agent }
+          post api('/jobs/request'), params: new_params, headers: { 'User-Agent' => user_agent }
         end
       end
     end
@@ -814,6 +1017,15 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
           end
 
           it { expect(job).to be_job_execution_timeout }
+        end
+
+        context 'when failure_reason is unmet_prerequisites' do
+          before do
+            update_job(state: 'failed', failure_reason: 'unmet_prerequisites')
+            job.reload
+          end
+
+          it { expect(job).to be_unmet_prerequisites }
         end
       end
 
@@ -893,7 +1105,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
 
       def update_job(token = job.token, **params)
         new_params = params.merge(token: token)
-        put api("/jobs/#{job.id}"), new_params
+        put api("/jobs/#{job.id}"), params: new_params
       end
 
       def update_job_after_time(update_interval = 20.minutes, state = 'running')
@@ -1113,7 +1325,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
         end
 
         Timecop.travel(job.updated_at + update_interval) do
-          patch api("/jobs/#{job.id}/trace"), content, request_headers
+          patch api("/jobs/#{job.id}/trace"), params: content, headers: request_headers
           job.reload
         end
       end
@@ -1244,7 +1456,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
         end
 
         def authorize_artifacts(params = {}, request_headers = headers)
-          post api("/jobs/#{job.id}/artifacts/authorize"), params, request_headers
+          post api("/jobs/#{job.id}/artifacts/authorize"), params: params, headers: request_headers
         end
 
         def authorize_artifacts_with_token_in_params(params = {}, request_headers = headers)
@@ -1300,7 +1512,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
                 end
 
                 before do
-                  fog_connection.directories.get('artifacts').files.create(
+                  fog_connection.directories.new(key: 'artifacts').files.create(
                     key: 'tmp/uploads/12312300',
                     body: 'content'
                   )
@@ -1347,7 +1559,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
 
           context 'when artifacts post request does not contain file' do
             it 'fails to post artifacts without file' do
-              post api("/jobs/#{job.id}/artifacts"), {}, headers_with_token
+              post api("/jobs/#{job.id}/artifacts"), params: {}, headers: headers_with_token
 
               expect(response).to have_gitlab_http_status(400)
             end
@@ -1355,7 +1567,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
 
           context 'GitLab Workhorse is not configured' do
             it 'fails to post artifacts without GitLab-Workhorse' do
-              post api("/jobs/#{job.id}/artifacts"), { token: job.token }, {}
+              post api("/jobs/#{job.id}/artifacts"), params: { token: job.token }, headers: {}
 
               expect(response).to have_gitlab_http_status(403)
             end
@@ -1372,7 +1584,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
             before do
               stub_application_setting(default_artifacts_expire_in: default_artifacts_expire_in)
 
-              post(api("/jobs/#{job.id}/artifacts"), post_data, headers_with_token)
+              post(api("/jobs/#{job.id}/artifacts"), params: post_data, headers: headers_with_token)
             end
 
             context 'when an expire_in is given' do
@@ -1427,7 +1639,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
             let(:stored_metadata_sha256) { job.reload.job_artifacts_metadata.file_sha256 }
 
             before do
-              post(api("/jobs/#{job.id}/artifacts"), post_data, headers_with_token)
+              post(api("/jobs/#{job.id}/artifacts"), params: post_data, headers: headers_with_token)
             end
 
             context 'when posts data accelerated by workhorse is correct' do
@@ -1545,7 +1757,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
             'file.name' => file.original_filename
           })
 
-          post api("/jobs/#{job.id}/artifacts"), params, headers
+          post api("/jobs/#{job.id}/artifacts"), params: params, headers: headers
         end
       end
 
@@ -1564,7 +1776,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
             context 'when artifacts are stored locally' do
               let(:download_headers) do
                 { 'Content-Transfer-Encoding' => 'binary',
-                  'Content-Disposition' => 'attachment; filename=ci_build_artifacts.zip' }
+                  'Content-Disposition' => %q(attachment; filename="ci_build_artifacts.zip"; filename*=UTF-8''ci_build_artifacts.zip) }
               end
 
               before do
@@ -1572,7 +1784,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
               end
 
               it 'download artifacts' do
-                expect(response).to have_http_status(200)
+                expect(response).to have_gitlab_http_status(200)
                 expect(response.headers.to_h).to include download_headers
               end
             end
@@ -1631,7 +1843,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
           params = params.merge(token: token)
           job.reload
 
-          get api("/jobs/#{job.id}/artifacts"), params, request_headers
+          get api("/jobs/#{job.id}/artifacts"), params: params, headers: request_headers
         end
       end
     end

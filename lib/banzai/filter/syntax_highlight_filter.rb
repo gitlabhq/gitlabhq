@@ -1,13 +1,18 @@
 # frozen_string_literal: true
 
 require 'rouge/plugins/common_mark'
-require 'rouge/plugins/redcarpet'
 
+# Generated HTML is transformed back to GFM by app/assets/javascripts/behaviors/markdown/nodes/code_block.js
 module Banzai
   module Filter
     # HTML Filter to highlight fenced code blocks
     #
     class SyntaxHighlightFilter < HTML::Pipeline::Filter
+      include OutputSafety
+
+      PARAMS_DELIMITER = ':'.freeze
+      LANG_PARAMS_ATTR = 'data-lang-params'.freeze
+
       def call
         doc.search('pre > code').each do |node|
           highlight_node(node)
@@ -18,7 +23,7 @@ module Banzai
 
       def highlight_node(node)
         css_classes = +'code highlight js-syntax-highlight'
-        lang = node.attr('lang')
+        lang, lang_params = parse_lang_params(node.attr('lang'))
         retried = false
 
         if use_rouge?(lang)
@@ -46,13 +51,25 @@ module Banzai
           retry
         end
 
-        highlighted = %(<pre class="#{css_classes}" lang="#{language}" v-pre="true"><code>#{code}</code></pre>)
+        highlighted = %(<pre class="#{css_classes}"
+                             lang="#{language}"
+                             #{lang_params}
+                             v-pre="true"><code>#{code}</code></pre>)
 
         # Extracted to a method to measure it
         replace_parent_pre_element(node, highlighted)
       end
 
       private
+
+      def parse_lang_params(language)
+        return unless language
+
+        lang, params = language.split(PARAMS_DELIMITER, 2)
+        formatted_params = %(#{LANG_PARAMS_ATTR}="#{escape_once(params)}") if params
+
+        [lang, formatted_params]
+      end
 
       # Separate method so it can be instrumented.
       def lex(lexer, code)

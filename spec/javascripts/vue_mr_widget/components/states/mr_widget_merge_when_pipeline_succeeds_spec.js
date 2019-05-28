@@ -121,14 +121,14 @@ describe('MRWidgetMergeWhenPipelineSucceeds', () => {
       expect(vm.$el.innerText).toContain('to be merged automatically when the pipeline succeeds');
       expect(vm.$el.innerText).toContain('The changes will be merged into');
       expect(vm.$el.innerText).toContain(targetBranch);
-      expect(vm.$el.innerText).toContain('The source branch will not be removed');
+      expect(vm.$el.innerText).toContain('The source branch will not be deleted');
       expect(vm.$el.querySelector('.js-cancel-auto-merge').innerText).toContain(
         'Cancel automatic merge',
       );
 
       expect(vm.$el.querySelector('.js-cancel-auto-merge').getAttribute('disabled')).toBeFalsy();
       expect(vm.$el.querySelector('.js-remove-source-branch').innerText).toContain(
-        'Remove source branch',
+        'Delete source branch',
       );
 
       expect(vm.$el.querySelector('.js-remove-source-branch').getAttribute('disabled')).toBeFalsy();
@@ -143,19 +143,19 @@ describe('MRWidgetMergeWhenPipelineSucceeds', () => {
       });
     });
 
-    it('should show source branch will be removed text when it source branch set to remove', done => {
+    it('should show source branch will be deleted text when it source branch set to remove', done => {
       vm.mr.shouldRemoveSourceBranch = true;
 
       Vue.nextTick(() => {
         const normalizedText = vm.$el.innerText.replace(/\s+/g, ' ');
 
-        expect(normalizedText).toContain('The source branch will be removed');
-        expect(normalizedText).not.toContain('The source branch will not be removed');
+        expect(normalizedText).toContain('The source branch will be deleted');
+        expect(normalizedText).not.toContain('The source branch will not be deleted');
         done();
       });
     });
 
-    it('should not show remove source branch button when user not able to remove source branch', done => {
+    it('should not show delete source branch button when user not able to delete source branch', done => {
       vm.mr.currentUserId = 4;
 
       Vue.nextTick(() => {
@@ -164,7 +164,7 @@ describe('MRWidgetMergeWhenPipelineSucceeds', () => {
       });
     });
 
-    it('should disable remove source branch button when the action is in progress', done => {
+    it('should disable delete source branch button when the action is in progress', done => {
       vm.isRemovingSourceBranch = true;
 
       Vue.nextTick(() => {

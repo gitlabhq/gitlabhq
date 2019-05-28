@@ -1,0 +1,27 @@
+# Read more about this feature here: https://docs.gitlab.com/ee/user/project/merge_requests/license_management.html
+
+variables:
+  LICENSE_MANAGEMENT_SETUP_CMD: '' # If needed, specify a command to setup your environment with a custom package manager.
+
+license_management:
+  stage: test
+  image:
+    name: "registry.gitlab.com/gitlab-org/security-products/license-management:$CI_SERVER_VERSION_MAJOR-$CI_SERVER_VERSION_MINOR-stable"
+    entrypoint: [""]
+  variables:
+    SETUP_CMD: $LICENSE_MANAGEMENT_SETUP_CMD
+  allow_failure: true
+  script:
+    - /run.sh analyze .
+  artifacts:
+    reports:
+      license_management: gl-license-management-report.json
+  dependencies: []
+  only:
+    refs:
+      - branches
+    variables:
+      - $GITLAB_FEATURES =~ /\blicense_management\b/
+  except:
+    variables:
+      - $LICENSE_MANAGEMENT_DISABLED

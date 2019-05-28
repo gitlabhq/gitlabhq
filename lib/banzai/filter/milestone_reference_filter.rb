@@ -51,13 +51,13 @@ module Banzai
         # default implementation.
         return super(text, pattern) if pattern != Milestone.reference_pattern
 
-        text.gsub(pattern) do |match|
+        unescape_html_entities(text).gsub(pattern) do |match|
           milestone = find_milestone($~[:project], $~[:namespace], $~[:milestone_iid], $~[:milestone_name])
 
           if milestone
             yield match, milestone.id, $~[:project], $~[:namespace], $~
           else
-            match
+            escape_html_entities(match)
           end
         end
       end
@@ -101,9 +101,9 @@ module Banzai
 
       def self_and_ancestors_ids(parent)
         if group_context?(parent)
-          parent.self_and_ancestors_ids
+          parent.self_and_ancestors.select(:id)
         elsif project_context?(parent)
-          parent.group&.self_and_ancestors_ids
+          parent.group&.self_and_ancestors&.select(:id)
         end
       end
 

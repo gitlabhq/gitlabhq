@@ -1,0 +1,15 @@
+{
+  "type": "object",
+  "required": [
+    "external_url",
+    "errors"
+  ],
+  "properties": {
+    "external_url": { "type": ["string", "null"] },
+    "errors": {
+      "type": "array",
+      "items": { "$ref": "error.json" }
+    }
+  },
+  "additionalProperties": false
+}

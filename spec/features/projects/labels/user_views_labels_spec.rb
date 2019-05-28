@@ -7,6 +7,7 @@ describe "User views labels" do
   set(:user) { create(:user) }
 
   let(:label_titles) { %w[bug enhancement feature] }
+  let!(:prioritized_label) { create(:label, project: project, title: 'prioritized-label-name', priority: 1) }
 
   before do
     label_titles.each { |title| create(:label, project: project, title: title) }
@@ -18,6 +19,10 @@ describe "User views labels" do
   end
 
   it "shows all labels" do
+    page.within('.prioritized-labels .manage-labels-list') do
+      expect(page).to have_content('prioritized-label-name')
+    end
+
     page.within('.other-labels .manage-labels-list') do
       label_titles.each { |title| expect(page).to have_content(title) }
     end

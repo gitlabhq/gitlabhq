@@ -27,7 +27,8 @@ shared_examples 'diff discussions API' do |parent_type, noteable_type, id_name|
     it "creates a new diff note" do
       position = diff_note.position.to_h
 
-      post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/discussions", user), body: 'hi!', position: position
+      post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/discussions", user),
+        params: { body: 'hi!', position: position }
 
       expect(response).to have_gitlab_http_status(201)
       expect(json_response['notes'].first['body']).to eq('hi!')
@@ -38,7 +39,8 @@ shared_examples 'diff discussions API' do |parent_type, noteable_type, id_name|
     it "returns a 400 bad request error when position is invalid" do
       position = diff_note.position.to_h.merge(new_line: '100000')
 
-      post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/discussions", user), body: 'hi!', position: position
+      post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/discussions", user),
+        params: { body: 'hi!', position: position }
 
       expect(response).to have_gitlab_http_status(400)
     end
@@ -47,7 +49,7 @@ shared_examples 'diff discussions API' do |parent_type, noteable_type, id_name|
   describe "POST /#{parent_type}/:id/#{noteable_type}/:noteable_id/discussions/:discussion_id/notes" do
     it 'adds a new note to the diff discussion' do
       post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/"\
-               "discussions/#{diff_note.discussion_id}/notes", user), body: 'hi!'
+               "discussions/#{diff_note.discussion_id}/notes", user), params: { body: 'hi!' }
 
       expect(response).to have_gitlab_http_status(201)
       expect(json_response['body']).to eq('hi!')

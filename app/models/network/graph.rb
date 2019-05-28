@@ -40,9 +40,12 @@ module Network
     # Get commits from repository
     #
     def collect_commits
-      find_commits(count_to_display_commit_in_center).map do |commit|
-        # Decorate with app/model/network/commit.rb
-        Network::Commit.new(commit)
+      # https://gitlab.com/gitlab-org/gitlab-ce/issues/58013
+      Gitlab::GitalyClient.allow_n_plus_1_calls do
+        find_commits(count_to_display_commit_in_center).map do |commit|
+          # Decorate with app/model/network/commit.rb
+          Network::Commit.new(commit)
+        end
       end
     end
 

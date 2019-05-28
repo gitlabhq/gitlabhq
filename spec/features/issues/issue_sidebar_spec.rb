@@ -130,7 +130,7 @@ describe 'Issue Sidebar' do
         end
       end
 
-      context 'creating a project label', :js do
+      context 'creating a project label', :js, :quarantine do
         before do
           page.within('.block.labels') do
             click_link 'Create project'

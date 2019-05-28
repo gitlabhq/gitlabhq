@@ -6,7 +6,7 @@ module QA
       class Show < Page::Base
         include Page::Component::GroupsFilter
 
-        view 'app/views/groups/show.html.haml' do
+        view 'app/views/groups/_home_panel.html.haml' do
           element :new_project_or_subgroup_dropdown
           element :new_project_or_subgroup_dropdown_toggle
           element :new_project_option
@@ -18,7 +18,7 @@ module QA
           element :no_result_text, 'No groups or projects matched your search' # rubocop:disable QA/ElementWithPattern
         end
 
-        def go_to_subgroup(name)
+        def click_subgroup(name)
           click_link name
         end
 
@@ -45,15 +45,17 @@ module QA
         private
 
         def select_kind(kind)
-          within_element(:new_project_or_subgroup_dropdown) do
-            # May need to click again because it is possible to click the button quicker than the JS is bound
-            wait(reload: false) do
-              click_element :new_project_or_subgroup_dropdown_toggle
+          QA::Support::Retrier.retry_on_exception(sleep_interval: 1.0) do
+            within_element(:new_project_or_subgroup_dropdown) do
+              # May need to click again because it is possible to click the button quicker than the JS is bound
+              wait(reload: false) do
+                click_element :new_project_or_subgroup_dropdown_toggle
 
-              has_element?(kind)
+                has_element?(kind)
+              end
+
+              click_element kind
             end
-
-            click_element kind
           end
         end
       end

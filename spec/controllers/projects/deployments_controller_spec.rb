@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Projects::DeploymentsController do
@@ -19,7 +21,7 @@ describe Projects::DeploymentsController do
       create(:deployment, :success, environment: environment, created_at: 7.hours.ago)
       create(:deployment, :success, environment: environment)
 
-      get :index, deployment_params(after: 8.hours.ago)
+      get :index, params: deployment_params(after: 8.hours.ago)
 
       expect(response).to be_ok
 
@@ -29,7 +31,7 @@ describe Projects::DeploymentsController do
     it 'returns a list with deployments information' do
       create(:deployment, :success, environment: environment)
 
-      get :index, deployment_params
+      get :index, params: deployment_params
 
       expect(response).to be_ok
       expect(response).to match_response_schema('deployments')
@@ -49,7 +51,7 @@ describe Projects::DeploymentsController do
       end
 
       it 'responds with not found' do
-        get :metrics, deployment_params(id: deployment.id)
+        get :metrics, params: deployment_params(id: deployment.id)
 
         expect(response).to be_not_found
       end
@@ -66,7 +68,7 @@ describe Projects::DeploymentsController do
         end
 
         it 'returns a empty response 204 resposne' do
-          get :metrics, deployment_params(id: deployment.id)
+          get :metrics, params: deployment_params(id: deployment.id)
           expect(response).to have_gitlab_http_status(204)
           expect(response.body).to eq('')
         end
@@ -86,7 +88,7 @@ describe Projects::DeploymentsController do
         end
 
         it 'returns a metrics JSON document' do
-          get :metrics, deployment_params(id: deployment.id)
+          get :metrics, params: deployment_params(id: deployment.id)
 
           expect(response).to be_ok
           expect(json_response['success']).to be(true)
@@ -101,7 +103,7 @@ describe Projects::DeploymentsController do
         end
 
         it 'responds with not found' do
-          get :metrics, deployment_params(id: deployment.id)
+          get :metrics, params: deployment_params(id: deployment.id)
 
           expect(response).to be_not_found
         end
@@ -122,7 +124,7 @@ describe Projects::DeploymentsController do
       end
 
       it 'responds with not found' do
-        get :metrics, deployment_params(id: deployment.id)
+        get :metrics, params: deployment_params(id: deployment.id)
 
         expect(response).to be_not_found
       end
@@ -141,7 +143,7 @@ describe Projects::DeploymentsController do
         end
 
         it 'returns a empty response 204 response' do
-          get :additional_metrics, deployment_params(id: deployment.id, format: :json)
+          get :additional_metrics, params: deployment_params(id: deployment.id, format: :json)
           expect(response).to have_gitlab_http_status(204)
           expect(response.body).to eq('')
         end
@@ -161,7 +163,7 @@ describe Projects::DeploymentsController do
         end
 
         it 'returns a metrics JSON document' do
-          get :additional_metrics, deployment_params(id: deployment.id, format: :json)
+          get :additional_metrics, params: deployment_params(id: deployment.id, format: :json)
 
           expect(response).to be_ok
           expect(json_response['success']).to be(true)

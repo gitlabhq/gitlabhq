@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Group do
@@ -362,6 +364,32 @@ describe Group do
     it { expect(group.has_maintainer?(nil)).to be_falsey }
   end
 
+  describe '#last_owner?' do
+    before do
+      @members = setup_group_members(group)
+    end
+
+    it { expect(group.last_owner?(@members[:owner])).to be_truthy }
+
+    context 'with two owners' do
+      before do
+        create(:group_member, :owner, group: group)
+      end
+
+      it { expect(group.last_owner?(@members[:owner])).to be_falsy }
+    end
+
+    context 'with owners from a parent', :postgresql do
+      before do
+        parent_group = create(:group)
+        create(:group_member, :owner, group: parent_group)
+        group.update(parent: parent_group)
+      end
+
+      it { expect(group.last_owner?(@members[:owner])).to be_falsy }
+    end
+  end
+
   describe '#lfs_enabled?' do
     context 'LFS enabled globally' do
       before do
@@ -722,16 +750,52 @@ describe Group do
     end
   end
 
+  describe '#highest_group_member', :nested_groups do
+    let(:nested_group) { create(:group, parent: group) }
+    let(:nested_group_2) { create(:group, parent: nested_group) }
+    let(:user) { create(:user) }
+
+    subject(:highest_group_member) { nested_group_2.highest_group_member(user) }
+
+    context 'when the user is not a member of any group in the hierarchy' do
+      it 'returns nil' do
+        expect(highest_group_member).to be_nil
+      end
+    end
+
+    context 'when the user is only a member of one group in the hierarchy' do
+      before do
+        nested_group.add_developer(user)
+      end
+
+      it 'returns that group member' do
+        expect(highest_group_member.access_level).to eq(Gitlab::Access::DEVELOPER)
+      end
+    end
+
+    context 'when the user is a member of several groups in the hierarchy' do
+      before do
+        group.add_owner(user)
+        nested_group.add_developer(user)
+        nested_group_2.add_maintainer(user)
+      end
+
+      it 'returns the group member with the highest access level' do
+        expect(highest_group_member.access_level).to eq(Gitlab::Access::OWNER)
+      end
+    end
+  end
+
   describe '#has_parent?' do
     context 'when the group has a parent' do
-      it 'should be truthy' do
+      it 'is truthy' do
         group = create(:group, :nested)
         expect(group.has_parent?).to be_truthy
       end
     end
 
     context 'when the group has no parent' do
-      it 'should be falsy' do
+      it 'is falsy' do
         group = create(:group, parent: nil)
         expect(group.has_parent?).to be_falsy
       end
@@ -772,6 +836,135 @@ describe Group do
       end
 
       it { is_expected.to be_truthy }
+    end
+  end
+
+  describe '#first_auto_devops_config' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:group) { create(:group) }
+
+    subject { group.first_auto_devops_config }
+
+    where(:instance_value, :group_value, :config) do
+      # Instance level enabled
+      true | nil    | { status: true, scope: :instance }
+      true | true   | { status: true, scope: :group }
+      true | false  | { status: false, scope: :group }
+
+      # Instance level disabled
+      false | nil    | { status: false, scope: :instance }
+      false | true   | { status: true, scope: :group }
+      false | false  | { status: false, scope: :group }
+    end
+
+    with_them do
+      before do
+        stub_application_setting(auto_devops_enabled: instance_value)
+
+        group.update_attribute(:auto_devops_enabled, group_value)
+      end
+
+      it { is_expected.to eq(config) }
+    end
+
+    context 'with parent groups', :nested_groups do
+      where(:instance_value, :parent_value, :group_value, :config) do
+        # Instance level enabled
+        true | nil   | nil    | { status: true, scope: :instance }
+        true | nil   | true   | { status: true, scope: :group }
+        true | nil   | false  | { status: false, scope: :group }
+
+        true | true  | nil    | { status: true, scope: :group }
+        true | true  | true   | { status: true, scope: :group }
+        true | true  | false  | { status: false, scope: :group }
+
+        true | false | nil    | { status: false, scope: :group }
+        true | false | true   | { status: true, scope: :group }
+        true | false | false  | { status: false, scope: :group }
+
+        # Instance level disable
+        false | nil  | nil    | { status: false, scope: :instance }
+        false | nil  | true   | { status: true, scope: :group }
+        false | nil  | false  | { status: false, scope: :group }
+
+        false | true | nil    | { status: true, scope: :group }
+        false | true | true   | { status: true, scope: :group }
+        false | true | false  | { status: false, scope: :group }
+
+        false | false | nil   | { status: false, scope: :group }
+        false | false | true  | { status: true, scope: :group }
+        false | false | false | { status: false, scope: :group }
+      end
+
+      with_them do
+        before do
+          stub_application_setting(auto_devops_enabled: instance_value)
+          parent = create(:group, auto_devops_enabled: parent_value)
+
+          group.update!(
+            auto_devops_enabled: group_value,
+            parent: parent
+          )
+        end
+
+        it { is_expected.to eq(config) }
+      end
+    end
+  end
+
+  describe '#auto_devops_enabled?' do
+    subject { group.auto_devops_enabled? }
+
+    context 'when auto devops is explicitly enabled on group' do
+      let(:group) { create(:group, :auto_devops_enabled) }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when auto devops is explicitly disabled on group' do
+      let(:group) { create(:group, :auto_devops_disabled) }
+
+      it { is_expected.to be_falsy }
+    end
+
+    context 'when auto devops is implicitly enabled or disabled' do
+      before do
+        stub_application_setting(auto_devops_enabled: false)
+
+        group.update!(parent: parent_group)
+      end
+
+      context 'when auto devops is enabled on root group' do
+        let(:root_group) { create(:group, :auto_devops_enabled) }
+        let(:subgroup) { create(:group, parent: root_group) }
+        let(:parent_group) { create(:group, parent: subgroup) }
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when auto devops is disabled on root group' do
+        let(:root_group) { create(:group, :auto_devops_disabled) }
+        let(:subgroup) { create(:group, parent: root_group) }
+        let(:parent_group) { create(:group, parent: subgroup) }
+
+        it { is_expected.to be_falsy }
+      end
+
+      context 'when auto devops is disabled on parent group and enabled on root group' do
+        let(:root_group) { create(:group, :auto_devops_enabled) }
+        let(:parent_group) { create(:group, :auto_devops_disabled, parent: root_group) }
+
+        it { is_expected.to be_falsy }
+      end
+    end
+  end
+
+  describe 'project_creation_level' do
+    it 'outputs the default one if it is nil' do
+      group = create(:group, project_creation_level: nil)
+
+      expect(group.project_creation_level).to eq(Gitlab::CurrentSettings.default_project_creation)
     end
   end
 end

@@ -33,15 +33,16 @@ From there, you can:
 - Set a [custom status](#current-status) for your profile
 - Manage your [commit email](#commit-email) for your profile
 - Manage [2FA](account/two_factor_authentication.md)
+- Add details of [external accounts](#add-details-of-external-accounts).
 - Change your username and [delete your account](account/delete_account.md)
 - Manage applications that can
-[use GitLab as an OAuth provider](../../integration/oauth_provider.md#introduction-to-oauth)
+  [use GitLab as an OAuth provider](../../integration/oauth_provider.md#introduction-to-oauth)
 - Manage [personal access tokens](personal_access_tokens.md) to access your account via API and authorized applications
 - Add and delete emails linked to your account
 - Choose which email to use for notifications, web-based commits, and display on your public profile
-- Manage [SSH keys](../../ssh/README.md#ssh) to access your account via SSH
+- Manage [SSH keys](../../ssh/README.md) to access your account via SSH
 - Manage your [preferences](preferences.md#syntax-highlighting-theme)
-to customize your own GitLab experience
+  to customize your own GitLab experience
 - [View your active sessions](active_sessions.md) and revoke any of them if necessary
 - Access your audit log, a security log of important events involving your account
 
@@ -73,7 +74,7 @@ which also covers the case where you have projects hosted with
 
 ## Private profile
 
-The following information will be hidden from the user profile page (https://gitlab.example.com/username) if this feature is enabled:
+The following information will be hidden from the user profile page (`https://gitlab.example.com/username`) if this feature is enabled:
 
 - Atom feed
 - Date when account is created
@@ -89,9 +90,18 @@ To enable private profile:
 1. Check the "Private profile" option.
 1. Hit **Update profile settings**.
 
-
 NOTE: **Note:**
 You and GitLab admins can see your the abovementioned information on your profile even if it is private.
+
+## Add details of external accounts
+
+GitLab allows you to add links to certain other external accounts you might have, like Skype and Twitter. They can help other users connect with you on other platforms.
+
+To add links to other accounts:
+
+1. Navigate to your **User Settings > Profile**.
+1. In the **Main settings** section, locate and fill out fields for links to external accounts like Skype and Twitter.
+1. Click the **Update profile settings** button.
 
 ## Private contributions
 

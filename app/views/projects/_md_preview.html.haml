@@ -7,32 +7,22 @@
       = _('This merge request is locked.')
       = _('Only project members can comment.')
 
-.md-area
+.md-area.position-relative
   .md-header
     %ul.nav.nav-tabs.nav-links.clearfix
       %li.md-header-tab.active
         %button.js-md-write-button{ tabindex: -1 }
-          Write
+          = _("Write")
       %li.md-header-tab
         %button.js-md-preview-button{ tabindex: -1 }
-          Preview
+          = _("Preview")
 
       %li.md-header-toolbar.active
-        = markdown_toolbar_button({ icon: "bold", data: { "md-tag" => "**" }, title: s_("MarkdownToolbar|Add bold text") })
-        = markdown_toolbar_button({ icon: "italic", data: { "md-tag" => "*" }, title: s_("MarkdownToolbar|Add italic text") })
-        = markdown_toolbar_button({ icon: "quote", data: { "md-tag" => "> ", "md-prepend" => true }, title: s_("MarkdownToolbar|Insert a quote") })
-        = markdown_toolbar_button({ icon: "code", data: { "md-tag" => "`", "md-block" => "```" }, title: s_("MarkdownToolbar|Insert code") })
-        = markdown_toolbar_button({ icon: "link", data: { "md-tag" => "[{text}](url)", "md-select" => "url" }, title: s_("MarkdownToolbar|Add a link") })
-        = markdown_toolbar_button({ icon: "list-bulleted", data: { "md-tag" => "* ", "md-prepend" => true }, title: s_("MarkdownToolbar|Add a bullet list") })
-        = markdown_toolbar_button({ icon: "list-numbered", data: { "md-tag" => "1. ", "md-prepend" => true }, title: s_("MarkdownToolbar|Add a numbered list") })
-        = markdown_toolbar_button({ icon: "task-done", data: { "md-tag" => "* [ ] ", "md-prepend" => true }, title: s_("MarkdownToolbar|Add a task list") })
-        = markdown_toolbar_button({ icon: "table", data: { "md-tag" => "| header | header |\n| ------ | ------ |\n| cell | cell |\n| cell | cell |", "md-prepend" => true }, title: s_("MarkdownToolbar|Add a table") })
-        %button.toolbar-btn.toolbar-fullscreen-btn.js-zen-enter.has-tooltip{ type: "button", tabindex: -1, "aria-label": "Go full screen", title: s_("MarkdownToolbar|Go full screen"), data: { container: "body" } }
-          = sprite_icon("screen-full")
+        = render 'projects/blob/markdown_buttons', show_fullscreen_button: true
 
   .md-write-holder
     = yield
-  .md.md-preview-holder.js-md-preview.hide.md-preview{ data: { url: url } }
+  .md.md-preview-holder.js-md-preview.hide{ data: { url: url } }
   .referenced-commands.hide
 
   - if referenced_users

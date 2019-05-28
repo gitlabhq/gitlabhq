@@ -34,7 +34,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(['job', 'stages', 'jobs', 'selectedStage', 'isLoadingStages']),
+    ...mapState(['job', 'stages', 'jobs', 'selectedStage']),
     coverage() {
       return `${this.job.coverage}%`;
     },
@@ -48,8 +48,7 @@ export default {
       return `${this.job.runner.description} (#${this.job.runner.id})`;
     },
     retryButtonClass() {
-      let className =
-        'js-retry-button float-right btn btn-retry d-none d-md-block d-lg-block d-xl-block';
+      let className = 'js-retry-button btn btn-retry';
       className +=
         this.job.status && this.job.recoverable ? ' btn-primary' : ' btn-inverted-secondary';
       return className;
@@ -110,60 +109,55 @@ export default {
   <aside class="right-sidebar build-sidebar" data-offset-top="101" data-spy="affix">
     <div class="sidebar-container">
       <div class="blocks-container">
-        <div class="block">
-          <strong class="inline prepend-top-8"> {{ job.name }} </strong>
-          <gl-link
-            v-if="job.retry_path"
-            :class="retryButtonClass"
-            :href="job.retry_path"
-            data-method="post"
-            rel="nofollow"
-          >
-            {{ __('Retry') }}
-          </gl-link>
-          <gl-link
-            v-if="job.terminal_path"
-            :href="job.terminal_path"
-            class="js-terminal-link pull-right btn btn-primary
-      btn-inverted visible-md-block visible-lg-block"
-            target="_blank"
-          >
-            {{ __('Debug') }} <icon name="external-link" />
-          </gl-link>
+        <div class="block d-flex flex-nowrap align-items-center">
+          <h4 class="my-0 mr-2 text-break-word">{{ job.name }}</h4>
+          <div class="flex-grow-1 flex-shrink-0 text-right">
+            <gl-link
+              v-if="job.retry_path"
+              :class="retryButtonClass"
+              :href="job.retry_path"
+              data-method="post"
+              rel="nofollow"
+              >{{ __('Retry') }}</gl-link
+            >
+            <gl-link
+              v-if="job.cancel_path"
+              :href="job.cancel_path"
+              class="js-cancel-job btn btn-default"
+              data-method="post"
+              rel="nofollow"
+              >{{ __('Cancel') }}</gl-link
+            >
+          </div>
+
           <gl-button
             :aria-label="__('Toggle Sidebar')"
             type="button"
-            class="btn btn-blank gutter-toggle
-        float-right d-block d-md-none js-sidebar-build-toggle"
+            class="btn btn-blank gutter-toggle float-right d-block d-md-none js-sidebar-build-toggle"
             @click="toggleSidebar"
           >
             <i aria-hidden="true" data-hidden="true" class="fa fa-angle-double-right"></i>
           </gl-button>
         </div>
-        <div v-if="job.retry_path || job.new_issue_path" class="block retry-link">
+
+        <div v-if="job.terminal_path || job.new_issue_path" class="block retry-link">
           <gl-link
             v-if="job.new_issue_path"
             :href="job.new_issue_path"
-            class="js-new-issue btn btn-success btn-inverted"
+            class="js-new-issue btn btn-success btn-inverted float-left mr-2"
+            >{{ __('New issue') }}</gl-link
           >
-            {{ __('New issue') }}
-          </gl-link>
           <gl-link
-            v-if="job.retry_path"
-            :href="job.retry_path"
-            class="js-retry-job btn btn-inverted-secondary"
-            data-method="post"
-            rel="nofollow"
+            v-if="job.terminal_path"
+            :href="job.terminal_path"
+            class="js-terminal-link btn btn-primary btn-inverted visible-md-block visible-lg-block float-left"
+            target="_blank"
           >
-            {{ __('Retry') }}
+            {{ __('Debug') }} <icon name="external-link" :size="14" />
           </gl-link>
         </div>
-        <div :class="{ block: renderBlock }">
-          <p v-if="job.merge_request" class="build-detail-row js-job-mr">
-            <span class="build-light-text"> {{ __('Merge Request:') }} </span>
-            <gl-link :href="job.merge_request.path"> !{{ job.merge_request.iid }} </gl-link>
-          </p>
 
+        <div :class="{ block: renderBlock }">
           <detail-row
             v-if="job.duration"
             :value="duration"
@@ -198,22 +192,11 @@ export default {
             title="Coverage"
           />
           <p v-if="job.tags.length" class="build-detail-row js-job-tags">
-            <span class="build-light-text"> {{ __('Tags:') }} </span>
-            <span v-for="(tag, i) in job.tags" :key="i" class="badge badge-primary">
-              {{ tag }}
-            </span>
+            <span class="font-weight-bold">{{ __('Tags:') }}</span>
+            <span v-for="(tag, i) in job.tags" :key="i" class="badge badge-primary mr-1">{{
+              tag
+            }}</span>
           </p>
-
-          <div v-if="job.cancel_path" class="btn-group prepend-top-5" role="group">
-            <gl-link
-              :href="job.cancel_path"
-              class="js-cancel-job btn btn-sm btn-default"
-              data-method="post"
-              rel="nofollow"
-            >
-              {{ __('Cancel') }}
-            </gl-link>
-          </div>
         </div>
 
         <artifacts-block v-if="hasArtifact" :artifact="job.artifact" />
@@ -225,7 +208,6 @@ export default {
         />
 
         <stages-dropdown
-          v-if="!isLoadingStages"
           :stages="stages"
           :pipeline="job.pipeline"
           :selected-stage="selectedStage"

@@ -1,5 +1,0 @@
----
-title: Fix default sorting for subgroups and projects list
-merge_request: 23058
-author: Jacopo Beschi @jacopo-beschi
-type: fixed

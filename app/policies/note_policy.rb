@@ -18,6 +18,7 @@ class NotePolicy < BasePolicy
     prevent :read_note
     prevent :admin_note
     prevent :resolve_note
+    prevent :award_emoji
   end
 
   rule { is_author }.policy do

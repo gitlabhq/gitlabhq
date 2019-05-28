@@ -5,7 +5,7 @@ module Ci
     def execute(pipeline)
       raise Gitlab::Access::AccessDeniedError unless can?(current_user, :destroy_pipeline, pipeline)
 
-      AuditEventService.new(current_user, pipeline).security_event
+      Ci::ExpirePipelineCacheService.new.execute(pipeline, delete: true)
 
       pipeline.destroy!
     end

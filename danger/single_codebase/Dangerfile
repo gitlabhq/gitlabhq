@@ -1,0 +1,56 @@
+def mention_single_codebase_approvers
+  frontend_maintainers = %w(@filipa @iamphill)
+  backend_maintainers = %w(@rspeicher @rymai @yorickpeterse @godfat)
+
+  rows = []
+  users = []
+
+  if gitlab.mr_labels.include?('frontend')
+    frontend_maintainer = frontend_maintainers.sample
+
+    rows << "| ~frontend | `#{frontend_maintainer}`"
+    users << frontend_maintainer
+  end
+
+  if gitlab.mr_labels.include?('backend')
+    backend_maintainer = backend_maintainers.sample
+
+    rows << "| ~backend | `#{backend_maintainer}`"
+    users << backend_maintainer
+  end
+
+  if rows.empty?
+    backup_maintainer = backend_maintainers.sample
+
+    rows << "| ~frontend / ~backend | `#{backup_maintainer}`"
+    users << backup_maintainer
+  end
+
+  markdown(<<~MARKDOWN.strip)
+    ## Single codebase changes
+
+    This merge request contains changes related to the work of moving towards a
+    [single codebase](https://gitlab.com/groups/gitlab-org/-/epics/802) for
+    Community Edition and Enterprise Edition. These changes will need to be
+    reviewed and approved by the following engineers:
+
+    | Category | Reviewer
+    |----------|---------
+    #{rows.join("\n")}
+
+    To make sure this happens, please follow these steps:
+
+    1. Add all of the mentioned users to the list of merge request approvals.
+    2. Assign the merge request to the first person in the above list.
+
+    If you are a reviewer, please follow these steps:
+
+    1. Review the merge request. If it is good to go, approve it.
+    2. Once approved, assign to the next person in the above list. If you are
+       the last person in the list, merge the merge request.
+  MARKDOWN
+end
+
+if gitlab.mr_labels.include?('single codebase')
+  mention_single_codebase_approvers
+end

@@ -1,5 +1,0 @@
----
-title: Reduce Gitaly calls in projects dashboard
-merge_request: 23307
-author:
-type: performance

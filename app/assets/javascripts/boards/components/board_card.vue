@@ -83,10 +83,10 @@ export default {
     }"
     :index="index"
     :data-issue-id="issue.id"
-    class="board-card"
+    class="board-card p-3 rounded"
     @mousedown="mouseDown"
     @mousemove="mouseMove"
-    @mouseup="showIssue($event);"
+    @mouseup="showIssue($event)"
   >
     <issue-card-inner
       :list="list"

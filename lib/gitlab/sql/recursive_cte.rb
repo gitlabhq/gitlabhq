@@ -48,7 +48,7 @@ module Gitlab
       #
       # alias_table - The Arel table to use as the alias.
       def alias_to(alias_table)
-        Arel::Nodes::As.new(table, alias_table)
+        Arel::Nodes::As.new(table, Arel::Table.new(alias_table.name.tr('.', '_')))
       end
 
       # Applies the CTE to the given relation, returning a new one that will

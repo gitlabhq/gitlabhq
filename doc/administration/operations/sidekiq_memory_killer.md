@@ -17,6 +17,11 @@ With the default settings, the MemoryKiller will cause a Sidekiq restart no
 more often than once every 15 minutes, with the restart causing about one
 minute of delay for incoming background jobs.
 
+Some background jobs rely on long-running external processes. To ensure these
+are cleanly terminated when Sidekiq is restarted, each Sidekiq process should be
+run as a process group leader (e.g., using `chpst -P`). If using Omnibus or the
+`bin/background_jobs` script with `runit` installed, this is handled for you.
+
 ## Configuring the MemoryKiller
 
 The MemoryKiller is controlled using environment variables.

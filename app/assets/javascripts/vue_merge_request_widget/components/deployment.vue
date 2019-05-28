@@ -23,6 +23,8 @@ export default {
     TooltipOnTruncate,
     FilteredSearchDropdown,
     ReviewAppLink,
+    VisualReviewAppLink: () =>
+      import('ee_component/vue_merge_request_widget/components/visual_review_app_link.vue'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -36,6 +38,20 @@ export default {
     showMetrics: {
       type: Boolean,
       required: true,
+    },
+    showVisualReviewApp: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    visualReviewAppMeta: {
+      type: Object,
+      required: false,
+      default: () => ({
+        sourceProjectId: '',
+        mergeRequestId: '',
+        appUrl: '',
+      }),
     },
   },
   deployedTextMap: {
@@ -53,6 +69,12 @@ export default {
   computed: {
     deployTimeago() {
       return this.timeFormated(this.deployment.deployed_at);
+    },
+    deploymentExternalUrl() {
+      if (this.deployment.changes && this.deployment.changes.length === 1) {
+        return this.deployment.changes[0].external_url;
+      }
+      return this.deployment.external_url;
     },
     hasExternalUrls() {
       return !!(this.deployment.external_url && this.deployment.external_url_formatted);
@@ -78,7 +100,7 @@ export default {
         : '';
     },
     shouldRenderDropdown() {
-      return this.deployment.changes && this.deployment.changes.length > 0;
+      return this.deployment.changes && this.deployment.changes.length > 1;
     },
     showMemoryUsage() {
       return this.hasMetrics && this.showMetrics;
@@ -154,13 +176,18 @@ export default {
                 v-if="shouldRenderDropdown"
                 class="js-mr-wigdet-deployment-dropdown inline"
                 :items="deployment.changes"
-                :main-action-link="deployment.external_url"
+                :main-action-link="deploymentExternalUrl"
                 filter-key="path"
               >
                 <template slot="mainAction" slot-scope="slotProps">
                   <review-app-link
-                    :link="deployment.external_url"
+                    :link="deploymentExternalUrl"
                     :css-class="`deploy-link js-deploy-url inline ${slotProps.className}`"
+                  />
+                  <visual-review-app-link
+                    v-if="showVisualReviewApp"
+                    :link="deploymentExternalUrl"
+                    :app-metadata="visualReviewAppMeta"
                   />
                 </template>
 
@@ -181,11 +208,17 @@ export default {
                   </a>
                 </template>
               </filtered-search-dropdown>
-              <review-app-link
-                v-else
-                :link="deployment.external_url"
-                css-class="js-deploy-url js-deploy-url-feature-flag deploy-link btn btn-default btn-sm inlin"
-              />
+              <template v-else>
+                <review-app-link
+                  :link="deploymentExternalUrl"
+                  css-class="js-deploy-url js-deploy-url-feature-flag deploy-link btn btn-default btn-sm inline"
+                />
+                <visual-review-app-link
+                  v-if="showVisualReviewApp"
+                  :link="deploymentExternalUrl"
+                  :app-metadata="visualReviewAppMeta"
+                />
+              </template>
             </template>
             <span
               v-if="deployment.stop_url"

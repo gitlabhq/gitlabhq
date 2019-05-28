@@ -59,28 +59,30 @@ export default {
 </script>
 <template>
   <div class="btn-group">
-    <gl-button
+    <button
       v-gl-tooltip
+      type="button"
       :disabled="isLoading"
       class="dropdown-new btn btn-default js-pipeline-dropdown-manual-actions"
-      title="Manual job"
+      :title="__('Manual job')"
       data-toggle="dropdown"
-      aria-label="Manual job"
+      :aria-label="__('Manual job')"
     >
-      <icon name="play" class="icon-play" /> <i class="fa fa-caret-down" aria-hidden="true"> </i>
+      <icon name="play" class="icon-play" />
+      <i class="fa fa-caret-down" aria-hidden="true"></i>
       <gl-loading-icon v-if="isLoading" />
-    </gl-button>
+    </button>
 
     <ul class="dropdown-menu dropdown-menu-right">
       <li v-for="action in actions" :key="action.path">
         <gl-button
           :class="{ disabled: isActionDisabled(action) }"
           :disabled="isActionDisabled(action)"
-          class="js-pipeline-action-link no-btn btn"
-          @click="onClickAction(action);"
+          class="js-pipeline-action-link no-btn btn d-flex align-items-center justify-content-between flex-wrap"
+          @click="onClickAction(action)"
         >
           {{ action.name }}
-          <span v-if="action.scheduled_at" class="pull-right">
+          <span v-if="action.scheduled_at">
             <icon name="clock" />
             <gl-countdown :end-date-string="action.scheduled_at" />
           </span>

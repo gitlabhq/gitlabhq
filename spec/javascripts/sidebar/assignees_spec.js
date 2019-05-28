@@ -24,12 +24,12 @@ describe('Assignee component', () => {
       const collapsed = component.$el.querySelector('.sidebar-collapsed-icon');
 
       expect(collapsed.childElementCount).toEqual(1);
-      expect(collapsed.children[0].getAttribute('aria-label')).toEqual('No Assignee');
+      expect(collapsed.children[0].getAttribute('aria-label')).toEqual('None');
       expect(collapsed.children[0].classList.contains('fa')).toEqual(true);
       expect(collapsed.children[0].classList.contains('fa-user')).toEqual(true);
     });
 
-    it('displays only "No assignee" when no users are assigned and the issue is read-only', () => {
+    it('displays only "None" when no users are assigned and the issue is read-only', () => {
       component = new AssigneeComponent({
         propsData: {
           rootPath: 'http://localhost:3000',
@@ -39,11 +39,11 @@ describe('Assignee component', () => {
       }).$mount();
       const componentTextNoUsers = component.$el.querySelector('.assign-yourself').innerText.trim();
 
-      expect(componentTextNoUsers).toBe('No assignee');
+      expect(componentTextNoUsers).toBe('None');
       expect(componentTextNoUsers.indexOf('assign yourself')).toEqual(-1);
     });
 
-    it('displays only "No assignee" when no users are assigned and the issue can be edited', () => {
+    it('displays only "None" when no users are assigned and the issue can be edited', () => {
       component = new AssigneeComponent({
         propsData: {
           rootPath: 'http://localhost:3000',
@@ -53,7 +53,7 @@ describe('Assignee component', () => {
       }).$mount();
       const componentTextNoUsers = component.$el.querySelector('.assign-yourself').innerText.trim();
 
-      expect(componentTextNoUsers.indexOf('No assignee')).toEqual(0);
+      expect(componentTextNoUsers.indexOf('None')).toEqual(0);
       expect(componentTextNoUsers.indexOf('assign yourself')).toBeGreaterThan(0);
     });
 
@@ -132,9 +132,94 @@ describe('Assignee component', () => {
         -1,
       );
     });
+
+    it('has correct "cannot merge" tooltip when user cannot merge', () => {
+      const user = Object.assign({}, UsersMock.user, { can_merge: false });
+
+      component = new AssigneeComponent({
+        propsData: {
+          rootPath: 'http://localhost:3000/',
+          users: [user],
+          editable: true,
+          issuableType: 'merge_request',
+        },
+      }).$mount();
+
+      expect(component.mergeNotAllowedTooltipMessage).toEqual('Cannot merge');
+    });
   });
 
   describe('Two or more assignees/users', () => {
+    it('has correct "cannot merge" tooltip when one user can merge', () => {
+      const users = UsersMockHelper.createNumberRandomUsers(3);
+      users[0].can_merge = true;
+      users[1].can_merge = false;
+      users[2].can_merge = false;
+
+      component = new AssigneeComponent({
+        propsData: {
+          rootPath: 'http://localhost:3000/',
+          users,
+          editable: true,
+          issuableType: 'merge_request',
+        },
+      }).$mount();
+
+      expect(component.mergeNotAllowedTooltipMessage).toEqual('1/3 can merge');
+    });
+
+    it('has correct "cannot merge" tooltip when no user can merge', () => {
+      const users = UsersMockHelper.createNumberRandomUsers(2);
+      users[0].can_merge = false;
+      users[1].can_merge = false;
+
+      component = new AssigneeComponent({
+        propsData: {
+          rootPath: 'http://localhost:3000/',
+          users,
+          editable: true,
+          issuableType: 'merge_request',
+        },
+      }).$mount();
+
+      expect(component.mergeNotAllowedTooltipMessage).toEqual('No one can merge');
+    });
+
+    it('has correct "cannot merge" tooltip when more than one user can merge', () => {
+      const users = UsersMockHelper.createNumberRandomUsers(3);
+      users[0].can_merge = false;
+      users[1].can_merge = true;
+      users[2].can_merge = true;
+
+      component = new AssigneeComponent({
+        propsData: {
+          rootPath: 'http://localhost:3000/',
+          users,
+          editable: true,
+          issuableType: 'merge_request',
+        },
+      }).$mount();
+
+      expect(component.mergeNotAllowedTooltipMessage).toEqual('2/3 can merge');
+    });
+
+    it('has no "cannot merge" tooltip when every user can merge', () => {
+      const users = UsersMockHelper.createNumberRandomUsers(2);
+      users[0].can_merge = true;
+      users[1].can_merge = true;
+
+      component = new AssigneeComponent({
+        propsData: {
+          rootPath: 'http://localhost:3000/',
+          users,
+          editable: true,
+          issuableType: 'merge_request',
+        },
+      }).$mount();
+
+      expect(component.mergeNotAllowedTooltipMessage).toEqual(null);
+    });
+
     it('displays two assignee icons when collapsed', () => {
       const users = UsersMockHelper.createNumberRandomUsers(2);
       component = new AssigneeComponent({
@@ -208,6 +293,19 @@ describe('Assignee component', () => {
 
       expect(component.$el.querySelectorAll('.user-item').length).toEqual(users.length);
       expect(component.$el.querySelector('.user-list-more')).toBe(null);
+    });
+
+    it('sets tooltip container to body', () => {
+      const users = UsersMockHelper.createNumberRandomUsers(2);
+      component = new AssigneeComponent({
+        propsData: {
+          rootPath: 'http://localhost:3000',
+          users,
+          editable: true,
+        },
+      }).$mount();
+
+      expect(component.$el.querySelector('.user-link').getAttribute('data-container')).toBe('body');
     });
 
     it('Shows the "show-less" assignees label', done => {

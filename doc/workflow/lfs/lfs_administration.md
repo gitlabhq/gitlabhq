@@ -4,9 +4,9 @@ Documentation on how to use Git LFS are under [Managing large binary files with 
 
 ## Requirements
 
-* Git LFS is supported in GitLab starting with version 8.2.
-* Support for object storage, such as AWS S3, was introduced in 10.0.
-* Users need to install [Git LFS client](https://git-lfs.github.com) version 1.0.1 and up.
+- Git LFS is supported in GitLab starting with version 8.2.
+- Support for object storage, such as AWS S3, was introduced in 10.0.
+- Users need to install [Git LFS client](https://git-lfs.github.com) version 1.0.1 and up.
 
 ## Configuration
 
@@ -15,9 +15,9 @@ GitLab is installed on.
 
 There are various configuration options to help GitLab server administrators:
 
-* Enabling/disabling Git LFS support
-* Changing the location of LFS object storage
-* Setting up object storage supported by [Fog](http://fog.io/about/provider_documentation.html)
+- Enabling/disabling Git LFS support
+- Changing the location of LFS object storage
+- Setting up object storage supported by [Fog](http://fog.io/about/provider_documentation.html)
 
 ### Configuration for Omnibus installations
 
@@ -107,6 +107,18 @@ Here is a configuration example with GCS.
 | `google_json_key_location` | The json key path | `/path/to/gcp-project-12345-abcde.json` |
 
 _NOTE: The service account must have permission to access the bucket. [See more](https://cloud.google.com/storage/docs/authentication)_
+
+Here is a configuration example with Rackspace Cloud Files.
+
+| Setting | Description | example |
+|---------|-------------|---------|
+| `provider` | The provider name | `Rackspace` |
+| `rackspace_username` | The username of the Rackspace account with access to the container | `joe.smith` |
+| `rackspace_api_key` | The API key of the Rackspace account with access to the container | `ABC123DEF456ABC123DEF456ABC123DE` |
+| `rackspace_region` | The Rackspace storage region to use, a three letter code from the [list of service access endpoints](https://developer.rackspace.com/docs/cloud-files/v1/general-api-info/service-access/) | `iad` |
+| `rackspace_temp_url_key` | The private key you have set in the Rackspace API for temporary URLs. Read more [here](https://developer.rackspace.com/docs/cloud-files/v1/use-cases/public-access-to-your-cloud-files-account/#tempurl) | `ABC123DEF456ABC123DEF456ABC123DE` |
+
+_NOTES: Regardless of whether the container has public access enabled or disabled, Fog will use the TempURL method to grant access to LFS objects. If you see errors in logs referencing instantiating storage with a temp-url-key, ensure that you have set they key properly on the Rackspace API and in gitlab.rb. You can verify the value of the key Rackspace has set by sending a GET request with token header to the service access endpoint URL and comparing the output of the returned headers._
 
 ### Manual uploading to an object storage
 
@@ -229,11 +241,11 @@ See more information in [!19581](https://gitlab.com/gitlab-org/gitlab-ce/merge_r
 
 ## Known limitations
 
-* Support for removing unreferenced LFS objects was added in 8.14 onwards.
-* LFS authentications via SSH was added with GitLab 8.12
-* Only compatible with the GitLFS client versions 1.1.0 and up, or 1.0.2.
-* The storage statistics currently count each LFS object multiple times for
-  every project linking to it
+- Support for removing unreferenced LFS objects was added in 8.14 onwards.
+- LFS authentications via SSH was added with GitLab 8.12.
+- Only compatible with the GitLFS client versions 1.1.0 and up, or 1.0.2.
+- The storage statistics currently count each LFS object multiple times for
+  every project linking to it.
 
 [reconfigure gitlab]: ../../administration/restart_gitlab.md#omnibus-gitlab-reconfigure "How to reconfigure Omnibus GitLab"
 [restart gitlab]: ../../administration/restart_gitlab.md#installations-from-source "How to restart GitLab"

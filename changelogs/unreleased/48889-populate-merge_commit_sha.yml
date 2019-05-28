@@ -1,6 +1,0 @@
----
-title: Fix "merged with [commit]" info for merge requests being merged automatically
-  by other actions
-merge_request: 22794
-author:
-type: fixed

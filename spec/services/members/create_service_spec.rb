@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Members::CreateService do
@@ -35,5 +37,25 @@ describe Members::CreateService do
     expect(result[:status]).to eq(:error)
     expect(result[:message]).to be_present
     expect(project.users).not_to include project_user
+  end
+
+  it 'does not add an invalid member' do
+    params = { user_ids: project_user.id.to_s, access_level: -1 }
+    result = described_class.new(user, params).execute(project)
+
+    expect(result[:status]).to eq(:error)
+    expect(result[:message]).to include("#{project_user.username}: Access level is not included in the list")
+    expect(project.users).not_to include project_user
+  end
+
+  it 'does not add a member with an existing invite' do
+    invited_member = create(:project_member, :invited, project: project)
+
+    params = { user_ids: invited_member.invite_email,
+               access_level: Gitlab::Access::GUEST }
+    result = described_class.new(user, params).execute(project)
+
+    expect(result[:status]).to eq(:error)
+    expect(result[:message]).to eq('Invite email has already been taken')
   end
 end

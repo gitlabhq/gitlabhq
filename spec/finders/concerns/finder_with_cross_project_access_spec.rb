@@ -115,4 +115,20 @@ describe FinderWithCrossProjectAccess do
       expect(finder.execute).to include(result)
     end
   end
+
+  context 'when specifying a model' do
+    let(:finder_class) do
+      Class.new do
+        prepend FinderWithCrossProjectAccess
+
+        requires_cross_project_access model: Project
+      end
+    end
+
+    context '.finder_model' do
+      it 'is set correctly' do
+        expect(finder_class.finder_model).to eq(Project)
+      end
+    end
+  end
 end

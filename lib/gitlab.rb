@@ -7,6 +7,14 @@ module Gitlab
     Pathname.new(File.expand_path('..', __dir__))
   end
 
+  def self.version_info
+    Gitlab::VersionInfo.parse(Gitlab::VERSION)
+  end
+
+  def self.pre_release?
+    VERSION.include?('pre')
+  end
+
   def self.config
     Settings
   end
@@ -16,7 +24,7 @@ module Gitlab
       if File.exist?(root.join("REVISION"))
         File.read(root.join("REVISION")).strip.freeze
       else
-        result = Gitlab::Popen.popen_with_detail(%W[#{config.git.bin_path} log --pretty=format:%h -n 1])
+        result = Gitlab::Popen.popen_with_detail(%W[#{config.git.bin_path} log --pretty=format:%h --abbrev=11 -n 1])
 
         if result.status.success?
           result.stdout.chomp.freeze
@@ -28,8 +36,8 @@ module Gitlab
   end
 
   COM_URL = 'https://gitlab.com'.freeze
-  APP_DIRS_PATTERN = %r{^/?(app|config|ee|lib|spec|\(\w*\))}
-  SUBDOMAIN_REGEX = %r{\Ahttps://[a-z0-9]+\.gitlab\.com\z}
+  APP_DIRS_PATTERN = %r{^/?(app|config|ee|lib|spec|\(\w*\))}.freeze
+  SUBDOMAIN_REGEX = %r{\Ahttps://[a-z0-9]+\.gitlab\.com\z}.freeze
   VERSION = File.read(root.join("VERSION")).strip.freeze
   INSTALLATION_TYPE = File.read(root.join("INSTALLATION_TYPE")).strip.freeze
 
@@ -50,11 +58,19 @@ module Gitlab
     Rails.env.development? || org? || com?
   end
 
-  def self.pre_release?
-    VERSION.include?('pre')
+  def self.ee?
+    if ENV['IS_GITLAB_EE'].present?
+      Gitlab::Utils.to_boolean(ENV['IS_GITLAB_EE'])
+    else
+      Object.const_defined?(:License)
+    end
   end
 
-  def self.version_info
-    Gitlab::VersionInfo.parse(Gitlab::VERSION)
+  def self.process_name
+    return 'sidekiq' if Sidekiq.server?
+    return 'console' if defined?(Rails::Console)
+    return 'test' if Rails.env.test?
+
+    'web'
   end
 end

@@ -35,8 +35,8 @@
       - elsif can_collaborate_with_project?(@project)
         %li= link_to _('New file'), project_new_blob_path(@project, @project.default_branch || 'master')
       - elsif create_mr_from_new_fork
-        - continue_params = { to:         project_new_blob_path(@project, @project.default_branch || 'master'),
-                              notice:     edit_in_new_fork_notice,
+        - continue_params = { to: project_new_blob_path(@project, @project.default_branch || 'master'),
+                              notice: edit_in_new_fork_notice,
                               notice_now: edit_in_new_fork_notice_now }
         - fork_path = project_forks_path(@project, namespace_key: current_user.namespace.id, continue: continue_params)
         %li= link_to _('New file'), fork_path, method: :post

@@ -87,7 +87,7 @@ export default {
 
 <template>
   <tr v-if="shouldRender" :class="className" class="notes_holder">
-    <td class="notes_content parallel old" colspan="2">
+    <td class="notes-content parallel old" colspan="2">
       <div v-if="shouldRenderDiscussionsOnLeft" class="content">
         <diff-discussions
           v-if="line.left.discussions.length"
@@ -101,10 +101,11 @@ export default {
         :diff-file-hash="diffFileHash"
         :line="line.left"
         :note-target-line="line.left"
+        :help-page-path="helpPagePath"
         line-position="left"
       />
     </td>
-    <td class="notes_content parallel new" colspan="2">
+    <td class="notes-content parallel new" colspan="2">
       <div v-if="shouldRenderDiscussionsOnRight" class="content">
         <diff-discussions
           v-if="line.right.discussions.length"

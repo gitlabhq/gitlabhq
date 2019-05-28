@@ -4,7 +4,7 @@ We developed a number of utilities to ease development.
 
 ## [`MergeHash`](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/gitlab/utils/merge_hash.rb)
 
-* Deep merges an array of hashes:
+- Deep merges an array of hashes:
 
     ``` ruby
     Gitlab::Utils::MergeHash.merge(
@@ -31,7 +31,7 @@ We developed a number of utilities to ease development.
     ]
     ```
 
-* Extracts all keys and values from a hash into an array:
+- Extracts all keys and values from a hash into an array:
 
     ``` ruby
     Gitlab::Utils::MergeHash.crush(
@@ -47,14 +47,14 @@ We developed a number of utilities to ease development.
 
 ## [`Override`](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/gitlab/utils/override.rb)
 
-* This utility could help us check if a particular method would override
+- This utility could help us check if a particular method would override
   another method or not. It has the same idea of Java's `@Override` annotation
   or Scala's `override` keyword. However we only do this check when
   `ENV['STATIC_VERIFICATION']` is set to avoid production runtime overhead.
   This is useful to check:
 
-    * If we have typos in overriding methods.
-    * If we renamed the overridden methods, making original overriding methods
+    - If we have typos in overriding methods.
+    - If we renamed the overridden methods, making original overriding methods
       overrides nothing.
 
     Here's a simple example:
@@ -92,7 +92,7 @@ We developed a number of utilities to ease development.
 
 ## [`StrongMemoize`](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/gitlab/utils/strong_memoize.rb)
 
-* Memoize the value even if it is `nil` or `false`.
+- Memoize the value even if it is `nil` or `false`.
 
     We often do `@value ||= compute`, however this doesn't work well if
     `compute` might eventually give `nil` and we don't want to compute again.
@@ -126,7 +126,7 @@ We developed a number of utilities to ease development.
     end
     ```
 
-* Clear memoization
+- Clear memoization
 
     ``` ruby
     class Find

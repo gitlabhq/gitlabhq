@@ -11,7 +11,7 @@ module Projects
     end
 
     def execute
-      return nil unless valid_url?(@url)
+      return unless valid_url?(@url)
 
       uploader = FileUploader.new(@project)
       uploader.download!(@url)

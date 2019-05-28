@@ -113,6 +113,9 @@ module ExtractsPath
     @id = get_id
     @ref, @path = extract_ref(@id)
     @repo = @project.repository
+    @ref.strip!
+
+    raise InvalidPathError if @ref.match?(/\s/)
 
     @commit = @repo.commit(@ref)
 

@@ -91,6 +91,7 @@ module IssuableCollections
     options = {
       scope: params[:scope],
       state: params[:state],
+      confidential: Gitlab::Utils.to_boolean(params[:confidential]),
       sort: set_sort_order
     }
 
@@ -99,6 +100,7 @@ module IssuableCollections
 
     if @project
       options[:project_id] = @project.id
+      options[:attempt_project_search_optimizations] = true
     elsif @group
       options[:group_id] = @group.id
       options[:include_subgroups] = true
@@ -129,13 +131,13 @@ module IssuableCollections
     return sort_param if Gitlab::Database.read_only?
 
     if user_preference[issuable_sorting_field] != sort_param
-      user_preference.update_attribute(issuable_sorting_field, sort_param)
+      user_preference.update(issuable_sorting_field => sort_param)
     end
 
     sort_param
   end
 
-  # Implement default_sorting_field method on controllers
+  # Implement issuable_sorting_field method on controllers
   # to choose which column to store the sorting parameter.
   def issuable_sorting_field
     nil
@@ -188,15 +190,15 @@ module IssuableCollections
                          end
   end
 
+  # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def preload_for_collection
+    common_attributes = [:author, :assignees, :labels, :milestone]
     @preload_for_collection ||= case collection_type
                                 when 'Issue'
-                                  [:project, :author, :assignees, :labels, :milestone, project: :namespace]
+                                  common_attributes + [:project, project: :namespace]
                                 when 'MergeRequest'
-                                  [
-                                    :target_project, :author, :assignee, :labels, :milestone,
-                                    source_project: :route, head_pipeline: :project, target_project: :namespace, latest_merge_request_diff: :merge_request_diff_commits
-                                  ]
+                                  common_attributes + [:target_project, source_project: :route, head_pipeline: :project, target_project: :namespace, latest_merge_request_diff: :merge_request_diff_commits]
                                 end
   end
+  # rubocop:enable Gitlab/ModuleWithInstanceVariables
 end

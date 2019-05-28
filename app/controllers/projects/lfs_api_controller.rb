@@ -26,7 +26,7 @@ class Projects::LfsApiController < Projects::GitHttpClientController
   def deprecated
     render(
       json: {
-        message: 'Server supports batch API only, please update your Git LFS client to version 1.0.1 and up.',
+        message: _('Server supports batch API only, please update your Git LFS client to version 1.0.1 and up.'),
         documentation_url: "#{Gitlab.config.gitlab.url}/help"
       },
       status: :not_implemented
@@ -62,7 +62,7 @@ class Projects::LfsApiController < Projects::GitHttpClientController
       else
         object[:error] = {
           code: 404,
-          message: "Object does not exist on the server or you don't have permissions to access it"
+          message: _("Object does not exist on the server or you don't have permissions to access it")
         }
       end
     end

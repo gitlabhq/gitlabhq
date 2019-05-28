@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::Git::GitmodulesParser do
-  it 'should parse a .gitmodules file correctly' do
+  it 'parses a .gitmodules file correctly' do
     data = <<~GITMODULES
       [submodule "vendor/libgit2"]
          path = vendor/libgit2

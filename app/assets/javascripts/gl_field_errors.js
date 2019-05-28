@@ -15,7 +15,7 @@ export default class GlFieldErrors {
 
   initValidators() {
     // register selectors here as needed
-    const validateSelectors = [':text', ':password', '[type=email]']
+    const validateSelectors = [':text', ':password', '[type=email]', '[type=url]', '[type=number]']
       .map(selector => `input${selector}`)
       .join(',');
 

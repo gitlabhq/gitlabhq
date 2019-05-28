@@ -81,7 +81,7 @@ describe 'Group milestones' do
           description: 'Lorem Ipsum is simply dummy text'
         )
       end
-      let!(:active_project_milestone2) { create(:milestone, project: other_project, state: 'active', title: 'v1.0') }
+      let!(:active_project_milestone2) { create(:milestone, project: other_project, state: 'active', title: 'v1.1') }
       let!(:closed_project_milestone1) { create(:milestone, project: project, state: 'closed', title: 'v2.0') }
       let!(:closed_project_milestone2) { create(:milestone, project: other_project, state: 'closed', title: 'v2.0') }
       let!(:active_group_milestone) { create(:milestone, group: group, state: 'active', title: 'GL-113') }
@@ -104,7 +104,7 @@ describe 'Group milestones' do
         legacy_milestone = GroupMilestone.build_collection(group, group.projects, { state: 'active' }).first
 
         expect(page).to have_selector("#milestone_#{active_group_milestone.id}", count: 1)
-        expect(page).to have_selector("#milestone_#{legacy_milestone.milestones.first.id}", count: 1)
+        expect(page).to have_selector("#milestone_#{legacy_milestone.milestone.id}", count: 1)
       end
 
       it 'shows milestone detail and supports its edit' do
@@ -121,6 +121,7 @@ describe 'Group milestones' do
 
       it 'renders milestones' do
         expect(page).to have_content('v1.0')
+        expect(page).to have_content('v1.1')
         expect(page).to have_content('GL-113')
         expect(page).to have_link(
           '1 Issue',

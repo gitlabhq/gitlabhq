@@ -8,7 +8,6 @@
 
 @import 'framework/animations';
 @import 'framework/vue_transitions';
-@import 'framework/avatar';
 @import 'framework/asciidoctor';
 @import 'framework/banner';
 @import 'framework/blocks';
@@ -31,7 +30,6 @@
 @import 'framework/logo';
 @import 'framework/markdown_area';
 @import 'framework/media_object';
-@import 'framework/mobile';
 @import 'framework/modal';
 @import 'framework/pagination';
 @import 'framework/panels';
@@ -61,8 +59,11 @@
 @import 'framework/memory_graph';
 @import 'framework/responsive_tables';
 @import 'framework/stacked_progress_bar';
+@import 'framework/sortable';
 @import 'framework/ci_variable_list';
 @import 'framework/feature_highlight';
 @import 'framework/terms';
 @import 'framework/read_more';
 @import 'framework/flex_grid';
+@import 'framework/system_messages';
+@import "framework/spinner";

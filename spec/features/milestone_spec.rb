@@ -3,7 +3,7 @@ require 'rails_helper'
 describe 'Milestone' do
   let(:group) { create(:group, :public) }
   let(:project) { create(:project, :public, namespace: group) }
-  let(:user)   { create(:user) }
+  let(:user) { create(:user) }
 
   before do
     create(:group_member, group: group, user: user)
@@ -120,6 +120,34 @@ describe 'Milestone' do
       find('.milestone-deprecation-message .js-popover-link').click
 
       expect(page).to have_selector('.popover')
+    end
+  end
+
+  describe 'reopen closed milestones' do
+    before do
+      create(:milestone, :closed, project: project)
+    end
+
+    describe 'group milestones page' do
+      it 'reopens the milestone' do
+        visit group_milestones_path(group, { state: 'closed' })
+
+        click_link 'Reopen Milestone'
+
+        expect(page).not_to have_selector('.status-box-closed')
+        expect(page).to have_selector('.status-box-open')
+      end
+    end
+
+    describe 'project milestones page' do
+      it 'reopens the milestone' do
+        visit project_milestones_path(project, { state: 'closed' })
+
+        click_link 'Reopen Milestone'
+
+        expect(page).not_to have_selector('.status-box-closed')
+        expect(page).to have_selector('.status-box-open')
+      end
     end
   end
 end

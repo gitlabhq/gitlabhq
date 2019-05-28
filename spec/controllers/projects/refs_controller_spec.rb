@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Projects::RefsController do
@@ -12,21 +14,23 @@ describe Projects::RefsController do
   describe 'GET #logs_tree' do
     def default_get(format = :html)
       get :logs_tree,
-          namespace_id: project.namespace.to_param,
-          project_id: project,
-          id: 'master',
-          path: 'foo/bar/baz.html',
+          params: {
+            namespace_id: project.namespace.to_param,
+            project_id: project,
+            id: 'master',
+            path: 'foo/bar/baz.html'
+          },
           format: format
     end
 
     def xhr_get(format = :html)
-      xhr :get,
-          :logs_tree,
-          namespace_id: project.namespace.to_param,
-          project_id: project,
-          id: 'master',
-          path: 'foo/bar/baz.html',
-          format: format
+      get :logs_tree, params: {
+        namespace_id: project.namespace.to_param,
+        project_id: project,
+        id: 'master',
+        path: 'foo/bar/baz.html',
+        format: format
+      }, xhr: true
     end
 
     it 'never throws MissingTemplate' do
@@ -42,11 +46,15 @@ describe Projects::RefsController do
     end
 
     it 'renders JS' do
+      expect(::Gitlab::GitalyClient).to receive(:allow_ref_name_caching).and_call_original
+
       xhr_get(:js)
       expect(response).to be_success
     end
 
     it 'renders JSON' do
+      expect(::Gitlab::GitalyClient).to receive(:allow_ref_name_caching).and_call_original
+
       xhr_get(:json)
 
       expect(response).to be_success

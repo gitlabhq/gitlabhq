@@ -26,7 +26,7 @@ module LfsRequest
 
     render(
       json: {
-        message: 'Git LFS is not enabled on this GitLab server, contact your admin.',
+        message: _('Git LFS is not enabled on this GitLab server, contact your admin.'),
         documentation_url: help_url
       },
       status: :not_implemented
@@ -51,7 +51,7 @@ module LfsRequest
   def render_lfs_forbidden
     render(
       json: {
-        message: 'Access forbidden. Check your access level.',
+        message: _('Access forbidden. Check your access level.'),
         documentation_url: help_url
       },
       content_type: CONTENT_TYPE,
@@ -62,7 +62,7 @@ module LfsRequest
   def render_lfs_not_found
     render(
       json: {
-        message: 'Not found.',
+        message: _('Not found.'),
         documentation_url: help_url
       },
       content_type: CONTENT_TYPE,
@@ -94,6 +94,7 @@ module LfsRequest
   def lfs_upload_access?
     return false unless project.lfs_enabled?
     return false unless has_authentication_ability?(:push_code)
+    return false if limit_exceeded?
 
     lfs_deploy_token? || can?(user, :push_code, project)
   end
@@ -120,5 +121,10 @@ module LfsRequest
 
   def has_authentication_ability?(capability)
     (authentication_abilities || []).include?(capability)
+  end
+
+  # Overridden in EE
+  def limit_exceeded?
+    false
   end
 end

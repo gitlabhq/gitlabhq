@@ -1,18 +1,29 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe Clusters::Applications::Helm do
   include_examples 'cluster application core specs', :clusters_applications_helm
 
-  describe '.installed' do
-    subject { described_class.installed }
+  describe '.available' do
+    subject { described_class.available }
 
     let!(:installed_cluster) { create(:clusters_applications_helm, :installed) }
+    let!(:updated_cluster) { create(:clusters_applications_helm, :updated) }
 
     before do
       create(:clusters_applications_helm, :errored)
     end
 
-    it { is_expected.to contain_exactly(installed_cluster) }
+    it { is_expected.to contain_exactly(installed_cluster, updated_cluster) }
+  end
+
+  describe '#can_uninstall?' do
+    let(:helm) { create(:clusters_applications_helm) }
+
+    subject { helm.can_uninstall? }
+
+    it { is_expected.to be_falsey }
   end
 
   describe '#issue_client_cert' do
@@ -33,11 +44,11 @@ describe Clusters::Applications::Helm do
 
     it { is_expected.to be_an_instance_of(Gitlab::Kubernetes::Helm::InitCommand) }
 
-    it 'should be initialized with 1 arguments' do
+    it 'is initialized with 1 arguments' do
       expect(subject.name).to eq('helm')
     end
 
-    it 'should have cert files' do
+    it 'has cert files' do
       expect(subject.files[:'ca.pem']).to be_present
       expect(subject.files[:'ca.pem']).to eq(helm.ca_cert)
 
@@ -49,16 +60,16 @@ describe Clusters::Applications::Helm do
     end
 
     describe 'rbac' do
-      context 'non rbac cluster' do
-        it { expect(subject).not_to be_rbac }
+      context 'rbac cluster' do
+        it { expect(subject).to be_rbac }
       end
 
-      context 'rbac cluster' do
+      context 'non rbac cluster' do
         before do
-          helm.cluster.platform_kubernetes.rbac!
+          helm.cluster.platform_kubernetes.abac!
         end
 
-        it { expect(subject).to be_rbac }
+        it { expect(subject).not_to be_rbac }
       end
     end
   end

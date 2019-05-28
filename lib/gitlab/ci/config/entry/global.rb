@@ -17,6 +17,9 @@ module Gitlab
           entry :image, Entry::Image,
             description: 'Docker image that will be used to execute jobs.'
 
+          entry :include, Entry::Includes,
+                description: 'List of external YAML files to include.'
+
           entry :services, Entry::Services,
             description: 'Docker images that will be linked to the container.'
 

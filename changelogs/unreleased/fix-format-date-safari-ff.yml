@@ -1,0 +1,5 @@
+---
+title: Throw an error when formatDate's input is invalid
+merge_request: 28713
+author:
+type: fixed

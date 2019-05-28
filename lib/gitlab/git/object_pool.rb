@@ -10,12 +10,13 @@ module Gitlab
       delegate :exists?, :size, to: :repository
       delegate :delete, to: :object_pool_service
 
-      attr_reader :storage, :relative_path, :source_repository
+      attr_reader :storage, :relative_path, :source_repository, :gl_project_path
 
-      def initialize(storage, relative_path, source_repository)
+      def initialize(storage, relative_path, source_repository, gl_project_path)
         @storage = storage
         @relative_path = relative_path
         @source_repository = source_repository
+        @gl_project_path = gl_project_path
       end
 
       def create
@@ -23,13 +24,6 @@ module Gitlab
       end
 
       def link(to_link_repo)
-        remote_name = to_link_repo.object_pool_remote_name
-        repository.set_config(
-          "remote.#{remote_name}.url" => relative_path_to(to_link_repo.relative_path),
-          "remote.#{remote_name}.tagOpt" => "--no-tags",
-          "remote.#{remote_name}.fetch" => "+refs/*:refs/remotes/#{remote_name}/*"
-        )
-
         object_pool_service.link_repository(to_link_repo)
       end
 
@@ -38,12 +32,16 @@ module Gitlab
       end
 
       def to_gitaly_repository
-        Gitlab::GitalyClient::Util.repository(storage, relative_path, GL_REPOSITORY)
+        Gitlab::GitalyClient::Util.repository(storage, relative_path, GL_REPOSITORY, gl_project_path)
       end
 
       # Allows for reusing other RPCs by 'tricking' Gitaly to think its a repository
       def repository
-        @repository ||= Gitlab::Git::Repository.new(storage, relative_path, GL_REPOSITORY)
+        @repository ||= Gitlab::Git::Repository.new(storage, relative_path, GL_REPOSITORY, gl_project_path)
+      end
+
+      def fetch
+        object_pool_service.fetch(source_repository)
       end
 
       private

@@ -9,7 +9,7 @@
           %i.fa.fa-clock-o
           = event.created_at.to_time.in_time_zone.strftime('%-I:%M%P')
         - if event.visible_to_user?(current_user)
-          - if event.push?
+          - if event.push_action?
             #{event.action_name} #{event.ref_type}
             %strong
               - commits_path = project_commits_path(event.project, event.ref_name)

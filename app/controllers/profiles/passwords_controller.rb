@@ -55,7 +55,7 @@ class Profiles::PasswordsController < Profiles::ApplicationController
       flash[:notice] = "Password was successfully updated. Please login with it"
       redirect_to new_user_session_path
     else
-      @user.reload
+      @user.reset
       render 'edit'
     end
   end

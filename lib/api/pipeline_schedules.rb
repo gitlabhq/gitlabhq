@@ -32,7 +32,7 @@ module API
         success Entities::PipelineScheduleDetails
       end
       params do
-        requires :pipeline_schedule_id, type: Integer,  desc: 'The pipeline schedule id'
+        requires :pipeline_schedule_id, type: Integer, desc: 'The pipeline schedule id'
       end
       get ':id/pipeline_schedules/:pipeline_schedule_id' do
         present pipeline_schedule, with: Entities::PipelineScheduleDetails
@@ -87,7 +87,7 @@ module API
         success Entities::PipelineScheduleDetails
       end
       params do
-        requires :pipeline_schedule_id, type: Integer,  desc: 'The pipeline schedule id'
+        requires :pipeline_schedule_id, type: Integer, desc: 'The pipeline schedule id'
       end
       post ':id/pipeline_schedules/:pipeline_schedule_id/take_ownership' do
         authorize! :update_pipeline_schedule, pipeline_schedule
@@ -103,7 +103,7 @@ module API
         success Entities::PipelineScheduleDetails
       end
       params do
-        requires :pipeline_schedule_id, type: Integer,  desc: 'The pipeline schedule id'
+        requires :pipeline_schedule_id, type: Integer, desc: 'The pipeline schedule id'
       end
       delete ':id/pipeline_schedules/:pipeline_schedule_id' do
         authorize! :admin_pipeline_schedule, pipeline_schedule
@@ -118,6 +118,7 @@ module API
         requires :pipeline_schedule_id, type: Integer, desc: 'The pipeline schedule id'
         requires :key, type: String, desc: 'The key of the variable'
         requires :value, type: String, desc: 'The value of the variable'
+        optional :variable_type, type: String, values: Ci::PipelineScheduleVariable.variable_types.keys, desc: 'The type of variable, must be one of env_var or file. Defaults to env_var'
       end
       post ':id/pipeline_schedules/:pipeline_schedule_id/variables' do
         authorize! :update_pipeline_schedule, pipeline_schedule
@@ -138,6 +139,7 @@ module API
         requires :pipeline_schedule_id, type: Integer, desc: 'The pipeline schedule id'
         requires :key, type: String, desc: 'The key of the variable'
         optional :value, type: String, desc: 'The value of the variable'
+        optional :variable_type, type: String, values: Ci::PipelineScheduleVariable.variable_types.keys, desc: 'The type of variable, must be one of env_var or file'
       end
       put ':id/pipeline_schedules/:pipeline_schedule_id/variables/:key' do
         authorize! :update_pipeline_schedule, pipeline_schedule

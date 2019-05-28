@@ -4,7 +4,7 @@ import Api from '~/api';
 
 describe('Api', () => {
   const dummyApiVersion = 'v3000';
-  const dummyUrlRoot = 'http://host.invalid';
+  const dummyUrlRoot = '/gitlab';
   const dummyGon = {
     api_version: dummyApiVersion,
     relative_url_root: dummyUrlRoot,
@@ -32,6 +32,18 @@ describe('Api', () => {
 
       expect(builtUrl).toEqual(expectedOutput);
     });
+
+    [null, '', '/'].forEach(root => {
+      it(`works when relative_url_root is ${root}`, () => {
+        window.gon.relative_url_root = root;
+        const input = '/api/:version/foo/bar';
+        const expectedOutput = `/api/${dummyApiVersion}/foo/bar`;
+
+        const builtUrl = Api.buildUrl(input);
+
+        expect(builtUrl).toEqual(expectedOutput);
+      });
+    });
   });
 
   describe('group', () => {
@@ -46,6 +58,22 @@ describe('Api', () => {
         expect(response.name).toBe('test');
         done();
       });
+    });
+  });
+
+  describe('groupMembers', () => {
+    it('fetches group members', done => {
+      const groupId = '54321';
+      const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/groups/${groupId}/members`;
+      const expectedData = [{ id: 7 }];
+      mock.onGet(expectedUrl).reply(200, expectedData);
+
+      Api.groupMembers(groupId)
+        .then(({ data }) => {
+          expect(data).toEqual(expectedData);
+        })
+        .then(done)
+        .catch(done.fail);
     });
   });
 
@@ -120,6 +148,40 @@ describe('Api', () => {
         expect(response[0].name).toBe('test');
         done();
       });
+    });
+  });
+
+  describe('projectMergeRequests', () => {
+    const projectPath = 'abc';
+    const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectPath}/merge_requests`;
+
+    it('fetches all merge requests for a project', done => {
+      const mockData = [{ source_branch: 'foo' }, { source_branch: 'bar' }];
+      mock.onGet(expectedUrl).reply(200, mockData);
+      Api.projectMergeRequests(projectPath)
+        .then(({ data }) => {
+          expect(data.length).toEqual(2);
+          expect(data[0].source_branch).toBe('foo');
+          expect(data[1].source_branch).toBe('bar');
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+
+    it('fetches merge requests filtered with passed params', done => {
+      const params = {
+        source_branch: 'bar',
+      };
+      const mockData = [{ source_branch: 'bar' }];
+      mock.onGet(expectedUrl, { params }).reply(200, mockData);
+
+      Api.projectMergeRequests(projectPath, params)
+        .then(({ data }) => {
+          expect(data.length).toEqual(1);
+          expect(data[0].source_branch).toBe('bar');
+        })
+        .then(done)
+        .catch(done.fail);
     });
   });
 
@@ -226,7 +288,7 @@ describe('Api', () => {
     it('creates a group label', done => {
       const namespace = 'group/subgroup';
       const labelData = { some: 'data' };
-      const expectedUrl = `${dummyUrlRoot}/groups/${namespace}/-/labels`;
+      const expectedUrl = Api.buildUrl(Api.groupLabelsPath).replace(':namespace_path', namespace);
       const expectedData = {
         label: labelData,
       };

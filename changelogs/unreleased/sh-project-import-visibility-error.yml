@@ -1,0 +1,5 @@
+---
+title: Fix invalid visibility string comparison in project import
+merge_request: 28612
+author:
+type: fixed

@@ -25,6 +25,7 @@ describe Gitlab::LegacyGithubImport::ReleaseFormatter do
       expected = {
         project: project,
         tag: 'v1.0.0',
+        name: 'First release',
         description: 'Release v1.0.0',
         created_at: created_at,
         updated_at: created_at

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Groups::CreateService, '#execute' do
@@ -55,7 +57,7 @@ describe Groups::CreateService, '#execute' do
 
       context 'when nested groups feature is disabled' do
         it 'does not save group and returns an error' do
-          allow(Group).to receive(:supports_nested_groups?).and_return(false)
+          allow(Group).to receive(:supports_nested_objects?).and_return(false)
 
           is_expected.not_to be_persisted
           expect(subject.errors[:parent_id]).to include('You don’t have permission to create a subgroup in this group.')
@@ -66,7 +68,7 @@ describe Groups::CreateService, '#execute' do
 
     context 'when nested groups feature is enabled' do
       before do
-        allow(Group).to receive(:supports_nested_groups?).and_return(true)
+        allow(Group).to receive(:supports_nested_objects?).and_return(true)
       end
 
       context 'as guest' do
@@ -85,6 +87,17 @@ describe Groups::CreateService, '#execute' do
 
         it { is_expected.to be_persisted }
       end
+    end
+  end
+
+  describe "when visibility level is passed as a string" do
+    let(:service) { described_class.new(user, group_params) }
+    let(:group_params) { { path: 'group_path', visibility: 'public' } }
+
+    it "assigns the correct visibility level" do
+      group = service.execute
+
+      expect(group.visibility_level).to eq(Gitlab::VisibilityLevel::PUBLIC)
     end
   end
 

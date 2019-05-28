@@ -52,10 +52,8 @@ module Gitlab
 
           pool&.with do |connection|
             prepared.each_slice(settings[:packet_size]) do |slice|
-              begin
-                connection.write_points(slice)
-              rescue StandardError
-              end
+              connection.write_points(slice)
+            rescue StandardError
             end
           end
         rescue Errno::EADDRNOTAVAIL, SocketError => ex
@@ -147,9 +145,7 @@ module Gitlab
         #
         # See `Gitlab::Metrics::Transaction#add_event` for more details.
         def add_event(*args)
-          trans = current_transaction
-
-          trans&.add_event(*args)
+          current_transaction&.add_event(*args)
         end
 
         # Returns the prefix to use for the name of a series.

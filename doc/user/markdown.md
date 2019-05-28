@@ -5,11 +5,11 @@ It is not valid for the [GitLab documentation website](https://docs.gitlab.com)
 nor [GitLab's main website](https://about.gitlab.com), as they both use
 [Kramdown](https://kramdown.gettalong.org) as their markdown engine.
 The documentation website uses an extended Kramdown gem, [GitLab Kramdown](https://gitlab.com/gitlab-org/gitlab_kramdown).
-Consult the [GitLab Kramdown Guide](https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/) for a complete Kramdown reference._
+Consult the [GitLab Kramdown Guide](https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/) for a complete Kramdown reference.
 
 ## GitLab Flavored Markdown (GFM)
 
-GitLab uses "GitLab Flavored Markdown" (GFM). It extends the [CommonMark specification][commonmark-spec] (which is based on standard Markdown) in a few significant ways to add some useful functionality. It was inspired by [GitHub Flavored Markdown](https://help.github.com/articles/basic-writing-and-formatting-syntax/).
+GitLab uses "GitLab Flavored Markdown" (GFM). It extends the [CommonMark specification][commonmark-spec] (which is based on standard Markdown) in a few significant ways to add additional useful functionality. It was inspired by [GitHub Flavored Markdown](https://help.github.com/articles/basic-writing-and-formatting-syntax/).
 
 You can use GFM in the following areas:
 
@@ -20,20 +20,22 @@ You can use GFM in the following areas:
 - Snippets (the snippet must be named with a `.md` extension)
 - Wiki pages
 - Markdown documents inside repositories
+- Epics **[ULTIMATE]**
 
 You can also use other rich text files in GitLab. You might have to install a
 dependency to do so. Please see the [`github-markup` gem readme](https://github.com/gitlabhq/markup#markups) for more information.
 
 > **Notes:**
 >
-> For the best result, we encourage you to check this document out as [rendered
-> by GitLab itself](markdown.md).
+> We encourage you to view this document as [rendered by GitLab itself](markdown.md).
 >
 > As of 11.1, GitLab uses the [CommonMark Ruby Library][commonmarker] for Markdown
 processing of all new issues, merge requests, comments, and other Markdown content
 in the GitLab system. As of 11.3, wiki pages and Markdown files (`.md`) in the
-repositories are also processed with CommonMark. Older content in issues/comments
-are still processed using the [Redcarpet Ruby library][redcarpet].
+repositories are also processed with CommonMark. As of 11.8, the [Redcarpet
+Ruby library][redcarpet] has been removed and all issues/comments, including
+those from pre-11.1, are now processed using [CommonMark Ruby
+Library][commonmarker].
 >
 > The documentation website had its [markdown engine migrated from Redcarpet to Kramdown](https://gitlab.com/gitlab-com/gitlab-docs/merge_requests/108)
 in October 2018.
@@ -42,11 +44,11 @@ in October 2018.
 
 ### Transitioning to CommonMark
 
-You may have Markdown documents in your repository that were written using some
-of the nuances of RedCarpet's version of Markdown. Since CommonMark uses a
-slightly stricter syntax, these documents may now display a little strangely
-since we've transitioned to CommonMark. Numbered lists with nested lists in
-particular can be displayed incorrectly.
+You may have older issues/merge requests or Markdown documents in your
+repository that were written using some of the nuances of RedCarpet's version
+of Markdown. Since CommonMark uses a slightly stricter syntax, these documents
+may now display a little strangely since we've transitioned to CommonMark.
+Numbered lists with nested lists in particular can be displayed incorrectly.
 
 It is usually quite easy to fix.  In the case of a nested list such as this:
 
@@ -65,11 +67,6 @@ simply add a space to each nested item:
 ```
 
 In the documentation below, we try to highlight some of the differences.
-
-If you have a need to view a document using RedCarpet, you can add the token
-`legacy_render=1` to the end of the url, like this:
-
-https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md?legacy_render=1
 
 If you have a large volume of Markdown files, it can be tedious to determine
 if they will be displayed correctly or not. You can use the
@@ -142,7 +139,7 @@ GFM will autolink almost any URL you copy and paste into your text:
 * <a href="irc://irc.freenode.net/gitlab">irc://irc.freenode.net/gitlab</a>
 * http://localhost:3000
 
-### Multiline Blockquote
+### Multiline blockquote
 
 > If this is not rendered correctly, see
 https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#multiline-blockquote
@@ -172,7 +169,7 @@ you can quote that without having to manually prepend `>` to every line!
 <p>you can quote that without having to manually prepend <code>&gt;</code> to every line!</p>
 </blockquote>
 
-### Code and Syntax Highlighting
+### Code and syntax highlighting
 
 > If this is not rendered correctly, see
 https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#code-and-syntax-highlighting
@@ -242,7 +239,7 @@ s = "There is no highlighting for this."
 But let's throw in a <b>tag</b>.
 ```
 
-### Inline Diff
+### Inline diff
 
 > If this is not rendered correctly, see
 https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#inline-diff
@@ -271,10 +268,7 @@ However the wrapping tags cannot be mixed as such:
 
 ### Emoji
 
-> If this is not rendered correctly, see
-https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#emoji
-
-```
+```md
 Sometimes you want to :monkey: around a bit and add some :star2: to your :speech_balloon:. Well we have a gift for you:
 
 :zap: You can use emoji anywhere GFM is supported. :v:
@@ -292,16 +286,15 @@ On Linux, you can download [Noto Color Emoji](https://www.google.com/get/noto/he
 Ubuntu 18.04 (like many modern Linux distros) has this font installed by default.
 ```
 
+Sometimes you want to <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/monkey.png" width="20px" height="20px" style="display:inline;margin:0"> around a bit and add some <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/star2.png" width="20px" height="20px" style="display:inline;margin:0"> to your <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/speech_balloon.png" width="20px" height="20px" style="display:inline;margin:0">. Well we have a gift for you:
 
-Sometimes you want to <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/monkey.png" width="20px" height="20px"> around a bit and add some <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/star2.png" width="20px" height="20px"> to your <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/speech_balloon.png" width="20px" height="20px">. Well we have a gift for you:
+<img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/zap.png" width="20px" height="20px" style="display:inline;margin:0">You can use emoji anywhere GFM is supported. <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/v.png" width="20px" height="20px" style="display:inline;margin:0">
 
-<img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/zap.png" width="20px" height="20px">You can use emoji anywhere GFM is supported. <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/v.png" width="20px" height="20px">
+You can use it to point out a <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/bug.png" width="20px" height="20px" style="display:inline;margin:0"> or warn about <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/speak_no_evil.png" width="20px" height="20px" style="display:inline;margin:0"> patches. And if someone improves your really <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/snail.png" width="20px" height="20px" style="display:inline;margin:0"> code, send them some <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/birthday.png" width="20px" height="20px" style="display:inline;margin:0">. People will <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/heart.png" width="20px" height="20px" style="display:inline;margin:0"> you for that.
 
-You can use it to point out a <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/bug.png" width="20px" height="20px"> or warn about <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/speak_no_evil.png" width="20px" height="20px"> patches. And if someone improves your really <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/snail.png" width="20px" height="20px"> code, send them some <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/birthday.png" width="20px" height="20px">. People will <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/heart.png" width="20px" height="20px"> you for that.
+If you are new to this, don't be <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/fearful.png" width="20px" height="20px" style="display:inline;margin:0">. You can easily join the emoji <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/family.png" width="20px" height="20px" style="display:inline;margin:0">. All you need to do is to look up one of the supported codes.
 
-If you are new to this, don't be <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/fearful.png" width="20px" height="20px">. You can easily join the emoji <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/family.png" width="20px" height="20px">. All you need to do is to look up one of the supported codes.
-
-Consult the [Emoji Cheat Sheet](https://www.emojicopy.com) for a list of all supported emoji codes. <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/thumbsup.png" width="20px" height="20px">
+Consult the [Emoji Cheat Sheet](https://www.webfx.com/tools/emoji-cheat-sheet/) for a list of all supported emoji codes. <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/thumbsup.png" width="20px" height="20px" style="display:inline;margin:0">
 
 Most emoji are natively supported on macOS, Windows, iOS, Android and will fallback to image-based emoji where there is lack of support.
 
@@ -309,7 +302,7 @@ On Linux, you can download [Noto Color Emoji](https://www.google.com/get/noto/he
 
 Ubuntu 18.04 (like many modern Linux distros) has this font installed by default.
 
-### Special GitLab References
+### Special GitLab references
 
 GFM recognizes special references.
 
@@ -328,6 +321,7 @@ GFM will recognize the following:
 | `#12345`                   | issue                           |
 | `!123`                     | merge request                   |
 | `$123`                     | snippet                         |
+| `&123`                     | epic **[ULTIMATE]**             |
 | `~123`                     | label by ID                     |
 | `~bug`                     | one-word label by name          |
 | `~"feature request"`       | multi-word label by name        |
@@ -348,6 +342,7 @@ GFM also recognizes certain cross-project references:
 | `namespace/project%123`                 | project milestone       |
 | `namespace/project$123`                 | snippet                 |
 | `namespace/project@9ba12248`            | specific commit         |
+| `group1/subgroup&123`                   | epic **[ULTIMATE]**     |
 | `namespace/project@9ba12248...b19a04f5` | commit range comparison |
 | `namespace/project~"Some label"`        | issues with given label |
 
@@ -363,7 +358,7 @@ It also has a shorthand version to reference other projects from the same namesp
 | `project@9ba12248...b19a04f5` | commit range comparison |
 | `project~"Some label"`        | issues with given label |
 
-### Task Lists
+### Task lists
 
 > If this is not rendered correctly, see
 https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#task-lists
@@ -457,14 +452,14 @@ Color written inside backticks will be followed by a color "chip".
 
 Examples:
 
-    `#F00`  
-    `#F00A`  
-    `#FF0000`  
-    `#FF0000AA`  
-    `RGB(0,255,0)`  
-    `RGB(0%,100%,0%)`  
-    `RGBA(0,255,0,0.7)`  
-    `HSL(540,70%,50%)`  
+    `#F00`
+    `#F00A`
+    `#FF0000`
+    `#FF0000AA`
+    `RGB(0,255,0)`
+    `RGB(0%,100%,0%)`
+    `RGBA(0,255,0,0.7)`
+    `HSL(540,70%,50%)`
     `HSLA(540,70%,50%,0.7)`
 
 Becomes:
@@ -485,7 +480,7 @@ GitLab 10.3.
 > If this is not rendered correctly, see
 https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#mermaid
 
-It is possible to generate diagrams and flowcharts from text using [Mermaid][mermaid].
+It is possible to generate diagrams and flowcharts from text using [Mermaid](https://mermaidjs.github.io/).
 
 In order to generate a diagram or flowchart, you should write your text inside the `mermaid` block.
 
@@ -501,9 +496,75 @@ Example:
 
 Becomes:
 
-<img src="./img/mermaid_diagram_render_gfm.png" width="200px" height="400px">
+```mermaid
+graph TD;
+  A-->B;
+  A-->C;
+  B-->D;
+  C-->D;
+```
 
-For details see the [Mermaid official page][mermaid].
+For details see the [Mermaid official page](https://mermaidjs.github.io/).
+
+### Front matter
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/23331)
+  in GitLab 11.6.
+
+Front matter is metadata included at the beginning of a markdown document, preceding
+its content. This data can be used by static site generators such as [Jekyll](https://jekyllrb.com/docs/front-matter/) and [Hugo](https://gohugo.io/content-management/front-matter/),
+and many other applications.
+
+In GitLab, front matter is only used in Markdown files and wiki pages, not the other places where Markdown formatting is supported.
+When you view a Markdown file rendered by GitLab, any front matter is displayed as-is, in a box at the top of the document, before the rendered HTML content.
+To view an example, you can toggle between the source and rendered version of a [GitLab documentation file](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/README.md).
+
+The following delimeters are supported:
+
+- YAML (`---`):
+
+  ```
+  ---
+  title: About Front Matter
+  example:
+    language: yaml
+  ---
+  ```
+
+- TOML (`+++`):
+
+  ```
+  +++
+  title = "About Front Matter"
+  [example]
+  language = "toml"
+  +++
+  ```
+
+- JSON (`;;;`):
+
+  ```
+  ;;;
+  {
+    "title": "About Front Matter"
+    "example": {
+      "language": "json"
+    }
+  }
+  ;;;
+  ```
+
+Other languages are supported by adding a specifier to any of the existing
+delimiters. For example:
+
+```
+---php
+$title = "About Front Matter";
+$example = array(
+  'language' => "php",
+);
+---
+```
 
 ## Standard Markdown
 
@@ -526,11 +587,11 @@ Alt-H2
 ------
 ```
 
-### Header IDs and links
+#### Header IDs and links
 
-All Markdown-rendered headers automatically get IDs, except in comments.
+All Markdown-rendered headers automatically get IDs, which can be linked to, except in comments.
 
-On hover, a link to those IDs becomes visible to make it easier to copy the link to the header to give it to someone else.
+On hover, a link to those IDs becomes visible to make it easier to copy the link to the header to use it somewhere else.
 
 The IDs are generated from the content of the header according to the following rules:
 
@@ -557,8 +618,8 @@ Would generate the following link IDs:
 1. `this-header-has-spaces-in-it`
 1. `this-header-has-a-in-it`
 1. `this-header-has-unicode-in-it-한글`
-1. `this-header-has-spaces-in-it`
 1. `this-header-has-spaces-in-it-1`
+1. `this-header-has-spaces-in-it-2`
 1. `this-header-has-3-5-in-it-and-parentheses`
 
 Note that the Emoji processing happens before the header IDs are generated, so the Emoji is converted to an image which then gets removed from the ID.
@@ -618,7 +679,7 @@ Becomes:
 + Or pluses
 
 If a list item contains multiple paragraphs,
-each subsequent paragraph should be indented to the same level as the start of the list item text (_Redcarpet: paragraph should be indented with four spaces._)
+each subsequent paragraph should be indented to the same level as the start of the list item text
 
 Example:
 
@@ -663,25 +724,25 @@ Becomes:
 
 There are two ways to create links, inline-style and reference-style.
 
-    [I'm an inline-style link](https://www.google.com)
+```markdown
+[I'm an inline-style link](https://www.google.com)
+[I'm a link to a repository file in the same directory](index.md)
+[I am an absolute reference within the repository](/doc/user/index.md)
+[I'm a relative link to the Milestones page](../README.md)
 
-    [I'm a reference-style link][Arbitrary case-insensitive reference text]
+[I link to a section on a different markdown page, using a header ID](index.md#overview)
+[I link to a different section on the same page, using the header ID](#header-ids-and-links)
 
-    [I'm a relative reference to a repository file](LICENSE)
+[I'm a reference-style link][Arbitrary case-insensitive reference text]
+[You can use numbers for reference-style link definitions][1]
+Or leave it empty and use the [link text itself][]
 
-    [I am an absolute reference within the repository](/doc/user/markdown.md)
+Some text to show that the reference links can follow later.
 
-    [I link to the Milestones page](/../milestones)
-
-    [You can use numbers for reference-style link definitions][1]
-
-    Or leave it empty and use the [link text itself][]
-
-    Some text to show that the reference links can follow later.
-
-    [arbitrary case-insensitive reference text]: https://www.mozilla.org
-    [1]: http://slashdot.org
-    [link text itself]: https://www.reddit.com
+[arbitrary case-insensitive reference text]: https://www.mozilla.org
+[1]: http://slashdot.org
+[link text itself]: https://www.reddit.com
+```
 
 >**Note:**
 Relative links do not allow referencing project files in a wiki page or wiki
@@ -782,7 +843,7 @@ These details <em>will</em> remain <strong>hidden</strong> until expanded.
 </details>
 </p>
 
-**Note:** Markdown inside these tags is supported, as long as you have a blank line after the `</summary>` tag and before the `</details>` tag, as shown in the example.  _Redcarpet does not support Markdown inside these tags.  You can work around this by using HTML, for example you can use `<pre><code>` tags instead of [code fences](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#code-and-syntax-highlighting)._
+**Note:** Markdown inside these tags is supported, as long as you have a blank line after the `</summary>` tag and before the `</details>` tag, as shown in the example.
 
 ```html
 <details>
@@ -931,7 +992,6 @@ while the equation for the theory of relativity is E = mc<sup>2</sup>.
 
 The formula for water is H<sub>2</sub>O while the equation for the theory of relativity is E = mc<sup>2</sup>.
 
-
 ## Wiki-specific Markdown
 
 The following examples show how links inside wikis behave.
@@ -1018,7 +1078,6 @@ A link starting with a `/` is relative to the wiki root.
 [^2]: This is my awesome footnote.
 
 [markdown.md]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md
-[mermaid]: https://mermaidjs.github.io/ "Mermaid website"
 [rouge]: http://rouge.jneen.net/ "Rouge website"
 [redcarpet]: https://github.com/vmg/redcarpet "Redcarpet website"
 [katex]: https://github.com/Khan/KaTeX "KaTeX website"

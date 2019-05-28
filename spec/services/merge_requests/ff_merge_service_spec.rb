@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe MergeRequests::FfMergeService do
@@ -7,7 +9,7 @@ describe MergeRequests::FfMergeService do
     create(:merge_request,
            source_branch: 'flatten-dir',
            target_branch: 'improve/awesome',
-           assignee: user2,
+           assignees: [user2],
            author: create(:user))
   end
   let(:project) { merge_request.project }
@@ -72,7 +74,7 @@ describe MergeRequests::FfMergeService do
       it 'logs and saves error if there is an PreReceiveError exception' do
         error_message = 'error message'
 
-        allow(service).to receive(:repository).and_raise(Gitlab::Git::PreReceiveError, error_message)
+        allow(service).to receive(:repository).and_raise(Gitlab::Git::PreReceiveError, "GitLab: #{error_message}")
         allow(service).to receive(:execute_hooks)
 
         service.execute(merge_request)

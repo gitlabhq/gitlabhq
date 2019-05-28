@@ -57,6 +57,8 @@ module Gitlab
       unsubscribes
       uploads
       users
+      v2
+      visual-review-toolbar.js
     ].freeze
 
     # This list should contain all words following `/*namespace_id/:project_id` in
@@ -125,7 +127,8 @@ module Gitlab
     # allow non-regex validations, etc), `NAMESPACE_FORMAT_REGEX_JS` serves as a Javascript-compatible version of
     # `NAMESPACE_FORMAT_REGEX`, with the negative lookbehind assertion removed. This means that the client-side validation
     # will pass for usernames ending in `.atom` and `.git`, but will be caught by the server-side validation.
-    PATH_REGEX_STR = '[a-zA-Z0-9_\.][a-zA-Z0-9_\-\.]*'.freeze
+    PATH_START_CHAR = '[a-zA-Z0-9_\.]'.freeze
+    PATH_REGEX_STR = PATH_START_CHAR + '[a-zA-Z0-9_\-\.]*'.freeze
     NAMESPACE_FORMAT_REGEX_JS = PATH_REGEX_STR + '[a-zA-Z0-9_\-]|[a-zA-Z0-9_]'.freeze
 
     NO_SUFFIX_REGEX = /(?<!\.git|\.atom)/.freeze

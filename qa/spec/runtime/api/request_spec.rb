@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe QA::Runtime::API::Request do
   let(:client)  { QA::Runtime::API::Client.new('http://example.com') }
   let(:request) { described_class.new(client, '/users') }

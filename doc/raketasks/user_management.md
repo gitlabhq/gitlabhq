@@ -52,7 +52,6 @@ bundle exec rake gitlab:import:all_users_to_all_groups RAILS_ENV=production
 
 - Enable this setting to keep new users blocked until they have been cleared by the admin (default: false).
 
-
 ```
 block_auto_created_users: false
 ```
@@ -76,7 +75,6 @@ bundle exec rake gitlab:two_factor:disable_for_all_users RAILS_ENV=production
 GitLab stores the secret data enabling 2FA to work in an encrypted database
 column. The encryption key for this data is known as `otp_key_base`, and is
 stored in `config/secrets.yml`.
-
 
 If that file is leaked, but the individual 2FA secrets have not, it's possible
 to re-encrypt those secrets with a new encryption key. This allows you to change

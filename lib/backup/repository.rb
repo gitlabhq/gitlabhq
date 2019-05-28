@@ -93,7 +93,7 @@ module Backup
             progress.puts "Error: #{e}".color(:red)
           end
         else
-          restore_repo_success = gitlab_shell.create_repository(project.repository_storage, project.disk_path)
+          restore_repo_success = gitlab_shell.create_project_repository(project)
         end
 
         if restore_repo_success

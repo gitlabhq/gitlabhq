@@ -1,12 +1,10 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { GlTooltipDirective } from '@gitlab/ui';
-import { parseBoolean } from '~/lib/utils/common_utils';
+import { s__, sprintf } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
 import FileRow from '~/vue_shared/components/file_row.vue';
 import FileRowStats from './file_row_stats.vue';
-
-const treeListStorageKey = 'mr_diff_tree_list';
 
 export default {
   directives: {
@@ -16,54 +14,53 @@ export default {
     Icon,
     FileRow,
   },
+  props: {
+    hideFileStats: {
+      type: Boolean,
+      required: true,
+    },
+  },
   data() {
-    const treeListStored = localStorage.getItem(treeListStorageKey);
-    const renderTreeList = treeListStored !== null ? parseBoolean(treeListStored) : true;
-
     return {
       search: '',
-      renderTreeList,
-      focusSearch: false,
     };
   },
   computed: {
-    ...mapState('diffs', ['tree', 'addedLines', 'removedLines']),
-    ...mapGetters('diffs', ['allBlobs', 'diffFilesLength']),
+    ...mapState('diffs', ['tree', 'renderTreeList']),
+    ...mapGetters('diffs', ['allBlobs']),
     filteredTreeList() {
       const search = this.search.toLowerCase().trim();
 
-      if (search === '') return this.renderTreeList ? this.tree : this.allBlobs;
-
-      return this.allBlobs.filter(f => f.path.toLowerCase().indexOf(search) >= 0);
-    },
-    rowDisplayTextKey() {
-      if (this.renderTreeList && this.search.trim() === '') {
-        return 'name';
+      if (search === '') {
+        return this.renderTreeList ? this.tree : this.allBlobs;
       }
 
-      return 'path';
+      return this.allBlobs.reduce((acc, folder) => {
+        const tree = folder.tree.filter(f => f.path.toLowerCase().indexOf(search) >= 0);
+
+        if (tree.length) {
+          return acc.concat({
+            ...folder,
+            tree,
+          });
+        }
+
+        return acc;
+      }, []);
+    },
+    fileRowExtraComponent() {
+      return this.hideFileStats ? null : FileRowStats;
     },
   },
   methods: {
     ...mapActions('diffs', ['toggleTreeOpen', 'scrollToFile']),
     clearSearch() {
       this.search = '';
-      this.toggleFocusSearch(false);
-    },
-    toggleRenderTreeList(toggle) {
-      this.renderTreeList = toggle;
-      localStorage.setItem(treeListStorageKey, this.renderTreeList);
-    },
-    toggleFocusSearch(toggle) {
-      this.focusSearch = toggle;
-    },
-    blurSearch() {
-      if (this.search.trim() === '') {
-        this.toggleFocusSearch(false);
-      }
     },
   },
-  FileRowStats,
+  searchPlaceholder: sprintf(s__('MergeRequest|Filter files or search with %{modifier_key}+p'), {
+    modifier_key: /Mac/i.test(navigator.userAgent) ? 'cmd' : 'ctrl',
+  }),
 };
 </script>
 
@@ -72,13 +69,14 @@ export default {
     <div class="append-bottom-8 position-relative tree-list-search d-flex">
       <div class="flex-fill d-flex">
         <icon name="search" class="position-absolute tree-list-icon" />
+        <label for="diff-tree-search" class="sr-only">{{ $options.searchPlaceholder }}</label>
         <input
+          id="diff-tree-search"
           v-model="search"
-          :placeholder="s__('MergeRequest|Filter files')"
+          :placeholder="$options.searchPlaceholder"
           type="search"
+          name="diff-tree-search"
           class="form-control"
-          @focus="toggleFocusSearch(true);"
-          @blur="blurSearch"
         />
         <button
           v-show="search"
@@ -90,36 +88,8 @@ export default {
           <icon name="close" />
         </button>
       </div>
-      <div v-show="!focusSearch" class="btn-group prepend-left-8 tree-list-view-toggle">
-        <button
-          v-gl-tooltip.hover
-          :aria-label="__('List view')"
-          :title="__('List view')"
-          :class="{
-            active: !renderTreeList,
-          }"
-          class="btn btn-default pt-0 pb-0 d-flex align-items-center"
-          type="button"
-          @click="toggleRenderTreeList(false);"
-        >
-          <icon name="hamburger" />
-        </button>
-        <button
-          v-gl-tooltip.hover
-          :aria-label="__('Tree view')"
-          :title="__('Tree view')"
-          :class="{
-            active: renderTreeList,
-          }"
-          class="btn btn-default pt-0 pb-0 d-flex align-items-center"
-          type="button"
-          @click="toggleRenderTreeList(true);"
-        >
-          <icon name="file-tree" />
-        </button>
-      </div>
     </div>
-    <div class="tree-list-scroll">
+    <div :class="{ 'pt-0 tree-list-blobs': !renderTreeList }" class="tree-list-scroll">
       <template v-if="filteredTreeList.length">
         <file-row
           v-for="file in filteredTreeList"
@@ -127,10 +97,8 @@ export default {
           :file="file"
           :level="0"
           :hide-extra-on-tree="true"
-          :extra-component="$options.FileRowStats"
+          :extra-component="fileRowExtraComponent"
           :show-changed-icon="true"
-          :display-text-key="rowDisplayTextKey"
-          :should-truncate-start="true"
           @toggleTreeOpen="toggleTreeOpen"
           @clickFile="scrollToFile"
         />
@@ -139,12 +107,22 @@ export default {
         {{ s__('MergeRequest|No files found') }}
       </p>
     </div>
-    <div v-once class="pt-3 pb-3 text-center">
-      {{ n__('%d changed file', '%d changed files', diffFilesLength) }}
-      <div>
-        <span class="cgreen"> {{ n__('%d addition', '%d additions', addedLines) }} </span>
-        <span class="cred"> {{ n__('%d deleted', '%d deletions', removedLines) }} </span>
-      </div>
-    </div>
   </div>
 </template>
+
+<style>
+.tree-list-blobs .file-row-name {
+  margin-left: 12px;
+}
+
+.diff-tree-search-shortcut {
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.tree-list-icon:not(button) {
+  pointer-events: none;
+}
+</style>

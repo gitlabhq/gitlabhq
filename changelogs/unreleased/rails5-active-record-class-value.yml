@@ -1,5 +1,0 @@
----
-title: 'Rails5: Passing a class as a value in an Active Record query is deprecated'
-merge_request: 23164
-author: Jasper Maes
-type: other

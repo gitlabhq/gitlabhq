@@ -12,7 +12,7 @@ class Implementation < GitlabUploader
 
   # user/:id
   def dynamic_segment
-    File.join(model.class.to_s.underscore, model.id.to_s)
+    File.join(model.class.underscore, model.id.to_s)
   end
 end
 
@@ -375,7 +375,7 @@ describe ObjectStorage do
   describe '#fog_public' do
     subject { uploader.fog_public }
 
-    it { is_expected.to eq(false) }
+    it { is_expected.to eq(nil) }
   end
 
   describe '.workhorse_authorize' do
@@ -716,7 +716,7 @@ describe ObjectStorage do
           end
 
           let!(:fog_file) do
-            fog_connection.directories.get('uploads').files.create(
+            fog_connection.directories.new(key: 'uploads').files.create(
               key: 'tmp/uploads/test/123123',
               body: 'content'
             )
@@ -769,6 +769,14 @@ describe ObjectStorage do
           models
 
           expect { avatars }.not_to exceed_query_limit(1)
+        end
+
+        it 'does not attempt to replace methods' do
+          models.each do |model|
+            expect(model.avatar.upload).to receive(:method_missing).and_call_original
+
+            model.avatar.upload.path
+          end
         end
 
         it 'fetches a unique upload for each model' do

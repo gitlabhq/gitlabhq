@@ -124,7 +124,7 @@ describe Gitlab::EncodingHelper do
     end
 
     it 'returns empty string on conversion errors' do
-      expect { ext_class.encode_utf8('') }.not_to raise_error(ArgumentError)
+      expect { ext_class.encode_utf8('') }.not_to raise_error
     end
 
     context 'with strings that can be forcefully encoded into utf8' do
@@ -189,14 +189,23 @@ describe Gitlab::EncodingHelper do
     end
   end
 
-  describe '#binary_stringio' do
+  describe '#binary_io' do
     it 'does not mutate the original string encoding' do
       test = 'my-test'
 
-      io_stream = ext_class.binary_stringio(test)
+      io_stream = ext_class.binary_io(test)
 
       expect(io_stream.external_encoding.name).to eq('ASCII-8BIT')
       expect(test.encoding.name).to eq('UTF-8')
+    end
+
+    it 'returns a copy of the IO with the correct encoding' do
+      test = fixture_file_upload('spec/fixtures/doc_sample.txt').to_io
+
+      io_stream = ext_class.binary_io(test)
+
+      expect(io_stream.external_encoding.name).to eq('ASCII-8BIT')
+      expect(test).not_to eq(io_stream)
     end
   end
 end

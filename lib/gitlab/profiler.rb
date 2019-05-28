@@ -16,7 +16,11 @@ module Gitlab
       ee/lib/gitlab/middleware/
       lib/gitlab/performance_bar/
       lib/gitlab/request_profiler/
+      lib/gitlab/query_limiting/
+      lib/gitlab/tracing/
       lib/gitlab/profiler.rb
+      lib/gitlab/correlation_id.rb
+      lib/gitlab/webpack/dev_server_middleware.rb
     ].freeze
 
     # Takes a URL to profile (can be a fully-qualified URL, or an absolute path)
@@ -69,7 +73,7 @@ module Gitlab
 
       result = with_custom_logger(logger) do
         with_user(user) do
-          RubyProf.profile { app.public_send(verb, url, post_data, headers) } # rubocop:disable GitlabSecurity/PublicSend
+          RubyProf.profile { app.public_send(verb, url, params: post_data, headers: headers) } # rubocop:disable GitlabSecurity/PublicSend
         end
       end
 

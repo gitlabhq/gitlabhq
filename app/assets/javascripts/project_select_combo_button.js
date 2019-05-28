@@ -44,9 +44,13 @@ export default class ProjectSelectComboButton {
 
   // eslint-disable-next-line class-methods-use-this
   openDropdown(event) {
-    $(event.currentTarget)
-      .siblings('.project-item-select')
-      .select2('open');
+    import(/* webpackChunkName: 'select2' */ 'select2/select2')
+      .then(() => {
+        $(event.currentTarget)
+          .siblings('.project-item-select')
+          .select2('open');
+      })
+      .catch(() => {});
   }
 
   selectProject() {

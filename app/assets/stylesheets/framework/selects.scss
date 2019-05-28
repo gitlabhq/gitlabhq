@@ -1,6 +1,11 @@
 /** Select2 selectbox style override **/
 .select2-container {
   width: 100% !important;
+
+  &.input-md,
+  &.input-lg {
+    display: block;
+  }
 }
 
 .select2-container,
@@ -27,7 +32,7 @@
       }
 
       &::after {
-        content: "\f078";
+        content: '\f078';
         position: absolute;
         z-index: 1;
         text-align: center;
@@ -52,6 +57,16 @@
       color: $gl-text-color;
     }
   }
+
+  &.is-invalid {
+    ~ .invalid-feedback {
+      display: block;
+    }
+
+    .select2-choices {
+      border-color: $red-500;
+    }
+  }
 }
 
 .select2-drop,
@@ -62,10 +77,18 @@
   min-width: 175px;
   color: $gl-text-color;
   z-index: 999;
+
+  .modal-open & {
+    z-index: $zindex-modal + 200;
+  }
 }
 
 .select2-drop-mask {
   z-index: 998;
+
+  .modal-open & {
+    z-index: $zindex-modal + 100;
+  }
 }
 
 .select2-drop.select2-drop-above.select2-drop-active {
@@ -237,6 +260,16 @@
   }
 
   .group-path {
+    color: $gl-gray-400;
+  }
+}
+
+.project-result {
+  .project-name {
+    font-weight: $gl-font-weight-bold;
+  }
+
+  .project-path {
     color: $gl-gray-400;
   }
 }

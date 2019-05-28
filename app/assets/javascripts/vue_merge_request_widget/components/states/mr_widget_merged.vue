@@ -84,7 +84,7 @@ export default {
         .removeSourceBranch()
         .then(res => res.data)
         .then(data => {
-          if (data.message === 'Branch was removed') {
+          if (data.message === 'Branch was deleted') {
             eventHub.$emit('MRWidgetUpdateRequested', () => {
               this.isMakingRequest = false;
             });
@@ -174,22 +174,22 @@ export default {
           </template>
         </p>
         <p v-if="mr.sourceBranchRemoved">
-          {{ s__('mrWidget|The source branch has been removed') }}
+          {{ s__('mrWidget|The source branch has been deleted') }}
         </p>
         <p v-if="shouldShowRemoveSourceBranch" class="space-children">
-          <span>{{ s__('mrWidget|You can remove source branch now') }}</span>
+          <span>{{ s__('mrWidget|You can delete the source branch now') }}</span>
           <button
             :disabled="isMakingRequest"
             type="button"
             class="btn btn-sm btn-default js-remove-branch-button"
             @click="removeSourceBranch"
           >
-            {{ s__('mrWidget|Remove Source Branch') }}
+            {{ s__('mrWidget|Delete source branch') }}
           </button>
         </p>
         <p v-if="shouldShowSourceBranchRemoving">
           <gl-loading-icon :inline="true" />
-          <span> {{ s__('mrWidget|The source branch is being removed') }} </span>
+          <span> {{ s__('mrWidget|The source branch is being deleted') }} </span>
         </p>
       </section>
     </div>

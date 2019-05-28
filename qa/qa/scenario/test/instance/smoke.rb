@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module QA
   module Scenario
     module Test
@@ -8,6 +10,7 @@ module QA
         #
         class Smoke < Template
           include Bootable
+          include SharedAttributes
 
           tags :smoke
         end

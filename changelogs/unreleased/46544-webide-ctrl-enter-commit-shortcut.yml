@@ -1,5 +1,0 @@
----
-title: "WebIDE: Pressing Ctrl-Enter while typing on the commit message now performs the commit action"
-merge_request: 23049
-author: Thomas Pathier
-type: added

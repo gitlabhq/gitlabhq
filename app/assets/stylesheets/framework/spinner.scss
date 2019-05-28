@@ -1,0 +1,51 @@
+@mixin spinner-color($color) {
+  border-color: rgba($color, 0.25);
+  border-top-color: $color;
+}
+
+@mixin spinner-size($size, $border-width) {
+  width: $size;
+  height: $size;
+  border-width: $border-width;
+  @include webkit-prefix(transform-origin, 50% 50% calc((#{$size} / 2) + #{$border-width}));
+}
+
+@keyframes spinner-rotate {
+  0% {
+    transform: rotate(0);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner {
+  border-radius: 50%;
+  position: relative;
+  margin: 0 auto;
+  animation-name: spinner-rotate;
+  animation-duration: 0.6s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  border-style: solid;
+  display: inline-flex;
+  @include spinner-size(16px, 2px);
+  @include spinner-color($orange-600);
+
+  &.spinner-md {
+    @include spinner-size(32px, 3px);
+  }
+
+  &.spinner-lg {
+    @include spinner-size(64px, 4px);
+  }
+
+  &.spinner-dark {
+    @include spinner-color($gray-700);
+  }
+
+  &.spinner-light {
+    @include spinner-color($white);
+  }
+}

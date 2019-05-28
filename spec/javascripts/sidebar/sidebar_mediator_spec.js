@@ -37,7 +37,7 @@ describe('Sidebar mediator', function() {
 
   it('fetches the data', done => {
     const mockData =
-      Mock.responseMap.GET['/gitlab-org/gitlab-shell/issues/5.json?serializer=sidebar'];
+      Mock.responseMap.GET['/gitlab-org/gitlab-shell/issues/5.json?serializer=sidebar_extras'];
     spyOn(this.mediator, 'processFetchedData').and.callThrough();
 
     this.mediator
@@ -51,7 +51,7 @@ describe('Sidebar mediator', function() {
 
   it('processes fetched data', () => {
     const mockData =
-      Mock.responseMap.GET['/gitlab-org/gitlab-shell/issues/5.json?serializer=sidebar'];
+      Mock.responseMap.GET['/gitlab-org/gitlab-shell/issues/5.json?serializer=sidebar_extras'];
     this.mediator.processFetchedData(mockData);
 
     expect(this.mediator.store.assignees).toEqual(mockData.assignees);

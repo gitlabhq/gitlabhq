@@ -1,0 +1,37 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`File row header component adds multiple ellipsises after 40 characters 1`] = `
+<div
+  class="file-row-header bg-white sticky-top p-2 js-file-row-header"
+>
+  <span
+    class="bold"
+  >
+    app/assets/javascripts/…/…/diffs/notes
+  </span>
+</div>
+`;
+
+exports[`File row header component renders file path 1`] = `
+<div
+  class="file-row-header bg-white sticky-top p-2 js-file-row-header"
+>
+  <span
+    class="bold"
+  >
+    app/assets
+  </span>
+</div>
+`;
+
+exports[`File row header component trucates path after 40 characters 1`] = `
+<div
+  class="file-row-header bg-white sticky-top p-2 js-file-row-header"
+>
+  <span
+    class="bold"
+  >
+    app/assets/javascripts/merge_requests
+  </span>
+</div>
+`;

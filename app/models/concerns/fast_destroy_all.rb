@@ -11,7 +11,7 @@
 # it is difficult to accomplish it.
 #
 # This module defines a format to use `delete_all` and delete associated external data.
-# Here is an exmaple
+# Here is an example
 #
 # Situation
 # - `Project` has many `Ci::BuildTraceChunk` through `Ci::Build`

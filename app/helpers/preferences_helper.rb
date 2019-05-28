@@ -43,12 +43,28 @@ module PreferencesHelper
     ]
   end
 
+  def first_day_of_week_choices
+    [
+      [_('Sunday'), 0],
+      [_('Monday'), 1],
+      [_('Saturday'), 6]
+    ]
+  end
+
+  def first_day_of_week_choices_with_default
+    first_day_of_week_choices.unshift([_('System default (%{default})') % { default: default_first_day_of_week }, nil])
+  end
+
   def user_application_theme
     @user_application_theme ||= Gitlab::Themes.for_user(current_user).css_class
   end
 
   def user_color_scheme
     Gitlab::ColorSchemes.for_user(current_user).css_class
+  end
+
+  def language_choices
+    Gitlab::I18n::AVAILABLE_LANGUAGES.map { |value, label| [label, value] }
   end
 
   private
@@ -65,5 +81,9 @@ module PreferencesHelper
   # EE would override this.
   def excluded_dashboard_choices
     ['operations']
+  end
+
+  def default_first_day_of_week
+    first_day_of_week_choices.rassoc(Gitlab::CurrentSettings.first_day_of_week).first
   end
 end

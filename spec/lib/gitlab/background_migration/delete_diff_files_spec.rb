@@ -1,5 +1,6 @@
 require 'spec_helper'
 
+# rubocop:disable RSpec/FactoriesInMigrationSpecs
 describe Gitlab::BackgroundMigration::DeleteDiffFiles, :migration, :sidekiq, schema: 20180619121030 do
   describe '#perform' do
     context 'when diff files can be deleted' do
@@ -71,3 +72,4 @@ describe Gitlab::BackgroundMigration::DeleteDiffFiles, :migration, :sidekiq, sch
     end
   end
 end
+# rubocop:enable RSpec/FactoriesInMigrationSpecs

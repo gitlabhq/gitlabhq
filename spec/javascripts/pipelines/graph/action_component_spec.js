@@ -55,13 +55,27 @@ describe('pipeline graph action component', () => {
 
       component.$el.click();
 
-      component
-        .$nextTick()
-        .then(() => {
-          expect(component.$emit).toHaveBeenCalledWith('pipelineActionRequestComplete');
-        })
-        .then(done)
-        .catch(done.fail);
+      setTimeout(() => {
+        component
+          .$nextTick()
+          .then(() => {
+            expect(component.$emit).toHaveBeenCalledWith('pipelineActionRequestComplete');
+          })
+          .catch(done.fail);
+
+        done();
+      }, 0);
+    });
+
+    it('renders a loading icon while waiting for request', done => {
+      component.$el.click();
+
+      component.$nextTick(() => {
+        expect(component.$el.querySelector('.js-action-icon-loading')).not.toBeNull();
+        setTimeout(() => {
+          done();
+        });
+      });
     });
   });
 });

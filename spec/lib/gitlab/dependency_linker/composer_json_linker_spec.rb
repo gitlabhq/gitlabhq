@@ -50,8 +50,8 @@ describe Gitlab::DependencyLinker::ComposerJsonLinker do
       %{<a href="#{url}" rel="nofollow noreferrer noopener" target="_blank">#{name}</a>}
     end
 
-    it 'links the module name' do
-      expect(subject).to include(link('laravel/laravel', 'https://packagist.org/packages/laravel/laravel'))
+    it 'does not link the module name' do
+      expect(subject).not_to include(link('laravel/laravel', 'https://packagist.org/packages/laravel/laravel'))
     end
 
     it 'links the homepage' do

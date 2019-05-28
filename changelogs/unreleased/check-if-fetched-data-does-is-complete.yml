@@ -1,5 +1,0 @@
----
-title: Validate chunk size when persist
-merge_request: 23341
-author:
-type: fixed

@@ -22,7 +22,7 @@ GET /projects/:id/pipelines
 | `sort`    | string  | no       | Sort pipelines in `asc` or `desc` order (default: `desc`) |
 
 ```
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/pipelines"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipelines"
 ```
 
 Example of response
@@ -60,7 +60,7 @@ GET /projects/:id/pipelines/:pipeline_id
 | `pipeline_id` | integer | yes      | The ID of a pipeline   |
 
 ```
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/pipelines/46"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipelines/46"
 ```
 
 Example of response
@@ -93,6 +93,37 @@ Example of response
 }
 ```
 
+### Get variables of a pipeline
+
+```
+GET /projects/:id/pipelines/:pipeline_id/variables
+```
+
+| Attribute  | Type    | Required | Description         |
+|------------|---------|----------|---------------------|
+| `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `pipeline_id` | integer | yes      | The ID of a pipeline   |
+
+```
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipelines/46/variables"
+```
+
+Example of response
+
+```json
+[
+  {
+    "key": "RUN_NIGHTLY_BUILD",
+    "variable_type": "env_var",
+    "value": "true"
+  },
+  {
+    "key": "foo",
+    "value": "bar"
+  }
+]
+```
+
 ## Create a new pipeline
 
 > [Introduced][ce-7209] in GitLab 8.14
@@ -105,10 +136,10 @@ POST /projects/:id/pipeline
 |------------|---------|----------|---------------------|
 | `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `ref`       | string | yes      | Reference to commit |
-| `variables` | array | no | An array containing the variables available in the pipeline, matching the structure [{ 'key' => 'UPLOAD_TO_S3', 'value' => 'true' }] |
+| `variables` | array | no | An array containing the variables available in the pipeline, matching the structure [{ 'key' => 'UPLOAD_TO_S3', 'variable_type' => 'file', 'value' => 'true' }] |
 
 ```
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/pipeline?ref=master"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipeline?ref=master"
 ```
 
 Example of response
@@ -155,7 +186,7 @@ POST /projects/:id/pipelines/:pipeline_id/retry
 | `pipeline_id` | integer | yes   | The ID of a pipeline |
 
 ```
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/pipelines/46/retry"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipelines/46/retry"
 ```
 
 Response:
@@ -202,7 +233,7 @@ POST /projects/:id/pipelines/:pipeline_id/cancel
 | `pipeline_id` | integer | yes   | The ID of a pipeline |
 
 ```
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/pipelines/46/cancel"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipelines/46/cancel"
 ```
 
 Response:
@@ -249,7 +280,7 @@ DELETE /projects/:id/pipelines/:pipeline_id
 | `pipeline_id` | integer | yes      | The ID of a pipeline   |
 
 ```
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --request "DELETE" "https://gitlab.example.com/api/v4/projects/1/pipelines/46"
+curl --header "PRIVATE-TOKEN: <your_access_token>" --request "DELETE" "https://gitlab.example.com/api/v4/projects/1/pipelines/46"
 ```
 
 [ce-5837]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5837

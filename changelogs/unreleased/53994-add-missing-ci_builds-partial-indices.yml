@@ -1,5 +1,0 @@
----
-title: Add partial index for ci_builds on project_id and status
-merge_request: 23268
-author:
-type: performance

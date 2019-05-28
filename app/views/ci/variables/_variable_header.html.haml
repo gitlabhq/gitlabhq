@@ -1,0 +1,16 @@
+- only_key_value = local_assigns.fetch(:only_key_value, false)
+
+%li.ci-variable-row.m-0.d-none.d-sm-block
+  .d-flex.w-100.align-items-center.pb-2
+    .bold.table-section.section-15.append-right-10
+      = s_('CiVariables|Type')
+    .bold.table-section.section-15.append-right-10
+      = s_('CiVariables|Key')
+    .bold.table-section.section-15.append-right-10
+      = s_('CiVariables|Value')
+    - unless only_key_value
+      .bold.table-section.section-20
+        = s_('CiVariables|State')
+    .bold.table-section.section-20
+      = s_('CiVariables|Masked')
+    = render_if_exists 'ci/variables/environment_scope_header'

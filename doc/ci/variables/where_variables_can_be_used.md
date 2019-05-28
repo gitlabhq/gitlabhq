@@ -15,26 +15,26 @@ There are two places defined variables can be used. On the:
 
 ### `.gitlab-ci.yml` file
 
-| Definition                           | Can be expanded?  | Expansion place | Description  |
-|--------------------------------------|-------------------|-----------------|--------------|
-| `environment:url`                    | yes               | GitLab           | The variable expansion is made by GitLab's [internal variable expansion mechanism](#gitlab-internal-variable-expansion-mechanism).<ul><li>Supported: all variables defined for a job (project/group variables, variables from `.gitlab-ci.yml`, variables from triggers, variables from pipeline schedules)</li><li>Not supported: variables defined in Runner's `config.toml` and variables created in job's `script`</li></ul> |
-| `environment:name`                   | yes               | GitLab           | Similar to `environment:url`, but the variables expansion doesn't support: <ul><li>variables that are based on the environment's name (`CI_ENVIRONMENT_NAME`, `CI_ENVIRONMENT_SLUG`)</li><li>any other variables related to environment (currently only `CI_ENVIRONMENT_URL`)</li><li>[persisted variables](#persisted-variables)</li></ul> |
-| `variables` | yes               | Runner          | The variable expansion is made by GitLab Runner's [internal variable expansion mechanism](#gitlab-runner-internal-variable-expansion-mechanism) |
-| `image`          | yes               | Runner          | The variable expansion is made by GitLab Runner's [internal variable expansion mechanism](#gitlab-runner-internal-variable-expansion-mechanism) |
-| `services:[]` | yes           | Runner          | The variable expansion is made by GitLab Runner's [internal variable expansion mechanism](#gitlab-runner-internal-variable-expansion-mechanism) |
-| `services:[]:name` | yes  | Runner          | The variable expansion is made by GitLab Runner's [internal variable expansion mechanism](#gitlab-runner-internal-variable-expansion-mechanism) |
-| `cache:key` | yes               | Runner          | The variable expansion is made by GitLab Runner's [internal variable expansion mechanism](#gitlab-runner-internal-variable-expansion-mechanism) |
-| `artifacts:name`                     | yes               | Runner          | The variable expansion is made by GitLab Runner's shell environment  |
-| `script`, `before_script`, `after_script` | yes | Script execution shell | The variable expansion is made by the [execution shell environment](#execution-shell-environment) |
-| `only:variables:[]`, `except:variables:[]`    | no                | n/a             | The variable must be in the form of `$variable`.<br/>Not supported:<ul><li>variables that are based on the environment's name (`CI_ENVIRONMENT_NAME`, `CI_ENVIRONMENT_SLUG`)</li><li>any other variables related to environment (currently only `CI_ENVIRONMENT_URL`)</li><li>[persisted variables](#persisted-variables)</li></ul> |
+| Definition                                 | Can be expanded? | Expansion place        | Description                                                                                                                                                                                                                                                                                                                                                                                                                       |
+|:-------------------------------------------|:-----------------|:-----------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `environment:url`                          | yes              | GitLab                 | The variable expansion is made by GitLab's [internal variable expansion mechanism](#gitlab-internal-variable-expansion-mechanism).<br/><br/>Supported are all variables defined for a job (project/group variables, variables from `.gitlab-ci.yml`, variables from triggers, variables from pipeline schedules).<br/><br/>Not supported are variables defined in Runner's `config.toml` and variables created in job's `script`. |
+| `environment:name`                         | yes              | GitLab                 | Similar to `environment:url`, but the variables expansion doesn't support the following:<br/><br/>- Variables that are based on the environment's name (`CI_ENVIRONMENT_NAME`, `CI_ENVIRONMENT_SLUG`).<br/>- Any other variables related to environment (currently only `CI_ENVIRONMENT_URL`).<br/>- [Persisted variables](#persisted-variables).                                                                                 |
+| `variables`                                | yes              | Runner                 | The variable expansion is made by GitLab Runner's [internal variable expansion mechanism](#gitlab-runner-internal-variable-expansion-mechanism)                                                                                                                                                                                                                                                                                   |
+| `image`                                    | yes              | Runner                 | The variable expansion is made by GitLab Runner's [internal variable expansion mechanism](#gitlab-runner-internal-variable-expansion-mechanism)                                                                                                                                                                                                                                                                                   |
+| `services:[]`                              | yes              | Runner                 | The variable expansion is made by GitLab Runner's [internal variable expansion mechanism](#gitlab-runner-internal-variable-expansion-mechanism)                                                                                                                                                                                                                                                                                   |
+| `services:[]:name`                         | yes              | Runner                 | The variable expansion is made by GitLab Runner's [internal variable expansion mechanism](#gitlab-runner-internal-variable-expansion-mechanism)                                                                                                                                                                                                                                                                                   |
+| `cache:key`                                | yes              | Runner                 | The variable expansion is made by GitLab Runner's [internal variable expansion mechanism](#gitlab-runner-internal-variable-expansion-mechanism)                                                                                                                                                                                                                                                                                   |
+| `artifacts:name`                           | yes              | Runner                 | The variable expansion is made by GitLab Runner's shell environment                                                                                                                                                                                                                                                                                                                                                               |
+| `script`, `before_script`, `after_script`  | yes              | Script execution shell | The variable expansion is made by the [execution shell environment](#execution-shell-environment)                                                                                                                                                                                                                                                                                                                                 |
+| `only:variables:[]`, `except:variables:[]` | no               | n/a                    | The variable must be in the form of `$variable`. Not supported are the following:<br/><br/>- Variables that are based on the environment's name (`CI_ENVIRONMENT_NAME`, `CI_ENVIRONMENT_SLUG`).<br/>- Any other variables related to environment (currently only `CI_ENVIRONMENT_URL`).<br/>- [Persisted variables](#persisted-variables).                                                                                            |
 
 ### `config.toml` file
 
 NOTE: **Note:**
 You can read more about `config.toml` in the [Runner's docs](https://docs.gitlab.com/runner/configuration/advanced-configuration.html).
 
-| Definition                           | Can be expanded? | Description |
-|--------------------------------------|------------------|-------------|
+| Definition                           | Can be expanded? | Description                                                                                                                                  |
+|:-------------------------------------|:-----------------|:---------------------------------------------------------------------------------------------------------------------------------------------|
 | `runners.environment`                | yes              | The variable expansion is made by the Runner's [internal variable expansion mechanism](#gitlab-runner-internal-variable-expansion-mechanism) |
 | `runners.kubernetes.pod_labels`      | yes              | The Variable expansion is made by the Runner's [internal variable expansion mechanism](#gitlab-runner-internal-variable-expansion-mechanism) |
 | `runners.kubernetes.pod_annotations` | yes              | The Variable expansion is made by the Runner's [internal variable expansion mechanism](#gitlab-runner-internal-variable-expansion-mechanism) |
@@ -106,9 +106,28 @@ The following variables are known as "persisted":
 
 They are:
 
-- Supported for definitions where the ["Expansion place"](#gitlab-ci-yml-file) is:
+- Supported for definitions where the ["Expansion place"](#gitlab-ciyml-file) is:
   - Runner.
   - Script execution shell.
 - Not supported:
-  - For definitions where the ["Expansion place"](#gitlab-ci-yml-file) is GitLab.
-  - In the `only` and `except` [variables expressions](README.md#variables-expressions).
+  - For definitions where the ["Expansion place"](#gitlab-ciyml-file) is GitLab.
+  - In the `only` and `except` [variables expressions](README.md#environment-variables-expressions).
+
+## Variables with an environment scope
+
+Variables defined with an environment scope are supported. Given that
+there is a variable `$STAGING_SECRET` defined in a scope of
+`review/staging/*`, the following job that is using dynamic environments
+is going to be created, based on the matching variable expression:
+
+```yaml
+my-job:
+  stage: staging
+  environment:
+    name: review/$CI_JOB_STAGE/deploy
+  script:
+    - 'deploy staging'
+  only:
+    variables:
+      - $STAGING_SECRET == 'something'
+```

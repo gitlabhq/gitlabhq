@@ -353,5 +353,59 @@ describe Banzai::Filter::RelativeLinkFilter do
         expect(doc.at_css('a')['href']).to eq 'http://example.com'
       end
     end
+
+    context 'to a personal snippet' do
+      let(:group) { nil }
+      let(:project) { nil }
+      let(:relative_path) { '/uploads/-/system/personal_snippet/6/674e4f07fbf0a7736c3439212896e51a/example.tar.gz' }
+
+      context 'with an absolute URL' do
+        let(:absolute_path) { Gitlab.config.gitlab.url + relative_path }
+        let(:only_path) { false }
+
+        it 'rewrites the link correctly' do
+          doc = filter(link(relative_path))
+
+          expect(doc.at_css('a')['href']).to eq(absolute_path)
+        end
+      end
+
+      context 'with a relative URL root' do
+        let(:gitlab_root) { '/gitlab' }
+        let(:absolute_path) { Gitlab.config.gitlab.url + gitlab_root + relative_path }
+
+        before do
+          stub_config_setting(relative_url_root: gitlab_root)
+        end
+
+        context 'with an absolute URL' do
+          let(:only_path) { false }
+
+          it 'rewrites the link correctly' do
+            doc = filter(link(relative_path))
+
+            expect(doc.at_css('a')['href']).to eq(absolute_path)
+          end
+        end
+
+        it 'rewrites the link correctly' do
+          doc = filter(link(relative_path))
+
+          expect(doc.at_css('a')['href']).to eq(gitlab_root + relative_path)
+        end
+      end
+
+      it 'rewrites the link correctly' do
+        doc = filter(link(relative_path))
+
+        expect(doc.at_css('a')['href']).to eq(relative_path)
+      end
+
+      it 'does not modify absolute URL' do
+        doc = filter(link('http://example.com'))
+
+        expect(doc.at_css('a')['href']).to eq 'http://example.com'
+      end
+    end
   end
 end

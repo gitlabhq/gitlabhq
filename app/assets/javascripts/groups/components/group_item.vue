@@ -88,7 +88,7 @@ export default {
       </div>
       <div
         :class="{ 'content-loading': group.isChildrenLoading }"
-        class="avatar-container s24 d-none d-sm-flex"
+        class="avatar-container rect-avatar s24 d-none d-sm-flex"
       >
         <a :href="group.relativePath" class="no-expand">
           <img v-if="hasAvatar" :src="group.avatarUrl" class="avatar s24" />

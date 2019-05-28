@@ -5,13 +5,14 @@ description: 'Learn how to administer GitLab Pages.'
 # GitLab Pages administration
 
 > **Notes:**
+>
 > - [Introduced][ee-80] in GitLab EE 8.3.
 > - Custom CNAMEs with TLS support were [introduced][ee-173] in GitLab EE 8.5.
 > - GitLab Pages [were ported][ce-14605] to Community Edition in GitLab 8.17.
 > - This guide is for Omnibus GitLab installations. If you have installed
 >   GitLab from source, follow the [Pages source installation document](source.md).
 > - To learn how to use GitLab Pages, read the [user documentation][pages-userguide].
-> - Does NOT support subgroups. See [this issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/30548) for more information and status.
+> - Support for subgroup project's websites was [introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/30548) in GitLab 11.8.
 
 This document describes how to set up the _latest_ GitLab Pages feature. Make
 sure to read the [changelog](#changelog) if you are upgrading to a new GitLab
@@ -124,7 +125,7 @@ The Pages daemon doesn't listen to the outside world.
     pages_external_url 'http://example.io'
     ```
 
-1. [Reconfigure GitLab][reconfigure]
+1. [Reconfigure GitLab][reconfigure].
 
 Watch the [video tutorial][video-admin] for this configuration.
 
@@ -156,7 +157,26 @@ outside world.
     where `pages-nginx.crt` and `pages-nginx.key` are the SSL cert and key,
     respectively.
 
-1. [Reconfigure GitLab][reconfigure]
+1. [Reconfigure GitLab][reconfigure].
+
+### Additional configuration for Docker container
+
+The GitLab Pages daemon will not have permissions to bind mounts when it runs
+in a Docker container. To overcome this issue you'll need to change the chroot
+behavior:
+
+1. Edit `/etc/gitlab/gitlab.rb`.
+1. Set the `inplace_chroot` to `true` for GitLab Pages:
+
+    ```shell
+    gitlab_pages['inplace_chroot'] = true
+    ```
+
+1. [Reconfigure GitLab][reconfigure].
+
+NOTE: **Note:**
+`inplace_chroot` option might not work with the other features, such as [Pages Access Control](#access-control).
+The [GitLab Pages README](https://gitlab.com/gitlab-org/gitlab-pages#caveats) has more information about caveats and workarounds.
 
 ## Advanced configuration
 
@@ -194,7 +214,7 @@ world. Custom domains are supported, but no TLS.
     `192.0.2.2` and `2001::2` are the secondary IPs the GitLab Pages daemon
     listens on. If you don't have IPv6, you can omit the IPv6 address.
 
-1. [Reconfigure GitLab][reconfigure]
+1. [Reconfigure GitLab][reconfigure].
 
 ### Custom domains with TLS support
 
@@ -228,7 +248,7 @@ world. Custom domains and TLS are supported.
     `192.0.2.2` and `2001::2` are the secondary IPs where the GitLab Pages daemon
     listens on. If you don't have IPv6, you can omit the IPv6 address.
 
-1. [Reconfigure GitLab][reconfigure]
+1. [Reconfigure GitLab][reconfigure].
 
 ### Custom domain verification
 
@@ -271,6 +291,20 @@ Pages access control is disabled by default. To enable it:
 1. [Reconfigure GitLab][reconfigure].
 1. Users can now configure it in their [projects' settings](../../user/project/pages/introduction.md#gitlab-pages-access-control-core-only).
 
+### Running behind a proxy
+
+Like the rest of GitLab, Pages can be used in those environments where external
+internet connectivity is gated by a proxy. In order to use a proxy for GitLab
+pages:
+
+1. Configure in `/etc/gitlab/gitlab.rb`:
+
+    ```ruby
+    gitlab_pages['http_proxy'] = 'http://example:8080'
+    ```
+
+1. [Reconfigure Gitlab][reconfigure] for the changes to take effect.
+
 ## Activate verbose logging for daemon
 
 Verbose logging was [introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests/2533) in
@@ -286,7 +320,7 @@ Follow the steps below to configure verbose logging of GitLab Pages daemon.
     gitlab_pages['log_verbose'] = true
     ```
 
-1. [Reconfigure GitLab][reconfigure]
+1. [Reconfigure GitLab][reconfigure].
 
 ## Change storage path
 
@@ -301,7 +335,7 @@ are stored.
     gitlab_rails['pages_path'] = "/mnt/storage/pages"
     ```
 
-1. [Reconfigure GitLab][reconfigure]
+1. [Reconfigure GitLab][reconfigure].
 
 ## Configure listener for reverse proxy requests
 
@@ -324,13 +358,50 @@ Omnibus GitLab 11.1.
     gitlab_pages['listen_proxy'] = "localhost:10080"
     ```
 
-1. [Reconfigure GitLab][reconfigure]
+1. [Reconfigure GitLab][reconfigure].
 
 ## Set maximum pages size
 
 The maximum size of the unpacked archive per project can be configured in the
 Admin area under the Application settings in the **Maximum size of pages (MB)**.
 The default is 100MB.
+
+## Running GitLab Pages in a separate server
+
+You may want to run GitLab Pages daemon on a separate server in order to decrease the load on your main application server.
+Follow the steps below to configure GitLab Pages in a separate server.
+
+1. Suppose you have the main GitLab application server named `app1`. Prepare
+   new Linux server (let's call it `app2`), create NFS share there and configure access to
+   this share from `app1`. Let's use the default GitLab Pages folder `/var/opt/gitlab/gitlab-rails/shared/pages`
+   as the shared folder on `app2` and mount it to `/mnt/pages` on `app1`.
+
+1. On `app2` install GitLab omnibus and modify `/etc/gitlab/gitlab.rb` this way:
+
+    ```shell
+    external_url 'http://<ip-address-of-the-server>'
+    pages_external_url "http://<your-pages-domain>"
+    postgresql['enable'] = false
+    redis['enable'] = false
+    prometheus['enable'] = false
+    unicorn['enable'] = false
+    sidekiq['enable'] = false
+    gitlab_workhorse['enable'] = false
+    gitaly['enable'] = false
+    alertmanager['enable'] = false
+    node_exporter['enable'] = false
+    gitlab_rails['auto_migrate'] = false
+    ```
+1. Run `sudo gitlab-ctl reconfigure`.
+1. On `app1` apply the following changes to `/etc/gitlab/gitlab.rb`:
+
+    ```shell
+    gitlab_pages['enable'] = false
+    pages_external_url "http://<your-pages-domain>"
+    gitlab_rails['pages_path'] = "/mnt/pages"
+    ```
+
+1. Run `sudo gitlab-ctl reconfigure`.
 
 ## Backup
 

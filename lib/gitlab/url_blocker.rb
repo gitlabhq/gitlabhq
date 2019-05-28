@@ -8,17 +8,19 @@ module Gitlab
     BlockedUrlError = Class.new(StandardError)
 
     class << self
-      def validate!(url, ports: [], protocols: [], allow_localhost: false, allow_local_network: true, ascii_only: false, enforce_user: false)
+      def validate!(url, ports: [], schemes: [], allow_localhost: false, allow_local_network: true, ascii_only: false, enforce_user: false, enforce_sanitization: false)
         return true if url.nil?
 
         # Param url can be a string, URI or Addressable::URI
         uri = parse_url(url)
 
+        validate_html_tags!(uri) if enforce_sanitization
+
         # Allow imports from the GitLab instance itself but only from the configured ports
         return true if internal?(uri)
 
-        port = uri.port || uri.default_port
-        validate_protocol!(uri.scheme, protocols)
+        port = get_port(uri)
+        validate_scheme!(uri.scheme, schemes)
         validate_port!(port, ports) if ports.any?
         validate_user!(uri.user) if enforce_user
         validate_hostname!(uri.hostname)
@@ -50,6 +52,18 @@ module Gitlab
 
       private
 
+      def get_port(uri)
+        uri.port || uri.default_port
+      end
+
+      def validate_html_tags!(uri)
+        uri_str = uri.to_s
+        sanitized_uri = ActionController::Base.helpers.sanitize(uri_str, tags: [])
+        if sanitized_uri != uri_str
+          raise BlockedUrlError, 'HTML/CSS/JS tags are not allowed'
+        end
+      end
+
       def parse_url(url)
         raise Addressable::URI::InvalidURIError if multiline?(url)
 
@@ -71,9 +85,9 @@ module Gitlab
         raise BlockedUrlError, "Only allowed ports are #{ports.join(', ')}, and any over 1024"
       end
 
-      def validate_protocol!(protocol, protocols)
-        if protocol.blank? || (protocols.any? && !protocols.include?(protocol))
-          raise BlockedUrlError, "Only allowed protocols are #{protocols.join(', ')}"
+      def validate_scheme!(scheme, schemes)
+        if scheme.blank? || (schemes.any? && !schemes.include?(scheme))
+          raise BlockedUrlError, "Only allowed schemes are #{schemes.join(', ')}"
         end
       end
 

@@ -45,7 +45,7 @@ shared_examples_for 'group and project milestones' do |route_definition|
     it 'returns an array of milestones specified by iids' do
       other_milestone = create(:milestone, project: try(:project), group: try(:group))
 
-      get api(route, user), iids: [closed_milestone.iid, other_milestone.iid]
+      get api(route, user), params: { iids: [closed_milestone.iid, other_milestone.iid] }
 
       expect(response).to have_gitlab_http_status(200)
       expect(json_response).to be_an Array
@@ -54,7 +54,7 @@ shared_examples_for 'group and project milestones' do |route_definition|
     end
 
     it 'does not return any milestone if none found' do
-      get api(route, user), iids: [Milestone.maximum(:iid).succ]
+      get api(route, user), params: { iids: [Milestone.maximum(:iid).succ] }
 
       expect(response).to have_gitlab_http_status(200)
       expect(json_response).to be_an Array
@@ -72,8 +72,17 @@ shared_examples_for 'group and project milestones' do |route_definition|
       expect(json_response.first['id']).to eq closed_milestone.id
     end
 
+    it 'returns a milestone by title' do
+      get api(route, user), params: { title: 'version2' }
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(json_response.size).to eq(1)
+      expect(json_response.first['title']).to eq milestone.title
+      expect(json_response.first['id']).to eq milestone.id
+    end
+
     it 'returns a milestone by searching for title' do
-      get api(route, user), search: 'version2'
+      get api(route, user), params: { search: 'version2' }
 
       expect(response).to have_gitlab_http_status(200)
       expect(response).to include_pagination_headers
@@ -83,7 +92,7 @@ shared_examples_for 'group and project milestones' do |route_definition|
     end
 
     it 'returns a milestones by searching for description' do
-      get api(route, user), search: 'open'
+      get api(route, user), params: { search: 'open' }
 
       expect(response).to have_gitlab_http_status(200)
       expect(response).to include_pagination_headers
@@ -117,7 +126,7 @@ shared_examples_for 'group and project milestones' do |route_definition|
 
   describe "POST #{route_definition}" do
     it 'creates a new milestone' do
-      post api(route, user), title: 'new milestone'
+      post api(route, user), params: { title: 'new milestone' }
 
       expect(response).to have_gitlab_http_status(201)
       expect(json_response['title']).to eq('new milestone')
@@ -125,8 +134,7 @@ shared_examples_for 'group and project milestones' do |route_definition|
     end
 
     it 'creates a new milestone with description and dates' do
-      post api(route, user),
-        title: 'new milestone', description: 'release', due_date: '2013-03-02', start_date: '2013-02-02'
+      post api(route, user), params: { title: 'new milestone', description: 'release', due_date: '2013-03-02', start_date: '2013-02-02' }
 
       expect(response).to have_gitlab_http_status(201)
       expect(json_response['description']).to eq('release')
@@ -141,14 +149,13 @@ shared_examples_for 'group and project milestones' do |route_definition|
     end
 
     it 'returns a 400 error if params are invalid (duplicate title)' do
-      post api(route, user),
-        title: milestone.title, description: 'release', due_date: '2013-03-02'
+      post api(route, user), params: { title: milestone.title, description: 'release', due_date: '2013-03-02' }
 
       expect(response).to have_gitlab_http_status(400)
     end
 
     it 'creates a new milestone with reserved html characters' do
-      post api(route, user), title: 'foo & bar 1.1 -> 2.2'
+      post api(route, user), params: { title: 'foo & bar 1.1 -> 2.2' }
 
       expect(response).to have_gitlab_http_status(201)
       expect(json_response['title']).to eq('foo & bar 1.1 -> 2.2')
@@ -158,8 +165,7 @@ shared_examples_for 'group and project milestones' do |route_definition|
 
   describe "PUT #{route_definition}/:milestone_id" do
     it 'updates a milestone' do
-      put api(resource_route, user),
-        title: 'updated title'
+      put api(resource_route, user), params: { title: 'updated title' }
 
       expect(response).to have_gitlab_http_status(200)
       expect(json_response['title']).to eq('updated title')
@@ -168,29 +174,27 @@ shared_examples_for 'group and project milestones' do |route_definition|
     it 'removes a due date if nil is passed' do
       milestone.update!(due_date: "2016-08-05")
 
-      put api(resource_route, user), due_date: nil
+      put api(resource_route, user), params: { due_date: nil }
 
       expect(response).to have_gitlab_http_status(200)
       expect(json_response['due_date']).to be_nil
     end
 
     it 'returns a 404 error if milestone id not found' do
-      put api("#{route}/1234", user),
-        title: 'updated title'
+      put api("#{route}/1234", user), params: { title: 'updated title' }
 
       expect(response).to have_gitlab_http_status(404)
     end
 
     it 'closes milestone' do
-      put api(resource_route, user),
-        state_event: 'close'
+      put api(resource_route, user), params: { state_event: 'close' }
       expect(response).to have_gitlab_http_status(200)
 
       expect(json_response['state']).to eq('closed')
     end
 
     it 'updates milestone with only start date' do
-      put api(resource_route, user), start_date: Date.tomorrow
+      put api(resource_route, user), params: { start_date: Date.tomorrow }
 
       expect(response).to have_gitlab_http_status(200)
     end

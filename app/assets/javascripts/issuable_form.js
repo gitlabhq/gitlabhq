@@ -1,8 +1,8 @@
 import $ from 'jquery';
 import Pikaday from 'pikaday';
+import GfmAutoComplete from 'ee_else_ce/gfm_auto_complete';
 import Autosave from './autosave';
 import UsersSelect from './users_select';
-import GfmAutoComplete from './gfm_auto_complete';
 import ZenMode from './zen_mode';
 import AutoWidthDropdownSelect from './issuable/auto_width_dropdown_select';
 import { parsePikadayDate, pikadayToString } from './lib/utils/datetime_utility';
@@ -44,6 +44,7 @@ export default class IssuableForm {
         parse: dateString => parsePikadayDate(dateString),
         toString: date => pikadayToString(date),
         onSelect: dateText => $issuableDueDate.val(calendar.toString(dateText)),
+        firstDay: gon.first_day_of_week,
       });
       calendar.setDate(parsePikadayDate($issuableDueDate.val()));
     }
@@ -120,35 +121,39 @@ export default class IssuableForm {
   }
 
   initTargetBranchDropdown() {
-    this.$targetBranchSelect.select2({
-      ...AutoWidthDropdownSelect.selectOptions('js-target-branch-select'),
-      ajax: {
-        url: this.$targetBranchSelect.data('endpoint'),
-        dataType: 'JSON',
-        quietMillis: 250,
-        data(search) {
-          return {
-            search,
-          };
-        },
-        results(data) {
-          return {
-            // `data` keys are translated so we can't just access them with a string based key
-            results: data[Object.keys(data)[0]].map(name => ({
-              id: name,
-              text: name,
-            })),
-          };
-        },
-      },
-      initSelection(el, callback) {
-        const val = el.val();
+    import(/* webpackChunkName: 'select2' */ 'select2/select2')
+      .then(() => {
+        this.$targetBranchSelect.select2({
+          ...AutoWidthDropdownSelect.selectOptions('js-target-branch-select'),
+          ajax: {
+            url: this.$targetBranchSelect.data('endpoint'),
+            dataType: 'JSON',
+            quietMillis: 250,
+            data(search) {
+              return {
+                search,
+              };
+            },
+            results(data) {
+              return {
+                // `data` keys are translated so we can't just access them with a string based key
+                results: data[Object.keys(data)[0]].map(name => ({
+                  id: name,
+                  text: name,
+                })),
+              };
+            },
+          },
+          initSelection(el, callback) {
+            const val = el.val();
 
-        callback({
-          id: val,
-          text: val,
+            callback({
+              id: val,
+              text: val,
+            });
+          },
         });
-      },
-    });
+      })
+      .catch(() => {});
   }
 }

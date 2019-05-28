@@ -7,7 +7,7 @@ module DiffViewer
     included do
       self.type = :simple
       self.switcher_icon = 'code'
-      self.switcher_title = 'source diff'
+      self.switcher_title = _('source diff')
     end
   end
 end

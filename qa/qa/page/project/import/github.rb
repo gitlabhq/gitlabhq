@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module QA
   module Page
     module Project
@@ -10,12 +12,11 @@ module QA
             element :list_repos_button, "submit_tag _('List your GitHub repositories')" # rubocop:disable QA/ElementWithPattern
           end
 
-          view 'app/views/import/_githubish_status.html.haml' do
-            element :project_import_row, 'data: { qa: { repo_path: repo.full_name } }' # rubocop:disable QA/ElementWithPattern
+          view 'app/assets/javascripts/import_projects/components/provider_repo_table_row.vue' do
+            element :project_import_row
             element :project_namespace_select
-            element :project_namespace_field, 'select_tag :namespace_id' # rubocop:disable QA/ElementWithPattern
-            element :project_path_field, 'text_field_tag :path, sanitize_project_name(repo.name)' # rubocop:disable QA/ElementWithPattern
-            element :import_button, "_('Import')" # rubocop:disable QA/ElementWithPattern
+            element :project_path_field
+            element :import_button
           end
 
           def add_personal_access_token(personal_access_token)
@@ -30,12 +31,19 @@ module QA
             choose_test_namespace(full_path)
             set_path(full_path, name)
             import_project(full_path)
+            wait_for_success
           end
 
           private
 
           def within_repo_path(full_path)
-            page.within(%Q(tr[data-qa-repo-path="#{full_path}"])) do
+            wait(reload: false) do
+              has_element?(:project_import_row, text: full_path)
+            end
+
+            project_import_row = find_element(:project_import_row, text: full_path)
+
+            within(project_import_row) do
               yield
             end
           end
@@ -45,18 +53,24 @@ module QA
               click_element :project_namespace_select
             end
 
-            select_item(Runtime::Namespace.path)
+            search_and_select(Runtime::Namespace.path)
           end
 
           def set_path(full_path, name)
             within_repo_path(full_path) do
-              fill_in 'path', with: name
+              fill_element(:project_path_field, name)
             end
           end
 
           def import_project(full_path)
             within_repo_path(full_path) do
-              click_button 'Import'
+              click_element(:import_button)
+            end
+          end
+
+          def wait_for_success
+            wait(max: 60, interval: 1.0, reload: false) do
+              page.has_content?('Done', wait: 1.0)
             end
           end
         end

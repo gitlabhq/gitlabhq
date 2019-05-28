@@ -95,7 +95,7 @@ export default {
                 class="close float-right"
                 data-dismiss="modal"
                 aria-label="Close"
-                @click="emitCancel($event);"
+                @click="emitCancel($event)"
               >
                 <span aria-hidden="true">&times;</span>
               </button>
@@ -112,7 +112,7 @@ export default {
               type="button"
               class="btn"
               data-dismiss="modal"
-              @click="emitCancel($event);"
+              @click="emitCancel($event)"
             >
               {{ closeButtonLabel }}
             </button>
@@ -130,7 +130,7 @@ export default {
               type="button"
               class="btn js-primary-button"
               data-dismiss="modal"
-              @click="emitSubmit($event);"
+              @click="emitSubmit($event)"
             >
               {{ primaryButtonLabel }}
             </button>

@@ -37,6 +37,11 @@ export default {
       required: false,
       default: 12,
     },
+    isCentered: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   computed: {
     changedIcon() {
@@ -78,7 +83,12 @@ export default {
 </script>
 
 <template>
-  <span v-gl-tooltip.right :title="tooltipTitle" class="file-changed-icon ml-auto">
+  <span
+    v-gl-tooltip.right
+    :title="tooltipTitle"
+    :class="{ 'ml-auto': isCentered }"
+    class="file-changed-icon"
+  >
     <icon v-if="showIcon" :name="changedIcon" :size="size" :css-classes="changedIconClass" />
   </span>
 </template>

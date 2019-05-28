@@ -302,14 +302,12 @@ module Gitlab
 
         ldap_identities = Identity.where("provider like 'ldap%'").where(id: start_id..end_id)
         ldap_identities.each do |identity|
-          begin
-            identity.extern_uid = Gitlab::Auth::LDAP::DN.new(identity.extern_uid).to_normalized_s
-            unless identity.save
-              Rails.logger.info "Unable to normalize \"#{identity.extern_uid}\". Skipping."
-            end
-          rescue Gitlab::Auth::LDAP::DN::FormatError => e
-            Rails.logger.info "Unable to normalize \"#{identity.extern_uid}\" due to \"#{e.message}\". Skipping."
+          identity.extern_uid = Gitlab::Auth::LDAP::DN.new(identity.extern_uid).to_normalized_s
+          unless identity.save
+            Rails.logger.info "Unable to normalize \"#{identity.extern_uid}\". Skipping."
           end
+        rescue Gitlab::Auth::LDAP::DN::FormatError => e
+          Rails.logger.info "Unable to normalize \"#{identity.extern_uid}\" due to \"#{e.message}\". Skipping."
         end
       end
 

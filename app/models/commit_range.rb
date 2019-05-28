@@ -28,12 +28,12 @@ class CommitRange
 
   # The beginning and ending refs can be named or SHAs, and
   # the range notation can be double- or triple-dot.
-  REF_PATTERN = /[0-9a-zA-Z][0-9a-zA-Z_.-]*[0-9a-zA-Z\^]/
-  PATTERN = /#{REF_PATTERN}\.{2,3}#{REF_PATTERN}/
+  REF_PATTERN = /[0-9a-zA-Z][0-9a-zA-Z_.-]*[0-9a-zA-Z\^]/.freeze
+  PATTERN = /#{REF_PATTERN}\.{2,3}#{REF_PATTERN}/.freeze
 
   # In text references, the beginning and ending refs can only be SHAs
   # between 7 and 40 hex characters.
-  STRICT_PATTERN = /\h{7,40}\.{2,3}\h{7,40}/
+  STRICT_PATTERN = /\h{7,40}\.{2,3}\h{7,40}/.freeze
 
   def self.reference_prefix
     '@'
@@ -134,25 +134,25 @@ class CommitRange
   end
 
   def sha_from
-    return nil unless @commit_from
+    return unless @commit_from
 
     @commit_from.id
   end
 
   def sha_to
-    return nil unless @commit_to
+    return unless @commit_to
 
     @commit_to.id
   end
 
   def sha_start
-    return nil unless sha_from
+    return unless sha_from
 
     exclude_start? ? sha_from + '^' : sha_from
   end
 
   def commit_start
-    return nil unless sha_start
+    return unless sha_start
 
     if exclude_start?
       @commit_start ||= project.commit(sha_start)

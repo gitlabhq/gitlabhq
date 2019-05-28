@@ -1,4 +1,6 @@
-module QA # rubocop:disable Naming/FileName
+# frozen_string_literal: true
+
+module QA
   module Page
     module Project
       module Settings
@@ -13,9 +15,7 @@ module QA # rubocop:disable Naming/FileName
 
           view 'app/views/projects/settings/ci_cd/_autodevops_form.html.haml' do
             element :enable_auto_devops_field, 'check_box :enabled' # rubocop:disable QA/ElementWithPattern
-            element :domain_field, 'text_field :domain' # rubocop:disable QA/ElementWithPattern
             element :enable_auto_devops_button, "%strong= s_('CICD|Default to Auto DevOps pipeline')" # rubocop:disable QA/ElementWithPattern
-            element :domain_input, "%strong= _('Domain')" # rubocop:disable QA/ElementWithPattern
             element :save_changes_button, "submit _('Save changes')" # rubocop:disable QA/ElementWithPattern
           end
 
@@ -31,10 +31,9 @@ module QA # rubocop:disable Naming/FileName
             end
           end
 
-          def enable_auto_devops_with_domain(domain)
+          def enable_auto_devops
             expand_section(:autodevops_settings) do
               check 'Default to Auto DevOps pipeline'
-              fill_in 'Domain', with: domain
               click_on 'Save changes'
             end
           end

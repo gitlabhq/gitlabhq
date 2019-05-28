@@ -4,7 +4,7 @@ Crowdin automatically syncs the `gitlab.pot` file presenting newly
 added translations to the community of translators.
 
 At the same time, it creates a merge request to merge all newly added
-& approved translations. Find the [merge reqeust created by
+& approved translations. Find the [merge request created by
 `gitlab-crowdin-bot`](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests?scope=all&utf8=%E2%9C%93&state=opened&author_username=gitlab-crowdin-bot)
 to see new and merged merge requests. They are created in EE and need
 to be ported to CE manually.
@@ -32,8 +32,7 @@ clicking `Pause sync` on the [Crowdin integration settings
 page](https://translate.gitlab.com/project/gitlab-ee/settings#integration).
 
 When all failures are resolved, the translations need to be double
-checked once more [as discussed in this
-issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/37850).
+checked once more as discussed in [confidential issue](../../user/project/issues/confidential_issues.md) `https://gitlab.com/gitlab-org/gitlab-ce/issues/37850`.
 
 ## Merging translations
 

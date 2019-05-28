@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe QA::Page::View do
   let(:element) do
     double('element', name: :something, pattern: /some element/)

@@ -7,12 +7,18 @@ functionality is working.
 
 Currently, our suite consists of this basic functionality coverage:
 
-- User Login (Standard Auth)
-- Project Creation
-- Issue Creation
-- Merge Request Creation
+- User standard authentication
+- SSH Key creation and addition to a user
+- Project simple creation
+- Project creation with Auto-DevOps enabled
+- Issue creation
+- Merge Request creation
+- Snippet creation
 
 Smoke tests have the `:smoke` RSpec metadata.
+
+See [End-to-end Testing](./end_to_end_tests.md) for more details about
+end-to-end tests.
 
 ---
 

@@ -11,6 +11,7 @@ describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitlab_redi
   let(:source_commit) { project.repository.commit('feature') }
   let(:target_commit) { project.repository.commit('master') }
   let(:milestone) { create(:milestone, project: project) }
+  let(:state) { :closed }
 
   let(:pull_request) do
     alice = Gitlab::GithubImport::Representation::User.new(id: 4, login: 'alice')
@@ -26,13 +27,13 @@ describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitlab_redi
       source_repository_id: 400,
       target_repository_id: 200,
       source_repository_owner: 'alice',
-      state: :closed,
+      state: state,
       milestone_number: milestone.iid,
       author: alice,
       assignee: alice,
       created_at: created_at,
       updated_at: updated_at,
-      merged_at: merged_at
+      merged_at: state == :closed && merged_at
     )
   end
 
@@ -89,9 +90,10 @@ describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitlab_redi
               description: 'This is my pull request',
               source_project_id: project.id,
               target_project_id: project.id,
-              source_branch: 'alice:feature',
+              source_branch: 'github/fork/alice/feature',
               target_branch: 'master',
               state: :merged,
+              state_id: 3,
               milestone_id: milestone.id,
               author_id: user.id,
               assignee_id: user.id,
@@ -110,16 +112,6 @@ describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitlab_redi
 
         expect(mr).to be_instance_of(MergeRequest)
         expect(exists).to eq(false)
-      end
-
-      it 'triggers internal_id functionality to track greatest iids' do
-        mr = build_stubbed(:merge_request, source_project: project, target_project: project)
-        allow(importer).to receive(:insert_and_return_id).and_return(mr.id)
-        allow(project.merge_requests).to receive(:find).with(mr.id).and_return(mr)
-
-        expect(mr).to receive(:ensure_target_project_iid!)
-
-        importer.create_merge_request
       end
     end
 
@@ -144,9 +136,10 @@ describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitlab_redi
               description: "*Created by: alice*\n\nThis is my pull request",
               source_project_id: project.id,
               target_project_id: project.id,
-              source_branch: 'alice:feature',
+              source_branch: 'github/fork/alice/feature',
               target_branch: 'master',
               state: :merged,
+              state_id: 3,
               milestone_id: milestone.id,
               author_id: project.creator_id,
               assignee_id: user.id,
@@ -193,6 +186,7 @@ describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitlab_redi
               source_branch: 'master-42',
               target_branch: 'master',
               state: :merged,
+              state_id: 3,
               milestone_id: milestone.id,
               author_id: user.id,
               assignee_id: user.id,
@@ -269,20 +263,64 @@ describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitlab_redi
         .and_return(user.id)
     end
 
-    it 'creates the merge request diffs' do
-      mr, exists = importer.create_merge_request
+    it 'does not create the source branch if merge request is merged' do
+      mr = insert_git_data
 
-      importer.insert_git_data(mr, exists)
+      expect(project.repository.branch_exists?(mr.source_branch)).to be_falsey
+      expect(project.repository.branch_exists?(mr.target_branch)).to be_truthy
+    end
+
+    context 'when merge request is open' do
+      let(:state) { :opened }
+
+      it 'creates the source branch' do
+        # Ensure the project creator is creating the branches because the
+        # merge request author may not have access to push to this
+        # repository. The project owner may also be a group.
+        allow(project.repository).to receive(:add_branch).with(project.creator, anything, anything).and_call_original
+
+        mr = insert_git_data
+
+        expect(project.repository.branch_exists?(mr.source_branch)).to be_truthy
+        expect(project.repository.branch_exists?(mr.target_branch)).to be_truthy
+      end
+
+      it 'is able to retry on pre-receive errors' do
+        expect(importer).to receive(:insert_or_replace_git_data).twice.and_call_original
+        expect(project.repository).to receive(:add_branch).and_raise('exception')
+
+        expect { insert_git_data }.to raise_error('exception')
+
+        expect(project.repository).to receive(:add_branch).with(project.creator, anything, anything).and_call_original
+
+        mr = insert_git_data
+
+        expect(project.repository.branch_exists?(mr.source_branch)).to be_truthy
+        expect(project.repository.branch_exists?(mr.target_branch)).to be_truthy
+        expect(mr.merge_request_diffs).to be_one
+      end
+
+      it 'ignores Git command errors when creating a branch' do
+        expect(project.repository).to receive(:add_branch).and_raise(Gitlab::Git::CommandError)
+        expect(Gitlab::Sentry).to receive(:track_acceptable_exception).and_call_original
+
+        mr = insert_git_data
+
+        expect(project.repository.branch_exists?(mr.source_branch)).to be_falsey
+        expect(project.repository.branch_exists?(mr.target_branch)).to be_truthy
+      end
+    end
+
+    it 'creates the merge request diffs' do
+      mr = insert_git_data
 
       expect(mr.merge_request_diffs.exists?).to eq(true)
     end
 
     it 'creates the merge request diff commits' do
-      mr, exists = importer.create_merge_request
+      mr = insert_git_data
 
-      importer.insert_git_data(mr, exists)
-
-      diff = mr.merge_request_diffs.take
+      diff = mr.merge_request_diffs.reload.first
 
       expect(diff.merge_request_diff_commits.exists?).to eq(true)
     end
@@ -297,6 +335,12 @@ describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitlab_redi
 
         expect(mr.merge_request_diffs.exists?).to eq(true)
       end
+    end
+
+    def insert_git_data
+      mr, exists = importer.create_merge_request
+      importer.insert_git_data(mr, exists)
+      mr
     end
   end
 end

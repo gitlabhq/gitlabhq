@@ -44,8 +44,7 @@ export const noteableDataMock = {
   milestone: null,
   milestone_id: null,
   moved_to_id: null,
-  preview_note_path:
-    '/gitlab-org/gitlab-ce/preview_markdown?quick_actions_target_id=98&quick_actions_target_type=Issue',
+  preview_note_path: '/gitlab-org/gitlab-ce/preview_markdown?target_id=98&target_type=Issue',
   project_id: 2,
   state: 'opened',
   time_estimate: 0,
@@ -165,7 +164,6 @@ export const note = {
   report_abuse_path:
     '/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-ce%2Fissues%2F7%23note_546&user_id=1',
   path: '/gitlab-org/gitlab-ce/notes/546',
-  cached_markdown_version: 11,
 };
 
 export const discussionMock = {
@@ -348,8 +346,7 @@ export const loggedOutnoteableData = {
   },
   noteable_note_url: '/group/project/merge_requests/1#note_1',
   create_note_path: '/gitlab-org/gitlab-ce/notes?target_id=98&target_type=issue',
-  preview_note_path:
-    '/gitlab-org/gitlab-ce/preview_markdown?quick_actions_target_id=98&quick_actions_target_type=Issue',
+  preview_note_path: '/gitlab-org/gitlab-ce/preview_markdown?target_id=98&target_type=Issue',
 };
 
 export const collapseNotesMock = [

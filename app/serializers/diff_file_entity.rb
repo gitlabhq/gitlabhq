@@ -4,12 +4,10 @@ class DiffFileEntity < DiffFileBaseEntity
   include CommitsHelper
   include IconsHelper
 
-  expose :too_large?, as: :too_large
-  expose :empty?, as: :empty
   expose :added_lines
   expose :removed_lines
 
-  expose :load_collapsed_diff_url, if: -> (diff_file, options) { diff_file.text? && options[:merge_request] } do |diff_file|
+  expose :load_collapsed_diff_url, if: -> (diff_file, options) { options[:merge_request] } do |diff_file|
     merge_request = options[:merge_request]
     project = merge_request.target_project
 
@@ -36,10 +34,6 @@ class DiffFileEntity < DiffFileBaseEntity
     project_blob_path(project, tree_join(diff_file.content_sha, diff_file.new_path))
   end
 
-  expose :viewer, using: DiffViewerEntity do |diff_file|
-    diff_file.rich_viewer || diff_file.simple_viewer
-  end
-
   expose :replaced_view_path, if: -> (_, options) { options[:merge_request] } do |diff_file|
     image_diff = diff_file.rich_viewer && diff_file.rich_viewer.partial_name == 'image'
     image_replaced = diff_file.old_content_sha && diff_file.old_content_sha != diff_file.content_sha
@@ -61,6 +55,10 @@ class DiffFileEntity < DiffFileBaseEntity
   # Used for inline diffs
   expose :highlighted_diff_lines, using: DiffLineEntity, if: -> (diff_file, _) { diff_file.text? } do |diff_file|
     diff_file.diff_lines_for_serializer
+  end
+
+  expose :is_fully_expanded do |diff_file|
+    diff_file.fully_expanded?
   end
 
   # Used for parallel diffs

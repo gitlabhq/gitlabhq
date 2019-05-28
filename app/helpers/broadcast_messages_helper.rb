@@ -4,7 +4,7 @@ module BroadcastMessagesHelper
   def broadcast_message(message)
     return unless message.present?
 
-    content_tag :div, class: 'broadcast-message', style: broadcast_message_style(message) do
+    content_tag :div, dir: 'auto', class: 'broadcast-message', style: broadcast_message_style(message) do
       icon('bullhorn') << ' ' << render_broadcast_message(message)
     end
   end

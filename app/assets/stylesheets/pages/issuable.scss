@@ -1,8 +1,3 @@
-// Limit MR description for side-by-side diff view
-.fixed-width-container {
-  @include fixed-width-container;
-}
-
 .issuable-warning-icon {
   background-color: $orange-100;
   border-radius: $border-radius-default;
@@ -22,11 +17,12 @@
   .detail-page-header,
   .page-content-header,
   .commit-box,
+  .info-well,
   .commit-ci-menu,
   .files-changed-inner,
   .limited-header-width,
   .limited-width-notes {
-    @extend .fixed-width-container;
+    @include fixed-width-container;
   }
 
   .issuable-details {
@@ -34,13 +30,13 @@
     .mr-source-target,
     .mr-state-widget,
     .merge-manually {
-      @extend .fixed-width-container;
+      @include fixed-width-container;
     }
   }
 
   .merge-request-details {
     .emoji-list-container {
-      @extend .fixed-width-container;
+      @include fixed-width-container;
     }
   }
 }
@@ -60,19 +56,16 @@
     padding: 0;
     margin-bottom: $gl-padding;
     border-bottom: 0;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    min-width: 0;
+    width: 100%;
+    text-align: initial;
   }
 
   .btn-edit {
     margin-left: auto;
     height: $gl-padding * 2;
-  }
-
-  // Border around images in issue and MR descriptions.
-  .description img:not(.emoji) {
-    border: 1px solid $white-normal;
-    padding: 5px;
-    max-height: calc(100vh - 100px);
-    max-width: 100%;
   }
 
   .emoji-block {
@@ -113,6 +106,20 @@
     font-size: 0;
     margin-bottom: -5px;
   }
+
+  .scoped-label-wrapper {
+    > a {
+      max-width: 100%;
+    }
+
+    .color-label {
+      padding-right: $gl-padding-24;
+    }
+
+    .scoped-label {
+      right: 12px;
+    }
+  }
 }
 
 .right-sidebar {
@@ -132,7 +139,7 @@
       color: $blue-800;
 
       .avatar {
-        border-color: rgba($gray-normal, .2);
+        border-color: rgba($gray-normal, 0.2);
       }
 
     }
@@ -219,7 +226,7 @@
     }
 
     a.edit-link:not([href]):hover {
-      color: rgba($gray-normal, .2);
+      color: rgba($gray-normal, 0.2);
     }
 
     .lock-edit, // uses same style, different js behaviour
@@ -259,6 +266,10 @@
 
   .selectbox {
     display: none;
+
+    &.show {
+      display: block;
+    }
   }
 
   .btn-clipboard:hover {
@@ -312,6 +323,7 @@
     }
 
     .no-value,
+    .btn-default-hover-link,
     .btn-secondary-hover-link {
       color: $gl-text-color-secondary;
     }
@@ -595,7 +607,6 @@
   margin: -7px;
 }
 
-
 .user-list {
   display: flex;
   flex-wrap: wrap;
@@ -707,14 +718,11 @@
 
 .issuable-list {
   li {
-
     .issue-box {
-      display: -webkit-flex;
       display: flex;
     }
 
     .issuable-info-container {
-      -webkit-flex: 1;
       flex: 1;
       display: flex;
       padding-right: $gl-padding;
@@ -722,6 +730,7 @@
       .issuable-main-info {
         flex: 1 auto;
         margin-right: 10px;
+        min-width: 0;
 
         .issue-weight-icon {
           vertical-align: sub;
@@ -783,6 +792,7 @@
     @media(max-width: map-get($grid-breakpoints, lg)-1) {
       .task-status,
       .issuable-due-date,
+      .issuable-weight,
       .project-ref-path {
         display: none;
       }
@@ -809,7 +819,6 @@
 
 
   .sidebar-collapsed-icon {
-
     > .stopwatch-svg {
       display: inline-block;
     }
@@ -867,11 +876,11 @@
   }
 
   .help-state-toggle-enter-active {
-    transition: all .8s ease;
+    transition: all 0.8s ease;
   }
 
   .help-state-toggle-leave-active {
-    transition: all .5s ease;
+    transition: all 0.5s ease;
   }
 
   .help-state-toggle-enter,
@@ -930,7 +939,7 @@
     .sidebar-collapsed-divider {
       line-height: 5px;
       font-size: 12px;
-      color: $theme-gray-700;
+      color: $gray-700;
 
       + .sidebar-collapsed-icon {
         padding-top: 0;

@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe 'User visits the profile preferences page' do
+  include Select2Helper
+
   let(:user) { create(:user) }
 
   before do
@@ -57,6 +59,28 @@ describe 'User visits the profile preferences page' do
 
       expect(page).not_to have_content("You don't have starred projects yet")
       expect(page.current_path).to eq dashboard_projects_path
+    end
+  end
+
+  describe 'User changes their language', :js do
+    it 'creates a flash message', :quarantine do
+      select2('en', from: '#user_preferred_language')
+      click_button 'Save'
+
+      wait_for_requests
+
+      expect_preferences_saved_message
+    end
+
+    it 'updates their preference' do
+      wait_for_requests
+      select2('eo', from: '#user_preferred_language')
+      click_button 'Save'
+
+      wait_for_requests
+      refresh
+
+      expect(page).to have_css('html[lang="eo"]')
     end
   end
 

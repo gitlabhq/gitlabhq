@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Ci::BuildMetadata do
@@ -13,12 +15,12 @@ describe Ci::BuildMetadata do
   end
 
   let(:build) { create(:ci_build, pipeline: pipeline) }
-  let(:build_metadata) { build.metadata }
+  let(:metadata) { build.metadata }
 
   it_behaves_like 'having unique enum values'
 
   describe '#update_timeout_state' do
-    subject { build_metadata }
+    subject { metadata }
 
     context 'when runner is not assigned to the job' do
       it "doesn't change timeout value" do

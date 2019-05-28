@@ -8,13 +8,6 @@
 module AuthenticatesWithTwoFactor
   extend ActiveSupport::Concern
 
-  included do
-    # This action comes from DeviseController, but because we call `sign_in`
-    # manually, not skipping this action would cause a "You are already signed
-    # in." error message to be shown upon successful login.
-    skip_before_action :require_no_authentication, only: [:create], raise: false
-  end
-
   # Store the user's ID in the session for later retrieval and render the
   # two factor code prompt
   #
@@ -36,7 +29,7 @@ module AuthenticatesWithTwoFactor
   end
 
   def locked_user_redirect(user)
-    flash.now[:alert] = 'Invalid Login or password'
+    flash.now[:alert] = _('Invalid Login or password')
     render 'devise/sessions/new'
   end
 
@@ -66,7 +59,7 @@ module AuthenticatesWithTwoFactor
     else
       user.increment_failed_attempts!
       Gitlab::AppLogger.info("Failed Login: user=#{user.username} ip=#{request.remote_ip} method=OTP")
-      flash.now[:alert] = 'Invalid two-factor code.'
+      flash.now[:alert] = _('Invalid two-factor code.')
       prompt_for_two_factor(user)
     end
   end
@@ -83,7 +76,7 @@ module AuthenticatesWithTwoFactor
     else
       user.increment_failed_attempts!
       Gitlab::AppLogger.info("Failed Login: user=#{user.username} ip=#{request.remote_ip} method=U2F")
-      flash.now[:alert] = 'Authentication via U2F device failed.'
+      flash.now[:alert] = _('Authentication via U2F device failed.')
       prompt_for_two_factor(user)
     end
   end

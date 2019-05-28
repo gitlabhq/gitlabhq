@@ -1,11 +1,18 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20170612071012_move_personal_snippets_files.rb')
 
-describe MovePersonalSnippetsFiles do
+describe MovePersonalSnippetsFiles, :migration do
   let(:migration) { described_class.new }
   let(:test_dir) { File.join(Rails.root, "tmp", "tests", "move_snippet_files_test") }
   let(:uploads_dir) { File.join(test_dir, 'uploads') }
   let(:new_uploads_dir) { File.join(uploads_dir, '-', 'system') }
+
+  let(:notes) { table(:notes) }
+  let(:snippets) { table(:snippets) }
+  let(:uploads) { table(:uploads) }
+
+  let(:user) { table(:users).create!(email: 'user@example.com', projects_limit: 10) }
+  let(:project) { table(:projects).create!(name: 'gitlab', namespace_id: 1) }
 
   before do
     allow(CarrierWave).to receive(:root).and_return(test_dir)
@@ -16,14 +23,14 @@ describe MovePersonalSnippetsFiles do
 
   describe "#up" do
     let(:snippet) do
-      snippet = create(:personal_snippet) # rubocop:disable RSpec/FactoriesInMigrationSpecs
+      snippet = snippets.create!(author_id: user.id)
       create_upload('picture.jpg', snippet)
       snippet.update(description: markdown_linking_file('picture.jpg', snippet))
       snippet
     end
 
     let(:snippet_with_missing_file) do
-      snippet = create(:snippet) # rubocop:disable RSpec/FactoriesInMigrationSpecs
+      snippet = snippets.create!(author_id: user.id, project_id: project.id)
       create_upload('picture.jpg', snippet, create_file: false)
       snippet.update(description: markdown_linking_file('picture.jpg', snippet))
       snippet
@@ -62,7 +69,10 @@ describe MovePersonalSnippetsFiles do
         secret = "secret#{snippet.id}"
         file_location = "/uploads/-/system/personal_snippet/#{snippet.id}/#{secret}/picture.jpg"
         markdown = markdown_linking_file('picture.jpg', snippet)
-        note = create(:note_on_personal_snippet, noteable: snippet, note: "with #{markdown}") # rubocop:disable RSpec/FactoriesInMigrationSpecs
+        note = notes.create!(noteable_id: snippet.id,
+                             noteable_type: Snippet,
+                             note: "with #{markdown}",
+                             author_id: user.id)
 
         migration.up
 
@@ -73,14 +83,14 @@ describe MovePersonalSnippetsFiles do
 
   describe "#down" do
     let(:snippet) do
-      snippet = create(:personal_snippet) # rubocop:disable RSpec/FactoriesInMigrationSpecs
+      snippet = snippets.create!(author_id: user.id)
       create_upload('picture.jpg', snippet, in_new_path: true)
       snippet.update(description: markdown_linking_file('picture.jpg', snippet, in_new_path: true))
       snippet
     end
 
     let(:snippet_with_missing_file) do
-      snippet = create(:personal_snippet) # rubocop:disable RSpec/FactoriesInMigrationSpecs
+      snippet = snippets.create!(author_id: user.id)
       create_upload('picture.jpg', snippet, create_file: false, in_new_path: true)
       snippet.update(description: markdown_linking_file('picture.jpg', snippet, in_new_path: true))
       snippet
@@ -119,7 +129,10 @@ describe MovePersonalSnippetsFiles do
         markdown = markdown_linking_file('picture.jpg', snippet, in_new_path: true)
         secret = "secret#{snippet.id}"
         file_location = "/uploads/personal_snippet/#{snippet.id}/#{secret}/picture.jpg"
-        note = create(:note_on_personal_snippet, noteable: snippet, note: "with #{markdown}") # rubocop:disable RSpec/FactoriesInMigrationSpecs
+        note = notes.create!(noteable_id: snippet.id,
+                             noteable_type: Snippet,
+                             note: "with #{markdown}",
+                             author_id: user.id)
 
         migration.down
 
@@ -135,7 +148,7 @@ describe MovePersonalSnippetsFiles do
 
       secret = '123456789'
       filename = 'hello.jpg'
-      snippet = create(:personal_snippet) # rubocop:disable RSpec/FactoriesInMigrationSpecs
+      snippet = snippets.create!(author_id: user.id)
 
       path_before = "/uploads/personal_snippet/#{snippet.id}/#{secret}/#{filename}"
       path_after = "/uploads/system/personal_snippet/#{snippet.id}/#{secret}/#{filename}"
@@ -161,7 +174,11 @@ describe MovePersonalSnippetsFiles do
       FileUtils.touch(absolute_path)
     end
 
-    create(:upload, model: snippet, path: "#{secret}/#{filename}", uploader: PersonalFileUploader) # rubocop:disable RSpec/FactoriesInMigrationSpecs
+    uploads.create!(model_id: snippet.id,
+                    model_type: snippet.class,
+                    path: "#{secret}/#{filename}",
+                    uploader: PersonalFileUploader,
+                    size: 100.kilobytes)
   end
 
   def markdown_linking_file(filename, snippet, in_new_path: false)

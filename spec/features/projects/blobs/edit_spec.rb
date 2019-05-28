@@ -9,6 +9,10 @@ describe 'Editing file blob', :js do
   let(:file_path) { project.repository.ls_files(project.repository.root_ref)[1] }
   let(:readme_file_path) { 'README.md' }
 
+  before do
+    stub_feature_flags(web_ide_default: false)
+  end
+
   context 'as a developer' do
     let(:user) { create(:user) }
     let(:role) { :developer }
@@ -45,6 +49,15 @@ describe 'Editing file blob', :js do
       end
     end
 
+    it 'updates the content of file with a number as file path' do
+      project.repository.create_file(user, '1', 'test', message: 'testing', branch_name: branch)
+      visit project_blob_path(project, tree_join(branch, '1'))
+
+      edit_and_commit
+
+      expect(page).to have_content 'NextFeature'
+    end
+
     context 'from blob file path' do
       before do
         visit project_blob_path(project, tree_join(branch, file_path))
@@ -77,20 +90,9 @@ describe 'Editing file blob', :js do
         click_link 'Preview'
         wait_for_requests
 
-        # the above generates two seperate lists (not embedded) in CommonMark
+        # the above generates two separate lists (not embedded) in CommonMark
         expect(page).to have_content("sublist")
         expect(page).not_to have_xpath("//ol//li//ul")
-      end
-
-      it 'renders content with RedCarpet when legacy_render is set' do
-        visit project_edit_blob_path(project, tree_join(branch, readme_file_path), legacy_render: 1)
-        fill_editor(content: "1. one\\n  - sublist\\n")
-        click_link 'Preview'
-        wait_for_requests
-
-        # the above generates a sublist list in RedCarpet
-        expect(page).to have_content("sublist")
-        expect(page).to have_xpath("//ol//li//ul")
       end
     end
   end

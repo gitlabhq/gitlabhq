@@ -41,6 +41,14 @@ nNp/xedE1YxutQ==
       enabled_until nil
     end
 
+    trait :scheduled_for_removal do
+      remove_at { 1.day.from_now }
+    end
+
+    trait :should_be_removed do
+      remove_at { 1.day.ago }
+    end
+
     trait :unverified do
       verified_at nil
     end

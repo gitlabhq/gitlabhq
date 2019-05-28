@@ -14,7 +14,7 @@ functionality of a project.
 
 ### General project settings
 
-Adjust your project's name, description, avatar, [default branch](../repository/branches/index.md#default-branch), and tags:
+Adjust your project's name, description, avatar, [default branch](../repository/branches/index.md#default-branch), and topics:
 
 ![general project settings](img/general_settings.png)
 
@@ -42,9 +42,9 @@ Set up your project's merge request settings:
 
 ![project's merge request settings](img/merge_requests_settings.png)
 
-### Service Desk
+### Service Desk **[PREMIUM]**
 
-Enable [Service Desk](https://docs.gitlab.com/ee/user/project/service_desk.html) for your project to offer customer support. Service Desk is available in [GitLab Premium](https://about.gitlab.com/pricing/).
+Enable [Service Desk](https://docs.gitlab.com/ee/user/project/service_desk.html) for your project to offer customer support.
 
 ### Export project
 
@@ -121,4 +121,14 @@ NOTE: **Note:**
 GitLab administrators can use the admin interface to move any project to any
 namespace if needed.
 
-[permissions]: ../../permissions.md##project-members-permissions
+[permissions]: ../../permissions.md#project-members-permissions
+
+## Operations settings
+
+### Error Tracking
+
+Configure Error Tracking to discover and view [Sentry errors within GitLab](../operations/error_tracking.md).
+
+### Jaeger tracing **[ULTIMATE]**
+
+Add the URL of a Jaeger server to allow your users to [easily access the Jaeger UI from within GitLab](../operations/tracing.md).

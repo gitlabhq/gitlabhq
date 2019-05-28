@@ -15,19 +15,19 @@ class RepositoryForkWorker
       return target_project.import_state.mark_as_failed(_('Source project cannot be found.'))
     end
 
-    fork_repository(target_project, source_project.repository_storage, source_project.disk_path)
+    fork_repository(target_project, source_project)
   end
 
   private
 
-  def fork_repository(target_project, source_repository_storage_name, source_disk_path)
+  def fork_repository(target_project, source_project)
     return unless start_fork(target_project)
 
     Gitlab::Metrics.add_event(:fork_repository)
 
-    result = gitlab_shell.fork_repository(source_repository_storage_name, source_disk_path,
-                                          target_project.repository_storage, target_project.disk_path)
-    raise "Unable to fork project #{target_project.id} for repository #{source_disk_path} -> #{target_project.disk_path}" unless result
+    result = gitlab_shell.fork_repository(source_project, target_project)
+
+    raise "Unable to fork project #{target_project.id} for repository #{source_project.disk_path} -> #{target_project.disk_path}" unless result
 
     target_project.after_import
   end

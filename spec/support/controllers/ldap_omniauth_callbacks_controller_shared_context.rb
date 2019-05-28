@@ -25,9 +25,13 @@ shared_context 'Ldap::OmniauthCallbacksController' do
     described_class.define_providers!
     Rails.application.reload_routes!
 
-    mock_auth_hash(provider.to_s, uid, user.email)
+    @original_env_config_omniauth_auth = mock_auth_hash(provider.to_s, uid, user.email)
     stub_omniauth_provider(provider, context: request)
 
     allow(Gitlab::Auth::LDAP::Access).to receive(:allowed?).and_return(valid_login?)
+  end
+
+  after do
+    Rails.application.env_config['omniauth.auth'] = @original_env_config_omniauth_auth
   end
 end

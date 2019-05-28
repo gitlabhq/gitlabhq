@@ -31,6 +31,7 @@ import initPerformanceBar from './performance_bar';
 import initSearchAutocomplete from './search_autocomplete';
 import GlFieldErrors from './gl_field_errors';
 import initUserPopovers from './user_popovers';
+import { __ } from './locale';
 
 // expose jQuery as global (TODO: remove these)
 window.jQuery = jQuery;
@@ -66,15 +67,11 @@ gl.lazyLoader = new LazyLoader({
   observerNode: '#content-body',
 });
 
-document.addEventListener('DOMContentLoaded', () => {
+// Put all initialisations here that can also wait after everything is rendered and ready
+function deferredInitialisation() {
   const $body = $('body');
-  const $document = $(document);
-  const $window = $(window);
-  const $sidebarGutterToggle = $('.js-sidebar-toggle');
-  let bootstrapBreakpoint = bp.getBreakpointSize();
 
   initBreadcrumbs();
-  initLayoutNav();
   initImporterStatus();
   initTodoToggle();
   initLogoAnimation();
@@ -82,7 +79,93 @@ document.addEventListener('DOMContentLoaded', () => {
   initUserPopovers();
 
   if (document.querySelector('.search')) initSearchAutocomplete();
+
+  addSelectOnFocusBehaviour('.js-select-on-focus');
+
+  $('.remove-row').on('ajax:success', function removeRowAjaxSuccessCallback() {
+    $(this)
+      .tooltip('dispose')
+      .closest('li')
+      .fadeOut();
+  });
+
+  $('.js-remove-tr').on('ajax:before', function removeTRAjaxBeforeCallback() {
+    $(this).hide();
+  });
+
+  $('.js-remove-tr').on('ajax:success', function removeTRAjaxSuccessCallback() {
+    $(this)
+      .closest('tr')
+      .fadeOut();
+  });
+
+  // Initialize select2 selects
+  if ($('select.select2').length) {
+    import(/* webpackChunkName: 'select2' */ 'select2/select2')
+      .then(() => {
+        $('select.select2').select2({
+          width: 'resolve',
+          dropdownAutoWidth: true,
+        });
+
+        // Close select2 on escape
+        $('.js-select2').on('select2-close', () => {
+          setTimeout(() => {
+            $('.select2-container-active').removeClass('select2-container-active');
+            $(':focus').blur();
+          }, 1);
+        });
+      })
+      .catch(() => {});
+  }
+
+  // Initialize tooltips
+  $body.tooltip({
+    selector: '.has-tooltip, [data-toggle="tooltip"]',
+    trigger: 'hover',
+    boundary: 'viewport',
+  });
+
+  // Initialize popovers
+  $body.popover({
+    selector: '[data-toggle="popover"]',
+    trigger: 'focus',
+    // set the viewport to the main content, excluding the navigation bar, so
+    // the navigation can't overlap the popover
+    viewport: '.layout-page',
+  });
+
+  loadAwardsHandler();
+
+  /**
+   * Toggle Canary Badge
+   *
+   * For GitLab.com only, when the user is using canary
+   * we render a Next badge and hide the option to switch
+   * to canay
+   */
+  if (Cookies.get('gitlab_canary') && Cookies.get('gitlab_canary') === 'true') {
+    const canaryBadge = document.querySelector('.js-canary-badge');
+    const canaryLink = document.querySelector('.js-canary-link');
+    if (canaryBadge) {
+      canaryBadge.classList.remove('hidden');
+    }
+    if (canaryLink) {
+      canaryLink.classList.add('hidden');
+    }
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const $body = $('body');
+  const $document = $(document);
+  const $window = $(window);
+  const $sidebarGutterToggle = $('.js-sidebar-toggle');
+  let bootstrapBreakpoint = bp.getBreakpointSize();
+
   if (document.querySelector('#js-peek')) initPerformanceBar({ container: '#js-peek' });
+
+  initLayoutNav();
 
   // Set the default path for all cookies to GitLab's root directory
   Cookies.defaults.path = gon.relative_url_root || '/';
@@ -112,57 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return true;
   });
 
-  addSelectOnFocusBehaviour('.js-select-on-focus');
-
-  $('.remove-row').on('ajax:success', function removeRowAjaxSuccessCallback() {
-    $(this)
-      .tooltip('dispose')
-      .closest('li')
-      .fadeOut();
-  });
-
-  $('.js-remove-tr').on('ajax:before', function removeTRAjaxBeforeCallback() {
-    $(this).hide();
-  });
-
-  $('.js-remove-tr').on('ajax:success', function removeTRAjaxSuccessCallback() {
-    $(this)
-      .closest('tr')
-      .fadeOut();
-  });
-
-  // Initialize select2 selects
-  $('select.select2').select2({
-    width: 'resolve',
-    dropdownAutoWidth: true,
-  });
-
-  // Close select2 on escape
-  $('.js-select2').on('select2-close', () => {
-    setTimeout(() => {
-      $('.select2-container-active').removeClass('select2-container-active');
-      $(':focus').blur();
-    }, 1);
-  });
-
-  // Initialize tooltips
-  $body.tooltip({
-    selector: '.has-tooltip, [data-toggle="tooltip"]',
-    trigger: 'hover',
-    boundary: 'viewport',
-    placement(tip, el) {
-      return $(el).data('placement') || 'bottom';
-    },
-  });
-
-  // Initialize popovers
-  $body.popover({
-    selector: '[data-toggle="popover"]',
-    trigger: 'focus',
-    // set the viewport to the main content, excluding the navigation bar, so
-    // the navigation can't overlap the popover
-    viewport: '.layout-page',
-  });
+  localTimeAgo($('abbr.timeago, .js-timeago'), true);
 
   // Form submitter
   $('.trigger-submit').on('change', function triggerSubmitCallback() {
@@ -170,8 +203,6 @@ document.addEventListener('DOMContentLoaded', () => {
       .parents('form')
       .submit();
   });
-
-  localTimeAgo($('abbr.timeago, .js-timeago'), true);
 
   // Disable form buttons while a form is submitting
   $body.on('ajax:complete, ajax:beforeSend, submit', 'form', function ajaxCompleteCallback(e) {
@@ -189,10 +220,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const ref = xhrObj.status;
 
     if (ref === 401) {
-      Flash('You need to be logged in.');
+      Flash(__('You need to be logged in.'));
     } else if (ref === 404 || ref === 500) {
-      Flash('Something went wrong on our end.');
+      Flash(__('Something went wrong on our end.'));
     }
+  });
+
+  $('.navbar-toggler').on('click', () => {
+    $('.header-content').toggleClass('menu-expanded');
   });
 
   // Commit show suppressed diff
@@ -200,10 +235,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const $container = $(this).parent();
     $container.next('table').show();
     $container.remove();
-  });
-
-  $('.navbar-toggler').on('click', () => {
-    $('.header-content').toggleClass('menu-expanded');
   });
 
   // Show/hide comments on diff
@@ -250,8 +281,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   $window.on('resize.app', fitSidebarForSize);
 
-  loadAwardsHandler();
-
   $('form.filter-form').on('submit', function filterFormSubmitCallback(event) {
     const link = document.createElement('a');
     link.href = this.action;
@@ -274,4 +303,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // initialize field errors
   $('.gl-show-field-errors').each((i, form) => new GlFieldErrors(form));
+
+  requestIdleCallback(deferredInitialisation);
 });

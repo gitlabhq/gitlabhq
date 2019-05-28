@@ -18,6 +18,7 @@ class Import::BaseController < ApplicationController
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
+  # deprecated: being replaced by app/services/import/base_service.rb
   def find_or_create_namespace(names, owner)
     names = params[:target_namespace].presence || names
 
@@ -32,6 +33,7 @@ class Import::BaseController < ApplicationController
     current_user.namespace
   end
 
+  # deprecated: being replaced by app/services/import/base_service.rb
   def project_save_error(project)
     project.errors.full_messages.join(', ')
   end

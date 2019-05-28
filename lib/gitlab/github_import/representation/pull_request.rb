@@ -76,10 +76,10 @@ module Gitlab
         # Returns a formatted source branch.
         #
         # For cross-project pull requests the branch name will be in the format
-        # `owner-name:branch-name`.
+        # `github/fork/owner-name/branch-name`.
         def formatted_source_branch
           if cross_project? && source_repository_owner
-            "#{source_repository_owner}:#{source_branch}"
+            "github/fork/#{source_repository_owner}/#{source_branch}"
           elsif source_branch == target_branch
             # Sometimes the source and target branch are the same, but GitLab
             # doesn't support this. This can happen when both the user and

@@ -1,5 +1,5 @@
 %p
-  Hi #{@user.name}!
+  Hi #{sanitize_name(@user.name)}!
 %p
   A new public key was added to your account:
 %p

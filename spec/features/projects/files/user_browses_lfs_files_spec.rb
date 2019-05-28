@@ -5,6 +5,8 @@ describe 'Projects > Files > User browses LFS files' do
   let(:user) { project.owner }
 
   before do
+    stub_feature_flags(vue_file_list: false)
+
     sign_in(user)
   end
 
@@ -12,6 +14,7 @@ describe 'Projects > Files > User browses LFS files' do
     before do
       allow_any_instance_of(Project).to receive(:lfs_enabled?).and_return(false)
       visit project_tree_path(project, 'lfs')
+      wait_for_requests
     end
 
     it 'is possible to see raw content of LFS pointer' do
@@ -26,10 +29,11 @@ describe 'Projects > Files > User browses LFS files' do
     end
   end
 
-  context 'when LFS is enabled' do
+  context 'when LFS is enabled', :js do
     before do
       allow_any_instance_of(Project).to receive(:lfs_enabled?).and_return(true)
       visit project_tree_path(project, 'lfs')
+      wait_for_requests
     end
 
     it 'shows an LFS object' do

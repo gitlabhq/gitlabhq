@@ -266,6 +266,7 @@ describe Backup::Manager do
           remote_directory: 'directory',
           multipart_chunk_size: 104857600,
           encryption: nil,
+          encryption_key: nil,
           storage_class: nil
         }
       )

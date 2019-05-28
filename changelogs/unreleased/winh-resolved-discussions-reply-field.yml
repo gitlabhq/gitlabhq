@@ -1,5 +1,0 @@
----
-title: Display reply field if resolved discussion has no replies
-merge_request: 23801
-author:
-type: fixed

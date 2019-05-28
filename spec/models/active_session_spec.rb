@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe ActiveSession, :clean_gitlab_redis_shared_state do
@@ -7,7 +9,10 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_shared_state do
     end
   end
 
-  let(:session) { double(:session, id: '6919a6f1bb119dd7396fadc38fd18d0d') }
+  let(:session) do
+    double(:session, { id: '6919a6f1bb119dd7396fadc38fd18d0d',
+                       '[]': {} })
+  end
 
   let(:request) do
     double(:request, {
@@ -80,6 +85,52 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_shared_state do
 
     it 'returns an empty array if the use does not have any active session' do
       expect(ActiveSession.list(user)).to eq []
+    end
+  end
+
+  describe '.list_sessions' do
+    it 'uses the ActiveSession lookup to return original sessions' do
+      Gitlab::Redis::SharedState.with do |redis|
+        redis.set("session:gitlab:6919a6f1bb119dd7396fadc38fd18d0d", Marshal.dump({ _csrf_token: 'abcd' }))
+
+        redis.sadd(
+          "session:lookup:user:gitlab:#{user.id}",
+          %w[
+            6919a6f1bb119dd7396fadc38fd18d0d
+            59822c7d9fcdfa03725eff41782ad97d
+          ]
+        )
+      end
+
+      expect(ActiveSession.list_sessions(user)).to eq [{ _csrf_token: 'abcd' }]
+    end
+  end
+
+  describe '.session_ids_for_user' do
+    it 'uses the user lookup table to return session ids' do
+      session_ids = ['59822c7d9fcdfa03725eff41782ad97d']
+
+      Gitlab::Redis::SharedState.with do |redis|
+        redis.sadd("session:lookup:user:gitlab:#{user.id}", session_ids)
+      end
+
+      expect(ActiveSession.session_ids_for_user(user)).to eq(session_ids)
+    end
+  end
+
+  describe '.sessions_from_ids' do
+    it 'uses the ActiveSession lookup to return original sessions' do
+      Gitlab::Redis::SharedState.with do |redis|
+        redis.set("session:gitlab:6919a6f1bb119dd7396fadc38fd18d0d", Marshal.dump({ _csrf_token: 'abcd' }))
+      end
+
+      expect(ActiveSession.sessions_from_ids(['6919a6f1bb119dd7396fadc38fd18d0d'])).to eq [{ _csrf_token: 'abcd' }]
+    end
+
+    it 'avoids a redis lookup for an empty array' do
+      expect(Gitlab::Redis::SharedState).not_to receive(:with)
+
+      expect(ActiveSession.sessions_from_ids([])).to eq([])
     end
   end
 

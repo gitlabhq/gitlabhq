@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Note do
@@ -205,6 +207,24 @@ describe Note do
     it "returns false" do
       note = build(:note, system: true)
       expect(note.editable?).to be_falsy
+    end
+  end
+
+  describe "edited?" do
+    let(:note) { build(:note, updated_by_id: nil, created_at: Time.now, updated_at: Time.now + 5.hours) }
+
+    context "with updated_by" do
+      it "returns true" do
+        note.updated_by = build(:user)
+
+        expect(note.edited?).to be_truthy
+      end
+    end
+
+    context "without updated_by" do
+      it "returns false" do
+        expect(note.edited?).to be_falsy
+      end
     end
   end
 
@@ -888,6 +908,21 @@ describe Note do
         it { is_expected.to include(comment) }
         it { is_expected.not_to include(system_note) }
       end
+    end
+  end
+
+  describe '#parent' do
+    it 'returns project for project notes' do
+      project = create(:project)
+      note = create(:note_on_issue, project: project)
+
+      expect(note.parent).to eq(project)
+    end
+
+    it 'returns nil for personal snippet note' do
+      note = create(:note_on_personal_snippet)
+
+      expect(note.parent).to be_nil
     end
   end
 end

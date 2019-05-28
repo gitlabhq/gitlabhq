@@ -57,7 +57,7 @@ export default {
         </div>
       </div>
       <div class="note-body">
-        <div class="note-text">
+        <div class="note-text md">
           <p>{{ note.body }}</p>
         </div>
       </div>

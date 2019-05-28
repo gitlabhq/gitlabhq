@@ -1,15 +1,15 @@
 - is_collapsed = local_assigns.fetch(:is_collapsed, false)
-- mark_content = is_collapsed ? sprite_icon('todo-done', css_class: 'todo-undone') : _('Mark todo as done')
-- todo_content = is_collapsed ? sprite_icon('todo-add') : _('Add todo')
+- has_todo = !!issuable_sidebar.dig(:current_user, :todo, :id)
+
+- todo_button_data = issuable_todo_button_data(issuable_sidebar, is_collapsed)
+- button_title = has_todo ? todo_button_data[:mark_text] : todo_button_data[:todo_text]
+- button_icon = has_todo ? todo_button_data[:mark_icon] : todo_button_data[:todo_icon]
 
 %button.issuable-todo-btn.js-issuable-todo{ type: 'button',
   class: (is_collapsed ? 'btn-blank sidebar-collapsed-icon dont-change-state has-tooltip' : 'btn btn-default issuable-header-btn float-right'),
-  title: (todo.nil? ? _('Add todo') : _('Mark todo as done')),
-  'aria-label' => (todo.nil? ? _('Add todo') : _('Mark todo as done')),
-  data: issuable_todo_button_data(issuable, todo, is_collapsed) }
+  title: button_title,
+  'aria-label' => button_title,
+  data: todo_button_data }
   %span.issuable-todo-inner.js-issuable-todo-inner<
-    - if todo
-      = mark_content
-    - else
-      = todo_content
+    = is_collapsed ? button_icon : button_title
   = icon('spin spinner', 'aria-hidden': 'true')

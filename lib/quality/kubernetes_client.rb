@@ -18,6 +18,8 @@ module Quality
         'delete',
         'ingress,svc,pdb,hpa,deploy,statefulset,job,pod,secret,configmap,pvc,secret,clusterrole,clusterrolebinding,role,rolebinding,sa',
         '--now',
+        '--ignore-not-found',
+        '--include-uninitialized',
         %(-l release="#{release_name}")
       ]
 

@@ -12,7 +12,7 @@ module ResourceEvents
       label_hash = {
         resource_column(resource) => resource.id,
         user_id: user.id,
-        created_at: Time.now
+        created_at: resource.system_note_timestamp
       }
 
       labels = added_labels.map do |label|

@@ -15,6 +15,7 @@
 #     author_id: integer
 #     assignee_id: integer
 #     search: string
+#     in: 'title', 'description', or a string joining them with comma
 #     label_name: string
 #     sort: string
 #     non_archived: boolean
@@ -28,7 +29,7 @@
 #
 class MergeRequestsFinder < IssuableFinder
   def self.scalar_params
-    @scalar_params ||= super + [:wip]
+    @scalar_params ||= super + [:wip, :target_branch]
   end
 
   def klass
@@ -36,12 +37,20 @@ class MergeRequestsFinder < IssuableFinder
   end
 
   def filter_items(_items)
-    items = by_source_branch(super)
+    items = by_commit(super)
+    items = by_source_branch(items)
     items = by_wip(items)
-    by_target_branch(items)
+    items = by_target_branch(items)
+    by_source_project_id(items)
   end
 
   private
+
+  def by_commit(items)
+    return items unless params[:commit_sha].presence
+
+    items.by_commit_sha(params[:commit_sha])
+  end
 
   def source_branch
     @source_branch ||= params[:source_branch].presence
@@ -64,6 +73,16 @@ class MergeRequestsFinder < IssuableFinder
     return items unless target_branch
 
     items.where(target_branch: target_branch)
+  end
+
+  def source_project_id
+    @source_project_id ||= params[:source_project_id].presence
+  end
+
+  def by_source_project_id(items)
+    return items unless source_project_id
+
+    items.where(source_project_id: source_project_id)
   end
 
   def by_wip(items)

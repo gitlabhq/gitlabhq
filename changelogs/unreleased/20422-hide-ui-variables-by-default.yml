@@ -1,6 +1,0 @@
----
-title: Pipeline trigger variable values are hidden in the UI by default. Maintainers
-  have the option to reveal them.
-merge_request: 23518
-author: jhampton
-type: added

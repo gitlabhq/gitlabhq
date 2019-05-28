@@ -105,7 +105,10 @@ export default {
 
       if (discussion.diff_file) {
         diffData.file_hash = discussion.diff_file.file_hash;
-        diffData.truncated_diff_lines = discussion.truncated_diff_lines || [];
+
+        diffData.truncated_diff_lines = utils.prepareDiffLines(
+          discussion.truncated_diff_lines || [],
+        );
       }
 
       // To support legacy notes, should be very rare case.
@@ -190,6 +193,10 @@ export default {
     const noteObj = utils.findNoteObjectById(state.discussions, note.discussion_id);
 
     if (noteObj.individual_note) {
+      if (note.type === constants.DISCUSSION_NOTE) {
+        noteObj.individual_note = false;
+      }
+
       noteObj.notes.splice(0, 1, note);
     } else {
       const comment = utils.findNoteObjectById(noteObj.notes, note.id);
@@ -243,7 +250,7 @@ export default {
   [types.SET_DISCUSSION_DIFF_LINES](state, { discussionId, diffLines }) {
     const discussion = utils.findNoteObjectById(state.discussions, discussionId);
 
-    discussion.truncated_diff_lines = diffLines;
+    discussion.truncated_diff_lines = utils.prepareDiffLines(diffLines);
   },
 
   [types.DISABLE_COMMENTS](state, value) {
@@ -260,5 +267,17 @@ export default {
         discussion.notes.some(note => note.resolvable && !note.resolved),
     ).length;
     state.hasUnresolvedDiscussions = state.unresolvedDiscussionsCount > 1;
+  },
+
+  [types.CONVERT_TO_DISCUSSION](state, discussionId) {
+    const convertedDisscussionIds = [...state.convertedDisscussionIds, discussionId];
+    Object.assign(state, { convertedDisscussionIds });
+  },
+
+  [types.REMOVE_CONVERTED_DISCUSSION](state, discussionId) {
+    const convertedDisscussionIds = [...state.convertedDisscussionIds];
+
+    convertedDisscussionIds.splice(convertedDisscussionIds.indexOf(discussionId), 1);
+    Object.assign(state, { convertedDisscussionIds });
   },
 };

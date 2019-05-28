@@ -1,6 +1,9 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Projects::CreateService, '#execute' do
+  include ExternalAuthorizationServiceHelpers
   include GitHelpers
 
   let(:gitlab_shell) { Gitlab::Shell.new }
@@ -16,7 +19,11 @@ describe Projects::CreateService, '#execute' do
     Label.create(title: "bug", template: true)
     project = create_project(user, opts)
 
-    expect(project.labels).not_to be_empty
+    created_label = project.reload.labels.last
+
+    expect(created_label.type).to eq('ProjectLabel')
+    expect(created_label.project_id).to eq(project.id)
+    expect(created_label.title).to eq('bug')
   end
 
   context 'user namespace' do
@@ -112,7 +119,7 @@ describe Projects::CreateService, '#execute' do
 
     def wiki_repo(project)
       relative_path = ProjectWiki.new(project).disk_path + '.git'
-      Gitlab::Git::Repository.new(project.repository_storage, relative_path, 'foobar')
+      Gitlab::Git::Repository.new(project.repository_storage, relative_path, 'foobar', project.full_path)
     end
   end
 
@@ -194,7 +201,7 @@ describe Projects::CreateService, '#execute' do
 
       context 'with legacy storage' do
         before do
-          gitlab_shell.create_repository(repository_storage, "#{user.namespace.full_path}/existing")
+          gitlab_shell.create_repository(repository_storage, "#{user.namespace.full_path}/existing", 'group/project')
         end
 
         after do
@@ -230,7 +237,7 @@ describe Projects::CreateService, '#execute' do
         end
 
         before do
-          gitlab_shell.create_repository(repository_storage, hashed_path)
+          gitlab_shell.create_repository(repository_storage, hashed_path, 'group/project')
         end
 
         after do
@@ -258,32 +265,6 @@ describe Projects::CreateService, '#execute' do
       expect(project.repository.commit_count).to be(1)
       expect(project.repository.readme.name).to eql('README.md')
       expect(project.repository.readme.data).to include('# GitLab')
-    end
-  end
-
-  context 'when group has kubernetes cluster' do
-    let(:group_cluster) { create(:cluster, :group, :provided_by_gcp) }
-    let(:group) { group_cluster.group }
-
-    let(:token) { 'aaaa' }
-    let(:service_account_creator) { double(Clusters::Gcp::Kubernetes::CreateOrUpdateServiceAccountService, execute: true) }
-    let(:secrets_fetcher) { double(Clusters::Gcp::Kubernetes::FetchKubernetesTokenService, execute: token) }
-
-    before do
-      group.add_owner(user)
-
-      expect(Clusters::Gcp::Kubernetes::CreateOrUpdateServiceAccountService).to receive(:namespace_creator).and_return(service_account_creator)
-      expect(Clusters::Gcp::Kubernetes::FetchKubernetesTokenService).to receive(:new).and_return(secrets_fetcher)
-    end
-
-    it 'creates kubernetes namespace for the project' do
-      project = create_project(user, opts.merge!(namespace_id: group.id))
-
-      expect(project).to be_valid
-
-      kubernetes_namespace = group_cluster.kubernetes_namespaces.first
-      expect(kubernetes_namespace).to be_present
-      expect(kubernetes_namespace.project).to eq(project)
     end
   end
 
@@ -337,6 +318,42 @@ describe Projects::CreateService, '#execute' do
     rugged = rugged_repo(project.repository)
 
     expect(rugged.config['gitlab.fullpath']).to eq project.full_path
+  end
+
+  context 'with external authorization enabled' do
+    before do
+      enable_external_authorization_service_check
+    end
+
+    it 'does not save the project with an error if the service denies access' do
+      expect(::Gitlab::ExternalAuthorization)
+        .to receive(:access_allowed?).with(user, 'new-label', any_args) { false }
+
+      project = create_project(user, opts.merge({ external_authorization_classification_label: 'new-label' }))
+
+      expect(project.errors[:external_authorization_classification_label]).to be_present
+      expect(project).not_to be_persisted
+    end
+
+    it 'saves the project when the user has access to the label' do
+      expect(::Gitlab::ExternalAuthorization)
+        .to receive(:access_allowed?).with(user, 'new-label', any_args) { true }
+
+      project = create_project(user, opts.merge({ external_authorization_classification_label: 'new-label' }))
+
+      expect(project).to be_persisted
+      expect(project.external_authorization_classification_label).to eq('new-label')
+    end
+
+    it 'does not save the project when the user has no access to the default label and no label is provided' do
+      expect(::Gitlab::ExternalAuthorization)
+        .to receive(:access_allowed?).with(user, 'default_label', any_args) { false }
+
+      project = create_project(user, opts)
+
+      expect(project.errors[:external_authorization_classification_label]).to be_present
+      expect(project).not_to be_persisted
+    end
   end
 
   def create_project(user, opts)

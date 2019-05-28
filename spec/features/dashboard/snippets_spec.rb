@@ -13,6 +13,21 @@ describe 'Dashboard snippets' do
     it_behaves_like 'paginated snippets'
   end
 
+  context 'when there are no project snippets', :js do
+    let(:project) { create(:project, :public) }
+    before do
+      sign_in(project.owner)
+      visit dashboard_snippets_path
+    end
+
+    it 'shows the empty state when there are no snippets' do
+      element = page.find('.row.empty-state')
+
+      expect(element).to have_content("Snippets are small pieces of code or notes that you want to keep.")
+      expect(element.find('.svg-content img')['src']).to have_content('illustrations/snippets_empty')
+    end
+  end
+
   context 'filtering by visibility' do
     let(:user) { create(:user) }
     let!(:snippets) do

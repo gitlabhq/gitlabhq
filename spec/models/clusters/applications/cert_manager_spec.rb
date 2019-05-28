@@ -1,63 +1,81 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe Clusters::Applications::CertManager do
   let(:cert_manager) { create(:clusters_applications_cert_managers) }
 
   include_examples 'cluster application core specs', :clusters_applications_cert_managers
+  include_examples 'cluster application status specs', :clusters_applications_cert_managers
+  include_examples 'cluster application version specs', :clusters_applications_cert_managers
+  include_examples 'cluster application initial status specs'
 
-  describe '#make_installing!' do
-    before do
-      application.make_installing!
-    end
+  describe '#can_uninstall?' do
+    subject { cert_manager.can_uninstall? }
 
-    context 'application install previously errored with older version' do
-      let(:application) { create(:clusters_applications_cert_managers, :scheduled, version: 'v0.4.0') }
-
-      it 'updates the application version' do
-        expect(application.reload.version).to eq('v0.5.0')
-      end
-    end
+    it { is_expected.to be_falsey }
   end
 
   describe '#install_command' do
-    let(:cluster_issuer_file) { { "cluster_issuer.yaml": "---\napiVersion: certmanager.k8s.io/v1alpha1\nkind: ClusterIssuer\nmetadata:\n  name: letsencrypt-prod\nspec:\n  acme:\n    server: https://acme-v02.api.letsencrypt.org/directory\n    email: admin@example.com\n    privateKeySecretRef:\n      name: letsencrypt-prod\n    http01: {}\n" } }
+    let(:cert_email) { 'admin@example.com' }
+
+    let(:cluster_issuer_file) do
+      file_contents = <<~EOF
+      ---
+      apiVersion: certmanager.k8s.io/v1alpha1
+      kind: ClusterIssuer
+      metadata:
+        name: letsencrypt-prod
+      spec:
+        acme:
+          server: https://acme-v02.api.letsencrypt.org/directory
+          email: #{cert_email}
+          privateKeySecretRef:
+            name: letsencrypt-prod
+          http01: {}
+      EOF
+
+      { "cluster_issuer.yaml": file_contents }
+    end
+
     subject { cert_manager.install_command }
 
     it { is_expected.to be_an_instance_of(Gitlab::Kubernetes::Helm::InstallCommand) }
 
-    it 'should be initialized with cert_manager arguments' do
+    it 'is initialized with cert_manager arguments' do
       expect(subject.name).to eq('certmanager')
       expect(subject.chart).to eq('stable/cert-manager')
-      expect(subject.version).to eq('v0.5.0')
-      expect(subject).not_to be_rbac
+      expect(subject.version).to eq('v0.5.2')
+      expect(subject).to be_rbac
       expect(subject.files).to eq(cert_manager.files.merge(cluster_issuer_file))
       expect(subject.postinstall).to eq(['/usr/bin/kubectl create -f /data/helm/certmanager/config/cluster_issuer.yaml'])
     end
 
     context 'for a specific user' do
+      let(:cert_email) { 'abc@xyz.com' }
+
       before do
-        cert_manager.email = 'abc@xyz.com'
-        cluster_issuer_file[:'cluster_issuer.yaml'].gsub! 'admin@example.com', 'abc@xyz.com'
+        cert_manager.email = cert_email
       end
 
-      it 'should use his/her email to register issuer with certificate provider' do
+      it 'uses his/her email to register issuer with certificate provider' do
         expect(subject.files).to eq(cert_manager.files.merge(cluster_issuer_file))
       end
     end
 
-    context 'on a rbac enabled cluster' do
+    context 'on a non rbac enabled cluster' do
       before do
-        cert_manager.cluster.platform_kubernetes.rbac!
+        cert_manager.cluster.platform_kubernetes.abac!
       end
 
-      it { is_expected.to be_rbac }
+      it { is_expected.not_to be_rbac }
     end
 
     context 'application failed to install previously' do
       let(:cert_manager) { create(:clusters_applications_cert_managers, :errored, version: '0.0.1') }
 
-      it 'should be initialized with the locked version' do
-        expect(subject.version).to eq('v0.5.0')
+      it 'is initialized with the locked version' do
+        expect(subject.version).to eq('v0.5.2')
       end
     end
   end
@@ -68,7 +86,7 @@ describe Clusters::Applications::CertManager do
 
     subject { application.files }
 
-    it 'should include cert_manager specific keys in the values.yaml file' do
+    it 'includes cert_manager specific keys in the values.yaml file' do
       expect(values).to include('ingressShim')
     end
   end

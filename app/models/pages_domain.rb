@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class PagesDomain < ActiveRecord::Base
+class PagesDomain < ApplicationRecord
   VERIFICATION_KEY = 'gitlab-pages-verification-code'.freeze
   VERIFICATION_THRESHOLD = 3.days.freeze
 
@@ -26,7 +26,7 @@ class PagesDomain < ActiveRecord::Base
 
   after_initialize :set_verification_code
   after_create :update_daemon
-  after_update :update_daemon, if: :pages_config_changed?
+  after_update :update_daemon, if: :saved_change_to_pages_config?
   after_destroy :update_daemon
 
   scope :enabled, -> { where('enabled_until >= ?', Time.now ) }
@@ -37,6 +37,8 @@ class PagesDomain < ActiveRecord::Base
 
     where(verified_at.eq(nil).or(enabled_until.eq(nil).or(enabled_until.lt(threshold))))
   end
+
+  scope :for_removal, -> { where("remove_at < ?", Time.now) }
 
   def verified?
     !!verified_at
@@ -146,21 +148,21 @@ class PagesDomain < ActiveRecord::Base
   end
   # rubocop: enable CodeReuse/ServiceClass
 
-  def pages_config_changed?
-    project_id_changed? ||
-      domain_changed? ||
-      certificate_changed? ||
-      key_changed? ||
+  def saved_change_to_pages_config?
+    saved_change_to_project_id? ||
+      saved_change_to_domain? ||
+      saved_change_to_certificate? ||
+      saved_change_to_key? ||
       became_enabled? ||
       became_disabled?
   end
 
   def became_enabled?
-    enabled_until.present? && !enabled_until_was.present?
+    enabled_until.present? && !enabled_until_before_last_save.present?
   end
 
   def became_disabled?
-    !enabled_until.present? && enabled_until_was.present?
+    !enabled_until.present? && enabled_until_before_last_save.present?
   end
 
   def validate_matching_key

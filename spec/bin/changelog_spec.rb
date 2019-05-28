@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 load File.expand_path('../../bin/changelog', __dir__)
@@ -80,7 +82,7 @@ describe 'bin/changelog' do
       end
     end
 
-    describe '.read_type'  do
+    describe '.read_type' do
       let(:type) { '1' }
 
       it 'reads type from $stdin' do

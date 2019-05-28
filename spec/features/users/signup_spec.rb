@@ -49,6 +49,34 @@ describe 'Signup' do
 
       expect(page).to have_content("Please create a username with only alphanumeric characters.")
     end
+
+    it 'shows an  error border if the username contains emojis' do
+      simulate_input('#new_user_username', 'ehsan😀')
+
+      expect(find('.username')).to have_css '.gl-field-error-outline'
+    end
+
+    it 'shows an error message if the username contains emojis' do
+      simulate_input('#new_user_username', 'ehsan😀')
+
+      expect(page).to have_content("Invalid input, please avoid emojis")
+    end
+  end
+
+  describe 'user\'s full name validation', :js do
+    before do
+      visit root_path
+      click_link 'Register'
+      simulate_input('#new_user_name', 'Ehsan 🦋')
+    end
+
+    it 'shows an error border if the user\'s fullname contains an emoji' do
+      expect(find('.name')).to have_css '.gl-field-error-outline'
+    end
+
+    it 'shows an error message if the username contains emojis' do
+      expect(page).to have_content("Invalid input, please avoid emojis")
+    end
   end
 
   context 'with no errors' do

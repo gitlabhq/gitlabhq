@@ -3,7 +3,7 @@
 # A note on the root of an issue, merge request, commit, or snippet.
 #
 # A note of this type is never resolvable.
-class Note < ActiveRecord::Base
+class Note < ApplicationRecord
   extend ActiveModel::Naming
   include Participable
   include Mentionable
@@ -313,6 +313,14 @@ class Note < ActiveRecord::Base
     !system?
   end
 
+  # Since we're using `updated_at` as `last_edited_at`, it could be touched by transforming / resolving a note.
+  # This makes sure it is only marked as edited when the note body is updated.
+  def edited?
+    return false if updated_by.blank?
+
+    super
+  end
+
   def cross_reference_not_visible_for?(user)
     cross_reference? && !all_referenced_mentionables_allowed?(user)
   end
@@ -454,6 +462,10 @@ class Note < ActiveRecord::Base
 
   def retrieve_upload(_identifier, paths)
     Upload.find_by(model: self, path: paths)
+  end
+
+  def parent
+    project
   end
 
   private

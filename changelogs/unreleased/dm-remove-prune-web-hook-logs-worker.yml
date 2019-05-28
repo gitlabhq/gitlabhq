@@ -1,5 +1,0 @@
----
-title: Remove old webhook logs after 90 days, as documented, instead of after 2
-merge_request:
-author:
-type: fixed

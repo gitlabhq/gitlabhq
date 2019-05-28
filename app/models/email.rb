@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-class Email < ActiveRecord::Base
+class Email < ApplicationRecord
   include Sortable
   include Gitlab::SQL::Pattern
 
   belongs_to :user
 
   validates :user_id, presence: true
-  validates :email, presence: true, uniqueness: true, email: true
+  validates :email, presence: true, uniqueness: true, devise_email: true
   validate :unique_email, if: ->(email) { email.email_changed? }
 
   scope :confirmed, -> { where.not(confirmed_at: nil) }
@@ -15,7 +15,7 @@ class Email < ActiveRecord::Base
   after_commit :update_invalid_gpg_signatures, if: -> { previous_changes.key?('confirmed_at') }
 
   devise :confirmable
-  self.reconfirmable = false  # currently email can't be changed, no need to reconfirm
+  self.reconfirmable = false # currently email can't be changed, no need to reconfirm
 
   delegate :username, to: :user
 

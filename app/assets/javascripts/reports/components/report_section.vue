@@ -73,6 +73,11 @@ export default {
       default: () => ({}),
       required: false,
     },
+    showReportSectionStatusIcon: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
 
   data() {
@@ -151,7 +156,7 @@ export default {
         <button
           v-if="isCollapsible"
           type="button"
-          class="js-collapse-btn btn float-right btn-sm"
+          class="js-collapse-btn btn float-right btn-sm qa-expand-report-button"
           @click="toggleCollapsed"
         >
           {{ collapseText }}
@@ -166,6 +171,7 @@ export default {
           :resolved-issues="resolvedIssues"
           :neutral-issues="neutralIssues"
           :component="component"
+          :show-report-section-status-icon="showReportSectionStatusIcon"
         />
       </slot>
     </div>

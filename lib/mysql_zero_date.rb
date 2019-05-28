@@ -17,4 +17,4 @@ module MysqlZeroDate
   end
 end
 
-ActiveRecord::ConnectionAdapters::AbstractMysqlAdapter.prepend(MysqlZeroDate) if Gitlab.rails5?
+ActiveRecord::ConnectionAdapters::AbstractMysqlAdapter.prepend(MysqlZeroDate)

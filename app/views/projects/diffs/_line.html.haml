@@ -30,7 +30,7 @@
         = link_text
       - else
         %a{ href: "##{line_code}", data: { linenumber: link_text } }
-    %td.line_content.noteable_line{ class: type }<
+    %td.line_content{ class: type }<
       - if email
         %pre= line.rich_text
       - else

@@ -18,19 +18,19 @@
     .table-mobile-content
       = link_to runner.short_sha, admin_runner_path(runner)
 
-  .table-section.section-15
+  .table-section.section-20
     .table-mobile-header{ role: 'rowheader' }= _('Description')
     .table-mobile-content.str-truncated.has-tooltip{ title: runner.description }
       = runner.description
 
-  .table-section.section-15
+  .table-section.section-10
     .table-mobile-header{ role: 'rowheader' }= _('Version')
     .table-mobile-content.str-truncated.has-tooltip{ title: runner.version }
       = runner.version
 
   .table-section.section-10
     .table-mobile-header{ role: 'rowheader' }= _('IP Address')
-    .table-mobile-content
+    .table-mobile-content.str-truncated.has-tooltip{ title: runner.ip_address }
       = runner.ip_address
 
   .table-section.section-5
@@ -44,20 +44,21 @@
   .table-section.section-5
     .table-mobile-header{ role: 'rowheader' }= _('Jobs')
     .table-mobile-content
-      = runner.builds.count(:all)
+      = limited_counter_with_delimiter(runner.builds)
 
   .table-section.section-10.section-wrap
     .table-mobile-header{ role: 'rowheader' }= _('Tags')
     .table-mobile-content
-      - runner.tag_list.sort.each do |tag|
-        %span.badge.badge-primary
+      - runner.tags.map(&:name).sort.each do |tag|
+        %span.badge.badge-primary.str-truncated.has-tooltip{ title: tag }
           = tag
 
   .table-section.section-10
     .table-mobile-header{ role: 'rowheader' }= _('Last contact')
     .table-mobile-content
-      - if runner.contacted_at
-        = time_ago_with_tooltip runner.contacted_at
+      - contacted_at = runner_contacted_at(runner)
+      - if contacted_at
+        = time_ago_with_tooltip contacted_at
       - else
         = _('Never')
 

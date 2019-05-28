@@ -33,6 +33,8 @@ describe 'Overview tab on a user profile', :js do
 
       it 'does not show any entries in the list of activities' do
         page.within('.activities-block') do
+          expect(page).to have_selector('.loading', visible: false)
+          expect(page).to have_content('Join or create a group to start contributing by commenting on issues or submitting merge requests!')
           expect(page).not_to have_selector('.event-item')
         end
       end
@@ -91,9 +93,10 @@ describe 'Overview tab on a user profile', :js do
     describe 'user has no personal projects' do
       include_context 'visit overview tab'
 
-      it 'it shows an empty project list with an info message' do
+      it 'shows an empty project list with an info message' do
         page.within('.projects-block') do
-          expect(page).to have_content('No projects found')
+          expect(page).to have_selector('.loading', visible: false)
+          expect(page).to have_content('You haven\'t created any personal projects.')
           expect(page).not_to have_selector('.project-row')
         end
       end
@@ -110,7 +113,7 @@ describe 'Overview tab on a user profile', :js do
 
       include_context 'visit overview tab'
 
-      it 'it shows one entry in the list of projects' do
+      it 'shows one entry in the list of projects' do
         page.within('.projects-block') do
           expect(page).to have_selector('.project-row', count: 1)
         end
@@ -118,6 +121,12 @@ describe 'Overview tab on a user profile', :js do
 
       it 'shows a link to the project list' do
         expect(find('#js-overview .projects-block')).to have_selector('.js-view-all', visible: true)
+      end
+
+      it 'shows projects in "compact mode"' do
+        page.within('#js-overview .projects-block') do
+          expect(find('.js-projects-list-holder')).to have_selector('.compact')
+        end
       end
     end
 
@@ -130,7 +139,7 @@ describe 'Overview tab on a user profile', :js do
 
       include_context 'visit overview tab'
 
-      it 'it shows max. ten entries in the list of projects' do
+      it 'shows max. ten entries in the list of projects' do
         page.within('.projects-block') do
           expect(page).to have_selector('.project-row', count: 10)
         end

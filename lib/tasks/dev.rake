@@ -10,6 +10,7 @@ namespace :dev do
 
   desc "GitLab | Eager load application"
   task load: :environment do
+    Rails.configuration.eager_load = true
     Rails.application.eager_load!
   end
 end

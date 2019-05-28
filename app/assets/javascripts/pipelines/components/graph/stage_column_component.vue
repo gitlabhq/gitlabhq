@@ -1,13 +1,17 @@
 <script>
 import _ from 'underscore';
+import stageColumnMixin from 'ee_else_ce/pipelines/mixins/stage_column_mixin';
 import JobItem from './job_item.vue';
 import JobGroupDropdown from './job_group_dropdown.vue';
+import ActionComponent from './action_component.vue';
 
 export default {
   components: {
     JobItem,
     JobGroupDropdown,
+    ActionComponent,
   },
+  mixins: [stageColumnMixin],
   props: {
     title: {
       type: String,
@@ -27,13 +31,20 @@ export default {
       required: false,
       default: '',
     },
+    action: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
+  },
+  computed: {
+    hasAction() {
+      return !_.isEmpty(this.action);
+    },
   },
   methods: {
     groupId(group) {
       return `ci-badge-${_.escape(group.name)}`;
-    },
-    buildConnnectorClass(index) {
-      return index === 0 && !this.isFirstColumn ? 'left-connector' : '';
     },
     pipelineActionRequestComplete() {
       this.$emit('refreshPipelineGraph');
@@ -43,7 +54,18 @@ export default {
 </script>
 <template>
   <li :class="stageConnectorClass" class="stage-column">
-    <div class="stage-name">{{ title }}</div>
+    <div class="stage-name position-relative">
+      {{ title }}
+      <action-component
+        v-if="hasAction"
+        :action-icon="action.icon"
+        :tooltip-text="action.title"
+        :link="action.path"
+        class="js-stage-action stage-action position-absolute position-top-0 rounded"
+        @pipelineActionRequestComplete="pipelineActionRequestComplete"
+      />
+    </div>
+
     <div class="builds-container">
       <ul>
         <li

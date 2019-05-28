@@ -3,6 +3,8 @@ require 'rails_helper'
 describe 'GFM autocomplete', :js do
   let(:issue_xss_title) { 'This will execute alert<img src=x onerror=alert(2)&lt;img src=x onerror=alert(1)&gt;' }
   let(:user_xss_title) { 'eve <img src=x onerror=alert(2)&lt;img src=x onerror=alert(1)&gt;' }
+  let(:label_xss_title) { 'alert label &lt;img src=x onerror="alert(\'Hello xss\');" a'}
+  let(:milestone_xss_title) { 'alert milestone &lt;img src=x onerror="alert(\'Hello xss\');" a' }
 
   let(:user_xss) { create(:user, name: user_xss_title, username: 'xss.user') }
   let(:user)    { create(:user, name: '💃speciąl someone💃', username: 'someone.special') }
@@ -25,9 +27,13 @@ describe 'GFM autocomplete', :js do
 
     simulate_input('#issue-description', "@#{user.name[0...3]}")
 
+    wait_for_requests
+
     find('.atwho-view .cur').click
 
     click_button 'Save changes'
+
+    wait_for_requests
 
     expect(find('.description')).to have_content(user.to_reference)
   end
@@ -47,6 +53,8 @@ describe 'GFM autocomplete', :js do
       find('#note-body').native.send_keys('#')
     end
 
+    wait_for_requests
+
     expect(page).to have_selector('.atwho-container')
 
     page.within '.atwho-container #at-view-issues' do
@@ -59,10 +67,28 @@ describe 'GFM autocomplete', :js do
       find('#note-body').native.send_keys('@ev')
     end
 
+    wait_for_requests
+
     expect(page).to have_selector('.atwho-container')
 
     page.within '.atwho-container #at-view-users' do
       expect(find('li').text).to have_content(user_xss.username)
+    end
+  end
+
+  it 'opens autocomplete menu for Milestone when field starts with text with item escaping HTML characters' do
+    create(:milestone, project: project, title: milestone_xss_title)
+
+    page.within '.timeline-content-form' do
+      find('#note-body').native.send_keys('%')
+    end
+
+    wait_for_requests
+
+    expect(page).to have_selector('.atwho-container')
+
+    page.within '.atwho-container #at-view-milestones' do
+      expect(find('li').text).to have_content('alert milestone')
     end
   end
 
@@ -252,83 +278,19 @@ describe 'GFM autocomplete', :js do
     end
   end
 
-  # This context has jsut one example in each contexts in order to improve spec performance.
   context 'labels' do
-    let!(:backend)          { create(:label, project: project, title: 'backend') }
-    let!(:bug)              { create(:label, project: project, title: 'bug') }
-    let!(:feature_proposal) { create(:label, project: project, title: 'feature proposal') }
+    it 'opens autocomplete menu for Labels when field starts with text with item escaping HTML characters' do
+      create(:label, project: project, title: label_xss_title)
 
-    context 'when no labels are assigned' do
-      it 'shows labels' do
-        note = find('#note-body')
+      note = find('#note-body')
 
-        # It should show all the labels on "~".
-        type(note, '~')
-        expect_labels(shown: [backend, bug, feature_proposal])
+      # It should show all the labels on "~".
+      type(note, '~')
 
-        # It should show all the labels on "/label ~".
-        type(note, '/label ~')
-        expect_labels(shown: [backend, bug, feature_proposal])
+      wait_for_requests
 
-        # It should show all the labels on "/relabel ~".
-        type(note, '/relabel ~')
-        expect_labels(shown: [backend, bug, feature_proposal])
-
-        # It should show no labels on "/unlabel ~".
-        type(note, '/unlabel ~')
-        expect_labels(not_shown: [backend, bug, feature_proposal])
-      end
-    end
-
-    context 'when some labels are assigned' do
-      before do
-        issue.labels << [backend]
-      end
-
-      it 'shows labels' do
-        note = find('#note-body')
-
-        # It should show all the labels on "~".
-        type(note, '~')
-        expect_labels(shown: [backend, bug, feature_proposal])
-
-        # It should show only unset labels on "/label ~".
-        type(note, '/label ~')
-        expect_labels(shown: [bug, feature_proposal], not_shown: [backend])
-
-        # It should show all the labels on "/relabel ~".
-        type(note, '/relabel ~')
-        expect_labels(shown: [backend, bug, feature_proposal])
-
-        # It should show only set labels on "/unlabel ~".
-        type(note, '/unlabel ~')
-        expect_labels(shown: [backend], not_shown: [bug, feature_proposal])
-      end
-    end
-
-    context 'when all labels are assigned' do
-      before do
-        issue.labels << [backend, bug, feature_proposal]
-      end
-
-      it 'shows labels' do
-        note = find('#note-body')
-
-        # It should show all the labels on "~".
-        type(note, '~')
-        expect_labels(shown: [backend, bug, feature_proposal])
-
-        # It should show no labels on "/label ~".
-        type(note, '/label ~')
-        expect_labels(not_shown: [backend, bug, feature_proposal])
-
-        # It should show all the labels on "/relabel ~".
-        type(note, '/relabel ~')
-        expect_labels(shown: [backend, bug, feature_proposal])
-
-        # It should show all the labels on "/unlabel ~".
-        type(note, '/unlabel ~')
-        expect_labels(shown: [backend, bug, feature_proposal])
+      page.within '.atwho-container #at-view-labels' do
+        expect(find('.atwho-view-ul').text).to have_content('alert label')
       end
     end
   end

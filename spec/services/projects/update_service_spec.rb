@@ -1,6 +1,9 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Projects::UpdateService do
+  include ExternalAuthorizationServiceHelpers
   include ProjectForksHelper
 
   let(:user) { create(:user) }
@@ -41,7 +44,7 @@ describe Projects::UpdateService do
         end
 
         it 'updates the project to private' do
-          expect(TodosDestroyer::ProjectPrivateWorker).to receive(:perform_in).with(1.hour, project.id)
+          expect(TodosDestroyer::ProjectPrivateWorker).to receive(:perform_in).with(Todo::WAIT_FOR_DELETE, project.id)
 
           result = update_project(project, user, visibility_level: Gitlab::VisibilityLevel::PRIVATE)
 
@@ -191,7 +194,7 @@ describe Projects::UpdateService do
     context 'when changing feature visibility to private' do
       it 'updates the visibility correctly' do
         expect(TodosDestroyer::PrivateFeaturesWorker)
-          .to receive(:perform_in).with(1.hour, project.id)
+          .to receive(:perform_in).with(Todo::WAIT_FOR_DELETE, project.id)
 
         result = update_project(project, user, project_feature_attributes:
                                  { issues_access_level: ProjectFeature::PRIVATE }
@@ -232,7 +235,7 @@ describe Projects::UpdateService do
         let(:project) { create(:project, :legacy_storage, :repository, creator: user, namespace: user.namespace) }
 
         before do
-          gitlab_shell.create_repository(repository_storage, "#{user.namespace.full_path}/existing")
+          gitlab_shell.create_repository(repository_storage, "#{user.namespace.full_path}/existing", user.namespace.full_path)
         end
 
         after do
@@ -361,6 +364,46 @@ describe Projects::UpdateService do
         call_service
       end
     end
+
+    context 'with external authorization enabled' do
+      before do
+        enable_external_authorization_service_check
+      end
+
+      it 'does not save the project with an error if the service denies access' do
+        expect(::Gitlab::ExternalAuthorization)
+          .to receive(:access_allowed?).with(user, 'new-label') { false }
+
+        result = update_project(project, user, { external_authorization_classification_label: 'new-label' })
+
+        expect(result[:message]).to be_present
+        expect(result[:status]).to eq(:error)
+      end
+
+      it 'saves the new label if the service allows access' do
+        expect(::Gitlab::ExternalAuthorization)
+          .to receive(:access_allowed?).with(user, 'new-label') { true }
+
+        result = update_project(project, user, { external_authorization_classification_label: 'new-label' })
+
+        expect(result[:status]).to eq(:success)
+        expect(project.reload.external_authorization_classification_label).to eq('new-label')
+      end
+
+      it 'checks the default label when the classification label was cleared' do
+        expect(::Gitlab::ExternalAuthorization)
+          .to receive(:access_allowed?).with(user, 'default_label') { true }
+
+        update_project(project, user, { external_authorization_classification_label: '' })
+      end
+
+      it 'does not check the label when it does not change' do
+        expect(::Gitlab::ExternalAuthorization)
+          .not_to receive(:access_allowed?)
+
+        update_project(project, user, { name: 'New name' })
+      end
+    end
   end
 
   describe '#run_auto_devops_pipeline?' do
@@ -397,6 +440,8 @@ describe Projects::UpdateService do
     context 'when auto devops is set to instance setting' do
       before do
         project.create_auto_devops!(enabled: nil)
+        project.reload
+
         allow(project.auto_devops).to receive(:previous_changes).and_return('enabled' => true)
       end
 

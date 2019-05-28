@@ -1,6 +1,10 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Ci::PipelineSchedule do
+  subject { build(:ci_pipeline_schedule) }
+
   it { is_expected.to belong_to(:project) }
   it { is_expected.to belong_to(:owner) }
 
@@ -31,6 +35,15 @@ describe Ci::PipelineSchedule do
         pipeline_schedule = build(:ci_pipeline_schedule, :inactive, ref: nil)
 
         expect(pipeline_schedule).not_to be_valid
+      end
+    end
+
+    context 'when cron contains trailing whitespaces' do
+      it 'strips the attribute' do
+        pipeline_schedule = build(:ci_pipeline_schedule, cron: ' 0 0 * * *   ')
+
+        expect(pipeline_schedule).to be_valid
+        expect(pipeline_schedule.cron).to eq('0 0 * * *')
       end
     end
   end

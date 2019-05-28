@@ -42,10 +42,10 @@ export default {
 </script>
 
 <template>
-  <section class="empty-state">
-    <div class="row">
+  <section class="empty-state d-flex mt-0 h-100">
+    <div class="row w-100 my-auto mx-0">
       <div class="col-12 col-md-6 order-md-last">
-        <aside class="svg-content"><img :src="emptyStateSvg" /></aside>
+        <aside class="svg-content d-none d-md-block"><img :src="emptyStateSvg" /></aside>
       </div>
       <div class="col-12 col-md-6 order-md-first">
         <div class="text-content">
@@ -58,7 +58,7 @@ export default {
             v-if="activeTab === 'selected'"
             class="btn btn-default"
             type="button"
-            @click="changeTab('all');"
+            @click="changeTab('all')"
           >
             Open issues
           </button>

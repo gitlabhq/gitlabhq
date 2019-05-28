@@ -6,7 +6,7 @@ import Sidebar from '~/right_sidebar';
 import timeoutPromise from './helpers/set_timeout_promise_helper';
 
 describe('Issuable right sidebar collapsed todo toggle', () => {
-  const fixtureName = 'issues/open-issue.html.raw';
+  const fixtureName = 'issues/open-issue.html';
   const jsonFixtureName = 'todos/todos.json';
   let mock;
 

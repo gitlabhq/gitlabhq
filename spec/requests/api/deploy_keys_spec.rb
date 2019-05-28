@@ -72,14 +72,14 @@ describe API::DeployKeys do
 
   describe 'POST /projects/:id/deploy_keys' do
     it 'does not create an invalid ssh key' do
-      post api("/projects/#{project.id}/deploy_keys", admin), { title: 'invalid key' }
+      post api("/projects/#{project.id}/deploy_keys", admin), params: { title: 'invalid key' }
 
       expect(response).to have_gitlab_http_status(400)
       expect(json_response['error']).to eq('key is missing')
     end
 
     it 'does not create a key without title' do
-      post api("/projects/#{project.id}/deploy_keys", admin), key: 'some key'
+      post api("/projects/#{project.id}/deploy_keys", admin), params: { key: 'some key' }
 
       expect(response).to have_gitlab_http_status(400)
       expect(json_response['error']).to eq('title is missing')
@@ -89,7 +89,7 @@ describe API::DeployKeys do
       key_attrs = attributes_for :another_key
 
       expect do
-        post api("/projects/#{project.id}/deploy_keys", admin), key_attrs
+        post api("/projects/#{project.id}/deploy_keys", admin), params: key_attrs
       end.to change { project.deploy_keys.count }.by(1)
 
       new_key = project.deploy_keys.last
@@ -99,7 +99,7 @@ describe API::DeployKeys do
 
     it 'returns an existing ssh key when attempting to add a duplicate' do
       expect do
-        post api("/projects/#{project.id}/deploy_keys", admin), { key: deploy_key.key, title: deploy_key.title }
+        post api("/projects/#{project.id}/deploy_keys", admin), params: { key: deploy_key.key, title: deploy_key.title }
       end.not_to change { project.deploy_keys.count }
 
       expect(response).to have_gitlab_http_status(201)
@@ -107,7 +107,7 @@ describe API::DeployKeys do
 
     it 'joins an existing ssh key to a new project' do
       expect do
-        post api("/projects/#{project2.id}/deploy_keys", admin), { key: deploy_key.key, title: deploy_key.title }
+        post api("/projects/#{project2.id}/deploy_keys", admin), params: { key: deploy_key.key, title: deploy_key.title }
       end.to change { project2.deploy_keys.count }.by(1)
 
       expect(response).to have_gitlab_http_status(201)
@@ -116,7 +116,7 @@ describe API::DeployKeys do
     it 'accepts can_push parameter' do
       key_attrs = attributes_for(:another_key).merge(can_push: true)
 
-      post api("/projects/#{project.id}/deploy_keys", admin), key_attrs
+      post api("/projects/#{project.id}/deploy_keys", admin), params: key_attrs
 
       expect(response).to have_gitlab_http_status(201)
       expect(json_response['can_push']).to eq(true)
@@ -131,7 +131,7 @@ describe API::DeployKeys do
 
     it 'updates a public deploy key as admin' do
       expect do
-        put api("/projects/#{project.id}/deploy_keys/#{deploy_key.id}", admin), { title: 'new title' }
+        put api("/projects/#{project.id}/deploy_keys/#{deploy_key.id}", admin), params: { title: 'new title' }
       end.not_to change(deploy_key, :title)
 
       expect(response).to have_gitlab_http_status(200)
@@ -139,7 +139,7 @@ describe API::DeployKeys do
 
     it 'does not update a public deploy key as non admin' do
       expect do
-        put api("/projects/#{project.id}/deploy_keys/#{deploy_key.id}", user), { title: 'new title' }
+        put api("/projects/#{project.id}/deploy_keys/#{deploy_key.id}", user), params: { title: 'new title' }
       end.not_to change(deploy_key, :title)
 
       expect(response).to have_gitlab_http_status(404)
@@ -149,7 +149,7 @@ describe API::DeployKeys do
       project_private_deploy_key
 
       expect do
-        put api("/projects/#{project.id}/deploy_keys/#{private_deploy_key.id}", admin), { title: '' }
+        put api("/projects/#{project.id}/deploy_keys/#{private_deploy_key.id}", admin), params: { title: '' }
       end.not_to change(deploy_key, :title)
 
       expect(response).to have_gitlab_http_status(400)
@@ -158,7 +158,7 @@ describe API::DeployKeys do
     it 'updates a private ssh key with correct attributes' do
       project_private_deploy_key
 
-      put api("/projects/#{project.id}/deploy_keys/#{private_deploy_key.id}", admin), { title: 'new title', can_push: true }
+      put api("/projects/#{project.id}/deploy_keys/#{private_deploy_key.id}", admin), params: { title: 'new title', can_push: true }
 
       expect(json_response['id']).to eq(private_deploy_key.id)
       expect(json_response['title']).to eq('new title')

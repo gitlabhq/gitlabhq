@@ -15,6 +15,7 @@ import ErasedBlock from './erased_block.vue';
 import Log from './job_log.vue';
 import LogTopBar from './job_log_controllers.vue';
 import StuckBlock from './stuck_block.vue';
+import UnmetPrerequisitesBlock from './unmet_prerequisites_block.vue';
 import Sidebar from './sidebar.vue';
 import { sprintf } from '~/locale';
 import delayedJobMixin from '../mixins/delayed_job_mixin';
@@ -32,8 +33,10 @@ export default {
     Log,
     LogTopBar,
     StuckBlock,
+    UnmetPrerequisitesBlock,
     Sidebar,
     GlLoadingIcon,
+    SharedRunner: () => import('ee_component/jobs/components/shared_runner_limit_block.vue'),
   },
   mixins: [delayedJobMixin],
   props: {
@@ -43,6 +46,11 @@ export default {
       default: null,
     },
     runnerHelpUrl: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    deploymentHelpUrl: {
       type: String,
       required: false,
       default: null,
@@ -78,13 +86,15 @@ export default {
       'isScrollTopDisabled',
       'isScrolledToBottomBeforeReceivingTrace',
       'hasError',
+      'selectedStage',
     ]),
     ...mapGetters([
-      'headerActions',
       'headerTime',
+      'hasUnmetPrerequisitesFailure',
       'shouldRenderCalloutMessage',
       'shouldRenderTriggeredLabel',
       'hasEnvironment',
+      'shouldRenderSharedRunnerLimitWarning',
       'hasTrace',
       'emptyStateIllustration',
       'isScrollingDown',
@@ -112,7 +122,13 @@ export default {
     // fetch the stages for the dropdown on the sidebar
     job(newVal, oldVal) {
       if (_.isEmpty(oldVal) && !_.isEmpty(newVal.pipeline)) {
-        this.fetchStages();
+        const stages = this.job.pipeline.details.stages || [];
+
+        const defaultStage = stages.find(stage => stage && stage.name === this.selectedStage);
+
+        if (defaultStage) {
+          this.fetchJobsForStage(defaultStage);
+        }
       }
 
       if (newVal.archived) {
@@ -151,7 +167,7 @@ export default {
       'setJobEndpoint',
       'setTraceOptions',
       'fetchJob',
-      'fetchStages',
+      'fetchJobsForStage',
       'hideSidebar',
       'showSidebar',
       'toggleSidebar',
@@ -202,7 +218,6 @@ export default {
               :item-id="job.id"
               :time="headerTime"
               :user="job.user"
-              :actions="headerActions"
               :has-sidebar-button="true"
               :should-render-triggered-label="shouldRenderTriggeredLabel"
               :item-name="__('Job')"
@@ -210,7 +225,10 @@ export default {
             />
           </div>
 
-          <callout v-if="shouldRenderCalloutMessage" :message="job.callout_message" />
+          <callout
+            v-if="shouldRenderCalloutMessage && !hasUnmetPrerequisitesFailure"
+            :message="job.callout_message"
+          />
         </header>
         <!-- EO Header Section -->
 
@@ -221,6 +239,20 @@ export default {
           :has-no-runners-for-project="hasRunnersForProject"
           :tags="job.tags"
           :runners-path="runnerSettingsUrl"
+        />
+
+        <unmet-prerequisites-block
+          v-if="hasUnmetPrerequisitesFailure"
+          class="js-job-failed"
+          :help-path="deploymentHelpUrl"
+        />
+
+        <shared-runner
+          v-if="shouldRenderSharedRunnerLimitWarning"
+          class="js-shared-runner-limit"
+          :quota-used="job.runners.quota.used"
+          :quota-limit="job.runners.quota.limit"
+          :runners-path="runnerHelpUrl"
         />
 
         <environments-block
@@ -240,14 +272,18 @@ export default {
         <div
           v-if="job.archived"
           ref="sticky"
-          class="js-archived-job prepend-top-default archived-sticky sticky-top"
+          class="js-archived-job prepend-top-default archived-job"
+          :class="{ 'sticky-top border-bottom-0': hasTrace }"
         >
           <icon name="lock" class="align-text-bottom" />
-
           {{ __('This job is archived. Only the complete pipeline can be retried.') }}
         </div>
         <!-- job log -->
-        <div v-if="hasTrace" class="build-trace-container">
+        <div
+          v-if="hasTrace"
+          class="build-trace-container position-relative"
+          :class="{ 'prepend-top-default': !job.archived }"
+        >
           <log-top-bar
             :class="{
               'sidebar-expanded': isSidebarOpen,

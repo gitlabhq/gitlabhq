@@ -126,6 +126,7 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
         describe 'side-by-side view' do
           before do
             page.within('.merge-request-tabs') { click_link 'Changes' }
+            find('.js-show-diff-settings').click
             page.find('#parallel-diff-btn').click
           end
 

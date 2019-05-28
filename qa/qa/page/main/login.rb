@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module QA
   module Page
     module Main
@@ -31,18 +33,13 @@ module QA
           element :register_tab
         end
 
-        view 'app/views/devise/shared/_omniauth_box.html.haml' do
+        view 'app/helpers/auth_helper.rb' do
           element :saml_login_button
+          element :github_login_button
         end
 
-        def initialize
-          # The login page is usually the entry point for all the scenarios so
-          # we need to wait for the instance to start. That said, in some cases
-          # we are already logged-in so we check both cases here.
-          wait(max: 500) do
-            has_css?('.login-page') ||
-              Page::Main::Menu.act { has_personal_area?(wait: 0) }
-          end
+        view 'app/views/layouts/devise.html.haml' do
+          element :login_page, required: true
         end
 
         def sign_in_using_credentials(user = nil)
@@ -124,6 +121,16 @@ module QA
           click_element :standard_tab
         end
 
+        def sign_in_with_github
+          set_initial_password_if_present
+          click_element :github_login_button
+        end
+
+        def sign_in_with_saml
+          set_initial_password_if_present
+          click_element :saml_login_button
+        end
+
         private
 
         def sign_in_using_ldap_credentials
@@ -134,18 +141,13 @@ module QA
           click_element :sign_in_button
         end
 
-        def sign_in_with_saml
-          set_initial_password_if_present
-          click_element :saml_login_button
-        end
-
         def sign_in_using_gitlab_credentials(user)
           switch_to_sign_in_tab if has_sign_in_tab?
           switch_to_standard_tab if has_standard_tab?
 
           fill_element :login_field, user.username
           fill_element :password_field, user.password
-          click_element :sign_in_button
+          click_element :sign_in_button, Page::Main::Menu
         end
 
         def set_initial_password_if_present

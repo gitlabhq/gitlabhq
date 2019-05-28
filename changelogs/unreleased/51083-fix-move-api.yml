@@ -1,5 +1,0 @@
----
-title: 'Commits API: Preserve file content in move operations if unspecified'
-merge_request: 23387
-author:
-type: fixed

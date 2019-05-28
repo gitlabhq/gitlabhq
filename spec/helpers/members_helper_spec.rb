@@ -16,7 +16,7 @@ describe MembersHelper do
     it { expect(remove_member_message(project_member_invite)).to eq "Are you sure you want to revoke the invitation for #{project_member_invite.invite_email} to join the #{project.full_name} project?" }
     it { expect(remove_member_message(project_member_request)).to eq "Are you sure you want to deny #{requester.name}'s request to join the #{project.full_name} project?" }
     it { expect(remove_member_message(project_member_request, user: requester)).to eq "Are you sure you want to withdraw your access request for the #{project.full_name} project?" }
-    it { expect(remove_member_message(group_member)).to eq "Are you sure you want to remove #{group_member.user.name} from the #{group.name} group?" }
+    it { expect(remove_member_message(group_member)).to eq "Are you sure you want to remove #{group_member.user.name} from the #{group.name} group and any subresources?" }
     it { expect(remove_member_message(group_member_invite)).to eq "Are you sure you want to revoke the invitation for #{group_member_invite.invite_email} to join the #{group.name} group?" }
     it { expect(remove_member_message(group_member_request)).to eq "Are you sure you want to deny #{requester.name}'s request to join the #{group.name} group?" }
     it { expect(remove_member_message(group_member_request, user: requester)).to eq "Are you sure you want to withdraw your access request for the #{group.name} group?" }
@@ -33,7 +33,7 @@ describe MembersHelper do
 
     it { expect(remove_member_title(project_member)).to eq 'Remove user from project' }
     it { expect(remove_member_title(project_member_request)).to eq 'Deny access request from project' }
-    it { expect(remove_member_title(group_member)).to eq 'Remove user from group' }
+    it { expect(remove_member_title(group_member)).to eq 'Remove user from group and any subresources' }
     it { expect(remove_member_title(group_member_request)).to eq 'Deny access request from group' }
   end
 

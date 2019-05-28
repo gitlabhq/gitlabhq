@@ -3,14 +3,14 @@
 
 .snippet-form-holder
   = form_for @snippet, url: url,
-             html: { class: "snippet-form js-requires-input js-quick-submit common-note-form" },
-             data: { markdown_version: @snippet.cached_markdown_version } do |f|
+             html: { class: "snippet-form js-requires-input js-quick-submit common-note-form" } do |f|
     = form_errors(@snippet)
 
     .form-group.row
-      = f.label :title, class: 'col-form-label col-sm-2'
+      .col-sm-2.col-form-label
+        = f.label :title
       .col-sm-10
-        = f.text_field :title, class: 'form-control', required: true, autofocus: true
+        = f.text_field :title, class: 'form-control qa-snippet-title', required: true, autofocus: true
 
     = render 'shared/form_elements/description', model: @snippet, project: @project, form: f
 
@@ -18,11 +18,12 @@
 
     .file-editor
       .form-group.row
-        = f.label :file_name, "File", class: 'col-form-label col-sm-2'
+        .col-sm-2.col-form-label
+          = f.label :file_name, "File"
         .col-sm-10
           .file-holder.snippet
             .js-file-title.file-title
-              = f.text_field :file_name, placeholder: "Optionally name this file to add code highlighting, e.g. example.rb for Ruby.", class: 'form-control snippet-file-name'
+              = f.text_field :file_name, placeholder: "Optionally name this file to add code highlighting, e.g. example.rb for Ruby.", class: 'form-control snippet-file-name qa-snippet-file-name'
             .file-content.code
               %pre#editor= @snippet.content
               = f.hidden_field :content, class: 'snippet-file-content'
@@ -32,7 +33,7 @@
 
     .form-actions
       - if @snippet.new_record?
-        = f.submit 'Create snippet', class: "btn-success btn"
+        = f.submit 'Create snippet', class: "btn-success btn qa-create-snippet-button"
       - else
         = f.submit 'Save changes', class: "btn-success btn"
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe VerifyPagesDomainService do
@@ -9,88 +11,177 @@ describe VerifyPagesDomainService do
   subject(:service) { described_class.new(domain) }
 
   describe '#execute' do
-    context 'verification code recognition (verified domain)' do
-      where(:domain_sym, :code_sym) do
-        :domain | :verification_code
-        :domain | :keyed_verification_code
+    where(:domain_sym, :code_sym) do
+      :domain | :verification_code
+      :domain | :keyed_verification_code
 
-        :verification_domain | :verification_code
-        :verification_domain | :keyed_verification_code
-      end
+      :verification_domain | :verification_code
+      :verification_domain | :keyed_verification_code
+    end
 
-      with_them do
-        set(:domain) { create(:pages_domain) }
+    with_them do
+      let(:domain_name) { domain.send(domain_sym) }
+      let(:verification_code) { domain.send(code_sym) }
 
-        let(:domain_name) { domain.send(domain_sym) }
-        let(:verification_code) { domain.send(code_sym) }
-
+      shared_examples 'verifies and enables the domain' do
         it 'verifies and enables the domain' do
-          stub_resolver(domain_name => ['something else', verification_code])
-
           expect(service.execute).to eq(status: :success)
+
           expect(domain).to be_verified
           expect(domain).to be_enabled
-        end
-
-        it 'verifies and enables when the code is contained partway through a TXT record' do
-          stub_resolver(domain_name => "something #{verification_code} else")
-
-          expect(service.execute).to eq(status: :success)
-          expect(domain).to be_verified
-          expect(domain).to be_enabled
-        end
-
-        it 'does not verify when the code is not present' do
-          stub_resolver(domain_name => 'something else')
-
-          expect(service.execute).to eq(error_status)
-
-          expect(domain).not_to be_verified
-          expect(domain).to be_enabled
+          expect(domain.remove_at).to be_nil
         end
       end
 
-      context 'verified domain' do
-        set(:domain) { create(:pages_domain) }
+      shared_examples 'successful enablement and verification' do
+        context 'when txt record contains verification code' do
+          before do
+            stub_resolver(domain_name => ['something else', verification_code])
+          end
 
-        it 'unverifies (but does not disable) when the right code is not present' do
-          stub_resolver(domain.domain => 'something else')
-
-          expect(service.execute).to eq(error_status)
-          expect(domain).not_to be_verified
-          expect(domain).to be_enabled
+          include_examples 'verifies and enables the domain'
         end
 
-        it 'unverifies (but does not disable) when no records are present' do
-          stub_resolver
+        context 'when txt record contains verification code with other text' do
+          before do
+            stub_resolver(domain_name => "something #{verification_code} else")
+          end
 
-          expect(service.execute).to eq(error_status)
-          expect(domain).not_to be_verified
-          expect(domain).to be_enabled
+          include_examples 'verifies and enables the domain'
         end
       end
 
-      context 'expired domain' do
-        set(:domain) { create(:pages_domain, :expired) }
-
-        it 'verifies and enables when the right code is present' do
-          stub_resolver(domain.domain => domain.keyed_verification_code)
-
-          expect(service.execute).to eq(status: :success)
-
-          expect(domain).to be_verified
-          expect(domain).to be_enabled
+      shared_examples 'unverifies and disables domain' do
+        it 'unverifies domain' do
+          expect(service.execute).to eq(error_status)
+          expect(domain).not_to be_verified
         end
 
-        it 'disables when the right code is not present' do
-          error_status[:message] += '. It is now disabled.'
+        it 'disables domain and shedules it for removal in 1 week' do
+          service.execute
 
-          stub_resolver
-
-          expect(service.execute).to eq(error_status)
-
-          expect(domain).not_to be_verified
           expect(domain).not_to be_enabled
+
+          expect(domain.remove_at).to be_like_time(7.days.from_now)
+        end
+      end
+
+      context 'when domain is disabled(or new)' do
+        let(:domain) { create(:pages_domain, :disabled) }
+
+        include_examples 'successful enablement and verification'
+
+        context 'when txt record does not contain verification code' do
+          before do
+            stub_resolver(domain_name => 'something else')
+          end
+
+          include_examples 'unverifies and disables domain'
+        end
+
+        context 'when txt record does not contain verification code' do
+          before do
+            stub_resolver(domain_name => 'something else')
+          end
+
+          include_examples 'unverifies and disables domain'
+        end
+
+        context 'when no txt records are present' do
+          before do
+            stub_resolver
+          end
+
+          include_examples 'unverifies and disables domain'
+        end
+      end
+
+      context 'when domain is verified' do
+        let(:domain) { create(:pages_domain) }
+
+        include_examples 'successful enablement and verification'
+
+        shared_examples 'unverifing domain' do
+          it 'unverifies but does not disable domain' do
+            expect(service.execute).to eq(error_status)
+            expect(domain).not_to be_verified
+            expect(domain).to be_enabled
+          end
+
+          it 'does not schedule domain for removal' do
+            service.execute
+            expect(domain.remove_at).to be_nil
+          end
+        end
+
+        context 'when txt record does not contain verification code' do
+          before do
+            stub_resolver(domain_name => 'something else')
+          end
+
+          include_examples 'unverifing domain'
+        end
+
+        context 'when no txt records are present' do
+          before do
+            stub_resolver
+          end
+
+          include_examples 'unverifing domain'
+        end
+      end
+
+      context 'when domain is expired' do
+        let(:domain) { create(:pages_domain, :expired) }
+
+        context 'when the right code is present' do
+          before do
+            stub_resolver(domain_name => domain.keyed_verification_code)
+          end
+
+          include_examples 'verifies and enables the domain'
+        end
+
+        context 'when the right code is not present' do
+          before do
+            stub_resolver
+          end
+
+          let(:error_status) { { status: :error, message: "Couldn't verify #{domain.domain}. It is now disabled." } }
+
+          include_examples 'unverifies and disables domain'
+        end
+      end
+
+      context 'when domain is disabled and scheduled for removal' do
+        let(:domain) { create(:pages_domain, :disabled, :scheduled_for_removal) }
+
+        context 'when the right code is present' do
+          before do
+            stub_resolver(domain.domain => domain.keyed_verification_code)
+          end
+
+          it 'verifies and enables domain' do
+            expect(service.execute).to eq(status: :success)
+
+            expect(domain).to be_verified
+            expect(domain).to be_enabled
+          end
+
+          it 'prevent domain from being removed' do
+            expect { service.execute }.to change { domain.remove_at }.to(nil)
+          end
+        end
+
+        context 'when the right code is not present' do
+          before do
+            stub_resolver
+          end
+
+          it 'keeps domain scheduled for removal but does not change removal time' do
+            expect { service.execute }.not_to change { domain.remove_at }
+            expect(domain.remove_at).to be_present
+          end
         end
       end
 

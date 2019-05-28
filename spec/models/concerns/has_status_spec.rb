@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe HasStatus do
@@ -32,6 +34,22 @@ describe HasStatus do
         end
 
         it { is_expected.to eq 'running' }
+      end
+
+      context 'all preparing' do
+        let!(:statuses) do
+          [create(type, status: :preparing), create(type, status: :preparing)]
+        end
+
+        it { is_expected.to eq 'preparing' }
+      end
+
+      context 'at least one preparing' do
+        let!(:statuses) do
+          [create(type, status: :success), create(type, status: :preparing)]
+        end
+
+        it { is_expected.to eq 'preparing' }
       end
 
       context 'success and failed but allowed to fail' do
@@ -188,7 +206,7 @@ describe HasStatus do
       end
     end
 
-    %i[created running pending success
+    %i[created preparing running pending success
        failed canceled skipped].each do |status|
       it_behaves_like 'having a job', status
     end
@@ -234,7 +252,7 @@ describe HasStatus do
     describe '.alive' do
       subject { CommitStatus.alive }
 
-      %i[running pending created].each do |status|
+      %i[running pending preparing created].each do |status|
         it_behaves_like 'containing the job', status
       end
 
@@ -270,7 +288,7 @@ describe HasStatus do
     describe '.cancelable' do
       subject { CommitStatus.cancelable }
 
-      %i[running pending created scheduled].each do |status|
+      %i[running pending preparing created scheduled].each do |status|
         it_behaves_like 'containing the job', status
       end
 

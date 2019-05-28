@@ -3,12 +3,16 @@ import _ from 'underscore';
 import { __ } from '~/locale';
 import Project from '~/pages/projects/project';
 import SmartInterval from '~/smart_interval';
+import MRWidgetStore from 'ee_else_ce/vue_merge_request_widget/stores/mr_widget_store';
+import MRWidgetService from 'ee_else_ce/vue_merge_request_widget/services/mr_widget_service';
+import stateMaps from 'ee_else_ce/vue_merge_request_widget/stores/state_maps';
 import createFlash from '../flash';
 import WidgetHeader from './components/mr_widget_header.vue';
 import WidgetMergeHelp from './components/mr_widget_merge_help.vue';
 import MrWidgetPipelineContainer from './components/mr_widget_pipeline_container.vue';
 import Deployment from './components/deployment.vue';
 import WidgetRelatedLinks from './components/mr_widget_related_links.vue';
+import MrWidgetAlertMessage from './components/mr_widget_alert_message.vue';
 import MergedState from './components/states/mr_widget_merged.vue';
 import ClosedState from './components/states/mr_widget_closed.vue';
 import MergingState from './components/states/mr_widget_merging.vue';
@@ -28,11 +32,7 @@ import FailedToMerge from './components/states/mr_widget_failed_to_merge.vue';
 import MergeWhenPipelineSucceedsState from './components/states/mr_widget_merge_when_pipeline_succeeds.vue';
 import AutoMergeFailed from './components/states/mr_widget_auto_merge_failed.vue';
 import CheckingState from './components/states/mr_widget_checking.vue';
-import MRWidgetStore from './stores/ee_switch_mr_widget_store';
-import MRWidgetService from './services/ee_switch_mr_widget_service';
 import eventHub from './event_hub';
-import stateMaps from './stores/ee_switch_state_maps';
-import SquashBeforeMerge from './components/states/squash_before_merge.vue';
 import notify from '~/lib/utils/notify';
 import SourceBranchRemovalStatus from './components/source_branch_removal_status.vue';
 import GroupedTestReportsApp from '../reports/components/grouped_test_reports_app.vue';
@@ -47,6 +47,7 @@ export default {
     MrWidgetPipelineContainer,
     Deployment,
     'mr-widget-related-links': WidgetRelatedLinks,
+    MrWidgetAlertMessage,
     'mr-widget-merged': MergedState,
     'mr-widget-closed': ClosedState,
     'mr-widget-merging': MergingState,
@@ -59,7 +60,6 @@ export default {
     'mr-widget-missing-branch': MissingBranchState,
     'mr-widget-ready-to-merge': ReadyToMergeState,
     'sha-mismatch': ShaMismatchState,
-    'mr-widget-squash-before-merge': SquashBeforeMerge,
     'mr-widget-checking': CheckingState,
     'mr-widget-unresolved-discussions': UnresolvedDiscussionsState,
     'mr-widget-pipeline-blocked': PipelineBlockedState,
@@ -106,8 +106,24 @@ export default {
         (!this.mr.isNothingToMergeState && !this.mr.isMergedState)
       );
     },
+    shouldRenderCollaborationStatus() {
+      return this.mr.allowCollaboration && this.mr.isOpen;
+    },
     shouldRenderMergedPipeline() {
       return this.mr.state === 'merged' && !_.isEmpty(this.mr.mergePipeline);
+    },
+    showMergePipelineForkWarning() {
+      return Boolean(
+        this.mr.mergePipelinesEnabled && this.mr.sourceProjectId !== this.mr.targetProjectId,
+      );
+    },
+    showTargetBranchAdvancedError() {
+      return Boolean(
+        this.mr.isOpen &&
+          this.mr.pipeline &&
+          this.mr.pipeline.target_sha &&
+          this.mr.pipeline.target_sha !== this.mr.targetBranchSha,
+      );
     },
   },
   watch: {
@@ -141,8 +157,8 @@ export default {
     }
   },
   methods: {
-    createService(store) {
-      const endpoints = {
+    getServiceEndpoints(store) {
+      return {
         mergePath: store.mergePath,
         mergeCheckPath: store.mergeCheckPath,
         cancelAutoMergePath: store.cancelAutoMergePath,
@@ -153,7 +169,9 @@ export default {
         mergeActionsContentPath: store.mergeActionsContentPath,
         rebasePath: store.rebasePath,
       };
-      return new MRWidgetService(endpoints);
+    },
+    createService(store) {
+      return new MRWidgetService(this.getServiceEndpoints(store));
     },
     checkStatus(cb, isRebased) {
       return this.service
@@ -315,17 +333,45 @@ export default {
       <div class="mr-widget-section">
         <component :is="componentName" :mr="mr" :service="service" />
 
-        <section v-if="mr.allowCollaboration" class="mr-info-list mr-links">
-          {{ s__('mrWidget|Allows commits from members who can merge to the target branch') }}
-        </section>
+        <div class="mr-widget-info">
+          <section v-if="shouldRenderCollaborationStatus" class="mr-info-list mr-links">
+            <p>
+              {{ s__('mrWidget|Allows commits from members who can merge to the target branch') }}
+            </p>
+          </section>
 
-        <mr-widget-related-links
-          v-if="shouldRenderRelatedLinks"
-          :state="mr.state"
-          :related-links="mr.relatedLinks"
-        />
+          <mr-widget-related-links
+            v-if="shouldRenderRelatedLinks"
+            :state="mr.state"
+            :related-links="mr.relatedLinks"
+          />
 
-        <source-branch-removal-status v-if="shouldRenderSourceBranchRemovalStatus" />
+          <mr-widget-alert-message
+            v-if="showMergePipelineForkWarning"
+            type="warning"
+            :help-path="mr.mergeRequestPipelinesHelpPath"
+          >
+            {{
+              s__(
+                'mrWidget|Fork merge requests do not create merge request pipelines which validate a post merge result',
+              )
+            }}
+          </mr-widget-alert-message>
+
+          <mr-widget-alert-message
+            v-if="showTargetBranchAdvancedError"
+            type="danger"
+            :help-path="mr.mergeRequestPipelinesHelpPath"
+          >
+            {{
+              s__(
+                'mrWidget|The target branch has advanced, which invalidates the merge request pipeline. Please update the source branch and retry merging',
+              )
+            }}
+          </mr-widget-alert-message>
+
+          <source-branch-removal-status v-if="shouldRenderSourceBranchRemovalStatus" />
+        </div>
       </div>
       <div v-if="shouldRenderMergeHelp" class="mr-widget-footer"><mr-widget-merge-help /></div>
     </div>

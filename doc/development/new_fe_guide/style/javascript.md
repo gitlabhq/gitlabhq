@@ -1,194 +1,196 @@
 # JavaScript style guide
 
-We use [Airbnb's JavaScript Style Guide][airbnb-style-guide] and it's accompanying linter to manage most of our JavaScript style guidelines.
+We use [Airbnb's JavaScript Style Guide](https://github.com/airbnb/javascript) and it's accompanying
+linter to manage most of our JavaScript style guidelines.
 
-In addition to the style guidelines set by Airbnb, we also have a few specific rules listed below.
+In addition to the style guidelines set by Airbnb, we also have a few specific rules
+listed below.
 
 > **Tip:**
 You can run eslint locally by running `yarn eslint`
 
-## Arrays
+## Avoid forEach
 
-<a name="avoid-foreach"></a><a name="1.1"></a>
-- [1.1](#avoid-foreach) **Avoid ForEach when mutating data** Use `map`, `reduce` or `filter` instead of `forEach` when mutating data. This will minimize mutations in functions ([which is aligned with Airbnb's style guide][airbnb-minimize-mutations])
+Avoid forEach when mutating data. Use `map`, `reduce` or `filter` instead of `forEach`
+when mutating data. This will minimize mutations in functions,
+which aligns with [Airbnb's style guide](https://github.com/airbnb/javascript#testing--for-real).
 
-    ```
-    // bad
-    users.forEach((user, index) => {
-      user.id = index;
-    });
-    
-    // good
-    const usersWithId = users.map((user, index) => {
-      return Object.assign({}, user, { id: index });
-    });
-    ```
+```javascript
+// bad
+users.forEach((user, index) => {
+  user.id = index;
+});
 
-## Functions
+// good
+const usersWithId = users.map((user, index) => {
+  return Object.assign({}, user, { id: index });
+});
+```
 
-<a name="limit-params"></a><a name="2.1"></a>
-- [2.1](#limit-params) **Limit number of parameters** If your function or method has more than 3 parameters, use an object as a parameter instead.
+## Limit number of parameters
 
-    ```
-    // bad
-    function a(p1, p2, p3) {
-      // ...
-    };
-    
-    // good
-    function a(p) {
-      // ...
-    };
-    ```
+If your function or method has more than 3 parameters, use an object as a parameter
+instead.
 
-## Classes & constructors
+```javascript
+// bad
+function a(p1, p2, p3) {
+  // ...
+};
 
-<a name="avoid-constructor-side-effects"></a><a name="3.1"></a>
-- [3.1](#avoid-constructor-side-effects) **Avoid side effects in constructors** Avoid making some operations in the `constructor`, such as asynchronous calls, API requests and DOM manipulations. Prefer moving them into separate functions. This will make tests easier to write and code easier to maintain.
+// good
+function a(p) {
+  // ...
+};
+```
 
-    ```javascript
-    // bad
-    class myClass {
-      constructor(config) {
-        this.config = config;
-        axios.get(this.config.endpoint)
-      }
-    }
-  
-    // good
-    class myClass {
-      constructor(config) {
-        this.config = config;
-      }
-  
-      makeRequest() {
-        axios.get(this.config.endpoint)
-      }
-    }
-    const instance = new myClass();
-    instance.makeRequest();
-  
-    ```
+## Avoid side effects in constructors
 
-<a name="avoid-classes-to-handle-dom-events"></a><a name="3.2"></a>
-- [3.2](#avoid-classes-to-handle-dom-events) **Avoid classes to handle DOM events** If the only purpose of the class is to bind a DOM event and handle the callback, prefer using a function.
+Avoid making asynchronous calls, API requests or DOM manipulations in the `constructor`.
+Move them into separate functions instead. This will make tests easier to write and
+code easier to maintain.
 
-    ```
-    // bad
-    class myClass {
-      constructor(config) {
-        this.config = config;
-      }
-    
-      init() {
-        document.addEventListener('click', () => {});
-      }
-    }
-    
-    // good
-    
-    const myFunction = () => {
-      document.addEventListener('click', () => {
-        // handle callback here
-      });
-    }
-    ```
+```javascript
+// bad
+class myClass {
+  constructor(config) {
+    this.config = config;
+    axios.get(this.config.endpoint)
+  }
+}
 
-<a name="element-container"></a><a name="3.3"></a>
-- [3.3](#element-container) **Pass element container to constructor** When your class manipulates the DOM, receive the element container as a parameter.
+// good
+class myClass {
+  constructor(config) {
+    this.config = config;
+  }
+
+  makeRequest() {
+    axios.get(this.config.endpoint)
+  }
+}
+const instance = new myClass();
+instance.makeRequest();
+
+```
+
+## Avoid classes to handle DOM events
+
+If the only purpose of the class is to bind a DOM event and handle the callback, prefer
+using a function.
+
+```javascript
+// bad
+class myClass {
+  constructor(config) {
+    this.config = config;
+  }
+
+  init() {
+    document.addEventListener('click', () => {});
+  }
+}
+
+// good
+
+const myFunction = () => {
+  document.addEventListener('click', () => {
+    // handle callback here
+  });
+}
+```
+
+## Pass element container to constructor
+
+When your class manipulates the DOM, receive the element container as a parameter.
 This is more maintainable and performant.
 
-    ```
-    // bad
-    class a {
-      constructor() {
-        document.querySelector('.b');
-      }
-    }
-    
-    // good
-    class a {
-      constructor(options) {
-        options.container.querySelector('.b');
-      }
-    }
-    ```
+```javascript
+// bad
+class a {
+  constructor() {
+    document.querySelector('.b');
+  }
+}
 
-## Type Casting & Coercion
+// good
+class a {
+  constructor(options) {
+    options.container.querySelector('.b');
+  }
+}
+```
 
-<a name="use-parseint"></a><a name="4.1"></a>
-- [4.1](#use-parseint) **Use ParseInt** Use `ParseInt` when converting a numeric string into a number.
+## Use ParseInt
 
-    ```
-    // bad
-    Number('10')
-    
-    // good
-    parseInt('10', 10);
-    ```
+Use `ParseInt` when converting a numeric string into a number.
 
-## CSS Selectors
+```javascript
+// bad
+Number('10')
 
-<a name="use-js-prefix"></a><a name="5.1"></a>
-- [5.1](#use-js-prefix) **Use js prefix** If a CSS class is only being used in JavaScript as a reference to the element, prefix the class name with `js-`
+// good
+parseInt('10', 10);
+```
 
-    ```
-    // bad
-    <button class="add-user"></button>
-    
-    // good
-    <button class="js-add-user"></button>
-    ```
+## CSS Selectors - Use `js-` prefix
 
-## Modules
+If a CSS class is only being used in JavaScript as a reference to the element, prefix
+the class name with `js-`.
 
-<a name="use-absolute-paths"></a><a name="6.1"></a>
-- [6.1](#use-absolute-paths) **Use absolute paths for nearby modules** Use absolute paths if the module you are importing is less than two levels up.
+```html
+// bad
+<button class="add-user"></button>
 
-    ```
-    // bad
-    import GitLabStyleGuide from '~/guides/GitLabStyleGuide';
-    
-    // good
-    import GitLabStyleGuide from '../GitLabStyleGuide';
-    ```
+// good
+<button class="js-add-user"></button>
+```
 
-<a name="use-relative-paths"></a><a name="6.2"></a>
-- [6.2](#use-relative-paths) **Use relative paths for distant modules** If the module you are importing is two or more levels up, use a relative path instead of an absolute path.
+## Absolute vs relative paths for modules
 
-    ```
-    // bad
-    import GitLabStyleGuide from '../../../guides/GitLabStyleGuide';
-    
-    // good
-    import GitLabStyleGuide from '~/GitLabStyleGuide';
-    ```
+Use relative paths if the module you are importing is less than two levels up.
 
-<a name="global-namespace"></a><a name="6.3"></a>
-- [6.3](#global-namespace) **Do not add to global namespace**
+```javascript
+// bad
+import GitLabStyleGuide from '~/guides/GitLabStyleGuide';
 
-<a name="domcontentloaded"></a><a name="6.4"></a>
-- [6.4](#domcontentloaded) **Do not use DOMContentLoaded in non-page modules** Imported modules should act the same each time they are loaded. `DOMContentLoaded` events are only allowed on modules loaded in the `/pages/*` directory because those are loaded dynamically with webpack.
+// good
+import GitLabStyleGuide from '../GitLabStyleGuide';
+```
 
-## Security
+If the module you are importing is two or more levels up, use an absolute path instead:
 
-<a name="avoid-xss"></a><a name="7.1"></a>
-- [7.1](#avoid-xss) **Avoid XSS** Do not use `innerHTML`, `append()` or `html()` to set content. It opens up too many vulnerabilities.
+```javascript
+// bad
+import GitLabStyleGuide from '../../../guides/GitLabStyleGuide';
 
-## ESLint
+// good
+import GitLabStyleGuide from '~/GitLabStyleGuide';
+```
 
-<a name="disable-eslint-file"></a><a name="8.1"></a>
-- [8.1](#disable-eslint-file) **Disabling ESLint in new files** Do not disable ESLint when creating new files. Existing files may have existing rules disabled due to legacy compatibility reasons but they are in the process of being refactored.
+Additionally, **do not add to global namespace**.
 
-<a name="disable-eslint-rule"></a><a name="8.2"></a>
-- [8.2](#disable-eslint-rule) **Disabling ESLint rule** Do not disable specific ESLint rules. Due to technical debt, you may disable the following rules only if you are invoking/instantiating existing code modules
+## Do not use `DOMContentLoaded` in non-page modules
 
-  - [no-new][no-new]
-  - [class-method-use-this][class-method-use-this]
+Imported modules should act the same each time they are loaded. `DOMContentLoaded`
+events are only allowed on modules loaded in the `/pages/*` directory because those
+are loaded dynamically with webpack.
 
-> Note: Disable these rules on a per line basis. This makes it easier to refactor in the future. E.g. use `eslint-disable-next-line` or `eslint-disable-line`
+## Avoid XSS
 
-[airbnb-style-guide]: https://github.com/airbnb/javascript
-[airbnb-minimize-mutations]: https://github.com/airbnb/javascript#testing--for-real
-[no-new]: http://eslint.org/docs/rules/no-new
-[class-method-use-this]: http://eslint.org/docs/rules/class-methods-use-this
+Do not use `innerHTML`, `append()` or `html()` to set content. It opens up too many
+vulnerabilities.
+
+## Disabling ESLint in new files
+
+Do not disable ESLint when creating new files. Existing files may have existing rules
+disabled due to legacy compatibility reasons but they are in the process of being refactored.
+
+Do not disable specific ESLint rules. Due to technical debt, you may disable the following
+rules only if you are invoking/instantiating existing code modules.
+
+  - [no-new](http://eslint.org/docs/rules/no-new)
+  - [class-method-use-this](http://eslint.org/docs/rules/class-methods-use-this)
+
+> Note: Disable these rules on a per line basis. This makes it easier to refactor
+  in the future. E.g. use `eslint-disable-next-line` or `eslint-disable-line`.

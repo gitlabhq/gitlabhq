@@ -104,9 +104,7 @@ export default {
     </div>
 
     <div class="title hide-collapsed">
-      {{
-        sprintf(__('Lock %{issuableDisplayName}'), { issuableDisplayName: issuableDisplayName })
-      }}
+      {{ sprintf(__('Lock %{issuableDisplayName}'), { issuableDisplayName: issuableDisplayName }) }}
       <button
         v-if="isEditable"
         class="float-right lock-edit"

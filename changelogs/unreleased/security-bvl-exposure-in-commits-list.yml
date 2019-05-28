@@ -1,5 +1,0 @@
----
-title: Don't expose confidential information in commit message list
-merge_request:
-author:
-type: security

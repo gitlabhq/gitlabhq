@@ -43,8 +43,12 @@ you to use.
     | :--- | :---------- |
     | **Name** | This can be anything. Consider something like `<Organization>'s GitLab` or `<Your Name>'s GitLab` or something else descriptive. |
     | **Application description** | Fill this in if you wish. |
-    | **Callback URL** | The URL to your GitLab installation, e.g., `https://gitlab.example.com`. |
+    | **Callback URL** | The URL to your GitLab installation, e.g., `https://gitlab.example.com/users/auth`. |
     | **URL** | The URL to your GitLab installation, e.g., `https://gitlab.example.com`. |
+
+    NOTE: Be sure to append `/users/auth` to the end of the callback URL
+    to prevent a [OAuth2 convert
+    redirect](http://tetraph.com/covert_redirect/) vulnerability.
 
     NOTE: Starting in GitLab 8.15, you MUST specify a callback URL, or you will
     see an "Invalid redirect_uri" message. For more details, see [the

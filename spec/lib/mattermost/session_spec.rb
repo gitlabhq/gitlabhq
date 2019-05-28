@@ -67,11 +67,13 @@ describe Mattermost::Session, type: :request do
             .with(query: hash_including({ 'state' => state }))
             .to_return do |request|
               post "/oauth/token",
-                client_id: doorkeeper.uid,
-                client_secret: doorkeeper.secret,
-                redirect_uri: params[:redirect_uri],
-                grant_type: 'authorization_code',
-                code: request.uri.query_values['code']
+                params: {
+                  client_id: doorkeeper.uid,
+                  client_secret: doorkeeper.secret,
+                  redirect_uri: params[:redirect_uri],
+                  grant_type: 'authorization_code',
+                  code: request.uri.query_values['code']
+                }
 
               if response.status == 200
                 { headers: { 'token' => 'thisworksnow' }, status: 202 }

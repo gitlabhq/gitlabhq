@@ -9,24 +9,24 @@ module Gitlab
         #
         class Image < ::Gitlab::Config::Entry::Node
           include ::Gitlab::Config::Entry::Validatable
+          include ::Gitlab::Config::Entry::Attributable
+          include ::Gitlab::Config::Entry::Configurable
 
-          ALLOWED_KEYS = %i[name entrypoint].freeze
+          ALLOWED_KEYS = %i[name entrypoint ports].freeze
 
           validations do
             validates :config, hash_or_string: true
             validates :config, allowed_keys: ALLOWED_KEYS
+            validates :config, disallowed_keys: %i[ports], unless: :with_image_ports?
 
             validates :name, type: String, presence: true
             validates :entrypoint, array_of_strings: true, allow_nil: true
           end
 
-          def hash?
-            @config.is_a?(Hash)
-          end
+          entry :ports, Entry::Ports,
+            description: 'Ports used expose the image'
 
-          def string?
-            @config.is_a?(String)
-          end
+          attributes :ports
 
           def name
             value[:name]
@@ -41,6 +41,14 @@ module Gitlab
             return @config if hash?
 
             {}
+          end
+
+          def with_image_ports?
+            opt(:with_image_ports)
+          end
+
+          def skip_config_hash_validation?
+            true
           end
         end
       end

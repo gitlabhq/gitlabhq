@@ -14,8 +14,8 @@ module QA
         end
         project_push.project.visit!
 
-        Page::Project::Menu.perform(&:go_to_activity)
-        Page::Project::Activity.perform(&:go_to_push_events)
+        Page::Project::Menu.perform(&:click_activity)
+        Page::Project::Activity.perform(&:click_push_events)
 
         expect(page).to have_content('pushed new branch master')
       end

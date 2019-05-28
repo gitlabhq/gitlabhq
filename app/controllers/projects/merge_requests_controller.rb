@@ -7,6 +7,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   include RendersCommits
   include ToggleAwardEmoji
   include IssuableCollections
+  include RecordUserLastActivity
 
   skip_before_action :merge_request, only: [:index, :bulk_update]
   before_action :whitelist_query_limiting, only: [:assign_related_issues, :update]
@@ -15,6 +16,8 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   before_action :authenticate_user!, only: [:assign_related_issues]
   before_action :check_user_can_push_to_source_branch!, only: [:rebase]
 
+  around_action :allow_gitaly_ref_name_caching, only: [:index, :show]
+
   def index
     @merge_requests = @issuables
 
@@ -22,8 +25,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       format.html
       format.json do
         render json: {
-          html: view_to_html_string("projects/merge_requests/_merge_requests"),
-          labels: @labels.as_json(methods: :text_color)
+          html: view_to_html_string("projects/merge_requests/_merge_requests")
         }
       end
     end
@@ -43,8 +45,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
         @noteable = @merge_request
         @commits_count = @merge_request.commits_count
-
-        labels
+        @issuable_sidebar = serializer.represent(@merge_request, serializer: 'sidebar')
 
         set_pipeline_variables
 
@@ -57,7 +58,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
         render json: serializer.represent(@merge_request, serializer: params[:serializer])
       end
 
-      format.patch  do
+      format.patch do
         break render_404 unless @merge_request.diff_refs
 
         send_git_patch @project.repository, @merge_request.diff_refs
@@ -97,20 +98,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def test_reports
-    result = @merge_request.compare_test_reports
-
-    case result[:status]
-    when :parsing
-      Gitlab::PollingInterval.set_header(response, interval: 3000)
-
-      render json: '', status: :no_content
-    when :parsed
-      render json: result[:data].to_json, status: :ok
-    when :error
-      render json: { status_reason: result[:status_reason] }, status: :bad_request
-    else
-      render json: { status_reason: 'Unknown error' }, status: :internal_server_error
-    end
+    reports_response(@merge_request.compare_test_reports)
   end
 
   def edit
@@ -220,18 +208,28 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     head :ok
   end
 
+  def discussions
+    merge_request.preload_discussions_diff_highlight
+
+    super
+  end
+
   protected
 
   alias_method :subscribable_resource, :merge_request
   alias_method :issuable, :merge_request
   alias_method :awardable, :merge_request
 
+  def issuable_sorting_field
+    MergeRequest::SORTING_PREFERENCE_FIELD
+  end
+
   def merge_params
     params.permit(merge_params_attributes)
   end
 
   def merge_params_attributes
-    [:should_remove_source_branch, :commit_message, :squash]
+    [:should_remove_source_branch, :commit_message, :squash_commit_message, :squash]
   end
 
   def merge_when_pipeline_succeeds_active?
@@ -341,5 +339,20 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   def whitelist_query_limiting
     # Also see https://gitlab.com/gitlab-org/gitlab-ce/issues/42441
     Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42438')
+  end
+
+  def reports_response(report_comparison)
+    case report_comparison[:status]
+    when :parsing
+      ::Gitlab::PollingInterval.set_header(response, interval: 3000)
+
+      render json: '', status: :no_content
+    when :parsed
+      render json: report_comparison[:data].to_json, status: :ok
+    when :error
+      render json: { status_reason: report_comparison[:status_reason] }, status: :bad_request
+    else
+      render json: { status_reason: 'Unknown error' }, status: :internal_server_error
+    end
   end
 end

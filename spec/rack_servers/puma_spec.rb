@@ -1,20 +1,20 @@
 # frozen_string_literal: true
 
-require 'fileutils'
-
-require 'excon'
-
 require 'spec_helper'
+
+require 'fileutils'
+require 'excon'
 
 describe 'Puma' do
   before(:all) do
-    project_root = File.expand_path('../..', __dir__)
-
-    config_lines = File.read('spec/rack_servers/configs/puma.rb')
-      .gsub('/home/git/gitlab', project_root)
-      .gsub('/home/git', project_root)
-
-    config_path = File.join(project_root, "tmp/tests/puma.rb")
+    project_root = Rails.root.to_s
+    config_lines = File.read(Rails.root.join('config/puma.example.development.rb'))
+      .gsub('config.ru', File.join(__dir__, 'configs/config.ru'))
+      .gsub('workers 2', 'workers 1')
+      .gsub('/home/git/gitlab.socket', File.join(project_root, 'tmp/tests/puma.socket'))
+      .gsub('on_worker_boot do', "on_worker_boot do\nFile.write('#{File.join(project_root, 'tmp/tests/puma-worker-ready')}', Process.pid)")
+      .gsub(%r{/home/git(/gitlab)?}, project_root)
+    config_path = File.join(project_root, 'tmp/tests/puma.rb')
     @socket_path = File.join(project_root, 'tmp/tests/puma.socket')
 
     File.write(config_path, config_lines)
@@ -44,11 +44,9 @@ describe 'Puma' do
   end
 
   after(:all) do
-    begin
-      WebMock.disable_net_connect!(allow_localhost: true)
-      Process.kill('TERM', @puma_master_pid)
-    rescue Errno::ESRCH
-    end
+    WebMock.disable_net_connect!(allow_localhost: true)
+    Process.kill('TERM', @puma_master_pid)
+  rescue Errno::ESRCH
   end
 
   def wait_puma_boot!(master_pid, ready_file)

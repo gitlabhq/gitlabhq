@@ -1,5 +1,0 @@
----
-title: Gracefully handle unknown/invalid GPG keys
-merge_request: 23492
-author:
-type: fixed

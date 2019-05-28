@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'Git LFS File Locking API' do
   include WorkhorseHelpers
 
-  let(:project)   { create(:project) }
+  let(:project) { create(:project) }
   let(:maintainer) { create(:user) }
   let(:developer) { create(:user) }
   let(:guest)     { create(:user) }
@@ -132,6 +132,17 @@ describe 'Git LFS File Locking API' do
 
         expect(json_response['lock'].keys).to match_array(%w(id path locked_at owner))
       end
+
+      context 'when a maintainer uses force' do
+        let(:authorization) { authorize_user(maintainer) }
+
+        it 'deletes the lock' do
+          project.add_maintainer(maintainer)
+          post_lfs_json url, { force: true }, headers
+
+          expect(response).to have_gitlab_http_status(200)
+        end
+      end
     end
   end
 
@@ -146,11 +157,11 @@ describe 'Git LFS File Locking API' do
   end
 
   def post_lfs_json(url, body = nil, headers = nil)
-    post(url, body.try(:to_json), (headers || {}).merge('Content-Type' => LfsRequest::CONTENT_TYPE))
+    post(url, params: body.try(:to_json), headers: (headers || {}).merge('Content-Type' => LfsRequest::CONTENT_TYPE))
   end
 
-  def do_get(url, params = nil,  headers = nil)
-    get(url, (params || {}), (headers || {}).merge('Content-Type' => LfsRequest::CONTENT_TYPE))
+  def do_get(url, params = nil, headers = nil)
+    get(url, params: (params || {}), headers: (headers || {}).merge('Content-Type' => LfsRequest::CONTENT_TYPE))
   end
 
   def json_response

@@ -1,6 +1,7 @@
 <script>
 import $ from 'jquery';
 import { GlButton } from '@gitlab/ui';
+import { getMilestone } from 'ee_else_ce/boards/boards_util';
 import eventHub from '../eventhub';
 import ProjectSelect from './project_select.vue';
 import ListIssue from '../models/issue';
@@ -51,11 +52,14 @@ export default {
 
       const labels = this.list.label ? [this.list.label] : [];
       const assignees = this.list.assignee ? [this.list.assignee] : [];
+      const milestone = getMilestone(this.list);
+
       const issue = new ListIssue({
         title: this.title,
         labels,
         subscribed: true,
         assignees,
+        milestone,
         project_id: this.selectedProject.id,
       });
 
@@ -95,8 +99,8 @@ export default {
 
 <template>
   <div class="board-new-issue-form">
-    <div class="board-card">
-      <form @submit="submit($event);">
+    <div class="board-card position-relative p-3 rounded">
+      <form @submit="submit($event)">
         <div v-if="error" class="flash-container">
           <div class="flash-alert">An error occurred. Please try again.</div>
         </div>

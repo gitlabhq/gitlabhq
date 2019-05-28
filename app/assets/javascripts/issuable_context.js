@@ -7,10 +7,14 @@ export default class IssuableContext {
   constructor(currentUser) {
     this.userSelect = new UsersSelect(currentUser);
 
-    $('select.select2').select2({
-      width: 'resolve',
-      dropdownAutoWidth: true,
-    });
+    import(/* webpackChunkName: 'select2' */ 'select2/select2')
+      .then(() => {
+        $('select.select2').select2({
+          width: 'resolve',
+          dropdownAutoWidth: true,
+        });
+      })
+      .catch(() => {});
 
     $('.issuable-sidebar .inline-update').on('change', 'select', function onClickSelect() {
       return $(this).submit();

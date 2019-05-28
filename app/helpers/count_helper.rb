@@ -13,7 +13,7 @@ module CountHelper
   # memberships, and deducting 1 for each root of the fork network.
   # This might be inacurate as the root of the fork network might have been deleted.
   #
-  # This makes querying this information a lot more effecient and it should be
+  # This makes querying this information a lot more efficient and it should be
   # accurate enough for the instance wide statistics
   def approximate_fork_count_with_delimiters(count_data)
     fork_network_count = count_data[ForkNetwork]

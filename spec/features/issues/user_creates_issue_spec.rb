@@ -14,7 +14,7 @@ describe "User creates issue" do
       visit(new_project_issue_path(project))
     end
 
-    it "creates issue" do
+    it "creates issue", :js do
       page.within(".issue-form") do
         expect(page).to have_no_content("Assign to")
         .and have_no_content("Labels")
@@ -27,11 +27,15 @@ describe "User creates issue" do
       issue_title = "500 error on profile"
 
       fill_in("Title", with: issue_title)
+      first('.js-md').click
+      first('.qa-issuable-form-description').native.send_keys('Description')
+
       click_button("Submit issue")
 
       expect(page).to have_content(issue_title)
         .and have_content(user.name)
         .and have_content(project.name)
+      expect(page).to have_selector('strong', text: 'Description')
     end
   end
 
@@ -87,6 +91,24 @@ describe "User creates issue" do
           .and have_content(project.name)
           .and have_content(label_titles.first)
       end
+    end
+  end
+
+  context "when signed in as user with special characters in their name" do
+    let(:user_special) { create(:user, name: "Jon O'Shea") }
+
+    before do
+      project.add_developer(user_special)
+      sign_in(user_special)
+
+      visit(new_project_issue_path(project))
+    end
+
+    it "will correctly escape user names with an apostrophe when clicking 'Assign to me'", :js do
+      first('.assign-to-me-link').click
+
+      expect(page).to have_content(user_special.name)
+      expect(page.find('input[name="issue[assignee_ids][]"]', visible: false)['data-meta']).to eq(user_special.name)
     end
   end
 end

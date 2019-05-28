@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Generated HTML is transformed back to GFM by app/assets/javascripts/behaviors/markdown/nodes/reference.js
 module Banzai
   module Filter
     # Base class for GitLab Flavored Markdown reference filters.
@@ -11,6 +12,7 @@ module Banzai
     #   :only_path          - Generate path-only links.
     class ReferenceFilter < HTML::Pipeline::Filter
       include RequestStoreReferenceCache
+      include OutputSafety
 
       class << self
         attr_accessor :reference_type
@@ -40,10 +42,6 @@ module Banzai
         attributes.map do |key, value|
           %Q(data-#{key.to_s.dasherize}="#{escape_once(value)}")
         end.join(' ')
-      end
-
-      def escape_once(html)
-        html.html_safe? ? html : ERB::Util.html_escape_once(html)
       end
 
       def ignore_ancestor_query

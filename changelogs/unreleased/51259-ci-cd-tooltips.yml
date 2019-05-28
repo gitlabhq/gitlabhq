@@ -1,6 +1,0 @@
----
-title: Replaces tooltip directive with the new gl-tooltip directive for consistency
-  in some ci/cd code
-merge_request:
-author:
-type: other

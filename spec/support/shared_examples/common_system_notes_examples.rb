@@ -1,5 +1,5 @@
 shared_examples 'system note creation' do |update_params, note_text|
-  subject { described_class.new(project, user).execute(issuable, [])}
+  subject { described_class.new(project, user).execute(issuable, old_labels: []) }
 
   before do
     issuable.assign_attributes(update_params)
@@ -16,7 +16,7 @@ shared_examples 'system note creation' do |update_params, note_text|
 end
 
 shared_examples 'WIP notes creation' do |wip_action|
-  subject { described_class.new(project, user).execute(issuable, []) }
+  subject { described_class.new(project, user).execute(issuable, old_labels: []) }
 
   it 'creates WIP toggle and title change notes' do
     expect { subject }.to change { Note.count }.from(0).to(2)

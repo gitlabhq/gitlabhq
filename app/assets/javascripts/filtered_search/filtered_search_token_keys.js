@@ -1,3 +1,5 @@
+import { __ } from '~/locale';
+
 export default class FilteredSearchTokenKeys {
   constructor(tokenKeys = [], alternativeTokenKeys = [], conditions = []) {
     this.tokenKeys = tokenKeys;
@@ -65,25 +67,27 @@ export default class FilteredSearchTokenKeys {
 
   searchByConditionKeyValue(key, value) {
     return (
-      this.conditions.find(condition => condition.tokenKey === key && condition.value === value) ||
-      null
+      this.conditions.find(
+        condition =>
+          condition.tokenKey === key && condition.value.toLowerCase() === value.toLowerCase(),
+      ) || null
     );
   }
 
-  addExtraTokensForMergeRequests() {
-    const wipToken = {
-      key: 'wip',
+  addExtraTokensForIssues() {
+    const confidentialToken = {
+      key: 'confidential',
       type: 'string',
       param: '',
       symbol: '',
-      icon: 'admin',
-      tag: 'Yes or No',
+      icon: 'eye-slash',
+      tag: __('Yes or No'),
       lowercaseValueOnSubmit: true,
-      uppercaseTokenName: true,
+      uppercaseTokenName: false,
       capitalizeTokenValue: true,
     };
 
-    this.tokenKeys.push(wipToken);
-    this.tokenKeysWithAlternative.push(wipToken);
+    this.tokenKeys.push(confidentialToken);
+    this.tokenKeysWithAlternative.push(confidentialToken);
   }
 }

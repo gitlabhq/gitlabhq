@@ -11,10 +11,18 @@ export default {
       required: false,
       default: 0,
     },
+    showOutput: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   computed: {
     hasKeys() {
       return this.type !== '' && this.count;
+    },
+    showTypeText() {
+      return this.type && this.count && this.showOutput;
     },
   },
 };
@@ -22,7 +30,7 @@ export default {
 
 <template>
   <div class="prompt">
-    <span v-if="hasKeys"> {{ type }} [{{ count }}]: </span>
+    <span v-if="showTypeText"> {{ type }} [{{ count }}]: </span>
   </div>
 </template>
 

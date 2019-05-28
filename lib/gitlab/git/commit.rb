@@ -5,6 +5,7 @@ module Gitlab
   module Git
     class Commit
       include Gitlab::EncodingHelper
+      prepend Gitlab::Git::RuggedImpl::Commit
       extend Gitlab::Git::WrapsGitalyErrors
 
       attr_accessor :raw_commit, :head
@@ -57,18 +58,22 @@ module Gitlab
           return commit_id if commit_id.is_a?(Gitlab::Git::Commit)
 
           # Some weird thing?
-          return nil unless commit_id.is_a?(String)
+          return unless commit_id.is_a?(String)
 
           # This saves us an RPC round trip.
-          return nil if commit_id.include?(':')
+          return if commit_id.include?(':')
 
-          commit = wrapped_gitaly_errors do
-            repo.gitaly_commit_client.find_commit(commit_id)
-          end
+          commit = find_commit(repo, commit_id)
 
           decorate(repo, commit) if commit
         rescue Gitlab::Git::CommandError, Gitlab::Git::Repository::NoRepository, ArgumentError
           nil
+        end
+
+        def find_commit(repo, commit_id)
+          wrapped_gitaly_errors do
+            repo.gitaly_commit_client.find_commit(commit_id)
+          end
         end
 
         # Get last commit for HEAD
@@ -179,12 +184,17 @@ module Gitlab
         end
       end
 
-      def initialize(repository, raw_commit, head = nil)
+      def initialize(repository, raw_commit, head = nil, lazy_load_parents: false)
         raise "Nil as raw commit passed" unless raw_commit
 
         @repository = repository
         @head = head
+        @lazy_load_parents = lazy_load_parents
 
+        init_commit(raw_commit)
+      end
+
+      def init_commit(raw_commit)
         case raw_commit
         when Hash
           init_from_hash(raw_commit)
@@ -214,6 +224,12 @@ module Gitlab
       # Was this commit committed by a different person than the original author?
       def different_committer?
         author_name != committer_name || author_email != committer_email
+      end
+
+      def parent_ids
+        return @parent_ids unless @lazy_load_parents
+
+        @parent_ids ||= @repository.commit(id).parent_ids
       end
 
       def parent_id
@@ -302,14 +318,23 @@ module Gitlab
         parent_ids.size > 1
       end
 
+      def gitaly_commit?
+        raw_commit.is_a?(Gitaly::GitCommit)
+      end
+
       def tree_entry(path)
         return unless path.present?
 
+        commit_tree_entry(path)
+      end
+
+      def commit_tree_entry(path)
         # We're only interested in metadata, so limit actual data to 1 byte
         # since Gitaly doesn't support "send no data" option.
         entry = @repository.gitaly_commit_client.tree_entry(id, path, 1)
         return unless entry
 
+        # To be compatible with the rugged format
         entry = entry.to_h
         entry.delete(:data)
         entry[:name] = File.basename(path)
@@ -319,7 +344,7 @@ module Gitlab
       end
 
       def to_gitaly_commit
-        return raw_commit if raw_commit.is_a?(Gitaly::GitCommit)
+        return raw_commit if gitaly_commit?
 
         message_split = raw_commit.message.split("\n", 2)
         Gitaly::GitCommit.new(
@@ -400,3 +425,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Git::Commit.singleton_class.prepend Gitlab::Git::RuggedImpl::Commit::ClassMethods

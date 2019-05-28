@@ -12,21 +12,21 @@
   .form-group.project-path.col-sm-6
     = f.label :namespace_id, class: 'label-bold' do
       %span= s_("Project URL")
-    .input-group
+    .input-group.flex-nowrap
       - if current_user.can_select_namespace?
-        .input-group-prepend.has-tooltip{ title: root_url }
+        .input-group-prepend.flex-shrink-0.has-tooltip{ title: root_url }
           .input-group-text
             = root_url
         - namespace_id = namespace_id_from(params)
         = f.select(:namespace_id,
-                   namespaces_options(namespace_id || :current_user,
-                                      display_path: true,
-                                      extra_group: namespace_id),
+                   namespaces_options_with_developer_maintainer_access(selected: namespace_id,
+                                                                      display_path: true,
+                                                                      extra_group: namespace_id),
                    {},
-                   { class: 'select2 js-select-namespace qa-project-namespace-select', tabindex: 1, data: { track_label: "#{track_label}", track_event: "activate_form_input", track_property: "project_path", track_value: "" }})
+                   { class: 'select2 js-select-namespace qa-project-namespace-select block-truncated', tabindex: 1, data: { track_label: "#{track_label}", track_event: "activate_form_input", track_property: "project_path", track_value: "" }})
 
       - else
-        .input-group-prepend.static-namespace.has-tooltip{ title: user_url(current_user.username) + '/' }
+        .input-group-prepend.static-namespace.flex-shrink-0.has-tooltip{ title: user_url(current_user.username) + '/' }
           .input-group-text.border-0
             #{user_url(current_user.username)}/
         = f.hidden_field :namespace_id, value: current_user.namespace_id
@@ -43,7 +43,7 @@
   = f.label :description, class: 'label-bold' do
     Project description
     %span (optional)
-  = f.text_area :description, placeholder: 'Description format',  class: "form-control", rows: 3, maxlength: 250, data: { track_label: "#{track_label}", track_event: "activate_form_input", track_property: "project_description", track_value: "" }
+  = f.text_area :description, placeholder: 'Description format', class: "form-control", rows: 3, maxlength: 250, data: { track_label: "#{track_label}", track_event: "activate_form_input", track_property: "project_description", track_value: "" }
 
 = f.label :visibility_level, class: 'label-bold' do
   Visibility Level

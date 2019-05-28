@@ -15,6 +15,16 @@ describe('Release block', () => {
     author_name: 'Release bot',
     author_email: 'release-bot@example.com',
     created_at: '2012-05-28T05:00:00-07:00',
+    author: {
+      avatar_url: 'uploads/-/system/user/avatar/johndoe/avatar.png',
+      id: 482476,
+      name: 'John Doe',
+      path: '/johndoe',
+      state: 'active',
+      status_tooltip_html: null,
+      username: 'johndoe',
+      web_url: 'https://gitlab.com/johndoe',
+    },
     commit: {
       id: '2695effb5807a22ff3d138d593fd856244e155e7',
       short_id: '2695effb',
@@ -66,32 +76,10 @@ describe('Release block', () => {
       ],
     },
   };
-
-  const props = {
-    name: release.name,
-    tag: release.tag_name,
-    commit: release.commit,
-    description: release.description_html,
-    author: {
-      avatar_url: 'uploads/-/system/user/avatar/johndoe/avatar.png',
-      id: 482476,
-      name: 'John Doe',
-      path: '/johndoe',
-      state: 'active',
-      status_tooltip_html: null,
-      username: 'johndoe',
-      web_url: 'https://gitlab.com/johndoe',
-    },
-    createdAt: release.created_at,
-    assetsCount: release.assets.count,
-    sources: release.assets.sources,
-    links: release.assets.links,
-  };
-
   let vm;
 
   beforeEach(() => {
-    vm = mountComponent(Component, props);
+    vm = mountComponent(Component, { release });
   });
 
   afterEach(() => {
@@ -144,5 +132,21 @@ describe('Release block', () => {
     expect(vm.$el.querySelector('.js-assets-list li a').textContent).toContain(
       release.assets.links[0].name,
     );
+  });
+
+  it('renders author avatar', () => {
+    expect(vm.$el.querySelector('.user-avatar-link')).not.toBeNull();
+  });
+
+  describe('external label', () => {
+    it('renders external label when link is external', () => {
+      expect(vm.$el.querySelector('.js-assets-list li a').textContent).toContain('external source');
+    });
+
+    it('does not render external label when link is not external', () => {
+      expect(vm.$el.querySelector('.js-assets-list li:nth-child(2) a').textContent).not.toContain(
+        'external source',
+      );
+    });
   });
 });

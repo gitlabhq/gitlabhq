@@ -8,6 +8,10 @@ module Banzai
     #
     # Based on HTML::Pipeline::AutolinkFilter
     #
+    # Note that our CommonMark parser, `commonmarker` (using the autolink extension)
+    # handles standard autolinking, like http/https. We detect additional
+    # schemes (smb, rdar, etc).
+    #
     # Context options:
     #   :autolink  - Boolean, skips all processing done by this filter when false
     #   :link_attr - Hash of attributes for the generated links
@@ -29,7 +33,7 @@ module Banzai
       # https://github.com/vmg/rinku/blob/v2.0.1/ext/rinku/autolink.c#L65
       #
       # Rubular: http://rubular.com/r/nrL3r9yUiq
-      LINK_PATTERN = %r{([a-z][a-z0-9\+\.-]+://[^\s>]+)(?<!\?|!|\.|,|:)}
+      LINK_PATTERN = %r{([a-z][a-z0-9\+\.-]+://[^\s>]+)(?<!\?|!|\.|,|:)}.freeze
 
       # Text matching LINK_PATTERN inside these elements will not be linked
       IGNORE_PARENTS = %w(a code kbd pre script style).to_set
@@ -107,10 +111,17 @@ module Banzai
           end
         end
 
-        # match has come from node.to_html above, so we know it's encoded
-        # correctly.
+        # Since this came from a Text node, make sure the new href is encoded.
+        # `commonmarker` percent encodes the domains of links it handles, so
+        # do the same (instead of using `normalized_encode`).
+        begin
+          href_safe = Addressable::URI.encode(match).html_safe
+        rescue Addressable::URI::InvalidURIError
+          return uri.to_s
+        end
+
         html_safe_match = match.html_safe
-        options = link_options.merge(href: html_safe_match)
+        options         = link_options.merge(href: href_safe)
 
         content_tag(:a, html_safe_match, options) + dropped
       end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Import::BitbucketController do
@@ -8,6 +10,7 @@ describe Import::BitbucketController do
   let(:secret) { "sekrettt" }
   let(:refresh_token) { SecureRandom.hex(15) }
   let(:access_params) { { token: token, expires_at: nil, expires_in: nil, refresh_token: nil } }
+  let(:code) { SecureRandom.hex(8) }
 
   def assign_session_tokens
     session[:bitbucket_token] = token
@@ -32,10 +35,16 @@ describe Import::BitbucketController do
                             expires_in: expires_in,
                             refresh_token: refresh_token)
       allow_any_instance_of(OAuth2::Client)
-        .to receive(:get_token).and_return(access_token)
+        .to receive(:get_token)
+        .with(hash_including(
+                'grant_type' => 'authorization_code',
+                'code' => code,
+                redirect_uri: users_import_bitbucket_callback_url),
+              {})
+        .and_return(access_token)
       stub_omniauth_provider('bitbucket')
 
-      get :callback
+      get :callback, params: { code: code }
 
       expect(session[:bitbucket_token]).to eq(token)
       expect(session[:bitbucket_refresh_token]).to eq(refresh_token)
@@ -237,7 +246,7 @@ describe Import::BitbucketController do
           .to receive(:new).with(bitbucket_repo, test_name, nested_namespace, user, access_params)
             .and_return(double(execute: project))
 
-        post :create, { target_namespace: nested_namespace.full_path, new_name: test_name, format: :json }
+        post :create, params: { target_namespace: nested_namespace.full_path, new_name: test_name }, format: :json
       end
     end
 
@@ -249,7 +258,7 @@ describe Import::BitbucketController do
           .to receive(:new).with(bitbucket_repo, test_name, kind_of(Namespace), user, access_params)
             .and_return(double(execute: project))
 
-        post :create, { target_namespace: 'foo/bar', new_name: test_name, format: :json }
+        post :create, params: { target_namespace: 'foo/bar', new_name: test_name }, format: :json
       end
 
       it 'creates the namespaces' do
@@ -257,7 +266,7 @@ describe Import::BitbucketController do
           .to receive(:new).with(bitbucket_repo, test_name, kind_of(Namespace), user, access_params)
             .and_return(double(execute: project))
 
-        expect { post :create, { target_namespace: 'foo/bar', new_name: test_name, format: :json } }
+        expect { post :create, params: { target_namespace: 'foo/bar', new_name: test_name }, format: :json }
           .to change { Namespace.count }.by(2)
       end
 
@@ -266,7 +275,7 @@ describe Import::BitbucketController do
           .to receive(:new).with(bitbucket_repo, test_name, kind_of(Namespace), user, access_params)
             .and_return(double(execute: project))
 
-        post :create, { target_namespace: 'foo/bar', new_name: test_name, format: :json }
+        post :create, params: { target_namespace: 'foo/bar', new_name: test_name }, format: :json
 
         expect(Namespace.find_by_path_or_name('bar').parent.path).to eq('foo')
       end
@@ -285,7 +294,7 @@ describe Import::BitbucketController do
           .to receive(:new).with(bitbucket_repo, test_name, kind_of(Namespace), user, access_params)
             .and_return(double(execute: project))
 
-        post :create, { target_namespace: 'foo/foobar/bar', new_name: test_name, format: :json }
+        post :create, params: { target_namespace: 'foo/foobar/bar', new_name: test_name }, format: :json
       end
 
       it 'creates the namespaces' do
@@ -293,7 +302,7 @@ describe Import::BitbucketController do
           .to receive(:new).with(bitbucket_repo, test_name, kind_of(Namespace), user, access_params)
             .and_return(double(execute: project))
 
-        expect { post :create, { target_namespace: 'foo/foobar/bar', new_name: test_name, format: :json } }
+        expect { post :create, params: { target_namespace: 'foo/foobar/bar', new_name: test_name }, format: :json }
           .to change { Namespace.count }.by(2)
       end
     end
@@ -302,7 +311,7 @@ describe Import::BitbucketController do
       it 'returns 422 response' do
         other_namespace = create(:group, name: 'other_namespace')
 
-        post :create, { target_namespace: other_namespace.name, format: :json }
+        post :create, params: { target_namespace: other_namespace.name }, format: :json
 
         expect(response).to have_gitlab_http_status(422)
       end

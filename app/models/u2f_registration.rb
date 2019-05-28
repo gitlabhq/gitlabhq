@@ -2,7 +2,7 @@
 
 # Registration information for U2F (universal 2nd factor) devices, like Yubikeys
 
-class U2fRegistration < ActiveRecord::Base
+class U2fRegistration < ApplicationRecord
   belongs_to :user
 
   def self.register(user, app_id, params, challenges)
@@ -19,7 +19,7 @@ class U2fRegistration < ActiveRecord::Base
                           user: user,
                           name: params[:name])
     rescue JSON::ParserError, NoMethodError, ArgumentError
-      registration.errors.add(:base, 'Your U2F device did not send a valid JSON response.')
+      registration.errors.add(:base, _('Your U2F device did not send a valid JSON response.'))
     rescue U2F::Error => e
       registration.errors.add(:base, e.message)
     end

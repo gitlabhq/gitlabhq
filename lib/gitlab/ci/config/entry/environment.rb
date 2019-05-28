@@ -36,10 +36,12 @@ module Gitlab
               validates :config, allowed_keys: ALLOWED_KEYS
 
               validates :url,
+                        type: String,
                         length: { maximum: 255 },
                         allow_nil: true
 
               validates :action,
+                        type: String,
                         inclusion: { in: %w[start stop], message: 'should be start or stop' },
                         allow_nil: true
 

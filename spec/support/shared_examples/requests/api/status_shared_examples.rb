@@ -54,7 +54,7 @@ shared_examples_for '412 response' do
 
   context 'for a modified ressource' do
     before do
-      delete request, params, { 'HTTP_IF_UNMODIFIED_SINCE' => '1990-01-12T00:00:48-0600' }
+      delete request, params: params, headers: { 'HTTP_IF_UNMODIFIED_SINCE' => '1990-01-12T00:00:48-0600' }
     end
 
     it 'returns 412' do
@@ -64,7 +64,7 @@ shared_examples_for '412 response' do
 
   context 'for an unmodified ressource' do
     before do
-      delete request, params, { 'HTTP_IF_UNMODIFIED_SINCE' => Time.now }
+      delete request, params: params, headers: { 'HTTP_IF_UNMODIFIED_SINCE' => Time.now }
     end
 
     it 'returns accepted' do

@@ -1,0 +1,19 @@
+{
+  "type": "object",
+  "required" : [
+    "id",
+    "slug",
+    "organization_slug",
+    "name"
+  ],
+  "properties" : {
+    "id": { "type": "string"},
+    "name": { "type": "string" },
+    "slug": { "type": "string" },
+    "status": { "type": "string" },
+    "organization_name": { "type": "string" },
+    "organization_slug": { "type": "string" },
+    "organization_id": { "type": "string" }
+  },
+  "additionalProperties": false
+}

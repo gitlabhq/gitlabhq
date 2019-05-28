@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module QA
   module Scenario
     module Test
@@ -9,10 +11,13 @@ module QA
         class Mattermost < Test::Instance::All
           tags :mattermost
 
-          def perform(address, mattermost, *rspec_options)
-            Runtime::Scenario.define(:mattermost_address, mattermost)
+          attribute :mattermost_address, '--mattermost-address URL', 'Address of the Mattermost server'
 
-            super(address, *rspec_options)
+          def perform(options, *args)
+            extract_address(:gitlab_address, options, args)
+            extract_address(:mattermost_address, options, args)
+
+            super(options, *args)
           end
         end
       end

@@ -1,6 +1,7 @@
 <script>
 import Pikaday from 'pikaday';
 import { parsePikadayDate, pikadayToString } from '~/lib/utils/datetime_utility';
+import { __ } from '~/locale';
 
 export default {
   name: 'DatePicker',
@@ -8,7 +9,7 @@ export default {
     label: {
       type: String,
       required: false,
-      default: 'Date picker',
+      default: __('Date picker'),
     },
     selectedDate: {
       type: Date,
@@ -40,6 +41,7 @@ export default {
       toString: date => pikadayToString(date),
       onSelect: this.selected.bind(this),
       onClose: this.toggled.bind(this),
+      firstDay: gon.first_day_of_week,
     });
 
     this.$el.append(this.calendar.el);

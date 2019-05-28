@@ -15,12 +15,12 @@ To enable the Microsoft Azure OAuth2 OmniAuth provider you must register your ap
     - Type: 'WEB APPLICATION AND/OR WEB API'
 
 1.  On the "App properties" page enter the needed URI's and click the "Complete" button.
-    - SIGN-IN URL: Enter the URL of your GitLab installation (e.g 'https://gitlab.mycompany.com/')
-    - APP ID URI: Enter the endpoint URL for Microsoft to use, just has to be unique (e.g 'https://mycompany.onmicrosoft.com/gitlab')
+    - SIGN-IN URL: Enter the URL of your GitLab installation (e.g `https://gitlab.mycompany.com/`)
+    - APP ID URI: Enter the endpoint URL for Microsoft to use, just has to be unique (e.g `https://mycompany.onmicrosoft.com/gitlab`)
 
 1. Select "Configure" in the top menu.
 
-1. Add a "Reply URL" pointing to the Azure OAuth callback of your GitLab installation (e.g. https://gitlab.mycompany.com/users/auth/azure_oauth2/callback).
+1. Add a "Reply URL" pointing to the Azure OAuth callback of your GitLab installation (e.g. `https://gitlab.mycompany.com/users/auth/azure_oauth2/callback`).
 
 1. Create a "Client secret" by selecting a duration, the secret will be generated as soon as you click the "Save" button in the bottom menu..
 
@@ -28,7 +28,7 @@ To enable the Microsoft Azure OAuth2 OmniAuth provider you must register your ap
 
 1. Select "View endpoints" from the bottom menu.
 
-1. You will see lots of endpoint URLs in the form 'https://login.microsoftonline.com/TENANT ID/...', note down the TENANT ID part of one of those endpoints.
+1. You will see lots of endpoint URLs in the form `https://login.microsoftonline.com/TENANT ID/...`, note down the TENANT ID part of one of those endpoints.
 
 1.  On your GitLab server, open the configuration file.
 

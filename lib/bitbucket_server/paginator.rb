@@ -12,7 +12,7 @@ module BitbucketServer
       @url = url
       @page = nil
       @page_offset = page_offset
-      @limit = limit || PAGE_LENGTH
+      @limit = limit
       @total = 0
     end
 
@@ -34,6 +34,8 @@ module BitbucketServer
     attr_reader :connection, :page, :url, :type, :limit
 
     def over_limit?
+      return false unless @limit
+
       @limit.positive? && @total >= @limit
     end
 
@@ -42,11 +44,15 @@ module BitbucketServer
     end
 
     def starting_offset
-      [0, page_offset - 1].max * limit
+      [0, page_offset - 1].max * max_per_page
+    end
+
+    def max_per_page
+      limit || PAGE_LENGTH
     end
 
     def fetch_next_page
-      parsed_response = connection.get(@url, start: next_offset, limit: @limit)
+      parsed_response = connection.get(@url, start: next_offset, limit: max_per_page)
       Page.new(parsed_response, type)
     end
   end

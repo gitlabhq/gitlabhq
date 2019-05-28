@@ -55,7 +55,7 @@ export default {
           :disabled="badge.isDeleting"
           class="btn btn-default append-right-8"
           type="button"
-          @click="editBadge(badge);"
+          @click="editBadge(badge)"
         >
           <icon :size="16" :aria-label="__('Edit')" name="pencil" />
         </button>
@@ -65,7 +65,7 @@ export default {
           type="button"
           data-toggle="modal"
           data-target="#delete-badge-modal"
-          @click="updateBadgeInModal(badge);"
+          @click="updateBadgeInModal(badge)"
         >
           <icon :size="16" :aria-label="__('Delete')" name="remove" />
         </button>

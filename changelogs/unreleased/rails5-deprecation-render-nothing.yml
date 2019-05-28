@@ -1,6 +1,0 @@
----
-title: render :nothing option is deprecated, Use head method to respond with empty
-  response body.
-merge_request: 23311
-author: Jasper Maes
-type: other

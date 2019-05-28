@@ -414,7 +414,7 @@ describe Gitlab::Ci::Trace::Stream, :clean_gitlab_redis_cache do
 
       context 'malicious regexp' do
         let(:data) { malicious_text }
-        let(:regex) { malicious_regexp }
+        let(:regex) { malicious_regexp_re2 }
 
         include_examples 'malicious regexp'
       end

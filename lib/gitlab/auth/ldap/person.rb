@@ -69,7 +69,7 @@ module Gitlab
         end
 
         def name
-          attribute_value(:name).first
+          attribute_value(:name)&.first
         end
 
         def uid
@@ -98,9 +98,7 @@ module Gitlab
 
         private
 
-        def entry
-          @entry
-        end
+        attr_reader :entry
 
         def config
           @config ||= Gitlab::Auth::LDAP::Config.new(provider)
@@ -114,7 +112,7 @@ module Gitlab
           attributes = Array(config.attributes[attribute.to_s])
           selected_attr = attributes.find { |attr| entry.respond_to?(attr) }
 
-          return nil unless selected_attr
+          return unless selected_attr
 
           entry.public_send(selected_attr) # rubocop:disable GitlabSecurity/PublicSend
         end

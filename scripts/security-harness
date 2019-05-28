@@ -37,7 +37,7 @@ else
 end
 
 __END__
-#!/bin/sh
+#!/bin/bash
 
 set -e
 

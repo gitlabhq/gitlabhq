@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe HasVariable do
@@ -57,7 +59,7 @@ describe HasVariable do
   describe '#to_runner_variable' do
     it 'returns a hash for the runner' do
       expect(subject.to_runner_variable)
-        .to eq(key: subject.key, value: subject.value, public: false)
+        .to include(key: subject.key, value: subject.value, public: false)
     end
   end
 end

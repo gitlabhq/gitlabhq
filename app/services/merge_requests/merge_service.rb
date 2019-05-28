@@ -7,11 +7,7 @@ module MergeRequests
   # mark merge request as merged and execute all hooks and notifications
   # Executed when you do merge via GitLab UI
   #
-  class MergeService < MergeRequests::BaseService
-    MergeError = Class.new(StandardError)
-
-    attr_reader :merge_request, :source
-
+  class MergeService < MergeRequests::MergeBaseService
     delegate :merge_jid, :state, to: :@merge_request
 
     def execute(merge_request)
@@ -22,7 +18,7 @@ module MergeRequests
 
       @merge_request = merge_request
 
-      error_check!
+      validate!
 
       merge_request.in_locked_state do
         if commit
@@ -36,27 +32,22 @@ module MergeRequests
       handle_merge_error(log_message: e.message, save_message_on_model: true)
     end
 
-    def source
-      return merge_request.diff_head_sha unless merge_request.squash
+    private
 
-      squash_result = ::MergeRequests::SquashService.new(project, current_user, params).execute(merge_request)
+    def validate!
+      authorization_check!
+      error_check!
+    end
 
-      case squash_result[:status]
-      when :success
-        squash_result[:squash_sha]
-      when :error
-        raise ::MergeRequests::MergeService::MergeError, squash_result[:message]
+    def authorization_check!
+      unless @merge_request.can_be_merged_by?(current_user)
+        raise_error('You are not allowed to merge this merge request')
       end
     end
 
-    # Overridden in EE.
-    def hooks_validation_pass?(_merge_request)
-      true
-    end
-
-    private
-
     def error_check!
+      super
+
       error =
         if @merge_request.should_be_rebased?
           'Only fast-forward merge is allowed for your project. Please update your source branch'
@@ -66,7 +57,7 @@ module MergeRequests
           'No source for merge'
         end
 
-      raise MergeError, error if error
+      raise_error(error) if error
     end
 
     def commit
@@ -76,22 +67,20 @@ module MergeRequests
       if commit_id
         log_info("Git merge finished on JID #{merge_jid} commit #{commit_id}")
       else
-        raise MergeError, 'Conflicts detected during merge'
+        raise_error('Conflicts detected during merge')
       end
 
       merge_request.update!(merge_commit_sha: commit_id)
     end
 
     def try_merge
-      message = params[:commit_message] || merge_request.merge_commit_message
-
-      repository.merge(current_user, source, merge_request, message)
+      repository.merge(current_user, source, merge_request, commit_message)
     rescue Gitlab::Git::PreReceiveError => e
-      handle_merge_error(log_message: e.message)
-      raise MergeError, 'Something went wrong during merge pre-receive hook'
+      raise MergeError,
+            "Something went wrong during merge pre-receive hook. #{e.message}".strip
     rescue => e
       handle_merge_error(log_message: e.message)
-      raise MergeError, 'Something went wrong during merge'
+      raise_error('Something went wrong during merge')
     ensure
       merge_request.update!(in_progress_merge_commit_sha: nil)
     end

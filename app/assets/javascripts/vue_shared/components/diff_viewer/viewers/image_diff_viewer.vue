@@ -75,7 +75,7 @@ export default {
             :class="{
               active: mode === $options.imageViewMode.twoup,
             }"
-            @click="changeMode($options.imageViewMode.twoup);"
+            @click="changeMode($options.imageViewMode.twoup)"
           >
             {{ s__('ImageDiffViewer|2-up') }}
           </li>
@@ -83,7 +83,7 @@ export default {
             :class="{
               active: mode === $options.imageViewMode.swipe,
             }"
-            @click="changeMode($options.imageViewMode.swipe);"
+            @click="changeMode($options.imageViewMode.swipe)"
           >
             {{ s__('ImageDiffViewer|Swipe') }}
           </li>
@@ -91,7 +91,7 @@ export default {
             :class="{
               active: mode === $options.imageViewMode.onion,
             }"
-            @click="changeMode($options.imageViewMode.onion);"
+            @click="changeMode($options.imageViewMode.onion)"
           >
             {{ s__('ImageDiffViewer|Onion skin') }}
           </li>

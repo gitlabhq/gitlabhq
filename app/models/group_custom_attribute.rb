@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class GroupCustomAttribute < ActiveRecord::Base
+class GroupCustomAttribute < ApplicationRecord
   belongs_to :group
 
   validates :group, :key, :value, presence: true

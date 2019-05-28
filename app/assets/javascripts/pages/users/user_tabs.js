@@ -91,6 +91,7 @@ export default class UserTabs {
     this.actions = Object.keys(this.loaded);
     this.bindEvents();
 
+    // TODO: refactor to make this configurable via constructor params with a default value of 'show'
     if (this.action === 'show') {
       this.action = this.defaultAction;
     }
@@ -221,7 +222,7 @@ export default class UserTabs {
     const monthsAgo = UserTabs.getVisibleCalendarPeriod($calendarWrap);
     const calendarActivitiesPath = $calendarWrap.data('calendarActivitiesPath');
     const utcOffset = $calendarWrap.data('utcOffset');
-    const calendarHint = __('Issues, merge requests, pushes and comments.');
+    const calendarHint = __('Issues, merge requests, pushes, and comments.');
 
     $calendarWrap.html(CALENDAR_TEMPLATE);
 
@@ -234,7 +235,7 @@ export default class UserTabs {
       data,
       calendarActivitiesPath,
       utcOffset,
-      0,
+      gon.first_day_of_week,
       monthsAgo,
     );
   }

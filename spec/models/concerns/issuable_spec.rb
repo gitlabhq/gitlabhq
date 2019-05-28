@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Issuable do
@@ -32,17 +34,56 @@ describe Issuable do
   end
 
   describe "Validation" do
-    subject { build(:issue) }
+    context 'general validations' do
+      subject { build(:issue) }
 
-    before do
-      allow(InternalId).to receive(:generate_next).and_return(nil)
+      before do
+        allow(InternalId).to receive(:generate_next).and_return(nil)
+      end
+
+      it { is_expected.to validate_presence_of(:project) }
+      it { is_expected.to validate_presence_of(:iid) }
+      it { is_expected.to validate_presence_of(:author) }
+      it { is_expected.to validate_presence_of(:title) }
+      it { is_expected.to validate_length_of(:title).is_at_most(255) }
     end
 
-    it { is_expected.to validate_presence_of(:project) }
-    it { is_expected.to validate_presence_of(:iid) }
-    it { is_expected.to validate_presence_of(:author) }
-    it { is_expected.to validate_presence_of(:title) }
-    it { is_expected.to validate_length_of(:title).is_at_most(255) }
+    describe 'milestone' do
+      let(:project) { create(:project) }
+      let(:milestone_id) { create(:milestone, project: project).id }
+      let(:params) do
+        {
+          title: 'something',
+          project: project,
+          author: build(:user),
+          milestone_id: milestone_id
+        }
+      end
+
+      subject { issuable_class.new(params) }
+
+      context 'with correct params' do
+        it { is_expected.to be_valid }
+      end
+
+      context 'with empty string milestone' do
+        let(:milestone_id) { '' }
+
+        it { is_expected.to be_valid }
+      end
+
+      context 'with nil milestone id' do
+        let(:milestone_id) { nil }
+
+        it { is_expected.to be_valid }
+      end
+
+      context 'with a milestone id from another project' do
+        let(:milestone_id) { create(:milestone).id }
+
+        it { is_expected.to be_invalid }
+      end
+    end
   end
 
   describe "Scope" do
@@ -63,6 +104,48 @@ describe Issuable do
       issue.save(validate: false)
 
       expect(issue.author_name).to eq nil
+    end
+  end
+
+  describe '#milestone_available?' do
+    let(:group) { create(:group) }
+    let(:project) { create(:project, group: group) }
+    let(:issue) { create(:issue, project: project) }
+
+    def build_issuable(milestone_id)
+      issuable_class.new(project: project, milestone_id: milestone_id)
+    end
+
+    it 'returns true with a milestone from the issue project' do
+      milestone = create(:milestone, project: project)
+
+      expect(build_issuable(milestone.id).milestone_available?).to be_truthy
+    end
+
+    it 'returns true with a milestone from the issue project group' do
+      milestone = create(:milestone, group: group)
+
+      expect(build_issuable(milestone.id).milestone_available?).to be_truthy
+    end
+
+    it 'returns true with a milestone from the the parent of the issue project group', :nested_groups do
+      parent = create(:group)
+      group.update(parent: parent)
+      milestone = create(:milestone, group: parent)
+
+      expect(build_issuable(milestone.id).milestone_available?).to be_truthy
+    end
+
+    it 'returns false with a milestone from another project' do
+      milestone = create(:milestone)
+
+      expect(build_issuable(milestone.id).milestone_available?).to be_falsey
+    end
+
+    it 'returns false with a milestone from another group' do
+      milestone = create(:milestone, group: create(:group))
+
+      expect(build_issuable(milestone.id).milestone_available?).to be_falsey
     end
   end
 
@@ -138,6 +221,78 @@ describe Issuable do
 
     it 'returns issues with a matching description for a query shorter than 3 chars' do
       expect(issuable_class.full_search(searchable_issue2.description.downcase)).to eq([searchable_issue2])
+    end
+
+    context 'when matching columns is "title"' do
+      it 'returns issues with a matching title' do
+        expect(issuable_class.full_search(searchable_issue.title, matched_columns: 'title'))
+          .to eq([searchable_issue])
+      end
+
+      it 'returns no issues with a matching description' do
+        expect(issuable_class.full_search(searchable_issue.description, matched_columns: 'title'))
+          .to be_empty
+      end
+    end
+
+    context 'when matching columns is "description"' do
+      it 'returns no issues with a matching title' do
+        expect(issuable_class.full_search(searchable_issue.title, matched_columns: 'description'))
+          .to be_empty
+      end
+
+      it 'returns issues with a matching description' do
+        expect(issuable_class.full_search(searchable_issue.description, matched_columns: 'description'))
+          .to eq([searchable_issue])
+      end
+    end
+
+    context 'when matching columns is "title,description"' do
+      it 'returns issues with a matching title' do
+        expect(issuable_class.full_search(searchable_issue.title, matched_columns: 'title,description'))
+          .to eq([searchable_issue])
+      end
+
+      it 'returns issues with a matching description' do
+        expect(issuable_class.full_search(searchable_issue.description, matched_columns: 'title,description'))
+          .to eq([searchable_issue])
+      end
+    end
+
+    context 'when matching columns is nil"' do
+      it 'returns issues with a matching title' do
+        expect(issuable_class.full_search(searchable_issue.title, matched_columns: nil))
+          .to eq([searchable_issue])
+      end
+
+      it 'returns issues with a matching description' do
+        expect(issuable_class.full_search(searchable_issue.description, matched_columns: nil))
+          .to eq([searchable_issue])
+      end
+    end
+
+    context 'when matching columns is "invalid"' do
+      it 'returns issues with a matching title' do
+        expect(issuable_class.full_search(searchable_issue.title, matched_columns: 'invalid'))
+          .to eq([searchable_issue])
+      end
+
+      it 'returns issues with a matching description' do
+        expect(issuable_class.full_search(searchable_issue.description, matched_columns: 'invalid'))
+          .to eq([searchable_issue])
+      end
+    end
+
+    context 'when matching columns is "title,invalid"' do
+      it 'returns issues with a matching title' do
+        expect(issuable_class.full_search(searchable_issue.title, matched_columns: 'title,invalid'))
+          .to eq([searchable_issue])
+      end
+
+      it 'returns no issues with a matching description' do
+        expect(issuable_class.full_search(searchable_issue.description, matched_columns: 'title,invalid'))
+          .to be_empty
+      end
     end
   end
 
@@ -347,8 +502,8 @@ describe Issuable do
       let(:user2) { create(:user) }
 
       before do
-        merge_request.update(assignee: user)
-        merge_request.update(assignee: user2)
+        merge_request.update(assignees: [user])
+        merge_request.update(assignees: [user, user2])
         expect(Gitlab::HookData::IssuableBuilder)
           .to receive(:new).with(merge_request).and_return(builder)
       end
@@ -357,8 +512,7 @@ describe Issuable do
         expect(builder).to receive(:build).with(
           user: user,
           changes: hash_including(
-            'assignee_id' => [user.id, user2.id],
-            'assignee' => [user.hook_attrs, user2.hook_attrs]
+            'assignees' => [[user.hook_attrs], [user.hook_attrs, user2.hook_attrs]]
           ))
 
         merge_request.to_hook_data(user, old_associations: { assignees: [user] })
@@ -504,7 +658,7 @@ describe Issuable do
     end
 
     context 'adding time' do
-      it 'should update the total time spent' do
+      it 'updates the total time spent' do
         spend_time(1800)
 
         expect(issue.total_time_spent).to eq(1800)
@@ -524,7 +678,7 @@ describe Issuable do
         spend_time(1800)
       end
 
-      it 'should update the total time spent' do
+      it 'updates the total time spent' do
         spend_time(-900)
 
         expect(issue.total_time_spent).to eq(900)
@@ -566,7 +720,7 @@ describe Issuable do
     end
 
     let(:merged_mr) { create(:merge_request, :merged, author: contributor, target_project: project, source_project: project) }
-    let(:open_mr)  { create(:merge_request, author: first_time_contributor, target_project: project, source_project: project) }
+    let(:open_mr) { create(:merge_request, author: first_time_contributor, target_project: project, source_project: project) }
     let(:merged_mr_other_project) { create(:merge_request, :merged, author: first_time_contributor, target_project: other_project, source_project: other_project) }
 
     context "for merge requests" do

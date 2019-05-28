@@ -7,9 +7,7 @@ module API
 
     before { authenticate! }
 
-    NOTEABLE_TYPES = [Issue, MergeRequest, Snippet].freeze
-
-    NOTEABLE_TYPES.each do |noteable_type|
+    Helpers::NotesHelpers.noteable_types.each do |noteable_type|
       parent_type = noteable_type.parent_class.to_s.underscore
       noteables_str = noteable_type.to_s.underscore.pluralize
 
@@ -39,7 +37,7 @@ module API
           # at the DB query level (which we cannot in that case), the current
           # page can have less elements than :per_page even if
           # there's more than one page.
-          raw_notes = noteable.notes.with_metadata.reorder(params[:order_by] => params[:sort])
+          raw_notes = noteable.notes.with_metadata.reorder(order_options_with_tie_breaker)
           notes =
             # paginate() only works with a relation. This could lead to a
             # mismatch between the pagination headers info and the actual notes

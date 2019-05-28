@@ -29,7 +29,7 @@ describe Gitlab::ImportExport::Importer do
       expect(shared.errors).to be_empty
     end
 
-    it 'extracts the archive'  do
+    it 'extracts the archive' do
       expect(Gitlab::ImportExport::FileImporter).to receive(:import).and_call_original
 
       importer.execute

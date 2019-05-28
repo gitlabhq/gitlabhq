@@ -68,7 +68,7 @@ describe 'Issue Boards', :js do
     let(:bug)         { create(:label, project: project, name: 'Bug') }
     let!(:backlog)    { create(:label, project: project, name: 'Backlog') }
     let!(:closed)       { create(:label, project: project, name: 'Closed') }
-    let!(:accepting)  { create(:label, project: project, name: 'Accepting Merge Requests') }
+    let!(:accepting) { create(:label, project: project, name: 'Accepting Merge Requests') }
     let!(:a_plus) { create(:label, project: project, name: 'A+') }
 
     let!(:list1) { create(:list, board: board, label: planning, position: 0) }
@@ -97,7 +97,7 @@ describe 'Issue Boards', :js do
       expect(find('.board:nth-child(4)')).to have_selector('.board-card')
     end
 
-    it 'shows description tooltip on list title' do
+    it 'shows description tooltip on list title', :quarantine do
       page.within('.board:nth-child(2)') do
         expect(find('.board-title span.has-tooltip')[:title]).to eq('Test')
       end
@@ -345,7 +345,7 @@ describe 'Issue Boards', :js do
 
           click_link 'Create project label'
 
-          fill_in('new_label_name', with: 'Testing New Label')
+          fill_in('new_label_name', with: 'Testing New Label - with list')
 
           first('.suggest-colors a').click
 
@@ -411,7 +411,7 @@ describe 'Issue Boards', :js do
         wait_for_empty_boards((2..4))
       end
 
-      it 'filters by label with space after reload' do
+      it 'filters by label with space after reload', :quarantine do
         set_filter("label", "\"#{accepting.title}")
         click_filter_link(accepting.title)
         submit_filter
@@ -477,7 +477,7 @@ describe 'Issue Boards', :js do
         end
       end
 
-      it 'filters by multiple labels' do
+      it 'filters by multiple labels', :quarantine do
         set_filter("label", testing.title)
         click_filter_link(testing.title)
 

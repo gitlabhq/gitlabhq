@@ -75,8 +75,8 @@ module Gitlab
         user.admin? || allowed_level?(level.to_i)
       end
 
+      # Level should be a numeric value, e.g. `20`
       # Return true if the specified level is allowed for the current user.
-      # Level should be a numeric value, e.g. `20`.
       def allowed_level?(level)
         valid_level?(level) && non_restricted_level?(level)
       end

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Project Issues Calendar Feed'  do
+describe 'Project Issues Calendar Feed' do
   describe 'GET /issues' do
     let!(:user)     { create(:user, email: 'private1@example.com', public_email: 'public1@example.com') }
     let!(:assignee) { create(:user, email: 'private2@example.com', public_email: 'public2@example.com') }
@@ -70,6 +70,15 @@ describe 'Project Issues Calendar Feed'  do
         expect(body).to have_text("DTSTART;VALUE=DATE:#{Date.tomorrow.strftime('%Y%m%d')}")
         expect(body).to have_text("URL:#{issue_url(issue)}")
         expect(body).to have_text('TRANSP:TRANSPARENT')
+      end
+    end
+
+    context 'sorted by priority' do
+      it 'renders calendar feed' do
+        visit project_issues_path(project, :ics, sort: 'priority', feed_token: user.feed_token)
+
+        expect(response_headers['Content-Type']).to have_content('text/calendar')
+        expect(body).to have_text('BEGIN:VCALENDAR')
       end
     end
   end

@@ -1,23 +1,10 @@
 import _ from 'underscore';
-import { __ } from '~/locale';
 import { isScrolledToBottom } from '~/lib/utils/scroll_utils';
 
-export const headerActions = state => {
-  if (state.job.new_issue_path) {
-    return [
-      {
-        label: __('New issue'),
-        path: state.job.new_issue_path,
-        cssClass:
-          'js-new-issue btn btn-success btn-inverted d-none d-md-block d-lg-block d-xl-block',
-        type: 'link',
-      },
-    ];
-  }
-  return [];
-};
-
 export const headerTime = state => (state.job.started ? state.job.started : state.job.created_at);
+
+export const hasUnmetPrerequisitesFailure = state =>
+  state.job && state.job.failure_reason && state.job.failure_reason === 'unmet_prerequisites';
 
 export const shouldRenderCalloutMessage = state =>
   !_.isEmpty(state.job.status) && !_.isEmpty(state.job.callout_message);
@@ -43,6 +30,17 @@ export const emptyStateIllustration = state =>
 
 export const emptyStateAction = state =>
   (state.job && state.job.status && state.job.status.action) || null;
+
+/**
+ * Shared runners limit is only rendered when
+ * used quota is bigger or equal than the limit
+ *
+ * @returns {Boolean}
+ */
+export const shouldRenderSharedRunnerLimitWarning = state =>
+  !_.isEmpty(state.job.runners) &&
+  !_.isEmpty(state.job.runners.quota) &&
+  state.job.runners.quota.used >= state.job.runners.quota.limit;
 
 export const isScrollingDown = state => isScrolledToBottom() && !state.isTraceComplete;
 

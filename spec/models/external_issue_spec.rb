@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe ExternalIssue do
@@ -30,7 +32,7 @@ describe ExternalIssue do
     end
 
     context 'if issue id is a number' do
-      let(:issue)   { described_class.new('1234', project) }
+      let(:issue) { described_class.new('1234', project) }
       it 'returns the issue ID prefixed by #' do
         expect(issue.reference_link_text).to eq '#1234'
       end

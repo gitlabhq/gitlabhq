@@ -1,6 +1,7 @@
 # Merge requests versions
 
 > **Notes:**
+>
 > - [Introduced][ce-5467] in GitLab 8.12.
 > - Comments are disabled while viewing outdated merge versions or comparing to
 >   versions other than base.

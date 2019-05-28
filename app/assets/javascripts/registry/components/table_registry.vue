@@ -70,7 +70,7 @@ export default {
       </thead>
       <tbody>
         <tr v-for="item in repo.list" :key="item.tag">
-          <td>
+          <td class="monospace">
             {{ item.tag }}
             <clipboard-button
               v-if="item.location"
@@ -80,7 +80,9 @@ export default {
             />
           </td>
           <td>
-            <span v-gl-tooltip.bottom :title="item.revision">{{ item.shortRevision }}</span>
+            <span v-gl-tooltip.bottom class="monospace" :title="item.revision">{{
+              item.shortRevision
+            }}</span>
           </td>
           <td>
             {{ formatSize(item.size) }}
@@ -104,7 +106,7 @@ export default {
               :aria-label="s__('ContainerRegistry|Remove tag')"
               variant="danger"
               class="js-delete-registry d-none d-sm-block float-right"
-              @click="handleDeleteRegistry(item);"
+              @click="handleDeleteRegistry(item)"
             >
               <icon name="remove" />
             </gl-button>

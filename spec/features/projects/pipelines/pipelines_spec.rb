@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe 'Pipelines', :js do
+  include ProjectForksHelper
+
   let(:project) { create(:project) }
 
   context 'when user is logged in' do
@@ -109,8 +111,7 @@ describe 'Pipelines', :js do
       context 'when pipeline is cancelable' do
         let!(:build) do
           create(:ci_build, pipeline: pipeline,
-                            stage: 'test',
-                            commands: 'test')
+                            stage: 'test')
         end
 
         before do
@@ -140,8 +141,7 @@ describe 'Pipelines', :js do
       context 'when pipeline is retryable' do
         let!(:build) do
           create(:ci_build, pipeline: pipeline,
-                            stage: 'test',
-                            commands: 'test')
+                            stage: 'test')
         end
 
         before do
@@ -164,6 +164,99 @@ describe 'Pipelines', :js do
             expect(page).not_to have_selector('.js-pipelines-retry-button')
             expect(page).to have_selector('.ci-running')
           end
+        end
+      end
+
+      context 'when pipeline is detached merge request pipeline' do
+        let(:merge_request) do
+          create(:merge_request,
+            :with_detached_merge_request_pipeline,
+            source_project: source_project,
+            target_project: target_project)
+        end
+
+        let!(:pipeline) { merge_request.all_pipelines.first }
+        let(:source_project) { project }
+        let(:target_project) { project }
+
+        before do
+          visit project_pipelines_path(source_project)
+        end
+
+        shared_examples_for 'showing detached merge request pipeline information' do
+          it 'shows detached tag for the pipeline' do
+            within '.pipeline-tags' do
+              expect(page).to have_content('detached')
+            end
+          end
+
+          it 'shows the link of the merge request' do
+            within '.branch-commit' do
+              expect(page).to have_link(merge_request.iid,
+                href: project_merge_request_path(project, merge_request))
+            end
+          end
+
+          it 'does not show the ref of the pipeline' do
+            within '.branch-commit' do
+              expect(page).not_to have_link(pipeline.ref)
+            end
+          end
+        end
+
+        it_behaves_like 'showing detached merge request pipeline information'
+
+        context 'when source project is a forked project' do
+          let(:source_project) { fork_project(project, user, repository: true) }
+
+          it_behaves_like 'showing detached merge request pipeline information'
+        end
+      end
+
+      context 'when pipeline is merge request pipeline' do
+        let(:merge_request) do
+          create(:merge_request,
+            :with_merge_request_pipeline,
+            source_project: source_project,
+            target_project: target_project,
+            merge_sha: target_project.commit.sha)
+        end
+
+        let!(:pipeline) { merge_request.all_pipelines.first }
+        let(:source_project) { project }
+        let(:target_project) { project }
+
+        before do
+          visit project_pipelines_path(source_project)
+        end
+
+        shared_examples_for 'Correct merge request pipeline information' do
+          it 'does not show detached tag for the pipeline' do
+            within '.pipeline-tags' do
+              expect(page).not_to have_content('detached')
+            end
+          end
+
+          it 'shows the link of the merge request' do
+            within '.branch-commit' do
+              expect(page).to have_link(merge_request.iid,
+                href: project_merge_request_path(project, merge_request))
+            end
+          end
+
+          it 'does not show the ref of the pipeline' do
+            within '.branch-commit' do
+              expect(page).not_to have_link(pipeline.ref)
+            end
+          end
+        end
+
+        it_behaves_like 'Correct merge request pipeline information'
+
+        context 'when source project is a forked project' do
+          let(:source_project) { fork_project(project, user, repository: true) }
+
+          it_behaves_like 'Correct merge request pipeline information'
         end
       end
 
@@ -202,8 +295,7 @@ describe 'Pipelines', :js do
           create(:ci_build, :manual,
             pipeline: pipeline,
             name: 'manual build',
-            stage: 'test',
-            commands: 'test')
+            stage: 'test')
         end
 
         before do
@@ -237,8 +329,7 @@ describe 'Pipelines', :js do
           create(:ci_build, :scheduled,
             pipeline: pipeline,
             name: 'delayed job',
-            stage: 'test',
-            commands: 'test')
+            stage: 'test')
         end
 
         before do
@@ -262,8 +353,7 @@ describe 'Pipelines', :js do
             create(:ci_build, :expired_scheduled,
               pipeline: pipeline,
               name: 'delayed job',
-              stage: 'test',
-              commands: 'test')
+              stage: 'test')
           end
 
           it "shows 00:00:00 as the remaining time" do
@@ -287,6 +377,30 @@ describe 'Pipelines', :js do
       end
 
       context 'for generic statuses' do
+        context 'when preparing' do
+          let!(:pipeline) do
+            create(:ci_empty_pipeline,
+              status: 'preparing', project: project)
+          end
+
+          let!(:status) do
+            create(:generic_commit_status,
+              :preparing, pipeline: pipeline)
+          end
+
+          before do
+            visit_project_pipelines
+          end
+
+          it 'is cancelable' do
+            expect(page).to have_selector('.js-pipelines-cancel-button')
+          end
+
+          it 'shows the pipeline as preparing' do
+            expect(page).to have_selector('.ci-preparing')
+          end
+        end
+
         context 'when running' do
           let!(:running) do
             create(:generic_commit_status,
@@ -428,19 +542,19 @@ describe 'Pipelines', :js do
           visit_project_pipelines
         end
 
-        it 'should render a mini pipeline graph' do
+        it 'renders a mini pipeline graph' do
           expect(page).to have_selector('.js-mini-pipeline-graph')
           expect(page).to have_selector('.js-builds-dropdown-button')
         end
 
         context 'when clicking a stage badge' do
-          it 'should open a dropdown' do
+          it 'opens a dropdown' do
             find('.js-builds-dropdown-button').click
 
             expect(page).to have_link build.name
           end
 
-          it 'should be possible to cancel pending build' do
+          it 'is possible to cancel pending build' do
             find('.js-builds-dropdown-button').click
             find('.js-ci-action').click
             wait_for_requests
@@ -456,7 +570,7 @@ describe 'Pipelines', :js do
                                        name: 'build')
           end
 
-          it 'should display the failure reason' do
+          it 'displays the failure reason' do
             find('.js-builds-dropdown-button').click
 
             within('.js-builds-dropdown-list') do
@@ -470,27 +584,27 @@ describe 'Pipelines', :js do
       context 'with pagination' do
         before do
           allow(Ci::Pipeline).to receive(:default_per_page).and_return(1)
-          create(:ci_empty_pipeline,  project: project)
+          create(:ci_empty_pipeline, project: project)
         end
 
-        it 'should render pagination' do
+        it 'renders pagination' do
           visit project_pipelines_path(project)
           wait_for_requests
 
           expect(page).to have_selector('.gl-pagination')
         end
 
-        it 'should render second page of pipelines' do
+        it 'renders second page of pipelines' do
           visit project_pipelines_path(project, page: '2')
           wait_for_requests
 
           expect(page).to have_selector('.gl-pagination .page', count: 2)
         end
 
-        it 'should show updated content' do
+        it 'shows updated content' do
           visit project_pipelines_path(project)
           wait_for_requests
-          page.find('.js-next-button a').click
+          page.find('.js-next-button .page-link').click
 
           expect(page).to have_selector('.gl-pagination .page', count: 2)
         end
@@ -571,7 +685,7 @@ describe 'Pipelines', :js do
           end
 
           it 'creates a new pipeline' do
-            expect { click_on 'Create pipeline' }
+            expect { click_on 'Run Pipeline' }
               .to change { Ci::Pipeline.count }.by(1)
 
             expect(Ci::Pipeline.last).to be_web
@@ -584,7 +698,7 @@ describe 'Pipelines', :js do
                 fill_in "Input variable value", with: "value"
               end
 
-              expect { click_on 'Create pipeline' }
+              expect { click_on 'Run Pipeline' }
                 .to change { Ci::Pipeline.count }.by(1)
 
               expect(Ci::Pipeline.last.variables.map { |var| var.slice(:key, :secret_value) })
@@ -595,7 +709,7 @@ describe 'Pipelines', :js do
 
         context 'without gitlab-ci.yml' do
           before do
-            click_on 'Create pipeline'
+            click_on 'Run Pipeline'
           end
 
           it { expect(page).to have_content('Missing .gitlab-ci.yml file') }
@@ -608,14 +722,14 @@ describe 'Pipelines', :js do
               click_link 'master'
             end
 
-            expect { click_on 'Create pipeline' }
+            expect { click_on 'Run Pipeline' }
               .to change { Ci::Pipeline.count }.by(1)
           end
         end
       end
     end
 
-    describe 'Create pipelines' do
+    describe 'Run Pipelines' do
       let(:project) { create(:project, :repository) }
 
       before do
@@ -626,7 +740,7 @@ describe 'Pipelines', :js do
         it 'has field to add a new pipeline' do
           expect(page).to have_selector('.js-branch-select')
           expect(find('.js-branch-select')).to have_content project.default_branch
-          expect(page).to have_content('Create for')
+          expect(page).to have_content('Run for')
         end
       end
 

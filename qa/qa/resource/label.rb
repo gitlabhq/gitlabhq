@@ -25,13 +25,13 @@ module QA
         project.visit!
 
         Page::Project::Menu.perform(&:go_to_labels)
-        Page::Label::Index.perform(&:go_to_new_label)
+        Page::Label::Index.perform(&:click_new_label_button)
 
         Page::Label::New.perform do |page|
           page.fill_title(@title)
           page.fill_description(@description)
           page.fill_color(@color)
-          page.create_label
+          page.click_label_create_button
         end
       end
     end

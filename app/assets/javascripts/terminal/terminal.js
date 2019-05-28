@@ -2,11 +2,14 @@ import _ from 'underscore';
 import $ from 'jquery';
 import { Terminal } from 'xterm';
 import * as fit from 'xterm/lib/addons/fit/fit';
+import * as webLinks from 'xterm/lib/addons/webLinks/webLinks';
 import { canScrollUp, canScrollDown } from '~/lib/utils/dom_utils';
+import { __ } from '~/locale';
 
 const SCROLL_MARGIN = 5;
 
 Terminal.applyAddon(fit);
+Terminal.applyAddon(webLinks);
 
 export default class GLTerminal {
   constructor(element, options = {}) {
@@ -48,6 +51,7 @@ export default class GLTerminal {
 
     this.terminal.open(this.container);
     this.terminal.fit();
+    this.terminal.webLinksInit();
     this.terminal.focus();
 
     this.socket.onopen = () => {
@@ -75,7 +79,8 @@ export default class GLTerminal {
   }
 
   handleSocketFailure() {
-    this.terminal.write('\r\nConnection failure');
+    this.terminal.write('\r\n');
+    this.terminal.write(__('Connection failure'));
   }
 
   addScrollListener(onScrollLimit) {

@@ -13,6 +13,10 @@ describe Banzai::Pipeline::DescriptionPipeline do
     output
   end
 
+  before do
+    stub_commonmark_sourcepos_disabled
+  end
+
   it 'uses a limited whitelist' do
     doc = parse('# Description')
 

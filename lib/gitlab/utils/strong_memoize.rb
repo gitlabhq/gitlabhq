@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_dependency 'gitlab/utils'
+
 module Gitlab
   module Utils
     module StrongMemoize

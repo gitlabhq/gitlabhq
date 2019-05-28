@@ -15,7 +15,7 @@ templates are also available from this API endpoint.
 Support will be added for [Issue and Merge Request templates](../user/project/description_templates.md)
 in a future release.
 
-Support for [Group-level file templates](../user/group/index.md#group-level-file-templates-premium)
+Support for [Group-level file templates](../user/group/index.md#group-file-templates-premium)
 **[PREMIUM]** was [added](https://gitlab.com/gitlab-org/gitlab-ee/issues/5987)
 in GitLab 11.5
 
@@ -100,7 +100,6 @@ GET /projects/:id/templates/:type/:key
 | `fullname` | string | no       | The full name of the copyright holder to use when expanding placeholders in the template. Only affects licenses |
 
 Example response (Dockerfile):
-
 
 ```json
 {

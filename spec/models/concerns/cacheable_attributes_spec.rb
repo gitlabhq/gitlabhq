@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe CacheableAttributes do
@@ -18,6 +20,10 @@ describe CacheableAttributes do
 
       def self.last
         @_last ||= new('foo' => 'a', 'bar' => 'b')
+      end
+
+      def self.column_names
+        %w[foo bar baz]
       end
 
       attr_accessor :attributes
@@ -75,13 +81,13 @@ describe CacheableAttributes do
 
     context 'without any attributes given' do
       it 'intializes a new object with the defaults' do
-        expect(minimal_test_class.build_from_defaults.attributes).to eq(minimal_test_class.defaults)
+        expect(minimal_test_class.build_from_defaults.attributes).to eq(minimal_test_class.defaults.stringify_keys)
       end
     end
 
     context 'with attributes given' do
       it 'intializes a new object with the given attributes merged into the defaults' do
-        expect(minimal_test_class.build_from_defaults(foo: 'd').attributes[:foo]).to eq('d')
+        expect(minimal_test_class.build_from_defaults(foo: 'd').attributes['foo']).to eq('d')
       end
     end
 
@@ -155,6 +161,10 @@ describe CacheableAttributes do
 
     describe 'edge cases' do
       describe 'caching behavior', :use_clean_rails_memory_store_caching do
+        before do
+          stub_commonmark_sourcepos_disabled
+        end
+
         it 'retrieves upload fields properly' do
           ar_record = create(:appearance, :with_logo)
           ar_record.cache!

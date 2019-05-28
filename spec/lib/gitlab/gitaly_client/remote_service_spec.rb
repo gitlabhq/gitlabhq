@@ -33,7 +33,7 @@ describe Gitlab::GitalyClient::RemoteService do
   end
 
   describe '#fetch_internal_remote' do
-    let(:remote_repository) { Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '') }
+    let(:remote_repository) { Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '', 'group/project') }
 
     it 'sends an fetch_internal_remote message and returns the result value' do
       expect_any_instance_of(Gitaly::RemoteService::Stub)

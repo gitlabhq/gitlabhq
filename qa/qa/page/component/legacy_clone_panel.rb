@@ -27,11 +27,6 @@ module QA
           Git::Location.new(find('#project_clone').value)
         end
 
-        def wait_for_push
-          sleep 5
-          refresh
-        end
-
         private
 
         def choose_repository_clone(kind, detect_text)

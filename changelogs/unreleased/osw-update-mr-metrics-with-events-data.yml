@@ -1,5 +1,0 @@
----
-title: Populate MR metrics with events table information (migration)
-merge_request: 23564
-author:
-type: performance

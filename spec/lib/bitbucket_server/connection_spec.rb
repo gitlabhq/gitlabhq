@@ -26,6 +26,12 @@ describe BitbucketServer::Connection do
 
       expect { subject.get(url) }.to raise_error(described_class::ConnectionError)
     end
+
+    it 'throws an exception upon a network error' do
+      WebMock.stub_request(:get, url).with(headers: { 'Accept' => 'application/json' }).to_raise(OpenSSL::SSL::SSLError)
+
+      expect { subject.get(url) }.to raise_error(described_class::ConnectionError)
+    end
   end
 
   describe '#post' do
@@ -39,6 +45,12 @@ describe BitbucketServer::Connection do
 
     it 'throws an exception if the response is not 200' do
       WebMock.stub_request(:post, url).with(headers: headers).to_return(body: payload.to_json, status: 500, headers: headers)
+
+      expect { subject.post(url, payload) }.to raise_error(described_class::ConnectionError)
+    end
+
+    it 'throws an exception upon a network error' do
+      WebMock.stub_request(:post, url).with(headers: { 'Accept' => 'application/json' }).to_raise(OpenSSL::SSL::SSLError)
 
       expect { subject.post(url, payload) }.to raise_error(described_class::ConnectionError)
     end
@@ -60,6 +72,12 @@ describe BitbucketServer::Connection do
 
       it 'throws an exception if the response is not 200' do
         WebMock.stub_request(:delete, branch_url).with(headers: headers).to_return(body: payload.to_json, status: 500, headers: headers)
+
+        expect { subject.delete(:branches, branch_path, payload) }.to raise_error(described_class::ConnectionError)
+      end
+
+      it 'throws an exception upon a network error' do
+        WebMock.stub_request(:delete, branch_url).with(headers: headers).to_raise(OpenSSL::SSL::SSLError)
 
         expect { subject.delete(:branches, branch_path, payload) }.to raise_error(described_class::ConnectionError)
       end

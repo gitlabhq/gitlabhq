@@ -8,7 +8,7 @@ module Gitlab
         POST_METHOD = 'POST'.freeze
         INVALID_HTTP_METHOD = 'invalid. Only PUT and POST methods allowed.'.freeze
 
-        validates :url, url: true
+        validates :url, addressable_url: true
 
         validate do
           unless [PUT_METHOD, POST_METHOD].include?(http_method.upcase)
@@ -30,10 +30,7 @@ module Gitlab
 
         def handle_response_error(response)
           unless response.success?
-            error_code = response.dig('Error', 'Code') || response.code
-            error_message = response.dig('Error', 'Message') || response.message
-
-            raise StrategyError.new("Error uploading the project. Code #{error_code}: #{error_message}")
+            raise StrategyError.new("Error uploading the project. Code #{response.code}: #{response.message}")
           end
         end
 

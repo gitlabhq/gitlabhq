@@ -5,7 +5,7 @@ module Projects
     include Gitlab::Utils::StrongMemoize
 
     def initialize(user, params)
-      @current_user, @params = user, params.dup
+      @current_user, @params = user, params.to_h.dup
     end
 
     def execute

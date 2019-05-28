@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import { TEST_HOST } from 'spec/test_constants';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
-import { trimText } from 'spec/helpers/vue_component_helper';
+import { trimText } from 'spec/helpers/text_helper';
 import { getTimeago } from '~/lib/utils/datetime_utility';
 import CommitItem from '~/diffs/components/commit_item.vue';
 import getDiffWithCommit from '../mock_data/diff_with_commit';
@@ -80,6 +80,8 @@ describe('diffs/components/commit_item', () => {
     expect(trimText(committerElement.textContent)).toEqual(expectedText);
     expect(nameElement).toHaveAttr('href', commit.author.web_url);
     expect(nameElement).toHaveText(commit.author.name);
+    expect(nameElement).toHaveClass('js-user-link');
+    expect(nameElement.dataset.userId).toEqual(commit.author.id.toString());
   });
 
   describe('without commit description', () => {

@@ -27,6 +27,8 @@ describe Clusters::Gcp::Kubernetes::CreateOrUpdateNamespaceService, '#execute' d
     stub_kubeclient_get_secret_error(api_url, 'gitlab-token')
     stub_kubeclient_create_secret(api_url)
 
+    stub_kubeclient_get_role_binding(api_url, "gitlab-#{namespace}", namespace: namespace)
+    stub_kubeclient_put_role_binding(api_url, "gitlab-#{namespace}", namespace: namespace)
     stub_kubeclient_get_namespace(api_url, namespace: namespace)
     stub_kubeclient_get_service_account_error(api_url, "#{namespace}-service-account", namespace: namespace)
     stub_kubeclient_create_service_account(api_url, namespace: namespace)
@@ -111,7 +113,7 @@ describe Clusters::Gcp::Kubernetes::CreateOrUpdateNamespaceService, '#execute' d
       it 'does not create any Clusters::KubernetesNamespace' do
         subject
 
-        expect(cluster.kubernetes_namespace).to eq(kubernetes_namespace)
+        expect(cluster.kubernetes_namespaces).to eq([kubernetes_namespace])
       end
 
       it 'creates project service account' do

@@ -15,6 +15,7 @@
 image: mono:latest
 
 stages:
+  - build
   - test
   - deploy
 
@@ -32,7 +33,7 @@ release:
     # The output path is relative to the position of the csproj-file
     - msbuild /p:Configuration="Release" /p:Platform="Any CPU"
       /p:OutputPath="./../../build/release/" "MyProject.sln"
-    
+
 debug:
   stage: test
   script:

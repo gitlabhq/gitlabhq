@@ -42,6 +42,7 @@ describe 'Milestones sorting', :js do
 
     expect(page).to have_button('Due later')
 
+    # assert descending sorting
     within '.milestones' do
       expect(page.all('ul.content-list > li').first.text).to include('v1.0')
       expect(page.all('ul.content-list > li')[1].text).to include('v3.0')

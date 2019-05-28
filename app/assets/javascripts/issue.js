@@ -7,6 +7,7 @@ import flash from './flash';
 import TaskList from './task_list';
 import CreateMergeRequestDropdown from './create_merge_request_dropdown';
 import IssuablesHelper from './helpers/issuables_helper';
+import { __ } from './locale';
 
 export default class Issue {
   constructor() {
@@ -15,8 +16,9 @@ export default class Issue {
     Issue.$btnNewBranch = $('#new-branch');
     Issue.createMrDropdownWrap = document.querySelector('.create-mr-dropdown-wrap');
 
-    Issue.initMergeRequests();
-    Issue.initRelatedBranches();
+    if (document.querySelector('#related-branches')) {
+      Issue.initRelatedBranches();
+    }
 
     this.closeButtons = $('a.btn-close');
     this.reopenButtons = $('a.btn-reopen');
@@ -43,7 +45,11 @@ export default class Issue {
    * @param {Array} data
    * @param {String} issueFailMessage
    */
-  updateTopState(isClosed, data, issueFailMessage = 'Unable to update this issue at this time.') {
+  updateTopState(
+    isClosed,
+    data,
+    issueFailMessage = __('Unable to update this issue at this time.'),
+  ) {
     if ('id' in data) {
       const isClosedBadge = $('div.status-box-issue-closed');
       const isOpenBadge = $('div.status-box-open');
@@ -80,7 +86,7 @@ export default class Issue {
   }
 
   initIssueBtnEventListeners() {
-    const issueFailMessage = 'Unable to update this issue at this time.';
+    const issueFailMessage = __('Unable to update this issue at this time.');
 
     return $(document).on(
       'click',
@@ -141,19 +147,6 @@ export default class Issue {
     }
   }
 
-  static initMergeRequests() {
-    var $container;
-    $container = $('#merge-requests');
-    return axios
-      .get($container.data('url'))
-      .then(({ data }) => {
-        if ('html' in data) {
-          $container.html(data.html);
-        }
-      })
-      .catch(() => flash('Failed to load referenced merge requests'));
-  }
-
   static initRelatedBranches() {
     var $container;
     $container = $('#related-branches');
@@ -164,6 +157,6 @@ export default class Issue {
           $container.html(data.html);
         }
       })
-      .catch(() => flash('Failed to load related branches'));
+      .catch(() => flash(__('Failed to load related branches')));
   }
 }

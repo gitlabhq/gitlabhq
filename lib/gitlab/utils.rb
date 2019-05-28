@@ -104,6 +104,12 @@ module Gitlab
       nil
     end
 
+    def try_megabytes_to_bytes(size)
+      Integer(size).megabytes
+    rescue ArgumentError
+      size
+    end
+
     def bytes_to_megabytes(bytes)
       bytes.to_f / Numeric::MEGABYTE
     end
@@ -114,6 +120,16 @@ module Gitlab
       return string_or_array if string_or_array.is_a?(Array)
 
       string_or_array.split(',').map(&:strip)
+    end
+
+    def deep_indifferent_access(data)
+      if data.is_a?(Array)
+        data.map(&method(:deep_indifferent_access))
+      elsif data.is_a?(Hash)
+        data.with_indifferent_access
+      else
+        data
+      end
     end
   end
 end

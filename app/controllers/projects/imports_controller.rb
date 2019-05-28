@@ -13,8 +13,8 @@ class Projects::ImportsController < Projects::ApplicationController
   end
 
   def create
-    if @project.update(safe_import_params)
-      @project.import_state.reload.schedule
+    if @project.update(import_params)
+      @project.import_state.reset.schedule
     end
 
     redirect_to project_import_path(@project)
@@ -42,9 +42,9 @@ class Projects::ImportsController < Projects::ApplicationController
 
   def finished_notice
     if @project.forked?
-      'The project was successfully forked.'
+      _('The project was successfully forked.')
     else
-      'The project was successfully imported.'
+      _('The project was successfully imported.')
     end
   end
 
@@ -66,11 +66,11 @@ class Projects::ImportsController < Projects::ApplicationController
     end
   end
 
-  def import_params
-    params.require(:project).permit(:import_url)
+  def import_params_attributes
+    [:import_url]
   end
 
-  def safe_import_params
-    import_params
+  def import_params
+    params.require(:project).permit(import_params_attributes)
   end
 end

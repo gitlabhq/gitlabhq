@@ -28,11 +28,15 @@ module Gitlab
             name.to_s.start_with?('.')
           end
 
+          def node_type(name)
+            hidden?(name) ? Entry::Hidden : Entry::Job
+          end
+
           # rubocop: disable CodeReuse/ActiveRecord
           def compose!(deps = nil)
             super do
               @config.each do |name, config|
-                node = hidden?(name) ? Entry::Hidden : Entry::Job
+                node = node_type(name)
 
                 factory = ::Gitlab::Config::Entry::Factory.new(node)
                   .value(config || {})

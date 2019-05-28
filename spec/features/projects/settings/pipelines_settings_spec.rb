@@ -98,42 +98,48 @@ describe "Projects > Settings > Pipelines settings" do
             expect(page).not_to have_content('instance enabled')
             expect(find_field('project_auto_devops_attributes_enabled')).not_to be_checked
             check 'Default to Auto DevOps pipeline'
-            fill_in('project_auto_devops_attributes_domain', with: 'test.com')
             click_on 'Save changes'
           end
 
           expect(page.status_code).to eq(200)
           expect(project.auto_devops).to be_present
           expect(project.auto_devops).to be_enabled
-          expect(project.auto_devops.domain).to eq('test.com')
 
           page.within '#autodevops-settings' do
             expect(find_field('project_auto_devops_attributes_enabled')).to be_checked
             expect(page).not_to have_content('instance enabled')
           end
         end
-      end
 
-      context 'when there is a cluster with ingress and external_ip' do
-        before do
-          cluster = create(:cluster, projects: [project])
-          cluster.create_application_ingress!(external_ip: '192.168.1.100')
+        context 'when auto devops is turned on group level' do
+          before do
+            project.update!(namespace: create(:group, :auto_devops_enabled))
+          end
+
+          it 'renders group enabled badge' do
+            visit project_settings_ci_cd_path(project)
+
+            page.within '#autodevops-settings' do
+              expect(page).to have_content('group enabled')
+              expect(find_field('project_auto_devops_attributes_enabled')).to be_checked
+            end
+          end
         end
 
-        it 'shows the help text with the nip.io domain as an alternative to custom domain' do
-          visit project_settings_ci_cd_path(project)
-          expect(page).to have_content('192.168.1.100.nip.io can be used as an alternative to a custom domain')
-        end
-      end
+        context 'when auto devops is turned on group parent level', :nested_groups do
+          before do
+            group = create(:group, parent: create(:group, :auto_devops_enabled))
+            project.update!(namespace: group)
+          end
 
-      context 'when there is no ingress' do
-        before do
-          create(:cluster, projects: [project])
-        end
+          it 'renders group enabled badge' do
+            visit project_settings_ci_cd_path(project)
 
-        it 'alternative to custom domain is not shown' do
-          visit project_settings_ci_cd_path(project)
-          expect(page).not_to have_content('can be used as an alternative to a custom domain')
+            page.within '#autodevops-settings' do
+              expect(page).to have_content('group enabled')
+              expect(find_field('project_auto_devops_attributes_enabled')).to be_checked
+            end
+          end
         end
       end
     end

@@ -8,7 +8,9 @@ module ImportHelper
   end
 
   def sanitize_project_name(name)
-    name.gsub(/[^\w\-]/, '-')
+    # For personal projects in Bitbucket in the form ~username, we can
+    # just drop that leading tilde.
+    name.gsub(/\A~+/, '').gsub(/[^\w\-]/, '-')
   end
 
   def import_project_target(owner, name)
@@ -16,10 +18,8 @@ module ImportHelper
     "#{namespace}/#{name}"
   end
 
-  def provider_project_link(provider, full_path)
-    url = __send__("#{provider}_project_url", full_path) # rubocop:disable GitlabSecurity/PublicSend
-
-    link_to full_path, url, target: '_blank', rel: 'noopener noreferrer'
+  def provider_project_link_url(provider_url, full_path)
+    Gitlab::Utils.append_path(provider_url, full_path)
   end
 
   def import_will_timeout_message(_ci_cd_only)
@@ -44,10 +44,6 @@ module ImportHelper
     _('Please wait while we import the repository for you. Refresh at will.')
   end
 
-  def import_github_title
-    _('Import repositories from GitHub')
-  end
-
   def import_github_authorize_message
     _('To import GitHub repositories, you first need to authorize GitLab to access the list of your GitHub repositories:')
   end
@@ -70,31 +66,5 @@ module ImportHelper
     else
       _('Note: Consider asking your GitLab administrator to configure %{github_integration_link}, which will allow login via GitHub and allow importing repositories without generating a Personal Access Token.').html_safe % { github_integration_link: github_integration_link }
     end
-  end
-
-  def import_githubish_choose_repository_message
-    _('Choose which repositories you want to import.')
-  end
-
-  def import_all_githubish_repositories_button_label
-    _('Import all repositories')
-  end
-
-  private
-
-  def github_project_url(full_path)
-    Gitlab::Utils.append_path(github_root_url, full_path)
-  end
-
-  def github_root_url
-    strong_memoize(:github_url) do
-      provider = Gitlab::Auth::OAuth::Provider.config_for('github')
-
-      provider&.dig('url').presence || 'https://github.com'
-    end
-  end
-
-  def gitea_project_url(full_path)
-    Gitlab::Utils.append_path(@gitea_host_url, full_path)
   end
 end

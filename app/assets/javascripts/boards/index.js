@@ -24,7 +24,11 @@ import BoardSidebar from './components/board_sidebar';
 import initNewListDropdown from './components/new_list_dropdown';
 import BoardAddIssuesModal from './components/modal/index.vue';
 import '~/vue_shared/vue_resource_interceptor';
-import { NavigationType, parseBoolean } from '~/lib/utils/common_utils';
+import {
+  NavigationType,
+  convertObjectPropsToCamelCase,
+  parseBoolean,
+} from '~/lib/utils/common_utils';
 
 let issueBoardsApp;
 
@@ -58,6 +62,7 @@ export default () => {
       state: boardsStore.state,
       loading: true,
       boardsEndpoint: $boardApp.dataset.boardsEndpoint,
+      recentBoardsEndpoint: $boardApp.dataset.recentBoardsEndpoint,
       listsEndpoint: $boardApp.dataset.listsEndpoint,
       boardId: $boardApp.dataset.boardId,
       disabled: parseBoolean($boardApp.dataset.disabled),
@@ -75,6 +80,7 @@ export default () => {
     created() {
       gl.boardService = new BoardService({
         boardsEndpoint: this.boardsEndpoint,
+        recentBoardsEndpoint: this.recentBoardsEndpoint,
         listsEndpoint: this.listsEndpoint,
         bulkUpdatePath: this.bulkUpdatePath,
         boardId: this.boardId,
@@ -117,7 +123,7 @@ export default () => {
           this.loading = false;
         })
         .catch(() => {
-          Flash('An error occurred while fetching the board lists. Please try again.');
+          Flash(__('An error occurred while fetching the board lists. Please try again.'));
         });
     },
     methods: {
@@ -131,9 +137,25 @@ export default () => {
           BoardService.getIssueInfo(sidebarInfoEndpoint)
             .then(res => res.data)
             .then(data => {
+              const {
+                subscribed,
+                totalTimeSpent,
+                timeEstimate,
+                humanTimeEstimate,
+                humanTotalTimeSpent,
+                weight,
+                epic,
+              } = convertObjectPropsToCamelCase(data);
+
               newIssue.setFetchingState('subscriptions', false);
               newIssue.updateData({
-                subscribed: data.subscribed,
+                humanTimeSpent: humanTotalTimeSpent,
+                timeSpent: totalTimeSpent,
+                humanTimeEstimate,
+                timeEstimate,
+                subscribed,
+                weight,
+                epic,
               });
             })
             .catch(() => {
@@ -201,7 +223,7 @@ export default () => {
         },
         tooltipTitle() {
           if (this.disabled) {
-            return 'Please add a list to your board first';
+            return __('Please add a list to your board first');
           }
 
           return '';

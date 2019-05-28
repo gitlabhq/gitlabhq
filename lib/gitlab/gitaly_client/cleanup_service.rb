@@ -12,24 +12,32 @@ module Gitlab
         @storage = repository.storage
       end
 
-      def apply_bfg_object_map(io)
-        first_request = Gitaly::ApplyBfgObjectMapRequest.new(repository: gitaly_repo)
-
-        enum = Enumerator.new do |y|
-          y.yield first_request
-
-          while data = io.read(RepositoryService::MAX_MSG_SIZE)
-            y.yield Gitaly::ApplyBfgObjectMapRequest.new(object_map: data)
-          end
-        end
-
-        GitalyClient.call(
+      def apply_bfg_object_map_stream(io, &blk)
+        responses = GitalyClient.call(
           storage,
           :cleanup_service,
-          :apply_bfg_object_map,
-          enum,
+          :apply_bfg_object_map_stream,
+          build_object_map_enum(io),
           timeout: GitalyClient.no_timeout
         )
+
+        responses.each(&blk)
+      end
+
+      private
+
+      def build_object_map_enum(io)
+        Enumerator.new do |y|
+          # First request. For simplicity, doesn't include any object map data
+          y << Gitaly::ApplyBfgObjectMapStreamRequest.new(repository: gitaly_repo)
+
+          # Now stream the BFG object map file to gitaly in chunks
+          while data = io.read(RepositoryService::MAX_MSG_SIZE)
+            y << Gitaly::ApplyBfgObjectMapStreamRequest.new(object_map: data)
+
+            break if io&.eof?
+          end
+        end
       end
     end
   end

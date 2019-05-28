@@ -23,7 +23,7 @@ describe Gitlab::Auth::OAuth::IdentityLinker do
   end
 
   context 'identity already linked to different user' do
-    let!(:identity) {  create(:identity, provider: provider, extern_uid: uid) }
+    let!(:identity) { create(:identity, provider: provider, extern_uid: uid) }
 
     it "#changed? returns false" do
       subject.link

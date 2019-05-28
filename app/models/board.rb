@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Board < ActiveRecord::Base
+class Board < ApplicationRecord
   belongs_to :group
   belongs_to :project
 
@@ -19,6 +19,10 @@ class Board < ActiveRecord::Base
 
   def group_board?
     group_id.present?
+  end
+
+  def project_board?
+    project_id.present?
   end
 
   def backlog_list

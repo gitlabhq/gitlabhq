@@ -1,6 +1,7 @@
 # Automatic issue closing
 
 >**Notes:**
+>
 > - This is the user docs. In order to change the default issue closing pattern,
 >   follow the steps in the [administration docs].
 > - For performance reasons, automatic issue closing is disabled for the very

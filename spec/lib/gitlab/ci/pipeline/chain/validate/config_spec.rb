@@ -115,7 +115,7 @@ describe Gitlab::Ci::Pipeline::Chain::Validate::Config do
     let(:pipeline) { build_stubbed(:ci_pipeline, project: project) }
 
     let(:merge_request_pipeline) do
-      build(:ci_pipeline, source: :merge_request, project: project)
+      build(:ci_pipeline, source: :merge_request_event, project: project)
     end
 
     let(:chain) { described_class.new(merge_request_pipeline, command).tap(&:perform!) }

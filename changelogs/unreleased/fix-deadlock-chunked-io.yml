@@ -1,5 +1,0 @@
----
-title: Fix deadlock on ChunkedIO
-merge_request:
-author:
-type: fixed

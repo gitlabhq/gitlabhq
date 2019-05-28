@@ -7,7 +7,7 @@
   .top-area.scrolling-tabs-container.inner-page-scroll-tabs
     .prepend-top-default
       .search-holder
-        = render 'shared/projects/search_form', autofocus: true, icon: true
+        = render 'shared/projects/search_form', autofocus: true, icon: true, admin_view: true
         .dropdown
           - toggle_text = 'Namespace'
           - if params[:namespace_id].present?

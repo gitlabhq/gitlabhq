@@ -54,7 +54,7 @@ describe 'Projects > Settings > Repository settings' do
         project.deploy_keys << private_deploy_key
         visit project_settings_repository_path(project)
 
-        find('.deploy-key', text: private_deploy_key.title).find('.ic-pencil').click()
+        find('.deploy-key', text: private_deploy_key.title).find('.ic-pencil').click
 
         fill_in 'deploy_key_title', with: 'updated_deploy_key'
         check 'deploy_key_deploy_keys_projects_attributes_0_can_push'
@@ -71,14 +71,14 @@ describe 'Projects > Settings > Repository settings' do
 
         visit project_settings_repository_path(project)
 
-        find('.js-deployKeys-tab-available_project_keys').click()
+        find('.js-deployKeys-tab-available_project_keys').click
 
-        find('.deploy-key', text: private_deploy_key.title).find('.ic-pencil').click()
+        find('.deploy-key', text: private_deploy_key.title).find('.ic-pencil').click
 
         fill_in 'deploy_key_title', with: 'updated_deploy_key'
         click_button 'Save changes'
 
-        find('.js-deployKeys-tab-available_project_keys').click()
+        find('.js-deployKeys-tab-available_project_keys').click
 
         expect(page).to have_content('updated_deploy_key')
       end
@@ -87,7 +87,7 @@ describe 'Projects > Settings > Repository settings' do
         project.deploy_keys << private_deploy_key
         visit project_settings_repository_path(project)
 
-        accept_confirm { find('.deploy-key', text: private_deploy_key.title).find('.ic-remove').click() }
+        accept_confirm { find('.deploy-key', text: private_deploy_key.title).find('.ic-remove').click }
 
         expect(page).not_to have_content(private_deploy_key.title)
       end
@@ -200,36 +200,53 @@ describe 'Projects > Settings > Repository settings' do
     context 'repository cleanup settings' do
       let(:object_map_file) { Rails.root.join('spec', 'fixtures', 'bfg_object_map.txt') }
 
-      context 'feature enabled' do
-        it 'uploads an object map file', :js do
-          stub_feature_flags(project_cleanup: true)
+      it 'uploads an object map file', :js do
+        visit project_settings_repository_path(project)
 
-          visit project_settings_repository_path(project)
+        expect(page).to have_content('Repository cleanup')
 
-          expect(page).to have_content('Repository cleanup')
+        page.within('#cleanup') do
+          attach_file('project[bfg_object_map]', object_map_file, visible: false)
 
-          page.within('#cleanup') do
-            attach_file('project[bfg_object_map]', object_map_file, visible: false)
-
-            Sidekiq::Testing.fake! do
-              click_button 'Start cleanup'
-            end
+          Sidekiq::Testing.fake! do
+            click_button 'Start cleanup'
           end
-
-          expect(page).to have_content('Repository cleanup has started')
-          expect(RepositoryCleanupWorker.jobs.count).to eq(1)
         end
+
+        expect(page).to have_content('Repository cleanup has started')
+        expect(RepositoryCleanupWorker.jobs.count).to eq(1)
+      end
+    end
+
+    context 'with an existing mirror', :js do
+      let(:mirrored_project) { create(:project, :repository, :remote_mirror) }
+
+      before do
+        mirrored_project.add_maintainer(user)
+
+        visit project_settings_repository_path(mirrored_project)
       end
 
-      context 'feature disabled' do
-        it 'does not show the settings' do
-          stub_feature_flags(project_cleanup: false)
+      it 'delete remote mirrors' do
+        expect(mirrored_project.remote_mirrors.count).to eq(1)
 
-          visit project_settings_repository_path(project)
+        find('.js-delete-mirror').click
+        wait_for_requests
 
-          expect(page).not_to have_content('Repository cleanup')
-        end
+        expect(mirrored_project.remote_mirrors.count).to eq(0)
       end
+    end
+
+    it 'shows a disabled mirror' do
+      create(:remote_mirror, project: project, enabled: false)
+
+      visit project_settings_repository_path(project)
+
+      mirror = find('.qa-mirrored-repository-row')
+
+      expect(mirror).to have_selector('.qa-delete-mirror')
+      expect(mirror).to have_selector('.qa-disabled-mirror-badge')
+      expect(mirror).not_to have_selector('.qa-update-now-button')
     end
   end
 end

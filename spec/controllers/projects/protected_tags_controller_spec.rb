@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require('spec_helper')
 
 describe Projects::ProtectedTagsController do
@@ -5,7 +7,7 @@ describe Projects::ProtectedTagsController do
     let(:project) { create(:project_empty_repo, :public) }
 
     it "redirects empty repo to projects page" do
-      get(:index, namespace_id: project.namespace.to_param, project_id: project)
+      get(:index, params: { namespace_id: project.namespace.to_param, project_id: project })
     end
   end
 
@@ -20,7 +22,7 @@ describe Projects::ProtectedTagsController do
     end
 
     it "deletes the protected tag" do
-      delete(:destroy, namespace_id: project.namespace.to_param, project_id: project, id: protected_tag.id)
+      delete(:destroy, params: { namespace_id: project.namespace.to_param, project_id: project, id: protected_tag.id })
 
       expect { ProtectedTag.find(protected_tag.id) }.to raise_error(ActiveRecord::RecordNotFound)
     end

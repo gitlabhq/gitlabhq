@@ -3,23 +3,33 @@
 require 'gitlab/email/handler/base_handler'
 require 'gitlab/email/handler/reply_processing'
 
+# handles merge request creation emails with these formats:
+#   incoming+gitlab-org-gitlab-ce-20-Author_Token12345678-merge-request@incoming.gitlab.com
+#   incoming+gitlab-org/gitlab-ce+merge-request+Author_Token12345678@incoming.gitlab.com (legacy)
 module Gitlab
   module Email
     module Handler
       class CreateMergeRequestHandler < BaseHandler
         include ReplyProcessing
-        attr_reader :project_path, :incoming_email_token
+
+        HANDLER_REGEX        = /\A#{HANDLER_ACTION_BASE_REGEX}-(?<incoming_email_token>.+)-merge-request\z/.freeze
+        HANDLER_REGEX_LEGACY = /\A(?<project_path>[^\+]*)\+merge-request\+(?<incoming_email_token>.*)/.freeze
 
         def initialize(mail, mail_key)
           super(mail, mail_key)
 
-          if m = /\A([^\+]*)\+merge-request\+(.*)/.match(mail_key.to_s)
-            @project_path, @incoming_email_token = m.captures
+          if !mail_key&.include?('/') && (matched = HANDLER_REGEX.match(mail_key.to_s))
+            @project_slug         = matched[:project_slug]
+            @project_id           = matched[:project_id]&.to_i
+            @incoming_email_token = matched[:incoming_email_token]
+          elsif matched = HANDLER_REGEX_LEGACY.match(mail_key.to_s)
+            @project_path         = matched[:project_path]
+            @incoming_email_token = matched[:incoming_email_token]
           end
         end
 
         def can_handle?
-          @project_path && @incoming_email_token
+          incoming_email_token && (project_id || project_path)
         end
 
         def execute
@@ -39,10 +49,6 @@ module Gitlab
           @author ||= User.find_by(incoming_email_token: incoming_email_token)
         end
         # rubocop: enable CodeReuse/ActiveRecord
-
-        def project
-          @project ||= Project.find_by_full_path(project_path)
-        end
 
         def metrics_params
           super.merge(includes_patches: patch_attachments.any?)
@@ -97,7 +103,7 @@ module Gitlab
 
         def remove_patch_attachments
           patch_attachments.each { |patch| mail.parts.delete(patch) }
-          # reset the message, so it needs to be reporocessed when the attachments
+          # reset the message, so it needs to be reprocessed when the attachments
           # have been modified
           @message = nil
         end

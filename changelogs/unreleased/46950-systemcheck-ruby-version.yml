@@ -1,5 +1,0 @@
----
-title: 'SystemCheck: Use a more reliable way to detect current Ruby version'
-merge_request: 23291
-author:
-type: changed

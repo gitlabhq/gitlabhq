@@ -40,7 +40,7 @@ export default {
               'is-active': viewer === $options.viewerTypes.mr,
             }"
             href="#"
-            @click.prevent="changeMode($options.viewerTypes.mr);"
+            @click.prevent="changeMode($options.viewerTypes.mr)"
           >
             <strong class="dropdown-menu-inner-title"> {{ mergeReviewLine }} </strong>
             <span class="dropdown-menu-inner-content">
@@ -54,7 +54,7 @@ export default {
               'is-active': viewer === $options.viewerTypes.diff,
             }"
             href="#"
-            @click.prevent="changeMode($options.viewerTypes.diff);"
+            @click.prevent="changeMode($options.viewerTypes.diff)"
           >
             <strong class="dropdown-menu-inner-title">{{ __('Reviewing') }}</strong>
             <span class="dropdown-menu-inner-content">

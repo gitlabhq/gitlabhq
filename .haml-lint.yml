@@ -1,9 +1,13 @@
+inherits_from:
+  - .haml-lint_todo.yml
 # Whether to ignore frontmatter at the beginning of HAML documents for
 # frameworks such as Jekyll/Middleman
 skip_frontmatter: false
 exclude:
   - 'vendor/**/*'
   - 'spec/**/*'
+require:
+  - './haml_lint/linter/no_plain_nodes.rb'
 
 linters:
   AltText:
@@ -97,6 +101,7 @@ linters:
       - Cop/LineBreakAroundConditionalBlock
       - Cop/ProjectPathHelper
       - GitlabSecurity/PublicSend
+      - Layout/EmptyLineAfterGuardClause
       - Layout/LeadingCommentSpace
       - Layout/SpaceAfterColon
       - Layout/SpaceAfterComma
@@ -112,11 +117,13 @@ linters:
       - Lint/LiteralInInterpolation
       - Lint/ParenthesesAsGroupedExpression
       - Lint/RedundantWithIndex
+      - Lint/SafeNavigationConsistency
       - Lint/Syntax
       - Metrics/BlockNesting
       - Naming/VariableName
       - Performance/RedundantMatch
       - Performance/StringReplacement
+      - Rails/LinkToBlank
       - Rails/Presence
       - Rails/RequestReferer
       - Style/AndOr
@@ -134,6 +141,7 @@ linters:
       - Style/TernaryParentheses
       - Style/TrailingCommaInHashLiteral
       - Style/UnlessElse
+      - Style/UnneededCondition
       - Style/WordArray
       - Style/ZeroLengthPredicate
 
@@ -149,7 +157,7 @@ linters:
 
   Indentation:
     enabled: true
-    character: space # or tab
+    character: space  # or tab
 
   TagName:
     enabled: true

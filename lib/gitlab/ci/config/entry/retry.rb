@@ -82,9 +82,6 @@ module Gitlab
               'retry config'
             end
           end
-
-          def self.default
-          end
         end
       end
     end

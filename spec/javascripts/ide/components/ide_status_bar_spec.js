@@ -76,6 +76,9 @@ describe('ideStatusBar', () => {
             icon: 'status_success',
           },
         },
+        commit: {
+          author_gravatar_url: 'www',
+        },
       });
 
       vm.$nextTick()

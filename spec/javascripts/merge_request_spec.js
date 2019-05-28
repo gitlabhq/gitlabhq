@@ -11,9 +11,9 @@ describe('MergeRequest', function() {
   describe('task lists', function() {
     let mock;
 
-    preloadFixtures('merge_requests/merge_request_with_task_list.html.raw');
+    preloadFixtures('merge_requests/merge_request_with_task_list.html');
     beforeEach(function() {
-      loadFixtures('merge_requests/merge_request_with_task_list.html.raw');
+      loadFixtures('merge_requests/merge_request_with_task_list.html');
 
       spyOn(axios, 'patch').and.callThrough();
       mock = new MockAdapter(axios);
@@ -40,17 +40,51 @@ describe('MergeRequest', function() {
       expect($('.js-task-list-field').val()).toBe('- [x] Task List Item');
     });
 
-    it('submits an ajax request on tasklist:changed', done => {
-      $('.js-task-list-field').trigger('tasklist:changed');
+    describe('tasklist', () => {
+      const lineNumber = 8;
+      const lineSource = '- [ ] item 8';
+      const index = 3;
+      const checked = true;
 
-      setTimeout(() => {
-        expect(axios.patch).toHaveBeenCalledWith(
-          `${gl.TEST_HOST}/frontend-fixtures/merge-requests-project/merge_requests/1.json`,
-          {
-            merge_request: { description: '- [ ] Task List Item' },
-          },
-        );
-        done();
+      it('submits an ajax request on tasklist:changed', done => {
+        $('.js-task-list-field').trigger({
+          type: 'tasklist:changed',
+          detail: { lineNumber, lineSource, index, checked },
+        });
+
+        setTimeout(() => {
+          expect(axios.patch).toHaveBeenCalledWith(
+            `${gl.TEST_HOST}/frontend-fixtures/merge-requests-project/merge_requests/1.json`,
+            {
+              merge_request: {
+                description: '- [ ] Task List Item',
+                lock_version: 0,
+                update_task: { line_number: lineNumber, line_source: lineSource, index, checked },
+              },
+            },
+          );
+
+          done();
+        });
+      });
+
+      it('shows an error notification when tasklist update failed', done => {
+        mock
+          .onPatch(`${gl.TEST_HOST}/frontend-fixtures/merge-requests-project/merge_requests/1.json`)
+          .reply(409, {});
+
+        $('.js-task-list-field').trigger({
+          type: 'tasklist:changed',
+          detail: { lineNumber, lineSource, index, checked },
+        });
+
+        setTimeout(() => {
+          expect(document.querySelector('.flash-container .flash-text').innerText.trim()).toBe(
+            'Someone edited this merge request at the same time you did. Please refresh the page to see changes.',
+          );
+
+          done();
+        });
       });
     });
   });
@@ -91,7 +125,7 @@ describe('MergeRequest', function() {
   describe('hideCloseButton', () => {
     describe('merge request of another user', () => {
       beforeEach(() => {
-        loadFixtures('merge_requests/merge_request_with_task_list.html.raw');
+        loadFixtures('merge_requests/merge_request_with_task_list.html');
         this.el = document.querySelector('.js-issuable-actions');
         new MergeRequest(); // eslint-disable-line no-new
         MergeRequest.hideCloseButton();
@@ -111,7 +145,7 @@ describe('MergeRequest', function() {
 
     describe('merge request of current_user', () => {
       beforeEach(() => {
-        loadFixtures('merge_requests/merge_request_of_current_user.html.raw');
+        loadFixtures('merge_requests/merge_request_of_current_user.html');
         this.el = document.querySelector('.js-issuable-actions');
         MergeRequest.hideCloseButton();
       });

@@ -5,7 +5,7 @@ import notify from '~/lib/utils/notify';
 import { stateKey } from '~/vue_merge_request_widget/stores/state_maps';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import mockData from './mock_data';
-import { faviconDataUrl, overlayDataUrl, faviconWithOverlayDataUrl } from '../lib/utils/mock_data';
+import { faviconDataUrl, overlayDataUrl } from '../lib/utils/mock_data';
 
 const returnPromise = data =>
   new Promise(resolve => {
@@ -18,7 +18,10 @@ describe('mrWidgetOptions', () => {
   let vm;
   let MrWidgetOptions;
 
+  const COLLABORATION_MESSAGE = 'Allows commits from members who can merge to the target branch';
+
   beforeEach(() => {
+    gon.features = { approvalRules: false };
     // Prevent component mounting
     delete mrWidgetOptions.el;
 
@@ -29,6 +32,7 @@ describe('mrWidgetOptions', () => {
   });
 
   afterEach(() => {
+    gon.features = null;
     vm.$destroy();
   });
 
@@ -130,6 +134,148 @@ describe('mrWidgetOptions', () => {
         vm.mr.state = 'nothingToMerge';
 
         expect(vm.shouldRenderSourceBranchRemovalStatus).toEqual(false);
+      });
+    });
+
+    describe('shouldRenderCollaborationStatus', () => {
+      describe('when collaboration is allowed', () => {
+        beforeEach(() => {
+          vm.mr.allowCollaboration = true;
+        });
+
+        describe('when merge request is opened', () => {
+          beforeEach(done => {
+            vm.mr.isOpen = true;
+            vm.$nextTick(done);
+          });
+
+          it('should render collaboration status', () => {
+            expect(vm.$el.textContent).toContain(COLLABORATION_MESSAGE);
+          });
+        });
+
+        describe('when merge request is not opened', () => {
+          beforeEach(done => {
+            vm.mr.isOpen = false;
+            vm.$nextTick(done);
+          });
+
+          it('should not render collaboration status', () => {
+            expect(vm.$el.textContent).not.toContain(COLLABORATION_MESSAGE);
+          });
+        });
+      });
+
+      describe('when collaboration is not allowed', () => {
+        beforeEach(() => {
+          vm.mr.allowCollaboration = false;
+        });
+
+        describe('when merge request is opened', () => {
+          beforeEach(done => {
+            vm.mr.isOpen = true;
+            vm.$nextTick(done);
+          });
+
+          it('should not render collaboration status', () => {
+            expect(vm.$el.textContent).not.toContain(COLLABORATION_MESSAGE);
+          });
+        });
+      });
+    });
+
+    describe('showMergePipelineForkWarning', () => {
+      describe('when the source project and target project are the same', () => {
+        beforeEach(done => {
+          Vue.set(vm.mr, 'mergePipelinesEnabled', true);
+          Vue.set(vm.mr, 'sourceProjectId', 1);
+          Vue.set(vm.mr, 'targetProjectId', 1);
+          vm.$nextTick(done);
+        });
+
+        it('should be false', () => {
+          expect(vm.showMergePipelineForkWarning).toEqual(false);
+        });
+      });
+
+      describe('when merge pipelines are not enabled', () => {
+        beforeEach(done => {
+          Vue.set(vm.mr, 'mergePipelinesEnabled', false);
+          Vue.set(vm.mr, 'sourceProjectId', 1);
+          Vue.set(vm.mr, 'targetProjectId', 2);
+          vm.$nextTick(done);
+        });
+
+        it('should be false', () => {
+          expect(vm.showMergePipelineForkWarning).toEqual(false);
+        });
+      });
+
+      describe('when merge pipelines are enabled _and_ the source project and target project are different', () => {
+        beforeEach(done => {
+          Vue.set(vm.mr, 'mergePipelinesEnabled', true);
+          Vue.set(vm.mr, 'sourceProjectId', 1);
+          Vue.set(vm.mr, 'targetProjectId', 2);
+          vm.$nextTick(done);
+        });
+
+        it('should be true', () => {
+          expect(vm.showMergePipelineForkWarning).toEqual(true);
+        });
+      });
+    });
+
+    describe('showTargetBranchAdvancedError', () => {
+      describe(`when the pipeline's target_sha property doesn't exist`, () => {
+        beforeEach(done => {
+          Vue.set(vm.mr, 'isOpen', true);
+          Vue.set(vm.mr.pipeline, 'target_sha', undefined);
+          Vue.set(vm.mr, 'targetBranchSha', 'abcd');
+          vm.$nextTick(done);
+        });
+
+        it('should be false', () => {
+          expect(vm.showTargetBranchAdvancedError).toEqual(false);
+        });
+      });
+
+      describe(`when the pipeline's target_sha matches the target branch's sha`, () => {
+        beforeEach(done => {
+          Vue.set(vm.mr, 'isOpen', true);
+          Vue.set(vm.mr.pipeline, 'target_sha', 'abcd');
+          Vue.set(vm.mr, 'targetBranchSha', 'abcd');
+          vm.$nextTick(done);
+        });
+
+        it('should be false', () => {
+          expect(vm.showTargetBranchAdvancedError).toEqual(false);
+        });
+      });
+
+      describe(`when the merge request is not open`, () => {
+        beforeEach(done => {
+          Vue.set(vm.mr, 'isOpen', false);
+          Vue.set(vm.mr.pipeline, 'target_sha', 'abcd');
+          Vue.set(vm.mr, 'targetBranchSha', 'bcde');
+          vm.$nextTick(done);
+        });
+
+        it('should be false', () => {
+          expect(vm.showTargetBranchAdvancedError).toEqual(false);
+        });
+      });
+
+      describe(`when the pipeline's target_sha does not match the target branch's sha`, () => {
+        beforeEach(done => {
+          Vue.set(vm.mr, 'isOpen', true);
+          Vue.set(vm.mr.pipeline, 'target_sha', 'abcd');
+          Vue.set(vm.mr, 'targetBranchSha', 'bcde');
+          vm.$nextTick(done);
+        });
+
+        it('should be true', () => {
+          expect(vm.showTargetBranchAdvancedError).toEqual(true);
+        });
       });
     });
   });
@@ -291,17 +437,27 @@ describe('mrWidgetOptions', () => {
         vm.mr.ciStatusFaviconPath = overlayDataUrl;
         vm.setFaviconHelper()
           .then(() => {
-            expect(faviconElement.getAttribute('href')).toEqual(faviconWithOverlayDataUrl);
+            /*
+            It would be better if we'd could mock commonUtils.setFaviconURL
+            with a spy and test that it was called. We are doing the following
+            tests as a proxy to show that the function has been called
+            */
+            expect(faviconElement.getAttribute('href')).not.toEqual(null);
+            expect(faviconElement.getAttribute('href')).not.toEqual(overlayDataUrl);
+            expect(faviconElement.getAttribute('href')).not.toEqual(faviconDataUrl);
             done();
           })
           .catch(done.fail);
       });
 
-      it('should not call setFavicon when there is no ciStatusFaviconPath', () => {
+      it('should not call setFavicon when there is no ciStatusFaviconPath', done => {
         vm.mr.ciStatusFaviconPath = null;
-        vm.setFaviconHelper();
-
-        expect(faviconElement.getAttribute('href')).toEqual(null);
+        vm.setFaviconHelper()
+          .then(() => {
+            expect(faviconElement.getAttribute('href')).toEqual(null);
+            done();
+          })
+          .catch(done.fail);
       });
     });
 
@@ -404,7 +560,7 @@ describe('mrWidgetOptions', () => {
       vm.$nextTick(() => {
         const tooltip = vm.$el.querySelector('.fa-question-circle');
 
-        expect(vm.$el.textContent).toContain('Removes source branch');
+        expect(vm.$el.textContent).toContain('Deletes source branch');
         expect(tooltip.getAttribute('data-original-title')).toBe(
           'A user with write access to the source branch selected this option',
         );
@@ -419,8 +575,8 @@ describe('mrWidgetOptions', () => {
       vm.mr.state = 'merged';
 
       vm.$nextTick(() => {
-        expect(vm.$el.textContent).toContain('The source branch has been removed');
-        expect(vm.$el.textContent).not.toContain('Removes source branch');
+        expect(vm.$el.textContent).toContain('The source branch has been deleted');
+        expect(vm.$el.textContent).not.toContain('Deletes source branch');
 
         done();
       });

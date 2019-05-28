@@ -1,4 +1,4 @@
-# Test and Deploy a python application with GitLab CI/CD
+# Test and deploy a Python application with GitLab CI/CD
 
 This example will guide you how to run tests in your Python application and deploy it automatically as Heroku application.
 
@@ -9,7 +9,12 @@ You can checkout the [example source](https://gitlab.com/ayufan/python-getting-s
 This is what the `.gitlab-ci.yml` file looks like for this project:
 
 ```yaml
+stages:
+  - test
+  - deploy
+
 test:
+  stage: test
   script:
   # this configures Django application to use attached postgres database that is run on `postgres` host
   - export DATABASE_URL=postgres://postgres:@postgres:5432/python-test-app
@@ -19,7 +24,7 @@ test:
   - python manage.py test
 
 staging:
-  type: deploy
+  stage: deploy
   script:
   - apt-get update -qy
   - apt-get install -y ruby-dev
@@ -29,7 +34,7 @@ staging:
   - master
 
 production:
-  type: deploy
+  stage: deploy
   script:
   - apt-get update -qy
   - apt-get install -y ruby-dev
@@ -47,7 +52,7 @@ This project has three jobs:
 
 ## Store API keys
 
-You'll need to create two variables in `Settings > CI/CD > Variables` on your GitLab project settings:
+You'll need to create two variables in **Settings > CI/CD > Environment variables** in your GitLab project:
 
 - `HEROKU_STAGING_API_KEY` - Heroku API key used to deploy staging app.
 - `HEROKU_PRODUCTION_API_KEY` - Heroku API key used to deploy production app.
@@ -65,7 +70,7 @@ First install [Docker Engine](https://docs.docker.com/installation/).
 To build this project you also need to have [GitLab Runner](https://docs.gitlab.com/runner).
 You can use public runners available on `gitlab.com`, but you can register your own:
 
-```
+```sh
 gitlab-runner register \
   --non-interactive \
   --url "https://gitlab.com/" \

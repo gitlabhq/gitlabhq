@@ -11,18 +11,18 @@ class Import::GoogleCodeController < Import::BaseController
     dump_file = params[:dump_file]
 
     unless dump_file.respond_to?(:read)
-      return redirect_back_or_default(options: { alert: "You need to upload a Google Takeout archive." })
+      return redirect_back_or_default(options: { alert: _("You need to upload a Google Takeout archive.") })
     end
 
     begin
       dump = JSON.parse(dump_file.read)
     rescue
-      return redirect_back_or_default(options: { alert: "The uploaded file is not a valid Google Takeout archive." })
+      return redirect_back_or_default(options: { alert: _("The uploaded file is not a valid Google Takeout archive.") })
     end
 
     client = Gitlab::GoogleCodeImport::Client.new(dump)
     unless client.valid?
-      return redirect_back_or_default(options: { alert: "The uploaded file is not a valid Google Takeout archive." })
+      return redirect_back_or_default(options: { alert: _("The uploaded file is not a valid Google Takeout archive.") })
     end
 
     session[:google_code_dump] = dump
@@ -44,13 +44,13 @@ class Import::GoogleCodeController < Import::BaseController
     begin
       user_map = JSON.parse(user_map_json)
     rescue
-      flash.now[:alert] = "The entered user map is not a valid JSON user map."
+      flash.now[:alert] = _("The entered user map is not a valid JSON user map.")
 
       return render "new_user_map"
     end
 
     unless user_map.is_a?(Hash) && user_map.all? { |k, v| k.is_a?(String) && v.is_a?(String) }
-      flash.now[:alert] = "The entered user map is not a valid JSON user map."
+      flash.now[:alert] = _("The entered user map is not a valid JSON user map.")
 
       return render "new_user_map"
     end
@@ -62,7 +62,7 @@ class Import::GoogleCodeController < Import::BaseController
 
     session[:google_code_user_map] = user_map
 
-    flash[:notice] = "The user map has been saved. Continue by selecting the projects you want to import."
+    flash[:notice] = _("The user map has been saved. Continue by selecting the projects you want to import.")
 
     redirect_to status_import_google_code_path
   end

@@ -12,14 +12,29 @@ class Clusters::ClustersController < Clusters::BaseController
   before_action :authorize_update_cluster!, only: [:update]
   before_action :authorize_admin_cluster!, only: [:destroy]
   before_action :update_applications_status, only: [:cluster_status]
+  before_action only: [:show] do
+    push_frontend_feature_flag(:metrics_time_window)
+  end
 
   helper_method :token_in_session
 
   STATUS_POLLING_INTERVAL = 10_000
 
   def index
-    clusters = ClustersFinder.new(clusterable, current_user, :all).execute
-    @clusters = clusters.page(params[:page]).per(20)
+    finder = ClusterAncestorsFinder.new(clusterable.subject, current_user)
+    clusters = finder.execute
+
+    # Note: We are paginating through an array here but this should OK as:
+    #
+    # In CE, we can have a maximum group nesting depth of 21, so including
+    # project cluster, we can have max 22 clusters for a group hierarchy.
+    # In EE (Premium) we can have any number, as multiple clusters are
+    # supported, but the number of clusters are fairly low currently.
+    #
+    # See https://gitlab.com/gitlab-org/gitlab-ce/issues/55260 also.
+    @clusters = Kaminari.paginate_array(clusters).page(params[:page]).per(20)
+
+    @has_ancestor_clusters = finder.has_ancestor_clusters?
   end
 
   def new
@@ -111,23 +126,25 @@ class Clusters::ClustersController < Clusters::BaseController
   private
 
   def update_params
-    if cluster.managed?
+    if cluster.provided_by_user?
       params.require(:cluster).permit(
         :enabled,
+        :name,
         :environment_scope,
+        :base_domain,
         platform_kubernetes_attributes: [
+          :api_url,
+          :token,
+          :ca_cert,
           :namespace
         ]
       )
     else
       params.require(:cluster).permit(
         :enabled,
-        :name,
         :environment_scope,
+        :base_domain,
         platform_kubernetes_attributes: [
-          :api_url,
-          :token,
-          :ca_cert,
           :namespace
         ]
       )
@@ -139,6 +156,7 @@ class Clusters::ClustersController < Clusters::BaseController
       :enabled,
       :name,
       :environment_scope,
+      :managed,
       provider_gcp_attributes: [
         :gcp_project_id,
         :zone,
@@ -157,6 +175,7 @@ class Clusters::ClustersController < Clusters::BaseController
       :enabled,
       :name,
       :environment_scope,
+      :managed,
       platform_kubernetes_attributes: [
         :namespace,
         :api_url,

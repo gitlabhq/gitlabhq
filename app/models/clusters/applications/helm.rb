@@ -4,7 +4,7 @@ require 'openssl'
 
 module Clusters
   module Applications
-    class Helm < ActiveRecord::Base
+    class Helm < ApplicationRecord
       self.table_name = 'clusters_applications_helm'
 
       attr_encrypted :ca_key,
@@ -27,6 +27,13 @@ module Clusters
         return unless not_installable?
 
         self.status = 'installable' if cluster&.platform_kubernetes_active?
+      end
+
+      # We will implement this in future MRs.
+      # Basically we need to check all other applications are not installed
+      # first.
+      def allowed_to_uninstall?
+        false
       end
 
       def install_command

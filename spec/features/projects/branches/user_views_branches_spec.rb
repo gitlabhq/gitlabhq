@@ -15,6 +15,8 @@ describe "User views branches" do
 
     it "shows branches" do
       expect(page).to have_content("Branches").and have_content("master")
+
+      expect(page.all(".graph-side")).to all( have_content(/\d+/) )
     end
   end
 

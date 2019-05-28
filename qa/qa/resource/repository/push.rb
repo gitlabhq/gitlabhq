@@ -8,7 +8,7 @@ module QA
       class Push < Base
         attr_accessor :file_name, :file_content, :commit_message,
                       :branch_name, :new_branch, :output, :repository_http_uri,
-                      :repository_ssh_uri, :ssh_key, :user
+                      :repository_ssh_uri, :ssh_key, :user, :use_lfs
 
         attr_writer :remote_branch
 
@@ -20,6 +20,7 @@ module QA
           @new_branch = true
           @repository_http_uri = ""
           @ssh_key = nil
+          @use_lfs = false
         end
 
         def remote_branch
@@ -33,7 +34,9 @@ module QA
         end
 
         def files=(files)
-          if !files.is_a?(Array) || files.empty?
+          if !files.is_a?(Array) ||
+              files.empty? ||
+              files.any? { |file| !file.has_key?(:name) || !file.has_key?(:content) }
             raise ArgumentError, "Please provide an array of hashes e.g.: [{name: 'file1', content: 'foo'}]"
           end
 
@@ -42,6 +45,8 @@ module QA
 
         def fabricate!
           Git::Repository.perform do |repository|
+            @output = ''
+
             if ssh_key
               repository.uri = repository_ssh_uri
               repository.use_ssh_key(ssh_key)
@@ -49,6 +54,8 @@ module QA
               repository.uri = repository_http_uri
               repository.use_default_credentials unless user
             end
+
+            repository.use_lfs = use_lfs
 
             username = 'GitLab QA'
             email = 'root@gitlab.com'
@@ -60,29 +67,25 @@ module QA
               email = user.email
             end
 
-            repository.clone
+            @output += repository.clone
             repository.configure_identity(username, email)
 
-            if new_branch
-              repository.checkout_new_branch(branch_name)
-            else
-              repository.checkout(branch_name)
-            end
+            @output += repository.checkout(branch_name, new_branch: new_branch)
 
             if @directory
               @directory.each_child do |f|
-                repository.add_file(f.basename, f.read) if f.file?
+                @output += repository.add_file(f.basename, f.read) if f.file?
               end
             elsif @files
               @files.each do |f|
                 repository.add_file(f[:name], f[:content])
               end
             else
-              repository.add_file(file_name, file_content)
+              @output += repository.add_file(file_name, file_content)
             end
 
-            repository.commit(commit_message)
-            @output = repository.push_changes("#{branch_name}:#{remote_branch}")
+            @output += repository.commit(commit_message)
+            @output += repository.push_changes("#{branch_name}:#{remote_branch}")
 
             repository.delete_ssh_key
           end

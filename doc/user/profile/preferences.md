@@ -57,7 +57,10 @@ and default views of your dashboard and the projects' landing pages.
 ### Layout width
 
 GitLab can be set up to use different widths depending on your liking. Choose
-between the fixed (max. 1200px) and the fluid (100%) application layout.
+between the fixed (max. `1280px`) and the fluid (`100%`) application layout.
+
+NOTE: **Note:**
+While `1280px` is the standard max width when using fixed layout, some pages still use 100% width, depending on the content.
 
 ### Default dashboard
 
@@ -76,6 +79,7 @@ You have 8 options here that you can use for your default dashboard view:
 - Your [Todos](../../workflow/todos.md)
 - Assigned Issues
 - Assigned Merge Requests
+- Operations Dashboard **[PREMIUM]**
 
 ### Project overview content
 
@@ -87,3 +91,23 @@ You can choose between 3 options:
 - Files and Readme (default)
 - Readme
 - Activity
+
+## Localization
+
+### Language
+
+Select your preferred language from a list of supported languages.
+
+*This feature is experimental and translations are not complete yet.*
+
+### First day of the week
+
+The first day of the week can be customised for calendar views and date pickers.
+
+You can choose one of the following options as the first day of the week:
+
+- Saturday
+- Sunday
+- Monday
+
+If you select **System Default**, the system-wide default setting will be used.

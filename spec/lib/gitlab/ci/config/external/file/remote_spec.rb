@@ -3,7 +3,9 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Config::External::File::Remote do
-  let(:remote_file) { described_class.new(location) }
+  let(:context) { described_class::Context.new(nil, '12345', nil, Set.new) }
+  let(:params) { { remote: location } }
+  let(:remote_file) { described_class.new(params, context) }
   let(:location) { 'https://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml' }
   let(:remote_file_content) do
     <<~HEREDOC
@@ -11,9 +13,34 @@ describe Gitlab::Ci::Config::External::File::Remote do
         - apt-get update -qq && apt-get install -y -qq sqlite3 libsqlite3-dev nodejs
         - ruby -v
         - which ruby
-        - gem install bundler --no-ri --no-rdoc
         - bundle install --jobs $(nproc)  "${FLAGS[@]}"
     HEREDOC
+  end
+
+  describe '#matching?' do
+    context 'when a remote is specified' do
+      let(:params) { { remote: 'http://remote' } }
+
+      it 'returns true' do
+        expect(remote_file).to be_matching
+      end
+    end
+
+    context 'with a missing remote' do
+      let(:params) { { remote: nil } }
+
+      it 'returns false' do
+        expect(remote_file).not_to be_matching
+      end
+    end
+
+    context 'with a missing remote key' do
+      let(:params) { {} }
+
+      it 'returns false' do
+        expect(remote_file).not_to be_matching
+      end
+    end
   end
 
   describe "#valid?" do
@@ -22,7 +49,7 @@ describe Gitlab::Ci::Config::External::File::Remote do
         WebMock.stub_request(:get, location).to_return(body: remote_file_content)
       end
 
-      it 'should return true' do
+      it 'returns true' do
         expect(remote_file.valid?).to be_truthy
       end
     end
@@ -30,7 +57,7 @@ describe Gitlab::Ci::Config::External::File::Remote do
     context 'with an irregular url' do
       let(:location) { 'not-valid://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml' }
 
-      it 'should return false' do
+      it 'returns false' do
         expect(remote_file.valid?).to be_falsy
       end
     end
@@ -40,7 +67,7 @@ describe Gitlab::Ci::Config::External::File::Remote do
         allow(Gitlab::HTTP).to receive(:get).and_raise(Timeout::Error)
       end
 
-      it 'should be falsy' do
+      it 'is falsy' do
         expect(remote_file.valid?).to be_falsy
       end
     end
@@ -48,7 +75,7 @@ describe Gitlab::Ci::Config::External::File::Remote do
     context 'when is not a yaml file' do
       let(:location) { 'https://asdasdasdaj48ggerexample.com' }
 
-      it 'should be falsy' do
+      it 'is falsy' do
         expect(remote_file.valid?).to be_falsy
       end
     end
@@ -56,7 +83,7 @@ describe Gitlab::Ci::Config::External::File::Remote do
     context 'with an internal url' do
       let(:location) { 'http://localhost:8080' }
 
-      it 'should be falsy' do
+      it 'is falsy' do
         expect(remote_file.valid?).to be_falsy
       end
     end
@@ -68,7 +95,7 @@ describe Gitlab::Ci::Config::External::File::Remote do
         WebMock.stub_request(:get, location).to_return(body: remote_file_content)
       end
 
-      it 'should return the content of the file' do
+      it 'returns the content of the file' do
         expect(remote_file.content).to eql(remote_file_content)
       end
     end
@@ -78,7 +105,7 @@ describe Gitlab::Ci::Config::External::File::Remote do
         allow(Gitlab::HTTP).to receive(:get).and_raise(Timeout::Error)
       end
 
-      it 'should be falsy' do
+      it 'is falsy' do
         expect(remote_file.content).to be_falsy
       end
     end
@@ -90,7 +117,7 @@ describe Gitlab::Ci::Config::External::File::Remote do
         WebMock.stub_request(:get, location).to_raise(SocketError.new('Some HTTP error'))
       end
 
-      it 'should be nil' do
+      it 'is nil' do
         expect(remote_file.content).to be_nil
       end
     end
@@ -98,7 +125,7 @@ describe Gitlab::Ci::Config::External::File::Remote do
     context 'with an internal url' do
       let(:location) { 'http://localhost:8080' }
 
-      it 'should be nil' do
+      it 'is nil' do
         expect(remote_file.content).to be_nil
       end
     end
@@ -120,7 +147,7 @@ describe Gitlab::Ci::Config::External::File::Remote do
         WebMock.stub_request(:get, location).to_timeout
       end
 
-      it 'should returns error message about a timeout' do
+      it 'returns error message about a timeout' do
         expect(subject).to match /could not be fetched because of a timeout error!/
       end
     end
@@ -130,7 +157,7 @@ describe Gitlab::Ci::Config::External::File::Remote do
         WebMock.stub_request(:get, location).to_raise(Gitlab::HTTP::Error)
       end
 
-      it 'should returns error message about a HTTP error' do
+      it 'returns error message about a HTTP error' do
         expect(subject).to match /could not be fetched because of HTTP error!/
       end
     end
@@ -140,7 +167,7 @@ describe Gitlab::Ci::Config::External::File::Remote do
         WebMock.stub_request(:get, location).to_return(body: remote_file_content, status: 404)
       end
 
-      it 'should returns error message about a timeout' do
+      it 'returns error message about a timeout' do
         expect(subject).to match /could not be fetched because of HTTP code `404` error!/
       end
     end
@@ -148,10 +175,20 @@ describe Gitlab::Ci::Config::External::File::Remote do
     context 'when the URL is blocked' do
       let(:location) { 'http://127.0.0.1/some/path/to/config.yaml' }
 
-      it 'should include details about blocked URL' do
+      it 'includes details about blocked URL' do
         expect(subject).to eq "Remote file could not be fetched because URL '#{location}' " \
                               'is blocked: Requests to localhost are not allowed!'
       end
+    end
+  end
+
+  describe '#expand_context' do
+    let(:params) { { remote: 'http://remote' } }
+
+    subject { remote_file.send(:expand_context) }
+
+    it 'drops all parameters' do
+      is_expected.to include(user: nil, project: nil, sha: nil)
     end
   end
 end

@@ -249,28 +249,21 @@
     .event-item {
       padding-left: 40px;
     }
+
+    @include media-breakpoint-up(lg) {
+      margin-right: 5px;
+    }
+  }
+
+  .projects-block {
+    @include media-breakpoint-up(lg) {
+      margin-left: 5px;
+    }
   }
 
   @include media-breakpoint-down(xs) {
     .cover-block {
       padding-top: 20px;
-    }
-
-    .cover-controls {
-      position: static;
-      padding: 0 16px;
-      margin-bottom: 20px;
-      display: -webkit-flex;
-      display: flex;
-
-      .btn {
-        -webkit-flex-grow: 1;
-        flex-grow: 1;
-
-        &:first-child {
-          margin-left: 0;
-        }
-      }
     }
 
     .user-profile-nav {
@@ -312,6 +305,7 @@ table.u2f-registrations {
   margin: 20px -5px 0;
 
   .bordered-box {
+    padding: 32px;
     border: 1px solid $blue-300;
     border-radius: $border-radius-default;
     background-color: $blue-50;
@@ -445,8 +439,17 @@ table.u2f-registrations {
     }
   }
 
+  .form-group > label {
+    font-weight: $gl-font-weight-bold;
+  }
+
+  .form-group > .form-text {
+    font-size: $gl-font-size;
+  }
+
   .emoji-menu-toggle-button {
     @include emoji-menu-toggle-button;
+    padding: 6px 10px;
 
     .no-emoji-placeholder {
       position: relative;
@@ -455,5 +458,54 @@ table.u2f-registrations {
         fill: $gl-text-color-secondary;
       }
     }
+  }
+
+  @include media-breakpoint-down(sm) {
+    .input-md,
+    .input-lg {
+      max-width: 100%;
+    }
+  }
+}
+
+.help-block {
+  color: $gl-text-color-secondary;
+}
+
+.gitlab-slack-gif {
+  width: 100%;
+  max-width: $add-to-slack-gif-max-width;
+}
+
+.gitlab-slack-well {
+  background-color: $white-light;
+  box-shadow: none;
+  max-width: $add-to-slack-well-max-width;
+}
+
+.gitlab-slack-logo {
+  width: $add-to-slack-logo-size;
+  height: $add-to-slack-logo-size;
+}
+
+.gitlab-slack-popup {
+  width: 100%;
+  max-width: $add-to-slack-popup-max-width;
+}
+
+.gitlab-slack-right-arrow svg {
+  fill: $white-dark;
+  width: $right-arrow-size;
+  height: $right-arrow-size;
+  vertical-align: text-bottom;
+}
+
+.gitlab-slack-double-headed-arrow {
+  vertical-align: text-top;
+
+  svg {
+    fill: $gray-darker;
+    width: $double-headed-arrow-width;
+    height: $double-headed-arrow-height;
   }
 }

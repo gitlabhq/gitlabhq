@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe RegistrationsController do
@@ -15,18 +17,18 @@ describe RegistrationsController do
 
       context 'when send_user_confirmation_email is false' do
         it 'signs the user in' do
-          allow_any_instance_of(ApplicationSetting).to receive(:send_user_confirmation_email).and_return(false)
+          stub_application_setting(send_user_confirmation_email: false)
 
-          expect { post(:create, user_params) }.not_to change { ActionMailer::Base.deliveries.size }
+          expect { post(:create, params: user_params) }.not_to change { ActionMailer::Base.deliveries.size }
           expect(subject.current_user).not_to be_nil
         end
       end
 
       context 'when send_user_confirmation_email is true' do
         it 'does not authenticate user and sends confirmation email' do
-          allow_any_instance_of(ApplicationSetting).to receive(:send_user_confirmation_email).and_return(true)
+          stub_application_setting(send_user_confirmation_email: true)
 
-          post(:create, user_params)
+          post(:create, params: user_params)
 
           expect(ActionMailer::Base.deliveries.last.to.first).to eq(user_params[:user][:email])
           expect(subject.current_user).to be_nil
@@ -35,24 +37,28 @@ describe RegistrationsController do
 
       context 'when signup_enabled? is false' do
         it 'redirects to sign_in' do
-          allow_any_instance_of(ApplicationSetting).to receive(:signup_enabled?).and_return(false)
+          stub_application_setting(signup_enabled: false)
 
-          expect { post(:create, user_params) }.not_to change(User, :count)
+          expect { post(:create, params: user_params) }.not_to change(User, :count)
           expect(response).to redirect_to(new_user_session_path)
         end
       end
     end
 
     context 'when reCAPTCHA is enabled' do
+      def fail_recaptcha
+        # Without this, `verify_recaptcha` arbitrarily returns true in test env
+        Recaptcha.configuration.skip_verify_env.delete('test')
+      end
+
       before do
         stub_application_setting(recaptcha_enabled: true)
       end
 
       it 'displays an error when the reCAPTCHA is not solved' do
-        # Without this, `verify_recaptcha` arbitrarily returns true in test env
-        Recaptcha.configuration.skip_verify_env.delete('test')
+        fail_recaptcha
 
-        post(:create, user_params)
+        post(:create, params: user_params)
 
         expect(response).to render_template(:new)
         expect(flash[:alert]).to include 'There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.'
@@ -64,8 +70,19 @@ describe RegistrationsController do
           Recaptcha.configuration.skip_verify_env << 'test'
         end
 
-        post(:create, user_params)
+        post(:create, params: user_params)
 
+        expect(flash[:notice]).to include 'Welcome! You have signed up successfully.'
+      end
+
+      it 'does not require reCAPTCHA if disabled by feature flag' do
+        stub_feature_flags(registrations_recaptcha: false)
+        fail_recaptcha
+
+        post(:create, params: user_params)
+
+        expect(controller).not_to receive(:verify_recaptcha)
+        expect(flash[:alert]).to be_nil
         expect(flash[:notice]).to include 'Welcome! You have signed up successfully.'
       end
     end
@@ -76,13 +93,13 @@ describe RegistrationsController do
       end
 
       it 'redirects back with a notice when the checkbox was not checked' do
-        post :create, user_params
+        post :create, params: user_params
 
         expect(flash[:alert]).to match /you must accept our terms/i
       end
 
       it 'creates the user with agreement when terms are accepted' do
-        post :create, user_params.merge(terms_opt_in: '1')
+        post :create, params: user_params.merge(terms_opt_in: '1')
 
         expect(subject.current_user).to be_present
         expect(subject.current_user.terms_accepted?).to be(true)
@@ -125,13 +142,13 @@ describe RegistrationsController do
       end
 
       it 'fails if password confirmation is wrong' do
-        post :destroy, password: 'wrong password'
+        post :destroy, params: { password: 'wrong password' }
 
         expect_password_failure
       end
 
       it 'succeeds if password is confirmed' do
-        post :destroy, password: '12345678'
+        post :destroy, params: { password: '12345678' }
 
         expect_success
       end
@@ -150,13 +167,13 @@ describe RegistrationsController do
       end
 
       it 'fails if username confirmation is wrong' do
-        post :destroy, username: 'wrong username'
+        post :destroy, params: { username: 'wrong username' }
 
         expect_username_failure
       end
 
       it 'succeeds if username is confirmed' do
-        post :destroy, username: user.username
+        post :destroy, params: { username: user.username }
 
         expect_success
       end

@@ -20,15 +20,14 @@
       %p
         = s_("TagsPage|Can't find HEAD commit for this tag")
     - if release && release.description.present?
-      .description.prepend-top-default
-        .wiki
-          = markdown_field(release, :description)
+      .description.md.prepend-top-default
+        = markdown_field(release, :description)
 
   .row-fixed-content.controls.flex-row
     = render 'projects/buttons/download', project: @project, ref: tag.name, pipeline: @tags_pipelines[tag.name]
 
     - if can?(current_user, :push_code, @project)
-      = link_to edit_project_tag_release_path(@project, tag.name), class: 'btn has-tooltip', title: s_('TagsPage|Edit release notes'), data: { container: "body" } do
+      = link_to edit_project_tag_release_path(@project, tag.name), class: 'btn btn-edit has-tooltip', title: s_('TagsPage|Edit release notes'), data: { container: "body" } do
         = icon("pencil")
 
       - if can?(current_user, :admin_project, @project)

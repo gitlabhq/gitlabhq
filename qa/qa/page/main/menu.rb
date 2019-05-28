@@ -10,15 +10,16 @@ module QA
         end
 
         view 'app/views/layouts/header/_default.html.haml' do
-          element :navbar
-          element :user_avatar
+          element :navbar, required: true
+          element :user_avatar, required: true
           element :user_menu, '.dropdown-menu' # rubocop:disable QA/ElementWithPattern
         end
 
         view 'app/views/layouts/nav/_dashboard.html.haml' do
           element :admin_area_link
-          element :projects_dropdown
-          element :groups_dropdown
+          element :projects_dropdown, required: true
+          element :groups_dropdown, required: true
+          element :snippets_link
         end
 
         view 'app/views/layouts/nav/projects_dropdown/_show.html.haml' do
@@ -46,7 +47,7 @@ module QA
           end
         end
 
-        def go_to_admin_area
+        def click_admin_area
           within_top_menu { click_element :admin_area_link }
         end
 
@@ -56,22 +57,26 @@ module QA
           end
         end
 
-        def go_to_profile_settings
-          within_user_menu do
-            click_link 'Settings'
+        def click_settings_link
+          retry_until(reload: false) do
+            within_user_menu do
+              click_link 'Settings'
+            end
+
+            has_text?('User Settings')
           end
+        end
+
+        def click_snippets_link
+          click_element :snippets_link
         end
 
         def has_personal_area?(wait: Capybara.default_max_wait_time)
-          using_wait_time(wait) do
-            page.has_selector?(element_selector_css(:user_avatar))
-          end
+          has_element?(:user_avatar, wait: wait)
         end
 
         def has_admin_area_link?(wait: Capybara.default_max_wait_time)
-          using_wait_time(wait) do
-            page.has_selector?(element_selector_css(:admin_area_link))
-          end
+          has_element?(:admin_area_link, wait: wait)
         end
 
         private

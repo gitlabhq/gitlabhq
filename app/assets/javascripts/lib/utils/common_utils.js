@@ -1,8 +1,13 @@
+/**
+ * @module common-utils
+ */
+
 import $ from 'jquery';
 import axios from './axios_utils';
 import { getLocationHash } from './url_utility';
 import { convertToCamelCase } from './text_utility';
 import { isObject } from './type_utility';
+import breakpointInstance from '../../breakpoints';
 
 export const getPagePath = (index = 0) => {
   const page = $('body').attr('data-page') || '';
@@ -118,14 +123,15 @@ export const handleLocationHash = () => {
 
 // Check if element scrolled into viewport from above or below
 // Courtesy http://stackoverflow.com/a/7557433/414749
-export const isInViewport = el => {
+export const isInViewport = (el, offset = {}) => {
   const rect = el.getBoundingClientRect();
+  const { top, left } = offset;
 
   return (
-    rect.top >= 0 &&
-    rect.left >= 0 &&
+    rect.top >= (top || 0) &&
+    rect.left >= (left || 0) &&
     rect.bottom <= window.innerHeight &&
-    rect.right <= window.innerWidth
+    parseInt(rect.right, 10) <= window.innerWidth
   );
 };
 
@@ -188,16 +194,23 @@ export const isMetaKey = e => e.metaKey || e.ctrlKey || e.altKey || e.shiftKey;
 export const isMetaClick = e => e.metaKey || e.ctrlKey || e.which === 2;
 
 export const contentTop = () => {
-  const perfBar = $('#js-peek').height() || 0;
-  const mrTabsHeight = $('.merge-request-tabs').height() || 0;
-  const headerHeight = $('.navbar-gitlab').height() || 0;
-  const diffFilesChanged = $('.js-diff-files-changed').height() || 0;
-  const diffFileLargeEnoughScreen =
-    'matchMedia' in window ? window.matchMedia('min-width: 768') : true;
+  const perfBar = $('#js-peek').outerHeight() || 0;
+  const mrTabsHeight = $('.merge-request-tabs').outerHeight() || 0;
+  const headerHeight = $('.navbar-gitlab').outerHeight() || 0;
+  const diffFilesChanged = $('.js-diff-files-changed').outerHeight() || 0;
+  const isDesktop = breakpointInstance.isDesktop();
   const diffFileTitleBar =
-    (diffFileLargeEnoughScreen && $('.diff-file .file-title-flex-parent:visible').height()) || 0;
+    (isDesktop && $('.diff-file .file-title-flex-parent:visible').outerHeight()) || 0;
+  const compareVersionsHeaderHeight = (isDesktop && $('.mr-version-controls').outerHeight()) || 0;
 
-  return perfBar + mrTabsHeight + headerHeight + diffFilesChanged + diffFileTitleBar;
+  return (
+    perfBar +
+    mrTabsHeight +
+    headerHeight +
+    diffFilesChanged +
+    diffFileTitleBar +
+    compareVersionsHeaderHeight
+  );
 };
 
 export const scrollToElement = element => {
@@ -213,6 +226,22 @@ export const scrollToElement = element => {
     },
     200,
   );
+};
+
+/**
+ * Returns a function that can only be invoked once between
+ * each browser screen repaint.
+ * @param {Function} fn
+ */
+export const debounceByAnimationFrame = fn => {
+  let requestId;
+
+  return function debounced(...args) {
+    if (requestId) {
+      window.cancelAnimationFrame(requestId);
+    }
+    requestId = window.requestAnimationFrame(() => fn.apply(this, args));
+  };
 };
 
 /**
@@ -425,34 +454,26 @@ export const historyPushState = newUrl => {
 };
 
 /**
- * Returns true for a String "true" and false otherwise.
- * This is the opposite of Boolean(...).toString()
+ * Returns true for a String value of "true" and false otherwise.
+ * This is the opposite of Boolean(...).toString().
+ * `parseBoolean` is idempotent.
  *
  * @param  {String} value
  * @returns {Boolean}
  */
-export const parseBoolean = value => value === 'true';
+export const parseBoolean = value => (value && value.toString()) === 'true';
 
 /**
- * Converts permission provided as strings to booleans.
- *
- * @param  {String} string
- * @returns {Boolean}
+ * @callback backOffCallback
+ * @param {Function} next
+ * @param {Function} stop
  */
-export const convertPermissionToBoolean = permission => {
-  if (process.env.NODE_ENV !== 'production') {
-    // eslint-disable-next-line no-console
-    console.warn('convertPermissionToBoolean is deprecated! Please use parseBoolean instead.');
-  }
-
-  return parseBoolean(permission);
-};
 
 /**
  * Back Off exponential algorithm
  * backOff :: (Function<next, stop>, Number) -> Promise<Any, Error>
  *
- * @param {Function<next, stop>} fn function to be called
+ * @param {backOffCallback} fn function to be called
  * @param {Number} timeout
  * @return {Promise<Any, Error>}
  * @example
@@ -602,10 +623,18 @@ export const spriteIcon = (icon, className = '') => {
 
 /**
  * This method takes in object with snake_case property names
- * and returns new object with camelCase property names
+ * and returns a new object with camelCase property names
  *
  * Reasoning for this method is to ensure consistent property
  * naming conventions across JS code.
+ *
+ * This method also supports additional params in `options` object
+ *
+ * @param {Object} obj - Object to be converted.
+ * @param {Object} options - Object containing additional options.
+ * @param {boolean} options.deep - FLag to allow deep object converting
+ * @param {Array[]} dropKeys - List of properties to discard while building new object
+ * @param {Array[]} ignoreKeyNames - List of properties to leave intact (as snake_case) while building new object
  */
 export const convertObjectPropsToCamelCase = (obj = {}, options = {}) => {
   if (obj === null) {
@@ -613,12 +642,26 @@ export const convertObjectPropsToCamelCase = (obj = {}, options = {}) => {
   }
 
   const initial = Array.isArray(obj) ? [] : {};
+  const { deep = false, dropKeys = [], ignoreKeyNames = [] } = options;
 
   return Object.keys(obj).reduce((acc, prop) => {
     const result = acc;
     const val = obj[prop];
 
-    if (options.deep && (isObject(val) || Array.isArray(val))) {
+    // Drop properties from new object if
+    // there are any mentioned in options
+    if (dropKeys.indexOf(prop) > -1) {
+      return acc;
+    }
+
+    // Skip converting properties in new object
+    // if there are any mentioned in options
+    if (ignoreKeyNames.indexOf(prop) > -1) {
+      result[prop] = obj[prop];
+      return acc;
+    }
+
+    if (deep && (isObject(val) || Array.isArray(val))) {
       result[convertToCamelCase(prop)] = convertObjectPropsToCamelCase(val, options);
     } else {
       result[convertToCamelCase(prop)] = obj[prop];
@@ -672,6 +715,26 @@ export const NavigationType = {
   TYPE_BACK_FORWARD: 2,
   TYPE_RESERVED: 255,
 };
+
+/**
+ * Returns the value of `gon.ee`
+ * Used to check if it's the EE codebase or the CE one.
+ *
+ * @returns Boolean
+ */
+export const isEE = () => window.gon && window.gon.ee;
+
+/**
+ * Checks if the given Label has a special syntax `::` in
+ * it's title.
+ *
+ * Expected Label to be an Object with `title` as a key:
+ *   { title: 'LabelTitle', ...otherProperties };
+ *
+ * @param {Object} label
+ * @returns Boolean
+ */
+export const isScopedLabel = ({ title = '' }) => title.indexOf('::') !== -1;
 
 window.gl = window.gl || {};
 window.gl.utils = {

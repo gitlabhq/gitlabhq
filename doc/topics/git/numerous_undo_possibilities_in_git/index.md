@@ -45,7 +45,6 @@ Here's what we'll cover in this tutorial:
        - [How to modify history](#how-modifying-history-is-done)
        - [How to remove sensitive information from repository](#deleting-sensitive-information-from-commits)
 
-
 ### Branching strategy
 
 [Git][git-official] is a de-centralized version control system, which means that beside regular
@@ -64,13 +63,11 @@ prevent that anything is lost or out of sync when feature is complete. You can a
 read through this blog post on [Git Tips & Tricks][gitlab-git-tips-n-tricks]
 to learn how to easily **do** things in Git.
 
-
 ## Undo local changes
 
 Until you push your changes to any remote repository, they will only affect you.
 That broadens your options on how to handle undoing them. Still, local changes
 can be on various stages and each stage has a different approach on how to tackle them.
-
 
 ### Unstaged local changes (before you commit)
 
@@ -315,7 +312,6 @@ In case you want to modify something introduced in commit `B`.
 You can find some more examples in [below section where we explain how to modify
 history](#how-modifying-history-is-done)
 
-
 ### Redoing the Undo
 
 Sometimes you realize that the changes you undid were useful and you want them
@@ -396,8 +392,8 @@ a nicer history of your contribution.
 Keep in mind that this also removes the comments attached to certain commits
 in merge requests, so if you need to retain traceability in GitLab, then
 modifying history is not acceptable.
-A feature-branch of a merge request is a public branch and might be used by 
-other developers, but project process and rules might allow or require 
+A feature-branch of a merge request is a public branch and might be used by
+other developers, but project process and rules might allow or require
 you to use `git rebase` (command that changes history) to reduce number of
 displayed commits on target branch after reviews are done (for example
 GitLab). There is a `git merge --squash` command which does exactly that

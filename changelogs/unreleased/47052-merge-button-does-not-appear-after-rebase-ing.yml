@@ -1,5 +1,0 @@
----
-title: Allow merge after rebase without page refresh on FF repositories
-merge_request: 23572
-author:
-type: fixed

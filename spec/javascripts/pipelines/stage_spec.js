@@ -120,13 +120,15 @@ describe('Pipelines stage component', () => {
 
         setTimeout(() => {
           component.$el.querySelector('.js-ci-action').click();
-          component
-            .$nextTick()
-            .then(() => {
-              expect(eventHub.$emit).toHaveBeenCalledWith('refreshPipelinesTable');
-            })
-            .then(done)
-            .catch(done.fail);
+          setTimeout(() => {
+            component
+              .$nextTick()
+              .then(() => {
+                expect(eventHub.$emit).toHaveBeenCalledWith('refreshPipelinesTable');
+              })
+              .then(done)
+              .catch(done.fail);
+          }, 0);
         }, 0);
       });
     });

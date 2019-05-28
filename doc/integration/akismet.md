@@ -18,7 +18,7 @@ from happening.
 
 To use Akismet:
 
-1. Go to the URL: https://akismet.com/account/
+1. Go to the URL: <https://akismet.com/account/>
 
 1. Sign-in or create a new account.
 
@@ -33,7 +33,6 @@ To use Akismet:
 1. Save the configuration.
 
 ![Screenshot of Akismet settings](img/akismet_settings.png)
-
 
 ## Training
 

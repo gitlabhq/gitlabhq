@@ -1,11 +1,13 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Issuable::CommonSystemNotesService do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
-  let(:issuable) { create(:issue) }
+  let(:issuable) { create(:issue, project: project) }
 
-  describe '#execute' do
+  context 'on issuable update' do
     it_behaves_like 'system note creation', { title: 'New title' }, 'changed title'
     it_behaves_like 'system note creation', { description: 'New description' }, 'changed the description'
     it_behaves_like 'system note creation', { discussion_locked: true }, 'locked this issue'
@@ -20,7 +22,7 @@ describe Issuable::CommonSystemNotesService do
       end
 
       it 'creates a resource label event' do
-        described_class.new(project, user).execute(issuable, [])
+        described_class.new(project, user).execute(issuable, old_labels: [])
         event = issuable.reload.resource_label_events.last
 
         expect(event).not_to be_nil
@@ -66,6 +68,49 @@ describe Issuable::CommonSystemNotesService do
           it_behaves_like 'WIP notes creation', 'unmarked'
         end
       end
+    end
+  end
+
+  context 'on issuable create' do
+    let(:issuable) { build(:issue, project: project) }
+
+    subject { described_class.new(project, user).execute(issuable, old_labels: [], is_update: false) }
+
+    it 'does not create system note for title and description' do
+      issuable.save
+
+      expect { subject }.not_to change { issuable.notes.count }
+    end
+
+    it 'creates a resource label event for labels added' do
+      label = create(:label, project: project)
+
+      issuable.labels << label
+      issuable.save
+
+      expect { subject }.to change { issuable.resource_label_events.count }.from(0).to(1)
+
+      event = issuable.reload.resource_label_events.last
+
+      expect(event).not_to be_nil
+      expect(event.label_id).to eq label.id
+      expect(event.user_id).to eq user.id
+    end
+
+    it 'creates a system note for milestone set' do
+      issuable.milestone = create(:milestone, project: project)
+      issuable.save
+
+      expect { subject }.to change { issuable.notes.count }.from(0).to(1)
+      expect(issuable.notes.last.note).to match('changed milestone')
+    end
+
+    it 'creates a system note for due_date set' do
+      issuable.due_date = Date.today
+      issuable.save
+
+      expect { subject }.to change { issuable.notes.count }.from(0).to(1)
+      expect(issuable.notes.last.note).to match('changed due date')
     end
   end
 end

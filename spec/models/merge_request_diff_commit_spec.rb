@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe MergeRequestDiffCommit do
@@ -16,7 +18,7 @@ describe MergeRequestDiffCommit do
   end
 
   describe '.create_bulk' do
-    let(:sha_attribute)  { Gitlab::Database::ShaAttribute.new }
+    let(:sha_attribute) { Gitlab::Database::ShaAttribute.new }
     let(:merge_request_diff_id) { merge_request.merge_request_diff.id }
     let(:commits) do
       [

@@ -11,24 +11,19 @@ cache:
   - node_modules/
 
 before_script:
-  # Update packages 
+  # Update packages
   - apt-get update -yqq
-
   # Install dependencies
   - apt-get install -yqq gnupg zlib1g-dev libpng-dev
-  
   # Install Node 8
   - curl -sL https://deb.nodesource.com/setup_8.x | bash -
   - apt-get install -yqq nodejs
-
   # Install php extensions
   - docker-php-ext-install zip
-
-  # Install Composer and project dependencies.
+  # Install Composer and project dependencies
   - curl -sS https://getcomposer.org/installer | php
-  - php composer.phar install 
-  
-  # Install Node dependencies.
+  - php composer.phar install
+  # Install Node dependencies
   - npm install
 
 pages:

@@ -47,5 +47,43 @@ describe Gitlab::Checks::DiffCheck do
         end
       end
     end
+
+    context 'commit diff validations' do
+      before do
+        allow(subject).to receive(:validations_for_diff).and_return([lambda { |diff| return }])
+
+        expect_any_instance_of(Commit).to receive(:raw_deltas).and_call_original
+
+        subject.validate!
+      end
+
+      context 'when request store is inactive' do
+        it 'are run for every commit' do
+          expect_any_instance_of(Commit).to receive(:raw_deltas).and_call_original
+
+          subject.validate!
+        end
+      end
+
+      context 'when request store is active', :request_store do
+        it 'are cached for every commit' do
+          expect_any_instance_of(Commit).not_to receive(:raw_deltas)
+
+          subject.validate!
+        end
+
+        it 'are run for not cached commits' do
+          allow(project.repository).to receive(:new_commits).and_return(
+            project.repository.commits_between('be93687618e4b132087f430a4d8fc3a609c9b77c', 'a5391128b0ef5d21df5dd23d98557f4ef12fae20')
+          )
+          change_access.instance_variable_set(:@commits, project.repository.new_commits)
+
+          expect(project.repository.new_commits.first).not_to receive(:raw_deltas).and_call_original
+          expect(project.repository.new_commits.last).to receive(:raw_deltas).and_call_original
+
+          subject.validate!
+        end
+      end
+    end
   end
 end

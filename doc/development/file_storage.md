@@ -4,21 +4,21 @@ We use the [CarrierWave] gem to handle file upload, store and retrieval.
 
 There are many places where file uploading is used, according to contexts:
 
-* System
+- System
   - Instance Logo (logo visible in sign in/sign up pages)
   - Header Logo (one displayed in the navigation bar)
-* Group
+- Group
   - Group avatars
-* User
+- User
   - User avatars
   - User snippet attachments
-* Project
+- Project
   - Project avatars
   - Issues/MR/Notes Markdown attachments
   - Issues/MR/Notes Legacy Markdown attachments
   - CI Artifacts (archive, metadata, trace)
   - LFS Objects
-
+  - Merge request diffs
 
 ## Disk storage
 
@@ -37,6 +37,7 @@ they are still not 100% standardized. You can see them below:
 | Issues/MR/Notes Legacy Markdown attachments | no     | uploads/-/system/note/attachment/:id/:filename              | `AttachmentUploader`   | Note       |
 | CI Artifacts (CE)                     | yes    | shared/artifacts/:disk_hash[0..1]/:disk_hash[2..3]/:disk_hash/:year_:month_:date/:job_id/:job_artifact_id (:disk_hash is SHA256 digest of project_id) | `JobArtifactUploader`  | Ci::JobArtifact  |
 | LFS Objects  (CE)                     | yes    | shared/lfs-objects/:hex/:hex/:object_hash                   | `LfsObjectUploader`    | LfsObject  |
+| External merge request diffs          | yes    | shared/external-diffs/merge_request_diffs/mr-:parent_id/diff-:id | `ExternalDiffUploader` | MergeRequestDiff |
 
 CI Artifacts and LFS Objects behave differently in CE and EE. In CE they inherit the `GitlabUploader`
 while in EE they inherit the `ObjectStorage` and store files in and S3 API compatible object store.
@@ -52,7 +53,7 @@ hash of the project ID instead, if project migrates to the new approach (introdu
 
 ### Path segments
 
-Files are stored at multiple locations and use different path schemes. 
+Files are stored at multiple locations and use different path schemes.
 All the `GitlabUploader` derived classes should comply with this path segment schema:
 
 ```
@@ -61,7 +62,7 @@ All the `GitlabUploader` derived classes should comply with this path segment sc
 | `<gitlab_root>/public/` | `uploads/-/system/`       | `user/avatar/:id/`                | `:filename`                      |
 | ----------------------- + ------------------------- + --------------------------------- + -------------------------------- |
 | `CarrierWave.root`      | `GitlabUploader.base_dir` | `GitlabUploader#dynamic_segment`  | `CarrierWave::Uploader#filename` |
-|                         | `CarrierWave::Uploader#store_dir`                             |                                  | 
+|                         | `CarrierWave::Uploader#store_dir`                             |                                  |
 
 |   FileUploader
 | ----------------------- + ------------------------- + --------------------------------- + -------------------------------- |
@@ -69,7 +70,7 @@ All the `GitlabUploader` derived classes should comply with this path segment sc
 | `<gitlab_root>/shared/` | `snippets/`               | `:secret/`                        | `:filename`                      |
 | ----------------------- + ------------------------- + --------------------------------- + -------------------------------- |
 | `CarrierWave.root`      | `GitlabUploader.base_dir` | `GitlabUploader#dynamic_segment`  | `CarrierWave::Uploader#filename` |
-|                         | `CarrierWave::Uploader#store_dir`                             |                                  | 
+|                         | `CarrierWave::Uploader#store_dir`                             |                                  |
 |                         |                           | `FileUploader#upload_path                                            |
 
 |   ObjectStore::Concern (store = remote)
@@ -77,7 +78,7 @@ All the `GitlabUploader` derived classes should comply with this path segment sc
 | `<bucket_name>`         | <ignored>                 | `user/avatar/:id/`                  | `:filename`                      |
 | ----------------------- + ------------------------- + ----------------------------------- + -------------------------------- |
 | `#fog_dir`              | `GitlabUploader.base_dir` | `GitlabUploader#dynamic_segment`    | `CarrierWave::Uploader#filename` |
-|                         |                           | `ObjectStorage::Concern#store_dir`  |                                  | 
+|                         |                           | `ObjectStorage::Concern#store_dir`  |                                  |
 |                         |                           | `ObjectStorage::Concern#upload_path                                    |
 ```
 

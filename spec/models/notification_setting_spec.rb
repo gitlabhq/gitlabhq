@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe NotificationSetting do
@@ -42,12 +44,7 @@ RSpec.describe NotificationSetting do
         expect(notification_setting.new_issue).to eq(true)
         expect(notification_setting.close_issue).to eq(true)
         expect(notification_setting.merge_merge_request).to eq(true)
-
-        # In Rails 5 assigning a value which is not explicitly `true` or `false` ("nil" in this case)
-        # to a boolean column transforms it to `true`.
-        # In Rails 4 it transforms the value to `false` with deprecation warning.
-        # Replace `eq(Gitlab.rails5?)` with `eq(true)` when removing rails5? code.
-        expect(notification_setting.close_merge_request).to eq(Gitlab.rails5?)
+        expect(notification_setting.close_merge_request).to eq(true)
         expect(notification_setting.reopen_merge_request).to eq(false)
       end
     end

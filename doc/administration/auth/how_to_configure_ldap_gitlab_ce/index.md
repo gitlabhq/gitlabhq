@@ -14,7 +14,7 @@ Managing a large number of users in GitLab can become a burden for system admini
 
 In this guide we will focus on configuring GitLab with Active Directory. [Active Directory](https://en.wikipedia.org/wiki/Active_Directory) is a popular LDAP compatible directory service provided by Microsoft, included in all modern Windows Server operating systems.
 
-GitLab has supported LDAP integration since [version 2.2](https://about.gitlab.com/2012/02/22/gitlab-version-2-2/). With GitLab LDAP [group syncing](#group-syncing-ee) being added to GitLab Enterprise Edition in [version 6.0](https://about.gitlab.com/2013/08/20/gitlab-6-dot-0-released/). LDAP integration has become one of the most popular features in GitLab.
+GitLab has supported LDAP integration since [version 2.2](https://about.gitlab.com/2012/02/22/gitlab-version-2-2/). With GitLab LDAP [group syncing](../how_to_configure_ldap_gitlab_ee/index.html#group-sync) being added to GitLab Enterprise Edition in [version 6.0](https://about.gitlab.com/2013/08/20/gitlab-6-dot-0-released/). LDAP integration has become one of the most popular features in GitLab.
 
 ## Getting started
 
@@ -111,7 +111,7 @@ The initial configuration of LDAP in GitLab requires changes to the `gitlab.rb` 
 
 The two Active Directory specific values are `active_directory: true` and `uid: 'sAMAccountName'`. `sAMAccountName` is an attribute returned by Active Directory used for GitLab usernames. See the example output from `ldapsearch` for a full list of attributes a "person" object (user) has in **AD** - [`ldapsearch` example](#using-ldapsearch-unix)
 
-> Both group_base and admin_group configuration options are only available in GitLab Enterprise Edition. See [GitLab EE - LDAP Features](#gitlab-enterprise-edition---ldap-features)
+> Both group_base and admin_group configuration options are only available in GitLab Enterprise Edition. See [GitLab EE - LDAP Features](../how_to_configure_ldap_gitlab_ee/index.html#gitlab-enterprise-edition---ldap-features) **[STARTER ONLY]**
 
 ### Example `gitlab.rb` LDAP
 
@@ -145,7 +145,7 @@ Securing LDAP (enabling LDAPS) on Windows Server 2012 involves installing a vali
 
 > By default a LDAP service listens for connections on TCP and UDP port 389. LDAPS (LDAP over SSL) listens on port 636
 
-### Testing you AD server
+### Testing your AD server
 
 #### Using **AdFind** (Windows)
 
@@ -255,7 +255,7 @@ After configuring LDAP, basic authentication will be available. Users can then l
 
 Users that are removed from the LDAP base group (e.g `OU=GitLab INT,DC=GitLab,DC=org`) will be **blocked** in GitLab. [More information](../ldap.md#security) on LDAP security.
 
-If `allow_username_or_email_login` is enabled in the LDAP configuration, GitLab will ignore everything after the first '@' in the LDAP username used on login. Example: The username `jon.doe@example.com` is converted to `jon.doe` when authenticating with the LDAP server. Disable this setting if you use `userPrincipalName` as the `uid`.
+If `allow_username_or_email_login` is enabled in the LDAP configuration, GitLab will ignore everything after the first '@' in the LDAP username used on login. Example: The username `` jon.doe@example.com `` is converted to `jon.doe` when authenticating with the LDAP server. Disable this setting if you use `userPrincipalName` as the `uid`.
 
 ## LDAP extended features on GitLab EE
 
@@ -267,4 +267,4 @@ have extended functionalities with LDAP, such as:
 - Updating user permissions
 - Multiple LDAP servers
 
-Read through the article on [LDAP for GitLab EE](https://docs.gitlab.com/ee/administration/auth/how_to_configure_ldap_gitlab_ee/) for an overview.
+Read through the article on [LDAP for GitLab EE](../how_to_configure_ldap_gitlab_ee/index.md) **[STARTER ONLY]** for an overview.

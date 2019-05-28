@@ -27,6 +27,8 @@ class UpdateDeploymentService
 
       deployment.tap(&:update_merge_request_metrics!)
     end
+
+    deployment
   end
 
   private

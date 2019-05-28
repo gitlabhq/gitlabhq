@@ -64,12 +64,12 @@ describe 'Dropdown emoji', :js do
       end
 
       it 'closes when the search bar is unfocused' do
-        find('body').click()
+        find('body').click
 
         expect(page).to have_css(js_dropdown_emoji, visible: false)
       end
 
-      it 'should show loading indicator when opened' do
+      it 'shows loading indicator when opened' do
         slow_requests do
           filtered_search.set('my-reaction:')
 
@@ -77,13 +77,13 @@ describe 'Dropdown emoji', :js do
         end
       end
 
-      it 'should hide loading indicator when loaded' do
+      it 'hides loading indicator when loaded' do
         send_keys_to_filtered_search('my-reaction:')
 
         expect(page).not_to have_css('#js-dropdown-my-reaction .filter-dropdown-loading')
       end
 
-      it 'should load all the emojis when opened' do
+      it 'loads all the emojis when opened' do
         send_keys_to_filtered_search('my-reaction:')
 
         expect(dropdown_emoji_size).to eq(4)
@@ -125,7 +125,7 @@ describe 'Dropdown emoji', :js do
         find('#js-dropdown-my-reaction .filter-dropdown-item', text: 'None').click
 
         expect(page).to have_css(js_dropdown_emoji, visible: false)
-        expect_tokens([reaction_token('none', false)])
+        expect_tokens([reaction_token('None', false)])
         expect_filtered_search_input_empty
       end
 
@@ -133,7 +133,7 @@ describe 'Dropdown emoji', :js do
         find('#js-dropdown-my-reaction .filter-dropdown-item', text: 'Any').click
 
         expect(page).to have_css(js_dropdown_emoji, visible: false)
-        expect_tokens([reaction_token('any', false)])
+        expect_tokens([reaction_token('Any', false)])
         expect_filtered_search_input_empty
       end
 

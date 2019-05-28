@@ -1,4 +1,5 @@
 import bp from './breakpoints';
+import { SIDEBAR_COLLAPSED_CLASS } from './contextual_sidebar';
 
 const HIDE_INTERVAL_TIMEOUT = 300;
 const IS_OVER_CLASS = 'is-over';
@@ -24,9 +25,12 @@ export const slope = (a, b) => (b.y - a.y) / (b.x - a.x);
 let headerHeight = 50;
 
 export const getHeaderHeight = () => headerHeight;
+const setHeaderHeight = () => {
+  headerHeight = sidebar.offsetTop;
+};
 
 export const isSidebarCollapsed = () =>
-  sidebar && sidebar.classList.contains('sidebar-collapsed-desktop');
+  sidebar && sidebar.classList.contains(SIDEBAR_COLLAPSED_CLASS);
 
 export const canShowActiveSubItems = el => {
   if (el.classList.contains('active') && !isSidebarCollapsed()) {
@@ -186,7 +190,7 @@ export default () => {
     });
   }
 
-  headerHeight = document.querySelector('.nav-sidebar').offsetTop;
+  requestIdleCallback(setHeaderHeight);
 
   items.forEach(el => {
     const subItems = el.querySelector('.sidebar-sub-level-items');

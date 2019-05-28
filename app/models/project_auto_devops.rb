@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ProjectAutoDevops < ActiveRecord::Base
+class ProjectAutoDevops < ApplicationRecord
   belongs_to :project
 
   enum deploy_strategy: {
@@ -16,21 +16,8 @@ class ProjectAutoDevops < ActiveRecord::Base
 
   after_save :create_gitlab_deploy_token, if: :needs_to_create_deploy_token?
 
-  def instance_domain
-    Gitlab::CurrentSettings.auto_devops_domain
-  end
-
-  def has_domain?
-    domain.present? || instance_domain.present?
-  end
-
   def predefined_variables
     Gitlab::Ci::Variables::Collection.new.tap do |variables|
-      if has_domain?
-        variables.append(key: 'AUTO_DEVOPS_DOMAIN',
-                         value: domain.presence || instance_domain)
-      end
-
       variables.concat(deployment_strategy_default_variables)
     end
   end

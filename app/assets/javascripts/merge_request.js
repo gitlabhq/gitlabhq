@@ -2,6 +2,7 @@
 
 import $ from 'jquery';
 import { __ } from '~/locale';
+import createFlash from '~/flash';
 import TaskList from './task_list';
 import MergeRequestTabs from './merge_request_tabs';
 import IssuablesHelper from './helpers/issuables_helper';
@@ -35,9 +36,17 @@ function MergeRequest(opts) {
       dataType: 'merge_request',
       fieldName: 'description',
       selector: '.detail-page-description',
+      lockVersion: this.$el.data('lockVersion'),
       onSuccess: result => {
         document.querySelector('#task_status').innerText = result.task_status;
         document.querySelector('#task_status_short').innerText = result.task_status_short;
+      },
+      onError: () => {
+        createFlash(
+          __(
+            'Someone edited this merge request at the same time you did. Please refresh the page to see changes.',
+          ),
+        );
       },
     });
   }

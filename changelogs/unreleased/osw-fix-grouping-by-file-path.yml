@@ -1,5 +1,0 @@
----
-title: Avoid 500's when serializing legacy diff notes
-merge_request: 23544
-author:
-type: fixed

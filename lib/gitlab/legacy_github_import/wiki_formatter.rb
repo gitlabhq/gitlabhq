@@ -13,6 +13,10 @@ module Gitlab
         project.wiki.disk_path
       end
 
+      def full_path
+        project.wiki.full_path
+      end
+
       def import_url
         project.import_url.sub(/\.git\z/, ".wiki.git")
       end

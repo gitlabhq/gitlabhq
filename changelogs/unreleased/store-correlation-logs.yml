@@ -1,5 +1,0 @@
----
-title: Log and pass correlation-id between Unicorn, Sidekiq and Gitaly
-merge_request:
-author:
-type: added

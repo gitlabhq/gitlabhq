@@ -36,6 +36,14 @@ module EmailsHelper
     nil
   end
 
+  def sanitize_name(name)
+    if name =~ URI::DEFAULT_PARSER.regexp[:URI_REF]
+      name.tr('.', '_')
+    else
+      name
+    end
+  end
+
   def password_reset_token_valid_time
     valid_hours = Devise.reset_password_within / 60 / 60
     if valid_hours >= 24
@@ -58,7 +66,7 @@ module EmailsHelper
   def header_logo
     if current_appearance&.header_logo?
       image_tag(
-        current_appearance.header_logo,
+        current_appearance.header_logo_path,
         style: 'height: 50px'
       )
     else
@@ -81,6 +89,28 @@ module EmailsHelper
       'margin:0',
       'text-align:center'
     ].join(';')
+  end
+
+  def closure_reason_text(closed_via, format: nil)
+    case closed_via
+    when MergeRequest
+      merge_request = MergeRequest.find(closed_via[:id]).present
+
+      case format
+      when :html
+        " via merge request #{link_to(merge_request.to_reference, merge_request.web_url)}"
+      else
+        # If it's not HTML nor text then assume it's text to be safe
+        " via merge request #{merge_request.to_reference} (#{merge_request.web_url})"
+      end
+    when String
+      # Technically speaking this should be Commit but per
+      # https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/15610#note_163812339
+      # we can't deserialize Commit without custom serializer for ActiveJob
+      " via #{closed_via}"
+    else
+      ""
+    end
   end
 
   # "You are receiving this email because #{reason}"
@@ -122,5 +152,43 @@ module EmailsHelper
     end
 
     project.id.to_s + "." + project_path_as_domain + "." + Gitlab.config.gitlab.host
+  end
+
+  def html_header_message
+    return unless show_header?
+
+    render_message(:header_message, style: '')
+  end
+
+  def html_footer_message
+    return unless show_footer?
+
+    render_message(:footer_message, style: '')
+  end
+
+  def text_header_message
+    return unless show_header?
+
+    strip_tags(render_message(:header_message, style: ''))
+  end
+
+  def text_footer_message
+    return unless show_footer?
+
+    strip_tags(render_message(:footer_message, style: ''))
+  end
+
+  private
+
+  def show_footer?
+    email_header_and_footer_enabled? && current_appearance&.show_footer?
+  end
+
+  def show_header?
+    email_header_and_footer_enabled? && current_appearance&.show_header?
+  end
+
+  def email_header_and_footer_enabled?
+    current_appearance&.email_header_and_footer_enabled?
   end
 end

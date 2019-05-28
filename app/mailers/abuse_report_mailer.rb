@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 class AbuseReportMailer < BaseMailer
+  layout 'empty_mailer'
+
+  helper EmailsHelper
+
   def notify(abuse_report_id)
     return unless deliverable?
 

@@ -33,6 +33,28 @@ describe Gitlab::Kubernetes::Helm::Api do
     end
   end
 
+  describe '#uninstall' do
+    before do
+      allow(client).to receive(:create_pod).and_return(nil)
+      allow(client).to receive(:delete_pod).and_return(nil)
+      allow(namespace).to receive(:ensure_exists!).once
+    end
+
+    it 'ensures the namespace exists before creating the POD' do
+      expect(namespace).to receive(:ensure_exists!).once.ordered
+      expect(client).to receive(:create_pod).once.ordered
+
+      subject.uninstall(command)
+    end
+
+    it 'removes an existing pod before installing' do
+      expect(client).to receive(:delete_pod).with('install-app-name', 'gitlab-managed-apps').once.ordered
+      expect(client).to receive(:create_pod).once.ordered
+
+      subject.uninstall(command)
+    end
+  end
+
   describe '#install' do
     before do
       allow(client).to receive(:create_pod).and_return(nil)
@@ -168,51 +190,6 @@ describe Gitlab::Kubernetes::Helm::Api do
           subject.install(command)
         end
       end
-    end
-  end
-
-  describe '#update' do
-    let(:rbac) { false }
-
-    let(:command) do
-      Gitlab::Kubernetes::Helm::UpgradeCommand.new(
-        application_name,
-        chart: 'chart-name',
-        files: files,
-        rbac: rbac
-      )
-    end
-
-    before do
-      allow(namespace).to receive(:ensure_exists!).once
-
-      allow(client).to receive(:update_config_map).and_return(nil)
-      allow(client).to receive(:create_pod).and_return(nil)
-      allow(client).to receive(:delete_pod).and_return(nil)
-    end
-
-    it 'ensures the namespace exists before creating the pod' do
-      expect(namespace).to receive(:ensure_exists!).once.ordered
-      expect(client).to receive(:create_pod).once.ordered
-
-      subject.update(command)
-    end
-
-    it 'removes an existing pod before updating' do
-      expect(client).to receive(:delete_pod).with('upgrade-app-name', 'gitlab-managed-apps').once.ordered
-      expect(client).to receive(:create_pod).once.ordered
-
-      subject.update(command)
-    end
-
-    it 'updates the config map on kubeclient when one exists' do
-      resource = Gitlab::Kubernetes::ConfigMap.new(
-        application_name, files
-      ).generate
-
-      expect(client).to receive(:update_config_map).with(resource).once
-
-      subject.update(command)
     end
   end
 

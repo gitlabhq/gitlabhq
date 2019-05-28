@@ -8,7 +8,7 @@ describe Types::PermissionTypes::BasePermissionType do
     Class.new(described_class) do
       graphql_name 'TestClass'
 
-      permission_field :do_stuff, resolve: -> (_, _, _)  { true }
+      permission_field :do_stuff, resolve: -> (_, _, _) { true }
       ability_field(:read_issue)
       abilities :admin_issue
     end

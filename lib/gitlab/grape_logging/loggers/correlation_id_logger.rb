@@ -6,7 +6,7 @@ module Gitlab
     module Loggers
       class CorrelationIdLogger < ::GrapeLogging::Loggers::Base
         def parameters(_, _)
-          { Gitlab::CorrelationId::LOG_KEY => Gitlab::CorrelationId.current_id }
+          { Labkit::Correlation::CorrelationId::LOG_KEY => Labkit::Correlation::CorrelationId.current_id }
         end
       end
     end

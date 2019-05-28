@@ -3,22 +3,18 @@
 module QA
   context 'Create' do
     describe 'Git clone over HTTP', :ldap_no_tls do
-      let(:location) do
-        Page::Project::Show.perform(&:repository_clone_http_location).uri
-      end
-
-      before do
+      before(:all) do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
         Page::Main::Login.perform(&:sign_in_using_credentials)
 
-        project = Resource::Project.fabricate! do |scenario|
+        @project = Resource::Project.fabricate! do |scenario|
           scenario.name = 'project-with-code'
           scenario.description = 'project for git clone tests'
         end
-        project.visit!
+        @project.visit!
 
         Git::Repository.perform do |repository|
-          repository.uri = location
+          repository.uri = @project.repository_http_location.uri
           repository.use_default_credentials
 
           repository.act do
@@ -29,12 +25,12 @@ module QA
             push_changes
           end
         end
-        Page::Project::Show.perform(&:wait_for_push)
+        @project.wait_for_push_new_branch
       end
 
       it 'user performs a deep clone' do
         Git::Repository.perform do |repository|
-          repository.uri = location
+          repository.uri = @project.repository_http_location.uri
           repository.use_default_credentials
 
           repository.clone
@@ -45,7 +41,7 @@ module QA
 
       it 'user performs a shallow clone' do
         Git::Repository.perform do |repository|
-          repository.uri = location
+          repository.uri = @project.repository_http_location.uri
           repository.use_default_credentials
 
           repository.shallow_clone

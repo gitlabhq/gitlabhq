@@ -10,7 +10,7 @@ module Gitlab
           end
 
           def satisfied_by?(pipeline, seed)
-            return true unless pipeline.branch_updated?
+            return true if pipeline.modified_paths.nil?
 
             pipeline.modified_paths.any? do |path|
               @globs.any? do |glob|

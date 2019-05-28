@@ -69,6 +69,7 @@
 
   @include media-breakpoint-up(sm) {
     display: flex;
+    height: 100%;
     align-items: center;
     padding: 50px 30px;
   }
@@ -97,5 +98,32 @@
     @include media-breakpoint-up(sm) {
       padding-left: 20px;
     }
+  }
+}
+
+@include media-breakpoint-up(lg) {
+  .column-large {
+    flex: 2;
+  }
+
+  .column-small {
+    flex: 1;
+    margin-bottom: 15px;
+
+    .blank-state {
+      max-width: 400px;
+      flex-wrap: wrap;
+      margin-left: 15px;
+    }
+
+    .blank-state-icon {
+      margin-bottom: 30px;
+    }
+  }
+}
+
+@include media-breakpoint-down(xs) {
+  .blank-state-icon svg {
+    width: 315px;
   }
 }

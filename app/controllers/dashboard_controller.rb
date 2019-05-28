@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 class DashboardController < Dashboard::ApplicationController
-  include IssuesAction
-  include MergeRequestsAction
+  include IssuableCollectionsAction
 
   prepend_before_action(only: [:issues]) { authenticate_sessionless_user!(:rss) }
   prepend_before_action(only: [:issues_calendar]) { authenticate_sessionless_user!(:ics) }
@@ -47,7 +46,10 @@ class DashboardController < Dashboard::ApplicationController
   end
 
   def check_filters_presence!
-    @no_filters_set = finder_type.scalar_params.none? { |k| params.key?(k) }
+    no_scalar_filters_set = finder_type.scalar_params.none? { |k| params.key?(k) }
+    no_array_filters_set = finder_type.array_params.none? { |k, _| params.key?(k) }
+
+    @no_filters_set = no_scalar_filters_set && no_array_filters_set
 
     return unless @no_filters_set
 

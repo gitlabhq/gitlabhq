@@ -21,7 +21,7 @@
             = clipboard_button(target: '#issuable_email', class: 'btn btn-clipboard input-group-text btn-transparent d-none d-sm-block')
 
             - if issuable_type == 'issue'
-              - enter_title_text =  _('Enter the issue title')
+              - enter_title_text = _('Enter the issue title')
               - enter_description_text = _('Enter the issue description')
             - else
               - enter_title_text = _('Enter the merge request title')
@@ -36,7 +36,12 @@
         %p
           = render 'by_email_description'
         %p
-          This is a private email address, generated just for you.
+          This is a private email address
+
+          %a{ href: 'https://docs.gitlab.com/ee/development/emails.html#email-namespace', target: "_blank", rel: "noopener" }
+            %i.fa.fa-question-circle{ 'aria-label': "Learn more about incoming email addresses" }
+
+          generated just for you.
 
           Anyone who gets ahold of it can create issues or merge requests as if they were you.
           You should

@@ -20,7 +20,7 @@ describe Clusters::Gcp::FinalizeCreationService, '#execute' do
   subject { described_class.new.execute(provider) }
 
   before do
-    allow(ClusterPlatformConfigureWorker).to receive(:perform_async)
+    allow(ClusterConfigureWorker).to receive(:perform_async)
   end
 
   shared_examples 'success' do
@@ -43,8 +43,8 @@ describe Clusters::Gcp::FinalizeCreationService, '#execute' do
       expect(platform.token).to eq(token)
     end
 
-    it 'calls ClusterPlatformConfigureWorker in a ascync fashion' do
-      expect(ClusterPlatformConfigureWorker).to receive(:perform_async).with(cluster.id)
+    it 'calls ClusterConfigureWorker in a ascync fashion' do
+      expect(ClusterConfigureWorker).to receive(:perform_async).with(cluster.id)
 
       subject
     end

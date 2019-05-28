@@ -2,7 +2,7 @@
 
 # To add new service you should build a class inherited from Service
 # and implement a set of methods
-class Service < ActiveRecord::Base
+class Service < ApplicationRecord
   include Sortable
   include Importable
   include ProjectServicesLoggable
@@ -50,6 +50,7 @@ class Service < ActiveRecord::Base
   scope :job_hooks, -> { where(job_events: true, active: true) }
   scope :pipeline_hooks, -> { where(pipeline_events: true, active: true) }
   scope :wiki_page_hooks, -> { where(wiki_page_events: true, active: true) }
+  scope :deployment_hooks, -> { where(deployment_events: true, active: true) }
   scope :external_issue_trackers, -> { issue_trackers.active.without_defaults }
   scope :deployment, -> { where(category: 'deployment') }
 
@@ -210,11 +211,7 @@ class Service < ActiveRecord::Base
       class_eval %{
         def #{arg}?
           # '!!' is used because nil or empty string is converted to nil
-          if Gitlab.rails5?
-            !!ActiveRecord::Type::Boolean.new.cast(#{arg})
-          else
-            !!ActiveRecord::Type::Boolean.new.type_cast_from_database(#{arg})
-          end
+          !!ActiveRecord::Type::Boolean.new.cast(#{arg})
         end
       }
     end
@@ -271,6 +268,7 @@ class Service < ActiveRecord::Base
       prometheus
       pushover
       redmine
+      youtrack
       slack_slash_commands
       slack
       teamcity
@@ -338,6 +336,8 @@ class Service < ActiveRecord::Base
       "Event will be triggered when a wiki page is created/updated"
     when "commit", "commit_events"
       "Event will be triggered when a commit is created/updated"
+    when "deployment"
+      "Event will be triggered when a deployment finishes"
     end
   end
 

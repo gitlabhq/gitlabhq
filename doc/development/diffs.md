@@ -59,13 +59,11 @@ Gitlab::Git::DiffCollection.collection_limits[:safe_max_files] = Gitlab::Git::Di
 
 File diffs will be collapsed (but be expandable) if 100 files have already been rendered.
 
-
 ```ruby
 Gitlab::Git::DiffCollection.collection_limits[:safe_max_lines] = Gitlab::Git::DiffCollection::DEFAULT_LIMITS[:max_lines] = 5000
 ```
 
 File diffs will be collapsed (but be expandable) if 5000 lines have already been rendered.
-
 
 ```ruby
 Gitlab::Git::DiffCollection.collection_limits[:safe_max_bytes] = Gitlab::Git::DiffCollection.collection_limits[:safe_max_files] * 5.kilobytes = 500.kilobytes
@@ -73,13 +71,11 @@ Gitlab::Git::DiffCollection.collection_limits[:safe_max_bytes] = Gitlab::Git::Di
 
 File diffs will be collapsed (but be expandable) if 500 kilobytes have already been rendered.
 
-
 ```ruby
 Gitlab::Git::DiffCollection.collection_limits[:max_files] = Commit::DIFF_HARD_LIMIT_FILES = 1000
 ```
 
 No more files will be rendered at all if 1000 files have already been rendered.
-
 
 ```ruby
 Gitlab::Git::DiffCollection.collection_limits[:max_lines] = Commit::DIFF_HARD_LIMIT_LINES = 50000
@@ -129,4 +125,3 @@ Diff Viewers, which can be found on `models/diff_viewer/*` are classes used to m
 whether it's a binary, which partial should be used to render it or which File extensions this class accounts for.
 
 `DiffViewer::Base` validates _blobs_ (old and new versions) content, extension and file type in order to check if it can be rendered.
-

@@ -26,10 +26,6 @@ class Snippets::NotesController < ApplicationController
   # rubocop: enable CodeReuse/ActiveRecord
   alias_method :noteable, :snippet
 
-  def note_params
-    super.merge(noteable_id: params[:snippet_id])
-  end
-
   def finder_params
     params.merge(last_fetched_at: last_fetched_at, target_id: snippet.id, target_type: 'personal_snippet')
   end

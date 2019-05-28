@@ -7,10 +7,13 @@ module Gitlab
         class Processor
           IncludeError = Class.new(StandardError)
 
-          def initialize(values, project, sha)
+          def initialize(values, project:, sha:, user:, expandset:)
             @values = values
-            @external_files = External::Mapper.new(values, project, sha).process
+            @external_files = External::Mapper.new(values, project: project, sha: sha, user: user, expandset: expandset).process
             @content = {}
+          rescue External::Mapper::Error,
+                 OpenSSL::SSL::SSLError => e
+            raise IncludeError, e.message
           end
 
           def perform

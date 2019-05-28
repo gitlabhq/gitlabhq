@@ -2,8 +2,10 @@
 
 module Members
   class DestroyService < Members::BaseService
-    def execute(member, skip_authorization: false)
+    def execute(member, skip_authorization: false, skip_subresources: false)
       raise Gitlab::Access::AccessDeniedError unless skip_authorization || can_destroy_member?(member)
+
+      @skip_auth = skip_authorization
 
       return member if member.is_a?(GroupMember) && member.source.last_owner?(member.user)
 
@@ -15,7 +17,8 @@ module Members
         notification_service.decline_access_request(member)
       end
 
-      enqeue_delete_todos(member)
+      delete_subresources(member) unless skip_subresources
+      enqueue_delete_todos(member)
 
       after_execute(member: member)
 
@@ -24,10 +27,27 @@ module Members
 
     private
 
-    def enqeue_delete_todos(member)
-      type = member.is_a?(GroupMember) ? 'Group' : 'Project'
-      # don't enqueue immediately to prevent todos removal in case of a mistake
-      TodosDestroyer::EntityLeaveWorker.perform_in(1.hour, member.user_id, member.source_id, type)
+    def delete_subresources(member)
+      return unless member.is_a?(GroupMember) && member.user && member.group
+
+      delete_project_members(member)
+      delete_subgroup_members(member) if Group.supports_nested_objects?
+    end
+
+    def delete_project_members(member)
+      groups = member.group.self_and_descendants
+
+      ProjectMember.in_namespaces(groups).with_user(member.user).each do |project_member|
+        self.class.new(current_user).execute(project_member, skip_authorization: @skip_auth)
+      end
+    end
+
+    def delete_subgroup_members(member)
+      groups = member.group.descendants
+
+      GroupMember.of_groups(groups).with_user(member.user).each do |group_member|
+        self.class.new(current_user).execute(group_member, skip_authorization: @skip_auth, skip_subresources: true)
+      end
     end
 
     def can_destroy_member?(member)

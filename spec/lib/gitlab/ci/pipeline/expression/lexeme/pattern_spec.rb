@@ -85,7 +85,7 @@ describe Gitlab::Ci::Pipeline::Expression::Lexeme::Pattern do
     end
 
     it 'raises error if evaluated regexp is not valid' do
-      allow(Gitlab::UntrustedRegexp).to receive(:valid?).and_return(true)
+      allow(Gitlab::UntrustedRegexp::RubySyntax).to receive(:valid?).and_return(true)
 
       regexp = described_class.new('/invalid ( .*/')
 

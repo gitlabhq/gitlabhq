@@ -11,7 +11,7 @@ delete window.translations;
   @param text The text to be translated
   @returns {String} The translated text
 */
-const gettext = text => locale.gettext.bind(locale)(ensureSingleLine(text));
+const gettext = text => locale.gettext(ensureSingleLine(text));
 
 /**
   Translate the text with a number

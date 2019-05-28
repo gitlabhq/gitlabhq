@@ -23,7 +23,7 @@ module CycleAnalyticsHelpers
 
     return if skip_push_handler
 
-    GitPushService.new(project,
+    Git::BranchPushService.new(project,
                        user,
                        oldrev: oldrev,
                        newrev: commit_shas.last,

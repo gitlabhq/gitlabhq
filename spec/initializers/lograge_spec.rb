@@ -6,7 +6,7 @@ describe 'lograge', type: :request do
   let(:headers) { { 'X-Request-ID' => 'new-correlation-id' } }
 
   context 'for API requests' do
-    subject { get("/api/v4/endpoint", {}, headers) }
+    subject { get("/api/v4/endpoint", params: {}, headers: headers) }
 
     it 'logs to api_json log' do
       # we assert receiving parameters by grape logger
@@ -19,7 +19,7 @@ describe 'lograge', type: :request do
   end
 
   context 'for Controller requests' do
-    subject { get("/", {}, headers) }
+    subject { get("/", params: {}, headers: headers) }
 
     it 'logs to production_json log' do
       # formatter receives a hash with correlation id

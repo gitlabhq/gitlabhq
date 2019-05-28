@@ -1,5 +1,0 @@
----
-title: Update rack to 2.0.6 (for QA environments)
-merge_request: 23171
-author: Takuya Noguchi
-type: security

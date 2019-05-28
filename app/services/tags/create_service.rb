@@ -2,7 +2,7 @@
 
 module Tags
   class CreateService < BaseService
-    def execute(tag_name, target, message, release_description = nil)
+    def execute(tag_name, target, message)
       valid_tag = Gitlab::GitRefValidator.validate(tag_name)
       return error('Tag name invalid') unless valid_tag
 
@@ -20,10 +20,7 @@ module Tags
       end
 
       if new_tag
-        if release_description.present?
-          CreateReleaseService.new(@project, @current_user)
-            .execute(tag_name, release_description)
-        end
+        repository.expire_tags_cache
 
         success.merge(tag: new_tag)
       else

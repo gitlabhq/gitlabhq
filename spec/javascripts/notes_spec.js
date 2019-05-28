@@ -34,7 +34,7 @@ const htmlEscape = comment => {
 describe('Notes', function() {
   const FLASH_TYPE_ALERT = 'alert';
   const NOTES_POST_PATH = /(.*)\/notes\?html=true$/;
-  var fixture = 'snippets/show.html.raw';
+  var fixture = 'snippets/show.html';
   preloadFixtures(fixture);
 
   beforeEach(function() {
@@ -89,10 +89,25 @@ describe('Notes', function() {
     });
 
     it('submits an ajax request on tasklist:changed', function(done) {
-      $('.js-task-list-container').trigger('tasklist:changed');
+      const lineNumber = 8;
+      const lineSource = '- [ ] item 8';
+      const index = 3;
+      const checked = true;
+
+      $('.js-task-list-container').trigger({
+        type: 'tasklist:changed',
+        detail: { lineNumber, lineSource, index, checked },
+      });
 
       setTimeout(() => {
-        expect(axios.patch).toHaveBeenCalled();
+        expect(axios.patch).toHaveBeenCalledWith(undefined, {
+          note: {
+            note: '',
+            lock_version: undefined,
+            update_task: { index, checked, line_number: lineNumber, line_source: lineSource },
+          },
+        });
+
         done();
       });
     });
@@ -655,7 +670,7 @@ describe('Notes', function() {
           done();
         })
         .catch(done.fail);
-    });
+    }, 2000);
   });
 
   describe('postComment with Slash commands', () => {

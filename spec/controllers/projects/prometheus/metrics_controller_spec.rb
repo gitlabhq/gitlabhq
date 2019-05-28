@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Projects::Prometheus::MetricsController do
@@ -24,7 +26,7 @@ describe Projects::Prometheus::MetricsController do
           end
 
           it 'returns no content response' do
-            get :active_common, project_params(format: :json)
+            get :active_common, params: project_params(format: :json)
 
             expect(response).to have_gitlab_http_status(204)
           end
@@ -38,7 +40,7 @@ describe Projects::Prometheus::MetricsController do
           end
 
           it 'returns no content response' do
-            get :active_common, project_params(format: :json)
+            get :active_common, params: project_params(format: :json)
 
             expect(response).to have_gitlab_http_status(200)
             expect(json_response).to eq(sample_response.deep_stringify_keys)
@@ -47,7 +49,7 @@ describe Projects::Prometheus::MetricsController do
 
         context 'when requesting non json response' do
           it 'returns not found response' do
-            get :active_common, project_params
+            get :active_common, params: project_params
 
             expect(response).to have_gitlab_http_status(404)
           end
@@ -62,7 +64,7 @@ describe Projects::Prometheus::MetricsController do
         allow(controller).to receive(:prometheus_adapter).and_return(prometheus_adapter)
         allow(prometheus_adapter).to receive(:query).with(:matched_metrics).and_return({})
 
-        get :active_common, project_params(format: :json)
+        get :active_common, params: project_params(format: :json)
 
         expect(response).to have_gitlab_http_status(404)
       end
@@ -70,7 +72,7 @@ describe Projects::Prometheus::MetricsController do
 
     context 'when prometheus_adapter is disabled' do
       it 'renders 404' do
-        get :active_common, project_params(format: :json)
+        get :active_common, params: project_params(format: :json)
 
         expect(response).to have_gitlab_http_status(404)
       end

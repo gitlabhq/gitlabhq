@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe Gitlab::Git::Diff, :seed_helper do
-  let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '') }
+  let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '', 'group/project') }
   let(:gitaly_diff) do
     Gitlab::GitalyClient::Diff.new(
       from_path: '.gitmodules',
@@ -182,7 +182,7 @@ EOT
     context "without default options" do
       let(:filtered_options) { described_class.filter_diff_options(options) }
 
-      it "should filter invalid options" do
+      it "filters invalid options" do
         expect(filtered_options).not_to have_key(:invalid_opt)
       end
     end
@@ -193,16 +193,16 @@ EOT
         described_class.filter_diff_options(options, default_options)
       end
 
-      it "should filter invalid options" do
+      it "filters invalid options" do
         expect(filtered_options).not_to have_key(:invalid_opt)
         expect(filtered_options).not_to have_key(:bad_opt)
       end
 
-      it "should merge with default options" do
+      it "merges with default options" do
         expect(filtered_options).to have_key(:ignore_whitespace_change)
       end
 
-      it "should override default options" do
+      it "overrides default options" do
         expect(filtered_options).to have_key(:max_files)
         expect(filtered_options[:max_files]).to eq(100)
       end

@@ -3,13 +3,13 @@
 module FinderMethods
   # rubocop: disable CodeReuse/ActiveRecord
   def find_by!(*args)
-    raise_not_found_unless_authorized execute.find_by!(*args)
+    raise_not_found_unless_authorized execute.reorder(nil).find_by!(*args)
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
   # rubocop: disable CodeReuse/ActiveRecord
   def find_by(*args)
-    if_authorized execute.find_by(*args)
+    if_authorized execute.reorder(nil).find_by(*args)
   end
   # rubocop: enable CodeReuse/ActiveRecord
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Issues::CreateService do
@@ -138,6 +140,20 @@ describe Issues::CreateService do
         end
       end
 
+      context 'when duplicate label titles are given' do
+        let(:label) { create(:label, project: project) }
+
+        let(:opts) do
+          { title: 'Title',
+            description: 'Description',
+            labels: [label.title, label.title] }
+        end
+
+        it 'assigns the label once' do
+          expect(issue.labels).to contain_exactly(label)
+        end
+      end
+
       it 'executes issue hooks when issue is not confidential' do
         opts = { title: 'Title', description: 'Description', confidential: false }
 
@@ -172,7 +188,7 @@ describe Issues::CreateService do
         end
 
         it 'removes assignee when user id is 0' do
-          opts = { title: 'Title', description: 'Description',  assignee_ids: [0] }
+          opts = { title: 'Title', description: 'Description', assignee_ids: [0] }
 
           issue = described_class.new(project, user, opts).execute
 

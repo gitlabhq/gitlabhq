@@ -1,10 +1,23 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe Clusters::Applications::Jupyter do
   include_examples 'cluster application core specs', :clusters_applications_jupyter
+  include_examples 'cluster application status specs', :clusters_applications_jupyter
+  include_examples 'cluster application version specs', :clusters_applications_jupyter
   include_examples 'cluster application helm specs', :clusters_applications_jupyter
 
   it { is_expected.to belong_to(:oauth_application) }
+
+  describe '#can_uninstall?' do
+    let(:ingress) { create(:clusters_applications_ingress, :installed, external_hostname: 'localhost.localdomain') }
+    let(:jupyter) { create(:clusters_applications_jupyter, cluster: ingress.cluster) }
+
+    subject { jupyter.can_uninstall? }
+
+    it { is_expected.to be_falsey }
+  end
 
   describe '#set_initial_status' do
     before do
@@ -24,19 +37,12 @@ describe Clusters::Applications::Jupyter do
 
       it { expect(jupyter).to be_installable }
     end
-  end
 
-  describe '#make_installing!' do
-    before do
-      application.make_installing!
-    end
+    context 'when ingress is installed and external_hostname is assigned' do
+      let(:ingress) { create(:clusters_applications_ingress, :installed, external_hostname: 'localhost.localdomain') }
+      let(:jupyter) { create(:clusters_applications_jupyter, cluster: ingress.cluster) }
 
-    context 'application install previously errored with older version' do
-      let(:application) { create(:clusters_applications_jupyter, :scheduled, version: 'v0.5') }
-
-      it 'updates the application version' do
-        expect(application.reload.version).to eq('v0.6')
-      end
+      it { expect(jupyter).to be_installable }
     end
   end
 
@@ -48,28 +54,28 @@ describe Clusters::Applications::Jupyter do
 
     it { is_expected.to be_an_instance_of(Gitlab::Kubernetes::Helm::InstallCommand) }
 
-    it 'should be initialized with 4 arguments' do
+    it 'is initialized with 4 arguments' do
       expect(subject.name).to eq('jupyter')
       expect(subject.chart).to eq('jupyter/jupyterhub')
-      expect(subject.version).to eq('v0.6')
-      expect(subject).not_to be_rbac
+      expect(subject.version).to eq('0.9-174bbd5')
+      expect(subject).to be_rbac
       expect(subject.repository).to eq('https://jupyterhub.github.io/helm-chart/')
       expect(subject.files).to eq(jupyter.files)
     end
 
-    context 'on a rbac enabled cluster' do
+    context 'on a non rbac enabled cluster' do
       before do
-        jupyter.cluster.platform_kubernetes.rbac!
+        jupyter.cluster.platform_kubernetes.abac!
       end
 
-      it { is_expected.to be_rbac }
+      it { is_expected.not_to be_rbac }
     end
 
     context 'application failed to install previously' do
       let(:jupyter) { create(:clusters_applications_jupyter, :errored, version: '0.0.1') }
 
-      it 'should be initialized with the locked version' do
-        expect(subject.version).to eq('v0.6')
+      it 'is initialized with the locked version' do
+        expect(subject.version).to eq('0.9-174bbd5')
       end
     end
   end
@@ -80,7 +86,7 @@ describe Clusters::Applications::Jupyter do
 
     subject { application.files }
 
-    it 'should include valid values' do
+    it 'includes valid values' do
       expect(values).to include('ingress')
       expect(values).to include('hub')
       expect(values).to include('rbac')
@@ -89,6 +95,7 @@ describe Clusters::Applications::Jupyter do
       expect(values).to include('singleuser')
       expect(values).to match(/clientId: '?#{application.oauth_application.uid}/)
       expect(values).to match(/callbackUrl: '?#{application.callback_url}/)
+      expect(values).to include("gitlabProjectIdWhitelist:\n    - #{application.cluster.project.id}")
     end
 
     context 'when cluster belongs to a project' do

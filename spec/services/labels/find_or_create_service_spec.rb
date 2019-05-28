@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Labels::FindOrCreateService do
@@ -46,7 +48,7 @@ describe Labels::FindOrCreateService do
         end
 
         context 'when include_ancestor_groups is true' do
-          let(:group)   { create(:group, :nested) }
+          let(:group) { create(:group, :nested) }
           let(:params) do
             {
               title: 'Audit',

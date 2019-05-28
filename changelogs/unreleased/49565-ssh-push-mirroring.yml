@@ -1,5 +1,0 @@
----
-title: Allow SSH public-key authentication for push mirroring
-merge_request: 22982
-author:
-type: added

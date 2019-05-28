@@ -1,7 +1,8 @@
 # GitLab Container Registry
 
 > **Notes:**
-> [Introduced][ce-4040] in GitLab 8.8.
+>
+> - [Introduced][ce-4040] in GitLab 8.8.
 > - Docker Registry manifest `v1` support was added in GitLab 8.9 to support Docker
 >   versions earlier than 1.10.
 > - This document is about the user guide. To learn how to enable GitLab Container
@@ -10,12 +11,12 @@
 > - Starting from GitLab 8.12, if you have 2FA enabled in your account, you need
 >   to pass a [personal access token][pat] instead of your password in order to
 >   login to GitLab's Container Registry.
-> - Multiple level image names support was added in GitLab 9.1
+> - Multiple level image names support was added in GitLab 9.1.
 
 With the Docker Container Registry integrated into GitLab, every project can
 have its own space to store its Docker images.
 
-You can read more about Docker Registry at https://docs.docker.com/registry/introduction/.
+You can read more about Docker Registry at <https://docs.docker.com/registry/introduction/>.
 
 ## Enable the Container Registry for your project
 
@@ -41,12 +42,12 @@ to enable it.
 ## Build and push images
 
 > **Notes:**
+>
 > - Moving or renaming existing container registry repositories is not supported
 >   once you have pushed images because the images are signed, and the
 >   signature includes the repository name.
 > - To move or rename a repository with a container registry you will have to
 >   delete all existing images.
-
 
 If you visit the **Registry** link under your project's menu, you can see the
 explicit instructions to login to the Container Registry using your GitLab
@@ -283,9 +284,9 @@ In the example above, we see the following trace on the mitmproxy window:
 
 The above image shows:
 
-* The initial PUT requests went through fine with a 201 status code.
-* The 201 redirected the client to the S3 bucket.
-* The HEAD request to the AWS bucket reported a 403 Unauthorized.
+- The initial PUT requests went through fine with a 201 status code.
+- The 201 redirected the client to the S3 bucket.
+- The HEAD request to the AWS bucket reported a 403 Unauthorized.
 
 What does this mean? This strongly suggests that the S3 user does not have the right
 [permissions to perform a HEAD request](http://docs.aws.amazon.com/AmazonS3/latest/API/RESTObjectHEAD.html).

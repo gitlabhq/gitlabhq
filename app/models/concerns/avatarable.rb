@@ -43,7 +43,18 @@ module Avatarable
   end
 
   def avatar_path(only_path: true, size: nil)
-    return unless self[:avatar].present?
+    unless self.try(:id)
+      return uncached_avatar_path(only_path: only_path, size: size)
+    end
+
+    # Cache this avatar path only within the request because avatars in
+    # object storage may be generated with time-limited, signed URLs.
+    key = "#{self.class.name}:#{self.id}:#{only_path}:#{size}"
+    Gitlab::SafeRequestStore[key] ||= uncached_avatar_path(only_path: only_path, size: size)
+  end
+
+  def uncached_avatar_path(only_path: true, size: nil)
+    return unless self.try(:avatar).present?
 
     asset_host = ActionController::Base.asset_host
     use_asset_host = asset_host.present?
@@ -80,7 +91,8 @@ module Avatarable
   private
 
   def retrieve_upload_from_batch(identifier)
-    BatchLoader.for(identifier: identifier, model: self).batch(key: self.class) do |upload_params, loader, args|
+    BatchLoader.for(identifier: identifier, model: self)
+               .batch(key: self.class, cache: true, replace_methods: false) do |upload_params, loader, args|
       model_class = args[:key]
       paths = upload_params.flat_map do |params|
         params[:model].upload_paths(params[:identifier])

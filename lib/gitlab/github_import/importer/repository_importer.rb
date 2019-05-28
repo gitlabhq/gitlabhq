@@ -5,18 +5,20 @@ module Gitlab
     module Importer
       class RepositoryImporter
         include Gitlab::ShellAdapter
+        include Gitlab::Utils::StrongMemoize
 
-        attr_reader :project, :client
+        attr_reader :project, :client, :wiki_formatter
 
         def initialize(project, client)
           @project = project
           @client = client
+          @wiki_formatter = ::Gitlab::LegacyGithubImport::WikiFormatter.new(project)
         end
 
         # Returns true if we should import the wiki for the project.
         # rubocop: disable CodeReuse/ActiveRecord
         def import_wiki?
-          client.repository(project.import_source)&.has_wiki &&
+          client_repository&.has_wiki &&
             !project.wiki_repository_exists? &&
             Gitlab::GitalyClient::RemoteService.exists?(wiki_url)
         end
@@ -51,15 +53,19 @@ module Gitlab
           refmap = Gitlab::GithubImport.refmap
           project.repository.fetch_as_mirror(project.import_url, refmap: refmap, forced: true, remote_name: 'github')
 
+          project.change_head(default_branch) if default_branch
+
+          # The initial fetch can bring in lots of loose refs and objects.
+          # Running a `git gc` will make importing pull requests faster.
+          Projects::HousekeepingService.new(project, :gc).execute
+
           true
         rescue Gitlab::Git::Repository::NoRepository, Gitlab::Shell::Error => e
           fail_import("Failed to import the repository: #{e.message}")
         end
 
         def import_wiki_repository
-          wiki_path = "#{project.disk_path}.wiki"
-
-          gitlab_shell.import_repository(project.repository_storage, wiki_path, wiki_url)
+          gitlab_shell.import_wiki_repository(project, wiki_formatter)
 
           true
         rescue Gitlab::Shell::Error => e
@@ -72,7 +78,7 @@ module Gitlab
         end
 
         def wiki_url
-          project.import_url.sub(/\.git\z/, '.wiki.git')
+          wiki_formatter.import_url
         end
 
         def update_clone_time
@@ -82,6 +88,18 @@ module Gitlab
         def fail_import(message)
           project.import_state.mark_as_failed(message)
           false
+        end
+
+        private
+
+        def default_branch
+          client_repository&.default_branch
+        end
+
+        def client_repository
+          strong_memoize(:client_repository) do
+            client.repository(project.import_source)
+          end
         end
       end
     end

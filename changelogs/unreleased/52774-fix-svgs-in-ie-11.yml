@@ -1,5 +1,0 @@
----
-title: Ensure that SVG sprite icons are properly rendered in IE11
-merge_request:
-author:
-type: fixed

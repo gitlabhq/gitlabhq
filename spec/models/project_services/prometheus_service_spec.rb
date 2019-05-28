@@ -33,18 +33,38 @@ describe PrometheusService, :use_clean_rails_memory_store_caching do
   describe 'Validations' do
     context 'when manual_configuration is enabled' do
       before do
-        subject.manual_configuration = true
+        service.manual_configuration = true
       end
 
-      it { is_expected.to validate_presence_of(:api_url) }
+      it 'validates presence of api_url' do
+        expect(service).to validate_presence_of(:api_url)
+      end
     end
 
     context 'when manual configuration is disabled' do
       before do
-        subject.manual_configuration = false
+        service.manual_configuration = false
       end
 
-      it { is_expected.not_to validate_presence_of(:api_url) }
+      it 'does not validate presence of api_url' do
+        expect(service).not_to validate_presence_of(:api_url)
+      end
+    end
+
+    context 'when the api_url domain points to localhost or local network' do
+      let(:domain) { Addressable::URI.parse(service.api_url).hostname }
+
+      it 'cannot query' do
+        expect(service.can_query?).to be true
+
+        aggregate_failures do
+          ['127.0.0.1', '192.168.2.3'].each do |url|
+            allow(Addrinfo).to receive(:getaddrinfo).with(domain, any_args).and_return([Addrinfo.tcp(url, 80)])
+
+            expect(service.can_query?).to be false
+          end
+        end
+      end
     end
   end
 
@@ -74,30 +94,35 @@ describe PrometheusService, :use_clean_rails_memory_store_caching do
   end
 
   describe '#prometheus_client' do
-    context 'manual configuration is enabled' do
-      let(:api_url) { 'http://some_url' }
+    let(:api_url) { 'http://some_url' }
 
-      before do
-        subject.active = true
-        subject.manual_configuration = true
-        subject.api_url = api_url
-      end
+    before do
+      service.active = true
+      service.api_url = api_url
+      service.manual_configuration = manual_configuration
+    end
+
+    context 'manual configuration is enabled' do
+      let(:manual_configuration) { true }
 
       it 'returns rest client from api_url' do
-        expect(subject.prometheus_client.url).to eq(api_url)
+        expect(service.prometheus_client.url).to eq(api_url)
+      end
+
+      it 'calls valid?' do
+        allow(service).to receive(:valid?).and_call_original
+
+        expect(service.prometheus_client).not_to be_nil
+
+        expect(service).to have_received(:valid?)
       end
     end
 
     context 'manual configuration is disabled' do
-      let(:api_url) { 'http://some_url' }
-
-      before do
-        subject.manual_configuration = false
-        subject.api_url = api_url
-      end
+      let(:manual_configuration) { false }
 
       it 'no client provided' do
-        expect(subject.prometheus_client).to be_nil
+        expect(service.prometheus_client).to be_nil
       end
     end
   end

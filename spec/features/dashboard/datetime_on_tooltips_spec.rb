@@ -15,7 +15,7 @@ describe 'Tooltips on .timeago dates', :js do
 
       sign_in user
       visit user_activity_path(user)
-      wait_for_requests()
+      wait_for_requests
 
       page.find('.js-timeago').hover
     end
@@ -32,7 +32,7 @@ describe 'Tooltips on .timeago dates', :js do
 
       sign_in user
       visit user_snippets_path(user)
-      wait_for_requests()
+      wait_for_requests
 
       page.find('.js-timeago.snippet-created-ago').hover
     end

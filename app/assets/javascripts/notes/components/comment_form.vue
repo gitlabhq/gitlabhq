@@ -11,6 +11,7 @@ import {
   capitalizeFirstCharacter,
   convertToCamelCase,
   splitCamelCase,
+  slugifyWithUnderscore,
 } from '../../lib/utils/text_utility';
 import * as constants from '../constants';
 import eventHub from '../event_hub';
@@ -38,11 +39,6 @@ export default {
     noteableType: {
       type: String,
       required: true,
-    },
-    markdownVersion: {
-      type: Number,
-      required: false,
-      default: 0,
     },
   },
   data() {
@@ -120,8 +116,11 @@ export default {
     author() {
       return this.getUserData;
     },
-    canUpdateIssue() {
-      return this.getNoteableData.current_user.can_update;
+    canToggleIssueState() {
+      return (
+        this.getNoteableData.current_user.can_update &&
+        this.getNoteableData.state !== constants.MERGED
+      );
     },
     endpoint() {
       return this.getNoteableData.create_note_path;
@@ -130,6 +129,9 @@ export default {
       return this.noteableType === constants.MERGE_REQUEST_NOTEABLE_TYPE
         ? 'merge request'
         : 'issue';
+    },
+    trackingLabel() {
+      return slugifyWithUnderscore(`${this.commentButtonTitle} button`);
     },
   },
   watch: {
@@ -342,7 +344,6 @@ Please check your network connection and try again.`;
               :markdown-preview-path="markdownPreviewPath"
               :markdown-docs-path="markdownDocsPath"
               :quick-actions-docs-path="quickActionsDocsPath"
-              :markdown-version="markdownVersion"
               :add-spacing-classes="false"
             >
               <textarea
@@ -350,6 +351,7 @@ Please check your network connection and try again.`;
                 ref="textarea"
                 slot="textarea"
                 v-model="note"
+                dir="auto"
                 :disabled="isSubmitting"
                 name="note[note]"
                 class="note-textarea js-vue-comment-form js-note-text
@@ -357,9 +359,9 @@ js-gfm-input js-autosize markdown-area js-vue-textarea qa-comment-input"
                 data-supports-quick-actions="true"
                 aria-label="Description"
                 placeholder="Write a comment or drag your files here…"
-                @keydown.up="editCurrentUserLastNote();"
-                @keydown.meta.enter="handleSave();"
-                @keydown.ctrl.enter="handleSave();"
+                @keydown.up="editCurrentUserLastNote()"
+                @keydown.meta.enter="handleSave()"
+                @keydown.ctrl.enter="handleSave()"
               >
               </textarea>
             </markdown-field>
@@ -370,10 +372,12 @@ append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
               >
                 <button
                   :disabled="isSubmitButtonDisabled"
-                  class="btn btn-create comment-btn js-comment-button js-comment-submit-button
+                  class="btn btn-success js-comment-button js-comment-submit-button
                     qa-comment-button"
                   type="submit"
-                  @click.prevent="handleSave();"
+                  :data-track-label="trackingLabel"
+                  data-track-event="click_button"
+                  @click.prevent="handleSave()"
                 >
                   {{ __(commentButtonTitle) }}
                 </button>
@@ -381,7 +385,7 @@ append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
                   :disabled="isSubmitButtonDisabled"
                   name="button"
                   type="button"
-                  class="btn comment-btn note-type-toggle js-note-new-discussion dropdown-toggle qa-note-dropdown"
+                  class="btn btn-success note-type-toggle js-note-new-discussion dropdown-toggle qa-note-dropdown"
                   data-display="static"
                   data-toggle="dropdown"
                   aria-label="Open comment type dropdown"
@@ -394,7 +398,7 @@ append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
                     <button
                       type="button"
                       class="btn btn-transparent"
-                      @click.prevent="setNoteType('comment');"
+                      @click.prevent="setNoteType('comment')"
                     >
                       <i aria-hidden="true" class="fa fa-check icon"> </i>
                       <div class="description">
@@ -408,7 +412,7 @@ append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
                     <button
                       type="button"
                       class="btn btn-transparent qa-discussion-option"
-                      @click.prevent="setNoteType('discussion');"
+                      @click.prevent="setNoteType('discussion')"
                     >
                       <i aria-hidden="true" class="fa fa-check icon"> </i>
                       <div class="description">
@@ -421,7 +425,7 @@ append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
               </div>
 
               <loading-button
-                v-if="canUpdateIssue"
+                v-if="canToggleIssueState"
                 :loading="isToggleStateButtonLoading"
                 :container-class="[
                   actionButtonClassNames,
@@ -429,17 +433,8 @@ append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
                 ]"
                 :disabled="isToggleStateButtonLoading || isSubmitting"
                 :label="issueActionButtonTitle"
-                @click="handleSave(true);"
+                @click="handleSave(true)"
               />
-
-              <button
-                v-if="note.length"
-                type="button"
-                class="btn btn-cancel js-note-discard"
-                @click="discard"
-              >
-                Discard draft
-              </button>
             </div>
           </form>
         </div>

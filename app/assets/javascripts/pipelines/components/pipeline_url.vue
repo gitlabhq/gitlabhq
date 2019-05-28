@@ -1,7 +1,19 @@
 <script>
 import { GlLink, GlTooltipDirective } from '@gitlab/ui';
+import _ from 'underscore';
+import { __, sprintf } from '~/locale';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import popover from '~/vue_shared/directives/popover';
+
+const popoverTitle = sprintf(
+  _.escape(
+    __(
+      `This pipeline makes use of a predefined CI/CD configuration enabled by %{strongStart}Auto DevOps.%{strongEnd}`,
+    ),
+  ),
+  { strongStart: '<b>', strongEnd: '</b>' },
+  false,
+);
 
 export default {
   components: {
@@ -32,14 +44,14 @@ export default {
         trigger: 'focus',
         placement: 'top',
         title: `<div class="autodevops-title">
-            This pipeline makes use of a predefined CI/CD configuration enabled by <b>Auto DevOps.</b>
+            ${popoverTitle}
           </div>`,
         content: `<a
             class="autodevops-link"
             href="${this.autoDevopsHelpPath}"
             target="_blank"
             rel="noopener noreferrer nofollow">
-            Learn more about Auto DevOps
+            ${_.escape(__('Learn more about Auto DevOps'))}
           </a>`,
       };
     },
@@ -47,27 +59,18 @@ export default {
 };
 </script>
 <template>
-  <div class="table-section section-15 d-none d-sm-none d-md-block pipeline-tags">
+  <div class="table-section section-10 d-none d-sm-none d-md-block pipeline-tags">
     <gl-link :href="pipeline.path" class="js-pipeline-url-link">
       <span class="pipeline-id">#{{ pipeline.id }}</span>
     </gl-link>
-    <span>by</span>
-    <user-avatar-link
-      v-if="user"
-      :link-href="pipeline.user.path"
-      :img-src="pipeline.user.avatar_url"
-      :tooltip-text="pipeline.user.name"
-      class="js-pipeline-url-user"
-    />
-    <span v-if="!user" class="js-pipeline-url-api api"> API </span>
     <div class="label-container">
       <span
         v-if="pipeline.flags.latest"
         v-gl-tooltip
+        :title="__('Latest pipeline for this branch')"
         class="js-pipeline-url-latest badge badge-success"
-        title="__('Latest pipeline for this branch')"
       >
-        latest
+        {{ __('latest') }}
       </span>
       <span
         v-if="pipeline.flags.yaml_errors"
@@ -75,7 +78,7 @@ export default {
         :title="pipeline.yaml_errors"
         class="js-pipeline-url-yaml badge badge-danger"
       >
-        yaml invalid
+        {{ __('yaml invalid') }}
       </span>
       <span
         v-if="pipeline.flags.failure_reason"
@@ -83,7 +86,7 @@ export default {
         :title="pipeline.failure_reason"
         class="js-pipeline-url-failure badge badge-danger"
       >
-        error
+        {{ __('error') }}
       </span>
       <gl-link
         v-if="pipeline.flags.auto_devops"
@@ -95,15 +98,15 @@ export default {
         Auto DevOps
       </gl-link>
       <span v-if="pipeline.flags.stuck" class="js-pipeline-url-stuck badge badge-warning">
-        stuck
+        {{ __('stuck') }}
       </span>
       <span
-        v-if="pipeline.flags.merge_request"
+        v-if="pipeline.flags.detached_merge_request_pipeline"
         v-gl-tooltip
-        title="__('This pipeline is run in a merge request context')"
-        class="js-pipeline-url-mergerequest badge badge-info"
+        :title="__('This pipeline is run on the source branch')"
+        class="js-pipeline-url-detached badge badge-info"
       >
-        merge request
+        {{ __('detached') }}
       </span>
     </div>
   </div>

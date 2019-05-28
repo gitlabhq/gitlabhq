@@ -68,7 +68,8 @@ git push origin conflicts_branch -f
 ----------
 
 ## Note
-* When to use 'git merge' and when to use 'git rebase'
-* Rebase when updating your branch with master
-* Merge when bringing changes from feature to master
-* Reference: https://www.atlassian.com/git/tutorials/merging-vs-rebasing/
+
+- When to use 'git merge' and when to use 'git rebase'
+- Rebase when updating your branch with master
+- Merge when bringing changes from feature to master
+- Reference: <https://www.atlassian.com/git/tutorials/merging-vs-rebasing/>

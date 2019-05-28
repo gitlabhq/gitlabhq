@@ -1,20 +1,27 @@
 <script>
 /* eslint-disable vue/require-default-prop */
+import { GlLink, GlModalDirective } from '@gitlab/ui';
+import TimeagoTooltip from '../../vue_shared/components/time_ago_tooltip.vue';
 import { s__, sprintf } from '../../locale';
 import eventHub from '../event_hub';
 import identicon from '../../vue_shared/components/identicon.vue';
 import loadingButton from '../../vue_shared/components/loading_button.vue';
-import {
-  APPLICATION_STATUS,
-  REQUEST_LOADING,
-  REQUEST_SUCCESS,
-  REQUEST_FAILURE,
-} from '../constants';
+import UninstallApplicationButton from './uninstall_application_button.vue';
+import UninstallApplicationConfirmationModal from './uninstall_application_confirmation_modal.vue';
+
+import { APPLICATION_STATUS } from '../constants';
 
 export default {
   components: {
     loadingButton,
     identicon,
+    TimeagoTooltip,
+    GlLink,
+    UninstallApplicationButton,
+    UninstallApplicationConfirmationModal,
+  },
+  directives: {
+    GlModalDirective,
   },
   props: {
     id: {
@@ -43,6 +50,11 @@ export default {
       required: false,
       default: false,
     },
+    uninstallable: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     status: {
       type: String,
       required: false,
@@ -51,13 +63,56 @@ export default {
       type: String,
       required: false,
     },
-    requestStatus: {
-      type: String,
-      required: false,
-    },
     requestReason: {
       type: String,
       required: false,
+    },
+    installed: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    installFailed: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    version: {
+      type: String,
+      required: false,
+    },
+    chartRepo: {
+      type: String,
+      required: false,
+    },
+    upgradeAvailable: {
+      type: Boolean,
+      required: false,
+    },
+    updateSuccessful: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    updateFailed: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    uninstallFailed: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    uninstallSuccessful: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    updateAcknowledged: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
     installApplicationRequestParams: {
       type: Object,
@@ -72,11 +127,14 @@ export default {
     isKnownStatus() {
       return Object.values(APPLICATION_STATUS).includes(this.status);
     },
-    isInstalled() {
+    isInstalling() {
+      return this.status === APPLICATION_STATUS.INSTALLING;
+    },
+    canInstall() {
       return (
-        this.status === APPLICATION_STATUS.INSTALLED ||
-        this.status === APPLICATION_STATUS.UPDATED ||
-        this.status === APPLICATION_STATUS.UPDATING
+        this.status === APPLICATION_STATUS.NOT_INSTALLABLE ||
+        this.status === APPLICATION_STATUS.INSTALLABLE ||
+        this.isUnknownStatus
       );
     },
     hasLogo() {
@@ -89,13 +147,14 @@ export default {
     rowJsClass() {
       return `js-cluster-application-row-${this.id}`;
     },
+    displayUninstallButton() {
+      return this.installed && this.uninstallable;
+    },
+    displayInstallButton() {
+      return !this.installed || !this.uninstallable;
+    },
     installButtonLoading() {
-      return (
-        !this.status ||
-        this.status === APPLICATION_STATUS.SCHEDULED ||
-        this.status === APPLICATION_STATUS.INSTALLING ||
-        this.requestStatus === REQUEST_LOADING
-      );
+      return !this.status || this.isInstalling;
     },
     installButtonDisabled() {
       // Avoid the potential for the real-time data to say APPLICATION_STATUS.INSTALLABLE but
@@ -104,30 +163,17 @@ export default {
       return (
         ((this.status !== APPLICATION_STATUS.INSTALLABLE &&
           this.status !== APPLICATION_STATUS.ERROR) ||
-          this.requestStatus === REQUEST_LOADING ||
-          this.requestStatus === REQUEST_SUCCESS) &&
+          this.isInstalling) &&
         this.isKnownStatus
       );
     },
     installButtonLabel() {
       let label;
-      if (
-        this.status === APPLICATION_STATUS.NOT_INSTALLABLE ||
-        this.status === APPLICATION_STATUS.INSTALLABLE ||
-        this.status === APPLICATION_STATUS.ERROR ||
-        this.isUnknownStatus
-      ) {
+      if (this.canInstall) {
         label = s__('ClusterIntegration|Install');
-      } else if (
-        this.status === APPLICATION_STATUS.SCHEDULED ||
-        this.status === APPLICATION_STATUS.INSTALLING
-      ) {
+      } else if (this.isInstalling) {
         label = s__('ClusterIntegration|Installing');
-      } else if (
-        this.status === APPLICATION_STATUS.INSTALLED ||
-        this.status === APPLICATION_STATUS.UPDATED ||
-        this.status === APPLICATION_STATUS.UPDATING
-      ) {
+      } else if (this.installed) {
         label = s__('ClusterIntegration|Installed');
       }
 
@@ -140,12 +186,76 @@ export default {
       return s__('ClusterIntegration|Manage');
     },
     hasError() {
-      return this.status === APPLICATION_STATUS.ERROR || this.requestStatus === REQUEST_FAILURE;
+      return this.installFailed || this.uninstallFailed;
     },
     generalErrorDescription() {
-      return sprintf(s__('ClusterIntegration|Something went wrong while installing %{title}'), {
+      let errorDescription;
+
+      if (this.installFailed) {
+        errorDescription = s__('ClusterIntegration|Something went wrong while installing %{title}');
+      } else if (this.uninstallFailed) {
+        errorDescription = s__(
+          'ClusterIntegration|Something went wrong while uninstalling %{title}',
+        );
+      }
+
+      return sprintf(errorDescription, { title: this.title });
+    },
+    versionLabel() {
+      if (this.updateFailed) {
+        return s__('ClusterIntegration|Upgrade failed');
+      } else if (this.isUpgrading) {
+        return s__('ClusterIntegration|Upgrading');
+      }
+
+      return s__('ClusterIntegration|Upgraded');
+    },
+    upgradeFailureDescription() {
+      return s__('ClusterIntegration|Update failed. Please check the logs and try again.');
+    },
+    upgradeSuccessDescription() {
+      return sprintf(s__('ClusterIntegration|%{title} upgraded successfully.'), {
         title: this.title,
       });
+    },
+    upgradeButtonLabel() {
+      let label;
+      if (this.upgradeAvailable && !this.updateFailed && !this.isUpgrading) {
+        label = s__('ClusterIntegration|Upgrade');
+      } else if (this.isUpgrading) {
+        label = s__('ClusterIntegration|Updating');
+      } else if (this.updateFailed) {
+        label = s__('ClusterIntegration|Retry update');
+      }
+
+      return label;
+    },
+    isUpgrading() {
+      // Since upgrading is handled asynchronously on the backend we need this check to prevent any delay on the frontend
+      return this.status === APPLICATION_STATUS.UPDATING;
+    },
+    shouldShowUpgradeDetails() {
+      // This method only returns true when;
+      // Upgrade was successful OR Upgrade failed
+      //     AND new upgrade is unavailable AND version information is present.
+      return (this.updateSuccessful || this.updateFailed) && !this.upgradeAvailable && this.version;
+    },
+    uninstallSuccessDescription() {
+      return sprintf(s__('ClusterIntegration|%{title} uninstalled successfully.'), {
+        title: this.title,
+      });
+    },
+  },
+  watch: {
+    updateSuccessful(updateSuccessful) {
+      if (updateSuccessful) {
+        this.$toast.show(this.upgradeSuccessDescription);
+      }
+    },
+    uninstallSuccessful(uninstallSuccessful) {
+      if (uninstallSuccessful) {
+        this.$toast.show(this.uninstallSuccessDescription);
+      }
     },
   },
   methods: {
@@ -153,6 +263,17 @@ export default {
       eventHub.$emit('installApplication', {
         id: this.id,
         params: this.installApplicationRequestParams,
+      });
+    },
+    upgradeClicked() {
+      eventHub.$emit('upgradeApplication', {
+        id: this.id,
+        params: this.installApplicationRequestParams,
+      });
+    },
+    uninstallConfirmed() {
+      eventHub.$emit('uninstallApplication', {
+        id: this.id,
       });
     },
   },
@@ -163,7 +284,7 @@ export default {
   <div
     :class="[
       rowJsClass,
-      isInstalled && 'cluster-application-installed',
+      installed && 'cluster-application-installed',
       disabled && 'cluster-application-disabled',
     ]"
     class="cluster-application-row gl-responsive-table-row gl-responsive-table-row-col-span"
@@ -186,16 +307,12 @@ export default {
             target="blank"
             rel="noopener noreferrer"
             class="js-cluster-application-title"
+            >{{ title }}</a
           >
-            {{ title }}
-          </a>
-          <span v-else class="js-cluster-application-title"> {{ title }} </span>
+          <span v-else class="js-cluster-application-title">{{ title }}</span>
         </strong>
         <slot name="description"></slot>
-        <div
-          v-if="hasError || isUnknownStatus"
-          class="cluster-application-error text-danger prepend-top-10"
-        >
+        <div v-if="hasError" class="cluster-application-error text-danger prepend-top-10">
           <p class="js-cluster-application-general-error-message append-bottom-0">
             {{ generalErrorDescription }}
           </p>
@@ -208,6 +325,37 @@ export default {
             </li>
           </ul>
         </div>
+
+        <div
+          v-if="shouldShowUpgradeDetails"
+          class="form-text text-muted label p-0 js-cluster-application-upgrade-details"
+        >
+          {{ versionLabel }}
+          <span v-if="updateSuccessful">to</span>
+
+          <gl-link
+            v-if="updateSuccessful"
+            :href="chartRepo"
+            target="_blank"
+            class="js-cluster-application-upgrade-version"
+            >chart v{{ version }}</gl-link
+          >
+        </div>
+
+        <div
+          v-if="updateFailed && !isUpgrading"
+          class="bs-callout bs-callout-danger cluster-application-banner mt-2 mb-0 js-cluster-application-upgrade-failure-message"
+        >
+          {{ upgradeFailureDescription }}
+        </div>
+        <loading-button
+          v-if="upgradeAvailable || updateFailed || isUpgrading"
+          class="btn btn-primary js-cluster-application-upgrade-button mt-2"
+          :loading="isUpgrading"
+          :disabled="isUpgrading"
+          :label="upgradeButtonLabel"
+          @click="upgradeClicked"
+        />
       </div>
       <div
         :class="{ 'section-25': showManageButton, 'section-15': !showManageButton }"
@@ -215,17 +363,29 @@ export default {
         role="gridcell"
       >
         <div v-if="showManageButton" class="btn-group table-action-buttons">
-          <a :href="manageLink" :class="{ disabled: disabled }" class="btn">
-            {{ manageButtonLabel }}
-          </a>
+          <a :href="manageLink" :class="{ disabled: disabled }" class="btn">{{
+            manageButtonLabel
+          }}</a>
         </div>
         <div class="btn-group table-action-buttons">
           <loading-button
+            v-if="displayInstallButton"
             :loading="installButtonLoading"
             :disabled="disabled || installButtonDisabled"
             :label="installButtonLabel"
             class="js-cluster-application-install-button"
             @click="installClicked"
+          />
+          <uninstall-application-button
+            v-if="displayUninstallButton"
+            v-gl-modal-directive="'uninstall-' + id"
+            :status="status"
+            class="js-cluster-application-uninstall-button"
+          />
+          <uninstall-application-confirmation-modal
+            :application="id"
+            :application-title="title"
+            @confirm="uninstallConfirmed()"
           />
         </div>
       </div>

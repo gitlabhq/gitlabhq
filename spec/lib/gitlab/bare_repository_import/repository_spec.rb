@@ -61,7 +61,7 @@ describe ::Gitlab::BareRepositoryImport::Repository do
     let(:wiki_path) { File.join(root_path, "#{hashed_path}.wiki.git") }
 
     before do
-      gitlab_shell.create_repository(repository_storage, hashed_path)
+      gitlab_shell.create_repository(repository_storage, hashed_path, 'group/project')
       Gitlab::GitalyClient::StorageSettings.allow_disk_access do
         repository = Rugged::Repository.new(repo_path)
         repository.config['gitlab.fullpath'] = 'to/repo'

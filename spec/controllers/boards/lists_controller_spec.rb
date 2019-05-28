@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Boards::ListsController do
@@ -31,13 +33,10 @@ describe Boards::ListsController do
     end
 
     context 'with unauthorized user' do
-      before do
-        allow(Ability).to receive(:allowed?).with(user, :read_project, project).and_return(true)
-        allow(Ability).to receive(:allowed?).with(user, :read_list, project).and_return(false)
-      end
+      let(:unauth_user) { create(:user) }
 
       it 'returns a forbidden 403 response' do
-        read_board_list user: user, board: board
+        read_board_list user: unauth_user, board: board
 
         expect(response).to have_gitlab_http_status(403)
       end
@@ -46,9 +45,11 @@ describe Boards::ListsController do
     def read_board_list(user:, board:)
       sign_in(user)
 
-      get :index, namespace_id: project.namespace.to_param,
-                  project_id: project,
-                  board_id: board.to_param,
+      get :index, params: {
+                    namespace_id: project.namespace.to_param,
+                    project_id: project,
+                    board_id: board.to_param
+                  },
                   format: :json
     end
   end
@@ -103,10 +104,12 @@ describe Boards::ListsController do
     def create_board_list(user:, board:, label_id:)
       sign_in(user)
 
-      post :create, namespace_id: project.namespace.to_param,
-                    project_id: project,
-                    board_id: board.to_param,
-                    list: { label_id: label_id },
+      post :create, params: {
+                      namespace_id: project.namespace.to_param,
+                      project_id: project,
+                      board_id: board.to_param,
+                      list: { label_id: label_id }
+                    },
                     format: :json
     end
   end
@@ -163,11 +166,7 @@ describe Boards::ListsController do
                  list: { position: position },
                  format: :json }
 
-      if Gitlab.rails5?
-        patch :update, params: params, as: :json
-      else
-        patch :update, params
-      end
+      patch :update, params: params, as: :json
     end
   end
 
@@ -205,10 +204,12 @@ describe Boards::ListsController do
     def remove_board_list(user:, board:, list:)
       sign_in(user)
 
-      delete :destroy, namespace_id: project.namespace.to_param,
-                       project_id: project,
-                       board_id: board.to_param,
-                       id: list.to_param,
+      delete :destroy, params: {
+                         namespace_id: project.namespace.to_param,
+                         project_id: project,
+                         board_id: board.to_param,
+                         id: list.to_param
+                       },
                        format: :json
     end
   end
@@ -249,9 +250,11 @@ describe Boards::ListsController do
     def generate_default_lists(user:, board:)
       sign_in(user)
 
-      post :generate, namespace_id: project.namespace.to_param,
-                      project_id: project,
-                      board_id: board.to_param,
+      post :generate, params: {
+                        namespace_id: project.namespace.to_param,
+                        project_id: project,
+                        board_id: board.to_param
+                      },
                       format: :json
     end
   end

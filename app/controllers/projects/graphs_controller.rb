@@ -45,7 +45,10 @@ class Projects::GraphsController < Projects::ApplicationController
   end
 
   def get_languages
-    @languages = @project.repository.languages
+    @languages =
+      ::Projects::RepositoryLanguagesService.new(@project, current_user).execute.map do |lang|
+        { value: lang.share, label: lang.name, color: lang.color, highlight: lang.color }
+      end
   end
 
   def fetch_graph

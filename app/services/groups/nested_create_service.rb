@@ -12,13 +12,13 @@ module Groups
     end
 
     def execute
-      return nil unless group_path
+      return unless group_path
 
       if namespace = namespace_or_group(group_path)
         return namespace
       end
 
-      if group_path.include?('/') && !Group.supports_nested_groups?
+      if group_path.include?('/') && !Group.supports_nested_objects?
         raise 'Nested groups are not supported on MySQL'
       end
 

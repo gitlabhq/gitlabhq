@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Import::GiteaController do
@@ -35,6 +37,14 @@ describe Import::GiteaController do
 
   describe 'POST create' do
     it_behaves_like 'a GitHub-ish import controller: POST create' do
+      before do
+        assign_host_url
+      end
+    end
+  end
+
+  describe "GET realtime_changes" do
+    it_behaves_like 'a GitHub-ish import controller: GET realtime_changes' do
       before do
         assign_host_url
       end

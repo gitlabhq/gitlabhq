@@ -238,7 +238,7 @@ describe Gitlab::Cache::Ci::ProjectPipelineStatus, :clean_gitlab_redis_cache do
     end
 
     describe '#delete_from_cache' do
-      it 'deletes values from redis_cache'  do
+      it 'deletes values from redis_cache' do
         pipeline_status.delete_from_cache
 
         key_exists = Gitlab::Redis::Cache.with { |redis| redis.exists(cache_key) }

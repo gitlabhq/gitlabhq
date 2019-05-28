@@ -2,7 +2,7 @@
 
 [Docker](https://www.docker.com) and container technology have been revolutionizing the software world for the past few years. They combine the performance and efficiency of native execution with the abstraction, security, and immutability of virtualization.
 
-GitLab provides official Docker images to allowing you to easily take advantage of the benefits of containerization while operating your GitLab instance.
+GitLab provides official Docker images allowing you to easily take advantage of the benefits of containerization while operating your GitLab instance.
 
 ## Omnibus GitLab based images
 

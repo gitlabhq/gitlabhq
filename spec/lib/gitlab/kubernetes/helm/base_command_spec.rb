@@ -41,7 +41,7 @@ describe Gitlab::Kubernetes::Helm::BaseCommand do
   describe '#pod_resource' do
     subject { base_command.pod_resource }
 
-    it 'should returns a kubeclient resoure with pod content for application' do
+    it 'returns a kubeclient resoure with pod content for application' do
       is_expected.to be_an_instance_of ::Kubeclient::Resource
     end
 

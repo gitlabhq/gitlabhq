@@ -15,7 +15,7 @@ module Sherlock
     def destroy_all
       Gitlab::Sherlock.collection.clear
 
-      redirect_to :back, status: :found
+      redirect_back_or_default(options: { status: :found })
     end
   end
 end

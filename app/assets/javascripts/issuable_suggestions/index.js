@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import defaultClient from '~/lib/graphql';
+import createDefaultClient from '~/lib/graphql';
 import App from './components/app.vue';
 
 Vue.use(VueApollo);
@@ -10,7 +10,7 @@ export default function() {
   const issueTitle = document.getElementById('issue_title');
   const { projectPath } = el.dataset;
   const apolloProvider = new VueApollo({
-    defaultClient,
+    defaultClient: createDefaultClient(),
   });
 
   return new Vue({

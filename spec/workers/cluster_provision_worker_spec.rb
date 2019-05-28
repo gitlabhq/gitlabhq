@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe ClusterProvisionWorker do
@@ -23,7 +25,7 @@ describe ClusterProvisionWorker do
       end
 
       it 'configures kubernetes platform' do
-        expect(ClusterPlatformConfigureWorker).to receive(:perform_async).with(cluster.id)
+        expect(ClusterConfigureWorker).to receive(:perform_async).with(cluster.id)
 
         described_class.new.perform(cluster.id)
       end
@@ -32,7 +34,7 @@ describe ClusterProvisionWorker do
     context 'when cluster does not exist' do
       it 'does not provision a cluster' do
         expect_any_instance_of(Clusters::Gcp::ProvisionService).not_to receive(:execute)
-        expect(ClusterPlatformConfigureWorker).not_to receive(:perform_async)
+        expect(ClusterConfigureWorker).not_to receive(:perform_async)
 
         described_class.new.perform(123)
       end

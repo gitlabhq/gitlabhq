@@ -97,6 +97,12 @@ describe GoogleApi::CloudPlatform::Client do
               "node_config": {
                 "machine_type": machine_type
               },
+              "master_auth": {
+                "username": "admin",
+                "client_certificate_config": {
+                  issue_client_certificate: true
+                }
+              },
               "legacy_abac": {
                 "enabled": true
               }
@@ -121,6 +127,12 @@ describe GoogleApi::CloudPlatform::Client do
                 "initial_node_count": cluster_size,
                 "node_config": {
                   "machine_type": machine_type
+                },
+                "master_auth": {
+                  "username": "admin",
+                  "client_certificate_config": {
+                    issue_client_certificate: true
+                  }
                 },
                 "legacy_abac": {
                   "enabled": false

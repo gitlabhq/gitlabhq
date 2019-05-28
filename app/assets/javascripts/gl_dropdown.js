@@ -561,10 +561,9 @@ GitLabDropdown = (function() {
         !$target.data('isLink')
       ) {
         e.stopPropagation();
-        return false;
-      } else {
-        return true;
       }
+
+      return true;
     }
   };
 
@@ -656,23 +655,7 @@ GitLabDropdown = (function() {
     if (this.options.renderMenu) {
       return this.options.renderMenu(html);
     } else {
-      var ul = document.createElement('ul');
-
-      for (var i = 0; i < html.length; i += 1) {
-        var el = html[i];
-
-        if (el instanceof $) {
-          el = el.get(0);
-        }
-
-        if (typeof el === 'string') {
-          ul.innerHTML += el;
-        } else {
-          ul.appendChild(el);
-        }
-      }
-
-      return ul;
+      return $('<ul>').append(html);
     }
   };
 
@@ -718,6 +701,10 @@ GitLabDropdown = (function() {
       index = false;
     }
     html = document.createElement('li');
+
+    if (rowHidden) {
+      html.style.display = 'none';
+    }
 
     if (data === 'divider' || data === 'separator') {
       html.className = data;

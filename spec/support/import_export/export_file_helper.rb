@@ -91,7 +91,7 @@ module ExportFileHelper
     loop do
       object_with_parent = deep_find_with_parent(sensitive_word, project_hash)
 
-      return nil unless object_with_parent && object_with_parent.object
+      return unless object_with_parent && object_with_parent.object
 
       if is_safe_hash?(object_with_parent.parent, sensitive_word)
         # It's in the safe list, remove hash and keep looking
@@ -133,6 +133,6 @@ module ExportFileHelper
   end
 
   def file_permissions(file)
-    File.stat(file).mode & 0777
+    File.lstat(file).mode & 0777
   end
 end

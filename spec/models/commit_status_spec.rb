@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe CommitStatus do
@@ -48,6 +50,16 @@ describe CommitStatus do
       expect(ExpireJobCacheWorker).to receive(:perform_async).with(commit_status.id)
 
       commit_status.success!
+    end
+
+    describe 'transitioning to running' do
+      let(:commit_status) { create(:commit_status, :pending, started_at: nil) }
+
+      it 'records the started at time' do
+        commit_status.run!
+
+        expect(commit_status.started_at).to be_present
+      end
     end
   end
 
@@ -437,7 +449,7 @@ describe CommitStatus do
       end
 
       it "lock" do
-        is_expected.to be true
+        is_expected.to be_truthy
       end
 
       it "raise exception when trying to update" do
@@ -451,7 +463,7 @@ describe CommitStatus do
       end
 
       it "do not lock" do
-        is_expected.to be false
+        is_expected.to be_falsey
       end
 
       it "save correctly" do
@@ -478,6 +490,12 @@ describe CommitStatus do
       let(:reason) { :script_failure }
 
       it { is_expected.to be_script_failure }
+    end
+
+    context 'when failure_reason is unmet_prerequisites' do
+      let(:reason) { :unmet_prerequisites }
+
+      it { is_expected.to be_unmet_prerequisites }
     end
   end
 
@@ -555,6 +573,7 @@ describe CommitStatus do
 
     before do
       allow(Time).to receive(:now).and_return(current_time)
+      expect(commit_status.any_unmet_prerequisites?).to eq false
     end
 
     shared_examples 'commit status enqueued' do
@@ -565,6 +584,12 @@ describe CommitStatus do
 
     context 'when initial state is :created' do
       let(:commit_status) { create(:commit_status, :created) }
+
+      it_behaves_like 'commit status enqueued'
+    end
+
+    context 'when initial state is :preparing' do
+      let(:commit_status) { create(:commit_status, :preparing) }
 
       it_behaves_like 'commit status enqueued'
     end

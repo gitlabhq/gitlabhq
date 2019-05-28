@@ -12,13 +12,12 @@ class DetectRepositoryLanguagesWorker
   attr_reader :project
 
   # rubocop: disable CodeReuse/ActiveRecord
-  def perform(project_id, user_id)
+  def perform(project_id, user_id = nil)
     @project = Project.find_by(id: project_id)
-    user = User.find_by(id: user_id)
-    return unless project && user
+    return unless project
 
     try_obtain_lease do
-      ::Projects::DetectRepositoryLanguagesService.new(project, user).execute
+      ::Projects::DetectRepositoryLanguagesService.new(project).execute
     end
   end
   # rubocop: enable CodeReuse/ActiveRecord

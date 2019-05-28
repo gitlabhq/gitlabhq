@@ -4,7 +4,8 @@ require 'spec_helper'
 
 describe Gitlab::Prometheus::QueryVariables do
   describe '.call' do
-    set(:environment) { create(:environment) }
+    let(:project) { environment.project }
+    let(:environment) { create(:environment) }
     let(:slug) { environment.slug }
 
     subject { described_class.call(environment) }
@@ -20,14 +21,33 @@ describe Gitlab::Prometheus::QueryVariables do
       it { is_expected.to include(kube_namespace: '') }
     end
 
-    context 'with deplyoment platform' do
-      let(:kube_namespace) { environment.deployment_platform.actual_namespace }
+    context 'with deployment platform' do
+      context 'with project cluster' do
+        let(:kube_namespace) { environment.deployment_platform.cluster.kubernetes_namespace_for(project) }
 
-      before do
-        create(:cluster, :provided_by_user, projects: [environment.project])
+        before do
+          create(:cluster, :project, :provided_by_user, projects: [project])
+        end
+
+        it { is_expected.to include(kube_namespace: kube_namespace) }
       end
 
-      it { is_expected.to include(kube_namespace: kube_namespace) }
+      context 'with group cluster' do
+        let(:cluster) { create(:cluster, :group, :provided_by_user, groups: [group]) }
+        let(:group) { create(:group) }
+        let(:project2) { create(:project) }
+        let(:kube_namespace) { k8s_ns.namespace }
+
+        let!(:k8s_ns) { create(:cluster_kubernetes_namespace, cluster: cluster, project: project) }
+        let!(:k8s_ns2) { create(:cluster_kubernetes_namespace, cluster: cluster, project: project2) }
+
+        before do
+          group.projects << project
+          group.projects << project2
+        end
+
+        it { is_expected.to include(kube_namespace: kube_namespace) }
+      end
     end
   end
 end

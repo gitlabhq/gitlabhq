@@ -6630,6 +6630,26 @@
   "deploy_keys": [],
   "services": [
     {
+      "id": 101,
+      "title": "YouTrack",
+      "project_id": 5,
+      "created_at": "2016-06-14T15:01:51.327Z",
+      "updated_at": "2016-06-14T15:01:51.327Z",
+      "active": false,
+      "properties": {},
+      "template": false,
+      "push_events": true,
+      "issues_events": true,
+      "merge_requests_events": true,
+      "tag_push_events": true,
+      "note_events": true,
+      "job_events": true,
+      "type": "YoutrackService",
+      "category": "issue_tracker",
+      "default": false,
+      "wiki_page_events": true
+    },
+    {
       "id": 100,
       "title": "JetBrains TeamCity CI",
       "project_id": 5,

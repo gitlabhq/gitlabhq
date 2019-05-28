@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module QA
   module Runtime
     module User
@@ -5,6 +7,10 @@ module QA
 
       def default_username
         'root'
+      end
+
+      def default_email
+        'admin@example.com'
       end
 
       def default_password

@@ -25,7 +25,7 @@ describe Gitlab::Cleanup::RemoteUploads do
 
       expect(::Fog::Storage).to receive(:new).and_return(connection)
 
-      expect(connection).to receive(:directories).and_return(double(get: directory))
+      expect(connection).to receive(:directories).and_return(double(new: directory))
       expect(directory).to receive(:files).and_return(remote_files)
     end
 

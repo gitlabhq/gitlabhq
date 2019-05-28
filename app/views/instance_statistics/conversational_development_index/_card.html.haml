@@ -9,11 +9,11 @@
       .board-card-score
         .board-card-score-value
           = format_score(card.instance_score)
-        .board-card-score-name You
+        .board-card-score-name= _('You')
       .board-card-score
         .board-card-score-value
           = format_score(card.leader_score)
-        .board-card-score-name Lead
+        .board-card-score-name= _('Lead')
     .board-card-score-big
       = number_to_percentage(card.percentage_score, precision: 1)
     .board-card-buttons

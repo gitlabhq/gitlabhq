@@ -1,1 +1,5 @@
-This document was moved to [user/markdown.md](../user/markdown.md).
+---
+redirect_to: '../user/markdown.md'
+---
+
+This document was moved to [another location](../user/markdown.md).

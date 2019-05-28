@@ -7,7 +7,7 @@
 #
 # For example, let's generate internal ids for Issue per Project:
 # ```
-# class Issue < ActiveRecord::Base
+# class Issue < ApplicationRecord
 #   has_internal_id :iid, scope: :project, init: ->(s) { s.project.issues.maximum(:iid) }
 # end
 # ```
@@ -52,6 +52,20 @@ module AtomicInternalId
         end
 
         value
+      end
+
+      define_method("reset_#{scope}_#{column}") do
+        if value = read_attribute(column)
+          scope_value = association(scope).reader
+          scope_attrs = { scope_value.class.table_name.singularize.to_sym => scope_value }
+          usage = self.class.table_name.to_sym
+
+          if InternalId.reset(self, scope_attrs, usage, value)
+            write_attribute(column, nil)
+          end
+        end
+
+        read_attribute(column)
       end
     end
   end

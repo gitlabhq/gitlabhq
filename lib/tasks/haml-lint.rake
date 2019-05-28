@@ -1,6 +1,6 @@
 unless Rails.env.production?
   require 'haml_lint/rake_task'
-  require 'haml_lint/inline_javascript'
+  require Rails.root.join('haml_lint/inline_javascript')
 
   # Workaround for warnings from parser/current
   # Keep it even if it no longer emits any warnings,

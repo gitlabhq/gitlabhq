@@ -1,5 +1,0 @@
----
-title: Fix a frozen string error in lib/gitlab/utils.rb
-merge_request: 23690
-author:
-type: fixed

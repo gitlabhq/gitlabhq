@@ -1,0 +1,5 @@
+---
+title: Update indirect dependency fsevents from 1.2.4 to 1.2.9
+merge_request: 28220
+author: Takuya Noguchi
+type: other

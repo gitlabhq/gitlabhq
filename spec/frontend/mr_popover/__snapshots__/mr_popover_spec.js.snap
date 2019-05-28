@@ -1,0 +1,93 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`MR Popover loaded state matches the snapshot 1`] = `
+<glpopover-stub
+  boundary="viewport"
+  placement="top"
+  show=""
+  target=""
+>
+  <div
+    class="mr-popover"
+  >
+    <div
+      class="d-flex align-items-center justify-content-between"
+    >
+      <div
+        class="d-inline-flex align-items-center"
+      >
+        <div
+          class="issuable-status-box status-box status-box-open"
+        >
+          
+          Open
+        
+        </div>
+         
+        <span
+          class="text-secondary"
+        >
+          Opened 
+          <time>
+            just now
+          </time>
+        </span>
+      </div>
+       
+      <ciicon-stub
+        cssclasses=""
+        size="16"
+        status="[object Object]"
+      />
+    </div>
+     
+    <h5
+      class="my-2"
+    >
+      MR Title
+    </h5>
+     
+    <div
+      class="text-secondary"
+    >
+      
+      foo/bar!1
+    
+    </div>
+  </div>
+</glpopover-stub>
+`;
+
+exports[`MR Popover shows skeleton-loader while apollo is loading 1`] = `
+<glpopover-stub
+  boundary="viewport"
+  placement="top"
+  show=""
+  target=""
+>
+  <div
+    class="mr-popover"
+  >
+    <div>
+      <glskeletonloading-stub
+        class="animation-container-small mt-1"
+        lines="1"
+      />
+    </div>
+     
+    <h5
+      class="my-2"
+    >
+      MR Title
+    </h5>
+     
+    <div
+      class="text-secondary"
+    >
+      
+      foo/bar!1
+    
+    </div>
+  </div>
+</glpopover-stub>
+`;

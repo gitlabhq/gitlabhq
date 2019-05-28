@@ -33,7 +33,7 @@ describe 'Merge request > User merges when pipeline succeeds', :js do
           click_button "Merge when pipeline succeeds"
 
           expect(page).to have_content "Set by #{user.name} to be merged automatically when the pipeline succeeds"
-          expect(page).to have_content "The source branch will not be removed"
+          expect(page).to have_content "The source branch will not be deleted"
           expect(page).to have_selector ".js-cancel-auto-merge"
           visit project_merge_request_path(project, merge_request) # Needed to refresh the page
           expect(page).to have_content /enabled an automatic merge when the pipeline for \h{8} succeeds/i
@@ -94,7 +94,7 @@ describe 'Merge request > User merges when pipeline succeeds', :js do
         click_link 'Merge when pipeline succeeds'
 
         expect(page).to have_content "Set by #{user.name} to be merged automatically when the pipeline succeeds"
-        expect(page).to have_content "The source branch will not be removed"
+        expect(page).to have_content "The source branch will not be deleted"
         expect(page).to have_link "Cancel automatic merge"
       end
     end
@@ -127,10 +127,10 @@ describe 'Merge request > User merges when pipeline succeeds', :js do
       expect(page).to have_content "canceled the automatic merge"
     end
 
-    it 'allows to remove source branch' do
-      click_link "Remove source branch"
+    it 'allows to delete source branch' do
+      click_link "Delete source branch"
 
-      expect(page).to have_content "The source branch will be removed"
+      expect(page).to have_content "The source branch will be deleted"
     end
 
     context 'when pipeline succeeds' do

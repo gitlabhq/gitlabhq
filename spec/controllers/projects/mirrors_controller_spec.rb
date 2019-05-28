@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Projects::MirrorsController do
@@ -65,7 +67,7 @@ describe Projects::MirrorsController do
         expect(flash[:notice]).to match(/successfully updated/)
       end
 
-      it 'should create a RemoteMirror object' do
+      it 'creates a RemoteMirror object' do
         expect { do_put(project, remote_mirrors_attributes: remote_mirror_attributes) }.to change(RemoteMirror, :count).by(1)
       end
     end
@@ -79,10 +81,10 @@ describe Projects::MirrorsController do
         do_put(project, remote_mirrors_attributes: remote_mirror_attributes)
 
         expect(response).to redirect_to(project_settings_repository_path(project, anchor: 'js-push-remote-settings'))
-        expect(flash[:alert]).to match(/Only allowed protocols are/)
+        expect(flash[:alert]).to match(/Only allowed schemes are/)
       end
 
-      it 'should not create a RemoteMirror object' do
+      it 'does not create a RemoteMirror object' do
         expect { do_put(project, remote_mirrors_attributes: remote_mirror_attributes) }.not_to change(RemoteMirror, :count)
       end
     end
@@ -147,7 +149,7 @@ describe Projects::MirrorsController do
     end
 
     def do_get(project, url = 'ssh://example.com')
-      get :ssh_host_keys, namespace_id: project.namespace, project_id: project, ssh_url: url
+      get :ssh_host_keys, params: { namespace_id: project.namespace, project_id: project, ssh_url: url }
     end
   end
 
@@ -155,6 +157,6 @@ describe Projects::MirrorsController do
     attrs = extra_attrs.merge(namespace_id: project.namespace.to_param, project_id: project.to_param)
     attrs[:project] = options
 
-    put :update, attrs
+    put :update, params: attrs
   end
 end

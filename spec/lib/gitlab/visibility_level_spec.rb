@@ -85,4 +85,12 @@ describe Gitlab::VisibilityLevel do
         .to eq(described_class::PRIVATE)
     end
   end
+
+  describe '.valid_level?' do
+    it 'returns true when visibility is valid' do
+      expect(described_class.valid_level?(described_class::PRIVATE)).to be_truthy
+      expect(described_class.valid_level?(described_class::INTERNAL)).to be_truthy
+      expect(described_class.valid_level?(described_class::PUBLIC)).to be_truthy
+    end
+  end
 end

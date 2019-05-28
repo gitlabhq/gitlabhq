@@ -30,7 +30,7 @@
 test:0.7:
   image: julia:0.7
   <<: *test_definition
-  
+
 test:1.0:
   image: julia:1.0
   <<: *test_definition

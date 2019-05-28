@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Projects::PagesController do
@@ -19,7 +21,7 @@ describe Projects::PagesController do
 
   describe 'GET show' do
     it 'returns 200 status' do
-      get :show, request_params
+      get :show, params: request_params
 
       expect(response).to have_gitlab_http_status(200)
     end
@@ -28,19 +30,31 @@ describe Projects::PagesController do
       let(:group) { create(:group, :nested) }
       let(:project) { create(:project, namespace: group) }
 
-      it 'returns a 404 status code' do
-        get :show, request_params
+      it 'returns a 200 status code' do
+        get :show, params: request_params
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(200)
       end
     end
   end
 
   describe 'DELETE destroy' do
     it 'returns 302 status' do
-      delete :destroy, request_params
+      delete :destroy, params: request_params
 
       expect(response).to have_gitlab_http_status(302)
+    end
+
+    context 'when user is developer' do
+      before do
+        project.add_developer(user)
+      end
+
+      it 'returns 404 status' do
+        delete :destroy, params: request_params
+
+        expect(response).to have_gitlab_http_status(404)
+      end
     end
   end
 
@@ -51,7 +65,7 @@ describe Projects::PagesController do
 
     describe 'GET show' do
       it 'returns 404 status' do
-        get :show, request_params
+        get :show, params: request_params
 
         expect(response).to have_gitlab_http_status(404)
       end
@@ -59,7 +73,7 @@ describe Projects::PagesController do
 
     describe 'DELETE destroy' do
       it 'returns 404 status' do
-        delete :destroy, request_params
+        delete :destroy, params: request_params
 
         expect(response).to have_gitlab_http_status(404)
       end
@@ -82,13 +96,13 @@ describe Projects::PagesController do
     end
 
     it 'returns 302 status' do
-      patch :update, request_params
+      patch :update, params: request_params
 
       expect(response).to have_gitlab_http_status(:found)
     end
 
     it 'redirects back to the pages settings' do
-      patch :update, request_params
+      patch :update, params: request_params
 
       expect(response).to redirect_to(project_pages_path(project))
     end
@@ -99,7 +113,7 @@ describe Projects::PagesController do
         .with(project, user, ActionController::Parameters.new(request_params[:project]).permit!)
         .and_return(update_service)
 
-      patch :update, request_params
+      patch :update, params: request_params
     end
   end
 end

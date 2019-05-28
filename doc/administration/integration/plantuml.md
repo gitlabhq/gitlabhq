@@ -52,14 +52,12 @@ http://localhost:8080/plantuml
 
 you can change these defaults by editing the `/etc/tomcat7/server.xml` file.
 
-
 ## GitLab
 
 You need to enable PlantUML integration from Settings under Admin Area. To do
 that, login with an Admin account and do following:
 
- - in GitLab go to **Admin Area** and then **Settings**
- - scroll to bottom of the page until PlantUML section
+ - in GitLab go to **Admin Area**->**Settings**->**Integrations**->**PlantUML**
  - check **Enable PlantUML** checkbox
  - set the PlantUML instance as **PlantUML URL**
 

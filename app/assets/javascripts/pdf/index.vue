@@ -1,6 +1,6 @@
 <script>
-import pdfjsLib from 'vendor/pdf';
-import workerSrc from 'vendor/pdf.worker.min';
+import pdfjsLib from 'pdfjs-dist/build/pdf';
+import workerSrc from 'pdfjs-dist/build/pdf.worker.min';
 
 import page from './page/index.vue';
 
@@ -28,7 +28,7 @@ export default {
   },
   watch: { pdf: 'load' },
   mounted() {
-    pdfjsLib.PDFJS.workerSrc = workerSrc;
+    pdfjsLib.GlobalWorkerOptions.workerSrc = workerSrc;
     if (this.hasPDF) this.load();
   },
   methods: {

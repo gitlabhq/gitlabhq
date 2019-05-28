@@ -3,7 +3,7 @@
 require "spec_helper"
 
 describe Gitlab::Git::Blob, :seed_helper do
-  let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '') }
+  let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '', 'group/project') }
   let(:rugged) do
     Rugged::Repository.new(File.join(TestEnv.repos_path, TEST_REPO_PATH))
   end
@@ -18,7 +18,7 @@ describe Gitlab::Git::Blob, :seed_helper do
     end
   end
 
-  describe '.find' do
+  shared_examples '.find' do
     context 'nil path' do
       let(:blob) { Gitlab::Git::Blob.find(repository, SeedRepo::Commit::ID, nil) }
 
@@ -59,7 +59,7 @@ describe Gitlab::Git::Blob, :seed_helper do
       it { expect(blob.data[0..10]).to eq("*.rbc\n*.sas") }
       it { expect(blob.size).to eq(241) }
       it { expect(blob.mode).to eq("100644") }
-      it { expect(blob).not_to be_binary }
+      it { expect(blob).not_to be_binary_in_repo }
     end
 
     context 'file in root with leading slash' do
@@ -92,7 +92,7 @@ describe Gitlab::Git::Blob, :seed_helper do
       end
 
       it 'does not mark the blob as binary' do
-        expect(blob).not_to be_binary
+        expect(blob).not_to be_binary_in_repo
       end
     end
 
@@ -123,9 +123,23 @@ describe Gitlab::Git::Blob, :seed_helper do
           .with(hash_including(binary: true))
           .and_call_original
 
-        expect(blob).to be_binary
+        expect(blob).to be_binary_in_repo
       end
     end
+  end
+
+  describe '.find with Gitaly enabled' do
+    it_behaves_like '.find'
+  end
+
+  describe '.find with Rugged enabled', :enable_rugged do
+    it 'calls out to the Rugged implementation' do
+      allow_any_instance_of(Rugged).to receive(:rev_parse).with(SeedRepo::Commit::ID).and_call_original
+
+      described_class.find(repository, SeedRepo::Commit::ID, 'files/images/6049019_460s.jpg')
+    end
+
+    it_behaves_like '.find'
   end
 
   describe '.raw' do
@@ -196,7 +210,7 @@ describe Gitlab::Git::Blob, :seed_helper do
       it { expect(blob.id).to eq('409f37c4f05865e4fb208c771485f211a22c4c2d') }
       it { expect(blob.data).to eq('') }
       it 'does not mark the blob as binary' do
-        expect(blob).not_to be_binary
+        expect(blob).not_to be_binary_in_repo
       end
     end
 
@@ -327,7 +341,7 @@ describe Gitlab::Git::Blob, :seed_helper do
       it { expect(blob.mode).to eq("100755") }
     end
 
-    context 'file with Chinese text' do
+    context 'file with Japanese text' do
       let(:blob) { Gitlab::Git::Blob.find(repository, SeedRepo::Commit::ID, "encoding/テスト.txt") }
 
       it { expect(blob.name).to eq("テスト.txt") }

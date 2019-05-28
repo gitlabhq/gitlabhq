@@ -1,15 +1,16 @@
 - @no_container = true
-- page_title 'Milestones'
+- page_title _('Milestones')
 
 %div{ class: container_class }
   .top-area
     = render 'shared/milestones_filter', counts: milestone_counts(@project.milestones)
 
     .nav-controls
+      = render 'shared/milestones/search_form'
       = render 'shared/milestones_sort_dropdown'
       - if can?(current_user, :admin_milestone, @project)
-        = link_to new_project_milestone_path(@project), class: "btn btn-success qa-new-project-milestone", title: 'New milestone' do
-          New milestone
+        = link_to new_project_milestone_path(@project), class: 'btn btn-success qa-new-project-milestone', title: _('New milestone') do
+          = _('New milestone')
 
   .milestones
     #delete-milestone-modal
@@ -20,6 +21,6 @@
 
       - if @milestones.blank?
         %li
-          .nothing-here-block No milestones to show
+          .nothing-here-block= _('No milestones to show')
 
     = paginate @milestones, theme: 'gitlab'

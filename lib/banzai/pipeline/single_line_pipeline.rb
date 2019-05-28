@@ -27,6 +27,12 @@ module Banzai
           Filter::CommitReferenceFilter
         ]
       end
+
+      def self.transform_context(context)
+        super(context).merge(
+          no_sourcepos: true
+        )
+      end
     end
   end
 end

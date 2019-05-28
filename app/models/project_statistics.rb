@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-class ProjectStatistics < ActiveRecord::Base
+class ProjectStatistics < ApplicationRecord
   belongs_to :project
   belongs_to :namespace
 
   before_save :update_storage_size
 
   COLUMNS_TO_REFRESH = [:repository_size, :lfs_objects_size, :commit_count].freeze
-  INCREMENTABLE_COLUMNS = { build_artifacts_size: %i[storage_size] }.freeze
+  INCREMENTABLE_COLUMNS = { build_artifacts_size: %i[storage_size], packages_size: %i[storage_size] }.freeze
 
   def total_repository_size
     repository_size + lfs_objects_size
@@ -36,8 +36,13 @@ class ProjectStatistics < ActiveRecord::Base
     self.lfs_objects_size = project.lfs_objects.sum(:size)
   end
 
+  # older migrations fail due to non-existent attribute without this
+  def packages_size
+    has_attribute?(:packages_size) ? super.to_i : 0
+  end
+
   def update_storage_size
-    self.storage_size = repository_size + lfs_objects_size + build_artifacts_size
+    self.storage_size = repository_size + lfs_objects_size + build_artifacts_size + packages_size
   end
 
   # Since this incremental update method does not call update_storage_size above,

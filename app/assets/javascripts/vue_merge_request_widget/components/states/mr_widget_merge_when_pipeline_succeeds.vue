@@ -106,11 +106,11 @@ export default {
           <a :href="mr.targetBranchPath" class="label-branch"> {{ mr.targetBranch }} </a>
         </p>
         <p v-if="mr.shouldRemoveSourceBranch">
-          {{ s__('mrWidget|The source branch will be removed') }}
+          {{ s__('mrWidget|The source branch will be deleted') }}
         </p>
         <p v-else class="d-flex align-items-start">
           <span class="append-right-10">
-            {{ s__('mrWidget|The source branch will not be removed') }}
+            {{ s__('mrWidget|The source branch will not be deleted') }}
           </span>
           <a
             v-if="canRemoveSourceBranch"
@@ -121,7 +121,7 @@ export default {
             @click.prevent="removeSourceBranch"
           >
             <i v-if="isRemovingSourceBranch" class="fa fa-spinner fa-spin" aria-hidden="true"> </i>
-            {{ s__('mrWidget|Remove source branch') }}
+            {{ s__('mrWidget|Delete source branch') }}
           </a>
         </p>
       </section>

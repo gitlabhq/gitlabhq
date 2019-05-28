@@ -23,6 +23,11 @@ require 'spec_helper'
 #   end
 shared_examples 'importer routing' do
   let(:except_actions) { [] }
+  let(:is_realtime) { false }
+
+  before do
+    except_actions.push(is_realtime ? :jobs : :realtime_changes)
+  end
 
   it 'to #create' do
     expect(post("/import/#{provider}")).to route_to("import/#{provider}#create") unless except_actions.include?(:create)
@@ -43,17 +48,22 @@ shared_examples 'importer routing' do
   it 'to #jobs' do
     expect(get("/import/#{provider}/jobs")).to route_to("import/#{provider}#jobs") unless except_actions.include?(:jobs)
   end
+
+  it 'to #realtime_changes' do
+    expect(get("/import/#{provider}/realtime_changes")).to route_to("import/#{provider}#realtime_changes") unless except_actions.include?(:realtime_changes)
+  end
 end
 
 # personal_access_token_import_github POST     /import/github/personal_access_token(.:format)                                                import/github#personal_access_token
 #                status_import_github GET      /import/github/status(.:format)                                                               import/github#status
 #              callback_import_github GET      /import/github/callback(.:format)                                                             import/github#callback
-#                  jobs_import_github GET      /import/github/jobs(.:format)                                                                 import/github#jobs
+#      realtime_changes_import_github GET      /import/github/realtime_changes(.:format)                                                                 import/github#jobs
 #                       import_github POST     /import/github(.:format)                                                                      import/github#create
 #                   new_import_github GET      /import/github/new(.:format)                                                                  import/github#new
 describe Import::GithubController, 'routing' do
   it_behaves_like 'importer routing' do
     let(:provider) { 'github' }
+    let(:is_realtime) { true }
   end
 
   it 'to #personal_access_token' do
@@ -63,13 +73,14 @@ end
 
 # personal_access_token_import_gitea POST     /import/gitea/personal_access_token(.:format)                                                 import/gitea#personal_access_token
 #                status_import_gitea GET      /import/gitea/status(.:format)                                                                import/gitea#status
-#                  jobs_import_gitea GET      /import/gitea/jobs(.:format)                                                                  import/gitea#jobs
+#      realtime_changes_import_gitea GET      /import/gitea/realtime_changes(.:format)                                                                  import/gitea#jobs
 #                       import_gitea POST     /import/gitea(.:format)                                                                       import/gitea#create
 #                   new_import_gitea GET      /import/gitea/new(.:format)                                                                   import/gitea#new
 describe Import::GiteaController, 'routing' do
   it_behaves_like 'importer routing' do
     let(:except_actions) { [:callback] }
     let(:provider) { 'gitea' }
+    let(:is_realtime) { true }
   end
 
   it 'to #personal_access_token' do

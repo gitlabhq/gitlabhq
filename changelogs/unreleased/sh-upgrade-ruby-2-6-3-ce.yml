@@ -1,0 +1,5 @@
+---
+title: Upgrade Ruby version to 2.6.3
+merge_request: 28117
+author:
+type: performance

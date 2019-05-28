@@ -3,6 +3,7 @@ require 'spec_helper'
 describe 'Projects > Wiki > User previews markdown changes', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, :wiki_repo, namespace: user.namespace) }
+  let(:wiki_page) { create(:wiki_page, wiki: project.wiki, attrs: { title: 'home', content: '[some link](other-page)' }) }
   let(:wiki_content) do
     <<-HEREDOC
 [regular link](regular)
@@ -18,9 +19,7 @@ describe 'Projects > Wiki > User previews markdown changes', :js do
 
     sign_in(user)
 
-    visit project_path(project)
-    find('.shortcuts-wiki').click
-    click_link "Create your first page"
+    visit project_wiki_path(project, wiki_page)
   end
 
   context "while creating a new wiki page" do
@@ -171,23 +170,9 @@ describe 'Projects > Wiki > User previews markdown changes', :js do
         fill_in :wiki_content, with: "1. one\n  - sublist\n"
         click_on "Preview"
 
-        # the above generates two seperate lists (not embedded) in CommonMark
+        # the above generates two separate lists (not embedded) in CommonMark
         expect(page).to have_content("sublist")
         expect(page).not_to have_xpath("//ol//li//ul")
-      end
-
-      it 'renders content with RedCarpet when legacy_render is set' do
-        wiki_page = create(:wiki_page,
-                           wiki: project.wiki,
-                           attrs: { title: 'home', content: "Empty content" })
-        visit(project_wiki_edit_path(project, wiki_page, legacy_render: 1))
-
-        fill_in :wiki_content, with: "1. one\n  - sublist\n"
-        click_on "Preview"
-
-        # the above generates a sublist list in RedCarpet
-        expect(page).to have_content("sublist")
-        expect(page).to have_xpath("//ol//li//ul")
       end
     end
   end

@@ -18,11 +18,16 @@ describe Gitlab::Ci::Build::Image do
         it 'populates fabricated object with the proper name attribute' do
           expect(subject.name).to eq(image_name)
         end
+
+        it 'does not populate the ports' do
+          expect(subject.ports).to be_empty
+        end
       end
 
       context 'when image is defined as hash' do
         let(:entrypoint) { '/bin/sh' }
-        let(:job) { create(:ci_build, options: { image: { name: image_name, entrypoint: entrypoint } } ) }
+
+        let(:job) { create(:ci_build, options: { image: { name: image_name, entrypoint: entrypoint, ports: [80] } } ) }
 
         it 'fabricates an object of the proper class' do
           is_expected.to be_kind_of(described_class)
@@ -31,6 +36,13 @@ describe Gitlab::Ci::Build::Image do
         it 'populates fabricated object with the proper attributes' do
           expect(subject.name).to eq(image_name)
           expect(subject.entrypoint).to eq(entrypoint)
+        end
+
+        it 'populates the ports' do
+          port = subject.ports.first
+          expect(port.number).to eq 80
+          expect(port.protocol).to eq 'http'
+          expect(port.name).to eq 'default_port'
         end
       end
 
@@ -67,6 +79,10 @@ describe Gitlab::Ci::Build::Image do
           expect(subject.first).to be_kind_of(described_class)
           expect(subject.first.name).to eq(service_image_name)
         end
+
+        it 'does not populate the ports' do
+          expect(subject.first.ports).to be_empty
+        end
       end
 
       context 'when service is defined as hash' do
@@ -75,7 +91,7 @@ describe Gitlab::Ci::Build::Image do
         let(:service_command) { 'sleep 30' }
         let(:job) do
           create(:ci_build, options: { services: [{ name: service_image_name, entrypoint: service_entrypoint,
-                                                    alias: service_alias, command: service_command }] })
+                                                    alias: service_alias, command: service_command, ports: [80] }] })
         end
 
         it 'fabricates an non-empty array of objects' do
@@ -89,6 +105,11 @@ describe Gitlab::Ci::Build::Image do
           expect(subject.first.entrypoint).to eq(service_entrypoint)
           expect(subject.first.alias).to eq(service_alias)
           expect(subject.first.command).to eq(service_command)
+
+          port = subject.first.ports.first
+          expect(port.number).to eq 80
+          expect(port.protocol).to eq 'http'
+          expect(port.name).to eq 'default_port'
         end
       end
 

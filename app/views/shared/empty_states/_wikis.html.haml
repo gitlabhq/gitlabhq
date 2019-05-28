@@ -2,7 +2,7 @@
 
 - if can?(current_user, :create_wiki, @project)
   - create_path = project_wiki_path(@project, params[:id], { view: 'create' })
-  - create_link = link_to s_('WikiEmpty|Create your first page'), create_path, class: 'btn btn-success', title: s_('WikiEmpty|Create your first page')
+  - create_link = link_to s_('WikiEmpty|Create your first page'), create_path, class: 'btn btn-success qa-create-first-page-link', title: s_('WikiEmpty|Create your first page')
 
   = render layout: layout_path, locals: { image_path: 'illustrations/wiki_login_empty.svg' } do
     %h4.text-left

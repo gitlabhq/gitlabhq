@@ -7,15 +7,15 @@
 #     cache_markdown_field :foo
 #     cache_markdown_field :bar
 #     cache_markdown_field :baz, pipeline: :single_line
+#     cache_markdown_field :baz, whitelisted: true
 #
 # Corresponding foo_html, bar_html and baz_html fields should exist.
 module CacheMarkdownField
   extend ActiveSupport::Concern
 
   # Increment this number every time the renderer changes its output
-  CACHE_REDCARPET_VERSION         = 3
   CACHE_COMMONMARK_VERSION_START  = 10
-  CACHE_COMMONMARK_VERSION        = 12
+  CACHE_COMMONMARK_VERSION        = 16
 
   # changes to these attributes cause the cache to be invalidates
   INVALIDATED_BY = %w[author project].freeze
@@ -38,18 +38,14 @@ module CacheMarkdownField
     end
 
     def html_fields
-      markdown_fields.map {|field| html_field(field) }
+      markdown_fields.map { |field| html_field(field) }
     end
-  end
 
-  class MarkdownEngine
-    def self.from_version(version = nil)
-      return :common_mark if version.nil? || version == 0
-
-      if version < CacheMarkdownField::CACHE_COMMONMARK_VERSION_START
-        :redcarpet
-      else
-        :common_mark
+    def html_fields_whitelisted
+      markdown_fields.each_with_object([]) do |field, fields|
+        if @data[field].fetch(:whitelisted, false)
+          fields << html_field(field)
+        end
       end
     end
   end
@@ -71,7 +67,7 @@ module CacheMarkdownField
     # Banzai is less strict about authors, so don't always have an author key
     context[:author] = self.author if self.respond_to?(:author)
 
-    context[:markdown_engine] = MarkdownEngine.from_version(latest_cached_markdown_version)
+    context[:markdown_engine] = :common_mark
 
     context
   end
@@ -128,12 +124,27 @@ module CacheMarkdownField
   end
 
   def latest_cached_markdown_version
-    return CacheMarkdownField::CACHE_COMMONMARK_VERSION unless cached_markdown_version
+    @latest_cached_markdown_version ||= (CacheMarkdownField::CACHE_COMMONMARK_VERSION << 16) | local_version
+  end
 
-    if cached_markdown_version < CacheMarkdownField::CACHE_COMMONMARK_VERSION_START
-      CacheMarkdownField::CACHE_REDCARPET_VERSION
+  def local_version
+    # because local_markdown_version is stored in application_settings which
+    # uses cached_markdown_version too, we check explicitly to avoid
+    # endless loop
+    return local_markdown_version if has_attribute?(:local_markdown_version)
+
+    settings = Gitlab::CurrentSettings.current_application_settings
+
+    # Following migrations are not properly isolated and
+    # use real models (by calling .ghost method), in these migrations
+    # local_markdown_version attribute doesn't exist yet, so we
+    # use a default value:
+    # db/migrate/20170825104051_migrate_issues_to_ghost_user.rb
+    # db/migrate/20171114150259_merge_requests_author_id_foreign_key.rb
+    if settings.respond_to?(:local_markdown_version)
+      settings.local_markdown_version
     else
-      CacheMarkdownField::CACHE_COMMONMARK_VERSION
+      0
     end
   end
 
@@ -147,11 +158,16 @@ module CacheMarkdownField
     alias_method :attributes_before_markdown_cache, :attributes
     def attributes
       attrs = attributes_before_markdown_cache
+      html_fields = cached_markdown_fields.html_fields
+      whitelisted = cached_markdown_fields.html_fields_whitelisted
+      exclude_fields = html_fields - whitelisted
 
-      attrs.delete('cached_markdown_version')
-
-      cached_markdown_fields.html_fields.each do |field|
+      exclude_fields.each do |field|
         attrs.delete(field)
+      end
+
+      if whitelisted.empty?
+        attrs.delete('cached_markdown_version')
       end
 
       attrs
@@ -178,7 +194,9 @@ module CacheMarkdownField
       # author and project invalidate the cache in all circumstances.
       define_method(invalidation_method) do
         changed_fields = changed_attributes.keys
-        invalidations = changed_fields & [markdown_field.to_s, *INVALIDATED_BY]
+        invalidations  = changed_fields & [markdown_field.to_s, *INVALIDATED_BY]
+        invalidations.delete(markdown_field.to_s) if changed_fields.include?("#{markdown_field}_html")
+
         !invalidations.empty? || !cached_html_up_to_date?(markdown_field)
       end
     end

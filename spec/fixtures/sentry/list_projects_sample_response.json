@@ -1,0 +1,81 @@
+[
+  {
+    "status": "active",
+    "features": [
+      "data-forwarding",
+      "rate-limits",
+      "releases"
+    ],
+    "color": "#5c3fbf",
+    "isInternal": false,
+    "isPublic": false,
+    "dateCreated": "2018-12-11T10:41:22.476Z",
+    "id": "2",
+    "slug": "sentry-example",
+    "name": "sentry-example",
+    "hasAccess": true,
+    "isBookmarked": false,
+    "platform": "node",
+    "firstEvent": "2018-12-12T15:07:18Z",
+    "avatar": {
+      "avatarUuid": null,
+      "avatarType": "letter_avatar"
+    },
+    "isMember": true,
+    "organization": {
+      "status": {
+        "id": "active",
+        "name": "active"
+      },
+      "require2FA": false,
+      "avatar": {
+        "avatarUuid": null,
+        "avatarType": "letter_avatar"
+      },
+      "name": "Sentry",
+      "dateCreated": "2018-12-11T10:21:47.431Z",
+      "id": "1",
+      "isEarlyAdopter": false,
+      "slug": "sentry"
+    }
+  },
+  {
+    "status": "active",
+    "features": [
+      "data-forwarding",
+      "rate-limits"
+    ],
+    "color": "#bf873f",
+    "isInternal": true,
+    "isPublic": false,
+    "dateCreated": "2018-12-11T10:21:47.440Z",
+    "id": "1",
+    "slug": "internal",
+    "name": "Internal",
+    "hasAccess": true,
+    "isBookmarked": false,
+    "platform": null,
+    "firstEvent": "2018-12-11T10:54:35Z",
+    "avatar": {
+      "avatarUuid": null,
+      "avatarType": "letter_avatar"
+    },
+    "isMember": true,
+    "organization": {
+      "status": {
+        "id": "active",
+        "name": "active"
+      },
+      "require2FA": false,
+      "avatar": {
+        "avatarUuid": null,
+        "avatarType": "letter_avatar"
+      },
+      "name": "Sentry",
+      "dateCreated": "2018-12-11T10:21:47.431Z",
+      "id": "1",
+      "isEarlyAdopter": false,
+      "slug": "sentry"
+    }
+  }
+]

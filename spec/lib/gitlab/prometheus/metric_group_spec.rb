@@ -21,6 +21,13 @@ describe Gitlab::Prometheus::MetricGroup do
         common_metric_group_a.id, common_metric_group_b_q1.id,
         common_metric_group_b_q2.id)
     end
+
+    it 'orders by priority' do
+      priorities = subject.map(&:priority)
+      names = subject.map(&:name)
+      expect(priorities).to eq([10, 5])
+      expect(names).to eq(['Response metrics (AWS ELB)', 'System metrics (Kubernetes)'])
+    end
   end
 
   describe '.for_project' do

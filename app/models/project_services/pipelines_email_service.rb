@@ -10,11 +10,11 @@ class PipelinesEmailService < Service
   end
 
   def title
-    'Pipelines emails'
+    _('Pipelines emails')
   end
 
   def description
-    'Email the pipelines status to a list of recipients.'
+    _('Email the pipelines status to a list of recipients.')
   end
 
   def self.to_param
@@ -51,7 +51,7 @@ class PipelinesEmailService < Service
     [
       { type: 'textarea',
         name: 'recipients',
-        placeholder: 'Emails separated by comma',
+        placeholder: _('Emails separated by comma'),
         required: true },
       { type: 'checkbox',
         name: 'notify_only_broken_pipelines' }

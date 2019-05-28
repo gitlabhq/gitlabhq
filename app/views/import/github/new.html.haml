@@ -4,7 +4,7 @@
 - header_title _("Projects"), root_path
 
 %h3.page-title
-  = icon 'github', text: import_github_title
+  = icon 'github', text: _('Import repositories from GitHub')
 
 - if github_import_configured?
   %p
@@ -21,6 +21,8 @@
   .form-group
     = text_field_tag :personal_access_token, '', class: 'form-control append-right-8', placeholder: _('Personal Access Token'), size: 40
     = submit_tag _('List your GitHub repositories'), class: 'btn btn-success'
+
+  = render_if_exists 'import/github/ci_cd_only'
 
 - unless github_import_configured?
   %hr

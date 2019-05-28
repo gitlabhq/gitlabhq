@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import sidebarDetailsBlock from '~/jobs/components/sidebar.vue';
 import createStore from '~/jobs/store';
-import job, { stages, jobsInStage } from '../mock_data';
+import job, { jobsInStage } from '../mock_data';
 import { mountComponentWithStore } from '../../helpers/vue_mount_component_helper';
-import { trimText } from '../../helpers/vue_component_helper';
+import { trimText } from '../../helpers/text_helper';
 
 describe('Sidebar details block', () => {
   const SidebarComponent = Vue.extend(sidebarDetailsBlock);
@@ -28,7 +28,7 @@ describe('Sidebar details block', () => {
         store,
       });
 
-      expect(vm.$el.querySelector('.js-retry-job')).toBeNull();
+      expect(vm.$el.querySelector('.js-retry-button')).toBeNull();
     });
   });
 
@@ -70,7 +70,7 @@ describe('Sidebar details block', () => {
     });
 
     it('should render link to retry job', () => {
-      expect(vm.$el.querySelector('.js-retry-job').getAttribute('href')).toEqual(job.retry_path);
+      expect(vm.$el.querySelector('.js-retry-button').getAttribute('href')).toEqual(job.retry_path);
     });
 
     it('should render link to cancel job', () => {
@@ -79,14 +79,6 @@ describe('Sidebar details block', () => {
   });
 
   describe('information', () => {
-    it('should render merge request link', () => {
-      expect(trimText(vm.$el.querySelector('.js-job-mr').textContent)).toEqual('Merge Request: !2');
-
-      expect(vm.$el.querySelector('.js-job-mr a').getAttribute('href')).toEqual(
-        job.merge_request.path,
-      );
-    });
-
     it('should render job duration', () => {
       expect(trimText(vm.$el.querySelector('.js-job-duration').textContent)).toEqual(
         'Duration: 6 seconds',
@@ -139,18 +131,8 @@ describe('Sidebar details block', () => {
       store.dispatch('receiveJobSuccess', job);
     });
 
-    describe('while fetching stages', () => {
-      it('it does not render dropdown', () => {
-        store.dispatch('requestStages');
-        vm = mountComponentWithStore(SidebarComponent, { store });
-
-        expect(vm.$el.querySelector('.js-selected-stage')).toBeNull();
-      });
-    });
-
     describe('with stages', () => {
       beforeEach(() => {
-        store.dispatch('receiveStagesSuccess', stages);
         vm = mountComponentWithStore(SidebarComponent, { store });
       });
 
@@ -164,7 +146,6 @@ describe('Sidebar details block', () => {
     describe('without jobs for stages', () => {
       beforeEach(() => {
         store.dispatch('receiveJobSuccess', job);
-        store.dispatch('receiveStagesSuccess', stages);
         vm = mountComponentWithStore(SidebarComponent, { store });
       });
 
@@ -176,7 +157,6 @@ describe('Sidebar details block', () => {
     describe('with jobs for stages', () => {
       beforeEach(() => {
         store.dispatch('receiveJobSuccess', job);
-        store.dispatch('receiveStagesSuccess', stages);
         store.dispatch('receiveJobsForStageSuccess', jobsInStage.latest_statuses);
         vm = mountComponentWithStore(SidebarComponent, { store });
       });

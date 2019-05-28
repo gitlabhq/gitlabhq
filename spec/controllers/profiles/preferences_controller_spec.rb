@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Profiles::PreferencesController do
@@ -29,7 +31,7 @@ describe Profiles::PreferencesController do
         theme_id: '1'
       )
 
-      patch :update, user: params, format: format
+      patch :update, params: { user: params }, format: format
     end
 
     context 'on successful update' do
@@ -42,10 +44,12 @@ describe Profiles::PreferencesController do
         prefs = {
           color_scheme_id: '1',
           dashboard: 'stars',
-          theme_id: '2'
+          theme_id: '2',
+          first_day_of_week: '1',
+          preferred_language: 'jp'
         }.with_indifferent_access
 
-        expect(user).to receive(:assign_attributes).with(prefs)
+        expect(user).to receive(:assign_attributes).with(ActionController::Parameters.new(prefs).permit!)
         expect(user).to receive(:save)
 
         go params: prefs

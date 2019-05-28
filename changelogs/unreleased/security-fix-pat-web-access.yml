@@ -1,5 +1,0 @@
----
-title: Restrict Personal Access Tokens to API scope on web requests
-merge_request:
-author:
-type: security

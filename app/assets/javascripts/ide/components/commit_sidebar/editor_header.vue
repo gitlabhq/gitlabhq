@@ -44,7 +44,7 @@ export default {
   <div class="d-flex ide-commit-editor-header align-items-center">
     <file-icon :file-name="activeFile.name" :size="16" class="mr-2" />
     <strong class="mr-2"> {{ activeFile.path }} </strong>
-    <changed-file-icon :file="activeFile" class="ml-0" />
+    <changed-file-icon :file="activeFile" :is-centered="false" />
     <div class="ml-auto">
       <button
         v-if="!isStaged"

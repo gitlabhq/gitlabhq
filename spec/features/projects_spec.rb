@@ -4,8 +4,13 @@ describe 'Project' do
   include ProjectForksHelper
   include MobileHelpers
 
+  before do
+    stub_feature_flags(vue_file_list: false)
+    stub_feature_flags(approval_rules: false)
+  end
+
   describe 'creating from template' do
-    let(:user)    { create(:user) }
+    let(:user) { create(:user) }
     let(:template) { Gitlab::ProjectTemplate.find(:rails) }
 
     before do
@@ -55,30 +60,30 @@ describe 'Project' do
     it 'parses Markdown' do
       project.update_attribute(:description, 'This is **my** project')
       visit path
-      expect(page).to have_css('.project-description > .project-description-markdown > p > strong')
+      expect(page).to have_css('.home-panel-description > .home-panel-description-markdown > p > strong')
     end
 
     it 'passes through html-pipeline' do
       project.update_attribute(:description, 'This project is the :poop:')
       visit path
-      expect(page).to have_css('.project-description > .project-description-markdown > p > gl-emoji')
+      expect(page).to have_css('.home-panel-description > .home-panel-description-markdown > p > gl-emoji')
     end
 
     it 'sanitizes unwanted tags' do
       project.update_attribute(:description, "```\ncode\n```")
       visit path
-      expect(page).not_to have_css('.project-description code')
+      expect(page).not_to have_css('.home-panel-description code')
     end
 
     it 'permits `rel` attribute on links' do
       project.update_attribute(:description, 'https://google.com/')
       visit path
-      expect(page).to have_css('.project-description a[rel]')
+      expect(page).to have_css('.home-panel-description a[rel]')
     end
 
     context 'read more', :js do
       let(:read_more_selector)         { '.read-more-container' }
-      let(:read_more_trigger_selector) { '.project-home-desc .js-read-more-trigger' }
+      let(:read_more_trigger_selector) { '.home-panel-home-desc .js-read-more-trigger' }
 
       it 'does not display "read more" link on desktop breakpoint' do
         project.update_attribute(:description, 'This is **my** project')
@@ -94,8 +99,39 @@ describe 'Project' do
 
         find(read_more_trigger_selector).click
 
-        expect(page).to have_css('.project-description .is-expanded')
+        expect(page).to have_css('.home-panel-description .is-expanded')
       end
+    end
+  end
+
+  describe 'project topics' do
+    let(:project) { create(:project, :repository) }
+    let(:path)    { project_path(project) }
+
+    before do
+      sign_in(create(:admin))
+      visit path
+    end
+
+    it 'shows project topics' do
+      project.update_attribute(:tag_list, 'topic1')
+
+      visit path
+
+      expect(page).to have_css('.home-panel-topic-list')
+      expect(page).to have_link('Topic1', href: explore_projects_path(tag: 'topic1'))
+    end
+
+    it 'shows up to 3 project tags' do
+      project.update_attribute(:tag_list, 'topic1, topic2, topic3, topic4')
+
+      visit path
+
+      expect(page).to have_css('.home-panel-topic-list')
+      expect(page).to have_link('Topic1', href: explore_projects_path(tag: 'topic1'))
+      expect(page).to have_link('Topic2', href: explore_projects_path(tag: 'topic2'))
+      expect(page).to have_link('Topic3', href: explore_projects_path(tag: 'topic3'))
+      expect(page).to have_content('+ 1 more')
     end
   end
 
@@ -146,7 +182,7 @@ describe 'Project' do
 
   describe 'showing information about source of a project fork' do
     let(:user) { create(:user) }
-    let(:base_project)  { create(:project, :public, :repository) }
+    let(:base_project) { create(:project, :public, :repository) }
     let(:forked_project) { fork_project(base_project, user, repository: true) }
 
     before do
@@ -336,6 +372,21 @@ describe 'Project' do
 
       expect(page).not_to have_selector('.event-item')
     end
+  end
+
+  describe 'edit' do
+    let(:user) { create(:user) }
+    let(:project) { create(:project, :public) }
+    let(:path) { edit_project_path(project) }
+
+    before do
+      project.add_maintainer(user)
+      sign_in(user)
+      visit path
+    end
+
+    it_behaves_like 'dirty submit form', [{ form: '.js-general-settings-form', input: 'input[name="project[name]"]' },
+                                          { form: '.qa-merge-request-settings', input: '#project_printing_merge_request_link_enabled' }]
   end
 
   def remove_with_confirm(button_text, confirm_with)

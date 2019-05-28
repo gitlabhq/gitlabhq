@@ -1,5 +1,0 @@
----
-title: Escape user fullname while rendering autocomplete template to prevent XSS
-merge_request:
-author:
-type: security

@@ -39,7 +39,7 @@ describe Gitlab::GitalyClient::OperationService do
 
     context "when pre_receive_error is present" do
       let(:response) do
-        Gitaly::UserCreateBranchResponse.new(pre_receive_error: "something failed")
+        Gitaly::UserCreateBranchResponse.new(pre_receive_error: "GitLab: something failed")
       end
 
       it "throws a PreReceive exception" do
@@ -80,7 +80,7 @@ describe Gitlab::GitalyClient::OperationService do
 
     context "when pre_receive_error is present" do
       let(:response) do
-        Gitaly::UserUpdateBranchResponse.new(pre_receive_error: "something failed")
+        Gitaly::UserUpdateBranchResponse.new(pre_receive_error: "GitLab: something failed")
       end
 
       it "throws a PreReceive exception" do
@@ -117,7 +117,7 @@ describe Gitlab::GitalyClient::OperationService do
 
     context "when pre_receive_error is present" do
       let(:response) do
-        Gitaly::UserDeleteBranchResponse.new(pre_receive_error: "something failed")
+        Gitaly::UserDeleteBranchResponse.new(pre_receive_error: "GitLab: something failed")
       end
 
       it "throws a PreReceive exception" do
@@ -175,7 +175,7 @@ describe Gitlab::GitalyClient::OperationService do
 
   shared_examples 'cherry pick and revert errors' do
     context 'when a pre_receive_error is present' do
-      let(:response) { response_class.new(pre_receive_error: "something failed") }
+      let(:response) { response_class.new(pre_receive_error: "GitLab: something failed") }
 
       it 'raises a PreReceiveError' do
         expect { subject }.to raise_error(Gitlab::Git::PreReceiveError, "something failed")
@@ -313,7 +313,7 @@ describe Gitlab::GitalyClient::OperationService do
       end
 
       context 'when a pre_receive_error is present' do
-        let(:response) { Gitaly::UserCommitFilesResponse.new(pre_receive_error: "something failed") }
+        let(:response) { Gitaly::UserCommitFilesResponse.new(pre_receive_error: "GitLab: something failed") }
 
         it 'raises a PreReceiveError' do
           expect { subject }.to raise_error(Gitlab::Git::PreReceiveError, "something failed")

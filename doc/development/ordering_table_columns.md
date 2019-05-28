@@ -19,7 +19,7 @@ The space between rows is also subject to alignment padding. The `user_id`
 column takes only 4 bytes, and on 64-bit platform, 4 zeroes will be added for
 alignment padding, to allow storing the next row beginning with the "clear" word.
 
-As a result, the actual size of each column would be (ommiting variable length
+As a result, the actual size of each column would be (omitting variable length
 data and 24-byte tuple header): 8 bytes, variable, 8 bytes. This means that
 each row will require at least 16 bytes for the two 4-byte integers. If a table
 has a few rows this is not an issue. However, once you start storing millions of
@@ -30,7 +30,7 @@ ideal column order would be the following:
 - `user_id` (integer, 4 bytes)
 - `name` (text, variable)
 
-or 
+or
 
 - `name` (text, variable)
 - `id` (integer, 4 bytes)
@@ -47,8 +47,7 @@ type size in descending order with variable sizes (`text`, `varchar`, arrays,
 
 ## Type Sizes
 
-While the PostgreSQL documentation
-(https://www.postgresql.org/docs/current/static/datatype.html) contains plenty
+While the [PostgreSQL documentation](https://www.postgresql.org/docs/current/datatype.html) contains plenty
 of information we will list the sizes of common types here so it's easier to
 look them up. Here "word" refers to the word size, which is 4 bytes for a 32
 bits platform and 8 bytes for a 64 bits platform.
@@ -138,7 +137,7 @@ This would produce the following chunks:
 | variable   | data               |
 
 Here we only need 40 bytes per row excluding the variable sized data and 24-byte
-tuple header. 8 bytes being saved may not sound like much, but for tables as 
+tuple header. 8 bytes being saved may not sound like much, but for tables as
 large as the `events` table it does begin to matter. For example, when storing
 80 000 000 rows this translates to a space saving of at least 610 MB, all by
 just changing the order of a few columns.

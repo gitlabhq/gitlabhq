@@ -4,6 +4,8 @@ import { collapseSystemNotes } from './collapse_utils';
 
 export const discussions = state => collapseSystemNotes(state.discussions);
 
+export const convertedDisscussionIds = state => state.convertedDisscussionIds;
+
 export const targetNoteHash = state => state.targetNoteHash;
 
 export const getNotesData = state => state.notesData;
@@ -17,6 +19,8 @@ export const getNotesDataByProp = state => prop => state.notesData[prop];
 export const getNoteableData = state => state.noteableData;
 
 export const getNoteableDataByProp = state => prop => state.noteableData[prop];
+
+export const userCanReply = state => !!state.noteableData.current_user.can_create_note;
 
 export const openState = state => state.noteableData.state;
 
@@ -188,6 +192,9 @@ export const firstUnresolvedDiscussionId = (state, getters) => diffOrder => {
   }
   return getters.unresolvedDiscussionsIdsByDate[0];
 };
+
+export const getDiscussion = state => discussionId =>
+  state.discussions.find(discussion => discussion.id === discussionId);
 
 export const commentsDisabled = state => state.commentsDisabled;
 

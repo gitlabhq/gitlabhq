@@ -43,4 +43,24 @@ describe Gitlab::GitalyClient::ObjectPoolService do
       end
     end
   end
+
+  describe '#fetch' do
+    before do
+      subject.delete
+    end
+
+    it 'restores the pool repository objects' do
+      subject.fetch(project.repository)
+
+      expect(object_pool.repository.exists?).to be(true)
+    end
+
+    context 'when called twice' do
+      it "doesn't raise an error" do
+        subject.delete
+
+        expect { subject.fetch(project.repository) }.not_to raise_error
+      end
+    end
+  end
 end

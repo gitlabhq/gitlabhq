@@ -2,6 +2,7 @@
 
 class IssueBoardEntity < Grape::Entity
   include RequestAwareEntity
+  include TimeTrackableEntity
 
   expose :id
   expose :iid
@@ -11,6 +12,7 @@ class IssueBoardEntity < Grape::Entity
   expose :due_date
   expose :project_id
   expose :relative_position
+  expose :time_estimate
 
   expose :project do |issue|
     API::Entities::Project.represent issue.project, only: [:id, :path]
@@ -37,7 +39,7 @@ class IssueBoardEntity < Grape::Entity
   end
 
   expose :issue_sidebar_endpoint, if: -> (issue) { issue.project } do |issue|
-    project_issue_path(issue.project, issue, format: :json, serializer: 'sidebar')
+    project_issue_path(issue.project, issue, format: :json, serializer: 'sidebar_extras')
   end
 
   expose :toggle_subscription_endpoint, if: -> (issue) { issue.project } do |issue|

@@ -102,13 +102,13 @@ export default {
     />
     <div class="title hide-collapsed">
       {{ __('Time tracking') }}
-      <div v-if="!showHelpState" class="help-button float-right" @click="toggleHelpState(true);">
+      <div v-if="!showHelpState" class="help-button float-right" @click="toggleHelpState(true)">
         <i class="fa fa-question-circle" aria-hidden="true"> </i>
       </div>
       <div
         v-if="showHelpState"
         class="close-help-button float-right"
-        @click="toggleHelpState(false);"
+        @click="toggleHelpState(false)"
       >
         <i class="fa fa-close" aria-hidden="true"> </i>
       </div>

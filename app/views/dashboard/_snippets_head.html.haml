@@ -1,9 +1,9 @@
-.page-title-holder
+.page-title-holder.d-flex.align-items-center
   %h1.page-title= _('Snippets')
 
-  - if current_user
+  - if current_user && current_user.snippets.any? || @snippets.any?
     .page-title-controls
-      = link_to "New snippet", new_snippet_path, class: "btn btn-success", title: "New snippet"
+      = link_to _("New snippet"), new_snippet_path, class: "btn btn-success", title: _("New snippet")
 
 .top-area
   %ul.nav-links.nav.nav-tabs

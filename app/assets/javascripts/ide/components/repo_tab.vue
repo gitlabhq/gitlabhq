@@ -74,7 +74,7 @@ export default {
       active: tab.active,
       disabled: tab.pending,
     }"
-    @click="clickFile(tab);"
+    @click="clickFile(tab)"
     @mouseover="mouseOverTab"
     @mouseout="mouseOutTab"
   >
@@ -88,7 +88,7 @@ export default {
       :disabled="tab.pending"
       type="button"
       class="multi-file-tab-close"
-      @click.stop.prevent="closeFile(tab);"
+      @click.stop.prevent="closeFile(tab)"
     >
       <icon v-if="!showChangedIcon" :size="12" name="close" />
       <changed-file-icon v-else :file="tab" />

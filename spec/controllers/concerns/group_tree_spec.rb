@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe GroupTree do
@@ -23,7 +25,7 @@ describe GroupTree do
       other_group = create(:group, name: 'filter')
       other_group.add_owner(user)
 
-      get :index, filter: 'filt', format: :json
+      get :index, params: { filter: 'filt' }, format: :json
 
       expect(assigns(:groups)).to contain_exactly(other_group)
     end
@@ -40,7 +42,7 @@ describe GroupTree do
       it 'contains only the subgroup when a parent was given' do
         subgroup = create(:group, :public, parent: group)
 
-        get :index, parent_id: group.id, format: :json
+        get :index, params: { parent_id: group.id }, format: :json
 
         expect(assigns(:groups)).to contain_exactly(subgroup)
       end
@@ -48,7 +50,7 @@ describe GroupTree do
       it 'allows filtering for subgroups and includes the parents for rendering' do
         subgroup = create(:group, :public, parent: group, name: 'filter')
 
-        get :index, filter: 'filt', format: :json
+        get :index, params: { filter: 'filt' }, format: :json
 
         expect(assigns(:groups)).to contain_exactly(group, subgroup)
       end
@@ -59,7 +61,7 @@ describe GroupTree do
         subgroup.add_developer(user)
         _other_subgroup = create(:group, :private, parent: parent, name: 'filte')
 
-        get :index, filter: 'filt', format: :json
+        get :index, params: { filter: 'filt' }, format: :json
 
         expect(assigns(:groups)).to contain_exactly(parent, subgroup)
       end
@@ -70,7 +72,7 @@ describe GroupTree do
         subgroup = create(:group, :public, parent: group)
         search_result = create(:group, :public, name: 'result', parent: subgroup)
 
-        get :index, filter: 'resu', format: :json
+        get :index, params: { filter: 'resu' }, format: :json
 
         expect(assigns(:groups)).to contain_exactly(group, subgroup, search_result)
       end
@@ -87,7 +89,7 @@ describe GroupTree do
         it 'expands the tree when filtering' do
           subgroup = create(:group, :public, parent: group, name: 'filter')
 
-          get :index, filter: 'filt', format: :json
+          get :index, params: { filter: 'filt' }, format: :json
 
           children_response = json_response.first['children']
 

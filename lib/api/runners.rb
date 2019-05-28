@@ -17,6 +17,7 @@ module API
                         desc: 'The type of the runners to show'
         optional :status, type: String, values: Ci::Runner::AVAILABLE_STATUSES,
                           desc: 'The status of the runners to show'
+        optional :tag_list, type: Array[String], desc: 'The tags of the runners to show'
         use :pagination
       end
       get do
@@ -24,6 +25,7 @@ module API
         runners = filter_runners(runners, params[:scope], allowed_scopes: Ci::Runner::AVAILABLE_STATUSES)
         runners = filter_runners(runners, params[:type], allowed_scopes: Ci::Runner::AVAILABLE_TYPES)
         runners = filter_runners(runners, params[:status], allowed_scopes: Ci::Runner::AVAILABLE_STATUSES)
+        runners = runners.tagged_with(params[:tag_list]) if params[:tag_list]
 
         present paginate(runners), with: Entities::Runner
       end
@@ -38,6 +40,7 @@ module API
                         desc: 'The type of the runners to show'
         optional :status, type: String, values: Ci::Runner::AVAILABLE_STATUSES,
                           desc: 'The status of the runners to show'
+        optional :tag_list, type: Array[String], desc: 'The tags of the runners to show'
         use :pagination
       end
       get 'all' do
@@ -47,6 +50,7 @@ module API
         runners = filter_runners(runners, params[:scope])
         runners = filter_runners(runners, params[:type], allowed_scopes: Ci::Runner::AVAILABLE_TYPES)
         runners = filter_runners(runners, params[:status], allowed_scopes: Ci::Runner::AVAILABLE_STATUSES)
+        runners = runners.tagged_with(params[:tag_list]) if params[:tag_list]
 
         present paginate(runners), with: Entities::Runner
       end
@@ -139,6 +143,7 @@ module API
                         desc: 'The type of the runners to show'
         optional :status, type: String, values: Ci::Runner::AVAILABLE_STATUSES,
                           desc: 'The status of the runners to show'
+        optional :tag_list, type: Array[String], desc: 'The tags of the runners to show'
         use :pagination
       end
       get ':id/runners' do
@@ -146,6 +151,7 @@ module API
         runners = filter_runners(runners, params[:scope])
         runners = filter_runners(runners, params[:type], allowed_scopes: Ci::Runner::AVAILABLE_TYPES)
         runners = filter_runners(runners, params[:status], allowed_scopes: Ci::Runner::AVAILABLE_STATUSES)
+        runners = runners.tagged_with(params[:tag_list]) if params[:tag_list]
 
         present paginate(runners), with: Entities::Runner
       end

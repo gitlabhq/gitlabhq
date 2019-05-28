@@ -2,8 +2,8 @@
 
 module Clusters
   module Applications
-    class Ingress < ActiveRecord::Base
-      VERSION = '0.23.0'.freeze
+    class Ingress < ApplicationRecord
+      VERSION = '1.1.2'.freeze
 
       self.table_name = 'clusters_applications_ingress'
 
@@ -23,7 +23,7 @@ module Clusters
       FETCH_IP_ADDRESS_DELAY = 30.seconds
 
       state_machine :status do
-        before_transition any => [:installed] do |application|
+        after_transition any => [:installed] do |application|
           application.run_after_commit do
             ClusterWaitForIngressIpAddressWorker.perform_in(
               FETCH_IP_ADDRESS_DELAY, application.name, application.id)
@@ -33,6 +33,13 @@ module Clusters
 
       def chart
         'stable/nginx-ingress'
+      end
+
+      # We will implement this in future MRs.
+      # Basically we need to check all dependent applications are not installed
+      # first.
+      def allowed_to_uninstall?
+        false
       end
 
       def install_command
@@ -48,6 +55,7 @@ module Clusters
       def schedule_status_update
         return unless installed?
         return if external_ip
+        return if external_hostname
 
         ClusterWaitForIngressIpAddressWorker.perform_async(name, id)
       end

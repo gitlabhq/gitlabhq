@@ -1,6 +1,0 @@
----
-title: Fix a possible symlink time of check to time of use race condition in GitLab
-  Pages
-merge_request:
-author:
-type: security

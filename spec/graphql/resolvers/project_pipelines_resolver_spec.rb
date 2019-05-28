@@ -4,7 +4,7 @@ describe Resolvers::ProjectPipelinesResolver do
   include GraphqlHelpers
 
   set(:project) { create(:project) }
-  set(:pipeline) {  create(:ci_pipeline, project: project) }
+  set(:pipeline) { create(:ci_pipeline, project: project) }
   set(:other_pipeline) { create(:ci_pipeline) }
   let(:current_user) { create(:user) }
 

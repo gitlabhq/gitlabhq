@@ -111,6 +111,7 @@ namespace :admin do
     put :reset_health_check_token
     put :clear_repository_check_states
     get :integrations, :repository, :templates, :ci_cd, :reporting, :metrics_and_profiling, :network, :geo, :preferences
+    get :lets_encrypt_terms_of_service
   end
 
   resources :labels
@@ -120,6 +121,10 @@ namespace :admin do
       get :resume
       get :pause
     end
+
+    collection do
+      get :tag_list, format: :json
+    end
   end
 
   resources :jobs, only: :index do
@@ -127,6 +132,8 @@ namespace :admin do
       post :cancel_all
     end
   end
+
+  concerns :clusterable
 
   root to: 'dashboard#index'
 end

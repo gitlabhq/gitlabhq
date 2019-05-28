@@ -1,5 +1,0 @@
----
-title: Fix SSRF in project integrations
-merge_request: 
-author:
-type: security

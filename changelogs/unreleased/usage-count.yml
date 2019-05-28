@@ -1,5 +1,0 @@
----
-title: Use approximate count for big tables for usage statistics.
-merge_request:
-author:
-type: fixed

@@ -5,15 +5,6 @@ module QA
     describe 'Issue creation' do
       let(:issue_title) { 'issue title' }
 
-      def create_issue
-        Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.act { sign_in_using_credentials }
-
-        Resource::Issue.fabricate! do |issue|
-          issue.title = issue_title
-        end
-      end
-
       it 'user creates an issue' do
         create_issue
 
@@ -22,7 +13,8 @@ module QA
         expect(page).to have_content(issue_title)
       end
 
-      context 'when using attachments in comments', :object_storage do
+      # Failure issue: https://gitlab.com/gitlab-org/quality/nightly/issues/101
+      context 'when using attachments in comments', :object_storage, :quarantine do
         let(:file_to_attach) do
           File.absolute_path(File.join('spec', 'fixtures', 'banana_sample.gif'))
         end
@@ -44,6 +36,15 @@ module QA
 
             expect(found).to be_truthy
           end
+        end
+      end
+
+      def create_issue
+        Runtime::Browser.visit(:gitlab, Page::Main::Login)
+        Page::Main::Login.act { sign_in_using_credentials }
+
+        Resource::Issue.fabricate! do |issue|
+          issue.title = issue_title
         end
       end
     end

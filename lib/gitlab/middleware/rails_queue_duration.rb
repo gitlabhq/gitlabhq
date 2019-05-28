@@ -7,6 +7,8 @@
 module Gitlab
   module Middleware
     class RailsQueueDuration
+      GITLAB_RAILS_QUEUE_DURATION_KEY = 'GITLAB_RAILS_QUEUE_DURATION'
+
       def initialize(app)
         @app = app
       end
@@ -19,6 +21,7 @@ module Gitlab
           duration = Time.now.to_f * 1_000 - proxy_start.to_f / 1_000_000
           trans.set(:rails_queue_duration, duration)
           metric_rails_queue_duration_seconds.observe(trans.labels, duration / 1_000)
+          env[GITLAB_RAILS_QUEUE_DURATION_KEY] = duration.round(2)
         end
 
         @app.call(env)

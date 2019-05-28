@@ -5,9 +5,9 @@ image: clojure:lein-2.7.0
 # Make sure you configure the connection as well
 
 before_script:
-  # If you need to install any external applications, like a 
+  # If you need to install any external applications, like a
   # postgres client, you may want to uncomment the line below:
-  # 
+  #
   #- apt-get update -y
   #
   # Retrieve project dependencies
@@ -17,6 +17,6 @@ before_script:
 
 test:
   script:
-  # If you need to run any migrations or configure the database, this 
-  # would be the point to do it.  
+  # If you need to run any migrations or configure the database, this
+  # would be the point to do it.
   - lein test

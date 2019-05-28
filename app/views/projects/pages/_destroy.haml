@@ -9,4 +9,4 @@
         .form-actions
           = link_to 'Remove pages', project_pages_path(@project), data: { confirm: 'Are you sure?'}, method: :delete, class: "btn btn-remove"
   - else
-    .nothing-here-block Only the project owner can remove pages
+    .nothing-here-block Only project maintainers can remove pages

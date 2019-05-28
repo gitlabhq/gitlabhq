@@ -28,7 +28,7 @@ describe Gitlab::Kubernetes::ServiceAccountToken do
 
     subject { service_account_token.generate }
 
-    it 'should build a Kubeclient Resource' do
+    it 'builds a Kubeclient Resource' do
       is_expected.to eq(resource)
     end
   end

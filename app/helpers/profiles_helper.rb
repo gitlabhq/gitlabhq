@@ -25,4 +25,8 @@ module ProfilesHelper
       end
     end
   end
+
+  def user_profile?
+    params[:controller] == 'users'
+  end
 end

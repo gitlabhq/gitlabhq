@@ -150,13 +150,13 @@ describe Gitlab::ContributionsCalendar do
   end
 
   describe '#starting_year' do
-    it "should be the start of last year" do
+    it "is the start of last year" do
       expect(calendar.starting_year).to eq(last_year.year)
     end
   end
 
   describe '#starting_month' do
-    it "should be the start of this month" do
+    it "is the start of this month" do
       expect(calendar.starting_month).to eq(today.month)
     end
   end

@@ -1,5 +1,0 @@
----
-title: Use cached size when passing artifacts to Runner
-merge_request:
-author:
-type: performance

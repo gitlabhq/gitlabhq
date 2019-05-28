@@ -5,11 +5,11 @@ describe ::Gitlab::GlRepository do
     set(:project) { create(:project, :repository) }
 
     it 'parses a project gl_repository' do
-      expect(described_class.parse("project-#{project.id}")).to eq([project, false])
+      expect(described_class.parse("project-#{project.id}")).to eq([project, Gitlab::GlRepository::PROJECT])
     end
 
     it 'parses a wiki gl_repository' do
-      expect(described_class.parse("wiki-#{project.id}")).to eq([project, true])
+      expect(described_class.parse("wiki-#{project.id}")).to eq([project, Gitlab::GlRepository::WIKI])
     end
 
     it 'throws an argument error on an invalid gl_repository' do

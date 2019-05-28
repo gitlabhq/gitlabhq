@@ -5,8 +5,8 @@ import GLDropdown from '~/gl_dropdown';
 import '~/lib/utils/common_utils';
 
 describe('glDropdown', function describeDropdown() {
-  preloadFixtures('static/gl_dropdown.html.raw');
-  loadJSONFixtures('projects.json');
+  preloadFixtures('static/gl_dropdown.html');
+  loadJSONFixtures('static/projects.json');
 
   const NON_SELECTABLE_CLASSES =
     '.divider, .separator, .dropdown-header, .dropdown-menu-empty-item';
@@ -64,10 +64,10 @@ describe('glDropdown', function describeDropdown() {
   }
 
   beforeEach(() => {
-    loadFixtures('static/gl_dropdown.html.raw');
+    loadFixtures('static/gl_dropdown.html');
     this.dropdownContainerElement = $('.dropdown.inline');
     this.$dropdownMenuElement = $('.dropdown-menu', this.dropdownContainerElement);
-    this.projectsData = getJSONFixture('projects.json');
+    this.projectsData = getJSONFixture('static/projects.json');
   });
 
   afterEach(() => {

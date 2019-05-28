@@ -266,7 +266,7 @@ export default {
     blob_name: 'CHANGELOG',
     blob_icon: '<i aria-hidden="true" data-hidden="true" class="fa fa-file-text-o fa-fw"></i>',
     file_hash: '1c497fbb3a46b78edf04cc2a2fa33f67e3ffbe2a',
-    file_path: 'CHANGELOG',
+    file_path: 'CHANGELOG.rb',
     new_file: false,
     deleted_file: false,
     renamed_file: false,
@@ -286,8 +286,9 @@ export default {
     content_sha: 'c48ee0d1bf3b30453f5b32250ce03134beaa6d13',
     stored_externally: null,
     external_storage: null,
-    old_path_html: ['CHANGELOG', 'CHANGELOG'],
+    old_path_html: 'CHANGELOG_OLD',
     new_path_html: 'CHANGELOG',
+    is_fully_expanded: true,
     context_lines_path:
       '/gitlab-org/gitlab-test/blob/c48ee0d1bf3b30453f5b32250ce03134beaa6d13/CHANGELOG/diff',
     highlighted_diff_lines: [
@@ -485,13 +486,17 @@ export default {
         },
       },
     ],
+    viewer: {
+      name: 'text',
+      error: null,
+    },
   },
   diff_discussion: true,
   truncated_diff_lines: [
     {
       text: 'line',
       rich_text:
-        '<tr class="line_holder new" id="">\n<td class="diff-line-num new old_line" data-linenumber="1">\n \n</td>\n<td class="diff-line-num new new_line" data-linenumber="1">\n1\n</td>\n<td class="line_content new noteable_line"><span id="LC1" class="line" lang="plaintext">  - Bad dates</span>\n</td>\n</tr>\n<tr class="line_holder new" id="">\n<td class="diff-line-num new old_line" data-linenumber="1">\n \n</td>\n<td class="diff-line-num new new_line" data-linenumber="2">\n2\n</td>\n<td class="line_content new noteable_line"><span id="LC2" class="line" lang="plaintext"></span>\n</td>\n</tr>\n',
+        '<tr class="line_holder new" id="">\n<td class="diff-line-num new old_line" data-linenumber="1">\n \n</td>\n<td class="diff-line-num new new_line" data-linenumber="1">\n1\n</td>\n<td class="line_content new"><span id="LC1" class="line" lang="plaintext">  - Bad dates</span>\n</td>\n</tr>\n<tr class="line_holder new" id="">\n<td class="diff-line-num new old_line" data-linenumber="1">\n \n</td>\n<td class="diff-line-num new new_line" data-linenumber="2">\n2\n</td>\n<td class="line_content new"><span id="LC2" class="line" lang="plaintext"></span>\n</td>\n</tr>\n',
       can_receive_suggestion: true,
       line_code: '6f209374f7e565f771b95720abf46024c41d1885_1_1',
       type: 'new',

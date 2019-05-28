@@ -3,9 +3,11 @@
 module Types
   module Ci
     class PipelineType < BaseObject
-      expose_permissions Types::PermissionTypes::Ci::Pipeline
-
       graphql_name 'Pipeline'
+
+      authorize :read_pipeline
+
+      expose_permissions Types::PermissionTypes::Ci::Pipeline
 
       field :id, GraphQL::ID_TYPE, null: false
       field :iid, GraphQL::ID_TYPE, null: false
@@ -13,6 +15,10 @@ module Types
       field :sha, GraphQL::STRING_TYPE, null: false
       field :before_sha, GraphQL::STRING_TYPE, null: true
       field :status, PipelineStatusEnum, null: false
+      field :detailed_status,
+            Types::Ci::DetailedStatusType,
+            null: false,
+            resolve: -> (obj, _args, ctx) { obj.detailed_status(ctx[:current_user]) }
       field :duration,
             GraphQL::INT_TYPE,
             null: true,

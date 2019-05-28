@@ -5,7 +5,7 @@ import _ from 'underscore';
 import Cookies from 'js-cookie';
 import flash from './flash';
 import axios from './lib/utils/axios_utils';
-import { __ } from './locale';
+import { sprintf, s__, __ } from './locale';
 
 function Sidebar(currentUser) {
   this.toggleTodo = this.toggleTodo.bind(this);
@@ -79,11 +79,12 @@ Sidebar.prototype.sidebarToggleClicked = function(e, triggered) {
 Sidebar.prototype.toggleTodo = function(e) {
   var $btnText, $this, $todoLoading, ajaxType, url;
   $this = $(e.currentTarget);
-  ajaxType = $this.attr('data-delete-path') ? 'delete' : 'post';
-  if ($this.attr('data-delete-path')) {
-    url = '' + $this.attr('data-delete-path');
+  ajaxType = $this.data('deletePath') ? 'delete' : 'post';
+
+  if ($this.data('deletePath')) {
+    url = '' + $this.data('deletePath');
   } else {
-    url = '' + $this.data('url');
+    url = '' + $this.data('createPath');
   }
 
   $this.tooltip('hide');
@@ -100,7 +101,10 @@ Sidebar.prototype.toggleTodo = function(e) {
       this.todoUpdateDone(data);
     })
     .catch(() =>
-      flash(`There was an error ${ajaxType === 'post' ? 'adding a' : 'deleting the'} todo.`),
+      flash(sprintf(__('There was an error %{message} todo.')), {
+        message:
+          ajaxType === 'post' ? s__('RightSidebar|adding a') : s__('RightSidebar|deleting the'),
+      }),
     );
 };
 
@@ -119,14 +123,14 @@ Sidebar.prototype.todoUpdateDone = function(data) {
       .removeClass('is-loading')
       .enable()
       .attr('aria-label', $el.data(`${attrPrefix}Text`))
-      .attr('data-delete-path', deletePath)
-      .attr('title', $el.data(`${attrPrefix}Text`));
+      .attr('title', $el.data(`${attrPrefix}Text`))
+      .data('deletePath', deletePath);
 
     if ($el.hasClass('has-tooltip')) {
       $el.tooltip('_fixTitle');
     }
 
-    if ($el.data(`${attrPrefix}Icon`)) {
+    if (typeof $el.data('isCollapsed') !== 'undefined') {
       $elText.html($el.data(`${attrPrefix}Icon`));
     } else {
       $elText.text($el.data(`${attrPrefix}Text`));

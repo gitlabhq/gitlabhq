@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 shared_examples 'TokenAuthenticatable' do
@@ -97,14 +99,31 @@ describe ApplicationSetting, 'TokenAuthenticatable' do
 end
 
 describe PersonalAccessToken, 'TokenAuthenticatable' do
-  let(:personal_access_token_name) { 'test-pat-01' }
+  shared_examples 'changes personal access token' do
+    it 'sets new token' do
+      subject
+
+      expect(personal_access_token.token).to eq(token_value)
+      expect(personal_access_token.token_digest).to eq(Gitlab::CryptoHelper.sha256(token_value))
+    end
+  end
+
+  shared_examples 'does not change personal access token' do
+    it 'sets new token' do
+      subject
+
+      expect(personal_access_token.token).to be(nil)
+      expect(personal_access_token.token_digest).to eq(token_digest)
+    end
+  end
+
   let(:token_value) { 'token' }
+  let(:token_digest) { Gitlab::CryptoHelper.sha256(token_value) }
   let(:user) { create(:user) }
   let(:personal_access_token) do
-    described_class.new(name: personal_access_token_name,
+    described_class.new(name: 'test-pat-01',
                         user_id: user.id,
                         scopes: [:api],
-                        token: token,
                         token_digest: token_digest)
   end
 
@@ -115,239 +134,71 @@ describe PersonalAccessToken, 'TokenAuthenticatable' do
   describe '.find_by_token' do
     subject { PersonalAccessToken.find_by_token(token_value) }
 
-    before do
+    it 'finds the token' do
       personal_access_token.save
-    end
 
-    context 'token_digest already exists' do
-      let(:token) { nil }
-      let(:token_digest) { Gitlab::CryptoHelper.sha256(token_value) }
-
-      it 'finds the token' do
-        expect(subject).not_to be_nil
-        expect(subject.name).to eql(personal_access_token_name)
-      end
-    end
-
-    context 'token_digest does not exist' do
-      let(:token) { token_value }
-      let(:token_digest) { nil }
-
-      it 'finds the token' do
-        expect(subject).not_to be_nil
-        expect(subject.name).to eql(personal_access_token_name)
-      end
+      expect(subject).to eq(personal_access_token)
     end
   end
 
   describe '#set_token'   do
     let(:new_token_value) { 'new-token' }
+
     subject { personal_access_token.set_token(new_token_value) }
 
-    context 'token_digest already exists' do
-      let(:token) { nil }
-      let(:token_digest) { Gitlab::CryptoHelper.sha256(token_value) }
+    it 'sets new token' do
+      subject
 
-      it 'overwrites token_digest' do
-        subject
-
-        expect(personal_access_token.read_attribute('token')).to be_nil
-        expect(personal_access_token.token).to eql(new_token_value)
-        expect(personal_access_token.token_digest).to eql( Gitlab::CryptoHelper.sha256(new_token_value))
-      end
-    end
-
-    context 'token_digest does not exist but token does' do
-      let(:token) { token_value }
-      let(:token_digest) { nil }
-
-      it 'creates new token_digest and clears token' do
-        subject
-
-        expect(personal_access_token.read_attribute('token')).to be_nil
-        expect(personal_access_token.token).to eql(new_token_value)
-        expect(personal_access_token.token_digest).to eql(Gitlab::CryptoHelper.sha256(new_token_value))
-      end
-    end
-
-    context 'token_digest does not exist, nor token' do
-      let(:token) { nil }
-      let(:token_digest) { nil }
-
-      it 'creates new token_digest' do
-        subject
-
-        expect(personal_access_token.read_attribute('token')).to be_nil
-        expect(personal_access_token.token).to eql(new_token_value)
-        expect(personal_access_token.token_digest).to eql( Gitlab::CryptoHelper.sha256(new_token_value))
-      end
+      expect(personal_access_token.token).to eq(new_token_value)
+      expect(personal_access_token.token_digest).to eq(Gitlab::CryptoHelper.sha256(new_token_value))
     end
   end
 
   describe '#ensure_token' do
     subject { personal_access_token.ensure_token }
 
-    context 'token_digest already exists' do
-      let(:token) { nil }
-      let(:token_digest) { Gitlab::CryptoHelper.sha256(token_value) }
-
-      it 'does not change token fields' do
-        subject
-
-        expect(personal_access_token.read_attribute('token')).to be_nil
-        expect(personal_access_token.token).to be_nil
-        expect(personal_access_token.token_digest).to eql( Gitlab::CryptoHelper.sha256(token_value))
-      end
-    end
-
-    context 'token_digest does not exist but token does' do
-      let(:token) { token_value }
+    context 'token_digest does not exist' do
       let(:token_digest) { nil }
 
-      it 'does not change token fields' do
-        subject
-
-        expect(personal_access_token.read_attribute('token')).to eql(token_value)
-        expect(personal_access_token.token).to eql(token_value)
-        expect(personal_access_token.token_digest).to be_nil
-      end
+      it_behaves_like 'changes personal access token'
     end
 
-    context 'token_digest does not exist, nor token' do
-      let(:token) { nil }
-      let(:token_digest) { nil }
+    context 'token_digest already generated' do
+      let(:token_digest) { 's3cr3t' }
 
-      it 'creates token_digest' do
-        subject
-
-        expect(personal_access_token.read_attribute('token')).to be_nil
-        expect(personal_access_token.token).to eql(token_value)
-        expect(personal_access_token.token_digest).to eql( Gitlab::CryptoHelper.sha256(token_value))
-      end
+      it_behaves_like 'does not change personal access token'
     end
   end
 
   describe '#ensure_token!' do
     subject { personal_access_token.ensure_token! }
 
-    context 'token_digest already exists' do
-      let(:token) { nil }
-      let(:token_digest) { Gitlab::CryptoHelper.sha256(token_value) }
-
-      it 'does not change token fields' do
-        subject
-
-        expect(personal_access_token.read_attribute('token')).to be_nil
-        expect(personal_access_token.token).to be_nil
-        expect(personal_access_token.token_digest).to eql( Gitlab::CryptoHelper.sha256(token_value))
-      end
-    end
-
-    context 'token_digest does not exist but token does' do
-      let(:token) { token_value }
+    context 'token_digest does not exist' do
       let(:token_digest) { nil }
 
-      it 'does not change token fields' do
-        subject
-
-        expect(personal_access_token.read_attribute('token')).to eql(token_value)
-        expect(personal_access_token.token).to eql(token_value)
-        expect(personal_access_token.token_digest).to be_nil
-      end
+      it_behaves_like 'changes personal access token'
     end
 
-    context 'token_digest does not exist, nor token' do
-      let(:token) { nil }
-      let(:token_digest) { nil }
+    context 'token_digest already generated' do
+      let(:token_digest) { 's3cr3t' }
 
-      it 'creates token_digest' do
-        subject
-
-        expect(personal_access_token.read_attribute('token')).to be_nil
-        expect(personal_access_token.token).to eql(token_value)
-        expect(personal_access_token.token_digest).to eql( Gitlab::CryptoHelper.sha256(token_value))
-      end
+      it_behaves_like 'does not change personal access token'
     end
   end
 
   describe '#reset_token!' do
     subject { personal_access_token.reset_token! }
 
-    context 'token_digest already exists' do
-      let(:token) { nil }
-      let(:token_digest) { Gitlab::CryptoHelper.sha256('old-token') }
-
-      it 'creates new token_digest' do
-        subject
-
-        expect(personal_access_token.read_attribute('token')).to be_nil
-        expect(personal_access_token.token).to eql(token_value)
-        expect(personal_access_token.token_digest).to eql( Gitlab::CryptoHelper.sha256(token_value))
-      end
-    end
-
-    context 'token_digest does not exist but token does' do
-      let(:token) { 'old-token' }
+    context 'token_digest does not exist' do
       let(:token_digest) { nil }
 
-      it 'creates new token_digest and clears token' do
-        subject
-
-        expect(personal_access_token.read_attribute('token')).to be_nil
-        expect(personal_access_token.token).to eql(token_value)
-        expect(personal_access_token.token_digest).to eql(Gitlab::CryptoHelper.sha256(token_value))
-      end
+      it_behaves_like 'changes personal access token'
     end
 
-    context 'token_digest does not exist, nor token' do
-      let(:token) { nil }
-      let(:token_digest) { nil }
+    context 'token_digest already generated' do
+      let(:token_digest) { 's3cr3t' }
 
-      it 'creates new token_digest' do
-        subject
-
-        expect(personal_access_token.read_attribute('token')).to be_nil
-        expect(personal_access_token.token).to eql(token_value)
-        expect(personal_access_token.token_digest).to eql( Gitlab::CryptoHelper.sha256(token_value))
-      end
-    end
-
-    context 'token_digest exists and newly generated token would be the same' do
-      let(:token) { nil }
-      let(:token_digest) { Gitlab::CryptoHelper.sha256('old-token') }
-
-      before do
-        personal_access_token.save
-        allow(Devise).to receive(:friendly_token).and_return(
-          'old-token', token_value, 'boom!')
-      end
-
-      it 'regenerates a new token_digest' do
-        subject
-
-        expect(personal_access_token.read_attribute('token')).to be_nil
-        expect(personal_access_token.token).to eql(token_value)
-        expect(personal_access_token.token_digest).to eql( Gitlab::CryptoHelper.sha256(token_value))
-      end
-    end
-
-    context 'token exists and newly generated token would be the same' do
-      let(:token) { 'old-token' }
-      let(:token_digest) { nil }
-
-      before do
-        personal_access_token.save
-        allow(Devise).to receive(:friendly_token).and_return(
-          'old-token', token_value, 'boom!')
-      end
-
-      it 'regenerates a new token_digest' do
-        subject
-
-        expect(personal_access_token.read_attribute('token')).to be_nil
-        expect(personal_access_token.token).to eql(token_value)
-        expect(personal_access_token.token_digest).to eql( Gitlab::CryptoHelper.sha256(token_value))
-      end
+      it_behaves_like 'changes personal access token'
     end
   end
 end

@@ -1,0 +1,5 @@
+%p
+  Milestone changed to
+  %strong= link_to(@milestone.name, @milestone_url)
+  - if date_range = milestone_date_range(@milestone)
+    = "(#{date_range})"

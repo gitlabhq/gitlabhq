@@ -132,7 +132,7 @@ class Projects::LabelsController < Projects::ApplicationController
       respond_to do |format|
         format.html do
           redirect_to(project_labels_path(@project),
-                      notice: 'Failed to promote label due to internal error. Please contact administrators.')
+                      notice: _('Failed to promote label due to internal error. Please contact administrators.'))
         end
         format.js
       end

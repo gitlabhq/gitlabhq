@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Projects::DestroyService do
@@ -128,10 +130,8 @@ describe Projects::DestroyService do
 
     it 'keeps project team intact upon an error' do
       perform_enqueued_jobs do
-        begin
-          destroy_project(project, user, {})
-        rescue ::Redis::CannotConnectError
-        end
+        destroy_project(project, user, {})
+      rescue ::Redis::CannotConnectError
       end
 
       expect(project.team.members.count).to eq 2
@@ -278,6 +278,40 @@ describe Projects::DestroyService do
 
       expect(fork_network.deleted_root_project_name).to eq(project.full_name)
       expect(fork_network.root_project).to be_nil
+    end
+  end
+
+  context 'repository +deleted path removal' do
+    def removal_path(path)
+      "#{path}+#{project.id}#{described_class::DELETED_FLAG}"
+    end
+
+    context 'regular phase' do
+      it 'schedules +deleted removal of existing repos' do
+        service = described_class.new(project, user, {})
+        allow(service).to receive(:schedule_stale_repos_removal)
+
+        expect(GitlabShellWorker).to receive(:perform_in)
+          .with(5.minutes, :remove_repository, project.repository_storage, removal_path(project.disk_path))
+
+        service.execute
+      end
+    end
+
+    context 'stale cleanup' do
+      let!(:async) { true }
+
+      it 'schedules +deleted wiki and repo removal' do
+        allow(ProjectDestroyWorker).to receive(:perform_async)
+
+        expect(GitlabShellWorker).to receive(:perform_in)
+          .with(10.minutes, :remove_repository, project.repository_storage, removal_path(project.disk_path))
+
+        expect(GitlabShellWorker).to receive(:perform_in)
+          .with(10.minutes, :remove_repository, project.repository_storage, removal_path(project.wiki.disk_path))
+
+        destroy_project(project, user, {})
+      end
     end
   end
 

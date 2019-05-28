@@ -1,8 +1,10 @@
 <script>
 import Icon from '~/vue_shared/components/icon.vue';
+import { GlButton, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
 
 export default {
-  components: { Icon },
+  components: { Icon, GlButton, GlLoadingIcon },
+  directives: { 'gl-tooltip': GlTooltipDirective },
   props: {
     canApply: {
       type: Boolean,
@@ -21,7 +23,6 @@ export default {
   },
   data() {
     return {
-      isAppliedSuccessfully: false,
       isApplying: false,
     };
   },
@@ -42,19 +43,24 @@ export default {
   <div class="md-suggestion-header border-bottom-0 mt-2">
     <div class="qa-suggestion-diff-header font-weight-bold">
       {{ __('Suggested change') }}
-      <a v-if="helpPagePath" :href="helpPagePath" :aria-label="__('Help')">
+      <a v-if="helpPagePath" :href="helpPagePath" :aria-label="__('Help')" class="js-help-btn">
         <icon name="question-o" css-classes="link-highlight" />
       </a>
     </div>
     <span v-if="isApplied" class="badge badge-success">{{ __('Applied') }}</span>
-    <button
-      v-if="canApply"
-      type="button"
-      class="btn qa-apply-btn"
+    <div v-if="isApplying" class="d-flex align-items-center text-secondary">
+      <gl-loading-icon class="d-flex-center mr-2" />
+      <span>{{ __('Applying suggestion') }}</span>
+    </div>
+    <gl-button
+      v-else-if="canApply"
+      v-gl-tooltip.viewport="__('This also resolves the discussion')"
+      class="btn-inverted qa-apply-btn"
       :disabled="isApplying"
+      variant="success"
       @click="applySuggestion"
     >
       {{ __('Apply suggestion') }}
-    </button>
+    </gl-button>
   </div>
 </template>

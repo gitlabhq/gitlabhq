@@ -9,6 +9,8 @@ describe('html output cell', () => {
     return new Component({
       propsData: {
         rawCode,
+        count: 0,
+        index: 0,
       },
     }).$mount();
   }

@@ -56,7 +56,7 @@ describe('Multi-file editor library decorations controller', () => {
       controller.addDecorations(model, 'key', [{ decoration: 'decorationValue' }]);
 
       expect(controller.decorations.size).toBe(1);
-      expect(controller.decorations.keys().next().value).toBe('path--path');
+      expect(controller.decorations.keys().next().value).toBe('gitlab:path--path');
     });
 
     it('calls decorate method', () => {
@@ -90,7 +90,7 @@ describe('Multi-file editor library decorations controller', () => {
 
       controller.decorate(model);
 
-      expect(controller.editorDecorations.keys().next().value).toBe('path--path');
+      expect(controller.editorDecorations.keys().next().value).toBe('gitlab:path--path');
     });
   });
 

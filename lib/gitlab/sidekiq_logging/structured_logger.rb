@@ -5,6 +5,7 @@ module Gitlab
     class StructuredLogger
       START_TIMESTAMP_FIELDS = %w[created_at enqueued_at].freeze
       DONE_TIMESTAMP_FIELDS = %w[started_at retried_at failed_at completed_at].freeze
+      MAXIMUM_JOB_ARGUMENTS_LENGTH = 10.kilobytes
 
       def call(job, queue)
         started_at = current_time
@@ -64,6 +65,7 @@ module Gitlab
         job['pid'] = ::Process.pid
 
         job.delete('args') unless ENV['SIDEKIQ_LOG_ARGUMENTS']
+        job['args'] = limited_job_args(job['args']) if job['args']
 
         convert_to_iso8601(job, START_TIMESTAMP_FIELDS)
 
@@ -92,6 +94,21 @@ module Gitlab
         return timestamp if timestamp.is_a?(String)
 
         Time.at(timestamp).utc.iso8601(3)
+      end
+
+      def limited_job_args(args)
+        return unless args.is_a?(Array)
+
+        total_length = 0
+        limited_args = args.take_while do |arg|
+          total_length += arg.to_json.length
+
+          total_length <= MAXIMUM_JOB_ARGUMENTS_LENGTH
+        end
+
+        limited_args.push('...') if total_length > MAXIMUM_JOB_ARGUMENTS_LENGTH
+
+        limited_args
       end
     end
   end

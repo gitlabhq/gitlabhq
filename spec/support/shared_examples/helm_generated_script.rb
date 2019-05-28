@@ -6,7 +6,7 @@ shared_examples 'helm commands' do
       EOS
     end
 
-    it 'should return appropriate command' do
+    it 'returns appropriate command' do
       expect(subject.generate_script.strip).to eq((helm_setup + commands).strip)
     end
   end

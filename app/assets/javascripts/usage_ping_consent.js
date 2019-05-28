@@ -2,6 +2,7 @@ import $ from 'jquery';
 import axios from './lib/utils/axios_utils';
 import Flash, { hideFlash } from './flash';
 import { parseBoolean } from './lib/utils/common_utils';
+import { __ } from './locale';
 
 export default () => {
   $('body').on('click', '.js-usage-consent-action', e => {
@@ -25,7 +26,7 @@ export default () => {
       })
       .catch(() => {
         hideConsentMessage();
-        Flash('Something went wrong. Try again later.');
+        Flash(__('Something went wrong. Try again later.'));
       });
   });
 };

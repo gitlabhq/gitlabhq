@@ -20,7 +20,7 @@ module Banzai
         \s*
         ^\k<delim>                             # closing front matter marker
         \s*
-      }mx
+      }mx.freeze
 
       def call
         html.sub(PATTERN) do |_match|

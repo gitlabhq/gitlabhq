@@ -3,7 +3,7 @@
 require 'yaml'
 
 invalid_changelogs = Dir['changelogs/**/*'].reject do |changelog|
-  next true if changelog =~ /(archive\.md|unreleased(-ee)?)$/
+  next true if changelog =~ /((README|archive)\.md|unreleased(-ee)?)$/
   next false unless changelog.end_with?('.yml')
 
   begin

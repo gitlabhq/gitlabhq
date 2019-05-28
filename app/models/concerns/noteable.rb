@@ -1,8 +1,25 @@
 # frozen_string_literal: true
 
 module Noteable
-  # Names of all implementers of `Noteable` that support resolvable notes.
+  extend ActiveSupport::Concern
+
+  # `Noteable` class names that support resolvable notes.
   RESOLVABLE_TYPES = %w(MergeRequest).freeze
+
+  class_methods do
+    # `Noteable` class names that support replying to individual notes.
+    def replyable_types
+      %w(Issue MergeRequest)
+    end
+  end
+
+  # The timestamp of the note (e.g. the :created_at or :updated_at attribute if provided via
+  # API call)
+  def system_note_timestamp
+    @system_note_timestamp || Time.now # rubocop:disable Gitlab/ModuleWithInstanceVariables
+  end
+
+  attr_writer :system_note_timestamp
 
   def base_class_name
     self.class.base_class.name
@@ -26,11 +43,19 @@ module Noteable
     DiscussionNote.noteable_types.include?(base_class_name)
   end
 
+  def supports_replying_to_individual_notes?
+    supports_discussions? && self.class.replyable_types.include?(base_class_name)
+  end
+
   def supports_suggestion?
     false
   end
 
   def discussions_rendered_on_frontend?
+    false
+  end
+
+  def preloads_discussion_diff_highlighting?
     false
   end
 

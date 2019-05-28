@@ -239,7 +239,7 @@ module Gitlab
 
         res = ::Projects::DownloadService.new(project, link).execute
 
-        return nil if res.nil?
+        return if res.nil?
 
         res[:markdown]
       end

@@ -92,6 +92,22 @@ describe API::ProjectTemplates do
       expect(json_response['name']).to eq('Actionscript')
     end
 
+    it 'returns C++ gitignore' do
+      get api("/projects/#{public_project.id}/templates/gitignores/C++")
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(response).to match_response_schema('public_api/v4/template')
+      expect(json_response['name']).to eq('C++')
+    end
+
+    it 'returns C++ gitignore for URL-encoded names' do
+      get api("/projects/#{public_project.id}/templates/gitignores/C%2B%2B")
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(response).to match_response_schema('public_api/v4/template')
+      expect(json_response['name']).to eq('C++')
+    end
+
     it 'returns a specific gitlab_ci_yml' do
       get api("/projects/#{public_project.id}/templates/gitlab_ci_ymls/Android")
 
@@ -125,13 +141,27 @@ describe API::ProjectTemplates do
       expect(response).to have_gitlab_http_status(200)
       expect(response).to match_response_schema('public_api/v4/license')
     end
+
+    shared_examples 'path traversal attempt' do |template_type|
+      it 'rejects invalid filenames' do
+        get api("/projects/#{public_project.id}/templates/#{template_type}/%2e%2e%2fPython%2ea")
+
+        expect(response).to have_gitlab_http_status(500)
+      end
+    end
+
+    TemplateFinder::VENDORED_TEMPLATES.each do |template_type, _|
+      it_behaves_like 'path traversal attempt', template_type
+    end
   end
 
   describe 'GET /projects/:id/templates/licenses/:key' do
     it 'fills placeholders in the license' do
       get api("/projects/#{public_project.id}/templates/licenses/agpl-3.0"),
-          project: 'Project Placeholder',
-          fullname: 'Fullname Placeholder'
+          params: {
+            project: 'Project Placeholder',
+            fullname: 'Fullname Placeholder'
+          }
 
       expect(response).to have_gitlab_http_status(200)
       expect(response).to match_response_schema('public_api/v4/license')

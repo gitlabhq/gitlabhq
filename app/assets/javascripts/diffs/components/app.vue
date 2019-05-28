@@ -4,6 +4,8 @@ import Icon from '~/vue_shared/components/icon.vue';
 import { __ } from '~/locale';
 import createFlash from '~/flash';
 import { GlLoadingIcon } from '@gitlab/ui';
+import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
+import Mousetrap from 'mousetrap';
 import eventHub from '../../notes/event_hub';
 import CompareVersions from './compare_versions.vue';
 import DiffFile from './diff_file.vue';
@@ -11,6 +13,15 @@ import NoChanges from './no_changes.vue';
 import HiddenFilesWarning from './hidden_files_warning.vue';
 import CommitWidget from './commit_widget.vue';
 import TreeList from './tree_list.vue';
+import {
+  TREE_LIST_WIDTH_STORAGE_KEY,
+  INITIAL_TREE_WIDTH,
+  MIN_TREE_WIDTH,
+  MAX_TREE_WIDTH,
+  TREE_HIDE_STATS_WIDTH,
+  MR_TREE_SHOW_KEY,
+  CENTERED_LIMITED_CONTAINER_CLASSES,
+} from '../constants';
 
 export default {
   name: 'DiffsApp',
@@ -23,6 +34,7 @@ export default {
     CommitWidget,
     TreeList,
     GlLoadingIcon,
+    PanelResizer,
   },
   props: {
     endpoint: {
@@ -52,10 +64,19 @@ export default {
       required: false,
       default: '',
     },
+    isFluidLayout: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
+    const treeWidth =
+      parseInt(localStorage.getItem(TREE_LIST_WIDTH_STORAGE_KEY), 10) || INITIAL_TREE_WIDTH;
+
     return {
       assignedDiscussions: false,
+      treeWidth,
     };
   },
   computed: {
@@ -74,7 +95,7 @@ export default {
       emailPatchPath: state => state.diffs.emailPatchPath,
     }),
     ...mapState('diffs', ['showTreeList', 'isLoading', 'startVersion']),
-    ...mapGetters('diffs', ['isParallelView']),
+    ...mapGetters('diffs', ['isParallelView', 'currentDiffIndex']),
     ...mapGetters(['isNotesFetched', 'getNoteableData']),
     targetBranch() {
       return {
@@ -95,6 +116,12 @@ export default {
         (this.startVersion &&
           this.startVersion.version_index === this.mergeRequestDiff.version_index)
       );
+    },
+    hideFileStats() {
+      return this.treeWidth <= TREE_HIDE_STATS_WIDTH;
+    },
+    isLimitedContainer() {
+      return !this.showTreeList && !this.isParallelView && !this.isFluidLayout;
     },
   },
   watch: {
@@ -129,6 +156,14 @@ export default {
   created() {
     this.adjustView();
     eventHub.$once('fetchedNotesData', this.setDiscussions);
+    eventHub.$once('fetchDiffData', this.fetchData);
+    eventHub.$on('refetchDiffData', this.refetchDiffData);
+    this.CENTERED_LIMITED_CONTAINER_CLASSES = CENTERED_LIMITED_CONTAINER_CLASSES;
+  },
+  beforeDestroy() {
+    eventHub.$off('fetchDiffData', this.fetchData);
+    eventHub.$off('refetchDiffData', this.refetchDiffData);
+    this.removeEventListeners();
   },
   methods: {
     ...mapActions(['startTaskList']),
@@ -138,10 +173,21 @@ export default {
       'startRenderDiffsQueue',
       'assignDiscussionsToDiff',
       'setHighlightedRow',
+      'cacheTreeListWidth',
+      'scrollToFile',
+      'toggleShowTreeList',
     ]),
-    fetchData() {
+    refetchDiffData() {
+      this.assignedDiscussions = false;
+      this.fetchData(false);
+    },
+    fetchData(toggleTree = true) {
       this.fetchDiffFiles()
         .then(() => {
+          if (toggleTree) {
+            this.hideTreeListIfJustOneFile();
+          }
+
           requestIdleCallback(
             () => {
               this.setDiscussions();
@@ -174,12 +220,47 @@ export default {
     adjustView() {
       if (this.shouldShow) {
         this.$nextTick(() => {
-          window.mrTabs.resetViewContainer();
-          window.mrTabs.expandViewContainer(this.showTreeList);
+          this.setEventListeners();
         });
+      } else {
+        this.removeEventListeners();
+      }
+    },
+    setEventListeners() {
+      Mousetrap.bind(['[', 'k', ']', 'j'], (e, combo) => {
+        switch (combo) {
+          case '[':
+          case 'k':
+            this.jumpToFile(-1);
+            break;
+          case ']':
+          case 'j':
+            this.jumpToFile(+1);
+            break;
+          default:
+            break;
+        }
+      });
+    },
+    removeEventListeners() {
+      Mousetrap.unbind(['[', 'k', ']', 'j']);
+    },
+    jumpToFile(step) {
+      const targetIndex = this.currentDiffIndex + step;
+      if (targetIndex >= 0 && targetIndex < this.diffFiles.length) {
+        this.scrollToFile(this.diffFiles[targetIndex].file_path);
+      }
+    },
+    hideTreeListIfJustOneFile() {
+      const storedTreeShow = localStorage.getItem(MR_TREE_SHOW_KEY);
+
+      if ((storedTreeShow === null && this.diffFiles.length <= 1) || storedTreeShow === 'false') {
+        this.toggleShowTreeList(false);
       }
     },
   },
+  minTreeWidth: MIN_TREE_WIDTH,
+  maxTreeWidth: MAX_TREE_WIDTH,
 };
 </script>
 
@@ -191,6 +272,7 @@ export default {
         :merge-request-diffs="mergeRequestDiffs"
         :merge-request-diff="mergeRequestDiff"
         :target-branch="targetBranch"
+        :is-limited-container="isLimitedContainer"
       />
 
       <hidden-files-warning
@@ -205,8 +287,27 @@ export default {
         :data-can-create-note="getNoteableData.current_user.can_create_note"
         class="files d-flex prepend-top-default"
       >
-        <div v-show="showTreeList" class="diff-tree-list"><tree-list /></div>
-        <div class="diff-files-holder">
+        <div
+          v-show="showTreeList"
+          :style="{ width: `${treeWidth}px` }"
+          class="diff-tree-list js-diff-tree-list"
+        >
+          <panel-resizer
+            :size.sync="treeWidth"
+            :start-size="treeWidth"
+            :min-size="$options.minTreeWidth"
+            :max-size="$options.maxTreeWidth"
+            side="right"
+            @resize-end="cacheTreeListWidth"
+          />
+          <tree-list :hide-file-stats="hideFileStats" />
+        </div>
+        <div
+          class="diff-files-holder"
+          :class="{
+            [CENTERED_LIMITED_CONTAINER_CLASSES]: isLimitedContainer,
+          }"
+        >
           <commit-widget v-if="commit" :commit="commit" />
           <template v-if="renderDiffFiles">
             <diff-file

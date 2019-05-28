@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Notes::BuildService do
@@ -41,6 +43,15 @@ describe Notes::BuildService do
       context 'when no note with that discussion ID exists' do
         it 'sets an error' do
           new_note = described_class.new(project, author, note: 'Test', in_reply_to_discussion_id: 'foo').execute
+          expect(new_note.errors[:base]).to include('Discussion to reply to cannot be found')
+        end
+      end
+
+      context 'when user has no access to discussion' do
+        it 'sets an error' do
+          another_user = create(:user)
+          new_note = described_class.new(project, another_user, note: 'Test', in_reply_to_discussion_id: note.discussion_id).execute
+
           expect(new_note.errors[:base]).to include('Discussion to reply to cannot be found')
         end
       end
@@ -110,6 +121,28 @@ describe Notes::BuildService do
 
             expect(new_note.errors[:base]).to include('Discussion to reply to cannot be found')
           end
+        end
+      end
+    end
+
+    context 'when replying to individual note' do
+      let(:note) { create(:note_on_issue) }
+
+      subject { described_class.new(project, author, note: 'Test', in_reply_to_discussion_id: note.discussion_id).execute }
+
+      it 'sets the note up to be in reply to that note' do
+        expect(subject).to be_valid
+        expect(subject).to be_a(DiscussionNote)
+        expect(subject.discussion_id).to eq(note.discussion_id)
+      end
+
+      context 'when noteable does not support replies' do
+        let(:note) { create(:note_on_commit) }
+
+        it 'builds another individual note' do
+          expect(subject).to be_valid
+          expect(subject).to be_a(Note)
+          expect(subject.discussion_id).not_to eq(note.discussion_id)
         end
       end
     end

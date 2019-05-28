@@ -5,6 +5,14 @@ describe Gitlab::GithubImport::Importer::RepositoryImporter do
   let(:import_state) { double(:import_state) }
   let(:client) { double(:client) }
 
+  let(:wiki) do
+    double(
+      :wiki,
+      disk_path: 'foo.wiki',
+      full_path: 'group/foo.wiki'
+    )
+  end
+
   let(:project) do
     double(
       :project,
@@ -15,7 +23,9 @@ describe Gitlab::GithubImport::Importer::RepositoryImporter do
       repository: repository,
       create_wiki: true,
       import_state: import_state,
-      lfs_enabled?: true
+      full_path: 'group/foo',
+      lfs_enabled?: true,
+      wiki: wiki
     )
   end
 
@@ -169,12 +179,28 @@ describe Gitlab::GithubImport::Importer::RepositoryImporter do
 
   describe '#import_repository' do
     it 'imports the repository' do
+      repo = double(:repo, default_branch: 'develop')
+
+      expect(client)
+        .to receive(:repository)
+        .with('foo/bar')
+        .and_return(repo)
+
+      expect(project)
+        .to receive(:change_head)
+        .with('develop')
+
       expect(project)
         .to receive(:ensure_repository)
 
       expect(repository)
         .to receive(:fetch_as_mirror)
         .with(project.import_url, refmap: Gitlab::GithubImport.refmap, forced: true, remote_name: 'github')
+
+      service = double
+      expect(Projects::HousekeepingService)
+        .to receive(:new).with(project, :gc).and_return(service)
+      expect(service).to receive(:execute)
 
       expect(importer.import_repository).to eq(true)
     end
@@ -195,7 +221,7 @@ describe Gitlab::GithubImport::Importer::RepositoryImporter do
     it 'imports the wiki repository' do
       expect(importer.gitlab_shell)
         .to receive(:import_repository)
-        .with('foo', 'foo.wiki', 'foo.wiki.git')
+        .with('foo', 'foo.wiki', 'foo.wiki.git', 'group/foo.wiki')
 
       expect(importer.import_wiki_repository).to eq(true)
     end

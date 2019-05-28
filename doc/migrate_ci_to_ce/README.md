@@ -71,7 +71,7 @@ sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production SKIP=r
 ```
 
 If this fails you need to fix it before upgrading to 8.0. Also see
-https://about.gitlab.com/getting-help/
+<https://about.gitlab.com/get-help/>
 
 ### 2. Check source and target database types
 
@@ -118,7 +118,7 @@ From this point on, GitLab CI will be unavailable for your end users.
 ### 1. Upgrade GitLab to 8.0
 
 First upgrade your GitLab server to version 8.0:
-https://about.gitlab.com/update/
+<https://about.gitlab.com/update/>
 
 ### 2. Disable CI on the GitLab server during the migration
 

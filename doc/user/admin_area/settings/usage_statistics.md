@@ -4,7 +4,7 @@ GitLab Inc. will periodically collect information about your instance in order
 to perform various actions.
 
 All statistics are opt-out, you can enable/disable them from the admin panel
-under **Admin area > Settings > Usage statistics**.
+under **Admin area > Settings > Metrics and profiling > Usage statistics**.
 
 ## Version check **[CORE ONLY]**
 
@@ -12,9 +12,9 @@ If enabled, version check will inform you if a new version is available and the
 importance of it through a status. This is shown on the help page (i.e. `/help`)
 for all signed in users, and on the admin pages. The statuses are:
 
-* Green: You are running the latest version of GitLab.
-* Orange: An updated version of GitLab is available.
-* Red: The version of GitLab you are running is vulnerable. You should install
+- Green: You are running the latest version of GitLab.
+- Orange: An updated version of GitLab is available.
+- Red: The version of GitLab you are running is vulnerable. You should install
   the latest version with security fixes as soon as possible.
 
 ![Orange version check example](img/update-available.png)
@@ -48,6 +48,8 @@ You can view the exact JSON payload in the administration panel. To view the pay
 1. Expand **Settings** in the left sidebar and click on **Metrics and profiling**.
 1. Expand **Usage statistics** and click on the **Preview payload** button.
 
+You can see how [the usage ping data maps to different stages of the product](https://gitlab.com/gitlab-data/analytics/blob/master/transform/snowflake-dbt/data/ping_metrics_to_stage_mapping_data.csv). 
+ 
 ### Deactivate the usage ping
 
 The usage ping is opt-out. If you want to deactivate this feature, go to

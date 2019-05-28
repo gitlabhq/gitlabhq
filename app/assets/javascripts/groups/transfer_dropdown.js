@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import { __ } from '~/locale';
 
 export default class TransferDropdown {
   constructor() {
@@ -13,7 +14,7 @@ export default class TransferDropdown {
   }
 
   buildDropdown() {
-    const extraOptions = [{ id: '', text: 'No parent group' }, 'divider'];
+    const extraOptions = [{ id: '', text: __('No parent group') }, 'divider'];
 
     this.groupDropdown.glDropdown({
       selectable: true,

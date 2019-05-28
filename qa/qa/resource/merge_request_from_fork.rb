@@ -11,7 +11,7 @@ module QA
 
       attribute :push do
         Repository::ProjectPush.fabricate! do |resource|
-          resource.project = fork
+          resource.project = fork.project
           resource.branch_name = fork_branch
           resource.file_name = 'file2.txt'
           resource.user = fork.user

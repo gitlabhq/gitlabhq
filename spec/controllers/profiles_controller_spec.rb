@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require('spec_helper')
 
 describe ProfilesController, :request_store do
@@ -9,7 +11,7 @@ describe ProfilesController, :request_store do
 
       expect do
         post :update,
-             user: { password: 'hello12345', password_confirmation: 'hello12345' }
+             params: { user: { password: 'hello12345', password_confirmation: 'hello12345' } }
       end.not_to change { user.reload.encrypted_password }
 
       expect(response.status).to eq(302)
@@ -21,7 +23,7 @@ describe ProfilesController, :request_store do
       sign_in(user)
 
       put :update,
-          user: { email: "john@gmail.com", name: "John" }
+          params: { user: { email: "john@gmail.com", name: "John" } }
 
       user.reload
 
@@ -35,7 +37,7 @@ describe ProfilesController, :request_store do
       sign_in(user)
 
       put :update,
-          user: { email: "john@gmail.com", name: "John" }
+          params: { user: { email: "john@gmail.com", name: "John" } }
 
       user.reload
 
@@ -52,7 +54,7 @@ describe ProfilesController, :request_store do
       sign_in(ldap_user)
 
       put :update,
-          user: { email: "john@gmail.com", name: "John" }
+          params: { user: { email: "john@gmail.com", name: "John" } }
 
       ldap_user.reload
 
@@ -69,7 +71,7 @@ describe ProfilesController, :request_store do
       sign_in(ldap_user)
 
       put :update,
-          user: { email: "john@gmail.com", name: "John", location: "City, Country" }
+          params: { user: { email: "john@gmail.com", name: "John", location: "City, Country" } }
 
       ldap_user.reload
 
@@ -82,7 +84,7 @@ describe ProfilesController, :request_store do
     it 'allows setting a user status' do
       sign_in(user)
 
-      put :update, user: { status: { message: 'Working hard!' } }
+      put :update, params: { user: { status: { message: 'Working hard!' } } }
 
       expect(user.reload.status.message).to eq('Working hard!')
       expect(response).to have_gitlab_http_status(302)
@@ -98,7 +100,7 @@ describe ProfilesController, :request_store do
       sign_in(user)
 
       put :update_username,
-        user: { username: new_username }
+        params: { user: { username: new_username } }
 
       user.reload
 
@@ -110,7 +112,9 @@ describe ProfilesController, :request_store do
       sign_in(user)
 
       put :update_username,
-          user: { username: new_username },
+          params: {
+            user: { username: new_username }
+          },
           format: :json
 
       expect(response.status).to eq(200)
@@ -121,7 +125,9 @@ describe ProfilesController, :request_store do
       sign_in(user)
 
       put :update_username,
-          user: { username: 'invalid username.git' },
+          params: {
+            user: { username: 'invalid username.git' }
+          },
           format: :json
 
       expect(response.status).to eq(422)
@@ -131,7 +137,7 @@ describe ProfilesController, :request_store do
     it 'raises a correct error when the username is missing' do
       sign_in(user)
 
-      expect { put :update_username, user: { gandalf: 'you shall not pass' } }
+      expect { put :update_username, params: { user: { gandalf: 'you shall not pass' } } }
         .to raise_error(ActionController::ParameterMissing)
     end
 
@@ -142,7 +148,7 @@ describe ProfilesController, :request_store do
         sign_in(user)
 
         put :update_username,
-          user: { username: new_username }
+          params: { user: { username: new_username } }
 
         user.reload
 
@@ -160,7 +166,7 @@ describe ProfilesController, :request_store do
         sign_in(user)
 
         put :update_username,
-          user: { username: new_username }
+          params: { user: { username: new_username } }
 
         user.reload
 

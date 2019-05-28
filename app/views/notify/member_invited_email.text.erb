@@ -1,4 +1,4 @@
-You have been invited <%= "by #{member.created_by.name} " if member.created_by %>to join the <%= member_source.human_name %> <%= member_source.model_name.singular %> as <%= member.human_access %>.
+You have been invited <%= "by #{sanitize_name(member.created_by.name)} " if member.created_by %>to join the <%= member_source.human_name %> <%= member_source.model_name.singular %> as <%= member.human_access %>.
 
 Accept invitation: <%= invite_url(@token) %>
 Decline invitation: <%= decline_invite_url(@token) %>

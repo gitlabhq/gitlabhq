@@ -8,6 +8,7 @@
 
 %div{ class: container_class }
   #js-job-vue-app{ data: { endpoint: project_job_path(@project, @build, format: :json),
+    deployment_help_url: help_page_path('user/project/clusters/index.html', anchor: 'troubleshooting-failed-deployment-jobs'),
     runner_help_url: help_page_path('ci/runners/README.html', anchor: 'setting-maximum-job-timeout-for-a-runner'),
     runner_settings_url: project_runners_path(@build.project, anchor: 'js-runners-settings'),
     build_options: javascript_build_options } }

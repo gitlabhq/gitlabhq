@@ -17,3 +17,11 @@ In the Admin area under **Settings** (`/admin/application_settings`), look for
 the "Visibility and Access Controls" area:
 
 ![SSH keys restriction admin settings](img/ssh_keys_restrictions_settings.png)
+
+If a restriction is imposed on any key type, users will be unable to upload new SSH keys that don't meet the requirement. Any existing keys that don't meet it will be disabled but not removed and users will be unable to pull or push code using them.
+
+An icon will be visible to the user of a restricted key in the SSH keys section of their profile:
+
+![Restricted SSH key icon](img/ssh_keys_restricted_key_icon.png)
+
+Hovering over this icon will tell you why the key is restricted.

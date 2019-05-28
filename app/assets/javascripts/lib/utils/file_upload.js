@@ -1,6 +1,9 @@
 export default (buttonSelector, fileSelector) => {
   const btn = document.querySelector(buttonSelector);
   const fileInput = document.querySelector(fileSelector);
+
+  if (!btn || !fileInput) return;
+
   const form = btn.closest('form');
 
   btn.addEventListener('click', () => {

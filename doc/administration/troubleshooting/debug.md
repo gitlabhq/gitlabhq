@@ -158,7 +158,7 @@ are concerned about affecting others during a production system, you can run a
 separate Rails process to debug the issue:
 
 1. Log in to your GitLab account.
-1. Copy the URL that is causing problems (e.g. https://gitlab.com/ABC).
+1. Copy the URL that is causing problems (e.g. `https://gitlab.com/ABC`).
 1. Create a Personal Access Token for your user (Profile Settings -> Access Tokens).
 1. Bring up the GitLab Rails console. For omnibus users, run:
 
@@ -211,5 +211,5 @@ The output in `/tmp/unicorn.txt` may help diagnose the root cause.
 
 # More information
 
-* [Debugging Stuck Ruby Processes](https://blog.newrelic.com/2013/04/29/debugging-stuck-ruby-processes-what-to-do-before-you-kill-9/)
-* [Cheatsheet of using gdb and ruby processes](gdb-stuck-ruby.txt)
+- [Debugging Stuck Ruby Processes](https://blog.newrelic.com/2013/04/29/debugging-stuck-ruby-processes-what-to-do-before-you-kill-9/)
+- [Cheatsheet of using gdb and ruby processes](gdb-stuck-ruby.txt)

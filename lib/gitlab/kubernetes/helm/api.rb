@@ -20,10 +20,10 @@ module Gitlab
           kubeclient.create_pod(command.pod_resource)
         end
 
-        def update(command)
-          namespace.ensure_exists!
+        alias_method :update, :install
 
-          update_config_map(command)
+        def uninstall(command)
+          namespace.ensure_exists!
 
           delete_pod!(command.pod_name)
           kubeclient.create_pod(command.pod_resource)
@@ -62,6 +62,8 @@ module Gitlab
 
         def create_config_map(command)
           command.config_map_resource.tap do |config_map_resource|
+            break unless config_map_resource
+
             if config_map_exists?(config_map_resource)
               kubeclient.update_config_map(config_map_resource)
             else

@@ -499,12 +499,12 @@ describe('Multi-file store actions', () => {
 
       testAction(
         renameEntry,
-        { path: 'test', name: 'new-name' },
+        { path: 'test', name: 'new-name', entryPath: null, parentPath: 'parent-path' },
         store.state,
         [
           {
             type: types.RENAME_ENTRY,
-            payload: { path: 'test', name: 'new-name', entryPath: null },
+            payload: { path: 'test', name: 'new-name', entryPath: null, parentPath: 'parent-path' },
           },
         ],
         [{ type: 'deleteEntry', payload: 'test' }],
@@ -527,17 +527,33 @@ describe('Multi-file store actions', () => {
 
       testAction(
         renameEntry,
-        { path: 'test', name: 'new-name' },
+        { path: 'test', name: 'new-name', parentPath: 'parent-path' },
         store.state,
         [
           {
             type: types.RENAME_ENTRY,
-            payload: { path: 'test', name: 'new-name', entryPath: null },
+            payload: { path: 'test', name: 'new-name', entryPath: null, parentPath: 'parent-path' },
           },
         ],
         [
-          { type: 'renameEntry', payload: { path: 'test', name: 'new-name', entryPath: 'tree-1' } },
-          { type: 'renameEntry', payload: { path: 'test', name: 'new-name', entryPath: 'tree-2' } },
+          {
+            type: 'renameEntry',
+            payload: {
+              path: 'test',
+              name: 'new-name',
+              entryPath: 'tree-1',
+              parentPath: 'parent-path/new-name',
+            },
+          },
+          {
+            type: 'renameEntry',
+            payload: {
+              path: 'test',
+              name: 'new-name',
+              entryPath: 'tree-2',
+              parentPath: 'parent-path/new-name',
+            },
+          },
           { type: 'deleteEntry', payload: 'test' },
         ],
         done,

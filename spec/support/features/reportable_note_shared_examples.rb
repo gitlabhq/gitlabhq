@@ -41,7 +41,7 @@ shared_examples 'reportable note' do |type|
 
   def open_dropdown(dropdown)
     # make window wide enough that tooltip doesn't trigger horizontal scrollbar
-    resize_window(1200, 800)
+    restore_window_size
 
     dropdown.find('.more-actions-toggle').click
     dropdown.find('.dropdown-menu li', match: :first)

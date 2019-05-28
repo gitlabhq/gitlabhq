@@ -28,13 +28,13 @@ class UploadsController < ApplicationController
   end
 
   def find_model
-    return nil unless params[:id]
+    return unless params[:id]
 
     upload_model_class.find(params[:id])
   end
 
   def authorize_access!
-    return nil unless model
+    return unless model
 
     authorized =
       case model
@@ -45,7 +45,7 @@ class UploadsController < ApplicationController
       when Appearance
         true
       else
-        permission = "read_#{model.class.to_s.underscore}".to_sym
+        permission = "read_#{model.class.underscore}".to_sym
 
         can?(current_user, permission, model)
       end
@@ -54,10 +54,11 @@ class UploadsController < ApplicationController
   end
 
   def authorize_create_access!
-    return nil unless model
+    return unless model
 
-    # for now we support only personal snippets comments
-    authorized = can?(current_user, :comment_personal_snippet, model)
+    # for now we support only personal snippets comments. Only personal_snippet
+    # is allowed as a model to #create through routing.
+    authorized = can?(current_user, :create_note, model)
 
     render_unauthorized unless authorized
   end
@@ -68,6 +69,10 @@ class UploadsController < ApplicationController
     else
       authenticate_user!
     end
+  end
+
+  def cache_publicly?
+    User === model || Appearance === model
   end
 
   def upload_model_class

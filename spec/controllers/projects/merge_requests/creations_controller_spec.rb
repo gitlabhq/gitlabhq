@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Projects::MergeRequests::CreationsController do
@@ -24,7 +26,7 @@ describe Projects::MergeRequests::CreationsController do
   describe 'GET new' do
     context 'merge request that removes a submodule' do
       it 'renders new merge request widget template' do
-        get :new, get_diff_params
+        get :new, params: get_diff_params
 
         expect(response).to be_success
       end
@@ -52,7 +54,7 @@ describe Projects::MergeRequests::CreationsController do
         end
 
         it 'limits total commits' do
-          get :new, large_diff_params
+          get :new, params: large_diff_params
 
           expect(response).to be_success
 
@@ -66,12 +68,12 @@ describe Projects::MergeRequests::CreationsController do
       end
 
       it 'shows total commits' do
-        get :new, large_diff_params
+        get :new, params: large_diff_params
 
         expect(response).to be_success
 
         total = assigns(:total_commit_count)
-        expect(assigns(:commits)).to be_an Array
+        expect(assigns(:commits)).to be_an CommitCollection
         expect(total).to be > 0
         expect(assigns(:hidden_commit_count)).to eq(0)
         expect(response).to have_gitlab_http_status(200)
@@ -85,7 +87,7 @@ describe Projects::MergeRequests::CreationsController do
       it 'does not assign diffs var' do
         allow_any_instance_of(MergeRequest).to receive(:can_be_created).and_return(false)
 
-        get :diffs, get_diff_params.merge(format: 'json')
+        get :diffs, params: get_diff_params.merge(format: 'json')
 
         expect(response).to be_success
         expect(assigns[:diffs]).to be_nil
@@ -101,7 +103,7 @@ describe Projects::MergeRequests::CreationsController do
     end
 
     it 'renders JSON including serialized pipelines' do
-      get :pipelines, get_diff_params.merge(format: 'json')
+      get :pipelines, params: get_diff_params.merge(format: 'json')
 
       expect(response).to be_ok
       expect(json_response).to have_key 'pipelines'
@@ -117,7 +119,7 @@ describe Projects::MergeRequests::CreationsController do
         format: 'json'
       }
 
-      get :diff_for_path, params.merge(extra_params)
+      get :diff_for_path, params: params.merge(extra_params)
     end
 
     let(:existing_path) { 'files/ruby/feature.rb' }
@@ -184,10 +186,12 @@ describe Projects::MergeRequests::CreationsController do
       expect(Ability).to receive(:allowed?).with(user, :read_project, project) { true }
 
       get :branch_to,
-          namespace_id: fork_project.namespace,
-          project_id: fork_project,
-          target_project_id: project.id,
-          ref: 'master'
+          params: {
+            namespace_id: fork_project.namespace,
+            project_id: fork_project,
+            target_project_id: project.id,
+            ref: 'master'
+          }
 
       expect(assigns(:commit)).not_to be_nil
       expect(response).to have_gitlab_http_status(200)
@@ -197,10 +201,12 @@ describe Projects::MergeRequests::CreationsController do
       expect(Ability).to receive(:allowed?).with(user, :read_project, project) { false }
 
       get :branch_to,
-          namespace_id: fork_project.namespace,
-          project_id: fork_project,
-          target_project_id: project.id,
-          ref: 'master'
+          params: {
+            namespace_id: fork_project.namespace,
+            project_id: fork_project,
+            target_project_id: project.id,
+            ref: 'master'
+          }
 
       expect(assigns(:commit)).to be_nil
       expect(response).to have_gitlab_http_status(200)

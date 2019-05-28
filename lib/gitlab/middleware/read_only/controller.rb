@@ -60,7 +60,7 @@ module Gitlab
         end
 
         def request
-          @env['rack.request'] ||= Rack::Request.new(@env)
+          @env['actionpack.request'] ||= ActionDispatch::Request.new(@env)
         end
 
         def last_visited_url
@@ -71,12 +71,16 @@ module Gitlab
           @route_hash ||= Rails.application.routes.recognize_path(request.url, { method: request.request_method }) rescue {}
         end
 
-        # Overridden in EE module
-        def whitelisted_routes
-          grack_route || ReadOnly.internal_routes.any? { |path| request.path.include?(path) } || lfs_route || sidekiq_route
+        def relative_url
+          File.join('', Gitlab.config.gitlab.relative_url_root).chomp('/')
         end
 
-        def grack_route
+        # Overridden in EE module
+        def whitelisted_routes
+          grack_route? || internal_route? || lfs_route? || sidekiq_route?
+        end
+
+        def grack_route?
           # Calling route_hash may be expensive. Only do it if we think there's a possible match
           return false unless
             request.path.end_with?('.git/git-upload-pack', '.git/git-receive-pack')
@@ -84,7 +88,11 @@ module Gitlab
           WHITELISTED_GIT_ROUTES[route_hash[:controller]]&.include?(route_hash[:action])
         end
 
-        def lfs_route
+        def internal_route?
+          ReadOnly.internal_routes.any? { |path| request.path.include?(path) }
+        end
+
+        def lfs_route?
           # Calling route_hash may be expensive. Only do it if we think there's a possible match
           unless request.path.end_with?('/info/lfs/objects/batch',
             '/info/lfs/locks', '/info/lfs/locks/verify') ||
@@ -95,8 +103,8 @@ module Gitlab
           WHITELISTED_GIT_LFS_ROUTES[route_hash[:controller]]&.include?(route_hash[:action])
         end
 
-        def sidekiq_route
-          request.path.start_with?('/admin/sidekiq')
+        def sidekiq_route?
+          request.path.start_with?("#{relative_url}/admin/sidekiq")
         end
       end
     end

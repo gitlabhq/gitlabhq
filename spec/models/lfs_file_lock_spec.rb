@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe LfsFileLock do
@@ -13,7 +15,7 @@ describe LfsFileLock do
 
   describe '#can_be_unlocked_by?' do
     let(:developer) { create(:user) }
-    let(:maintainer)    { create(:user) }
+    let(:maintainer) { create(:user) }
 
     before do
       project = lfs_file_lock.project

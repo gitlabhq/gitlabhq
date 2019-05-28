@@ -76,8 +76,11 @@ module Gitlab
       str.dup.force_encoding(Encoding::ASCII_8BIT)
     end
 
-    def binary_stringio(str)
-      StringIO.new(str.freeze || '').tap { |io| io.set_encoding(Encoding::ASCII_8BIT) }
+    def binary_io(str_or_io)
+      io = str_or_io.to_io.dup if str_or_io.respond_to?(:to_io)
+      io ||= StringIO.new(str_or_io.to_s.freeze)
+
+      io.tap { |io| io.set_encoding(Encoding::ASCII_8BIT) }
     end
 
     private

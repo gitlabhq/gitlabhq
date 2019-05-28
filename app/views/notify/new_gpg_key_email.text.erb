@@ -1,4 +1,4 @@
-Hi <%= @user.name %>!
+Hi <%= sanitize_name(@user.name) %>!
 
 A new GPG key was added to your account:
 

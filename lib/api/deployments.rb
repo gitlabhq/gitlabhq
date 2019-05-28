@@ -33,7 +33,7 @@ module API
         success Entities::Deployment
       end
       params do
-        requires :deployment_id, type: Integer,  desc: 'The deployment ID'
+        requires :deployment_id, type: Integer, desc: 'The deployment ID'
       end
       get ':id/deployments/:deployment_id' do
         authorize! :read_deployment, user_project

@@ -24,7 +24,7 @@ module Gitlab
         # Example:
         #
         #   desc do
-        #     "This is a dynamic description for #{noteable.to_ability_name}"
+        #     "This is a dynamic description for #{quick_action_target.to_ability_name}"
         #   end
         #   command :command_key do |arguments|
         #     # Awesome code block
@@ -64,6 +64,23 @@ module Gitlab
         #   end
         def explanation(text = '', &block)
           @explanation = block_given? ? block : text
+        end
+
+        # Allows to define type(s) that must be met in order for the command
+        # to be returned by `.command_names` & `.command_definitions`.
+        #
+        # It is being evaluated before the conditions block is being evaluated
+        #
+        # If no types are passed then any type is allowed as the check is simply skipped.
+        #
+        # Example:
+        #
+        #   types Commit, Issue, MergeRequest
+        #   command :command_key do |arguments|
+        #     # Awesome code block
+        #   end
+        def types(*types_list)
+          @types = types_list
         end
 
         # Allows to define conditions that must be met in order for the command
@@ -144,7 +161,8 @@ module Gitlab
             params: @params,
             condition_block: @condition_block,
             parse_params_block: @parse_params_block,
-            action_block: block
+            action_block: block,
+            types: @types
           )
 
           self.command_definitions << definition
@@ -159,6 +177,7 @@ module Gitlab
           @condition_block = nil
           @warning = nil
           @parse_params_block = nil
+          @types = nil
         end
       end
     end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe SentNotificationsController do
@@ -15,7 +17,7 @@ describe SentNotificationsController do
     context 'when the user is not logged in' do
       context 'when the force param is passed' do
         before do
-          get(:unsubscribe, id: sent_notification.reply_key, force: true)
+          get(:unsubscribe, params: { id: sent_notification.reply_key, force: true })
         end
 
         it 'unsubscribes the user' do
@@ -33,7 +35,7 @@ describe SentNotificationsController do
 
       context 'when the force param is not passed' do
         before do
-          get(:unsubscribe, id: sent_notification.reply_key)
+          get(:unsubscribe, params: { id: sent_notification.reply_key })
         end
 
         it 'does not unsubscribe the user' do
@@ -57,7 +59,7 @@ describe SentNotificationsController do
 
       context 'when the ID passed does not exist' do
         before do
-          get(:unsubscribe, id: sent_notification.reply_key.reverse)
+          get(:unsubscribe, params: { id: sent_notification.reply_key.reverse })
         end
 
         it 'does not unsubscribe the user' do
@@ -75,7 +77,7 @@ describe SentNotificationsController do
 
       context 'when the force param is passed' do
         before do
-          get(:unsubscribe, id: sent_notification.reply_key, force: true)
+          get(:unsubscribe, params: { id: sent_notification.reply_key, force: true })
         end
 
         it 'unsubscribes the user' do
@@ -101,7 +103,7 @@ describe SentNotificationsController do
         let(:sent_notification) { create(:sent_notification, project: project, noteable: merge_request, recipient: user) }
 
         before do
-          get(:unsubscribe, id: sent_notification.reply_key)
+          get(:unsubscribe, params: { id: sent_notification.reply_key })
         end
 
         it 'unsubscribes the user' do

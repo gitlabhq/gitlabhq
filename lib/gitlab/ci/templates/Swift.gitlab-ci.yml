@@ -2,7 +2,9 @@
 # This file assumes an own GitLab CI runner, setup on a macOS system.
 stages:
   - build
+  - test
   - archive
+  - deploy
 
 build_project:
   stage: build

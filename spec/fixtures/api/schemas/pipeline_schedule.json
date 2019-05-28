@@ -33,7 +33,7 @@
       "additionalProperties": false
     },
     "variables": {
-      "type": ["array", "null"],
+      "type": "array",
       "items": { "$ref": "pipeline_schedule_variable.json" }
     }
   },

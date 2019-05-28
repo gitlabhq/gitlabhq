@@ -93,7 +93,7 @@ describe Clusters::RefreshService do
       let(:group) { cluster.group }
       let(:project) { create(:project, group: group) }
 
-      include_examples 'creates a kubernetes namespace'
+      include_examples 'does not create a kubernetes namespace'
 
       context 'when project already has kubernetes namespace' do
         before do
@@ -102,6 +102,12 @@ describe Clusters::RefreshService do
 
         include_examples 'does not create a kubernetes namespace'
       end
+    end
+
+    context 'cluster is not managed' do
+      let!(:cluster) { create(:cluster, :project, :not_managed, projects: [project]) }
+
+      include_examples 'does not create a kubernetes namespace'
     end
   end
 end

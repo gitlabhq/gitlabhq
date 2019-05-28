@@ -1,7 +1,7 @@
+import Members from 'ee_else_ce/members';
 import memberExpirationDate from '../../../member_expiration_date';
 import UsersSelect from '../../../users_select';
 import groupsSelect from '../../../groups_select';
-import Members from '../../../members';
 
 document.addEventListener('DOMContentLoaded', () => {
   memberExpirationDate('.js-access-expiration-date-groups');

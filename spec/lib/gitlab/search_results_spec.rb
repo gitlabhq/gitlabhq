@@ -97,7 +97,7 @@ describe Gitlab::SearchResults do
         results.objects('merge_requests')
       end
 
-      it 'it skips project filter if default project context is used' do
+      it 'skips project filter if default project context is used' do
         allow(results).to receive(:default_project_filter).and_return(true)
 
         expect(results).not_to receive(:project_ids_relation)
@@ -113,12 +113,28 @@ describe Gitlab::SearchResults do
         results.objects('issues')
       end
 
-      it 'it skips project filter if default project context is used' do
+      it 'skips project filter if default project context is used' do
         allow(results).to receive(:default_project_filter).and_return(true)
 
         expect(results).not_to receive(:project_ids_relation)
 
         results.objects('issues')
+      end
+    end
+
+    describe '#users' do
+      it 'does not call the UsersFinder when the current_user is not allowed to read users list' do
+        allow(Ability).to receive(:allowed?).and_return(false)
+
+        expect(UsersFinder).not_to receive(:new).with(user, search: 'foo').and_call_original
+
+        results.objects('users')
+      end
+
+      it 'calls the UsersFinder' do
+        expect(UsersFinder).to receive(:new).with(user, search: 'foo').and_call_original
+
+        results.objects('users')
       end
     end
   end

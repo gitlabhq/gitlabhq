@@ -6,6 +6,13 @@ export const mockLabels = [
     color: '#BADA55',
     text_color: '#FFFFFF',
   },
+  {
+    id: 27,
+    title: 'Foo::Bar',
+    description: 'Foobar',
+    color: '#0033CC',
+    text_color: '#FFFFFF',
+  },
 ];
 
 export const mockSuggestedColors = [

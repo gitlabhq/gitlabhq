@@ -3,7 +3,8 @@ import store from '~/ide/stores';
 import service from '~/ide/services';
 import router from '~/ide/ide_router';
 import eventHub from '~/ide/eventhub';
-import * as consts from '~/ide/stores/modules/commit/constants';
+import consts from '~/ide/stores/modules/commit/constants';
+import { commitActionTypes } from '~/ide/constants';
 import { resetStore, file } from 'spec/ide/helpers';
 
 describe('IDE commit module actions', () => {
@@ -294,7 +295,7 @@ describe('IDE commit module actions', () => {
               commit_message: 'testing 123',
               actions: [
                 {
-                  action: 'update',
+                  action: commitActionTypes.update,
                   file_path: jasmine.anything(),
                   content: undefined,
                   encoding: jasmine.anything(),
@@ -321,7 +322,7 @@ describe('IDE commit module actions', () => {
               commit_message: 'testing 123',
               actions: [
                 {
-                  action: 'update',
+                  action: commitActionTypes.update,
                   file_path: jasmine.anything(),
                   content: undefined,
                   encoding: jasmine.anything(),
@@ -389,17 +390,33 @@ describe('IDE commit module actions', () => {
         it('redirects to new merge request page', done => {
           spyOn(eventHub, '$on');
 
-          store.state.commit.commitAction = '3';
+          store.state.commit.commitAction = consts.COMMIT_TO_NEW_BRANCH;
+          store.state.commit.shouldCreateMR = true;
 
           store
             .dispatch('commit/commitChanges')
             .then(() => {
               expect(visitUrl).toHaveBeenCalledWith(
                 `webUrl/merge_requests/new?merge_request[source_branch]=${
-                  store.getters['commit/newBranchName']
+                  store.getters['commit/placeholderBranchName']
                 }&merge_request[target_branch]=master`,
               );
 
+              done();
+            })
+            .catch(done.fail);
+        });
+
+        it('does not redirect to new merge request page when shouldCreateMR is not checked', done => {
+          spyOn(eventHub, '$on');
+
+          store.state.commit.commitAction = consts.COMMIT_TO_NEW_BRANCH;
+          store.state.commit.shouldCreateMR = false;
+
+          store
+            .dispatch('commit/commitChanges')
+            .then(() => {
+              expect(visitUrl).not.toHaveBeenCalled();
               done();
             })
             .catch(done.fail);

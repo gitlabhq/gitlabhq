@@ -1,8 +1,10 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Config do
+  set(:user) { create(:user) }
+
   let(:config) do
-    described_class.new(yml)
+    described_class.new(yml, project: nil, sha: nil, user: nil)
   end
 
   context 'when config is valid' do
@@ -121,6 +123,63 @@ describe Gitlab::Ci::Config do
         )
       end
     end
+
+    context 'when ports have been set' do
+      context 'in the main image' do
+        let(:yml) do
+          <<-EOS
+            image:
+              name: ruby:2.2
+              ports:
+                - 80
+          EOS
+        end
+
+        it 'raises an error' do
+          expect(config.errors).to include("image config contains disallowed keys: ports")
+        end
+      end
+
+      context 'in the job image' do
+        let(:yml) do
+          <<-EOS
+            image: ruby:2.2
+
+            test:
+              script: rspec
+              image:
+                name: ruby:2.2
+                ports:
+                  - 80
+          EOS
+        end
+
+        it 'raises an error' do
+          expect(config.errors).to include("jobs:test:image config contains disallowed keys: ports")
+        end
+      end
+
+      context 'in the services' do
+        let(:yml) do
+          <<-EOS
+            image: ruby:2.2
+
+            test:
+              script: rspec
+              image: ruby:2.2
+              services:
+                - name: test
+                  alias: test
+                  ports:
+                    - 80
+          EOS
+        end
+
+        it 'raises an error' do
+          expect(config.errors).to include("jobs:test:services:service config contains disallowed keys: ports")
+        end
+      end
+    end
   end
 
   context "when using 'include' directive" do
@@ -131,7 +190,6 @@ describe Gitlab::Ci::Config do
     let(:remote_file_content) do
       <<~HEREDOC
       variables:
-        AUTO_DEVOPS_DOMAIN: domain.example.com
         POSTGRES_USER: user
         POSTGRES_PASSWORD: testing-password
         POSTGRES_ENABLED: "true"
@@ -154,7 +212,7 @@ describe Gitlab::Ci::Config do
     end
 
     let(:config) do
-      described_class.new(gitlab_ci_yml, project: project, sha: '12345')
+      described_class.new(gitlab_ci_yml, project: project, sha: '12345', user: user)
     end
 
     before do
@@ -166,15 +224,13 @@ describe Gitlab::Ci::Config do
     end
 
     context "when gitlab_ci_yml has valid 'include' defined" do
-      it 'should return a composed hash' do
+      it 'returns a composed hash' do
         before_script_values = [
           "apt-get update -qq && apt-get install -y -qq sqlite3 libsqlite3-dev nodejs", "ruby -v",
           "which ruby",
-          "gem install bundler --no-ri --no-rdoc",
           "bundle install --jobs $(nproc)  \"${FLAGS[@]}\""
         ]
         variables = {
-          AUTO_DEVOPS_DOMAIN: "domain.example.com",
           POSTGRES_USER: "user",
           POSTGRES_PASSWORD: "testing-password",
           POSTGRES_ENABLED: "true",
@@ -191,7 +247,7 @@ describe Gitlab::Ci::Config do
       end
     end
 
-    context "when gitlab_ci.yml has invalid 'include' defined"  do
+    context "when gitlab_ci.yml has invalid 'include' defined" do
       let(:gitlab_ci_yml) do
         <<~HEREDOC
           include: invalid
@@ -206,13 +262,30 @@ describe Gitlab::Ci::Config do
       end
     end
 
+    context "when gitlab_ci.yml has ambigious 'include' defined" do
+      let(:gitlab_ci_yml) do
+        <<~HEREDOC
+          include:
+            remote: http://url
+            local: /local/file.yml
+        HEREDOC
+      end
+
+      it 'raises error YamlProcessor validationError' do
+        expect { config }.to raise_error(
+          described_class::ConfigError,
+          'Include `{"remote":"http://url","local":"/local/file.yml"}` needs to match exactly one accessor!'
+        )
+      end
+    end
+
     describe 'external file version' do
       context 'when external local file SHA is defined' do
         it 'is using a defined value' do
           expect(project.repository).to receive(:blob_data_at)
             .with('eeff1122', local_location)
 
-          described_class.new(gitlab_ci_yml, project: project, sha: 'eeff1122')
+          described_class.new(gitlab_ci_yml, project: project, sha: 'eeff1122', user: user)
         end
       end
 
@@ -220,7 +293,7 @@ describe Gitlab::Ci::Config do
         it 'is using latest SHA on the default branch' do
           expect(project.repository).to receive(:root_ref_sha)
 
-          described_class.new(gitlab_ci_yml, project: project)
+          described_class.new(gitlab_ci_yml, project: project, sha: nil, user: user)
         end
       end
     end
@@ -241,7 +314,7 @@ describe Gitlab::Ci::Config do
         HEREDOC
       end
 
-      it 'should take precedence' do
+      it 'takes precedence' do
         expect(config.to_hash).to eq({ image: 'ruby:2.2' })
       end
     end
@@ -266,7 +339,7 @@ describe Gitlab::Ci::Config do
         HEREDOC
       end
 
-      it 'should merge the variables dictionaries' do
+      it 'merges the variables dictionaries' do
         expect(config.to_hash).to eq({ variables: { A: 'alpha', B: 'beta', C: 'gamma', D: 'delta' } })
       end
     end

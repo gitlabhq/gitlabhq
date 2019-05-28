@@ -1,0 +1,25 @@
+config:
+  target: "{{ $processEnvironment.HOST_URL }}"
+  http:
+    pool: 10 # All HTTP requests from all virtual users will be sent over the same <pool> connections.
+             # This also means that there is a limit on the number of requests sent per second.
+  phases:
+    - duration: 30
+      arrivalRate: 10
+      name: "Warm up"
+    - duration: 90
+      arrivalRate: 10
+      rampTo: 100
+      name: "Gradual ramp up"
+    - duration: 90
+      arrivalRate: 100
+      name: "Sustained max load"
+scenarios:
+  - name: "Visit large issue url"
+    flow:
+      - get:
+          url: "{{ $processEnvironment.LARGE_ISSUE_URL }}"
+  - name: "Visit large MR url"
+    flow:
+      - get:
+          url: "{{ $processEnvironment.LARGE_MR_URL }}"

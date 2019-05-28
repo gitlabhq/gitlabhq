@@ -1,5 +1,5 @@
 %p
-  Hi #{@user['name']}!
+  Hi #{sanitize_name(@user['name'])}!
 %p
   - if Gitlab::CurrentSettings.allow_signup?
     Your account has been created successfully.

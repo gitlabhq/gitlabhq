@@ -51,6 +51,16 @@ module QA
           element :branches_dropdown
         end
 
+        view 'app/views/projects/blob/viewers/_loading.html.haml' do
+          element :spinner
+        end
+
+        def wait_for_viewers_to_load
+          wait(reload: false) do
+            has_no_element?(:spinner)
+          end
+        end
+
         def create_first_new_file!
           within_element(:quick_actions) do
             click_link_with_text 'New file'
@@ -66,13 +76,13 @@ module QA
           click_on 'Fork'
         end
 
-        def go_to_file(filename)
+        def click_file(filename)
           within_element(:file_tree) do
             click_on filename
           end
         end
 
-        def go_to_commit(commit_msg)
+        def click_commit(commit_msg)
           within_element(:file_tree) do
             click_on commit_msg
           end

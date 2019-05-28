@@ -9,16 +9,14 @@ class DetailedStatusEntity < Grape::Entity
   expose :details_path
 
   expose :illustration do |status|
-    begin
-      illustration = {
-          image: ActionController::Base.helpers.image_path(status.illustration[:image])
-      }
-      illustration = status.illustration.merge(illustration)
+    illustration = {
+        image: ActionController::Base.helpers.image_path(status.illustration[:image])
+    }
+    illustration = status.illustration.merge(illustration)
 
-      illustration
-    rescue NotImplementedError
-      # ignored
-    end
+    illustration
+  rescue NotImplementedError
+    # ignored
   end
 
   expose :favicon do |status|

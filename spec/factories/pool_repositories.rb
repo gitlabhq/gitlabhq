@@ -5,6 +5,7 @@ FactoryBot.define do
 
     before(:create) do |pool|
       pool.source_project = create(:project, :repository)
+      pool.source_project.update!(pool_repository: pool)
     end
 
     trait :scheduled do
@@ -13,6 +14,10 @@ FactoryBot.define do
 
     trait :failed do
       state :failed
+    end
+
+    trait :obsolete do
+      state :obsolete
     end
 
     trait :ready do

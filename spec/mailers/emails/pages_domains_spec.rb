@@ -6,7 +6,7 @@ describe Emails::PagesDomains do
   include_context 'gitlab email notification'
 
   set(:project) { create(:project) }
-  set(:domain) { create(:pages_domain, project: project)  }
+  set(:domain) { create(:pages_domain, project: project) }
   set(:user) { project.owner }
 
   shared_examples 'a pages domain email' do
@@ -22,6 +22,26 @@ describe Emails::PagesDomains do
         is_expected.to have_body_text domain.url
         is_expected.to have_body_text project_pages_domain_url(project, domain)
         is_expected.to have_body_text help_page_url('user/project/pages/getting_started_part_three.md', anchor: 'dns-txt-record')
+      end
+    end
+  end
+
+  shared_examples 'notification about upcoming domain removal' do
+    context 'when domain is not scheduled for removal' do
+      it 'asks user to remove it' do
+        is_expected.to have_body_text 'please remove it'
+      end
+    end
+
+    context 'when domain is scheduled for removal' do
+      before do
+        domain.update!(remove_at: 1.week.from_now)
+      end
+      it 'notifies user that domain will be removed automatically' do
+        aggregate_failures do
+          is_expected.to have_body_text domain.remove_at.strftime('%F %T')
+          is_expected.to have_body_text "it will be removed from your GitLab project"
+        end
       end
     end
   end
@@ -43,6 +63,8 @@ describe Emails::PagesDomains do
 
     it_behaves_like 'a pages domain email'
 
+    it_behaves_like 'notification about upcoming domain removal'
+
     it { is_expected.to have_body_text 'has been disabled' }
   end
 
@@ -62,6 +84,8 @@ describe Emails::PagesDomains do
     subject { Notify.pages_domain_verification_failed_email(domain, user) }
 
     it_behaves_like 'a pages domain email'
+
+    it_behaves_like 'notification about upcoming domain removal'
 
     it 'says verification has failed and when the domain is enabled until' do
       is_expected.to have_body_text 'Verification has failed'

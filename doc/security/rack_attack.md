@@ -94,7 +94,7 @@ In case you want to remove a blocked IP, follow these steps:
 1. Find the IPs that have been blocked in the production log:
 
     ```sh
-    grep "Rack_Attack" /var/log/gitlab/gitlab-rails/production.log
+    grep "Rack_Attack" /var/log/gitlab/gitlab-rails/auth.log
     ```
 
 1. Since the blacklist is stored in Redis, you need to open up `redis-cli`:

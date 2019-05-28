@@ -1,5 +1,0 @@
----
-title: Bump nokogiri, loofah, and rack gems for security updates
-merge_request: 23204
-author:
-type: security

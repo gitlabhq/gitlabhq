@@ -9,9 +9,6 @@ plugins:
   - import
   - html
 settings:
-  html/html-extensions:
-    - '.html'
-    - '.html.raw'
   import/resolver:
     webpack:
       config: './config/webpack.config.js'
