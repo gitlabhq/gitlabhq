@@ -1,0 +1,5 @@
+---
+title: Use source ref in pipeline webhook
+merge_request: 28772
+author:
+type: fixed
