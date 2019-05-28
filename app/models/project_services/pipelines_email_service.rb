@@ -2,11 +2,11 @@
 
 class PipelinesEmailService < Service
   prop_accessor :recipients
-  boolean_accessor :notify_only_broken_pipelines
+  boolean_accessor :notify_only_broken_pipelines, :notify_only_default_branch
   validates :recipients, presence: true, if: :valid_recipients?
 
   def initialize_properties
-    self.properties ||= { notify_only_broken_pipelines: true }
+    self.properties ||= { notify_only_broken_pipelines: true, notify_only_default_branch: false }
   end
 
   def title
@@ -54,7 +54,9 @@ class PipelinesEmailService < Service
         placeholder: _('Emails separated by comma'),
         required: true },
       { type: 'checkbox',
-        name: 'notify_only_broken_pipelines' }
+        name: 'notify_only_broken_pipelines' },
+      { type: 'checkbox',
+        name: 'notify_only_default_branch' }
     ]
   end
 
@@ -67,6 +69,16 @@ class PipelinesEmailService < Service
   end
 
   def should_pipeline_be_notified?(data)
+    notify_for_pipeline_branch?(data) && notify_for_pipeline?(data)
+  end
+
+  def notify_for_pipeline_branch?(data)
+    return true unless notify_only_default_branch?
+
+    data[:object_attributes][:ref] == data[:project][:default_branch]
+  end
+
+  def notify_for_pipeline?(data)
     case data[:object_attributes][:status]
     when 'success'
       !notify_only_broken_pipelines?
