@@ -18,7 +18,11 @@ describe Gitlab::ImportExport::AttributeCleaner do
       'notid' => 99,
       'import_source' => 'whatever',
       'import_type' => 'whatever',
-      'non_existent_attr' => 'whatever'
+      'non_existent_attr' => 'whatever',
+      'some_html' => '<p>dodgy html</p>',
+      'legit_html' => '<p>legit html</p>',
+      '_html' => '<p>perfectly ordinary html</p>',
+      'cached_markdown_version' => 12345
     }
   end
 
