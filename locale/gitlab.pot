@@ -4934,6 +4934,9 @@ msgstr ""
 msgid "History"
 msgstr ""
 
+msgid "History of authentications"
+msgstr ""
+
 msgid "Hook was successfully created."
 msgstr ""
 
@@ -8872,6 +8875,9 @@ msgstr ""
 msgid "Sign-up restrictions"
 msgstr ""
 
+msgid "Signed in with %{authentication} authentication"
+msgstr ""
+
 msgid "Signing in using %{label} has been disabled"
 msgstr ""
 
@@ -9904,6 +9910,9 @@ msgid "This is a confidential issue."
 msgstr ""
 
 msgid "This is a delayed job to run in %{remainingTime}"
+msgstr ""
+
+msgid "This is a security log of important events involving your account."
 msgstr ""
 
 msgid "This is the author's first Merge Request to this project."

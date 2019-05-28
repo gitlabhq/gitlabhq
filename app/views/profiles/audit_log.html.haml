@@ -1,4 +1,4 @@
-- page_title "Authentication log"
+- page_title _('Authentication log')
 - @content_class = "limit-container-width" unless fluid_layout
 
 .row.prepend-top-default
@@ -6,6 +6,6 @@
     %h4.prepend-top-0
       = page_title
     %p
-      This is a security log of important events involving your account.
+      = _('This is a security log of important events involving your account.')
   .col-lg-8
     = render 'event_table', events: @events
