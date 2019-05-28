@@ -381,7 +381,7 @@ Takes changes from one branch, and [applies them](https://git-scm.com/docs/git-m
 
 [Arises](https://about.gitlab.com/2016/09/06/resolving-merge-conflicts-from-the-gitlab-ui/) when a merge can't be performed cleanly between two versions of the same file.
 
-#### Merge Request
+#### Merge Request (MR)
 
 [Takes changes](../../gitlab-basics/add-merge-request.md) from one branch, and applies them into another branch.
 
