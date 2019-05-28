@@ -5,6 +5,7 @@ describe Gitlab::BitbucketImport::Importer do
 
   before do
     stub_omniauth_provider('bitbucket')
+    stub_feature_flags(stricter_mr_branch_name: false)
   end
 
   let(:statuses) do
