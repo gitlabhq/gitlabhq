@@ -45,7 +45,7 @@ module Gitlab
       end
 
       def private_key
-        @private_key ||= OpenSSL::PKey.read(Gitlab::Application.secrets.lets_encrypt_private_key)
+        @private_key ||= OpenSSL::PKey.read(Gitlab::CurrentSettings.lets_encrypt_private_key)
       end
 
       def admin_email
