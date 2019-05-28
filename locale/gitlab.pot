@@ -1629,6 +1629,9 @@ msgstr ""
 msgid "By default GitLab sends emails in HTML and plain text formats so mail clients can choose what format to use. Disable this option if you only want to send emails in plain text format."
 msgstr ""
 
+msgid "By default, all projects and groups will use the global notifications setting."
+msgstr ""
+
 msgid "ByAuthor|by"
 msgstr ""
 
@@ -4653,6 +4656,9 @@ msgstr ""
 msgid "Given access %{time_ago}"
 msgstr ""
 
+msgid "Global notification settings"
+msgstr ""
+
 msgid "Go Back"
 msgstr ""
 
@@ -4807,6 +4813,9 @@ msgid "GroupSettings|remove the share with group lock from %{ancestor_group_name
 msgstr ""
 
 msgid "Groups"
+msgstr ""
+
+msgid "Groups (%{count})"
 msgstr ""
 
 msgid "Groups can also be nested by creating %{subgroup_docs_link_start}subgroups%{subgroup_docs_link_end}."
@@ -6557,6 +6566,9 @@ msgstr ""
 msgid "Notification setting - %{notification_title}"
 msgstr ""
 
+msgid "Notification settings saved"
+msgstr ""
+
 msgid "NotificationEvent|Close issue"
 msgstr ""
 
@@ -6606,6 +6618,9 @@ msgid "NotificationLevel|Participate"
 msgstr ""
 
 msgid "NotificationLevel|Watch"
+msgstr ""
+
+msgid "NotificationSetting|Custom"
 msgstr ""
 
 msgid "Notifications"
@@ -7771,6 +7786,9 @@ msgstr ""
 msgid "Projects"
 msgstr ""
 
+msgid "Projects (%{count})"
+msgstr ""
+
 msgid "Projects Successfully Retrieved"
 msgstr ""
 
@@ -7997,6 +8015,9 @@ msgid "Read more about project permissions <strong>%{link_to_help}</strong>"
 msgstr ""
 
 msgid "Real-time features"
+msgstr ""
+
+msgid "Receive notifications about your own activity"
 msgstr ""
 
 msgid "Recent Project Activity"
@@ -10324,6 +10345,9 @@ msgstr ""
 msgid "To preserve performance only <strong>%{display_size} of %{real_size}</strong> files are displayed."
 msgstr ""
 
+msgid "To specify the notification level per project of a group you belong to, you need to visit project page and change notification level there."
+msgstr ""
+
 msgid "To start serving your jobs you can add Runners to your group"
 msgstr ""
 
@@ -11311,6 +11335,9 @@ msgid "You can resolve the merge conflict using either the Interactive mode, by 
 msgstr ""
 
 msgid "You can set up jobs to only use Runners with specific tags. Separate tags with commas."
+msgstr ""
+
+msgid "You can specify notification level per group or per project."
 msgstr ""
 
 msgid "You can test your .gitlab-ci.yml in %{linkStart}CI Lint%{linkEnd}."
