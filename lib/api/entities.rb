@@ -201,6 +201,7 @@ module API
         # MR describing the solution: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/20555
         projects_relation.preload(:project_feature, :route)
                          .preload(:import_state, :tags)
+                         .preload(:auto_devops)
                          .preload(namespace: [:route, :owner])
       end
       # rubocop: enable CodeReuse/ActiveRecord
@@ -307,6 +308,7 @@ module API
         # MR describing the solution: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/20555
         super(projects_relation).preload(:group)
                                 .preload(:ci_cd_settings)
+                                .preload(:auto_devops)
                                 .preload(project_group_links: { group: :route },
                                          fork_network: :root_project,
                                          fork_network_member: :forked_from_project,
