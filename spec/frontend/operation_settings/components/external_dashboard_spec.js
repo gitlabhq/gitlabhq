@@ -2,6 +2,9 @@ import { shallowMount } from '@vue/test-utils';
 import { GlButton, GlLink, GlFormGroup, GlFormInput } from '@gitlab/ui';
 import ExternalDashboard from '~/operation_settings/components/external_dashboard.vue';
 import { TEST_HOST } from 'helpers/test_constants';
+import initSettingsPanels from '~/settings_panels';
+
+jest.mock('~/settings_panels');
 
 describe('operation settings external dashboard component', () => {
   let wrapper;
@@ -19,6 +22,18 @@ describe('operation settings external dashboard component', () => {
 
   it('renders header text', () => {
     expect(wrapper.find('.js-section-header').text()).toBe('External Dashboard');
+  });
+
+  describe('expand/collapse button', () => {
+    it('is properly instantiated as a settings panel', () => {
+      expect(initSettingsPanels).toHaveBeenCalled();
+    });
+
+    it('defaults to collapsed state', () => {
+      const button = wrapper.find(GlButton);
+
+      expect(button.text()).toBe('Expand');
+    });
   });
 
   describe('sub-header', () => {
