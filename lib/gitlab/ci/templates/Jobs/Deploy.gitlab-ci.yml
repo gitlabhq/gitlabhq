@@ -432,6 +432,7 @@ rollout 100%:
         --set postgresql.postgresUser="$POSTGRES_USER" \
         --set postgresql.postgresPassword="$POSTGRES_PASSWORD" \
         --set postgresql.postgresDatabase="$POSTGRES_DB" \
+        --set postgresql.imageTag="$POSTGRES_VERSION" \
         --set application.migrateCommand="$DB_MIGRATE" \
         $HELM_UPGRADE_EXTRA_ARGS \
         --namespace="$KUBE_NAMESPACE" \
