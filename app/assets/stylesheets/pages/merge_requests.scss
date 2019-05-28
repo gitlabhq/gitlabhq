@@ -185,46 +185,6 @@
         }
       }
     }
-
-    .accept-control {
-      display: inline-block;
-      float: left;
-      margin: 0;
-      margin-left: 20px;
-      padding: 5px;
-      padding-top: 8px;
-      line-height: 20px;
-
-      &.right {
-        float: right;
-        padding-right: 0;
-      }
-
-      .modify-merge-commit-link {
-        padding: 0;
-        background-color: transparent;
-        border: 0;
-        color: $gl-text-color;
-
-        &:hover,
-        &:focus {
-          text-decoration: underline;
-        }
-      }
-
-      .merge-param-checkbox {
-        margin: 0;
-      }
-
-      a .fa-question-circle {
-        color: $gl-text-color-secondary;
-
-        &:hover,
-        &:focus {
-          color: $link-hover-color;
-        }
-      }
-    }
   }
 
   .ci-widget {
@@ -406,12 +366,6 @@
       .accept-action {
         width: 100%;
         text-align: center;
-      }
-
-      .accept-control {
-        width: 100%;
-        text-align: center;
-        margin: 0;
       }
     }
 
