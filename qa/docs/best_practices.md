@@ -35,4 +35,4 @@ Finally, interacting with the application only by its GUI generates a higher rat
 - Building state through the GUI is time consuming and it's not sustainable as the test suite grows.
 - When depending only on the GUI to create the application's state and tests fail due to front-end issues, we can't rely on the test failures rate, and we generates a higher rate of test flakiness.
 
-Now that we are aware of all of it, [let's go create some tests](./WRITING_TESTS_FROM_SCRATCH.md).
+Now that we are aware of all of it, [let's go create some tests](writing_tests_from_scratch.md).
