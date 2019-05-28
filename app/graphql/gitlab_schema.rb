@@ -7,7 +7,7 @@ class GitlabSchema < GraphQL::Schema
   AUTHENTICATED_COMPLEXITY = 250
   ADMIN_COMPLEXITY         = 300
 
-  ANONYMOUS_MAX_DEPTH = 10
+  DEFAULT_MAX_DEPTH = 10
   AUTHENTICATED_MAX_DEPTH = 15
 
   use BatchLoader::GraphQL
@@ -23,10 +23,21 @@ class GitlabSchema < GraphQL::Schema
   default_max_page_size 100
 
   max_complexity DEFAULT_MAX_COMPLEXITY
+  max_depth DEFAULT_MAX_DEPTH
 
   mutation(Types::MutationType)
 
   class << self
+    def multiplex(queries, **kwargs)
+      kwargs[:max_complexity] ||= max_query_complexity(kwargs[:context])
+
+      queries.each do |query|
+        query[:max_depth] = max_query_depth(kwargs[:context])
+      end
+
+      super(queries, **kwargs)
+    end
+
     def execute(query_str = nil, **kwargs)
       kwargs[:max_complexity] ||= max_query_complexity(kwargs[:context])
       kwargs[:max_depth] ||= max_query_depth(kwargs[:context])
@@ -54,7 +65,7 @@ class GitlabSchema < GraphQL::Schema
       if current_user
         AUTHENTICATED_MAX_DEPTH
       else
-        ANONYMOUS_MAX_DEPTH
+        DEFAULT_MAX_DEPTH
       end
     end
   end
