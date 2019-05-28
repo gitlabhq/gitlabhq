@@ -1165,9 +1165,6 @@ msgstr ""
 msgid "Are you sure? This will invalidate your registered applications and U2F devices."
 msgstr ""
 
-msgid "Are you sure? This will invalidate your registered applications and U2F devices."
-msgstr ""
-
 msgid "Artifacts"
 msgstr ""
 
@@ -8181,12 +8178,6 @@ msgstr ""
 msgid "Register with two-factor app"
 msgstr ""
 
-msgid "Register with two-factor app"
-msgstr ""
-
-msgid "Registered On"
-msgstr ""
-
 msgid "Registry"
 msgstr ""
 
@@ -11644,9 +11635,6 @@ msgid "You don't have any U2F devices registered yet."
 msgstr ""
 
 msgid "You don't have any active chat names."
-msgstr ""
-
-msgid "You don't have any U2F devices registered yet."
 msgstr ""
 
 msgid "You don't have any applications"
