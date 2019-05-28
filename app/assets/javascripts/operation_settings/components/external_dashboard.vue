@@ -1,5 +1,6 @@
 <script>
 import { GlButton, GlFormGroup, GlFormInput, GlLink } from '@gitlab/ui';
+import initSettingsPanels from '~/settings_panels';
 
 export default {
   components: {
@@ -19,15 +20,19 @@ export default {
       required: true,
     },
   },
+  mounted() {
+    initSettingsPanels();
+  },
 };
 </script>
 
 <template>
-  <section class="settings expanded">
+  <section class="settings no-animate">
     <div class="settings-header">
       <h4 class="js-section-header">
         {{ s__('ExternalMetrics|External Dashboard') }}
       </h4>
+      <gl-button class="js-settings-toggle">{{ __('Expand') }}</gl-button>
       <p class="js-section-sub-header">
         {{
           s__(
