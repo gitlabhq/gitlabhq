@@ -58,7 +58,26 @@ describe SessionsController do
         it 'authenticates user correctly' do
           post(:create, params: { user: user_params })
 
-          expect(subject.current_user). to eq user
+          expect(subject.current_user).to eq user
+        end
+
+        context 'with password authentication disabled' do
+          before do
+            stub_application_setting(password_authentication_enabled_for_web: false)
+          end
+
+          it 'does not sign in the user' do
+            post(:create, params: { user: user_params })
+
+            expect(@request.env['warden']).not_to be_authenticated
+            expect(subject.current_user).to be_nil
+          end
+
+          it 'returns status 403' do
+            post(:create, params: { user: user_params })
+
+            expect(response.status).to eq 403
+          end
         end
 
         it 'creates an audit log record' do
@@ -150,6 +169,19 @@ describe SessionsController do
           authenticate_2fa(remember_me: '0', otp_attempt: user.current_otp)
 
           expect(response.cookies['remember_user_token']).to be_nil
+        end
+      end
+
+      context 'with password authentication disabled' do
+        before do
+          stub_application_setting(password_authentication_enabled_for_web: false)
+        end
+
+        it 'allows 2FA stage of non-password login' do
+          authenticate_2fa(otp_attempt: user.current_otp)
+
+          expect(@request.env['warden']).to be_authenticated
+          expect(subject.current_user).to eq user
         end
       end
 
