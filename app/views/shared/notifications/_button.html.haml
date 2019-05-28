@@ -15,7 +15,7 @@
               = icon('caret-down')
               .sr-only Toggle dropdown
           - else
-            %button.dropdown-new.btn.btn-default.has-tooltip.notifications-btn#notifications-button{ type: "button", title: "Notification setting", class: "#{btn_class}", "aria-label" => "Notification setting: #{notification_title(notification_setting.level)}", data: { container: "body", toggle: "dropdown", target: notifications_menu_identifier("dropdown", notification_setting), flip: "false" } }
+            %button.dropdown-new.btn.btn-default.has-tooltip.notifications-btn#notifications-button{ type: "button", title: _("Notification setting"), class: "#{btn_class}", "aria-label" => _("Notification setting - %{notification_title}") % { notification_title: notification_title(notification_setting.level) }, data: { container: "body", toggle: "dropdown", target: notifications_menu_identifier("dropdown", notification_setting), flip: "false" } }
               = icon("bell", class: "js-notification-loading")
               = notification_title(notification_setting.level)
               = icon("caret-down")
