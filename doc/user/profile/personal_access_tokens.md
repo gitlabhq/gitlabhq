@@ -49,6 +49,7 @@ the following table.
 [2fa]: ../account/two_factor_authentication.md
 [api]: ../../api/README.md
 [ce-3749]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/3749
+[ce-5951]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5951
 [ce-14838]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14838
 [container registry]: ../project/container_registry.md
 [users]: ../../api/users.md
