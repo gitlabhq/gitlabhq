@@ -18,7 +18,7 @@
       = render 'stat_anchor_list', anchors: @project.statistics_buttons(show_auto_devops_callout: show_auto_devops_callout)
 
   - if vue_file_list
-    #js-tree-list{ data: { project_path: @project.full_path, ref: ref } }
+    #js-tree-list{ data: { project_path: @project.full_path, full_name: @project.name_with_namespace, ref: ref } }
     - if @tree.readme
       = render "projects/tree/readme", readme: @tree.readme
   - else
