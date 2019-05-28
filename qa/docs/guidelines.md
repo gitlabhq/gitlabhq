@@ -59,9 +59,10 @@ We follow a simple formula roughly based on hungarian notation.
   - `_link`
   - `_tab`
   - `_dropdown`
-  - `_text`
+  - `_field`
   - `_checkbox`
   - `_radio`
+  - `_content`
   
 *Note: This list is a work in progress. This list will eventually be the end-all enumeration of all available types.
         I.e., any element that does not end with something in this list is bad form.*
@@ -74,18 +75,16 @@ view '...' do
   element :edit_button 
   element :notes_tab
   element :squash_checkbox
+  element :username_field
+  element :issue_title_content
 end
 ```
 
 **Bad**  
 ```ruby
-view '...' do
-  # `_field` should be `_text`.  
-  # Per the W3C Spec, field is too vague. `type='password'`, `type='hidden'` etc.
-  element :login_field  
-  
-  # `_confirmation` should be `_text`. what sort of confirmation? a checkbox confirmation? no real way to disambiguate.
-  # an appropriate replacement would be `element :password_confirmation_text`
+view '...' do  
+  # `_confirmation` should be `_field`. what sort of confirmation? a checkbox confirmation? no real way to disambiguate.
+  # an appropriate replacement would be `element :password_confirmation_field`
   element :password_confirmation
 
   # `clone_options` is too vague. If it's a dropdown menu, it should be `clone_dropdown`. 
