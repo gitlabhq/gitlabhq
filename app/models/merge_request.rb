@@ -597,6 +597,8 @@ class MergeRequest < ActiveRecord::Base
       return
     end
 
+    [:source_branch, :target_branch].each { |attr| validate_branch_name(attr) }
+
     if opened?
       similar_mrs = target_project
         .merge_requests
@@ -615,6 +617,16 @@ class MergeRequest < ActiveRecord::Base
         )
       end
     end
+  end
+
+  def validate_branch_name(attr)
+    return unless changes_include?(attr)
+
+    branch = read_attribute(attr)
+
+    return unless branch
+
+    errors.add(attr) unless Gitlab::GitRefValidator.validate_merge_request_branch(branch)
   end
 
   def validate_target_project
