@@ -10,6 +10,7 @@ describe DeploymentEntity do
   let(:build) { create(:ci_build, :manual, pipeline: pipeline) }
   let(:pipeline) { create(:ci_pipeline, project: project, user: user) }
   let(:entity) { described_class.new(deployment, request: request) }
+
   subject { entity.as_json }
 
   before do
@@ -47,6 +48,16 @@ describe DeploymentEntity do
         expect(subject[:manual_actions]).not_to be_present
       end
     end
+
+    context 'when deployment details serialization was disabled' do
+      let(:entity) do
+        described_class.new(deployment, request: request, deployment_details: false)
+      end
+
+      it 'does not serialize manual actions details' do
+        expect(subject.with_indifferent_access).not_to include(:manual_actions)
+      end
+    end
   end
 
   describe 'scheduled_actions' do
@@ -67,6 +78,36 @@ describe DeploymentEntity do
     context 'when the same pipeline does not have a scheduled action' do
       it 'does not return other actions' do
         expect(subject[:scheduled_actions]).to be_empty
+      end
+    end
+
+    context 'when deployment details serialization was disabled' do
+      let(:entity) do
+        described_class.new(deployment, request: request, deployment_details: false)
+      end
+
+      it 'does not serialize scheduled actions details' do
+        expect(subject.with_indifferent_access).not_to include(:scheduled_actions)
+      end
+    end
+  end
+
+  context 'when deployment details serialization was disabled' do
+    include Gitlab::Routing
+
+    let(:entity) do
+      described_class.new(deployment, request: request, deployment_details: false)
+    end
+
+    it 'does not serialize deployment details' do
+      expect(subject.with_indifferent_access)
+        .not_to include(:commit, :manual_actions, :scheduled_actions)
+    end
+
+    it 'only exposes deployable name and path' do
+      project_job_path(project, deployment.deployable).tap do |path|
+        expect(subject.fetch(:deployable))
+          .to eq(name: 'test', build_path: path)
       end
     end
   end
