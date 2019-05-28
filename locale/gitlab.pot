@@ -340,6 +340,9 @@ msgstr ""
 msgid "2FA enabled"
 msgstr ""
 
+msgid "2FADevice|Registered On"
+msgstr ""
+
 msgid "3 days"
 msgstr ""
 
@@ -8170,9 +8173,6 @@ msgid "Register and see your runners for this project."
 msgstr ""
 
 msgid "Register with two-factor app"
-msgstr ""
-
-msgid "Registered On"
 msgstr ""
 
 msgid "Registry"
