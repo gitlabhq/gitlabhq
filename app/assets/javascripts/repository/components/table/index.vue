@@ -50,7 +50,7 @@ export default {
       );
     },
     showParentRow() {
-      return !this.isLoadingFiles && this.path !== '';
+      return !this.isLoadingFiles && ['', '/'].indexOf(this.path) === -1;
     },
   },
   watch: {

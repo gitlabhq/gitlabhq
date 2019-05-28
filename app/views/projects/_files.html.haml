@@ -14,7 +14,7 @@
     = render 'shared/commit_well', commit: commit, ref: ref, project: project
 
   - if is_project_overview
-    .project-buttons.append-bottom-default{ class: ("js-hide-on-navigation" if vue_file_list) }
+    .project-buttons.append-bottom-default{ class: ("js-keep-hidden-on-navigation" if vue_file_list) }
       = render 'stat_anchor_list', anchors: @project.statistics_buttons(show_auto_devops_callout: show_auto_devops_callout)
 
   - if vue_file_list
