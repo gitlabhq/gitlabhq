@@ -1,0 +1,5 @@
+---
+title: Fixed ignored postgres version that occurs after the first autodevops deploy when specifying custom $POSTGRES_VERSION
+merge_request: 28735
+author: Brandon Dimcheff
+type: fixed
