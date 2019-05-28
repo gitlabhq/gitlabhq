@@ -142,9 +142,12 @@ In order to do that, follow the steps:
       # The 'docker' hostname is the alias of the service container as described at
       # https://docs.gitlab.com/ee/ci/docker/using_docker_images.html#accessing-the-services
       #
-      # Note that if you're using Kubernetes executor, the variable should be set to
-      # tcp://localhost:2375 because of how Kubernetes executor connects services
+      # Note that if you're using the Kubernetes executor, the variable should be set to
+      # tcp://localhost:2375/ because of how the Kubernetes executor connects services
       # to the job container
+      # DOCKER_HOST: tcp://localhost:2375/
+      #
+      # For non-Kubernetes executors, we use tcp://docker:2375/
       DOCKER_HOST: tcp://docker:2375/
       # When using dind, it's wise to use the overlayfs driver for
       # improved performance.

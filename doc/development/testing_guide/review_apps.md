@@ -113,7 +113,7 @@ You can also manually start the `review-qa-all`: it runs the full QA suite.
 On every [pipeline][gitlab-pipeline] in the `qa` stage, the
 `review-performance` job is automatically started: this job does basic
 browser performance testing using a
-[Sitespeed.io Container](https://docs.gitlab.com/ee/user/project/merge_requests/browser_performance_testing.html).
+[Sitespeed.io Container](../../user/project/merge_requests/browser_performance_testing.md).
 
 ## How to:
 
@@ -203,7 +203,7 @@ find a way to limit it to only us.**
 [automated_cleanup.rb]: https://gitlab.com/gitlab-org/gitlab-ee/blob/master/scripts/review_apps/automated_cleanup.rb
 [Auto-DevOps.gitlab-ci.yml]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml
 [gitlab-ci-yml]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/.gitlab-ci.yml
-[gitlab-k8s-integration]: https://docs.gitlab.com/ee/user/project/clusters/index.html
+[gitlab-k8s-integration]: ../../user/project/clusters/index.md
 [password-bug]: https://gitlab.com/gitlab-org/gitlab-ce/issues/53621
 
 ---

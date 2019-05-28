@@ -6,7 +6,7 @@ describe LabelsHelper do
       let(:context_project) { project }
 
       context "when asking for a #{issuables_type} link" do
-        subject { show_label_issuables_link?(label, issuables_type, project: context_project) }
+        subject { show_label_issuables_link?(label.present(issuable_subject: nil), issuables_type, project: context_project) }
 
         context "when #{issuables_type} are enabled for the project" do
           let(:project) { create(:project, "#{issuables_type}_access_level": ProjectFeature::ENABLED) }
@@ -277,6 +277,23 @@ describe LabelsHelper do
       expect(label.id).to be_nil
       expect(label.title).to eq('foo')
       expect(label.color).to eq('bar')
+    end
+  end
+
+  describe '#label_status_tooltip' do
+    let(:status) { 'unsubscribed'.inquiry }
+    subject { label_status_tooltip(label.present(issuable_subject: nil), status) }
+
+    context 'with a project label' do
+      let(:label) { create(:label, title: 'bug') }
+
+      it { is_expected.to eq('Subscribe at project level') }
+    end
+
+    context 'with a group label' do
+      let(:label) { create(:group_label, title: 'bug') }
+
+      it { is_expected.to eq('Subscribe at group level') }
     end
   end
 end

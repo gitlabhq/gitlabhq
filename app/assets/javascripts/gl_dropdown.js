@@ -702,6 +702,10 @@ GitLabDropdown = (function() {
     }
     html = document.createElement('li');
 
+    if (rowHidden) {
+      html.style.display = 'none';
+    }
+
     if (data === 'divider' || data === 'separator') {
       html.className = data;
       return html;

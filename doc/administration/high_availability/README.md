@@ -64,8 +64,8 @@ larger one.
 
 - 1 PostgreSQL node
 - 1 Redis node
-- 2 or more GitLab application nodes (Unicorn, Workhorse, Sidekiq)
 - 1 NFS/Gitaly storage server
+- 2 or more GitLab application nodes (Unicorn, Workhorse, Sidekiq)
 
 #### Installation Instructions
 
@@ -88,9 +88,9 @@ in size, indicating that there is contention or not enough resources.
 
 - 1 PostgreSQL node
 - 1 Redis node
-- 2 or more GitLab application nodes (Unicorn, Workhorse)
-- 2 or more Sidekiq nodes
 - 2 or more NFS/Gitaly storage servers
+- 2 or more Sidekiq nodes
+- 2 or more GitLab application nodes (Unicorn, Workhorse)
 
 ## High Availability Architecture Examples
 

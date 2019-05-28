@@ -20,7 +20,6 @@ class PipelineEntity < Grape::Entity
   end
 
   expose :flags do
-    expose :latest?, as: :latest
     expose :stuck?, as: :stuck
     expose :auto_devops_source?, as: :auto_devops
     expose :merge_request_event?, as: :merge_request
@@ -34,6 +33,7 @@ class PipelineEntity < Grape::Entity
 
   expose :details do
     expose :detailed_status, as: :status, with: DetailedStatusEntity
+    expose :ordered_stages, as: :stages, using: StageEntity
     expose :duration
     expose :finished_at
   end

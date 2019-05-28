@@ -291,6 +291,20 @@ Pages access control is disabled by default. To enable it:
 1. [Reconfigure GitLab][reconfigure].
 1. Users can now configure it in their [projects' settings](../../user/project/pages/introduction.md#gitlab-pages-access-control-core-only).
 
+### Running behind a proxy
+
+Like the rest of GitLab, Pages can be used in those environments where external
+internet connectivity is gated by a proxy. In order to use a proxy for GitLab
+pages:
+
+1. Configure in `/etc/gitlab/gitlab.rb`:
+
+    ```ruby
+    gitlab_pages['http_proxy'] = 'http://example:8080'
+    ```
+
+1. [Reconfigure Gitlab][reconfigure] for the changes to take effect.
+
 ## Activate verbose logging for daemon
 
 Verbose logging was [introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests/2533) in
@@ -376,6 +390,7 @@ Follow the steps below to configure GitLab Pages in a separate server.
     gitaly['enable'] = false
     alertmanager['enable'] = false
     node_exporter['enable'] = false
+    gitlab_rails['auto_migrate'] = false
     ```
 1. Run `sudo gitlab-ctl reconfigure`.
 1. On `app1` apply the following changes to `/etc/gitlab/gitlab.rb`:

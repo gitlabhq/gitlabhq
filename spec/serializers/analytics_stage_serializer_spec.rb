@@ -21,4 +21,34 @@ describe AnalyticsStageSerializer do
   it 'contains important elements of AnalyticsStage' do
     expect(subject).to include(:title, :description, :value)
   end
+
+  context 'when median is equal 0' do
+    before do
+      allow_any_instance_of(Gitlab::CycleAnalytics::BaseStage).to receive(:median).and_return(0)
+    end
+
+    it 'sets the value to nil' do
+      expect(subject.fetch(:value)).to be_nil
+    end
+  end
+
+  context 'when median is below 1' do
+    before do
+      allow_any_instance_of(Gitlab::CycleAnalytics::BaseStage).to receive(:median).and_return(0.12)
+    end
+
+    it 'sets the value to equal to median' do
+      expect(subject.fetch(:value)).to eq('less than a minute')
+    end
+  end
+
+  context 'when median is above 1' do
+    before do
+      allow_any_instance_of(Gitlab::CycleAnalytics::BaseStage).to receive(:median).and_return(60.12)
+    end
+
+    it 'sets the value to equal to median' do
+      expect(subject.fetch(:value)).to eq('1 minute')
+    end
+  end
 end

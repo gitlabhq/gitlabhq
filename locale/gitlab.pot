@@ -877,9 +877,6 @@ msgstr ""
 msgid "An error occurred while fetching sidebar data"
 msgstr ""
 
-msgid "An error occurred while fetching stages."
-msgstr ""
-
 msgid "An error occurred while fetching the board lists. Please try again."
 msgstr ""
 
@@ -1443,6 +1440,9 @@ msgstr ""
 msgid "Begin with the selected commit"
 msgstr ""
 
+msgid "Behavior"
+msgstr ""
+
 msgid "Below are examples of regex for existing tools:"
 msgstr ""
 
@@ -1812,6 +1812,9 @@ msgstr ""
 msgid "Checking branch availability..."
 msgstr ""
 
+msgid "Checking username availability..."
+msgstr ""
+
 msgid "Cherry-pick this commit"
 msgstr ""
 
@@ -1848,6 +1851,9 @@ msgstr ""
 msgid "Choose between <code>clone</code> or <code>fetch</code> to get the recent application code"
 msgstr ""
 
+msgid "Choose between fixed (max. 1280px) and fluid (100%%) application layout."
+msgstr ""
+
 msgid "Choose file…"
 msgstr ""
 
@@ -1855,6 +1861,9 @@ msgid "Choose the top-level group for your repository imports."
 msgstr ""
 
 msgid "Choose visibility level, enable/disable project features (issues, repository, wiki, snippets) and set permissions."
+msgstr ""
+
+msgid "Choose what content you want to see on a project’s overview page."
 msgstr ""
 
 msgid "Choose your merge method, options, checks, and set up a default merge request description template."
@@ -2505,6 +2514,9 @@ msgstr ""
 msgid "ClusterIntegration|The endpoint is in the process of being assigned. Please check your Kubernetes cluster or Quotas on Google Kubernetes Engine if it takes a long time."
 msgstr ""
 
+msgid "ClusterIntegration|There was a problem authenticating with your cluster. Please ensure your CA Certificate and Token are valid."
+msgstr ""
+
 msgid "ClusterIntegration|This account must have permissions to create a Kubernetes cluster in the %{link_to_container_project} specified below"
 msgstr ""
 
@@ -2557,6 +2569,9 @@ msgid "ClusterIntegration|You must have an RBAC-enabled cluster to install Knati
 msgstr ""
 
 msgid "ClusterIntegration|Your account must have %{link_to_kubernetes_engine}"
+msgstr ""
+
+msgid "ClusterIntegration|Your cluster API is unreachable. Please ensure your API URL is correct."
 msgstr ""
 
 msgid "ClusterIntegration|Zone"
@@ -3110,6 +3125,9 @@ msgstr ""
 msgid "Customize language and region related settings."
 msgstr ""
 
+msgid "Customize the appearance of the application header and navigation sidebar."
+msgstr ""
+
 msgid "Customize your pipeline configuration, view your pipeline status and coverage report."
 msgstr ""
 
@@ -3195,6 +3213,9 @@ msgid "Default artifacts expiration"
 msgstr ""
 
 msgid "Default classification label"
+msgstr ""
+
+msgid "Default dashboard"
 msgstr ""
 
 msgid "Default first day of the week"
@@ -4527,6 +4548,9 @@ msgstr ""
 msgid "From the Kubernetes cluster details view, install Runner from the applications list"
 msgstr ""
 
+msgid "Full name"
+msgstr ""
+
 msgid "GPG Key ID:"
 msgstr ""
 
@@ -4645,6 +4669,9 @@ msgid "Go to"
 msgstr ""
 
 msgid "Go to %{link_to_google_takeout}."
+msgstr ""
+
+msgid "Go to parent"
 msgstr ""
 
 msgid "Go to project"
@@ -4920,6 +4947,9 @@ msgid "Highest role:"
 msgstr ""
 
 msgid "History"
+msgstr ""
+
+msgid "History of authentications"
 msgstr ""
 
 msgid "Hook was successfully created."
@@ -5623,6 +5653,9 @@ msgstr ""
 msgid "Latest pipeline for this branch"
 msgstr ""
 
+msgid "Layout width"
+msgstr ""
+
 msgid "Lead"
 msgstr ""
 
@@ -6093,6 +6126,12 @@ msgstr ""
 msgid "Milestones|This action cannot be reversed."
 msgstr ""
 
+msgid "Minimum length is %{minimum_password_length} characters"
+msgstr ""
+
+msgid "Minimum length is %{minimum_password_length} characters."
+msgstr ""
+
 msgid "Mirror a repository"
 msgstr ""
 
@@ -6462,6 +6501,9 @@ msgid "Not enough data"
 msgstr ""
 
 msgid "Not found."
+msgstr ""
+
+msgid "Not implemented!"
 msgstr ""
 
 msgid "Not now"
@@ -7060,6 +7102,12 @@ msgstr ""
 msgid "Please note that this application is not provided by GitLab and you should verify its authenticity before allowing access."
 msgstr ""
 
+msgid "Please provide a valid email address."
+msgstr ""
+
+msgid "Please retype the email address."
+msgstr ""
+
 msgid "Please select a file"
 msgstr ""
 
@@ -7534,6 +7582,9 @@ msgstr ""
 msgid "Project name"
 msgstr ""
 
+msgid "Project overview content"
+msgstr ""
+
 msgid "Project slug"
 msgstr ""
 
@@ -7971,6 +8022,9 @@ msgstr ""
 msgid "Regex pattern"
 msgstr ""
 
+msgid "Register"
+msgstr ""
+
 msgid "Register / Sign In"
 msgstr ""
 
@@ -8056,12 +8110,6 @@ msgid "Remove project"
 msgstr ""
 
 msgid "Remove spent time"
-msgstr ""
-
-msgid "Remove this label? Are you sure?"
-msgstr ""
-
-msgid "Remove this label? This will affect all projects within the group. Are you sure?"
 msgstr ""
 
 msgid "Remove time estimate"
@@ -8842,6 +8890,9 @@ msgstr ""
 msgid "Sign-up restrictions"
 msgstr ""
 
+msgid "Signed in with %{authentication} authentication"
+msgstr ""
+
 msgid "Signing in using %{label} has been disabled"
 msgstr ""
 
@@ -9314,6 +9365,9 @@ msgid "Switch to GitLab Next"
 msgstr ""
 
 msgid "Switch to the source to copy it to the clipboard"
+msgstr ""
+
+msgid "Syntax highlighting theme"
 msgstr ""
 
 msgid "System Hooks"
@@ -9876,6 +9930,9 @@ msgstr ""
 msgid "This is a delayed job to run in %{remainingTime}"
 msgstr ""
 
+msgid "This is a security log of important events involving your account."
+msgstr ""
+
 msgid "This is the author's first Merge Request to this project."
 msgstr ""
 
@@ -9994,6 +10051,12 @@ msgid "This repository is currently empty. A new Auto DevOps pipeline will be cr
 msgstr ""
 
 msgid "This runner will only run on pipelines triggered on protected branches"
+msgstr ""
+
+msgid "This setting allows you to customize the appearance of the syntax."
+msgstr ""
+
+msgid "This setting allows you to customize the behavior of the system layout and default views."
 msgstr ""
 
 msgid "This setting can be overridden in each project."
@@ -10756,6 +10819,12 @@ msgstr ""
 msgid "UserProfile|Your projects can be available publicly, internally, or privately, at your choice."
 msgstr ""
 
+msgid "Username is already taken."
+msgstr ""
+
+msgid "Username is available."
+msgstr ""
+
 msgid "Users"
 msgstr ""
 
@@ -11209,6 +11278,12 @@ msgid "You can easily install a Runner on a Kubernetes cluster. %{link_to_help_p
 msgstr ""
 
 msgid "You can invite a new member to <strong>%{project_name}</strong> or invite another group."
+msgstr ""
+
+msgid "You can invite a new member to <strong>%{project_name}</strong>."
+msgstr ""
+
+msgid "You can invite another group to <strong>%{project_name}</strong>."
 msgstr ""
 
 msgid "You can move around the graph by using the arrow keys."

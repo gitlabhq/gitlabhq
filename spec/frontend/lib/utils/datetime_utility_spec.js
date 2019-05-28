@@ -65,6 +65,26 @@ describe('Date time utils', () => {
     });
   });
 
+  describe('formatDate', () => {
+    it('should format date properly', () => {
+      const formattedDate = datetimeUtility.formatDate(new Date('07/23/2016'));
+
+      expect(formattedDate).toBe('Jul 23, 2016 12:00am GMT+0000');
+    });
+
+    it('should format ISO date properly', () => {
+      const formattedDate = datetimeUtility.formatDate('2016-07-23T00:00:00.559Z');
+
+      expect(formattedDate).toBe('Jul 23, 2016 12:00am GMT+0000');
+    });
+
+    it('should throw an error if date is invalid', () => {
+      expect(() => {
+        datetimeUtility.formatDate('2016-07-23 00:00:00 UTC');
+      }).toThrow(new Error('Invalid date'));
+    });
+  });
+
   describe('get day difference', () => {
     it('should return 7', () => {
       const firstDay = new Date('07/01/2016');
@@ -380,7 +400,7 @@ describe('prettyTime methods', () => {
 
 describe('calculateRemainingMilliseconds', () => {
   beforeEach(() => {
-    spyOn(Date, 'now').and.callFake(() => new Date('2063-04-04T00:42:00Z').getTime());
+    jest.spyOn(Date, 'now').mockImplementation(() => new Date('2063-04-04T00:42:00Z').getTime());
   });
 
   it('calculates the remaining time for a given end date', () => {

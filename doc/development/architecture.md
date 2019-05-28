@@ -106,21 +106,21 @@ Component statuses are linked to configuration documentation for each component.
 
 ### Component list
 
-| Component | Description | [Omnibus GitLab](https://docs.gitlab.com/omnibus/README.html) | [GitLab chart](https://docs.gitlab.com/charts/) | [Minikube Minimal](https://docs.gitlab.com/charts/development/minikube/#deploying-gitlab-with-minimal-settings) | [GitLab.com](https://gitlab.com) | [Source](https://docs.gitlab.com/ee/install/installation.html) | [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit) | CE/EE |
+| Component | Description | [Omnibus GitLab](https://docs.gitlab.com/omnibus/) | [GitLab chart](https://docs.gitlab.com/charts/) | [Minikube Minimal](https://docs.gitlab.com/charts/development/minikube/#deploying-gitlab-with-minimal-settings) | [GitLab.com](https://gitlab.com) | [Source](../install/installation.md) | [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit) | CE/EE |
 | --------- | ----------- |:--------------------:|:------------------:|:-----:|:--------:|:--------:|:-------:|:-------:|
 | [NGINX](#nginx) | Routes requests to appropriate components, terminates SSL | [✅][nginx-omnibus] | [✅][nginx-charts] | [⚙][nginx-charts] | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production-architecture/#service-architecture) | [⤓][nginx-source] | ❌ | CE & EE |
-| [Unicorn (GitLab Rails)](#unicorn) | Handles requests for the web interface and API | [✅][unicorn-omnibus] | [✅][unicorn-charts] | [✅][unicorn-charts] | [✅](https://docs.gitlab.com/ee/user/gitlab_com/#unicorn) | [⚙][unicorn-source] | [✅][gitlab-yml] | CE & EE |
-| [Sidekiq](#sidekiq) | Background jobs processor | [✅][sidekiq-omnibus] | [✅][sidekiq-charts] | [✅](https://docs.gitlab.com/charts/charts/gitlab/sidekiq/index.html) | [✅](https://docs.gitlab.com/ee/user/gitlab_com/#sidekiq) | [✅][gitlab-yml] | [✅][gitlab-yml] | CE & EE |
+| [Unicorn (GitLab Rails)](#unicorn) | Handles requests for the web interface and API | [✅][unicorn-omnibus] | [✅][unicorn-charts] | [✅][unicorn-charts] | [✅](../user/gitlab_com/index.md#unicorn) | [⚙][unicorn-source] | [✅][gitlab-yml] | CE & EE |
+| [Sidekiq](#sidekiq) | Background jobs processor | [✅][sidekiq-omnibus] | [✅][sidekiq-charts] | [✅](https://docs.gitlab.com/charts/charts/gitlab/sidekiq/index.html) | [✅](../user/gitlab_com/index.md#sidekiq) | [✅][gitlab-yml] | [✅][gitlab-yml] | CE & EE |
 | [Gitaly](#gitaly) | Git RPC service for handling all git calls made by GitLab | [✅][gitaly-omnibus] | [✅][gitaly-charts] | [✅][gitaly-charts] | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production-architecture/#service-architecture) | [⚙][gitaly-source] | ✅ | CE & EE |
 | [GitLab Workhorse](#gitlab-workhorse) | Smart reverse proxy, handles large HTTP requests | [✅][workhorse-omnibus] | [✅][workhorse-charts] | [✅][workhorse-charts] | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production-architecture/#service-architecture) | [⚙][workhorse-source] | ✅ | CE & EE |
 | [GitLab Shell](#gitlab-shell) | Handles `git` over SSH sessions | [✅][shell-omnibus] | [✅][shell-charts] | [✅][shell-charts] | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production-architecture/#service-architecture) | [⚙][shell-source] | [✅][gitlab-yml] | CE & EE |
-| [GitLab Pages](#gitlab-pages) | Hosts static websites | [⚙][pages-omnibus] | [❌][pages-charts] | [❌][pages-charts] | [✅](https://docs.gitlab.com/ee/user/gitlab_com/#gitlab-pages) | [⚙][pages-source] | [⚙][pages-gdk] | CE & EE  |
-| [Registry](#registry) | Container registry, allows pushing and pulling of images | [⚙][registry-omnibus] | [✅][registry-charts] | [✅][registry-charts] | [✅](https://docs.gitlab.com/ee/user/project/container_registry.html#build-and-push-images) | [⤓][registry-source] | [⚙][registry-gdk] | CE & EE  |
+| [GitLab Pages](#gitlab-pages) | Hosts static websites | [⚙][pages-omnibus] | [❌][pages-charts] | [❌][pages-charts] | [✅](../user/gitlab_com/index.md#gitlab-pages) | [⚙][pages-source] | [⚙][pages-gdk] | CE & EE  |
+| [Registry](#registry) | Container registry, allows pushing and pulling of images | [⚙][registry-omnibus] | [✅][registry-charts] | [✅][registry-charts] | [✅](../user/project/container_registry.md#build-and-push-images) | [⤓][registry-source] | [⚙][registry-gdk] | CE & EE  |
 | [Redis](#redis) | Caching service | [✅][redis-omnibus] | [✅][redis-omnibus] | [✅][redis-charts] | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production-architecture/#service-architecture) | [⤓][redis-source] | ✅ | CE & EE |
-| [PostgreSQL](#postgresql) | Database | [✅][postgres-omnibus] | [✅][postgres-charts] | [✅][postgres-charts] | [✅](https://docs.gitlab.com/ee/user/gitlab_com/#postgresql) | [⤓][postgres-source] | ✅ | CE & EE |
+| [PostgreSQL](#postgresql) | Database | [✅][postgres-omnibus] | [✅][postgres-charts] | [✅][postgres-charts] | [✅](../user/gitlab_com/index.md#postgresql) | [⤓][postgres-source] | ✅ | CE & EE |
 | [PgBouncer](#pgbouncer) | Database connection pooling, failover | [⚙][pgbouncer-omnibus] | [❌][pgbouncer-charts] | [❌][pgbouncer-charts] | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production-architecture/#database-architecture) | ❌ | ❌ | EE Only |
-| [Consul](#consul) | Database node discovery, failover | [⚙][consul-omnibus] | [❌][consul-charts] | [❌][consul-charts] | [✅](https://docs.gitlab.com/ee/user/gitlab_com/#consul) | ❌ | ❌ | EE Only |
-| [GitLab self-monitoring: Prometheus](#prometheus) | Time-series database, metrics collection, and query service | [✅][prometheus-omnibus] | [✅][prometheus-charts] | [⚙][prometheus-charts] | [✅](https://docs.gitlab.com/ee/user/gitlab_com/#prometheus) | ❌ | ❌ | CE & EE |
+| [Consul](#consul) | Database node discovery, failover | [⚙][consul-omnibus] | [❌][consul-charts] | [❌][consul-charts] | [✅](../user/gitlab_com/index.md#consul) | ❌ | ❌ | EE Only |
+| [GitLab self-monitoring: Prometheus](#prometheus) | Time-series database, metrics collection, and query service | [✅][prometheus-omnibus] | [✅][prometheus-charts] | [⚙][prometheus-charts] | [✅](../user/gitlab_com/index.md#prometheus) | ❌ | ❌ | CE & EE |
 | [GitLab self-monitoring: Alertmanager](#alertmanager) | Deduplicates, groups, and routes alerts from Prometheus | [✅][alertmanager-omnibus] | [✅][alertmanager-charts] |  [⚙][alertmanager-charts] | [✅](https://about.gitlab.com/handbook/engineering/monitoring/) | ❌ | ❌ | CE & EE |
 | [GitLab self-monitoring: Grafana](#grafana) | Metrics dashboard | [⚙][grafana-omnibus] | [⤓][grafana-charts] |  [⤓][grafana-charts] | [✅](https://dashboards.gitlab.com/d/RZmbBr7mk/gitlab-triage?refresh=30s) | ❌ | ❌ | CE & EE |
 | [GitLab self-monitoring: Sentry](#sentry) | Track errors generated by the GitLab instance | [⤓][sentry-omnibus] | [❌][sentry-charts] | [❌][sentry-charts] | [✅](https://about.gitlab.com/handbook/support/workflows/services/gitlab_com/500_errors.html#searching-sentry) | [⤓][gitlab-yml] | [⤓][gitlab-yml] | CE & EE |
@@ -130,15 +130,15 @@ Component statuses are linked to configuration documentation for each component.
 | [PgBouncer Exporter](#pgbouncer-exporter) | Prometheus endpoint with PgBouncer metrics | [⚙][pgbouncer-exporter-omnibus] | [❌][pgbouncer-exporter-charts] | [❌][pgbouncer-exporter-charts] | [✅](https://about.gitlab.com/handbook/engineering/monitoring/) | ❌ | ❌ | CE & EE |
 | [GitLab Monitor](#gitlab-monitor) | Generates a variety of GitLab metrics | [✅][gitlab-monitor-omnibus] | [❌][gitab-monitor-charts] | [❌][gitab-monitor-charts] | [✅](https://about.gitlab.com/handbook/engineering/monitoring/) | ❌ | ❌ | CE & EE |
 | [Node Exporter](#node-exporter) | Prometheus endpoint with system metrics | [✅][node-exporter-omnibus] | [❌][node-exporter-charts] | [❌][node-exporter-charts] | [✅](https://about.gitlab.com/handbook/engineering/monitoring/) | ❌ | ❌ | CE & EE |
-| [Mattermost](#mattermost) | Open-source Slack alternative | [⚙][mattermost-omnibus] | [⤓][mattermost-charts] | [⤓][mattermost-charts] | [⤓](https://docs.gitlab.com/ee/user/project/integrations/mattermost_slash_commands.html#manual-configuration), [⤓](https://docs.gitlab.com/ee/user/project/integrations/mattermost.html) | ❌ | ❌ | CE & EE |
+| [Mattermost](#mattermost) | Open-source Slack alternative | [⚙][mattermost-omnibus] | [⤓][mattermost-charts] | [⤓][mattermost-charts] | [⤓](../user/project/integrations/mattermost_slash_commands.md#manual-configuration), [⤓](../user/project/integrations/mattermost.html) | ❌ | ❌ | CE & EE |
 | [MinIO](#minio) | Object storage service | [⤓][minio-omnibus] | [✅][minio-charts] | [✅][minio-charts] | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production-architecture/#storage-architecture) | ❌ | [⚙][minio-gdk] | CE & EE |
-| [Runner](#gitlab-runner) | Executes GitLab CI jobs | [⤓][runner-omnibus] | [✅][runner-charts] | [⚙][runner-charts] | [✅](https://docs.gitlab.com/ee/user/gitlab_com/#shared-runners) | [⚙][runner-source] | [⚙][runner-gdk] | CE & EE |
+| [Runner](#gitlab-runner) | Executes GitLab CI jobs | [⤓][runner-omnibus] | [✅][runner-charts] | [⚙][runner-charts] | [✅](../user/gitlab_com/index.md#shared-runners) | [⚙][runner-source] | [⚙][runner-gdk] | CE & EE |
 | [Database Migrations](#database-migrations) | Database migrations | [✅][database-migrations-omnibus] | [✅][database-migrations-charts] | [✅][database-migrations-charts] | ✅ | [⚙][database-migrations-source] | ✅ | CE & EE |
 | [Certificate Management](#certificate-management) | TLS Settings, Let's Encrypt | [✅][certificate-management-omnibus] | [✅][certificate-management-charts] | [⚙][certificate-management-charts] | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production-architecture/#secrets-management) | [⚙][certificate-management-source] | [⚙][certificate-management-gdk] | CE & EE |
-| [GitLab Geo Node](#gitlab-geo) | Geographically distributed GitLab nodes | [⚙][geo-omnibus] | [❌][geo-charts] | [❌][geo-charts] | ✅ | [❌](../administration/geo/replication/configuration_source.md) | [⚙][geo-gdk] | EE Only |
+| [GitLab Geo Node](#gitlab-geo) | Geographically distributed GitLab nodes | [⚙][geo-omnibus] | [❌][geo-charts] | [❌][geo-charts] | ✅ | ❌ | [⚙][geo-gdk] | EE Only |
 | [LDAP Authentication](#ldap-authentication) | Authenticate users against centralized LDAP directory | [⤓][ldap-omnibus] | [⤓][ldap-charts] | [⤓][ldap-charts] | [❌](https://about.gitlab.com/pricing/#gitlab-com) | [⤓][gitlab-yml] | [⤓][ldap-gdk] | CE & EE |
-| [Outbound email (SMTP)](#outbound-email) | Send email messages to users | [⤓][outbound-email-omnibus] | [⤓][outbound-email-charts] | [⤓][outbound-email-charts] | [✅](https://docs.gitlab.com/ee/user/gitlab_com/#mail-configuration) | [⤓][gitlab-yml] | [⤓][gitlab-yml] | CE & EE |
-| [Inbound email (SMTP)](#inbound-email) | Receive messages to update issues | [⤓][inbound-email-omnibus] | [⤓][inbound-email-charts] | [⤓][inbound-email-charts] | [✅](https://docs.gitlab.com/ee/user/gitlab_com/#mail-configuration) | [⤓][gitlab-yml] | [⤓][gitlab-yml] |  CE & EE |
+| [Outbound email (SMTP)](#outbound-email) | Send email messages to users | [⤓][outbound-email-omnibus] | [⤓][outbound-email-charts] | [⤓][outbound-email-charts] | [✅](../user/gitlab_com/index.md#mail-configuration) | [⤓][gitlab-yml] | [⤓][gitlab-yml] | CE & EE |
+| [Inbound email (SMTP)](#inbound-email) | Receive messages to update issues | [⤓][inbound-email-omnibus] | [⤓][inbound-email-charts] | [⤓][inbound-email-charts] | [✅](../user/gitlab_com/index.md#mail-configuration) | [⤓][gitlab-yml] | [⤓][gitlab-yml] |  CE & EE |
 | [ElasticSearch](#elasticsearch) | Improved search within GitLab | [⤓][elasticsearch-omnibus] | [⤓][elasticsearch-charts] | [⤓][elasticsearch-charts] | [❌](https://gitlab.com/groups/gitlab-org/-/epics/153) | [⤓][elasticsearch-source] | [⤓][elasticsearch-gdk] | EE Only |
 | [Sentry integration](#sentry) | Error tracking for deployed apps | [⤓][sentry-integration] | [⤓][sentry-integration] | [⤓][sentry-integration] | [⤓][sentry-integration] | [⤓][sentry-integration] | [⤓][sentry-integration] | CE & EE |
 | [Jaeger integration](#jaeger) | Distributed tracing for deployed apps | [⤓][jaeger-integration] | [⤓][jaeger-integration] | [⤓][jaeger-integration] | [⤓][jaeger-integration] | [⤓][jaeger-integration] | [⤓][jaeger-integration] | EE Only |
@@ -440,7 +440,7 @@ Sidekiq is a Ruby background job processor that pulls jobs from the redis queue 
 - Configuration: [Omnibus][managed-k8s-apps], [Charts][managed-k8s-apps], [Source][managed-k8s-apps], [GDK][managed-k8s-apps]
 - Layer: Core Service (Processor)
 
-GitLab provides [GitLab Managed Apps](https://docs.gitlab.com/ee/user/project/clusters/#installing-applications), a one-click install for various applications which can be added directly to your configured cluster. These applications are needed for Review Apps and deployments when using Auto DevOps. You can install them after you create a cluster.
+GitLab provides [GitLab Managed Apps](../user/project/clusters/index.md#installing-applications), a one-click install for various applications which can be added directly to your configured cluster. These applications are needed for Review Apps and deployments when using Auto DevOps. You can install them after you create a cluster.
 
 ## GitLab by Request Type
 
@@ -609,92 +609,92 @@ We've also detailed [our architecture of GitLab.com](https://about.gitlab.com/ha
 
 [alertmanager-omnibus]: https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-config-template/gitlab.rb.template
 [alertmanager-charts]: https://github.com/helm/charts/tree/master/stable/prometheus
-[nginx-omnibus]: https://docs.gitlab.com/omnibus/settings/nginx.html
-[nginx-charts]: https://docs.gitlab.com/charts/charts/nginx/index.html
-[nginx-source]: https://docs.gitlab.com/ee/install/installation.html#9-nginx
+[nginx-omnibus]: https://docs.gitlab.com/omnibus/settings/
+[nginx-charts]: https://docs.gitlab.com/charts/charts/nginx/
+[nginx-source]: ../install/installation.md#9-nginx
 [unicorn-omnibus]: https://docs.gitlab.com/omnibus/settings/unicorn.html
-[unicorn-charts]: https://docs.gitlab.com/charts/charts/gitlab/unicorn/index.html
-[unicorn-source]: https://docs.gitlab.com/ee/install/installation.html#configure-it
+[unicorn-charts]: https://docs.gitlab.com/charts/charts/gitlab/unicorn/
+[unicorn-source]: ../install/installation.md#configure-it
 [gitlab-yml]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/config/gitlab.yml.example
 [sidekiq-omnibus]: https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-config-template/gitlab.rb.template
-[sidekiq-charts]: https://docs.gitlab.com/charts/charts/gitlab/sidekiq/index.html
-[gitaly-omnibus]: https://docs.gitlab.com/ee/administration/gitaly/
-[gitaly-charts]: https://docs.gitlab.com/charts/charts/gitlab/gitaly/index.html
-[gitaly-source]: https://docs.gitlab.com/ee/install/installation.html#install-gitaly
+[sidekiq-charts]: https://docs.gitlab.com/charts/charts/gitlab/sidekiq/
+[gitaly-omnibus]: ../administration/gitaly/index.md
+[gitaly-charts]: https://docs.gitlab.com/charts/charts/gitlab/gitaly/
+[gitaly-source]: ../install/installation.md#install-gitaly
 [workhorse-omnibus]: https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-config-template/gitlab.rb.template
-[workhorse-charts]: https://docs.gitlab.com/charts/charts/gitlab/unicorn/index.html
-[workhorse-source]: https://docs.gitlab.com/ee/install/installation.html#install-gitlab-workhorse
+[workhorse-charts]: https://docs.gitlab.com/charts/charts/gitlab/unicorn/
+[workhorse-source]: ../install/installation.md#install-gitlab-workhorse
 [shell-omnibus]: https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-config-template/gitlab.rb.template
-[shell-charts]: https://docs.gitlab.com/charts/charts/gitlab/gitlab-shell/index.html
-[shell-source]: https://docs.gitlab.com/ee/install/installation.html#install-gitlab-shell
-[pages-omnibus]: https://docs.gitlab.com/ee/administration/pages/
+[shell-charts]: https://docs.gitlab.com/charts/charts/gitlab/gitlab-shell/
+[shell-source]: ../install/installation.md#install-gitlab-shell
+[pages-omnibus]: ../administration/pages/index.md
 [pages-charts]: https://gitlab.com/charts/gitlab/issues/37
-[pages-source]: https://docs.gitlab.com/ee/install/installation.html#install-gitlab-pages
+[pages-source]: ../install/installation.md#install-gitlab-pages
 [pages-gdk]: https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/pages.md
-[registry-omnibus]: https://docs.gitlab.com/ee/administration/container_registry.html#container-registry-domain-configuration
-[registry-charts]: https://docs.gitlab.com/charts/charts/registry/index.html
-[registry-source]: https://docs.gitlab.com/ee/administration/container_registry.html#enable-the-container-registry
+[registry-omnibus]: ../administration/container_registry.md#container-registry-domain-configuration
+[registry-charts]: https://docs.gitlab.com/charts/charts/registry/
+[registry-source]: ../administration/container_registry.md#enable-the-container-registry
 [registry-gdk]: https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/registry.md
 [redis-omnibus]: https://docs.gitlab.com/omnibus/settings/redis.html
-[redis-charts]: https://docs.gitlab.com/charts/charts/redis/index.html
-[redis-source]: https://docs.gitlab.com/ee/install/installation.html#7-redis
+[redis-charts]: https://docs.gitlab.com/charts/charts/redis/
+[redis-source]: ../install/installation.md#7-redis
 [postgres-omnibus]: https://docs.gitlab.com/omnibus/settings/database.html
 [postgres-charts]: https://github.com/helm/charts/tree/master/stable/postgresql
-[postgres-source]: https://docs.gitlab.com/ee/install/installation.html#6-database
-[pgbouncer-omnibus]: https://docs.gitlab.com/ee/administration/high_availability/pgbouncer.html
+[postgres-source]: ../install/installation.md#6-database
+[pgbouncer-omnibus]: ../administration/high_availability/pgbouncer.md
 [pgbouncer-charts]: https://docs.gitlab.com/charts/installation/deployment.html#postgresql
-[consul-omnibus]: https://docs.gitlab.com/ee/administration/high_availability/consul.html
+[consul-omnibus]: ../administration/high_availability/consul.md
 [consul-charts]: https://docs.gitlab.com/charts/installation/deployment.html#postgresql
-[prometheus-omnibus]: https://docs.gitlab.com/ee/administration/monitoring/prometheus/
+[prometheus-omnibus]: ../administration/monitoring/prometheus/index.md
 [prometheus-charts]: https://github.com/helm/charts/tree/master/stable/prometheus
-[grafana-omnibus]: https://docs.gitlab.com/ee/administration/monitoring/performance/grafana_configuration.html
+[grafana-omnibus]: ../administration/monitoring/performance/grafana_configuration.md
 [grafana-charts]: https://github.com/helm/charts/tree/master/stable/grafana
 [sentry-omnibus]: https://docs.gitlab.com/omnibus/settings/configuration.html#error-reporting-and-logging-with-sentry
 [sentry-charts]: https://gitlab.com/charts/gitlab/issues/1319
 [jaeger-omnibus]: https://gitlab.com/gitlab-org/omnibus-gitlab/issues/4104
 [jaeger-charts]: https://gitlab.com/charts/gitlab/issues/1320
-[jaeger-source]: https://docs.gitlab.com/ee/development/distributed_tracing.html#enabling-distributed-tracing
-[jaeger-gdk]: https://docs.gitlab.com/ee/development/distributed_tracing.html#using-jaeger-in-the-gitlab-development-kit
-[redis-exporter-omnibus]: https://docs.gitlab.com/ee/administration/monitoring/prometheus/redis_exporter.html
-[redis-exporter-charts]: https://docs.gitlab.com/charts/charts/redis/index.html
-[postgres-exporter-omnibus]: https://docs.gitlab.com/ee/administration/monitoring/prometheus/postgres_exporter.html
+[jaeger-source]: ../development/distributed_tracing.md#enabling-distributed-tracing
+[jaeger-gdk]: ../development/distributed_tracing.html#using-jaeger-in-the-gitlab-development-kit
+[redis-exporter-omnibus]: ../administration/monitoring/prometheus/redis_exporter.md
+[redis-exporter-charts]: https://docs.gitlab.com/charts/charts/redis/
+[postgres-exporter-omnibus]: ../administration/monitoring/prometheus/postgres_exporter.md
 [postgres-exporter-charts]: https://github.com/helm/charts/tree/master/stable/postgresql
-[pgbouncer-exporter-omnibus]: https://docs.gitlab.com/ee/administration/monitoring/prometheus/pgbouncer_exporter.html
+[pgbouncer-exporter-omnibus]: ../administration/monitoring/prometheus/pgbouncer_exporter.md
 [pgbouncer-exporter-charts]: https://docs.gitlab.com/charts/installation/deployment.html#postgresql
-[gitlab-monitor-omnibus]: https://docs.gitlab.com/ee/administration/monitoring/prometheus/gitlab_monitor_exporter.html
+[gitlab-monitor-omnibus]: ../administration/monitoring/prometheus/gitlab_monitor_exporter.md
 [gitab-monitor-charts]: https://gitlab.com/charts/gitlab/issues/319
-[node-exporter-omnibus]: https://docs.gitlab.com/ee/administration/monitoring/prometheus/node_exporter.html
+[node-exporter-omnibus]: ../administration/monitoring/prometheus/node_exporter.md
 [node-exporter-charts]: https://gitlab.com/charts/gitlab/issues/1332
 [mattermost-omnibus]: https://docs.gitlab.com/omnibus/gitlab-mattermost/
 [mattermost-charts]: https://docs.mattermost.com/install/install-mmte-helm-gitlab-helm.html
 [minio-omnibus]: https://min.io/download
-[minio-charts]: https://docs.gitlab.com/charts/charts/minio/index.html
+[minio-charts]: https://docs.gitlab.com/charts/charts/minio/
 [minio-gdk]: https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/object_storage.md
 [runner-omnibus]: https://docs.gitlab.com/runner/
 [runner-charts]: https://docs.gitlab.com/runner/install/kubernetes.html
 [runner-source]: https://docs.gitlab.com/runner/
 [runner-gdk]: https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/runner.md
 [database-migrations-omnibus]: https://docs.gitlab.com/omnibus/settings/database.html#disabling-automatic-database-migration
-[database-migrations-charts]: https://docs.gitlab.com/charts/charts/gitlab/migrations/index.html
-[database-migrations-source]: https://docs.gitlab.com/ee/update/upgrading_from_source.html#13-install-libs-migrations-etc
+[database-migrations-charts]: https://docs.gitlab.com/charts/charts/gitlab/migrations/
+[database-migrations-source]: ../update/upgrading_from_source.md#13-install-libs-migrations-etc
 [certificate-management-omnibus]: https://docs.gitlab.com/omnibus/settings/ssl.html
 [certificate-management-charts]: https://docs.gitlab.com/charts/installation/tls.html
-[certificate-management-source]: https://docs.gitlab.com/ee/install/installation.html#using-https
+[certificate-management-source]: ../install/installation.md#using-https
 [certificate-management-gdk]: https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/https.md
-[geo-omnibus]: https://docs.gitlab.com/ee/administration/geo/replication/index.html#setup-instructions
+[geo-omnibus]: ../administration/geo/replication/index.md#setup-instructions
 [geo-charts]: https://gitlab.com/charts/gitlab/issues/8
 [geo-gdk]: https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/geo.md
-[ldap-omnibus]: https://docs.gitlab.com/ee/administration/auth/ldap.html
+[ldap-omnibus]: ../administration/auth/ldap.md
 [ldap-charts]: https://docs.gitlab.com/charts/charts/globals.html#ldap
 [ldap-gdk]: https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/ldap.md
 [outbound-email-omnibus]: https://docs.gitlab.com/omnibus/settings/smtp.html
 [outbound-email-charts]: https://docs.gitlab.com/charts/installation/command-line-options.html#outgoing-email-configuration
-[inbound-email-omnibus]: https://docs.gitlab.com/ee/administration/incoming_email.html
+[inbound-email-omnibus]: ../administration/incoming_email.md
 [inbound-email-charts]: https://docs.gitlab.com/charts/installation/command-line-options.html#incoming-email-configuration
-[elasticsearch-omnibus]: https://docs.gitlab.com/ee/integration/elasticsearch.html
-[elasticsearch-charts]: https://docs.gitlab.com/ee/integration/elasticsearch.html
-[elasticsearch-source]: https://docs.gitlab.com/ee/integration/elasticsearch.html
+[elasticsearch-omnibus]: ../integration/elasticsearch.md
+[elasticsearch-charts]: ../integration/elasticsearch.md
+[elasticsearch-source]: ../integration/elasticsearch.md
 [elasticsearch-gdk]: https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/elasticsearch.md
-[sentry-integration]: https://docs.gitlab.com/ee/user/project/operations/error_tracking.html
-[jaeger-integration]: https://docs.gitlab.com/ee/user/project/operations/tracing.html
-[managed-k8s-apps]: https://docs.gitlab.com/ee/user/project/clusters/#installing-applications
+[sentry-integration]: ../user/project/operations/error_tracking.md
+[jaeger-integration]: ../user/project/operations/tracing.md
+[managed-k8s-apps]: ../user/project/clusters/index.md#installing-applications

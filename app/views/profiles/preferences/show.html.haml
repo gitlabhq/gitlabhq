@@ -1,11 +1,11 @@
-- page_title 'Preferences'
+- page_title _('Preferences')
 - @content_class = "limit-container-width" unless fluid_layout
 
 = form_for @user, url: profile_preferences_path, remote: true, method: :put, html: { class: 'row prepend-top-default js-preferences-form' } do |f|
   .col-lg-4.application-theme
     %h4.prepend-top-0
       = s_('Preferences|Navigation theme')
-    %p Customize the appearance of the application header and navigation sidebar.
+    %p= _('Customize the appearance of the application header and navigation sidebar.')
   .col-lg-8.application-theme
     - Gitlab::Themes.each do |theme|
       = label_tag do
@@ -18,11 +18,11 @@
 
   .col-lg-4.profile-settings-sidebar
     %h4.prepend-top-0
-      Syntax highlighting theme
+      = _('Syntax highlighting theme')
     %p
-      This setting allows you to customize the appearance of the syntax.
+      = _('This setting allows you to customize the appearance of the syntax.')
       = succeed '.' do
-        = link_to 'Learn more', help_page_path('user/profile/preferences', anchor: 'syntax-highlighting-theme'), target: '_blank'
+        = link_to _('Learn more'), help_page_path('user/profile/preferences', anchor: 'syntax-highlighting-theme'), target: '_blank'
   .col-lg-8.syntax-theme
     - Gitlab::ColorSchemes.each do |scheme|
       = label_tag do
@@ -35,31 +35,31 @@
 
   .col-lg-4.profile-settings-sidebar
     %h4.prepend-top-0
-      Behavior
+      = _('Behavior')
     %p
-      This setting allows you to customize the behavior of the system layout and default views.
+      = _('This setting allows you to customize the behavior of the system layout and default views.')
       = succeed '.' do
-        = link_to 'Learn more', help_page_path('user/profile/preferences', anchor: 'behavior'), target: '_blank'
+        = link_to _('Learn more'), help_page_path('user/profile/preferences', anchor: 'behavior'), target: '_blank'
   .col-lg-8
     .form-group
       = f.label :layout, class: 'label-bold' do
-        Layout width
+        = _('Layout width')
       = f.select :layout, layout_choices, {}, class: 'form-control'
       .form-text.text-muted
-        Choose between fixed (max. 1280px) and fluid (100%) application layout.
+        = _('Choose between fixed (max. 1280px) and fluid (100%%) application layout.')
     .form-group
       = f.label :dashboard, class: 'label-bold' do
-        Default dashboard
+        = _('Default dashboard')
       = f.select :dashboard, dashboard_choices, {}, class: 'form-control'
 
     = render_if_exists 'profiles/preferences/group_overview_selector', f: f # EE-specific
 
     .form-group
       = f.label :project_view, class: 'label-bold' do
-        Project overview content
+        = _('Project overview content')
       = f.select :project_view, project_view_choices, {}, class: 'form-control'
       .form-text.text-muted
-        Choose what content you want to see on a project’s overview page.
+        = _('Choose what content you want to see on a project’s overview page.')
 
   .col-sm-12
     %hr

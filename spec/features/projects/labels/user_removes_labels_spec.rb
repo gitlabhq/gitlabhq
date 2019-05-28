@@ -21,8 +21,11 @@ describe "User removes labels" do
         page.first(".label-list-item") do
           first('.js-label-options-dropdown').click
           first(".remove-row").click
-          first(:link, "Delete label").click
         end
+
+        expect(page).to have_content("#{label.title} will be permanently deleted from #{project.name}. This cannot be undone.")
+
+        first(:link, "Delete label").click
       end
 
       expect(page).to have_content("Label was removed").and have_no_content(label.title)

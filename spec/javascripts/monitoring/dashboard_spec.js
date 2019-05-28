@@ -2,8 +2,15 @@ import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import Dashboard from '~/monitoring/components/dashboard.vue';
 import { timeWindows, timeWindowsKeyNames } from '~/monitoring/constants';
+import * as types from '~/monitoring/stores/mutation_types';
+import { createStore } from '~/monitoring/stores';
 import axios from '~/lib/utils/axios_utils';
-import { metricsGroupsAPIResponse, mockApiEndpoint, environmentData } from './mock_data';
+import {
+  metricsGroupsAPIResponse,
+  mockApiEndpoint,
+  environmentData,
+  singleGroupResponse,
+} from './mock_data';
 
 const propsData = {
   hasMetrics: false,
@@ -30,6 +37,7 @@ export default propsData;
 describe('Dashboard', () => {
   let DashboardComponent;
   let mock;
+  let store;
 
   beforeEach(() => {
     setFixtures(`
@@ -45,6 +53,7 @@ describe('Dashboard', () => {
       },
     };
 
+    store = createStore();
     mock = new MockAdapter(axios);
     DashboardComponent = Vue.extend(Dashboard);
   });
@@ -58,10 +67,11 @@ describe('Dashboard', () => {
       const component = new DashboardComponent({
         el: document.querySelector('.prometheus-graphs'),
         propsData: { ...propsData, showTimeWindowDropdown: false },
+        store,
       });
 
       expect(component.$el.querySelector('.prometheus-graphs')).toBe(null);
-      expect(component.state).toEqual('gettingStarted');
+      expect(component.emptyState).toEqual('gettingStarted');
     });
   });
 
@@ -74,10 +84,11 @@ describe('Dashboard', () => {
       const component = new DashboardComponent({
         el: document.querySelector('.prometheus-graphs'),
         propsData: { ...propsData, hasMetrics: true, showTimeWindowDropdown: false },
+        store,
       });
 
       Vue.nextTick(() => {
-        expect(component.state).toEqual('loading');
+        expect(component.emptyState).toEqual('loading');
         done();
       });
     });
@@ -91,6 +102,7 @@ describe('Dashboard', () => {
           showLegend: false,
           showTimeWindowDropdown: false,
         },
+        store,
       });
 
       setTimeout(() => {
@@ -110,6 +122,7 @@ describe('Dashboard', () => {
           showPanels: false,
           showTimeWindowDropdown: false,
         },
+        store,
       });
 
       setTimeout(() => {
@@ -129,16 +142,24 @@ describe('Dashboard', () => {
           showPanels: false,
           showTimeWindowDropdown: false,
         },
+        store,
       });
 
-      component.store.storeEnvironmentsData(environmentData);
+      component.$store.commit(
+        `monitoringDashboard/${types.RECEIVE_ENVIRONMENTS_DATA_SUCCESS}`,
+        environmentData,
+      );
+      component.$store.commit(
+        `monitoringDashboard/${types.RECEIVE_METRICS_DATA_SUCCESS}`,
+        singleGroupResponse,
+      );
 
       setTimeout(() => {
         const dropdownMenuEnvironments = component.$el.querySelectorAll(
           '.js-environments-dropdown .dropdown-item',
         );
 
-        expect(dropdownMenuEnvironments.length).toEqual(component.store.environmentsData.length);
+        expect(dropdownMenuEnvironments.length).toEqual(component.environments.length);
         done();
       });
     });
@@ -152,18 +173,29 @@ describe('Dashboard', () => {
           showPanels: false,
           showTimeWindowDropdown: false,
         },
+        store,
       });
 
-      component.store.storeEnvironmentsData([]);
+      component.$store.commit(
+        `monitoringDashboard/${types.SET_ENVIRONMENTS_ENDPOINT}`,
+        '/environments',
+      );
+      component.$store.commit(`monitoringDashboard/${types.RECEIVE_ENVIRONMENTS_DATA_SUCCESS}`, []);
+      component.$store.commit(
+        `monitoringDashboard/${types.RECEIVE_METRICS_DATA_SUCCESS}`,
+        singleGroupResponse,
+      );
 
-      setTimeout(() => {
-        const dropdownMenuEnvironments = component.$el.querySelectorAll(
-          '.js-environments-dropdown .dropdown-item',
-        );
+      Vue.nextTick()
+        .then(() => {
+          const dropdownMenuEnvironments = component.$el.querySelectorAll(
+            '.js-environments-dropdown .dropdown-item',
+          );
 
-        expect(dropdownMenuEnvironments.length).toEqual(0);
-        done();
-      });
+          expect(dropdownMenuEnvironments.length).toEqual(0);
+          done();
+        })
+        .catch(done.fail);
     });
 
     it('renders the environments dropdown with a single active element', done => {
@@ -175,19 +207,32 @@ describe('Dashboard', () => {
           showPanels: false,
           showTimeWindowDropdown: false,
         },
+        store,
       });
 
-      component.store.storeEnvironmentsData(environmentData);
+      component.$store.commit(
+        `monitoringDashboard/${types.SET_ENVIRONMENTS_ENDPOINT}`,
+        '/environments',
+      );
+      component.$store.commit(
+        `monitoringDashboard/${types.RECEIVE_ENVIRONMENTS_DATA_SUCCESS}`,
+        environmentData,
+      );
+      component.$store.commit(
+        `monitoringDashboard/${types.RECEIVE_METRICS_DATA_SUCCESS}`,
+        singleGroupResponse,
+      );
 
-      setTimeout(() => {
-        const dropdownItems = component.$el.querySelectorAll(
-          '.js-environments-dropdown .dropdown-item[active="true"]',
-        );
+      Vue.nextTick()
+        .then(() => {
+          const dropdownItems = component.$el.querySelectorAll(
+            '.js-environments-dropdown .dropdown-item[active="true"]',
+          );
 
-        expect(dropdownItems.length).toEqual(1);
-        expect(dropdownItems[0].textContent.trim()).toEqual(component.currentEnvironmentName);
-        done();
-      });
+          expect(dropdownItems.length).toEqual(1);
+          done();
+        })
+        .catch(done.fail);
     });
 
     it('hides the dropdown', done => {
@@ -200,6 +245,7 @@ describe('Dashboard', () => {
           environmentsEndpoint: '',
           showTimeWindowDropdown: false,
         },
+        store,
       });
 
       Vue.nextTick(() => {
@@ -219,6 +265,7 @@ describe('Dashboard', () => {
           showPanels: false,
           showTimeWindowDropdown: false,
         },
+        store,
       });
 
       setTimeout(() => {
@@ -239,6 +286,7 @@ describe('Dashboard', () => {
           showPanels: false,
           showTimeWindowDropdown: true,
         },
+        store,
       });
       const numberOfTimeWindows = Object.keys(timeWindows).length;
 
@@ -261,6 +309,7 @@ describe('Dashboard', () => {
       const component = new DashboardComponent({
         el: document.querySelector('.prometheus-graphs'),
         propsData: { ...propsData, hasMetrics: true, showTimeWindowDropdown: true },
+        store,
       });
 
       setTimeout(() => {
@@ -281,6 +330,7 @@ describe('Dashboard', () => {
       const component = new DashboardComponent({
         el: document.querySelector('.prometheus-graphs'),
         propsData: { ...propsData, hasMetrics: true, showTimeWindowDropdown: true },
+        store,
       });
 
       Vue.nextTick(() => {
@@ -310,6 +360,7 @@ describe('Dashboard', () => {
           showPanels: false,
           showTimeWindowDropdown: false,
         },
+        store,
       });
 
       expect(component.elWidth).toEqual(0);
@@ -352,6 +403,7 @@ describe('Dashboard', () => {
             showTimeWindowDropdown: false,
             externalDashboardPath: '/mockPath',
           },
+          store,
         });
       });
 
@@ -377,6 +429,7 @@ describe('Dashboard', () => {
             showTimeWindowDropdown: false,
             externalDashboardPath: '',
           },
+          store,
         });
       });
 

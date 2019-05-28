@@ -59,7 +59,7 @@
         .append-right-default
           = s_("CiVariable|Masked")
         %button{ type: 'button',
-          class: "js-project-feature-toggle project-feature-toggle #{'is-checked' if is_masked}",
+          class: "js-project-feature-toggle project-feature-toggle qa-variable-masked #{'is-checked' if is_masked}",
           "aria-label": s_("CiVariable|Toggle masked") }
           %input{ type: "hidden",
             class: 'js-ci-variable-input-masked js-project-feature-toggle-input',

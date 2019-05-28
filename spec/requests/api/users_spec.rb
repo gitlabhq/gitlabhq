@@ -276,6 +276,18 @@ describe API::Users do
         expect(response).to have_gitlab_http_status(400)
       end
     end
+
+    context "when authenticated and ldap is enabled" do
+      it "returns non-ldap user" do
+        create :omniauth_user, provider: "ldapserver1"
+
+        get api("/users", user), params: { skip_ldap: "true" }
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.first["username"]).to eq user.username
+      end
+    end
   end
 
   describe "GET /users/:id" do

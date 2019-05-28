@@ -151,6 +151,26 @@ describe Suggestions::CreateService do
           subject.execute
         end
       end
+
+      context 'when a patch removes an empty line' do
+        let(:markdown) do
+          <<-MARKDOWN.strip_heredoc
+              ```suggestion
+              ```
+          MARKDOWN
+        end
+        let(:position) { build_position(new_line: 13) }
+
+        it 'creates an appliable suggestion' do
+          subject.execute
+
+          suggestion = note.suggestions.last
+
+          expect(suggestion).to be_appliable
+          expect(suggestion.from_content).to eq("\n")
+          expect(suggestion.to_content).to eq("")
+        end
+      end
     end
   end
 end

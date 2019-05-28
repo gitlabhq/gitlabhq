@@ -88,7 +88,7 @@ website from your project's **Settings > Pages**.
 
 You can also take some **optional** further steps:
 
-- _Remove the fork relationship._ The fork relashionship is necessary to contribute back to the project you originally forked from. If you don't have any intentions to do so, you can remove it. To do so, navigate to your project's **Settings**, expand **Advanced settings**, and scroll down to **Remove fork relationship**:
+- _Remove the fork relationship._ The fork relationship is necessary to contribute back to the project you originally forked from. If you don't have any intentions to do so, you can remove it. To do so, navigate to your project's **Settings**, expand **Advanced settings**, and scroll down to **Remove fork relationship**:
 
     ![remove fork relationship](img/remove_fork_relationship.png)
 
