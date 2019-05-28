@@ -70,5 +70,47 @@ describe Banzai::Filter::WikiLinkFilter do
         expect(filtered_link.attribute('href').value).to eq(invalid_link)
       end
     end
+
+    context "when the slug is deemed unsafe or invalid" do
+      let(:link) { "alert(1);" }
+
+      invalid_slugs = [
+        "javascript:",
+        "JaVaScRiPt:",
+        "\u0001java\u0003script:",
+        "javascript    :",
+        "javascript:    ",
+        "javascript    :   ",
+        ":javascript:",
+        "javascript&#58;",
+        "javascript&#0058;",
+        "javascript&#x3A;",
+        "javascript&#x003A;",
+        "java\0script:",
+        " &#14;  javascript:"
+        ]
+
+      invalid_slugs.each do |slug|
+        context "with the slug #{slug}" do
+          it "doesn't rewrite a (.) relative link" do
+            filtered_link = filter(
+              "<a href='.#{link}'>Link</a>",
+              project_wiki: wiki,
+              page_slug: slug).children[0]
+
+            expect(filtered_link.attribute('href').value).not_to include(slug)
+          end
+
+          it "doesn't rewrite a (..) relative link" do
+            filtered_link = filter(
+              "<a href='..#{link}'>Link</a>",
+              project_wiki: wiki,
+              page_slug: slug).children[0]
+
+            expect(filtered_link.attribute('href').value).not_to include(slug)
+          end
+        end
+      end
+    end
   end
 end
