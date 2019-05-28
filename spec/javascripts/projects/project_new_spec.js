@@ -10,7 +10,17 @@ describe('New Project', () => {
     setFixtures(`
       <div class='toggle-import-form'>
         <div class='import-url-data'>
-          <input id="project_import_url" />
+          <div class="form-group">
+            <input id="project_import_url" />
+          </div>
+          <div id="import-url-auth-method">
+            <div class="form-group">
+              <input id="project-import-url-user" />
+            </div>
+            <div class="form-group">
+              <input id="project_import_url_password" />
+            </div>
+          </div>
           <input id="project_name" />
           <input id="project_path" />
         </div>
@@ -119,7 +129,7 @@ describe('New Project', () => {
       });
 
       it('changes project path for HTTPS URL in $projectImportUrl', () => {
-        $projectImportUrl.val('https://username:password@gitlab.company.com/group/project.git');
+        $projectImportUrl.val('https://gitlab.company.com/group/project.git');
 
         projectNew.deriveProjectPathFromUrl($projectImportUrl);
 
