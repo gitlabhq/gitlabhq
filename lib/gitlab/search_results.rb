@@ -103,9 +103,11 @@ module Gitlab
 
     # rubocop: disable CodeReuse/ActiveRecord
     def milestones
-      milestones = Milestone.where(project_id: project_ids_relation)
-      milestones = milestones.search(query)
-      milestones.reorder('milestones.updated_at DESC')
+      milestones = Milestone.search(query)
+
+      milestones = filter_milestones_by_project(milestones)
+
+      milestones.reorder('updated_at DESC')
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
@@ -122,6 +124,26 @@ module Gitlab
     def default_scope
       'projects'
     end
+
+    # Filter milestones by authorized projects.
+    # For performance reasons project_id is being plucked
+    # to be used on a smaller query.
+    #
+    # rubocop: disable CodeReuse/ActiveRecord
+    def filter_milestones_by_project(milestones)
+      project_ids =
+        milestones.where(project_id: project_ids_relation)
+          .select(:project_id).distinct
+          .pluck(:project_id)
+
+      return Milestone.none if project_ids.nil?
+
+      authorized_project_ids_relation =
+        Project.where(id: project_ids).ids_with_milestone_available_for(current_user)
+
+      milestones.where(project_id: authorized_project_ids_relation)
+    end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     # rubocop: disable CodeReuse/ActiveRecord
     def project_ids_relation
