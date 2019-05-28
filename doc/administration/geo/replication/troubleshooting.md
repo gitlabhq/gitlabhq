@@ -310,7 +310,7 @@ same host on different ports. That is, 5432 and 5431 respectively.
 ### Checking configuration
 
 NOTE: **Note:**
-The following steps are for Omnibus installs only. Using Geo with source-based installs [is deprecated](index.md#using-gitlab-installed-from-source-deprecated).
+The following steps are for Omnibus installs only. Using Geo with source-based installs was **deprecated** in GitLab 11.5.
 
 To check the configuration:
 
