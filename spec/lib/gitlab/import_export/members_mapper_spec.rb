@@ -12,7 +12,6 @@ describe Gitlab::ImportExport::MembersMapper do
          "access_level" => 40,
          "source_id" => 14,
          "source_type" => "Project",
-         "user_id" => 19,
          "notification_level" => 3,
          "created_at" => "2016-03-11T10:21:44.822Z",
          "updated_at" => "2016-03-11T10:21:44.822Z",
@@ -25,7 +24,8 @@ describe Gitlab::ImportExport::MembersMapper do
              "id" => exported_user_id,
              "email" => user2.email,
              "username" => 'test'
-           }
+           },
+          "user_id" => 19
        },
        {
          "id" => 3,
@@ -78,6 +78,15 @@ describe Gitlab::ImportExport::MembersMapper do
 
       expect(members_mapper.map[exported_user_id]).to eq(user2.id)
       expect(ProjectMember.find_by_user_id(user2.id).access_level).to eq(ProjectMember::MAINTAINER)
+    end
+
+    it 'removes old user_id from member_hash to avoid conflict with user key' do
+      expect(ProjectMember).to receive(:create)
+        .twice
+        .with(hash_excluding('user_id'))
+        .and_call_original
+
+      members_mapper.map
     end
 
     context 'user is not an admin' do
