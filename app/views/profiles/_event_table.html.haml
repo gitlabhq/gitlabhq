@@ -1,14 +1,12 @@
 %h5.prepend-top-0
-  History of authentications
+  = _('History of authentications')
 
 %ul.content-list
   - events.each do |event|
     %li
       %span.description
         = audit_icon(event.details[:with], class: "append-right-5")
-        Signed in with
-        = event.details[:with]
-        authentication
+        = _('Signed in with %{authentication} authentication') % { authentication: event.details[:with]}
       %span.float-right= time_ago_with_tooltip(event.created_at)
 
 = paginate events, theme: "gitlab"
