@@ -15,6 +15,8 @@ module API
         authenticate_non_get!
       end
 
+      helpers Helpers::UsersHelpers
+
       helpers do
         # rubocop: disable CodeReuse/ActiveRecord
         def find_user_by_id(params)
@@ -52,10 +54,7 @@ module API
           optional :private_profile, type: Boolean, desc: 'Flag indicating the user has a private profile'
           all_or_none_of :extern_uid, :provider
 
-          if Gitlab.ee?
-            optional :shared_runners_minutes_limit, type: Integer, desc: 'Pipeline minutes quota for this user'
-            optional :extra_shared_runners_minutes_limit, type: Integer, desc: '(admin-only) Extra pipeline minutes quota for this user'
-          end
+          use :optional_params_ee
         end
 
         params :sort_params do
@@ -85,10 +84,7 @@ module API
         use :sort_params
         use :pagination
         use :with_custom_attributes
-
-        if Gitlab.ee?
-          optional :skip_ldap, type: Boolean, default: false, desc: 'Skip LDAP users'
-        end
+        use :optional_index_params_ee
       end
       # rubocop: disable CodeReuse/ActiveRecord
       get do
