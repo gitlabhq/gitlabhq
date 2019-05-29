@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+require 'fast_spec_helper'
+
+require 'gitlab/danger/teammate'
+
 describe Gitlab::Danger::Teammate do
   subject { described_class.new({ 'projects' => projects }) }
   let(:projects) { { project => capabilities } }
@@ -9,15 +13,15 @@ describe Gitlab::Danger::Teammate do
     let(:capabilities) { ['reviewer backend', 'maintainer frontend', 'trainee_maintainer database'] }
 
     it '#reviewer? supports multiple roles per project' do
-      expect(subject.reviewer?(project, 'backend')).to be_truthy
+      expect(subject.reviewer?(project, :backend)).to be_truthy
     end
 
     it '#traintainer? supports multiple roles per project' do
-      expect(subject.traintainer?(project, 'database')).to be_truthy
+      expect(subject.traintainer?(project, :database)).to be_truthy
     end
 
     it '#maintainer? supports multiple roles per project' do
-      expect(subject.maintainer?(project, 'frontend')).to be_truthy
+      expect(subject.maintainer?(project, :frontend)).to be_truthy
     end
   end
 
@@ -25,15 +29,15 @@ describe Gitlab::Danger::Teammate do
     let(:capabilities) { 'reviewer backend' }
 
     it '#reviewer? supports one role per project' do
-      expect(subject.reviewer?(project, 'backend')).to be_truthy
+      expect(subject.reviewer?(project, :backend)).to be_truthy
     end
 
     it '#traintainer? supports one role per project' do
-      expect(subject.traintainer?(project, 'database')).to be_falsey
+      expect(subject.traintainer?(project, :database)).to be_falsey
     end
 
     it '#maintainer? supports one role per project' do
-      expect(subject.maintainer?(project, 'frontend')).to be_falsey
+      expect(subject.maintainer?(project, :frontend)).to be_falsey
     end
   end
 end
