@@ -3,7 +3,7 @@
 > Introduced in [GitLab Enterprise Edition 7.12](https://about.gitlab.com/2015/06/22/gitlab-7-12-released/#merge-request-approvers-ee-only).
 
 NOTE: **Note:**
-If you are running a self-managed instance, the new interface shown on
+Prior to 12.0, if you are running a self-managed instance, the new interface shown on
 this page will not be available unless the feature flag
 `approval_rules` is enabled, which can be done from the Rails console by
 instance administrators.
