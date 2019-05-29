@@ -47,7 +47,7 @@ export const BoardsMockData = {
         },
       ],
     },
-    '/test/issue-boards/milestones.json': [
+    '/test/issue-boards/-/milestones.json': [
       {
         id: 1,
         title: 'test',
@@ -58,10 +58,10 @@ export const BoardsMockData = {
     '/test/-/boards/1/lists': listObj,
   },
   PUT: {
-    '/test/issue-boards/board/1/lists{/id}': {},
+    '/test/issue-boards/-/board/1/lists{/id}': {},
   },
   DELETE: {
-    '/test/issue-boards/board/1/lists{/id}': {},
+    '/test/issue-boards/-/board/1/lists{/id}': {},
   },
 };
 
@@ -71,7 +71,7 @@ export const boardsMockInterceptor = config => {
 };
 
 export const mockBoardService = (opts = {}) => {
-  const boardsEndpoint = opts.boardsEndpoint || '/test/issue-boards/boards.json';
+  const boardsEndpoint = opts.boardsEndpoint || '/test/issue-boards/-/boards.json';
   const listsEndpoint = opts.listsEndpoint || '/test/-/boards/1/lists';
   const bulkUpdatePath = opts.bulkUpdatePath || '';
   const boardId = opts.boardId || '1';
