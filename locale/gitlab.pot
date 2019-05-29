@@ -1776,6 +1776,9 @@ msgstr ""
 msgid "Change your password"
 msgstr ""
 
+msgid "Change your password or recover your current one"
+msgstr ""
+
 msgid "ChangeTypeActionLabel|Pick into branch"
 msgstr ""
 
@@ -12100,9 +12103,6 @@ msgid "nounSeries|%{item}, and %{lastItem}"
 msgstr ""
 
 msgid "or"
-msgstr ""
-
-msgid "or recover your current one"
 msgstr ""
 
 msgid "out of %d total test"
