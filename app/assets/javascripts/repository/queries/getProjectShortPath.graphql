@@ -1,0 +1,3 @@
+query getProjectShortPath {
+  projectShortPath @client
+}

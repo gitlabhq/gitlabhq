@@ -655,4 +655,8 @@ module ProjectsHelper
       project.builds_enabled? &&
       !project.repository.gitlab_ci_yml
   end
+
+  def vue_file_list_enabled?
+    Gitlab::Graphql.enabled? && Feature.enabled?(:vue_file_list, @project)
+  end
 end

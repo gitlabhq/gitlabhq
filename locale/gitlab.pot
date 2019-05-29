@@ -4389,6 +4389,9 @@ msgstr ""
 msgid "Files"
 msgstr ""
 
+msgid "Files breadcrumb"
+msgstr ""
+
 msgid "Files, directories, and submodules in the path %{path} for commit reference %{ref}"
 msgstr ""
 
