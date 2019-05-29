@@ -25,10 +25,11 @@ describe ProjectCacheWorker do
     end
 
     context 'with an existing project without a repository' do
-      it 'does nothing' do
+      it 'updates statistics but does not refresh the method cashes' do
         allow_any_instance_of(Repository).to receive(:exists?).and_return(false)
 
-        expect(worker).not_to receive(:update_statistics)
+        expect(worker).to receive(:update_statistics)
+        expect_any_instance_of(Repository).not_to receive(:refresh_method_caches)
 
         worker.perform(project.id)
       end

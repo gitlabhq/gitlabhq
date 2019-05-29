@@ -26,11 +26,12 @@ describe StorageHelper do
              namespace: namespace,
              statistics: build(:project_statistics,
                                repository_size:      10.kilobytes,
+                               wiki_size:            10.bytes,
                                lfs_objects_size:     20.gigabytes,
                                build_artifacts_size: 30.megabytes))
     end
 
-    let(:message) { '10 KB repositories, 30 MB build artifacts, 20 GB LFS' }
+    let(:message) { '10 KB repositories, 10 Bytes wikis, 30 MB build artifacts, 20 GB LFS' }
 
     it 'works on ProjectStatistics' do
       expect(helper.storage_counters_details(project.statistics)).to eq(message)
