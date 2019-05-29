@@ -14,7 +14,7 @@ class Projects::ImportsController < Projects::ApplicationController
   end
 
   def create
-    if @project.update(import_url_params)
+    if @project.update(import_params)
       @project.import_state.reset.schedule
     end
 
@@ -65,5 +65,15 @@ class Projects::ImportsController < Projects::ApplicationController
     if @project.repository_exists? && @project.no_import?
       redirect_to project_path(@project)
     end
+  end
+
+  def import_params_attributes
+    []
+  end
+
+  def import_params
+    params.require(:project)
+      .permit(import_params_attributes)
+      .merge(import_url_params)
   end
 end
