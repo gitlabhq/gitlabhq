@@ -83,6 +83,44 @@ describe ProjectStatistics do
         expect(statistics).not_to have_received(:update_wiki_size)
       end
     end
+
+    context 'without repositories' do
+      it 'does not crash' do
+        expect(project.repository.exists?).to be_falsey
+        expect(project.wiki.repository.exists?).to be_falsey
+
+        statistics.refresh!
+
+        expect(statistics).to have_received(:update_commit_count)
+        expect(statistics).to have_received(:update_repository_size)
+        expect(statistics).to have_received(:update_wiki_size)
+        expect(statistics.repository_size).to eq(0)
+        expect(statistics.commit_count).to eq(0)
+        expect(statistics.wiki_size).to eq(0)
+      end
+    end
+
+    context 'with deleted repositories' do
+      let(:project) { create(:project, :repository, :wiki_repo) }
+
+      before do
+        Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+          FileUtils.rm_rf(project.repository.path)
+          FileUtils.rm_rf(project.wiki.repository.path)
+        end
+      end
+
+      it 'does not crash' do
+        statistics.refresh!
+
+        expect(statistics).to have_received(:update_commit_count)
+        expect(statistics).to have_received(:update_repository_size)
+        expect(statistics).to have_received(:update_wiki_size)
+        expect(statistics.repository_size).to eq(0)
+        expect(statistics.commit_count).to eq(0)
+        expect(statistics.wiki_size).to eq(0)
+      end
+    end
   end
 
   describe '#update_commit_count' do
