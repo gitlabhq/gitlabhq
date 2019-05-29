@@ -10,9 +10,10 @@
       = _('After a successful password update, you will be redirected to the login page where you can log in with your new password.')
   .col-lg-8
     %h5.prepend-top-0
-      = _('Change your password')
-      - unless @user.password_automatically_set?
-        = _('or recover your current one')
+      - if @user.password_automatically set
+        = _('Change your password')
+      - else
+        = _('Change your password or recover your current one')
     = form_for @user, url: profile_password_path, method: :put, html: {class: "update-password"} do |f|
       = form_errors(@user)
 
