@@ -822,6 +822,7 @@ $note-form-margin-left: 72px;
 
   .line-resolve-btn {
     margin-right: 5px;
+    color: $gray-darkest;
 
     svg {
       vertical-align: middle;
@@ -836,7 +837,6 @@ $note-form-margin-left: 72px;
   background-color: transparent;
   border: 0;
   outline: 0;
-  color: $gray-darkest;
   transition: color $general-hover-transition-duration $general-hover-transition-curve;
 
   &.is-disabled {
