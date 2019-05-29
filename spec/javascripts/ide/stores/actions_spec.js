@@ -9,12 +9,15 @@ import actions, {
   setErrorMessage,
   deleteEntry,
   renameEntry,
+  getBranchData,
 } from '~/ide/stores/actions';
+import axios from '~/lib/utils/axios_utils';
 import store from '~/ide/stores';
 import * as types from '~/ide/stores/mutation_types';
 import router from '~/ide/ide_router';
 import { resetStore, file } from '../helpers';
 import testAction from '../../helpers/vuex_action_helper';
+import MockAdapter from 'axios-mock-adapter';
 
 describe('Multi-file store actions', () => {
   beforeEach(() => {
@@ -558,6 +561,67 @@ describe('Multi-file store actions', () => {
         ],
         done,
       );
+    });
+  });
+
+  describe('getBranchData', () => {
+    let mock;
+
+    beforeEach(() => {
+      mock = new MockAdapter(axios);
+    });
+
+    afterEach(() => {
+      mock.restore();
+    });
+
+    describe('error', () => {
+      let dispatch;
+      const callParams = [
+        {
+          commit() {},
+          state: store.state,
+        },
+        {
+          projectId: 'abc/def',
+          branchId: 'master-testing',
+        },
+      ];
+
+      beforeEach(() => {
+        dispatch = jasmine.createSpy('dispatchSpy');
+        document.body.innerHTML += '<div class="flash-container"></div>';
+      });
+
+      afterEach(() => {
+        document.querySelector('.flash-container').remove();
+      });
+
+      it('passes the error further unchanged without dispatching any action when response is 404', done => {
+        mock.onGet(/(.*)/).replyOnce(404);
+
+        getBranchData(...callParams)
+          .then(done.fail)
+          .catch(e => {
+            expect(dispatch.calls.count()).toEqual(0);
+            expect(e.response.status).toEqual(404);
+            expect(document.querySelector('.flash-alert')).toBeNull();
+            done();
+          });
+      });
+
+      it('does not pass the error further and flashes an alert if error is not 404', done => {
+        mock.onGet(/(.*)/).replyOnce(418);
+
+        getBranchData(...callParams)
+          .then(done.fail)
+          .catch(e => {
+            expect(dispatch.calls.count()).toEqual(0);
+            expect(e.response).toBeUndefined();
+            expect(document.querySelector('.flash-alert')).not.toBeNull();
+            done();
+          });
+      });
     });
   });
 });

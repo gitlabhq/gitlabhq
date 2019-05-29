@@ -19,6 +19,12 @@ export default {
     });
   },
   [types.SET_BRANCH_WORKING_REFERENCE](state, { projectId, branchId, reference }) {
+    if (!state.projects[projectId].branches[branchId]) {
+      Object.assign(state.projects[projectId].branches, {
+        [branchId]: {},
+      });
+    }
+
     Object.assign(state.projects[projectId].branches[branchId], {
       workingReference: reference,
     });

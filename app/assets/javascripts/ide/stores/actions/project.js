@@ -35,48 +35,6 @@ export const getProjectData = ({ commit, state }, { namespace, projectId, force 
     }
   });
 
-export const getBranchData = (
-  { commit, dispatch, state },
-  { projectId, branchId, force = false } = {},
-) =>
-  new Promise((resolve, reject) => {
-    if (
-      typeof state.projects[`${projectId}`] === 'undefined' ||
-      !state.projects[`${projectId}`].branches[branchId] ||
-      force
-    ) {
-      service
-        .getBranchData(`${projectId}`, branchId)
-        .then(({ data }) => {
-          const { id } = data.commit;
-          commit(types.SET_BRANCH, {
-            projectPath: `${projectId}`,
-            branchName: branchId,
-            branch: data,
-          });
-          commit(types.SET_BRANCH_WORKING_REFERENCE, { projectId, branchId, reference: id });
-          resolve(data);
-        })
-        .catch(e => {
-          if (e.response.status === 404) {
-            dispatch('showBranchNotFoundError', branchId);
-          } else {
-            flash(
-              __('Error loading branch data. Please try again.'),
-              'alert',
-              document,
-              null,
-              false,
-              true,
-            );
-          }
-          reject(new Error(`Branch not loaded - ${projectId}/${branchId}`));
-        });
-    } else {
-      resolve(state.projects[`${projectId}`].branches[branchId]);
-    }
-  });
-
 export const refreshLastCommitData = ({ commit }, { projectId, branchId } = {}) =>
   service
     .getBranchData(projectId, branchId)
@@ -125,40 +83,66 @@ export const showBranchNotFoundError = ({ dispatch }, branchId) => {
   });
 };
 
-export const openBranch = ({ dispatch, state }, { projectId, branchId, basePath }) => {
+export const showEmptyState = ({ commit, state }, { projectId, branchId }) => {
+  const treePath = `${projectId}/${branchId}`;
+  commit(types.CREATE_TREE, { treePath });
+  commit(types.TOGGLE_LOADING, {
+    entry: state.trees[treePath],
+    forceValue: false,
+  });
+};
+
+export const openBranch = ({ dispatch, state, getters }, { projectId, branchId, basePath }) => {
   dispatch('setCurrentBranchId', branchId);
 
-  dispatch('getBranchData', {
-    projectId,
-    branchId,
-  });
-
-  return dispatch('getFiles', {
+  if (getters.emptyRepo) {
+    return dispatch('showEmptyState', { projectId, branchId });
+  }
+  return dispatch('getBranchData', {
     projectId,
     branchId,
   })
-    .then(() => {
-      if (basePath) {
-        const path = basePath.slice(-1) === '/' ? basePath.slice(0, -1) : basePath;
-        const treeEntryKey = Object.keys(state.entries).find(
-          key => key === path && !state.entries[key].pending,
-        );
-        const treeEntry = state.entries[treeEntryKey];
-
-        if (treeEntry) {
-          dispatch('handleTreeEntryAction', treeEntry);
-        } else {
-          dispatch('createTempEntry', {
-            name: path,
-            type: 'blob',
-          });
-        }
-      }
-    })
     .then(() => {
       dispatch('getMergeRequestsForBranch', {
         projectId,
         branchId,
       });
+      dispatch('getFiles', {
+        projectId,
+        branchId,
+      })
+        .then(() => {
+          if (basePath) {
+            const path = basePath.slice(-1) === '/' ? basePath.slice(0, -1) : basePath;
+            const treeEntryKey = Object.keys(state.entries).find(
+              key => key === path && !state.entries[key].pending,
+            );
+            const treeEntry = state.entries[treeEntryKey];
+
+            if (treeEntry) {
+              dispatch('handleTreeEntryAction', treeEntry);
+            } else {
+              dispatch('createTempEntry', {
+                name: path,
+                type: 'blob',
+              });
+            }
+          }
+        })
+        .catch(
+          () =>
+            new Error(
+              sprintf(
+                __('An error occurred whilst getting files for - %{branchId}'),
+                {
+                  branchId: `<strong>${_.escape(projectId)}/${_.escape(branchId)}</strong>`,
+                },
+                false,
+              ),
+            ),
+        );
+    })
+    .catch(() => {
+      dispatch('showBranchNotFoundError', branchId);
     });
 };

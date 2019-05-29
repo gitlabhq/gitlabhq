@@ -36,6 +36,9 @@ export const currentMergeRequest = state => {
 
 export const currentProject = state => state.projects[state.currentProjectId];
 
+export const emptyRepo = state =>
+  state.projects[state.currentProjectId] && state.projects[state.currentProjectId].empty_repo;
+
 export const currentTree = state =>
   state.trees[`${state.currentProjectId}/${state.currentBranchId}`];
 

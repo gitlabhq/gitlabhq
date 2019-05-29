@@ -74,17 +74,13 @@ export const getFiles = ({ state, commit, dispatch }, { projectId, branchId } = 
           resolve();
         })
         .catch(e => {
-          if (e.response.status === 404) {
-            dispatch('showBranchNotFoundError', branchId);
-          } else {
-            dispatch('setErrorMessage', {
-              text: __('An error occurred whilst loading all the files.'),
-              action: payload =>
-                dispatch('getFiles', payload).then(() => dispatch('setErrorMessage', null)),
-              actionText: __('Please try again'),
-              actionPayload: { projectId, branchId },
-            });
-          }
+          dispatch('setErrorMessage', {
+            text: __('An error occurred whilst loading all the files.'),
+            action: payload =>
+              dispatch('getFiles', payload).then(() => dispatch('setErrorMessage', null)),
+            actionText: __('Please try again'),
+            actionPayload: { projectId, branchId },
+          });
           reject(e);
         });
     } else {
