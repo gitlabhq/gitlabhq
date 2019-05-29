@@ -494,6 +494,12 @@ table.code {
     }
   }
 
+  .line_holder:last-of-type {
+    td:first-child {
+      border-bottom-left-radius: $border-radius-default;
+    }
+  }
+
   &.left-side-selected {
     td.line_content.parallel.right-side {
       user-select: none;

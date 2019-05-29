@@ -30,7 +30,8 @@ module EnvironmentsHelper
       "environments-endpoint": project_environments_path(project, format: :json),
       "project-path" => project_path(project),
       "tags-path" => project_tags_path(project),
-      "has-metrics" => "#{environment.has_metrics?}"
+      "has-metrics" => "#{environment.has_metrics?}",
+      "external-dashboard-url" => project.metrics_setting_external_dashboard_url
     }
   end
 end

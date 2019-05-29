@@ -38,9 +38,9 @@ export default class ProjectLabelSubscription {
         let newAction;
 
         if (oldStatus === 'unsubscribed') {
-          [newStatus, newAction] = ['subscribed', 'Unsubscribe'];
+          [newStatus, newAction] = ['subscribed', __('Unsubscribe')];
         } else {
-          [newStatus, newAction] = ['unsubscribed', 'Subscribe'];
+          [newStatus, newAction] = ['unsubscribed', __('Subscribe')];
         }
 
         $btn.removeClass('disabled');

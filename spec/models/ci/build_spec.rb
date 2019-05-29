@@ -2604,30 +2604,6 @@ describe Ci::Build do
       it { is_expected.to include(ci_config_path) }
     end
 
-    context 'when using auto devops' do
-      context 'and is enabled' do
-        before do
-          project.create_auto_devops!(enabled: true, domain: 'example.com')
-        end
-
-        it "includes AUTO_DEVOPS_DOMAIN" do
-          is_expected.to include(
-            { key: 'AUTO_DEVOPS_DOMAIN', value: 'example.com', public: true, masked: false })
-        end
-      end
-
-      context 'and is disabled' do
-        before do
-          project.create_auto_devops!(enabled: false, domain: 'example.com')
-        end
-
-        it "includes AUTO_DEVOPS_DOMAIN" do
-          is_expected.not_to include(
-            { key: 'AUTO_DEVOPS_DOMAIN', value: 'example.com', public: true, masked: false })
-        end
-      end
-    end
-
     context 'when pipeline variable overrides build variable' do
       before do
         build.yaml_variables = [{ key: 'MYVAR', value: 'myvar', public: true }]
@@ -3510,6 +3486,18 @@ describe Ci::Build do
         it 'raises an error' do
           expect { subject }.to raise_error(Gitlab::Ci::Parsers::Test::Junit::JunitParserError)
         end
+      end
+    end
+  end
+
+  describe '#report_artifacts' do
+    subject { build.report_artifacts }
+
+    context 'when the build has reports' do
+      let!(:report) { create(:ci_job_artifact, :codequality, job: build) }
+
+      it 'returns the artifacts with reports' do
+        expect(subject).to contain_exactly(report)
       end
     end
   end

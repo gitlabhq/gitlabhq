@@ -108,6 +108,24 @@ Some basic Ruby runtime metrics are available:
 
 [GC.stat]: https://ruby-doc.org/core-2.3.0/GC.html#method-c-stat
 
+## Puma Metrics **[EXPERIMENTAL]**
+
+When Puma is used instead of Unicorn, following metrics are available:
+
+| Metric                                       | Type    | Since | Description |
+|:-------------------------------------------- |:------- |:----- |:----------- |
+| puma_workers                                 | Gauge   | 12.0 | Total number of workers |
+| puma_running_workers                         | Gauge   | 12.0 | Number of booted workers |
+| puma_stale_workers                           | Gauge   | 12.0 | Number of old workers |
+| puma_phase                                   | Gauge   | 12.0 | Phase number (increased during phased restarts) |
+| puma_running                                 | Gauge   | 12.0 | Number of running threads |
+| puma_queued_connections                      | Gauge   | 12.0 | Number of connections in that worker's "todo" set waiting for a worker thread |
+| puma_active_connections                      | Gauge   | 12.0 | Number of threads processing a request |
+| puma_pool_capacity                           | Gauge   | 12.0 | Number of requests the worker is capable of taking right now |
+| puma_max_threads                             | Gauge   | 12.0 | Maximum number of worker threads |
+| puma_idle_threads                            | Gauge   | 12.0 | Number of spawned threads which are not processing a request |
+
+
 ## Metrics shared directory
 
 GitLab's Prometheus client requires a directory to store metrics data shared between multi-process services.

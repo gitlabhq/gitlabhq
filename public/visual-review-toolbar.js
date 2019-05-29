@@ -374,12 +374,12 @@ function clearNote (inputId) {
   }
 }
 
-function confirmAndClear (discussionId) {
+function confirmAndClear (mergeRequestId) {
   const commentButton = document.getElementById('gitlab-comment-button');
   const note = document.getElementById('gitlab-validation-note');
 
   commentButton.innerText = 'Feedback sent';
-  note.innerText = `Your comment was successfully posted to issue #${discussionId}`;
+  note.innerText = `Your comment was successfully posted to merge request #${mergeRequestId}`;
 
   setTimeout(resetCommentButton, 1000);
 }
@@ -412,7 +412,7 @@ function getProjectDetails () {
   const browser = getBrowserId(userAgent);
 
   const scriptEl = document.getElementById('review-app-toolbar-script')
-  const { projectId, discussionId, mrUrl } = scriptEl.dataset;
+  const { projectId, mergeRequestId, mrUrl } = scriptEl.dataset;
 
   return {
     href,
@@ -422,7 +422,7 @@ function getProjectDetails () {
     innerWidth,
     innerHeight,
     projectId,
-    discussionId,
+    mergeRequestId,
     mrUrl,
   };
 }
@@ -449,7 +449,7 @@ function postComment ({
   innerWidth,
   innerHeight,
   projectId,
-  discussionId,
+  mergeRequestId,
   mrUrl,
 }) {
   // Clear any old errors
@@ -466,18 +466,20 @@ function postComment ({
   }
 
   const detailText = `
-    <details>
-      <summary>Metadata</summary>
-      Posted from ${href} | ${platform} | ${browser} | ${innerWidth} x ${innerHeight}.
-      <br /><br />
-      *User agent: ${userAgent}*
-    </details>
+ \n
+<details>
+  <summary>Metadata</summary>
+  Posted from ${href} | ${platform} | ${browser} | ${innerWidth} x ${innerHeight}.
+  <br /><br />
+  <em>User agent: ${userAgent}</em>
+</details>
   `;
 
   const url = `
-    ${mrUrl}/api/v4/projects/${projectId}/issues/${discussionId}/discussions`;
+    ${mrUrl}/api/v4/projects/${projectId}/merge_requests/${mergeRequestId}/discussions`;
 
-  const body = `${commentText}${detailText}`;
+
+  const body = `${commentText} ${detailText}`;
 
   fetch(url, {
      method: 'POST',
@@ -489,7 +491,7 @@ function postComment ({
   })
   .then((response) => {
     if (response.ok) {
-      confirmAndClear(discussionId);
+      confirmAndClear(mergeRequestId);
       return;
     }
 

@@ -3,7 +3,7 @@ import Jed from 'jed';
 
 import locale from '~/locale';
 import Translate from '~/vue_shared/translate';
-import { trimText } from 'spec/helpers/vue_component_helper';
+import { trimText } from 'spec/helpers/text_helper';
 
 describe('Vue translate filter', () => {
   let el;

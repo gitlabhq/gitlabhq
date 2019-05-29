@@ -325,8 +325,8 @@
   line-height: 1;
   padding: 0;
   min-width: 16px;
-  color: $gray-darkest;
-  fill: $gray-darkest;
+  color: $gray-600;
+  fill: $gray-600;
 
   .fa {
     position: relative;
@@ -375,4 +375,13 @@
       opacity: 1;
     }
   }
+}
+
+/*
+* Mixin that handles the size and right margin of avatars.
+*/
+@mixin avatar-size($size, $margin-right) {
+  width: $size;
+  height: $size;
+  margin-right: $margin-right;
 }

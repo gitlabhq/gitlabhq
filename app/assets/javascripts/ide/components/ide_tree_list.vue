@@ -54,14 +54,17 @@ export default {
         <slot name="header"></slot>
       </header>
       <div class="ide-tree-body h-100">
-        <file-row
-          v-for="file in currentTree.tree"
-          :key="file.key"
-          :file="file"
-          :level="0"
-          :extra-component="$options.FileRowExtra"
-          @toggleTreeOpen="toggleTreeOpen"
-        />
+        <template v-if="currentTree.tree.length">
+          <file-row
+            v-for="file in currentTree.tree"
+            :key="file.key"
+            :file="file"
+            :level="0"
+            :extra-component="$options.FileRowExtra"
+            @toggleTreeOpen="toggleTreeOpen"
+          />
+        </template>
+        <div v-else class="file-row">{{ __('No files') }}</div>
       </div>
     </template>
   </div>

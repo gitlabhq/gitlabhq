@@ -54,6 +54,7 @@ First, navigate to the Security Dashboard found under your group's
 Once you're on the dashboard, at the top you should see a series of filters for:
 
 - Severity
+- Confidence
 - Report type
 - Project
 

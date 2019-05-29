@@ -5,5 +5,17 @@
 .hidden.js-cluster-creating.bs-callout.bs-callout-info{ role: 'alert' }
   = s_('ClusterIntegration|Kubernetes cluster is being created on Google Kubernetes Engine...')
 
+.hidden.row.js-cluster-api-unreachable.bs-callout.bs-callout-warning{ role: 'alert' }
+  .col-11
+    = s_('ClusterIntegration|Your cluster API is unreachable. Please ensure your API URL is correct.')
+  .col-1.p-0
+    %button.js-close-banner.close.cluster-application-banner-close.h-100.m-0= "×"
+
+.hidden.js-cluster-authentication-failure.row.js-cluster-api-unreachable.bs-callout.bs-callout-warning{ role: 'alert' }
+  .col-11
+    = s_('ClusterIntegration|There was a problem authenticating with your cluster. Please ensure your CA Certificate and Token are valid.')
+  .col-1.p-0
+    %button.js-close-banner.close.cluster-application-banner-close.h-100.m-0= "×"
+
 .hidden.js-cluster-success.bs-callout.bs-callout-success{ role: 'alert' }
   = s_("ClusterIntegration|Kubernetes cluster was successfully created on Google Kubernetes Engine. Refresh the page to see Kubernetes cluster's details")

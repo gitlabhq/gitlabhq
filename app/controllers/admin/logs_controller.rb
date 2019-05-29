@@ -15,7 +15,8 @@ class Admin::LogsController < Admin::ApplicationController
       Gitlab::EnvironmentLogger,
       Gitlab::SidekiqLogger,
       Gitlab::RepositoryCheckLogger,
-      Gitlab::ProjectServiceLogger
+      Gitlab::ProjectServiceLogger,
+      Gitlab::Kubernetes::Logger
     ]
   end
 end

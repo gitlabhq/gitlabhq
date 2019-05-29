@@ -1,6 +1,0 @@
----
-title: Fix wrong use of ActiveRecord in PoolRepository
-merge_request: 27464
-author:
-type: fixed
-

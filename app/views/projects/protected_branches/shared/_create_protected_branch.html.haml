@@ -6,8 +6,8 @@
     .card-body
       = form_errors(@protected_branch)
       .form-group.row
-        = f.label :name, class: 'col-md-2 text-right' do
-          Branch:
+        .col-md-2.text-right
+          = f.label :name, 'Branch:'
         .col-md-10
           = render partial: "projects/protected_branches/shared/dropdown", locals: { f: f }
           .form-text.text-muted

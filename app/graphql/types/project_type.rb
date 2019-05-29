@@ -69,6 +69,8 @@ module Types
     field :namespace, Types::NamespaceType, null: false
     field :group, Types::GroupType, null: true
 
+    field :repository, Types::RepositoryType, null: false
+
     field :merge_requests,
           Types::MergeRequestType.connection_type,
           null: true,

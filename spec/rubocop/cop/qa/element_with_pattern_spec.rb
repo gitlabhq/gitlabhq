@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 require 'rubocop'
@@ -23,7 +25,7 @@ describe RuboCop::Cop::QA::ElementWithPattern do
         element :groups_filter, 'search_field_tag :filter'
                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^ Don't use a pattern for element, create a corresponding `qa-groups-filter` instead.
         element :groups_filter_placeholder, /Search by name/
-                                            ^^^^^^^^^^^^^^^^ Don't use a pattern for element, create a corresponding `qa-groups-filter-placeholder` instead.
+                                             ^^^^^^^^^^^^^^ Don't use a pattern for element, create a corresponding `qa-groups-filter-placeholder` instead.
       end
       RUBY
     end
@@ -33,6 +35,13 @@ describe RuboCop::Cop::QA::ElementWithPattern do
       view 'app/views/shared/groups/_search_form.html.haml' do
         element :groups_filter
         element :groups_filter_placeholder
+      end
+      RUBY
+
+      expect_no_offenses(<<-RUBY)
+      view 'app/views/shared/groups/_search_form.html.haml' do
+        element :groups_filter, required: true
+        element :groups_filter_placeholder, required: false
       end
       RUBY
     end

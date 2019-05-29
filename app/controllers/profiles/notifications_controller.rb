@@ -14,9 +14,9 @@ class Profiles::NotificationsController < Profiles::ApplicationController
     result = Users::UpdateService.new(current_user, user_params.merge(user: current_user)).execute
 
     if result[:status] == :success
-      flash[:notice] = "Notification settings saved"
+      flash[:notice] = _("Notification settings saved")
     else
-      flash[:alert] = "Failed to save new settings"
+      flash[:alert] = _("Failed to save new settings")
     end
 
     redirect_back_or_default(default: profile_notifications_path)

@@ -581,6 +581,8 @@ class MergeRequest < ApplicationRecord
   end
 
   def validate_branches
+    return unless target_project && source_project
+
     if target_project == source_project && target_branch == source_branch
       errors.add :branch_conflict, "You can't use same project/branch for source and target"
       return

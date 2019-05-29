@@ -12,24 +12,17 @@ export default function createRouter(base, baseRef) {
     base: joinPaths(gon.relative_url_root || '', base),
     routes: [
       {
-        path: '/',
-        name: 'projectRoot',
-        component: IndexPage,
-      },
-      {
         path: `/tree/${baseRef}(/.*)?`,
         name: 'treePath',
         component: TreePage,
         props: route => ({
-          path: route.params.pathMatch,
+          path: route.params.pathMatch && route.params.pathMatch.replace(/^\//, ''),
         }),
-        beforeEnter(to, from, next) {
-          document
-            .querySelectorAll('.js-hide-on-navigation')
-            .forEach(el => el.classList.add('hidden'));
-
-          next();
-        },
+      },
+      {
+        path: '/',
+        name: 'projectRoot',
+        component: IndexPage,
       },
     ],
   });

@@ -491,6 +491,7 @@ Settings.webpack.dev_server['port']    ||= 3808
 Settings['monitoring'] ||= Settingslogic.new({})
 Settings.monitoring['ip_whitelist'] ||= ['127.0.0.1/8']
 Settings.monitoring['unicorn_sampler_interval'] ||= 10
+Settings.monitoring['puma_sampler_interval'] ||= 5
 Settings.monitoring['ruby_sampler_interval'] ||= 60
 Settings.monitoring['sidekiq_exporter'] ||= Settingslogic.new({})
 Settings.monitoring.sidekiq_exporter['enabled'] ||= false

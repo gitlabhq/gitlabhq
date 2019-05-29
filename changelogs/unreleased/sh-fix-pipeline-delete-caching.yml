@@ -1,5 +1,0 @@
----
-title: Properly expire all pipeline caches when pipeline is deleted
-merge_request: 27334
-author:
-type: fixed

@@ -1,0 +1,5 @@
+---
+title: Prevent icons from shrinking in User popover when contents exceed container
+merge_request: 28696
+author:
+type: fixed

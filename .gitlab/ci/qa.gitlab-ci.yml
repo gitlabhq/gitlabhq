@@ -1,6 +1,6 @@
 package-and-qa:
   image: ruby:2.6-alpine
-  stage: qa
+  stage: review # So even if review-deploy failed we can still run this
   when: manual
   before_script: []
   dependencies: []

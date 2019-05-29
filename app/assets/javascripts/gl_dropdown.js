@@ -335,6 +335,10 @@ GitLabDropdown = (function() {
               _this.fullData = data;
               _this.parseData(_this.fullData);
               _this.focusTextInput();
+
+              // Update dropdown position since remote data may have changed dropdown size
+              _this.dropdown.find('.dropdown-menu-toggle').dropdown('update');
+
               if (
                 _this.options.filterable &&
                 _this.filter &&
@@ -701,6 +705,10 @@ GitLabDropdown = (function() {
       index = false;
     }
     html = document.createElement('li');
+
+    if (rowHidden) {
+      html.style.display = 'none';
+    }
 
     if (data === 'divider' || data === 'separator') {
       html.className = data;

@@ -23,6 +23,21 @@ describe Ci::JobArtifact do
 
   it_behaves_like 'having unique enum values'
 
+  describe '.with_reports' do
+    let!(:artifact) { create(:ci_job_artifact, :archive) }
+
+    subject { described_class.with_reports }
+
+    it { is_expected.to be_empty }
+
+    context 'when there are reports' do
+      let!(:metrics_report) { create(:ci_job_artifact, :junit) }
+      let!(:codequality_report) { create(:ci_job_artifact, :codequality) }
+
+      it { is_expected.to eq([metrics_report, codequality_report]) }
+    end
+  end
+
   describe '.test_reports' do
     subject { described_class.test_reports }
 

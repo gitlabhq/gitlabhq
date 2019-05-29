@@ -2,6 +2,191 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.11.0 (2019-05-22)
+
+### Security (1 change)
+
+- Destroy project remote mirrors instead of disabling. !27087
+
+### Fixed (74 changes, 19 of them are from the community)
+
+- Don't create a temp reference for branch comparisons within project. !24038
+- Fix some label links not appearing on group labels page and label title being a link on project labels page. !24060 (Tanya Pazitny)
+- Fix extra emails for custom notifications. !25607
+- Rewind IID on Ci::Pipelines. !26490
+- Fix duplicate merge request pipelines created by Sidekiq worker retry. !26643
+- Catch and report OpenSSL exceptions while fetching external configuration files in CI::Config. !26750 (Drew Cimino)
+- stop rendering download links for expired artifacts on the project tags page. !26753 (Drew Cimino)
+- Format extra help page text like wiki. !26782 (Bastian Blank)
+- Always show instance configuration link. !26783 (Bastian Blank)
+- Display maximum artifact size from runtime config. !26784 (Bastian Blank)
+- Resolve issue where list labels did not have the correct text color on creation. !26794 (Tucker Chapman)
+- Set release name when adding release notes to an existing tag. !26807
+- Fix the bug that the project statistics is not updated. !26854 (Hiroyuki Sato)
+- Client side changes for ListLastCommitsForTree response update. !26880
+- Fix api group visibility. !26896
+- Require all templates to use default stages. !26954
+- Remove a "reopen merge request button" on a "merged" merge request. !26965 (Hiroyuki Sato)
+- Fix misaligned image diff swipe view. !26969 (ftab)
+- Add badge-pill class on group member count. !27019
+- Remove leading / trailing spaces from heading when generating header ids. !27025 (Willian Balmant)
+- Respect updated_at attribute in notes produced by API calls. !27124 (Ben Gamari)
+- Fix GitHub project import visibility. !27133 (Daniel Wyatt)
+- Fixes actions dropdowns in environments page. !27160
+- Fixes create button background for Environments form. !27161
+- Display scoped labels in Issue Boards. !27164
+- Align UrlValidator to validate_url gem implementation. !27194 (Horatiu Eugen Vlad)
+- Resolve Web IDE template dropdown showing duplicates. !27237
+- Update GitLab Workhorse to v8.6.0. !27260
+- Only show in autocomplete when author active. !27292
+- Remove deadline for Git fsck. !27299
+- Show prioritized labels to guests. !27307
+- Properly expire all pipeline caches when pipeline is deleted. !27334
+- Replaced icon for external URL with doc-text icon. !27365
+- Add auto direction for issue title. !27378 (Ahmad Haghighi)
+- fix wiki search result links in titles. !27400 (khm)
+- Fix system notes timestamp when creating issue in the past. !27406
+- Fix approvals sometimes being reset after a merge request is rebased. !27446
+- Fix empty block in MR widget when user doesn't have permission. !27462
+- Fix wrong use of ActiveRecord in PoolRepository. !27464
+- Show proper preview for uploaded images in Web IDE. !27471
+- Resolve Renaming an image via Web IDE corrupts it. !27486
+- Clean up CarrierWave's import/export files. !27487
+- Fix autocomplete dropdown for usernames starting with period. !27533 (Jan Beckmann)
+- Disable password autocomplete in mirror repository form. !27542
+- Always use internal ID tables in development and production. !27544
+- Only show the "target branch has advanced" message when the merge request is open. !27588
+- Resolve Misalignment on suggested changes diff table. !27612
+- Update Workhorse to v8.7.0. !27630
+- Fix FE API and IDE handling of '/' relative_url_root. !27635
+- Hide ScopedBadge overflow notes. !27651
+- Fix base domain help text update. !27746
+- Upgrade letter_opener_web to support Rails 5.1. !27829
+- Fix webpack assets handling when relative url root is '/'. !27909
+- Fix IDE get file data with '/' as relative root. !27911
+- Allow a member to have an access level equal to parent group. !27913
+- Fix issuables state_id nil when importing projects from GitHub. !28027
+- Fix uploading of LFS tracked file through UI. !28052
+- Render Next badge only for gitlab.com. !28056
+- Fix update head pipeline process of Pipelines for merge requests. !28057
+- Fix visual issues in set status modal. !28147
+- Use a path for the related merge requests endpoint. !28171
+- disable SSH key validation in key details view. !28180 (Roger Meier)
+- Fix MR discussion border missing in chrome sometimes. !28185
+- Fix Error 500 when inviting user already present. !28198
+- Remove non-semantic use of `.row` in member listing controls. !28204
+- Properly handle LFS Batch API response in project import. !28223
+- Fix project visibility level validation. !28305 (Peter Marko)
+- Fix incorrect prefix used in new uploads for personal snippets. !28337
+- Fix Rugged get_tree_entries recursive flag not working. !28494
+- Fixes next badge being always visible.
+- Next badge must visible when canary flag is true.
+- Adds arrow icons to select option in CI/CD settings.
+- Vertically aligns the play button for stages.
+- Allow replying to individual notes from API.
+
+### Changed (19 changes, 3 of them are from the community)
+
+- Sort by due date and popularity in both directions for Issues and Merge requests. !25502 (Nermin Vehabovic)
+- Improve pipelines table spacing, add triggerer column. !26136
+- Allow extra arguments in helm commands when deploying the application in Auto-DevOps.gitlab-ci.yml. !26171 (tortuetorche)
+- Switch to sassc-rails for faster stylesheet compilation. !26224
+- Reorganize project merge request settings. !26834
+- Display a toast message when the Kubernetes runner has successfully upgraded. !27206
+- Allow guests users to access project releases. !27247
+- Add help texts to K8 form fields. !27274
+- Support prometheus for group level clusters. !27280
+- Include link to raw job log in plain-text emails. !27409
+- Only escape Markdown emphasis characters in autocomplete when necessary. !27457
+- Move location of charts/auto-deploy-app -> gitlab-org/charts/auto-deploy-app. !27477
+- Make canceled jobs not retryable. !27503
+- Upgrade to Gitaly v1.36.0. !27831
+- Update deployment event chat notification message. !27972
+- Upgrade to Gitaly v1.42.0. !28135
+- Resolve discussion when apply suggestion. !28160
+- Improve expanding diff to full file performance.
+- Knative version bump 0.3 -> 0.5. (Chris Baumbauer <cab@cabnetworks.net>)
+
+### Performance (5 changes)
+
+- Added list_pages method to avoid loading all wiki pages content. !22801
+- Add gitaly session id & catfile-cache feature flag. !27472
+- Add improvements to global search of issues and merge requests. !27817
+- Disable method replacement in avatar loading. !27866
+- Fix Blob.lazy always loading all previously-requested blobs when a new request is made.
+
+### Added (36 changes, 10 of them are from the community)
+
+- Add time preferences for user. !25381
+- Added write_repository scope for personal access token. !26021 (Horatiu Eugen Vlad)
+- Mark disabled pages domains for removal, but don't remove them yet. !26212
+- Remove pages domains if they weren't verified for 1 week. !26227
+- Expose pipeline variables via API. !26501 (Agustin Henze <tin@redhat.com>)
+- Download a folder from repository. !26532 (kiameisomabes)
+- Remove cleaned up OIDs from database and cache. !26555
+- Disables kubernetes resources creation if a cluster is not managed. !26565
+- Add CI_COMMIT_REF_PROTECTED CI variable. !26716 (Jason van den Hurk)
+- Add new API endpoint to expose a single environment. !26887
+- Allow Sentry configuration to be passed on gitlab.yml. !27091 (Roger Meier)
+- CI variables of type file. !27112
+- Allow linking to a private helm repository by providing credentials, and customisation of repository name. !27123 (Stuart Moore @stjm-cc)
+- Add time tracking information to Issue Boards sidebar. !27166
+- Play all manual jobs in a stage. !27188
+- Instance level kubernetes clusters. !27196
+- Adds if InfluxDB and Prometheus metrics are enabled to usage ping data. !27238
+- Autosave description in epics. !27296
+- Add deployment events to chat notification services. !27338
+- Add packages_size to ProjectStatistics. !27373
+- Added OmniAuth OpenID Connect strategy. !27383 (Horatiu Eugen Vlad)
+- Test using Git 2.21. !27418
+- Use official Gitea logo in importer. !27424 (Matti Ranta (@techknowlogick))
+- Add option to set access_level of runners upon registration. !27490 (Zelin L)
+- Add initial GraphQL query for Groups. !27492
+- Enable Sidekiq Reliable Fetcher for background jobs by default. !27530
+- Add backend support for a External Dashboard URL setting. !27550
+- Implement UI for uninstalling Cluster’s managed apps. !27559
+- Resolve Salesforce.com omniauth support. !27834
+- Leave project/group from access granted email. !27892
+- Allow Sentry client-side DSN to be passed on gitlab.yml. !27967
+- GraphQL: improve evaluation of query complexity based on arguments and query limits. !28017
+- Adds badge for Canary environment and help link.
+- Support negative matches.
+- Show category icons in user popover.
+- Added Omniauth UltraAuth strategy to GitLab. (Kartikey Tanna)
+
+### Other (29 changes, 8 of them are from the community)
+
+- Validate refs used in controllers don't have spaces. !24037
+- Migrate correlation and tracing code to LabKit. !25379
+- Update node.js to 10.15.3 in CI template for Hexo. !25943 (Takuya Noguchi)
+- Improve icons and button order in project overview. !26796
+- Add instructions on how to contribute a Built-In template for project. !26976
+- Extract DiscussionNotes component from NoteableDiscussion. !27066
+- Bump gRPC to 1.19.0 and protobuf to 3.7.1. !27086
+- Extract DiscussionActions component from NoteableDiscussion. !27227
+- Show disabled project repo mirrors in settings. !27326
+- Add backtrace to Gitaly performance bar. !27345
+- Moved EE/CE differences for dropdown_value_collapsed into CE. !27367
+- Remove "You are already signed in" banner. !27377
+- Move ee-specific code from boards/components/issue_card_inner.vue. !27394 (Roman Rodionov)
+- Upgrade to Rails 5.1. !27480 (Jasper Maes)
+- Update GitLab Runner Helm Chart to 0.4.0. !27508
+- Update GitLab Runner Helm Chart to 0.4.1. !27627
+- Refactored notes tests from Karma to Jest. !27648 (Martin Hobert)
+- refactor(issue): Refactored issue tests from Karma to Jest. !27673 (Martin Hobert)
+- Refactored Karma spec files to Jest. !27688 (Martin Hobert)
+- Add CSS fix for <wbr> elements on IE11. !27846
+- Update clair-local-scan to v2.0.8 for container scanning. !27977
+- Use PostgreSQL 10.7 in tests. !28020
+- Document EE License Auto Import During Install. !28106
+- Remove the note in the docs that multi-line suggestions are not yet available. !28119 (hardysim)
+- Update gitlab-shell to v9.1.0. !28184
+- Add EE fixtures to SeedFu list. !28241
+- Replaces CSS with BS4 utility class for pipeline schedules.
+- Creates a vendors folder for external CSS.
+- Add some frozen string to spec/**/*.rb. (gfyoung)
+
+
 ## 11.10.4 (2019-05-01)
 
 ### Fixed (12 changes)

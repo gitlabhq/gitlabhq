@@ -1,5 +1,0 @@
----
-title: Disable method replacement in avatar loading
-merge_request: 27866
-author:
-type: performance

@@ -194,9 +194,9 @@ export default {
                 v-show="noEmoji"
                 class="js-no-emoji-placeholder no-emoji-placeholder position-relative"
               >
-                <icon name="emoji_slightly_smiling_face" css-classes="award-control-icon-neutral" />
-                <icon name="emoji_smiley" css-classes="award-control-icon-positive" />
-                <icon name="emoji_smile" css-classes="award-control-icon-super-positive" />
+                <icon name="slight-smile" css-classes="award-control-icon-neutral" />
+                <icon name="smiley" css-classes="award-control-icon-positive" />
+                <icon name="smile" css-classes="award-control-icon-super-positive" />
               </span>
             </button>
           </span>

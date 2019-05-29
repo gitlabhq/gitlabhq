@@ -9,9 +9,20 @@ const IS_EE = require('./helpers/is_ee_env');
 const ROOT_PATH = path.resolve(__dirname, '..');
 const SPECS_PATH = /^(?:\.[\\\/])?(ee[\\\/])?spec[\\\/]javascripts[\\\/]/;
 
-function fatalError(message) {
+function exitError(message) {
   console.error(chalk.red(`\nError: ${message}\n`));
   process.exit(1);
+}
+
+function exitWarn(message) {
+  console.error(chalk.yellow(`\nWarn: ${message}\n`));
+  process.exit(0);
+}
+
+function exit(message, isError = true) {
+  const fn = isError ? exitError : exitWarn;
+
+  fn(message);
 }
 
 // disable problematic options
@@ -31,7 +42,8 @@ webpackConfig.plugins.push(
   }),
 );
 
-const specFilters = argumentsParser
+const options = argumentsParser
+  .option('--no-fail-on-empty-test-suite')
   .option(
     '-f, --filter-spec [filter]',
     'Filter run spec files by path. Multiple filters are like a logical OR.',
@@ -41,7 +53,9 @@ const specFilters = argumentsParser
     },
     [],
   )
-  .parse(process.argv).filterSpec;
+  .parse(process.argv);
+
+const specFilters = options.filterSpec;
 
 const createContext = (specFiles, regex, suffix) => {
   const newContext = specFiles.reduce((context, file) => {
@@ -73,11 +87,13 @@ if (specFilters.length) {
   filteredSpecFiles = [...new Set(filteredSpecFiles)];
 
   if (filteredSpecFiles.length < 1) {
-    fatalError('Your filter did not match any test files.');
+    const isError = options.failOnEmptyTestSuite;
+
+    exit('Your filter did not match any test files.', isError);
   }
 
   if (!filteredSpecFiles.every(file => SPECS_PATH.test(file))) {
-    fatalError('Test files must be located within /spec/javascripts.');
+    exitError('Test files must be located within /spec/javascripts.');
   }
 
   const CE_FILES = filteredSpecFiles.filter(file => !file.startsWith('ee'));

@@ -1,0 +1,5 @@
+---
+title: Pass user's identity and token from JupyterHub to user's Jupyter environment
+merge_request: 27314
+author: Amit Rathi
+type: added

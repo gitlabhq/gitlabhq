@@ -1,3 +1,4 @@
+# coding: utf-8
 # frozen_string_literal: true
 
 module PageLayoutHelper
@@ -36,7 +37,7 @@ module PageLayoutHelper
     if description.present?
       @page_description = description.squish
     elsif @page_description.present?
-      sanitize(@page_description, tags: []).truncate_words(30)
+      sanitize(@page_description.truncate_words(30), tags: [])
     end
   end
 

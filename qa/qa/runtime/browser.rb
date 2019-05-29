@@ -33,6 +33,7 @@ module QA
 
       def self.visit(address, page = nil, &block)
         new.visit(address, page, &block)
+        page.validate_elements_present!
       end
 
       def self.configure!
@@ -76,6 +77,9 @@ module QA
               # https://developers.google.com/web/updates/2017/04/headless-chrome#cli
               options.add_argument("disable-gpu")
             end
+
+            # Disable /dev/shm use in CI. See https://gitlab.com/gitlab-org/gitlab-ee/issues/4252
+            options.add_argument("disable-dev-shm-usage") if QA::Runtime::Env.running_in_ci?
           end
 
           # Use the same profile on QA runs if CHROME_REUSE_PROFILE is true.
@@ -84,9 +88,6 @@ module QA
             qa_profile_dir = ::File.expand_path('../../tmp/qa-profile', __dir__)
             options.add_argument("user-data-dir=#{qa_profile_dir}")
           end
-
-          # Disable /dev/shm use in CI. See https://gitlab.com/gitlab-org/gitlab-ee/issues/4252
-          options.add_argument("disable-dev-shm-usage") if QA::Runtime::Env.running_in_ci?
 
           selenium_options = {
             browser: QA::Runtime::Env.browser,

@@ -3,7 +3,7 @@ import _ from 'underscore';
 import ProjectSelector from '~/vue_shared/components/project_selector/project_selector.vue';
 import ProjectListItem from '~/vue_shared/components/project_selector/project_list_item.vue';
 import { shallowMount } from '@vue/test-utils';
-import { trimText } from 'spec/helpers/vue_component_helper';
+import { trimText } from 'spec/helpers/text_helper';
 
 describe('ProjectSelector component', () => {
   let wrapper;

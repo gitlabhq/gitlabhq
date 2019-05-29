@@ -5,8 +5,8 @@ require 'spec_helper'
 describe Deployment do
   subject { build(:deployment) }
 
-  it { is_expected.to belong_to(:project) }
-  it { is_expected.to belong_to(:environment) }
+  it { is_expected.to belong_to(:project).required }
+  it { is_expected.to belong_to(:environment).required }
   it { is_expected.to belong_to(:user) }
   it { is_expected.to belong_to(:deployable) }
 

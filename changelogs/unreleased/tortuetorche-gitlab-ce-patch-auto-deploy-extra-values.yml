@@ -1,5 +1,0 @@
----
-title: Allow extra arguments in helm commands when deploying the application in Auto-DevOps.gitlab-ci.yml
-merge_request: 26171
-author: tortuetorche
-type: changed

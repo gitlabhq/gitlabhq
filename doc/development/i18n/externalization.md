@@ -195,6 +195,7 @@ For example use `%{created_at}` in Ruby but `%{createdAt}` in JavaScript.
 
 Sometimes you need to add some context to the text that you want to translate
 (if the word occurs in a sentence and/or the word is ambiguous).
+Namespaces should be PascalCase.
 
 - In Ruby/HAML:
 

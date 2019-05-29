@@ -1,5 +1,0 @@
----
-title: Allow Sentry configuration to be passed on gitlab.yml
-merge_request: 27091
-author: Roger Meier
-type: added

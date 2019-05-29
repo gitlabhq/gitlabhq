@@ -9,16 +9,6 @@ module API
     before { authenticate_non_get! }
 
     helpers do
-      if Gitlab.ee?
-        params :issues_params_ee do
-          optional :weight, types: [Integer, String], integer_none_any: true, desc: 'The weight of the issue'
-        end
-
-        params :issue_params_ee do
-          optional :weight, type: Integer, desc: 'The weight of the issue'
-        end
-      end
-
       params :issues_stats_params do
         optional :labels, type: Array[String], coerce_with: Validations::Types::LabelsList.coerce, desc: 'Comma-separated list of label names'
         optional :milestone, type: String, desc: 'Milestone title'
@@ -47,7 +37,7 @@ module API
         optional :my_reaction_emoji, type: String, desc: 'Return issues reacted by the authenticated user by the given emoji'
         optional :confidential, type: Boolean, desc: 'Filter confidential or public issues'
 
-        use :issues_params_ee if Gitlab.ee?
+        use :optional_issues_params_ee
       end
 
       params :issues_params do
@@ -73,7 +63,7 @@ module API
         optional :confidential, type: Boolean, desc: 'Boolean parameter if the issue should be confidential'
         optional :discussion_locked, type: Boolean, desc: " Boolean parameter indicating if the issue's discussion is locked"
 
-        use :issue_params_ee if Gitlab.ee?
+        use :optional_issue_params_ee
       end
     end
 

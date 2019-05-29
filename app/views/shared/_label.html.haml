@@ -30,7 +30,7 @@
             = sprite_icon('ellipsis_v')
           .dropdown-menu.dropdown-open-left
             %ul
-              - if label.is_a?(ProjectLabel) && label.project.group && can?(current_user, :admin_label, label.project.group)
+              - if label.project_label? && label.project.group && can?(current_user, :admin_label, label.project.group)
                 %li
                   %button.js-promote-project-label-button.btn.btn-transparent.btn-action{ disabled: true, type: 'button',
                     data: { url: promote_project_label_path(label.project, label),

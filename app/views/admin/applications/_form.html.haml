@@ -2,13 +2,15 @@
   = form_errors(application)
 
   = content_tag :div, class: 'form-group row' do
-    = f.label :name, class: 'col-sm-2 col-form-label'
+    .col-sm-2.col-form-label
+      = f.label :name
     .col-sm-10
       = f.text_field :name, class: 'form-control'
       = doorkeeper_errors_for application, :name
 
   = content_tag :div, class: 'form-group row' do
-    = f.label :redirect_uri, class: 'col-sm-2 col-form-label'
+    .col-sm-2.col-form-label
+      = f.label :redirect_uri
     .col-sm-10
       = f.text_area :redirect_uri, class: 'form-control'
       = doorkeeper_errors_for application, :redirect_uri
@@ -21,14 +23,16 @@
           for local tests
 
   = content_tag :div, class: 'form-group row' do
-    = f.label :trusted, class: 'col-sm-2 col-form-label pt-0'
+    .col-sm-2.col-form-label.pt-0
+      = f.label :trusted
     .col-sm-10
       = f.check_box :trusted
       %span.form-text.text-muted
         Trusted applications are automatically authorized on GitLab OAuth flow.
 
   .form-group.row
-    = f.label :scopes, class: 'col-sm-2 col-form-label pt-0'
+    .col-sm-2.col-form-label.pt-0
+      = f.label :scopes
     .col-sm-10
       = render 'shared/tokens/scopes_form', prefix: 'doorkeeper_application', token: application, scopes: @scopes
 

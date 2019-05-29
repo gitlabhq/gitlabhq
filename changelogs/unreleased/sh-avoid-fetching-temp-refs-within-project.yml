@@ -1,5 +1,0 @@
----
-title: Don't create a temp reference for branch comparisons within project
-merge_request: 24038
-author:
-type: fixed

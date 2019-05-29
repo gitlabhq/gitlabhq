@@ -1016,7 +1016,7 @@ X-Gitlab-Event: Pipeline Hook
          "email": "user@gitlab.com"
       }
    },
-   "jobs":[
+   "builds":[
       {
          "id": 380,
          "stage": "deploy",

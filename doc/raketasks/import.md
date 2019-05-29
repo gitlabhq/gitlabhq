@@ -16,7 +16,7 @@
 The new folder needs to have git user ownership and read/write/execute access for git user and its group:
 
 ```
-sudo -u git mkdir /var/opt/gitlab/git-data/repository-import-<date>/new_group
+sudo -u git mkdir -p /var/opt/gitlab/git-data/repository-import-<date>/new_group
 ```
 
 ### Copy your bare repositories inside this newly created folder:

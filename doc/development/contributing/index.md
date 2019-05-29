@@ -87,7 +87,7 @@ Sometimes style guides will be followed but the code will lack structural integr
 
 GitLab will do its best to review community contributions as quickly as possible. Specially appointed developers review community contributions daily. You may take a look at the [team page](https://about.gitlab.com/team/) for the merge request coach who specializes in the type of code you have written and mention them in the merge request.  For example, if you have written some JavaScript in your code then you should mention the frontend merge request coach. If your code has multiple disciplines you may mention multiple merge request coaches.
 
-GitLab receives a lot of community contributions, so if your code has not been reviewed within 4 days of its initial submission feel free to re-mention the appropriate merge request coach.
+GitLab receives a lot of community contributions, so if your code has not been reviewed within two days (excluding weekend and public holidays) of its initial submission feel free to re-mention the appropriate merge request coach.
 
 When submitting code to GitLab, you may feel that your contribution requires the aid of an external library. If your code includes an external library please provide a link to the library, as well as reasons for including it.
 

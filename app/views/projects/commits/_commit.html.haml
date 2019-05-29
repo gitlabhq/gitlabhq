@@ -9,6 +9,9 @@
 - commit_status = commit.present(current_user: current_user).status_for(ref)
 
 - link = commit_path(project, commit, merge_request: merge_request)
+
+- show_project_name = local_assigns.fetch(:show_project_name, false)
+
 %li.commit.flex-row.js-toggle-container{ id: "commit-#{commit.short_id}" }
 
   .avatar-cell.d-none.d-sm-block
@@ -32,6 +35,7 @@
         - commit_timeago = time_ago_with_tooltip(commit.authored_date, placement: 'bottom')
         - commit_text =  _('%{commit_author_link} authored %{commit_timeago}') % { commit_author_link: commit_author_link, commit_timeago: commit_timeago }
         #{ commit_text.html_safe }
+      = render_if_exists 'projects/commits/project_namespace', show_project_name: show_project_name, project: project
 
       - if commit.description?
         %pre.commit-row-description.js-toggle-content.append-bottom-8

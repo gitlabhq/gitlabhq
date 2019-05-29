@@ -173,11 +173,15 @@ Via command line, you can commit multiple times before pushing.
 
 ## Repository size
 
-On GitLab.com, your [repository size limit is 10GB](../../gitlab_com/index.md#repository-size-limit)
-(including LFS). For other instances, the repository size is limited by your
-system administrators.
+A project's repository size is reported on the project's **Details** page. The reported size is
+updated every 15 minutes at most, so may not reflect recent activity.
 
-You can also [reduce a repository size using Git](reducing_the_repo_size_using_git.md).
+The repository size for:
+
+- GitLab.com [is set by GitLab](../../gitlab_com/index.md#repository-size-limit).
+- Self-managed instances is set by your GitLab administrators.
+
+You can [reduce a repository's size using Git](reducing_the_repo_size_using_git.md).
 
 ## Contributors
 

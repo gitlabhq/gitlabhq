@@ -100,6 +100,9 @@ artifacts, you can use an object storage like AWS S3 instead.
 This configuration relies on valid AWS credentials to be configured already.
 Use an object storage option like AWS S3 to store job artifacts.
 
+DANGER: **Danger:**
+If you're enabling S3 in [GitLab HA](high_availability/README.md), you will need to have an [NFS mount set up for CI traces and artifacts](high_availability/nfs.md#a-single-nfs-mount) or enable [live tracing](job_traces.md#new-live-trace-architecture). If these settings are not set, you will risk job traces disappearing or not being saved.
+
 ### Object Storage Settings
 
 For source installations the following settings are nested under `artifacts:` and then `object_store:`. On omnibus installs they are prefixed by `artifacts_object_store_`.

@@ -18,11 +18,11 @@ _This notice should stay as the first item in the CONTRIBUTING.md file._
 ## Contributing Documentation has been moved
 
 As of July 2018, all the documentation for contributing to the GitLab project has been moved to a new location.
-[View the new documentation](doc/development/contributing/index.md) to find the latest information.
+[View the new documentation](https://about.gitlab.com/community/contribute/) to find the latest information.
 
 ## Contribute to GitLab
 
-This [documentation](doc/development/contributing/index.md#contribute-to-gitlab) has been moved.
+[View the new documentation](https://about.gitlab.com/community/contribute/) to find the latest information.
 
 ## Security vulnerability disclosure
 
@@ -42,7 +42,7 @@ This [documentation](doc/development/contributing/index.md#helping-others) has b
 
 ## I want to contribute!
 
-This [documentation](doc/development/contributing/index.md#i-want-to-contribute) has been moved.
+[View the new documentation](https://about.gitlab.com/community/contribute/) to find the latest information.
 
 ## Contribution Flow
 

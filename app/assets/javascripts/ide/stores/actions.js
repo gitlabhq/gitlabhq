@@ -1,12 +1,15 @@
 import $ from 'jquery';
 import Vue from 'vue';
+import { __, sprintf } from '~/locale';
 import { visitUrl } from '~/lib/utils/url_utility';
 import flash from '~/flash';
+import _ from 'underscore';
 import * as types from './mutation_types';
 import { decorateFiles } from '../lib/files';
 import { stageKeys } from '../constants';
+import service from '../services';
 
-export const redirectToUrl = (_, url) => visitUrl(url);
+export const redirectToUrl = (self, url) => visitUrl(url);
 
 export const setInitialData = ({ commit }, data) => commit(types.SET_INITIAL_DATA, data);
 
@@ -238,6 +241,53 @@ export const renameEntry = (
     dispatch('deleteEntry', path);
   }
 };
+
+export const getBranchData = ({ commit, state }, { projectId, branchId, force = false } = {}) =>
+  new Promise((resolve, reject) => {
+    const currentProject = state.projects[projectId];
+    if (!currentProject || !currentProject.branches[branchId] || force) {
+      service
+        .getBranchData(projectId, branchId)
+        .then(({ data }) => {
+          const { id } = data.commit;
+          commit(types.SET_BRANCH, {
+            projectPath: projectId,
+            branchName: branchId,
+            branch: data,
+          });
+          commit(types.SET_BRANCH_WORKING_REFERENCE, { projectId, branchId, reference: id });
+          resolve(data);
+        })
+        .catch(e => {
+          if (e.response.status === 404) {
+            reject(e);
+          } else {
+            flash(
+              __('Error loading branch data. Please try again.'),
+              'alert',
+              document,
+              null,
+              false,
+              true,
+            );
+
+            reject(
+              new Error(
+                sprintf(
+                  __('Branch not loaded - %{branchId}'),
+                  {
+                    branchId: `<strong>${_.escape(projectId)}/${_.escape(branchId)}</strong>`,
+                  },
+                  false,
+                ),
+              ),
+            );
+          }
+        });
+    } else {
+      resolve(currentProject.branches[branchId]);
+    }
+  });
 
 export * from './actions/tree';
 export * from './actions/file';

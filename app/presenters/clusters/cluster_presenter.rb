@@ -22,10 +22,6 @@ module Clusters
       "https://console.cloud.google.com/kubernetes/clusters/details/#{provider.zone}/#{name}" if gcp?
     end
 
-    def can_toggle_cluster?
-      can?(current_user, :update_cluster, cluster) && created?
-    end
-
     def can_read_cluster?
       can?(current_user, :read_cluster, cluster)
     end
