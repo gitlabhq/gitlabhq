@@ -16,15 +16,8 @@ export default function createRouter(base, baseRef) {
         name: 'treePath',
         component: TreePage,
         props: route => ({
-          path: route.params.pathMatch.replace(/^\//, ''),
+          path: route.params.pathMatch && route.params.pathMatch.replace(/^\//, ''),
         }),
-        beforeEnter(to, from, next) {
-          document
-            .querySelectorAll('.js-hide-on-navigation')
-            .forEach(el => el.classList.add('hidden'));
-
-          next();
-        },
       },
       {
         path: '/',
