@@ -332,16 +332,19 @@ describe 'Admin updates settings' do
   end
 
   context 'Network page' do
-    it 'Enable outbound requests' do
+    it 'Changes Outbound requests settings' do
       visit network_admin_application_settings_path
 
       page.within('.as-outbound') do
         check 'Allow requests to the local network from hooks and services'
+        # Enabled by default
+        uncheck 'Enforce DNS rebinding attack protection'
         click_button 'Save changes'
       end
 
       expect(page).to have_content "Application settings saved successfully"
       expect(Gitlab::CurrentSettings.allow_local_requests_from_hooks_and_services).to be true
+      expect(Gitlab::CurrentSettings.dns_rebinding_protection_enabled).to be false
     end
   end
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190506135400) do
+ActiveRecord::Schema.define(version: 20190529142545) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -189,6 +189,7 @@ ActiveRecord::Schema.define(version: 20190506135400) do
     t.string "encrypted_external_auth_client_key_pass_iv"
     t.string "lets_encrypt_notification_email"
     t.boolean "lets_encrypt_terms_of_service_accepted", default: false, null: false
+    t.boolean "dns_rebinding_protection_enabled", default: true, null: false
     t.index ["usage_stats_set_by_user_id"], name: "index_application_settings_on_usage_stats_set_by_user_id", using: :btree
   end
 
