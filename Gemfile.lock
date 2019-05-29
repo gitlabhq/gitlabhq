@@ -82,6 +82,8 @@ GEM
     bcrypt (3.1.12)
     bcrypt_pbkdf (1.0.0)
     benchmark-ips (2.3.0)
+    benchmark-memory (0.1.2)
+      memory_profiler (~> 0.9)
     better_errors (2.5.0)
       coderay (>= 1.0.0)
       erubi (>= 1.0.0)
@@ -1024,6 +1026,7 @@ DEPENDENCIES
   batch-loader (~> 1.4.0)
   bcrypt_pbkdf (~> 1.0)
   benchmark-ips (~> 2.3.0)
+  benchmark-memory (~> 0.1)
   better_errors (~> 2.5.0)
   binding_of_caller (~> 0.8.0)
   bootsnap (~> 1.4)
@@ -1122,7 +1125,7 @@ DEPENDENCIES
   lograge (~> 0.5)
   loofah (~> 2.2)
   mail_room (~> 0.9.1)
-  memory_profiler
+  memory_profiler (~> 0.9)
   method_source (~> 0.8)
   mimemagic (~> 0.3.2)
   mini_magick

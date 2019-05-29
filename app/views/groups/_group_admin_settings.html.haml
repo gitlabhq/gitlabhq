@@ -1,5 +1,6 @@
 .form-group.row
-  = f.label :lfs_enabled, 'Large File Storage', class: 'col-form-label col-sm-2 pt-0'
+  .col-sm-2.col-form-label.pt-0
+    = f.label :lfs_enabled, 'Large File Storage'
   .col-sm-10
     .form-check
       = f.check_box :lfs_enabled, checked: @group.lfs_enabled?, class: 'form-check-input'
@@ -10,12 +11,14 @@
         %br/
         %span.descr This setting can be overridden in each project.
 .form-group.row
-  = f.label s_('ProjectCreationLevel|Allowed to create projects'), class: 'col-form-label col-sm-2'
+  .col-sm-2.col-form-label
+    = f.label s_('ProjectCreationLevel|Allowed to create projects')
   .col-sm-10
     = f.select :project_creation_level, options_for_select(::Gitlab::Access.project_creation_options, @group.project_creation_level), {}, class: 'form-control'
 
 .form-group.row
-  = f.label :require_two_factor_authentication, 'Two-factor authentication', class: 'col-form-label col-sm-2 pt-0'
+  .col-sm-2.col-form-label.pt-0
+    = f.label :require_two_factor_authentication, 'Two-factor authentication'
   .col-sm-10
     .form-check
       = f.check_box :require_two_factor_authentication, class: 'form-check-input'

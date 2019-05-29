@@ -86,7 +86,7 @@ Everyone is encouraged to draft the requirements in the issue, but a product man
 do the following:
 
 - When the issue is assigned a release milestone, review and update the Documentation details.
-- By the kickoff, finalizie the Documentation details.
+- By the kickoff, finalize the Documentation details.
 
 ### Developer and maintainer roles
 
@@ -117,7 +117,7 @@ Follow the process below unless otherwise agreed with the product manager and te
 
 #### Reviews and merging
 
-All reviewers can help ensure accuracy, clarity, completeness, and adherence to the plans in the issue, as well as the [Documentation Guidelines](https://docs.gitlab.com/ee/development/documentation/) and [Style Guide](https://docs.gitlab.com/ee/development/documentation/styleguide.html).
+All reviewers can help ensure accuracy, clarity, completeness, and adherence to the plans in the issue, as well as the [Documentation Guidelines](index.md) and [Style Guide](styleguide.md).
 
 - **Prior to merging**, documentation changes committed by the developer must be reviewed by:
 
@@ -136,7 +136,7 @@ All reviewers can help ensure accuracy, clarity, completeness, and adherence to 
    1. **The maintainer** who is assigned to merge the MR, to verify clarity, completeness, and quality, to the best of their ability.
 
 - Upon merging, if a technical writer review has not been performed and there is not yet a linked issue for a follow-up review, the maintainer should [create an issue using the Doc Review template](https://gitlab.com/gitlab-org/gitlab-ce/issues/new?issuable_template=Doc%20Review), link it from the MR, and
-  mention the original MR author in the new issue. Alternatively, the mainitainer can ask the MR author to create and link this issue before the MR is merged.
+  mention the original MR author in the new issue. Alternatively, the maintainer can ask the MR author to create and link this issue before the MR is merged.
 
 - After merging, documentation changes are reviewed by:
 
@@ -157,14 +157,14 @@ All reviewers can help ensure accuracy, clarity, completeness, and adherence to 
 #### Collaboration
 
 By default, the developer will work on documentation changes independently, but
-the developer, PM, or technicial writer can propose a broader collaboration for
+the developer, PM, or technical writer can propose a broader collaboration for
 any given issue.
 
 Additionally, technical writers are available for questions at any time.
 
 #### Review
 
-- Techncial writers provide non-blocking reviews of all documentation changes,
+- Technical writers provide non-blocking reviews of all documentation changes,
   before or after the change is merged. However, if the docs are ready in the MR while
   there's time before the freeze, the technical writer's review can commence early, on request.
 - The technical writer will confirm that the doc is clear, grammatically correct,
@@ -173,7 +173,7 @@ Additionally, technical writers are available for questions at any time.
   the developer and code reviewer should have already made a good-faith effort to ensure:
   - Clarity.
   - Adherence to the plans and goals in the issue.
-  - Location (make sure the docs are in the correct directorkes and has the correct name).
+  - Location (make sure the docs are in the correct directories and has the correct name).
   - Syntax, typos, and broken links.
   - Improvements to the content.
   - Accordance with the [Documentation Style Guide](styleguide.md), and [Structure and Template](structure.md) doc.

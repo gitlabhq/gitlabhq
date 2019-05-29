@@ -5,12 +5,14 @@ require 'spec_helper'
 describe ::Gitlab::LetsEncrypt::Client do
   include LetsEncryptHelpers
 
+  set(:private_key) { OpenSSL::PKey::RSA.new(4096).to_pem }
   let(:client) { described_class.new }
 
   before do
     stub_application_setting(
       lets_encrypt_notification_email: 'myemail@test.example.com',
-      lets_encrypt_terms_of_service_accepted: true
+      lets_encrypt_terms_of_service_accepted: true,
+      lets_encrypt_private_key: private_key
     )
   end
 

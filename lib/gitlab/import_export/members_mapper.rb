@@ -63,7 +63,7 @@ module Gitlab
           'source_id' => @project.id,
           'importing' => true,
           'access_level' => [member['access_level'], ProjectMember::MAINTAINER].min
-        )
+        ).except('user_id')
       end
 
       def parsed_hash(member)

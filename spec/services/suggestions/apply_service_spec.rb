@@ -5,6 +5,16 @@ require 'spec_helper'
 describe Suggestions::ApplyService do
   include ProjectForksHelper
 
+  def build_position(args = {})
+    default_args = { old_path: "files/ruby/popen.rb",
+                     new_path: "files/ruby/popen.rb",
+                     old_line: nil,
+                     new_line: 9,
+                     diff_refs: merge_request.diff_refs }
+
+    Gitlab::Diff::Position.new(default_args.merge(args))
+  end
+
   shared_examples 'successfully creates commit and updates suggestion' do
     def apply(suggestion)
       result = subject.execute(suggestion)
@@ -43,13 +53,7 @@ describe Suggestions::ApplyService do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user, :commit_email) }
 
-  let(:position) do
-    Gitlab::Diff::Position.new(old_path: "files/ruby/popen.rb",
-                               new_path: "files/ruby/popen.rb",
-                               old_line: nil,
-                               new_line: 9,
-                               diff_refs: merge_request.diff_refs)
-  end
+  let(:position) { build_position }
 
   let(:diff_note) do
     create(:diff_note_on_merge_request, noteable: merge_request, position: position, project: project)
@@ -329,6 +333,56 @@ describe Suggestions::ApplyService do
                                                   lines_above: 2,
                                                   lines_below: 3,
                                                   to_content: "# multi\n# line\n")
+        end
+
+        it_behaves_like 'successfully creates commit and updates suggestion'
+      end
+
+      context 'remove an empty line suggestion' do
+        let(:expected_content) do
+          <<~CONTENT
+            require 'fileutils'
+            require 'open3'
+
+            module Popen
+              extend self
+
+              def popen(cmd, path=nil)
+                unless cmd.is_a?(Array)
+                  raise RuntimeError, "System commands must be given as an array of strings"
+                end
+
+                path ||= Dir.pwd
+                vars = {
+                  "PWD" => path
+                }
+
+                options = {
+                  chdir: path
+                }
+
+                unless File.directory?(path)
+                  FileUtils.mkdir_p(path)
+                end
+
+                @cmd_output = ""
+                @cmd_status = 0
+
+                Open3.popen3(vars, *cmd, options) do |stdin, stdout, stderr, wait_thr|
+                  @cmd_output << stdout.read
+                  @cmd_output << stderr.read
+                  @cmd_status = wait_thr.value.exitstatus
+                end
+
+                return @cmd_output, @cmd_status
+              end
+            end
+          CONTENT
+        end
+
+        let(:position) { build_position(new_line: 13) }
+        let(:suggestion) do
+          create(:suggestion, :content_from_repo, note: diff_note, to_content: "")
         end
 
         it_behaves_like 'successfully creates commit and updates suggestion'

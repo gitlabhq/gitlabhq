@@ -13,5 +13,6 @@ describe 'Admin browses logs' do
     expect(page).to have_link 'test.log'
     expect(page).to have_link 'sidekiq.log'
     expect(page).to have_link 'repocheck.log'
+    expect(page).to have_link 'kubernetes.log'
   end
 end

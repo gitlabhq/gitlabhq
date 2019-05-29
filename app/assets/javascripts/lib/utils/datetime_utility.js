@@ -79,7 +79,12 @@ export const getDayName = date =>
  * @param {date} datetime
  * @returns {String}
  */
-export const formatDate = datetime => dateFormat(datetime, 'mmm d, yyyy h:MMtt Z');
+export const formatDate = datetime => {
+  if (_.isString(datetime) && datetime.match(/\d+-\d+\d+ /)) {
+    throw new Error('Invalid date');
+  }
+  return dateFormat(datetime, 'mmm d, yyyy h:MMtt Z');
+};
 
 /**
  * Timeago uses underscores instead of dashes to separate language from country code.

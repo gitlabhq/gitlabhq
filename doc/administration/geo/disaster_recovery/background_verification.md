@@ -29,12 +29,7 @@ the node more time before scheduling a planned failover.
 Run the following commands in a Rails console on the **primary** node:
 
 ```sh
-# Omnibus GitLab
 gitlab-rails console
-
-# Installation from source
-cd /home/git/gitlab
-sudo -u git -H bin/rails console RAILS_ENV=production
 ```
 
 To check if automatic background verification is enabled:
@@ -102,12 +97,7 @@ disable if you need. Run the following commands in a Rails console on the
 **primary** node:
 
 ```sh
-# Omnibus GitLab
 gitlab-rails console
-
-# Installation from source
-cd /home/git/gitlab
-sudo -u git -H bin/rails console RAILS_ENV=production
 ```
 
 To disable automatic background re-verification:
@@ -131,31 +121,15 @@ to be resynced without the backoff period:
 
 For repositories:
 
-- Omnibus Installation
-
-    ```sh
-    sudo gitlab-rake geo:verification:repository:reset
-    ```
-
-- Source Installation
-
-    ```sh
-    sudo -u git -H bundle exec rake geo:verification:repository:reset RAILS_ENV=production
-    ```
+```sh
+sudo gitlab-rake geo:verification:repository:reset
+```
 
 For wikis:
 
-- Omnibus Installation
-
-    ```sh
-    sudo gitlab-rake geo:verification:wiki:reset
-    ```
-
-- Source Installation
-
-    ```sh
-    sudo -u git -H bundle exec rake geo:verification:wiki:reset RAILS_ENV=production
-    ```
+```sh
+sudo gitlab-rake geo:verification:wiki:reset
+```
 
 ## Reconcile differences with checksum mismatches
 
@@ -169,7 +143,7 @@ If the **primary** and **secondary** nodes have a checksum verification mismatch
 1. On the project admin page get the **Gitaly storage name**, and **Gitaly relative path**:
    ![Project admin page](img/checksum-differences-admin-project-page.png)
 
-1. Navigate to the project's repository directory on both **primary** and **secondary** nodes. For an installation from source, the path is usually `/home/git/repositories`. For Omnibus installs, the path is usually `/var/opt/gitlab/git-data/repositories`. Note that if `git_data_dirs` is customized, check the directory layout on your server to be sure.
+1. Navigate to the project's repository directory on both **primary** and **secondary** nodes (the path is usually `/var/opt/gitlab/git-data/repositories`). Note that if `git_data_dirs` is customized, check the directory layout on your server to be sure.
 
     ```sh
     cd /var/opt/gitlab/git-data/repositories

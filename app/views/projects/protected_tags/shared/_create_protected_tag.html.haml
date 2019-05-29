@@ -6,8 +6,8 @@
     .card-body
       = form_errors(@protected_tag)
       .form-group.row
-        = f.label :name, class: 'col-md-2 text-right' do
-          Tag:
+        .col-md-2.text-right
+          = f.label :name, 'Tag:'
         .col-md-10.protected-tags-dropdown
           = render partial: "projects/protected_tags/shared/dropdown", locals: { f: f }
           .form-text.text-muted

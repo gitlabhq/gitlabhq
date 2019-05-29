@@ -257,6 +257,12 @@ class ApplicationSetting < ApplicationRecord
                  algorithm: 'aes-256-gcm',
                  encode: true
 
+  attr_encrypted :lets_encrypt_private_key,
+                 mode: :per_attribute_iv,
+                 key: Settings.attr_encrypted_db_key_base_truncated,
+                 algorithm: 'aes-256-gcm',
+                 encode: true
+
   before_validation :ensure_uuid!
   before_validation :strip_sentry_values
 

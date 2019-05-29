@@ -134,6 +134,34 @@ staging:
 The `ENVIRONMENT` variable will be passed to every job defined in a downstream
 pipeline. It will be available as an environment variable when GitLab Runner picks a job.
 
+In the following configuration, the `MY_VARIABLE` variable will be passed
+downstream, because jobs inherit variables declared in top-level `variables`:
+
+```yaml
+variables:
+  MY_VARIABLE: my-value
+
+my-pipeline:
+  variables:
+    ENVIRONMENT: something
+  trigger: my/project
+```
+
+You might want to pass some information about the upstream pipeline using, for
+example, predefined variables. In order to do that, you can use interpolation
+to pass any variable. For example:
+
+```yaml
+my-pipeline:
+  variables:
+    UPSTREAM_BRANCH: $CI_COMMIT_REF_NAME
+  trigger: my/project
+```
+
+In this scenario, the `UPSTREAM_BRANCH` variable with a value related to the
+upstream pipeline will be passed to a `downstream` job, and will be available
+within the context of all downstream builds.
+
 ### Limitations
 
 Because bridge jobs are a little different to regular jobs, it is not

@@ -31,7 +31,7 @@ project.
 #### Seeding issues for Insights charts **[ULTIMATE]**
 
 You can seed issues specifically for working with the
-[Insights charts](https://docs.gitlab.com/ee/user/group/insights/index.html) with the
+[Insights charts](../user/group/insights/index.md) with the
 `gitlab:seed:insights:issues` task:
 
 ```shell

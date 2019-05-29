@@ -6,7 +6,8 @@
   = render_if_exists 'admin/namespace_plan', f: f
 
   .form-group.row.group-description-holder
-    = f.label :avatar, _("Group avatar"), class: 'col-form-label col-sm-2'
+    .col-sm-2.col-form-label
+      = f.label :avatar, _("Group avatar")
     .col-sm-10
       = render 'shared/choose_avatar_button', f: f
 
