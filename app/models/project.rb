@@ -309,6 +309,7 @@ class Project < ApplicationRecord
   delegate :group_clusters_enabled?, to: :group, allow_nil: true
   delegate :root_ancestor, to: :namespace, allow_nil: true
   delegate :last_pipeline, to: :commit, allow_nil: true
+  delegate :external_dashboard_url, to: :metrics_setting, allow_nil: true, prefix: true
 
   # Validations
   validates :creator, presence: true, on: :create
