@@ -239,6 +239,7 @@ module API
         end
       end
 
+      expose :empty_repo?, as: :empty_repo
       expose :archived?, as: :archived
       expose :visibility
       expose :owner, using: Entities::UserBasic, unless: ->(project, options) { project.group }

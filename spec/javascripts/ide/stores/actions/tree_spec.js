@@ -93,38 +93,6 @@ describe('Multi-file store tree actions', () => {
     });
 
     describe('error', () => {
-      it('dispatches branch not found actions when response is 404', done => {
-        const dispatch = jasmine.createSpy('dispatchSpy');
-
-        store.state.projects = {
-          'abc/def': {
-            web_url: `${gl.TEST_HOST}/files`,
-          },
-        };
-
-        mock.onGet(/(.*)/).replyOnce(404);
-
-        getFiles(
-          {
-            commit() {},
-            dispatch,
-            state: store.state,
-          },
-          {
-            projectId: 'abc/def',
-            branchId: 'master-testing',
-          },
-        )
-          .then(done.fail)
-          .catch(() => {
-            expect(dispatch.calls.argsFor(0)).toEqual([
-              'showBranchNotFoundError',
-              'master-testing',
-            ]);
-            done();
-          });
-      });
-
       it('dispatches error action', done => {
         const dispatch = jasmine.createSpy('dispatchSpy');
 

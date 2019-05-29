@@ -37,4 +37,39 @@ describe('Multi-file store branch mutations', () => {
       expect(localState.projects.Example.branches.master.commit.title).toBe('Example commit');
     });
   });
+
+  describe('SET_BRANCH_WORKING_REFERENCE', () => {
+    beforeEach(() => {
+      localState.projects = {
+        Foo: {
+          branches: {
+            bar: {},
+          },
+        },
+      };
+    });
+
+    it('sets workingReference for existing branch', () => {
+      mutations.SET_BRANCH_WORKING_REFERENCE(localState, {
+        projectId: 'Foo',
+        branchId: 'bar',
+        reference: 'foo-bar-ref',
+      });
+
+      expect(localState.projects.Foo.branches.bar.workingReference).toBe('foo-bar-ref');
+    });
+
+    it('does not fail on non-existent just yet branch', () => {
+      expect(localState.projects.Foo.branches.unknown).toBeUndefined();
+
+      mutations.SET_BRANCH_WORKING_REFERENCE(localState, {
+        projectId: 'Foo',
+        branchId: 'unknown',
+        reference: 'fun-fun-ref',
+      });
+
+      expect(localState.projects.Foo.branches.unknown).not.toBeUndefined();
+      expect(localState.projects.Foo.branches.unknown.workingReference).toBe('fun-fun-ref');
+    });
+  });
 });

@@ -135,6 +135,17 @@ export const commitChanges = ({ commit, state, getters, dispatch, rootState, roo
         return null;
       }
 
+      if (!data.parent_ids.length) {
+        commit(
+          rootTypes.TOGGLE_EMPTY_STATE,
+          {
+            projectPath: rootState.currentProjectId,
+            value: false,
+          },
+          { root: true },
+        );
+      }
+
       dispatch('setLastCommitMessage', data);
       dispatch('updateCommitMessage', '');
       return dispatch('updateFilesAfterCommit', {
