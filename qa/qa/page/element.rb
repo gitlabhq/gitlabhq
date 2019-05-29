@@ -28,7 +28,7 @@ module QA
       end
 
       def selector_css
-        ".#{selector}"
+        "[data-qa-selector='#{@name}'],.#{selector}"
       end
 
       def expression
@@ -40,7 +40,7 @@ module QA
       end
 
       def matches?(line)
-        !!(line =~ expression)
+        !!(line =~ /["']#{name}['"]|#{expression}/)
       end
     end
   end

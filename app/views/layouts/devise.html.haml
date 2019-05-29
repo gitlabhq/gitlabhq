@@ -1,7 +1,7 @@
 !!! 5
 %html.devise-layout-html{ class: system_message_class }
   = render "layouts/head"
-  %body.ui-indigo.login-page.application.navless.qa-login-page{ data: { page: body_data_page } }
+  %body.ui-indigo.login-page.application.navless{ data: { page: body_data_page, qa_selector: 'login_page' } }
     = header_message
     .page-wrap
       = render "layouts/header/empty"
