@@ -8,13 +8,13 @@ describe 'tokens rake tasks' do
   end
 
   describe 'reset_all_email task' do
-    it 'invokes create_hooks task' do
+    it 'changes the incoming email token' do
       expect { run_rake_task('tokens:reset_all_email') }.to change { user.reload.incoming_email_token }
     end
   end
 
   describe 'reset_all_feed task' do
-    it 'invokes create_hooks task' do
+    it 'changes the feed token for the user' do
       expect { run_rake_task('tokens:reset_all_feed') }.to change { user.reload.feed_token }
     end
   end

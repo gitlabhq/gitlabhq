@@ -34,34 +34,6 @@ module Gitlab
       TagExistsError = Class.new(StandardError)
       ChecksumError = Class.new(StandardError)
 
-      class << self
-        def create_hooks(repo_path, global_hooks_path)
-          local_hooks_path = File.join(repo_path, 'hooks')
-          real_local_hooks_path = :not_found
-
-          begin
-            real_local_hooks_path = File.realpath(local_hooks_path)
-          rescue Errno::ENOENT
-            # real_local_hooks_path == :not_found
-          end
-
-          # Do nothing if hooks already exist
-          unless real_local_hooks_path == File.realpath(global_hooks_path)
-            if File.exist?(local_hooks_path)
-              # Move the existing hooks somewhere safe
-              FileUtils.mv(
-                local_hooks_path,
-                "#{local_hooks_path}.old.#{Time.now.to_i}")
-            end
-
-            # Create the hooks symlink
-            FileUtils.ln_sf(global_hooks_path, local_hooks_path)
-          end
-
-          true
-        end
-      end
-
       # Directory name of repo
       attr_reader :name
 

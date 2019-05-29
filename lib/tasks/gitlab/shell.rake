@@ -51,9 +51,6 @@ namespace :gitlab do
         end
       end
 
-      # (Re)create hooks
-      Rake::Task['gitlab:shell:create_hooks'].invoke
-
       Gitlab::Shell.ensure_secret_token!
     end
 
@@ -77,15 +74,6 @@ namespace :gitlab do
           end
         end
       end
-    end
-
-    desc 'Create or repair repository hooks symlink'
-    task create_hooks: :gitlab_environment do
-      warn_user_is_not_gitlab
-
-      puts 'Creating/Repairing hooks symlinks for all repositories'
-      system(*%W(#{Gitlab.config.gitlab_shell.path}/bin/create-hooks) + repository_storage_paths_args)
-      puts 'done'.color(:green)
     end
   end
 
