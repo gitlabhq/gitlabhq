@@ -343,6 +343,10 @@ module ProjectsHelper
     description.html_safe % { project_name: project.name }
   end
 
+  def metrics_external_dashboard_url
+    @project.metrics_setting_external_dashboard_url
+  end
+
   private
 
   def get_project_nav_tabs(project, current_user)
