@@ -10,7 +10,7 @@
       = _('After a successful password update, you will be redirected to the login page where you can log in with your new password.')
   .col-lg-8
     %h5.prepend-top-0
-      - if @user.password_automatically set
+      - if @user.password_automatically_set
         = _('Change your password')
       - else
         = _('Change your password or recover your current one')
