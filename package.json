@@ -25,7 +25,8 @@
     "stylelint-create-utility-map": "node scripts/frontend/stylelint/stylelint-utility-map.js",
     "test": "node scripts/frontend/test",
     "webpack": "NODE_OPTIONS=\"--max-old-space-size=3584\" webpack --config config/webpack.config.js",
-    "webpack-prod": "NODE_OPTIONS=\"--max-old-space-size=3584\" NODE_ENV=production webpack --config config/webpack.config.js"
+    "webpack-prod": "NODE_OPTIONS=\"--max-old-space-size=3584\" NODE_ENV=production webpack --config config/webpack.config.js",
+    "webpack-vrt": "NODE_OPTIONS=\"--max-old-space-size=3584\" NODE_ENV=production webpack --config config/webpack.config.review_toolbar.js"
   },
   "dependencies": {
     "@babel/core": "^7.4.4",

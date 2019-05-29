@@ -2,259 +2,10 @@
 /////////////////// STYLES ////////////////////
 ///////////////////////////////////////////////
 
+// this style must be applied inline
 const buttonClearStyles = `
   -webkit-appearance: none;
 `;
-
-const buttonBaseStyles = `
-  cursor: pointer;
-  transition: background-color 100ms linear, border-color 100ms linear, color 100ms linear, box-shadow 100ms linear;
-`;
-
-const buttonSuccessActiveStyles = `
-  background-color: #168f48;
-  border-color: #12753a;
-  color: #fff;
-`;
-
-const buttonSuccessHoverStyles = `
-  color: #fff;
-  background-color: #137e3f;
-  border-color: #127339;
-`;
-
-const buttonSuccessStyles = `
-  ${buttonBaseStyles}
-  background-color: #1aaa55;
-  border: 1px solid #168f48;
-  color: #fff;
-`;
-
-const buttonSecondaryStyles = `
-  ${buttonBaseStyles}
-  background: none #fff;
-  margin: 0 .5rem;
-  border: 1px solid #e3e3e3;
-`;
-
-const buttonSecondaryActiveStyles = `
-  color: #2e2e2e;
-  background-color: #e1e1e1;
-  border-color: #dadada;
-`;
-
-const buttonSecondaryHoverStyles = `
-  background-color: #f0f0f0;
-  border-color: #e3e3e3;
-  color: #2e2e2e;
-`;
-
-const buttonWideStyles = `
-  width: 100%;
-`;
-
-const buttonWrapperStyles = `
-  margin-top: 1rem;
-  display: flex;
-  align-items: baseline;
-  justify-content: flex-end;
-`;
-
-const collapseStyles = `
-  ${buttonBaseStyles}
-  width: 2.4rem;
-  height: 2.2rem;
-  margin-left: 1rem;
-  padding: .5rem;
-`;
-
-const collapseClosedStyles = `
-  ${collapseStyles}
-  align-self: center;
-`;
-
-const collapseOpenStyles = `
-  ${collapseStyles}
-`;
-
-const checkboxLabelStyles = `
-  padding: 0 .2rem;
-`;
-
-const checkboxWrapperStyles = `
-  display: flex;
-  align-items: baseline;
-`;
-
-const formStyles = `
-  display: flex;
-  flex-direction: column;
-  width: 100%
-`;
-
-const labelStyles = `
-  font-weight: 600;
-  display: inline-block;
-  width: 100%;
-`;
-
-const linkStyles = `
-  color: #1b69b6;
-  text-decoration: none;
-  background-color: transparent;
-  background-image: none;
-`;
-
-const messageStyles =  `
-  padding: .25rem 0;
-  margin: 0;
-  line-height: 1.2rem;
-`;
-
-const metadataNoteStyles = `
-  font-size: .7rem;
-  line-height: 1rem;
-  color: #666;
-  margin-bottom: 0;
-`;
-
-const inputStyles = `
-  width: 100%;
-  border: 1px solid #dfdfdf;
-  border-radius: 4px;
-  padding: .1rem .2rem;
-  min-height: 2rem;
-  max-width: 17rem;
-`;
-
-const svgInnerStyles = `
-  pointer-events: none;
-`;
-
-const wrapperClosedStyles = `
-  max-width: 3.4rem;
-  max-height: 3.4rem;
-`;
-
-const wrapperOpenStyles = `
-  max-width: 22rem;
-  max-height: 22rem;
-`;
-
-const wrapperStyles = `
-  max-width: 22rem;
-  max-height: 22rem;
-  overflow: scroll;
-  position: fixed;
-  bottom: 1rem;
-  right: 1rem;
-  display: flex;
-  flex-direction: row-reverse;
-  padding: 1rem;
-  background-color: #fff;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell,
-  'Helvetica Neue', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
-  'Noto Color Emoji';
-  font-size: .8rem;
-  font-weight: 400;
-  color: #2e2e2e;
-`;
-
-const gitlabStyles = `
-  #gitlab-collapse > * {
-    ${svgInnerStyles}
-  }
-
-  #gitlab-form-wrapper {
-    ${formStyles}
-  }
-
-  #gitlab-review-container {
-    ${wrapperStyles}
-  }
-
-  .gitlab-open-wrapper {
-    ${wrapperOpenStyles}
-  }
-
-  .gitlab-closed-wrapper {
-    ${wrapperClosedStyles}
-  }
-
-  .gitlab-button-secondary {
-    ${buttonSecondaryStyles}
-  }
-
-  .gitlab-button-secondary:hover {
-    ${buttonSecondaryHoverStyles}
-  }
-
-  .gitlab-button-secondary:active {
-    ${buttonSecondaryActiveStyles}
-  }
-
-  .gitlab-button-success:hover {
-    ${buttonSuccessHoverStyles}
-  }
-
-  .gitlab-button-success:active {
-    ${buttonSuccessActiveStyles}
-  }
-
-  .gitlab-button-success {
-    ${buttonSuccessStyles}
-  }
-
-  .gitlab-button-wide {
-    ${buttonWideStyles}
-  }
-
-  .gitlab-button-wrapper {
-    ${buttonWrapperStyles}
-  }
-
-  .gitlab-collapse-closed {
-    ${collapseClosedStyles}
-  }
-
-  .gitlab-collapse-open {
-    ${collapseOpenStyles}
-  }
-
-  .gitlab-checkbox-label {
-    ${checkboxLabelStyles}
-  }
-
-  .gitlab-checkbox-wrapper {
-    ${checkboxWrapperStyles}
-  }
-
-  .gitlab-label {
-    ${labelStyles}
-  }
-
-  .gitlab-link {
-    ${linkStyles}
-  }
-
-  .gitlab-message {
-    ${messageStyles}
-  }
-
-  .gitlab-metadata-note {
-    ${metadataNoteStyles}
-  }
-
-  .gitlab-input {
-    ${inputStyles}
-  }
-`;
-
-function addStylesheet() {
-  const styleEl = document.createElement('style');
-  styleEl.insertAdjacentHTML('beforeend', gitlabStyles);
-  document.head.appendChild(styleEl);
-}
 
 ///////////////////////////////////////////////
 /////////////////// STATE ////////////////////
@@ -275,25 +26,24 @@ const comment = `
     <p class='gitlab-metadata-note'>Additional metadata will be included: browser, OS, current page, user agent, and viewport dimensions.</p>
   </div>
   <div class='gitlab-button-wrapper''>
-    <button class='gitlab-button-secondary' style='${buttonClearStyles}' type='button' id='gitlab-logout-button'> Logout </button>
-    <button class='gitlab-button-success' style='${buttonClearStyles}' type='button' id='gitlab-comment-button'> Send feedback </button>
+    <button class='gitlab-button gitlab-button-secondary' style='${buttonClearStyles}' type='button' id='gitlab-logout-button'> Logout </button>
+    <button class='gitlab-button gitlab-button-success' style='${buttonClearStyles}' type='button' id='gitlab-comment-button'> Send feedback </button>
   </div>
 `;
 
 const commentIcon = `
   <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><title>icn/comment</title><path d="M4 11.132l1.446-.964A1 1 0 0 1 6 10h5a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v6.132zM6.303 12l-2.748 1.832A1 1 0 0 1 2 13V5a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3v4a3 3 0 0 1-3 3H6.303z" id="gitlab-comment-icon"/></svg>
-`
+`;
 
 const compressIcon = `
   <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><title>icn/compress</title><path d="M5.27 12.182l-1.562 1.561a1 1 0 0 1-1.414 0h-.001a1 1 0 0 1 0-1.415l1.56-1.56L2.44 9.353a.5.5 0 0 1 .353-.854H7.09a.5.5 0 0 1 .5.5v4.294a.5.5 0 0 1-.853.353l-1.467-1.465zm6.911-6.914l1.464 1.464a.5.5 0 0 1-.353.854H8.999a.5.5 0 0 1-.5-.5V2.793a.5.5 0 0 1 .854-.354l1.414 1.415 1.56-1.561a1 1 0 1 1 1.415 1.414l-1.561 1.56z" id="gitlab-compress-icon"/></svg>
 `;
 
 const collapseButton = `
-  <button id='gitlab-collapse' style='${buttonClearStyles}' class='gitlab-collapse-open gitlab-button-secondary'>${compressIcon}</button>
+  <button id='gitlab-collapse' style='${buttonClearStyles}' class='gitlab-button gitlab-button-secondary gitlab-collapse gitlab-collapse-open'>${compressIcon}</button>
 `;
 
-
-const form = (content) => `
+const form = content => `
   <div id='gitlab-form-wrapper'>
     ${content}
   </div>
@@ -310,7 +60,7 @@ const login = `
     <label for="remember_token" class='gitlab-checkbox-label'>Remember me</label>
   </div>
   <div class='gitlab-button-wrapper'>
-    <button class='gitlab-button-wide gitlab-button-success' style='${buttonClearStyles}' type='button' id='gitlab-login'> Submit </button>
+    <button class='gitlab-button-wide gitlab-button gitlab-button-success' style='${buttonClearStyles}' type='button' id='gitlab-login'> Submit </button>
   </div>
 `;
 
@@ -319,25 +69,25 @@ const login = `
 ///////////////////////////////////////////////
 
 // from https://developer.mozilla.org/en-US/docs/Web/API/Window/navigator
-function getBrowserId (sUsrAg) {
-  var aKeys = ["MSIE", "Edge", "Firefox", "Safari", "Chrome", "Opera"],
-      nIdx = aKeys.length - 1;
+function getBrowserId(sUsrAg) {
+  var aKeys = ['MSIE', 'Edge', 'Firefox', 'Safari', 'Chrome', 'Opera'],
+    nIdx = aKeys.length - 1;
 
   for (nIdx; nIdx > -1 && sUsrAg.indexOf(aKeys[nIdx]) === -1; nIdx--);
   return aKeys[nIdx];
 }
 
-function addCommentForm () {
+function addCommentForm() {
   const formWrapper = document.getElementById('gitlab-form-wrapper');
   formWrapper.innerHTML = comment;
 }
 
-function addLoginForm () {
+function addLoginForm() {
   const formWrapper = document.getElementById('gitlab-form-wrapper');
   formWrapper.innerHTML = login;
 }
 
-function authorizeUser () {
+function authorizeUser() {
   // Clear any old errors
   clearNote('gitlab-token');
 
@@ -357,13 +107,12 @@ function authorizeUser () {
   return;
 }
 
-function authSuccess (token) {
+function authSuccess(token) {
   data.token = token;
   addCommentForm();
 }
 
-
-function clearNote (inputId) {
+function clearNote(inputId) {
   const note = document.getElementById('gitlab-validation-note');
   note.innerText = '';
   note.style.color = '';
@@ -374,7 +123,7 @@ function clearNote (inputId) {
   }
 }
 
-function confirmAndClear (mergeRequestId) {
+function confirmAndClear(mergeRequestId) {
   const commentButton = document.getElementById('gitlab-comment-button');
   const note = document.getElementById('gitlab-validation-note');
 
@@ -384,7 +133,7 @@ function confirmAndClear (mergeRequestId) {
   setTimeout(resetCommentButton, 1000);
 }
 
-function getInitialState () {
+function getInitialState() {
   const { localStorage } = window;
 
   try {
@@ -396,22 +145,21 @@ function getInitialState () {
     }
 
     return login;
-
   } catch (err) {
     return login;
   }
 }
 
-function getProjectDetails () {
-  const { innerWidth,
-          innerHeight,
-          location: { href },
-          navigator: {
-            platform, userAgent
-          } } = window;
+function getProjectDetails() {
+  const {
+    innerWidth,
+    innerHeight,
+    location: { href },
+    navigator: { platform, userAgent },
+  } = window;
   const browser = getBrowserId(userAgent);
 
-  const scriptEl = document.getElementById('review-app-toolbar-script')
+  const scriptEl = document.getElementById('review-app-toolbar-script');
   const { projectId, mergeRequestId, mrUrl } = scriptEl.dataset;
 
   return {
@@ -427,7 +175,7 @@ function getProjectDetails () {
   };
 }
 
-function logoutUser () {
+function logoutUser() {
   const { localStorage } = window;
 
   // All the browsers we support have localStorage, so let's silently fail
@@ -441,7 +189,7 @@ function logoutUser () {
   addLoginForm();
 }
 
-function postComment ({
+function postComment({
   href,
   platform,
   browser,
@@ -478,32 +226,34 @@ function postComment ({
   const url = `
     ${mrUrl}/api/v4/projects/${projectId}/merge_requests/${mergeRequestId}/discussions`;
 
-
   const body = `${commentText} ${detailText}`;
 
   fetch(url, {
-     method: 'POST',
-     headers: {
+    method: 'POST',
+    headers: {
       'PRIVATE-TOKEN': data.token,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ body }),
   })
-  .then((response) => {
-    if (response.ok) {
-      confirmAndClear(mergeRequestId);
-      return;
-    }
+    .then(response => {
+      if (response.ok) {
+        confirmAndClear(mergeRequestId);
+        return;
+      }
 
-    throw new Error(`${response.status}: ${response.statusText}`)
-  })
-  .catch((err) => {
-    postError(`The feedback was not sent successfully. Please try again. Error: ${err.message}`, 'gitlab-comment');
-    resetCommentBox();
-  });
+      throw new Error(`${response.status}: ${response.statusText}`);
+    })
+    .catch(err => {
+      postError(
+        `The feedback was not sent successfully. Please try again. Error: ${err.message}`,
+        'gitlab-comment',
+      );
+      resetCommentBox();
+    });
 }
 
-function postError (message, inputId) {
+function postError(message, inputId) {
   const note = document.getElementById('gitlab-validation-note');
   const field = document.getElementById(inputId);
   field.style.borderColor = '#db3b21';
@@ -543,8 +293,7 @@ function setInProgressState() {
   commentBox.style.pointerEvents = 'none';
 }
 
-function storeToken (token) {
-
+function storeToken(token) {
   const { localStorage } = window;
 
   // All the browsers we support have localStorage, so let's silently fail
@@ -556,7 +305,7 @@ function storeToken (token) {
   }
 }
 
-function toggleForm () {
+function toggleForm() {
   const container = document.getElementById('gitlab-review-container');
   const collapseButton = document.getElementById('gitlab-collapse');
   const form = document.getElementById('gitlab-form-wrapper');
@@ -578,7 +327,7 @@ function toggleForm () {
       display: 'none',
       backgroundColor: 'rgba(255, 255, 255, 0)',
     },
-  }
+  };
 
   const nextState = collapseButton.classList.contains('gitlab-collapse-open') ? CLOSED : OPEN;
 
@@ -593,9 +342,9 @@ function toggleForm () {
 ///////////////// INJECTION //////////////////
 ///////////////////////////////////////////////
 
-function noop() {};
+function noop() {}
 
-const eventLookup = ({target: { id }}) => {
+const eventLookup = ({ target: { id } }) => {
   switch (id) {
     case 'gitlab-collapse':
       return toggleForm;
@@ -620,9 +369,9 @@ window.addEventListener('load', () => {
   container.insertAdjacentHTML('beforeend', form(content));
 
   document.body.insertBefore(container, document.body.firstChild);
-  addStylesheet();
 
-  document.getElementById('gitlab-review-container').addEventListener('click', (event) => {
+  document.getElementById('gitlab-review-container').addEventListener('click', event => {
     eventLookup(event)();
   });
+  
 });
