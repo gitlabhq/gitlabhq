@@ -3,6 +3,14 @@
 module API
   module Helpers
     module IssuesHelpers
+      extend Grape::API::Helpers
+
+      params :optional_issue_params_ee do
+      end
+
+      params :optional_issues_params_ee do
+      end
+
       def self.update_params_at_least_one_of
         [
           :assignee_id,
