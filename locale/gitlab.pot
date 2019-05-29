@@ -3775,6 +3775,9 @@ msgstr ""
 msgid "Ends at (UTC)"
 msgstr ""
 
+msgid "Enforce DNS rebinding attack protection"
+msgstr ""
+
 msgid "Enter at least three characters to search"
 msgstr ""
 
@@ -8284,6 +8287,9 @@ msgid "Resolved by %{name}"
 msgstr ""
 
 msgid "Resolved by %{resolvedByName}"
+msgstr ""
+
+msgid "Resolves IP addresses once and uses them to submit requests"
 msgstr ""
 
 msgid "Response metrics (AWS ELB)"

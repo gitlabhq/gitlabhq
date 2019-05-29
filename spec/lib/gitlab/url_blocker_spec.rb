@@ -46,6 +46,41 @@ describe Gitlab::UrlBlocker do
         expect(hostname).to be(nil)
       end
     end
+
+    context 'disabled DNS rebinding protection' do
+      context 'when URI is internal' do
+        let(:import_url) { 'http://localhost' }
+
+        it 'returns URI and no hostname' do
+          uri, hostname = described_class.validate!(import_url, dns_rebind_protection: false)
+
+          expect(uri).to eq(Addressable::URI.parse('http://localhost'))
+          expect(hostname).to be(nil)
+        end
+      end
+
+      context 'when the URL hostname is a domain' do
+        let(:import_url) { 'https://example.org' }
+
+        it 'returns URI and no hostname' do
+          uri, hostname = described_class.validate!(import_url, dns_rebind_protection: false)
+
+          expect(uri).to eq(Addressable::URI.parse('https://example.org'))
+          expect(hostname).to eq(nil)
+        end
+      end
+
+      context 'when the URL hostname is an IP address' do
+        let(:import_url) { 'https://93.184.216.34' }
+
+        it 'returns URI and no hostname' do
+          uri, hostname = described_class.validate!(import_url, dns_rebind_protection: false)
+
+          expect(uri).to eq(Addressable::URI.parse('https://93.184.216.34'))
+          expect(hostname).to be(nil)
+        end
+      end
+    end
   end
 
   describe '#blocked_url?' do
