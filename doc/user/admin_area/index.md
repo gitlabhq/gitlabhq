@@ -114,3 +114,27 @@ To change the sort order, click the sort dropdown and select the desired order. 
 To search for users, enter your criteria in the search field. The user search is case
 insensitive, and applies partial matching to name and username. To search for an email address,
 you must provide the complete email address.
+
+## Administer Jobs
+
+You can administer all jobs in the GitLab instance from the Admin Area's Jobs page.
+
+To access the Jobs page, go to **Admin Area > Overview > Jobs**.
+
+All jobs are listed, in reverse order of their job ID.
+
+Click the **All** tab to list all jobs. Click the **Pending**, **Running**, or **Finished** tab to list only jobs of that status.
+
+For each job, the following details are listed:
+
+| Field    | Description |
+|--------- | ----------- |
+| Status   | Job status, either **passed**, **skipped**, or **failed**.              |
+| Job      | Includes links to the job, branch, and the commit that started the job. |
+| Pipeline | Includes a link to the specific pipeline.                               |
+| Project  | Name of the project, and organization, to which the job belongs.        |
+| Runner   | Name of the CI runner assigned to execute the job.                      |
+| Stage    | Stage that the job is declared in a `.gitlab-ci.yml` file.              |
+| Name     | Name of the job specified in a `.gitlab-ci.yml` file.                   |
+| Timing   | Duration of the job, and how long ago the job completed.                |
+| Coverage | Percentage of tests coverage.                                           |
