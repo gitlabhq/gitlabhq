@@ -18,7 +18,21 @@ module Gitlab
       # enforce_sanitization - Raises error if URL includes any HTML/CSS/JS tags and argument is true.
       #
       # Returns an array with [<uri>, <original-hostname>].
-      def validate!(url, ports: [], protocols: [], allow_localhost: false, allow_local_network: true, ascii_only: false, enforce_user: false, enforce_sanitization: false) # rubocop:disable Metrics/CyclomaticComplexity
+      # rubocop:disable Metrics/CyclomaticComplexity
+      # rubocop:disable Metrics/ParameterLists
+      def validate!(
+        url,
+        ports: [],
+        schemes: [],
+        allow_localhost: false,
+        allow_local_network: true,
+        ascii_only: false,
+        enforce_user: false,
+        enforce_sanitization: false,
+        dns_rebind_protection: true)
+        # rubocop:enable Metrics/CyclomaticComplexity
+        # rubocop:enable Metrics/ParameterLists
+
         return [nil, nil] if url.nil?
 
         # Param url can be a string, URI or Addressable::URI
@@ -45,15 +59,17 @@ module Gitlab
           return [uri, nil]
         end
 
+        protected_uri_with_hostname = enforce_uri_hostname(addrs_info, uri, hostname, dns_rebind_protection)
+
         # Allow url from the GitLab instance itself but only for the configured hostname and ports
-        return enforce_uri_hostname(addrs_info, uri, hostname) if internal?(uri)
+        return protected_uri_with_hostname if internal?(uri)
 
         validate_localhost!(addrs_info) unless allow_localhost
         validate_loopback!(addrs_info) unless allow_localhost
         validate_local_network!(addrs_info) unless allow_local_network
         validate_link_local!(addrs_info) unless allow_local_network
 
-        enforce_uri_hostname(addrs_info, uri, hostname)
+        protected_uri_with_hostname
       end
 
       def blocked_url?(*args)
@@ -74,17 +90,15 @@ module Gitlab
       #
       # The original hostname is used to validate the SSL, given in that scenario
       # we'll be making the request to the IP address, instead of using the hostname.
-      def enforce_uri_hostname(addrs_info, uri, hostname)
+      def enforce_uri_hostname(addrs_info, uri, hostname, dns_rebind_protection)
         address = addrs_info.first
         ip_address = address&.ip_address
 
-        if ip_address && ip_address != hostname
-          uri = uri.dup
-          uri.hostname = ip_address
-          return [uri, hostname]
-        end
+        return [uri, nil] unless dns_rebind_protection && ip_address && ip_address != hostname
 
-        [uri, nil]
+        uri = uri.dup
+        uri.hostname = ip_address
+        [uri, hostname]
       end
 
       def get_port(uri)

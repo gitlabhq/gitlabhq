@@ -3034,6 +3034,9 @@ msgstr ""
 msgid "Ends at (UTC)"
 msgstr ""
 
+msgid "Enforce DNS rebinding attack protection"
+msgstr ""
+
 msgid "Enter in your Bitbucket Server URL and personal access token below"
 msgstr ""
 
@@ -6436,6 +6439,9 @@ msgid "Resolve discussion"
 msgstr ""
 
 msgid "Resolved"
+msgstr ""
+
+msgid "Resolves IP addresses once and uses them to submit requests"
 msgstr ""
 
 msgid "Response metrics (AWS ELB)"

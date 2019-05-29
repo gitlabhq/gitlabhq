@@ -47,6 +47,38 @@ describe Gitlab::HTTPConnectionAdapter do
       end
     end
 
+    context 'when DNS rebinding protection is disabled' do
+      it 'sets up the connection' do
+        stub_application_setting(dns_rebinding_protection_enabled: false)
+
+        uri = URI('https://example.org')
+
+        connection = described_class.new(uri).connection
+
+        expect(connection).to be_a(Net::HTTP)
+        expect(connection.address).to eq('example.org')
+        expect(connection.hostname_override).to eq(nil)
+        expect(connection.addr_port).to eq('example.org')
+        expect(connection.port).to eq(443)
+      end
+    end
+
+    context 'when http(s) environment variable is set' do
+      it 'sets up the connection' do
+        stub_env('https_proxy' => 'https://my.proxy')
+
+        uri = URI('https://example.org')
+
+        connection = described_class.new(uri).connection
+
+        expect(connection).to be_a(Net::HTTP)
+        expect(connection.address).to eq('example.org')
+        expect(connection.hostname_override).to eq(nil)
+        expect(connection.addr_port).to eq('example.org')
+        expect(connection.port).to eq(443)
+      end
+    end
+
     context 'when local requests are allowed' do
       it 'sets up the connection' do
         uri = URI('https://example.org')
