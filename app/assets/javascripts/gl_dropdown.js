@@ -335,6 +335,10 @@ GitLabDropdown = (function() {
               _this.fullData = data;
               _this.parseData(_this.fullData);
               _this.focusTextInput();
+
+              // Update dropdown position since remote data may have changed dropdown size
+              _this.dropdown.find('.dropdown-menu-toggle').dropdown('update');
+
               if (
                 _this.options.filterable &&
                 _this.filter &&
