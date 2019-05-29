@@ -100,7 +100,7 @@ Like [Get file from repository](repository_files.md#get-file-from-repository) yo
 
 ## Create new file in repository
 
-This allows you to create a single file. For creating multiple files with a single request see the [commits API](commits.html#create-a-commit-with-multiple-files-and-actions).
+This allows you to create a single file. For creating multiple files with a single request see the [commits API](commits.md#create-a-commit-with-multiple-files-and-actions).
 
 ```
 POST /projects/:id/repository/files/:file_path
@@ -135,7 +135,7 @@ Parameters:
 
 ## Update existing file in repository
 
-This allows you to update a single file. For updating multiple files with a single request see the [commits API](commits.html#create-a-commit-with-multiple-files-and-actions).
+This allows you to update a single file. For updating multiple files with a single request see the [commits API](commits.md#create-a-commit-with-multiple-files-and-actions).
 
 ```
 PUT /projects/:id/repository/files/:file_path
@@ -181,7 +181,7 @@ Currently gitlab-shell has a boolean return code, preventing GitLab from specify
 
 ## Delete existing file in repository
 
-This allows you to delete a single file. For deleting multiple files with a single request, see the [commits API](commits.html#create-a-commit-with-multiple-files-and-actions).
+This allows you to delete a single file. For deleting multiple files with a single request, see the [commits API](commits.md#create-a-commit-with-multiple-files-and-actions).
 
 ```
 DELETE /projects/:id/repository/files/:file_path
