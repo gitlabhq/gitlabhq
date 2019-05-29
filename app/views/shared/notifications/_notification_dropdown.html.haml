@@ -8,5 +8,5 @@
   %li.divider
   %li
     %a.update-notification{ href: "#", role: "button", class: ("is-active" if notification_setting.custom?), data: { toggle: "modal", target: "#" + notifications_menu_identifier("modal", notification_setting), notification_level: "custom", notification_title: "Custom" } }
-      %strong.dropdown-menu-inner-title Custom
+      %strong.dropdown-menu-inner-title= s_('NotificationSetting|Custom')
       %span.dropdown-menu-inner-content= notification_description("custom")

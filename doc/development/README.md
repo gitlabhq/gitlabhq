@@ -59,6 +59,7 @@ description: 'Learn how to contribute to GitLab.'
 - [DeclarativePolicy framework](policies.md)
 - [How Git object deduplication works in GitLab](git_object_deduplication.md)
 - [Geo development](geo.md)
+- [Routing](routing.md)
 
 ## Performance guides
 

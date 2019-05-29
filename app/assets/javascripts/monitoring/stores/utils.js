@@ -1,12 +1,5 @@
 import _ from 'underscore';
 
-function sortMetrics(metrics) {
-  return _.chain(metrics)
-    .sortBy('title')
-    .sortBy('weight')
-    .value();
-}
-
 function checkQueryEmptyData(query) {
   return {
     ...query,
@@ -59,7 +52,13 @@ function groupQueriesByChartInfo(metrics) {
   return Object.values(metricsByChart);
 }
 
-function normalizeMetrics(metrics) {
+export const sortMetrics = metrics =>
+  _.chain(metrics)
+    .sortBy('title')
+    .sortBy('weight')
+    .value();
+
+export const normalizeMetrics = metrics => {
   const groupedMetrics = groupQueriesByChartInfo(metrics);
 
   return groupedMetrics.map(metric => {
@@ -81,31 +80,4 @@ function normalizeMetrics(metrics) {
       queries: removeTimeSeriesNoData(queries),
     };
   });
-}
-
-export default class MonitoringStore {
-  constructor() {
-    this.groups = [];
-    this.deploymentData = [];
-    this.environmentsData = [];
-  }
-
-  storeMetrics(groups = []) {
-    this.groups = groups.map(group => ({
-      ...group,
-      metrics: normalizeMetrics(sortMetrics(group.metrics)),
-    }));
-  }
-
-  storeDeploymentData(deploymentData = []) {
-    this.deploymentData = deploymentData;
-  }
-
-  storeEnvironmentsData(environmentsData = []) {
-    this.environmentsData = environmentsData.filter(environment => !!environment.last_deployment);
-  }
-
-  getMetricsCount() {
-    return this.groups.reduce((count, group) => count + group.metrics.length, 0);
-  }
-}
+};

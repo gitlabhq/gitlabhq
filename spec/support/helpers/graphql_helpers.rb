@@ -134,6 +134,10 @@ module GraphqlHelpers
     end.join(", ")
   end
 
+  def post_multiplex(queries, current_user: nil, headers: {})
+    post api('/', current_user, version: 'graphql'), params: { _json: queries }, headers: headers
+  end
+
   def post_graphql(query, current_user: nil, variables: nil, headers: {})
     post api('/', current_user, version: 'graphql'), params: { query: query, variables: variables }, headers: headers
   end
@@ -147,7 +151,14 @@ module GraphqlHelpers
   end
 
   def graphql_errors
-    json_response['errors']
+    case json_response
+    when Hash # regular query
+      json_response['errors']
+    when Array # multiplexed queries
+      json_response.map { |response| response['errors'] }
+    else
+      raise "Unkown GraphQL response type #{json_response.class}"
+    end
   end
 
   def graphql_mutation_response(mutation_name)

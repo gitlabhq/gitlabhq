@@ -1,3 +1,7 @@
+---
+type: reference
+---
+
 # GitLab Admin Area **[CORE ONLY]**
 
 The Admin Area provides a web UI for administering some features of GitLab self-managed instances.
@@ -16,7 +20,7 @@ The Admin Area is made up of the following sections:
 
 | Section                    | Description                                                                                                                                              |
 |:---------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Overview                   | View your GitLab [Dashboard](#admin-dashboard), and administer [projects](#administer-projects), users, groups, jobs, runners, and Gitaly servers.       |
+| Overview                   | View your GitLab [Dashboard](#admin-dashboard), and administer [projects](#administer-projects), [users](#administer-users), groups, jobs, runners, and Gitaly servers.       |
 | Monitoring                 | View GitLab system information, and information on background jobs, logs, [health checks](monitoring/health_check.md), request profiles, and audit logs. |
 | Messages                   | Send and manage [broadcast messages](broadcast_messages.md) for your users.                                                                              |
 | System Hooks               | Configure [system hooks](../../system_hooks/system_hooks.md) for many events.                                                                            |
@@ -90,3 +94,23 @@ You can combine the filter options. For example, to list only public projects wi
 
 1. Click the **Public** tab.
 1. Enter `score` in the **Filter by name...** input box.
+
+## Administer Users
+
+You can administer all users in the GitLab instance from the Admin Area's Users page.
+
+To access the Users page, go to **Admin Area > Overview > Users**.
+
+Click the **Active**, **Admins**, **2FA Enabled**, or **2FA Disabled**, **External**, or
+**Without projects** tab to list only users of that criteria.
+
+For each user, their username, email address, are listed, also the date their account was
+created and the date of last activity. To edit a user, click the **Edit** button in that user's
+row. To delete the user, or delete the user and their contributions, click the cog dropdown in
+that user's row, and select the desired option.
+
+To change the sort order, click the sort dropdown and select the desired order. By default the sort dropdown shows **Name**.
+
+To search for users, enter your criteria in the search field. The user search is case
+insensitive, and applies partial matching to name and username. To search for an email address,
+you must provide the complete email address.

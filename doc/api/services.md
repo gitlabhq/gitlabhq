@@ -754,6 +754,7 @@ Parameters:
 | `recipients` | string | yes | Comma-separated list of recipient email addresses |
 | `add_pusher` | boolean | no | Add pusher to recipients list |
 | `notify_only_broken_pipelines` | boolean | no | Notify only broken pipelines |
+| `notify_only_default_branch` | boolean | no | Send notifications only for the default branch ([introduced in GitLab 12.0](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/28271)) |
 
 ### Delete Pipeline-Emails service
 

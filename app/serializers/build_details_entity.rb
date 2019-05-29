@@ -8,15 +8,17 @@ class BuildDetailsEntity < JobEntity
   expose :stuck?, as: :stuck
   expose :user, using: UserEntity
   expose :runner, using: RunnerEntity
+  expose :metadata, using: BuildMetadataEntity
   expose :pipeline, using: PipelineEntity
 
   expose :deployment_status, if: -> (*) { build.starts_environment? } do
     expose :deployment_status, as: :status
-
-    expose :persisted_environment, as: :environment, with: EnvironmentEntity
+    expose :persisted_environment, as: :environment do |build, options|
+      options.merge(deployment_details: false).yield_self do |opts|
+        EnvironmentEntity.represent(build.persisted_environment, opts)
+      end
+    end
   end
-
-  expose :metadata, using: BuildMetadataEntity
 
   expose :artifact, if: -> (*) { can?(current_user, :read_build, build) } do
     expose :download_path, if: -> (*) { build.artifacts? } do |build|

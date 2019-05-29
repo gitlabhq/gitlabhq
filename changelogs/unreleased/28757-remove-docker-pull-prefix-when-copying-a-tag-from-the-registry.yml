@@ -1,0 +1,5 @@
+---
+title: Remove `docker pull` prefix when copying a tag from the registry
+merge_request: 28757
+author: Benedikt Franke
+type: changed

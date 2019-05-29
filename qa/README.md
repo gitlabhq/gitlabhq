@@ -49,10 +49,10 @@ will need to [modify your GDK setup](https://gitlab.com/gitlab-org/gitlab-qa/blo
 
 ### Writing tests
 
-- [Writing tests from scratch tutorial](docs/WRITING_TESTS_FROM_SCRATCH.md)
-    - [Best practices](docs/BEST_PRACTICES.md)
+- [Writing tests from scratch tutorial](docs/writing_tests_from_scratch.md)
+    - [Best practices](docs/best_practices.md)
     - [Using page objects](qa/page/README.md)
-    - [Guidelines](docs/GUIDELINES.md)
+    - [Guidelines](docs/guidelines.md)
 
 ### Running specific tests
 

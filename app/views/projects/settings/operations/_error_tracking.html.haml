@@ -2,10 +2,12 @@
 
 - setting = error_tracking_setting
 
-%section.settings.expanded.no-animate
+%section.settings.no-animate.js-error-tracking-settings
   .settings-header
     %h4
       = _('Error Tracking')
+    %button.btn.js-settings-toggle{ type: 'button' }
+      = _('Expand')
     %p
       = _('To link Sentry to GitLab, enter your Sentry URL and Auth Token.')
       = link_to _('More information'), help_page_path('user/project/operations/error_tracking'), target: '_blank', rel: 'noopener noreferrer'

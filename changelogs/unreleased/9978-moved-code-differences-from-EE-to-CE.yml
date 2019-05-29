@@ -1,0 +1,5 @@
+---
+title: "Moved EE/CE code differences for `app/assets/javascripts/gl_dropdown.js` into CE"
+merge_request: 28711
+author: Michel Engelen
+type: other

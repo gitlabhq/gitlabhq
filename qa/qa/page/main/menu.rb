@@ -10,15 +10,15 @@ module QA
         end
 
         view 'app/views/layouts/header/_default.html.haml' do
-          element :navbar
-          element :user_avatar
+          element :navbar, required: true
+          element :user_avatar, required: true
           element :user_menu, '.dropdown-menu' # rubocop:disable QA/ElementWithPattern
         end
 
         view 'app/views/layouts/nav/_dashboard.html.haml' do
           element :admin_area_link
-          element :projects_dropdown
-          element :groups_dropdown
+          element :projects_dropdown, required: true
+          element :groups_dropdown, required: true
           element :snippets_link
         end
 

@@ -8,7 +8,7 @@ In this tutorial, you will find different examples, and the steps involved, in t
 
 It's important to understand that end-to-end tests of isolated features, such as the ones described in the above note, doesn't mean that everything needs to happen through the GUI.
 
-If you don't exactly understand what we mean by **not everything needs to happen through the GUI,** please make sure you've read the [best practices](./BEST_PRACTICES.md) before moving on.
+If you don't exactly understand what we mean by **not everything needs to happen through the GUI,** please make sure you've read the [best practices](best_practices.md) before moving on.
 
 ## This document covers the following items:
 
@@ -367,7 +367,7 @@ With that in mind, resources can be a project, an epic, an issue, a label, a com
 
 As you saw in the tests' pre-conditions and the optimization sections, we're already creating some of these resources, and we are doing that by calling the `fabricate_via_api!` method.
 
-> We could be using the `fabricate!` method instead, which would use the `fabricate_via_api!` method if it exists, and fallback to GUI fabrication otherwise, but we recommend being explicit to make it clear what the test does. Also, we recommend fabricating resources via API since this makes tests faster and more reliable, unless the test is focusing on the GUI itself, or there's no GUI coverage for that specific part in any other test.
+> We could be using the `fabricate!` method instead, which would use the `fabricate_via_api!` method if it exists, and fallback to GUI fabrication otherwise, but we recommend being explicit to make it clear what the test does. Also, we always recommend fabricating resources via API since this makes tests faster and more reliable.
 
 For our test suite example, the [project resource](https://gitlab.com/gitlab-org/gitlab-ee/blob/d3584e80b4236acdf393d815d604801573af72cc/qa/qa/resource/project.rb#L55) already had a `fabricate_via_api!` method available, while other resources don't have it, so we will have to create them, like for the issue and label resources. Also, we will have to make a small change in the project resource to expose its `id` attribute so that we can refer to it when fabricating the issue.
 

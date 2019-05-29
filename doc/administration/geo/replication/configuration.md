@@ -1,9 +1,4 @@
-# Geo configuration (GitLab Omnibus) **[PREMIUM ONLY]**
-
-NOTE: **Note:**
-This is the documentation for the Omnibus GitLab packages. For installations
-from source, follow the [**Geo nodes configuration for installations
-from source**][configuration-source] guide.
+# Geo configuration **[PREMIUM ONLY]**
 
 ## Configuring a new **secondary** node
 
@@ -303,7 +298,6 @@ See the [updating the Geo nodes document](updating_the_geo_nodes.md).
 
 See the [troubleshooting document](troubleshooting.md).
 
-[configuration-source]: configuration_source.md
 [setup-geo-omnibus]: index.md#using-omnibus-gitlab
 [Hashed Storage]: ../../repository_storage_types.md
 [Disaster Recovery]: ../disaster_recovery/index.md

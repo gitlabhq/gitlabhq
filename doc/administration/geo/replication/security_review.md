@@ -120,9 +120,7 @@ questions from [owasp.org](https://www.owasp.org).
 
 ### What details regarding required OS components and lock‐down needs have been defined?
 
-- The recommended installation method (Omnibus) packages most components itself.
-  A from-source installation method exists. Both are documented at
-  <https://docs.gitlab.com/ee/administration/geo/replication/index.html>
+- The supported installation method (Omnibus) packages most components itself.
 - There are significant dependencies on the system-installed OpenSSH daemon (Geo
   requires users to set up custom authentication methods) and the omnibus or
   system-provided PostgreSQL daemon (it must be configured to listen on TCP,

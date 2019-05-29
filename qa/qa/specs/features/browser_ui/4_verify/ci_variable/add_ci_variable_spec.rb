@@ -16,6 +16,7 @@ module QA
           resource.project = project
           resource.key = 'VARIABLE_KEY'
           resource.value = 'some_CI_variable'
+          resource.masked = false
         end
 
         project.visit!

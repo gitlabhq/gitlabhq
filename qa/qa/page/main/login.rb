@@ -39,19 +39,7 @@ module QA
         end
 
         view 'app/views/layouts/devise.html.haml' do
-          element :login_page
-        end
-
-        def assert_page_loaded
-          unless page_loaded?
-            raise QA::Runtime::Browser::NotRespondingError, "Login page did not load at #{QA::Page::Main::Login.perform(&:current_url)}"
-          end
-        end
-
-        def page_loaded?
-          wait(max: 60) do
-            has_element?(:login_page)
-          end
+          element :login_page, required: true
         end
 
         def sign_in_using_credentials(user = nil)
@@ -159,7 +147,7 @@ module QA
 
           fill_element :login_field, user.username
           fill_element :password_field, user.password
-          click_element :sign_in_button
+          click_element :sign_in_button, Page::Main::Menu
         end
 
         def set_initial_password_if_present

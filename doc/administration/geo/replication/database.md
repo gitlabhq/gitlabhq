@@ -1,9 +1,7 @@
-# Geo database replication (GitLab Omnibus) **[PREMIUM ONLY]**
+# Geo database replication **[PREMIUM ONLY]**
 
 NOTE: **Note:**
-This is the documentation for the Omnibus GitLab packages. For installations
-from source, follow the
-[Geo database replication (source)](database_source.md) guide.
+The following steps are for Omnibus installs only. Using Geo with source-based installs was **deprecated** in GitLab 11.5.
 
 NOTE: **Note:**
 If your GitLab installation uses external (not managed by Omnibus) PostgreSQL
@@ -102,10 +100,15 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
     else.
 
     If you are using an external database not managed by Omnibus GitLab, you need
-    to create the replicator user and define a password to it manually.
-    For information on how to create a replication user, refer to the
-    [appropriate step](database_source.md#step-1-configure-the-primary-server)
-    in [Geo database replication (source)](database_source.md).
+    to create the replicator user and define a password to it manually:
+
+    ```sql
+    --- Create a new user 'replicator'
+    CREATE USER gitlab_replicator;
+
+    --- Set/change a password and grants replication privilege
+    ALTER USER gitlab_replicator WITH REPLICATION ENCRYPTED PASSWORD '<replication_password>';
+    ```
 
 1. Configure PostgreSQL to listen on network interfaces:
 
@@ -340,7 +343,7 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
 
     ##
     ## Secondary address
-    ## - replace '<secondary_node_ip>' with the public or VPC address of your Geo secondary node 
+    ## - replace '<secondary_node_ip>' with the public or VPC address of your Geo secondary node
     ##
     postgresql['listen_address'] = '<secondary_node_ip>'
     postgresql['md5_auth_cidr_addresses'] = ['<secondary_node_ip>/32']
@@ -383,8 +386,7 @@ the database on the **primary** node, replicates the database, and creates the
 needed files for streaming replication.
 
 The directories used are the defaults that are set up in Omnibus. If you have
-changed any defaults or are using a source installation, configure it as you
-see fit replacing the directories and paths.
+changed any defaults, configure it as you see fit replacing the directories and paths.
 
 CAUTION: **Warning:**
 Make sure to run this on the **secondary** server as it removes all PostgreSQL's

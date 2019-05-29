@@ -195,7 +195,7 @@ describe('note_app', () => {
         setTimeout(() => {
           done();
         });
-      });
+      }, 2000);
     });
 
     describe('discussion note', () => {
@@ -230,7 +230,7 @@ describe('note_app', () => {
         setTimeout(() => {
           done();
         });
-      });
+      }, 2000);
     });
   });
 

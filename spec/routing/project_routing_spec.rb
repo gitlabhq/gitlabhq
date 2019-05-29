@@ -138,9 +138,11 @@ describe 'project routing' do
   describe Projects::AutocompleteSourcesController, 'routing' do
     [:members, :issues, :merge_requests, :labels, :milestones, :commands, :snippets].each do |action|
       it "to ##{action}" do
-        expect(get("/gitlab/gitlabhq/autocomplete_sources/#{action}")).to route_to("projects/autocomplete_sources##{action}", namespace_id: 'gitlab', project_id: 'gitlabhq')
+        expect(get("/gitlab/gitlabhq/-/autocomplete_sources/#{action}")).to route_to("projects/autocomplete_sources##{action}", namespace_id: 'gitlab', project_id: 'gitlabhq')
       end
     end
+
+    it_behaves_like 'redirecting a legacy project path', "/gitlab/gitlabhq/autocomplete_sources/labels", "/gitlab/gitlabhq/-/autocomplete_sources/labels"
   end
 
   #  pages_project_wikis GET    /:project_id/wikis/pages(.:format)       projects/wikis#pages
@@ -239,7 +241,10 @@ describe 'project routing' do
     it_behaves_like 'RESTful project resources' do
       let(:actions)    { [:index, :new, :create, :edit, :update] }
       let(:controller) { 'deploy_keys' }
+      let(:controller_path) { '/-/deploy_keys' }
     end
+
+    it_behaves_like 'redirecting a legacy project path', "/gitlab/gitlabhq/deploy_keys", "/gitlab/gitlabhq/-/deploy_keys"
   end
 
   # project_protected_branches GET    /:project_id/protected_branches(.:format)     protected_branches#index
@@ -447,7 +452,10 @@ describe 'project routing' do
     it_behaves_like 'RESTful project resources' do
       let(:actions)    { [:index, :create, :update, :destroy] }
       let(:controller) { 'project_members' }
+      let(:controller_path) { '/-/project_members' }
     end
+
+    it_behaves_like 'redirecting a legacy project path', "/gitlab/gitlabhq/project_members", "/gitlab/gitlabhq/-/project_members"
   end
 
   #     project_milestones    GET    /:project_id/milestones(.:format)          milestones#index

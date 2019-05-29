@@ -8,6 +8,7 @@ module QA
       prepend Support::Page::Logging if Runtime::Env.debug?
       include Capybara::DSL
       include Scenario::Actable
+      extend Validatable
       extend SingleForwardable
 
       ElementNotFound = Class.new(RuntimeError)
@@ -93,8 +94,10 @@ module QA
         find_element(name).set(false)
       end
 
-      def click_element(name)
+      # replace with (..., page = self.class)
+      def click_element(name, page = nil)
         find_element(name).click
+        page.validate_elements_present! if page
       end
 
       def fill_element(name, content)

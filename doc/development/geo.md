@@ -90,7 +90,7 @@ projects that need updating. Those projects can be:
   timestamp that is more recent than the `last_repository_successful_sync_at`
   timestamp in the `Geo::ProjectRegistry` model.
 - Manual: The admin can manually flag a repository to resync in the
-  [Geo admin panel](https://docs.gitlab.com/ee/user/admin_area/geo_nodes.html).
+  [Geo admin panel](../user/admin_area/geo_nodes.md).
 
 When we fail to fetch a repository on the secondary `RETRIES_BEFORE_REDOWNLOAD`
 times, Geo does a so-called _redownload_. It will do a clean clone
@@ -299,7 +299,7 @@ basically hashes all Git refs together and stores that hash in the
 The **secondary** node does the same to calculate the hash of its
 clone, and compares the hash with the value the **primary** node
 calculated. If there is a mismatch, Geo will mark this as a mismatch
-and the administrator can see this in the [Geo admin panel](https://docs.gitlab.com/ee/user/admin_area/geo_nodes.html).
+and the administrator can see this in the [Geo admin panel](../user/admin_area/geo_nodes.md).
 
 ## Glossary
 

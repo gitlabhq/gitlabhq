@@ -62,7 +62,7 @@ Entry level [subscription](https://about.gitlab.com/pricing/) for GitLab EE curr
 
 ### Bitbucket
 
-Atlassian's web hosting service for Git and Mercurial Projects. Read about [migrating](https://docs.gitlab.com/ce/workflow/importing/import_projects_from_bitbucket.html) from BitBucket to a GitLab instance.
+Atlassian's web hosting service for Git and Mercurial Projects. Read about [migrating](../../user/project/import/bitbucket.md) from BitBucket to a GitLab instance.
 
 ### Branch
 
@@ -70,10 +70,10 @@ A branch is a parallel version of a repository. This allows you to work on the r
 
 ### Branded Login
 
-Having your own logo on [your GitLab instance login page](https://docs.gitlab.com/ee/customization/branded_login_page.html) instead of the GitLab logo.
+Having your own logo on [your GitLab instance login page](../../customization/branded_login_page.md) instead of the GitLab logo.
 
 ### Job triggers (Build Triggers)
-These protect your code base against breaks, for instance when a team is working on the same project. Learn about [setting up](https://docs.gitlab.com/ce/ci/triggers/README.html) job triggers.
+These protect your code base against breaks, for instance when a team is working on the same project. Learn about [setting up](../../ci/triggers/README.md) job triggers.
 
 ### CEPH
 
@@ -149,7 +149,7 @@ As in "specify [dependencies](https://gitlab.com/gitlab-org/gitlab-ce/issues/147
 
 ### Deploy Keys
 
-A [SSH key](https://docs.gitlab.com/ce/gitlab-basics/create-your-ssh-keys.html)stored on your server that grants access to a single GitLab repository. This is used by a GitLab runner to clone a project's code so that tests can be run against the checked out code.
+A [SSH key](../../gitlab-basics/create-your-ssh-keys.md)stored on your server that grants access to a single GitLab repository. This is used by a GitLab runner to clone a project's code so that tests can be run against the checked out code.
 
 ### Developer
 
@@ -169,7 +169,7 @@ A folder used for storing multiple files.
 
 ### Docker Container Registry
 
-A [feature](https://docs.gitlab.com/ce/user/project/container_registry.html) of [GitLab projects](https://about.gitlab.com/2016/05/23/gitlab-container-registry/). Containers wrap up a piece of software in a complete filesystem that contains everything it needs to run: code, runtime, system tools, system libraries – anything you can install on a server. This guarantees that it will always run the same, regardless of the environment it is running in.
+A [feature](../../user/project/container_registry.md) of [GitLab projects](https://about.gitlab.com/2016/05/23/gitlab-container-registry/). Containers wrap up a piece of software in a complete filesystem that contains everything it needs to run: code, runtime, system tools, system libraries – anything you can install on a server. This guarantees that it will always run the same, regardless of the environment it is running in.
 
 ### Dynamic Environment (review apps)
 
@@ -191,7 +191,7 @@ First Byte (sometimes referred to as time to first byte or [TTFB](https://en.wik
 
 ### Fork
 
-Your [own copy](https://docs.gitlab.com/ce/workflow/forking_workflow.html) of a repository that allows you to make changes to the repository without affecting the original.
+Your [own copy](../../workflow/forking_workflow.md) of a repository that allows you to make changes to the repository without affecting the original.
 
 ### Funnel, or: TOFU, MOFU, BOFU
 
@@ -221,7 +221,7 @@ A single-tenant solution that provides GitLab CE or EE as a managed service. Git
 
 ### GitHub
 
-A web-based Git repository hosting service with an enterprise offering. Its main features are: issue tracking, pull request with code review, abundancy of integrations and wiki. It offers free public repos, private repos and enterprise services are paid. Read about [importing a project](https://docs.gitlab.com/ce/workflow/importing/import_projects_from_github.html) from GitHub to GitLab.
+A web-based Git repository hosting service with an enterprise offering. Its main features are: issue tracking, pull request with code review, abundancy of integrations and wiki. It offers free public repos, private repos and enterprise services are paid. Read about [importing a project](../../workflow/importing/import_projects_from_github.md) from GitHub to GitLab.
 
 ### GitLab CE
 
@@ -241,7 +241,7 @@ Our free SaaS for public and private repositories.
 
 ### GitLab Geo
 
-Allows you to replicate your GitLab instance to other geographical locations as a read-only fully operational version. It [can be used](https://docs.gitlab.com/ee/administration/geo/replication/index.html) for cloning and fetching projects, in addition to reading any data. This will make working with large repositories over large distances much faster.
+Allows you to replicate your GitLab instance to other geographical locations as a read-only fully operational version. It [can be used](../../administration/geo/replication/index.md) for cloning and fetching projects, in addition to reading any data. This will make working with large repositories over large distances much faster.
 
 ### GitLab High Availability
 
@@ -299,15 +299,15 @@ An [application layer protocol](http://www.irchelp.org/) that facilitates commun
 
 ### Issue Tracker
 
-A [tool](https://docs.gitlab.com/ee/integration/external-issue-tracker.html) used to manage, organize, and maintain a list of issues, making it easier for an organization to manage.
+A [tool](../../integration/external-issue-tracker.md) used to manage, organize, and maintain a list of issues, making it easier for an organization to manage.
 
 ### Jenkins
 
-An Open Source CI tool written using the Java programming language. [Jenkins](https://jenkins.io/) does the same job as GitLab CI, Bamboo, and Travis CI. It is extremely popular. Related [documentation](https://docs.gitlab.com/ee/integration/jenkins.html).
+An Open Source CI tool written using the Java programming language. [Jenkins](https://jenkins.io/) does the same job as GitLab CI, Bamboo, and Travis CI. It is extremely popular. Related [documentation](../../integration/jenkins.md).
 
 ### Jira
 
-Atlassian's [project management software](https://www.atlassian.com/software/jira), i.e. a complex issue tracker. GitLab [can be configured](https://docs.gitlab.com/ee/project_services/jira.html) to interact with JIRA Core either using an on-premise instance or the SaaS solution that Atlassian offers.
+Atlassian's [project management software](https://www.atlassian.com/software/jira), i.e. a complex issue tracker. GitLab [can be configured](../../project_services/jira.md) to interact with JIRA Core either using an on-premise instance or the SaaS solution that Atlassian offers.
 
 ### JUnit
 
@@ -323,7 +323,7 @@ An open source container cluster manager originally designed by Google. It's bas
 
 ### Labels
 
-An [identifier](https://docs.gitlab.com/ce/user/project/labels.html) to describe a group of one or more specific file revisions.
+An [identifier](../../user/project/labels.md) to describe a group of one or more specific file revisions.
 
 ### Lightweight Directory Access Protocol (LDAP)
 
@@ -331,7 +331,7 @@ An [identifier](https://docs.gitlab.com/ce/user/project/labels.html) to describe
 
 ### LDAP User Authentication
 
-GitLab [integrates](https://docs.gitlab.com/ce/administration/auth/ldap.html) with LDAP to support user authentication. This enables GitLab to sign in people from an LDAP server (i.e., allowing people whose names are on the electronic user directory server to be able to use their LDAP accounts to login.)
+GitLab [integrates](../../administration/auth/ldap.md) with LDAP to support user authentication. This enables GitLab to sign in people from an LDAP server (i.e., allowing people whose names are on the electronic user directory server to be able to use their LDAP accounts to login.)
 
 ### LDAP Group Sync
 
@@ -381,9 +381,9 @@ Takes changes from one branch, and [applies them](https://git-scm.com/docs/git-m
 
 [Arises](https://about.gitlab.com/2016/09/06/resolving-merge-conflicts-from-the-gitlab-ui/) when a merge can't be performed cleanly between two versions of the same file.
 
-#### Merge Request
+#### Merge Request (MR)
 
-[Takes changes](https://docs.gitlab.com/ce/gitlab-basics/add-merge-request.html) from one branch, and applies them into another branch.
+[Takes changes](../../gitlab-basics/add-merge-request.md) from one branch, and applies them into another branch.
 
 ### Meteor
 
@@ -395,11 +395,11 @@ Allow you to [organize issues](../../user/project/milestones/index.md) and merge
 
 ### Mirror Repositories
 
-A project that is set up to automatically have its branches, tags, and commits [updated from an upstream repository](https://docs.gitlab.com/ee/workflow/repository_mirroring.html). This is useful when a repository you're interested in is located on a different server, and you want to be able to browse its content and activity using the familiar GitLab interface.
+A project that is set up to automatically have its branches, tags, and commits [updated from an upstream repository](../../workflow/repository_mirroring.md). This is useful when a repository you're interested in is located on a different server, and you want to be able to browse its content and activity using the familiar GitLab interface.
 
 ### MIT License
 
-A type of software license. It lets people do anything with your code with proper attribution and without warranty. It is the most common license for open source applications written in Ruby on Rails. GitLab CE is issued under this [license](https://docs.gitlab.com/ce/development/licensing.html). This means you can download the code, modify it as you want, and even build a new commercial product using the underlying code and it's not illegal. The only condition is that there is no form of warranty provided by GitLab so whatever happens when you use the code is your own problem.
+A type of software license. It lets people do anything with your code with proper attribution and without warranty. It is the most common license for open source applications written in Ruby on Rails. GitLab CE is issued under this [license](../../development/licensing.md). This means you can download the code, modify it as you want, and even build a new commercial product using the underlying code and it's not illegal. The only condition is that there is no form of warranty provided by GitLab so whatever happens when you use the code is your own problem.
 
 ### Mondo Rescue
 
@@ -427,7 +427,7 @@ A web [server](https://www.nginx.com/resources/wiki/) (pronounced "engine x"). [
 
 ### OAuth
 
-An open standard for authorization, commonly used as a way for internet users to log into third party websites using their Microsoft, Google, Facebook or Twitter accounts without exposing their password. GitLab [is](https://docs.gitlab.com/ce/integration/oauth_provider.html) an OAuth2 authentication service provider.
+An open standard for authorization, commonly used as a way for internet users to log into third party websites using their Microsoft, Google, Facebook or Twitter accounts without exposing their password. GitLab [is](../../integration/oauth_provider.md) an OAuth2 authentication service provider.
 
 ### Omnibus Packages
 
@@ -479,11 +479,11 @@ An [object-relational](https://en.wikipedia.org/wiki/PostgreSQL) database. Toute
 
 ### Protected Branches
 
-A [feature](https://docs.gitlab.com/ce/user/project/protected_branches.html) that protects branches from unauthorized pushes, force pushing or deletion.
+A [feature](../../user/project/protected_branches.md) that protects branches from unauthorized pushes, force pushing or deletion.
 
 ### Protected Tags
 
-A [feature](https://docs.gitlab.com/ce/user/project/protected_tags.html) that protects tags from unauthorized creation, update or deletion
+A [feature](../../user/project/protected_tags.md) that protects tags from unauthorized creation, update or deletion
 
 ### Pull
 
@@ -547,7 +547,7 @@ Actual build machines/containers that [run and execute tests](https://gitlab.com
 
 ### Sidekiq
 
-The background job processor GitLab [uses](https://docs.gitlab.com/ce/administration/troubleshooting/sidekiq.html) to asynchronously run tasks.
+The background job processor GitLab [uses](../../administration/troubleshooting/sidekiq.md) to asynchronously run tasks.
 
 ### Software as a service (SaaS)
 
@@ -567,7 +567,7 @@ The board used to track the status and progress of each of the sprint backlog it
 
 ### Shell
 
-Terminal on Mac OSX, GitBash on Windows, or Linux Terminal on Linux. You [use git](https://docs.gitlab.com/ce/gitlab-basics/start-using-git.html) and make changes to GitLab projects in your shell. You [use git](https://docs.gitlab.com/ce/gitlab-basics/start-using-git.html) and make changes to GitLab projects in your shell.
+Terminal on Mac OSX, GitBash on Windows, or Linux Terminal on Linux. You [use git](../../gitlab-basics/start-using-git.md) and make changes to GitLab projects in your shell. You [use git](../../gitlab-basics/start-using-git.md) and make changes to GitLab projects in your shell.
 
 ### Shell command runner
 
@@ -577,7 +577,7 @@ The tenant purchases their own copy of the software and the software can be cust
 
 ### Slack
 
-Real time messaging app for teams that is used internally by  GitLab team members. GitLab users can enable [Slack integration](https://docs.gitlab.com/ce/project_services/slack.html) to trigger push, issue, and merge request events among others.
+Real time messaging app for teams that is used internally by  GitLab team members. GitLab users can enable [Slack integration](../../project_services/slack.md) to trigger push, issue, and merge request events among others.
 
 ### Slash commands
 
@@ -595,7 +595,7 @@ Program code as typed by a computer programmer (i.e. it has not yet been compile
 
 ### SSH Key
 
-A unique identifier of a computer. It is used to identify computers without the need for a password (e.g., On GitLab I have [added the ssh key](https://docs.gitlab.com/ce/gitlab-basics/create-your-ssh-keys.html) of all my work machines so that the GitLab instance knows that it can accept code pushes and pulls from this trusted machines whose keys are I have added.)
+A unique identifier of a computer. It is used to identify computers without the need for a password (e.g., On GitLab I have [added the ssh key](../../gitlab-basics/create-your-ssh-keys.md) of all my work machines so that the GitLab instance knows that it can accept code pushes and pulls from this trusted machines whose keys are I have added.)
 
 ### Single Sign On (SSO)
 
@@ -627,11 +627,11 @@ A program that allows you to perform superuser/administrator actions on Unix Ope
 
 ### Subversion (SVN)
 
-An open source version control system. Read about [migrating from SVN](https://docs.gitlab.com/ce/workflow/importing/migrating_from_svn.html) to GitLab using SubGit.
+An open source version control system. Read about [migrating from SVN](../../workflow/importing/migrating_from_svn.md) to GitLab using SubGit.
 
 ### Tag
 
-[Represents](https://docs.gitlab.com/ce/api/tags.html) a version of a particular branch at a moment in time.
+[Represents](../../api/tags.md) a version of a particular branch at a moment in time.
 
 ### Tenancy
 
@@ -673,7 +673,7 @@ Version control is a system that records changes to a file or set of files over 
 
 ### Virtual Private Cloud (VPC)
 
-A [VPC](https://docs.gitlab.com/ce/university/glossary/README.html#virtual-private-cloud-vpc) is an on demand configurable pool of shared computing resources allocated within a public cloud environment, providing some isolation between the different users using the resources. GitLab users need to create a new Amazon VPC in order to [set up High Availability](https://docs.gitlab.com/ce/university/high-availability/aws/).
+A [VPC](#virtual-private-cloud-vpc) is an on demand configurable pool of shared computing resources allocated within a public cloud environment, providing some isolation between the different users using the resources. GitLab users need to create a new Amazon VPC in order to [set up High Availability](../../install/aws/index.md).
 
 ### Virtual private server (VPS)
 
@@ -689,7 +689,7 @@ A [model](http://www.umsl.edu/~hugheyd/is6840/waterfall.html) of building softwa
 
 ### Webhooks
 
-A way for an app to [provide](https://docs.gitlab.com/ce/user/project/integrations/webhooks.html) other applications with real-time information (e.g., send a message to a slack channel when a commit is pushed.) Read about setting up [custom git hooks](https://gitlab.com/help/administration/custom_hooks.md) for when webhooks are insufficient.
+A way for an app to [provide](../../user/project/integrations/webhooks.md) other applications with real-time information (e.g., send a message to a slack channel when a commit is pushed.) Read about setting up [custom git hooks](../../administration/custom_hooks.md) for when webhooks are insufficient.
 
 ### Wiki
 
