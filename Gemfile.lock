@@ -680,6 +680,7 @@ GEM
       rack
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
+    rack-timeout (0.5.1)
     rails (5.1.7)
       actioncable (= 5.1.7)
       actionmailer (= 5.1.7)
@@ -1174,6 +1175,7 @@ DEPENDENCIES
   rack-cors (~> 1.0.0)
   rack-oauth2 (~> 1.9.3)
   rack-proxy (~> 0.6.0)
+  rack-timeout
   rails (= 5.1.7)
   rails-controller-testing
   rails-i18n (~> 5.1)
