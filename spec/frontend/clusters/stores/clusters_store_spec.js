@@ -133,6 +133,8 @@ describe('Clusters Store', () => {
             uninstallable: false,
             uninstallSuccessful: false,
             uninstallFailed: false,
+            updateSuccessful: false,
+            updateFailed: false,
           },
           cert_manager: {
             title: 'Cert-Manager',

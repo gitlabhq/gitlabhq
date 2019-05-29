@@ -77,6 +77,8 @@ export default class ClusterStore {
           isEditingHostName: false,
           externalIp: null,
           externalHostname: null,
+          updateSuccessful: false,
+          updateFailed: false,
         },
       },
     };
