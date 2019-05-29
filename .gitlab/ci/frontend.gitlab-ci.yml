@@ -1,6 +1,6 @@
 .assets-compile-cache: &assets-compile-cache
   cache:
-    key: "assets-compile:vendor_ruby:.yarn-cache:tmp_cache_assets_sprockets:v5"
+    key: "assets-compile:vendor_ruby:.yarn-cache:tmp_cache_assets_sprockets:v6"
     paths:
       - vendor/ruby/
       - .yarn-cache/
