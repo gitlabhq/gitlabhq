@@ -19,9 +19,6 @@ msgstr ""
 msgid " Please sign in."
 msgstr ""
 
-msgid " Status"
-msgstr ""
-
 msgid " Try to %{action} this file again."
 msgstr ""
 
