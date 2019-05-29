@@ -24,4 +24,5 @@
       = @key.key
   .col-md-12
     .float-right
-      = link_to _('Remove'), path_to_key(@key, is_admin), data: {confirm: _('Are you sure?')}, method: :delete, class: "btn btn-remove delete-key qa-delete-key-button"
+      - if @key.can_delete?
+        = link_to _('Remove'), path_to_key(@key, is_admin), data: {confirm: _('Are you sure?')}, method: :delete, class: "btn btn-remove delete-key qa-delete-key-button"
