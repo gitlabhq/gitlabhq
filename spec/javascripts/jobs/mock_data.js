@@ -960,6 +960,7 @@ export default {
   },
   pipeline: {
     id: 140,
+    iid: 13,
     user: {
       name: 'Root',
       username: 'root',
