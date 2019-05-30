@@ -27,8 +27,14 @@ input[type='text'].danger {
 }
 
 label {
+  font-weight: $gl-font-weight-bold;
+
   &.inline-label {
     margin: 0;
+  }
+
+  &.form-check-label {
+    font-weight: $gl-font-weight-normal;
   }
 
   &.label-bold {
