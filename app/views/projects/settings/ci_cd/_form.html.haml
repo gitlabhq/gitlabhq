@@ -26,6 +26,14 @@
 
         %hr
         .form-group
+          = f.fields_for :ci_cd_settings_attributes, @project.ci_cd_settings do |form|
+            = form.label :default_git_depth, _('Git shallow clone'), class: 'label-bold'
+            = form.number_field :default_git_depth, { class: 'form-control', min: 0, max: 1000 }
+            %p.form-text.text-muted
+              = _('The number of changes to be fetched from GitLab when cloning a repository. This can speed up Pipelines execution. Keep empty or set to 0 to disable shallow clone by default and make GitLab CI fetch all branches and tags each time.')
+
+        %hr
+        .form-group
           = f.label :build_timeout_human_readable, _('Timeout'), class: 'label-bold'
           = f.text_field :build_timeout_human_readable, class: 'form-control'
           %p.form-text.text-muted

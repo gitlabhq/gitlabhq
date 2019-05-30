@@ -25,14 +25,16 @@ module Ci
     end
 
     def git_depth
-      strong_memoize(:git_depth) do
-        git_depth = variables&.find { |variable| variable[:key] == 'GIT_DEPTH' }&.dig(:value)
-        git_depth.to_i
-      end
+      if git_depth_variable
+        git_depth_variable[:value]
+      else
+        project.default_git_depth
+      end.to_i
     end
 
     def refspecs
       specs = []
+      specs << refspec_for_merge_request_ref if merge_request_ref?
 
       if git_depth > 0
         specs << refspec_for_branch(ref) if branch? || legacy_detached_merge_request_pipeline?
@@ -41,8 +43,6 @@ module Ci
         specs << refspec_for_branch
         specs << refspec_for_tag
       end
-
-      specs << refspec_for_merge_request_ref if merge_request_ref?
 
       specs
     end
@@ -88,6 +88,12 @@ module Ci
 
     def refspec_for_merge_request_ref
       "+#{ref}:#{ref}"
+    end
+
+    def git_depth_variable
+      strong_memoize(:git_depth_variable) do
+        variables&.find { |variable| variable[:key] == 'GIT_DEPTH' }
+      end
     end
   end
 end

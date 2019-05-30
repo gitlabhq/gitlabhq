@@ -145,6 +145,14 @@ describe Projects::ForkService do
         end
       end
 
+      context "CI/CD settings" do
+        it "inherits default_git_depth from the origin project" do
+          @from_project.update(default_git_depth: 42)
+          @to_project = fork_project(@from_project, @to_user)
+          expect(@to_project.default_git_depth).to eq(42)
+        end
+      end
+
       context "when project has restricted visibility level" do
         context "and only one visibility level is restricted" do
           before do

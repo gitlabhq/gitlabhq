@@ -36,18 +36,19 @@ module Projects
 
     def fork_new_project
       new_params = {
-        visibility_level:       allowed_visibility_level,
-        description:            @project.description,
-        name:                   target_name,
-        path:                   target_path,
-        shared_runners_enabled: @project.shared_runners_enabled,
-        namespace_id:           target_namespace.id,
-        fork_network:           fork_network,
+        visibility_level:          allowed_visibility_level,
+        description:               @project.description,
+        name:                      target_name,
+        path:                      target_path,
+        shared_runners_enabled:    @project.shared_runners_enabled,
+        namespace_id:              target_namespace.id,
+        fork_network:              fork_network,
+        ci_cd_settings_attributes: { default_git_depth: @project.default_git_depth },
         # We need to assign the fork network membership after the project has
         # been instantiated to avoid ActiveRecord trying to create it when
         # initializing the project, as that would cause a foreign key constraint
         # exception.
-        relations_block:        -> (project) { build_fork_network_member(project) }
+        relations_block:           -> (project) { build_fork_network_member(project) }
       }
 
       if @project.avatar.present? && @project.avatar.image?
@@ -56,7 +57,10 @@ module Projects
 
       new_params.merge!(@project.object_pool_params)
 
-      new_project = CreateService.new(current_user, new_params).execute
+      new_project = CreateService.new(current_user, new_params).execute do |p|
+        p.build_ci_cd_settings(default_git_depth: @project.default_git_depth)
+      end
+
       return new_project unless new_project.persisted?
 
       # Set the forked_from_project relation after saving to avoid having to
