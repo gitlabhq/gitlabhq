@@ -15,7 +15,6 @@
       position: sticky;
       top: $mr-file-header-top;
       z-index: 102;
-      height: $mr-version-controls-height;
 
       &::before {
         content: '';
