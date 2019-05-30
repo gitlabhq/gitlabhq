@@ -1,3 +1,7 @@
+---
+type: reference
+---
+
 # Getting started with GitLab CI/CD
 
 >**Note:** Starting from version 8.0, GitLab [Continuous Integration][ci] (CI)
@@ -35,11 +39,11 @@ project's **Pipelines** page.
 
 ---
 
-This guide assumes that you:
+This guide assumes that you have:
 
-- have a working GitLab instance of version 8.0+r or are using
-  [GitLab.com](https://gitlab.com)
-- have a project in GitLab that you would like to use CI for
+- A working GitLab instance of version 8.0+r or are using
+  [GitLab.com](https://gitlab.com).
+- A project in GitLab that you would like to use CI for.
 
 Let's break it down to pieces and work on solving the GitLab CI puzzle.
 

@@ -1,5 +1,6 @@
 ---
 last_updated: 2017-12-13
+type: tutorial
 ---
 
 # Using SSH keys with GitLab CI/CD
