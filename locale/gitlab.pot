@@ -517,6 +517,9 @@ msgstr ""
 msgid "Add README"
 msgstr ""
 
+msgid "Add a GPG key"
+msgstr ""
+
 msgid "Add a bullet list"
 msgstr ""
 
@@ -539,6 +542,9 @@ msgid "Add a task list"
 msgstr ""
 
 msgid "Add a todo"
+msgstr ""
+
+msgid "Add an SSH key"
 msgstr ""
 
 msgid "Add bold text"
@@ -1136,6 +1142,12 @@ msgid "Are you sure you want to unsubscribe from the %{type}: %{link_to_noteable
 msgstr ""
 
 msgid "Are you sure?"
+msgstr ""
+
+msgid "Are you sure? All commits that were signed with this GPG key will be unverified."
+msgstr ""
+
+msgid "Are you sure? Removing this GPG key does not affect already signed commits."
 msgstr ""
 
 msgid "Artifacts"
@@ -3559,6 +3571,9 @@ msgstr ""
 msgid "Domain verification is an essential security measure for public GitLab sites. Users are required to demonstrate they control a domain before it is enabled"
 msgstr ""
 
+msgid "Don't paste the private part of the GPG key. Paste the public part which begins with '-----BEGIN PGP PUBLIC KEY BLOCK-----'."
+msgstr ""
+
 msgid "Don't show again"
 msgstr ""
 
@@ -4440,6 +4455,9 @@ msgstr ""
 msgid "Fingerprint"
 msgstr ""
 
+msgid "Fingerprint:"
+msgstr ""
+
 msgid "Fingerprints"
 msgstr ""
 
@@ -4570,6 +4588,9 @@ msgid "GPG Key ID:"
 msgstr ""
 
 msgid "GPG Keys"
+msgstr ""
+
+msgid "GPG keys allow you to verify signed commits."
 msgstr ""
 
 msgid "GPG signature (loading...)"
@@ -5666,6 +5687,9 @@ msgid "Last updated"
 msgstr ""
 
 msgid "Last used"
+msgstr ""
+
+msgid "Last used on:"
 msgstr ""
 
 msgid "LastPushEvent|You pushed to"
@@ -7384,6 +7408,9 @@ msgstr ""
 msgid "Profiles|Invalid username"
 msgstr ""
 
+msgid "Profiles|Key"
+msgstr ""
+
 msgid "Profiles|Learn more"
 msgstr ""
 
@@ -8465,6 +8492,9 @@ msgstr ""
 msgid "Runs a number of housekeeping tasks within the current repository, such as compressing file revisions and removing unreachable objects."
 msgstr ""
 
+msgid "SSH Key"
+msgstr ""
+
 msgid "SSH Keys"
 msgstr ""
 
@@ -8472,6 +8502,9 @@ msgid "SSH Keys Help"
 msgstr ""
 
 msgid "SSH host keys"
+msgstr ""
+
+msgid "SSH keys allow you to establish a secure connection between your computer and GitLab."
 msgstr ""
 
 msgid "SSH public key"
@@ -9358,6 +9391,9 @@ msgstr ""
 msgid "Subgroups and projects"
 msgstr ""
 
+msgid "Subkeys"
+msgstr ""
+
 msgid "Submit as spam"
 msgstr ""
 
@@ -9906,6 +9942,18 @@ msgstr ""
 msgid "The value lying at the midpoint of a series of observed values. E.g., between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 = 6."
 msgstr ""
 
+msgid "There are no GPG keys associated with this account."
+msgstr ""
+
+msgid "There are no GPG keys with access to your account."
+msgstr ""
+
+msgid "There are no SSH keys associated with this account."
+msgstr ""
+
+msgid "There are no SSH keys with access to your account."
+msgstr ""
+
 msgid "There are no archived projects yet"
 msgstr ""
 
@@ -10403,6 +10451,9 @@ msgid "Tip:"
 msgstr ""
 
 msgid "Title"
+msgstr ""
+
+msgid "Title:"
 msgstr ""
 
 msgid "Titles and Filenames"
@@ -11619,6 +11670,9 @@ msgstr ""
 msgid "Your Conversational Development Index gives an overview of how you are using GitLab from a feature perspective. View how you compare with other organizations, discover features you are not using, and learn best practices through blog posts and white papers."
 msgstr ""
 
+msgid "Your GPG keys (%{count})"
+msgstr ""
+
 msgid "Your Groups"
 msgstr ""
 
@@ -11629,6 +11683,9 @@ msgid "Your Projects (default)"
 msgstr ""
 
 msgid "Your Projects' Activity"
+msgstr ""
+
+msgid "Your SSH keys (%{count})"
 msgstr ""
 
 msgid "Your Todos"
