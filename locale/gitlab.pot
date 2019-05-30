@@ -11283,7 +11283,7 @@ msgstr ""
 msgid "You are attempting to update a file that has changed since you started editing it."
 msgstr ""
 
-msgid "You are going to remove %{group_name}, this will also remove all its subgroups and projects. This can’t be undone. Are you ABSOLUTELY sure?"
+msgid "You are going to remove %{group_name}, this will also remove all of its subgroups and projects. Removed groups CANNOT be restored! Are you ABSOLUTELY sure?"
 msgstr ""
 
 msgid "You are going to remove %{project_full_name}. Removed project CANNOT be restored! Are you ABSOLUTELY sure?"
