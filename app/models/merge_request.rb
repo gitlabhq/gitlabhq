@@ -1080,14 +1080,12 @@ class MergeRequest < ApplicationRecord
 
   # Returns the current merge-ref HEAD commit.
   #
+  # Consider calling mergeability_check method _before_ this if you need
+  # the latest possible version of it (it's already automatically updated
+  # along the merge_status).
+  #
   def merge_ref_head
     project.repository.commit(merge_ref_path)
-  end
-
-  # Returns the updated merge-ref HEAD commit.
-  #
-  def merge_ref_head!
-    merge_ref_head if check_mergeability.success?
   end
 
   def ref_path

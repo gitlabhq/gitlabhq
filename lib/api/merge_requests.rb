@@ -398,11 +398,11 @@ module API
         present merge_request, with: Entities::MergeRequest, current_user: current_user, project: user_project
       end
 
-      desc 'Returns an up to date merge-ref HEAD'
+      desc 'Returns the up to date merge-ref HEAD commit'
       get ':id/merge_requests/:merge_request_iid/merge_ref' do
         merge_request = find_project_merge_request(params[:merge_request_iid])
 
-        result = merge_request.check_mergeability
+        result = ::MergeRequests::MergeabilityCheckService.new(merge_request).execute
 
         if result.success? && commit = merge_request.merge_ref_head
           present :commit_id, commit.sha
