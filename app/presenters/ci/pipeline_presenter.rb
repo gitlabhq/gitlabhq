@@ -43,7 +43,7 @@ module Ci
         if pipeline.ref_exists?
           _("for %{link_to_pipeline_ref}").html_safe % { link_to_pipeline_ref: link_to_pipeline_ref }
         else
-          _("for %{ref}") % { ref: content_tag(:span, pipeline.ref, class: 'ref-name') }
+          _("for %{ref}").html_safe % { ref: content_tag(:span, pipeline.ref, class: 'ref-name') }
         end
       end
     end
