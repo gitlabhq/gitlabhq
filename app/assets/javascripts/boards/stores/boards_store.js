@@ -45,7 +45,7 @@ const boardsStore = {
   },
   addList(listObj, defaultAvatar) {
     const list = new List(listObj, defaultAvatar);
-    this.state.lists.push(list);
+    this.state.lists = _.sortBy([...this.state.lists, list], 'position');
 
     return list;
   },
@@ -82,8 +82,6 @@ const boardsStore = {
       title: __('Welcome to your Issue Board!'),
       position: 0,
     });
-
-    this.state.lists = _.sortBy(this.state.lists, 'position');
   },
   removeBlankState() {
     this.removeList('blank');
