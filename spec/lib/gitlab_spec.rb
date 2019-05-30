@@ -109,4 +109,34 @@ describe Gitlab do
       expect(described_class.ee?).to eq(false)
     end
   end
+
+  describe '.http_proxy_env?' do
+    it 'returns true when lower case https' do
+      stub_env('https_proxy', 'https://my.proxy')
+
+      expect(described_class.http_proxy_env?).to eq(true)
+    end
+
+    it 'returns true when upper case https' do
+      stub_env('HTTPS_PROXY', 'https://my.proxy')
+
+      expect(described_class.http_proxy_env?).to eq(true)
+    end
+
+    it 'returns true when lower case http' do
+      stub_env('http_proxy', 'http://my.proxy')
+
+      expect(described_class.http_proxy_env?).to eq(true)
+    end
+
+    it 'returns true when upper case http' do
+      stub_env('HTTP_PROXY', 'http://my.proxy')
+
+      expect(described_class.http_proxy_env?).to eq(true)
+    end
+
+    it 'returns false when not set' do
+      expect(described_class.http_proxy_env?).to eq(false)
+    end
+  end
 end

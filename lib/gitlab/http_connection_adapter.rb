@@ -14,7 +14,8 @@ module Gitlab
     def connection
       begin
         @uri, hostname = Gitlab::UrlBlocker.validate!(uri, allow_local_network: allow_local_requests?,
-                                                           allow_localhost: allow_local_requests?)
+                                                           allow_localhost: allow_local_requests?,
+                                                           dns_rebind_protection: dns_rebind_protection?)
       rescue Gitlab::UrlBlocker::BlockedUrlError => e
         raise Gitlab::HTTP::BlockedUrlError, "URL '#{uri}' is blocked: #{e.message}"
       end
@@ -28,6 +29,12 @@ module Gitlab
 
     def allow_local_requests?
       options.fetch(:allow_local_requests, allow_settings_local_requests?)
+    end
+
+    def dns_rebind_protection?
+      return false if Gitlab.http_proxy_env?
+
+      Gitlab::CurrentSettings.dns_rebinding_protection_enabled?
     end
 
     def allow_settings_local_requests?
