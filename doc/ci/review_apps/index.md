@@ -1,9 +1,13 @@
+---
+type: reference
+---
+
 # Review Apps
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/21971) in GitLab 8.12. Further additions were made in GitLab 8.13 and 8.14.
 > - Inspired by [Heroku's Review Apps](https://devcenter.heroku.com/articles/github-integration-review-apps), which itself was inspired by [Fourchette](https://github.com/rainforestapp/fourchette).
 
-Review Apps are a collaboration tool that takes the hard work out of providing an environment to showcase product changes.
+Review Apps is a collaboration tool that takes the hard work out of providing an environment to showcase product changes.
 
 ## Introduction
 
@@ -18,7 +22,7 @@ Review Apps:
 
 In the above example:
 
-- A Review App is built every time a commit is pushed to`topic branch`.
+- A Review App is built every time a commit is pushed to `topic branch`.
 - The reviewer fails two reviews before passing the third review.
 - Once the review as passed, `topic branch` is merged into `master` where it's deploy to staging.
 - After been approved in staging, the changes that were merged into `master` are deployed in to production.

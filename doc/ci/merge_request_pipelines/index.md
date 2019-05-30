@@ -1,3 +1,7 @@
+---
+type: reference
+---
+
 # Pipelines for merge requests
 
 NOTE: **Note**:

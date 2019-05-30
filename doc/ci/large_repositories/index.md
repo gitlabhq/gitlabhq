@@ -1,3 +1,7 @@
+---
+type: reference
+---
+
 # Optimizing GitLab for large repositories
 
 Large repositories consisting of more than 50k files in a worktree
