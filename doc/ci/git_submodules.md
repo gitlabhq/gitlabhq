@@ -1,3 +1,7 @@
+---
+type: reference
+---
+
 # Using Git submodules with GitLab CI
 
 > **Notes:**

@@ -1,3 +1,7 @@
+---
+type: reference
+---
+
 # Multi-project pipelines **[PREMIUM]**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/2121) in

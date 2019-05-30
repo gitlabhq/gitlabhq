@@ -1,3 +1,7 @@
+---
+type: reference
+---
+
 # Creating and using CI/CD pipelines
 
 > Introduced in GitLab 8.8.

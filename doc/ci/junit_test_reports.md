@@ -1,3 +1,7 @@
+---
+type: reference
+---
+
 # JUnit test reports
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/45318) in GitLab 11.2.
