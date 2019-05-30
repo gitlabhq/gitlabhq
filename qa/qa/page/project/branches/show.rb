@@ -28,9 +28,11 @@ module QA
             finished_loading?
           end
 
-          def has_no_branch?(branch_name)
-            within_element(:all_branches) do
-              has_no_element?(:branch_name, text: branch_name, wait: Support::Waiter::DEFAULT_MAX_WAIT_TIME)
+          def has_no_branch?(branch_name, reload: false)
+            wait(reload: reload) do
+              within_element(:all_branches) do
+                has_no_element?(:branch_name, text: branch_name)
+              end
             end
           end
 
