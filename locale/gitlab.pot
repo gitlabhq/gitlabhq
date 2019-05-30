@@ -9400,6 +9400,69 @@ msgstr ""
 msgid "Suggested change"
 msgstr ""
 
+msgid "SuggestedColors|Bright Green"
+msgstr ""
+
+msgid "SuggestedColors|Dark grayish cyan"
+msgstr ""
+
+msgid "SuggestedColors|Dark moderate blue"
+msgstr ""
+
+msgid "SuggestedColors|Dark moderate orange"
+msgstr ""
+
+msgid "SuggestedColors|Dark moderate pink"
+msgstr ""
+
+msgid "SuggestedColors|Dark moderate violet"
+msgstr ""
+
+msgid "SuggestedColors|Feijoa"
+msgstr ""
+
+msgid "SuggestedColors|Moderate blue"
+msgstr ""
+
+msgid "SuggestedColors|Pure red"
+msgstr ""
+
+msgid "SuggestedColors|Slightly desaturated blue"
+msgstr ""
+
+msgid "SuggestedColors|Slightly desaturated green"
+msgstr ""
+
+msgid "SuggestedColors|Soft orange"
+msgstr ""
+
+msgid "SuggestedColors|Soft red"
+msgstr ""
+
+msgid "SuggestedColors|Strong pink"
+msgstr ""
+
+msgid "SuggestedColors|Strong red"
+msgstr ""
+
+msgid "SuggestedColors|Strong yellow"
+msgstr ""
+
+msgid "SuggestedColors|UA blue"
+msgstr ""
+
+msgid "SuggestedColors|Very dark desaturated blue"
+msgstr ""
+
+msgid "SuggestedColors|Very dark lime green"
+msgstr ""
+
+msgid "SuggestedColors|Very pale orange"
+msgstr ""
+
+msgid "SuggestedColors|lime green"
+msgstr ""
+
 msgid "Sunday"
 msgstr ""
 
