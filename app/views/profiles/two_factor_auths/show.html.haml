@@ -25,9 +25,9 @@
 
       - else
         %p
-          - document_url = help_page_path('user/profile/account/two_factor_authentication')
-          - help_link_start = '<a href="%{url}" target="_blank">'.html_safe % { url: document_url }
-          = _('Install a soft token authenticator like %{free_otp_link} or Google Authenticator from your application repository and scan this QR code. More information is available in the %{help_link_start}documentation%{help_link_end}.'.html_safe) % { free_otp_link:'<a href="https://freeotp.github.io/">FreeOTP</a>'.html_safe, help_link_start:help_link_start, help_link_end:'</a>'.html_safe }
+          - help_link_start = '<a href="%{url}" target="_blank">' % { url: help_page_path('user/profile/account/two_factor_authentication') }
+          - register_2fa_token = _('Install a soft token authenticator like %{free_otp_link} or Google Authenticator from your application repository and scan this QR code. More information is available in the %{help_link_start}documentation%{help_link_end}.') % { free_otp_link:'<a href="https://freeotp.github.io/">FreeOTP</a>', help_link_start:help_link_start, help_link_end:'</a>' }
+          = register_2fa_token.html_safe
         .row.append-bottom-10
           .col-md-4
             = raw @qr_code
