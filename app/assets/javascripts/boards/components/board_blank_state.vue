@@ -1,6 +1,5 @@
 <script>
 /* global ListLabel */
-import _ from 'underscore';
 import Cookies from 'js-cookie';
 import boardsStore from '../stores/boards_store';
 
@@ -28,8 +27,6 @@ export default {
           },
         });
       });
-
-      boardsStore.state.lists = _.sortBy(boardsStore.state.lists, 'position');
 
       // Save the labels
       gl.boardService

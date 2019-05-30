@@ -44,6 +44,15 @@ describe('Store', () => {
     expect(boardsStore.state.lists.length).toBe(0);
   });
 
+  describe('addList', () => {
+    it('sorts by position', () => {
+      boardsStore.addList({ position: 2 });
+      boardsStore.addList({ position: 1 });
+
+      expect(boardsStore.state.lists[0].position).toBe(1);
+    });
+  });
+
   describe('lists', () => {
     it('creates new list without persisting to DB', () => {
       boardsStore.addList(listObj);

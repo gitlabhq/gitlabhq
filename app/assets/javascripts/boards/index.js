@@ -1,5 +1,4 @@
 import $ from 'jquery';
-import _ from 'underscore';
 import Vue from 'vue';
 
 import Flash from '~/flash';
@@ -106,18 +105,23 @@ export default () => {
       gl.boardService
         .all()
         .then(res => res.data)
-        .then(data => {
-          data.forEach(board => {
-            const list = boardsStore.addList(board, this.defaultAvatar);
-
-            if (list.type === 'closed') {
-              list.position = Infinity;
-            } else if (list.type === 'backlog') {
-              list.position = -1;
+        .then(lists => {
+          lists.forEach(listObj => {
+            let { position } = listObj;
+            if (listObj.list_type === 'closed') {
+              position = Infinity;
+            } else if (listObj.list_type === 'backlog') {
+              position = -1;
             }
-          });
 
-          this.state.lists = _.sortBy(this.state.lists, 'position');
+            boardsStore.addList(
+              {
+                ...listObj,
+                position,
+              },
+              this.defaultAvatar,
+            );
+          });
 
           boardsStore.addBlankState();
           this.loading = false;
