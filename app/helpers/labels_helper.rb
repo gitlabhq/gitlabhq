@@ -79,10 +79,10 @@ module LabelsHelper
     {
       '#0033CC' => s_('SuggestedColors|UA blue'),
       '#428BCA' => s_('SuggestedColors|Moderate blue'),
-      '#44AD8E' => s_('SuggestedColors|lime green'),
+      '#44AD8E' => s_('SuggestedColors|Lime green'),
       '#A8D695' => s_('SuggestedColors|Feijoa'),
       '#5CB85C' => s_('SuggestedColors|Slightly desaturated green'),
-      '#69D100' => s_('SuggestedColors|Bright Green'),
+      '#69D100' => s_('SuggestedColors|Bright green'),
       '#004E00' => s_('SuggestedColors|Very dark lime green'),
       '#34495E' => s_('SuggestedColors|Very dark desaturated blue'),
       '#7F8C8D' => s_('SuggestedColors|Dark grayish cyan'),
