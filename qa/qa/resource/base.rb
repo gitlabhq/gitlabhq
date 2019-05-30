@@ -15,6 +15,38 @@ module QA
 
       def_delegators :evaluator, :attribute
 
+      def self.fabricate!(*args, &prepare_block)
+        fabricate_via_api!(*args, &prepare_block)
+      rescue NotImplementedError
+        fabricate_via_browser_ui!(*args, &prepare_block)
+      end
+
+      def self.fabricate_via_browser_ui!(*args, &prepare_block)
+        options = args.extract_options!
+        resource = options.fetch(:resource) { new }
+        parents = options.fetch(:parents) { [] }
+
+        do_fabricate!(resource: resource, prepare_block: prepare_block, parents: parents) do
+          log_fabrication(:browser_ui, resource, parents, args) { resource.fabricate!(*args) }
+
+          current_url
+        end
+      end
+
+      def self.fabricate_via_api!(*args, &prepare_block)
+        options = args.extract_options!
+        resource = options.fetch(:resource) { new }
+        parents = options.fetch(:parents) { [] }
+
+        raise NotImplementedError unless resource.api_support?
+
+        resource.eager_load_api_client!
+
+        do_fabricate!(resource: resource, prepare_block: prepare_block, parents: parents) do
+          log_fabrication(:api, resource, parents, args) { resource.fabricate_via_api! }
+        end
+      end
+
       def fabricate!(*_args)
         raise NotImplementedError
       end
@@ -53,38 +85,6 @@ module QA
 
       def log_having_both_api_result_and_block(name, api_value)
         QA::Runtime::Logger.info "<#{self.class}> Attribute #{name.inspect} has both API response `#{api_value}` and a block. API response will be picked. Block will be ignored."
-      end
-
-      def self.fabricate!(*args, &prepare_block)
-        fabricate_via_api!(*args, &prepare_block)
-      rescue NotImplementedError
-        fabricate_via_browser_ui!(*args, &prepare_block)
-      end
-
-      def self.fabricate_via_browser_ui!(*args, &prepare_block)
-        options = args.extract_options!
-        resource = options.fetch(:resource) { new }
-        parents = options.fetch(:parents) { [] }
-
-        do_fabricate!(resource: resource, prepare_block: prepare_block, parents: parents) do
-          log_fabrication(:browser_ui, resource, parents, args) { resource.fabricate!(*args) }
-
-          current_url
-        end
-      end
-
-      def self.fabricate_via_api!(*args, &prepare_block)
-        options = args.extract_options!
-        resource = options.fetch(:resource) { new }
-        parents = options.fetch(:parents) { [] }
-
-        raise NotImplementedError unless resource.api_support?
-
-        resource.eager_load_api_client!
-
-        do_fabricate!(resource: resource, prepare_block: prepare_block, parents: parents) do
-          log_fabrication(:api, resource, parents, args) { resource.fabricate_via_api! }
-        end
       end
 
       def self.do_fabricate!(resource:, prepare_block:, parents: [])
