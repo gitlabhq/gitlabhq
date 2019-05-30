@@ -5635,6 +5635,9 @@ msgstr[1] ""
 msgid "Last Pipeline"
 msgstr ""
 
+msgid "Last accessed on"
+msgstr ""
+
 msgid "Last activity"
 msgstr ""
 
@@ -7262,6 +7265,9 @@ msgid "Profile"
 msgstr ""
 
 msgid "Profile Settings"
+msgstr ""
+
+msgid "ProfileSession|on"
 msgstr ""
 
 msgid "Profiles| You are about to permanently delete %{yourAccount}, and all of the issues, merge requests, and groups linked to your account. Once you confirm %{deleteAccount}, it cannot be undone or recovered."
@@ -8944,6 +8950,9 @@ msgstr ""
 msgid "Sign-up restrictions"
 msgstr ""
 
+msgid "Signed in"
+msgstr ""
+
 msgid "Signed in with %{authentication} authentication"
 msgstr ""
 
@@ -10050,10 +10059,16 @@ msgstr ""
 msgid "This is a delayed job to run in %{remainingTime}"
 msgstr ""
 
+msgid "This is a list of devices that have logged into your account. Revoke any sessions that you do not recognize."
+msgstr ""
+
 msgid "This is a security log of important events involving your account."
 msgstr ""
 
 msgid "This is the author's first Merge Request to this project."
+msgstr ""
+
+msgid "This is your current session"
 msgstr ""
 
 msgid "This issue is confidential"
