@@ -2,6 +2,24 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.11.1 (2019-05-30)
+
+### Security (12 changes)
+
+- Add DNS rebinding protection settings.
+- Prevent XSS injection in note imports.
+- Prevent invalid branch for merge request.
+- Filter relative links in wiki for XSS.
+- Fix confidential issue label disclosure on milestone view.
+- Fix url redaction for issue links.
+- Resolve: Milestones leaked via search API.
+- Protect Gitlab::HTTP against DNS rebinding attack.
+- Add extra fields for handling basic auth on import by url page.
+- Prevent bypass of restriction disabling web password sign in.
+- Update Gitaly to fix GetArchive vulnerability.
+- Hide confidential issue title on unsubscribe for anonymous users.
+
+
 ## 11.11.0 (2019-05-22)
 
 ### Security (1 change)

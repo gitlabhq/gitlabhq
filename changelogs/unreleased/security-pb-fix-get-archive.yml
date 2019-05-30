@@ -1,5 +1,0 @@
----
-title: Update Gitaly to fix GetArchive vulnerability
-merge_request:
-author:
-type: security

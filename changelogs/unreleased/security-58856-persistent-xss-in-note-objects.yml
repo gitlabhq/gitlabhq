@@ -1,5 +1,0 @@
----
-title: Prevent XSS injection in note imports
-merge_request:
-author:
-type: security
