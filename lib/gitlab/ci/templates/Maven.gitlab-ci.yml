@@ -1,7 +1,10 @@
 # This file is a template, and might need editing before it works on your project.
+
 # Build JAVA applications using Apache Maven (http://maven.apache.org)
 # For docker image tags see https://hub.docker.com/_/maven/
+#
 # For general lifecycle information see https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html
+
 # This template will build and test your projects
 # * Caches downloaded dependencies and plugins between invocation.
 # * Verify but don't deploy merge requests.
@@ -36,15 +39,17 @@ verify:jdk8:
   <<: *verify
   image: maven:3.3.9-jdk-8
 
+# To deploy packages to the GitLab Maven Repository, uncomment the following section.
+# Please note: The Maven Repository is currently only available for Premium / Ultimate accounts.
+#
 # For `master` branch run `mvn deploy` automatically.
-deploy:jdk8:
-  stage: deploy
-  script:
-    - if [ ! -f ci_settings.xml ];
-        then echo CI settings missing, please see https://gitlab.com/help/user/project/packages/maven_repository.md#creating-maven-packages-with-gitlab-cicd for instructions.;
-      fi
-    - 'cp ci_settings.xml /root/.m2/settings.xml'
-    - 'mvn $MAVEN_CLI_OPTS deploy'
-  only:
-    - master
-  image: maven:3.3.9-jdk-8
+#deploy:jdk8:
+# stage: deploy
+# script:
+#   - if [ ! -f ci_settings.xml ];
+#       then echo CI settings missing, please see https://gitlab.com/help/user/project/packages/maven_repository.md#creating-maven-packages-with-gitlab-cicd for instructions.;
+#     fi
+#   - 'mvn $MAVEN_CLI_OPTS deploy -s ci_settings.xml'
+#  only:
+#   - master
+# image: maven:3.3.9-jdk-8
