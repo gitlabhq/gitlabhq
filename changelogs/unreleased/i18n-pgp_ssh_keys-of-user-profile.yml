@@ -1,0 +1,5 @@
+---
+title: Externalize strings of PGP Keys and SSH Keys page in user profile
+merge_request: 28653
+author: Antony Liu
+type: other
