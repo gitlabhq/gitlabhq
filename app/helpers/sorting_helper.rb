@@ -3,29 +3,30 @@
 module SortingHelper
   def sort_options_hash
     {
-      sort_value_created_date     => sort_title_created_date,
-      sort_value_downvotes        => sort_title_downvotes,
-      sort_value_due_date         => sort_title_due_date,
-      sort_value_due_date_later   => sort_title_due_date_later,
-      sort_value_due_date_soon    => sort_title_due_date_soon,
-      sort_value_label_priority   => sort_title_label_priority,
-      sort_value_largest_group    => sort_title_largest_group,
-      sort_value_largest_repo     => sort_title_largest_repo,
-      sort_value_milestone        => sort_title_milestone,
-      sort_value_milestone_later  => sort_title_milestone_later,
-      sort_value_milestone_soon   => sort_title_milestone_soon,
-      sort_value_name             => sort_title_name,
-      sort_value_name_desc        => sort_title_name_desc,
-      sort_value_oldest_created   => sort_title_oldest_created,
-      sort_value_oldest_signin    => sort_title_oldest_signin,
-      sort_value_oldest_updated   => sort_title_oldest_updated,
-      sort_value_recently_created => sort_title_recently_created,
-      sort_value_recently_signin  => sort_title_recently_signin,
-      sort_value_recently_updated => sort_title_recently_updated,
-      sort_value_popularity       => sort_title_popularity,
-      sort_value_priority         => sort_title_priority,
-      sort_value_upvotes          => sort_title_upvotes,
-      sort_value_contacted_date   => sort_title_contacted_date
+      sort_value_created_date      => sort_title_created_date,
+      sort_value_downvotes         => sort_title_downvotes,
+      sort_value_due_date          => sort_title_due_date,
+      sort_value_due_date_later    => sort_title_due_date_later,
+      sort_value_due_date_soon     => sort_title_due_date_soon,
+      sort_value_label_priority    => sort_title_label_priority,
+      sort_value_largest_group     => sort_title_largest_group,
+      sort_value_largest_repo      => sort_title_largest_repo,
+      sort_value_milestone         => sort_title_milestone,
+      sort_value_milestone_later   => sort_title_milestone_later,
+      sort_value_milestone_soon    => sort_title_milestone_soon,
+      sort_value_name              => sort_title_name,
+      sort_value_name_desc         => sort_title_name_desc,
+      sort_value_oldest_created    => sort_title_oldest_created,
+      sort_value_oldest_signin     => sort_title_oldest_signin,
+      sort_value_oldest_updated    => sort_title_oldest_updated,
+      sort_value_recently_created  => sort_title_recently_created,
+      sort_value_recently_signin   => sort_title_recently_signin,
+      sort_value_recently_updated  => sort_title_recently_updated,
+      sort_value_popularity        => sort_title_popularity,
+      sort_value_priority          => sort_title_priority,
+      sort_value_upvotes           => sort_title_upvotes,
+      sort_value_contacted_date    => sort_title_contacted_date,
+      sort_value_relative_position => sort_title_relative_position
     }
   end
 
@@ -397,6 +398,10 @@ module SortingHelper
     s_('SortOptions|Recent last activity')
   end
 
+  def sort_title_relative_position
+    s_('SortOptions|Manual')
+  end
+
   # Values.
   def sort_value_access_level_asc
     'access_level_asc'
@@ -544,5 +549,9 @@ module SortingHelper
 
   def sort_value_recently_last_activity
     'last_activity_on_desc'
+  end
+
+  def sort_value_relative_position
+    'relative_position'
   end
 end

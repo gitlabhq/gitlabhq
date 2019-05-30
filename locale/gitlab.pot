@@ -9124,6 +9124,9 @@ msgstr ""
 msgid "SortOptions|Least popular"
 msgstr ""
 
+msgid "SortOptions|Manual"
+msgstr ""
+
 msgid "SortOptions|Milestone due date"
 msgstr ""
 
