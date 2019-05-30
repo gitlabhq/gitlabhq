@@ -172,7 +172,9 @@ describe API::Issues do
     end
 
     it 'returns 404 when project does not exist' do
-      get api('/projects/1000/issues', non_member)
+      max_project_id = Project.maximum(:id).to_i
+
+      get api("/projects/#{max_project_id + 1}/issues", non_member)
 
       expect(response).to have_gitlab_http_status(404)
     end
