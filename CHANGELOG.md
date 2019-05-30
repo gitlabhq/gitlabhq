@@ -2,6 +2,24 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.10.5 (2019-05-30)
+
+### Security (12 changes, 1 of them is from the community)
+
+- Protect Gitlab::HTTP against DNS rebinding attack.
+- Fix project visibility level validation. (Peter Marko)
+- Update Knative version.
+- Add DNS rebinding protection settings.
+- Prevent XSS injection in note imports.
+- Prevent invalid branch for merge request.
+- Filter relative links in wiki for XSS.
+- Fix confidential issue label disclosure on milestone view.
+- Fix url redaction for issue links.
+- Resolve: Milestones leaked via search API.
+- Prevent bypass of restriction disabling web password sign in.
+- Hide confidential issue title on unsubscribe for anonymous users.
+
+
 ## 11.10.4 (2019-05-01)
 
 ### Fixed (12 changes)
