@@ -832,9 +832,6 @@ msgstr ""
 msgid "An error has occurred"
 msgstr ""
 
-msgid "An error occurding while fetching folder content."
-msgstr ""
-
 msgid "An error occurred creating the new branch."
 msgstr ""
 
@@ -860,6 +857,9 @@ msgid "An error occurred while dismissing the alert. Refresh the page and try ag
 msgstr ""
 
 msgid "An error occurred while dismissing the feature highlight. Refresh the page and try dismissing again."
+msgstr ""
+
+msgid "An error occurred while fetching folder content."
 msgstr ""
 
 msgid "An error occurred while fetching label colors."
