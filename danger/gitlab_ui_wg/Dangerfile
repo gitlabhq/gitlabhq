@@ -1,29 +1,36 @@
+FRONTEND_MAINTAINERS = %w[filipa iamphill psimyn sarahghp mishunov].freeze
+UX_MAINTAINERS = %w[tauriedavis rverissimo].freeze
+NO_REVIEWER = 'No reviewer available'.freeze
+
 def mention_single_codebase_approvers
-  frontend_maintainers = %w(@filipa @iamphill @psimyn @sarahghp @mishunov)
-  ux_maintainers = %w(@tauriedavis @rverissimo)
+  canonical_branch_name =
+    roulette.canonical_branch_name(gitlab.mr_json['source_branch'])
+
+  random = roulette.new_random(canonical_branch_name)
+
+  frontend_maintainers = helper.new_teammates(FRONTEND_MAINTAINERS)
+  ux_maintainers = helper.new_teammates(UX_MAINTAINERS)
 
   rows = []
-  users = []
 
   if gitlab.mr_labels.include?('frontend')
-    frontend_maintainer = frontend_maintainers.sample
+    frontend_maintainer =
+      roulette.spin_for_person(frontend_maintainers, random: random)
 
-    rows << "| ~frontend | `#{frontend_maintainer}`"
-    users << frontend_maintainer
+    rows << "| ~frontend | #{frontend_maintainer&.markdown_name || NO_REVIEWER}"
   end
 
   if gitlab.mr_labels.include?('UX')
-    ux_maintainers = ux_maintainers.sample
+    ux_maintainers =
+      roulette.spin_for_person(ux_maintainers, random: random)
 
-    rows << "| ~UX | `#{ux_maintainers}`"
-    users << ux_maintainers
+    rows << "| ~UX | #{ux_maintainers&.markdown_name || NO_REVIEWER}"
   end
 
   if rows.empty?
     backup_maintainer = frontend_maintainers.sample
 
-    rows << "| ~frontend / ~UX | `#{backup_maintainer}`"
-    users << backup_maintainer
+    rows << "| ~frontend / ~UX | #{backup_maintainer.markdown_name}"
   end
 
   markdown(<<~MARKDOWN.strip)

@@ -31,6 +31,9 @@ Please consider creating a merge request to
 for them.
 MARKDOWN
 
+NO_REVIEWER = 'No reviewer available'.freeze
+NO_MAINTAINER = 'No maintainer available'.freeze
+
 def spin_for_category(team, project, category, branch_name)
   random = roulette.new_random(branch_name)
   labels = gitlab.mr_labels
@@ -49,7 +52,7 @@ def spin_for_category(team, project, category, branch_name)
   reviewer = roulette.spin_for_person(reviewers + traintainers + traintainers, random: random)
   maintainer = roulette.spin_for_person(maintainers, random: random)
 
-  "| #{helper.label_for_category(category)} | #{reviewer&.markdown_name} | #{maintainer&.markdown_name} |"
+  "| #{helper.label_for_category(category)} | #{reviewer&.markdown_name || NO_REVIEWER} | #{maintainer&.markdown_name || NO_MAINTAINER} |"
 end
 
 def build_list(items)
@@ -84,9 +87,6 @@ if changes.any? && !gitlab.mr_labels.include?('single codebase') && !gitlab.mr_l
       warn("Reviewer roulette failed to load team data: #{err.message}")
       []
     end
-
-  # Exclude the MR author from the team for selection purposes
-  team.delete_if { |teammate| teammate.username == gitlab.mr_author }
 
   project = helper.project_name
   unknown = changes.fetch(:unknown, [])
