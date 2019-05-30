@@ -167,7 +167,7 @@ export default () => {
         boardsStore.detail.issue = newIssue;
       },
       clearDetailIssue() {
-        boardsStore.detail.issue = {};
+        boardsStore.clearDetailIssue();
       },
       toggleSubscription(id) {
         const { issue } = boardsStore.detail;

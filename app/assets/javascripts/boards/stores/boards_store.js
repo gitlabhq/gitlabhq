@@ -188,6 +188,10 @@ const boardsStore = {
   updateFiltersUrl() {
     window.history.pushState(null, null, `?${this.filter.path}`);
   },
+
+  clearDetailIssue() {
+    this.detail.issue = {};
+  },
 };
 
 BoardsStoreEE.initEESpecific(boardsStore);
