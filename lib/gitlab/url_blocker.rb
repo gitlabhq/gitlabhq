@@ -23,7 +23,7 @@ module Gitlab
       def validate!(
         url,
         ports: [],
-        schemes: [],
+        protocols: [],
         allow_localhost: false,
         allow_local_network: true,
         ascii_only: false,
