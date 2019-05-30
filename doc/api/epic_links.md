@@ -12,6 +12,7 @@ If a user is not a member of a group and the group is private, a `GET` request o
 Epics are available only in the [Ultimate/Gold tier](https://about.gitlab.com/pricing/). If the epics feature is not available, a `403` status code will be returned.
 
 ## List epics related to a given epic
+
 Gets all child epics of an epic.
 
 ```
