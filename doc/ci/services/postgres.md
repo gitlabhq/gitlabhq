@@ -1,3 +1,7 @@
+---
+type: reference
+---
+
 # Using PostgreSQL
 
 As many applications depend on PostgreSQL as their database, you will
