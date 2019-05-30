@@ -41,6 +41,8 @@
     "@gitlab/ui": "^3.10.1",
     "apollo-cache-inmemory": "^1.5.1",
     "apollo-client": "^2.5.1",
+    "apollo-link": "^1.2.11",
+    "apollo-link-batch-http": "^1.2.11",
     "apollo-upload-client": "^10.0.0",
     "at.js": "^1.5.4",
     "autosize": "^4.0.0",

@@ -52,13 +52,22 @@ describe 'GitlabSchema configurations' do
   end
 
   context 'multiplexed queries' do
+    let(:current_user) { nil }
+
     subject do
       queries = [
-        { query: graphql_query_for('project', { 'fullPath' => project.full_path }, %w(id name description)) },
-        { query: graphql_query_for('echo', { 'text' => "$test" }, []), variables: { "test" => "Hello world" } }
+        { query: graphql_query_for('project', { 'fullPath' => '$fullPath' }, %w(id name description)) },
+        { query: graphql_query_for('echo', { 'text' => "$test" }, []), variables: { "test" => "Hello world" } },
+        { query: graphql_query_for('project', { 'fullPath' => project.full_path }, "userPermissions { createIssue }") }
       ]
 
-      post_multiplex(queries)
+      post_multiplex(queries, current_user: current_user)
+    end
+
+    it 'does not authenticate all queries' do
+      subject
+
+      expect(json_response.last['data']['project']).to be_nil
     end
 
     it_behaves_like 'imposing query limits' do
@@ -69,16 +78,26 @@ describe 'GitlabSchema configurations' do
         subject
 
         # Expect a response for each query, even though it will be empty
-        expect(json_response.size).to eq(2)
+        expect(json_response.size).to eq(3)
         json_response.each do |single_query_response|
           expect(single_query_response).not_to have_key('data')
         end
 
         # Expect errors for each query
-        expect(graphql_errors.size).to eq(2)
+        expect(graphql_errors.size).to eq(3)
         graphql_errors.each do |single_query_errors|
           expect(single_query_errors.first['message']).to include('which exceeds max complexity of 4')
         end
+      end
+    end
+
+    context 'authentication' do
+      let(:current_user) { project.owner }
+
+      it 'authenticates all queries' do
+        subject
+
+        expect(json_response.last['data']['project']['userPermissions']['createIssue']).to be(true)
       end
     end
   end
