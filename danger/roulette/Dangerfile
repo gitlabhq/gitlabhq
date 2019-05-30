@@ -32,7 +32,7 @@ for them.
 MARKDOWN
 
 def spin_for_category(team, project, category, branch_name)
-  rng = Random.new(Digest::MD5.hexdigest(branch_name).to_i(16))
+  random = roulette.new_random(branch_name)
 
   reviewers = team.select { |member| member.reviewer?(project, category) }
   traintainers = team.select { |member| member.traintainer?(project, category) }
@@ -42,41 +42,10 @@ def spin_for_category(team, project, category, branch_name)
   # https://gitlab.com/gitlab-org/gitlab-ce/issues/57653
 
   # Make traintainers have triple the chance to be picked as a reviewer
-  reviewer = spin_for_person(reviewers + traintainers + traintainers, random: rng)
-  maintainer = spin_for_person(maintainers, random: rng)
+  reviewer = roulette.spin_for_person(reviewers + traintainers + traintainers, random: random)
+  maintainer = roulette.spin_for_person(maintainers, random: random)
 
   "| #{helper.label_for_category(category)} | #{reviewer&.markdown_name} | #{maintainer&.markdown_name} |"
-end
-
-# Known issue: If someone is rejected due to OOO, and then becomes not OOO, the
-# selection will change on next spin
-def spin_for_person(people, random:)
-  person = nil
-  people = people.dup
-
-  people.size.times do
-    person = people.sample(random: random)
-
-    break person unless out_of_office?(person)
-
-    people -= [person]
-  end
-
-  person
-end
-
-def out_of_office?(person)
-  username = CGI.escape(person.username)
-  api_endpoint = "https://gitlab.com/api/v4/users/#{username}/status"
-  response = HTTParty.get(api_endpoint) # rubocop:disable Gitlab/HTTParty
-
-  if response.code == 200
-    response["message"]&.match(/OOO/i)
-  else
-    false # this is no worse than not checking for OOO
-  end
-rescue
-  false
 end
 
 def build_list(items)
@@ -101,14 +70,12 @@ categories = changes.keys - [:unknown]
 # disable the review roulette for such MRs.
 if changes.any? && !gitlab.mr_labels.include?('single codebase') && !gitlab.mr_labels.include?('CSS cleanup')
   # Strip leading and trailing CE/EE markers
-  canonical_branch_name = gitlab
-                            .mr_json['source_branch']
-                            .gsub(/^[ce]e-/, '')
-                            .gsub(/-[ce]e$/, '')
+  canonical_branch_name =
+    roulette.canonical_branch_name(gitlab.mr_json['source_branch'])
 
   team =
     begin
-      helper.project_team
+      roulette.project_team(helper.project_name)
     rescue => err
       warn("Reviewer roulette failed to load team data: #{err.message}")
       []

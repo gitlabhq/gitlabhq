@@ -1,6 +1,4 @@
 # frozen_string_literal: true
-require 'net/http'
-require 'json'
 
 require_relative 'teammate'
 
@@ -8,7 +6,6 @@ module Gitlab
   module Danger
     module Helper
       RELEASE_TOOLS_BOT = 'gitlab-release-tools-bot'
-      ROULETTE_DATA_URL = URI.parse('https://about.gitlab.com/roulette.json').freeze
 
       # Returns a list of all files that have been added, modified or renamed.
       # `git.modified_files` might contain paths that already have been renamed,
@@ -47,32 +44,6 @@ module Gitlab
 
       def project_name
         ee? ? 'gitlab-ee' : 'gitlab-ce'
-      end
-
-      # Looks up the current list of GitLab team members and parses it into a
-      # useful form
-      #
-      # @return [Array<Teammate>]
-      def team
-        @team ||=
-          begin
-            rsp = Net::HTTP.get_response(ROULETTE_DATA_URL)
-            raise "Failed to read #{ROULETTE_DATA_URL}: #{rsp.code} #{rsp.message}" unless
-              rsp.is_a?(Net::HTTPSuccess)
-
-            data = JSON.parse(rsp.body)
-            data.map { |hash| ::Gitlab::Danger::Teammate.new(hash) }
-          rescue JSON::ParserError
-            raise "Failed to parse JSON response from #{ROULETTE_DATA_URL}"
-          end
-      end
-
-      # Like +team+, but only returns teammates in the current project, based on
-      # project_name.
-      #
-      # @return [Array<Teammate>]
-      def project_team
-        team.select { |member| member.in_project?(project_name) }
       end
 
       # @return [Hash<String,Array<String>>]

@@ -6,8 +6,8 @@ module Gitlab
       attr_reader :name, :username, :projects
 
       def initialize(options = {})
-        @name = options['name']
         @username = options['username']
+        @name = options['name'] || @username
         @projects = options['projects']
       end
 
