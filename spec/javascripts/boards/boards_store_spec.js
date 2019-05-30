@@ -268,4 +268,14 @@ describe('Store', () => {
       });
     });
   });
+
+  describe('clearDetailIssue', () => {
+    it('resets issue details', () => {
+      boardsStore.detail.issue = 'something';
+
+      boardsStore.clearDetailIssue();
+
+      expect(boardsStore.detail.issue).toEqual({});
+    });
+  });
 });
