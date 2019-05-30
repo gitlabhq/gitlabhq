@@ -240,7 +240,7 @@ export default {
         css-class="btn-default btn-transparent btn-clipboard"
       />
 
-      <small v-if="isModeChanged" ref="fileMode">
+      <small v-if="isModeChanged" ref="fileMode" class="mr-1">
         {{ diffFile.a_mode }} → {{ diffFile.b_mode }}
       </small>
 
