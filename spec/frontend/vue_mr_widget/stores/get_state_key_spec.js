@@ -4,7 +4,7 @@ describe('getStateKey', () => {
   it('should return proper state name', () => {
     const context = {
       mergeStatus: 'checked',
-      mergeWhenPipelineSucceeds: false,
+      autoMergeEnabled: false,
       canMerge: true,
       onlyAllowMergeIfPipelineSucceeds: false,
       isPipelineFailed: false,
@@ -33,7 +33,7 @@ describe('getStateKey', () => {
 
     context.autoMergeEnabled = true;
 
-    expect(bound()).toEqual('mergeWhenPipelineSucceeds');
+    expect(bound()).toEqual('autoMergeEnabled');
 
     context.isSHAMismatch = true;
 
@@ -80,7 +80,7 @@ describe('getStateKey', () => {
   it('returns rebased state key', () => {
     const context = {
       mergeStatus: 'checked',
-      mergeWhenPipelineSucceeds: false,
+      autoMergeEnabled: false,
       canMerge: true,
       onlyAllowMergeIfPipelineSucceeds: true,
       isPipelineFailed: true,

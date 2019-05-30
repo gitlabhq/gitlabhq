@@ -21,7 +21,7 @@ describe('MRWidgetMergeWhenPipelineSucceeds', () => {
         canCancelAutomaticMerge: true,
         mergeUserId: 1,
         currentUserId: 1,
-        setToMWPSBy: {},
+        setToAutoMergeBy: {},
         sha,
         targetBranchPath,
         targetBranch,
@@ -106,7 +106,7 @@ describe('MRWidgetMergeWhenPipelineSucceeds', () => {
           expect(eventHub.$emit).toHaveBeenCalledWith('MRWidgetUpdateRequested');
           expect(vm.service.merge).toHaveBeenCalledWith({
             sha,
-            merge_when_pipeline_succeeds: true,
+            auto_merge_strategy: 'merge_when_pipeline_succeeds',
             should_remove_source_branch: true,
           });
           done();

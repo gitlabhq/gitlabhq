@@ -31,7 +31,7 @@ export default {
     return {
       removeSourceBranch: this.mr.shouldRemoveSourceBranch,
       mergeWhenBuildSucceeds: false,
-      autoMergeStrategy: null,
+      autoMergeStrategy: undefined,
       isMakingRequest: false,
       isMergingImmediately: false,
       commitMessage: this.mr.commitMessage,
@@ -126,11 +126,7 @@ export default {
         this.isMergingImmediately = true;
       }
 
-      if (mergeWhenBuildSucceeds === true) {
-        this.autoMergeStrategy = 'merge_when_pipeline_succeeds'
-      } else {
-        this.autoMergeStrategy = null
-      }
+      this.autoMergeStrategy = mergeWhenBuildSucceeds ? 'merge_when_pipeline_succeeds' : undefined;
 
       const options = {
         sha: this.mr.sha,
