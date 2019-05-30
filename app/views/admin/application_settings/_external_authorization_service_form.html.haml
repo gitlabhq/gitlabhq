@@ -5,7 +5,7 @@
     %button.btn.js-settings-toggle{ type: 'button' }
       = expanded ? 'Collapse' : 'Expand'
     %p
-    = _('External Classification Policy Authorization')
+      = _('External Classification Policy Authorization')
   .settings-content
 
     = form_for @application_setting, url: admin_application_settings_path(anchor: 'js-external-auth-settings'), html: { class: 'fieldset-form' } do |f|
