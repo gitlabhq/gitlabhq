@@ -4,7 +4,7 @@ The majority of the end-to-end tests require some state to be built in the appli
 
 A good example is a user being logged in as a pre-condition for testing the feature.
 
-But if the login feature is already covered with end-to-end tests through the GUI, there is no reason to perform such an expensive task to test the functionality of creating a project, or importing a repo, even if this features depend on a user being logged in. Let's see an example to make things clear.
+But if the login feature is already covered with end-to-end tests through the GUI, there is no reason to perform such an expensive task to test the functionality of creating a project, or importing a repo, even if these features depend on a user being logged in. Let's see an example to make things clear.
 
 Let's say that, on average, the process to perform a successful login through the GUI takes 2 seconds.
 
@@ -33,6 +33,6 @@ Finally, interacting with the application only by its GUI generates a higher rat
 **The takeaways here are:**
 
 - Building state through the GUI is time consuming and it's not sustainable as the test suite grows.
-- When depending only on the GUI to create the application's state and tests fail due to front-end issues, we can't rely on the test failures rate, and we generates a higher rate of test flakiness.
+- When depending only on the GUI to create the application's state and tests fail due to front-end issues, we can't rely on the test failures rate, and we generate a higher rate of test flakiness.
 
-Now that we are aware of all of it, [let's go create some tests](writing_tests_from_scratch.md).
+Now that we are aware of all of it, [let's go create some tests](writing_tests_from_scratch.md#this-document-covers-the-following-items).
