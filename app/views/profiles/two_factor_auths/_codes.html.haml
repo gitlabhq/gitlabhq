@@ -1,5 +1,6 @@
 %p.slead
-  = _('Should you ever lose your phone or access to your one time password secret, each of these recovery codes can be used one time each to regain access to your account. Please save them in a safe place, or you %{b_start}will%{b_end} lose access to your account.'.html_safe) % { b_start:'<b>'.html_safe, b_end:'</b>'.html_safe }
+  - lose_2fa_message =  _('Should you ever lose your phone or access to your one time password secret, each of these recovery codes can be used one time each to regain access to your account. Please save them in a safe place, or you %{b_start}will%{b_end} lose access to your account.') % { b_start:'<b>', b_end:'</b>' }
+  = lose_2fa_message.html_safe
 
 .codes.card
   %ul
