@@ -208,7 +208,7 @@ applications. In the rightmost column for the production environment, you can ma
   application is running.
 
 Right below, there is the
-[Deploy Board](https://docs.gitlab.com/ee/user/project/deploy_boards.html).
+[Deploy Board](../../user/project/deploy_boards.md).
 The squares represent pods in your Kubernetes cluster that are associated with
 the given environment. Hovering above each square you can see the state of a
 deployment and clicking a square will take you to the pod's logs page.

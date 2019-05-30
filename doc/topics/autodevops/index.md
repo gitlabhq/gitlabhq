@@ -13,7 +13,7 @@ Starting with GitLab 11.3, the Auto DevOps pipeline is enabled by default for al
 projects. If it has not been explicitly enabled for the project, Auto DevOps will be automatically
 disabled on the first pipeline failure. Your project will continue to use an alternative
 [CI/CD configuration file](../../ci/yaml/README.md) if one is found. A GitLab
-administrator can [change this setting](../../user/admin_area/settings/continuous_integration.html#auto-devops-core-only)
+administrator can [change this setting](../../user/admin_area/settings/continuous_integration.md#auto-devops-core-only)
 in the admin area.
 
 With Auto DevOps, the software development process becomes easier to set up
@@ -181,7 +181,7 @@ Those environments are tied to jobs that use [Auto Deploy](#auto-deploy), so
 except for the environment scope, they would also need to have a different
 domain they would be deployed to. This is why you need to define a separate
 `KUBE_INGRESS_BASE_DOMAIN` variable for all the above
-[based on the environment](https://docs.gitlab.com/ee/ci/variables/#limiting-environment-scopes-of-environment-variables-premium).
+[based on the environment](../../ci/variables/README.md#limiting-environment-scopes-of-environment-variables-premium).
 
 The following table is an example of how the three different clusters would
 be configured.
@@ -363,7 +363,7 @@ created, and is uploaded as an artifact which you can later download and check
 out.
 
 Any differences between the source and target branches are also
-[shown in the merge request widget](https://docs.gitlab.com/ee/user/project/merge_requests/code_quality.html).
+[shown in the merge request widget](../../user/project/merge_requests/code_quality.md).
 
 ### Auto SAST **[ULTIMATE]**
 
@@ -376,7 +376,7 @@ report is created, it's uploaded as an artifact which you can later download and
 check out.
 
 Any security warnings are also shown in the merge request widget. Read more how
-[SAST works](https://docs.gitlab.com/ee/user/application_security/sast/index.html).
+[SAST works](../../user/application_security/sast/index.md).
 
 NOTE: **Note:**
 The Auto SAST stage will be skipped on licenses other than Ultimate.
@@ -395,7 +395,7 @@ report is created, it's uploaded as an artifact which you can later download and
 check out.
 
 Any security warnings are also shown in the merge request widget. Read more about
-[Dependency Scanning](https://docs.gitlab.com/ee/user/application_security/dependency_scanning/index.html).
+[Dependency Scanning](../../user/application_security/dependency_scanning/index.md).
 
 NOTE: **Note:**
 The Auto Dependency Scanning stage will be skipped on licenses other than Ultimate.
@@ -414,7 +414,7 @@ report is created, it's uploaded as an artifact which you can later download and
 check out.
 
 Any licenses are also shown in the merge request widget. Read more how
-[License Management works](https://docs.gitlab.com/ee/user/application_security/license_management/index.html).
+[License Management works](../../user/application_security/license_management/index.md).
 
 NOTE: **Note:**
 The Auto License Management stage will be skipped on licenses other than Ultimate.
@@ -430,7 +430,7 @@ created, it's uploaded as an artifact which you can later download and
 check out.
 
 Any security warnings are also shown in the merge request widget. Read more how
-[Container Scanning works](https://docs.gitlab.com/ee/user/application_security/container_scanning/index.html).
+[Container Scanning works](../../user/application_security/container_scanning/index.md).
 
 NOTE: **Note:**
 The Auto Container Scanning stage will be skipped on licenses other than Ultimate.
@@ -486,7 +486,7 @@ issues. Once the report is created, it's uploaded as an artifact which you can
 later download and check out.
 
 Any security warnings are also shown in the merge request widget. Read how
-[DAST works](https://docs.gitlab.com/ee/user/application_security/dast/index.html).
+[DAST works](../../user/application_security/dast/index.md).
 
 NOTE: **Note:**
 The Auto DAST stage will be skipped on licenses other than Ultimate.
@@ -504,7 +504,7 @@ Auto Browser Performance Testing utilizes the [Sitespeed.io container](https://h
 ```
 
 Any performance differences between the source and target branches are also
-[shown in the merge request widget](https://docs.gitlab.com/ee//user/project/merge_requests/browser_performance_testing.html).
+[shown in the merge request widget](../../user/project/merge_requests/browser_performance_testing.md).
 
 ### Auto Deploy
 
@@ -673,7 +673,7 @@ repo or by specifying a project variable:
 ### Custom Helm chart per environment **[PREMIUM]**
 
 You can specify the use of a custom Helm chart per environment by scoping the environment variable
-to the desired environment. See [Limiting environment scopes of variables](https://docs.gitlab.com/ee/ci/variables/#limiting-environment-scopes-of-variables-premium).
+to the desired environment. See [Limiting environment scopes of variables](../../ci/variables/README.md#limiting-environment-scopes-of-environment-variables-premium).
 
 ### Customizing `.gitlab-ci.yml`
 
@@ -739,8 +739,8 @@ also be customized, and you can easily use a [custom buildpack](#custom-buildpac
 | `AUTO_DEVOPS_CHART_REPOSITORY_PASSWORD` | From Gitlab 11.11, this variable can be used to set a password to connect to the helm repository. Defaults to no credentials. (Also set AUTO_DEVOPS_CHART_REPOSITORY_USERNAME) |
 | `REPLICAS`                   | The number of replicas to deploy; defaults to 1.                                                                                                                                                                              |
 | `PRODUCTION_REPLICAS`        | The number of replicas to deploy in the production environment. This takes precedence over `REPLICAS`; defaults to 1.                                                                                                         |
-| `CANARY_REPLICAS`            | The number of canary replicas to deploy for [Canary Deployments](https://docs.gitlab.com/ee/user/project/canary_deployments.html); defaults to 1                                                                              |
-| `CANARY_PRODUCTION_REPLICAS` | The number of canary replicas to deploy for [Canary Deployments](https://docs.gitlab.com/ee/user/project/canary_deployments.html) in the production environment. This takes precedence over `CANARY_REPLICAS`; defaults to 1  |
+| `CANARY_REPLICAS`            | The number of canary replicas to deploy for [Canary Deployments](../../user/project/canary_deployments.md); defaults to 1                                                                              |
+| `CANARY_PRODUCTION_REPLICAS` | The number of canary replicas to deploy for [Canary Deployments](../../user/project/canary_deployments.md) in the production environment. This takes precedence over `CANARY_REPLICAS`; defaults to 1  |
 | `ADDITIONAL_HOSTS`           | Fully qualified domain names specified as a comma-separated list that are added to the ingress hosts.                                                                                                                         |
 | `<ENVIRONMENT>_ADDITIONAL_HOSTS` | For a specific environment, the fully qualified domain names specified as a comma-separated list that are added to the ingress hosts. This takes precedence over `ADDITIONAL_HOSTS`.                                      |
 | `POSTGRES_ENABLED`           | Whether PostgreSQL is enabled; defaults to `"true"`. Set to `false` to disable the automatic deployment of PostgreSQL.                                                                                                        |
@@ -917,7 +917,7 @@ you when you're ready to manually deploy to production.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ci-yml/merge_requests/171)
 in GitLab 11.0.
 
-A [canary environment](https://docs.gitlab.com/ee/user/project/canary_deployments.html) can be used
+A [canary environment](../../user/project/canary_deployments.md) can be used
 before any changes are deployed to production.
 
 If `CANARY_ENABLED` is defined in your project (e.g., set `CANARY_ENABLED` to

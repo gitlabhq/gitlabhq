@@ -70,5 +70,5 @@ We've gathered some resources to help you to get the best from Git with GitLab.
 
 - [Getting Started with Git LFS](https://about.gitlab.com/2017/01/30/getting-started-with-git-lfs-tutorial/)
 - [GitLab Git LFS documentation](../../workflow/lfs/manage_large_binaries_with_git_lfs.md)
-- [Git-Annex to Git-LFS migration guide](https://docs.gitlab.com/ee/workflow/lfs/migrate_from_git_annex_to_git_lfs.html)
+- [Git-Annex to Git-LFS migration guide](../../workflow/lfs/migrate_from_git_annex_to_git_lfs.md)
 - Article (2015-08-13): [Towards a production quality open source Git LFS server](https://about.gitlab.com/2015/08/13/towards-a-production-quality-open-source-git-lfs-server/)
