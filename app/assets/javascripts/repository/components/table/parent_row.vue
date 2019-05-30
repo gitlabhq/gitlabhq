@@ -27,8 +27,8 @@ export default {
 </script>
 
 <template>
-  <tr v-once @click="clickRow">
-    <td colspan="3" class="tree-item-file-name">
+  <tr class="tree-item">
+    <td colspan="3" class="tree-item-file-name" @click.self="clickRow">
       <router-link :to="parentRoute" :aria-label="__('Go to parent')">
         ..
       </router-link>
