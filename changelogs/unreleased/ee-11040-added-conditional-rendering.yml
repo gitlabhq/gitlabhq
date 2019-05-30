@@ -1,0 +1,5 @@
+---
+title: "Added conditional rendering to `app/views/search/_form.html.haml` for CE/EE code base consistency"
+merge_request: 28883
+author: Michel Engelen
+type: other

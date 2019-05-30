@@ -13,3 +13,4 @@
     - unless params[:snippets].eql? 'true'
       = render 'filter'
     = button_tag _("Search"), class: "btn btn-success btn-search"
+    = render_if_exists 'search/form_elasticsearch'
