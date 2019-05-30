@@ -863,7 +863,7 @@ You can check if everything is correct by connecting to each server using
 `redis-cli` application, and sending the `info replication` command as below.
 
 ```
-/opt/gitlab/embedded/bin/redis-cli -a <redis-password> info replication
+/opt/gitlab/embedded/bin/redis-cli -h <redis-host-or-ip> -a '<redis-password>' info replication
 ```
 
 When connected to a `master` redis, you will see the number of connected
