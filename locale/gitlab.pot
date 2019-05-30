@@ -9415,7 +9415,7 @@ msgstr ""
 msgid "Suggested change"
 msgstr ""
 
-msgid "SuggestedColors|Bright Green"
+msgid "SuggestedColors|Bright green"
 msgstr ""
 
 msgid "SuggestedColors|Dark grayish cyan"
@@ -9434,6 +9434,9 @@ msgid "SuggestedColors|Dark moderate violet"
 msgstr ""
 
 msgid "SuggestedColors|Feijoa"
+msgstr ""
+
+msgid "SuggestedColors|Lime green"
 msgstr ""
 
 msgid "SuggestedColors|Moderate blue"
@@ -9473,9 +9476,6 @@ msgid "SuggestedColors|Very dark lime green"
 msgstr ""
 
 msgid "SuggestedColors|Very pale orange"
-msgstr ""
-
-msgid "SuggestedColors|lime green"
 msgstr ""
 
 msgid "Sunday"
