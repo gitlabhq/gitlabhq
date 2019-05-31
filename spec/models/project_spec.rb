@@ -1147,7 +1147,7 @@ describe Project do
         allow(project).to receive(:avatar_in_git) { true }
       end
 
-      let(:avatar_path) { "/#{project.full_path}/avatar" }
+      let(:avatar_path) { "/#{project.full_path}/-/avatar" }
 
       it { is_expected.to eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
     end

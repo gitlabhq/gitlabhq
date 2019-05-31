@@ -264,7 +264,7 @@ describe('Api', () => {
       const namespace = 'some namespace';
       const project = 'some project';
       const labelData = { some: 'data' };
-      const expectedUrl = `${dummyUrlRoot}/${namespace}/${project}/labels`;
+      const expectedUrl = `${dummyUrlRoot}/${namespace}/${project}/-/labels`;
       const expectedData = {
         label: labelData,
       };

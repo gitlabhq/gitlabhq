@@ -124,6 +124,44 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             put :revoke
           end
         end
+
+        resources :milestones, constraints: { id: /\d+/ } do
+          member do
+            post :promote
+            put :sort_issues
+            put :sort_merge_requests
+            get :merge_requests
+            get :participants
+            get :labels
+          end
+        end
+
+        resources :labels, except: [:show], constraints: { id: /\d+/ } do
+          collection do
+            post :generate
+            post :set_priorities
+          end
+
+          member do
+            post :promote
+            post :toggle_subscription
+            delete :remove_priority
+          end
+        end
+
+        resources :services, constraints: { id: %r{[^/]+} }, only: [:edit, :update] do
+          member do
+            put :test
+          end
+        end
+
+        resources :boards, only: [:index, :show], constraints: { id: /\d+/ }
+        resources :releases, only: [:index]
+        resources :forks, only: [:index, :new, :create]
+        resources :group_links, only: [:index, :create, :update, :destroy], constraints: { id: /\d+/ }
+
+        resource :import, only: [:new, :create, :show]
+        resource :avatar, only: [:show, :destroy]
       end
       # End of the /-/ scope.
 
@@ -132,7 +170,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       #
       get '/templates/:template_type/:key' => 'templates#show', as: :template, constraints: { key: %r{[^/]+} }
 
-      resource  :avatar, only: [:show, :destroy]
       resources :commit, only: [:show], constraints: { id: /\h{7,40}/ } do
         member do
           get :branches
@@ -159,12 +196,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
       end
 
-      resources :services, constraints: { id: %r{[^/]+} }, only: [:edit, :update] do
-        member do
-          put :test
-        end
-      end
-
       resource :mattermost, only: [:new, :create]
 
       namespace :prometheus do
@@ -172,10 +203,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           get :active_common, on: :collection
         end
       end
-
-      resources :releases, only: [:index]
-      resources :forks, only: [:index, :new, :create]
-      resource :import, only: [:new, :create, :show]
 
       resources :merge_requests, concerns: :awardable, except: [:new, :create], constraints: { id: /\d+/ } do
         member do
@@ -372,31 +399,8 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
       end
 
-      resources :milestones, constraints: { id: /\d+/ } do
-        member do
-          post :promote
-          put :sort_issues
-          put :sort_merge_requests
-          get :merge_requests
-          get :participants
-          get :labels
-        end
-      end
-
-      resources :labels, except: [:show], constraints: { id: /\d+/ } do
-        collection do
-          post :generate
-          post :set_priorities
-        end
-
-        member do
-          post :promote
-          post :toggle_subscription
-          delete :remove_priority
-        end
-      end
-
       get :issues, to: 'issues#calendar', constraints: lambda { |req| req.format == :ics }
+
       resources :issues, concerns: :awardable, constraints: { id: /\d+/ } do
         member do
           post :toggle_subscription
@@ -408,13 +412,12 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           post :create_merge_request
           get :discussions, format: :json
         end
+
         collection do
           post :bulk_update
           post :import_csv
         end
       end
-
-      resources :group_links, only: [:index, :create, :update, :destroy], constraints: { id: /\d+/ }
 
       resources :notes, only: [:create, :destroy, :update], concerns: :awardable, constraints: { id: /\d+/ } do
         member do
@@ -425,8 +428,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       end
 
       get 'noteable/:target_type/:target_id/notes' => 'notes#index', as: 'noteable_notes'
-
-      resources :boards, only: [:index, :show], constraints: { id: /\d+/ }
 
       resources :todos, only: [:create]
 
@@ -510,7 +511,9 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           as: :project) do
       Gitlab::Routing.redirect_legacy_paths(self, :settings, :branches, :tags,
                                             :network, :graphs, :autocomplete_sources,
-                                            :project_members, :deploy_keys, :deploy_tokens)
+                                            :project_members, :deploy_keys, :deploy_tokens,
+                                            :labels, :milestones, :services, :boards, :releases,
+                                            :forks, :group_links, :import, :avatar)
     end
   end
 end
