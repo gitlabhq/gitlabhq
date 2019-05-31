@@ -28,8 +28,9 @@
       or
       %button.attach-new-file.markdown-selector{ type: 'button' }= _("attach a new file")
 
-    %button.markdown-selector.button-attach-file{ type: 'button', tabindex: '-1' }
+    %button.markdown-selector.button-attach-file.btn-link{ type: 'button', tabindex: '-1' }
       = icon('file-image-o', class: 'toolbar-button-icon')
-      = _("Attach a file")
+      %span.text-attach-file<>
+        = _("Attach a file")
 
     %button.btn.btn-default.btn-sm.hide.button-cancel-uploading-files{ type: 'button' }= _("Cancel")
