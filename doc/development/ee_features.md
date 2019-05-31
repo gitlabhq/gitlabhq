@@ -459,15 +459,6 @@ Resolving an EE template path that is relative to the CE view path will not work
 = render_if_exists 'projects/button' # Will render `ee/app/views/projects/_button`
 ```
 
-You should not explicitly set render options like `partial` or provide a `locals` hash.
-The first argument should be a path string and the second can be a hash replacing `locals`.
-
-```ruby
-render partial: 'projects/button', locals: { project: project }
-# becomes
-render_if_exists 'projects/button', project: project
-```
-
 #### Using `render_ce`
 
 For `render` and `render_if_exists`, they search for the EE partial first,
