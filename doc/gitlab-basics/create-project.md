@@ -16,7 +16,7 @@ To create a project in GitLab:
    - [Import a project](../user/project/import/index.md) from a different repository,
      if enabled on your GitLab instance. Contact your GitLab admin if this
      is unavailable.
-   - Run [CI/CD pipelines for external repositories](https://docs.gitlab.com/ee/ci/ci_cd_for_external_repos/index.html). **[PREMIUM]**
+   - Run [CI/CD pipelines for external repositories](../ci/ci_cd_for_external_repos/index.md). **[PREMIUM]**
 
 ## Blank projects
 

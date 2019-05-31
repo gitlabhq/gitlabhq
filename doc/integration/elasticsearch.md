@@ -8,8 +8,8 @@ This document describes how to set up Elasticsearch with GitLab. Once enabled,
 you'll have the benefit of fast search response times and the advantage of two
 special searches:
 
-- [Advanced Global Search](https://docs.gitlab.com/ee/user/search/advanced_global_search.html)
-- [Advanced Syntax Search](https://docs.gitlab.com/ee/user/search/advanced_search_syntax.html)
+- [Advanced Global Search](../user/search/advanced_global_search.md)
+- [Advanced Syntax Search](../user/search/advanced_search_syntax.md)
 
 ## Version Requirements
 <!-- Please remember to update ee/lib/system_check/app/elasticsearch_check.rb if this changes -->

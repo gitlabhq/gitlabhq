@@ -38,7 +38,7 @@ Future purchases will use the information in this section. The email listed in t
 
 ### Self-managed: Apply your license file
 
-After purchase, the license file is sent to the email address tied to the Customers portal account, which needs to be [uploaded to the GitLab instance](https://docs.gitlab.com/ee/user/admin_area/license.html#uploading-your-license).
+After purchase, the license file is sent to the email address tied to the Customers portal account, which needs to be [uploaded to the GitLab instance](../user/admin_area/license.md#uploading-your-license).
 
 ### Link your GitLab.com account with your Customers Portal account
 
