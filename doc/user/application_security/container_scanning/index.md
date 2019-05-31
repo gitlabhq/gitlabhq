@@ -119,7 +119,7 @@ container_scanning:
   variables:
     DOCKER_DRIVER: overlay2
     ## Define two new variables based on GitLab's CI/CD predefined variables
-    ## https://docs.gitlab.com/ee/ci/variables/#predefined-environment-variables
+    ## https://docs.gitlab.com/ee/ci/variables/README.html#predefined-environment-variables
     CI_APPLICATION_REPOSITORY: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG
     CI_APPLICATION_TAG: $CI_COMMIT_SHA
     CLAIR_LOCAL_SCAN_VERSION: v2.0.8_fe9b059d930314b54c78f75afe265955faf4fdc1
@@ -162,7 +162,7 @@ container_scanning:
   variables:
     DOCKER_DRIVER: overlay2
     ## Define two new variables based on GitLab's CI/CD predefined variables
-    ## https://docs.gitlab.com/ee/ci/variables/#predefined-environment-variables
+    ## https://docs.gitlab.com/ee/ci/variables/README.html#predefined-environment-variables
     CI_APPLICATION_REPOSITORY: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG
     CI_APPLICATION_TAG: $CI_COMMIT_SHA
     CLAIR_LOCAL_SCAN_VERSION: v2.0.8_fe9b059d930314b54c78f75afe265955faf4fdc1

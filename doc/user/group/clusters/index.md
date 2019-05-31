@@ -87,7 +87,7 @@ The domain should have a wildcard DNS configured to the Ingress IP address.
 When adding more than one Kubernetes cluster to your project, you need to differentiate
 them with an environment scope. The environment scope associates clusters with
 [environments](../../../ci/environments.md) similar to how the
-[environment-specific variables](https://docs.gitlab.com/ee/ci/variables/#limiting-environment-scopes-of-environment-variables-premium)
+[environment-specific variables](../../../ci/variables/README.md#limiting-environment-scopes-of-environment-variables-premium)
 work.
 
 While evaluating which environment matches the environment scope of a
