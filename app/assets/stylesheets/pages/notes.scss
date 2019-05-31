@@ -437,7 +437,9 @@ $note-form-margin-left: 72px;
 .diff-file {
   .is-over {
     .add-diff-note {
-      display: inline-block;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
     }
   }
 
@@ -741,7 +743,7 @@ $note-form-margin-left: 72px;
 .add-diff-note {
   @include btn-comment-icon;
   opacity: 0;
-  margin-left: -50px;
+  margin-left: -52px;
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
@@ -899,10 +901,6 @@ $note-form-margin-left: 72px;
 
   .diff-comment-form {
     display: block;
-  }
-
-  .add-diff-note svg {
-    margin-top: 4px;
   }
 }
 

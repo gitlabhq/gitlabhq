@@ -615,10 +615,9 @@ table.code {
 
 .diff-comment-avatar-holders {
   position: absolute;
-  height: 19px;
-  width: 19px;
-  margin-left: -15px;
+  margin-left: -$gl-padding;
   z-index: 100;
+  @include code-icon-size();
 
   &:hover {
     .diff-comment-avatar,
@@ -652,26 +651,28 @@ table.code {
 .diff-comments-more-count {
   position: absolute;
   left: 0;
-  width: 19px;
-  height: 19px;
   margin-right: 0;
   border-color: $white-light;
   cursor: pointer;
   transition: all 0.1s ease-out;
+  @include code-icon-size();
 
   @for $i from 1 through 4 {
     &:nth-child(#{$i}) {
       z-index: (4 - $i);
     }
   }
+
+  .avatar {
+    @include code-icon-size();
+  }
 }
 
 .diff-comments-more-count {
-  width: 19px;
-  min-width: 19px;
   padding-left: 0;
   padding-right: 0;
   overflow: hidden;
+  @include code-icon-size();
 }
 
 .diff-comments-more-count,
@@ -680,12 +681,15 @@ table.code {
 }
 
 .diff-notes-collapse {
-  width: 24px;
-  height: 24px;
+  border: 0;
   border-radius: 50%;
   padding: 0;
   transition: transform 0.1s ease-out;
   z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  @include code-icon-size();
 
   .collapse-icon {
     height: 50%;
