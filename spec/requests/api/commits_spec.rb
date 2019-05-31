@@ -2,6 +2,8 @@ require 'spec_helper'
 require 'mime/types'
 
 describe API::Commits do
+  include ProjectForksHelper
+
   let(:user) { create(:user) }
   let(:guest) { create(:user).tap { |u| project.add_guest(u) } }
   let(:project) { create(:project, :repository, creator: user, path: 'my.project') }
@@ -315,6 +317,96 @@ describe API::Commits do
           post api(url, user), params: valid_c_params
 
           expect(response).to have_gitlab_http_status(201)
+        end
+      end
+
+      context 'when the API user is a guest' do
+        def last_commit_id(project, branch_name)
+          project.repository.find_branch(branch_name)&.dereferenced_target&.id
+        end
+
+        let(:public_project) { create(:project, :public, :repository) }
+        let!(:url) { "/projects/#{public_project.id}/repository/commits" }
+        let(:guest) { create(:user).tap { |u| public_project.add_guest(u) } }
+
+        it 'returns a 403' do
+          post api(url, guest), params: valid_c_params
+
+          expect(response).to have_gitlab_http_status(403)
+        end
+
+        context 'when start_project is provided' do
+          context 'when posting to a forked project the user owns' do
+            let!(:forked_project) { fork_project(public_project, guest, namespace: guest.namespace, repository: true) }
+            let!(:url) { "/projects/#{forked_project.id}/repository/commits" }
+
+            before do
+              valid_c_params[:start_branch]  = "master"
+              valid_c_params[:branch]        = "patch"
+            end
+
+            context 'identified by Integer (id)' do
+              before do
+                valid_c_params[:start_project] = public_project.id
+              end
+
+              it 'adds a new commit to forked_project and returns a 201' do
+                expect { post api(url, guest), params: valid_c_params }
+                  .to change { last_commit_id(forked_project, valid_c_params[:branch]) }
+                  .and not_change { last_commit_id(public_project, valid_c_params[:start_branch]) }
+
+                expect(response).to have_gitlab_http_status(201)
+              end
+            end
+
+            context 'identified by String (full_path)' do
+              before do
+                valid_c_params[:start_project] = public_project.full_path
+              end
+
+              it 'adds a new commit to forked_project and returns a 201' do
+                expect { post api(url, guest), params: valid_c_params }
+                  .to change { last_commit_id(forked_project, valid_c_params[:branch]) }
+                  .and not_change { last_commit_id(public_project, valid_c_params[:start_branch]) }
+
+                expect(response).to have_gitlab_http_status(201)
+              end
+            end
+          end
+
+          context 'when the target project is not part of the fork network of start_project' do
+            let(:unrelated_project) { create(:project, :public, :repository, creator: guest) }
+            let!(:url) { "/projects/#{unrelated_project.id}/repository/commits" }
+
+            before do
+              valid_c_params[:start_branch]  = "master"
+              valid_c_params[:branch]        = "patch"
+              valid_c_params[:start_project] = public_project.id
+            end
+
+            it 'returns a 403' do
+              post api(url, guest), params: valid_c_params
+
+              expect(response).to have_gitlab_http_status(403)
+            end
+          end
+        end
+
+        context 'when posting to a forked project the user does not have write access' do
+          let!(:forked_project) { fork_project(public_project, user, namespace: user.namespace, repository: true) }
+          let!(:url) { "/projects/#{forked_project.id}/repository/commits" }
+
+          before do
+            valid_c_params[:start_branch]  = "master"
+            valid_c_params[:branch]        = "patch"
+            valid_c_params[:start_project] = public_project.id
+          end
+
+          it 'returns a 403' do
+            post api(url, guest), params: valid_c_params
+
+            expect(response).to have_gitlab_http_status(403)
+          end
         end
       end
     end
