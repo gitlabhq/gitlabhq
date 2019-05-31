@@ -33,15 +33,15 @@ With GitLab merge requests, you can:
 
 With **[GitLab Enterprise Edition][ee]**, you can also:
 
-- Prepare a full review and submit it once it's ready with [Merge Request Reviews](https://docs.gitlab.com/ee/user/discussions/index.md#merge-request-reviews-premium) **[PREMIUM]**
-- View the deployment process across projects with [Multi-Project Pipelines](https://docs.gitlab.com/ee/ci/multi_project_pipelines.md) **[PREMIUM]**
+- Prepare a full review and submit it once it's ready with [Merge Request Reviews](../../discussions/index.md#merge-request-reviews-premium) **[PREMIUM]**
+- View the deployment process across projects with [Multi-Project Pipelines](../../../ci/multi_project_pipelines.md) **[PREMIUM]**
 - Request [approvals](merge_request_approvals.md) from your managers **[STARTER]**
 - Analyze the impact of your changes with [Code Quality reports](code_quality.md) **[STARTER]**
-- Manage the licenses of your dependencies with [License Management](https://docs.gitlab.com/ee/user/application_security/license_management/index.md) **[ULTIMATE]**
-- Analyze your source code for vulnerabilities with [Static Application Security Testing](https://docs.gitlab.com/ee/user/application_security/sast/index.md) **[ULTIMATE]**
-- Analyze your running web applications for vulnerabilities with [Dynamic Application Security Testing](https://docs.gitlab.com/ee/user/application_security/dast/index.md) **[ULTIMATE]**
-- Analyze your dependencies for vulnerabilities with [Dependency Scanning](https://docs.gitlab.com/ee/user/application_security/dependency_scanning/index.md) **[ULTIMATE]**
-- Analyze your Docker images for vulnerabilities with [Container Scanning](https://docs.gitlab.com/ee/user/application_security/container_scanning/index.md) **[ULTIMATE]**
+- Manage the licenses of your dependencies with [License Management](../../application_security/license_management/index.md) **[ULTIMATE]**
+- Analyze your source code for vulnerabilities with [Static Application Security Testing](../../application_security/sast/index.md) **[ULTIMATE]**
+- Analyze your running web applications for vulnerabilities with [Dynamic Application Security Testing](../../application_security/dast/index.md) **[ULTIMATE]**
+- Analyze your dependencies for vulnerabilities with [Dependency Scanning](../../application_security/dependency_scanning/index.md) **[ULTIMATE]**
+- Analyze your Docker images for vulnerabilities with [Container Scanning](../../application_security/container_scanning/index.md) **[ULTIMATE]**
 - Determine the performance impact of changes with [Browser Performance Testing](#browser-performance-testing-premium) **[PREMIUM]**
 
 ## Use cases
@@ -174,7 +174,7 @@ Start a review in order to create multiple comments on a diff and publish them o
 Starting a review allows you to get all your thoughts in order and ensure you haven't missed anything
 before submitting all your comments.
 
-[Learn more about Merge Request Reviews](https://docs.gitlab.com/ee/user/discussions/index.html#merge-request-reviews-premium)
+[Learn more about Merge Request Reviews](../../discussions/index.md#merge-request-reviews-premium)
 
 ## Squash and merge
 
@@ -395,7 +395,7 @@ GitLab runs the [Sitespeed.io container][sitespeed-container] and displays the d
 
 GitLab can scan and report any vulnerabilities found in your project.
 
-[Read more about security reports.](https://docs.gitlab.com/ee/user/application_security/index.html)
+[Read more about security reports.](../../application_security/index.md)
 
 ## JUnit test reports
 
