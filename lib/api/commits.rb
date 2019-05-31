@@ -96,17 +96,27 @@ module API
           end
         end
         optional :start_branch, type: String, desc: 'Name of the branch to start the new commit from'
+        optional :start_project, types: [Integer, String], desc: 'The ID or path of the project to start the commit from'
         optional :author_email, type: String, desc: 'Author email for commit'
         optional :author_name, type: String, desc: 'Author name for commit'
         optional :stats, type: Boolean, default: true, desc: 'Include commit stats'
         optional :force, type: Boolean, default: false, desc: 'When `true` overwrites the target branch with a new commit based on the `start_branch`'
       end
       post ':id/repository/commits' do
+        if params[:start_project]
+          start_project = find_project!(params[:start_project])
+
+          unless user_project.forked_from?(start_project)
+            forbidden!("Project is not included in the fork network for #{start_project.full_name}")
+          end
+        end
+
         authorize_push_to_branch!(params[:branch])
 
         attrs = declared_params
         attrs[:branch_name] = attrs.delete(:branch)
         attrs[:start_branch] ||= attrs[:branch_name]
+        attrs[:start_project] = start_project if start_project
 
         result = ::Files::MultiService.new(user_project, current_user, attrs).execute
 
