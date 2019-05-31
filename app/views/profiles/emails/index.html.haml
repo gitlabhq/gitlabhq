@@ -26,7 +26,9 @@
         %li
           Your Commit Email will be used for web based operations, such as edits and merges.
         %li
-          Your Notification Email will be used for account notifications.
+          Your Default Notification Email will be used for account notifications if a
+          = link_to 'group-specific email address', profile_notifications_path
+          is not set.
         %li
           Your Public Email will be displayed on your public profile.
         %li
@@ -41,7 +43,7 @@
           - if @primary_email === current_user.public_email
             %span.badge.badge-info Public email
           - if @primary_email === current_user.notification_email
-            %span.badge.badge-info Notification email
+            %span.badge.badge-info Default notification email
       - @emails.each do |email|
         %li
           = render partial: 'shared/email_with_badge', locals: { email: email.email, verified: email.confirmed? }

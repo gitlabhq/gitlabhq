@@ -206,12 +206,12 @@ class Namespace < ApplicationRecord
       .ancestors(upto: top, hierarchy_order: hierarchy_order)
   end
 
-  def self_and_ancestors
+  def self_and_ancestors(hierarchy_order: nil)
     return self.class.where(id: id) unless parent_id
 
     Gitlab::ObjectHierarchy
       .new(self.class.where(id: id))
-      .base_and_ancestors
+      .base_and_ancestors(hierarchy_order: hierarchy_order)
   end
 
   # Returns all the descendants of the current namespace.
