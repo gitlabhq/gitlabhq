@@ -88,7 +88,7 @@ class Notify < BaseMailer
 
     # Return group-specific email address if present, otherwise return global
     # email address
-    group_notification_email.presence || @current_user.notification_email
+    group_notification_email || @current_user.notification_email
   end
 
   # Formats arguments into a String suitable for use as an email subject

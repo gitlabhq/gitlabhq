@@ -60,10 +60,9 @@ shared_examples 'an email sent to a user' do
     end
   end
 
-  context 'when project is in a sub-group' do
+  context 'when project is in a sub-group', :nested_groups do
     before do
-      project.group = subgroup
-      project.save!
+      project.update!(group: subgroup)
     end
 
     it 'is sent to user\'s subgroup notification email address when set' do

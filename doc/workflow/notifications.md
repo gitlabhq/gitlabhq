@@ -23,7 +23,7 @@ Each of these settings have levels of notification:
 - Disabled: Turns off notifications.
 - Custom: Receive notifications for custom selected events.
 
-> Introduced in GitLab 11.9
+> Introduced in GitLab 12.0
 
 You can also select an email address to receive notifications for each group you belong to.
 
