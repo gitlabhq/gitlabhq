@@ -6,7 +6,7 @@ describe Types::BaseField do
   context 'when considering complexity' do
     let(:resolver) do
       Class.new(described_class) do
-        def self.resolver_complexity(args)
+        def self.resolver_complexity(args, child_complexity:)
           2 if args[:foo]
         end
 

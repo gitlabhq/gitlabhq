@@ -33,7 +33,7 @@ module Types
         limit_value = [args[:first], args[:last], page_size].compact.min
 
         # Resolvers may add extra complexity depending on used arguments
-        complexity = child_complexity + self.resolver&.try(:resolver_complexity, args).to_i
+        complexity = child_complexity + self.resolver&.try(:resolver_complexity, args, child_complexity: child_complexity).to_i
 
         # Resolvers may add extra complexity depending on number of items being loaded.
         multiplier = self.resolver&.try(:complexity_multiplier, args).to_f
