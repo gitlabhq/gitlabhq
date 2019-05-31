@@ -65,7 +65,7 @@ Below you can read more about how to use it and how does it work.
 Currently, we are using _multi-project pipeline_-like approach to run QA
 pipelines.
 
-![QA on merge requests CI/CD architecture](img/qa_on_merge_requests_cicd_architecture.png)
+![QA on merge requests CI/CD architecture](../img/qa_on_merge_requests_cicd_architecture.png)
 
 <details>
 <summary>Show mermaid source</summary>
@@ -136,6 +136,12 @@ Once you decided where to put [test environment orchestration scenarios] and
 the [GitLab QA orchestrator README][gitlab-qa-readme], and [the already existing
 instance-level scenarios][instance-level scenarios].
 
+Continued reading:  
+
+- [Quick Start Guide](quick_start_guide.md)
+- [Style Guide](style_guide.md)
+- [Best Practices](best_practices.md)
+
 ## Where can I ask for help?
 
 You can ask question in the `#quality` channel on Slack (GitLab internal) or
@@ -149,7 +155,7 @@ you can find an issue you would like to work on in
 [gitlab-qa-readme]: https://gitlab.com/gitlab-org/gitlab-qa/tree/master/README.md
 [quality-nightly-pipelines]: https://gitlab.com/gitlab-org/quality/nightly/pipelines
 [quality-staging-pipelines]: https://gitlab.com/gitlab-org/quality/staging/pipelines
-[review-apps]: ./review_apps.md
+[review-apps]: ../review_apps.md
 [gitlab-qa-architecture]: https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/architecture.md
 [gitlab-qa-issues]: https://gitlab.com/gitlab-org/gitlab-qa/issues?label_name%5B%5D=new+scenario
 [gitlab-ce-issues]: https://gitlab.com/gitlab-org/gitlab-ce/issues?label_name[]=QA&label_name[]=test

@@ -1,6 +1,6 @@
-# Style guide for writing E2E tests
+# Style guide for writing end-to-end tests
 
-This document describes the conventions used at GitLab for writing E2E tests using the GitLab QA project.
+This document describes the conventions used at GitLab for writing End-to-end (E2E) tests using the GitLab QA project.
 
 ## `click_` versus `go_to_`
 
@@ -45,7 +45,7 @@ Notice that in the above example, before clicking the `:operations_environments_
 
 > We can create these methods as helpers to abstract multi-step navigation.
 
-### Element Naming Convention
+### Element naming convention
 
 When adding new elements to a page, it's important that we have a uniform element naming convention.
 
@@ -69,7 +69,8 @@ We follow a simple formula roughly based on hungarian notation.
   
 #### Examples
 
-**Good**  
+**Good**
+
 ```ruby
 view '...' do
   element :edit_button 
@@ -80,7 +81,8 @@ view '...' do
 end
 ```
 
-**Bad**  
+**Bad**
+
 ```ruby
 view '...' do  
   # `_confirmation` should be `_field`. what sort of confirmation? a checkbox confirmation? no real way to disambiguate.

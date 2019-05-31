@@ -178,7 +178,7 @@ Every new feature should come with a [test plan].
 | ---------- | -------------- | ----- |
 | `qa/qa/specs/features/` | [Capybara] + [RSpec] + Custom QA framework | Tests should be placed under their corresponding [Product category] |
 
-> See [end-to-end tests](end_to_end_tests.md) for more information.
+> See [end-to-end tests](end_to_end/index.md) for more information.
 
 Note that `qa/spec` contains unit tests of the QA framework itself, not to be
 confused with the application's [unit tests](#unit-tests) or

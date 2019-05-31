@@ -17,10 +17,10 @@ If you don't exactly understand what we mean by **not everything needs to happen
 - [2.](#2-test-skeleton) Creating the skeleton of the test file (`*_spec.rb`)
 - [3.](#3-test-cases-mvc) The [MVC](https://about.gitlab.com/handbook/values/#minimum-viable-change-mvc) of the test cases' logic
 - [4.](#4-extracting-duplicated-code) Extracting duplicated code into methods
-- [5.](#5-tests-pre-conditions-using-resources-and-page-objects) Tests' pre-conditions (`before :context` and `before`) using resources and [Page Objects](./qa/qa/page/README.md)
+- [5.](#5-tests-pre-conditions-using-resources-and-page-objects) Tests' pre-conditions (`before :context` and `before`) using resources and [Page Objects]
 - [6.](#6-optimization) Optimizing the test suite
 - [7.](#7-resources) Using and implementing resources
-- [8.](#8-page-objects) Moving element definitions and methods to [Page Objects](./qa/qa/page/README.md)
+- [8.](#8-page-objects) Moving element definitions and methods to [Page Objects]
 
 ### 0. Are end-to-end tests needed?
 
@@ -111,7 +111,7 @@ end
 
 > Notice that the test itself is simple. The most challenging part is the creation of the application state, which will be covered later.
 
-> The exemplified test case's MVC is not enough for the change to be merged, but it helps to build up the test logic. The reason is that we do not want to use locators directly in the tests, and tests **must** use [Page Objects](./qa/qa/page/README.md) before they can be merged. This way we better separate the responsibilities, where the Page Objects encapsulate elements and methods that allow us to interact with pages, while the spec files describe the test cases in more business-related language.
+> The exemplified test case's MVC is not enough for the change to be merged, but it helps to build up the test logic. The reason is that we do not want to use locators directly in the tests, and tests **must** use [Page Objects] before they can be merged. This way we better separate the responsibilities, where the Page Objects encapsulate elements and methods that allow us to interact with pages, while the spec files describe the test cases in more business-related language.
 
 Below are the steps that the test covers:
 
@@ -275,7 +275,7 @@ In the `before` block we create all the application state needed for the tests t
 
 > A project is created in the background by creating the `issue` resource.
 
-> When [creating the resources](./qa/qa/resource/README.md), notice that when calling the `fabricate_via_api` method, we pass some attribute:values, like `title`, and `labels` for the `issue` resource; and `project` and `title` for the `label` resource.
+> When creating the [Resources], notice that when calling the `fabricate_via_api` method, we pass some attribute:values, like `title`, and `labels` for the `issue` resource; and `project` and `title` for the `label` resource.
 
 > What's important to understand here is that by creating the application state mostly using the public APIs we save a lot of time in the test suite setup stage.
 
@@ -283,7 +283,7 @@ In the `before` block we create all the application state needed for the tests t
 
 ### 6. Optimization
 
-As already mentioned in the [best practices](./BEST_PRACTICES.md) document, end-to-end tests are very costly in terms of execution time, and it's our responsibility as software engineers to ensure that we optimize them as much as possible.
+As already mentioned in the [best practices](best_practices.md) document, end-to-end tests are very costly in terms of execution time, and it's our responsibility as software engineers to ensure that we optimize them as much as possible.
 
 > Note that end-to-end tests are slow to run and so they can have several actions and assertions in a single test, which helps us get feedback from the tests sooner. In comparison, unit tests are much faster to run and can exercise every little piece of the application in isolation, and so they usually have only one assertion per test.
 
@@ -339,7 +339,7 @@ To address point 1, we changed the test implementation from two `it` blocks into
 
 **Note:** When writing this document, some code that is now merged to master was not implemented yet, but we left them here for the readers to understand the whole process of end-to-end test creation.
 
-You can think of [resources](qa/qa/resource/README.md) as anything that can be created on GitLab CE or EE, either through the GUI, the API, or the CLI.
+You can think of [Resources] as anything that can be created on GitLab CE or EE, either through the GUI, the API, or the CLI.
 
 With that in mind, resources can be a project, an epic, an issue, a label, a commit, etc.
 
@@ -439,7 +439,7 @@ Page Objects are used in end-to-end tests for maintenance reasons, where a page'
 
 > Page Objects are auto-loaded in the `qa/qa.rb` file and available in all the test files (`*_spec.rb`).
 
-Take a look at [this document for a detailed explanation about Page Objects](./qa/page/README.md).
+Take a look at the [Page Objects] documentation.
 
 Now, let's go back to our example.
 
@@ -580,3 +580,6 @@ As you might remember, in the Issue Page Object we call this method like this: `
 ___
 
 With that, you should be able to start writing end-to-end tests yourself. *Congratulations!*
+
+[Page Objects]: page_objects.md
+[Resources]: resources.md
