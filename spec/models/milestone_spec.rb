@@ -31,11 +31,27 @@ describe Milestone do
     end
 
     describe 'start_date' do
-      it 'adds an error when start_date is greated then due_date' do
+      it 'adds an error when start_date is greater then due_date' do
         milestone = build(:milestone, start_date: Date.tomorrow, due_date: Date.yesterday)
 
         expect(milestone).not_to be_valid
         expect(milestone.errors[:due_date]).to include("must be greater than start date")
+      end
+
+      it 'adds an error when start_date is greater than 9999-12-31' do
+        milestone = build(:milestone, start_date: Date.new(10000, 1, 1))
+
+        expect(milestone).not_to be_valid
+        expect(milestone.errors[:start_date]).to include("date must not be after 9999-12-31")
+      end
+    end
+
+    describe 'due_date' do
+      it 'adds an error when due_date is greater than 9999-12-31' do
+        milestone = build(:milestone, due_date: Date.new(10000, 1, 1))
+
+        expect(milestone).not_to be_valid
+        expect(milestone.errors[:due_date]).to include("date must not be after 9999-12-31")
       end
     end
   end
@@ -379,21 +395,6 @@ describe Milestone do
 
       it 'returns no results' do
         expect(milestone_ids).to be_empty
-      end
-    end
-
-    context 'when there is a milestone with a date after 294276 AD', :postgresql do
-      before do
-        past_milestone_project_1.update!(due_date: Date.new(294277, 1, 1))
-      end
-
-      it 'returns the next upcoming open milestone ID for each project and group' do
-        expect(milestone_ids).to contain_exactly(
-          current_milestone_project_1.id,
-          current_milestone_project_2.id,
-          current_milestone_group_1.id,
-          current_milestone_group_2.id
-        )
       end
     end
   end

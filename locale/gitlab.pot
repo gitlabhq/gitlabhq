@@ -11991,6 +11991,9 @@ msgstr ""
 msgid "customize"
 msgstr ""
 
+msgid "date must not be after 9999-12-31"
+msgstr ""
+
 msgid "day"
 msgid_plural "days"
 msgstr[0] ""
