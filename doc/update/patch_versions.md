@@ -108,7 +108,7 @@ sudo -u git -H make
 
 ### 8. Install/Update `gitlab-elasticsearch-indexer` (optional) **[STARTER ONLY]**
 
-If you're interested in using GitLab's new [elasticsearch repository indexer](https://docs.gitlab.com/ee/integration/elasticsearch.html#elasticsearch-repository-indexer-beta) (currently in beta)
+If you're interested in using GitLab's new [elasticsearch repository indexer](../integration/elasticsearch.md#elasticsearch-repository-indexer-beta) (currently in beta)
 please follow the instructions on the document linked above and enable the
 indexer usage in the GitLab admin settings.
 

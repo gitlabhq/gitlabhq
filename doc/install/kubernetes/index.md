@@ -10,7 +10,7 @@ If you're not sure if Kubernetes is for you, our
 [Omnibus GitLab packages](../README.md#installing-gitlab-using-the-omnibus-gitlab-package-recommended)
 are mature, scalable, support [high availability](../../administration/high_availability/README.md)
 and are used today on GitLab.com.
-It is not necessary to have GitLab installed on Kubernetes in order to use [GitLab Kubernetes integration](https://docs.gitlab.com/ee/user/project/clusters/index.html). 
+It is not necessary to have GitLab installed on Kubernetes in order to use [GitLab Kubernetes integration](../../user/project/clusters/index.md). 
 
 The easiest method to deploy GitLab on [Kubernetes](https://kubernetes.io/) is
 to take advantage of GitLab's Helm charts. [Helm](https://github.com/kubernetes/helm/blob/master/README.md)
