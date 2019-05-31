@@ -612,16 +612,6 @@ describe Gitlab::Shell do
         FileUtils.rm_rf(created_path)
       end
 
-      it 'creates a repository' do
-        expect(gitlab_shell.create_repository(repository_storage, repo_name, repo_name)).to be_truthy
-
-        expect(File.stat(created_path).mode & 0o777).to eq(0o770)
-
-        hooks_path = File.join(created_path, 'hooks')
-        expect(File.lstat(hooks_path)).to be_symlink
-        expect(File.realpath(hooks_path)).to eq(gitlab_shell_hooks_path)
-      end
-
       it 'returns false when the command fails' do
         FileUtils.mkdir_p(File.dirname(created_path))
         # This file will block the creation of the repo's .git directory. That
