@@ -296,7 +296,7 @@ To enable this feature, navigate to the group settings page. Select
 Member lock lets a group owner prevent any new project membership to all of the
 projects within a group, allowing tighter control over project membership.
 
-For example, if you want to lock the group for an [Audit Event](https://docs.gitlab.com/ee/administration/audit_events.html),
+For example, if you want to lock the group for an [Audit Event](../../administration/audit_events.md),
 enable Member lock to guarantee that project membership cannot be modified during that audit.
 
 To enable this feature:
@@ -315,7 +315,7 @@ request to add a new user to a project through API will not be possible.
 
 Group file templates allow you to share a set of templates for common file
 types with every project in a group. It is analogous to the
-[instance template repository](https://docs.gitlab.com/ee/user/admin_area/settings/instance_template_repository.html)
+[instance template repository](../admin_area/settings/instance_template_repository.md)
 feature, and the selected project should follow the same naming conventions as
 are documented on that page.
 
@@ -346,7 +346,7 @@ Define project templates at a group level by setting a group as the template sou
   access each project's settings, and remove any project, all from the same screen.
 - **Webhooks**: Configure [webhooks](../project/integrations/webhooks.md) for your group.
 - **Kubernetes cluster integration**: Connect your GitLab group with [Kubernetes clusters](clusters/index.md).
-- **Audit Events**: View [Audit Events](https://docs.gitlab.com/ee/administration/audit_events.html)
+- **Audit Events**: View [Audit Events](../../administration/audit_events.md)
   for the group. **[STARTER ONLY]**
 - **Pipelines quota**: Keep track of the [pipeline quota](../admin_area/settings/continuous_integration.md) for the group.
 

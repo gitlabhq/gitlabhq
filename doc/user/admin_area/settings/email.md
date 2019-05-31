@@ -40,7 +40,7 @@ In order to change this option:
 1. Hit **Save** for the changes to take effect.
 
 NOTE: **Note**: Once the hostname gets configured, every private commit email using the previous hostname, will not get
-recognized by GitLab. This can directly conflict with certain [Push rules](https://docs.gitlab.com/ee/push_rules/push_rules.html) such as
+recognized by GitLab. This can directly conflict with certain [Push rules](../../../push_rules/push_rules.md) such as
 `Check whether author is a GitLab user` and `Check whether committer is the current authenticated user`.
 
 <!-- ## Troubleshooting
