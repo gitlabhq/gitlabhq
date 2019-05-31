@@ -1633,7 +1633,6 @@ ActiveRecord::Schema.define(version: 20190527194900) do
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
     t.boolean "enabled"
-    t.string "domain"
     t.integer "deploy_strategy", default: 0, null: false
     t.index ["project_id"], name: "index_project_auto_devops_on_project_id", unique: true, using: :btree
   end

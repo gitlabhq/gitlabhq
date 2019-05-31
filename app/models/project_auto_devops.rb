@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 class ProjectAutoDevops < ApplicationRecord
+  include IgnorableColumn
+
+  ignore_column :domain
+
   belongs_to :project
 
   enum deploy_strategy: {
@@ -11,8 +15,6 @@ class ProjectAutoDevops < ApplicationRecord
 
   scope :enabled, -> { where(enabled: true) }
   scope :disabled, -> { where(enabled: false) }
-
-  validates :domain, allow_blank: true, hostname: { allow_numeric_hostname: true }
 
   after_save :create_gitlab_deploy_token, if: :needs_to_create_deploy_token?
 
