@@ -26,6 +26,8 @@ module QA
         Page::Main::Login.perform(&:sign_in_using_credentials)
 
         set_file_size_limit('')
+
+        Page::Main::Menu.perform(&:sign_out)
       end
 
       it 'push successful when the file size is under the limit' do
