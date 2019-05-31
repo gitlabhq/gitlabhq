@@ -334,7 +334,7 @@ table {
 .toolbar-button-icon {
   position: relative;
   top: 1px;
-  margin-right: 3px;
+  margin-right: $gl-padding-4;
   color: inherit;
   font-size: 16px;
 }
@@ -461,6 +461,15 @@ table {
   border: 0;
   font-size: 14px;
   line-height: 16px;
+
+  &:hover,
+  &:focus {
+    text-decoration: none;
+
+    .text-attach-file {
+      text-decoration: underline;
+    }
+  }
 }
 
 .markdown-selector {
