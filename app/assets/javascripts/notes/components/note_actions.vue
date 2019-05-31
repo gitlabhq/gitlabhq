@@ -147,6 +147,7 @@ export default {
         class="note-action-button note-emoji-button js-add-award js-note-emoji"
         href="#"
         title="Add reaction"
+        data-position="right"
       >
         <icon css-classes="link-highlight award-control-icon-neutral" name="slight-smile" />
         <icon css-classes="link-highlight award-control-icon-positive" name="smiley" />
