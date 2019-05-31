@@ -385,3 +385,8 @@
   height: $size;
   margin-right: $margin-right;
 }
+
+@mixin code-icon-size() {
+  width: $gl-font-size * $code-line-height * 0.9;
+  height: $gl-font-size * $code-line-height * 0.9;
+}
