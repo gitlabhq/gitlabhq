@@ -14,7 +14,8 @@ describe Gitlab::ImportSources do
           'Repo by URL'      => 'git',
           'GitLab export'    => 'gitlab_project',
           'Gitea'            => 'gitea',
-          'Manifest file'    => 'manifest'
+          'Manifest file'    => 'manifest',
+          'Phabricator'      => 'phabricator'
         }
 
       expect(described_class.options).to eq(expected)
@@ -35,6 +36,7 @@ describe Gitlab::ImportSources do
           gitlab_project
           gitea
           manifest
+          phabricator
         )
 
       expect(described_class.values).to eq(expected)
@@ -53,6 +55,7 @@ describe Gitlab::ImportSources do
           fogbugz
           gitlab_project
           gitea
+          phabricator
         )
 
       expect(described_class.importer_names).to eq(expected)
@@ -70,7 +73,8 @@ describe Gitlab::ImportSources do
       'git' => nil,
       'gitlab_project' => Gitlab::ImportExport::Importer,
       'gitea' => Gitlab::LegacyGithubImport::Importer,
-      'manifest' => nil
+      'manifest' => nil,
+      'phabricator' => Gitlab::PhabricatorImport::Importer
     }
 
     import_sources.each do |name, klass|
@@ -91,7 +95,8 @@ describe Gitlab::ImportSources do
       'git' => 'Repo by URL',
       'gitlab_project' => 'GitLab export',
       'gitea' => 'Gitea',
-      'manifest' => 'Manifest file'
+      'manifest' => 'Manifest file',
+      'phabricator' => 'Phabricator'
     }
 
     import_sources.each do |name, title|
@@ -102,7 +107,7 @@ describe Gitlab::ImportSources do
   end
 
   describe 'imports_repository? checker' do
-    let(:allowed_importers) { %w[github gitlab_project bitbucket_server] }
+    let(:allowed_importers) { %w[github gitlab_project bitbucket_server phabricator] }
 
     it 'fails if any importer other than the allowed ones implements this method' do
       current_importers = described_class.values.select { |kind| described_class.importer(kind).try(:imports_repository?) }

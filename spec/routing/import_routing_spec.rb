@@ -174,3 +174,15 @@ describe Import::GitlabProjectsController, 'routing' do
     expect(get('/import/gitlab_project/new')).to route_to('import/gitlab_projects#new')
   end
 end
+
+# new_import_phabricator GET  /import/phabricator/new(.:format) import/phabricator#new
+# import_phabricator     POST /import/phabricator(.:format)     import/phabricator#create
+describe Import::PhabricatorController, 'routing' do
+  it 'to #create' do
+    expect(post("/import/phabricator")).to route_to("import/phabricator#create")
+  end
+
+  it 'to #new' do
+    expect(get("/import/phabricator/new")).to route_to("import/phabricator#new")
+  end
+end

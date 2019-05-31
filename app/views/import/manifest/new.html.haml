@@ -4,9 +4,5 @@
 %h3.page-title
   = _('Manifest file import')
 
-- if @errors.present?
-  .alert.alert-danger
-    - @errors.each do |error|
-      = error
-
+= render 'import/shared/errors'
 = render 'form'
