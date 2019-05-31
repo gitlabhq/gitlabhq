@@ -1,8 +1,6 @@
 %p.slead
-  Should you ever lose your phone or access to your one time password secret, each of these recovery codes can be used one
-  time each to regain access to your account. Please save them in a safe place, or you
-  %b will
-  lose access to your account.
+  - lose_2fa_message =  _('Should you ever lose your phone or access to your one time password secret, each of these recovery codes can be used one time each to regain access to your account. Please save them in a safe place, or you %{b_start}will%{b_end} lose access to your account.') % { b_start:'<b>', b_end:'</b>' }
+  = lose_2fa_message.html_safe
 
 .codes.card
   %ul
@@ -11,5 +9,5 @@
         %span.monospace= code
 
 .d-flex
-  = link_to 'Proceed', profile_account_path, class: 'btn btn-success append-right-10'
-  = link_to 'Download codes', "data:text/plain;charset=utf-8,#{CGI.escape(@codes.join("\n"))}", download: "gitlab-recovery-codes.txt", class: 'btn btn-default'
+  = link_to _('Proceed'), profile_account_path, class: 'btn btn-success append-right-10'
+  = link_to _('Download codes'), "data:text/plain;charset=utf-8,#{CGI.escape(@codes.join("\n"))}", download: "gitlab-recovery-codes.txt", class: 'btn btn-default'

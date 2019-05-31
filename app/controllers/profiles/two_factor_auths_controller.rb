@@ -18,7 +18,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
       two_factor_authentication_reason(
         global: lambda do
           flash.now[:alert] =
-            s_('The global settings require you to enable Two-Factor Authentication for your account.')
+            _('The global settings require you to enable Two-Factor Authentication for your account.')
         end,
         group: lambda do |groups|
           flash.now[:alert] = groups_notification(groups)
@@ -27,7 +27,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
 
       unless two_factor_grace_period_expired?
         grace_period_deadline = current_user.otp_grace_period_started_at + two_factor_grace_period.hours
-        flash.now[:alert] = flash.now[:alert] + s_(" You need to do this before %{grace_period_deadline}.") % { grace_period_deadline: l(grace_period_deadline) }
+        flash.now[:alert] = flash.now[:alert] + _(" You need to do this before %{grace_period_deadline}.") % { grace_period_deadline: l(grace_period_deadline) }
       end
     end
 
@@ -44,7 +44,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
 
       render 'create'
     else
-      @error = s_('Invalid pin code')
+      @error = _('Invalid pin code')
       @qr_code = build_qr_code
       setup_u2f_registration
       render 'show'
