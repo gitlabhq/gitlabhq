@@ -22,7 +22,7 @@ Consider a team formed by frontend developers, backend developers,
 UX designers, QA testers, and a product manager working together to bring an idea to
 market.
 
-Multiple Assignees for Issues makes collaboration smother,
+Multiple Assignees for Issues makes collaboration smoother,
 and allows shared responsibilities to be clearly displayed.
 All assignees are shown across your team's workflows and receive notifications (as they
 would as single assignees), simplifying communication and ownership.
