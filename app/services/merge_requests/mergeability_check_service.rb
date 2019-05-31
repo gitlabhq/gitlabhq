@@ -2,6 +2,8 @@
 
 module MergeRequests
   class MergeabilityCheckService < ::BaseService
+    include Gitlab::Utils::StrongMemoize
+
     delegate :project, to: :@merge_request
     delegate :repository, to: :project
 
@@ -16,8 +18,8 @@ module MergeRequests
     # and the merge-ref is synced. Success in case of being/becoming mergeable,
     # error otherwise.
     def execute
-      return ServiceResponse.error('Invalid argument') unless merge_request
-      return ServiceResponse.error('Unsupported operation') if Gitlab::Database.read_only?
+      return ServiceResponse.error(message: 'Invalid argument') unless merge_request
+      return ServiceResponse.error(message: 'Unsupported operation') if Gitlab::Database.read_only?
 
       update_merge_status
 
@@ -25,12 +27,38 @@ module MergeRequests
         return ServiceResponse.error(message: 'Merge request is not mergeable')
       end
 
-      ServiceResponse.success
+      unless payload.fetch(:merge_ref_head)
+        return ServiceResponse.error(message: 'Merge ref was not found')
+      end
+
+      ServiceResponse.success(payload: payload)
     end
 
     private
 
     attr_reader :merge_request
+
+    def payload
+      strong_memoize(:payload) do
+        {
+          merge_ref_head: merge_ref_head_payload
+        }
+      end
+    end
+
+    def merge_ref_head_payload
+      commit = merge_request.merge_ref_head
+
+      return unless commit
+
+      target_id, source_id = commit.parent_ids
+
+      {
+        commit_id: commit.id,
+        source_id: source_id,
+        target_id: target_id
+      }
+    end
 
     def update_merge_status
       return unless merge_request.recheck_merge_status?

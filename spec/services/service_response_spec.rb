@@ -16,6 +16,13 @@ describe ServiceResponse do
       expect(response).to be_success
       expect(response.message).to eq('Good orange')
     end
+
+    it 'creates a successful response with payload' do
+      response = described_class.success(payload: { good: 'orange' })
+
+      expect(response).to be_success
+      expect(response.payload).to eq(good: 'orange')
+    end
   end
 
   describe '.error' do
@@ -32,6 +39,15 @@ describe ServiceResponse do
       expect(response).to be_error
       expect(response.message).to eq('Bad apple')
       expect(response.http_status).to eq(400)
+    end
+
+    it 'creates a failed response with payload' do
+      response = described_class.error(message: 'Bad apple',
+                                       payload: { bad: 'apple' })
+
+      expect(response).to be_error
+      expect(response.message).to eq('Bad apple')
+      expect(response.payload).to eq(bad: 'apple')
     end
   end
 

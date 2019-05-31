@@ -404,8 +404,8 @@ module API
 
         result = ::MergeRequests::MergeabilityCheckService.new(merge_request).execute
 
-        if result.success? && commit = merge_request.merge_ref_head
-          present :commit_id, commit.sha
+        if result.success?
+          present :commit_id, result.payload.dig(:merge_ref_head, :commit_id)
         else
           render_api_error!(result.message, 400)
         end
