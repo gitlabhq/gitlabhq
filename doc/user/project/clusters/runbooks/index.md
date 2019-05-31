@@ -34,7 +34,7 @@ for an overview of how this is accomplished in GitLab!**
 To create an executable runbook, you will need:
 
 1. **Kubernetes** - A Kubernetes cluster is required to deploy the rest of the applications. 
-    The simplest way to get started is to add a cluster using [GitLab's GKE integration](https://docs.gitlab.com/ee/user/project/clusters/#adding-and-creating-a-new-gke-cluster-via-gitlab).
+    The simplest way to get started is to add a cluster using [GitLab's GKE integration](../index.md#adding-and-creating-a-new-gke-cluster-via-gitlab).
 1. **Helm Tiller** - Helm is a package manager for Kubernetes and is required to install 
     all the other applications. It is installed in its own pod inside the cluster which 
     can run the helm CLI in a safe environment.
@@ -59,7 +59,7 @@ the components outlined above and the preloaded demo runbook.
 
 ### 1. Add a Kubernetes cluster
 
-Follow the steps outlined in [Adding and creating a new GKE cluster via GitLab](https://docs.gitlab.com/ee/user/project/clusters/#adding-and-creating-a-new-gke-cluster-via-gitlab) 
+Follow the steps outlined in [Adding and creating a new GKE cluster via GitLab](../index.md#adding-and-creating-a-new-gke-cluster-via-gitlab) 
 to add a Kubernetes cluster to your project.
 
 ### 2. Install Helm Tiller, Ingress, and JupyterHub
@@ -90,7 +90,7 @@ The server will take a couple of seconds to start.
 ### 4. Configure access
 
 In order for the runbook to access your GitLab project, you will need to enter a
-[GitLab Access Token](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html)
+[GitLab Access Token](../../../profile/personal_access_tokens.md)
 as well as your Project ID in the **Setup** section of the demo runbook.
 
 Double-click the **DevOps-Runbook-Demo** folder located on the left panel.

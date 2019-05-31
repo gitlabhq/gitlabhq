@@ -1,5 +1,5 @@
 ---
-redirect_to: 'https://docs.gitlab.com/ee/user/application_security/dast/index.html'
+redirect_to: '../../application_security/dast/index.md'
 ---
 
-This document was moved to [another location](https://docs.gitlab.com/ee/user/application_security/dast/index.html).
+This document was moved to [another location](../../application_security/dast/index.md).
