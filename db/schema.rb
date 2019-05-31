@@ -1744,7 +1744,7 @@ ActiveRecord::Schema.define(version: 20190527194900) do
     t.bigint "repository_size", default: 0, null: false
     t.bigint "lfs_objects_size", default: 0, null: false
     t.bigint "build_artifacts_size", default: 0, null: false
-    t.bigint "packages_size"
+    t.bigint "packages_size", default: 0, null: false
     t.bigint "wiki_size"
     t.index ["namespace_id"], name: "index_project_statistics_on_namespace_id", using: :btree
     t.index ["project_id"], name: "index_project_statistics_on_project_id", unique: true, using: :btree
