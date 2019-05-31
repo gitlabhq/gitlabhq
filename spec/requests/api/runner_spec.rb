@@ -1632,8 +1632,8 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
             let!(:metadata) { file_upload2 }
             let!(:metadata_sha256) { Digest::SHA256.file(metadata.path).hexdigest }
 
-            let(:stored_artifacts_file) { job.reload.artifacts_file.file }
-            let(:stored_metadata_file) { job.reload.artifacts_metadata.file }
+            let(:stored_artifacts_file) { job.reload.artifacts_file }
+            let(:stored_metadata_file) { job.reload.artifacts_metadata }
             let(:stored_artifacts_size) { job.reload.artifacts_size }
             let(:stored_artifacts_sha256) { job.reload.job_artifacts_archive.file_sha256 }
             let(:stored_metadata_sha256) { job.reload.job_artifacts_metadata.file_sha256 }
@@ -1654,9 +1654,9 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
 
               it 'stores artifacts and artifacts metadata' do
                 expect(response).to have_gitlab_http_status(201)
-                expect(stored_artifacts_file.original_filename).to eq(artifacts.original_filename)
-                expect(stored_metadata_file.original_filename).to eq(metadata.original_filename)
-                expect(stored_artifacts_size).to eq(72821)
+                expect(stored_artifacts_file.filename).to eq(artifacts.original_filename)
+                expect(stored_metadata_file.filename).to eq(metadata.original_filename)
+                expect(stored_artifacts_size).to eq(artifacts.size)
                 expect(stored_artifacts_sha256).to eq(artifacts_sha256)
                 expect(stored_metadata_sha256).to eq(metadata_sha256)
               end
