@@ -48,7 +48,7 @@ class ProjectStatistics < ApplicationRecord
 
   # older migrations fail due to non-existent attribute without this
   def packages_size
-    has_attribute?(:packages_size) ? super.to_i : 0
+    has_attribute?(:packages_size) ? super : 0
   end
 
   def update_storage_size
