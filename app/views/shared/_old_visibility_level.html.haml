@@ -1,6 +1,6 @@
 .form-group.row
   .col-sm-2.col-form-label
     = _('Visibility level')
-    = link_to icon('question-circle'), help_page_path("public_access/public_access")
+    = link_to icon('question-circle'), help_page_path("public_access/public_access"), target: '_blank'
   .col-sm-10
     = render 'shared/visibility_level', f: f, visibility_level: visibility_level, can_change_visibility_level: can_change_visibility_level, form_model: form_model, with_label: with_label
