@@ -288,6 +288,20 @@ installations from source.
 
 It logs information whenever [Rack Attack] registers an abusive request.
 
+## `graphql_json.log`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/59587) in GitLab 12.0.
+
+This file lives in `/var/log/gitlab/gitlab-rails/graphql_json.log` for
+Omnibus GitLab packages or in `/home/git/gitlab/log/graphql_json.log` for
+installations from source.
+
+GraphQL queries are recorded in that file. For example:
+
+```json
+{"query_string":"query IntrospectionQuery{__schema {queryType { name },mutationType { name }}}...(etc)","variables":{"a":1,"b":2},"complexity":181,"depth":1,"duration":7}
+```
+
 ## Reconfigure Logs
 
 Reconfigure log files live in `/var/log/gitlab/reconfigure` for Omnibus GitLab

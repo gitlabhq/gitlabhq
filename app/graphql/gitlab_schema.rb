@@ -16,7 +16,7 @@ class GitlabSchema < GraphQL::Schema
   use Gitlab::Graphql::Connections
   use Gitlab::Graphql::GenericTracing
 
-  query_analyzer Gitlab::Graphql::QueryAnalyzers::LogQueryComplexity.analyzer
+  query_analyzer Gitlab::Graphql::QueryAnalyzers::LoggerAnalyzer.new
 
   query(Types::QueryType)
 

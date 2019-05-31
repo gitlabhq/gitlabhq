@@ -111,4 +111,29 @@ describe 'GitlabSchema configurations' do
       expect(graphql_errors).to be_nil
     end
   end
+
+  context 'logging' do
+    let(:query) { File.read(Rails.root.join('spec/fixtures/api/graphql/introspection.graphql')) }
+
+    it 'logs the query complexity and depth' do
+      analyzer_memo = {
+        query_string: query,
+        variables: {}.to_s,
+        complexity: 181,
+        depth: 0,
+        duration: 7
+      }
+
+      expect_any_instance_of(Gitlab::Graphql::QueryAnalyzers::LoggerAnalyzer).to receive(:duration).and_return(7)
+      expect(Gitlab::GraphqlLogger).to receive(:info).with(analyzer_memo)
+
+      post_graphql(query, current_user: nil)
+    end
+
+    it 'logs using `format_message`' do
+      expect_any_instance_of(Gitlab::GraphqlLogger).to receive(:format_message)
+
+      post_graphql(query, current_user: nil)
+    end
+  end
 end
