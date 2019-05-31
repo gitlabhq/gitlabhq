@@ -12,7 +12,7 @@ project can have its own space to store its Maven artifacts.
 
 NOTE: **Note:**
 This option is available only if your GitLab administrator has
-[enabled support for the Maven repository](https://docs.gitlab.com/ee/administration/packages.html).**[PREMIUM ONLY]**
+[enabled support for the Maven repository](../../../administration/packages.md).**[PREMIUM ONLY]**
 
 After the Packages feature is enabled, the Maven Repository will be available for
 all new projects by default. To enable it for existing projects, or if you want

@@ -9,9 +9,9 @@ Gemnasium has been [acquired by GitLab](https://about.gitlab.com/press/releases/
 in January 2018. Since May 15, 2018, the services provided by Gemnasium are no longer available.
 The team behind Gemnasium has joined GitLab as the new Security Products team
 and is working on a wider range of tools than just Dependency Scanning:
-[SAST](https://docs.gitlab.com/ee/user/application_security/sast/index.html),
-[DAST](https://docs.gitlab.com/ee/user/application_security/dast/index.html),
-[Container Scanning](https://docs.gitlab.com/ee/user/application_security/container_scanning/index.html) and more.
+[SAST](../../application_security/sast/index.md),
+[DAST](../../application_security/dast/index.md),
+[Container Scanning](../../application_security/container_scanning/index.md) and more.
 If you want to continue monitoring your dependencies, see the
 [Migrating to GitLab](#migrating-to-gitlab) section below.
 
@@ -45,7 +45,7 @@ Security features are free for public (open-source) projects hosted on GitLab.co
 You're almost set! If you're already using
 [Auto DevOps](../../../topics/autodevops/), you are already covered.
 Otherwise, you must configure your `.gitlab-ci.yml` according to the
-[dependency scanning page](https://docs.gitlab.com/ee/user/application_security/dependency_scanning/index.html).
+[dependency scanning page](../../application_security/dependency_scanning/index.md).
 
 ### If your project is hosted on GitHub (https://github.com / GitHub Enterprise)
 
@@ -81,7 +81,7 @@ back to both GitLab and GitHub when completed.
 
 1. To set up the dependency scanning job, corresponding to what Gemnasium was
    doing, you must create a `.gitlab-ci.yml` file, or update it according to
-   the [dependency scanning docs](https://docs.gitlab.com/ee/user/application_security/dependency_scanning/index.html).
+   the [dependency scanning docs](../../application_security/dependency_scanning/index.md).
    The mirroring is pull-only by default, so you may create or update the file on
    GitHub:
 
