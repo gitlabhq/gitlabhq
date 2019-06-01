@@ -79,9 +79,11 @@ module Boards
       # rubocop: enable CodeReuse/ActiveRecord
 
       def move_between_ids
-        return unless params[:move_after_id] || params[:move_before_id]
+        ids = [params[:move_after_id], params[:move_before_id]]
+                .map(&:to_i)
+                .map { |m| m.positive? ? m : nil }
 
-        [params[:move_after_id], params[:move_before_id]]
+        ids.any? ? ids : nil
       end
     end
   end

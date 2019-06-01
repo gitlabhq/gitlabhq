@@ -687,6 +687,22 @@ describe Issues::UpdateService, :mailer do
       end
     end
 
+    context 'when moving an issue ', :nested_groups do
+      it 'raises an error for invalid move ids within a project' do
+        opts = { move_between_ids: [9000, 9999] }
+
+        expect { described_class.new(issue.project, user, opts).execute(issue) }
+            .to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it 'raises an error for invalid move ids within a group' do
+        opts = { move_between_ids: [9000, 9999], board_group_id: create(:group).id }
+
+        expect { described_class.new(issue.project, user, opts).execute(issue) }
+            .to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+
     include_examples 'issuable update service' do
       let(:open_issuable) { issue }
       let(:closed_issuable) { create(:closed_issue, project: project) }
