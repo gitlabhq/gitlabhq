@@ -254,16 +254,17 @@ export default {
       <diff-stats :added-lines="diffFile.added_lines" :removed-lines="diffFile.removed_lines" />
       <div class="btn-group" role="group">
         <template v-if="diffFile.blob && diffFile.blob.readable_text">
-          <button
-            :disabled="!diffHasDiscussions(diffFile)"
-            :class="{ active: hasExpandedDiscussions }"
-            :title="s__('MergeRequests|Toggle comments for this file')"
-            class="js-btn-vue-toggle-comments btn"
-            type="button"
-            @click="handleToggleDiscussions"
-          >
-            <icon name="comment" />
-          </button>
+          <span v-gl-tooltip.hover :title="s__('MergeRequests|Toggle comments for this file')">
+            <gl-button
+              :disabled="!diffHasDiscussions(diffFile)"
+              :class="{ active: hasExpandedDiscussions }"
+              class="js-btn-vue-toggle-comments btn"
+              type="button"
+              @click="handleToggleDiscussions"
+            >
+              <icon name="comment" />
+            </gl-button>
+          </span>
 
           <edit-button
             v-if="!diffFile.deleted_file"

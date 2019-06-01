@@ -38,7 +38,7 @@ export default {
 
 <template>
   <gl-button
-    v-gl-tooltip.bottom
+    v-gl-tooltip.top
     :href="editPath"
     :title="__('Edit file')"
     class="js-edit-blob"
