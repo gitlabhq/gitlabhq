@@ -90,7 +90,7 @@ class DiffNote < Note
   end
 
   def banzai_render_context(field)
-    super.merge(project: project, suggestions_filter_enabled: supports_suggestion?)
+    super.merge(suggestions_filter_enabled: true)
   end
 
   private
