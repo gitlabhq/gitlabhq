@@ -70,11 +70,30 @@ describe API::Search do
       context 'for milestones scope' do
         before do
           create(:milestone, project: project, title: 'awesome milestone')
-
-          get api('/search', user), params: { scope: 'milestones', search: 'awesome' }
         end
 
-        it_behaves_like 'response is correct', schema: 'public_api/v4/milestones'
+        context 'when user can read project milestones' do
+          before do
+            get api('/search', user), params: { scope: 'milestones', search: 'awesome' }
+          end
+
+          it_behaves_like 'response is correct', schema: 'public_api/v4/milestones'
+        end
+
+        context 'when user cannot read project milestones' do
+          before do
+            project.project_feature.update!(merge_requests_access_level: ProjectFeature::PRIVATE)
+            project.project_feature.update!(issues_access_level: ProjectFeature::PRIVATE)
+          end
+
+          it 'returns empty array' do
+            get api('/search', user), params: { scope: 'milestones', search: 'awesome' }
+
+            milestones = JSON.parse(response.body)
+
+            expect(milestones).to be_empty
+          end
+        end
       end
 
       context 'for users scope' do
@@ -318,11 +337,30 @@ describe API::Search do
       context 'for milestones scope' do
         before do
           create(:milestone, project: project, title: 'awesome milestone')
-
-          get api("/projects/#{project.id}/search", user), params: { scope: 'milestones', search: 'awesome' }
         end
 
-        it_behaves_like 'response is correct', schema: 'public_api/v4/milestones'
+        context 'when user can read milestones' do
+          before do
+            get api("/projects/#{project.id}/search", user), params: { scope: 'milestones', search: 'awesome' }
+          end
+
+          it_behaves_like 'response is correct', schema: 'public_api/v4/milestones'
+        end
+
+        context 'when user cannot read project milestones' do
+          before do
+            project.project_feature.update!(merge_requests_access_level: ProjectFeature::PRIVATE)
+            project.project_feature.update!(issues_access_level: ProjectFeature::PRIVATE)
+          end
+
+          it 'returns empty array' do
+            get api("/projects/#{project.id}/search", user), params: { scope: 'milestones', search: 'awesome' }
+
+            milestones = JSON.parse(response.body)
+
+            expect(milestones).to be_empty
+          end
+        end
       end
 
       context 'for users scope' do
