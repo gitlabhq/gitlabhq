@@ -582,16 +582,17 @@ Note that a post-install hook means that if any deploy succeeds,
 If present, `DB_MIGRATE` will be run as a shell command within an application pod as
 a helm pre-upgrade hook.
 
-For example, in a Rails application:
+For example, in a Rails application in an image built with
+[Herokuish](https://github.com/gliderlabs/herokuish):
 
-- `DB_INITIALIZE` can be set to `cd /app && RAILS_ENV=production
-  bin/setup`
-- `DB_MIGRATE` can be set to `cd /app && RAILS_ENV=production bin/update`
+- `DB_INITIALIZE` can be set to `RAILS_ENV=production /bin/herokuish procfile exec bin/rails db:setup`
+- `DB_MIGRATE` can be set to `RAILS_ENV=production /bin/herokuish procfile exec bin/rails db:migrate`
 
 NOTE: **Note:**
-The `/app` path is the directory of your project inside the docker image
-as [configured by
-Herokuish](https://github.com/gliderlabs/herokuish#paths)
+Unless you have a `Dockerfile` in your repo, your image is built with
+Herokuish. You must prefix commands run in these images with `/bin/herokuish
+procfile exec` in order to replicate the the environment your application is
+run in.
 
 ### Auto Monitoring
 
