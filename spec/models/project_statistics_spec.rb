@@ -11,6 +11,20 @@ describe ProjectStatistics do
     it { is_expected.to belong_to(:namespace) }
   end
 
+  describe 'scopes' do
+    describe '.for_project_ids' do
+      it 'returns only requested projects' do
+        stats = create_list(:project_statistics, 3)
+        project_ids = stats[0..1].map { |s| s.project_id }
+        expected_ids = stats[0..1].map { |s| s.id }
+
+        requested_stats = described_class.for_project_ids(project_ids).pluck(:id)
+
+        expect(requested_stats).to eq(expected_ids)
+      end
+    end
+  end
+
   describe 'statistics columns' do
     it "support values up to 8 exabytes" do
       statistics.update!(

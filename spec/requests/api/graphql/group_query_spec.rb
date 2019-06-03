@@ -86,17 +86,18 @@ describe 'getting group information' do
       end
 
       it 'avoids N+1 queries' do
-        post_graphql(group_query(group1), current_user: admin)
-
         control_count = ActiveRecord::QueryRecorder.new do
           post_graphql(group_query(group1), current_user: admin)
         end.count
 
-        create(:project, namespace: group1)
+        queries = [{ query: group_query(group1) },
+                   { query: group_query(group2) }]
 
         expect do
-          post_graphql(group_query(group1), current_user: admin)
+          post_multiplex(queries, current_user: admin)
         end.not_to exceed_query_limit(control_count)
+
+        expect(graphql_errors).to contain_exactly(nil, nil)
       end
     end
 

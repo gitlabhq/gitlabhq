@@ -16,6 +16,8 @@ class ProjectStatistics < ApplicationRecord
   COLUMNS_TO_REFRESH = [:repository_size, :wiki_size, :lfs_objects_size, :commit_count].freeze
   INCREMENTABLE_COLUMNS = { build_artifacts_size: %i[storage_size], packages_size: %i[storage_size] }.freeze
 
+  scope :for_project_ids, ->(project_ids) { where(project_id: project_ids) }
+
   def total_repository_size
     repository_size + lfs_objects_size
   end

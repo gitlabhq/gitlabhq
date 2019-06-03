@@ -69,6 +69,10 @@ module Types
     field :namespace, Types::NamespaceType, null: false
     field :group, Types::GroupType, null: true
 
+    field :statistics, Types::ProjectStatisticsType,
+          null: false,
+          resolve: -> (obj, _args, _ctx) { Gitlab::Graphql::Loaders::BatchProjectStatisticsLoader.new(obj.id).find }
+
     field :repository, Types::RepositoryType, null: false
 
     field :merge_requests,
