@@ -217,8 +217,9 @@ describe MergeRequests::UpdateService, :mailer do
             head_pipeline_of: merge_request
           )
 
-          expect(MergeRequests::MergeWhenPipelineSucceedsService).to receive(:new).with(project, user)
+          expect(AutoMerge::MergeWhenPipelineSucceedsService).to receive(:new).with(project, user, {})
             .and_return(service_mock)
+          allow(service_mock).to receive(:available_for?) { true }
           expect(service_mock).to receive(:execute).with(merge_request)
         end
 

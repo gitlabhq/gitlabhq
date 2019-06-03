@@ -386,9 +386,8 @@ module API
         )
 
         if merge_when_pipeline_succeeds && merge_request.head_pipeline && merge_request.head_pipeline.active?
-          ::MergeRequests::MergeWhenPipelineSucceedsService
-            .new(merge_request.target_project, current_user, merge_params)
-            .execute(merge_request)
+          AutoMergeService.new(merge_request.target_project, current_user, merge_params)
+            .execute(merge_request, AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS)
         else
           ::MergeRequests::MergeService
             .new(merge_request.target_project, current_user, merge_params)
@@ -429,11 +428,9 @@ module API
       post ':id/merge_requests/:merge_request_iid/cancel_merge_when_pipeline_succeeds' do
         merge_request = find_project_merge_request(params[:merge_request_iid])
 
-        unauthorized! unless merge_request.can_cancel_merge_when_pipeline_succeeds?(current_user)
+        unauthorized! unless merge_request.can_cancel_auto_merge?(current_user)
 
-        ::MergeRequests::MergeWhenPipelineSucceedsService
-          .new(merge_request.target_project, current_user)
-          .cancel(merge_request)
+        AutoMergeService.new(merge_request.target_project, current_user).cancel(merge_request)
       end
 
       desc 'Rebase the merge request against its target branch' do

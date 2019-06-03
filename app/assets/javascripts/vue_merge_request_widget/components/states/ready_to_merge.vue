@@ -31,7 +31,7 @@ export default {
     return {
       removeSourceBranch: this.mr.shouldRemoveSourceBranch,
       mergeWhenBuildSucceeds: false,
-      setToMergeWhenPipelineSucceeds: false,
+      autoMergeStrategy: undefined,
       isMakingRequest: false,
       isMergingImmediately: false,
       commitMessage: this.mr.commitMessage,
@@ -42,7 +42,7 @@ export default {
     };
   },
   computed: {
-    shouldShowMergeWhenPipelineSucceedsText() {
+    shouldShowAutoMergeText() {
       return this.mr.isPipelineActive;
     },
     status() {
@@ -87,7 +87,7 @@ export default {
     mergeButtonText() {
       if (this.isMergingImmediately) {
         return __('Merge in progress');
-      } else if (this.shouldShowMergeWhenPipelineSucceedsText) {
+      } else if (this.shouldShowAutoMergeText) {
         return __('Merge when pipeline succeeds');
       }
 
@@ -104,7 +104,7 @@ export default {
       return enableSquashBeforeMerge && commitsCount > 1;
     },
     shouldShowMergeControls() {
-      return this.mr.isMergeAllowed || this.shouldShowMergeWhenPipelineSucceedsText;
+      return this.mr.isMergeAllowed || this.shouldShowAutoMergeText;
     },
     shouldShowSquashEdit() {
       return this.squashBeforeMerge && this.shouldShowSquashBeforeMerge;
@@ -126,12 +126,12 @@ export default {
         this.isMergingImmediately = true;
       }
 
-      this.setToMergeWhenPipelineSucceeds = mergeWhenBuildSucceeds === true;
+      this.autoMergeStrategy = mergeWhenBuildSucceeds ? 'merge_when_pipeline_succeeds' : undefined;
 
       const options = {
         sha: this.mr.sha,
         commit_message: this.commitMessage,
-        merge_when_pipeline_succeeds: this.setToMergeWhenPipelineSucceeds,
+        auto_merge_strategy: this.autoMergeStrategy,
         should_remove_source_branch: this.removeSourceBranch === true,
         squash: this.squashBeforeMerge,
         squash_commit_message: this.squashCommitMessage,

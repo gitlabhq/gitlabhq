@@ -429,8 +429,9 @@ describe Projects::MergeRequestsController do
 
         it 'sets the MR to merge when the pipeline succeeds' do
           service = double(:merge_when_pipeline_succeeds_service)
+          allow(service).to receive(:available_for?) { true }
 
-          expect(MergeRequests::MergeWhenPipelineSucceedsService)
+          expect(AutoMerge::MergeWhenPipelineSucceedsService)
             .to receive(:new).with(project, anything, anything)
             .and_return(service)
           expect(service).to receive(:execute).with(merge_request)
@@ -713,9 +714,9 @@ describe Projects::MergeRequestsController do
     end
   end
 
-  describe 'POST cancel_merge_when_pipeline_succeeds' do
+  describe 'POST cancel_auto_merge' do
     subject do
-      post :cancel_merge_when_pipeline_succeeds,
+      post :cancel_auto_merge,
         params: {
           format: :json,
           namespace_id: merge_request.project.namespace.to_param,
@@ -725,14 +726,15 @@ describe Projects::MergeRequestsController do
         xhr: true
     end
 
-    it 'calls MergeRequests::MergeWhenPipelineSucceedsService' do
-      mwps_service = double
+    it 'calls AutoMergeService' do
+      auto_merge_service = double
 
-      allow(MergeRequests::MergeWhenPipelineSucceedsService)
+      allow(AutoMergeService)
         .to receive(:new)
-        .and_return(mwps_service)
+        .and_return(auto_merge_service)
 
-      expect(mwps_service).to receive(:cancel).with(merge_request)
+      allow(auto_merge_service).to receive(:available_strategies).with(merge_request)
+      expect(auto_merge_service).to receive(:cancel).with(merge_request)
 
       subject
     end

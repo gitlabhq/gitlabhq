@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MergeRequests::MergeWhenPipelineSucceedsService do
+describe AutoMerge::MergeWhenPipelineSucceedsService do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
 
@@ -21,6 +21,27 @@ describe MergeRequests::MergeWhenPipelineSucceedsService do
     described_class.new(project, user, commit_message: 'Awesome message')
   end
 
+  describe "#available_for?" do
+    subject { service.available_for?(mr_merge_if_green_enabled) }
+
+    let(:pipeline_status) { :running }
+
+    before do
+      create(:ci_pipeline, pipeline_status, ref: mr_merge_if_green_enabled.source_branch,
+                                            sha: mr_merge_if_green_enabled.diff_head_sha,
+                                            project: mr_merge_if_green_enabled.source_project)
+      mr_merge_if_green_enabled.update_head_pipeline
+    end
+
+    it { is_expected.to be_truthy }
+
+    context 'when the head piipeline succeeded' do
+      let(:pipeline_status) { :success }
+
+      it { is_expected.to be_falsy }
+    end
+  end
+
   describe "#execute" do
     let(:merge_request) do
       create(:merge_request, target_project: project, source_project: project,
@@ -30,8 +51,7 @@ describe MergeRequests::MergeWhenPipelineSucceedsService do
     context 'first time enabling' do
       before do
         allow(merge_request)
-          .to receive(:head_pipeline)
-          .and_return(pipeline)
+          .to receive_messages(head_pipeline: pipeline, actual_head_pipeline: pipeline)
 
         service.execute(merge_request)
       end
@@ -39,7 +59,7 @@ describe MergeRequests::MergeWhenPipelineSucceedsService do
       it 'sets the params, merge_user, and flag' do
         expect(merge_request).to be_valid
         expect(merge_request.merge_when_pipeline_succeeds).to be_truthy
-        expect(merge_request.merge_params).to eq commit_message: 'Awesome message'
+        expect(merge_request.merge_params).to include commit_message: 'Awesome message'
         expect(merge_request.merge_user).to be user
       end
 
@@ -54,8 +74,8 @@ describe MergeRequests::MergeWhenPipelineSucceedsService do
       let(:build)   { create(:ci_build, ref: mr_merge_if_green_enabled.source_branch) }
 
       before do
-        allow(mr_merge_if_green_enabled).to receive(:head_pipeline)
-          .and_return(pipeline)
+        allow(mr_merge_if_green_enabled)
+          .to receive_messages(head_pipeline: pipeline, actual_head_pipeline: pipeline)
 
         allow(mr_merge_if_green_enabled).to receive(:mergeable?)
           .and_return(true)
@@ -72,7 +92,7 @@ describe MergeRequests::MergeWhenPipelineSucceedsService do
     end
   end
 
-  describe "#trigger" do
+  describe "#process" do
     let(:merge_request_ref) { mr_merge_if_green_enabled.source_branch }
     let(:merge_request_head) do
       project.commit(mr_merge_if_green_enabled.source_branch).id
@@ -86,8 +106,11 @@ describe MergeRequests::MergeWhenPipelineSucceedsService do
       end
 
       it "merges all merge requests with merge when the pipeline succeeds enabled" do
+        allow(mr_merge_if_green_enabled)
+          .to receive_messages(head_pipeline: triggering_pipeline, actual_head_pipeline: triggering_pipeline)
+
         expect(MergeWorker).to receive(:perform_async)
-        service.trigger(triggering_pipeline)
+        service.process(mr_merge_if_green_enabled)
       end
     end
 
@@ -99,7 +122,7 @@ describe MergeRequests::MergeWhenPipelineSucceedsService do
 
       it 'does not merge request' do
         expect(MergeWorker).not_to receive(:perform_async)
-        service.trigger(old_pipeline)
+        service.process(mr_merge_if_green_enabled)
       end
     end
 
@@ -111,7 +134,7 @@ describe MergeRequests::MergeWhenPipelineSucceedsService do
 
       it 'does not merge request' do
         expect(MergeWorker).not_to receive(:perform_async)
-        service.trigger(unrelated_pipeline)
+        service.process(mr_merge_if_green_enabled)
       end
     end
 
@@ -125,8 +148,11 @@ describe MergeRequests::MergeWhenPipelineSucceedsService do
       end
 
       it 'merges the associated merge request' do
+        allow(mr_merge_if_green_enabled)
+          .to receive_messages(head_pipeline: pipeline, actual_head_pipeline: pipeline)
+
         expect(MergeWorker).to receive(:perform_async)
-        service.trigger(pipeline)
+        service.process(mr_merge_if_green_enabled)
       end
     end
   end

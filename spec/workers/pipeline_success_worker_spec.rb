@@ -5,12 +5,13 @@ require 'spec_helper'
 describe PipelineSuccessWorker do
   describe '#perform' do
     context 'when pipeline exists' do
-      let(:pipeline) { create(:ci_pipeline, status: 'success') }
+      let(:pipeline) { create(:ci_pipeline, status: 'success', ref: merge_request.source_branch, project: merge_request.source_project) }
+      let(:merge_request) { create(:merge_request) }
 
       it 'performs "merge when pipeline succeeds"' do
-        expect_any_instance_of(
-          MergeRequests::MergeWhenPipelineSucceedsService
-        ).to receive(:trigger)
+        expect_next_instance_of(AutoMergeService) do |auto_merge|
+          expect(auto_merge).to receive(:process)
+        end
 
         described_class.new.perform(pipeline.id)
       end

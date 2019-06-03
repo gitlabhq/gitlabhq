@@ -80,7 +80,7 @@ describe('ReadyToMerge', () => {
     it('should have default data', () => {
       expect(vm.mergeWhenBuildSucceeds).toBeFalsy();
       expect(vm.useCommitMessageWithDescription).toBeFalsy();
-      expect(vm.setToMergeWhenPipelineSucceeds).toBeFalsy();
+      expect(vm.autoMergeStrategy).toBeUndefined();
       expect(vm.showCommitMessageEditor).toBeFalsy();
       expect(vm.isMakingRequest).toBeFalsy();
       expect(vm.isMergingImmediately).toBeFalsy();
@@ -91,17 +91,17 @@ describe('ReadyToMerge', () => {
   });
 
   describe('computed', () => {
-    describe('shouldShowMergeWhenPipelineSucceedsText', () => {
+    describe('shouldShowAutoMergeText', () => {
       it('should return true with active pipeline', () => {
         vm.mr.isPipelineActive = true;
 
-        expect(vm.shouldShowMergeWhenPipelineSucceedsText).toBeTruthy();
+        expect(vm.shouldShowAutoMergeText).toBeTruthy();
       });
 
       it('should return false with inactive pipeline', () => {
         vm.mr.isPipelineActive = false;
 
-        expect(vm.shouldShowMergeWhenPipelineSucceedsText).toBeFalsy();
+        expect(vm.shouldShowAutoMergeText).toBeFalsy();
       });
     });
 
@@ -325,16 +325,20 @@ describe('ReadyToMerge', () => {
         vm.handleMergeButtonClick(true);
 
         setTimeout(() => {
-          expect(vm.setToMergeWhenPipelineSucceeds).toBeTruthy();
+          expect(vm.autoMergeStrategy).toBe('merge_when_pipeline_succeeds');
           expect(vm.isMakingRequest).toBeTruthy();
           expect(eventHub.$emit).toHaveBeenCalledWith('MRWidgetUpdateRequested');
 
           const params = vm.service.merge.calls.argsFor(0)[0];
 
-          expect(params.sha).toEqual(vm.mr.sha);
-          expect(params.commit_message).toEqual(vm.mr.commitMessage);
-          expect(params.should_remove_source_branch).toBeFalsy();
-          expect(params.merge_when_pipeline_succeeds).toBeTruthy();
+          expect(params).toEqual(
+            jasmine.objectContaining({
+              sha: vm.mr.sha,
+              commit_message: vm.mr.commitMessage,
+              should_remove_source_branch: false,
+              auto_merge_strategy: 'merge_when_pipeline_succeeds',
+            }),
+          );
           done();
         }, 333);
       });
@@ -345,7 +349,7 @@ describe('ReadyToMerge', () => {
         vm.handleMergeButtonClick(false, true);
 
         setTimeout(() => {
-          expect(vm.setToMergeWhenPipelineSucceeds).toBeFalsy();
+          expect(vm.autoMergeStrategy).toBeUndefined();
           expect(vm.isMakingRequest).toBeTruthy();
           expect(eventHub.$emit).toHaveBeenCalledWith('FailedToMerge', undefined);
 
@@ -363,7 +367,7 @@ describe('ReadyToMerge', () => {
         vm.handleMergeButtonClick();
 
         setTimeout(() => {
-          expect(vm.setToMergeWhenPipelineSucceeds).toBeFalsy();
+          expect(vm.autoMergeStrategy).toBeUndefined();
           expect(vm.isMakingRequest).toBeTruthy();
           expect(vm.initiateMergePolling).toHaveBeenCalled();
 

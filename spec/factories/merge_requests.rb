@@ -95,7 +95,8 @@ FactoryBot.define do
     end
 
     trait :merge_when_pipeline_succeeds do
-      merge_when_pipeline_succeeds true
+      auto_merge_enabled true
+      auto_merge_strategy AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS
       merge_user { author }
     end
 

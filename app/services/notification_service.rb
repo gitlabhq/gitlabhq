@@ -238,7 +238,7 @@ class NotificationService
       merge_request,
       current_user,
       :merged_merge_request_email,
-      skip_current_user: !merge_request.merge_when_pipeline_succeeds?
+      skip_current_user: !merge_request.auto_merge_enabled?
     )
   end
 

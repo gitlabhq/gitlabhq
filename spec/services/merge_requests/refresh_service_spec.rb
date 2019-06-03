@@ -23,7 +23,8 @@ describe MergeRequests::RefreshService do
                               source_branch: 'master',
                               target_branch: 'feature',
                               target_project: @project,
-                              merge_when_pipeline_succeeds: true,
+                              auto_merge_enabled: true,
+                              auto_merge_strategy: AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS,
                               merge_user: @user)
 
       @another_merge_request = create(:merge_request,
@@ -31,7 +32,8 @@ describe MergeRequests::RefreshService do
                                       source_branch: 'master',
                                       target_branch: 'test',
                                       target_project: @project,
-                                      merge_when_pipeline_succeeds: true,
+                                      auto_merge_enabled: true,
+                                      auto_merge_strategy: AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS,
                                       merge_user: @user)
 
       @fork_merge_request = create(:merge_request,
@@ -83,7 +85,7 @@ describe MergeRequests::RefreshService do
 
         expect(@merge_request.notes).not_to be_empty
         expect(@merge_request).to be_open
-        expect(@merge_request.merge_when_pipeline_succeeds).to be_falsey
+        expect(@merge_request.auto_merge_enabled).to be_falsey
         expect(@merge_request.diff_head_sha).to eq(@newrev)
         expect(@fork_merge_request).to be_open
         expect(@fork_merge_request.notes).to be_empty
@@ -292,7 +294,7 @@ describe MergeRequests::RefreshService do
 
         expect(@merge_request.notes).not_to be_empty
         expect(@merge_request).to be_open
-        expect(@merge_request.merge_when_pipeline_succeeds).to be_falsey
+        expect(@merge_request.auto_merge_enabled).to be_falsey
         expect(@merge_request.diff_head_sha).to eq(@newrev)
         expect(@fork_merge_request).to be_open
         expect(@fork_merge_request.notes).to be_empty

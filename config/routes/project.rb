@@ -208,7 +208,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         member do
           get :commit_change_content
           post :merge
-          post :cancel_merge_when_pipeline_succeeds
+          post :cancel_auto_merge
           get :pipeline_status
           get :ci_environments_status
           post :toggle_subscription
