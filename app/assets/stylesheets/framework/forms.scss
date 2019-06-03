@@ -290,3 +290,17 @@ label {
 .input-group-text {
   max-height: $input-height;
 }
+
+.gl-form-checkbox {
+  align-items: baseline;
+
+  &.form-check-inline .form-check-input {
+    align-self: flex-start;
+    margin-right: $gl-padding-8;
+    height: 1.5 * $gl-font-size;
+  }
+
+  .help-text {
+    margin-bottom: 0;
+  }
+}
