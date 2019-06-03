@@ -654,6 +654,35 @@ and related tools such as:
 - <https://explain.depesz.com/>
 - <http://tatiyants.com/postgres-query-plan-visualization/>
 
+## Producing query plans
+
+There are a few ways to get the output of a query plan. Of course you
+can directly run the `EXPLAIN` query in the `psql` console, or you can
+follow one of the other options below.
+
+### Rails console
+
+Using the [`activerecord-explain-analyze`](https://github.com/6/activerecord-explain-analyze)
+you can directly generate the query plan from the Rails console:
+
+```ruby
+pry(main)> require 'activerecord-explain-analyze'
+=> true
+pry(main)> Project.where('build_timeout > ?', 3600).explain(analyze: true)
+  Project Load (1.9ms)  SELECT "projects".* FROM "projects" WHERE (build_timeout > 3600)
+  ↳ (pry):12
+=> EXPLAIN for: SELECT "projects".* FROM "projects" WHERE (build_timeout > 3600)
+Seq Scan on public.projects  (cost=0.00..2.17 rows=1 width=742) (actual time=0.040..0.041 rows=0 loops=1)
+  Output: id, name, path, description, created_at, updated_at, creator_id, namespace_id, ...
+  Filter: (projects.build_timeout > 3600)
+  Rows Removed by Filter: 14
+  Buffers: shared hit=2
+Planning time: 0.411 ms
+Execution time: 0.113 ms
+```
+
+### Chatops
+
 GitLab employees can also use our chatops solution, available in Slack using the
 `/chatops` slash command. You can use chatops to get a query plan by running the
 following:
