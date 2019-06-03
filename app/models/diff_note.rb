@@ -46,7 +46,7 @@ class DiffNote < Note
   # Returns the diff file from `position`
   def latest_diff_file
     strong_memoize(:latest_diff_file) do
-      position.diff_file(project.repository)
+      position.diff_file(repository)
     end
   end
 
@@ -113,7 +113,7 @@ class DiffNote < Note
       if note_diff_file
         diff = Gitlab::Git::Diff.new(note_diff_file.to_hash)
         Gitlab::Diff::File.new(diff,
-                               repository: project.repository,
+                               repository: repository,
                                diff_refs: original_position.diff_refs)
       elsif created_at_diff?(noteable.diff_refs)
         # We're able to use the already persisted diffs (Postgres) if we're
@@ -124,7 +124,7 @@ class DiffNote < Note
         # `Diff::FileCollection::MergeRequestDiff`.
         noteable.diffs(original_position.diff_options).diff_files.first
       else
-        original_position.diff_file(self.project.repository)
+        original_position.diff_file(repository)
       end
 
     # Since persisted diff files already have its content "unfolded"
@@ -139,7 +139,7 @@ class DiffNote < Note
   end
 
   def set_line_code
-    self.line_code = self.position.line_code(self.project.repository)
+    self.line_code = self.position.line_code(repository)
   end
 
   def verify_supported
@@ -173,6 +173,10 @@ class DiffNote < Note
       shas << self.position.head_sha
     end
 
-    project.repository.keep_around(*shas)
+    repository.keep_around(*shas)
+  end
+
+  def repository
+    noteable.respond_to?(:repository) ? noteable.repository : project.repository
   end
 end
