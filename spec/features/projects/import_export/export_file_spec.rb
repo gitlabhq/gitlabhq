@@ -12,7 +12,7 @@ describe 'Import/Export - project export integration test', :js do
   let(:export_path) { "#{Dir.tmpdir}/import_file_spec" }
   let(:config_hash) { YAML.load_file(Gitlab::ImportExport.config_file).deep_stringify_keys }
 
-  let(:sensitive_words) { %w[pass secret token key encrypted] }
+  let(:sensitive_words) { %w[pass secret token key encrypted html] }
   let(:safe_list) do
     {
       token: [ProjectHook, Ci::Trigger, CommitStatus],
