@@ -58,7 +58,7 @@ module Resolvers
       IssuesFinder.new(context[:current_user], args).execute
     end
 
-    def self.resolver_complexity(args)
+    def self.resolver_complexity(args, child_complexity:)
       complexity = super
       complexity += 2 if args[:labelName]
 
