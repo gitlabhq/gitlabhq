@@ -405,7 +405,7 @@ export class SearchAutocomplete {
     this.wrap.removeClass('search-active');
     // If input is blank then restore state
     if (this.searchInput.val() === '') {
-      return this.restoreOriginalState();
+      this.restoreOriginalState();
     }
     this.dropdownMenu.removeClass('show');
   }
