@@ -1,0 +1,5 @@
+---
+title: Use 3-way merge for squashing commits
+merge_request: 28078
+author:
+type: fixed
