@@ -32,7 +32,7 @@
           %span.dropdown-toggle-text
             {{ labelDropdownTitle }}
           = icon('chevron-down')
-        .dropdown-menu.dropdown-select.dropdown-menu-paging.dropdown-menu-labels.dropdown-menu-selectable
+        .dropdown-menu.dropdown-select.dropdown-menu-paging.dropdown-menu-labels.dropdown-menu-selectable.dropdown-extended-height
           = render partial: "shared/issuable/label_page_default"
           - if can?(current_user, :admin_label, current_board_parent)
             = render partial: "shared/issuable/label_page_create", locals: { show_add_list: true }

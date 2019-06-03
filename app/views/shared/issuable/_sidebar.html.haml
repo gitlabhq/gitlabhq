@@ -118,7 +118,7 @@
               %span.dropdown-toggle-text{ class: ("is-default" if selected_labels.empty?) }
                 = multi_label_name(selected_labels, "Labels")
               = icon('chevron-down', 'aria-hidden': 'true')
-            .dropdown-menu.dropdown-select.dropdown-menu-paging.dropdown-menu-labels.dropdown-menu-selectable
+            .dropdown-menu.dropdown-select.dropdown-menu-paging.dropdown-menu-labels.dropdown-menu-selectable.dropdown-extended-height
               = render partial: "shared/issuable/label_page_default"
               - if issuable_sidebar.dig(:current_user, :can_admin_label)
                 = render partial: "shared/issuable/label_page_create"
