@@ -33,7 +33,7 @@ module Gitlab
 
     SERVER_FEATURE_CATFILE_CACHE = 'catfile-cache'.freeze
     # Server feature flags should use '_' to separate words.
-    SERVER_FEATURE_FLAGS = [SERVER_FEATURE_CATFILE_CACHE, 'delta_islands'].freeze
+    SERVER_FEATURE_FLAGS = [SERVER_FEATURE_CATFILE_CACHE].freeze
 
     MUTEX = Mutex.new
 
