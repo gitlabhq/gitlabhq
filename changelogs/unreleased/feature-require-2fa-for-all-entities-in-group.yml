@@ -1,7 +1,4 @@
----
-title: Apply the group setting "require 2FA" to be inherited across all subgroups
-  and descendant projects of the group where it was set. (This works only for postgresql
-  databases, not for mysql/mariadb)
+title: Apply the group setting "require 2FA" across all subgroup and ancestor group members as well when changing the group setting
 merge_request: 24965
 author: rroger
 type: changed
