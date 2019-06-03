@@ -52,10 +52,20 @@ export default {
       required: false,
       default: '',
     },
-    showReportSectionStatus: {
+    showReportSectionStatusIcon: {
       type: Boolean,
       required: false,
       default: true,
+    },
+    issuesUlElementClass: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    issueItemClass: {
+      type: String,
+      required: false,
+      default: null,
     },
   },
   computed: {
@@ -67,6 +77,9 @@ export default {
         ...this.resolvedIssues.map(wrapIssueWithState(STATUS_SUCCESS)),
       ];
     },
+    wclass() {
+      return `report-block-list ${this.issuesUlElementClass}`;
+    },
   },
 };
 </script>
@@ -77,7 +90,7 @@ export default {
     :size="$options.typicalReportItemHeight"
     class="report-block-container"
     wtag="ul"
-    wclass="report-block-list"
+    :wclass="wclass"
   >
     <report-item
       v-for="(wrapped, index) in issuesWithState"
@@ -86,7 +99,8 @@ export default {
       :status="wrapped.status"
       :component="component"
       :is-new="wrapped.isNew"
-      :show-report-section-status="showReportSectionStatus"
+      :show-report-section-status-icon="showReportSectionStatusIcon"
+      :class="issueItemClass"
     />
   </smart-virtual-list>
 </template>
