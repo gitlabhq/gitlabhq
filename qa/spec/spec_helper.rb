@@ -3,6 +3,11 @@
 require_relative '../qa'
 require 'rspec/retry'
 
+if ENV['CI'] && QA::Runtime::Env.knapsack? && !ENV['NO_KNAPSACK']
+  require 'knapsack'
+  Knapsack::Adapters::RSpecAdapter.bind
+end
+
 %w[helpers shared_examples].each do |d|
   Dir[::File.join(__dir__, d, '**', '*.rb')].each { |f| require f }
 end

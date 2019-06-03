@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require 'rspec/core'
+require 'rspec/expectations'
+require 'knapsack'
 
 module QA
   module Specs
@@ -32,9 +34,24 @@ module QA
         end
 
         args.push(options)
-        args.push(DEFAULT_TEST_PATH_ARGS) unless options.any? { |opt| opt =~ %r{/features/} }
 
         Runtime::Browser.configure!
+
+        if Runtime::Env.knapsack?
+          allocator = Knapsack::AllocatorBuilder.new(Knapsack::Adapters::RSpecAdapter).allocator
+
+          QA::Runtime::Logger.info ''
+          QA::Runtime::Logger.info 'Report specs:'
+          QA::Runtime::Logger.info allocator.report_node_tests.join(', ')
+          QA::Runtime::Logger.info ''
+          QA::Runtime::Logger.info 'Leftover specs:'
+          QA::Runtime::Logger.info allocator.leftover_node_tests.join(', ')
+          QA::Runtime::Logger.info ''
+
+          args.push(['--', allocator.node_tests])
+        else
+          args.push(DEFAULT_TEST_PATH_ARGS) unless options.any? { |opt| opt =~ %r{/features/} }
+        end
 
         RSpec::Core::Runner.run(args.flatten, $stderr, $stdout).tap do |status|
           abort if status.nonzero?
