@@ -75,7 +75,7 @@ export default {
       };
     },
     canReportAsAbuse() {
-      return !!this.note.report_abuse_path && this.author.id !== this.getUserData.id;
+      return Boolean(this.note.report_abuse_path) && this.author.id !== this.getUserData.id;
     },
     noteAnchorId() {
       return `note_${this.note.id}`;

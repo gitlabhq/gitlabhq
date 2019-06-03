@@ -12,7 +12,7 @@ export default class IssuableIndex {
   }
   initBulkUpdate(pagePrefix) {
     const userCanBulkUpdate = $('.issues-bulk-update').length > 0;
-    const alreadyInitialized = !!this.bulkUpdateSidebar;
+    const alreadyInitialized = Boolean(this.bulkUpdateSidebar);
 
     if (userCanBulkUpdate && !alreadyInitialized) {
       IssuableBulkUpdateActions.init({

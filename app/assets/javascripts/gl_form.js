@@ -13,7 +13,7 @@ export default class GLForm {
     const dataSources = (gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources) || {};
     Object.keys(this.enableGFM).forEach(item => {
       if (item !== 'emojis') {
-        this.enableGFM[item] = !!dataSources[item];
+        this.enableGFM[item] = Boolean(dataSources[item]);
       }
     });
     // Before we start, we should clean up any previous data for this form

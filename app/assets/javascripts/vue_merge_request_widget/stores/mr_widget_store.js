@@ -79,7 +79,7 @@ export default class MergeRequestStore {
     this.autoMergeStrategy = data.auto_merge_strategy;
     this.mergePath = data.merge_path;
     this.ffOnlyEnabled = data.ff_only_enabled;
-    this.shouldBeRebased = !!data.should_be_rebased;
+    this.shouldBeRebased = Boolean(data.should_be_rebased);
     this.statusPath = data.status_path;
     this.emailPatchesPath = data.email_patches_path;
     this.plainDiffPath = data.plain_diff_path;
@@ -92,9 +92,9 @@ export default class MergeRequestStore {
     this.isOpen = data.state === 'opened';
     this.hasMergeableDiscussionsState = data.mergeable_discussions_state === false;
     this.canRemoveSourceBranch = currentUser.can_remove_source_branch || false;
-    this.canMerge = !!data.merge_path;
+    this.canMerge = Boolean(data.merge_path);
     this.canCreateIssue = currentUser.can_create_issue || false;
-    this.canCancelAutomaticMerge = !!data.cancel_auto_merge_path;
+    this.canCancelAutomaticMerge = Boolean(data.cancel_auto_merge_path);
     this.isSHAMismatch = this.sha !== data.diff_head_sha;
     this.canBeMerged = data.can_be_merged || false;
     this.isMergeAllowed = data.mergeable || false;

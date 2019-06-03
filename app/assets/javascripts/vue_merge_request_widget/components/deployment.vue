@@ -77,16 +77,16 @@ export default {
       return this.deployment.external_url;
     },
     hasExternalUrls() {
-      return !!(this.deployment.external_url && this.deployment.external_url_formatted);
+      return Boolean(this.deployment.external_url && this.deployment.external_url_formatted);
     },
     hasDeploymentTime() {
-      return !!(this.deployment.deployed_at && this.deployment.deployed_at_formatted);
+      return Boolean(this.deployment.deployed_at && this.deployment.deployed_at_formatted);
     },
     hasDeploymentMeta() {
-      return !!(this.deployment.url && this.deployment.name);
+      return Boolean(this.deployment.url && this.deployment.name);
     },
     hasMetrics() {
-      return !!this.deployment.metrics_url;
+      return Boolean(this.deployment.metrics_url);
     },
     deployedText() {
       return this.$options.deployedTextMap[this.deployment.status];

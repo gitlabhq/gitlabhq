@@ -156,7 +156,7 @@ export default {
       return this.store.formState;
     },
     hasUpdated() {
-      return !!this.state.updatedAt;
+      return Boolean(this.state.updatedAt);
     },
     issueChanged() {
       const {

@@ -49,7 +49,7 @@ export default {
   computed: {
     ...mapGetters(['userCanReply']),
     hasReplies() {
-      return !!this.replies.length;
+      return Boolean(this.replies.length);
     },
     replies() {
       return this.discussion.notes.slice(1);

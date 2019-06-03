@@ -2,10 +2,10 @@ import _ from 'underscore';
 import { __, s__, sprintf } from '~/locale';
 import { getDisplayName } from '../utils';
 
-export const hasProjects = state => !!state.projects && state.projects.length > 0;
+export const hasProjects = state => Boolean(state.projects) && state.projects.length > 0;
 
 export const isProjectInvalid = (state, getters) =>
-  !!state.selectedProject &&
+  Boolean(state.selectedProject) &&
   getters.hasProjects &&
   !state.projects.some(project => _.isMatch(state.selectedProject, project));
 

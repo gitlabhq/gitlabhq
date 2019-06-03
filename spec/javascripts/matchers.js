@@ -28,7 +28,7 @@ export default {
         reference.getAttribute('xlink:href').endsWith(`#${iconName}`),
       );
       const result = {
-        pass: !!matchingIcon,
+        pass: Boolean(matchingIcon),
       };
 
       if (result.pass) {
