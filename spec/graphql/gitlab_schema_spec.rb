@@ -107,6 +107,64 @@ describe GitlabSchema do
     end
   end
 
+  describe '.id_from_object' do
+    it 'returns a global id' do
+      expect(described_class.id_from_object(build(:project, id: 1))).to be_a(GlobalID)
+    end
+
+    it "raises a meaningful error if a global id couldn't be generated" do
+      expect { described_class.id_from_object(build(:commit)) }
+        .to raise_error(RuntimeError, /include `GlobalID::Identification` into/i)
+    end
+  end
+
+  describe '.object_from_id' do
+    context 'for subclasses of `ApplicationRecord`' do
+      it 'returns the correct record' do
+        user = create(:user)
+
+        result = described_class.object_from_id(user.to_global_id.to_s)
+
+        expect(result.__sync).to eq(user)
+      end
+
+      it 'batchloads the queries' do
+        user1 = create(:user)
+        user2 = create(:user)
+
+        expect do
+          [described_class.object_from_id(user1.to_global_id),
+           described_class.object_from_id(user2.to_global_id)].map(&:__sync)
+        end.not_to exceed_query_limit(1)
+      end
+    end
+
+    context 'for other classes' do
+      # We cannot use an anonymous class here as `GlobalID` expects `.name` not
+      # to return `nil`
+      class TestGlobalId
+        include GlobalID::Identification
+        attr_accessor :id
+
+        def initialize(id)
+          @id = id
+        end
+      end
+
+      it 'falls back to a regular find' do
+        result = TestGlobalId.new(123)
+
+        expect(TestGlobalId).to receive(:find).with("123").and_return(result)
+
+        expect(described_class.object_from_id(result.to_global_id)).to eq(result)
+      end
+    end
+
+    it 'raises the correct error on invalid input' do
+      expect { described_class.object_from_id("bogus id") }.to raise_error(Gitlab::Graphql::Errors::ArgumentError)
+    end
+  end
+
   def field_instrumenters
     described_class.instrumenters[:field] + described_class.instrumenters[:field_after_built_ins]
   end

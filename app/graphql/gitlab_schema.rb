@@ -45,6 +45,31 @@ class GitlabSchema < GraphQL::Schema
       super(query_str, **kwargs)
     end
 
+    def id_from_object(object)
+      unless object.respond_to?(:to_global_id)
+        # This is an error in our schema and needs to be solved. So raise a
+        # more meaningfull error message
+        raise "#{object} does not implement `to_global_id`. "\
+              "Include `GlobalID::Identification` into `#{object.class}"
+      end
+
+      object.to_global_id
+    end
+
+    def object_from_id(global_id)
+      gid = GlobalID.parse(global_id)
+
+      unless gid
+        raise Gitlab::Graphql::Errors::ArgumentError, "#{global_id} is not a valid GitLab id."
+      end
+
+      if gid.model_class < ApplicationRecord
+        Gitlab::Graphql::Loaders::BatchModelLoader.new(gid.model_class, gid.model_id).find
+      else
+        gid.find
+      end
+    end
+
     private
 
     def max_query_complexity(ctx)

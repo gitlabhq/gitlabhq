@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'GitlabSchema configurations' do
   include GraphqlHelpers
 
-  let(:project) { create(:project) }
+  set(:project) { create(:project) }
 
   shared_examples 'imposing query limits' do
     describe '#max_complexity' do
@@ -134,6 +134,17 @@ describe 'GitlabSchema configurations' do
       expect_any_instance_of(Gitlab::GraphqlLogger).to receive(:format_message)
 
       post_graphql(query, current_user: nil)
+    end
+  end
+
+  context "global id's" do
+    it 'uses GlobalID to expose ids' do
+      post_graphql(graphql_query_for('project', { 'fullPath' => project.full_path }, %w(id)),
+                   current_user: project.owner)
+
+      parsed_id = GlobalID.parse(graphql_data['project']['id'])
+
+      expect(parsed_id).to eq(project.to_global_id)
     end
   end
 end
