@@ -32,7 +32,7 @@ GitLab will:
 
 1. Import the project.
 1. Enable [Pull Mirroring](../../workflow/repository_mirroring.md#pulling-from-a-remote-repository-starter).
-1. Enable [GitHub project integration](https://docs.gitlab.com/ee/user/project/integrations/github.html).
+1. Enable [GitHub project integration](../../user/project/integrations/github.md).
 1. Create a web hook on GitHub to notify GitLab of new commits.
 
 CAUTION: **Caution:**
@@ -69,12 +69,9 @@ repositories:
 
 1. In GitHub, add a `.gitlab-ci.yml` to [configure GitLab CI/CD](../quick_start/README.md).
 
-GitLab will:
-
-1. Import the project.
-1. Enable [Pull Mirroring](../../workflow/repository_mirroring.md#pulling-from-a-remote-repository-starter).
-1. Enable [GitHub project integration](https://docs.gitlab.com/ee/user/project/integrations/github.html).
-1. Create a web hook on GitHub to notify GitLab of new commits.
+GitLab will import the project, enable [Pull Mirroring](../../workflow/repository_mirroring.md#pulling-from-a-remote-repository-starter), enable
+[GitHub project integration](../../user/project/integrations/github.md), and create a web hook
+on GitHub to notify GitLab of new commits.
 
 ## Connect manually
 
@@ -99,7 +96,7 @@ your repository:
 
     GitLab will automatically configure polling-based pull mirroring.
 
-1. Still in GitLab, enable the [GitHub project integration](https://docs.gitlab.com/ee/user/project/integrations/github.html)
+1. Still in GitLab, enable the [GitHub project integration](../../user/project/integrations/github.md)
    from **Settings > Integrations.**
 
     Check the **Active** checkbox to enable the integration, paste your

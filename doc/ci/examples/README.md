@@ -47,7 +47,7 @@ to get paid for writing complete articles for GitLab.
 
 ## Adding templates to your GitLab installation **[PREMIUM ONLY]**
 
-If you want to have customized examples and templates for your own self-managed GitLab instance available to your team, your GitLab administrator can [designate an instance template repository](https://docs.gitlab.com/ee/user/admin_area/settings/instance_template_repository.html) that contains examples and templates specific to your enterprise.
+If you want to have customized examples and templates for your own self-managed GitLab instance available to your team, your GitLab administrator can [designate an instance template repository](../../user/admin_area/settings/instance_template_repository.md) that contains examples and templates specific to your enterprise.
 
 ## Other resources
 

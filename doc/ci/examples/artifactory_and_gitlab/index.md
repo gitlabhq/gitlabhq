@@ -106,7 +106,7 @@ parameter in `.gitlab-ci.yml` to use the custom location instead of the default 
 Now it's time we set up [GitLab CI/CD](https://about.gitlab.com/product/continuous-integration/) to automatically build, test and deploy the dependency!
 
 GitLab CI/CD uses a file in the root of the repo, named `.gitlab-ci.yml`, to read the definitions for jobs
-that will be executed by the configured GitLab Runners. You can read more about this file in the [GitLab Documentation](https://docs.gitlab.com/ee/ci/yaml/).
+that will be executed by the configured GitLab Runners. You can read more about this file in the [GitLab Documentation](../../yaml/README.md).
 
 First of all, remember to set up variables for your deployment. Navigate to your project's **Settings > CI/CD > Environment variables** page
 and add the following ones (replace them with your current values, of course):
