@@ -2,6 +2,87 @@
 require 'spec_helper'
 
 describe Gitlab::UrlBlocker do
+  describe '#validate!' do
+    context 'when URI is nil' do
+      let(:import_url) { nil }
+
+      it 'returns no URI and hostname' do
+        uri, hostname = described_class.validate!(import_url)
+
+        expect(uri).to be(nil)
+        expect(hostname).to be(nil)
+      end
+    end
+
+    context 'when URI is internal' do
+      let(:import_url) { 'http://localhost' }
+
+      it 'returns URI and no hostname' do
+        uri, hostname = described_class.validate!(import_url)
+
+        expect(uri).to eq(Addressable::URI.parse('http://[::1]'))
+        expect(hostname).to eq('localhost')
+      end
+    end
+
+    context 'when the URL hostname is a domain' do
+      let(:import_url) { 'https://example.org' }
+
+      it 'returns URI and hostname' do
+        uri, hostname = described_class.validate!(import_url)
+
+        expect(uri).to eq(Addressable::URI.parse('https://93.184.216.34'))
+        expect(hostname).to eq('example.org')
+      end
+    end
+
+    context 'when the URL hostname is an IP address' do
+      let(:import_url) { 'https://93.184.216.34' }
+
+      it 'returns URI and no hostname' do
+        uri, hostname = described_class.validate!(import_url)
+
+        expect(uri).to eq(Addressable::URI.parse('https://93.184.216.34'))
+        expect(hostname).to be(nil)
+      end
+    end
+
+    context 'disabled DNS rebinding protection' do
+      context 'when URI is internal' do
+        let(:import_url) { 'http://localhost' }
+
+        it 'returns URI and no hostname' do
+          uri, hostname = described_class.validate!(import_url, dns_rebind_protection: false)
+
+          expect(uri).to eq(Addressable::URI.parse('http://localhost'))
+          expect(hostname).to be(nil)
+        end
+      end
+
+      context 'when the URL hostname is a domain' do
+        let(:import_url) { 'https://example.org' }
+
+        it 'returns URI and no hostname' do
+          uri, hostname = described_class.validate!(import_url, dns_rebind_protection: false)
+
+          expect(uri).to eq(Addressable::URI.parse('https://example.org'))
+          expect(hostname).to eq(nil)
+        end
+      end
+
+      context 'when the URL hostname is an IP address' do
+        let(:import_url) { 'https://93.184.216.34' }
+
+        it 'returns URI and no hostname' do
+          uri, hostname = described_class.validate!(import_url, dns_rebind_protection: false)
+
+          expect(uri).to eq(Addressable::URI.parse('https://93.184.216.34'))
+          expect(hostname).to be(nil)
+        end
+      end
+    end
+  end
+
   describe '#blocked_url?' do
     let(:ports) { Project::VALID_IMPORT_PORTS }
 
@@ -208,7 +289,7 @@ describe Gitlab::UrlBlocker do
       end
 
       def stub_domain_resolv(domain, ip)
-        address = double(ip_address: ip, ipv4_private?: true, ipv6_link_local?: false, ipv4_loopback?: false, ipv6_loopback?: false)
+        address = double(ip_address: ip, ipv4_private?: true, ipv6_link_local?: false, ipv4_loopback?: false, ipv6_loopback?: false, ipv4?: false)
         allow(Addrinfo).to receive(:getaddrinfo).with(domain, any_args).and_return([address])
         allow(address).to receive(:ipv6_v4mapped?).and_return(false)
       end

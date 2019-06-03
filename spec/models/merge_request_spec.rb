@@ -173,6 +173,42 @@ describe MergeRequest do
       end
     end
 
+    context 'for branch' do
+      before do
+        stub_feature_flags(stricter_mr_branch_name: false)
+      end
+
+      using RSpec::Parameterized::TableSyntax
+
+      where(:branch_name, :valid) do
+        'foo' | true
+        'foo:bar' | false
+        '+foo:bar' | false
+        'foo bar' | false
+        '-foo' | false
+        'HEAD' | true
+        'refs/heads/master' | true
+      end
+
+      with_them do
+        it "validates source_branch" do
+          subject = build(:merge_request, source_branch: branch_name, target_branch: 'master')
+
+          subject.valid?
+
+          expect(subject.errors.added?(:source_branch)).to eq(!valid)
+        end
+
+        it "validates target_branch" do
+          subject = build(:merge_request, source_branch: 'master', target_branch: branch_name)
+
+          subject.valid?
+
+          expect(subject.errors.added?(:target_branch)).to eq(!valid)
+        end
+      end
+    end
+
     context 'for forks' do
       let(:project) { create(:project) }
       let(:fork1) { fork_project(project) }

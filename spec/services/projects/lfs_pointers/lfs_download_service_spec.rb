@@ -2,6 +2,8 @@
 require 'spec_helper'
 
 describe Projects::LfsPointers::LfsDownloadService do
+  include StubRequests
+
   let(:project) { create(:project) }
   let(:lfs_content) { SecureRandom.random_bytes(10) }
   let(:oid) { Digest::SHA256.hexdigest(lfs_content) }
@@ -62,7 +64,7 @@ describe Projects::LfsPointers::LfsDownloadService do
   describe '#execute' do
     context 'when file download succeeds' do
       before do
-        WebMock.stub_request(:get, download_link).to_return(body: lfs_content)
+        stub_full_request(download_link).to_return(body: lfs_content)
       end
 
       it_behaves_like 'lfs object is created'
@@ -104,7 +106,7 @@ describe Projects::LfsPointers::LfsDownloadService do
       let(:size) { 1 }
 
       before do
-        WebMock.stub_request(:get, download_link).to_return(body: lfs_content)
+        stub_full_request(download_link).to_return(body: lfs_content)
       end
 
       it_behaves_like 'no lfs object is created'
@@ -118,7 +120,7 @@ describe Projects::LfsPointers::LfsDownloadService do
 
     context 'when downloaded lfs file has a different oid' do
       before do
-        WebMock.stub_request(:get, download_link).to_return(body: lfs_content)
+        stub_full_request(download_link).to_return(body: lfs_content)
         allow_any_instance_of(Digest::SHA256).to receive(:hexdigest).and_return('foobar')
       end
 
@@ -136,7 +138,7 @@ describe Projects::LfsPointers::LfsDownloadService do
       let(:lfs_object) { LfsDownloadObject.new(oid: oid, size: size, link: download_link_with_credentials) }
 
       before do
-        WebMock.stub_request(:get, download_link).with(headers: { 'Authorization' => 'Basic dXNlcjpwYXNzd29yZA==' }).to_return(body: lfs_content)
+        stub_full_request(download_link).with(headers: { 'Authorization' => 'Basic dXNlcjpwYXNzd29yZA==' }).to_return(body: lfs_content)
       end
 
       it 'the request adds authorization headers' do
@@ -149,7 +151,7 @@ describe Projects::LfsPointers::LfsDownloadService do
       let(:local_request_setting) { true }
 
       before do
-        WebMock.stub_request(:get, download_link).to_return(body: lfs_content)
+        stub_full_request(download_link, ip_address: '192.168.2.120').to_return(body: lfs_content)
       end
 
       it_behaves_like 'lfs object is created'
@@ -173,7 +175,8 @@ describe Projects::LfsPointers::LfsDownloadService do
 
         with_them do
           before do
-            WebMock.stub_request(:get, download_link).to_return(status: 301, headers: { 'Location' => redirect_link })
+            stub_full_request(download_link, ip_address: '192.168.2.120')
+              .to_return(status: 301, headers: { 'Location' => redirect_link })
           end
 
           it_behaves_like 'no lfs object is created'
@@ -184,8 +187,8 @@ describe Projects::LfsPointers::LfsDownloadService do
         let(:redirect_link) { "http://example.com/"}
 
         before do
-          WebMock.stub_request(:get, download_link).to_return(status: 301, headers: { 'Location' => redirect_link })
-          WebMock.stub_request(:get, redirect_link).to_return(body: lfs_content)
+          stub_full_request(download_link).to_return(status: 301, headers: { 'Location' => redirect_link })
+          stub_full_request(redirect_link).to_return(body: lfs_content)
         end
 
         it_behaves_like 'lfs object is created'

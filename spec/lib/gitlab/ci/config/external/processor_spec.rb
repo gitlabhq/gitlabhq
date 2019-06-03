@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Config::External::Processor do
+  include StubRequests
+
   set(:project) { create(:project, :repository) }
   set(:another_project) { create(:project, :repository) }
   set(:user) { create(:user) }
@@ -42,7 +44,7 @@ describe Gitlab::Ci::Config::External::Processor do
       let(:values) { { include: remote_file, image: 'ruby:2.2' } }
 
       before do
-        WebMock.stub_request(:get, remote_file).to_raise(SocketError.new('Some HTTP error'))
+        stub_full_request(remote_file).and_raise(SocketError.new('Some HTTP error'))
       end
 
       it 'raises an error' do
@@ -75,7 +77,7 @@ describe Gitlab::Ci::Config::External::Processor do
       end
 
       before do
-        WebMock.stub_request(:get, remote_file).to_return(body: external_file_content)
+        stub_full_request(remote_file).to_return(body: external_file_content)
       end
 
       it 'appends the file to the values' do
@@ -145,7 +147,7 @@ describe Gitlab::Ci::Config::External::Processor do
         allow_any_instance_of(Gitlab::Ci::Config::External::File::Local)
           .to receive(:fetch_local_content).and_return(local_file_content)
 
-        WebMock.stub_request(:get, remote_file).to_return(body: remote_file_content)
+        stub_full_request(remote_file).to_return(body: remote_file_content)
       end
 
       it 'appends the files to the values' do
@@ -191,7 +193,8 @@ describe Gitlab::Ci::Config::External::Processor do
       end
 
       it 'takes precedence' do
-        WebMock.stub_request(:get, remote_file).to_return(body: remote_file_content)
+        stub_full_request(remote_file).to_return(body: remote_file_content)
+
         expect(processor.perform[:image]).to eq('ruby:2.2')
       end
     end
@@ -231,7 +234,8 @@ describe Gitlab::Ci::Config::External::Processor do
           HEREDOC
         end
 
-        WebMock.stub_request(:get, 'http://my.domain.com/config.yml').to_return(body: 'remote_build: { script: echo Hello World }')
+        stub_full_request('http://my.domain.com/config.yml')
+          .to_return(body: 'remote_build: { script: echo Hello World }')
       end
 
       context 'when project is public' do
@@ -273,8 +277,10 @@ describe Gitlab::Ci::Config::External::Processor do
 
     context 'when config includes an external configuration file via SSL web request' do
       before do
-        stub_request(:get, 'https://sha256.badssl.com/fake.yml').to_return(body: 'image: ruby:2.6', status: 200)
-        stub_request(:get, 'https://self-signed.badssl.com/fake.yml')
+        stub_full_request('https://sha256.badssl.com/fake.yml', ip_address: '8.8.8.8')
+          .to_return(body: 'image: ruby:2.6', status: 200)
+
+        stub_full_request('https://self-signed.badssl.com/fake.yml', ip_address: '8.8.8.9')
           .to_raise(OpenSSL::SSL::SSLError.new('SSL_connect returned=1 errno=0 state=error: certificate verify failed (self signed certificate)'))
       end
 
