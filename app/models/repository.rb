@@ -1077,7 +1077,7 @@ class Repository
   end
 
   def rebase(user, merge_request)
-    if Feature.disabled?(:two_step_rebase, default_enabled: false)
+    if Feature.disabled?(:two_step_rebase, default_enabled: true)
       return rebase_deprecated(user, merge_request)
     end
 
