@@ -32,10 +32,8 @@ describe MergeRequests::MergeToRefService do
 
       expect(result[:status]).to eq(:success)
       expect(result[:commit_id]).to be_present
-      expect(result[:source_id]).to eq(merge_request.source_branch_sha)
-      expect(result[:target_id]).to eq(merge_request.target_branch_sha)
       expect(repository.ref_exists?(target_ref)).to be(true)
-      expect(ref_head.id).to eq(result[:commit_id])
+      expect(ref_head.sha).to eq(result[:commit_id])
     end
   end
 
@@ -72,10 +70,6 @@ describe MergeRequests::MergeToRefService do
   let(:merge_request) { create(:merge_request, :simple) }
   let(:project) { merge_request.project }
 
-  before do
-    project.add_maintainer(user)
-  end
-
   describe '#execute' do
     let(:service) do
       described_class.new(project, user, commit_message: 'Awesome message',
@@ -92,6 +86,12 @@ describe MergeRequests::MergeToRefService do
     it_behaves_like 'successfully evaluates pre-condition checks'
 
     context 'commit history comparison with regular MergeService' do
+      before do
+        # The merge service needs an authorized user while merge-to-ref
+        # doesn't.
+        project.add_maintainer(user)
+      end
+
       let(:merge_ref_service) do
         described_class.new(project, user, {})
       end
@@ -136,9 +136,9 @@ describe MergeRequests::MergeToRefService do
         let(:merge_method) { :merge }
 
         it 'returns error' do
-          allow(merge_request).to receive(:mergeable_to_ref?) { false }
+          allow(project).to receive_message_chain(:repository, :merge_to_ref) { nil }
 
-          error_message = "Merge request is not mergeable to #{merge_request.merge_ref_path}"
+          error_message = 'Conflicts detected during merge'
 
           result = service.execute(merge_request)
 
@@ -169,29 +169,6 @@ describe MergeRequests::MergeToRefService do
       end
 
       it { expect(todo).not_to be_done }
-    end
-
-    context 'when merge request is WIP state' do
-      it 'fails to merge' do
-        merge_request = create(:merge_request, title: 'WIP: The feature')
-
-        result = service.execute(merge_request)
-
-        expect(result[:status]).to eq(:error)
-        expect(result[:message]).to eq("Merge request is not mergeable to #{merge_request.merge_ref_path}")
-      end
-    end
-
-    it 'returns error when user has no authorization to admin the merge request' do
-      unauthorized_user = create(:user)
-      project.add_reporter(unauthorized_user)
-
-      service = described_class.new(project, unauthorized_user)
-
-      result = service.execute(merge_request)
-
-      expect(result[:status]).to eq(:error)
-      expect(result[:message]).to eq('You are not allowed to merge to this ref')
     end
   end
 end
