@@ -6,7 +6,6 @@ describe 'Project' do
 
   before do
     stub_feature_flags(vue_file_list: false)
-    stub_feature_flags(approval_rules: false)
   end
 
   describe 'creating from template' do
