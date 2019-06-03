@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 describe PivotaltrackerService do
+  include StubRequests
+
   describe 'Associations' do
     it { is_expected.to belong_to :project }
     it { is_expected.to have_one :service_hook }
@@ -53,12 +55,12 @@ describe PivotaltrackerService do
     end
 
     before do
-      WebMock.stub_request(:post, url)
+      stub_full_request(url, method: :post)
     end
 
     it 'posts correct message' do
       service.execute(push_data)
-      expect(WebMock).to have_requested(:post, url).with(
+      expect(WebMock).to have_requested(:post, stubbed_hostname(url)).with(
         body: {
           'source_commit' => {
             'commit_id' => '21c12ea',
@@ -85,14 +87,14 @@ describe PivotaltrackerService do
         service.execute(push_data(branch: 'master'))
         service.execute(push_data(branch: 'v10'))
 
-        expect(WebMock).to have_requested(:post, url).twice
+        expect(WebMock).to have_requested(:post, stubbed_hostname(url)).twice
       end
 
       it 'does not post message if branch is not in the list' do
         service.execute(push_data(branch: 'mas'))
         service.execute(push_data(branch: 'v11'))
 
-        expect(WebMock).not_to have_requested(:post, url)
+        expect(WebMock).not_to have_requested(:post, stubbed_hostname(url))
       end
     end
   end

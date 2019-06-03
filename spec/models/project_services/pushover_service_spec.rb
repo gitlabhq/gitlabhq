@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 describe PushoverService do
+  include StubRequests
+
   describe 'Associations' do
     it { is_expected.to belong_to :project }
     it { is_expected.to have_one :service_hook }
@@ -57,13 +59,13 @@ describe PushoverService do
         sound: sound
       )
 
-      WebMock.stub_request(:post, api_url)
+      stub_full_request(api_url, method: :post, ip_address: '8.8.8.8')
     end
 
     it 'calls Pushover API' do
       pushover.execute(sample_data)
 
-      expect(WebMock).to have_requested(:post, api_url).once
+      expect(WebMock).to have_requested(:post, 'https://8.8.8.8/1/messages.json').once
     end
   end
 end
