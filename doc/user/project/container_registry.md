@@ -53,7 +53,7 @@ If you visit the **Registry** link under your project's menu, you can see the
 explicit instructions to login to the Container Registry using your GitLab
 credentials.
 
-For example if the Registry's URL is `registry.example.com`, the you should be
+For example if the Registry's URL is `registry.example.com`, then you should be
 able to login with:
 
 ```
@@ -204,7 +204,7 @@ at the communication between the client and the Registry.
 The REST API between the Docker client and Registry is [described
 here](https://docs.docker.com/registry/spec/api/). Normally, one would just
 use Wireshark or tcpdump to capture the traffic and see where things went
-wrong.  However, since all communication between Docker clients and servers
+wrong.  However, since all communications between Docker clients and servers
 are done over HTTPS, it's a bit difficult to decrypt the traffic quickly even
 if you know the private key. What can we do instead?
 
