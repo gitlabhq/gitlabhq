@@ -109,6 +109,11 @@ const boardsStore = {
     });
     listFrom.update();
   },
+
+  startMoving(list, issue) {
+    Object.assign(this.moving, { list, issue });
+  },
+
   moveIssueToList(listFrom, listTo, issue, newIndex) {
     const issueTo = listTo.findIssue(issue.id);
     const issueLists = issue.getLists();

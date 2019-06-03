@@ -142,8 +142,10 @@ export default {
         const card = this.$refs.issue[e.oldIndex];
 
         card.showDetail = false;
-        boardsStore.moving.list = card.list;
-        boardsStore.moving.issue = boardsStore.moving.list.findIssue(+e.item.dataset.issueId);
+
+        const { list } = card;
+        const issue = list.findIssue(Number(e.item.dataset.issueId));
+        boardsStore.startMoving(list, issue);
 
         sortableStart();
       },
