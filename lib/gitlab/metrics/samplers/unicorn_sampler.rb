@@ -4,10 +4,6 @@ module Gitlab
   module Metrics
     module Samplers
       class UnicornSampler < BaseSampler
-        def initialize(interval)
-          super(interval)
-        end
-
         def metrics
           @metrics ||= init_metrics
         end
