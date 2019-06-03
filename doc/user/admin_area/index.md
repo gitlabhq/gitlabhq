@@ -20,7 +20,7 @@ The Admin Area is made up of the following sections:
 
 | Section                    | Description                                                                                                                                              |
 |:---------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Overview                   | View your GitLab [Dashboard](#admin-dashboard), and administer [projects](#administer-projects), [users](#administer-users), groups, jobs, runners, and Gitaly servers.       |
+| Overview                   | View your GitLab [Dashboard](#admin-dashboard), and administer [projects](#administer-projects), [users](#administer-users), groups, jobs, [Runners](#administer-runners), and Gitaly servers.       |
 | Monitoring                 | View GitLab system information, and information on background jobs, logs, [health checks](monitoring/health_check.md), request profiles, and audit logs. |
 | Messages                   | Send and manage [broadcast messages](broadcast_messages.md) for your users.                                                                              |
 | System Hooks               | Configure [system hooks](../../system_hooks/system_hooks.md) for many events.                                                                            |
@@ -109,7 +109,12 @@ created and the date of last activity. To edit a user, click the **Edit** button
 row. To delete the user, or delete the user and their contributions, click the cog dropdown in
 that user's row, and select the desired option.
 
-To change the sort order, click the sort dropdown and select the desired order. By default the sort dropdown shows **Name**.
+To change the sort order:
+
+1. Click the sort dropdown.
+1. Select the desired order.
+
+By default the sort dropdown shows **Name**.
 
 To search for users, enter your criteria in the search field. The user search is case
 insensitive, and applies partial matching to name and username. To search for an email address,
@@ -138,3 +143,49 @@ For each job, the following details are listed:
 | Name     | Name of the job specified in a `.gitlab-ci.yml` file.                   |
 | Timing   | Duration of the job, and how long ago the job completed.                |
 | Coverage | Percentage of tests coverage.                                           |
+
+## Administer Runners
+
+You can adminster all Runners in the GitLab instance from the Admin Area's **Runners** page. See
+[GitLab Runner](https://docs.gitlab.com/runner/) for more information on Runner itself.
+
+To access the **Runners** page, go to **Admin Area > Overview > Runners**.
+
+The **Runners** page features:
+
+- A description of Runners, and their possible states.
+- Instructions on installing a Runner.
+- A list of all registered Runners.
+
+Runners are listed in descending order by the date they were created, by default. You can change
+the sort order to *Last Contacted* from the dropdown beside the search field.
+
+To search Runners' descriptions:
+
+1. In the **Search or filter results...** field, type the description of the Runner you want to
+find.
+1. Press Enter.
+
+You can also filter Runners by status, type, and tag. To filter:
+
+1. Click in the **Search or filter results...** field.
+1. Select **status:**, **type:**, or **tag:**
+1. Select or enter your search criteria.
+
+![Attributes of a Runner, with the **Search or filter results...** field active](img/index_runners_search_or_filter.png)
+
+For each Runner, the following attributes are listed:
+
+| Attribute    | Description |
+| ------------ | ----------- |
+| Type         | One or more of the following states: shared, group, specific, locked, or paused |
+| Runner token | Token used to identify the Runner, and which the Runner uses to communicate with the GitLab instance |
+| Description  | Description given to the Runner when it was created |
+| Version      | GitLab Runner version |
+| IP address   | IP address of the host on which the Runner is registered |
+| Projects     | Projects to which the Runner is assigned |
+| Jobs         | Total of jobs run by the Runner |
+| Tags         | Tags associated with the Runner |
+| Last contact | Timestamp indicating when the GitLab instance last contacted the Runner |
+
+You can also edit, pause, or remove each Runner.
