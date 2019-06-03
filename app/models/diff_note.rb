@@ -15,7 +15,9 @@ class DiffNote < Note
   validates :original_position, presence: true
   validates :position, presence: true
   validates :line_code, presence: true, line_code: true, if: :on_text?
-  validates :noteable_type, inclusion: { in: noteable_types }
+  # We need to evaluate the `noteable` types when running the validation since
+  # EE might have added a type when the module was prepended
+  validates :noteable_type, inclusion: { in: -> (_note) { noteable_types } }
   validate :positions_complete
   validate :verify_supported
   validate :diff_refs_match_commit, if: :for_commit?

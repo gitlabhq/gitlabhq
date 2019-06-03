@@ -12,7 +12,7 @@ module ResolvableNote
     validates :resolved_by, presence: true, if: :resolved?
 
     # Keep this scope in sync with `#potentially_resolvable?`
-    scope :potentially_resolvable, -> { where(type: RESOLVABLE_TYPES).where(noteable_type: Noteable::RESOLVABLE_TYPES) }
+    scope :potentially_resolvable, -> { where(type: RESOLVABLE_TYPES).where(noteable_type: Noteable.resolvable_types) }
     # Keep this scope in sync with `#resolvable?`
     scope :resolvable, -> { potentially_resolvable.user }
 
