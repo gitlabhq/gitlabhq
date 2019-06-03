@@ -287,4 +287,16 @@ describe('Store', () => {
       expect(boardsStore.detail.issue).toEqual({});
     });
   });
+
+  describe('startMoving', () => {
+    it('stores list and issue', () => {
+      const dummyIssue = 'some issue';
+      const dummyList = 'some list';
+
+      boardsStore.startMoving(dummyList, dummyIssue);
+
+      expect(boardsStore.moving.issue).toEqual(dummyIssue);
+      expect(boardsStore.moving.list).toEqual(dummyList);
+    });
+  });
 });
