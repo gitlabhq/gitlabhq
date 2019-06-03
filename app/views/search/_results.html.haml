@@ -1,5 +1,6 @@
 - if @search_objects.to_a.empty?
   = render partial: "search/results/empty"
+  = render_if_exists 'shared/promotions/promote_advanced_search'
 - else
   .row-content-block
     - unless @search_objects.is_a?(Kaminari::PaginatableWithoutCount)
@@ -11,7 +12,7 @@
       - elsif @group
         - link_to_group = link_to(@group.name, @group)
         = _("in group %{link_to_group}").html_safe % { link_to_group: link_to_group }
-
+  = render_if_exists 'shared/promotions/promote_advanced_search'
   .results.prepend-top-10
     - if @scope == 'commits'
       %ul.content-list.commit-list
