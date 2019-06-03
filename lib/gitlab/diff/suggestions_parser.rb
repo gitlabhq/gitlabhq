@@ -10,10 +10,12 @@ module Gitlab
         # Returns an array of Gitlab::Diff::Suggestion which represents each
         # suggestion in the given text.
         #
-        def parse(text, position:, project:)
+        def parse(text, position:, project:, supports_suggestion: true)
           return [] unless position.complete?
 
-          html = Banzai.render(text, project: nil, no_original_data: true)
+          html = Banzai.render(text, project: nil,
+                                     no_original_data: true,
+                                     suggestions_filter_enabled: supports_suggestion)
           doc = Nokogiri::HTML(html)
           suggestion_nodes = doc.search('pre.suggestion')
 
