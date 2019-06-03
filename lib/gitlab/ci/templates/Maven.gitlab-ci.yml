@@ -19,6 +19,9 @@ variables:
   # `installAtEnd` and `deployAtEnd` are only effective with recent version of the corresponding plugins.
   MAVEN_CLI_OPTS: "--batch-mode --errors --fail-at-end --show-version -DinstallAtEnd=true -DdeployAtEnd=true"
 
+# This template uses jdk8 for verifying and deploying images
+image: maven:3.3.9-jdk-8
+
 # Cache downloaded dependencies and plugins between builds.
 # To keep cache across branches add 'key: "$CI_JOB_NAME"'
 cache:
@@ -37,7 +40,6 @@ cache:
 # Verify merge requests using JDK8
 verify:jdk8:
   <<: *verify
-  image: maven:3.3.9-jdk-8
 
 # To deploy packages from CI, create a ci_settings.xml file
 # For deploying packages to GitLab's Maven Repository: See https://gitlab.com/help/user/project/packages/maven_repository.md#creating-maven-packages-with-gitlab-cicd for more details.
@@ -47,9 +49,8 @@ deploy:jdk8:
   stage: deploy
   script:
     - if [ ! -f ci_settings.xml ];
-        then echo CI settings missing\! If deploying to GitLab Maven Repository, please see https://gitlab.com/help/user/project/packages/maven_repository.md#creating-maven-packages-with-gitlab-cicd for instructions.;
+        then echo "CI settings missing\! If deploying to GitLab Maven Repository, please see https://gitlab.com/help/user/project/packages/maven_repository.md#creating-maven-packages-with-gitlab-cicd for instructions.";
       fi
     - 'mvn $MAVEN_CLI_OPTS deploy -s ci_settings.xml'
   only:
     - master
-  image: maven:3.3.9-jdk-8
