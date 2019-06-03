@@ -222,60 +222,6 @@ describe('mrWidgetOptions', () => {
         });
       });
     });
-
-    describe('showTargetBranchAdvancedError', () => {
-      describe(`when the pipeline's target_sha property doesn't exist`, () => {
-        beforeEach(done => {
-          Vue.set(vm.mr, 'isOpen', true);
-          Vue.set(vm.mr.pipeline, 'target_sha', undefined);
-          Vue.set(vm.mr, 'targetBranchSha', 'abcd');
-          vm.$nextTick(done);
-        });
-
-        it('should be false', () => {
-          expect(vm.showTargetBranchAdvancedError).toEqual(false);
-        });
-      });
-
-      describe(`when the pipeline's target_sha matches the target branch's sha`, () => {
-        beforeEach(done => {
-          Vue.set(vm.mr, 'isOpen', true);
-          Vue.set(vm.mr.pipeline, 'target_sha', 'abcd');
-          Vue.set(vm.mr, 'targetBranchSha', 'abcd');
-          vm.$nextTick(done);
-        });
-
-        it('should be false', () => {
-          expect(vm.showTargetBranchAdvancedError).toEqual(false);
-        });
-      });
-
-      describe(`when the merge request is not open`, () => {
-        beforeEach(done => {
-          Vue.set(vm.mr, 'isOpen', false);
-          Vue.set(vm.mr.pipeline, 'target_sha', 'abcd');
-          Vue.set(vm.mr, 'targetBranchSha', 'bcde');
-          vm.$nextTick(done);
-        });
-
-        it('should be false', () => {
-          expect(vm.showTargetBranchAdvancedError).toEqual(false);
-        });
-      });
-
-      describe(`when the pipeline's target_sha does not match the target branch's sha`, () => {
-        beforeEach(done => {
-          Vue.set(vm.mr, 'isOpen', true);
-          Vue.set(vm.mr.pipeline, 'target_sha', 'abcd');
-          Vue.set(vm.mr, 'targetBranchSha', 'bcde');
-          vm.$nextTick(done);
-        });
-
-        it('should be true', () => {
-          expect(vm.showTargetBranchAdvancedError).toEqual(true);
-        });
-      });
-    });
   });
 
   describe('methods', () => {
