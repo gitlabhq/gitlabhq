@@ -248,7 +248,7 @@ export default {
             >
           </gl-dropdown>
         </div>
-        <div v-if="showTimeWindowDropdown" class="d-flex align-items-center">
+        <div v-if="showTimeWindowDropdown" class="d-flex align-items-center prepend-left-8">
           <strong>{{ s__('Metrics|Show last') }}</strong>
           <gl-dropdown
             class="prepend-left-10 js-time-window-dropdown"
