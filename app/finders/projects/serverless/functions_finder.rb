@@ -14,15 +14,16 @@ module Projects
         knative_services.flatten.compact
       end
 
-      # Possible return values: Clusters::Cluster::KnativeServicesFinder::KNATIVE_STATE
+      # Possible return values: Clusters::KnativeServicesFinder::KNATIVE_STATE
       def knative_installed
         states = @clusters.map do |cluster|
+          cluster.application_knative
           cluster.knative_services_finder(project).knative_detected.tap do |state|
-            return state if state == ::Clusters::Cluster::KnativeServicesFinder::KNATIVE_STATES['checking'] # rubocop:disable Cop/AvoidReturnFromBlocks
+            return state if state == ::Clusters::KnativeServicesFinder::KNATIVE_STATES['checking'] # rubocop:disable Cop/AvoidReturnFromBlocks
           end
         end
 
-        states.any? { |state| state == ::Clusters::Cluster::KnativeServicesFinder::KNATIVE_STATES['installed'] }
+        states.any? { |state| state == ::Clusters::KnativeServicesFinder::KNATIVE_STATES['installed'] }
       end
 
       def service(environment_scope, name)
