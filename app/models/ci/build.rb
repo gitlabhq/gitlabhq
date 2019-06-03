@@ -15,7 +15,6 @@ module Ci
     include Gitlab::Utils::StrongMemoize
     include Deployable
     include HasRef
-    include UpdateProjectStatistics
 
     BuildArchivedError = Class.new(StandardError)
 

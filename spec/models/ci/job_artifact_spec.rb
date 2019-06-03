@@ -5,10 +5,6 @@ require 'spec_helper'
 describe Ci::JobArtifact do
   let(:artifact) { create(:ci_job_artifact, :archive) }
 
-  it_behaves_like 'UpdateProjectStatistics' do
-    subject { build(:ci_job_artifact, :archive, size: 106365) }
-  end
-
   describe "Associations" do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:job) }
@@ -22,6 +18,10 @@ describe Ci::JobArtifact do
   it { is_expected.to delegate_method(:exists?).to(:file) }
 
   it_behaves_like 'having unique enum values'
+
+  it_behaves_like 'UpdateProjectStatistics' do
+    subject { build(:ci_job_artifact, :archive, size: 106365) }
+  end
 
   describe '.with_reports' do
     let!(:artifact) { create(:ci_job_artifact, :archive) }

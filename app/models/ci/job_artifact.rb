@@ -59,7 +59,7 @@ module Ci
     validate :valid_file_format?, unless: :trace?, on: :create
     before_save :set_size, if: :file_changed?
 
-    update_project_statistics stat: :build_artifacts_size
+    update_project_statistics project_statistics_name: :build_artifacts_size
 
     after_save :update_file_store, if: :saved_change_to_file?
 

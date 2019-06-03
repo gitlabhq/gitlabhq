@@ -3,16 +3,16 @@
 require 'spec_helper'
 
 shared_examples_for 'UpdateProjectStatistics' do
-  let(:project)   { subject.project }
-  let(:stat)      { described_class.statistic_name }
-  let(:attribute) { described_class.statistic_attribute }
+  let(:project) { subject.project }
+  let(:project_statistics_name) { described_class.project_statistics_name }
+  let(:statistic_attribute) { described_class.statistic_attribute }
 
   def reload_stat
-    project.statistics.reload.send(stat).to_i
+    project.statistics.reload.send(project_statistics_name).to_i
   end
 
   def read_attribute
-    subject.read_attribute(attribute).to_i
+    subject.read_attribute(statistic_attribute).to_i
   end
 
   it { is_expected.to be_new_record }
@@ -39,7 +39,8 @@ shared_examples_for 'UpdateProjectStatistics' do
         .to receive(:increment_statistic)
         .and_call_original
 
-      subject.write_attribute(attribute, read_attribute + delta)
+      subject.write_attribute(statistic_attribute, read_attribute + delta)
+
       expect { subject.save! }
         .to change { reload_stat }
         .by(delta)
