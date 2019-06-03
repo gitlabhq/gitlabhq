@@ -4,8 +4,9 @@
 - member = local_assigns.fetch(:member)
 - user = local_assigns.fetch(:user, member.user)
 - source = member.source
+- override = member.try(:override)
 
-%li.member{ class: dom_class(member), id: dom_id(member) }
+%li.member{ class: [dom_class(member), ("is-overridden" if override)], id: dom_id(member) }
   %span.list-item-name
     - if user
       = image_tag avatar_icon_for_user(user, 40), class: "avatar s40", alt: ''
@@ -54,6 +55,7 @@
   - if show_roles
     - current_resource = @project || @group
     .controls.member-controls
+      = render_if_exists 'shared/members/ee/ldap_tag', can_override: member.can_override?
       - if show_controls && member.source == current_resource
 
         - if member.can_resend_invite?
@@ -67,6 +69,7 @@
             = f.hidden_field :access_level
             .member-form-control.dropdown.append-right-5
               %button.dropdown-menu-toggle.js-member-permissions-dropdown{ type: "button",
+                disabled: member.can_override? && !override,
                 data: { toggle: "dropdown", field_name: "#{f.object_name}[access_level]" } }
                 %span.dropdown-toggle-text
                   = member.human_access
@@ -80,8 +83,13 @@
                         = link_to role, "javascript:void(0)",
                           class: ("is-active" if member.access_level == role_id),
                           data: { id: role_id, el_id: dom_id(member) }
+                    = render_if_exists 'shared/members/ee/revert_ldap_group_sync_option',
+                      group: @group,
+                      member: member,
+                      can_override: member.can_override?
             .prepend-left-5.clearable-input.member-form-control
               = f.text_field :expires_at,
+                disabled: member.can_override? && !override,
                 class: 'form-control js-access-expiration-date js-member-update-control',
                 placeholder: _('Expiration date'),
                 id: "member_expires_at_#{member.id}",
@@ -116,5 +124,8 @@
                 = _("Delete")
               - unless force_mobile_view
                 = icon('trash', class: 'd-none d-sm-block')
+        = render_if_exists 'shared/members/ee/override_member_buttons', group: @group, member: member, user: user, action: :edit, can_override: member.can_override?
       - else
         %span.member-access-text= member.human_access
+
+= render_if_exists 'shared/members/ee/override_member_buttons', group: @group, member: member, user: user, action: :confirm, can_override: member.can_override?
