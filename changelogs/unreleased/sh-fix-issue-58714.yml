@@ -1,0 +1,5 @@
+---
+title: Fix migration failure when groups are missing route
+merge_request: 29022
+author:
+type: fixed
