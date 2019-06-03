@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import 'at.js';
 import _ from 'underscore';
 import glRegexp from './lib/utils/regexp';
 import AjaxCache from './lib/utils/ajax_cache';
