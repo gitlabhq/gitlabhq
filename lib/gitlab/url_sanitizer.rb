@@ -47,6 +47,10 @@ module Gitlab
       @credentials ||= { user: @url.user.presence, password: @url.password.presence }
     end
 
+    def user
+      credentials[:user]
+    end
+
     def full_url
       @full_url ||= generate_full_url.to_s
     end
