@@ -97,7 +97,12 @@ export const lastCommit = (state, getters) => {
 export const currentBranch = (state, getters) =>
   getters.currentProject && getters.currentProject.branches[state.currentBranchId];
 
+export const branchName = (_state, getters) => getters.currentBranch && getters.currentBranch.name;
+
 export const packageJson = state => state.entries[packageJsonPath];
+
+export const isOnDefaultBranch = (_state, getters) =>
+  getters.currentProject && getters.currentProject.default_branch === getters.branchName;
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};
