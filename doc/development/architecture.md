@@ -59,7 +59,7 @@ graph TB
   PgBouncerExporter[PgBouncer Exporter] --> PgBouncer
   Prometheus -- TCP 9187 --> PostgreSQLExporter
   Prometheus -- TCP 9100 --> NodeExporter[Node Exporter]
-  Prometheus -- TCP 9168 --> GitLabMonito[GitLab Monitor]
+  Prometheus -- TCP 9168 --> GitLabMonitor[GitLab Monitor]
   Prometheus -- TCP 9127 --> PgBouncerExporter
   GitLabMonitor --> PostgreSQL
   GitLabMonitor --> GitLabShell
