@@ -1,0 +1,5 @@
+---
+title: Do not display Update app button when saving Knative domain name
+merge_request: 28904
+author:
+type: changed

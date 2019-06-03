@@ -89,6 +89,10 @@ export default {
       type: Boolean,
       required: false,
     },
+    updateable: {
+      type: Boolean,
+      default: true,
+    },
     updateSuccessful: {
       type: Boolean,
       required: false,
@@ -326,36 +330,38 @@ export default {
           </ul>
         </div>
 
-        <div
-          v-if="shouldShowUpgradeDetails"
-          class="form-text text-muted label p-0 js-cluster-application-upgrade-details"
-        >
-          {{ versionLabel }}
-          <span v-if="updateSuccessful">to</span>
-
-          <gl-link
-            v-if="updateSuccessful"
-            :href="chartRepo"
-            target="_blank"
-            class="js-cluster-application-upgrade-version"
-            >chart v{{ version }}</gl-link
+        <div v-if="updateable">
+          <div
+            v-if="shouldShowUpgradeDetails"
+            class="form-text text-muted label p-0 js-cluster-application-upgrade-details"
           >
-        </div>
+            {{ versionLabel }}
+            <span v-if="updateSuccessful">to</span>
 
-        <div
-          v-if="updateFailed && !isUpgrading"
-          class="bs-callout bs-callout-danger cluster-application-banner mt-2 mb-0 js-cluster-application-upgrade-failure-message"
-        >
-          {{ upgradeFailureDescription }}
+            <gl-link
+              v-if="updateSuccessful"
+              :href="chartRepo"
+              target="_blank"
+              class="js-cluster-application-upgrade-version"
+              >chart v{{ version }}</gl-link
+            >
+          </div>
+
+          <div
+            v-if="updateFailed && !isUpgrading"
+            class="bs-callout bs-callout-danger cluster-application-banner mt-2 mb-0 js-cluster-application-upgrade-failure-message"
+          >
+            {{ upgradeFailureDescription }}
+          </div>
+          <loading-button
+            v-if="upgradeAvailable || updateFailed || isUpgrading"
+            class="btn btn-primary js-cluster-application-upgrade-button mt-2"
+            :loading="isUpgrading"
+            :disabled="isUpgrading"
+            :label="upgradeButtonLabel"
+            @click="upgradeClicked"
+          />
         </div>
-        <loading-button
-          v-if="upgradeAvailable || updateFailed || isUpgrading"
-          class="btn btn-primary js-cluster-application-upgrade-button mt-2"
-          :loading="isUpgrading"
-          :disabled="isUpgrading"
-          :label="upgradeButtonLabel"
-          @click="upgradeClicked"
-        />
       </div>
       <div
         :class="{ 'section-25': showManageButton, 'section-15': !showManageButton }"

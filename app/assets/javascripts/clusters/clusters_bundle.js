@@ -353,8 +353,10 @@ export default class Clusters {
 
   saveKnativeDomain(data) {
     const appId = data.id;
-    this.store.updateAppProperty(appId, 'status', APPLICATION_STATUS.UPDATING);
-    this.service.updateApplication(appId, data.params);
+    this.store.updateApplication(appId);
+    this.service.updateApplication(appId, data.params).catch(() => {
+      this.store.notifyUpdateFailure(appId);
+    });
   }
 
   setKnativeHostname(data) {
