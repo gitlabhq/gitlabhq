@@ -8,6 +8,18 @@ describe ImportUrlParams do
     controller.import_url_params
   end
 
+  context 'empty URL' do
+    let(:params) do
+      ActionController::Parameters.new(project: {
+        title: 'Test'
+      })
+    end
+
+    it 'returns empty hash' do
+      expect(import_url_params).to eq({})
+    end
+  end
+
   context 'url and password separately provided' do
     let(:params) do
       ActionController::Parameters.new(project: {
