@@ -307,8 +307,8 @@ GitLabDropdown = (function() {
     // Set Defaults
     this.filterInput = this.options.filterInput || this.getElement(FILTER_INPUT);
     this.noFilterInput = this.options.noFilterInput || this.getElement(NO_FILTER_INPUT);
-    this.highlight = !!this.options.highlight;
-    this.icon = !!this.options.icon;
+    this.highlight = Boolean(this.options.highlight);
+    this.icon = Boolean(this.options.icon);
     this.filterInputBlur =
       this.options.filterInputBlur != null ? this.options.filterInputBlur : true;
     // If no input is passed create a default one

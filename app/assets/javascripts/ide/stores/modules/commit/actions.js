@@ -102,7 +102,7 @@ export const updateFilesAfterCommit = ({ commit, dispatch, rootState, rootGetter
 
     eventHub.$emit(`editor.update.model.content.${file.key}`, {
       content: file.content,
-      changed: !!changedFile,
+      changed: Boolean(changedFile),
     });
   });
 };

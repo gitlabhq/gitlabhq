@@ -6,8 +6,8 @@ import { isImageLoaded } from '../lib/utils/image_utility';
 export default class ImageDiff {
   constructor(el, options) {
     this.el = el;
-    this.canCreateNote = !!(options && options.canCreateNote);
-    this.renderCommentBadge = !!(options && options.renderCommentBadge);
+    this.canCreateNote = Boolean(options && options.canCreateNote);
+    this.renderCommentBadge = Boolean(options && options.renderCommentBadge);
     this.$noteContainer = $('.note-container', this.el);
     this.imageBadges = [];
   }

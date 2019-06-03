@@ -1,11 +1,11 @@
 export default {
   methods: {
     isConfidential(issue) {
-      return !!issue.confidential;
+      return Boolean(issue.confidential);
     },
 
     isLocked(issue) {
-      return !!issue.discussion_locked;
+      return Boolean(issue.discussion_locked);
     },
 
     hasWarning(issue) {

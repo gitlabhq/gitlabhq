@@ -37,7 +37,7 @@ export default class ShortcutsIssuable extends Shortcuts {
     }
 
     // Sanity check: Make sure the selected text comes from a discussion : it can either contain a message...
-    let foundMessage = !!documentFragment.querySelector('.md');
+    let foundMessage = Boolean(documentFragment.querySelector('.md'));
 
     // ... Or come from a message
     if (!foundMessage) {

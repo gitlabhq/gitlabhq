@@ -513,7 +513,7 @@ export const stringifyTime = (timeObject, fullNameFormat = false) => {
   const reducedTime = _.reduce(
     timeObject,
     (memo, unitValue, unitName) => {
-      const isNonZero = !!unitValue;
+      const isNonZero = Boolean(unitValue);
 
       if (fullNameFormat && isNonZero) {
         // Remove traling 's' if unit value is singular

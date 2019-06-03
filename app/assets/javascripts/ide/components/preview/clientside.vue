@@ -105,7 +105,7 @@ export default {
         .then(() => {
           this.initManager('#ide-preview', this.sandboxOpts, {
             fileResolver: {
-              isFile: p => Promise.resolve(!!this.entries[createPathWithExt(p)]),
+              isFile: p => Promise.resolve(Boolean(this.entries[createPathWithExt(p)])),
               readFile: p => this.loadFileContent(createPathWithExt(p)).then(content => content),
             },
           });

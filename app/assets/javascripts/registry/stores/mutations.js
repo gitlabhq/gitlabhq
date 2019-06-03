@@ -9,7 +9,7 @@ export default {
   [types.SET_REPOS_LIST](state, list) {
     Object.assign(state, {
       repos: list.map(el => ({
-        canDelete: !!el.destroy_path,
+        canDelete: Boolean(el.destroy_path),
         destroyPath: el.destroy_path,
         id: el.id,
         isLoading: false,
@@ -42,7 +42,7 @@ export default {
       location: element.location,
       createdAt: element.created_at,
       destroyPath: element.destroy_path,
-      canDelete: !!element.destroy_path,
+      canDelete: Boolean(element.destroy_path),
     }));
   },
 

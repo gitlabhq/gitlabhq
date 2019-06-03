@@ -97,7 +97,7 @@ export default {
       return this.mr.hasCI;
     },
     shouldRenderRelatedLinks() {
-      return !!this.mr.relatedLinks && !this.mr.isNothingToMergeState;
+      return Boolean(this.mr.relatedLinks) && !this.mr.isNothingToMergeState;
     },
     shouldRenderSourceBranchRemovalStatus() {
       return (

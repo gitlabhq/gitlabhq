@@ -82,9 +82,9 @@ Sidebar.prototype.toggleTodo = function(e) {
   ajaxType = $this.data('deletePath') ? 'delete' : 'post';
 
   if ($this.data('deletePath')) {
-    url = '' + $this.data('deletePath');
+    url = String($this.data('deletePath'));
   } else {
-    url = '' + $this.data('createPath');
+    url = String($this.data('createPath'));
   }
 
   $this.tooltip('hide');

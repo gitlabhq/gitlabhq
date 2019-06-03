@@ -2,7 +2,7 @@ function isPropertyAccessSafe(base, property) {
   let safe;
 
   try {
-    safe = !!base[property];
+    safe = Boolean(base[property]);
   } catch (error) {
     safe = false;
   }
