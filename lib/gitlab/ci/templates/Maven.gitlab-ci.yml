@@ -42,14 +42,14 @@ verify:jdk8:
   <<: *verify
 
 # To deploy packages from CI, create a ci_settings.xml file
-# For deploying packages to GitLab's Maven Repository: See https://gitlab.com/help/user/project/packages/maven_repository.md#creating-maven-packages-with-gitlab-cicd for more details.
+# For deploying packages to GitLab's Maven Repository: See https://docs.gitlab.com/ee/user/project/packages/maven_repository.html#creating-maven-packages-with-gitlab-cicd for more details.
 # Please note: The GitLab Maven Repository is currently only available in GitLab Premium / Ultimate.
 # For `master` branch run `mvn deploy` automatically.
 deploy:jdk8:
   stage: deploy
   script:
     - if [ ! -f ci_settings.xml ];
-        then echo "CI settings missing\! If deploying to GitLab Maven Repository, please see https://gitlab.com/help/user/project/packages/maven_repository.md#creating-maven-packages-with-gitlab-cicd for instructions.";
+        then echo "CI settings missing\! If deploying to GitLab Maven Repository, please see https://docs.gitlab.com/ee/user/project/packages/maven_repository.html#creating-maven-packages-with-gitlab-cicd for instructions.";
       fi
     - 'mvn $MAVEN_CLI_OPTS deploy -s ci_settings.xml'
   only:
