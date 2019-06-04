@@ -82,15 +82,17 @@ module Page
       end
 
       # ...
+    end 
   end
 end
 ```
 
-The `view` DSL method declares the filename of the view where an
-`element` is implemented.
+### Defining Elements
+
+The `view` DSL method will correspond to the rails View, partial, or vue component that renders the elements.
 
 The `element` DSL method in turn declares an element for which a corresponding
-`qa-element-name-dasherized` CSS class need to be added to the view file.
+`qa-element-name-dasherized` CSS class will need to be added to the view file.
 
 You can also define a value (String or Regexp) to match to the actual view
 code but **this is deprecated** in favor of the above method for two reasons:
@@ -114,6 +116,37 @@ view 'app/views/my/view.html.haml' do
   element :profile_link, /link_to .* "My Profile"/ # rubocop:disable QA/ElementWithPattern
 end
 ```
+
+### Adding Elements to a View
+
+Given the following elements...
+
+```ruby
+view 'app/views/my/view.html.haml' do
+  element :login_field
+  element :password_field
+  element :sign_in_button
+end
+```
+
+To add these elements to the view, you must change the rails View, partial, or vue component by adding a `qa-element-descriptor` class
+for each element defined.
+
+In our case, `qa-login-field`, `qa-password-field` and `qa-sign-in-button`
+
+**app/views/my/view.html.haml**  
+
+```haml
+= f.text_field :login, class: "form-control top qa-login-field", autofocus: "autofocus", autocapitalize: "off", autocorrect: "off", required: true, title: "This field is required."
+= f.password_field :password, class: "form-control bottom qa-password-field", required: true, title: "This field is required."
+= f.submit "Sign in", class: "btn btn-success qa-sign-in-button"
+```
+
+Things to note:
+
+- The CSS class must be `kebab-cased` (separated with hyphens "`-`")
+- If the element appears on the page unconditionally, add `required: true` to the element. See
+[Dynamic element validation](dynamic_element_validation.md)
 
 ## Running the test locally
 
