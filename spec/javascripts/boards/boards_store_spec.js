@@ -12,6 +12,7 @@ import '~/boards/models/issue';
 import '~/boards/models/list';
 import '~/boards/services/board_service';
 import boardsStore from '~/boards/stores/boards_store';
+import eventHub from '~/boards/eventhub';
 import { listObj, listObjDuplicate, boardsMockInterceptor, mockBoardService } from './mock_data';
 
 describe('Store', () => {
@@ -50,6 +51,39 @@ describe('Store', () => {
       boardsStore.addList({ position: 1 });
 
       expect(boardsStore.state.lists[0].position).toBe(1);
+    });
+  });
+
+  describe('toggleFilter', () => {
+    const dummyFilter = 'x=42';
+    let updateTokensSpy;
+
+    beforeEach(() => {
+      updateTokensSpy = jasmine.createSpy('updateTokens');
+      eventHub.$once('updateTokens', updateTokensSpy);
+
+      // prevent using window.history
+      spyOn(boardsStore, 'updateFiltersUrl').and.callFake(() => {});
+    });
+
+    it('adds the filter if it is not present', () => {
+      boardsStore.filter.path = 'something';
+
+      boardsStore.toggleFilter(dummyFilter);
+
+      expect(boardsStore.filter.path).toEqual(`something&${dummyFilter}`);
+      expect(updateTokensSpy).toHaveBeenCalled();
+      expect(boardsStore.updateFiltersUrl).toHaveBeenCalled();
+    });
+
+    it('removes the filter if it is present', () => {
+      boardsStore.filter.path = `something&${dummyFilter}`;
+
+      boardsStore.toggleFilter(dummyFilter);
+
+      expect(boardsStore.filter.path).toEqual('something');
+      expect(updateTokensSpy).toHaveBeenCalled();
+      expect(boardsStore.updateFiltersUrl).toHaveBeenCalled();
     });
   });
 
