@@ -182,30 +182,8 @@ describe Milestone do
     end
   end
 
-  describe '#percent_complete' do
-    before do
-      allow(milestone).to receive_messages(
-        closed_items_count: 3,
-        total_items_count: 4
-      )
-    end
-
-    it { expect(milestone.percent_complete(user)).to eq(75) }
-  end
-
   describe '#can_be_closed?' do
     it { expect(milestone.can_be_closed?).to be_truthy }
-  end
-
-  describe '#total_items_count' do
-    before do
-      create :closed_issue, milestone: milestone, project: project
-      create :merge_request, milestone: milestone, source_project: project
-    end
-
-    it 'returns total count of issues and merge requests assigned to milestone' do
-      expect(milestone.total_items_count(user)).to eq 2
-    end
   end
 
   describe '#can_be_closed?' do

@@ -138,7 +138,7 @@ For group milestones in [GitLab Premium](https://about.gitlab.com/pricing), a [b
 
 The milestone sidebar on the milestone view shows the following:
 
-- Percentage complete, which is calculated as number of closed issues plus number of closed/merged merge requests divided by total number issues and merge requests.
+- Percentage complete, which is calculated as number of closed issues divided by total number of issues.
 - The start date and due date.
 - The total time spent on all issues that have the milestone assigned.
 
