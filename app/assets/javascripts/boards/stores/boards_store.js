@@ -212,7 +212,11 @@ const boardsStore = {
   },
 
   clearDetailIssue() {
-    this.detail.issue = {};
+    this.setIssueDetail({});
+  },
+
+  setIssueDetail(issueDetail) {
+    this.detail.issue = issueDetail;
   },
 };
 

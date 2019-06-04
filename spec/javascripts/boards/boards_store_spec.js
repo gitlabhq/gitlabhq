@@ -322,6 +322,17 @@ describe('Store', () => {
     });
   });
 
+  describe('setIssueDetail', () => {
+    it('sets issue details', () => {
+      boardsStore.detail.issue = 'some details';
+
+      const dummyValue = 'new details';
+      boardsStore.setIssueDetail(dummyValue);
+
+      expect(boardsStore.detail.issue).toEqual(dummyValue);
+    });
+  });
+
   describe('startMoving', () => {
     it('stores list and issue', () => {
       const dummyIssue = 'some issue';

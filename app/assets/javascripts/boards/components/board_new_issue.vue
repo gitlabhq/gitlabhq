@@ -72,7 +72,7 @@ export default {
           // Need this because our jQuery very kindly disables buttons on ALL form submissions
           $(this.$refs.submitButton).enable();
 
-          boardsStore.detail.issue = issue;
+          boardsStore.setIssueDetail(issue);
           boardsStore.detail.list = this.list;
         })
         .catch(() => {
