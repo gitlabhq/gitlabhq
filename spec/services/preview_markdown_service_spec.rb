@@ -56,7 +56,9 @@ describe PreviewMarkdownService do
 
         expect(Gitlab::Diff::SuggestionsParser)
           .to receive(:parse)
-          .with(text, position: position, project: merge_request.project)
+          .with(text, position: position,
+                      project: merge_request.project,
+                      supports_suggestion: true)
           .and_call_original
 
         result = service.execute
