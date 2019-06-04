@@ -3,20 +3,29 @@ require 'spec_helper'
 describe FileMover do
   include FileMoverHelpers
 
+  let(:user) { create(:user) }
   let(:filename) { 'banana_sample.gif' }
-  let(:temp_file_path) { File.join('uploads/-/system/temp', 'secret55', filename) }
+  let(:secret) { 'secret55' }
+  let(:temp_file_path) { File.join("uploads/-/system/user/#{user.id}", secret, filename) }
 
   let(:temp_description) do
     "test ![banana_sample](/#{temp_file_path}) "\
     "same ![banana_sample](/#{temp_file_path}) "
   end
-  let(:file_path) { File.join('uploads/-/system/personal_snippet', snippet.id.to_s, 'secret55', filename) }
+  let(:file_path) { File.join('uploads/-/system/personal_snippet', snippet.id.to_s, secret, filename) }
   let(:snippet) { create(:personal_snippet, description: temp_description) }
 
-  subject { described_class.new(temp_file_path, snippet).execute }
+  let(:tmp_uploader) do
+    PersonalFileUploader.new(user, secret: secret)
+  end
+
+  let(:file) { fixture_file_upload('spec/fixtures/banana_sample.gif') }
+  subject { described_class.new(temp_file_path, from_model: user, to_model: snippet).execute }
 
   describe '#execute' do
     before do
+      tmp_uploader.store!(file)
+
       expect(FileUtils).to receive(:mkdir_p).with(a_string_including(File.dirname(file_path)))
       expect(FileUtils).to receive(:move).with(a_string_including(temp_file_path), a_string_including(file_path))
       allow_any_instance_of(CarrierWave::SanitizedFile).to receive(:exists?).and_return(true)
@@ -24,6 +33,8 @@ describe FileMover do
 
       stub_file_mover(temp_file_path)
     end
+
+    let(:tmp_upload) { tmp_uploader.upload }
 
     context 'when move and field update successful' do
       it 'updates the description correctly' do
@@ -36,8 +47,10 @@ describe FileMover do
           )
       end
 
-      it 'creates a new update record' do
-        expect { subject }.to change { Upload.count }.by(1)
+      it 'updates existing upload record' do
+        expect { subject }
+          .to change { tmp_upload.reload.attributes.values_at('model_id', 'model_type') }
+          .from([user.id, 'User']).to([snippet.id, 'PersonalSnippet'])
       end
 
       it 'schedules a background migration' do
@@ -52,30 +65,31 @@ describe FileMover do
         expect(FileUtils).to receive(:move).with(a_string_including(file_path), a_string_including(temp_file_path))
       end
 
-      subject { described_class.new(file_path, snippet, :non_existing_field).execute }
+      subject { described_class.new(file_path, :non_existing_field, from_model: user, to_model: snippet).execute }
 
       it 'does not update the description' do
         subject
 
         expect(snippet.reload.description)
           .to eq(
-            "test ![banana_sample](/uploads/-/system/temp/secret55/banana_sample.gif) "\
-            "same ![banana_sample](/uploads/-/system/temp/secret55/banana_sample.gif) "
+            "test ![banana_sample](/uploads/-/system/user/#{user.id}/secret55/banana_sample.gif) "\
+            "same ![banana_sample](/uploads/-/system/user/#{user.id}/secret55/banana_sample.gif) "
           )
       end
 
-      it 'does not create a new update record' do
-        expect { subject }.not_to change { Upload.count }
+      it 'does not change the upload record' do
+        expect { subject }
+          .not_to change { tmp_upload.reload.attributes.values_at('model_id', 'model_type') }
       end
     end
   end
 
   context 'security' do
     context 'when relative path is involved' do
-      let(:temp_file_path) { File.join('uploads/-/system/temp', '..', 'another_subdir_of_temp') }
+      let(:temp_file_path) { File.join("uploads/-/system/user/#{user.id}", '..', 'another_subdir_of_temp') }
 
       it 'does not trigger move if path is outside designated directory' do
-        stub_file_mover('uploads/-/system/another_subdir_of_temp')
+        stub_file_mover("uploads/-/system/user/#{user.id}/another_subdir_of_temp")
         expect(FileUtils).not_to receive(:move)
 
         subject
