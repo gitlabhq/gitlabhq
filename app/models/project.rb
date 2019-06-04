@@ -407,6 +407,7 @@ class Project < ApplicationRecord
   scope :with_builds_enabled, -> { with_feature_enabled(:builds) }
   scope :with_issues_enabled, -> { with_feature_enabled(:issues) }
   scope :with_issues_available_for_user, ->(current_user) { with_feature_available_for_user(:issues, current_user) }
+  scope :with_merge_requests_available_for_user, ->(current_user) { with_feature_available_for_user(:merge_requests, current_user) }
   scope :with_merge_requests_enabled, -> { with_feature_enabled(:merge_requests) }
   scope :with_remote_mirrors, -> { joins(:remote_mirrors).where(remote_mirrors: { enabled: true }).distinct }
 
@@ -596,6 +597,17 @@ class Project < ApplicationRecord
 
     def group_ids
       joins(:namespace).where(namespaces: { type: 'Group' }).select(:namespace_id)
+    end
+
+    # Returns ids of projects with milestones available for given user
+    #
+    # Used on queries to find milestones which user can see
+    # For example: Milestone.where(project_id: ids_with_milestone_available_for(user))
+    def ids_with_milestone_available_for(user)
+      with_issues_enabled = with_issues_available_for_user(user).select(:id)
+      with_merge_requests_enabled = with_merge_requests_available_for_user(user).select(:id)
+
+      from_union([with_issues_enabled, with_merge_requests_enabled]).select(:id)
     end
   end
 

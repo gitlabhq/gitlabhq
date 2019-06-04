@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe Mattermost::Session, type: :request do
   include ExclusiveLeaseHelpers
+  include StubRequests
 
   let(:user) { create(:user) }
 
@@ -24,7 +25,7 @@ describe Mattermost::Session, type: :request do
     let(:location) { 'http://location.tld' }
     let(:cookie_header) {'MMOAUTH=taskik8az7rq8k6rkpuas7htia; Path=/;'}
     let!(:stub) do
-      WebMock.stub_request(:get, "#{mattermost_url}/oauth/gitlab/login")
+      stub_full_request("#{mattermost_url}/oauth/gitlab/login")
         .to_return(headers: { 'location' => location, 'Set-Cookie' => cookie_header }, status: 302)
     end
 
@@ -63,7 +64,7 @@ describe Mattermost::Session, type: :request do
         end
 
         before do
-          WebMock.stub_request(:get, "#{mattermost_url}/signup/gitlab/complete")
+          stub_full_request("#{mattermost_url}/signup/gitlab/complete")
             .with(query: hash_including({ 'state' => state }))
             .to_return do |request|
               post "/oauth/token",
@@ -80,7 +81,7 @@ describe Mattermost::Session, type: :request do
               end
             end
 
-          WebMock.stub_request(:post, "#{mattermost_url}/api/v4/users/logout")
+          stub_full_request("#{mattermost_url}/api/v4/users/logout", method: :post)
             .to_return(headers: { Authorization: 'token thisworksnow' }, status: 200)
         end
 
