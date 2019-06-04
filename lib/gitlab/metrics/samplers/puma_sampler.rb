@@ -51,10 +51,11 @@ module Gitlab
           set_master_metrics(stats)
 
           stats['worker_status'].each do |worker|
+            last_status = worker['last_status']
             labels = { worker: "worker_#{worker['index']}" }
 
             metrics[:puma_phase].set(labels, worker['phase'])
-            set_worker_metrics(worker['last_status'], labels)
+            set_worker_metrics(last_status, labels) if last_status.present?
           end
         end
 
