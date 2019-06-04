@@ -8,6 +8,7 @@ import Cookies from 'js-cookie';
 import BoardsStoreEE from 'ee_else_ce/boards/stores/boards_store_ee';
 import { getUrlParamsArray, parseBoolean } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
+import eventHub from '../eventhub';
 
 const boardsStore = {
   disabled: false,
@@ -188,6 +189,24 @@ const boardsStore = {
   findListByLabelId(id) {
     return this.state.lists.find(list => list.type === 'label' && list.label.id === id);
   },
+
+  toggleFilter(filter) {
+    const filterPath = this.filter.path.split('&');
+    const filterIndex = filterPath.indexOf(filter);
+
+    if (filterIndex === -1) {
+      filterPath.push(filter);
+    } else {
+      filterPath.splice(filterIndex, 1);
+    }
+
+    this.filter.path = filterPath.join('&');
+
+    this.updateFiltersUrl();
+
+    eventHub.$emit('updateTokens');
+  },
+
   updateFiltersUrl() {
     window.history.pushState(null, null, `?${this.filter.path}`);
   },
