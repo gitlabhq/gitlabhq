@@ -17,17 +17,38 @@ module KubernetesHelpers
     kube_response(kube_deployments_body)
   end
 
-  def stub_kubeclient_discover(api_url)
+  def stub_kubeclient_discover_base(api_url)
     WebMock.stub_request(:get, api_url + '/api/v1').to_return(kube_response(kube_v1_discovery_body))
-    WebMock.stub_request(:get, api_url + '/apis/extensions/v1beta1').to_return(kube_response(kube_v1beta1_discovery_body))
-    WebMock.stub_request(:get, api_url + '/apis/rbac.authorization.k8s.io/v1').to_return(kube_response(kube_v1_rbac_authorization_discovery_body))
-    WebMock.stub_request(:get, api_url + '/apis/serving.knative.dev/v1alpha1').to_return(kube_response(kube_v1alpha1_serving_knative_discovery_body))
+    WebMock
+      .stub_request(:get, api_url + '/apis/extensions/v1beta1')
+      .to_return(kube_response(kube_v1beta1_discovery_body))
+    WebMock
+      .stub_request(:get, api_url + '/apis/rbac.authorization.k8s.io/v1')
+      .to_return(kube_response(kube_v1_rbac_authorization_discovery_body))
   end
 
-  def stub_kubeclient_service_pods(status: nil)
+  def stub_kubeclient_discover(api_url)
+    stub_kubeclient_discover_base(api_url)
+
+    WebMock
+      .stub_request(:get, api_url + '/apis/serving.knative.dev/v1alpha1')
+      .to_return(kube_response(kube_v1alpha1_serving_knative_discovery_body))
+  end
+
+  def stub_kubeclient_discover_knative_not_found(api_url)
+    stub_kubeclient_discover_base(api_url)
+
+    WebMock
+      .stub_request(:get, api_url + '/apis/serving.knative.dev/v1alpha1')
+      .to_return(status: [404, "Resource Not Found"])
+  end
+
+  def stub_kubeclient_service_pods(response = nil, options = {})
     stub_kubeclient_discover(service.api_url)
-    pods_url = service.api_url + "/api/v1/pods"
-    response = { status: status } if status
+
+    namespace_path = options[:namespace].present? ? "namespaces/#{options[:namespace]}/" : ""
+
+    pods_url = service.api_url + "/api/v1/#{namespace_path}pods"
 
     WebMock.stub_request(:get, pods_url).to_return(response || kube_pods_response)
   end
@@ -56,15 +77,18 @@ module KubernetesHelpers
     WebMock.stub_request(:get, deployments_url).to_return(response || kube_deployments_response)
   end
 
-  def stub_kubeclient_knative_services(**options)
+  def stub_kubeclient_knative_services(options = {})
+    namespace_path = options[:namespace].present? ? "namespaces/#{options[:namespace]}/" : ""
+
     options[:name] ||= "kubetest"
-    options[:namespace] ||= "default"
     options[:domain] ||= "example.com"
+    options[:response] ||= kube_response(kube_knative_services_body(options))
 
     stub_kubeclient_discover(service.api_url)
-    knative_url = service.api_url + "/apis/serving.knative.dev/v1alpha1/services"
 
-    WebMock.stub_request(:get, knative_url).to_return(kube_response(kube_knative_services_body(options)))
+    knative_url = service.api_url + "/apis/serving.knative.dev/v1alpha1/#{namespace_path}services"
+
+    WebMock.stub_request(:get, knative_url).to_return(options[:response])
   end
 
   def stub_kubeclient_get_secret(api_url, **options)

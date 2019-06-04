@@ -19,13 +19,13 @@ describe('ServerlessMutations', () => {
 
       expect(state.isLoading).toEqual(false);
       expect(state.hasFunctionData).toEqual(true);
-      expect(state.functions).toEqual(mockServerlessFunctions);
+      expect(state.functions).toEqual(mockServerlessFunctions.functions);
     });
 
     it('should ensure loading has stopped and hasFunctionData is false when there are no functions available', () => {
       const state = {};
 
-      mutations[types.RECEIVE_FUNCTIONS_NODATA_SUCCESS](state);
+      mutations[types.RECEIVE_FUNCTIONS_NODATA_SUCCESS](state, { knative_installed: true });
 
       expect(state.isLoading).toEqual(false);
       expect(state.hasFunctionData).toEqual(false);

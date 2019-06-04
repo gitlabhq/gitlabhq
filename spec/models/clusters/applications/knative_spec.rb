@@ -3,9 +3,6 @@
 require 'rails_helper'
 
 describe Clusters::Applications::Knative do
-  include KubernetesHelpers
-  include ReactiveCachingHelpers
-
   let(:knative) { create(:clusters_applications_knative) }
 
   include_examples 'cluster application core specs', :clusters_applications_knative
@@ -145,78 +142,5 @@ describe Clusters::Applications::Knative do
 
   describe 'validations' do
     it { is_expected.to validate_presence_of(:hostname) }
-  end
-
-  describe '#service_pod_details' do
-    let(:cluster) { create(:cluster, :project, :provided_by_gcp) }
-    let(:service) { cluster.platform_kubernetes }
-    let(:knative) { create(:clusters_applications_knative, cluster: cluster) }
-
-    let(:namespace) do
-      create(:cluster_kubernetes_namespace,
-        cluster: cluster,
-        cluster_project: cluster.cluster_project,
-        project: cluster.cluster_project.project)
-    end
-
-    before do
-      stub_kubeclient_discover(service.api_url)
-      stub_kubeclient_knative_services
-      stub_kubeclient_service_pods
-      stub_reactive_cache(knative,
-        {
-          services: kube_response(kube_knative_services_body),
-          pods: kube_response(kube_knative_pods_body(cluster.cluster_project.project.name, namespace.namespace))
-        })
-      synchronous_reactive_cache(knative)
-    end
-
-    it 'is able k8s core for pod details' do
-      expect(knative.service_pod_details(namespace.namespace, cluster.cluster_project.project.name)).not_to be_nil
-    end
-  end
-
-  describe '#services' do
-    let(:cluster) { create(:cluster, :project, :provided_by_gcp) }
-    let(:service) { cluster.platform_kubernetes }
-    let(:knative) { create(:clusters_applications_knative, cluster: cluster) }
-
-    let(:namespace) do
-      create(:cluster_kubernetes_namespace,
-        cluster: cluster,
-        cluster_project: cluster.cluster_project,
-        project: cluster.cluster_project.project)
-    end
-
-    subject { knative.services }
-
-    before do
-      stub_kubeclient_discover(service.api_url)
-      stub_kubeclient_knative_services
-      stub_kubeclient_service_pods
-    end
-
-    it 'has an unintialized cache' do
-      is_expected.to be_nil
-    end
-
-    context 'when using synchronous reactive cache' do
-      before do
-        stub_reactive_cache(knative,
-          {
-            services: kube_response(kube_knative_services_body),
-            pods: kube_response(kube_knative_pods_body(cluster.cluster_project.project.name, namespace.namespace))
-          })
-        synchronous_reactive_cache(knative)
-      end
-
-      it 'has cached services' do
-        is_expected.not_to be_nil
-      end
-
-      it 'matches our namespace' do
-        expect(knative.services_for(ns: namespace)).not_to be_nil
-      end
-    end
   end
 end

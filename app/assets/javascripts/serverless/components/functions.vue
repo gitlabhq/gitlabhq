@@ -4,6 +4,7 @@ import { GlLoadingIcon } from '@gitlab/ui';
 import FunctionRow from './function_row.vue';
 import EnvironmentRow from './environment_row.vue';
 import EmptyState from './empty_state.vue';
+import { CHECKING_INSTALLED } from '../constants';
 
 export default {
   components: {
@@ -13,10 +14,6 @@ export default {
     GlLoadingIcon,
   },
   props: {
-    installed: {
-      type: Boolean,
-      required: true,
-    },
     clustersPath: {
       type: String,
       required: true,
@@ -31,8 +28,15 @@ export default {
     },
   },
   computed: {
-    ...mapState(['isLoading', 'hasFunctionData']),
+    ...mapState(['installed', 'isLoading', 'hasFunctionData']),
     ...mapGetters(['getFunctions']),
+
+    checkingInstalled() {
+      return this.installed === CHECKING_INSTALLED;
+    },
+    isInstalled() {
+      return this.installed === true;
+    },
   },
   created() {
     this.fetchFunctions({
@@ -47,15 +51,16 @@ export default {
 
 <template>
   <section id="serverless-functions">
-    <div v-if="installed">
+    <gl-loading-icon
+      v-if="checkingInstalled"
+      :size="2"
+      class="prepend-top-default append-bottom-default"
+    />
+
+    <div v-else-if="isInstalled">
       <div v-if="hasFunctionData">
-        <gl-loading-icon
-          v-if="isLoading"
-          :size="2"
-          class="prepend-top-default append-bottom-default"
-        />
-        <template v-else>
-          <div class="groups-list-tree-container">
+        <template>
+          <div class="groups-list-tree-container js-functions-wrapper">
             <ul class="content-list group-list-tree">
               <environment-row
                 v-for="(env, index) in getFunctions"
@@ -66,6 +71,11 @@ export default {
             </ul>
           </div>
         </template>
+        <gl-loading-icon
+          v-if="isLoading"
+          :size="2"
+          class="prepend-top-default append-bottom-default js-functions-loader"
+        />
       </div>
       <div v-else class="empty-state js-empty-state">
         <div class="text-content">

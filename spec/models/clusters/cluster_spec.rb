@@ -38,6 +38,11 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
 
   it { is_expected.to respond_to :project }
 
+  it do
+    expect(subject.knative_services_finder(subject.project))
+      .to be_instance_of(Clusters::KnativeServicesFinder)
+  end
+
   describe '.enabled' do
     subject { described_class.enabled }
 

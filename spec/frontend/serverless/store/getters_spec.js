@@ -32,7 +32,7 @@ describe('Serverless Store Getters', () => {
 
   describe('getFunctions', () => {
     it('should translate the raw function array to group the functions per environment scope', () => {
-      state.functions = mockServerlessFunctions;
+      state.functions = mockServerlessFunctions.functions;
 
       const funcs = getters.getFunctions(state);
 
