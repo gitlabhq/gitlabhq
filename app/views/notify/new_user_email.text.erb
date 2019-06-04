@@ -1,8 +1,13 @@
 Hi <%= sanitize_name(@user.name) %>!
 
+<% if Gitlab::CurrentSettings.allow_signup? %>
+Your account has been created successfully.
+<% else %>
 The Administrator created an account for you. Now you are a member of the company GitLab application.
+<% end %>
 
 login.................. <%= @user.email %>
+
 <% if @user.created_by_id %>
 Click here to set your password:
 <%= edit_password_url(@user, :reset_password_token => @token) %>
