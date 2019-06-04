@@ -41,7 +41,11 @@ class UploadsController < ApplicationController
       when Note
         can?(current_user, :read_project, model.project)
       when User
-        true
+        # We validate the current user has enough (writing)
+        # access to itself when a secret is given.
+        # For instance, user avatars are readable by anyone,
+        # while temporary, user snippet uploads are not.
+        !secret? || can?(current_user, :update_user, model)
       when Appearance
         true
       else
@@ -56,8 +60,13 @@ class UploadsController < ApplicationController
   def authorize_create_access!
     return unless model
 
-    # for now we support only personal snippets comments
-    authorized = can?(current_user, :comment_personal_snippet, model)
+    authorized =
+      case model
+      when User
+        can?(current_user, :update_user, model)
+      else
+        can?(current_user, :comment_personal_snippet, model)
+      end
 
     render_unauthorized unless authorized
   end
@@ -72,6 +81,10 @@ class UploadsController < ApplicationController
 
   def cache_publicly?
     User === model || Appearance === model
+  end
+
+  def secret?
+    params[:secret].present?
   end
 
   def upload_model_class
