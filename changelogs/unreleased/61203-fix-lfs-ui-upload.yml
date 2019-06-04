@@ -1,0 +1,5 @@
+---
+title: Fix uploading of LFS tracked file through UI
+merge_request: 28052
+author:
+type: fixed
