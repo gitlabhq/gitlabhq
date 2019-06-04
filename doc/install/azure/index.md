@@ -1,13 +1,9 @@
 ---
-description: 'Learn how to spin up a
-pre-configured GitLab VM on Microsoft Azure and have your very own private GitLab instance up and running in around 30 minutes.'
+description: 'Learn how to spin up a pre-configured GitLab VM on Microsoft Azure.'
+type: howto
 ---
 
 # Install GitLab on Microsoft Azure
-
-> _This article was originally written by Dave Wentzel and [published on the GitLab Blog][Original-Blog-Post]._
->
-> _Ported to the GitLab documentation and updated on 2017-08-24 by [Ian Scorer](https://gitlab.com/iscorer)._
 
 Azure is Microsoft's business cloud and GitLab is a pre-configured offering on the Azure Marketplace.
 Hopefully, you aren't surprised to hear that Microsoft and Azure have embraced open source software
@@ -444,3 +440,15 @@ Check out our other [Technical Articles][GitLab-Technical-Articles] or browse th
 [SSH]: https://en.wikipedia.org/wiki/Secure_Shell
 [PuTTY]: http://www.putty.org/
 [Using-SSH-In-Putty]: https://mediatemple.net/community/products/dv/204404604/using-ssh-in-putty-
+
+<!-- ## Troubleshooting
+
+Include any troubleshooting steps that you can foresee. If you know beforehand what issues
+one might have when setting this up, or when something is changed, or on upgrading, it's
+important to describe those, too. Think of things that may go wrong and include them here.
+This is important to minimize requests for support and to avoid doc comments with
+questions that you know someone might ask.
+
+Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+If you have none to add when creating a doc, leave this section in place
+but commented out to help encourage others to add to it in the future. -->

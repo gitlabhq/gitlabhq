@@ -1,6 +1,7 @@
 ---
 comments: false
 description: Read through the GitLab installation methods.
+type: index
 ---
 
 # Installation **[CORE ONLY]**
@@ -81,7 +82,7 @@ the above methods, provided the cloud provider supports it.
 - [Install on AWS](aws/index.md): Install Omnibus GitLab on AWS using the community AMIs that GitLab provides.
 - [Install GitLab on Google Cloud Platform](google_cloud_platform/index.md): Install Omnibus GitLab on a VM in GCP.
 - [Install GitLab on Azure](azure/index.md): Install Omnibus GitLab from Azure Marketplace.
-- [Install GitLab on OpenShift](openshift_and_gitlab/index.md): Install GitLab using the Docker image on OpenShift.
+- [Install GitLab on OpenShift](https://docs.gitlab.com/charts/installation/cloud/openshift.html): Install GitLab on OpenShift by using GitLab's Helm charts.
 - [Install GitLab on DC/OS](https://mesosphere.com/blog/gitlab-dcos/): Install GitLab on Mesosphere DC/OS via the [GitLab-Mesosphere integration](https://about.gitlab.com/2016/09/16/announcing-gitlab-and-mesosphere/).
 - [Install GitLab on DigitalOcean](https://about.gitlab.com/2016/04/27/getting-started-with-gitlab-and-digitalocean/): Install Omnibus GitLab on DigitalOcean.
 - _Testing only!_ [DigitalOcean and Docker Machine](digitaloceandocker.md):
