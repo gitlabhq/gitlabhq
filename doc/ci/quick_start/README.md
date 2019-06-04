@@ -4,9 +4,14 @@ type: reference
 
 # Getting started with GitLab CI/CD
 
->**Note:** Starting from version 8.0, GitLab [Continuous Integration][ci] (CI)
+NOTE: **Note:**
+Starting from version 8.0, GitLab [Continuous Integration][ci] (CI)
 is fully integrated into GitLab itself and is [enabled] by default on all
 projects.
+
+NOTE: **Note:**
+Please keep in mind that only project Maintainers and Admin users have
+the permissions to access a project's settings.
 
 GitLab offers a [continuous integration][ci] service. If you
 [add a `.gitlab-ci.yml` file][yaml] to the root directory of your repository,
@@ -44,6 +49,7 @@ This guide assumes that you have:
 - A working GitLab instance of version 8.0+r or are using
   [GitLab.com](https://gitlab.com).
 - A project in GitLab that you would like to use CI for.
+- Maintainer or owner access to the project
 
 Let's break it down to pieces and work on solving the GitLab CI puzzle.
 
@@ -77,6 +83,8 @@ You need to create a file named `.gitlab-ci.yml` in the root directory of your
 repository. Below is an example for a Ruby on Rails project.
 
 ```yaml
+image: "ruby:2.5"
+
 before_script:
   - apt-get update -qq && apt-get install -y -qq sqlite3 libsqlite3-dev nodejs
   - ruby -v
