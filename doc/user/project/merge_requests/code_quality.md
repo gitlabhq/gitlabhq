@@ -19,7 +19,7 @@ in the merge request widget area:
 
 For instance, consider the following workflow:
 
-1. Your backend team member starts a new implementation for making certain feature in your app faster
+1. Your backend team member starts a new implementation for making a certain feature in your app faster
 1. With Code Quality reports, they analyze how their implementation is impacting the code quality
 1. The metrics show that their code degrade the quality in 10 points
 1. You ask a co-worker to help them with this modification
@@ -63,7 +63,7 @@ Example:
 NOTE: **Note:**
 Although the Code Climate spec supports more properties, those are ignored by GitLab.
 
-For more information on how the Code Quality job should look like, check the
+For more information on what the Code Quality job should look like, check the
 example on [analyzing a project's code quality](../../../ci/examples/code_quality.md).
 
 GitLab then checks this report, compares the metrics between the source and target
