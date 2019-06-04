@@ -393,7 +393,7 @@ describe('Dashboard', () => {
             hasMetrics: true,
             showPanels: false,
             showTimeWindowDropdown: false,
-            externalDashboardPath: '/mockPath',
+            externalDashboardUrl: '/mockUrl',
           },
           store,
         });
@@ -419,7 +419,7 @@ describe('Dashboard', () => {
             hasMetrics: true,
             showPanels: false,
             showTimeWindowDropdown: false,
-            externalDashboardPath: '',
+            externalDashboardUrl: '',
           },
           store,
         });
