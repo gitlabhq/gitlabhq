@@ -38,7 +38,7 @@ export default {
     GlModalDirective,
   },
   props: {
-    externalDashboardPath: {
+    externalDashboardUrl: {
       type: String,
       required: false,
       default: '',
@@ -299,10 +299,11 @@ export default {
           </gl-modal>
         </div>
         <gl-button
-          v-if="externalDashboardPath.length"
+          v-if="externalDashboardUrl.length"
           class="js-external-dashboard-link prepend-left-8"
           variant="primary"
-          :href="externalDashboardPath"
+          :href="externalDashboardUrl"
+          target="_blank"
         >
           {{ __('View full dashboard') }}
           <icon name="external-link" />

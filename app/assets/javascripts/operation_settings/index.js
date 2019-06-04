@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import store from './store';
 import ExternalDashboardForm from './components/external_dashboard.vue';
 
 export default () => {
@@ -14,13 +15,9 @@ export default () => {
 
   return new Vue({
     el,
+    store: store(el.dataset),
     render(createElement) {
-      return createElement(ExternalDashboardForm, {
-        props: {
-          ...el.dataset,
-          expanded: false,
-        },
-      });
+      return createElement(ExternalDashboardForm);
     },
   });
 };
