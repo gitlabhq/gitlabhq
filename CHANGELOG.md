@@ -187,6 +187,23 @@ entry.
 - Add some frozen string to spec/**/*.rb. (gfyoung)
 
 
+## 11.10.6 (2019-06-04)
+
+### Fixed (7 changes, 1 of them is from the community)
+
+- Allow a member to have an access level equal to parent group. !27913
+- Fix uploading of LFS tracked file through UI. !28052
+- Use 3-way merge for squashing commits. !28078
+- Use a path for the related merge requests endpoint. !28171
+- Fix project visibility level validation. !28305 (Peter Marko)
+- Fix Rugged get_tree_entries recursive flag not working. !28494
+- Use source ref in pipeline webhook. !28772
+
+### Other (1 change)
+
+- Fix input group height.
+
+
 ## 11.10.4 (2019-05-01)
 
 ### Fixed (12 changes)
