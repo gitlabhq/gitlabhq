@@ -20,7 +20,7 @@ The Admin Area is made up of the following sections:
 
 | Section                    | Description                                                                                                                                              |
 |:---------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Overview                   | View your GitLab [Dashboard](#admin-dashboard), and administer [projects](#administer-projects), [users](#administer-users), groups, jobs, [Runners](#administer-runners), and Gitaly servers.       |
+| Overview                   | View your GitLab [Dashboard](#admin-dashboard), and administer [projects](#administer-projects), [users](#administer-users), groups, [jobs](#administer-jobs), [Runners](#administer-runners), and [Gitaly servers](#administer-gitaly-servers).       |
 | Monitoring                 | View GitLab system information, and information on background jobs, logs, [health checks](monitoring/health_check.md), request profiles, and audit logs. |
 | Messages                   | Send and manage [broadcast messages](broadcast_messages.md) for your users.                                                                              |
 | System Hooks               | Configure [system hooks](../../system_hooks/system_hooks.md) for many events.                                                                            |
@@ -189,3 +189,20 @@ For each Runner, the following attributes are listed:
 | Last contact | Timestamp indicating when the GitLab instance last contacted the Runner |
 
 You can also edit, pause, or remove each Runner.
+
+## Administer Gitaly servers
+
+You can list all Gitaly servers in the GitLab instance from the Admin Area's **Gitaly Servers**
+page. For more details, see [Gitaly](../../administration/gitaly/index.md).
+
+To access the **Gitaly Servers** page, go to **Admin Area > Overview > Gitaly Servers**.
+
+For each Gitaly server, the following details are listed:
+
+| Field          | Description |
+| -------------- | ----------- |
+| Storage        | Repository storage |
+| Address        | Network address on which the Gitaly server is listening |
+| Server version | Gitaly version |
+| Git version    | Version of Git installed on the Gitaly server |
+| Up to date     | Indicates if the Gitaly server version is the latest version available. A green dot indicates the server is up to date. |
