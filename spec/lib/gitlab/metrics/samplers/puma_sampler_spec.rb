@@ -61,6 +61,33 @@ describe Gitlab::Metrics::Samplers::PumaSampler do
       end
     end
 
+    context 'with empty worker stats' do
+      let(:puma_stats) do
+        <<~EOS
+        {
+          "workers": 2,
+          "phase": 2,
+          "booted_workers": 2,
+          "old_workers": 0,
+          "worker_status": [{
+            "pid": 32534,
+            "index": 0,
+            "phase": 1,
+            "booted": true,
+            "last_checkin": "2019-05-15T07:57:55Z",
+            "last_status": {}
+          }]
+        }
+        EOS
+      end
+
+      it 'does not log worker stats' do
+        expect(subject).not_to receive(:set_worker_metrics)
+
+        subject.sample
+      end
+    end
+
     context 'in single mode' do
       let(:puma_stats) do
         <<~EOS
