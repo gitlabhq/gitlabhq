@@ -7,6 +7,16 @@ FactoryBot.define do
     description "pipeline schedule"
     project
 
+    trait :every_minute do
+      cron '*/1 * * * *'
+      cron_timezone Gitlab::Ci::CronParser::VALID_SYNTAX_SAMPLE_TIME_ZONE
+    end
+
+    trait :hourly do
+      cron '* */1 * * *'
+      cron_timezone Gitlab::Ci::CronParser::VALID_SYNTAX_SAMPLE_TIME_ZONE
+    end
+
     trait :nightly do
       cron '0 1 * * *'
       cron_timezone Gitlab::Ci::CronParser::VALID_SYNTAX_SAMPLE_TIME_ZONE
