@@ -152,7 +152,7 @@ export function isSafeURL(url) {
   try {
     const parsedUrl = new URL(url, getBaseURL());
     return ['http:', 'https:'].includes(parsedUrl.protocol);
-  } catch {
+  } catch (e) {
     return false;
   }
 }
