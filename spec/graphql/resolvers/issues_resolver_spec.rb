@@ -121,7 +121,7 @@ describe Resolvers::IssuesResolver do
   end
 
   it 'increases field complexity based on arguments' do
-    field = Types::BaseField.new(name: 'test', type: GraphQL::STRING_TYPE, resolver_class: described_class, null: false, max_page_size: 100)
+    field = Types::BaseField.new(name: 'test', type: GraphQL::STRING_TYPE.connection_type, resolver_class: described_class, null: false, max_page_size: 100)
 
     expect(field.to_graphql.complexity.call({}, {}, 1)).to eq 4
     expect(field.to_graphql.complexity.call({}, { labelName: 'foo' }, 1)).to eq 8
