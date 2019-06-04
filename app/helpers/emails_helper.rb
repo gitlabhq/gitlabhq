@@ -98,16 +98,17 @@ module EmailsHelper
 
       case format
       when :html
-        " via merge request #{link_to(merge_request.to_reference, merge_request.web_url)}"
+        merge_request_link = link_to(merge_request.to_reference, merge_request.web_url)
+        _("via merge request %{link}").html_safe % { link: merge_request_link }
       else
         # If it's not HTML nor text then assume it's text to be safe
-        " via merge request #{merge_request.to_reference} (#{merge_request.web_url})"
+        _("via merge request %{link}") % { link: "#{merge_request.to_reference} (#{merge_request.web_url})" }
       end
     when String
       # Technically speaking this should be Commit but per
       # https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/15610#note_163812339
       # we can't deserialize Commit without custom serializer for ActiveJob
-      " via #{closed_via}"
+      _("via %{closed_via}") % { closed_via: closed_via }
     else
       ""
     end

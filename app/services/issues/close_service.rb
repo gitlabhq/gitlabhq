@@ -29,7 +29,7 @@ module Issues
         event_service.close_issue(issue, current_user)
         create_note(issue, closed_via) if system_note
 
-        closed_via = "commit #{closed_via.id}" if closed_via.is_a?(Commit)
+        closed_via = _("commit %{commit_id}") % { commit_id: closed_via.id } if closed_via.is_a?(Commit)
 
         notification_service.async.close_issue(issue, current_user, closed_via: closed_via) if notifications
         todo_service.close_issue(issue, current_user)
