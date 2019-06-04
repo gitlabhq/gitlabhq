@@ -459,7 +459,7 @@ describe('Api', () => {
         dummyProjectPath,
       )}/repository/branches`;
 
-      spyOn(axios, 'post').and.callThrough();
+      jest.spyOn(axios, 'post');
 
       mock.onPost(expectedUrl).replyOnce(200, {
         name: branch,
