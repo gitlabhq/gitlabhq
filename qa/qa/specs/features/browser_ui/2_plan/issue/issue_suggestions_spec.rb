@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  # Failure issue: https://gitlab.com/gitlab-org/quality/staging/issues/53
-  context 'Plan', :quarantine do
+  context 'Plan' do
     describe 'issue suggestions' do
       let(:issue_title) { 'Issue Lists are awesome' }
 
@@ -10,12 +9,12 @@ module QA
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
         Page::Main::Login.perform(&:sign_in_using_credentials)
 
-        project = Resource::Project.fabricate! do |resource|
+        project = Resource::Project.fabricate_via_api! do |resource|
           resource.name = 'project-for-issue-suggestions'
           resource.description = 'project for issue suggestions'
         end
 
-        Resource::Issue.fabricate! do |issue|
+        Resource::Issue.fabricate_via_browser_ui! do |issue|
           issue.title = issue_title
           issue.project = project
         end
