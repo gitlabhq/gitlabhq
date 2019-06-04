@@ -125,6 +125,7 @@ export default {
       'setFileEOL',
       'updateViewer',
       'removePendingTab',
+      'triggerFilesChange',
     ]),
     initEditor() {
       if (this.shouldHideEditor) return;
@@ -256,6 +257,7 @@ export default {
         'is-added': file.tempFile,
       }"
       class="multi-file-editor-holder"
+      @focusout="triggerFilesChange"
     ></div>
     <content-viewer
       v-if="showContentViewer"

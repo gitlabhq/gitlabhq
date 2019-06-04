@@ -488,7 +488,7 @@ describe('Multi-file store actions', () => {
         'path',
         store.state,
         [{ type: types.DELETE_ENTRY, payload: 'path' }],
-        [{ type: 'burstUnusedSeal' }],
+        [{ type: 'burstUnusedSeal' }, { type: 'triggerFilesChange' }],
         done,
       );
     });
@@ -510,7 +510,7 @@ describe('Multi-file store actions', () => {
             payload: { path: 'test', name: 'new-name', entryPath: null, parentPath: 'parent-path' },
           },
         ],
-        [{ type: 'deleteEntry', payload: 'test' }],
+        [{ type: 'deleteEntry', payload: 'test' }, { type: 'triggerFilesChange' }],
         done,
       );
     });
@@ -558,6 +558,7 @@ describe('Multi-file store actions', () => {
             },
           },
           { type: 'deleteEntry', payload: 'test' },
+          { type: 'triggerFilesChange' },
         ],
         done,
       );

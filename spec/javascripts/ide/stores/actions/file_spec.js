@@ -719,4 +719,20 @@ describe('IDE store file actions', () => {
         .catch(done.fail);
     });
   });
+
+  describe('triggerFilesChange', () => {
+    beforeEach(() => {
+      spyOn(eventHub, '$emit');
+    });
+
+    it('emits event that files have changed', done => {
+      store
+        .dispatch('triggerFilesChange')
+        .then(() => {
+          expect(eventHub.$emit).toHaveBeenCalledWith('ide.files.change');
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+  });
 });
