@@ -330,6 +330,7 @@ export default {
         :commits-count="mr.commitsCount"
         :target-branch="mr.targetBranch"
         :is-fast-forward-enabled="mr.ffOnlyEnabled"
+        :class="{ 'border-bottom': mr.mergeError }"
       >
         <ul class="border-top content-list commits-list flex-list">
           <commit-edit

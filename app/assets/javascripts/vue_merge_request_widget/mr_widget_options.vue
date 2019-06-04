@@ -1,6 +1,6 @@
 <script>
 import _ from 'underscore';
-import { __ } from '~/locale';
+import { sprintf, s__, __ } from '~/locale';
 import Project from '~/pages/projects/project';
 import SmartInterval from '~/smart_interval';
 import MRWidgetStore from 'ee_else_ce/vue_merge_request_widget/stores/mr_widget_store';
@@ -124,6 +124,11 @@ export default {
           this.mr.pipeline.target_sha &&
           this.mr.pipeline.target_sha !== this.mr.targetBranchSha,
       );
+    },
+    mergeError() {
+      return sprintf(s__('mrWidget|Merge failed: %{mergeError}. Please try again.'), {
+        mergeError: this.mr.mergeError,
+      });
     },
   },
   watch: {
@@ -368,6 +373,10 @@ export default {
                 'mrWidget|The target branch has advanced, which invalidates the merge request pipeline. Please update the source branch and retry merging',
               )
             }}
+          </mr-widget-alert-message>
+
+          <mr-widget-alert-message v-if="mr.mergeError" type="danger">
+            {{ mergeError }}
           </mr-widget-alert-message>
 
           <source-branch-removal-status v-if="shouldRenderSourceBranchRemovalStatus" />
