@@ -1,5 +1,0 @@
----
-title: Fix OmniAuth OAuth2Generic strategy not loading
-merge_request: 28680
-author:
-type: fixed

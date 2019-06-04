@@ -2,6 +2,23 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.11.2 (2019-06-04)
+
+### Fixed (7 changes)
+
+- Update SAST.gitlab-ci.yml - Add SAST_GITLEAKS_ENTROPY_LEVEL. !28607
+- Fix OmniAuth OAuth2Generic strategy not loading. !28680
+- Use source ref in pipeline webhook. !28772
+- Fix migration failure when groups are missing route. !29022
+- Stop two-step rebase from hanging when errors occur. !29068
+- Fix project settings not being able to update. !29097
+- Fix display of 'Promote to group label' button.
+
+### Other (1 change)
+
+- Fix input group height.
+
+
 ## 11.11.1 (2019-05-30)
 
 ### Security (12 changes)

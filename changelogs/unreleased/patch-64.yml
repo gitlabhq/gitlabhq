@@ -1,5 +1,0 @@
----
-title: Update SAST.gitlab-ci.yml - Add SAST_GITLEAKS_ENTROPY_LEVEL
-merge_request: 28607
-author:
-type: fixed
