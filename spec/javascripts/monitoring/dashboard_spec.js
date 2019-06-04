@@ -176,10 +176,6 @@ describe('Dashboard', () => {
         store,
       });
 
-      component.$store.commit(
-        `monitoringDashboard/${types.SET_ENVIRONMENTS_ENDPOINT}`,
-        '/environments',
-      );
       component.$store.commit(`monitoringDashboard/${types.RECEIVE_ENVIRONMENTS_DATA_SUCCESS}`, []);
       component.$store.commit(
         `monitoringDashboard/${types.RECEIVE_METRICS_DATA_SUCCESS}`,
@@ -210,10 +206,6 @@ describe('Dashboard', () => {
         store,
       });
 
-      component.$store.commit(
-        `monitoringDashboard/${types.SET_ENVIRONMENTS_ENDPOINT}`,
-        '/environments',
-      );
       component.$store.commit(
         `monitoringDashboard/${types.RECEIVE_ENVIRONMENTS_DATA_SUCCESS}`,
         environmentData,
