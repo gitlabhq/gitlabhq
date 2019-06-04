@@ -142,6 +142,7 @@ module Trigger
         "GITLAB_VERSION" => ENV['CI_COMMIT_REF_NAME'],
         "GITLAB_TAG" => ENV['CI_COMMIT_TAG'],
         "GITLAB_ASSETS_TAG" => ENV['CI_COMMIT_TAG'] ? ENV['CI_COMMIT_REF_NAME'] : ENV['CI_COMMIT_REF_SLUG'],
+        "FORCE_RAILS_IMAGE_BUILDS" => 'true',
         "#{edition}_PIPELINE" => 'true'
       }
     end
