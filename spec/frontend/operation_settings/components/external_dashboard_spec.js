@@ -114,6 +114,8 @@ describe('operation settings external dashboard component', () => {
     });
 
     describe('submit button', () => {
+      const findSubmitButton = () => wrapper.find('.settings-content form').find(GlButton);
+
       const endpointRequest = [
         operationsSettingsEndpoint,
         {
@@ -127,14 +129,14 @@ describe('operation settings external dashboard component', () => {
 
       it('renders button label', () => {
         mountComponent();
-        const submit = wrapper.find(GlButton);
+        const submit = findSubmitButton();
         expect(submit.text()).toBe('Save Changes');
       });
 
       it('submits form on click', () => {
         mountComponent(false);
         axios.patch.mockResolvedValue();
-        wrapper.find(GlButton).trigger('click');
+        findSubmitButton().trigger('click');
 
         expect(axios.patch).toHaveBeenCalledWith(...endpointRequest);
 
@@ -145,7 +147,7 @@ describe('operation settings external dashboard component', () => {
         mountComponent(false);
         const message = 'mockErrorMessage';
         axios.patch.mockRejectedValue({ response: { data: { message } } });
-        wrapper.find(GlButton).trigger('click');
+        findSubmitButton().trigger('click');
 
         expect(axios.patch).toHaveBeenCalledWith(...endpointRequest);
 
