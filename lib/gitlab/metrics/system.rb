@@ -35,6 +35,8 @@ module Gitlab
         def self.process_start_time
           fields = File.read('/proc/self/stat').split
 
+          # fields[21] is linux proc stat field "(22) starttime".
+          # The value is expressed in clock ticks, divide by clock ticks for seconds.
           ( fields[21].to_i || 0 ) / clk_tck
         end
       else
