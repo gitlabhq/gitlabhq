@@ -2,6 +2,8 @@
 
 module ImportUrlParams
   def import_url_params
+    return {} unless params.dig(:project, :import_url).present?
+
     { import_url: import_params_to_full_url(params[:project]) }
   end
 

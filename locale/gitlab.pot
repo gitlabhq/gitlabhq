@@ -7927,12 +7927,6 @@ msgstr ""
 msgid "Remove spent time"
 msgstr ""
 
-msgid "Remove this label? Are you sure?"
-msgstr ""
-
-msgid "Remove this label? This will affect all projects within the group. Are you sure?"
-msgstr ""
-
 msgid "Remove time estimate"
 msgstr ""
 
