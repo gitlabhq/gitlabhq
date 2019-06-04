@@ -1,9 +1,10 @@
 - header_title _("Snippets"), snippets_path
+- snippets_upload_path = snippets_upload_path(@snippet, current_user)
 
 - content_for :page_specific_javascripts do
-  - if @snippet && current_user
+  - if snippets_upload_path
     -# haml-lint:disable InlineJavaScript
     :javascript
-      window.uploads_path = "#{upload_path('personal_snippet', id: @snippet.id)}";
+      window.uploads_path = "#{snippets_upload_path}";
 
 = render template: "layouts/application"

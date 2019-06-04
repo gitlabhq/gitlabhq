@@ -1,6 +1,16 @@
 # frozen_string_literal: true
 
 module SnippetsHelper
+  def snippets_upload_path(snippet, user)
+    return unless user
+
+    if snippet&.persisted?
+      upload_path('personal_snippet', id: snippet.id)
+    else
+      upload_path('user', id: user.id)
+    end
+  end
+
   def reliable_snippet_path(snippet, opts = nil)
     if snippet.project_id?
       project_snippet_path(snippet.project, snippet, opts)
