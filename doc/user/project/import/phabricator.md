@@ -15,18 +15,15 @@ Currently, only the following basic fields are imported:
 - Created at
 - Closed at
 
-
 ## Enabling this feature
 
 While this feature is incomplete, a feature flag is required to enable it so that
 we can gain early feedback before releasing it for everyone. To enable it:
 
+1. Run the following command in a Rails console:
+
+   ```ruby
+   Feature.enable(:phabricator_import)
+   ```
+
 1. Enable Phabricator as an [import source](../../admin_area/settings/visibility_and_access_controls.md#import-sources) in the Admin area.
-
-  ``` {.ruby}
-  Feature.enable(:phabricator_import)
-  ```
-
-The [import
-source](../../admin_area/settings/visibility_and_access_controls.md#import-sources)
-also needs to be activated by an admin in the admin interface.
