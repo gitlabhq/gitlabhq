@@ -440,6 +440,8 @@ class ApplicationController < ActionController::Base
   end
 
   def set_session_storage(&block)
+    return yield if sessionless_user?
+
     Gitlab::Session.with_session(session, &block)
   end
 
