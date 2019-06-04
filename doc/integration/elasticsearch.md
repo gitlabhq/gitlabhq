@@ -192,9 +192,6 @@ Performing asynchronous indexing, as this will describe, will generate a lot of 
 Make sure to prepare for this task by either [Horizontally Scaling](../administration/high_availability/README.md#basic-scaling)
 or creating [extra sidekiq processes](../administration/operations/extra_sidekiq_processes.md)
 
-NOTE: **Note**:
-After indexing the repositories asynchronously, you **MUST** index the database to be able to search.
-
 Configure Elasticsearch's host and port in **Admin > Settings > Integrations**. Then create empty indexes using one of the following commands:
 
 ```sh
@@ -217,78 +214,49 @@ curl --request PUT localhost:9200/gitlab-production/_settings --data '{
     } }'
 ```
 
-Then enable Elasticsearch indexing and run repository indexing tasks:
+Then enable Elasticsearch indexing and run project indexing tasks:
 
 ```sh
 # Omnibus installations
-sudo gitlab-rake gitlab:elastic:index_repositories_async
+sudo gitlab-rake gitlab:elastic:index_projects
 
 # Installations from source
-bundle exec rake gitlab:elastic:index_repositories_async RAILS_ENV=production
+bundle exec rake gitlab:elastic:index_projects RAILS_ENV=production
 ```
 
-This enqueues a number of Sidekiq jobs to index your existing repositories.
-You can view the jobs in the admin panel (they are placed in the `elastic_batch_project_indexer`)
+This enqueues a Sidekiq job for each project that needs to be indexed.
+You can view the jobs in the admin panel (they are placed in the `elastic_indexer`
 queue), or you can query indexing status using a rake task:
 
 ```sh
 # Omnibus installations
-sudo gitlab-rake gitlab:elastic:index_repositories_status
+sudo gitlab-rake gitlab:elastic:index_projects_status
 
 # Installations from source
-bundle exec rake gitlab:elastic:index_repositories_status RAILS_ENV=production
+bundle exec rake gitlab:elastic:index_projects_status RAILS_ENV=production
 
 Indexing is 65.55% complete (6555/10000 projects)
 ```
 
-By default, one job is created for every 300 projects. For large numbers of
-projects, you may wish to increase the batch size, by setting the `BATCH`
-environment variable.
-
-You can also run the initial indexing synchronously - this is most useful if
-you have a small number of projects or need finer-grained control over indexing
-than Sidekiq permits:
+If you want to limit the index to a range of projects you can provide the
+`ID_FROM` and `ID_TO` parameters:
 
 ```sh
 # Omnibus installations
-sudo gitlab-rake gitlab:elastic:index_repositories
+sudo gitlab-rake gitlab:elastic:index_projects ID_FROM=1001 ID_TO=2000
 
 # Installations from source
-bundle exec rake gitlab:elastic:index_repositories RAILS_ENV=production
-```
-
-It might take a while depending on how big your Git repositories are.
-
-If you want to run several tasks in parallel (probably in separate terminal
-windows) you can provide the `ID_FROM` and `ID_TO` parameters:
-
-```sh
-# Omnibus installations
-sudo gitlab-rake gitlab:elastic:index_repositories ID_FROM=1001 ID_TO=2000
-
-# Installations from source
-bundle exec rake gitlab:elastic:index_repositories ID_FROM=1001 ID_TO=2000 RAILS_ENV=production
+bundle exec rake gitlab:elastic:index_projects ID_FROM=1001 ID_TO=2000 RAILS_ENV=production
 ```
 
 Where `ID_FROM` and `ID_TO` are project IDs. Both parameters are optional.
-As an example, if you have 3,000 repositories and you want to run three separate indexing tasks, you might run:
+The above examples will index all projects starting with ID `1001` up to (and including) ID `2000`.
 
-```sh
-# Omnibus installations
-sudo gitlab-rake gitlab:elastic:index_repositories ID_TO=1000
-sudo gitlab-rake gitlab:elastic:index_repositories ID_FROM=1001 ID_TO=2000
-sudo gitlab-rake gitlab:elastic:index_repositories ID_FROM=2001
-
-# Installations from source
-bundle exec rake gitlab:elastic:index_repositories RAILS_ENV=production ID_TO=1000
-bundle exec rake gitlab:elastic:index_repositories RAILS_ENV=production ID_FROM=1001 ID_TO=2000
-bundle exec rake gitlab:elastic:index_repositories RAILS_ENV=production ID_FROM=2001
-```
-
-Sometimes your repository index process `gitlab:elastic:index_repositories` or
-`gitlab:elastic:index_repositories_async` can get interrupted. This may happen
-for many reasons, but it's always safe to run the indexing job again - it will
-skip those repositories that have already been indexed.
+TIP: **Troubleshooting:**
+Sometimes the project indexing jobs queued by `gitlab:elastic:index_projects`
+can get interrupted. This may happen for many reasons, but it's always safe
+to run the indexing task again - it will skip those repositories that have
+already been indexed.
 
 As the indexer stores the last commit SHA of every indexed repository in the
 database, you can run the indexer with the special parameter `UPDATE_INDEX` and
@@ -297,10 +265,10 @@ that repository is indexed, it can be useful in case if your index is outdated:
 
 ```sh
 # Omnibus installations
-sudo gitlab-rake gitlab:elastic:index_repositories UPDATE_INDEX=true ID_TO=1000
+sudo gitlab-rake gitlab:elastic:index_projects UPDATE_INDEX=true ID_TO=1000
 
 # Installations from source
-bundle exec rake gitlab:elastic:index_repositories UPDATE_INDEX=true ID_TO=1000 RAILS_ENV=production
+bundle exec rake gitlab:elastic:index_projects UPDATE_INDEX=true ID_TO=1000 RAILS_ENV=production
 ```
 
 You can also use the `gitlab:elastic:clear_index_status` Rake task to force the
@@ -319,16 +287,6 @@ bundle exec rake gitlab:elastic:index_wikis RAILS_ENV=production
 
 The wiki indexer also supports the `ID_FROM` and `ID_TO` parameters if you want
 to limit a project set.
-
-Index all database entities (Keep in mind it can take a while, so consider using `screen` or `tmux`):
-
-```sh
-# Omnibus installations
-sudo gitlab-rake gitlab:elastic:index_database
-
-# Installations from source
-bundle exec rake gitlab:elastic:index_database RAILS_ENV=production
-```
 
 Enable replication and refreshing again after indexing (only if you previously disabled it):
 
@@ -376,25 +334,15 @@ There are several rake tasks available to you via the command line:
   - This is a wrapper task. It does the following:
     - `sudo gitlab-rake gitlab:elastic:create_empty_index`
     - `sudo gitlab-rake gitlab:elastic:clear_index_status`
+    - `sudo gitlab-rake gitlab:elastic:index_projects`
     - `sudo gitlab-rake gitlab:elastic:index_wikis`
-    - `sudo gitlab-rake gitlab:elastic:index_database`
-    - `sudo gitlab-rake gitlab:elastic:index_repositories`
-- [sudo gitlab-rake gitlab:elastic:index_repositories_async](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/ee/lib/tasks/gitlab/elastic.rake)
-  - This iterates over all projects and places them in batches. It then sends these batches to the background via sidekiq jobs to be indexed.
-- [sudo gitlab-rake gitlab:elastic:index_repositories_status](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/ee/lib/tasks/gitlab/elastic.rake)
+    - `sudo gitlab-rake gitlab:elastic:index_snippets`
+- [sudo gitlab-rake gitlab:elastic:index_projects](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/ee/lib/tasks/gitlab/elastic.rake)
+  - This iterates over all projects and queues sidekiq jobs to index them in the background.
+- [sudo gitlab-rake gitlab:elastic:index_projects_status](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/ee/lib/tasks/gitlab/elastic.rake)
   - This determines the overall status of the indexing. It is done by counting the total number of indexed projects, dividing by a count of the total number of projects, then multiplying by 100.
-- [sudo gitlab-rake gitlab:elastic:index_repositories](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/ee/lib/tasks/gitlab/elastic.rake)
-  - This iterates over all projects and places them in batches. It then performs indexing on said batches synchronously.
 - [sudo gitlab-rake gitlab:elastic:index_wikis](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/ee/lib/tasks/gitlab/elastic.rake)
   - Iterates over every project, determines if said project contains wiki data, and then indexes the blobs (content) of said wiki data.
-- [sudo gitlab-rake gitlab:elastic:index_database](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/ee/lib/tasks/gitlab/elastic.rake)
-  - This is a [rake multitask](https://www.rubydoc.info/github/ruby/rake/Rake/MultiTask). It does the following:
-    - `sudo gitlab-rake gitlab:elastic:index_projects`
-    - `sudo gitlab-rake gitlab:elastic:index_issues`
-    - `sudo gitlab-rake gitlab:elastic:index_merge_requests`
-    - `sudo gitlab-rake gitlab:elastic:index_snippets`
-    - `sudo gitlab-rake gitlab:elastic:index_notes`
-    - `sudo gitlab-rake gitlab:elastic:index_milestones`
 - [sudo gitlab-rake gitlab:elastic:create_empty_index](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/ee/lib/tasks/gitlab/elastic.rake)
   - This generates an empty index on the Elasticsearch side.
 - [sudo gitlab-rake gitlab:elastic:clear_index_status](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/ee/lib/tasks/gitlab/elastic.rake)
@@ -405,18 +353,8 @@ There are several rake tasks available to you via the command line:
   - Does the same thing as `sudo gitlab-rake gitlab:elastic:create_empty_index`
 - [sudo gitlab-rake gitlab:elastic:add_feature_visibility_levels_to_project](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/ee/lib/tasks/gitlab/elastic.rake)
   - Adds visibility information to the indices for projects.
-- [sudo gitlab-rake gitlab:elastic:index_projects](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/ee/lib/tasks/gitlab/elastic.rake)
-  - Performs an Elasticsearch import that indexes projects data.
-- [sudo gitlab-rake gitlab:elastic:index_issues](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/ee/lib/tasks/gitlab/elastic.rake)
-  - Performs an Elasticsearch import that indexes issues data.
-- [sudo gitlab-rake gitlab:elastic:index_merge_requests](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/ee/lib/tasks/gitlab/elastic.rake)
-  - Performs an Elasticsearch import that indexes merge requests data.
 - [sudo gitlab-rake gitlab:elastic:index_snippets](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/ee/lib/tasks/gitlab/elastic.rake)
   - Performs an Elasticsearch import that indexes the snippets data.
-- [sudo gitlab-rake gitlab:elastic:index_notes](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/ee/lib/tasks/gitlab/elastic.rake)
-  - Performs an Elasticsearch import that indexes the notes data.
-- [sudo gitlab-rake gitlab:elastic:index_milestones](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/ee/lib/tasks/gitlab/elastic.rake)
-  - Performs an Elasticsearch import that indexes the milestones data.
 
 ### Environment Variables
 
@@ -424,40 +362,16 @@ In addition to the rake tasks, there are some environment variables that can be 
 
 | Environment Variable | Data Type | What it does                                                                 |
 | -------------------- |:---------:| ---------------------------------------------------------------------------- |
-| `BATCH`              | Integer   | Modifies the size of the indexing batch (default 300 projects).              |
 | `UPDATE_INDEX`       | Boolean   | Tells the indexer to overwrite any existing index data (true/false).         |
 | `ID_TO`              | Integer   | Tells the indexer to only index projects less than or equal to the value.    |
 | `ID_FROM`            | Integer   | Tells the indexer to only index projects greater than or equal to the value. |
-
-### Batching
-
-The ability to apply batching makes the indexer run more efficiently. The default
-size of a batch is 300 projects, which may or may not be ideal for your setup.
-Depending on the resources available to your GitLab instance (sidekiq) and your
-Elasticsearch instance (RAM, CPU), you may be able to increase or decrease the
-batch size for more efficiency.
-
-- The larger the batch size is, the less sidekiq jobs and indexing requests get created.
-- The larger the batch size is, the more time and RAM it takes to process.
-- The smaller the batch size, the more sidekiq jobs, and indexing requests get created.
-- The smaller the batch size, the more CPU gets utilized.
-
-Finding the ideal size can be tricky, and will vary from GitLab instance to GitLab instance.
-Generally speaking, if the default is not ideal for you, try reducing it to somewhere in
-the 50-150 range (for bigger sized repos) or 450-600 range (for many small-sized repos).
-
-Example use:
-
-```sh
-sudo gitlab-rake gitlab:elastic:index_repositories_async BATCH=50
-```
 
 ### Indexing a specific project
 
 Because the `ID_TO` and `ID_FROM` environment variables use the `or equal to` comparison, you can index only one project by using both these variables with the same project ID number:
 
 ```sh
-root@git:~# sudo gitlab-rake gitlab:elastic:index_repositories ID_TO=5 ID_FROM=5
+root@git:~# sudo gitlab-rake gitlab:elastic:index_projects ID_TO=5 ID_FROM=5
 Indexing project repositories...I, [2019-03-04T21:27:03.083410 #3384]  INFO -- : Indexing GitLab User / test (ID=33)...
 I, [2019-03-04T21:27:05.215266 #3384]  INFO -- : Indexing GitLab User / test (ID=33) is done!
 ```
@@ -554,7 +468,7 @@ Here are some common pitfalls and how to overcome them:
     
 - **The indexing process is taking a very long time**
 
-    The more data present in your GitLab instance, the longer the indexing process takes. You might want to try adjusting the BATCH sizes for asynchronous indexing to help speed up the process.
+    The more data present in your GitLab instance, the longer the indexing process takes.
 
 - **No new data is added to the Elasticsearch index when I push code**
 
