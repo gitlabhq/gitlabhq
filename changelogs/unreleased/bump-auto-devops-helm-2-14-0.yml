@@ -1,0 +1,5 @@
+---
+title: Bump Helm version in Auto-DevOps.gitlab-ci.yml to 2.14.0
+merge_request: 28527
+author:
+type: other
