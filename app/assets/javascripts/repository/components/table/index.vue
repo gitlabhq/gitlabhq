@@ -134,6 +134,7 @@ export default {
               :current-path="path"
               :path="entry.flatPath"
               :type="entry.type"
+              :url="entry.webUrl"
             />
           </template>
         </tbody>

@@ -21,6 +21,11 @@ export default {
       type: String,
       required: true,
     },
+    url: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   computed: {
     routerLinkTo() {
@@ -59,7 +64,7 @@ export default {
   <tr v-once :class="`file_${id}`" class="tree-item" @click="openRow">
     <td class="tree-item-file-name">
       <i :aria-label="type" role="img" :class="iconName" class="fa fa-fw"></i>
-      <component :is="linkComponent" :to="routerLinkTo" class="str-truncated">
+      <component :is="linkComponent" :to="routerLinkTo" :href="url" class="str-truncated">
         {{ fullPath }}
       </component>
       <template v-if="isSubmodule">

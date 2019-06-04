@@ -86,4 +86,16 @@ describe('Repository table row component', () => {
 
     expect(vm.find('.commit-sha').text()).toContain('1');
   });
+
+  it('renders link with href', () => {
+    factory({
+      id: '1',
+      path: 'test',
+      type: 'blob',
+      url: 'https://test.com',
+      currentPath: '/',
+    });
+
+    expect(vm.find('a').attributes('href')).toEqual('https://test.com');
+  });
 });
