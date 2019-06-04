@@ -1,5 +1,0 @@
----
-title: Stop two-step rebase from hanging when errors occur
-merge_request: 29068
-author:
-type: fixed
