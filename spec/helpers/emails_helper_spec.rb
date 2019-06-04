@@ -8,19 +8,19 @@ describe EmailsHelper do
 
       context "and format is text" do
         it "returns plain text" do
-          expect(closure_reason_text(merge_request, format: :text)).to eq(" via merge request #{merge_request.to_reference} (#{merge_request_presenter.web_url})")
+          expect(closure_reason_text(merge_request, format: :text)).to eq("via merge request #{merge_request.to_reference} (#{merge_request_presenter.web_url})")
         end
       end
 
       context "and format is HTML" do
         it "returns HTML" do
-          expect(closure_reason_text(merge_request, format: :html)).to eq(" via merge request #{link_to(merge_request.to_reference, merge_request_presenter.web_url)}")
+          expect(closure_reason_text(merge_request, format: :html)).to eq("via merge request #{link_to(merge_request.to_reference, merge_request_presenter.web_url)}")
         end
       end
 
       context "and format is unknown" do
         it "returns plain text" do
-          expect(closure_reason_text(merge_request, format: :text)).to eq(" via merge request #{merge_request.to_reference} (#{merge_request_presenter.web_url})")
+          expect(closure_reason_text(merge_request, format: :text)).to eq("via merge request #{merge_request.to_reference} (#{merge_request_presenter.web_url})")
         end
       end
     end
@@ -29,7 +29,7 @@ describe EmailsHelper do
       let(:closed_via) { "5a0eb6fd7e0f133044378c662fcbbc0d0c16dbfa" }
 
       it "returns plain text" do
-        expect(closure_reason_text(closed_via)).to eq(" via #{closed_via}")
+        expect(closure_reason_text(closed_via)).to eq("via #{closed_via}")
       end
     end
 
