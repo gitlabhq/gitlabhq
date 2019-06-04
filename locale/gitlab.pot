@@ -12258,6 +12258,9 @@ msgstr ""
 msgid "mrWidget|Merge failed."
 msgstr ""
 
+msgid "mrWidget|Merge failed: %{mergeError}. Please try again."
+msgstr ""
+
 msgid "mrWidget|Merge locally"
 msgstr ""
 

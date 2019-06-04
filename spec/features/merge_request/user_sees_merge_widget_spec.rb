@@ -327,8 +327,8 @@ describe 'Merge request > User sees merge widget', :js do
       # Wait for the `ci_status` and `merge_check` requests
       wait_for_requests
 
-      page.within('.mr-widget-body') do
-        expect(page).to have_content('Something went wrong')
+      page.within('.mr-section-container') do
+        expect(page).to have_content('Merge failed: Something went wrong')
       end
     end
   end
@@ -348,8 +348,8 @@ describe 'Merge request > User sees merge widget', :js do
       # Wait for the `ci_status` and `merge_check` requests
       wait_for_requests
 
-      page.within('.mr-widget-body') do
-        expect(page).to have_content('Something went wrong')
+      page.within('.mr-section-container') do
+        expect(page).to have_content('Merge failed: Something went wrong')
       end
     end
   end

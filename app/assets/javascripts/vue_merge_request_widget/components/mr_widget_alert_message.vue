@@ -37,7 +37,7 @@ export default {
 </script>
 
 <template>
-  <div class="m-3 ml-5" :class="messageClass">
+  <div class="m-3 ml-7" :class="messageClass">
     <slot></slot>
     <gl-link v-if="helpPath" :href="helpPath" target="_blank">
       <icon :size="16" name="question-o" class="align-middle" />
