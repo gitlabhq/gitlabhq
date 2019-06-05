@@ -172,6 +172,34 @@ describe IssuePolicy do
       expect(permissions(assignee, issue_locked)).to be_disallowed(:admin_issue, :reopen_issue)
     end
 
+    context 'when issues are private' do
+      before do
+        project.project_feature.update(issues_access_level: ProjectFeature::PRIVATE)
+      end
+      let(:issue) { create(:issue, project: project, author: author) }
+      let(:visitor) { create(:user) }
+      let(:admin) { create(:user, :admin) }
+
+      it 'forbids visitors from viewing issues' do
+        expect(permissions(visitor, issue)).to be_disallowed(:read_issue)
+      end
+      it 'forbids visitors from commenting' do
+        expect(permissions(visitor, issue)).to be_disallowed(:create_note)
+      end
+      it 'allows guests to view' do
+        expect(permissions(guest, issue)).to be_allowed(:read_issue)
+      end
+      it 'allows guests to comment' do
+        expect(permissions(guest, issue)).to be_allowed(:create_note)
+      end
+      it 'allows admins to view' do
+        expect(permissions(admin, issue)).to be_allowed(:read_issue)
+      end
+      it 'allows admins to comment' do
+        expect(permissions(admin, issue)).to be_allowed(:create_note)
+      end
+    end
+
     context 'with confidential issues' do
       let(:confidential_issue) { create(:issue, :confidential, project: project, assignees: [assignee], author: author) }
       let(:confidential_issue_no_assignee) { create(:issue, :confidential, project: project) }
