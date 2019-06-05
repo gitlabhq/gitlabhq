@@ -17,16 +17,7 @@ module QA
         @project = Resource::Project.fabricate! do |project|
           project.name = 'file-template-project'
           project.description = 'Add file templates via the Web IDE'
-        end
-        @project.visit!
-
-        # Add a file via the regular Files view because the Web IDE isn't
-        # available unless there is a file present
-        Page::Project::Show.perform(&:create_first_new_file!)
-        Page::File::Form.perform do |page|
-          page.add_name('dummy')
-          page.add_content('Enable the Web IDE')
-          page.commit_changes
+          project.initialize_with_readme = true
         end
 
         Page::Main::Menu.perform(&:sign_out)

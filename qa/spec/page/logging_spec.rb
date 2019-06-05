@@ -64,9 +64,19 @@ describe QA::Support::Page::Logging do
 
   it 'logs find_element with text' do
     expect { subject.find_element(:element, text: 'foo') }
-      .to output(/finding :element with text "foo"/).to_stdout_from_any_process
+      .to output(/finding :element with args {:text=>"foo"}/).to_stdout_from_any_process
     expect { subject.find_element(:element, text: 'foo') }
       .to output(/found :element/).to_stdout_from_any_process
+  end
+
+  it 'logs find_element with wait' do
+    expect { subject.find_element(:element, wait: 0) }
+      .to output(/finding :element with args {:wait=>0}/).to_stdout_from_any_process
+  end
+
+  it 'logs find_element with class' do
+    expect { subject.find_element(:element, class: 'active') }
+      .to output(/finding :element with args {:class=>\"active\"}/).to_stdout_from_any_process
   end
 
   it 'logs click_element' do
