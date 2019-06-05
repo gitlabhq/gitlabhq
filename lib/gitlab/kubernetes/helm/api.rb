@@ -24,6 +24,7 @@ module Gitlab
 
         def uninstall(command)
           namespace.ensure_exists!
+          create_config_map(command)
 
           delete_pod!(command.pod_name)
           kubeclient.create_pod(command.pod_resource)
