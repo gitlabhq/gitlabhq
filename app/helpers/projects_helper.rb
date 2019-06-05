@@ -241,6 +241,7 @@ module ProjectsHelper
 
   # TODO: Remove this method when removing the feature flag
   # https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/11209#note_162234863
+  # make sure to remove from the EE specific controller as well: ee/app/controllers/ee/dashboard/projects_controller.rb
   def show_projects?(projects, params)
     Feature.enabled?(:project_list_filter_bar) || !!(params[:personal] || params[:name] || any_projects?(projects))
   end
