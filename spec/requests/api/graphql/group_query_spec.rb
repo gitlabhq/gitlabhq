@@ -56,7 +56,7 @@ describe 'getting group information' do
         post_graphql(group_query(group1), current_user: user1)
 
         expect(response).to have_gitlab_http_status(200)
-        expect(graphql_data['group']['id']).to eq(group1.id.to_s)
+        expect(graphql_data['group']['id']).to eq(group1.to_global_id.to_s)
         expect(graphql_data['group']['name']).to eq(group1.name)
         expect(graphql_data['group']['path']).to eq(group1.path)
         expect(graphql_data['group']['description']).to eq(group1.description)
