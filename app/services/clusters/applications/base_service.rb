@@ -81,7 +81,7 @@ module Clusters
         oauth_application_params = {
           name: params[:application],
           redirect_uri: application.callback_url,
-          scopes: 'api read_user openid',
+          scopes: application.oauth_scopes,
           owner: current_user
         }
 

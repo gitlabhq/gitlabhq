@@ -96,6 +96,8 @@ describe Clusters::Applications::Jupyter do
       expect(values).to match(/clientId: '?#{application.oauth_application.uid}/)
       expect(values).to match(/callbackUrl: '?#{application.callback_url}/)
       expect(values).to include("gitlabProjectIdWhitelist:\n    - #{application.cluster.project.id}")
+      expect(values).to include("c.GitLabOAuthenticator.scope = ['api read_repository write_repository']")
+      expect(values).to match(/GITLAB_HOST: '?#{Gitlab.config.gitlab.host}/)
     end
 
     context 'when cluster belongs to a project' do
