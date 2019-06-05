@@ -81,7 +81,7 @@ export const getDayName = date =>
  */
 export const formatDate = datetime => {
   if (_.isString(datetime) && datetime.match(/\d+-\d+\d+ /)) {
-    throw new Error('Invalid date');
+    throw new Error(__('Invalid date'));
   }
   return dateFormat(datetime, 'mmm d, yyyy h:MMtt Z');
 };
