@@ -1,0 +1,5 @@
+---
+title: Remove a default git depth in Pipelines for merge requests
+merge_request: 28926
+author:
+type: fixed
