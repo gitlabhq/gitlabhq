@@ -136,24 +136,6 @@ describe Ci::BuildRunnerPresenter do
         is_expected.to eq(1)
       end
     end
-
-    context 'when pipeline is detached merge request pipeline' do
-      let(:merge_request) { create(:merge_request, :with_detached_merge_request_pipeline) }
-      let(:pipeline) { merge_request.all_pipelines.first }
-      let(:build) { create(:ci_build, ref: pipeline.ref, pipeline: pipeline) }
-
-      it 'returns the default git depth for pipelines for merge requests' do
-        is_expected.to eq(described_class::DEFAULT_GIT_DEPTH_MERGE_REQUEST)
-      end
-
-      context 'when pipeline is legacy detached merge request pipeline' do
-        let(:merge_request) { create(:merge_request, :with_legacy_detached_merge_request_pipeline) }
-
-        it 'behaves as branch pipeline' do
-          is_expected.to eq(0)
-        end
-      end
-    end
   end
 
   describe '#refspecs' do
@@ -191,7 +173,9 @@ describe Ci::BuildRunnerPresenter do
 
       it 'returns the correct refspecs' do
         is_expected
-          .to contain_exactly('+refs/merge-requests/1/head:refs/merge-requests/1/head')
+          .to contain_exactly('+refs/heads/*:refs/remotes/origin/*',
+                              '+refs/tags/*:refs/tags/*',
+                              '+refs/merge-requests/1/head:refs/merge-requests/1/head')
       end
 
       context 'when pipeline is legacy detached merge request pipeline' do
