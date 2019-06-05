@@ -1,10 +1,6 @@
 ---
-last_updated: 2018-11-19
-author: Marcia Ramos
-author_gitlab: marcia
-level: beginner
-article_type: user guide
-date: 2017-02-22
+last_updated: 2019-06-04
+type: concepts, reference, howto
 ---
 
 # GitLab Pages custom domains and SSL/TLS Certificates
