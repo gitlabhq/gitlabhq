@@ -1,3 +1,7 @@
+---
+type: reference
+---
+
 # Where variables can be used
 
 As it's described in the [CI/CD variables](README.md) docs, you can

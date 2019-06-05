@@ -1,3 +1,7 @@
+---
+type: reference
+---
+
 # Predefined environment variables reference
 
 For an introduction on this subject, read through the
