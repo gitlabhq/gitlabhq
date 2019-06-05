@@ -207,6 +207,10 @@ const boardsStore = {
     eventHub.$emit('updateTokens');
   },
 
+  setListDetail(newList) {
+    this.detail.list = newList;
+  },
+
   updateFiltersUrl() {
     window.history.pushState(null, null, `?${this.filter.path}`);
   },

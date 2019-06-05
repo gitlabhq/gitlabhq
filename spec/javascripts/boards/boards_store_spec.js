@@ -312,6 +312,17 @@ describe('Store', () => {
     });
   });
 
+  describe('setListDetail', () => {
+    it('sets the list detail', () => {
+      boardsStore.detail.list = 'not a list';
+
+      const dummyValue = 'new list';
+      boardsStore.setListDetail(dummyValue);
+
+      expect(boardsStore.detail.list).toEqual(dummyValue);
+    });
+  });
+
   describe('clearDetailIssue', () => {
     it('resets issue details', () => {
       boardsStore.detail.issue = 'something';
