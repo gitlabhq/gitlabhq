@@ -6,6 +6,7 @@ describe MergeRequestPolicy do
   let(:guest) { create(:user) }
   let(:author) { create(:user) }
   let(:developer) { create(:user) }
+  let(:non_team_member) { create(:user) }
   let(:project) { create(:project, :public) }
 
   def permissions(user, merge_request)
@@ -16,6 +17,78 @@ describe MergeRequestPolicy do
     project.add_guest(guest)
     project.add_guest(author)
     project.add_developer(developer)
+  end
+
+  MR_PERMS = %i[create_merge_request_in
+                create_merge_request_from
+                read_merge_request
+                create_note].freeze
+
+  shared_examples_for 'a denied user' do
+    let(:perms) { permissions(subject, merge_request) }
+
+    MR_PERMS.each do |thing|
+      it "cannot #{thing}" do
+        expect(perms).to be_disallowed(thing)
+      end
+    end
+  end
+
+  shared_examples_for 'a user with access' do
+    let(:perms) { permissions(subject, merge_request) }
+
+    MR_PERMS.each do |thing|
+      it "can #{thing}" do
+        expect(perms).to be_allowed(thing)
+      end
+    end
+  end
+
+  context 'when merge requests have been disabled' do
+    let!(:merge_request) { create(:merge_request, source_project: project, target_project: project, author: author) }
+
+    before do
+      project.project_feature.update(merge_requests_access_level: ProjectFeature::DISABLED)
+    end
+
+    describe 'the author' do
+      subject { author }
+      it_behaves_like 'a denied user'
+    end
+
+    describe 'a guest' do
+      subject { guest }
+      it_behaves_like 'a denied user'
+    end
+
+    describe 'a developer' do
+      subject { developer }
+      it_behaves_like 'a denied user'
+    end
+
+    describe 'any other user' do
+      subject { non_team_member }
+      it_behaves_like 'a denied user'
+    end
+  end
+
+  context 'when merge requests are private' do
+    let!(:merge_request) { create(:merge_request, source_project: project, target_project: project, author: author) }
+
+    before do
+      project.update(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+      project.project_feature.update(merge_requests_access_level: ProjectFeature::PRIVATE)
+    end
+
+    describe 'a non-team-member' do
+      subject { non_team_member }
+      it_behaves_like 'a denied user'
+    end
+
+    describe 'a developer' do
+      subject { developer }
+      it_behaves_like 'a user with access'
+    end
   end
 
   context 'when merge request is unlocked' do
@@ -47,6 +120,22 @@ describe MergeRequestPolicy do
 
     it 'prevents guests from reopening merge request' do
       expect(permissions(guest, merge_request_locked)).to be_disallowed(:reopen_merge_request)
+    end
+
+    context 'when the user is not a project member' do
+      let(:user) { create(:user) }
+
+      it 'cannot create a note' do
+        expect(permissions(user, merge_request_locked)).to be_disallowed(:create_note)
+      end
+    end
+
+    context 'when the user is project member, with at least guest access' do
+      let(:user) { guest }
+
+      it 'can create a note' do
+        expect(permissions(user, merge_request_locked)).to be_allowed(:create_note)
+      end
     end
   end
 
