@@ -4,12 +4,18 @@ require 'spec_helper'
 
 describe Gitlab::Metrics::Dashboard::Processor do
   let(:project) { build(:project) }
-  let(:environment) { build(:environment, project: project) }
+  let(:environment) { create(:environment, project: project) }
   let(:dashboard_yml) { YAML.load_file('spec/fixtures/lib/gitlab/metrics/dashboard/sample_dashboard.yml') }
 
   describe 'process' do
     let(:process_params) { [project, environment, dashboard_yml] }
     let(:dashboard) { described_class.new(*process_params).process(insert_project_metrics: true) }
+
+    it 'includes a path for the prometheus endpoint with each metric' do
+      all_metrics.each do |metric|
+        expect(metric).to include(prometheus_endpoint_path: prometheus_path(metric[:query_range]))
+      end
+    end
 
     context 'when dashboard config corresponds to common metrics' do
       let!(:common_metric) { create(:prometheus_metric, :common, identifier: 'metric_a1') }
@@ -99,7 +105,15 @@ describe Gitlab::Metrics::Dashboard::Processor do
       query_range: metric.query,
       unit: metric.unit,
       label: metric.legend,
-      metric_id: metric.id
+      metric_id: metric.id,
+      prometheus_endpoint_path: prometheus_path(metric.query)
     }
+  end
+
+  def prometheus_path(query)
+    "/#{project.namespace.path}" \
+    "/#{project.name}/environments/" \
+    "#{environment.id}/prometheus/api/v1" \
+    "/query_range?query=#{CGI::escape query}"
   end
 end

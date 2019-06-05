@@ -7,7 +7,7 @@ describe Gitlab::Metrics::Dashboard::ProjectDashboardService, :use_clean_rails_m
 
   set(:user) { build(:user) }
   set(:project) { build(:project) }
-  set(:environment) { build(:environment, project: project) }
+  set(:environment) { create(:environment, project: project) }
 
   before do
     project.add_maintainer(user)
