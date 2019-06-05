@@ -1,10 +1,6 @@
 ---
-last_updated: 2018-02-16
-author: Marcia Ramos
-author_gitlab: marcia
-level: intermediate
-article_type: user guide
-date: 2017-02-22
+last_updated: 2019-06-04
+type: reference, howto
 ---
 
 # Creating and Tweaking GitLab CI/CD for GitLab Pages
