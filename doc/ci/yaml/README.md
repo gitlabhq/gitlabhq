@@ -108,7 +108,7 @@ The following table lists available parameters for jobs:
 | [`parallel`](#parallel)                            | How many instances of a job should be run in parallel.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | [`trigger`](#trigger-premium)                      | Defines a downstream pipeline trigger.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | [`include`](#include)                              | Allows this job to include external YAML files. Also available: `include:local`, `include:file`, `include:template`, and `include:remote`.                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| [`extends`](#extends)                              | Configuration entry that this job is going to inherit from.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| [`extends`](#extends)                              | Configuration entries that this job is going to inherit from.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | [`pages`](#pages)                                  | Upload the result of a job to use with GitLab Pages.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | [`variables`](#variables)                          | Define job variables on a job level.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 
@@ -2117,7 +2117,7 @@ docker-test:
 
 > Introduced in GitLab 11.3.
 
-`extends` defines an entry name that a job that uses `extends` is going to
+`extends` defines entry names that a job that uses `extends` is going to
 inherit from.
 
 It is an alternative to using [YAML anchors](#anchors) and is a little
@@ -2192,6 +2192,46 @@ rspec 2:
 spinach:
   extends: .tests
   script: rake spinach
+```
+
+It's also possible to use multiple parents for `extends`.
+The algorithm used for merge is "closest scope wins", so keys
+from the last member will always shadow anything defined on other levels.
+For example:
+
+```yaml
+.only-important:
+  only:
+    - master
+    - stable
+  tags:
+    - production
+
+.in-docker:
+  tags:
+    - docker
+  image: alpine
+
+rspec:
+  extends:
+    - .only-important
+    - .in-docker
+  script:
+    - rake rspec
+```
+
+This results in the following `rspec` job:
+
+```yaml
+rspec:
+  only:
+    - master
+    - stable
+  tags:
+    - docker
+  image: alpine
+  script:
+    - rake rspec
 ```
 
 ### Using `extends` and `include` together

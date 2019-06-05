@@ -44,12 +44,12 @@ describe Gitlab::Ci::Config::Extendable::Entry do
     end
   end
 
-  describe '#extends_key' do
+  describe '#extends_keys' do
     context 'when entry is extensible' do
       it 'returns symbolized extends key value' do
         entry = described_class.new(:test, test: { extends: 'something' })
 
-        expect(entry.extends_key).to eq :something
+        expect(entry.extends_keys).to eq [:something]
       end
     end
 
@@ -57,7 +57,7 @@ describe Gitlab::Ci::Config::Extendable::Entry do
       it 'returns nil' do
         entry = described_class.new(:test, test: 'something')
 
-        expect(entry.extends_key).to be_nil
+        expect(entry.extends_keys).to be_nil
       end
     end
   end
@@ -76,7 +76,7 @@ describe Gitlab::Ci::Config::Extendable::Entry do
     end
   end
 
-  describe '#base_hash!' do
+  describe '#base_hashes!' do
     subject { described_class.new(:test, hash) }
 
     context 'when base hash is not extensible' do
@@ -87,8 +87,8 @@ describe Gitlab::Ci::Config::Extendable::Entry do
         }
       end
 
-      it 'returns unchanged base hash' do
-        expect(subject.base_hash!).to eq(script: 'rspec')
+      it 'returns unchanged base hashes' do
+        expect(subject.base_hashes!).to eq([{ script: 'rspec' }])
       end
     end
 
@@ -101,12 +101,12 @@ describe Gitlab::Ci::Config::Extendable::Entry do
         }
       end
 
-      it 'extends the base hash first' do
-        expect(subject.base_hash!).to eq(extends: 'first', script: 'rspec')
+      it 'extends the base hashes first' do
+        expect(subject.base_hashes!).to eq([{ extends: 'first', script: 'rspec' }])
       end
 
       it 'mutates original context' do
-        subject.base_hash!
+        subject.base_hashes!
 
         expect(hash.fetch(:second)).to eq(extends: 'first', script: 'rspec')
       end
@@ -157,6 +157,34 @@ describe Gitlab::Ci::Config::Extendable::Entry do
           first: { script: 'my value' },
           second: { extends: 'first', script: 'my value' },
           test: { extends: 'second', script: 'my value' }
+        }
+      end
+
+      it 'returns extended part of the hash' do
+        expect(subject.extend!).to eq result[:test]
+      end
+
+      it 'mutates original context' do
+        subject.extend!
+
+        expect(hash).to eq result
+      end
+    end
+
+    context 'when extending multiple hashes correctly' do
+      let(:hash) do
+        {
+          first: { script: 'my value', image: 'ubuntu' },
+          second: { image: 'alpine' },
+          test: { extends: %w(first second) }
+        }
+      end
+
+      let(:result) do
+        {
+          first: { script: 'my value', image: 'ubuntu' },
+          second: { image: 'alpine' },
+          test: { extends: %w(first second), script: 'my value', image: 'alpine' }
         }
       end
 
