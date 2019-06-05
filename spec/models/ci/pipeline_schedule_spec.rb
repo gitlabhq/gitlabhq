@@ -97,7 +97,7 @@ describe Ci::PipelineSchedule do
 
     let(:cron_worker_next_run_at) do
       Gitlab::Ci::CronParser.new(Settings.cron_jobs['pipeline_schedule_worker']['cron'], Time.zone.name)
-        .next_time_from(Time.now)
+        .next_time_from(Time.zone.now)
     end
 
     context 'when creates new pipeline schedule' do
