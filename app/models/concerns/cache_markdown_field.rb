@@ -13,42 +13,8 @@
 module CacheMarkdownField
   extend ActiveSupport::Concern
 
-  # Increment this number every time the renderer changes its output
-  CACHE_COMMONMARK_VERSION_START  = 10
-  CACHE_COMMONMARK_VERSION        = 16
-
   # changes to these attributes cause the cache to be invalidates
   INVALIDATED_BY = %w[author project].freeze
-
-  # Knows about the relationship between markdown and html field names, and
-  # stores the rendering contexts for the latter
-  class FieldData
-    def initialize
-      @data = {}
-    end
-
-    delegate :[], :[]=, to: :@data
-
-    def markdown_fields
-      @data.keys
-    end
-
-    def html_field(markdown_field)
-      "#{markdown_field}_html"
-    end
-
-    def html_fields
-      markdown_fields.map { |field| html_field(field) }
-    end
-
-    def html_fields_whitelisted
-      markdown_fields.each_with_object([]) do |field, fields|
-        if @data[field].fetch(:whitelisted, false)
-          fields << html_field(field)
-        end
-      end
-    end
-  end
 
   def skip_project_check?
     false
@@ -85,24 +51,22 @@ module CacheMarkdownField
     end.to_h
     updates['cached_markdown_version'] = latest_cached_markdown_version
 
-    updates.each {|html_field, data| write_attribute(html_field, data) }
+    updates.each { |field, data| write_markdown_field(field, data) }
   end
 
   def refresh_markdown_cache!
     updates = refresh_markdown_cache
 
-    return unless persisted? && Gitlab::Database.read_write?
-
-    update_columns(updates)
+    save_markdown(updates)
   end
 
   def cached_html_up_to_date?(markdown_field)
+    return false if cached_html_for(markdown_field).nil? && __send__(markdown_field).present? # rubocop:disable GitlabSecurity/PublicSend
+
     html_field = cached_markdown_fields.html_field(markdown_field)
 
-    return false if cached_html_for(markdown_field).nil? && !__send__(markdown_field).nil? # rubocop:disable GitlabSecurity/PublicSend
-
-    markdown_changed = attribute_changed?(markdown_field) || false
-    html_changed = attribute_changed?(html_field) || false
+    markdown_changed = markdown_field_changed?(markdown_field)
+    html_changed = markdown_field_changed?(html_field)
 
     latest_cached_markdown_version == cached_markdown_version &&
       (html_changed || markdown_changed == html_changed)
@@ -117,21 +81,21 @@ module CacheMarkdownField
   end
 
   def cached_html_for(markdown_field)
-    raise ArgumentError.new("Unknown field: #{field}") unless
+    raise ArgumentError.new("Unknown field: #{markdown_field}") unless
       cached_markdown_fields.markdown_fields.include?(markdown_field)
 
     __send__(cached_markdown_fields.html_field(markdown_field)) # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def latest_cached_markdown_version
-    @latest_cached_markdown_version ||= (CacheMarkdownField::CACHE_COMMONMARK_VERSION << 16) | local_version
+    @latest_cached_markdown_version ||= (Gitlab::MarkdownCache::CACHE_COMMONMARK_VERSION << 16) | local_version
   end
 
   def local_version
     # because local_markdown_version is stored in application_settings which
     # uses cached_markdown_version too, we check explicitly to avoid
     # endless loop
-    return local_markdown_version if has_attribute?(:local_markdown_version)
+    return local_markdown_version if respond_to?(:has_attribute?) && has_attribute?(:local_markdown_version)
 
     settings = Gitlab::CurrentSettings.current_application_settings
 
@@ -150,32 +114,14 @@ module CacheMarkdownField
 
   included do
     cattr_reader :cached_markdown_fields do
-      FieldData.new
+      Gitlab::MarkdownCache::FieldData.new
     end
 
-    # Always exclude _html fields from attributes (including serialization).
-    # They contain unredacted HTML, which would be a security issue
-    alias_method :attributes_before_markdown_cache, :attributes
-    def attributes
-      attrs = attributes_before_markdown_cache
-      html_fields = cached_markdown_fields.html_fields
-      whitelisted = cached_markdown_fields.html_fields_whitelisted
-      exclude_fields = html_fields - whitelisted
-
-      exclude_fields.each do |field|
-        attrs.delete(field)
-      end
-
-      if whitelisted.empty?
-        attrs.delete('cached_markdown_version')
-      end
-
-      attrs
+    if self < ActiveRecord::Base
+      include Gitlab::MarkdownCache::ActiveRecord::Extension
+    else
+      prepend Gitlab::MarkdownCache::Redis::Extension
     end
-
-    # Using before_update here conflicts with elasticsearch-model somehow
-    before_create :refresh_markdown_cache, if: :invalidated_markdown_cache?
-    before_update :refresh_markdown_cache, if: :invalidated_markdown_cache?
   end
 
   class_methods do
@@ -193,10 +139,8 @@ module CacheMarkdownField
       # The HTML becomes invalid if any dependent fields change. For now, assume
       # author and project invalidate the cache in all circumstances.
       define_method(invalidation_method) do
-        changed_fields = changed_attributes.keys
-        invalidations  = changed_fields & [markdown_field.to_s, *INVALIDATED_BY]
-        invalidations.delete(markdown_field.to_s) if changed_fields.include?("#{markdown_field}_html")
-
+        invalidations = changed_markdown_fields & [markdown_field.to_s, *INVALIDATED_BY]
+        invalidations.delete(markdown_field.to_s) if changed_markdown_fields.include?("#{markdown_field}_html")
         !invalidations.empty? || !cached_html_up_to_date?(markdown_field)
       end
     end
