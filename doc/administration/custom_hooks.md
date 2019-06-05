@@ -5,11 +5,11 @@ Custom Git hooks must be configured on the filesystem of the GitLab
 server. Only GitLab server administrators will be able to complete these tasks.
 Please explore [webhooks] and [CI] as an option if you do not
 have filesystem access. For a user configurable Git hook interface, see
-[Push Rules](https://docs.gitlab.com/ee/push_rules/push_rules.html),
+[Push Rules](../push_rules/push_rules.md),
 available in GitLab Enterprise Edition.
 
 NOTE: **Note:**
-Custom Git hooks won't be replicated to secondary nodes if you use [GitLab Geo][gitlab-geo]
+Custom Git hooks won't be replicated to secondary nodes if you use [GitLab Geo](geo/replication/index.md)
 
 Git natively supports hooks that are executed on different actions.
 Examples of server-side git hooks include pre-receive, post-receive, and update.
@@ -123,6 +123,5 @@ exit 1
 [CI]: ../ci/README.md
 [hooks]: https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks#Server-Side-Hooks
 [webhooks]: ../user/project/integrations/webhooks.md
-[gitlab-geo]: https://docs.gitlab.com/ee/administration/geo/replication/index.html
 [5073]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5073
 [93]: https://gitlab.com/gitlab-org/gitlab-shell/merge_requests/93

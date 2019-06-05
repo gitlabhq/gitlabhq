@@ -34,10 +34,10 @@ feature for CentOS 6, follow [the instructions on how to build and install a cus
 
 By default, GitLab manages an `authorized_keys` file, which contains all the
 public SSH keys for users allowed to access GitLab. However, to maintain a
-single source of truth, [Geo](https://docs.gitlab.com/ee/administration/geo/replication/index.html) needs to be configured to perform SSH fingerprint
+single source of truth, [Geo](../geo/replication/index.md) needs to be configured to perform SSH fingerprint
 lookups via database lookup.
 
-As part of [setting up Geo](https://docs.gitlab.com/ee/administration/geo/replication/index.html#setup-instructions),
+As part of [setting up Geo](../geo/replication/index.md#setup-instructions),
 you will be required to follow the steps outlined below for both the primary and
 secondary nodes, but note that the `Write to "authorized keys" file` checkbox
 only needs to be unchecked on the primary node since it will be reflected

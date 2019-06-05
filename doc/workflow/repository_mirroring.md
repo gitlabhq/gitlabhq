@@ -283,10 +283,10 @@ project mirroring again by [Forcing an update](#forcing-an-update-core).
 [GitLab Starter](https://about.gitlab.com/pricing/) 10.3.
 
 Pull mirroring uses polling to detect new branches and commits added upstream, often minutes
-afterwards. If you notify GitLab by [API](https://docs.gitlab.com/ee/api/projects.html#start-the-pull-mirroring-process-for-a-project),
+afterwards. If you notify GitLab by [API](https://docs.gitlab.com/ee/api/projects.html#start-the-pull-mirroring-process-for-a-project-starter),
 updates will be pulled immediately.
 
-For more information, see [Start the pull mirroring process for a Project](https://docs.gitlab.com/ee/api/projects.html#start-the-pull-mirroring-process-for-a-project).
+For more information, see [Start the pull mirroring process for a Project](https://docs.gitlab.com/ee/api/projects.html#start-the-pull-mirroring-process-for-a-project-starter).
 
 ## Forcing an update **[CORE]**
 

@@ -122,7 +122,7 @@ Additionally, this configuration is specifically warned against in the
 >to the NFS server can cause data corruption problems.
 
 For supported database architecture, please see our documentation on
-[Configuring a Database for GitLab HA](https://docs.gitlab.com/ee/administration/high_availability/database.html).
+[Configuring a Database for GitLab HA](database.md).
 
 ## NFS Client mount options
 

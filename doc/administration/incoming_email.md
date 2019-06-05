@@ -10,7 +10,7 @@ GitLab has several features based on receiving incoming emails:
 - [New merge request by email](../user/project/merge_requests/index.md#create-new-merge-requests-by-email):
   allow GitLab users to create a new merge request by sending an email to a
   user-specific email address.
-- [Service Desk](https://docs.gitlab.com/ee/user/project/service_desk.html): provide e-mail support to
+- [Service Desk](../user/project/service_desk.md): provide e-mail support to
   your customers through GitLab. **[PREMIUM]**
 
 ## Requirements
