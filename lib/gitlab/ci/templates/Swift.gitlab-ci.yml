@@ -25,7 +25,7 @@ archive_project:
     - master
   artifacts:
     paths:
-    - build/ProjectName.ipa
+      - build/ProjectName.ipa
   tags:
     - ios_11-3
     - xcode_9-3

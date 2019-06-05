@@ -8,7 +8,7 @@ before_script:
   # If you need to install any external applications, like a
   # postgres client, you may want to uncomment the line below:
   #
-  #- apt-get update -y
+  # - apt-get update -y
   #
   # Retrieve project dependencies
   # Do this on before_script since it'll be shared between both test and
@@ -17,6 +17,6 @@ before_script:
 
 test:
   script:
-  # If you need to run any migrations or configure the database, this
-  # would be the point to do it.
-  - lein test
+    # If you need to run any migrations or configure the database, this
+    # would be the point to do it.
+    - lein test

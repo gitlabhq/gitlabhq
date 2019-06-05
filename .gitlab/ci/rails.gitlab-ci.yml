@@ -136,7 +136,7 @@ setup-test-env:
   stage: prepare
   script:
     - bundle exec ruby -Ispec -e 'require "spec_helper" ; TestEnv.init'
-    - scripts/gitaly-test-build # Do not use 'bundle exec' here
+    - scripts/gitaly-test-build  # Do not use 'bundle exec' here
   artifacts:
     expire_in: 7d
     paths:
@@ -342,8 +342,8 @@ coverage:
     name: coverage
     expire_in: 31d
     paths:
-    - coverage/index.html
-    - coverage/assets/
+      - coverage/index.html
+      - coverage/assets/
   except:
     - /(^docs[\/-].*|.*-docs$)/
     - /(^qa[\/-].*|.*-qa$)/

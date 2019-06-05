@@ -26,8 +26,8 @@ performance:
     - mv sitespeed-results/data/performance.json performance.json
   artifacts:
     paths:
-    - performance.json
-    - sitespeed-results/
+      - performance.json
+      - sitespeed-results/
   only:
     refs:
       - branches

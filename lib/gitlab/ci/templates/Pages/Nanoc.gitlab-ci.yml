@@ -3,10 +3,10 @@ image: ruby:2.3
 
 pages:
   script:
-  - bundle install -j4
-  - nanoc
+    - bundle install -j4
+    - nanoc
   artifacts:
     paths:
-    - public
+      - public
   only:
-  - master
+    - master

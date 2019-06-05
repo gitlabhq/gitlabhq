@@ -22,15 +22,15 @@ cache:
 # services such as redis or postgres
 before_script:
   - apt-get update -qq && apt-get install -y -qq libxml2-dev
-  - crystal -v # Print out Crystal version for debugging
+  - crystal -v  # Print out Crystal version for debugging
   - shards
 
 # If you are using built-in Crystal Spec.
 spec:
   script:
-  - crystal spec
+    - crystal spec
 
 # If you are using minitest.cr
 minitest:
   script:
-  - crystal test/spec_test.cr # change to the file(s) you execute for tests
+    - crystal test/spec_test.cr  # change to the file(s) you execute for tests

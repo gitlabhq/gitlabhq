@@ -54,7 +54,7 @@ ensureContainer:
     - rm -f android-signing-keystore.jks || true
   artifacts:
     paths:
-    - app/build/outputs
+      - app/build/outputs
 
 buildDebug:
   extends: .build_job
@@ -116,6 +116,6 @@ promoteProduction:
   # We only allow production promotion on `master` because
   # it has its own production scoped secret variables
   only:
-   - master
+    - master
   script:
     - bundle exec fastlane promote_beta_to_production

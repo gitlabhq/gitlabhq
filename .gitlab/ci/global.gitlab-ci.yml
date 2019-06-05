@@ -1,6 +1,6 @@
 .dedicated-runner:
   retry:
-    max: 2 # This is confusing but this means "3 runs at max".
+    max: 2  # This is confusing but this means "3 runs at max".
     when:
       - unknown_failure
       - api_failure
