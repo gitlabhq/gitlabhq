@@ -33,11 +33,8 @@ module QA
           exists
         end
 
-        def find_element(name, text: nil, wait: Capybara.default_max_wait_time)
-          msg = ["finding :#{name}"]
-          msg << %Q(with text "#{text}") if text
-          msg << "(wait: #{wait})"
-          log(msg.compact.join(' '))
+        def find_element(name, **kwargs)
+          log("finding :#{name} with args #{kwargs}")
 
           element = super
 
@@ -120,6 +117,12 @@ module QA
           log("loading complete after #{Time.now - now} seconds")
 
           loaded
+        end
+
+        def wait_for_animated_element(name)
+          log("waiting for animated element: #{name}")
+
+          super
         end
 
         def within_element(name)

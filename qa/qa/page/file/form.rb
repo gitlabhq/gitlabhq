@@ -38,6 +38,8 @@ module QA
 
         def commit_changes
           click_on 'Commit changes'
+
+          finished_loading?
         end
 
         def select_template(template_type, template)

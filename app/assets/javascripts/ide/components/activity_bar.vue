@@ -78,7 +78,7 @@ export default {
           data-container="body"
           data-placement="right"
           type="button"
-          class="ide-sidebar-link js-ide-commit-mode"
+          class="ide-sidebar-link js-ide-commit-mode qa-commit-mode-tab"
           @click.prevent="changedActivityView($event, $options.activityBarViews.commit)"
         >
           <icon name="commit" />
