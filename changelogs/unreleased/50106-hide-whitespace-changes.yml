@@ -1,0 +1,5 @@
+---
+title: Fix whitespace changes visibility when the related file was initially collapsed
+merge_request: 28950
+author: Ondřej Budai
+type: fixed

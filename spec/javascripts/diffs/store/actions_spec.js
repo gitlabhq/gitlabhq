@@ -396,6 +396,7 @@ describe('DiffsStoreActions', () => {
   });
 
   describe('loadCollapsedDiff', () => {
+    const state = { showWhitespace: true };
     it('should fetch data and call mutation with response and the give parameter', done => {
       const file = { hash: 123, load_collapsed_diff_url: '/load/collapsed/diff/url' };
       const data = { hash: 123, parallelDiffLines: [{ lineCode: 1 }] };
@@ -403,7 +404,7 @@ describe('DiffsStoreActions', () => {
       const commit = jasmine.createSpy('commit');
       mock.onGet(file.loadCollapsedDiffUrl).reply(200, data);
 
-      loadCollapsedDiff({ commit, getters: { commitId: null } }, file)
+      loadCollapsedDiff({ commit, getters: { commitId: null }, state }, file)
         .then(() => {
           expect(commit).toHaveBeenCalledWith(types.ADD_COLLAPSED_DIFFS, { file, data });
 
@@ -421,10 +422,10 @@ describe('DiffsStoreActions', () => {
 
       spyOn(axios, 'get').and.returnValue(Promise.resolve({ data: {} }));
 
-      loadCollapsedDiff({ commit() {}, getters }, file);
+      loadCollapsedDiff({ commit() {}, getters, state }, file);
 
       expect(axios.get).toHaveBeenCalledWith(file.load_collapsed_diff_url, {
-        params: { commit_id: null },
+        params: { commit_id: null, w: '0' },
       });
     });
 
@@ -436,10 +437,10 @@ describe('DiffsStoreActions', () => {
 
       spyOn(axios, 'get').and.returnValue(Promise.resolve({ data: {} }));
 
-      loadCollapsedDiff({ commit() {}, getters }, file);
+      loadCollapsedDiff({ commit() {}, getters, state }, file);
 
       expect(axios.get).toHaveBeenCalledWith(file.load_collapsed_diff_url, {
-        params: { commit_id: '123' },
+        params: { commit_id: '123', w: '0' },
       });
     });
   });
