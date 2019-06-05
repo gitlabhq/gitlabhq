@@ -3,6 +3,7 @@
 - page_title @domain.domain
 %h3.page-title
   = @domain.domain
+= render 'projects/pages_domains/helper_text'
 %hr.clearfix
 %div
   = form_for [@project.namespace.becomes(Namespace), @project, @domain], html: { class: 'fieldset-form' } do |f|

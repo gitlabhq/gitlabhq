@@ -1,6 +1,7 @@
+# frozen_string_literal: true
 require 'spec_helper'
 
-describe 'Pages' do
+shared_examples 'pages domain editing' do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
   let(:role) { :maintainer }
@@ -316,5 +317,23 @@ describe 'Pages' do
         expect(project.pages_deployed?).to be_falsey
       end
     end
+  end
+end
+
+describe 'Pages' do
+  context 'when pages_auto_ssl feature flag is disabled' do
+    before do
+      stub_feature_flags(pages_auto_ssl: false)
+    end
+
+    include_examples 'pages domain editing'
+  end
+
+  context 'when pages_auto_ssl feature flag is enabled' do
+    before do
+      stub_feature_flags(pages_auto_ssl: true)
+    end
+
+    include_examples 'pages domain editing'
   end
 end
