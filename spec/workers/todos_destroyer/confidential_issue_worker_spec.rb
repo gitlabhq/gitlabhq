@@ -3,12 +3,19 @@
 require 'spec_helper'
 
 describe TodosDestroyer::ConfidentialIssueWorker do
-  it "calls the Todos::Destroy::ConfidentialIssueService with the params it was given" do
-    service = double
+  let(:service) { double }
 
-    expect(::Todos::Destroy::ConfidentialIssueService).to receive(:new).with(100).and_return(service)
+  it "calls the Todos::Destroy::ConfidentialIssueService with issue_id parameter" do
+    expect(::Todos::Destroy::ConfidentialIssueService).to receive(:new).with(issue_id: 100, project_id: nil).and_return(service)
     expect(service).to receive(:execute)
 
     described_class.new.perform(100)
+  end
+
+  it "calls the Todos::Destroy::ConfidentialIssueService with project_id parameter" do
+    expect(::Todos::Destroy::ConfidentialIssueService).to receive(:new).with(issue_id: nil, project_id: 100).and_return(service)
+    expect(service).to receive(:execute)
+
+    described_class.new.perform(nil, 100)
   end
 end
