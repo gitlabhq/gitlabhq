@@ -282,6 +282,11 @@ module Gitlab
         (size.to_f / 1024).round(2)
       end
 
+      # Return git object directory size in bytes
+      def object_directory_size
+        gitaly_repository_client.get_object_directory_size.to_f * 1024
+      end
+
       # Build an array of commits.
       #
       # Usage.

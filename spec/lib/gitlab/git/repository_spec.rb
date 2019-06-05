@@ -186,6 +186,18 @@ describe Gitlab::Git::Repository, :seed_helper do
     it { is_expected.to be < 2 }
   end
 
+  describe '#object_directory_size' do
+    before do
+      allow(repository.gitaly_repository_client)
+        .to receive(:get_object_directory_size)
+        .and_return(2)
+    end
+
+    subject { repository.object_directory_size }
+
+    it { is_expected.to eq 2048 }
+  end
+
   describe '#empty?' do
     it { expect(repository).not_to be_empty }
   end
