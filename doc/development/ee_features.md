@@ -906,7 +906,7 @@ import bundle from 'ee/protected_branches/protected_branches_bundle.js';
 import bundle from 'ee_else_ce/protected_branches/protected_branches_bundle.js';
 ```
 
-See the frontend guide [performance section](./fe_guide/performance.md) for
+See the frontend guide [performance section](fe_guide/performance.md) for
 information on managing page-specific javascript within EE.
 
 

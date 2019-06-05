@@ -56,7 +56,7 @@ bundle exec rails db RAILS_ENV=development
 
 ### `ActiveRecord::PendingMigrationError` with Spring
 
-When running specs with the [Spring preloader](./rake_tasks.md#speed-up-tests-rake-tasks-and-migrations),
+When running specs with the [Spring preloader](rake_tasks.md#speed-up-tests-rake-tasks-and-migrations),
 the test database can get into a corrupted state. Trying to run the migration or
 dropping/resetting the test database has no effect.
 

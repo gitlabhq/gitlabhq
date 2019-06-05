@@ -17,9 +17,9 @@ If you use a cloud-managed service, or provide your own PostgreSQL:
 
 ## PostgreSQL in a Scaled Environment
 
-This section is relevant for [Scaled Architecture](./README.md#scalable-architecture-examples)
-environments including [Basic Scaling](./README.md#basic-scaling) and
-[Full Scaling](./README.md#full-scaling).
+This section is relevant for [Scaled Architecture](README.md#scalable-architecture-examples)
+environments including [Basic Scaling](README.md#basic-scaling) and
+[Full Scaling](README.md#full-scaling).
 
 ### Provide your own PostgreSQL instance **[CORE ONLY]**
 
@@ -87,14 +87,14 @@ Advanced configuration options are supported and can be added if
 needed.
 
 Continue configuration of other components by going
-[back to Scaled Architectures](./README.md#scalable-architecture-examples)
+[back to Scaled Architectures](README.md#scalable-architecture-examples)
 
 ## PostgreSQL with High Availability
 
-This section is relevant for [High Availability Architecture](./README.md#high-availability-architecture-examples)
-environments including [Horizontal](./README.md#horizontal),
-[Hybrid](./README.md#hybrid), and
-[Fully Distributed](./README.md#fully-distributed).
+This section is relevant for [High Availability Architecture](README.md#high-availability-architecture-examples)
+environments including [Horizontal](README.md#horizontal),
+[Hybrid](README.md#hybrid), and
+[Fully Distributed](README.md#fully-distributed).
 
 ### Provide your own PostgreSQL instance **[CORE ONLY]**
 

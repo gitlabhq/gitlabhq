@@ -73,10 +73,10 @@ Complete the following installation steps in order. A link at the end of each
 section will bring you back to the Scalable Architecture Examples section so
 you can continue with the next step.
 
-1. [PostgreSQL](./database.md#postgresql-in-a-scaled-environment)
-1. [Redis](./redis.md#redis-in-a-scaled-environment)
-1. [Gitaly](./gitaly.md) (recommended) or [NFS](./nfs.md)
-1. [GitLab application nodes](./gitlab.md)
+1. [PostgreSQL](database.md#postgresql-in-a-scaled-environment)
+1. [Redis](redis.md#redis-in-a-scaled-environment)
+1. [Gitaly](gitaly.md) (recommended) or [NFS](nfs.md)
+1. [GitLab application nodes](gitlab.md)
 
 ### Full Scaling
 

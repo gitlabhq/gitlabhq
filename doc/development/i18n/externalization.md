@@ -212,7 +212,7 @@ Namespaces should be PascalCase.
     ```
 
 Note: The namespace should be removed from the translation. See the [translation
-guidelines for more details](./translation.md#namespaced-strings).
+guidelines for more details](translation.md#namespaced-strings).
 
 ### Dates / times
 
