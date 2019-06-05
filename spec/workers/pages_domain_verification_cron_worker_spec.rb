@@ -10,6 +10,13 @@ describe PagesDomainVerificationCronWorker do
     let!(:reverify) { create(:pages_domain, :reverify) }
     let!(:disabled) { create(:pages_domain, :disabled) }
 
+    it 'does nothing if the database is read-only' do
+      allow(Gitlab::Database).to receive(:read_only?).and_return(true)
+      expect(PagesDomainVerificationWorker).not_to receive(:perform_async).with(reverify.id)
+
+      worker.perform
+    end
+
     it 'enqueues a PagesDomainVerificationWorker for domains needing verification' do
       [reverify, disabled].each do |domain|
         expect(PagesDomainVerificationWorker).to receive(:perform_async).with(domain.id)
