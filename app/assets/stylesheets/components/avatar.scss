@@ -191,12 +191,5 @@ $identicon-backgrounds: $identicon-red, $identicon-purple, $identicon-indigo, $i
 }
 
 .avatar-counter {
-  background-color: $gray-darkest;
-  color: $white-light;
-  border: 1px solid $gray-normal;
-  border-radius: 1em;
-  font-family: $regular-font;
-  font-size: 9px;
-  line-height: 16px;
-  text-align: center;
+  @include avatar-counter();
 }
