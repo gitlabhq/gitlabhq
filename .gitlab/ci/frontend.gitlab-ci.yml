@@ -33,9 +33,9 @@ gitlab:assets:compile:
     DOCKER_HOST: tcp://docker:2375
   script:
     - node --version
-    - yarn install --frozen-lockfile --production --cache-folder .yarn-cache
+    - retry yarn install --frozen-lockfile --production --cache-folder .yarn-cache
     - free -m
-    - bundle exec rake gitlab:assets:compile
+    - retry bundle exec rake gitlab:assets:compile
     - time scripts/build_assets_image
     - scripts/clean-old-cached-assets
     - rm -f /etc/apt/sources.list.d/google*.list  # We don't need to update Chrome here
@@ -65,9 +65,9 @@ compile-assets:
   stage: prepare
   script:
     - node --version
-    - yarn install --frozen-lockfile --cache-folder .yarn-cache
+    - retry yarn install --frozen-lockfile --cache-folder .yarn-cache
     - free -m
-    - bundle exec rake gitlab:assets:compile
+    - retry bundle exec rake gitlab:assets:compile
     - scripts/clean-old-cached-assets
   variables:
     # we override the max_old_space_size to prevent OOM errors
