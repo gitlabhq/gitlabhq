@@ -11,11 +11,14 @@ describe Gitlab::Metrics::Dashboard::Processor do
     let(:process_params) { [project, environment, dashboard_yml] }
     let(:dashboard) { described_class.new(*process_params).process(insert_project_metrics: true) }
 
+    # rubocop:disable RSpec/IteratedExpectation
+    # Cop disabled "all" matcher doesn't offer access to the element
     it 'includes a path for the prometheus endpoint with each metric' do
       all_metrics.each do |metric|
         expect(metric).to include(prometheus_endpoint_path: prometheus_path(metric[:query_range]))
       end
     end
+    # rubocop:enable RSpec/IteratedExpectation
 
     context 'when dashboard config corresponds to common metrics' do
       let!(:common_metric) { create(:prometheus_metric, :common, identifier: 'metric_a1') }
@@ -114,6 +117,6 @@ describe Gitlab::Metrics::Dashboard::Processor do
     "/#{project.namespace.path}" \
     "/#{project.name}/environments/" \
     "#{environment.id}/prometheus/api/v1" \
-    "/query_range?query=#{CGI::escape query}"
+    "/query_range?query=#{CGI.escape query}"
   end
 end

@@ -16,8 +16,7 @@ module Gitlab
           private
 
           def endpoint_for_metric(metric)
-            Gitlab::Routing.url_helpers.prometheus_api_namespace_project_environment_path(
-              project.namespace,
+            Gitlab::Routing.url_helpers.prometheus_api_project_environment_path(
               project,
               environment,
               proxy_path: query_type(metric),
