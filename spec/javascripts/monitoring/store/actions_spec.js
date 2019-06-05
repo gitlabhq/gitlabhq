@@ -3,6 +3,9 @@ import MockAdapter from 'axios-mock-adapter';
 import store from '~/monitoring/stores';
 import * as types from '~/monitoring/stores/mutation_types';
 import {
+  fetchDashboard,
+  receiveMetricsDashboardSuccess,
+  receiveMetricsDashboardFailure,
   fetchDeploymentsData,
   fetchEnvironmentsData,
   requestMetricsData,
@@ -12,7 +15,7 @@ import {
 import storeState from '~/monitoring/stores/state';
 import testAction from 'spec/helpers/vuex_action_helper';
 import { resetStore } from '../helpers';
-import { deploymentData, environmentData } from '../mock_data';
+import { deploymentData, environmentData, metricsDashboardResponse } from '../mock_data';
 
 describe('Monitoring store actions', () => {
   let mock;
@@ -153,6 +156,90 @@ describe('Monitoring store actions', () => {
         [],
         done,
       );
+    });
+  });
+
+  describe('fetchDashboard', () => {
+    let dispatch;
+    let state;
+    const response = metricsDashboardResponse;
+
+    beforeEach(() => {
+      dispatch = jasmine.createSpy();
+      state = storeState();
+      state.dashboardEndpoint = '/dashboard';
+    });
+
+    it('dispatches receive and success actions', done => {
+      const params = {};
+      mock.onGet(state.dashboardEndpoint).reply(200, response);
+
+      fetchDashboard({ state, dispatch }, params)
+        .then(() => {
+          expect(dispatch).toHaveBeenCalledWith('requestMetricsDashboard');
+          expect(dispatch).toHaveBeenCalledWith('receiveMetricsDashboardSuccess', {
+            response,
+          });
+          done();
+        })
+        .catch(done.fail);
+    });
+
+    it('dispatches failure action', done => {
+      const params = {};
+      mock.onGet(state.dashboardEndpoint).reply(500);
+
+      fetchDashboard({ state, dispatch }, params)
+        .then(() => {
+          expect(dispatch).toHaveBeenCalledWith(
+            'receiveMetricsDashboardFailure',
+            new Error('Request failed with status code 500'),
+          );
+          done();
+        })
+        .catch(done.fail);
+    });
+  });
+
+  describe('receiveMetricsDashboardSuccess', () => {
+    let commit;
+    let dispatch;
+
+    beforeEach(() => {
+      commit = jasmine.createSpy();
+      dispatch = jasmine.createSpy();
+    });
+
+    it('stores groups ', () => {
+      const params = {};
+      const response = metricsDashboardResponse;
+
+      receiveMetricsDashboardSuccess({ commit, dispatch }, { response, params });
+
+      expect(commit).toHaveBeenCalledWith(
+        types.RECEIVE_METRICS_DATA_SUCCESS,
+        metricsDashboardResponse.dashboard.panel_groups,
+      );
+    });
+  });
+
+  describe('receiveMetricsDashboardFailure', () => {
+    let commit;
+
+    beforeEach(() => {
+      commit = jasmine.createSpy();
+    });
+
+    it('commits failure action', () => {
+      receiveMetricsDashboardFailure({ commit });
+
+      expect(commit).toHaveBeenCalledWith(types.RECEIVE_METRICS_DATA_FAILURE, undefined);
+    });
+
+    it('commits failure action with error', () => {
+      receiveMetricsDashboardFailure({ commit }, 'uh-oh');
+
+      expect(commit).toHaveBeenCalledWith(types.RECEIVE_METRICS_DATA_FAILURE, 'uh-oh');
     });
   });
 });

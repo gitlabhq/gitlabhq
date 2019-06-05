@@ -7,6 +7,11 @@ export default (props = {}) => {
   const el = document.getElementById('prometheus-graphs');
 
   if (el && el.dataset) {
+    store.dispatch(
+      'monitoringDashboard/setDashboardEnabled',
+      gon.features.environmentMetricsUsePrometheusEndpoint,
+    );
+
     // eslint-disable-next-line no-new
     new Vue({
       el,

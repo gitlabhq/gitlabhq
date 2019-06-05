@@ -35,6 +35,20 @@ export const setEndpoints = ({ commit }, endpoints) => {
   commit(types.SET_ENDPOINTS, endpoints);
 };
 
+export const setDashboardEnabled = ({ commit }, enabled) => {
+  commit(types.SET_DASHBOARD_ENABLED, enabled);
+};
+
+export const requestMetricsDashboard = ({ commit }) => {
+  commit(types.REQUEST_METRICS_DATA);
+};
+export const receiveMetricsDashboardSuccess = ({ commit }, { response }) => {
+  commit(types.RECEIVE_METRICS_DATA_SUCCESS, response.dashboard.panel_groups);
+};
+export const receiveMetricsDashboardFailure = ({ commit }, error) => {
+  commit(types.RECEIVE_METRICS_DATA_FAILURE, error);
+};
+
 export const requestMetricsData = ({ commit }) => commit(types.REQUEST_METRICS_DATA);
 export const receiveMetricsDataSuccess = ({ commit }, data) =>
   commit(types.RECEIVE_METRICS_DATA_SUCCESS, data);
@@ -56,6 +70,10 @@ export const fetchData = ({ dispatch }, params) => {
 };
 
 export const fetchMetricsData = ({ state, dispatch }, params) => {
+  if (state.useDashboardEndpoint) {
+    return dispatch('fetchDashboard', params);
+  }
+
   dispatch('requestMetricsData');
 
   return backOffRequest(() => axios.get(state.metricsEndpoint, { params }))
@@ -69,6 +87,21 @@ export const fetchMetricsData = ({ state, dispatch }, params) => {
     })
     .catch(error => {
       dispatch('receiveMetricsDataFailure', error);
+      createFlash(s__('Metrics|There was an error while retrieving metrics'));
+    });
+};
+
+export const fetchDashboard = ({ state, dispatch }, params) => {
+  dispatch('requestMetricsDashboard');
+
+  return axios
+    .get(state.dashboardEndpoint, { params })
+    .then(resp => resp.data)
+    .then(response => {
+      dispatch('receiveMetricsDashboardSuccess', { response });
+    })
+    .catch(error => {
+      dispatch('receiveMetricsDashboardFailure', error);
       createFlash(s__('Metrics|There was an error while retrieving metrics'));
     });
 };

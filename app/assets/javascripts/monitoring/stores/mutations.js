@@ -7,10 +7,24 @@ export default {
     state.showEmptyState = true;
   },
   [types.RECEIVE_METRICS_DATA_SUCCESS](state, groupData) {
-    state.groups = groupData.map(group => ({
-      ...group,
-      metrics: normalizeMetrics(sortMetrics(group.metrics)),
-    }));
+    state.groups = groupData.map(group => {
+      let { metrics } = group;
+
+      // for backwards compatibility, and to limit Vue template changes:
+      // for each group alias panels to metrics
+      // for each panel alias metrics to queries
+      if (state.useDashboardEndpoint) {
+        metrics = group.panels.map(panel => ({
+          ...panel,
+          queries: panel.metrics,
+        }));
+      }
+
+      return {
+        ...group,
+        metrics: normalizeMetrics(sortMetrics(metrics)),
+      };
+    });
 
     if (!state.groups.length) {
       state.emptyState = 'noData';
@@ -38,6 +52,10 @@ export default {
     state.metricsEndpoint = endpoints.metricsEndpoint;
     state.environmentsEndpoint = endpoints.environmentsEndpoint;
     state.deploymentsEndpoint = endpoints.deploymentsEndpoint;
+    state.dashboardEndpoint = endpoints.dashboardEndpoint;
+  },
+  [types.SET_DASHBOARD_ENABLED](state, enabled) {
+    state.useDashboardEndpoint = enabled;
   },
   [types.SET_GETTING_STARTED_EMPTY_STATE](state) {
     state.emptyState = 'gettingStarted';

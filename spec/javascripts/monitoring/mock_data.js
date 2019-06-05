@@ -857,3 +857,67 @@ export const environmentData = [
     updated_at: '2018-07-04T18:44:54.010Z',
   },
 ];
+
+export const metricsDashboardResponse = {
+  dashboard: {
+    dashboard: 'Environment metrics',
+    priority: 1,
+    panel_groups: [
+      {
+        group: 'System metrics (Kubernetes)',
+        priority: 5,
+        panels: [
+          {
+            title: 'Memory Usage (Total)',
+            type: 'area-chart',
+            y_label: 'Total Memory Used',
+            weight: 4,
+            metrics: [
+              {
+                id: 'system_metrics_kubernetes_container_memory_total',
+                query_range:
+                  'avg(sum(container_memory_usage_bytes{container_name!="POD",pod_name=~"^%{ci_environment_slug}-(.*)",namespace="%{kube_namespace}"}) by (job)) without (job)  /1024/1024/1024',
+                label: 'Total',
+                unit: 'GB',
+                metric_id: 12,
+              },
+            ],
+          },
+          {
+            title: 'Core Usage (Total)',
+            type: 'area-chart',
+            y_label: 'Total Cores',
+            weight: 3,
+            metrics: [
+              {
+                id: 'system_metrics_kubernetes_container_cores_total',
+                query_range:
+                  'avg(sum(rate(container_cpu_usage_seconds_total{container_name!="POD",pod_name=~"^%{ci_environment_slug}-(.*)",namespace="%{kube_namespace}"}[15m])) by (job)) without (job)',
+                label: 'Total',
+                unit: 'cores',
+                metric_id: 13,
+              },
+            ],
+          },
+          {
+            title: 'Memory Usage (Pod average)',
+            type: 'area-chart',
+            y_label: 'Memory Used per Pod',
+            weight: 2,
+            metrics: [
+              {
+                id: 'system_metrics_kubernetes_container_memory_average',
+                query_range:
+                  'avg(sum(container_memory_usage_bytes{container_name!="POD",pod_name=~"^%{ci_environment_slug}-(.*)",namespace="%{kube_namespace}"}) by (job)) without (job) / count(avg(container_memory_usage_bytes{container_name!="POD",pod_name=~"^%{ci_environment_slug}-(.*)",namespace="%{kube_namespace}"}) without (job)) /1024/1024',
+                label: 'Pod average',
+                unit: 'MB',
+                metric_id: 14,
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  status: 'success',
+};
