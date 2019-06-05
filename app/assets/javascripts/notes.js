@@ -7,6 +7,10 @@ no-unused-vars, no-shadow, no-useless-escape, class-methods-use-this */
 /* global ResolveService */
 /* global mrRefreshWidgetUrl */
 
+/*
+old_notes_spec.js is the spec for the legacy, jQuery notes application. It has nothing to do with the new, fancy Vue notes app.
+ */
+
 import $ from 'jquery';
 import _ from 'underscore';
 import Cookies from 'js-cookie';

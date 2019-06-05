@@ -1,11 +1,19 @@
 const NS_PER_SEC = 1e9;
 const NS_PER_MS = 1e6;
+const IS_DEBUGGING = process.execArgv.join(' ').includes('--inspect-brk');
 
 let testTimeoutNS;
 
 export const setTestTimeout = newTimeoutMS => {
   testTimeoutNS = newTimeoutMS * NS_PER_MS;
   jest.setTimeout(newTimeoutMS);
+};
+
+// Allows slow tests to set their own timeout.
+// Useful for tests with jQuery, which is very slow in big DOMs.
+let temporaryTimeoutNS = null;
+export const setTestTimeoutOnce = newTimeoutMS => {
+  temporaryTimeoutNS = newTimeoutMS * NS_PER_MS;
 };
 
 export const initializeTestTimeout = defaultTimeoutMS => {
@@ -19,12 +27,20 @@ export const initializeTestTimeout = defaultTimeoutMS => {
   });
 
   afterEach(() => {
+    let timeoutNS = testTimeoutNS;
+    if (Number.isFinite(temporaryTimeoutNS)) {
+      timeoutNS = temporaryTimeoutNS;
+      temporaryTimeoutNS = null;
+    }
+
     const [seconds, remainingNs] = process.hrtime(testStartTime);
     const elapsedNS = seconds * NS_PER_SEC + remainingNs;
 
-    if (elapsedNS > testTimeoutNS) {
+    // Disable the timeout error when debugging. It is meaningless because
+    // debugging always takes longer than the test timeout.
+    if (elapsedNS > timeoutNS && !IS_DEBUGGING) {
       throw new Error(
-        `Test took too long (${elapsedNS / NS_PER_MS}ms > ${testTimeoutNS / NS_PER_MS}ms)!`,
+        `Test took too long (${elapsedNS / NS_PER_MS}ms > ${timeoutNS / NS_PER_MS}ms)!`,
       );
     }
   });
