@@ -5,6 +5,7 @@ import {
   bytesToGiB,
   numberToHumanSize,
   sum,
+  isOdd,
 } from '~/lib/utils/number_utils';
 
 describe('Number Utils', () => {
@@ -96,6 +97,16 @@ describe('Number Utils', () => {
 
     it('should add up all the values in an array when passed to a reducer', () => {
       expect([1, 2, 3, 4, 5].reduce(sum)).toEqual(15);
+    });
+  });
+
+  describe('isOdd', () => {
+    it('should return 0 with a even number', () => {
+      expect(isOdd(2)).toEqual(0);
+    });
+
+    it('should return 1 with a odd number', () => {
+      expect(isOdd(1)).toEqual(1);
     });
   });
 });
