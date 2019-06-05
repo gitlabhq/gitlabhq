@@ -74,9 +74,14 @@ Here are some links to get you up to speed with the current effort:
 
 After a given documentation path is aligned across CE and EE, all merge requests
 affecting that path must be submitted to CE, regardless of the content it has.
-This means that for EE-only features which are being added only to the EE codebase,
-you have to submit a separate merge request in CE that contains the docs.
-This might seem like a duplicate effort, but it's for the short term.
+This means that:
+
+* For **EE-only docs changes**, you only have to submit a CE MR.
+* For **EE-only features** that touch both the code and the docs, you have to submit
+an EE MR containing all changes, and a CE MR containing only the docs changes
+and without a changelog entry.
+
+This might seem like a duplicate effort, but it's only for the short term.
 A list of the already aligned docs can be found in
 [the epic description](https://gitlab.com/groups/gitlab-org/-/epics/199#ee-specific-lines-check).
 
