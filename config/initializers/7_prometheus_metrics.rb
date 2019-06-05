@@ -19,12 +19,6 @@ Gitlab::Application.configure do |config|
   config.middleware.insert(1, Gitlab::Metrics::RequestsRackMiddleware)
 end
 
-Sidekiq.configure_server do |config|
-  config.on(:startup) do
-    Gitlab::Metrics::SidekiqMetricsExporter.instance.start
-  end
-end
-
 if !Rails.env.test? && Gitlab::Metrics.prometheus_metrics_enabled?
   Gitlab::Cluster::LifecycleEvents.on_worker_start do
     defined?(::Prometheus::Client.reinitialize_on_pid_change) && Prometheus::Client.reinitialize_on_pid_change
