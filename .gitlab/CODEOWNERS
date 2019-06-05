@@ -18,3 +18,4 @@ db/ @abrandl @NikolayS
 /lib/gitlab/auth/ldap/ @dblessing @mkozono
 /lib/gitlab/ci/templates/ @nolith @zj
 /lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml @DylanGriffith @mayra-cabrera @tkuah
+/lib/gitlab/ci/templates/Security/ @plafoucriere @gonzoyumo @twoodham
