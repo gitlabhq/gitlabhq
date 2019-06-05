@@ -224,3 +224,9 @@ vulnerabilities in your groups and projects. Read more about the
 
 Once a vulnerability is found, you can interact with it. Read more on how to
 [interact with the vulnerabilities](../index.md#interacting-with-the-vulnerabilities).
+
+## Contributing to the vulnerability database
+
+You can search the [gemnasium-db](https://gitlab.com/gitlab-org/security-products/gemnasium-db) project
+to find a vulnerability in the Gemnasium database.
+You can also [submit new vulnerabilities](https://gitlab.com/gitlab-org/security-products/gemnasium-db/blob/master/CONTRIBUTING.md).
