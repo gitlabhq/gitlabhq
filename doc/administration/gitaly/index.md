@@ -220,6 +220,9 @@ network, firewall, or name resolution problem preventing your GitLab
 server from reaching the Gitaly server then all Gitaly requests will
 fail.
 
+Additionally, you need to 
+[disable Rugged if previously manually enabled](../high_availability/nfs.md#improving-nfs-performance-with-gitlab).
+
 We assume that your Gitaly server can be reached at
 `gitaly.internal:8075` from your GitLab server, and that Gitaly can read and
 write to `/mnt/gitlab/default` and `/mnt/gitlab/storage1` respectively.
