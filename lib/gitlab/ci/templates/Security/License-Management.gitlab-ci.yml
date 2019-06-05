@@ -1,7 +1,7 @@
 # Read more about this feature here: https://docs.gitlab.com/ee/user/project/merge_requests/license_management.html
 
 variables:
-  LICENSE_MANAGEMENT_SETUP_CMD: '' # If needed, specify a command to setup your environment with a custom package manager.
+  LICENSE_MANAGEMENT_SETUP_CMD: ''  # If needed, specify a command to setup your environment with a custom package manager.
 
 license_management:
   stage: test

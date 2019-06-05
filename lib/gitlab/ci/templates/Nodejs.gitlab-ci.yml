@@ -14,14 +14,14 @@ services:
 # http://docs.gitlab.com/ce/ci/yaml/README.html#cache
 cache:
   paths:
-  - node_modules/
+    - node_modules/
 
 test_async:
   script:
-   - npm install
-   - node ./specs/start.js ./specs/async.spec.js
+    - npm install
+    - node ./specs/start.js ./specs/async.spec.js
 
 test_db:
   script:
-   - npm install
-   - node ./specs/start.js ./specs/db-postgres.spec.js
+    - npm install
+    - node ./specs/start.js ./specs/db-postgres.spec.js

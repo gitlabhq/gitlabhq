@@ -1,9 +1,9 @@
 image: ayufan/openshift-cli
 
 stages:
-  - build # dummy stage to follow the template guidelines
+  - build  # dummy stage to follow the template guidelines
   - test
-  - deploy # dummy stage to follow the template guidelines
+  - deploy  # dummy stage to follow the template guidelines
   - review
   - staging
   - production

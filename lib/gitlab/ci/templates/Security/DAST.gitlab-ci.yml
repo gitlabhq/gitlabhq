@@ -15,22 +15,22 @@ dast:
   image:
     name: "registry.gitlab.com/gitlab-org/security-products/dast:$CI_SERVER_VERSION_MAJOR-$CI_SERVER_VERSION_MINOR-stable"
   variables:
-    # URL to scan:
-    # DAST_WEBSITE: https://example.com/
-    #
-    # Time limit for target availability (scan is attempted even when timeout):
-    # DAST_TARGET_AVAILABILITY_TIMEOUT: 60
-    #
-    # Set these variables to scan with an authenticated user:
-    # DAST_AUTH_URL: https://example.com/sign-in
-    # DAST_USERNAME: john.doe@example.com
-    # DAST_PASSWORD: john-doe-password
-    # DAST_USERNAME_FIELD: session[user] # the name of username field at the sign-in HTML form
-    # DAST_PASSWORD_FIELD: session[password] # the name of password field at the sign-in HTML form
-    # DAST_AUTH_EXCLUDE_URLS: http://example.com/sign-out,http://example.com/sign-out-2 # optional: URLs to skip during the authenticated scan; comma-separated, no spaces in between
-    #
-    # Perform ZAP Full Scan, which includes both passive and active scanning:
-    # DAST_FULL_SCAN_ENABLED: "true"
+  # URL to scan:
+  # DAST_WEBSITE: https://example.com/
+  #
+  # Time limit for target availability (scan is attempted even when timeout):
+  # DAST_TARGET_AVAILABILITY_TIMEOUT: 60
+  #
+  # Set these variables to scan with an authenticated user:
+  # DAST_AUTH_URL: https://example.com/sign-in
+  # DAST_USERNAME: john.doe@example.com
+  # DAST_PASSWORD: john-doe-password
+  # DAST_USERNAME_FIELD: session[user] # the name of username field at the sign-in HTML form
+  # DAST_PASSWORD_FIELD: session[password] # the name of password field at the sign-in HTML form
+  # DAST_AUTH_EXCLUDE_URLS: http://example.com/sign-out,http://example.com/sign-out-2 # optional: URLs to skip during the authenticated scan; comma-separated, no spaces in between
+  #
+  # Perform ZAP Full Scan, which includes both passive and active scanning:
+  # DAST_FULL_SCAN_ENABLED: "true"
   allow_failure: true
   script:
     - export DAST_WEBSITE=${DAST_WEBSITE:-$(cat environment_url.txt)}

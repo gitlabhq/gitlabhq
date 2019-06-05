@@ -6,7 +6,7 @@ image: openjdk:8-jdk
 variables:
   ANDROID_COMPILE_SDK: "28"
   ANDROID_BUILD_TOOLS: "28.0.2"
-  ANDROID_SDK_TOOLS:   "4333796"
+  ANDROID_SDK_TOOLS: "4333796"
 
 before_script:
   - apt-get --quiet update --yes
@@ -35,7 +35,7 @@ assembleDebug:
     - ./gradlew assembleDebug
   artifacts:
     paths:
-    - app/build/outputs/
+      - app/build/outputs/
 
 debugTests:
   stage: test

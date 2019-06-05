@@ -6,25 +6,24 @@ variables:
   JEKYLL_ENV: production
 
 before_script:
-- bundle install
+  - bundle install
 
 test:
   stage: test
   script:
-  - bundle exec jekyll build -d test
+    - bundle exec jekyll build -d test
   artifacts:
     paths:
-    - test
+      - test
   except:
-  - master
+    - master
 
 pages:
   stage: deploy
   script:
-  - bundle exec jekyll build -d public
+    - bundle exec jekyll build -d public
   artifacts:
     paths:
-    - public
+      - public
   only:
-  - master
-
+    - master

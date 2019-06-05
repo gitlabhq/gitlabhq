@@ -3,15 +3,15 @@ image: node:10.15.3
 
 pages:
   script:
-  - npm install hexo-cli -g
-  - test -e package.json && npm install
-  - hexo generate
+    - npm install hexo-cli -g
+    - test -e package.json && npm install
+    - hexo generate
   artifacts:
     paths:
-    - public
+      - public
   cache:
     paths:
       - node_modules
     key: project
   only:
-  - master
+    - master

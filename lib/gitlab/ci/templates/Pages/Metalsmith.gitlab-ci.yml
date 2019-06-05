@@ -4,13 +4,13 @@ image: node:4.2.2
 pages:
   cache:
     paths:
-    - node_modules/
+      - node_modules/
   script:
-  - npm install -g metalsmith
-  - npm install
-  - make build
+    - npm install -g metalsmith
+    - npm install
+    - make build
   artifacts:
     paths:
-    - public
+      - public
   only:
-  - master
+    - master

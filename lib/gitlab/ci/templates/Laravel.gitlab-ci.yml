@@ -16,8 +16,8 @@ variables:
 # http://docs.gitlab.com/ce/ci/yaml/README.html#cache
 cache:
   paths:
-  - vendor/
-  - node_modules/
+    - vendor/
+    - node_modules/
 
 # This is a basic example for a gem or script which doesn't use
 # services such as redis or postgres
@@ -37,7 +37,7 @@ before_script:
   - docker-php-ext-enable xdebug
   # Install Composer and project dependencies.
   - curl -sS https://getcomposer.org/installer | php
-  - php composer.phar install 
+  - php composer.phar install
   # Install Node dependencies.
   # comment this out if you don't have a node dependency
   - npm install
@@ -63,10 +63,10 @@ before_script:
 
 test:
   script:
-  # run laravel tests
-  - php vendor/bin/phpunit --coverage-text --colors=never 
-  # run frontend tests
-  # if you have any task for testing frontend
-  # set it in your package.json script
-  # comment this out if you don't have a frontend test
-  - npm test
+    # run laravel tests
+    - php vendor/bin/phpunit --coverage-text --colors=never
+    # run frontend tests
+    # if you have any task for testing frontend
+    # set it in your package.json script
+    # comment this out if you don't have a frontend test
+    - npm test

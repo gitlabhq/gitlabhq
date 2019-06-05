@@ -4,14 +4,14 @@ image: node:latest
 # http://docs.gitlab.com/ce/ci/yaml/README.html#cache
 cache:
   paths:
-  - node_modules/
+    - node_modules/
 
 pages:
   script:
-  - yarn install
-  - ./node_modules/.bin/gatsby build --prefix-paths
+    - yarn install
+    - ./node_modules/.bin/gatsby build --prefix-paths
   artifacts:
     paths:
-    - public
+      - public
   only:
-  - master
+    - master

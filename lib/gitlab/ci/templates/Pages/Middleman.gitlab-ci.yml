@@ -3,25 +3,25 @@ image: ruby:2.3
 
 cache:
   paths:
-  - vendor
+    - vendor
 
 test:
   script:
-  - apt-get update -yqqq
-  - apt-get install -y nodejs
-  - bundle install --path vendor
-  - bundle exec middleman build
+    - apt-get update -yqqq
+    - apt-get install -y nodejs
+    - bundle install --path vendor
+    - bundle exec middleman build
   except:
     - master
 
 pages:
   script:
-  - apt-get update -yqqq
-  - apt-get install -y nodejs
-  - bundle install --path vendor
-  - bundle exec middleman build
+    - apt-get update -yqqq
+    - apt-get install -y nodejs
+    - bundle install --path vendor
+    - bundle exec middleman build
   artifacts:
     paths:
-    - public
+      - public
   only:
-  - master
+    - master
