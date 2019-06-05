@@ -13,10 +13,6 @@ describe Gitlab::MarkdownCache::Redis::Store, :clean_gitlab_redis_cache do
 
       attr_accessor :field_1, :field_2, :field_1_html, :field_2_html, :cached_markdown_version
 
-      def id
-        'test-redisbacked-store'
-      end
-
       def cache_key
         "cache-key"
       end

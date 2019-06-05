@@ -43,9 +43,9 @@ module Gitlab
         end
 
         def markdown_cache_key
-          unless @subject.respond_to?(:id)
+          unless @subject.respond_to?(:cache_key)
             raise Gitlab::MarkdownCache::UnsupportedClassError,
-                  "This class has no id to use for caching"
+                  "This class has no cache_key to use for caching"
           end
 
           "markdown_cache:#{@subject.cache_key}"

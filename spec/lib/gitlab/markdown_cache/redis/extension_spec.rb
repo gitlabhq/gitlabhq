@@ -15,10 +15,6 @@ describe Gitlab::MarkdownCache::Redis::Extension, :clean_gitlab_redis_cache do
       cache_markdown_field :title, pipeline: :single_line
       cache_markdown_field :description
 
-      def id
-        "test-markdown-cache"
-      end
-
       def cache_key
         "cache-key"
       end
