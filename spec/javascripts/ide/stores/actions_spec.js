@@ -492,6 +492,33 @@ describe('Multi-file store actions', () => {
         done,
       );
     });
+
+    it('does not delete a folder after it is emptied', done => {
+      const testFolder = {
+        type: 'tree',
+        tree: [],
+      };
+      const testEntry = {
+        path: 'testFolder/entry-to-delete',
+        parentPath: 'testFolder',
+        opened: false,
+        tree: [],
+      };
+      testFolder.tree.push(testEntry);
+      store.state.entries = {
+        testFolder,
+        'testFolder/entry-to-delete': testEntry,
+      };
+
+      testAction(
+        deleteEntry,
+        'testFolder/entry-to-delete',
+        store.state,
+        [{ type: types.DELETE_ENTRY, payload: 'testFolder/entry-to-delete' }],
+        [{ type: 'burstUnusedSeal' }, { type: 'triggerFilesChange' }],
+        done,
+      );
+    });
   });
 
   describe('renameEntry', () => {
