@@ -138,14 +138,15 @@ staging:
 The `ENVIRONMENT` variable will be passed to every job defined in a downstream
 pipeline. It will be available as an environment variable when GitLab Runner picks a job.
 
-In the following configuration, the `MY_VARIABLE` variable will be passed
-downstream, because jobs inherit variables declared in top-level `variables`:
+In the following configuration, the `MY_VARIABLE` variable will be passed to the downstream pipeline
+that is created when the `trigger-downstream` job is queued. This is because `trigger-downstream`
+job inherits variables declared in global variables blocks, and then we pass these variables to a downstream pipeline.
 
 ```yaml
 variables:
   MY_VARIABLE: my-value
 
-my-pipeline:
+trigger-downstream:
   variables:
     ENVIRONMENT: something
   trigger: my/project
@@ -156,14 +157,14 @@ example, predefined variables. In order to do that, you can use interpolation
 to pass any variable. For example:
 
 ```yaml
-my-pipeline:
+downstream-job:
   variables:
     UPSTREAM_BRANCH: $CI_COMMIT_REF_NAME
   trigger: my/project
 ```
 
 In this scenario, the `UPSTREAM_BRANCH` variable with a value related to the
-upstream pipeline will be passed to a `downstream` job, and will be available
+upstream pipeline will be passed to the `downstream-job` job, and will be available
 within the context of all downstream builds.
 
 ### Limitations
