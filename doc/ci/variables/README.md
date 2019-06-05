@@ -87,7 +87,7 @@ Variable types can be set via the [UI](#via-the-ui) or the [API](../../api/proje
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/13784) in GitLab 11.10
 
-By default, variables will be created as masked variables.
+Variables can be created as masked variables.
 This means that the value of the variable will be hidden in job logs,
 though it must match certain requirements to do so:
 

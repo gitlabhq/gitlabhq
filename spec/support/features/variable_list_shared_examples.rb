@@ -45,12 +45,12 @@ shared_examples 'variable list' do
     end
   end
 
-  it 'defaults to masked' do
+  it 'defaults to unmasked' do
     page.within('.js-ci-variable-list-section .js-row:last-child') do
       find('.js-ci-variable-input-key').set('key')
       find('.js-ci-variable-input-value').set('key_value')
 
-      expect(find('.js-ci-variable-input-masked', visible: false).value).to eq('true')
+      expect(find('.js-ci-variable-input-masked', visible: false).value).to eq('false')
     end
 
     click_button('Save variables')
@@ -62,7 +62,7 @@ shared_examples 'variable list' do
     page.within('.js-ci-variable-list-section .js-row:nth-child(2)') do
       expect(find('.js-ci-variable-input-key').value).to eq('key')
       expect(find('.js-ci-variable-input-value', visible: false).value).to eq('key_value')
-      expect(find('.js-ci-variable-input-masked', visible: false).value).to eq('true')
+      expect(find('.js-ci-variable-input-masked', visible: false).value).to eq('false')
     end
   end
 
@@ -234,6 +234,21 @@ shared_examples 'variable list' do
   end
 
   it 'edits variable to be unmasked' do
+    page.within('.js-ci-variable-list-section .js-row:last-child') do
+      find('.js-ci-variable-input-key').set('unmasked_key')
+      find('.js-ci-variable-input-value').set('unmasked_value')
+      expect(find('.js-ci-variable-input-masked', visible: false).value).to eq('false')
+
+      find('.ci-variable-masked-item .js-project-feature-toggle').click
+
+      expect(find('.js-ci-variable-input-masked', visible: false).value).to eq('true')
+    end
+
+    click_button('Save variables')
+    wait_for_requests
+
+    visit page_path
+
     page.within('.js-ci-variable-list-section .js-row:nth-child(2)') do
       expect(find('.js-ci-variable-input-masked', visible: false).value).to eq('true')
 
@@ -253,20 +268,9 @@ shared_examples 'variable list' do
   end
 
   it 'edits variable to be masked' do
-    page.within('.js-ci-variable-list-section .js-row:nth-child(2)') do
-      expect(find('.js-ci-variable-input-masked', visible: false).value).to eq('true')
-
-      find('.ci-variable-masked-item .js-project-feature-toggle').click
-
-      expect(find('.js-ci-variable-input-masked', visible: false).value).to eq('false')
-    end
-
-    click_button('Save variables')
-    wait_for_requests
-
-    visit page_path
-
-    page.within('.js-ci-variable-list-section .js-row:nth-child(2)') do
+    page.within('.js-ci-variable-list-section .js-row:last-child') do
+      find('.js-ci-variable-input-key').set('masked_key')
+      find('.js-ci-variable-input-value').set('masked_value')
       expect(find('.js-ci-variable-input-masked', visible: false).value).to eq('false')
 
       find('.ci-variable-masked-item .js-project-feature-toggle').click
@@ -348,10 +352,11 @@ shared_examples 'variable list' do
     end
   end
 
-  it 'shows validation error box about empty values' do
+  it 'shows validation error box about masking empty values' do
     page.within('.js-ci-variable-list-section .js-row:last-child') do
       find('.js-ci-variable-input-key').set('empty_value')
       find('.js-ci-variable-input-value').set('')
+      find('.ci-variable-masked-item .js-project-feature-toggle').click
     end
 
     click_button('Save variables')
@@ -367,6 +372,7 @@ shared_examples 'variable list' do
     page.within('.js-ci-variable-list-section .js-row:last-child') do
       find('.js-ci-variable-input-key').set('unmaskable_value')
       find('.js-ci-variable-input-value').set('???')
+      find('.ci-variable-masked-item .js-project-feature-toggle').click
     end
 
     click_button('Save variables')

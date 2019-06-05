@@ -17,7 +17,7 @@ module CiVariablesHelper
     if variable && !only_key_value
       variable.masked
     else
-      true
+      false
     end
   end
 
