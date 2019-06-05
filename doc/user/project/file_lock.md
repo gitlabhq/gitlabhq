@@ -1,10 +1,8 @@
 # File Locking **[PREMIUM]**
 
-> **Notes:**
-> - [Introduced][ee-440] in [GitLab Premium][ee] 8.9.
-> - This feature needs to have a license with the "File Lock" option enabled. If
->   you are using Premium but you don't see the "Lock" button,
->   ask your GitLab administrator.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/440) in [GitLab Premium](https://about.gitlab.com/pricing/) 8.9.
+> - This feature needs to have a license with the "File Lock" option enabled.
+> - If you are using Premium but you don't see the "Lock" button, ask your GitLab administrator.
 
 File Locking helps you avoid merge conflicts and better manage your binary files.
 Lock any file or directory, make your changes, and then unlock it so another
@@ -37,7 +35,7 @@ lies under them is also locked.
 The user that locks a file or directory **is the only one** that can edit and
 push their changes back to the repository where the locked objects are located.
 
-Locks can be created by any person who has [push access] to the repository; i.e.,
+Locks can be created by any person who has [push access](../../user/permissions.md) to the repository; i.e.,
 Developer and higher level, and can be removed solely by their author and any
 user with Maintainer permissions and above.
 
@@ -101,7 +99,3 @@ To view or manage every existing lock, navigate to the
 locks and [remove the ones you have permission for](#permissions-on-file-locking).
 
 ![Locked Files](img/file_lock_list.png)
-
-[ee-440]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/440 "File Lock"
-[ee]: https://about.gitlab.com/pricing/
-[push access]: ../../user/permissions.md
