@@ -56,7 +56,8 @@ To do this, run the Rake task:
 sudo gitlab-rake gitlab:features:enable_rugged
 ```
 
-If you need to undo this setting for some reason, run:
+If you need to undo this setting for some reason such as switching to [Gitaly without NFS](gitaly.md)
+(recommended), run:
 
 ```sh
 sudo gitlab-rake gitlab:features:disable_rugged
