@@ -32,9 +32,11 @@ module Types
         # Resolvers may add extra complexity depending on used arguments
         complexity = child_complexity + self.resolver&.try(:resolver_complexity, args, child_complexity: child_complexity).to_i
 
-        if @connection
+        field_defn = to_graphql
+
+        if field_defn.connection?
           # Resolvers may add extra complexity depending on number of items being loaded.
-          page_size   = @max_page_size || ctx.schema.default_max_page_size
+          page_size   = field_defn.connection_max_page_size || ctx.schema.default_max_page_size
           limit_value = [args[:first], args[:last], page_size].compact.min
           multiplier  = self.resolver&.try(:complexity_multiplier, args).to_f
           complexity += complexity * limit_value * multiplier
