@@ -4,8 +4,10 @@ type: reference, howto
 
 # Groups
 
-With GitLab Groups you can assemble related projects together
-and grant members access to several projects at once.
+With GitLab Groups, you can:
+
+- Assemble related projects together.
+- Grant members access to several projects at once.
 
 Groups can also be nested in [subgroups](subgroups/index.md).
 
@@ -13,17 +15,21 @@ Find your groups by clicking **Groups > Your Groups** in the top navigation.
 
 ![GitLab Groups](img/groups.png)
 
-> [Introduced][ce-36234] in [GitLab 11.1](https://about.gitlab.com/2018/07/22/gitlab-11-1-released/#groups-dropdown-in-navigation)
+> The **Groups** dropdown in the top navigation was [introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/36234) in [GitLab 11.1](https://about.gitlab.com/2018/07/22/gitlab-11-1-released/#groups-dropdown-in-navigation).
 
-The Groups page displays:
+The **Groups** page displays:
 
-- All groups you are a member of.
-- How many projects each group contains.
-- How many members a group has.
-- The group visibility.
-- A link to the group settings if you have sufficient permissions.
+- All groups you are a member of, when **Your groups** is selected.
+- A list of public groups, when **Explore public groups** is selected.
 
-By clicking the last button, you can leave that group.
+Each group on the **Groups** page is listed with:
+
+- How many subgroups it has.
+- How many projects it contains.
+- How many members the group has, not including members inherited from parent groups.
+- The group's visibility.
+- A link to the group's settings, if you have sufficient permissions.
+- A link to leave the group, if you are a member.
 
 ## Use cases
 
@@ -210,7 +216,7 @@ Get an overview of the vulnerabilities of all the projects in a group and its su
 > Introduced in [GitLab Ultimate][ee] 11.9 behind the `insights` feature flag.
 
 Configure the Insights that matter for your groups or projects, allowing users to explore data
-such as: 
+such as:
 
 - Triage hygiene
 - Issues created/closed per a given period
