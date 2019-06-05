@@ -2,17 +2,19 @@
 require 'spec_helper'
 
 describe Gitlab::MarkdownCache::ActiveRecord::Extension do
-  class ARThingWithMarkdownFields < ActiveRecord::Base
-    self.table_name = 'issues'
-    include CacheMarkdownField
-    cache_markdown_field :title, whitelisted: true
-    cache_markdown_field :description, pipeline: :single_line
+  let(:klass) do
+    Class.new(ActiveRecord::Base) do
+      self.table_name = 'issues'
+      include CacheMarkdownField
+      cache_markdown_field :title, whitelisted: true
+      cache_markdown_field :description, pipeline: :single_line
 
-    attr_accessor :author, :project
+      attr_accessor :author, :project
+    end
   end
 
   let(:cache_version) { Gitlab::MarkdownCache::CACHE_COMMONMARK_VERSION << 16 }
-  let(:thing) { ARThingWithMarkdownFields.new(title: markdown, title_html: html, cached_markdown_version: cache_version) }
+  let(:thing) { klass.new(title: markdown, title_html: html, cached_markdown_version: cache_version) }
 
   let(:markdown) { '`Foo`' }
   let(:html) { '<p data-sourcepos="1:1-1:5" dir="auto"><code>Foo</code></p>' }
@@ -21,7 +23,7 @@ describe Gitlab::MarkdownCache::ActiveRecord::Extension do
   let(:updated_html) { '<p data-sourcepos="1:1-1:5" dir="auto"><code>Bar</code></p>' }
 
   context 'an unchanged markdown field' do
-    let(:thing) { ARThingWithMarkdownFields.new(title: markdown) }
+    let(:thing) { klass.new(title: markdown) }
 
     before do
       thing.title = thing.title
@@ -35,7 +37,7 @@ describe Gitlab::MarkdownCache::ActiveRecord::Extension do
   end
 
   context 'a changed markdown field' do
-    let(:thing) { ARThingWithMarkdownFields.new(title: markdown, title_html: html, cached_markdown_version: cache_version) }
+    let(:thing) { klass.new(title: markdown, title_html: html, cached_markdown_version: cache_version) }
 
     before do
       thing.title = updated_markdown
@@ -67,7 +69,7 @@ describe Gitlab::MarkdownCache::ActiveRecord::Extension do
   end
 
   context 'a non-markdown field changed' do
-    let(:thing) { ARThingWithMarkdownFields.new(title: markdown, title_html: html, cached_markdown_version: cache_version) }
+    let(:thing) { klass.new(title: markdown, title_html: html, cached_markdown_version: cache_version) }
 
     before do
       thing.state = 'closed'
@@ -81,7 +83,7 @@ describe Gitlab::MarkdownCache::ActiveRecord::Extension do
   end
 
   context 'version is out of date' do
-    let(:thing) { ARThingWithMarkdownFields.new(title: updated_markdown, title_html: html, cached_markdown_version: nil) }
+    let(:thing) { klass.new(title: updated_markdown, title_html: html, cached_markdown_version: nil) }
 
     before do
       thing.save
@@ -122,7 +124,7 @@ describe Gitlab::MarkdownCache::ActiveRecord::Extension do
   end
 
   describe '#cached_html_up_to_date?' do
-    let(:thing) { ARThingWithMarkdownFields.create(title: updated_markdown, title_html: html, cached_markdown_version: nil) }
+    let(:thing) { klass.create(title: updated_markdown, title_html: html, cached_markdown_version: nil) }
     subject { thing.cached_html_up_to_date?(:title) }
 
     it 'returns false if markdown has been changed but html has not' do

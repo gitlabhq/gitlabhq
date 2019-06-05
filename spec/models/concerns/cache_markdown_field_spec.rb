@@ -30,6 +30,10 @@ describe CacheMarkdownField, :clean_gitlab_redis_cache do
       def id
         "test-markdown-cache"
       end
+
+      def cache_key
+        "cache-key"
+      end
     end
   end
 

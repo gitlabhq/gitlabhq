@@ -48,7 +48,7 @@ module Gitlab
                   "This class has no id to use for caching"
           end
 
-          "markdown_cache:#{@subject.class}:#{@subject.id}"
+          "markdown_cache:#{@subject.cache_key}"
         end
       end
     end

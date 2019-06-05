@@ -2,30 +2,34 @@
 require 'spec_helper'
 
 describe Gitlab::MarkdownCache::Redis::Extension, :clean_gitlab_redis_cache do
-  class ThingWithMarkdownFields
-    include CacheMarkdownField
+  let(:klass) do
+    Class.new do
+      include CacheMarkdownField
 
-    def initialize(title: nil, description: nil)
-      @title, @description = title, description
-    end
+      def initialize(title: nil, description: nil)
+        @title, @description = title, description
+      end
 
-    attr_reader :title, :description
+      attr_reader :title, :description
 
-    cache_markdown_field :title, pipeline: :single_line
-    cache_markdown_field :description
+      cache_markdown_field :title, pipeline: :single_line
+      cache_markdown_field :description
 
-    def id
-      "test-markdown-cache"
+      def id
+        "test-markdown-cache"
+      end
+
+      def cache_key
+        "cache-key"
+      end
     end
   end
 
   let(:cache_version) { Gitlab::MarkdownCache::CACHE_COMMONMARK_VERSION << 16 }
-  let(:thing) { ThingWithMarkdownFields.new(title: "`Hello`", description: "`World`") }
-  let(:expected_cache_key) { "markdown_cache:ThingWithMarkdownFields:test-markdown-cache" }
+  let(:thing) { klass.new(title: "`Hello`", description: "`World`") }
+  let(:expected_cache_key) { "markdown_cache:cache-key" }
 
   it 'defines the html attributes' do
-    thing = ThingWithMarkdownFields.new
-
     expect(thing).to respond_to(:title_html, :description_html, :cached_markdown_version)
   end
 

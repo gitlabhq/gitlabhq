@@ -16,10 +16,14 @@ describe Gitlab::MarkdownCache::Redis::Store, :clean_gitlab_redis_cache do
       def id
         'test-redisbacked-store'
       end
+
+      def cache_key
+        "cache-key"
+      end
     end
   end
   let(:storable) { storable_class.new }
-  let(:cache_key) { "markdown_cache:#{storable_class}:#{storable.id}" }
+  let(:cache_key) { "markdown_cache:#{storable.cache_key}" }
 
   subject(:store) { described_class.new(storable) }
 
