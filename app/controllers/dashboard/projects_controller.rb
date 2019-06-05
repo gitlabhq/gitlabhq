@@ -6,18 +6,14 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
 
   prepend_before_action(only: [:index]) { authenticate_sessionless_user!(:rss) }
   before_action :set_non_archived_param
+  before_action :projects, only: [:index]
   before_action :default_sorting
   skip_cross_project_access_check :index, :starred
 
   def index
-    @projects = load_projects(params.merge(non_public: true))
-
     respond_to do |format|
       format.html do
-        # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/40260
-        Gitlab::GitalyClient.allow_n_plus_1_calls do
-          render
-        end
+        render_projects
       end
       format.atom do
         load_events
@@ -50,6 +46,17 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
   # rubocop: enable CodeReuse/ActiveRecord
 
   private
+
+  def projects
+    @projects ||= load_projects(params.merge(non_public: true))
+  end
+
+  def render_projects
+    # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/40260
+    Gitlab::GitalyClient.allow_n_plus_1_calls do
+      render
+    end
+  end
 
   def default_sorting
     params[:sort] ||= 'latest_activity_desc'
