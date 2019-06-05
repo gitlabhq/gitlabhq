@@ -11,16 +11,24 @@ describe Banzai::Renderer do
     object
   end
 
+  def fake_cacheless_object
+    object = double('cacheless object')
+
+    allow(object).to receive(:respond_to?).with(:cached_markdown_fields).and_return(false)
+
+    object
+  end
+
   describe '#render_field' do
     let(:renderer) { described_class }
 
     context 'without cache' do
-      let(:commit) { create(:project, :repository).commit }
+      let(:commit) { fake_cacheless_object }
 
       it 'returns cacheless render field' do
-        expect(renderer).to receive(:cacheless_render_field).with(commit, :title, {})
+        expect(renderer).to receive(:cacheless_render_field).with(commit, :field, {})
 
-        renderer.render_field(commit, :title)
+        renderer.render_field(commit, :field)
       end
     end
 
