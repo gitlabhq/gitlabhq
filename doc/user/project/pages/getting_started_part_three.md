@@ -96,7 +96,7 @@ you need to log into your domain's admin control panel and add a DNS
 `CNAME` record pointing your subdomain to your website URL
 (`namespace.gitlab.io`) address.
 
-Notice that, despite it's a user or project website, the `CNAME`
+Note that, whether it's a user or a project website, the `CNAME`
 should point to your Pages domain (`namespace.gitlab.io`),
 without any `/project-name`.
 
