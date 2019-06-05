@@ -1,3 +1,7 @@
+---
+type: reference
+---
+
 # Group-level Kubernetes clusters
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/34758) in GitLab 11.6.
