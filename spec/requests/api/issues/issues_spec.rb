@@ -276,14 +276,6 @@ describe API::Issues do
       it 'returns issues with no assignee' do
         issue2 = create(:issue, author: user2, project: project)
 
-        get api('/issues', user), params: { assignee_id: 0, scope: 'all' }
-
-        expect_paginated_array_response(issue2.id)
-      end
-
-      it 'returns issues with no assignee' do
-        issue2 = create(:issue, author: user2, project: project)
-
         get api('/issues', user), params: { assignee_id: 'None', scope: 'all' }
 
         expect_paginated_array_response(issue2.id)
@@ -493,18 +485,6 @@ describe API::Issues do
 
         it 'returns an array of issues with no label with labels param as array' do
           get api('/issues', user), params: { labels: [IssuesFinder::FILTER_NONE] }
-
-          expect_paginated_array_response(closed_issue.id)
-        end
-
-        it 'returns an array of issues with no label when using the legacy No+Label filter' do
-          get api('/issues', user), params: { labels: 'No Label' }
-
-          expect_paginated_array_response(closed_issue.id)
-        end
-
-        it 'returns an array of issues with no label when using the legacy No+Label filter with labels param as array' do
-          get api('/issues', user), params: { labels: ['No Label'] }
 
           expect_paginated_array_response(closed_issue.id)
         end

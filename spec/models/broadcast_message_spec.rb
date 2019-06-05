@@ -88,13 +88,6 @@ describe BroadcastMessage do
       expect(Rails.cache).not_to receive(:delete).with(described_class::CACHE_KEY)
       expect(described_class.current.length).to eq(0)
     end
-
-    it 'clears the legacy cache key' do
-      create(:broadcast_message, :future)
-
-      expect(Rails.cache).to receive(:delete).with(described_class::LEGACY_CACHE_KEY)
-      expect(described_class.current.length).to eq(0)
-    end
   end
 
   describe '#attributes' do
@@ -164,7 +157,6 @@ describe BroadcastMessage do
       message = create(:broadcast_message)
 
       expect(Rails.cache).to receive(:delete).with(described_class::CACHE_KEY)
-      expect(Rails.cache).to receive(:delete).with(described_class::LEGACY_CACHE_KEY)
 
       message.flush_redis_cache
     end

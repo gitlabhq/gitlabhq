@@ -20,12 +20,6 @@ shared_examples 'no assignee filter' do
   end
 
   it 'returns issuables not assigned to any assignee' do
-    params[:assignee_id] = 0
-
-    expect(issuables).to contain_exactly(*expected_issuables)
-  end
-
-  it 'returns issuables not assigned to any assignee' do
     params[:assignee_id] = 'none'
 
     expect(issuables).to contain_exactly(*expected_issuables)

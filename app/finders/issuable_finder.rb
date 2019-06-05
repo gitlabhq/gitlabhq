@@ -43,7 +43,7 @@ class IssuableFinder
   FILTER_NONE = 'none'.freeze
   FILTER_ANY = 'any'.freeze
 
-  # This is accepted as a deprecated filter and is also used in unassigning users
+  # This is used in unassigning users
   NONE = '0'.freeze
 
   attr_accessor :current_user, :params
@@ -248,8 +248,7 @@ class IssuableFinder
   def filter_by_no_label?
     downcased = label_names.map(&:downcase)
 
-    # Label::NONE is deprecated and should be removed in 12.0
-    downcased.include?(FILTER_NONE) || downcased.include?(Label::NONE)
+    downcased.include?(FILTER_NONE)
   end
 
   def filter_by_any_label?
@@ -449,8 +448,7 @@ class IssuableFinder
   # rubocop: enable CodeReuse/ActiveRecord
 
   def filter_by_no_assignee?
-    # Assignee_id takes precedence over assignee_username
-    [NONE, FILTER_NONE].include?(params[:assignee_id].to_s.downcase) || params[:assignee_username].to_s == NONE
+    params[:assignee_id].to_s.downcase == FILTER_NONE
   end
 
   def filter_by_any_assignee?
