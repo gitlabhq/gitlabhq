@@ -208,12 +208,23 @@ you decide to run GitLab Runner and the GitLab Rails application on the same
 machine.
 
 It is also not safe to install everything on a single machine, because of the
-[security reasons](https://docs.gitlab.com/runner/security/) 
-- especially when you plan to use shell executor with GitLab
+[security reasons](https://docs.gitlab.com/runner/security/), especially when you plan to use shell executor with GitLab
 Runner.
 
 We recommend using a separate machine for each GitLab Runner, if you plan to
 use the CI features.
+The GitLab Runner server requirements depend on:
+
+- The type of [executor](https://docs.gitlab.com/runner/executors/) you configured on GitLab Runner.
+- Resources required to run build jobs.
+- Job concurrency settings.
+
+Since the nature of the jobs varies for each use case, you will need to experiment by adjusting the job concurrency to get the optimum setting.
+
+For reference, GitLab.com's [auto-scaling shared runner](../user/gitlab_com/index.md#shared-runners) is configured so that a **single job** will run in a **single instance** with:
+
+- 1vCPU.
+- 3.75GB of RAM.
 
 ## Supported web browsers
 
