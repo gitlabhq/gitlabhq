@@ -8,9 +8,13 @@ describe EnqueueVerifyPagesDomainWorkers, :sidekiq, :migration do
     end
   end
 
+  let(:domains_table) { table(:pages_domains) }
+
   describe '#up' do
     it 'enqueues a verification worker for every domain' do
-      domains = 1.upto(3).map { |i| PagesDomain.create!(domain: "my#{i}.domain.com") }
+      domains = Array.new(3) do |i|
+        domains_table.create!(domain: "my#{i}.domain.com", verification_code: "123#{i}")
+      end
 
       expect { migrate! }.to change(PagesDomainVerificationWorker.jobs, :size).by(3)
 
