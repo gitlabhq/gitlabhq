@@ -14,9 +14,6 @@ stages:
   image:
     name: gcr.io/kaniko-project/executor:debug
     entrypoint: [""]
-  only:
-    refs:
-      - master
   script:
     - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
     - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/$DOCKERFILE --destination $CI_REGISTRY_IMAGE
@@ -24,9 +21,6 @@ stages:
 .serverless:deploy:image:
   stage: deploy
   image: gcr.io/triggermesh/tm@sha256:e3ee74db94d215bd297738d93577481f3e4db38013326c90d57f873df7ab41d5
-  only:
-    refs:
-      - master
   environment: development
   script:
     - echo "$CI_REGISTRY_IMAGE"
