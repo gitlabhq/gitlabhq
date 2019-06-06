@@ -50,7 +50,7 @@ class NotificationRecipient
     when :mention
       @type == :mention
     when :participating
-      !excluded_participating_action? && %i[participating mention watch].include?(@type)
+      @custom_action == :failed_pipeline || %i[participating mention].include?(@type)
     when :custom
       custom_enabled? || %i[participating mention].include?(@type)
     when :watch
@@ -104,12 +104,6 @@ class NotificationRecipient
     return false unless @custom_action
 
     NotificationSetting::EXCLUDED_WATCHER_EVENTS.include?(@custom_action)
-  end
-
-  def excluded_participating_action?
-    return false unless @custom_action
-
-    NotificationSetting::EXCLUDED_PARTICIPATING_EVENTS.include?(@custom_action)
   end
 
   private
