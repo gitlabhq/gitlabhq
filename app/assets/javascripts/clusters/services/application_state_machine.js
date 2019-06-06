@@ -123,7 +123,6 @@ const applicationStateMachine = {
         target: INSTALLED,
         effects: {
           updateSuccessful: true,
-          updateAcknowledged: false,
         },
       },
       [UPDATE_ERRORED]: {
