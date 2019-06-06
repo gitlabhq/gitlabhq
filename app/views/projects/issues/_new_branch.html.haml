@@ -8,18 +8,18 @@
   - create_branch_path = project_branches_path(@project, branch_name: @issue.to_branch_name, ref: @project.default_branch, issue_iid: @issue.iid)
   - refs_path = refs_namespace_project_path(@project.namespace, @project, search: '')
 
-  .create-mr-dropdown-wrap.d-inline-block{ data: { can_create_path: can_create_path, create_mr_path: create_mr_path, create_branch_path: create_branch_path, refs_path: refs_path } }
-    .btn-group.unavailable
+  .create-mr-dropdown-wrap.d-inline-block.full-width-mobile{ data: { can_create_path: can_create_path, create_mr_path: create_mr_path, create_branch_path: create_branch_path, refs_path: refs_path } }
+    .btn-group.btn-group-sm.unavailable
       %button.btn.btn-grouped{ type: 'button', disabled: 'disabled' }
         = icon('spinner', class: 'fa-spin')
         %span.text
           Checking branch availability…
 
-    .btn-group.available.hidden
+    .btn-group.btn-group-sm.available.hidden
       %button.btn.js-create-merge-request.btn-success.btn-inverted{ type: 'button', data: { action: data_action } }
         = value
 
-      %button.btn.create-merge-request-dropdown-toggle.dropdown-toggle.btn-success.btn-inverted.js-dropdown-toggle{ type: 'button', data: { dropdown: { trigger: '#create-merge-request-dropdown' }, display: 'static' } }
+      %button.btn.create-merge-request-dropdown-toggle.dropdown-toggle.btn-success.btn-inverted.js-dropdown-toggle.flex-grow-0{ type: 'button', data: { dropdown: { trigger: '#create-merge-request-dropdown' }, display: 'static' } }
         = icon('caret-down')
 
       .droplab-dropdown

@@ -199,6 +199,7 @@
 
   &.user-cover-block {
     padding: 24px 0 0;
+    border-bottom: 1px solid $border-color;
 
     .nav-links {
       width: 100%;
@@ -230,14 +231,6 @@
 
 .block-connector {
   margin-top: -1px;
-}
-
-.nav-block {
-  .controls {
-    float: right;
-    margin-top: 8px;
-    padding-bottom: 8px;
-  }
 }
 
 .content-block {

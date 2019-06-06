@@ -13,8 +13,8 @@
 
     a,
     button {
-      padding: $gl-btn-padding;
-      padding-bottom: 11px;
+      padding: $gl-padding-8;
+      padding-bottom: $gl-padding-8 + 1;
       font-size: 14px;
       line-height: 28px;
       color: $gl-text-color-secondary;
@@ -58,8 +58,12 @@
 }
 
 .top-area {
-  @include clearfix;
   border-bottom: 1px solid $border-color;
+  display: flex;
+
+  @include media-breakpoint-down(md) {
+    flex-flow: column-reverse wrap;
+  }
 
   .nav-text {
     padding-top: 16px;
@@ -75,9 +79,8 @@
   }
 
   .nav-links {
-    margin-bottom: 0;
     border-bottom: 0;
-    float: left;
+    flex: 1;
 
     &.wide {
       width: 100%;
@@ -98,16 +101,23 @@
 
       &.mobile-separator {
         border-bottom: 1px solid $border-color;
+        margin-bottom: $gl-padding-8;
       }
     }
   }
 
   .nav-controls {
     display: inline-block;
-    float: right;
     text-align: right;
-    padding: $gl-padding-8 0;
-    margin-bottom: 0;
+
+    @include media-breakpoint-down(sm) {
+      margin-top: $gl-padding-8;
+    }
+
+    @include media-breakpoint-up(md) {
+      display: flex;
+      align-items: center;
+    }
 
     > .btn,
     > .btn-container,
@@ -115,8 +125,6 @@
     > input,
     > form {
       margin-right: $gl-padding-top;
-      display: inline-block;
-      vertical-align: top;
 
       &:last-child {
         margin-right: 0;
@@ -143,7 +151,7 @@
       @include media-breakpoint-up(lg) { width: 250px; }
     }
 
-    @include media-breakpoint-down(xs) {
+    @include media-breakpoint-down(sm) {
       padding-bottom: 0;
       width: 100%;
 
@@ -153,7 +161,7 @@
       .dropdown-toggle,
       .dropdown-menu-toggle,
       .form-control {
-        margin: 0 0 10px;
+        margin: 0 0 $gl-padding-8;
         display: block;
         width: 100%;
       }
@@ -165,7 +173,7 @@
       form {
         display: block;
         height: auto;
-        margin-bottom: 14px;
+        margin-bottom: $gl-padding-8;
 
         input {
           width: 100%;
@@ -236,20 +244,11 @@
     width: 100%;
   }
 
-  @include media-breakpoint-down(xs) {
-    flex-flow: row wrap;
-
+  @include media-breakpoint-down(md) {
     .nav-controls {
       $controls-margin: $btn-margin-5 - 2px;
       flex: 0 0 100%;
-
-      &.controls-flex {
-        display: flex;
-        flex-flow: row wrap;
-        align-items: center;
-        justify-content: center;
-        padding: 0 0 $gl-padding-top;
-      }
+      margin-top: $gl-padding-8;
 
       .controls-item,
       .controls-item-full,
@@ -326,8 +325,8 @@
 
   .fade-right,
   .fade-left {
-    top: 16px;
-    bottom: auto;
+    bottom: $gl-padding;
+    top: auto;
   }
 
   &.is-smaller {
@@ -367,6 +366,7 @@
     display: flex;
     border-bottom: 1px solid $border-color;
     overflow: hidden;
+    align-items: center;
 
     .nav-links {
       border-bottom: 0;

@@ -69,7 +69,11 @@
   }
 
   .emoji-block {
-    padding: 10px 0;
+    padding: $gl-padding-4 0;
+
+    @include media-breakpoint-down(md) {
+      padding: $gl-padding-8 0;
+    }
   }
 }
 
@@ -131,6 +135,10 @@
   background: $gray-light;
   z-index: 200;
   overflow: hidden;
+
+  @include media-breakpoint-down(sm) {
+    z-index: 251;
+  }
 
   a:not(.btn) {
     color: inherit;

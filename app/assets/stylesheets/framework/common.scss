@@ -489,3 +489,15 @@ img.emoji {
 .cursor-pointer {
   cursor: pointer;
 }
+
+// Make buttons/dropdowns full-width on mobile
+.full-width-mobile {
+  @include media-breakpoint-down(xs) {
+    width: 100%;
+
+    > .dropdown-menu,
+    > .btn {
+      width: 100%;
+    }
+  }
+}
