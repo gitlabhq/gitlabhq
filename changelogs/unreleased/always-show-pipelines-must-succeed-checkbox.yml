@@ -1,0 +1,5 @@
+---
+title: Always show "Pipelines must succeed" checkbox
+merge_request: 28651
+author:
+type: fixed
