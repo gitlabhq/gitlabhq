@@ -169,7 +169,7 @@ module VisibilityLevelHelper
   #
   # 1. The group permissions (e.g. a subgroup is private, which requires
   # all projects to be private)
-  # 2. The global allowed visibility settinngs, set by the admin
+  # 2. The global allowed visibility settings, set by the admin
   def selected_visibility_level(form_model, requested_level)
     requested_level =
       if requested_level.present?
