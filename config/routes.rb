@@ -75,6 +75,8 @@ Rails.application.routes.draw do
       resources :issues, module: :boards, only: [:index, :update]
     end
 
+    get 'acme-challenge/' => 'acme_challenges#show'
+
     # UserCallouts
     resources :user_callouts, only: [:create]
 

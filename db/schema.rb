@@ -1571,6 +1571,20 @@ ActiveRecord::Schema.define(version: 20190530154715) do
     t.index ["access_grant_id"], name: "index_oauth_openid_requests_on_access_grant_id", using: :btree
   end
 
+  create_table "pages_domain_acme_orders", force: :cascade do |t|
+    t.integer "pages_domain_id", null: false
+    t.datetime_with_timezone "expires_at", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.string "url", null: false
+    t.string "challenge_token", null: false
+    t.text "challenge_file_content", null: false
+    t.text "encrypted_private_key", null: false
+    t.text "encrypted_private_key_iv", null: false
+    t.index ["challenge_token"], name: "index_pages_domain_acme_orders_on_challenge_token", using: :btree
+    t.index ["pages_domain_id"], name: "index_pages_domain_acme_orders_on_pages_domain_id", using: :btree
+  end
+
   create_table "pages_domains", id: :serial, force: :cascade do |t|
     t.integer "project_id"
     t.text "certificate"
@@ -2560,6 +2574,7 @@ ActiveRecord::Schema.define(version: 20190530154715) do
   add_foreign_key "notes", "projects", name: "fk_99e097b079", on_delete: :cascade
   add_foreign_key "notification_settings", "users", name: "fk_0c95e91db7", on_delete: :cascade
   add_foreign_key "oauth_openid_requests", "oauth_access_grants", column: "access_grant_id", name: "fk_oauth_openid_requests_oauth_access_grants_access_grant_id"
+  add_foreign_key "pages_domain_acme_orders", "pages_domains", on_delete: :cascade
   add_foreign_key "pages_domains", "projects", name: "fk_ea2f6dfc6f", on_delete: :cascade
   add_foreign_key "personal_access_tokens", "users"
   add_foreign_key "pool_repositories", "projects", column: "source_project_id", on_delete: :nullify
