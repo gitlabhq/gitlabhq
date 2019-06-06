@@ -52,7 +52,7 @@ Add another cluster similar to the first one and make sure to
 [set an environment scope](#environment-scopes-premium) that will
 differentiate the new cluster from the rest.
 
-## Gitlab-managed clusters
+## GitLab-managed clusters
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22011) in GitLab 11.5.
 > Became [optional](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/26565) in GitLab 11.11.
@@ -149,3 +149,15 @@ The following features are not currently available for group-level clusters:
 1. Terminals (see [related issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/55487)).
 1. Pod logs (see [related issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/55488)).
 1. Deployment boards (see [related issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/55489)).
+
+<!-- ## Troubleshooting
+
+Include any troubleshooting steps that you can foresee. If you know beforehand what issues
+one might have when setting this up, or when something is changed, or on upgrading, it's
+important to describe those, too. Think of things that may go wrong and include them here.
+This is important to minimize requests for support, and to avoid doc comments with
+questions that you know someone might ask.
+
+Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+If you have none to add when creating a doc, leave this section in place
+but commented out to help encourage others to add to it in the future. -->
