@@ -606,6 +606,9 @@ And to check out a particular merge request:
 git checkout origin/merge-requests/1
 ```
 
+all the above can be done with [git-mr] script.
+
+[git-mr]: https://gitlab.com/glensc/git-mr
 [products]: https://about.gitlab.com/products/ "GitLab products page"
 [protected branches]: ../protected_branches.md
 [ci]: ../../../ci/README.md
