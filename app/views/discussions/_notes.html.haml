@@ -19,20 +19,24 @@
 
   .discussion-reply-holder
     - if can_create_note?
+      %a.user-avatar-link.d-none.d-sm-block{ href: user_path(current_user) }
+        = image_tag avatar_icon_for_user(current_user), alt: current_user.to_reference, class: 'avatar s40'
       - if discussion.potentially_resolvable?
         - line_type = local_assigns.fetch(:line_type, nil)
 
-        .btn-group.discussion-with-resolve-btn{ role: "group" }
-          .btn-group{ role: "group" }
-            = link_to_reply_discussion(discussion, line_type)
+        .discussion-with-resolve-btn
+          .btn-group.discussion-with-resolve-btn{ role: "group" }
+            .btn-group{ role: "group" }
+              = link_to_reply_discussion(discussion, line_type)
 
-          = render "discussions/resolve_all", discussion: discussion
+            = render "discussions/resolve_all", discussion: discussion
 
-          .btn-group.discussion-actions
-            = render "discussions/new_issue_for_discussion", discussion: discussion, merge_request: discussion.noteable
-            = render "discussions/jump_to_next", discussion: discussion
+            .btn-group.discussion-actions
+              = render "discussions/new_issue_for_discussion", discussion: discussion, merge_request: discussion.noteable
+              = render "discussions/jump_to_next", discussion: discussion
       - else
-        = link_to_reply_discussion(discussion)
+        .discussion-with-resolve-btn
+          = link_to_reply_discussion(discussion)
     - elsif !current_user
       .disabled-comment.text-center
         Please

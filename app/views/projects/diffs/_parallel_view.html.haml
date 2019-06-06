@@ -1,7 +1,7 @@
 / Side-by-side diff view
 
 .text-file{ data: diff_view_data }
-  %table.diff-wrap-lines.code.js-syntax-highlight
+  %table.diff-wrap-lines.code.code-commit.js-syntax-highlight
     - diff_file.parallel_diff_lines.each do |line|
       - left = line[:left]
       - right = line[:right]

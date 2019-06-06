@@ -87,7 +87,11 @@ export default {
       'unresolvedDiscussionsCount',
       'hasUnresolvedDiscussions',
       'showJumpToNextDiscussion',
+      'getUserData',
     ]),
+    currentUser() {
+      return this.getUserData;
+    },
     author() {
       return this.firstNote.author;
     },
@@ -377,6 +381,14 @@ Please check your network connection and try again.`;
                   :class="{ 'is-replying': isReplying }"
                   class="discussion-reply-holder"
                 >
+                  <user-avatar-link
+                    v-if="!isReplying && currentUser"
+                    :link-href="currentUser.path"
+                    :img-src="currentUser.avatar_url"
+                    :img-alt="currentUser.name"
+                    :img-size="40"
+                    class="d-none d-sm-block"
+                  />
                   <discussion-actions
                     v-if="!isReplying && userCanReply"
                     :discussion="discussion"
@@ -388,18 +400,27 @@ Please check your network connection and try again.`;
                     @resolve="resolveHandler"
                     @jumpToNextDiscussion="jumpToNextDiscussion"
                   />
-                  <note-form
-                    v-if="isReplying"
-                    ref="noteForm"
-                    :discussion="discussion"
-                    :is-editing="false"
-                    :line="diffLine"
-                    save-button-title="Comment"
-                    :autosave-key="autosaveKey"
-                    @handleFormUpdateAddToReview="addReplyToReview"
-                    @handleFormUpdate="saveReply"
-                    @cancelForm="cancelReplyForm"
-                  />
+                  <div v-if="isReplying" class="avatar-note-form-holder">
+                    <user-avatar-link
+                      v-if="currentUser"
+                      :link-href="currentUser.path"
+                      :img-src="currentUser.avatar_url"
+                      :img-alt="currentUser.name"
+                      :img-size="40"
+                      class="d-none d-sm-block"
+                    />
+                    <note-form
+                      ref="noteForm"
+                      :discussion="discussion"
+                      :is-editing="false"
+                      :line="diffLine"
+                      save-button-title="Comment"
+                      :autosave-key="autosaveKey"
+                      @handleFormUpdateAddToReview="addReplyToReview"
+                      @handleFormUpdate="saveReply"
+                      @cancelForm="cancelReplyForm"
+                    />
+                  </div>
                   <note-signed-out-widget v-if="!userCanReply" />
                 </div>
               </template>

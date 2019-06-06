@@ -3,7 +3,7 @@
   .suppressed-container
     %a.show-suppressed-diff.cursor-pointer.js-show-suppressed-diff= _("Changes suppressed. Click to show.")
 
-%table.text-file.diff-wrap-lines.code.js-syntax-highlight.commit-diff{ data: diff_view_data, class: too_big ? 'hide' : '' }
+%table.text-file.diff-wrap-lines.code.code-commit.js-syntax-highlight.commit-diff{ data: diff_view_data, class: too_big ? 'hide' : '' }
   = render partial: "projects/diffs/line",
     collection: diff_file.highlighted_diff_lines,
     as: :line,
