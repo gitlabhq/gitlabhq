@@ -177,14 +177,6 @@ ul.content-list {
       }
     }
 
-    .member-controls {
-      float: none;
-
-      @include media-breakpoint-up(sm) {
-        float: right;
-      }
-    }
-
     // When dragging a list item
     &.ui-sortable-helper {
       border-bottom: 0;
