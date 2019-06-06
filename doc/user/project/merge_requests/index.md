@@ -511,7 +511,7 @@ seconds and the status will update automatically.
 
 Merge Request pipeline statuses can't be retrieved when the following occurs:
 
-1. A Merge Requst is created
+1. A Merge Request is created
 1. The Merge Request is closed
 1. Changes are made in the project
 1. The Merge Request is reopened
