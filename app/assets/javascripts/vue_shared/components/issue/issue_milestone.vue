@@ -19,10 +19,14 @@ export default {
   },
   computed: {
     milestoneDue() {
-      return this.milestone.due_date ? parsePikadayDate(this.milestone.due_date) : null;
+      const dueDate = this.milestone.due_date || this.milestone.dueDate;
+
+      return dueDate ? parsePikadayDate(dueDate) : null;
     },
     milestoneStart() {
-      return this.milestone.start_date ? parsePikadayDate(this.milestone.start_date) : null;
+      const startDate = this.milestone.start_date || this.milestone.startDate;
+
+      return startDate ? parsePikadayDate(startDate) : null;
     },
     isMilestoneStarted() {
       if (!this.milestoneStart) {
