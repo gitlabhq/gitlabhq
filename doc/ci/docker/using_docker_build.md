@@ -2,8 +2,6 @@
 
 GitLab CI/CD allows you to use Docker Engine to build and test docker-based projects.
 
-TIP: **Tip:**
-This also allows to you to use `docker-compose` and other docker-enabled tools.
 
 One of the new trends in Continuous Integration/Deployment is to:
 
@@ -75,7 +73,7 @@ GitLab Runner then executes job scripts as the `gitlab-runner` user.
         - docker run my-docker-image /script/to/run/tests
     ```
 
-1. You can now use `docker` command and install `docker-compose` if needed.
+1. You can now use `docker` command (and **install** `docker-compose` if needed).
 
 NOTE: **Note:**
 By adding `gitlab-runner` to the `docker` group you are effectively granting `gitlab-runner` full root permissions.
@@ -85,8 +83,10 @@ For more information please read [On Docker security: `docker` group considered 
 
 The second approach is to use the special docker-in-docker (dind)
 [Docker image](https://hub.docker.com/_/docker/) with all tools installed
-(`docker` and `docker-compose`) and run the job script in context of that
-image in privileged mode.
+(`docker`) and run the job script in context of that
+image in privileged mode. 
+
+NOTE: **Note:** `docker-compose` is not part of docker-in-docker (dind). In case you'd like to use `docker-compose` in your CI builds, please follow the (installation instructions for docker-compose)[https://docs.docker.com/compose/install/] provided by docker. 
 
 In order to do that, follow the steps:
 
