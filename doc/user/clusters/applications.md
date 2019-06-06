@@ -140,8 +140,8 @@ that installs additional useful packages on top of the base Jupyter. You
 will also see ready-to-use DevOps Runbooks built with Nurtch's [Rubix library](https://github.com/amit1rrr/rubix).
 
 More information on
-creating executable runbooks can be found in [our Nurtch
-documentation](../project/clusters/runbooks/index.md#nurtch-executable-runbooks). Note that
+creating executable runbooks can be found in [our Runbooks
+documentation](../project/clusters/runbooks/index.md#executable-runbooks). Note that
 Ingress must be installed and have an IP address assigned before
 JupyterHub can be installed.
 
@@ -151,6 +151,33 @@ The
 chart is used to install this application with a
 [`values.yaml`](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/vendor/jupyter/values.yaml)
 file.
+
+#### Jupyter Git Integration
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/28783) in GitLab 12 for project-level clusters.
+
+When installing JupyterHub onto your Kubernetes cluster, [JupyterLab's Git extension](https://github.com/jupyterlab/jupyterlab-git)
+is automatically provisioned and configured using the authenticated user's:
+
+- Name
+- Email
+- Newly created access token
+
+JupyterLab's Git extension enables full version control of your notebooks as well as issuance of Git commands within Jupyter.
+Git commands can be issued via the **Git** tab on the left panel or via Jupyter's command line prompt.
+
+NOTE: **Note:**
+JupyterLab's Git extension stores the user token in the JupyterHub DB in encrypted format
+and in the single user Jupyter instance as plain text. This is because [Git requires storing
+credentials as plain text](https://git-scm.com/docs/git-credential-store). Potentially, if
+a nefarious user finds a way to read from the file system in the single user Jupyter instance
+they could retrieve the token.
+
+![Jupyter's Git Extension](img/jupyter-git-extension.gif)
+
+You can clone repositories from the files tab in Jupyter:
+
+![Jupyter clone repository](img/jupyter-gitclone.png)
 
 ### Knative
 

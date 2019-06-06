@@ -17,13 +17,15 @@ Modern implementations have introduced the concept of an "executable
 runbooks", where, along with a well-defined process, operators can execute 
 pre-written code blocks or database queries against a given environment.
 
-## Nurtch Executable Runbooks
+## Executable Runbooks
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/45912) in GitLab 11.4.
 
 The JupyterHub app offered via GitLab’s Kubernetes integration now ships 
 with Nurtch’s Rubix library, providing a simple way to create DevOps 
-runbooks. A sample runbook is provided, showcasing common operations.
+runbooks. A sample runbook is provided, showcasing common operations. While Rubix makes it
+simple to create common Kubernetes and AWS workflows, you can also create them manually without
+Rubix.
 
 **<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 Watch this [video](https://www.youtube.com/watch?v=Q_OqHIIUPjE)
