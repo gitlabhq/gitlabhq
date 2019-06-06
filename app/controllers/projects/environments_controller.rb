@@ -15,6 +15,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     push_frontend_feature_flag(:environment_metrics_use_prometheus_endpoint)
     push_frontend_feature_flag(:environment_metrics_show_multiple_dashboards)
     push_frontend_feature_flag(:grafana_dashboard_link)
+    push_frontend_feature_flag(:prometheus_computed_alerts)
   end
 
   def index

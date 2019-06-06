@@ -4,6 +4,10 @@ class Projects::ClustersController < Clusters::ClustersController
   prepend_before_action :project
   before_action :repository
 
+  before_action do
+    push_frontend_feature_flag(:prometheus_computed_alerts)
+  end
+
   layout 'project'
 
   private
