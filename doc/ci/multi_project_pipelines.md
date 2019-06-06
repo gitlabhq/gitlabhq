@@ -167,6 +167,10 @@ In this scenario, the `UPSTREAM_BRANCH` variable with a value related to the
 upstream pipeline will be passed to the `downstream-job` job, and will be available
 within the context of all downstream builds.
 
+### Demos
+
+[A click-through demo of cross-project pipeline is available](https://about.gitlab.com/handbook/marketing/product-marketing/demo/#cross-project-pipeline-triggering-and-visualization-may-2019---1110), demonstrates how cross-functional dev teams use cross-pipeline triggering to trigger multiple pipelines for different microservices projects. 
+
 ### Limitations
 
 Because bridge jobs are a little different to regular jobs, it is not
