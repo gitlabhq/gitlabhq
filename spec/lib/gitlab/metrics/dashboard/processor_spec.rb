@@ -11,14 +11,11 @@ describe Gitlab::Metrics::Dashboard::Processor do
     let(:process_params) { [project, environment, dashboard_yml] }
     let(:dashboard) { described_class.new(*process_params).process(insert_project_metrics: true) }
 
-    # rubocop:disable RSpec/IteratedExpectation
-    # Cop disabled "all" matcher doesn't offer access to the element
     it 'includes a path for the prometheus endpoint with each metric' do
-      all_metrics.each do |metric|
-        expect(metric).to include(prometheus_endpoint_path: prometheus_path(metric[:query_range]))
+      expect(all_metrics).to satisfy_all do |metric|
+        metric[:prometheus_endpoint_path] == prometheus_path(metric[:query_range])
       end
     end
-    # rubocop:enable RSpec/IteratedExpectation
 
     context 'when dashboard config corresponds to common metrics' do
       let!(:common_metric) { create(:prometheus_metric, :common, identifier: 'metric_a1') }
@@ -70,7 +67,7 @@ describe Gitlab::Metrics::Dashboard::Processor do
 
     shared_examples_for 'errors with message' do |expected_message|
       it 'raises a DashboardLayoutError' do
-        error_class = Gitlab::Metrics::Dashboard::Stages::BaseStage::DashboardLayoutError
+        error_class = Gitlab::Metrics::Dashboard::Stages::BaseStage::DashboardProcessingError
 
         expect { dashboard }.to raise_error(error_class, expected_message)
       end
@@ -93,6 +90,12 @@ describe Gitlab::Metrics::Dashboard::Processor do
 
       it_behaves_like 'errors with message', 'Each "panel" must define an array :metrics'
     end
+
+    context 'when the dashboard contains a metric which is missing a query' do
+      let(:dashboard_yml) { { panel_groups: [{ panels: [{ metrics: [{}] }] }] } }
+
+      it_behaves_like 'errors with message', 'Each "metric" must define one of :query or :query_range'
+    end
   end
 
   private
@@ -114,9 +117,11 @@ describe Gitlab::Metrics::Dashboard::Processor do
   end
 
   def prometheus_path(query)
-    "/#{project.namespace.path}" \
-    "/#{project.name}/environments/" \
-    "#{environment.id}/prometheus/api/v1" \
-    "/query_range?query=#{CGI.escape query}"
+    Gitlab::Routing.url_helpers.prometheus_api_project_environment_path(
+      project,
+      environment,
+      proxy_path: :query_range,
+      query: query
+    )
   end
 end

@@ -28,12 +28,8 @@ describe Gitlab::Metrics::Dashboard::Finder, :use_clean_rails_memory_store_cachi
     end
 
     context 'when the dashboard contains a metric without a query' do
-      let(:project) do
-        project_with_dashboard(
-          dashboard_path,
-          { 'panel_groups' => [{ 'panels' => [{ 'metrics' => [{ 'id' => 'mock' }] }] }] }.to_yaml
-        )
-      end
+      let(:dashboard) { { 'panel_groups' => [{ 'panels' => [{ 'metrics' => [{ 'id' => 'mock' }] }] }] } }
+      let(:project) { project_with_dashboard(dashboard_path, dashboard.to_yaml) }
 
       it_behaves_like 'misconfigured dashboard service response', :unprocessable_entity
     end

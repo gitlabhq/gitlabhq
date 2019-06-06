@@ -5,7 +5,7 @@ module Gitlab
     module Dashboard
       module Stages
         class EndpointInserter < BaseStage
-          MissingQueryError = Class.new(StandardError)
+          MissingQueryError = Class.new(DashboardProcessingError)
 
           def transform!
             for_metrics do |metric|
@@ -31,7 +31,7 @@ module Gitlab
           def query_for_metric(metric)
             query = metric[query_type(metric)]
 
-            raise MissingQueryError.new('Missing required metric key: one of :query or :query_range') unless query
+            raise MissingQueryError.new('Each "metric" must define one of :query or :query_range') unless query
 
             query
           end
