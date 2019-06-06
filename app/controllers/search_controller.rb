@@ -25,6 +25,7 @@ class SearchController < ApplicationController
     @show_snippets = search_service.show_snippets?
     @search_results = search_service.search_results
     @search_objects = search_service.search_objects
+    @display_options = search_service.display_options
 
     render_commits if @scope == 'commits'
     eager_load_user_status if @scope == 'users'
