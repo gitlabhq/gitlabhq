@@ -8,7 +8,12 @@ class Feature
     # CATFILE_CACHE sets an incorrect example
     CATFILE_CACHE = 'catfile-cache'.freeze
 
-    SERVER_FEATURE_FLAGS = [CATFILE_CACHE].freeze
+    SERVER_FEATURE_FLAGS =
+      [
+        CATFILE_CACHE,
+        'get_commit_signatures'.freeze
+      ].freeze
+
     DEFAULT_ON_FLAGS = Set.new([CATFILE_CACHE]).freeze
 
     class << self
