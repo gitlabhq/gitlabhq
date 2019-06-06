@@ -1,3 +1,7 @@
+---
+type: reference, howto
+---
+
 # SAML SSO for GitLab.com Groups **[SILVER ONLY]**
 
 > Introduced in [GitLab.com Silver](https://about.gitlab.com/pricing/) 11.0.
@@ -15,7 +19,7 @@ SAML SSO for GitLab.com groups does not sync users between providers without usi
 ## Configuring your Identity Provider
 
 1. Navigate to the group and click **Settings > SAML SSO**.
-1. Configure your SAML server using the **Assertion consumer service URL** and **Issuer**. Alternatively GitLab provides [metadata XML configuration](#metadata-configuration). See [your identity provider's documentation](#providers) for more details.
+1. Configure your SAML server using the **Assertion consumer service URL** and **Identifier**. Alternatively GitLab provides [metadata XML configuration](#metadata-configuration). See [your identity provider's documentation](#providers) for more details.
 1. Configure the SAML response to include a NameID that uniquely identifies each user.
 1. Configure required assertions using the [table below](#assertions).
 1. Once the identity provider is set up, move on to [configuring GitLab](#configuring-gitlab).
@@ -43,12 +47,12 @@ GitLab.com uses the SAML NameID to identify users. The NameID element:
 
 ### Assertions
 
-| Field | Supported keys | Notes |
-|-|----------------|-------------|
-| Email | `email`, `mail` | (required) |
-| Full Name | `name` |  |
-| First Name | `first_name`, `firstname`, `firstName` |  |
-| Last Name | `last_name`, `lastname`, `lastName` |  |
+| Field | Supported keys |
+|-------|----------------|
+| Email (required)| `email`, `mail` |
+| Full Name | `name` |
+| First Name | `first_name`, `firstname`, `firstName` |
+| Last Name | `last_name`, `lastname`, `lastName` |
 
 ## Metadata configuration
 
@@ -122,3 +126,15 @@ For example, to unlink the `MyOrg` account, the following **Disconnect** button 
 | Assertion consumer service URL | The callback on GitLab where users will be redirected after successfully authenticating with the identity provider. |
 | Issuer | How GitLab identifies itself to the identity provider. Also known as a "Relying party trust identifier". |
 | Certificate fingerprint | Used to confirm that communications over SAML are secure by checking that the server is signing communications with the correct certificate. Also known as a certificate thumbprint. |
+
+<!-- ## Troubleshooting
+
+Include any troubleshooting steps that you can foresee. If you know beforehand what issues
+one might have when setting this up, or when something is changed, or on upgrading, it's
+important to describe those, too. Think of things that may go wrong and include them here.
+This is important to minimize requests for support, and to avoid doc comments with
+questions that you know someone might ask.
+
+Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+If you have none to add when creating a doc, leave this section in place
+but commented out to help encourage others to add to it in the future. -->
