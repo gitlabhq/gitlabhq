@@ -44,4 +44,12 @@ class IssueEntity < IssuableEntity
   expose :preview_note_path do |issue|
     preview_markdown_path(issue.project, target_type: 'Issue', target_id: issue.iid)
   end
+
+  expose :confidential_issues_docs_path, if: -> (issue) { issue.confidential? } do |issue|
+    help_page_path('user/project/issues/confidential_issues.md')
+  end
+
+  expose :locked_discussion_docs_path, if: -> (issue) { issue.discussion_locked? } do |issue|
+    help_page_path('user/discussions/index.md', anchor: 'lock-discussions')
+  end
 end

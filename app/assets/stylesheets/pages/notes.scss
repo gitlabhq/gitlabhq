@@ -762,7 +762,7 @@ $note-form-margin-left: 72px;
     background-color: $white-light;
   }
 
-  a {
+  a:not(.learn-more) {
     color: $blue-600;
   }
 }
