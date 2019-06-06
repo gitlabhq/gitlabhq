@@ -127,7 +127,7 @@ describe('applicationStateMachine', () => {
   describe(`current state is ${UPDATING}`, () => {
     it.each`
       expectedState | event             | effects
-      ${INSTALLED}  | ${UPDATED}        | ${{ updateSuccessful: true, updateAcknowledged: false }}
+      ${INSTALLED}  | ${UPDATED}        | ${{ updateSuccessful: true }}
       ${INSTALLED}  | ${UPDATE_ERRORED} | ${{ updateFailed: true }}
     `(`transitions to $expectedState on $event event and applies $effects`, data => {
       const { expectedState, event, effects } = data;

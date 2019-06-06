@@ -142,8 +142,7 @@ export default class Clusters {
   addListeners() {
     if (this.showTokenButton) this.showTokenButton.addEventListener('click', this.showToken);
     eventHub.$on('installApplication', this.installApplication);
-    eventHub.$on('upgradeApplication', data => this.upgradeApplication(data));
-    eventHub.$on('dismissUpgradeSuccess', appId => this.dismissUpgradeSuccess(appId));
+    eventHub.$on('updateApplication', data => this.updateApplication(data));
     eventHub.$on('saveKnativeDomain', data => this.saveKnativeDomain(data));
     eventHub.$on('setKnativeHostname', data => this.setKnativeHostname(data));
     eventHub.$on('uninstallApplication', data => this.uninstallApplication(data));
@@ -155,8 +154,7 @@ export default class Clusters {
   removeListeners() {
     if (this.showTokenButton) this.showTokenButton.removeEventListener('click', this.showToken);
     eventHub.$off('installApplication', this.installApplication);
-    eventHub.$off('upgradeApplication', this.upgradeApplication);
-    eventHub.$off('dismissUpgradeSuccess', this.dismissUpgradeSuccess);
+    eventHub.$off('updateApplication', this.updateApplication);
     eventHub.$off('saveKnativeDomain');
     eventHub.$off('setKnativeHostname');
     eventHub.$off('uninstallApplication');
@@ -331,17 +329,11 @@ export default class Clusters {
     });
   }
 
-  upgradeApplication(data) {
-    const appId = data.id;
-
+  updateApplication({ id: appId, params }) {
     this.store.updateApplication(appId);
-    this.service.installApplication(appId, data.params).catch(() => {
+    this.service.installApplication(appId, params).catch(() => {
       this.store.notifyUpdateFailure(appId);
     });
-  }
-
-  dismissUpgradeSuccess(appId) {
-    this.store.acknowledgeSuccessfulUpdate(appId);
   }
 
   toggleIngressDomainHelpText({ externalIp }, { externalIp: newExternalIp }) {

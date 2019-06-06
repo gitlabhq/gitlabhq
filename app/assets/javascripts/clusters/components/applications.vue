@@ -376,7 +376,7 @@ export default {
         :request-reason="applications.runner.requestReason"
         :version="applications.runner.version"
         :chart-repo="applications.runner.chartRepo"
-        :upgrade-available="applications.runner.upgradeAvailable"
+        :update-available="applications.runner.updateAvailable"
         :installed="applications.runner.installed"
         :install-failed="applications.runner.installFailed"
         :update-successful="applications.runner.updateSuccessful"

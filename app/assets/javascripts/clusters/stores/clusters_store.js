@@ -56,8 +56,7 @@ export default class ClusterStore {
           title: s__('ClusterIntegration|GitLab Runner'),
           version: null,
           chartRepo: 'https://gitlab.com/charts/gitlab-runner',
-          upgradeAvailable: null,
-          updateAcknowledged: true,
+          updateAvailable: null,
           updateSuccessful: false,
           updateFailed: false,
         },
@@ -136,10 +135,6 @@ export default class ClusterStore {
     this.state.applications[appId] = transitionApplicationState(currentAppState, event);
   }
 
-  acknowledgeSuccessfulUpdate(appId) {
-    this.state.applications[appId].updateAcknowledged = true;
-  }
-
   updateAppProperty(appId, prop, value) {
     this.state.applications[appId][prop] = value;
   }
@@ -154,7 +149,7 @@ export default class ClusterStore {
         status,
         status_reason: statusReason,
         version,
-        update_available: upgradeAvailable,
+        update_available: updateAvailable,
         can_uninstall: uninstallable,
       } = serverAppEntry;
       const currentApplicationState = this.state.applications[appId] || {};
@@ -191,7 +186,7 @@ export default class ClusterStore {
           serverAppEntry.external_hostname || this.state.applications.knative.externalHostname;
       } else if (appId === RUNNER) {
         this.state.applications.runner.version = version;
-        this.state.applications.runner.upgradeAvailable = upgradeAvailable;
+        this.state.applications.runner.updateAvailable = updateAvailable;
       }
     });
   }
