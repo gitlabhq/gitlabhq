@@ -63,6 +63,36 @@ describe 'New project' do
         end
       end
     end
+
+    context 'when group visibility is private but default is internal' do
+      before do
+        stub_application_setting(default_project_visibility: Gitlab::VisibilityLevel::INTERNAL)
+      end
+
+      it 'has private selected' do
+        group = create(:group, visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+        visit new_project_path(namespace_id: group.id)
+
+        page.within('#blank-project-pane') do
+          expect(find_field("project_visibility_level_#{Gitlab::VisibilityLevel::PRIVATE}")).to be_checked
+        end
+      end
+    end
+
+    context 'when group visibility is public but user requests private' do
+      before do
+        stub_application_setting(default_project_visibility: Gitlab::VisibilityLevel::INTERNAL)
+      end
+
+      it 'has private selected' do
+        group = create(:group, visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+        visit new_project_path(namespace_id: group.id, project: { visibility_level: Gitlab::VisibilityLevel::PRIVATE })
+
+        page.within('#blank-project-pane') do
+          expect(find_field("project_visibility_level_#{Gitlab::VisibilityLevel::PRIVATE}")).to be_checked
+        end
+      end
+    end
   end
 
   context 'Readme selector' do

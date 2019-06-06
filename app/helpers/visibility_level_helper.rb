@@ -165,7 +165,45 @@ module VisibilityLevelHelper
     !form_model.visibility_level_allowed?(level)
   end
 
+  # Visibility level can be restricted in two ways:
+  #
+  # 1. The group permissions (e.g. a subgroup is private, which requires
+  # all projects to be private)
+  # 2. The global allowed visibility settings, set by the admin
+  def selected_visibility_level(form_model, requested_level)
+    requested_level =
+      if requested_level.present?
+        requested_level.to_i
+      else
+        default_project_visibility
+      end
+
+    [requested_level, max_allowed_visibility_level(form_model)].min
+  end
+
   private
+
+  def max_allowed_visibility_level(form_model)
+    # First obtain the maximum visibility for the project or group
+    current_level = max_allowed_visibility_level_by_model(form_model)
+
+    # Now limit this by the global setting
+    Gitlab::VisibilityLevel.closest_allowed_level(current_level)
+  end
+
+  def max_allowed_visibility_level_by_model(form_model)
+    current_level = Gitlab::VisibilityLevel::PRIVATE
+
+    Gitlab::VisibilityLevel.values.sort.each do |value|
+      if disallowed_visibility_level?(form_model, value)
+        break
+      else
+        current_level = value
+      end
+    end
+
+    current_level
+  end
 
   def visibility_level_errors_for_group(group, level_name)
     group_name = link_to group.name, group_path(group)

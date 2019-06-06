@@ -162,4 +162,49 @@ describe VisibilityLevelHelper do
       end
     end
   end
+
+  describe "selected_visibility_level" do
+    let(:group) { create(:group, :public) }
+    let!(:project) { create(:project, :internal, group: group) }
+    let!(:forked_project) { fork_project(project) }
+
+    using RSpec::Parameterized::TableSyntax
+
+    PUBLIC = Gitlab::VisibilityLevel::PUBLIC
+    INTERNAL = Gitlab::VisibilityLevel::INTERNAL
+    PRIVATE = Gitlab::VisibilityLevel::PRIVATE
+
+    # This is a subset of all the permutations
+    where(:requested_level, :max_allowed, :global_default_level, :restricted_levels, :expected) do
+      PUBLIC | PUBLIC | PUBLIC | [] | PUBLIC
+      PUBLIC | PUBLIC | PUBLIC | [PUBLIC] | INTERNAL
+      INTERNAL | PUBLIC | PUBLIC | [] | INTERNAL
+      INTERNAL | PRIVATE | PRIVATE | [] | PRIVATE
+      PRIVATE | PUBLIC | PUBLIC | [] | PRIVATE
+      PUBLIC | PRIVATE | INTERNAL | [] | PRIVATE
+      PUBLIC | INTERNAL | PUBLIC | [] | INTERNAL
+      PUBLIC | PRIVATE | PUBLIC | [] | PRIVATE
+      PUBLIC | INTERNAL | INTERNAL | [] | INTERNAL
+      PUBLIC | PUBLIC | INTERNAL | [] | PUBLIC
+    end
+
+    before do
+      stub_application_setting(restricted_visibility_levels: restricted_levels,
+                               default_project_visibility: global_default_level)
+    end
+
+    with_them do
+      it "provides correct visibility level for forked project" do
+        project.update(visibility_level: max_allowed)
+
+        expect(selected_visibility_level(forked_project, requested_level)).to eq(expected)
+      end
+
+      it "provides correct visibiility level for project in group" do
+        project.group.update(visibility_level: max_allowed)
+
+        expect(selected_visibility_level(project, requested_level)).to eq(expected)
+      end
+    end
+  end
 end
