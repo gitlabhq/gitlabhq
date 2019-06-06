@@ -8,7 +8,7 @@ class ProjectCiCdSetting < ApplicationRecord
 
   DEFAULT_GIT_DEPTH = 50
 
-  before_create :set_default_git_depth, unless: :default_git_depth?
+  before_create :set_default_git_depth
 
   validates :default_git_depth,
     numericality: {
@@ -31,6 +31,8 @@ class ProjectCiCdSetting < ApplicationRecord
   private
 
   def set_default_git_depth
+    return if default_git_depth
+
     self.default_git_depth = DEFAULT_GIT_DEPTH
   end
 end
