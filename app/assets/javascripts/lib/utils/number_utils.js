@@ -100,3 +100,9 @@ export function numberToHumanSize(size) {
  * @returns {Float} The summed value
  */
 export const sum = (a = 0, b = 0) => a + b;
+
+/**
+ * Checks if the provided number is odd
+ * @param {Int} number
+ */
+export const isOdd = (number = 0) => number % 2;
