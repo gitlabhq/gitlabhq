@@ -47,6 +47,16 @@ You can dismiss vulnerabilities by clicking the **Dismiss vulnerability** button
 This will dismiss the vulnerability and re-render it to reflect its dismissed state.
 If you wish to undo this dismissal, you can click the **Undo dismiss** button.
 
+#### Adding a dismissal reason
+
+> Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing) 12.0.
+
+When dismissing a vulnerability, it's often helpful to provide a reason for doing so.
+If you press the comment button next to **Dismiss vulnerability** in the modal, a text box will appear, allowing you to add a comment with your dismissal.
+This comment can not currently be edited or removed, but [future versions](https://gitlab.com/gitlab-org/gitlab-ee/issues/11721) will add this functionality.
+
+![Dismissed vulnerability comment](img/dismissed_info.png)
+
 ### Creating an issue for a vulnerability
 
 You can create an issue for a vulnerability by selecting the **Create issue**
