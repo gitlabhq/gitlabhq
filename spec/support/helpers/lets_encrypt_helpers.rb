@@ -1,6 +1,26 @@
 # frozen_string_literal: true
 
 module LetsEncryptHelpers
+  ACME_ORDER_METHODS = {
+    url: 'https://example.com/',
+    status: 'valid',
+    expires: 2.days.from_now
+  }.freeze
+
+  ACME_CHALLENGE_METHODS = {
+    status: 'pending',
+    token: 'tokenvalue',
+    file_content: 'hereisfilecontent',
+    request_validation: true
+  }.freeze
+
+  def stub_lets_encrypt_settings
+    stub_application_setting(
+      lets_encrypt_notification_email: 'myemail@test.example.com',
+      lets_encrypt_terms_of_service_accepted: true
+    )
+  end
+
   def stub_lets_encrypt_client
     client = instance_double('Acme::Client')
 
@@ -15,5 +35,25 @@ module LetsEncryptHelpers
     ).and_return(client)
 
     client
+  end
+
+  def acme_challenge_double
+    challenge = instance_double('Acme::Client::Resources::Challenges::HTTP01')
+    allow(challenge).to receive_messages(ACME_CHALLENGE_METHODS)
+    challenge
+  end
+
+  def acme_authorization_double
+    authorization = instance_double('Acme::Client::Resources::Authorization')
+    allow(authorization).to receive(:http).and_return(acme_challenge_double)
+    authorization
+  end
+
+  def acme_order_double(attributes = {})
+    acme_order = instance_double('Acme::Client::Resources::Order')
+    allow(acme_order).to receive_messages(ACME_ORDER_METHODS.merge(attributes))
+    allow(acme_order).to receive(:authorizations).and_return([acme_authorization_double])
+    allow(acme_order).to receive(:finalize)
+    acme_order
   end
 end

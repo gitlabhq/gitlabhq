@@ -7,7 +7,7 @@ module Gitlab
         @acme_challenge = acme_challenge
       end
 
-      delegate :url, :token, :file_content, :status, :request_validation, to: :acme_challenge
+      delegate :token, :file_content, :status, :request_validation, to: :acme_challenge
 
       private
 

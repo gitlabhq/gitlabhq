@@ -13,7 +13,16 @@ module Gitlab
         ::Gitlab::LetsEncrypt::Challenge.new(challenge)
       end
 
-      delegate :url, :status, to: :acme_order
+      def request_certificate(domain:, private_key:)
+        csr = ::Acme::Client::CertificateRequest.new(
+          private_key: OpenSSL::PKey.read(private_key),
+          subject: { common_name: domain }
+        )
+
+        acme_order.finalize(csr: csr)
+      end
+
+      delegate :url, :status, :expires, :certificate, to: :acme_order
 
       private
 
