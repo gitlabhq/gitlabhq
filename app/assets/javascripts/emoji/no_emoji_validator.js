@@ -1,10 +1,11 @@
 import { __ } from '~/locale';
 import emojiRegex from 'emoji-regex';
+import InputValidator from '../validators/input_validator';
 
-const invalidInputClass = 'gl-field-error-outline';
-
-export default class NoEmojiValidator {
+export default class NoEmojiValidator extends InputValidator {
   constructor(opts = {}) {
+    super();
+
     const container = opts.container || '';
     this.noEmojiEmelents = document.querySelectorAll(`${container} .js-block-emoji`);
 
@@ -19,45 +20,14 @@ export default class NoEmojiValidator {
 
     const { value } = this.inputDomElement;
 
+    this.errorMessage = __('Invalid input, please avoid emojis');
+
     this.validatePattern(value);
     this.setValidationStateAndMessage();
   }
 
   validatePattern(value) {
     const pattern = emojiRegex();
-    this.hasEmojis = new RegExp(pattern).test(value);
-
-    if (this.hasEmojis) {
-      this.inputDomElement.setCustomValidity(__('Invalid input, please avoid emojis'));
-    } else {
-      this.inputDomElement.setCustomValidity('');
-    }
-  }
-
-  setValidationStateAndMessage() {
-    if (!this.inputDomElement.checkValidity()) {
-      this.setInvalidState();
-    } else {
-      this.clearFieldValidationState();
-    }
-  }
-
-  clearFieldValidationState() {
-    this.inputDomElement.classList.remove(invalidInputClass);
-    this.inputErrorMessage.classList.add('hide');
-  }
-
-  setInvalidState() {
-    this.inputDomElement.classList.add(invalidInputClass);
-    this.setErrorMessage();
-  }
-
-  setErrorMessage() {
-    if (this.hasEmojis) {
-      this.inputErrorMessage.innerHTML = this.inputDomElement.validationMessage;
-    } else {
-      this.inputErrorMessage.innerHTML = this.inputDomElement.title;
-    }
-    this.inputErrorMessage.classList.remove('hide');
+    this.invalidInput = new RegExp(pattern).test(value);
   }
 }

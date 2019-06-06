@@ -73,7 +73,8 @@
     .login-body {
       font-size: 13px;
 
-      input + p {
+      input + p,
+      input ~ p.field-validation {
         margin-top: 5px;
       }
 
