@@ -5,11 +5,11 @@ module Gitlab
     module Pipeline
       module Expression
         module Lexeme
-          class Equals < Lexeme::Operator
-            PATTERN = /==/.freeze
+          class And < Lexeme::Operator
+            PATTERN = /&&/.freeze
 
             def evaluate(variables = {})
-              @left.evaluate(variables) == @right.evaluate(variables)
+              @left.evaluate(variables) && @right.evaluate(variables)
             end
 
             def self.build(_value, behind, ahead)
@@ -17,7 +17,7 @@ module Gitlab
             end
 
             def self.precedence
-              10 # See: https://ruby-doc.org/core-2.5.0/doc/syntax/precedence_rdoc.html
+              11 # See: https://ruby-doc.org/core-2.5.0/doc/syntax/precedence_rdoc.html
             end
           end
         end
