@@ -691,4 +691,38 @@ describe ApplicationController do
       end
     end
   end
+
+  context 'Gitlab::Session' do
+    controller(described_class) do
+      prepend_before_action do
+        authenticate_sessionless_user!(:rss)
+      end
+
+      def index
+        if Gitlab::Session.current
+          head :created
+        else
+          head :not_found
+        end
+      end
+    end
+
+    it 'is set on web requests' do
+      sign_in(user)
+
+      get :index
+
+      expect(response).to have_gitlab_http_status(:created)
+    end
+
+    context 'with sessionless user' do
+      it 'is not set' do
+        personal_access_token = create(:personal_access_token, user: user)
+
+        get :index, format: :atom, params: { private_token: personal_access_token.token }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
 end
