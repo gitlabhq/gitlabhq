@@ -20,7 +20,7 @@ shared_examples 'reportable note' do |type|
     dropdown = comment.find(more_actions_selector)
     open_dropdown(dropdown)
 
-    expect(dropdown).to have_link('Report abuse to GitLab', href: abuse_report_path)
+    expect(dropdown).to have_link('Report abuse to admin', href: abuse_report_path)
 
     if type == 'issue' || type == 'merge_request'
       expect(dropdown).to have_button('Delete comment')
@@ -33,7 +33,7 @@ shared_examples 'reportable note' do |type|
     dropdown = comment.find(more_actions_selector)
     open_dropdown(dropdown)
 
-    dropdown.click_link('Report abuse to GitLab')
+    dropdown.click_link('Report abuse to admin')
 
     expect(find('#user_name')['value']).to match(note.author.username)
     expect(find('#abuse_report_message')['value']).to match(noteable_note_url(note))

@@ -427,7 +427,7 @@ msgstr ""
 msgid "A fork is a copy of a project.<br />Forking a repository allows you to make changes without affecting the original project."
 msgstr ""
 
-msgid "A member of GitLab's abuse team will review your report as soon as possible."
+msgid "A member of the abuse team will review your report as soon as possible."
 msgstr ""
 
 msgid "A new branch will be created in your fork and a new merge request will be started."
@@ -7315,7 +7315,7 @@ msgstr ""
 msgid "Please try again"
 msgstr ""
 
-msgid "Please use this form to report users to GitLab who create spam issues, comments or behave inappropriately."
+msgid "Please use this form to report to the admin users who create spam issues, comments or behave inappropriately."
 msgstr ""
 
 msgid "Please wait a moment, this page will automatically refresh when ready."
@@ -8385,7 +8385,7 @@ msgstr ""
 msgid "Reply to this email directly or %{view_it_on_gitlab}."
 msgstr ""
 
-msgid "Report abuse to GitLab"
+msgid "Report abuse to admin"
 msgstr ""
 
 msgid "Reporting"
