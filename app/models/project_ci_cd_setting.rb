@@ -31,8 +31,6 @@ class ProjectCiCdSetting < ApplicationRecord
   private
 
   def set_default_git_depth
-    return if default_git_depth
-
-    self.default_git_depth = DEFAULT_GIT_DEPTH
+    self.default_git_depth ||= DEFAULT_GIT_DEPTH
   end
 end
