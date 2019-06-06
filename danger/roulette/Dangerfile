@@ -33,10 +33,14 @@ MARKDOWN
 
 def spin_for_category(team, project, category, branch_name)
   random = roulette.new_random(branch_name)
+  labels = gitlab.mr_labels
 
-  reviewers = team.select { |member| member.reviewer?(project, category) }
-  traintainers = team.select { |member| member.traintainer?(project, category) }
-  maintainers = team.select { |member| member.maintainer?(project, category) }
+  reviewers, traintainers, maintainers =
+    %i[reviewer? traintainer? maintainer?].map do |kind|
+      team.select do |member|
+        member.public_send(kind, project, category, labels) # rubocop:disable GitlabSecurity/PublicSend
+      end
+    end
 
   # TODO: take CODEOWNERS into account?
   # https://gitlab.com/gitlab-org/gitlab-ce/issues/57653
