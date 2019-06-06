@@ -445,8 +445,7 @@ The replication process is now complete.
 PostgreSQL connections. We recommend using PGBouncer if you use GitLab in a
 high-availability configuration with a cluster of nodes supporting a Geo
 **primary** node and another cluster of nodes supporting a Geo **secondary** node. For more
-information, see the [Omnibus HA](../../high_availability/database.md#configure-using-omnibus)
-documentation.
+information, see [High Availability with GitLab Omnibus](../../high_availability/database.md#high-availability-with-gitlab-omnibus-premium-only).
 
 For a Geo **secondary** node to work properly with PGBouncer in front of the database,
 it will need a separate read-only user to make [PostgreSQL FDW queries][FDW]
