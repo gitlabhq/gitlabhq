@@ -23,7 +23,10 @@ module GitalyTest
       'BUNDLE_FLAGS' => "--jobs=4 --retry=3",
       'BUNDLE_INSTALL_FLAGS' => nil,
       'BUNDLE_GEMFILE' => gemfile,
-      'RUBYOPT' => nil
+      'RUBYOPT' => nil,
+
+      # Git hooks can't run during tests as the internal API is not running.
+      'GITALY_TESTING_NO_GIT_HOOKS' => "1"
     }
 
     if ENV['CI']
