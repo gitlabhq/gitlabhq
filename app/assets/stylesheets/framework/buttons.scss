@@ -249,7 +249,7 @@
     padding: 6px 16px;
     border-color: $border-color;
     color: $gray-darkest;
-    background-color: $gray-light;
+    background-color: $white-light;
 
     &:hover,
     &:active,
@@ -258,7 +258,6 @@
       box-shadow: none;
       border-color: lighten($blue-300, 20%);
       color: $gray-darkest;
-      background-color: $gray-light;
     }
   }
 

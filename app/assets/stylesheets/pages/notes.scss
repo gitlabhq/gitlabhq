@@ -80,21 +80,17 @@ $note-form-margin-left: 72px;
     }
   }
 
-  li.note {
-    border-bottom: 1px solid $border-color;
-  }
-
   .replies-toggle {
     background-color: $gray-light;
     padding: $gl-padding-8 $gl-padding;
+    border-top: 1px solid $gray-100;
+    border-bottom: 1px solid $gray-100;
 
     .collapse-replies-btn:hover {
       color: $blue-600;
     }
 
     &.expanded {
-      border-bottom: 1px solid $border-color;
-
       span {
         cursor: pointer;
       }
@@ -211,8 +207,13 @@ $note-form-margin-left: 72px;
         display: none;
       }
 
+      .user-avatar-link img {
+        margin-top: $gl-padding-8;
+      }
+
       .note-edit-form {
         display: block;
+        margin-left: 0;
 
         &.current-note-edit-form + .note-awards {
           display: none;
@@ -519,10 +520,28 @@ $note-form-margin-left: 72px;
   }
 }
 
-.commit-diff {
-  .notes-content {
-    background-color: $white-light;
+.code-commit .notes-content,
+.diff-viewer > .image ~ .note-container {
+  background-color: $white-light;
+
+  .avatar-note-form-holder {
+    .user-avatar-link img {
+      margin: 13px $gl-padding $gl-padding;
+    }
+
+    form,
+    ~ .discussion-form-container {
+      padding: $gl-padding;
+
+      @include media-breakpoint-up(sm) {
+        margin-left: $note-icon-gutter-width;
+      }
+    }
   }
+}
+
+.diff-viewer > .image ~ .note-container form.new-note {
+  margin-left: 0;
 }
 
 .discussion-header,

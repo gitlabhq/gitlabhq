@@ -453,6 +453,28 @@ span.idiff {
     }
   }
 
+  .note-container {
+    .user-avatar-link.new-comment {
+      position: absolute;
+      margin: 40px $gl-padding 0 116px;
+
+      ~ .note-edit-form form.edit-note {
+        @include media-breakpoint-up(sm) {
+          margin-left: $note-icon-gutter-width;
+        }
+      }
+    }
+  }
+
+  .diff-discussions:not(:last-child) .discussion .discussion-body {
+    padding-bottom: $gl-padding;
+
+    .discussion-reply-holder {
+      border-bottom: 1px solid $gray-100;
+      border-radius: 0;
+    }
+  }
+
   .md-previewer {
     padding: $gl-padding;
   }
