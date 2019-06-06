@@ -234,6 +234,8 @@ export default {
         v-if="hasWarning(getNoteableData)"
         :is-locked="isLocked(getNoteableData)"
         :is-confidential="isConfidential(getNoteableData)"
+        :locked-issue-docs-path="lockedIssueDocsPath"
+        :confidential-issue-docs-path="confidentialIssueDocsPath"
       />
 
       <markdown-field

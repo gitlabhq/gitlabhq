@@ -103,6 +103,11 @@
   margin: auto;
   align-items: center;
 
+  a {
+    color: $orange-600;
+    text-decoration: underline;
+  }
+
   .icon {
     margin-right: $issuable-warning-icon-margin;
     vertical-align: text-bottom;

@@ -6994,6 +6994,9 @@ msgstr ""
 msgid "People without permission will never get a notification and won't be able to comment."
 msgstr ""
 
+msgid "People without permission will never get a notification."
+msgstr ""
+
 msgid "Perform advanced options such as changing path, transferring, or removing the group."
 msgstr ""
 
@@ -10188,6 +10191,9 @@ msgstr ""
 msgid "Third party offers"
 msgstr ""
 
+msgid "This %{issuableDisplayName} is locked. Only project members can comment."
+msgstr ""
+
 msgid "This %{issuable} is locked. Only <strong>project members</strong> can comment."
 msgstr ""
 
@@ -10282,9 +10288,6 @@ msgid "This is your current session"
 msgstr ""
 
 msgid "This issue is confidential"
-msgstr ""
-
-msgid "This issue is confidential and locked."
 msgstr ""
 
 msgid "This issue is locked."
@@ -11935,9 +11938,6 @@ msgid "Your comment could not be submitted! Please check your network connection
 msgstr ""
 
 msgid "Your comment could not be updated! Please check your network connection and try again."
-msgstr ""
-
-msgid "Your comment will not be visible to the public."
 msgstr ""
 
 msgid "Your deployment services will be broken, you will need to manually fix the services after renaming."

@@ -15,31 +15,37 @@ function formatWarning(string) {
 describe('Issue Warning Component', () => {
   describe('isLocked', () => {
     it('should render locked issue warning information', () => {
-      const vm = mountComponent(IssueWarning, {
+      const props = {
         isLocked: true,
-      });
+        lockedIssueDocsPath: 'docs/issues/locked',
+      };
+      const vm = mountComponent(IssueWarning, props);
 
       expect(
         vm.$el.querySelector('.icon use').getAttributeNS('http://www.w3.org/1999/xlink', 'href'),
       ).toMatch(/lock$/);
       expect(formatWarning(vm.$el.querySelector('span').textContent)).toEqual(
-        'This issue is locked. Only project members can comment.',
+        'This issue is locked. Only project members can comment. Learn more',
       );
+      expect(vm.$el.querySelector('a').href).toContain(props.lockedIssueDocsPath);
     });
   });
 
   describe('isConfidential', () => {
     it('should render confidential issue warning information', () => {
-      const vm = mountComponent(IssueWarning, {
+      const props = {
         isConfidential: true,
-      });
+        confidentialIssueDocsPath: '/docs/issues/confidential',
+      };
+      const vm = mountComponent(IssueWarning, props);
 
       expect(
         vm.$el.querySelector('.icon use').getAttributeNS('http://www.w3.org/1999/xlink', 'href'),
       ).toMatch(/eye-slash$/);
       expect(formatWarning(vm.$el.querySelector('span').textContent)).toEqual(
-        'This is a confidential issue. Your comment will not be visible to the public.',
+        'This is a confidential issue. People without permission will never get a notification. Learn more',
       );
+      expect(vm.$el.querySelector('a').href).toContain(props.confidentialIssueDocsPath);
     });
   });
 
