@@ -846,15 +846,40 @@
   display: flex;
   justify-content: space-between;
 
-  @include media-breakpoint-down(sm) {
-    flex-direction: column-reverse;
+  @include media-breakpoint-down(xs) {
+    .discussion-filter-container,
+    .line-resolve-all-container {
+      margin-bottom: $gl-padding-4;
+    }
   }
 
   .discussion-filter-container {
-    margin-top: $gl-padding-8;
-
     &:not(:only-child) {
-      padding-right: $gl-padding-8;
+      margin: $gl-padding-4;
+    }
+  }
+
+  .merge-request-tabs {
+    height: $grid-size * 6;
+  }
+}
+
+// Wrap MR tabs/buttons so you don't have to scroll on desktop
+@include media-breakpoint-down(md) {
+  .merge-request-tabs-container,
+  .epic-tabs-container {
+    flex-direction: column-reverse;
+    padding-top: $gl-padding-8;
+  }
+}
+
+@include media-breakpoint-down(lg) {
+  .right-sidebar-expanded {
+    .merge-request-tabs-container,
+    .epic-tabs-container {
+      flex-direction: column-reverse;
+      align-items: flex-start;
+      padding-top: $gl-padding-8;
     }
   }
 }

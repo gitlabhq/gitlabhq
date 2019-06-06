@@ -768,9 +768,7 @@ $note-form-margin-left: 72px;
 }
 
 .line-resolve-all-container {
-  @include notes-media('min', map-get($grid-breakpoints, sm)) {
-    margin-right: 0;
-  }
+  margin: $gl-padding-4;
 
   > div {
     white-space: nowrap;
@@ -786,6 +784,8 @@ $note-form-margin-left: 72px;
   }
 
   .btn {
+    line-height: $gl-line-height;
+
     svg {
       fill: $gray-darkest;
     }
@@ -811,10 +811,11 @@ $note-form-margin-left: 72px;
 .line-resolve-all {
   vertical-align: middle;
   display: inline-block;
-  padding: 6px 10px;
+  padding: $gl-padding-4 10px;
   background-color: $gray-light;
   border: 1px solid $border-color;
   border-radius: $border-radius-default;
+  font-size: $gl-btn-small-font-size;
 
   &.has-next-btn {
     border-top-right-radius: 0;
@@ -829,6 +830,10 @@ $note-form-margin-left: 72px;
     svg {
       vertical-align: middle;
     }
+  }
+
+  @include media-breakpoint-down(xs) {
+    flex: 1;
   }
 }
 
