@@ -3,7 +3,7 @@
 .form-group
   %b= s_('ProjectSettings|Merge checks')
   %p.text-secondary= s_('ProjectSettings|These checks must pass before merge requests can be merged')
-  .form-check.mb-2.builds-feature{ class: ("hidden" if @project && @project.project_feature.send(:builds_access_level) == 0) }
+  .form-check.mb-2.builds-feature
     = form.check_box :only_allow_merge_if_pipeline_succeeds, class: 'form-check-input'
     = form.label :only_allow_merge_if_pipeline_succeeds, class: 'form-check-label' do
       = s_('ProjectSettings|Pipelines must succeed')
