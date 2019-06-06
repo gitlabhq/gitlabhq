@@ -23,7 +23,13 @@ describe ProjectCiCdSetting do
   end
 
   describe 'validations' do
-    it { is_expected.to validate_numericality_of(:default_git_depth).only_integer.is_greater_than_or_equal_to(0).is_less_than_or_equal_to(1000).allow_nil }
+    it 'validates default_git_depth is between 0 and 1000 or nil' do
+      expect(subject).to validate_numericality_of(:default_git_depth)
+        .only_integer
+        .is_greater_than_or_equal_to(0)
+        .is_less_than_or_equal_to(1000)
+        .allow_nil
+    end
   end
 
   describe '#default_git_depth' do
