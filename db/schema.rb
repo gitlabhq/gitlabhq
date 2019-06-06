@@ -2257,8 +2257,10 @@ ActiveRecord::Schema.define(version: 20190613030606) do
 
   create_table "operations_feature_flags_clients", force: :cascade do |t|
     t.integer "project_id", null: false
-    t.string "token", null: false
+    t.string "token"
+    t.string "token_encrypted"
     t.index ["project_id", "token"], name: "index_operations_feature_flags_clients_on_project_id_and_token", unique: true, using: :btree
+    t.index ["project_id", "token_encrypted"], name: "index_feature_flags_clients_on_project_id_and_token_encrypted", unique: true, using: :btree
   end
 
   create_table "packages_maven_metadata", force: :cascade do |t|
