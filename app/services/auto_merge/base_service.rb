@@ -20,6 +20,14 @@ module AutoMerge
       strategy.to_sym
     end
 
+    def update(merge_request)
+      merge_request.merge_params.merge!(params)
+
+      return :failed unless merge_request.save
+
+      strategy.to_sym
+    end
+
     def cancel(merge_request)
       if cancel_auto_merge(merge_request)
         yield if block_given?

@@ -92,6 +92,30 @@ describe AutoMerge::BaseService do
     end
   end
 
+  describe '#update' do
+    subject { service.update(merge_request) }
+
+    let(:merge_request) { create(:merge_request, :merge_when_pipeline_succeeds) }
+
+    context 'when merge params are specified' do
+      let(:params) do
+        {
+          'commit_message' => "Merge branch 'patch-12' into 'master'",
+          'sha' => "200fcc9c260f7219eaf0daba87d818f0922c5b18",
+          'should_remove_source_branch' => false,
+          'squash' => false,
+          'squash_commit_message' => "Update README.md"
+        }
+      end
+
+      it 'updates merge params' do
+        expect { subject }.to change {
+          merge_request.reload.merge_params.slice(*params.keys)
+        }.from({}).to(params)
+      end
+    end
+  end
+
   describe '#cancel' do
     subject { service.cancel(merge_request) }
 
