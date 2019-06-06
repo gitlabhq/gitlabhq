@@ -780,8 +780,8 @@ GEM
       rspec-expectations (~> 3.7.0)
       rspec-mocks (~> 3.7.0)
       rspec-support (~> 3.7.0)
-    rspec-retry (0.4.5)
-      rspec-core
+    rspec-retry (0.6.1)
+      rspec-core (> 3.3)
     rspec-set (0.1.3)
     rspec-support (3.7.1)
     rspec_junit_formatter (0.4.1)
@@ -1175,7 +1175,7 @@ DEPENDENCIES
   rqrcode-rails3 (~> 0.1.7)
   rspec-parameterized
   rspec-rails (~> 3.7.0)
-  rspec-retry (~> 0.4.5)
+  rspec-retry (~> 0.6.1)
   rspec-set (~> 0.1.3)
   rspec_junit_formatter
   rspec_profiling (~> 0.0.5)
