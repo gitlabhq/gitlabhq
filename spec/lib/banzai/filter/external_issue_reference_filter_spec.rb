@@ -155,6 +155,13 @@ describe Banzai::Filter::ExternalIssueReferenceFilter do
 
       it_behaves_like "external issue tracker"
     end
+
+    context "with a lowercase prefix" do
+      let(:issue) { ExternalIssue.new("gl-030", project) }
+      let(:reference) { issue.to_reference }
+
+      it_behaves_like "external issue tracker"
+    end
   end
 
   context "jira project" do
