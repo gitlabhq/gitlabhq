@@ -25,3 +25,17 @@ document.body.dataset.page
 ```
 
 Find here the [source code setting the attribute](https://gitlab.com/gitlab-org/gitlab-ce/blob/cc5095edfce2b4d4083a4fb1cdc7c0a1898b9921/app/views/layouts/application.html.haml#L4).
+
+### `modal_copy_button` vs `clipboard_button`
+
+The `clipboard_button` uses the `copy_to_clipboard.js` behaviour, which is
+initialized on page load, so if there are vue-based clipboard buttons that
+don't exist at page load (such as ones in a `GlModal`), they do not have the
+click handlers associated with the clipboard package.
+
+`modal_copy_button` was added that manages an instance of the
+[`clipboard` plugin](https://www.npmjs.com/package/clipboard) specific to
+the instance of that component, which means that clipboard events are
+bound on mounting and destroyed when the button is, mitigating the above
+issue. It also has bindings to a particular container or modal ID
+available, to work with the focus trap created by our GlModal.
