@@ -1294,7 +1294,7 @@ describe Ci::Build do
             build.cancel!
           end
 
-          it { is_expected.not_to be_retryable }
+          it { is_expected.to be_retryable }
         end
       end
 
@@ -1824,7 +1824,7 @@ describe Ci::Build do
       context 'when build has been canceled' do
         subject { build_stubbed(:ci_build, :manual, status: :canceled) }
 
-        it { is_expected.not_to be_playable }
+        it { is_expected.to be_playable }
       end
 
       context 'when build is successful' do
