@@ -135,6 +135,14 @@ class PagesDomain < ApplicationRecord
     "#{VERIFICATION_KEY}=#{verification_code}"
   end
 
+  def certificate=(certificate)
+    super(certificate)
+
+    # set nil, if certificate is nil
+    self.certificate_valid_not_before = x509&.not_before
+    self.certificate_valid_not_after = x509&.not_after
+  end
+
   private
 
   def set_verification_code
@@ -187,7 +195,7 @@ class PagesDomain < ApplicationRecord
   end
 
   def x509
-    return unless certificate
+    return unless certificate.present?
 
     @x509 ||= OpenSSL::X509::Certificate.new(certificate)
   rescue OpenSSL::X509::CertificateError
