@@ -5,7 +5,7 @@ describe Gitlab::BackgroundMigration::DeleteDiffFiles, :migration, :sidekiq, sch
   describe '#perform' do
     before do
       # This migration was created before we introduced ProjectCiCdSetting#default_git_depth
-      allow_any_instance_of(ProjectCiCdSetting).to receive(:default_git_depth?).and_return(true)
+      allow_any_instance_of(ProjectCiCdSetting).to receive(:default_git_depth=).and_return(0)
       allow_any_instance_of(ProjectCiCdSetting).to receive(:default_git_depth).and_return(nil)
     end
 

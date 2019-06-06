@@ -12,8 +12,8 @@ describe RemoveOrphanedLabelLinks, :migration do
 
   before do
     # This migration was created before we introduced ProjectCiCdSetting#default_git_depth
-    allow_any_instance_of(ProjectCiCdSetting).to receive(:default_git_depth?).and_return(true)
     allow_any_instance_of(ProjectCiCdSetting).to receive(:default_git_depth).and_return(nil)
+    allow_any_instance_of(ProjectCiCdSetting).to receive(:default_git_depth=).and_return(0)
   end
 
   context 'add foreign key on label_id' do

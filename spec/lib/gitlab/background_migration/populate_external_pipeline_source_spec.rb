@@ -10,8 +10,8 @@ describe Gitlab::BackgroundMigration::PopulateExternalPipelineSource, :migration
     # This migration was created before we introduced metadata configs
     stub_feature_flags(ci_build_metadata_config: false)
     # This migration was created before we introduced ProjectCiCdSetting#default_git_depth
-    allow_any_instance_of(ProjectCiCdSetting).to receive(:default_git_depth?).and_return(true)
     allow_any_instance_of(ProjectCiCdSetting).to receive(:default_git_depth).and_return(nil)
+    allow_any_instance_of(ProjectCiCdSetting).to receive(:default_git_depth=).and_return(0)
   end
 
   let!(:internal_pipeline) { create(:ci_pipeline, source: :web) }
