@@ -77,10 +77,10 @@ module Gitlab
         end
 
         def worker_label
+          return { worker: 'sidekiq' } if Sidekiq.server?
           return {} unless defined?(Unicorn::Worker)
 
           worker_no = ::Prometheus::Client::Support::Unicorn.worker_id
-
           if worker_no
             { worker: worker_no }
           else
