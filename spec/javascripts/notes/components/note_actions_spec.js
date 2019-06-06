@@ -66,7 +66,7 @@ describe('noteActions', () => {
         expect(wrapper.find('.js-note-edit').exists()).toBe(true);
       });
 
-      it('should be possible to report abuse to GitLab', () => {
+      it('should be possible to report abuse to admin', () => {
         expect(wrapper.find(`a[href="${props.reportAbusePath}"]`).exists()).toBe(true);
       });
 

@@ -1,10 +1,10 @@
-- page_title _("Report abuse to GitLab")
+- page_title _("Report abuse to admin")
 %h3.page-title
-  = _("Report abuse to GitLab")
+  = _("Report abuse to admin")
 %p
-  = _("Please use this form to report users to GitLab who create spam issues, comments or behave inappropriately.")
+  = _("Please use this form to report to the admin users who create spam issues, comments or behave inappropriately.")
 %p
-  = _("A member of GitLab's abuse team will review your report as soon as possible.")
+  = _("A member of the abuse team will review your report as soon as possible.")
 %hr
 = form_for @abuse_report, html: { class: 'js-quick-submit js-requires-input'} do |f|
   = form_errors(@abuse_report)

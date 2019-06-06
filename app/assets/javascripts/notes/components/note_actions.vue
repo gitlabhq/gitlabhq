@@ -195,7 +195,7 @@ export default {
       </button>
       <ul class="dropdown-menu more-actions-dropdown dropdown-open-left">
         <li v-if="canReportAsAbuse">
-          <a :href="reportAbusePath">{{ __('Report abuse to GitLab') }}</a>
+          <a :href="reportAbusePath">{{ __('Report abuse to admin') }}</a>
         </li>
         <li v-if="noteUrl">
           <button
