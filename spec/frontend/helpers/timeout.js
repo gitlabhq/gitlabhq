@@ -5,7 +5,13 @@ const IS_DEBUGGING = process.execArgv.join(' ').includes('--inspect-brk');
 let testTimeoutNS;
 
 export const setTestTimeout = newTimeoutMS => {
-  testTimeoutNS = newTimeoutMS * NS_PER_MS;
+  const newTimeoutNS = newTimeoutMS * NS_PER_MS;
+  // never accept a smaller timeout than the default
+  if (newTimeoutNS < testTimeoutNS) {
+    return;
+  }
+
+  testTimeoutNS = newTimeoutNS;
   jest.setTimeout(newTimeoutMS);
 };
 
@@ -13,7 +19,13 @@ export const setTestTimeout = newTimeoutMS => {
 // Useful for tests with jQuery, which is very slow in big DOMs.
 let temporaryTimeoutNS = null;
 export const setTestTimeoutOnce = newTimeoutMS => {
-  temporaryTimeoutNS = newTimeoutMS * NS_PER_MS;
+  const newTimeoutNS = newTimeoutMS * NS_PER_MS;
+  // never accept a smaller timeout than the default
+  if (newTimeoutNS < testTimeoutNS) {
+    return;
+  }
+
+  temporaryTimeoutNS = newTimeoutNS;
 };
 
 export const initializeTestTimeout = defaultTimeoutMS => {
