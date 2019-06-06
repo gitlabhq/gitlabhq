@@ -39,6 +39,8 @@ However, DAST can be [configured](#full-scan)
 to also perform a so-called "active scan". That is, attack your application and produce a more extensive security report.
 It can be very useful combined with [Review Apps](../../../ci/review_apps/index.md).
 
+The [`dast`](https://gitlab.com/gitlab-org/security-products/dast/container_registry) Docker image in GitLab container registry is updated on a weekly basis to have all [`owasp2docker-weekly`](https://hub.docker.com/r/owasp/zap2docker-weekly/) updates in it.
+
 ## Use cases
 
 It helps you automatically find security vulnerabilities in your running web
