@@ -1088,22 +1088,6 @@ describe MergeRequest do
     end
   end
 
-  describe "#reset_auto_merge" do
-    let(:merge_if_green) do
-      create :merge_request, merge_when_pipeline_succeeds: true, merge_user: create(:user),
-                             merge_params: { "should_remove_source_branch" => "1", "commit_message" => "msg" }
-    end
-
-    it "sets the item to false" do
-      merge_if_green.reset_auto_merge
-      merge_if_green.reload
-
-      expect(merge_if_green.merge_when_pipeline_succeeds).to be_falsey
-      expect(merge_if_green.merge_params["should_remove_source_branch"]).to be_nil
-      expect(merge_if_green.merge_params["commit_message"]).to be_nil
-    end
-  end
-
   describe '#committers' do
     it 'returns all the committers of every commit in the merge request' do
       users = subject.commits.without_merge_commits.map(&:committer_email).uniq.map do |email|

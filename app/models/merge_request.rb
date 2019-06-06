@@ -984,21 +984,6 @@ class MergeRequest < ApplicationRecord
     end
   end
 
-  def reset_auto_merge
-    return unless auto_merge_enabled?
-
-    self.auto_merge_enabled = false
-    self.merge_user = nil
-    if merge_params
-      merge_params.delete('should_remove_source_branch')
-      merge_params.delete('commit_message')
-      merge_params.delete('squash_commit_message')
-      merge_params.delete('auto_merge_strategy')
-    end
-
-    self.save
-  end
-
   # Return array of possible target branches
   # depends on target project of MR
   def target_branches
