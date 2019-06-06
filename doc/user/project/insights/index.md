@@ -179,7 +179,7 @@ Supported values are:
 
 Filter by the state of the queried "issuable".
 
-If you omit it, no state filter will be applied.
+If you omit it, the `opened` state filter will be applied.
 
 Supported values are:
 
@@ -187,6 +187,7 @@ Supported values are:
 - `closed`: Closed Open issues / merge requests.
 - `locked`: Issues / merge requests that have their discussion locked.
 - `merged`: Merged merge requests.
+- `all`: Issues / merge requests in all states
 
 #### `query.filter_labels`
 
