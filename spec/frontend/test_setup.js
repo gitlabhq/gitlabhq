@@ -15,7 +15,7 @@ afterEach(() =>
   }),
 );
 
-initializeTestTimeout(500);
+initializeTestTimeout(process.env.CI ? 5000 : 500);
 
 // fail tests for unmocked requests
 beforeEach(done => {
