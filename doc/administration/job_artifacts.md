@@ -7,9 +7,9 @@
 > - Starting with GitLab 8.17, builds are renamed to jobs.
 > - This is the administration documentation. For the user guide see [pipelines/job_artifacts](../user/project/pipelines/job_artifacts.md).
 
-Artifacts is a list of files and directories which are attached to a job
-after it completes successfully. This feature is enabled by default in all
-GitLab installations. Keep reading if you want to know how to disable it.
+Artifacts is a list of files and directories which are attached to a job after it
+finishes. This feature is enabled by default in all GitLab installations. Keep reading
+if you want to know how to disable it.
 
 ## Disabling job artifacts
 
@@ -42,8 +42,9 @@ To disable artifacts site-wide, follow the steps below.
 
 ## Storing job artifacts
 
-After a successful job, GitLab Runner uploads an archive containing the job
-artifacts to GitLab.
+GitLab Runner can upload an archive containing the job artifacts to GitLab. By default,
+this is done when the job succeeds, but can also be done on failure, or always, via the
+[`artifacts:when`](../ci/yaml/README.md#artifactswhen) parameter.
 
 ### Using local storage
 

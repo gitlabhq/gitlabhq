@@ -1189,9 +1189,9 @@ skip the download step.
 > - Job artifacts are only collected for successful jobs by default.
 
 `artifacts` is used to specify a list of files and directories which should be
-attached to the job after success.
+attached to the job when it [succeeds, fails, or always](#artifactswhen).
 
-The artifacts will be sent to GitLab after the job finishes successfully and will
+The artifacts will be sent to GitLab after the job finishes and will
 be available for download in the GitLab UI.
 
 [Read more about artifacts](../../user/project/pipelines/job_artifacts.md).
