@@ -154,11 +154,11 @@ describe('VariableList', () => {
     describe('validateMaskability', () => {
       let $row;
 
-      const maskingErrorElement = '.js-row:nth-child(2) .masking-validation-error';
+      const maskingErrorElement = '.js-row:last-child .masking-validation-error';
 
       beforeEach(() => {
         $row = $wrapper.find('.js-row:last-child');
-        $row.find('.js-ci-variable-input-key').val('variable-key');
+        $row.find('.ci-variable-masked-item .js-project-feature-toggle').click();
       });
 
       it('has a regex provided via a data attribute', () => {
