@@ -1,5 +1,6 @@
 ---
 comments: false
+type: index
 ---
 
 # Security

@@ -1,3 +1,7 @@
+---
+type: concepts
+---
+
 # Information exclusivity
 
 Git is a distributed version control system (DVCS).

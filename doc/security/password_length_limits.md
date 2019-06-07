@@ -1,3 +1,7 @@
+---
+type: reference, howto
+---
+
 # Custom password length limits
 
 If you want to enforce longer user passwords you can create an extra Devise initializer with the steps below.
