@@ -7,8 +7,8 @@ If you have non-GitLab web services running on your GitLab server or within its
 local network, these may be vulnerable to exploitation via Webhooks.
 
 With [Webhooks](../user/project/integrations/webhooks.md), you and your project
-maintainers and owners can set up URLs to be triggered when specific things
-happen to projects. Normally, these requests are sent to external web services
+maintainers and owners can set up URLs to be triggered when specific changes
+occur in your projects. Normally, these requests are sent to external web services
 specifically set up for this purpose, that process the request and its attached
 data in some appropriate way.
 
