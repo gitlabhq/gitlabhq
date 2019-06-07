@@ -248,14 +248,24 @@ label {
 
 .gl-form-checkbox {
   align-items: baseline;
+  margin-right: 1rem;
+  margin-bottom: 0.25rem;
+
+  .form-check-input {
+    margin-right: 0;
+  }
+
+  .form-check-label {
+    padding-left: $gl-padding-8;
+  }
 
   &.form-check-inline .form-check-input {
     align-self: flex-start;
-    margin-right: $gl-padding-8;
     height: 1.5 * $gl-font-size;
   }
 
-  .help-text {
-    margin-bottom: 0;
+  .form-check-input:disabled,
+  .form-check-input:disabled ~ .form-check-label {
+    cursor: not-allowed;
   }
 }
