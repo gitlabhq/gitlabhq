@@ -265,8 +265,8 @@ $note-form-margin-left: 72px;
   }
 
   .system-note {
-    padding: 6px 21px;
-    margin: $gl-padding-24 0;
+    padding: $gl-padding-4 20px;
+    margin: $gl-padding 0;
     background-color: transparent;
 
     .note-header-info {
@@ -365,7 +365,7 @@ $note-form-margin-left: 72px;
       height: $system-note-icon-size;
       border: 1px solid $border-color;
       border-radius: $system-note-icon-size;
-      margin: -6px $gl-padding 0 0;
+      margin: -6px 20px 0 0;
 
       svg {
         width: $system-note-svg-size;
