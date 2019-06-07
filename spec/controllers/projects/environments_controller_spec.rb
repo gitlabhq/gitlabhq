@@ -433,20 +433,6 @@ describe Projects::EnvironmentsController do
     end
 
     context 'when only one time param is provided' do
-      context 'when :metrics_time_window feature flag is disabled' do
-        before do
-          stub_feature_flags(metrics_time_window: false)
-          expect(environment).to receive(:additional_metrics).with(no_args).and_return(nil)
-        end
-
-        it 'returns a time-window agnostic response' do
-          additional_metrics(start: '1552647300.651094')
-
-          expect(response).to have_gitlab_http_status(204)
-          expect(json_response).to eq({})
-        end
-      end
-
       it 'raises an error when start is missing' do
         expect { additional_metrics(end: '1552647300.651094') }
           .to raise_error(ActionController::ParameterMissing)
