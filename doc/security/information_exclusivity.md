@@ -18,8 +18,9 @@ This is an inherent feature of a DVCS. All git management systems have this
 limitation.
 
 You can take steps to prevent unintentional sharing and information
-destruction. This is the reason why only certain people are allowed to invite
-others and why no user can force push a protected branch.
+destruction. This limitation is the reason why only certain people are allowed
+to [add users to a project](../user/project/members/) and why only a GitLab
+admin can [force push a protected branch](../project/protected_branches.html).
 
 <!-- ## Troubleshooting
 
