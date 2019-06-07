@@ -48,7 +48,7 @@
         = s_('ClusterIntegration|This option will allow you to install applications on RBAC clusters.')
 
     .form-group
-      = field.check_box :managed, { disabled: true, label: s_('ClusterIntegration|GitLab-managed cluster'),
+      = field.check_box :managed, { label: s_('ClusterIntegration|GitLab-managed cluster'),
         label_class: 'label-bold' }
       .form-text.text-muted
         = s_('ClusterIntegration|Allow GitLab to manage namespace and service accounts for this cluster.')

@@ -396,6 +396,7 @@ describe Admin::ClustersController do
         cluster: {
           enabled: false,
           name: 'my-new-cluster-name',
+          managed: false,
           base_domain: domain
         }
       }
@@ -409,6 +410,7 @@ describe Admin::ClustersController do
       expect(flash[:notice]).to eq('Kubernetes cluster was successfully updated.')
       expect(cluster.enabled).to be_falsey
       expect(cluster.name).to eq('my-new-cluster-name')
+      expect(cluster).not_to be_managed
       expect(cluster.domain).to eq('test-domain.com')
     end
 
@@ -433,6 +435,7 @@ describe Admin::ClustersController do
               cluster: {
                 enabled: false,
                 name: 'my-new-cluster-name',
+                managed: false,
                 domain: domain
               }
             }
@@ -445,6 +448,7 @@ describe Admin::ClustersController do
             expect(response).to have_http_status(:no_content)
             expect(cluster.enabled).to be_falsey
             expect(cluster.name).to eq('my-new-cluster-name')
+            expect(cluster).not_to be_managed
           end
         end
 

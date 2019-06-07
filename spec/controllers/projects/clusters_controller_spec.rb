@@ -449,6 +449,7 @@ describe Projects::ClustersController do
         cluster: {
           enabled: false,
           name: 'my-new-cluster-name',
+          managed: false,
           platform_kubernetes_attributes: {
             namespace: 'my-namespace'
           }
@@ -464,6 +465,7 @@ describe Projects::ClustersController do
       expect(flash[:notice]).to eq('Kubernetes cluster was successfully updated.')
       expect(cluster.enabled).to be_falsey
       expect(cluster.name).to eq('my-new-cluster-name')
+      expect(cluster).not_to be_managed
       expect(cluster.platform_kubernetes.namespace).to eq('my-namespace')
     end
 
@@ -475,6 +477,7 @@ describe Projects::ClustersController do
               cluster: {
                 enabled: false,
                 name: 'my-new-cluster-name',
+                managed: false,
                 platform_kubernetes_attributes: {
                   namespace: 'my-namespace'
                 }
@@ -489,6 +492,7 @@ describe Projects::ClustersController do
             expect(response).to have_http_status(:no_content)
             expect(cluster.enabled).to be_falsey
             expect(cluster.name).to eq('my-new-cluster-name')
+            expect(cluster).not_to be_managed
             expect(cluster.platform_kubernetes.namespace).to eq('my-namespace')
           end
         end
