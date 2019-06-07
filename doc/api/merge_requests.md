@@ -138,7 +138,11 @@ Parameters:
       "human_time_estimate": null,
       "human_total_time_spent": null
     },
-    "squash": false
+    "squash": false,
+    "task_completion_status":{
+      "count":0,
+      "completed_count":0
+    }
   }
 ]
 ```
@@ -280,7 +284,11 @@ Parameters:
       "human_time_estimate": null,
       "human_total_time_spent": null
     },
-    "squash": false
+    "squash": false,
+    "task_completion_status":{
+      "count":0,
+      "completed_count":0
+    }
   }
 ]
 ```
@@ -410,7 +418,11 @@ Parameters:
       "human_time_estimate": null,
       "human_total_time_spent": null
     },
-    "squash": false
+    "squash": false,
+    "task_completion_status":{
+      "count":0,
+      "completed_count":0
+    }
   }
 ]
 ```
@@ -545,7 +557,11 @@ Parameters:
     "start_sha": "c380d3acebd181f13629a25d2e2acca46ffe1e00"
   },
   "diverged_commits_count": 2,
-  "rebase_in_progress": false
+  "rebase_in_progress": false,
+  "task_completion_status":{
+    "count":0,
+    "completed_count":0
+  }
 }
 ```
 
@@ -579,7 +595,7 @@ Parameters:
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/10fc7f102be8de7657fb4d80898bbfe3?s=80&d=identicon",
     "web_url": "http://localhost/user2"
-  },
+  }
 ]
 ```
 
@@ -702,7 +718,11 @@ Parameters:
     "total_time_spent": 0,
     "human_time_estimate": null,
     "human_total_time_spent": null
-  }
+  },
+  "task_completion_status":{
+    "count":0,
+    "completed_count":0
+  },
   "changes": [
     {
     "old_path": "VERSION",
@@ -865,7 +885,11 @@ POST /projects/:id/merge_requests
     "head_sha": "2be7ddb704c7b6b83732fdd5b9f09d5a397b5f8f",
     "start_sha": "c380d3acebd181f13629a25d2e2acca46ffe1e00"
   },
-  "diverged_commits_count": 2
+  "diverged_commits_count": 2,
+  "task_completion_status":{
+    "count":0,
+    "completed_count":0
+  }
 }
 ```
 
@@ -1002,7 +1026,11 @@ Must include at least one non-required attribute from above.
     "head_sha": "2be7ddb704c7b6b83732fdd5b9f09d5a397b5f8f",
     "start_sha": "c380d3acebd181f13629a25d2e2acca46ffe1e00"
   },
-  "diverged_commits_count": 2
+  "diverged_commits_count": 2,
+  "task_completion_status":{
+    "count":0,
+    "completed_count":0
+  }
 }
 ```
 
@@ -1155,13 +1183,17 @@ Parameters:
     "head_sha": "2be7ddb704c7b6b83732fdd5b9f09d5a397b5f8f",
     "start_sha": "c380d3acebd181f13629a25d2e2acca46ffe1e00"
   },
-  "diverged_commits_count": 2
+  "diverged_commits_count": 2,
+  "task_completion_status":{
+    "count":0,
+    "completed_count":0
+  }
 }
 ```
 
 ## Returns the up to date merge-ref HEAD commit
 
-Merge the changes between the merge request source and target branches into `refs/merge-requests/:iid/merge` 
+Merge the changes between the merge request source and target branches into `refs/merge-requests/:iid/merge`
 ref, of the target project repository, if possible. This ref will have the state the target branch would have if
 a regular merge action was taken.
 
@@ -1309,7 +1341,11 @@ Parameters:
     "head_sha": "2be7ddb704c7b6b83732fdd5b9f09d5a397b5f8f",
     "start_sha": "c380d3acebd181f13629a25d2e2acca46ffe1e00"
   },
-  "diverged_commits_count": 2
+  "diverged_commits_count": 2,
+  "task_completion_status":{
+    "count":0,
+    "completed_count":0
+  }
 }
 ```
 
@@ -1345,7 +1381,7 @@ If the rebase operation is ongoing, the response will include the following:
 
 ```json
 {
-  "rebase_in_progress": true
+  "rebase_in_progress": true,
   "merge_error": null
 }
 ```
@@ -1356,7 +1392,7 @@ the following:
 ```json
 {
   "rebase_in_progress": false,
-  "merge_error": null,
+  "merge_error": null
 }
 ```
 
@@ -1365,7 +1401,7 @@ If the rebase operation fails, the response will include the following:
 ```json
 {
   "rebase_in_progress": false,
-  "merge_error": "Rebase failed. Please rebase locally",
+  "merge_error": "Rebase failed. Please rebase locally"
 }
 ```
 
@@ -1572,7 +1608,11 @@ Example response:
     "head_sha": "2be7ddb704c7b6b83732fdd5b9f09d5a397b5f8f",
     "start_sha": "c380d3acebd181f13629a25d2e2acca46ffe1e00"
   },
-  "diverged_commits_count": 2
+  "diverged_commits_count": 2,
+  "task_completion_status":{
+    "count":0,
+    "completed_count":0
+  }
 }
 ```
 
@@ -1701,7 +1741,11 @@ Example response:
     "head_sha": "2be7ddb704c7b6b83732fdd5b9f09d5a397b5f8f",
     "start_sha": "c380d3acebd181f13629a25d2e2acca46ffe1e00"
   },
-  "diverged_commits_count": 2
+  "diverged_commits_count": 2,
+  "task_completion_status":{
+    "count":0,
+    "completed_count":0
+  }
 }
 ```
 

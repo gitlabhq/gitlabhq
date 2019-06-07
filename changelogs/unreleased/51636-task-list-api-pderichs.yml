@@ -1,0 +1,5 @@
+---
+title: Add task count and completed count to responses of Issue and MR
+merge_request: 28859
+author:
+type: added
