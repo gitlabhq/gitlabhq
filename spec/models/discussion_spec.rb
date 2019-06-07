@@ -29,4 +29,12 @@ describe Discussion do
       ])
     end
   end
+
+  describe 'authorization' do
+    it 'delegates to the first note' do
+      policy = DeclarativePolicy.policy_for(instance_double(User, id: 1), subject)
+
+      expect(policy).to be_a(NotePolicy)
+    end
+  end
 end

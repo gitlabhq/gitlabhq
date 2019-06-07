@@ -4,6 +4,8 @@ module Types
   class IssueType < BaseObject
     graphql_name 'Issue'
 
+    implements(Types::Notes::NoteableType)
+
     authorize :read_issue
 
     expose_permissions Types::PermissionTypes::Issue

@@ -133,6 +133,25 @@ describe NotePolicy do
           end
         end
       end
+
+      context 'for discussions' do
+        let(:policy) { described_class.new(user, note.discussion) }
+
+        it 'allows the author to manage the discussion' do
+          expect(policy).to be_allowed(:admin_note)
+          expect(policy).to be_allowed(:resolve_note)
+          expect(policy).to be_allowed(:read_note)
+          expect(policy).to be_allowed(:award_emoji)
+        end
+
+        context 'when the user does not have access to the noteable' do
+          before do
+            noteable.update_attribute(:confidential, true)
+          end
+
+          it_behaves_like 'a discussion with a private noteable'
+        end
+      end
     end
   end
 end

@@ -134,6 +134,14 @@ module Gitlab
         @line_code ||= diff_file(repository)&.line_code_for_position(self)
       end
 
+      def on_image?
+        position_type == 'image'
+      end
+
+      def on_text?
+        position_type == 'text'
+      end
+
       private
 
       def find_diff_file(repository)

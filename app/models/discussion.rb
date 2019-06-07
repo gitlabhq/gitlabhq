@@ -4,6 +4,7 @@
 #
 # A discussion of this type can be resolvable.
 class Discussion
+  include GlobalID::Identification
   include ResolvableDiscussion
 
   attr_reader :notes, :context_noteable
@@ -11,13 +12,18 @@ class Discussion
   delegate  :created_at,
             :project,
             :author,
-
             :noteable,
             :commit_id,
             :for_commit?,
             :for_merge_request?,
+            :to_ability_name,
+            :editable?,
 
             to: :first_note
+
+  def declarative_policy_delegate
+    first_note
+  end
 
   def project_id
     project&.id

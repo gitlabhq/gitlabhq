@@ -46,6 +46,9 @@ describe Gitlab::Diff::Position do
       )
     end
 
+    it { is_expected.to be_on_text }
+    it { is_expected.not_to be_on_image }
+
     describe "#diff_file" do
       it "returns the correct diff file" do
         diff_file = subject.diff_file(project.repository)
@@ -90,6 +93,9 @@ describe Gitlab::Diff::Position do
         position_type: "image"
       )
     end
+
+    it { is_expected.not_to be_on_text }
+    it { is_expected.to be_on_image }
 
     it "returns the correct diff file" do
       diff_file = subject.diff_file(project.repository)
