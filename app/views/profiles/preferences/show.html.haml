@@ -5,7 +5,8 @@
   .col-lg-4.application-theme
     %h4.prepend-top-0
       = s_('Preferences|Navigation theme')
-    %p= _('Customize the appearance of the application header and navigation sidebar.')
+    %p
+      = s_('Preferences|Customize the appearance of the application header and navigation sidebar.')
   .col-lg-8.application-theme
     - Gitlab::Themes.each do |theme|
       = label_tag do
@@ -18,9 +19,9 @@
 
   .col-lg-4.profile-settings-sidebar
     %h4.prepend-top-0
-      = _('Syntax highlighting theme')
+      = s_('Preferences|Syntax highlighting theme')
     %p
-      = _('This setting allows you to customize the appearance of the syntax.')
+      = s_('Preferences|This setting allows you to customize the appearance of the syntax.')
       = succeed '.' do
         = link_to _('Learn more'), help_page_path('user/profile/preferences', anchor: 'syntax-highlighting-theme'), target: '_blank'
   .col-lg-8.syntax-theme
@@ -35,31 +36,31 @@
 
   .col-lg-4.profile-settings-sidebar
     %h4.prepend-top-0
-      = _('Behavior')
+      = s_('Preferences|Behavior')
     %p
-      = _('This setting allows you to customize the behavior of the system layout and default views.')
+      = s_('Preferences|This setting allows you to customize the behavior of the system layout and default views.')
       = succeed '.' do
         = link_to _('Learn more'), help_page_path('user/profile/preferences', anchor: 'behavior'), target: '_blank'
   .col-lg-8
     .form-group
       = f.label :layout, class: 'label-bold' do
-        = _('Layout width')
+        = s_('Preferences|Layout width')
       = f.select :layout, layout_choices, {}, class: 'form-control'
       .form-text.text-muted
-        = _('Choose between fixed (max. 1280px) and fluid (100%%) application layout.')
+        = s_('Preferences|Choose between fixed (max. 1280px) and fluid (100%%) application layout.')
     .form-group
       = f.label :dashboard, class: 'label-bold' do
-        = _('Default dashboard')
+        = s_('Preferences|Default dashboard')
       = f.select :dashboard, dashboard_choices, {}, class: 'form-control'
 
     = render_if_exists 'profiles/preferences/group_overview_selector', f: f # EE-specific
 
     .form-group
       = f.label :project_view, class: 'label-bold' do
-        = _('Project overview content')
+        = s_('Preferences|Project overview content')
       = f.select :project_view, project_view_choices, {}, class: 'form-control'
       .form-text.text-muted
-        = _('Choose what content you want to see on a project’s overview page.')
+        = s_('Preferences|Choose what content you want to see on a project’s overview page.')
 
   .col-sm-12
     %hr
