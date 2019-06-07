@@ -4,10 +4,6 @@
   box-shadow: 0 2px 3px 1px $gray-200;
   font-size: $gl-font-size-small;
 
-  .category-icon {
-    color: $gray-600;
-  }
-
   /**
   * Blue popover variation
   */
@@ -129,6 +125,10 @@
 .user-popover {
   padding: $gl-padding-8;
   line-height: $gl-line-height;
+
+  .category-icon {
+    color: $gray-600;
+  }
 }
 
 .onboarding-welcome-page {
