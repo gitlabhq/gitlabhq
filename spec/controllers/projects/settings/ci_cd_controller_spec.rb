@@ -212,7 +212,7 @@ describe Projects::Settings::CiCdController do
           subject
 
           project.reload
-          expect(project.default_git_depth).to eq(10)
+          expect(project.ci_default_git_depth).to eq(10)
         end
       end
     end

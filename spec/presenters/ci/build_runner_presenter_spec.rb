@@ -134,7 +134,7 @@ describe Ci::BuildRunnerPresenter do
     end
 
     it 'defaults to git depth setting for the project' do
-      expect(git_depth).to eq(build.project.default_git_depth)
+      expect(git_depth).to eq(build.project.ci_default_git_depth)
     end
 
     context 'when feature flag :ci_project_git_depth is disabled' do
