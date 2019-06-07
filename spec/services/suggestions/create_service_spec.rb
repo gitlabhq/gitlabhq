@@ -96,7 +96,7 @@ describe Suggestions::CreateService do
 
       it 'creates no suggestion when diff file is not found' do
         expect_next_instance_of(DiffNote) do |diff_note|
-          expect(diff_note).to receive(:latest_diff_file).twice { nil }
+          expect(diff_note).to receive(:latest_diff_file).once { nil }
         end
 
         expect { subject.execute }.not_to change(Suggestion, :count)
