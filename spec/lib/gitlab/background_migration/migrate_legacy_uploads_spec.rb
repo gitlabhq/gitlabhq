@@ -5,21 +5,37 @@ describe Gitlab::BackgroundMigration::MigrateLegacyUploads, :migration, schema: 
   let(:test_dir) { FileUploader.options['storage_path'] }
 
   # rubocop: disable RSpec/FactoriesInMigrationSpecs
-  let!(:namespace) { create(:namespace) }
-  let!(:project) { create(:project, :legacy_storage, namespace: namespace) }
-  let!(:issue) { create(:issue, project: project) }
+  let(:namespace) { create(:namespace) }
+  let(:project) { create(:project, :legacy_storage, namespace: namespace) }
+  let(:issue) { create(:issue, project: project) }
 
-  let!(:note1) { create(:note, note: 'some note text awesome', project: project, noteable: issue) }
-  let!(:note2) { create(:note, note: 'some note', project: project, noteable: issue) }
+  let(:note1) { create(:note, note: 'some note text awesome', project: project, noteable: issue) }
+  let(:note2) { create(:note, note: 'some note', project: project, noteable: issue) }
 
-  let!(:hashed_project) { create(:project, namespace: namespace) }
-  let!(:issue_hashed_project) { create(:issue, project: hashed_project) }
-  let!(:note_hashed_project) { create(:note, note: 'some note', project: hashed_project, attachment: 'text.pdf', noteable: issue_hashed_project) }
+  let(:hashed_project) { create(:project, namespace: namespace) }
+  let(:issue_hashed_project) { create(:issue, project: hashed_project) }
+  let(:note_hashed_project) { create(:note, note: 'some note', project: hashed_project, attachment: 'text.pdf', noteable: issue_hashed_project) }
 
-  let!(:standard_upload) do
+  let(:standard_upload) do
     create(:upload,
       path: "secretabcde/image.png",
       model_id: create(:project).id, model_type: 'Project', uploader: 'FileUploader')
+  end
+
+  before do
+    # This migration was created before we introduced ProjectCiCdSetting#default_git_depth
+    allow_any_instance_of(ProjectCiCdSetting).to receive(:default_git_depth).and_return(nil)
+    allow_any_instance_of(ProjectCiCdSetting).to receive(:default_git_depth=).and_return(0)
+
+    namespace
+    project
+    issue
+    note1
+    note2
+    hashed_project
+    issue_hashed_project
+    note_hashed_project
+    standard_upload
   end
 
   def create_remote_upload(model, filename)
