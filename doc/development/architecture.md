@@ -676,7 +676,7 @@ We've also detailed [our architecture of GitLab.com](https://about.gitlab.com/ha
 [runner-gdk]: https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/runner.md
 [database-migrations-omnibus]: https://docs.gitlab.com/omnibus/settings/database.html#disabling-automatic-database-migration
 [database-migrations-charts]: https://docs.gitlab.com/charts/charts/gitlab/migrations/
-[database-migrations-source]: ../update/upgrading_from_source.md#13-install-libs-migrations-etc
+[database-migrations-source]: ../update/upgrading_from_source.md#14-install-libs-migrations-etc
 [certificate-management-omnibus]: https://docs.gitlab.com/omnibus/settings/ssl.html
 [certificate-management-charts]: https://docs.gitlab.com/charts/installation/tls.html
 [certificate-management-source]: ../install/installation.md#using-https
