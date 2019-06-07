@@ -19,6 +19,7 @@ namespace :gettext do
     Rake::Task['gettext:po_to_json'].invoke
   end
 
+  desc 'Regenerate gitlab.pot file'
   task :regenerate do
     pot_file = 'locale/gitlab.pot'
     # Remove all translated files, this speeds up finding
