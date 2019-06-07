@@ -27,4 +27,8 @@ module CiVariablesHelper
       %w(File file)
     ]
   end
+
+  def ci_variable_maskable_regex
+    Maskable::REGEX.inspect.sub('\\A', '^').sub('\\z', '$').sub(/^\//, '').sub(/\/[a-z]*$/, '').gsub('\/', '/')
+  end
 end

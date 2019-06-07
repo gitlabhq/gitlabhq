@@ -92,7 +92,7 @@ This means that the value of the variable will be hidden in job logs,
 though it must match certain requirements to do so:
 
 - The value must be in a single line.
-- The value must contain only letters, numbers, or underscores.
+- The value must only consist of characters from the Base64 alphabet, defined in [RFC4648](https://tools.ietf.org/html/rfc4648).
 - The value must be at least 8 characters long.
 - The value must not use variables.
 
