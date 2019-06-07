@@ -106,10 +106,6 @@ export default {
       type: String,
       required: true,
     },
-    showTimeWindowDropdown: {
-      type: Boolean,
-      required: true,
-    },
     customMetricsAvailable: {
       type: Boolean,
       required: false,
@@ -248,7 +244,7 @@ export default {
             >
           </gl-dropdown>
         </div>
-        <div v-if="showTimeWindowDropdown" class="d-flex align-items-center prepend-left-8">
+        <div class="d-flex align-items-center prepend-left-8">
           <strong>{{ s__('Metrics|Show last') }}</strong>
           <gl-dropdown
             class="prepend-left-10 js-time-window-dropdown"

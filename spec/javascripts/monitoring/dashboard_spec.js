@@ -68,7 +68,7 @@ describe('Dashboard', () => {
     it('shows a getting started empty state when no metrics are present', () => {
       component = new DashboardComponent({
         el: document.querySelector('.prometheus-graphs'),
-        propsData: { ...propsData, showTimeWindowDropdown: false },
+        propsData: { ...propsData },
         store,
       });
 
@@ -85,7 +85,7 @@ describe('Dashboard', () => {
     it('shows up a loading state', done => {
       component = new DashboardComponent({
         el: document.querySelector('.prometheus-graphs'),
-        propsData: { ...propsData, hasMetrics: true, showTimeWindowDropdown: false },
+        propsData: { ...propsData, hasMetrics: true },
         store,
       });
 
@@ -102,7 +102,6 @@ describe('Dashboard', () => {
           ...propsData,
           hasMetrics: true,
           showLegend: false,
-          showTimeWindowDropdown: false,
         },
         store,
       });
@@ -122,7 +121,6 @@ describe('Dashboard', () => {
           ...propsData,
           hasMetrics: true,
           showPanels: false,
-          showTimeWindowDropdown: false,
         },
         store,
       });
@@ -142,7 +140,6 @@ describe('Dashboard', () => {
           ...propsData,
           hasMetrics: true,
           showPanels: false,
-          showTimeWindowDropdown: false,
         },
         store,
       });
@@ -173,7 +170,6 @@ describe('Dashboard', () => {
           ...propsData,
           hasMetrics: true,
           showPanels: false,
-          showTimeWindowDropdown: false,
         },
         store,
       });
@@ -203,7 +199,6 @@ describe('Dashboard', () => {
           ...propsData,
           hasMetrics: true,
           showPanels: false,
-          showTimeWindowDropdown: false,
         },
         store,
       });
@@ -237,7 +232,6 @@ describe('Dashboard', () => {
           hasMetrics: true,
           showPanels: false,
           environmentsEndpoint: '',
-          showTimeWindowDropdown: false,
         },
         store,
       });
@@ -250,27 +244,6 @@ describe('Dashboard', () => {
       });
     });
 
-    it('does not show the time window dropdown when the feature flag is not set', done => {
-      component = new DashboardComponent({
-        el: document.querySelector('.prometheus-graphs'),
-        propsData: {
-          ...propsData,
-          hasMetrics: true,
-          showPanels: false,
-          showTimeWindowDropdown: false,
-        },
-        store,
-      });
-
-      setTimeout(() => {
-        const timeWindowDropdown = component.$el.querySelector('.js-time-window-dropdown');
-
-        expect(timeWindowDropdown).toBeNull();
-
-        done();
-      });
-    });
-
     it('renders the time window dropdown with a set of options', done => {
       component = new DashboardComponent({
         el: document.querySelector('.prometheus-graphs'),
@@ -278,7 +251,6 @@ describe('Dashboard', () => {
           ...propsData,
           hasMetrics: true,
           showPanels: false,
-          showTimeWindowDropdown: true,
         },
         store,
       });
@@ -304,7 +276,6 @@ describe('Dashboard', () => {
           ...propsData,
           hasMetrics: true,
           showPanels: false,
-          showTimeWindowDropdown: true,
         },
         store,
       });
@@ -338,7 +309,7 @@ describe('Dashboard', () => {
 
       component = new DashboardComponent({
         el: document.querySelector('.prometheus-graphs'),
-        propsData: { ...propsData, hasMetrics: true, showTimeWindowDropdown: true },
+        propsData: { ...propsData, hasMetrics: true },
         store,
       });
 
@@ -359,7 +330,7 @@ describe('Dashboard', () => {
 
       component = new DashboardComponent({
         el: document.querySelector('.prometheus-graphs'),
-        propsData: { ...propsData, hasMetrics: true, showTimeWindowDropdown: true },
+        propsData: { ...propsData, hasMetrics: true },
         store,
       });
 
@@ -388,7 +359,6 @@ describe('Dashboard', () => {
           ...propsData,
           hasMetrics: true,
           showPanels: false,
-          showTimeWindowDropdown: false,
         },
         store,
       });
@@ -424,7 +394,6 @@ describe('Dashboard', () => {
             ...propsData,
             hasMetrics: true,
             showPanels: false,
-            showTimeWindowDropdown: false,
             externalDashboardUrl: '/mockUrl',
           },
           store,
@@ -450,7 +419,6 @@ describe('Dashboard', () => {
             ...propsData,
             hasMetrics: true,
             showPanels: false,
-            showTimeWindowDropdown: false,
             externalDashboardUrl: '',
           },
           store,
