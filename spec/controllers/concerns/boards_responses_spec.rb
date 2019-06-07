@@ -15,9 +15,9 @@ describe BoardsResponses do
     let!(:board) { create(:board) }
 
     it 'serializes properly' do
-      expected = { id: board.id }
+      expected = { "id" => board.id }
 
-      expect(subject.serialize_as_json(board).to_h).to include(expected)
+      expect(JSON.parse(subject.serialize_as_json(board))).to include(expected)
     end
   end
 end
