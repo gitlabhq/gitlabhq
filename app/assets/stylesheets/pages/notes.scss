@@ -569,7 +569,7 @@ $note-form-margin-left: 72px;
 }
 
 .discussion-header {
-  min-height: 72px;
+  min-height: 74px;
 
   .note-header-info {
     padding-bottom: 0;
@@ -582,8 +582,10 @@ $note-form-margin-left: 72px;
 }
 
 .unresolved {
-  .note-header-info {
-    margin-top: $gl-padding-8;
+  .discussion-header {
+    .note-header-info {
+      margin-top: $gl-padding-8;
+    }
   }
 }
 
