@@ -1,3 +1,7 @@
+---
+type: concepts, howto
+---
+
 # Building Docker images with GitLab CI/CD
 
 GitLab CI/CD allows you to use Docker Engine to build and test docker-based projects.
@@ -5,10 +9,10 @@ GitLab CI/CD allows you to use Docker Engine to build and test docker-based proj
 
 One of the new trends in Continuous Integration/Deployment is to:
 
-1. Create an application image
-1. Run tests against the created image
-1. Push image to a remote registry
-1. Deploy to a server from the pushed image
+1. Create an application image.
+1. Run tests against the created image.
+1. Push image to a remote registry.
+1. Deploy to a server from the pushed image.
 
 It's also useful when your application already has the `Dockerfile` that can be
 used to create and test an image:
@@ -113,7 +117,7 @@ In order to do that, follow the steps:
 
     The above command will create a `config.toml` entry similar to this:
 
-    ```
+    ```toml
     [[runners]]
       url = "https://gitlab.com/"
       token = TOKEN
@@ -227,7 +231,7 @@ In order to do that, follow the steps:
 
     The above command will create a `config.toml` entry similar to this:
 
-    ```
+    ```toml
     [[runners]]
       url = "https://gitlab.com/"
       token = REGISTRATION_TOKEN
@@ -270,9 +274,9 @@ aware of the following implications:
   create containers with specific names, they may conflict with each other.
 - Sharing files and directories from the source repo into containers may not
   work as expected since volume mounting is done in the context of the host
-  machine, not the build container, e.g.:
+  machine, not the build container. For example:
 
-    ```
+    ```sh
     docker run --rm -t -i -v $(pwd)/src:/home/app/src test-image:latest run_app_tests
     ```
 
@@ -337,7 +341,7 @@ NOTE: **Note:**
 The shared Runners on GitLab.com use the `overlay2` driver by default.
 
 By default, when using `docker:dind`, Docker uses the `vfs` storage driver which
-copies the filesystem on every run. This is a very disk-intensive operation
+copies the filesystem on every run. This is a disk-intensive operation
 which can be avoided if a different driver is used, for example `overlay2`.
 
 ### Requirements
@@ -345,13 +349,13 @@ which can be avoided if a different driver is used, for example `overlay2`.
 1. Make sure a recent kernel is used, preferably `>= 4.2`.
 1. Check whether the `overlay` module is loaded:
 
-    ```
+    ```sh
     sudo lsmod | grep overlay
     ```
 
     If you see no result, then it isn't loaded. To load it use:
 
-    ```
+    ```sh
     sudo modprobe overlay
     ```
 
@@ -359,7 +363,7 @@ which can be avoided if a different driver is used, for example `overlay2`.
     On Ubuntu systems, this is done by editing `/etc/modules`. Just add the
     following line into it:
 
-    ```
+    ```text
     overlay
     ```
 
@@ -367,7 +371,7 @@ which can be avoided if a different driver is used, for example `overlay2`.
 
 You can enable the driver for each project individually by editing the project's `.gitlab-ci.yml`:
 
-```
+```yaml
 variables:
   DOCKER_DRIVER: overlay2
 ```
@@ -571,3 +575,15 @@ deploy:
 [docker-cap]: https://docs.docker.com/engine/reference/run/#runtime-privilege-and-linux-capabilities
 [2fa]: ../../user/profile/account/two_factor_authentication.md
 [pat]: ../../user/profile/personal_access_tokens.md
+
+<!-- ## Troubleshooting
+
+Include any troubleshooting steps that you can foresee. If you know beforehand what issues
+one might have when setting this up, or when something is changed, or on upgrading, it's
+important to describe those, too. Think of things that may go wrong and include them here.
+This is important to minimize requests for support, and to avoid doc comments with
+questions that you know someone might ask.
+
+Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+If you have none to add when creating a doc, leave this section in place
+but commented out to help encourage others to add to it in the future. -->

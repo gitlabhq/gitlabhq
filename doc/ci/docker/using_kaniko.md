@@ -1,3 +1,7 @@
+---
+type: howto
+---
+
 # Building images with kaniko and GitLab CI/CD
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/45512) in GitLab 11.2.
@@ -9,17 +13,18 @@ container images from a Dockerfile, inside a container or Kubernetes cluster.
 kaniko solves two problems with using the
 [docker-in-docker build](using_docker_build.md#use-docker-in-docker-executor) method:
 
-1. Docker-in-docker requires [privileged mode](https://docs.docker.com/engine/reference/run/#runtime-privilege-and-linux-capabilities)
-   in order to function, which is a significant security concern.
-1. Docker-in-docker generally incurs a performance penalty and can be quite slow.
+- Docker-in-docker requires [privileged mode](https://docs.docker.com/engine/reference/run/#runtime-privilege-and-linux-capabilities)
+  in order to function, which is a significant security concern.
+- Docker-in-docker generally incurs a performance penalty and can be quite slow.
 
 ## Requirements
 
 In order to utilize kaniko with GitLab, a [GitLab Runner](https://docs.gitlab.com/runner/)
-using either the [Kubernetes](https://docs.gitlab.com/runner/executors/kubernetes.html),
-[Docker](https://docs.gitlab.com/runner/executors/docker.html), or
-[Docker Machine](https://docs.gitlab.com/runner/executors/docker_machine.html)
-executors is required.
+using one of the following executors is required:
+
+- [Kubernetes](https://docs.gitlab.com/runner/executors/kubernetes.html).
+- [Docker](https://docs.gitlab.com/runner/executors/docker.html).
+- [Docker Machine](https://docs.gitlab.com/runner/executors/docker_machine.html).
 
 ## Building a Docker image with kaniko
 
@@ -34,14 +39,17 @@ few important details:
 - A Docker `config.json` file needs to be created with the authentication
   information for the desired container registry.
 
----
+In the following example, kaniko is used to:
 
-In the following example, kaniko is used to build a Docker image and then push
-it to [GitLab Container Registry](../../user/project/container_registry.md).
+1. Build a Docker image.
+1. Then push it to [GitLab Container Registry](../../user/project/container_registry.md).
+
 The job will run only when a tag is pushed. A `config.json` file is created under
 `/kaniko/.docker` with the needed GitLab Container Registry credentials taken from the
 [environment variables](../variables/README.md#predefined-environment-variables)
-GitLab CI/CD provides. In the last step, kaniko uses the `Dockerfile` under the
+GitLab CI/CD provides.
+
+In the last step, kaniko uses the `Dockerfile` under the
 root directory of the project, builds the Docker image and pushes it to the
 project's Container Registry while tagging it with the Git tag:
 
@@ -80,3 +88,15 @@ store:
       ...
       -----END CERTIFICATE-----" >> /kaniko/ssl/certs/ca-certificates.crt
 ```
+
+<!-- ## Troubleshooting
+
+Include any troubleshooting steps that you can foresee. If you know beforehand what issues
+one might have when setting this up, or when something is changed, or on upgrading, it's
+important to describe those, too. Think of things that may go wrong and include them here.
+This is important to minimize requests for support, and to avoid doc comments with
+questions that you know someone might ask.
+
+Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+If you have none to add when creating a doc, leave this section in place
+but commented out to help encourage others to add to it in the future. -->

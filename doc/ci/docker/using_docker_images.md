@@ -1,3 +1,7 @@
+---
+type: concepts, howto
+---
+
 # Using Docker images
 
 GitLab CI in conjunction with [GitLab Runner](../runners/README.md) can use
@@ -45,10 +49,10 @@ The `image` keyword is the name of the Docker image the Docker executor
 will run to perform the CI tasks.
 
 By default, the executor will only pull images from [Docker Hub][hub],
-but this can be configured in the `gitlab-runner/config.toml` by setting
+however this can be configured in the `gitlab-runner/config.toml` by setting
 the [Docker pull policy][] to allow using local images.
 
-For more information about images and Docker Hub please read
+For more information about images and Docker Hub, please read
 the [Docker Fundamentals][] documentation.
 
 ## What is a service
@@ -95,8 +99,8 @@ required for the CI/CD job to proceed and is accessed by network.
 
 To make sure this works, the Runner:
 
-1. checks which ports are exposed from the container by default
-1. starts a special container that waits for these ports to be accessible
+1. Checks which ports are exposed from the container by default.
+1. Starts a special container that waits for these ports to be accessible.
 
 When the second stage of the check fails, either because there is no opened port in the
 service, or the service was not started properly before the timeout and the port is not
@@ -106,7 +110,7 @@ In most cases it will affect the job, but there may be situations when the job
 will still succeed even if that warning was printed. For example:
 
 - The service was started a little after the warning was raised, and the job is
-  not using the linked service from the very beginning. In that case, when the
+  not using the linked service from the beginning. In that case, when the
   job needed to access the service, it may have been already there waiting for
   connections.
 - The service container is not providing any networking service, but it's doing
@@ -143,9 +147,9 @@ job:
 If you need to have `php`, `node` and `go` available for your script, you should
 either:
 
-- choose an existing Docker image that contains all required tools, or
-- create your own Docker image, which will have all the required tools included
-  and use that in your job
+- Choose an existing Docker image that contains all required tools.
+- Create your own Docker image, which will have all the required tools included
+  and use that in your job.
 
 ### Accessing the services
 
@@ -167,18 +171,18 @@ access to it from your build container under two hostnames to choose from:
 - `tutum-wordpress`
 - `tutum__wordpress`
 
->**Note:**
+NOTE: **Note:**
 Hostnames with underscores are not RFC valid and may cause problems in 3rd party
 applications.
 
 The default aliases for the service's hostname are created from its image name
 following these rules:
 
-- Everything after the colon (`:`) is stripped
+- Everything after the colon (`:`) is stripped.
 - Slash (`/`) is replaced with double underscores (`__`) and the primary alias
-  is created
+  is created.
 - Slash (`/`) is replaced with a single dash (`-`) and the secondary alias is
-  created (requires GitLab Runner v1.1.0 or higher)
+  created (requires GitLab Runner v1.1.0 or higher).
 
 To override the default behavior, you can
 [specify a service alias](#available-settings-for-services).
@@ -333,7 +337,7 @@ services:
 ```
 
 The Runner will still start two containers using the `mysql:latest` image,
-but now each of them will also be accessible with the alias configured
+however now each of them will also be accessible with the alias configured
 in `.gitlab-ci.yml` file.
 
 ### Setting a command for the service
@@ -408,8 +412,6 @@ you should check which one your Runner is using. Specifically:
 
 The syntax of `image:entrypoint` is similar to [Dockerfile's `ENTRYPOINT`][entrypoint].
 
-----
-
 Let's assume you have a `super/sql:experimental` image with some SQL database
 inside it and you would like to use it as a base image for your job because you
 want to execute some tests with this database binary. Let's also assume that
@@ -443,7 +445,7 @@ image:
 
 Look for the `[runners.docker]` section:
 
-```
+```toml
 [runners.docker]
   image = "ruby:2.1"
   services = ["mysql:latest", "postgres:latest"]
@@ -469,11 +471,11 @@ image which is private and requires you to login into a private container regist
 
 Let's also assume that these are the login credentials:
 
-| Key      | Value                     |
-|----------|---------------------------|
-| registry | registry.example.com:5000 |
-| username | my_username               |
-| password | my_password               |
+| Key      | Value                       |
+|:---------|:----------------------------|
+| registry | `registry.example.com:5000` |
+| username | `my_username`               |
+| password | `my_password`               |
 
 To configure access for `registry.example.com:5000`, follow these steps:
 
@@ -534,7 +536,8 @@ To configure access for `registry.example.com:5000`, follow these steps:
 You can add configuration for as many registries as you want, adding more
 registries to the `"auths"` hash as described above.
 
-NOTE: **Note:** The full `hostname:port` combination is required everywhere
+NOTE: **Note:**
+The full `hostname:port` combination is required everywhere
 for the Runner to match the `DOCKER_AUTH_CONFIG`. For example, if
 `registry.example.com:5000/namespace/image:tag` is specified in `.gitlab-ci.yml`,
 then the `DOCKER_AUTH_CONFIG` must also specify `registry.example.com:5000`.
@@ -551,8 +554,9 @@ service containers.
 For all possible configuration variables check the documentation of each image
 provided in their corresponding Docker hub page.
 
-*Note: All variables will be passed to all services containers. It's not
-designed to distinguish which variable should go where.*
+NOTE: **Note:**
+All variables will be passed to all services containers. It's not
+designed to distinguish which variable should go where.
 
 ### PostgreSQL service example
 
@@ -582,8 +586,9 @@ time.
 
 ## How to debug a job locally
 
-*Note: The following commands are run without root privileges. You should be
-able to run Docker with your regular user account.*
+NOTE: **Note:**
+The following commands are run without root privileges. You should be
+able to run Docker with your regular user account.
 
 First start with creating a file named `build_script`:
 
@@ -602,7 +607,7 @@ is specific to your project.
 
 Then create some service containers:
 
-```
+```sh
 docker run -d --name service-mysql mysql:latest
 docker run -d --name service-postgres postgres:latest
 ```
@@ -614,7 +619,7 @@ respectively. They will both run in the background (`-d`).
 Finally, create a build container by executing the `build_script` file we
 created earlier:
 
-```
+```sh
 docker run --name build -i --link=service-mysql:mysql --link=service-postgres:postgres ruby:2.1 /bin/bash < build_script
 ```
 
@@ -626,7 +631,7 @@ piped using STDIN to the bash interpreter which in turn executes the
 When you finish testing and no longer need the containers, you can remove them
 with:
 
-```
+```sh
 docker rm -f -v build service-mysql service-postgres
 ```
 
