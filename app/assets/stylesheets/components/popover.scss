@@ -39,6 +39,25 @@
   }
 }
 
+.onboarding-popover {
+  box-shadow: 0 2px 4px $dropdown-shadow-color;
+
+  .popover-body {
+    font-size: $gl-font-size;
+    line-height: $gl-line-height;
+    padding: $gl-padding;
+  }
+
+  .popover-header {
+    display: none;
+  }
+
+  .accept-mr-label {
+    background-color: $accepting-mr-label-color;
+    color: $white-light;
+  }
+}
+
 .onboarding-welcome-page {
   .popover {
     min-width: auto;
