@@ -3,8 +3,8 @@ import Vue from 'vue';
 
 import Flash from '~/flash';
 import { __ } from '~/locale';
-import '~/vue_shared/models/label';
-import '~/vue_shared/models/assignee';
+import './models/label';
+import './models/assignee';
 
 import FilteredSearchBoards from './filtered_search_boards';
 import eventHub from './eventhub';
