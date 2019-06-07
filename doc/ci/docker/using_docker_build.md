@@ -1,23 +1,25 @@
+---
+type: concepts, howto
+---
+
 # Building Docker images with GitLab CI/CD
 
 GitLab CI/CD allows you to use Docker Engine to build and test docker-based projects.
 
-TIP: **Tip:**
-This also allows to you to use `docker-compose` and other docker-enabled tools.
 
 One of the new trends in Continuous Integration/Deployment is to:
 
-1. Create an application image
-1. Run tests against the created image
-1. Push image to a remote registry
-1. Deploy to a server from the pushed image
+1. Create an application image.
+1. Run tests against the created image.
+1. Push image to a remote registry.
+1. Deploy to a server from the pushed image.
 
 It's also useful when your application already has the `Dockerfile` that can be
 used to create and test an image:
 
 ```bash
 docker build -t my-image dockerfiles/
-docker run my-docker-image /script/to/run/tests
+docker run my-image /script/to/run/tests
 docker tag my-image my-registry:5000/my-image
 docker push my-registry:5000/my-image
 ```
@@ -75,7 +77,7 @@ GitLab Runner then executes job scripts as the `gitlab-runner` user.
         - docker run my-docker-image /script/to/run/tests
     ```
 
-1. You can now use `docker` command and install `docker-compose` if needed.
+1. You can now use `docker` command (and **install** `docker-compose` if needed).
 
 NOTE: **Note:**
 By adding `gitlab-runner` to the `docker` group you are effectively granting `gitlab-runner` full root permissions.
@@ -85,8 +87,10 @@ For more information please read [On Docker security: `docker` group considered 
 
 The second approach is to use the special docker-in-docker (dind)
 [Docker image](https://hub.docker.com/_/docker/) with all tools installed
-(`docker` and `docker-compose`) and run the job script in context of that
-image in privileged mode.
+(`docker`) and run the job script in context of that
+image in privileged mode. 
+
+NOTE: **Note:** `docker-compose` is not part of docker-in-docker (dind). In case you'd like to use `docker-compose` in your CI builds, please follow the (installation instructions for docker-compose)[https://docs.docker.com/compose/install/] provided by docker. 
 
 In order to do that, follow the steps:
 
@@ -113,7 +117,7 @@ In order to do that, follow the steps:
 
     The above command will create a `config.toml` entry similar to this:
 
-    ```
+    ```toml
     [[runners]]
       url = "https://gitlab.com/"
       token = TOKEN
@@ -142,9 +146,12 @@ In order to do that, follow the steps:
       # The 'docker' hostname is the alias of the service container as described at
       # https://docs.gitlab.com/ee/ci/docker/using_docker_images.html#accessing-the-services
       #
-      # Note that if you're using Kubernetes executor, the variable should be set to
-      # tcp://localhost:2375 because of how Kubernetes executor connects services
+      # Note that if you're using the Kubernetes executor, the variable should be set to
+      # tcp://localhost:2375/ because of how the Kubernetes executor connects services
       # to the job container
+      # DOCKER_HOST: tcp://localhost:2375/
+      #
+      # For non-Kubernetes executors, we use tcp://docker:2375/
       DOCKER_HOST: tcp://docker:2375/
       # When using dind, it's wise to use the overlayfs driver for
       # improved performance.
@@ -224,7 +231,7 @@ In order to do that, follow the steps:
 
     The above command will create a `config.toml` entry similar to this:
 
-    ```
+    ```toml
     [[runners]]
       url = "https://gitlab.com/"
       token = REGISTRATION_TOKEN
@@ -267,9 +274,9 @@ aware of the following implications:
   create containers with specific names, they may conflict with each other.
 - Sharing files and directories from the source repo into containers may not
   work as expected since volume mounting is done in the context of the host
-  machine, not the build container, e.g.:
+  machine, not the build container. For example:
 
-    ```
+    ```sh
     docker run --rm -t -i -v $(pwd)/src:/home/app/src test-image:latest run_app_tests
     ```
 
@@ -303,20 +310,19 @@ services:
   - docker:dind
 
 variables:
-  CONTAINER_IMAGE: registry.gitlab.com/$CI_PROJECT_PATH
   DOCKER_HOST: tcp://docker:2375
   DOCKER_DRIVER: overlay2
 
 before_script:
-  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
+  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
 
 build:
   stage: build
   script:
-    - docker pull $CONTAINER_IMAGE:latest || true
-    - docker build --cache-from $CONTAINER_IMAGE:latest --tag $CONTAINER_IMAGE:$CI_COMMIT_SHA --tag $CONTAINER_IMAGE:latest .
-    - docker push $CONTAINER_IMAGE:$CI_COMMIT_SHA
-    - docker push $CONTAINER_IMAGE:latest
+    - docker pull $CI_REGISTRY_IMAGE:latest || true
+    - docker build --cache-from $CI_REGISTRY_IMAGE:latest --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA --tag $CI_REGISTRY_IMAGE:latest .
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    - docker push $CI_REGISTRY_IMAGE:latest
 ```
 
 The steps in the `script` section for the `build` stage can be summed up to:
@@ -324,7 +330,7 @@ The steps in the `script` section for the `build` stage can be summed up to:
 1. The first command tries to pull the image from the registry so that it can be
    used as a cache for the `docker build` command.
 1. The second command builds a Docker image using the pulled image as a
-   cache (notice the `--cache-from $CONTAINER_IMAGE:latest` argument) if
+   cache (notice the `--cache-from $CI_REGISTRY_IMAGE:latest` argument) if
    available, and tags it.
 1. The last two commands push the tagged Docker images to the container registry
    so that they may also be used as cache for subsequent builds.
@@ -335,7 +341,7 @@ NOTE: **Note:**
 The shared Runners on GitLab.com use the `overlay2` driver by default.
 
 By default, when using `docker:dind`, Docker uses the `vfs` storage driver which
-copies the filesystem on every run. This is a very disk-intensive operation
+copies the filesystem on every run. This is a disk-intensive operation
 which can be avoided if a different driver is used, for example `overlay2`.
 
 ### Requirements
@@ -343,13 +349,13 @@ which can be avoided if a different driver is used, for example `overlay2`.
 1. Make sure a recent kernel is used, preferably `>= 4.2`.
 1. Check whether the `overlay` module is loaded:
 
-    ```
+    ```sh
     sudo lsmod | grep overlay
     ```
 
     If you see no result, then it isn't loaded. To load it use:
 
-    ```
+    ```sh
     sudo modprobe overlay
     ```
 
@@ -357,7 +363,7 @@ which can be avoided if a different driver is used, for example `overlay2`.
     On Ubuntu systems, this is done by editing `/etc/modules`. Just add the
     following line into it:
 
-    ```
+    ```text
     overlay
     ```
 
@@ -365,7 +371,7 @@ which can be avoided if a different driver is used, for example `overlay2`.
 
 You can enable the driver for each project individually by editing the project's `.gitlab-ci.yml`:
 
-```
+```yaml
 variables:
   DOCKER_DRIVER: overlay2
 ```
@@ -389,6 +395,7 @@ If you're running multiple Runners you will have to modify all configuration fil
 ## Using the GitLab Container Registry
 
 > **Notes:**
+>
 > - This feature requires GitLab 8.8 and GitLab Runner 1.2.
 > - Starting from GitLab 8.12, if you have [2FA] enabled in your account, you need
 >   to pass a [personal access token][pat] instead of your password in order to
@@ -420,14 +427,14 @@ and depend on the visibility of your project.
 
 For all projects, mostly suitable for public ones:
 
-- **Using the special `gitlab-ci-token` user**: This user is created for you in order to
+- **Using the special `$CI_REGISTRY_USER` variable**: The user specified by this variable is created for you in order to
   push to the Registry connected to your project. Its password is automatically
-  set with the `$CI_JOB_TOKEN` variable. This allows you to automate building and deploying
+  set with the `$CI_REGISTRY_PASSWORD` variable. This allows you to automate building and deploying
   your Docker images and has read/write access to the Registry. This is ephemeral,
   so it's only valid for one job. You can use the following example as-is:
 
     ```sh
-    docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     ```
 
 For private and internal projects:
@@ -435,8 +442,10 @@ For private and internal projects:
 - **Using a personal access token**: You can create and use a
   [personal access token](../../user/profile/personal_access_tokens.md)
   in case your project is private:
-    - For read (pull) access, the scope should be `read_registry`.
-    - For read/write (pull/push) access, use `api`.
+
+  - For read (pull) access, the scope should be `read_registry`.
+  - For read/write (pull/push) access, use `api`.
+
   Replace the `<username>` and `<access_token>` in the following example:
 
     ```sh
@@ -468,9 +477,9 @@ could look like:
      DOCKER_DRIVER: overlay2
    stage: build
    script:
-     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.example.com
-     - docker build -t registry.example.com/group/project/image:latest .
-     - docker push registry.example.com/group/project/image:latest
+     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+     - docker build -t $CI_REGISTRY/group/project/image:latest .
+     - docker push $CI_REGISTRY/group/project/image:latest
 ```
 
 You can also make use of [other variables](../variables/README.md) to avoid hardcoding:
@@ -485,7 +494,7 @@ variables:
   IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
 
 before_script:
-  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
 
 build:
   stage: build
@@ -525,7 +534,7 @@ variables:
   CONTAINER_RELEASE_IMAGE: $CI_REGISTRY_IMAGE:latest
 
 before_script:
-  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
 
 build:
   stage: build
@@ -566,3 +575,15 @@ deploy:
 [docker-cap]: https://docs.docker.com/engine/reference/run/#runtime-privilege-and-linux-capabilities
 [2fa]: ../../user/profile/account/two_factor_authentication.md
 [pat]: ../../user/profile/personal_access_tokens.md
+
+<!-- ## Troubleshooting
+
+Include any troubleshooting steps that you can foresee. If you know beforehand what issues
+one might have when setting this up, or when something is changed, or on upgrading, it's
+important to describe those, too. Think of things that may go wrong and include them here.
+This is important to minimize requests for support, and to avoid doc comments with
+questions that you know someone might ask.
+
+Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+If you have none to add when creating a doc, leave this section in place
+but commented out to help encourage others to add to it in the future. -->

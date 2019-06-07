@@ -8,6 +8,8 @@ class Projects::PipelinesController < Projects::ApplicationController
   before_action :authorize_create_pipeline!, only: [:new, :create]
   before_action :authorize_update_pipeline!, only: [:retry, :cancel]
 
+  around_action :allow_gitaly_ref_name_caching, only: [:index, :show]
+
   wrap_parameters Ci::Pipeline
 
   POLLING_INTERVAL = 10_000
@@ -31,10 +33,7 @@ class Projects::PipelinesController < Projects::ApplicationController
         Gitlab::PollingInterval.set_header(response, interval: POLLING_INTERVAL)
 
         render json: {
-          pipelines: PipelineSerializer
-            .new(project: @project, current_user: @current_user)
-            .with_pagination(request, response)
-            .represent(@pipelines, disable_coverage: true, preload: true),
+          pipelines: serialize_pipelines,
           count: {
             all: @pipelines_count,
             running: @running_count,
@@ -150,6 +149,13 @@ class Projects::PipelinesController < Projects::ApplicationController
 
   private
 
+  def serialize_pipelines
+    PipelineSerializer
+      .new(project: @project, current_user: @current_user)
+      .with_pagination(request, response)
+      .represent(@pipelines, disable_coverage: true, preload: true)
+  end
+
   def render_show
     respond_to do |format|
       format.html do
@@ -163,7 +169,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def create_params
-    params.require(:pipeline).permit(:ref, variables_attributes: %i[key secret_value])
+    params.require(:pipeline).permit(:ref, variables_attributes: %i[key variable_type secret_value])
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

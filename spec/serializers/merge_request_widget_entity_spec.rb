@@ -13,6 +13,10 @@ describe MergeRequestWidgetEntity do
     described_class.new(resource, request: request).as_json
   end
 
+  it 'has the latest sha of the target branch' do
+    is_expected.to include(:target_branch_sha)
+  end
+
   describe 'source_project_full_path' do
     it 'includes the full path of the source project' do
       expect(subject[:source_project_full_path]).to be_present
@@ -279,13 +283,64 @@ describe MergeRequestWidgetEntity do
   end
 
   describe 'commits_without_merge_commits' do
-    it 'should not include merge commits' do
-      # Mock all but the first 5 commits to be merge commits
-      resource.commits.each_with_index do |commit, i|
-        expect(commit).to receive(:merge_commit?).at_least(:once).and_return(i > 4)
+    def find_matching_commit(short_id)
+      resource.commits.find { |c| c.short_id == short_id }
+    end
+
+    it 'does not include merge commits' do
+      commits_in_widget = subject[:commits_without_merge_commits]
+
+      expect(commits_in_widget.length).to be < resource.commits.length
+      expect(commits_in_widget.length).to eq(resource.commits.without_merge_commits.length)
+      commits_in_widget.each do |c|
+        expect(find_matching_commit(c[:short_id]).merge_commit?).to eq(false)
+      end
+    end
+  end
+
+  describe 'auto merge' do
+    context 'when auto merge is enabled' do
+      let(:resource) { create(:merge_request, :merge_when_pipeline_succeeds) }
+
+      it 'returns auto merge related information' do
+        expect(subject[:auto_merge_enabled]).to be_truthy
+        expect(subject[:auto_merge_strategy]).to eq('merge_when_pipeline_succeeds')
+      end
+    end
+
+    context 'when auto merge is not enabled' do
+      let(:resource) { create(:merge_request) }
+
+      it 'returns auto merge related information' do
+        expect(subject[:auto_merge_enabled]).to be_falsy
+        expect(subject[:auto_merge_strategy]).to be_nil
+      end
+    end
+
+    context 'when head pipeline is running' do
+      before do
+        create(:ci_pipeline, :running, project: project,
+                                       ref: resource.source_branch,
+                                       sha: resource.diff_head_sha)
+        resource.update_head_pipeline
       end
 
-      expect(subject[:commits_without_merge_commits].size).to eq(5)
+      it 'returns available auto merge strategies' do
+        expect(subject[:available_auto_merge_strategies]).to eq(%w[merge_when_pipeline_succeeds])
+      end
+    end
+
+    context 'when head pipeline is finished' do
+      before do
+        create(:ci_pipeline, :success, project: project,
+                                       ref: resource.source_branch,
+                                       sha: resource.diff_head_sha)
+        resource.update_head_pipeline
+      end
+
+      it 'returns available auto merge strategies' do
+        expect(subject[:available_auto_merge_strategies]).to be_empty
+      end
     end
   end
 end

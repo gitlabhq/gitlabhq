@@ -41,6 +41,25 @@ describe 'Pipeline Badge' do
       end
     end
 
+    context 'when the pipeline is preparing' do
+      let!(:job) { create(:ci_build, status: 'created', pipeline: pipeline) }
+
+      before do
+        # Prevent skipping directly to 'pending'
+        allow(Ci::BuildPrepareWorker).to receive(:perform_async)
+        allow(job).to receive(:prerequisites).and_return([double])
+      end
+
+      it 'displays the preparing badge' do
+        job.enqueue
+
+        visit pipeline_project_badges_path(project, ref: ref, format: :svg)
+
+        expect(page.status_code).to eq(200)
+        expect_badge('preparing')
+      end
+    end
+
     context 'when the pipeline is running' do
       it 'shows displays so on the badge' do
         create(:ci_build, pipeline: pipeline, name: 'second build', status_event: 'run')

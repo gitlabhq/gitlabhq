@@ -11,9 +11,13 @@ module Clusters
 
       def execute
         return if app.external_ip
+        return if app.external_hostname
         return unless try_obtain_lease
 
-        app.update!(external_ip: ingress_ip) if ingress_ip
+        app.external_ip = ingress_ip if ingress_ip
+        app.external_hostname = ingress_hostname if ingress_hostname
+
+        app.save! if app.changed?
       end
 
       private
@@ -25,12 +29,16 @@ module Clusters
       end
 
       def ingress_ip
-        service.status.loadBalancer.ingress&.first&.ip
+        ingress_service&.ip
       end
 
-      def service
+      def ingress_hostname
+        ingress_service&.hostname
+      end
+
+      def ingress_service
         strong_memoize(:ingress_service) do
-          app.ingress_service
+          app.ingress_service.status.loadBalancer.ingress&.first
         end
       end
     end

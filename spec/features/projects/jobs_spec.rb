@@ -2,6 +2,9 @@ require 'spec_helper'
 require 'tempfile'
 
 describe 'Jobs', :clean_gitlab_redis_shared_state do
+  include Gitlab::Routing
+  include ProjectForksHelper
+
   let(:user) { create(:user) }
   let(:user_access_level) { :developer }
   let(:project) { create(:project, :repository) }
@@ -121,6 +124,112 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
       end
     end
 
+    context 'pipeline info block', :js do
+      it 'shows pipeline id and source branch' do
+        visit project_job_path(project, job)
+
+        within '.js-pipeline-info' do
+          expect(page).to have_content("Pipeline ##{pipeline.id} (##{pipeline.iid}) for #{pipeline.ref}")
+        end
+      end
+
+      context 'when pipeline is detached merge request pipeline' do
+        let(:merge_request) do
+          create(:merge_request,
+            :with_detached_merge_request_pipeline,
+            target_project: target_project,
+            source_project: source_project)
+        end
+
+        let(:source_project) { project }
+        let(:target_project) { project }
+        let(:pipeline) { merge_request.all_pipelines.last }
+        let(:job) { create(:ci_build, pipeline: pipeline) }
+
+        it 'shows merge request iid and source branch' do
+          visit project_job_path(project, job)
+
+          within '.js-pipeline-info' do
+            expect(page).to have_content("for !#{pipeline.merge_request.iid} " \
+                                         "with #{pipeline.merge_request.source_branch}")
+            expect(page).to have_link("!#{pipeline.merge_request.iid}",
+              href: project_merge_request_path(project, merge_request))
+            expect(page).to have_link(pipeline.merge_request.source_branch,
+              href: project_commits_path(project, merge_request.source_branch))
+          end
+        end
+
+        context 'when source project is a forked project' do
+          let(:source_project) { fork_project(project, user, repository: true) }
+          let(:target_project) { project }
+
+          it 'shows merge request iid and source branch' do
+            visit project_job_path(source_project, job)
+
+            within '.js-pipeline-info' do
+              expect(page).to have_content("for !#{pipeline.merge_request.iid} " \
+                                           "with #{pipeline.merge_request.source_branch}")
+              expect(page).to have_link("!#{pipeline.merge_request.iid}",
+                href: project_merge_request_path(project, merge_request))
+              expect(page).to have_link(pipeline.merge_request.source_branch,
+                href: project_commits_path(source_project, merge_request.source_branch))
+            end
+          end
+        end
+      end
+
+      context 'when pipeline is merge request pipeline' do
+        let(:merge_request) do
+          create(:merge_request,
+            :with_merge_request_pipeline,
+            target_project: target_project,
+            source_project: source_project)
+        end
+
+        let(:source_project) { project }
+        let(:target_project) { project }
+        let(:pipeline) { merge_request.all_pipelines.last }
+        let(:job) { create(:ci_build, pipeline: pipeline) }
+
+        it 'shows merge request iid and source branch' do
+          visit project_job_path(project, job)
+
+          within '.js-pipeline-info' do
+            expect(page).to have_content("for !#{pipeline.merge_request.iid} " \
+                                         "with #{pipeline.merge_request.source_branch} " \
+                                         "into #{pipeline.merge_request.target_branch}")
+            expect(page).to have_link("!#{pipeline.merge_request.iid}",
+              href: project_merge_request_path(project, merge_request))
+            expect(page).to have_link(pipeline.merge_request.source_branch,
+              href: project_commits_path(project, merge_request.source_branch))
+            expect(page).to have_link(pipeline.merge_request.target_branch,
+              href: project_commits_path(project, merge_request.target_branch))
+          end
+        end
+
+        context 'when source project is a forked project' do
+          let(:source_project) { fork_project(project, user, repository: true) }
+          let(:target_project) { project }
+
+          it 'shows merge request iid and source branch' do
+            visit project_job_path(source_project, job)
+
+            within '.js-pipeline-info' do
+              expect(page).to have_content("for !#{pipeline.merge_request.iid} " \
+                                           "with #{pipeline.merge_request.source_branch} " \
+                                           "into #{pipeline.merge_request.target_branch}")
+              expect(page).to have_link("!#{pipeline.merge_request.iid}",
+                href: project_merge_request_path(project, merge_request))
+              expect(page).to have_link(pipeline.merge_request.source_branch,
+                href: project_commits_path(source_project, merge_request.source_branch))
+              expect(page).to have_link(pipeline.merge_request.target_branch,
+                href: project_commits_path(project, merge_request.target_branch))
+            end
+          end
+        end
+      end
+    end
+
     context 'sidebar', :js do
       let(:job) { create(:ci_build, :success, :trace_live, pipeline: pipeline, name: '<img src=x onerror=alert(document.domain)>') }
 
@@ -205,7 +314,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
 
     context "Download artifacts", :js do
       before do
-        job.update(legacy_artifacts_file: artifacts_file)
+        create(:ci_job_artifact, :archive, file: artifacts_file, job: job)
         visit project_job_path(project, job)
       end
 
@@ -229,8 +338,8 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
 
     context 'Artifacts expire date', :js do
       before do
-        job.update(legacy_artifacts_file: artifacts_file,
-                   artifacts_expire_at: expire_at)
+        create(:ci_job_artifact, :archive, file: artifacts_file, expire_at: expire_at, job: job)
+        job.update!(artifacts_expire_at: expire_at)
 
         visit project_job_path(project, job)
       end
@@ -872,7 +981,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
 
   describe "GET /:project/jobs/:id/download", :js do
     before do
-      job.update(legacy_artifacts_file: artifacts_file)
+      create(:ci_job_artifact, :archive, file: artifacts_file, job: job)
       visit project_job_path(project, job)
 
       click_link 'Download'
@@ -880,7 +989,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
 
     context "Build from other project" do
       before do
-        job2.update(legacy_artifacts_file: artifacts_file)
+        create(:ci_job_artifact, :archive, file: artifacts_file, job: job2)
       end
 
       it do

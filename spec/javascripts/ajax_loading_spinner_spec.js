@@ -2,7 +2,7 @@ import $ from 'jquery';
 import AjaxLoadingSpinner from '~/ajax_loading_spinner';
 
 describe('Ajax Loading Spinner', () => {
-  const fixtureTemplate = 'static/ajax_loading_spinner.html.raw';
+  const fixtureTemplate = 'static/ajax_loading_spinner.html';
   preloadFixtures(fixtureTemplate);
 
   beforeEach(() => {

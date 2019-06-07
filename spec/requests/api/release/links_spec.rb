@@ -73,6 +73,22 @@ describe API::Release::Links do
           expect(response).to have_gitlab_http_status(:ok)
         end
       end
+
+      context 'when project is public and the repository is private' do
+        let(:project) { create(:project, :repository, :public, :repository_private) }
+
+        it_behaves_like '403 response' do
+          let(:request) { get api("/projects/#{project.id}/releases/v0.1/assets/links", non_project_member) }
+        end
+
+        context 'when the release does not exists' do
+          let!(:release) { }
+
+          it_behaves_like '403 response' do
+            let(:request) { get api("/projects/#{project.id}/releases/v0.1/assets/links", non_project_member) }
+          end
+        end
+      end
     end
   end
 

@@ -1,0 +1,17 @@
+@each $variant, $range in $color-ranges {
+  @each $suffix, $color in $range {
+    #{'.bg-#{$variant}-#{$suffix}'} {
+      background-color: $color;
+    }
+
+    #{'.text-#{$variant}-#{$suffix}'} {
+      color: $color;
+    }
+  }
+}
+
+@each $index, $size in $type-scale {
+  #{'.text-#{$index}'} {
+    font-size: $size;
+  }
+}

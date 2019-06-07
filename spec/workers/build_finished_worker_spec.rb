@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe BuildFinishedWorker do
@@ -15,6 +17,7 @@ describe BuildFinishedWorker do
         expect_any_instance_of(BuildCoverageWorker).to receive(:perform)
         expect(BuildHooksWorker).to receive(:perform_async)
         expect(ArchiveTraceWorker).to receive(:perform_async)
+        expect(ExpirePipelineCacheWorker).to receive(:perform_async)
 
         described_class.new.perform(build.id)
       end

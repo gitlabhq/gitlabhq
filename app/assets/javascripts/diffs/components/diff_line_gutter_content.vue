@@ -84,8 +84,6 @@ export default {
     },
     shouldShowCommentButton() {
       return (
-        this.isLoggedIn &&
-        this.showCommentButton &&
         this.isHover &&
         !this.isMatchLine &&
         !this.isContextLine &&
@@ -101,6 +99,9 @@ export default {
         return false;
       }
       return this.showCommentButton && this.hasDiscussions;
+    },
+    shouldRenderCommentButton() {
+      return this.isLoggedIn && this.showCommentButton;
     },
   },
   methods: {
@@ -167,6 +168,7 @@ export default {
     >
     <template v-else>
       <button
+        v-if="shouldRenderCommentButton"
         v-show="shouldShowCommentButton"
         type="button"
         class="add-diff-note js-add-diff-note-button qa-diff-comment"

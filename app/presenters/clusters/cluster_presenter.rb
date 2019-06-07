@@ -22,10 +22,6 @@ module Clusters
       "https://console.cloud.google.com/kubernetes/clusters/details/#{provider.zone}/#{name}" if gcp?
     end
 
-    def can_toggle_cluster?
-      can?(current_user, :update_cluster, cluster) && created?
-    end
-
     def can_read_cluster?
       can?(current_user, :read_cluster, cluster)
     end
@@ -35,6 +31,8 @@ module Clusters
         s_("ClusterIntegration|Project cluster")
       elsif cluster.group_type?
         s_("ClusterIntegration|Group cluster")
+      elsif cluster.instance_type?
+        s_("ClusterIntegration|Instance cluster")
       end
     end
 
@@ -43,9 +41,15 @@ module Clusters
         project_cluster_path(project, cluster)
       elsif cluster.group_type?
         group_cluster_path(group, cluster)
+      elsif cluster.instance_type?
+        admin_cluster_path(cluster)
       else
         raise NotImplementedError
       end
+    end
+
+    def read_only_kubernetes_platform_fields?
+      !cluster.provided_by_user?
     end
 
     private

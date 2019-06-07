@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Projects::CommitsController do
@@ -15,7 +17,7 @@ describe Projects::CommitsController do
 
     describe "GET commits_root" do
       context "no ref is provided" do
-        it 'should redirect to the default branch of the project' do
+        it 'redirects to the default branch of the project' do
           get(:commits_root,
               params: {
                 namespace_id: project.namespace,
@@ -113,6 +115,8 @@ describe Projects::CommitsController do
       render_views
 
       before do
+        expect(::Gitlab::GitalyClient).to receive(:allow_ref_name_caching).and_call_original unless id.include?(' ')
+
         get(:signatures,
             params: {
               namespace_id: project.namespace,

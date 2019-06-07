@@ -39,7 +39,7 @@ export default {
       </gl-link>
 
       <clipboard-button
-        :text="commit.short_id"
+        :text="commit.id"
         :title="__('Copy commit SHA to clipboard')"
         css-class="btn btn-clipboard btn-transparent"
       />

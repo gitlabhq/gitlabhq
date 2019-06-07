@@ -1,5 +1,0 @@
----
-title: 'Timer and action name aligned vertically for delayed jobs in pipeline actions'
-merge_request: 25117
-author: Gokhan Apaydin
-type: fixed

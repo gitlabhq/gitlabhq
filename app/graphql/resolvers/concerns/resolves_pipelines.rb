@@ -19,6 +19,16 @@ module ResolvesPipelines
              description: "Filter pipelines by the sha of the commit they are run for"
   end
 
+  class_methods do
+    def resolver_complexity(args, child_complexity:)
+      complexity = super
+      complexity += 2 if args[:sha]
+      complexity += 2 if args[:ref]
+
+      complexity
+    end
+  end
+
   def resolve_pipelines(project, params = {})
     PipelinesFinder.new(project, context[:current_user], params).execute
   end

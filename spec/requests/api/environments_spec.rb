@@ -32,6 +32,7 @@ describe API::Environments do
         expect(json_response.first['name']).to eq(environment.name)
         expect(json_response.first['external_url']).to eq(environment.external_url)
         expect(json_response.first['project'].keys).to contain_exactly(*project_data_keys)
+        expect(json_response.first).not_to have_key("last_deployment")
       end
     end
 
@@ -183,6 +184,27 @@ describe API::Environments do
     context 'a non member' do
       it 'rejects the request' do
         post api("/projects/#{project.id}/environments/#{environment.id}/stop", non_member)
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
+  end
+
+  describe 'GET /projects/:id/environments/:environment_id' do
+    context 'as member of the project' do
+      it 'returns project environments' do
+        create(:deployment, :success, project: project, environment: environment)
+
+        get api("/projects/#{project.id}/environments/#{environment.id}", user)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to match_response_schema('public_api/v4/environment')
+      end
+    end
+
+    context 'as non member' do
+      it 'returns a 404 status code' do
+        get api("/projects/#{project.id}/environments/#{environment.id}", non_member)
 
         expect(response).to have_gitlab_http_status(404)
       end

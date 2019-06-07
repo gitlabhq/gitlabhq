@@ -30,7 +30,7 @@ the `pushes_since_gc` value is 200 a `git gc` will be run.
   `git add`.
 - `git repack` ([man page][man-repack]) re-organize existing packs into a single, more efficient pack.
 
-You can find this option under your **[Project] > Edit Project**.
+You can find this option under your project's **Settings > General > Advanced**.
 
 ---
 

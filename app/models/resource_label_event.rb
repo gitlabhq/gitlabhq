@@ -2,7 +2,7 @@
 
 # This model is not used yet, it will be used for:
 # https://gitlab.com/gitlab-org/gitlab-ce/issues/48483
-class ResourceLabelEvent < ActiveRecord::Base
+class ResourceLabelEvent < ApplicationRecord
   include Importable
   include Gitlab::Utils::StrongMemoize
   include CacheMarkdownField

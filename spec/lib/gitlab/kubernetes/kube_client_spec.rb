@@ -50,6 +50,36 @@ describe Gitlab::Kubernetes::KubeClient do
     end
   end
 
+  describe '#initialize' do
+    shared_examples 'local address' do
+      it 'blocks local addresses' do
+        expect { client }.to raise_error(Gitlab::UrlBlocker::BlockedUrlError)
+      end
+
+      context 'when local requests are allowed' do
+        before do
+          stub_application_setting(allow_local_requests_from_hooks_and_services: true)
+        end
+
+        it 'allows local addresses' do
+          expect { client }.not_to raise_error
+        end
+      end
+    end
+
+    context 'localhost address' do
+      let(:api_url) { 'http://localhost:22' }
+
+      it_behaves_like 'local address'
+    end
+
+    context 'private network address' do
+      let(:api_url) { 'http://192.168.1.2:3003' }
+
+      it_behaves_like 'local address'
+    end
+  end
+
   describe '#core_client' do
     subject { client.core_client }
 

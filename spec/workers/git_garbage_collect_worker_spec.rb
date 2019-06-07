@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'fileutils'
 
 require 'spec_helper'
@@ -110,6 +112,19 @@ describe GitGarbageCollectWorker do
           .and_return(nil)
 
         subject.perform(project.id, :full_repack, lease_key, lease_uuid)
+      end
+    end
+
+    context "pack_refs" do
+      before do
+        expect(subject).to receive(:get_lease_uuid).and_return(lease_uuid)
+      end
+
+      it "calls Gitaly" do
+        expect_any_instance_of(Gitlab::GitalyClient::RefService).to receive(:pack_refs)
+          .and_return(nil)
+
+        subject.perform(project.id, :pack_refs, lease_key, lease_uuid)
       end
     end
 

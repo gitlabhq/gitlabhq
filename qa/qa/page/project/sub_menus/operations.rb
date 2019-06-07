@@ -14,7 +14,7 @@ module QA
             end
           end
 
-          def click_operations_environments
+          def go_to_operations_environments
             hover_operations do
               within_submenu do
                 click_element(:operations_environments_link)
@@ -22,7 +22,7 @@ module QA
             end
           end
 
-          def click_operations_kubernetes
+          def go_to_operations_kubernetes
             hover_operations do
               within_submenu do
                 click_link('Kubernetes')

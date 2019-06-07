@@ -27,7 +27,7 @@ module QA
 
         Runtime::Browser.visit(ENV['GITLAB_ADDRESS'], Page::Main::Login)
         Page::Main::Login.perform(&:sign_in_using_credentials)
-        Page::Main::Menu.perform(&:go_to_profile_settings)
+        Page::Main::Menu.perform(&:click_settings_link)
         Page::Profile::Menu.perform(&:click_access_tokens)
 
         token_name = 'api-test-token'

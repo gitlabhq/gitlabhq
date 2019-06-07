@@ -90,8 +90,9 @@ describe API::Groups do
 
       it "includes statistics if requested" do
         attributes = {
-          storage_size: 702,
+          storage_size: 1158,
           repository_size: 123,
+          wiki_size: 456,
           lfs_objects_size: 234,
           build_artifacts_size: 345
         }.stringify_keys

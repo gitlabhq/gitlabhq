@@ -1,5 +1,5 @@
 <script>
-import { GlTooltipDirective, GlButton } from '@gitlab/ui';
+import { GlTooltipDirective, GlButton, GlLoadingIcon } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
 import { dasherize } from '~/lib/utils/text_utility';
 import { __ } from '~/locale';
@@ -20,6 +20,7 @@ export default {
   components: {
     Icon,
     GlButton,
+    GlLoadingIcon,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -41,6 +42,7 @@ export default {
   data() {
     return {
       isDisabled: false,
+      isLoading: false,
     };
   },
   computed: {
@@ -59,15 +61,19 @@ export default {
     onClickAction() {
       this.$root.$emit('bv::hide::tooltip', `js-ci-action-${this.link}`);
       this.isDisabled = true;
+      this.isLoading = true;
 
       axios
         .post(`${this.link}.json`)
         .then(() => {
           this.isDisabled = false;
+          this.isLoading = false;
+
           this.$emit('pipelineActionRequestComplete');
         })
         .catch(() => {
           this.isDisabled = false;
+          this.isLoading = false;
 
           createFlash(__('An error occurred while making the request.'));
         });
@@ -82,10 +88,10 @@ export default {
     :title="tooltipText"
     :class="cssClass"
     :disabled="isDisabled"
-    class="js-ci-action btn btn-blank
-btn-transparent ci-action-icon-container ci-action-icon-wrapper"
+    class="js-ci-action btn btn-blank btn-transparent ci-action-icon-container ci-action-icon-wrapper"
     @click="onClickAction"
   >
-    <icon :name="actionIcon" />
+    <gl-loading-icon v-if="isLoading" class="js-action-icon-loading" />
+    <icon v-else :name="actionIcon" />
   </gl-button>
 </template>

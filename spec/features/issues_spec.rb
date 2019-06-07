@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'Issues' do
@@ -91,7 +93,7 @@ describe 'Issues' do
         click_button 'Save changes'
 
         page.within('.assignee') do
-          expect(page).to have_content 'No assignee - assign yourself'
+          expect(page).to have_content 'None - assign yourself'
         end
 
         expect(issue.reload.assignees).to be_empty
@@ -233,8 +235,8 @@ describe 'Issues' do
                          created_at: Time.now - (index * 60))
         end
       end
-      let(:newer_due_milestone) { create(:milestone, due_date: '2013-12-11') }
-      let(:later_due_milestone) { create(:milestone, due_date: '2013-12-12') }
+      let(:newer_due_milestone) { create(:milestone, project: project, due_date: '2013-12-11') }
+      let(:later_due_milestone) { create(:milestone, project: project, due_date: '2013-12-12') }
 
       it 'sorts by newest' do
         visit project_issues_path(project, sort: sort_value_created_date)
@@ -465,7 +467,7 @@ describe 'Issues' do
             click_link 'Edit'
             click_link 'Unassigned'
             first('.title').click
-            expect(page).to have_content 'No assignee'
+            expect(page).to have_content 'None'
           end
 
           # wait_for_requests does not work with vue-resource at the moment
@@ -479,7 +481,7 @@ describe 'Issues' do
           visit project_issue_path(project, issue2)
 
           page.within('.assignee') do
-            expect(page).to have_content "No assignee"
+            expect(page).to have_content "None"
           end
 
           page.within '.assignee' do
@@ -497,11 +499,20 @@ describe 'Issues' do
 
         it 'allows user to unselect themselves', :js do
           issue2 = create(:issue, project: project, author: user)
+
           visit project_issue_path(project, issue2)
+
+          def close_dropdown_menu_if_visible
+            find('.dropdown-menu-toggle', visible: :all).tap do |toggle|
+              toggle.click if toggle.visible?
+            end
+          end
 
           page.within '.assignee' do
             click_link 'Edit'
             click_link user.name
+
+            close_dropdown_menu_if_visible
 
             page.within '.value .author' do
               expect(page).to have_content user.name
@@ -510,8 +521,10 @@ describe 'Issues' do
             click_link 'Edit'
             click_link user.name
 
+            close_dropdown_menu_if_visible
+
             page.within '.value .assign-yourself' do
-              expect(page).to have_content "No assignee"
+              expect(page).to have_content "None"
             end
           end
         end
@@ -764,10 +777,10 @@ describe 'Issues' do
 
             wait_for_requests
 
-            expect(page).to have_no_content 'No due date'
+            expect(page).to have_no_content 'None'
 
             click_link 'remove due date'
-            expect(page).to have_content 'No due date'
+            expect(page).to have_content 'None'
           end
         end
       end

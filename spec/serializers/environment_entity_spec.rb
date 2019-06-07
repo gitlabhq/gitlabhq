@@ -54,7 +54,7 @@ describe EnvironmentEntity do
                projects: [project])
       end
 
-      it 'should include cluster_type' do
+      it 'includes cluster_type' do
         expect(subject).to include(:cluster_type)
         expect(subject[:cluster_type]).to eq('project_type')
       end
@@ -65,7 +65,7 @@ describe EnvironmentEntity do
         create(:kubernetes_service, project: project)
       end
 
-      it 'should not include cluster_type' do
+      it 'does not include cluster_type' do
         expect(subject).not_to include(:cluster_type)
       end
     end

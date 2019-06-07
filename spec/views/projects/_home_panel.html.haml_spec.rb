@@ -45,7 +45,7 @@ describe 'projects/_home_panel' do
 
   context 'badges' do
     shared_examples 'show badges' do
-      it 'should render the all badges' do
+      it 'renders the all badges' do
         render
 
         expect(rendered).to have_selector('.project-badges a')
@@ -70,7 +70,7 @@ describe 'projects/_home_panel' do
     context 'has no badges' do
       let(:project) { create(:project) }
 
-      it 'should not render any badge' do
+      it 'does not render any badge' do
         render
 
         expect(rendered).not_to have_selector('.project-badges')

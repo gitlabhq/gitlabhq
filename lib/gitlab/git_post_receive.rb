@@ -5,7 +5,7 @@ module Gitlab
     include Gitlab::Identifier
     attr_reader :project, :identifier, :changes, :push_options
 
-    def initialize(project, identifier, changes, push_options)
+    def initialize(project, identifier, changes, push_options = {})
       @project = project
       @identifier = identifier
       @changes = deserialize_changes(changes)

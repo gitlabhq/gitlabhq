@@ -25,7 +25,9 @@ module Ci
         origin_ref: params[:ref],
         checkout_sha: params[:checkout_sha],
         after_sha: params[:after],
-        before_sha: params[:before],
+        before_sha: params[:before],          # The base SHA of the source branch (i.e merge_request.diff_base_sha).
+        source_sha: params[:source_sha],      # The HEAD SHA of the source branch (i.e merge_request.diff_head_sha).
+        target_sha: params[:target_sha],      # The HEAD SHA of the target branch.
         trigger_request: trigger_request,
         schedule: schedule,
         merge_request: merge_request,
@@ -35,7 +37,7 @@ module Ci
         variables_attributes: params[:variables_attributes],
         project: project,
         current_user: current_user,
-        push_options: params[:push_options],
+        push_options: params[:push_options] || {},
         chat_data: params[:chat_data],
         **extra_options(options))
 
@@ -52,6 +54,10 @@ module Ci
           pipeline.process!
         end
       end
+
+      # If pipeline is not persisted, try to recover IID
+      pipeline.reset_project_iid unless pipeline.persisted? ||
+          Feature.disabled?(:ci_pipeline_rewind_iid, project, default_enabled: true)
 
       pipeline
     end
@@ -98,16 +104,10 @@ module Ci
     end
 
     def schedule_head_pipeline_update
-      related_merge_requests.each do |merge_request|
+      pipeline.all_merge_requests.opened.each do |merge_request|
         UpdateHeadPipelineForMergeRequestWorker.perform_async(merge_request.id)
       end
     end
-
-    # rubocop: disable CodeReuse/ActiveRecord
-    def related_merge_requests
-      pipeline.project.source_of_merge_requests.opened.where(source_branch: pipeline.ref)
-    end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     def extra_options(options = {})
       # In Ruby 2.4, even when options is empty, f(**options) doesn't work when f

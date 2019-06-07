@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ProjectDeployToken < ActiveRecord::Base
+class ProjectDeployToken < ApplicationRecord
   belongs_to :project
   belongs_to :deploy_token, inverse_of: :project_deploy_tokens
 

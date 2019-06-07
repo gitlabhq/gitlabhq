@@ -1,0 +1,98 @@
+{
+  "result": {
+    "data": [
+      {
+        "id": 283,
+        "type": "TASK",
+        "phid": "PHID-TASK-fswfs3wkowjb6cyyxtyx",
+        "fields": {
+          "name": "Things are slow",
+          "description": {
+            "raw": "Things are slow but should be fast!"
+          },
+          "authorPHID": "PHID-USER-nrtht5wijwbxquens3qr",
+          "ownerPHID": "PHID-USER-nrtht5wijwbxquens3qr",
+          "status": {
+            "value": "resolved",
+            "name": "Resolved",
+            "color": null
+          },
+          "priority": {
+            "value": 100,
+            "subpriority": 8589934592,
+            "name": "Super urgent",
+            "color": "pink"
+          },
+          "points": null,
+          "subtype": "default",
+          "closerPHID": "PHID-USER-nrtht5wijwbxquens3qr",
+          "dateClosed": 1374657042,
+          "spacePHID": null,
+          "dateCreated": 1374616241,
+          "dateModified": 1374657044,
+          "policy": {
+            "view": "users",
+            "interact": "users",
+            "edit": "users"
+          },
+          "custom.field-1": null,
+          "custom.field-2": null,
+          "custom.field-3": null
+        },
+        "attachments": {}
+      },
+      {
+        "id": 284,
+        "type": "TASK",
+        "phid": "PHID-TASK-5f73nyq5sjeh4cbmcsnb",
+        "fields": {
+          "name": "Things are broken",
+          "description": {
+            "raw": "Things are broken and should be fixed"
+          },
+          "authorPHID": "PHID-USER-nrtht5wijwbxquens3qr",
+          "ownerPHID": "PHID-USER-h425fsrixz4gjxiyr7ot",
+          "status": {
+            "value": "resolved",
+            "name": "Resolved",
+            "color": null
+          },
+          "priority": {
+            "value": 100,
+            "subpriority": 8589803520,
+            "name": "Super urgent",
+            "color": "pink"
+          },
+          "points": null,
+          "subtype": "default",
+          "closerPHID": "PHID-USER-h425fsrixz4gjxiyr7ot",
+          "dateClosed": 1375049556,
+          "spacePHID": null,
+          "dateCreated": 1374616578,
+          "dateModified": 1375049556,
+          "policy": {
+            "view": "users",
+            "interact": "users",
+            "edit": "users"
+          },
+          "custom.field-1": null,
+          "custom.field-2": null,
+          "custom.field-3": null
+        },
+        "attachments": {}
+      }
+    ],
+    "maps": {},
+    "query": {
+      "queryKey": null
+    },
+    "cursor": {
+      "limit": "2",
+      "after": "284",
+      "before": null,
+      "order": null
+    }
+  },
+  "error_code": null,
+  "error_info": null
+}

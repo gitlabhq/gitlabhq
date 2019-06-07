@@ -41,6 +41,8 @@
               = link_to project_cycle_analytics_path(@project), title: _('Cycle Analytics'), class: 'shortcuts-project-cycle-analytics' do
                 %span= _('Cycle Analytics')
 
+          = render_if_exists 'layouts/nav/project_insights_link'
+
       - if project_nav_tab? :files
         = nav_link(controller: sidebar_repository_paths) do
           = link_to project_tree_path(@project), class: 'shortcuts-tree qa-project-menu-repo' do
@@ -268,6 +270,8 @@
                         %span= _("Got it!")
                         = sprite_icon('thumb-up')
 
+            = render_if_exists 'layouts/nav/sidebar/project_feature_flags_link'
+
       - if project_nav_tab? :container_registry
         = nav_link(controller: %w[projects/registry/repositories]) do
           = link_to project_container_registry_index_path(@project), class: 'shortcuts-container-registry' do
@@ -281,7 +285,9 @@
                 %strong.fly-out-top-item-name
                   = _('Registry')
 
-      - if project_nav_tab?(:wiki)
+      = render_if_exists 'layouts/nav/sidebar/project_packages_link'
+
+      - if project_nav_tab? :wiki
         - wiki_url = project_wiki_path(@project, :home)
         = nav_link(controller: :wikis) do
           = link_to wiki_url, class: 'shortcuts-wiki qa-wiki-link' do
@@ -355,12 +361,12 @@
                 = link_to project_settings_repository_path(@project), title: _('Repository') do
                   %span
                     = _('Repository')
-              - if @project.feature_available?(:builds, current_user)
+              - if !@project.archived? && @project.feature_available?(:builds, current_user)
                 = nav_link(controller: :ci_cd) do
                   = link_to project_settings_ci_cd_path(@project), title: _('CI / CD') do
                     %span
                       = _('CI / CD')
-              - if settings_operations_available?
+              - if !@project.archived? && settings_operations_available?
                 = nav_link(controller: [:operations]) do
                   = link_to project_settings_operations_path(@project), title: _('Operations') do
                     = _('Operations')

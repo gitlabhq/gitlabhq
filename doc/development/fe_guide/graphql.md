@@ -43,10 +43,12 @@ new Vue({
 
 Read more about [Vue Apollo][vue-apollo] in the [Vue Apollo documentation][vue-apollo-docs].
 
-### Local state with `apollo-link-state`
+### Local state with Apollo
 
-It is possible to use our Apollo setup with [apollo-link-state][apollo-link-state] by passing
-in the client state object when creating the default client.
+It is possible to manage an application state with Apollo by passing
+in a resolvers object when creating the default client. The default state can be set by writing
+to the cache after setting up the default client.
+
 
 ```javascript
 import Vue from 'vue';
@@ -54,17 +56,27 @@ import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
 Vue.use(VueApollo);
 
+const defaultClient = createDefaultClient({
+  Query: {
+    ...
+  },
+  Mutations: {
+    ...
+  },
+});
+
+defaultClient.cache.writeData({
+  data: {
+    isLoading: true,
+  },
+});
+
 const apolloProvider = new VueApollo({
-  defaultClient: createDefaultClient({
-    defaults: {
-      testing: true,
-    },
-    resolvers: {
-      ...
-    },
-  }),
+  defaultClient,
 });
 ```
+
+Read more about local state management with Apollo in the [Vue Apollo documentation](https://vue-apollo.netlify.com/guide/local-state.html#local-state).
 
 ### Testing
 
@@ -81,6 +93,8 @@ it('tests apollo component', () => {
   });
 });
 ```
+
+Another possible way is testing queries with mocked GraphQL schema. Read more about this way in [Vue Apollo testing documentation](https://vue-apollo.netlify.com/guide/testing.html#tests-with-mocked-graqhql-schema)
 
 ## Usage outside of Vue
 

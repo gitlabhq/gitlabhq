@@ -37,7 +37,7 @@ module Gitlab
       end
 
       def resolve_conflicts(target_repository, resolution, source_branch, target_branch)
-        reader = binary_stringio(resolution.files.to_json)
+        reader = binary_io(resolution.files.to_json)
 
         req_enum = Enumerator.new do |y|
           header = resolve_conflicts_request_header(target_repository, resolution, source_branch, target_branch)

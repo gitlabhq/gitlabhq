@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe QA::Git::Repository do
   include Helpers::StubENV
 
@@ -39,7 +41,7 @@ describe QA::Git::Repository do
 
     describe '#clone' do
       it 'is unable to resolve host' do
-        expect(repository.clone).to include("fatal: unable to access 'http://root@foo/bar.git/'")
+        expect { repository.clone }.to raise_error(described_class::RepositoryCommandError, /The command .* failed \(128\) with the following output/)
       end
     end
 
@@ -49,7 +51,7 @@ describe QA::Git::Repository do
       end
 
       it 'fails to push changes' do
-        expect(repository.push_changes).to include("error: failed to push some refs to 'http://root@foo/bar.git'")
+        expect { repository.push_changes }.to raise_error(described_class::RepositoryCommandError, /The command .* failed \(1\) with the following output/)
       end
     end
 
@@ -113,6 +115,15 @@ describe QA::Git::Repository do
 
         expect(File.read(File.join(tmp_netrc_dir, '.netrc')))
           .to eq("machine foo login user password foo\n")
+      end
+
+      it 'adds credentials with special characters' do
+        password = %q[!"#$%&')(*+,-./:;<=>?]
+        repository.username = 'user'
+        repository.password = password
+
+        expect(File.read(File.join(tmp_netrc_dir, '.netrc')))
+          .to eq("machine foo login user password #{password}\n")
       end
     end
   end

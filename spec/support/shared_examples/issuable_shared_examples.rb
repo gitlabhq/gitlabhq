@@ -31,7 +31,7 @@ shared_examples 'system notes for milestones' do
   context 'project milestones' do
     it 'creates a system note' do
       expect do
-        update_issuable(milestone: create(:milestone))
+        update_issuable(milestone: create(:milestone, project: project))
       end.to change { Note.system.count }.by(1)
     end
   end

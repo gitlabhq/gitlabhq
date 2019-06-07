@@ -156,12 +156,26 @@ export default {
       return this.store.formState;
     },
     hasUpdated() {
-      return !!this.state.updatedAt;
+      return Boolean(this.state.updatedAt);
     },
     issueChanged() {
-      const descriptionChanged = this.initialDescriptionText !== this.store.formState.description;
-      const titleChanged = this.initialTitleText !== this.store.formState.title;
-      return descriptionChanged || titleChanged;
+      const {
+        store: {
+          formState: { description, title },
+        },
+        initialDescriptionText,
+        initialTitleText,
+      } = this;
+
+      if (initialDescriptionText || description) {
+        return initialDescriptionText !== description;
+      }
+
+      if (initialTitleText || title) {
+        return initialTitleText !== title;
+      }
+
+      return false;
     },
     defaultErrorMessage() {
       return sprintf(s__('Error updating %{issuableType}'), { issuableType: this.issuableType });

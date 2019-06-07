@@ -69,7 +69,7 @@ module BoardsHelper
   end
 
   def board_sidebar_user_data
-    dropdown_options = issue_assignees_dropdown_options
+    dropdown_options = assignees_dropdown_options('issue')
 
     {
       toggle: 'dropdown',

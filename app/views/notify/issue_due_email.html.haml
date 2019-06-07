@@ -3,7 +3,7 @@
 
 - if @issue.assignees.any?
   %p
-    Assignee: #{@issue.assignee_list}
+    = assignees_label(@issue)
 %p
   This issue is due on: #{@issue.due_date.to_s(:medium)}
 

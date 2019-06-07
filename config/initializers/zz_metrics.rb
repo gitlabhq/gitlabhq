@@ -30,7 +30,6 @@ def instrument_classes(instrumentation)
     # are included.
     %w(app services [^concerns]**) => %w(app services),
     %w(lib gitlab conflicts)       => ['lib'],
-    %w(lib gitlab diff)            => ['lib'],
     %w(lib gitlab email message)   => ['lib'],
     %w(lib gitlab checks)          => ['lib']
   }

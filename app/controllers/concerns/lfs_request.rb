@@ -26,7 +26,7 @@ module LfsRequest
 
     render(
       json: {
-        message: 'Git LFS is not enabled on this GitLab server, contact your admin.',
+        message: _('Git LFS is not enabled on this GitLab server, contact your admin.'),
         documentation_url: help_url
       },
       status: :not_implemented
@@ -51,7 +51,7 @@ module LfsRequest
   def render_lfs_forbidden
     render(
       json: {
-        message: 'Access forbidden. Check your access level.',
+        message: _('Access forbidden. Check your access level.'),
         documentation_url: help_url
       },
       content_type: CONTENT_TYPE,
@@ -62,7 +62,7 @@ module LfsRequest
   def render_lfs_not_found
     render(
       json: {
-        message: 'Not found.',
+        message: _('Not found.'),
         documentation_url: help_url
       },
       content_type: CONTENT_TYPE,

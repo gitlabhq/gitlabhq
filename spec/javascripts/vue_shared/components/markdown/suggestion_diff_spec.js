@@ -1,20 +1,49 @@
 import Vue from 'vue';
 import SuggestionDiffComponent from '~/vue_shared/components/markdown/suggestion_diff.vue';
+import { selectDiffLines } from '~/vue_shared/components/lib/utils/diff_utils';
 
 const MOCK_DATA = {
   canApply: true,
-  newLines: [
-    { content: 'Line 1\n', lineNumber: 1 },
-    { content: 'Line 2\n', lineNumber: 2 },
-    { content: 'Line 3\n', lineNumber: 3 },
-  ],
-  fromLine: 1,
-  fromContent: 'Old content',
   suggestion: {
     id: 1,
+    diff_lines: [
+      {
+        can_receive_suggestion: false,
+        line_code: null,
+        meta_data: null,
+        new_line: null,
+        old_line: 5,
+        rich_text: '-test',
+        text: '-test',
+        type: 'old',
+      },
+      {
+        can_receive_suggestion: true,
+        line_code: null,
+        meta_data: null,
+        new_line: 5,
+        old_line: null,
+        rich_text: '+new test',
+        text: '+new test',
+        type: 'new',
+      },
+      {
+        can_receive_suggestion: true,
+        line_code: null,
+        meta_data: null,
+        new_line: 5,
+        old_line: null,
+        rich_text: '+new test2',
+        text: '+new test2',
+        type: 'new',
+      },
+    ],
   },
   helpPagePath: 'path_to_docs',
 };
+
+const lines = selectDiffLines(MOCK_DATA.suggestion.diff_lines);
+const newLines = lines.filter(line => line.type === 'new');
 
 describe('Suggestion Diff component', () => {
   let vm;
@@ -39,30 +68,23 @@ describe('Suggestion Diff component', () => {
     });
 
     it('renders the oldLineNumber', () => {
-      const fromLine = vm.$el.querySelector('.qa-old-diff-line-number').innerHTML;
+      const fromLine = vm.$el.querySelector('.old_line').innerHTML;
 
-      expect(parseInt(fromLine, 10)).toBe(vm.fromLine);
+      expect(parseInt(fromLine, 10)).toBe(lines[0].old_line);
     });
 
     it('renders the oldLineContent', () => {
       const fromContent = vm.$el.querySelector('.line_content.old').innerHTML;
 
-      expect(fromContent.includes(vm.fromContent)).toBe(true);
+      expect(fromContent.includes(lines[0].text)).toBe(true);
     });
 
-    it('renders the contents of newLines', () => {
-      const newLines = vm.$el.querySelectorAll('.line_holder.new');
+    it('renders new lines', () => {
+      const newLinesElements = vm.$el.querySelectorAll('.line_holder.new');
 
-      newLines.forEach((line, i) => {
-        expect(newLines[i].innerHTML.includes(vm.newLines[i].content)).toBe(true);
-      });
-    });
-
-    it('renders a line number for each line', () => {
-      const newLineNumbers = vm.$el.querySelectorAll('.qa-new-diff-line-number');
-
-      newLineNumbers.forEach((line, i) => {
-        expect(newLineNumbers[i].innerHTML.includes(vm.newLines[i].lineNumber)).toBe(true);
+      newLinesElements.forEach((line, i) => {
+        expect(newLinesElements[i].innerHTML.includes(newLines[i].new_line)).toBe(true);
+        expect(newLinesElements[i].innerHTML.includes(newLines[i].text)).toBe(true);
       });
     });
   });

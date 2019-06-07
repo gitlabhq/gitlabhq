@@ -2,6 +2,7 @@ import $ from 'jquery';
 import axios from './lib/utils/axios_utils';
 import Api from './api';
 import { normalizeHeaders } from './lib/utils/common_utils';
+import { __ } from '~/locale';
 
 export default function groupsSelect() {
   import(/* webpackChunkName: 'select2' */ 'select2/select2')
@@ -18,7 +19,7 @@ export default function groupsSelect() {
           : Api.groupsPath;
 
         $select.select2({
-          placeholder: 'Search for a group',
+          placeholder: __('Search for a group'),
           allowClear: $select.hasClass('allowClear'),
           multiple: $select.hasClass('multiselect'),
           minimumInputLength: 0,

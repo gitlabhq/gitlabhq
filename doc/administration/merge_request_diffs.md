@@ -145,3 +145,47 @@ The connection settings match those provided by [Fog](https://github.com/fog), a
     ```
 
 1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
+
+### Alternative in-database storage
+
+Enabling external diffs may reduce the performance of merge requests, as they
+must be retrieved in a separate operation to other data. A compromise may be
+reached by only storing outdated diffs externally, while keeping current diffs
+in the database.
+
+To enable this feature, perform the following steps:
+
+**In Omnibus installations:**
+
+1.  Edit `/etc/gitlab/gitlab.rb` and add the following line:
+
+    ```ruby
+    gitlab_rails['external_diffs_when'] = 'outdated'
+    ```
+
+1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+
+**In installations from source:**
+
+1. Edit `/home/git/gitlab/config/gitlab.yml` and add or amend the following
+   lines:
+
+    ```yaml
+    external_diffs:
+      enabled: true
+      when: outdated
+    ```
+
+1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
+
+With this feature enabled, diffs will initially stored in the database, rather
+than externally. They will be moved to external storage once any of these
+conditions become true:
+
+- A newer version of the merge request diff exists
+- The merge request was merged more than seven days ago
+- The merge request was closed more than seven day ago
+
+These rules strike a balance between space and performance by only storing
+frequently-accessed diffs in the database. Diffs that are less likely to be
+accessed are moved to external storage instead.

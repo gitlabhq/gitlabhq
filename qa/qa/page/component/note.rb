@@ -15,7 +15,7 @@ module QA
             element :reply_comment_button
           end
 
-          base.view 'app/assets/javascripts/notes/components/noteable_discussion.vue' do
+          base.view 'app/assets/javascripts/notes/components/discussion_actions.vue' do
             element :discussion_reply
           end
 

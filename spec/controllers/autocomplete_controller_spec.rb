@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe AutocompleteController do
@@ -369,6 +371,37 @@ describe AutocompleteController do
         expect(json_response[1]).to match('name' => 'thumbsup')
         expect(json_response[2]).to match('name' => 'tea')
         expect(json_response[3]).to match('name' => 'thumbsdown')
+      end
+    end
+
+    context 'Get merge_request_target_branches' do
+      let(:user2) { create(:user) }
+      let!(:merge_request1) { create(:merge_request, source_project: project, target_branch: 'feature') }
+
+      context 'unauthorized user' do
+        it 'returns empty json' do
+          get :merge_request_target_branches
+
+          expect(json_response).to be_empty
+        end
+      end
+
+      context 'sign in as user without any accesible merge requests' do
+        it 'returns empty json' do
+          sign_in(user2)
+          get :merge_request_target_branches
+
+          expect(json_response).to be_empty
+        end
+      end
+
+      context 'sign in as user with a accesible merge request' do
+        it 'returns json' do
+          sign_in(user)
+          get :merge_request_target_branches
+
+          expect(json_response).to contain_exactly({ 'title' => 'feature' })
+        end
       end
     end
   end

@@ -3,25 +3,26 @@
   .col-md-4
     .card
       .card-header
-        SSH Key
+        = _('SSH Key')
       %ul.content-list
         %li
-          %span.light Title:
+          %span.light= _('Title:')
           %strong= @key.title
         %li
-          %span.light Created on:
+          %span.light= _('Created on:')
           %strong= @key.created_at.to_s(:medium)
         %li
-          %span.light Last used on:
+          %span.light= _('Last used on:')
           %strong= @key.last_used_at.try(:to_s, :medium) || 'N/A'
 
   .col-md-8
     = form_errors(@key, type: 'key') unless @key.valid?
     %p
-      %span.light Fingerprint:
+      %span.light= _('Fingerprint:')
       %code.key-fingerprint= @key.fingerprint
     %pre.well-pre
       = @key.key
   .col-md-12
     .float-right
-      = link_to 'Remove', path_to_key(@key, is_admin), data: {confirm: 'Are you sure?'}, method: :delete, class: "btn btn-remove delete-key qa-delete-key-button"
+      - if @key.can_delete?
+        = link_to _('Remove'), path_to_key(@key, is_admin), data: {confirm: _('Are you sure?')}, method: :delete, class: "btn btn-remove delete-key qa-delete-key-button"

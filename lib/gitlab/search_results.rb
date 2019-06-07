@@ -2,6 +2,8 @@
 
 module Gitlab
   class SearchResults
+    COUNT_LIMIT = 1001
+
     attr_reader :current_user, :query, :per_page
 
     # Limit search results by passed projects
@@ -25,27 +27,26 @@ module Gitlab
     def objects(scope, page = nil, without_count = true)
       collection = case scope
                    when 'projects'
-                     projects.page(page).per(per_page)
+                     projects
                    when 'issues'
-                     issues.page(page).per(per_page)
+                     issues
                    when 'merge_requests'
-                     merge_requests.page(page).per(per_page)
+                     merge_requests
                    when 'milestones'
-                     milestones.page(page).per(per_page)
+                     milestones
+                   when 'users'
+                     users
                    else
-                     Kaminari.paginate_array([]).page(page).per(per_page)
-                   end
+                     Kaminari.paginate_array([])
+                   end.page(page).per(per_page)
 
       without_count ? collection.without_count : collection
     end
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def limited_projects_count
-      @limited_projects_count ||= projects.limit(count_limit).count
+      @limited_projects_count ||= limited_count(projects)
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def limited_issues_count
       return @limited_issues_count if @limited_issues_count
 
@@ -54,29 +55,38 @@ module Gitlab
       # and confidential issues user has access to, is too complex.
       # It's faster to try to fetch all public issues first, then only
       # if necessary try to fetch all issues.
-      sum = issues(public_only: true).limit(count_limit).count
-      @limited_issues_count = sum < count_limit ? issues.limit(count_limit).count : sum
+      sum = limited_count(issues(public_only: true))
+      @limited_issues_count = sum < count_limit ? limited_count(issues) : sum
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def limited_merge_requests_count
-      @limited_merge_requests_count ||= merge_requests.limit(count_limit).count
+      @limited_merge_requests_count ||= limited_count(merge_requests)
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def limited_milestones_count
-      @limited_milestones_count ||= milestones.limit(count_limit).count
+      @limited_milestones_count ||= limited_count(milestones)
     end
-    # rubocop: enable CodeReuse/ActiveRecord
+
+    def limited_users_count
+      @limited_users_count ||= limited_count(users)
+    end
 
     def single_commit_result?
       false
     end
 
     def count_limit
-      1001
+      COUNT_LIMIT
+    end
+
+    def users
+      return User.none unless Ability.allowed?(current_user, :read_users_list)
+
+      UsersFinder.new(current_user, search: query).execute
+    end
+
+    def display_options(_scope)
+      {}
     end
 
     private
@@ -85,57 +95,81 @@ module Gitlab
       limit_projects.search(query)
     end
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def issues(finder_params = {})
-      issues = IssuesFinder.new(current_user, finder_params).execute
+      issues = IssuesFinder.new(current_user, issuable_params.merge(finder_params)).execute
+
       unless default_project_filter
-        issues = issues.where(project_id: project_ids_relation)
+        issues = issues.where(project_id: project_ids_relation) # rubocop: disable CodeReuse/ActiveRecord
       end
 
-      issues =
-        if query =~ /#(\d+)\z/
-          issues.where(iid: $1)
-        else
-          issues.full_search(query)
-        end
-
-      issues.reorder('updated_at DESC')
+      issues
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     # rubocop: disable CodeReuse/ActiveRecord
     def milestones
-      milestones = Milestone.where(project_id: project_ids_relation)
-      milestones = milestones.search(query)
+      milestones = Milestone.search(query)
+
+      milestones = filter_milestones_by_project(milestones)
+
       milestones.reorder('updated_at DESC')
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def merge_requests
-      merge_requests = MergeRequestsFinder.new(current_user).execute
+      merge_requests = MergeRequestsFinder.new(current_user, issuable_params).execute
+
       unless default_project_filter
         merge_requests = merge_requests.in_projects(project_ids_relation)
       end
 
-      merge_requests =
-        if query =~ /[#!](\d+)\z/
-          merge_requests.where(iid: $1)
-        else
-          merge_requests.full_search(query)
-        end
-
-      merge_requests.reorder('updated_at DESC')
+      merge_requests
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     def default_scope
       'projects'
     end
 
+    # Filter milestones by authorized projects.
+    # For performance reasons project_id is being plucked
+    # to be used on a smaller query.
+    #
+    # rubocop: disable CodeReuse/ActiveRecord
+    def filter_milestones_by_project(milestones)
+      project_ids =
+        milestones.where(project_id: project_ids_relation)
+          .select(:project_id).distinct
+          .pluck(:project_id)
+
+      return Milestone.none if project_ids.nil?
+
+      authorized_project_ids_relation =
+        Project.where(id: project_ids).ids_with_milestone_available_for(current_user)
+
+      milestones.where(project_id: authorized_project_ids_relation)
+    end
+    # rubocop: enable CodeReuse/ActiveRecord
+
     # rubocop: disable CodeReuse/ActiveRecord
     def project_ids_relation
       limit_projects.select(:id).reorder(nil)
+    end
+    # rubocop: enable CodeReuse/ActiveRecord
+
+    def issuable_params
+      {}.tap do |params|
+        params[:sort] = 'updated_desc'
+
+        if query =~ /#(\d+)\z/
+          params[:iids] = $1
+        else
+          params[:search] = query
+        end
+      end
+    end
+
+    # rubocop: disable CodeReuse/ActiveRecord
+    def limited_count(relation)
+      relation.reorder(nil).limit(count_limit).size
     end
     # rubocop: enable CodeReuse/ActiveRecord
   end

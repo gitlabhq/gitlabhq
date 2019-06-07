@@ -5,10 +5,10 @@ import MiniPipelineGraph from '~/mini_pipeline_graph_dropdown';
 import timeoutPromise from './helpers/set_timeout_promise_helper';
 
 describe('Mini Pipeline Graph Dropdown', () => {
-  preloadFixtures('static/mini_dropdown_graph.html.raw');
+  preloadFixtures('static/mini_dropdown_graph.html');
 
   beforeEach(() => {
-    loadFixtures('static/mini_dropdown_graph.html.raw');
+    loadFixtures('static/mini_dropdown_graph.html');
   });
 
   describe('When is initialized', () => {

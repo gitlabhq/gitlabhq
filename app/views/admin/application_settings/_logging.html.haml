@@ -1,6 +1,12 @@
 = form_for @application_setting, url: admin_application_settings_path(anchor: 'js-logging-settings'), html: { class: 'fieldset-form' } do |f|
   = form_errors(@application_setting)
 
+  %p
+    %strong
+      NOTE:
+    These settings will be removed from the UI in a GitLab 12.0 release and made available within gitlab.yml.
+    In addition, you will be able to define a Sentry Environment to differentiate between multiple deployments. For example, development, staging, and production.
+
   %fieldset
     .form-group
       .form-check

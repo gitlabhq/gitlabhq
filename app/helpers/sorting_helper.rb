@@ -3,40 +3,48 @@
 module SortingHelper
   def sort_options_hash
     {
-      sort_value_created_date     => sort_title_created_date,
-      sort_value_downvotes        => sort_title_downvotes,
-      sort_value_due_date         => sort_title_due_date,
-      sort_value_due_date_later   => sort_title_due_date_later,
-      sort_value_due_date_soon    => sort_title_due_date_soon,
-      sort_value_label_priority   => sort_title_label_priority,
-      sort_value_largest_group    => sort_title_largest_group,
-      sort_value_largest_repo     => sort_title_largest_repo,
-      sort_value_milestone        => sort_title_milestone,
-      sort_value_milestone_later  => sort_title_milestone_later,
-      sort_value_milestone_soon   => sort_title_milestone_soon,
-      sort_value_name             => sort_title_name,
-      sort_value_name_desc        => sort_title_name_desc,
-      sort_value_oldest_created   => sort_title_oldest_created,
-      sort_value_oldest_signin    => sort_title_oldest_signin,
-      sort_value_oldest_updated   => sort_title_oldest_updated,
-      sort_value_recently_created => sort_title_recently_created,
-      sort_value_recently_signin  => sort_title_recently_signin,
-      sort_value_recently_updated => sort_title_recently_updated,
-      sort_value_popularity       => sort_title_popularity,
-      sort_value_priority         => sort_title_priority,
-      sort_value_upvotes          => sort_title_upvotes,
-      sort_value_contacted_date   => sort_title_contacted_date
+      sort_value_created_date      => sort_title_created_date,
+      sort_value_downvotes         => sort_title_downvotes,
+      sort_value_due_date          => sort_title_due_date,
+      sort_value_due_date_later    => sort_title_due_date_later,
+      sort_value_due_date_soon     => sort_title_due_date_soon,
+      sort_value_label_priority    => sort_title_label_priority,
+      sort_value_largest_group     => sort_title_largest_group,
+      sort_value_largest_repo      => sort_title_largest_repo,
+      sort_value_milestone         => sort_title_milestone,
+      sort_value_milestone_later   => sort_title_milestone_later,
+      sort_value_milestone_soon    => sort_title_milestone_soon,
+      sort_value_name              => sort_title_name,
+      sort_value_name_desc         => sort_title_name_desc,
+      sort_value_oldest_created    => sort_title_oldest_created,
+      sort_value_oldest_signin     => sort_title_oldest_signin,
+      sort_value_oldest_updated    => sort_title_oldest_updated,
+      sort_value_recently_created  => sort_title_recently_created,
+      sort_value_recently_signin   => sort_title_recently_signin,
+      sort_value_recently_updated  => sort_title_recently_updated,
+      sort_value_popularity        => sort_title_popularity,
+      sort_value_priority          => sort_title_priority,
+      sort_value_upvotes           => sort_title_upvotes,
+      sort_value_contacted_date    => sort_title_contacted_date,
+      sort_value_relative_position => sort_title_relative_position
     }
   end
 
   def projects_sort_options_hash
+    Feature.enabled?(:project_list_filter_bar) && !current_controller?('admin/projects') ? projects_sort_common_options_hash : old_projects_sort_options_hash
+  end
+
+  # TODO: Simplify these sorting options
+  # https://gitlab.com/gitlab-org/gitlab-ce/issues/60798
+  # https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/11209#note_162234858
+  def old_projects_sort_options_hash
     options = {
       sort_value_latest_activity  => sort_title_latest_activity,
       sort_value_name             => sort_title_name,
       sort_value_oldest_activity  => sort_title_oldest_activity,
       sort_value_oldest_created   => sort_title_oldest_created,
       sort_value_recently_created => sort_title_recently_created,
-      sort_value_most_stars       => sort_title_most_stars
+      sort_value_stars_desc       => sort_title_most_stars
     }
 
     if current_controller?('admin/projects')
@@ -44,6 +52,41 @@ module SortingHelper
     end
 
     options
+  end
+
+  def projects_sort_common_options_hash
+    {
+      sort_value_latest_activity  => sort_title_latest_activity,
+      sort_value_recently_created => sort_title_created_date,
+      sort_value_name             => sort_title_name,
+      sort_value_stars_desc       => sort_title_stars
+    }
+  end
+
+  def projects_sort_option_titles
+    {
+      sort_value_latest_activity  => sort_title_latest_activity,
+      sort_value_recently_created => sort_title_created_date,
+      sort_value_name             => sort_title_name,
+      sort_value_stars_desc       => sort_title_stars,
+      sort_value_oldest_activity  => sort_title_latest_activity,
+      sort_value_oldest_created   => sort_title_created_date,
+      sort_value_name_desc        => sort_title_name,
+      sort_value_stars_asc        => sort_title_stars
+    }
+  end
+
+  def projects_reverse_sort_options_hash
+    {
+      sort_value_latest_activity  => sort_value_oldest_activity,
+      sort_value_recently_created => sort_value_oldest_created,
+      sort_value_name             => sort_value_name_desc,
+      sort_value_stars_desc       => sort_value_stars_asc,
+      sort_value_oldest_activity  => sort_value_latest_activity,
+      sort_value_oldest_created   => sort_value_recently_created,
+      sort_value_name_desc        => sort_value_name,
+      sort_value_stars_asc        => sort_value_stars_desc
+    }
   end
 
   def groups_sort_options_hash
@@ -59,7 +102,7 @@ module SortingHelper
 
   def subgroups_sort_options_hash
     groups_sort_options_hash.merge(
-      sort_value_most_stars => sort_title_most_stars
+      sort_value_stars_desc => sort_title_most_stars
     )
   end
 
@@ -142,7 +185,9 @@ module SortingHelper
     {
       sort_value_oldest_created => sort_value_created_date,
       sort_value_oldest_updated => sort_value_recently_updated,
-      sort_value_milestone_later => sort_value_milestone
+      sort_value_milestone_later => sort_value_milestone,
+      sort_value_due_date_later => sort_value_due_date,
+      sort_value_least_popular => sort_value_popularity
     }
   end
 
@@ -151,7 +196,11 @@ module SortingHelper
       sort_value_created_date => sort_value_oldest_created,
       sort_value_recently_created => sort_value_oldest_created,
       sort_value_recently_updated => sort_value_oldest_updated,
-      sort_value_milestone => sort_value_milestone_later
+      sort_value_milestone => sort_value_milestone_later,
+      sort_value_due_date => sort_value_due_date_later,
+      sort_value_due_date_soon => sort_value_due_date_later,
+      sort_value_popularity => sort_value_least_popular,
+      sort_value_most_popular => sort_value_least_popular
     }.merge(issuable_sort_option_overrides)
   end
 
@@ -170,6 +219,8 @@ module SortingHelper
     end
   end
 
+  # TODO: dedupicate issuable and project sort direction
+  # https://gitlab.com/gitlab-org/gitlab-ce/issues/60798
   def issuable_sort_direction_button(sort_value)
     link_class = 'btn btn-default has-tooltip reverse-sort-btn qa-reverse-sort'
     reverse_sort = issuable_reverse_sort_order_hash[sort_value]
@@ -181,7 +232,23 @@ module SortingHelper
       link_class += ' disabled'
     end
 
-    link_to(reverse_url, type: 'button', class: link_class, title: 'Sort direction') do
+    link_to(reverse_url, type: 'button', class: link_class, title: s_('SortOptions|Sort direction')) do
+      sprite_icon("sort-#{issuable_sort_icon_suffix(sort_value)}", size: 16)
+    end
+  end
+
+  def project_sort_direction_button(sort_value)
+    link_class = 'btn btn-default has-tooltip reverse-sort-btn qa-reverse-sort'
+    reverse_sort = projects_reverse_sort_options_hash[sort_value]
+
+    if reverse_sort
+      reverse_url = filter_projects_path(sort: reverse_sort)
+    else
+      reverse_url = '#'
+      link_class += ' disabled'
+    end
+
+    link_to(reverse_url, type: 'button', class: link_class, title: s_('SortOptions|Sort direction')) do
       sprite_icon("sort-#{issuable_sort_icon_suffix(sort_value)}", size: 16)
     end
   end
@@ -319,12 +386,20 @@ module SortingHelper
     s_('SortOptions|Most stars')
   end
 
+  def sort_title_stars
+    s_('SortOptions|Stars')
+  end
+
   def sort_title_oldest_last_activity
     s_('SortOptions|Oldest last activity')
   end
 
   def sort_title_recently_last_activity
     s_('SortOptions|Recent last activity')
+  end
+
+  def sort_title_relative_position
+    s_('SortOptions|Manual')
   end
 
   # Values.
@@ -420,6 +495,14 @@ module SortingHelper
     'popularity'
   end
 
+  def sort_value_most_popular
+    'popularity_desc'
+  end
+
+  def sort_value_least_popular
+    'popularity_asc'
+  end
+
   def sort_value_priority
     'priority'
   end
@@ -452,8 +535,12 @@ module SortingHelper
     'contacted_asc'
   end
 
-  def sort_value_most_stars
+  def sort_value_stars_desc
     'stars_desc'
+  end
+
+  def sort_value_stars_asc
+    'stars_asc'
   end
 
   def sort_value_oldest_last_activity
@@ -462,5 +549,9 @@ module SortingHelper
 
   def sort_value_recently_last_activity
     'last_activity_on_desc'
+  end
+
+  def sort_value_relative_position
+    'relative_position'
   end
 end

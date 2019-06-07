@@ -1,15 +1,42 @@
-/* eslint-disable class-methods-use-this */
+const defaultTimezone = { name: 'UTC', offset: 0 };
+const defaults = {
+  $inputEl: null,
+  $dropdownEl: null,
+  onSelectTimezone: null,
+  displayFormat: item => item.name,
+};
 
-import $ from 'jquery';
+export const formatUtcOffset = offset => {
+  const parsed = parseInt(offset, 10);
+  if (Number.isNaN(parsed) || parsed === 0) {
+    return `0`;
+  }
+  const prefix = offset > 0 ? '+' : '-';
+  return `${prefix} ${Math.abs(offset / 3600)}`;
+};
 
-const defaultTimezone = 'UTC';
+export const formatTimezone = item => `[UTC ${formatUtcOffset(item.offset)}] ${item.name}`;
+
+export const findTimezoneByIdentifier = (tzList = [], identifier = null) => {
+  if (tzList && tzList.length && identifier && identifier.length) {
+    return tzList.find(tz => tz.identifier === identifier) || null;
+  }
+  return null;
+};
 
 export default class TimezoneDropdown {
-  constructor() {
-    this.$dropdown = $('.js-timezone-dropdown');
+  constructor({ $dropdownEl, $inputEl, onSelectTimezone, displayFormat } = defaults) {
+    this.$dropdown = $dropdownEl;
     this.$dropdownToggle = this.$dropdown.find('.dropdown-toggle-text');
-    this.$input = $('#schedule_cron_timezone');
+    this.$input = $inputEl;
     this.timezoneData = this.$dropdown.data('data');
+
+    this.onSelectTimezone = onSelectTimezone;
+    this.displayFormat = displayFormat || defaults.displayFormat;
+
+    this.initialTimezone =
+      findTimezoneByIdentifier(this.timezoneData, this.$input.val()) || defaultTimezone;
+
     this.initDefaultTimezone();
     this.initDropdown();
   }
@@ -19,50 +46,32 @@ export default class TimezoneDropdown {
       data: this.timezoneData,
       filterable: true,
       selectable: true,
-      toggleLabel: item => item.name,
+      toggleLabel: this.displayFormat,
       search: {
         fields: ['name'],
       },
       clicked: cfg => this.updateInputValue(cfg),
-      text: item => this.formatTimezone(item),
+      text: item => formatTimezone(item),
     });
 
-    this.setDropdownToggle();
-  }
-
-  formatUtcOffset(offset) {
-    let prefix = '';
-
-    if (offset > 0) {
-      prefix = '+';
-    } else if (offset < 0) {
-      prefix = '-';
-    }
-
-    return `${prefix} ${Math.abs(offset / 3600)}`;
-  }
-
-  formatTimezone(item) {
-    return `[UTC ${this.formatUtcOffset(item.offset)}] ${item.name}`;
+    this.setDropdownToggle(this.displayFormat(this.initialTimezone));
   }
 
   initDefaultTimezone() {
-    const initialValue = this.$input.val();
-
-    if (!initialValue) {
-      this.$input.val(defaultTimezone);
+    if (!this.$input.val()) {
+      this.$input.val(defaultTimezone.name);
     }
   }
 
-  setDropdownToggle() {
-    const initialValue = this.$input.val();
-
-    this.$dropdownToggle.text(initialValue);
+  setDropdownToggle(dropdownText) {
+    this.$dropdownToggle.text(dropdownText);
   }
 
   updateInputValue({ selectedObj, e }) {
     e.preventDefault();
     this.$input.val(selectedObj.identifier);
-    gl.pipelineScheduleFieldErrors.updateFormValidityState();
+    if (this.onSelectTimezone) {
+      this.onSelectTimezone({ selectedObj, e });
+    }
   }
 }

@@ -20,9 +20,9 @@ module QA
 
         Page::Dashboard::Groups.perform do |page|
           if page.has_group?(path)
-            page.go_to_group(path)
+            page.click_group(path)
           else
-            page.go_to_new_group
+            page.click_new_group
 
             Page::Group::New.perform do |group|
               group.set_path(path)

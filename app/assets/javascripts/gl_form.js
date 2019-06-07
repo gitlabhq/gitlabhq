@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import autosize from 'autosize';
-import GfmAutoComplete, * as GFMConfig from './gfm_auto_complete';
+import GfmAutoComplete, { defaultAutocompleteConfig } from 'ee_else_ce/gfm_auto_complete';
 import dropzoneInput from './dropzone_input';
 import { addMarkdownListeners, removeMarkdownListeners } from './lib/utils/text_markdown';
 
@@ -8,12 +8,12 @@ export default class GLForm {
   constructor(form, enableGFM = {}) {
     this.form = form;
     this.textarea = this.form.find('textarea.js-gfm-input');
-    this.enableGFM = Object.assign({}, GFMConfig.defaultAutocompleteConfig, enableGFM);
+    this.enableGFM = Object.assign({}, defaultAutocompleteConfig, enableGFM);
     // Disable autocomplete for keywords which do not have dataSources available
     const dataSources = (gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources) || {};
     Object.keys(this.enableGFM).forEach(item => {
       if (item !== 'emojis') {
-        this.enableGFM[item] = !!dataSources[item];
+        this.enableGFM[item] = Boolean(dataSources[item]);
       }
     });
     // Before we start, we should clean up any previous data for this form

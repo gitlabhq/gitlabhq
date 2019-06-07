@@ -1,0 +1,5 @@
+---
+title: Adds a text label to color pickers to improve accessibility.
+merge_request: 28343
+author: Chris Toynbee
+type: changed

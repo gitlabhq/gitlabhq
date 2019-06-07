@@ -1,5 +1,5 @@
 - if readme.rich_viewer
-  %article.file-holder.readme-holder{ id: 'readme', class: ("limited-width-container" unless fluid_layout) }
+  %article.file-holder.readme-holder{ id: 'readme', class: [("limited-width-container" unless fluid_layout), ("js-hide-on-navigation" if vue_file_list_enabled?)] }
     .js-file-title.file-title
       = blob_icon readme.mode, readme.name
       = link_to project_blob_path(@project, tree_join(@ref, readme.path)) do

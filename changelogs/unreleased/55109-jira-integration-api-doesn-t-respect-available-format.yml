@@ -1,5 +1,0 @@
----
-title: 'API: Support Jira transition ID as string'
-merge_request: 24400
-author: Robert Schilling
-type: fixed

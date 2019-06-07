@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe DiffNote do
@@ -319,6 +321,14 @@ describe DiffNote do
   end
 
   describe '#supports_suggestion?' do
+    context 'when noteable does not exist' do
+      it 'returns false' do
+        allow(subject).to receive(:noteable) { nil }
+
+        expect(subject.supports_suggestion?).to be(false)
+      end
+    end
+
     context 'when noteable does not support suggestions' do
       it 'returns false' do
         allow(subject.noteable).to receive(:supports_suggestion?) { false }
@@ -333,6 +343,16 @@ describe DiffNote do
 
         expect(subject.supports_suggestion?).to be(false)
       end
+    end
+  end
+
+  describe '#banzai_render_context' do
+    let(:note) { create(:diff_note_on_merge_request) }
+
+    it 'includes expected context' do
+      context = note.banzai_render_context(:note)
+
+      expect(context).to include(suggestions_filter_enabled: true, noteable: note.noteable, project: note.project)
     end
   end
 

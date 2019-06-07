@@ -1,5 +1,17 @@
 require 'sidekiq/web'
 
+def enable_reliable_fetch?
+  return true unless Feature::FlipperFeature.table_exists?
+
+  Feature.enabled?(:gitlab_sidekiq_reliable_fetcher, default_enabled: true)
+end
+
+def enable_semi_reliable_fetch_mode?
+  return true unless Feature::FlipperFeature.table_exists?
+
+  Feature.enabled?(:gitlab_sidekiq_enable_semi_reliable_fetcher, default_enabled: true)
+end
+
 # Disable the Sidekiq Rack session since GitLab already has its own session store.
 # CSRF protection still works (https://github.com/mperham/sidekiq/commit/315504e766c4fd88a29b7772169060afc4c40329).
 Sidekiq::Web.set :sessions, false
@@ -11,6 +23,10 @@ queues_config_hash[:namespace] = Gitlab::Redis::Queues::SIDEKIQ_NAMESPACE
 # Default is to retry 25 times with exponential backoff. That's too much.
 Sidekiq.default_worker_options = { retry: 3 }
 
+if Rails.env.development?
+  Sidekiq.default_worker_options[:backtrace] = true
+end
+
 enable_json_logs = Gitlab.config.sidekiq.log_format == 'json'
 
 Sidekiq.configure_server do |config|
@@ -18,7 +34,7 @@ Sidekiq.configure_server do |config|
 
   config.server_middleware do |chain|
     chain.add Gitlab::SidekiqMiddleware::ArgumentsLogger if ENV['SIDEKIQ_LOG_ARGUMENTS'] && !enable_json_logs
-    chain.add Gitlab::SidekiqMiddleware::Shutdown
+    chain.add Gitlab::SidekiqMiddleware::MemoryKiller if ENV['SIDEKIQ_MEMORY_KILLER_MAX_RSS']
     chain.add Gitlab::SidekiqMiddleware::RequestStoreMiddleware unless ENV['SIDEKIQ_REQUEST_STORE'] == '0'
     chain.add Gitlab::SidekiqMiddleware::BatchLoader
     chain.add Gitlab::SidekiqMiddleware::CorrelationLogger
@@ -41,9 +57,8 @@ Sidekiq.configure_server do |config|
     ActiveRecord::Base.clear_all_connections!
   end
 
-  if Feature::FlipperFeature.table_exists? && Feature.enabled?(:gitlab_sidekiq_reliable_fetcher)
-    # By default we're going to use Semi Reliable Fetch
-    config.options[:semi_reliable_fetch] = Feature.enabled?(:gitlab_sidekiq_enable_semi_reliable_fetcher, default_enabled: true)
+  if enable_reliable_fetch?
+    config.options[:semi_reliable_fetch] = enable_semi_reliable_fetch_mode?
     Sidekiq::ReliableFetch.setup_reliable_fetch!(config)
   end
 
@@ -73,6 +88,9 @@ Sidekiq.configure_server do |config|
   # Avoid autoload issue such as 'Mail::Parsers::AddressStruct'
   # https://github.com/mikel/mail/issues/912#issuecomment-214850355
   Mail.eager_autoload!
+
+  # Ensure the whole process group is terminated if possible
+  Gitlab::SidekiqSignals.install!(Sidekiq::CLI::SIGNAL_HANDLERS)
 end
 
 Sidekiq.configure_client do |config|

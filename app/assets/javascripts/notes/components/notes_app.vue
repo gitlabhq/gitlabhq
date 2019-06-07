@@ -6,6 +6,7 @@ import * as constants from '../constants';
 import eventHub from '../event_hub';
 import noteableNote from './noteable_note.vue';
 import noteableDiscussion from './noteable_discussion.vue';
+import discussionFilterNote from './discussion_filter_note.vue';
 import systemNote from '../../vue_shared/components/notes/system_note.vue';
 import commentForm from './comment_form.vue';
 import placeholderNote from '../../vue_shared/components/notes/placeholder_note.vue';
@@ -24,6 +25,7 @@ export default {
     placeholderNote,
     placeholderSystemNote,
     skeletonLoadingContainer,
+    discussionFilterNote,
   },
   props: {
     noteableData: {
@@ -65,6 +67,7 @@ export default {
       'isLoading',
       'commentsDisabled',
       'getNoteableData',
+      'userCanReply',
     ]),
     noteableType() {
       return this.noteableData.noteableType;
@@ -81,7 +84,7 @@ export default {
       return this.discussions;
     },
     canReply() {
-      return this.getNoteableData.current_user.can_create_note && !this.commentsDisabled;
+      return this.userCanReply && !this.commentsDisabled;
     },
   },
   watch: {
@@ -124,6 +127,9 @@ export default {
       initUserPopovers(this.$el.querySelectorAll('.js-user-link'));
     });
   },
+  beforeDestroy() {
+    this.stopPolling();
+  },
   methods: {
     ...mapActions([
       'setLoadingState',
@@ -141,6 +147,7 @@ export default {
       'expandDiscussion',
       'startTaskList',
       'convertToDiscussion',
+      'stopPolling',
     ]),
     fetchNotes() {
       if (this.isFetching) return null;
@@ -235,6 +242,7 @@ export default {
           :help-page-path="helpPagePath"
         />
       </template>
+      <discussion-filter-note v-show="commentsDisabled" />
     </ul>
 
     <comment-form v-if="!commentsDisabled" :noteable-type="noteableType" />

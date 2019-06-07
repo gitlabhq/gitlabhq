@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe UsersController do
@@ -185,12 +187,31 @@ describe UsersController do
 
     context 'for user' do
       context 'with public profile' do
-        it 'renders calendar_activities' do
-          push_data = Gitlab::DataBuilder::Push.build_sample(project, public_user)
-          EventCreateService.new.push(project, public_user, push_data)
+        let(:issue) { create(:issue, project: project, author: user) }
+        let(:note) { create(:note, noteable: issue, author: user, project: project) }
 
+        render_views
+
+        before do
+          create_push_event
+          create_note_event
+        end
+
+        it 'renders calendar_activities' do
           get :calendar_activities, params: { username: public_user.username }
+
           expect(assigns[:events]).not_to be_empty
+        end
+
+        it 'avoids N+1 queries', :request_store do
+          get :calendar_activities, params: { username: public_user.username }
+
+          control = ActiveRecord::QueryRecorder.new { get :calendar_activities, params: { username: public_user.username } }
+
+          create_push_event
+          create_note_event
+
+          expect { get :calendar_activities, params: { username: public_user.username } }.not_to exceed_query_limit(control)
         end
       end
 
@@ -202,6 +223,21 @@ describe UsersController do
           get :calendar_activities, params: { username: private_user.username }
           expect(response).to have_gitlab_http_status(:not_found)
         end
+      end
+
+      context 'external authorization' do
+        subject { get :calendar_activities, params: { username: user.username } }
+
+        it_behaves_like 'disabled when using an external authorization service'
+      end
+
+      def create_push_event
+        push_data = Gitlab::DataBuilder::Push.build_sample(project, public_user)
+        EventCreateService.new.push(project, public_user, push_data)
+      end
+
+      def create_note_event
+        EventCreateService.new.leave_note(note, public_user)
       end
     end
   end
@@ -257,6 +293,12 @@ describe UsersController do
         expect(response).to have_gitlab_http_status(200)
         expect(JSON.parse(response.body)).to have_key('html')
       end
+    end
+
+    context 'external authorization' do
+      subject { get :snippets, params: { username: user.username } }
+
+      it_behaves_like 'disabled when using an external authorization service'
     end
   end
 

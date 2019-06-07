@@ -43,7 +43,7 @@ describe "User creates wiki page" do
         expect(page).to have_content("Create Page")
       end
 
-      it "shows non-escaped link in the pages list", :js do
+      it "shows non-escaped link in the pages list", :js, :quarantine do
         fill_in(:wiki_title, with: "one/two/three-test")
 
         page.within(".wiki-form") do
@@ -136,12 +136,12 @@ describe "User creates wiki page" do
           click_button("Create page")
         end
 
-        page.within ".wiki" do
+        page.within ".md" do
           expect(page).to have_selector(".katex", count: 3).and have_content("2+2 is 4")
         end
       end
 
-      it_behaves_like 'wiki file attachments'
+      it_behaves_like 'wiki file attachments', :quarantine
     end
 
     context "in a group namespace", :js do
@@ -151,7 +151,7 @@ describe "User creates wiki page" do
         expect(page).to have_field("wiki[message]", with: "Create home")
       end
 
-      it "creates a page from the home page" do
+      it "creates a page from the home page", :quarantine do
         page.within(".wiki-form") do
           fill_in(:wiki_content, with: "My awesome wiki!")
 

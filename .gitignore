@@ -59,8 +59,6 @@ eslint-report.html
 /public/uploads.*
 /public/uploads/
 /shared/artifacts/
-/spec/javascripts/fixtures/blob/pdf/
-/spec/javascripts/fixtures/blob/balsamiq/
 /rails_best_practices_output.html
 /tags
 /tmp/*
@@ -81,3 +79,4 @@ package-lock.json
 /junit_*.xml
 /coverage-frontend/
 jsdoc/
+**/tmp/rubocop_cache/**

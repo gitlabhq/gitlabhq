@@ -1,36 +1,22 @@
-# How to create your SSH Keys
+# Create and add your SSH public key
 
-1. The first thing you need to do is go to your [command line](start-using-git.md)
-   and follow the [instructions](../ssh/README.md) to generate your SSH key pair.
+This topic describes how to:
 
-1. Once you do that, login to GitLab with your credentials.
-1. On the upper right corner, click on your avatar and go to your **Profile settings**.
+- Create an SSH key pair to use with GitLab.
+- Add the SSH public key to your GitLab account.
 
-    ![Profile settings dropdown](img/profile_settings.png)
+You do this to use [Git over SSH instead of Git over HTTP](https://git-scm.com/book/en/v2/Git-on-the-Server-The-Protocols).
 
-1. Navigate to the **SSH keys** tab.
+## Creating your SSH key pair
 
-    ![SSH Keys](img/profile_settings_ssh_keys.png)
+1. Go to your [command line](start-using-git.md).
+1. Follow the [instructions](../ssh/README.md#generating-a-new-ssh-key-pair) to generate your SSH key pair.
 
-1. Paste your **public** key that you generated in the first step in the 'Key'
-   box.
+## Adding your SSH public key to GitLab
 
-    ![Paste SSH public key](img/profile_settings_ssh_keys_paste_pub.png)
+To add the SSH public key to GitLab,
+see [Adding an SSH key to your GitLab account](../ssh/README.md#adding-an-ssh-key-to-your-gitlab-account).
 
-1. Optionally, give it a descriptive title so that you can recognize it in the
-   event you add multiple keys.
-
-    ![SSH key title](img/profile_settings_ssh_keys_title.png)
-
-1. Finally, click on **Add key** to add it to GitLab. You will be able to see
-   its fingerprint, its title and creation date.
-
-    ![SSH key single page](img/profile_settings_ssh_keys_single_key.png)
-
->**Note:**
-Once you add a key, you cannot edit it, only remove it. In case the paste
-didn't work, you will have to remove the offending key and re-add it.
-
----
-
-Congratulations! You are now ready to use Git over SSH, instead of Git over HTTP!
+NOTE: **Note:**
+Once you add a key, you cannot edit it. If the paste
+[didn't work](../ssh/README.md#testing-that-everything-is-set-up-correctly), you need to remove the key and re-add it.

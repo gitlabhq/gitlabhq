@@ -4,7 +4,7 @@
       - detailed_status = stage.detailed_status(current_user)
       - icon_status = "#{detailed_status.icon}_borderless"
 
-      .stage-container.dropdown{ class: klass }
+      .stage-container.mt-0.ml-1.dropdown{ class: klass }
         %button.mini-pipeline-graph-dropdown-toggle.has-tooltip.js-builds-dropdown-button{ class: "ci-status-icon-#{detailed_status.group}", type: 'button', data: { toggle: 'dropdown', title: "#{stage.name}: #{detailed_status.label}", placement: 'top', "stage-endpoint" => stage_ajax_project_pipeline_path(pipeline.project, pipeline, stage: stage.name) } }
           = sprite_icon(icon_status)
 
@@ -13,5 +13,5 @@
             %ul
 
           %li.js-builds-dropdown-loading.hidden
-            .text-center
-              %i.fa.fa-spinner.fa-spin{ 'aria-hidden': 'true', 'aria-label': 'Loading' }
+            .loading-container.text-center
+              %span.spinner{ 'aria-label': 'Loading' }

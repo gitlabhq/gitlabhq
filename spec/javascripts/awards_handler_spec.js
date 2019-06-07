@@ -19,9 +19,9 @@ const lazyAssert = function(done, assertFn) {
 };
 
 describe('AwardsHandler', function() {
-  preloadFixtures('snippets/show.html.raw');
+  preloadFixtures('snippets/show.html');
   beforeEach(function(done) {
-    loadFixtures('snippets/show.html.raw');
+    loadFixtures('snippets/show.html');
     loadAwardsHandler(true)
       .then(obj => {
         awardsHandler = obj;

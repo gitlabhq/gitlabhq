@@ -15,12 +15,10 @@ By default, a protected branch does four simple things:
 - it prevents **anyone** from force pushing to the branch
 - it prevents **anyone** from deleting the branch
 
-See the [Changelog](#changelog) section for changes over time.
+>**Note**:
+A GitLab admin is allowed to push to the protected branches.
 
->
->Additional functionality for GitLab Enterprise Edition:
->
->- Restrict push and merge access to [certain users][ee-restrict]
+See the [Changelog](#changelog) section for changes over time.
 
 ## Configuring protected branches
 
@@ -68,6 +66,21 @@ dropdown list in the "Already protected" area.
 If you don't choose any of those options while creating a protected branch,
 they are set to "Maintainers" by default.
 
+## Restricting push and merge access to certain users **[STARTER]**
+
+> This feature was [introduced][ce-5081] in [GitLab Starter][ee] 8.11.
+
+With GitLab Enterprise Edition you can restrict access to protected branches
+by choosing a role (Maintainers, Developers) as well as certain users. From the
+dropdown menu select the role and/or the users you want to have merge or push
+access.
+
+![Select roles and users](img/protected_branches_select_roles_and_users.png)
+
+Click **Protect** and the branch will appear in the "Protected branch" list.
+
+![Roles and users list](img/protected_branches_select_roles_and_users_list.png)
+
 ## Wildcard protected branches
 
 > [Introduced][ce-4665] in GitLab 8.10.
@@ -93,6 +106,25 @@ If you click on a protected branch's name, you will be presented with a list of
 all matching branches:
 
 ![Protected branch matches](img/protected_branches_matches.png)
+
+## Creating a protected branch
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/53361) in GitLab 11.9.
+
+When a protected branch or wildcard protected branches are set to
+[**No one** is **Allowed to push**](#using-the-allowed-to-merge-and-allowed-to-push-settings),
+Developers (and users with higher [permission levels](../permissions.md)) are allowed
+to create a new protected branch, but only via the UI or through the API (to avoid
+creating protected branches accidentally from the command line or from a Git
+client application).
+
+To create a new branch through the user interface:
+
+1. Visit **Repository > Branches**.
+1. Click on **New branch**.
+1. Fill in the branch name and select an existing branch, tag, or commit that
+   the new branch will be based off. Only existing protected branches and commits
+   that are already in protected branches will be accepted.
 
 ## Deleting a protected branch
 
@@ -125,6 +157,10 @@ for details about the pipelines security model.
 
 ## Changelog
 
+**11.9**
+
+- [Allow protected branches to be created](https://gitlab.com/gitlab-org/gitlab-ce/issues/53361) by Developers (and users with higher permission levels) through the API and the user interface.
+
 **9.2**
 
 - Allow deletion of protected branches via the web interface [gitlab-org/gitlab-ce#21393][ce-21393]
@@ -146,3 +182,4 @@ for details about the pipelines security model.
 [ce-21393]: https://gitlab.com/gitlab-org/gitlab-ce/issues/21393
 [ee-restrict]: http://docs.gitlab.com/ee/user/project/protected_branches.html#restricting-push-and-merge-access-to-certain-users
 [perm]: ../permissions.md
+[ee]: https://about.gitlab.com/pricing/

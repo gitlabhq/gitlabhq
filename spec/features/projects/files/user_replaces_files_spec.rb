@@ -14,6 +14,8 @@ describe 'Projects > Files > User replaces files', :js do
   let(:user) { create(:user) }
 
   before do
+    stub_feature_flags(vue_file_list: false)
+
     sign_in(user)
   end
 

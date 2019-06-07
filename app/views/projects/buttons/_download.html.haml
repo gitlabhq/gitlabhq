@@ -7,31 +7,22 @@
       = sprite_icon('download')
       %span.sr-only=  _('Select Archive Format')
       = sprite_icon("arrow-down")
-    %ul.dropdown-menu.dropdown-menu-right{ role: 'menu' }
-      %li.dropdown-header
-        #{ _('Source code') }
-      %li
-        = link_to project_archive_path(project, id: tree_join(ref, archive_prefix), format: 'zip'), rel: 'nofollow', download: '' do
-          %span=  _('Download zip')
-      %li
-        = link_to project_archive_path(project, id: tree_join(ref, archive_prefix), format: 'tar.gz'), rel: 'nofollow', download: '' do
-          %span= _('Download tar.gz')
-      %li
-        = link_to project_archive_path(project, id: tree_join(ref, archive_prefix), format: 'tar.bz2'), rel: 'nofollow', download: '' do
-          %span= _('Download tar.bz2')
-      %li
-        = link_to project_archive_path(project, id: tree_join(ref, archive_prefix), format: 'tar'), rel: 'nofollow', download: '' do
-          %span= _('Download tar')
-
+    .dropdown-menu.dropdown-menu-right{ role: 'menu' }
+      %section
+        %h5.m-0.dropdown-bold-header= _('Download source code')
+        .dropdown-menu-content
+          = render 'projects/buttons/download_links', project: project, ref: ref, archive_prefix: archive_prefix, path: nil
+      - if directory? && Feature.enabled?(:git_archive_path, default_enabled: true)
+        %section.border-top.pt-1.mt-1
+          %h5.m-0.dropdown-bold-header= _('Download this directory')
+          .dropdown-menu-content
+            = render 'projects/buttons/download_links', project: project, ref: ref, archive_prefix: archive_prefix, path: @path
       - if pipeline && pipeline.latest_builds_with_artifacts.any?
-        %li.dropdown-header Artifacts
-        - unless pipeline.latest?
-          - latest_pipeline = project.pipeline_for(ref)
-          %li
-            .unclickable= ci_status_for_statuseable(latest_pipeline)
-          %li.dropdown-header Previous Artifacts
-        - pipeline.latest_builds_with_artifacts.each do |job|
-          %li
-            = link_to latest_succeeded_project_artifacts_path(project, "#{ref}/download", job: job.name), rel: 'nofollow', download: '' do
-              %span
-                #{s_('DownloadArtifacts|Download')} '#{job.name}'
+        %section.border-top.pt-1.mt-1
+          %h5.m-0.dropdown-bold-header= _('Download artifacts')
+          - unless pipeline.latest?
+            %span.unclickable= ci_status_for_statuseable(project.pipeline_for(ref))
+          %h6.m-0.dropdown-header= _('Previous Artifacts')
+          %ul
+            - pipeline.latest_builds_with_artifacts.each do |job|
+              %li= link_to job.name, latest_succeeded_project_artifacts_path(project, "#{ref}/download", job: job.name), rel: 'nofollow', download: ''

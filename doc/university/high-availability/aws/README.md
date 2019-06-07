@@ -3,7 +3,7 @@ comments: false
 ---
 
 > **Note**: We **do not** recommend using the AWS Elastic File System (EFS), as it can result
-in [significantly degraded performance](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/doc/administration/high_availability/nfs.md#aws-elastic-file-system).
+in [significantly degraded performance](../../../administration/high_availability/nfs.md#avoid-using-awss-elastic-file-system-efs).
 
 # High Availability on AWS
 
@@ -83,7 +83,7 @@ our newly created VPC.
 ### Internet Gateway
 
 Now still on the same dashboard head over to Internet Gateways and
-create a new one. After its created pres on the `Attach to VPC` button and
+create a new one. After its created press on the `Attach to VPC` button and
 select our VPC.
 
 ![Internet Gateway](img/ig.png)
@@ -182,7 +182,7 @@ Another option is to build a simple NFS server using a vanilla Linux server back
 by AWS Elastic Block Storage (EBS).
 
 > **Note:** GitLab does not recommend using AWS Elastic File System (EFS). See
-  details in [High Availability NFS documentation](../../../administration/high_availability/nfs.md#aws-elastic-file-system)
+  details in [High Availability NFS documentation](../../../administration/high_availability/nfs.md#avoid-using-awss-elastic-file-system-efs)
 
 ***
 
@@ -390,5 +390,5 @@ some redundancy options but it might also imply Geographic replication.
 There is a lot of ground yet to cover so have a read through these other
 resources and feel free to open an issue to request additional material.
 
-- [GitLab High Availability](http://docs.gitlab.com/ce/administration/high_availability/README.html#sts=High%20Availability)
-- [GitLab Geo](https://docs.gitlab.com/ee/administration/geo/replication/index.html)
+- [GitLab High Availability](../../../administration/high_availability/README.md)
+- [GitLab Geo](../../../administration/geo/replication/index.md)

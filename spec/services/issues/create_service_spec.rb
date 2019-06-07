@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Issues::CreateService do
@@ -135,6 +137,20 @@ describe Issues::CreateService do
           described_class.new(project, user, opts).execute
 
           expect(assignee.assigned_open_issues_count).to eq 1
+        end
+      end
+
+      context 'when duplicate label titles are given' do
+        let(:label) { create(:label, project: project) }
+
+        let(:opts) do
+          { title: 'Title',
+            description: 'Description',
+            labels: [label.title, label.title] }
+        end
+
+        it 'assigns the label once' do
+          expect(issue.labels).to contain_exactly(label)
         end
       end
 

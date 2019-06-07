@@ -36,15 +36,15 @@ Set up your project's merge request settings:
 
 - Set up the merge request method (merge commit, [fast-forward merge](../merge_requests/fast_forward_merge.html)).
 - Merge request [description templates](../description_templates.md#description-templates).
-- Enable [merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html#merge-request-approvals). **[STARTER]**
+- Enable [merge request approvals](../merge_requests/merge_request_approvals.md). **[STARTER]**
 - Enable [merge only of pipeline succeeds](../merge_requests/merge_when_pipeline_succeeds.md).
 - Enable [merge only when all discussions are resolved](../../discussions/index.md#only-allow-merge-requests-to-be-merged-if-all-discussions-are-resolved).
 
 ![project's merge request settings](img/merge_requests_settings.png)
 
-### Service Desk
+### Service Desk **[PREMIUM]**
 
-Enable [Service Desk](https://docs.gitlab.com/ee/user/project/service_desk.html) for your project to offer customer support. Service Desk is available in [GitLab Premium](https://about.gitlab.com/pricing/).
+Enable [Service Desk](../service_desk.md) for your project to offer customer support.
 
 ### Export project
 
@@ -100,9 +100,9 @@ Only project Owners and Admin users have the [permissions] to transfer a project
 
 You can transfer an existing project into a [group](../../group/index.md) if:
 
-1. you have at least **Maintainer** [permissions] to that group
-1. you are an **Owner** of the project.
-
+1. You have at least **Maintainer** [permissions] to that group.
+1. The project is in a subgroup you own.
+1. You are at least a **Maintainer** of the project under your personal namespace.
 Similarly, if you are an owner of a group, you can transfer any of its projects
 under your own user.
 
@@ -128,3 +128,7 @@ namespace if needed.
 ### Error Tracking
 
 Configure Error Tracking to discover and view [Sentry errors within GitLab](../operations/error_tracking.md).
+
+### Jaeger tracing **[ULTIMATE]**
+
+Add the URL of a Jaeger server to allow your users to [easily access the Jaeger UI from within GitLab](../operations/tracing.md).

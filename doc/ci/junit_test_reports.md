@@ -1,3 +1,7 @@
+---
+type: reference
+---
+
 # JUnit test reports
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/45318) in GitLab 11.2.
@@ -71,11 +75,11 @@ merge request widget.
 
 NOTE: **Note:**
 If you also want the ability to browse JUnit output files, include the
-[`artifacts:paths`](yaml/README.md#artifactspaths) keyword.
+[`artifacts:paths`](yaml/README.md#artifactspaths) keyword. An example of this is shown in the Ruby example below.
 
 ### Ruby example
 
-Use the following job in `.gitlab-ci.yml`:
+Use the following job in `.gitlab-ci.yml`. This includes the `artifacts:paths` keyword to provide a link to the JUnit output file.
 
 ```yaml
 ## Use https://github.com/sj26/rspec_junit_formatter to generate a JUnit report with rspec
@@ -85,6 +89,8 @@ ruby:
   - bundle install
   - rspec spec/lib/ --format RspecJunitFormatter --out rspec.xml
   artifacts:
+    paths:
+      - rspec.xml
     reports:
       junit: rspec.xml
 ```
@@ -113,8 +119,8 @@ There are a few tools that can produce JUnit reports in Java.
 
 In the following example, `gradle` is used to generate the test reports.
 If there are multiple test tasks defined, `gradle` will generate multiple
-directories under `build/test-results/`. In that case, you can leverage regex
-matching by defining the following path: `build/test-results/test/TEST-*.xml`:
+directories under `build/test-results/`. In that case, you can leverage glob
+matching by defining the following path: `build/test-results/test/**/TEST-*.xml`:
 
 ```yaml
 java:
@@ -123,7 +129,7 @@ java:
   - gradle test
   artifacts:
     reports:
-      junit: build/test-results/test/TEST-*.xml
+      junit: build/test-results/test/**/TEST-*.xml
 ```
 
 #### Maven

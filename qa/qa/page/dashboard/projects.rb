@@ -1,9 +1,9 @@
+# frozen_string_literal: true
+
 module QA
   module Page
     module Dashboard
       class Projects < Page::Base
-        view 'app/views/dashboard/projects/index.html.haml'
-
         view 'app/views/shared/projects/_search_form.html.haml' do
           element :form_filter_by_name, /form_tag.+id: 'project-filter-form'/ # rubocop:disable QA/ElementWithPattern
         end

@@ -1,0 +1,5 @@
+---
+title: Omit max-count for diverging_commit_counts behind feature flag
+merge_request: 28157
+author:
+type: other

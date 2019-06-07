@@ -4,13 +4,19 @@ module Projects
   module GroupLinks
     class CreateService < BaseService
       def execute(group)
-        return false unless group
+        return error('Not Found', 404) unless group && can?(current_user, :read_namespace, group)
 
-        project.project_group_links.create(
+        link = project.project_group_links.new(
           group: group,
           group_access: params[:link_group_access],
           expires_at: params[:expires_at]
         )
+
+        if link.save
+          success(link: link)
+        else
+          error(link.errors.full_messages.to_sentence, 409)
+        end
       end
     end
   end

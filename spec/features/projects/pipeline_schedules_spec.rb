@@ -93,14 +93,14 @@ describe 'Pipeline Schedules', :js do
         expect(page).to have_button('UTC')
       end
 
-      it 'it creates a new scheduled pipeline' do
+      it 'creates a new scheduled pipeline' do
         fill_in_schedule_form
         save_pipeline_schedule
 
         expect(page).to have_content('my fancy description')
       end
 
-      it 'it prevents an invalid form from being submitted' do
+      it 'prevents an invalid form from being submitted' do
         save_pipeline_schedule
 
         expect(page).to have_content('This field is required')
@@ -112,7 +112,7 @@ describe 'Pipeline Schedules', :js do
         edit_pipeline_schedule
       end
 
-      it 'it displays existing properties' do
+      it 'displays existing properties' do
         description = find_field('schedule_description').value
         expect(description).to eq('pipeline schedule')
         expect(page).to have_button('master')
@@ -225,7 +225,7 @@ describe 'Pipeline Schedules', :js do
     context 'when active is true and next_run_at is NULL' do
       before do
         create(:ci_pipeline_schedule, project: project, owner: user).tap do |pipeline_schedule|
-          pipeline_schedule.update_attribute(:cron, nil) # Consequently next_run_at will be nil
+          pipeline_schedule.update_attribute(:next_run_at, nil) # Consequently next_run_at will be nil
         end
       end
 

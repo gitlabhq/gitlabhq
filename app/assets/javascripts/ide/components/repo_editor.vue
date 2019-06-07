@@ -1,5 +1,6 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex';
+import { viewerInformationForPath } from '~/vue_shared/components/content_viewer/lib/viewer_utils';
 import flash from '~/flash';
 import ContentViewer from '~/vue_shared/components/content_viewer/content_viewer.vue';
 import DiffViewer from '~/vue_shared/components/diff_viewer/diff_viewer.vue';
@@ -35,7 +36,7 @@ export default {
     ]),
     ...mapGetters('fileTemplates', ['showFileTemplatesBar']),
     shouldHideEditor() {
-      return this.file && this.file.binary && !this.file.content;
+      return this.file && this.file.binary;
     },
     showContentViewer() {
       return (
@@ -55,6 +56,10 @@ export default {
       return {
         active: this.file.viewMode === 'preview',
       };
+    },
+    fileType() {
+      const info = viewerInformationForPath(this.file.path);
+      return (info && info.id) || '';
     },
   },
   watch: {
@@ -120,6 +125,7 @@ export default {
       'setFileEOL',
       'updateViewer',
       'removePendingTab',
+      'triggerFilesChange',
     ]),
     initEditor() {
       if (this.shouldHideEditor) return;
@@ -251,6 +257,7 @@ export default {
         'is-added': file.tempFile,
       }"
       class="multi-file-editor-holder"
+      @focusout="triggerFilesChange"
     ></div>
     <content-viewer
       v-if="showContentViewer"
@@ -258,6 +265,7 @@ export default {
       :path="file.rawPath || file.path"
       :file-size="file.size"
       :project-path="file.projectId"
+      :type="fileType"
     />
     <diff-viewer
       v-if="showDiffViewer"

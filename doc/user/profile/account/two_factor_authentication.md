@@ -18,9 +18,10 @@ the second factor of authentication. Once enabled, in addition to supplying your
 password to login, you'll be prompted to activate your U2F device (usually by pressing
 a button on it), and it will perform secure authentication on your behalf.
 
-The U2F workflow is only [supported by](https://caniuse.com/#search=U2F) Google Chrome, Opera and Firefox at this point, so we _strongly_ recommend
-that you set up both methods of two-factor authentication, so you can still access your account
-from other browsers.
+The U2F workflow is [supported by](https://caniuse.com/#search=U2F) Google Chrome, Opera, and Firefox.
+
+We recommend that you set up 2FA with both a [one-time password authenticator](#enable-2fa-via-one-time-password-authenticator) and a [U2F device](#enable-2fa-via-u2f-device), so you can still access your account
+if you lose your U2F device.
 
 ## Enabling 2FA
 
@@ -59,6 +60,7 @@ of recovery codes.
 ### Enable 2FA via U2F device
 
 > **Notes:**
+>
 > - GitLab officially only supports [Yubikey] U2F devices.
 > - Support for U2F devices was added in GitLab 8.8.
 
@@ -159,8 +161,8 @@ a new set of recovery codes with SSH.
 
 1. Run `ssh git@gitlab.example.com 2fa_recovery_codes`.
 1. You are prompted to confirm that you want to generate new codes. Continuing this process invalidates previously saved codes.
-    ```
-    bash
+
+    ```sh
     $ ssh git@gitlab.example.com 2fa_recovery_codes
     Are you sure you want to generate new two-factor recovery codes?
     Any existing recovery codes you saved will be invalidated. (yes/no)
@@ -205,17 +207,17 @@ Sign in and re-enable two-factor authentication as soon as possible.
 - You need to take special care to that 2FA keeps working after
   [restoring a GitLab backup](../../../raketasks/backup_restore.md).
 - To ensure 2FA authorizes correctly with TOTP server, you may want to ensure
-  your GitLab server's time is synchronized via a service like NTP.  Otherwise,
+  your GitLab server's time is synchronized via a service like NTP. Otherwise,
   you may have cases where authorization always fails because of time differences.
 - The GitLab U2F implementation does _not_ work when the GitLab instance is accessed from
   multiple hostnames, or FQDNs. Each U2F registration is linked to the _current hostname_ at
   the time of registration, and cannot be used for other hostnames/FQDNs.
 
-    For example, if a user is trying to access a GitLab instance from `first.host.xyz` and `second.host.xyz`:
+  For example, if a user is trying to access a GitLab instance from `first.host.xyz` and `second.host.xyz`:
 
-    - The user logs in via `first.host.xyz` and registers their U2F key.
-    - The user logs out and attempts to log in via `first.host.xyz` - U2F authentication succeeds.
-    - The user logs out and attempts to log in via `second.host.xyz` - U2F authentication fails, because
+  - The user logs in via `first.host.xyz` and registers their U2F key.
+  - The user logs out and attempts to log in via `first.host.xyz` - U2F authentication succeeds.
+  - The user logs out and attempts to log in via `second.host.xyz` - U2F authentication fails, because
     the U2F key has only been registered on `first.host.xyz`.
 
 [Google Authenticator]: https://support.google.com/accounts/answer/1066447?hl=en

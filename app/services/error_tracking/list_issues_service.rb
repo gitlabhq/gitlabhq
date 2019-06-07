@@ -18,7 +18,7 @@ module ErrorTracking
       end
 
       if result[:error].present?
-        return error(result[:error], :bad_request)
+        return error(result[:error], http_status_from_error_type(result[:error_type]))
       end
 
       success(issues: result[:issues])
@@ -29,6 +29,15 @@ module ErrorTracking
     end
 
     private
+
+    def http_status_from_error_type(error_type)
+      case error_type
+      when ErrorTracking::ProjectErrorTrackingSetting::SENTRY_API_ERROR_TYPE_MISSING_KEYS
+        :internal_server_error
+      else
+        :bad_request
+      end
+    end
 
     def project_error_tracking_setting
       project.error_tracking_setting

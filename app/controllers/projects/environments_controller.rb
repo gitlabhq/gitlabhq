@@ -10,6 +10,12 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   before_action :environment, only: [:show, :edit, :update, :stop, :terminal, :terminal_websocket_authorize, :metrics]
   before_action :verify_api_request!, only: :terminal_websocket_authorize
   before_action :expire_etag_cache, only: [:index]
+  before_action only: [:metrics, :additional_metrics, :metrics_dashboard] do
+    push_frontend_feature_flag(:environment_metrics_use_prometheus_endpoint)
+    push_frontend_feature_flag(:environment_metrics_show_multiple_dashboards)
+    push_frontend_feature_flag(:grafana_dashboard_link)
+    push_frontend_feature_flag(:prometheus_computed_alerts)
+  end
 
   def index
     @environments = project.environments
@@ -114,7 +120,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     terminal = environment.terminals.try(:first)
     if terminal
       set_workhorse_internal_api_content_type
-      render json: Gitlab::Workhorse.terminal_websocket(terminal)
+      render json: Gitlab::Workhorse.channel_websocket(terminal)
     else
       render html: 'Not found', status: :not_found
     end
@@ -131,13 +137,13 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   end
 
   def metrics
-    # Currently, this acts as a hint to load the metrics details into the cache
-    # if they aren't there already
-    @metrics = environment.metrics || {}
-
     respond_to do |format|
       format.html
       format.json do
+        # Currently, this acts as a hint to load the metrics details into the cache
+        # if they aren't there already
+        @metrics = environment.metrics || {}
+
         render json: @metrics, status: @metrics.any? ? :ok : :no_content
       end
     end
@@ -146,9 +152,36 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   def additional_metrics
     respond_to do |format|
       format.json do
-        additional_metrics = environment.additional_metrics || {}
+        additional_metrics = environment.additional_metrics(*metrics_params) || {}
 
         render json: additional_metrics, status: additional_metrics.any? ? :ok : :no_content
+      end
+    end
+  end
+
+  def metrics_dashboard
+    return render_403 unless Feature.enabled?(:environment_metrics_use_prometheus_endpoint, project)
+
+    if Feature.enabled?(:environment_metrics_show_multiple_dashboards, project)
+      result = dashboard_finder.find(project, current_user, environment, params[:dashboard])
+
+      result[:all_dashboards] = project.repository.metrics_dashboard_paths
+    else
+      result = dashboard_finder.find(project, current_user, environment)
+    end
+
+    respond_to do |format|
+      if result[:status] == :success
+        format.json do
+          render status: :ok, json: result.slice(:all_dashboards, :dashboard, :status)
+        end
+      else
+        format.json do
+          render(
+            status: result[:http_status],
+            json: result.slice(:all_dashboards, :message, :status)
+          )
+        end
       end
     end
   end
@@ -184,6 +217,14 @@ class Projects::EnvironmentsController < Projects::ApplicationController
 
   def environment
     @environment ||= project.environments.find(params[:id])
+  end
+
+  def metrics_params
+    params.require([:start, :end])
+  end
+
+  def dashboard_finder
+    Gitlab::Metrics::Dashboard::Finder
   end
 
   def search_environment_names

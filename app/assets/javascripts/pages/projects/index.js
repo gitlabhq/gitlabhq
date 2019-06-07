@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (newClusterViews.indexOf(page) > -1) {
     const callout = document.querySelector('.gcp-signup-offer');
-    if (callout) new PersistentUserCallout(callout); // eslint-disable-line no-new
+    PersistentUserCallout.factory(callout);
 
     initGkeDropdowns();
   }

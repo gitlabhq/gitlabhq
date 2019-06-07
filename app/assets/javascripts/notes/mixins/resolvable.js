@@ -31,6 +31,10 @@ export default {
   },
   methods: {
     resolveHandler(resolvedState = false) {
+      if (this.note && this.note.isDraft) {
+        return this.$emit('toggleResolveStatus');
+      }
+
       this.isResolving = true;
       const isResolved = this.discussionResolved || resolvedState;
       const discussion = this.resolveAsThread;

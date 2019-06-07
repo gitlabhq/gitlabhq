@@ -16,6 +16,7 @@ To create a project in GitLab:
    - [Import a project](../user/project/import/index.md) from a different repository,
      if enabled on your GitLab instance. Contact your GitLab admin if this
      is unavailable.
+   - Run [CI/CD pipelines for external repositories](../ci/ci_cd_for_external_repos/index.md). **[PREMIUM]**
 
 ## Blank projects
 
@@ -42,7 +43,9 @@ Project templates can pre-populate your project with necessary files to get you 
 
 There are two types of project templates:
 
-- [Built-in templates](#builtin-templates), sourced from the [`project-templates`](https://gitlab.com/gitlab-org/project-templates) group.
+- [Built-in templates](#built-in-templates), sourced from the following groups:
+  - [`project-templates`](https://gitlab.com/gitlab-org/project-templates)
+  - [`pages`](https://gitlab.com/pages)
 - [Custom project templates](#custom-project-templates-premium-only), for custom templates configured by GitLab administrators and users.
 
 ### Built-in templates
@@ -50,12 +53,12 @@ There are two types of project templates:
 Built-in templates are project templates that are:
 
 - Developed and maintained in the
-  [`project-templates`](https://gitlab.com/gitlab-org/project-templates) group.
+  [`project-templates`](https://gitlab.com/gitlab-org/project-templates) and [`pages`](https://gitlab.com/pages) groups.
 - Released with GitLab.
 
 To use a built-in template on the **New project** page:
 
-1. On the **Create from template** tab.
+1. On the **Create from template** tab, select the **Built-in** tab.
 1. From the list of available built-in templates, click the:
     - **Preview** button to look at the template source itself.
     - **Use template** button to start creating the project.
@@ -64,7 +67,7 @@ To use a built-in template on the **New project** page:
 
 TIP: **Tip:**
 You can improve the existing built-in templates or contribute new ones on the
-[`project-templates`](https://gitlab.com/gitlab-org/project-templates) group.
+[`project-templates`](https://gitlab.com/gitlab-org/project-templates) and [`pages`](https://gitlab.com/pages) groups.
 
 ### Custom project templates **[PREMIUM ONLY]**
 

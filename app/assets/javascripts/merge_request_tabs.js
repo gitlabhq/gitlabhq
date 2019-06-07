@@ -21,6 +21,7 @@ import { localTimeAgo } from './lib/utils/datetime_utility';
 import syntaxHighlight from './syntax_highlight';
 import Notes from './notes';
 import { polyfillSticky } from './lib/utils/sticky';
+import { __ } from './locale';
 
 // MergeRequestTabs
 //
@@ -326,7 +327,7 @@ export default class MergeRequestTabs {
       })
       .catch(() => {
         this.toggleLoading(false);
-        flash('An error occurred while fetching this tab.');
+        flash(__('An error occurred while fetching this tab.'));
       });
   }
 
@@ -398,7 +399,7 @@ export default class MergeRequestTabs {
         const hash = getLocationHash();
         const anchor = hash && $container.find(`.note[id="${hash}"]`);
         if (anchor && anchor.length > 0) {
-          const notesContent = anchor.closest('.notes_content');
+          const notesContent = anchor.closest('.notes-content');
           const lineType = notesContent.hasClass('new') ? 'new' : 'old';
           Notes.instance.toggleDiffNote({
             target: anchor,
@@ -416,7 +417,7 @@ export default class MergeRequestTabs {
       })
       .catch(() => {
         this.toggleLoading(false);
-        flash('An error occurred while fetching this tab.');
+        flash(__('An error occurred while fetching this tab.'));
       });
   }
 

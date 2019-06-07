@@ -8,60 +8,66 @@
     .import-buttons
       - if gitlab_project_import_enabled?
         .import_gitlab_project.has-tooltip{ data: { container: 'body' } }
-          = link_to new_import_gitlab_project_path, class: 'btn btn_import_gitlab_project project-submit', data: { track_label: "#{track_label}", track_event: "click_button", track_property: "gitlab_export" } do
+          = link_to new_import_gitlab_project_path, class: 'btn btn_import_gitlab_project project-submit', **tracking_attrs(track_label, 'click_button', 'gitlab_export') do
             = icon('gitlab', text: 'GitLab export')
 
       - if github_import_enabled?
         %div
-          = link_to new_import_github_path, class: 'btn js-import-github', data: { track_label: "#{track_label}", track_event: "click_button", track_property: "github" } do
+          = link_to new_import_github_path, class: 'btn js-import-github', **tracking_attrs(track_label, 'click_button', 'github') do
             = icon('github', text: 'GitHub')
 
       - if bitbucket_import_enabled?
         %div
           = link_to status_import_bitbucket_path, class: "btn import_bitbucket #{'how_to_import_link' unless bitbucket_import_configured?}",
-          data: { track_label: "#{track_label}", track_event: "click_button", track_property: "bitbucket_cloud" } do
+          **tracking_attrs(track_label, 'click_button', 'bitbucket_cloud') do
             = icon('bitbucket', text: 'Bitbucket Cloud')
           - unless bitbucket_import_configured?
             = render 'bitbucket_import_modal'
       - if bitbucket_server_import_enabled?
         %div
-          = link_to status_import_bitbucket_server_path, class: "btn import_bitbucket",
-          data: { track_label: "#{track_label}", track_event: "click_button", track_property: "bitbucket_server" } do
+          = link_to status_import_bitbucket_server_path, class: "btn import_bitbucket", **tracking_attrs(track_label, 'click_button', 'bitbucket_server') do
             = icon('bitbucket-square', text: 'Bitbucket Server')
         %div
       - if gitlab_import_enabled?
         %div
           = link_to status_import_gitlab_path, class: "btn import_gitlab #{'how_to_import_link' unless gitlab_import_configured?}",
-          data: { track_label: "#{track_label}", track_event: "click_button", track_property: "gitlab_com" } do
+          **tracking_attrs(track_label, 'click_button', 'gitlab_com') do
             = icon('gitlab', text: 'GitLab.com')
           - unless gitlab_import_configured?
             = render 'gitlab_import_modal'
 
       - if google_code_import_enabled?
         %div
-          = link_to new_import_google_code_path, class: 'btn import_google_code', data: { track_label: "#{track_label}", track_event: "click_button", track_property: "google_code" } do
+          = link_to new_import_google_code_path, class: 'btn import_google_code', **tracking_attrs(track_label, 'click_button', 'google_code') do
             = icon('google', text: 'Google Code')
 
       - if fogbugz_import_enabled?
         %div
-          = link_to new_import_fogbugz_path, class: 'btn import_fogbugz', data: { track_label: "#{track_label}", track_event: "click_button", track_property: "fogbugz" } do
+          = link_to new_import_fogbugz_path, class: 'btn import_fogbugz', **tracking_attrs(track_label, 'click_button', 'fogbugz') do
             = icon('bug', text: 'Fogbugz')
 
       - if gitea_import_enabled?
         %div
-          = link_to new_import_gitea_path, class: 'btn import_gitea', data: { track_label: "#{track_label}", track_event: "click_button", track_property: "gitea" } do
-            = custom_icon('go_logo')
+          = link_to new_import_gitea_path, class: 'btn import_gitea', **tracking_attrs(track_label, 'click_button', 'gitea') do
+            = custom_icon('gitea_logo')
             Gitea
 
       - if git_import_enabled?
         %div
-          %button.btn.js-toggle-button.js-import-git-toggle-button{ type: "button", data: { toggle_open_class: 'active', data: { toggle_open_class: 'active', track_label: "#{track_label}" , track_event: "click_button", track_property: "repo_url" } } }
+          %button.btn.js-toggle-button.js-import-git-toggle-button{ type: "button", data: { toggle_open_class: 'active' }, **tracking_attrs(track_label, 'click_button', 'repo_url') }
             = icon('git', text: 'Repo by URL')
 
       - if manifest_import_enabled?
         %div
-          = link_to new_import_manifest_path, class: 'btn import_manifest', data: { track_label: "#{track_label}", track_event: "click_button", track_property: "manifest_file" } do
+          = link_to new_import_manifest_path, class: 'btn import_manifest', **tracking_attrs(track_label, 'click_button', 'manifest_file') do
             = icon('file-text-o', text: 'Manifest file')
+
+      - if phabricator_import_enabled?
+        %div
+          = link_to new_import_phabricator_path, class: 'btn import_phabricator', data: { track_label: "#{track_label}", track_event: "click_button", track_property: "phabricator" } do
+            = custom_icon('issues')
+            = _("Phabricator Tasks")
+
 
   .js-toggle-content.toggle-import-form{ class: ('hide' if active_tab != 'import') }
     = form_for @project, html: { class: 'new_project' } do |f|

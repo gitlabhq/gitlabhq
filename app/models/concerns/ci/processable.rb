@@ -23,5 +23,9 @@ module Ci
     def expanded_environment_name
       raise NotImplementedError
     end
+
+    def scoped_variables_hash
+      raise NotImplementedError
+    end
   end
 end

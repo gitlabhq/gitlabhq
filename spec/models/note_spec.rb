@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Note do
@@ -205,6 +207,24 @@ describe Note do
     it "returns false" do
       note = build(:note, system: true)
       expect(note.editable?).to be_falsy
+    end
+  end
+
+  describe "edited?" do
+    let(:note) { build(:note, updated_by_id: nil, created_at: Time.now, updated_at: Time.now + 5.hours) }
+
+    context "with updated_by" do
+      it "returns true" do
+        note.updated_by = build(:user)
+
+        expect(note.edited?).to be_truthy
+      end
+    end
+
+    context "without updated_by" do
+      it "returns false" do
+        expect(note.edited?).to be_falsy
+      end
     end
   end
 

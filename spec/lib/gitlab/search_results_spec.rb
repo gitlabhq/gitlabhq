@@ -97,7 +97,7 @@ describe Gitlab::SearchResults do
         results.objects('merge_requests')
       end
 
-      it 'it skips project filter if default project context is used' do
+      it 'skips project filter if default project context is used' do
         allow(results).to receive(:default_project_filter).and_return(true)
 
         expect(results).not_to receive(:project_ids_relation)
@@ -113,12 +113,28 @@ describe Gitlab::SearchResults do
         results.objects('issues')
       end
 
-      it 'it skips project filter if default project context is used' do
+      it 'skips project filter if default project context is used' do
         allow(results).to receive(:default_project_filter).and_return(true)
 
         expect(results).not_to receive(:project_ids_relation)
 
         results.objects('issues')
+      end
+    end
+
+    describe '#users' do
+      it 'does not call the UsersFinder when the current_user is not allowed to read users list' do
+        allow(Ability).to receive(:allowed?).and_return(false)
+
+        expect(UsersFinder).not_to receive(:new).with(user, search: 'foo').and_call_original
+
+        results.objects('users')
+      end
+
+      it 'calls the UsersFinder' do
+        expect(UsersFinder).to receive(:new).with(user, search: 'foo').and_call_original
+
+        results.objects('users')
       end
     end
   end
@@ -239,5 +255,29 @@ describe Gitlab::SearchResults do
     project.project_feature.update!(merge_requests_access_level: ProjectFeature::PRIVATE)
 
     expect(results.objects('merge_requests')).not_to include merge_request
+  end
+
+  context 'milestones' do
+    it 'returns correct set of milestones' do
+      private_project_1 = create(:project, :private)
+      private_project_2 = create(:project, :private)
+      internal_project = create(:project, :internal)
+      public_project_1 = create(:project, :public)
+      public_project_2 = create(:project, :public, :issues_disabled, :merge_requests_disabled)
+      private_project_1.add_developer(user)
+      # milestones that should not be visible
+      create(:milestone, project: private_project_2, title: 'Private project without access milestone')
+      create(:milestone, project: public_project_2, title: 'Public project with milestones disabled milestone')
+      # milestones that should be visible
+      milestone_1 = create(:milestone, project: private_project_1, title: 'Private project with access milestone', state: 'closed')
+      milestone_2 = create(:milestone, project: internal_project, title: 'Internal project milestone')
+      milestone_3 = create(:milestone, project: public_project_1, title: 'Public project with milestones enabled milestone')
+      # Global search scope takes user authorized projects, internal projects and public projects.
+      limit_projects = ProjectsFinder.new(current_user: user).execute
+
+      milestones = described_class.new(user, limit_projects, 'milestone').objects('milestones')
+
+      expect(milestones).to match_array([milestone_1, milestone_2, milestone_3])
+    end
   end
 end

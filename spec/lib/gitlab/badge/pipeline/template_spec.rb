@@ -59,6 +59,16 @@ describe Gitlab::Badge::Pipeline::Template do
       end
     end
 
+    context 'when status is preparing' do
+      before do
+        allow(badge).to receive(:status).and_return('preparing')
+      end
+
+      it 'has expected color' do
+        expect(template.value_color).to eq '#dfb317'
+      end
+    end
+
     context 'when status is unknown' do
       before do
         allow(badge).to receive(:status).and_return('unknown')

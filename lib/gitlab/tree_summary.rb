@@ -95,7 +95,7 @@ module Gitlab
     end
 
     def cache_commit(commit)
-      return nil unless commit.present?
+      return unless commit.present?
 
       resolved_commits[commit.id] ||= commit
     end

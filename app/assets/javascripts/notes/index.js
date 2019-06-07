@@ -1,4 +1,6 @@
 import Vue from 'vue';
+import { isEE } from '~/lib/utils/common_utils';
+import initNoteStats from 'ee_else_ce/event_tracking/notes';
 import notesApp from './components/notes_app.vue';
 import initDiscussionFilters from './discussion_filters';
 import createStore from './stores';
@@ -6,9 +8,8 @@ import createStore from './stores';
 document.addEventListener('DOMContentLoaded', () => {
   const store = createStore();
 
-  initDiscussionFilters(store);
-
-  return new Vue({
+  // eslint-disable-next-line no-new
+  new Vue({
     el: '#js-vue-notes',
     components: {
       notesApp,
@@ -39,6 +40,11 @@ document.addEventListener('DOMContentLoaded', () => {
         notesData: JSON.parse(notesDataset.notesData),
       };
     },
+    mounted() {
+      if (isEE) {
+        initNoteStats();
+      }
+    },
     render(createElement) {
       return createElement('notes-app', {
         props: {
@@ -49,4 +55,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     },
   });
+
+  initDiscussionFilters(store);
 });

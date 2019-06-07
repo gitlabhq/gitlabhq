@@ -34,7 +34,7 @@ export default {
       format: 'yyyy-mm-dd',
       container: this.$el,
       defaultDate: this.selectedDate,
-      setDefaultDate: !!this.selectedDate,
+      setDefaultDate: Boolean(this.selectedDate),
       minDate: this.minDate,
       maxDate: this.maxDate,
       parse: dateString => parsePikadayDate(dateString),

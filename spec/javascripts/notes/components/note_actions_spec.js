@@ -58,6 +58,7 @@ describe('noteActions', () => {
 
     it('should render emoji link', () => {
       expect(wrapper.find('.js-add-award').exists()).toBe(true);
+      expect(wrapper.find('.js-add-award').attributes('data-position')).toBe('right');
     });
 
     describe('actions dropdown', () => {
@@ -65,7 +66,7 @@ describe('noteActions', () => {
         expect(wrapper.find('.js-note-edit').exists()).toBe(true);
       });
 
-      it('should be possible to report abuse to GitLab', () => {
+      it('should be possible to report abuse to admin', () => {
         expect(wrapper.find(`a[href="${props.reportAbusePath}"]`).exists()).toBe(true);
       });
 
@@ -128,87 +129,33 @@ describe('noteActions', () => {
     });
   });
 
-  describe('with feature flag replyToIndividualNotes enabled', () => {
+  describe('for showReply = true', () => {
     beforeEach(() => {
-      gon.features = {
-        replyToIndividualNotes: true,
-      };
-    });
-
-    afterEach(() => {
-      gon.features = {};
-    });
-
-    describe('for showReply = true', () => {
-      beforeEach(() => {
-        wrapper = shallowMountNoteActions({
-          ...props,
-          showReply: true,
-        });
-      });
-
-      it('shows a reply button', () => {
-        const replyButton = wrapper.find({ ref: 'replyButton' });
-
-        expect(replyButton.exists()).toBe(true);
+      wrapper = shallowMountNoteActions({
+        ...props,
+        showReply: true,
       });
     });
 
-    describe('for showReply = false', () => {
-      beforeEach(() => {
-        wrapper = shallowMountNoteActions({
-          ...props,
-          showReply: false,
-        });
-      });
+    it('shows a reply button', () => {
+      const replyButton = wrapper.find({ ref: 'replyButton' });
 
-      it('does not show a reply button', () => {
-        const replyButton = wrapper.find({ ref: 'replyButton' });
-
-        expect(replyButton.exists()).toBe(false);
-      });
+      expect(replyButton.exists()).toBe(true);
     });
   });
 
-  describe('with feature flag replyToIndividualNotes disabled', () => {
+  describe('for showReply = false', () => {
     beforeEach(() => {
-      gon.features = {
-        replyToIndividualNotes: false,
-      };
-    });
-
-    afterEach(() => {
-      gon.features = {};
-    });
-
-    describe('for showReply = true', () => {
-      beforeEach(() => {
-        wrapper = shallowMountNoteActions({
-          ...props,
-          showReply: true,
-        });
-      });
-
-      it('does not show a reply button', () => {
-        const replyButton = wrapper.find({ ref: 'replyButton' });
-
-        expect(replyButton.exists()).toBe(false);
+      wrapper = shallowMountNoteActions({
+        ...props,
+        showReply: false,
       });
     });
 
-    describe('for showReply = false', () => {
-      beforeEach(() => {
-        wrapper = shallowMountNoteActions({
-          ...props,
-          showReply: false,
-        });
-      });
+    it('does not show a reply button', () => {
+      const replyButton = wrapper.find({ ref: 'replyButton' });
 
-      it('does not show a reply button', () => {
-        const replyButton = wrapper.find({ ref: 'replyButton' });
-
-        expect(replyButton.exists()).toBe(false);
-      });
+      expect(replyButton.exists()).toBe(false);
     });
   });
 });

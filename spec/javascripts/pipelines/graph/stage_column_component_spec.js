@@ -35,6 +35,7 @@ describe('stage column component', () => {
     component = mountComponent(StageColumnComponent, {
       title: 'foo',
       groups: mockGroups,
+      hasTriggeredBy: false,
     });
   });
 
@@ -54,18 +55,68 @@ describe('stage column component', () => {
             id: 4259,
             name: '<img src=x onerror=alert(document.domain)>',
             status: {
-              icon: 'icon_status_success',
+              icon: 'status_success',
               label: 'success',
               tooltip: '<img src=x onerror=alert(document.domain)>',
             },
           },
         ],
         title: 'test',
+        hasTriggeredBy: false,
       });
 
       expect(component.$el.querySelector('.builds-container li').getAttribute('id')).toEqual(
         'ci-badge-&lt;img src=x onerror=alert(document.domain)&gt;',
       );
+    });
+  });
+
+  describe('with action', () => {
+    it('renders action button', () => {
+      component = mountComponent(StageColumnComponent, {
+        groups: [
+          {
+            id: 4259,
+            name: '<img src=x onerror=alert(document.domain)>',
+            status: {
+              icon: 'status_success',
+              label: 'success',
+              tooltip: '<img src=x onerror=alert(document.domain)>',
+            },
+          },
+        ],
+        title: 'test',
+        hasTriggeredBy: false,
+        action: {
+          icon: 'play',
+          title: 'Play all',
+          path: 'action',
+        },
+      });
+
+      expect(component.$el.querySelector('.js-stage-action')).not.toBeNull();
+    });
+  });
+
+  describe('without action', () => {
+    it('does not render action button', () => {
+      component = mountComponent(StageColumnComponent, {
+        groups: [
+          {
+            id: 4259,
+            name: '<img src=x onerror=alert(document.domain)>',
+            status: {
+              icon: 'status_success',
+              label: 'success',
+              tooltip: '<img src=x onerror=alert(document.domain)>',
+            },
+          },
+        ],
+        title: 'test',
+        hasTriggeredBy: false,
+      });
+
+      expect(component.$el.querySelector('.js-stage-action')).toBeNull();
     });
   });
 });

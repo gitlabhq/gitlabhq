@@ -4,7 +4,7 @@ require 'nokogiri'
 
 module MarkupHelper
   include ActionView::Helpers::TagHelper
-  include ActionView::Context
+  include ::Gitlab::ActionViewOutput::Context
 
   def plain?(filename)
     Gitlab::MarkupHelper.plain?(filename)
@@ -74,7 +74,7 @@ module MarkupHelper
   # the tag contents are truncated without removing the closing tag.
   def first_line_in_markdown(object, attribute, max_chars = nil, options = {})
     md = markdown_field(object, attribute, options)
-    return nil unless md.present?
+    return unless md.present?
 
     tags = %w(a gl-emoji b pre code p span)
     tags << 'img' if options[:allow_images]
@@ -83,7 +83,8 @@ module MarkupHelper
     text = sanitize(
       text,
       tags: tags,
-      attributes: Rails::Html::WhiteListSanitizer.allowed_attributes + ['style', 'data-src', 'data-name', 'data-unicode-version']
+      attributes: Rails::Html::WhiteListSanitizer.allowed_attributes +
+          %w(style data-src data-name data-unicode-version data-iid data-project-path data-mr-title)
     )
 
     # since <img> tags are stripped, this can leave empty <a> tags hanging around
@@ -241,9 +242,7 @@ module MarkupHelper
       node.remove if node.name == 'a' && node.content.blank?
     end
 
-    # Use `Loofah` directly instead of `sanitize`
-    # as we still use the `rails-deprecated_sanitizer` gem
-    Loofah.fragment(text).scrub!(scrubber).to_s
+    sanitize text, scrubber: scrubber
   end
 
   def markdown_toolbar_button(options = {})

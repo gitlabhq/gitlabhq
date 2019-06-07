@@ -27,7 +27,7 @@ class SshHostKey
 
   def self.find_by(opts = {})
     opts = HashWithIndifferentAccess.new(opts)
-    return nil unless opts.key?(:id)
+    return unless opts.key?(:id)
 
     project_id, url = opts[:id].split(':', 2)
     project = Project.find_by(id: project_id)

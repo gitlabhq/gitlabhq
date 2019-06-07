@@ -11,8 +11,8 @@ module Gitlab
           ParserError = Class.new(StandardError)
           InvalidStreamError = Class.new(StandardError)
 
-          VERSION_PATTERN = /^[\w\s]+(\d+\.\d+\.\d+)/
-          INVALID_PATH_PATTERN = %r{(^\.?\.?/)|(/\.?\.?/)}
+          VERSION_PATTERN = /^[\w\s]+(\d+\.\d+\.\d+)/.freeze
+          INVALID_PATH_PATTERN = %r{(^\.?\.?/)|(/\.?\.?/)}.freeze
 
           attr_reader :stream, :path, :full_version
 
@@ -98,12 +98,12 @@ module Gitlab
 
           def read_uint32(gz)
             binary = gz.read(4)
-            binary.unpack('L>')[0] if binary
+            binary.unpack1('L>') if binary
           end
 
           def read_string(gz)
             string_size = read_uint32(gz)
-            return nil unless string_size
+            return unless string_size
 
             gz.read(string_size)
           end

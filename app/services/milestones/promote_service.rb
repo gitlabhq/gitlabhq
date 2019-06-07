@@ -26,17 +26,15 @@ module Milestones
 
     private
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def milestone_ids_for_merge(group_milestone)
       # Pluck need to be used here instead of select so the array of ids
       # is persistent after old milestones gets deleted.
       @milestone_ids_for_merge ||= begin
         search_params = { title: group_milestone.title, project_ids: group_project_ids, state: 'all' }
         milestones = MilestonesFinder.new(search_params).execute
-        milestones.pluck(:id)
+        milestones.pluck_primary_key
       end
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     def move_children_to_group_milestone(group_milestone)
       milestone_ids_for_merge(group_milestone).in_groups_of(100, false) do |milestone_ids|
@@ -45,7 +43,7 @@ module Milestones
     end
 
     def check_project_milestone!(milestone)
-      raise_error('Only project milestones can be promoted.') unless milestone.project_milestone?
+      raise_error(s_('PromoteMilestone|Only project milestones can be promoted.')) unless milestone.project_milestone?
     end
 
     def clone_project_milestone(milestone)
@@ -73,7 +71,7 @@ module Milestones
     # rubocop: enable CodeReuse/ActiveRecord
 
     def group
-      @group ||= parent.group || raise_error('Project does not belong to a group.')
+      @group ||= parent.group || raise_error(s_('PromoteMilestone|Project does not belong to a group.'))
     end
 
     # rubocop: disable CodeReuse/ActiveRecord
@@ -87,7 +85,7 @@ module Milestones
     end
 
     def raise_error(message)
-      raise PromoteMilestoneError, "Promotion failed - #{message}"
+      raise PromoteMilestoneError, s_("PromoteMilestone|Promotion failed - %{message}") % { message: message }
     end
   end
 end

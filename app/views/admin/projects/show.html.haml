@@ -73,16 +73,11 @@
               = @project.repository.relative_path
 
           %li
-            %span.light Storage used:
-            %strong= storage_counter(@project.statistics.storage_size)
-            (
-            = storage_counter(@project.statistics.repository_size)
-            repository,
-            = storage_counter(@project.statistics.build_artifacts_size)
-            build artifacts,
-            = storage_counter(@project.statistics.lfs_objects_size)
-            LFS
-            )
+            %span.light= _('Storage:')
+            %strong= storage_counter(@project.statistics&.storage_size)
+            - if @project.statistics
+              = surround '(', ')' do
+                = storage_counters_details(@project.statistics)
 
           %li
             %span.light last commit:
@@ -105,6 +100,8 @@
             %span.light archived:
             %strong project is read-only
 
+        = render_if_exists "shared_runner_status", project: @project
+
         %li
           %span.light access:
           %strong
@@ -120,7 +117,8 @@
       .card-body
         = form_for @project, url: transfer_admin_project_path(@project), method: :put do |f|
           .form-group.row
-            = f.label :new_namespace_id, "Namespace", class: 'col-form-label col-sm-3'
+            .col-sm-3.col-form-label
+              = f.label :new_namespace_id, "Namespace"
             .col-sm-9
               .dropdown
                 = dropdown_toggle('Search for Namespace', { toggle: 'dropdown', field_name: 'new_namespace_id' }, { toggle_class: 'js-namespace-select large' })

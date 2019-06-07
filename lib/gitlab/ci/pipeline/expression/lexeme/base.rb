@@ -15,9 +15,13 @@ module Gitlab
             end
 
             def self.scan(scanner)
-              if scanner.scan(self::PATTERN)
+              if scanner.scan(pattern)
                 Expression::Token.new(scanner.matched, self)
               end
+            end
+
+            def self.pattern
+              self::PATTERN
             end
           end
         end

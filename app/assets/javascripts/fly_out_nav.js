@@ -1,4 +1,5 @@
 import bp from './breakpoints';
+import { SIDEBAR_COLLAPSED_CLASS } from './contextual_sidebar';
 
 const HIDE_INTERVAL_TIMEOUT = 300;
 const IS_OVER_CLASS = 'is-over';
@@ -29,7 +30,7 @@ const setHeaderHeight = () => {
 };
 
 export const isSidebarCollapsed = () =>
-  sidebar && sidebar.classList.contains('sidebar-collapsed-desktop');
+  sidebar && sidebar.classList.contains(SIDEBAR_COLLAPSED_CLASS);
 
 export const canShowActiveSubItems = el => {
   if (el.classList.contains('active') && !isSidebarCollapsed()) {

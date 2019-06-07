@@ -7,7 +7,7 @@ scheduling into milestones. Labelling is a task for everyone.
 Most issues will have labels for at least one of the following:
 
 - Type: ~feature, ~bug, ~customer, etc.
-- Subject: ~wiki, ~"container registry", ~ldap, ~api, ~frontend, etc.
+- Subject: ~wiki, ~"Container Registry", ~ldap, ~api, ~frontend, etc.
 - Team: ~Plan, ~Manage, ~Quality, etc.
 - Stage: ~"devops:plan", ~"devops:create", etc.
 - Release Scoping: ~Deliverable, ~Stretch, ~"Next Patch Release"
@@ -44,7 +44,7 @@ Subject labels are labels that define what area or feature of GitLab this issue
 hits. They are not always necessary, but very convenient.
 
 Examples of subject labels are ~wiki, ~ldap, ~api,
-~issues, ~"merge requests", ~labels, and ~"container registry".
+~issues, ~"merge requests", ~labels, and ~"Container Registry".
 
 If you are an expert in a particular area, it makes it easier to find issues to
 work on. You can also subscribe to those labels to receive an email each time an
@@ -62,10 +62,12 @@ The current team labels are:
 
 - ~Configure
 - ~Create
+- ~Defend
 - ~Distribution
 - ~Documentation
 - ~Geo
 - ~Gitaly
+- ~Growth
 - ~Manage
 - ~Monitor
 - ~Plan
@@ -90,18 +92,21 @@ Stage labels specify which [DevOps stage][devops-stages] the issue belongs to.
 
 The current stage labels are:
 
-- ~"devops:manage"
-- ~"devops:plan"
-- ~"devops:create"
-- ~"devops:verify"
-- ~"devops:package"
-- ~"devops:release"
-- ~"devops:configure"
-- ~"devops:monitor"
-- ~"devops:secure"
+- ~"devops::manage"
+- ~"devops::plan"
+- ~"devops::create"
+- ~"devops::verify"
+- ~"devops::package"
+- ~"devops::release"
+- ~"devops::configure"
+- ~"devops::monitor"
+- ~"devops::secure"
+- ~"devops::defend"
+- ~"devops::growth"
+- ~"devops::enablement"
 
-These labels should be mutually exclusive. If an issue belongs to multiple
-stages, the most relevant should be used.
+These labels are [scoped labels](../../user/project/labels.md#scoped-labels-premium)
+and thus are mutually exclusive.
 
 They differ from the [Team labels](#team-labels) because teams may work on
 issues outside their stage.
@@ -116,6 +121,25 @@ The Stage labels are used to generate the [direction pages][direction-pages] aut
 
 [devops-stages]: https://about.gitlab.com/direction/#devops-stages
 [direction-pages]: https://about.gitlab.com/direction/
+
+## Group labels
+
+Group labels specify which [groups][structure-groups] the issue belongs to.
+
+Examples include:
+
+- ~"group::control"
+- ~"group::editor"
+
+These labels are [scoped labels](../../user/project/labels.md#scoped-labels-premium)
+and thus are mutually exclusive.
+
+Groups are nested beneath a particular stage, so only one stage label and one group label
+can be applied to a single issue. You can find the groups listed in the
+[Product Categories pages][product-categories].
+
+[structure-groups]: https://about.gitlab.com/company/team/structure/#groups
+[product-categories]: https://about.gitlab.com/handbook/product/categories/
 
 ## Release Scoping labels
 
@@ -336,13 +360,14 @@ addressed.
 
 In order to track things that can be improved in GitLab's codebase,
 we use the ~"technical debt" label in [GitLab's issue tracker][ce-tracker].
-For user experience improvements, we use the ~"UX debt" label.
+For missed user experience requirements, we use the ~"UX debt" label.
 
 These labels should be added to issues that describe things that can be improved,
 shortcuts that have been taken, features that need additional attention, and all
 other things that have been left behind due to high velocity of development.
 For example, code that needs refactoring should use the ~"technical debt" label,
-user experience refinements should use the ~"UX debt" label.
+something that didn't ship according to our Design System guidelines should
+use the ~"UX debt" label.
 
 Everyone can create an issue, though you may need to ask for adding a specific
 label, if you do not have permissions to do it by yourself. Additional labels

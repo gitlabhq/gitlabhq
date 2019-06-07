@@ -2,6 +2,7 @@
 import { GlLink, GlTooltipDirective } from '@gitlab/ui';
 import _ from 'underscore';
 import { __, sprintf } from '~/locale';
+import PipelineLink from '~/vue_shared/components/ci_pipeline_link.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import popover from '~/vue_shared/directives/popover';
 
@@ -19,6 +20,7 @@ export default {
   components: {
     UserAvatarLink,
     GlLink,
+    PipelineLink,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -59,19 +61,13 @@ export default {
 };
 </script>
 <template>
-  <div class="table-section section-15 d-none d-sm-none d-md-block pipeline-tags">
-    <gl-link :href="pipeline.path" class="js-pipeline-url-link">
-      <span class="pipeline-id">#{{ pipeline.id }}</span>
-    </gl-link>
-    <span>by</span>
-    <user-avatar-link
-      v-if="user"
-      :link-href="user.path"
-      :img-src="user.avatar_url"
-      :tooltip-text="user.name"
-      class="js-pipeline-url-user"
+  <div class="table-section section-10 d-none d-sm-none d-md-block pipeline-tags section-wrap">
+    <pipeline-link
+      :href="pipeline.path"
+      :pipeline-id="pipeline.id"
+      :pipeline-iid="pipeline.iid"
+      class="js-pipeline-url-link"
     />
-    <span v-if="!user" class="js-pipeline-url-api api"> API </span>
     <div class="label-container">
       <span
         v-if="pipeline.flags.latest"
@@ -110,12 +106,12 @@ export default {
         {{ __('stuck') }}
       </span>
       <span
-        v-if="pipeline.flags.merge_request"
+        v-if="pipeline.flags.detached_merge_request_pipeline"
         v-gl-tooltip
-        :title="__('This pipeline is run in a merge request context')"
-        class="js-pipeline-url-mergerequest badge badge-info"
+        :title="__('This pipeline is run on the source branch')"
+        class="js-pipeline-url-detached badge badge-info"
       >
-        {{ __('merge request') }}
+        {{ __('detached') }}
       </span>
     </div>
   </div>

@@ -1,5 +1,0 @@
----
-title: Optimize Redis usage in User::ActivityService
-merge_request: 25005
-author:
-type: performance

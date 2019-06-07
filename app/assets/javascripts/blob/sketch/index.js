@@ -1,5 +1,6 @@
 import JSZip from 'jszip';
 import JSZipUtils from 'jszip-utils';
+import { __ } from '~/locale';
 
 export default class SketchLoader {
   constructor(container) {
@@ -56,10 +57,10 @@ export default class SketchLoader {
     const errorMsg = document.createElement('p');
 
     errorMsg.className = 'prepend-top-default append-bottom-default text-center';
-    errorMsg.textContent = `
+    errorMsg.textContent = __(`
       Cannot show preview. For previews on sketch files, they must have the file format
       introduced by Sketch version 43 and above.
-    `;
+    `);
     this.container.appendChild(errorMsg);
 
     this.removeLoadingIcon();

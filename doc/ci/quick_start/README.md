@@ -1,8 +1,17 @@
+---
+type: reference
+---
+
 # Getting started with GitLab CI/CD
 
->**Note:** Starting from version 8.0, GitLab [Continuous Integration][ci] (CI)
+NOTE: **Note:**
+Starting from version 8.0, GitLab [Continuous Integration][ci] (CI)
 is fully integrated into GitLab itself and is [enabled] by default on all
 projects.
+
+NOTE: **Note:**
+Please keep in mind that only project Maintainers and Admin users have
+the permissions to access a project's settings.
 
 GitLab offers a [continuous integration][ci] service. If you
 [add a `.gitlab-ci.yml` file][yaml] to the root directory of your repository,
@@ -35,11 +44,12 @@ project's **Pipelines** page.
 
 ---
 
-This guide assumes that you:
+This guide assumes that you have:
 
-- have a working GitLab instance of version 8.0+r or are using
-  [GitLab.com](https://gitlab.com)
-- have a project in GitLab that you would like to use CI for
+- A working GitLab instance of version 8.0+r or are using
+  [GitLab.com](https://gitlab.com).
+- A project in GitLab that you would like to use CI for.
+- Maintainer or owner access to the project
 
 Let's break it down to pieces and work on solving the GitLab CI puzzle.
 
@@ -73,6 +83,8 @@ You need to create a file named `.gitlab-ci.yml` in the root directory of your
 repository. Below is an example for a Ruby on Rails project.
 
 ```yaml
+image: "ruby:2.5"
+
 before_script:
   - apt-get update -qq && apt-get install -y -qq sqlite3 libsqlite3-dev nodejs
   - ruby -v
@@ -105,7 +117,7 @@ Jobs are used to create jobs, which are then picked by
 What is important is that each job is run independently from each other.
 
 If you want to check whether the `.gitlab-ci.yml` of your project is valid, there is a
-Lint tool under the page `/ci/lint` of your project namespace. You can also find
+Lint tool under the page `/-/ci/lint` of your project namespace. You can also find
 a "CI Lint" button to go to this page under **CI/CD ➔ Pipelines** and
 **Pipelines ➔ Jobs** in your project.
 
@@ -127,7 +139,7 @@ Now if you go to the **Pipelines** page you will see that the pipeline is
 pending.
 
 NOTE: **Note:**
-If you have a [mirrored repository where GitLab pulls from](https://docs.gitlab.com/ee/workflow/repository_mirroring.html#pulling-from-a-remote-repository-starter),
+If you have a [mirrored repository where GitLab pulls from](../../workflow/repository_mirroring.md#pulling-from-a-remote-repository-starter),
 you may need to enable pipeline triggering in your project's
 **Settings > Repository > Pull from a remote repository > Trigger pipelines for mirror updates**.
 

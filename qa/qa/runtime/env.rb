@@ -53,7 +53,7 @@ module QA
 
       # specifies token that can be used for the api
       def personal_access_token
-        @personal_access_token ||= ENV['PERSONAL_ACCESS_TOKEN']
+        @personal_access_token ||= ENV['GITLAB_QA_ACCESS_TOKEN']
       end
 
       def remote_grid
@@ -134,6 +134,10 @@ module QA
 
       def gitlab_qa_password_2
         ENV['GITLAB_QA_PASSWORD_2']
+      end
+
+      def knapsack?
+        !!(ENV['KNAPSACK_GENERATE_REPORT'] || ENV['KNAPSACK_REPORT_PATH'] || ENV['KNAPSACK_TEST_FILE_PATTERN'])
       end
 
       def ldap_username

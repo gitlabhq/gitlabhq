@@ -7,9 +7,7 @@ module API
 
     before { authenticate! }
 
-    EVENTABLE_TYPES = [Issue, MergeRequest].freeze
-
-    EVENTABLE_TYPES.each do |eventable_type|
+    Helpers::ResourceLabelEventsHelpers.eventable_types.each do |eventable_type|
       parent_type = eventable_type.parent_class.to_s.underscore
       eventables_str = eventable_type.to_s.underscore.pluralize
 

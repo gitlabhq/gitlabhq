@@ -23,13 +23,13 @@ describe API::ProjectMilestones do
     end
 
     it 'returns 404 response when the project does not exists' do
-      delete api("/projects/999/milestones/#{milestone.id}", user)
+      delete api("/projects/0/milestones/#{milestone.id}", user)
 
       expect(response).to have_gitlab_http_status(404)
     end
 
     it 'returns 404 response when the milestone does not exists' do
-      delete api("/projects/#{project.id}/milestones/999", user)
+      delete api("/projects/#{project.id}/milestones/0", user)
 
       expect(response).to have_gitlab_http_status(404)
     end
@@ -47,6 +47,76 @@ describe API::ProjectMilestones do
 
       put api("/projects/#{project.id}/milestones/#{milestone.id}", user),
           params: { state_event: 'close' }
+    end
+  end
+
+  describe 'POST /projects/:id/milestones/:milestone_id/promote' do
+    let(:group) { create(:group) }
+
+    before do
+      project.update(namespace: group)
+    end
+
+    context 'when user does not have permission to promote milestone' do
+      before do
+        group.add_guest(user)
+      end
+
+      it 'returns 403' do
+        post api("/projects/#{project.id}/milestones/#{milestone.id}/promote", user)
+
+        expect(response).to have_gitlab_http_status(403)
+      end
+    end
+
+    context 'when user has permission' do
+      before do
+        group.add_developer(user)
+      end
+
+      it 'returns 200' do
+        post api("/projects/#{project.id}/milestones/#{milestone.id}/promote", user)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(group.milestones.first.title).to eq(milestone.title)
+      end
+
+      it 'returns 200 for closed milestone' do
+        post api("/projects/#{project.id}/milestones/#{closed_milestone.id}/promote", user)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(group.milestones.first.title).to eq(closed_milestone.title)
+      end
+    end
+
+    context 'when no such resources' do
+      before do
+        group.add_developer(user)
+      end
+
+      it 'returns 404 response when the project does not exist' do
+        post api("/projects/0/milestones/#{milestone.id}/promote", user)
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+
+      it 'returns 404 response when the milestone does not exist' do
+        post api("/projects/#{project.id}/milestones/0/promote", user)
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
+
+    context 'when project does not belong to group' do
+      before do
+        project.update(namespace: user.namespace)
+      end
+
+      it 'returns 403' do
+        post api("/projects/#{project.id}/milestones/#{milestone.id}/promote", user)
+
+        expect(response).to have_gitlab_http_status(403)
+      end
     end
   end
 end

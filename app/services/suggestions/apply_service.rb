@@ -7,7 +7,7 @@ module Suggestions
     end
 
     def execute(suggestion)
-      unless suggestion.appliable?
+      unless suggestion.appliable?(cached: false)
         return error('Suggestion is not appliable')
       end
 
@@ -15,7 +15,13 @@ module Suggestions
         return error('The file has been changed')
       end
 
-      params = file_update_params(suggestion)
+      diff_file = suggestion.diff_file
+
+      unless diff_file
+        return error('The file was not found')
+      end
+
+      params = file_update_params(suggestion, diff_file)
       result = ::Files::UpdateService.new(suggestion.project, @current_user, params).execute
 
       if result[:status] == :success
@@ -38,8 +44,8 @@ module Suggestions
       suggestion.position.head_sha == suggestion.noteable.source_branch_sha
     end
 
-    def file_update_params(suggestion)
-      blob = suggestion.diff_file.new_blob
+    def file_update_params(suggestion, diff_file)
+      blob = diff_file.new_blob
       file_path = suggestion.file_path
       branch_name = suggestion.branch
       file_content = new_file_content(suggestion, blob)

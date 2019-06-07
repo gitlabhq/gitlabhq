@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe QA::Scenario::Actable do
   subject do
     Class.new do

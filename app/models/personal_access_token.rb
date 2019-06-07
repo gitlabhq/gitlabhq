@@ -1,12 +1,10 @@
 # frozen_string_literal: true
 
-class PersonalAccessToken < ActiveRecord::Base
+class PersonalAccessToken < ApplicationRecord
   include Expirable
-  include IgnorableColumn
   include TokenAuthenticatable
 
   add_authentication_token_field :token, digest: true
-  ignore_column :token
 
   REDIS_EXPIRY_TIME = 3.minutes
 
@@ -58,7 +56,7 @@ class PersonalAccessToken < ActiveRecord::Base
   protected
 
   def validate_scopes
-    unless revoked || scopes.all? { |scope| Gitlab::Auth.available_scopes.include?(scope.to_sym) }
+    unless revoked || scopes.all? { |scope| Gitlab::Auth.all_available_scopes.include?(scope.to_sym) }
       errors.add :scopes, "can only contain available scopes"
     end
   end

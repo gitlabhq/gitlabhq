@@ -3,11 +3,6 @@
 module QA
   context 'Create' do
     describe 'Wiki management' do
-      def validate_content(content)
-        expect(page).to have_content('Wiki was successfully updated')
-        expect(page).to have_content(/#{content}/)
-      end
-
       it 'user creates, edits, clones, and pushes to the wiki' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
         Page::Main::Login.perform(&:sign_in_using_credentials)
@@ -20,7 +15,7 @@ module QA
 
         validate_content('My First Wiki Content')
 
-        Page::Project::Wiki::Edit.perform(&:go_to_edit_page)
+        Page::Project::Wiki::Edit.perform(&:click_edit)
         Page::Project::Wiki::New.perform do |page|
           page.set_content("My Second Wiki Content")
           page.save_changes
@@ -37,6 +32,11 @@ module QA
         Page::Project::Menu.perform(&:click_wiki)
 
         expect(page).to have_content('My Third Wiki Content')
+      end
+
+      def validate_content(content)
+        expect(page).to have_content('Wiki was successfully updated')
+        expect(page).to have_content(/#{content}/)
       end
     end
   end

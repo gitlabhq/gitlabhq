@@ -9,7 +9,7 @@ describe('Board component', () => {
   let el;
 
   beforeEach(done => {
-    loadFixtures('boards/show.html.raw');
+    loadFixtures('boards/show.html');
 
     el = document.createElement('div');
     document.body.appendChild(el);
@@ -102,5 +102,19 @@ describe('Board component', () => {
         done();
       })
       .catch(done.fail);
+  });
+
+  it('does render add issue button', () => {
+    expect(vm.$el.querySelector('.issue-count-badge-add-button')).not.toBeNull();
+  });
+
+  it('does not render add issue button when list type is blank', done => {
+    vm.list.type = 'blank';
+
+    Vue.nextTick(() => {
+      expect(vm.$el.querySelector('.issue-count-badge-add-button')).toBeNull();
+
+      done();
+    });
   });
 });

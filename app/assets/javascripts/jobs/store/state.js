@@ -25,7 +25,6 @@ export default () => ({
   traceState: null,
 
   // sidebar dropdown & list of jobs
-  isLoadingStages: false,
   isLoadingJobs: false,
   selectedStage: '',
   stages: [],

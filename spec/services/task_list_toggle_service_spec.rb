@@ -113,4 +113,25 @@ describe TaskListToggleService do
 
     expect(toggler.execute).to be_falsey
   end
+
+  it 'properly handles a GitLab blockquote' do
+    markdown =
+      <<-EOT.strip_heredoc
+      >>>
+      gitlab blockquote
+      >>>
+
+      * [ ] Task 1
+      * [x] Task 2
+    EOT
+
+    markdown_html = Banzai::Pipeline::FullPipeline.call(markdown, project: nil)[:output].to_html
+    toggler = described_class.new(markdown, markdown_html,
+                                  toggle_as_checked: true,
+                                  line_source: '* [ ] Task 1', line_number: 5)
+
+    expect(toggler.execute).to be_truthy
+    expect(toggler.updated_markdown.lines[4]).to eq "* [x] Task 1\n"
+    expect(toggler.updated_markdown_html).to include('disabled checked> Task 1')
+  end
 end

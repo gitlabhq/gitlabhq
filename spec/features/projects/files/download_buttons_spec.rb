@@ -30,7 +30,7 @@ describe 'Projects > Files > Download buttons in files tree' do
     it 'shows download artifacts button' do
       href = latest_succeeded_project_artifacts_path(project, "#{project.default_branch}/download", job: 'build')
 
-      expect(page).to have_link "Download '#{build.name}'", href: href
+      expect(page).to have_link build.name, href: href
     end
   end
 end

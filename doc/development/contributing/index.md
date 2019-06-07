@@ -3,9 +3,6 @@
 Thank you for your interest in contributing to GitLab. This guide details how
 to contribute to GitLab in a way that is easy for everyone.
 
-We want to create a welcoming environment for everyone who is interested in contributing.
-Please visit our [Code of Conduct page](https://about.gitlab.com/contributing/code-of-conduct) to learn more about our commitment to an open and welcoming environment.
-
 For a first-time step-by-step guide to the contribution process, please see
 ["Contributing to GitLab"](https://about.gitlab.com/contributing/).
 
@@ -33,8 +30,8 @@ vulnerabilities.
 
 ## Code of conduct
 
-Our code of conduct can be found on the
-["Contributing to GitLab"](https://about.gitlab.com/contributing/) page.
+We want to create a welcoming environment for everyone who is interested in contributing.
+Please visit our [Code of Conduct page](https://about.gitlab.com/community/contribute/code-of-conduct/) to learn more about our commitment to an open and welcoming environment.
 
 ## Closing policy for issues and merge requests
 
@@ -52,9 +49,12 @@ for audiences of all ages.
 If a contributor is no longer actively working on a submitted merge request
 we can decide that the merge request will be finished by one of our
 [Merge request coaches][team] or close the merge request. We make this decision
-based on how important the change is for our product vision. If a Merge request
+based on how important the change is for our product vision. If a merge request
 coach is going to finish the merge request we assign the
-~"coach will finish" label.
+~"coach will finish" label. When a team member picks up a community contribution,
+we credit the original author by adding a changelog entry crediting the author
+and optionally include the original author on at least one of the commits
+within the MR.
 
 ## Helping others
 
@@ -87,7 +87,7 @@ Sometimes style guides will be followed but the code will lack structural integr
 
 GitLab will do its best to review community contributions as quickly as possible. Specially appointed developers review community contributions daily. You may take a look at the [team page](https://about.gitlab.com/team/) for the merge request coach who specializes in the type of code you have written and mention them in the merge request.  For example, if you have written some JavaScript in your code then you should mention the frontend merge request coach. If your code has multiple disciplines you may mention multiple merge request coaches.
 
-GitLab receives a lot of community contributions, so if your code has not been reviewed within 4 days of its initial submission feel free to re-mention the appropriate merge request coach.
+GitLab receives a lot of community contributions, so if your code has not been reviewed within two days (excluding weekend and public holidays) of its initial submission feel free to re-mention the appropriate merge request coach.
 
 When submitting code to GitLab, you may feel that your contribution requires the aid of an external library. If your code includes an external library please provide a link to the library, as well as reasons for including it.
 
@@ -119,6 +119,7 @@ This [documentation](merge_request_workflow.md) outlines the current merge reque
 - [Merge request guidelines](merge_request_workflow.md#merge-request-guidelines)
 - [Contribution acceptance criteria](merge_request_workflow.md#contribution-acceptance-criteria)
 - [Definition of done](merge_request_workflow.md#definition-of-done)
+- [Dependencies](merge_request_workflow.md#dependencies)
 
 ## Style guides
 

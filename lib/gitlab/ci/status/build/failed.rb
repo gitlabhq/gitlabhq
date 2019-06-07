@@ -15,7 +15,8 @@ module Gitlab
             runner_unsupported: 'unsupported runner',
             stale_schedule: 'stale schedule',
             job_execution_timeout: 'job execution timeout',
-            archived_failure: 'archived failure'
+            archived_failure: 'archived failure',
+            unmet_prerequisites: 'unmet prerequisites'
           }.freeze
 
           private_constant :REASONS

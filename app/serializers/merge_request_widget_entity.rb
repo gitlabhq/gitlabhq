@@ -9,7 +9,11 @@ class MergeRequestWidgetEntity < IssuableEntity
   expose :merge_params
   expose :merge_status
   expose :merge_user_id
-  expose :merge_when_pipeline_succeeds
+  expose :auto_merge_enabled
+  expose :auto_merge_strategy
+  expose :available_auto_merge_strategies do |merge_request|
+    AutoMergeService.new(merge_request.project, current_user).available_strategies(merge_request) # rubocop: disable CodeReuse/ServiceClass
+  end
   expose :source_branch
   expose :source_branch_protected do |merge_request|
     merge_request.source_project.present? && ProtectedBranch.protected?(merge_request.source_project, merge_request.source_branch)
@@ -20,6 +24,7 @@ class MergeRequestWidgetEntity < IssuableEntity
   end
   expose :squash
   expose :target_branch
+  expose :target_branch_sha
   expose :target_project_id
   expose :target_project_full_path do |merge_request|
     merge_request.project&.full_path
@@ -181,8 +186,8 @@ class MergeRequestWidgetEntity < IssuableEntity
     presenter(merge_request).remove_wip_path
   end
 
-  expose :cancel_merge_when_pipeline_succeeds_path do |merge_request|
-    presenter(merge_request).cancel_merge_when_pipeline_succeeds_path
+  expose :cancel_auto_merge_path do |merge_request|
+    presenter(merge_request).cancel_auto_merge_path
   end
 
   expose :create_issue_to_resolve_discussions_path do |merge_request|
@@ -234,7 +239,7 @@ class MergeRequestWidgetEntity < IssuableEntity
   end
 
   expose :preview_note_path do |merge_request|
-    preview_markdown_path(merge_request.project, quick_actions_target_type: 'MergeRequest', quick_actions_target_id: merge_request.iid)
+    preview_markdown_path(merge_request.project, target_type: 'MergeRequest', target_id: merge_request.iid)
   end
 
   expose :merge_commit_path do |merge_request|
@@ -253,6 +258,10 @@ class MergeRequestWidgetEntity < IssuableEntity
 
   expose :conflicts_docs_path do |merge_request|
     presenter(merge_request).conflicts_docs_path
+  end
+
+  expose :merge_request_pipelines_docs_path do |merge_request|
+    presenter(merge_request).merge_request_pipelines_docs_path
   end
 
   private

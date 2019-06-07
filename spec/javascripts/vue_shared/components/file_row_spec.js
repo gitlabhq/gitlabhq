@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import FileRow from '~/vue_shared/components/file_row.vue';
+import FileRowExtra from '~/ide/components/file_row_extra.vue';
 import { file } from 'spec/ide/helpers';
 import mountComponent from '../../helpers/vue_mount_component_helper';
 
@@ -15,6 +16,10 @@ describe('File row component', () => {
   afterEach(() => {
     vm.$destroy();
   });
+
+  const findNewDropdown = () => vm.$el.querySelector('.ide-new-btn .dropdown');
+  const findNewDropdownButton = () => vm.$el.querySelector('.ide-new-btn .dropdown button');
+  const findFileRow = () => vm.$el.querySelector('.file-row');
 
   it('renders name', () => {
     createComponent({
@@ -83,5 +88,60 @@ describe('File row component', () => {
     });
 
     expect(vm.$el.querySelector('.js-file-row-header')).not.toBe(null);
+  });
+
+  describe('new dropdown', () => {
+    beforeEach(() => {
+      createComponent({
+        file: file('t5'),
+        level: 1,
+        extraComponent: FileRowExtra,
+      });
+    });
+
+    it('renders in extra component', () => {
+      expect(findNewDropdown()).not.toBe(null);
+    });
+
+    it('is hidden at start', () => {
+      expect(findNewDropdown()).not.toHaveClass('show');
+    });
+
+    it('is opened when button is clicked', done => {
+      expect(vm.dropdownOpen).toBe(false);
+      findNewDropdownButton().dispatchEvent(new Event('click'));
+
+      vm.$nextTick()
+        .then(() => {
+          expect(vm.dropdownOpen).toBe(true);
+          expect(findNewDropdown()).toHaveClass('show');
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+
+    describe('when opened', () => {
+      beforeEach(() => {
+        vm.dropdownOpen = true;
+      });
+
+      it('stays open when button triggers mouseout', () => {
+        findNewDropdownButton().dispatchEvent(new Event('mouseout'));
+
+        expect(vm.dropdownOpen).toBe(true);
+      });
+
+      it('stays open when button triggers mouseleave', () => {
+        findNewDropdownButton().dispatchEvent(new Event('mouseleave'));
+
+        expect(vm.dropdownOpen).toBe(true);
+      });
+
+      it('closes when row triggers mouseleave', () => {
+        findFileRow().dispatchEvent(new Event('mouseleave'));
+
+        expect(vm.dropdownOpen).toBe(false);
+      });
+    });
   });
 });

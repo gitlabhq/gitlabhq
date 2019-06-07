@@ -92,7 +92,7 @@ describe 'Gcp Cluster', :js do
         end
 
         it 'user sees a validation error' do
-          expect(page).to have_css('#error_explanation')
+          expect(page).to have_css('.gl-field-error')
         end
       end
     end

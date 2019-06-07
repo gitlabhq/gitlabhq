@@ -3,6 +3,7 @@
 
 import $ from 'jquery';
 import Vue from 'vue';
+import { __ } from '~/locale';
 
 import DiscussionMixins from '../mixins/discussion';
 
@@ -23,9 +24,9 @@ const JumpToDiscussion = Vue.extend({
   computed: {
     buttonText: function() {
       if (this.discussionId) {
-        return 'Jump to next unresolved discussion';
+        return __('Jump to next unresolved discussion');
       } else {
-        return 'Jump to first unresolved discussion';
+        return __('Jump to first unresolved discussion');
       }
     },
     allResolved: function() {

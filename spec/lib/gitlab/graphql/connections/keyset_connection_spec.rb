@@ -85,6 +85,11 @@ describe Gitlab::Graphql::Connections::KeysetConnection do
       expect(subject.paged_nodes.size).to eq(3)
     end
 
+    it 'is a loaded memoized array' do
+      expect(subject.paged_nodes).to be_an(Array)
+      expect(subject.paged_nodes.object_id).to eq(subject.paged_nodes.object_id)
+    end
+
     context 'when `first` is passed' do
       let(:arguments) { { first: 2 } }
 

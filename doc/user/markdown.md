@@ -20,6 +20,7 @@ You can use GFM in the following areas:
 - Snippets (the snippet must be named with a `.md` extension)
 - Wiki pages
 - Markdown documents inside repositories
+- Epics **[ULTIMATE]**
 
 You can also use other rich text files in GitLab. You might have to install a
 dependency to do so. Please see the [`github-markup` gem readme](https://github.com/gitlabhq/markup#markups) for more information.
@@ -267,10 +268,7 @@ However the wrapping tags cannot be mixed as such:
 
 ### Emoji
 
-> If this is not rendered correctly, see
-https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#emoji
-
-```
+```md
 Sometimes you want to :monkey: around a bit and add some :star2: to your :speech_balloon:. Well we have a gift for you:
 
 :zap: You can use emoji anywhere GFM is supported. :v:
@@ -288,15 +286,15 @@ On Linux, you can download [Noto Color Emoji](https://www.google.com/get/noto/he
 Ubuntu 18.04 (like many modern Linux distros) has this font installed by default.
 ```
 
-Sometimes you want to <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/monkey.png" width="20px" height="20px"> around a bit and add some <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/star2.png" width="20px" height="20px"> to your <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/speech_balloon.png" width="20px" height="20px">. Well we have a gift for you:
+Sometimes you want to <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/monkey.png" width="20px" height="20px" style="display:inline;margin:0"> around a bit and add some <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/star2.png" width="20px" height="20px" style="display:inline;margin:0"> to your <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/speech_balloon.png" width="20px" height="20px" style="display:inline;margin:0">. Well we have a gift for you:
 
-<img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/zap.png" width="20px" height="20px">You can use emoji anywhere GFM is supported. <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/v.png" width="20px" height="20px">
+<img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/zap.png" width="20px" height="20px" style="display:inline;margin:0">You can use emoji anywhere GFM is supported. <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/v.png" width="20px" height="20px" style="display:inline;margin:0">
 
-You can use it to point out a <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/bug.png" width="20px" height="20px"> or warn about <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/speak_no_evil.png" width="20px" height="20px"> patches. And if someone improves your really <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/snail.png" width="20px" height="20px"> code, send them some <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/birthday.png" width="20px" height="20px">. People will <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/heart.png" width="20px" height="20px"> you for that.
+You can use it to point out a <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/bug.png" width="20px" height="20px" style="display:inline;margin:0"> or warn about <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/speak_no_evil.png" width="20px" height="20px" style="display:inline;margin:0"> patches. And if someone improves your really <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/snail.png" width="20px" height="20px" style="display:inline;margin:0"> code, send them some <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/birthday.png" width="20px" height="20px" style="display:inline;margin:0">. People will <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/heart.png" width="20px" height="20px" style="display:inline;margin:0"> you for that.
 
-If you are new to this, don't be <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/fearful.png" width="20px" height="20px">. You can easily join the emoji <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/family.png" width="20px" height="20px">. All you need to do is to look up one of the supported codes.
+If you are new to this, don't be <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/fearful.png" width="20px" height="20px" style="display:inline;margin:0">. You can easily join the emoji <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/family.png" width="20px" height="20px" style="display:inline;margin:0">. All you need to do is to look up one of the supported codes.
 
-Consult the [Emoji Cheat Sheet](https://www.webfx.com/tools/emoji-cheat-sheet/) for a list of all supported emoji codes. <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/thumbsup.png" width="20px" height="20px">
+Consult the [Emoji Cheat Sheet](https://www.webfx.com/tools/emoji-cheat-sheet/) for a list of all supported emoji codes. <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/thumbsup.png" width="20px" height="20px" style="display:inline;margin:0">
 
 Most emoji are natively supported on macOS, Windows, iOS, Android and will fallback to image-based emoji where there is lack of support.
 
@@ -323,6 +321,7 @@ GFM will recognize the following:
 | `#12345`                   | issue                           |
 | `!123`                     | merge request                   |
 | `$123`                     | snippet                         |
+| `&123`                     | epic **[ULTIMATE]**             |
 | `~123`                     | label by ID                     |
 | `~bug`                     | one-word label by name          |
 | `~"feature request"`       | multi-word label by name        |
@@ -343,6 +342,7 @@ GFM also recognizes certain cross-project references:
 | `namespace/project%123`                 | project milestone       |
 | `namespace/project$123`                 | snippet                 |
 | `namespace/project@9ba12248`            | specific commit         |
+| `group1/subgroup&123`                   | epic **[ULTIMATE]**     |
 | `namespace/project@9ba12248...b19a04f5` | commit range comparison |
 | `namespace/project~"Some label"`        | issues with given label |
 
@@ -480,7 +480,7 @@ GitLab 10.3.
 > If this is not rendered correctly, see
 https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#mermaid
 
-It is possible to generate diagrams and flowcharts from text using [Mermaid][mermaid].
+It is possible to generate diagrams and flowcharts from text using [Mermaid](https://mermaidjs.github.io/).
 
 In order to generate a diagram or flowchart, you should write your text inside the `mermaid` block.
 
@@ -496,9 +496,15 @@ Example:
 
 Becomes:
 
-<img src="./img/mermaid_diagram_render_gfm.png" width="200px" height="400px">
+```mermaid
+graph TD;
+  A-->B;
+  A-->C;
+  B-->D;
+  C-->D;
+```
 
-For details see the [Mermaid official page][mermaid].
+For details see the [Mermaid official page](https://mermaidjs.github.io/).
 
 ### Front matter
 
@@ -581,11 +587,11 @@ Alt-H2
 ------
 ```
 
-### Header IDs and links
+#### Header IDs and links
 
-All Markdown-rendered headers automatically get IDs, except in comments.
+All Markdown-rendered headers automatically get IDs, which can be linked to, except in comments.
 
-On hover, a link to those IDs becomes visible to make it easier to copy the link to the header to give it to someone else.
+On hover, a link to those IDs becomes visible to make it easier to copy the link to the header to use it somewhere else.
 
 The IDs are generated from the content of the header according to the following rules:
 
@@ -612,8 +618,8 @@ Would generate the following link IDs:
 1. `this-header-has-spaces-in-it`
 1. `this-header-has-a-in-it`
 1. `this-header-has-unicode-in-it-한글`
-1. `this-header-has-spaces-in-it`
 1. `this-header-has-spaces-in-it-1`
+1. `this-header-has-spaces-in-it-2`
 1. `this-header-has-3-5-in-it-and-parentheses`
 
 Note that the Emoji processing happens before the header IDs are generated, so the Emoji is converted to an image which then gets removed from the ID.
@@ -718,25 +724,25 @@ Becomes:
 
 There are two ways to create links, inline-style and reference-style.
 
-    [I'm an inline-style link](https://www.google.com)
+```markdown
+[I'm an inline-style link](https://www.google.com)
+[I'm a link to a repository file in the same directory](index.md)
+[I am an absolute reference within the repository](/doc/user/index.md)
+[I'm a relative link to the Milestones page](../README.md)
 
-    [I'm a reference-style link][Arbitrary case-insensitive reference text]
+[I link to a section on a different markdown page, using a header ID](index.md#overview)
+[I link to a different section on the same page, using the header ID](#header-ids-and-links)
 
-    [I'm a relative reference to a repository file](LICENSE)
+[I'm a reference-style link][Arbitrary case-insensitive reference text]
+[You can use numbers for reference-style link definitions][1]
+Or leave it empty and use the [link text itself][]
 
-    [I am an absolute reference within the repository](/doc/user/markdown.md)
+Some text to show that the reference links can follow later.
 
-    [I link to the Milestones page](/../milestones)
-
-    [You can use numbers for reference-style link definitions][1]
-
-    Or leave it empty and use the [link text itself][]
-
-    Some text to show that the reference links can follow later.
-
-    [arbitrary case-insensitive reference text]: https://www.mozilla.org
-    [1]: http://slashdot.org
-    [link text itself]: https://www.reddit.com
+[arbitrary case-insensitive reference text]: https://www.mozilla.org
+[1]: http://slashdot.org
+[link text itself]: https://www.reddit.com
+```
 
 >**Note:**
 Relative links do not allow referencing project files in a wiki page or wiki
@@ -1021,7 +1027,7 @@ A link can be constructed relative to the current wiki page using `./<page>`,
   it would link to `<your_wiki>/documentation/related`:
 
     ```markdown
-    [Link to Related Page](./related)
+    [Link to Related Page](related)
     ```
 
 - If this snippet was placed on a page at `<your_wiki>/documentation/related/content`,
@@ -1035,7 +1041,7 @@ A link can be constructed relative to the current wiki page using `./<page>`,
   it would link to `<your_wiki>/documentation/related.md`:
 
     ```markdown
-    [Link to Related Page](./related.md)
+    [Link to Related Page](related.md)
     ```
 
 - If this snippet was placed on a page at `<your_wiki>/documentation/related/content`,
@@ -1072,7 +1078,6 @@ A link starting with a `/` is relative to the wiki root.
 [^2]: This is my awesome footnote.
 
 [markdown.md]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md
-[mermaid]: https://mermaidjs.github.io/ "Mermaid website"
 [rouge]: http://rouge.jneen.net/ "Rouge website"
 [redcarpet]: https://github.com/vmg/redcarpet "Redcarpet website"
 [katex]: https://github.com/Khan/KaTeX "KaTeX website"

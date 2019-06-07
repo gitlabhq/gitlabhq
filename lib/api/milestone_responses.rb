@@ -16,6 +16,7 @@ module API
           optional :state, type: String, values: %w[active closed all], default: 'all',
                            desc: 'Return "active", "closed", or "all" milestones'
           optional :iids, type: Array[Integer], desc: 'The IIDs of the milestones'
+          optional :title, type: String, desc: 'The title of the milestones'
           optional :search, type: String, desc: 'The search criteria for the title or description of the milestone'
           use :pagination
         end
@@ -33,6 +34,7 @@ module API
           milestones = parent.milestones.order_id_desc
           milestones = Milestone.filter_by_state(milestones, params[:state])
           milestones = filter_by_iid(milestones, params[:iids]) if params[:iids].present?
+          milestones = filter_by_title(milestones, params[:title]) if params[:title]
           milestones = filter_by_search(milestones, params[:search]) if params[:search]
 
           present paginate(milestones), with: Entities::Milestone

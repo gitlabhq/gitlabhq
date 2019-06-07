@@ -7,7 +7,7 @@
     = sprite_icon("arrow-down", css_class: "icon")
   %ul.p-3.dropdown-menu.dropdown-menu-right.dropdown-menu-large.dropdown-menu-selectable.clone-options-dropdown.qa-clone-options
     - if ssh_enabled?
-      %li.pb-2
+      %li
         %label.label-bold
           = _('Clone with SSH')
         .input-group
@@ -16,7 +16,7 @@
             = clipboard_button(target: '#ssh_project_clone', title: _("Copy URL to clipboard"), class: "input-group-text btn-default btn-clipboard")
             = render_if_exists 'projects/buttons/geo'
     - if http_enabled?
-      %li
+      %li.pt-2
         %label.label-bold
           = _('Clone with %{http_label}') % { http_label: gitlab_config.protocol.upcase }
         .input-group
@@ -24,5 +24,6 @@
           .input-group-append
             = clipboard_button(target: '#http_project_clone', title: _("Copy URL to clipboard"), class: "input-group-text btn-default btn-clipboard")
             = render_if_exists 'projects/buttons/geo'
+    = render_if_exists 'projects/buttons/kerberos_clone_field'
 
 = render_if_exists 'shared/geo_info_modal', project: project

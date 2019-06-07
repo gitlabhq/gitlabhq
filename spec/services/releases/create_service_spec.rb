@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Releases::CreateService do
@@ -19,6 +21,8 @@ describe Releases::CreateService do
     shared_examples 'a successful release creation' do
       it 'creates a new release' do
         result = service.execute
+
+        expect(project.releases.count).to eq(1)
         expect(result[:status]).to eq(:success)
         expect(result[:tag]).not_to be_nil
         expect(result[:release]).not_to be_nil
@@ -67,6 +71,14 @@ describe Releases::CreateService do
         expect(result[:status]).to eq(:error)
         expect(project.releases.find_by(tag: tag_name).description).to eq(description)
       end
+    end
+  end
+
+  describe '#find_or_build_release' do
+    it 'does not save the built release' do
+      service.find_or_build_release
+
+      expect(project.releases.count).to eq(0)
     end
   end
 end

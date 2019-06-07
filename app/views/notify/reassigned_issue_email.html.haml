@@ -1,10 +1,1 @@
-%p
-  Assignee changed
-  - if @previous_assignees.any?
-    from
-    %strong= sanitize_name(@previous_assignees.map(&:name).to_sentence)
-  to
-  - if @issue.assignees.any?
-    %strong= @issue.assignee_list
-  - else
-    %strong Unassigned
+= render 'reassigned_issuable_email', issuable: @issue, previous_assignees: @previous_assignees

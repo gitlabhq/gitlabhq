@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module QA
   module Page
     module Label
@@ -9,7 +11,7 @@ module QA
           element :label_create_button
         end
 
-        def create_label
+        def click_label_create_button
           click_element :label_create_button
         end
 

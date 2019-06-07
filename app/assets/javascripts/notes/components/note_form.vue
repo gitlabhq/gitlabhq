@@ -7,6 +7,8 @@ import markdownField from '../../vue_shared/components/markdown/field.vue';
 import issuableStateMixin from '../mixins/issuable_state';
 import resolvable from '../mixins/resolvable';
 import { __ } from '~/locale';
+import { getDraft, updateDraft } from '~/lib/utils/autosave';
+import noteFormMixin from 'ee_else_ce/notes/mixins/note_form';
 
 export default {
   name: 'NoteForm',
@@ -14,7 +16,7 @@ export default {
     issueWarning,
     markdownField,
   },
-  mixins: [issuableStateMixin, resolvable],
+  mixins: [issuableStateMixin, resolvable, noteFormMixin],
   props: {
     noteBody: {
       type: String,
@@ -60,15 +62,31 @@ export default {
       required: false,
       default: null,
     },
+    diffFile: {
+      type: Object,
+      required: false,
+      default: null,
+    },
     helpPagePath: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    autosaveKey: {
       type: String,
       required: false,
       default: '',
     },
   },
   data() {
+    let updatedNoteBody = this.noteBody;
+
+    if (!updatedNoteBody && this.autosaveKey) {
+      updatedNoteBody = getDraft(this.autosaveKey) || '';
+    }
+
     return {
-      updatedNoteBody: this.noteBody,
+      updatedNoteBody,
       conflictWhileEditing: false,
       isSubmitting: false,
       isResolving: this.resolveDiscussion,
@@ -90,9 +108,42 @@ export default {
       }
       return '#';
     },
+    diffParams() {
+      if (this.diffFile) {
+        return {
+          filePath: this.diffFile.file_path,
+          refs: this.diffFile.diff_refs,
+        };
+      } else if (this.note && this.note.position) {
+        return {
+          filePath: this.note.position.new_path,
+          refs: this.note.position,
+        };
+      } else if (this.discussion && this.discussion.diff_file) {
+        return {
+          filePath: this.discussion.diff_file.file_path,
+          refs: this.discussion.diff_file.diff_refs,
+        };
+      }
+
+      return null;
+    },
     markdownPreviewPath() {
       const notable = this.getNoteableDataByProp('preview_note_path');
-      return mergeUrlParams({ preview_suggestions: true }, notable);
+
+      const previewSuggestions = this.line && this.diffParams;
+      const params = previewSuggestions
+        ? {
+            preview_suggestions: previewSuggestions,
+            line: this.line.new_line,
+            file_path: this.diffParams.filePath,
+            base_sha: this.diffParams.refs.base_sha,
+            start_sha: this.diffParams.refs.start_sha,
+            head_sha: this.diffParams.refs.head_sha,
+          }
+        : {};
+
+      return mergeUrlParams(params, notable);
     },
     markdownDocsPath() {
       return this.getNotesDataByProp('markdownDocsPath');
@@ -145,21 +196,6 @@ export default {
 
       return shouldResolve || shouldToggleState;
     },
-    handleKeySubmit() {
-      this.handleUpdate();
-    },
-    handleUpdate(shouldResolve) {
-      const beforeSubmitDiscussionState = this.discussionResolved;
-      this.isSubmitting = true;
-
-      this.$emit('handleFormUpdate', this.updatedNoteBody, this.$refs.editNoteForm, () => {
-        this.isSubmitting = false;
-
-        if (this.shouldToggleResolved(shouldResolve, beforeSubmitDiscussionState)) {
-          this.resolveHandler(beforeSubmitDiscussionState);
-        }
-      });
-    },
     editMyLastNote() {
       if (this.updatedNoteBody === '') {
         const lastNoteInDiscussion = this.getDiscussionLastNote(this.discussion);
@@ -174,6 +210,12 @@ export default {
     cancelHandler(shouldConfirm = false) {
       // Sends information about confirm message and if the textarea has changed
       this.$emit('cancelForm', shouldConfirm, this.noteBody !== this.updatedNoteBody);
+    },
+    onInput() {
+      if (this.autosaveKey) {
+        const { autosaveKey, updatedNoteBody: text } = this;
+        updateDraft(autosaveKey, text);
+      }
     },
   },
 };
@@ -192,6 +234,8 @@ export default {
         v-if="hasWarning(getNoteableData)"
         :is-locked="isLocked(getNoteableData)"
         :is-confidential="isConfidential(getNoteableData)"
+        :locked-issue-docs-path="lockedIssueDocsPath"
+        :confidential-issue-docs-path="confidentialIssueDocsPath"
       />
 
       <markdown-field
@@ -212,37 +256,85 @@ export default {
           :data-supports-quick-actions="!isEditing"
           name="note[note]"
           class="note-textarea js-gfm-input js-note-text js-autosize markdown-area js-vue-issue-note-form js-vue-textarea qa-reply-input"
+          dir="auto"
           aria-label="Description"
           placeholder="Write a comment or drag your files here…"
           @keydown.meta.enter="handleKeySubmit()"
           @keydown.ctrl.enter="handleKeySubmit()"
-          @keydown.up="editMyLastNote()"
-          @keydown.esc="cancelHandler(true)"
+          @keydown.exact.up="editMyLastNote()"
+          @keydown.exact.esc="cancelHandler(true)"
+          @input="onInput"
         ></textarea>
       </markdown-field>
       <div class="note-form-actions clearfix">
-        <button
-          :disabled="isDisabled"
-          type="button"
-          class="js-vue-issue-save btn btn-success js-comment-button qa-reply-comment-button"
-          @click="handleUpdate()"
-        >
-          {{ saveButtonTitle }}
-        </button>
-        <button
-          v-if="discussion.resolvable"
-          class="btn btn-nr btn-default append-right-10 js-comment-resolve-button"
-          @click.prevent="handleUpdate(true)"
-        >
-          {{ resolveButtonTitle }}
-        </button>
-        <button
-          class="btn btn-cancel note-edit-cancel js-close-discussion-note-form"
-          type="button"
-          @click="cancelHandler()"
-        >
-          Cancel
-        </button>
+        <template v-if="showBatchCommentsActions">
+          <p v-if="showResolveDiscussionToggle">
+            <label>
+              <template v-if="discussionResolved">
+                <input
+                  v-model="isUnresolving"
+                  type="checkbox"
+                  class="qa-unresolve-review-discussion"
+                />
+                {{ __('Unresolve discussion') }}
+              </template>
+              <template v-else>
+                <input v-model="isResolving" type="checkbox" class="qa-resolve-review-discussion" />
+                {{ __('Resolve discussion') }}
+              </template>
+            </label>
+          </p>
+          <div>
+            <button
+              :disabled="isDisabled"
+              type="button"
+              class="btn btn-success qa-start-review"
+              @click="handleAddToReview"
+            >
+              <template v-if="hasDrafts">{{ __('Add to review') }}</template>
+              <template v-else>{{ __('Start a review') }}</template>
+            </button>
+            <button
+              :disabled="isDisabled"
+              type="button"
+              class="btn qa-comment-now"
+              @click="handleUpdate()"
+            >
+              {{ __('Add comment now') }}
+            </button>
+            <button
+              class="btn btn-cancel note-edit-cancel js-close-discussion-note-form"
+              type="button"
+              @click="cancelHandler()"
+            >
+              {{ __('Cancel') }}
+            </button>
+          </div>
+        </template>
+        <template v-else>
+          <button
+            :disabled="isDisabled"
+            type="button"
+            class="js-vue-issue-save btn btn-success js-comment-button qa-reply-comment-button"
+            @click="handleUpdate()"
+          >
+            {{ saveButtonTitle }}
+          </button>
+          <button
+            v-if="discussion.resolvable"
+            class="btn btn-nr btn-default append-right-10 js-comment-resolve-button"
+            @click.prevent="handleUpdate(true)"
+          >
+            {{ resolveButtonTitle }}
+          </button>
+          <button
+            class="btn btn-cancel note-edit-cancel js-close-discussion-note-form"
+            type="button"
+            @click="cancelHandler()"
+          >
+            Cancel
+          </button>
+        </template>
       </div>
     </form>
   </div>

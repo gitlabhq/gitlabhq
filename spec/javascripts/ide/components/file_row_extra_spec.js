@@ -20,7 +20,7 @@ describe('IDE extra file row component', () => {
       file: {
         ...file('test'),
       },
-      mouseOver: false,
+      dropdownOpen: false,
     });
 
     spyOnProperty(vm, 'getUnstagedFilesCountForPath').and.returnValue(() => unstagedFilesCount);

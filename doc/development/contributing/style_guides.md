@@ -10,7 +10,7 @@
 1. [Testing][testing]
 1. [JavaScript styleguide][js-styleguide]
 1. [SCSS styleguide][scss-styleguide]
-1. [Shell commands](../shell_commands.md) created by GitLab
+1. [Shell commands (Ruby)](../shell_commands.md) created by GitLab
    contributors to enhance security
 1. [Database Migrations](../migration_style_guide.md)
 1. [Markdown](http://www.cirosantilli.com/markdown-styleguide)
@@ -22,6 +22,7 @@
    text should be _sorry, we could not create your account because:_
 1. Code should be written in [US English][us-english]
 1. [Go](../go_guide/index.md)
+1. [Python](../python_guide/index.md)
 
 This is also the style used by linting tools such as
 [RuboCop](https://github.com/bbatsov/rubocop) and [Hound CI](https://houndci.com).

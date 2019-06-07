@@ -247,11 +247,10 @@ describe API::Helpers do
       exception = RuntimeError.new('test error')
       allow(exception).to receive(:backtrace).and_return(caller)
 
-      expect(Raven).to receive(:capture_exception).with(exception, tags: {
-        correlation_id: 'new-correlation-id'
-      }, extra: {})
+      expect(Raven).to receive(:capture_exception).with(exception, tags:
+        a_hash_including(correlation_id: 'new-correlation-id'), extra: {})
 
-      Gitlab::CorrelationId.use_id('new-correlation-id') do
+      Labkit::Correlation::CorrelationId.use_id('new-correlation-id') do
         handle_api_exception(exception)
       end
     end

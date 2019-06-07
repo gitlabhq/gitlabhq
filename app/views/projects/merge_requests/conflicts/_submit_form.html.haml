@@ -6,7 +6,7 @@
   .form-group.row
     .col-md-4
       %h4= _('Resolve conflicts on source branch')
-      .resolve-info
+      .resolve-info{ "v-pre": true }
         = translation.html_safe
     .col-md-8
       %label.label-bold{ "for" => "commit-message" }

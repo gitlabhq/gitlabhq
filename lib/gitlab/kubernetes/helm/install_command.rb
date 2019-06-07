@@ -7,7 +7,8 @@ module Gitlab
         include BaseCommand
         include ClientCommand
 
-        attr_reader :name, :files, :chart, :version, :repository, :preinstall, :postinstall
+        attr_reader :name, :files, :chart, :repository, :preinstall, :postinstall
+        attr_accessor :version
 
         def initialize(name:, chart:, files:, rbac:, version: nil, repository: nil, preinstall: nil, postinstall: nil)
           @name = name

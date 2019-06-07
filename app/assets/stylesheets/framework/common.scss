@@ -5,6 +5,9 @@
 .cgreen { color: $green-600; }
 .cdark { color: $common-gray-dark; }
 
+.fwhite { fill: $white-light; }
+.fgray { fill: $gray-700; }
+
 .text-plain,
 .text-plain:hover {
   color: $gl-text-color;
@@ -48,6 +51,10 @@
   color: $brand-info;
 }
 
+.bg-gray-light {
+  background-color: $gray-light;
+}
+
 .text-break-word {
   word-break: break-all;
 }
@@ -57,7 +64,11 @@
   text-decoration: underline;
 }
 
-.hint { font-style: italic; color: $gl-gray-400; }
+.hint {
+  font-style: italic;
+  color: $gl-gray-400;
+}
+
 .light { color: $gl-text-color; }
 
 .slead {
@@ -116,7 +127,7 @@ hr {
   text-overflow: ellipsis;
   white-space: nowrap;
 
-  > div,
+  > div:not(.block),
   .str-truncated {
     display: inline;
   }
@@ -158,13 +169,14 @@ p.time {
   text-shadow: none;
 }
 
-.thin_area {
+.thin-area {
   height: 150px;
 }
 
 // Fix issue with notes & lists creating a bunch of bottom borders.
 li.note {
   img { max-width: 100%; }
+
   .note-title {
     li {
       border-bottom: 0 !important;
@@ -183,11 +195,6 @@ li.note {
   background-color: inherit;
 }
 
-.show-suppressed-diff,
-.show-all-commits {
-  cursor: pointer;
-}
-
 .error-message {
   padding: 10px;
   background: $red-400;
@@ -200,17 +207,25 @@ li.note {
   }
 }
 
-.warning_message {
-  border-left: 4px solid $orange-200;
-  color: $orange-700;
+@mixin message($background-color, $border-color, $text-color) {
+  border-left: 4px solid $border-color;
+  color: $text-color;
   padding: 10px;
   margin-bottom: 10px;
-  background: $orange-100;
+  background: $background-color;
   padding-left: 20px;
 
   &.centered {
     text-align: center;
   }
+}
+
+.warning_message {
+  @include message($orange-100, $orange-200, $orange-700);
+}
+
+.danger_message {
+  @include message($red-100, $red-200, $red-900);
 }
 
 .gitlab-promo {
@@ -335,7 +350,7 @@ img.emoji {
 
 .disabled-content {
   pointer-events: none;
-  opacity: .5;
+  opacity: 0.5;
 }
 
 .break-word {
@@ -371,18 +386,23 @@ img.emoji {
 .prepend-top-default { margin-top: $gl-padding !important; }
 .prepend-top-16 { margin-top: 16px; }
 .prepend-top-20 { margin-top: 20px; }
+.prepend-top-32 { margin-top: 32px; }
 .prepend-left-4 { margin-left: 4px; }
 .prepend-left-5 { margin-left: 5px; }
 .prepend-left-8 { margin-left: 8px; }
 .prepend-left-10 { margin-left: 10px; }
+.prepend-left-15 { margin-left: 15px; }
 .prepend-left-default { margin-left: $gl-padding; }
 .prepend-left-20 { margin-left: 20px; }
+.prepend-left-32 { margin-left: 32px; }
 .append-right-4 { margin-right: 4px; }
 .append-right-5 { margin-right: 5px; }
 .append-right-8 { margin-right: 8px; }
 .append-right-10 { margin-right: 10px; }
+.append-right-15 { margin-right: 15px; }
 .append-right-default { margin-right: $gl-padding; }
 .append-right-20 { margin-right: 20px; }
+.prepend-right-32 { margin-right: 32px; }
 .append-bottom-0 { margin-bottom: 0; }
 .append-bottom-4 { margin-bottom: $gl-padding-4; }
 .append-bottom-5 { margin-bottom: 5px; }
@@ -391,15 +411,20 @@ img.emoji {
 .append-bottom-15 { margin-bottom: 15px; }
 .append-bottom-20 { margin-bottom: 20px; }
 .append-bottom-default { margin-bottom: $gl-padding; }
+.prepend-bottom-32 { margin-bottom: 32px; }
 .inline { display: inline-block; }
 .center { text-align: center; }
+.block { display: block; }
+.flex { display: flex; }
 .vertical-align-middle { vertical-align: middle; }
 .vertical-align-sub { vertical-align: sub; }
 .flex-align-self-center { align-self: center; }
 .flex-grow { flex-grow: 1; }
 .flex-no-shrink { flex-shrink: 0; }
 .ws-initial { white-space: initial; }
+.ws-normal { white-space: normal; }
 .overflow-auto { overflow: auto; }
+
 .d-flex-center {
   display: flex;
   align-items: center;
@@ -413,27 +438,24 @@ img.emoji {
 
 .mw-460 { max-width: 460px; }
 .mw-6em { max-width: 6em; }
+.mw-70p { max-width: 70%; }
 
 .min-height-0 { min-height: 0; }
 
-.w-3 { width: #{3 * $grid-size}; }
-
-.h-3 { width: #{3 * $grid-size}; }
+.svg-w-100 {
+  svg {
+    width: 100%;
+  }
+}
 
 /** COMMON SPACING CLASSES **/
-.gl-pl-0 { padding-left: 0; }
-.gl-pl-1 { padding-left: #{0.5 * $grid-size}; }
-.gl-pl-2 { padding-left: $grid-size; }
-.gl-pl-3 { padding-left: #{2 * $grid-size}; }
-.gl-pl-4 { padding-left: #{3 * $grid-size}; }
-.gl-pl-5 { padding-left: #{4 * $grid-size}; }
-
-.gl-pr-0 { padding-right: 0; }
-.gl-pr-1 { padding-right: #{0.5 * $grid-size}; }
-.gl-pr-2 { padding-right: $grid-size; }
-.gl-pr-3 { padding-right: #{2 * $grid-size}; }
-.gl-pr-4 { padding-right: #{3 * $grid-size}; }
-.gl-pr-5 { padding-right: #{4 * $grid-size}; }
+@each $index, $padding in $spacing-scale {
+  #{'.gl-p-#{$index}'} { padding: $padding; }
+  #{'.gl-pl-#{$index}'} { padding-left: $padding; }
+  #{'.gl-pr-#{$index}'} { padding-right: $padding; }
+  #{'.gl-pt-#{$index}'} { padding-top: $padding; }
+  #{'.gl-pb-#{$index}'} { padding-bottom: $padding; }
+}
 
 /**
  * Removes browser specific clear icon from input fields in
@@ -447,10 +469,10 @@ img.emoji {
 }
 
 /** COMMON POSITIONING CLASSES */
-.position-bottom-0 { bottom: 0; }
-.position-left-0 { left: 0; }
-.position-right-0 { right: 0; }
-.position-top-0 { top: 0; }
+.position-bottom-0 { bottom: 0 !important; }
+.position-left-0 { left: 0 !important; }
+.position-right-0 { right: 0 !important; }
+.position-top-0 { top: 0 !important; }
 
 .drag-handle {
   width: 4px;
@@ -461,5 +483,56 @@ img.emoji {
 
   &.is-dragging {
     background-color: $gray-600;
+  }
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+// Make buttons/dropdowns full-width on mobile
+.full-width-mobile {
+  @include media-breakpoint-down(xs) {
+    width: 100%;
+
+    > .dropdown-menu,
+    > .btn {
+      width: 100%;
+    }
+  }
+}
+
+.onboarding-helper-container {
+  bottom: 40px;
+  right: 40px;
+  font-size: $gl-font-size-small;
+  background: $gray-100;
+  width: 200px;
+  border-radius: 24px;
+  box-shadow: 0 2px 4px $issue-boards-card-shadow;
+  z-index: 10000;
+
+  .collapsible {
+    max-height: 0;
+    transition: max-height 0.5s cubic-bezier(0, 1, 0, 1);
+  }
+
+  &.expanded {
+    border-bottom-right-radius: $border-radius-default;
+    border-bottom-left-radius: $border-radius-default;
+
+    .collapsible {
+      max-height: 1000px;
+      transition: max-height 1s ease-in-out;
+    }
+  }
+
+  .avatar {
+    border-color: darken($gray-normal, 10%);
+
+    img {
+      width: 32px;
+      height: 32px;
+    }
   }
 }

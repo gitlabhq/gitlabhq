@@ -1,0 +1,5 @@
+---
+title: Removes support for AUTO_DEVOPS_DOMAIN
+merge_request: 28460
+author:
+type: removed

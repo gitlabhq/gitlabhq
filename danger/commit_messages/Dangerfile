@@ -21,7 +21,7 @@ class EmojiChecker
   # alone is not enough, as we'd match `:foo:bar:baz`. Instead, we use this
   # regex to save us from having to check for all possible emoji names when we
   # know one definitely is not included.
-  LIKELY_EMOJI = /:[\+a-z0-9_\-]+:/
+  LIKELY_EMOJI = /:[\+a-z0-9_\-]+:/.freeze
 
   def initialize
     names = JSON.parse(File.read(DIGESTS)).keys +
@@ -163,10 +163,10 @@ def lint_commit(commit)
   end
 
   if emoji_checker.includes_emoji?(commit.message)
-    fail_commit(
+    warn_commit(
       commit,
       'Avoid the use of Markdown Emoji such as `:+1:`. ' \
-        'These add no value to the commit message, ' \
+        'These add limited value to the commit message, ' \
         'and are displayed as plain text outside of GitLab'
     )
 

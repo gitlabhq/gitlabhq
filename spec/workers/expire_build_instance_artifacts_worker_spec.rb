@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe ExpireBuildInstanceArtifactsWorker do
@@ -19,7 +21,7 @@ describe ExpireBuildInstanceArtifactsWorker do
         end
 
         it 'does remove files' do
-          expect(build.reload.artifacts_file.exists?).to be_falsey
+          expect(build.reload.artifacts_file.present?).to be_falsey
         end
 
         it 'does remove the job artifact record' do
@@ -38,7 +40,7 @@ describe ExpireBuildInstanceArtifactsWorker do
       end
 
       it 'does not remove files' do
-        expect(build.reload.artifacts_file.exists?).to be_truthy
+        expect(build.reload.artifacts_file.present?).to be_truthy
       end
 
       it 'does not remove the job artifact record' do
@@ -54,7 +56,7 @@ describe ExpireBuildInstanceArtifactsWorker do
       end
 
       it 'does not remove files' do
-        expect(build.reload.artifacts_file.exists?).to be_truthy
+        expect(build.reload.artifacts_file.present?).to be_truthy
       end
 
       it 'does not remove the job artifact record' do

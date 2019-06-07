@@ -37,7 +37,7 @@ describe 'User creates snippet', :js do
     dropzone_file Rails.root.join('spec', 'fixtures', 'banana_sample.gif')
     find('.js-md-preview-button').click
 
-    page.within('#new_personal_snippet .md-preview') do
+    page.within('#new_personal_snippet .md-preview-holder') do
       expect(page).to have_content('My Snippet')
 
       link = find('a.no-attachment-icon img[alt="banana_sample"]')['src']

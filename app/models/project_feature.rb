@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ProjectFeature < ActiveRecord::Base
+class ProjectFeature < ApplicationRecord
   # == Project features permissions
   #
   # Grants access level to project tools
@@ -72,11 +72,13 @@ class ProjectFeature < ActiveRecord::Base
   default_value_for :wiki_access_level,           value: ENABLED, allows_nil: false
   default_value_for :repository_access_level,     value: ENABLED, allows_nil: false
 
+  scope :for_project_id, -> (project) { where(project: project) }
+
   def feature_available?(feature, user)
     # This feature might not be behind a feature flag at all, so default to true
     return false unless ::Feature.enabled?(feature, user, default_enabled: true)
 
-    get_permission(user, access_level(feature))
+    get_permission(user, feature)
   end
 
   def access_level(feature)
@@ -134,12 +136,12 @@ class ProjectFeature < ActiveRecord::Base
     (FEATURES - %i(pages)).each {|f| validator.call("#{f}_access_level")}
   end
 
-  def get_permission(user, level)
-    case level
+  def get_permission(user, feature)
+    case access_level(feature)
     when DISABLED
       false
     when PRIVATE
-      user && (project.team.member?(user) || user.full_private_access?)
+      team_access?(user, feature)
     when ENABLED
       true
     when PUBLIC
@@ -147,5 +149,12 @@ class ProjectFeature < ActiveRecord::Base
     else
       true
     end
+  end
+
+  def team_access?(user, feature)
+    return unless user
+    return true if user.full_private_access?
+
+    project.team.member?(user, ProjectFeature.required_minimum_access_level(feature))
   end
 end

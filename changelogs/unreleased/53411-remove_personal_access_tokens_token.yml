@@ -1,5 +1,0 @@
----
-title: Remove undigested token column from personal_access_tokens table from the database
-merge_request: 22743
-author:
-type: changed

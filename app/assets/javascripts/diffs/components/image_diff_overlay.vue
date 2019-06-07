@@ -1,6 +1,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import _ from 'underscore';
+import imageDiffMixin from 'ee_else_ce/diffs/mixins/image_diff';
 import Icon from '~/vue_shared/components/icon.vue';
 
 export default {
@@ -8,6 +9,7 @@ export default {
   components: {
     Icon,
   },
+  mixins: [imageDiffMixin],
   props: {
     discussions: {
       type: [Array, Object],
@@ -48,7 +50,6 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['toggleDiscussion']),
     ...mapActions('diffs', ['openDiffFileCommentForm']),
     getImageDimensions() {
       return {
@@ -105,15 +106,15 @@ export default {
       v-for="(discussion, index) in allDiscussions"
       :key="discussion.id"
       :style="getPosition(discussion)"
-      :class="badgeClass"
+      :class="[badgeClass, { 'is-draft': discussion.isDraft }]"
       :disabled="!shouldToggleDiscussion"
       class="js-image-badge"
       type="button"
-      @click="toggleDiscussion({ discussionId: discussion.id })"
+      @click="clickedToggle(discussion)"
     >
       <icon v-if="showCommentIcon" name="image-comment-dark" />
       <template v-else>
-        {{ index + 1 }}
+        {{ toggleText(discussion, index) }}
       </template>
     </button>
     <button

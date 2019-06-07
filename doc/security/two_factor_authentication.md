@@ -16,39 +16,35 @@ enforce everyone to set up 2FA, you can choose from two different ways:
 - Enforce on next login.
 - Suggest on next login, but allow a grace period before enforcing.
 
-In the Admin area under **Settings** (`/admin/application_settings`), look for
-the "Sign-in Restrictions" area, where you can configure both.
+After the configured grace period has elapsed, users will be able to log in but
+won't be able to leave the 2FA configuration area at `/profile/two_factor_auth`.
+
+To enable 2FA for all users:
+
+1. Navigate to **Admin area > Settings > General** (`/admin/application_settings`).
+1. Expand the **Sign-in restrictions** section, where you can configure both.
 
 If you want 2FA enforcement to take effect on next login, change the grace
 period to `0`.
 
----
-
-![Two factor authentication admin settings](img/two_factor_authentication_settings.png)
-
----
-
 ## Enforcing 2FA for all users in a group
 
-If you want to enforce 2FA only for certain groups, you can enable it in the
-group settings and specify a grace period as above. To change this setting you
-need to be administrator or owner of the group.
+If you want to enforce 2FA only for certain groups, you can:
+
+1. Enable it in the group's **Settings > General** page.
+1. Optionally specify a grace period as above.
+
+To change this setting, you need to be administrator or owner of the group.
 
 If there are multiple 2FA requirements (i.e. group + all users, or multiple
 groups) the shortest grace period will be used.
-
----
-
-![Two factor authentication group settings](img/two_factor_authentication_group_settings.png)
-
----
 
 ## Disabling 2FA for everyone
 
 There may be some special situations where you want to disable 2FA for everyone
 even when forced 2FA is disabled. There is a rake task for that:
 
-```
+```sh
 # Omnibus installations
 sudo gitlab-rake gitlab:two_factor:disable_for_all_users
 
@@ -56,5 +52,6 @@ sudo gitlab-rake gitlab:two_factor:disable_for_all_users
 sudo -u git -H bundle exec rake gitlab:two_factor:disable_for_all_users RAILS_ENV=production
 ```
 
-**IMPORTANT: this is a permanent and irreversible action. Users will have to
-    reactivate 2FA from scratch if they want to use it again.**
+CAUTION: **Caution:**
+This is a permanent and irreversible action. Users will have to
+reactivate 2FA from scratch if they want to use it again.

@@ -1,5 +1,0 @@
----
-title: 'API: Expose if the current user can merge a MR'
-merge_request: 25207
-author: Robert Schilling
-type: added

@@ -63,4 +63,8 @@ describe('Description field component', () => {
 
     expect(eventHub.$emit).toHaveBeenCalled();
   });
+
+  it('has a ref named `textarea`', () => {
+    expect(vm.$refs.textarea).not.toBeNull();
+  });
 });

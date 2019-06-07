@@ -1,3 +1,7 @@
+---
+type: howto
+---
+
 # Troubleshooting Git
 
 Sometimes things don't work the way they should or as you might expect when
@@ -9,7 +13,7 @@ with Git.
 'Broken pipe' errors can occur when attempting to push to a remote repository.
 When pushing you will usually see:
 
-```
+```text
 Write failed: Broken pipe
 fatal: The remote end hung up unexpectedly
 ```
@@ -39,14 +43,15 @@ There's another option where you can prevent session timeouts by configuring
 SSH 'keep alive' either on the client or on the server (if you are a GitLab
 admin and have access to the server).
 
-NOTE: **Note:** configuring *both* the client and the server is unnecessary.
+NOTE: **Note:**
+Configuring *both* the client and the server is unnecessary.
 
 **To configure SSH on the client side**:
 
--  On UNIX, edit `~/.ssh/config` (create the file if it doesn’t exist) and
-   add or edit:
+- On UNIX, edit `~/.ssh/config` (create the file if it doesn’t exist) and
+  add or edit:
 
-    ```
+    ```text
     Host your-gitlab-instance-url.com
       ServerAliveInterval 60
       ServerAliveCountMax 5
@@ -58,7 +63,7 @@ NOTE: **Note:** configuring *both* the client and the server is unnecessary.
 
 **To configure SSH on the server side**, edit `/etc/ssh/sshd_config` and add:
 
-```
+```text
 ClientAliveInterval 60
 ClientAliveCountMax 5
 ```
@@ -78,13 +83,40 @@ git push
 In case you're running an older version of Git (< 2.9), consider upgrading
 to >= 2.9 (see [Broken pipe when pushing to Git repository][Broken-Pipe]).
 
+## `ssh_exchange_identification` error
+
+Users may experience the following error when attempting to push or pull
+using Git over SSH:
+
+```text
+Please make sure you have the correct access rights
+and the repository exists.
+...
+ssh_exchange_identification: read: Connection reset by peer
+fatal: Could not read from remote repository.
+```
+
+This error usually indicates that SSH daemon's `MaxStartups` value is throttling
+SSH connections. This setting specifies the maximum number of unauthenticated
+connections to the SSH daemon. This affects users with proper authentication
+credentials (SSH keys) because every connection is 'unauthenticated' in the
+beginning. The default value is `10`.
+
+Increase `MaxStartups` by adding or modifying the value in `/etc/ssh/sshd_config`:
+
+```text
+MaxStartups 100
+```
+
+Restart SSHD for the change to take effect.
+
 ## Timeout during git push/pull
 
 If pulling/pushing from/to your repository ends up taking more than 50 seconds,
-a timeout will be issued with a log of the number of operations performed 
+a timeout will be issued with a log of the number of operations performed
 and their respective timings, like the example below:
 
-```
+```text
 remote: Running checks for branch: master
 remote: Scanning for LFS objects... (153ms)
 remote: Calculating new repository size... (cancelled after 729ms)

@@ -1,10 +1,15 @@
 /* eslint no-param-reassign: "off" */
 
 import $ from 'jquery';
-import GfmAutoComplete from '~/gfm_auto_complete';
+import GfmAutoComplete from 'ee_else_ce/gfm_auto_complete';
 
-import 'vendor/jquery.caret';
-import 'vendor/jquery.atwho';
+import 'jquery.caret';
+import 'at.js';
+
+import { TEST_HOST } from 'helpers/test_constants';
+import { getJSONFixture } from 'helpers/fixtures';
+
+const labelsFixture = getJSONFixture('autocomplete_sources/labels.json');
 
 describe('GfmAutoComplete', () => {
   const gfmAutoCompleteCallbacks = GfmAutoComplete.prototype.getDefaultCallbacks.call({
@@ -12,11 +17,12 @@ describe('GfmAutoComplete', () => {
   });
 
   let atwhoInstance;
-  let items;
   let sorterValue;
 
   describe('DefaultOptions.sorter', () => {
     describe('assets loading', () => {
+      let items;
+
       beforeEach(() => {
         jest.spyOn(GfmAutoComplete, 'isLoading').mockReturnValue(true);
 
@@ -61,7 +67,7 @@ describe('GfmAutoComplete', () => {
         atwhoInstance = { setting: {} };
 
         const query = 'query';
-        items = [];
+        const items = [];
         const searchKey = 'searchKey';
 
         gfmAutoCompleteCallbacks.sorter.call(atwhoInstance, query, items, searchKey);
@@ -85,7 +91,7 @@ describe('GfmAutoComplete', () => {
     });
 
     it('should quote if value contains any non-alphanumeric characters', () => {
-      expect(beforeInsert(atwhoInstance, '~label-20')).toBe('~"label\\-20"');
+      expect(beforeInsert(atwhoInstance, '~label-20')).toBe('~"label-20"');
       expect(beforeInsert(atwhoInstance, '~label 20')).toBe('~"label 20"');
     });
 
@@ -93,12 +99,21 @@ describe('GfmAutoComplete', () => {
       expect(beforeInsert(atwhoInstance, '~1234')).toBe('~"1234"');
     });
 
-    it('should escape Markdown emphasis characters, except in the first character', () => {
-      expect(beforeInsert(atwhoInstance, '@_group')).toEqual('@\\_group');
-      expect(beforeInsert(atwhoInstance, '~_bug')).toEqual('~\\_bug');
+    it('escapes Markdown strikethroughs when needed', () => {
+      expect(beforeInsert(atwhoInstance, '~a~bug')).toEqual('~"a~bug"');
+      expect(beforeInsert(atwhoInstance, '~a~~bug~~')).toEqual('~"a\\~~bug\\~~"');
+    });
+
+    it('escapes Markdown emphasis when needed', () => {
+      expect(beforeInsert(atwhoInstance, '~a_bug_')).toEqual('~a_bug\\_');
+      expect(beforeInsert(atwhoInstance, '~a _bug_')).toEqual('~"a \\_bug\\_"');
+      expect(beforeInsert(atwhoInstance, '~a*bug*')).toEqual('~"a\\*bug\\*"');
+      expect(beforeInsert(atwhoInstance, '~a *bug*')).toEqual('~"a \\*bug\\*"');
+    });
+
+    it('escapes Markdown code spans when needed', () => {
+      expect(beforeInsert(atwhoInstance, '~a`bug`')).toEqual('~"a\\`bug\\`"');
       expect(beforeInsert(atwhoInstance, '~a `bug`')).toEqual('~"a \\`bug\\`"');
-      expect(beforeInsert(atwhoInstance, '~a ~bug')).toEqual('~"a \\~bug"');
-      expect(beforeInsert(atwhoInstance, '~a **bug')).toEqual('~"a \\*\\*bug"');
     });
   });
 
@@ -191,6 +206,38 @@ describe('GfmAutoComplete', () => {
     });
   });
 
+  describe('DefaultOptions.highlighter', () => {
+    beforeEach(() => {
+      atwhoInstance = { setting: {} };
+    });
+
+    it('should return li if no query is given', () => {
+      const liTag = '<li></li>';
+
+      const highlightedTag = gfmAutoCompleteCallbacks.highlighter.call(atwhoInstance, liTag);
+
+      expect(highlightedTag).toEqual(liTag);
+    });
+
+    it('should highlight search query in li element', () => {
+      const liTag = '<li><img src="" />string</li>';
+      const query = 's';
+
+      const highlightedTag = gfmAutoCompleteCallbacks.highlighter.call(atwhoInstance, liTag, query);
+
+      expect(highlightedTag).toEqual('<li><img src="" /> <strong>s</strong>tring </li>');
+    });
+
+    it('should highlight search query with special char in li element', () => {
+      const liTag = '<li><img src="" />te.st</li>';
+      const query = '.';
+
+      const highlightedTag = gfmAutoCompleteCallbacks.highlighter.call(atwhoInstance, liTag, query);
+
+      expect(highlightedTag).toEqual('<li><img src="" /> te<strong>.</strong>st </li>');
+    });
+  });
+
   describe('isLoading', () => {
     it('should be true with loading data object item', () => {
       expect(GfmAutoComplete.isLoading({ name: 'loading' })).toBe(true);
@@ -248,6 +295,92 @@ describe('GfmAutoComplete', () => {
           reference: 'grp/proj#5',
         }),
       ).toBe('<li><small>grp/proj#5</small> Some Issue</li>');
+    });
+  });
+
+  describe('labels', () => {
+    const dataSources = {
+      labels: `${TEST_HOST}/autocomplete_sources/labels`,
+    };
+
+    const allLabels = labelsFixture;
+    const assignedLabels = allLabels.filter(label => label.set);
+    const unassignedLabels = allLabels.filter(label => !label.set);
+
+    let autocomplete;
+    let $textarea;
+
+    beforeEach(() => {
+      autocomplete = new GfmAutoComplete(dataSources);
+      $textarea = $('<textarea></textarea>');
+      autocomplete.setup($textarea, { labels: true });
+    });
+
+    afterEach(() => {
+      autocomplete.destroy();
+    });
+
+    const triggerDropdown = text => {
+      $textarea
+        .trigger('focus')
+        .val(text)
+        .caret('pos', -1);
+      $textarea.trigger('keyup');
+
+      return new Promise(window.requestAnimationFrame);
+    };
+
+    const getDropdownItems = () => {
+      const dropdown = document.getElementById('at-view-labels');
+      const items = dropdown.getElementsByTagName('li');
+      return [].map.call(items, item => item.textContent.trim());
+    };
+
+    const expectLabels = ({ input, output }) =>
+      triggerDropdown(input).then(() => {
+        expect(getDropdownItems()).toEqual(output.map(label => label.title));
+      });
+
+    describe('with no labels assigned', () => {
+      beforeEach(() => {
+        autocomplete.cachedData['~'] = [...unassignedLabels];
+      });
+
+      it.each`
+        input           | output
+        ${'~'}          | ${unassignedLabels}
+        ${'/label ~'}   | ${unassignedLabels}
+        ${'/relabel ~'} | ${unassignedLabels}
+        ${'/unlabel ~'} | ${[]}
+      `('$input shows $output.length labels', expectLabels);
+    });
+
+    describe('with some labels assigned', () => {
+      beforeEach(() => {
+        autocomplete.cachedData['~'] = allLabels;
+      });
+
+      it.each`
+        input           | output
+        ${'~'}          | ${allLabels}
+        ${'/label ~'}   | ${unassignedLabels}
+        ${'/relabel ~'} | ${allLabels}
+        ${'/unlabel ~'} | ${assignedLabels}
+      `('$input shows $output.length labels', expectLabels);
+    });
+
+    describe('with all labels assigned', () => {
+      beforeEach(() => {
+        autocomplete.cachedData['~'] = [...assignedLabels];
+      });
+
+      it.each`
+        input           | output
+        ${'~'}          | ${assignedLabels}
+        ${'/label ~'}   | ${[]}
+        ${'/relabel ~'} | ${assignedLabels}
+        ${'/unlabel ~'} | ${assignedLabels}
+      `('$input shows $output.length labels', expectLabels);
     });
   });
 });

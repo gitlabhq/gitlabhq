@@ -14,11 +14,10 @@ describe 'Disable individual triggers' do
   end
 
   context 'service has multiple supported events' do
-    let(:service_name) { 'JIRA' }
+    let(:service_name) { 'HipChat' }
 
     it 'shows trigger checkboxes' do
-      event_count = JiraService.supported_events.count
-      expect(event_count).to be > 1
+      event_count = HipchatService.supported_events.count
 
       expect(page).to have_content "Trigger"
       expect(page).to have_css(checkbox_selector, count: event_count)

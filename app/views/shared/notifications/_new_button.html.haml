@@ -10,14 +10,14 @@
         %div{ class: ("btn-group" if notification_setting.custom?) }
           - if notification_setting.custom?
             %button.dropdown-new.btn.btn-default.has-tooltip.notifications-btn#notifications-button{ type: "button", title: _("Notification setting - %{notification_title}") % { notification_title: notification_title(notification_setting.level) }, class: "#{btn_class}", "aria-label" => _("Notification setting - %{notification_title}") % { notification_title: notification_title(notification_setting.level) }, data: { container: "body", placement: 'top', toggle: "modal", target: "#" + notifications_menu_identifier("modal", notification_setting), display: 'static' } }
-              = sprite_icon("notifications", css_class: "icon notifications-icon js-notifications-icon")
+              = notification_setting_icon(notification_setting)
               %span.js-notification-loading.fa.hidden
             %button.btn.dropdown-toggle{ data: { toggle: "dropdown", target: notifications_menu_identifier("dropdown", notification_setting), flip: "false" }, class: "#{btn_class}" }
               = sprite_icon("arrow-down", css_class: "icon mr-0")
               .sr-only Toggle dropdown
           - else
-            %button.dropdown-new.btn.btn-default.has-tooltip.notifications-btn#notifications-button{ type: "button", title: "Notification setting - #{notification_title(notification_setting.level)}", class: "#{btn_class}", "aria-label" => "Notification setting: #{notification_title(notification_setting.level)}", data: { container: "body", placement: 'top', toggle: "dropdown", target: notifications_menu_identifier("dropdown", notification_setting), flip: "false" } }
-              = sprite_icon("notifications", css_class: "icon notifications-icon js-notifications-icon")
+            %button.dropdown-new.btn.btn-default.has-tooltip.notifications-btn#notifications-button{ type: "button", title: _("Notification setting - %{notification_title}") % { notification_title: notification_title(notification_setting.level) }, class: "#{btn_class}", "aria-label" => _("Notification setting - %{notification_title}") % { notification_title: notification_title(notification_setting.level) }, data: { container: "body", placement: 'top', toggle: "dropdown", target: notifications_menu_identifier("dropdown", notification_setting), flip: "false" } }
+              = notification_setting_icon(notification_setting)
               %span.js-notification-loading.fa.hidden
               = sprite_icon("arrow-down", css_class: "icon")
 

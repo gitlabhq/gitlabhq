@@ -5,7 +5,7 @@ describe PipelineSerializer do
   set(:user) { create(:user) }
 
   let(:serializer) do
-    described_class.new(current_user: user)
+    described_class.new(current_user: user, project: project)
   end
 
   before do
@@ -97,6 +97,44 @@ describe PipelineSerializer do
       end
     end
 
+    context 'when there are pipelines for merge requests' do
+      let(:resource) { Ci::Pipeline.all }
+
+      let!(:merge_request_1) do
+        create(:merge_request,
+          :with_detached_merge_request_pipeline,
+          target_project: project,
+          target_branch: 'master',
+          source_project: project,
+          source_branch: 'feature')
+      end
+
+      let!(:merge_request_2) do
+        create(:merge_request,
+          :with_detached_merge_request_pipeline,
+          target_project: project,
+          target_branch: 'master',
+          source_project: project,
+          source_branch: '2-mb-file')
+      end
+
+      before do
+        project.add_developer(user)
+      end
+
+      it 'includes merge requests information' do
+        expect(subject.all? { |entry| entry[:merge_request].present? }).to be_truthy
+      end
+
+      it 'preloads related merge requests', :postgresql do
+        recorded = ActiveRecord::QueryRecorder.new { subject }
+
+        expect(recorded.log)
+          .to include("SELECT \"merge_requests\".* FROM \"merge_requests\" " \
+                      "WHERE \"merge_requests\".\"id\" IN (#{merge_request_1.id}, #{merge_request_2.id})")
+      end
+    end
+
     describe 'number of queries when preloaded' do
       subject { serializer.represent(resource, preload: true) }
       let(:resource) { Ci::Pipeline.all }
@@ -118,8 +156,9 @@ describe PipelineSerializer do
 
         it 'verifies number of queries', :request_store do
           recorded = ActiveRecord::QueryRecorder.new { subject }
+          expected_queries = Gitlab.ee? ? 38 : 31
 
-          expect(recorded.count).to be_within(2).of(31)
+          expect(recorded.count).to be_within(2).of(expected_queries)
           expect(recorded.cached_count).to eq(0)
         end
       end
@@ -138,7 +177,8 @@ describe PipelineSerializer do
           # pipeline. With the same ref this check is cached but if refs are
           # different then there is an extra query per ref
           # https://gitlab.com/gitlab-org/gitlab-ce/issues/46368
-          expect(recorded.count).to be_within(2).of(38)
+          expected_queries = Gitlab.ee? ? 44 : 38
+          expect(recorded.count).to be_within(2).of(expected_queries)
           expect(recorded.cached_count).to eq(0)
         end
       end

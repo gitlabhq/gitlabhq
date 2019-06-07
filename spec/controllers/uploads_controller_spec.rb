@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 shared_examples 'content not cached without revalidation' do
   it 'ensures content will not be cached without revalidation' do

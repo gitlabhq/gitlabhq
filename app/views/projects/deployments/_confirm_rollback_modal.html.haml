@@ -1,0 +1,23 @@
+- commit_sha = link_to deployment.short_sha, project_commit_path(@project, deployment.sha), class: "commit-sha has-tooltip", title: h(deployment.commit_title)
+.modal.ws-normal.fade{ tabindex: -1, id: "confirm-rollback-modal-#{deployment.id}" }
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %h4.modal-title.d-flex.mw-100
+          - if deployment.last?
+            = s_("Environments|Re-deploy environment %{environment_name}?") % {environment_name: @environment.name}
+          - else
+            = s_("Environments|Rollback environment %{environment_name}?") % {environment_name: @environment.name}
+      .modal-body
+        - if deployment.last?
+          %p= s_('Environments|This action will relaunch the job for commit %{commit_id}, putting the environment in a previous version. Are you sure you want to continue?').html_safe % {commit_id: commit_sha}
+        - else
+          %p
+            = s_('Environments|This action will run the job defined by staging for commit %{commit_id}, putting the environment in a previous version. You can revert it by re-deploying the latest version of your application. Are you sure you want to continue?').html_safe % {commit_id: commit_sha}
+      .modal-footer
+        = button_tag _('Cancel'), type: 'button', class: 'btn btn-cancel', data: { dismiss: 'modal' }
+        = link_to [:retry, @project.namespace.becomes(Namespace), @project, deployment.deployable], method: :post, class: 'btn btn-danger' do
+          - if deployment.last?
+            = s_('Environments|Re-deploy')
+          - else
+            = s_('Environments|Rollback')

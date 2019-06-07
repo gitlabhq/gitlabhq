@@ -95,7 +95,7 @@ module Gitlab
         local_labels = available_labels(project_id)
 
         # get all label links for the given resource (issue/MR)
-        # which reference a label not included in avaiable_labels
+        # which reference a label not included in available_labels
         # (other than its project labels and labels of ancestor groups)
         cross_labels = LabelLink
           .select('label_id, labels.title as title, labels.color as color, label_links.id as label_link_id')

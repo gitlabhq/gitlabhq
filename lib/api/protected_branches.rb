@@ -8,6 +8,8 @@ module API
 
     before { authorize_admin_project }
 
+    helpers Helpers::ProtectedBranchesHelpers
+
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
@@ -51,6 +53,8 @@ module API
         optional :merge_access_level, type: Integer,
                                       values: ProtectedBranch::MergeAccessLevel.allowed_access_levels,
                                       desc: 'Access levels allowed to merge (defaults: `40`, maintainer access level)'
+
+        use :optional_params_ee
       end
       # rubocop: disable CodeReuse/ActiveRecord
       post ':id/protected_branches' do

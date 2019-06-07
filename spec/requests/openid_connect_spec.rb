@@ -187,7 +187,7 @@ describe 'OpenID Connect requests' do
       expect(response).to have_gitlab_http_status(200)
       expect(json_response['issuer']).to eq('http://localhost')
       expect(json_response['jwks_uri']).to eq('http://www.example.com/oauth/discovery/keys')
-      expect(json_response['scopes_supported']).to eq(%w[api read_user sudo read_repository openid profile email])
+      expect(json_response['scopes_supported']).to eq(%w[api read_user read_repository write_repository sudo openid profile email])
     end
   end
 

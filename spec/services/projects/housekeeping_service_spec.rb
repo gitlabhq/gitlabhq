@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Projects::HousekeepingService do
@@ -79,6 +81,9 @@ describe Projects::HousekeepingService do
         # At push 10, 20, ... (except those above)
         expect(GitGarbageCollectWorker).to receive(:perform_async).with(project.id, :incremental_repack, :the_lease_key, :the_uuid)
           .exactly(16).times
+        # At push 6, 12, 18, ... (except those above)
+        expect(GitGarbageCollectWorker).to receive(:perform_async).with(project.id, :pack_refs, :the_lease_key, :the_uuid)
+          .exactly(27).times
 
         201.times do
           subject.increment!
@@ -86,6 +91,19 @@ describe Projects::HousekeepingService do
         end
 
         expect(project.pushes_since_gc).to eq(1)
+      end
+    end
+
+    it 'runs the task specifically requested' do
+      housekeeping = described_class.new(project, :gc)
+
+      allow(housekeeping).to receive(:try_obtain_lease).and_return(:gc_uuid)
+      allow(housekeeping).to receive(:lease_key).and_return(:gc_lease_key)
+
+      expect(GitGarbageCollectWorker).to receive(:perform_async).with(project.id, :gc, :gc_lease_key, :gc_uuid).twice
+
+      2.times do
+        housekeeping.execute
       end
     end
   end

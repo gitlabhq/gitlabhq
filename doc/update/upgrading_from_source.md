@@ -16,19 +16,16 @@ If the highest number stable branch is unclear please check the
 [GitLab Blog](https://about.gitlab.com/blog/archives.html) for installation
 guide links by version.
 
+If you are changing from GitLab Community Edition to GitLab Enterprise Edition, see
+the [Upgrading from CE to EE](upgrading_from_ce_to_ee.md) documentation.
+
 ## Guidelines for all versions
 
 This section contains all the steps necessary to upgrade Community Edition or
 Enterprise Edition, regardless of the version you are upgrading to. Version
 specific guidelines (should there be any) are covered separately.
 
-### 1. Stop server
-
-```bash
-sudo service gitlab stop
-```
-
-### 2. Backup
+### 1. Backup
 
 NOTE: If you installed GitLab from source, make sure `rsync` is installed.
 
@@ -38,10 +35,16 @@ cd /home/git/gitlab
 sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production
 ```
 
+### 2. Stop server
+
+```bash
+sudo service gitlab stop
+```
+
 ### 3. Update Ruby
 
-NOTE: Beginning in GitLab 11.0, we only support Ruby 2.4 or higher, and dropped
-support for Ruby 2.3. Be sure to upgrade if necessary.
+NOTE: Beginning in GitLab 11.6, we only support Ruby 2.5 or higher, and dropped
+support for Ruby 2.4. Be sure to upgrade if necessary.
 
 You can check which version you are running with `ruby -v`.
 
@@ -49,9 +52,9 @@ Download Ruby and compile it:
 
 ```bash
 mkdir /tmp/ruby && cd /tmp/ruby
-curl --remote-name --progress https://cache.ruby-lang.org/pub/ruby/2.5/ruby-2.5.3.tar.gz
-echo 'f919a9fbcdb7abecd887157b49833663c5c15fda  ruby-2.5.3.tar.gz' | shasum -c - && tar xzf ruby-2.5.3.tar.gz
-cd ruby-2.5.3
+curl --remote-name --progress https://cache.ruby-lang.org/pub/ruby/2.6/ruby-2.6.3.tar.gz
+echo '2347ed6ca5490a104ebd5684d2b9b5eefa6cd33c  ruby-2.6.3.tar.gz' | shasum -c - && tar xzf ruby-2.6.3.tar.gz
+cd ruby-2.6.3
 
 ./configure --disable-install-rdoc
 make
@@ -111,7 +114,47 @@ sudo ln -sf /usr/local/go/bin/{go,godoc,gofmt} /usr/local/bin/
 rm go1.10.5.linux-amd64.tar.gz
 ```
 
-### 6. Get latest code
+### 6. Update git
+
+NOTE: **Note:**
+GitLab 11.11 and higher only supports Git 2.21.x and newer, and
+[dropped support for older versions](https://gitlab.com/gitlab-org/gitlab-ce/issues/54255).
+Be sure to upgrade your installation if necessary.
+
+```bash
+# Make sure Git is version 2.21.0 or higher
+git --version
+
+# Remove packaged Git
+sudo apt-get remove git-core
+
+# Install dependencies
+sudo apt-get install -y libcurl4-openssl-dev libexpat1-dev gettext libz-dev libssl-dev build-essential
+
+# Download and compile pcre2 from source
+curl --silent --show-error --location https://ftp.pcre.org/pub/pcre/pcre2-10.33.tar.gz --output pcre2.tar.gz
+tar -xzf pcre2.tar.gz
+cd pcre2-10.33
+chmod +x configure
+./configure --prefix=/usr --enable-jit
+make
+make install
+
+# Download and compile from source
+cd /tmp
+curl --remote-name --location --progress https://www.kernel.org/pub/software/scm/git/git-2.21.0.tar.gz
+echo '85eca51c7404da75e353eba587f87fea9481ba41e162206a6f70ad8118147bee  git-2.21.0.tar.gz' | shasum -a256 -c - && tar -xzf git-2.21.0.tar.gz
+cd git-2.21.0/
+./configure --with-libpcre
+make prefix=/usr/local all
+
+# Install into /usr/local/bin
+sudo make prefix=/usr/local install
+
+# You should edit config/gitlab.yml, change the git -> bin_path to /usr/local/bin/git
+```
+
+### 7. Get latest code
 
 ```bash
 cd /home/git/gitlab
@@ -139,7 +182,7 @@ cd /home/git/gitlab
 sudo -u git -H git checkout BRANCH-ee
 ```
 
-### 7. Update gitlab-shell
+### 8. Update gitlab-shell
 
 ```bash
 cd /home/git/gitlab-shell
@@ -149,7 +192,7 @@ sudo -u git -H git checkout v$(</home/git/gitlab/GITLAB_SHELL_VERSION)
 sudo -u git -H bin/compile
 ```
 
-### 8. Update gitlab-workhorse
+### 9. Update gitlab-workhorse
 
 Install and compile gitlab-workhorse. GitLab-Workhorse uses
 [GNU Make](https://www.gnu.org/software/make/).
@@ -164,7 +207,7 @@ sudo -u git -H git checkout v$(</home/git/gitlab/GITLAB_WORKHORSE_VERSION)
 sudo -u git -H make
 ```
 
-### 9. Update Gitaly
+### 10. Update Gitaly
 
 #### Compile Gitaly
 
@@ -175,7 +218,7 @@ sudo -u git -H git checkout v$(</home/git/gitlab/GITALY_SERVER_VERSION)
 sudo -u git -H make
 ```
 
-### 10. Update gitlab-pages
+### 11. Update gitlab-pages
 
 #### Only needed if you use GitLab Pages
 
@@ -192,7 +235,7 @@ sudo -u git -H git checkout v$(</home/git/gitlab/GITLAB_PAGES_VERSION)
 sudo -u git -H make
 ```
 
-### 11. Update MySQL permissions
+### 12. Update MySQL permissions
 
 If you are using MySQL you need to grant the GitLab user the necessary
 permissions on the database:
@@ -214,7 +257,7 @@ You can make this setting permanent by adding it to your `my.cnf`:
 log_bin_trust_function_creators=1
 ```
 
-### 12. Update configuration files
+### 13. Update configuration files
 
 #### New configuration options for `gitlab.yml`
 
@@ -288,7 +331,7 @@ For Ubuntu 16.04.1 LTS:
 sudo systemctl daemon-reload
 ```
 
-### 13. Install libs, migrations, etc.
+### 14. Install libs, migrations, etc.
 
 ```bash
 cd /home/git/gitlab
@@ -311,7 +354,7 @@ sudo -u git -H bundle exec rake db:migrate RAILS_ENV=production
 sudo -u git -H bundle exec rake gettext:compile RAILS_ENV=production
 
 # Update node dependencies and recompile assets
-sudo -u git -H bundle exec rake yarn:install gitlab:assets:clean gitlab:assets:compile RAILS_ENV=production NODE_ENV=production
+sudo -u git -H bundle exec rake yarn:install gitlab:assets:clean gitlab:assets:compile RAILS_ENV=production NODE_ENV=production NODE_OPTIONS="--max_old_space_size=4096"
 
 # Clean up cache
 sudo -u git -H bundle exec rake cache:clear RAILS_ENV=production
@@ -320,14 +363,14 @@ sudo -u git -H bundle exec rake cache:clear RAILS_ENV=production
 **MySQL installations**: Run through the `MySQL strings limits` and `Tables and
 data conversion to utf8mb4` [tasks](../install/database_mysql.md).
 
-### 14. Start application
+### 15. Start application
 
 ```bash
 sudo service gitlab start
 sudo service nginx restart
 ```
 
-### 15. Check application status
+### 16. Check application status
 
 Check if GitLab and its environment are configured correctly:
 

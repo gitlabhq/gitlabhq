@@ -53,7 +53,7 @@ module SystemCheck
       end
 
       def ssh_dir
-        return nil unless home_dir
+        return unless home_dir
 
         File.join(home_dir, '.ssh')
       end

@@ -1,8 +1,4 @@
-# Configuring GitLab for HA
-
-Assuming you have already configured a [database](database.md), [Redis](redis.md), and [NFS](nfs.md), you can
-configure the GitLab application server(s) now. Complete the steps below
-for each GitLab application server in your environment.
+# Configuring GitLab Scaling and High Availability
 
 > **Note:** There is some additional configuration near the bottom for
   additional GitLab application servers. It's important to read and understand
@@ -145,6 +141,14 @@ This particular directory does not exist on the NFS server. Ensure
 the share is exported and exists on the NFS server and try to remount.
 
 ---
+
+## Upgrading GitLab HA
+
+GitLab HA installations can be upgraded with no downtime, but the
+upgrade process must be carefully coordinated to avoid failures. See the
+[Omnibus GitLab multi-node upgrade
+document](https://docs.gitlab.com/omnibus/update/#multi-node--ha-deployment)
+for more details.
 
 Read more on high-availability configuration:
 

@@ -142,6 +142,23 @@ export const createNewNote = ({ commit, dispatch }, { endpoint, data }) =>
 
 export const removePlaceholderNotes = ({ commit }) => commit(types.REMOVE_PLACEHOLDER_NOTES);
 
+export const resolveDiscussion = ({ state, dispatch, getters }, { discussionId }) => {
+  const discussion = utils.findNoteObjectById(state.discussions, discussionId);
+  const isResolved = getters.isDiscussionResolved(discussionId);
+
+  if (!discussion) {
+    return Promise.reject();
+  } else if (isResolved) {
+    return Promise.resolve();
+  }
+
+  return dispatch('toggleResolveNote', {
+    endpoint: discussion.resolve_path,
+    isResolved,
+    discussion: true,
+  });
+};
+
 export const toggleResolveNote = ({ commit, dispatch }, { endpoint, isResolved, discussion }) =>
   service
     .toggleResolveNote(endpoint, isResolved)
@@ -251,11 +268,20 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
     const { errors } = res;
     const commandsChanges = res.commands_changes;
 
-    if (hasQuickActions && errors && Object.keys(errors).length) {
-      eTagPoll.makeRequest();
+    if (errors && Object.keys(errors).length) {
+      /*
+       The following reply means that quick actions have been successfully applied:
 
-      $('.js-gfm-input').trigger('clear-commands-cache.atwho');
-      Flash('Commands applied', 'notice', noteData.flashContainer);
+       {"commands_changes":{},"valid":false,"errors":{"commands_only":["Commands applied"]}}
+       */
+      if (hasQuickActions) {
+        eTagPoll.makeRequest();
+
+        $('.js-gfm-input').trigger('clear-commands-cache.atwho');
+        Flash(__('Commands applied'), 'notice', noteData.flashContainer);
+      } else {
+        throw new Error(__('Failed to save comment!'));
+      }
     }
 
     if (commandsChanges) {
@@ -269,7 +295,7 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
           })
           .catch(() => {
             Flash(
-              'Something went wrong while adding your award. Please try again.',
+              __('Something went wrong while adding your award. Please try again.'),
               'alert',
               noteData.flashContainer,
             );
@@ -311,7 +337,7 @@ export const poll = ({ commit, state, getters, dispatch }) => {
     data: state,
     successCallback: resp =>
       resp.json().then(data => pollSuccessCallBack(data, commit, state, getters, dispatch)),
-    errorCallback: () => Flash('Something went wrong while fetching latest comments.'),
+    errorCallback: () => Flash(__('Something went wrong while fetching latest comments.')),
   });
 
   if (!Visibility.hidden()) {
@@ -347,7 +373,7 @@ export const fetchData = ({ commit, state, getters }) => {
     .poll(requestData)
     .then(resp => resp.json)
     .then(data => pollSuccessCallBack(data, commit, state, getters))
-    .catch(() => Flash('Something went wrong while fetching latest comments.'));
+    .catch(() => Flash(__('Something went wrong while fetching latest comments.')));
 };
 
 export const toggleAward = ({ commit, getters }, { awardName, noteId }) => {
@@ -420,15 +446,13 @@ export const updateResolvableDiscussonsCounts = ({ commit }) =>
   commit(types.UPDATE_RESOLVABLE_DISCUSSIONS_COUNTS);
 
 export const submitSuggestion = (
-  { commit },
-  { discussionId, noteId, suggestionId, flashContainer, callback },
-) => {
+  { commit, dispatch },
+  { discussionId, noteId, suggestionId, flashContainer },
+) =>
   service
     .applySuggestion(suggestionId)
-    .then(() => {
-      commit(types.APPLY_SUGGESTION, { discussionId, noteId, suggestionId });
-      callback();
-    })
+    .then(() => commit(types.APPLY_SUGGESTION, { discussionId, noteId, suggestionId }))
+    .then(() => dispatch('resolveDiscussion', { discussionId }).catch(() => {}))
     .catch(err => {
       const defaultMessage = __(
         'Something went wrong while applying the suggestion. Please try again.',
@@ -436,9 +460,7 @@ export const submitSuggestion = (
       const flashMessage = err.response.data ? `${err.response.data.message}.` : defaultMessage;
 
       Flash(__(flashMessage), 'alert', flashContainer);
-      callback();
     });
-};
 
 export const convertToDiscussion = ({ commit }, noteId) =>
   commit(types.CONVERT_TO_DISCUSSION, noteId);

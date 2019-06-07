@@ -71,7 +71,8 @@ export default {
         'issue-realtime-pre-pulse': preAnimation,
         'issue-realtime-trigger-pulse': pulseAnimation,
       }"
-      class="title"
+      class="title qa-title"
+      dir="auto"
       v-html="titleHtml"
     ></h2>
     <button

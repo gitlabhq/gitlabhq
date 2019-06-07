@@ -158,46 +158,6 @@ describe Clusters::ClusterPresenter do
     it { is_expected.to include(cluster.name) }
   end
 
-  describe '#can_toggle_cluster' do
-    let(:user) { create(:user) }
-
-    before do
-      allow(cluster).to receive(:current_user).and_return(user)
-    end
-
-    subject { described_class.new(cluster).can_toggle_cluster? }
-
-    context 'when user can update' do
-      before do
-        allow_any_instance_of(described_class).to receive(:can?).with(user, :update_cluster, cluster).and_return(true)
-      end
-
-      context 'when cluster is created' do
-        before do
-          allow(cluster).to receive(:created?).and_return(true)
-        end
-
-        it { is_expected.to eq(true) }
-      end
-
-      context 'when cluster is not created' do
-        before do
-          allow(cluster).to receive(:created?).and_return(false)
-        end
-
-        it { is_expected.to eq(false) }
-      end
-    end
-
-    context 'when user can not update' do
-      before do
-        allow_any_instance_of(described_class).to receive(:can?).with(user, :update_cluster, cluster).and_return(false)
-      end
-
-      it { is_expected.to eq(false) }
-    end
-  end
-
   describe '#cluster_type_description' do
     subject { described_class.new(cluster).cluster_type_description }
 
@@ -209,6 +169,12 @@ describe Clusters::ClusterPresenter do
       let(:cluster) { create(:cluster, :provided_by_gcp, :group) }
 
       it { is_expected.to eq('Group cluster') }
+    end
+
+    context 'instance_type cluster' do
+      let(:cluster) { create(:cluster, :provided_by_gcp, :instance) }
+
+      it { is_expected.to eq('Instance cluster') }
     end
   end
 
@@ -226,6 +192,28 @@ describe Clusters::ClusterPresenter do
       let(:cluster) { create(:cluster, :provided_by_gcp, :group) }
 
       it { is_expected.to eq(group_cluster_path(group, cluster)) }
+    end
+
+    context 'instance_type cluster' do
+      let(:cluster) { create(:cluster, :provided_by_gcp, :instance) }
+
+      it { is_expected.to eq(admin_cluster_path(cluster)) }
+    end
+  end
+
+  describe '#read_only_kubernetes_platform_fields?' do
+    subject { described_class.new(cluster).read_only_kubernetes_platform_fields? }
+
+    context 'with a user-provided cluster' do
+      let(:cluster) { build_stubbed(:cluster, :provided_by_user) }
+
+      it { is_expected.to be_falsy }
+    end
+
+    context 'with a GCP-provided cluster' do
+      let(:cluster) { build_stubbed(:cluster, :provided_by_gcp) }
+
+      it { is_expected.to be_truthy }
     end
   end
 end

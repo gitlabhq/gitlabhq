@@ -22,7 +22,9 @@ body,
 .form-control,
 .search form {
   // Override default font size used in non-csslab UI
-  font-size: 14px;
+  // Use rem to keep default font-size at 14px on body so 1rem still
+  // fits 8px grid, but also allow users to change browser font size
+  font-size: .875rem;
 }
 
 legend {
@@ -341,16 +343,6 @@ input[type=color].form-control {
   .btn {
     vertical-align: unset;
   }
-}
-
-// Bootstrap 3 compatibility because bootstrap_form Gem is not updated yet
-.input-group-btn:first-child {
-  @extend .input-group-prepend;
-}
-
-// Bootstrap 3 compatibility because bootstrap_form Gem is not updated yet
-.input-group-btn:last-child {
-  @extend .input-group-append;
 }
 
 /*

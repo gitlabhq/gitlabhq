@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class UserInteractedProject < ActiveRecord::Base
+class UserInteractedProject < ApplicationRecord
   belongs_to :user
   belongs_to :project
 
@@ -26,16 +26,14 @@ class UserInteractedProject < ActiveRecord::Base
 
       cached_exists?(attributes) do
         transaction(requires_new: true) do
-          begin
-            where(attributes).select(1).first || create!(attributes)
-            true # not caching the whole record here for now
-          rescue ActiveRecord::RecordNotUnique
-            # Note, above queries are not atomic and prone
-            # to race conditions (similar like #find_or_create!).
-            # In the case where we hit this, the record we want
-            # already exists - shortcut and return.
-            true
-          end
+          where(attributes).select(1).first || create!(attributes)
+          true # not caching the whole record here for now
+        rescue ActiveRecord::RecordNotUnique
+          # Note, above queries are not atomic and prone
+          # to race conditions (similar like #find_or_create!).
+          # In the case where we hit this, the record we want
+          # already exists - shortcut and return.
+          true
         end
       end
     end

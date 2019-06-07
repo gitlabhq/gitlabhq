@@ -15,11 +15,14 @@ module IssuablesHelper
     sidebar_gutter_collapsed? ? _('Expand sidebar') : _('Collapse sidebar')
   end
 
-  def sidebar_assignee_tooltip_label(issuable)
-    if issuable.assignee
-      issuable.assignee.name
+  def assignees_label(issuable, include_value: true)
+    label = 'Assignee'.pluralize(issuable.assignees.count)
+
+    if include_value
+      sanitized_list = sanitize_name(issuable.assignee_list)
+      "#{label}: #{sanitized_list}"
     else
-      issuable.allows_multiple_assignees? ? _('Assignee(s)') : _('Assignee')
+      label
     end
   end
 
@@ -191,7 +194,7 @@ module IssuablesHelper
 
     output << content_tag(:strong) do
       author_output = link_to_member(project, issuable.author, size: 24, mobile_classes: "d-none d-sm-inline")
-      author_output << link_to_member(project, issuable.author, size: 24, by_username: true, avatar: false, mobile_classes: "d-block d-sm-none")
+      author_output << link_to_member(project, issuable.author, size: 24, by_username: true, avatar: false, mobile_classes: "d-inline d-sm-none")
 
       if status = user_status(issuable.author)
         author_output << "#{status}".html_safe
@@ -276,6 +279,8 @@ module IssuablesHelper
       initialDescriptionText: issuable.description,
       initialTaskStatus: issuable.task_status
     }
+
+    data[:hasClosingMergeRequest] = issuable.merge_requests_count != 0 if issuable.is_a?(Issue)
 
     if parent.is_a?(Group)
       data[:groupPath] = parent.path

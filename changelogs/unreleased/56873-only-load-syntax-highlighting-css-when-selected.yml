@@ -1,5 +1,0 @@
----
-title: Only load syntax highlight CSS of selected theme
-merge_request: 25232
-author:
-type: performance

@@ -44,6 +44,14 @@ module Gitlab
           (@master_restart_hooks ||= []) << block
         end
 
+        def on_master_start(&block)
+          if in_clustered_environment?
+            on_before_fork(&block)
+          else
+            on_worker_start(&block)
+          end
+        end
+
         #
         # Lifecycle integration methods (called from unicorn.rb, puma.rb, etc.)
         #

@@ -108,7 +108,7 @@ module Gitlab
       end
 
       def find_or_create_groups
-        return nil unless group_path.present?
+        return unless group_path.present?
 
         log " * Using namespace: #{group_path}"
 

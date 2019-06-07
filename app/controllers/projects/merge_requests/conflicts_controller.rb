@@ -16,12 +16,12 @@ class Projects::MergeRequests::ConflictsController < Projects::MergeRequests::Ap
           render json: @conflicts_list
         elsif @merge_request.can_be_merged?
           render json: {
-            message: 'The merge conflicts for this merge request have already been resolved. Please return to the merge request.',
+            message: _('The merge conflicts for this merge request have already been resolved. Please return to the merge request.'),
             type: 'error'
           }
         else
           render json: {
-            message: 'The merge conflicts for this merge request cannot be resolved through GitLab. Please try to resolve them locally.',
+            message: _('The merge conflicts for this merge request cannot be resolved through GitLab. Please try to resolve them locally.'),
             type: 'error'
           }
         end
@@ -43,7 +43,7 @@ class Projects::MergeRequests::ConflictsController < Projects::MergeRequests::Ap
     return render_404 unless @conflicts_list.can_be_resolved_in_ui?
 
     if @merge_request.can_be_merged?
-      render status: :bad_request, json: { message: 'The merge conflicts for this merge request have already been resolved.' }
+      render status: :bad_request, json: { message: _('The merge conflicts for this merge request have already been resolved.') }
       return
     end
 
@@ -52,7 +52,7 @@ class Projects::MergeRequests::ConflictsController < Projects::MergeRequests::Ap
         .new(merge_request)
         .execute(current_user, params)
 
-      flash[:notice] = 'All merge conflicts were resolved. The merge request can now be merged.'
+      flash[:notice] = _('All merge conflicts were resolved. The merge request can now be merged.')
 
       render json: { redirect_to: project_merge_request_url(@project, @merge_request, resolved_conflicts: true) }
     rescue Gitlab::Git::Conflict::Resolver::ResolutionError => e

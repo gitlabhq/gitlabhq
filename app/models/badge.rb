@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Badge < ActiveRecord::Base
+class Badge < ApplicationRecord
   include FromUnion
 
   # This structure sets the placeholders that the urls
@@ -22,7 +22,7 @@ class Badge < ActiveRecord::Base
 
   scope :order_created_at_asc, -> { reorder(created_at: :asc) }
 
-  validates :link_url, :image_url, url: { protocols: %w(http https) }
+  validates :link_url, :image_url, addressable_url: true
   validates :type, presence: true
 
   def rendered_link_url(project = nil)

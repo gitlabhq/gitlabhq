@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Admin::ProjectsController do
@@ -41,6 +43,16 @@ describe Admin::ProjectsController do
 
       expect { get :index }.not_to exceed_query_limit(control_count)
     end
+  end
+
+  describe 'GET /projects.json' do
+    render_views
+
+    before do
+      get :index, format: :json
+    end
+
+    it { is_expected.to respond_with(:success) }
   end
 
   describe 'GET /projects/:id' do

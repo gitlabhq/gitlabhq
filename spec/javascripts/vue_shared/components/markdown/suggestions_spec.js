@@ -2,46 +2,52 @@ import Vue from 'vue';
 import SuggestionsComponent from '~/vue_shared/components/markdown/suggestions.vue';
 
 const MOCK_DATA = {
-  fromLine: 1,
-  fromContent: 'Old content',
-  suggestions: [],
+  suggestions: [
+    {
+      id: 1,
+      appliable: true,
+      applied: false,
+      current_user: {
+        can_apply: true,
+      },
+      diff_lines: [
+        {
+          can_receive_suggestion: false,
+          line_code: null,
+          meta_data: null,
+          new_line: null,
+          old_line: 5,
+          rich_text: '-test',
+          text: '-test',
+          type: 'old',
+        },
+        {
+          can_receive_suggestion: true,
+          line_code: null,
+          meta_data: null,
+          new_line: 5,
+          old_line: null,
+          rich_text: '+new test',
+          text: '+new test',
+          type: 'new',
+        },
+      ],
+    },
+  ],
   noteHtml: `
+      <div class="suggestion">
+      <div class="line">-oldtest</div>
+    </div>  
     <div class="suggestion">
-      <div class="line">Suggestion 1</div>
+      <div class="line">+newtest</div>
     </div>    
-    
-    <div class="suggestion">
-      <div class="line">Suggestion 2</div>
-    </div>
   `,
   isApplied: false,
   helpPagePath: 'path_to_docs',
 };
 
-const generateLine = content => {
-  const line = document.createElement('div');
-  line.className = 'line';
-  line.innerHTML = content;
-
-  return line;
-};
-
-const generateMockLines = () => {
-  const line1 = generateLine('Line 1');
-  const line2 = generateLine('Line 2');
-  const line3 = generateLine('- Line 3');
-  const container = document.createElement('div');
-
-  container.appendChild(line1);
-  container.appendChild(line2);
-  container.appendChild(line3);
-
-  return container;
-};
-
 describe('Suggestion component', () => {
   let vm;
-  let extractedLines;
   let diffTable;
 
   beforeEach(done => {
@@ -51,8 +57,7 @@ describe('Suggestion component', () => {
       propsData: MOCK_DATA,
     }).$mount();
 
-    extractedLines = vm.extractNewLines(generateMockLines());
-    diffTable = vm.generateDiff(extractedLines).$mount().$el;
+    diffTable = vm.generateDiff(0).$mount().$el;
 
     spyOn(vm, 'renderSuggestions');
     vm.renderSuggestions();
@@ -70,32 +75,8 @@ describe('Suggestion component', () => {
 
     it('renders suggestions', () => {
       expect(vm.renderSuggestions).toHaveBeenCalled();
-      expect(vm.$el.innerHTML.includes('Suggestion 1')).toBe(true);
-      expect(vm.$el.innerHTML.includes('Suggestion 2')).toBe(true);
-    });
-  });
-
-  describe('extractNewLines', () => {
-    it('extracts suggested lines', () => {
-      const expectedReturn = [
-        { content: 'Line 1\n', lineNumber: 1 },
-        { content: 'Line 2\n', lineNumber: 2 },
-        { content: '- Line 3\n', lineNumber: 3 },
-      ];
-
-      expect(vm.extractNewLines(generateMockLines())).toEqual(expectedReturn);
-    });
-
-    it('increments line number for each extracted line', () => {
-      expect(extractedLines[0].lineNumber).toEqual(1);
-      expect(extractedLines[1].lineNumber).toEqual(2);
-      expect(extractedLines[2].lineNumber).toEqual(3);
-    });
-
-    it('returns empty array if no lines are found', () => {
-      const el = document.createElement('div');
-
-      expect(vm.extractNewLines(el)).toEqual([]);
+      expect(vm.$el.innerHTML.includes('oldtest')).toBe(true);
+      expect(vm.$el.innerHTML.includes('newtest')).toBe(true);
     });
   });
 
@@ -109,17 +90,17 @@ describe('Suggestion component', () => {
     });
 
     it('generates a diff table that contains contents the suggested lines', () => {
-      extractedLines.forEach((line, i) => {
-        expect(diffTable.innerHTML.includes(extractedLines[i].content)).toBe(true);
+      MOCK_DATA.suggestions[0].diff_lines.forEach(line => {
+        const text = line.text.substring(1);
+
+        expect(diffTable.innerHTML.includes(text)).toBe(true);
       });
     });
 
     it('generates a diff table with the correct line number for each suggested line', () => {
-      const lines = diffTable.getElementsByClassName('qa-new-diff-line-number');
+      const lines = diffTable.querySelectorAll('.old_line');
 
-      expect([...lines][0].innerHTML).toBe('1');
-      expect([...lines][1].innerHTML).toBe('2');
-      expect([...lines][2].innerHTML).toBe('3');
+      expect(parseInt([...lines][0].innerHTML, 10)).toBe(5);
     });
   });
 });

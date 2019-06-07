@@ -18,9 +18,6 @@ module Projects
     # per rewritten object, with the old and new SHAs space-separated. It can be
     # used to update or remove content that references the objects that BFG has
     # altered
-    #
-    # Currently, only the project repository is modified by this service, but we
-    # may wish to modify other data sources in the future.
     def execute
       apply_bfg_object_map!
 
@@ -41,8 +38,50 @@ module Projects
       raise NoUploadError unless project.bfg_object_map.exists?
 
       project.bfg_object_map.open do |io|
-        repository_cleaner.apply_bfg_object_map(io)
+        repository_cleaner.apply_bfg_object_map_stream(io) do |response|
+          cleanup_diffs(response)
+        end
       end
+    end
+
+    def cleanup_diffs(response)
+      old_commit_shas = extract_old_commit_shas(response.entries)
+
+      ActiveRecord::Base.transaction do
+        cleanup_merge_request_diffs(old_commit_shas)
+        cleanup_note_diff_files(old_commit_shas)
+      end
+    end
+
+    def extract_old_commit_shas(batch)
+      batch.lazy.select { |entry| entry.type == :COMMIT }.map(&:old_oid).force
+    end
+
+    def cleanup_merge_request_diffs(old_commit_shas)
+      merge_request_diffs = MergeRequestDiff
+        .by_project_id(project.id)
+        .by_commit_sha(old_commit_shas)
+
+      # It's important to run the ActiveRecord callbacks here
+      merge_request_diffs.destroy_all # rubocop:disable Cop/DestroyAll
+
+      # TODO: ensure the highlight cache is removed immediately. It's too hard
+      # to calculate the Redis keys at present.
+      #
+      # https://gitlab.com/gitlab-org/gitlab-ce/issues/61115
+    end
+
+    def cleanup_note_diff_files(old_commit_shas)
+      # Pluck the IDs instead of running the query twice to ensure we clear the
+      # cache for exactly the note diffs we remove
+      ids = NoteDiffFile
+        .referencing_sha(old_commit_shas, project_id: project.id)
+        .pluck_primary_key
+
+      NoteDiffFile.id_in(ids).delete_all
+
+      # A highlighted version of the diff is stored in redis. Remove it now.
+      Gitlab::DiscussionsDiff::HighlightCache.clear_multiple(ids)
     end
 
     def repository_cleaner

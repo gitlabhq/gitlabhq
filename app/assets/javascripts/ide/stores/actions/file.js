@@ -1,5 +1,6 @@
-import { __ } from '../../../locale';
-import { normalizeHeaders } from '../../../lib/utils/common_utils';
+import { joinPaths } from '~/lib/utils/url_utility';
+import { normalizeHeaders } from '~/lib/utils/common_utils';
+import { __ } from '~/locale';
 import eventHub from '../../eventhub';
 import service from '../../services';
 import * as types from '../mutation_types';
@@ -69,7 +70,7 @@ export const getFileData = (
   const url = file.prevPath ? file.url.replace(file.path, file.prevPath) : file.url;
 
   return service
-    .getFileData(`${gon.relative_url_root ? gon.relative_url_root : ''}${url.replace('/-/', '/')}`)
+    .getFileData(joinPaths(gon.relative_url_root || '', url.replace('/-/', '/')))
     .then(({ data, headers }) => {
       const normalizedHeaders = normalizeHeaders(headers);
       setPageTitle(decodeURI(normalizedHeaders['PAGE-TITLE']));
@@ -263,4 +264,9 @@ export const removePendingTab = ({ commit }, file) => {
   commit(types.REMOVE_PENDING_TAB, file);
 
   eventHub.$emit(`editor.update.model.dispose.${file.key}`);
+};
+
+export const triggerFilesChange = () => {
+  // Used in EE for file mirroring
+  eventHub.$emit('ide.files.change');
 };

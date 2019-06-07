@@ -186,7 +186,11 @@ end
 When adding a foreign-key constraint to either an existing or new
 column remember to also add a index on the column.
 
-This is _required_ for all foreign-keys.
+This is **required** for all foreign-keys, e.g., to support efficient cascading
+deleting: when a lot of rows in a table get deleted, the referenced records need
+to be deleted too. The database has to look for corresponding records in the
+referenced table. Without an index, this will result in a sequential scan on the
+table which can take a long time.
 
 Here's an example where we add a new column with a foreign key
 constraint. Note it includes `index: true` to create an index for it.
@@ -423,3 +427,9 @@ _namespaces_ that have a `project_id`.
 
 The `path` column for these rows will be renamed to their previous value followed
 by an integer. For example: `users` would turn into `users0`
+
+### Moving migrations from EE to CE
+
+When migrations need to be moved from GitLab Enterprise Edition to GitLab Community Edition,
+a migration file should be moved from `ee/db/{post_,}migrate` directory in the `gitlab-ee` project to `db/{post_,}migrate` directory in the `gitlab-ce` project. This way
+the schema number remains intact, there is no need to modify old migrations, and proper columns, tables or data are added in the Community Edition.

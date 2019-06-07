@@ -149,7 +149,7 @@ describe API::Namespaces do
 
       context "when namespace doesn't exist" do
         it 'returns not-found' do
-          get api('/namespaces/9999', request_actor)
+          get api('/namespaces/0', request_actor)
 
           expect(response).to have_gitlab_http_status(404)
         end

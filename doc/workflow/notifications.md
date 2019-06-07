@@ -16,12 +16,16 @@ Notification settings are divided into three groups:
 
 Each of these settings have levels of notification:
 
+- Global: For groups and projects, notifications as per global settings.
 - Watch: Receive notifications for any activity.
-- On Mention: Receive notifications when `@mentioned` in comments.
 - Participate: Receive notifications for threads you have participated in.
+- On Mention: Receive notifications when `@mentioned` in comments.
 - Disabled: Turns off notifications.
 - Custom: Receive notifications for custom selected events.
-- Global: For groups and projects, notifications as per global settings.
+
+> Introduced in GitLab 12.0
+
+You can also select an email address to receive notifications for each group you belong to.
 
 ### Global Settings
 
@@ -73,40 +77,43 @@ Below is the table of events users can be notified of:
 | Group access level changed   | User                                                              | Sent when user group access level is changed |
 | Project moved                | Project members [1]                                               | [1] not disabled |
 
-### Issue / Merge request events
+### Issue / Epics / Merge request events
 
 In most of the below cases, the notification will be sent to:
 
 - Participants:
   - the author and assignee of the issue/merge request
   - authors of comments on the issue/merge request
-  - anyone mentioned by `@username` in the issue/merge request title or description
-  - anyone mentioned by `@username` in any of the comments on the issue/merge request
-     ...with notification level "Participating" or higher
+  - anyone mentioned by `@username` in the title or description of the issue, merge request or epic **[ULTIMATE]**
+  - anyone with notification level "Participating" or higher that is mentioned by `@username`
+    in any of the comments on the issue, merge request, or epic **[ULTIMATE]**
 - Watchers: users with notification level "Watch"
-- Subscribers: anyone who manually subscribed to the issue/merge request
+- Subscribers: anyone who manually subscribed to the issue, merge request, or epic **[ULTIMATE]**
 - Custom: Users with notification level "custom" who turned on notifications for any of the events present in the table below
 
 | Event                  | Sent to |
 |------------------------|---------|
-| New issue              | |
-| Close issue            | |
+| New issue              |         |
+| Close issue            |         |
 | Reassign issue         | The above, plus the old assignee |
-| Reopen issue           | |
+| Reopen issue           |         |
 | Due issue              | Participants and Custom notification level with this event selected |
 | Change milestone issue | Subscribers, participants mentioned, and Custom notification level with this event selected |
 | Remove milestone issue | Subscribers, participants mentioned, and Custom notification level with this event selected |
-| New merge request      | |
+| New merge request      |         |
 | Push to merge request  | Participants and Custom notification level with this event selected |
 | Reassign merge request | The above, plus the old assignee |
-| Close merge request    | |
-| Reopen merge request   | |
-| Merge merge request    | |
+| Close merge request    |         |
+| Reopen merge request   |         |
+| Merge merge request    |         |
 | Change milestone merge request | Subscribers, participants mentioned, and Custom notification level with this event selected |
 | Remove milestone merge request | Subscribers, participants mentioned, and Custom notification level with this event selected |
 | New comment            | The above, plus anyone mentioned by `@username` in the comment, with notification level "Mention" or higher |
 | Failed pipeline        | The author of the pipeline |
 | Successful pipeline    | The author of the pipeline, if they have the custom notification setting for successful pipelines set |
+| New epic **[ULTIMATE]** |        |
+| Close epic **[ULTIMATE]** |      |
+| Reopen epic **[ULTIMATE]** |     |
 
 In addition, if the title or description of an Issue or Merge Request is
 changed, notifications will be sent to any **new** mentions by `@username` as

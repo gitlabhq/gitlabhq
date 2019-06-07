@@ -35,12 +35,10 @@ module Gitlab
         threads = Array.new(thread_count) do
           Thread.new do
             pool.with_connection do |connection|
-              begin
-                Thread.current[MULTI_THREAD_AR_CONNECTION] = connection
-                yield
-              ensure
-                Thread.current[MULTI_THREAD_AR_CONNECTION] = nil
-              end
+              Thread.current[MULTI_THREAD_AR_CONNECTION] = connection
+              yield
+            ensure
+              Thread.current[MULTI_THREAD_AR_CONNECTION] = nil
             end
           end
         end

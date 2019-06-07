@@ -20,7 +20,7 @@ module PreviewMarkdown
       body: view_context.markdown(result[:text], markdown_params),
       references: {
         users: result[:users],
-        suggestions: result[:suggestions],
+        suggestions: SuggestionSerializer.new.represent_diff(result[:suggestions]),
         commands: view_context.markdown(result[:commands])
       }
     }

@@ -1,9 +1,10 @@
 ---
 author: Dylan Griffith
 author_gitlab: DylanGriffith
-level: intermediary
+level: intermediate
 article_type: tutorial
 date: 2018-06-07
+last_updated: 2019-04-08
 description: "Continuous Deployment of a Spring Boot application to Cloud Foundry with GitLab CI/CD"
 ---
 
@@ -77,7 +78,10 @@ image: java:8
 stages:
   - build
   - deploy
-
+  
+before_script:
+  - chmod +x mvnw
+  
 build:
   stage: build
   script: ./mvnw package
@@ -99,7 +103,7 @@ We've used the `java:8` [docker
 image](../../docker/using_docker_images.md) to build
 our application as it provides the up-to-date Java 8 JDK on [Docker
 Hub](https://hub.docker.com/). We've also added the [`only`
-clause](../../yaml/README.md#only-and-except-simplified)
+clause](../../yaml/README.md#onlyexcept-basic)
 to ensure our deployments only happen when we push to the master branch.
 
 Now, since the steps defined in `.gitlab-ci.yml` require credentials to login

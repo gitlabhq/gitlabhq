@@ -1,5 +1,6 @@
 - @no_container = true
 - page_title _('Branches')
+- add_to_breadcrumbs(_('Repository'), project_tree_path(@project))
 
 %div{ class: container_class }
   .top-area.adjust
@@ -43,6 +44,8 @@
           = s_('Branches|Delete merged branches')
         = link_to new_project_branch_path(@project), class: 'btn btn-success' do
           = s_('Branches|New branch')
+
+  = render_if_exists 'projects/commits/mirror_status'
 
   - if can?(current_user, :admin_project, @project)
     - project_settings_link = link_to s_('Branches|project settings'), project_protected_branches_path(@project)

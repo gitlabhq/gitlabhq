@@ -2,7 +2,8 @@
 
 module QA
   context 'Create' do
-    describe 'File templates' do
+    # Issue: https://gitlab.com/gitlab-org/quality/nightly/issues/97
+    describe 'File templates', :quarantine do
       include Runtime::Fixtures
 
       def login
@@ -16,14 +17,7 @@ module QA
         @project = Resource::Project.fabricate! do |project|
           project.name = 'file-template-project'
           project.description = 'Add file templates via the Files view'
-        end
-
-        # There's no 'New File' dropdown when the project is blank, so we first
-        # add a dummy file so that the dropdown will appear
-        Resource::File.fabricate! do |file|
-          file.project = @project
-          file.name = 'README.md'
-          file.content = '# Readme'
+          project.initialize_with_readme = true
         end
 
         Page::Main::Menu.perform(&:sign_out)

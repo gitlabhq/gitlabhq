@@ -25,11 +25,9 @@ module WaitableWorker
       failed = []
 
       args_list.each do |args|
-        begin
-          new.perform(*args)
-        rescue
-          failed << args
-        end
+        new.perform(*args)
+      rescue
+        failed << args
       end
 
       bulk_perform_async(failed) if failed.present?

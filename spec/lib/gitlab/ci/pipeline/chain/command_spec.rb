@@ -48,6 +48,24 @@ describe Gitlab::Ci::Pipeline::Chain::Command do
       end
     end
 
+    describe '#merge_request_ref_exists?' do
+      subject { command.merge_request_ref_exists? }
+
+      let!(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+
+      context 'for existing merge request ref' do
+        let(:origin_ref) { merge_request.ref_path }
+
+        it { is_expected.to eq(true) }
+      end
+
+      context 'for branch ref' do
+        let(:origin_ref) { merge_request.source_branch }
+
+        it { is_expected.to eq(false) }
+      end
+    end
+
     describe '#ref' do
       subject { command.ref }
 
@@ -157,6 +175,54 @@ describe Gitlab::Ci::Pipeline::Chain::Command do
 
       it 'uses BLANK_SHA' do
         is_expected.to eq(Gitlab::Git::BLANK_SHA)
+      end
+    end
+  end
+
+  describe '#source_sha' do
+    subject { command.source_sha }
+
+    let(:command) do
+      described_class.new(project: project,
+                          source_sha: source_sha,
+                          merge_request: merge_request)
+    end
+
+    let(:merge_request) do
+      create(:merge_request, target_project: project, source_project: project)
+    end
+
+    let(:source_sha) { nil }
+
+    context 'when source_sha is specified' do
+      let(:source_sha) { 'abc' }
+
+      it 'returns the specified value' do
+        is_expected.to eq('abc')
+      end
+    end
+  end
+
+  describe '#target_sha' do
+    subject { command.target_sha }
+
+    let(:command) do
+      described_class.new(project: project,
+                          target_sha: target_sha,
+                          merge_request: merge_request)
+    end
+
+    let(:merge_request) do
+      create(:merge_request, target_project: project, source_project: project)
+    end
+
+    let(:target_sha) { nil }
+
+    context 'when target_sha is specified' do
+      let(:target_sha) { 'abc' }
+
+      it 'returns the specified value' do
+        is_expected.to eq('abc')
       end
     end
   end

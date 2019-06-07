@@ -15,8 +15,8 @@ import {
   TREE_TYPE,
 } from '../constants';
 
-export function findDiffFile(files, hash) {
-  return files.filter(file => file.file_hash === hash)[0];
+export function findDiffFile(files, match, matchKey = 'file_hash') {
+  return files.find(file => file[matchKey] === match);
 }
 
 export const getReversePosition = linePosition => {
@@ -250,7 +250,10 @@ export function prepareDiffData(diffData) {
       renderIt: showingLines < LINES_TO_BE_RENDERED_DIRECTLY,
       collapsed:
         file.viewer.name === diffViewerModes.text && showingLines > MAX_LINES_TO_BE_RENDERED,
+      isShowingFullFile: false,
+      isLoadingFullFile: false,
       discussions: [],
+      renderingLines: false,
     });
   }
 }
@@ -411,3 +414,43 @@ export const getDiffMode = diffFile => {
     diffModes.replaced
   );
 };
+
+export const convertExpandLines = ({
+  diffLines,
+  data,
+  typeKey,
+  oldLineKey,
+  newLineKey,
+  mapLine,
+}) => {
+  const dataLength = data.length;
+  const lines = [];
+
+  for (let i = 0, diffLinesLength = diffLines.length; i < diffLinesLength; i += 1) {
+    const line = diffLines[i];
+
+    if (_.property(typeKey)(line) === 'match') {
+      const beforeLine = diffLines[i - 1];
+      const afterLine = diffLines[i + 1];
+      const newLineProperty = _.property(newLineKey);
+      const beforeLineIndex = newLineProperty(beforeLine) || 0;
+      const afterLineIndex = newLineProperty(afterLine) - 1 || dataLength;
+
+      lines.push(
+        ...data.slice(beforeLineIndex, afterLineIndex).map((l, index) =>
+          mapLine({
+            line: Object.assign(l, { hasForm: false, discussions: [] }),
+            oldLine: (_.property(oldLineKey)(beforeLine) || 0) + index + 1,
+            newLine: (newLineProperty(beforeLine) || 0) + index + 1,
+          }),
+        ),
+      );
+    } else {
+      lines.push(line);
+    }
+  }
+
+  return lines;
+};
+
+export const idleCallback = cb => requestIdleCallback(cb);

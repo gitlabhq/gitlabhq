@@ -286,6 +286,7 @@ describe API::Jobs do
         expect(json_response['ref']).to eq(job.ref)
         expect(json_response['tag']).to eq(job.tag)
         expect(json_response['coverage']).to eq(job.coverage)
+        expect(json_response['allow_failure']).to eq(job.allow_failure)
         expect(Time.parse(json_response['created_at'])).to be_like_time(job.created_at)
         expect(Time.parse(json_response['started_at'])).to be_like_time(job.started_at)
         expect(Time.parse(json_response['finished_at'])).to be_like_time(job.finished_at)
@@ -317,6 +318,49 @@ describe API::Jobs do
 
       it 'does not return specific job data' do
         expect(response).to have_gitlab_http_status(401)
+      end
+    end
+  end
+
+  describe 'DELETE /projects/:id/jobs/:job_id/artifacts' do
+    let!(:job) { create(:ci_build, :artifacts, pipeline: pipeline, user: api_user) }
+
+    before do
+      delete api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user)
+    end
+
+    context 'when user is anonymous' do
+      let(:api_user) { nil }
+
+      it 'does not delete artifacts' do
+        expect(job.job_artifacts.size).to eq 2
+      end
+
+      it 'returns status 401 (unauthorized)' do
+        expect(response).to have_http_status :unauthorized
+      end
+    end
+
+    context 'with developer' do
+      it 'does not delete artifacts' do
+        expect(job.job_artifacts.size).to eq 2
+      end
+
+      it 'returns status 403 (forbidden)' do
+        expect(response).to have_http_status :forbidden
+      end
+    end
+
+    context 'with authorized user' do
+      let(:maintainer) { create(:project_member, :maintainer, project: project).user }
+      let!(:api_user) { maintainer }
+
+      it 'deletes artifacts' do
+        expect(job.job_artifacts.size).to eq 0
+      end
+
+      it 'returns status 204 (no content)' do
+        expect(response).to have_http_status :no_content
       end
     end
   end
@@ -869,8 +913,8 @@ describe API::Jobs do
         expect(response).to have_gitlab_http_status(201)
         expect(job.job_artifacts.count).to eq(0)
         expect(job.trace.exist?).to be_falsy
-        expect(job.artifacts_file.exists?).to be_falsy
-        expect(job.artifacts_metadata.exists?).to be_falsy
+        expect(job.artifacts_file.present?).to be_falsy
+        expect(job.artifacts_metadata.present?).to be_falsy
         expect(job.has_job_artifacts?).to be_falsy
       end
 

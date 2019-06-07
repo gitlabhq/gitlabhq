@@ -1,26 +1,19 @@
 <script>
-import { GlSkeletonLoading } from '@gitlab/ui';
+import { mapState, mapActions, mapGetters } from 'vuex';
+import { GlLoadingIcon } from '@gitlab/ui';
 import FunctionRow from './function_row.vue';
 import EnvironmentRow from './environment_row.vue';
 import EmptyState from './empty_state.vue';
+import { CHECKING_INSTALLED } from '../constants';
 
 export default {
   components: {
     EnvironmentRow,
     FunctionRow,
     EmptyState,
-    GlSkeletonLoading,
+    GlLoadingIcon,
   },
   props: {
-    functions: {
-      type: Object,
-      required: true,
-      default: () => ({}),
-    },
-    installed: {
-      type: Boolean,
-      required: true,
-    },
     clustersPath: {
       type: String,
       required: true,
@@ -29,32 +22,48 @@ export default {
       type: String,
       required: true,
     },
-    loadingData: {
-      type: Boolean,
-      required: false,
-      default: true,
+    statusPath: {
+      type: String,
+      required: true,
     },
-    hasFunctionData: {
-      type: Boolean,
-      required: false,
-      default: true,
+  },
+  computed: {
+    ...mapState(['installed', 'isLoading', 'hasFunctionData']),
+    ...mapGetters(['getFunctions']),
+
+    checkingInstalled() {
+      return this.installed === CHECKING_INSTALLED;
     },
+    isInstalled() {
+      return this.installed === true;
+    },
+  },
+  created() {
+    this.fetchFunctions({
+      functionsPath: this.statusPath,
+    });
+  },
+  methods: {
+    ...mapActions(['fetchFunctions']),
   },
 };
 </script>
 
 <template>
   <section id="serverless-functions">
-    <div v-if="installed">
+    <gl-loading-icon
+      v-if="checkingInstalled"
+      :size="2"
+      class="prepend-top-default append-bottom-default"
+    />
+
+    <div v-else-if="isInstalled">
       <div v-if="hasFunctionData">
-        <template v-if="loadingData">
-          <div v-for="j in 3" :key="j" class="gl-responsive-table-row"><gl-skeleton-loading /></div>
-        </template>
-        <template v-else>
-          <div class="groups-list-tree-container">
+        <template>
+          <div class="groups-list-tree-container js-functions-wrapper">
             <ul class="content-list group-list-tree">
               <environment-row
-                v-for="(env, index) in functions"
+                v-for="(env, index) in getFunctions"
                 :key="index"
                 :env="env"
                 :env-name="index"
@@ -62,6 +71,11 @@ export default {
             </ul>
           </div>
         </template>
+        <gl-loading-icon
+          v-if="isLoading"
+          :size="2"
+          class="prepend-top-default append-bottom-default js-functions-loader"
+        />
       </div>
       <div v-else class="empty-state js-empty-state">
         <div class="text-content">

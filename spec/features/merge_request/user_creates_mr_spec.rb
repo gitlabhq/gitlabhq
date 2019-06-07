@@ -1,11 +1,18 @@
 require 'rails_helper'
 
 describe 'Merge request > User creates MR' do
-  it_behaves_like 'a creatable merge request'
+  include ProjectForksHelper
+
+  before do
+    stub_licensed_features(multiple_merge_request_assignees: false)
+  end
+
+  context 'non-fork merge request' do
+    include_context 'merge request create context'
+    it_behaves_like 'a creatable merge request'
+  end
 
   context 'from a forked project' do
-    include ProjectForksHelper
-
     let(:canonical_project) { create(:project, :public, :repository) }
 
     let(:source_project) do
@@ -15,6 +22,7 @@ describe 'Merge request > User creates MR' do
     end
 
     context 'to canonical project' do
+      include_context 'merge request create context'
       it_behaves_like 'a creatable merge request'
     end
 
@@ -25,6 +33,7 @@ describe 'Merge request > User creates MR' do
           namespace: user.namespace)
       end
 
+      include_context 'merge request create context'
       it_behaves_like 'a creatable merge request'
     end
   end

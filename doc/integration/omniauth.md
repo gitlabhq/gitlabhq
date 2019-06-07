@@ -33,6 +33,9 @@ contains some settings that are common for all providers.
 - [Authentiq](../administration/auth/authentiq.md)
 - [OAuth2Generic](oauth2_generic.md)
 - [JWT](../administration/auth/jwt.md)
+- [OpenID Connect](../administration/auth/oidc.md)
+- [UltraAuth](ultra_auth.md)
+- [SalesForce](salesforce.md)
 
 ## Initial OmniAuth Configuration
 
@@ -199,7 +202,7 @@ from the Omniauth provider's documentation.
 
         sudo -u git -H bundle install --without development test mysql --path vendor/bundle --no-deployment
 
-    > These are the same commands you used in the [Install Gems section](#install-gems) with `--path vendor/bundle --no-deployment` instead of `--deployment`.
+    > These are the same commands you used during initial installation in the [Install Gems section](../install/installation.md#install-gems) with `--path vendor/bundle --no-deployment` instead of `--deployment`.
 
 -   Start GitLab:
 
@@ -256,7 +259,7 @@ gitlab_rails['omniauth_enabled'] = false
 
 You can enable profile syncing from selected OmniAuth providers and for all or for specific user information.
 
-When authenticating using LDAP, the user's email is always synced.
+When authenticating using LDAP, the user's name and email are always synced.
 
 ```ruby
   gitlab_rails['sync_profile_from_provider'] = ['twitter', 'google_oauth2']

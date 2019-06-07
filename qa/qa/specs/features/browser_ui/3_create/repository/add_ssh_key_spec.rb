@@ -16,7 +16,7 @@ module QA
         expect(page).to have_content("Title: #{key_title}")
         expect(page).to have_content(key.fingerprint)
 
-        Page::Main::Menu.act { go_to_profile_settings }
+        Page::Main::Menu.act { click_settings_link }
         Page::Profile::Menu.act { click_ssh_keys }
 
         Page::Profile::SSHKeys.perform do |ssh_keys|

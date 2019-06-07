@@ -16,9 +16,9 @@ class Projects::TriggersController < Projects::ApplicationController
     @trigger = project.triggers.create(trigger_params.merge(owner: current_user))
 
     if @trigger.valid?
-      flash[:notice] = 'Trigger was created successfully.'
+      flash[:notice] = _('Trigger was created successfully.')
     else
-      flash[:alert] = 'You could not create a new trigger.'
+      flash[:alert] = _('You could not create a new trigger.')
     end
 
     redirect_to project_settings_ci_cd_path(@project, anchor: 'js-pipeline-triggers')
@@ -26,9 +26,9 @@ class Projects::TriggersController < Projects::ApplicationController
 
   def take_ownership
     if trigger.update(owner: current_user)
-      flash[:notice] = 'Trigger was re-assigned.'
+      flash[:notice] = _('Trigger was re-assigned.')
     else
-      flash[:alert] = 'You could not take ownership of trigger.'
+      flash[:alert] = _('You could not take ownership of trigger.')
     end
 
     redirect_to project_settings_ci_cd_path(@project, anchor: 'js-pipeline-triggers')
@@ -39,7 +39,7 @@ class Projects::TriggersController < Projects::ApplicationController
 
   def update
     if trigger.update(trigger_params)
-      redirect_to project_settings_ci_cd_path(@project, anchor: 'js-pipeline-triggers'), notice: 'Trigger was successfully updated.'
+      redirect_to project_settings_ci_cd_path(@project, anchor: 'js-pipeline-triggers'), notice: _('Trigger was successfully updated.')
     else
       render action: "edit"
     end
@@ -47,9 +47,9 @@ class Projects::TriggersController < Projects::ApplicationController
 
   def destroy
     if trigger.destroy
-      flash[:notice] = "Trigger removed."
+      flash[:notice] = _("Trigger removed.")
     else
-      flash[:alert] = "Could not remove the trigger."
+      flash[:alert] = _("Could not remove the trigger.")
     end
 
     redirect_to project_settings_ci_cd_path(@project, anchor: 'js-pipeline-triggers'), status: :found

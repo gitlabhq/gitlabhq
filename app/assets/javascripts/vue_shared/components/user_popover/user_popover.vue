@@ -1,11 +1,13 @@
 <script>
 import { GlPopover, GlSkeletonLoading } from '@gitlab/ui';
+import Icon from '~/vue_shared/components/icon.vue';
 import UserAvatarImage from '../user_avatar/user_avatar_image.vue';
 import { glEmojiTag } from '../../../emoji';
 
 export default {
   name: 'UserPopover',
   components: {
+    Icon,
     GlPopover,
     GlSkeletonLoading,
     UserAvatarImage,
@@ -68,16 +70,31 @@ export default {
           <gl-skeleton-loading v-else :lines="1" class="animation-container-small mb-1" />
         </div>
         <div class="text-secondary">
-          <div v-if="user.bio" class="js-bio">{{ user.bio }}</div>
-          <div v-if="user.organization" class="js-organization">{{ user.organization }}</div>
+          <div v-if="user.bio" class="js-bio d-flex mb-1">
+            <icon name="profile" css-classes="category-icon flex-shrink-0" />
+            <span class="ml-1">{{ user.bio }}</span>
+          </div>
+          <div v-if="user.organization" class="js-organization d-flex mb-1">
+            <icon
+              v-show="!jobInfoIsLoading"
+              name="work"
+              css-classes="category-icon flex-shrink-0"
+            />
+            <span class="ml-1">{{ user.organization }}</span>
+          </div>
           <gl-skeleton-loading
             v-if="jobInfoIsLoading"
             :lines="1"
             class="animation-container-small mb-1"
           />
         </div>
-        <div class="text-secondary">
-          {{ user.location }}
+        <div class="js-location text-secondary d-flex">
+          <icon
+            v-show="!locationIsLoading && user.location"
+            name="location"
+            css-classes="category-icon flex-shrink-0"
+          />
+          <span class="ml-1">{{ user.location }}</span>
           <gl-skeleton-loading
             v-if="locationIsLoading"
             :lines="1"

@@ -23,22 +23,27 @@ export const receiveTemplateTypesError = ({ commit, dispatch }) => {
 export const receiveTemplateTypesSuccess = ({ commit }, templates) =>
   commit(types.RECEIVE_TEMPLATE_TYPES_SUCCESS, templates);
 
-export const fetchTemplateTypes = ({ dispatch, state, rootState }, page = 1) => {
+export const fetchTemplateTypes = ({ dispatch, state, rootState }) => {
   if (!Object.keys(state.selectedTemplateType).length) return Promise.reject();
 
   dispatch('requestTemplateTypes');
 
-  return Api.projectTemplates(rootState.currentProjectId, state.selectedTemplateType.key, { page })
-    .then(({ data, headers }) => {
-      const nextPage = parseInt(normalizeHeaders(headers)['X-NEXT-PAGE'], 10);
-
-      dispatch('receiveTemplateTypesSuccess', data);
-
-      if (nextPage) {
-        dispatch('fetchTemplateTypes', nextPage);
-      }
+  const fetchPages = (page = 1, prev = []) =>
+    Api.projectTemplates(rootState.currentProjectId, state.selectedTemplateType.key, {
+      page,
+      per_page: 100,
     })
-    .catch(() => dispatch('receiveTemplateTypesError'));
+      .then(({ data, headers }) => {
+        const nextPage = parseInt(normalizeHeaders(headers)['X-NEXT-PAGE'], 10);
+        const nextData = prev.concat(data);
+
+        dispatch('receiveTemplateTypesSuccess', nextData);
+
+        return nextPage ? fetchPages(nextPage, nextData) : nextData;
+      })
+      .catch(() => dispatch('receiveTemplateTypesError'));
+
+  return fetchPages();
 };
 
 export const setSelectedTemplateType = ({ commit, dispatch, rootGetters }, type) => {

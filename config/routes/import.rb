@@ -67,4 +67,6 @@ namespace :import do
     get :jobs
     post :upload
   end
+
+  resource :phabricator, only: [:create, :new], controller: :phabricator
 end

@@ -40,11 +40,11 @@ module Gitlab
       end
 
       def first_time_reference_commit(event)
-        return nil unless event && merge_request_diff_commits
+        return unless event && merge_request_diff_commits
 
         commits = merge_request_diff_commits[event['id'].to_i]
 
-        return nil if commits.blank?
+        return if commits.blank?
 
         commits.find do |commit|
           next unless commit[:committed_date] && event['first_mentioned_in_commit_at']

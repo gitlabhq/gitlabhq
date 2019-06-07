@@ -27,11 +27,7 @@ export default {
   },
   computed: {
     shouldRenderPagination() {
-      return (
-        !this.isLoading &&
-        this.state.pipelines.length &&
-        this.state.pageInfo.total > this.state.pageInfo.perPage
-      );
+      return !this.isLoading;
     },
   },
   beforeMount() {

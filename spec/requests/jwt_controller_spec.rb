@@ -142,7 +142,7 @@ describe JwtController do
     end
 
     it 'allows read access' do
-      expect(service).to receive(:execute).with(authentication_abilities: Gitlab::Auth.read_authentication_abilities)
+      expect(service).to receive(:execute).with(authentication_abilities: Gitlab::Auth.read_only_authentication_abilities)
 
       get '/jwt/auth', params: parameters
     end

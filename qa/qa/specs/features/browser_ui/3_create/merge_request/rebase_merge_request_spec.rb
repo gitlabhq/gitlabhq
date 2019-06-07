@@ -12,7 +12,7 @@ module QA
         end
         project.visit!
 
-        Page::Project::Menu.perform(&:go_to_settings)
+        Page::Project::Menu.perform(&:click_settings)
         Page::Project::Settings::MergeRequest.perform(&:enable_ff_only)
 
         merge_request = Resource::MergeRequest.fabricate! do |merge_request|

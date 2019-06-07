@@ -1,6 +1,9 @@
 %p
   Issue was moved to another project.
-%p
-  New issue:
-  = link_to project_issue_url(@new_project, @new_issue) do
-    = @new_issue.title
+- if @can_access_project
+  %p
+    New issue:
+    = link_to project_issue_url(@new_project, @new_issue) do
+      = @new_issue.title
+- else
+  You don't have access to the project.

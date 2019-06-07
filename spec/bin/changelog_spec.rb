@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 load File.expand_path('../../bin/changelog', __dir__)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module QA::Page
   module Project::Pipeline
     class Show < QA::Page::Base
@@ -42,11 +44,11 @@ module QA::Page
         end
       end
 
-      def go_to_job(job_name)
-        find_element(:job_link, job_name).click
+      def click_job(job_name)
+        find_element(:job_link, text: job_name).click
       end
 
-      def go_to_first_job
+      def click_on_first_job
         css = '.js-pipeline-graph-job-link'
 
         wait(reload: false) do

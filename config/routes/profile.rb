@@ -17,7 +17,11 @@ resource :profile, only: [:show, :update] do
         delete :unlink
       end
     end
-    resource :notifications, only: [:show, :update]
+
+    resource :notifications, only: [:show, :update] do
+      resources :groups, only: :update
+    end
+
     resource :password, only: [:new, :create, :edit, :update] do
       member do
         put :reset

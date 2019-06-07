@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'Project' do
@@ -5,7 +7,7 @@ describe 'Project' do
   include MobileHelpers
 
   before do
-    stub_feature_flags(approval_rules: false)
+    stub_feature_flags(vue_file_list: false)
   end
 
   describe 'creating from template' do
@@ -371,6 +373,21 @@ describe 'Project' do
 
       expect(page).not_to have_selector('.event-item')
     end
+  end
+
+  describe 'edit' do
+    let(:user) { create(:user) }
+    let(:project) { create(:project, :public) }
+    let(:path) { edit_project_path(project) }
+
+    before do
+      project.add_maintainer(user)
+      sign_in(user)
+      visit path
+    end
+
+    it_behaves_like 'dirty submit form', [{ form: '.js-general-settings-form', input: 'input[name="project[name]"]' },
+                                          { form: '.qa-merge-request-settings', input: '#project_printing_merge_request_link_enabled' }]
   end
 
   def remove_with_confirm(button_text, confirm_with)

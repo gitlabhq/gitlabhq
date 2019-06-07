@@ -5,6 +5,8 @@ module Gitlab
     class Config
       class Extendable
         class Entry
+          include Gitlab::Utils::StrongMemoize
+
           InvalidExtensionError = Class.new(Extendable::ExtensionError)
           CircularDependencyError = Class.new(Extendable::ExtensionError)
           NestingTooDeepError = Class.new(Extendable::ExtensionError)
@@ -28,34 +30,46 @@ module Gitlab
           end
 
           def value
-            @value ||= @context.fetch(@key)
+            strong_memoize(:value) do
+              @context.fetch(@key)
+            end
           end
 
-          def base_hash!
-            @base ||= Extendable::Entry
-              .new(extends_key, @context, self)
-              .extend!
+          def base_hashes!
+            strong_memoize(:base_hashes) do
+              extends_keys.map do |key|
+                Extendable::Entry
+                  .new(key, @context, self)
+                  .extend!
+              end
+            end
           end
 
-          def extends_key
-            value.fetch(:extends).to_s.to_sym if extensible?
+          def extends_keys
+            strong_memoize(:extends_keys) do
+              next unless extensible?
+
+              Array(value.fetch(:extends)).map(&:to_s).map(&:to_sym)
+            end
           end
 
           def ancestors
-            @ancestors ||= Array(@parent&.ancestors) + Array(@parent&.key)
+            strong_memoize(:ancestors) do
+              Array(@parent&.ancestors) + Array(@parent&.key)
+            end
           end
 
           def extend!
             return value unless extensible?
 
-            if unknown_extension?
+            if unknown_extensions.any?
               raise Entry::InvalidExtensionError,
-                    "#{key}: unknown key in `extends`"
+                    "#{key}: unknown keys in `extends` (#{show_keys(unknown_extensions)})"
             end
 
-            if invalid_base?
+            if invalid_bases.any?
               raise Entry::InvalidExtensionError,
-                    "#{key}: invalid base hash in `extends`"
+                    "#{key}: invalid base hashes in `extends` (#{show_keys(invalid_bases)})"
             end
 
             if nesting_too_deep?
@@ -68,10 +82,17 @@ module Gitlab
                     "#{key}: circular dependency detected in `extends`"
             end
 
-            @context[key] = base_hash!.deep_merge(value)
+            merged = {}
+            base_hashes!.each { |h| merged.deep_merge!(h) }
+
+            @context[key] = merged.deep_merge!(value)
           end
 
           private
+
+          def show_keys(keys)
+            keys.join(', ')
+          end
 
           def nesting_too_deep?
             ancestors.count > MAX_NESTING_LEVELS
@@ -81,12 +102,16 @@ module Gitlab
             ancestors.include?(key)
           end
 
-          def unknown_extension?
-            !@context.key?(extends_key)
+          def unknown_extensions
+            strong_memoize(:unknown_extensions) do
+              extends_keys.reject { |key| @context.key?(key) }
+            end
           end
 
-          def invalid_base?
-            !@context[extends_key].is_a?(Hash)
+          def invalid_bases
+            strong_memoize(:invalid_bases) do
+              extends_keys.reject { |key| @context[key].is_a?(Hash) }
+            end
           end
         end
       end

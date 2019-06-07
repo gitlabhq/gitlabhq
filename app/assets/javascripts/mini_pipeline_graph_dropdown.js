@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import flash from './flash';
 import axios from './lib/utils/axios_utils';
+import { __ } from './locale';
 
 /**
  * In each pipelines table we have a mini pipeline graph for each pipeline.
@@ -98,7 +99,7 @@ export default class MiniPipelineGraph {
         ) {
           $(button).dropdown('toggle');
         }
-        flash('An error occurred while fetching the builds.', 'alert');
+        flash(__('An error occurred while fetching the builds.'), 'alert');
       });
   }
 

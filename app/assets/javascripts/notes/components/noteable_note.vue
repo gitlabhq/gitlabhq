@@ -4,12 +4,13 @@ import { mapGetters, mapActions } from 'vuex';
 import { escape } from 'underscore';
 import { truncateSha } from '~/lib/utils/text_utility';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
+import draftMixin from 'ee_else_ce/notes/mixins/draft';
 import { s__, sprintf } from '../../locale';
 import Flash from '../../flash';
 import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
 import noteHeader from './note_header.vue';
 import noteActions from './note_actions.vue';
-import noteBody from './note_body.vue';
+import NoteBody from './note_body.vue';
 import eventHub from '../event_hub';
 import noteable from '../mixins/noteable';
 import resolvable from '../mixins/resolvable';
@@ -20,10 +21,10 @@ export default {
     userAvatarLink,
     noteHeader,
     noteActions,
-    noteBody,
+    NoteBody,
     TimelineEntryItem,
   },
-  mixins: [noteable, resolvable],
+  mixins: [noteable, resolvable, draftMixin],
   props: {
     note: {
       type: Object,
@@ -73,11 +74,8 @@ export default {
         'is-editable': this.note.current_user.can_edit,
       };
     },
-    canResolve() {
-      return this.note.resolvable && !!this.getUserData.id;
-    },
     canReportAsAbuse() {
-      return !!this.note.report_abuse_path && this.author.id !== this.getUserData.id;
+      return Boolean(this.note.report_abuse_path) && this.author.id !== this.getUserData.id;
     },
     noteAnchorId() {
       return `note_${this.note.id}`;
@@ -96,7 +94,7 @@ export default {
         return '';
       }
 
-      // We need to do this to ensure we have the currect sentence order
+      // We need to do this to ensure we have the correct sentence order
       // when translating this as the sentence order may change from one
       // language to the next. See:
       // https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/24427#note_133713771
@@ -156,12 +154,16 @@ export default {
       this.$refs.noteBody.resetAutoSave();
       this.$emit('updateSuccess');
     },
-    formUpdateHandler(noteText, parentElement, callback) {
+    formUpdateHandler(noteText, parentElement, callback, resolveDiscussion) {
       this.$emit('handleUpdateNote', {
         note: this.note,
         noteText,
+        resolveDiscussion,
         callback: () => this.updateSuccess(),
       });
+
+      if (this.isDraft) return;
+
       const data = {
         endpoint: this.note.path,
         note: {
@@ -207,7 +209,10 @@ export default {
       // we need to do this to prevent noteForm inconsistent content warning
       // this is something we intentionally do so we need to recover the content
       this.note.note = noteText;
-      this.$refs.noteBody.note.note = noteText;
+      const { noteBody } = this.$refs;
+      if (noteBody) {
+        noteBody.note.note = noteText;
+      }
     },
   },
 };
@@ -219,7 +224,7 @@ export default {
     :class="classNameBindings"
     :data-award-url="note.toggle_award_path"
     :data-note-id="note.id"
-    class="note note-wrapper"
+    class="note note-wrapper qa-noteable-note-item"
   >
     <div v-once class="timeline-icon">
       <user-avatar-link
@@ -234,6 +239,7 @@ export default {
     <div class="timeline-content">
       <div class="note-header">
         <note-header v-once :author="author" :created-at="note.created_at" :note-id="note.id">
+          <slot slot="note-header-info" name="note-header-info"></slot>
           <span v-if="commit" v-html="actionText"></span>
           <span v-else class="d-none d-sm-inline">&middot;</span>
         </note-header>
@@ -247,12 +253,15 @@ export default {
           :can-award-emoji="note.current_user.can_award_emoji"
           :can-delete="note.current_user.can_edit"
           :can-report-as-abuse="canReportAsAbuse"
-          :can-resolve="note.current_user.can_resolve"
+          :can-resolve="canResolve"
           :report-abuse-path="note.report_abuse_path"
-          :resolvable="note.resolvable"
-          :is-resolved="note.resolved"
+          :resolvable="note.resolvable || note.isDraft"
+          :is-resolved="note.resolved || note.resolve_discussion"
           :is-resolving="isResolving"
           :resolved-by="note.resolved_by"
+          :is-draft="note.isDraft"
+          :resolve-discussion="note.isDraft && note.resolve_discussion"
+          :discussion-id="discussionId"
           @handleEdit="editHandler"
           @handleDelete="deleteHandler"
           @handleResolve="resolveHandler"

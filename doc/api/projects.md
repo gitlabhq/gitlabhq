@@ -153,6 +153,7 @@ When the user is authenticated and `simple` is not set this returns something li
       "commit_count": 37,
       "storage_size": 1038090,
       "repository_size": 1038090,
+      "wiki_size" : 0,
       "lfs_objects_size": 0,
       "job_artifacts_size": 0
     },
@@ -234,6 +235,7 @@ When the user is authenticated and `simple` is not set this returns something li
       "commit_count": 12,
       "storage_size": 2066080,
       "repository_size": 2066080,
+      "wiki_size" : 0,
       "lfs_objects_size": 0,
       "job_artifacts_size": 0
     },
@@ -342,6 +344,7 @@ GET /users/:user_id/projects
       "commit_count": 37,
       "storage_size": 1038090,
       "repository_size": 1038090,
+      "wiki_size" : 0,
       "lfs_objects_size": 0,
       "job_artifacts_size": 0
     },
@@ -423,6 +426,7 @@ GET /users/:user_id/projects
       "commit_count": 12,
       "storage_size": 2066080,
       "repository_size": 2066080,
+      "wiki_size" : 0,
       "lfs_objects_size": 0,
       "job_artifacts_size": 0
     },
@@ -494,7 +498,9 @@ GET /projects/:id
     "name": "Diaspora",
     "path": "diaspora",
     "kind": "group",
-    "full_path": "diaspora"
+    "full_path": "diaspora",
+    "avatar_url": "http://localhost:3000/uploads/group/avatar/3/foo.jpg",
+    "web_url": "http://localhost:3000/groups/diaspora"
   },
   "import_status": "none",
   "import_error": null,
@@ -546,6 +552,7 @@ GET /projects/:id
     "commit_count": 37,
     "storage_size": 1038090,
     "repository_size": 1038090,
+    "wiki_size" : 0,
     "lfs_objects_size": 0,
     "job_artifacts_size": 0
   },
@@ -560,6 +567,8 @@ GET /projects/:id
   }
 }
 ```
+
+**Note**: The `web_url` and `avatar_url` attributes on `namespace` were [introduced][ce-27427] in GitLab 11.11.
 
 If the project is a fork, and you provide a valid token to authenticate, the
 `forked_from_project` field will appear in the response.
@@ -1587,3 +1596,4 @@ GET /projects/:id/snapshot
 
 [eep]: https://about.gitlab.com/pricing/ "Available only in GitLab Premium"
 [ee-6137]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/6137
+[ce-27427]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/27427

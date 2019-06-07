@@ -86,17 +86,17 @@ module TreeHelper
   end
 
   def edit_in_new_fork_notice_now
-    "You're not allowed to make changes to this project directly." +
-      " A fork of this project is being created that you can make changes in, so you can submit a merge request."
+    _("You're not allowed to make changes to this project directly. "\
+      "A fork of this project is being created that you can make changes in, so you can submit a merge request.")
   end
 
   def edit_in_new_fork_notice
-    "You're not allowed to make changes to this project directly." +
-      " A fork of this project has been created that you can make changes in, so you can submit a merge request."
+    _("You're not allowed to make changes to this project directly. "\
+      "A fork of this project has been created that you can make changes in, so you can submit a merge request.")
   end
 
   def edit_in_new_fork_notice_action(action)
-    edit_in_new_fork_notice + " Try to #{action} this file again."
+    edit_in_new_fork_notice + _(" Try to %{action} this file again.") % { action: action }
   end
 
   def commit_in_fork_help
@@ -136,18 +136,9 @@ module TreeHelper
   end
 
   # returns the relative path of the first subdir that doesn't have only one directory descendant
-  # rubocop: disable CodeReuse/ActiveRecord
   def flatten_tree(root_path, tree)
-    return tree.flat_path.sub(%r{\A#{Regexp.escape(root_path)}/}, '') if tree.flat_path.present?
-
-    subtree = Gitlab::Git::Tree.where(@repository, @commit.id, tree.path)
-    if subtree.count == 1 && subtree.first.dir?
-      return tree_join(tree.name, flatten_tree(root_path, subtree.first))
-    else
-      return tree.name
-    end
+    tree.flat_path.sub(%r{\A#{Regexp.escape(root_path)}/}, '')
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def selected_branch
     @branch_name || tree_edit_branch

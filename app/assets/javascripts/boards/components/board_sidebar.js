@@ -2,19 +2,21 @@
 
 import $ from 'jquery';
 import Vue from 'vue';
-import Flash from '../../flash';
-import { sprintf, __ } from '../../locale';
-import Sidebar from '../../right_sidebar';
-import eventHub from '../../sidebar/event_hub';
-import AssigneeTitle from '../../sidebar/components/assignees/assignee_title.vue';
-import Assignees from '../../sidebar/components/assignees/assignees.vue';
-import DueDateSelectors from '../../due_date_select';
+import Flash from '~/flash';
+import { sprintf, __ } from '~/locale';
+import Sidebar from '~/right_sidebar';
+import eventHub from '~/sidebar/event_hub';
+import DueDateSelectors from '~/due_date_select';
+import IssuableContext from '~/issuable_context';
+import LabelsSelect from '~/labels_select';
+import AssigneeTitle from '~/sidebar/components/assignees/assignee_title.vue';
+import Assignees from '~/sidebar/components/assignees/assignees.vue';
+import Subscriptions from '~/sidebar/components/subscriptions/subscriptions.vue';
+import TimeTracker from '~/sidebar/components/time_tracking/time_tracker.vue';
+import MilestoneSelect from '~/milestone_select';
 import RemoveBtn from './sidebar/remove_issue.vue';
-import IssuableContext from '../../issuable_context';
-import LabelsSelect from '../../labels_select';
-import Subscriptions from '../../sidebar/components/subscriptions/subscriptions.vue';
-import MilestoneSelect from '../../milestone_select';
 import boardsStore from '../stores/boards_store';
+import { isScopedLabel } from '~/lib/utils/common_utils';
 
 export default Vue.extend({
   components: {
@@ -22,6 +24,7 @@ export default Vue.extend({
     Assignees,
     RemoveBtn,
     Subscriptions,
+    TimeTracker,
   },
   props: {
     currentUser: {
@@ -42,7 +45,7 @@ export default Vue.extend({
       return Object.keys(this.issue).length;
     },
     milestoneTitle() {
-      return this.issue.milestone ? this.issue.milestone.title : 'No Milestone';
+      return this.issue.milestone ? this.issue.milestone.title : __('No Milestone');
     },
     canRemove() {
       return !this.list.preset;
@@ -137,6 +140,12 @@ export default Vue.extend({
           this.loadingAssignees = false;
           Flash(__('An error occurred while saving assignees'));
         });
+    },
+    showScopedLabels(label) {
+      return boardsStore.scopedLabels.enabled && isScopedLabel(label);
+    },
+    helpLink() {
+      return boardsStore.scopedLabels.helpLink;
     },
   },
 });

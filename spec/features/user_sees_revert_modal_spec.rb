@@ -17,12 +17,14 @@ describe 'Merge request > User sees revert modal', :js do
   end
 
   it 'shows the revert modal' do
-    expect(page).to have_content('Revert this merge request')
+    page.within('.modal-header') do
+      expect(page).to have_content 'Revert this merge request'
+    end
   end
 
   it 'closes the revert modal with escape keypress' do
     find('#modal-revert-commit').send_keys(:escape)
 
-    expect(page).not_to have_content('Revert this merge request')
+    expect(page).not_to have_selector('#modal-revert-commit', visible: true)
   end
 end

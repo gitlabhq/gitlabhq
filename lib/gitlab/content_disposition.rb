@@ -22,13 +22,13 @@ module Gitlab
     end
 
     # rubocop:disable Style/VariableInterpolation
-    TRADITIONAL_ESCAPED_CHAR = /[^ A-Za-z0-9!#$+.^_`|~-]/
+    TRADITIONAL_ESCAPED_CHAR = /[^ A-Za-z0-9!#$+.^_`|~-]/.freeze
 
     def ascii_filename
       'filename="' + percent_escape(::I18n.transliterate(filename), TRADITIONAL_ESCAPED_CHAR) + '"'
     end
 
-    RFC_5987_ESCAPED_CHAR = /[^A-Za-z0-9!#$&+.^_`|~-]/
+    RFC_5987_ESCAPED_CHAR = /[^A-Za-z0-9!#$&+.^_`|~-]/.freeze
     # rubocop:enable Style/VariableInterpolation
 
     def utf8_filename

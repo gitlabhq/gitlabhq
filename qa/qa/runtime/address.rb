@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module QA
   module Runtime
     class Address
@@ -14,6 +16,13 @@ module QA
         else
           @instance.to_s
         end
+      end
+
+      def self.valid?(value)
+        uri = URI.parse(value)
+        uri.is_a?(URI::HTTP) && !uri.host.nil?
+      rescue URI::InvalidURIError
+        false
       end
     end
   end

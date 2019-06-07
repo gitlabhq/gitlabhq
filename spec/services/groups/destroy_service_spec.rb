@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Groups::DestroyService do
@@ -80,44 +82,6 @@ describe Groups::DestroyService do
         expect(gitlab_shell.exists?(project.repository_storage, remove_path)).to be_falsey
         expect(Project.unscoped.count).to eq(1)
         expect(Group.unscoped.count).to eq(2)
-      end
-    end
-
-    context 'potential race conditions' do
-      context "when the `GroupDestroyWorker` task runs immediately" do
-        it "deletes the group" do
-          # Commit the contents of this spec's transaction so far
-          # so subsequent db connections can see it.
-          #
-          # DO NOT REMOVE THIS LINE, even if you see a WARNING with "No
-          # transaction is currently in progress". Without this, this
-          # spec will always be green, since the group created in setup
-          # cannot be seen by any other connections / threads in this spec.
-          Group.connection.commit_db_transaction
-
-          group_record = run_with_new_database_connection do |conn|
-            conn.execute("SELECT * FROM namespaces WHERE id = #{group.id}").first
-          end
-
-          expect(group_record).not_to be_nil
-
-          # Execute the contents of `GroupDestroyWorker` in a separate thread, to
-          # simulate data manipulation by the Sidekiq worker (different database
-          # connection / transaction).
-          expect(GroupDestroyWorker).to receive(:perform_async).and_wrap_original do |m, group_id, user_id|
-            Thread.new { m[group_id, user_id] }.join(5)
-          end
-
-          # Kick off the initial group destroy in a new thread, so that
-          # it doesn't share this spec's database transaction.
-          Thread.new { described_class.new(group, user).async_execute }.join(5)
-
-          group_record = run_with_new_database_connection do |conn|
-            conn.execute("SELECT * FROM namespaces WHERE id = #{group.id}").first
-          end
-
-          expect(group_record).to be_nil
-        end
       end
     end
   end

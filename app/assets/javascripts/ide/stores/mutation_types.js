@@ -12,6 +12,7 @@ export const SET_LINKS = 'SET_LINKS';
 export const SET_PROJECT = 'SET_PROJECT';
 export const SET_CURRENT_PROJECT = 'SET_CURRENT_PROJECT';
 export const TOGGLE_PROJECT_OPEN = 'TOGGLE_PROJECT_OPEN';
+export const TOGGLE_EMPTY_STATE = 'TOGGLE_EMPTY_STATE';
 
 // Merge Request Mutation Types
 export const SET_MERGE_REQUEST = 'SET_MERGE_REQUEST';

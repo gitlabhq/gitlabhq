@@ -3,6 +3,8 @@ shared_examples 'an unauthorized API user' do
 end
 
 shared_examples 'time tracking endpoints' do |issuable_name|
+  let(:non_member) { create(:user) }
+
   issuable_collection_name = issuable_name.pluralize
 
   describe "POST /projects/:id/#{issuable_collection_name}/:#{issuable_name}_id/time_estimate" do

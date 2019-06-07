@@ -1,4 +1,5 @@
 import _ from 'underscore';
+import $ from 'jquery';
 
 class DirtySubmitForm {
   constructor(form) {
@@ -20,12 +21,18 @@ class DirtySubmitForm {
   }
 
   registerListeners() {
-    const throttledUpdateDirtyInput = _.throttle(
-      event => this.updateDirtyInput(event),
-      DirtySubmitForm.THROTTLE_DURATION,
+    const getThrottledHandlerForInput = _.memoize(() =>
+      _.throttle(event => this.updateDirtyInput(event), DirtySubmitForm.THROTTLE_DURATION),
     );
+
+    const throttledUpdateDirtyInput = event => {
+      const throttledHandler = getThrottledHandlerForInput(event.target.name);
+      throttledHandler(event);
+    };
+
     this.form.addEventListener('input', throttledUpdateDirtyInput);
     this.form.addEventListener('change', throttledUpdateDirtyInput);
+    $(this.form).on('change.select2', throttledUpdateDirtyInput);
     this.form.addEventListener('submit', event => this.formSubmit(event));
   }
 

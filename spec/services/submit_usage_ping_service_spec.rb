@@ -1,6 +1,10 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe SubmitUsagePingService do
+  include StubRequests
+
   context 'when usage ping is disabled' do
     before do
       stub_application_setting(usage_ping_enabled: false)
@@ -97,7 +101,7 @@ describe SubmitUsagePingService do
   end
 
   def stub_response(body)
-    stub_request(:post, 'https://version.gitlab.com/usage_data')
+    stub_full_request('https://version.gitlab.com/usage_data', method: :post)
       .to_return(
         headers: { 'Content-Type' => 'application/json' },
         body: body.to_json

@@ -49,7 +49,7 @@ export default {
       <div class="text-content">
         <h4 class="js-job-empty-state-title text-center">{{ title }}</h4>
 
-        <p v-if="content" class="js-job-empty-state-content">{{ content }}</p>
+        <p v-if="content" class="js-job-empty-state-content text-center">{{ content }}</p>
 
         <div v-if="action" class="text-center">
           <gl-link

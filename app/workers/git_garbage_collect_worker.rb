@@ -23,13 +23,15 @@ class GitGarbageCollectWorker
     end
 
     task = task.to_sym
-    project.link_pool_repository
+
+    ::Projects::GitDeduplicationService.new(project).execute
+
     gitaly_call(task, project.repository.raw_repository)
 
     # Refresh the branch cache in case garbage collection caused a ref lookup to fail
     flush_ref_caches(project) if task == :gc
 
-    project.repository.expire_statistics_caches
+    project.repository.expire_statistics_caches if task != :pack_refs
 
     # In case pack files are deleted, release libgit2 cache and open file
     # descriptors ASAP instead of waiting for Ruby garbage collection
@@ -58,7 +60,12 @@ class GitGarbageCollectWorker
 
   ## `repository` has to be a Gitlab::Git::Repository
   def gitaly_call(task, repository)
-    client = Gitlab::GitalyClient::RepositoryService.new(repository)
+    client = if task == :pack_refs
+               Gitlab::GitalyClient::RefService.new(repository)
+             else
+               Gitlab::GitalyClient::RepositoryService.new(repository)
+             end
+
     case task
     when :gc
       client.garbage_collect(bitmaps_enabled?)
@@ -66,6 +73,8 @@ class GitGarbageCollectWorker
       client.repack_full(bitmaps_enabled?)
     when :incremental_repack
       client.repack_incremental
+    when :pack_refs
+      client.pack_refs
     end
   rescue GRPC::NotFound => e
     Gitlab::GitLogger.error("#{__method__} failed:\nRepository not found")

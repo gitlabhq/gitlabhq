@@ -87,6 +87,11 @@
   padding: $gl-padding;
 }
 
+.mr-widget-info {
+  padding-left: $gl-padding-50 - $gl-padding-32;
+  padding-right: $gl-padding;
+}
+
 .mr-state-widget {
   color: $gl-text-color;
 
@@ -166,6 +171,7 @@
       float: left;
 
       .accept-merge-request {
+        &.ci-preparing,
         &.ci-pending,
         &.ci-running {
           @include btn-blue;
@@ -176,46 +182,6 @@
         &.ci-canceled,
         &.ci-error {
           @include btn-red;
-        }
-      }
-    }
-
-    .accept-control {
-      display: inline-block;
-      float: left;
-      margin: 0;
-      margin-left: 20px;
-      padding: 5px;
-      padding-top: 8px;
-      line-height: 20px;
-
-      &.right {
-        float: right;
-        padding-right: 0;
-      }
-
-      .modify-merge-commit-link {
-        padding: 0;
-        background-color: transparent;
-        border: 0;
-        color: $gl-text-color;
-
-        &:hover,
-        &:focus {
-          text-decoration: underline;
-        }
-      }
-
-      .merge-param-checkbox {
-        margin: 0;
-      }
-
-      a .fa-question-circle {
-        color: $gl-text-color-secondary;
-
-        &:hover,
-        &:focus {
-          color: $link-hover-color;
         }
       }
     }
@@ -401,12 +367,6 @@
         width: 100%;
         text-align: center;
       }
-
-      .accept-control {
-        width: 100%;
-        text-align: center;
-        margin: 0;
-      }
     }
 
     .commit-message-editor {
@@ -491,12 +451,20 @@
   .merge-request {
     padding: 10px 0 10px 15px;
     position: relative;
-    display: -webkit-flex;
     display: flex;
 
     .issuable-info-container {
-      -webkit-flex: 1;
       flex: 1;
+    }
+
+    .issuable-meta {
+      .author-link {
+        display: inline-block;
+      }
+
+      .issuable-comments {
+        height: 18px;
+      }
     }
 
     .merge-request-title {
@@ -551,6 +519,10 @@
 
 .mr-links {
   padding-left: $status-icon-size + $gl-btn-padding;
+
+  &:last-child {
+    padding-bottom: $gl-padding;
+  }
 }
 
 .mr-info-list {
@@ -595,7 +567,6 @@
   .dropdown-toggle .fa {
     color: $gl-text-color;
   }
-
 
   .git-merge-container {
     justify-content: space-between;
@@ -738,7 +709,6 @@
   background: $gray-light;
   color: $gl-text-color;
   margin-top: -1px;
-  border-top: 1px solid $border-color;
 
   .mr-version-menus-container {
     display: flex;
@@ -761,6 +731,7 @@
 
   .content-block {
     padding: $gl-padding-top $gl-padding;
+    border-bottom: 0;
   }
 
   .comments-disabled-notif {
@@ -785,16 +756,18 @@
     padding-right: 5px;
   }
 
+  // Shortening button height by 1px to make compare-versions
+  // header 56px and fit into our 8px design grid
+  button {
+    height: 34px;
+  }
+
   @include media-breakpoint-up(md) {
     position: -webkit-sticky;
     position: sticky;
     top: $header-height + $mr-tabs-height;
-    width: 100%;
-
-    &.is-fileTreeOpen {
-      margin-left: -16px;
-      width: calc(100% + 32px);
-    }
+    margin-left: -16px;
+    width: calc(100% + 32px);
 
     .mr-version-menus-container {
       flex-wrap: nowrap;
@@ -806,15 +779,16 @@
   }
 }
 
-.merge-request-tabs-holder {
+.merge-request-tabs-holder,
+.epic-tabs-holder {
   top: $header-height;
-  z-index: 300;
+  z-index: 250;
   background-color: $white-light;
   border-bottom: 1px solid $border-color;
 
   @include media-breakpoint-up(sm) {
-    position: sticky;
     position: -webkit-sticky;
+    position: sticky;
   }
 
   &.affix {
@@ -824,11 +798,6 @@
     @include media-breakpoint-down(xs) {
       right: 0;
     }
-
-    .merge-request-tabs-container {
-      padding-left: $gl-padding;
-      padding-right: $gl-padding;
-    }
   }
 
   .nav-links {
@@ -836,11 +805,21 @@
   }
 }
 
-.with-performance-bar .merge-request-tabs-holder {
-  top: $header-height + $performance-bar-height;
+.merge-request-tabs-holder.affix .merge-request-tabs-container,
+.epic-tabs-holder.affix .epic-tabs-container {
+  padding-left: $gl-padding;
+  padding-right: $gl-padding;
 }
 
-.merge-request-tabs {
+.with-performance-bar {
+  .merge-request-tabs-holder,
+  .epic-tabs-holder {
+    top: $header-height + $performance-bar-height;
+  }
+}
+
+.merge-request-tabs,
+.epic-tabs {
   display: flex;
   flex-wrap: nowrap;
   margin-bottom: 0;
@@ -848,7 +827,8 @@
 }
 
 .limit-container-width {
-  .merge-request-tabs-container {
+  .merge-request-tabs-container,
+  .epic-tabs-container {
     max-width: $limited-layout-width;
     margin-left: auto;
     margin-right: auto;
@@ -861,28 +841,53 @@
   }
 }
 
-.merge-request-tabs-container {
+.merge-request-tabs-container,
+.epic-tabs-container {
   display: flex;
   justify-content: space-between;
 
-  @include media-breakpoint-down(sm) {
-    flex-direction: column-reverse;
+  @include media-breakpoint-down(xs) {
+    .discussion-filter-container,
+    .line-resolve-all-container {
+      margin-bottom: $gl-padding-4;
+    }
   }
 
   .discussion-filter-container {
-    margin-top: $gl-padding-8;
-
     &:not(:only-child) {
-      padding-right: $gl-padding-8;
+      margin: $gl-padding-4;
+    }
+  }
+
+  .merge-request-tabs {
+    height: $grid-size * 6;
+  }
+}
+
+// Wrap MR tabs/buttons so you don't have to scroll on desktop
+@include media-breakpoint-down(md) {
+  .merge-request-tabs-container,
+  .epic-tabs-container {
+    flex-direction: column-reverse;
+    padding-top: $gl-padding-8;
+  }
+}
+
+@include media-breakpoint-down(lg) {
+  .right-sidebar-expanded {
+    .merge-request-tabs-container,
+    .epic-tabs-container {
+      flex-direction: column-reverse;
+      align-items: flex-start;
+      padding-top: $gl-padding-8;
     }
   }
 }
 
 .limit-container-width:not(.container-limited) {
-  .merge-request-tabs-holder:not(.affix) {
-    .merge-request-tabs-container {
-      max-width: $limited-layout-width - ($gl-padding * 2);
-    }
+  .merge-request-tabs-holder:not(.affix) .merge-request-tabs-container,
+  .epic-tabs-holder:not(.affix) .epic-tabs-container {
+    max-width: $limited-layout-width - ($gl-padding * 2);
   }
 }
 
@@ -955,10 +960,6 @@
     }
   }
 
-  .btn svg {
-    fill: $gray-700;
-  }
-
   .dropdown-menu {
     width: 400px;
   }
@@ -1017,7 +1018,12 @@
   background: $black-transparent;
 }
 
-.source-branch-removal-status {
-  padding-left: 50px;
-  padding-bottom: $gl-padding;
+.mr-compare {
+  .diff-file .file-title-flex-parent {
+    top: $header-height + 51px;
+
+    .with-performance-bar & {
+      top: $performance-bar-height + $header-height + 51px;
+    }
+  }
 }

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe UpdateHeadPipelineForMergeRequestWorker do
@@ -18,7 +20,7 @@ describe UpdateHeadPipelineForMergeRequestWorker do
 
       context 'when merge request sha does not equal pipeline sha' do
         before do
-          merge_request.merge_request_diff.update(head_commit_sha: 'different_sha')
+          merge_request.merge_request_diff.update(head_commit_sha: Digest::SHA1.hexdigest(SecureRandom.hex))
         end
 
         it 'does not update head pipeline' do
@@ -39,7 +41,7 @@ describe UpdateHeadPipelineForMergeRequestWorker do
       let!(:merge_request_pipeline) do
         create(:ci_pipeline,
                project: project,
-               source: :merge_request,
+               source: :merge_request_event,
                sha: latest_sha,
                merge_request: merge_request)
       end

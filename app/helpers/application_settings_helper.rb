@@ -119,6 +119,39 @@ module ApplicationSettingsHelper
     options_for_select(options, selected)
   end
 
+  def external_authorization_description
+    _("If enabled, access to projects will be validated on an external service"\
+        " using their classification label.")
+  end
+
+  def external_authorization_timeout_help_text
+    _("Time in seconds GitLab will wait for a response from the external "\
+        "service. When the service does not respond in time, access will be "\
+        "denied.")
+  end
+
+  def external_authorization_url_help_text
+    _("When leaving the URL blank, classification labels can still be "\
+        "specified without disabling cross project features or performing "\
+        "external authorization checks.")
+  end
+
+  def external_authorization_client_certificate_help_text
+    _("The X509 Certificate to use when mutual TLS is required to communicate "\
+        "with the external authorization service. If left blank, the server "\
+        "certificate is still validated when accessing over HTTPS.")
+  end
+
+  def external_authorization_client_key_help_text
+    _("The private key to use when a client certificate is provided. This value "\
+        "is encrypted at rest.")
+  end
+
+  def external_authorization_client_pass_help_text
+    _("The passphrase required to decrypt the private key. This is optional "\
+        "and the value is encrypted at rest.")
+  end
+
   def visible_attributes
     [
       :admin_notification_email,
@@ -127,6 +160,7 @@ module ApplicationSettingsHelper
       :akismet_api_key,
       :akismet_enabled,
       :allow_local_requests_from_hooks_and_services,
+      :dns_rebinding_protection_enabled,
       :archive_builds_in_human_readable,
       :authorized_keys_enabled,
       :auto_devops_enabled,
@@ -137,6 +171,7 @@ module ApplicationSettingsHelper
       :default_artifacts_expire_in,
       :default_branch_protection,
       :default_group_visibility,
+      :default_project_creation,
       :default_project_visibility,
       :default_projects_limit,
       :default_snippet_visibility,
@@ -237,7 +272,23 @@ module ApplicationSettingsHelper
     ]
   end
 
+  def external_authorization_service_attributes
+    [
+      :external_auth_client_cert,
+      :external_auth_client_key,
+      :external_auth_client_key_pass,
+      :external_authorization_service_default_label,
+      :external_authorization_service_enabled,
+      :external_authorization_service_timeout,
+      :external_authorization_service_url
+    ]
+  end
+
   def expanded_by_default?
     Rails.env.test?
+  end
+
+  def instance_clusters_enabled?
+    can?(current_user, :read_cluster, Clusters::Instance.new)
   end
 end

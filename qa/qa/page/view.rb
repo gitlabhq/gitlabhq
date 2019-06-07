@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'pathname'
 
 module QA
@@ -48,8 +50,8 @@ module QA
           @elements = []
         end
 
-        def element(name, pattern = nil)
-          @elements.push(Page::Element.new(name, pattern))
+        def element(name, *args)
+          @elements.push(Page::Element.new(name, *args))
         end
       end
     end

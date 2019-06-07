@@ -2,9 +2,17 @@
 
 module ApplicationSettings
   class UpdateService < ApplicationSettings::BaseService
+    include ValidatesClassificationLabel
+
     attr_reader :params, :application_setting
 
     def execute
+      validate_classification_label(application_setting, :external_authorization_service_default_label)
+
+      if application_setting.errors.any?
+        return false
+      end
+
       update_terms(@params.delete(:terms))
 
       if params.key?(:performance_bar_allowed_group_path)
@@ -38,7 +46,7 @@ module ApplicationSettings
     def performance_bar_allowed_group_id
       performance_bar_enabled = !params.key?(:performance_bar_enabled) || params.delete(:performance_bar_enabled)
       group_full_path = params.delete(:performance_bar_allowed_group_path)
-      return nil unless Gitlab::Utils.to_boolean(performance_bar_enabled)
+      return unless Gitlab::Utils.to_boolean(performance_bar_enabled)
 
       Group.find_by_full_path(group_full_path)&.id if group_full_path.present?
     end

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Ci
-  class PipelineChatData < ActiveRecord::Base
+  class PipelineChatData < ApplicationRecord
     self.table_name = 'ci_pipeline_chat_data'
 
     belongs_to :chat_name

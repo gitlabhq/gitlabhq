@@ -39,19 +39,19 @@ class Admin::UsersController < Admin::ApplicationController
 
       warden.set_user(user, scope: :user)
 
-      Gitlab::AppLogger.info("User #{current_user.username} has started impersonating #{user.username}")
+      Gitlab::AppLogger.info(_("User %{current_user_username} has started impersonating %{username}") % { current_user_username: current_user.username, username: user.username })
 
-      flash[:alert] = "You are now impersonating #{user.username}"
+      flash[:alert] = _("You are now impersonating %{username}") % { username: user.username }
 
       redirect_to root_path
     else
       flash[:alert] =
         if user.blocked?
-          "You cannot impersonate a blocked user"
+          _("You cannot impersonate a blocked user")
         elsif user.internal?
-          "You cannot impersonate an internal user"
+          _("You cannot impersonate an internal user")
         else
-          "You cannot impersonate a user who cannot log in"
+          _("You cannot impersonate a user who cannot log in")
         end
 
       redirect_to admin_user_path(user)
@@ -60,35 +60,35 @@ class Admin::UsersController < Admin::ApplicationController
 
   def block
     if update_user { |user| user.block }
-      redirect_back_or_admin_user(notice: "Successfully blocked")
+      redirect_back_or_admin_user(notice: _("Successfully blocked"))
     else
-      redirect_back_or_admin_user(alert: "Error occurred. User was not blocked")
+      redirect_back_or_admin_user(alert: _("Error occurred. User was not blocked"))
     end
   end
 
   def unblock
     if user.ldap_blocked?
-      redirect_back_or_admin_user(alert: "This user cannot be unlocked manually from GitLab")
+      redirect_back_or_admin_user(alert: _("This user cannot be unlocked manually from GitLab"))
     elsif update_user { |user| user.activate }
-      redirect_back_or_admin_user(notice: "Successfully unblocked")
+      redirect_back_or_admin_user(notice: _("Successfully unblocked"))
     else
-      redirect_back_or_admin_user(alert: "Error occurred. User was not unblocked")
+      redirect_back_or_admin_user(alert: _("Error occurred. User was not unblocked"))
     end
   end
 
   def unlock
     if update_user { |user| user.unlock_access! }
-      redirect_back_or_admin_user(alert: "Successfully unlocked")
+      redirect_back_or_admin_user(alert: _("Successfully unlocked"))
     else
-      redirect_back_or_admin_user(alert: "Error occurred. User was not unlocked")
+      redirect_back_or_admin_user(alert: _("Error occurred. User was not unlocked"))
     end
   end
 
   def confirm
     if update_user { |user| user.confirm }
-      redirect_back_or_admin_user(notice: "Successfully confirmed")
+      redirect_back_or_admin_user(notice: _("Successfully confirmed"))
     else
-      redirect_back_or_admin_user(alert: "Error occurred. User was not confirmed")
+      redirect_back_or_admin_user(alert: _("Error occurred. User was not confirmed"))
     end
   end
 
@@ -96,7 +96,7 @@ class Admin::UsersController < Admin::ApplicationController
     update_user { |user| user.disable_two_factor! }
 
     redirect_to admin_user_path(user),
-      notice: 'Two-factor Authentication has been disabled for this user'
+      notice: _('Two-factor Authentication has been disabled for this user')
   end
 
   def create
@@ -109,7 +109,7 @@ class Admin::UsersController < Admin::ApplicationController
 
     respond_to do |format|
       if @user.persisted?
-        format.html { redirect_to [:admin, @user], notice: 'User was successfully created.' }
+        format.html { redirect_to [:admin, @user], notice: _('User was successfully created.') }
         format.json { render json: @user, status: :created, location: @user }
       else
         format.html { render "new" }
@@ -138,7 +138,7 @@ class Admin::UsersController < Admin::ApplicationController
       end
 
       if result[:status] == :success
-        format.html { redirect_to [:admin, user], notice: 'User was successfully updated.' }
+        format.html { redirect_to [:admin, user], notice: _('User was successfully updated.') }
         format.json { head :ok }
       else
         # restore username to keep form action url.
@@ -153,7 +153,7 @@ class Admin::UsersController < Admin::ApplicationController
     user.delete_async(deleted_by: current_user, params: params.permit(:hard_delete))
 
     respond_to do |format|
-      format.html { redirect_to admin_users_path, status: 302, notice: "The user is being deleted." }
+      format.html { redirect_to admin_users_path, status: 302, notice: _("The user is being deleted.") }
       format.json { head :ok }
     end
   end
@@ -164,11 +164,11 @@ class Admin::UsersController < Admin::ApplicationController
 
     respond_to do |format|
       if success
-        format.html { redirect_back_or_admin_user(notice: 'Successfully removed email.') }
+        format.html { redirect_back_or_admin_user(notice: _('Successfully removed email.')) }
         format.json { head :ok }
       else
-        format.html { redirect_back_or_admin_user(alert: 'There was an error removing the e-mail.') }
-        format.json { render json: 'There was an error removing the e-mail.', status: :bad_request }
+        format.html { redirect_back_or_admin_user(alert: _('There was an error removing the e-mail.')) }
+        format.json { render json: _('There was an error removing the e-mail.'), status: :bad_request }
       end
     end
   end

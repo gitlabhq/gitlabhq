@@ -1,10 +1,6 @@
 ---
-last_updated: 2018-11-19
-author: Marcia Ramos
-author_gitlab: marcia
-level: beginner
-article_type: user guide
-date: 2017-02-22
+last_updated: 2019-06-04
+type: concepts, reference, howto
 ---
 
 # GitLab Pages custom domains and SSL/TLS Certificates
@@ -20,13 +16,13 @@ you should consider first, which we'll cover in this guide:
 
 1. Either if you're adding a **root domain** or a **subdomain**, for which
    you'll need to set up [DNS records](#dns-records)
-1. Whether you want to add an [SSL/TLS certificate](#ssl-tls-certificates) or not
+1. Whether you want to add an [SSL/TLS certificate](#ssltls-certificates) or not
 
 To finish the association, you need to [add your domain to your project's Pages settings](#add-your-custom-domain-to-gitlab-pages-settings).
 
 Let's start from the beginning with [DNS records](#dns-records).
 If you already know how they work and want to skip the introduction to DNS,
-you may be interested in skipping it until the [TL;DR](#tl-dr) section below.
+you may be interested in skipping it until the [TL;DR](#tldr) section below.
 
 ### DNS Records
 
@@ -96,7 +92,7 @@ you need to log into your domain's admin control panel and add a DNS
 `CNAME` record pointing your subdomain to your website URL
 (`namespace.gitlab.io`) address.
 
-Notice that, despite it's a user or project website, the `CNAME`
+Note that, whether it's a user or a project website, the `CNAME`
 should point to your Pages domain (`namespace.gitlab.io`),
 without any `/project-name`.
 
@@ -114,6 +110,8 @@ containing a verification code. The code will be displayed after you
 If using a [DNS A record](#dns-a-record), you can place the TXT record directly
 under the domain. If using a [DNS CNAME record](#dns-cname-record), the two record types won't
 co-exist, so you need to place the TXT record in a special subdomain of its own.
+
+If the domain cannot be verified for 7 days, it will be removed from the GitLab project.
 
 #### TL;DR
 
@@ -148,8 +146,8 @@ verify your domain's ownership with a TXT record:
 
 Once you've set the DNS record, you'll need navigate to your project's
 **Setting > Pages** and click **+ New domain** to add your custom domain to
-GitLab Pages. You can choose whether to add an [SSL/TLS certificate](#ssl-tls-certificates)
-to make your website accessible under HTTPS or leave it blank. If don't add a certificate,
+GitLab Pages. You can choose whether to add an [SSL/TLS certificate](#ssltls-certificates)
+to make your website accessible under HTTPS or leave it blank. If you don't add a certificate,
 your site will be accessible only via HTTP:
 
 ![Add new domain](img/add_certificate_to_pages.png)
@@ -174,9 +172,6 @@ From that page, you can view, add, and remove them.
 Note that [DNS propagation may take some time (up to 24h)](http://www.inmotionhosting.com/support/domain-names/dns-nameserver-changes/domain-names-dns-changes),
 although it's usually a matter of minutes to complete. Until it does, verification
 will fail and attempts to visit your domain will respond with a 404.
-
-Read through the [general documentation on GitLab Pages](introduction.md#add-a-custom-domain-to-your-pages-website) to learn more about adding
-custom domains to GitLab Pages sites.
 
 ### Redirecting `www.domain.com` to `domain.com` with Cloudflare
 

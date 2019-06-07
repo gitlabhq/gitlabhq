@@ -15,8 +15,8 @@ module ErrorTracking
         result = setting.list_sentry_projects
       rescue Sentry::Client::Error => e
         return error(e.message, :bad_request)
-      rescue Sentry::Client::SentryError => e
-        return error(e.message, :unprocessable_entity)
+      rescue Sentry::Client::MissingKeysError => e
+        return error(e.message, :internal_server_error)
       end
 
       success(projects: result[:projects])
@@ -28,8 +28,8 @@ module ErrorTracking
       (project.error_tracking_setting || project.build_error_tracking_setting).tap do |setting|
         setting.api_url = ErrorTracking::ProjectErrorTrackingSetting.build_api_url_from(
           api_host: params[:api_host],
-          organization_slug: nil,
-          project_slug: nil
+          organization_slug: 'org',
+          project_slug: 'proj'
         )
 
         setting.token = params[:token]

@@ -3,12 +3,13 @@ require Rails.root.join('db', 'post_migrate', '20181219145520_migrate_cluster_co
 
 describe MigrateClusterConfigureWorkerSidekiqQueue, :sidekiq, :redis do
   include Gitlab::Database::MigrationHelpers
+  include StubWorker
 
   context 'when there are jobs in the queue' do
     it 'correctly migrates queue when migrating up' do
       Sidekiq::Testing.disable! do
-        stubbed_worker(queue: 'gcp_cluster:cluster_platform_configure').perform_async('Something', [1])
-        stubbed_worker(queue: 'gcp_cluster:cluster_configure').perform_async('Something', [1])
+        stub_worker(queue: 'gcp_cluster:cluster_platform_configure').perform_async('Something', [1])
+        stub_worker(queue: 'gcp_cluster:cluster_configure').perform_async('Something', [1])
 
         described_class.new.up
 
@@ -19,12 +20,12 @@ describe MigrateClusterConfigureWorkerSidekiqQueue, :sidekiq, :redis do
 
     it 'does not affect other queues under the same namespace' do
       Sidekiq::Testing.disable! do
-        stubbed_worker(queue: 'gcp_cluster:cluster_install_app').perform_async('Something', [1])
-        stubbed_worker(queue: 'gcp_cluster:cluster_provision').perform_async('Something', [1])
-        stubbed_worker(queue: 'gcp_cluster:cluster_wait_for_app_installation').perform_async('Something', [1])
-        stubbed_worker(queue: 'gcp_cluster:wait_for_cluster_creation').perform_async('Something', [1])
-        stubbed_worker(queue: 'gcp_cluster:cluster_wait_for_ingress_ip_address').perform_async('Something', [1])
-        stubbed_worker(queue: 'gcp_cluster:cluster_project_configure').perform_async('Something', [1])
+        stub_worker(queue: 'gcp_cluster:cluster_install_app').perform_async('Something', [1])
+        stub_worker(queue: 'gcp_cluster:cluster_provision').perform_async('Something', [1])
+        stub_worker(queue: 'gcp_cluster:cluster_wait_for_app_installation').perform_async('Something', [1])
+        stub_worker(queue: 'gcp_cluster:wait_for_cluster_creation').perform_async('Something', [1])
+        stub_worker(queue: 'gcp_cluster:cluster_wait_for_ingress_ip_address').perform_async('Something', [1])
+        stub_worker(queue: 'gcp_cluster:cluster_project_configure').perform_async('Something', [1])
 
         described_class.new.up
 
@@ -39,7 +40,7 @@ describe MigrateClusterConfigureWorkerSidekiqQueue, :sidekiq, :redis do
 
     it 'correctly migrates queue when migrating down' do
       Sidekiq::Testing.disable! do
-        stubbed_worker(queue: 'gcp_cluster:cluster_configure').perform_async('Something', [1])
+        stub_worker(queue: 'gcp_cluster:cluster_configure').perform_async('Something', [1])
 
         described_class.new.down
 
@@ -56,13 +57,6 @@ describe MigrateClusterConfigureWorkerSidekiqQueue, :sidekiq, :redis do
 
     it 'does not raise error when migrating down' do
       expect { described_class.new.down }.not_to raise_error
-    end
-  end
-
-  def stubbed_worker(queue:)
-    Class.new do
-      include Sidekiq::Worker
-      sidekiq_options queue: queue
     end
   end
 end

@@ -55,6 +55,7 @@ module Gitlab
             source_branch: pull_request.formatted_source_branch,
             target_branch: pull_request.target_branch,
             state: pull_request.state,
+            state_id: ::MergeRequest.available_states[pull_request.state],
             milestone_id: milestone_finder.id_for(pull_request),
             author_id: author_id,
             assignee_id: user_finder.assignee_id_for(pull_request),
@@ -89,7 +90,7 @@ module Gitlab
 
           return if project.repository.branch_exists?(source_branch)
 
-          project.repository.add_branch(merge_request.author, source_branch, pull_request.source_branch_sha)
+          project.repository.add_branch(project.creator, source_branch, pull_request.source_branch_sha)
         rescue Gitlab::Git::CommandError => e
           Gitlab::Sentry.track_acceptable_exception(e,
                                                     extra: {

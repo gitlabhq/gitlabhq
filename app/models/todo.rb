@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Todo < ActiveRecord::Base
+class Todo < ApplicationRecord
   include Sortable
   include FromUnion
 
@@ -31,8 +31,16 @@ class Todo < ActiveRecord::Base
   belongs_to :note
   belongs_to :project
   belongs_to :group
-  belongs_to :target, polymorphic: true, touch: true # rubocop:disable Cop/PolymorphicAssociations
+  belongs_to :target, -> {
+    if self.klass.respond_to?(:with_api_entity_associations)
+      self.with_api_entity_associations
+    else
+      self
+    end
+  }, polymorphic: true, touch: true # rubocop:disable Cop/PolymorphicAssociations
+
   belongs_to :user
+  belongs_to :issue, -> { where("target_type = 'Issue'") }, foreign_key: :target_id
 
   delegate :name, :email, to: :author, prefix: true, allow_nil: true
 
@@ -52,6 +60,8 @@ class Todo < ActiveRecord::Base
   scope :for_type, -> (type) { where(target_type: type) }
   scope :for_target, -> (id) { where(target_id: id) }
   scope :for_commit, -> (id) { where(commit_id: id) }
+  scope :with_api_entity_associations, -> { preload(:target, :author, :note, group: :route, project: [:route, { namespace: :route }]) }
+  scope :joins_issue_and_assignees, -> { left_joins(issue: :assignees) }
 
   state_machine :state, initial: :pending do
     event :done do

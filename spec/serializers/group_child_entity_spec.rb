@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe GroupChildEntity do
+  include ExternalAuthorizationServiceHelpers
   include Gitlab::Routing.url_helpers
 
   let(:user) { create(:user) }
@@ -108,5 +109,23 @@ describe GroupChildEntity do
     end
 
     it_behaves_like 'group child json'
+  end
+
+  describe 'for a project with external authorization enabled' do
+    let(:object) do
+      create(:project, :with_avatar,
+             description: 'Awesomeness')
+    end
+
+    before do
+      enable_external_authorization_service_check
+      object.add_maintainer(user)
+    end
+
+    it 'does not hit the external authorization service' do
+      expect(::Gitlab::ExternalAuthorization).not_to receive(:access_allowed?)
+
+      expect(json[:can_edit]).to eq(false)
+    end
   end
 end

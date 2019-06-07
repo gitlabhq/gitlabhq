@@ -1,5 +1,7 @@
 import renderPDF from '~/blob/pdf';
-import testPDF from '../../fixtures/blob/pdf/test.pdf';
+import { FIXTURES_PATH } from 'spec/test_constants';
+
+const testPDF = `${FIXTURES_PATH}/blob/pdf/test.pdf`;
 
 describe('PDF renderer', () => {
   let viewer;
@@ -15,10 +17,10 @@ describe('PDF renderer', () => {
     }
   };
 
-  preloadFixtures('static/pdf_viewer.html.raw');
+  preloadFixtures('static/pdf_viewer.html');
 
   beforeEach(() => {
-    loadFixtures('static/pdf_viewer.html.raw');
+    loadFixtures('static/pdf_viewer.html');
     viewer = document.getElementById('js-pdf-viewer');
     viewer.dataset.endpoint = testPDF;
   });

@@ -9,6 +9,8 @@ class Projects::BlobController < Projects::ApplicationController
   include ActionView::Helpers::SanitizeHelper
   prepend_before_action :authenticate_user!, only: [:edit]
 
+  around_action :allow_gitaly_ref_name_caching, only: [:show]
+
   before_action :require_non_empty_project, except: [:new, :create]
   before_action :authorize_download_code!
 
@@ -29,7 +31,7 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def create
-    create_commit(Files::CreateService, success_notice: "The file has been successfully created.",
+    create_commit(Files::CreateService, success_notice: _("The file has been successfully created."),
                                         success_path: -> { project_blob_path(@project, File.join(@branch_name, @file_path)) },
                                         failure_view: :new,
                                         failure_path: project_new_blob_path(@project, @ref))
@@ -81,7 +83,7 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def destroy
-    create_commit(Files::DeleteService, success_notice: "The file has been successfully deleted.",
+    create_commit(Files::DeleteService, success_notice: _("The file has been successfully deleted."),
                                         success_path: -> { after_delete_path },
                                         failure_view: :show,
                                         failure_path: project_blob_path(@project, @id))
@@ -90,64 +92,20 @@ class Projects::BlobController < Projects::ApplicationController
   def diff
     apply_diff_view_cookie!
 
-    @blob.load_all_data!
-    @lines = @blob.present.highlight.lines
+    @form = Blobs::UnfoldPresenter.new(blob, params.to_unsafe_h)
 
-    @form = UnfoldForm.new(params.to_unsafe_h)
-
-    @lines = @lines[@form.since - 1..@form.to - 1].map(&:html_safe)
-
-    if @form.bottom?
-      @match_line = ''
-    else
-      lines_length = @lines.length - 1
-      line = [@form.since, lines_length].join(',')
-      @match_line = "@@ -#{line}+#{line} @@"
-    end
-
-    # We can keep only 'render_diff_lines' from this conditional when
+    # keep only json rendering when
     # https://gitlab.com/gitlab-org/gitlab-ce/issues/44988 is done
     if rendered_for_merge_request?
-      render_diff_lines
+      render json: DiffLineSerializer.new.represent(@form.diff_lines)
     else
+      @lines = @form.lines
+      @match_line = @form.match_line_text
       render layout: false
     end
   end
 
   private
-
-  # Converts a String array to Gitlab::Diff::Line array
-  def render_diff_lines
-    @lines.map! do |line|
-      # These are marked as context lines but are loaded from blobs.
-      # We also have context lines loaded from diffs in other places.
-      diff_line = Gitlab::Diff::Line.new(line, nil, nil, nil, nil)
-      diff_line.rich_text = line
-      diff_line
-    end
-
-    add_match_line
-
-    render json: DiffLineSerializer.new.represent(@lines)
-  end
-
-  def add_match_line
-    return unless @form.unfold?
-
-    if @form.bottom? && @form.to < @blob.lines.size
-      old_pos = @form.to - @form.offset
-      new_pos = @form.to
-    elsif @form.since != 1
-      old_pos = new_pos = @form.since
-    end
-
-    # Match line is not needed when it reaches the top limit or bottom limit of the file.
-    return unless new_pos
-
-    @match_line = Gitlab::Diff::Line.new(@match_line, 'match', nil, old_pos, new_pos)
-
-    @form.bottom? ? @lines.push(@match_line) : @lines.unshift(@match_line)
-  end
 
   def blob
     @blob ||= @repository.blob_at(@commit.id, @path)
@@ -216,8 +174,7 @@ class Projects::BlobController < Projects::ApplicationController
       end
 
     if params[:file].present?
-      params[:content] = Base64.encode64(params[:file].read)
-      params[:encoding] = 'base64'
+      params[:content] = params[:file]
     end
 
     @commit_params = {
@@ -231,6 +188,8 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def validate_diff_params
+    return if params[:full]
+
     if [:since, :to, :offset].any? { |key| params[key].blank? }
       head :ok
     end

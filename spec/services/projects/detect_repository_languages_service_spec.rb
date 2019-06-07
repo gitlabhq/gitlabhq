@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Projects::DetectRepositoryLanguagesService, :clean_gitlab_redis_shared_state do
   set(:project) { create(:project, :repository) }
 
-  subject { described_class.new(project, project.owner) }
+  subject { described_class.new(project) }
 
   describe '#execute' do
     context 'without previous detection' do
@@ -18,6 +20,10 @@ describe Projects::DetectRepositoryLanguagesService, :clean_gitlab_redis_shared_
         names = subject.execute.map(&:name)
 
         expect(names).to eq(%w[Ruby JavaScript HTML CoffeeScript])
+      end
+
+      it 'updates detected_repository_languages flag' do
+        expect { subject.execute }.to change(project, :detected_repository_languages).to(true)
       end
     end
 
@@ -35,6 +41,12 @@ describe Projects::DetectRepositoryLanguagesService, :clean_gitlab_redis_shared_
         repository_languages = subject.execute.map(&:name)
 
         expect(repository_languages).to eq(%w[Ruby D])
+      end
+
+      it "doesn't touch detected_repository_languages flag" do
+        expect(project).not_to receive(:update_column).with(:detected_repository_languages, true)
+
+        subject.execute
       end
     end
 

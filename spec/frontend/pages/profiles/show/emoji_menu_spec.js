@@ -13,7 +13,7 @@ describe('EmojiMenu', () => {
   let dummyEmojiList;
 
   beforeEach(() => {
-    dummySelectEmojiCallback = jasmine.createSpy('dummySelectEmojiCallback');
+    dummySelectEmojiCallback = jest.fn().mockName('dummySelectEmojiCallback');
     dummyEmojiList = {
       glEmojiTag() {
         return dummyEmojiTag;
@@ -75,19 +75,19 @@ describe('EmojiMenu', () => {
 
       expect(emojiMenu.registerEventListener).toHaveBeenCalledWith(
         'one',
-        jasmine.anything(),
+        expect.anything(),
         'mouseenter focus',
         dummyToggleButtonSelector,
         'mouseenter focus',
-        jasmine.anything(),
+        expect.anything(),
       );
 
       expect(emojiMenu.registerEventListener).toHaveBeenCalledWith(
         'on',
-        jasmine.anything(),
+        expect.anything(),
         'click',
         dummyToggleButtonSelector,
-        jasmine.anything(),
+        expect.anything(),
       );
     });
 
@@ -96,10 +96,10 @@ describe('EmojiMenu', () => {
 
       expect(emojiMenu.registerEventListener).toHaveBeenCalledWith(
         'on',
-        jasmine.anything(),
+        expect.anything(),
         'click',
         `.js-awards-block .js-emoji-btn, .${dummyMenuClass} .js-emoji-btn`,
-        jasmine.anything(),
+        expect.anything(),
       );
     });
   });

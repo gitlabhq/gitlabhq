@@ -59,7 +59,11 @@ module Gitlab
       end
 
       def member_hash(member)
-        parsed_hash(member).merge('source_id' => @project.id, 'importing' => true)
+        parsed_hash(member).merge(
+          'source_id' => @project.id,
+          'importing' => true,
+          'access_level' => [member['access_level'], ProjectMember::MAINTAINER].min
+        ).except('user_id')
       end
 
       def parsed_hash(member)

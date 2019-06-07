@@ -8,11 +8,11 @@ module QA
         Page::Main::Login.act { sign_in_using_credentials }
 
         deploy_token_name = 'deploy token name'
-        deploy_token_expires_at = Date.today + 7 # 1 Week from now
+        one_week_from_now = Date.today + 7
 
         deploy_token = Resource::DeployToken.fabricate! do |resource|
           resource.name = deploy_token_name
-          resource.expires_at = deploy_token_expires_at
+          resource.expires_at = one_week_from_now
         end
 
         expect(deploy_token.username.length).to be > 0

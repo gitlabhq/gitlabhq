@@ -1,5 +1,0 @@
----
-title: Remove duplicate XHR request when requesting new pipeline page
-merge_request: 25506
-author:
-type: fixed

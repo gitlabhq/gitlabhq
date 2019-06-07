@@ -50,6 +50,14 @@ FactoryBot.define do
         failure_reason :config_error
       end
 
+      trait :created do
+        status :created
+      end
+
+      trait :preparing do
+        status :preparing
+      end
+
       trait :blocked do
         status :manual
       end
@@ -79,6 +87,12 @@ FactoryBot.define do
 
         after(:build) do |pipeline, evaluator|
           pipeline.builds << build(:ci_build, :test_reports, pipeline: pipeline, project: pipeline.project)
+        end
+      end
+
+      trait :with_job do
+        after(:build) do |pipeline, evaluator|
+          pipeline.builds << build(:ci_build, pipeline: pipeline, project: pipeline.project)
         end
       end
 

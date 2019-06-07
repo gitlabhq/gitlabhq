@@ -2,7 +2,7 @@
 
 require 'digest/md5'
 
-class Key < ActiveRecord::Base
+class Key < ApplicationRecord
   include AfterCommitQueue
   include Sortable
 
@@ -57,6 +57,11 @@ class Key < ActiveRecord::Base
 
   def shell_id
     "key-#{id}"
+  end
+
+  # EE overrides this
+  def can_delete?
+    true
   end
 
   # rubocop: disable CodeReuse/ServiceClass

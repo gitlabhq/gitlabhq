@@ -6,10 +6,11 @@
     = s_('Environment variables are configured by your administrator to be %{link_start}protected%{link_end} by default').html_safe % { link_start: link_start, link_end: '</a>'.html_safe }
 
 .row
-  .col-lg-12.js-ci-variable-list-section{ data: { save_endpoint: save_endpoint } }
+  .col-lg-12.js-ci-variable-list-section{ data: { save_endpoint: save_endpoint, maskable_regex: ci_variable_maskable_regex } }
     .hide.alert.alert-danger.js-ci-variable-error-box
 
     %ul.ci-variable-list
+      = render 'ci/variables/variable_header'
       - @variables.each.each do |variable|
         = render 'ci/variables/variable_row', form_field: 'variables', variable: variable
       = render 'ci/variables/variable_row', form_field: 'variables'

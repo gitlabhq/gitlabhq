@@ -75,6 +75,10 @@ FactoryBot.define do
       status 'created'
     end
 
+    trait :preparing do
+      status 'preparing'
+    end
+
     trait :scheduled do
       schedulable
       status 'scheduled'
@@ -244,17 +248,6 @@ FactoryBot.define do
       runner factory: :ci_runner
     end
 
-    trait :legacy_artifacts do
-      after(:create) do |build, _|
-        build.update!(
-          legacy_artifacts_file: fixture_file_upload(
-            Rails.root.join('spec/fixtures/ci_build_artifacts.zip'), 'application/zip'),
-          legacy_artifacts_metadata: fixture_file_upload(
-            Rails.root.join('spec/fixtures/ci_build_artifacts_metadata.gz'), 'application/x-gzip')
-        )
-      end
-    end
-
     trait :artifacts do
       after(:create) do |build|
         create(:ci_job_artifact, :archive, job: build, expire_at: build.artifacts_expire_at)
@@ -330,6 +323,11 @@ FactoryBot.define do
     trait :api_failure do
       failed
       failure_reason 2
+    end
+
+    trait :prerequisite_failure do
+      failed
+      failure_reason 10
     end
 
     trait :with_runner_session do

@@ -20,22 +20,37 @@ importance of involving reviewer(s) in the section on the responsibility of the 
 If you need some guidance (e.g. it's your first merge request), feel free to ask
 one of the [Merge request coaches][team].
 
-If you need assistance with security scans or comments, feel free to include the 
+If you need assistance with security scans or comments, feel free to include the
 Security Team (`@gitlab-com/gl-security`) in the review.
+
+Depending on the areas your merge request touches, it must be **approved** by one
+or more [maintainers](https://about.gitlab.com/handbook/engineering/workflow/code-review/#maintainer):
+
+For approvals, we use the approval functionality found in the merge request
+widget. Reviewers can add their approval by [approving additionally](../user/project/merge_requests/merge_request_approvals.md#adding-or-removing-an-approval).
+
+Getting your merge request **merged** also requires a maintainer. If it requires
+more than one approval, the last maintainer to review and approve it will also merge it.
+
+### Reviewer roulette
 
 The `danger-review` CI job will randomly pick a reviewer and a maintainer for
 each area of the codebase that your merge request seems to touch. It only makes
 recommendations - feel free to override it if you think someone else is a better
 fit!
 
-Depending on the areas your merge request touches, it must be **approved** by one
-or more [maintainers](https://about.gitlab.com/handbook/engineering/workflow/code-review/#maintainer):
+It picks reviewers and maintainers from the list at the
+[engineering projects](https://about.gitlab.com/handbook/engineering/projects/)
+page, with these behaviours:
 
-For approvals, we use the approval functionality found in the merge request
-widget. Reviewers can add their approval by [approving additionally](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html#adding-or-removing-an-approval).
-
-Getting your merge request **merged** also requires a maintainer. If it requires
-more than one approval, the last maintainer to review and approve it will also merge it.
+1. It will not pick people whose [GitLab status](../user/profile/index.md#current-status)
+   contains the string 'OOO'.
+2. [Trainee maintainers](https://about.gitlab.com/handbook/engineering/workflow/code-review/#trainee-maintainer)
+   are three times as likely to be picked as other reviewers.
+3. It always picks the same reviewers and maintainers for the same
+   branch name (unless their OOO status changes, as in point 1). It
+   removes leading `ce-` and `ee-`, and trailing `-ce` and `-ee`, so
+   that it can be stable for backport branches.
 
 ### Approval guidelines
 
@@ -58,12 +73,7 @@ from teams other than your own.
 
 #### Security requirements
 
-   1. If your merge request is processing, storing, or transferring any kind of [RED or ORANGE data](https://docs.google.com/document/d/15eNKGA3zyZazsJMldqTBFbYMnVUSQSpU14lo22JMZQY/edit) (this is a confidential document), it must be
-      **approved by a [Security Engineer][team]**.
-   1. If your merge request involves implementing, utilizing, or is otherwise related to any type of authentication, authorization, or session handling mechanism, it must be
-      **approved by a [Security Engineer][team]**.
-   1. If your merge request has a goal which requires a cryptographic function such as: confidentiality, integrity, authentication, or non-repudiation, it must be
-      **approved by a [Security Engineer][team]**.
+View the updated documentation regarding [internal application security reviews](https://about.gitlab.com/handbook/engineering/security/index.html#internal-application-security-reviews) for **when** and **how** to request a security review.
 
 ### The responsibility of the merge request author
 
@@ -137,21 +147,13 @@ If a developer who happens to also be a maintainer was involved in a merge reque
 as a domain expert and/or reviewer, it is recommended that they are not also picked
 as the maintainer to ultimately approve and merge it.
 
-Try to review in a timely manner; doing so allows everyone involved in the merge
-request to iterate faster as the context is fresh in memory. Further, this 
-improves contributors' experiences significantly. Reviewers should aim to review
-within two working days from the date they were assigned the merge request. If 
-you don't think you'll be able to review a merge request within that time, let 
-the author know as soon as possible. When the author of the merge request has not
-heard anything after two days, a new reviewer should be assigned.
-
 Maintainers should check before merging if the merge request is approved by the
 required approvers.
 
 Maintainers must check before merging if the merge request is introducing new
 vulnerabilities, by inspecting the list in the Merge Request [Security
-Widget](https://docs.gitlab.com/ee/user/project/merge_requests/#security-reports-ultimate).
-When in doubt, a [Security Engineer][team] can be involved. The list of detected 
+Widget](../user/project/merge_requests/index.md#security-reports-ultimate).
+When in doubt, a [Security Engineer][team] can be involved. The list of detected
 vulnerabilities must be either empty or containing:
 
 - dismissed vulnerabilities in case of false positives
@@ -225,6 +227,37 @@ It is responsibility of the author of a merge request that the merge request is 
 
 Developers who have capacity can regularly check the list of [merge requests to review](https://gitlab.com/groups/gitlab-org/-/merge_requests?scope=all&utf8=%E2%9C%93&state=opened&label_name%5B%5D=ready%20for%20review) and assign any merge request they want to review.
 
+### Review turnaround time
+
+Since [unblocking others is always a top priority](https://about.gitlab.com/handbook/values/#global-optimization),
+reviewers are expected to review assigned merge requests in a timely manner,
+even when this may negatively impact their other tasks and priorities.
+Doing so allows everyone involved in the merge request to iterate faster as the
+context is fresh in memory, improves contributors' experiences significantly,
+and gives authors more time to address feedback and iterate on their work before
+the [feature freeze](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/PROCESS.md#feature-freeze-on-the-7th-for-the-release-on-the-22nd).
+
+A turnaround time of two working days is usually acceptable, since engineers
+will typically have other things to work on while they're waiting for review,
+but don't hesitate to ask the author if it's unclear what time frame would be
+acceptable, how urgent the review is, or how significant the blockage. Authors
+are also encouraged to provide this information up-front to reviewers, but are
+expected to be mindful of the [guidelines on when to ask for review on MRs that
+are intended to go in before the feature freeze](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/PROCESS.md#between-the-1st-and-the-7th),
+and realistic in their expectations if these were not followed.
+
+If you don't think you'll be able to review a merge request within a reasonable
+time frame, let the author know as soon as possible and try to help them find
+another reviewer or maintainer who will be able to, so that they can be unblocked
+and get on with their work quickly. Of course, if you are out of office and have
+[communicated](https://about.gitlab.com/handbook/paid-time-off/#communicating-your-time-off)
+this through your GitLab.com Status, authors are expected to realize this and
+find a different reviewer themselves.
+
+When a merge request author feels like they have been blocked for longer than
+is reasonable, they are free to remind the reviewer through Slack or assign
+another reviewer.
+
 ### Reviewing code
 
 Understand why the change is necessary (fixes a bug, improves the user
@@ -253,7 +286,7 @@ experience, refactors the existing code). Then:
   author has already set this option or if the merge request clearly contains a
   messy commit history that is intended to be squashed.
 
-[squash-and-merge]: https://docs.gitlab.com/ee/user/project/merge_requests/squash_and_merge.html#squash-and-merge
+[squash-and-merge]: ../user/project/merge_requests/squash_and_merge.md#squash-and-merge
 
 ### The right balance
 
@@ -286,7 +319,7 @@ reviewee.
 GitLab is used in a lot of places. Many users use
 our [Omnibus packages](https://about.gitlab.com/installation/), but some use
 the [Docker images](https://docs.gitlab.com/omnibus/docker/), some are
-[installed from source](https://docs.gitlab.com/ce/install/installation.html),
+[installed from source](../install/installation.md),
 and there are other installation methods available. GitLab.com itself is a large
 Enterprise Edition instance. This has some implications:
 

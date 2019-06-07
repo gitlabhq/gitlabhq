@@ -18,7 +18,7 @@ export default {
   <div class="note-actions-item">
     <gl-button
       ref="button"
-      v-gl-tooltip.bottom
+      v-gl-tooltip
       class="note-action-button"
       variant="transparent"
       :title="__('Reply to comment')"

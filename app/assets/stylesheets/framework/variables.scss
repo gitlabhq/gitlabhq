@@ -11,6 +11,14 @@ $default-transition-duration: 0.15s;
 $contextual-sidebar-width: 220px;
 $contextual-sidebar-collapsed-width: 50px;
 $toggle-sidebar-height: 48px;
+$spacing-scale: (
+  0: 0,
+  1: #{0.5 * $grid-size},
+  2: $grid-size,
+  3: #{2 * $grid-size},
+  4: #{3 * $grid-size},
+  5: #{4 * $grid-size}
+);
 
 /*
  * Color schema
@@ -23,6 +31,7 @@ $darken-border-dashed-factor: 25%;
 $white-light: #fff;
 $white-normal: #f0f0f0;
 $white-dark: #eaeaea;
+$white-transparent: rgba(255, 255, 255, 0.8);
 
 $gray-lightest: #fdfdfd;
 $gray-light: #fafafa;
@@ -41,13 +50,13 @@ $t-gray-a-04: rgba($black, 0.04);
 $t-gray-a-06: rgba($black, 0.06);
 $t-gray-a-08: rgba($black, 0.08);
 
-$gl-gray-100: #dddddd;
-$gl-gray-200: #cccccc;
-$gl-gray-350: #aaaaaa;
-$gl-gray-400: #999999;
-$gl-gray-500: #777777;
-$gl-gray-600: #666666;
-$gl-gray-700: #555555;
+$gl-gray-100: #ddd;
+$gl-gray-200: #ccc;
+$gl-gray-350: #aaa;
+$gl-gray-400: #999;
+$gl-gray-500: #777;
+$gl-gray-600: #666;
+$gl-gray-700: #555;
 
 $green-50: #f1fdf6;
 $green-100: #dcf5e7;
@@ -100,7 +109,7 @@ $red-950: #4b140b;
 $gray-50: #fafafa;
 $gray-100: #f2f2f2;
 $gray-200: #dfdfdf;
-$gray-300: #cccccc;
+$gray-300: #ccc;
 $gray-400: #bababa;
 $gray-500: #a7a7a7;
 $gray-600: #919191;
@@ -108,6 +117,84 @@ $gray-700: #707070;
 $gray-800: #4f4f4f;
 $gray-900: #2e2e2e;
 $gray-950: #1f1f1f;
+
+$greens: (
+  '50': $green-50,
+  '100': $green-100,
+  '200': $green-200,
+  '300': $green-300,
+  '400': $green-400,
+  '500': $green-500,
+  '600': $green-600,
+  '700': $green-700,
+  '800': $green-800,
+  '900': $green-900,
+  '950': $green-950
+);
+
+$blues: (
+  '50': $blue-50,
+  '100': $blue-100,
+  '200': $blue-200,
+  '300': $blue-300,
+  '400': $blue-400,
+  '500': $blue-500,
+  '600': $blue-600,
+  '700': $blue-700,
+  '800': $blue-800,
+  '900': $blue-900,
+  '950': $blue-950
+);
+
+$oranges: (
+  '50': $orange-50,
+  '100': $orange-100,
+  '200': $orange-200,
+  '300': $orange-300,
+  '400': $orange-400,
+  '500': $orange-500,
+  '600': $orange-600,
+  '700': $orange-700,
+  '800': $orange-800,
+  '900': $orange-900,
+  '950': $orange-950
+);
+
+$reds: (
+  '50': $red-50,
+  '100': $red-100,
+  '200': $red-200,
+  '300': $red-300,
+  '400': $red-400,
+  '500': $red-500,
+  '600': $red-600,
+  '700': $red-700,
+  '800': $red-800,
+  '900': $red-900,
+  '950': $red-950
+);
+
+$grays: (
+  '50': $gray-50,
+  '100': $gray-100,
+  '200': $gray-200,
+  '300': $gray-300,
+  '400': $gray-400,
+  '500': $gray-500,
+  '600': $gray-600,
+  '700': $gray-700,
+  '800': $gray-800,
+  '900': $gray-900,
+  '950': $gray-950
+);
+
+$color-ranges: (
+  'primary': $blues,
+  'secondary': $grays,
+  'success': $greens,
+  'warning': $oranges,
+  'danger': $reds
+);
 
 // GitLab themes
 
@@ -218,6 +305,15 @@ $gl-gray-dark: #313236;
 $gl-gray-light: #5c5c5c;
 $gl-header-color: #4c4e54;
 
+$type-scale: (
+  1: 12px,
+  2: 14px,
+  3: 16px,
+  4: 20px,
+  5: 28px,
+  6: 42px
+);
+
 /*
  * Lists
  */
@@ -277,7 +373,7 @@ $general-hover-transition-duration: 100ms;
 $general-hover-transition-curve: linear;
 $highlight-changes-color: rgb(235, 255, 232);
 $performance-bar-height: 35px;
-$system-header-height: 35px;
+$system-header-height: 16px;
 $system-footer-height: $system-header-height;
 $flash-height: 52px;
 $context-header-height: 60px;
@@ -285,8 +381,12 @@ $breadcrumb-min-height: 48px;
 $home-panel-title-row-height: 64px;
 $home-panel-avatar-mobile-size: 24px;
 $gl-line-height: 16px;
+$gl-line-height-20: 20px;
 $gl-line-height-24: 24px;
 $gl-line-height-14: 14px;
+
+$issue-box-upcoming-bg: #8f8f8f;
+$pages-group-name-color: #4c4e54;
 
 /*
 * Common component specific colors
@@ -323,8 +423,8 @@ $line-select-yellow: #fcf8e7;
 $line-select-yellow-dark: #f0e2bd;
 $dark-diff-match-bg: rgba(255, 255, 255, 0.3);
 $dark-diff-match-color: rgba(255, 255, 255, 0.1);
-$diff-image-info-color: gray;
-$diff-view-modes-color: gray;
+$diff-image-info-color: #808080;
+$diff-view-modes-color: #808080;
 $diff-view-modes-border: #c1c1c1;
 $diff-jagged-border-gradient-color: darken($white-normal, 8%);
 
@@ -333,7 +433,7 @@ $diff-jagged-border-gradient-color: darken($white-normal, 8%);
  */
 $monospace-font: 'Menlo', 'DejaVu Sans Mono', 'Liberation Mono', 'Consolas', 'Ubuntu Mono',
   'Courier New', 'andale mono', 'lucida console', monospace;
-$regular-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell,
+$regular-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans', Ubuntu, Cantarell,
   'Helvetica Neue', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
   'Noto Color Emoji';
 
@@ -343,6 +443,7 @@ $regular-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-San
 $dropdown-width: 300px;
 $dropdown-min-height: 40px;
 $dropdown-max-height: 312px;
+$dropdown-max-height-lg: 445px;
 $dropdown-vertical-offset: 4px;
 $dropdown-empty-row-bg: rgba(#000, 0.04);
 $dropdown-shadow-color: rgba(#000, 0.1);
@@ -398,6 +499,17 @@ $pagination-line-height: 20px;
 $pagination-disabled-color: #cdcdcd;
 
 /*
+* Toasts
+*/
+$toast-offset: 24px;
+$toast-height: 48px;
+$toast-max-width: 586px;
+$toast-padding-right: 42px;
+$toast-default-margin: 8px;
+$toast-action-margin-left: 16px;
+$toast-background-opacity: 0.95;
+
+/*
  *  Status icons
  */
 $status-icon-size: 22px;
@@ -409,7 +521,7 @@ $award-emoji-menu-shadow: rgba(0, 0, 0, 0.175);
 $award-emoji-positive-add-bg: #fed159;
 $award-emoji-positive-add-lines: #bb9c13;
 $award-emoji-width: 376px;
-$award-emoji-width-xs: 300px;
+$award-emoji-width-xs: 90%;
 
 /*
  * Search Box
@@ -478,6 +590,7 @@ $issue-board-list-difference-md: $issue-board-list-difference-sm + $issue-boards
 */
 $avatar-radius: 50%;
 $gl-avatar-size: 40px;
+$gl-avatar-border-opacity: 0.1;
 
 /*
 * Blame
@@ -528,6 +641,7 @@ $input-lg-width: 320px;
 */
 $document-index-color: #888;
 $help-shortcut-header-color: #333;
+$accepting-mr-label-color: #69d100;
 
 /*
 * Issues
@@ -568,6 +682,11 @@ $project-network-controls-color: #888;
 $feature-toggle-color: #fff;
 $feature-toggle-text-color: #fff;
 $feature-toggle-color-enabled: #4a8bee;
+
+/*
+ * Monitor Charts
+ */
+$chart-tooltip-max-width: 512px;
 
 /*
 Stat Graph
@@ -625,6 +744,18 @@ Animation Functions
 $dropdown-animation-timing: cubic-bezier(0.23, 1, 0.32, 1);
 
 /*
+GitLab Plans
+*/
+$gl-gold-plan: #d4af37;
+$gl-silver-plan: #91a1ab;
+$gl-bronze-plan: #cd7f32;
+
+/*
+Cross-project Pipelines
+ */
+$linked-project-column-margin: 60px;
+
+/*
 Performance Bar
 */
 $perf-bar-production: #222;
@@ -646,6 +777,17 @@ Image Commenting cursor
 */
 $image-comment-cursor-left-offset: 12;
 $image-comment-cursor-top-offset: 12;
+
+/*
+Add GitLab Slack Application
+*/
+$add-to-slack-popup-max-width: 400px;
+$add-to-slack-gif-max-width: 850px;
+$add-to-slack-well-max-width: 750px;
+$add-to-slack-logo-size: 100px;
+$double-headed-arrow-width: 100px;
+$double-headed-arrow-height: 25px;
+$right-arrow-size: 16px;
 
 /*
 Popup
@@ -682,3 +824,16 @@ $mr-version-controls-height: 56px;
 Compare Branches
 */
 $compare-branches-sticky-header-height: 68px;
+
+/**
+ Bootstrap 4.2.0 introduced new icons for validating forms.
+ Our design system does not use those, so we are disabling them for now:
+ - Docs: https://getbootstrap.com/docs/4.3/components/forms/#server-side
+ - Issue: https://gitlab.com/gitlab-org/design.gitlab.com/issues/242
+ */
+$enable-validation-icons: false;
+
+/*
+Licenses
+*/
+$license-header-cell-width: 150px;

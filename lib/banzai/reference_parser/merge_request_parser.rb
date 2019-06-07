@@ -10,7 +10,7 @@ module Banzai
           nodes,
           MergeRequest.includes(
             :author,
-            :assignee,
+            :assignees,
             {
               # These associations are primarily used for checking permissions.
               # Eager loading these ensures we don't end up running dozens of

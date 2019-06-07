@@ -17,8 +17,10 @@ export default {
     <label class="sr-only" for="issuable-title"> Title </label>
     <input
       id="issuable-title"
+      ref="input"
       v-model="formState.title"
       class="form-control qa-title-input"
+      dir="auto"
       type="text"
       placeholder="Title"
       aria-label="Title"

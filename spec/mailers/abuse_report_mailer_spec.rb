@@ -4,25 +4,24 @@ describe AbuseReportMailer do
   include EmailSpec::Matchers
 
   describe '.notify' do
+    before do
+      stub_application_setting(admin_notification_email: 'admin@example.com')
+    end
+
+    let(:report) { create(:abuse_report) }
+
+    subject { described_class.notify(report.id) }
+
+    it_behaves_like 'appearance header and footer enabled'
+    it_behaves_like 'appearance header and footer not enabled'
+
     context 'with admin_notification_email set' do
-      before do
-        stub_application_setting(admin_notification_email: 'admin@example.com')
-      end
-
       it 'sends to the admin_notification_email' do
-        report = create(:abuse_report)
-
-        mail = described_class.notify(report.id)
-
-        expect(mail).to deliver_to 'admin@example.com'
+        is_expected.to deliver_to 'admin@example.com'
       end
 
       it 'includes the user in the subject' do
-        report = create(:abuse_report)
-
-        mail = described_class.notify(report.id)
-
-        expect(mail).to have_subject "#{report.user.name} (#{report.user.username}) was reported for abuse"
+        is_expected.to have_subject "#{report.user.name} (#{report.user.username}) was reported for abuse"
       end
     end
 

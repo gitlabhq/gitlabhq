@@ -11,6 +11,7 @@ class Namespace < ApplicationRecord
   include IgnorableColumn
   include FeatureGate
   include FromUnion
+  include Gitlab::Utils::StrongMemoize
 
   ignore_column :deleted_at
 
@@ -49,17 +50,20 @@ class Namespace < ApplicationRecord
 
   validate :nesting_level_allowed
 
+  validates_associated :runners
+
   delegate :name, to: :owner, allow_nil: true, prefix: true
+  delegate :avatar_url, to: :owner, allow_nil: true
 
   after_commit :refresh_access_of_projects_invited_groups, on: :update, if: -> { previous_changes.key?('share_with_group_lock') }
 
   before_create :sync_share_with_group_lock_with_parent
   before_update :sync_share_with_group_lock_with_parent, if: :parent_changed?
-  after_update :force_share_with_group_lock_on_descendants, if: -> { share_with_group_lock_changed? && share_with_group_lock? }
+  after_update :force_share_with_group_lock_on_descendants, if: -> { saved_change_to_share_with_group_lock? && share_with_group_lock? }
 
   # Legacy Storage specific hooks
 
-  after_update :move_dir, if: :path_or_parent_changed?
+  after_update :move_dir, if: :saved_change_to_path_or_parent?
   before_destroy(prepend: true) { prepare_for_destroy }
   after_destroy :rm_dir
 
@@ -72,8 +76,10 @@ class Namespace < ApplicationRecord
         'namespaces.*',
         'COALESCE(SUM(ps.storage_size), 0) AS storage_size',
         'COALESCE(SUM(ps.repository_size), 0) AS repository_size',
+        'COALESCE(SUM(ps.wiki_size), 0) AS wiki_size',
         'COALESCE(SUM(ps.lfs_objects_size), 0) AS lfs_objects_size',
-        'COALESCE(SUM(ps.build_artifacts_size), 0) AS build_artifacts_size'
+        'COALESCE(SUM(ps.build_artifacts_size), 0) AS build_artifacts_size',
+        'COALESCE(SUM(ps.packages_size), 0) AS packages_size'
       )
   end
 
@@ -140,7 +146,7 @@ class Namespace < ApplicationRecord
 
   def send_update_instructions
     projects.each do |project|
-      project.send_move_instructions("#{full_path_was}/#{project.path}")
+      project.send_move_instructions("#{full_path_before_last_save}/#{project.path}")
     end
   end
 
@@ -148,8 +154,12 @@ class Namespace < ApplicationRecord
     type == 'Group' ? 'group' : 'user'
   end
 
+  def user?
+    kind == 'user'
+  end
+
   def find_fork_of(project)
-    return nil unless project.fork_network
+    return unless project.fork_network
 
     if Gitlab::SafeRequestStore.active?
       forks_in_namespace = Gitlab::SafeRequestStore.fetch("namespaces:#{id}:forked_projects") do
@@ -196,12 +206,12 @@ class Namespace < ApplicationRecord
       .ancestors(upto: top, hierarchy_order: hierarchy_order)
   end
 
-  def self_and_ancestors
+  def self_and_ancestors(hierarchy_order: nil)
     return self.class.where(id: id) unless parent_id
 
     Gitlab::ObjectHierarchy
       .new(self.class.where(id: id))
-      .base_and_ancestors
+      .base_and_ancestors(hierarchy_order: hierarchy_order)
   end
 
   # Returns all the descendants of the current namespace.
@@ -219,10 +229,6 @@ class Namespace < ApplicationRecord
 
   def user_ids_for_project_authorizations
     [owner_id]
-  end
-
-  def parent_changed?
-    parent_id_changed?
   end
 
   # Includes projects from this namespace and projects from all subgroups
@@ -254,12 +260,12 @@ class Namespace < ApplicationRecord
     false
   end
 
-  def full_path_was
-    if parent_id_was.nil?
-      path_was
+  def full_path_before_last_save
+    if parent_id_before_last_save.nil?
+      path_before_last_save
     else
-      previous_parent = Group.find_by(id: parent_id_was)
-      previous_parent.full_path + '/' + path_was
+      previous_parent = Group.find_by(id: parent_id_before_last_save)
+      previous_parent.full_path + '/' + path_before_last_save
     end
   end
 
@@ -267,10 +273,34 @@ class Namespace < ApplicationRecord
     owner.refresh_authorized_projects
   end
 
+  def auto_devops_enabled?
+    first_auto_devops_config[:status]
+  end
+
+  def first_auto_devops_config
+    return { scope: :group, status: auto_devops_enabled } unless auto_devops_enabled.nil?
+
+    strong_memoize(:first_auto_devops_config) do
+      if has_parent?
+        parent.first_auto_devops_config
+      else
+        { scope: :instance, status: Gitlab::CurrentSettings.auto_devops_enabled? }
+      end
+    end
+  end
+
   private
 
-  def path_or_parent_changed?
-    path_changed? || parent_changed?
+  def parent_changed?
+    parent_id_changed?
+  end
+
+  def saved_change_to_parent?
+    saved_change_to_parent_id?
+  end
+
+  def saved_change_to_path_or_parent?
+    saved_change_to_path? || saved_change_to_parent_id?
   end
 
   def refresh_access_of_projects_invited_groups

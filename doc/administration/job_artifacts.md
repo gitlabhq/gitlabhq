@@ -1,14 +1,15 @@
 # Jobs artifacts administration
 
 > **Notes:**
+>
 > - Introduced in GitLab 8.2 and GitLab Runner 0.7.0.
 > - Starting with GitLab 8.4 and GitLab Runner 1.0, the artifacts archive format changed to `ZIP`.
 > - Starting with GitLab 8.17, builds are renamed to jobs.
 > - This is the administration documentation. For the user guide see [pipelines/job_artifacts](../user/project/pipelines/job_artifacts.md).
 
-Artifacts is a list of files and directories which are attached to a job
-after it completes successfully. This feature is enabled by default in all
-GitLab installations. Keep reading if you want to know how to disable it.
+Artifacts is a list of files and directories which are attached to a job after it
+finishes. This feature is enabled by default in all GitLab installations. Keep reading
+if you want to know how to disable it.
 
 ## Disabling job artifacts
 
@@ -41,8 +42,9 @@ To disable artifacts site-wide, follow the steps below.
 
 ## Storing job artifacts
 
-After a successful job, GitLab Runner uploads an archive containing the job
-artifacts to GitLab.
+GitLab Runner can upload an archive containing the job artifacts to GitLab. By default,
+this is done when the job succeeds, but can also be done on failure, or always, via the
+[`artifacts:when`](../ci/yaml/README.md#artifactswhen) parameter.
 
 ### Using local storage
 
@@ -86,6 +88,7 @@ _The artifacts are stored by default in
 ### Using object storage
 
 > **Notes:**
+>
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1762) in
 >   [GitLab Premium](https://about.gitlab.com/pricing/) 9.4.
 > - Since version 9.5, artifacts are [browsable](../user/project/pipelines/job_artifacts.md#browsing-artifacts),
@@ -97,6 +100,9 @@ If you don't want to use the local disk where GitLab is installed to store the
 artifacts, you can use an object storage like AWS S3 instead.
 This configuration relies on valid AWS credentials to be configured already.
 Use an object storage option like AWS S3 to store job artifacts.
+
+DANGER: **Danger:**
+If you're enabling S3 in [GitLab HA](high_availability/README.md), you will need to have an [NFS mount set up for CI traces and artifacts](high_availability/nfs.md#a-single-nfs-mount) or enable [live tracing](job_traces.md#new-live-trace-architecture). If these settings are not set, you will risk job traces disappearing or not being saved.
 
 ### Object Storage Settings
 
@@ -274,7 +280,7 @@ you can flip the feature flag from a Rails console.
 ## Set the maximum file size of the artifacts
 
 Provided the artifacts are enabled, you can change the maximum file size of the
-artifacts through the [Admin area settings](../user/admin_area/settings/continuous_integration.md#maximum-artifacts-size).
+artifacts through the [Admin area settings](../user/admin_area/settings/continuous_integration.md#maximum-artifacts-size-core-only).
 
 ## Storage statistics
 

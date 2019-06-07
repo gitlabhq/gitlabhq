@@ -1,0 +1,17 @@
+package-and-qa:
+  image: ruby:2.6-alpine
+  stage: review  # So even if review-deploy failed we can still run this
+  when: manual
+  before_script: []
+  dependencies: []
+  cache: {}
+  variables:
+    GIT_DEPTH: "1"
+  retry: 0
+  script:
+    - source scripts/utils.sh
+    - install_gitlab_gem
+    - ./scripts/trigger-build omnibus
+  only:
+    - /.+/@gitlab-org/gitlab-ce
+    - /.+/@gitlab-org/gitlab-ee

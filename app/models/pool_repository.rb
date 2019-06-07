@@ -3,11 +3,11 @@
 # The PoolRepository model is the database equivalent of an ObjectPool for Gitaly
 # That is; PoolRepository is the record in the database, ObjectPool is the
 # repository on disk
-class PoolRepository < ActiveRecord::Base
+class PoolRepository < ApplicationRecord
   include Shardable
   include AfterCommitQueue
 
-  has_one :source_project, class_name: 'Project'
+  belongs_to :source_project, class_name: 'Project'
   validates :source_project, presence: true
 
   has_many :member_projects, class_name: 'Project'
@@ -81,10 +81,7 @@ class PoolRepository < ActiveRecord::Base
     object_pool.link(repository.raw)
   end
 
-  # This RPC can cause data loss, as not all objects are present the local repository
-  def unlink_repository(repository)
-    object_pool.unlink_repository(repository.raw)
-
+  def mark_obsolete_if_last(repository)
     if member_projects.where.not(id: repository.project.id).exists?
       true
     else
@@ -102,7 +99,8 @@ class PoolRepository < ActiveRecord::Base
   end
 
   def inspect
-    "#<#{self.class.name} id:#{id} state:#{state} disk_path:#{disk_path} source_project: #{source_project.full_path}>"
+    source = source_project ? source_project.full_path : 'nil'
+    "#<#{self.class.name} id:#{id} state:#{state} disk_path:#{disk_path} source_project: #{source}>"
   end
 
   private

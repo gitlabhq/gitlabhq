@@ -32,7 +32,8 @@
             - from_label = from
 
           = link_to project_compare_path(project, from: from, to: event.commit_to) do
-            Compare #{from_label}...#{truncate_sha(event.commit_to)}
+            %span Compare
+            %span.commit-sha #{from_label}...#{truncate_sha(event.commit_to)}
 
           - if create_mr
             %span

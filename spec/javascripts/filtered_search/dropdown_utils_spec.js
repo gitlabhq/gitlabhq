@@ -4,7 +4,7 @@ import IssuableFilteredSearchTokenKeys from '~/filtered_search/issuable_filtered
 import FilteredSearchSpecHelper from '../helpers/filtered_search_spec_helper';
 
 describe('Dropdown Utils', () => {
-  const issueListFixture = 'issues/issue_list.html.raw';
+  const issueListFixture = 'issues/issue_list.html';
   preloadFixtures(issueListFixture);
 
   describe('getEscapedText', () => {

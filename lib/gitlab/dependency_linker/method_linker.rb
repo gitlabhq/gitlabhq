@@ -23,18 +23,22 @@ module Gitlab
       #   link_method_call('name')
       #   # Will link `package` in `self.name = "package"`
       def link_method_call(method_name, value = nil, &url_proc)
+        regex = method_call_regex(method_name, value)
+
+        link_regex(regex, &url_proc)
+      end
+
+      def method_call_regex(method_name, value = nil)
         method_name = regexp_for_value(method_name)
         value = regexp_for_value(value)
 
-        regex = %r{
+        %r{
           #{method_name}            # Method name
           \s*                       # Whitespace
           [(=]?                     # Opening brace or equals sign
           \s*                       # Whitespace
           ['"](?<name>#{value})['"] # Package name in quotes
         }x
-
-        link_regex(regex, &url_proc)
       end
     end
   end

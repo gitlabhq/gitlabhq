@@ -39,7 +39,7 @@ module Gitlab
     private
 
     def custom_language
-      return nil unless @language
+      return unless @language
 
       Rouge::Lexer.find_fancy(@language)
     end

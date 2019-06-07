@@ -1,4 +1,4 @@
-import { sprintf, n__, s__ } from '~/locale';
+import { sprintf, n__, s__, __ } from '~/locale';
 import {
   STATUS_FAILED,
   STATUS_SUCCESS,
@@ -38,12 +38,12 @@ const textBuilder = results => {
 
 export const summaryTextBuilder = (name = '', results = {}) => {
   const resultsString = textBuilder(results);
-  return `${name} contained ${resultsString}`;
+  return sprintf(__('%{name} contained %{resultsString}'), { name, resultsString });
 };
 
 export const reportTextBuilder = (name = '', results = {}) => {
   const resultsString = textBuilder(results);
-  return `${name} found ${resultsString}`;
+  return sprintf(__('%{name} found %{resultsString}'), { name, resultsString });
 };
 
 export const statusIcon = status => {

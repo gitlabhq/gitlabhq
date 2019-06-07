@@ -2,13 +2,14 @@
   = form_errors(@group)
   = render 'shared/group_form', f: f
 
-  = render_if_exists 'shared/repository_size_limit_setting', form: f, type: :group
+  = render_if_exists 'shared/old_repository_size_limit_setting', form: f, type: :group
   = render_if_exists 'admin/namespace_plan', f: f
 
   .form-group.row.group-description-holder
-    = f.label :avatar, _("Group avatar"), class: 'col-form-label col-sm-2'
+    .col-sm-2.col-form-label
+      = f.label :avatar, _("Group avatar")
     .col-sm-10
-      = render 'shared/choose_group_avatar_button', f: f
+      = render 'shared/choose_avatar_button', f: f
 
   = render 'shared/old_visibility_level', f: f, visibility_level: visibility_level, can_change_visibility_level: can_change_group_visibility_level?(@group), form_model: @group, with_label: false
 

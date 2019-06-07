@@ -75,6 +75,8 @@ input[type='checkbox']:hover {
   }
 
   .search-input-wrap {
+    width: 100%;
+
     .search-icon,
     .clear-icon {
       position: absolute;
@@ -87,6 +89,7 @@ input[type='checkbox']:hover {
       -webkit-user-select: none;
       -moz-user-select: none;
       -ms-user-select: none;
+      user-select: none;
     }
 
     .clear-icon {
@@ -185,13 +188,11 @@ input[type='checkbox']:hover {
 
 .search-holder {
   @include media-breakpoint-up(sm) {
-    display: -webkit-flex;
     display: flex;
   }
 
   .search-field-holder,
   .project-filter-form {
-    -webkit-flex: 1 0 auto;
     flex: 1 0 auto;
     position: relative;
     margin-right: 0;
@@ -260,3 +261,13 @@ input[type='checkbox']:hover {
     color: $blue-600;
   }
 }
+
+// Disable webkit input icons, link to solution: https://stackoverflow.com/questions/9421551/how-do-i-remove-all-default-webkit-search-field-styling
+/* stylelint-disable property-no-vendor-prefix */
+input[type='search']::-webkit-search-decoration,
+input[type='search']::-webkit-search-cancel-button,
+input[type='search']::-webkit-search-results-button,
+input[type='search']::-webkit-search-results-decoration {
+  -webkit-appearance: none;
+}
+/* stylelint-enable */

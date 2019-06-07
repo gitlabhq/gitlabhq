@@ -10,11 +10,15 @@ describe QuickActions::InterpretService do
   let(:milestone) { create(:milestone, project: project, title: '9.10') }
   let(:commit) { create(:commit, project: project) }
   let(:inprogress) { create(:label, project: project, title: 'In Progress') }
+  let(:helmchart) { create(:label, project: project, title: 'Helm Chart Registry') }
   let(:bug) { create(:label, project: project, title: 'Bug') }
   let(:note) { build(:note, commit_id: merge_request.diff_head_sha) }
   let(:service) { described_class.new(project, developer) }
 
   before do
+    stub_licensed_features(multiple_issue_assignees: false,
+                           multiple_merge_request_assignees: false)
+
     project.add_developer(developer)
   end
 
@@ -90,6 +94,26 @@ describe QuickActions::InterpretService do
         _, updates = service.execute(content, issuable)
 
         expect(updates).to eq(add_label_ids: [inprogress.id])
+      end
+    end
+
+    shared_examples 'multiword label name starting without ~' do
+      it 'fetches label ids and populates add_label_ids if content contains /label' do
+        helmchart # populate the label
+        _, updates = service.execute(content, issuable)
+
+        expect(updates).to eq(add_label_ids: [helmchart.id])
+      end
+    end
+
+    shared_examples 'label name is included in the middle of another label name' do
+      it 'ignores the sublabel when the content contains the includer label name' do
+        helmchart # populate the label
+        create(:label, project: project, title: 'Chart')
+
+        _, updates = service.execute(content, issuable)
+
+        expect(updates).to eq(add_label_ids: [helmchart.id])
       end
     end
 
@@ -505,7 +529,7 @@ describe QuickActions::InterpretService do
         let(:issuable) { issue }
       end
 
-      it_behaves_like 'assign command' do
+      it_behaves_like 'assign command', :quarantine do
         let(:content) { "/assign @#{developer.username} @#{developer2.username}" }
         let(:issuable) { merge_request }
       end
@@ -621,6 +645,26 @@ describe QuickActions::InterpretService do
     it_behaves_like 'multiple label with same argument' do
       let(:content) { %(/label ~"#{inprogress.title}" \n/label ~#{inprogress.title}) }
       let(:issuable) { issue }
+    end
+
+    it_behaves_like 'multiword label name starting without ~' do
+      let(:content) { %(/label "#{helmchart.title}") }
+      let(:issuable) { issue }
+    end
+
+    it_behaves_like 'multiword label name starting without ~' do
+      let(:content) { %(/label "#{helmchart.title}") }
+      let(:issuable) { merge_request }
+    end
+
+    it_behaves_like 'label name is included in the middle of another label name' do
+      let(:content) { %(/label ~"#{helmchart.title}") }
+      let(:issuable) { issue }
+    end
+
+    it_behaves_like 'label name is included in the middle of another label name' do
+      let(:content) { %(/label ~"#{helmchart.title}") }
+      let(:issuable) { merge_request }
     end
 
     it_behaves_like 'unlabel command' do
@@ -1524,6 +1568,16 @@ describe QuickActions::InterpretService do
 
           expect(explanations).to eq(["Creates branch 'foo' and a merge request to resolve this issue"])
         end
+      end
+    end
+
+    context "#commands_executed_count" do
+      it 'counts commands executed' do
+        content = "/close and \n/assign me and \n/title new title"
+
+        service.execute(content, issue)
+
+        expect(service.commands_executed_count).to eq(3)
       end
     end
   end

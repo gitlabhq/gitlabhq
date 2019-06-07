@@ -5,7 +5,7 @@ describe ProjectSnippetPolicy do
   let(:regular_user) { create(:user) }
   let(:external_user) { create(:user, :external) }
   let(:project) { create(:project, :public) }
-
+  let(:snippet) { create(:project_snippet, snippet_visibility, project: project) }
   let(:author_permissions) do
     [
       :update_project_snippet,
@@ -13,23 +13,13 @@ describe ProjectSnippetPolicy do
     ]
   end
 
-  def abilities(user, snippet_visibility)
-    snippet = create(:project_snippet, snippet_visibility, project: project)
-
-    described_class.new(user, snippet)
-  end
-
-  def expect_allowed(*permissions)
-    permissions.each { |p| is_expected.to be_allowed(p) }
-  end
-
-  def expect_disallowed(*permissions)
-    permissions.each { |p| is_expected.not_to be_allowed(p) }
-  end
+  subject { described_class.new(current_user, snippet) }
 
   context 'public snippet' do
+    let(:snippet_visibility) { :public }
+
     context 'no user' do
-      subject { abilities(nil, :public) }
+      let(:current_user) { nil }
 
       it do
         expect_allowed(:read_project_snippet)
@@ -38,7 +28,7 @@ describe ProjectSnippetPolicy do
     end
 
     context 'regular user' do
-      subject { abilities(regular_user, :public) }
+      let(:current_user) { regular_user }
 
       it do
         expect_allowed(:read_project_snippet, :create_note)
@@ -47,7 +37,7 @@ describe ProjectSnippetPolicy do
     end
 
     context 'external user' do
-      subject { abilities(external_user, :public) }
+      let(:current_user) { external_user }
 
       it do
         expect_allowed(:read_project_snippet, :create_note)
@@ -57,8 +47,10 @@ describe ProjectSnippetPolicy do
   end
 
   context 'internal snippet' do
+    let(:snippet_visibility) { :internal }
+
     context 'no user' do
-      subject { abilities(nil, :internal) }
+      let(:current_user) { nil }
 
       it do
         expect_disallowed(:read_project_snippet)
@@ -67,7 +59,7 @@ describe ProjectSnippetPolicy do
     end
 
     context 'regular user' do
-      subject { abilities(regular_user, :internal) }
+      let(:current_user) { regular_user }
 
       it do
         expect_allowed(:read_project_snippet, :create_note)
@@ -76,31 +68,31 @@ describe ProjectSnippetPolicy do
     end
 
     context 'external user' do
-      subject { abilities(external_user, :internal) }
+      let(:current_user) { external_user }
 
       it do
         expect_disallowed(:read_project_snippet, :create_note)
         expect_disallowed(*author_permissions)
       end
-    end
 
-    context 'project team member external user' do
-      subject { abilities(external_user, :internal) }
+      context 'project team member' do
+        before do
+          project.add_developer(external_user)
+        end
 
-      before do
-        project.add_developer(external_user)
-      end
-
-      it do
-        expect_allowed(:read_project_snippet, :create_note)
-        expect_disallowed(*author_permissions)
+        it do
+          expect_allowed(:read_project_snippet, :create_note)
+          expect_disallowed(*author_permissions)
+        end
       end
     end
   end
 
   context 'private snippet' do
+    let(:snippet_visibility) { :private }
+
     context 'no user' do
-      subject { abilities(nil, :private) }
+      let(:current_user) { nil }
 
       it do
         expect_disallowed(:read_project_snippet)
@@ -109,53 +101,52 @@ describe ProjectSnippetPolicy do
     end
 
     context 'regular user' do
-      subject { abilities(regular_user, :private) }
+      let(:current_user) { regular_user }
 
       it do
         expect_disallowed(:read_project_snippet, :create_note)
         expect_disallowed(*author_permissions)
       end
-    end
 
-    context 'snippet author' do
-      let(:snippet) { create(:project_snippet, :private, author: regular_user, project: project) }
+      context 'snippet author' do
+        let(:snippet) { create(:project_snippet, :private, author: regular_user, project: project) }
 
-      subject { described_class.new(regular_user, snippet) }
+        it do
+          expect_allowed(:read_project_snippet, :create_note)
+          expect_allowed(*author_permissions)
+        end
+      end
 
-      it do
-        expect_allowed(:read_project_snippet, :create_note)
-        expect_allowed(*author_permissions)
+      context 'project team member normal user' do
+        before do
+          project.add_developer(regular_user)
+        end
+
+        it do
+          expect_allowed(:read_project_snippet, :create_note)
+          expect_disallowed(*author_permissions)
+        end
       end
     end
 
-    context 'project team member normal user' do
-      subject { abilities(regular_user, :private) }
+    context 'external user' do
+      context 'project team member' do
+        let(:current_user) { external_user }
 
-      before do
-        project.add_developer(regular_user)
-      end
+        before do
+          project.add_developer(external_user)
+        end
 
-      it do
-        expect_allowed(:read_project_snippet, :create_note)
-        expect_disallowed(*author_permissions)
-      end
-    end
-
-    context 'project team member external user' do
-      subject { abilities(external_user, :private) }
-
-      before do
-        project.add_developer(external_user)
-      end
-
-      it do
-        expect_allowed(:read_project_snippet, :create_note)
-        expect_disallowed(*author_permissions)
+        it do
+          expect_allowed(:read_project_snippet, :create_note)
+          expect_disallowed(*author_permissions)
+        end
       end
     end
 
     context 'admin user' do
-      subject { abilities(create(:admin), :private) }
+      let(:snippet_visibility) { :private }
+      let(:current_user) { create(:admin) }
 
       it do
         expect_allowed(:read_project_snippet, :create_note)

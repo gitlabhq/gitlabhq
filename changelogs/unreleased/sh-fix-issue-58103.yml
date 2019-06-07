@@ -1,5 +1,0 @@
----
-title: Properly handle multiple X-Forwarded-For addresses in runner IP
-merge_request: 25511
-author:
-type: fixed

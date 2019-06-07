@@ -1,5 +1,0 @@
----
-title: Allow configuring POSTGRES_VERSION in Auto DevOps
-merge_request: 25500
-author:
-type: added

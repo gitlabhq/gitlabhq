@@ -44,6 +44,8 @@ Dir[Rails.root.join("spec/support/shared_contexts/*.rb")].each { |f| require f }
 Dir[Rails.root.join("spec/support/shared_examples/*.rb")].each { |f| require f }
 Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
 
+quality_level = Quality::TestLevel.new
+
 RSpec.configure do |config|
   config.use_transactional_fixtures = false
   config.use_instantiated_fixtures  = false
@@ -53,10 +55,12 @@ RSpec.configure do |config|
   config.display_try_failure_messages = true
 
   config.infer_spec_type_from_file_location!
+  config.full_backtrace = !!ENV['CI']
 
-  config.define_derived_metadata(file_path: %r{/spec/}) do |metadata|
+  config.define_derived_metadata(file_path: %r{(ee)?/spec/.+_spec\.rb\z}) do |metadata|
     location = metadata[:location]
 
+    metadata[:level] = quality_level.level_for(location)
     metadata[:api] = true if location =~ %r{/spec/requests/api/}
 
     # do not overwrite type if it's already set
@@ -66,6 +70,7 @@ RSpec.configure do |config|
     metadata[:type] = match[1].singularize.to_sym if match
   end
 
+  config.include LicenseHelpers
   config.include ActiveJob::TestHelper
   config.include ActiveSupport::Testing::TimeHelpers
   config.include CycleAnalyticsHelpers
@@ -82,6 +87,7 @@ RSpec.configure do |config|
   config.include Devise::Test::IntegrationHelpers, type: :feature
   config.include LoginHelpers, type: :feature
   config.include SearchHelpers, type: :feature
+  config.include WaitHelpers, type: :feature
   config.include EmailHelpers, :mailer, type: :mailer
   config.include Warden::Test::Helpers, type: :request
   config.include Gitlab::Routing, type: :routing
@@ -96,6 +102,7 @@ RSpec.configure do |config|
   config.include MigrationsHelpers, :migration
   config.include RedisHelpers
   config.include Rails.application.routes.url_helpers, type: :routing
+  config.include PolicyHelpers, type: :policy
 
   if ENV['CI']
     # This includes the first try, i.e. tests will be run 4 times before failing.
@@ -115,9 +122,16 @@ RSpec.configure do |config|
     TestEnv.clean_test_path
   end
 
-  config.before do
+  config.before do |example|
     # Enable all features by default for testing
     allow(Feature).to receive(:enabled?) { true }
+
+    enabled = example.metadata[:enable_rugged].present?
+
+    # Disable Rugged features by default
+    Gitlab::Git::RuggedImpl::Repository::FEATURE_FLAGS.each do |flag|
+      allow(Feature).to receive(:enabled?).with(flag).and_return(enabled)
+    end
 
     # The following can be removed when we remove the staged rollout strategy
     # and we can just enable it using instance wide settings
@@ -127,7 +141,7 @@ RSpec.configure do |config|
       .and_return(false)
   end
 
-  config.before(:example, :quarantine) do
+  config.around(:example, :quarantine) do
     # Skip tests in quarantine unless we explicitly focus on them.
     skip('In quarantine') unless config.inclusion_filter[:quarantine]
   end

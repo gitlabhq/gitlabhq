@@ -1,10 +1,14 @@
+---
+type: reference
+---
+
 # Usage statistics
 
 GitLab Inc. will periodically collect information about your instance in order
 to perform various actions.
 
 All statistics are opt-out, you can enable/disable them from the admin panel
-under **Admin area > Settings > Usage statistics**.
+under **Admin area > Settings > Metrics and profiling > Usage statistics**.
 
 ## Version check **[CORE ONLY]**
 
@@ -48,6 +52,8 @@ You can view the exact JSON payload in the administration panel. To view the pay
 1. Expand **Settings** in the left sidebar and click on **Metrics and profiling**.
 1. Expand **Usage statistics** and click on the **Preview payload** button.
 
+You can see how [the usage ping data maps to different stages of the product](https://gitlab.com/gitlab-data/analytics/blob/master/transform/snowflake-dbt/data/ping_metrics_to_stage_mapping_data.csv). 
+ 
 ### Deactivate the usage ping
 
 The usage ping is opt-out. If you want to deactivate this feature, go to
@@ -80,6 +86,18 @@ of your instance to your users.
 
 This can be restricted to admins by selecting "Only admins" in the Instance
 Statistics visibility section under **Admin area > Settings > Usage statistics**.
+
+<!-- ## Troubleshooting
+
+Include any troubleshooting steps that you can foresee. If you know beforehand what issues
+one might have when setting this up, or when something is changed, or on upgrading, it's
+important to describe those, too. Think of things that may go wrong and include them here.
+This is important to minimize requests for support, and to avoid doc comments with
+questions that you know someone might ask.
+
+Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+If you have none to add when creating a doc, leave this section in place
+but commented out to help encourage others to add to it in the future. -->
 
 [ee-557]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/557
 [ee-735]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/735

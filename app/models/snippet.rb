@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Snippet < ActiveRecord::Base
+class Snippet < ApplicationRecord
   include Gitlab::VisibilityLevel
   include Redactable
   include CacheMarkdownField

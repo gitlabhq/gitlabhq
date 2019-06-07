@@ -1,27 +1,29 @@
+- max_name_length = 128
+- max_username_length = 255
 #register-pane.tab-pane.login-box{ role: 'tabpanel' }
   .login-body
     = form_for(resource, as: "new_#{resource_name}", url: registration_path(resource_name), html: { class: "new_new_user gl-show-field-errors", "aria-live" => "assertive" }) do |f|
       .devise-errors
-        = devise_error_messages!
+        = render "devise/shared/error_messages", resource: resource
       .name.form-group
-        = f.label :name, 'Full name', class: 'label-bold'
-        = f.text_field :name, class: "form-control top qa-new-user-name js-block-emoji", required: true, title: _("This field is required.")
+        = f.label :name, _('Full name'), class: 'label-bold'
+        = f.text_field :name, class: "form-control top qa-new-user-name js-block-emoji js-validate-length", :data => { :max_length => max_name_length, :max_length_message => s_("SignUp|Name is too long (maximum is %{max_length} characters).") % { max_length: max_name_length } }, required: true, title: _("This field is required.")
       .username.form-group
         = f.label :username, class: 'label-bold'
-        = f.text_field :username, class: "form-control middle qa-new-user-username js-block-emoji", pattern: Gitlab::PathRegex::NAMESPACE_FORMAT_REGEX_JS, required: true, title: _("Please create a username with only alphanumeric characters.")
-        %p.validation-error.hide Username is already taken.
-        %p.validation-success.hide Username is available.
-        %p.validation-pending.hide Checking username availability...
+        = f.text_field :username, class: "form-control middle qa-new-user-username js-block-emoji js-validate-length", :data => { :max_length => max_username_length, :max_length_message => s_("SignUp|Username is too long (maximum is %{max_length} characters).") % { max_length: max_username_length } }, pattern: Gitlab::PathRegex::NAMESPACE_FORMAT_REGEX_JS, required: true, title: _("Please create a username with only alphanumeric characters.")
+        %p.validation-error.field-validation.hide= _('Username is already taken.')
+        %p.validation-success.field-validation.hide= _('Username is available.')
+        %p.validation-pending.field-validation.hide= _('Checking username availability...')
       .form-group
         = f.label :email, class: 'label-bold'
-        = f.email_field :email, class: "form-control middle qa-new-user-email", required: true, title: "Please provide a valid email address."
+        = f.email_field :email, class: "form-control middle qa-new-user-email", required: true, title: _("Please provide a valid email address.")
       .form-group
         = f.label :email_confirmation, class: 'label-bold'
-        = f.email_field :email_confirmation, class: "form-control middle qa-new-user-email-confirmation", required: true, title: "Please retype the email address."
+        = f.email_field :email_confirmation, class: "form-control middle qa-new-user-email-confirmation", required: true, title: _("Please retype the email address.")
       .form-group.append-bottom-20#password-strength
         = f.label :password, class: 'label-bold'
-        = f.password_field :password, class: "form-control bottom qa-new-user-password", required: true, pattern: ".{#{@minimum_password_length},}", title: "Minimum length is #{@minimum_password_length} characters."
-        %p.gl-field-hint.text-secondary Minimum length is #{@minimum_password_length} characters
+        = f.password_field :password, class: "form-control bottom qa-new-user-password", required: true, pattern: ".{#{@minimum_password_length},}", title: _("Minimum length is %{minimum_password_length} characters.") % { minimum_password_length: @minimum_password_length }
+        %p.gl-field-hint.text-secondary= _('Minimum length is %{minimum_password_length} characters') % { minimum_password_length: @minimum_password_length }
       - if Gitlab::CurrentSettings.current_application_settings.enforce_terms?
         .form-group
           = check_box_tag :terms_opt_in, '1', false, required: true, class: 'qa-new-user-accept-terms'
@@ -29,8 +31,9 @@
             - terms_link = link_to s_("I accept the|Terms of Service and Privacy Policy"), terms_path, target: "_blank"
             - accept_terms_label = _("I accept the %{terms_link}") % { terms_link: terms_link }
             = accept_terms_label.html_safe
+      = render_if_exists 'devise/shared/email_opted_in', f: f
       %div
       - if Gitlab::Recaptcha.enabled?
         = recaptcha_tags
       .submit-container
-        = f.submit "Register", class: "btn-register btn qa-new-user-register-button"
+        = f.submit _("Register"), class: "btn-register btn qa-new-user-register-button"

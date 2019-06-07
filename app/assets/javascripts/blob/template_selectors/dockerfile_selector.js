@@ -1,11 +1,12 @@
 import FileTemplateSelector from '../file_template_selector';
+import { __ } from '~/locale';
 
 export default class DockerfileSelector extends FileTemplateSelector {
   constructor({ mediator }) {
     super(mediator);
     this.config = {
       key: 'dockerfile',
-      name: 'Dockerfile',
+      name: __('Dockerfile'),
       pattern: /(Dockerfile)/,
       type: 'dockerfiles',
       dropdown: '.js-dockerfile-selector',

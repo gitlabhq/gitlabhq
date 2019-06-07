@@ -23,6 +23,10 @@ module QA
             element :filter_options
           end
 
+          view 'app/assets/javascripts/notes/components/noteable_note.vue' do
+            element :noteable_note_item
+          end
+
           # Adds a comment to an issue
           # attachment option should be an absolute path
           def comment(text, attachment: nil)
@@ -34,6 +38,12 @@ module QA
             end
 
             click_element :comment_button
+          end
+
+          def has_comment?(comment_text)
+            wait(reload: false) do
+              has_element?(:noteable_note_item, text: comment_text)
+            end
           end
 
           def select_comments_only_filter
@@ -54,7 +64,7 @@ module QA
             retry_on_exception do
               click_body
               click_element :discussion_filter
-              find_element(:filter_options, text).click
+              find_element(:filter_options, text: text).click
             end
           end
         end

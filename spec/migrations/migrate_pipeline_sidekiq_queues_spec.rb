@@ -3,12 +3,13 @@ require Rails.root.join('db', 'post_migrate', '20170822101017_migrate_pipeline_s
 
 describe MigratePipelineSidekiqQueues, :sidekiq, :redis do
   include Gitlab::Database::MigrationHelpers
+  include StubWorker
 
   context 'when there are jobs in the queues' do
     it 'correctly migrates queue when migrating up' do
       Sidekiq::Testing.disable! do
-        stubbed_worker(queue: :pipeline).perform_async('Something', [1])
-        stubbed_worker(queue: :build).perform_async('Something', [1])
+        stub_worker(queue: :pipeline).perform_async('Something', [1])
+        stub_worker(queue: :build).perform_async('Something', [1])
 
         described_class.new.up
 
@@ -20,10 +21,10 @@ describe MigratePipelineSidekiqQueues, :sidekiq, :redis do
 
     it 'correctly migrates queue when migrating down' do
       Sidekiq::Testing.disable! do
-        stubbed_worker(queue: :pipeline_default).perform_async('Class', [1])
-        stubbed_worker(queue: :pipeline_processing).perform_async('Class', [2])
-        stubbed_worker(queue: :pipeline_hooks).perform_async('Class', [3])
-        stubbed_worker(queue: :pipeline_cache).perform_async('Class', [4])
+        stub_worker(queue: :pipeline_default).perform_async('Class', [1])
+        stub_worker(queue: :pipeline_processing).perform_async('Class', [2])
+        stub_worker(queue: :pipeline_hooks).perform_async('Class', [3])
+        stub_worker(queue: :pipeline_cache).perform_async('Class', [4])
 
         described_class.new.down
 
@@ -43,13 +44,6 @@ describe MigratePipelineSidekiqQueues, :sidekiq, :redis do
 
     it 'does not raise error when migrating down' do
       expect { described_class.new.down }.not_to raise_error
-    end
-  end
-
-  def stubbed_worker(queue:)
-    Class.new do
-      include Sidekiq::Worker
-      sidekiq_options queue: queue
     end
   end
 end

@@ -53,6 +53,7 @@ module Gitlab
             description: description,
             milestone_id: milestone_finder.id_for(issue),
             state: issue.state,
+            state_id: ::Issue.available_states[issue.state],
             created_at: issue.created_at,
             updated_at: issue.updated_at
           }

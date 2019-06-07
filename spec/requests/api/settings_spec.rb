@@ -13,6 +13,7 @@ describe API::Settings, 'Settings' do
       expect(json_response['default_projects_limit']).to eq(42)
       expect(json_response['password_authentication_enabled_for_web']).to be_truthy
       expect(json_response['repository_storages']).to eq(['default'])
+      expect(json_response['password_authentication_enabled']).to be_truthy
       expect(json_response['plantuml_enabled']).to be_falsey
       expect(json_response['plantuml_url']).to be_nil
       expect(json_response['default_project_visibility']).to be_a String
@@ -44,6 +45,7 @@ describe API::Settings, 'Settings' do
         put api("/application/settings", admin),
           params: {
             default_projects_limit: 3,
+            default_project_creation: 2,
             password_authentication_enabled_for_web: false,
             repository_storages: ['custom'],
             plantuml_enabled: true,
@@ -64,12 +66,13 @@ describe API::Settings, 'Settings' do
             performance_bar_allowed_group_path: group.full_path,
             instance_statistics_visibility_private: true,
             diff_max_patch_bytes: 150_000,
-            default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_MERGE,
+            default_branch_protection: ::Gitlab::Access::PROTECTION_DEV_CAN_MERGE,
             local_markdown_version: 3
           }
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['default_projects_limit']).to eq(3)
+        expect(json_response['default_project_creation']).to eq(::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS)
         expect(json_response['password_authentication_enabled_for_web']).to be_falsey
         expect(json_response['repository_storages']).to eq(['custom'])
         expect(json_response['plantuml_enabled']).to be_truthy
@@ -112,6 +115,39 @@ describe API::Settings, 'Settings' do
 
       expect(response).to have_gitlab_http_status(200)
       expect(json_response['performance_bar_allowed_group_id']).to be_nil
+    end
+
+    context 'external policy classification settings' do
+      let(:settings) do
+        {
+          external_authorization_service_enabled: true,
+          external_authorization_service_url: 'https://custom.service/',
+          external_authorization_service_default_label: 'default',
+          external_authorization_service_timeout: 9.99,
+          external_auth_client_cert: File.read('spec/fixtures/passphrase_x509_certificate.crt'),
+          external_auth_client_key: File.read('spec/fixtures/passphrase_x509_certificate_pk.key'),
+          external_auth_client_key_pass: "5iveL!fe"
+        }
+      end
+      let(:attribute_names) { settings.keys.map(&:to_s) }
+
+      it 'includes the attributes in the API' do
+        get api("/application/settings", admin)
+
+        expect(response).to have_gitlab_http_status(200)
+        attribute_names.each do |attribute|
+          expect(json_response.keys).to include(attribute)
+        end
+      end
+
+      it 'allows updating the settings' do
+        put api("/application/settings", admin), params: settings
+
+        expect(response).to have_gitlab_http_status(200)
+        settings.each do |attribute, value|
+          expect(ApplicationSetting.current.public_send(attribute)).to eq(value)
+        end
+      end
     end
 
     context "missing plantuml_url value when plantuml_enabled is true" do

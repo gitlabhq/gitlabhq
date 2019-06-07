@@ -7,7 +7,7 @@
   .value
     .value-content
       %span.no-value{ "v-if" => "!issue.dueDate" }
-        = _("No due date")
+        = _("None")
       %span.bold{ "v-if" => "issue.dueDate" }
         {{ issue.dueDate | due-date }}
       - if can_admin_issue?

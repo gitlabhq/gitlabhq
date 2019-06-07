@@ -142,6 +142,48 @@ describe Gitlab::GitalyClient do
     end
   end
 
+  describe '.request_kwargs' do
+    context 'when catfile-cache feature is enabled' do
+      before do
+        stub_feature_flags('gitaly_catfile-cache': true)
+      end
+
+      it 'sets the gitaly-session-id in the metadata' do
+        results = described_class.request_kwargs('default', nil)
+        expect(results[:metadata]).to include('gitaly-session-id')
+      end
+
+      context 'when RequestStore is not enabled' do
+        it 'sets a different gitaly-session-id per request' do
+          gitaly_session_id = described_class.request_kwargs('default', nil)[:metadata]['gitaly-session-id']
+
+          expect(described_class.request_kwargs('default', nil)[:metadata]['gitaly-session-id']).not_to eq(gitaly_session_id)
+        end
+      end
+
+      context 'when RequestStore is enabled', :request_store do
+        it 'sets the same gitaly-session-id on every outgoing request metadata' do
+          gitaly_session_id = described_class.request_kwargs('default', nil)[:metadata]['gitaly-session-id']
+
+          3.times do
+            expect(described_class.request_kwargs('default', nil)[:metadata]['gitaly-session-id']).to eq(gitaly_session_id)
+          end
+        end
+      end
+    end
+
+    context 'when catfile-cache feature is disabled' do
+      before do
+        stub_feature_flags({ 'gitaly_catfile-cache': false })
+      end
+
+      it 'does not set the gitaly-session-id in the metadata' do
+        results = described_class.request_kwargs('default', nil)
+        expect(results[:metadata]).not_to include('gitaly-session-id')
+      end
+    end
+  end
+
   describe 'enforce_gitaly_request_limits?' do
     def call_gitaly(count = 1)
       (1..count).each do
@@ -149,9 +191,19 @@ describe Gitlab::GitalyClient do
       end
     end
 
-    context 'when RequestStore is enabled', :request_store do
+    context 'when RequestStore is enabled and the maximum number of calls is not enforced by a feature flag', :request_store do
+      before do
+        stub_feature_flags(gitaly_enforce_requests_limits: false)
+      end
+
       it 'allows up the maximum number of allowed calls' do
         expect { call_gitaly(Gitlab::GitalyClient::MAXIMUM_GITALY_CALLS) }.not_to raise_error
+      end
+
+      it 'allows the maximum number of calls to be exceeded if GITALY_DISABLE_REQUEST_LIMITS is set' do
+        stub_env('GITALY_DISABLE_REQUEST_LIMITS', 'true')
+
+        expect { call_gitaly(Gitlab::GitalyClient::MAXIMUM_GITALY_CALLS + 1) }.not_to raise_error
       end
 
       context 'when the maximum number of calls has been reached' do
@@ -185,6 +237,32 @@ describe Gitlab::GitalyClient do
 
         it 'does not allow the maximum number of calls to be exceeded outside of an allow_n_plus_1_calls block' do
           expect { call_gitaly(Gitlab::GitalyClient::MAXIMUM_GITALY_CALLS + 1) }.to raise_error(Gitlab::GitalyClient::TooManyInvocationsError)
+        end
+      end
+    end
+
+    context 'in production and when RequestStore is enabled', :request_store do
+      before do
+        allow(Rails.env).to receive(:production?).and_return(true)
+      end
+
+      context 'when the maximum number of calls is enforced by a feature flag' do
+        before do
+          stub_feature_flags(gitaly_enforce_requests_limits: true)
+        end
+
+        it 'does not allow the maximum number of calls to be exceeded' do
+          expect { call_gitaly(Gitlab::GitalyClient::MAXIMUM_GITALY_CALLS + 1) }.to raise_error(Gitlab::GitalyClient::TooManyInvocationsError)
+        end
+      end
+
+      context 'when the maximum number of calls is not enforced by a feature flag' do
+        before do
+          stub_feature_flags(gitaly_enforce_requests_limits: false)
+        end
+
+        it 'allows the maximum number of calls to be exceeded' do
+          expect { call_gitaly(Gitlab::GitalyClient::MAXIMUM_GITALY_CALLS + 1) }.not_to raise_error
         end
       end
     end

@@ -76,13 +76,13 @@ module QA
           click_on 'Fork'
         end
 
-        def go_to_file(filename)
+        def click_file(filename)
           within_element(:file_tree) do
             click_on filename
           end
         end
 
-        def go_to_commit(commit_msg)
+        def click_commit(commit_msg)
           within_element(:file_tree) do
             click_on commit_msg
           end

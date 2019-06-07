@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe PostReceive do
@@ -33,8 +35,8 @@ describe PostReceive do
   describe "#process_project_changes" do
     context 'empty changes' do
       it "does not call any PushService but runs after project hooks" do
-        expect(GitPushService).not_to receive(:new)
-        expect(GitTagPushService).not_to receive(:new)
+        expect(Git::BranchPushService).not_to receive(:new)
+        expect(Git::TagPushService).not_to receive(:new)
         expect_next_instance_of(SystemHooksService) { |service| expect(service).to receive(:execute_hooks) }
 
         described_class.new.perform(gl_repository, key_id, "")
@@ -45,8 +47,8 @@ describe PostReceive do
       let!(:key_id) { "" }
 
       it 'returns false' do
-        expect(GitPushService).not_to receive(:new)
-        expect(GitTagPushService).not_to receive(:new)
+        expect(Git::BranchPushService).not_to receive(:new)
+        expect(Git::TagPushService).not_to receive(:new)
 
         expect(described_class.new.perform(gl_repository, key_id, base64_changes)).to be false
       end
@@ -60,9 +62,13 @@ describe PostReceive do
       context "branches" do
         let(:changes) { "123456 789012 refs/heads/tést" }
 
-        it "calls GitPushService" do
-          expect_any_instance_of(GitPushService).to receive(:execute).and_return(true)
-          expect_any_instance_of(GitTagPushService).not_to receive(:execute)
+        it "calls Git::BranchPushService" do
+          expect_next_instance_of(Git::BranchPushService) do |service|
+            expect(service).to receive(:execute).and_return(true)
+          end
+
+          expect(Git::TagPushService).not_to receive(:new)
+
           described_class.new.perform(gl_repository, key_id, base64_changes)
         end
       end
@@ -70,9 +76,13 @@ describe PostReceive do
       context "tags" do
         let(:changes) { "123456 789012 refs/tags/tag" }
 
-        it "calls GitTagPushService" do
-          expect_any_instance_of(GitPushService).not_to receive(:execute)
-          expect_any_instance_of(GitTagPushService).to receive(:execute).and_return(true)
+        it "calls Git::TagPushService" do
+          expect(Git::BranchPushService).not_to receive(:execute)
+
+          expect_next_instance_of(Git::TagPushService) do |service|
+            expect(service).to receive(:execute).and_return(true)
+          end
+
           described_class.new.perform(gl_repository, key_id, base64_changes)
         end
       end
@@ -81,18 +91,29 @@ describe PostReceive do
         let(:changes) { "123456 789012 refs/merge-requests/123" }
 
         it "does not call any of the services" do
-          expect_any_instance_of(GitPushService).not_to receive(:execute)
-          expect_any_instance_of(GitTagPushService).not_to receive(:execute)
+          expect(Git::BranchPushService).not_to receive(:new)
+          expect(Git::TagPushService).not_to receive(:new)
+
           described_class.new.perform(gl_repository, key_id, base64_changes)
         end
       end
 
       context "gitlab-ci.yml" do
-        let(:changes) { "123456 789012 refs/heads/feature\n654321 210987 refs/tags/tag" }
+        let(:changes) do
+          <<-EOF.strip_heredoc
+            123456 789012 refs/heads/feature
+            654321 210987 refs/tags/tag
+            123456 789012 refs/heads/feature2
+            123458 789013 refs/heads/feature3
+            123459 789015 refs/heads/feature4
+          EOF
+        end
+
+        let(:changes_count) { changes.lines.count }
 
         subject { described_class.new.perform(gl_repository, key_id, base64_changes) }
 
-        context "creates a Ci::Pipeline for every change" do
+        context "with valid .gitlab-ci.yml" do
           before do
             stub_ci_pipeline_to_return_yaml_file
 
@@ -105,7 +126,33 @@ describe PostReceive do
               .and_return(true)
           end
 
-          it { expect { subject }.to change { Ci::Pipeline.count }.by(2) }
+          context 'when git_push_create_all_pipelines is disabled' do
+            before do
+              stub_feature_flags(git_push_create_all_pipelines: false)
+            end
+
+            it "creates pipeline for branches and tags" do
+              subject
+
+              expect(Ci::Pipeline.pluck(:ref)).to contain_exactly("feature", "tag", "feature2", "feature3")
+            end
+
+            it "creates exactly #{described_class::PIPELINE_PROCESS_LIMIT} pipelines" do
+              expect(changes_count).to be > described_class::PIPELINE_PROCESS_LIMIT
+
+              expect { subject }.to change { Ci::Pipeline.count }.by(described_class::PIPELINE_PROCESS_LIMIT)
+            end
+          end
+
+          context 'when git_push_create_all_pipelines is enabled' do
+            before do
+              stub_feature_flags(git_push_create_all_pipelines: true)
+            end
+
+            it "creates all pipelines" do
+              expect { subject }.to change { Ci::Pipeline.count }.by(changes_count)
+            end
+          end
         end
 
         context "does not create a Ci::Pipeline" do
@@ -125,7 +172,9 @@ describe PostReceive do
           allow_any_instance_of(Gitlab::DataBuilder::Repository).to receive(:update).and_return(fake_hook_data)
           # silence hooks so we can isolate
           allow_any_instance_of(Key).to receive(:post_create_hook).and_return(true)
-          allow_any_instance_of(GitPushService).to receive(:execute).and_return(true)
+          expect_next_instance_of(Git::BranchPushService) do |service|
+            expect(service).to receive(:execute).and_return(true)
+          end
         end
 
         it 'calls SystemHooksService' do

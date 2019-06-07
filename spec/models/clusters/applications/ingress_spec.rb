@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe Clusters::Applications::Ingress do
@@ -14,6 +16,12 @@ describe Clusters::Applications::Ingress do
   before do
     allow(ClusterWaitForIngressIpAddressWorker).to receive(:perform_in)
     allow(ClusterWaitForIngressIpAddressWorker).to receive(:perform_async)
+  end
+
+  describe '#can_uninstall?' do
+    subject { ingress.can_uninstall? }
+
+    it { is_expected.to be_falsey }
   end
 
   describe '#make_installed!' do
@@ -56,6 +64,14 @@ describe Clusters::Applications::Ingress do
         expect(ClusterWaitForIngressIpAddressWorker).not_to have_received(:perform_in)
       end
     end
+
+    context 'when there is already an external_hostname' do
+      let(:application) { create(:clusters_applications_ingress, :installed, external_hostname: 'localhost.localdomain') }
+
+      it 'does not schedule a ClusterWaitForIngressIpAddressWorker' do
+        expect(ClusterWaitForIngressIpAddressWorker).not_to have_received(:perform_in)
+      end
+    end
   end
 
   describe '#install_command' do
@@ -63,7 +79,7 @@ describe Clusters::Applications::Ingress do
 
     it { is_expected.to be_an_instance_of(Gitlab::Kubernetes::Helm::InstallCommand) }
 
-    it 'should be initialized with ingress arguments' do
+    it 'is initialized with ingress arguments' do
       expect(subject.name).to eq('ingress')
       expect(subject.chart).to eq('stable/nginx-ingress')
       expect(subject.version).to eq('1.1.2')
@@ -82,7 +98,7 @@ describe Clusters::Applications::Ingress do
     context 'application failed to install previously' do
       let(:ingress) { create(:clusters_applications_ingress, :errored, version: 'nginx') }
 
-      it 'should be initialized with the locked version' do
+      it 'is initialized with the locked version' do
         expect(subject.version).to eq('1.1.2')
       end
     end
@@ -94,7 +110,7 @@ describe Clusters::Applications::Ingress do
 
     subject { application.files }
 
-    it 'should include ingress valid keys in values' do
+    it 'includes ingress valid keys in values' do
       expect(values).to include('image')
       expect(values).to include('repository')
       expect(values).to include('stats')

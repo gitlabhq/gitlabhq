@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class PushEventPayload < ActiveRecord::Base
+class PushEventPayload < ApplicationRecord
   include ShaAttribute
 
   belongs_to :event, inverse_of: :push_event_payload

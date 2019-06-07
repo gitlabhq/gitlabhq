@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Deployment do
   subject { build(:deployment) }
 
-  it { is_expected.to belong_to(:project) }
-  it { is_expected.to belong_to(:environment) }
+  it { is_expected.to belong_to(:project).required }
+  it { is_expected.to belong_to(:environment).required }
   it { is_expected.to belong_to(:user) }
   it { is_expected.to belong_to(:deployable) }
 
@@ -100,6 +102,13 @@ describe Deployment do
 
         deployment.succeed!
       end
+
+      it 'executes Deployments::FinishedWorker asynchronously' do
+        expect(Deployments::FinishedWorker)
+          .to receive(:perform_async).with(deployment.id)
+
+        deployment.succeed!
+      end
     end
 
     context 'when deployment failed' do
@@ -113,6 +122,13 @@ describe Deployment do
           expect(deployment.finished_at).to be_like_time(Time.now)
         end
       end
+
+      it 'executes Deployments::FinishedWorker asynchronously' do
+        expect(Deployments::FinishedWorker)
+          .to receive(:perform_async).with(deployment.id)
+
+        deployment.drop!
+      end
     end
 
     context 'when deployment was canceled' do
@@ -125,6 +141,13 @@ describe Deployment do
           expect(deployment).to be_canceled
           expect(deployment.finished_at).to be_like_time(Time.now)
         end
+      end
+
+      it 'executes Deployments::FinishedWorker asynchronously' do
+        expect(Deployments::FinishedWorker)
+          .to receive(:perform_async).with(deployment.id)
+
+        deployment.cancel!
       end
     end
   end
@@ -354,6 +377,40 @@ describe Deployment do
 
         it { is_expected.to eq(close_action) }
       end
+    end
+  end
+
+  describe '#cluster' do
+    let(:deployment) { create(:deployment) }
+    let(:project) { deployment.project }
+    let(:environment) { deployment.environment }
+
+    subject { deployment.cluster }
+
+    before do
+      expect(project).to receive(:deployment_platform)
+        .with(environment: environment.name).and_call_original
+    end
+
+    context 'project has no deployment platform' do
+      before do
+        expect(project.clusters).to be_empty
+      end
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'project uses the kubernetes service for deployments' do
+      let!(:service) { create(:kubernetes_service, project: project) }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'project has a deployment platform' do
+      let!(:cluster) { create(:cluster, projects: [project]) }
+      let!(:platform) { create(:cluster_platform_kubernetes, cluster: cluster) }
+
+      it { is_expected.to eq cluster }
     end
   end
 end

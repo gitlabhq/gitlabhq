@@ -11,7 +11,7 @@ Read through GiLab's branching documentation:
 See also:
 
 - [Branches API](../../../../api/branches.md), for information on operating on repository branches using the GitLab API.
-- [GitLab Flow](../../../../university/training/gitlab_flow.md#gitlab-flow). Use the best of GitLab for your branching strategies.
+- [GitLab Flow](../../../../university/training/gitlab_flow.md). Use the best of GitLab for your branching strategies.
 - [Getting started with Git](../../../../topics/git/index.md) and GitLab.
 
 ## Default branch

@@ -15,7 +15,7 @@ module Releases
       end
 
       def name
-        params[:name]
+        params[:name] || tag_name
       end
 
       def description

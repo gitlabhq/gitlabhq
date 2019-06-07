@@ -20,6 +20,8 @@ export const getNoteableData = state => state.noteableData;
 
 export const getNoteableDataByProp = state => prop => state.noteableData[prop];
 
+export const userCanReply = state => Boolean(state.noteableData.current_user.can_create_note);
+
 export const openState = state => state.noteableData.state;
 
 export const getUserData = state => state.userData || {};
@@ -190,6 +192,9 @@ export const firstUnresolvedDiscussionId = (state, getters) => diffOrder => {
   }
   return getters.unresolvedDiscussionsIdsByDate[0];
 };
+
+export const getDiscussion = state => discussionId =>
+  state.discussions.find(discussion => discussion.id === discussionId);
 
 export const commentsDisabled = state => state.commentsDisabled;
 

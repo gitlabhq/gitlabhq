@@ -57,7 +57,7 @@ class CampfireService < Service
   # https://github.com/basecamp/campfire-api/blob/master/sections/messages.md#create-message
   def speak(room_name, message, auth)
     room = rooms(auth).find { |r| r["name"] == room_name }
-    return nil unless room
+    return unless room
 
     path = "/room/#{room["id"]}/speak.json"
     body = {

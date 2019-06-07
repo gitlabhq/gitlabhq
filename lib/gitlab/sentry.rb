@@ -10,7 +10,7 @@ module Gitlab
     def self.context(current_user = nil)
       return unless enabled?
 
-      Raven.tags_context(locale: I18n.locale)
+      Raven.tags_context(default_tags)
 
       if current_user
         Raven.user_context(
@@ -44,16 +44,19 @@ module Gitlab
         extra[:issue_url] = issue_url if issue_url
         context # Make sure we've set everything we know in the context
 
-        tags = {
-          Gitlab::CorrelationId::LOG_KEY.to_sym => Gitlab::CorrelationId.current_id
-        }
-
-        Raven.capture_exception(exception, tags: tags, extra: extra)
+        Raven.capture_exception(exception, tags: default_tags, extra: extra)
       end
     end
 
     def self.should_raise_for_dev?
       Rails.env.development? || Rails.env.test?
+    end
+
+    def self.default_tags
+      {
+        Labkit::Correlation::CorrelationId::LOG_KEY.to_sym => Labkit::Correlation::CorrelationId.current_id,
+        locale: I18n.locale
+      }
     end
   end
 end

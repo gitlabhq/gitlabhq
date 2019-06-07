@@ -3,11 +3,12 @@
 module Gitlab
   module Danger
     class Teammate
-      attr_reader :name, :username, :projects
+      attr_reader :name, :username, :role, :projects
 
       def initialize(options = {})
-        @name = options['name']
         @username = options['username']
+        @name = options['name'] || @username
+        @role = options['role']
         @projects = options['projects']
       end
 
@@ -20,22 +21,34 @@ module Gitlab
       end
 
       # Traintainers also count as reviewers
-      def reviewer?(project, category)
-        capabilities(project) == "reviewer #{category}" || traintainer?(project, category)
+      def reviewer?(project, category, labels)
+        has_capability?(project, category, :reviewer, labels) ||
+          traintainer?(project, category, labels)
       end
 
-      def traintainer?(project, category)
-        capabilities(project) == "trainee_maintainer #{category}"
+      def traintainer?(project, category, labels)
+        has_capability?(project, category, :trainee_maintainer, labels)
       end
 
-      def maintainer?(project, category)
-        capabilities(project) == "maintainer #{category}"
+      def maintainer?(project, category, labels)
+        has_capability?(project, category, :maintainer, labels)
       end
 
       private
 
+      def has_capability?(project, category, kind, labels)
+        case category
+        when :test
+          area = role[/Test Automation Engineer, (\w+)/, 1]
+
+          area && labels.any?(area) if kind == :reviewer
+        else
+          capabilities(project).include?("#{kind} #{category}")
+        end
+      end
+
       def capabilities(project)
-        projects.fetch(project, '')
+        Array(projects.fetch(project, []))
       end
     end
   end

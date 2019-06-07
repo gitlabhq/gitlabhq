@@ -121,6 +121,49 @@ describe Banzai::Filter::ExternalIssueReferenceFilter do
     end
   end
 
+  context "youtrack project" do
+    let(:project) { create(:youtrack_project) }
+
+    before do
+      project.update!(issues_enabled: false)
+    end
+
+    context "with right markdown" do
+      let(:issue) { ExternalIssue.new("YT-123", project) }
+      let(:reference) { issue.to_reference }
+
+      it_behaves_like "external issue tracker"
+    end
+
+    context "with underscores in the prefix" do
+      let(:issue) { ExternalIssue.new("PRJ_1-123", project) }
+      let(:reference) { issue.to_reference }
+
+      it_behaves_like "external issue tracker"
+    end
+
+    context "with lowercase letters in the prefix" do
+      let(:issue) { ExternalIssue.new("YTkPrj-123", project) }
+      let(:reference) { issue.to_reference }
+
+      it_behaves_like "external issue tracker"
+    end
+
+    context "with a single-letter prefix" do
+      let(:issue) { ExternalIssue.new("T-123", project) }
+      let(:reference) { issue.to_reference }
+
+      it_behaves_like "external issue tracker"
+    end
+
+    context "with a lowercase prefix" do
+      let(:issue) { ExternalIssue.new("gl-030", project) }
+      let(:reference) { issue.to_reference }
+
+      it_behaves_like "external issue tracker"
+    end
+  end
+
   context "jira project" do
     let(:project) { create(:jira_project) }
     let(:reference) { issue.to_reference }

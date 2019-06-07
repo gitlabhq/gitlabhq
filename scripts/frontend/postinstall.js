@@ -13,7 +13,7 @@ if (process.platform === 'darwin') {
         ensure that it is supported by the fsevents library.
 
         You can try installing again with \`${chalk.cyan('yarn install --force')}\`
-      `)
+      `),
     );
     process.exit(1);
   }

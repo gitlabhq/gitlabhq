@@ -13,12 +13,18 @@ shared_examples 'languages and percentages JSON response' do
     )
   end
 
-  it 'returns expected language values' do
-    get api("/projects/#{project.id}/languages", user)
+  context "when the languages haven't been detected yet" do
+    it 'returns expected language values' do
+      get api("/projects/#{project.id}/languages", user)
 
-    expect(response).to have_gitlab_http_status(:ok)
-    expect(json_response).to eq(expected_languages)
-    expect(json_response.count).to be > 1
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response).to eq({})
+
+      get api("/projects/#{project.id}/languages", user)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(JSON.parse(response.body)).to eq(expected_languages)
+    end
   end
 
   context 'when the languages were detected before' do
@@ -40,6 +46,8 @@ shared_examples 'languages and percentages JSON response' do
 end
 
 describe API::Projects do
+  include ExternalAuthorizationServiceHelpers
+
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }
@@ -136,6 +144,7 @@ describe API::Projects do
     end
 
     let!(:public_project) { create(:project, :public, name: 'public_project') }
+
     before do
       project
       project2
@@ -495,8 +504,9 @@ describe API::Projects do
           project4.add_reporter(user2)
         end
 
-        it 'returns an array of groups the user has at least developer access' do
+        it 'returns an array of projects the user has at least developer access' do
           get api('/projects', user2), params: { min_access_level: 30 }
+
           expect(response).to have_gitlab_http_status(200)
           expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
@@ -778,7 +788,7 @@ describe API::Projects do
     let!(:public_project) { create(:project, :public, name: 'public_project', creator_id: user4.id, namespace: user4.namespace) }
 
     it 'returns error when user not found' do
-      get api('/users/9999/projects/')
+      get api('/users/0/projects/')
 
       expect(response).to have_gitlab_http_status(404)
       expect(json_response['message']).to eq('404 User Not Found')
@@ -968,8 +978,16 @@ describe API::Projects do
 
   describe 'GET /projects/:id' do
     context 'when unauthenticated' do
-      it 'returns the public projects' do
-        public_project = create(:project, :public)
+      it 'does not return private projects' do
+        private_project = create(:project, :private)
+
+        get api("/projects/#{private_project.id}")
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+
+      it 'returns public projects' do
+        public_project = create(:project, :repository, :public)
 
         get api("/projects/#{public_project.id}")
 
@@ -977,11 +995,84 @@ describe API::Projects do
         expect(json_response['id']).to eq(public_project.id)
         expect(json_response['description']).to eq(public_project.description)
         expect(json_response['default_branch']).to eq(public_project.default_branch)
+        expect(json_response['ci_config_path']).to eq(public_project.ci_config_path)
         expect(json_response.keys).not_to include('permissions')
+      end
+
+      context 'and the project has a private repository' do
+        let(:project) { create(:project, :repository, :public, :repository_private) }
+        let(:protected_attributes) { %w(default_branch ci_config_path) }
+
+        it 'hides protected attributes of private repositories if user is not a member' do
+          get api("/projects/#{project.id}", user)
+
+          expect(response).to have_gitlab_http_status(200)
+          protected_attributes.each do |attribute|
+            expect(json_response.keys).not_to include(attribute)
+          end
+        end
+
+        it 'exposes protected attributes of private repositories if user is a member' do
+          project.add_developer(user)
+
+          get api("/projects/#{project.id}", user)
+
+          expect(response).to have_gitlab_http_status(200)
+          protected_attributes.each do |attribute|
+            expect(json_response.keys).to include(attribute)
+          end
+        end
       end
     end
 
-    context 'when authenticated' do
+    context 'when authenticated as an admin' do
+      it 'returns a project by id' do
+        project
+        project_member
+        group = create(:group)
+        link = create(:project_group_link, project: project, group: group)
+
+        get api("/projects/#{project.id}", admin)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response['id']).to eq(project.id)
+        expect(json_response['description']).to eq(project.description)
+        expect(json_response['default_branch']).to eq(project.default_branch)
+        expect(json_response['tag_list']).to be_an Array
+        expect(json_response['archived']).to be_falsey
+        expect(json_response['visibility']).to be_present
+        expect(json_response['ssh_url_to_repo']).to be_present
+        expect(json_response['http_url_to_repo']).to be_present
+        expect(json_response['web_url']).to be_present
+        expect(json_response['owner']).to be_a Hash
+        expect(json_response['name']).to eq(project.name)
+        expect(json_response['path']).to be_present
+        expect(json_response['issues_enabled']).to be_present
+        expect(json_response['merge_requests_enabled']).to be_present
+        expect(json_response['wiki_enabled']).to be_present
+        expect(json_response['jobs_enabled']).to be_present
+        expect(json_response['snippets_enabled']).to be_present
+        expect(json_response['container_registry_enabled']).to be_present
+        expect(json_response['created_at']).to be_present
+        expect(json_response['last_activity_at']).to be_present
+        expect(json_response['shared_runners_enabled']).to be_present
+        expect(json_response['creator_id']).to be_present
+        expect(json_response['namespace']).to be_present
+        expect(json_response['avatar_url']).to be_nil
+        expect(json_response['star_count']).to be_present
+        expect(json_response['forks_count']).to be_present
+        expect(json_response['public_jobs']).to be_present
+        expect(json_response['shared_with_groups']).to be_an Array
+        expect(json_response['shared_with_groups'].length).to eq(1)
+        expect(json_response['shared_with_groups'][0]['group_id']).to eq(group.id)
+        expect(json_response['shared_with_groups'][0]['group_name']).to eq(group.name)
+        expect(json_response['shared_with_groups'][0]['group_access_level']).to eq(link.group_access)
+        expect(json_response['only_allow_merge_if_pipeline_succeeds']).to eq(project.only_allow_merge_if_pipeline_succeeds)
+        expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to eq(project.only_allow_merge_if_all_discussions_are_resolved)
+      end
+    end
+
+    context 'when authenticated as a regular user' do
       before do
         project
         project_member
@@ -1003,7 +1094,6 @@ describe API::Projects do
         expect(json_response['ssh_url_to_repo']).to be_present
         expect(json_response['http_url_to_repo']).to be_present
         expect(json_response['web_url']).to be_present
-        expect(json_response['owner']).to be_a Hash
         expect(json_response['owner']).to be_a Hash
         expect(json_response['name']).to eq(project.name)
         expect(json_response['path']).to be_present
@@ -1092,7 +1182,9 @@ describe API::Projects do
           'path' => user.namespace.path,
           'kind' => user.namespace.kind,
           'full_path' => user.namespace.full_path,
-          'parent_id' => nil
+          'parent_id' => nil,
+          'avatar_url' => user.avatar_url,
+          'web_url' => Gitlab::Routing.url_helpers.user_url(user)
         })
       end
 
@@ -1128,6 +1220,36 @@ describe API::Projects do
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response).to include 'statistics'
+      end
+
+      context "and the project has a private repository" do
+        let(:project) { create(:project, :public, :repository, :repository_private) }
+
+        it "does not include statistics if user is not a member" do
+          get api("/projects/#{project.id}", user), params: { statistics: true }
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(json_response).not_to include 'statistics'
+        end
+
+        it "includes statistics if user is a member" do
+          project.add_developer(user)
+
+          get api("/projects/#{project.id}", user), params: { statistics: true }
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(json_response).to include 'statistics'
+        end
+
+        it "includes statistics also when repository is disabled" do
+          project.add_developer(user)
+          project.project_feature.update_attribute(:repository_access_level, ProjectFeature::DISABLED)
+
+          get api("/projects/#{project.id}", user), params: { statistics: true }
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(json_response).to include 'statistics'
+        end
       end
 
       it "includes import_error if user can admin project" do
@@ -1264,6 +1386,70 @@ describe API::Projects do
           end
         end
       end
+
+      context 'when project belongs to a group namespace' do
+        let(:group) { create(:group, :with_avatar) }
+        let(:project) { create(:project, namespace: group) }
+        let!(:project_member) { create(:project_member, :developer, user: user, project: project) }
+
+        it 'returns group web_url and avatar_url' do
+          get api("/projects/#{project.id}", user)
+
+          expect(response).to have_gitlab_http_status(200)
+
+          group_data = json_response['namespace']
+          expect(group_data['web_url']).to eq(group.web_url)
+          expect(group_data['avatar_url']).to eq(group.avatar_url)
+        end
+      end
+
+      context 'when project belongs to a user namespace' do
+        let(:user) { create(:user) }
+        let(:project) { create(:project, namespace: user.namespace) }
+
+        it 'returns user web_url and avatar_url' do
+          get api("/projects/#{project.id}", user)
+
+          expect(response).to have_gitlab_http_status(200)
+
+          user_data = json_response['namespace']
+          expect(user_data['web_url']).to eq("http://localhost/#{user.username}")
+          expect(user_data['avatar_url']).to eq(user.avatar_url)
+        end
+      end
+    end
+
+    context 'with external authorization' do
+      let(:project) do
+        create(:project,
+               namespace: user.namespace,
+               external_authorization_classification_label: 'the-label')
+      end
+
+      context 'when the user has access to the project' do
+        before do
+          external_service_allow_access(user, project)
+        end
+
+        it 'includes the label in the response' do
+          get api("/projects/#{project.id}", user)
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(json_response['external_authorization_classification_label']).to eq('the-label')
+        end
+      end
+
+      context 'when the external service denies access' do
+        before do
+          external_service_deny_access(user, project)
+        end
+
+        it 'returns a 404' do
+          get api("/projects/#{project.id}", user)
+
+          expect(response).to have_gitlab_http_status(404)
+        end
+      end
     end
   end
 
@@ -1385,7 +1571,7 @@ describe API::Projects do
         end
 
         it 'fails if forked_from project which does not exist' do
-          post api("/projects/#{project_fork_target.id}/fork/9999", admin)
+          post api("/projects/#{project_fork_target.id}/fork/0", admin)
           expect(response).to have_gitlab_http_status(404)
         end
 
@@ -1510,6 +1696,9 @@ describe API::Projects do
 
   describe "POST /projects/:id/share" do
     let(:group) { create(:group) }
+    before do
+      group.add_developer(user)
+    end
 
     it "shares project with group" do
       expires_at = 10.days.from_now.to_date
@@ -1559,6 +1748,15 @@ describe API::Projects do
 
       expect(response).to have_gitlab_http_status(400)
       expect(json_response['error']).to eq 'group_access does not have a valid value'
+    end
+
+    it "returns a 409 error when link is not saved" do
+      allow(::Projects::GroupLinks::CreateService).to receive_message_chain(:new, :execute)
+        .and_return({ status: :error, http_status: 409, message: 'error' })
+
+      post api("/projects/#{project.id}/share", user), params: { group_id: group.id, group_access: Gitlab::Access::DEVELOPER }
+
+      expect(response).to have_gitlab_http_status(409)
     end
   end
 
@@ -1807,6 +2005,20 @@ describe API::Projects do
         expect(response).to have_gitlab_http_status(403)
       end
     end
+
+    context 'when updating external classification' do
+      before do
+        enable_external_authorization_service_check
+      end
+
+      it 'updates the classification label' do
+        put(api("/projects/#{project.id}", user), params: { external_authorization_classification_label: 'new label' })
+
+        expect(response).to have_gitlab_http_status(200)
+
+        expect(project.reload.external_authorization_classification_label).to eq('new label')
+      end
+    end
   end
 
   describe 'POST /projects/:id/archive' do
@@ -1936,7 +2148,7 @@ describe API::Projects do
       end
 
       it 'returns not_found(404) for not existing project' do
-        get api("/projects/9999999999/languages", user)
+        get api("/projects/0/languages", user)
 
         expect(response).to have_gitlab_http_status(:not_found)
       end

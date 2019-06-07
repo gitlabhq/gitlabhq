@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Ci::RetryBuildService do
@@ -21,22 +23,23 @@ describe Ci::RetryBuildService do
 
   REJECT_ACCESSORS =
     %i[id status user token token_encrypted coverage trace runner
-       artifacts_expire_at artifacts_file artifacts_metadata artifacts_size
+       artifacts_expire_at
        created_at updated_at started_at finished_at queued_at erased_by
        erased_at auto_canceled_by job_artifacts job_artifacts_archive
        job_artifacts_metadata job_artifacts_trace job_artifacts_junit
        job_artifacts_sast job_artifacts_dependency_scanning
        job_artifacts_container_scanning job_artifacts_dast
        job_artifacts_license_management job_artifacts_performance
-       job_artifacts_codequality scheduled_at].freeze
+       job_artifacts_codequality job_artifacts_metrics scheduled_at].freeze
 
   IGNORE_ACCESSORS =
     %i[type lock_version target_url base_tags trace_sections
        commit_id deployment erased_by_id project_id
        runner_id tag_taggings taggings tags trigger_request_id
        user_id auto_canceled_by_id retried failure_reason
-       artifacts_file_store artifacts_metadata_store
-       metadata runner_session trace_chunks].freeze
+       sourced_pipelines artifacts_file_store artifacts_metadata_store
+       metadata runner_session trace_chunks
+       artifacts_file artifacts_metadata artifacts_size].freeze
 
   shared_examples 'build duplication' do
     let(:another_pipeline) { create(:ci_empty_pipeline, project: project) }
@@ -95,7 +98,8 @@ describe Ci::RetryBuildService do
     end
 
     it 'has correct number of known attributes' do
-      known_accessors = CLONE_ACCESSORS + REJECT_ACCESSORS + IGNORE_ACCESSORS
+      processed_accessors = CLONE_ACCESSORS + REJECT_ACCESSORS
+      known_accessors = processed_accessors + IGNORE_ACCESSORS
 
       # :tag_list is a special case, this accessor does not exist
       # in reflected associations, comes from `act_as_taggable` and
@@ -108,7 +112,8 @@ describe Ci::RetryBuildService do
 
       current_accessors.uniq!
 
-      expect(known_accessors).to contain_exactly(*current_accessors)
+      expect(current_accessors).to include(*processed_accessors)
+      expect(known_accessors).to include(*current_accessors)
     end
   end
 

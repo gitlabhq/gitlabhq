@@ -20,6 +20,12 @@ module Banzai
       def suggestions_filter_enabled?
         context[:suggestions_filter_enabled]
       end
+
+      private
+
+      def project
+        context[:project]
+      end
     end
   end
 end

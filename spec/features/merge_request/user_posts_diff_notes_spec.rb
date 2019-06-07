@@ -178,7 +178,7 @@ describe 'Merge request > User posts diff notes', :js do
     end
   end
 
-  describe 'with muliple note forms' do
+  describe 'with multiple note forms' do
     before do
       visit diffs_project_merge_request_path(project, merge_request, view: 'inline')
       click_diff_line(find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]'))

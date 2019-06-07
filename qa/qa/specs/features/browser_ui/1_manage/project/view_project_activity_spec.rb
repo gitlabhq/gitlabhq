@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  # Failure issue: https://gitlab.com/gitlab-org/quality/staging/issues/21
-  context 'Manage', :quarantine do
+  context 'Manage' do
     describe 'Project activity' do
       it 'user creates an event in the activity page upon Git push' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
@@ -15,8 +14,8 @@ module QA
         end
         project_push.project.visit!
 
-        Page::Project::Menu.perform(&:go_to_activity)
-        Page::Project::Activity.perform(&:go_to_push_events)
+        Page::Project::Menu.perform(&:click_activity)
+        Page::Project::Activity.perform(&:click_push_events)
 
         expect(page).to have_content('pushed new branch master')
       end

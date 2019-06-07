@@ -8,7 +8,7 @@ describe Gitlab::JsonLogger do
 
   describe '#format_message' do
     before do
-      allow(Gitlab::CorrelationId).to receive(:current_id).and_return('new-correlation-id')
+      allow(Labkit::Correlation::CorrelationId).to receive(:current_id).and_return('new-correlation-id')
     end
 
     it 'formats strings' do

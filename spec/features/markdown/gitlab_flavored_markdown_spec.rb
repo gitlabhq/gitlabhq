@@ -20,8 +20,7 @@ describe "GitLab Flavored Markdown" do
     let(:commit) { project.commit }
 
     before do
-      allow_any_instance_of(Commit).to receive(:title)
-        .and_return("fix #{issue.to_reference}\n\nask #{fred.to_reference} for details")
+      create_commit("fix #{issue.to_reference}\n\nask #{fred.to_reference} for details", project, user, 'master')
     end
 
     it "renders title in commits#index" do

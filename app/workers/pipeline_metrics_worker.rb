@@ -30,6 +30,6 @@ class PipelineMetricsWorker
   # rubocop: enable CodeReuse/ActiveRecord
 
   def merge_requests(pipeline)
-    pipeline.merge_requests.map(&:id)
+    pipeline.merge_requests_as_head_pipeline.map(&:id)
   end
 end

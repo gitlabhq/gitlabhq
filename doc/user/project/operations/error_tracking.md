@@ -22,8 +22,12 @@ GitLab provides an easy way to connect Sentry to your project:
 1. Sign up to Sentry.io or [deploy your own](#deploying-sentry) Sentry instance.
 1. [Find or generate](https://docs.sentry.io/api/auth/) a Sentry auth token for your Sentry project.
    Make sure to give the token at least the following scopes: `event:read` and `project:read`.
-1. Navigate to your project’s **Settings > Operations** and provide the Sentry API URL and auth token.
-1. Ensure that the 'Active' checkbox is set.
+1. Navigate to your project’s **Settings > Operations**.
+1. Ensure that the **Active** checkbox is set.
+1. In the **Sentry API URL** field, enter your Sentry hostname. For example, `https://sentry.example.com`.
+1. In the **Auth Token** field, enter the token you previously generated.
+1. Click the **Connect** button to test the connection to Sentry and populate the **Project** dropdown.
+1. From the **Project** dropdown, choose a Sentry project to link to your GitLab project.
 1. Click **Save changes** for the changes to take effect.
 1. You can now visit **Operations > Error Tracking** in your project's sidebar to [view a list](#error-tracking-list) of Sentry errors.
 

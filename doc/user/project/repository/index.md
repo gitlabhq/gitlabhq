@@ -97,7 +97,7 @@ Some things to note about precedence:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/2508) in GitLab 9.1
 
-[Jupyter][jupyter] Notebook (previously IPython Notebook) files are used for
+[Jupyter](https://jupyter.org) Notebook (previously IPython Notebook) files are used for
 interactive computing in many fields and contain a complete record of the
 user's sessions and include code, narrative text, equations and rich output.
 
@@ -123,7 +123,7 @@ You can live preview changes submitted to a new branch with
 [Review Apps](../../../ci/review_apps/index.md).
 
 With [GitLab Starter](https://about.gitlab.com/pricing/), you can also request
-[approval](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html) from your managers.
+[approval](../merge_requests/merge_request_approvals.md) from your managers.
 
 To create, delete, and view [branches](branches/index.md) via GitLab's UI:
 
@@ -154,7 +154,7 @@ Via command line, you can commit multiple times before pushing.
   you will trigger a pipeline per push, not per commit.
   - **Skip pipelines:**
   You can add to you commit message the keyword
-  [`[ci skip]`](../../../ci/yaml/README.html#skipping-jobs)
+  [`[ci skip]`](../../../ci/yaml/README.md#skipping-jobs)
   and GitLab CI will skip that pipeline.
   - **Cross-link issues and merge requests:**
   [Cross-linking](../issues/crosslinking_issues.md#from-commit-messages)
@@ -173,11 +173,15 @@ Via command line, you can commit multiple times before pushing.
 
 ## Repository size
 
-On GitLab.com, your [repository size limit is 10GB](../../gitlab_com/index.md#repository-size-limit)
-(including LFS). For other instances, the repository size is limited by your
-system administrators.
+A project's repository size is reported on the project's **Details** page. The reported size is
+updated every 15 minutes at most, so may not reflect recent activity.
 
-You can also [reduce a repository size using Git](reducing_the_repo_size_using_git.md).
+The repository size for:
+
+- GitLab.com [is set by GitLab](../../gitlab_com/index.md#repository-size-limit).
+- Self-managed instances is set by your GitLab administrators.
+
+You can [reduce a repository's size using Git](reducing_the_repo_size_using_git.md).
 
 ## Contributors
 
@@ -220,14 +224,10 @@ Select branches to compare using the [branch filter search box](branches/index.m
 
 Find it under your project's **Repository > Compare**.
 
-## Locked files
+## Locked files **[PREMIUM]**
 
-> Available in [GitLab Premium](https://about.gitlab.com/pricing/).
-
-Lock your files to prevent any conflicting changes.
-
-[File Locking](https://docs.gitlab.com/ee/user/project/file_lock.html) is available only in
-[GitLab Premium](https://about.gitlab.com/pricing/).
+Use [File Locking](../file_lock.md) to
+lock your files to prevent any conflicting changes.
 
 ## Repository's API
 
@@ -241,4 +241,21 @@ Projects that contain a `.xcodeproj` or `.xcworkspace` directory can now be clon
 in Xcode using the new **Open in Xcode** button, located next to the Git URL
 used for cloning your project. The button is only shown on macOS.
 
-[jupyter]: https://jupyter.org
+## Download Source Code
+
+> Support for directory download was [introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/24704) in GitLab 11.11.
+
+The source code stored in a repository can be downloaded from the UI.
+By clicking the download icon, a dropdown will open with links to download the following:
+
+![Download source code](img/download_source_code.png)
+
+- **Source code:**
+  allows users to download the source code on branch they're currently
+  viewing. Available extensions: `zip`, `tar`, `tar.gz`, and `tar.bz2`.
+- **Directory:**
+  only shows up when viewing a sub-directory. This allows users to download
+  the specific directory they're currently viewing. Also available in `zip`,
+  `tar`, `tar.gz`, and `tar.bz2`.
+- **Artifacts:**
+  allows users to download the artifacts of the latest CI build.

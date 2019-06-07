@@ -7,15 +7,18 @@ module Gitlab
   class UserExtractor
     # Not using `Devise.email_regexp` to filter out any chars that an email
     # does not end with and not pinning the email to a start of end of a string.
-    EMAIL_REGEXP = /(?<email>([^@\s]+@[^@\s]+(?<!\W)))/
+    EMAIL_REGEXP = /(?<email>([^@\s]+@[^@\s]+(?<!\W)))/.freeze
     USERNAME_REGEXP = User.reference_pattern
 
     def initialize(text)
-      @text = text
+      # EE passes an Array to `text` in a few places, so we want to support both
+      # here.
+      @text = Array(text).join(' ')
     end
 
     def users
       return User.none unless @text.present?
+      return User.none if references.empty?
 
       @users ||= User.from_union(union_relations)
     end

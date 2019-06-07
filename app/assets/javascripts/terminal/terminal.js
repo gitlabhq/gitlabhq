@@ -4,6 +4,7 @@ import { Terminal } from 'xterm';
 import * as fit from 'xterm/lib/addons/fit/fit';
 import * as webLinks from 'xterm/lib/addons/webLinks/webLinks';
 import { canScrollUp, canScrollDown } from '~/lib/utils/dom_utils';
+import { __ } from '~/locale';
 
 const SCROLL_MARGIN = 5;
 
@@ -78,7 +79,8 @@ export default class GLTerminal {
   }
 
   handleSocketFailure() {
-    this.terminal.write('\r\nConnection failure');
+    this.terminal.write('\r\n');
+    this.terminal.write(__('Connection failure'));
   }
 
   addScrollListener(onScrollLimit) {

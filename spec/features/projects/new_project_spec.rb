@@ -63,6 +63,36 @@ describe 'New project' do
         end
       end
     end
+
+    context 'when group visibility is private but default is internal' do
+      before do
+        stub_application_setting(default_project_visibility: Gitlab::VisibilityLevel::INTERNAL)
+      end
+
+      it 'has private selected' do
+        group = create(:group, visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+        visit new_project_path(namespace_id: group.id)
+
+        page.within('#blank-project-pane') do
+          expect(find_field("project_visibility_level_#{Gitlab::VisibilityLevel::PRIVATE}")).to be_checked
+        end
+      end
+    end
+
+    context 'when group visibility is public but user requests private' do
+      before do
+        stub_application_setting(default_project_visibility: Gitlab::VisibilityLevel::INTERNAL)
+      end
+
+      it 'has private selected' do
+        group = create(:group, visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+        visit new_project_path(namespace_id: group.id, project: { visibility_level: Gitlab::VisibilityLevel::PRIVATE })
+
+        page.within('#blank-project-pane') do
+          expect(find_field("project_visibility_level_#{Gitlab::VisibilityLevel::PRIVATE}")).to be_checked
+        end
+      end
+    end
   end
 
   context 'Readme selector' do
@@ -249,6 +279,25 @@ describe 'New project' do
       it 'shows import instructions' do
         expect(page).to have_content('Manifest file import')
         expect(current_path).to eq new_import_manifest_path
+      end
+    end
+  end
+
+  context 'Namespace selector' do
+    context 'with group with DEVELOPER_MAINTAINER_PROJECT_ACCESS project_creation_level' do
+      let(:group) { create(:group, project_creation_level: ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS) }
+
+      before do
+        group.add_developer(user)
+        visit new_project_path(namespace_id: group.id)
+      end
+
+      it 'selects the group namespace' do
+        page.within('#blank-project-pane') do
+          namespace = find('#project_namespace_id option[selected]')
+
+          expect(namespace.text).to eq group.full_path
+        end
       end
     end
   end

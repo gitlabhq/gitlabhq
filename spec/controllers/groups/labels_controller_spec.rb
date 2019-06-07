@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Groups::LabelsController do
@@ -36,6 +38,12 @@ describe Groups::LabelsController do
         label_ids = json_response.map {|label| label['title']}
         expect(label_ids).to match_array([group_label_1.title, subgroup_label_1.title])
       end
+    end
+
+    context 'external authorization' do
+      subject { get :index, params: { group_id: group.to_param } }
+
+      it_behaves_like 'disabled when using an external authorization service'
     end
   end
 

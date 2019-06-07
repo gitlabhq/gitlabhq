@@ -3,7 +3,7 @@ import Api from '~/api';
 import Search from '~/pages/search/show/search';
 
 describe('Search', () => {
-  const fixturePath = 'search/show.html.raw';
+  const fixturePath = 'search/show.html';
   const searchTerm = 'some search';
   const fillDropdownInput = dropdownSelector => {
     const dropdownElement = document.querySelector(dropdownSelector).parentNode;

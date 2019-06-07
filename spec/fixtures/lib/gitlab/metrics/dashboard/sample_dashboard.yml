@@ -1,0 +1,36 @@
+dashboard: 'Test Dashboard'
+priority: 1
+panel_groups:
+- group: Group A
+  priority: 1
+  panels:
+  - title: "Super Chart A1"
+    type: "area-chart"
+    y_label: "y_label"
+    weight: 1
+    metrics:
+    - id: metric_a1
+      query_range: 'query'
+      unit: unit
+      label: Legend Label
+  - title: "Super Chart A2"
+    type: "area-chart"
+    y_label: "y_label"
+    weight: 2
+    metrics:
+    - id: metric_a2
+      query_range: 'query'
+      label: Legend Label
+      unit: unit
+- group: Group B
+  priority: 10
+  panels:
+  - title: "Super Chart B"
+    type: "area-chart"
+    y_label: "y_label"
+    weight: 1
+    metrics:
+    - id: metric_b
+      query_range: 'query'
+      unit: unit
+      label: Legend Label

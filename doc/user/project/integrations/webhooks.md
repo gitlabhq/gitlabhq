@@ -48,7 +48,7 @@ Navigate to the webhooks page by going to your project's
 ## Use-cases
 
 - You can set up a webhook in GitLab to send a notification to
-  [Slack](https://api.slack.com/incoming-webhooks) every time a build fails, for example
+  [Slack](https://api.slack.com/incoming-webhooks) every time a job fails.
 - You can [integrate with Twilio to be notified via SMS](https://www.datadoghq.com/blog/send-alerts-sms-customizable-webhooks-twilio/)
   every time an issue is created for a specific project or group within GitLab
 - You can use them to [automatically assign labels to merge requests](https://about.gitlab.com/2016/08/19/applying-gitlab-labels-automatically/).
@@ -321,8 +321,14 @@ X-Gitlab-Event: Issue Hook
     "group_id": 41
   }],
   "changes": {
-    "updated_by_id": [null, 1],
-    "updated_at": ["2017-09-15 16:50:55 UTC", "2017-09-15 16:52:00 UTC"],
+    "updated_by_id": {
+      "previous": null,
+      "current": 1
+    },
+    "updated_at": {
+      "previous": "2017-09-15 16:50:55 UTC", 
+      "current": "2017-09-15 16:52:00 UTC"
+    },
     "labels": {
       "previous": [{
         "id": 206,
@@ -851,8 +857,14 @@ X-Gitlab-Event: Merge Request Hook
     "group_id": 41
   }],
   "changes": {
-    "updated_by_id": [null, 1],
-    "updated_at": ["2017-09-15 16:50:55 UTC", "2017-09-15 16:52:00 UTC"],
+    "updated_by_id": {
+      "previous": null,
+      "current": 1
+    },
+    "updated_at": {
+      "previous": "2017-09-15 16:50:55 UTC", 
+      "current":"2017-09-15 16:52:00 UTC"
+    },
     "labels": {
       "previous": [{
         "id": 206,
@@ -1041,7 +1053,12 @@ X-Gitlab-Event: Pipeline Hook
             "username": "root",
             "avatar_url": "http://www.gravatar.com/avatar/e32bd13e2add097461cb96824b7a829c?s=80\u0026d=identicon"
          },
-         "runner": null,
+         "runner": {
+            "id":380987,
+            "description":"shared-runners-manager-6.gitlab.com",
+            "active":true,
+            "is_shared":true
+         },
          "artifacts_file":{
             "filename": null,
             "size": null
@@ -1062,7 +1079,12 @@ X-Gitlab-Event: Pipeline Hook
             "username": "root",
             "avatar_url": "http://www.gravatar.com/avatar/e32bd13e2add097461cb96824b7a829c?s=80\u0026d=identicon"
          },
-         "runner": null,
+         "runner": {
+            "id":380987,
+            "description":"shared-runners-manager-6.gitlab.com",
+            "active":true,
+            "is_shared":true
+         },
          "artifacts_file":{
             "filename": null,
             "size": null
@@ -1083,7 +1105,12 @@ X-Gitlab-Event: Pipeline Hook
             "username": "root",
             "avatar_url": "http://www.gravatar.com/avatar/e32bd13e2add097461cb96824b7a829c?s=80\u0026d=identicon"
          },
-         "runner": null,
+         "runner": {
+            "id":380987,
+            "description":"shared-runners-manager-6.gitlab.com",
+            "active":true,
+            "is_shared":true
+         },
          "artifacts_file":{
             "filename": null,
             "size": null
@@ -1114,34 +1141,34 @@ X-Gitlab-Event: Pipeline Hook
 }
 ```
 
-### Build events
+### Job events
 
-Triggered on status change of a Build.
+Triggered on status change of a job.
 
 **Request Header**:
 
 ```
-X-Gitlab-Event: Build Hook
+X-Gitlab-Event: Job Hook
 ```
 
 **Request Body**:
 
 ```json
 {
-  "object_kind": "build",
+  "object_kind": "job",
   "ref": "gitlab-script-trigger",
   "tag": false,
   "before_sha": "2293ada6b400935a1378653304eaf6221e0fdb8f",
   "sha": "2293ada6b400935a1378653304eaf6221e0fdb8f",
-  "build_id": 1977,
-  "build_name": "test",
-  "build_stage": "test",
-  "build_status": "created",
-  "build_started_at": null,
-  "build_finished_at": null,
-  "build_duration": null,
-  "build_allow_failure": false,
-  "build_failure_reason": "script_failure",
+  "job_id": 1977,
+  "job_name": "test",
+  "job_stage": "test",
+  "job_status": "created",
+  "job_started_at": null,
+  "job_finished_at": null,
+  "job_duration": null,
+  "job_allow_failure": false,
+  "job_failure_reason": "script_failure",
   "project_id": 380,
   "project_name": "gitlab-org/gitlab-test",
   "user": {

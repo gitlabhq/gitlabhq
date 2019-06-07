@@ -31,6 +31,16 @@ export default {
       type: Boolean,
       required: true,
     },
+    enableScopedLabels: {
+      type: Boolean,
+      require: false,
+      default: false,
+    },
+    scopedLabelsDocumentationLink: {
+      type: String,
+      require: false,
+      default: '#',
+    },
   },
   computed: {
     dropdownToggleText() {
@@ -61,6 +71,8 @@ export default {
     :data-labels="labelsPath"
     :data-namespace-path="namespace"
     :data-show-any="showExtraOptions"
+    :data-scoped-labels="enableScopedLabels"
+    :data-scoped-labels-documentation-link="scopedLabelsDocumentationLink"
     type="button"
     class="dropdown-menu-toggle wide js-label-select js-multiselect js-context-config-modal"
     data-toggle="dropdown"

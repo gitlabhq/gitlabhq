@@ -7,6 +7,8 @@
 # column type without parsing db/schema.rb.
 module Gitlab
   class FakeApplicationSettings < OpenStruct
+    include ApplicationSettingImplementation
+
     # Mimic ActiveRecord predicate methods for boolean values
     def self.define_predicate_methods(options)
       options.each do |key, value|
@@ -26,20 +28,7 @@ module Gitlab
       FakeApplicationSettings.define_predicate_methods(options)
     end
 
-    def key_restriction_for(type)
-      0
-    end
-
-    def allowed_key_types
-      ApplicationSetting::SUPPORTED_KEY_TYPES
-    end
-
-    def pick_repository_storage
-      repository_storages.sample
-    end
-
-    def commit_email_hostname
-      super.presence || ApplicationSetting.default_commit_email_hostname
-    end
+    alias_method :read_attribute, :[]
+    alias_method :has_attribute?, :[]
   end
 end

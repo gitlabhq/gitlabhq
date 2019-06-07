@@ -7,7 +7,7 @@ shared_examples 'discussion comments' do |resource_name|
   let(:close_selector) { "#{form_selector} .btn-comment-and-close" }
   let(:comments_selector) { '.timeline > .note.timeline-entry' }
 
-  it 'clicking "Comment" will post a comment' do
+  it 'clicking "Comment" will post a comment', :quarantine do
     expect(page).to have_selector toggle_selector
 
     find("#{form_selector} .note-textarea").send_keys('a')
@@ -224,7 +224,7 @@ shared_examples 'discussion comments' do |resource_name|
           find(toggle_selector).click
         end
 
-        it 'should have "Start discussion" selected' do
+        it 'has "Start discussion" selected' do
           find("#{menu_selector} li", match: :first)
           items = all("#{menu_selector} li")
 
@@ -267,7 +267,7 @@ shared_examples 'discussion comments' do |resource_name|
             end
           end
 
-          it 'should have "Comment" selected when opening the menu' do
+          it 'has "Comment" selected when opening the menu' do
             find(toggle_selector).click
 
             find("#{menu_selector} li", match: :first)

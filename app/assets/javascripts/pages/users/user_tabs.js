@@ -91,6 +91,7 @@ export default class UserTabs {
     this.actions = Object.keys(this.loaded);
     this.bindEvents();
 
+    // TODO: refactor to make this configurable via constructor params with a default value of 'show'
     if (this.action === 'show') {
       this.action = this.defaultAction;
     }

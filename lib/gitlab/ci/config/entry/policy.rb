@@ -17,7 +17,7 @@ module Gitlab
             include ::Gitlab::Config::Entry::Validatable
 
             validations do
-              validates :config, array_of_strings_or_regexps: true
+              validates :config, array_of_strings_or_regexps_with_fallback: true
             end
 
             def value
@@ -38,7 +38,7 @@ module Gitlab
               validate :variables_expressions_syntax
 
               with_options allow_nil: true do
-                validates :refs, array_of_strings_or_regexps: true
+                validates :refs, array_of_strings_or_regexps_with_fallback: true
                 validates :kubernetes, allowed_values: %w[active]
                 validates :variables, array_of_strings: true
                 validates :changes, array_of_strings: true

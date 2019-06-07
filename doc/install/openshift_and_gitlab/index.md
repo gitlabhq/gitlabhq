@@ -1,8 +1,5 @@
 ---
-author: Achilleas Pipinellis
-author_gitlab: axil
-level: intermediary
-article_type: tutorial
+type: howto
 date: 2016-06-28
 ---
 
@@ -11,7 +8,7 @@ date: 2016-06-28
 CAUTION: **Deprecated:**
 This article is deprecated. Use the official Kubernetes Helm charts for
 installing GitLab to OpenShift. Check out the
-[official installation docs](https://gitlab.com/charts/gitlab/blob/master/doc/cloud/openshift.md)
+[official installation docs](https://docs.gitlab.com/charts/installation/cloud/openshift.html)
 for details.
 
 ## Introduction

@@ -18,7 +18,7 @@ module QA
           element :label_svg
         end
 
-        def go_to_new_label
+        def click_new_label_button
           # The 'labels.svg' takes a fraction of a second to load after which the "New label" button shifts up a bit
           # This can cause webdriver to miss the hit so we wait for the svg to load (implicitly with has_element?)
           # before clicking the button.

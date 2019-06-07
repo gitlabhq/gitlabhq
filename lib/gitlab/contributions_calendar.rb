@@ -49,6 +49,7 @@ module Gitlab
       Event.contributions.where(author_id: contributor.id)
         .where(created_at: date.beginning_of_day..date.end_of_day)
         .where(project_id: projects)
+        .with_associations
     end
     # rubocop: enable CodeReuse/ActiveRecord
 

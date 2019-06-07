@@ -31,15 +31,15 @@ class BambooService < CiService
   end
 
   def title
-    'Atlassian Bamboo CI'
+    s_('BambooService|Atlassian Bamboo CI')
   end
 
   def description
-    'A continuous integration and build server'
+    s_('BambooService|A continuous integration and build server')
   end
 
   def help
-    'You must set up automatic revision labeling and a repository trigger in Bamboo.'
+    s_('BambooService|You must set up automatic revision labeling and a repository trigger in Bamboo.')
   end
 
   def self.to_param
@@ -49,11 +49,11 @@ class BambooService < CiService
   def fields
     [
         { type: 'text', name: 'bamboo_url',
-          placeholder: 'Bamboo root URL like https://bamboo.example.com', required: true },
+          placeholder: s_('BambooService|Bamboo root URL like https://bamboo.example.com'), required: true },
         { type: 'text', name: 'build_key',
-          placeholder: 'Bamboo build plan key like KEY', required: true },
+          placeholder: s_('BambooService|Bamboo build plan key like KEY'), required: true },
         { type: 'text', name: 'username',
-          placeholder: 'A user with API access, if applicable' },
+          placeholder: s_('BambooService|A user with API access, if applicable') },
         { type: 'password', name: 'password' }
     ]
   end

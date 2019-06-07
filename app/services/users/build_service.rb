@@ -26,7 +26,7 @@ module Users
         end
       end
 
-      identity_attrs = params.slice(:extern_uid, :provider)
+      identity_attrs = params.slice(*identity_params)
 
       unless identity_attrs.empty?
         user.identities.build(identity_attrs)
@@ -36,6 +36,10 @@ module Users
     end
 
     private
+
+    def identity_params
+      [:extern_uid, :provider]
+    end
 
     def can_create_user?
       (current_user.nil? && Gitlab::CurrentSettings.allow_signup?) || current_user&.admin?

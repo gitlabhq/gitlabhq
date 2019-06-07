@@ -6,7 +6,9 @@ module Issues
 
     def execute
       filter_resolve_discussion_params
-      @issue = project.issues.new(issue_params)
+      @issue = project.issues.new(issue_params).tap do |issue|
+        ensure_milestone_available(issue)
+      end
     end
 
     def issue_params_with_info_from_discussions

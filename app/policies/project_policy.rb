@@ -89,6 +89,15 @@ class ProjectPolicy < BasePolicy
     ::Gitlab::CurrentSettings.current_application_settings.mirror_available
   end
 
+  with_scope :subject
+  condition(:classification_label_authorized, score: 32) do
+    ::Gitlab::ExternalAuthorization.access_allowed?(
+      @user,
+      @subject.external_authorization_classification_label,
+      @subject.full_path
+    )
+  end
+
   # We aren't checking `:read_issue` or `:read_merge_request` in this case
   # because it could be possible for a user to see an issuable-iid
   # (`:read_issue_iid` or `:read_merge_request_iid`) but then wouldn't be
@@ -187,6 +196,7 @@ class ProjectPolicy < BasePolicy
 
   rule { can?(:reporter_access) }.policy do
     enable :download_code
+    enable :read_statistics
     enable :download_wiki_code
     enable :fork_project
     enable :create_project_snippet
@@ -203,6 +213,7 @@ class ProjectPolicy < BasePolicy
     enable :read_deployment
     enable :read_merge_request
     enable :read_sentry_issue
+    enable :read_prometheus
   end
 
   # We define `:public_user_access` separately because there are cases in gitlab-ee
@@ -231,6 +242,7 @@ class ProjectPolicy < BasePolicy
     enable :admin_merge_request
     enable :admin_milestone
     enable :update_merge_request
+    enable :reopen_merge_request
     enable :create_commit_status
     enable :update_commit_status
     enable :create_build
@@ -278,6 +290,8 @@ class ProjectPolicy < BasePolicy
     enable :admin_cluster
     enable :create_environment_terminal
     enable :destroy_release
+    enable :destroy_artifacts
+    enable :daily_statistics
   end
 
   rule { (mirror_available & can?(:admin_project)) | admin }.enable :admin_remote_mirror
@@ -299,6 +313,8 @@ class ProjectPolicy < BasePolicy
 
   rule { issues_disabled }.policy do
     prevent(*create_read_update_admin_destroy(:issue))
+    prevent(*create_read_update_admin_destroy(:board))
+    prevent(*create_read_update_admin_destroy(:list))
   end
 
   rule { merge_requests_disabled | repository_disabled }.policy do
@@ -410,6 +426,25 @@ class ProjectPolicy < BasePolicy
 
   rule { ~can_have_multiple_clusters & has_clusters }.prevent :add_cluster
 
+  rule { ~can?(:read_cross_project) & ~classification_label_authorized }.policy do
+    # Preventing access here still allows the projects to be listed. Listing
+    # projects doesn't check the `:read_project` ability. But instead counts
+    # on the `project_authorizations` table.
+    #
+    # All other actions should explicitly check read project, which would
+    # trigger the `classification_label_authorized` condition.
+    #
+    # `:read_project_for_iids` is not prevented by this condition, as it is
+    # used for cross-project reference checks.
+    prevent :guest_access
+    prevent :public_access
+    prevent :public_user_access
+    prevent :reporter_access
+    prevent :developer_access
+    prevent :maintainer_access
+    prevent :owner_access
+  end
+
   private
 
   def team_member?
@@ -453,6 +488,10 @@ class ProjectPolicy < BasePolicy
   def team_access_level
     return -1 if @user.nil?
 
+    lookup_access_level!
+  end
+
+  def lookup_access_level!
     # NOTE: max_member_access has its own cache
     project.team.max_member_access(@user.id)
   end
@@ -462,7 +501,7 @@ class ProjectPolicy < BasePolicy
     when ProjectFeature::DISABLED
       false
     when ProjectFeature::PRIVATE
-      guest? || admin?
+      admin? || team_access_level >= ProjectFeature.required_minimum_access_level(feature)
     else
       true
     end

@@ -260,6 +260,7 @@ FactoryBot.define do
     trait(:merge_requests_enabled)  { merge_requests_access_level ProjectFeature::ENABLED }
     trait(:merge_requests_disabled) { merge_requests_access_level ProjectFeature::DISABLED }
     trait(:merge_requests_private)  { merge_requests_access_level ProjectFeature::PRIVATE }
+    trait(:merge_requests_public)   { merge_requests_access_level ProjectFeature::PUBLIC }
     trait(:repository_enabled)      { repository_access_level ProjectFeature::ENABLED }
     trait(:repository_disabled)     { repository_access_level ProjectFeature::DISABLED }
     trait(:repository_private)      { repository_access_level ProjectFeature::PRIVATE }
@@ -270,6 +271,10 @@ FactoryBot.define do
 
     trait :auto_devops do
       association :auto_devops, factory: :project_auto_devops
+    end
+
+    trait :auto_devops_disabled do
+      association :auto_devops, factory: [:project_auto_devops, :disabled]
     end
   end
 
@@ -308,6 +313,20 @@ FactoryBot.define do
           'project_url' => 'http://redmine/projects/project_name_in_redmine',
           'issues_url' => 'http://redmine/projects/project_name_in_redmine/issues/:id',
           'new_issue_url' => 'http://redmine/projects/project_name_in_redmine/issues/new'
+        }
+      )
+    end
+  end
+
+  factory :youtrack_project, parent: :project do
+    has_external_issue_tracker true
+
+    after :create do |project|
+      project.create_youtrack_service(
+        active: true,
+        properties: {
+          'project_url' => 'http://youtrack/projects/project_guid_in_youtrack',
+          'issues_url' => 'http://youtrack/issues/:id'
         }
       )
     end

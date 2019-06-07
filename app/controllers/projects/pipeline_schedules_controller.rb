@@ -50,9 +50,11 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
     job_id = RunPipelineScheduleWorker.perform_async(schedule.id, current_user.id)
 
     if job_id
-      flash[:notice] = "Successfully scheduled a pipeline to run. Go to the <a href=\"#{project_pipelines_path(@project)}\">Pipelines page</a> for details.".html_safe
+      pipelines_link_start = "<a href=\"#{project_pipelines_path(@project)}\">"
+      message = _("Successfully scheduled a pipeline to run. Go to the %{pipelines_link_start}Pipelines page%{pipelines_link_end} for details.") % { pipelines_link_start: pipelines_link_start, pipelines_link_end: "</a>" }
+      flash[:notice] = message.html_safe
     else
-      flash[:alert] = 'Unable to schedule a pipeline to run immediately'
+      flash[:alert] = _('Unable to schedule a pipeline to run immediately')
     end
 
     redirect_to pipeline_schedules_path(@project)
@@ -85,7 +87,7 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
 
     return unless limiter.throttled?([current_user, schedule], 1)
 
-    flash[:alert] = 'You cannot play this scheduled pipeline at the moment. Please wait a minute.'
+    flash[:alert] = _('You cannot play this scheduled pipeline at the moment. Please wait a minute.')
     redirect_to pipeline_schedules_path(@project)
   end
 
@@ -96,7 +98,7 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
   def schedule_params
     params.require(:schedule)
       .permit(:description, :cron, :cron_timezone, :ref, :active,
-        variables_attributes: [:id, :key, :secret_value, :_destroy] )
+        variables_attributes: [:id, :variable_type, :key, :secret_value, :_destroy] )
   end
 
   def authorize_play_pipeline_schedule!

@@ -22,6 +22,7 @@ import noteHeader from '~/notes/components/note_header.vue';
 import Icon from '~/vue_shared/components/icon.vue';
 import TimelineEntryItem from './timeline_entry_item.vue';
 import { spriteIcon } from '../../../lib/utils/common_utils';
+import initMRPopovers from '~/mr_popover/';
 
 const MAX_VISIBLE_COMMIT_LIST_COUNT = 3;
 
@@ -71,6 +72,9 @@ export default {
       );
     },
   },
+  mounted() {
+    initMRPopovers(this.$el.querySelectorAll('.gfm-merge_request'));
+  },
 };
 </script>
 
@@ -93,7 +97,7 @@ export default {
             'system-note-commit-list': hasMoreCommits,
             'hide-shade': expanded,
           }"
-          class="note-text"
+          class="note-text md"
           v-html="note.note_html"
         ></div>
         <div v-if="hasMoreCommits" class="flex-list">

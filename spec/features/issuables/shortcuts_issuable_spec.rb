@@ -13,7 +13,7 @@ describe 'Blob shortcuts', :js do
   end
 
   shared_examples "quotes the selected text" do
-    it "quotes the selected text" do
+    it "quotes the selected text", :quarantine do
       select_element('.note-text')
       find('body').native.send_key('r')
 

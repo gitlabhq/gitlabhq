@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe Clusters::Applications::Prometheus do
@@ -8,6 +10,21 @@ describe Clusters::Applications::Prometheus do
   include_examples 'cluster application version specs', :clusters_applications_prometheus
   include_examples 'cluster application helm specs', :clusters_applications_prometheus
   include_examples 'cluster application initial status specs'
+
+  describe 'after_destroy' do
+    let(:project) { create(:project) }
+    let(:cluster) { create(:cluster, :with_installed_helm, projects: [project]) }
+    let!(:application) { create(:clusters_applications_prometheus, :installed, cluster: cluster) }
+    let!(:prometheus_service) { project.create_prometheus_service(active: true) }
+
+    it 'deactivates prometheus_service after destroy' do
+      expect do
+        application.destroy!
+
+        prometheus_service.reload
+      end.to change(prometheus_service, :active).from(true).to(false)
+    end
+  end
 
   describe 'transition to installed' do
     let(:project) { create(:project) }
@@ -21,10 +38,18 @@ describe Clusters::Applications::Prometheus do
     end
 
     it 'ensures Prometheus service is activated' do
-      expect(prometheus_service).to receive(:update).with(active: true)
+      expect(prometheus_service).to receive(:update!).with(active: true)
 
       subject.make_installed
     end
+  end
+
+  describe '#can_uninstall?' do
+    let(:prometheus) { create(:clusters_applications_prometheus) }
+
+    subject { prometheus.can_uninstall? }
+
+    it { is_expected.to be_truthy }
   end
 
   describe '#prometheus_client' do
@@ -92,7 +117,7 @@ describe Clusters::Applications::Prometheus do
 
     it { is_expected.to be_an_instance_of(Gitlab::Kubernetes::Helm::InstallCommand) }
 
-    it 'should be initialized with 3 arguments' do
+    it 'is initialized with 3 arguments' do
       expect(subject.name).to eq('prometheus')
       expect(subject.chart).to eq('stable/prometheus')
       expect(subject.version).to eq('6.7.3')
@@ -111,12 +136,12 @@ describe Clusters::Applications::Prometheus do
     context 'application failed to install previously' do
       let(:prometheus) { create(:clusters_applications_prometheus, :errored, version: '2.0.0') }
 
-      it 'should be initialized with the locked version' do
+      it 'is initialized with the locked version' do
         expect(subject.version).to eq('6.7.3')
       end
     end
 
-    it 'should not install knative metrics' do
+    it 'does not install knative metrics' do
       expect(subject.postinstall).to be_nil
     end
 
@@ -126,9 +151,37 @@ describe Clusters::Applications::Prometheus do
 
       subject { prometheus.install_command }
 
-      it 'should install knative metrics' do
+      it 'installs knative metrics' do
         expect(subject.postinstall).to include("kubectl apply -f #{Clusters::Applications::Knative::METRICS_CONFIG}")
       end
+    end
+  end
+
+  describe '#uninstall_command' do
+    let(:prometheus) { create(:clusters_applications_prometheus) }
+
+    subject { prometheus.uninstall_command }
+
+    it { is_expected.to be_an_instance_of(Gitlab::Kubernetes::Helm::DeleteCommand) }
+
+    it 'has the application name' do
+      expect(subject.name).to eq('prometheus')
+    end
+
+    it 'has files' do
+      expect(subject.files).to eq(prometheus.files)
+    end
+
+    it 'is rbac' do
+      expect(subject).to be_rbac
+    end
+
+    context 'on a non rbac enabled cluster' do
+      before do
+        prometheus.cluster.platform_kubernetes.abac!
+      end
+
+      it { is_expected.not_to be_rbac }
     end
   end
 
@@ -140,7 +193,7 @@ describe Clusters::Applications::Prometheus do
       expect(prometheus.upgrade_command(values)).to be_an_instance_of(::Gitlab::Kubernetes::Helm::InstallCommand)
     end
 
-    it 'should be initialized with 3 arguments' do
+    it 'is initialized with 3 arguments' do
       command = prometheus.upgrade_command(values)
 
       expect(command.name).to eq('prometheus')
@@ -178,7 +231,7 @@ describe Clusters::Applications::Prometheus do
 
     subject { application.files }
 
-    it 'should include prometheus valid values' do
+    it 'includes prometheus valid values' do
       expect(values).to include('alertmanager')
       expect(values).to include('kubeStateMetrics')
       expect(values).to include('nodeExporter')
@@ -202,7 +255,7 @@ describe Clusters::Applications::Prometheus do
       expect(subject[:'values.yaml']).to eq({ hello: :world })
     end
 
-    it 'should include cert files' do
+    it 'includes cert files' do
       expect(subject[:'ca.pem']).to be_present
       expect(subject[:'ca.pem']).to eq(application.cluster.application_helm.ca_cert)
 
@@ -218,7 +271,7 @@ describe Clusters::Applications::Prometheus do
         application.cluster.application_helm.ca_cert = nil
       end
 
-      it 'should not include cert files' do
+      it 'does not include cert files' do
         expect(subject[:'ca.pem']).not_to be_present
         expect(subject[:'cert.pem']).not_to be_present
         expect(subject[:'key.pem']).not_to be_present

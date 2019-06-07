@@ -4,12 +4,14 @@ describe API::Releases do
   let(:project) { create(:project, :repository, :private) }
   let(:maintainer) { create(:user) }
   let(:reporter) { create(:user) }
+  let(:guest) { create(:user) }
   let(:non_project_member) { create(:user) }
   let(:commit) { create(:commit, project: project) }
 
   before do
     project.add_maintainer(maintainer)
     project.add_reporter(reporter)
+    project.add_guest(guest)
 
     project.repository.add_tag(maintainer, 'v0.1', commit.id)
     project.repository.add_tag(maintainer, 'v0.2', commit.id)
@@ -50,7 +52,7 @@ describe API::Releases do
       it 'matches response schema' do
         get api("/projects/#{project.id}/releases", maintainer)
 
-        expect(response).to match_response_schema('releases')
+        expect(response).to match_response_schema('public_api/v4/releases')
       end
     end
 
@@ -63,6 +65,46 @@ describe API::Releases do
         expect(json_response.count).to eq(1)
         expect(json_response.first['tag_name']).to eq('v1.1.5')
         expect(release).to be_tag_missing
+      end
+    end
+
+    context 'when user is a guest' do
+      let!(:release) do
+        create(:release,
+               project: project,
+               tag: 'v0.1',
+               author: maintainer,
+               created_at: 2.days.ago)
+      end
+
+      it 'responds 200 OK' do
+        get api("/projects/#{project.id}/releases", guest)
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      it "does not expose tag, commit and source code" do
+        get api("/projects/#{project.id}/releases", guest)
+
+        expect(response).to match_response_schema('public_api/v4/release/releases_for_guest')
+        expect(json_response[0]['assets']['count']).to eq(release.links.count)
+      end
+
+      context 'when project is public' do
+        let(:project) { create(:project, :repository, :public) }
+
+        it 'responds 200 OK' do
+          get api("/projects/#{project.id}/releases", guest)
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+
+        it "exposes tag, commit and source code" do
+          get api("/projects/#{project.id}/releases", guest)
+
+          expect(response).to match_response_schema('public_api/v4/releases')
+          expect(json_response[0]['assets']['count']).to eq(release.links.count + release.sources.count)
+        end
       end
     end
 
@@ -115,7 +157,7 @@ describe API::Releases do
       it 'matches response schema' do
         get api("/projects/#{project.id}/releases/v0.1", maintainer)
 
-        expect(response).to match_response_schema('release')
+        expect(response).to match_response_schema('public_api/v4/release')
       end
 
       it 'contains source information as assets' do
@@ -186,6 +228,35 @@ describe API::Releases do
 
             expect(json_response['assets']['links'].first['external'])
               .to be_falsy
+          end
+        end
+      end
+
+      context 'when user is a guest' do
+        it 'responds 403 Forbidden' do
+          get api("/projects/#{project.id}/releases/v0.1", guest)
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+
+        context 'when project is public' do
+          let(:project) { create(:project, :repository, :public) }
+
+          it 'responds 200 OK' do
+            get api("/projects/#{project.id}/releases/v0.1", guest)
+
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+
+          it "exposes tag and commit" do
+            create(:release,
+                   project: project,
+                   tag: 'v0.1',
+                   author: maintainer,
+                   created_at: 2.days.ago)
+            get api("/projects/#{project.id}/releases/v0.1", guest)
+
+            expect(response).to match_response_schema('public_api/v4/release')
           end
         end
       end
@@ -268,7 +339,7 @@ describe API::Releases do
     it 'matches response schema' do
       post api("/projects/#{project.id}/releases", maintainer), params: params
 
-      expect(response).to match_response_schema('release')
+      expect(response).to match_response_schema('public_api/v4/release')
     end
 
     it 'does not create a new tag' do
@@ -340,7 +411,7 @@ describe API::Releases do
           it 'matches response schema' do
             post api("/projects/#{project.id}/releases", maintainer), params: params
 
-            expect(response).to match_response_schema('release')
+            expect(response).to match_response_schema('public_api/v4/release')
           end
         end
 
@@ -494,7 +565,7 @@ describe API::Releases do
     it 'matches response schema' do
       put api("/projects/#{project.id}/releases/v0.1", maintainer), params: params
 
-      expect(response).to match_response_schema('release')
+      expect(response).to match_response_schema('public_api/v4/release')
     end
 
     context 'when user tries to update sha' do
@@ -586,7 +657,7 @@ describe API::Releases do
     it 'matches response schema' do
       delete api("/projects/#{project.id}/releases/v0.1", maintainer)
 
-      expect(response).to match_response_schema('release')
+      expect(response).to match_response_schema('public_api/v4/release')
     end
 
     context 'when there are no corresponding releases' do

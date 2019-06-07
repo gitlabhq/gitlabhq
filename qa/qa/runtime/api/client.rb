@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'airborne'
 
 module QA
@@ -14,7 +16,7 @@ module QA
 
         def personal_access_token
           @personal_access_token ||= begin
-            # you can set the environment variable PERSONAL_ACCESS_TOKEN
+            # you can set the environment variable GITLAB_QA_ACCESS_TOKEN
             # to use a specific access token rather than create one from the UI
             Runtime::Env.personal_access_token ||= create_personal_access_token
           end
@@ -23,15 +25,12 @@ module QA
         private
 
         def create_personal_access_token
-          if @is_new_session
-            Runtime::Browser.visit(@address, Page::Main::Login) { do_create_personal_access_token }
-          else
-            do_create_personal_access_token
-          end
+          Runtime::Browser.visit(@address, Page::Main::Login) if @is_new_session
+          do_create_personal_access_token
         end
 
         def do_create_personal_access_token
-          Page::Main::Login.act { sign_in_using_credentials }
+          Page::Main::Login.perform(&:sign_in_using_credentials)
           Resource::PersonalAccessToken.fabricate!.access_token
         end
       end

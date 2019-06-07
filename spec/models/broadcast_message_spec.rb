@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe BroadcastMessage do
@@ -92,6 +94,12 @@ describe BroadcastMessage do
 
       expect(Rails.cache).to receive(:delete).with(described_class::LEGACY_CACHE_KEY)
       expect(described_class.current.length).to eq(0)
+    end
+  end
+
+  describe '#attributes' do
+    it 'includes message_html field' do
+      expect(subject.attributes.keys).to include("cached_markdown_version", "message_html")
     end
   end
 

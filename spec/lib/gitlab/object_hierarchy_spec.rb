@@ -81,6 +81,24 @@ describe Gitlab::ObjectHierarchy, :postgresql do
       expect { relation.update_all(share_with_group_lock: false) }
         .to raise_error(ActiveRecord::ReadOnlyRecord)
     end
+
+    context 'when with_depth is true' do
+      let(:relation) do
+        described_class.new(Group.where(id: parent.id)).base_and_descendants(with_depth: true)
+      end
+
+      it 'includes depth in the results' do
+        object_depths = {
+          parent.id => 1,
+          child1.id => 2,
+          child2.id => 3
+        }
+
+        relation.each do |object|
+          expect(object.depth).to eq(object_depths[object.id])
+        end
+      end
+    end
   end
 
   describe '#descendants' do
@@ -88,6 +106,28 @@ describe Gitlab::ObjectHierarchy, :postgresql do
       relation = described_class.new(Group.where(id: parent)).descendants
 
       expect(relation).to contain_exactly(child1, child2)
+    end
+  end
+
+  describe '#max_descendants_depth' do
+    subject { described_class.new(base_relation).max_descendants_depth }
+
+    context 'when base relation is empty' do
+      let(:base_relation) { Group.where(id: nil) }
+
+      it { expect(subject).to be_nil }
+    end
+
+    context 'when base has no children' do
+      let(:base_relation) { Group.where(id: child2) }
+
+      it { expect(subject).to eq(1) }
+    end
+
+    context 'when base has grandchildren' do
+      let(:base_relation) { Group.where(id: parent) }
+
+      it { expect(subject).to eq(3) }
     end
   end
 

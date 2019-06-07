@@ -2,7 +2,7 @@
 
 require 'carrierwave/orm/activerecord'
 
-class Issue < ActiveRecord::Base
+class Issue < ApplicationRecord
   include AtomicInternalId
   include IidRoutes
   include Issuable
@@ -49,10 +49,6 @@ class Issue < ActiveRecord::Base
 
   scope :in_projects, ->(project_ids) { where(project_id: project_ids) }
 
-  scope :assigned, -> { where('EXISTS (SELECT TRUE FROM issue_assignees WHERE issue_id = issues.id)') }
-  scope :unassigned, -> { where('NOT EXISTS (SELECT TRUE FROM issue_assignees WHERE issue_id = issues.id)') }
-  scope :assigned_to, ->(u) { where('EXISTS (SELECT TRUE FROM issue_assignees WHERE user_id = ? AND issue_id = issues.id)', u.id)}
-
   scope :with_due_date, -> { where.not(due_date: nil) }
   scope :without_due_date, -> { where(due_date: nil) }
   scope :due_before, ->(date) { where('issues.due_date < ?', date) }
@@ -62,8 +58,10 @@ class Issue < ActiveRecord::Base
   scope :order_due_date_asc, -> { reorder('issues.due_date IS NULL, issues.due_date ASC') }
   scope :order_due_date_desc, -> { reorder('issues.due_date IS NULL, issues.due_date DESC') }
   scope :order_closest_future_date, -> { reorder('CASE WHEN issues.due_date >= CURRENT_DATE THEN 0 ELSE 1 END ASC, ABS(CURRENT_DATE - issues.due_date) ASC') }
+  scope :order_relative_position_asc, -> { reorder(::Gitlab::Database.nulls_last_order('relative_position', 'ASC')) }
 
   scope :preload_associations, -> { preload(:labels, project: :namespace) }
+  scope :with_api_entity_associations, -> { preload(:timelogs, :assignees, :author, :notes, :labels, project: [:route, { namespace: :route }] ) }
 
   scope :public_only, -> { where(confidential: false) }
   scope :confidential_only, -> { where(confidential: true) }
@@ -73,8 +71,6 @@ class Issue < ActiveRecord::Base
 
   attr_spammable :title, spam_title: true
   attr_spammable :description, spam_description: true
-
-  participant :assignees
 
   state_machine :state, initial: :opened do
     event :close do
@@ -89,7 +85,7 @@ class Issue < ActiveRecord::Base
     state :closed
 
     before_transition any => :closed do |issue|
-      issue.closed_at = Time.zone.now
+      issue.closed_at = issue.system_note_timestamp
     end
 
     before_transition closed: :opened do |issue|
@@ -135,9 +131,10 @@ class Issue < ActiveRecord::Base
   def self.sort_by_attribute(method, excluded_labels: [])
     case method.to_s
     when 'closest_future_date' then order_closest_future_date
-    when 'due_date'      then order_due_date_asc
-    when 'due_date_asc'  then order_due_date_asc
-    when 'due_date_desc' then order_due_date_desc
+    when 'due_date'            then order_due_date_asc
+    when 'due_date_asc'        then order_due_date_asc
+    when 'due_date_desc'       then order_due_date_desc
+    when 'relative_position'   then order_relative_position_asc
     else
       super
     end
@@ -152,22 +149,6 @@ class Issue < ActiveRecord::Base
 
   def hook_attrs
     Gitlab::HookData::IssueBuilder.new(self).build
-  end
-
-  # Returns a Hash of attributes to be used for Twitter card metadata
-  def card_attributes
-    {
-      'Author'   => author.try(:name),
-      'Assignee' => assignee_list
-    }
-  end
-
-  def assignee_or_author?(user)
-    author_id == user.id || assignees.exists?(user.id)
-  end
-
-  def assignee_list
-    assignees.map(&:name).to_sentence
   end
 
   # `from` argument can be a Namespace or Project.
@@ -229,7 +210,13 @@ class Issue < ActiveRecord::Base
   def visible_to_user?(user = nil)
     return false unless project && project.feature_available?(:issues, user)
 
-    user ? readable_by?(user) : publicly_visible?
+    return publicly_visible? unless user
+
+    return false unless readable_by?(user)
+
+    user.full_private_access? ||
+      ::Gitlab::ExternalAuthorization.access_allowed?(
+        user, project.external_authorization_classification_label)
   end
 
   def check_for_spam?
@@ -263,6 +250,10 @@ class Issue < ActiveRecord::Base
   end
   # rubocop: enable CodeReuse/ServiceClass
 
+  def merge_requests_count
+    merge_requests_closing_issues.count
+  end
+
   private
 
   def ensure_metrics
@@ -293,7 +284,7 @@ class Issue < ActiveRecord::Base
 
   # Returns `true` if this Issue is visible to everybody.
   def publicly_visible?
-    project.public? && !confidential?
+    project.public? && !confidential? && !::Gitlab::ExternalAuthorization.enabled?
   end
 
   def expire_etag_cache

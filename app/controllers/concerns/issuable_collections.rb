@@ -41,6 +41,7 @@ module IssuableCollections
     return if pagination_disabled?
 
     @issuables          = @issuables.page(params[:page])
+    @issuables          = per_page_for_relative_position if params[:sort] == 'relative_position'
     @issuable_meta_data = issuable_meta_data(@issuables, collection_type)
     @total_pages        = issuable_page_count
   end
@@ -80,6 +81,11 @@ module IssuableCollections
     (row_count.to_f / limit).ceil
   end
 
+  # manual / relative_position sorting allows for 100 items on the page
+  def per_page_for_relative_position
+    @issuables.per(100) # rubocop:disable Gitlab/ModuleWithInstanceVariables
+  end
+
   def issuable_finder_for(finder_class)
     finder_class.new(current_user, finder_options)
   end
@@ -100,6 +106,7 @@ module IssuableCollections
 
     if @project
       options[:project_id] = @project.id
+      options[:attempt_project_search_optimizations] = true
     elsif @group
       options[:group_id] = @group.id
       options[:include_subgroups] = true
@@ -189,15 +196,15 @@ module IssuableCollections
                          end
   end
 
+  # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def preload_for_collection
+    common_attributes = [:author, :assignees, :labels, :milestone]
     @preload_for_collection ||= case collection_type
                                 when 'Issue'
-                                  [:project, :author, :assignees, :labels, :milestone, project: :namespace]
+                                  common_attributes + [:project, project: :namespace]
                                 when 'MergeRequest'
-                                  [
-                                    :target_project, :author, :assignee, :labels, :milestone,
-                                    source_project: :route, head_pipeline: :project, target_project: :namespace, latest_merge_request_diff: :merge_request_diff_commits
-                                  ]
+                                  common_attributes + [:target_project, source_project: :route, head_pipeline: :project, target_project: :namespace, latest_merge_request_diff: :merge_request_diff_commits]
                                 end
   end
+  # rubocop:enable Gitlab/ModuleWithInstanceVariables
 end

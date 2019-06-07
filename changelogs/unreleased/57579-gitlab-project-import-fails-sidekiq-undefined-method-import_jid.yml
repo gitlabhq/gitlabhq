@@ -1,5 +1,0 @@
----
-title: Fix import_jid error on project import
-merge_request: 25239
-author:
-type: fixed

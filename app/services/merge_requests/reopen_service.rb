@@ -3,7 +3,7 @@
 module MergeRequests
   class ReopenService < MergeRequests::BaseService
     def execute(merge_request)
-      return merge_request unless can?(current_user, :update_merge_request, merge_request)
+      return merge_request unless can?(current_user, :reopen_merge_request, merge_request)
 
       if merge_request.reopen
         create_event(merge_request)

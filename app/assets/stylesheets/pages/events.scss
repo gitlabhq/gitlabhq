@@ -8,7 +8,7 @@
   border-bottom: 1px solid $white-normal;
   color: $gl-text-color-secondary;
   position: relative;
-  line-height: $gl-line-height;
+  line-height: $gl-line-height-20;
 
   .system-note-image {
     position: absolute;
@@ -48,7 +48,7 @@
   }
 
   .event-user-info {
-    margin-bottom: $gl-padding-8;
+    margin-bottom: $gl-padding-4;
 
     .author_name {
       a {
@@ -67,7 +67,7 @@
   }
 
   .event-body {
-    margin-top: $gl-padding-8;
+    margin-top: $gl-padding-4;
     margin-right: 174px;
     color: $gl-text-color;
 
@@ -155,6 +155,10 @@
 
         &:hover {
           background: none;
+        }
+
+        a {
+          color: $blue-600;
         }
       }
     }

@@ -24,7 +24,13 @@ module Gitlab
       def call(env)
         return @app.call(env) unless env['PATH_INFO'] == HEALTH_PATH
 
-        request = ActionDispatch::Request.new(env)
+        # We should be using ActionDispatch::Request instead of
+        # Rack::Request to be consistent with Rails, but due to a Rails
+        # bug described in
+        # https://gitlab.com/gitlab-org/gitlab-ce/issues/58573#note_149799010
+        # hosts behind a load balancer will only see 127.0.0.1 for the
+        # load balancer's IP.
+        request = Rack::Request.new(env)
 
         return OK_RESPONSE if client_ip_whitelisted?(request)
 

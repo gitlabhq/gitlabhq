@@ -3,9 +3,9 @@
     .note-actions-item
       = link_to '#', title: _('Add reaction'), class: "note-action-button note-emoji-button js-add-award js-note-emoji has-tooltip", data: { position: 'right' } do
         = icon('spinner spin')
-        %span{ class: 'link-highlight award-control-icon-neutral' }= custom_icon('emoji_slightly_smiling_face')
-        %span{ class: 'link-highlight award-control-icon-positive' }= custom_icon('emoji_smiley')
-        %span{ class: 'link-highlight award-control-icon-super-positive' }= custom_icon('emoji_smile')
+        %span{ class: 'link-highlight award-control-icon-neutral' }= sprite_icon('slight-smile')
+        %span{ class: 'link-highlight award-control-icon-positive' }= sprite_icon('smiley')
+        %span{ class: 'link-highlight award-control-icon-super-positive' }= sprite_icon('smile')
 
   - if note_editable
     .note-actions-item

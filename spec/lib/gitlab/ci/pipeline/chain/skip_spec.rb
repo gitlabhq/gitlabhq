@@ -23,7 +23,7 @@ describe Gitlab::Ci::Pipeline::Chain::Skip do
       step.perform!
     end
 
-    it 'should break the chain' do
+    it 'breaks the chain' do
       expect(step.break?).to be true
     end
 
@@ -37,11 +37,11 @@ describe Gitlab::Ci::Pipeline::Chain::Skip do
       step.perform!
     end
 
-    it 'should not break the chain' do
+    it 'does not break the chain' do
       expect(step.break?).to be false
     end
 
-    it 'should not skip a pipeline chain' do
+    it 'does not skip a pipeline chain' do
       expect(pipeline.reload).not_to be_skipped
     end
   end

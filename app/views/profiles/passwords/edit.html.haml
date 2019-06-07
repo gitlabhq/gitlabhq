@@ -1,5 +1,5 @@
-- breadcrumb_title "Edit Password"
-- page_title "Password"
+- breadcrumb_title _('Edit Password')
+- page_title _('Password')
 - @content_class = "limit-container-width" unless fluid_layout
 
 .row.prepend-top-default
@@ -7,28 +7,29 @@
     %h4.prepend-top-0
       = page_title
     %p
-      After a successful password update, you will be redirected to the login page where you can log in with your new password.
+      = _('After a successful password update, you will be redirected to the login page where you can log in with your new password.')
   .col-lg-8
     %h5.prepend-top-0
-      Change your password
-      - unless @user.password_automatically_set?
-        or recover your current one
+      - if @user.password_automatically_set
+        = _('Change your password')
+      - else
+        = _('Change your password or recover your current one')
     = form_for @user, url: profile_password_path, method: :put, html: {class: "update-password"} do |f|
       = form_errors(@user)
 
       - unless @user.password_automatically_set?
         .form-group
-          = f.label :current_password, class: 'label-bold'
+          = f.label :current_password, _('Current password'), class: 'label-bold'
           = f.password_field :current_password, required: true, class: 'form-control'
           %p.form-text.text-muted
-            You must provide your current password in order to change it.
+            = _('You must provide your current password in order to change it.')
       .form-group
-        = f.label :password, 'New password', class: 'label-bold'
+        = f.label :password, _('New password'), class: 'label-bold'
         = f.password_field :password, required: true, class: 'form-control'
       .form-group
-        = f.label :password_confirmation, class: 'label-bold'
+        = f.label :password_confirmation, _('Password confirmation'), class: 'label-bold'
         = f.password_field :password_confirmation, required: true, class: 'form-control'
       .prepend-top-default.append-bottom-default
-        = f.submit 'Save password', class: "btn btn-success append-right-10"
+        = f.submit _('Save password'), class: "btn btn-success append-right-10"
         - unless @user.password_automatically_set?
-          = link_to "I forgot my password", reset_profile_password_path, method: :put, class: "account-btn-link"
+          = link_to _('I forgot my password'), reset_profile_password_path, method: :put, class: "account-btn-link"

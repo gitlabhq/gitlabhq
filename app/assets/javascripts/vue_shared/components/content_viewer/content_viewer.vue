@@ -1,5 +1,4 @@
 <script>
-import { viewerInformationForPath } from './lib/viewer_utils';
 import MarkdownViewer from './viewers/markdown_viewer.vue';
 import ImageViewer from './viewers/image_viewer.vue';
 import DownloadViewer from './viewers/download_viewer.vue';
@@ -24,15 +23,18 @@ export default {
       required: false,
       default: '',
     },
+    type: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   computed: {
     viewer() {
       if (!this.path) return null;
+      if (!this.type) return DownloadViewer;
 
-      const previewInfo = viewerInformationForPath(this.path);
-      if (!previewInfo) return DownloadViewer;
-
-      switch (previewInfo.id) {
+      switch (this.type) {
         case 'markdown':
           return MarkdownViewer;
         case 'image':

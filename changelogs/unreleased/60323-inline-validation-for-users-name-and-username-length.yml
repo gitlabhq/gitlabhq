@@ -1,0 +1,5 @@
+---
+title: Update registration form to indicate invalid name or username length on input
+merge_request: 28095
+author: Jiaan Louw
+type: changed

@@ -15,6 +15,8 @@ module API
         authenticate_non_get!
       end
 
+      helpers Helpers::UsersHelpers
+
       helpers do
         # rubocop: disable CodeReuse/ActiveRecord
         def find_user_by_id(params)
@@ -51,6 +53,8 @@ module API
           optional :avatar, type: File, desc: 'Avatar image for user'
           optional :private_profile, type: Boolean, desc: 'Flag indicating the user has a private profile'
           all_or_none_of :extern_uid, :provider
+
+          use :optional_params_ee
         end
 
         params :sort_params do
@@ -80,6 +84,7 @@ module API
         use :sort_params
         use :pagination
         use :with_custom_attributes
+        use :optional_index_params_ee
       end
       # rubocop: disable CodeReuse/ActiveRecord
       get do
@@ -124,7 +129,7 @@ module API
         user = User.find_by(id: params[:id])
         not_found!('User') unless user && can?(current_user, :read_user, user)
 
-        opts = { with: current_user&.admin? ? Entities::UserWithAdmin : Entities::User, current_user: current_user }
+        opts = { with: current_user&.admin? ? Entities::UserDetailsWithAdmin : Entities::User, current_user: current_user }
         user, opts = with_custom_attributes(user, opts)
 
         present user, opts

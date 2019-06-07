@@ -124,7 +124,7 @@ export default {
           data.issues.forEach(issueObj => {
             const issue = new ListIssue(issueObj);
             const foundSelectedIssue = ModalStore.findSelectedIssue(issue);
-            issue.selected = !!foundSelectedIssue;
+            issue.selected = Boolean(foundSelectedIssue);
 
             this.issues.push(issue);
           });
@@ -143,8 +143,11 @@ export default {
 };
 </script>
 <template>
-  <div v-if="showAddIssuesModal" class="add-issues-modal">
-    <div class="add-issues-container">
+  <div
+    v-if="showAddIssuesModal"
+    class="add-issues-modal d-flex position-fixed position-top-0 position-bottom-0 position-left-0 position-right-0 h-100"
+  >
+    <div class="add-issues-container d-flex flex-column m-auto rounded">
       <modal-header
         :project-id="projectId"
         :milestone-path="milestonePath"
@@ -161,8 +164,10 @@ export default {
         :new-issue-path="newIssuePath"
         :empty-state-svg="emptyStateSvg"
       />
-      <section v-if="loading || filterLoading" class="add-issues-list text-center">
-        <div class="add-issues-list-loading"><gl-loading-icon /></div>
+      <section v-if="loading || filterLoading" class="add-issues-list d-flex h-100 text-center">
+        <div class="add-issues-list-loading w-100 align-self-center">
+          <gl-loading-icon size="md" />
+        </div>
       </section>
       <modal-footer />
     </div>

@@ -3,7 +3,8 @@
 module API
   class ProjectImport < Grape::API
     include PaginationParams
-    include Helpers::ProjectsHelpers
+
+    helpers Helpers::ProjectsHelpers
 
     helpers do
       def import_params

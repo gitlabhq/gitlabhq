@@ -14,6 +14,12 @@ namespace :gitlab do
       rake_version = run_and_match(%w(rake --version), /[\d\.]+/).try(:to_s)
       # check redis version
       redis_version = run_and_match(%w(redis-cli --version), /redis-cli (\d+\.\d+\.\d+)/).to_a
+
+      # check for system defined proxies
+      if Gitlab.ee?
+        proxies = Gitlab::Proxy.detect_proxy.map {|k, v| "#{k}: #{v}"}.join("\n\t\t")
+      end
+
       # check Git version
       git_version = run_and_match([Gitlab.config.git.bin_path, '--version'], /git version ([\d\.]+)/).to_a
       # check Go version
@@ -22,6 +28,11 @@ namespace :gitlab do
       puts ""
       puts "System information".color(:yellow)
       puts "System:\t\t#{os_name || "unknown".color(:red)}"
+
+      if Gitlab.ee?
+        puts "Proxy:\t\t#{proxies.present? ? proxies.color(:green) : "no"}"
+      end
+
       puts "Current User:\t#{run_command(%w(whoami))}"
       puts "Using RVM:\t#{rvm_version.present? ? "yes".color(:green) : "no"}"
       puts "RVM Version:\t#{rvm_version}" if rvm_version.present?
@@ -34,13 +45,19 @@ namespace :gitlab do
       puts "Sidekiq Version:#{Sidekiq::VERSION}"
       puts "Go Version:\t#{go_version[1] || "unknown".color(:red)}"
 
-      # check database adapter
-      database_adapter = ActiveRecord::Base.connection.adapter_name.downcase
-
       project = Group.new(path: "some-group").projects.build(path: "some-project")
       # construct clone URLs
       http_clone_url = project.http_url_to_repo
       ssh_clone_url  = project.ssh_url_to_repo
+
+      if Gitlab.ee?
+        geo_node_type =
+          if Gitlab::Geo.current_node
+            Gitlab::Geo.current_node.primary ? 'Primary' : 'Secondary'
+          else
+            'Undefined'.color(:red)
+          end
+      end
 
       omniauth_providers = Gitlab.config.omniauth.providers.map { |provider| provider['name'] }
 
@@ -49,16 +66,24 @@ namespace :gitlab do
       puts "Version:\t#{Gitlab::VERSION}"
       puts "Revision:\t#{Gitlab.revision}"
       puts "Directory:\t#{Rails.root}"
-      puts "DB Adapter:\t#{database_adapter}"
+      puts "DB Adapter:\t#{Gitlab::Database.human_adapter_name}"
+      puts "DB Version:\t#{Gitlab::Database.version}"
       puts "URL:\t\t#{Gitlab.config.gitlab.url}"
       puts "HTTP Clone URL:\t#{http_clone_url}"
       puts "SSH Clone URL:\t#{ssh_clone_url}"
+
+      if Gitlab.ee?
+        puts "Elasticsearch:\t#{Gitlab::CurrentSettings.current_application_settings.elasticsearch_indexing? ? "yes".color(:green) : "no"}"
+        puts "Geo:\t\t#{Gitlab::Geo.enabled? ? "yes".color(:green) : "no"}"
+        puts "Geo node:\t#{geo_node_type}" if Gitlab::Geo.enabled?
+      end
+
       puts "Using LDAP:\t#{Gitlab.config.ldap.enabled ? "yes".color(:green) : "no"}"
       puts "Using Omniauth:\t#{Gitlab::Auth.omniauth_enabled? ? "yes".color(:green) : "no"}"
       puts "Omniauth Providers: #{omniauth_providers.join(', ')}" if Gitlab::Auth.omniauth_enabled?
 
       # check Gitolite version
-      gitlab_shell_version_file = "#{Gitlab.config.gitlab_shell.hooks_path}/../VERSION"
+      gitlab_shell_version_file = "#{Gitlab.config.gitlab_shell.path}/VERSION"
       if File.readable?(gitlab_shell_version_file)
         gitlab_shell_version = File.read(gitlab_shell_version_file)
       end
@@ -72,7 +97,7 @@ namespace :gitlab do
           puts "- #{name}: \t#{repository_storage.legacy_disk_path}"
         end
       end
-      puts "Hooks:\t\t#{Gitlab.config.gitlab_shell.hooks_path}"
+      puts "GitLab Shell path:\t\t#{Gitlab.config.gitlab_shell.path}"
       puts "Git:\t\t#{Gitlab.config.git.bin_path}"
     end
   end

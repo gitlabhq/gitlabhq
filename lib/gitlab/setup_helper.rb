@@ -44,6 +44,13 @@ module Gitlab
         config[:'gitlab-shell'] = { dir: Gitlab.config.gitlab_shell.path }
         config[:bin_dir] = Gitlab.config.gitaly.client_path
 
+        if Rails.env.test?
+          # Compared to production, tests run in constrained environments. This
+          # number is meant to grow with the number of concurrent rails requests /
+          # sidekiq jobs, and concurrency will be low anyway in test.
+          config[:git] = { catfile_cache_size: 5 }
+        end
+
         TomlRB.dump(config)
       end
 

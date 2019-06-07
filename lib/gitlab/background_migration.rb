@@ -58,21 +58,37 @@ module Gitlab
       migration_class_for(class_name).new.perform(*arguments)
     end
 
-    def self.exists?(migration_class)
+    def self.exists?(migration_class, additional_queues = [])
       enqueued = Sidekiq::Queue.new(self.queue)
       scheduled = Sidekiq::ScheduledSet.new
 
-      [enqueued, scheduled].each do |queue|
+      enqueued_job?([enqueued, scheduled], migration_class)
+    end
+
+    def self.dead_jobs?(migration_class)
+      dead_set = Sidekiq::DeadSet.new
+
+      enqueued_job?([dead_set], migration_class)
+    end
+
+    def self.retrying_jobs?(migration_class)
+      retry_set = Sidekiq::RetrySet.new
+
+      enqueued_job?([retry_set], migration_class)
+    end
+
+    def self.migration_class_for(class_name)
+      const_get(class_name)
+    end
+
+    def self.enqueued_job?(queues, migration_class)
+      queues.each do |queue|
         queue.each do |job|
           return true if job.queue == self.queue && job.args.first == migration_class
         end
       end
 
       false
-    end
-
-    def self.migration_class_for(class_name)
-      const_get(class_name)
     end
   end
 end

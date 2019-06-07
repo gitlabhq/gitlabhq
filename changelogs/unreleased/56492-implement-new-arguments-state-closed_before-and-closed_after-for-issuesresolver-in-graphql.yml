@@ -1,5 +1,0 @@
----
-title: "Implement new arguments `state`, `closed_before` and `closed_after` for `IssuesResolver` in GraphQL"
-merge_request: 24910
-author:
-type: changed

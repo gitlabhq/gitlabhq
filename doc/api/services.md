@@ -449,6 +449,45 @@ Get Hangouts Chat service settings for a project.
 GET /projects/:id/services/hangouts-chat
 ```
 
+## HipChat
+
+Private group chat and IM
+
+### Create/Edit HipChat service
+
+Set HipChat service for a project.
+
+```
+PUT /projects/:id/services/hipchat
+```
+
+Parameters:
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `token` | string | true | Room token |
+| `color` | string | false | The room color |
+| `notify` | boolean | false | Enable notifications |
+| `room` | string | false |Room name or ID |
+| `api_version` | string | false | Leave blank for default (v2) |
+| `server` | string | false | Leave blank for default. For example, `https://hipchat.example.com`. |
+
+### Delete HipChat service
+
+Delete HipChat service for a project.
+
+```
+DELETE /projects/:id/services/hipchat
+```
+
+### Get HipChat service settings
+
+Get HipChat service settings for a project.
+
+```
+GET /projects/:id/services/hipchat
+```
+
 ## Irker (IRC gateway)
 
 Send IRC messages, on update, to a list of recipients through an Irker gateway.
@@ -505,10 +544,9 @@ GET /projects/:id/services/jira
 
 Set JIRA service for a project.
 
-> **Notes:**
-> - Starting with GitLab 8.14, `api_url`, `issues_url`, `new_issue_url` and
->   `project_url` are replaced by `project_key`, `url`. If you are using an
->   older version, [follow this documentation][old-jira-api].
+> Starting with GitLab 8.14, `api_url`, `issues_url`, `new_issue_url` and
+> `project_url` are replaced by `url`. If you are using an
+> older version, [follow this documentation][old-jira-api].
 
 ```
 PUT /projects/:id/services/jira
@@ -519,11 +557,11 @@ Parameters:
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `url`           | string | yes | The URL to the JIRA project which is being linked to this GitLab project. For example, `https://jira.example.com`. |
-| `project_key`   | string | yes | The short identifier for your JIRA project, all uppercase, e.g., `PROJ`. |
+| `api_url`   | string | no | The base URL to the JIRA instance API. Web URL value will be used if not set. For example, `https://jira-api.example.com`. |
 | `username`      | string | yes  | The username of the user created to be used with GitLab/JIRA. |
 | `password`      | string | yes  | The password of the user created to be used with GitLab/JIRA. |
 | `active`        | boolean | no  | Activates or deactivates the service. Defaults to false (deactivated). |
-| `jira_issue_transition_id` | integer | no | The ID of a transition that moves issues to a closed state. You can find this number under the JIRA workflow administration (**Administration > Issues > Workflows**) by selecting **View** under **Operations** of the desired workflow of your project. The ID of each state can be found inside the parenthesis of each transition name under the **Transitions (id)** column ([see screenshot][trans]). By default, this ID is set to `2`. |
+| `jira_issue_transition_id` | string | no | The ID of a transition that moves issues to a closed state. You can find this number under the JIRA workflow administration (**Administration > Issues > Workflows**) by selecting **View** under **Operations** of the desired workflow of your project. The ID of each state can be found inside the parenthesis of each transition name under the **Transitions (id)** column ([see screenshot][trans]). By default, this ID is set to `2`. |
 
 ### Delete JIRA service
 
@@ -716,6 +754,7 @@ Parameters:
 | `recipients` | string | yes | Comma-separated list of recipient email addresses |
 | `add_pusher` | boolean | no | Add pusher to recipients list |
 | `notify_only_broken_pipelines` | boolean | no | Notify only broken pipelines |
+| `notify_only_default_branch` | boolean | no | Send notifications only for the default branch ([introduced in GitLab 12.0](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/28271)) |
 
 ### Delete Pipeline-Emails service
 
@@ -1062,6 +1101,75 @@ Get JetBrains TeamCity CI service settings for a project.
 GET /projects/:id/services/teamcity
 ```
 
+## Jenkins CI **[STARTER]**
+
+A continuous integration and build server
+
+### Create/Edit Jenkins CI service
+
+Set Jenkins CI service for a project.
+
+```
+PUT /projects/:id/services/jenkins
+```
+
+Parameters:
+
+- `jenkins_url` (**required**) - Jenkins URL like http://jenkins.example.com
+- `project_name` (**required**) - The URL-friendly project name. Example: my_project_name
+- `username` (optional) - A user with access to the Jenkins server, if applicable
+- `password` (optional) - The password of the user
+
+### Delete Jenkins CI service
+
+Delete Jenkins CI service for a project.
+
+```
+DELETE /projects/:id/services/jenkins
+```
+
+### Get Jenkins CI service settings
+
+Get Jenkins CI service settings for a project.
+
+```
+GET /projects/:id/services/jenkins
+```
+
+## Jenkins CI (Deprecated) Service
+
+A continuous integration and build server
+
+### Create/Edit Jenkins CI (Deprecated) service
+
+Set Jenkins CI (Deprecated) service for a project.
+
+```
+PUT /projects/:id/services/jenkins-deprecated
+```
+
+Parameters:
+
+- `project_url` (**required**) - Jenkins project URL like http://jenkins.example.com/job/my-project/
+- `multiproject_enabled` (optional) - Multi-project mode is configured in Jenkins GitLab Hook plugin
+- `pass_unstable` (optional) - Unstable builds will be treated as passing
+
+### Delete Jenkins CI (Deprecated) service
+
+Delete Jenkins CI (Deprecated) service for a project.
+
+```
+DELETE /projects/:id/services/jenkins-deprecated
+```
+
+### Get Jenkins CI (Deprecated) service settings
+
+Get Jenkins CI (Deprecated) service settings for a project.
+
+```
+GET /projects/:id/services/jenkins-deprecated
+```
+
 [jira-doc]: ../user/project/integrations/jira.md
 [old-jira-api]: https://gitlab.com/gitlab-org/gitlab-ce/blob/8-13-stable/doc/api/services.md#jira
 
@@ -1102,3 +1210,39 @@ GET /projects/:id/services/mock-ci
 ```
 
 [11435]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/11435
+
+## YouTrack
+
+YouTrack issue tracker
+
+### Create/Edit YouTrack service
+
+Set YouTrack service for a project.
+
+```
+PUT /projects/:id/services/youtrack
+```
+
+Parameters:
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `issues_url` | string | true | Issue url |
+| `project_url` | string | true | Project url |
+| `description` | string | false | Description |
+
+### Delete YouTrack Service
+
+Delete YouTrack service for a project.
+
+```
+DELETE /projects/:id/services/youtrack
+```
+
+### Get YouTrack Service Settings
+
+Get YouTrack service settings for a project.
+
+```
+GET /projects/:id/services/youtrack
+```

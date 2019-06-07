@@ -93,4 +93,22 @@ describe "User creates issue" do
       end
     end
   end
+
+  context "when signed in as user with special characters in their name" do
+    let(:user_special) { create(:user, name: "Jon O'Shea") }
+
+    before do
+      project.add_developer(user_special)
+      sign_in(user_special)
+
+      visit(new_project_issue_path(project))
+    end
+
+    it "will correctly escape user names with an apostrophe when clicking 'Assign to me'", :js do
+      first('.assign-to-me-link').click
+
+      expect(page).to have_content(user_special.name)
+      expect(page.find('input[name="issue[assignee_ids][]"]', visible: false)['data-meta']).to eq(user_special.name)
+    end
+  end
 end

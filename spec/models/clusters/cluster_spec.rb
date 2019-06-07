@@ -2,8 +2,13 @@
 
 require 'spec_helper'
 
-describe Clusters::Cluster do
+describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
+  include ReactiveCachingHelpers
+  include KubernetesHelpers
+
   it_behaves_like 'having unique enum values'
+
+  subject { build(:cluster) }
 
   it { is_expected.to belong_to(:user) }
   it { is_expected.to have_many(:cluster_projects) }
@@ -17,12 +22,10 @@ describe Clusters::Cluster do
   it { is_expected.to have_one(:application_prometheus) }
   it { is_expected.to have_one(:application_runner) }
   it { is_expected.to have_many(:kubernetes_namespaces) }
-  it { is_expected.to have_one(:kubernetes_namespace) }
   it { is_expected.to have_one(:cluster_project) }
 
   it { is_expected.to delegate_method(:status).to(:provider) }
   it { is_expected.to delegate_method(:status_reason).to(:provider) }
-  it { is_expected.to delegate_method(:status_name).to(:provider) }
   it { is_expected.to delegate_method(:on_creation?).to(:provider) }
   it { is_expected.to delegate_method(:active?).to(:platform_kubernetes).with_prefix }
   it { is_expected.to delegate_method(:rbac?).to(:platform_kubernetes).with_prefix }
@@ -31,8 +34,14 @@ describe Clusters::Cluster do
   it { is_expected.to delegate_method(:available?).to(:application_prometheus).with_prefix }
   it { is_expected.to delegate_method(:available?).to(:application_knative).with_prefix }
   it { is_expected.to delegate_method(:external_ip).to(:application_ingress).with_prefix }
+  it { is_expected.to delegate_method(:external_hostname).to(:application_ingress).with_prefix }
 
   it { is_expected.to respond_to :project }
+
+  it do
+    expect(subject.knative_services_finder(subject.project))
+      .to be_instance_of(Clusters::KnativeServicesFinder)
+  end
 
   describe '.enabled' do
     subject { described_class.enabled }
@@ -92,6 +101,24 @@ describe Clusters::Cluster do
     end
 
     it { is_expected.to contain_exactly(cluster) }
+  end
+
+  describe '.managed' do
+    subject do
+      described_class.managed
+    end
+
+    context 'cluster is not managed' do
+      let!(:cluster) { create(:cluster, :not_managed) }
+
+      it { is_expected.not_to include(cluster) }
+    end
+
+    context 'cluster is managed' do
+      let!(:cluster) { create(:cluster) }
+
+      it { is_expected.to include(cluster) }
+    end
   end
 
   describe '.missing_kubernetes_namespace' do
@@ -268,7 +295,7 @@ describe Clusters::Cluster do
       context 'when cluster is not a valid hostname' do
         let(:cluster) { build(:cluster, domain: 'http://not.a.valid.hostname') }
 
-        it 'should add an error on domain' do
+        it 'adds an error on domain' do
           expect(subject).not_to be_valid
           expect(subject.errors[:domain].first).to eq('contains invalid characters (valid characters: [a-z0-9\\-])')
         end
@@ -303,6 +330,15 @@ describe Clusters::Cluster do
 
       it 'returns the group cluster' do
         is_expected.to eq([group_cluster])
+      end
+    end
+
+    context 'when group and instance have configured kubernetes clusters' do
+      let(:project) { create(:project, group: group) }
+      let!(:instance_cluster) { create(:cluster, :provided_by_gcp, :instance) }
+
+      it 'returns clusters in order, descending the hierachy' do
+        is_expected.to eq([group_cluster, instance_cluster])
       end
     end
 
@@ -472,28 +508,6 @@ describe Clusters::Cluster do
     end
   end
 
-  describe '#created?' do
-    let(:cluster) { create(:cluster, :provided_by_gcp) }
-
-    subject { cluster.created? }
-
-    context 'when status_name is :created' do
-      before do
-        allow(cluster).to receive_message_chain(:provider, :status_name).and_return(:created)
-      end
-
-      it { is_expected.to eq(true) }
-    end
-
-    context 'when status_name is not :created' do
-      before do
-        allow(cluster).to receive_message_chain(:provider, :status_name).and_return(:creating)
-      end
-
-      it { is_expected.to eq(false) }
-    end
-  end
-
   describe '#allow_user_defined_namespace?' do
     let(:cluster) { create(:cluster, :provided_by_gcp) }
 
@@ -528,62 +542,15 @@ describe Clusters::Cluster do
     end
 
     context 'with no domain on cluster' do
-      context 'with a project cluster' do
-        let(:cluster) { create(:cluster, :project, :provided_by_gcp) }
-        let(:project) { cluster.project }
+      let(:cluster) { create(:cluster, :project, :provided_by_gcp) }
+      let(:project) { cluster.project }
 
-        context 'with domain set at instance level' do
-          before do
-            stub_application_setting(auto_devops_domain: 'global_domain.com')
-
-            it { is_expected.to eq('global_domain.com') }
-          end
+      context 'with domain set at instance level' do
+        before do
+          stub_application_setting(auto_devops_domain: 'global_domain.com')
         end
 
-        context 'with domain set on ProjectAutoDevops' do
-          before do
-            auto_devops = project.build_auto_devops(domain: 'legacy-ado-domain.com')
-            auto_devops.save
-          end
-
-          it { is_expected.to eq('legacy-ado-domain.com') }
-        end
-
-        context 'with domain set as environment variable on project' do
-          before do
-            variable = project.variables.build(key: 'AUTO_DEVOPS_DOMAIN', value: 'project-ado-domain.com')
-            variable.save
-          end
-
-          it { is_expected.to eq('project-ado-domain.com') }
-        end
-
-        context 'with domain set as environment variable on the group project' do
-          let(:group) { create(:group) }
-
-          before do
-            project.update(parent_id: group.id)
-            variable = group.variables.build(key: 'AUTO_DEVOPS_DOMAIN', value: 'group-ado-domain.com')
-            variable.save
-          end
-
-          it { is_expected.to eq('group-ado-domain.com') }
-        end
-      end
-
-      context 'with a group cluster' do
-        let(:cluster) { create(:cluster, :group, :provided_by_gcp) }
-
-        context 'with domain set as environment variable for the group' do
-          let(:group) { cluster.group }
-
-          before do
-            variable = group.variables.build(key: 'AUTO_DEVOPS_DOMAIN', value: 'group-ado-domain.com')
-            variable.save
-          end
-
-          it { is_expected.to eq('group-ado-domain.com') }
-        end
+        it { is_expected.to eq('global_domain.com') }
       end
     end
   end
@@ -598,7 +565,7 @@ describe Clusters::Cluster do
         stub_application_setting(auto_devops_domain: 'global_domain.com')
       end
 
-      it 'should include KUBE_INGRESS_BASE_DOMAIN' do
+      it 'includes KUBE_INGRESS_BASE_DOMAIN' do
         expect(subject.to_hash).to include(KUBE_INGRESS_BASE_DOMAIN: 'global_domain.com')
       end
     end
@@ -606,7 +573,7 @@ describe Clusters::Cluster do
     context 'with a cluster domain' do
       let(:cluster) { create(:cluster, :provided_by_gcp, domain: 'example.com') }
 
-      it 'should include KUBE_INGRESS_BASE_DOMAIN' do
+      it 'includes KUBE_INGRESS_BASE_DOMAIN' do
         expect(subject.to_hash).to include(KUBE_INGRESS_BASE_DOMAIN: 'example.com')
       end
     end
@@ -614,8 +581,159 @@ describe Clusters::Cluster do
     context 'with no domain' do
       let(:cluster) { create(:cluster, :provided_by_gcp, :project) }
 
-      it 'should return an empty array' do
+      it 'returns an empty array' do
         expect(subject.to_hash).to be_empty
+      end
+    end
+  end
+
+  describe '#provided_by_user?' do
+    subject { cluster.provided_by_user? }
+
+    context 'with a GCP provider' do
+      let(:cluster) { create(:cluster, :provided_by_gcp) }
+
+      it { is_expected.to be_falsy }
+    end
+
+    context 'with an user provider' do
+      let(:cluster) { create(:cluster, :provided_by_user) }
+
+      it { is_expected.to be_truthy }
+    end
+  end
+
+  describe '#status_name' do
+    subject { cluster.status_name }
+
+    context 'the cluster has a provider' do
+      let(:cluster) { create(:cluster, :provided_by_gcp) }
+
+      before do
+        cluster.provider.make_errored!
+      end
+
+      it { is_expected.to eq :errored }
+    end
+
+    context 'there is a cached connection status' do
+      let(:cluster) { create(:cluster, :provided_by_user) }
+
+      before do
+        allow(cluster).to receive(:connection_status).and_return(:connected)
+      end
+
+      it { is_expected.to eq :connected }
+    end
+
+    context 'there is no connection status in the cache' do
+      let(:cluster) { create(:cluster, :provided_by_user) }
+
+      before do
+        allow(cluster).to receive(:connection_status).and_return(nil)
+      end
+
+      it { is_expected.to eq :created }
+    end
+  end
+
+  describe '#connection_status' do
+    let(:cluster) { create(:cluster) }
+    let(:status) { :connected }
+
+    subject { cluster.connection_status }
+
+    it { is_expected.to be_nil }
+
+    context 'with a cached status' do
+      before do
+        stub_reactive_cache(cluster, connection_status: status)
+      end
+
+      it { is_expected.to eq(status) }
+    end
+  end
+
+  describe '#calculate_reactive_cache' do
+    subject { cluster.calculate_reactive_cache }
+
+    context 'cluster is disabled' do
+      let(:cluster) { create(:cluster, :disabled) }
+
+      it 'does not populate the cache' do
+        expect(cluster).not_to receive(:retrieve_connection_status)
+
+        is_expected.to be_nil
+      end
+    end
+
+    context 'cluster is enabled' do
+      let(:cluster) { create(:cluster, :provided_by_user, :group) }
+
+      context 'connection to the cluster is successful' do
+        before do
+          stub_kubeclient_discover(cluster.platform.api_url)
+        end
+
+        it { is_expected.to eq(connection_status: :connected) }
+      end
+
+      context 'cluster cannot be reached' do
+        before do
+          allow(cluster.kubeclient.core_client).to receive(:discover)
+            .and_raise(SocketError)
+        end
+
+        it { is_expected.to eq(connection_status: :unreachable) }
+      end
+
+      context 'cluster cannot be authenticated to' do
+        before do
+          allow(cluster.kubeclient.core_client).to receive(:discover)
+            .and_raise(OpenSSL::X509::CertificateError.new("Certificate error"))
+        end
+
+        it { is_expected.to eq(connection_status: :authentication_failure) }
+      end
+
+      describe 'Kubeclient::HttpError' do
+        let(:error_code) { 403 }
+        let(:error_message) { "Forbidden" }
+
+        before do
+          allow(cluster.kubeclient.core_client).to receive(:discover)
+            .and_raise(Kubeclient::HttpError.new(error_code, error_message, nil))
+        end
+
+        it { is_expected.to eq(connection_status: :authentication_failure) }
+
+        context 'generic timeout' do
+          let(:error_message) { 'Timed out connecting to server'}
+
+          it { is_expected.to eq(connection_status: :unreachable) }
+        end
+
+        context 'gateway timeout' do
+          let(:error_message) { '504 Gateway Timeout for GET https://kubernetes.example.com/api/v1'}
+
+          it { is_expected.to eq(connection_status: :unreachable) }
+        end
+      end
+
+      context 'an uncategorised error is raised' do
+        before do
+          allow(cluster.kubeclient.core_client).to receive(:discover)
+            .and_raise(StandardError)
+        end
+
+        it { is_expected.to eq(connection_status: :unknown_failure) }
+
+        it 'notifies Sentry' do
+          expect(Gitlab::Sentry).to receive(:track_acceptable_exception)
+            .with(instance_of(StandardError), hash_including(extra: { cluster_id: cluster.id }))
+
+          subject
+        end
       end
     end
   end

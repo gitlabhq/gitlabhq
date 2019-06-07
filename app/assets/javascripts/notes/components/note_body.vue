@@ -1,6 +1,7 @@
 <script>
 import { mapActions } from 'vuex';
 import $ from 'jquery';
+import getDiscussion from 'ee_else_ce/notes/mixins/get_discussion';
 import noteEditedText from './note_edited_text.vue';
 import noteAwardsList from './note_awards_list.vue';
 import noteAttachment from './note_attachment.vue';
@@ -16,7 +17,7 @@ export default {
     noteForm,
     Suggestions,
   },
-  mixins: [autosave],
+  mixins: [autosave, getDiscussion],
   props: {
     note: {
       type: Object,
@@ -76,16 +77,18 @@ export default {
     renderGFM() {
       $(this.$refs['note-body']).renderGFM();
     },
-    handleFormUpdate(note, parentElement, callback) {
-      this.$emit('handleFormUpdate', note, parentElement, callback);
+    handleFormUpdate(note, parentElement, callback, resolveDiscussion) {
+      this.$emit('handleFormUpdate', note, parentElement, callback, resolveDiscussion);
     },
     formCancelHandler(shouldConfirm, isDirty) {
       this.$emit('cancelForm', shouldConfirm, isDirty);
     },
-    applySuggestion({ suggestionId, flashContainer, callback }) {
+    applySuggestion({ suggestionId, flashContainer, callback = () => {} }) {
       const { discussion_id: discussionId, id: noteId } = this.note;
 
-      this.submitSuggestion({ discussionId, noteId, suggestionId, flashContainer, callback });
+      return this.submitSuggestion({ discussionId, noteId, suggestionId, flashContainer }).then(
+        callback,
+      );
     },
   },
 };
@@ -95,7 +98,6 @@ export default {
   <div ref="note-body" :class="{ 'js-task-list-container': canEdit }" class="note-body">
     <suggestions
       v-if="hasSuggestion && !isEditing"
-      class="note-text md"
       :suggestions="note.suggestions"
       :note-html="note.note_html"
       :line-type="lineType"
@@ -112,6 +114,8 @@ export default {
       :line="line"
       :note="note"
       :help-page-path="helpPagePath"
+      :discussion="discussion"
+      :resolve-discussion="note.resolve_discussion"
       @handleFormUpdate="handleFormUpdate"
       @cancelForm="formCancelHandler"
     />
@@ -120,6 +124,7 @@ export default {
       v-model="note.note"
       :data-update-url="note.path"
       class="hidden js-task-list-field"
+      dir="auto"
     ></textarea>
     <note-edited-text
       v-if="note.last_edited_at"

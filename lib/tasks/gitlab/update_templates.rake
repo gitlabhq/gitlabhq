@@ -50,7 +50,7 @@ namespace :gitlab do
         puts "Waiting for the import to finish"
 
         sleep(5)
-        project.reload
+        project.reset
       end
 
       Projects::ImportExport::ExportService.new(project, admin).execute

@@ -1,12 +1,17 @@
-%li.notification-list-item
-  %span.notification.fa.fa-holder.append-right-5
-    - if setting.global?
-      = notification_icon(current_user.global_notification_setting.level)
-    - else
-      = notification_icon(setting.level)
+.gl-responsive-table-row.notification-list-item
+  .table-section.section-40
+    %span.notification.fa.fa-holder.append-right-5
+      - if setting.global?
+        = notification_icon(current_user.global_notification_setting.level)
+      - else
+        = notification_icon(setting.level)
 
-  %span.str-truncated
-    = link_to group.name, group_path(group)
+    %span.str-truncated
+      = link_to group.name, group_path(group)
 
-  .float-right
+  .table-section.section-30.text-right
     = render 'shared/notifications/button', notification_setting: setting
+
+  .table-section.section-30
+    = form_for @user.notification_settings.find { |ns| ns.source == group }, url: profile_notifications_group_path(group), method: :put, html: { class: 'update-notifications' } do |f|
+      = f.select :notification_email, @user.all_emails, { include_blank: 'Global notification email' }, class: 'select2 js-group-notification-email'

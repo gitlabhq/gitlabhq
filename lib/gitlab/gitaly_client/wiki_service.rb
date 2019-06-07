@@ -22,7 +22,7 @@ module Gitlab
           commit_details: gitaly_commit_details(commit_details)
         )
 
-        strio = binary_stringio(content)
+        strio = binary_io(content)
 
         enum = Enumerator.new do |y|
           until strio.eof?
@@ -49,7 +49,7 @@ module Gitlab
           commit_details: gitaly_commit_details(commit_details)
         )
 
-        strio = binary_stringio(content)
+        strio = binary_io(content)
 
         enum = Enumerator.new do |y|
           until strio.eof?
@@ -87,9 +87,35 @@ module Gitlab
         wiki_page_from_iterator(response)
       end
 
-      def get_all_pages(limit: 0)
-        request = Gitaly::WikiGetAllPagesRequest.new(repository: @gitaly_repo, limit: limit)
+      def list_all_pages(limit: 0, sort: nil, direction_desc: false)
+        sort_value = Gitaly::WikiListPagesRequest::SortBy.resolve(sort.to_s.upcase.to_sym)
+
+        params = { repository: @gitaly_repo, limit: limit, direction_desc: direction_desc }
+        params[:sort] = sort_value if sort_value
+
+        request = Gitaly::WikiListPagesRequest.new(params)
+        stream = GitalyClient.call(@repository.storage, :wiki_service, :wiki_list_pages, request, timeout: GitalyClient.medium_timeout)
+        stream.each_with_object([]) do |message, pages|
+          page = message.page
+
+          next unless page
+
+          wiki_page = GitalyClient::WikiPage.new(page.to_h)
+          version = new_wiki_page_version(page.version)
+
+          pages << [wiki_page, version]
+        end
+      end
+
+      def load_all_pages(limit: 0, sort: nil, direction_desc: false)
+        sort_value = Gitaly::WikiGetAllPagesRequest::SortBy.resolve(sort.to_s.upcase.to_sym)
+
+        params = { repository: @gitaly_repo, limit: limit, direction_desc: direction_desc }
+        params[:sort] = sort_value if sort_value
+
+        request = Gitaly::WikiGetAllPagesRequest.new(params)
         response = GitalyClient.call(@repository.storage, :wiki_service, :wiki_get_all_pages, request, timeout: GitalyClient.medium_timeout)
+
         pages = []
 
         loop do

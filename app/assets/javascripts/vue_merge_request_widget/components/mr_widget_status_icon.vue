@@ -33,7 +33,7 @@ export default {
 </script>
 <template>
   <div class="space-children d-flex append-right-10 widget-status-icon">
-    <div v-if="isLoading" class="mr-widget-icon"><gl-loading-icon /></div>
+    <div v-if="isLoading" class="mr-widget-icon"><gl-loading-icon size="md" /></div>
 
     <ci-icon v-else :status="statusObj" :size="24" />
 

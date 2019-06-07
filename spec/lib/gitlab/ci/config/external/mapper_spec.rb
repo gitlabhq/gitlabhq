@@ -3,12 +3,15 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Config::External::Mapper do
+  include StubRequests
+
   set(:project) { create(:project, :repository) }
   set(:user) { create(:user) }
 
   let(:local_file) { '/lib/gitlab/ci/templates/non-existent-file.yml' }
   let(:remote_url) { 'https://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml' }
   let(:template_file) { 'Auto-DevOps.gitlab-ci.yml' }
+  let(:expandset) { Set.new }
 
   let(:file_content) do
     <<~HEREDOC
@@ -17,11 +20,11 @@ describe Gitlab::Ci::Config::External::Mapper do
   end
 
   before do
-    WebMock.stub_request(:get, remote_url).to_return(body: file_content)
+    stub_full_request(remote_url).to_return(body: file_content)
   end
 
   describe '#process' do
-    subject { described_class.new(values, project: project, sha: '123456', user: user).process }
+    subject { described_class.new(values, project: project, sha: '123456', user: user, expandset: expandset).process }
 
     context "when single 'include' keyword is defined" do
       context 'when the string is a local file' do
@@ -139,6 +142,38 @@ describe Gitlab::Ci::Config::External::Mapper do
 
       it 'returns an empty array' do
         expect(subject).to be_empty
+      end
+    end
+
+    context "when duplicate 'include' is defined" do
+      let(:values) do
+        { include: [
+            { 'local' => local_file },
+            { 'local' => local_file }
+          ],
+          image: 'ruby:2.2' }
+      end
+
+      it 'raises an exception' do
+        expect { subject }.to raise_error(described_class::DuplicateIncludesError)
+      end
+    end
+
+    context "when too many 'includes' are defined" do
+      let(:values) do
+        { include: [
+            { 'local' => local_file },
+            { 'remote' => remote_url }
+          ],
+          image: 'ruby:2.2' }
+      end
+
+      before do
+        stub_const("#{described_class}::MAX_INCLUDES", 1)
+      end
+
+      it 'raises an exception' do
+        expect { subject }.to raise_error(described_class::TooManyIncludesError)
       end
     end
   end

@@ -11,7 +11,8 @@
     = link_to [event.project.namespace.becomes(Namespace), event.project, event.target], class: 'has-tooltip event-target-link append-right-4', title: event.target_title do
       = event.target.reference_link_text
     - unless event.milestone?
-      %span.event-target-title.append-right-4= "&quot;".html_safe + event.target.title + "&quot".html_safe
+      %span.event-target-title.append-right-4{ dir: "auto" }
+        = "&quot;".html_safe + event.target.title + "&quot".html_safe
   - else
     %span.event-type.d-inline-block.append-right-4{ class: event.action_name }
       = event_action_name(event)

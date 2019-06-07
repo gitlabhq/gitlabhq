@@ -73,6 +73,17 @@ describe Gitlab::GitalyClient::RepositoryService do
     end
   end
 
+  describe '#get_object_directory_size' do
+    it 'sends a get_object_directory_size message' do
+      expect_any_instance_of(Gitaly::RepositoryService::Stub)
+        .to receive(:get_object_directory_size)
+        .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
+        .and_return(size: 0)
+
+      client.get_object_directory_size
+    end
+  end
+
   describe '#apply_gitattributes' do
     let(:revision) { 'master' }
 
@@ -229,6 +240,36 @@ describe Gitlab::GitalyClient::RepositoryService do
         .and_return(double)
 
       client.raw_changes_between('deadbeef', 'deadpork')
+    end
+  end
+
+  describe '#disconnect_alternates' do
+    let(:project) { create(:project, :repository) }
+    let(:repository) { project.repository }
+    let(:repository_path) { File.join(TestEnv.repos_path, repository.relative_path) }
+    let(:pool_repository) { create(:pool_repository) }
+    let(:object_pool) { pool_repository.object_pool }
+    let(:object_pool_service) { Gitlab::GitalyClient::ObjectPoolService.new(object_pool) }
+
+    before do
+      object_pool_service.create(repository)
+      object_pool_service.link_repository(repository)
+    end
+
+    it 'deletes the alternates file' do
+      repository.disconnect_alternates
+
+      alternates_file = File.join(repository_path, "objects", "info", "alternates")
+
+      expect(File.exist?(alternates_file)).to be_falsey
+    end
+
+    context 'when called twice' do
+      it "doesn't raise an error" do
+        repository.disconnect_alternates
+
+        expect { repository.disconnect_alternates }.not_to raise_error
+      end
     end
   end
 end

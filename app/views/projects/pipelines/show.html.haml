@@ -1,7 +1,7 @@
 - @no_container = true
-- add_to_breadcrumbs "Pipelines", project_pipelines_path(@project)
+- add_to_breadcrumbs _('Pipelines'), project_pipelines_path(@project)
 - breadcrumb_title "##{@pipeline.id}"
-- page_title "Pipeline"
+- page_title _('Pipeline')
 
 .js-pipeline-container{ class: container_class, data: { controller_action: "#{controller.action_name}" } }
   #js-pipeline-header-vue.pipeline-header-container
@@ -11,11 +11,13 @@
 
   - if @pipeline.builds.empty? && @pipeline.yaml_errors.present?
     .bs-callout.bs-callout-danger
-      %h4 Found errors in your .gitlab-ci.yml:
+      %h4= _('Found errors in your %{gitlab_ci_yml}:') % { gitlab_ci_yml: '.gitlab-ci.yml' }
       %ul
         - @pipeline.yaml_errors.split(",").each do |error|
           %li= error
-      You can test your .gitlab-ci.yml in #{link_to "CI Lint", project_ci_lint_path(@project)}.
+      - lint_link_url = project_ci_lint_path(@project)
+      - lint_link_start = '<a href="%{url}">'.html_safe % { url: lint_link_url }
+      = s_('You can also test your %{gitlab_ci_yml} in %{lint_link_start}CI Lint%{lint_link_end}').html_safe % { gitlab_ci_yml: '.gitlab-ci.yml', lint_link_start: lint_link_start, lint_link_end: '</a>'.html_safe }
   - else
     = render "projects/pipelines/with_tabs", pipeline: @pipeline
 

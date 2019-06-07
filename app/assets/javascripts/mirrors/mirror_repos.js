@@ -87,7 +87,7 @@ export default class MirrorRepos {
         project: {
           remote_mirrors_attributes: {
             id: $target.data('mirrorId'),
-            enabled: 0,
+            _destroy: 1,
           },
         },
       };

@@ -121,7 +121,7 @@ describe ObjectStorage::DirectUpload do
               expect(subject[:MultipartUpload][:PartURLs].length).to eq(2)
             end
 
-            it 'part size is mimimum, 5MB' do
+            it 'part size is minimum, 5MB' do
               expect(subject[:MultipartUpload][:PartSize]).to eq(5.megabyte)
             end
           end

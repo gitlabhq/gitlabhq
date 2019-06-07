@@ -28,9 +28,11 @@ export default class MergeRequestStore {
     this.iid = data.iid;
     this.title = data.title;
     this.targetBranch = data.target_branch;
+    this.targetBranchSha = data.target_branch_sha;
     this.sourceBranch = data.source_branch;
     this.sourceBranchProtected = data.source_branch_protected;
     this.conflictsDocsPath = data.conflicts_docs_path;
+    this.mergeRequestPipelinesHelpPath = data.merge_request_pipelines_docs_path;
     this.mergeStatus = data.merge_status;
     this.commitMessage = data.default_merge_commit_message;
     this.shortMergeCommitSha = data.short_merge_commit_sha;
@@ -59,7 +61,7 @@ export default class MergeRequestStore {
 
     this.updatedAt = data.updated_at;
     this.metrics = MergeRequestStore.buildMetrics(data.metrics);
-    this.setToMWPSBy = MergeRequestStore.formatUserObject(data.merge_user || {});
+    this.setToAutoMergeBy = MergeRequestStore.formatUserObject(data.merge_user || {});
     this.mergeUserId = data.merge_user_id;
     this.currentUserId = gon.current_user_id;
     this.sourceBranchPath = data.source_branch_path;
@@ -68,15 +70,16 @@ export default class MergeRequestStore {
     this.targetBranchPath = data.target_branch_commits_path;
     this.targetBranchTreePath = data.target_branch_tree_path;
     this.conflictResolutionPath = data.conflict_resolution_path;
-    this.cancelAutoMergePath = data.cancel_merge_when_pipeline_succeeds_path;
+    this.cancelAutoMergePath = data.cancel_auto_merge_path;
     this.removeWIPPath = data.remove_wip_path;
     this.sourceBranchRemoved = !data.source_branch_exists;
     this.shouldRemoveSourceBranch = data.remove_source_branch || false;
     this.onlyAllowMergeIfPipelineSucceeds = data.only_allow_merge_if_pipeline_succeeds || false;
-    this.mergeWhenPipelineSucceeds = data.merge_when_pipeline_succeeds || false;
+    this.autoMergeEnabled = Boolean(data.auto_merge_enabled);
+    this.autoMergeStrategy = data.auto_merge_strategy;
     this.mergePath = data.merge_path;
     this.ffOnlyEnabled = data.ff_only_enabled;
-    this.shouldBeRebased = !!data.should_be_rebased;
+    this.shouldBeRebased = Boolean(data.should_be_rebased);
     this.statusPath = data.status_path;
     this.emailPatchesPath = data.email_patches_path;
     this.plainDiffPath = data.plain_diff_path;
@@ -89,9 +92,9 @@ export default class MergeRequestStore {
     this.isOpen = data.state === 'opened';
     this.hasMergeableDiscussionsState = data.mergeable_discussions_state === false;
     this.canRemoveSourceBranch = currentUser.can_remove_source_branch || false;
-    this.canMerge = !!data.merge_path;
+    this.canMerge = Boolean(data.merge_path);
     this.canCreateIssue = currentUser.can_create_issue || false;
-    this.canCancelAutomaticMerge = !!data.cancel_merge_when_pipeline_succeeds_path;
+    this.canCancelAutomaticMerge = Boolean(data.cancel_auto_merge_path);
     this.isSHAMismatch = this.sha !== data.diff_head_sha;
     this.canBeMerged = data.can_be_merged || false;
     this.isMergeAllowed = data.mergeable || false;
@@ -99,6 +102,9 @@ export default class MergeRequestStore {
     this.allowCollaboration = data.allow_collaboration;
     this.targetProjectFullPath = data.target_project_full_path;
     this.sourceProjectFullPath = data.source_project_full_path;
+    this.sourceProjectId = data.source_project_id;
+    this.targetProjectId = data.target_project_id;
+    this.mergePipelinesEnabled = data.merge_pipelines_enabled;
 
     // Cherry-pick and Revert actions related
     this.canCherryPickInCurrentMR = currentUser.can_cherry_pick_on_current_merge_request || false;
@@ -112,7 +118,7 @@ export default class MergeRequestStore {
     this.ciStatus = data.ci_status;
     this.isPipelineFailed = this.ciStatus === 'failed' || this.ciStatus === 'canceled';
     this.isPipelinePassing =
-      this.ciStatus === 'success' || this.ciStatus === 'success_with_warnings';
+      this.ciStatus === 'success' || this.ciStatus === 'success-with-warnings';
     this.isPipelineSkipped = this.ciStatus === 'skipped';
     this.pipelineDetailedStatus = pipelineStatus;
     this.isPipelineActive = data.pipeline ? data.pipeline.active : false;

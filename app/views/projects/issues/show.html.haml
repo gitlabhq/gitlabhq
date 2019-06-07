@@ -1,7 +1,7 @@
 - @content_class = "limit-container-width" unless fluid_layout
-- add_to_breadcrumbs "Issues", project_issues_path(@project)
+- add_to_breadcrumbs _("Issues"), project_issues_path(@project)
 - breadcrumb_title @issue.to_reference
-- page_title           "#{@issue.title} (#{@issue.to_reference})", "Issues"
+- page_title           "#{@issue.title} (#{@issue.to_reference})", _("Issues")
 - page_description     @issue.description
 - page_card_attributes @issue.card_attributes
 
@@ -15,7 +15,7 @@
     .issuable-status-box.status-box.status-box-issue-closed{ class: issue_button_visibility(@issue, false) }
       = sprite_icon('mobile-issue-close', size: 16, css_class: 'd-block d-sm-none')
       .d-none.d-sm-block
-        - if @issue.moved?
+        - if @issue.moved? && can?(current_user, :read_issue, @issue.moved_to)
           - moved_link_start = "<a href=\"#{issue_path(@issue.moved_to)}\" class=\"text-white text-underline\">".html_safe
           - moved_link_end = '</a>'.html_safe
           = s_('IssuableStatus|Closed (%{moved_link_start}moved%{moved_link_end})').html_safe % {moved_link_start: moved_link_start,
@@ -72,16 +72,18 @@
       %h2.title= markdown_field(@issue, :title)
       - if @issue.description.present?
         .description{ class: can?(current_user, :update_issue, @issue) ? 'js-task-list-container' : '' }
-          .wiki= markdown_field(@issue, :description)
+          .md= markdown_field(@issue, :description)
           %textarea.hidden.js-task-list-field= @issue.description
 
       = edited_time_ago_with_tooltip(@issue, placement: 'bottom', html_class: 'issue-edited-ago js-issue-edited-ago')
 
-    #merge-requests{ data: { url: referenced_merge_requests_project_issue_path(@project, @issue) } }
-      // This element is filled in using JavaScript.
+    = render_if_exists 'projects/issues/related_issues'
 
-    #related-branches{ data: { url: related_branches_project_issue_path(@project, @issue) } }
-      // This element is filled in using JavaScript.
+    #js-related-merge-requests{ data: { endpoint: expose_path(api_v4_projects_issues_related_merge_requests_path(id: @project.id, issue_iid: @issue.iid)), project_namespace: @project.namespace.path, project_path: @project.path } }
+
+    - if can?(current_user, :download_code, @project)
+      #related-branches{ data: { url: related_branches_project_issue_path(@project, @issue) } }
+        -# This element is filled in using JavaScript.
 
   .content-block.emoji-block.emoji-block-sticky
     .row

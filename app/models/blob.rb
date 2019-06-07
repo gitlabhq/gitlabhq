@@ -110,7 +110,7 @@ class Blob < SimpleDelegator
   end
 
   def load_all_data!
-    # Endpoint needed: gitlab-org/gitaly#756
+    # Endpoint needed: https://gitlab.com/gitlab-org/gitaly/issues/756
     Gitlab::GitalyClient.allow_n_plus_1_calls do
       super(project.repository) if project
     end

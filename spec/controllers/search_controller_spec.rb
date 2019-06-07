@@ -1,10 +1,38 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe SearchController do
+  include ExternalAuthorizationServiceHelpers
+
   let(:user) { create(:user) }
 
   before do
     sign_in(user)
+  end
+
+  context 'uses the right partials depending on scope' do
+    using RSpec::Parameterized::TableSyntax
+    render_views
+
+    set(:project) { create(:project, :public, :repository, :wiki_repo) }
+
+    subject { get(:show, params: { project_id: project.id, scope: scope, search: 'merge' }) }
+
+    where(:partial, :scope) do
+      '_blob'        | :blobs
+      '_wiki_blob'   | :wiki_blobs
+      '_commit'      | :commits
+    end
+
+    with_them do
+      it do
+        project_wiki = create(:project_wiki, project: project, user: user)
+        create(:wiki_page, wiki: project_wiki, attrs: { title: 'merge', content: 'merge' })
+
+        expect(subject).to render_template("search/results/#{partial}")
+      end
+    end
   end
 
   it 'finds issue comments' do
@@ -74,6 +102,43 @@ describe SearchController do
       get :show, params: { project_id: project.id, scope: 'notes', search: note.note }
 
       expect(assigns[:search_objects].count).to eq(0)
+    end
+  end
+
+  context 'with external authorization service enabled' do
+    let(:project) { create(:project, namespace: user.namespace) }
+    let(:note) { create(:note_on_issue, project: project) }
+
+    before do
+      enable_external_authorization_service_check
+    end
+
+    describe 'GET #show' do
+      it 'renders a 403 when no project is given' do
+        get :show, params: { scope: 'notes', search: note.note }
+
+        expect(response).to have_gitlab_http_status(403)
+      end
+
+      it 'renders a 200 when a project was set' do
+        get :show, params: { project_id: project.id, scope: 'notes', search: note.note }
+
+        expect(response).to have_gitlab_http_status(200)
+      end
+    end
+
+    describe 'GET #autocomplete' do
+      it 'renders a 403 when no project is given' do
+        get :autocomplete, params: { term: 'hello' }
+
+        expect(response).to have_gitlab_http_status(403)
+      end
+
+      it 'renders a 200 when a project was set' do
+        get :autocomplete, params: { project_id: project.id, term: 'hello' }
+
+        expect(response).to have_gitlab_http_status(200)
+      end
     end
   end
 end

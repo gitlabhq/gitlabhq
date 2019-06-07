@@ -4,5 +4,5 @@
   .dropdown-menu.dropdown-extended-height.dropdown-menu-paging.dropdown-menu-right.dropdown-menu-issues-board-new.dropdown-menu-selectable.js-tab-container-labels
     = render partial: "shared/issuable/label_page_default", locals: { show_footer: true, show_create: true, show_boards_content: true, title: "Add list" }
     - if can?(current_user, :admin_label, board.parent)
-      = render partial: "shared/issuable/label_page_create"
+      = render partial: "shared/issuable/label_page_create", locals: { show_add_list: true, add_list: true, add_list_class: 'd-none' }
     = dropdown_loading

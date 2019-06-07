@@ -42,8 +42,8 @@ describe Gitlab::DependencyLinker::PodspecLinker do
       %{<a href="#{url}" rel="nofollow noreferrer noopener" target="_blank">#{name}</a>}
     end
 
-    it 'links the gem name' do
-      expect(subject).to include(link('Reachability', 'https://cocoapods.org/pods/Reachability'))
+    it 'does not link the pod name' do
+      expect(subject).not_to include(link('Reachability', 'https://cocoapods.org/pods/Reachability'))
     end
 
     it 'links the license' do

@@ -12,6 +12,7 @@ module QA
   module Git
     class Repository
       include Scenario::Actable
+      RepositoryCommandError = Class.new(StandardError)
 
       attr_writer :use_lfs
       attr_accessor :env_vars
@@ -205,6 +206,10 @@ module QA
         output.chomp!
         Runtime::Logger.debug "Git: output=[#{output}], exitstatus=[#{status.exitstatus}]"
 
+        unless status.success?
+          raise RepositoryCommandError, "The command #{command} failed (#{status.exitstatus}) with the following output:\n#{output}"
+        end
+
         Result.new(status.exitstatus == 0, output)
       end
 
@@ -246,7 +251,7 @@ module QA
       end
 
       def netrc_already_contains_content?
-        read_netrc_content.grep(/^#{netrc_content}$/).any?
+        read_netrc_content.grep(/^#{Regexp.escape(netrc_content)}$/).any?
       end
     end
   end

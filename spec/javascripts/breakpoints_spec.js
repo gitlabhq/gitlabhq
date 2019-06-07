@@ -10,4 +10,18 @@ describe('breakpoints', () => {
       expect(bp.getBreakpointSize()).toBe(key);
     });
   });
+
+  describe('isDesktop', () => {
+    it('returns true when screen size is medium', () => {
+      spyOn(bp, 'windowWidth').and.returnValue(breakpoints.md + 10);
+
+      expect(bp.isDesktop()).toBe(true);
+    });
+
+    it('returns false when screen size is small', () => {
+      spyOn(bp, 'windowWidth').and.returnValue(breakpoints.sm + 10);
+
+      expect(bp.isDesktop()).toBe(false);
+    });
+  });
 });

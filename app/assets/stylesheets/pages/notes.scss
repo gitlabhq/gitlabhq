@@ -68,7 +68,7 @@ $note-form-margin-left: 72px;
       }
     }
 
-    .notes_content {
+    .notes-content {
       border: 0;
       border-top: 1px solid $border-color;
     }
@@ -80,21 +80,17 @@ $note-form-margin-left: 72px;
     }
   }
 
-  li.note {
-    border-bottom: 1px solid $border-color;
-  }
-
   .replies-toggle {
     background-color: $gray-light;
     padding: $gl-padding-8 $gl-padding;
+    border-top: 1px solid $gray-100;
+    border-bottom: 1px solid $gray-100;
 
     .collapse-replies-btn:hover {
       color: $blue-600;
     }
 
     &.expanded {
-      border-bottom: 1px solid $border-color;
-
       span {
         cursor: pointer;
       }
@@ -107,6 +103,7 @@ $note-form-margin-left: 72px;
 
     &.collapsed {
       color: $gl-text-color-secondary;
+      border-radius: 0 0 $border-radius-default $border-radius-default;
 
       svg {
         float: left;
@@ -210,8 +207,13 @@ $note-form-margin-left: 72px;
         display: none;
       }
 
+      .user-avatar-link img {
+        margin-top: $gl-padding-8;
+      }
+
       .note-edit-form {
         display: block;
+        margin-left: 0;
 
         &.current-note-edit-form + .note-awards {
           display: none;
@@ -224,14 +226,7 @@ $note-form-margin-left: 72px;
       overflow-y: hidden;
 
       .note-text {
-        @include md-typography;
-        // Reset ul style types since we're nested inside a ul already
-        @include bulleted-list;
         word-wrap: break-word;
-
-        table {
-          @include markdown-table;
-        }
       }
     }
 
@@ -270,8 +265,8 @@ $note-form-margin-left: 72px;
   }
 
   .system-note {
-    padding: 6px 21px;
-    margin: $gl-padding-24 0;
+    padding: $gl-padding-4 20px;
+    margin: $gl-padding 0;
     background-color: transparent;
 
     .note-header-info {
@@ -283,8 +278,6 @@ $note-form-margin-left: 72px;
     }
 
     .system-note-message {
-      display: inline;
-
       &::first-letter {
         text-transform: lowercase;
       }
@@ -300,26 +293,6 @@ $note-form-margin-left: 72px;
         &::first-letter {
           text-transform: lowercase;
         }
-      }
-    }
-
-    .timeline-icon {
-      float: left;
-      display: flex;
-      align-items: center;
-      background-color: $white-light;
-      width: $system-note-icon-size;
-      height: $system-note-icon-size;
-      border: 1px solid $border-color;
-      border-radius: $system-note-icon-size;
-      margin: -6px $gl-padding 0 0;
-
-      svg {
-        width: $system-note-svg-size;
-        height: $system-note-svg-size;
-        fill: $gray-darkest;
-        display: block;
-        margin: 0 auto;
       }
     }
 
@@ -380,6 +353,37 @@ $note-form-margin-left: 72px;
       }
     }
   }
+
+  .system-note,
+  .discussion-filter-note {
+    .timeline-icon {
+      float: left;
+      display: flex;
+      align-items: center;
+      background-color: $white-light;
+      width: $system-note-icon-size;
+      height: $system-note-icon-size;
+      border: 1px solid $border-color;
+      border-radius: $system-note-icon-size;
+      margin: -6px 20px 0 0;
+
+      svg {
+        width: $system-note-svg-size;
+        height: $system-note-svg-size;
+        fill: $gray-darkest;
+        display: block;
+        margin: 0 auto;
+      }
+    }
+  }
+
+  .discussion-filter-note {
+    .timeline-icon {
+      width: $system-note-icon-size + 6;
+      height: $system-note-icon-size + 6;
+      margin-top: -8px;
+    }
+  }
 }
 
 // Diff code in discussion view
@@ -434,7 +438,9 @@ $note-form-margin-left: 72px;
 .diff-file {
   .is-over {
     .add-diff-note {
-      display: inline-block;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
     }
   }
 
@@ -451,7 +457,7 @@ $note-form-margin-left: 72px;
 
   // Merge request notes in diffs
   // Diff is inline
-  .notes_content .note-header .note-headline-light {
+  .notes-content .note-header .note-headline-light {
     display: inline-block;
     position: relative;
   }
@@ -463,11 +469,16 @@ $note-form-margin-left: 72px;
       border: 1px solid $border-color;
       border-left: 0;
 
-      &.notes_content {
+      &.notes-content {
         border-width: 1px 0;
         padding: 0;
         vertical-align: top;
         white-space: normal;
+
+        // Fixes subpixel rounding issue https://gitlab.com/gitlab-org/gitlab-ce/issues/53973
+        // background-color is needed for dark code preference
+        padding-bottom: 1px;
+        background-color: $white-light;
 
         &.parallel {
           border-width: 1px;
@@ -509,10 +520,28 @@ $note-form-margin-left: 72px;
   }
 }
 
-.commit-diff {
-  .notes_content {
-    background-color: $white-light;
+.code-commit .notes-content,
+.diff-viewer > .image ~ .note-container {
+  background-color: $white-light;
+
+  .avatar-note-form-holder {
+    .user-avatar-link img {
+      margin: 13px $gl-padding $gl-padding;
+    }
+
+    form,
+    ~ .discussion-form-container {
+      padding: $gl-padding;
+
+      @include media-breakpoint-up(sm) {
+        margin-left: $note-icon-gutter-width;
+      }
+    }
   }
+}
+
+.diff-viewer > .image ~ .note-container form.new-note {
+  margin-left: 0;
 }
 
 .discussion-header,
@@ -540,7 +569,7 @@ $note-form-margin-left: 72px;
 }
 
 .discussion-header {
-  min-height: 72px;
+  min-height: 74px;
 
   .note-header-info {
     padding-bottom: 0;
@@ -553,8 +582,10 @@ $note-form-margin-left: 72px;
 }
 
 .unresolved {
-  .note-header-info {
-    margin-top: $gl-padding-8;
+  .discussion-header {
+    .note-header-info {
+      margin-top: $gl-padding-8;
+    }
   }
 }
 
@@ -596,12 +627,6 @@ $note-form-margin-left: 72px;
 }
 
 .note-headline-meta {
-  display: inline-block;
-
-  .system-note-message {
-    white-space: normal;
-  }
-
   .system-note-separator {
     color: $gl-text-color-disabled;
   }
@@ -643,7 +668,7 @@ $note-form-margin-left: 72px;
   display: inline-flex;
   align-items: center;
   margin-left: 10px;
-  color: $gray-darkest;
+  color: $gray-600;
 
   @include notes-media('max', map-get($grid-breakpoints, sm) - 1) {
     float: none;
@@ -739,7 +764,7 @@ $note-form-margin-left: 72px;
 .add-diff-note {
   @include btn-comment-icon;
   opacity: 0;
-  margin-left: -55px;
+  margin-left: -52px;
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
@@ -758,15 +783,13 @@ $note-form-margin-left: 72px;
     background-color: $white-light;
   }
 
-  a {
+  a:not(.learn-more) {
     color: $blue-600;
   }
 }
 
 .line-resolve-all-container {
-  @include notes-media('min', map-get($grid-breakpoints, sm)) {
-    margin-right: 0;
-  }
+  margin: $gl-padding-4;
 
   > div {
     white-space: nowrap;
@@ -782,6 +805,8 @@ $note-form-margin-left: 72px;
   }
 
   .btn {
+    line-height: $gl-line-height;
+
     svg {
       fill: $gray-darkest;
     }
@@ -807,10 +832,11 @@ $note-form-margin-left: 72px;
 .line-resolve-all {
   vertical-align: middle;
   display: inline-block;
-  padding: 6px 10px;
+  padding: $gl-padding-4 10px;
   background-color: $gray-light;
   border: 1px solid $border-color;
   border-radius: $border-radius-default;
+  font-size: $gl-btn-small-font-size;
 
   &.has-next-btn {
     border-top-right-radius: 0;
@@ -820,10 +846,15 @@ $note-form-margin-left: 72px;
 
   .line-resolve-btn {
     margin-right: 5px;
+    color: $gray-darkest;
 
     svg {
       vertical-align: middle;
     }
+  }
+
+  @include media-breakpoint-down(xs) {
+    flex: 1;
   }
 }
 
@@ -834,7 +865,6 @@ $note-form-margin-left: 72px;
   background-color: transparent;
   border: 0;
   outline: 0;
-  color: $gray-darkest;
   transition: color $general-hover-transition-duration $general-hover-transition-curve;
 
   &.is-disabled {
@@ -898,14 +928,9 @@ $note-form-margin-left: 72px;
   .diff-comment-form {
     display: block;
   }
-
-  .add-diff-note svg {
-    margin-top: 4px;
-  }
 }
 
 .discussion-filter-container {
-
   .btn > svg {
     width: $gl-col-padding;
     height: $gl-col-padding;
@@ -927,7 +952,6 @@ $note-form-margin-left: 72px;
 //This needs to be deleted when Snippet/Commit comments are convered to Vue
 // See https://gitlab.com/gitlab-org/gitlab-ce/issues/53918#note_117038785
 .unstyled-comments {
-
   .discussion-header {
     padding: $gl-padding;
     border-bottom: 1px solid $border-color;

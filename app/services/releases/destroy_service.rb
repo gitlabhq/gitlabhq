@@ -5,7 +5,6 @@ module Releases
     include Releases::Concerns
 
     def execute
-      return error('Tag does not exist', 404) unless existing_tag
       return error('Release does not exist', 404) unless release
       return error('Access Denied', 403) unless allowed?
 

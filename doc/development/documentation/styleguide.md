@@ -4,65 +4,192 @@ description: 'Writing styles, markup, formatting, and other standards for GitLab
 
 # Documentation Style Guide
 
-The documentation style guide defines the markup structure used in
-GitLab documentation. Check the
-[documentation guidelines](index.md) for general development instructions.
+This document defines the standards for GitLab's documentation content and files.
 
-See the GitLab handbook for the [writing style guidelines](https://about.gitlab.com/handbook/communication/#writing-style-guidelines).
+For broader information about the documentation, see the [Documentation guidelines](index.md).
 
 For programmatic help adhering to the guidelines, see [linting](index.md#linting).
 
-## Files
+See the GitLab handbook for further [writing style guidelines](https://about.gitlab.com/handbook/communication/#writing-style-guidelines)
+that apply to all GitLab content, not just documentation.
 
-- [Directory structure](index.md#location-and-naming-documents): place the docs
-  in the correct location.
-- [Documentation files](index.md#documentation-files): name the files accordingly.
+## Documentation is the single source of truth (SSOT)
 
-DANGER: **Attention:**
-**Do not** use capital letters, spaces, or special chars in file names,
-branch names, directory names, headings, or in anything that generates a path.
+### Why a single source of truth
 
-NOTE: **Note:**
-**Do not** create new `README.md` files, name them `index.md` instead. There's
-a test that will fail if it spots a new `README.md` file.
+The documentation is the SSOT for all information related to the implementation, usage, and troubleshooting of GitLab products and features. It evolves continually, in keeping with new products and features, and with improvements for clarity, accuracy, and completeness.
 
-### Markdown
+This policy prevents information silos, ensuring that it remains easy to find information about GitLab products.
 
-The [documentation website](https://docs.gitlab.com) had its markdown engine migrated from [Redcarpet to GitLab Kramdown](https://gitlab.com/gitlab-com/gitlab-docs/merge_requests/108)
-in October 2018.
+It also informs decisions about the kinds of content we include in our documentation.
+
+The documentation is a continually evolving SSOT for all information related to the implementation, usage, and troubleshooting of GitLab products and features.
+
+### All information
+
+Include problem-solving actions that may address rare cases or be considered 'risky', so long as proper context is provided in the form of fully detailed warnings and caveats. This kind of content should be included as it could be helpful to others and, when properly explained, its benefits outweigh the risks. If you think you have found an exception to this rule, contact the Technical Writing team.
+
+We will add all troubleshooting information to the documentation, no matter how unlikely a user is to encounter a situation.
+For the Troubleshooting sections, people in GitLab Support can merge additions themselves.
+
+### All media types
+
+Include any media types/sources if the content is relevant to readers. You can freely include or link presentations, diagrams, videos, etc.; no matter who it was originally composed for, if it is helpful to any of our audiences, we can include it.
+
+   - If you use an image that has a separate source file (for example, a vector or diagram format), link the image to the source file so that it may be reused or updated by anyone.
+   - Do not copy and paste content from other sources unless it is a limited quotation with the source cited. Typically it is better to either rephrase relevant information in your own words or link out to the other source.
+
+### No special types
+
+In the software industry, it is a best practice to organize documentatioin in different types. For example, [Divio recommends](https://www.divio.com/blog/documentation/):
+
+1. Tutorials
+2. How-to guides
+3. Explanation
+4. Reference (for example, a glossary)
+
+At GitLab, we have so many product changes in our monthly releases that we can't afford to continually update multiple types of information.
+If we have multiple types, the information will become outdated. Therefore, we have a [single template](structure.md) for documentation.
+
+We currently do not distinguish specific document types, although we are open to reconsidering this policy
+once the documentation has reached a future stage of maturity and quality. If you are reading this, then despite our
+continual improvement efforts, that point hasn't been reached.
+
+### Link instead of summarize
+
+There is a temptation to summarize the information on another page.
+This will cause the information to live in two places.
+Instead, link to the SSOT and explain why it is important to consume the information.
+
+### Organize by topic, not by type
+
+Beyond top-level audience-type folders (e.g. `administration`), we organize content by topic, not by type, so that it can be located as easily as possible within the single-source-of-truth (SSOT) section for the subject matter.
+
+For example, do not create groupings of similar media types (e.g. glossaries, FAQs, or sets of all articles or videos).
+
+Such grouping of content by type makes
+it difficult to browse for the information you need and difficult to maintain up-to-date content.
+Instead, organize content by its subject (e.g. everything related to CI goes together)
+and cross-link between any related content.
+
+### Docs-first methodology
+
+We employ a **docs-first methodology** to help ensure that the docs remain a complete and trusted resource, and to make communicating about the use of GitLab more efficient.
+
+* If the answer to a question exists in documentation, share the link to the docs instead of rephrasing the information.
+* When you encounter new information not available in GitLab’s documentation (for example, when working on a support case or testing a feature), your first step should be to create a merge request to add this information to the docs. You can then share the MR in order to communicate this information.
+
+New information that would be useful toward the future usage or troubleshooting of GitLab should not be written directly in a forum or other messaging system, but added to a docs MR and then referenced, as described above. Note that among any other doc changes, you can always add a Troubleshooting section to a doc if none exists, or un-comment and use the placeholder Troubleshooting section included as part of our [doc template](structure.md#template-for-new-docs), if present.
+
+The more we reflexively add useful information to the docs, the more (and more successfully) the docs will be used to efficiently accomplish tasks and solve problems.
+
+If you have questions when considering, authoring, or editing docs, ask the Technical Writing team on Slack in `#docs` or in GitLab by mentioning the writer for the applicable [DevOps stage](https://about.gitlab.com/handbook/product/categories/#devops-stages). Otherwise, forge ahead with your best effort. It does not need to be perfect; the team is happy to review and improve upon your content. Please review the [Documentation guidelines](index.md) before you begin your first documentation MR.
+
+Having a knowledge base is any form that is separate from the documentation would be against the docs-first methodology because the content would overlap with the documentation.
+
+## Markdown
+
+All GitLab documentation is written using [Markdown](https://en.wikipedia.org/wiki/Markdown).
+
+The [documentation website](https://docs.gitlab.com) uses GitLab Kramdown as its Markdown rendering engine. For a complete Kramdown reference, see the [GitLab Markdown Kramdown Guide](https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/).
 
 The [`gitlab-kramdown`](https://gitlab.com/gitlab-org/gitlab_kramdown)
-gem will support all [GFM markup](../../user/markdown.md) in the future. For now,
-use regular markdown markup, following the rules on this style guide. For a complete
-Kramdown reference, check the [GitLab Markdown Kramdown Guide](https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/).
-Use Kramdown markup wisely: do not overuse its specific markup (e.g., `{:.class}`) as it will not render properly in
-[`/help`](#gitlab-help).
+Ruby gem will support all [GFM markup](../../user/markdown.md) in the future. That is,
+all markup that is supported for display in the GitLab application itself. For now,
+use regular Markdown markup, following the rules in the linked style guide.
 
-## Content
+Note that Kramdown-specific markup (e.g., `{:.class}`) will not render properly on GitLab instances under [`/help`](index.md#gitlab-help).
 
-These guidelines help toward the goal of having every user's search of documentation
-yield a useful result, and ensuring content is helpful and easy to consume.
+## Structure
 
-- What to include:
-  - Any and all helpful information, processes, and tips for implementing,
-  using, and troubleshooting GitLab features. [The documentation is the single source of truth](https://about.gitlab.com/handbook/documentation/#documentation-as-single-source-of-truth-ssot)
-  for this information.
-  - 'Risky' or niche problem-solving steps. There is no reason to withhold these or
-  store them elsewhere; simply include them along with the rest of the docs including all necessary
-  detail, such as specific warnings and caveats about potential ramifications.
-  - Any content types/sources, if relevant to users or admins. You can freely
-  include presentations, videos, etc.; no matter who it was originally written for,
-  if it is helpful to any of our audiences, we can include it. If an outside source
-  that's under copyright, rephrase, or summarize and link out; do not copy and paste.
-  - All applicable subsections as described on the [structure and template](structure.md) page,
-  with files organized in the [correct directory](index.md#documentation-directory-structure).
-- To ensure discoverability, link to each doc from its higher-level index page and other related pages.
-- When referencing other GitLab products and features, link to their
-  respective docs; when referencing third-party products or technologies,
-  link out to their external sites, documentation, and resources.
-- Do not duplicate information.
+### Organize by topic, not by type
+
+Because we want documentation to be a SSOT, we should [organize by topic, not by type](#organize-by-topic-not-by-type).
+
+### Folder structure overview
+
+The documentation is separated by top-level audience folders [`user`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/user),
+[`administration`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/administration), and [`development`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/development) (contributing) folders.
+
+Beyond that, we primarily follow the structure of the GitLab user interface or API.
+
+Our goal is to have a clear hierarchical structure with meaningful URLs
+like `docs.gitlab.com/user/project/merge_requests/`. With this pattern,
+you can immediately tell that you are navigating to user-related documentation
+about Project features; specifically about Merge Requests. Our site's paths match
+those of our repository, so the clear structure also makes documentation easier to update.
+
+The table below shows what kind of documentation goes where.
+
+| Directory             | What belongs here      |
+|:----------------------|:---------------------------------------------------------------------------------------------------------------------------------|
+| `doc/user/`           | User related documentation. Anything that can be done within the GitLab UI goes here, including usage of the `/admin` interface. |
+| `doc/administration/` | Documentation that requires the user to have access to the server where GitLab is installed. The admin settings that can be accessed via GitLab's interface exist under `doc/user/admin_area/`. |
+| `doc/api/`            | API related documentation. |
+| `doc/development/`    | Documentation related to the development of GitLab, whether contributing code or docs. Related process and style guides should go here. |
+| `doc/legal/`          | Legal documents about contributing to GitLab. |
+| `doc/install/`        | Contains instructions for installing GitLab. |
+| `doc/update/`         | Contains instructions for updating GitLab. |
+| `doc/topics/`         | Indexes per topic (`doc/topics/topic-name/index.md`): all resources for that topic. |
+
+### Working with directories and files
+
+1. When you create a new directory, always start with an `index.md` file.
+  Do not use another file name and **do not** create `README.md` files.
+1. **Do not** use special characters and spaces, or capital letters in file names,
+  directory names, branch names, and anything that generates a path.
+1. When creating a new document and it has more than one word in its name,
+   make sure to use underscores instead of spaces or dashes (`-`). For example,
+   a proper naming would be `import_projects_from_github.md`. The same rule
+   applies to images.
+1. For image files, do not exceed 100KB.
+1. We do not yet support embedded videos. Please link out.
+1. There are four main directories, `user`, `administration`, `api` and `development`.
+1. The `doc/user/` directory has five main subdirectories: `project/`, `group/`,
+   `profile/`, `dashboard/` and `admin_area/`.
+   1. `doc/user/project/` should contain all project related documentation.
+   1. `doc/user/group/` should contain all group related documentation.
+   1. `doc/user/profile/` should contain all profile related documentation.
+      Every page you would navigate under `/profile` should have its own document,
+      i.e. `account.md`, `applications.md`, `emails.md`, etc.
+   1. `doc/user/dashboard/` should contain all dashboard related documentation.
+   1. `doc/user/admin_area/` should contain all admin related documentation
+      describing what can be achieved by accessing GitLab's admin interface
+      (_not to be confused with `doc/administration` where server access is
+      required_).
+      1. Every category under `/admin/application_settings` should have its
+         own document located at `doc/user/admin_area/settings/`. For example,
+         the **Visibility and Access Controls** category should have a document
+         located at `doc/user/admin_area/settings/visibility_and_access_controls.md`.
+1. The `doc/topics/` directory holds topic-related technical content. Create
+   `doc/topics/topic-name/subtopic-name/index.md` when subtopics become necessary.
+   General user- and admin- related documentation, should be placed accordingly.
+1. The directories `/workflow/`, `/university/`, and `/articles/` have
+been **deprecated** and the majority their docs have been moved to their correct location
+in small iterations.
+
+If you are unsure where a document or a content addition should live, this should
+not stop you from authoring and contributing. You can use your best judgment and
+then ask the reviewer of your MR to confirm your decision, and/or ask a technical writer
+at any stage in the process. The techncial writing team will review all documentation
+changes, regardless, and can move content if there is a better place for it.
+
+### Avoid duplication
+
+Do not include the same information in multiple places. [Link to a SSOT instead.](#link-instead-of-summarize)
+
+### References across documents
+
+- Give each folder an index.md page that introduces the topic, introduces the pages within, and links to the pages within (including to the index pages of any next-level subpaths).
+- To ensure discoverability, ensure each new or renamed doc is linked from its higher-level index page and other related pages.
+- When making reference to other GitLab products and features, link to their respective docs, at least on first mention.
+- When making reference to third-party products or technologies, link out to their external sites, documentation, and resources.
+
+### Structure within documents
+
+- Include any and all applicable subsections as described on the [structure and template](structure.md) page.
 - Structure content in alphabetical order in tables, lists, etc., unless there is
-  a logical reason not to (for example, when mirroring the UI or an ordered sequence).
+  a logical reason not to (for example, when mirroring the UI or an otherwise ordered sequence).
 
 ## Language
 
@@ -80,11 +207,10 @@ yield a useful result, and ensuring content is helpful and easy to consume.
 
 ## Text
 
-- Split up long lines (wrap text), this makes it much easier to review and edit. Only
-  double line breaks are shown as a full line break by creating new paragraphs.
-  80-100 characters is the recommended line length.
+- Splitting long lines (preferably up to 100 characters) can make it easier to provide feedback on small chunks of text.
+- Insert an empty line for new paragraphs.
 - Use sentence case for titles, headings, labels, menu items, and buttons.
-- Jump a line between different markups (e.g., after every paragraph, header, list, etc). Example:
+- Insert an empty line between different markups (e.g., after every paragraph, header, list, etc). Example:
 
     ```md
     ## Header
@@ -95,7 +221,7 @@ yield a useful result, and ensuring content is helpful and easy to consume.
     - List item 2
     ```
 
-### Tables overlapping the ToC
+### Tables overlapping the TOC
 
 By default, all tables have a width of 100% on docs.gitlab.com.
 In a few cases, the table will overlap the table of contents (ToC).
@@ -235,6 +361,31 @@ For other punctuation rules, please refer to the
 - Use [meaningful anchor texts](https://www.futurehosting.com/blog/links-should-have-meaningful-anchor-text-heres-why/).
   E.g., instead of writing something like `Read more about GitLab Issue Boards [here](LINK)`,
   write `Read more about [GitLab Issue Boards](LINK)`.
+
+### Links requiring permissions
+
+Don't link directly to:
+
+- [Confidential issues](../../user/project/issues/confidential_issues.md).
+- Project features that require [special permissions](../../user/permissions.md) to view.
+
+These will fail for:
+
+- Those without sufficient permissions.
+- Automated link checkers.
+
+Instead:
+
+- To reduce confusion, mention in the text that the information is either:
+  - Contained in a confidential issue.
+  - Requires special permission to a project to view.
+- Provide a link in back ticks (`` ` ``) so that those with access to the issue can easily navigate to it.
+
+Example:
+
+```md
+For more information, see the [confidential issue](https://docs.gitlab.com/ee/user/project/issues/confidential_issues.html) `https://gitlab.com/gitlab-org/gitlab-ce/issues/<issue_number>`.
+```
 
 ### Unlinking emails
 
@@ -453,41 +604,49 @@ The following are recommended verbs for specific uses.
 
 ## GitLab versions and tiers
 
-- Every piece of documentation that comes with a new feature should declare the
-  GitLab version that feature got introduced. Right below the heading add a
-  blockquote:
+Tagged and released versions of GitLab documentation are available:
+
+- In the [documentation archives](https://docs.gitlab.com/archives/).
+- At the `/help` URL for any GitLab installation.
+
+The version introducing a new feature is added to the top of the topic in the documentation to provide
+a helpful link back to how the feature was developed.
+
+### Text for documentation requiring version text
+
+- For features that need to declare the GitLab version that the feature was introduced. Text similar
+  to the following should be added immediately below the heading as a blockquote:
 
     ```md
-    > Introduced in GitLab 8.3.
+    > Introduced in GitLab 11.3.
     ```
 
-- Whenever possible, every feature should have a link to the issue, MR or epic
-  (in that order) that introduced it. The above quote would be then transformed to:
+- Whenever possible, version text should have a link to the issue, merge request, or epic that introduced the feature.
+  An issue is preferred over a merge request, and a merge request is preferred over an epic. For example:
 
     ```md
-    > [Introduced](<link-to-issue>) in GitLab 8.3.
+    > [Introduced](<link-to-issue>) in GitLab 11.3.
     ```
 
-- If the feature is only available in GitLab Enterprise Edition, don't forget to mention
+- If the feature is only available in GitLab Enterprise Edition, mention
   the [paid tier](https://about.gitlab.com/handbook/marketing/product-marketing/#tiers)
   the feature is available in:
 
     ```md
-    > [Introduced](<link-to-issue>) in [GitLab Starter](https://about.gitlab.com/pricing/) 10.3.
+    > [Introduced](<link-to-issue>) in [GitLab Starter](https://about.gitlab.com/pricing/) 11.3.
     ```
 
-### Early versions of EE
+### Removing version text
 
-If the feature was created before GitLab 9.2 (before [different EE tiers were introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1851)):
+Over time, version text will reference a progressively older version of GitLab. In cases where version text
+refers to versions of GitLab four or more major versions back, consider removing the text.
 
-- Declare it as "Introduced in GitLab Enterprise Edition X.Y".
-- Note which tier the feature is available in.
+For example, if the current major version is 11.x, version text referencing versions of GitLab 7.x
+and older are candidates for removal.
 
-For example:
-
-```md
-> [Introduced](<link-to-issue>) in GitLab Enterprise Edition 9.0. Available in [GitLab Premium](https://about.gitlab.com/pricing/).
-```
+NOTE: **Note:**
+This guidance applies to any text that mentions a GitLab version, not just "Introduced in... " text.
+Other text includes deprecation notices and version-specific how-to information.
 
 ## Product badges
 
@@ -507,6 +666,12 @@ keyword "only":
 - For GitLab Premium: `**[PREMIUM ONLY]**`.
 - For GitLab Ultimate: `**[ULTIMATE ONLY]**`.
 
+For GitLab.com only tiers (when the feature is not available for self-hosted instances):
+
+- For GitLab Bronze and higher tiers: `**[BRONZE ONLY]**`.
+- For GitLab Silver and higher tiers: `**[SILVER ONLY]**`.
+- For GitLab Gold: `**[GOLD ONLY]**`.
+
 The tier should be ideally added to headers, so that the full badge will be displayed.
 However, it can be also mentioned from paragraphs, list items, and table cells. For these cases,
 the tier mention will be represented by an orange question mark that will show the tiers on hover.
@@ -515,6 +680,7 @@ For example:
 
 - `**[STARTER]**` renders as **[STARTER]**
 - `**[STARTER ONLY]**` renders as **[STARTER ONLY]**
+- `**[SILVER ONLY]**` renders as **[SILVER ONLY]**
 
 The absence of tiers' mentions mean that the feature is available in GitLab Core,
 GitLab.com Free, and all higher tiers.
@@ -612,7 +778,7 @@ In this case:
 - The code blocks are indented one or more spaces under the list item to render
   correctly.
 - Different highlighting languages are used for each config in the code block.
-- The [references](#references) guide is used for reconfigure/restart.
+- The [GitLab Restart](#gitlab-restart) section is used to explain a required restart/reconfigure of GitLab.
 
 ## API
 

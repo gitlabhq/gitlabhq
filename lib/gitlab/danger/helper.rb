@@ -1,13 +1,11 @@
 # frozen_string_literal: true
-require 'net/http'
-require 'json'
 
 require_relative 'teammate'
 
 module Gitlab
   module Danger
     module Helper
-      ROULETTE_DATA_URL = URI.parse('https://about.gitlab.com/roulette.json').freeze
+      RELEASE_TOOLS_BOT = 'gitlab-release-tools-bot'
 
       # Returns a list of all files that have been added, modified or renamed.
       # `git.modified_files` might contain paths that already have been renamed,
@@ -40,34 +38,12 @@ module Gitlab
         ENV['CI_PROJECT_NAME'] == 'gitlab-ee' || File.exist?('../../CHANGELOG-EE.md')
       end
 
+      def release_automation?
+        gitlab.mr_author == RELEASE_TOOLS_BOT
+      end
+
       def project_name
         ee? ? 'gitlab-ee' : 'gitlab-ce'
-      end
-
-      # Looks up the current list of GitLab team members and parses it into a
-      # useful form
-      #
-      # @return [Array<Teammate>]
-      def team
-        @team ||=
-          begin
-            rsp = Net::HTTP.get_response(ROULETTE_DATA_URL)
-            raise "Failed to read #{ROULETTE_DATA_URL}: #{rsp.code} #{rsp.message}" unless
-              rsp.is_a?(Net::HTTPSuccess)
-
-            data = JSON.parse(rsp.body)
-            data.map { |hash| ::Gitlab::Danger::Teammate.new(hash) }
-          rescue JSON::ParserError
-            raise "Failed to parse JSON response from #{ROULETTE_DATA_URL}"
-          end
-      end
-
-      # Like +team+, but only returns teammates in the current project, based on
-      # project_name.
-      #
-      # @return [Array<Teammate>]
-      def project_team
-        team.select { |member| member.in_project?(project_name) }
       end
 
       # @return [Hash<String,Array<String>>]
@@ -94,24 +70,42 @@ module Gitlab
       end
 
       CATEGORY_LABELS = {
-        docs: "~Documentation",
+        docs: "~Documentation", # Docs are reviewed along DevOps stages, so don't need roulette for now.
         none: "",
-        qa: "~QA"
+        qa: "~QA",
+        test: "~test for `spec/features/*`"
       }.freeze
-
-      # rubocop:disable Style/RegexpLiteral
       CATEGORIES = {
-        %r{\Adoc/} => :docs,
-        %r{\A(CONTRIBUTING|LICENSE|MAINTENANCE|PHILOSOPHY|PROCESS|README)(\.md)?\z} => :docs,
+        %r{\Adoc/} => :none, # To reinstate roulette for documentation, set to `:docs`.
+        %r{\A(CONTRIBUTING|LICENSE|MAINTENANCE|PHILOSOPHY|PROCESS|README)(\.md)?\z} => :none, # To reinstate roulette for documentation, set to `:docs`.
 
         %r{\A(ee/)?app/(assets|views)/} => :frontend,
         %r{\A(ee/)?public/} => :frontend,
         %r{\A(ee/)?spec/(javascripts|frontend)/} => :frontend,
         %r{\A(ee/)?vendor/assets/} => :frontend,
-        %r{\A(jest\.config\.js|package\.json|yarn\.lock)\z} => :frontend,
+        %r{\Ascripts/frontend/} => :frontend,
+        %r{(\A|/)(
+          \.babelrc |
+          \.eslintignore |
+          \.eslintrc(\.yml)? |
+          \.nvmrc |
+          \.prettierignore |
+          \.prettierrc |
+          \.scss-lint.yml |
+          \.stylelintrc |
+          \.haml-lint.yml |
+          \.haml-lint_todo.yml |
+          babel\.config\.js |
+          jest\.config\.js |
+          karma\.config\.js |
+          webpack\.config\.js |
+          package\.json |
+          yarn\.lock
+        )\z}x => :frontend,
 
         %r{\A(ee/)?app/(?!assets|views)[^/]+} => :backend,
         %r{\A(ee/)?(bin|config|danger|generator_templates|lib|rubocop|scripts)/} => :backend,
+        %r{\A(ee/)?spec/features/} => :test,
         %r{\A(ee/)?spec/(?!javascripts|frontend)[^/]+} => :backend,
         %r{\A(ee/)?vendor/(?!assets)[^/]+} => :backend,
         %r{\A(ee/)?vendor/(languages\.yml|licenses\.csv)\z} => :backend,
@@ -123,13 +117,13 @@ module Gitlab
 
         # Files that don't fit into any category are marked with :none
         %r{\A(ee/)?changelogs/} => :none,
+        %r{\Alocale/gitlab\.pot\z} => :none,
 
         # Fallbacks in case the above patterns miss anything
         %r{\.rb\z} => :backend,
-        %r{\.(md|txt)\z} => :docs,
+        %r{\.(md|txt)\z} => :none, # To reinstate roulette for documentation, set to `:docs`.
         %r{\.js\z} => :frontend
       }.freeze
-      # rubocop:enable Style/RegexpLiteral
     end
   end
 end

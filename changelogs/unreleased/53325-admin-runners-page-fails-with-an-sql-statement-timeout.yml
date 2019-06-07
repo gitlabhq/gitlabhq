@@ -1,5 +1,0 @@
----
-title: Use limited counter for runner build count in admin page.
-merge_request: 25220
-author:
-type: fixed

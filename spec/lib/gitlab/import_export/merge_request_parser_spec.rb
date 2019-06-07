@@ -41,4 +41,20 @@ describe Gitlab::ImportExport::MergeRequestParser do
 
     expect(parsed_merge_request).to eq(merge_request)
   end
+
+  context 'when the merge request has diffs' do
+    let(:merge_request) do
+      build(:merge_request, source_project: forked_project, target_project: project)
+    end
+
+    context 'when the diff is invalid' do
+      let(:merge_request_diff) { build(:merge_request_diff, merge_request: merge_request, base_commit_sha: 'foobar') }
+
+      it 'sets the diff to nil' do
+        expect(merge_request_diff).to be_invalid
+        expect(merge_request_diff.merge_request).to eq merge_request
+        expect(parsed_merge_request.merge_request_diff).to be_nil
+      end
+    end
+  end
 end

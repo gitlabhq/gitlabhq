@@ -2,7 +2,7 @@
 
 # For an example companion mocking service, see https://gitlab.com/gitlab-org/gitlab-mock-ci-service
 class MockCiService < CiService
-  ALLOWED_STATES = %w[failed canceled running pending success success_with_warnings skipped not_found].freeze
+  ALLOWED_STATES = %w[failed canceled running pending success success-with-warnings skipped not_found].freeze
 
   prop_accessor :mock_service_url
   validates :mock_service_url, presence: true, public_url: true, if: :activated?

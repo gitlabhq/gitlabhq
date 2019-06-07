@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-class BroadcastMessage < ActiveRecord::Base
+class BroadcastMessage < ApplicationRecord
   include CacheMarkdownField
   include Sortable
 
-  cache_markdown_field :message, pipeline: :broadcast_message
+  cache_markdown_field :message, pipeline: :broadcast_message, whitelisted: true
 
   validates :message,   presence: true
   validates :starts_at, presence: true

@@ -13,6 +13,11 @@ export default {
       type: String,
       required: true,
     },
+    statusIconSize: {
+      type: Number,
+      required: false,
+      default: 32,
+    },
   },
   computed: {
     iconName() {
@@ -45,6 +50,6 @@ export default {
     }"
     class="report-block-list-icon"
   >
-    <icon :name="iconName" :size="32" />
+    <icon :name="iconName" :size="statusIconSize" />
   </div>
 </template>

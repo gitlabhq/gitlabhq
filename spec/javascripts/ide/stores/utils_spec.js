@@ -1,4 +1,5 @@
 import * as utils from '~/ide/stores/utils';
+import { commitActionTypes } from '~/ide/constants';
 import { file } from '../helpers';
 
 describe('Multi-file store utils', () => {
@@ -107,7 +108,7 @@ describe('Multi-file store utils', () => {
         commit_message: 'commit message',
         actions: [
           {
-            action: 'update',
+            action: commitActionTypes.update,
             file_path: 'staged',
             content: 'updated file content',
             encoding: 'text',
@@ -115,7 +116,7 @@ describe('Multi-file store utils', () => {
             previous_path: undefined,
           },
           {
-            action: 'create',
+            action: commitActionTypes.create,
             file_path: 'added',
             content: 'new file content',
             encoding: 'base64',
@@ -123,7 +124,7 @@ describe('Multi-file store utils', () => {
             previous_path: undefined,
           },
           {
-            action: 'delete',
+            action: commitActionTypes.delete,
             file_path: 'deletedFile',
             content: undefined,
             encoding: 'text',
@@ -170,7 +171,7 @@ describe('Multi-file store utils', () => {
         commit_message: 'prebuilt test commit message',
         actions: [
           {
-            action: 'update',
+            action: commitActionTypes.update,
             file_path: 'staged',
             content: 'updated file content',
             encoding: 'text',
@@ -178,7 +179,7 @@ describe('Multi-file store utils', () => {
             previous_path: undefined,
           },
           {
-            action: 'create',
+            action: commitActionTypes.create,
             file_path: 'added',
             content: 'new file content',
             encoding: 'base64',
@@ -193,19 +194,19 @@ describe('Multi-file store utils', () => {
 
   describe('commitActionForFile', () => {
     it('returns deleted for deleted file', () => {
-      expect(utils.commitActionForFile({ deleted: true })).toBe('delete');
+      expect(utils.commitActionForFile({ deleted: true })).toBe(commitActionTypes.delete);
     });
 
     it('returns create for tempFile', () => {
-      expect(utils.commitActionForFile({ tempFile: true })).toBe('create');
+      expect(utils.commitActionForFile({ tempFile: true })).toBe(commitActionTypes.create);
     });
 
     it('returns move for moved file', () => {
-      expect(utils.commitActionForFile({ prevPath: 'test' })).toBe('move');
+      expect(utils.commitActionForFile({ prevPath: 'test' })).toBe(commitActionTypes.move);
     });
 
     it('returns update by default', () => {
-      expect(utils.commitActionForFile({})).toBe('update');
+      expect(utils.commitActionForFile({})).toBe(commitActionTypes.update);
     });
   });
 
@@ -233,6 +234,131 @@ describe('Multi-file store utils', () => {
           deleted: true,
         },
       ]);
+    });
+  });
+
+  describe('mergeTrees', () => {
+    let fromTree;
+    let toTree;
+
+    beforeEach(() => {
+      fromTree = [file('foo')];
+      toTree = [file('bar')];
+    });
+
+    it('merges simple trees with sorting the result', () => {
+      toTree = [file('beta'), file('alpha'), file('gamma')];
+      const res = utils.mergeTrees(fromTree, toTree);
+
+      expect(res.length).toEqual(4);
+      expect(res[0].name).toEqual('alpha');
+      expect(res[1].name).toEqual('beta');
+      expect(res[2].name).toEqual('foo');
+      expect(res[3].name).toEqual('gamma');
+      expect(res[2]).toBe(fromTree[0]);
+    });
+
+    it('handles edge cases', () => {
+      expect(utils.mergeTrees({}, []).length).toEqual(0);
+
+      let res = utils.mergeTrees({}, toTree);
+
+      expect(res.length).toEqual(1);
+      expect(res[0].name).toEqual('bar');
+
+      res = utils.mergeTrees(fromTree, []);
+
+      expect(res.length).toEqual(1);
+      expect(res[0].name).toEqual('foo');
+      expect(res[0]).toBe(fromTree[0]);
+    });
+
+    it('merges simple trees without producing duplicates', () => {
+      toTree.push(file('foo'));
+
+      const res = utils.mergeTrees(fromTree, toTree);
+
+      expect(res.length).toEqual(2);
+      expect(res[0].name).toEqual('bar');
+      expect(res[1].name).toEqual('foo');
+      expect(res[1]).not.toBe(fromTree[0]);
+    });
+
+    it('merges nested tree into the main one without duplicates', () => {
+      fromTree[0].tree.push({
+        ...file('alpha'),
+        path: 'foo/alpha',
+        tree: [
+          {
+            ...file('beta.md'),
+            path: 'foo/alpha/beta.md',
+          },
+        ],
+      });
+
+      toTree.push({
+        ...file('foo'),
+        tree: [
+          {
+            ...file('alpha'),
+            path: 'foo/alpha',
+            tree: [
+              {
+                ...file('gamma.md'),
+                path: 'foo/alpha/gamma.md',
+              },
+            ],
+          },
+        ],
+      });
+
+      const res = utils.mergeTrees(fromTree, toTree);
+
+      expect(res.length).toEqual(2);
+      expect(res[1].name).toEqual('foo');
+
+      const finalBranch = res[1].tree[0].tree;
+
+      expect(finalBranch.length).toEqual(2);
+      expect(finalBranch[0].name).toEqual('beta.md');
+      expect(finalBranch[1].name).toEqual('gamma.md');
+    });
+
+    it('marks correct folders as opened as the parsing goes on', () => {
+      fromTree[0].tree.push({
+        ...file('alpha'),
+        path: 'foo/alpha',
+        tree: [
+          {
+            ...file('beta.md'),
+            path: 'foo/alpha/beta.md',
+          },
+        ],
+      });
+
+      toTree.push({
+        ...file('foo'),
+        tree: [
+          {
+            ...file('alpha'),
+            path: 'foo/alpha',
+            tree: [
+              {
+                ...file('gamma.md'),
+                path: 'foo/alpha/gamma.md',
+              },
+            ],
+          },
+        ],
+      });
+
+      const res = utils.mergeTrees(fromTree, toTree);
+
+      expect(res[1].name).toEqual('foo');
+      expect(res[1].opened).toEqual(true);
+
+      expect(res[1].tree[0].name).toEqual('alpha');
+      expect(res[1].tree[0].opened).toEqual(true);
     });
   });
 });

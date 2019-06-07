@@ -11,12 +11,12 @@ describe 'shared/milestones/_issuables.html.haml' do
     stub_template 'shared/milestones/_issuable.html.haml' => ''
   end
 
-  it 'should show the issuables count if show_counter is true' do
+  it 'shows the issuables count if show_counter is true' do
     render 'shared/milestones/issuables', show_counter: true
     expect(rendered).to have_content('100')
   end
 
-  it 'should not show the issuables count if show_counter is false' do
+  it 'does not show the issuables count if show_counter is false' do
     render 'shared/milestones/issuables', show_counter: false
     expect(rendered).not_to have_content('100')
   end
@@ -24,7 +24,7 @@ describe 'shared/milestones/_issuables.html.haml' do
   describe 'a high issuables count' do
     let(:issuables_size) { 1000 }
 
-    it 'should show a delimited number if show_counter is true' do
+    it 'shows a delimited number if show_counter is true' do
       render 'shared/milestones/issuables', show_counter: true
       expect(rendered).to have_content('1,000')
     end

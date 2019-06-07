@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe InternalId do
@@ -91,7 +93,7 @@ describe InternalId do
       before do
         described_class.reset_column_information
         # Project factory will also call the current_version
-        expect(ActiveRecord::Migrator).to receive(:current_version).twice.and_return(InternalId::REQUIRED_SCHEMA_VERSION - 1)
+        expect(ActiveRecord::Migrator).to receive(:current_version).at_least(:once).and_return(InternalId::REQUIRED_SCHEMA_VERSION - 1)
       end
 
       let(:init) { double('block') }
@@ -101,6 +103,66 @@ describe InternalId do
 
         expect(init).to receive(:call).with(issue).and_return(val)
         expect(subject).to eq(val + 1)
+      end
+
+      it 'always attempts to generate internal IDs in production mode' do
+        allow(Rails.env).to receive(:test?).and_return(false)
+        val = rand(1..100)
+        generator = double(generate: val)
+        expect(InternalId::InternalIdGenerator).to receive(:new).and_return(generator)
+
+        expect(subject).to eq(val)
+      end
+    end
+  end
+
+  describe '.reset' do
+    subject { described_class.reset(issue, scope, usage, value) }
+
+    context 'in the absence of a record' do
+      let(:value) { 2 }
+
+      it 'does not revert back the value' do
+        expect { subject }.not_to change { described_class.count }
+        expect(subject).to be_falsey
+      end
+    end
+
+    context 'when valid iid is used to reset' do
+      let!(:value) { generate_next }
+
+      context 'and iid is a latest one' do
+        it 'does rewind and next generated value is the same' do
+          expect(subject).to be_truthy
+          expect(generate_next).to eq(value)
+        end
+      end
+
+      context 'and iid is not a latest one' do
+        it 'does not rewind' do
+          generate_next
+
+          expect(subject).to be_falsey
+          expect(generate_next).to be > value
+        end
+      end
+
+      def generate_next
+        described_class.generate_next(issue, scope, usage, init)
+      end
+    end
+
+    context 'with an insufficient schema version' do
+      let(:value) { 2 }
+
+      before do
+        described_class.reset_column_information
+        # Project factory will also call the current_version
+        expect(ActiveRecord::Migrator).to receive(:current_version).twice.and_return(InternalId::REQUIRED_SCHEMA_VERSION - 1)
+      end
+
+      it 'does not reset any of the iids' do
+        expect(subject).to be_falsey
       end
     end
   end

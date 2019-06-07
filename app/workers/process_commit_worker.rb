@@ -48,7 +48,7 @@ class ProcessCommitWorker
     # Issues::CloseService#execute.
     IssueCollection.new(issues).updatable_by_user(user).each do |issue|
       Issues::CloseService.new(project, author)
-        .close_issue(issue, commit: commit)
+        .close_issue(issue, closed_via: commit)
     end
   end
 

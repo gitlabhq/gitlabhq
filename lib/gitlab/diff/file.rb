@@ -75,7 +75,7 @@ module Gitlab
       end
 
       def line_for_position(pos)
-        return nil unless pos.position_type == 'text'
+        return unless pos.position_type == 'text'
 
         # This method is normally used to find which line the diff was
         # commented on, and in this context, it's normally the raw diff persisted
@@ -133,11 +133,15 @@ module Gitlab
       end
 
       def new_blob
-        new_blob_lazy&.itself
+        strong_memoize(:new_blob) do
+          new_blob_lazy&.itself
+        end
       end
 
       def old_blob
-        old_blob_lazy&.itself
+        strong_memoize(:old_blob) do
+          old_blob_lazy&.itself
+        end
       end
 
       def new_blob_lines_between(from_line, to_line)
@@ -158,7 +162,10 @@ module Gitlab
         new_blob || old_blob
       end
 
-      attr_writer :highlighted_diff_lines
+      def highlighted_diff_lines=(value)
+        clear_memoization(:diff_lines_for_serializer)
+        @highlighted_diff_lines = value
+      end
 
       # Array of Gitlab::Diff::Line objects
       def diff_lines
@@ -314,19 +321,31 @@ module Gitlab
       # This adds the bottom match line to the array if needed. It contains
       # the data to load more context lines.
       def diff_lines_for_serializer
-        lines = highlighted_diff_lines
+        strong_memoize(:diff_lines_for_serializer) do
+          lines = highlighted_diff_lines
 
-        return if lines.empty?
-        return if blob.nil?
+          next if lines.empty?
+          next if blob.nil?
 
-        last_line = lines.last
+          last_line = lines.last
 
-        if last_line.new_pos < total_blob_lines(blob) && !deleted_file?
-          match_line = Gitlab::Diff::Line.new("", 'match', nil, last_line.old_pos, last_line.new_pos)
-          lines.push(match_line)
+          if last_line.new_pos < total_blob_lines(blob) && !deleted_file?
+            match_line = Gitlab::Diff::Line.new("", 'match', nil, last_line.old_pos, last_line.new_pos)
+            lines.push(match_line)
+          end
+
+          lines
         end
+      end
 
-        lines
+      def fully_expanded?
+        return true if binary?
+
+        lines = diff_lines_for_serializer
+
+        return true if lines.nil?
+
+        lines.none? { |line| line.type.to_s == 'match' }
       end
 
       private

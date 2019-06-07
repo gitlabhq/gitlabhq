@@ -193,6 +193,10 @@ export default {
     const noteObj = utils.findNoteObjectById(state.discussions, note.discussion_id);
 
     if (noteObj.individual_note) {
+      if (note.type === constants.DISCUSSION_NOTE) {
+        noteObj.individual_note = false;
+      }
+
       noteObj.notes.splice(0, 1, note);
     } else {
       const comment = utils.findNoteObjectById(noteObj.notes, note.id);

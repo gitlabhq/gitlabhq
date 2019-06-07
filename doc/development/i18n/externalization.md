@@ -174,7 +174,7 @@ For example use `%{created_at}` in Ruby but `%{createdAt}` in JavaScript.
     # => When size == 2: 'There are 2 mice.'
     ```
 
-    Avoid using `%d` or count variables in sigular strings. This allows more natural translation in some languages.
+    Avoid using `%d` or count variables in singular strings. This allows more natural translation in some languages.
 
 - In JavaScript:
 
@@ -195,6 +195,7 @@ For example use `%{created_at}` in Ruby but `%{createdAt}` in JavaScript.
 
 Sometimes you need to add some context to the text that you want to translate
 (if the word occurs in a sentence and/or the word is ambiguous).
+Namespaces should be PascalCase.
 
 - In Ruby/HAML:
 
@@ -211,7 +212,7 @@ Sometimes you need to add some context to the text that you want to translate
     ```
 
 Note: The namespace should be removed from the translation. See the [translation
-guidelines for more details](./translation.md#namespaced-strings).
+guidelines for more details](translation.md#namespaced-strings).
 
 ### Dates / times
 
@@ -300,7 +301,7 @@ file in. Once the changes are on master, they will be picked up by
 [Crowdin](http://translate.gitlab.com) and be presented for translation.
 
 If there are merge conflicts in the `gitlab.pot` file, you can delete the file
-and regenerate it using the same command. Confirm that you are not deleting any strings accidentally by looking over the diff.
+and regenerate it using the same command.
 
 ### Validating PO files
 
@@ -331,7 +332,7 @@ Errors in `locale/zh_HK/gitlab.po`:
     Syntax error in msgstr
     Syntax error in message_line
     There should be only whitespace until the end of line after the double quote character of a message text.
-    Parseing result before error: '{:msgid=>["", "You are going to remove %{project_name_with_namespace}.\\n", "Removed project CANNOT be restored!\\n", "Are you ABSOLUTELY sure?"]}'
+    Parsing result before error: '{:msgid=>["", "You are going to remove %{project_name_with_namespace}.\\n", "Removed project CANNOT be restored!\\n", "Are you ABSOLUTELY sure?"]}'
     SimplePoParser filtered backtrace: SimplePoParser::ParserError
 Errors in `locale/zh_TW/gitlab.po`:
   1 pipeline

@@ -2,10 +2,10 @@ import $ from 'jquery';
 import OAuthRememberMe from '~/pages/sessions/new/oauth_remember_me';
 
 describe('OAuthRememberMe', () => {
-  preloadFixtures('static/oauth_remember_me.html.raw');
+  preloadFixtures('static/oauth_remember_me.html');
 
   beforeEach(() => {
-    loadFixtures('static/oauth_remember_me.html.raw');
+    loadFixtures('static/oauth_remember_me.html');
 
     new OAuthRememberMe({ container: $('#oauth-container') }).bindEvents();
   });

@@ -1,7 +1,7 @@
 - supports_autocomplete = local_assigns.fetch(:supports_autocomplete, true)
 - supports_quick_actions = note_supports_quick_actions?(@note)
 - if supports_quick_actions
-  - preview_url = preview_markdown_path(@project, quick_actions_target_type: @note.noteable_type, quick_actions_target_id: @note.noteable_id)
+  - preview_url = preview_markdown_path(@project, target_type: @note.noteable_type, target_id: @note.noteable_id)
 - else
   - preview_url = preview_markdown_path(@project)
 

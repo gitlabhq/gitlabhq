@@ -4,7 +4,7 @@
 
 - if @issue.assignees.any?
   %p
-    Assignee: #{@issue.assignee_list}
+    = assignees_label(@issue)
 
 - if @issue.description
   %div

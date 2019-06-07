@@ -2,6 +2,7 @@ import $ from 'jquery';
 import ProtectedBranchAccessDropdown from './protected_branch_access_dropdown';
 import CreateItemDropdown from '../create_item_dropdown';
 import AccessorUtilities from '../lib/utils/accessor';
+import { __ } from '~/locale';
 
 export default class ProtectedBranchCreate {
   constructor() {
@@ -35,7 +36,7 @@ export default class ProtectedBranchCreate {
 
     this.createItemDropdown = new CreateItemDropdown({
       $dropdown: $protectedBranchDropdown,
-      defaultToggleLabel: 'Protected Branch',
+      defaultToggleLabel: __('Protected Branch'),
       fieldName: 'protected_branch[name]',
       onSelect: this.onSelectCallback,
       getData: ProtectedBranchCreate.getProtectedBranches,

@@ -1,3 +1,7 @@
+---
+type: reference
+---
+
 # Using Redis
 
 As many applications depend on Redis as their key-value store, you will

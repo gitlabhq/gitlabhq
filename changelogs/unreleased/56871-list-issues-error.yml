@@ -1,5 +1,0 @@
----
-title: Display error message when API call to list Sentry issues fails
-merge_request: 24936
-author:
-type: fixed

@@ -93,4 +93,4 @@ When adding new automated tests, please keep [testing levels](https://docs.gitla
 in mind.
 -->
 
-/label ~Quality ~"test plan"
+/label ~Quality ~"test\-plan"

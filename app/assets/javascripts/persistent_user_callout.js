@@ -31,4 +31,12 @@ export default class PersistentUserCallout {
         Flash(__('An error occurred while dismissing the alert. Refresh the page and try again.'));
       });
   }
+
+  static factory(container) {
+    if (!container) {
+      return undefined;
+    }
+
+    return new PersistentUserCallout(container);
+  }
 }

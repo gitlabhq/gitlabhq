@@ -75,10 +75,12 @@ POST /projects/:id/repository/commits
 | `branch` | string | yes | Name of the branch to commit into. To create a new branch, also provide `start_branch`. |
 | `commit_message` | string | yes | Commit message |
 | `start_branch` | string | no | Name of the branch to start the new commit from |
+| `start_project` | integer/string | no | The project ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) to start the commit from. Defaults to the value of `id`. |
 | `actions[]` | array | yes | An array of action hashes to commit as a batch. See the next table for what attributes it can take. |
 | `author_email` | string | no | Specify the commit author's email address |
 | `author_name` | string | no | Specify the commit author's name |
 | `stats` | boolean | no | Include commit stats. Default is true |
+| `force` | boolean | no | When `true` overwrites the target branch with a new commit based on the `start_branch` |
 
 | `actions[]` Attribute | Type | Required | Description |
 | --------------------- | ---- | -------- | ----------- |
@@ -129,6 +131,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --header "Cont
 ```
 
 Example response:
+
 ```json
 {
   "id": "ed899a2f4b50b4370feeea94676502b42383c746",
@@ -152,6 +155,32 @@ Example response:
   },
   "status": null
 }
+```
+
+GitLab supports [form encoding](README.md#encoding-api-parameters-of-array-and-hash-types). The following is an example using Commit API with form encoding:
+
+```bash
+curl --request POST \
+     --form "branch=master" \
+     --form "commit_message=some commit message" \
+     --form "start_branch=master" \
+     --form "actions[][action]=create" \
+     --form "actions[][file_path]=foo/bar" \
+     --form "actions[][content]=</path/to/local.file" \
+     --form "actions[][action]=delete" \
+     --form "actions[][file_path]=foo/bar2" \
+     --form "actions[][action]=move" \
+     --form "actions[][file_path]=foo/bar3" \
+     --form "actions[][previous_path]=foo/bar4" \
+     --form "actions[][content]=</path/to/local1.file" \
+     --form "actions[][action]=update" \
+     --form "actions[][file_path]=foo/bar5" \
+     --form "actions[][content]=</path/to/local2.file" \
+     --form "actions[][action]=chmod" \
+     --form "actions[][file_path]=foo/bar5" \
+     --form "actions[][execute_filemode]=true" \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     "https://gitlab.example.com/api/v4/projects/1/repository/commits"
 ```
 
 ## Get a single commit
@@ -195,9 +224,9 @@ Example response:
   "last_pipeline" : {
     "id": 8,
     "ref": "master",
-    "sha": "2dc6aa325a317eda67812f05600bdf0fcdc70ab0"
+    "sha": "2dc6aa325a317eda67812f05600bdf0fcdc70ab0",
     "status": "created"
-  }
+  },
   "stats": {
     "additions": 15,
     "deletions": 10,
@@ -474,7 +503,7 @@ GET /projects/:id/repository/commits/:sha/statuses
 | `sha`     | string  | yes | The commit SHA
 | `ref`     | string  | no  | The name of a repository branch or tag or, if not given, the default branch
 | `stage`   | string  | no  | Filter by [build stage](../ci/yaml/README.md#stages), e.g., `test`
-| `name`    | string  | no  | Filter by [job name](../ci/yaml/README.md#jobs), e.g., `bundler:audit`
+| `name`    | string  | no  | Filter by [job name](../ci/yaml/README.md#introduction), e.g., `bundler:audit`
 | `all`     | boolean | no  | Return all statuses, not only the latest ones
 
 ```bash

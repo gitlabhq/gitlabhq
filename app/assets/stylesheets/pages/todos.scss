@@ -6,9 +6,7 @@
 .todos-list > .todo {
   // workaround because we cannot use border-colapse
   border-top: 1px solid transparent;
-  display: -webkit-flex;
   display: flex;
-  -webkit-flex-direction: row;
   flex-direction: row;
 
   &:hover {
@@ -29,23 +27,18 @@
   .todo-avatar,
   .todo-actions {
     @include transition(opacity);
-    -webkit-flex: 0 0 auto;
     flex: 0 0 auto;
   }
 
   .todo-actions {
-    display: -webkit-flex;
     display: flex;
-    -webkit-justify-content: center;
     justify-content: center;
-    -webkit-flex-direction: column;
     flex-direction: column;
     margin-left: 10px;
     min-width: 55px;
   }
 
   .todo-item {
-    -webkit-flex: 0 1 100%;
     flex: 0 1 100%;
     min-width: 0;
   }
@@ -60,13 +53,13 @@
 
       .todo-avatar,
       .todo-item {
-        opacity: .6;
+        opacity: 0.6;
       }
     }
 
     .todo-avatar,
     .todo-item {
-      opacity: .2;
+      opacity: 0.2;
     }
 
     .btn {
@@ -82,7 +75,6 @@
     display: flex;
 
     > .title-item {
-      -webkit-flex: 0 0 auto;
       flex: 0 0 auto;
       margin: 0 2px;
 
@@ -96,7 +88,6 @@
     }
 
     .todo-label {
-      -webkit-flex: 0 1 auto;
       flex: 0 1 auto;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -119,45 +110,38 @@
   }
 
   .todo-body {
-    .todo-note {
-      word-wrap: break-word;
+    .badge.badge-pill,
+    p {
+      color: $gl-text-color;
+    }
 
-      .md {
-        color: $gl-grayish-blue;
-        font-size: $gl-font-size;
+    .md {
+      color: $gl-grayish-blue;
+      font-size: $gl-font-size;
+    }
 
-        .badge.badge-pill {
-          color: $gl-text-color;
-        }
+    code {
+      white-space: pre-wrap;
+    }
 
-        p {
-          color: $gl-text-color;
-        }
-      }
+    pre {
+      border: 0;
+      background: $gray-light;
+      border-radius: 0;
+      color: $gl-gray-500;
+      margin: 0 20px;
+      overflow: hidden;
+    }
 
-      code {
-        white-space: pre-wrap;
-      }
+    .note-image-attach {
+      margin-top: 4px;
+      margin-left: 0;
+      max-width: 200px;
+      float: none;
+    }
 
-      pre {
-        border: 0;
-        background: $gray-light;
-        border-radius: 0;
-        color: $gl-gray-500;
-        margin: 0 20px;
-        overflow: hidden;
-      }
-
-      .note-image-attach {
-        margin-top: 4px;
-        margin-left: 0;
-        max-width: 200px;
-        float: none;
-      }
-
-      p:last-child {
-        margin-bottom: 0;
-      }
+    p:last-child {
+      margin-bottom: 0;
     }
   }
 }
@@ -222,23 +206,19 @@
 }
 
 .todos-empty {
-  display: -webkit-flex;
   display: flex;
-  -webkit-flex-direction: column;
   flex-direction: column;
   max-width: 900px;
   margin-left: auto;
   margin-right: auto;
 
   @include media-breakpoint-up(sm) {
-    -webkit-flex-direction: row;
     flex-direction: row;
     padding-top: 80px;
   }
 }
 
 .todos-empty-content {
-  -webkit-align-self: center;
   align-self: center;
   max-width: 480px;
   margin-right: 20px;
@@ -252,7 +232,6 @@
   @include media-breakpoint-up(sm) {
     width: 300px;
     margin-right: 0;
-    -webkit-order: 2;
     order: 2;
   }
 }

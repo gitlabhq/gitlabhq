@@ -1,5 +1,0 @@
----
-title: Provide expires_in in LFS authentication payload
-merge_request: 25082
-author:
-type: fixed

@@ -3,7 +3,7 @@ import { mapActions } from 'vuex';
 import Translate from '../vue_shared/translate';
 import ImportProjectsTable from './components/import_projects_table.vue';
 import { parseBoolean } from '../lib/utils/common_utils';
-import store from './store';
+import createStore from './store';
 
 Vue.use(Translate);
 
@@ -20,6 +20,7 @@ export default function mountImportProjectsTable(mountElement) {
     ciCdOnly,
   } = mountElement.dataset;
 
+  const store = createStore();
   return new Vue({
     el: mountElement,
     store,

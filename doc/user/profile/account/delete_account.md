@@ -14,7 +14,7 @@ Deleting a user will delete all projects in that user namespace.
   [GitLab 9.1][ce-10273], and from the API in [GitLab 9.3][ce-11853].
 
 When a user account is deleted, not all associated records are deleted with it.
-Here's a list of things that will not be deleted:
+Here's a list of things that will **not** be deleted:
 
 - Issues that the user created
 - Merge requests that the user created

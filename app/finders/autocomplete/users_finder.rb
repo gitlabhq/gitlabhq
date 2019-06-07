@@ -2,6 +2,8 @@
 
 module Autocomplete
   class UsersFinder
+    include Gitlab::Utils::StrongMemoize
+
     # The number of users to display in the results is hardcoded to 20, and
     # pagination is not supported. This ensures that performance remains
     # consistent and removes the need for implementing keyset pagination to
@@ -31,7 +33,7 @@ module Autocomplete
         # Include current user if available to filter by "Me"
         items.unshift(current_user) if prepend_current_user?
 
-        if prepend_author? && (author = User.find_by_id(author_id))
+        if prepend_author? && author&.active?
           items.unshift(author)
         end
       end
@@ -40,6 +42,12 @@ module Autocomplete
     end
 
     private
+
+    def author
+      strong_memoize(:author) do
+        User.find_by_id(author_id)
+      end
+    end
 
     # Returns the users based on the input parameters, as an Array.
     #

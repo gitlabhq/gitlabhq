@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe 'User page' do
+  include ExternalAuthorizationServiceHelpers
+
   let(:user) { create(:user) }
 
   context 'with public profile' do
@@ -83,6 +85,26 @@ describe 'User page' do
 
       page.within '.navbar-nav' do
         expect(page).to have_link('Sign in / Register')
+      end
+    end
+  end
+
+  context 'most recent activity' do
+    it 'shows the most recent activity' do
+      visit(user_path(user))
+
+      expect(page).to have_content('Most Recent Activity')
+    end
+
+    context 'when external authorization is enabled' do
+      before do
+        enable_external_authorization_service_check
+      end
+
+      it 'hides the most recent activity' do
+        visit(user_path(user))
+
+        expect(page).not_to have_content('Most Recent Activity')
       end
     end
   end

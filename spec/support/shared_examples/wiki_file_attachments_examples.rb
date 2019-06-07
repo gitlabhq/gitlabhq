@@ -42,7 +42,7 @@ shared_examples 'wiki file attachments' do
       end
     end
 
-    context 'uploading is complete' do
+    context 'uploading is complete', :quarantine do
       it 'shows "Attach a file" button on uploading complete' do
         attach_with_dropzone
         wait_for_requests

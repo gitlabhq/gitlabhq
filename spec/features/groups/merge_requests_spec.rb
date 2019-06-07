@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'Group merge requests page' do
@@ -38,7 +40,7 @@ describe 'Group merge requests page' do
 
   context 'when merge request assignee to user' do
     before do
-      issuable.update!(assignee: user)
+      issuable.update!(assignees: [user])
 
       visit path
     end

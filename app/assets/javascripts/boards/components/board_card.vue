@@ -66,7 +66,7 @@ export default {
           eventHub.$emit('clearDetailIssue');
         } else {
           eventHub.$emit('newDetailIssue', this.issue);
-          boardsStore.detail.list = this.list;
+          boardsStore.setListDetail(this.list);
         }
       }
     },
@@ -83,7 +83,7 @@ export default {
     }"
     :index="index"
     :data-issue-id="issue.id"
-    class="board-card"
+    class="board-card p-3 rounded"
     @mousedown="mouseDown"
     @mousemove="mouseMove"
     @mouseup="showIssue($event)"

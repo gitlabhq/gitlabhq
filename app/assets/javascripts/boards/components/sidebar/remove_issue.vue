@@ -48,7 +48,7 @@ export default Vue.extend({
         list.removeIssue(issue);
       });
 
-      boardsStore.detail.issue = {};
+      boardsStore.clearDetailIssue();
     },
     /**
      * Build the default patch request.

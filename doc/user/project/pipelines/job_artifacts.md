@@ -1,6 +1,7 @@
 # Introduction to job artifacts
 
 > **Notes:**
+>
 > - Since GitLab 8.2 and GitLab Runner 0.7.0, job artifacts that are created by
 >   GitLab Runner are uploaded to GitLab and are downloadable as a single archive
 >   (`tar.gz`) using the GitLab UI.
@@ -15,7 +16,7 @@
 >   [administration/job_artifacts](../../../administration/job_artifacts.md).
 
 Artifacts is a list of files and directories which are attached to a job
-after it completes successfully. This feature is enabled by default in all
+after it finishes. This feature is enabled by default in all
 GitLab installations.
 
 ## Defining artifacts in `.gitlab-ci.yml`
@@ -35,12 +36,14 @@ pdf:
 A job named `pdf` calls the `xelatex` command in order to build a pdf file from
 the latex source file `mycv.tex`. We then define the `artifacts` paths which in
 turn are defined with the `paths` keyword. All paths to files and directories
-are relative to the repository that was cloned during the build. These uploaded
-artifacts will be kept in GitLab for 1 week as defined by the `expire_in`
-definition. You have the option to keep the artifacts from expiring via the
-[web interface](#browsing-job-artifacts). If the expiry time is not defined,
-it defaults to the [instance wide
-setting](../../admin_area/settings/continuous_integration.md#default-artifacts-expiration-core-only).
+are relative to the repository that was cloned during the build.
+
+The artifacts will be uploaded when the job succeeds by default, but can be set to upload
+when the job fails, or always, if the [`artifacts:when`](../../../ci/yaml/README.md#artifactswhen)
+parameter is used. These uploaded artifacts will be kept in GitLab for 1 week as defined
+by the `expire_in` definition. You have the option to keep the artifacts from expiring
+via the [web interface](#browsing-artifacts). If the expiry time is not defined, it defaults
+to the [instance wide setting](../../admin_area/settings/continuous_integration.md#default-artifacts-expiration-core-only).
 
 For more examples on artifacts, follow the [artifacts reference in
 `.gitlab-ci.yml`](../../../ci/yaml/README.md#artifacts).
@@ -54,7 +57,8 @@ For more examples on artifacts, follow the [artifacts reference in
 > **Note:**
 > With [GitLab 10.1][ce-14399], HTML files in a public project can be previewed
 > directly in a new tab without the need to download them when
-> [GitLab Pages](../../../administration/pages/index.md) is enabled
+> [GitLab Pages](../../../administration/pages/index.md) is enabled.
+> The same holds for textual formats (currently supported extensions: `.txt`, `.json`, and `.log`).
 
 After a job finishes, if you visit the job's specific page, there are three
 buttons. You can download the artifacts archive or browse its contents, whereas
@@ -152,7 +156,7 @@ For example:
 https://gitlab.com/gitlab-org/gitlab-ce/-/jobs/artifacts/master/browse?job=coverage
 ```
 
-There is also a URL to specific files, including html files that 
+There is also a URL to specific files, including html files that
 are shown in [GitLab Pages](../../../administration/pages/index.md):
 
 ```
@@ -183,7 +187,7 @@ information in the UI.
 DANGER: **Warning:**
 This is a destructive action that leads to data loss. Use with caution.
 
-If you have at least Developer [permissions](../../permissions.md#gitlab-ci-cd-permissions)
+If you have at least Developer [permissions](../../permissions.md#gitlab-cicd-permissions)
 on the project, you can erase a single job via the UI which will also remove the
 artifacts and the job's trace.
 
@@ -191,7 +195,7 @@ artifacts and the job's trace.
 1. Click the trash icon at the top right of the job's trace.
 1. Confirm the deletion.
 
-## Retrieve artifacts of private projects when using GitLab CI 
+## Retrieve artifacts of private projects when using GitLab CI
 
 In order to retrieve a job artifact of a different project, you might need to use a private token in order to [authenticate and download](../../../api/jobs.md#get-job-artifacts) the artifacts.
 

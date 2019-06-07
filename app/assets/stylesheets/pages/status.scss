@@ -33,17 +33,18 @@
     border-color: $gl-text-color;
 
     &:not(span):hover {
-      background-color: rgba($gl-text-color, .07);
+      background-color: rgba($gl-text-color, 0.07);
     }
   }
 
   &.ci-pending,
-  &.ci-failed_with_warnings,
-  &.ci-success_with_warnings {
+  &.ci-failed-with-warnings,
+  &.ci-success-with-warnings {
     @include status-color($orange-100, $orange-500, $orange-700);
   }
 
   &.ci-info,
+  &.ci-preparing,
   &.ci-running {
     @include status-color($blue-100, $blue-500, $blue-600);
   }
@@ -54,7 +55,7 @@
     border-color: $gl-text-color-secondary;
 
     &:not(span):hover {
-      background-color: rgba($gl-text-color-secondary, .07);
+      background-color: rgba($gl-text-color-secondary, 0.07);
     }
   }
 }

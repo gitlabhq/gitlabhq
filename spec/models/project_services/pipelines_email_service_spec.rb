@@ -1,8 +1,14 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe PipelinesEmailService, :mailer do
   let(:pipeline) do
-    create(:ci_pipeline, project: project, sha: project.commit('master').sha)
+    create(:ci_pipeline, :failed,
+      project: project,
+      sha: project.commit('master').sha,
+      ref: project.default_branch
+    )
   end
 
   let(:project) { create(:project, :repository) }
@@ -82,12 +88,7 @@ describe PipelinesEmailService, :mailer do
       subject.test(data)
     end
 
-    context 'when pipeline is failed' do
-      before do
-        data[:object_attributes][:status] = 'failed'
-        pipeline.update(status: 'failed')
-      end
-
+    context 'when pipeline is failed and on default branch' do
       it_behaves_like 'sending email'
     end
 
@@ -99,6 +100,25 @@ describe PipelinesEmailService, :mailer do
 
       it_behaves_like 'sending email'
     end
+
+    context 'when pipeline is failed and on a non-default branch' do
+      before do
+        data[:object_attributes][:ref] = 'not-the-default-branch'
+        pipeline.update(ref: 'not-the-default-branch')
+      end
+
+      context 'with notify_only_default branch on' do
+        before do
+          subject.notify_only_default_branch = true
+        end
+
+        it_behaves_like 'sending email'
+      end
+
+      context 'with notify_only_default_branch off' do
+        it_behaves_like 'sending email'
+      end
+    end
   end
 
   describe '#execute' do
@@ -108,11 +128,6 @@ describe PipelinesEmailService, :mailer do
 
     context 'with recipients' do
       context 'with failed pipeline' do
-        before do
-          data[:object_attributes][:status] = 'failed'
-          pipeline.update(status: 'failed')
-        end
-
         it_behaves_like 'sending email'
       end
 
@@ -131,11 +146,6 @@ describe PipelinesEmailService, :mailer do
         end
 
         context 'with failed pipeline' do
-          before do
-            data[:object_attributes][:status] = 'failed'
-            pipeline.update(status: 'failed')
-          end
-
           it_behaves_like 'sending email'
         end
 
@@ -143,6 +153,40 @@ describe PipelinesEmailService, :mailer do
           before do
             data[:object_attributes][:status] = 'success'
             pipeline.update(status: 'success')
+          end
+
+          it_behaves_like 'not sending email'
+        end
+      end
+
+      context 'with notify_only_default_branch off' do
+        context 'with default branch' do
+          it_behaves_like 'sending email'
+        end
+
+        context 'with non default branch' do
+          before do
+            data[:object_attributes][:ref] = 'not-the-default-branch'
+            pipeline.update(ref: 'not-the-default-branch')
+          end
+
+          it_behaves_like 'sending email'
+        end
+      end
+
+      context 'with notify_only_default_branch on' do
+        before do
+          subject.notify_only_default_branch = true
+        end
+
+        context 'with default branch' do
+          it_behaves_like 'sending email'
+        end
+
+        context 'with non default branch' do
+          before do
+            data[:object_attributes][:ref] = 'not-the-default-branch'
+            pipeline.update(ref: 'not-the-default-branch')
           end
 
           it_behaves_like 'not sending email'

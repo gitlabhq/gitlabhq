@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
 module Ci
-  class Variable < ActiveRecord::Base
+  class Variable < ApplicationRecord
     extend Gitlab::Ci::Model
     include HasVariable
     include Presentable
+    include Maskable
 
     belongs_to :project
 

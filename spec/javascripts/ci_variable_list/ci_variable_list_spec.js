@@ -5,9 +5,9 @@ import getSetTimeoutPromise from 'spec/helpers/set_timeout_promise_helper';
 const HIDE_CLASS = 'hide';
 
 describe('VariableList', () => {
-  preloadFixtures('pipeline_schedules/edit.html.raw');
-  preloadFixtures('pipeline_schedules/edit_with_variables.html.raw');
-  preloadFixtures('projects/ci_cd_settings.html.raw');
+  preloadFixtures('pipeline_schedules/edit.html');
+  preloadFixtures('pipeline_schedules/edit_with_variables.html');
+  preloadFixtures('projects/ci_cd_settings.html');
 
   let $wrapper;
   let variableList;
@@ -15,7 +15,7 @@ describe('VariableList', () => {
   describe('with only key/value inputs', () => {
     describe('with no variables', () => {
       beforeEach(() => {
-        loadFixtures('pipeline_schedules/edit.html.raw');
+        loadFixtures('pipeline_schedules/edit.html');
         $wrapper = $('.js-ci-variable-list-section');
 
         variableList = new VariableList({
@@ -82,7 +82,7 @@ describe('VariableList', () => {
 
     describe('with persisted variables', () => {
       beforeEach(() => {
-        loadFixtures('pipeline_schedules/edit_with_variables.html.raw');
+        loadFixtures('pipeline_schedules/edit_with_variables.html');
         $wrapper = $('.js-ci-variable-list-section');
 
         variableList = new VariableList({
@@ -115,7 +115,7 @@ describe('VariableList', () => {
 
   describe('with all inputs(key, value, protected)', () => {
     beforeEach(() => {
-      loadFixtures('projects/ci_cd_settings.html.raw');
+      loadFixtures('projects/ci_cd_settings.html');
       $wrapper = $('.js-ci-variable-list-section');
 
       $wrapper.find('.js-ci-variable-input-protected').attr('data-default', 'false');
@@ -127,29 +127,93 @@ describe('VariableList', () => {
       variableList.init();
     });
 
-    it('should add another row when editing the last rows protected checkbox', done => {
+    it('should not add another row when editing the last rows protected checkbox', done => {
       const $row = $wrapper.find('.js-row:last-child');
       $row.find('.ci-variable-protected-item .js-project-feature-toggle').click();
 
       getSetTimeoutPromise()
         .then(() => {
-          expect($wrapper.find('.js-row').length).toBe(2);
-
-          // Check for the correct default in the new row
-          const $protectedInput = $wrapper
-            .find('.js-row:last-child')
-            .find('.js-ci-variable-input-protected');
-
-          expect($protectedInput.val()).toBe('false');
+          expect($wrapper.find('.js-row').length).toBe(1);
         })
         .then(done)
         .catch(done.fail);
+    });
+
+    it('should not add another row when editing the last rows masked checkbox', done => {
+      const $row = $wrapper.find('.js-row:last-child');
+      $row.find('.ci-variable-masked-item .js-project-feature-toggle').click();
+
+      getSetTimeoutPromise()
+        .then(() => {
+          expect($wrapper.find('.js-row').length).toBe(1);
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+
+    describe('validateMaskability', () => {
+      let $row;
+
+      const maskingErrorElement = '.js-row:last-child .masking-validation-error';
+
+      beforeEach(() => {
+        $row = $wrapper.find('.js-row:last-child');
+        $row.find('.ci-variable-masked-item .js-project-feature-toggle').click();
+      });
+
+      it('has a regex provided via a data attribute', () => {
+        expect($wrapper.attr('data-maskable-regex')).toBe('^[a-zA-Z0-9_+=/-]{8,}$');
+      });
+
+      it('allows values that are 8 characters long', done => {
+        $row.find('.js-ci-variable-input-value').val('looooong');
+
+        getSetTimeoutPromise()
+          .then(() => {
+            expect($wrapper.find(maskingErrorElement)).toHaveClass('hide');
+          })
+          .then(done)
+          .catch(done.fail);
+      });
+
+      it('rejects values that are shorter than 8 characters', done => {
+        $row.find('.js-ci-variable-input-value').val('short');
+
+        getSetTimeoutPromise()
+          .then(() => {
+            expect($wrapper.find(maskingErrorElement)).toBeVisible();
+          })
+          .then(done)
+          .catch(done.fail);
+      });
+
+      it('allows values with base 64 characters', done => {
+        $row.find('.js-ci-variable-input-value').val('abcABC123_+=/-');
+
+        getSetTimeoutPromise()
+          .then(() => {
+            expect($wrapper.find(maskingErrorElement)).toHaveClass('hide');
+          })
+          .then(done)
+          .catch(done.fail);
+      });
+
+      it('rejects values with other special characters', done => {
+        $row.find('.js-ci-variable-input-value').val('1234567$');
+
+        getSetTimeoutPromise()
+          .then(() => {
+            expect($wrapper.find(maskingErrorElement)).toBeVisible();
+          })
+          .then(done)
+          .catch(done.fail);
+      });
     });
   });
 
   describe('toggleEnableRow method', () => {
     beforeEach(() => {
-      loadFixtures('pipeline_schedules/edit_with_variables.html.raw');
+      loadFixtures('pipeline_schedules/edit_with_variables.html');
       $wrapper = $('.js-ci-variable-list-section');
 
       variableList = new VariableList({
@@ -198,7 +262,7 @@ describe('VariableList', () => {
 
   describe('hideValues', () => {
     beforeEach(() => {
-      loadFixtures('projects/ci_cd_settings.html.raw');
+      loadFixtures('projects/ci_cd_settings.html');
       $wrapper = $('.js-ci-variable-list-section');
 
       variableList = new VariableList({

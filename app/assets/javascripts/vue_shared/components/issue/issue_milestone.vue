@@ -17,15 +17,17 @@ export default {
       required: true,
     },
   },
-  data() {
-    return {
-      milestoneDue: this.milestone.due_date ? parsePikadayDate(this.milestone.due_date) : null,
-      milestoneStart: this.milestone.start_date
-        ? parsePikadayDate(this.milestone.start_date)
-        : null,
-    };
-  },
   computed: {
+    milestoneDue() {
+      const dueDate = this.milestone.due_date || this.milestone.dueDate;
+
+      return dueDate ? parsePikadayDate(dueDate) : null;
+    },
+    milestoneStart() {
+      const startDate = this.milestone.start_date || this.milestone.startDate;
+
+      return startDate ? parsePikadayDate(startDate) : null;
+    },
     isMilestoneStarted() {
       if (!this.milestoneStart) {
         return false;
@@ -72,7 +74,7 @@ export default {
 <template>
   <div ref="milestoneDetails" class="issue-milestone-details">
     <icon :size="16" class="inline icon" name="clock" />
-    <span class="milestone-title">{{ milestone.title }}</span>
+    <span class="milestone-title d-inline-block">{{ milestone.title }}</span>
     <gl-tooltip :target="() => $refs.milestoneDetails" placement="bottom" class="js-item-milestone">
       <span class="bold">{{ __('Milestone') }}</span> <br />
       <span>{{ milestone.title }}</span> <br />

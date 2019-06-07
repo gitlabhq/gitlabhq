@@ -34,7 +34,7 @@ module Gitlab
                              message: 'should be on_success, on_failure, ' \
                                       'always, manual or delayed' }
               validates :dependencies, array_of_strings: true
-              validates :extends, type: String
+              validates :extends, array_of_strings_or_string: true
             end
 
             validates :start_in, duration: { limit: '1 day' }, if: :delayed?

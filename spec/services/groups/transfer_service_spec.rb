@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe Groups::TransferService, :postgresql do
@@ -12,11 +14,11 @@ describe Groups::TransferService, :postgresql do
         allow(Group).to receive(:supports_nested_objects?).and_return(false)
       end
 
-      it 'should return false' do
+      it 'returns false' do
         expect(transfer_service.execute(new_parent_group)).to be_falsy
       end
 
-      it 'should add an error on group' do
+      it 'adds an error on group' do
         transfer_service.execute(new_parent_group)
         expect(transfer_service.error).to eq('Transfer failed: Database is not supported.')
       end
@@ -30,11 +32,11 @@ describe Groups::TransferService, :postgresql do
         create(:group_member, :owner, group: new_parent_group, user: user)
       end
 
-      it 'should return false' do
+      it 'returns false' do
         expect(transfer_service.execute(new_parent_group)).to be_falsy
       end
 
-      it 'should add an error on group' do
+      it 'adds an error on group' do
         transfer_service.execute(new_parent_group)
         expect(transfer_service.error).to eq('Transfer failed: namespace directory cannot be moved')
       end
@@ -50,7 +52,7 @@ describe Groups::TransferService, :postgresql do
       context 'when the group is already a root group' do
         let(:group) { create(:group, :public) }
 
-        it 'should add an error on group' do
+        it 'adds an error on group' do
           transfer_service.execute(nil)
           expect(transfer_service.error).to eq('Transfer failed: Group is already a root group.')
         end
@@ -59,11 +61,11 @@ describe Groups::TransferService, :postgresql do
       context 'when the user does not have the right policies' do
         let!(:group_member) { create(:group_member, :guest, group: group, user: user) }
 
-        it "should return false" do
+        it "returns false" do
           expect(transfer_service.execute(nil)).to be_falsy
         end
 
-        it "should add an error on group" do
+        it "adds an error on group" do
           transfer_service.execute(new_parent_group)
           expect(transfer_service.error).to eq("Transfer failed: You don't have enough permissions.")
         end
@@ -76,11 +78,11 @@ describe Groups::TransferService, :postgresql do
           create(:group, path: 'not-unique')
         end
 
-        it 'should return false' do
+        it 'returns false' do
           expect(transfer_service.execute(nil)).to be_falsy
         end
 
-        it 'should add an error on group' do
+        it 'adds an error on group' do
           transfer_service.execute(nil)
           expect(transfer_service.error).to eq('Transfer failed: The parent group already has a subgroup with the same path.')
         end
@@ -96,17 +98,17 @@ describe Groups::TransferService, :postgresql do
           group.reload
         end
 
-        it 'should update group attributes' do
+        it 'updates group attributes' do
           expect(group.parent).to be_nil
         end
 
-        it 'should update group children path' do
+        it 'updates group children path' do
           group.children.each do |subgroup|
             expect(subgroup.full_path).to eq("#{group.path}/#{subgroup.path}")
           end
         end
 
-        it 'should update group projects path' do
+        it 'updates group projects path' do
           group.projects.each do |project|
             expect(project.full_path).to eq("#{group.path}/#{project.path}")
           end
@@ -122,11 +124,11 @@ describe Groups::TransferService, :postgresql do
       context 'when the new parent group is the same as the previous parent group' do
         let(:group) { create(:group, :public, :nested, parent: new_parent_group) }
 
-        it 'should return false' do
+        it 'returns false' do
           expect(transfer_service.execute(new_parent_group)).to be_falsy
         end
 
-        it 'should add an error on group' do
+        it 'adds an error on group' do
           transfer_service.execute(new_parent_group)
           expect(transfer_service.error).to eq('Transfer failed: Group is already associated to the parent group.')
         end
@@ -135,11 +137,11 @@ describe Groups::TransferService, :postgresql do
       context 'when the user does not have the right policies' do
         let!(:group_member) { create(:group_member, :guest, group: group, user: user) }
 
-        it "should return false" do
+        it "returns false" do
           expect(transfer_service.execute(new_parent_group)).to be_falsy
         end
 
-        it "should add an error on group" do
+        it "adds an error on group" do
           transfer_service.execute(new_parent_group)
           expect(transfer_service.error).to eq("Transfer failed: You don't have enough permissions.")
         end
@@ -152,11 +154,11 @@ describe Groups::TransferService, :postgresql do
           create(:group, path: "not-unique", parent: new_parent_group)
         end
 
-        it 'should return false' do
+        it 'returns false' do
           expect(transfer_service.execute(new_parent_group)).to be_falsy
         end
 
-        it 'should add an error on group' do
+        it 'adds an error on group' do
           transfer_service.execute(new_parent_group)
           expect(transfer_service.error).to eq('Transfer failed: The parent group already has a subgroup with the same path.')
         end
@@ -171,11 +173,11 @@ describe Groups::TransferService, :postgresql do
           group.update_attribute(:path, 'foo')
         end
 
-        it 'should return false' do
+        it 'returns false' do
           expect(transfer_service.execute(new_parent_group)).to be_falsy
         end
 
-        it 'should add an error on group' do
+        it 'adds an error on group' do
           transfer_service.execute(new_parent_group)
           expect(transfer_service.error).to eq('Transfer failed: Validation failed: Group URL has already been taken')
         end
@@ -191,7 +193,7 @@ describe Groups::TransferService, :postgresql do
           let(:new_parent_group) { create(:group, :public) }
           let(:group) { create(:group, :private, :nested) }
 
-          it 'should not update the visibility for the group' do
+          it 'does not update the visibility for the group' do
             group.reload
             expect(group.private?).to be_truthy
             expect(group.visibility_level).not_to eq(new_parent_group.visibility_level)
@@ -202,27 +204,27 @@ describe Groups::TransferService, :postgresql do
           let(:new_parent_group) { create(:group, :private) }
           let(:group) { create(:group, :public, :nested) }
 
-          it 'should update visibility level based on the parent group' do
+          it 'updates visibility level based on the parent group' do
             group.reload
             expect(group.private?).to be_truthy
             expect(group.visibility_level).to eq(new_parent_group.visibility_level)
           end
         end
 
-        it 'should update visibility for the group based on the parent group' do
+        it 'updates visibility for the group based on the parent group' do
           expect(group.visibility_level).to eq(new_parent_group.visibility_level)
         end
 
-        it 'should update parent group to the new parent ' do
+        it 'updates parent group to the new parent' do
           expect(group.parent).to eq(new_parent_group)
         end
 
-        it 'should return the group as children of the new parent' do
+        it 'returns the group as children of the new parent' do
           expect(new_parent_group.children.count).to eq(1)
           expect(new_parent_group.children.first).to eq(group)
         end
 
-        it 'should create a redirect for the group' do
+        it 'creates a redirect for the group' do
           expect(group.redirect_routes.count).to eq(1)
         end
       end
@@ -236,21 +238,21 @@ describe Groups::TransferService, :postgresql do
           transfer_service.execute(new_parent_group)
         end
 
-        it 'should update subgroups path' do
+        it 'updates subgroups path' do
           new_parent_path = new_parent_group.path
           group.children.each do |subgroup|
             expect(subgroup.full_path).to eq("#{new_parent_path}/#{group.path}/#{subgroup.path}")
           end
         end
 
-        it 'should create redirects for the subgroups' do
+        it 'creates redirects for the subgroups' do
           expect(group.redirect_routes.count).to eq(1)
           expect(subgroup1.redirect_routes.count).to eq(1)
           expect(subgroup2.redirect_routes.count).to eq(1)
         end
 
         context 'when the new parent has a higher visibility than the children' do
-          it 'should not update the children visibility' do
+          it 'does not update the children visibility' do
             expect(subgroup1.private?).to be_truthy
             expect(subgroup2.internal?).to be_truthy
           end
@@ -261,7 +263,7 @@ describe Groups::TransferService, :postgresql do
           let!(:subgroup2) { create(:group, :public, parent: group) }
           let(:new_parent_group) { create(:group, :private) }
 
-          it 'should update children visibility to match the new parent' do
+          it 'updates children visibility to match the new parent' do
             group.children.each do |subgroup|
               expect(subgroup.private?).to be_truthy
             end
@@ -279,21 +281,21 @@ describe Groups::TransferService, :postgresql do
           transfer_service.execute(new_parent_group)
         end
 
-        it 'should update projects path' do
+        it 'updates projects path' do
           new_parent_path = new_parent_group.path
           group.projects.each do |project|
             expect(project.full_path).to eq("#{new_parent_path}/#{group.path}/#{project.name}")
           end
         end
 
-        it 'should create permanent redirects for the projects' do
+        it 'creates permanent redirects for the projects' do
           expect(group.redirect_routes.count).to eq(1)
           expect(project1.redirect_routes.count).to eq(1)
           expect(project2.redirect_routes.count).to eq(1)
         end
 
         context 'when the new parent has a higher visibility than the projects' do
-          it 'should not update projects visibility' do
+          it 'does not update projects visibility' do
             expect(project1.private?).to be_truthy
             expect(project2.internal?).to be_truthy
           end
@@ -304,7 +306,7 @@ describe Groups::TransferService, :postgresql do
           let!(:project2) { create(:project, :repository, :public, namespace: group) }
           let(:new_parent_group) { create(:group, :private) }
 
-          it 'should update projects visibility to match the new parent' do
+          it 'updates projects visibility to match the new parent' do
             group.projects.each do |project|
               expect(project.private?).to be_truthy
             end
@@ -324,21 +326,21 @@ describe Groups::TransferService, :postgresql do
           transfer_service.execute(new_parent_group)
         end
 
-        it 'should update subgroups path' do
+        it 'updates subgroups path' do
           new_parent_path = new_parent_group.path
           group.children.each do |subgroup|
             expect(subgroup.full_path).to eq("#{new_parent_path}/#{group.path}/#{subgroup.path}")
           end
         end
 
-        it 'should update projects path' do
+        it 'updates projects path' do
           new_parent_path = new_parent_group.path
           group.projects.each do |project|
             expect(project.full_path).to eq("#{new_parent_path}/#{group.path}/#{project.name}")
           end
         end
 
-        it 'should create redirect for the subgroups and projects' do
+        it 'creates redirect for the subgroups and projects' do
           expect(group.redirect_routes.count).to eq(1)
           expect(subgroup1.redirect_routes.count).to eq(1)
           expect(subgroup2.redirect_routes.count).to eq(1)
@@ -360,7 +362,7 @@ describe Groups::TransferService, :postgresql do
           transfer_service.execute(new_parent_group)
         end
 
-        it 'should update subgroups path' do
+        it 'updates subgroups path' do
           new_base_path = "#{new_parent_group.path}/#{group.path}"
           group.children.each do |children|
             expect(children.full_path).to eq("#{new_base_path}/#{children.path}")
@@ -372,7 +374,7 @@ describe Groups::TransferService, :postgresql do
           end
         end
 
-        it 'should update projects path' do
+        it 'updates projects path' do
           new_parent_path = "#{new_parent_group.path}/#{group.path}"
           subgroup1.projects.each do |project|
             project_full_path = "#{new_parent_path}/#{project.namespace.path}/#{project.name}"
@@ -380,7 +382,7 @@ describe Groups::TransferService, :postgresql do
           end
         end
 
-        it 'should create redirect for the subgroups and projects' do
+        it 'creates redirect for the subgroups and projects' do
           expect(group.redirect_routes.count).to eq(1)
           expect(project1.redirect_routes.count).to eq(1)
           expect(subgroup1.redirect_routes.count).to eq(1)
@@ -402,11 +404,40 @@ describe Groups::TransferService, :postgresql do
           transfer_service.execute(new_parent_group)
         end
 
-        it 'should restore group and projects visibility' do
+        it 'restores group and projects visibility' do
           subgroup1.reload
           project1.reload
           expect(subgroup1.public?).to be_truthy
           expect(project1.public?).to be_truthy
+        end
+      end
+    end
+
+    context 'when transferring a subgroup into root group' do
+      let(:group) { create(:group, :public, :nested) }
+      let(:subgroup) { create(:group, :public, parent: group) }
+      let(:transfer_service) { described_class.new(subgroup, user) }
+
+      it 'ensures there is still an owner for the transferred group' do
+        expect(subgroup.owners).to be_empty
+
+        transfer_service.execute(nil)
+        subgroup.reload
+
+        expect(subgroup.owners).to match_array(user)
+      end
+
+      context 'when group has explicit owner' do
+        let(:another_owner) { create(:user) }
+        let!(:another_member) { create(:group_member, :owner, group: subgroup, user: another_owner) }
+
+        it 'does not add additional owner' do
+          expect(subgroup.owners).to match_array(another_owner)
+
+          transfer_service.execute(nil)
+          subgroup.reload
+
+          expect(subgroup.owners).to match_array(another_owner)
         end
       end
     end

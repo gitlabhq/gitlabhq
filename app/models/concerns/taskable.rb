@@ -19,7 +19,7 @@ module Taskable
     \s+                       # whitespace prefix has to be always presented for a list item
     (\[\s\]|\[[xX]\])         # checkbox
     (\s.+)                    # followed by whitespace and some text.
-  }x
+  }x.freeze
 
   def self.get_tasks(content)
     content.to_s.scan(ITEM_PATTERN).map do |checkbox, label|
@@ -74,5 +74,12 @@ module Taskable
   # task list items -- for small screens
   def task_status_short
     task_status(short: true)
+  end
+
+  def task_completion_status
+    @task_completion_status ||= {
+        count: tasks.summary.item_count,
+        completed_count: tasks.summary.complete_count
+    }
   end
 end

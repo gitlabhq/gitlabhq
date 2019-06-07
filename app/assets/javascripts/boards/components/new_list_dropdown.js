@@ -2,13 +2,16 @@
 
 import $ from 'jquery';
 import axios from '~/lib/utils/axios_utils';
-import _ from 'underscore';
 import CreateLabelDropdown from '../../create_label';
 import boardsStore from '../stores/boards_store';
 
 $(document)
   .off('created.label')
-  .on('created.label', (e, label) => {
+  .on('created.label', (e, label, addNewList) => {
+    if (!addNewList) {
+      return;
+    }
+
     boardsStore.new({
       title: label.title,
       position: boardsStore.state.lists.length - 2,
@@ -74,8 +77,6 @@ export default function initNewListDropdown() {
               color: label.color,
             },
           });
-
-          boardsStore.state.lists = _.sortBy(boardsStore.state.lists, 'position');
         }
       },
     });

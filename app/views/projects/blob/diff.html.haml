@@ -15,14 +15,14 @@
           %a{ href: "#", data: { linenumber: line_number_old }, disabled: true }
         %td.new_line.diff-line-num{ data: { linenumber: line_number_new } }
           %a{ href: "#", data: { linenumber: line_number_new }, disabled: true }
-        %td.line_content.noteable_line{ class: line_class }= line
+        %td.line_content{ class: line_class }= line
       - when :parallel
         %td.old_line.diff-line-num{ data: { linenumber: line_number_old } }
           %a{ href: "##{line_number_old}", data: { linenumber: line_number_old }, disabled: true }
-        %td.line_content.noteable_line.left-side{ class: line_class }= line
+        %td.line_content.left-side{ class: line_class }= line
         %td.new_line.diff-line-num{ data: { linenumber: line_number_new } }
           %a{ href: "##{line_number_new}", data: { linenumber: line_number_new }, disabled: true }
-        %td.line_content.noteable_line.right-side{ class: line_class }= line
+        %td.line_content.right-side{ class: line_class }= line
 
   - if @form.unfold? && @form.bottom? && @form.to < @blob.lines.size
     %tr.line_holder{ id: @form.to, class: line_class }

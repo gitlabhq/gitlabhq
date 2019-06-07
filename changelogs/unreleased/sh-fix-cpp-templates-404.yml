@@ -1,5 +1,0 @@
----
-title: Fix 404s when C++ .gitignore template selected
-merge_request: 25416
-author:
-type: fixed

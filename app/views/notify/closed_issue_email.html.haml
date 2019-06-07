@@ -1,2 +1,2 @@
 %p
-  Issue was closed by #{sanitize_name(@updated_by.name)}
+  = _("Issue was closed by %{name} %{reason}").html_safe % { name: sanitize_name(@updated_by.name), reason: closure_reason_text(@closed_via, format: formats.first) }

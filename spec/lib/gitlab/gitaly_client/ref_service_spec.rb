@@ -89,6 +89,16 @@ describe Gitlab::GitalyClient::RefService do
     end
   end
 
+  describe '#list_new_blobs' do
+    it 'raises DeadlineExceeded when timeout is too small' do
+      newrev = '54fcc214b94e78d7a41a9a8fe6d87a5e59500e51'
+
+      expect do
+        client.list_new_blobs(newrev, dynamic_timeout: 0.001)
+      end.to raise_error(GRPC::DeadlineExceeded)
+    end
+  end
+
   describe '#local_branches' do
     it 'sends a find_local_branches message' do
       expect_any_instance_of(Gitaly::RefService::Stub)
@@ -153,6 +163,17 @@ describe Gitlab::GitalyClient::RefService do
         .and_return(double('delete_refs_response', git_error: ""))
 
       client.delete_refs(except_with_prefixes: prefixes)
+    end
+  end
+
+  describe '#pack_refs' do
+    it 'sends a pack_refs message' do
+      expect_any_instance_of(Gitaly::RefService::Stub)
+        .to receive(:pack_refs)
+        .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
+        .and_return(double(:pack_refs_response))
+
+      client.pack_refs
     end
   end
 end

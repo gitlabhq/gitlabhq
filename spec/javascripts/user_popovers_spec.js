@@ -2,7 +2,7 @@ import initUserPopovers from '~/user_popovers';
 import UsersCache from '~/lib/utils/users_cache';
 
 describe('User Popovers', () => {
-  const fixtureTemplate = 'merge_requests/diff_comment.html.raw';
+  const fixtureTemplate = 'merge_requests/diff_comment.html';
   preloadFixtures(fixtureTemplate);
 
   const selector = '.js-user-link';

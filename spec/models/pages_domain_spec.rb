@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe PagesDomain do
@@ -76,6 +78,17 @@ describe PagesDomain do
           expect(pages_domain.errors.keys).to eq errors_on
         end
       end
+    end
+  end
+
+  describe 'when certificate is specified' do
+    let(:domain) { build(:pages_domain) }
+
+    it 'saves validity time' do
+      domain.save
+
+      expect(domain.certificate_valid_not_before).to be_like_time(Time.parse("2016-02-12 14:32:00 UTC"))
+      expect(domain.certificate_valid_not_after).to be_like_time(Time.parse("2020-04-12 14:32:00 UTC"))
     end
   end
 
@@ -339,6 +352,34 @@ describe PagesDomain do
 
           domain.update!(key: nil, certificate: nil)
         end
+      end
+    end
+  end
+
+  describe '.for_removal' do
+    subject { described_class.for_removal }
+
+    context 'when domain is not schedule for removal' do
+      let!(:domain) { create :pages_domain }
+
+      it 'does not return domain' do
+        is_expected.to be_empty
+      end
+    end
+
+    context 'when domain is scheduled for removal yesterday' do
+      let!(:domain) { create :pages_domain, remove_at: 1.day.ago }
+
+      it 'returns domain' do
+        is_expected.to eq([domain])
+      end
+    end
+
+    context 'when domain is scheduled for removal tomorrow' do
+      let!(:domain) { create :pages_domain, remove_at: 1.day.from_now }
+
+      it 'does not return domain' do
+        is_expected.to be_empty
       end
     end
   end

@@ -3,6 +3,7 @@ FactoryBot.define do
     user
     name 'test-cluster'
     cluster_type :project_type
+    managed true
 
     trait :instance do
       cluster_type { Clusters::Cluster.cluster_types[:instance_type] }
@@ -12,7 +13,7 @@ FactoryBot.define do
       cluster_type { Clusters::Cluster.cluster_types[:project_type] }
 
       before(:create) do |cluster, evaluator|
-        cluster.projects << create(:project, :repository)
+        cluster.projects << create(:project, :repository) unless cluster.projects.present?
       end
     end
 
@@ -20,7 +21,7 @@ FactoryBot.define do
       cluster_type { Clusters::Cluster.cluster_types[:group_type] }
 
       before(:create) do |cluster, evalutor|
-        cluster.groups << create(:group)
+        cluster.groups << create(:group) unless cluster.groups.present?
       end
     end
 
@@ -62,6 +63,10 @@ FactoryBot.define do
 
     trait :with_domain do
       domain 'example.com'
+    end
+
+    trait :not_managed do
+      managed false
     end
   end
 end

@@ -1,6 +1,10 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Issue do
+  include ExternalAuthorizationServiceHelpers
+
   describe "Associations" do
     it { is_expected.to belong_to(:milestone) }
     it { is_expected.to have_many(:assignees) }
@@ -51,6 +55,29 @@ describe Issue do
     end
   end
 
+  describe 'locking' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:lock_version) do
+      [
+        [0],
+        ["0"]
+      ]
+    end
+
+    with_them do
+      it 'works when an issue has a NULL lock_version' do
+        issue = create(:issue)
+
+        described_class.where(id: issue.id).update_all('lock_version = NULL')
+
+        issue.update!(lock_version: lock_version, title: 'locking test')
+
+        expect(issue.reload.title).to eq('locking test')
+      end
+    end
+  end
+
   describe '#order_by_position_and_priority' do
     let(:project) { create :project }
     let(:p1) { create(:label, title: 'P1', project: project, priority: 1) }
@@ -63,6 +90,21 @@ describe Issue do
     it 'returns ordered list' do
       expect(project.issues.order_by_position_and_priority)
         .to match [issue3, issue4, issue1, issue2]
+    end
+  end
+
+  describe '#sort' do
+    let(:project) { create(:project) }
+
+    context "by relative_position" do
+      let!(:issue)  { create(:issue, project: project) }
+      let!(:issue2) { create(:issue, project: project, relative_position: 2) }
+      let!(:issue3) { create(:issue, project: project, relative_position: 1) }
+
+      it "sorts asc with nulls at the end" do
+        issues = project.issues.sort_by_attribute('relative_position')
+        expect(issues).to eq([issue3, issue2, issue])
+      end
     end
   end
 
@@ -776,5 +818,48 @@ describe Issue do
 
   it_behaves_like 'throttled touch' do
     subject { create(:issue, updated_at: 1.hour.ago) }
+  end
+
+  context 'when an external authentication service' do
+    before do
+      enable_external_authorization_service_check
+    end
+
+    describe '#visible_to_user?' do
+      it 'is `false` when an external authorization service is enabled' do
+        issue = build(:issue, project: build(:project, :public))
+
+        expect(issue).not_to be_visible_to_user
+      end
+
+      it 'checks the external service to determine if an issue is readable by a user' do
+        project = build(:project, :public,
+                        external_authorization_classification_label: 'a-label')
+        issue = build(:issue, project: project)
+        user = build(:user)
+
+        expect(::Gitlab::ExternalAuthorization).to receive(:access_allowed?).with(user, 'a-label') { false }
+        expect(issue.visible_to_user?(user)).to be_falsy
+      end
+
+      it 'does not check the external service if a user does not have access to the project' do
+        project = build(:project, :private,
+                        external_authorization_classification_label: 'a-label')
+        issue = build(:issue, project: project)
+        user = build(:user)
+
+        expect(::Gitlab::ExternalAuthorization).not_to receive(:access_allowed?)
+        expect(issue.visible_to_user?(user)).to be_falsy
+      end
+
+      it 'does not check the external webservice for admins' do
+        issue = build(:issue)
+        user = build(:admin)
+
+        expect(::Gitlab::ExternalAuthorization).not_to receive(:access_allowed?)
+
+        issue.visible_to_user?(user)
+      end
+    end
   end
 end

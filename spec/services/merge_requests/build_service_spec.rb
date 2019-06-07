@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe MergeRequests::BuildService do
@@ -227,6 +229,15 @@ describe MergeRequests::BuildService do
               expect(merge_request.milestone).to eq(milestone2)
               expect(merge_request.labels).to match_array([label2])
             end
+          end
+        end
+
+        context 'when a milestone is from another project' do
+          let(:milestone) { create(:milestone, project: create(:project)) }
+          let(:milestone_id) { milestone.id }
+
+          it 'sets milestone to nil' do
+            expect(merge_request.milestone).to be_nil
           end
         end
       end

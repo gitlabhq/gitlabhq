@@ -1,7 +1,6 @@
 <script>
 import { mapActions } from 'vuex';
 import icon from '~/vue_shared/components/icon.vue';
-import newModal from './modal.vue';
 import upload from './upload.vue';
 import ItemButton from './button.vue';
 import { modalTypes } from '../../constants';
@@ -9,7 +8,6 @@ import { modalTypes } from '../../constants';
 export default {
   components: {
     icon,
-    newModal,
     upload,
     ItemButton,
   },
@@ -23,38 +21,29 @@ export default {
       required: false,
       default: '',
     },
-    mouseOver: {
+    isOpen: {
       type: Boolean,
-      required: true,
+      required: false,
+      default: false,
     },
   },
-  data() {
-    return {
-      dropdownOpen: false,
-    };
-  },
   watch: {
-    dropdownOpen() {
+    isOpen() {
       this.$nextTick(() => {
         this.$refs.dropdownMenu.scrollIntoView({
           block: 'nearest',
         });
       });
     },
-    mouseOver() {
-      if (!this.mouseOver) {
-        this.dropdownOpen = false;
-      }
-    },
   },
   methods: {
     ...mapActions(['createTempEntry', 'openNewEntryModal', 'deleteEntry']),
     createNewItem(type) {
       this.openNewEntryModal({ type, path: this.path });
-      this.dropdownOpen = false;
+      this.$emit('toggle', false);
     },
     openDropdown() {
-      this.dropdownOpen = !this.dropdownOpen;
+      this.$emit('toggle', !this.isOpen);
     },
   },
   modalTypes,
@@ -65,7 +54,7 @@ export default {
   <div class="ide-new-btn">
     <div
       :class="{
-        show: dropdownOpen,
+        show: isOpen,
       }"
       class="dropdown d-flex"
     >

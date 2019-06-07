@@ -62,11 +62,32 @@ describe ErrorTracking::ProjectErrorTrackingSetting do
     end
 
     context 'URL path' do
-      it 'fails validation with wrong path' do
+      it 'fails validation without api/0/projects' do
         subject.api_url = 'http://gitlab.com/project1/something'
 
         expect(subject).not_to be_valid
-        expect(subject.errors.messages[:api_url]).to include('path needs to start with /api/0/projects')
+        expect(subject.errors.messages[:api_url]).to include('is invalid')
+      end
+
+      it 'fails validation without org and project slugs' do
+        subject.api_url = 'http://gitlab.com/api/0/projects/'
+
+        expect(subject).not_to be_valid
+        expect(subject.errors.messages[:project]).to include('is a required field')
+      end
+
+      it 'fails validation when api_url has extra parts' do
+        subject.api_url = 'http://gitlab.com/api/0/projects/org/proj/something'
+
+        expect(subject).not_to be_valid
+        expect(subject.errors.messages[:api_url]).to include("is invalid")
+      end
+
+      it 'fails validation when api_url has less parts' do
+        subject.api_url = 'http://gitlab.com/api/0/projects/org'
+
+        expect(subject).not_to be_valid
+        expect(subject.errors.messages[:api_url]).to include("is invalid")
       end
 
       it 'passes validation with correct path' do
@@ -146,7 +167,7 @@ describe ErrorTracking::ProjectErrorTrackingSetting do
       end
     end
 
-    context 'when sentry client raises exception' do
+    context 'when sentry client raises Sentry::Client::Error' do
       let(:sentry_client) { spy(:sentry_client) }
 
       before do
@@ -158,7 +179,31 @@ describe ErrorTracking::ProjectErrorTrackingSetting do
       end
 
       it 'returns error' do
-        expect(result).to eq(error: 'error message')
+        expect(result).to eq(
+          error: 'error message',
+          error_type: ErrorTracking::ProjectErrorTrackingSetting::SENTRY_API_ERROR_TYPE_NON_20X_RESPONSE
+        )
+        expect(subject).to have_received(:sentry_client)
+        expect(sentry_client).to have_received(:list_issues)
+      end
+    end
+
+    context 'when sentry client raises Sentry::Client::MissingKeysError' do
+      let(:sentry_client) { spy(:sentry_client) }
+
+      before do
+        synchronous_reactive_cache(subject)
+
+        allow(subject).to receive(:sentry_client).and_return(sentry_client)
+        allow(sentry_client).to receive(:list_issues).with(opts)
+          .and_raise(Sentry::Client::MissingKeysError, 'Sentry API response is missing keys. key not found: "id"')
+      end
+
+      it 'returns error' do
+        expect(result).to eq(
+          error: 'Sentry API response is missing keys. key not found: "id"',
+          error_type: ErrorTracking::ProjectErrorTrackingSetting::SENTRY_API_ERROR_TYPE_MISSING_KEYS
+        )
         expect(subject).to have_received(:sentry_client)
         expect(sentry_client).to have_received(:list_issues)
       end
@@ -274,6 +319,16 @@ describe ErrorTracking::ProjectErrorTrackingSetting do
       )
 
       expect(api_url).to eq(':::')
+    end
+
+    it 'returns nil when api_host is blank' do
+      api_url = described_class.build_api_url_from(
+        api_host: '',
+        organization_slug: 'org-slug',
+        project_slug: 'proj-slug'
+      )
+
+      expect(api_url).to be_nil
     end
   end
 

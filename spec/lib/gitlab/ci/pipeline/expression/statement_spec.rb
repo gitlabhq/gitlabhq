@@ -1,4 +1,6 @@
-require 'fast_spec_helper'
+# TODO switch this back after the "ci_variables_complex_expressions" feature flag is removed
+# require 'fast_spec_helper'
+require 'spec_helper'
 require 'rspec-parameterized'
 
 describe Gitlab::Ci::Pipeline::Expression::Statement do
@@ -7,8 +9,12 @@ describe Gitlab::Ci::Pipeline::Expression::Statement do
   end
 
   let(:variables) do
-    { 'PRESENT_VARIABLE' => 'my variable',
-      EMPTY_VARIABLE: '' }
+    {
+      'PRESENT_VARIABLE'   => 'my variable',
+      'PATH_VARIABLE'      => 'a/path/variable/value',
+      'FULL_PATH_VARIABLE' => '/a/full/path/variable/value',
+      'EMPTY_VARIABLE'     =>  ''
+    }
   end
 
   describe '.new' do
@@ -21,93 +27,158 @@ describe Gitlab::Ci::Pipeline::Expression::Statement do
     end
   end
 
-  describe '#parse_tree' do
-    context 'when expression is empty' do
-      let(:text) { '' }
-
-      it 'raises an error' do
-        expect { subject.parse_tree }
-          .to raise_error described_class::StatementError
-      end
-    end
-
-    context 'when expression grammar is incorrect' do
-      table = [
-        '$VAR "text"',   # missing operator
-        '== "123"',      # invalid left side
-        '"some string"', # only string provided
-        '$VAR ==',       # invalid right side
-        'null',          # missing lexemes
-        ''               # empty statement
-      ]
-
-      table.each do |syntax|
-        context "when expression grammar is #{syntax.inspect}" do
-          let(:text) { syntax }
-
-          it 'raises a statement error exception' do
-            expect { subject.parse_tree }
-              .to raise_error described_class::StatementError
-          end
-
-          it 'is an invalid statement' do
-            expect(subject).not_to be_valid
-          end
-        end
-      end
-    end
-
-    context 'when expression grammar is correct' do
-      context 'when using an operator' do
-        let(:text) { '$VAR == "value"' }
-
-        it 'returns a reverse descent parse tree' do
-          expect(subject.parse_tree)
-            .to be_a Gitlab::Ci::Pipeline::Expression::Lexeme::Equals
-        end
-
-        it 'is a valid statement' do
-          expect(subject).to be_valid
-        end
-      end
-
-      context 'when using a single token' do
-        let(:text) { '$PRESENT_VARIABLE' }
-
-        it 'returns a single token instance' do
-          expect(subject.parse_tree)
-            .to be_a Gitlab::Ci::Pipeline::Expression::Lexeme::Variable
-        end
-      end
-    end
-  end
-
   describe '#evaluate' do
     using RSpec::Parameterized::TableSyntax
 
     where(:expression, :value) do
-      '$PRESENT_VARIABLE == "my variable"' | true
-      '"my variable" == $PRESENT_VARIABLE' | true
-      '$PRESENT_VARIABLE == null'          | false
-      '$EMPTY_VARIABLE == null'            | false
-      '"" == $EMPTY_VARIABLE'              | true
-      '$EMPTY_VARIABLE'                    | ''
-      '$UNDEFINED_VARIABLE == null'        | true
-      'null == $UNDEFINED_VARIABLE'        | true
-      '$PRESENT_VARIABLE'                  | 'my variable'
-      '$UNDEFINED_VARIABLE'                | nil
-      "$PRESENT_VARIABLE =~ /var.*e$/"     | true
-      "$PRESENT_VARIABLE =~ /^var.*/"      | false
-      "$EMPTY_VARIABLE =~ /var.*/"         | false
-      "$UNDEFINED_VARIABLE =~ /var.*/"     | false
-      "$PRESENT_VARIABLE =~ /VAR.*/i"      | true
+      '$PRESENT_VARIABLE == "my variable"'                          | true
+      '"my variable" == $PRESENT_VARIABLE'                          | true
+      '$PRESENT_VARIABLE == null'                                   | false
+      '$EMPTY_VARIABLE == null'                                     | false
+      '"" == $EMPTY_VARIABLE'                                       | true
+      '$EMPTY_VARIABLE'                                             | ''
+      '$UNDEFINED_VARIABLE == null'                                 | true
+      'null == $UNDEFINED_VARIABLE'                                 | true
+      '$PRESENT_VARIABLE'                                           | 'my variable'
+      '$UNDEFINED_VARIABLE'                                         | nil
+      "$PRESENT_VARIABLE =~ /var.*e$/"                              | 3
+      '$PRESENT_VARIABLE =~ /va\r.*e$/'                             | nil
+      '$PRESENT_VARIABLE =~ /va\/r.*e$/'                            | nil
+      "$PRESENT_VARIABLE =~ /var.*e$/"                              | 3
+      "$PRESENT_VARIABLE =~ /^var.*/"                               | nil
+      "$EMPTY_VARIABLE =~ /var.*/"                                  | nil
+      "$UNDEFINED_VARIABLE =~ /var.*/"                              | nil
+      "$PRESENT_VARIABLE =~ /VAR.*/i"                               | 3
+      '$PATH_VARIABLE =~ /path\/variable/'                          | 2
+      '$FULL_PATH_VARIABLE =~ /^\/a\/full\/path\/variable\/value$/' | 0
+      '$FULL_PATH_VARIABLE =~ /\\/path\\/variable\\/value$/'        | 7
+      '$PRESENT_VARIABLE != "my variable"'                          | false
+      '"my variable" != $PRESENT_VARIABLE'                          | false
+      '$PRESENT_VARIABLE != null'                                   | true
+      '$EMPTY_VARIABLE != null'                                     | true
+      '"" != $EMPTY_VARIABLE'                                       | false
+      '$UNDEFINED_VARIABLE != null'                                 | false
+      'null != $UNDEFINED_VARIABLE'                                 | false
+      "$PRESENT_VARIABLE !~ /var.*e$/"                              | false
+      "$PRESENT_VARIABLE !~ /^var.*/"                               | true
+      '$PRESENT_VARIABLE !~ /^v\ar.*/'                              | true
+      '$PRESENT_VARIABLE !~ /^v\/ar.*/'                             | true
+      "$EMPTY_VARIABLE !~ /var.*/"                                  | true
+      "$UNDEFINED_VARIABLE !~ /var.*/"                              | true
+      "$PRESENT_VARIABLE !~ /VAR.*/i"                               | false
+
+      '$PRESENT_VARIABLE && "string"'          | 'string'
+      '$PRESENT_VARIABLE && $PRESENT_VARIABLE' | 'my variable'
+      '$PRESENT_VARIABLE && $EMPTY_VARIABLE'   | ''
+      '$PRESENT_VARIABLE && null'              | nil
+      '"string" && $PRESENT_VARIABLE'          | 'my variable'
+      '$EMPTY_VARIABLE && $PRESENT_VARIABLE'   | 'my variable'
+      'null && $PRESENT_VARIABLE'              | nil
+      '$EMPTY_VARIABLE && "string"'            | 'string'
+      '$EMPTY_VARIABLE && $EMPTY_VARIABLE'     | ''
+      '"string" && $EMPTY_VARIABLE'            | ''
+      '"string" && null'                       | nil
+      'null && "string"'                       | nil
+      '"string" && "string"'                   | 'string'
+      'null && null'                           | nil
+
+      '$PRESENT_VARIABLE =~ /my var/ && $EMPTY_VARIABLE =~ /nope/' | nil
+      '$EMPTY_VARIABLE == "" && $PRESENT_VARIABLE'                 | 'my variable'
+      '$EMPTY_VARIABLE == "" && $PRESENT_VARIABLE != "nope"'       | true
+      '$PRESENT_VARIABLE && $EMPTY_VARIABLE'                       | ''
+      '$PRESENT_VARIABLE && $UNDEFINED_VARIABLE'                   | nil
+      '$UNDEFINED_VARIABLE && $EMPTY_VARIABLE'                     | nil
+      '$UNDEFINED_VARIABLE && $PRESENT_VARIABLE'                   | nil
+
+      '$FULL_PATH_VARIABLE =~ /^\/a\/full\/path\/variable\/value$/ && $PATH_VARIABLE =~ /path\/variable/'      | 2
+      '$FULL_PATH_VARIABLE =~ /^\/a\/bad\/path\/variable\/value$/ && $PATH_VARIABLE =~ /path\/variable/'       | nil
+      '$FULL_PATH_VARIABLE =~ /^\/a\/full\/path\/variable\/value$/ && $PATH_VARIABLE =~ /bad\/path\/variable/' | nil
+      '$FULL_PATH_VARIABLE =~ /^\/a\/bad\/path\/variable\/value$/ && $PATH_VARIABLE =~ /bad\/path\/variable/'  | nil
+
+      '$FULL_PATH_VARIABLE =~ /^\/a\/full\/path\/variable\/value$/ || $PATH_VARIABLE =~ /path\/variable/'      | 0
+      '$FULL_PATH_VARIABLE =~ /^\/a\/bad\/path\/variable\/value$/ || $PATH_VARIABLE =~ /path\/variable/'       | 2
+      '$FULL_PATH_VARIABLE =~ /^\/a\/full\/path\/variable\/value$/ || $PATH_VARIABLE =~ /bad\/path\/variable/' | 0
+      '$FULL_PATH_VARIABLE =~ /^\/a\/bad\/path\/variable\/value$/ || $PATH_VARIABLE =~ /bad\/path\/variable/'  | nil
+
+      '$PRESENT_VARIABLE =~ /my var/ || $EMPTY_VARIABLE =~ /nope/' | 0
+      '$EMPTY_VARIABLE == "" || $PRESENT_VARIABLE'                 | true
+      '$PRESENT_VARIABLE != "nope" || $EMPTY_VARIABLE == ""'       | true
+
+      '$PRESENT_VARIABLE && null || $EMPTY_VARIABLE == ""'         | true
+      '$PRESENT_VARIABLE || $UNDEFINED_VARIABLE'                   | 'my variable'
+      '$UNDEFINED_VARIABLE || $PRESENT_VARIABLE'                   | 'my variable'
+      '$UNDEFINED_VARIABLE == null || $PRESENT_VARIABLE'           | true
+      '$PRESENT_VARIABLE || $UNDEFINED_VARIABLE == null'           | 'my variable'
     end
 
     with_them do
       let(:text) { expression }
 
       it "evaluates to `#{params[:value].inspect}`" do
-        expect(subject.evaluate).to eq value
+        expect(subject.evaluate).to eq(value)
+      end
+
+      # This test is used to ensure that our parser
+      # returns exactly the same results as if we
+      # were evaluating using ruby's `eval`
+      context 'when using Ruby eval' do
+        let(:expression_ruby) do
+          expression
+            .gsub(/null/, 'nil')
+            .gsub(/\$([a-zA-Z_][a-zA-Z0-9_]*)/) { "variables['#{Regexp.last_match(1)}']" }
+        end
+
+        it 'behaves exactly the same' do
+          expect(instance_eval(expression_ruby)).to eq(subject.evaluate)
+        end
+      end
+    end
+
+    context 'with the ci_variables_complex_expressions feature flag disabled' do
+      before do
+        stub_feature_flags(ci_variables_complex_expressions: false)
+      end
+
+      where(:expression, :value) do
+        '$PRESENT_VARIABLE == "my variable"'                          | true
+        '"my variable" == $PRESENT_VARIABLE'                          | true
+        '$PRESENT_VARIABLE == null'                                   | false
+        '$EMPTY_VARIABLE == null'                                     | false
+        '"" == $EMPTY_VARIABLE'                                       | true
+        '$EMPTY_VARIABLE'                                             | ''
+        '$UNDEFINED_VARIABLE == null'                                 | true
+        'null == $UNDEFINED_VARIABLE'                                 | true
+        '$PRESENT_VARIABLE'                                           | 'my variable'
+        '$UNDEFINED_VARIABLE'                                         | nil
+        "$PRESENT_VARIABLE =~ /var.*e$/"                              | true
+        "$PRESENT_VARIABLE =~ /^var.*/"                               | false
+        "$EMPTY_VARIABLE =~ /var.*/"                                  | false
+        "$UNDEFINED_VARIABLE =~ /var.*/"                              | false
+        "$PRESENT_VARIABLE =~ /VAR.*/i"                               | true
+        '$PATH_VARIABLE =~ /path/variable/'                           | true
+        '$PATH_VARIABLE =~ /path\/variable/'                          | true
+        '$FULL_PATH_VARIABLE =~ /^/a/full/path/variable/value$/'      | true
+        '$FULL_PATH_VARIABLE =~ /^\/a\/full\/path\/variable\/value$/' | true
+        '$PRESENT_VARIABLE != "my variable"'                          | false
+        '"my variable" != $PRESENT_VARIABLE'                          | false
+        '$PRESENT_VARIABLE != null'                                   | true
+        '$EMPTY_VARIABLE != null'                                     | true
+        '"" != $EMPTY_VARIABLE'                                       | false
+        '$UNDEFINED_VARIABLE != null'                                 | false
+        'null != $UNDEFINED_VARIABLE'                                 | false
+        "$PRESENT_VARIABLE !~ /var.*e$/"                              | false
+        "$PRESENT_VARIABLE !~ /^var.*/"                               | true
+        "$EMPTY_VARIABLE !~ /var.*/"                                  | true
+        "$UNDEFINED_VARIABLE !~ /var.*/"                              | true
+        "$PRESENT_VARIABLE !~ /VAR.*/i"                               | false
+      end
+
+      with_them do
+        let(:text) { expression }
+
+        it "evaluates to `#{params[:value].inspect}`" do
+          expect(subject.evaluate).to eq value
+        end
       end
     end
   end
@@ -125,6 +196,8 @@ describe Gitlab::Ci::Pipeline::Expression::Statement do
       '$INVALID = 1'                       | false
       "$PRESENT_VARIABLE =~ /var.*/"       | true
       "$UNDEFINED_VARIABLE =~ /var.*/"     | false
+      "$PRESENT_VARIABLE !~ /var.*/"       | false
+      "$UNDEFINED_VARIABLE !~ /var.*/"     | true
     end
 
     with_them do

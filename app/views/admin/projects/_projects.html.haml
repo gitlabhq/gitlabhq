@@ -7,17 +7,17 @@
             = link_to 'Edit', edit_project_path(project), id: "edit_#{dom_id(project)}", class: "btn"
             %button.delete-project-button.btn.btn-danger{ data: { toggle: 'modal',
               target: '#delete-project-modal',
-              delete_project_url: project_path(project),
+              delete_project_url: admin_project_path(project),
               project_name: project.name }, type: 'button' }
               = s_('AdminProjects|Delete')
 
           .stats
             %span.badge.badge-pill
-              = storage_counter(project.statistics.storage_size)
+              = storage_counter(project.statistics&.storage_size)
             - if project.archived
               %span.badge.badge-warning archived
           .title
-            = link_to(admin_namespace_project_path(project.namespace, project)) do
+            = link_to(admin_project_path(project)) do
               .dash-project-avatar
                 .avatar-container.rect-avatar.s40
                   = project_icon(project, alt: '', class: 'avatar project-avatar s40', width: 40, height: 40)

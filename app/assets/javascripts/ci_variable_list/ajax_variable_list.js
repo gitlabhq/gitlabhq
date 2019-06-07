@@ -27,15 +27,24 @@ function generateErrorBoxContent(errors) {
 
 // Used for the variable list on CI/CD projects/groups settings page
 export default class AjaxVariableList {
-  constructor({ container, saveButton, errorBox, formField = 'variables', saveEndpoint }) {
+  constructor({
+    container,
+    saveButton,
+    errorBox,
+    formField = 'variables',
+    saveEndpoint,
+    maskableRegex,
+  }) {
     this.container = container;
     this.saveButton = saveButton;
     this.errorBox = errorBox;
     this.saveEndpoint = saveEndpoint;
+    this.maskableRegex = maskableRegex;
 
     this.variableList = new VariableList({
       container: this.container,
       formField,
+      maskableRegex,
     });
 
     this.bindEvents();

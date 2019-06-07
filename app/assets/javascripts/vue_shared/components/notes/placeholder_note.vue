@@ -51,13 +51,13 @@ export default {
       <div class="note-header">
         <div class="note-header-info">
           <a :href="getUserData.path">
-            <span class="d-none d-sm-inline-block">{{ getUserData.name }}</span>
+            <span class="d-none d-sm-inline-block bold">{{ getUserData.name }}</span>
             <span class="note-headline-light">@{{ getUserData.username }}</span>
           </a>
         </div>
       </div>
       <div class="note-body">
-        <div class="note-text">
+        <div class="note-text md">
           <p>{{ note.body }}</p>
         </div>
       </div>

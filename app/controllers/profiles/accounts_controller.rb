@@ -14,10 +14,10 @@ class Profiles::AccountsController < Profiles::ApplicationController
 
     return render_404 unless identity
 
-    if unlink_allowed?(provider)
+    if unlink_provider_allowed?(provider)
       identity.destroy
     else
-      flash[:alert] = "You are not allowed to unlink your primary login account"
+      flash[:alert] = _("You are not allowed to unlink your primary login account")
     end
 
     redirect_to profile_account_path

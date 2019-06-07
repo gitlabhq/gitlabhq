@@ -14,6 +14,7 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
       get :issues, as: :issues_group
       get :merge_requests, as: :merge_requests_group
       get :projects, as: :projects_group
+      get :details, as: :details_group
       get :activity, as: :activity_group
       put :transfer, as: :transfer_group
       # TODO: Remove as part of refactor in https://gitlab.com/gitlab-org/gitlab-ce/issues/49693
@@ -31,6 +32,7 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
     namespace :settings do
       resource :ci_cd, only: [:show], controller: 'ci_cd' do
         put :reset_registration_token
+        patch :update_auto_devops
       end
     end
 
@@ -67,7 +69,7 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
       end
     end
 
-    resources :boards, only: [:index, :show]
+    resources :boards, only: [:index, :show], constraints: { id: /\d+/ }
 
     resources :runners, only: [:index, :edit, :update, :destroy, :show] do
       member do

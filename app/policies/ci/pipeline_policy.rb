@@ -14,6 +14,10 @@ module Ci
       @subject.external?
     end
 
+    condition(:triggerer_of_pipeline) do
+      @subject.triggered_by?(@user)
+    end
+
     # Disallow users without permissions from accessing internal pipelines
     rule { ~can?(:read_build) & ~external_pipeline }.policy do
       prevent :read_pipeline
@@ -27,6 +31,14 @@ module Ci
 
     rule { can?(:owner_access) }.policy do
       enable :destroy_pipeline
+    end
+
+    rule { can?(:admin_pipeline) }.policy do
+      enable :read_pipeline_variable
+    end
+
+    rule { can?(:update_pipeline) & triggerer_of_pipeline }.policy do
+      enable :read_pipeline_variable
     end
 
     def ref_protected?(user, project, tag, ref)

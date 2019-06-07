@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe MergeRequestPresenter do
-  let(:resource) { create :merge_request, source_project: project }
-  let(:project) { create :project }
+  let(:resource) { create(:merge_request, source_project: project) }
+  let(:project) { create(:project) }
   let(:user) { create(:user) }
 
   describe '#ci_status' do
@@ -40,8 +40,8 @@ describe MergeRequestPresenter do
           allow(pipeline).to receive(:has_warnings?) { true }
         end
 
-        it 'returns "success_with_warnings"' do
-          is_expected.to eq('success_with_warnings')
+        it 'returns "success-with-warnings"' do
+          is_expected.to eq('success-with-warnings')
         end
       end
 
@@ -207,25 +207,25 @@ describe MergeRequestPresenter do
     end
   end
 
-  describe '#cancel_merge_when_pipeline_succeeds_path' do
+  describe '#cancel_auto_merge_path' do
     subject do
       described_class.new(resource, current_user: user)
-        .cancel_merge_when_pipeline_succeeds_path
+        .cancel_auto_merge_path
     end
 
     context 'when can cancel mwps' do
       it 'returns path' do
-        allow(resource).to receive(:can_cancel_merge_when_pipeline_succeeds?)
+        allow(resource).to receive(:can_cancel_auto_merge?)
           .with(user)
           .and_return(true)
 
-        is_expected.to eq("/#{resource.project.full_path}/merge_requests/#{resource.iid}/cancel_merge_when_pipeline_succeeds")
+        is_expected.to eq("/#{resource.project.full_path}/merge_requests/#{resource.iid}/cancel_auto_merge")
       end
     end
 
     context 'when cannot cancel mwps' do
       it 'returns nil' do
-        allow(resource).to receive(:can_cancel_merge_when_pipeline_succeeds?)
+        allow(resource).to receive(:can_cancel_auto_merge?)
           .with(user)
           .and_return(false)
 
@@ -345,6 +345,30 @@ describe MergeRequestPresenter do
     end
   end
 
+  describe '#source_branch_commits_path' do
+    subject do
+      described_class.new(resource, current_user: user)
+        .source_branch_commits_path
+    end
+
+    context 'when source branch exists' do
+      it 'returns path' do
+        allow(resource).to receive(:source_branch_exists?) { true }
+
+        is_expected
+          .to eq("/#{resource.source_project.full_path}/commits/#{resource.source_branch}")
+      end
+    end
+
+    context 'when source branch does not exist' do
+      it 'returns nil' do
+        allow(resource).to receive(:source_branch_exists?) { false }
+
+        is_expected.to be_nil
+      end
+    end
+  end
+
   describe '#target_branch_tree_path' do
     subject do
       described_class.new(resource, current_user: user)
@@ -379,7 +403,7 @@ describe MergeRequestPresenter do
         allow(resource).to receive(:source_branch_exists?) { true }
 
         is_expected
-          .to eq("/#{resource.source_project.full_path}/branches/#{resource.source_branch}")
+          .to eq("/#{resource.source_project.full_path}/-/branches/#{resource.source_branch}")
       end
     end
 
@@ -388,6 +412,75 @@ describe MergeRequestPresenter do
         allow(resource).to receive(:source_branch_exists?) { false }
 
         is_expected.to be_nil
+      end
+    end
+  end
+
+  describe '#target_branch_path' do
+    subject do
+      described_class.new(resource, current_user: user).target_branch_path
+    end
+
+    context 'when target branch exists' do
+      it 'returns path' do
+        allow(resource).to receive(:target_branch_exists?) { true }
+
+        is_expected
+          .to eq("/#{resource.source_project.full_path}/-/branches/#{resource.target_branch}")
+      end
+    end
+
+    context 'when target branch does not exist' do
+      it 'returns nil' do
+        allow(resource).to receive(:target_branch_exists?) { false }
+
+        is_expected.to be_nil
+      end
+    end
+  end
+
+  describe '#source_branch_link' do
+    subject { presenter.source_branch_link }
+
+    let(:presenter) { described_class.new(resource, current_user: user) }
+
+    context 'when source branch exists' do
+      it 'returns link' do
+        allow(resource).to receive(:source_branch_exists?) { true }
+
+        is_expected
+          .to eq("<a class=\"ref-name\" href=\"#{presenter.source_branch_commits_path}\">#{presenter.source_branch}</a>")
+      end
+    end
+
+    context 'when source branch does not exist' do
+      it 'returns text' do
+        allow(resource).to receive(:source_branch_exists?) { false }
+
+        is_expected.to eq("<span class=\"ref-name\">#{presenter.source_branch}</span>")
+      end
+    end
+  end
+
+  describe '#target_branch_link' do
+    subject { presenter.target_branch_link }
+
+    let(:presenter) { described_class.new(resource, current_user: user) }
+
+    context 'when target branch exists' do
+      it 'returns link' do
+        allow(resource).to receive(:target_branch_exists?) { true }
+
+        is_expected
+          .to eq("<a class=\"ref-name\" href=\"#{presenter.target_branch_commits_path}\">#{presenter.target_branch}</a>")
+      end
+    end
+
+    context 'when target branch does not exist' do
+      it 'returns text' do
+        allow(resource).to receive(:target_branch_exists?) { false }
+
+        is_expected.to eq("<span class=\"ref-name\">#{presenter.target_branch}</span>")
       end
     end
   end
@@ -473,6 +566,48 @@ describe MergeRequestPresenter do
         it 'returns nil' do
           is_expected.to be_nil
         end
+      end
+    end
+  end
+
+  describe '#can_push_to_source_branch' do
+    before do
+      allow(resource).to receive(:source_branch_exists?) { source_branch_exists }
+
+      allow_any_instance_of(Gitlab::UserAccess::RequestCacheExtension)
+        .to receive(:can_push_to_branch?)
+              .with(resource.source_branch)
+              .and_return(can_push_to_branch)
+    end
+
+    subject do
+      described_class.new(resource, current_user: user).can_push_to_source_branch?
+    end
+
+    context 'when source branch exists AND user can push to source branch' do
+      let(:source_branch_exists) { true }
+      let(:can_push_to_branch) { true }
+
+      it 'returns true' do
+        is_expected.to eq(true)
+      end
+    end
+
+    context 'when source branch does not exists' do
+      let(:source_branch_exists) { false }
+      let(:can_push_to_branch) { true }
+
+      it 'returns false' do
+        is_expected.to eq(false)
+      end
+    end
+
+    context 'when user cannot push to source branch' do
+      let(:source_branch_exists) { true }
+      let(:can_push_to_branch) { false }
+
+      it 'returns false' do
+        is_expected.to eq(false)
       end
     end
   end

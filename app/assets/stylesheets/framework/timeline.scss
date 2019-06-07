@@ -42,8 +42,8 @@
     }
   }
 
-  .avatar {
-    margin-right: 15px;
+  img.avatar {
+    margin-right: $gl-padding;
   }
 
   .controls {
@@ -55,4 +55,5 @@
 .discussion .timeline-entry {
   margin: 0;
   border-right: 0;
+  border-radius: $border-radius-default $border-radius-default 0 0;
 }

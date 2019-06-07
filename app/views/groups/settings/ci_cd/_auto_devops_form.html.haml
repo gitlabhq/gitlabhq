@@ -1,0 +1,15 @@
+= form_for group, url: update_auto_devops_group_settings_ci_cd_path(group), method: :patch do |f|
+  = form_errors(group)
+  %fieldset
+    .form-group
+      .card.auto-devops-card
+        .card-body
+          .form-check
+            = f.check_box :auto_devops_enabled, class: 'form-check-input', checked: group.auto_devops_enabled?
+            = f.label :auto_devops_enabled, class: 'form-check-label' do
+              %strong= s_('GroupSettings|Default to Auto DevOps pipeline for all projects within this group')
+              %span.badge.badge-info#auto-devops-badge= badge_for_auto_devops_scope(group)
+            .form-text.text-muted
+              = s_('GroupSettings|The Auto DevOps pipeline will run if no alternative CI configuration file is found.')
+              = link_to _('More information'), help_page_path('topics/autodevops/index.md'), target: '_blank'
+      = f.submit _('Save changes'), class: 'btn btn-success prepend-top-15'

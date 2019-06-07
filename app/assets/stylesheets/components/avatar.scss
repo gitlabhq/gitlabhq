@@ -1,0 +1,202 @@
+$avatar-sizes: (
+  16: (
+    font-size: 10px,
+    line-height: 16px,
+    border-radius: $border-radius-small
+  ),
+  18: (
+    border-radius: $border-radius-small
+  ),
+  20: (
+    border-radius: $border-radius-small
+  ),
+  24: (
+    font-size: 12px,
+    line-height: 24px,
+    border-radius: $border-radius-default
+  ),
+  26: (
+    font-size: 20px,
+    line-height: 1.33,
+    border-radius: $border-radius-default
+  ),
+  32: (
+    font-size: 14px,
+    line-height: 32px,
+    border-radius: $border-radius-default
+  ),
+  40: (
+    font-size: 16px,
+    line-height: 38px,
+    border-radius: $border-radius-default
+  ),
+  48: (
+    font-size: 20px,
+    line-height: 48px,
+    border-radius: $border-radius-large
+  ),
+  60: (
+    font-size: 32px,
+    line-height: 58px,
+    border-radius: $border-radius-large
+  ),
+  64: (
+    font-size: 28px,
+    line-height: 64px,
+    border-radius: $border-radius-large
+  ),
+  90: (
+    font-size: 36px,
+    line-height: 88px,
+    border-radius: $border-radius-large
+  ),
+  100: (
+    font-size: 36px,
+    line-height: 98px,
+    border-radius: $border-radius-large
+  ),
+  160: (
+    font-size: 96px,
+    line-height: 158px,
+    border-radius: $border-radius-large
+  )
+);
+
+$identicon-backgrounds: $identicon-red, $identicon-purple, $identicon-indigo, $identicon-blue, $identicon-teal,
+  $identicon-orange, $gray-darker;
+
+.avatar-circle {
+  float: left;
+  margin-right: $gl-padding;
+  border-radius: $avatar-radius;
+  border: 1px solid $gray-normal;
+
+  @each $size, $size-config in $avatar-sizes {
+    &.s#{$size} {
+      @include avatar-size(#{$size}px, if($size < 48, 8px, 16px));
+    }
+  }
+}
+
+.avatar {
+  @extend .avatar-circle;
+  transition-property: none;
+
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  background: $gray-lightest;
+  overflow: hidden;
+  border-color: rgba($black, $gl-avatar-border-opacity);
+
+  &.avatar-inline {
+    float: none;
+    display: inline-block;
+    margin-left: 2px;
+    flex-shrink: 0;
+
+    &.s16 {
+      margin-right: 4px;
+    }
+
+    &.s24 {
+      margin-right: 4px;
+    }
+  }
+
+  &.center {
+    font-size: 14px;
+    line-height: 1.8em;
+    text-align: center;
+  }
+
+  &.avatar-tile {
+    border-radius: 0;
+    border: 0;
+  }
+
+  &.avatar-placeholder {
+    border: 0;
+  }
+}
+
+.identicon {
+  text-align: center;
+  vertical-align: top;
+  color: $gray-800;
+  background-color: $gray-darker;
+
+  // Sizes
+  @each $size, $size-config in $avatar-sizes {
+    $keys: map-keys($size-config);
+
+    &.s#{$size} {
+      @each $key in $keys {
+        // We don't want `border-radius` to be included here.
+        @if ($key != 'border-radius') {
+          #{$key}: map-get($size-config, #{$key});
+        }
+      }
+    }
+  }
+
+  // Background colors
+  @for $i from 1 through length($identicon-backgrounds) {
+    &.bg#{$i} {
+      background-color: nth($identicon-backgrounds, $i);
+    }
+  }
+}
+
+.avatar-container {
+  @extend .avatar-circle;
+  overflow: hidden;
+  display: flex;
+
+  a {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    text-decoration: none;
+  }
+
+  .avatar {
+    border-radius: 0;
+    border: 0;
+    height: auto;
+    width: 100%;
+    margin: 0;
+    align-self: center;
+  }
+
+  &.s40 {
+    min-width: 40px;
+    min-height: 40px;
+  }
+
+  &.s64 {
+    min-width: 64px;
+    min-height: 64px;
+  }
+}
+
+.rect-avatar {
+  border-radius: $border-radius-small;
+
+  @each $size, $size-config in $avatar-sizes {
+    &.s#{$size} {
+      border-radius: map-get($size-config, 'border-radius');
+    }
+  }
+}
+
+.avatar-counter {
+  background-color: $gray-darkest;
+  color: $white-light;
+  border: 1px solid $gray-normal;
+  border-radius: 1em;
+  font-family: $regular-font;
+  font-size: 9px;
+  line-height: 16px;
+  text-align: center;
+}

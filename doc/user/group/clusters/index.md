@@ -1,3 +1,7 @@
+---
+type: reference
+---
+
 # Group-level Kubernetes clusters
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/34758) in GitLab 11.6.
@@ -5,28 +9,17 @@
 
 ## Overview
 
-Similar to [project Kubernetes
-clusters](../../project/clusters/index.md), Group-level Kubernetes
-clusters allow you to connect a Kubernetes cluster to your group,
-enabling you to use the same cluster across multiple projects.
+Similar to [project-level](../../project/clusters/index.md) and
+[instance-level](../../instance/clusters/index.md) Kubernetes clusters,
+group-level Kubernetes clusters allow you to connect a Kubernetes cluster to
+your group, enabling you to use the same cluster across multiple projects.
 
 ## Installing applications
 
-GitLab provides a one-click install for various applications that can be
-added directly to your cluster.
-
-NOTE: **Note:**
-Applications will be installed in a dedicated namespace called
-`gitlab-managed-apps`. If you have added an existing Kubernetes cluster
-with Tiller already installed, you should be careful as GitLab cannot
-detect it. In this event, installing Tiller via the applications will
-result in the cluster having it twice. This can lead to confusion during
-deployments.
-
-| Application                                                                | GitLab version | Description | Helm Chart |
-| -----------                                                                | -------------- | ----------- | ---------- |
-| [Helm Tiller](https://docs.helm.sh)                                        | 10.2+          | Helm is a package manager for Kubernetes and is required to install all the other applications. It is installed in its own pod inside the cluster which can run the `helm` CLI in a safe environment. | n/a |
-| [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress) | 10.2+          | Ingress can provide load balancing, SSL termination, and name-based virtual hosting. It acts as a web proxy for your applications and is useful if you want to use [Auto DevOps](../../../topics/autodevops/index.md) or deploy your own web apps. | [stable/nginx-ingress](https://github.com/helm/charts/tree/master/stable/nginx-ingress) |
+GitLab can install and manage some applications in your group-level
+cluster. For more information on installing, upgrading, uninstalling,
+and troubleshooting applications for your group cluster, see
+[Gitlab Managed Apps](../../clusters/applications.md).
 
 ## RBAC compatibility
 
@@ -56,8 +49,31 @@ group. That way you can have different clusters for different environments,
 like dev, staging, production, etc.
 
 Add another cluster similar to the first one and make sure to
-[set an environment scope](#environment-scopes) that will
+[set an environment scope](#environment-scopes-premium) that will
 differentiate the new cluster from the rest.
+
+## GitLab-managed clusters
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22011) in GitLab 11.5.
+> Became [optional](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/26565) in GitLab 11.11.
+
+NOTE: **Note:**
+Only available when creating clusters. Existing clusters not managed by GitLab
+cannot become GitLab-managed later.
+
+You can choose to allow GitLab to manage your cluster for you. If your cluster is
+managed by GitLab, resources for your projects will be automatically created. See the
+[Access controls](../../project/clusters/index.md#access-controls) section for details on which resources will
+be created.
+
+If you choose to manage your own cluster, project-specific resources will not be created
+automatically. If you are using [Auto DevOps](../../../topics/autodevops/index.md), you will
+need to explicitly provide the `KUBE_NAMESPACE` [deployment variable](../../project/clusters/index.md#deployment-variables)
+that will be used by your deployment jobs.
+
+NOTE: **Note:**
+If you [install applications](#installing-applications) on your cluster, GitLab will create
+the resources required to run these even if you have chosen to manage your own cluster.
 
 ## Base domain
 
@@ -72,11 +88,10 @@ The domain should have a wildcard DNS configured to the Ingress IP address.
 
 ## Environment scopes **[PREMIUM]**
 
-When adding more than one Kubernetes cluster to your project, you need
-to differentiate them with an environment scope. The environment scope
-associates clusters with [environments](../../../ci/environments.md)
-similar to how the [environment-specific
-variables](../../../ci/variables/README.md#limiting-environment-scopes-of-variables)
+When adding more than one Kubernetes cluster to your project, you need to differentiate
+them with an environment scope. The environment scope associates clusters with
+[environments](../../../ci/environments.md) similar to how the
+[environment-specific variables](../../../ci/variables/README.md#limiting-environment-scopes-of-environment-variables-premium)
 work.
 
 While evaluating which environment matches the environment scope of a
@@ -133,4 +148,16 @@ The following features are not currently available for group-level clusters:
 
 1. Terminals (see [related issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/55487)).
 1. Pod logs (see [related issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/55488)).
-1. Deployment boards (see [related issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/55488)).
+1. Deployment boards (see [related issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/55489)).
+
+<!-- ## Troubleshooting
+
+Include any troubleshooting steps that you can foresee. If you know beforehand what issues
+one might have when setting this up, or when something is changed, or on upgrading, it's
+important to describe those, too. Think of things that may go wrong and include them here.
+This is important to minimize requests for support, and to avoid doc comments with
+questions that you know someone might ask.
+
+Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+If you have none to add when creating a doc, leave this section in place
+but commented out to help encourage others to add to it in the future. -->

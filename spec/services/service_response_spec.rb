@@ -1,0 +1,73 @@
+# frozen_string_literal: true
+
+require 'fast_spec_helper'
+
+ActiveSupport::Dependencies.autoload_paths << 'app/services'
+
+describe ServiceResponse do
+  describe '.success' do
+    it 'creates a successful response without a message' do
+      expect(described_class.success).to be_success
+    end
+
+    it 'creates a successful response with a message' do
+      response = described_class.success(message: 'Good orange')
+
+      expect(response).to be_success
+      expect(response.message).to eq('Good orange')
+    end
+
+    it 'creates a successful response with payload' do
+      response = described_class.success(payload: { good: 'orange' })
+
+      expect(response).to be_success
+      expect(response.payload).to eq(good: 'orange')
+    end
+  end
+
+  describe '.error' do
+    it 'creates a failed response without HTTP status' do
+      response = described_class.error(message: 'Bad apple')
+
+      expect(response).to be_error
+      expect(response.message).to eq('Bad apple')
+    end
+
+    it 'creates a failed response with HTTP status' do
+      response = described_class.error(message: 'Bad apple', http_status: 400)
+
+      expect(response).to be_error
+      expect(response.message).to eq('Bad apple')
+      expect(response.http_status).to eq(400)
+    end
+
+    it 'creates a failed response with payload' do
+      response = described_class.error(message: 'Bad apple',
+                                       payload: { bad: 'apple' })
+
+      expect(response).to be_error
+      expect(response.message).to eq('Bad apple')
+      expect(response.payload).to eq(bad: 'apple')
+    end
+  end
+
+  describe '#success?' do
+    it 'returns true for a successful response' do
+      expect(described_class.success.success?).to eq(true)
+    end
+
+    it 'returns false for a failed response' do
+      expect(described_class.error(message: 'Bad apple').success?).to eq(false)
+    end
+  end
+
+  describe '#error?' do
+    it 'returns false for a successful response' do
+      expect(described_class.success.error?).to eq(false)
+    end
+
+    it 'returns true for a failed response' do
+      expect(described_class.error(message: 'Bad apple').error?).to eq(true)
+    end
+  end
+end

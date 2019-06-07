@@ -2,12 +2,12 @@ import $ from 'jquery';
 import setupNativeFormVariableList from '~/ci_variable_list/native_form_variable_list';
 
 describe('NativeFormVariableList', () => {
-  preloadFixtures('pipeline_schedules/edit.html.raw');
+  preloadFixtures('pipeline_schedules/edit.html');
 
   let $wrapper;
 
   beforeEach(() => {
-    loadFixtures('pipeline_schedules/edit.html.raw');
+    loadFixtures('pipeline_schedules/edit.html');
     $wrapper = $('.js-ci-variable-list-section');
 
     setupNativeFormVariableList({

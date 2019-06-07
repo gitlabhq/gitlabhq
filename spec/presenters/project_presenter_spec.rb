@@ -411,4 +411,23 @@ describe ProjectPresenter do
       end
     end
   end
+
+  describe '#statistics_buttons' do
+    let(:project) { build(:project) }
+    let(:presenter) { described_class.new(project, current_user: user) }
+
+    it 'orders the items correctly' do
+      allow(project.repository).to receive(:readme).and_return(double(name: 'readme'))
+      allow(project.repository).to receive(:changelog).and_return(nil)
+      allow(project.repository).to receive(:contribution_guide).and_return(double(name: 'foo'))
+      allow(presenter).to receive(:filename_path).and_return('fake/path')
+      allow(presenter).to receive(:contribution_guide_path).and_return('fake_path')
+
+      buttons = presenter.statistics_buttons(show_auto_devops_callout: false)
+      expect(buttons.map(&:label)).to start_with(
+        a_string_including('README'),
+        a_string_including('CONTRIBUTING')
+      )
+    end
+  end
 end

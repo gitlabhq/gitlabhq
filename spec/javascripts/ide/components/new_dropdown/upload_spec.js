@@ -78,6 +78,8 @@ describe('new dropdown upload', () => {
         type: 'blob',
         content: 'plain text',
         base64: false,
+        binary: false,
+        rawPath: '',
       });
     });
 
@@ -89,6 +91,8 @@ describe('new dropdown upload', () => {
         type: 'blob',
         content: binaryTarget.result.split('base64,')[1],
         base64: true,
+        binary: true,
+        rawPath: binaryTarget.result,
       });
     });
   });

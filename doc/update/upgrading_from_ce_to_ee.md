@@ -9,6 +9,10 @@ Community Edition to Enterprise Edition. These documents can be found in the
 [`doc/update` directory of Enterprise Edition's source
 code][old-ee-upgrade-docs].
 
+If you want to upgrade the version only, for example 11.8 to 11.9, *without* changing the
+GitLab edition you are using (Community or Enterprise), see the
+[Upgrading from source](upgrading_from_source.md) documentation.
+
 ## General upgrading steps
 
 This guide assumes you have a correctly configured and tested installation of
@@ -71,7 +75,7 @@ sudo -u git -H bundle exec rake assets:clean assets:precompile cache:clear RAILS
 ### 4. Install `gitlab-elasticsearch-indexer` (optional) **[STARTER ONLY]**
 
 If you're interested in using GitLab's new [elasticsearch repository
-indexer][indexer-beta] (currently in beta) please follow the instructions on the
+indexer](../integration/elasticsearch.md) (currently in beta) please follow the instructions on the
 document linked above and enable the indexer usage in the GitLab admin settings.
 
 ### 5. Start application
@@ -129,4 +133,3 @@ Additional instructions here.
 
 [support@gitlab.com]: mailto:support@gitlab.com
 [old-ee-upgrade-docs]: https://gitlab.com/gitlab-org/gitlab-ee/tree/11-8-stable-ee/doc/update
-[indexer-beta]: https://docs.gitlab.com/ee/integration/elasticsearch.html

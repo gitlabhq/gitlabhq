@@ -1,4 +1,4 @@
-- visibility_level = params.dig(:project, :visibility_level) || default_project_visibility
+- visibility_level = selected_visibility_level(@project, params.dig(:project, :visibility_level))
 - ci_cd_only = local_assigns.fetch(:ci_cd_only, false)
 - hide_init_with_readme = local_assigns.fetch(:hide_init_with_readme, false)
 - track_label = local_assigns.fetch(:track_label, 'blank_project')
@@ -12,21 +12,21 @@
   .form-group.project-path.col-sm-6
     = f.label :namespace_id, class: 'label-bold' do
       %span= s_("Project URL")
-    .input-group
+    .input-group.flex-nowrap
       - if current_user.can_select_namespace?
-        .input-group-prepend.has-tooltip{ title: root_url }
+        .input-group-prepend.flex-shrink-0.has-tooltip{ title: root_url }
           .input-group-text
             = root_url
         - namespace_id = namespace_id_from(params)
         = f.select(:namespace_id,
-                   namespaces_options(namespace_id || :current_user,
-                                      display_path: true,
-                                      extra_group: namespace_id),
+                   namespaces_options_with_developer_maintainer_access(selected: namespace_id,
+                                                                      display_path: true,
+                                                                      extra_group: namespace_id),
                    {},
-                   { class: 'select2 js-select-namespace qa-project-namespace-select', tabindex: 1, data: { track_label: "#{track_label}", track_event: "activate_form_input", track_property: "project_path", track_value: "" }})
+                   { class: 'select2 js-select-namespace qa-project-namespace-select block-truncated', tabindex: 1, data: { track_label: "#{track_label}", track_event: "activate_form_input", track_property: "project_path", track_value: "" }})
 
       - else
-        .input-group-prepend.static-namespace.has-tooltip{ title: user_url(current_user.username) + '/' }
+        .input-group-prepend.static-namespace.flex-shrink-0.has-tooltip{ title: user_url(current_user.username) + '/' }
           .input-group-text.border-0
             #{user_url(current_user.username)}/
         = f.hidden_field :namespace_id, value: current_user.namespace_id
@@ -54,7 +54,7 @@
   .form-group.row.initialize-with-readme-setting
     %div{ :class => "col-sm-12" }
       .form-check
-        = check_box_tag 'project[initialize_with_readme]', '1', false, class: 'form-check-input', data: { track_label: "#{track_label}", track_event: "activate_form_input", track_property: "init_with_readme" }
+        = check_box_tag 'project[initialize_with_readme]', '1', false, class: 'form-check-input qa-initialize-with-readme-checkbox', data: { track_label: "#{track_label}", track_event: "activate_form_input", track_property: "init_with_readme" }
         = label_tag 'project[initialize_with_readme]', class: 'form-check-label' do
           .option-title
             %strong Initialize repository with a README

@@ -9,7 +9,7 @@
   = render 'groups/home_panel'
 
   .groups-listing{ data: { endpoints: { default: group_children_path(@group, format: :json), shared: group_shared_projects_path(@group, format: :json) } } }
-    .top-area.group-nav-container
+    .top-area.group-nav-container.justify-content-between
       .scrolling-tabs-container.inner-page-scroll-tabs
         .fade-left= icon('angle-left')
         .fade-right= icon('angle-right')

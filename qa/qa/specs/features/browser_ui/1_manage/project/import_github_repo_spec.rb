@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Manage', :orchestrated, :github do
+  # https://gitlab.com/gitlab-org/gitlab-ce/issues/58158
+  context 'Manage', :github, :quarantine do
     describe 'Project import from GitHub' do
       let(:imported_project) do
         Resource::ProjectImportedFromGithub.fabricate! do |project|
@@ -48,20 +49,26 @@ module QA
       end
 
       def verify_issues_import
-        Page::Project::Menu.act { click_issues }
-        expect(page).to have_content('This is a sample issue')
+        QA::Support::Retrier.retry_on_exception do
+          Page::Project::Menu.act { click_issues }
+          expect(page).to have_content('This is a sample issue')
 
-        click_link 'This is a sample issue'
+          click_link 'This is a sample issue'
 
-        expect(page).to have_content('We should populate this project with issues, pull requests and wiki pages.')
+          expect(page).to have_content('We should populate this project with issues, pull requests and wiki pages.')
 
-        # Comments
-        expect(page).to have_content('This is a comment from @rymai.')
+          # Comments
+          comment_text = 'This is a comment from @rymai.'
 
-        Page::Issuable::Sidebar.perform do |issuable|
-          expect(issuable).to have_label('enhancement')
-          expect(issuable).to have_label('help wanted')
-          expect(issuable).to have_label('good first issue')
+          Page::Project::Issue::Show.perform do |issue_page|
+            expect(issue_page).to have_comment(comment_text)
+          end
+
+          Page::Issuable::Sidebar.perform do |issuable|
+            expect(issuable).to have_label('enhancement')
+            expect(issuable).to have_label('help wanted')
+            expect(issuable).to have_label('good first issue')
+          end
         end
       end
 

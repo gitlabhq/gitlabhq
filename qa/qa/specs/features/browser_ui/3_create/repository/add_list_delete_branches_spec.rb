@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Create' do
+  # Failure issue: https://gitlab.com/gitlab-org/quality/nightly/issues/62
+  context 'Create', :quarantine do
     describe 'Create, list, and delete branches via web' do
       master_branch = 'master'
       second_branch = 'second-branch'
@@ -57,7 +58,7 @@ module QA
       end
 
       it 'branches are correctly listed after CRUD operations' do
-        Page::Project::Menu.perform(&:click_repository_branches)
+        Page::Project::Menu.perform(&:go_to_repository_branches)
 
         expect(page).to have_content(master_branch)
         expect(page).to have_content(second_branch)
@@ -72,9 +73,8 @@ module QA
 
         Page::Project::Branches::Show.perform do |branches_view|
           branches_view.delete_branch(third_branch)
+          expect(branches_view).to have_no_branch(third_branch)
         end
-
-        expect(page).not_to have_content(third_branch)
 
         Page::Project::Branches::Show.perform(&:delete_merged_branches)
 
@@ -84,8 +84,7 @@ module QA
 
         page.refresh
         Page::Project::Branches::Show.perform do |branches_view|
-          branches_view.wait_for_texts_not_to_be_visible([commit_message_of_second_branch])
-          expect(branches_view).not_to have_branch_title(second_branch)
+          expect(branches_view).to have_no_branch(second_branch, reload: true)
         end
       end
     end

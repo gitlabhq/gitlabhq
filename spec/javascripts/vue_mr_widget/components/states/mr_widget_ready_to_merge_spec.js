@@ -18,6 +18,7 @@ const createTestMr = customConfig => {
     isPipelinePassing: false,
     isMergeAllowed: true,
     onlyAllowMergeIfPipelineSucceeds: false,
+    ffOnlyEnabled: false,
     hasCI: false,
     ciStatus: null,
     sha: '12345678',
@@ -79,7 +80,7 @@ describe('ReadyToMerge', () => {
     it('should have default data', () => {
       expect(vm.mergeWhenBuildSucceeds).toBeFalsy();
       expect(vm.useCommitMessageWithDescription).toBeFalsy();
-      expect(vm.setToMergeWhenPipelineSucceeds).toBeFalsy();
+      expect(vm.autoMergeStrategy).toBeUndefined();
       expect(vm.showCommitMessageEditor).toBeFalsy();
       expect(vm.isMakingRequest).toBeFalsy();
       expect(vm.isMergingImmediately).toBeFalsy();
@@ -90,17 +91,17 @@ describe('ReadyToMerge', () => {
   });
 
   describe('computed', () => {
-    describe('shouldShowMergeWhenPipelineSucceedsText', () => {
+    describe('shouldShowAutoMergeText', () => {
       it('should return true with active pipeline', () => {
         vm.mr.isPipelineActive = true;
 
-        expect(vm.shouldShowMergeWhenPipelineSucceedsText).toBeTruthy();
+        expect(vm.shouldShowAutoMergeText).toBeTruthy();
       });
 
       it('should return false with inactive pipeline', () => {
         vm.mr.isPipelineActive = false;
 
-        expect(vm.shouldShowMergeWhenPipelineSucceedsText).toBeFalsy();
+        expect(vm.shouldShowAutoMergeText).toBeFalsy();
       });
     });
 
@@ -324,16 +325,20 @@ describe('ReadyToMerge', () => {
         vm.handleMergeButtonClick(true);
 
         setTimeout(() => {
-          expect(vm.setToMergeWhenPipelineSucceeds).toBeTruthy();
+          expect(vm.autoMergeStrategy).toBe('merge_when_pipeline_succeeds');
           expect(vm.isMakingRequest).toBeTruthy();
           expect(eventHub.$emit).toHaveBeenCalledWith('MRWidgetUpdateRequested');
 
           const params = vm.service.merge.calls.argsFor(0)[0];
 
-          expect(params.sha).toEqual(vm.mr.sha);
-          expect(params.commit_message).toEqual(vm.mr.commitMessage);
-          expect(params.should_remove_source_branch).toBeFalsy();
-          expect(params.merge_when_pipeline_succeeds).toBeTruthy();
+          expect(params).toEqual(
+            jasmine.objectContaining({
+              sha: vm.mr.sha,
+              commit_message: vm.mr.commitMessage,
+              should_remove_source_branch: false,
+              auto_merge_strategy: 'merge_when_pipeline_succeeds',
+            }),
+          );
           done();
         }, 333);
       });
@@ -344,7 +349,7 @@ describe('ReadyToMerge', () => {
         vm.handleMergeButtonClick(false, true);
 
         setTimeout(() => {
-          expect(vm.setToMergeWhenPipelineSucceeds).toBeFalsy();
+          expect(vm.autoMergeStrategy).toBeUndefined();
           expect(vm.isMakingRequest).toBeTruthy();
           expect(eventHub.$emit).toHaveBeenCalledWith('FailedToMerge', undefined);
 
@@ -362,7 +367,7 @@ describe('ReadyToMerge', () => {
         vm.handleMergeButtonClick();
 
         setTimeout(() => {
-          expect(vm.setToMergeWhenPipelineSucceeds).toBeFalsy();
+          expect(vm.autoMergeStrategy).toBeUndefined();
           expect(vm.isMakingRequest).toBeTruthy();
           expect(vm.initiateMergePolling).toHaveBeenCalled();
 
@@ -376,11 +381,29 @@ describe('ReadyToMerge', () => {
     });
 
     describe('initiateMergePolling', () => {
+      beforeEach(() => {
+        jasmine.clock().install();
+      });
+
+      afterEach(() => {
+        jasmine.clock().uninstall();
+      });
+
       it('should call simplePoll', () => {
         const simplePoll = spyOnDependency(ReadyToMerge, 'simplePoll');
         vm.initiateMergePolling();
 
-        expect(simplePoll).toHaveBeenCalled();
+        expect(simplePoll).toHaveBeenCalledWith(jasmine.any(Function), { timeout: 0 });
+      });
+
+      it('should call handleMergePolling', () => {
+        spyOn(vm, 'handleMergePolling');
+
+        vm.initiateMergePolling();
+
+        jasmine.clock().tick(2000);
+
+        expect(vm.handleMergePolling).toHaveBeenCalled();
       });
     });
 
@@ -396,7 +419,7 @@ describe('ReadyToMerge', () => {
         });
 
       beforeEach(() => {
-        loadFixtures('merge_requests/merge_request_of_current_user.html.raw');
+        loadFixtures('merge_requests/merge_request_of_current_user.html');
       });
 
       it('should call start and stop polling when MR merged', done => {
@@ -624,6 +647,10 @@ describe('ReadyToMerge', () => {
     const findCommitsHeaderElement = () => wrapper.find(CommitsHeader);
     const findCommitEditElements = () => wrapper.findAll(CommitEdit);
     const findCommitDropdownElement = () => wrapper.find(CommitMessageDropdown);
+    const findFirstCommitEditLabel = () =>
+      findCommitEditElements()
+        .at(0)
+        .props('label');
 
     describe('squash checkbox', () => {
       it('should be rendered when squash before merge is enabled and there is more than 1 commit', () => {
@@ -648,32 +675,130 @@ describe('ReadyToMerge', () => {
     });
 
     describe('commits count collapsible header', () => {
-      it('should be rendered if fast-forward is disabled', () => {
+      it('should be rendered when fast-forward is disabled', () => {
         createLocalComponent();
 
         expect(findCommitsHeaderElement().exists()).toBeTruthy();
       });
 
-      it('should not be rendered if fast-forward is enabled', () => {
-        createLocalComponent({ mr: { ffOnlyEnabled: true } });
+      describe('when fast-forward is enabled', () => {
+        it('should be rendered if squash and squash before are enabled and there is more than 1 commit', () => {
+          createLocalComponent({
+            mr: {
+              ffOnlyEnabled: true,
+              enableSquashBeforeMerge: true,
+              squash: true,
+              commitsCount: 2,
+            },
+          });
 
-        expect(findCommitsHeaderElement().exists()).toBeFalsy();
+          expect(findCommitsHeaderElement().exists()).toBeTruthy();
+        });
+
+        it('should not be rendered if squash before merge is disabled', () => {
+          createLocalComponent({
+            mr: {
+              ffOnlyEnabled: true,
+              enableSquashBeforeMerge: false,
+              squash: true,
+              commitsCount: 2,
+            },
+          });
+
+          expect(findCommitsHeaderElement().exists()).toBeFalsy();
+        });
+
+        it('should not be rendered if squash is disabled', () => {
+          createLocalComponent({
+            mr: {
+              ffOnlyEnabled: true,
+              squash: false,
+              enableSquashBeforeMerge: true,
+              commitsCount: 2,
+            },
+          });
+
+          expect(findCommitsHeaderElement().exists()).toBeFalsy();
+        });
+
+        it('should not be rendered if commits count is 1', () => {
+          createLocalComponent({
+            mr: {
+              ffOnlyEnabled: true,
+              squash: true,
+              enableSquashBeforeMerge: true,
+              commitsCount: 1,
+            },
+          });
+
+          expect(findCommitsHeaderElement().exists()).toBeFalsy();
+        });
       });
     });
 
     describe('commits edit components', () => {
+      describe('when fast-forward merge is enabled', () => {
+        it('should not be rendered if squash is disabled', () => {
+          createLocalComponent({
+            mr: {
+              ffOnlyEnabled: true,
+              squash: false,
+              enableSquashBeforeMerge: true,
+              commitsCount: 2,
+            },
+          });
+
+          expect(findCommitEditElements().length).toBe(0);
+        });
+
+        it('should not be rendered if squash before merge is disabled', () => {
+          createLocalComponent({
+            mr: {
+              ffOnlyEnabled: true,
+              squash: true,
+              enableSquashBeforeMerge: false,
+              commitsCount: 2,
+            },
+          });
+
+          expect(findCommitEditElements().length).toBe(0);
+        });
+
+        it('should not be rendered if there is only one commit', () => {
+          createLocalComponent({
+            mr: {
+              ffOnlyEnabled: true,
+              squash: true,
+              enableSquashBeforeMerge: true,
+              commitsCount: 1,
+            },
+          });
+
+          expect(findCommitEditElements().length).toBe(0);
+        });
+
+        it('should have one edit component if squash is enabled and there is more than 1 commit', () => {
+          createLocalComponent({
+            mr: {
+              ffOnlyEnabled: true,
+              squash: true,
+              enableSquashBeforeMerge: true,
+              commitsCount: 2,
+            },
+          });
+
+          expect(findCommitEditElements().length).toBe(1);
+          expect(findFirstCommitEditLabel()).toBe('Squash commit message');
+        });
+      });
+
       it('should have one edit component when squash is disabled', () => {
         createLocalComponent();
 
         expect(findCommitEditElements().length).toBe(1);
       });
 
-      const findFirstCommitEditLabel = () =>
-        findCommitEditElements()
-          .at(0)
-          .props('label');
-
-      it('should have two edit components when squash is enabled', () => {
+      it('should have two edit components when squash is enabled and there is more than 1 commit', () => {
         createLocalComponent({
           mr: {
             commitsCount: 2,
@@ -683,6 +808,18 @@ describe('ReadyToMerge', () => {
         });
 
         expect(findCommitEditElements().length).toBe(2);
+      });
+
+      it('should have one edit components when squash is enabled and there is 1 commit only', () => {
+        createLocalComponent({
+          mr: {
+            commitsCount: 1,
+            squash: true,
+            enableSquashBeforeMerge: true,
+          },
+        });
+
+        expect(findCommitEditElements().length).toBe(1);
       });
 
       it('should have correct edit merge commit label', () => {
@@ -711,8 +848,10 @@ describe('ReadyToMerge', () => {
         expect(findCommitDropdownElement().exists()).toBeFalsy();
       });
 
-      it('should  be rendered if squash is enabled', () => {
-        createLocalComponent({ mr: { squash: true } });
+      it('should  be rendered if squash is enabled and there is more than 1 commit', () => {
+        createLocalComponent({
+          mr: { enableSquashBeforeMerge: true, squash: true, commitsCount: 2 },
+        });
 
         expect(findCommitDropdownElement().exists()).toBeTruthy();
       });

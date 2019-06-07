@@ -100,7 +100,7 @@ describe('CopyAsGFM', () => {
         simulateCopy();
 
         setTimeout(() => {
-          const expectedGFM = '* List Item1\n\n* List Item2';
+          const expectedGFM = '* List Item1\n* List Item2';
 
           expect(clipboardData.setData).toHaveBeenCalledWith('text/x-gfm', expectedGFM);
           done();
@@ -114,7 +114,7 @@ describe('CopyAsGFM', () => {
         simulateCopy();
 
         setTimeout(() => {
-          const expectedGFM = '1. List Item1\n\n1. List Item2';
+          const expectedGFM = '1. List Item1\n1. List Item2';
 
           expect(clipboardData.setData).toHaveBeenCalledWith('text/x-gfm', expectedGFM);
           done();

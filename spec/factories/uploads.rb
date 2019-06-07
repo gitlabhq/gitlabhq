@@ -13,7 +13,7 @@ FactoryBot.define do
     end
 
     # this needs to comply with RecordsUpload::Concern#upload_path
-    path { File.join("uploads/-/system", model.class.to_s.underscore, mount_point.to_s, 'avatar.jpg') }
+    path { File.join("uploads/-/system", model.class.underscore, mount_point.to_s, 'avatar.jpg') }
 
     trait :personal_snippet_upload do
       uploader "PersonalFileUploader"
@@ -54,10 +54,7 @@ FactoryBot.define do
     end
 
     trait :attachment_upload do
-      transient do
-        mount_point :attachment
-      end
-
+      mount_point :attachment
       model { build(:note) }
       uploader "AttachmentUploader"
     end

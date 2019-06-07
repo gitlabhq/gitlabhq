@@ -21,6 +21,22 @@ describe Suggestion do
     end
   end
 
+  describe '#diff_lines' do
+    let(:suggestion) { create(:suggestion, :content_from_repo) }
+
+    it 'returns parsed diff lines' do
+      expected_diff_lines = Gitlab::Diff::SuggestionDiff.new(suggestion).diff_lines
+      diff_lines = suggestion.diff_lines
+
+      expect(diff_lines.size).to eq(expected_diff_lines.size)
+      expect(diff_lines).to all(be_a(Gitlab::Diff::Line))
+
+      expected_diff_lines.each_with_index do |expected_line, index|
+        expect(diff_lines[index].to_hash).to eq(expected_line.to_hash)
+      end
+    end
+  end
+
   describe '#appliable?' do
     context 'when note does not support suggestions' do
       it 'returns false' do

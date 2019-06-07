@@ -37,12 +37,7 @@ module QA
         it 'user without push rights fails to push to the protected branch' do
           create_protected_branch(allow_to_push: false)
 
-          push = push_new_file(branch_name)
-
-          expect(push.output)
-          .to match(/remote\: GitLab\: You are not allowed to push code to protected branches on this project/)
-          expect(push.output)
-          .to match(/\[remote rejected\] #{branch_name} -> #{branch_name} \(pre-receive hook declined\)/)
+          expect { push_new_file(branch_name) }.to raise_error(QA::Git::Repository::RepositoryCommandError, /remote: GitLab: You are not allowed to push code to protected branches on this project\.([\s\S]+)\[remote rejected\] #{branch_name} -> #{branch_name} \(pre-receive hook declined\)/)
         end
       end
 

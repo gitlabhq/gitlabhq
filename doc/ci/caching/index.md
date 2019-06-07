@@ -1,3 +1,7 @@
+---
+type: index, concepts, howto
+---
+
 # Cache dependencies in GitLab CI/CD
 
 GitLab CI/CD provides a caching mechanism that can be used to save time
@@ -60,7 +64,7 @@ In summary:
 
 - Caches are disabled if not defined globally or per job (using `cache:`).
 - Caches are available for all jobs in your `.gitlab-ci.yml` if enabled globally.
-- Caches can be used by subsequent pipelines of that very same job (a script in
+- Caches can be used by subsequent pipelines of that same job (a script in
   a stage) in which the cache was created (if not defined globally).
 - Caches are stored where the Runner is installed **and** uploaded to S3 if
   [distributed cache is enabled](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching).
@@ -87,7 +91,7 @@ cache, when declaring `cache` in your jobs, use one or a mix of the following:
   that share their cache.
 - [Use sticky Runners](../runners/README.md#locking-a-specific-runner-from-being-enabled-for-other-projects)
   that will be only available to a particular project.
-- [Use a `key`](../yaml/README.md#cachekey) that fits your workflow (e.g.,
+- [Use a `key`](../yaml/README.md#cachekey) that fits your workflow (for example,
   different caches on each branch). For that, you can take advantage of the
   [CI/CD predefined variables](../variables/README.md#predefined-environment-variables).
 
@@ -100,7 +104,7 @@ From the perspective of the Runner, in order for cache to work effectively, one
 of the following must be true:
 
 - Use a single Runner for all your jobs.
-- Use multiple Runners (in autoscale mode or not) that use.
+- Use multiple Runners (in autoscale mode or not) that use
   [distributed caching](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching),
   where the cache is stored in S3 buckets (like shared Runners on GitLab.com).
 - Use multiple Runners (not in autoscale mode) of the same architecture that
@@ -289,7 +293,7 @@ jobs inherit it. Gems are installed in `vendor/ruby/` and are cached per-branch:
 #
 # https://gitlab.com/gitlab-org/gitlab-ce/tree/master/lib/gitlab/ci/templates/Ruby.gitlab-ci.yml
 #
-image: ruby:2.5
+image: ruby:2.6
 
 # Cache gems in between builds
 cache:
@@ -420,7 +424,7 @@ mismatch and a few ideas how to fix it.
 
 Let's explore some examples.
 
----
+#### Examples
 
 Let's assume you have only one Runner assigned to your project, so the cache
 will be stored in the Runner's machine by default. If two jobs, A and B,
@@ -461,8 +465,6 @@ job B:
    and thus will be ineffective.
 
 To fix that, use different `keys` for each job.
-
----
 
 In another case, let's assume you have more than one Runners assigned to your
 project, but the distributed cache is not enabled. We want the second time the
@@ -526,3 +528,15 @@ Behind the scenes, this works by increasing a counter in the database, and the
 value of that counter is used to create the key for the cache by appending an
 integer to it: `-1`, `-2`, etc. After a push, a new key is generated and the
 old cache is not valid anymore.
+
+<!-- ## Troubleshooting
+
+Include any troubleshooting steps that you can foresee. If you know beforehand what issues
+one might have when setting this up, or when something is changed, or on upgrading, it's
+important to describe those, too. Think of things that may go wrong and include them here.
+This is important to minimize requests for support, and to avoid doc comments with
+questions that you know someone might ask.
+
+Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+If you have none to add when creating a doc, leave this section in place
+but commented out to help encourage others to add to it in the future. -->

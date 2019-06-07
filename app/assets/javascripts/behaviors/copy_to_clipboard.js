@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import Clipboard from 'clipboard';
+import { sprintf, __ } from '~/locale';
 
 function showTooltip(target, title) {
   const $target = $(target);
@@ -16,7 +17,7 @@ function showTooltip(target, title) {
 }
 
 function genericSuccess(e) {
-  showTooltip(e.trigger, 'Copied');
+  showTooltip(e.trigger, __('Copied'));
   // Clear the selection and blur the trigger so it loses its border
   e.clearSelection();
   $(e.trigger).blur();
@@ -33,7 +34,7 @@ function genericError(e) {
   } else {
     key = 'Ctrl';
   }
-  showTooltip(e.trigger, `Press ${key}-C to copy`);
+  showTooltip(e.trigger, sprintf(__(`Press %{key}-C to copy`), { key }));
 }
 
 export default function initCopyToClipboard() {

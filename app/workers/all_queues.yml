@@ -1,11 +1,14 @@
 ---
 - auto_devops:auto_devops_disable
 
+- auto_merge:auto_merge_process
+
 - cronjob:admin_email
 - cronjob:expire_build_artifacts
 - cronjob:gitlab_usage_ping
 - cronjob:import_export_project_cleanup
 - cronjob:pages_domain_verification_cron
+- cronjob:pages_domain_removal_cron
 - cronjob:pipeline_schedule
 - cronjob:prune_old_events
 - cronjob:remove_expired_group_links
@@ -21,8 +24,10 @@
 - cronjob:trending_projects
 - cronjob:issue_due_scheduler
 - cronjob:prune_web_hook_logs
+- cronjob:schedule_migrate_external_diffs
 
 - gcp_cluster:cluster_install_app
+- gcp_cluster:cluster_patch_app
 - gcp_cluster:cluster_upgrade_app
 - gcp_cluster:cluster_provision
 - gcp_cluster:cluster_wait_for_app_installation
@@ -30,6 +35,8 @@
 - gcp_cluster:cluster_wait_for_ingress_ip_address
 - gcp_cluster:cluster_configure
 - gcp_cluster:cluster_project_configure
+- gcp_cluster:clusters_applications_wait_for_uninstall_app
+- gcp_cluster:clusters_applications_uninstall
 
 - github_import_advance_stage
 - github_importer:github_import_import_diff_note
@@ -47,6 +54,9 @@
 - github_importer:github_import_stage_import_repository
 
 - hashed_storage:hashed_storage_migrator
+- hashed_storage:hashed_storage_rollbacker
+- hashed_storage:hashed_storage_project_migrate
+- hashed_storage:hashed_storage_project_rollback
 
 - mail_scheduler:mail_scheduler_issue_due
 - mail_scheduler:mail_scheduler_notification_service
@@ -67,6 +77,7 @@
 - pipeline_hooks:build_hooks
 - pipeline_hooks:pipeline_hooks
 - pipeline_processing:build_finished
+- pipeline_processing:ci_build_prepare
 - pipeline_processing:build_queue
 - pipeline_processing:build_success
 - pipeline_processing:pipeline_process
@@ -77,6 +88,7 @@
 - pipeline_processing:ci_build_schedule
 
 - deployment:deployments_success
+- deployment:deployments_finished
 
 - repository_check:repository_check_clear
 - repository_check:repository_check_batch
@@ -114,6 +126,7 @@
 - invalid_gpg_signature_update
 - irker
 - merge
+- migrate_external_diffs
 - namespaceless_project_destroy
 - new_issue
 - new_merge_request
@@ -126,7 +139,6 @@
 - project_cache
 - project_destroy
 - project_export
-- project_migrate_hashed_storage
 - project_service
 - propagate_service_template
 - reactive_caching
@@ -137,6 +149,7 @@
 - repository_remove_remote
 - system_hook_push
 - update_merge_requests
+- update_project_statistics
 - upload_checksum
 - web_hook
 - repository_update_remote_mirror
@@ -146,3 +159,4 @@
 - repository_cleanup
 - delete_stored_files
 - import_issues_csv
+- project_daily_statistics

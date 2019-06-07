@@ -26,7 +26,7 @@ class GroupPolicy < BasePolicy
   condition(:can_change_parent_share_with_group_lock) { can?(:change_share_with_group_lock, @subject.parent) }
 
   condition(:has_projects) do
-    GroupProjectsFinder.new(group: @subject, current_user: @user, options: { include_subgroups: true }).execute.any?
+    GroupProjectsFinder.new(group: @subject, current_user: @user, options: { include_subgroups: true, only_owned: true }).execute.any?
   end
 
   condition(:has_clusters, scope: :subject) { clusterable_has_clusters? }
@@ -34,6 +34,14 @@ class GroupPolicy < BasePolicy
 
   with_options scope: :subject, score: 0
   condition(:request_access_enabled) { @subject.request_access_enabled }
+
+  condition(:create_projects_disabled) do
+    @subject.project_creation_level == ::Gitlab::Access::NO_ONE_PROJECT_ACCESS
+  end
+
+  condition(:developer_maintainer_access) do
+    @subject.project_creation_level == ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS
+  end
 
   rule { public_group }.policy do
     enable :read_group
@@ -53,8 +61,9 @@ class GroupPolicy < BasePolicy
   rule { admin }.enable :read_group
 
   rule { has_projects }.policy do
-    enable :read_group
+    enable :read_list
     enable :read_label
+    enable :read_group
   end
 
   rule { has_access }.enable :read_namespace
@@ -114,9 +123,16 @@ class GroupPolicy < BasePolicy
 
   rule { ~can_have_multiple_clusters & has_clusters }.prevent :add_cluster
 
+  rule { developer & developer_maintainer_access }.enable :create_projects
+  rule { create_projects_disabled }.prevent :create_projects
+
   def access_level
     return GroupMember::NO_ACCESS if @user.nil?
 
-    @access_level ||= @subject.max_member_access_for_user(@user)
+    @access_level ||= lookup_access_level!
+  end
+
+  def lookup_access_level!
+    @subject.max_member_access_for_user(@user)
   end
 end

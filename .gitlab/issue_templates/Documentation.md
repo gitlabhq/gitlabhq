@@ -9,7 +9,7 @@
 * For information about documentation content and process, see
      https://docs.gitlab.com/ee/development/documentation/ -->
 
-### Type of issue
+<!-- Type of issue -->
 
 <!-- Un-comment the line for the applicable doc issue type to add its label.
      Note that all text on that line is deleted upon issue creation. -->

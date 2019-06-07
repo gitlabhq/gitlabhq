@@ -76,6 +76,7 @@ export default {
       hasSuggestion: false,
       markdownPreviewLoading: false,
       previewMarkdown: false,
+      suggestions: this.note.suggestions || [],
     };
   },
   computed: {
@@ -108,9 +109,6 @@ export default {
         lineNumber = newLine || oldLine;
       }
       return lineNumber;
-    },
-    suggestions() {
-      return this.note.suggestions || [];
     },
     lineType() {
       return this.line ? this.line.type : '';
@@ -175,6 +173,7 @@ export default {
         this.referencedCommands = data.references.commands;
         this.referencedUsers = data.references.users;
         this.hasSuggestion = data.references.suggestions && data.references.suggestions.length;
+        this.suggestions = data.references.suggestions;
       }
 
       this.$nextTick()
@@ -189,7 +188,7 @@ export default {
   <div
     ref="gl-form"
     :class="{ 'prepend-top-default append-bottom-default': addSpacingClasses }"
-    class="md-area js-vue-markdown-field"
+    class="js-vue-markdown-field md-area position-relative"
   >
     <markdown-header
       :preview-markdown="previewMarkdown"
@@ -215,7 +214,7 @@ export default {
       <div
         v-show="previewMarkdown"
         ref="markdown-preview"
-        class="md-preview js-vue-md-preview md md-preview-holder"
+        class="js-vue-md-preview md-preview-holder"
       >
         <suggestions
           v-if="hasSuggestion"
@@ -233,7 +232,7 @@ export default {
       <div
         v-show="previewMarkdown"
         ref="markdown-preview"
-        class="md-preview js-vue-md-preview md md-preview-holder"
+        class="js-vue-md-preview md md-preview-holder"
         v-html="markdownPreview"
       ></div>
     </template>

@@ -13,6 +13,11 @@ describe('Environment', () => {
     cssContainerClass: 'container',
     newEnvironmentPath: 'environments/new',
     helpPagePath: 'help',
+    canaryDeploymentFeatureId: 'canary_deployment',
+    showCanaryDeploymentCallout: true,
+    userCalloutsPath: '/callouts',
+    lockPromotionSvgPath: '/assets/illustrations/lock-promotion.svg',
+    helpCanaryDeploymentsPath: 'help/canary-deployments',
   };
 
   let EnvironmentsComponent;
@@ -94,7 +99,7 @@ describe('Environment', () => {
         it('should make an API request when page is clicked', done => {
           spyOn(component, 'updateContent');
           setTimeout(() => {
-            component.$el.querySelector('.gl-pagination li:nth-child(5) a').click();
+            component.$el.querySelector('.gl-pagination li:nth-child(5) .page-link').click();
 
             expect(component.updateContent).toHaveBeenCalledWith({ scope: 'available', page: '2' });
             done();

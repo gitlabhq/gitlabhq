@@ -4,7 +4,7 @@
       = link_to profile_path, title: _('Profile Settings') do
         .avatar-container.s40.settings-avatar
           = image_tag avatar_icon_for_user(current_user, 40), class: "avatar s40 avatar-tile", alt: current_user.name
-        .sidebar-context-title User Settings
+        .sidebar-context-title= _('User Settings')
     %ul.sidebar-top-level-items
       = nav_link(path: 'profiles#show', html_options: {class: 'home'}) do
         = link_to profile_path do
@@ -28,6 +28,8 @@
             = link_to profile_account_path do
               %strong.fly-out-top-item-name
                 = _('Account')
+
+      = render_if_exists 'layouts/nav/sidebar/profile_billing_link'
       = nav_link(controller: 'oauth/applications') do
         = link_to applications_profile_path do
           .nav-icon-container
@@ -150,5 +152,7 @@
             = link_to audit_log_profile_path do
               %strong.fly-out-top-item-name
                 = _('Authentication Log')
+
+      = render_if_exists 'layouts/nav/sidebar/profile_pipeline_quota_link'
 
     = render 'shared/sidebar_toggle_button'

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Board < ActiveRecord::Base
+class Board < ApplicationRecord
   belongs_to :group
   belongs_to :project
 

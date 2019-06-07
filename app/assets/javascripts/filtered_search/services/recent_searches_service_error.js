@@ -1,7 +1,9 @@
+import { __ } from '~/locale';
+
 class RecentSearchesServiceError {
   constructor(message) {
     this.name = 'RecentSearchesServiceError';
-    this.message = message || 'Recent Searches Service is unavailable';
+    this.message = message || __('Recent Searches Service is unavailable');
   }
 }
 

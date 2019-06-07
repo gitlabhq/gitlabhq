@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Ci
-  class BuildTraceSectionName < ActiveRecord::Base
+  class BuildTraceSectionName < ApplicationRecord
     extend Gitlab::Ci::Model
 
     belongs_to :project

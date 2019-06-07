@@ -2,6 +2,8 @@
 
 module Projects
   class CreateService < BaseService
+    include ValidatesClassificationLabel
+
     def initialize(user, params)
       @current_user, @params = user, params.dup
       @skip_wiki = @params.delete(:skip_wiki)
@@ -44,6 +46,8 @@ module Projects
 
       relations_block&.call(@project)
       yield(@project) if block_given?
+
+      validate_classification_label(@project, :external_authorization_classification_label)
 
       # If the block added errors, don't try to save the project
       return @project if @project.errors.any?
@@ -96,8 +100,6 @@ module Projects
       current_user.invalidate_personal_projects_count
 
       create_readme if @initialize_with_readme
-
-      configure_group_clusters_for_project
     end
 
     # Refresh the current user's authorizations inline (so they can access the
@@ -121,10 +123,6 @@ module Projects
       }
 
       Files::CreateService.new(@project, current_user, commit_attrs).execute
-    end
-
-    def configure_group_clusters_for_project
-      ClusterProjectConfigureWorker.perform_async(@project.id)
     end
 
     def skip_wiki?
@@ -155,8 +153,8 @@ module Projects
       log_message << " Project ID: #{@project.id}" if @project&.id
       Rails.logger.error(log_message)
 
-      if @project
-        @project.import_state.mark_as_failed(message) if @project.persisted? && @project.import?
+      if @project && @project.persisted? && @project.import_state
+        @project.import_state.mark_as_failed(message)
       end
 
       @project

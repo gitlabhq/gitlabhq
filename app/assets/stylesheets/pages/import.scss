@@ -18,8 +18,6 @@
 }
 
 .import-namespace-select {
-  width: auto !important;
-
   > .select2-choice {
     border-radius: $border-radius-default 0 0 $border-radius-default;
     position: relative;
@@ -48,4 +46,16 @@
 
 .import-projects-loading-icon {
   margin-top: $gl-padding-32;
+}
+
+.btn-import {
+  .loading-icon {
+    display: none;
+  }
+
+  &.is-loading {
+    .loading-icon {
+      display: inline-block;
+    }
+  }
 }

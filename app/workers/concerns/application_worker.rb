@@ -53,7 +53,7 @@ module ApplicationWorker
       schedule = now + delay.to_i
 
       if schedule <= now
-        raise ArgumentError, 'The schedule time must be in the future!'
+        raise ArgumentError, _('The schedule time must be in the future!')
       end
 
       Sidekiq::Client.push_bulk('class' => self, 'args' => args_list, 'at' => schedule)

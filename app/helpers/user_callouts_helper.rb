@@ -17,6 +17,9 @@ module UserCalloutsHelper
     render 'shared/flash_user_callout', flash_type: flash_type, message: message, feature_name: feature_name
   end
 
+  def render_dashboard_gold_trial(user)
+  end
+
   private
 
   def user_dismissed?(feature_name)

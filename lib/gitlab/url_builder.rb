@@ -30,6 +30,10 @@ module Gitlab
         snippet_url(object)
       when Milestone
         milestone_url(object)
+      when ::Ci::Build
+        project_job_url(object.project, object)
+      when User
+        user_url(object)
       else
         raise NotImplementedError.new("No URL builder defined for #{object.class}")
       end

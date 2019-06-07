@@ -1,10 +1,15 @@
-# Slack slash commands
+# Slack slash commands **[CORE ONLY]**
 
-> Introduced in GitLab 8.15
+> Introduced in GitLab 8.15.
 
-Slack slash commands allow you to control GitLab and view content right inside Slack, without having to leave it. This requires configurations in both Slack and GitLab.
+Slack slash commands allow you to control GitLab and view content right inside
+Slack, without having to leave it. This requires configurations in both Slack and GitLab.
 
-> Note: GitLab can also send events (e.g. issue created) to Slack as notifications. This is the separately configured [Slack Notifications Service](slack.md).
+GitLab can also send events (e.g., `issue created`) to Slack as notifications.
+This is the separately configured [Slack Notifications Service](slack.md).
+
+NOTE: **Note:**
+For GitLab.com, use the [Slack app](gitlab_slack_application.md) instead.
 
 ## Configuration
 

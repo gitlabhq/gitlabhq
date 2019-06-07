@@ -20,7 +20,7 @@ module Groups
       end
 
       # reload the relation to prevent triggering destroy hooks on the projects again
-      group.projects.reload
+      group.projects.reset
 
       group.children.each do |group|
         # This needs to be synchronous since the namespace gets destroyed below

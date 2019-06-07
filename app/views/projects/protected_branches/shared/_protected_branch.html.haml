@@ -1,6 +1,6 @@
 - can_admin_project = can?(current_user, :admin_project, @project)
 
-%tr.js-protected-branch-edit-form{ data: { url: namespace_project_protected_branch_path(@project.namespace, @project, protected_branch) } }
+%tr.qa-protected-branch.js-protected-branch-edit-form{ data: { url: namespace_project_protected_branch_path(@project.namespace, @project, protected_branch) } }
   %td
     %span.ref-name= protected_branch.name
 

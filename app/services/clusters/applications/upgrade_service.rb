@@ -6,22 +6,28 @@ module Clusters
       def execute
         return unless app.scheduled?
 
-        begin
-          app.make_updating!
+        app.make_updating!
 
-          # install_command works with upgrades too
-          # as it basically does `helm upgrade --install`
-          helm_api.update(install_command)
+        upgrade
+      end
 
-          ClusterWaitForAppInstallationWorker.perform_in(
-            ClusterWaitForAppInstallationWorker::INTERVAL, app.name, app.id)
-        rescue Kubeclient::HttpError => e
-          log_error(e)
-          app.make_update_errored!("Kubernetes error: #{e.error_code}")
-        rescue StandardError => e
-          log_error(e)
-          app.make_update_errored!("Can't start upgrade process.")
-        end
+      private
+
+      def upgrade
+        # install_command works with upgrades too
+        # as it basically does `helm upgrade --install`
+        log_event(:begin_upgrade)
+        helm_api.update(install_command)
+
+        log_event(:schedule_wait_for_upgrade)
+        ClusterWaitForAppInstallationWorker.perform_in(
+          ClusterWaitForAppInstallationWorker::INTERVAL, app.name, app.id)
+      rescue Kubeclient::HttpError => e
+        log_error(e)
+        app.make_errored!(_('Kubernetes error: %{error_code}') % { error_code: e.error_code })
+      rescue StandardError => e
+        log_error(e)
+        app.make_errored!(_('Failed to upgrade.'))
       end
     end
   end

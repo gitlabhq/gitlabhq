@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :deployment, class: Deployment do
-    sha '97de212e80737a608d939f648d959671fb0a0142'
+    sha 'b83d6e391c22777fca1ed3012fce84f633d7fed0'
     ref 'master'
     tag false
     user nil

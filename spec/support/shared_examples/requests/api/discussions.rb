@@ -1,4 +1,4 @@
-shared_examples 'discussions API' do |parent_type, noteable_type, id_name|
+shared_examples 'discussions API' do |parent_type, noteable_type, id_name, can_reply_to_individual_notes: false|
   describe "GET /#{parent_type}/:id/#{noteable_type}/:noteable_id/discussions" do
     it "returns an array of discussions" do
       get api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/discussions", user)
@@ -86,6 +86,37 @@ shared_examples 'discussions API' do |parent_type, noteable_type, id_name|
         expect(response).to have_gitlab_http_status(404)
       end
     end
+
+    context 'when a project is public with private repo access' do
+      let!(:parent) { create(:project, :public, :repository, :repository_private, :snippets_private) }
+      let!(:user_without_access) { create(:user) }
+
+      context 'when user is not a team member of private repo' do
+        before do
+          project.team.truncate
+        end
+
+        context "creating a new note" do
+          before do
+            post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/discussions", user_without_access), params: { body: 'hi!' }
+          end
+
+          it 'raises 404 error' do
+            expect(response).to have_gitlab_http_status(404)
+          end
+        end
+
+        context "fetching a discussion" do
+          before do
+            get api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/discussions/#{note.discussion_id}", user_without_access)
+          end
+
+          it 'raises 404 error' do
+            expect(response).to have_gitlab_http_status(404)
+          end
+        end
+      end
+    end
   end
 
   describe "POST /#{parent_type}/:id/#{noteable_type}/:noteable_id/discussions/:discussion_id/notes" do
@@ -105,13 +136,25 @@ shared_examples 'discussions API' do |parent_type, noteable_type, id_name|
       expect(response).to have_gitlab_http_status(400)
     end
 
-    it "returns a 400 bad request error if discussion is individual note" do
-      note.update_attribute(:type, nil)
+    context 'when the discussion is an individual note' do
+      before do
+        note.update!(type: nil)
 
-      post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/"\
-               "discussions/#{note.discussion_id}/notes", user), params: { body: 'hi!' }
+        post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/"\
+                 "discussions/#{note.discussion_id}/notes", user), params: { body: 'hi!' }
+      end
 
-      expect(response).to have_gitlab_http_status(400)
+      if can_reply_to_individual_notes
+        it 'creates a new discussion' do
+          expect(response).to have_gitlab_http_status(201)
+          expect(json_response['body']).to eq('hi!')
+          expect(json_response['type']).to eq('DiscussionNote')
+        end
+      else
+        it 'returns 400 bad request' do
+          expect(response).to have_gitlab_http_status(400)
+        end
+      end
     end
   end
 

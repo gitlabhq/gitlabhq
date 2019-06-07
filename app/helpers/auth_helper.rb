@@ -2,7 +2,7 @@
 
 module AuthHelper
   PROVIDERS_WITH_ICONS = %w(twitter github gitlab bitbucket google_oauth2 facebook azure_oauth2 authentiq).freeze
-  LDAP_PROVIDER = /\Aldap/
+  LDAP_PROVIDER = /\Aldap/.freeze
 
   def ldap_enabled?
     Gitlab::Auth::LDAP::Config.enabled?
@@ -100,8 +100,12 @@ module AuthHelper
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
-  def unlink_allowed?(provider)
-    %w(saml cas3).exclude?(provider.to_s)
+  def unlink_provider_allowed?(provider)
+    IdentityProviderPolicy.new(current_user, provider).can?(:unlink)
+  end
+
+  def link_provider_allowed?(provider)
+    IdentityProviderPolicy.new(current_user, provider).can?(:link)
   end
 
   extend self

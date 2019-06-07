@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Environment do
   let(:project) { create(:project, :stubbed_repository) }
   subject(:environment) { create(:environment, project: project) }
 
-  it { is_expected.to belong_to(:project) }
+  it { is_expected.to belong_to(:project).required }
   it { is_expected.to have_many(:deployments) }
 
   it { is_expected.to delegate_method(:stop_action).to(:last_deployment) }
@@ -160,6 +162,28 @@ describe Environment do
 
       it 'returns an environment name' do
         expect(environment.folder_name).to eq 'production'
+      end
+    end
+  end
+
+  describe '#name_without_type' do
+    context 'when it is inside a folder' do
+      subject(:environment) do
+        create(:environment, name: 'staging/review-1')
+      end
+
+      it 'returns name without folder' do
+        expect(environment.name_without_type).to eq 'review-1'
+      end
+    end
+
+    context 'when the environment if a top-level item itself' do
+      subject(:environment) do
+        create(:environment, name: 'production')
+      end
+
+      it 'returns full name' do
+        expect(environment.name_without_type).to eq 'production'
       end
     end
   end
@@ -568,7 +592,7 @@ describe Environment do
 
       shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
         it 'returns the terminals from the deployment service' do
-          expect(project.deployment_platform)
+          expect(environment.deployment_platform)
             .to receive(:terminals).with(environment)
             .and_return(:fake_terminals)
 
@@ -661,7 +685,8 @@ describe Environment do
 
   describe '#additional_metrics' do
     let(:project) { create(:prometheus_project) }
-    subject { environment.additional_metrics }
+    let(:metric_params) { [] }
+    subject { environment.additional_metrics(*metric_params) }
 
     context 'when the environment has additional metrics' do
       before do
@@ -669,11 +694,25 @@ describe Environment do
       end
 
       it 'returns the additional metrics from the deployment service' do
-        expect(environment.prometheus_adapter).to receive(:query)
-                                                .with(:additional_metrics_environment, environment)
-                                                .and_return(:fake_metrics)
+        expect(environment.prometheus_adapter)
+          .to receive(:query)
+          .with(:additional_metrics_environment, environment)
+          .and_return(:fake_metrics)
 
         is_expected.to eq(:fake_metrics)
+      end
+
+      context 'when time window arguments are provided' do
+        let(:metric_params) { [1552642245.067, Time.now] }
+
+        it 'queries with the expected parameters' do
+          expect(environment.prometheus_adapter)
+            .to receive(:query)
+            .with(:additional_metrics_environment, environment, *metric_params.map(&:to_f))
+            .and_return(:fake_metrics)
+
+          is_expected.to eq(:fake_metrics)
+        end
       end
     end
 

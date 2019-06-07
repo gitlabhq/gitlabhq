@@ -48,6 +48,10 @@ describe StageEntity do
       expect(subject[:title]).to eq 'test: passed'
     end
 
+    it 'does not contain play_details info' do
+      expect(subject[:status][:action]).not_to be_present
+    end
+
     context 'when the jobs should be grouped' do
       let(:entity) { described_class.new(stage, request: request, grouped: true) }
 
@@ -64,6 +68,30 @@ describe StageEntity do
           groups = subject[:groups].map { |group| group[:name] }
           expect(groups).to include('generic')
         end
+      end
+    end
+
+    context 'with a skipped stage ' do
+      let(:stage) { create(:ci_stage_entity, status: 'skipped') }
+
+      it 'contains play_all_manual' do
+        expect(subject[:status][:action]).to be_present
+      end
+    end
+
+    context 'with a scheduled stage ' do
+      let(:stage) { create(:ci_stage_entity, status: 'scheduled') }
+
+      it 'contains play_all_manual' do
+        expect(subject[:status][:action]).to be_present
+      end
+    end
+
+    context 'with a manual stage ' do
+      let(:stage) { create(:ci_stage_entity, status: 'manual') }
+
+      it 'contains play_all_manual' do
+        expect(subject[:status][:action]).to be_present
       end
     end
   end

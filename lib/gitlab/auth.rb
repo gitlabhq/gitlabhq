@@ -4,10 +4,17 @@ module Gitlab
   module Auth
     MissingPersonalAccessTokenError = Class.new(StandardError)
 
+    # Scopes used for GitLab API access
+    API_SCOPES = [:api, :read_user].freeze
+
+    # Scopes used for GitLab Repository access
+    REPOSITORY_SCOPES = [:read_repository, :write_repository].freeze
+
+    # Scopes used for GitLab Docker Registry access
     REGISTRY_SCOPES = [:read_registry].freeze
 
-    # Scopes used for GitLab API access
-    API_SCOPES = [:api, :read_user, :sudo, :read_repository].freeze
+    # Scopes used for GitLab as admin
+    ADMIN_SCOPES = [:sudo].freeze
 
     # Scopes used for OpenID Connect
     OPENID_SCOPES = [:openid].freeze
@@ -159,7 +166,7 @@ module Gitlab
 
         token = PersonalAccessTokensFinder.new(state: 'active').find_by_token(password)
 
-        if token && valid_scoped_token?(token, available_scopes)
+        if token && valid_scoped_token?(token, all_available_scopes)
           Gitlab::Auth::Result.new(token.user, nil, :personal_access_token, abilities_for_scopes(token.scopes))
         end
       end
@@ -176,7 +183,8 @@ module Gitlab
         abilities_by_scope = {
           api: full_authentication_abilities,
           read_registry: [:read_container_image],
-          read_repository: [:download_code]
+          read_repository: [:download_code],
+          write_repository: [:download_code, :push_code]
         }
 
         scopes.flat_map do |scope|
@@ -196,7 +204,7 @@ module Gitlab
 
         scopes = abilities_for_scopes(token.scopes)
 
-        if valid_scoped_token?(token, available_scopes)
+        if valid_scoped_token?(token, all_available_scopes)
           Gitlab::Auth::Result.new(token, token.project, :deploy_token, scopes)
         end
       end
@@ -222,7 +230,7 @@ module Gitlab
           elsif token_handler.deploy_key_pushable?(project)
             read_write_authentication_abilities
           else
-            read_authentication_abilities
+            read_only_authentication_abilities
           end
 
         if token_handler.token_valid?(encoded_token)
@@ -258,7 +266,7 @@ module Gitlab
         ]
       end
 
-      def read_authentication_abilities
+      def read_only_authentication_abilities
         [
           :read_project,
           :download_code,
@@ -267,7 +275,7 @@ module Gitlab
       end
 
       def read_write_authentication_abilities
-        read_authentication_abilities + [
+        read_only_authentication_abilities + [
           :push_code,
           :create_container_image
         ]
@@ -279,15 +287,19 @@ module Gitlab
         ]
       end
 
-      def available_scopes(current_user = nil)
-        scopes = API_SCOPES + registry_scopes
-        scopes.delete(:sudo) if current_user && !current_user.admin?
+      def available_scopes_for(current_user)
+        scopes = non_admin_available_scopes
+        scopes += ADMIN_SCOPES if current_user.admin?
         scopes
+      end
+
+      def all_available_scopes
+        non_admin_available_scopes + ADMIN_SCOPES
       end
 
       # Other available scopes
       def optional_scopes
-        available_scopes + OPENID_SCOPES + PROFILE_SCOPES - DEFAULT_SCOPES
+        all_available_scopes + OPENID_SCOPES + PROFILE_SCOPES - DEFAULT_SCOPES
       end
 
       def registry_scopes
@@ -297,6 +309,10 @@ module Gitlab
       end
 
       private
+
+      def non_admin_available_scopes
+        API_SCOPES + REPOSITORY_SCOPES + registry_scopes
+      end
 
       def find_build_by_token(token)
         ::Ci::Build.running.find_by_token(token)

@@ -1,5 +1,7 @@
 ---
 description: "How to secure GitLab Pages websites with Let's Encrypt."
+type: howto
+last_updated: 2019-06-04
 ---
 
 # Let's Encrypt for GitLab Pages
@@ -134,19 +136,19 @@ Now that your certificate has been issued, let's add it to your Pages site:
     sudo cat /etc/letsencrypt/live/example.com/fullchain.pem | pbcopy
     ```
 
-1. Copy and paste the public key into the second field **Key (PEM)**:
+1. Copy and paste the private key into the second field **Key (PEM)**:
 
     ```bash
     sudo cat /etc/letsencrypt/live/example.com/privkey.pem | pbcopy
     ```
 
 1. Click **Save changes** to apply them to your website.
-1. Wait a few minutes for DNS propagation.
+1. Wait a few minutes for the configuration changes to take effect.
 1. Visit your website at `https://example.com`.
 
 To force `https` connections on your site, navigate to your
-project's **Settings > Pages** and check **Force domains with SSL
-certificates to use HTTPS**.
+project's **Settings > Pages** and check **Force HTTPS (requires
+valid certificates)**.
 
 ## Renewal
 

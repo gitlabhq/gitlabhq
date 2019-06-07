@@ -137,7 +137,7 @@ The Pages daemon doesn't listen to the outside world.
 
     ```
     gitlab_pages_enabled=true
-    gitlab_pages_options="-pages-domain example.io -pages-root $app_root/shared/pages -listen-proxy 127.0.0.1:8090
+    gitlab_pages_options="-pages-domain example.io -pages-root $app_root/shared/pages -listen-proxy 127.0.0.1:8090"
     ```
 
 1. Copy the `gitlab-pages` Nginx configuration file:

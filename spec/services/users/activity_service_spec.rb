@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Users::ActivityService do
@@ -76,7 +78,7 @@ describe Users::ActivityService do
       let(:last_activity_on) { nil }
 
       it 'does not update last_activity_on' do
-        stub_exclusive_lease_taken("acitvity_service:#{user.id}", timeout: 1.minute.to_i)
+        stub_exclusive_lease_taken("activity_service:#{user.id}", timeout: 1.minute.to_i)
 
         expect { subject.execute }.not_to change(user, :last_activity_on)
       end

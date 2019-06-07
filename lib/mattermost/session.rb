@@ -122,7 +122,7 @@ module Mattermost
 
       @oauth_uri = nil
 
-      response = get('/oauth/gitlab/login', follow_redirects: false, format: 'text/html')
+      response = get('/oauth/gitlab/login', follow_redirects: false)
       return unless (300...400) === response.code
 
       redirect_uri = response.headers['location']

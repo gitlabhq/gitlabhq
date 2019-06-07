@@ -73,7 +73,7 @@ describe API::Badges do
           let(:badge) { source.badges.first }
 
           context "as a #{type}" do
-            it 'returns 200' do
+            it 'returns 200', :quarantine do
               user = public_send(type)
 
               get api("/#{source_type.pluralize}/#{source.id}/badges/#{badge.id}", user)
@@ -193,7 +193,7 @@ describe API::Badges do
       end
 
       context 'when authenticated as a maintainer/owner' do
-        it 'updates the member' do
+        it 'updates the member', :quarantine do
           put api("/#{source_type.pluralize}/#{source.id}/badges/#{badge.id}", maintainer),
               params: { link_url: example_url, image_url: example_url2 }
 
@@ -239,7 +239,7 @@ describe API::Badges do
         end
       end
 
-      context 'when authenticated as a maintainer/owner' do
+      context 'when authenticated as a maintainer/owner', :quarantine do
         it 'deletes the badge' do
           expect do
             delete api("/#{source_type.pluralize}/#{source.id}/badges/#{badge.id}", maintainer)

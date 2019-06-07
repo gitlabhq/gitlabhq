@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'Project variables', :js do
   let(:user)     { create(:user) }
   let(:project)  { create(:project) }
-  let(:variable) { create(:ci_variable, key: 'test_key', value: 'test value') }
+  let(:variable) { create(:ci_variable, key: 'test_key', value: 'test_value', masked: true) }
   let(:page_path) { project_settings_ci_cd_path(project) }
 
   before do

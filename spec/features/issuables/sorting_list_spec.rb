@@ -86,26 +86,26 @@ describe 'Sort Issuable List' do
           expect(last_merge_request).to include(first_created_issuable.title)
         end
       end
+    end
 
-      context 'custom sorting' do
-        let(:issuable_type) { :merge_request }
+    context 'custom sorting' do
+      let(:issuable_type) { :merge_request }
 
-        it 'supports sorting in asc and desc order' do
-          visit_merge_requests_with_state(project, 'open')
+      it 'supports sorting in asc and desc order' do
+        visit_merge_requests_with_state(project, 'open')
 
-          page.within('.issues-other-filters') do
-            click_button('Created date')
-            click_link('Last updated')
-          end
-
-          expect(first_merge_request).to include(last_updated_issuable.title)
-          expect(last_merge_request).to include(first_updated_issuable.title)
-
-          find('.issues-other-filters .filter-dropdown-container .qa-reverse-sort').click
-
-          expect(first_merge_request).to include(first_updated_issuable.title)
-          expect(last_merge_request).to include(last_updated_issuable.title)
+        page.within('.issues-other-filters') do
+          click_button('Created date')
+          click_link('Last updated')
         end
+
+        expect(first_merge_request).to include(last_updated_issuable.title)
+        expect(last_merge_request).to include(first_updated_issuable.title)
+
+        find('.issues-other-filters .filter-dropdown-container .qa-reverse-sort').click
+
+        expect(first_merge_request).to include(first_updated_issuable.title)
+        expect(last_merge_request).to include(last_updated_issuable.title)
       end
     end
   end

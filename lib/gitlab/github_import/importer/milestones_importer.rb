@@ -42,6 +42,7 @@ module Gitlab
             description: milestone.description,
             project_id: project.id,
             state: state_for(milestone),
+            due_date: milestone.due_on&.to_date,
             created_at: milestone.created_at,
             updated_at: milestone.updated_at
           }

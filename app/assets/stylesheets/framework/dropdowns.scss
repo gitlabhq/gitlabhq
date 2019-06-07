@@ -351,6 +351,10 @@
     // Expects up to 3 digits on the badge
     margin-right: 40px;
   }
+
+  .dropdown-menu-content {
+    padding: $dropdown-item-padding-y $dropdown-item-padding-x;
+  }
 }
 
 .droplab-dropdown {
@@ -566,10 +570,10 @@
 }
 
 .dropdown-menu-close {
-  right: 5px;
+  top: $gl-padding-4;
+  right: $gl-padding-8;
   width: 20px;
   height: 20px;
-  top: -1px;
 }
 
 .dropdown-menu-close-icon {

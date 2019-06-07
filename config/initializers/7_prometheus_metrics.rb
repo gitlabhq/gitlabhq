@@ -19,21 +19,21 @@ Gitlab::Application.configure do |config|
   config.middleware.insert(1, Gitlab::Metrics::RequestsRackMiddleware)
 end
 
-Sidekiq.configure_server do |config|
-  config.on(:startup) do
-    Gitlab::Metrics::SidekiqMetricsExporter.instance.start
-  end
-end
-
 if !Rails.env.test? && Gitlab::Metrics.prometheus_metrics_enabled?
   Gitlab::Cluster::LifecycleEvents.on_worker_start do
     defined?(::Prometheus::Client.reinitialize_on_pid_change) && Prometheus::Client.reinitialize_on_pid_change
 
-    unless Sidekiq.server?
+    if defined?(::Unicorn)
       Gitlab::Metrics::Samplers::UnicornSampler.initialize_instance(Settings.monitoring.unicorn_sampler_interval).start
     end
 
     Gitlab::Metrics::Samplers::RubySampler.initialize_instance(Settings.monitoring.ruby_sampler_interval).start
+  end
+
+  if defined?(::Puma)
+    Gitlab::Cluster::LifecycleEvents.on_master_start do
+      Gitlab::Metrics::Samplers::PumaSampler.initialize_instance(Settings.monitoring.puma_sampler_interval).start
+    end
   end
 end
 

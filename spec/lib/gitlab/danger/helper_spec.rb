@@ -2,7 +2,6 @@
 
 require 'fast_spec_helper'
 require 'rspec-parameterized'
-require 'webmock/rspec'
 
 require 'gitlab/danger/helper'
 
@@ -16,39 +15,6 @@ describe Gitlab::Danger::Helper do
 
     def initialize(git:)
       @git = git
-    end
-  end
-
-  let(:teammate_json) do
-    <<~JSON
-    [
-      {
-        "username": "in-gitlab-ce",
-        "name": "CE maintainer",
-        "projects":{ "gitlab-ce": "maintainer backend" }
-      },
-      {
-        "username": "in-gitlab-ee",
-        "name": "EE reviewer",
-        "projects":{ "gitlab-ee": "reviewer frontend" }
-      }
-    ]
-    JSON
-  end
-
-  let(:ce_teammate_matcher) do
-    satisfy do |teammate|
-      teammate.username == 'in-gitlab-ce' &&
-        teammate.name == 'CE maintainer' &&
-        teammate.projects == { 'gitlab-ce' => 'maintainer backend' }
-    end
-  end
-
-  let(:ee_teammate_matcher) do
-    satisfy do |teammate|
-      teammate.username == 'in-gitlab-ee' &&
-        teammate.name == 'EE reviewer' &&
-        teammate.projects == { 'gitlab-ee' => 'reviewer frontend' }
     end
   end
 
@@ -119,69 +85,6 @@ describe Gitlab::Danger::Helper do
     end
   end
 
-  describe '#team' do
-    subject(:team) { helper.team }
-
-    context 'HTTP failure' do
-      before do
-        WebMock
-          .stub_request(:get, 'https://about.gitlab.com/roulette.json')
-          .to_return(status: 404)
-      end
-
-      it 'raises a pretty error' do
-        expect { team }.to raise_error(/Failed to read/)
-      end
-    end
-
-    context 'JSON failure' do
-      before do
-        WebMock
-          .stub_request(:get, 'https://about.gitlab.com/roulette.json')
-          .to_return(body: 'INVALID JSON')
-      end
-
-      it 'raises a pretty error' do
-        expect { team }.to raise_error(/Failed to parse/)
-      end
-    end
-
-    context 'success' do
-      before do
-        WebMock
-          .stub_request(:get, 'https://about.gitlab.com/roulette.json')
-          .to_return(body: teammate_json)
-      end
-
-      it 'returns an array of teammates' do
-        is_expected.to contain_exactly(ce_teammate_matcher, ee_teammate_matcher)
-      end
-
-      it 'memoizes the result' do
-        expect(team.object_id).to eq(helper.team.object_id)
-      end
-    end
-  end
-
-  describe '#project_team' do
-    subject { helper.project_team }
-
-    before do
-      WebMock
-        .stub_request(:get, 'https://about.gitlab.com/roulette.json')
-        .to_return(body: teammate_json)
-    end
-
-    it 'filters team by project_name' do
-      expect(helper)
-        .to receive(:project_name)
-        .at_least(:once)
-        .and_return('gitlab-ce')
-
-      is_expected.to contain_exactly(ce_teammate_matcher)
-    end
-  end
-
   describe '#changes_by_category' do
     it 'categorizes changed files' do
       expect(fake_git).to receive(:added_files) { %w[foo foo.md foo.rb foo.js db/foo qa/foo ee/changelogs/foo.yml] }
@@ -191,9 +94,8 @@ describe Gitlab::Danger::Helper do
       expect(helper.changes_by_category).to eq(
         backend: %w[foo.rb],
         database: %w[db/foo],
-        docs: %w[foo.md],
         frontend: %w[foo.js],
-        none: %w[ee/changelogs/foo.yml],
+        none: %w[ee/changelogs/foo.yml foo.md],
         qa: %w[qa/foo],
         unknown: %w[foo]
       )
@@ -202,13 +104,13 @@ describe Gitlab::Danger::Helper do
 
   describe '#category_for_file' do
     where(:path, :expected_category) do
-      'doc/foo'         | :docs
-      'CONTRIBUTING.md' | :docs
-      'LICENSE'         | :docs
-      'MAINTENANCE.md'  | :docs
-      'PHILOSOPHY.md'   | :docs
-      'PROCESS.md'      | :docs
-      'README.md'       | :docs
+      'doc/foo'         | :none
+      'CONTRIBUTING.md' | :none
+      'LICENSE'         | :none
+      'MAINTENANCE.md'  | :none
+      'PHILOSOPHY.md'   | :none
+      'PROCESS.md'      | :none
+      'README.md'       | :none
 
       'ee/doc/foo'      | :unknown
       'ee/README'       | :unknown
@@ -265,14 +167,15 @@ describe Gitlab::Danger::Helper do
 
       'changelogs/foo'    | :none
       'ee/changelogs/foo' | :none
+      'locale/gitlab.pot' | :none
 
       'FOO'          | :unknown
       'foo'          | :unknown
 
       'foo/bar.rb'  | :backend
       'foo/bar.js'  | :frontend
-      'foo/bar.txt' | :docs
-      'foo/bar.md'  | :docs
+      'foo/bar.txt' | :none
+      'foo/bar.md'  | :none
     end
 
     with_them do

@@ -1795,7 +1795,7 @@ GroupsController
         when requesting a redirected path
           returns not found
   PUT transfer
-    when transfering to a subgroup goes right
+    when transferring to a subgroup goes right
       should return a notice (PENDING: around hook at ./spec/spec_helper.rb:190 did not execute the example)
       should redirect to the new path (PENDING: around hook at ./spec/spec_helper.rb:190 did not execute the example)
     when converting to a root group goes right
@@ -2299,7 +2299,7 @@ Groups::TransferService
         should update subgroups path (PENDING: around hook at ./spec/spec_helper.rb:190 did not execute the example)
         should update projects path (PENDING: around hook at ./spec/spec_helper.rb:190 did not execute the example)
         should create redirect for the subgroups and projects (PENDING: around hook at ./spec/spec_helper.rb:190 did not execute the example)
-      when transfering a group with nested groups and projects
+      when transferring a group with nested groups and projects
         should update subgroups path (PENDING: around hook at ./spec/spec_helper.rb:190 did not execute the example)
         should update projects path (PENDING: around hook at ./spec/spec_helper.rb:190 did not execute the example)
         should create redirect for the subgroups and projects (PENDING: around hook at ./spec/spec_helper.rb:190 did not execute the example)
@@ -2426,9 +2426,9 @@ Groups::MilestonesController
       lists legacy group milestones and group milestones
   #show
     when there is a title parameter
-      searchs for a legacy group milestone
+      searches for a legacy group milestone
     when there is not a title parameter
-      searchs for a group milestone
+      searches for a group milestone
   behaves like milestone tabs
     #merge_requests
       as html
@@ -3109,11 +3109,11 @@ Pending: (Failures listed here are expected and do not affect your suite's statu
      # around hook at ./spec/spec_helper.rb:186 did not execute the example
      # ./spec/controllers/groups_controller_spec.rb:129
 
-  15) GroupsController PUT transfer when transfering to a subgroup goes right should return a notice
+  15) GroupsController PUT transfer when transferring to a subgroup goes right should return a notice
      # around hook at ./spec/spec_helper.rb:190 did not execute the example
      # ./spec/controllers/groups_controller_spec.rb:516
 
-  16) GroupsController PUT transfer when transfering to a subgroup goes right should redirect to the new path
+  16) GroupsController PUT transfer when transferring to a subgroup goes right should redirect to the new path
      # around hook at ./spec/spec_helper.rb:190 did not execute the example
      # ./spec/controllers/groups_controller_spec.rb:520
 
@@ -3301,15 +3301,15 @@ Pending: (Failures listed here are expected and do not affect your suite's statu
      # around hook at ./spec/spec_helper.rb:190 did not execute the example
      # ./spec/services/groups/transfer_service_spec.rb:341
 
-  63) Groups::TransferService#execute when transferring a subgroup into another group when transfering a group with nested groups and projects should update subgroups path
+  63) Groups::TransferService#execute when transferring a subgroup into another group when transferring a group with nested groups and projects should update subgroups path
      # around hook at ./spec/spec_helper.rb:190 did not execute the example
      # ./spec/services/groups/transfer_service_spec.rb:363
 
-  64) Groups::TransferService#execute when transferring a subgroup into another group when transfering a group with nested groups and projects should update projects path
+  64) Groups::TransferService#execute when transferring a subgroup into another group when transferring a group with nested groups and projects should update projects path
      # around hook at ./spec/spec_helper.rb:190 did not execute the example
      # ./spec/services/groups/transfer_service_spec.rb:375
 
-  65) Groups::TransferService#execute when transferring a subgroup into another group when transfering a group with nested groups and projects should create redirect for the subgroups and projects
+  65) Groups::TransferService#execute when transferring a subgroup into another group when transferring a group with nested groups and projects should create redirect for the subgroups and projects
      # around hook at ./spec/spec_helper.rb:190 did not execute the example
      # ./spec/services/groups/transfer_service_spec.rb:383
 

@@ -1,9 +1,4 @@
-import _ from 'underscore';
-import AjaxCache from '~/lib/utils/ajax_cache';
-import UsersCache from '~/lib/utils/users_cache';
-
 import FilteredSearchVisualTokens from '~/filtered_search/filtered_search_visual_tokens';
-import DropdownUtils from '~/filtered_search//dropdown_utils';
 import FilteredSearchSpecHelper from '../helpers/filtered_search_spec_helper';
 
 describe('Filtered Search Visual Tokens', () => {
@@ -298,6 +293,7 @@ describe('Filtered Search Visual Tokens', () => {
       subject.addVisualTokenElement('milestone');
       const token = tokensContainer.querySelector('.js-visual-token');
 
+      expect(token.classList.contains('search-token-milestone')).toEqual(true);
       expect(token.classList.contains('filtered-search-token')).toEqual(true);
       expect(token.querySelector('.name').innerText).toEqual('milestone');
       expect(token.querySelector('.value')).toEqual(null);
@@ -307,6 +303,7 @@ describe('Filtered Search Visual Tokens', () => {
       subject.addVisualTokenElement('label', 'Frontend');
       const token = tokensContainer.querySelector('.js-visual-token');
 
+      expect(token.classList.contains('search-token-label')).toEqual(true);
       expect(token.classList.contains('filtered-search-token')).toEqual(true);
       expect(token.querySelector('.name').innerText).toEqual('label');
       expect(token.querySelector('.value').innerText).toEqual('Frontend');
@@ -322,10 +319,12 @@ describe('Filtered Search Visual Tokens', () => {
       const labelToken = tokens[0];
       const assigneeToken = tokens[1];
 
+      expect(labelToken.classList.contains('search-token-label')).toEqual(true);
       expect(labelToken.classList.contains('filtered-search-token')).toEqual(true);
       expect(labelToken.querySelector('.name').innerText).toEqual('label');
       expect(labelToken.querySelector('.value').innerText).toEqual('Frontend');
 
+      expect(assigneeToken.classList.contains('search-token-assignee')).toEqual(true);
       expect(assigneeToken.classList.contains('filtered-search-token')).toEqual(true);
       expect(assigneeToken.querySelector('.name').innerText).toEqual('assignee');
       expect(assigneeToken.querySelector('.value').innerText).toEqual('@root');
@@ -685,349 +684,21 @@ describe('Filtered Search Visual Tokens', () => {
   });
 
   describe('renderVisualTokenValue', () => {
-    const keywordToken = FilteredSearchSpecHelper.createFilterVisualToken('search');
-    const milestoneToken = FilteredSearchSpecHelper.createFilterVisualToken(
-      'milestone',
-      'upcoming',
-    );
-
-    let updateLabelTokenColorSpy;
-    let updateUserTokenAppearanceSpy;
-
     beforeEach(() => {
       tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(`
         ${authorToken.outerHTML}
         ${bugLabelToken.outerHTML}
-        ${keywordToken.outerHTML}
-        ${milestoneToken.outerHTML}
       `);
-
-      spyOn(subject, 'updateLabelTokenColor');
-      updateLabelTokenColorSpy = subject.updateLabelTokenColor;
-
-      spyOn(subject, 'updateUserTokenAppearance');
-      updateUserTokenAppearanceSpy = subject.updateUserTokenAppearance;
     });
 
     it('renders a author token value element', () => {
-      const { tokenNameElement, tokenValueContainer, tokenValueElement } = findElements(
-        authorToken,
-      );
+      const { tokenNameElement, tokenValueElement } = findElements(authorToken);
       const tokenName = tokenNameElement.innerText;
       const tokenValue = 'new value';
 
       subject.renderVisualTokenValue(authorToken, tokenName, tokenValue);
 
       expect(tokenValueElement.innerText).toBe(tokenValue);
-      expect(updateUserTokenAppearanceSpy.calls.count()).toBe(1);
-      const expectedArgs = [tokenValueContainer, tokenValueElement, tokenValue];
-
-      expect(updateUserTokenAppearanceSpy.calls.argsFor(0)).toEqual(expectedArgs);
-      expect(updateLabelTokenColorSpy.calls.count()).toBe(0);
-    });
-
-    it('renders a label token value element', () => {
-      const { tokenNameElement, tokenValueContainer, tokenValueElement } = findElements(
-        bugLabelToken,
-      );
-      const tokenName = tokenNameElement.innerText;
-      const tokenValue = 'new value';
-
-      subject.renderVisualTokenValue(bugLabelToken, tokenName, tokenValue);
-
-      expect(tokenValueElement.innerText).toBe(tokenValue);
-      expect(updateLabelTokenColorSpy.calls.count()).toBe(1);
-      const expectedArgs = [tokenValueContainer, tokenValue];
-
-      expect(updateLabelTokenColorSpy.calls.argsFor(0)).toEqual(expectedArgs);
-      expect(updateUserTokenAppearanceSpy.calls.count()).toBe(0);
-    });
-
-    it('renders a milestone token value element', () => {
-      const { tokenNameElement, tokenValueElement } = findElements(milestoneToken);
-      const tokenName = tokenNameElement.innerText;
-      const tokenValue = 'new value';
-
-      subject.renderVisualTokenValue(milestoneToken, tokenName, tokenValue);
-
-      expect(tokenValueElement.innerText).toBe(tokenValue);
-      expect(updateLabelTokenColorSpy.calls.count()).toBe(0);
-      expect(updateUserTokenAppearanceSpy.calls.count()).toBe(0);
-    });
-
-    it('does not update user token appearance for `None` filter', () => {
-      const { tokenNameElement } = findElements(authorToken);
-
-      const tokenName = tokenNameElement.innerText;
-      const tokenValue = 'None';
-
-      subject.renderVisualTokenValue(authorToken, tokenName, tokenValue);
-
-      expect(updateUserTokenAppearanceSpy.calls.count()).toBe(0);
-    });
-
-    it('does not update user token appearance for `none` filter', () => {
-      const { tokenNameElement } = findElements(authorToken);
-
-      const tokenName = tokenNameElement.innerText;
-      const tokenValue = 'none';
-
-      subject.renderVisualTokenValue(authorToken, tokenName, tokenValue);
-
-      expect(updateUserTokenAppearanceSpy.calls.count()).toBe(0);
-    });
-
-    it('does not update user token appearance for `any` filter', () => {
-      const { tokenNameElement } = findElements(authorToken);
-
-      const tokenName = tokenNameElement.innerText;
-      const tokenValue = 'any';
-
-      subject.renderVisualTokenValue(authorToken, tokenName, tokenValue);
-
-      expect(updateUserTokenAppearanceSpy.calls.count()).toBe(0);
-    });
-
-    it('does not update label token color for `none` filter', () => {
-      const { tokenNameElement } = findElements(bugLabelToken);
-
-      const tokenName = tokenNameElement.innerText;
-      const tokenValue = 'none';
-
-      subject.renderVisualTokenValue(bugLabelToken, tokenName, tokenValue);
-
-      expect(updateLabelTokenColorSpy.calls.count()).toBe(0);
-    });
-
-    it('does not update label token color for `any` filter', () => {
-      const { tokenNameElement } = findElements(bugLabelToken);
-
-      const tokenName = tokenNameElement.innerText;
-      const tokenValue = 'any';
-
-      subject.renderVisualTokenValue(bugLabelToken, tokenName, tokenValue);
-
-      expect(updateLabelTokenColorSpy.calls.count()).toBe(0);
-    });
-  });
-
-  describe('updateUserTokenAppearance', () => {
-    let usersCacheSpy;
-
-    beforeEach(() => {
-      spyOn(UsersCache, 'retrieve').and.callFake(username => usersCacheSpy(username));
-    });
-
-    it('ignores error if UsersCache throws', done => {
-      spyOn(window, 'Flash');
-      const dummyError = new Error('Earth rotated backwards');
-      const { tokenValueContainer, tokenValueElement } = findElements(authorToken);
-      const tokenValue = tokenValueElement.innerText;
-      usersCacheSpy = username => {
-        expect(`@${username}`).toBe(tokenValue);
-        return Promise.reject(dummyError);
-      };
-
-      subject
-        .updateUserTokenAppearance(tokenValueContainer, tokenValueElement, tokenValue)
-        .then(() => {
-          expect(window.Flash.calls.count()).toBe(0);
-        })
-        .then(done)
-        .catch(done.fail);
-    });
-
-    it('does nothing if user cannot be found', done => {
-      const { tokenValueContainer, tokenValueElement } = findElements(authorToken);
-      const tokenValue = tokenValueElement.innerText;
-      usersCacheSpy = username => {
-        expect(`@${username}`).toBe(tokenValue);
-        return Promise.resolve(undefined);
-      };
-
-      subject
-        .updateUserTokenAppearance(tokenValueContainer, tokenValueElement, tokenValue)
-        .then(() => {
-          expect(tokenValueElement.innerText).toBe(tokenValue);
-        })
-        .then(done)
-        .catch(done.fail);
-    });
-
-    it('replaces author token with avatar and display name', done => {
-      const dummyUser = {
-        name: 'Important Person',
-        avatar_url: 'https://host.invalid/mypics/avatar.png',
-      };
-      const { tokenValueContainer, tokenValueElement } = findElements(authorToken);
-      const tokenValue = tokenValueElement.innerText;
-      usersCacheSpy = username => {
-        expect(`@${username}`).toBe(tokenValue);
-        return Promise.resolve(dummyUser);
-      };
-
-      subject
-        .updateUserTokenAppearance(tokenValueContainer, tokenValueElement, tokenValue)
-        .then(() => {
-          expect(tokenValueContainer.dataset.originalValue).toBe(tokenValue);
-          expect(tokenValueElement.innerText.trim()).toBe(dummyUser.name);
-          const avatar = tokenValueElement.querySelector('img.avatar');
-
-          expect(avatar.src).toBe(dummyUser.avatar_url);
-          expect(avatar.alt).toBe('');
-        })
-        .then(done)
-        .catch(done.fail);
-    });
-
-    it('escapes user name when creating token', done => {
-      const dummyUser = {
-        name: '<script>',
-        avatar_url: `${gl.TEST_HOST}/mypics/avatar.png`,
-      };
-      const { tokenValueContainer, tokenValueElement } = findElements(authorToken);
-      const tokenValue = tokenValueElement.innerText;
-      usersCacheSpy = username => {
-        expect(`@${username}`).toBe(tokenValue);
-        return Promise.resolve(dummyUser);
-      };
-
-      subject
-        .updateUserTokenAppearance(tokenValueContainer, tokenValueElement, tokenValue)
-        .then(() => {
-          expect(tokenValueElement.innerText.trim()).toBe(dummyUser.name);
-          tokenValueElement.querySelector('.avatar').remove();
-
-          expect(tokenValueElement.innerHTML.trim()).toBe(_.escape(dummyUser.name));
-        })
-        .then(done)
-        .catch(done.fail);
-    });
-  });
-
-  describe('setTokenStyle', () => {
-    let originalTextColor;
-
-    beforeEach(() => {
-      originalTextColor = bugLabelToken.style.color;
-    });
-
-    it('should set backgroundColor', () => {
-      const originalBackgroundColor = bugLabelToken.style.backgroundColor;
-      const token = subject.setTokenStyle(bugLabelToken, 'blue', 'white');
-
-      expect(token.style.backgroundColor).toEqual('blue');
-      expect(token.style.backgroundColor).not.toEqual(originalBackgroundColor);
-    });
-
-    it('should set textColor', () => {
-      const token = subject.setTokenStyle(bugLabelToken, 'white', 'black');
-
-      expect(token.style.color).toEqual('black');
-      expect(token.style.color).not.toEqual(originalTextColor);
-    });
-
-    it('should add inverted class when textColor is #FFFFFF', () => {
-      const token = subject.setTokenStyle(bugLabelToken, 'black', '#FFFFFF');
-
-      expect(token.style.color).toEqual('rgb(255, 255, 255)');
-      expect(token.style.color).not.toEqual(originalTextColor);
-      expect(token.querySelector('.remove-token').classList.contains('inverted')).toEqual(true);
-    });
-  });
-
-  describe('updateLabelTokenColor', () => {
-    const jsonFixtureName = 'labels/project_labels.json';
-    const dummyEndpoint = '/dummy/endpoint';
-
-    preloadFixtures(jsonFixtureName);
-
-    let labelData;
-
-    beforeAll(() => {
-      labelData = getJSONFixture(jsonFixtureName);
-    });
-
-    const missingLabelToken = FilteredSearchSpecHelper.createFilterVisualToken(
-      'label',
-      '~doesnotexist',
-    );
-    const spaceLabelToken = FilteredSearchSpecHelper.createFilterVisualToken(
-      'label',
-      '~"some space"',
-    );
-
-    beforeEach(() => {
-      tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(`
-        ${bugLabelToken.outerHTML}
-        ${missingLabelToken.outerHTML}
-        ${spaceLabelToken.outerHTML}
-      `);
-
-      const filteredSearchInput = document.querySelector('.filtered-search');
-      filteredSearchInput.dataset.baseEndpoint = dummyEndpoint;
-
-      AjaxCache.internalStorage = {};
-      AjaxCache.internalStorage[`${dummyEndpoint}/labels.json`] = labelData;
-    });
-
-    const parseColor = color => {
-      const dummyElement = document.createElement('div');
-      dummyElement.style.color = color;
-      return dummyElement.style.color;
-    };
-
-    const expectValueContainerStyle = (tokenValueContainer, label) => {
-      expect(tokenValueContainer.getAttribute('style')).not.toBe(null);
-      expect(tokenValueContainer.style.backgroundColor).toBe(parseColor(label.color));
-      expect(tokenValueContainer.style.color).toBe(parseColor(label.text_color));
-    };
-
-    const findLabel = tokenValue =>
-      labelData.find(label => tokenValue === `~${DropdownUtils.getEscapedText(label.title)}`);
-
-    it('updates the color of a label token', done => {
-      const { tokenValueContainer, tokenValueElement } = findElements(bugLabelToken);
-      const tokenValue = tokenValueElement.innerText;
-      const matchingLabel = findLabel(tokenValue);
-
-      subject
-        .updateLabelTokenColor(tokenValueContainer, tokenValue)
-        .then(() => {
-          expectValueContainerStyle(tokenValueContainer, matchingLabel);
-        })
-        .then(done)
-        .catch(done.fail);
-    });
-
-    it('updates the color of a label token with spaces', done => {
-      const { tokenValueContainer, tokenValueElement } = findElements(spaceLabelToken);
-      const tokenValue = tokenValueElement.innerText;
-      const matchingLabel = findLabel(tokenValue);
-
-      subject
-        .updateLabelTokenColor(tokenValueContainer, tokenValue)
-        .then(() => {
-          expectValueContainerStyle(tokenValueContainer, matchingLabel);
-        })
-        .then(done)
-        .catch(done.fail);
-    });
-
-    it('does not change color of a missing label', done => {
-      const { tokenValueContainer, tokenValueElement } = findElements(missingLabelToken);
-      const tokenValue = tokenValueElement.innerText;
-      const matchingLabel = findLabel(tokenValue);
-
-      expect(matchingLabel).toBe(undefined);
-
-      subject
-        .updateLabelTokenColor(tokenValueContainer, tokenValue)
-        .then(() => {
-          expect(tokenValueContainer.getAttribute('style')).toBe(null);
-        })
-        .then(done)
-        .catch(done.fail);
     });
   });
 });

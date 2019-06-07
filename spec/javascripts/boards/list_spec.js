@@ -4,8 +4,8 @@
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import _ from 'underscore';
-import '~/vue_shared/models/label';
-import '~/vue_shared/models/assignee';
+import '~/boards/models/label';
+import '~/boards/models/assignee';
 import '~/boards/models/issue';
 import '~/boards/models/list';
 import '~/boards/services/board_service';
@@ -45,6 +45,7 @@ describe('List model', () => {
         id: _.random(10000),
         title: 'test',
         color: 'red',
+        text_color: 'white',
       },
     });
     list.save();
@@ -53,6 +54,8 @@ describe('List model', () => {
       expect(list.id).toBe(listObj.id);
       expect(list.type).toBe('label');
       expect(list.position).toBe(0);
+      expect(list.label.color).toBe('red');
+      expect(list.label.textColor).toBe('white');
       done();
     }, 0);
   });

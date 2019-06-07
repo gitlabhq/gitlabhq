@@ -1,0 +1,24 @@
+.project-list-item {
+  &:not(:disabled):not(.disabled) {
+    &:focus,
+    &:active,
+    &:focus:active {
+      outline: none;
+      box-shadow: none;
+    }
+  }
+}
+
+// When housed inside a modal, the edge of each item
+// should extend to the edge of the modal.
+.modal-body {
+  .project-list-item {
+    border-radius: 0;
+    margin-left: -$gl-padding;
+    margin-right: -$gl-padding;
+
+    .project-namespace-name-container {
+      overflow: hidden;
+    }
+  }
+}

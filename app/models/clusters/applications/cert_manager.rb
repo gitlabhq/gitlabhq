@@ -2,7 +2,7 @@
 
 module Clusters
   module Applications
-    class CertManager < ActiveRecord::Base
+    class CertManager < ApplicationRecord
       VERSION = 'v0.5.2'.freeze
 
       self.table_name = 'clusters_applications_cert_managers'
@@ -22,6 +22,12 @@ module Clusters
 
       def chart
         'stable/cert-manager'
+      end
+
+      # We will implement this in future MRs.
+      # Need to reverse postinstall step
+      def allowed_to_uninstall?
+        false
       end
 
       def install_command

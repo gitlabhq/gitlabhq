@@ -21,7 +21,7 @@ module Notes
 
       if quick_actions_service.supported?(note)
         options = { merge_request_diff_head_sha: merge_request_diff_head_sha }
-        content, command_params = quick_actions_service.extract_commands(note, options)
+        content, update_params = quick_actions_service.execute(note, options)
 
         only_commands = content.empty?
 
@@ -43,16 +43,17 @@ module Notes
         Suggestions::CreateService.new(note).execute
       end
 
-      if command_params.present?
-        quick_actions_service.execute(command_params, note)
+      if quick_actions_service.commands_executed_count.to_i > 0
+        if update_params.present?
+          quick_actions_service.apply_updates(update_params, note)
+          note.commands_changes = update_params
+        end
 
         # We must add the error after we call #save because errors are reset
         # when #save is called
         if only_commands
           note.errors.add(:commands_only, 'Commands applied')
         end
-
-        note.commands_changes = command_params
       end
 
       note

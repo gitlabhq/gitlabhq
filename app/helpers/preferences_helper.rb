@@ -46,7 +46,8 @@ module PreferencesHelper
   def first_day_of_week_choices
     [
       [_('Sunday'), 0],
-      [_('Monday'), 1]
+      [_('Monday'), 1],
+      [_('Saturday'), 6]
     ]
   end
 

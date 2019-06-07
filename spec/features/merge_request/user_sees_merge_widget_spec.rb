@@ -145,6 +145,119 @@ describe 'Merge request > User sees merge widget', :js do
     end
   end
 
+  context 'when merge request has a branch pipeline as the head pipeline' do
+    let!(:pipeline) do
+      create(:ci_pipeline,
+        ref: merge_request.source_branch,
+        sha: merge_request.source_branch_sha,
+        project: merge_request.source_project)
+    end
+
+    before do
+      merge_request.update_head_pipeline
+      visit project_merge_request_path(project, merge_request)
+    end
+
+    it 'shows head pipeline information' do
+      within '.ci-widget-content' do
+        expect(page).to have_content("Pipeline ##{pipeline.id} (##{pipeline.iid}) pending " \
+                                     "for #{pipeline.short_sha} " \
+                                     "on #{pipeline.ref}")
+      end
+    end
+  end
+
+  context 'when merge request has a detached merge request pipeline as the head pipeline' do
+    let(:merge_request) do
+      create(:merge_request,
+        :with_detached_merge_request_pipeline,
+        source_project: source_project,
+        target_project: target_project)
+    end
+
+    let!(:pipeline) do
+      merge_request.all_pipelines.last
+    end
+
+    let(:source_project) { project }
+    let(:target_project) { project }
+
+    before do
+      merge_request.update_head_pipeline
+      visit project_merge_request_path(project, merge_request)
+    end
+
+    it 'shows head pipeline information' do
+      within '.ci-widget-content' do
+        expect(page).to have_content("Pipeline ##{pipeline.id} (##{pipeline.iid}) pending " \
+                                     "for #{pipeline.short_sha} " \
+                                     "on #{merge_request.to_reference} " \
+                                     "with #{merge_request.source_branch}")
+      end
+    end
+
+    context 'when source project is a forked project' do
+      let(:source_project) { fork_project(project, user, repository: true) }
+
+      it 'shows head pipeline information' do
+        within '.ci-widget-content' do
+          expect(page).to have_content("Pipeline ##{pipeline.id} (##{pipeline.iid}) pending " \
+                                       "for #{pipeline.short_sha} " \
+                                       "on #{merge_request.to_reference} " \
+                                       "with #{merge_request.source_branch}")
+        end
+      end
+    end
+  end
+
+  context 'when merge request has a merge request pipeline as the head pipeline' do
+    let(:merge_request) do
+      create(:merge_request,
+        :with_merge_request_pipeline,
+        source_project: source_project,
+        target_project: target_project,
+        merge_sha: merge_sha)
+    end
+
+    let!(:pipeline) do
+      merge_request.all_pipelines.last
+    end
+
+    let(:source_project) { project }
+    let(:target_project) { project }
+    let(:merge_sha) { project.commit.sha }
+
+    before do
+      merge_request.update_head_pipeline
+      visit project_merge_request_path(project, merge_request)
+    end
+
+    it 'shows head pipeline information' do
+      within '.ci-widget-content' do
+        expect(page).to have_content("Pipeline ##{pipeline.id} (##{pipeline.iid}) pending " \
+                                     "for #{pipeline.short_sha} " \
+                                     "on #{merge_request.to_reference} " \
+                                     "with #{merge_request.source_branch} " \
+                                     "into #{merge_request.target_branch}")
+      end
+    end
+
+    context 'when source project is a forked project' do
+      let(:source_project) { fork_project(project, user, repository: true) }
+      let(:merge_sha) { source_project.commit.sha }
+
+      it 'shows head pipeline information' do
+        within '.ci-widget-content' do
+          expect(page).to have_content("Pipeline ##{pipeline.id} (##{pipeline.iid}) pending " \
+                                       "for #{pipeline.short_sha} " \
+                                       "on #{merge_request.to_reference} " \
+                                       "with #{merge_request.source_branch} " \
+                                       "into #{merge_request.target_branch}")
+        end
+      end
+    end
+  end
+
   context 'view merge request with MWBS button' do
     before do
       commit_status = create(:commit_status, project: project, status: 'pending')
@@ -189,7 +302,7 @@ describe 'Merge request > User sees merge widget', :js do
       visit project_merge_request_path(project_only_mwps, merge_request_in_only_mwps_project)
     end
 
-    it 'should be allowed to merge' do
+    it 'is allowed to merge' do
       # Wait for the `ci_status` and `merge_check` requests
       wait_for_requests
 
@@ -201,7 +314,8 @@ describe 'Merge request > User sees merge widget', :js do
   context 'view merge request with MWPS enabled but automatically merge fails' do
     before do
       merge_request.update(
-        merge_when_pipeline_succeeds: true,
+        auto_merge_enabled: true,
+        auto_merge_strategy: AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS,
         merge_user: merge_request.author,
         merge_error: 'Something went wrong'
       )
@@ -213,8 +327,8 @@ describe 'Merge request > User sees merge widget', :js do
       # Wait for the `ci_status` and `merge_check` requests
       wait_for_requests
 
-      page.within('.mr-widget-body') do
-        expect(page).to have_content('Something went wrong')
+      page.within('.mr-section-container') do
+        expect(page).to have_content('Merge failed: Something went wrong')
       end
     end
   end
@@ -234,8 +348,8 @@ describe 'Merge request > User sees merge widget', :js do
       # Wait for the `ci_status` and `merge_check` requests
       wait_for_requests
 
-      page.within('.mr-widget-body') do
-        expect(page).to have_content('Something went wrong')
+      page.within('.mr-section-container') do
+        expect(page).to have_content('Merge failed: Something went wrong')
       end
     end
   end
@@ -554,6 +668,28 @@ describe 'Merge request > User sees merge widget', :js do
 
       def comparer
         Gitlab::Ci::Reports::TestReportsComparer.new(base_reports, head_reports)
+      end
+    end
+  end
+
+  context 'when MR has pipeline but user does not have permission' do
+    let(:sha) { project.commit(merge_request.source_branch).sha }
+    let!(:pipeline) { create(:ci_pipeline_without_jobs, status: 'success', sha: sha, project: project, ref: merge_request.source_branch) }
+
+    before do
+      project.update(
+        visibility_level: Gitlab::VisibilityLevel::PUBLIC,
+        public_builds: false
+      )
+      merge_request.update!(head_pipeline: pipeline)
+      sign_out(:user)
+
+      visit project_merge_request_path(project, merge_request)
+    end
+
+    it 'renders a CI pipeline error' do
+      within '.ci-widget' do
+        expect(page).to have_content('Could not retrieve the pipeline status.')
       end
     end
   end

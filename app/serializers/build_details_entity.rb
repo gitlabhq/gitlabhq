@@ -8,15 +8,17 @@ class BuildDetailsEntity < JobEntity
   expose :stuck?, as: :stuck
   expose :user, using: UserEntity
   expose :runner, using: RunnerEntity
+  expose :metadata, using: BuildMetadataEntity
   expose :pipeline, using: PipelineEntity
 
   expose :deployment_status, if: -> (*) { build.starts_environment? } do
     expose :deployment_status, as: :status
-
-    expose :persisted_environment, as: :environment, with: EnvironmentEntity
+    expose :persisted_environment, as: :environment do |build, options|
+      options.merge(deployment_details: false).yield_self do |opts|
+        EnvironmentEntity.represent(build.persisted_environment, opts)
+      end
+    end
   end
-
-  expose :metadata, using: BuildMetadataEntity
 
   expose :artifact, if: -> (*) { can?(current_user, :read_build, build) } do
     expose :download_path, if: -> (*) { build.artifacts? } do |build|
@@ -40,10 +42,17 @@ class BuildDetailsEntity < JobEntity
     end
   end
 
+  expose :report_artifacts,
+    as: :reports,
+    using: JobArtifactReportEntity,
+    if: -> (*) { can?(current_user, :read_build, build) }
+
   expose :erased_by, if: -> (*) { build.erased? }, using: UserEntity
   expose :erase_path, if: -> (*) { build.erasable? && can?(current_user, :erase_build, build) } do |build|
     erase_project_job_path(project, build)
   end
+
+  expose :failure_reason, if: -> (*) { build.failed? }
 
   expose :terminal_path, if: -> (*) { can_create_build_terminal? } do |build|
     terminal_project_job_path(project, build)

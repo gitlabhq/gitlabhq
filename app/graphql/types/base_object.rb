@@ -6,5 +6,10 @@ module Types
     prepend Gitlab::Graphql::ExposePermissions
 
     field_class Types::BaseField
+
+    # All graphql fields exposing an id, should expose a global id.
+    def id
+      GitlabSchema.id_from_object(object)
+    end
   end
 end

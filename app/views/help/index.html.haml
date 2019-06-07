@@ -1,11 +1,11 @@
 %div
 - if Gitlab::CurrentSettings.help_page_text.present?
-  = markdown_field(Gitlab::CurrentSettings.current_application_settings, :help_page_text)
+  .prepend-top-default.md
+    = markdown_field(Gitlab::CurrentSettings.current_application_settings, :help_page_text)
   %hr
 
 %h1
-  GitLab
-  Community Edition
+  = default_brand_title
   - if user_signed_in?
     %span= link_to_version
     = version_status_badge
@@ -24,12 +24,13 @@
     Used by more than 100,000 organizations, GitLab is the most popular solution to manage git repositories on-premises.
     %br
     Read more about GitLab at #{link_to promo_host, promo_url, target: '_blank', rel: 'noopener noreferrer'}.
-    %p= link_to 'Check the current instance configuration ', help_instance_configuration_url
-  %hr
+
+%p= link_to 'Check the current instance configuration ', help_instance_configuration_url
+%hr
 
 .row.prepend-top-default
   .col-md-8
-    .documentation-index.wiki
+    .documentation-index.md
       = markdown(@help_index)
   .col-md-4
     .card

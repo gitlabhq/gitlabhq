@@ -313,7 +313,7 @@ module Gitlab
 
         def get_term_color_class(color_index, prefix)
           color_name = COLOR[color_index]
-          return nil if color_name.nil?
+          return if color_name.nil?
 
           get_color_class(["term", prefix, color_name])
         end

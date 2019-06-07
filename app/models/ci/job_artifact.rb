@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 module Ci
-  class JobArtifact < ActiveRecord::Base
+  class JobArtifact < ApplicationRecord
     include AfterCommitQueue
     include ObjectStorage::BackgroundMove
+    include UpdateProjectStatistics
     extend Gitlab::Ci::Model
 
     NotSupportedAdapterError = Class.new(StandardError)
@@ -21,14 +22,19 @@ module Ci
       container_scanning: 'gl-container-scanning-report.json',
       dast: 'gl-dast-report.json',
       license_management: 'gl-license-management-report.json',
-      performance: 'performance.json'
+      performance: 'performance.json',
+      metrics: 'metrics.txt'
     }.freeze
 
-    TYPE_AND_FORMAT_PAIRS = {
+    INTERNAL_TYPES = {
       archive: :zip,
       metadata: :gzip,
-      trace: :raw,
+      trace: :raw
+    }.freeze
+
+    REPORT_TYPES = {
       junit: :gzip,
+      metrics: :gzip,
 
       # All these file formats use `raw` as we need to store them uncompressed
       # for Frontend to fetch the files and do analysis
@@ -42,6 +48,8 @@ module Ci
       performance: :raw
     }.freeze
 
+    TYPE_AND_FORMAT_PAIRS = INTERNAL_TYPES.merge(REPORT_TYPES).freeze
+
     belongs_to :project
     belongs_to :job, class_name: "Ci::Build", foreign_key: :job_id
 
@@ -50,10 +58,10 @@ module Ci
     validates :file_format, presence: true, unless: :trace?, on: :create
     validate :valid_file_format?, unless: :trace?, on: :create
     before_save :set_size, if: :file_changed?
-    after_save :update_project_statistics_after_save, if: :size_changed?
-    after_destroy :update_project_statistics_after_destroy, unless: :project_destroyed?
 
-    after_save :update_file_store, if: :file_changed?
+    update_project_statistics project_statistics_name: :build_artifacts_size
+
+    after_save :update_file_store, if: :saved_change_to_file?
 
     scope :with_files_stored_locally, -> { where(file_store: [nil, ::JobArtifactUploader::Store::LOCAL]) }
 
@@ -61,6 +69,10 @@ module Ci
       types = self.file_types.select { |file_type| file_types.include?(file_type) }.values
 
       where(file_type: types)
+    end
+
+    scope :with_reports, -> do
+      with_file_types(REPORT_TYPES.keys.map(&:to_s))
     end
 
     scope :test_reports, -> do
@@ -88,14 +100,15 @@ module Ci
       dast: 8, ## EE-specific
       codequality: 9, ## EE-specific
       license_management: 10, ## EE-specific
-      performance: 11 ## EE-specific
+      performance: 11, ## EE-specific
+      metrics: 12 ## EE-specific
     }
 
     enum file_format: {
       raw: 1,
       zip: 2,
       gzip: 3
-    }
+    }, _suffix: true
 
     # `file_location` indicates where actual files are stored.
     # Ideally, actual files should be stored in the same directory, and use the same
@@ -171,18 +184,6 @@ module Ci
 
     def set_size
       self.size = file.size
-    end
-
-    def update_project_statistics_after_save
-      update_project_statistics(size.to_i - size_was.to_i)
-    end
-
-    def update_project_statistics_after_destroy
-      update_project_statistics(-self.size.to_i)
-    end
-
-    def update_project_statistics(difference)
-      ProjectStatistics.increment_statistic(project_id, :build_artifacts_size, difference)
     end
 
     def project_destroyed?

@@ -7,6 +7,10 @@ See [the general developer security release guidelines](https://gitlab.com/gitla
 This merge request _must not_ close the corresponding security issue _unless_ it
 targets master.
 
+When submitting a merge request for CE, a corresponding EE merge request is
+always required. This makes it easier to merge security merge requests, as
+manually merging CE into EE is no longer required.
+
 -->
 ## Related issues
 
@@ -20,8 +24,8 @@ targets master.
 - [ ] Title of this MR is the same as for all backports
 - [ ] A [CHANGELOG entry](https://docs.gitlab.com/ee/development/changelog.html) is added without a `merge_request` value, with `type` set to `security`
 - [ ] Add a link to this MR in the `links` section of related issue
-- [ ] Add a link to an EE MR if required
-- [ ] Assign to a reviewer
+- [ ] Set up an EE MR (always required for CE merge requests): EE_MR_LINK_HERE
+- [ ] Assign to a reviewer (that is not a release manager)
 
 ## Reviewer checklist
 

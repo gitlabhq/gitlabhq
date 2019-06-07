@@ -2,6 +2,7 @@
 import { mapGetters } from 'vuex';
 import Icon from '~/vue_shared/components/icon.vue';
 import { GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
+import resolvedStatusMixin from 'ee_else_ce/batch_comments/mixins/resolved_status';
 import ReplyButton from './note_actions/reply_button.vue';
 
 export default {
@@ -14,6 +15,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [resolvedStatusMixin],
   props: {
     authorId: {
       type: Number,
@@ -86,9 +88,6 @@ export default {
   },
   computed: {
     ...mapGetters(['getUserDataByProp']),
-    showReplyButton() {
-      return gon.features && gon.features.replyToIndividualNotes && this.showReply;
-    },
     shouldShowActionsDropdown() {
       return this.currentUserId && (this.canEdit || this.canReportAsAbuse);
     },
@@ -100,15 +99,6 @@ export default {
     },
     currentUserId() {
       return this.getUserDataByProp('id');
-    },
-    resolveButtonTitle() {
-      let title = 'Mark as resolved';
-
-      if (this.resolvedBy) {
-        title = `Resolved by ${this.resolvedBy.name}`;
-      }
-
-      return title;
     },
   },
   methods: {
@@ -145,7 +135,7 @@ export default {
         @click="onResolve"
       >
         <template v-if="!isResolving">
-          <icon name="check-circle" />
+          <icon :name="isResolved ? 'check-circle-filled' : 'check-circle'" />
         </template>
         <gl-loading-icon v-else inline />
       </button>
@@ -157,18 +147,15 @@ export default {
         class="note-action-button note-emoji-button js-add-award js-note-emoji"
         href="#"
         title="Add reaction"
+        data-position="right"
       >
-        <gl-loading-icon inline />
-        <icon
-          css-classes="link-highlight award-control-icon-neutral"
-          name="emoji_slightly_smiling_face"
-        />
-        <icon css-classes="link-highlight award-control-icon-positive" name="emoji_smiley" />
-        <icon css-classes="link-highlight award-control-icon-super-positive" name="emoji_smiley" />
+        <icon css-classes="link-highlight award-control-icon-neutral" name="slight-smile" />
+        <icon css-classes="link-highlight award-control-icon-positive" name="smiley" />
+        <icon css-classes="link-highlight award-control-icon-super-positive" name="smiley" />
       </a>
     </div>
     <reply-button
-      v-if="showReplyButton"
+      v-if="showReply"
       ref="replyButton"
       class="js-reply-button"
       @startReplying="$emit('startReplying')"
@@ -208,7 +195,7 @@ export default {
       </button>
       <ul class="dropdown-menu more-actions-dropdown dropdown-open-left">
         <li v-if="canReportAsAbuse">
-          <a :href="reportAbusePath">{{ __('Report abuse to GitLab') }}</a>
+          <a :href="reportAbusePath">{{ __('Report abuse to admin') }}</a>
         </li>
         <li v-if="noteUrl">
           <button

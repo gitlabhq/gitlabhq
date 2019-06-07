@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ProtectedTag < ActiveRecord::Base
+class ProtectedTag < ApplicationRecord
   include ProtectedRef
 
   validates :name, uniqueness: { scope: :project_id }

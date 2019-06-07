@@ -5,6 +5,7 @@ describe Gitlab::BitbucketImport::Importer do
 
   before do
     stub_omniauth_provider('bitbucket')
+    stub_feature_flags(stricter_mr_branch_name: false)
   end
 
   let(:statuses) do
@@ -95,6 +96,9 @@ describe Gitlab::BitbucketImport::Importer do
   subject { described_class.new(project) }
 
   describe '#import_pull_requests' do
+    let(:source_branch_sha) { sample.commits.last }
+    let(:target_branch_sha) { sample.commits.first }
+
     before do
       allow(subject).to receive(:import_wiki)
       allow(subject).to receive(:import_issues)
@@ -102,9 +106,9 @@ describe Gitlab::BitbucketImport::Importer do
       pull_request = instance_double(
         Bitbucket::Representation::PullRequest,
         iid: 10,
-        source_branch_sha: sample.commits.last,
+        source_branch_sha: source_branch_sha,
         source_branch_name: Gitlab::Git::BRANCH_REF_PREFIX + sample.source_branch,
-        target_branch_sha: sample.commits.first,
+        target_branch_sha: target_branch_sha,
         target_branch_name: Gitlab::Git::BRANCH_REF_PREFIX + sample.target_branch,
         title: 'This is a title',
         description: 'This is a test pull request',
@@ -162,6 +166,19 @@ describe Gitlab::BitbucketImport::Importer do
       expect(reply_note).to be_a(DiffNote)
       expect(reply_note.note).to eq(@reply.note)
     end
+
+    context "when branches' sha is not found in the repository" do
+      let(:source_branch_sha) { 'a' * Commit::MIN_SHA_LENGTH }
+      let(:target_branch_sha) { 'b' * Commit::MIN_SHA_LENGTH }
+
+      it 'uses the pull request sha references' do
+        expect { subject.execute }.to change { MergeRequest.count }.by(1)
+
+        merge_request_diff = MergeRequest.first.merge_request_diff
+        expect(merge_request_diff.head_commit_sha).to eq source_branch_sha
+        expect(merge_request_diff.start_commit_sha).to eq target_branch_sha
+      end
+    end
   end
 
   context 'issues statuses' do
@@ -204,6 +221,46 @@ describe Gitlab::BitbucketImport::Importer do
       ).to_return(status: 200,
                   headers: { "Content-Type" => "application/json" },
                   body: {}.to_json)
+    end
+
+    context 'creating labels on project' do
+      before do
+        allow(importer).to receive(:import_wiki)
+      end
+
+      it 'creates labels as expected' do
+        expect { importer.execute }.to change { Label.count }.from(0).to(Gitlab::BitbucketImport::Importer::LABELS.size)
+      end
+
+      it 'does not fail if label is already existing' do
+        label = Gitlab::BitbucketImport::Importer::LABELS.first
+        ::Labels::CreateService.new(label).execute(project: project)
+
+        expect { importer.execute }.not_to raise_error
+      end
+
+      it 'does not create new labels' do
+        Gitlab::BitbucketImport::Importer::LABELS.each do |label|
+          create(:label, project: project, title: label[:title])
+        end
+
+        expect { importer.execute }.not_to change { Label.count }
+      end
+
+      it 'does not update existing ones' do
+        label_title = Gitlab::BitbucketImport::Importer::LABELS.first[:title]
+        existing_label = create(:label, project: project, title: label_title)
+        # Reload label from database so we avoid timestamp comparison issues related to time precision when comparing
+        # attributes later.
+        existing_label.reload
+
+        Timecop.freeze(Time.now + 1.minute) do
+          importer.execute
+
+          label_after_import = project.labels.find(existing_label.id)
+          expect(label_after_import.attributes).to eq(existing_label.attributes)
+        end
+      end
     end
 
     it 'maps statuses to open or closed' do

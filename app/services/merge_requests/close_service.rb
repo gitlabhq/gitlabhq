@@ -17,6 +17,8 @@ module MergeRequests
         execute_hooks(merge_request, 'close')
         invalidate_cache_counts(merge_request, users: merge_request.assignees)
         merge_request.update_project_counter_caches
+        cleanup_environments(merge_request)
+        cancel_auto_merge(merge_request)
       end
 
       merge_request
@@ -31,6 +33,10 @@ module MergeRequests
         close_event = event_service.close_mr(merge_request, current_user)
         merge_request_metrics_service(merge_request).close(close_event)
       end
+    end
+
+    def cancel_auto_merge(merge_request)
+      AutoMergeService.new(project, current_user).cancel(merge_request)
     end
   end
 end

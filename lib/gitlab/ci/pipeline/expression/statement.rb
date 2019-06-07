@@ -7,16 +7,6 @@ module Gitlab
         class Statement
           StatementError = Class.new(Expression::ExpressionError)
 
-          GRAMMAR = [
-            %w[variable],
-            %w[variable equals string],
-            %w[variable equals variable],
-            %w[variable equals null],
-            %w[string equals variable],
-            %w[null equals variable],
-            %w[variable matches pattern]
-          ].freeze
-
           def initialize(statement, variables = {})
             @lexer = Expression::Lexer.new(statement)
             @variables = variables.with_indifferent_access
@@ -24,10 +14,6 @@ module Gitlab
 
           def parse_tree
             raise StatementError if @lexer.lexemes.empty?
-
-            unless GRAMMAR.find { |syntax| syntax == @lexer.lexemes }
-              raise StatementError, 'Unknown pipeline expression!'
-            end
 
             Expression::Parser.new(@lexer.tokens).tree
           end
@@ -43,6 +29,7 @@ module Gitlab
           end
 
           def valid?
+            evaluate
             parse_tree.is_a?(Lexeme::Base)
           rescue Expression::ExpressionError
             false

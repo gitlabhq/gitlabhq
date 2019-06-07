@@ -1,7 +1,10 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe BambooService, :use_clean_rails_memory_store_caching do
   include ReactiveCachingHelpers
+  include StubRequests
 
   let(:bamboo_url) { 'http://gitlab.com/bamboo' }
 
@@ -255,7 +258,7 @@ describe BambooService, :use_clean_rails_memory_store_caching do
   end
 
   def stub_bamboo_request(url, status, body)
-    WebMock.stub_request(:get, url).to_return(
+    stub_full_request(url).to_return(
       status: status,
       headers: { 'Content-Type' => 'application/json' },
       body: body

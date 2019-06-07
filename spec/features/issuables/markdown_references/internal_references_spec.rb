@@ -70,7 +70,7 @@ describe "Internal references", :js do
 
             page.within("#merge-requests ul") do
               expect(page).to have_content(private_project_merge_request.title)
-              expect(page).to have_css(".merge-request-status")
+              expect(page).to have_css(".ic-issue-open-m")
             end
 
             expect(page).to have_content("mentioned in merge request #{private_project_merge_request.to_reference(public_project)}")

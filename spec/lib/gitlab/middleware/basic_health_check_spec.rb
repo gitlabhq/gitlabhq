@@ -28,6 +28,35 @@ describe Gitlab::Middleware::BasicHealthCheck do
       end
     end
 
+    context 'with X-Forwarded-For headers' do
+      let(:load_balancer_ip) { '1.2.3.4' }
+
+      before do
+        env['HTTP_X_FORWARDED_FOR'] = "#{load_balancer_ip}, 127.0.0.1"
+        env['REMOTE_ADDR'] = '127.0.0.1'
+        env['PATH_INFO'] = described_class::HEALTH_PATH
+      end
+
+      it 'returns 200 response when endpoint is allowed' do
+        allow(Settings.monitoring).to receive(:ip_whitelist).and_return([load_balancer_ip])
+        expect(app).not_to receive(:call)
+
+        response = middleware.call(env)
+
+        expect(response[0]).to eq(200)
+        expect(response[1]).to eq({ 'Content-Type' => 'text/plain' })
+        expect(response[2]).to eq(['GitLab OK'])
+      end
+
+      it 'returns 404 when whitelist is not configured' do
+        allow(Settings.monitoring).to receive(:ip_whitelist).and_return([])
+
+        response = middleware.call(env)
+
+        expect(response[0]).to eq(404)
+      end
+    end
+
     context 'whitelisted IP' do
       before do
         env['REMOTE_ADDR'] = '127.0.0.1'

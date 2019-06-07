@@ -4,6 +4,34 @@
   .dropdown-menu {
     @extend .dropdown-menu-right;
   }
+
+  @include media-breakpoint-down(sm) {
+    .notification-dropdown {
+      width: 100%;
+    }
+
+    .notification-form {
+      display: block;
+    }
+
+    .notifications-btn,
+    .btn-group {
+      width: 100%;
+    }
+
+    .table-section {
+      border-top: 0;
+      min-height: unset;
+
+      &:not(:first-child) {
+        padding-top: 0;
+      }
+    }
+
+    .update-notifications {
+      width: 100%;
+    }
+  }
 }
 
 .notification {

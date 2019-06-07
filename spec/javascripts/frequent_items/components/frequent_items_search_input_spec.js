@@ -1,19 +1,22 @@
 import Vue from 'vue';
 import searchComponent from '~/frequent_items/components/frequent_items_search_input.vue';
 import eventHub from '~/frequent_items/event_hub';
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import { shallowMount } from '@vue/test-utils';
 
 const createComponent = (namespace = 'projects') => {
   const Component = Vue.extend(searchComponent);
 
-  return mountComponent(Component, { namespace });
+  return shallowMount(Component, { propsData: { namespace } });
 };
 
 describe('FrequentItemsSearchInputComponent', () => {
+  let wrapper;
   let vm;
 
   beforeEach(() => {
-    vm = createComponent();
+    wrapper = createComponent();
+
+    ({ vm } = wrapper);
   });
 
   afterEach(() => {
@@ -35,7 +38,7 @@ describe('FrequentItemsSearchInputComponent', () => {
   describe('mounted', () => {
     it('should listen `dropdownOpen` event', done => {
       spyOn(eventHub, '$on');
-      const vmX = createComponent();
+      const vmX = createComponent().vm;
 
       Vue.nextTick(() => {
         expect(eventHub.$on).toHaveBeenCalledWith(
@@ -49,7 +52,7 @@ describe('FrequentItemsSearchInputComponent', () => {
 
   describe('beforeDestroy', () => {
     it('should unbind event listeners on eventHub', done => {
-      const vmX = createComponent();
+      const vmX = createComponent().vm;
       spyOn(eventHub, '$off');
 
       vmX.$mount();
@@ -67,12 +70,12 @@ describe('FrequentItemsSearchInputComponent', () => {
 
   describe('template', () => {
     it('should render component element', () => {
-      const inputEl = vm.$el.querySelector('input.form-control');
-
-      expect(vm.$el.classList.contains('search-input-container')).toBeTruthy();
-      expect(inputEl).not.toBe(null);
-      expect(inputEl.getAttribute('placeholder')).toBe('Search your projects');
-      expect(vm.$el.querySelector('.search-icon')).toBeDefined();
+      expect(wrapper.classes()).toContain('search-input-container');
+      expect(wrapper.contains('input.form-control')).toBe(true);
+      expect(wrapper.contains('.search-icon')).toBe(true);
+      expect(wrapper.find('input.form-control').attributes('placeholder')).toBe(
+        'Search your projects',
+      );
     });
   });
 });

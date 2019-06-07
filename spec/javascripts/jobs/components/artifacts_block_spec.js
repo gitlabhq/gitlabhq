@@ -2,7 +2,7 @@ import Vue from 'vue';
 import { getTimeago } from '~/lib/utils/datetime_utility';
 import component from '~/jobs/components/artifacts_block.vue';
 import mountComponent from '../../helpers/vue_mount_component_helper';
-import { trimText } from '../../helpers/vue_component_helper';
+import { trimText } from '../../helpers/text_helper';
 
 describe('Artifacts block', () => {
   const Component = Vue.extend(component);

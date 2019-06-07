@@ -2,12 +2,13 @@ import axios from '../../lib/utils/axios_utils';
 import { mergeUrlParams } from '../../lib/utils/url_utility';
 
 export default class BoardService {
-  constructor({ boardsEndpoint, listsEndpoint, bulkUpdatePath, boardId }) {
+  constructor({ boardsEndpoint, listsEndpoint, bulkUpdatePath, boardId, recentBoardsEndpoint }) {
     this.boardsEndpoint = boardsEndpoint;
     this.boardId = boardId;
     this.listsEndpoint = listsEndpoint;
     this.listsEndpointGenerate = `${listsEndpoint}/generate.json`;
     this.bulkUpdatePath = bulkUpdatePath;
+    this.recentBoardsEndpoint = `${recentBoardsEndpoint}.json`;
   }
 
   generateBoardsPath(id) {

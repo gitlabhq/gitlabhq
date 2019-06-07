@@ -52,6 +52,19 @@ module Gitlab
           end
         end
 
+        # Clears multiple cache keys at once.
+        #
+        # raw_keys - An Array of unique cache keys, without namespaces.
+        #
+        # It returns the number of cache keys cleared. Ex.: 42
+        def clear_multiple(raw_keys)
+          return [] if raw_keys.empty?
+
+          keys = raw_keys.map { |id| cache_key_for(id) }
+
+          Redis::Cache.with { |redis| redis.del(keys) }
+        end
+
         def cache_key_for(raw_key)
           "#{cache_key_prefix}:#{raw_key}"
         end

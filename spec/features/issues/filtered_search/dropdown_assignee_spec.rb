@@ -42,7 +42,7 @@ describe 'Dropdown assignee', :js do
       expect(page).to have_css(js_dropdown_assignee, visible: false)
     end
 
-    it 'should show loading indicator when opened' do
+    it 'shows loading indicator when opened' do
       slow_requests do
         # We aren't using `input_filtered_search` because we want to see the loading indicator
         filtered_search.set('assignee:')
@@ -51,13 +51,13 @@ describe 'Dropdown assignee', :js do
       end
     end
 
-    it 'should hide loading indicator when loaded' do
+    it 'hides loading indicator when loaded' do
       input_filtered_search('assignee:', submit: false, extra_space: false)
 
       expect(find(js_dropdown_assignee)).not_to have_css('.filter-dropdown-loading')
     end
 
-    it 'should load all the assignees when opened' do
+    it 'loads all the assignees when opened' do
       input_filtered_search('assignee:', submit: false, extra_space: false)
 
       expect(dropdown_assignee_size).to eq(4)

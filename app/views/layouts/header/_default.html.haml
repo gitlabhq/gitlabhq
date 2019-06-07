@@ -17,6 +17,10 @@
             - if logo_text.present?
               %span.logo-text.d-none.d-lg-block.prepend-left-8
                 = logo_text
+          - if Gitlab.com?
+            = link_to 'https://next.gitlab.com', class: 'label-link js-canary-badge canary-badge bg-transparent hidden', target: :_blank do
+              %span.color-label.has-tooltip.badge.badge-pill.green-badge
+                = _('Next')
 
         - if current_user
           = render "layouts/nav/dashboard"
@@ -38,7 +42,7 @@
               = link_to assigned_issues_dashboard_path, title: _('Issues'), class: 'dashboard-shortcuts-issues', aria: { label: _('Issues') }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
                 = sprite_icon('issues', size: 16)
                 - issues_count = assigned_issuables_count(:issues)
-                %span.badge.badge-pill.issues-count{ class: ('hidden' if issues_count.zero?) }
+                %span.badge.badge-pill.issues-count.green-badge{ class: ('hidden' if issues_count.zero?) }
                   = number_with_delimiter(issues_count)
           - if header_link?(:merge_requests)
             = nav_link(path: 'dashboard#merge_requests', html_options: { class: "user-counter" }) do

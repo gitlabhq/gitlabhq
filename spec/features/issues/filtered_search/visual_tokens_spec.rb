@@ -59,13 +59,6 @@ describe 'Visual tokens', :js do
       expect(page).to have_css('#js-dropdown-author', visible: false)
     end
 
-    it 'ends editing mode when scroll container is clicked' do
-      find('.scroll-container').click
-
-      expect_filtered_search_input_empty
-      expect(page).to have_css('#js-dropdown-author', visible: false)
-    end
-
     describe 'selecting different author from dropdown' do
       before do
         filter_author_dropdown.find('.filter-dropdown-item .dropdown-light-content', text: "@#{user_rock.username}").click
@@ -104,13 +97,6 @@ describe 'Visual tokens', :js do
 
     it 'ends editing mode when document is clicked' do
       find('#content-body').click
-
-      expect_filtered_search_input_empty
-      expect(page).to have_css('#js-dropdown-assignee', visible: false)
-    end
-
-    it 'ends editing mode when scroll container is clicked' do
-      find('.scroll-container').click
 
       expect_filtered_search_input_empty
       expect(page).to have_css('#js-dropdown-assignee', visible: false)
@@ -163,13 +149,6 @@ describe 'Visual tokens', :js do
 
     it 'ends editing mode when document is clicked' do
       find('#content-body').click
-
-      expect_filtered_search_input_empty
-      expect(page).to have_css('#js-dropdown-milestone', visible: false)
-    end
-
-    it 'ends editing mode when scroll container is clicked' do
-      find('.scroll-container').click
 
       expect_filtered_search_input_empty
       expect(page).to have_css('#js-dropdown-milestone', visible: false)

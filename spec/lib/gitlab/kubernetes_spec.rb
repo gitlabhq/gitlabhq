@@ -40,10 +40,40 @@ describe Gitlab::Kubernetes do
 
   describe '#filter_by_label' do
     it 'returns matching labels' do
-      matching_items = [kube_pod(app: 'foo')]
+      matching_items = [kube_pod(track: 'foo'), kube_deployment(track: 'foo')]
+      items = matching_items + [kube_pod, kube_deployment]
+
+      expect(filter_by_label(items, 'track' => 'foo')).to eq(matching_items)
+    end
+  end
+
+  describe '#filter_by_annotation' do
+    it 'returns matching labels' do
+      matching_items = [kube_pod(environment_slug: 'foo'), kube_deployment(environment_slug: 'foo')]
+      items = matching_items + [kube_pod, kube_deployment]
+
+      expect(filter_by_annotation(items, 'app.gitlab.com/env' => 'foo')).to eq(matching_items)
+    end
+  end
+
+  describe '#filter_by_project_environment' do
+    let(:matching_pod) { kube_pod(environment_slug: 'production', project_slug: 'my-cool-app') }
+
+    it 'returns matching legacy env label' do
+      matching_pod['metadata']['annotations'].delete('app.gitlab.com/app')
+      matching_pod['metadata']['annotations'].delete('app.gitlab.com/env')
+      matching_pod['metadata']['labels']['app'] = 'production'
+      matching_items = [matching_pod]
       items = matching_items + [kube_pod]
 
-      expect(filter_by_label(items, app: 'foo')).to eq(matching_items)
+      expect(filter_by_project_environment(items, 'my-cool-app', 'production')).to eq(matching_items)
+    end
+
+    it 'returns matching env label' do
+      matching_items = [matching_pod]
+      items = matching_items + [kube_pod]
+
+      expect(filter_by_project_environment(items, 'my-cool-app', 'production')).to eq(matching_items)
     end
   end
 

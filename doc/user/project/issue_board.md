@@ -28,11 +28,11 @@ Issue Boards** (version introduced in GitLab 8.11 - August 2016).
 ### Advanced features of Issue Boards
 
 With [GitLab Starter](https://about.gitlab.com/pricing/), you can create
-[multiple issue boards](#multiple-issue-boards) for a given project. **[STARTER]**
+[multiple issue boards](#multiple-issue-boards-starter) for a given project. **[STARTER]**
 
 With [GitLab Premium](https://about.gitlab.com/pricing/), you can also create multiple
-issue boards for your groups, and add lists for [assignees](#assignee-lists) and
-[milestones](#milestone-lists). **[PREMIUM]**
+issue boards for your groups, and add lists for [assignees](#assignee-lists-premium) and
+[milestones](#milestone-lists-premium). **[PREMIUM]**
 
 Check all the [advanced features of Issue Boards](#gitlab-enterprise-features-for-issue-boards)
 below.
@@ -42,7 +42,7 @@ below.
 ## How it works
 
 The Issue Board builds on GitLab's existing
-[issue tracking functionality](issues/index.md#issue-tracker) and
+[issue tracking functionality](issues/index.md#issues-list) and
 leverages the power of [labels](labels.md) by utilizing them as lists of the scrum board.
 
 With the Issue Board you can have a different view of your issues while
@@ -97,7 +97,7 @@ If we have the labels "**backend**", "**frontend**", "**staging**", and
 
 ### Use cases for Multiple Issue Boards
 
-With [Multiple Issue Boards](#multiple-issue-boards), available only in
+With [Multiple Issue Boards](#multiple-issue-boards-starter), available only in
 [GitLab Enterprise Edition](https://about.gitlab.com/pricing/),
 each team can have their own board to organize their workflow individually.
 
@@ -151,7 +151,7 @@ Create lists for each of your team members and quickly drag-and-drop issues onto
 
 ## Permissions
 
-[Developers and up](../permissions.md) can use all the functionality of the
+[Reporters and up](../permissions.md) can use all the functionality of the
 Issue Board, that is, create or delete lists and drag issues from one list to another.
 
 ## GitLab Enterprise features for Issue Boards
@@ -173,9 +173,13 @@ or in situations where a repository is used to host the code of multiple
 products.
 
 Clicking on the current board name in the upper left corner will reveal a
-menu from where you can create another Issue Board and rename or delete the
-existing one.
+menu from where you can create another Issue Board or delete the existing one.
 Using the search box at the top of the menu, you can filter the listed boards.
+
+When you have 10 or more boards available, a "Recent" section is also shown in the menu.
+These are shortcuts to your last 4 visited boards.
+
+![Multiple Issue Boards](img/issue_boards_multiple.png)
 
 When you're revisiting an issue board in a project or group with multiple boards,
 GitLab will automatically load the last board you visited.
@@ -183,8 +187,6 @@ GitLab will automatically load the last board you visited.
 NOTE: **Note:**
 The Multiple Issue Boards feature is available for
 **projects in GitLab Starter Edition** and for **groups in GitLab Premium Edition**.
-
-![Multiple Issue Boards](img/issue_boards_multiple.png)
 
 ### Configurable Issue Boards **[STARTER]**
 
@@ -218,7 +220,7 @@ Click the button at the top right to toggle focus mode on and off. In focus mode
 
 The top of each list indicates the sum of issue weights for the issues that
 belong to that list. This is useful when using boards for capacity allocation,
-especially in combination with [assignee lists](#assignee-lists).
+especially in combination with [assignee lists](#assignee-lists-premium).
 
 ![Issue Board summed weights](img/issue_board_summed_weights.png)
 

@@ -9,7 +9,7 @@ import ShortcutsIssuable from '~/behaviors/shortcuts/shortcuts_issuable';
 const FORM_SELECTOR = '.js-main-target-form .js-vue-comment-form';
 
 describe('ShortcutsIssuable', function() {
-  const fixtureName = 'snippets/show.html.raw';
+  const fixtureName = 'snippets/show.html';
   preloadFixtures(fixtureName);
 
   beforeAll(done => {

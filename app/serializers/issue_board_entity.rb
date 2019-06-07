@@ -2,6 +2,7 @@
 
 class IssueBoardEntity < Grape::Entity
   include RequestAwareEntity
+  include TimeTrackableEntity
 
   expose :id
   expose :iid
@@ -11,6 +12,7 @@ class IssueBoardEntity < Grape::Entity
   expose :due_date
   expose :project_id
   expose :relative_position
+  expose :time_estimate
 
   expose :project do |issue|
     API::Entities::Project.represent issue.project, only: [:id, :path]

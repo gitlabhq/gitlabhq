@@ -77,8 +77,8 @@ for use (e.g. variations on the main use case), but if that's not applicable, th
 Examples of use cases on feature pages:
 - CE and EE: [Issues](../../user/project/issues/index.md#use-cases)
 - CE and EE: [Merge Requests](../../user/project/merge_requests/index.md)
-- EE-only: [Geo](https://docs.gitlab.com/ee/administration/geo/replication/index.html)
-- EE-only: [Jenkins integration](https://docs.gitlab.com/ee/integration/jenkins.html)
+- EE-only: [Geo](../../administration/geo/replication/index.md)
+- EE-only: [Jenkins integration](../../integration/jenkins.md)
 
 ## Requirements
 
@@ -121,8 +121,8 @@ but commented out to help encourage others to add to it in the future. -->
 
 Notes:
 
-- (1): Apply the [tier badges](https://docs.gitlab.com/ee/development/documentation/styleguide.html#product-badges) accordingly
-- (2): Apply the correct format for the [GitLab version introducing the feature](https://docs.gitlab.com/ee/development/documentation/styleguide.html#gitlab-versions-and-tiers)
+- (1): Apply the [tier badges](styleguide.md#product-badges) accordingly
+- (2): Apply the correct format for the [GitLab version introducing the feature](styleguide.md#gitlab-versions-and-tiers)
 ```
 
 ## Help and feedback section

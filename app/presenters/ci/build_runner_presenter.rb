@@ -25,17 +25,19 @@ module Ci
     end
 
     def git_depth
-      strong_memoize(:git_depth) do
-        git_depth = variables&.find { |variable| variable[:key] == 'GIT_DEPTH' }&.dig(:value)
-        git_depth.to_i
-      end
+      if git_depth_variable
+        git_depth_variable[:value]
+      else
+        project.default_git_depth
+      end.to_i
     end
 
     def refspecs
       specs = []
+      specs << refspec_for_merge_request_ref if merge_request_ref?
 
       if git_depth > 0
-        specs << refspec_for_branch(ref) if branch? || merge_request?
+        specs << refspec_for_branch(ref) if branch? || legacy_detached_merge_request_pipeline?
         specs << refspec_for_tag(ref) if tag?
       else
         specs << refspec_for_branch
@@ -82,6 +84,16 @@ module Ci
 
     def refspec_for_tag(ref = '*')
       "+#{Gitlab::Git::TAG_REF_PREFIX}#{ref}:#{RUNNER_REMOTE_TAG_PREFIX}#{ref}"
+    end
+
+    def refspec_for_merge_request_ref
+      "+#{ref}:#{ref}"
+    end
+
+    def git_depth_variable
+      strong_memoize(:git_depth_variable) do
+        variables&.find { |variable| variable[:key] == 'GIT_DEPTH' }
+      end
     end
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Dashboard::MilestonesController do
@@ -13,7 +15,7 @@ describe Dashboard::MilestonesController do
     )
   end
   let(:issue) { create(:issue, project: project, milestone: project_milestone) }
-  let(:group_issue) { create(:issue, milestone: group_milestone) }
+  let(:group_issue) { create(:issue, milestone: group_milestone, project: create(:project, group: group)) }
 
   let!(:label) { create(:label, project: project, title: 'Issue Label', issues: [issue]) }
   let!(:group_label) { create(:group_label, group: group, title: 'Group Issue Label', issues: [group_issue]) }
@@ -75,11 +77,17 @@ describe Dashboard::MilestonesController do
       expect(response.body).not_to include(project_milestone.title)
     end
 
-    it 'should show counts of group and project milestones to which the user belongs to' do
+    it 'shows counts of group and project milestones to which the user belongs to' do
       get :index
 
       expect(response.body).to include("Open\n<span class=\"badge badge-pill\">2</span>")
       expect(response.body).to include("Closed\n<span class=\"badge badge-pill\">0</span>")
+    end
+
+    context 'external authorization' do
+      subject { get :index }
+
+      it_behaves_like 'disabled when using an external authorization service'
     end
   end
 end

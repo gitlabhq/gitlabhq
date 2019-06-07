@@ -1,112 +1,45 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe GraphqlController do
-  describe 'execute' do
-    let(:user) { nil }
+  before do
+    stub_feature_flags(graphql: true)
+  end
 
-    before do
-      sign_in(user) if user
-
-      run_test_query!
-    end
-
-    subject { query_response }
-
-    context 'graphql is disabled by feature flag' do
-      let(:user) { nil }
+  describe 'POST #execute' do
+    context 'when user is logged in' do
+      let(:user) { create(:user) }
 
       before do
-        stub_feature_flags(graphql: false)
+        sign_in(user)
       end
 
-      it 'returns 404' do
-        run_test_query!
-
-        expect(response).to have_gitlab_http_status(404)
-      end
-    end
-
-    context 'signed out' do
-      let(:user) { nil }
-
-      it 'runs the query with current_user: nil' do
-        is_expected.to eq('echo' => 'nil says: test success')
-      end
-    end
-
-    context 'signed in' do
-      let(:user) { create(:user, username: 'Simon') }
-
-      it 'runs the query with current_user set' do
-        is_expected.to eq('echo' => '"Simon" says: test success')
-      end
-    end
-
-    context 'invalid variables' do
-      it 'returns an error' do
-        run_test_query!(variables: "This is not JSON")
-
-        expect(response).to have_gitlab_http_status(422)
-        expect(json_response['errors'].first['message']).not_to be_nil
-      end
-    end
-  end
-
-  context 'token authentication' do
-    before do
-      stub_authentication_activity_metrics(debug: false)
-    end
-
-    let(:user) { create(:user, username: 'Simon') }
-    let(:personal_access_token) { create(:personal_access_token, user: user) }
-
-    context "when the 'personal_access_token' param is populated with the personal access token" do
-      it 'logs the user in' do
-        expect(authentication_metrics)
-          .to increment(:user_authenticated_counter)
-                .and increment(:user_session_override_counter)
-                       .and increment(:user_sessionless_authentication_counter)
-
-        run_test_query!(private_token: personal_access_token.token)
+      it 'returns 200 when user can access API' do
+        post :execute
 
         expect(response).to have_gitlab_http_status(200)
-        expect(query_response).to eq('echo' => '"Simon" says: test success')
+      end
+
+      it 'returns access denied template when user cannot access API' do
+        # User cannot access API in a couple of cases
+        # * When user is internal(like ghost users)
+        # * When user is blocked
+        expect(Ability).to receive(:allowed?).with(user, :access_api, :global).and_return(false)
+
+        post :execute
+
+        expect(response.status).to eq(403)
+        expect(response).to render_template('errors/access_denied')
       end
     end
 
-    context 'when the personal access token has no api scope' do
-      it 'does not log the user in' do
-        personal_access_token.update(scopes: [:read_user])
-
-        run_test_query!(private_token: personal_access_token.token)
+    context 'when user is not logged in' do
+      it 'returns 200' do
+        post :execute
 
         expect(response).to have_gitlab_http_status(200)
-
-        expect(query_response).to eq('echo' => 'nil says: test success')
       end
     end
-
-    context 'without token' do
-      it 'shows public data' do
-        run_test_query!
-
-        expect(query_response).to eq('echo' => 'nil says: test success')
-      end
-    end
-  end
-
-  # Chosen to exercise all the moving parts in GraphqlController#execute
-  def run_test_query!(variables: { 'text' => 'test success' }, private_token: nil)
-    query = <<~QUERY
-      query Echo($text: String) {
-        echo(text: $text)
-      }
-    QUERY
-
-    post :execute, params: { query: query, operationName: 'Echo', variables: variables, private_token: private_token }
-  end
-
-  def query_response
-    json_response['data']
   end
 end

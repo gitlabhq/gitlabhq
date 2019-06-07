@@ -4,11 +4,14 @@
 - member = local_assigns.fetch(:member)
 - user = local_assigns.fetch(:user, member.user)
 - source = member.source
+- override = member.try(:override)
 
-%li.member{ class: dom_class(member), id: dom_id(member) }
-  %span.list-item-name
+-# Note this is just for individual members. For groups please see shared/members/_group
+
+%li.member.py-2.px-3.d-flex.flex-column{ class: [dom_class(member), ("is-overridden" if override), ("flex-md-row" unless force_mobile_view)], id: dom_id(member) }
+  %span.list-item-name.mb-2.m-md-0
     - if user
-      = image_tag avatar_icon_for_user(user, 40), class: "avatar s40", alt: ''
+      = image_tag avatar_icon_for_user(user, 40), class: "avatar s40 flex-shrink-0 flex-grow-0", alt: ''
       .user-info
         = link_to user.name, user_path(user), class: 'member js-user-link', data: { user_id: user.id }
         = user_status(user)
@@ -42,7 +45,7 @@
               = _("Expires in %{expires_at}").html_safe % { expires_at: distance_of_time_in_words_to_now(member.expires_at) }
 
     - else
-      = image_tag avatar_icon_for_email(member.invite_email, 40), class: "avatar s40", alt: ''
+      = image_tag avatar_icon_for_email(member.invite_email, 40), class: "avatar s40 flex-shrink-0 flex-grow-0", alt: ''
       .user-info
         .member= member.invite_email
         .cgray
@@ -53,20 +56,22 @@
           = time_ago_with_tooltip(member.created_at)
   - if show_roles
     - current_resource = @project || @group
-    .controls.member-controls
+    .controls.member-controls.align-items-center
+      = render_if_exists 'shared/members/ee/ldap_tag', can_override: member.can_override?
       - if show_controls && member.source == current_resource
 
         - if member.can_resend_invite?
           = link_to icon('paper-plane'), polymorphic_path([:resend_invite, member]),
                     method: :post,
-                    class: 'btn btn-default prepend-left-10 d-none d-sm-block',
+                    class: 'btn btn-default align-self-center mr-sm-2',
                     title: _('Resend invite')
 
         - if user != current_user && member.can_update?
-          = form_for member, remote: true, html: { class: 'js-edit-member-form form-group row append-right-5' } do |f|
+          = form_for member, remote: true, html: { class: "js-edit-member-form form-group #{'d-sm-flex' unless force_mobile_view}" } do |f|
             = f.hidden_field :access_level
-            .member-form-control.dropdown.append-right-5
+            .member-form-control.dropdown{ class: [("mr-sm-2 d-sm-inline-block" unless force_mobile_view)] }
               %button.dropdown-menu-toggle.js-member-permissions-dropdown{ type: "button",
+                disabled: member.can_override? && !override,
                 data: { toggle: "dropdown", field_name: "#{f.object_name}[access_level]" } }
                 %span.dropdown-toggle-text
                   = member.human_access
@@ -80,20 +85,25 @@
                         = link_to role, "javascript:void(0)",
                           class: ("is-active" if member.access_level == role_id),
                           data: { id: role_id, el_id: dom_id(member) }
-            .prepend-left-5.clearable-input.member-form-control
+                    = render_if_exists 'shared/members/ee/revert_ldap_group_sync_option',
+                      group: @group,
+                      member: member,
+                      can_override: member.can_override?
+            .clearable-input.member-form-control{ class: [("d-sm-inline-block" unless force_mobile_view)] }
               = f.text_field :expires_at,
+                disabled: member.can_override? && !override,
                 class: 'form-control js-access-expiration-date js-member-update-control',
                 placeholder: _('Expiration date'),
                 id: "member_expires_at_#{member.id}",
                 data: { el_id: dom_id(member) }
               %i.clear-icon.js-clear-input
         - else
-          %span.member-access-text= member.human_access
+          %span.member-access-text.user-access-role= member.human_access
 
         - if member.can_approve?
           = link_to polymorphic_path([:approve_access_request, member]),
                     method: :post,
-                    class: 'btn btn-success prepend-left-10',
+                    class: "btn btn-success align-self-center m-0 mb-2 #{'mb-sm-0 ml-sm-2' unless force_mobile_view}",
                     title: _('Grant access') do
             %span{ class: ('d-block d-sm-none' unless force_mobile_view) }
               = _('Grant access')
@@ -105,16 +115,19 @@
             = link_to icon('sign-out', text: _('Leave')), polymorphic_path([:leave, member.source, :members]),
                       method: :delete,
                       data: { confirm: leave_confirmation_message(member.source) },
-                      class: 'btn btn-remove prepend-left-10'
+                      class: "btn btn-remove align-self-center m-0 #{'ml-sm-2' unless force_mobile_view}"
           - else
             = link_to member,
                       method: :delete,
                       data: { confirm: remove_member_message(member) },
-                      class: 'btn btn-remove prepend-left-10',
+                      class: "btn btn-remove align-self-center m-0 #{'ml-sm-2' unless force_mobile_view}",
                       title: remove_member_title(member) do
               %span{ class: ('d-block d-sm-none' unless force_mobile_view) }
                 = _("Delete")
               - unless force_mobile_view
                 = icon('trash', class: 'd-none d-sm-block')
+        = render_if_exists 'shared/members/ee/override_member_buttons', group: @group, member: member, user: user, action: :edit, can_override: member.can_override?
       - else
-        %span.member-access-text= member.human_access
+        %span.member-access-text.user-access-role= member.human_access
+
+= render_if_exists 'shared/members/ee/override_member_buttons', group: @group, member: member, user: user, action: :confirm, can_override: member.can_override?

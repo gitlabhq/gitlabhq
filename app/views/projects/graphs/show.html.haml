@@ -22,6 +22,6 @@
         = s_('ContributorsPage|Commits to %{branch_name}, excluding merge commits. Limited to 6,000 commits.') % { branch_name: @ref }
       %input#brush_change{ :type => "hidden" }
     .graphs.row
-      #contributors-master
+      #contributors-master.svg-w-100
       #contributors.clearfix
-        %ol.contributors-list.row
+        %ol.contributors-list.svg-w-100.row

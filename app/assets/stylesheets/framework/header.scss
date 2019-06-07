@@ -39,7 +39,6 @@
 
   .header-content {
     width: 100%;
-    display: -webkit-flex;
     display: flex;
     justify-content: space-between;
     position: relative;
@@ -47,11 +46,8 @@
     padding-left: 0;
 
     .title-container {
-      display: -webkit-flex;
       display: flex;
-      -webkit-align-items: stretch;
       align-items: stretch;
-      -webkit-flex: 1 1 auto;
       flex: 1 1 auto;
       padding-top: 0;
       overflow: visible;
@@ -60,7 +56,6 @@
     .title {
       padding-right: 0;
       color: currentColor;
-      display: -webkit-flex;
       display: flex;
       position: relative;
       margin: 0;
@@ -85,7 +80,6 @@
       }
 
       a {
-        display: -webkit-flex;
         display: flex;
         align-items: center;
         padding: 2px 8px;
@@ -173,7 +167,6 @@
 
     .navbar-nav {
       @include media-breakpoint-down(xs) {
-        display: -webkit-flex;
         display: flex;
         padding-right: 10px;
         flex-direction: row;
@@ -258,7 +251,6 @@
   > li {
     > a,
     > button {
-      display: -webkit-flex;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -294,7 +286,6 @@
 }
 
 .navbar-sub-nav {
-  display: -webkit-flex;
   display: flex;
   margin: 0 0 0 6px;
 
@@ -313,7 +304,9 @@
   }
 }
 
-.caret-down {
+.caret-down,
+.btn .caret-down {
+  top: 0;
   height: 11px;
   width: 11px;
   margin-left: 4px;
@@ -326,14 +319,12 @@
 }
 
 .breadcrumbs {
-  display: -webkit-flex;
   display: flex;
   min-height: $breadcrumb-min-height;
   color: $gl-text-color;
 }
 
 .breadcrumbs-container {
-  display: -webkit-flex;
   display: flex;
   width: 100%;
   position: relative;
@@ -344,7 +335,6 @@
 }
 
 .breadcrumbs-links {
-  -webkit-flex: 1;
   flex: 1;
   min-width: 0;
   align-self: center;
@@ -379,7 +369,6 @@
 }
 
 .breadcrumbs-list {
-  display: -webkit-flex;
   display: flex;
   margin-bottom: 0;
   line-height: 16px;
@@ -430,7 +419,6 @@
 }
 
 .breadcrumbs-extra {
-  display: -webkit-flex;
   display: flex;
   flex: 0 0 auto;
   margin-left: auto;
@@ -459,29 +447,44 @@
   }
 }
 
+.title-container,
 .navbar-nav {
-  li {
-    .badge.badge-pill {
-      position: inherit;
-      font-weight: $gl-font-weight-normal;
-      margin-left: -6px;
-      font-size: 11px;
-      color: $white-light;
-      padding: 0 5px;
-      line-height: 12px;
-      border-radius: 7px;
-      box-shadow: 0 1px 0 rgba($gl-header-color, 0.2);
+  .badge.badge-pill {
+    position: inherit;
+    font-weight: $gl-font-weight-normal;
+    margin-left: -6px;
+    font-size: 11px;
+    color: $white-light;
+    padding: 0 5px;
+    line-height: 12px;
+    border-radius: 7px;
+    box-shadow: 0 1px 0 rgba($gl-header-color, 0.2);
 
-      &.issues-count {
-        background-color: $green-500;
-      }
+    &.green-badge {
+      background-color: $green-500;
+    }
 
-      &.merge-requests-count {
-        background-color: $orange-600;
-      }
+    &.merge-requests-count {
+      background-color: $orange-600;
+    }
 
-      &.todos-count {
-        background-color: $blue-500;
+    &.todos-count {
+      background-color: $blue-500;
+    }
+  }
+
+  .canary-badge {
+    .badge {
+      font-size: $gl-font-size-small;
+      line-height: $gl-line-height;
+      padding: 0 $grid-size;
+    }
+
+    &:hover {
+      text-decoration: none;
+
+      .badge {
+        text-decoration: none;
       }
     }
   }
@@ -594,10 +597,15 @@
 
   .emoji-menu-toggle-button {
     @include emoji-menu-toggle-button;
+    padding: $gl-vert-padding $gl-btn-padding;
   }
 
   .input-group {
-    height: 34px;
+    &,
+    .input-group-prepend,
+    .input-group-append {
+      height: $input-height;
+    }
   }
 }
 

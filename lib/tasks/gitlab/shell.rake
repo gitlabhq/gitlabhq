@@ -51,9 +51,6 @@ namespace :gitlab do
         end
       end
 
-      # (Re)create hooks
-      Rake::Task['gitlab:shell:create_hooks'].invoke
-
       Gitlab::Shell.ensure_secret_token!
     end
 
@@ -78,15 +75,6 @@ namespace :gitlab do
         end
       end
     end
-
-    desc 'Create or repair repository hooks symlink'
-    task create_hooks: :gitlab_environment do
-      warn_user_is_not_gitlab
-
-      puts 'Creating/Repairing hooks symlinks for all repositories'
-      system(*%W(#{Gitlab.config.gitlab_shell.path}/bin/create-hooks) + repository_storage_paths_args)
-      puts 'done'.color(:green)
-    end
   end
 
   def setup
@@ -103,19 +91,12 @@ namespace :gitlab do
 
     Gitlab::Shell.new.remove_all_keys
 
-    Gitlab::Shell.new.batch_add_keys do |adder|
-      Key.find_each(batch_size: 1000) do |key|
-        adder.add_key(key.shell_id, key.key)
-        print '.'
+    Key.find_in_batches(batch_size: 1000) do |keys|
+      unless Gitlab::Shell.new.batch_add_keys(keys)
+        puts "Failed to add keys...".color(:red)
+        exit 1
       end
     end
-    puts ""
-
-    unless $?.success?
-      puts "Failed to add keys...".color(:red)
-      exit 1
-    end
-
   rescue Gitlab::TaskAbortedByUserError
     puts "Quitting...".color(:red)
     exit 1

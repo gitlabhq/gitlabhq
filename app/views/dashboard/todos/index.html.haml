@@ -2,9 +2,9 @@
 - page_title "Todos"
 - header_title "Todos", dashboard_todos_path
 
-= render_if_exists "shared/gold_trial_callout"
+= render_dashboard_gold_trial(current_user)
 
-.page-title-holder
+.page-title-holder.d-flex.align-items-center
   %h1.page-title= _('Todos')
 
 - if current_user.todos.any?
@@ -34,7 +34,7 @@
             = icon('spinner spin')
 
   .todos-filters
-    .row-content-block.second-block
+    .issues-details-filters.row-content-block.second-block
       = form_tag todos_filter_path(without: [:project_id, :author_id, :type, :action_id]), method: :get, class: 'filter-form d-sm-flex' do
         .filter-categories.flex-fill
           .filter-item.inline

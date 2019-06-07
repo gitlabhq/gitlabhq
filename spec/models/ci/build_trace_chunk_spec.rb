@@ -171,7 +171,7 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
     end
 
     shared_examples_for 'Scheduling sidekiq worker to flush data to persist store' do
-      context 'when new data fullfilled chunk size' do
+      context 'when new data fulfilled chunk size' do
         let(:new_data) { 'a' * described_class::CHUNK_SIZE }
 
         it 'schedules trace chunk flush worker' do
@@ -193,7 +193,7 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
     end
 
     shared_examples_for 'Scheduling no sidekiq worker' do
-      context 'when new data fullfilled chunk size' do
+      context 'when new data fulfilled chunk size' do
         let(:new_data) { 'a' * described_class::CHUNK_SIZE }
 
         it 'does not schedule trace chunk flush worker' do

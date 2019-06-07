@@ -4,10 +4,16 @@ export default {
     colors: {
       type: Array,
       required: true,
+      validator(value) {
+        return value.length === 2;
+      },
     },
     opacity: {
       type: Array,
       required: true,
+      validator(value) {
+        return value.length === 2;
+      },
     },
     identifierName: {
       type: String,

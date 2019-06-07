@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Milestone do
@@ -29,11 +31,27 @@ describe Milestone do
     end
 
     describe 'start_date' do
-      it 'adds an error when start_date is greated then due_date' do
+      it 'adds an error when start_date is greater then due_date' do
         milestone = build(:milestone, start_date: Date.tomorrow, due_date: Date.yesterday)
 
         expect(milestone).not_to be_valid
         expect(milestone.errors[:due_date]).to include("must be greater than start date")
+      end
+
+      it 'adds an error when start_date is greater than 9999-12-31' do
+        milestone = build(:milestone, start_date: Date.new(10000, 1, 1))
+
+        expect(milestone).not_to be_valid
+        expect(milestone.errors[:start_date]).to include("date must not be after 9999-12-31")
+      end
+    end
+
+    describe 'due_date' do
+      it 'adds an error when due_date is greater than 9999-12-31' do
+        milestone = build(:milestone, due_date: Date.new(10000, 1, 1))
+
+        expect(milestone).not_to be_valid
+        expect(milestone.errors[:due_date]).to include("date must not be after 9999-12-31")
       end
     end
   end
@@ -164,38 +182,16 @@ describe Milestone do
     end
   end
 
-  describe '#percent_complete' do
-    before do
-      allow(milestone).to receive_messages(
-        closed_items_count: 3,
-        total_items_count: 4
-      )
-    end
-
-    it { expect(milestone.percent_complete(user)).to eq(75) }
-  end
-
   describe '#can_be_closed?' do
     it { expect(milestone.can_be_closed?).to be_truthy }
   end
 
-  describe '#total_items_count' do
-    before do
-      create :closed_issue, milestone: milestone, project: project
-      create :merge_request, milestone: milestone
-    end
-
-    it 'returns total count of issues and merge requests assigned to milestone' do
-      expect(milestone.total_items_count(user)).to eq 2
-    end
-  end
-
   describe '#can_be_closed?' do
     before do
-      milestone = create :milestone
-      create :closed_issue, milestone: milestone
+      milestone = create :milestone, project: project
+      create :closed_issue, milestone: milestone, project: project
 
-      create :issue
+      create :issue, project: project
     end
 
     it 'returns true if milestone active and all nested issues closed' do
@@ -501,5 +497,21 @@ describe Milestone do
         expect(count).to eq(expected_count)
       end
     end
+  end
+
+  describe '.reference_pattern' do
+    subject { described_class.reference_pattern }
+
+    it { is_expected.to match('gitlab-org/gitlab-ce%123') }
+    it { is_expected.to match('gitlab-org/gitlab-ce%"my-milestone"') }
+  end
+
+  describe '.link_reference_pattern' do
+    subject { described_class.link_reference_pattern }
+
+    it { is_expected.to match("#{Gitlab.config.gitlab.url}/gitlab-org/gitlab-ce/milestones/123") }
+    it { is_expected.to match("#{Gitlab.config.gitlab.url}/gitlab-org/gitlab-ce/-/milestones/123") }
+    it { is_expected.not_to match("#{Gitlab.config.gitlab.url}/gitlab-org/gitlab-ce/issues/123") }
+    it { is_expected.not_to match("gitlab-org/gitlab-ce/milestones/123") }
   end
 end

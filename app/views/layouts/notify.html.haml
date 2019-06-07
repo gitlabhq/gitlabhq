@@ -7,6 +7,7 @@
     = yield :head
   %body
     .content
+      = html_header_message
       = yield
     .footer{ style: "margin-top: 10px;" }
       %p
@@ -30,3 +31,6 @@
             adjust your notification settings.
 
           = email_action @target_url
+
+        = render_if_exists 'layouts/email_additional_text'
+        = html_footer_message

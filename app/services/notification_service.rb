@@ -89,14 +89,14 @@ class NotificationService
   #  * project team members with notification level higher then Participating
   #  * users with custom level checked with "close issue"
   #
-  def close_issue(issue, current_user)
-    close_resource_email(issue, current_user, :closed_issue_email)
+  def close_issue(issue, current_user, closed_via: nil)
+    close_resource_email(issue, current_user, :closed_issue_email, closed_via: closed_via)
   end
 
   # When we reassign an issue we should send an email to:
   #
-  #  * issue old assignee if their notification level is not Disabled
-  #  * issue new assignee if their notification level is not Disabled
+  #  * issue old assignees if their notification level is not Disabled
+  #  * issue new assignees if their notification level is not Disabled
   #  * users with custom level checked with "reassign issue"
   #
   def reassigned_issue(issue, current_user, previous_assignees = [])
@@ -104,7 +104,7 @@ class NotificationService
       issue,
       current_user,
       action: "reassign",
-      previous_assignee: previous_assignees
+      previous_assignees: previous_assignees
     )
 
     previous_assignee_ids = previous_assignees.map(&:id)
@@ -140,7 +140,7 @@ class NotificationService
   # When create a merge request we should send an email to:
   #
   #  * mr author
-  #  * mr assignee if their notification level is not Disabled
+  #  * mr assignees if their notification level is not Disabled
   #  * project team members with notification level higher then Participating
   #  * watchers of the mr's labels
   #  * users with custom level checked with "new merge request"
@@ -184,23 +184,25 @@ class NotificationService
 
   # When we reassign a merge_request we should send an email to:
   #
-  #  * merge_request old assignee if their notification level is not Disabled
-  #  * merge_request assignee if their notification level is not Disabled
+  #  * merge_request old assignees if their notification level is not Disabled
+  #  * merge_request new assignees if their notification level is not Disabled
   #  * users with custom level checked with "reassign merge request"
   #
-  def reassigned_merge_request(merge_request, current_user, previous_assignee = nil)
+  def reassigned_merge_request(merge_request, current_user, previous_assignees = [])
     recipients = NotificationRecipientService.build_recipients(
       merge_request,
       current_user,
       action: "reassign",
-      previous_assignee: previous_assignee
+      previous_assignees: previous_assignees
     )
+
+    previous_assignee_ids = previous_assignees.map(&:id)
 
     recipients.each do |recipient|
       mailer.reassigned_merge_request_email(
         recipient.user.id,
         merge_request.id,
-        previous_assignee&.id,
+        previous_assignee_ids,
         current_user.id,
         recipient.reason
       ).deliver_later
@@ -236,7 +238,7 @@ class NotificationService
       merge_request,
       current_user,
       :merged_merge_request_email,
-      skip_current_user: !merge_request.merge_when_pipeline_succeeds?
+      skip_current_user: !merge_request.auto_merge_enabled?
     )
   end
 
@@ -502,7 +504,7 @@ class NotificationService
     end
   end
 
-  def close_resource_email(target, current_user, method, skip_current_user: true)
+  def close_resource_email(target, current_user, method, skip_current_user: true, closed_via: nil)
     action = method == :merged_merge_request_email ? "merge" : "close"
 
     recipients = NotificationRecipientService.build_recipients(
@@ -513,7 +515,7 @@ class NotificationService
     )
 
     recipients.each do |recipient|
-      mailer.send(method, recipient.user.id, target.id, current_user.id, recipient.reason).deliver_later
+      mailer.send(method, recipient.user.id, target.id, current_user.id, reason: recipient.reason, closed_via: closed_via).deliver_later
     end
   end
 

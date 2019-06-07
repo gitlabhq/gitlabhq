@@ -28,7 +28,7 @@ export default {
 <template>
   <span>
     <span ref="issueTimeEstimate" class="board-card-info card-number">
-      <icon name="hourglass" css-classes="board-card-info-icon" /><time
+      <icon name="hourglass" css-classes="board-card-info-icon align-top" /><time
         class="board-card-info-text"
         >{{ timeEstimate }}</time
       >

@@ -20,7 +20,7 @@ export default class GpgBadges {
     const endpoint = tag.data('signaturesPath');
     if (!endpoint) {
       displayError();
-      return Promise.reject(new Error('Missing commit signatures endpoint!'));
+      return Promise.reject(new Error(__('Missing commit signatures endpoint!')));
     }
 
     const params = parseQueryStringIntoObject(tag.serialize());

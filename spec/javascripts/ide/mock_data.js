@@ -16,6 +16,7 @@ export const projectData = {
   },
   mergeRequests: {},
   merge_requests_enabled: true,
+  default_branch: 'master',
 };
 
 export const pipelines = [

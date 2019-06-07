@@ -1,10 +1,14 @@
-# Installing GitLab on Amazon Web Services (AWS)
+---
+type: howto
+---
 
-To install GitLab on AWS, you can use the Amazon Machine Images (AMIs) that GitLab
-provides with [each release](https://about.gitlab.com/releases/).
+# Installing GitLab HA on Amazon Web Services (AWS)
 
 This page offers a walkthrough of a common HA (Highly Available) configuration
 for GitLab on AWS. You should customize it to accommodate your needs.
+
+NOTE: **Note**
+For organizations with 300 users or less, the recommended AWS installation method is to launch an EC2 single box [Omnibus Installation](https://about.gitlab.com/install/) and implement a snapshot strategy for backing up the data.
 
 ## Introduction
 
@@ -55,6 +59,8 @@ Here's a list of the AWS services we will use, with links to pricing information
 - **ElastiCache**: An in-memory cache environment will be used to provide a
   High Availability Redis configuration. See the
   [Amazon ElastiCache pricing](https://aws.amazon.com/elasticache/pricing/).
+  
+NOTE: **Note:** Please note that while we will be using EBS for storage, we do not recommend using EFS as it may negatively impact GitLab's performance. You can review the [relevant documentation](../../administration/high_availability/nfs.md#avoid-using-awss-elastic-file-system-efs) for more details.
 
 ## Creating an IAM EC2 instance role and profile
 To minimize the permissions of the user, we'll create a new [IAM](https://docs.aws.amazon.com/IAM/latest/UserGuide/introduction.html)
@@ -379,6 +385,10 @@ size depends on your needs and you can always migrate to a bigger volume later.
 You will be able to [set up that volume](#setting-up-the-ebs-volume)
 after the instance is created.
 
+CAUTION: **Caution:**
+We **do not** recommend using the AWS Elastic File System (EFS), as it can result
+in [significantly degraded performance](../../administration/high_availability/nfs.md#avoid-using-awss-elastic-file-system-efs).
+
 ### Configure security group
 
 As a last step, configure the security group:
@@ -606,7 +616,7 @@ To back up GitLab:
 
 To restore GitLab, first review the [restore documentation](../../raketasks/backup_restore.md#restore),
 and primarily the restore prerequisites. Then, follow the steps under the
-[Omnibus installations section](../../raketasks/backup_restore.md#restore-for-omnibus-installations).
+[Omnibus installations section](../../raketasks/backup_restore.md#restore-for-omnibus-gitlab-installations).
 
 ## Updating GitLab
 
@@ -643,12 +653,24 @@ Have a read through these other resources and feel free to
 [open an issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/new)
 to request additional material:
 
-- [GitLab High Availability](https://docs.gitlab.com/ee/administration/high_availability/):
+- [GitLab High Availability](../../administration/high_availability/README.md):
   GitLab supports several different types of clustering and high-availability.
-- [Geo replication](https://docs.gitlab.com/ee/administration/geo/replication/):
+- [Geo replication](../../administration/geo/replication/index.md):
   Geo is the solution for widely distributed development teams.
 - [Omnibus GitLab](https://docs.gitlab.com/omnibus/) - Everything you need to know
   about administering your GitLab instance.
-- [Upload a license](https://docs.gitlab.com/ee/user/admin_area/license.html):
+- [Upload a license](../../user/admin_area/license.md):
   Activate all GitLab Enterprise Edition functionality with a license.
 - [Pricing](https://about.gitlab.com/pricing): Pricing for the different tiers.
+
+<!-- ## Troubleshooting
+
+Include any troubleshooting steps that you can foresee. If you know beforehand what issues
+one might have when setting this up, or when something is changed, or on upgrading, it's
+important to describe those, too. Think of things that may go wrong and include them here.
+This is important to minimize requests for support and to avoid doc comments with
+questions that you know someone might ask.
+
+Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+If you have none to add when creating a doc, leave this section in place
+but commented out to help encourage others to add to it in the future. -->

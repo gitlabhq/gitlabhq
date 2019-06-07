@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class DeployToken < ActiveRecord::Base
+class DeployToken < ApplicationRecord
   include Expirable
   include TokenAuthenticatable
   include PolicyActor

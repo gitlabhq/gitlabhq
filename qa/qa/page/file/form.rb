@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module QA
   module Page
     module File
@@ -36,6 +38,8 @@ module QA
 
         def commit_changes
           click_on 'Commit changes'
+
+          finished_loading?
         end
 
         def select_template(template_type, template)

@@ -9,7 +9,7 @@
   = auto_discovery_link_tag(:atom, user_url(@user, format: :atom), title: "#{@user.name} activity")
 
 .user-profile
-  .cover-block.user-cover-block.top-area
+  .cover-block.user-cover-block
     .cover-controls
       - if @user == current_user
         = link_to profile_path, class: 'btn btn-default has-tooltip', title: s_('UserProfile|Edit profile'), 'aria-label': 'Edit profile' do
@@ -45,7 +45,7 @@
             = emoji_icon(@user.status.emoji)
             = markdown_field(@user.status, :message)
 
-        .cover-desc.member-date
+        .cover-desc.member-date.cgray
           %p
             %span.middle-dot-divider
               @#{@user.username}
@@ -53,7 +53,7 @@
               %span.middle-dot-divider
                 = s_('Member since %{date}') % { date: @user.created_at.to_date.to_s(:long) }
 
-        .cover-desc
+        .cover-desc.cgray
           - unless @user.public_email.blank?
             .profile-link-holder.middle-dot-divider
               = link_to @user.public_email, "mailto:#{@user.public_email}", class: 'text-link'
@@ -82,7 +82,7 @@
               = @user.organization
 
         - if @user.bio.present?
-          .cover-desc
+          .cover-desc.cgray
             %p.profile-user-bio
               = @user.bio
 

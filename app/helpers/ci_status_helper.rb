@@ -16,7 +16,7 @@ module CiStatusHelper
     label = case status
             when 'success'
               'passed'
-            when 'success_with_warnings'
+            when 'success-with-warnings'
               'passed with warnings'
             when 'manual'
               'waiting for manual action'
@@ -37,7 +37,7 @@ module CiStatusHelper
     case status
     when 'success'
       s_('CiStatusText|passed')
-    when 'success_with_warnings'
+    when 'success-with-warnings'
       s_('CiStatusText|passed')
     when 'manual'
       s_('CiStatusText|blocked')
@@ -71,7 +71,7 @@ module CiStatusHelper
       case status
       when 'success'
         'status_success'
-      when 'success_with_warnings'
+      when 'success-with-warnings'
         'status_warning'
       when 'failed'
         'status_failed'
@@ -100,17 +100,6 @@ module CiStatusHelper
     "pipeline-status/#{pipeline_status.sha}-#{pipeline_status.status}"
   end
 
-  def render_project_pipeline_status(pipeline_status, tooltip_placement: 'left')
-    project = pipeline_status.project
-    path = pipelines_project_commit_path(project, pipeline_status.sha, ref: pipeline_status.ref)
-
-    render_status_with_link(
-      'commit',
-      pipeline_status.status,
-      path,
-      tooltip_placement: tooltip_placement)
-  end
-
   def render_commit_status(commit, ref: nil, tooltip_placement: 'left')
     project = commit.project
     path = pipelines_project_commit_path(project, commit, ref: ref)
@@ -123,14 +112,8 @@ module CiStatusHelper
       icon_size: 24)
   end
 
-  def render_pipeline_status(pipeline, tooltip_placement: 'left')
-    project = pipeline.project
-    path = project_pipeline_path(project, pipeline)
-    render_status_with_link('pipeline', pipeline.status, path, tooltip_placement: tooltip_placement)
-  end
-
   def render_status_with_link(type, status, path = nil, tooltip_placement: 'left', cssclass: '', container: 'body', icon_size: 16)
-    klass = "ci-status-link ci-status-icon-#{status.dasherize} #{cssclass}"
+    klass = "ci-status-link ci-status-icon-#{status.dasherize} d-inline-flex #{cssclass}"
     title = "#{type.titleize}: #{ci_label_for_status(status)}"
     data = { toggle: 'tooltip', placement: tooltip_placement, container: container }
 

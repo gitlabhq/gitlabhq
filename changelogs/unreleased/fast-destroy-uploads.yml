@@ -1,5 +1,0 @@
----
-title: File uploads are deleted asynchronously when deleting a project or group.
-merge_request:
-author:
-type: added

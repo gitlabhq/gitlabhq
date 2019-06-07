@@ -6,14 +6,14 @@ describe Gitlab::GitalyClient::CleanupService do
   let(:relative_path) { project.disk_path + '.git' }
   let(:client) { described_class.new(project.repository) }
 
-  describe '#apply_bfg_object_map' do
-    it 'sends an apply_bfg_object_map message' do
+  describe '#apply_bfg_object_map_stream' do
+    it 'sends an apply_bfg_object_map_stream message' do
       expect_any_instance_of(Gitaly::CleanupService::Stub)
-        .to receive(:apply_bfg_object_map)
+        .to receive(:apply_bfg_object_map_stream)
         .with(kind_of(Enumerator), kind_of(Hash))
-        .and_return(double)
+        .and_return([])
 
-      client.apply_bfg_object_map(StringIO.new)
+      client.apply_bfg_object_map_stream(StringIO.new)
     end
   end
 end

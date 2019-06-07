@@ -8,6 +8,8 @@ module Groups
     end
 
     def execute
+      remove_unallowed_params
+
       @group = Group.new(params)
 
       after_build_hook(@group, params)
@@ -44,13 +46,13 @@ module Groups
       if @group.subgroup?
         unless can?(current_user, :create_subgroup, @group.parent)
           @group.parent = nil
-          @group.errors.add(:parent_id, 'You don’t have permission to create a subgroup in this group.')
+          @group.errors.add(:parent_id, s_('CreateGroup|You don’t have permission to create a subgroup in this group.'))
 
           return false
         end
       else
         unless can?(current_user, :create_group)
-          @group.errors.add(:base, 'You don’t have permission to create groups.')
+          @group.errors.add(:base, s_('CreateGroup|You don’t have permission to create groups.'))
 
           return false
         end
@@ -60,12 +62,16 @@ module Groups
     end
 
     def can_use_visibility_level?
-      unless Gitlab::VisibilityLevel.allowed_for?(current_user, params[:visibility_level])
+      unless Gitlab::VisibilityLevel.allowed_for?(current_user, visibility_level)
         deny_visibility_level(@group)
         return false
       end
 
       true
+    end
+
+    def visibility_level
+      params[:visibility].present? ? Gitlab::VisibilityLevel.level_value(params[:visibility]) : params[:visibility_level]
     end
   end
 end

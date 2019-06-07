@@ -12,7 +12,7 @@ describe SearchHelper do
         allow(self).to receive(:current_user).and_return(nil)
       end
 
-      it "it returns nil" do
+      it "returns nil" do
         expect(search_autocomplete_opts("q")).to be_nil
       end
     end

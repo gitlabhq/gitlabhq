@@ -27,9 +27,13 @@ class DiffFileBaseEntity < Grape::Entity
 
     next unless merge_request.source_project
 
-    project_edit_blob_path(merge_request.source_project,
-      tree_join(merge_request.source_branch, diff_file.new_path),
-      options)
+    if Feature.enabled?(:web_ide_default)
+      ide_edit_path(merge_request.source_project, merge_request.source_branch, diff_file.new_path)
+    else
+      project_edit_blob_path(merge_request.source_project,
+        tree_join(merge_request.source_branch, diff_file.new_path),
+        options)
+    end
   end
 
   expose :old_path_html do |diff_file|

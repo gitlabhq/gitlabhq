@@ -49,10 +49,10 @@ export default {
   },
   computed: {
     hasTimeSpent() {
-      return !!this.timeSpent;
+      return Boolean(this.timeSpent);
     },
     hasTimeEstimate() {
-      return !!this.timeEstimate;
+      return Boolean(this.timeEstimate);
     },
     showComparisonState() {
       return this.hasTimeEstimate && this.hasTimeSpent;
@@ -67,7 +67,7 @@ export default {
       return !this.hasTimeEstimate && !this.hasTimeSpent;
     },
     showHelpState() {
-      return !!this.showHelp;
+      return Boolean(this.showHelp);
     },
   },
   created() {

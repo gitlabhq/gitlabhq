@@ -4,8 +4,8 @@
 
 import Vue from 'vue';
 
-import '~/vue_shared/models/label';
-import '~/vue_shared/models/assignee';
+import '~/boards/models/label';
+import '~/boards/models/assignee';
 import '~/boards/models/issue';
 import '~/boards/models/list';
 import IssueCardInner from '~/boards/components/issue_card_inner.vue';
@@ -283,6 +283,12 @@ describe('Issue card component', () => {
           done();
         })
         .catch(done.fail);
+    });
+  });
+
+  describe('weights', () => {
+    it('not shows weight component', () => {
+      expect(component.$el.querySelector('.board-card-weight')).toBeNull();
     });
   });
 });

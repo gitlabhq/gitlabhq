@@ -3,7 +3,7 @@ import _ from 'underscore';
 import timeago from 'timeago.js';
 import dateFormat from 'dateformat';
 import { pluralize } from './text_utility';
-import { languageCode, s__ } from '../../locale';
+import { languageCode, s__, __ } from '../../locale';
 
 window.timeago = timeago;
 
@@ -63,7 +63,15 @@ export const pad = (val, len = 2) => `0${val}`.slice(-len);
  * @returns {String}
  */
 export const getDayName = date =>
-  ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][date.getDay()];
+  [
+    __('Sunday'),
+    __('Monday'),
+    __('Tuesday'),
+    __('Wednesday'),
+    __('Thursday'),
+    __('Friday'),
+    __('Saturday'),
+  ][date.getDay()];
 
 /**
  * @example
@@ -71,7 +79,12 @@ export const getDayName = date =>
  * @param {date} datetime
  * @returns {String}
  */
-export const formatDate = datetime => dateFormat(datetime, 'mmm d, yyyy h:MMtt Z');
+export const formatDate = datetime => {
+  if (_.isString(datetime) && datetime.match(/\d+-\d+\d+ /)) {
+    throw new Error(__('Invalid date'));
+  }
+  return dateFormat(datetime, 'mmm d, yyyy h:MMtt Z');
+};
 
 /**
  * Timeago uses underscores instead of dashes to separate language from country code.
@@ -92,7 +105,7 @@ export const getTimeago = () => {
 
       const timeAgoLocaleRemaining = [
         () => [s__('Timeago|just now'), s__('Timeago|right now')],
-        () => [s__('Timeago|%s seconds ago'), s__('Timeago|%s seconds remaining')],
+        () => [s__('Timeago|just now'), s__('Timeago|%s seconds remaining')],
         () => [s__('Timeago|1 minute ago'), s__('Timeago|1 minute remaining')],
         () => [s__('Timeago|%s minutes ago'), s__('Timeago|%s minutes remaining')],
         () => [s__('Timeago|1 hour ago'), s__('Timeago|1 hour remaining')],
@@ -121,7 +134,7 @@ export const getTimeago = () => {
 
       const timeAgoLocale = [
         () => [s__('Timeago|just now'), s__('Timeago|right now')],
-        () => [s__('Timeago|%s seconds ago'), s__('Timeago|in %s seconds')],
+        () => [s__('Timeago|just now'), s__('Timeago|in %s seconds')],
         () => [s__('Timeago|1 minute ago'), s__('Timeago|in 1 minute')],
         () => [s__('Timeago|%s minutes ago'), s__('Timeago|in %s minutes')],
         () => [s__('Timeago|1 hour ago'), s__('Timeago|in 1 hour')],
@@ -160,7 +173,11 @@ export const getTimeago = () => {
  * @param {Boolean} setTimeago
  */
 export const localTimeAgo = ($timeagoEls, setTimeago = true) => {
-  getTimeago().render($timeagoEls, timeagoLanguageCode);
+  getTimeago();
+
+  $timeagoEls.each((i, el) => {
+    $(el).text(timeagoInstance.format($(el).attr('datetime'), timeagoLanguageCode));
+  });
 
   if (!setTimeago) {
     return;
@@ -316,13 +333,13 @@ export const getSundays = date => {
   }
 
   const daysToSunday = [
-    'Saturday',
-    'Friday',
-    'Thursday',
-    'Wednesday',
-    'Tuesday',
-    'Monday',
-    'Sunday',
+    __('Saturday'),
+    __('Friday'),
+    __('Thursday'),
+    __('Wednesday'),
+    __('Tuesday'),
+    __('Monday'),
+    __('Sunday'),
   ];
 
   const month = date.getMonth();
@@ -332,7 +349,7 @@ export const getSundays = date => {
 
   while (dateOfMonth.getMonth() === month) {
     const dayName = getDayName(dateOfMonth);
-    if (dayName === 'Sunday') {
+    if (dayName === __('Sunday')) {
       sundays.push(new Date(dateOfMonth.getTime()));
     }
 
@@ -496,7 +513,7 @@ export const stringifyTime = (timeObject, fullNameFormat = false) => {
   const reducedTime = _.reduce(
     timeObject,
     (memo, unitValue, unitName) => {
-      const isNonZero = !!unitValue;
+      const isNonZero = Boolean(unitValue);
 
       if (fullNameFormat && isNonZero) {
         // Remove traling 's' if unit value is singular

@@ -1,0 +1,30 @@
+# This is a very simple template that mainly relies on FastLane to build and distribute your app.
+# Read more about how to use this template on the blog post https://about.gitlab.com/2019/03/06/ios-publishing-with-gitlab-and-fastlane/
+# You will also need fastlane and signing configuration for this to work, along with a MacOS runner.
+# These details are provided in the blog post.
+
+# Note that when you're using the shell executor for MacOS builds, the
+# build and tests run as the identity of the runner logged in user, directly on
+# the build host. This is less secure than using container executors, so please
+# take a look at our security implications documentation at
+# https://docs.gitlab.com/runner/security/#usage-of-shell-executor for additional
+# detail on what to keep in mind in this scenario.
+
+stages:
+  - build
+  - test
+  - deploy
+
+variables:
+  LC_ALL: "en_US.UTF-8"
+  LANG: "en_US.UTF-8"
+  GIT_STRATEGY: clone
+
+build:
+  stage: build
+  script:
+    - bundle install
+    - bundle exec fastlane build
+  artifacts:
+    paths:
+      - ./*.ipa

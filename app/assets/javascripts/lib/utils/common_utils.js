@@ -7,6 +7,7 @@ import axios from './axios_utils';
 import { getLocationHash } from './url_utility';
 import { convertToCamelCase } from './text_utility';
 import { isObject } from './type_utility';
+import breakpointInstance from '../../breakpoints';
 
 export const getPagePath = (index = 0) => {
   const page = $('body').attr('data-page') || '';
@@ -93,6 +94,8 @@ export const handleLocationHash = () => {
   const fixedNav = document.querySelector('.navbar-gitlab');
   const performanceBar = document.querySelector('#js-peek');
   const topPadding = 8;
+  const diffFileHeader = document.querySelector('.js-file-title');
+  const versionMenusContainer = document.querySelector('.mr-version-menus-container');
 
   let adjustment = 0;
   if (fixedNav) adjustment -= fixedNav.offsetHeight;
@@ -111,6 +114,14 @@ export const handleLocationHash = () => {
 
   if (performanceBar) {
     adjustment -= performanceBar.offsetHeight;
+  }
+
+  if (diffFileHeader) {
+    adjustment -= diffFileHeader.offsetHeight;
+  }
+
+  if (versionMenusContainer) {
+    adjustment -= versionMenusContainer.offsetHeight;
   }
 
   if (isInMRPage()) {
@@ -193,16 +204,23 @@ export const isMetaKey = e => e.metaKey || e.ctrlKey || e.altKey || e.shiftKey;
 export const isMetaClick = e => e.metaKey || e.ctrlKey || e.which === 2;
 
 export const contentTop = () => {
-  const perfBar = $('#js-peek').height() || 0;
-  const mrTabsHeight = $('.merge-request-tabs').height() || 0;
-  const headerHeight = $('.navbar-gitlab').height() || 0;
-  const diffFilesChanged = $('.js-diff-files-changed').height() || 0;
-  const diffFileLargeEnoughScreen =
-    'matchMedia' in window ? window.matchMedia('min-width: 768') : true;
+  const perfBar = $('#js-peek').outerHeight() || 0;
+  const mrTabsHeight = $('.merge-request-tabs').outerHeight() || 0;
+  const headerHeight = $('.navbar-gitlab').outerHeight() || 0;
+  const diffFilesChanged = $('.js-diff-files-changed').outerHeight() || 0;
+  const isDesktop = breakpointInstance.isDesktop();
   const diffFileTitleBar =
-    (diffFileLargeEnoughScreen && $('.diff-file .file-title-flex-parent:visible').height()) || 0;
+    (isDesktop && $('.diff-file .file-title-flex-parent:visible').outerHeight()) || 0;
+  const compareVersionsHeaderHeight = (isDesktop && $('.mr-version-controls').outerHeight()) || 0;
 
-  return perfBar + mrTabsHeight + headerHeight + diffFilesChanged + diffFileTitleBar;
+  return (
+    perfBar +
+    mrTabsHeight +
+    headerHeight +
+    diffFilesChanged +
+    diffFileTitleBar +
+    compareVersionsHeaderHeight
+  );
 };
 
 export const scrollToElement = element => {
@@ -707,6 +725,26 @@ export const NavigationType = {
   TYPE_BACK_FORWARD: 2,
   TYPE_RESERVED: 255,
 };
+
+/**
+ * Returns the value of `gon.ee`
+ * Used to check if it's the EE codebase or the CE one.
+ *
+ * @returns Boolean
+ */
+export const isEE = () => window.gon && window.gon.ee;
+
+/**
+ * Checks if the given Label has a special syntax `::` in
+ * it's title.
+ *
+ * Expected Label to be an Object with `title` as a key:
+ *   { title: 'LabelTitle', ...otherProperties };
+ *
+ * @param {Object} label
+ * @returns Boolean
+ */
+export const isScopedLabel = ({ title = '' }) => title.indexOf('::') !== -1;
 
 window.gl = window.gl || {};
 window.gl.utils = {

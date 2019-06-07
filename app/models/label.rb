@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Label < ActiveRecord::Base
+class Label < ApplicationRecord
   include CacheMarkdownField
   include Referable
   include Subscribable
@@ -8,6 +8,7 @@ class Label < ActiveRecord::Base
   include OptionallySearch
   include Sortable
   include FromUnion
+  include Presentable
 
   cache_markdown_field :description, pipeline: :single_line
 
@@ -126,6 +127,17 @@ class Label < ActiveRecord::Base
     fuzzy_search(query, [:title, :description])
   end
 
+  # Override Gitlab::SQL::Pattern.min_chars_for_partial_matching as
+  # label queries are never global, and so will not use a trigram
+  # index. That means we can have just one character in the LIKE.
+  def self.min_chars_for_partial_matching
+    1
+  end
+
+  def self.by_ids(ids)
+    where(id: ids)
+  end
+
   def open_issues_count(user = nil)
     issues_count(user, state: 'opened')
   end
@@ -220,6 +232,10 @@ class Label < ActiveRecord::Base
 
   def hook_attrs
     attributes
+  end
+
+  def present(attributes)
+    super(attributes.merge(presenter_class: ::LabelPresenter))
   end
 
   private

@@ -28,7 +28,7 @@ module RuboCop
           source_name = node.location.expression.source_buffer.name
           path = Pathname.new(source_name).relative_path_from(rails_root)
           dirname = File.dirname(path)
-            .sub(%r{\Adb/(migrate|post_migrate)}, 'spec/migrations')
+            .sub(%r{db/(migrate|post_migrate)}, 'spec/migrations')
           filename = File.basename(source_name, '.rb').sub(/\A\d+_/, '')
 
           File.join(dirname, "#{filename}_spec.rb")

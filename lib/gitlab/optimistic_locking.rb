@@ -12,7 +12,7 @@ module Gitlab
       retries -= 1
       raise unless retries >= 0
 
-      subject.reload
+      subject.reset
       retry
     end
 

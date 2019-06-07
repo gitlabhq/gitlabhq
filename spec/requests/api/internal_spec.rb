@@ -26,6 +26,21 @@ describe API::Internal do
 
       expect(json_response['redis']).to be(false)
     end
+
+    context 'authenticating' do
+      it 'authenticates using a header' do
+        get api("/internal/check"),
+            headers: { API::Helpers::GITLAB_SHARED_SECRET_HEADER => Base64.encode64(secret_token) }
+
+        expect(response).to have_gitlab_http_status(200)
+      end
+
+      it 'returns 401 when no credentials provided' do
+        get(api("/internal/check"))
+
+        expect(response).to have_gitlab_http_status(401)
+      end
+    end
   end
 
   describe 'GET /internal/broadcast_message' do
@@ -237,6 +252,14 @@ describe API::Internal do
 
       expect(json_response['name']).to eq(user.name)
     end
+
+    it 'responds successfully when a user is not found' do
+      get(api("/internal/discover"), params: { username: 'noone', secret_token: secret_token })
+
+      expect(response).to have_gitlab_http_status(200)
+
+      expect(response.body).to eq('null')
+    end
   end
 
   describe "GET /internal/authorized_keys" do
@@ -298,7 +321,7 @@ describe API::Internal do
       end
 
       context 'with env passed as a JSON' do
-        let(:gl_repository) { project.gl_repository(is_wiki: true) }
+        let(:gl_repository) { Gitlab::GlRepository::WIKI.identifier_for_subject(project) }
 
         it 'sets env in RequestStore' do
           obj_dir_relative = './objects'
@@ -324,7 +347,6 @@ describe API::Internal do
 
           expect(response).to have_gitlab_http_status(200)
           expect(json_response["status"]).to be_truthy
-          expect(json_response["repository_path"]).to eq('/')
           expect(json_response["gl_project_path"]).to eq(project.wiki.full_path)
           expect(json_response["gl_repository"]).to eq("wiki-#{project.id}")
           expect(user.reload.last_activity_on).to be_nil
@@ -337,7 +359,6 @@ describe API::Internal do
 
           expect(response).to have_gitlab_http_status(200)
           expect(json_response["status"]).to be_truthy
-          expect(json_response["repository_path"]).to eq('/')
           expect(json_response["gl_project_path"]).to eq(project.wiki.full_path)
           expect(json_response["gl_repository"]).to eq("wiki-#{project.id}")
           expect(user.reload.last_activity_on).to eql(Date.today)
@@ -350,7 +371,6 @@ describe API::Internal do
 
           expect(response).to have_gitlab_http_status(200)
           expect(json_response["status"]).to be_truthy
-          expect(json_response["repository_path"]).to eq('/')
           expect(json_response["gl_repository"]).to eq("project-#{project.id}")
           expect(json_response["gl_project_path"]).to eq(project.full_path)
           expect(json_response["gitaly"]).not_to be_nil
@@ -370,7 +390,6 @@ describe API::Internal do
 
             expect(response).to have_gitlab_http_status(200)
             expect(json_response["status"]).to be_truthy
-            expect(json_response["repository_path"]).to eq('/')
             expect(json_response["gl_repository"]).to eq("project-#{project.id}")
             expect(json_response["gl_project_path"]).to eq(project.full_path)
             expect(json_response["gitaly"]).not_to be_nil
@@ -475,6 +494,40 @@ describe API::Internal do
           expect(json_response['message']).to eql(message)
           expect(json_response['payload']).to eql(payload)
           expect(user.reload.last_activity_on).to be_nil
+        end
+      end
+    end
+
+    context "console message" do
+      before do
+        project.add_developer(user)
+      end
+
+      context "git pull" do
+        context "with no console message" do
+          it "has the correct payload" do
+            pull(key, project)
+
+            expect(response).to have_gitlab_http_status(200)
+            expect(json_response['gl_console_messages']).to eq([])
+          end
+        end
+
+        context "with a console message" do
+          let(:console_messages) { ['message for the console'] }
+
+          it "has the correct payload" do
+            expect_next_instance_of(Gitlab::GitAccess) do |access|
+              expect(access).to receive(:check_for_console_messages)
+                                  .with('git-upload-pack')
+                                  .and_return(console_messages)
+            end
+
+            pull(key, project)
+
+            expect(response).to have_gitlab_http_status(200)
+            expect(json_response['gl_console_messages']).to eq(console_messages)
+          end
         end
       end
     end
@@ -587,6 +640,22 @@ describe API::Internal do
         project.destroy
 
         pull(key, project)
+
+        expect(response).to have_gitlab_http_status(404)
+        expect(json_response["status"]).to be_falsey
+      end
+
+      it 'returns a 200 response when using a project path that does not exist' do
+        post(
+          api("/internal/allowed"),
+          params: {
+            key_id: key.id,
+            project: 'project/does-not-exist.git',
+            action: 'git-upload-pack',
+            secret_token: secret_token,
+            protocol: 'ssh'
+          }
+        )
 
         expect(response).to have_gitlab_http_status(404)
         expect(json_response["status"]).to be_falsey
@@ -819,8 +888,10 @@ describe API::Internal do
       }
     end
 
+    let(:branch_name) { 'feature' }
+
     let(:changes) do
-      "#{Gitlab::Git::BLANK_SHA} 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/new_branch"
+      "#{Gitlab::Git::BLANK_SHA} 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/#{branch_name}"
     end
 
     let(:push_options) do
@@ -836,9 +907,9 @@ describe API::Internal do
 
     it 'enqueues a PostReceive worker job' do
       expect(PostReceive).to receive(:perform_async)
-        .with(gl_repository, identifier, changes, push_options)
+        .with(gl_repository, identifier, changes, { ci: { skip: true } })
 
-      post api("/internal/post_receive"), params: valid_params
+      post api('/internal/post_receive'), params: valid_params
     end
 
     it 'decreases the reference counter and returns the result' do
@@ -846,17 +917,17 @@ describe API::Internal do
         .and_return(reference_counter)
       expect(reference_counter).to receive(:decrease).and_return(true)
 
-      post api("/internal/post_receive"), params: valid_params
+      post api('/internal/post_receive'), params: valid_params
 
       expect(json_response['reference_counter_decreased']).to be(true)
     end
 
     it 'returns link to create new merge request' do
-      post api("/internal/post_receive"), params: valid_params
+      post api('/internal/post_receive'), params: valid_params
 
       expect(json_response['merge_request_urls']).to match [{
-        "branch_name" => "new_branch",
-        "url" => "http://#{Gitlab.config.gitlab.host}/#{project.namespace.name}/#{project.path}/merge_requests/new?merge_request%5Bsource_branch%5D=new_branch",
+        "branch_name" => branch_name,
+        "url" => "http://#{Gitlab.config.gitlab.host}/#{project.namespace.name}/#{project.path}/merge_requests/new?merge_request%5Bsource_branch%5D=#{branch_name}",
         "new_merge_request" => true
       }]
     end
@@ -864,16 +935,75 @@ describe API::Internal do
     it 'returns empty array if printing_merge_request_link_enabled is false' do
       project.update!(printing_merge_request_link_enabled: false)
 
-      post api("/internal/post_receive"), params: valid_params
+      post api('/internal/post_receive'), params: valid_params
 
       expect(json_response['merge_request_urls']).to eq([])
+    end
+
+    it 'does not invoke MergeRequests::PushOptionsHandlerService' do
+      expect(MergeRequests::PushOptionsHandlerService).not_to receive(:new)
+
+      post api('/internal/post_receive'), params: valid_params
+    end
+
+    context 'when there are merge_request push options' do
+      before do
+        valid_params[:push_options] = ['merge_request.create']
+      end
+
+      it 'invokes MergeRequests::PushOptionsHandlerService' do
+        expect(MergeRequests::PushOptionsHandlerService).to receive(:new)
+
+        post api('/internal/post_receive'), params: valid_params
+      end
+
+      it 'creates a new merge request' do
+        expect do
+          Sidekiq::Testing.fake! do
+            post api('/internal/post_receive'), params: valid_params
+          end
+        end.to change { MergeRequest.count }.by(1)
+      end
+
+      it 'links to the newly created merge request' do
+        post api('/internal/post_receive'), params: valid_params
+
+        expect(json_response['merge_request_urls']).to match [{
+          'branch_name' => branch_name,
+          'url' => "http://#{Gitlab.config.gitlab.host}/#{project.namespace.name}/#{project.path}/merge_requests/1",
+          'new_merge_request' => false
+        }]
+      end
+
+      it 'adds errors on the service instance to warnings' do
+        expect_any_instance_of(
+          MergeRequests::PushOptionsHandlerService
+        ).to receive(:errors).at_least(:once).and_return(['my error'])
+
+        post api('/internal/post_receive'), params: valid_params
+
+        expect(json_response['warnings']).to eq('Error encountered with push options \'merge_request.create\': my error')
+      end
+
+      it 'adds ActiveRecord errors on invalid MergeRequest records to warnings' do
+        invalid_merge_request = MergeRequest.new
+        invalid_merge_request.errors.add(:base, 'my error')
+
+        expect_any_instance_of(
+          MergeRequests::CreateService
+        ).to receive(:execute).and_return(invalid_merge_request)
+
+        post api('/internal/post_receive'), params: valid_params
+
+        expect(json_response['warnings']).to eq('Error encountered with push options \'merge_request.create\': my error')
+      end
     end
 
     context 'broadcast message exists' do
       let!(:broadcast_message) { create(:broadcast_message, starts_at: 1.day.ago, ends_at: 1.day.from_now ) }
 
       it 'returns one broadcast message' do
-        post api("/internal/post_receive"), params: valid_params
+        post api('/internal/post_receive'), params: valid_params
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['broadcast_message']).to eq(broadcast_message.message)
@@ -882,7 +1012,7 @@ describe API::Internal do
 
     context 'broadcast message does not exist' do
       it 'returns empty string' do
-        post api("/internal/post_receive"), params: valid_params
+        post api('/internal/post_receive'), params: valid_params
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['broadcast_message']).to eq(nil)
@@ -893,7 +1023,7 @@ describe API::Internal do
       it 'returns empty string' do
         allow(BroadcastMessage).to receive(:current).and_return(nil)
 
-        post api("/internal/post_receive"), params: valid_params
+        post api('/internal/post_receive'), params: valid_params
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['broadcast_message']).to eq(nil)
@@ -905,7 +1035,7 @@ describe API::Internal do
         project_moved = Gitlab::Checks::ProjectMoved.new(project, user, 'http', 'foo/baz')
         project_moved.add_message
 
-        post api("/internal/post_receive"), params: valid_params
+        post api('/internal/post_receive'), params: valid_params
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response["redirected_message"]).to be_present
@@ -918,7 +1048,7 @@ describe API::Internal do
         project_created = Gitlab::Checks::ProjectCreated.new(project, user, 'http')
         project_created.add_message
 
-        post api("/internal/post_receive"), params: valid_params
+        post api('/internal/post_receive'), params: valid_params
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response["project_created_message"]).to be_present
@@ -930,7 +1060,7 @@ describe API::Internal do
       it 'does not try to notify that project moved' do
         allow_any_instance_of(Gitlab::Identifier).to receive(:identify).and_return(nil)
 
-        post api("/internal/post_receive"), params: valid_params
+        post api('/internal/post_receive'), params: valid_params
 
         expect(response).to have_gitlab_http_status(200)
       end
@@ -956,9 +1086,9 @@ describe API::Internal do
   def gl_repository_for(project_or_wiki)
     case project_or_wiki
     when ProjectWiki
-      project_or_wiki.project.gl_repository(is_wiki: true)
+      Gitlab::GlRepository::WIKI.identifier_for_subject(project_or_wiki.project)
     when Project
-      project_or_wiki.gl_repository(is_wiki: false)
+      Gitlab::GlRepository::PROJECT.identifier_for_subject(project_or_wiki)
     else
       nil
     end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Badge do
@@ -59,7 +61,7 @@ describe Badge do
   end
 
   shared_examples 'rendered_links' do
-    it 'should use the project information to populate the url placeholders' do
+    it 'uses the project information to populate the url placeholders' do
       stub_project_commit_info(project)
 
       expect(badge.public_send("rendered_#{method}", project)).to eq "http://www.example.com/#{project.full_path}/#{project.id}/master/whatever"

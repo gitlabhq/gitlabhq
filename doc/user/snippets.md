@@ -20,7 +20,7 @@ and private. See [Public access](../public_access/public_access.md) for more inf
 ## Project snippets
 
 Project snippets are always related to a specific project.
-See [Project's features](project/index.md#projects-features) for more information.
+See [Project features](project/index.md#project-features) for more information.
 
 ## Discover snippets
 

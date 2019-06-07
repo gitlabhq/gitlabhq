@@ -217,5 +217,36 @@ describe 'Projects > Settings > Repository settings' do
         expect(RepositoryCleanupWorker.jobs.count).to eq(1)
       end
     end
+
+    context 'with an existing mirror', :js do
+      let(:mirrored_project) { create(:project, :repository, :remote_mirror) }
+
+      before do
+        mirrored_project.add_maintainer(user)
+
+        visit project_settings_repository_path(mirrored_project)
+      end
+
+      it 'delete remote mirrors' do
+        expect(mirrored_project.remote_mirrors.count).to eq(1)
+
+        find('.js-delete-mirror').click
+        wait_for_requests
+
+        expect(mirrored_project.remote_mirrors.count).to eq(0)
+      end
+    end
+
+    it 'shows a disabled mirror' do
+      create(:remote_mirror, project: project, enabled: false)
+
+      visit project_settings_repository_path(project)
+
+      mirror = find('.qa-mirrored-repository-row')
+
+      expect(mirror).to have_selector('.qa-delete-mirror')
+      expect(mirror).to have_selector('.qa-disabled-mirror-badge')
+      expect(mirror).not_to have_selector('.qa-update-now-button')
+    end
   end
 end

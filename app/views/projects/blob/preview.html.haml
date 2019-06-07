@@ -1,21 +1,20 @@
-.diff-file.file-holder
-  .diff-content
-    - if markup?(@blob.name)
-      .file-content.wiki.md{ class: ('use-csslab' if Feature.enabled?(:csslab)) }
-        = markup(@blob.name, @content)
-    - else
-      .file-content.code.js-syntax-highlight
-        - unless @diff_lines.empty?
-          %table.text-file
-            - @diff_lines.each do |line|
-              %tr.line_holder{ class: "#{line.type}" }
-                - if line.type == "match"
-                  %td.old_line.diff-line-num= "..."
-                  %td.new_line.diff-line-num= "..."
-                  %td.line_content.match= line.text
-                - else
-                  %td.old_line.diff-line-num
-                  %td.new_line.diff-line-num
-                  %td.line_content{ class: "#{line.type}" }= diff_line_content(line.text)
-        - else
-          .nothing-here-block No changes.
+- if markup?(@blob.name)
+  .file-content.md.md-file{ class: ('use-csslab' if Feature.enabled?(:csslab)) }
+    = markup(@blob.name, @content)
+- else
+  .diff-file
+    .diff-content
+      - unless @diff_lines.empty?
+        %table.text-file.code.js-syntax-highlight
+          - @diff_lines.each do |line|
+            %tr.line_holder{ class: line.type }
+              - if line.type == "match"
+                %td.old_line.diff-line-num.match= "..."
+                %td.new_line.diff-line-num.match= "..."
+                %td.line_content.match= line.text
+              - else
+                %td.old_line.diff-line-num{ class: line.type }
+                %td.new_line.diff-line-num{ class: line.type }
+                %td.line_content{ class: line.type }= diff_line_content(line.text)
+      - else
+        .nothing-here-block No changes.

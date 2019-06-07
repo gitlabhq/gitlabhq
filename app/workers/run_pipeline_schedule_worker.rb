@@ -21,6 +21,30 @@ class RunPipelineScheduleWorker
     Ci::CreatePipelineService.new(schedule.project,
                                   user,
                                   ref: schedule.ref)
-      .execute(:schedule, ignore_skip_ci: true, save_on_errors: false, schedule: schedule)
+      .execute!(:schedule, ignore_skip_ci: true, save_on_errors: false, schedule: schedule)
+  rescue Ci::CreatePipelineService::CreateError
+    # no-op. This is a user operation error such as corrupted .gitlab-ci.yml.
+  rescue => e
+    error(schedule, e)
+  end
+
+  private
+
+  def error(schedule, error)
+    failed_creation_counter.increment
+
+    Rails.logger.error "Failed to create a scheduled pipeline. " \
+                       "schedule_id: #{schedule.id} message: #{error.message}"
+
+    Gitlab::Sentry
+      .track_exception(error,
+                       issue_url: 'https://gitlab.com/gitlab-org/gitlab-ce/issues/41231',
+                       extra: { schedule_id: schedule.id })
+  end
+
+  def failed_creation_counter
+    @failed_creation_counter ||=
+      Gitlab::Metrics.counter(:pipeline_schedule_creation_failed_total,
+                              "Counter of failed attempts of pipeline schedule creation")
   end
 end

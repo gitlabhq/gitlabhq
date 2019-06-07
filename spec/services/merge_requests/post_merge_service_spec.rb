@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe MergeRequests::PostMergeService do
   let(:user) { create(:user) }
-  let(:merge_request) { create(:merge_request, assignee: user) }
+  let(:merge_request) { create(:merge_request, assignees: [user]) }
   let(:project) { merge_request.project }
 
   before do
@@ -59,6 +61,14 @@ describe MergeRequests::PostMergeService do
       expect { described_class.new(project, user, {}).execute(merge_request) }.to raise_error
 
       expect(merge_request.reload).to be_merged
+    end
+
+    it 'clean up environments for the merge request' do
+      expect_next_instance_of(Ci::StopEnvironmentsService) do |service|
+        expect(service).to receive(:execute_for_merge_request).with(merge_request)
+      end
+
+      described_class.new(project, user).execute(merge_request)
     end
   end
 end

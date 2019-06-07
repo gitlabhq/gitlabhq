@@ -306,7 +306,22 @@ describe API::CommitStatuses do
         it 'responds with bad request status and validation errors' do
           expect(response).to have_gitlab_http_status(400)
           expect(json_response['message']['target_url'])
-            .to include 'is blocked: Only allowed protocols are http, https'
+            .to include 'is blocked: Only allowed schemes are http, https'
+        end
+      end
+
+      context 'when target URL is an unsupported scheme' do
+        before do
+          post api(post_url, developer), params: {
+                                           state: 'pending',
+                                           target_url: 'git://example.com'
+                                         }
+        end
+
+        it 'responds with bad request status and validation errors' do
+          expect(response).to have_gitlab_http_status(400)
+          expect(json_response['message']['target_url'])
+              .to include 'is blocked: Only allowed schemes are http, https'
         end
       end
     end

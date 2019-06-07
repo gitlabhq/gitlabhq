@@ -94,6 +94,7 @@ module Gitlab
     # - Webhook URLs (:hook)
     # - Sentry DSN (:sentry_dsn)
     # - File content from Web Editor (:content)
+    # - Jira shared secret (:sharedSecret)
     #
     # NOTE: It is **IMPORTANT** to also update gitlab-workhorse's filter when adding parameters here to not
     #       introduce another security vulnerability: https://gitlab.com/gitlab-org/gitlab-workhorse/issues/182
@@ -108,6 +109,7 @@ module Gitlab
       trace
       variables
       content
+      sharedSecret
     )
 
     # Enable escaping HTML in JSON.
@@ -161,11 +163,6 @@ module Gitlab
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
-
-    config.action_view.sanitized_allowed_protocols = %w(smb)
-
-    # Can be removed once upgraded to Rails 5.1 or higher
-    config.action_controller.raise_on_unfiltered_parameters = true
 
     # Nokogiri is significantly faster and uses less memory than REXML
     ActiveSupport::XmlMini.backend = 'Nokogiri'

@@ -91,7 +91,8 @@ module Gitlab
 
         # No need to do anything if the plaintext is nil, or an encrypted
         # value already exists
-        return nil unless plaintext.present? && !ciphertext.present?
+        return unless plaintext.present?
+        return if ciphertext.present?
 
         # attr_encrypted will calculate and set the expected value for us
         instance.public_send("#{plain_column}=", plaintext) # rubocop:disable GitlabSecurity/PublicSend

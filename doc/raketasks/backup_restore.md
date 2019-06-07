@@ -100,6 +100,13 @@ the gitlab task runner pod via `kubectl`. Refer to [backing up a GitLab installa
 kubectl exec -it <gitlab task-runner pod> backup-utility
 ```
 
+Similarly to the Kubernetes case, if you have scaled out your GitLab
+cluster to use multiple application servers, you should pick a
+designated node (that won't be auto-scaled away) for running the
+backup rake task. Because the backup rake task is tightly coupled to
+the main Rails application, this is typically a node on which you're
+also running Unicorn/Puma and/or Sidekiq.
+
 Example output:
 
 ```
@@ -193,6 +200,26 @@ To use the `copy` strategy instead of the default streaming strategy, specify
 
 ```sh
 sudo gitlab-rake gitlab:backup:create STRATEGY=copy
+```
+
+### Backup filename
+
+By default a backup file is created according to the specification in [the Backup timestamp](#backup-timestamp) section above. You can however override the `[TIMESTAMP]` part of the filename by setting the `BACKUP` environment variable. For example:
+
+```sh
+sudo gitlab-rake gitlab:backup:create BACKUP=dump
+```
+
+The resulting file will then be `dump_gitlab_backup.tar`. This is useful for systems that make use of rsync and incremental backups, and will result in considerably faster transfer speeds.
+
+### Rsyncable
+
+To make sure the generated archive is intelligently transferable by rsync, the `GZIP_RSYNCABLE=yes` option can be set. This will set the `--rsyncable` option to `gzip`. This is only useful in combination with setting [the Backup filename option](#backup-filename).
+
+Note that the `--rsyncable` option in `gzip` is not guaranteed to be available on all distributions. To verify that it is available in your distribution you can run `gzip --help` or consult the man pages.
+
+```sh
+sudo gitlab-rake gitlab:backup:create BACKUP=dump GZIP_RSYNCABLE=yes
 ```
 
 ### Excluding specific directories from the backup
@@ -382,6 +409,8 @@ an access key from the Google console first:
 1. Select "Interoperability" and create an access key
 1. Make note of the "Access Key" and "Secret" and replace them in the
    configurations below
+1. In the buckets advanced settings ensure the Access Control option "Set object-level
+   and bucket-level permissions" is selected
 1. Make sure you already have a bucket created
 
 For Omnibus GitLab packages:
@@ -603,7 +632,7 @@ directory (repositories, uploads).
 To restore a backup, you will also need to restore `/etc/gitlab/gitlab-secrets.json`
 (for Omnibus packages) or `/home/git/gitlab/.secret` (for installations
 from source). This file contains the database encryption key,
-[CI/CD variables](../ci/variables/README.md#variables), and
+[CI/CD variables](../ci/variables/README.md#gitlab-cicd-environment-variables), and
 variables used for [two-factor authentication](../user/profile/account/two_factor_authentication.md).
 If you fail to restore this encryption key file along with the application data
 backup, users with two-factor authentication enabled and GitLab Runners will
@@ -819,15 +848,24 @@ including (but not restricted to):
 * [Project mirroring](../workflow/repository_mirroring.md)
 * [Web hooks](../user/project/integrations/webhooks.md)
 
-In the case of CI/CD, variables, you might experience some weird behavior, like
-stuck jobs or 500 errors. In that case, you can try removing  contents of the
-`ci_group_variables` and `ci_project_variables` tables from the database.
+In cases like CI/CD variables and Runner authentication, you might
+experience some unexpected behavior such as:
+
+- Stuck jobs.
+- 500 errors.
+
+In this case, you are required to reset all the tokens for CI/CD variables
+and Runner Authentication, which is described in more detail below. After
+resetting the tokens, you should be able to visit your project and the jobs
+will have started running again.
 
 CAUTION: **Warning:**
 Use the following commands at your own risk, and make sure you've taken a
 backup beforehand.
 
-1.  Enter the Rails console:
+#### Reset CI/CD variables
+
+1.  Enter the DB console:
 
     For Omnibus GitLab packages:
 
@@ -860,8 +898,39 @@ backup beforehand.
 1. You may need to reconfigure or restart GitLab for the changes to take
    effect.
 
-You should now be able to visit your project, and the jobs will start
-running again.
+
+#### Reset Runner registration tokens
+
+1.  Enter the DB console:
+
+    For Omnibus GitLab packages:
+
+    ```sh
+    sudo gitlab-rails dbconsole
+    ```
+
+    For installations from source:
+
+    ```sh
+    sudo -u git -H bundle exec rails dbconsole RAILS_ENV=production
+    ```
+
+1. Clear all the tokens for projects, groups, and the whole instance:
+
+    CAUTION: **Caution:**
+    The last UPDATE operation will stop the runners being able to pick up
+    new jobs. You must register new runners.
+
+    ```sql
+    -- Clear project tokens
+    UPDATE projects SET runners_token = null, runners_token_encrypted = null;
+    -- Clear group tokens
+    UPDATE namespaces SET runners_token = null, runners_token_encrypted = null;
+    -- Clear instance tokens
+    UPDATE application_settings SET runners_registration_token_encrypted = null;
+    -- Clear runner tokens
+    UPDATE ci_runners SET token = null, token_encrypted = null;
+    ```
 
 A similar strategy can be employed for the remaining features - by removing the
 data that cannot be decrypted, GitLab can be brought back into working order,

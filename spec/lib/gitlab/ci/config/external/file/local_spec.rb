@@ -4,8 +4,10 @@ require 'spec_helper'
 
 describe Gitlab::Ci::Config::External::File::Local do
   set(:project) { create(:project, :repository) }
+  set(:user) { create(:user) }
 
-  let(:context) { described_class::Context.new(project, '12345', nil) }
+  let(:sha) { '12345' }
+  let(:context) { described_class::Context.new(project, sha, user, Set.new) }
   let(:params) { { local: location } }
   let(:local_file) { described_class.new(params, context) }
 
@@ -13,7 +15,7 @@ describe Gitlab::Ci::Config::External::File::Local do
     context 'when a local is specified' do
       let(:params) { { local: 'file' } }
 
-      it 'should return true' do
+      it 'returns true' do
         expect(local_file).to be_matching
       end
     end
@@ -21,7 +23,7 @@ describe Gitlab::Ci::Config::External::File::Local do
     context 'with a missing local' do
       let(:params) { { local: nil } }
 
-      it 'should return false' do
+      it 'returns false' do
         expect(local_file).not_to be_matching
       end
     end
@@ -29,7 +31,7 @@ describe Gitlab::Ci::Config::External::File::Local do
     context 'with a missing local key' do
       let(:params) { {} }
 
-      it 'should return false' do
+      it 'returns false' do
         expect(local_file).not_to be_matching
       end
     end
@@ -43,7 +45,7 @@ describe Gitlab::Ci::Config::External::File::Local do
         allow_any_instance_of(described_class).to receive(:fetch_local_content).and_return("image: 'ruby2:2'")
       end
 
-      it 'should return true' do
+      it 'returns true' do
         expect(local_file.valid?).to be_truthy
       end
     end
@@ -51,7 +53,7 @@ describe Gitlab::Ci::Config::External::File::Local do
     context 'when is not a valid local path' do
       let(:location) { '/lib/gitlab/ci/templates/non-existent-file.yml' }
 
-      it 'should return false' do
+      it 'returns false' do
         expect(local_file.valid?).to be_falsy
       end
     end
@@ -59,7 +61,7 @@ describe Gitlab::Ci::Config::External::File::Local do
     context 'when is not a yaml file' do
       let(:location) { '/config/application.rb' }
 
-      it 'should return false' do
+      it 'returns false' do
         expect(local_file.valid?).to be_falsy
       end
     end
@@ -82,7 +84,7 @@ describe Gitlab::Ci::Config::External::File::Local do
         allow_any_instance_of(described_class).to receive(:fetch_local_content).and_return(local_file_content)
       end
 
-      it 'should return the content of the file' do
+      it 'returns the content of the file' do
         expect(local_file.content).to eq(local_file_content)
       end
     end
@@ -90,7 +92,7 @@ describe Gitlab::Ci::Config::External::File::Local do
     context 'with an invalid file' do
       let(:location) { '/lib/gitlab/ci/templates/non-existent-file.yml' }
 
-      it 'should be nil' do
+      it 'is nil' do
         expect(local_file.content).to be_nil
       end
     end
@@ -99,8 +101,40 @@ describe Gitlab::Ci::Config::External::File::Local do
   describe '#error_message' do
     let(:location) { '/lib/gitlab/ci/templates/non-existent-file.yml' }
 
-    it 'should return an error message' do
+    it 'returns an error message' do
       expect(local_file.error_message).to eq("Local file `#{location}` does not exist!")
+    end
+  end
+
+  describe '#expand_context' do
+    let(:location) { 'location.yml' }
+
+    subject { local_file.send(:expand_context) }
+
+    it 'inherits project, user and sha' do
+      is_expected.to include(user: user, project: project, sha: sha)
+    end
+  end
+
+  describe '#to_hash' do
+    context 'properly includes another local file in the same repository' do
+      let(:location) { 'some/file/config.yml' }
+      let(:content) { 'include: { local: another-config.yml }'}
+
+      let(:another_location) { 'another-config.yml' }
+      let(:another_content) { 'rspec: JOB' }
+
+      before do
+        allow(project.repository).to receive(:blob_data_at).with(sha, location)
+          .and_return(content)
+
+        allow(project.repository).to receive(:blob_data_at).with(sha, another_location)
+          .and_return(another_content)
+      end
+
+      it 'does expand hash to include the template' do
+        expect(local_file.to_hash).to include(:rspec)
+      end
     end
   end
 end

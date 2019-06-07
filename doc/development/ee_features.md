@@ -19,6 +19,11 @@ CE specs should remain untouched as much as possible and extra specs
 should be added for EE. Licensed features can be stubbed using the
 spec helper `stub_licensed_features` in `EE::LicenseHelpers`.
 
+You can force Webpack to act as CE by either deleting the `ee/` directory or by
+setting the [`IS_GITLAB_EE` environment variable](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/config/helpers/is_ee_env.js)
+to something that evaluates as `false`. The same works for running tests
+(for example `IS_GITLAB_EE=0 yarn jest`).
+
 [ee-as-ce]: https://gitlab.com/gitlab-org/gitlab-ee/issues/2500
 
 ## Separation of EE code
@@ -161,7 +166,7 @@ still having access the class's implementation with `super`.
 
 There are a few gotchas with it:
 
-- you should always [`extend ::Gitlab::Utils::Override`] and use `override` to
+- you should always [`extend ::Gitlab::Utils::Override`](utilities.md#overridehttpsgitlabcomgitlab-orggitlab-ceblobmasterlibgitlabutilsoverriderb) and use `override` to
   guard the "overrider" method to ensure that if the method gets renamed in
   CE, the EE override won't be silently forgotten.
 - when the "overrider" would add a line in the middle of the CE
@@ -272,8 +277,6 @@ module EE
   end
 end
 ```
-
-[`extend ::Gitlab::Utils::Override`]: utilities.md#override
 
 ##### Overriding CE class methods
 
@@ -443,6 +446,19 @@ The disadvantage of this:
   port `render_if_exists` to CE.
 - If we have typos in the partial name, it would be silently ignored.
 
+
+##### Caveats
+
+The `render_if_exists` view path argument must be relative to `app/views/` and `ee/app/views`.
+Resolving an EE template path that is relative to the CE view path will not work.
+
+```haml
+- # app/views/projects/index.html.haml
+
+= render_if_exists 'button' # Will not render `ee/app/views/projects/_button` and will quietly fail
+= render_if_exists 'projects/button' # Will render `ee/app/views/projects/_button`
+```
+
 #### Using `render_ce`
 
 For `render` and `render_if_exists`, they search for the EE partial first,
@@ -532,40 +548,56 @@ due to `prepend`, but Grape is complex internally and we couldn't easily do
 that, so we'll follow regular object-oriented practices that we define the
 interface first here.
 
-For example, suppose we have a few more optional params for EE, given this CE
-API code:
+For example, suppose we have a few more optional params for EE. We can move the
+params out of the `Grape::API` class to a helper module, so we can `prepend` it
+before it would be used in the class.
 
 ```ruby
 module API
-  class MergeRequests < Grape::API
-    # EE::API::MergeRequests would override the following helpers
-    helpers do
-      params :optional_params_ee do
+  class Projects < Grape::API
+    helpers Helpers::ProjectsHelpers
+  end
+end
+```
+
+Given this CE API `params`:
+
+```ruby
+module API
+  module Helpers
+    module ProjectsHelpers
+      extend ActiveSupport::Concern
+      extend Grape::API::Helpers
+
+      params :optional_project_params_ce do
+        # CE specific params go here...
       end
-    end
 
-    params :optional_params do
-      # CE specific params go here...
+      params :optional_project_params_ee do
+      end
 
-      use :optional_params_ee
+      params :optional_project_params do
+        use :optional_project_params_ce
+        use :optional_project_params_ee
+      end
     end
   end
 end
 
-API::MergeRequests.prepend(EE::API::MergeRequests)
+API::Helpers::ProjectsHelpers.prepend(EE::API::Helpers::ProjectsHelpers)
 ```
 
-And then we could override it in EE module:
+We could override it in EE module:
 
 ```ruby
 module EE
   module API
-    module MergeRequests
-      extend ActiveSupport::Concern
+    module Helpers
+      module ProjectsHelpers
+        extend ActiveSupport::Concern
 
-      prepended do
-        helpers do
-          params :optional_params_ee do
+        prepended do
+          params :optional_project_params_ee do
             # EE specific params go here...
           end
         end
@@ -574,9 +606,6 @@ module EE
   end
 end
 ```
-
-This way, the only difference between CE and EE for that API file would be
-`prepend EE::API::MergeRequests`.
 
 #### EE helpers
 
@@ -877,15 +906,88 @@ import bundle from 'ee/protected_branches/protected_branches_bundle.js';
 import bundle from 'ee_else_ce/protected_branches/protected_branches_bundle.js';
 ```
 
-See the frontend guide [performance section](./fe_guide/performance.md) for
+See the frontend guide [performance section](fe_guide/performance.md) for
 information on managing page-specific javascript within EE.
+
+
+## Vue code in `assets/javascript`
+### script tag
+
+#### Child Component only used in EE
+To separate Vue template differences we should [async import the components](https://vuejs.org/v2/guide/components-dynamic-async.html#Async-Components).
+
+Doing this allows for us to load the correct component in EE whilst in CE
+we can load a empty component that renders nothing. This code **should**
+exist in the CE repository as well as the EE repository.
+
+```html
+<script>
+export default {
+  components: {
+    EEComponent: () => import('ee_component/components/test.vue'),
+  },
+};
+</script>
+
+<template>
+  <div>
+    <ee-component />
+  </div>
+</template>
+```
+
+#### For JS code that is EE only, like props, computed properties, methods, etc, we will keep the current approach
+ - Since we [can't async load a mixin](https://github.com/vuejs/vue-loader/issues/418#issuecomment-254032223) we will use the [`ee_else_ce`](../development/ee_features.md#javascript-code-in-assetsjavascripts) alias we already have for webpack.
+  - This means all the EE specific props, computed properties, methods, etc that are EE only should be in a mixin in the `ee/` folder and we need to create a CE counterpart of the mixin
+
+##### Example:
+```javascript
+import mixin from 'ee_else_ce/path/mixin';
+
+{
+    mixins: [mixin]
+}
+```
+
+- Computed Properties/methods and getters only used in the child import still need a counterpart in CE
+
+- For store modules, we will need a CE counterpart too.
+- You can see an MR with an example [here](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/9762)
+
+#### `template` tag
+* **EE Child components**
+  - Since we are using the async loading to check which component to load, we'd still use the component's name, check [this example](#child-component-only-used-in-ee).
+
+* **EE extra HTML**
+  - For the templates that have extra HTML in EE we should move it into a new component and use the `ee_else_ce` dynamic import
+
+### Non Vue Files
+For regular JS files, the approach is similar.
+
+1. We will keep using the [`ee_else_ce`](../development/ee_features.md#javascript-code-in-assetsjavascripts) helper, this means that EE only code should be inside the `ee/` folder.
+  1. An EE file should be created with the EE only code, and it should extend the CE counterpart.
+  1. For code inside functions that can't be extended, the code should be moved into a new file and we should use `ee_else_ce` helper:
+
+##### Example:
+
+```javascript
+  import eeCode from 'ee_else_ce/ee_code';
+
+  function test() {
+    const test = 'a';
+
+    eeCode();
+
+    return test;
+  }
+```
 
 ## SCSS code in `assets/stylesheets`
 
 To separate EE-specific styles in SCSS files, if a component you're adding styles for
 is limited to only EE, it is better to have a separate SCSS file in appropriate directory
 within `app/assets/stylesheets`.
-See [backporting changes](#backporting-changes) for instructions on how to merge changes safely.
+See [backporting changes](#backporting-changes-from-ee-to-ce) for instructions on how to merge changes safely.
 
 In some cases, this is not entirely possible or creating dedicated SCSS file is an overkill,
 e.g. a text style of some component is different for EE. In such cases,

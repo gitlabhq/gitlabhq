@@ -164,6 +164,21 @@ describe 'Merge request > User resolves conflicts', :js do
         expect(page).to have_content('Gregor Samsa woke from troubled dreams')
       end
     end
+
+    context "with malicious branch name" do
+      let(:bad_branch_name) { "malicious-branch-{{toString.constructor('alert(/xss/)')()}}" }
+      let(:branch) { project.repository.create_branch(bad_branch_name, 'conflict-resolvable') }
+      let(:merge_request) { create_merge_request(branch.name) }
+
+      before do
+        visit project_merge_request_path(project, merge_request)
+        click_link('conflicts', href: %r{/conflicts\Z})
+      end
+
+      it "renders bad name without xss issues" do
+        expect(find('.resolve-conflicts-form .resolve-info')).to have_content(bad_branch_name)
+      end
+    end
   end
 
   UNRESOLVABLE_CONFLICTS = {

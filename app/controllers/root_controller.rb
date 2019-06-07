@@ -15,7 +15,7 @@ class RootController < Dashboard::ProjectsController
   before_action :redirect_logged_user, if: -> { current_user.present? }
 
   def index
-    # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/37434
+    # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/40260
     Gitlab::GitalyClient.allow_n_plus_1_calls do
       super
     end

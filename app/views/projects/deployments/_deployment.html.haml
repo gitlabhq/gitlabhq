@@ -18,7 +18,7 @@
         - if deployment.user
           %div
             by
-            = user_avatar(user: deployment.user, size: 20)
+            = user_avatar(user: deployment.user, size: 20, css_class: "mr-0 float-none")
 
   .table-section.section-15{ role: 'gridcell' }
     .table-mobile-header{ role: 'rowheader' }= _("Created")

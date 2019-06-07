@@ -1,0 +1,23 @@
+{
+  "type": "object",
+  "required": [
+    "id",
+    "name",
+    "slug",
+    "external_url",
+    "last_deployment"
+  ],
+  "properties": {
+    "id": { "type": "integer" },
+    "name": { "type": "string" },
+    "slug": { "type": "string" },
+    "external_url": { "$ref": "../../types/nullable_string.json" },
+    "last_deployment": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "deployment.json" }
+      ]
+    }
+  },
+  "additionalProperties": false
+}

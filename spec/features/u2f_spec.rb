@@ -246,26 +246,6 @@ describe 'Using U2F (Universal 2nd Factor) Devices for Authentication', :js do
         end
       end
     end
-
-    describe "when two-factor authentication is disabled" do
-      let(:user) { create(:user) }
-
-      before do
-        user = gitlab_sign_in(:user)
-        user.update_attribute(:otp_required_for_login, true)
-        visit profile_account_path
-        manage_two_factor_authentication
-        expect(page).to have_content("Your U2F device needs to be set up.")
-        register_u2f_device
-      end
-
-      it "deletes u2f registrations" do
-        visit profile_two_factor_auth_path
-        expect do
-          accept_confirm { click_on "Disable" }
-        end.to change { U2fRegistration.count }.by(-1)
-      end
-    end
   end
 
   describe 'fallback code authentication' do

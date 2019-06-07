@@ -11,7 +11,7 @@ class PivotaltrackerService < Service
   end
 
   def description
-    'Project Management Software (Source Commits Endpoint)'
+    s_('PivotalTrackerService|Project Management Software (Source Commits Endpoint)')
   end
 
   def self.to_param
@@ -23,14 +23,14 @@ class PivotaltrackerService < Service
       {
         type: 'text',
         name: 'token',
-        placeholder: 'Pivotal Tracker API token.',
+        placeholder: s_('PivotalTrackerService|Pivotal Tracker API token.'),
         required: true
       },
       {
         type: 'text',
         name: 'restrict_to_branch',
-        placeholder: 'Comma-separated list of branches which will be ' \
-          'automatically inspected. Leave blank to include all branches.'
+        placeholder: s_('PivotalTrackerService|Comma-separated list of branches which will be ' \
+          'automatically inspected. Leave blank to include all branches.')
       }
     ]
   end

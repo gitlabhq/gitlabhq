@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe API::Pipelines do
@@ -292,6 +294,7 @@ describe API::Pipelines do
 
         expect(variable.key).to eq(expected_variable['key'])
         expect(variable.value).to eq(expected_variable['value'])
+        expect(variable.variable_type).to eq(expected_variable['variable_type'])
       end
     end
 
@@ -312,7 +315,7 @@ describe API::Pipelines do
         end
 
         context 'variables given' do
-          let(:variables) { [{ 'key' => 'UPLOAD_TO_S3', 'value' => 'true' }] }
+          let(:variables) { [{ 'variable_type' => 'file', 'key' => 'UPLOAD_TO_S3', 'value' => 'true' }] }
 
           it 'creates and returns a new pipeline using the given variables' do
             expect do
@@ -328,7 +331,7 @@ describe API::Pipelines do
         end
 
         describe 'using variables conditions' do
-          let(:variables) { [{ 'key' => 'STAGING', 'value' => 'true' }] }
+          let(:variables) { [{ 'variable_type' => 'env_var', 'key' => 'STAGING', 'value' => 'true' }] }
 
           before do
             config = YAML.dump(test: { script: 'test', only: { variables: ['$STAGING'] } })
@@ -399,6 +402,13 @@ describe API::Pipelines do
 
   describe 'GET /projects/:id/pipelines/:pipeline_id' do
     context 'authorized user' do
+      it 'exposes known attributes' do
+        get api("/projects/#{project.id}/pipelines/#{pipeline.id}", user)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to match_response_schema('public_api/v4/pipeline/detail')
+      end
+
       it 'returns project pipelines' do
         get api("/projects/#{project.id}/pipelines/#{pipeline.id}", user)
 
@@ -428,12 +438,78 @@ describe API::Pipelines do
     end
 
     context 'unauthorized user' do
-      it 'should not return a project pipeline' do
+      it 'does not return a project pipeline' do
         get api("/projects/#{project.id}/pipelines/#{pipeline.id}", non_member)
 
         expect(response).to have_gitlab_http_status(404)
         expect(json_response['message']).to eq '404 Project Not Found'
         expect(json_response['id']).to be nil
+      end
+    end
+  end
+
+  describe 'GET /projects/:id/pipelines/:pipeline_id/variables' do
+    subject { get api("/projects/#{project.id}/pipelines/#{pipeline.id}/variables", api_user) }
+
+    let(:api_user) { user }
+
+    context 'user is a mantainer' do
+      it 'returns pipeline variables empty' do
+        subject
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response).to be_empty
+      end
+
+      context 'with variables' do
+        let!(:variable) { create(:ci_pipeline_variable, pipeline: pipeline, key: 'foo', value: 'bar') }
+
+        it 'returns pipeline variables' do
+          subject
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(json_response).to contain_exactly({ "variable_type" => "env_var", "key" => "foo", "value" => "bar" })
+        end
+      end
+    end
+
+    context 'user is a developer' do
+      let(:pipeline_owner_user) { create(:user) }
+      let(:pipeline) { create(:ci_empty_pipeline, project: project, user: pipeline_owner_user) }
+
+      before do
+        project.add_developer(api_user)
+      end
+
+      context 'pipeline created by the developer user' do
+        let(:api_user) { pipeline_owner_user }
+        let!(:variable) { create(:ci_pipeline_variable, pipeline: pipeline, key: 'foo', value: 'bar') }
+
+        it 'returns pipeline variables' do
+          subject
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(json_response).to contain_exactly({ "variable_type" => "env_var", "key" => "foo", "value" => "bar" })
+        end
+      end
+
+      context 'pipeline created is not created by the developer user' do
+        let(:api_user) { create(:user) }
+
+        it 'does not return pipeline variables' do
+          subject
+
+          expect(response).to have_gitlab_http_status(403)
+        end
+      end
+    end
+
+    context 'user is not a project member' do
+      it 'does not return pipeline variables' do
+        get api("/projects/#{project.id}/pipelines/#{pipeline.id}/variables", non_member)
+
+        expect(response).to have_gitlab_http_status(404)
+        expect(json_response['message']).to eq '404 Project Not Found'
       end
     end
   end
@@ -474,7 +550,7 @@ describe API::Pipelines do
 
     context 'unauthorized user' do
       context 'when user is not member' do
-        it 'should return a 404' do
+        it 'returns a 404' do
           delete api("/projects/#{project.id}/pipelines/#{pipeline.id}", non_member)
 
           expect(response).to have_gitlab_http_status(404)
@@ -489,7 +565,7 @@ describe API::Pipelines do
           project.add_developer(developer)
         end
 
-        it 'should return a 403' do
+        it 'returns a 403' do
           delete api("/projects/#{project.id}/pipelines/#{pipeline.id}", developer)
 
           expect(response).to have_gitlab_http_status(403)
@@ -519,7 +595,7 @@ describe API::Pipelines do
     end
 
     context 'unauthorized user' do
-      it 'should not return a project pipeline' do
+      it 'does not return a project pipeline' do
         post api("/projects/#{project.id}/pipelines/#{pipeline.id}/retry", non_member)
 
         expect(response).to have_gitlab_http_status(404)

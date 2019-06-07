@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 describe ::Ci::DestroyPipelineService do
-  let(:project) { create(:project) }
-  let!(:pipeline) { create(:ci_pipeline, project: project) }
+  let(:project) { create(:project, :repository) }
+  let!(:pipeline) { create(:ci_pipeline, :success, project: project, sha: project.commit.id) }
 
   subject { described_class.new(project, user).execute(pipeline) }
 
@@ -15,6 +15,17 @@ describe ::Ci::DestroyPipelineService do
       subject
 
       expect { pipeline.reload }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it 'clears the cache', :use_clean_rails_memory_store_caching do
+      create(:commit_status, :success, pipeline: pipeline, ref: pipeline.ref)
+
+      expect(project.pipeline_status.has_status?).to be_truthy
+
+      subject
+
+      # Need to use find to avoid memoization
+      expect(Project.find(project.id).pipeline_status.has_status?).to be_falsey
     end
 
     it 'does not log an audit event' do

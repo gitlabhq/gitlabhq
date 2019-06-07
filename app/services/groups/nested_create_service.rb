@@ -12,7 +12,7 @@ module Groups
     end
 
     def execute
-      return nil unless group_path
+      return unless group_path
 
       if namespace = namespace_or_group(group_path)
         return namespace

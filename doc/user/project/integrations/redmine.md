@@ -18,9 +18,7 @@
 
     ![Redmine configuration](img/redmine_configuration.png)
 
-1. To disable the internal issue tracking system in a project, navigate to the General page, expand [Permissions](../settings/index.md#sharing-and-permissions), and slide the Issues switch invalid.
-
-    ![Issue configuration](img/issue_configuration.png)
+1. To disable the internal issue tracking system in a project, navigate to the General page, expand the [permissions](../settings/index.md#sharing-and-permissions) section and switch the **Issues** toggle to disabled.
 
 ## Referencing issues in Redmine
 

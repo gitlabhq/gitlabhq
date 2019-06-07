@@ -11,7 +11,7 @@ class AsanaService < Service
   end
 
   def description
-    'Asana - Teamwork without email'
+    s_('AsanaService|Asana - Teamwork without email')
   end
 
   def help
@@ -36,13 +36,13 @@ http://app.asana.com/-/account_api'
       {
         type: 'text',
         name: 'api_key',
-        placeholder: 'User Personal Access Token. User must have access to task, all comments will be attributed to this user.',
+        placeholder: s_('AsanaService|User Personal Access Token. User must have access to task, all comments will be attributed to this user.'),
         required: true
       },
       {
         type: 'text',
         name: 'restrict_to_branch',
-        placeholder: 'Comma-separated list of branches which will be automatically inspected. Leave blank to include all branches.'
+        placeholder: s_('AsanaService|Comma-separated list of branches which will be automatically inspected. Leave blank to include all branches.')
       }
     ]
   end
@@ -73,7 +73,7 @@ http://app.asana.com/-/account_api'
     project_name = project.full_name
 
     data[:commits].each do |commit|
-      push_msg = "#{user} pushed to branch #{branch} of #{project_name} ( #{commit[:url]} ):"
+      push_msg = s_("AsanaService|%{user} pushed to branch %{branch} of %{project_name} ( %{commit_url} ):") % { user: user, branch: branch, project_name: project_name, commit_url: commit[:url] }
       check_commit(commit[:message], push_msg)
     end
   end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Projects::ForkService do
@@ -140,6 +142,30 @@ describe Projects::ForkService do
           @from_project.enable_ci
           @to_project = fork_project(@from_project, @to_user)
           expect(@to_project.builds_enabled?).to be_truthy
+        end
+      end
+
+      context "CI/CD settings" do
+        let(:to_project) { fork_project(@from_project, @to_user) }
+
+        context "when origin has git depth specified" do
+          before do
+            @from_project.update(default_git_depth: 42)
+          end
+
+          it "inherits default_git_depth from the origin project" do
+            expect(to_project.default_git_depth).to eq(42)
+          end
+        end
+
+        context "when origin does not define git depth" do
+          before do
+            @from_project.update!(default_git_depth: nil)
+          end
+
+          it "the fork has git depth set to 0" do
+            expect(to_project.default_git_depth).to eq(0)
+          end
         end
       end
 

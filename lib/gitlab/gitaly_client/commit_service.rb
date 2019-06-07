@@ -79,7 +79,7 @@ module Gitlab
 
       def tree_entry(ref, path, limit = nil)
         if Pathname.new(path).cleanpath.to_s.start_with?('../')
-          # The TreeEntry RPC should return an empty reponse in this case but in
+          # The TreeEntry RPC should return an empty response in this case but in
           # Gitaly 0.107.0 and earlier we get an exception instead. This early return
           # saves us a Gitaly roundtrip while also avoiding the exception.
           return
@@ -174,7 +174,7 @@ module Gitlab
 
         response.each_with_object({}) do |gitaly_response, hsh|
           gitaly_response.commits.each do |commit_for_tree|
-            hsh[commit_for_tree.path] = Gitlab::Git::Commit.new(@repository, commit_for_tree.commit)
+            hsh[commit_for_tree.path_bytes] = Gitlab::Git::Commit.new(@repository, commit_for_tree.commit)
           end
         end
       end
@@ -286,7 +286,7 @@ module Gitlab
           commit = call_find_commit(revision)
           return unless commit
 
-          key[:commit_id] = commit.id
+          key[:commit_id] = commit.id unless GitalyClient.ref_name_caching_allowed?
           Gitlab::SafeRequestStore[key] = commit
         else
           call_find_commit(revision)

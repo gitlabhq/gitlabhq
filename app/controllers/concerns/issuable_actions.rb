@@ -8,7 +8,7 @@ module IssuableActions
     before_action :authorize_destroy_issuable!, only: :destroy
     before_action :authorize_admin_issuable!, only: :bulk_update
     before_action only: :show do
-      push_frontend_feature_flag(:reply_to_individual_notes)
+      push_frontend_feature_flag(:scoped_labels, default_enabled: true)
     end
   end
 
@@ -192,12 +192,7 @@ module IssuableActions
 
   def bulk_update_params
     permitted_keys_array = permitted_keys.dup
-
-    if resource_name == 'issue'
-      permitted_keys_array << { assignee_ids: [] }
-    else
-      permitted_keys_array.unshift(:assignee_id)
-    end
+    permitted_keys_array << { assignee_ids: [] }
 
     params.require(:update).permit(permitted_keys_array)
   end

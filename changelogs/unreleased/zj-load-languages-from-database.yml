@@ -1,5 +1,0 @@
----
-title: Load repository language from the database if detected before
-merge_request: 25518
-author:
-type: performance

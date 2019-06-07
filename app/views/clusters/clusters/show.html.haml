@@ -4,7 +4,7 @@
 - page_title _('Kubernetes Cluster')
 - manage_prometheus_path = edit_project_service_path(@cluster.project, 'prometheus') if @project
 
-- expanded = Rails.env.test?
+- expanded = expanded_by_default?
 
 - status_path = clusterable.cluster_status_cluster_path(@cluster.id, format: :json) if can?(current_user, :admin_cluster, @cluster)
 .edit-cluster-form.js-edit-cluster-form{ data: { status_path: status_path,
@@ -15,15 +15,17 @@
   install_runner_path: clusterable.install_applications_cluster_path(@cluster, :runner),
   install_jupyter_path: clusterable.install_applications_cluster_path(@cluster, :jupyter),
   install_knative_path: clusterable.install_applications_cluster_path(@cluster, :knative),
+  update_knative_path: clusterable.update_applications_cluster_path(@cluster, :knative),
   toggle_status: @cluster.enabled? ? 'true': 'false',
-  has_rbac: @cluster.platform_kubernetes_rbac? ? 'true': 'false',
+  has_rbac: has_rbac_enabled?(@cluster) ? 'true': 'false',
   cluster_type: @cluster.cluster_type,
   cluster_status: @cluster.status_name,
   cluster_status_reason: @cluster.status_reason,
   help_path: help_page_path('user/project/clusters/index.md', anchor: 'installing-applications'),
-  ingress_help_path: help_page_path('user/project/clusters/index.md', anchor: 'getting-the-external-ip-address'),
-  ingress_dns_help_path: help_page_path('topics/autodevops/quick_start_guide.md', anchor: 'point-dns-at-cluster-ip'),
-  manage_prometheus_path: manage_prometheus_path } }
+  ingress_help_path: help_page_path('user/project/clusters/index.md', anchor: 'getting-the-external-endpoint'),
+  ingress_dns_help_path: help_page_path('user/project/clusters/index.md', anchor: 'manually-determining-the-external-endpoint'),
+  manage_prometheus_path: manage_prometheus_path,
+  cluster_id: @cluster.id } }
 
   .js-cluster-application-notice
     .flash-container
@@ -32,6 +34,8 @@
     %h4= @cluster.name
     = render 'banner'
     = render 'form'
+
+  = render_if_exists 'projects/clusters/prometheus_graphs'
 
   .cluster-applications-table#js-cluster-applications
 
@@ -50,5 +54,5 @@
       %button.btn.js-settings-toggle{ type: 'button' }
         = expanded ? _('Collapse') : _('Expand')
       %p= s_("ClusterIntegration|Advanced options on this Kubernetes cluster's integration")
-    .settings-content
+    .settings-content#advanced-settings-section
       = render 'advanced_settings'

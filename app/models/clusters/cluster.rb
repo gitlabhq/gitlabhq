@@ -1,22 +1,26 @@
 # frozen_string_literal: true
 
 module Clusters
-  class Cluster < ActiveRecord::Base
+  class Cluster < ApplicationRecord
     include Presentable
     include Gitlab::Utils::StrongMemoize
     include FromUnion
+    include ReactiveCaching
 
     self.table_name = 'clusters'
+    self.reactive_cache_key = -> (cluster) { [cluster.class.model_name.singular, cluster.id] }
 
+    PROJECT_ONLY_APPLICATIONS = {
+      Applications::Jupyter.application_name => Applications::Jupyter,
+      Applications::Knative.application_name => Applications::Knative
+    }.freeze
     APPLICATIONS = {
       Applications::Helm.application_name => Applications::Helm,
       Applications::Ingress.application_name => Applications::Ingress,
       Applications::CertManager.application_name => Applications::CertManager,
-      Applications::Prometheus.application_name => Applications::Prometheus,
       Applications::Runner.application_name => Applications::Runner,
-      Applications::Jupyter.application_name => Applications::Jupyter,
-      Applications::Knative.application_name => Applications::Knative
-    }.freeze
+      Applications::Prometheus.application_name => Applications::Prometheus
+    }.merge(PROJECT_ONLY_APPLICATIONS).freeze
     DEFAULT_ENVIRONMENT = '*'.freeze
     KUBE_INGRESS_BASE_DOMAIN = 'KUBE_INGRESS_BASE_DOMAIN'.freeze
 
@@ -43,7 +47,6 @@ module Clusters
     has_one :application_knative, class_name: 'Clusters::Applications::Knative'
 
     has_many :kubernetes_namespaces
-    has_one :kubernetes_namespace, -> { order(id: :desc) }, class_name: 'Clusters::KubernetesNamespace'
 
     accepts_nested_attributes_for :provider_gcp, update_only: true
     accepts_nested_attributes_for :platform_kubernetes, update_only: true
@@ -56,6 +59,8 @@ module Clusters
     validate :no_groups, unless: :group_type?
     validate :no_projects, unless: :project_type?
 
+    after_save :clear_reactive_cache!
+
     delegate :status, to: :provider, allow_nil: true
     delegate :status_reason, to: :provider, allow_nil: true
     delegate :on_creation?, to: :provider, allow_nil: true
@@ -67,8 +72,10 @@ module Clusters
     delegate :available?, to: :application_prometheus, prefix: true, allow_nil: true
     delegate :available?, to: :application_knative, prefix: true, allow_nil: true
     delegate :external_ip, to: :application_ingress, prefix: true, allow_nil: true
+    delegate :external_hostname, to: :application_ingress, prefix: true, allow_nil: true
 
     alias_attribute :base_domain, :domain
+    alias_attribute :provided_by_user?, :user?
 
     enum cluster_type: {
       instance_type: 1,
@@ -90,6 +97,7 @@ module Clusters
     scope :user_provided, -> { where(provider_type: ::Clusters::Cluster.provider_types[:user]) }
     scope :gcp_provided, -> { where(provider_type: ::Clusters::Cluster.provider_types[:gcp]) }
     scope :gcp_installed, -> { gcp_provided.includes(:provider_gcp).where(cluster_providers_gcp: { status: ::Clusters::Providers::Gcp.state_machines[:status].states[:created].value }) }
+    scope :managed, -> { where(managed: true) }
 
     scope :default_environment, -> { where(environment_scope: DEFAULT_ENVIRONMENT) }
 
@@ -103,29 +111,35 @@ module Clusters
 
     scope :preload_knative, -> {
       preload(
-        :kubernetes_namespace,
+        :kubernetes_namespaces,
         :platform_kubernetes,
         :application_knative
       )
     }
 
     def self.ancestor_clusters_for_clusterable(clusterable, hierarchy_order: :asc)
+      return [] if clusterable.is_a?(Instance)
+
       hierarchy_groups = clusterable.ancestors_upto(hierarchy_order: hierarchy_order).eager_load(:clusters)
       hierarchy_groups = hierarchy_groups.merge(current_scope) if current_scope
 
-      hierarchy_groups.flat_map(&:clusters)
+      hierarchy_groups.flat_map(&:clusters) + Instance.new.clusters
     end
 
     def status_name
-      if provider
-        provider.status_name
-      else
-        :created
+      provider&.status_name || connection_status.presence || :created
+    end
+
+    def connection_status
+      with_reactive_cache do |data|
+        data[:connection_status]
       end
     end
 
-    def created?
-      status_name == :created
+    def calculate_reactive_cache
+      return unless enabled?
+
+      { connection_status: retrieve_connection_status }
     end
 
     def applications
@@ -146,10 +160,6 @@ module Clusters
 
     def platform
       return platform_kubernetes if kubernetes?
-    end
-
-    def managed?
-      !user?
     end
 
     def all_projects
@@ -176,20 +186,24 @@ module Clusters
     end
     alias_method :group, :first_group
 
+    def instance
+      Instance.new if instance_type?
+    end
+
     def kubeclient
       platform_kubernetes.kubeclient if kubernetes?
     end
 
+    def kubernetes_namespace_for(project)
+      find_or_initialize_kubernetes_namespace_for_project(project).namespace
+    end
+
     def find_or_initialize_kubernetes_namespace_for_project(project)
-      if project_type?
-        kubernetes_namespaces.find_or_initialize_by(
-          project: project,
-          cluster_project: cluster_project
-        )
-      else
-        kubernetes_namespaces.find_or_initialize_by(
-          project: project
-        )
+      attributes = { project: project }
+      attributes[:cluster_project] = cluster_project if project_type?
+
+      kubernetes_namespaces.find_or_initialize_by(attributes).tap do |namespace|
+        namespace.set_defaults
       end
     end
 
@@ -198,7 +212,7 @@ module Clusters
     end
 
     def kube_ingress_domain
-      @kube_ingress_domain ||= domain.presence || instance_domain || legacy_auto_devops_domain
+      @kube_ingress_domain ||= domain.presence || instance_domain
     end
 
     def predefined_variables
@@ -209,10 +223,41 @@ module Clusters
       end
     end
 
+    def knative_services_finder(project)
+      @knative_services_finder ||= KnativeServicesFinder.new(self, project)
+    end
+
     private
 
     def instance_domain
       @instance_domain ||= Gitlab::CurrentSettings.auto_devops_domain
+    end
+
+    def retrieve_connection_status
+      kubeclient.core_client.discover
+    rescue *Gitlab::Kubernetes::Errors::CONNECTION
+      :unreachable
+    rescue *Gitlab::Kubernetes::Errors::AUTHENTICATION
+      :authentication_failure
+    rescue Kubeclient::HttpError => e
+      kubeclient_error_status(e.message)
+    rescue => e
+      Gitlab::Sentry.track_acceptable_exception(e, extra: { cluster_id: id })
+
+      :unknown_failure
+    else
+      :connected
+    end
+
+    # KubeClient uses the same error class
+    # For connection errors (eg. timeout) and
+    # for Kubernetes errors.
+    def kubeclient_error_status(message)
+      if message&.match?(/timed out|timeout/i)
+        :unreachable
+      else
+        :authentication_failure
+      end
     end
 
     # To keep backward compatibility with AUTO_DEVOPS_DOMAIN

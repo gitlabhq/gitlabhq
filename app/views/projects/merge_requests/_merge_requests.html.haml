@@ -1,5 +1,5 @@
 %ul.content-list.mr-list.issuable-list
-  - if @merge_requests.exists?
+  - if @merge_requests.present?
     = render @merge_requests
   - else
     = render 'shared/empty_states/merge_requests'

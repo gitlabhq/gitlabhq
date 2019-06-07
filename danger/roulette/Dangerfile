@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'digest/md5'
+
 MESSAGE = <<MARKDOWN
 ## Reviewer roulette
 
@@ -29,15 +31,23 @@ Please consider creating a merge request to
 for them.
 MARKDOWN
 
-def spin(team, project, category)
-  reviewers = team.select { |member| member.reviewer?(project, category) }
-  maintainers = team.select { |member| member.maintainer?(project, category) }
+def spin_for_category(team, project, category, branch_name)
+  random = roulette.new_random(branch_name)
+  labels = gitlab.mr_labels
 
-  # TODO: filter out people who are currently not in the office
+  reviewers, traintainers, maintainers =
+    %i[reviewer? traintainer? maintainer?].map do |kind|
+      team.select do |member|
+        member.public_send(kind, project, category, labels) # rubocop:disable GitlabSecurity/PublicSend
+      end
+    end
+
   # TODO: take CODEOWNERS into account?
+  # https://gitlab.com/gitlab-org/gitlab-ce/issues/57653
 
-  reviewer = reviewers[rand(reviewers.size)]
-  maintainer = maintainers[rand(maintainers.size)]
+  # Make traintainers have triple the chance to be picked as a reviewer
+  reviewer = roulette.spin_for_person(reviewers + traintainers + traintainers, random: random)
+  maintainer = roulette.spin_for_person(maintainers, random: random)
 
   "| #{helper.label_for_category(category)} | #{reviewer&.markdown_name} | #{maintainer&.markdown_name} |"
 end
@@ -54,14 +64,22 @@ end
 
 changes = helper.changes_by_category
 
-# Ignore any files that are known but uncategoried. Prompt for any unknown files
+# Ignore any files that are known but uncategorized. Prompt for any unknown files
 changes.delete(:none)
 categories = changes.keys - [:unknown]
 
-unless changes.empty?
+# Single codebase MRs are reviewed using a slightly different process, so we
+# disable the review roulette for such MRs.
+# CSS Clean up MRs are reviewed using a slightly different process, so we
+# disable the review roulette for such MRs.
+if changes.any? && !gitlab.mr_labels.include?('single codebase') && !gitlab.mr_labels.include?('CSS cleanup')
+  # Strip leading and trailing CE/EE markers
+  canonical_branch_name =
+    roulette.canonical_branch_name(gitlab.mr_json['source_branch'])
+
   team =
     begin
-      helper.project_team
+      roulette.project_team(helper.project_name)
     rescue => err
       warn("Reviewer roulette failed to load team data: #{err.message}")
       []
@@ -73,7 +91,7 @@ unless changes.empty?
   project = helper.project_name
   unknown = changes.fetch(:unknown, [])
 
-  rows = categories.map { |category| spin(team, project, category) }
+  rows = categories.map { |category| spin_for_category(team, project, category, canonical_branch_name) }
 
   markdown(MESSAGE)
   markdown(CATEGORY_TABLE_HEADER + rows.join("\n")) unless rows.empty?

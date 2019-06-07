@@ -28,5 +28,9 @@ FactoryBot.define do
         gcp.make_errored('Something wrong')
       end
     end
+
+    trait :abac_enabled do
+      legacy_abac true
+    end
   end
 end

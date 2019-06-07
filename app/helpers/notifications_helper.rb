@@ -93,4 +93,15 @@ module NotificationsHelper
       s_(event.to_s.humanize)
     end
   end
+
+  def notification_setting_icon(notification_setting)
+    sprite_icon(
+      notification_setting.disabled? ? "notifications-off" : "notifications",
+      css_class: "icon notifications-icon js-notifications-icon"
+    )
+  end
+
+  def show_unsubscribe_title?(noteable)
+    can?(current_user, "read_#{noteable.to_ability_name}".to_sym, noteable)
+  end
 end

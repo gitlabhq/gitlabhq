@@ -1,6 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import testAction from 'spec/helpers/vuex_action_helper';
-import { showTreeEntry, getFiles } from '~/ide/stores/actions/tree';
+import { showTreeEntry, getFiles, setDirectoryData } from '~/ide/stores/actions/tree';
 import * as types from '~/ide/stores/mutation_types';
 import axios from '~/lib/utils/axios_utils';
 import store from '~/ide/stores';
@@ -20,6 +20,7 @@ describe('Multi-file store tree actions', () => {
   };
 
   beforeEach(() => {
+    jasmine.clock().install();
     spyOn(router, 'push');
 
     mock = new MockAdapter(axios);
@@ -37,6 +38,7 @@ describe('Multi-file store tree actions', () => {
   });
 
   afterEach(() => {
+    jasmine.clock().uninstall();
     mock.restore();
     resetStore(store);
   });
@@ -70,6 +72,11 @@ describe('Multi-file store tree actions', () => {
         store
           .dispatch('getFiles', basicCallParameters)
           .then(() => {
+            // The populating of the tree is deferred for performance reasons.
+            // See this merge request for details: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/25700
+            jasmine.clock().tick(1);
+          })
+          .then(() => {
             projectTree = store.state.trees['abcproject/master'];
 
             expect(projectTree.tree.length).toBe(2);
@@ -86,38 +93,6 @@ describe('Multi-file store tree actions', () => {
     });
 
     describe('error', () => {
-      it('dispatches branch not found actions when response is 404', done => {
-        const dispatch = jasmine.createSpy('dispatchSpy');
-
-        store.state.projects = {
-          'abc/def': {
-            web_url: `${gl.TEST_HOST}/files`,
-          },
-        };
-
-        mock.onGet(/(.*)/).replyOnce(404);
-
-        getFiles(
-          {
-            commit() {},
-            dispatch,
-            state: store.state,
-          },
-          {
-            projectId: 'abc/def',
-            branchId: 'master-testing',
-          },
-        )
-          .then(done.fail)
-          .catch(() => {
-            expect(dispatch.calls.argsFor(0)).toEqual([
-              'showBranchNotFoundError',
-              'master-testing',
-            ]);
-            done();
-          });
-      });
-
       it('dispatches error action', done => {
         const dispatch = jasmine.createSpy('dispatchSpy');
 
@@ -195,6 +170,37 @@ describe('Multi-file store tree actions', () => {
         store.state,
         [{ type: types.SET_TREE_OPEN, payload: 'grandparent/parent' }],
         [{ type: 'showTreeEntry', payload: 'grandparent/parent' }],
+        done,
+      );
+    });
+  });
+
+  describe('setDirectoryData', () => {
+    it('sets tree correctly if there are no opened files yet', done => {
+      const treeFile = file({ name: 'README.md' });
+      store.state.trees['abcproject/master'] = {};
+
+      testAction(
+        setDirectoryData,
+        { projectId: 'abcproject', branchId: 'master', treeList: [treeFile] },
+        store.state,
+        [
+          {
+            type: types.SET_DIRECTORY_DATA,
+            payload: {
+              treePath: 'abcproject/master',
+              data: [treeFile],
+            },
+          },
+          {
+            type: types.TOGGLE_LOADING,
+            payload: {
+              entry: {},
+              forceValue: false,
+            },
+          },
+        ],
+        [],
         done,
       );
     });

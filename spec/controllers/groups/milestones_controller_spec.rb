@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Groups::MilestonesController do
@@ -79,6 +81,12 @@ describe Groups::MilestonesController do
         expect(response).to have_gitlab_http_status(200)
         expect(response.content_type).to eq 'application/json'
       end
+    end
+
+    context 'external authorization' do
+      subject { get :index, params: { group_id: group.to_param } }
+
+      it_behaves_like 'disabled when using an external authorization service'
     end
   end
 

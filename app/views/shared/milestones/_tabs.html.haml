@@ -12,7 +12,7 @@
       %li.nav-item
         = link_to '#tab-merge-requests', class: 'nav-link', 'data-toggle' => 'tab', 'data-endpoint': milestone_merge_request_tab_path(milestone) do
           Merge Requests
-          %span.badge.badge-pill= milestone.merge_requests.size
+          %span.badge.badge-pill= milestone.merge_requests_visible_to_user(current_user).size
     - else
       %li.nav-item
         = link_to '#tab-merge-requests', class: 'nav-link active', 'data-toggle' => 'tab', 'data-endpoint': milestone_merge_request_tab_path(milestone) do
@@ -21,11 +21,11 @@
     %li.nav-item
       = link_to '#tab-participants', class: 'nav-link', 'data-toggle' => 'tab', 'data-endpoint': milestone_participants_tab_path(milestone) do
         Participants
-        %span.badge.badge-pill= milestone.participants.count
+        %span.badge.badge-pill= milestone.issue_participants_visible_by_user(current_user).count
     %li.nav-item
       = link_to '#tab-labels', class: 'nav-link', 'data-toggle' => 'tab', 'data-endpoint': milestone_labels_tab_path(milestone) do
         Labels
-        %span.badge.badge-pill= milestone.labels.count
+        %span.badge.badge-pill= milestone.issue_labels_visible_by_user(current_user).count
 
 - issues = milestone.sorted_issues(current_user)
 - show_project_name = local_assigns.fetch(:show_project_name, false)

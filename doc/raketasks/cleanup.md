@@ -23,6 +23,16 @@ sudo gitlab-rake gitlab:cleanup:repos
 bundle exec rake gitlab:cleanup:repos RAILS_ENV=production
 ```
 
+Remove old repository copies from repositories moved to another storage.
+
+```
+# omnibus-gitlab
+sudo gitlab-rake gitlab:cleanup:moved
+
+# installation from source
+bundle exec rake gitlab:cleanup:moved RAILS_ENV=production
+```
+
 Clean up local project upload files if they don't exist in GitLab database. The
 task attempts to fix the file if it can find its project, otherwise it moves the
 file to a lost and found directory.

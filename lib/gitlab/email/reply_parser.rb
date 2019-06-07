@@ -61,7 +61,7 @@ module Gitlab
 
       # Force encoding to UTF-8 on a Mail::Message or Mail::Part
       def fix_charset(object)
-        return nil if object.nil?
+        return if object.nil?
 
         if object.charset
           object.body.decoded.force_encoding(object.charset.gsub(/utf8/i, "UTF-8")).encode("UTF-8").to_s

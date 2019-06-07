@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Dashboard::TodosController do
@@ -104,6 +106,12 @@ describe Dashboard::TodosController do
           expect(response).to redirect_to(dashboard_todos_path(page: last_page, project_id: project.id))
         end
       end
+    end
+
+    context 'external authorization' do
+      subject { get :index }
+
+      it_behaves_like 'disabled when using an external authorization service'
     end
   end
 

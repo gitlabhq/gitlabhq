@@ -70,11 +70,52 @@ describe API::Search do
       context 'for milestones scope' do
         before do
           create(:milestone, project: project, title: 'awesome milestone')
-
-          get api('/search', user), params: { scope: 'milestones', search: 'awesome' }
         end
 
-        it_behaves_like 'response is correct', schema: 'public_api/v4/milestones'
+        context 'when user can read project milestones' do
+          before do
+            get api('/search', user), params: { scope: 'milestones', search: 'awesome' }
+          end
+
+          it_behaves_like 'response is correct', schema: 'public_api/v4/milestones'
+        end
+
+        context 'when user cannot read project milestones' do
+          before do
+            project.project_feature.update!(merge_requests_access_level: ProjectFeature::PRIVATE)
+            project.project_feature.update!(issues_access_level: ProjectFeature::PRIVATE)
+          end
+
+          it 'returns empty array' do
+            get api('/search', user), params: { scope: 'milestones', search: 'awesome' }
+
+            milestones = JSON.parse(response.body)
+
+            expect(milestones).to be_empty
+          end
+        end
+      end
+
+      context 'for users scope' do
+        before do
+          create(:user, name: 'billy')
+
+          get api('/search', user), params: { scope: 'users', search: 'billy' }
+        end
+
+        it_behaves_like 'response is correct', schema: 'public_api/v4/user/basics'
+
+        context 'when users search feature is disabled' do
+          before do
+            allow(Feature).to receive(:disabled?).with(:users_search, default_enabled: true).and_return(true)
+
+            get api('/search', user), params: { scope: 'users', search: 'billy' }
+          end
+
+          it 'returns 400 error' do
+            expect(response).to have_gitlab_http_status(400)
+          end
+        end
       end
 
       context 'for snippet_titles scope' do
@@ -126,7 +167,7 @@ describe API::Search do
 
     context 'when group does not exist' do
       it 'returns 404 error' do
-        get api('/groups/9999/search', user), params: { scope: 'issues', search: 'awesome' }
+        get api('/groups/0/search', user), params: { scope: 'issues', search: 'awesome' }
 
         expect(response).to have_gitlab_http_status(404)
       end
@@ -192,6 +233,40 @@ describe API::Search do
 
         it_behaves_like 'response is correct', schema: 'public_api/v4/milestones'
       end
+
+      context 'for users scope' do
+        before do
+          user = create(:user, name: 'billy')
+          create(:group_member, :developer, user: user, group: group)
+
+          get api("/groups/#{group.id}/search", user), params: { scope: 'users', search: 'billy' }
+        end
+
+        it_behaves_like 'response is correct', schema: 'public_api/v4/user/basics'
+
+        context 'when users search feature is disabled' do
+          before do
+            allow(Feature).to receive(:disabled?).with(:users_search, default_enabled: true).and_return(true)
+
+            get api("/groups/#{group.id}/search", user), params: { scope: 'users', search: 'billy' }
+          end
+
+          it 'returns 400 error' do
+            expect(response).to have_gitlab_http_status(400)
+          end
+        end
+      end
+
+      context 'for users scope with group path as id' do
+        before do
+          user1 = create(:user, name: 'billy')
+          create(:group_member, :developer, user: user1, group: group)
+
+          get api("/groups/#{CGI.escape(group.full_path)}/search", user), params: { scope: 'users', search: 'billy' }
+        end
+
+        it_behaves_like 'response is correct', schema: 'public_api/v4/user/basics'
+      end
     end
   end
 
@@ -222,7 +297,7 @@ describe API::Search do
 
     context 'when project does not exist' do
       it 'returns 404 error' do
-        get api('/projects/9999/search', user), params: { scope: 'issues', search: 'awesome' }
+        get api('/projects/0/search', user), params: { scope: 'issues', search: 'awesome' }
 
         expect(response).to have_gitlab_http_status(404)
       end
@@ -262,11 +337,53 @@ describe API::Search do
       context 'for milestones scope' do
         before do
           create(:milestone, project: project, title: 'awesome milestone')
-
-          get api("/projects/#{project.id}/search", user), params: { scope: 'milestones', search: 'awesome' }
         end
 
-        it_behaves_like 'response is correct', schema: 'public_api/v4/milestones'
+        context 'when user can read milestones' do
+          before do
+            get api("/projects/#{project.id}/search", user), params: { scope: 'milestones', search: 'awesome' }
+          end
+
+          it_behaves_like 'response is correct', schema: 'public_api/v4/milestones'
+        end
+
+        context 'when user cannot read project milestones' do
+          before do
+            project.project_feature.update!(merge_requests_access_level: ProjectFeature::PRIVATE)
+            project.project_feature.update!(issues_access_level: ProjectFeature::PRIVATE)
+          end
+
+          it 'returns empty array' do
+            get api("/projects/#{project.id}/search", user), params: { scope: 'milestones', search: 'awesome' }
+
+            milestones = JSON.parse(response.body)
+
+            expect(milestones).to be_empty
+          end
+        end
+      end
+
+      context 'for users scope' do
+        before do
+          user1 = create(:user, name: 'billy')
+          create(:project_member, :developer, user: user1, project: project)
+
+          get api("/projects/#{project.id}/search", user), params: { scope: 'users', search: 'billy' }
+        end
+
+        it_behaves_like 'response is correct', schema: 'public_api/v4/user/basics'
+
+        context 'when users search feature is disabled' do
+          before do
+            allow(Feature).to receive(:disabled?).with(:users_search, default_enabled: true).and_return(true)
+
+            get api("/projects/#{project.id}/search", user), params: { scope: 'users', search: 'billy' }
+          end
+
+          it 'returns 400 error' do
+            expect(response).to have_gitlab_http_status(400)
+          end
+        end
       end
 
       context 'for notes scope' do
@@ -334,6 +451,13 @@ describe API::Search do
 
             expect(response).to have_gitlab_http_status(200)
             expect(json_response.size).to eq(11)
+          end
+
+          it 'by ref' do
+            get api("/projects/#{repo_project.id}/search", user), params: { scope: 'blobs', search: 'This file is used in tests for ci_environments_status', ref: 'pages-deploy' }
+
+            expect(response).to have_gitlab_http_status(200)
+            expect(json_response.size).to eq(1)
           end
         end
       end

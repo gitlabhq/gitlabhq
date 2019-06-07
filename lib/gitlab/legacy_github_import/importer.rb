@@ -89,12 +89,10 @@ module Gitlab
       def import_labels
         fetch_resources(:labels, repo, per_page: 100) do |labels|
           labels.each do |raw|
-            begin
-              gh_label = LabelFormatter.new(project, raw)
-              gh_label.create!
-            rescue => e
-              errors << { type: :label, url: Gitlab::UrlSanitizer.sanitize(gh_label.url), errors: e.message }
-            end
+            gh_label = LabelFormatter.new(project, raw)
+            gh_label.create!
+          rescue => e
+            errors << { type: :label, url: Gitlab::UrlSanitizer.sanitize(gh_label.url), errors: e.message }
           end
         end
 
@@ -104,12 +102,10 @@ module Gitlab
       def import_milestones
         fetch_resources(:milestones, repo, state: :all, per_page: 100) do |milestones|
           milestones.each do |raw|
-            begin
-              gh_milestone = MilestoneFormatter.new(project, raw)
-              gh_milestone.create!
-            rescue => e
-              errors << { type: :milestone, url: Gitlab::UrlSanitizer.sanitize(gh_milestone.url), errors: e.message }
-            end
+            gh_milestone = MilestoneFormatter.new(project, raw)
+            gh_milestone.create!
+          rescue => e
+            errors << { type: :milestone, url: Gitlab::UrlSanitizer.sanitize(gh_milestone.url), errors: e.message }
           end
         end
       end
@@ -223,24 +219,22 @@ module Gitlab
       def create_comments(comments)
         ActiveRecord::Base.no_touching do
           comments.each do |raw|
-            begin
-              comment = CommentFormatter.new(project, raw, client)
+            comment = CommentFormatter.new(project, raw, client)
 
-              # GH does not return info about comment's parent, so we guess it by checking its URL!
-              *_, parent, iid = URI(raw.html_url).path.split('/')
+            # GH does not return info about comment's parent, so we guess it by checking its URL!
+            *_, parent, iid = URI(raw.html_url).path.split('/')
 
-              issuable = if parent == 'issues'
-                           Issue.find_by(project_id: project.id, iid: iid)
-                         else
-                           MergeRequest.find_by(target_project_id: project.id, iid: iid)
-                         end
+            issuable = if parent == 'issues'
+                         Issue.find_by(project_id: project.id, iid: iid)
+                       else
+                         MergeRequest.find_by(target_project_id: project.id, iid: iid)
+                       end
 
-              next unless issuable
+            next unless issuable
 
-              issuable.notes.create!(comment.attributes)
-            rescue => e
-              errors << { type: :comment, url: Gitlab::UrlSanitizer.sanitize(raw.url), errors: e.message }
-            end
+            issuable.notes.create!(comment.attributes)
+          rescue => e
+            errors << { type: :comment, url: Gitlab::UrlSanitizer.sanitize(raw.url), errors: e.message }
           end
         end
       end
@@ -281,12 +275,10 @@ module Gitlab
       def import_releases
         fetch_resources(:releases, repo, per_page: 100) do |releases|
           releases.each do |raw|
-            begin
-              gh_release = ReleaseFormatter.new(project, raw)
-              gh_release.create! if gh_release.valid?
-            rescue => e
-              errors << { type: :release, url: Gitlab::UrlSanitizer.sanitize(gh_release.url), errors: e.message }
-            end
+            gh_release = ReleaseFormatter.new(project, raw)
+            gh_release.create! if gh_release.valid?
+          rescue => e
+            errors << { type: :release, url: Gitlab::UrlSanitizer.sanitize(gh_release.url), errors: e.message }
           end
         end
       end

@@ -1,0 +1,5 @@
+---
+title: Fixes Ref link being displayed as raw HTML in the Pipelines page
+merge_request: 28823
+author:
+type: fixed

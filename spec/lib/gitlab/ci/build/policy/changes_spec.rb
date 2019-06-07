@@ -133,7 +133,7 @@ describe Gitlab::Ci::Build::Policy::Changes do
       let(:seed) { double('build seed', to_resource: ci_build) }
 
       context 'when source is merge request' do
-        let(:source) { :merge_request }
+        let(:source) { :merge_request_event }
 
         let(:merge_request) do
           create(:merge_request,

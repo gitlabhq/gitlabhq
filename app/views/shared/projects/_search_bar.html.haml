@@ -1,0 +1,28 @@
+- @sort ||= sort_value_latest_activity
+- project_tab_filter = local_assigns.fetch(:project_tab_filter, "")
+- flex_grow_and_shrink_xs = 'd-flex flex-xs-grow-1 flex-xs-shrink-1 flex-grow-0 flex-shrink-0'
+
+.filtered-search-block.row-content-block.bt-0
+  .filtered-search-wrapper.d-flex.flex-nowrap.flex-column.flex-sm-wrap.flex-sm-row.flex-xl-nowrap
+    - unless project_tab_filter == :starred
+      .filtered-search-nav.mb-2.mb-lg-0{ class: flex_grow_and_shrink_xs }
+        = render 'dashboard/projects/nav', project_tab_filter: project_tab_filter
+    .filtered-search.d-flex.flex-grow-1.flex-shrink-1.w-100.mb-2.mb-lg-0.ml-0{ class: project_tab_filter == :starred ? "extended-filtered-search-box mb-2 mb-lg-0" : "ml-sm-3" }
+      .btn-group.w-100{ role: "group" }
+        .btn-group.w-100{ role: "group" }
+          .filtered-search-box.m-0
+            .filtered-search-box-input-container.pl-2
+              = render 'shared/projects/search_form', admin_view: false, search_form_placeholder: _("Search projects...")
+        %button.btn.btn-secondary{ type: 'submit', form: 'project-filter-form' }
+          = sprite_icon('search', size: 16, css_class: 'search-icon ')
+    .filtered-search-dropdown.flex-row.align-items-center.mb-2.m-sm-0#filtered-search-visibility-dropdown{ class: flex_grow_and_shrink_xs }
+      .filtered-search-dropdown-label.p-0.pl-sm-3.font-weight-bold
+        %span
+          = _("Visibility")
+      = render 'explore/projects/filter', has_label: true
+    .filtered-search-dropdown.flex-row.align-items-center.m-sm-0#filtered-search-sorting-dropdown{ class: flex_grow_and_shrink_xs }
+      .filtered-search-dropdown-label.p-0.pl-sm-3.font-weight-bold
+        %span
+          = _("Sort by")
+      = render 'shared/projects/sort_dropdown'
+

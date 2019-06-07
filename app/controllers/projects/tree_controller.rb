@@ -6,6 +6,8 @@ class Projects::TreeController < Projects::ApplicationController
   include CreatesCommit
   include ActionView::Helpers::SanitizeHelper
 
+  around_action :allow_gitaly_ref_name_caching, only: [:show]
+
   before_action :require_non_empty_project, except: [:new, :create]
   before_action :assign_ref_vars
   before_action :assign_dir_vars, only: [:create_dir]
@@ -37,7 +39,7 @@ class Projects::TreeController < Projects::ApplicationController
   def create_dir
     return render_404 unless @commit_params.values.all?
 
-    create_commit(Files::CreateDirService,  success_notice: "The directory has been successfully created.",
+    create_commit(Files::CreateDirService,  success_notice: _("The directory has been successfully created."),
                                             success_path: project_tree_path(@project, File.join(@branch_name, @dir_name)),
                                             failure_path: project_tree_path(@project, @ref))
   end

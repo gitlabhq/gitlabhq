@@ -1,0 +1,11 @@
+= form.label :assignee_id, "Assignee", class: "col-form-label #{has_due_date ? "col-lg-4" : "col-sm-2"}"
+.col-sm-10{ class: ("col-md-8" if has_due_date) }
+  .issuable-form-select-holder.selectbox
+    - issuable.assignees.each do |assignee|
+      = hidden_field_tag "#{issuable.to_ability_name}[assignee_ids][]", assignee.id, id: nil, data: { meta: assignee.name, avatar_url: assignee.avatar_url, name: assignee.name, username: assignee.username }
+
+    - if issuable.assignees.length === 0
+      = hidden_field_tag "#{issuable.to_ability_name}[assignee_ids][]", 0, id: nil, data: { meta: '' }
+
+    = dropdown_tag(users_dropdown_label(issuable.assignees), options: assignees_dropdown_options(issuable.to_ability_name))
+  = link_to 'Assign to me', '#', class: "assign-to-me-link qa-assign-to-me-link #{'hide' if issuable.assignees.include?(current_user)}"

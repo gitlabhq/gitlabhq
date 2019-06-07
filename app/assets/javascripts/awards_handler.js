@@ -8,6 +8,7 @@ import { updateTooltipTitle } from './lib/utils/common_utils';
 import { isInVueNoteablePage } from './lib/utils/dom_utils';
 import flash from './flash';
 import axios from './lib/utils/axios_utils';
+import bp from './breakpoints';
 
 const animationEndEventString = 'animationend webkitAnimationEnd MSAnimationEnd oAnimationEnd';
 const transitionEndEventString = 'transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd';
@@ -264,7 +265,10 @@ export class AwardsHandler {
     const css = {
       top: `${$addBtn.offset().top + $addBtn.outerHeight()}px`,
     };
-    if (position === 'right') {
+    // for xs screen we position the element on center
+    if (bp.getBreakpointSize() === 'xs') {
+      css.left = '5%';
+    } else if (position === 'right') {
       css.left = `${$addBtn.offset().left - $menu.outerWidth() + 20}px`;
       $menu.addClass('is-aligned-right');
     } else {

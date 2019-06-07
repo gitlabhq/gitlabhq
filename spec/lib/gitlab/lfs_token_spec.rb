@@ -77,42 +77,35 @@ describe Gitlab::LfsToken, :clean_gitlab_redis_shared_state do
     let(:actor) { create(:user, username: 'test_user_lfs_1') }
     let(:lfs_token) { described_class.new(actor) }
 
-    context 'for an HMAC token' do
-      before do
-        # We're not interested in testing LegacyRedisDeviseToken here
-        allow(Gitlab::LfsToken::LegacyRedisDeviseToken).to receive_message_chain(:new, :token_valid?).and_return(false)
+    context 'where the token is invalid' do
+      context "because it's junk" do
+        it 'returns false' do
+          expect(lfs_token.token_valid?('junk')).to be_falsey
+        end
       end
 
-      context 'where the token is invalid' do
-        context "because it's junk" do
-          it 'returns false' do
-            expect(lfs_token.token_valid?('junk')).to be_falsey
-          end
+      context "because it's been fiddled with" do
+        it 'returns false' do
+          fiddled_token = lfs_token.token.tap { |token| token[0] = 'E' }
+          expect(lfs_token.token_valid?(fiddled_token)).to be_falsey
         end
+      end
 
-        context "because it's been fiddled with" do
-          it 'returns false' do
-            fiddled_token = lfs_token.token.tap { |token| token[0] = 'E' }
-            expect(lfs_token.token_valid?(fiddled_token)).to be_falsey
-          end
+      context "because it was generated with a different secret" do
+        it 'returns false' do
+          different_actor = create(:user, username: 'test_user_lfs_2')
+          different_secret_token = described_class.new(different_actor).token
+          expect(lfs_token.token_valid?(different_secret_token)).to be_falsey
         end
+      end
 
-        context "because it was generated with a different secret" do
-          it 'returns false' do
-            different_actor = create(:user, username: 'test_user_lfs_2')
-            different_secret_token = described_class.new(different_actor).token
-            expect(lfs_token.token_valid?(different_secret_token)).to be_falsey
-          end
-        end
-
-        context "because it's expired" do
-          it 'returns false' do
-            expired_token = lfs_token.token
-            # Needs to be at least 1860 seconds, because the default expiry is
-            # 1800 seconds with an additional 60 second leeway.
-            Timecop.freeze(Time.now + 1865) do
-              expect(lfs_token.token_valid?(expired_token)).to be_falsey
-            end
+      context "because it's expired" do
+        it 'returns false' do
+          expired_token = lfs_token.token
+          # Needs to be at least 1860 seconds, because the default expiry is
+          # 1800 seconds with an additional 60 second leeway.
+          Timecop.freeze(Time.now + 1865) do
+            expect(lfs_token.token_valid?(expired_token)).to be_falsey
           end
         end
       end
@@ -120,53 +113,6 @@ describe Gitlab::LfsToken, :clean_gitlab_redis_shared_state do
       context 'where the token is valid' do
         it 'returns true' do
           expect(lfs_token.token_valid?(lfs_token.token)).to be_truthy
-        end
-      end
-    end
-
-    context 'for a LegacyRedisDevise token' do
-      before do
-        # We're not interested in testing HMACToken here
-        allow_any_instance_of(Gitlab::LfsToken::HMACToken).to receive(:token_valid?).and_return(false)
-      end
-
-      context 'where the token is invalid' do
-        context "because it's junk" do
-          it 'returns false' do
-            expect(lfs_token.token_valid?('junk')).to be_falsey
-          end
-        end
-
-        context "because it's been fiddled with" do
-          it 'returns false' do
-            generated_token = Gitlab::LfsToken::LegacyRedisDeviseToken.new(actor).store_new_token
-            fiddled_token = generated_token.tap { |token| token[0] = 'E' }
-            expect(lfs_token.token_valid?(fiddled_token)).to be_falsey
-          end
-        end
-
-        context "because it was generated with a different secret" do
-          it 'returns false' do
-            different_actor = create(:user, username: 'test_user_lfs_2')
-            different_secret_token = described_class.new(different_actor).token
-            expect(lfs_token.token_valid?(different_secret_token)).to be_falsey
-          end
-        end
-
-        context "because it's expired" do
-          it 'returns false' do
-            generated_token = Gitlab::LfsToken::LegacyRedisDeviseToken.new(actor).store_new_token(1)
-            # We need a real sleep here because we need to wait for redis to expire the key.
-            sleep(0.01)
-            expect(lfs_token.token_valid?(generated_token)).to be_falsey
-          end
-        end
-      end
-
-      context 'where the token is valid' do
-        it 'returns true' do
-          generated_token = Gitlab::LfsToken::LegacyRedisDeviseToken.new(actor).store_new_token
-          expect(lfs_token.token_valid?(generated_token)).to be_truthy
         end
       end
     end

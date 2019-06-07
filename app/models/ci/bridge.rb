@@ -3,8 +3,11 @@
 module Ci
   class Bridge < CommitStatus
     include Ci::Processable
+    include Ci::Contextable
+    include Ci::PipelineDelegator
     include Importable
     include AfterCommitQueue
+    include HasRef
     include Gitlab::Utils::StrongMemoize
 
     belongs_to :project
@@ -37,11 +40,11 @@ module Ci
       false
     end
 
-    def expanded_environment_name
+    def runnable?
+      false
     end
 
-    def predefined_variables
-      raise NotImplementedError
+    def expanded_environment_name
     end
 
     def execute_hooks

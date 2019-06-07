@@ -12,7 +12,9 @@ class GroupMember < Member
   validates :source_type, format: { with: /\ANamespace\z/ }
   default_scope { where(source_type: SOURCE_TYPE) }
 
-  scope :in_groups, ->(groups) { where(source_id: groups.select(:id)) }
+  scope :of_groups, ->(groups) { where(source_id: groups.select(:id)) }
+
+  scope :count_users_by_group_id, -> { joins(:user).group(:source_id).count }
 
   after_create :update_two_factor_requirement, unless: :invite?
   after_destroy :update_two_factor_requirement, unless: :invite?
@@ -53,7 +55,7 @@ class GroupMember < Member
   end
 
   def post_update_hook
-    if access_level_changed?
+    if saved_change_to_access_level?
       run_after_commit { notification_service.update_group_member(self) }
     end
 

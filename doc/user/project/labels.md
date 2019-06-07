@@ -8,13 +8,60 @@ Labels allow you to categorize issues or merge requests using descriptive titles
 
 In GitLab, you can create project and group labels:
 
-- **Project labels** can be assigned to issues or merge requests in that project only. 
+- **Project labels** can be assigned to issues or merge requests in that project only.
 - **Group labels** can be assigned to any issue or merge request of any project in that group or any subgroups of the group.
+
+## Scoped labels **[PREMIUM]**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/9175) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.10.
+
+Scoped labels allow teams to use the simple and familiar feature of labels to
+annotate their issues, merge requests, and epics to achieve custom fields and
+custom workflow states by leveraging a special label title syntax.
+
+A scoped label is a kind of label defined only by a special double-colon syntax
+in the label’s title, using the format `key::value`. For example:
+
+![A sample scoped label](img/key_value_labels.png)
+
+Two scoped labels with the same key but a different value cannot simultaneously
+apply to an issue, epic, or merge request. For example, if an issue already has `priority::3`
+and you apply `priority::2` to it, `priority::3` is automatically removed from the issue.
+
+An issue, epic, or merge request cannot have two scoped labels with the same key.
+For example, if an issue is already labeled `priority::3` and you apply the label `priority::2` to it,
+`priority::3` is automatically removed.
+
+### Labels with multiple colon pairs
+
+If labels have multiple instances of `::`, the longest path from left to right, until the last `::`, is considered the "key" or the "scope".
+
+For example, `nested::key1::value1` and `nested::key1::value2` cannot both exist on the same issue. Adding the latter label will automatically remove the former due to the shared scope of `nested::key1`.
+
+`nested::key1::value1` and `nested::key2::value1` can both exist on the same issue, as these are considered to use two different label scopes, `nested::key1` and `nested::key2`.
+
+### Workflows with scoped labels **[PREMIUM]**
+
+Suppose you wanted a custom field in issues to track the platform operating system
+that your features target, where each issue should only target one platform. You
+would then create labels `platform::iOS`, `platform::Android`, `platform::Linux`,
+etc., as necessary. Applying any one of these labels on a given issue would
+automatically remove any other existing label that starts with `platform::`.
+
+The same pattern could be applied to represent the workflow states of your teams.
+Suppose you have the labels `workflow::development`, `workflow::review`, and
+`workflow::deployed`. If an issue already has the label `workflow::development`
+applied, and a developer wanted to advance the issue to `workflow::review`, they
+would simply apply that label, and the `workflow::development` label would
+automatically be removed. This behavior already exists when you move issues
+across label lists in an [issue board](issue_board.md#creating-workflows), but
+now, team members who may not be working in an issue board directly would still
+be able to advance workflow states consistently in issues themselves.
 
 ## Creating labels
 
 >**Note:**
-A permission level of `Developer` or higher is required to create labels.
+A permission level of Reporter or higher is required to create labels.
 
 ### New project label
 
@@ -35,6 +82,9 @@ GitLab will add the following default labels to the project:
 
 To create a **group label**, follow similar steps from above to project labels. Navigate to **Issues > Labels** in the group and create it from there.
 This page only shows group labels in this group.
+Alternatively, you can create group labels also from Epic sidebar. Please note that the created label will belong to the immediate group to which epic belongs.
+
+![Create Labels from Epic](img/labels_epic_sidebar.png)
 
 Group labels appear in every label list page of the group's child projects.
 
@@ -42,14 +92,14 @@ Group labels appear in every label list page of the group's child projects.
 
 ### New project label from sidebar
 
-From the sidebar of an issue or a merge request, you can create a create a new **project label** inline immediately, instead of navigating to the project label list page.
+From the sidebar of an issue or a merge request, you can create a new **project label** inline immediately, instead of navigating to the project label list page.
 
 ![Labels inline](img/new_label_from_sidebar.gif)
 
 ## Editing labels
 
 NOTE: **Note:**
-A permission level of `Developer` or higher is required to edit labels.
+A permission level of Reporter or higher is required to edit labels.
 
 You can update a label by navigating to **Issues > Labels** in the project or group and clicking the pencil icon.
 
@@ -81,7 +131,7 @@ top-right:
 
 GitLab will consider the label title and description for the search.
 
-## Filtering issues and merge requests by label
+## Filtering issues, merge requests and epics by label
 
 ### Filtering in list pages
 
@@ -89,11 +139,16 @@ From the project issue list page and the project merge request list page, you ca
 
 From the group issue list page and the group merge request list page, you can [filter](../search/index.md#issues-and-merge-requests) by both group labels (including subgroup ancestors and subgroup descendants) and project labels.
 
+From the group epic list page, you can [filter](../search/index.md#issues-and-merge-requests) by both current group labels as well as descendant group labels.
+
 ![Labels group issues](img/labels_group_issues.png)
 
 ### Filtering in issue boards
 
 - From [project boards](issue_board.md), you can filter by both group labels and project labels in the [search and filter bar](../search/index.md#issue-boards).
+- From [group issue boards](issue_board.md#group-issue-boards-premium), you can filter by only group labels in the [search and filter bar](../search/index.md#issue-boards). **[PREMIUM]**
+- From [project boards](issue_board.md), you can filter by both group labels and project labels in the [issue board configuration](issue_board.md#configurable-issue-boards-starter). **[STARTER]**
+- From [group issue boards](issue_board.md#group-issue-boards-premium), you can filter by only group labels in the [issue board configuration](issue_board.md#configurable-issue-boards-starter). **[STARTER]**
 
 ## Subscribing to labels
 

@@ -70,7 +70,7 @@ module QA
         puts 'Waiting for the runner to process the pipeline'
         sleep 15 # Runner should process all jobs within 15 seconds.
 
-        Page::Project::Pipeline::Index.perform(&:go_to_latest_pipeline)
+        Page::Project::Pipeline::Index.perform(&:click_on_latest_pipeline)
 
         Page::Project::Pipeline::Show.perform do |pipeline|
           expect(pipeline).to be_running

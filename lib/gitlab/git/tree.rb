@@ -18,6 +18,10 @@ module Gitlab
         def where(repository, sha, path = nil, recursive = false)
           path = nil if path == '' || path == '/'
 
+          tree_entries(repository, sha, path, recursive)
+        end
+
+        def tree_entries(repository, sha, path, recursive)
           wrapped_gitaly_errors do
             repository.gitaly_commit_client.tree_entries(repository, sha, path, recursive)
           end
@@ -44,7 +48,7 @@ module Gitlab
             entry[:name] == path_arr[0] && entry[:type] == :tree
           end
 
-          return nil unless entry
+          return unless entry
 
           if path_arr.size > 1
             path_arr.shift
@@ -95,3 +99,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Git::Tree.singleton_class.prepend Gitlab::Git::RuggedImpl::Tree::ClassMethods

@@ -116,7 +116,7 @@ module Auth
         build_can_pull?(requested_project) || user_can_pull?(requested_project) || deploy_token_can_pull?(requested_project)
       when 'push'
         build_can_push?(requested_project) || user_can_push?(requested_project)
-      when '*'
+      when '*', 'delete'
         user_can_admin?(requested_project)
       else
         false

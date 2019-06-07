@@ -36,10 +36,11 @@ describe PreferencesHelper do
   end
 
   describe '#first_day_of_week_choices' do
-    it 'returns Sunday and Monday as choices' do
+    it 'returns Saturday, Sunday and Monday as choices' do
       expect(helper.first_day_of_week_choices).to eq [
         ['Sunday', 0],
-        ['Monday', 1]
+        ['Monday', 1],
+        ['Saturday', 6]
       ]
     end
   end
@@ -47,14 +48,21 @@ describe PreferencesHelper do
   describe '#first_day_of_week_choices_with_default' do
     it 'returns choices including system default' do
       expect(helper.first_day_of_week_choices_with_default).to eq [
-        ['System default (Sunday)', nil], ['Sunday', 0], ['Monday', 1]
+        ['System default (Sunday)', nil], ['Sunday', 0], ['Monday', 1], ['Saturday', 6]
       ]
     end
 
     it 'returns choices including system default set to Monday' do
       stub_application_setting(first_day_of_week: 1)
       expect(helper.first_day_of_week_choices_with_default).to eq [
-        ['System default (Monday)', nil], ['Sunday', 0], ['Monday', 1]
+        ['System default (Monday)', nil], ['Sunday', 0], ['Monday', 1], ['Saturday', 6]
+      ]
+    end
+
+    it 'returns choices including system default set to Saturday' do
+      stub_application_setting(first_day_of_week: 6)
+      expect(helper.first_day_of_week_choices_with_default).to eq [
+        ['System default (Saturday)', nil], ['Sunday', 0], ['Monday', 1], ['Saturday', 6]
       ]
     end
   end

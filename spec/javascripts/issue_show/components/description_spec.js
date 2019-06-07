@@ -43,12 +43,12 @@ describe('Description component', () => {
 
     Vue.nextTick(() => {
       expect(
-        vm.$el.querySelector('.wiki').classList.contains('issue-realtime-pre-pulse'),
+        vm.$el.querySelector('.md').classList.contains('issue-realtime-pre-pulse'),
       ).toBeTruthy();
 
       setTimeout(() => {
         expect(
-          vm.$el.querySelector('.wiki').classList.contains('issue-realtime-trigger-pulse'),
+          vm.$el.querySelector('.md').classList.contains('issue-realtime-trigger-pulse'),
         ).toBeTruthy();
 
         done();

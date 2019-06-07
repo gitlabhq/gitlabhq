@@ -11,7 +11,7 @@ One of the things it uses these credentials for is providing access to
 ## How it works
 
 A detailed overview of the architecture of web terminals and how they work
-can be found in [this document](https://gitlab.com/gitlab-org/gitlab-workhorse/blob/master/doc/terminal.md).
+can be found in [this document](https://gitlab.com/gitlab-org/gitlab-workhorse/blob/master/doc/channel.md).
 In brief:
 
 - GitLab relies on the user to provide their own Kubernetes credentials, and to
@@ -42,6 +42,11 @@ detail below.
 - The session URL is not exposed to the users in any way. GitLab holds all the state internally and proxies accordingly.
 
 ##  Enabling and disabling terminal support
+
+NOTE: **Note:** AWS Elastic Load Balancers (ELBs) do not support web sockets. 
+AWS Application Load Balancers (ALBs) must be used if you want web terminals
+to work. See [AWS Elastic Load Balancing Product Comparison](https://aws.amazon.com/elasticloadbalancing/features/#compare)
+for more information.
 
 As web terminals use WebSockets, every HTTP/HTTPS reverse proxy in front of
 Workhorse needs to be configured to pass the `Connection` and `Upgrade` headers

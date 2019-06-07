@@ -9,12 +9,12 @@ module QA
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
         Page::Main::Login.perform(&:sign_in_using_credentials)
 
-        project = Resource::Project.fabricate! do |resource|
+        project = Resource::Project.fabricate_via_api! do |resource|
           resource.name = 'project-for-issue-suggestions'
           resource.description = 'project for issue suggestions'
         end
 
-        Resource::Issue.fabricate! do |issue|
+        Resource::Issue.fabricate_via_browser_ui! do |issue|
           issue.title = issue_title
           issue.project = project
         end

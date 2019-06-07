@@ -40,6 +40,24 @@ if Settings.ldap['enabled'] || Rails.env.test?
     # Since GitLab 10.0, verify_certificates defaults to true for security.
     server['verify_certificates'] = true if server['verify_certificates'].nil?
 
+    # Expose ability to set `tls_options` directly. Deprecate `ca_file` and
+    # `ssl_version` in favor of `tls_options` hash option.
+    server['tls_options'] ||= {}
+
+    if server['ssl_version'] || server['ca_file']
+      Rails.logger.warn 'DEPRECATED: LDAP options `ssl_version` and `ca_file` should be nested within `tls_options`'
+    end
+
+    if server['ssl_version']
+      server['tls_options']['ssl_version'] ||= server['ssl_version']
+      server.delete('ssl_version')
+    end
+
+    if server['ca_file']
+      server['tls_options']['ca_file'] ||= server['ca_file']
+      server.delete('ca_file')
+    end
+
     Settings.ldap['servers'][key] = server
   end
 end
@@ -108,6 +126,7 @@ Settings['issues_tracker'] ||= {}
 # GitLab
 #
 Settings['gitlab'] ||= Settingslogic.new({})
+Settings.gitlab['default_project_creation'] ||= ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS
 Settings.gitlab['default_projects_limit'] ||= 100000
 Settings.gitlab['default_branch_protection'] ||= 2
 Settings.gitlab['default_can_create_group'] = true if Settings.gitlab['default_can_create_group'].nil?
@@ -117,6 +136,8 @@ Settings.gitlab['ssh_host']   ||= Settings.gitlab.host
 Settings.gitlab['https']        = false if Settings.gitlab['https'].nil?
 Settings.gitlab['port']       ||= ENV['GITLAB_PORT'] || (Settings.gitlab.https ? 443 : 80)
 Settings.gitlab['relative_url_root'] ||= ENV['RAILS_RELATIVE_URL_ROOT'] || ''
+# / is not a valid relative URL root
+Settings.gitlab['relative_url_root']   = '' if Settings.gitlab['relative_url_root'] == '/'
 Settings.gitlab['protocol'] ||= Settings.gitlab.https ? "https" : "http"
 Settings.gitlab['email_enabled'] ||= true if Settings.gitlab['email_enabled'].nil?
 Settings.gitlab['email_from'] ||= ENV['GITLAB_EMAIL_FROM'] || "gitlab@#{Settings.gitlab.host}"
@@ -197,6 +218,15 @@ Settings.registry['host_port']     ||= [Settings.registry['host'], Settings.regi
 Settings.registry['path']            = Settings.absolute(Settings.registry['path'] || File.join(Settings.shared['path'], 'registry'))
 
 #
+# Error Reporting and Logging with Sentry
+#
+Settings['sentry'] ||= Settingslogic.new({})
+Settings.sentry['enabled'] ||= false
+Settings.sentry['dsn'] ||= nil
+Settings.sentry['environment'] ||= nil
+Settings.sentry['clientside_dsn'] ||= nil
+
+#
 # Pages
 #
 Settings['pages'] ||= Settingslogic.new({})
@@ -220,6 +250,7 @@ Settings.pages.admin['certificate'] ||= ''
 #
 Settings['external_diffs'] ||= Settingslogic.new({})
 Settings.external_diffs['enabled']      = false if Settings.external_diffs['enabled'].nil?
+Settings.external_diffs['when']         = 'always' if Settings.external_diffs['when'].nil?
 Settings.external_diffs['storage_path'] = Settings.absolute(Settings.external_diffs['storage_path'] || File.join(Settings.shared['path'], 'external-diffs'))
 Settings.external_diffs['object_store'] = ObjectStoreSettings.parse(Settings.external_diffs['object_store'])
 
@@ -318,6 +349,10 @@ Settings.cron_jobs['pages_domain_verification_cron_worker'] ||= Settingslogic.ne
 Settings.cron_jobs['pages_domain_verification_cron_worker']['cron'] ||= '*/15 * * * *'
 Settings.cron_jobs['pages_domain_verification_cron_worker']['job_class'] = 'PagesDomainVerificationCronWorker'
 
+Settings.cron_jobs['pages_domain_removal_cron_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['pages_domain_removal_cron_worker']['cron'] ||= '47 0 * * *'
+Settings.cron_jobs['pages_domain_removal_cron_worker']['job_class'] = 'PagesDomainRemovalCronWorker'
+
 Settings.cron_jobs['issue_due_scheduler_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['issue_due_scheduler_worker']['cron'] ||= '50 00 * * *'
 Settings.cron_jobs['issue_due_scheduler_worker']['job_class'] = 'IssueDueSchedulerWorker'
@@ -325,6 +360,10 @@ Settings.cron_jobs['issue_due_scheduler_worker']['job_class'] = 'IssueDueSchedul
 Settings.cron_jobs['prune_web_hook_logs_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['prune_web_hook_logs_worker']['cron'] ||= '0 */1 * * *'
 Settings.cron_jobs['prune_web_hook_logs_worker']['job_class'] = 'PruneWebHookLogsWorker'
+
+Settings.cron_jobs['schedule_migrate_external_diffs_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['schedule_migrate_external_diffs_worker']['cron'] ||= '15 * * * *'
+Settings.cron_jobs['schedule_migrate_external_diffs_worker']['job_class'] = 'ScheduleMigrateExternalDiffsWorker'
 
 #
 # Sidekiq
@@ -337,7 +376,8 @@ Settings['sidekiq']['log_format'] ||= 'default'
 #
 Settings['gitlab_shell'] ||= Settingslogic.new({})
 Settings.gitlab_shell['path']           = Settings.absolute(Settings.gitlab_shell['path'] || Settings.gitlab['user_home'] + '/gitlab-shell/')
-Settings.gitlab_shell['hooks_path']     = Settings.absolute(Settings.gitlab_shell['hooks_path'] || Settings.gitlab['user_home'] + '/gitlab-shell/hooks/')
+Settings.gitlab_shell['hooks_path']     = :deprecated_use_gitlab_shell_path_instead
+Settings.gitlab_shell['authorized_keys_file'] ||= nil
 Settings.gitlab_shell['secret_file'] ||= Rails.root.join('.gitlab_shell_secret')
 Settings.gitlab_shell['receive_pack']   = true if Settings.gitlab_shell['receive_pack'].nil?
 Settings.gitlab_shell['upload_pack']    = true if Settings.gitlab_shell['upload_pack'].nil?
@@ -451,6 +491,7 @@ Settings.webpack.dev_server['port']    ||= 3808
 Settings['monitoring'] ||= Settingslogic.new({})
 Settings.monitoring['ip_whitelist'] ||= ['127.0.0.1/8']
 Settings.monitoring['unicorn_sampler_interval'] ||= 10
+Settings.monitoring['puma_sampler_interval'] ||= 5
 Settings.monitoring['ruby_sampler_interval'] ||= 60
 Settings.monitoring['sidekiq_exporter'] ||= Settingslogic.new({})
 Settings.monitoring.sidekiq_exporter['enabled'] ||= false

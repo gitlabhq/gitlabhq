@@ -79,8 +79,12 @@
   table {
     color: $black;
 
-    strong {
-      color: $black;
+    td {
+      vertical-align: top;
+    }
+
+    .backtrace-row {
+      display: none;
     }
   }
 

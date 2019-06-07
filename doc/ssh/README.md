@@ -55,7 +55,7 @@ As an admin, you can restrict
 By default, all keys are permitted, which is also the case for
 [GitLab.com](../user/gitlab_com/index.md#ssh-host-keys-fingerprints).
 
-## ED25519 SSH keys
+### ED25519 SSH keys
 
 Following [best practices](https://linux-audit.com/using-ed25519-openssh-keys-instead-of-dsa-rsa-ecdsa/),
 you should always favor [ED25519](https://ed25519.cr.yp.to/) SSH keys, since they
@@ -65,7 +65,7 @@ They were introduced in OpenSSH 6.5, so any modern OS should include the
 option to create them. If for any reason your OS or the GitLab instance you
 interact with doesn't support this, you can fallback to RSA.
 
-## RSA SSH keys
+### RSA SSH keys
 
 RSA keys are the most common ones and therefore the most compatible with
 servers that may have an old OpenSSH version. Use them if the GitLab server
@@ -166,12 +166,13 @@ Now, it's time to add the newly created public key to your GitLab account.
     NOTE: **Note:**
     If you opted to create an RSA key, the name might differ.
 
-1. Add your public SSH key to your GitLab account by clicking your avatar
-   in the upper right corner and selecting **Settings**. From there on,
-   navigate to **SSH Keys** and paste your public key in the "Key" section.
-   If you created the key with a comment, this will appear under "Title".
-   If not, give your key an identifiable title like _Work Laptop_ or
-   _Home Workstation_, and click **Add key**.
+1. Add your **public** SSH key to your GitLab account by:
+   1. Clicking your avatar in the upper right corner and selecting **Settings**.
+   1. Navigating to **SSH Keys** and pasting your **public** key in the **Key** field. If you:
+
+      - Created the key with a comment, this will appear in the **Title** field.
+      - Created the key without a comment, give your key an identifiable title like _Work Laptop_ or _Home Workstation_.
+   1. Click the **Add key** button.
 
     NOTE: **Note:**
     If you manually copied your public SSH key make sure you copied the entire
@@ -305,7 +306,7 @@ who needs to know and configure the private key.
 GitLab administrators set up Global Deploy keys in the Admin area under the
 section **Deploy Keys**. Ensure keys have a meaningful title as that will be
 the primary way for project maintainers and owners to identify the correct Global
-Deploy key to add.  For instance, if the key gives access to a SaaS CI instance,
+Deploy key to add. For instance, if the key gives access to a SaaS CI instance,
 use the name of that service in the key name if that is all it is used for.
 When creating Global Shared Deploy keys, give some thought to the granularity
 of keys - they could be of very narrow usage such as just a specific service or

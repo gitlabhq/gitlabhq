@@ -14,10 +14,8 @@ module Rack
 end
 
 gitlab_trusted_proxies = Array(Gitlab.config.gitlab.trusted_proxies).map do |proxy|
-  begin
-    IPAddr.new(proxy)
-  rescue IPAddr::InvalidAddressError
-  end
+  IPAddr.new(proxy)
+rescue IPAddr::InvalidAddressError
 end.compact
 
 Rails.application.config.action_dispatch.trusted_proxies = (

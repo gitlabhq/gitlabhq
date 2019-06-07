@@ -29,7 +29,7 @@ export default {
     // The text input is editable when there's a custom interval, or when it's
     // a preset interval and the user clicks the 'custom' radio button
     isEditable() {
-      return !!(this.customInputEnabled || !this.intervalIsPreset);
+      return Boolean(this.customInputEnabled || !this.intervalIsPreset);
     },
   },
   watch: {

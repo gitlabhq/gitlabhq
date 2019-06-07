@@ -1,13 +1,16 @@
 <script>
+import _ from 'underscore';
 import { GlTooltipDirective } from '@gitlab/ui';
 import { sprintf, __ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
+import issueCardInner from 'ee_else_ce/boards/mixins/issue_card_inner';
 import UserAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
-import eventHub from '../eventhub';
 import IssueDueDate from './issue_due_date.vue';
 import IssueTimeEstimate from './issue_time_estimate.vue';
 import boardsStore from '../stores/boards_store';
+import IssueCardInnerScopedLabel from './issue_card_inner_scoped_label.vue';
+import { isScopedLabel } from '~/lib/utils/common_utils';
 
 export default {
   components: {
@@ -16,10 +19,13 @@ export default {
     TooltipOnTruncate,
     IssueDueDate,
     IssueTimeEstimate,
+    IssueCardWeight: () => import('ee_component/boards/components/issue_card_weight.vue'),
+    IssueCardInnerScopedLabel,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [issueCardInner],
   props: {
     issue: {
       type: Object,
@@ -92,6 +98,12 @@ export default {
       const { referencePath, groupId } = this.issue;
       return !groupId ? referencePath.split('#')[0] : null;
     },
+    orderedLabels() {
+      return _.sortBy(this.issue.labels, 'title');
+    },
+    helpLink() {
+      return boardsStore.scopedLabels.helpLink;
+    },
   },
   methods: {
     isIndexLessThanlimit(index) {
@@ -123,31 +135,7 @@ export default {
       const labelTitle = encodeURIComponent(label.title);
       const filter = `label_name[]=${labelTitle}`;
 
-      this.applyFilter(filter);
-    },
-    filterByWeight(weight) {
-      if (!this.updateFilters) return;
-
-      const issueWeight = encodeURIComponent(weight);
-      const filter = `weight=${issueWeight}`;
-
-      this.applyFilter(filter);
-    },
-    applyFilter(filter) {
-      const filterPath = boardsStore.filter.path.split('&');
-      const filterIndex = filterPath.indexOf(filter);
-
-      if (filterIndex === -1) {
-        filterPath.push(filter);
-      } else {
-        filterPath.splice(filterIndex, 1);
-      }
-
-      boardsStore.filter.path = filterPath.join('&');
-
-      boardsStore.updateFiltersUrl();
-
-      eventHub.$emit('updateTokens');
+      boardsStore.toggleFilter(filter);
     },
     labelStyle(label) {
       return {
@@ -155,12 +143,15 @@ export default {
         color: label.textColor,
       };
     },
+    showScopedLabel(label) {
+      return boardsStore.scopedLabels.enabled && isScopedLabel(label);
+    },
   },
 };
 </script>
 <template>
   <div>
-    <div class="board-card-header">
+    <div class="d-flex board-card-header" dir="auto">
       <h4 class="board-card-title append-bottom-0 prepend-top-0">
         <icon
           v-if="issue.confidential"
@@ -175,27 +166,37 @@ export default {
       </h4>
     </div>
     <div v-if="showLabelFooter" class="board-card-labels prepend-top-4 d-flex flex-wrap">
-      <button
-        v-for="label in issue.labels"
-        v-if="showLabel(label)"
-        :key="label.id"
-        v-gl-tooltip
-        :style="labelStyle(label)"
-        :title="label.description"
-        class="badge color-label append-right-4 prepend-top-4"
-        type="button"
-        @click="filterByLabel(label)"
-      >
-        {{ label.title }}
-      </button>
+      <template v-for="label in orderedLabels" v-if="showLabel(label)">
+        <issue-card-inner-scoped-label
+          v-if="showScopedLabel(label)"
+          :key="label.id"
+          :label="label"
+          :label-style="labelStyle(label)"
+          :scoped-labels-documentation-link="helpLink"
+          @scoped-label-click="filterByLabel($event)"
+        />
+
+        <button
+          v-else
+          :key="label.id"
+          v-gl-tooltip
+          :style="labelStyle(label)"
+          :title="label.description"
+          class="badge color-label append-right-4 prepend-top-4"
+          type="button"
+          @click="filterByLabel(label)"
+        >
+          {{ label.title }}
+        </button>
+      </template>
     </div>
     <div class="board-card-footer d-flex justify-content-between align-items-end">
       <div
-        class="d-flex align-items-start flex-wrap-reverse board-card-number-container js-board-card-number-container"
+        class="d-flex align-items-start flex-wrap-reverse board-card-number-container overflow-hidden js-board-card-number-container"
       >
         <span
           v-if="issue.referencePath"
-          class="board-card-number d-flex append-right-8 prepend-top-8"
+          class="board-card-number overflow-hidden d-flex append-right-8 prepend-top-8"
         >
           <tooltip-on-truncate
             v-if="issueReferencePath"
@@ -209,10 +210,14 @@ export default {
           <issue-due-date v-if="issue.dueDate" :date="issue.dueDate" /><issue-time-estimate
             v-if="issue.timeEstimate"
             :estimate="issue.timeEstimate"
+          /><issue-card-weight
+            v-if="issue.weight"
+            :weight="issue.weight"
+            @click="filterByWeight(issue.weight)"
           />
         </span>
       </div>
-      <div class="board-card-assignee">
+      <div class="board-card-assignee d-flex">
         <user-avatar-link
           v-for="(assignee, index) in issue.assignees"
           v-if="shouldRenderAssignee(index)"

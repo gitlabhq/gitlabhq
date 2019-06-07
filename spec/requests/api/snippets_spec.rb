@@ -84,10 +84,17 @@ describe API::Snippets do
   end
 
   describe 'GET /snippets/:id/raw' do
-    let(:snippet) { create(:personal_snippet, author: user) }
+    set(:author) { create(:user) }
+    set(:snippet) { create(:personal_snippet, :private, author: author) }
+
+    it 'requires authentication' do
+      get api("/snippets/#{snippet.id}", nil)
+
+      expect(response).to have_gitlab_http_status(401)
+    end
 
     it 'returns raw text' do
-      get api("/snippets/#{snippet.id}/raw", user)
+      get api("/snippets/#{snippet.id}/raw", author)
 
       expect(response).to have_gitlab_http_status(200)
       expect(response.content_type).to eq 'text/plain'
@@ -95,38 +102,83 @@ describe API::Snippets do
     end
 
     it 'forces attachment content disposition' do
-      get api("/snippets/#{snippet.id}/raw", user)
+      get api("/snippets/#{snippet.id}/raw", author)
 
       expect(headers['Content-Disposition']).to match(/^attachment/)
     end
 
     it 'returns 404 for invalid snippet id' do
-      get api("/snippets/1234/raw", user)
+      snippet.destroy
+
+      get api("/snippets/#{snippet.id}/raw", author)
 
       expect(response).to have_gitlab_http_status(404)
       expect(json_response['message']).to eq('404 Snippet Not Found')
     end
+
+    it 'hides private snippets from ordinary users' do
+      get api("/snippets/#{snippet.id}/raw", user)
+
+      expect(response).to have_gitlab_http_status(404)
+    end
+
+    it 'shows internal snippets to ordinary users' do
+      internal_snippet = create(:personal_snippet, :internal, author: author)
+
+      get api("/snippets/#{internal_snippet.id}/raw", user)
+
+      expect(response).to have_gitlab_http_status(200)
+    end
   end
 
   describe 'GET /snippets/:id' do
-    let(:snippet) { create(:personal_snippet, author: user) }
+    set(:admin) { create(:user, :admin) }
+    set(:author) { create(:user) }
+    set(:private_snippet) { create(:personal_snippet, :private, author: author) }
+    set(:internal_snippet) { create(:personal_snippet, :internal, author: author) }
+
+    it 'requires authentication' do
+      get api("/snippets/#{private_snippet.id}", nil)
+
+      expect(response).to have_gitlab_http_status(401)
+    end
 
     it 'returns snippet json' do
-      get api("/snippets/#{snippet.id}", user)
+      get api("/snippets/#{private_snippet.id}", author)
 
       expect(response).to have_gitlab_http_status(200)
 
-      expect(json_response['title']).to eq(snippet.title)
-      expect(json_response['description']).to eq(snippet.description)
-      expect(json_response['file_name']).to eq(snippet.file_name)
-      expect(json_response['visibility']).to eq(snippet.visibility)
+      expect(json_response['title']).to eq(private_snippet.title)
+      expect(json_response['description']).to eq(private_snippet.description)
+      expect(json_response['file_name']).to eq(private_snippet.file_name)
+      expect(json_response['visibility']).to eq(private_snippet.visibility)
+    end
+
+    it 'shows private snippets to an admin' do
+      get api("/snippets/#{private_snippet.id}", admin)
+
+      expect(response).to have_gitlab_http_status(200)
+    end
+
+    it 'hides private snippets from an ordinary user' do
+      get api("/snippets/#{private_snippet.id}", user)
+
+      expect(response).to have_gitlab_http_status(404)
+    end
+
+    it 'shows internal snippets to an ordinary user' do
+      get api("/snippets/#{internal_snippet.id}", user)
+
+      expect(response).to have_gitlab_http_status(200)
     end
 
     it 'returns 404 for invalid snippet id' do
-      get api("/snippets/1234", user)
+      private_snippet.destroy
+
+      get api("/snippets/#{private_snippet.id}", admin)
 
       expect(response).to have_gitlab_http_status(404)
-      expect(json_response['message']).to eq('404 Not found')
+      expect(json_response['message']).to eq('404 Snippet Not Found')
     end
   end
 

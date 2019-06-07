@@ -7,8 +7,8 @@ const VARIABLE_PATCH_ENDPOINT = 'http://test.host/frontend-fixtures/builds-proje
 const HIDE_CLASS = 'hide';
 
 describe('AjaxFormVariableList', () => {
-  preloadFixtures('projects/ci_cd_settings.html.raw');
-  preloadFixtures('projects/ci_cd_settings_with_variables.html.raw');
+  preloadFixtures('projects/ci_cd_settings.html');
+  preloadFixtures('projects/ci_cd_settings_with_variables.html');
 
   let container;
   let saveButton;
@@ -18,7 +18,7 @@ describe('AjaxFormVariableList', () => {
   let ajaxVariableList;
 
   beforeEach(() => {
-    loadFixtures('projects/ci_cd_settings.html.raw');
+    loadFixtures('projects/ci_cd_settings.html');
     container = document.querySelector('.js-ci-variable-list-section');
 
     mock = new MockAdapter(axios);
@@ -32,6 +32,7 @@ describe('AjaxFormVariableList', () => {
       saveButton,
       errorBox,
       saveEndpoint: container.dataset.saveEndpoint,
+      maskableRegex: container.dataset.maskableRegex,
     });
 
     spyOn(ajaxVariableList, 'updateRowsWithPersistedVariables').and.callThrough();
@@ -113,7 +114,7 @@ describe('AjaxFormVariableList', () => {
     it('hides secret values', done => {
       mock.onPatch(VARIABLE_PATCH_ENDPOINT).reply(200, {});
 
-      const row = container.querySelector('.js-row:first-child');
+      const row = container.querySelector('.js-row');
       const valueInput = row.querySelector('.js-ci-variable-input-value');
       const valuePlaceholder = row.querySelector('.js-secret-value-placeholder');
 
@@ -168,7 +169,7 @@ describe('AjaxFormVariableList', () => {
 
   describe('updateRowsWithPersistedVariables', () => {
     beforeEach(() => {
-      loadFixtures('projects/ci_cd_settings_with_variables.html.raw');
+      loadFixtures('projects/ci_cd_settings_with_variables.html');
       container = document.querySelector('.js-ci-variable-list-section');
 
       const ajaxVariableListEl = document.querySelector('.js-ci-variable-list-section');
@@ -218,6 +219,13 @@ describe('AjaxFormVariableList', () => {
 
       expect(idInput.value).toEqual('3');
       expect(row.dataset.isPersisted).toEqual('true');
+    });
+  });
+
+  describe('maskableRegex', () => {
+    it('takes in the regex provided by the data attribute', () => {
+      expect(container.dataset.maskableRegex).toBe('^[a-zA-Z0-9_+=/-]{8,}$');
+      expect(ajaxVariableList.maskableRegex).toBe(container.dataset.maskableRegex);
     });
   });
 });

@@ -33,6 +33,52 @@ describe Gitlab::Kubernetes::Helm::Api do
     end
   end
 
+  describe '#uninstall' do
+    before do
+      allow(client).to receive(:create_pod).and_return(nil)
+      allow(client).to receive(:get_config_map).and_return(nil)
+      allow(client).to receive(:create_config_map).and_return(nil)
+      allow(client).to receive(:delete_pod).and_return(nil)
+      allow(namespace).to receive(:ensure_exists!).once
+    end
+
+    it 'ensures the namespace exists before creating the POD' do
+      expect(namespace).to receive(:ensure_exists!).once.ordered
+      expect(client).to receive(:create_pod).once.ordered
+
+      subject.uninstall(command)
+    end
+
+    it 'removes an existing pod before installing' do
+      expect(client).to receive(:delete_pod).with('install-app-name', 'gitlab-managed-apps').once.ordered
+      expect(client).to receive(:create_pod).once.ordered
+
+      subject.uninstall(command)
+    end
+
+    context 'with a ConfigMap' do
+      let(:resource) { Gitlab::Kubernetes::ConfigMap.new(application_name, files).generate }
+
+      it 'creates a ConfigMap on kubeclient' do
+        expect(client).to receive(:create_config_map).with(resource).once
+
+        subject.install(command)
+      end
+
+      context 'config map already exists' do
+        before do
+          expect(client).to receive(:get_config_map).with("values-content-configuration-#{application_name}", gitlab_namespace).and_return(resource)
+        end
+
+        it 'updates the config map' do
+          expect(client).to receive(:update_config_map).with(resource).once
+
+          subject.install(command)
+        end
+      end
+    end
+  end
+
   describe '#install' do
     before do
       allow(client).to receive(:create_pod).and_return(nil)

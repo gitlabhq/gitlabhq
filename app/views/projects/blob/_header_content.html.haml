@@ -1,12 +1,12 @@
 .file-header-content
   = blob_icon blob.mode, blob.name
 
-  %strong.file-title-name
+  %strong.file-title-name.qa-file-title-name
     = blob.name
 
   = copy_file_path_button(blob.path)
 
-  %small
+  %small.mr-1
     = number_to_human_size(blob.raw_size)
 
   - if blob.stored_externally? && blob.external_storage == :lfs

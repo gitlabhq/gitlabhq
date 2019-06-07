@@ -41,11 +41,14 @@ describe Gitlab::DependencyLinker::GemfileLinker do
     end
 
     it 'links dependencies' do
-      expect(subject).to include(link('rails', 'https://rubygems.org/gems/rails'))
       expect(subject).to include(link('rails-deprecated_sanitizer', 'https://rubygems.org/gems/rails-deprecated_sanitizer'))
-      expect(subject).to include(link('responders', 'https://rubygems.org/gems/responders'))
-      expect(subject).to include(link('sprockets', 'https://rubygems.org/gems/sprockets'))
       expect(subject).to include(link('default_value_for', 'https://rubygems.org/gems/default_value_for'))
+    end
+
+    it 'links to external dependencies' do
+      expect(subject).to include(link('rails', 'https://github.com/rails/rails'))
+      expect(subject).to include(link('responders', 'https://github.com/rails/responders'))
+      expect(subject).to include(link('sprockets', 'https://gitlab.example.com/gems/sprockets'))
     end
 
     it 'links GitHub repos' do

@@ -18,12 +18,9 @@
   }
 
   .input-group {
-    display: flex;
-
     .select2-container {
       display: unset;
       max-width: unset;
-      width: unset !important;
       flex-grow: 1;
     }
 
@@ -68,6 +65,10 @@
       border-radius: 0 $border-radius-base $border-radius-base 0;
     }
   }
+}
+
+.classification-label {
+  background-color: $red-500;
 }
 
 .toggle-wrapper {
@@ -212,8 +213,7 @@
       }
     }
 
-    .access-request-link,
-    .home-panel-topic-list {
+    .access-request-link {
       padding-left: $gl-padding-8;
       border-left: 1px solid $gl-text-color-secondary;
     }
@@ -571,9 +571,7 @@
 
   .import-buttons {
     padding-left: 0;
-    display: -webkit-flex;
     display: flex;
-    -webkit-flex-wrap: wrap;
     flex-wrap: wrap;
 
     .btn {
@@ -693,10 +691,6 @@
       }
     }
   }
-}
-
-.project-empty-note-panel {
-  border-bottom: 1px solid $border-color;
 }
 
 .project-stats,
@@ -1168,6 +1162,8 @@ pre.light-well {
 .cannot-be-merged:hover {
   color: $red-500;
   margin-top: 2px;
+  position: relative;
+  z-index: 2;
 }
 
 .private-forks-notice .private-fork-icon {
@@ -1447,6 +1443,89 @@ pre.light-well {
       .label-hide {
         display: none;
       }
+    }
+  }
+}
+
+.project-filters {
+  .btn svg {
+    color: $gl-gray-700;
+  }
+
+  .button-filter-group {
+    .btn {
+      width: 96px;
+    }
+
+    a {
+      color: $black;
+    }
+
+    .active {
+      background: $btn-active-gray;
+    }
+  }
+
+  .filtered-search-dropdown-label {
+    min-width: 68px;
+
+    @include media-breakpoint-down(xs) {
+      min-width: 60px;
+    }
+  }
+
+  .filtered-search {
+    min-width: 30%;
+    flex-basis: 0;
+
+    .project-filter-form .project-filter-form-field {
+      padding-right: $gl-padding-8;
+    }
+
+    .filtered-search,
+    .filtered-search-nav,
+    .filtered-search-dropdown {
+      flex-basis: 0;
+    }
+
+    @include media-breakpoint-down(lg) {
+      min-width: 15%;
+
+      .project-filter-form-field {
+        min-width: 150px;
+      }
+    }
+
+    @include media-breakpoint-down(md) {
+      min-width: 30%;
+    }
+  }
+
+  .filtered-search-box {
+    border-radius: 3px 0 0 3px;
+  }
+
+  .dropdown-menu-toggle {
+    margin-left: $gl-padding-8;
+  }
+
+  @include media-breakpoint-down(md) {
+    .extended-filtered-search-box {
+      min-width: 55%;
+    }
+
+    .filtered-search-dropdown {
+      width: 50%;
+
+      .dropdown-menu-toggle {
+        width: 100%;
+      }
+    }
+  }
+
+  @include media-breakpoint-down(xs) {
+    .filtered-search-dropdown {
+      width: 100%;
     }
   }
 }

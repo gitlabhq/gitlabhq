@@ -5,5 +5,68 @@
     padding: $gl-padding-8;
     font-size: $gl-font-size-small;
     line-height: $gl-line-height;
+
+    .category-icon {
+      color: $gray-600;
+    }
+  }
+
+  &.blue {
+    background-color: $blue-600;
+
+    .popover-body {
+      color: $white-light;
+    }
+
+    &.bs-popover-bottom {
+      .arrow::after {
+        border-bottom-color: $blue-600;
+      }
+    }
+
+    &.bs-popover-top {
+      .arrow::after {
+        border-top-color: $blue-600;
+      }
+    }
+  }
+}
+
+.mr-popover {
+  .text-secondary {
+    font-size: 12px;
+    line-height: 1.33;
+  }
+}
+
+.onboarding-popover {
+  box-shadow: 0 2px 4px $dropdown-shadow-color;
+
+  .popover-body {
+    font-size: $gl-font-size;
+    line-height: $gl-line-height;
+    padding: $gl-padding;
+  }
+
+  .popover-header {
+    display: none;
+  }
+
+  .accept-mr-label {
+    background-color: $accepting-mr-label-color;
+    color: $white-light;
+  }
+}
+
+.onboarding-welcome-page {
+  .popover {
+    min-width: auto;
+    max-width: 40%;
+
+    .popover-body {
+      padding-top: $gl-padding;
+      padding-bottom: $gl-padding;
+      font-size: $gl-font-size-small;
+    }
   }
 }

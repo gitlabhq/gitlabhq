@@ -132,6 +132,19 @@ describe API::Members do
       expect(json_response.map { |u| u['id'] }).to match_array [maintainer.id, developer.id, nested_user.id, project_user.id, linked_group_user.id]
     end
 
+    it 'returns only one member for each user without returning duplicated members' do
+      linked_group.add_developer(developer)
+
+      get api("/projects/#{project.id}/members/all", developer)
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(response).to include_pagination_headers
+      expect(json_response).to be_an Array
+      expect(json_response.map { |u| u['id'] }).to eq [developer.id, maintainer.id, nested_user.id, project_user.id, linked_group_user.id]
+      expect(json_response.map { |u| u['access_level'] }).to eq [Gitlab::Access::DEVELOPER, Gitlab::Access::OWNER, Gitlab::Access::DEVELOPER,
+                                                                 Gitlab::Access::DEVELOPER, Gitlab::Access::DEVELOPER]
+    end
+
     it 'finds all group members including inherited members' do
       get api("/groups/#{nested_group.id}/members/all", developer)
 
@@ -236,7 +249,7 @@ describe API::Members do
                params: { user_id: stranger.id, access_level: Member::REPORTER }
 
           expect(response).to have_gitlab_http_status(400)
-          expect(json_response['message']['access_level']).to eq(["should be higher than Developer inherited membership from group #{parent.name}"])
+          expect(json_response['message']['access_level']).to eq(["should be greater than or equal to Developer inherited membership from group #{parent.name}"])
         end
 
         it 'creates the member if group level is lower', :nested_groups do

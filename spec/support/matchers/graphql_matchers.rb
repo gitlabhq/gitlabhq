@@ -1,8 +1,6 @@
 RSpec::Matchers.define :require_graphql_authorizations do |*expected|
   match do |field|
-    field_definition = field.metadata[:type_class]
-    expect(field_definition).to respond_to(:required_permissions)
-    expect(field_definition.required_permissions).to contain_exactly(*expected)
+    expect(field.metadata[:authorize]).to eq(*expected)
   end
 end
 

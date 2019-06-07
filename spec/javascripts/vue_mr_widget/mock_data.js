@@ -62,6 +62,7 @@ export default {
     "Merge branch 'daaaa' into 'master'\n\nUpdate README.md\n\nSee merge request !22",
   pipeline: {
     id: 172,
+    iid: 32,
     user: {
       name: 'Administrator',
       username: 'root',
@@ -134,12 +135,23 @@ export default {
       yaml_errors: false,
       retryable: true,
       cancelable: false,
+      merge_request_pipeline: false,
+      detached_merge_request_pipeline: true,
     },
     ref: {
       name: 'daaaa',
       path: '/root/acets-app/tree/daaaa',
       tag: false,
       branch: true,
+    },
+    merge_request: {
+      iid: 1,
+      path: '/root/detached-merge-request-pipelines/merge_requests/1',
+      title: 'Update README.md',
+      source_branch: 'feature-1',
+      source_branch_path: '/root/detached-merge-request-pipelines/branches/feature-1',
+      target_branch: 'master',
+      target_branch_path: '/root/detached-merge-request-pipelines/branches/master',
     },
     commit: {
       id: '104096c51715e12e7ae41f9333e9fa35b73f385d',
@@ -222,12 +234,50 @@ export default {
   merge_commit_path:
     'http://localhost:3000/root/acets-app/commit/53027d060246c8f47e4a9310fb332aa52f221775',
   troubleshooting_docs_path: 'help',
+  merge_request_pipelines_docs_path: '/help/ci/merge_request_pipelines/index.md',
   squash: true,
+  visual_review_app_available: true,
 };
 
 export const mockStore = {
-  pipeline: { id: 0 },
-  mergePipeline: { id: 1 },
+  pipeline: {
+    id: 0,
+    iid: 0,
+    path: '/root/acets-app/pipelines/0',
+    details: {
+      status: {
+        details_path: '/root/review-app-tester/pipelines/66',
+        favicon:
+          '/assets/ci_favicons/favicon_status_success-8451333011eee8ce9f2ab25dc487fe24a8758c694827a582f17f42b0a90446a2. png',
+        group: 'success-with-warnings',
+        has_details: true,
+        icon: 'status_warning',
+        illustration: null,
+        label: 'passed with warnings',
+        text: 'passed',
+        tooltip: 'passed',
+      },
+    },
+  },
+  mergePipeline: {
+    id: 1,
+    iid: 1,
+    path: '/root/acets-app/pipelines/0',
+    details: {
+      status: {
+        details_path: '/root/review-app-tester/pipelines/66',
+        favicon:
+          '/assets/ci_favicons/favicon_status_success-8451333011eee8ce9f2ab25dc487fe24a8758c694827a582f17f42b0a90446a2. png',
+        group: 'success-with-warnings',
+        has_details: true,
+        icon: 'status_warning',
+        illustration: null,
+        label: 'passed with warnings',
+        text: 'passed',
+        tooltip: 'passed',
+      },
+    },
+  },
   targetBranch: 'target-branch',
   sourceBranch: 'source-branch',
   sourceBranchLink: 'source-branch-link',

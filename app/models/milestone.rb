@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Milestone < ActiveRecord::Base
+class Milestone < ApplicationRecord
   # Represents a "No Milestone" state used for filtering Issues and Merge
   # Requests that have no milestone assigned.
   MilestoneStruct = Struct.new(:title, :name, :id)
@@ -37,6 +37,7 @@ class Milestone < ActiveRecord::Base
   scope :active, -> { with_state(:active) }
   scope :closed, -> { with_state(:closed) }
   scope :for_projects, -> { where(group: nil).includes(:project) }
+  scope :started, -> { active.where('milestones.start_date <= CURRENT_DATE') }
 
   scope :for_projects_and_groups, -> (projects, groups) do
     projects = projects.compact if projects.is_a? Array
@@ -57,6 +58,7 @@ class Milestone < ActiveRecord::Base
   validate :uniqueness_of_title, if: :title_changed?
   validate :milestone_type_check
   validate :start_date_should_be_less_than_due_date, if: proc { |m| m.start_date.present? && m.due_date.present? }
+  validate :dates_within_4_digits
 
   strip_attributes :title
 
@@ -149,7 +151,7 @@ class Milestone < ActiveRecord::Base
   def self.upcoming_ids(projects, groups)
     rel = unscoped
             .for_projects_and_groups(projects, groups)
-            .active.where('milestones.due_date > NOW()')
+            .active.where('milestones.due_date > CURRENT_DATE')
 
     if Gitlab::Database.postgresql?
       rel.order(:project_id, :group_id, :due_date).select('DISTINCT ON (project_id, group_id) id')
@@ -161,7 +163,7 @@ class Milestone < ActiveRecord::Base
           ON milestones.project_id <=> earlier_milestones.project_id
             AND milestones.group_id <=> earlier_milestones.group_id
             AND milestones.due_date > earlier_milestones.due_date
-            AND earlier_milestones.due_date > NOW()
+            AND earlier_milestones.due_date > CURRENT_DATE
             AND earlier_milestones.state = 'active'
       HEREDOC
 
@@ -290,22 +292,22 @@ class Milestone < ActiveRecord::Base
     end
 
     title_exists = relation.find_by_title(title)
-    errors.add(:title, "already being used for another group or project milestone.") if title_exists
+    errors.add(:title, _("already being used for another group or project milestone.")) if title_exists
   end
 
   # Milestone should be either a project milestone or a group milestone
   def milestone_type_check
     if group_id && project_id
       field = project_id_changed? ? :project_id : :group_id
-      errors.add(field, "milestone should belong either to a project or a group.")
+      errors.add(field, _("milestone should belong either to a project or a group."))
     end
   end
 
   def milestone_format_reference(format = :iid)
-    raise ArgumentError, 'Unknown format' unless [:iid, :name].include?(format)
+    raise ArgumentError, _('Unknown format') unless [:iid, :name].include?(format)
 
     if group_milestone? && format == :iid
-      raise ArgumentError, 'Cannot refer to a group milestone by an internal id!'
+      raise ArgumentError, _('Cannot refer to a group milestone by an internal id!')
     end
 
     if format == :name && !name.include?('"')
@@ -321,7 +323,17 @@ class Milestone < ActiveRecord::Base
 
   def start_date_should_be_less_than_due_date
     if due_date <= start_date
-      errors.add(:due_date, "must be greater than start date")
+      errors.add(:due_date, _("must be greater than start date"))
+    end
+  end
+
+  def dates_within_4_digits
+    if start_date && start_date > Date.new(9999, 12, 31)
+      errors.add(:start_date, _("date must not be after 9999-12-31"))
+    end
+
+    if due_date && due_date > Date.new(9999, 12, 31)
+      errors.add(:due_date, _("date must not be after 9999-12-31"))
     end
   end
 

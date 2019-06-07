@@ -13,3 +13,4 @@
     - if http_enabled?
       %li
         = dropdown_item_with_description(http_copy_label, project.http_url_to_repo, href: project.http_url_to_repo, data: { clone_type: 'http' })
+    = render_if_exists 'shared/mobile_kerberos_clone'

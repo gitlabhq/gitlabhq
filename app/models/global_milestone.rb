@@ -8,7 +8,9 @@ class GlobalMilestone
   attr_reader :milestone
   alias_attribute :name, :title
 
-  delegate :title, :state, :due_date, :start_date, :participants, :project, :group, :expires_at, :closed?, :iid, :group_milestone?, :safe_title, :milestoneish_id, to: :milestone
+  delegate :title, :state, :due_date, :start_date, :participants, :project,
+           :group, :expires_at, :closed?, :iid, :group_milestone?, :safe_title,
+           :milestoneish_id, :parent, to: :milestone
 
   def to_hash
     {

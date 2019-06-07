@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Event do
@@ -86,7 +88,7 @@ describe Event do
     let(:event) { create_push_event(project, user) }
 
     it do
-      expect(event.push?).to be_truthy
+      expect(event.push_action?).to be_truthy
       expect(event.visible_to_user?(user)).to be_truthy
       expect(event.visible_to_user?(nil)).to be_falsey
       expect(event.tag?).to be_falsey
@@ -261,7 +263,7 @@ describe Event do
 
     context 'merge request diff note event' do
       let(:project) { create(:project, :public) }
-      let(:merge_request) { create(:merge_request, source_project: project, author: author, assignee: assignee) }
+      let(:merge_request) { create(:merge_request, source_project: project, author: author, assignees: [assignee]) }
       let(:note_on_merge_request) { create(:legacy_diff_note_on_merge_request, noteable: merge_request, project: project) }
       let(:target) { note_on_merge_request }
 

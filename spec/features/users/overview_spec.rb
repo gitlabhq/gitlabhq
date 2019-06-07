@@ -93,7 +93,7 @@ describe 'Overview tab on a user profile', :js do
     describe 'user has no personal projects' do
       include_context 'visit overview tab'
 
-      it 'it shows an empty project list with an info message' do
+      it 'shows an empty project list with an info message' do
         page.within('.projects-block') do
           expect(page).to have_selector('.loading', visible: false)
           expect(page).to have_content('You haven\'t created any personal projects.')
@@ -113,7 +113,7 @@ describe 'Overview tab on a user profile', :js do
 
       include_context 'visit overview tab'
 
-      it 'it shows one entry in the list of projects' do
+      it 'shows one entry in the list of projects' do
         page.within('.projects-block') do
           expect(page).to have_selector('.project-row', count: 1)
         end
@@ -139,7 +139,7 @@ describe 'Overview tab on a user profile', :js do
 
       include_context 'visit overview tab'
 
-      it 'it shows max. ten entries in the list of projects' do
+      it 'shows max. ten entries in the list of projects' do
         page.within('.projects-block') do
           expect(page).to have_selector('.project-row', count: 10)
         end

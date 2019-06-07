@@ -1,0 +1,5 @@
+---
+title: Fix job name in graph dropdown overflowing
+merge_request: 28824
+author:
+type: fixed

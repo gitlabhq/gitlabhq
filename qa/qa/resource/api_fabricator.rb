@@ -8,9 +8,6 @@ module QA
     module ApiFabricator
       include Capybara::DSL
 
-      HTTP_STATUS_OK = 200
-      HTTP_STATUS_CREATED = 201
-
       ResourceNotFoundError = Class.new(RuntimeError)
       ResourceFabricationFailedError = Class.new(RuntimeError)
       ResourceURLMissingError = Class.new(RuntimeError)

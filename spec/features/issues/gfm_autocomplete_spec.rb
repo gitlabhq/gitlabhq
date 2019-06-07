@@ -278,12 +278,7 @@ describe 'GFM autocomplete', :js do
     end
   end
 
-  # This context has just one example in each contexts in order to improve spec performance.
-  context 'labels', :quarantine do
-    let!(:backend)          { create(:label, project: project, title: 'backend') }
-    let!(:bug)              { create(:label, project: project, title: 'bug') }
-    let!(:feature_proposal) { create(:label, project: project, title: 'feature proposal') }
-
+  context 'labels' do
     it 'opens autocomplete menu for Labels when field starts with text with item escaping HTML characters' do
       create(:label, project: project, title: label_xss_title)
 
@@ -296,83 +291,6 @@ describe 'GFM autocomplete', :js do
 
       page.within '.atwho-container #at-view-labels' do
         expect(find('.atwho-view-ul').text).to have_content('alert label')
-      end
-    end
-
-    context 'when no labels are assigned' do
-      it 'shows labels' do
-        note = find('#note-body')
-
-        # It should show all the labels on "~".
-        type(note, '~')
-        wait_for_requests
-        expect_labels(shown: [backend, bug, feature_proposal])
-
-        # It should show all the labels on "/label ~".
-        type(note, '/label ~')
-        expect_labels(shown: [backend, bug, feature_proposal])
-
-        # It should show all the labels on "/relabel ~".
-        type(note, '/relabel ~')
-        expect_labels(shown: [backend, bug, feature_proposal])
-
-        # It should show no labels on "/unlabel ~".
-        type(note, '/unlabel ~')
-        expect_labels(not_shown: [backend, bug, feature_proposal])
-      end
-    end
-
-    context 'when some labels are assigned' do
-      before do
-        issue.labels << [backend]
-      end
-
-      it 'shows labels' do
-        note = find('#note-body')
-
-        # It should show all the labels on "~".
-        type(note, '~')
-        wait_for_requests
-        expect_labels(shown: [backend, bug, feature_proposal])
-
-        # It should show only unset labels on "/label ~".
-        type(note, '/label ~')
-        expect_labels(shown: [bug, feature_proposal], not_shown: [backend])
-
-        # It should show all the labels on "/relabel ~".
-        type(note, '/relabel ~')
-        expect_labels(shown: [backend, bug, feature_proposal])
-
-        # It should show only set labels on "/unlabel ~".
-        type(note, '/unlabel ~')
-        expect_labels(shown: [backend], not_shown: [bug, feature_proposal])
-      end
-    end
-
-    context 'when all labels are assigned' do
-      before do
-        issue.labels << [backend, bug, feature_proposal]
-      end
-
-      it 'shows labels' do
-        note = find('#note-body')
-
-        # It should show all the labels on "~".
-        type(note, '~')
-        wait_for_requests
-        expect_labels(shown: [backend, bug, feature_proposal])
-
-        # It should show no labels on "/label ~".
-        type(note, '/label ~')
-        expect_labels(not_shown: [backend, bug, feature_proposal])
-
-        # It should show all the labels on "/relabel ~".
-        type(note, '/relabel ~')
-        expect_labels(shown: [backend, bug, feature_proposal])
-
-        # It should show all the labels on "/unlabel ~".
-        type(note, '/unlabel ~')
-        expect_labels(shown: [backend, bug, feature_proposal])
       end
     end
   end

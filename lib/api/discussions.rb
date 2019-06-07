@@ -7,9 +7,7 @@ module API
 
     before { authenticate! }
 
-    NOTEABLE_TYPES = [Issue, Snippet, MergeRequest, Commit].freeze
-
-    NOTEABLE_TYPES.each do |noteable_type|
+    Helpers::DiscussionsHelpers.noteable_types.each do |noteable_type|
       parent_type = noteable_type.parent_class.to_s.underscore
       noteables_str = noteable_type.to_s.underscore.pluralize
       noteables_path = noteable_type == Commit ? "repository/#{noteables_str}" : noteables_str
@@ -136,9 +134,13 @@ module API
         post ":id/#{noteables_path}/:noteable_id/discussions/:discussion_id/notes" do
           noteable = find_noteable(parent_type, noteables_str, params[:noteable_id])
           notes = readable_discussion_notes(noteable, params[:discussion_id])
+          first_note = notes.first
 
           break not_found!("Discussion") if notes.empty?
-          break bad_request!("Discussion is an individual note.") unless notes.first.part_of_discussion?
+
+          unless first_note.part_of_discussion? || first_note.to_discussion.can_convert_to_discussion?
+            break bad_request!("Discussion can not be replied to.")
+          end
 
           opts = {
             note: params[:body],
@@ -204,7 +206,7 @@ module API
           delete_note(noteable, params[:note_id])
         end
 
-        if Noteable::RESOLVABLE_TYPES.include?(noteable_type.to_s)
+        if Noteable.resolvable_types.include?(noteable_type.to_s)
           desc "Resolve/unresolve an existing #{noteable_type.to_s.downcase} discussion" do
             success Entities::Discussion
           end

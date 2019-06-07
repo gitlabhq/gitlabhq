@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Shard < ActiveRecord::Base
+class Shard < ApplicationRecord
   # Store shard names from the configuration file in the database. This is not a
   # list of active shards - we just want to assign an immutable, unique ID to
   # every shard name for easy indexing / referencing.

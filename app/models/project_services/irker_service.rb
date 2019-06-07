@@ -112,7 +112,7 @@ class IrkerService < Service
   end
 
   def consider_uri(uri)
-    return nil if uri.scheme.nil?
+    return if uri.scheme.nil?
 
     # Authorize both irc://domain.com/#chan and irc://domain.com/chan
     if uri.is_a?(URI) && uri.scheme[/^ircs?\z/] && !uri.path.nil?

@@ -1,6 +1,6 @@
 .search-result-row
   %h4
-    = link_to [milestone.project.namespace.becomes(Namespace), milestone.project, milestone] do
+    = link_to namespace_project_milestone_path(milestone.project.namespace.becomes(Namespace), milestone.project, milestone) do
       %span.term.str-truncated= milestone.title
 
   - if milestone.description.present?

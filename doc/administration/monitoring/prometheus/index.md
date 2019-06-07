@@ -1,6 +1,7 @@
 # Monitoring GitLab with Prometheus
 
 > **Notes:**
+>
 > - Prometheus and the various exporters listed in this page are bundled in the
 >   Omnibus GitLab package. Check each exporter's documentation for the timeline
 >   they got added. For installations from source you will have to install them
@@ -17,7 +18,7 @@ access to high quality time-series monitoring of GitLab services.
 ## Overview
 
 Prometheus works by periodically connecting to data sources and collecting their
-performance metrics via the [various exporters](#prometheus-exporters). To view
+performance metrics via the [various exporters](#bundled-software-metrics). To view
 and work with the monitoring data, you can either
 [connect directly to Prometheus](#viewing-performance-metrics) or utilize a
 dashboard tool like [Grafana].
@@ -95,13 +96,15 @@ To use an external Prometheus server:
 
 1. Set each bundled service's [exporter](#bundled-software-metrics) to listen on a network address, for example:
 
-     ```ruby
+    ```ruby
      gitlab_monitor['listen_address'] = '0.0.0.0'
+     sidekiq['listen_address'] = '0.0.0.0'
      gitlab_monitor['listen_port'] = '9168'
-     gitaly['prometheus_listen_addr'] = "0.0.0.0:9236"
      node_exporter['listen_address'] = '0.0.0.0:9100'
      redis_exporter['listen_address'] = '0.0.0.0:9121'
      postgres_exporter['listen_address'] = '0.0.0.0:9187'
+     gitaly['prometheus_listen_addr'] = "0.0.0.0:9236"
+     gitlab_workhorse['prometheus_listen_addr'] = "0.0.0.0:9229"
      ```
 
 1. Install and set up a dedicated Prometheus instance, if necessary, using the [official installation instructions](https://prometheus.io/docs/prometheus/latest/installation/).
@@ -109,6 +112,18 @@ To use an external Prometheus server:
 
     ```ruby
     gitlab_rails['monitoring_whitelist'] = ['127.0.0.0/8', '192.168.0.1']
+    ```
+
+1. To scrape nginx metrics, you'll also need to configure nginx to allow the Prometheus server
+   IP. For example:
+
+    ```ruby
+    nginx['status']['options'] = {
+          "server_tokens" => "off",
+          "access_log" => "off",
+          "allow" => "192.168.0.1",
+          "deny" => "all",
+    }
     ```
 
 1. [Reconfigure GitLab][reconfigure] to apply the changes
@@ -201,6 +216,12 @@ The Redis exporter allows you to measure various Redis metrics.
 The Postgres exporter allows you to measure various PostgreSQL metrics.
 
 [➔ Read more about the Postgres exporter.](postgres_exporter.md)
+
+### PgBouncer exporter
+
+The PgBouncer exporter allows you to measure various PgBouncer metrics.
+
+[➔ Read more about the PgBouncer exporter.](pgbouncer_exporter.md)
 
 ### GitLab monitor exporter
 

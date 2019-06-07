@@ -46,6 +46,14 @@ describe ResolvesPipelines do
     expect(resolve_pipelines({}, {})).to be_empty
   end
 
+  it 'increases field complexity based on arguments' do
+    field = Types::BaseField.new(name: 'test', type: GraphQL::STRING_TYPE, resolver_class: resolver, null: false, max_page_size: 1)
+
+    expect(field.to_graphql.complexity.call({}, {}, 1)).to eq 2
+    expect(field.to_graphql.complexity.call({}, { sha: 'foo' }, 1)).to eq 4
+    expect(field.to_graphql.complexity.call({}, { sha: 'ref' }, 1)).to eq 4
+  end
+
   def resolve_pipelines(args = {}, context = { current_user: current_user })
     resolve(resolver, obj: project, args: args, ctx: context)
   end

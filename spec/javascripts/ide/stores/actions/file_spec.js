@@ -10,11 +10,19 @@ import eventHub from '~/ide/eventhub';
 import { file, resetStore } from '../../helpers';
 import testAction from '../../../helpers/vuex_action_helper';
 
+const RELATIVE_URL_ROOT = '/gitlab';
+
 describe('IDE store file actions', () => {
   let mock;
+  let originalGon;
 
   beforeEach(() => {
     mock = new MockAdapter(axios);
+    originalGon = window.gon;
+    window.gon = {
+      ...window.gon,
+      relative_url_root: RELATIVE_URL_ROOT,
+    };
 
     spyOn(router, 'push');
   });
@@ -22,6 +30,7 @@ describe('IDE store file actions', () => {
   afterEach(() => {
     mock.restore();
     resetStore(store);
+    window.gon = originalGon;
   });
 
   describe('closeFile', () => {
@@ -121,68 +130,48 @@ describe('IDE store file actions', () => {
       store._actions.scrollToTab = oldScrollToTab; // eslint-disable-line
     });
 
-    it('calls scrollToTab', done => {
-      store
-        .dispatch('setFileActive', localFile.path)
-        .then(() => {
-          expect(scrollToTabSpy).toHaveBeenCalled();
+    it('calls scrollToTab', () => {
+      const dispatch = jasmine.createSpy();
 
-          done();
-        })
-        .catch(done.fail);
+      actions.setFileActive(
+        { commit() {}, state: store.state, getters: store.getters, dispatch },
+        localFile.path,
+      );
+
+      expect(dispatch).toHaveBeenCalledWith('scrollToTab');
     });
 
-    it('sets the file active', done => {
-      store
-        .dispatch('setFileActive', localFile.path)
-        .then(() => {
-          expect(localFile.active).toBeTruthy();
+    it('commits SET_FILE_ACTIVE', () => {
+      const commit = jasmine.createSpy();
 
-          done();
-        })
-        .catch(done.fail);
+      actions.setFileActive(
+        { commit, state: store.state, getters: store.getters, dispatch() {} },
+        localFile.path,
+      );
+
+      expect(commit).toHaveBeenCalledWith('SET_FILE_ACTIVE', {
+        path: localFile.path,
+        active: true,
+      });
     });
 
-    it('returns early if file is already active', done => {
-      localFile.active = true;
-
-      store
-        .dispatch('setFileActive', localFile.path)
-        .then(() => {
-          expect(scrollToTabSpy).not.toHaveBeenCalled();
-
-          done();
-        })
-        .catch(done.fail);
-    });
-
-    it('sets current active file to not active', done => {
+    it('sets current active file to not active', () => {
       const f = file('newActive');
       store.state.entries[f.path] = f;
       localFile.active = true;
       store.state.openFiles.push(localFile);
 
-      store
-        .dispatch('setFileActive', f.path)
-        .then(() => {
-          expect(localFile.active).toBeFalsy();
+      const commit = jasmine.createSpy();
 
-          done();
-        })
-        .catch(done.fail);
-    });
+      actions.setFileActive(
+        { commit, state: store.state, getters: store.getters, dispatch() {} },
+        f.path,
+      );
 
-    it('resets location.hash for line highlighting', done => {
-      window.location.hash = 'test';
-
-      store
-        .dispatch('setFileActive', localFile.path)
-        .then(() => {
-          expect(window.location.hash).not.toBe('test');
-
-          done();
-        })
-        .catch(done.fail);
+      expect(commit).toHaveBeenCalledWith('SET_FILE_ACTIVE', {
+        path: localFile.path,
+        active: false,
+      });
     });
   });
 
@@ -193,13 +182,13 @@ describe('IDE store file actions', () => {
       spyOn(service, 'getFileData').and.callThrough();
 
       localFile = file(`newCreate-${Math.random()}`);
-      localFile.url = `${gl.TEST_HOST}/getFileDataURL`;
+      localFile.url = `project/getFileDataURL`;
       store.state.entries[localFile.path] = localFile;
     });
 
     describe('success', () => {
       beforeEach(() => {
-        mock.onGet(`${gl.TEST_HOST}/getFileDataURL`).replyOnce(
+        mock.onGet(`${RELATIVE_URL_ROOT}/project/getFileDataURL`).replyOnce(
           200,
           {
             blame_path: 'blame_path',
@@ -220,7 +209,9 @@ describe('IDE store file actions', () => {
         store
           .dispatch('getFileData', { path: localFile.path })
           .then(() => {
-            expect(service.getFileData).toHaveBeenCalledWith(`${gl.TEST_HOST}/getFileDataURL`);
+            expect(service.getFileData).toHaveBeenCalledWith(
+              `${RELATIVE_URL_ROOT}/project/getFileDataURL`,
+            );
 
             done();
           })
@@ -286,7 +277,7 @@ describe('IDE store file actions', () => {
 
     describe('error', () => {
       beforeEach(() => {
-        mock.onGet(`${gl.TEST_HOST}/getFileDataURL`).networkError();
+        mock.onGet(`project/getFileDataURL`).networkError();
       });
 
       it('dispatches error action', done => {
@@ -723,6 +714,22 @@ describe('IDE store file actions', () => {
         .dispatch('removePendingTab', f)
         .then(() => {
           expect(eventHub.$emit).toHaveBeenCalledWith(`editor.update.model.dispose.${f.key}`);
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+  });
+
+  describe('triggerFilesChange', () => {
+    beforeEach(() => {
+      spyOn(eventHub, '$emit');
+    });
+
+    it('emits event that files have changed', done => {
+      store
+        .dispatch('triggerFilesChange')
+        .then(() => {
+          expect(eventHub.$emit).toHaveBeenCalledWith('ide.files.change');
         })
         .then(done)
         .catch(done.fail);

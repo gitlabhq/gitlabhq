@@ -1,0 +1,5 @@
+---
+title: Remove ability for group clusters to be automatically configured on creation
+merge_request: 27245
+author:
+type: removed

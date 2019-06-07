@@ -46,7 +46,7 @@ class PushEventPayloadService
   def commit_title
     commit = @push_data.fetch(:commits).last
 
-    return nil unless commit && commit[:message]
+    return unless commit && commit[:message]
 
     raw_msg = commit[:message]
 

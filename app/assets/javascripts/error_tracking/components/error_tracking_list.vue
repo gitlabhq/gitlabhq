@@ -48,7 +48,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['startPolling']),
+    ...mapActions(['startPolling', 'restartPolling']),
   },
 };
 </script>
@@ -56,19 +56,17 @@ export default {
 <template>
   <div>
     <div v-if="errorTrackingEnabled">
-      <div v-if="loading" class="py-3"><gl-loading-icon :size="3" /></div>
+      <div v-if="loading" class="py-3">
+        <gl-loading-icon :size="3" />
+      </div>
       <div v-else>
         <div class="d-flex justify-content-end">
-          <gl-button class="my-3 ml-auto" variant="primary" :href="externalUrl" target="_blank"
-            >View in Sentry <icon name="external-link" />
+          <gl-button class="my-3 ml-auto" variant="primary" :href="externalUrl" target="_blank">
+            {{ __('View in Sentry') }}
+            <icon name="external-link" />
           </gl-button>
         </div>
-        <gl-table
-          :items="errors"
-          :fields="$options.fields"
-          :show-empty="true"
-          :empty-text="__('No errors to display')"
-        >
+        <gl-table :items="errors" :fields="$options.fields" :show-empty="true">
           <template slot="HEAD_events" slot-scope="data">
             <div class="text-right">{{ data.label }}</div>
           </template>
@@ -100,6 +98,14 @@ export default {
             <div class="d-flex align-items-center">
               <icon name="calendar" css-classes="text-secondary mr-1" />
               <time-ago :time="errors.item.lastSeen" class="text-secondary" />
+            </div>
+          </template>
+          <template slot="empty">
+            <div ref="empty">
+              {{ __('No errors to display.') }}
+              <gl-link class="js-try-again" @click="restartPolling">
+                {{ __('Check again') }}
+              </gl-link>
             </div>
           </template>
         </gl-table>

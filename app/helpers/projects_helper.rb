@@ -169,7 +169,7 @@ module ProjectsHelper
     translation.html_safe
   end
 
-  def project_list_cache_key(project)
+  def project_list_cache_key(project, pipeline_status: true)
     key = [
       project.route.cache_key,
       project.cache_key,
@@ -179,10 +179,11 @@ module ProjectsHelper
       Gitlab::CurrentSettings.cache_key,
       "cross-project:#{can?(current_user, :read_cross_project)}",
       max_project_member_access_cache_key(project),
+      pipeline_status,
       'v2.6'
     ]
 
-    key << pipeline_status_cache_key(project.pipeline_status) if project.pipeline_status.has_status?
+    key << pipeline_status_cache_key(project.pipeline_status) if pipeline_status && project.pipeline_status.has_status?
 
     key
   end
@@ -238,8 +239,11 @@ module ProjectsHelper
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
+  # TODO: Remove this method when removing the feature flag
+  # https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/11209#note_162234863
+  # make sure to remove from the EE specific controller as well: ee/app/controllers/ee/dashboard/projects_controller.rb
   def show_projects?(projects, params)
-    !!(params[:personal] || params[:name] || any_projects?(projects))
+    Feature.enabled?(:project_list_filter_bar) || !!(params[:personal] || params[:name] || any_projects?(projects))
   end
 
   def push_to_create_project_command(user = current_user)
@@ -284,13 +288,74 @@ module ProjectsHelper
     can?(current_user, :read_environment, @project)
   end
 
+  def error_tracking_setting_project_json
+    setting = @project.error_tracking_setting
+
+    return if setting.blank? || setting.project_slug.blank? ||
+        setting.organization_slug.blank?
+
+    {
+      name: setting.project_name,
+      organization_name: setting.organization_name,
+      organization_slug: setting.organization_slug,
+      slug: setting.project_slug
+    }.to_json
+  end
+
+  def directory?
+    @path.present?
+  end
+
+  def external_classification_label_help_message
+    default_label = ::Gitlab::CurrentSettings.current_application_settings
+                      .external_authorization_service_default_label
+
+    s_(
+      "ExternalAuthorizationService|When no classification label is set the "\
+        "default label `%{default_label}` will be used."
+    ) % { default_label: default_label }
+  end
+
+  def can_import_members?
+    Ability.allowed?(current_user, :admin_project_member, @project)
+  end
+
+  def project_can_be_shared?
+    !membership_locked? || @project.allowed_to_share_with_group?
+  end
+
+  def membership_locked?
+    false
+  end
+
+  def share_project_description(project)
+    share_with_group   = project.allowed_to_share_with_group?
+    share_with_members = !membership_locked?
+
+    description =
+      if share_with_group && share_with_members
+        _("You can invite a new member to <strong>%{project_name}</strong> or invite another group.")
+      elsif share_with_group
+        _("You can invite another group to <strong>%{project_name}</strong>.")
+      elsif share_with_members
+        _("You can invite a new member to <strong>%{project_name}</strong>.")
+      end
+
+    description.html_safe % { project_name: project.name }
+  end
+
+  def metrics_external_dashboard_url
+    @project.metrics_setting_external_dashboard_url
+  end
+
   private
 
   def get_project_nav_tabs(project, current_user)
     nav_tabs = [:home]
 
-    if !project.empty_repo? && can?(current_user, :download_code, project)
-      nav_tabs << [:files, :commits, :network, :graphs, :forks, :releases]
+    unless project.empty_repo?
+      nav_tabs << [:files, :commits, :network, :graphs, :forks] if can?(current_user, :download_code, project)
+      nav_tabs << :releases if can?(current_user, :read_release, project)
     end
 
     if project.repo_exists? && can?(current_user, :read_merge_request, project)
@@ -350,7 +415,8 @@ module ProjectsHelper
       blobs:          :download_code,
       commits:        :download_code,
       merge_requests: :read_merge_request,
-      notes:          [:read_merge_request, :download_code, :read_issue, :read_project_snippet]
+      notes:          [:read_merge_request, :download_code, :read_issue, :read_project_snippet],
+      members:        :read_project_member
     )
   end
 
@@ -593,5 +659,9 @@ module ProjectsHelper
       project.has_auto_devops_implicitly_enabled? &&
       project.builds_enabled? &&
       !project.repository.gitlab_ci_yml
+  end
+
+  def vue_file_list_enabled?
+    Gitlab::Graphql.enabled? && Feature.enabled?(:vue_file_list, @project)
   end
 end

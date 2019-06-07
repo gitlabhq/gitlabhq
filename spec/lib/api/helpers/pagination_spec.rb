@@ -2,8 +2,12 @@ require 'spec_helper'
 
 describe API::Helpers::Pagination do
   let(:resource) { Project.all }
-  let(:incoming_api_projects_url) { "#{Gitlab.config.gitlab.url}:8080/api/v4/projects" }
-  let(:canonical_api_projects_url) { "#{Gitlab.config.gitlab.url}/api/v4/projects" }
+  let(:custom_port) { 8080 }
+  let(:incoming_api_projects_url) { "#{Gitlab.config.gitlab.url}:#{custom_port}/api/v4/projects" }
+
+  before do
+    stub_config_setting(port: custom_port)
+  end
 
   subject do
     Class.new.include(described_class).new
@@ -48,7 +52,7 @@ describe API::Helpers::Pagination do
 
         it 'adds appropriate headers' do
           expect_header('X-Per-Page', '2')
-          expect_header('X-Next-Page', "#{canonical_api_projects_url}?#{query.merge(ks_prev_id: projects[1].id).to_query}")
+          expect_header('X-Next-Page', "#{incoming_api_projects_url}?#{query.merge(ks_prev_id: projects[1].id).to_query}")
 
           expect_header('Link', anything) do |_key, val|
             expect(val).to include('rel="next"')
@@ -71,7 +75,7 @@ describe API::Helpers::Pagination do
 
         it 'adds appropriate headers' do
           expect_header('X-Per-Page', '2')
-          expect_header('X-Next-Page', "#{canonical_api_projects_url}?#{query.merge(ks_prev_id: projects[2].id).to_query}")
+          expect_header('X-Next-Page', "#{incoming_api_projects_url}?#{query.merge(ks_prev_id: projects[2].id).to_query}")
 
           expect_header('Link', anything) do |_key, val|
             expect(val).to include('rel="next"')
@@ -171,7 +175,7 @@ describe API::Helpers::Pagination do
 
             it 'returns the right link to the next page' do
               expect_header('X-Per-Page', '2')
-              expect_header('X-Next-Page', "#{canonical_api_projects_url}?#{query.merge(ks_prev_id: projects[6].id, ks_prev_name: projects[6].name).to_query}")
+              expect_header('X-Next-Page', "#{incoming_api_projects_url}?#{query.merge(ks_prev_id: projects[6].id, ks_prev_name: projects[6].name).to_query}")
               expect_header('Link', anything) do |_key, val|
                 expect(val).to include('rel="next"')
               end
@@ -224,9 +228,9 @@ describe API::Helpers::Pagination do
             expect_header('X-Prev-Page', '')
 
             expect_header('Link', anything) do |_key, val|
-              expect(val).to include(%Q(<#{canonical_api_projects_url}?#{query.merge(page: 1).to_query}>; rel="first"))
-              expect(val).to include(%Q(<#{canonical_api_projects_url}?#{query.merge(page: 2).to_query}>; rel="last"))
-              expect(val).to include(%Q(<#{canonical_api_projects_url}?#{query.merge(page: 2).to_query}>; rel="next"))
+              expect(val).to include(%Q(<#{incoming_api_projects_url}?#{query.merge(page: 1).to_query}>; rel="first"))
+              expect(val).to include(%Q(<#{incoming_api_projects_url}?#{query.merge(page: 2).to_query}>; rel="last"))
+              expect(val).to include(%Q(<#{incoming_api_projects_url}?#{query.merge(page: 2).to_query}>; rel="next"))
               expect(val).not_to include('rel="prev"')
             end
 
@@ -290,8 +294,8 @@ describe API::Helpers::Pagination do
               expect_header('X-Prev-Page', '')
 
               expect_header('Link', anything) do |_key, val|
-                expect(val).to include(%Q(<#{canonical_api_projects_url}?#{query.merge(page: 1).to_query}>; rel="first"))
-                expect(val).to include(%Q(<#{canonical_api_projects_url}?#{query.merge(page: 2).to_query}>; rel="next"))
+                expect(val).to include(%Q(<#{incoming_api_projects_url}?#{query.merge(page: 1).to_query}>; rel="first"))
+                expect(val).to include(%Q(<#{incoming_api_projects_url}?#{query.merge(page: 2).to_query}>; rel="next"))
                 expect(val).not_to include('rel="last"')
                 expect(val).not_to include('rel="prev"')
               end
@@ -318,9 +322,9 @@ describe API::Helpers::Pagination do
           expect_header('X-Prev-Page', '1')
 
           expect_header('Link', anything) do |_key, val|
-            expect(val).to include(%Q(<#{canonical_api_projects_url}?#{query.merge(page: 1).to_query}>; rel="first"))
-            expect(val).to include(%Q(<#{canonical_api_projects_url}?#{query.merge(page: 2).to_query}>; rel="last"))
-            expect(val).to include(%Q(<#{canonical_api_projects_url}?#{query.merge(page: 1).to_query}>; rel="prev"))
+            expect(val).to include(%Q(<#{incoming_api_projects_url}?#{query.merge(page: 1).to_query}>; rel="first"))
+            expect(val).to include(%Q(<#{incoming_api_projects_url}?#{query.merge(page: 2).to_query}>; rel="last"))
+            expect(val).to include(%Q(<#{incoming_api_projects_url}?#{query.merge(page: 1).to_query}>; rel="prev"))
             expect(val).not_to include('rel="next"')
           end
 
@@ -367,8 +371,8 @@ describe API::Helpers::Pagination do
           expect_header('X-Prev-Page', '')
 
           expect_header('Link', anything) do |_key, val|
-            expect(val).to include(%Q(<#{canonical_api_projects_url}?#{query.merge(page: 1).to_query}>; rel="first"))
-            expect(val).to include(%Q(<#{canonical_api_projects_url}?#{query.merge(page: 1).to_query}>; rel="last"))
+            expect(val).to include(%Q(<#{incoming_api_projects_url}?#{query.merge(page: 1).to_query}>; rel="first"))
+            expect(val).to include(%Q(<#{incoming_api_projects_url}?#{query.merge(page: 1).to_query}>; rel="last"))
             expect(val).not_to include('rel="prev"')
             expect(val).not_to include('rel="next"')
             expect(val).not_to include('page=0')

@@ -1,0 +1,32 @@
+{
+  "type": "object",
+  "allOf": [
+    { "$ref": "basic.json" },
+    {
+      "properties": {
+        "before_sha": { "type": ["string", "null"] },
+        "tag": { "type": ["boolean"] },
+        "yaml_errors": { "type": ["string", "null"] },
+        "user": {
+          "anyOf": [
+            { "type": ["object", "null"] },
+            { "$ref": "../user/basic.json" }
+          ]
+        },
+        "created_at": { "type": ["date", "null"] },
+        "updated_at": { "type": ["date", "null"] },
+        "started_at": { "type": ["date", "null"] },
+        "finished_at": { "type": ["date", "null"] },
+        "committed_at": { "type": ["date", "null"] },
+        "duration": { "type": ["number", "null"] },
+        "coverage": { "type": ["string", "null"] },
+        "detailed_status": {
+          "oneOf": [
+            { "type": "null" },
+            { "$ref": "../../../status/ci_detailed_status.json" }
+          ]
+        }
+      }
+    }
+  ]
+}

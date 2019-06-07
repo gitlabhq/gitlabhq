@@ -3,11 +3,11 @@
 - block_css_class = type != :boards_modal ? 'row-content-block second-block' : ''
 - user_can_admin_list = board && can?(current_user, :admin_list, board.parent)
 
-.issues-filters
-  .issues-details-filters.filtered-search-block{ class: block_css_class, "v-pre" => type == :boards_modal }
+.issues-filters{ class: ("w-100" if type == :boards_modal) }
+  .issues-details-filters.filtered-search-block.d-flex{ class: block_css_class, "v-pre" => type == :boards_modal }
     - if type == :boards
       = render_if_exists "shared/boards/switcher", board: board
-    = form_tag page_filter_path, method: :get, class: 'filter-form js-filter-form' do
+    = form_tag page_filter_path, method: :get, class: 'filter-form js-filter-form w-100' do
       - if params[:search].present?
         = hidden_field_tag :search, params[:search]
       - if @can_bulk_update
@@ -71,6 +71,7 @@
                 = render 'shared/issuable/user_dropdown_item',
                   user: User.new(username: '{{username}}', name: '{{name}}'),
                   avatar: { lazy: true, url: '{{avatar_url}}' }
+            = render_if_exists 'shared/issuable/approver_dropdown'
             #js-dropdown-milestone.filtered-search-input-dropdown-menu.dropdown-menu
               %ul{ data: { dropdown: true } }
                 %li.filter-dropdown-item{ data: { value: 'None' } }
@@ -136,6 +137,11 @@
                 %li.filter-dropdown-item{ data: { value: 'no', capitalize: true } }
                   %button.btn.btn-link{ type: 'button' }
                     = _('No')
+            #js-dropdown-target-branch.filtered-search-input-dropdown-menu.dropdown-menu
+              %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
+                %li.filter-dropdown-item
+                  %button.btn.btn-link.js-data-value.monospace
+                    {{title}}
 
             = render_if_exists 'shared/issuable/filter_weight', type: type
 

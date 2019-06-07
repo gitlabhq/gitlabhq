@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import createStore from '~/notes/stores';
 import DiscussionFilter from '~/notes/components/discussion_filter.vue';
-import { DISCUSSION_FILTERS_DEFAULT_VALUE } from '~/notes/constants';
+import { DISCUSSION_FILTERS_DEFAULT_VALUE, DISCUSSION_FILTER_TYPES } from '~/notes/constants';
 import { mountComponentWithStore } from '../../helpers/vue_mount_component_helper';
 import { discussionFiltersMock, discussionMock } from '../mock_data';
 
@@ -54,14 +54,18 @@ describe('DiscussionFilter component', () => {
   });
 
   it('updates to the selected item', () => {
-    const filterItem = vm.$el.querySelector('.dropdown-menu li:last-child button');
+    const filterItem = vm.$el.querySelector(
+      `.dropdown-menu li[data-filter-type="${DISCUSSION_FILTER_TYPES.HISTORY}"] button`,
+    );
     filterItem.click();
 
     expect(vm.currentFilter.title).toEqual(filterItem.textContent.trim());
   });
 
   it('only updates when selected filter changes', () => {
-    const filterItem = vm.$el.querySelector('.dropdown-menu li:first-child button');
+    const filterItem = vm.$el.querySelector(
+      `.dropdown-menu li[data-filter-type="${DISCUSSION_FILTER_TYPES.ALL}"] button`,
+    );
 
     spyOn(vm, 'filterDiscussion');
     filterItem.click();
@@ -70,21 +74,27 @@ describe('DiscussionFilter component', () => {
   });
 
   it('disables commenting when "Show history only" filter is applied', () => {
-    const filterItem = vm.$el.querySelector('.dropdown-menu li:last-child button');
+    const filterItem = vm.$el.querySelector(
+      `.dropdown-menu li[data-filter-type="${DISCUSSION_FILTER_TYPES.HISTORY}"] button`,
+    );
     filterItem.click();
 
     expect(vm.$store.state.commentsDisabled).toBe(true);
   });
 
   it('enables commenting when "Show history only" filter is not applied', () => {
-    const filterItem = vm.$el.querySelector('.dropdown-menu li:first-child button');
+    const filterItem = vm.$el.querySelector(
+      `.dropdown-menu li[data-filter-type="${DISCUSSION_FILTER_TYPES.ALL}"] button`,
+    );
     filterItem.click();
 
     expect(vm.$store.state.commentsDisabled).toBe(false);
   });
 
   it('renders a dropdown divider for the default filter', () => {
-    const defaultFilter = vm.$el.querySelector('.dropdown-menu li:first-child');
+    const defaultFilter = vm.$el.querySelector(
+      `.dropdown-menu li[data-filter-type="${DISCUSSION_FILTER_TYPES.ALL}"]`,
+    );
 
     expect(defaultFilter.lastChild.classList).toContain('dropdown-divider');
   });

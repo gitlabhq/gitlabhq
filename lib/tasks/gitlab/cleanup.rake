@@ -60,7 +60,7 @@ namespace :gitlab do
               .new(server.storage)
               .rename(path, new_path)
           rescue StandardError => e
-            puts "Error occured while moving the repository: #{e.message}".color(:red)
+            puts "Error occurred while moving the repository: #{e.message}".color(:red)
           end
         end
       end

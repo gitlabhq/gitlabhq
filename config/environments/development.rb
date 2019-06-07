@@ -47,4 +47,7 @@ Rails.application.configure do
   config.assets.quiet = true
 
   config.allow_concurrency = defined?(::Puma)
+
+  # BetterErrors live shell (REPL) on every stack frame
+  BetterErrors::Middleware.allow_ip!("127.0.0.1/0")
 end

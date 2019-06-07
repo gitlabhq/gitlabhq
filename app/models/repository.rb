@@ -19,7 +19,7 @@ class Repository
 
   include Gitlab::RepositoryCacheAdapter
 
-  attr_accessor :full_path, :disk_path, :project, :is_wiki
+  attr_accessor :full_path, :disk_path, :project, :repo_type
 
   delegate :ref_name_for_sha, to: :raw_repository
   delegate :bundle_to_disk, to: :raw_repository
@@ -39,7 +39,8 @@ class Repository
                       changelog license_blob license_key gitignore
                       gitlab_ci_yml branch_names tag_names branch_count
                       tag_count avatar exists? root_ref has_visible_content?
-                      issue_template_names merge_request_template_names xcode_project?).freeze
+                      issue_template_names merge_request_template_names
+                      metrics_dashboard_paths xcode_project?).freeze
 
   # Methods that use cache_method but only memoize the value
   MEMOIZED_CACHED_METHODS = %i(license).freeze
@@ -57,15 +58,16 @@ class Repository
     avatar: :avatar,
     issue_template: :issue_template_names,
     merge_request_template: :merge_request_template_names,
+    metrics_dashboard: :metrics_dashboard_paths,
     xcode_config: :xcode_project?
   }.freeze
 
-  def initialize(full_path, project, disk_path: nil, is_wiki: false)
+  def initialize(full_path, project, disk_path: nil, repo_type: Gitlab::GlRepository::PROJECT)
     @full_path = full_path
     @disk_path = disk_path || full_path
     @project = project
     @commit_cache = {}
-    @is_wiki = is_wiki
+    @repo_type = repo_type
   end
 
   def ==(other)
@@ -79,7 +81,7 @@ class Repository
   end
 
   def raw_repository
-    return nil unless full_path
+    return unless full_path
 
     @raw_repository ||= initialize_raw_repository
   end
@@ -103,7 +105,7 @@ class Repository
   end
 
   def commit(ref = nil)
-    return nil unless exists?
+    return unless exists?
     return ref if ref.is_a?(::Commit)
 
     find_commit(ref || root_ref)
@@ -265,16 +267,14 @@ class Repository
   # to avoid unnecessary syncing.
   def keep_around(*shas)
     shas.each do |sha|
-      begin
-        next unless sha.present? && commit_by(oid: sha)
+      next unless sha.present? && commit_by(oid: sha)
 
-        next if kept_around?(sha)
+      next if kept_around?(sha)
 
-        # This will still fail if the file is corrupted (e.g. 0 bytes)
-        raw_repository.write_ref(keep_around_ref_name(sha), sha)
-      rescue Gitlab::Git::CommandError => ex
-        Rails.logger.error "Unable to create keep-around reference for repository #{disk_path}: #{ex}"
-      end
+      # This will still fail if the file is corrupted (e.g. 0 bytes)
+      raw_repository.write_ref(keep_around_ref_name(sha), sha)
+    rescue Gitlab::Git::CommandError => ex
+      Rails.logger.error "Unable to create keep-around reference for repository #{disk_path}: #{ex}"
     end
   end
 
@@ -283,14 +283,19 @@ class Repository
   end
 
   def diverging_commit_counts(branch)
+    return diverging_commit_counts_without_max(branch) if Feature.enabled?('gitaly_count_diverging_commits_no_max')
+
+    ## TODO: deprecate the below code after 12.0
     @root_ref_hash ||= raw_repository.commit(root_ref).id
     cache.fetch(:"diverging_commit_counts_#{branch.name}") do
       # Rugged seems to throw a `ReferenceError` when given branch_names rather
       # than SHA-1 hashes
+      branch_sha = branch.dereferenced_target.sha
+
       number_commits_behind, number_commits_ahead =
         raw_repository.diverging_commit_count(
           @root_ref_hash,
-          branch.dereferenced_target.sha,
+          branch_sha,
           max_count: MAX_DIVERGING_COUNT)
 
       if number_commits_behind + number_commits_ahead >= MAX_DIVERGING_COUNT
@@ -301,13 +306,30 @@ class Repository
     end
   end
 
-  def archive_metadata(ref, storage_path, format = "tar.gz", append_sha:)
+  def diverging_commit_counts_without_max(branch)
+    @root_ref_hash ||= raw_repository.commit(root_ref).id
+    cache.fetch(:"diverging_commit_counts_without_max_#{branch.name}") do
+      # Rugged seems to throw a `ReferenceError` when given branch_names rather
+      # than SHA-1 hashes
+      branch_sha = branch.dereferenced_target.sha
+
+      number_commits_behind, number_commits_ahead =
+        raw_repository.diverging_commit_count(
+          @root_ref_hash,
+          branch_sha)
+
+      { behind: number_commits_behind, ahead: number_commits_ahead }
+    end
+  end
+
+  def archive_metadata(ref, storage_path, format = "tar.gz", append_sha:, path: nil)
     raw_repository.archive_metadata(
       ref,
       storage_path,
       project.path,
       format,
-      append_sha: append_sha
+      append_sha: append_sha,
+      path: path
     )
   end
 
@@ -464,7 +486,7 @@ class Repository
   def after_import
     expire_content_cache
 
-    DetectRepositoryLanguagesWorker.perform_async(project.id, project.owner.id)
+    DetectRepositoryLanguagesWorker.perform_async(project.id)
   end
 
   # Runs code after a new commit has been pushed.
@@ -534,10 +556,9 @@ class Repository
   end
 
   def root_ref
-    # When the repo does not exist, or there is no root ref, we raise this error so no data is cached.
-    raw_repository&.root_ref or raise Gitlab::Git::Repository::NoRepository # rubocop:disable Style/AndOr
+    raw_repository&.root_ref
   end
-  cache_method :root_ref
+  cache_method_asymmetrically :root_ref
 
   # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/314
   def exists?
@@ -603,6 +624,11 @@ class Repository
     Gitlab::Template::MergeRequestTemplate.dropdown_names(project)
   end
   cache_method :merge_request_template_names, fallback: []
+
+  def metrics_dashboard_paths
+    Gitlab::Metrics::Dashboard::Finder.find_all_paths_from_source(project)
+  end
+  cache_method :metrics_dashboard_paths
 
   def readme
     head_tree&.readme
@@ -854,6 +880,12 @@ class Repository
     end
   end
 
+  def merge_to_ref(user, source_sha, merge_request, target_ref, message)
+    branch = merge_request.target_branch
+
+    raw.merge_to_ref(user, source_sha, branch, target_ref, message)
+  end
+
   def ff_merge(user, source, target_branch, merge_request: nil)
     their_commit_id = commit(source)&.id
     raise 'Invalid merge source' if their_commit_id.nil?
@@ -1026,11 +1058,41 @@ class Repository
     raw_repository.fetch_ref(source_repository.raw_repository, source_ref: source_ref, target_ref: target_ref)
   end
 
+  # DEPRECATED: https://gitlab.com/gitlab-org/gitaly/issues/1628
+  def rebase_deprecated(user, merge_request)
+    rebase_sha = raw.rebase_deprecated(
+      user,
+      merge_request.id,
+      branch: merge_request.source_branch,
+      branch_sha: merge_request.source_branch_sha,
+      remote_repository: merge_request.target_project.repository.raw,
+      remote_branch: merge_request.target_branch
+    )
+
+    # To support the full deprecated behaviour, set the
+    # `rebase_commit_sha` for the merge_request here and return the value
+    merge_request.update(rebase_commit_sha: rebase_sha, merge_error: nil)
+
+    rebase_sha
+  end
+
   def rebase(user, merge_request)
-    raw.rebase(user, merge_request.id, branch: merge_request.source_branch,
-                                       branch_sha: merge_request.source_branch_sha,
-                                       remote_repository: merge_request.target_project.repository.raw,
-                                       remote_branch: merge_request.target_branch)
+    if Feature.disabled?(:two_step_rebase, default_enabled: true)
+      return rebase_deprecated(user, merge_request)
+    end
+
+    MergeRequest.transaction do
+      raw.rebase(
+        user,
+        merge_request.id,
+        branch: merge_request.source_branch,
+        branch_sha: merge_request.source_branch_sha,
+        remote_repository: merge_request.target_project.repository.raw,
+        remote_branch: merge_request.target_branch
+      ) do |commit_id|
+        merge_request.update!(rebase_commit_sha: commit_id, merge_error: nil)
+      end
+    end
   end
 
   def squash(user, merge_request, message)
@@ -1059,6 +1121,19 @@ class Repository
 
     blob.load_all_data!
     blob.data
+  end
+
+  def create_if_not_exists
+    return if exists?
+
+    raw.create_repository
+    after_create
+  end
+
+  def blobs_metadata(paths, ref = 'HEAD')
+    references = Array.wrap(paths).map { |path| [ref, path] }
+
+    Gitlab::Git::Blob.batch_metadata(raw, references).map { |raw_blob| Blob.decorate(raw_blob) }
   end
 
   private
@@ -1109,7 +1184,7 @@ class Repository
   def initialize_raw_repository
     Gitlab::Git::Repository.new(project.repository_storage,
                                 disk_path + '.git',
-                                Gitlab::GlRepository.gl_repository(project, is_wiki),
+                                repo_type.identifier_for_subject(project),
                                 project.full_path)
   end
 end

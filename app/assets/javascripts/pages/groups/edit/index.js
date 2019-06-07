@@ -1,4 +1,4 @@
-import groupAvatar from '~/group_avatar';
+import initAvatarPicker from '~/avatar_picker';
 import TransferDropdown from '~/groups/transfer_dropdown';
 import initConfirmDangerModal from '~/confirm_danger_modal';
 import initSettingsPanels from '~/settings_panels';
@@ -9,7 +9,7 @@ import groupsSelect from '~/groups_select';
 import projectSelect from '~/project_select';
 
 document.addEventListener('DOMContentLoaded', () => {
-  groupAvatar();
+  initAvatarPicker();
   new TransferDropdown(); // eslint-disable-line no-new
   initConfirmDangerModal();
   initSettingsPanels();

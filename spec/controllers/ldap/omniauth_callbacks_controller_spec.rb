@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Ldap::OmniauthCallbacksController do
@@ -43,7 +45,7 @@ describe Ldap::OmniauthCallbacksController do
   end
 
   context 'sign up' do
-    let(:user) { double(email: 'new@example.com') }
+    let(:user) { double(email: +'new@example.com') }
 
     before do
       stub_omniauth_setting(block_auto_created_users: false)

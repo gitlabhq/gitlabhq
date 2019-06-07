@@ -19,7 +19,7 @@ module Gitlab
       def hook_attrs(pipeline)
         {
           id: pipeline.id,
-          ref: pipeline.ref,
+          ref: pipeline.source_ref,
           tag: pipeline.tag,
           sha: pipeline.sha,
           before_sha: pipeline.before_sha,
@@ -47,7 +47,7 @@ module Gitlab
           user: build.user.try(:hook_attrs),
           runner: build.runner && runner_hook_attrs(build.runner),
           artifacts_file: {
-            filename: build.artifacts_file.filename,
+            filename: build.artifacts_file&.filename,
             size: build.artifacts_size
           }
         }

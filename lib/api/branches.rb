@@ -34,11 +34,11 @@ module API
         repository = user_project.repository
 
         branches = BranchesFinder.new(repository, declared_params(include_missing: false)).execute
-        branches = ::Kaminari.paginate_array(branches)
+        branches = paginate(::Kaminari.paginate_array(branches))
         merged_branch_names = repository.merged_branch_names(branches.map(&:name))
 
         present(
-          paginate(branches),
+          branches,
           with: Entities::Branch,
           current_user: current_user,
           project: user_project,
@@ -162,8 +162,8 @@ module API
           result = DeleteBranchService.new(user_project, current_user)
                     .execute(params[:branch])
 
-          if result[:status] != :success
-            render_api_error!(result[:message], result[:return_code])
+          if result.error?
+            render_api_error!(result.message, result.http_status)
           end
         end
       end

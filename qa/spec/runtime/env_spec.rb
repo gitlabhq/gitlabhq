@@ -90,13 +90,13 @@ describe QA::Runtime::Env do
       described_class.instance_variable_set(:@personal_access_token, nil)
     end
 
-    context 'when PERSONAL_ACCESS_TOKEN is set' do
+    context 'when GITLAB_QA_ACCESS_TOKEN is set' do
       before do
-        stub_env('PERSONAL_ACCESS_TOKEN', 'a_token')
+        stub_env('GITLAB_QA_ACCESS_TOKEN', 'a_token_too')
       end
 
       it 'returns specified token from env' do
-        expect(described_class.personal_access_token).to eq 'a_token'
+        expect(described_class.personal_access_token).to eq 'a_token_too'
       end
     end
 
@@ -165,6 +165,30 @@ describe QA::Runtime::Env do
     it 'returns stripped string if GITHUB_ACCESS_TOKEN is defined' do
       stub_env('GITHUB_ACCESS_TOKEN', ' abc123 ')
       expect(described_class.github_access_token).to eq('abc123')
+    end
+  end
+
+  describe '.knapsack?' do
+    it 'returns true if KNAPSACK_GENERATE_REPORT is defined' do
+      stub_env('KNAPSACK_GENERATE_REPORT', 'true')
+
+      expect(described_class.knapsack?).to be_truthy
+    end
+
+    it 'returns true if KNAPSACK_REPORT_PATH is defined' do
+      stub_env('KNAPSACK_REPORT_PATH', '/a/path')
+
+      expect(described_class.knapsack?).to be_truthy
+    end
+
+    it 'returns true if KNAPSACK_TEST_FILE_PATTERN is defined' do
+      stub_env('KNAPSACK_TEST_FILE_PATTERN', '/a/**/pattern')
+
+      expect(described_class.knapsack?).to be_truthy
+    end
+
+    it 'returns false if neither KNAPSACK_GENERATE_REPORT nor KNAPSACK_REPORT_PATH nor KNAPSACK_TEST_FILE_PATTERN are defined' do
+      expect(described_class.knapsack?).to be_falsey
     end
   end
 

@@ -105,6 +105,7 @@ class User < ApplicationRecord
   has_many :groups, through: :group_members
   has_many :owned_groups, -> { where(members: { access_level: Gitlab::Access::OWNER }) }, through: :group_members, source: :group
   has_many :maintainers_groups, -> { where(members: { access_level: Gitlab::Access::MAINTAINER }) }, through: :group_members, source: :group
+  has_many :developer_groups, -> { where(members: { access_level: ::Gitlab::Access::DEVELOPER }) }, through: :group_members, source: :group
   has_many :owned_or_maintainers_groups,
            -> { where(members: { access_level: [Gitlab::Access::MAINTAINER, Gitlab::Access::OWNER] }) },
            through: :group_members,
@@ -159,12 +160,12 @@ class User < ApplicationRecord
   # Validations
   #
   # Note: devise :validatable above adds validations for :email and :password
-  validates :name, presence: true
+  validates :name, presence: true, length: { maximum: 128 }
   validates :email, confirmation: true
   validates :notification_email, presence: true
-  validates :notification_email, email: true, if: ->(user) { user.notification_email != user.email }
-  validates :public_email, presence: true, uniqueness: true, email: true, allow_blank: true
-  validates :commit_email, email: true, allow_nil: true, if: ->(user) { user.commit_email != user.email }
+  validates :notification_email, devise_email: true, if: ->(user) { user.notification_email != user.email }
+  validates :public_email, presence: true, uniqueness: true, devise_email: true, allow_blank: true
+  validates :commit_email, devise_email: true, allow_nil: true, if: ->(user) { user.commit_email != user.email }
   validates :bio, length: { maximum: 255 }, allow_blank: true
   validates :projects_limit,
     presence: true,
@@ -193,7 +194,7 @@ class User < ApplicationRecord
   before_validation :ensure_namespace_correct
   before_save :ensure_namespace_correct # in case validation is skipped
   after_validation :set_username_errors
-  after_update :username_changed_hook, if: :username_changed?
+  after_update :username_changed_hook, if: :saved_change_to_username?
   after_destroy :post_destroy_hook
   after_destroy :remove_key_cache
   after_commit(on: :update) do
@@ -229,6 +230,9 @@ class User < ApplicationRecord
   delegate :notes_filter_for, to: :user_preference
   delegate :set_notes_filter, to: :user_preference
   delegate :first_day_of_week, :first_day_of_week=, to: :user_preference
+  delegate :timezone, :timezone=, to: :user_preference
+  delegate :time_display_relative, :time_display_relative=, to: :user_preference
+  delegate :time_format_in_24h, :time_format_in_24h=, to: :user_preference
 
   accepts_nested_attributes_for :user_preference, update_only: true
 
@@ -276,6 +280,7 @@ class User < ApplicationRecord
   scope :by_username, -> (usernames) { iwhere(username: Array(usernames).map(&:to_s)) }
   scope :for_todos, -> (todos) { where(id: todos.select(:user_id)) }
   scope :with_emails, -> { preload(:emails) }
+  scope :with_dashboard, -> (dashboard) { where(dashboard: dashboard) }
 
   # Limits the users to those that have TODOs, optionally in the given state.
   #
@@ -432,7 +437,7 @@ class User < ApplicationRecord
         fuzzy_arel_match(:name, query, lower_exact_match: true)
           .or(fuzzy_arel_match(:username, query, lower_exact_match: true))
           .or(arel_table[:email].eq(query))
-      ).reorder(order % { query: ActiveRecord::Base.connection.quote(query) }, :name)
+      ).reorder(order % { query: ApplicationRecord.connection.quote(query) }, :name)
     end
 
     # Limits the result set to users _not_ in the given query/list of IDs.
@@ -470,7 +475,7 @@ class User < ApplicationRecord
     end
 
     def by_login(login)
-      return nil unless login
+      return unless login
 
       if login.include?('@'.freeze)
         unscoped.iwhere(email: login).take
@@ -515,7 +520,7 @@ class User < ApplicationRecord
     def ghost
       email = 'ghost%s@example.com'
       unique_internal(where(ghost: true), 'ghost', email) do |u|
-        u.bio = 'This is a "Ghost User", created to hold all issues authored by users that have since been deleted. This user cannot be removed.'
+        u.bio = _('This is a "Ghost User", created to hold all issues authored by users that have since been deleted. This user cannot be removed.')
         u.name = 'Ghost User'
       end
     end
@@ -535,20 +540,16 @@ class User < ApplicationRecord
     username
   end
 
-  def self.internal_attributes
-    [:ghost]
-  end
-
   def internal?
-    self.class.internal_attributes.any? { |a| self[a] }
+    ghost?
   end
 
   def self.internal
-    where(Hash[internal_attributes.zip([true] * internal_attributes.size)])
+    where(ghost: true)
   end
 
   def self.non_internal
-    where(internal_attributes.map { |attr| "#{attr} IS NOT TRUE" }.join(" AND "))
+    where('ghost IS NOT TRUE')
   end
 
   #
@@ -624,32 +625,32 @@ class User < ApplicationRecord
 
   def namespace_move_dir_allowed
     if namespace&.any_project_has_container_registry_tags?
-      errors.add(:username, 'cannot be changed if a personal project has container registry tags.')
+      errors.add(:username, _('cannot be changed if a personal project has container registry tags.'))
     end
   end
 
   def unique_email
     if !emails.exists?(email: email) && Email.exists?(email: email)
-      errors.add(:email, 'has already been taken')
+      errors.add(:email, _('has already been taken'))
     end
   end
 
   def owns_notification_email
     return if temp_oauth_email?
 
-    errors.add(:notification_email, "is not an email you own") unless all_emails.include?(notification_email)
+    errors.add(:notification_email, _("is not an email you own")) unless all_emails.include?(notification_email)
   end
 
   def owns_public_email
     return if public_email.blank?
 
-    errors.add(:public_email, "is not an email you own") unless all_emails.include?(public_email)
+    errors.add(:public_email, _("is not an email you own")) unless all_emails.include?(public_email)
   end
 
   def owns_commit_email
     return if read_attribute(:commit_email).blank?
 
-    errors.add(:commit_email, "is not an email you own") unless verified_emails.include?(commit_email)
+    errors.add(:commit_email, _("is not an email you own")) unless verified_emails.include?(commit_email)
   end
 
   # Define commit_email-related attribute methods explicitly instead of relying
@@ -759,11 +760,15 @@ class User < ApplicationRecord
 
   # Typically used in conjunction with projects table to get projects
   # a user has been given access to.
+  # The param `related_project_column` is the column to compare to the
+  # project_authorizations. By default is projects.id
   #
   # Example use:
   # `Project.where('EXISTS(?)', user.authorizations_for_projects)`
-  def authorizations_for_projects(min_access_level: nil)
-    authorizations = project_authorizations.select(1).where('project_authorizations.project_id = projects.id')
+  def authorizations_for_projects(min_access_level: nil, related_project_column: 'projects.id')
+    authorizations = project_authorizations
+                      .select(1)
+                      .where("project_authorizations.project_id = #{related_project_column}")
 
     return authorizations unless min_access_level.present?
 
@@ -882,7 +887,12 @@ class User < ApplicationRecord
   # rubocop: enable CodeReuse/ServiceClass
 
   def several_namespaces?
-    owned_groups.any? || maintainers_groups.any?
+    union_sql = ::Gitlab::SQL::Union.new(
+      [owned_groups,
+       maintainers_groups,
+       groups_with_developer_maintainer_project_access]).to_sql
+
+    ::Group.from("(#{union_sql}) #{::Group.table_name}").any?
   end
 
   def namespace_id
@@ -915,6 +925,10 @@ class User < ApplicationRecord
 
   def project_deploy_keys
     DeployKey.unscoped.in_projects(authorized_projects.pluck(:id)).distinct(:id)
+  end
+
+  def highest_role
+    members.maximum(:access_level) || Gitlab::Access::NO_ACCESS
   end
 
   def accessible_deploy_keys
@@ -1164,12 +1178,24 @@ class User < ApplicationRecord
     @manageable_namespaces ||= [namespace] + manageable_groups
   end
 
-  def manageable_groups
-    Gitlab::ObjectHierarchy.new(owned_or_maintainers_groups).base_and_descendants
+  def manageable_groups(include_groups_with_developer_maintainer_access: false)
+    owned_and_maintainer_group_hierarchy = Gitlab::ObjectHierarchy.new(owned_or_maintainers_groups).base_and_descendants
+
+    if include_groups_with_developer_maintainer_access
+      union_sql = ::Gitlab::SQL::Union.new(
+        [owned_and_maintainer_group_hierarchy,
+         groups_with_developer_maintainer_project_access]).to_sql
+
+      ::Group.from("(#{union_sql}) #{::Group.table_name}")
+    else
+      owned_and_maintainer_group_hierarchy
+    end
   end
 
-  def manageable_groups_with_routes
-    manageable_groups.eager_load(:route).order('routes.path')
+  def manageable_groups_with_routes(include_groups_with_developer_maintainer_access: false)
+    manageable_groups(include_groups_with_developer_maintainer_access: include_groups_with_developer_maintainer_access)
+      .eager_load(:route)
+      .order('routes.path')
   end
 
   def namespaces
@@ -1471,15 +1497,6 @@ class User < ApplicationRecord
     devise_mailer.__send__(notification, self, *args).deliver_later # rubocop:disable GitlabSecurity/PublicSend
   end
 
-  # This works around a bug in Devise 4.2.0 that erroneously causes a user to
-  # be considered active in MySQL specs due to a sub-second comparison
-  # issue. For more details, see: https://gitlab.com/gitlab-org/gitlab-ee/issues/2362#note_29004709
-  def confirmation_period_valid?
-    return false if self.class.allow_unconfirmed_access_for == 0.days
-
-    super
-  end
-
   def ensure_user_rights_and_limits
     if external?
       self.can_create_group = false
@@ -1567,5 +1584,17 @@ class User < ApplicationRecord
     user
   ensure
     Gitlab::ExclusiveLease.cancel(lease_key, uuid)
+  end
+
+  def groups_with_developer_maintainer_project_access
+    project_creation_levels = [::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS]
+
+    if ::Gitlab::CurrentSettings.default_project_creation == ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS
+      project_creation_levels << nil
+    end
+
+    developer_groups_hierarchy = ::Gitlab::ObjectHierarchy.new(developer_groups).base_and_descendants
+    ::Group.where(id: developer_groups_hierarchy.select(:id),
+                  project_creation_level: project_creation_levels)
   end
 end

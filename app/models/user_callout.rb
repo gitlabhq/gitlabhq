@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class UserCallout < ActiveRecord::Base
+class UserCallout < ApplicationRecord
   belongs_to :user
 
   # We use `UserCalloutEnums.feature_names` here so that EE can more easily

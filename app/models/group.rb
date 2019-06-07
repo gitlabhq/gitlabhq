@@ -56,12 +56,12 @@ class Group < Namespace
 
   validates :two_factor_grace_period, presence: true, numericality: { greater_than_or_equal_to: 0 }
 
-  add_authentication_token_field :runners_token, encrypted: true, migrating: true
+  add_authentication_token_field :runners_token, encrypted: -> { Feature.enabled?(:groups_tokens_optional_encryption, default_enabled: true) ? :optional : :required }
 
   after_create :post_create_hook
   after_destroy :post_destroy_hook
   after_save :update_two_factor_requirement
-  after_update :path_changed_hook, if: :path_changed?
+  after_update :path_changed_hook, if: :saved_change_to_path?
 
   class << self
     def sort_by_attribute(method)
@@ -126,10 +126,20 @@ class Group < Namespace
   # Overrides notification_settings has_many association
   # This allows to apply notification settings from parent groups
   # to child groups and projects.
-  def notification_settings
+  def notification_settings(hierarchy_order: nil)
     source_type = self.class.base_class.name
+    settings = NotificationSetting.where(source_type: source_type, source_id: self_and_ancestors_ids)
 
-    NotificationSetting.where(source_type: source_type, source_id: self_and_ancestors_ids)
+    return settings unless hierarchy_order && self_and_ancestors_ids.length > 1
+
+    settings
+      .joins("LEFT JOIN (#{self_and_ancestors(hierarchy_order: hierarchy_order).to_sql}) AS ordered_groups ON notification_settings.source_id = ordered_groups.id")
+      .select('notification_settings.*, ordered_groups.depth AS depth')
+      .order("ordered_groups.depth #{hierarchy_order}")
+  end
+
+  def notification_settings_for(user, hierarchy_order: nil)
+    notification_settings(hierarchy_order: hierarchy_order).where(user: user)
   end
 
   def to_reference(_from = nil, full: nil)
@@ -228,22 +238,21 @@ class Group < Namespace
   def has_owner?(user)
     return false unless user
 
-    members_with_parents.owners.where(user_id: user).any?
+    members_with_parents.owners.exists?(user_id: user)
   end
 
   def has_maintainer?(user)
     return false unless user
 
-    members_with_parents.maintainers.where(user_id: user).any?
+    members_with_parents.maintainers.exists?(user_id: user)
   end
 
   # @deprecated
   alias_method :has_master?, :has_maintainer?
 
   # Check if user is a last owner of the group.
-  # Parent owners are ignored for nested groups.
   def last_owner?(user)
-    owners.include?(user) && owners.size == 1
+    has_owner?(user) && members_with_parents.owners.size == 1
   end
 
   def ldap_synced?
@@ -405,10 +414,14 @@ class Group < Namespace
     Feature.enabled?(:group_clusters, root_ancestor, default_enabled: true)
   end
 
+  def project_creation_level
+    super || ::Gitlab::CurrentSettings.default_project_creation
+  end
+
   private
 
   def update_two_factor_requirement
-    return unless require_two_factor_authentication_changed? || two_factor_grace_period_changed?
+    return unless saved_change_to_require_two_factor_authentication? || saved_change_to_two_factor_grace_period?
 
     users.find_each(&:update_two_factor_requirement)
   end

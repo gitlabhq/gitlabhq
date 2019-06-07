@@ -1,4 +1,6 @@
 # encoding: utf-8
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe Blob do
@@ -40,6 +42,21 @@ describe Blob do
       # Access property so the values are loaded
       changelog.id
       contributing.id
+    end
+
+    it 'does not include blobs from previous requests in later requests' do
+      changelog = described_class.lazy(project, commit_id, 'CHANGELOG')
+      contributing = described_class.lazy(same_project, commit_id, 'CONTRIBUTING.md')
+
+      # Access property so the values are loaded
+      changelog.id
+      contributing.id
+
+      readme = described_class.lazy(project, commit_id, 'README.md')
+
+      expect(project.repository).to receive(:blobs_at).with([[commit_id, 'README.md']]).once.and_call_original
+
+      readme.id
     end
   end
 

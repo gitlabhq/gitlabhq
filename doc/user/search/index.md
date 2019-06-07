@@ -84,6 +84,12 @@ You can view recent searches by clicking on the little arrow-clock icon, which i
 
 Individual filters can be removed by clicking on the filter's (x) button or backspacing. The entire search filter can be cleared by clicking on the search box's (x) button.
 
+## Filtering with multiple filters of the same type
+
+Some filters can be added multiple times. These include but are not limited to assignees and labels. When you filter with these multiple filters of the same type, the AND logic is applied. For example, if you were filtering `assignee:@sam assignee:@sarah`, your results will only include entries whereby the assignees are assigned to both Sam and Sarah are returned.
+
+![multiple assignees filtering](img/multiple_assignees.png)
+
 ### Shortcut
 
 You'll also find a shortcut on the search field on the top-right of the project's dashboard to
@@ -96,7 +102,7 @@ quickly access issues and merge requests created or assigned to you within that 
 Your [todos](../../workflow/todos.md#gitlab-todos) can be searched by "to do" and "done".
 You can [filter](../../workflow/todos.md#filtering-your-todos) them per project,
 author, type, and action. Also, you can sort them by
-[**Label priority**](../../user/project/labels.md#prioritize-labels),
+[**Label priority**](../../user/project/labels.md#label-priority),
 **Last created** and **Oldest created**.
 
 ## Projects
@@ -136,3 +142,18 @@ you'll be able to, besides filtering them by **Name**, **Author**, **Assignee**,
 and **Labels**, select multiple issues to add to a list of your choice:
 
 ![search and select issues to add to board](img/search_issues_board.png)
+
+## Advanced Global Search **[STARTER]**
+
+Leverage Elasticsearch for faster, more advanced code search across your entire
+GitLab instance.
+
+[Learn how to use the Advanced Global Search.](advanced_global_search.md)
+
+## Advanced Syntax Search **[STARTER]**
+
+Use advanced queries for more targeted search results.
+
+[Learn how to use the Advanced Syntax Search.](advanced_search_syntax.md)
+
+[ee]: https://about.gitlab.com/pricing/

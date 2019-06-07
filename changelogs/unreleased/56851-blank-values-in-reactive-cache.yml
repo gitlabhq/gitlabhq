@@ -1,5 +1,0 @@
----
-title: Allow empty values such as [] to be stored in reactive cache
-merge_request: 25283
-author:
-type: fixed

@@ -21,7 +21,7 @@ describe 'Labels Hierarchy', :js, :nested_groups do
   end
 
   shared_examples 'assigning labels from sidebar' do
-    it 'can assign all ancestors labels' do
+    it 'can assign all ancestors labels', :quarantine do
       [grandparent_group_label, parent_group_label, project_label_1].each do |label|
         page.within('.block.labels') do
           find('.edit-link').click
@@ -145,7 +145,7 @@ describe 'Labels Hierarchy', :js, :nested_groups do
       visit new_project_issue_path(project_1)
     end
 
-    it 'should be able to assign ancestor group labels' do
+    it 'is able to assign ancestor group labels' do
       fill_in 'issue_title', with: 'new created issue'
       fill_in 'issue_description', with: 'new issue description'
 

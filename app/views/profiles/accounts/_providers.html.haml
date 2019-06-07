@@ -1,0 +1,21 @@
+%label.label-bold
+  = s_('Profiles|Connected Accounts')
+  %p= s_('Profiles|Click on icon to activate signin with one of the following services')
+  - providers.each do |provider|
+    - unlink_allowed = unlink_provider_allowed?(provider)
+    - link_allowed = link_provider_allowed?(provider)
+    - if unlink_allowed || link_allowed
+      .provider-btn-group
+        .provider-btn-image
+          = provider_image_tag(provider)
+        - if auth_active?(provider)
+          - if unlink_allowed
+            = link_to unlink_profile_account_path(provider: provider), method: :delete, class: 'provider-btn' do
+              = s_('Profiles|Disconnect')
+          - else
+            %a.provider-btn
+              = s_('Profiles|Active')
+        - elsif link_allowed
+          = link_to omniauth_authorize_path(:user, provider), method: :post, class: 'provider-btn not-active' do
+            = s_('Profiles|Connect')
+  = render_if_exists 'profiles/accounts/group_saml_unlink_buttons', group_saml_identities: group_saml_identities

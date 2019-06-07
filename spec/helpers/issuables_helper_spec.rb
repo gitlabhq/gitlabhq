@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe IssuablesHelper do
@@ -176,7 +178,7 @@ describe IssuablesHelper do
       stub_commonmark_sourcepos_disabled
     end
 
-    it 'returns the correct json for an issue' do
+    it 'returns the correct data for an issue' do
       issue = create(:issue, author: user, description: 'issue text')
       @project = issue.project
 
@@ -198,7 +200,7 @@ describe IssuablesHelper do
         initialDescriptionText: 'issue text',
         initialTaskStatus: '0 of 0 tasks completed'
       }
-      expect(helper.issuable_initial_data(issue)).to eq(expected_data)
+      expect(helper.issuable_initial_data(issue)).to match(hash_including(expected_data))
     end
   end
 end

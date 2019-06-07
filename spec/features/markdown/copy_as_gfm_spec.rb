@@ -55,15 +55,10 @@ describe 'Copy as GFM', :js do
           To see how GitLab looks please see the [features page on our website](https://about.gitlab.com/features/).
 
           * Manage Git repositories with fine grained access controls that keep your code secure
-
           * Perform code reviews and enhance collaboration with merge requests
-
           * Complete continuous integration (CI) and CD pipelines to builds, test, and deploy your applications
-
           * Each project can also have an issue tracker, issue board, and a wiki
-
           * Used by more than 100,000 organizations, GitLab is the most popular solution to manage Git repositories on-premises
-
           * Completely free and open source (MIT Expat license)
         GFM
       )
@@ -116,13 +111,11 @@ describe 'Copy as GFM', :js do
 
         <<~GFM,
           * [ ] Unchecked task
-
           * [x] Checked task
         GFM
 
         <<~GFM
           1. [ ] Unchecked ordered task
-
           1. [x] Checked ordered task
         GFM
       )
@@ -551,7 +544,6 @@ describe 'Copy as GFM', :js do
 
         <<~GFM,
           * List item
-
           * List item 2
         GFM
 
@@ -565,7 +557,6 @@ describe 'Copy as GFM', :js do
         # nested lists
         <<~GFM,
           * Nested
-
             * Lists
         GFM
 
@@ -578,7 +569,6 @@ describe 'Copy as GFM', :js do
 
         <<~GFM,
           1. Ordered list item
-
           1. Ordered list item 2
         GFM
 
@@ -592,7 +582,6 @@ describe 'Copy as GFM', :js do
         # nested ordered list
         <<~GFM,
           1. Nested
-
              1. Ordered lists
         GFM
 

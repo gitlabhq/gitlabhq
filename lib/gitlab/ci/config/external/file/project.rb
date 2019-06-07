@@ -64,6 +64,13 @@ module Gitlab
                 project.commit(ref_name).try(:sha)
               end
             end
+
+            def expand_context
+              super.merge(
+                project: project,
+                sha: sha,
+                user: context.user)
+            end
           end
         end
       end

@@ -1,3 +1,7 @@
+---
+type: reference
+---
+
 # Interactive Web Terminals
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/50144) in GitLab 11.3.
@@ -54,3 +58,8 @@ terminal will block the job from finishing for the duration configured in
 close the terminal window.
 
 ![finished job with terminal open](img/finished_job_with_terminal_open.png)
+
+## Interactive Web Terminals for the Web IDE **[ULTIMATE ONLY]**
+
+Read the Web IDE docs to learn how to run [Interactive Terminals through the Web IDE](../../user/project/web_ide/index.md).
+

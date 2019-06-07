@@ -9,6 +9,10 @@ describe 'Editing file blob', :js do
   let(:file_path) { project.repository.ls_files(project.repository.root_ref)[1] }
   let(:readme_file_path) { 'README.md' }
 
+  before do
+    stub_feature_flags(web_ide_default: false)
+  end
+
   context 'as a developer' do
     let(:user) { create(:user) }
     let(:role) { :developer }
@@ -43,6 +47,15 @@ describe 'Editing file blob', :js do
       it 'returns me to the mr' do
         expect(page).to have_content(merge_request.title)
       end
+    end
+
+    it 'updates the content of file with a number as file path' do
+      project.repository.create_file(user, '1', 'test', message: 'testing', branch_name: branch)
+      visit project_blob_path(project, tree_join(branch, '1'))
+
+      edit_and_commit
+
+      expect(page).to have_content 'NextFeature'
     end
 
     context 'from blob file path' do

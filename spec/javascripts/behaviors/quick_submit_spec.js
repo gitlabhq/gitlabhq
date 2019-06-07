@@ -4,10 +4,10 @@ import '~/behaviors/quick_submit';
 describe('Quick Submit behavior', function() {
   const keydownEvent = (options = { keyCode: 13, metaKey: true }) => $.Event('keydown', options);
 
-  preloadFixtures('snippets/show.html.raw');
+  preloadFixtures('snippets/show.html');
 
   beforeEach(() => {
-    loadFixtures('snippets/show.html.raw');
+    loadFixtures('snippets/show.html');
     $('form').submit(e => {
       // Prevent a form submit from moving us off the testing page
       e.preventDefault();

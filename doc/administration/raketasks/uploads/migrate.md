@@ -2,7 +2,7 @@
 
 ## Migrate to Object Storage
 
-After [configuring the object storage](../../uploads.md#using-object-storage) for GitLab's uploads, you may use this task to migrate existing uploads from the local storage to the remote storage.
+After [configuring the object storage](../../uploads.md#using-object-storage-core-only) for GitLab's uploads, you may use this task to migrate existing uploads from the local storage to the remote storage.
 
 >**Note:**
 All of the processing will be done in a background worker and requires **no downtime**.

@@ -1,4 +1,6 @@
 # coding: utf-8
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Issues::UpdateService, :mailer do
@@ -356,7 +358,7 @@ describe Issues::UpdateService, :mailer do
         it_behaves_like 'system notes for milestones'
 
         it 'sends notifications for subscribers of changed milestone' do
-          issue.milestone = create(:milestone)
+          issue.milestone = create(:milestone, project: project)
 
           issue.save
 
@@ -380,7 +382,7 @@ describe Issues::UpdateService, :mailer do
         end
 
         it 'marks todos as done' do
-          update_issue(milestone: create(:milestone))
+          update_issue(milestone: create(:milestone, project: project))
 
           expect(todo.reload.done?).to eq true
         end
@@ -389,7 +391,7 @@ describe Issues::UpdateService, :mailer do
 
         it 'sends notifications for subscribers of changed milestone' do
           perform_enqueued_jobs do
-            update_issue(milestone: create(:milestone))
+            update_issue(milestone: create(:milestone, project: project))
           end
 
           should_email(subscriber)
@@ -590,6 +592,16 @@ describe Issues::UpdateService, :mailer do
 
         it 'removes the passed labels' do
           expect(result.label_ids).not_to include(label.id)
+        end
+      end
+
+      context 'when duplicate label titles are given' do
+        let(:params) do
+          { labels: [label3.title, label3.title] }
+        end
+
+        it 'assigns the label once' do
+          expect(result.labels).to contain_exactly(label3)
         end
       end
     end

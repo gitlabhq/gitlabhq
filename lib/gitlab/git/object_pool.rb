@@ -8,7 +8,7 @@ module Gitlab
       GL_REPOSITORY = ""
 
       delegate :exists?, :size, to: :repository
-      delegate :unlink_repository, :delete, to: :object_pool_service
+      delegate :delete, to: :object_pool_service
 
       attr_reader :storage, :relative_path, :source_repository, :gl_project_path
 
@@ -38,6 +38,10 @@ module Gitlab
       # Allows for reusing other RPCs by 'tricking' Gitaly to think its a repository
       def repository
         @repository ||= Gitlab::Git::Repository.new(storage, relative_path, GL_REPOSITORY, gl_project_path)
+      end
+
+      def fetch
+        object_pool_service.fetch(source_repository)
       end
 
       private

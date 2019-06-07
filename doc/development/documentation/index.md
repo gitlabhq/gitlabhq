@@ -16,13 +16,13 @@ In addition to this page, the following resources to help craft and contribute d
 - [Markdown Guide](https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/) - A reference for the markdown implementation used by GitLab's documentation site and about.gitlab.com.
 - [Site architecture](site_architecture/index.md) - How docs.gitlab.com is built.
 
-## Source and rendered locations
+## Source files and rendered web locations
 
 Documentation for GitLab Community Edition (CE) and Enterprise Edition (EE), along with GitLab Runner and Omnibus, is published to [docs.gitlab.com](https://docs.gitlab.com). The documentation for CE and EE is also published within the application at `/help` on the domain of the GitLab instance.
 
 At `/help`, only content for your current edition and version is included, whereas multiple versions' content is available at docs.gitlab.com.
 
-The source of the documentation is maintained in the following repository locations:
+The source of the documentation exists within the codebase of each GitLab application in the following repository locations:
 
 | Project | Path |
 | --- | --- |
@@ -48,95 +48,67 @@ as its markdown rendering engine. See the [GitLab Markdown Guide](https://about.
 
 Adhere to the [Documentation Style Guide](styleguide.md). If a style standard is missing, you are welcome to suggest one via a merge request.
 
-## Documentation directory structure
+## Folder structure and files
 
-The documentation is structured based on the GitLab UI structure itself,
-separated by [`user`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/user),
-[`administrator`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/administration), and [`contributor`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/development).
+See the [Structure](styleguide.md#structure) section of the [Documentation Style Guide](styleguide.md).
 
-In order to have a [solid site structure](https://searchengineland.com/seo-benefits-developing-solid-site-structure-277456) for our documentation,
-all docs should be linked. Every new document should be cross-linked to its related documentation, and linked from its topic-related index, when existent.
+## Single codebase
 
-The directories `/workflow/`, `/gitlab-basics/`, `/university/`, and `/articles/` have
-been **deprecated** and the majority their docs have been moved to their correct location
-in small iterations. Please do not create new docs in these folders. Organize docs by product area and subject, not type.
+We currently maintain two sets of docs: one in the
+[gitlab-ce](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc) repo and
+one in [gitlab-ee](https://gitlab.com/gitlab-org/gitlab-ee/tree/master/doc).
+They are similar, and most pages are identical, but they are different repositories.
+With the single codebase effort, we want to make those two sets identical, so when the
+time comes to have only one codebase, we'll be ready.
 
-### Documentation files
+Here are some links to get you up to speed with the current effort:
 
-- When you create a new directory, always start with an `index.md` file.
-  Do not use another file name and **do not** create `README.md` files.
-- **Do not** use special chars and spaces, or capital letters in file names,
-  directory names, branch names, and anything that generates a path.
-- Max screenshot size: 100KB.
-- We do not support videos (yet).
+- [CE/EE codebases blueprint](https://about.gitlab.com/handbook/engineering/infrastructure/blueprint/ce-ee-codebases/)
+- [CE/EE codebases merge design](https://about.gitlab.com/handbook/engineering/infrastructure/design/merge-ce-ee-codebases/)
+- [Single docs codebase epic](https://gitlab.com/groups/gitlab-org/-/epics/199)
+- [Issue board of related issues](https://gitlab.com/groups/gitlab-org/-/boards/981090?&label_name[]=Documentation&label_name[]=single%20codebase)
+- [Related merge requests](https://gitlab.com/groups/gitlab-org/-/merge_requests?scope=all&utf8=%E2%9C%93&state=all&label_name[]=Documentation&label_name[]=single%20codebase)
+- [Visualize the existing diffs](https://leipert-projects.gitlab.io/is-gitlab-pretty-yet/diff/?search=%5Edoc)
 
-### Location and naming documents
+### CE first
 
-Our goal is to have a clear hierarchical structure with meaningful URLs
-like `docs.gitlab.com/user/project/merge_requests/`. With this pattern,
-you can immediately tell that you are navigating to user-related documentation
-about project features; specifically about merge requests. Our site's paths match
-those of our repository, so the clear structure also makes documentation easier to update.
+After a given documentation path is aligned across CE and EE, all merge requests
+affecting that path must be submitted to CE, regardless of the content it has.
+This means that:
 
-While the documentation is home to a variety of content types, we do not organize by content type.
-For example, do not create groupings of similar media types (e.g. indexes of all articles, videos, etc.).
-Similarly, we do not use glossaries or FAQs. Such grouping of content by type makes
-it difficult to browse for the information you need and difficult to maintain up-to-date content.
-Instead, organize content by its subject (e.g. everything related to CI goes together)
-and cross-link between any related content.
+* For **EE-only docs changes**, you only have to submit a CE MR.
+* For **EE-only features** that touch both the code and the docs, you have to submit
+an EE MR containing all changes, and a CE MR containing only the docs changes
+and without a changelog entry.
 
-Do not simply link out to GitLab technical blog posts. There should be an up-to-date
-single source of truth on the topic within the documentation, and the top of the
-blog post should be updated to link to that doc.
+This might seem like a duplicate effort, but it's only for the short term.
+A list of the already aligned docs can be found in
+[the epic description](https://gitlab.com/groups/gitlab-org/-/epics/199#ee-specific-lines-check).
 
-The table below shows what kind of documentation goes where.
+Since the docs will be combined, it's crucial to add the relevant
+[product badges](styleguide.md#product-badges) for all EE documentation, so that
+we can discern which features belong to which tier.
 
-| Directory             | What belongs here                                                                                                                                                                                              |
-|:----------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `doc/user/`           | User related documentation. Anything that can be done within the GitLab UI goes here including `/admin`.                                                                                                       |
-| `doc/administration/` | Documentation that requires the user to have access to the server where GitLab is installed. The admin settings that can be accessed via GitLab's interface go under `doc/user/admin_area/`.                   |
-| `doc/api/`            | API related documentation.                                                                                                                                                                                     |
-| `doc/development/`    | Documentation related to the development of GitLab. Related process and style guides should go here.                                                                                                                            |
-| `doc/legal/`          | Legal documents about contributing to GitLab.                                                                                                                                                                  |
-| `doc/install/`        | Probably the most visited directory, since `installation.md` is there. Ideally this should go under `doc/administration/`, but it's best to leave it as-is in order to avoid confusion (still debated though). |
-| `doc/update/`         | Same with `doc/install/`. Should be under `administration/`, but this is a well known location, better leave as-is, at least for now.                                                                          |
-| `doc/topics/`         | Indexes per Topic (`doc/topics/topic-name/index.md`): all resources for that topic (user and admin documentation, articles, and third-party docs)                                                              |
+### EE specific lines check
 
-**General rules & best practices:**
+There's a special test in place
+([`ee_specific_check.rb`](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/scripts/ee_specific_check/ee_specific_check.rb)),
+which, among others, checks and prevents creating/editing new files and directories
+in EE under `doc/`.
 
-1. When creating a new document and it has more than one word in its name,
-   make sure to use underscores instead of spaces or dashes (`-`). For example,
-   a proper naming would be `import_projects_from_github.md`. The same rule
-   applies to images.
-1. Start a new directory with an `index.md` file.
-1. There are four main directories, `user`, `administration`, `api` and `development`.
-1. The `doc/user/` directory has five main subdirectories: `project/`, `group/`,
-   `profile/`, `dashboard/` and `admin_area/`.
-   1. `doc/user/project/` should contain all project related documentation.
-   1. `doc/user/group/` should contain all group related documentation.
-   1. `doc/user/profile/` should contain all profile related documentation.
-      Every page you would navigate under `/profile` should have its own document,
-      i.e. `account.md`, `applications.md`, `emails.md`, etc.
-   1. `doc/user/dashboard/` should contain all dashboard related documentation.
-   1. `doc/user/admin_area/` should contain all admin related documentation
-      describing what can be achieved by accessing GitLab's admin interface
-      (_not to be confused with `doc/administration` where server access is
-      required_).
-      1. Every category under `/admin/application_settings` should have its
-         own document located at `doc/user/admin_area/settings/`. For example,
-         the **Visibility and Access Controls** category should have a document
-         located at `doc/user/admin_area/settings/visibility_and_access_controls.md`.
-1. The `doc/topics/` directory holds topic-related technical content. Create
-   `doc/topics/topic-name/subtopic-name/index.md` when subtopics become necessary.
-   General user- and admin- related documentation, should be placed accordingly.
+We have a long list of documentation paths that are either whitelisted or not.
+Paths in the whitelist (not commented out) will not be subject to the test,
+which means you are allowed to create/change docs content in EE for the time
+being. The goal is to not have any doc whitelisted.
 
-If you are unsure where a document or a content addition should live, this should
-not stop you from authoring and contributing. You can use your best judgment and
-then ask the reviewer of your MR to confirm your decision, and/or ask a technical writer
-at any stage in the process. The techncial writing team will review all documentation
-changes, regardless, and can move content if there is a better place for it.
+At the time of this writing, the only items left to be aligned are the API docs:
 
-### Changing document location
+- `doc/api/*` ([issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/60045) / [merge request](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/27491))
+
+Eventually, once all docs are aligned, we'll remove any doc reference from that
+script, so it catches everything.
+
+## Changing document location
 
 Changing a document's location requires specific steps to be followed to ensure that
 users can seamlessly access the new doc page, whether they are accesing content
@@ -194,7 +166,7 @@ Things to note:
   built-in help page, that's why we omit it in `git grep`.
 - Use the checklist on the "Change documentation location" MR description template.
 
-#### Alternative redirection method
+### Alternative redirection method
 
 Alternatively to the method described above, you can simply replace the content
 of the old file with a frontmatter containing a redirect link:
@@ -212,7 +184,7 @@ This redirection method will not provide a redirect fallback on GitLab `/help`. 
 it, make sure to add a link to the new page on the doc, otherwise it's a dead end for users that
 land on the doc via `/help`.
 
-#### Redirections for pages with Disqus comments
+### Redirections for pages with Disqus comments
 
 If the documentation page being relocated already has any Disqus comments,
 we need to preserve the Disqus thread.
@@ -397,7 +369,7 @@ to merge changes that will break `master` from a merge request with a successful
 ## Docs site architecture
 
 See the [Docs site architecture](site_architecture/index.md) page to learn
-how we build and deploy the site at [docs.gitlab.com](https://docs.gitlab.com), and
+how we build and deploy the site at [docs.gitlab.com](https://docs.gitlab.com) and
 to review all the assets and libraries in use.
 
 ### Global navigation
@@ -499,7 +471,7 @@ If you want to know the in-depth details, here's what's really happening:
 The following GitLab features are used among others:
 
 - [Manual actions](../../ci/yaml/README.md#whenmanual)
-- [Multi project pipelines](https://docs.gitlab.com/ee/ci/multi_project_pipeline_graphs.html)
+- [Multi project pipelines](../../ci/multi_project_pipeline_graphs.md)
 - [Review Apps](../../ci/review_apps/index.md)
 - [Artifacts](../../ci/yaml/README.md#artifacts)
 - [Specific Runner](../../ci/runners/README.md#locking-a-specific-runner-from-being-enabled-for-other-projects)
@@ -511,10 +483,10 @@ Currently, the following tests are in place:
 
 1. `docs lint`: Check that all internal (relative) links work correctly and
    that all cURL examples in API docs use the full switches. It's recommended
-   to [check locally](#previewing-locally) before pushing to GitLab by executing the command
+   to [check locally](#previewing-the-changes-live) before pushing to GitLab by executing the command
    `bundle exec nanoc check internal_links` on your local
    [`gitlab-docs`](https://gitlab.com/gitlab-com/gitlab-docs) directory.
-1. [`ee_compat_check`](../automatic_ce_ee_merge.md#avoiding-ce-gt-ee-merge-conflicts-beforehand) (runs on CE only):
+1. [`ee_compat_check`](../automatic_ce_ee_merge.md#avoiding-ce-ee-merge-conflicts-beforehand) (runs on CE only):
     When you submit a merge request to GitLab Community Edition (CE),
     there is this additional job that runs against Enterprise Edition (EE)
     and checks if your changes can apply cleanly to the EE codebase.
@@ -522,6 +494,10 @@ Currently, the following tests are in place:
     As CE is merged into EE once a day, it's important to avoid merge conflicts.
     Submitting an EE-equivalent merge request cherry-picking all commits from CE to EE is
     essential to avoid them.
+1. [`ee-files-location-check`/`ee-specific-lines-check`](#ee-specific-lines-check) (runs on EE only):
+   This test ensures that no new files/directories are created/changed in EE.
+   All docs should be submitted in CE instead, regardless the tier they are on.
+   This is for the [single codebase](#single-codebase) effort.
 1. In a full pipeline, tests for [`/help`](#gitlab-help-tests).
 
 ### Linting

@@ -22,9 +22,10 @@
               %h3.text-center
                 Users:
                 = approximate_count_with_delimiters(@counts, User)
-            = render_if_exists 'admin/dashboard/users_statistics'
             %hr
-            = link_to 'New user', new_admin_user_path, class: "btn btn-success"
+            .btn-group.d-flex{ role: 'group' }
+              = link_to 'New user', new_admin_user_path, class: "btn btn-success"
+              = render_if_exists 'admin/dashboard/users_statistics'
       .col-sm-4
         .info-well.dark-well
           .well-segment.well-centered
@@ -162,7 +163,7 @@
               %span.float-right
                 #{Rails::VERSION::STRING}
             %p
-              = Gitlab::Database.adapter_name
+              = Gitlab::Database.human_adapter_name
               %span.float-right
                 = Gitlab::Database.version
             %p

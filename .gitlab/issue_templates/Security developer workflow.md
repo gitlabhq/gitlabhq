@@ -17,10 +17,10 @@ Set the title to: `Description of the original issue`
 
 #### Backports
 
-- [ ] Once the MR is ready to be merged, create MRs targetting the last 3 releases, plus the current RC if between the 7th and 22nd of the month.
+- [ ] Once the MR is ready to be merged, create MRs targeting the last 3 releases, plus the current RC if between the 7th and 22nd of the month.
     - [ ] At this point, it might be easy to squash the commits from the MR into one
     - You can use the script `bin/secpick` instead of the following steps, to help you cherry-picking. See the [secpick documentation]
-    - [ ] Create each MR targetting the stable branch `X-Y-stable`, using the "Security Release" merge request template.
+    - [ ] Create each MR targeting the stable branch `X-Y-stable`, using the "Security Release" merge request template.
     - Every merge request will have its own set of TODOs, so make sure to
       complete those.
 - [ ] Make sure all MRs have a link in the [links section](#links)
@@ -30,6 +30,7 @@ Set the title to: `Description of the original issue`
 #### Documentation and final details
 
 - [ ] Check the topic on #security to see when the next release is going to happen and add a link to the [links section](#links)
+- [ ] Add links to this issue and your MRs in the description of the security release issue
 - [ ] Find out the versions affected (the Git history of the files affected may help you with this) and add them to the [details section](#details)
 - [ ] Fill in any upgrade notes that users may need to take into account in the [details section](#details)
 - [ ] Add Yes/No and further details if needed to the migration and settings columns in the [details section](#details)

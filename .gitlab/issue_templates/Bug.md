@@ -27,9 +27,9 @@ and verify the issue you're about to submit isn't a duplicate.
 
 ### Example Project
 
-(If possible, please create an example project here on GitLab.com that exhibits the problematic behaviour, and link to it here in the bug report)
+(If possible, please create an example project here on GitLab.com that exhibits the problematic behavior, and link to it here in the bug report)
 
-(If you are using an older version of GitLab, this will also determine whether the bug has been fixed in a more recent version)
+(If you are using an older version of GitLab, this will also determine whether the bug is fixed in a more recent version)
 
 ### What is the current *bug* behavior?
 
@@ -42,7 +42,7 @@ and verify the issue you're about to submit isn't a duplicate.
 ### Relevant logs and/or screenshots
 
 (Paste any relevant logs - please use code blocks (```) to format console output,
-logs, and code as it's very hard to read otherwise.)
+logs, and code as it's tough to read otherwise.)
 
 ### Output of checks
 

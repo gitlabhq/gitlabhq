@@ -3,14 +3,17 @@
 - @content_class = "limit-container-width" unless fluid_layout
 
 = render "projects/default_branch/show"
+= render_if_exists "projects/push_rules/index"
 = render "projects/mirrors/mirror_repos"
 
 -# Protected branches & tags use a lot of nested partials.
 -# The shared parts of the views can be found in the `shared` directory.
 -# Those are used throughout the actual views. These `shared` views are then
 -# reused in EE.
-= render "projects/protected_branches/index"
-= render "projects/protected_tags/index"
+= render "projects/settings/repository/protected_branches"
+
 = render @deploy_keys
 = render "projects/deploy_tokens/index"
 = render "projects/cleanup/show"
+
+= render_if_exists 'shared/promotions/promote_repository_features'

@@ -3,7 +3,7 @@ import NewBranchForm from '~/new_branch_form';
 
 describe('Branch', function() {
   describe('create a new branch', function() {
-    preloadFixtures('branches/new_branch.html.raw');
+    preloadFixtures('branches/new_branch.html');
 
     function fillNameWith(value) {
       $('.js-branch-name')
@@ -16,7 +16,7 @@ describe('Branch', function() {
     }
 
     beforeEach(function() {
-      loadFixtures('branches/new_branch.html.raw');
+      loadFixtures('branches/new_branch.html');
       $('form').on('submit', function(e) {
         return e.preventDefault();
       });

@@ -1,16 +1,19 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe LicenseTemplate do
   describe '#content' do
     it 'calls a proc exactly once if provided' do
-      lazy = build_template(-> { 'bar' })
-      content = lazy.content
+      content_proc = -> { 'bar' }
+      expect(content_proc).to receive(:call).once.and_call_original
 
-      expect(content).to eq('bar')
-      expect(content.object_id).to eq(lazy.content.object_id)
+      lazy = build_template(content_proc)
 
-      content.replace('foo')
-      expect(lazy.content).to eq('foo')
+      expect(lazy.content).to eq('bar')
+
+      # Subsequent calls should not call proc again
+      expect(lazy.content).to eq('bar')
     end
 
     it 'returns a string if provided' do

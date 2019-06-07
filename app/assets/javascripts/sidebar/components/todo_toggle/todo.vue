@@ -50,6 +50,9 @@ export default {
     buttonLabel() {
       return this.isTodo ? MARK_TEXT : TODO_TEXT;
     },
+    buttonTooltip() {
+      return !this.collapsed ? undefined : this.buttonLabel;
+    },
     collapsedButtonIconClasses() {
       return this.isTodo ? 'todo-undone' : '';
     },
@@ -69,7 +72,7 @@ export default {
   <button
     v-tooltip
     :class="buttonClasses"
-    :title="buttonLabel"
+    :title="buttonTooltip"
     :aria-label="buttonLabel"
     :data-issuable-id="issuableId"
     :data-issuable-type="issuableType"

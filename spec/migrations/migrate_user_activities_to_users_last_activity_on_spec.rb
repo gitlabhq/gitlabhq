@@ -3,10 +3,10 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20170324160416_migrate_user_activities_to_users_last_activity_on.rb')
 
-describe MigrateUserActivitiesToUsersLastActivityOn, :clean_gitlab_redis_shared_state, :delete do
+describe MigrateUserActivitiesToUsersLastActivityOn, :clean_gitlab_redis_shared_state, :migration do
   let(:migration) { described_class.new }
-  let!(:user_active_1) { create(:user) } # rubocop:disable RSpec/FactoriesInMigrationSpecs
-  let!(:user_active_2) { create(:user) } # rubocop:disable RSpec/FactoriesInMigrationSpecs
+  let!(:user_active_1) { table(:users).create!(email: 'test1', username: 'test1') }
+  let!(:user_active_2) { table(:users).create!(email: 'test2', username: 'test2') }
 
   def record_activity(user, time)
     Gitlab::Redis::SharedState.with do |redis|

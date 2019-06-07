@@ -1,72 +1,68 @@
-- page_title 'Two-Factor Authentication', 'Account'
-- add_to_breadcrumbs("Two-Factor Authentication", profile_account_path)
+- page_title _('Two-Factor Authentication'), _('Account')
+- add_to_breadcrumbs(_('Two-Factor Authentication'), profile_account_path)
 - @content_class = "limit-container-width" unless fluid_layout
 
 .js-two-factor-auth{ 'data-two-factor-skippable' => "#{two_factor_skippable?}", 'data-two_factor_skip_url' => skip_profile_two_factor_auth_path }
   .row.prepend-top-default
     .col-lg-4
       %h4.prepend-top-0
-        Register Two-Factor Authenticator
+        = _('Register Two-Factor Authenticator')
       %p
-        Use an one time password authenticator on your mobile device or computer to enable two-factor authentication (2FA).
+        = _('Use an one time password authenticator on your mobile device or computer to enable two-factor authentication (2FA).')
     .col-lg-8
       - if current_user.two_factor_otp_enabled?
         %p
-          You've already enabled two-factor authentication using one time password authenticators. In order to register a different device, you must first disable two-factor authentication.
+          = _("You've already enabled two-factor authentication using one time password authenticators. In order to register a different device, you must first disable two-factor authentication.")
         %p
-          If you lose your recovery codes you can generate new ones, invalidating all previous codes.
+          = _('If you lose your recovery codes you can generate new ones, invalidating all previous codes.')
         %div
-          = link_to 'Disable two-factor authentication', profile_two_factor_auth_path,
+          = link_to _('Disable two-factor authentication'), profile_two_factor_auth_path,
                 method: :delete,
-                data: { confirm: "Are you sure? This will invalidate your registered applications and U2F devices." },
+                data: { confirm: _('Are you sure? This will invalidate your registered applications and U2F devices.') },
                 class: 'btn btn-danger append-right-10'
           = form_tag codes_profile_two_factor_auth_path, {style: 'display: inline-block', method: :post} do |f|
-            = submit_tag 'Regenerate recovery codes', class: 'btn'
+            = submit_tag _('Regenerate recovery codes'), class: 'btn'
 
       - else
         %p
-          Install a soft token authenticator like <a href="https://freeotp.github.io/">FreeOTP</a>
-          or Google Authenticator from your application repository and scan this QR code.
-          More information is available in the #{link_to('documentation', help_page_path('user/profile/account/two_factor_authentication'))}.
+          - help_link_start = '<a href="%{url}" target="_blank">' % { url: help_page_path('user/profile/account/two_factor_authentication') }
+          - register_2fa_token = _('Install a soft token authenticator like %{free_otp_link} or Google Authenticator from your application repository and scan this QR code. More information is available in the %{help_link_start}documentation%{help_link_end}.') % { free_otp_link:'<a href="https://freeotp.github.io/">FreeOTP</a>', help_link_start:help_link_start, help_link_end:'</a>' }
+          = register_2fa_token.html_safe
         .row.append-bottom-10
           .col-md-4
             = raw @qr_code
           .col-md-8
             .account-well
               %p.prepend-top-0.append-bottom-0
-                Can't scan the code?
+                = _("Can't scan the code?")
               %p.prepend-top-0.append-bottom-0
-                To add the entry manually, provide the following details to the application on your phone.
+                = _('To add the entry manually, provide the following details to the application on your phone.')
               %p.prepend-top-0.append-bottom-0
-                Account:
-                = @account_string
+                = _('Account: %{account}') % { account: @account_string }
               %p.prepend-top-0.append-bottom-0
-                Key:
-                = current_user.otp_secret.scan(/.{4}/).join(' ')
+                = _('Key: %{key}') %{ key: current_user.otp_secret.scan(/.{4}/).join(' ') }
               %p.two-factor-new-manual-content
-                Time based: Yes
+                = _('Time based: Yes')
         = form_tag profile_two_factor_auth_path, method: :post do |f|
           - if @error
             .alert.alert-danger
               = @error
           .form-group
-            = label_tag :pin_code, nil, class: "label-bold"
+            = label_tag :pin_code, _('Pin code'), class: "label-bold"
             = text_field_tag :pin_code, nil, class: "form-control", required: true
           .prepend-top-default
-            = submit_tag 'Register with two-factor app', class: 'btn btn-success'
+            = submit_tag _('Register with two-factor app'), class: 'btn btn-success'
 
   %hr
 
   .row.prepend-top-default
     .col-lg-4
       %h4.prepend-top-0
-        Register Universal Two-Factor (U2F) Device
+        = _('Register Universal Two-Factor (U2F) Device')
       %p
-        Use a hardware device to add the second factor of authentication.
+        = _('Use a hardware device to add the second factor of authentication.')
       %p
-        As U2F devices are only supported by a few browsers, we require that you set up a
-        two-factor authentication app before a U2F device. That way you'll always be able to
-        log in - even when you're using an unsupported browser.
+        = _("As U2F devices are only supported by a few browsers, we require that you set up a two-factor authentication app before a U2F device. That way you'll always be able to log in - even when you're using an unsupported browser.")
     .col-lg-8
       - if @u2f_registration.errors.present?
         = form_errors(@u2f_registration)
@@ -74,7 +70,8 @@
 
       %hr
 
-      %h5 U2F Devices (#{@u2f_registrations.length})
+      %h5
+        = _('U2F Devices (%{length})') % { length: @u2f_registrations.length }
 
       - if @u2f_registrations.present?
         .table-responsive
@@ -85,16 +82,16 @@
               %col{ width: "20%" }
             %thead
               %tr
-                %th Name
-                %th Registered On
+                %th= _('Name')
+                %th= s_('2FADevice|Registered On')
                 %th
             %tbody
               - @u2f_registrations.each do |registration|
                 %tr
-                  %td= registration.name.presence || "<no name set>"
+                  %td= registration.name.presence || _("<no name set>")
                   %td= registration.created_at.to_date.to_s(:medium)
-                  %td= link_to "Delete", profile_u2f_registration_path(registration), method: :delete, class: "btn btn-danger float-right", data: { confirm: "Are you sure you want to delete this device? This action cannot be undone." }
+                  %td= link_to _('Delete'), profile_u2f_registration_path(registration), method: :delete, class: "btn btn-danger float-right", data: { confirm: _('Are you sure you want to delete this device? This action cannot be undone.') }
 
       - else
         .settings-message.text-center
-          You don't have any U2F devices registered yet.
+          = _("You don't have any U2F devices registered yet.")

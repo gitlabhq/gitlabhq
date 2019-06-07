@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe QA::Runtime::API::Client do
   include Helpers::StubENV
 

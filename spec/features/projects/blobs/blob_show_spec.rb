@@ -548,10 +548,7 @@ describe 'File blob', :js do
     it 'displays an auxiliary viewer' do
       aggregate_failures do
         # shows names of dependency manager and package
-        expect(page).to have_content('This project manages its dependencies using RubyGems and defines a gem named activerecord.')
-
-        # shows a link to the gem
-        expect(page).to have_link('activerecord', href: 'https://rubygems.org/gems/activerecord')
+        expect(page).to have_content('This project manages its dependencies using RubyGems.')
 
         # shows a learn more link
         expect(page).to have_link('Learn more', href: 'https://rubygems.org/')
@@ -575,7 +572,7 @@ describe 'File blob', :js do
       visit_blob('files/ruby/test.rb', ref: 'feature')
     end
 
-    it 'should show the realtime pipeline status' do
+    it 'shows the realtime pipeline status' do
       page.within('.commit-actions') do
         expect(page).to have_css('.ci-status-icon')
         expect(page).to have_css('.ci-status-icon-running')

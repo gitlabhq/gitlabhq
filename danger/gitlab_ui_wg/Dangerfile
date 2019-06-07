@@ -1,0 +1,55 @@
+def mention_single_codebase_approvers
+  frontend_maintainers = %w(@filipa @iamphill @psimyn @sarahghp @mishunov)
+  ux_maintainers = %w(@tauriedavis @rverissimo)
+
+  rows = []
+  users = []
+
+  if gitlab.mr_labels.include?('frontend')
+    frontend_maintainer = frontend_maintainers.sample
+
+    rows << "| ~frontend | `#{frontend_maintainer}`"
+    users << frontend_maintainer
+  end
+
+  if gitlab.mr_labels.include?('UX')
+    ux_maintainers = ux_maintainers.sample
+
+    rows << "| ~UX | `#{ux_maintainers}`"
+    users << ux_maintainers
+  end
+
+  if rows.empty?
+    backup_maintainer = frontend_maintainers.sample
+
+    rows << "| ~frontend / ~UX | `#{backup_maintainer}`"
+    users << backup_maintainer
+  end
+
+  markdown(<<~MARKDOWN.strip)
+    ## GitLab UI Working Group changes
+
+    This merge request contains changes related to the work of [cleaning up CSS and creating
+    reusable components](https://gitlab.com/groups/gitlab-org/-/epics/950).
+    These changes will need to be reviewed and approved by the following engineers:
+
+    | Category | Reviewer
+    |----------|---------
+    #{rows.join("\n")}
+
+    To make sure this happens, please follow these steps:
+
+    1. Add all of the mentioned users to the list of merge request approvals.
+    2. Assign the merge request to the first person in the above list.
+
+    If you are a reviewer, please follow these steps:
+
+    1. Review the merge request. If it is good to go, approve it.
+    2. Once approved, assign to the next person in the above list. If you are
+       the last person in the list, merge the merge request.
+  MARKDOWN
+end
+
+if gitlab.mr_labels.include?('CSS cleanup')
+  mention_single_codebase_approvers
+end

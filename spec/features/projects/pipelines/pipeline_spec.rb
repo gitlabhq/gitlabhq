@@ -1,6 +1,11 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'Pipeline', :js do
+  include RoutesHelpers
+  include ProjectForksHelper
+
   let(:project) { create(:project) }
   let(:user) { create(:user) }
   let(:role) { :developer }
@@ -19,6 +24,11 @@ describe 'Pipeline', :js do
     let!(:build_failed) do
       create(:ci_build, :failed,
              pipeline: pipeline, stage: 'test', name: 'test')
+    end
+
+    let!(:build_preparing) do
+      create(:ci_build, :preparing,
+             pipeline: pipeline, stage: 'deploy', name: 'prepare')
     end
 
     let!(:build_running) do
@@ -51,11 +61,11 @@ describe 'Pipeline', :js do
     let(:project) { create(:project, :repository) }
     let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', sha: project.commit.id, user: user) }
 
-    before do
-      visit project_pipeline_path(project, pipeline)
-    end
+    subject(:visit_pipeline) { visit project_pipeline_path(project, pipeline) }
 
     it 'shows the pipeline graph' do
+      visit_pipeline
+
       expect(page).to have_selector('.pipeline-visualization')
       expect(page).to have_content('Build')
       expect(page).to have_content('Test')
@@ -65,11 +75,26 @@ describe 'Pipeline', :js do
     end
 
     it 'shows Pipeline tab pane as active' do
+      visit_pipeline
+
       expect(page).to have_css('#js-tab-pipeline.active')
     end
 
     it 'shows link to the pipeline ref' do
+      visit_pipeline
+
       expect(page).to have_link(pipeline.ref)
+    end
+
+    it 'shows the pipeline information' do
+      visit_pipeline
+
+      within '.pipeline-info' do
+        expect(page).to have_content("#{pipeline.statuses.count} jobs " \
+                                      "for #{pipeline.ref} ")
+        expect(page).to have_link(pipeline.ref,
+          href: project_commits_path(pipeline.project, pipeline.ref))
+      end
     end
 
     it_behaves_like 'showing user status' do
@@ -79,6 +104,10 @@ describe 'Pipeline', :js do
     end
 
     describe 'pipeline graph' do
+      before do
+        visit_pipeline
+      end
+
       context 'when pipeline has running builds' do
         it 'shows a running icon and a cancel action for the running build' do
           page.within('#ci-badge-deploy') do
@@ -89,6 +118,24 @@ describe 'Pipeline', :js do
         end
 
         it 'cancels the running build and shows retry button' do
+          find('#ci-badge-deploy .ci-action-icon-container').click
+
+          page.within('#ci-badge-deploy') do
+            expect(page).to have_css('.js-icon-retry')
+          end
+        end
+      end
+
+      context 'when pipeline has preparing builds' do
+        it 'shows a preparing icon and a cancel action' do
+          page.within('#ci-badge-prepare') do
+            expect(page).to have_selector('.js-ci-status-icon-preparing')
+            expect(page).to have_selector('.js-icon-cancel')
+            expect(page).to have_content('prepare')
+          end
+        end
+
+        it 'cancels the preparing build and shows retry button' do
           find('#ci-badge-deploy .ci-action-icon-container').click
 
           page.within('#ci-badge-deploy') do
@@ -109,7 +156,7 @@ describe 'Pipeline', :js do
           end
         end
 
-        it 'should be possible to retry the success job' do
+        it 'is possible to retry the success job' do
           find('#ci-badge-build .ci-action-icon-container').click
 
           expect(page).not_to have_content('Retry job')
@@ -149,13 +196,13 @@ describe 'Pipeline', :js do
           end
         end
 
-        it 'should be possible to retry the failed build' do
+        it 'is possible to retry the failed build' do
           find('#ci-badge-test .ci-action-icon-container').click
 
           expect(page).not_to have_content('Retry job')
         end
 
-        it 'should include the failure reason' do
+        it 'includes the failure reason' do
           page.within('#ci-badge-test') do
             build_link = page.find('.js-pipeline-graph-job-link')
             expect(build_link['data-original-title']).to eq('test - failed - (unknown failure)')
@@ -175,7 +222,7 @@ describe 'Pipeline', :js do
           end
         end
 
-        it 'should be possible to play the manual job' do
+        it 'is possible to play the manual job' do
           find('#ci-badge-manual-build .ci-action-icon-container').click
 
           expect(page).not_to have_content('Play job')
@@ -191,7 +238,25 @@ describe 'Pipeline', :js do
       end
     end
 
+    context 'when the pipeline has manual stage' do
+      before do
+        create(:ci_build, :manual, pipeline: pipeline, stage: 'publish', name: 'CentOS')
+        create(:ci_build, :manual, pipeline: pipeline, stage: 'publish', name: 'Debian')
+        create(:ci_build, :manual, pipeline: pipeline, stage: 'publish', name: 'OpenSUDE')
+
+        visit_pipeline
+      end
+
+      it 'displays play all button' do
+        expect(page).to have_selector('.js-stage-action')
+      end
+    end
+
     context 'page tabs' do
+      before do
+        visit_pipeline
+      end
+
       it 'shows Pipeline, Jobs and Failed Jobs tabs with link' do
         expect(page).to have_link('Pipeline')
         expect(page).to have_link('Jobs')
@@ -218,6 +283,10 @@ describe 'Pipeline', :js do
     end
 
     context 'retrying jobs' do
+      before do
+        visit_pipeline
+      end
+
       it { expect(page).not_to have_content('retried') }
 
       context 'when retrying' do
@@ -230,6 +299,10 @@ describe 'Pipeline', :js do
     end
 
     context 'canceling jobs' do
+      before do
+        visit_pipeline
+      end
+
       it { expect(page).not_to have_selector('.ci-canceled') }
 
       context 'when canceling' do
@@ -249,9 +322,160 @@ describe 'Pipeline', :js do
                                    user: user)
       end
 
+      before do
+        visit_pipeline
+      end
+
       it 'does not render link to the pipeline ref' do
         expect(page).not_to have_link(pipeline.ref)
         expect(page).to have_content(pipeline.ref)
+      end
+
+      it 'does not render render raw HTML to the pipeline ref' do
+        page.within '.pipeline-info' do
+          expect(page).not_to have_content('<span class="ref-name"')
+        end
+      end
+    end
+
+    context 'when pipeline is detached merge request pipeline' do
+      let(:source_project) { project }
+      let(:target_project) { project }
+
+      let(:merge_request) do
+        create(:merge_request,
+          :with_detached_merge_request_pipeline,
+          source_project: source_project,
+          target_project: target_project)
+      end
+
+      let(:pipeline) do
+        merge_request.all_pipelines.last
+      end
+
+      it 'shows the pipeline information' do
+        visit_pipeline
+
+        within '.pipeline-info' do
+          expect(page).to have_content("#{pipeline.statuses.count} jobs " \
+                                       "for !#{merge_request.iid} " \
+                                       "with #{merge_request.source_branch}")
+          expect(page).to have_link("!#{merge_request.iid}",
+            href: project_merge_request_path(project, merge_request))
+          expect(page).to have_link(merge_request.source_branch,
+            href: project_commits_path(merge_request.source_project, merge_request.source_branch))
+        end
+      end
+
+      context 'when source branch does not exist' do
+        before do
+          project.repository.rm_branch(user, merge_request.source_branch)
+        end
+
+        it 'does not link to the source branch commit path' do
+          visit_pipeline
+
+          within '.pipeline-info' do
+            expect(page).not_to have_link(merge_request.source_branch)
+            expect(page).to have_content(merge_request.source_branch)
+          end
+        end
+      end
+
+      context 'when source project is a forked project' do
+        let(:source_project) { fork_project(project, user, repository: true) }
+
+        before do
+          visit project_pipeline_path(source_project, pipeline)
+        end
+
+        it 'shows the pipeline information' do
+          within '.pipeline-info' do
+            expect(page).to have_content("#{pipeline.statuses.count} jobs " \
+                                         "for !#{merge_request.iid} " \
+                                         "with #{merge_request.source_branch}")
+            expect(page).to have_link("!#{merge_request.iid}",
+              href: project_merge_request_path(project, merge_request))
+            expect(page).to have_link(merge_request.source_branch,
+              href: project_commits_path(merge_request.source_project, merge_request.source_branch))
+          end
+        end
+      end
+    end
+
+    context 'when pipeline is merge request pipeline' do
+      let(:source_project) { project }
+      let(:target_project) { project }
+
+      let(:merge_request) do
+        create(:merge_request,
+          :with_merge_request_pipeline,
+          source_project: source_project,
+          target_project: target_project,
+          merge_sha: project.commit.id)
+      end
+
+      let(:pipeline) do
+        merge_request.all_pipelines.last
+      end
+
+      before do
+        pipeline.update(user: user)
+      end
+
+      it 'shows the pipeline information' do
+        visit_pipeline
+
+        within '.pipeline-info' do
+          expect(page).to have_content("#{pipeline.statuses.count} jobs " \
+                                       "for !#{merge_request.iid} " \
+                                       "with #{merge_request.source_branch} " \
+                                       "into #{merge_request.target_branch}")
+          expect(page).to have_link("!#{merge_request.iid}",
+            href: project_merge_request_path(project, merge_request))
+          expect(page).to have_link(merge_request.source_branch,
+            href: project_commits_path(merge_request.source_project, merge_request.source_branch))
+          expect(page).to have_link(merge_request.target_branch,
+            href: project_commits_path(merge_request.target_project, merge_request.target_branch))
+        end
+      end
+
+      context 'when target branch does not exist' do
+        before do
+          project.repository.rm_branch(user, merge_request.target_branch)
+        end
+
+        it 'does not link to the target branch commit path' do
+          visit_pipeline
+
+          within '.pipeline-info' do
+            expect(page).not_to have_link(merge_request.target_branch)
+            expect(page).to have_content(merge_request.target_branch)
+          end
+        end
+      end
+
+      context 'when source project is a forked project' do
+        let(:source_project) { fork_project(project, user, repository: true) }
+
+        before do
+          visit project_pipeline_path(source_project, pipeline)
+        end
+
+        it 'shows the pipeline information' do
+          within '.pipeline-info' do
+            expect(page).to have_content("#{pipeline.statuses.count} jobs " \
+                                       "for !#{merge_request.iid} " \
+                                       "with #{merge_request.source_branch} " \
+                                       "into #{merge_request.target_branch}")
+            expect(page).to have_link("!#{merge_request.iid}",
+              href: project_merge_request_path(project, merge_request))
+            expect(page).to have_link(merge_request.source_branch,
+              href: project_commits_path(merge_request.source_project, merge_request.source_branch))
+            expect(page).to have_link(merge_request.target_branch,
+              href: project_commits_path(merge_request.target_project, merge_request.target_branch))
+          end
+        end
       end
     end
   end
@@ -280,7 +504,7 @@ describe 'Pipeline', :js do
         expect(page).to have_content('Cancel running')
       end
 
-      it 'should not link to job' do
+      it 'does not link to job' do
         expect(page).not_to have_selector('.js-pipeline-graph-job-link')
       end
     end
@@ -666,7 +890,7 @@ describe 'Pipeline', :js do
 
       let(:pipeline) do
         create(:ci_pipeline,
-               source: :merge_request,
+               source: :merge_request_event,
                project: merge_request.source_project,
                ref: 'feature',
                sha: merge_request.diff_head_sha,
@@ -686,9 +910,9 @@ describe 'Pipeline', :js do
         visit project_pipeline_path(project, pipeline)
       end
 
-      it 'contains badge that indicates merge request pipeline' do
+      it 'contains badge that indicates detached merge request pipeline' do
         page.within(all('.well-segment')[1]) do
-          expect(page).to have_content 'merge request'
+          expect(page).to have_content 'detached'
         end
       end
     end

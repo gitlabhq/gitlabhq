@@ -14,8 +14,8 @@ class FileUploader < GitlabUploader
   include ObjectStorage::Concern
   prepend ObjectStorage::Extension::RecordsUploads
 
-  MARKDOWN_PATTERN = %r{\!?\[.*?\]\(/uploads/(?<secret>[0-9a-f]{32})/(?<file>.*?)\)}
-  DYNAMIC_PATH_PATTERN = %r{.*(?<secret>\h{32})/(?<identifier>.*)}
+  MARKDOWN_PATTERN = %r{\!?\[.*?\]\(/uploads/(?<secret>[0-9a-f]{32})/(?<file>.*?)\)}.freeze
+  DYNAMIC_PATH_PATTERN = %r{.*(?<secret>\h{32})/(?<identifier>.*)}.freeze
 
   after :remove, :prune_store_dir
 
@@ -109,10 +109,18 @@ class FileUploader < GitlabUploader
   def upload_path
     if file_storage?
       # Legacy path relative to project.full_path
-      File.join(dynamic_segment, identifier)
+      local_storage_path(identifier)
     else
-      File.join(store_dir, identifier)
+      remote_storage_path(identifier)
     end
+  end
+
+  def local_storage_path(file_identifier)
+    File.join(dynamic_segment, file_identifier)
+  end
+
+  def remote_storage_path(file_identifier)
+    File.join(store_dir, file_identifier)
   end
 
   def store_dirs

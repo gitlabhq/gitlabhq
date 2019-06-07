@@ -92,7 +92,7 @@ export default {
 </script>
 <template>
   <div id="js-peek" :class="env">
-    <div v-if="currentRequest" class="d-flex container-fluid container-limited">
+    <div v-if="currentRequest" class="d-flex container-fluid container-limited qa-performance-bar">
       <div id="peek-view-host" class="view">
         <span
           v-if="hasHost"

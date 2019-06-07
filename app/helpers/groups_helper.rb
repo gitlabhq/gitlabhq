@@ -4,6 +4,7 @@ module GroupsHelper
   def group_overview_nav_link_paths
     %w[
       groups#show
+      groups#details
       groups#activity
       groups#subgroups
       analytics#show
@@ -98,7 +99,7 @@ module GroupsHelper
   end
 
   def remove_group_message(group)
-    _("You are going to remove %{group_name}. Removed groups CANNOT be restored! Are you ABSOLUTELY sure?") %
+    _("You are going to remove %{group_name}, this will also remove all of its subgroups and projects. Removed groups CANNOT be restored! Are you ABSOLUTELY sure?") %
       { group_name: group.name }
   end
 
@@ -117,11 +118,12 @@ module GroupsHelper
   end
 
   def parent_group_options(current_group)
-    groups = current_user.owned_groups.sort_by(&:human_name).map do |group|
+    exclude_groups = current_group.self_and_descendants.pluck_primary_key
+    exclude_groups << current_group.parent_id if current_group.parent_id
+    groups = GroupsFinder.new(current_user, min_access_level: Gitlab::Access::OWNER, exclude_group_ids: exclude_groups).execute.sort_by(&:human_name).map do |group|
       { id: group.id, text: group.human_name }
     end
 
-    groups.delete_if { |group| group[:id] == current_group.id }
     groups.to_json
   end
 

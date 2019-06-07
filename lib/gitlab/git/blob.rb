@@ -23,6 +23,10 @@ module Gitlab
 
       class << self
         def find(repository, sha, path, limit: MAX_DATA_DISPLAY_SIZE)
+          tree_entry(repository, sha, path, limit)
+        end
+
+        def tree_entry(repository, sha, path, limit)
           return unless path
 
           path = path.sub(%r{\A/*}, '')
@@ -179,3 +183,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Git::Blob.singleton_class.prepend Gitlab::Git::RuggedImpl::Blob::ClassMethods

@@ -24,22 +24,22 @@ class EmailReceiverWorker
     reason =
       case error
       when Gitlab::Email::UnknownIncomingEmail
-        "We couldn't figure out what the email is for. Please create your issue or comment through the web interface."
+        s_("EmailError|We couldn't figure out what the email is for. Please create your issue or comment through the web interface.")
       when Gitlab::Email::SentNotificationNotFoundError
-        "We couldn't figure out what the email is in reply to. Please create your comment through the web interface."
+        s_("EmailError|We couldn't figure out what the email is in reply to. Please create your comment through the web interface.")
       when Gitlab::Email::ProjectNotFound
-        "We couldn't find the project. Please check if there's any typo."
+        s_("EmailError|We couldn't find the project. Please check if there's any typo.")
       when Gitlab::Email::EmptyEmailError
         can_retry = true
-        "It appears that the email is blank. Make sure your reply is at the top of the email, we can't process inline replies."
+        s_("EmailError|It appears that the email is blank. Make sure your reply is at the top of the email, we can't process inline replies.")
       when Gitlab::Email::UserNotFoundError
-        "We couldn't figure out what user corresponds to the email. Please create your comment through the web interface."
+        s_("EmailError|We couldn't figure out what user corresponds to the email. Please create your comment through the web interface.")
       when Gitlab::Email::UserBlockedError
-        "Your account has been blocked. If you believe this is in error, contact a staff member."
+        s_("EmailError|Your account has been blocked. If you believe this is in error, contact a staff member.")
       when Gitlab::Email::UserNotAuthorizedError
-        "You are not allowed to perform this action. If you believe this is in error, contact a staff member."
+        s_("EmailError|You are not allowed to perform this action. If you believe this is in error, contact a staff member.")
       when Gitlab::Email::NoteableNotFoundError
-        "The thread you are replying to no longer exists, perhaps it was deleted? If you believe this is in error, contact a staff member."
+        s_("EmailError|The thread you are replying to no longer exists, perhaps it was deleted? If you believe this is in error, contact a staff member.")
       when Gitlab::Email::InvalidAttachment
         error.message
       when Gitlab::Email::InvalidRecordError

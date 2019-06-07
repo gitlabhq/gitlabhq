@@ -14,13 +14,17 @@ module MergeRequests
     private
 
     def refresh_merge_requests!
+      # n + 1: https://gitlab.com/gitlab-org/gitlab-ce/issues/60289
       Gitlab::GitalyClient.allow_n_plus_1_calls(&method(:find_new_commits))
+
       # Be sure to close outstanding MRs before reloading them to avoid generating an
       # empty diff during a manual merge
       close_upon_missing_source_branch_ref
       post_merge_manually_merged
       reload_merge_requests
-      reset_merge_when_pipeline_succeeds
+      outdate_suggestions
+      refresh_pipelines_on_merge_requests
+      cancel_auto_merge
       mark_pending_todos_done
       cache_merge_requests_closing_issues
 
@@ -106,8 +110,6 @@ module MergeRequests
         end
 
         merge_request.mark_as_unchecked
-        create_merge_request_pipeline(merge_request, current_user)
-        UpdateHeadPipelineForMergeRequestWorker.perform_async(merge_request.id)
       end
 
       # Upcoming method calls need the refreshed version of
@@ -125,8 +127,25 @@ module MergeRequests
         merge_request.source_branch == @push.branch_name
     end
 
-    def reset_merge_when_pipeline_succeeds
-      merge_requests_for_source_branch.each(&:reset_merge_when_pipeline_succeeds)
+    def outdate_suggestions
+      outdate_service = Suggestions::OutdateService.new
+
+      merge_requests_for_source_branch.each do |merge_request|
+        outdate_service.execute(merge_request)
+      end
+    end
+
+    def refresh_pipelines_on_merge_requests
+      merge_requests_for_source_branch.each do |merge_request|
+        create_pipeline_for(merge_request, current_user)
+        UpdateHeadPipelineForMergeRequestWorker.perform_async(merge_request.id)
+      end
+    end
+
+    def cancel_auto_merge
+      merge_requests_for_source_branch.each do |merge_request|
+        AutoMergeService.new(project, current_user).cancel(merge_request)
+      end
     end
 
     def mark_pending_todos_done

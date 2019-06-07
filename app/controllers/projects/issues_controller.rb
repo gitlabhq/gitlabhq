@@ -10,11 +10,11 @@ class Projects::IssuesController < Projects::ApplicationController
   include SpammableActions
   include RecordUserLastActivity
 
-  def self.issue_except_actions
+  def issue_except_actions
     %i[index calendar new create bulk_update import_csv]
   end
 
-  def self.set_issuables_index_only_actions
+  def set_issuables_index_only_actions
     %i[index calendar]
   end
 
@@ -25,9 +25,9 @@ class Projects::IssuesController < Projects::ApplicationController
 
   before_action :whitelist_query_limiting, only: [:create, :create_merge_request, :move, :bulk_update]
   before_action :check_issues_available!
-  before_action :issue, except: issue_except_actions
+  before_action :issue, unless: ->(c) { c.issue_except_actions.include?(c.action_name.to_sym) }
 
-  before_action :set_issuables_index, only: set_issuables_index_only_actions
+  before_action :set_issuables_index, if: ->(c) { c.set_issuables_index_only_actions.include?(c.action_name.to_sym) }
 
   # Allow write(create) issue
   before_action :authorize_create_issue!, only: [:new, :create]
@@ -39,6 +39,7 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action :authorize_create_merge_request_from!, only: [:create_merge_request]
 
   before_action :authorize_import_issues!, only: [:import_csv]
+  before_action :authorize_download_code!, only: [:related_branches]
 
   before_action :set_suggested_issues_feature_flags, only: [:new]
 
@@ -95,9 +96,9 @@ class Projects::IssuesController < Projects::ApplicationController
 
     if service.discussions_to_resolve.count(&:resolved?) > 0
       flash[:notice] = if service.discussion_to_resolve_id
-                         "Resolved 1 discussion."
+                         _("Resolved 1 discussion.")
                        else
-                         "Resolved all discussions."
+                         _("Resolved all discussions.")
                        end
     end
 
@@ -129,18 +130,6 @@ class Projects::IssuesController < Projects::ApplicationController
 
   rescue ActiveRecord::StaleObjectError
     render_conflict_response
-  end
-
-  def referenced_merge_requests
-    @merge_requests, @closed_by_merge_requests = ::Issues::ReferencedMergeRequestsService.new(project, current_user).execute(issue)
-
-    respond_to do |format|
-      format.json do
-        render json: {
-          html: view_to_html_string('projects/issues/_merge_requests')
-        }
-      end
-    end
   end
 
   def related_branches

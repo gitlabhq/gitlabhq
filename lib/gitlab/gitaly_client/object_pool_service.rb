@@ -34,14 +34,13 @@ module Gitlab
                           request, timeout: GitalyClient.fast_timeout)
       end
 
-      def unlink_repository(repository)
-        request = Gitaly::UnlinkRepositoryFromObjectPoolRequest.new(
+      def fetch(repository)
+        request = Gitaly::FetchIntoObjectPoolRequest.new(
           object_pool: object_pool,
-          repository: repository.gitaly_repository
+          origin: repository.gitaly_repository
         )
 
-        GitalyClient.call(storage, :object_pool_service, :unlink_repository_from_object_pool,
-                          request, timeout: GitalyClient.fast_timeout)
+        GitalyClient.call(storage, :object_pool_service, :fetch_into_object_pool, request)
       end
     end
   end

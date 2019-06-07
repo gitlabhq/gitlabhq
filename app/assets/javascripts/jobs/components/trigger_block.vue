@@ -52,7 +52,7 @@ export default {
     </p>
 
     <template v-if="hasVariables">
-      <p class="trigger-variables-btn-container">
+      <p class="trigger-variables-btn-container d-flex">
         <span class="font-weight-bold">{{ __('Trigger variables:') }}</span>
 
         <gl-button

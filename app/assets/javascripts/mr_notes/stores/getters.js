@@ -1,5 +1,5 @@
 export default {
   isLoggedIn(state, getters) {
-    return !!getters.getUserData.id;
+    return Boolean(getters.getUserData.id);
   },
 };
