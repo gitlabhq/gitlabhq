@@ -1,0 +1,5 @@
+---
+title: Make OpenID Connect work without requiring a name
+merge_request: 29312
+author:
+type: fixed
