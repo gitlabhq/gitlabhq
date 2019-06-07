@@ -444,8 +444,8 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
               'sha' => job.sha,
               'before_sha' => job.before_sha,
               'ref_type' => 'branch',
-              'refspecs' => %w[+refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/*],
-              'depth' => 0 }
+              'refspecs' => ["+refs/heads/#{job.ref}:refs/remotes/origin/#{job.ref}"],
+              'depth' => project.default_git_depth }
           end
 
           let(:expected_steps) do
@@ -531,7 +531,11 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
               end
             end
 
-            context 'when GIT_DEPTH is not specified' do
+            context 'when GIT_DEPTH is not specified and there is no default git depth for the project' do
+              before do
+                project.update!(default_git_depth: nil)
+              end
+
               it 'specifies refspecs' do
                 request_job
 
@@ -587,7 +591,11 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
               end
             end
 
-            context 'when GIT_DEPTH is not specified' do
+            context 'when GIT_DEPTH is not specified and there is no default git depth for the project' do
+              before do
+                project.update!(default_git_depth: nil)
+              end
+
               it 'specifies refspecs' do
                 request_job
 

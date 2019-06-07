@@ -20,6 +20,22 @@ There are two options. Using:
 The default Git strategy can be overridden by the [GIT_STRATEGY variable](../../../ci/yaml/README.md#git-strategy)
 in `.gitlab-ci.yml`.
 
+## Git shallow clone
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/28919) in GitLab 12.0.
+
+NOTE: **Note**: As of GitLab 12.0, newly created projects will automaticallyl have a default 
+`git depth` value of `50`.
+
+It is possible to limit the number of changes that GitLab CI/CD will fetch when cloning 
+a repository. Setting a limit to `git depth` can speed up Pipelines execution. Maximum
+allowed value is `1000`.
+
+To disable shallow clone and make GitLab CI/CD fetch all branches and tags each time,
+keep the value empty or set to `0`.
+
+This value can also be [overridden by `GIT_DEPTH`](../../../ci/large_repositories/index.md#shallow-cloning) variable in `.gitlab-ci.yml` file.
+
 ## Timeout
 
 Timeout defines the maximum amount of time in minutes that a job is able run.

@@ -292,6 +292,7 @@ class Project < ApplicationRecord
   accepts_nested_attributes_for :project_feature, update_only: true
   accepts_nested_attributes_for :import_data
   accepts_nested_attributes_for :auto_devops, update_only: true
+  accepts_nested_attributes_for :ci_cd_settings, update_only: true
 
   accepts_nested_attributes_for :remote_mirrors,
                                 allow_destroy: true,
@@ -310,6 +311,7 @@ class Project < ApplicationRecord
   delegate :root_ancestor, to: :namespace, allow_nil: true
   delegate :last_pipeline, to: :commit, allow_nil: true
   delegate :external_dashboard_url, to: :metrics_setting, allow_nil: true, prefix: true
+  delegate :default_git_depth, :default_git_depth=, to: :ci_cd_settings
 
   # Validations
   validates :creator, presence: true, on: :create
