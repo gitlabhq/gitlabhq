@@ -1,7 +1,7 @@
 /* global ListIssue */
 
-import '~/vue_shared/models/label';
-import '~/vue_shared/models/assignee';
+import '~/boards/models/label';
+import '~/boards/models/assignee';
 import '~/boards/models/issue';
 import '~/boards/models/list';
 import Store from '~/boards/stores/modal_store';
