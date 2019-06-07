@@ -654,6 +654,7 @@ and related tools such as:
 - <https://explain.depesz.com/>
 - <http://tatiyants.com/postgres-query-plan-visualization/>
 
+
 ## Producing query plans
 
 There are a few ways to get the output of a query plan. Of course you
@@ -683,9 +684,9 @@ Execution time: 0.113 ms
 
 ### Chatops
 
-GitLab employees can also use our chatops solution, available in Slack using the
-`/chatops` slash command. You can use chatops to get a query plan by running the
-following:
+[GitLab employees can also use our chatops solution, available in Slack using the
+`/chatops` slash command](chatops_on_gitlabcom.md).
+You can use chatops to get a query plan by running the following:
 
 ```
 /chatops run explain SELECT COUNT(*) FROM projects WHERE visibility_level IN (0, 20)

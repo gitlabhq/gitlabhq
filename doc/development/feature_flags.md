@@ -20,7 +20,7 @@ dynamic (querying the DB etc.).
 Once defined in `lib/feature.rb`, you will be able to activate a
 feature for a given feature group via the [`feature_group` param of the features API](../api/features.md#set-or-create-a-feature)
 
-For GitLab.com, team members have access to feature flags through chatops. Only
+For GitLab.com, [team members have access to feature flags through Chatops](chatops_on_gitlabcom.md). Only
 percentage gates are supported at this time. Setting a feature to be used 50% of
 the time, you should execute `/chatops run feature set my_feature_flag 50`.
 
