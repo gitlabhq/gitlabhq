@@ -225,6 +225,17 @@ vulnerabilities in your groups and projects. Read more about the
 Once a vulnerability is found, you can interact with it. Read more on how to
 [interact with the vulnerabilities](../index.md#interacting-with-the-vulnerabilities).
 
+## Dependency List
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/10075)
+in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.0.
+
+An additional benefit of Dependency Scanning is the ability to get a list of your project's dependencies with their versions. 
+
+This list can be generated only for [supported languages and package managers](#supported-languages-and-package-managers).
+
+To see the generated dependency list, navigate to the Dependency List page under your project's left sidebar menu **Project > Dependency List**.
+
 ## Contributing to the vulnerability database
 
 You can search the [gemnasium-db](https://gitlab.com/gitlab-org/security-products/gemnasium-db) project
