@@ -99,6 +99,7 @@ export const createTempEntry = (
       commit(types.TOGGLE_FILE_OPEN, file.path);
       commit(types.ADD_FILE_TO_CHANGED, file.path);
       dispatch('setFileActive', file.path);
+      dispatch('triggerFilesChange');
     }
 
     if (parentPath && !state.entries[parentPath].opened) {
@@ -210,6 +211,8 @@ export const deleteEntry = ({ commit, dispatch, state }, path) => {
   if (entry.parentPath && state.entries[entry.parentPath].tree.length === 0) {
     dispatch('deleteEntry', entry.parentPath);
   }
+
+  dispatch('triggerFilesChange');
 };
 
 export const resetOpenFiles = ({ commit }) => commit(types.RESET_OPEN_FILES);
@@ -240,6 +243,8 @@ export const renameEntry = (
   if (!entryPath && !entry.tempFile) {
     dispatch('deleteEntry', path);
   }
+
+  dispatch('triggerFilesChange');
 };
 
 export const getBranchData = ({ commit, state }, { projectId, branchId, force = false } = {}) =>
