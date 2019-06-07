@@ -11,7 +11,6 @@ module Clusters
       RESERVED_NAMESPACES = %w(gitlab-managed-apps).freeze
 
       self.table_name = 'cluster_platforms_kubernetes'
-      self.reactive_cache_key = ->(kubernetes) { [kubernetes.class.model_name.singular, kubernetes.id] }
 
       belongs_to :cluster, inverse_of: :platform_kubernetes, class_name: 'Clusters::Cluster'
 
