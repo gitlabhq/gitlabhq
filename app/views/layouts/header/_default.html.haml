@@ -64,7 +64,7 @@
             .dropdown-menu.dropdown-menu-right
               = render 'layouts/header/help_dropdown'
           - if header_link?(:user_dropdown)
-            %li.nav-item.header-user.dropdown{ data: { track_label: "profile_dropdown", track_event: "click_dropdown" } }
+            %li.nav-item.header-user.dropdown{ data: { track_label: "profile_dropdown", track_event: "click_dropdown", qa_selector: 'user_menu' } }
               = link_to current_user, class: user_dropdown_class, data: { toggle: "dropdown" } do
                 = image_tag avatar_icon_for_user(current_user, 23), width: 23, height: 23, class: "header-user-avatar qa-user-avatar"
                 = sprite_icon('angle-down', css_class: 'caret-down')
