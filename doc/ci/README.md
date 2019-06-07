@@ -161,6 +161,33 @@ See also the [Why CI/CD?](https://docs.google.com/presentation/d/1OGgk2Tcxbpl7DJ
 As GitLab CI/CD has evolved, certain breaking changes have
 been necessary. These are:
 
+#### 12.0
+
+- [Use refspec to clone/fetch git
+  repository](https://gitlab.com/gitlab-org/gitlab-runner/issues/4069).
+- [Old cache
+  configuration](https://gitlab.com/gitlab-org/gitlab-runner/issues/4070).
+- [Old metrics server
+  configuration](https://gitlab.com/gitlab-org/gitlab-runner/issues/4072).
+- [Remove
+  `FF_K8S_USE_ENTRYPOINT_OVER_COMMAND`](https://gitlab.com/gitlab-org/gitlab-runner/issues/4073).
+- [Remove Linux distributions that reach
+  EOL](https://gitlab.com/gitlab-org/gitlab-runner/merge_requests/1130).
+- [Update command line API for helper
+  images](https://gitlab.com/gitlab-org/gitlab-runner/issues/4013).
+- [Remove old `git clean`
+  flow](https://gitlab.com/gitlab-org/gitlab-runner/issues/4175).
+
+#### 11.0
+
+- No breaking changes.
+
+#### 10.0
+
+- No breaking changes.
+
+#### 9.0
+
 - [CI variables renaming for GitLab 9.0](variables/deprecated_variables.md#gitlab-90-renamed-variables). Read about the
   deprecated CI variables and what you should use for GitLab 9.0+.
 - [New CI job permissions model](../user/project/new_ci_build_permissions_model.md).
