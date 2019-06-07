@@ -576,6 +576,8 @@ module API
       expose :time_stats, using: 'API::Entities::IssuableTimeStats' do |issue|
         issue
       end
+
+      expose :task_completion_status
     end
 
     class Issue < IssueBasic
@@ -724,6 +726,8 @@ module API
       end
 
       expose :squash
+
+      expose :task_completion_status
     end
 
     class MergeRequest < MergeRequestBasic
