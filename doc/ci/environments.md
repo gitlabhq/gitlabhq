@@ -92,7 +92,7 @@ deploy_staging:
   - master
 ```
 
-We have defined 3 [stages](yaml/README.md#stages):
+We have defined three [stages](yaml/README.md#stages):
 
 - `test`
 - `build`
@@ -135,7 +135,7 @@ In summary, with the above `.gitlab-ci.yml` we have achieved the following:
 > the name given in `.gitlab-ci.yml` (with any variables expanded), while the
 > second is a "cleaned-up" version of the name, suitable for use in URLs, DNS,
 > etc.
-
+>
 > Starting with GitLab 9.3, the environment URL is exposed to the Runner via
 > `$CI_ENVIRONMENT_URL`. The URL is expanded from `.gitlab-ci.yml`, or if
 > the URL was not defined there, the external URL from the environment is used.

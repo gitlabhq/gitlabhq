@@ -1,8 +1,12 @@
 ---
 comments: false
+type: index
 ---
 
 # Docker integration
+
+GitLab CI/CD can be combined with [Docker](https://www.docker.com) to enable
+integration between the two.
 
 The following documentation is available for using GitLab CI/CD with Docker:
 

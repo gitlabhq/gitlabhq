@@ -1,8 +1,15 @@
+---
+type: howto
+---
+
 # Using GitLab CI/CD with a Bitbucket Cloud repository **[PREMIUM]**
 
-GitLab CI/CD can be used with Bitbucket Cloud by creating a
-[CI/CD project](https://docs.gitlab.com/ee/user/project/ci_cd_for_external_repo.html) and connecting
-your Git repository via URL.
+GitLab CI/CD can be used with Bitbucket Cloud by:
+
+1. Creating a [CI/CD project](https://docs.gitlab.com/ee/user/project/ci_cd_for_external_repo.html).
+1. Connecting your Git repository via URL.
+
+To use GitLab CI/CD with a Bitbucket Cloud repository:
 
 1. In GitLab create a **CI/CD for external repo**, select **Repo by URL** and
    create the project.
@@ -16,13 +23,13 @@ your Git repository via URL.
    with `api` scope. This will be used to authenticate requests from the web
    hook that will be created in Bitbucket to notify GitLab of new commits.
 
-1. In Bitbucket from **Settings > Webhooks** create a new web hook to notify
+1. In Bitbucket, from **Settings > Webhooks**, create a new web hook to notify
    GitLab of new commits.
 
     The web hook URL should be set to the GitLab API to trigger pull mirroring,
     using the Personal Access Token we just generated for authentication.
 
-    ```
+    ```text
     https://gitlab.com/api/v4/projects/<NAMESPACE>%2F<PROJECT>/mirror/pull?private_token=<PERSONAL_ACCESS_TOKEN>
     ```
 
@@ -33,27 +40,27 @@ your Git repository via URL.
     After saving, test the web hook by pushing a change to your Bitbucket
     repository.
 
-1. In Bitbucket create an **App Password** from **Bitbucket Settings > App
+1. In Bitbucket, create an **App Password** from **Bitbucket Settings > App
    Passwords** to authenticate the build status script setting commit build
    statuses in Bitbucket. Repository write permissions are required.
 
     ![Bitbucket Cloud webhook](img/bitbucket_app_password.png)
 
-1. In GitLab from **Settings > CI/CD > Environment variables** add variables to allow
-   communication with Bitbucket via the Bitbucket API.
+1. In GitLab, from **Settings > CI/CD > Environment variables**, add variables to allow
+   communication with Bitbucket via the Bitbucket API:
 
-    `BITBUCKET_ACCESS_TOKEN`: the Bitbucket app password created above
+    `BITBUCKET_ACCESS_TOKEN`: the Bitbucket app password created above.
 
-    `BITBUCKET_USERNAME`: the username of the Bitbucket account
+    `BITBUCKET_USERNAME`: the username of the Bitbucket account.
 
-    `BITBUCKET_NAMESPACE`: set this if your GitLab and Bitbucket namespaces differ
+    `BITBUCKET_NAMESPACE`: set this if your GitLab and Bitbucket namespaces differ.
 
-    `BITBUCKET_REPOSITORY`: set this if your GitLab and Bitbucket project names differ
+    `BITBUCKET_REPOSITORY`: set this if your GitLab and Bitbucket project names differ.
 
-1. In Bitbucket add a script to push the pipeline status to Bitbucket.
+1. In Bitbucket, add a script to push the pipeline status to Bitbucket.
 
     > Note: changes made in GitLab will be overwritten by any changes made
-    upstream in Bitbucket.
+    > upstream in Bitbucket.
 
     Create a file `build_status` and insert the script below and run
     `chmod +x build_status` in your terminal to make the script executable.
@@ -111,7 +118,7 @@ your Git repository via URL.
 1. Still in Bitbucket, create a `.gitlab-ci.yml` file to use the script to push
    pipeline success and failures to Bitbucket.
 
-    ```
+    ```yaml
     stages:
       - test
       - ci_status
@@ -145,3 +152,15 @@ GitLab is now configured to mirror changes from Bitbucket, run CI/CD pipelines
 configured in `.gitlab-ci.yml` and push the status to Bitbucket.
 
 [pull-mirroring]: ../../workflow/repository_mirroring.md#pulling-from-a-remote-repository-starter
+
+<!-- ## Troubleshooting
+
+Include any troubleshooting steps that you can foresee. If you know beforehand what issues
+one might have when setting this up, or when something is changed, or on upgrading, it's
+important to describe those, too. Think of things that may go wrong and include them here.
+This is important to minimize requests for support, and to avoid doc comments with
+questions that you know someone might ask.
+
+Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+If you have none to add when creating a doc, leave this section in place
+but commented out to help encourage others to add to it in the future. -->
