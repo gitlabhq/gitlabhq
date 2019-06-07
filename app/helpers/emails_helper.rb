@@ -57,12 +57,6 @@ module EmailsHelper
     pluralize(valid_length, unit)
   end
 
-  def reset_token_expire_message
-    link_tag = link_to('request a new one', new_user_password_url(user_email: @user.email))
-    "This link is valid for #{password_reset_token_valid_time}.  " \
-    "After it expires, you can #{link_tag}."
-  end
-
   def header_logo
     if current_appearance&.header_logo?
       image_tag(
