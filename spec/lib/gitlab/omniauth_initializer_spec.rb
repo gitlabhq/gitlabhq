@@ -83,13 +83,5 @@ describe Gitlab::OmniauthInitializer do
 
       subject.execute([cas3_config])
     end
-
-    it 'configures name for openid_connect' do
-      openid_connect_config = { 'name' => 'openid_connect', 'args' => {} }
-
-      expect(devise_config).to receive(:omniauth).with(:openid_connect, name: 'openid_connect')
-
-      subject.execute([openid_connect_config])
-    end
   end
 end
