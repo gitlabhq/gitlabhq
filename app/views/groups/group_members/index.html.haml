@@ -67,6 +67,6 @@
                   = search_field_tag :search_invited, params[:search_invited], { placeholder: 'Search', class: 'form-control', spellcheck: false }
                   %button.member-search-btn{ type: "submit", "aria-label" => "Submit search" }
                     = icon("search")
-          %ul.content-list.invited-members-list
+          %ul.content-list.members-list
             = render partial: 'shared/members/member', collection: @invited_members, as: :member
         = paginate @invited_members, param_name: 'invited_members_page', theme: 'gitlab'
