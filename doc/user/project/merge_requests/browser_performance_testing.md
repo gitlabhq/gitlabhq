@@ -1,13 +1,17 @@
+---
+type: reference, howto
+---
+
 # Browser Performance Testing **[PREMIUM]**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3507)
 in [GitLab Premium](https://about.gitlab.com/pricing/) 10.3.
 
-## Overview
-
 If your application offers a web interface and you are using
 [GitLab CI/CD](../../../ci/README.md), you can quickly determine the performance
 impact of pending code changes.
+
+## Overview
 
 GitLab uses [Sitespeed.io](https://www.sitespeed.io), a free and open source
 tool for measuring the performance of web sites, and has built a simple
@@ -52,3 +56,15 @@ Consecutive merge requests will have something to compare to and the Performance
 report will be shown properly.
 
 ![Performance Widget](img/browser_performance_testing.png)
+
+<!-- ## Troubleshooting
+
+Include any troubleshooting steps that you can foresee. If you know beforehand what issues
+one might have when setting this up, or when something is changed, or on upgrading, it's
+important to describe those, too. Think of things that may go wrong and include them here.
+This is important to minimize requests for support, and to avoid doc comments with
+questions that you know someone might ask.
+
+Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+If you have none to add when creating a doc, leave this section in place
+but commented out to help encourage others to add to it in the future. -->

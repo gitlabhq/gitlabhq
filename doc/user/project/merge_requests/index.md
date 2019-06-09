@@ -1,7 +1,11 @@
+---
+type: index, reference, concepts
+---
+
 # Merge requests
 
-Merge requests allow you to exchange changes you made to source code and
-collaborate with other people on the same project.
+Merge requests allow you to visualize and collaborate on the proposed changes
+to source code that exist as commits on a given Git branch.
 
 ![Merge request view](img/merge_request.png)
 
