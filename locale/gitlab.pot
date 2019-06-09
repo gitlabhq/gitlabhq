@@ -3677,7 +3677,10 @@ msgstr ""
 msgid "Enable shared Runners"
 msgstr ""
 
-msgid "Enable the Performance Bar for a given group."
+msgid "Enable access to the Performance Bar for a given group."
+msgstr ""
+
+msgid "Enable access to the Performance Bar"
 msgstr ""
 
 msgid "Enable two-factor authentication"

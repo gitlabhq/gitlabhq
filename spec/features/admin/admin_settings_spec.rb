@@ -302,22 +302,22 @@ describe 'Admin updates settings' do
       group = create(:group)
 
       page.within('.as-performance-bar') do
-        check 'Enable the Performance Bar'
+        check 'Enable access to the Performance Bar'
         fill_in 'Allowed group', with: group.path
         click_on 'Save changes'
       end
 
       expect(page).to have_content "Application settings saved successfully"
-      expect(find_field('Enable the Performance Bar')).to be_checked
+      expect(find_field('Enable access to the Performance Bar')).to be_checked
       expect(find_field('Allowed group').value).to eq group.path
 
       page.within('.as-performance-bar') do
-        uncheck 'Enable the Performance Bar'
+        uncheck 'Enable access to the Performance Bar'
         click_on 'Save changes'
       end
 
       expect(page).to have_content 'Application settings saved successfully'
-      expect(find_field('Enable the Performance Bar')).not_to be_checked
+      expect(find_field('Enable access to the Performance Bar')).not_to be_checked
       expect(find_field('Allowed group').value).to be_nil
     end
 
