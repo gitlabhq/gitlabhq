@@ -1,14 +1,16 @@
+---
+type: reference, howto
+---
+
 # Code Quality **[STARTER]**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1984)
 in [GitLab Starter](https://about.gitlab.com/pricing/) 9.3.
 
-## Overview
-
-If you are using [GitLab CI/CD](../../../ci/README.md), you can analyze your
+With the help of [GitLab CI/CD](../../../ci/README.md), you can analyze your
 source code quality using GitLab Code Quality.
 Code Quality uses [Code Climate Engines](https://codeclimate.com), which are
-free and open source. Code Quality doesn’t require a Code Climate subscription.
+free and open source. Code Quality doesn't require a Code Climate subscription.
 
 Going a step further, GitLab can show the Code Quality report right
 in the merge request widget area:
@@ -69,14 +71,24 @@ example on [analyzing a project's code quality](../../../ci/examples/code_qualit
 GitLab then checks this report, compares the metrics between the source and target
 branches, and shows the information right on the merge request.
 
-CAUTION: **Caution:**
 If multiple jobs in a pipeline generate a code quality artifact, only the artifact from
 the last created job (the job with the largest job ID) is used. To avoid confusion,
 configure only one job to generate a code quality artifact.
 
-NOTE: **Note:**
 If the Code Quality report doesn't have anything to compare to, no information
 will be displayed in the merge request area. That is the case when you add the
 Code Quality job in your `.gitlab-ci.yml` for the very first time.
 Consecutive merge requests will have something to compare to and the Code Quality
 report will be shown properly.
+
+<!-- ## Troubleshooting
+
+Include any troubleshooting steps that you can foresee. If you know beforehand what issues
+one might have when setting this up, or when something is changed, or on upgrading, it's
+important to describe those, too. Think of things that may go wrong and include them here.
+This is important to minimize requests for support, and to avoid doc comments with
+questions that you know someone might ask.
+
+Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+If you have none to add when creating a doc, leave this section in place
+but commented out to help encourage others to add to it in the future. -->
