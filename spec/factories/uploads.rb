@@ -54,7 +54,10 @@ FactoryBot.define do
     end
 
     trait :attachment_upload do
-      mount_point :attachment
+      transient do
+        mount_point :attachment
+      end
+
       model { build(:note) }
       uploader "AttachmentUploader"
     end
