@@ -406,6 +406,18 @@ describe MergeRequests::UpdateService, :mailer do
           expect(pending_todo.reload).to be_done
         end
       end
+
+      context 'when auto merge is enabled and target branch changed' do
+        before do
+          AutoMergeService.new(project, user).execute(merge_request, AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS)
+
+          update_merge_request({ target_branch: 'target' })
+        end
+
+        it 'marks pending todos as done' do
+          expect(pending_todo.reload).to be_done
+        end
+      end
     end
 
     context 'when the merge request is relabeled' do

@@ -34,9 +34,5 @@ module MergeRequests
         merge_request_metrics_service(merge_request).close(close_event)
       end
     end
-
-    def cancel_auto_merge(merge_request)
-      AutoMergeService.new(project, current_user).cancel(merge_request)
-    end
   end
 end
