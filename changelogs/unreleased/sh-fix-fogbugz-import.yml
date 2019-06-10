@@ -1,0 +1,5 @@
+---
+title: Fix Fogbugz Importer not working
+merge_request: 29383
+author:
+type: fixed
