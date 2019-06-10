@@ -128,7 +128,7 @@ export default {
             :disabled="mr.sourceBranchRemoved"
             data-target="#modal_merge_info"
             data-toggle="modal"
-            class="btn btn-default js-check-out-branch append-right-default"
+            class="btn btn-default js-check-out-branch append-right-8"
             type="button"
           >
             {{ s__('mrWidget|Check out branch') }}
