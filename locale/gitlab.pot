@@ -6955,7 +6955,7 @@ msgstr ""
 msgid "Paste a machine public key here. Read more about how to generate it %{link_start}here%{link_end}"
 msgstr ""
 
-msgid "Paste your public SSH key, which is usually contained in the file '~/.ssh/id_rsa.pub' and begins with 'ssh-rsa'. Don't use your private SSH key."
+msgid "Paste your public SSH key, which is usually contained in the file '~/.ssh/id_ed25519.pub' or '~/.ssh/id_rsa.pub' and begins with 'ssh-ed25519' or 'ssh-rsa'. Don't use your private SSH key."
 msgstr ""
 
 msgid "Path"
@@ -7642,7 +7642,7 @@ msgstr ""
 msgid "Profiles|Type your %{confirmationValue} to confirm:"
 msgstr ""
 
-msgid "Profiles|Typically starts with \"ssh-rsa …\""
+msgid "Profiles|Typically starts with \"ssh-ed25519 …\" or \"ssh-rsa …\""
 msgstr ""
 
 msgid "Profiles|Update profile settings"
