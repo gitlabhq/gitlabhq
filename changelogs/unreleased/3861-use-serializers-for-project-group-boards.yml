@@ -1,6 +1,0 @@
----
-title: Refactor Board JSON serialization to use Grape::Entity instead of manual serialization
-  (to_json)
-merge_request:
-author:
-type: changed

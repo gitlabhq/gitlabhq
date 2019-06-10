@@ -69,7 +69,7 @@ module BoardsResponses
   end
 
   def serialize_as_json(resource)
-    serializer.represent(resource).to_json
+    serializer.represent(resource).as_json
   end
 
   def respond_with(resource)

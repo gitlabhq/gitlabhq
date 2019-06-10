@@ -17,7 +17,7 @@ describe BoardsResponses do
     it 'serializes properly' do
       expected = { "id" => board.id }
 
-      expect(JSON.parse(subject.serialize_as_json(board))).to include(expected)
+      expect(subject.serialize_as_json(board)).to include(expected)
     end
   end
 end
