@@ -3769,6 +3769,9 @@ msgstr ""
 msgid "Enable Sentry for error reporting and logging."
 msgstr ""
 
+msgid "Enable access to the Performance Bar for a given group."
+msgstr ""
+
 msgid "Enable and configure InfluxDB metrics."
 msgstr ""
 
@@ -3800,9 +3803,6 @@ msgid "Enable reCAPTCHA or Akismet and set IP limits."
 msgstr ""
 
 msgid "Enable shared Runners"
-msgstr ""
-
-msgid "Enable the Performance Bar for a given group."
 msgstr ""
 
 msgid "Enable two-factor authentication"

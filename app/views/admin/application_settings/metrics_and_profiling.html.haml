@@ -31,7 +31,7 @@
     %button.btn.btn-default.js-settings-toggle{ type: 'button' }
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
-      = _('Enable the Performance Bar for a given group.')
+      = _('Enable access to the Performance Bar for a given group.')
       = link_to icon('question-circle'), help_page_path('administration/monitoring/performance/performance_bar')
   .settings-content
     = render 'performance_bar'
