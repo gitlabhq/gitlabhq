@@ -29,8 +29,11 @@ the development cycle, ensuring that all the code deployed to
 production complies with the code standards you established for
 your app.
 
-For a complete overview of these methodologies and GitLab CI/CD,
-read the [Introduction to CI/CD with GitLab](introduction/index.md).
+For a:
+
+- Complete overview of these methodologies and GitLab CI/CD,
+  read the [Introduction to CI/CD with GitLab](introduction/index.md).
+- Video demonstration of GitLab CI/CD, see [Demo: CI/CD with GitLab](https://www.youtube.com/watch?v=1iXFbchozdY).
 
 ## Getting started
 
