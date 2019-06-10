@@ -40,9 +40,12 @@ describe EnqueueResetMergeStatus, :migration, :sidekiq do
           .to be_scheduled_delayed_migration(5.minutes, 1, 2)
 
         expect(described_class::MIGRATION)
-          .to be_scheduled_delayed_migration(10.minutes, 3, 3)
+          .to be_scheduled_delayed_migration(10.minutes, 3, 4)
 
-        expect(BackgroundMigrationWorker.jobs.size).to eq(2)
+        expect(described_class::MIGRATION)
+          .to be_scheduled_delayed_migration(15.minutes, 5, 5)
+
+        expect(BackgroundMigrationWorker.jobs.size).to eq(3)
       end
     end
   end
