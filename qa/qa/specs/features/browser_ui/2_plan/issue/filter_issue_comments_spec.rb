@@ -5,7 +5,7 @@ module QA
     describe 'filter issue comments activities' do
       let(:issue_title) { 'issue title' }
 
-      it 'user filters comments and activites in an issue' do
+      it 'user filters comments and activities in an issue' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
         Page::Main::Login.act { sign_in_using_credentials }
 

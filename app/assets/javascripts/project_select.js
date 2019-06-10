@@ -3,6 +3,7 @@
 import $ from 'jquery';
 import Api from './api';
 import ProjectSelectComboButton from './project_select_combo_button';
+import { s__ } from './locale';
 
 export default function projectSelect() {
   import(/* webpackChunkName: 'select2' */ 'select2/select2')
@@ -21,9 +22,9 @@ export default function projectSelect() {
         this.includeProjectsInSubgroups = $(select).data('includeProjectsInSubgroups') || false;
         this.allowClear = $(select).data('allowClear') || false;
 
-        placeholder = 'Search for project';
+        placeholder = s__('ProjectSelect|Search for project');
         if (this.includeGroups) {
-          placeholder += ' or group';
+          placeholder += s__('ProjectSelect| or group');
         }
 
         $(select).select2({

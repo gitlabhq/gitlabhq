@@ -8,6 +8,8 @@ module API
 
     before { authorize_admin_project }
 
+    helpers Helpers::ProtectedBranchesHelpers
+
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
@@ -52,29 +54,7 @@ module API
                                       values: ProtectedBranch::MergeAccessLevel.allowed_access_levels,
                                       desc: 'Access levels allowed to merge (defaults: `40`, maintainer access level)'
 
-        if Gitlab.ee?
-          optional :unprotect_access_level, type: Integer,
-                                            values: ProtectedBranch::UnprotectAccessLevel.allowed_access_levels,
-                                            desc: 'Access levels allowed to unprotect (defaults: `40`, maintainer access level)'
-
-          optional :allowed_to_push, type: Array, desc: 'An array of users/groups allowed to push' do
-            optional :access_level, type: Integer, values: ProtectedBranch::PushAccessLevel.allowed_access_levels
-            optional :user_id, type: Integer
-            optional :group_id, type: Integer
-          end
-
-          optional :allowed_to_merge, type: Array, desc: 'An array of users/groups allowed to merge' do
-            optional :access_level, type: Integer, values: ProtectedBranch::MergeAccessLevel.allowed_access_levels
-            optional :user_id, type: Integer
-            optional :group_id, type: Integer
-          end
-
-          optional :allowed_to_unprotect, type: Array, desc: 'An array of users/groups allowed to unprotect' do
-            optional :access_level, type: Integer, values: ProtectedBranch::UnprotectAccessLevel.allowed_access_levels
-            optional :user_id, type: Integer
-            optional :group_id, type: Integer
-          end
-        end
+        use :optional_params_ee
       end
       # rubocop: disable CodeReuse/ActiveRecord
       post ':id/protected_branches' do

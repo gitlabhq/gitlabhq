@@ -11,7 +11,7 @@ describe 'Setting WIP status of a merge request' do
   let(:mutation) do
     variables = {
       project_path: project.full_path,
-      iid: merge_request.iid
+      iid: merge_request.iid.to_s
     }
     graphql_mutation(:merge_request_set_wip, variables.merge(input))
   end

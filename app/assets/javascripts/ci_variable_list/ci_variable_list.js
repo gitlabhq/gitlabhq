@@ -16,9 +16,10 @@ function createEnvironmentItem(value) {
 }
 
 export default class VariableList {
-  constructor({ container, formField }) {
+  constructor({ container, formField, maskableRegex }) {
     this.$container = $(container);
     this.formField = formField;
+    this.maskableRegex = new RegExp(maskableRegex);
     this.environmentDropdownMap = new WeakMap();
 
     this.inputMap = {
@@ -196,9 +197,8 @@ export default class VariableList {
   validateMaskability($row) {
     const invalidInputClass = 'gl-field-error-outline';
 
-    const maskableRegex = /^\w{8,}$/; // Eight or more alphanumeric characters plus underscores
     const variableValue = $row.find(this.inputMap.secret_value.selector).val();
-    const isValueMaskable = maskableRegex.test(variableValue) || variableValue === '';
+    const isValueMaskable = this.maskableRegex.test(variableValue) || variableValue === '';
     const isMaskedChecked = $row.find(this.inputMap.masked.selector).val() === 'true';
 
     // Show a validation error if the user wants to mask an unmaskable variable value

@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import axios from './lib/utils/axios_utils';
 import flash from './flash';
-import { __ } from './locale';
+import { s__, __ } from './locale';
 import IssuableBulkUpdateSidebar from './issuable_bulk_update_sidebar';
 import IssuableBulkUpdateActions from './issuable_bulk_update_actions';
 
@@ -12,7 +12,7 @@ export default class IssuableIndex {
   }
   initBulkUpdate(pagePrefix) {
     const userCanBulkUpdate = $('.issues-bulk-update').length > 0;
-    const alreadyInitialized = !!this.bulkUpdateSidebar;
+    const alreadyInitialized = Boolean(this.bulkUpdateSidebar);
 
     if (userCanBulkUpdate && !alreadyInitialized) {
       IssuableBulkUpdateActions.init({
@@ -29,7 +29,7 @@ export default class IssuableIndex {
     $resetToken.on('click', e => {
       e.preventDefault();
 
-      $resetToken.text('resetting...');
+      $resetToken.text(s__('EmailToken|resetting...'));
 
       axios
         .put($resetToken.attr('href'))
@@ -38,12 +38,12 @@ export default class IssuableIndex {
             .val(data.new_address)
             .focus();
 
-          $resetToken.text('reset it');
+          $resetToken.text(s__('EmailToken|reset it'));
         })
         .catch(() => {
           flash(__('There was an error when reseting email token.'));
 
-          $resetToken.text('reset it');
+          $resetToken.text(s__('EmailToken|reset it'));
         });
     });
   }

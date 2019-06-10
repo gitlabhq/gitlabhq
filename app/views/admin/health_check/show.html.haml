@@ -23,7 +23,7 @@
         %code= liveness_url(token: Gitlab::CurrentSettings.health_check_access_token)
       %li
         %code= metrics_url(token: Gitlab::CurrentSettings.health_check_access_token)
-
+      = render_if_exists 'admin/health_check/health_check_url'
   %hr
   .card
     .card-header

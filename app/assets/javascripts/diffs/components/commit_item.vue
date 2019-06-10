@@ -69,7 +69,7 @@ export default {
       :link-href="authorUrl"
       :img-src="authorAvatar"
       :img-alt="authorName"
-      :img-size="36"
+      :img-size="40"
       class="avatar-cell d-none d-sm-block"
     />
     <div class="commit-detail flex-list">

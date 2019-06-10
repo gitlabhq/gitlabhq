@@ -9,9 +9,16 @@ module Gitlab
     BlockedUrlError = Class.new(StandardError)
     RedirectionTooDeep = Class.new(StandardError)
 
+    HTTP_ERRORS = [
+      SocketError, OpenSSL::SSL::SSLError, Errno::ECONNRESET,
+      Errno::ECONNREFUSED, Errno::EHOSTUNREACH, Net::OpenTimeout,
+      Net::ReadTimeout, Gitlab::HTTP::BlockedUrlError,
+      Gitlab::HTTP::RedirectionTooDeep
+    ].freeze
+
     include HTTParty # rubocop:disable Gitlab/HTTParty
 
-    connection_adapter ProxyHTTPConnectionAdapter
+    connection_adapter HTTPConnectionAdapter
 
     def self.perform_request(http_method, path, options, &block)
       super

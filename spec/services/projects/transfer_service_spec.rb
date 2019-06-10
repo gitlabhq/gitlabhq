@@ -73,33 +73,6 @@ describe Projects::TransferService do
         shard_name: project.repository_storage
       )
     end
-
-    context 'new group has a kubernetes cluster' do
-      let(:group_cluster) { create(:cluster, :group, :provided_by_gcp) }
-      let(:group) { group_cluster.group }
-
-      let(:token) { 'aaaa' }
-      let(:service_account_creator) { double(Clusters::Gcp::Kubernetes::CreateOrUpdateServiceAccountService, execute: true) }
-      let(:secrets_fetcher) { double(Clusters::Gcp::Kubernetes::FetchKubernetesTokenService, execute: token) }
-
-      subject { transfer_project(project, user, group) }
-
-      before do
-        stub_feature_flags(ci_preparing_state: false)
-        expect(Clusters::Gcp::Kubernetes::CreateOrUpdateServiceAccountService).to receive(:namespace_creator).and_return(service_account_creator)
-        expect(Clusters::Gcp::Kubernetes::FetchKubernetesTokenService).to receive(:new).and_return(secrets_fetcher)
-      end
-
-      it 'creates kubernetes namespace for the project' do
-        subject
-
-        expect(project.kubernetes_namespaces.count).to eq(1)
-
-        kubernetes_namespace = group_cluster.kubernetes_namespaces.first
-        expect(kubernetes_namespace).to be_present
-        expect(kubernetes_namespace.project).to eq(project)
-      end
-    end
   end
 
   context 'when transfer fails' do

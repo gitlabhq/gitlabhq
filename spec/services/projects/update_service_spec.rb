@@ -45,6 +45,7 @@ describe Projects::UpdateService do
 
         it 'updates the project to private' do
           expect(TodosDestroyer::ProjectPrivateWorker).to receive(:perform_in).with(Todo::WAIT_FOR_DELETE, project.id)
+          expect(TodosDestroyer::ConfidentialIssueWorker).to receive(:perform_in).with(Todo::WAIT_FOR_DELETE, nil, project.id)
 
           result = update_project(project, user, visibility_level: Gitlab::VisibilityLevel::PRIVATE)
 

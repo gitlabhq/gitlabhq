@@ -99,7 +99,7 @@ module GroupsHelper
   end
 
   def remove_group_message(group)
-    _("You are going to remove %{group_name}. Removed groups CANNOT be restored! Are you ABSOLUTELY sure?") %
+    _("You are going to remove %{group_name}, this will also remove all of its subgroups and projects. Removed groups CANNOT be restored! Are you ABSOLUTELY sure?") %
       { group_name: group.name }
   end
 

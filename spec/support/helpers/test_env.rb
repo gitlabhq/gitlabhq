@@ -135,7 +135,7 @@ module TestEnv
 
   def clean_gitlab_test_path
     Dir[TMP_TEST_PATH].each do |entry|
-      if File.basename(entry) =~ /\A(gitlab-(test|test_bare|test-fork|test-fork_bare))\z/
+      unless test_dirs.include?(File.basename(entry))
         FileUtils.rm_rf(entry)
       end
     end
@@ -311,6 +311,18 @@ module TestEnv
   end
 
   private
+
+  # These are directories that should be preserved at cleanup time
+  def test_dirs
+    @test_dirs ||= %w[
+      gitaly
+      gitlab-shell
+      gitlab-test
+      gitlab-test_bare
+      gitlab-test-fork
+      gitlab-test-fork_bare
+    ]
+  end
 
   def factory_repo_path
     @factory_repo_path ||= Rails.root.join('tmp', 'tests', factory_repo_name)

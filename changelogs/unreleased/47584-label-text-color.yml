@@ -1,5 +1,0 @@
----
-title: Resolve issue where list labels did not have the correct text color on creation
-merge_request: 26794
-author: Tucker Chapman
-type: fixed

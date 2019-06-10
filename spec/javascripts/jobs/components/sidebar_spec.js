@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import sidebarDetailsBlock from '~/jobs/components/sidebar.vue';
 import createStore from '~/jobs/store';
-import job, { stages, jobsInStage } from '../mock_data';
+import job, { jobsInStage } from '../mock_data';
 import { mountComponentWithStore } from '../../helpers/vue_mount_component_helper';
-import { trimText } from '../../helpers/vue_component_helper';
+import { trimText } from '../../helpers/text_helper';
 
 describe('Sidebar details block', () => {
   const SidebarComponent = Vue.extend(sidebarDetailsBlock);
@@ -131,18 +131,8 @@ describe('Sidebar details block', () => {
       store.dispatch('receiveJobSuccess', job);
     });
 
-    describe('while fetching stages', () => {
-      it('it does not render dropdown', () => {
-        store.dispatch('requestStages');
-        vm = mountComponentWithStore(SidebarComponent, { store });
-
-        expect(vm.$el.querySelector('.js-selected-stage')).toBeNull();
-      });
-    });
-
     describe('with stages', () => {
       beforeEach(() => {
-        store.dispatch('receiveStagesSuccess', stages);
         vm = mountComponentWithStore(SidebarComponent, { store });
       });
 
@@ -156,7 +146,6 @@ describe('Sidebar details block', () => {
     describe('without jobs for stages', () => {
       beforeEach(() => {
         store.dispatch('receiveJobSuccess', job);
-        store.dispatch('receiveStagesSuccess', stages);
         vm = mountComponentWithStore(SidebarComponent, { store });
       });
 
@@ -168,7 +157,6 @@ describe('Sidebar details block', () => {
     describe('with jobs for stages', () => {
       beforeEach(() => {
         store.dispatch('receiveJobSuccess', job);
-        store.dispatch('receiveStagesSuccess', stages);
         store.dispatch('receiveJobsForStageSuccess', jobsInStage.latest_statuses);
         vm = mountComponentWithStore(SidebarComponent, { store });
       });

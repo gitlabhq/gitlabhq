@@ -45,7 +45,7 @@ export default class Serverless {
         },
       });
     } else {
-      const { statusPath, clustersPath, helpPath, installed } = document.querySelector(
+      const { statusPath, clustersPath, helpPath } = document.querySelector(
         '.js-serverless-functions-page',
       ).dataset;
 
@@ -56,7 +56,6 @@ export default class Serverless {
         render(createElement) {
           return createElement(Functions, {
             props: {
-              installed: installed !== undefined,
               clustersPath,
               helpPath,
               statusPath,

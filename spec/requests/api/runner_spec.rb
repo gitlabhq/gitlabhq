@@ -444,8 +444,8 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
               'sha' => job.sha,
               'before_sha' => job.before_sha,
               'ref_type' => 'branch',
-              'refspecs' => %w[+refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/*],
-              'depth' => 0 }
+              'refspecs' => ["+refs/heads/#{job.ref}:refs/remotes/origin/#{job.ref}"],
+              'depth' => project.default_git_depth }
           end
 
           let(:expected_steps) do
@@ -531,13 +531,41 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
               end
             end
 
-            context 'when GIT_DEPTH is not specified' do
+            context 'when GIT_DEPTH is not specified and there is no default git depth for the project' do
+              before do
+                project.update!(default_git_depth: nil)
+              end
+
               it 'specifies refspecs' do
                 request_job
 
                 expect(response).to have_gitlab_http_status(201)
                 expect(json_response['git_info']['refspecs'])
                   .to contain_exactly('+refs/tags/*:refs/tags/*', '+refs/heads/*:refs/remotes/origin/*')
+              end
+            end
+          end
+
+          context 'when job filtered by job_age' do
+            let!(:job) { create(:ci_build, :tag, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0, queued_at: 60.seconds.ago) }
+
+            context 'job is queued less than job_age parameter' do
+              let(:job_age) { 120 }
+
+              it 'gives 204' do
+                request_job(job_age: job_age)
+
+                expect(response).to have_gitlab_http_status(204)
+              end
+            end
+
+            context 'job is queued more than job_age parameter' do
+              let(:job_age) { 30 }
+
+              it 'picks a job' do
+                request_job(job_age: job_age)
+
+                expect(response).to have_gitlab_http_status(201)
               end
             end
           end
@@ -563,7 +591,11 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
               end
             end
 
-            context 'when GIT_DEPTH is not specified' do
+            context 'when GIT_DEPTH is not specified and there is no default git depth for the project' do
+              before do
+                project.update!(default_git_depth: nil)
+              end
+
               it 'specifies refspecs' do
                 request_job
 
@@ -1608,8 +1640,8 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
             let!(:metadata) { file_upload2 }
             let!(:metadata_sha256) { Digest::SHA256.file(metadata.path).hexdigest }
 
-            let(:stored_artifacts_file) { job.reload.artifacts_file.file }
-            let(:stored_metadata_file) { job.reload.artifacts_metadata.file }
+            let(:stored_artifacts_file) { job.reload.artifacts_file }
+            let(:stored_metadata_file) { job.reload.artifacts_metadata }
             let(:stored_artifacts_size) { job.reload.artifacts_size }
             let(:stored_artifacts_sha256) { job.reload.job_artifacts_archive.file_sha256 }
             let(:stored_metadata_sha256) { job.reload.job_artifacts_metadata.file_sha256 }
@@ -1630,9 +1662,9 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
 
               it 'stores artifacts and artifacts metadata' do
                 expect(response).to have_gitlab_http_status(201)
-                expect(stored_artifacts_file.original_filename).to eq(artifacts.original_filename)
-                expect(stored_metadata_file.original_filename).to eq(metadata.original_filename)
-                expect(stored_artifacts_size).to eq(72821)
+                expect(stored_artifacts_file.filename).to eq(artifacts.original_filename)
+                expect(stored_metadata_file.filename).to eq(metadata.original_filename)
+                expect(stored_artifacts_size).to eq(artifacts.size)
                 expect(stored_artifacts_sha256).to eq(artifacts_sha256)
                 expect(stored_metadata_sha256).to eq(metadata_sha256)
               end

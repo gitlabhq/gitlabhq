@@ -1,0 +1,5 @@
+---
+title: Allow user to set primary email first when 2FA is required
+merge_request: 28097
+author: Kartikey Tanna
+type: fixed

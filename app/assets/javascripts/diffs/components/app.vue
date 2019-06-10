@@ -157,10 +157,12 @@ export default {
     this.adjustView();
     eventHub.$once('fetchedNotesData', this.setDiscussions);
     eventHub.$once('fetchDiffData', this.fetchData);
+    eventHub.$on('refetchDiffData', this.refetchDiffData);
     this.CENTERED_LIMITED_CONTAINER_CLASSES = CENTERED_LIMITED_CONTAINER_CLASSES;
   },
   beforeDestroy() {
     eventHub.$off('fetchDiffData', this.fetchData);
+    eventHub.$off('refetchDiffData', this.refetchDiffData);
     this.removeEventListeners();
   },
   methods: {
@@ -175,10 +177,16 @@ export default {
       'scrollToFile',
       'toggleShowTreeList',
     ]),
-    fetchData() {
+    refetchDiffData() {
+      this.assignedDiscussions = false;
+      this.fetchData(false);
+    },
+    fetchData(toggleTree = true) {
       this.fetchDiffFiles()
         .then(() => {
-          this.hideTreeListIfJustOneFile();
+          if (toggleTree) {
+            this.hideTreeListIfJustOneFile();
+          }
 
           requestIdleCallback(
             () => {

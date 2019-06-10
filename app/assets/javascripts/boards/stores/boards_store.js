@@ -8,6 +8,7 @@ import Cookies from 'js-cookie';
 import BoardsStoreEE from 'ee_else_ce/boards/stores/boards_store_ee';
 import { getUrlParamsArray, parseBoolean } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
+import eventHub from '../eventhub';
 
 const boardsStore = {
   disabled: false,
@@ -45,7 +46,7 @@ const boardsStore = {
   },
   addList(listObj, defaultAvatar) {
     const list = new List(listObj, defaultAvatar);
-    this.state.lists.push(list);
+    this.state.lists = _.sortBy([...this.state.lists, list], 'position');
 
     return list;
   },
@@ -82,8 +83,6 @@ const boardsStore = {
       title: __('Welcome to your Issue Board!'),
       position: 0,
     });
-
-    this.state.lists = _.sortBy(this.state.lists, 'position');
   },
   removeBlankState() {
     this.removeList('blank');
@@ -111,6 +110,11 @@ const boardsStore = {
     });
     listFrom.update();
   },
+
+  startMoving(list, issue) {
+    Object.assign(this.moving, { list, issue });
+  },
+
   moveIssueToList(listFrom, listTo, issue, newIndex) {
     const issueTo = listTo.findIssue(issue.id);
     const issueLists = issue.getLists();
@@ -185,8 +189,38 @@ const boardsStore = {
   findListByLabelId(id) {
     return this.state.lists.find(list => list.type === 'label' && list.label.id === id);
   },
+
+  toggleFilter(filter) {
+    const filterPath = this.filter.path.split('&');
+    const filterIndex = filterPath.indexOf(filter);
+
+    if (filterIndex === -1) {
+      filterPath.push(filter);
+    } else {
+      filterPath.splice(filterIndex, 1);
+    }
+
+    this.filter.path = filterPath.join('&');
+
+    this.updateFiltersUrl();
+
+    eventHub.$emit('updateTokens');
+  },
+
+  setListDetail(newList) {
+    this.detail.list = newList;
+  },
+
   updateFiltersUrl() {
     window.history.pushState(null, null, `?${this.filter.path}`);
+  },
+
+  clearDetailIssue() {
+    this.setIssueDetail({});
+  },
+
+  setIssueDetail(issueDetail) {
+    this.detail.issue = issueDetail;
   },
 };
 

@@ -4,28 +4,28 @@
 # JBake https://jbake.org/ is a Java based, open source, static site/blog generator for developers & designers
 #
 # This yml works with jBake 2.5.1
-# Feel free to change JBAKE_VERSION version 
+# Feel free to change JBAKE_VERSION version
 #
 # HowTo at: https://jorge.aguilera.gitlab.io/howtojbake/
 
 image: java:8
 
 variables:
-    JBAKE_VERSION: 2.5.1
+  JBAKE_VERSION: 2.5.1
 
 # We use SDKMan as tool for managing versions
 before_script:
-   - apt-get update -qq && apt-get install -y -qq unzip zip
-   - curl -sSL https://get.sdkman.io | bash
-   - echo sdkman_auto_answer=true > /root/.sdkman/etc/config
-   - source /root/.sdkman/bin/sdkman-init.sh
-   - sdk install jbake $JBAKE_VERSION < /dev/null
-   - sdk use jbake $JBAKE_VERSION
+  - apt-get update -qq && apt-get install -y -qq unzip zip
+  - curl -sSL https://get.sdkman.io | bash
+  - echo sdkman_auto_answer=true > /root/.sdkman/etc/config
+  - source /root/.sdkman/bin/sdkman-init.sh
+  - sdk install jbake $JBAKE_VERSION < /dev/null
+  - sdk use jbake $JBAKE_VERSION
 
 # This build job produced the output directory of your site
 pages:
- script:
- - jbake . public
- artifacts:
-   paths:
-   - public
+  script:
+    - jbake . public
+  artifacts:
+    paths:
+      - public

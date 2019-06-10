@@ -3,7 +3,7 @@
   .login-body
     = form_for(resource, as: resource_name, url: password_path(:user), html: { method: :put, class: 'gl-show-field-errors' }) do |f|
       .devise-errors
-        = devise_error_messages!
+        = render "devise/shared/error_messages", resource: resource
       = f.hidden_field :reset_password_token
       .form-group
         = f.label 'New password', for: "user_password"

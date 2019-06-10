@@ -52,7 +52,7 @@ describe 'Merge request > User merges when pipeline succeeds', :js do
           # so we have to wait for asynchronous call to reload it
           # and have_content expectation handles that.
           #
-          expect(page).to have_content "Pipeline ##{pipeline.id} running"
+          expect(page).to have_content "Pipeline ##{pipeline.id} (##{pipeline.iid}) running"
         end
 
         it_behaves_like 'Merge when pipeline succeeds activator'
@@ -74,11 +74,12 @@ describe 'Merge request > User merges when pipeline succeeds', :js do
                    source_project: project,
                    title: 'Bug NS-04',
                    author: user,
-                   merge_user: user,
-                   merge_params: { force_remove_source_branch: '1' })
+                   merge_user: user)
         end
 
         before do
+          merge_request.merge_params['force_remove_source_branch'] = '0'
+          merge_request.save!
           click_link "Cancel automatic merge"
         end
 
@@ -102,11 +103,11 @@ describe 'Merge request > User merges when pipeline succeeds', :js do
 
   context 'when merge when pipeline succeeds is enabled' do
     let(:merge_request) do
-      create(:merge_request_with_diffs, :simple,  source_project: project,
-                                                  author: user,
-                                                  merge_user: user,
-                                                  title: 'MepMep',
-                                                  merge_when_pipeline_succeeds: true)
+      create(:merge_request_with_diffs, :simple, :merge_when_pipeline_succeeds,
+        source_project: project,
+        author: user,
+        merge_user: user,
+        title: 'MepMep')
     end
     let!(:build) do
       create(:ci_build, pipeline: pipeline)
@@ -158,8 +159,8 @@ describe 'Merge request > User merges when pipeline succeeds', :js do
         # Wait for the `ci_status` and `merge_check` requests
         wait_for_requests
 
-        page.within('.mr-widget-body') do
-          expect(page).to have_content('Something went wrong')
+        page.within('.mr-section-container') do
+          expect(page).to have_content('Merge failed: Something went wrong')
         end
       end
     end
@@ -177,8 +178,8 @@ describe 'Merge request > User merges when pipeline succeeds', :js do
         # Wait for the `ci_status` and `merge_check` requests
         wait_for_requests
 
-        page.within('.mr-widget-body') do
-          expect(page).to have_content('Something went wrong')
+        page.within('.mr-section-container') do
+          expect(page).to have_content('Merge failed: Something went wrong')
         end
       end
     end

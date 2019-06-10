@@ -2,7 +2,7 @@
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/9388) in [GitLab.com Silver](https://about.gitlab.com/pricing/) 11.10.
 
-GitLab's [SCIM API](https://docs.gitlab.com/ee/api/scim.html) implements part of [the RFC7644 protocol](https://tools.ietf.org/html/rfc7644).
+GitLab's [SCIM API](../../../api/scim.md) implements part of [the RFC7644 protocol](https://tools.ietf.org/html/rfc7644).
 
 Currently, the following actions are available:
 

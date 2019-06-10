@@ -58,6 +58,26 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         expect(Milestone.find_by_description('test milestone').issues.count).to eq(2)
       end
 
+      context 'when importing a project with cached_markdown_version and note_html' do
+        context 'for an Issue' do
+          it 'does not import note_html' do
+            note_content = 'Quo reprehenderit aliquam qui dicta impedit cupiditate eligendi'
+            issue_note = Issue.find_by(description: 'Aliquam enim illo et possimus.').notes.select { |n| n.note.match(/#{note_content}/)}.first
+
+            expect(issue_note.note_html).to match(/#{note_content}/)
+          end
+        end
+
+        context 'for a Merge Request' do
+          it 'does not import note_html' do
+            note_content = 'Sit voluptatibus eveniet architecto quidem'
+            merge_request_note = MergeRequest.find_by(title: 'MR1').notes.select { |n| n.note.match(/#{note_content}/)}.first
+
+            expect(merge_request_note.note_html).to match(/#{note_content}/)
+          end
+        end
+      end
+
       it 'creates a valid pipeline note' do
         expect(Ci::Pipeline.find_by_sha('sha-notes').notes).not_to be_empty
       end
@@ -328,6 +348,19 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
     end
 
     context 'when the project has overridden params in import data' do
+      it 'handles string versions of visibility_level' do
+        # Project needs to be in a group for visibility level comparison
+        # to happen
+        group = create(:group)
+        project.group = group
+
+        project.create_import_data(data: { override_params: { visibility_level: Gitlab::VisibilityLevel::INTERNAL.to_s } })
+
+        restored_project_json
+
+        expect(project.visibility_level).to eq(Gitlab::VisibilityLevel::INTERNAL)
+      end
+
       it 'overwrites the params stored in the JSON' do
         project.create_import_data(data: { override_params: { description: "Overridden" } })
 

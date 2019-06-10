@@ -39,6 +39,8 @@ However, DAST can be [configured](#full-scan)
 to also perform a so-called "active scan". That is, attack your application and produce a more extensive security report.
 It can be very useful combined with [Review Apps](../../../ci/review_apps/index.md).
 
+The [`dast`](https://gitlab.com/gitlab-org/security-products/dast/container_registry) Docker image in GitLab container registry is updated on a weekly basis to have all [`owasp2docker-weekly`](https://hub.docker.com/r/owasp/zap2docker-weekly/) updates in it.
+
 ## Use cases
 
 It helps you automatically find security vulnerabilities in your running web
@@ -47,10 +49,7 @@ applications while you are developing and testing your applications.
 ## Requirements
 
 To run a DAST job, you need GitLab Runner with the
-[`docker`](https://docs.gitlab.com/runner/executors/docker.html#use-docker-in-docker-with-privileged-mode) or
-[`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html#running-privileged-containers-for-the-runners)
-executor running in privileged mode. If you're using the shared Runners on GitLab.com,
-this is enabled by default.
+[`docker` executor](https://docs.gitlab.com/runner/executors/docker.html).
 
 ## Configuring DAST
 
@@ -138,7 +137,7 @@ variables:
 
 #### Customizing the DAST settings
 
-The SAST settings can be changed through environment variables by using the
+The DAST settings can be changed through environment variables by using the
 [`variables`](../../../ci/yaml/README.md#variables) parameter in `.gitlab-ci.yml`.
 These variables are documented in the [DAST README](https://gitlab.com/gitlab-org/security-products/dast#settings).
 

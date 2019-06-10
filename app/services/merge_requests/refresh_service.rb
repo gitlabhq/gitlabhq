@@ -24,7 +24,7 @@ module MergeRequests
       reload_merge_requests
       outdate_suggestions
       refresh_pipelines_on_merge_requests
-      reset_merge_when_pipeline_succeeds
+      cancel_auto_merge
       mark_pending_todos_done
       cache_merge_requests_closing_issues
 
@@ -142,8 +142,10 @@ module MergeRequests
       end
     end
 
-    def reset_merge_when_pipeline_succeeds
-      merge_requests_for_source_branch.each(&:reset_merge_when_pipeline_succeeds)
+    def cancel_auto_merge
+      merge_requests_for_source_branch.each do |merge_request|
+        AutoMergeService.new(project, current_user).cancel(merge_request)
+      end
     end
 
     def mark_pending_todos_done

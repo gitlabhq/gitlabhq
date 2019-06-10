@@ -76,6 +76,7 @@ class Namespace < ApplicationRecord
         'namespaces.*',
         'COALESCE(SUM(ps.storage_size), 0) AS storage_size',
         'COALESCE(SUM(ps.repository_size), 0) AS repository_size',
+        'COALESCE(SUM(ps.wiki_size), 0) AS wiki_size',
         'COALESCE(SUM(ps.lfs_objects_size), 0) AS lfs_objects_size',
         'COALESCE(SUM(ps.build_artifacts_size), 0) AS build_artifacts_size',
         'COALESCE(SUM(ps.packages_size), 0) AS packages_size'
@@ -205,12 +206,12 @@ class Namespace < ApplicationRecord
       .ancestors(upto: top, hierarchy_order: hierarchy_order)
   end
 
-  def self_and_ancestors
+  def self_and_ancestors(hierarchy_order: nil)
     return self.class.where(id: id) unless parent_id
 
     Gitlab::ObjectHierarchy
       .new(self.class.where(id: id))
-      .base_and_ancestors
+      .base_and_ancestors(hierarchy_order: hierarchy_order)
   end
 
   # Returns all the descendants of the current namespace.

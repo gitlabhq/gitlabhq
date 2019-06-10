@@ -1,0 +1,5 @@
+---
+title: Improve performance of jobs controller
+merge_request: 28093
+author:
+type: performance

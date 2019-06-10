@@ -1,0 +1,5 @@
+---
+title: Default masked to false for new variables
+merge_request: 28186
+author:
+type: changed

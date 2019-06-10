@@ -96,7 +96,7 @@ describe Suggestions::CreateService do
 
       it 'creates no suggestion when diff file is not found' do
         expect_next_instance_of(DiffNote) do |diff_note|
-          expect(diff_note).to receive(:latest_diff_file).twice { nil }
+          expect(diff_note).to receive(:latest_diff_file).once { nil }
         end
 
         expect { subject.execute }.not_to change(Suggestion, :count)
@@ -149,6 +149,26 @@ describe Suggestions::CreateService do
             .and_call_original
 
           subject.execute
+        end
+      end
+
+      context 'when a patch removes an empty line' do
+        let(:markdown) do
+          <<-MARKDOWN.strip_heredoc
+              ```suggestion
+              ```
+          MARKDOWN
+        end
+        let(:position) { build_position(new_line: 13) }
+
+        it 'creates an appliable suggestion' do
+          subject.execute
+
+          suggestion = note.suggestions.last
+
+          expect(suggestion).to be_appliable
+          expect(suggestion.from_content).to eq("\n")
+          expect(suggestion.to_content).to eq("")
         end
       end
     end

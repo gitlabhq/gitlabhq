@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Clean up cached files that are older than 1 week
-find tmp/cache/assets/sprockets/ -type f -mtime +7 -execdir rm -- "{}" \;
+# Clean up cached files that are older than 4 days
+find tmp/cache/assets/sprockets/ -type f -mtime +4 -execdir rm -- "{}" \;
 
 du -d 0 -h tmp/cache/assets/sprockets | cut -f1 | xargs -I % echo "tmp/cache/assets/sprockets/ is currently %"

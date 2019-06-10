@@ -4,6 +4,7 @@ import _ from 'underscore';
 import './behaviors/preview_markdown';
 import csrf from './lib/utils/csrf';
 import axios from './lib/utils/axios_utils';
+import { n__, __ } from '~/locale';
 
 Dropzone.autoDiscover = false;
 
@@ -90,7 +91,7 @@ export default function dropzoneInput(form) {
       if (!processingFileCount) $attachButton.removeClass('hide');
       addFileToForm(response.link.url);
     },
-    error: (file, errorMessage = 'Attaching the file failed.', xhr) => {
+    error: (file, errorMessage = __('Attaching the file failed.'), xhr) => {
       // If 'error' event is fired by dropzone, the second parameter is error message.
       // If the 'errorMessage' parameter is empty, the default error message is set.
       // If the 'error' event is fired by backend (xhr) error response, the third parameter is
@@ -273,19 +274,11 @@ export default function dropzoneInput(form) {
   };
 
   updateAttachingMessage = (files, messageContainer) => {
-    let attachingMessage;
     const filesCount = files.filter(file => file.status === 'uploading' || file.status === 'queued')
       .length;
+    const attachingMessage = n__('Attaching a file', 'Attaching %d files', filesCount);
 
-    // Dinamycally change uploading files text depending on files number in
-    // dropzone files queue.
-    if (filesCount > 1) {
-      attachingMessage = `Attaching ${filesCount} files -`;
-    } else {
-      attachingMessage = 'Attaching a file -';
-    }
-
-    messageContainer.text(attachingMessage);
+    messageContainer.text(`${attachingMessage} -`);
   };
 
   form.find('.markdown-selector').click(function onMarkdownClick(e) {

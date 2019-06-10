@@ -31,7 +31,11 @@
     "last_deployment": {
       "oneOf": [
         { "type": "null" },
-        { "$ref": "deployment.json" }
+        { "$ref": "deployment.json" },
+        {
+          "name": { "type": "string" },
+          "build_path": { "type": "string" }
+        }
       ]
     }
   },

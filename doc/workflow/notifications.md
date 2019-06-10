@@ -16,12 +16,16 @@ Notification settings are divided into three groups:
 
 Each of these settings have levels of notification:
 
+- Global: For groups and projects, notifications as per global settings.
 - Watch: Receive notifications for any activity.
-- On Mention: Receive notifications when `@mentioned` in comments.
 - Participate: Receive notifications for threads you have participated in.
+- On Mention: Receive notifications when `@mentioned` in comments.
 - Disabled: Turns off notifications.
 - Custom: Receive notifications for custom selected events.
-- Global: For groups and projects, notifications as per global settings.
+
+> Introduced in GitLab 12.0
+
+You can also select an email address to receive notifications for each group you belong to.
 
 ### Global Settings
 

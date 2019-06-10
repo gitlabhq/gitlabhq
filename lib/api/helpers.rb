@@ -445,7 +445,7 @@ module API
     end
 
     def present_carrierwave_file!(file, supports_direct_download: true)
-      return not_found! unless file.exists?
+      return not_found! unless file&.exists?
 
       if file.file_storage?
         present_disk_file!(file.path, file.filename)

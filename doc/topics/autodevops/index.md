@@ -13,7 +13,7 @@ Starting with GitLab 11.3, the Auto DevOps pipeline is enabled by default for al
 projects. If it has not been explicitly enabled for the project, Auto DevOps will be automatically
 disabled on the first pipeline failure. Your project will continue to use an alternative
 [CI/CD configuration file](../../ci/yaml/README.md) if one is found. A GitLab
-administrator can [change this setting](../../user/admin_area/settings/continuous_integration.html#auto-devops-core-only)
+administrator can [change this setting](../../user/admin_area/settings/continuous_integration.md#auto-devops-core-only)
 in the admin area.
 
 With Auto DevOps, the software development process becomes easier to set up
@@ -126,10 +126,6 @@ Auto Deploy, and Auto Monitoring will be silently skipped.
 
 ## Auto DevOps base domain
 
-NOTE: **Note**
-`AUTO_DEVOPS_DOMAIN` environment variable is deprecated and
-[is scheduled to be removed](https://gitlab.com/gitlab-org/gitlab-ce/issues/56959).
-
 The Auto DevOps base domain is required if you want to make use of [Auto
 Review Apps](#auto-review-apps) and [Auto Deploy](#auto-deploy). It can be defined
 in any of the following places:
@@ -162,6 +158,12 @@ Auto DevOps base domain to `1.2.3.4.nip.io`.
 Once set up, all requests will hit the load balancer, which in turn will route
 them to the Kubernetes pods that run your application(s).
 
+NOTE: **Note:**
+From GitLab 11.8, `KUBE_INGRESS_BASE_DOMAIN` replaces `AUTO_DEVOPS_DOMAIN`.
+Support for `AUTO_DEVOPS_DOMAIN` was [removed in GitLab
+12.0](https://gitlab.com/gitlab-org/gitlab-ce/issues/56959).
+
+
 ## Using multiple Kubernetes clusters **[PREMIUM]**
 
 When using Auto DevOps, you may want to deploy different environments to
@@ -179,7 +181,7 @@ Those environments are tied to jobs that use [Auto Deploy](#auto-deploy), so
 except for the environment scope, they would also need to have a different
 domain they would be deployed to. This is why you need to define a separate
 `KUBE_INGRESS_BASE_DOMAIN` variable for all the above
-[based on the environment](https://docs.gitlab.com/ee/ci/variables/#limiting-environment-scopes-of-environment-variables-premium).
+[based on the environment](../../ci/variables/README.md#limiting-environment-scopes-of-environment-variables-premium).
 
 The following table is an example of how the three different clusters would
 be configured.
@@ -208,10 +210,6 @@ Now that all is configured, you can test your setup by creating a merge request
 and verifying that your app is deployed as a review app in the Kubernetes
 cluster with the `review/*` environment scope. Similarly, you can check the
 other environments.
-
-NOTE: **Note:**
-From GitLab 11.8, `KUBE_INGRESS_BASE_DOMAIN` replaces `AUTO_DEVOPS_DOMAIN`.
-`AUTO_DEVOPS_DOMAIN` [is scheduled to be removed](https://gitlab.com/gitlab-org/gitlab-ce/issues/56959).
 
 ## Enabling/Disabling Auto DevOps
 
@@ -365,7 +363,7 @@ created, and is uploaded as an artifact which you can later download and check
 out.
 
 Any differences between the source and target branches are also
-[shown in the merge request widget](https://docs.gitlab.com/ee/user/project/merge_requests/code_quality.html).
+[shown in the merge request widget](../../user/project/merge_requests/code_quality.md).
 
 ### Auto SAST **[ULTIMATE]**
 
@@ -378,7 +376,7 @@ report is created, it's uploaded as an artifact which you can later download and
 check out.
 
 Any security warnings are also shown in the merge request widget. Read more how
-[SAST works](https://docs.gitlab.com/ee/user/application_security/sast/index.html).
+[SAST works](../../user/application_security/sast/index.md).
 
 NOTE: **Note:**
 The Auto SAST stage will be skipped on licenses other than Ultimate.
@@ -397,7 +395,7 @@ report is created, it's uploaded as an artifact which you can later download and
 check out.
 
 Any security warnings are also shown in the merge request widget. Read more about
-[Dependency Scanning](https://docs.gitlab.com/ee/user/application_security/dependency_scanning/index.html).
+[Dependency Scanning](../../user/application_security/dependency_scanning/index.md).
 
 NOTE: **Note:**
 The Auto Dependency Scanning stage will be skipped on licenses other than Ultimate.
@@ -416,7 +414,7 @@ report is created, it's uploaded as an artifact which you can later download and
 check out.
 
 Any licenses are also shown in the merge request widget. Read more how
-[License Management works](https://docs.gitlab.com/ee/user/application_security/license_management/index.html).
+[License Management works](../../user/application_security/license_management/index.md).
 
 NOTE: **Note:**
 The Auto License Management stage will be skipped on licenses other than Ultimate.
@@ -432,7 +430,7 @@ created, it's uploaded as an artifact which you can later download and
 check out.
 
 Any security warnings are also shown in the merge request widget. Read more how
-[Container Scanning works](https://docs.gitlab.com/ee/user/application_security/container_scanning/index.html).
+[Container Scanning works](../../user/application_security/container_scanning/index.md).
 
 NOTE: **Note:**
 The Auto Container Scanning stage will be skipped on licenses other than Ultimate.
@@ -488,7 +486,7 @@ issues. Once the report is created, it's uploaded as an artifact which you can
 later download and check out.
 
 Any security warnings are also shown in the merge request widget. Read how
-[DAST works](https://docs.gitlab.com/ee/user/application_security/dast/index.html).
+[DAST works](../../user/application_security/dast/index.md).
 
 NOTE: **Note:**
 The Auto DAST stage will be skipped on licenses other than Ultimate.
@@ -506,7 +504,7 @@ Auto Browser Performance Testing utilizes the [Sitespeed.io container](https://h
 ```
 
 Any performance differences between the source and target branches are also
-[shown in the merge request widget](https://docs.gitlab.com/ee//user/project/merge_requests/browser_performance_testing.html).
+[shown in the merge request widget](../../user/project/merge_requests/browser_performance_testing.md).
 
 ### Auto Deploy
 
@@ -584,16 +582,17 @@ Note that a post-install hook means that if any deploy succeeds,
 If present, `DB_MIGRATE` will be run as a shell command within an application pod as
 a helm pre-upgrade hook.
 
-For example, in a Rails application:
+For example, in a Rails application in an image built with
+[Herokuish](https://github.com/gliderlabs/herokuish):
 
-- `DB_INITIALIZE` can be set to `cd /app && RAILS_ENV=production
-  bin/setup`
-- `DB_MIGRATE` can be set to `cd /app && RAILS_ENV=production bin/update`
+- `DB_INITIALIZE` can be set to `RAILS_ENV=production /bin/herokuish procfile exec bin/rails db:setup`
+- `DB_MIGRATE` can be set to `RAILS_ENV=production /bin/herokuish procfile exec bin/rails db:migrate`
 
 NOTE: **Note:**
-The `/app` path is the directory of your project inside the docker image
-as [configured by
-Herokuish](https://github.com/gliderlabs/herokuish#paths)
+Unless you have a `Dockerfile` in your repo, your image is built with
+Herokuish. You must prefix commands run in these images with `/bin/herokuish
+procfile exec` in order to replicate the the environment your application is
+run in.
 
 ### Auto Monitoring
 
@@ -675,7 +674,7 @@ repo or by specifying a project variable:
 ### Custom Helm chart per environment **[PREMIUM]**
 
 You can specify the use of a custom Helm chart per environment by scoping the environment variable
-to the desired environment. See [Limiting environment scopes of variables](https://docs.gitlab.com/ee/ci/variables/#limiting-environment-scopes-of-variables-premium).
+to the desired environment. See [Limiting environment scopes of variables](../../ci/variables/README.md#limiting-environment-scopes-of-environment-variables-premium).
 
 ### Customizing `.gitlab-ci.yml`
 
@@ -734,7 +733,6 @@ also be customized, and you can easily use a [custom buildpack](#custom-buildpac
 
 | **Variable**                 | **Description**                                                                                                                                                                                                               |
 | ------------                 | ---------------                                                                                                                                                                                                               |
-| `AUTO_DEVOPS_DOMAIN`         | The [Auto DevOps domain](#auto-devops-base-domain). By default, set automatically by the [Auto DevOps setting](#enablingdisabling-auto-devops). This variable is deprecated and [is scheduled to be removed](https://gitlab.com/gitlab-org/gitlab-ce/issues/56959). Use `KUBE_INGRESS_BASE_DOMAIN` instead. |
 | `AUTO_DEVOPS_CHART`          | The Helm Chart used to deploy your apps; defaults to the one [provided by GitLab](https://gitlab.com/gitlab-org/charts/auto-deploy-app).                                                             |
 | `AUTO_DEVOPS_CHART_REPOSITORY` | The Helm Chart repository used to search for charts; defaults to `https://charts.gitlab.io`. |
 | `AUTO_DEVOPS_CHART_REPOSITORY_NAME` | From Gitlab 11.11, this variable can be used to set the name of the helm repository; defaults to "gitlab" |
@@ -742,8 +740,8 @@ also be customized, and you can easily use a [custom buildpack](#custom-buildpac
 | `AUTO_DEVOPS_CHART_REPOSITORY_PASSWORD` | From Gitlab 11.11, this variable can be used to set a password to connect to the helm repository. Defaults to no credentials. (Also set AUTO_DEVOPS_CHART_REPOSITORY_USERNAME) |
 | `REPLICAS`                   | The number of replicas to deploy; defaults to 1.                                                                                                                                                                              |
 | `PRODUCTION_REPLICAS`        | The number of replicas to deploy in the production environment. This takes precedence over `REPLICAS`; defaults to 1.                                                                                                         |
-| `CANARY_REPLICAS`            | The number of canary replicas to deploy for [Canary Deployments](https://docs.gitlab.com/ee/user/project/canary_deployments.html); defaults to 1                                                                              |
-| `CANARY_PRODUCTION_REPLICAS` | The number of canary replicas to deploy for [Canary Deployments](https://docs.gitlab.com/ee/user/project/canary_deployments.html) in the production environment. This takes precedence over `CANARY_REPLICAS`; defaults to 1  |
+| `CANARY_REPLICAS`            | The number of canary replicas to deploy for [Canary Deployments](../../user/project/canary_deployments.md); defaults to 1                                                                              |
+| `CANARY_PRODUCTION_REPLICAS` | The number of canary replicas to deploy for [Canary Deployments](../../user/project/canary_deployments.md) in the production environment. This takes precedence over `CANARY_REPLICAS`; defaults to 1  |
 | `ADDITIONAL_HOSTS`           | Fully qualified domain names specified as a comma-separated list that are added to the ingress hosts.                                                                                                                         |
 | `<ENVIRONMENT>_ADDITIONAL_HOSTS` | For a specific environment, the fully qualified domain names specified as a comma-separated list that are added to the ingress hosts. This takes precedence over `ADDITIONAL_HOSTS`.                                      |
 | `POSTGRES_ENABLED`           | Whether PostgreSQL is enabled; defaults to `"true"`. Set to `false` to disable the automatic deployment of PostgreSQL.                                                                                                        |
@@ -771,6 +769,7 @@ also be customized, and you can easily use a [custom buildpack](#custom-buildpac
 | `K8S_SECRET_*`               | From GitLab 11.7, any variable prefixed with [`K8S_SECRET_`](#application-secret-variables) will be made available by Auto DevOps as environment variables to the deployed application. |
 | `KUBE_INGRESS_BASE_DOMAIN`   | From GitLab 11.8, this variable can be used to set a domain per cluster. See [cluster domains](../../user/project/clusters/index.md#base-domain) for more information. |
 | `ROLLOUT_RESOURCE_TYPE`     | From GitLab 11.9, this variable allows specification of the resource type being deployed when using a custom helm chart. Default value is `deployment`. |
+| `ROLLOUT_STATUS_DISABLED`   | From GitLab 12.0, this variable allows to disable rollout status check because it doesn't support all resource types, for example, `cronjob`. |
 | `HELM_UPGRADE_EXTRA_ARGS`   | From GitLab 11.11, this variable allows extra arguments in `helm` commands when deploying the application. Note that using quotes will not prevent word splitting. |
 
 TIP: **Tip:**
@@ -919,7 +918,7 @@ you when you're ready to manually deploy to production.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ci-yml/merge_requests/171)
 in GitLab 11.0.
 
-A [canary environment](https://docs.gitlab.com/ee/user/project/canary_deployments.html) can be used
+A [canary environment](../../user/project/canary_deployments.md) can be used
 before any changes are deployed to production.
 
 If `CANARY_ENABLED` is defined in your project (e.g., set `CANARY_ENABLED` to
@@ -1099,3 +1098,7 @@ curl --data "value=true" --header "PRIVATE-TOKEN: personal_access_token" https:/
 [ee]: https://about.gitlab.com/pricing/
 [ce-21955]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/21955
 [ce-19507]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/19507
+
+## Development guides
+
+Configuring [GDK for Auto DevOps](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/auto_devops.md).

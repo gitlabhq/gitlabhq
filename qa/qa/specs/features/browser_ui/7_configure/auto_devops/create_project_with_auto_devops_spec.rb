@@ -9,8 +9,7 @@ module QA
       Page::Main::Login.perform(&:sign_in_using_credentials)
     end
 
-    # Transient failure issue: https://gitlab.com/gitlab-org/quality/nightly/issues/68
-    describe 'Auto DevOps support', :orchestrated, :kubernetes, :quarantine do
+    describe 'Auto DevOps support', :orchestrated, :kubernetes do
       context 'when rbac is enabled' do
         before(:all) do
           @cluster = Service::KubernetesCluster.new.create!
@@ -34,6 +33,7 @@ module QA
             resource.project = @project
             resource.key = 'CODE_QUALITY_DISABLED'
             resource.value = '1'
+            resource.masked = false
           end
 
           # Set an application secret CI variable (prefixed with K8S_SECRET_)
@@ -41,6 +41,7 @@ module QA
             resource.project = @project
             resource.key = 'K8S_SECRET_OPTIONAL_MESSAGE'
             resource.value = 'you_can_see_this_variable'
+            resource.masked = false
           end
 
           # Connect K8s cluster

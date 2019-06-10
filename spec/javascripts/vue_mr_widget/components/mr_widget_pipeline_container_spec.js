@@ -1,4 +1,4 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { mount, createLocalVue } from '@vue/test-utils';
 import MrWidgetPipelineContainer from '~/vue_merge_request_widget/components/mr_widget_pipeline_container.vue';
 import MrWidgetPipeline from '~/vue_merge_request_widget/components/mr_widget_pipeline.vue';
 import { mockStore } from '../mock_data';
@@ -9,7 +9,7 @@ describe('MrWidgetPipelineContainer', () => {
   const factory = (props = {}) => {
     const localVue = createLocalVue();
 
-    wrapper = shallowMount(localVue.extend(MrWidgetPipelineContainer), {
+    wrapper = mount(localVue.extend(MrWidgetPipelineContainer), {
       propsData: {
         mr: Object.assign({}, mockStore),
         ...props,

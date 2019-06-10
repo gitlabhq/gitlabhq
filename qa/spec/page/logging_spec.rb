@@ -64,9 +64,19 @@ describe QA::Support::Page::Logging do
 
   it 'logs find_element with text' do
     expect { subject.find_element(:element, text: 'foo') }
-      .to output(/finding :element with text "foo"/).to_stdout_from_any_process
+      .to output(/finding :element with args {:text=>"foo"}/).to_stdout_from_any_process
     expect { subject.find_element(:element, text: 'foo') }
       .to output(/found :element/).to_stdout_from_any_process
+  end
+
+  it 'logs find_element with wait' do
+    expect { subject.find_element(:element, wait: 0) }
+      .to output(/finding :element with args {:wait=>0}/).to_stdout_from_any_process
+  end
+
+  it 'logs find_element with class' do
+    expect { subject.find_element(:element, class: 'active') }
+      .to output(/finding :element with args {:class=>\"active\"}/).to_stdout_from_any_process
   end
 
   it 'logs click_element' do
@@ -93,7 +103,14 @@ describe QA::Support::Page::Logging do
     allow(page).to receive(:has_no_css?).and_return(true)
 
     expect { subject.has_no_element?(:element) }
-      .to output(/has_no_element\? :element returned true/).to_stdout_from_any_process
+      .to output(/has_no_element\? :element \(wait: 2\) returned: true/).to_stdout_from_any_process
+  end
+
+  it 'logs has_no_element? with text' do
+    allow(page).to receive(:has_no_css?).and_return(true)
+
+    expect { subject.has_no_element?(:element, text: "more text") }
+      .to output(/has_no_element\? :element with text \"more text\" \(wait: 2\) returned: true/).to_stdout_from_any_process
   end
 
   it 'logs has_text?' do

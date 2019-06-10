@@ -10,6 +10,7 @@ the diagram below and are described in more detail within this document.
 ## Replication layer
 
 Geo handles replication for different components:
+
 - [Database](#database-replication): includes the entire application, except cache and jobs.
 - [Git repositories](#repository-replication): includes both projects and wikis.
 - [Uploaded blobs](#uploads-replication): includes anything from images attached on issues
@@ -90,7 +91,7 @@ projects that need updating. Those projects can be:
   timestamp that is more recent than the `last_repository_successful_sync_at`
   timestamp in the `Geo::ProjectRegistry` model.
 - Manual: The admin can manually flag a repository to resync in the
-  [Geo admin panel](https://docs.gitlab.com/ee/user/admin_area/geo_nodes.html).
+  [Geo admin panel](../user/admin_area/geo_nodes.md).
 
 When we fail to fetch a repository on the secondary `RETRIES_BEFORE_REDOWNLOAD`
 times, Geo does a so-called _redownload_. It will do a clean clone
@@ -209,20 +210,38 @@ bundle exec rake geo:db:migrate
 
 ### Foreign Data Wrapper
 
-The use of [FDW](#fdw) was introduced in GitLab 10.1.
+> Introduced in GitLab 10.1.
 
-This is useful for the [Geo Log Cursor](#geo-log-cursor) and improves
-the performance of some synchronization operations.
+Foreign Data Wrapper ([FDW](#fdw)) is used by the [Geo Log Cursor](#geo-log-cursor) and improves
+the performance of many synchronization operations.
+
+FDW is a PostgreSQL extension ([`postgres_fdw`](https://www.postgresql.org/docs/current/postgres-fdw.html)) that is enabled within
+the Geo Tracking Database (on a **secondary** node), which allows it
+to connect to the readonly database replica and perform queries and filter
+data from both instances.
 
 While FDW is available in older versions of PostgreSQL, we needed to
 raise the minimum required version to 9.6 as this includes many
 performance improvements to the FDW implementation.
 
+This persistent connection is configured as an FDW server
+named `gitlab_secondary`. This configuration exists within the database's user
+context only. To access the `gitlab_secondary`, GitLab needs to use the
+same database user that had previously been configured.
+
+The Geo Tracking Database accesses the readonly database replica via FDW as a regular user, 
+limited by its own restrictions. The credentials are configured as a 
+`USER MAPPING` associated with the `SERVER` mapped previously 
+(`gitlab_secondary`).
+
+FDW configuration and credentials definition are managed automatically by the
+Omnibus GitLab `gitlab-ctl reconfigure` command. 
+
 #### Refeshing the Foreign Tables
 
-Whenever the database schema changes on the **primary** node, the
-**secondary** node will need to refresh its foreign tables by running
-the following:
+Whenever a new Geo node is configured or the database schema changes on the 
+**primary** node, you must refresh the foreign tables on the **secondary** node
+by running the following:
 
 ```sh
 bundle exec rake geo:db:refresh_foreign_tables
@@ -241,6 +260,53 @@ STATEMENT:                SELECT a.attname, format_type(a.atttypid, a.atttypmod)
                     WHERE a.attrelid = '"gitlab_secondary"."ci_job_artifacts"'::regclass
                       AND a.attnum > 0 AND NOT a.attisdropped
                     ORDER BY a.attnum
+```
+
+#### Accessing data from a Foreign Table
+
+At the SQL level, all you have to do is `SELECT` data from `gitlab_secondary.*`.
+
+Here's an example of how to access all projects from the Geo Tracking Database's FDW:
+
+```sql
+SELECT * FROM gitlab_secondary.projects;
+```
+
+As a more real-world example, this is how you filter for unarchived projects
+on the Tracking Database:
+
+```sql
+SELECT project_registry.*
+  FROM project_registry
+  JOIN gitlab_secondary.projects
+    ON (project_registry.project_id = gitlab_secondary.projects.id 
+   AND gitlab_secondary.projects.archived IS FALSE)
+```
+
+At the ActiveRecord level, we have additional Models that represent the 
+foreign tables. They must be mapped in a slightly different way, and they are read-only.
+
+Check the existing FDW models in `ee/app/models/geo/fdw` for reference.
+
+From a developer's perspective, it's no different than creating a model that
+represents a Database View.
+
+With the examples above, you can access the projects with:
+
+```ruby
+Geo::Fdw::Project.all
+```
+
+and to access the `ProjectRegistry` filtering by unarchived projects:
+
+```ruby
+# We have to use Arel here:
+project_registry_table = Geo::ProjectRegistry.arel_table
+fdw_project_table = Geo::Fdw::Project.arel_table
+
+project_registry_table.join(fdw_project_table)
+                      .on(project_registry_table[:project_id].eq(fdw_project_table[:id]))
+                      .where((fdw_project_table[:archived]).eq(true)) # if you append `.to_sql` you can check generated query
 ```
 
 ## Finders
@@ -299,7 +365,7 @@ basically hashes all Git refs together and stores that hash in the
 The **secondary** node does the same to calculate the hash of its
 clone, and compares the hash with the value the **primary** node
 calculated. If there is a mismatch, Geo will mark this as a mismatch
-and the administrator can see this in the [Geo admin panel](https://docs.gitlab.com/ee/user/admin_area/geo_nodes.html).
+and the administrator can see this in the [Geo admin panel](../user/admin_area/geo_nodes.md).
 
 ## Glossary
 

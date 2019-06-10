@@ -4,19 +4,53 @@ rbac:
 hub:
   extraEnv:
     JUPYTER_ENABLE_LAB: 1
-    SINGLEUSER_IMAGE: 'registry.gitlab.com/gitlab-org/jupyterhub-user-image:latest'
   extraConfig: |
     c.KubeSpawner.cmd = ['jupyter-labhub']
+    c.GitLabOAuthenticator.scope = ['api read_repository write_repository']
+
+    async def add_auth_env(spawner):
+      '''
+      We set user's id, login and access token on single user image to
+      enable repository integration for JupyterHub.
+      See: https://gitlab.com/gitlab-org/gitlab-ce/issues/47138#note_154294790
+      '''
+      auth_state = await spawner.user.get_auth_state()
+
+      if not auth_state:
+          spawner.log.warning("No auth state for %s", spawner.user)
+          return
+
+      spawner.environment['GITLAB_ACCESS_TOKEN'] = auth_state['access_token']
+      spawner.environment['GITLAB_USER_LOGIN'] = auth_state['gitlab_user']['username']
+      spawner.environment['GITLAB_USER_ID'] = str(auth_state['gitlab_user']['id'])
+      spawner.environment['GITLAB_USER_EMAIL'] = auth_state['gitlab_user']['email']
+      spawner.environment['GITLAB_USER_NAME'] = auth_state['gitlab_user']['name']
+
+    c.KubeSpawner.pre_spawn_hook = add_auth_env
 
 auth:
   type: gitlab
+  state:
+    enabled: true
 
 singleuser:
   defaultUrl: "/lab"
+  image:
+    name: registry.gitlab.com/gitlab-org/jupyterhub-user-image
+    tag: latest
   lifecycleHooks:
     postStart:
       exec:
-        command: ["sh", "-c", "git clone https://gitlab.com/gitlab-org/nurtch-demo.git DevOps-Runbook-Demo || true"]
+        command:
+          - "sh"
+          - "-c"
+          - >
+            git clone https://gitlab.com/gitlab-org/nurtch-demo.git DevOps-Runbook-Demo || true;
+            echo "https://${GITLAB_USER_LOGIN}:${GITLAB_ACCESS_TOKEN}@${GITLAB_HOST}" > ~/.git-credentials;
+            git config --global credential.helper store;
+            git config --global user.email "${GITLAB_USER_EMAIL}";
+            git config --global user.name "${GITLAB_USER_NAME}";
+            jupyter serverextension enable --py jupyterlab_git
 
 ingress:
  enabled: true

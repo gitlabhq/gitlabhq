@@ -12,7 +12,7 @@ const Api = {
   groupProjectsPath: '/api/:version/groups/:id/projects.json',
   projectsPath: '/api/:version/projects.json',
   projectPath: '/api/:version/projects/:id',
-  projectLabelsPath: '/:namespace_path/:project_path/labels',
+  projectLabelsPath: '/:namespace_path/:project_path/-/labels',
   projectMergeRequestsPath: '/api/:version/projects/:id/merge_requests',
   projectMergeRequestPath: '/api/:version/projects/:id/merge_requests/:mrid',
   projectMergeRequestChangesPath: '/api/:version/projects/:id/merge_requests/:mrid/changes',

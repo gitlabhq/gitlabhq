@@ -132,7 +132,7 @@ describe SystemNoteService do
     end
 
     it 'sets the note text' do
-      link = "http://localhost/#{project.full_path}/tags/#{tag_name}"
+      link = "/#{project.full_path}/-/tags/#{tag_name}"
 
       expect(subject.note).to eq "tagged commit #{noteable.sha} to [`#{tag_name}`](#{link})"
     end
@@ -1139,7 +1139,7 @@ describe SystemNoteService do
 
         diff_id = merge_request.merge_request_diff.id
         line_code = change_position.line_code(project.repository)
-        expect(subject.note).to include(diffs_project_merge_request_url(project, merge_request, diff_id: diff_id, anchor: line_code))
+        expect(subject.note).to include(diffs_project_merge_request_path(project, merge_request, diff_id: diff_id, anchor: line_code))
       end
     end
 

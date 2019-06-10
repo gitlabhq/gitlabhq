@@ -14,12 +14,13 @@
 1. [From repo by URL](repo_by_url.md)
 1. [By uploading a manifest file (AOSP)](manifest.md)
 1. [From Gemnasium](gemnasium.md)
+1. [From Phabricator](phabricator.md)
 
 In addition to the specific migration documentation above, you can import any
 Git repository via HTTP from the New Project page. Be aware that if the
 repository is too large the import can timeout.
 
-There is also the option of [connecting your external repository to get CI/CD benefits](https://docs.gitlab.com/ee/ci/ci_cd_for_external_repos/index.html). **[PREMIUM]**
+There is also the option of [connecting your external repository to get CI/CD benefits](../../../ci/ci_cd_for_external_repos/index.md). **[PREMIUM]**
 
 ## Migrating from self-hosted GitLab to GitLab.com
 

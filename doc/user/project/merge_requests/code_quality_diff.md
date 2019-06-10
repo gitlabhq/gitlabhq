@@ -1,5 +1,5 @@
 ---
-redirect_from: 'https://docs.gitlab.com/ee/user/project/merge_requests/code_quality_diff.html'
+redirect_from: 'code_quality_diff.md'
 redirect_to: 'code_quality.md'
 ---
 

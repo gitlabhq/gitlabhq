@@ -62,4 +62,32 @@ describe LabelPresenter do
       expect(label.can_subscribe_to_label_in_different_levels?).to be_falsey
     end
   end
+
+  describe '#project_label?' do
+    context 'with group label' do
+      subject { group_label.project_label? }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'with project label' do
+      subject { label.project_label? }
+
+      it { is_expected.to be_truthy }
+    end
+  end
+
+  describe '#subject_name' do
+    context 'with group label' do
+      subject { group_label.subject_name }
+
+      it { is_expected.to eq(group_label.group.name) }
+    end
+
+    context 'with project label' do
+      subject { label.subject_name }
+
+      it { is_expected.to eq(label.project.name) }
+    end
+  end
 end

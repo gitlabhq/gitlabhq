@@ -68,7 +68,7 @@ class Event < ApplicationRecord
 
   # Callbacks
   after_create :reset_project_activity
-  after_create :set_last_repository_updated_at, if: :push?
+  after_create :set_last_repository_updated_at, if: :push_action?
   after_create :track_user_interacted_projects
 
   # Scopes
@@ -138,11 +138,11 @@ class Event < ApplicationRecord
   # rubocop:disable Metrics/CyclomaticComplexity
   # rubocop:disable Metrics/PerceivedComplexity
   def visible_to_user?(user = nil)
-    if push? || commit_note?
+    if push_action? || commit_note?
       Ability.allowed?(user, :download_code, project)
     elsif membership_changed?
       Ability.allowed?(user, :read_project, project)
-    elsif created_project?
+    elsif created_project_action?
       Ability.allowed?(user, :read_project, project)
     elsif issue? || issue_note?
       Ability.allowed?(user, :read_issue, note? ? note_target : target)
@@ -173,56 +173,56 @@ class Event < ApplicationRecord
     target.try(:title)
   end
 
-  def created?
+  def created_action?
     action == CREATED
   end
 
-  def push?
+  def push_action?
     false
   end
 
-  def merged?
+  def merged_action?
     action == MERGED
   end
 
-  def closed?
+  def closed_action?
     action == CLOSED
   end
 
-  def reopened?
+  def reopened_action?
     action == REOPENED
   end
 
-  def joined?
+  def joined_action?
     action == JOINED
   end
 
-  def left?
+  def left_action?
     action == LEFT
   end
 
-  def expired?
+  def expired_action?
     action == EXPIRED
   end
 
-  def destroyed?
+  def destroyed_action?
     action == DESTROYED
   end
 
-  def commented?
+  def commented_action?
     action == COMMENTED
   end
 
   def membership_changed?
-    joined? || left? || expired?
+    joined_action? || left_action? || expired_action?
   end
 
-  def created_project?
-    created? && !target && target_type.nil?
+  def created_project_action?
+    created_action? && !target && target_type.nil?
   end
 
   def created_target?
-    created? && target
+    created_action? && target
   end
 
   def milestone?
@@ -258,23 +258,23 @@ class Event < ApplicationRecord
   end
 
   def action_name
-    if push?
+    if push_action?
       push_action_name
-    elsif closed?
+    elsif closed_action?
       "closed"
-    elsif merged?
+    elsif merged_action?
       "accepted"
-    elsif joined?
+    elsif joined_action?
       'joined'
-    elsif left?
+    elsif left_action?
       'left'
-    elsif expired?
+    elsif expired_action?
       'removed due to membership expiration from'
-    elsif destroyed?
+    elsif destroyed_action?
       'destroyed'
-    elsif commented?
+    elsif commented_action?
       "commented on"
-    elsif created_project?
+    elsif created_project_action?
       created_project_action_name
     else
       "opened"
@@ -337,7 +337,7 @@ class Event < ApplicationRecord
   end
 
   def body?
-    if push?
+    if push_action?
       push_with_commits?
     elsif note?
       true

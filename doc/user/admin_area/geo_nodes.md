@@ -1,9 +1,13 @@
+---
+type: howto
+---
+
 # Geo nodes admin area **[PREMIUM ONLY]**
 
-For more information about setting up GitLab Geo, read the
-[Geo documentation](https://docs.gitlab.com/ee/administration/geo/replication/index.html).
+You can configure various settings for GitLab Geo nodes. For more information, see
+[Geo documentation](../../administration/geo/replication/index.md).
 
-When you're done, you can navigate to **Admin area > Geo** (`/admin/geo/nodes`).
+On the primary node, go to **Admin area > Geo**. On secondary nodes, go to **Admin area > Geo > Nodes**.
 
 ## Common settings
 
@@ -25,7 +29,7 @@ changes on the **primary** node!
 
 | Setting                   | Description |
 |---------------------------|-------------|
-| Selective synchronization | Enable Geo [selective sync](https://docs.gitlab.com/ee/administration/geo/replication/configuration.html#selective-synchronization) for this **secondary** node. |
+| Selective synchronization | Enable Geo [selective sync](../../administration/geo/replication/configuration.md#selective-synchronization) for this **secondary** node. |
 | Repository sync capacity  | Number of concurrent requests this **secondary** node will make to the **primary** node when backfilling repositories. |
 | File sync capacity        | Number of concurrent requests this **secondary** node will make to the **primary** node when backfilling files. |
 
@@ -68,3 +72,15 @@ a unique `name` is set for each Geo node. The `gitlab.rb` setting
 
 The load balancer must use sticky sessions in order to avoid authentication
 failures and cross site request errors.
+
+<!-- ## Troubleshooting
+
+Include any troubleshooting steps that you can foresee. If you know beforehand what issues
+one might have when setting this up, or when something is changed, or on upgrading, it's
+important to describe those, too. Think of things that may go wrong and include them here.
+This is important to minimize requests for support, and to avoid doc comments with
+questions that you know someone might ask.
+
+Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+If you have none to add when creating a doc, leave this section in place
+but commented out to help encourage others to add to it in the future. -->

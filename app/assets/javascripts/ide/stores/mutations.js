@@ -142,7 +142,7 @@ export default {
 
     Object.assign(state.entries[file.path], {
       raw: file.content,
-      changed: !!changedFile,
+      changed: Boolean(changedFile),
       staged: false,
       prevPath: '',
       moved: false,

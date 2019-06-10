@@ -1,18 +1,21 @@
+# frozen_string_literal: true
+
 require_relative '../../qa_helpers'
 
 module RuboCop
   module Cop
     module QA
-      # This cop checks for the usage of factories in migration specs
+      # This cop checks for the usage of patterns in QA elements
       #
       # @example
       #
       #   # bad
-      #   let(:user) { create(:user) }
+      #   element :some_element, "link_to 'something'"
+      #   element :some_element, /link_to 'something'/
       #
       #   # good
-      #   let(:users) { table(:users) }
-      #   let(:user) { users.create!(name: 'User 1', username: 'user1') }
+      #   element :some_element
+      #   element :some_element, required: true
       class ElementWithPattern < RuboCop::Cop::Cop
         include QAHelpers
 
@@ -22,10 +25,13 @@ module RuboCop
           return unless in_qa_file?(node)
           return unless method_name(node).to_s == 'element'
 
-          element_name, pattern = node.arguments
-          return unless pattern
+          element_name, *args = node.arguments
 
-          add_offense(node, location: pattern.source_range, message: MESSAGE % "qa-#{element_name.value.to_s.tr('_', '-')}")
+          return if args.first.nil?
+
+          args.first.each_node(:str) do |arg|
+            add_offense(arg, message: MESSAGE % "qa-#{element_name.value.to_s.tr('_', '-')}")
+          end
         end
 
         private

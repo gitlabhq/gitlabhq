@@ -45,9 +45,12 @@ FactoryBot.define do
       file_type :archive
       file_format :zip
 
-      after(:build) do |artifact, _|
-        artifact.file = fixture_file_upload(
-          Rails.root.join('spec/fixtures/ci_build_artifacts.zip'), 'application/zip')
+      transient do
+        file { fixture_file_upload(Rails.root.join('spec/fixtures/ci_build_artifacts.zip'), 'application/zip') }
+      end
+
+      after(:build) do |artifact, evaluator|
+        artifact.file = evaluator.file
       end
     end
 
@@ -61,9 +64,12 @@ FactoryBot.define do
       file_type :metadata
       file_format :gzip
 
-      after(:build) do |artifact, _|
-        artifact.file = fixture_file_upload(
-          Rails.root.join('spec/fixtures/ci_build_artifacts_metadata.gz'), 'application/x-gzip')
+      transient do
+        file { fixture_file_upload(Rails.root.join('spec/fixtures/ci_build_artifacts_metadata.gz'), 'application/x-gzip') }
+      end
+
+      after(:build) do |artifact, evaluator|
+        artifact.file = evaluator.file
       end
     end
 

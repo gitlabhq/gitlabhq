@@ -1,0 +1,4 @@
+- if @errors.present?
+  .alert.alert-danger
+    - @errors.each do |error|
+      = error

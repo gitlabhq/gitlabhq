@@ -21,13 +21,6 @@
       color: $login-brand-holder-color;
     }
 
-    h1:first-child {
-      font-weight: $gl-font-weight-normal;
-      margin-bottom: 0.68em;
-      margin-top: 0;
-      font-size: 34px;
-    }
-
     h3 {
       font-size: 22px;
     }
@@ -49,8 +42,8 @@
   .login-box,
   .omniauth-container {
     box-shadow: 0 0 0 1px $border-color;
-    border-bottom-right-radius: $border-radius-small;
-    border-bottom-left-radius: $border-radius-small;
+    border-bottom-right-radius: $border-radius;
+    border-bottom-left-radius: $border-radius;
     padding: 15px;
 
     .login-heading h3 {
@@ -80,7 +73,8 @@
     .login-body {
       font-size: 13px;
 
-      input + p {
+      input + p,
+      input ~ p.field-validation {
         margin-top: 5px;
       }
 
@@ -95,7 +89,7 @@
   }
 
   .omniauth-container {
-    border-radius: $border-radius-small;
+    border-radius: $border-radius;
     font-size: 13px;
 
     p {

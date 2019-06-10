@@ -1,0 +1,5 @@
+---
+title: Fix Merge Request merge checkbox alignment on mobile view
+merge_request: 28845
+author:
+type: fixed

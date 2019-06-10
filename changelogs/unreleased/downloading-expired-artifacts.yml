@@ -1,5 +1,0 @@
----
-title: stop rendering download links for expired artifacts on the project tags page
-merge_request: 26753
-author: Drew Cimino
-type: fixed

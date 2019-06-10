@@ -205,25 +205,6 @@ cd /home/git/gitlab
 sudo -u git -H bundle exec rake gitlab:track_deployment RAILS_ENV=production
 ```
 
-## Create or repair repository hooks symlink
-
-If the GitLab shell hooks directory location changes or another circumstance
-leads to the hooks symlink becoming missing or invalid, run this Rake task
-to create or repair the symlinks.
-
-**Omnibus Installation**
-
-```
-sudo gitlab-rake gitlab:shell:create_hooks
-```
-
-**Source Installation**
-
-```
-cd /home/git/gitlab
-sudo -u git -H bundle exec rake gitlab:shell:create_hooks RAILS_ENV=production
-```
-
 ## Check TCP connectivity to a remote site
 
 Sometimes you need to know if your GitLab installation can connect to a TCP

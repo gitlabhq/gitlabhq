@@ -32,7 +32,7 @@ describe Gitlab::UrlBuilder do
 
           url = described_class.build(milestone)
 
-          expect(url).to eq "#{Settings.gitlab['url']}/#{milestone.project.full_path}/milestones/#{milestone.iid}"
+          expect(url).to eq "#{Settings.gitlab['url']}/#{milestone.project.full_path}/-/milestones/#{milestone.iid}"
         end
       end
 

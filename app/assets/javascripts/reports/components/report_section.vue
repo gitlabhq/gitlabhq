@@ -3,10 +3,7 @@ import { __ } from '~/locale';
 import StatusIcon from '~/vue_merge_request_widget/components/mr_widget_status_icon.vue';
 import Popover from '~/vue_shared/components/help_popover.vue';
 import IssuesList from './issues_list.vue';
-
-const LOADING = 'LOADING';
-const ERROR = 'ERROR';
-const SUCCESS = 'SUCCESS';
+import { status } from '../constants';
 
 export default {
   name: 'ReportSection',
@@ -42,7 +39,8 @@ export default {
     },
     successText: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
     unresolvedIssues: {
       type: Array,
@@ -73,6 +71,26 @@ export default {
       default: () => ({}),
       required: false,
     },
+    showReportSectionStatusIcon: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    issuesUlElementClass: {
+      type: String,
+      required: false,
+      default: undefined,
+    },
+    issuesListContainerClass: {
+      type: String,
+      required: false,
+      default: undefined,
+    },
+    issueItemClass: {
+      type: String,
+      required: false,
+      default: undefined,
+    },
   },
 
   data() {
@@ -86,13 +104,13 @@ export default {
       return this.isCollapsed ? __('Expand') : __('Collapse');
     },
     isLoading() {
-      return this.status === LOADING;
+      return this.status === status.LOADING;
     },
     loadingFailed() {
-      return this.status === ERROR;
+      return this.status === status.ERROR;
     },
     isSuccess() {
-      return this.status === SUCCESS;
+      return this.status === status.SUCCESS;
     },
     isCollapsible() {
       return !this.alwaysOpen && this.hasIssues;
@@ -127,6 +145,15 @@ export default {
     hasPopover() {
       return Object.keys(this.popoverOptions).length > 0;
     },
+    slotName() {
+      if (this.isSuccess) {
+        return 'success';
+      } else if (this.isLoading) {
+        return 'loading';
+      }
+
+      return 'error';
+    },
   },
   methods: {
     toggleCollapsed() {
@@ -142,6 +169,7 @@ export default {
       <div class="media-body d-flex flex-align-self-center">
         <span class="js-code-text code-text">
           {{ headerText }}
+          <slot :name="slotName"></slot>
 
           <popover v-if="hasPopover" :options="popoverOptions" class="prepend-left-5" />
         </span>
@@ -151,7 +179,7 @@ export default {
         <button
           v-if="isCollapsible"
           type="button"
-          class="js-collapse-btn btn float-right btn-sm"
+          class="js-collapse-btn btn float-right btn-sm qa-expand-report-button"
           @click="toggleCollapsed"
         >
           {{ collapseText }}
@@ -166,6 +194,10 @@ export default {
           :resolved-issues="resolvedIssues"
           :neutral-issues="neutralIssues"
           :component="component"
+          :show-report-section-status-icon="showReportSectionStatusIcon"
+          :issues-ul-element-class="issuesUlElementClass"
+          :class="issuesListContainerClass"
+          :issue-item-class="issueItemClass"
         />
       </slot>
     </div>

@@ -100,6 +100,11 @@ Devise.setup do |config|
   # secure: true in order to force SSL only cookies.
   # config.cookie_options = {}
 
+  # When set to false, does not sign a user in automatically after their password is
+  # changed. Defaults to true, so a user is signed in automatically after a password
+  # is changed.
+  config.sign_in_after_change_password = false
+
   # Send a notification email when the user's password is changed
   config.send_password_change_notification = true
 

@@ -9,20 +9,44 @@ easy to maintain, and performant for the end-user.
 As part of the effort for [cleaning up our CSS and moving our components into GitLab-UI](https://gitlab.com/groups/gitlab-org/-/epics/950)
 led by the [GitLab UI WG](https://gitlab.com/gitlab-com/www-gitlab-com/merge_requests/20623) we prefer the use of utility classes over adding new CSS. However, complex CSS can be addressed by adding component classes.
 
-We have a few internal utility classes in [`common.scss`](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/app/assets/stylesheets/framework/common.scss)
-and we use [Bootstrap's Utility Classes](https://getbootstrap.com/docs/4.3/utilities/)
+#### Where are utility classes defined?
+
+- [Bootstrap's Utility Classes](https://getbootstrap.com/docs/4.3/utilities/)
+- [`common.scss`](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/app/assets/stylesheets/framework/common.scss) (old)
+- [`utilities.scss`](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/app/assets/stylesheets/utilities.scss) (new)
+
+#### Where should I put new utility classes?
 
 New utility classes should be added to [`utilities.scss`](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/app/assets/stylesheets/utilities.scss). Existing classes include:
 
-**Background color**: `.bg-variant-shade` e.g. `.bg-warning-400`  
-**Text color**: `.text-variant-shade` e.g. `.text-success-500` 
+| Name | Pattern | Example |
+|------|---------|---------|
+| Background color | `.bg-{variant}-{shade}` | `.bg-warning-400` |
+| Text color | `.text-{variant}-{shade}` | `.text-success-500` |
+| Font size | `.text-{size}` | `.text-2` |
 
-- variant is one of 'primary', 'secondary', 'success', 'warning', 'error'
-- shade is on of the shades listed on [colors](https://design.gitlab.com/foundations/colors/)
+- `{variant}` is one of 'primary', 'secondary', 'success', 'warning', 'error'
+- `{shade}` is on of the shades listed on [colors](https://design.gitlab.com/foundations/colors/)
+- `{size}` is a number from 1-6 from our [Type scale](https://design.gitlab.com/foundations/typography)
 
-**Font size**: `.text-size` e.g. `.text-2`
+#### When should I create component classes?
 
-- **size** is number from 1-6 from our [Type scale](https://design.gitlab.com/foundations/typography)
+We recommend a "utility-first" approach. 
+
+1. Start with utility classes.
+2. If composing utility classes into a component class removes code duplication and encapsulates a clear responsibility, do it.
+
+This encourages an organic growth of component classes and prevents the creation of one-off unreusable classes. Also, the kind of classes that emerge from "utility-first" tend to be design-centered (e.g. `.button`, `.alert`, `.card`) rather than domain-centered (e.g. `.security-report-widget`, `.commit-header-icon`). 
+
+Examples of component classes that were created using "utility-first" include:
+
+- [`.circle-icon-container`](https://gitlab.com/gitlab-org/gitlab-ce/blob/579fa8b8ec7eb38d40c96521f517c9dab8c3b97a/app/assets/stylesheets/framework/icons.scss#L85)
+- [`.d-flex-center`](https://gitlab.com/gitlab-org/gitlab-ce/blob/900083d89cd6af391d26ab7922b3f64fa2839bef/app/assets/stylesheets/framework/common.scss#L425)
+
+Inspiration:
+
+- https://tailwindcss.com/docs/utility-first
+- https://tailwindcss.com/docs/extracting-components 
 
 ### Naming
 

@@ -1,12 +1,14 @@
 require 'spec_helper'
 
 describe API::SystemHooks do
+  include StubRequests
+
   let(:user) { create(:user) }
   let(:admin) { create(:admin) }
   let!(:hook) { create(:system_hook, url: "http://example.com") }
 
   before do
-    stub_request(:post, hook.url)
+    stub_full_request(hook.url, method: :post)
   end
 
   describe "GET /hooks" do
@@ -68,6 +70,8 @@ describe API::SystemHooks do
     end
 
     it 'sets default values for events' do
+      stub_full_request('http://mep.mep', method: :post)
+
       post api('/hooks', admin), params: { url: 'http://mep.mep' }
 
       expect(response).to have_gitlab_http_status(201)
@@ -78,6 +82,8 @@ describe API::SystemHooks do
     end
 
     it 'sets explicit values for events' do
+      stub_full_request('http://mep.mep', method: :post)
+
       post api('/hooks', admin),
         params: {
           url: 'http://mep.mep',

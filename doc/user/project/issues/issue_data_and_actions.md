@@ -90,7 +90,7 @@ If a label doesn't exist yet, you can click **Edit**, and it opens a dropdown me
 
 - Assign a weight. Larger values are used to indicate more effort is required to complete the issue. Only positive values or zero are allowed.
 
-Learn more in the [Issue Weight documentation](https://docs.gitlab.com/ee/workflow/issue_weight.html).
+Learn more in the [Issue Weight documentation](../../../workflow/issue_weight.md).
 
 #### 9. Participants
 
@@ -103,7 +103,7 @@ Learn more in the [Issue Weight documentation](https://docs.gitlab.com/ee/workfl
 - Unsubscribe: if you are receiving notifications on that issue but no
   longer want to receive them, unsubscribe from it.
 
-Read more in the [notifications documentation](https://docs.gitlab.com/ee/workflow/notifications.html#issue--epics--merge-request-events).
+Read more in the [notifications documentation](../../../workflow/notifications.md#issue--epics--merge-request-events).
 
 #### 11. Reference
 

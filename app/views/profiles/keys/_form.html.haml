@@ -3,11 +3,11 @@
     = form_errors(@key)
 
     .form-group
-      = f.label :key, class: 'label-bold'
+      = f.label :key, s_('Profiles|Key'), class: 'label-bold'
       %p= _("Paste your public SSH key, which is usually contained in the file '~/.ssh/id_rsa.pub' and begins with 'ssh-rsa'. Don't use your private SSH key.")
       = f.text_area :key, class: "form-control js-add-ssh-key-validation-input qa-key-public-key-field", rows: 8, required: true, placeholder: s_('Profiles|Typically starts with "ssh-rsa …"')
     .form-group
-      = f.label :title, class: 'label-bold'
+      = f.label :title, _('Title'), class: 'label-bold'
       = f.text_field :title, class: "form-control input-lg qa-key-title-field", required: true, placeholder: s_('Profiles|e.g. My MacBook key')
       %p.form-text.text-muted= _('Name your individual key via a title')
 

@@ -81,6 +81,17 @@ describe PagesDomain do
     end
   end
 
+  describe 'when certificate is specified' do
+    let(:domain) { build(:pages_domain) }
+
+    it 'saves validity time' do
+      domain.save
+
+      expect(domain.certificate_valid_not_before).to be_like_time(Time.parse("2016-02-12 14:32:00 UTC"))
+      expect(domain.certificate_valid_not_after).to be_like_time(Time.parse("2020-04-12 14:32:00 UTC"))
+    end
+  end
+
   describe 'validate certificate' do
     subject { domain }
 

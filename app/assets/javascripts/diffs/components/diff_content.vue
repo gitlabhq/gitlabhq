@@ -8,6 +8,7 @@ import NotDiffableViewer from '~/vue_shared/components/diff_viewer/viewers/not_d
 import NoPreviewViewer from '~/vue_shared/components/diff_viewer/viewers/no_preview.vue';
 import InlineDiffView from './inline_diff_view.vue';
 import ParallelDiffView from './parallel_diff_view.vue';
+import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
 import NoteForm from '../../notes/components/note_form.vue';
 import ImageDiffOverlay from './image_diff_overlay.vue';
 import DiffDiscussions from './diff_discussions.vue';
@@ -26,6 +27,7 @@ export default {
     ImageDiffOverlay,
     NotDiffableViewer,
     NoPreviewViewer,
+    userAvatarLink,
     DiffFileDrafts: () => import('ee_component/batch_comments/components/diff_file_drafts.vue'),
   },
   mixins: [diffLineNoteFormMixin, draftCommentsMixin],
@@ -47,7 +49,7 @@ export default {
     }),
     ...mapGetters('diffs', ['isInlineView', 'isParallelView']),
     ...mapGetters('diffs', ['getCommentFormForDiffFile']),
-    ...mapGetters(['getNoteableData', 'noteableType']),
+    ...mapGetters(['getNoteableData', 'noteableType', 'getUserData']),
     diffMode() {
       return getDiffMode(this.diffFile);
     },
@@ -71,6 +73,9 @@ export default {
     },
     diffFileHash() {
       return this.diffFile.file_hash;
+    },
+    author() {
+      return this.getUserData;
     },
   },
   methods: {
@@ -134,6 +139,14 @@ export default {
           :can-comment="getNoteableData.current_user.can_create_note"
         />
         <div v-if="showNotesContainer" class="note-container">
+          <user-avatar-link
+            v-if="diffFileCommentForm && author"
+            :link-href="author.path"
+            :img-src="author.avatar_url"
+            :img-alt="author.name"
+            :img-size="40"
+            class="d-none d-sm-block new-comment"
+          />
           <diff-discussions
             v-if="diffFile.discussions.length"
             class="diff-file-discussions"

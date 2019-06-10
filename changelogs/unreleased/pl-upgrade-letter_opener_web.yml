@@ -1,5 +1,0 @@
----
-title: Upgrade letter_opener_web to support Rails 5.1
-merge_request: 27829
-author:
-type: fixed

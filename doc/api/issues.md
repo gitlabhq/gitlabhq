@@ -37,23 +37,26 @@ GET /issues?confidential=true
 
 | Attribute           | Type             | Required   | Description                                                                                                                                         |
 | ------------------- | ---------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `state`             | string           | no         | Return all issues or just those that are `opened` or `closed`                                                                                       |
+| `state`             | string           | no         | Return `all` issues or just those that are `opened` or `closed`                                                                                       |
 | `labels`            | string           | no         | Comma-separated list of label names, issues must have all labels to be returned. `None` lists all issues with no labels. `Any` lists all issues with at least one label. `No+Label` (Deprecated) lists all issues with no labels. Predefined names are case-insensitive. |
+| `with_labels_details`| Boolean          | no         | If `true`, response will return more details for each label in labels field: `:name`, `:color`, `:description`, `:text_color`. Default is `false`. |
 | `milestone`         | string           | no         | The milestone title. `None` lists all issues with no milestone. `Any` lists all issues that have an assigned milestone.                             |
 | `scope`             | string           | no         | Return issues for the given scope: `created_by_me`, `assigned_to_me` or `all`. Defaults to `created_by_me`<br> For versions before 11.0, use the now deprecated `created-by-me` or `assigned-to-me` scopes instead.<br> _([Introduced][ce-13004] in GitLab 9.5. [Changed to snake_case][ce-18935] in GitLab 11.0)_ |
-| `author_id`         | integer          | no         | Return issues created by the given user `id`. Combine with `scope=all` or `scope=assigned_to_me`. _([Introduced][ce-13004] in GitLab 9.5)_          |
-| `assignee_id`       | integer          | no         | Return issues assigned to the given user `id`. `None` returns unassigned issues. `Any` returns issues with an assignee. _([Introduced][ce-13004] in GitLab 9.5)_ |
+| `author_id`         | integer          | no         | Return issues created by the given user `id`. Mutually exclusive with `author_username`. Combine with `scope=all` or `scope=assigned_to_me`. _([Introduced][ce-13004] in GitLab 9.5)_ |
+| `author_username`   | string           | no         | Return issues created by the given `username`. Simillar to `author_id` and mutually exclusive with `author_id`. |
+| `assignee_id`       | integer          | no         | Return issues assigned to the given user `id`. Mutually exclusive with `assignee_username`. `None` returns unassigned issues. `Any` returns issues with an assignee. _([Introduced][ce-13004] in GitLab 9.5)_ |
+| `assignee_username` | Array[String]    | no         | Return issues assigned to the given `username`. Simillar to `assignee_id` and mutually exclusive with `assignee_id`. In CE version `assignee_username` array should only contain a single value or an invalid param error will be returned otherwise. |
 | `my_reaction_emoji` | string           | no         | Return issues reacted by the authenticated user by the given `emoji`. `None` returns issues not given a reaction. `Any` returns issues given at least one reaction. _([Introduced][ce-14016] in GitLab 10.0)_ |
 | `iids[]`            | Array[integer]   | no         | Return only the issues having the given `iid`                                                                                                       |
 | `order_by`          | string           | no         | Return issues ordered by `created_at` or `updated_at` fields. Default is `created_at`                                                               |
 | `sort`              | string           | no         | Return issues sorted in `asc` or `desc` order. Default is `desc`                                                                                    |
 | `search`            | string           | no         | Search issues against their `title` and `description`                                                                                               |
-| `in`                | string           | no         | Modify the scope of the `search` attribute. `title`, `description`, or a string joining them with comma. Default is `title,description`              |
+| `in`                | string           | no         | Modify the scope of the `search` attribute. `title`, `description`, or a string joining them with comma. Default is `title,description`             |
 | `created_after`     | datetime         | no         | Return issues created on or after the given time                                                                                                    |
 | `created_before`    | datetime         | no         | Return issues created on or before the given time                                                                                                   |
 | `updated_after`     | datetime         | no         | Return issues updated on or after the given time                                                                                                    |
 | `updated_before`    | datetime         | no         | Return issues updated on or before the given time                                                                                                   |
-| `confidential `     | Boolean          | no        | Filter confidential or public issues.                                                                                                                |
+| `confidential `     | Boolean          | no         | Filter confidential or public issues.                                                                                                               |
 
 ```bash
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/issues
@@ -109,7 +112,7 @@ Example response:
       "title" : "Consequatur vero maxime deserunt laboriosam est voluptas dolorem.",
       "created_at" : "2016-01-04T15:31:51.081Z",
       "iid" : 6,
-      "labels" : [],
+      "labels" : ["foo", "bar"],
       "upvotes": 4,
       "downvotes": 0,
       "merge_requests_count": 0,
@@ -122,8 +125,21 @@ Example response:
          "human_time_estimate": null,
          "human_total_time_spent": null
       },
+      "has_tasks": true,
+      "task_status": "10 of 15 tasks completed",
       "confidential": false,
-      "discussion_locked": false
+      "discussion_locked": false,
+      "_links":{
+         "self":"http://example.com/api/v4/projects/1/issues/76",
+         "notes":"`http://example.com/`api/v4/projects/1/issues/76/notes",
+         "award_emoji":"http://example.com/api/v4/projects/1/issues/76/award_emoji",
+         "project":"http://example.com/api/v4/projects/1"
+      },
+      "subscribed": false,
+      "task_completion_status":{
+         "count":0,
+         "completed_count":0
+      }
    }
 ]
 ```
@@ -158,11 +174,14 @@ GET /groups/:id/issues?confidential=true
 | `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user                 |
 | `state`             | string           | no         | Return all issues or just those that are `opened` or `closed`                                                                 |
 | `labels`            | string           | no         | Comma-separated list of label names, issues must have all labels to be returned. `None` lists all issues with no labels. `Any` lists all issues with at least one label. `No+Label` (Deprecated) lists all issues with no labels. Predefined names are case-insensitive. |
+| `with_labels_details`| Boolean          | no         | If `true`, response will return more details for each label in labels field: `:name`, `:color`, `:description`, `:text_color`. Default is `false`. |
 | `iids[]`            | Array[integer]   | no         | Return only the issues having the given `iid`                                                                                 |
 | `milestone`         | string           | no         | The milestone title. `None` lists all issues with no milestone. `Any` lists all issues that have an assigned milestone.       |
 | `scope`             | string           | no         | Return issues for the given scope: `created_by_me`, `assigned_to_me` or `all`.<br> For versions before 11.0, use the now deprecated `created-by-me` or `assigned-to-me` scopes instead.<br> _([Introduced][ce-13004] in GitLab 9.5. [Changed to snake_case][ce-18935] in GitLab 11.0)_ |
-| `author_id`         | integer          | no         | Return issues created by the given user `id` _([Introduced][ce-13004] in GitLab 9.5)_                                         |
-| `assignee_id`       | integer          | no         | Return issues assigned to the given user `id`. `None` returns unassigned issues. `Any` returns issues with an assignee. _([Introduced][ce-13004] in GitLab 9.5)_ |
+| `author_id`         | integer          | no         | Return issues created by the given user `id`. Mutually exclusive with `author_username`. Combine with `scope=all` or `scope=assigned_to_me`. _([Introduced][ce-13004] in GitLab 9.5)_ |
+| `author_username`   | string           | no         | Return issues created by the given `username`. Simillar to `author_id` and mutually exclusive with `author_id`. |
+| `assignee_id`       | integer          | no         | Return issues assigned to the given user `id`. Mutually exclusive with `assignee_username`. `None` returns unassigned issues. `Any` returns issues with an assignee. _([Introduced][ce-13004] in GitLab 9.5)_ |
+| `assignee_username` | Array[String]    | no         | Return issues assigned to the given `username`. Simillar to `assignee_id` and mutually exclusive with `assignee_id`. In CE version `assignee_username` array should only contain a single value or an invalid param error will be returned otherwise. |
 | `my_reaction_emoji` | string           | no         | Return issues reacted by the authenticated user by the given `emoji`. `None` returns issues not given a reaction. `Any` returns issues given at least one reaction. _([Introduced][ce-14016] in GitLab 10.0)_ |
 | `order_by`          | string           | no         | Return issues ordered by `created_at` or `updated_at` fields. Default is `created_at`                                         |
 | `sort`              | string           | no         | Return issues sorted in `asc` or `desc` order. Default is `desc`                                                              |
@@ -221,7 +240,7 @@ Example response:
          "id" : 9,
          "name" : "Dr. Luella Kovacek"
       },
-      "labels" : [],
+      "labels" : ["foo", "bar"],
       "upvotes": 4,
       "downvotes": 0,
       "merge_requests_count": 0,
@@ -240,8 +259,21 @@ Example response:
          "human_time_estimate": null,
          "human_total_time_spent": null
       },
+      "has_tasks": true,
+      "task_status": "10 of 15 tasks completed",
       "confidential": false,
-      "discussion_locked": false
+      "discussion_locked": false,
+      "_links":{
+         "self":"http://example.com/api/v4/projects/4/issues/41",
+         "notes":"`http://example.com/`api/v4/projects/4/issues/41/notes",
+         "award_emoji":"http://example.com/api/v4/projects/4/issues/41/award_emoji",
+         "project":"http://example.com/api/v4/projects/4"
+      },
+      "subscribed": false,
+      "task_completion_status":{
+         "count":0,
+         "completed_count":0
+      }
    }
 ]
 ```
@@ -277,10 +309,13 @@ GET /projects/:id/issues?confidential=true
 | `iids[]`            | Array[integer]   | no         | Return only the milestone having the given `iid`                                                                              |
 | `state`             | string           | no         | Return all issues or just those that are `opened` or `closed`                                                                 |
 | `labels`            | string           | no         | Comma-separated list of label names, issues must have all labels to be returned. `None` lists all issues with no labels. `Any` lists all issues with at least one label. `No+Label` (Deprecated) lists all issues with no labels. Predefined names are case-insensitive. |
+| `with_labels_details`| Boolean          | no         | If `true`, response will return more details for each label in labels field: `:name`, `:color`, `:description`, `:text_color`. Default is `false`. |
 | `milestone`         | string           | no         | The milestone title. `None` lists all issues with no milestone. `Any` lists all issues that have an assigned milestone.       |
 | `scope`             | string           | no         | Return issues for the given scope: `created_by_me`, `assigned_to_me` or `all`.<br> For versions before 11.0, use the now deprecated `created-by-me` or `assigned-to-me` scopes instead.<br> _([Introduced][ce-13004] in GitLab 9.5. [Changed to snake_case][ce-18935] in GitLab 11.0)_ |
-| `author_id`         | integer          | no         | Return issues created by the given user `id` _([Introduced][ce-13004] in GitLab 9.5)_                                         |
-| `assignee_id`       | integer          | no         | Return issues assigned to the given user `id`. `None` returns unassigned issues. `Any` returns issues with an assignee. _([Introduced][ce-13004] in GitLab 9.5)_ |
+| `author_id`         | integer          | no         | Return issues created by the given user `id`. Mutually exclusive with `author_username`. Combine with `scope=all` or `scope=assigned_to_me`. _([Introduced][ce-13004] in GitLab 9.5)_ |
+| `author_username`   | string           | no         | Return issues created by the given `username`. Simillar to `author_id` and mutually exclusive with `author_id`. |
+| `assignee_id`       | integer          | no         | Return issues assigned to the given user `id`. Mutually exclusive with `assignee_username`. `None` returns unassigned issues. `Any` returns issues with an assignee. _([Introduced][ce-13004] in GitLab 9.5)_ |
+| `assignee_username` | Array[String]    | no         | Return issues assigned to the given `username`. Simillar to `assignee_id` and mutually exclusive with `assignee_id`. In CE version `assignee_username` array should only contain a single value or an invalid param error will be returned otherwise. |
 | `my_reaction_emoji` | string           | no         | Return issues reacted by the authenticated user by the given `emoji`. `None` returns issues not given a reaction. `Any` returns issues given at least one reaction. _([Introduced][ce-14016] in GitLab 10.0)_ |
 | `order_by`          | string           | no         | Return issues ordered by `created_at` or `updated_at` fields. Default is `created_at`                                         |
 | `sort`              | string           | no         | Return issues sorted in `asc` or `desc` order. Default is `desc`                                                              |
@@ -340,7 +375,7 @@ Example response:
          "id" : 9,
          "name" : "Dr. Luella Kovacek"
       },
-      "labels" : [],
+      "labels" : ["foo", "bar"],
       "upvotes": 4,
       "downvotes": 0,
       "merge_requests_count": 0,
@@ -366,8 +401,21 @@ Example response:
          "human_time_estimate": null,
          "human_total_time_spent": null
       },
+      "has_tasks": true,
+      "task_status": "10 of 15 tasks completed",
       "confidential": false,
-      "discussion_locked": false
+      "discussion_locked": false,
+      "_links":{
+         "self":"http://example.com/api/v4/projects/4/issues/41",
+         "notes":"`http://example.com/`api/v4/projects/4/issues/41/notes",
+         "award_emoji":"http://example.com/api/v4/projects/4/issues/41/award_emoji",
+         "project":"http://example.com/api/v4/projects/4"
+      },
+      "subscribed": false,
+      "task_completion_status":{
+         "count":0,
+         "completed_count":0
+      }
    }
 ]
 ```
@@ -464,6 +512,10 @@ Example response:
       "notes": "http://example.com/api/v4/projects/1/issues/2/notes",
       "award_emoji": "http://example.com/api/v4/projects/1/issues/2/award_emoji",
       "project": "http://example.com/api/v4/projects/1"
+   },
+   "task_completion_status":{
+      "count":0,
+      "completed_count":0
    }
 }
 ```
@@ -547,6 +599,10 @@ Example response:
       "notes": "http://example.com/api/v4/projects/1/issues/2/notes",
       "award_emoji": "http://example.com/api/v4/projects/1/issues/2/award_emoji",
       "project": "http://example.com/api/v4/projects/1"
+   },
+   "task_completion_status":{
+      "count":0,
+      "completed_count":0
    }
 }
 ```
@@ -638,6 +694,10 @@ Example response:
       "notes": "http://example.com/api/v4/projects/1/issues/2/notes",
       "award_emoji": "http://example.com/api/v4/projects/1/issues/2/award_emoji",
       "project": "http://example.com/api/v4/projects/1"
+   },
+   "task_completion_status":{
+      "count":0,
+      "completed_count":0
    }
 }
 ```
@@ -744,6 +804,10 @@ Example response:
     "notes": "http://example.com/api/v4/projects/1/issues/2/notes",
     "award_emoji": "http://example.com/api/v4/projects/1/issues/2/award_emoji",
     "project": "http://example.com/api/v4/projects/1"
+  },
+  "task_completion_status":{
+     "count":0,
+     "completed_count":0
   }
 }
 ```
@@ -829,6 +893,10 @@ Example response:
     "notes": "http://example.com/api/v4/projects/1/issues/2/notes",
     "award_emoji": "http://example.com/api/v4/projects/1/issues/2/award_emoji",
     "project": "http://example.com/api/v4/projects/1"
+  },
+  "task_completion_status":{
+     "count":0,
+     "completed_count":0
   }
 }
 ```
@@ -895,7 +963,11 @@ Example response:
   "due_date": null,
   "web_url": "http://example.com/example/example/issues/12",
   "confidential": false,
-  "discussion_locked": false
+  "discussion_locked": false,
+  "task_completion_status":{
+     "count":0,
+     "completed_count":0
+  }
 }
 ```
 
@@ -993,7 +1065,11 @@ Example response:
     "due_date": null,
     "web_url": "http://example.com/example/example/issues/110",
     "confidential": false,
-    "discussion_locked": false
+    "discussion_locked": false,
+    "task_completion_status":{
+       "count":0,
+       "completed_count":0
+    }
   },
   "target_url": "https://gitlab.example.com/gitlab-org/gitlab-ci/issues/10",
   "body": "Vel voluptas atque dicta mollitia adipisci qui at.",

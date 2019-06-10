@@ -20,6 +20,7 @@ description: 'Learn how to contribute to GitLab.'
 - [Automatic CE->EE merge](automatic_ce_ee_merge.md)
 - [Guidelines for implementing Enterprise Edition features](ee_features.md)
 - [Security process for developers](https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/developer.md#security-releases-critical-non-critical-as-a-developer)
+- [Requesting access to Chatops on GitLab.com](chatops_on_gitlabcom.md#requesting-access) (for GitLabbers)
 
 ## UX and frontend guides
 
@@ -44,6 +45,7 @@ description: 'Learn how to contribute to GitLab.'
 - [`Gemfile` guidelines](gemfile.md)
 - [Pry debugging](pry_debugging.md)
 - [Sidekiq debugging](sidekiq_debugging.md)
+- [Accessing session data](session.md)
 - [Gotchas](gotchas.md) to avoid
 - [Avoid modules with instance variables](module_with_instance_variables.md) if possible
 - [How to dump production data to staging](db_dump.md)
@@ -58,6 +60,7 @@ description: 'Learn how to contribute to GitLab.'
 - [DeclarativePolicy framework](policies.md)
 - [How Git object deduplication works in GitLab](git_object_deduplication.md)
 - [Geo development](geo.md)
+- [Routing](routing.md)
 
 ## Performance guides
 
@@ -136,3 +139,8 @@ description: 'Learn how to contribute to GitLab.'
 ## Go guides
 
 - [Go Guidelines](go_guide/index.md)
+
+## Other GitLab Development Kit (GDK) guides
+
+- [Run full Auto DevOps cycle in a GDK instance](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/auto_devops.md)
+- [Using GitLab Runner with GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/runner.md)

@@ -86,16 +86,12 @@ class KubernetesService < DeploymentService
     ]
   end
 
-  def actual_namespace
+  def kubernetes_namespace_for(project)
     if namespace.present?
       namespace
     else
       default_namespace
     end
-  end
-
-  def namespace_for(project)
-    actual_namespace
   end
 
   # Check we can connect to the Kubernetes API
@@ -118,7 +114,7 @@ class KubernetesService < DeploymentService
       variables
         .append(key: 'KUBE_URL', value: api_url)
         .append(key: 'KUBE_TOKEN', value: token, public: false, masked: true)
-        .append(key: 'KUBE_NAMESPACE', value: actual_namespace)
+        .append(key: 'KUBE_NAMESPACE', value: kubernetes_namespace_for(project))
         .append(key: 'KUBECONFIG', value: kubeconfig, public: false, file: true)
 
       if ca_pem.present?
@@ -135,8 +131,10 @@ class KubernetesService < DeploymentService
   # short time later
   def terminals(environment)
     with_reactive_cache do |data|
+      project = environment.project
+
       pods = filter_by_project_environment(data[:pods], project.full_path_slug, environment.slug)
-      terminals = pods.flat_map { |pod| terminals_for_pod(api_url, actual_namespace, pod) }.compact
+      terminals = pods.flat_map { |pod| terminals_for_pod(api_url, kubernetes_namespace_for(project), pod) }.compact
       terminals.each { |terminal| add_terminal_auth(terminal, terminal_auth) }
     end
   end
@@ -173,7 +171,7 @@ class KubernetesService < DeploymentService
   def kubeconfig
     to_kubeconfig(
       url: api_url,
-      namespace: actual_namespace,
+      namespace: kubernetes_namespace_for(project),
       token: token,
       ca_pem: ca_pem)
   end
@@ -190,7 +188,7 @@ class KubernetesService < DeploymentService
   end
 
   def build_kube_client!
-    raise "Incomplete settings" unless api_url && actual_namespace && token
+    raise "Incomplete settings" unless api_url && kubernetes_namespace_for(project) && token
 
     Gitlab::Kubernetes::KubeClient.new(
       api_url,
@@ -204,7 +202,7 @@ class KubernetesService < DeploymentService
   def read_pods
     kubeclient = build_kube_client!
 
-    kubeclient.get_pods(namespace: actual_namespace).as_json
+    kubeclient.get_pods(namespace: kubernetes_namespace_for(project)).as_json
   rescue Kubeclient::ResourceNotFoundError
     []
   end

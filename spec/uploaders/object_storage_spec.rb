@@ -12,7 +12,7 @@ class Implementation < GitlabUploader
 
   # user/:id
   def dynamic_segment
-    File.join(model.class.to_s.underscore, model.id.to_s)
+    File.join(model.class.underscore, model.id.to_s)
   end
 end
 

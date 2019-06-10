@@ -10,12 +10,13 @@
         = icon('chevron-down')
       %ul.dropdown-menu.dropdown-menu-right.dropdown-menu-selectable.dropdown-menu-sort
         %li
-          = sortable_item(sort_title_priority,         page_filter_path(sort: sort_value_priority),         sort_title)
-          = sortable_item(sort_title_created_date,     page_filter_path(sort: sort_value_created_date),     sort_title)
-          = sortable_item(sort_title_recently_updated, page_filter_path(sort: sort_value_recently_updated), sort_title)
-          = sortable_item(sort_title_milestone,        page_filter_path(sort: sort_value_milestone),        sort_title)
-          = sortable_item(sort_title_due_date,         page_filter_path(sort: sort_value_due_date),         sort_title) if viewing_issues
-          = sortable_item(sort_title_popularity,       page_filter_path(sort: sort_value_popularity),       sort_title)
-          = sortable_item(sort_title_label_priority,   page_filter_path(sort: sort_value_label_priority),   sort_title)
+          = sortable_item(sort_title_priority,          page_filter_path(sort: sort_value_priority),          sort_title)
+          = sortable_item(sort_title_created_date,      page_filter_path(sort: sort_value_created_date),      sort_title)
+          = sortable_item(sort_title_recently_updated,  page_filter_path(sort: sort_value_recently_updated),  sort_title)
+          = sortable_item(sort_title_milestone,         page_filter_path(sort: sort_value_milestone),         sort_title)
+          = sortable_item(sort_title_due_date,          page_filter_path(sort: sort_value_due_date),          sort_title) if viewing_issues
+          = sortable_item(sort_title_popularity,        page_filter_path(sort: sort_value_popularity),        sort_title)
+          = sortable_item(sort_title_label_priority,    page_filter_path(sort: sort_value_label_priority),    sort_title)
+          = sortable_item(sort_title_relative_position, page_filter_path(sort: sort_value_relative_position), sort_title) if viewing_issues && Feature.enabled?(:manual_sorting)
           = render_if_exists('shared/ee/issuable/sort_dropdown', viewing_issues: viewing_issues, sort_title: sort_title)
     = issuable_sort_direction_button(sort_value)

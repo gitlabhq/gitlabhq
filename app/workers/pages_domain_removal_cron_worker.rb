@@ -5,8 +5,6 @@ class PagesDomainRemovalCronWorker
   include CronjobQueue
 
   def perform
-    return unless Feature.enabled?(:remove_disabled_domains)
-
     PagesDomain.for_removal.find_each do |domain|
       domain.destroy!
     rescue => e

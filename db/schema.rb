@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190506135400) do
+ActiveRecord::Schema.define(version: 20190530154715) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -189,6 +189,11 @@ ActiveRecord::Schema.define(version: 20190506135400) do
     t.string "encrypted_external_auth_client_key_pass_iv"
     t.string "lets_encrypt_notification_email"
     t.boolean "lets_encrypt_terms_of_service_accepted", default: false, null: false
+    t.integer "elasticsearch_shards", default: 5, null: false
+    t.integer "elasticsearch_replicas", default: 1, null: false
+    t.text "encrypted_lets_encrypt_private_key"
+    t.text "encrypted_lets_encrypt_private_key_iv"
+    t.boolean "dns_rebinding_protection_enabled", default: true, null: false
     t.index ["usage_stats_set_by_user_id"], name: "index_application_settings_on_usage_stats_set_by_user_id", using: :btree
   end
 
@@ -378,6 +383,7 @@ ActiveRecord::Schema.define(version: 20190506135400) do
     t.index ["project_id", "id"], name: "index_ci_builds_on_project_id_and_id", using: :btree
     t.index ["project_id", "status"], name: "index_ci_builds_project_id_and_status_for_live_jobs_partial2", where: "(((type)::text = 'Ci::Build'::text) AND ((status)::text = ANY (ARRAY[('running'::character varying)::text, ('pending'::character varying)::text, ('created'::character varying)::text])))", using: :btree
     t.index ["protected"], name: "index_ci_builds_on_protected", using: :btree
+    t.index ["queued_at"], name: "index_ci_builds_on_queued_at", using: :btree
     t.index ["runner_id"], name: "index_ci_builds_on_runner_id", using: :btree
     t.index ["scheduled_at"], name: "partial_index_ci_builds_on_scheduled_at_with_scheduled_jobs", where: "((scheduled_at IS NOT NULL) AND ((type)::text = 'Ci::Build'::text) AND ((status)::text = 'scheduled'::text))", using: :btree
     t.index ["stage_id", "stage_idx"], name: "tmp_build_stage_position_index", where: "(stage_idx IS NOT NULL)", using: :btree
@@ -1356,6 +1362,7 @@ ActiveRecord::Schema.define(version: 20190506135400) do
     t.index ["source_branch"], name: "index_merge_requests_on_source_branch", using: :btree
     t.index ["source_project_id", "source_branch"], name: "index_merge_requests_on_source_project_and_branch_state_opened", where: "((state)::text = 'opened'::text)", using: :btree
     t.index ["source_project_id", "source_branch"], name: "index_merge_requests_on_source_project_id_and_source_branch", using: :btree
+    t.index ["state", "merge_status"], name: "index_merge_requests_on_state_and_merge_status", where: "(((state)::text = 'opened'::text) AND ((merge_status)::text = 'can_be_merged'::text))", using: :btree
     t.index ["target_branch"], name: "index_merge_requests_on_target_branch", using: :btree
     t.index ["target_project_id", "iid"], name: "index_merge_requests_on_target_project_id_and_iid", unique: true, using: :btree
     t.index ["target_project_id", "iid"], name: "index_merge_requests_on_target_project_id_and_iid_opened", where: "((state)::text = 'opened'::text)", using: :btree
@@ -1511,6 +1518,7 @@ ActiveRecord::Schema.define(version: 20190506135400) do
     t.boolean "success_pipeline"
     t.boolean "push_to_merge_request"
     t.boolean "issue_due"
+    t.string "notification_email"
     t.index ["source_id", "source_type"], name: "index_notification_settings_on_source_id_and_source_type", using: :btree
     t.index ["user_id", "source_id", "source_type"], name: "index_notifications_on_user_id_and_source_id_and_source_type", unique: true, using: :btree
     t.index ["user_id"], name: "index_notification_settings_on_user_id", using: :btree
@@ -1563,6 +1571,20 @@ ActiveRecord::Schema.define(version: 20190506135400) do
     t.index ["access_grant_id"], name: "index_oauth_openid_requests_on_access_grant_id", using: :btree
   end
 
+  create_table "pages_domain_acme_orders", force: :cascade do |t|
+    t.integer "pages_domain_id", null: false
+    t.datetime_with_timezone "expires_at", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.string "url", null: false
+    t.string "challenge_token", null: false
+    t.text "challenge_file_content", null: false
+    t.text "encrypted_private_key", null: false
+    t.text "encrypted_private_key_iv", null: false
+    t.index ["challenge_token"], name: "index_pages_domain_acme_orders_on_challenge_token", using: :btree
+    t.index ["pages_domain_id"], name: "index_pages_domain_acme_orders_on_pages_domain_id", using: :btree
+  end
+
   create_table "pages_domains", id: :serial, force: :cascade do |t|
     t.integer "project_id"
     t.text "certificate"
@@ -1575,6 +1597,8 @@ ActiveRecord::Schema.define(version: 20190506135400) do
     t.datetime_with_timezone "enabled_until"
     t.datetime_with_timezone "remove_at"
     t.boolean "auto_ssl_enabled", default: false, null: false
+    t.datetime_with_timezone "certificate_valid_not_before"
+    t.datetime_with_timezone "certificate_valid_not_after"
     t.index ["domain"], name: "index_pages_domains_on_domain", unique: true, using: :btree
     t.index ["project_id", "enabled_until"], name: "index_pages_domains_on_project_id_and_enabled_until", using: :btree
     t.index ["project_id"], name: "index_pages_domains_on_project_id", using: :btree
@@ -1627,7 +1651,6 @@ ActiveRecord::Schema.define(version: 20190506135400) do
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
     t.boolean "enabled"
-    t.string "domain"
     t.integer "deploy_strategy", default: 0, null: false
     t.index ["project_id"], name: "index_project_auto_devops_on_project_id", unique: true, using: :btree
   end
@@ -1637,6 +1660,7 @@ ActiveRecord::Schema.define(version: 20190506135400) do
     t.boolean "group_runners_enabled", default: true, null: false
     t.boolean "merge_pipelines_enabled"
     t.boolean "merge_trains_enabled", default: false, null: false
+    t.integer "default_git_depth"
     t.index ["project_id"], name: "index_project_ci_cd_settings_on_project_id", unique: true, using: :btree
   end
 
@@ -1739,7 +1763,8 @@ ActiveRecord::Schema.define(version: 20190506135400) do
     t.bigint "repository_size", default: 0, null: false
     t.bigint "lfs_objects_size", default: 0, null: false
     t.bigint "build_artifacts_size", default: 0, null: false
-    t.bigint "packages_size"
+    t.bigint "packages_size", default: 0, null: false
+    t.bigint "wiki_size"
     t.index ["namespace_id"], name: "index_project_statistics_on_namespace_id", using: :btree
     t.index ["project_id"], name: "index_project_statistics_on_project_id", unique: true, using: :btree
   end
@@ -2552,6 +2577,7 @@ ActiveRecord::Schema.define(version: 20190506135400) do
   add_foreign_key "notes", "projects", name: "fk_99e097b079", on_delete: :cascade
   add_foreign_key "notification_settings", "users", name: "fk_0c95e91db7", on_delete: :cascade
   add_foreign_key "oauth_openid_requests", "oauth_access_grants", column: "access_grant_id", name: "fk_oauth_openid_requests_oauth_access_grants_access_grant_id"
+  add_foreign_key "pages_domain_acme_orders", "pages_domains", on_delete: :cascade
   add_foreign_key "pages_domains", "projects", name: "fk_ea2f6dfc6f", on_delete: :cascade
   add_foreign_key "personal_access_tokens", "users"
   add_foreign_key "pool_repositories", "projects", column: "source_project_id", on_delete: :nullify

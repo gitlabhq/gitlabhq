@@ -109,7 +109,7 @@ describe Projects::Settings::CiCdController do
     end
 
     context 'when updating the auto_devops settings' do
-      let(:params) { { auto_devops_attributes: { enabled: '', domain: 'mepmep.md' } } }
+      let(:params) { { auto_devops_attributes: { enabled: '' } } }
 
       context 'following the instance default' do
         let(:params) { { auto_devops_attributes: { enabled: '' } } }
@@ -198,6 +198,21 @@ describe Projects::Settings::CiCdController do
         it 'set specified timeout' do
           expect(subject).to set_flash[:alert]
           expect(response).to redirect_to(namespace_project_settings_ci_cd_path)
+        end
+      end
+
+      context 'when default_git_depth is not specified' do
+        let(:params) { { ci_cd_settings_attributes: { default_git_depth: 10 } } }
+
+        before do
+          project.ci_cd_settings.update!(default_git_depth: nil)
+        end
+
+        it 'set specified git depth' do
+          subject
+
+          project.reload
+          expect(project.default_git_depth).to eq(10)
         end
       end
     end

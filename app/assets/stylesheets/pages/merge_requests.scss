@@ -87,6 +87,11 @@
   padding: $gl-padding;
 }
 
+.mr-widget-info {
+  padding-left: $gl-padding-50 - $gl-padding-32;
+  padding-right: $gl-padding;
+}
+
 .mr-state-widget {
   color: $gl-text-color;
 
@@ -177,46 +182,6 @@
         &.ci-canceled,
         &.ci-error {
           @include btn-red;
-        }
-      }
-    }
-
-    .accept-control {
-      display: inline-block;
-      float: left;
-      margin: 0;
-      margin-left: 20px;
-      padding: 5px;
-      padding-top: 8px;
-      line-height: 20px;
-
-      &.right {
-        float: right;
-        padding-right: 0;
-      }
-
-      .modify-merge-commit-link {
-        padding: 0;
-        background-color: transparent;
-        border: 0;
-        color: $gl-text-color;
-
-        &:hover,
-        &:focus {
-          text-decoration: underline;
-        }
-      }
-
-      .merge-param-checkbox {
-        margin: 0;
-      }
-
-      a .fa-question-circle {
-        color: $gl-text-color-secondary;
-
-        &:hover,
-        &:focus {
-          color: $link-hover-color;
         }
       }
     }
@@ -402,12 +367,6 @@
         width: 100%;
         text-align: center;
       }
-
-      .accept-control {
-        width: 100%;
-        text-align: center;
-        margin: 0;
-      }
     }
 
     .commit-message-editor {
@@ -560,6 +519,10 @@
 
 .mr-links {
   padding-left: $status-icon-size + $gl-btn-padding;
+
+  &:last-child {
+    padding-bottom: $gl-padding;
+  }
 }
 
 .mr-info-list {
@@ -883,15 +846,40 @@
   display: flex;
   justify-content: space-between;
 
-  @include media-breakpoint-down(sm) {
-    flex-direction: column-reverse;
+  @include media-breakpoint-down(xs) {
+    .discussion-filter-container,
+    .line-resolve-all-container {
+      margin-bottom: $gl-padding-4;
+    }
   }
 
   .discussion-filter-container {
-    margin-top: $gl-padding-8;
-
     &:not(:only-child) {
-      padding-right: $gl-padding-8;
+      margin: $gl-padding-4;
+    }
+  }
+
+  .merge-request-tabs {
+    height: $grid-size * 6;
+  }
+}
+
+// Wrap MR tabs/buttons so you don't have to scroll on desktop
+@include media-breakpoint-down(md) {
+  .merge-request-tabs-container,
+  .epic-tabs-container {
+    flex-direction: column-reverse;
+    padding-top: $gl-padding-8;
+  }
+}
+
+@include media-breakpoint-down(lg) {
+  .right-sidebar-expanded {
+    .merge-request-tabs-container,
+    .epic-tabs-container {
+      flex-direction: column-reverse;
+      align-items: flex-start;
+      padding-top: $gl-padding-8;
     }
   }
 }
@@ -972,10 +960,6 @@
     }
   }
 
-  .btn svg {
-    fill: $gray-700;
-  }
-
   .dropdown-menu {
     width: 400px;
   }
@@ -1032,11 +1016,6 @@
   position: fixed;
   z-index: 99999;
   background: $black-transparent;
-}
-
-.source-branch-removal-status {
-  padding-left: 50px;
-  padding-bottom: $gl-padding;
 }
 
 .mr-compare {

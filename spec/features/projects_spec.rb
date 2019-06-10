@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'Project' do
@@ -5,7 +7,7 @@ describe 'Project' do
   include MobileHelpers
 
   before do
-    stub_feature_flags(approval_rules: false)
+    stub_feature_flags(vue_file_list: false)
   end
 
   describe 'creating from template' do

@@ -1,8 +1,25 @@
+---
+type: reference
+---
+
 # Visibility and access controls
+
+GitLab allows admins to:
+
+- Control access and visibility to GitLab resources including branches and projects.
+- Select from which hosting sites code can be imported into GitLab.
+- Select the protocols permitted to access GitLab.
+- Enable or disable repository mirroring.
+
+To access the visibility and access control options:
+
+1. Log in to GitLab as an admin.
+1. Go to **Admin Area > Settings > General**.
+1. Expand the **Visibility and access controls** section.
 
 ## Import sources
 
-Choose from which hosting sites the users can
+Choose from which hosting sites users can
 [import their projects](../../project/import/index.md).
 
 ![import sources](img/import_sources.png)
@@ -11,12 +28,10 @@ Choose from which hosting sites the users can
 
 > [Introduced][ce-4696] in GitLab 8.10.
 
-With GitLab's Access restrictions you can choose which Git access protocols you
-want your users to use to communicate with GitLab. This feature can be enabled
-via the `Application Settings` in the Admin interface.
+With GitLab's access restrictions, you can select with which protocols users can communicate with
+GitLab.
 
-The setting is called `Enabled Git access protocols`, and it gives you the option
-to choose between:
+From the **Enabled Git access protocols** dropdown, select one of the following:
 
 - Both SSH and HTTP(S)
 - Only SSH
@@ -24,10 +39,9 @@ to choose between:
 
 ![Settings Overview](img/access_restrictions.png)
 
-When both SSH and HTTP(S) are enabled, GitLab will behave as usual, it will give
-your users the option to choose which protocol they would like to use.
+When both SSH and HTTP(S) are enabled, your users can choose either protocol.
 
-When you choose to allow only one of the protocols, a couple of things will happen:
+When only one protocol is enabled:
 
 - The project page will only show the allowed protocol's URL, with no option to
   change it.
@@ -54,9 +68,21 @@ application level.
 > [Introduced][ee-3586] in GitLab 10.3.
 
 This option is enabled by default. By disabling it, both pull and push mirroring will no longer
-work in every repository and can only be re-enabled on a per-project basis by an admin.
+work in every repository and can only be re-enabled by an admin on a per-project basis.
 
 ![Mirror settings](img/mirror_settings.png)
+
+<!-- ## Troubleshooting
+
+Include any troubleshooting steps that you can foresee. If you know beforehand what issues
+one might have when setting this up, or when something is changed, or on upgrading, it's
+important to describe those, too. Think of things that may go wrong and include them here.
+This is important to minimize requests for support, and to avoid doc comments with
+questions that you know someone might ask.
+
+Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+If you have none to add when creating a doc, leave this section in place
+but commented out to help encourage others to add to it in the future. -->
 
 [ce-4696]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/4696
 [ce-18021]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/18021

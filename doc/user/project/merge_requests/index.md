@@ -1,7 +1,11 @@
+---
+type: index, reference, concepts
+---
+
 # Merge requests
 
-Merge requests allow you to exchange changes you made to source code and
-collaborate with other people on the same project.
+Merge requests allow you to visualize and collaborate on the proposed changes
+to source code that exist as commits on a given Git branch.
 
 ![Merge request view](img/merge_request.png)
 
@@ -33,15 +37,15 @@ With GitLab merge requests, you can:
 
 With **[GitLab Enterprise Edition][ee]**, you can also:
 
-- Prepare a full review and submit it once it's ready with [Merge Request Reviews](https://docs.gitlab.com/ee/user/discussions/index.md#merge-request-reviews-premium) **[PREMIUM]**
-- View the deployment process across projects with [Multi-Project Pipelines](https://docs.gitlab.com/ee/ci/multi_project_pipelines.md) **[PREMIUM]**
+- Prepare a full review and submit it once it's ready with [Merge Request Reviews](../../discussions/index.md#merge-request-reviews-premium) **[PREMIUM]**
+- View the deployment process across projects with [Multi-Project Pipelines](../../../ci/multi_project_pipelines.md) **[PREMIUM]**
 - Request [approvals](merge_request_approvals.md) from your managers **[STARTER]**
 - Analyze the impact of your changes with [Code Quality reports](code_quality.md) **[STARTER]**
-- Manage the licenses of your dependencies with [License Management](https://docs.gitlab.com/ee/user/application_security/license_management/index.md) **[ULTIMATE]**
-- Analyze your source code for vulnerabilities with [Static Application Security Testing](https://docs.gitlab.com/ee/user/application_security/sast/index.md) **[ULTIMATE]**
-- Analyze your running web applications for vulnerabilities with [Dynamic Application Security Testing](https://docs.gitlab.com/ee/user/application_security/dast/index.md) **[ULTIMATE]**
-- Analyze your dependencies for vulnerabilities with [Dependency Scanning](https://docs.gitlab.com/ee/user/application_security/dependency_scanning/index.md) **[ULTIMATE]**
-- Analyze your Docker images for vulnerabilities with [Container Scanning](https://docs.gitlab.com/ee/user/application_security/container_scanning/index.md) **[ULTIMATE]**
+- Manage the licenses of your dependencies with [License Management](../../application_security/license_management/index.md) **[ULTIMATE]**
+- Analyze your source code for vulnerabilities with [Static Application Security Testing](../../application_security/sast/index.md) **[ULTIMATE]**
+- Analyze your running web applications for vulnerabilities with [Dynamic Application Security Testing](../../application_security/dast/index.md) **[ULTIMATE]**
+- Analyze your dependencies for vulnerabilities with [Dependency Scanning](../../application_security/dependency_scanning/index.md) **[ULTIMATE]**
+- Analyze your Docker images for vulnerabilities with [Container Scanning](../../application_security/container_scanning/index.md) **[ULTIMATE]**
 - Determine the performance impact of changes with [Browser Performance Testing](#browser-performance-testing-premium) **[PREMIUM]**
 
 ## Use cases
@@ -174,7 +178,7 @@ Start a review in order to create multiple comments on a diff and publish them o
 Starting a review allows you to get all your thoughts in order and ensure you haven't missed anything
 before submitting all your comments.
 
-[Learn more about Merge Request Reviews](https://docs.gitlab.com/ee/user/discussions/index.html#merge-request-reviews-premium)
+[Learn more about Merge Request Reviews](../../discussions/index.md#merge-request-reviews-premium)
 
 ## Squash and merge
 
@@ -395,7 +399,15 @@ GitLab runs the [Sitespeed.io container][sitespeed-container] and displays the d
 
 GitLab can scan and report any vulnerabilities found in your project.
 
-[Read more about security reports.](https://docs.gitlab.com/ee/user/application_security/index.html)
+[Read more about security reports.](../../application_security/index.md)
+
+## JUnit test reports
+
+Configure your CI jobs to use JUnit test reports, and let GitLab display a report
+on the merge request so that it’s easier and faster to identify the failure
+without having to check the entire job log.
+
+[Read more about JUnit test reports](../../../ci/junit_test_reports.md).
 
 ## Live preview with Review Apps
 
@@ -503,7 +515,7 @@ seconds and the status will update automatically.
 
 Merge Request pipeline statuses can't be retrieved when the following occurs:
 
-1. A Merge Requst is created
+1. A Merge Request is created
 1. The Merge Request is closed
 1. Changes are made in the project
 1. The Merge Request is reopened
@@ -539,13 +551,13 @@ Add the following alias to your `~/.gitconfig`:
 
 Now you can check out a particular merge request from any repository and any
 remote. For example, to check out the merge request with ID 5 as shown in GitLab
-from the `upstream` remote, do:
+from the `origin` remote, do:
 
 ```
-git mr upstream 5
+git mr origin 5
 ```
 
-This will fetch the merge request into a local `mr-upstream-5` branch and check
+This will fetch the merge request into a local `mr-origin-5` branch and check
 it out.
 
 #### Checkout locally by modifying `.git/config` for a given repository
@@ -598,6 +610,9 @@ And to check out a particular merge request:
 git checkout origin/merge-requests/1
 ```
 
+all the above can be done with [git-mr] script.
+
+[git-mr]: https://gitlab.com/glensc/git-mr
 [products]: https://about.gitlab.com/products/ "GitLab products page"
 [protected branches]: ../protected_branches.md
 [ci]: ../../../ci/README.md

@@ -206,8 +206,19 @@ describe ApplicationController do
     describe '#check_two_factor_requirement' do
       subject { controller.send :check_two_factor_requirement }
 
+      it 'does not redirect if user has temporary oauth email' do
+        oauth_user = create(:user, email: 'temp-email-for-oauth@email.com')
+        allow(controller).to receive(:two_factor_authentication_required?).and_return(true)
+        allow(controller).to receive(:current_user).and_return(oauth_user)
+
+        expect(controller).not_to receive(:redirect_to)
+
+        subject
+      end
+
       it 'does not redirect if 2FA is not required' do
         allow(controller).to receive(:two_factor_authentication_required?).and_return(false)
+
         expect(controller).not_to receive(:redirect_to)
 
         subject
@@ -216,6 +227,7 @@ describe ApplicationController do
       it 'does not redirect if user is not logged in' do
         allow(controller).to receive(:two_factor_authentication_required?).and_return(true)
         allow(controller).to receive(:current_user).and_return(nil)
+
         expect(controller).not_to receive(:redirect_to)
 
         subject
@@ -223,8 +235,9 @@ describe ApplicationController do
 
       it 'does not redirect if user has 2FA enabled' do
         allow(controller).to receive(:two_factor_authentication_required?).and_return(true)
-        allow(controller).to receive(:current_user).twice.and_return(user)
+        allow(controller).to receive(:current_user).thrice.and_return(user)
         allow(user).to receive(:two_factor_enabled?).and_return(true)
+
         expect(controller).not_to receive(:redirect_to)
 
         subject
@@ -232,9 +245,10 @@ describe ApplicationController do
 
       it 'does not redirect if 2FA setup can be skipped' do
         allow(controller).to receive(:two_factor_authentication_required?).and_return(true)
-        allow(controller).to receive(:current_user).twice.and_return(user)
+        allow(controller).to receive(:current_user).thrice.and_return(user)
         allow(user).to receive(:two_factor_enabled?).and_return(false)
         allow(controller).to receive(:skip_two_factor?).and_return(true)
+
         expect(controller).not_to receive(:redirect_to)
 
         subject
@@ -242,10 +256,11 @@ describe ApplicationController do
 
       it 'redirects to 2FA setup otherwise' do
         allow(controller).to receive(:two_factor_authentication_required?).and_return(true)
-        allow(controller).to receive(:current_user).twice.and_return(user)
+        allow(controller).to receive(:current_user).thrice.and_return(user)
         allow(user).to receive(:two_factor_enabled?).and_return(false)
         allow(controller).to receive(:skip_two_factor?).and_return(false)
         allow(controller).to receive(:profile_two_factor_auth_path)
+
         expect(controller).to receive(:redirect_to)
 
         subject
@@ -673,6 +688,40 @@ describe ApplicationController do
         get :index, xhr: true
 
         expect(response.headers['Cache-Control']).to eq 'max-age=0, private, must-revalidate'
+      end
+    end
+  end
+
+  context 'Gitlab::Session' do
+    controller(described_class) do
+      prepend_before_action do
+        authenticate_sessionless_user!(:rss)
+      end
+
+      def index
+        if Gitlab::Session.current
+          head :created
+        else
+          head :not_found
+        end
+      end
+    end
+
+    it 'is set on web requests' do
+      sign_in(user)
+
+      get :index
+
+      expect(response).to have_gitlab_http_status(:created)
+    end
+
+    context 'with sessionless user' do
+      it 'is not set' do
+        personal_access_token = create(:personal_access_token, user: user)
+
+        get :index, format: :atom, params: { private_token: personal_access_token.token }
+
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end

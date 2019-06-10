@@ -3,15 +3,15 @@ image: dettmering/hugo-build
 
 pages:
   script:
-  - hugo
+    - hugo
   artifacts:
     paths:
-    - public
+      - public
   only:
-  - master
+    - master
 
 test:
   script:
-  - hugo
+    - hugo
   except:
-  - master
+    - master

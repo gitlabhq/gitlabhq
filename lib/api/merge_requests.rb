@@ -367,10 +367,6 @@ module API
         merge_request = find_project_merge_request(params[:merge_request_iid])
         merge_when_pipeline_succeeds = to_boolean(params[:merge_when_pipeline_succeeds])
 
-        if merge_when_pipeline_succeeds || merge_request.merge_when_pipeline_succeeds
-          render_api_error!('Not allowed: pipeline does not exist', 405) unless merge_request.head_pipeline
-        end
-
         # Merge request can not be merged
         # because user dont have permissions to push into target branch
         unauthorized! unless merge_request.can_be_merged_by?(current_user)
@@ -390,9 +386,8 @@ module API
         )
 
         if merge_when_pipeline_succeeds && merge_request.head_pipeline && merge_request.head_pipeline.active?
-          ::MergeRequests::MergeWhenPipelineSucceedsService
-            .new(merge_request.target_project, current_user, merge_params)
-            .execute(merge_request)
+          AutoMergeService.new(merge_request.target_project, current_user, merge_params)
+            .execute(merge_request, AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS)
         else
           ::MergeRequests::MergeService
             .new(merge_request.target_project, current_user, merge_params)
@@ -402,28 +397,16 @@ module API
         present merge_request, with: Entities::MergeRequest, current_user: current_user, project: user_project
       end
 
-      desc 'Merge a merge request to its default temporary merge ref path'
-      params do
-        optional :merge_commit_message, type: String, desc: 'Custom merge commit message'
-      end
-      put ':id/merge_requests/:merge_request_iid/merge_to_ref' do
+      desc 'Returns the up to date merge-ref HEAD commit'
+      get ':id/merge_requests/:merge_request_iid/merge_ref' do
         merge_request = find_project_merge_request(params[:merge_request_iid])
 
-        authorize! :admin_merge_request, user_project
+        result = ::MergeRequests::MergeabilityCheckService.new(merge_request).execute
 
-        merge_params = {
-          commit_message: params[:merge_commit_message]
-        }
-
-        result = ::MergeRequests::MergeToRefService
-          .new(merge_request.target_project, current_user, merge_params)
-          .execute(merge_request)
-
-        if result[:status] == :success
-          present result.slice(:commit_id), 200
+        if result.success?
+          present :commit_id, result.payload.dig(:merge_ref_head, :commit_id)
         else
-          http_status = result[:http_status] || 400
-          render_api_error!(result[:message], http_status)
+          render_api_error!(result.message, 400)
         end
       end
 
@@ -433,11 +416,9 @@ module API
       post ':id/merge_requests/:merge_request_iid/cancel_merge_when_pipeline_succeeds' do
         merge_request = find_project_merge_request(params[:merge_request_iid])
 
-        unauthorized! unless merge_request.can_cancel_merge_when_pipeline_succeeds?(current_user)
+        unauthorized! unless merge_request.can_cancel_auto_merge?(current_user)
 
-        ::MergeRequests::MergeWhenPipelineSucceedsService
-          .new(merge_request.target_project, current_user)
-          .cancel(merge_request)
+        AutoMergeService.new(merge_request.target_project, current_user).cancel(merge_request)
       end
 
       desc 'Rebase the merge request against its target branch' do

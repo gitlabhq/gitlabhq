@@ -1,3 +1,4 @@
+import { GlButton } from '@gitlab/ui';
 import missingPrometheusComponent from '~/serverless/components/missing_prometheus.vue';
 import { shallowMount } from '@vue/test-utils';
 
@@ -9,27 +10,29 @@ const createComponent = missingData =>
       missingData,
     },
     sync: false,
-  }).vm;
+  });
 
 describe('missingPrometheusComponent', () => {
-  let vm;
+  let wrapper;
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
   });
 
   it('should render missing prometheus message', () => {
-    vm = createComponent(false);
+    wrapper = createComponent(false);
+    const { vm } = wrapper;
 
     expect(vm.$el.querySelector('.state-description').innerHTML.trim()).toContain(
       'Function invocation metrics require Prometheus to be installed first.',
     );
 
-    expect(vm.$el.querySelector('glbutton-stub').getAttribute('variant')).toEqual('success');
+    expect(wrapper.find(GlButton).attributes('variant')).toBe('success');
   });
 
   it('should render no prometheus data message', () => {
-    vm = createComponent(true);
+    wrapper = createComponent(true);
+    const { vm } = wrapper;
 
     expect(vm.$el.querySelector('.state-description').innerHTML.trim()).toContain(
       'Invocation metrics loading or not available at this time.',

@@ -5,6 +5,8 @@ describe 'Projects > Files > User views files page' do
   let(:user) { project.owner }
 
   before do
+    stub_feature_flags(vue_file_list: false)
+
     sign_in user
     visit project_tree_path(project, project.repository.root_ref)
   end

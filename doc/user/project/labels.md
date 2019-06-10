@@ -32,6 +32,14 @@ An issue, epic, or merge request cannot have two scoped labels with the same key
 For example, if an issue is already labeled `priority::3` and you apply the label `priority::2` to it,
 `priority::3` is automatically removed.
 
+### Labels with multiple colon pairs
+
+If labels have multiple instances of `::`, the longest path from left to right, until the last `::`, is considered the "key" or the "scope".
+
+For example, `nested::key1::value1` and `nested::key1::value2` cannot both exist on the same issue. Adding the latter label will automatically remove the former due to the shared scope of `nested::key1`.
+
+`nested::key1::value1` and `nested::key2::value1` can both exist on the same issue, as these are considered to use two different label scopes, `nested::key1` and `nested::key2`.
+
 ### Workflows with scoped labels **[PREMIUM]**
 
 Suppose you wanted a custom field in issues to track the platform operating system
@@ -131,7 +139,7 @@ From the project issue list page and the project merge request list page, you ca
 
 From the group issue list page and the group merge request list page, you can [filter](../search/index.md#issues-and-merge-requests) by both group labels (including subgroup ancestors and subgroup descendants) and project labels.
 
-From the group epic list page, you can [filter](../search/index.md#issues-and-merge-requests) by both current group labels as well as decendent group labels.
+From the group epic list page, you can [filter](../search/index.md#issues-and-merge-requests) by both current group labels as well as descendant group labels.
 
 ![Labels group issues](img/labels_group_issues.png)
 

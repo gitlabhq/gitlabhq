@@ -21,4 +21,9 @@ export default {
       }),
     });
   },
+  [types.TOGGLE_EMPTY_STATE](state, { projectPath, value }) {
+    Object.assign(state.projects[projectPath], {
+      empty_repo: value,
+    });
+  },
 };

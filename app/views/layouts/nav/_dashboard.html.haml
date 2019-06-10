@@ -19,17 +19,17 @@
 
   - if dashboard_nav_link?(:activity)
     = nav_link(path: 'dashboard#activity', html_options: { class: ["d-none d-xl-block", ("d-lg-block" unless has_extra_nav_icons?)] }) do
-      = link_to activity_dashboard_path, class: 'dashboard-shortcuts-activity', title: _('Activity') do
+      = link_to activity_dashboard_path, class: 'dashboard-shortcuts-activity' do
         = _('Activity')
 
   - if dashboard_nav_link?(:milestones)
     = nav_link(controller: 'dashboard/milestones', html_options: { class: ["d-none d-xl-block", ("d-lg-block" unless has_extra_nav_icons?)] }) do
-      = link_to dashboard_milestones_path, class: 'dashboard-shortcuts-milestones', title: _('Milestones') do
+      = link_to dashboard_milestones_path, class: 'dashboard-shortcuts-milestones' do
         = _('Milestones')
 
   - if dashboard_nav_link?(:snippets)
     = nav_link(controller: 'dashboard/snippets', html_options: { class: ["d-none d-xl-block", ("d-lg-block" unless has_extra_nav_icons?)] }) do
-      = link_to dashboard_snippets_path, class: 'dashboard-shortcuts-snippets qa-snippets-link', title: _('Snippets') do
+      = link_to dashboard_snippets_path, class: 'dashboard-shortcuts-snippets qa-snippets-link' do
         = _('Snippets')
 
   - if any_dashboard_nav_link?([:groups, :milestones, :activity, :snippets])
@@ -41,47 +41,47 @@
         %ul
           - if dashboard_nav_link?(:activity)
             = nav_link(path: 'dashboard#activity') do
-              = link_to activity_dashboard_path, title: _('Activity') do
+              = link_to activity_dashboard_path do
                 = _('Activity')
 
           - if dashboard_nav_link?(:milestones)
             = nav_link(controller: 'dashboard/milestones') do
-              = link_to dashboard_milestones_path, class: 'dashboard-shortcuts-milestones', title: _('Milestones') do
+              = link_to dashboard_milestones_path, class: 'dashboard-shortcuts-milestones' do
                 = _('Milestones')
 
           - if dashboard_nav_link?(:snippets)
             = nav_link(controller: 'dashboard/snippets') do
-              = link_to dashboard_snippets_path, class: 'dashboard-shortcuts-snippets', title: _('Snippets') do
+              = link_to dashboard_snippets_path, class: 'dashboard-shortcuts-snippets' do
                 = _('Snippets')
-
-          = render_if_exists 'dashboard/operations/nav_link'
+          %li.dropdown.d-lg-none
+            = render_if_exists 'dashboard/operations/nav_link_list'
           - if can?(current_user, :read_instance_statistics)
-            = nav_link(controller: [:conversational_development_index, :cohorts]) do
-              = link_to instance_statistics_root_path, title: _('Instance Statistics'), aria: { label: _('Instance Statistics') }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+            = nav_link(controller: [:conversational_development_index, :cohorts], html_options: { class: 'd-lg-none' }) do
+              = link_to instance_statistics_root_path do
                 = _('Instance Statistics')
           - if current_user.admin?
             = nav_link(controller: 'admin/dashboard') do
-              = link_to admin_root_path, class: 'admin-icon qa-admin-area-link', title: _('Admin Area'), aria: { label: _('Admin Area') }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+              = link_to admin_root_path, class: 'd-lg-none admin-icon qa-admin-area-link' do
                 = _('Admin Area')
           - if Gitlab::Sherlock.enabled?
             %li
-              = link_to sherlock_transactions_path, class: 'admin-icon', title: _('Sherlock Transactions'),
-                data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+              = link_to sherlock_transactions_path, class: 'd-lg-none admin-icon' do
                 = _('Sherlock Transactions')
 
   -# Shortcut to Dashboard > Projects
   - if dashboard_nav_link?(:projects)
     %li.hidden
-      = link_to dashboard_projects_path, title: _('Projects'), class: 'dashboard-shortcuts-projects' do
+      = link_to dashboard_projects_path, class: 'dashboard-shortcuts-projects' do
         = _('Projects')
 
   - if current_controller?('ide')
     %li.line-separator.d-none.d-sm-block
       = nav_link(controller: 'ide') do
-        = link_to '#', class: 'dashboard-shortcuts-web-ide', title: _('Web IDE') do
+        = link_to '#', class: 'dashboard-shortcuts-web-ide' do
           = _('Web IDE')
 
-  = render_if_exists 'dashboard/operations/nav_link'
+  %li.dropdown{ class: 'd-none d-lg-block' }
+    = render_if_exists 'dashboard/operations/nav_link'
   - if can?(current_user, :read_instance_statistics)
     = nav_link(controller: [:conversational_development_index, :cohorts], html_options: { class: "d-none d-lg-block d-xl-block"}) do
       = link_to instance_statistics_root_path, title: _('Instance Statistics'), aria: { label: _('Instance Statistics') }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
@@ -95,3 +95,4 @@
       = link_to sherlock_transactions_path, class: 'admin-icon d-none d-lg-block d-xl-block', title: _('Sherlock Transactions'),
         data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
         = icon('tachometer fw')
+  = render_if_exists 'layouts/nav/geo_primary_node_url'

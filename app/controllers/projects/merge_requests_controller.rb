@@ -33,7 +33,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   def show
     close_merge_request_if_no_source_project
-    mark_merge_request_mergeable
+    @merge_request.check_mergeability
 
     respond_to do |format|
       format.html do
@@ -145,14 +145,12 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     render partial: 'projects/merge_requests/widget/commit_change_content', layout: false
   end
 
-  def cancel_merge_when_pipeline_succeeds
-    unless @merge_request.can_cancel_merge_when_pipeline_succeeds?(current_user)
+  def cancel_auto_merge
+    unless @merge_request.can_cancel_auto_merge?(current_user)
       return access_denied!
     end
 
-    ::MergeRequests::MergeWhenPipelineSucceedsService
-      .new(@project, current_user)
-      .cancel(@merge_request)
+    AutoMergeService.new(project, current_user).cancel(@merge_request)
 
     render json: serialize_widget(@merge_request)
   end
@@ -229,12 +227,12 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def merge_params_attributes
-    [:should_remove_source_branch, :commit_message, :squash_commit_message, :squash]
+    [:should_remove_source_branch, :commit_message, :squash_commit_message, :squash, :auto_merge_strategy]
   end
 
-  def merge_when_pipeline_succeeds_active?
-    params[:merge_when_pipeline_succeeds].present? &&
-      @merge_request.head_pipeline && @merge_request.head_pipeline.active?
+  def auto_merge_requested?
+    # Support params[:merge_when_pipeline_succeeds] during the transition period
+    params[:auto_merge_strategy].present? || params[:merge_when_pipeline_succeeds].present?
   end
 
   def close_merge_request_if_no_source_project
@@ -253,14 +251,10 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     @merge_request.has_no_commits? && !@merge_request.target_branch_exists?
   end
 
-  def mark_merge_request_mergeable
-    @merge_request.check_if_can_be_merged
-  end
-
   def merge!
-    # Disable the CI check if merge_when_pipeline_succeeds is enabled since we have
+    # Disable the CI check if auto_merge_strategy is specified since we have
     # to wait until CI completes to know
-    unless @merge_request.mergeable?(skip_ci_check: merge_when_pipeline_succeeds_active?)
+    unless @merge_request.mergeable?(skip_ci_check: auto_merge_requested?)
       return :failed
     end
 
@@ -274,24 +268,10 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
     @merge_request.update(merge_error: nil, squash: merge_params.fetch(:squash, false))
 
-    if params[:merge_when_pipeline_succeeds].present?
-      return :failed unless @merge_request.actual_head_pipeline
-
-      if @merge_request.actual_head_pipeline.active?
-        ::MergeRequests::MergeWhenPipelineSucceedsService
-          .new(@project, current_user, merge_params)
-          .execute(@merge_request)
-
-        :merge_when_pipeline_succeeds
-      elsif @merge_request.actual_head_pipeline.success?
-        # This can be triggered when a user clicks the auto merge button while
-        # the tests finish at about the same time
-        @merge_request.merge_async(current_user.id, merge_params)
-
-        :success
-      else
-        :failed
-      end
+    if auto_merge_requested?
+      AutoMergeService.new(project, current_user, merge_params)
+        .execute(merge_request,
+                 params[:auto_merge_strategy] || AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS)
     else
       @merge_request.merge_async(current_user.id, merge_params)
 

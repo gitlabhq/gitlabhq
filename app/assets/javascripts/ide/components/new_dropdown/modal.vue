@@ -134,6 +134,7 @@ export default {
 <template>
   <gl-modal
     id="ide-new-entry"
+    class="qa-new-file-modal"
     :header-title-text="modalTitle"
     :footer-primary-button-text="buttonLabel"
     footer-primary-button-variant="success"

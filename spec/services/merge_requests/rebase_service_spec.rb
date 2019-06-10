@@ -38,6 +38,32 @@ describe MergeRequests::RebaseService do
       end
     end
 
+    shared_examples 'sequence of failure and success' do
+      it 'properly clears the error message' do
+        allow(repository).to receive(:gitaly_operation_client).and_raise('Something went wrong')
+
+        service.execute(merge_request)
+
+        expect(merge_request.reload.merge_error).to eq described_class::REBASE_ERROR
+
+        allow(repository).to receive(:gitaly_operation_client).and_call_original
+
+        service.execute(merge_request)
+
+        expect(merge_request.reload.merge_error).to eq nil
+      end
+    end
+
+    it_behaves_like 'sequence of failure and success'
+
+    context 'with deprecated step rebase feature' do
+      before do
+        stub_feature_flags(two_step_rebase: false)
+      end
+
+      it_behaves_like 'sequence of failure and success'
+    end
+
     context 'when unexpected error occurs' do
       before do
         allow(repository).to receive(:gitaly_operation_client).and_raise('Something went wrong')

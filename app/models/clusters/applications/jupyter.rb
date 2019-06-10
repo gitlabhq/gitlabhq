@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'securerandom'
+
 module Clusters
   module Applications
     class Jupyter < ApplicationRecord
@@ -39,7 +41,7 @@ module Clusters
       end
 
       # Will be addressed in future MRs
-      # We need to investigate and document what will be permenantly deleted.
+      # We need to investigate and document what will be permanently deleted.
       def allowed_to_uninstall?
         false
       end
@@ -57,6 +59,10 @@ module Clusters
 
       def callback_url
         "http://#{hostname}/hub/oauth_callback"
+      end
+
+      def oauth_scopes
+        'api read_repository write_repository'
       end
 
       private
@@ -80,6 +86,9 @@ module Clusters
             "secretToken" => secret_token
           },
           "auth" => {
+            "state" => {
+              "cryptoKey" => crypto_key
+            },
             "gitlab" => {
               "clientId" => oauth_application.uid,
               "clientSecret" => oauth_application.secret,
@@ -89,10 +98,15 @@ module Clusters
           },
           "singleuser" => {
             "extraEnv" => {
-              "GITLAB_CLUSTER_ID" => cluster.id.to_s
+              "GITLAB_CLUSTER_ID" => cluster.id.to_s,
+              "GITLAB_HOST" => gitlab_host
             }
           }
         }
+      end
+
+      def crypto_key
+        @crypto_key ||= SecureRandom.hex(32)
       end
 
       def project_id
@@ -101,6 +115,10 @@ module Clusters
 
       def gitlab_url
         Gitlab.config.gitlab.url
+      end
+
+      def gitlab_host
+        Gitlab.config.gitlab.host
       end
 
       def content_values

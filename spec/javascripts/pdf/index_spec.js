@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import { GlobalWorkerOptions } from 'vendor/pdf';
-import workerSrc from 'vendor/pdf.worker.min';
+import { GlobalWorkerOptions } from 'pdfjs-dist/build/pdf';
+import workerSrc from 'pdfjs-dist/build/pdf.worker.min';
 
 import PDFLab from '~/pdf/index.vue';
 import { FIXTURES_PATH } from 'spec/test_constants';

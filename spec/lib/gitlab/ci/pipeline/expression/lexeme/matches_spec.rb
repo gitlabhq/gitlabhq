@@ -6,9 +6,21 @@ describe Gitlab::Ci::Pipeline::Expression::Lexeme::Matches do
   let(:right) { double('right') }
 
   describe '.build' do
-    it 'creates a new instance of the token' do
-      expect(described_class.build('=~', left, right))
-        .to be_a(described_class)
+    context 'with non-evaluable operands' do
+      it 'creates a new instance of the token' do
+        expect { described_class.build('=~', left, right) }
+          .to raise_error Gitlab::Ci::Pipeline::Expression::Lexeme::Operator::OperatorError
+      end
+    end
+
+    context 'with evaluable operands' do
+      it 'creates a new instance of the token' do
+        allow(left).to receive(:evaluate).and_return('my-string')
+        allow(right).to receive(:evaluate).and_return('/my-string/')
+
+        expect(described_class.build('=~', left, right))
+          .to be_a(described_class)
+      end
     end
   end
 
@@ -18,63 +30,93 @@ describe Gitlab::Ci::Pipeline::Expression::Lexeme::Matches do
     end
   end
 
+  describe '.precedence' do
+    it 'has a precedence' do
+      expect(described_class.precedence).to be_an Integer
+    end
+  end
+
   describe '#evaluate' do
-    it 'returns false when left and right do not match' do
-      allow(left).to receive(:evaluate).and_return('my-string')
-      allow(right).to receive(:evaluate)
-        .and_return(Gitlab::UntrustedRegexp.new('something'))
+    let(:operator) { described_class.new(left, right) }
 
-      operator = described_class.new(left, right)
+    subject { operator.evaluate }
 
-      expect(operator.evaluate).to eq false
+    before do
+      allow(left).to receive(:evaluate).and_return(left_value)
+      allow(right).to receive(:evaluate).and_return(right_value)
     end
 
-    it 'returns true when left and right match' do
-      allow(left).to receive(:evaluate).and_return('my-awesome-string')
-      allow(right).to receive(:evaluate)
-        .and_return(Gitlab::UntrustedRegexp.new('awesome.string$'))
+    context 'when left and right do not match' do
+      let(:left_value)  { 'my-string' }
+      let(:right_value) { Gitlab::UntrustedRegexp.new('something') }
 
-      operator = described_class.new(left, right)
-
-      expect(operator.evaluate).to eq true
+      it { is_expected.to eq(nil) }
     end
 
-    it 'supports matching against a nil value' do
-      allow(left).to receive(:evaluate).and_return(nil)
-      allow(right).to receive(:evaluate)
-        .and_return(Gitlab::UntrustedRegexp.new('pattern'))
+    context 'when left and right match' do
+      let(:left_value)  { 'my-awesome-string' }
+      let(:right_value) { Gitlab::UntrustedRegexp.new('awesome.string$') }
 
-      operator = described_class.new(left, right)
-
-      expect(operator.evaluate).to eq false
+      it { is_expected.to eq(3) }
     end
 
-    it 'supports multiline strings' do
-      allow(left).to receive(:evaluate).and_return <<~TEXT
-        My awesome contents
+    context 'when left is nil' do
+      let(:left_value)  { nil }
+      let(:right_value) { Gitlab::UntrustedRegexp.new('pattern') }
 
-        My-text-string!
-      TEXT
-
-      allow(right).to receive(:evaluate)
-        .and_return(Gitlab::UntrustedRegexp.new('text-string'))
-
-      operator = described_class.new(left, right)
-
-      expect(operator.evaluate).to eq true
+      it { is_expected.to eq(nil) }
     end
 
-    it 'supports regexp flags' do
-      allow(left).to receive(:evaluate).and_return <<~TEXT
-        My AWESOME content
-      TEXT
+    context 'when left is a multiline string and matches right' do
+      let(:left_value) do
+        <<~TEXT
+          My awesome contents
 
-      allow(right).to receive(:evaluate)
-        .and_return(Gitlab::UntrustedRegexp.new('(?i)awesome'))
+          My-text-string!
+        TEXT
+      end
 
-      operator = described_class.new(left, right)
+      let(:right_value) { Gitlab::UntrustedRegexp.new('text-string') }
 
-      expect(operator.evaluate).to eq true
+      it { is_expected.to eq(24) }
+    end
+
+    context 'when left is a multiline string and does not match right' do
+      let(:left_value) do
+        <<~TEXT
+          My awesome contents
+
+          My-terrible-string!
+        TEXT
+      end
+
+      let(:right_value) { Gitlab::UntrustedRegexp.new('text-string') }
+
+      it { is_expected.to eq(nil) }
+    end
+
+    context 'when a matching pattern uses regex flags' do
+      let(:left_value) do
+        <<~TEXT
+          My AWESOME content
+        TEXT
+      end
+
+      let(:right_value) { Gitlab::UntrustedRegexp.new('(?i)awesome') }
+
+      it { is_expected.to eq(3) }
+    end
+
+    context 'when a non-matching pattern uses regex flags' do
+      let(:left_value) do
+        <<~TEXT
+          My AWESOME content
+        TEXT
+      end
+
+      let(:right_value) { Gitlab::UntrustedRegexp.new('(?i)terrible') }
+
+      it { is_expected.to eq(nil) }
     end
   end
 end

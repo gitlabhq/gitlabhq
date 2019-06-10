@@ -186,7 +186,7 @@ Remember that actions only describe that something happened, they don't describe
       state.users.push(user);
     },
     [types.REQUEST_ADD_USER_ERROR](state, error) {
-      state.isAddingUser = true;
+      state.isAddingUser = false;
       state.errorAddingUser = error;
     },
   };
@@ -231,7 +231,7 @@ The store should be included in the main component of your application:
 
 ```javascript
   // app.vue
-  import store from 'store'; // it will include the index.js file
+  import store from './store'; // it will include the index.js file
 
   export default {
     name: 'application',

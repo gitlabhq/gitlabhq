@@ -1,6 +1,6 @@
 # Related issues **[STARTER]**
 
-> [Introduced][ee-1797] in [GitLab Starter][ee] 9.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1797) in [GitLab Starter](https://about.gitlab.com/pricing/) 9.4.
 
 Related issues are a bi-directional relationship between any two issues
 and appear in a block below the issue description. Issues can be across groups
@@ -35,11 +35,6 @@ will no longer appear in either issue.
 
 ![Removing a related issue](img/related_issues_remove.png)
 
-Please access our [permissions] page for more information.
+Please access our [permissions](../../permissions.md) page for more information.
 
-Additionally, you are also able to manage related issues through [our API].
-
-[ee]: https://about.gitlab.com/pricing/
-[ee-1797]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1797
-[permissions]: ../../permissions.md
-[Our API]: https://docs.gitlab.com/ee/api/issue_links.html
+Additionally, you are also able to manage related issues through [our API](../../../api/issue_links.md).

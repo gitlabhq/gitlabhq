@@ -94,6 +94,8 @@ export const handleLocationHash = () => {
   const fixedNav = document.querySelector('.navbar-gitlab');
   const performanceBar = document.querySelector('#js-peek');
   const topPadding = 8;
+  const diffFileHeader = document.querySelector('.js-file-title');
+  const versionMenusContainer = document.querySelector('.mr-version-menus-container');
 
   let adjustment = 0;
   if (fixedNav) adjustment -= fixedNav.offsetHeight;
@@ -112,6 +114,14 @@ export const handleLocationHash = () => {
 
   if (performanceBar) {
     adjustment -= performanceBar.offsetHeight;
+  }
+
+  if (diffFileHeader) {
+    adjustment -= diffFileHeader.offsetHeight;
+  }
+
+  if (versionMenusContainer) {
+    adjustment -= versionMenusContainer.offsetHeight;
   }
 
   if (isInMRPage()) {

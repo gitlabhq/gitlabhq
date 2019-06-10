@@ -59,6 +59,11 @@ class Key < ApplicationRecord
     "key-#{id}"
   end
 
+  # EE overrides this
+  def can_delete?
+    true
+  end
+
   # rubocop: disable CodeReuse/ServiceClass
   def update_last_used_at
     Keys::LastUsedService.new(self).execute

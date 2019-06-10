@@ -1,6 +1,6 @@
 import { states } from './constants';
 
-export const hasLatestPipeline = state => !state.isLoadingPipeline && !!state.latestPipeline;
+export const hasLatestPipeline = state => !state.isLoadingPipeline && Boolean(state.latestPipeline);
 
 export const pipelineFailed = state =>
   state.latestPipeline && state.latestPipeline.details.status.text === states.failed;

@@ -1,3 +1,7 @@
+---
+type: reference
+---
+
 # Using MySQL
 
 As many applications depend on MySQL as their database, you will eventually
@@ -17,8 +21,8 @@ services:
 
 variables:
   # Configure mysql environment variables (https://hub.docker.com/_/mysql/)
-  MYSQL_DATABASE: el_duderino
-  MYSQL_ROOT_PASSWORD: mysql_strong_password
+  MYSQL_DATABASE: "<your_mysql_database>"
+  MYSQL_ROOT_PASSWORD: "<your_mysql_password>"
 ```
 
 And then configure your application to use the database, for example:
@@ -26,18 +30,18 @@ And then configure your application to use the database, for example:
 ```yaml
 Host: mysql
 User: root
-Password: mysql_strong_password
-Database: el_duderino
+Password: <your_mysql_password>
+Database: <your_mysql_database>
 ```
 
 If you are wondering why we used `mysql` for the `Host`, read more at
 [How services are linked to the job](../docker/using_docker_images.md#how-services-are-linked-to-the-job).
 
-You can also use any other docker image available on [Docker Hub][hub-mysql].
+You can also use any other docker image available on [Docker Hub](https://hub.docker.com/_/mysql/).
 For example, to use MySQL 5.5 the service becomes `mysql:5.5`.
 
 The `mysql` image can accept some environment variables. For more details
-check the documentation on [Docker Hub][hub-mysql].
+check the documentation on [Docker Hub](https://hub.docker.com/_/mysql/).
 
 ## Use MySQL with the Shell executor
 
@@ -74,13 +78,13 @@ mysql> CREATE USER 'runner'@'localhost' IDENTIFIED BY '$password';
 Create the database:
 
 ```bash
-mysql> CREATE DATABASE IF NOT EXISTS `el_duderino` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_unicode_ci`;
+mysql> CREATE DATABASE IF NOT EXISTS `<your_mysql_database>` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_unicode_ci`;
 ```
 
 Grant the necessary permissions on the database:
 
 ```bash
-mysql> GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, CREATE TEMPORARY TABLES, DROP, INDEX, ALTER, LOCK TABLES ON `el_duderino`.* TO 'runner'@'localhost';
+mysql> GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, CREATE TEMPORARY TABLES, DROP, INDEX, ALTER, LOCK TABLES ON `<your_mysql_database>`.* TO 'runner'@'localhost';
 ```
 
 If all went well you can now quit the database session:
@@ -93,7 +97,7 @@ Now, try to connect to the newly created database to check that everything is
 in place:
 
 ```bash
-mysql -u runner -p -D el_duderino
+mysql -u runner -p -D <your_mysql_database>
 ```
 
 As a final step, configure your application to use the database, for example:
@@ -102,17 +106,14 @@ As a final step, configure your application to use the database, for example:
 Host: localhost
 User: runner
 Password: $password
-Database: el_duderino
+Database: <your_mysql_database>
 ```
 
 ## Example project
 
-We have set up an [Example MySQL Project][mysql-example-repo] for your
+We have set up an [Example MySQL Project](https://gitlab.com/gitlab-examples/mysql) for your
 convenience that runs on [GitLab.com](https://gitlab.com) using our publicly
 available [shared runners](../runners/README.md).
 
-Want to hack on it? Simply fork it, commit and push  your changes. Within a few
+Want to hack on it? Simply fork it, commit and push your changes. Within a few
 moments the changes will be picked by a public runner and the job will begin.
-
-[hub-mysql]: https://hub.docker.com/_/mysql/
-[mysql-example-repo]: https://gitlab.com/gitlab-examples/mysql

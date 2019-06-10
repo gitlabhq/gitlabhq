@@ -5,7 +5,7 @@ import _ from 'underscore';
 import Cookies from 'js-cookie';
 import flash from './flash';
 import axios from './lib/utils/axios_utils';
-import { __ } from './locale';
+import { sprintf, s__, __ } from './locale';
 
 function Sidebar(currentUser) {
   this.toggleTodo = this.toggleTodo.bind(this);
@@ -82,9 +82,9 @@ Sidebar.prototype.toggleTodo = function(e) {
   ajaxType = $this.data('deletePath') ? 'delete' : 'post';
 
   if ($this.data('deletePath')) {
-    url = '' + $this.data('deletePath');
+    url = String($this.data('deletePath'));
   } else {
-    url = '' + $this.data('createPath');
+    url = String($this.data('createPath'));
   }
 
   $this.tooltip('hide');
@@ -101,7 +101,10 @@ Sidebar.prototype.toggleTodo = function(e) {
       this.todoUpdateDone(data);
     })
     .catch(() =>
-      flash(`There was an error ${ajaxType === 'post' ? 'adding a' : 'deleting the'} todo.`),
+      flash(sprintf(__('There was an error %{message} todo.')), {
+        message:
+          ajaxType === 'post' ? s__('RightSidebar|adding a') : s__('RightSidebar|deleting the'),
+      }),
     );
 };
 

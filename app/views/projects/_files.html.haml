@@ -13,7 +13,12 @@
     = render 'shared/commit_well', commit: commit, ref: ref, project: project
 
   - if is_project_overview
-    .project-buttons.append-bottom-default
+    .project-buttons.append-bottom-default{ class: ("js-keep-hidden-on-navigation" if vue_file_list_enabled?) }
       = render 'stat_anchor_list', anchors: @project.statistics_buttons(show_auto_devops_callout: show_auto_devops_callout)
 
-  = render 'projects/tree/tree_content', tree: @tree, content_url: content_url
+  - if vue_file_list_enabled?
+    #js-tree-list{ data: { project_path: @project.full_path, project_short_path: @project.path, ref: ref, full_name: @project.name_with_namespace } }
+    - if @tree.readme
+      = render "projects/tree/readme", readme: @tree.readme
+  - else
+    = render 'projects/tree/tree_content', tree: @tree, content_url: content_url

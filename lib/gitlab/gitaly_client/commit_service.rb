@@ -79,7 +79,7 @@ module Gitlab
 
       def tree_entry(ref, path, limit = nil)
         if Pathname.new(path).cleanpath.to_s.start_with?('../')
-          # The TreeEntry RPC should return an empty reponse in this case but in
+          # The TreeEntry RPC should return an empty response in this case but in
           # Gitaly 0.107.0 and earlier we get an exception instead. This early return
           # saves us a Gitaly roundtrip while also avoiding the exception.
           return

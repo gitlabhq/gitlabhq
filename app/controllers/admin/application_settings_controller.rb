@@ -89,6 +89,13 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
     )
   end
 
+  # Getting ToS url requires `directory` api call to Let's Encrypt
+  # which could result in 500 error/slow rendering on settings page
+  # Because of that we use separate controller action
+  def lets_encrypt_terms_of_service
+    redirect_to ::Gitlab::LetsEncrypt.terms_of_service_url
+  end
+
   private
 
   def set_application_setting

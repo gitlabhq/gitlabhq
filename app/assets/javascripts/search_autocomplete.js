@@ -2,7 +2,7 @@
 
 import $ from 'jquery';
 import { escape, throttle } from 'underscore';
-import { s__, sprintf } from '~/locale';
+import { s__, __, sprintf } from '~/locale';
 import { getIdenticonBackgroundClass, getIdenticonTitle } from '~/helpers/avatar_helper';
 import axios from './lib/utils/axios_utils';
 import DropdownUtils from './filtered_search/dropdown_utils';
@@ -379,7 +379,7 @@ export class SearchAutocomplete {
           }
         }
     }
-    this.wrap.toggleClass('has-value', !!e.target.value);
+    this.wrap.toggleClass('has-value', Boolean(e.target.value));
   }
 
   onSearchInputFocus() {
@@ -396,7 +396,7 @@ export class SearchAutocomplete {
 
   onClearInputClick(e) {
     e.preventDefault();
-    this.wrap.toggleClass('has-value', !!e.target.value);
+    this.wrap.toggleClass('has-value', Boolean(e.target.value));
     return this.searchInput.val('').focus();
   }
 
@@ -405,8 +405,9 @@ export class SearchAutocomplete {
     this.wrap.removeClass('search-active');
     // If input is blank then restore state
     if (this.searchInput.val() === '') {
-      return this.restoreOriginalState();
+      this.restoreOriginalState();
     }
+    this.dropdownMenu.removeClass('show');
   }
 
   restoreOriginalState() {
@@ -439,7 +440,7 @@ export class SearchAutocomplete {
 
   restoreMenu() {
     var html;
-    html = '<ul><li class="dropdown-menu-empty-item"><a>Loading...</a></li></ul>';
+    html = `<ul><li class="dropdown-menu-empty-item"><a>${__('Loading...')}</a></li></ul>`;
     return this.dropdownContent.html(html);
   }
 

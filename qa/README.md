@@ -1,6 +1,6 @@
 # GitLab QA - End-to-end tests for GitLab
 
-This directory contains [end-to-end tests](doc/development/testing_guide/end_to_end_tests.md)
+This directory contains [end-to-end tests](../../../doc/development/testing_guide/end_to_end/index.md)
 for GitLab. It includes the test framework and the tests themselves.
 
 The tests can be found in `qa/specs/features` (not to be confused with the unit
@@ -29,7 +29,7 @@ verify coupling between page objects implemented as a part of GitLab QA
 and corresponding views / partials / selectors in CE / EE.
 
 Whenever `qa:selectors` job fails in your merge request, you are supposed to
-fix [page objects](qa/page/README.md). You should also trigger end-to-end tests
+fix [page objects](../doc/development/testing_guide/end_to_end/page_objects.md). You should also trigger end-to-end tests
 using `package-and-qa` manual action, to test if everything works fine.
 
 ## How can I use it?
@@ -49,8 +49,10 @@ will need to [modify your GDK setup](https://gitlab.com/gitlab-org/gitlab-qa/blo
 
 ### Writing tests
 
-1. [Using page objects](qa/page/README.md)
-2. [Style guide](STYLE_GUIDE.md)
+- [Writing tests from scratch tutorial](../doc/development/testing_guide/end_to_end/quick_start_guide.md)
+    - [Best practices](../doc/development/testing_guide/best_practices.md)
+    - [Using page objects](../doc/development/testing_guide/end_to_end/page_objects.md)
+    - [Guidelines](../doc/development/testing_guide/index.md)
 
 ### Running specific tests
 

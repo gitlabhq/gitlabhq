@@ -31,7 +31,7 @@ describe 'help/index' do
         render
 
         expect(rendered).to match '8.0.2'
-        expect(rendered).to have_link('8.0.2', href: %r{https://gitlab.com/gitlab-org/gitlab-(ce|ee)/tags/v8.0.2})
+        expect(rendered).to have_link('8.0.2', href: %r{https://gitlab.com/gitlab-org/gitlab-(ce|ee)/-/tags/v8.0.2})
       end
 
       it 'shows a link to the commit for pre-releases' do

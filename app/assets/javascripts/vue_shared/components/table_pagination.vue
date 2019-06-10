@@ -121,7 +121,7 @@ export default {
           this.change(1);
           break;
         default:
-          this.change(+text);
+          this.change(Number(text));
           break;
       }
     },

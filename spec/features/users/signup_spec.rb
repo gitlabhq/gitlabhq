@@ -25,6 +25,13 @@ describe 'Signup' do
       expect(find('.username')).not_to have_css '.gl-field-error-outline'
     end
 
+    it 'does not show an error border if the username length is not longer than 255 characters' do
+      fill_in 'new_user_username', with: 'u' * 255
+      wait_for_requests
+
+      expect(find('.username')).not_to have_css '.gl-field-error-outline'
+    end
+
     it 'shows an error border if the username already exists' do
       existing_user = create(:user)
 
@@ -39,6 +46,20 @@ describe 'Signup' do
       wait_for_requests
 
       expect(find('.username')).to have_css '.gl-field-error-outline'
+    end
+
+    it 'shows an error border if the username is longer than 255 characters' do
+      fill_in 'new_user_username', with: 'u' * 256
+      wait_for_requests
+
+      expect(find('.username')).to have_css '.gl-field-error-outline'
+    end
+
+    it 'shows an error message if the username is longer than 255 characters' do
+      fill_in 'new_user_username', with: 'u' * 256
+      wait_for_requests
+
+      expect(page).to have_content("Username is too long (maximum is 255 characters).")
     end
 
     it 'shows an error message on submit if the username contains special characters' do
@@ -67,14 +88,35 @@ describe 'Signup' do
     before do
       visit root_path
       click_link 'Register'
-      simulate_input('#new_user_name', 'Ehsan 🦋')
+    end
+
+    it 'does not show an error border if the user\'s fullname length is not longer than 128 characters' do
+      fill_in 'new_user_name', with: 'u' * 128
+
+      expect(find('.name')).not_to have_css '.gl-field-error-outline'
     end
 
     it 'shows an error border if the user\'s fullname contains an emoji' do
+      simulate_input('#new_user_name', 'Ehsan 🦋')
+
       expect(find('.name')).to have_css '.gl-field-error-outline'
     end
 
+    it 'shows an error border if the user\'s fullname is longer than 128 characters' do
+      fill_in 'new_user_name', with: 'n' * 129
+
+      expect(find('.name')).to have_css '.gl-field-error-outline'
+    end
+
+    it 'shows an error message if the user\'s fullname is longer than 128 characters' do
+      fill_in 'new_user_name', with: 'n' * 129
+
+      expect(page).to have_content("Name is too long (maximum is 128 characters).")
+    end
+
     it 'shows an error message if the username contains emojis' do
+      simulate_input('#new_user_name', 'Ehsan 🦋')
+
       expect(page).to have_content("Invalid input, please avoid emojis")
     end
   end

@@ -42,7 +42,7 @@ describe Projects::RawController do
       end
     end
 
-    it_behaves_like 'repository lfs file load' do
+    it_behaves_like 'a controller that can serve LFS files' do
       let(:filename) { 'lfs_object.iso' }
       let(:filepath) { "be93687/files/lfs/#{filename}" }
     end

@@ -118,7 +118,7 @@
               %span.dropdown-toggle-text{ class: ("is-default" if selected_labels.empty?) }
                 = multi_label_name(selected_labels, "Labels")
               = icon('chevron-down', 'aria-hidden': 'true')
-            .dropdown-menu.dropdown-select.dropdown-menu-paging.dropdown-menu-labels.dropdown-menu-selectable
+            .dropdown-menu.dropdown-select.dropdown-menu-paging.dropdown-menu-labels.dropdown-menu-selectable.dropdown-extended-height
               = render partial: "shared/issuable/label_page_default"
               - if issuable_sidebar.dig(:current_user, :can_admin_label)
                 = render partial: "shared/issuable/label_page_create"
@@ -158,13 +158,13 @@
             %button.btn.btn-default.btn-block.js-sidebar-dropdown-toggle.js-move-issue{ type: 'button',
               data: { toggle: 'dropdown', display: 'static' } }
               = _('Move issue')
-            .dropdown-menu.dropdown-menu-selectable
+            .dropdown-menu.dropdown-menu-selectable.dropdown-extended-height
               = dropdown_title(_('Move issue'))
               = dropdown_filter(_('Search project'), search_id: 'sidebar-move-issue-dropdown-search')
               = dropdown_content
               = dropdown_loading
               = dropdown_footer add_content_class: true do
-                %button.btn.btn-success.sidebar-move-issue-confirmation-button.js-move-issue-confirmation-button{ disabled: true }
+                %button.btn.btn-success.sidebar-move-issue-confirmation-button.js-move-issue-confirmation-button{ type: 'button', disabled: true }
                   = _('Move')
                   = icon('spinner spin', class: 'sidebar-move-issue-confirmation-loading-icon')
 

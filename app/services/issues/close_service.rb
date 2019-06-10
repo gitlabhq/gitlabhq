@@ -7,7 +7,7 @@ module Issues
       return issue unless can?(current_user, :update_issue, issue)
 
       close_issue(issue,
-                  commit: commit,
+                  closed_via: commit,
                   notifications: notifications,
                   system_note: system_note)
     end
@@ -17,9 +17,9 @@ module Issues
     #
     # The code calling this method is responsible for ensuring that a user is
     # allowed to close the given issue.
-    def close_issue(issue, commit: nil, notifications: true, system_note: true)
+    def close_issue(issue, closed_via: nil, notifications: true, system_note: true)
       if project.jira_tracker? && project.jira_service.active && issue.is_a?(ExternalIssue)
-        project.jira_service.close_issue(commit, issue)
+        project.jira_service.close_issue(closed_via, issue)
         todo_service.close_issue(issue, current_user)
         return issue
       end
@@ -27,8 +27,11 @@ module Issues
       if project.issues_enabled? && issue.close
         issue.update(closed_by: current_user)
         event_service.close_issue(issue, current_user)
-        create_note(issue, commit) if system_note
-        notification_service.async.close_issue(issue, current_user) if notifications
+        create_note(issue, closed_via) if system_note
+
+        closed_via = _("commit %{commit_id}") % { commit_id: closed_via.id } if closed_via.is_a?(Commit)
+
+        notification_service.async.close_issue(issue, current_user, closed_via: closed_via) if notifications
         todo_service.close_issue(issue, current_user)
         execute_hooks(issue, 'close')
         invalidate_cache_counts(issue, users: issue.assignees)

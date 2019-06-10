@@ -282,7 +282,7 @@ describe 'Gitlab::Graphql::Authorization' do
       issue_ids = issue_edges.map { |issue_edge| issue_edge['node']&.fetch('id') }
 
       expect(issue_edges.size).to eq(visible_issues.size)
-      expect(issue_ids).to eq(visible_issues.map { |i| i.id.to_s })
+      expect(issue_ids).to eq(visible_issues.map { |i| i.to_global_id.to_s })
     end
 
     it 'does not check access on fields that will not be rendered' do

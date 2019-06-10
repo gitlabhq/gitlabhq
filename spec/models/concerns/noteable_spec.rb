@@ -260,4 +260,16 @@ describe Noteable do
       end
     end
   end
+
+  describe '.replyable_types' do
+    it 'exposes the replyable types' do
+      expect(described_class.replyable_types).to include('Issue', 'MergeRequest')
+    end
+  end
+
+  describe '.resolvable_types' do
+    it 'exposes the replyable types' do
+      expect(described_class.resolvable_types).to include('MergeRequest')
+    end
+  end
 end

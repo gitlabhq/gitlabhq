@@ -1,14 +1,14 @@
 import Vue from 'vue';
 import { TEST_HOST } from 'spec/test_constants';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
-import { trimText } from 'spec/helpers/vue_component_helper';
+import { trimText } from 'spec/helpers/text_helper';
 import { getTimeago } from '~/lib/utils/datetime_utility';
 import CommitItem from '~/diffs/components/commit_item.vue';
 import getDiffWithCommit from '../mock_data/diff_with_commit';
 
 const TEST_AUTHOR_NAME = 'test';
 const TEST_AUTHOR_EMAIL = 'test+test@gitlab.com';
-const TEST_AUTHOR_GRAVATAR = `${TEST_HOST}/avatar/test?s=36`;
+const TEST_AUTHOR_GRAVATAR = `${TEST_HOST}/avatar/test?s=40`;
 const TEST_SIGNATURE_HTML = '<a>Legit commit</a>';
 const TEST_PIPELINE_STATUS_PATH = `${TEST_HOST}/pipeline/status`;
 
@@ -65,7 +65,7 @@ describe('diffs/components/commit_item', () => {
     const imgElement = avatarElement.querySelector('img');
 
     expect(avatarElement).toHaveAttr('href', commit.author.web_url);
-    expect(imgElement).toHaveClass('s36');
+    expect(imgElement).toHaveClass('s40');
     expect(imgElement).toHaveAttr('alt', commit.author.name);
     expect(imgElement).toHaveAttr('src', commit.author.avatar_url);
   });

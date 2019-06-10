@@ -1,4 +1,4 @@
-- visibility_level = params.dig(:project, :visibility_level) || default_project_visibility
+- visibility_level = selected_visibility_level(@project, params.dig(:project, :visibility_level))
 - ci_cd_only = local_assigns.fetch(:ci_cd_only, false)
 - hide_init_with_readme = local_assigns.fetch(:hide_init_with_readme, false)
 - track_label = local_assigns.fetch(:track_label, 'blank_project')
@@ -54,7 +54,7 @@
   .form-group.row.initialize-with-readme-setting
     %div{ :class => "col-sm-12" }
       .form-check
-        = check_box_tag 'project[initialize_with_readme]', '1', false, class: 'form-check-input', data: { track_label: "#{track_label}", track_event: "activate_form_input", track_property: "init_with_readme" }
+        = check_box_tag 'project[initialize_with_readme]', '1', false, class: 'form-check-input qa-initialize-with-readme-checkbox', data: { track_label: "#{track_label}", track_event: "activate_form_input", track_property: "init_with_readme" }
         = label_tag 'project[initialize_with_readme]', class: 'form-check-label' do
           .option-title
             %strong Initialize repository with a README

@@ -53,7 +53,7 @@ class ActiveSession
 
   def self.list(user)
     Gitlab::Redis::SharedState.with do |redis|
-      cleaned_up_lookup_entries(redis, user.id).map do |entry|
+      cleaned_up_lookup_entries(redis, user).map do |entry|
         # rubocop:disable Security/MarshalLoad
         Marshal.load(entry)
         # rubocop:enable Security/MarshalLoad
@@ -78,7 +78,7 @@ class ActiveSession
 
   def self.cleanup(user)
     Gitlab::Redis::SharedState.with do |redis|
-      cleaned_up_lookup_entries(redis, user.id)
+      cleaned_up_lookup_entries(redis, user)
     end
   end
 
@@ -90,25 +90,52 @@ class ActiveSession
     "#{Gitlab::Redis::SharedState::USER_SESSIONS_LOOKUP_NAMESPACE}:#{user_id}"
   end
 
-  def self.cleaned_up_lookup_entries(redis, user_id)
-    lookup_key = lookup_key_name(user_id)
+  def self.list_sessions(user)
+    sessions_from_ids(session_ids_for_user(user))
+  end
 
-    session_ids = redis.smembers(lookup_key)
+  def self.session_ids_for_user(user)
+    Gitlab::Redis::SharedState.with do |redis|
+      redis.smembers(lookup_key_name(user.id))
+    end
+  end
 
-    entry_keys = session_ids.map { |session_id| key_name(user_id, session_id) }
-    return [] if entry_keys.empty?
+  def self.sessions_from_ids(session_ids)
+    return [] if session_ids.empty?
 
-    entries = redis.mget(entry_keys)
+    Gitlab::Redis::SharedState.with do |redis|
+      session_keys = session_ids.map { |session_id| "#{Gitlab::Redis::SharedState::SESSION_NAMESPACE}:#{session_id}" }
 
-    session_ids_and_entries = session_ids.zip(entries)
+      redis.mget(session_keys).compact.map do |raw_session|
+        # rubocop:disable Security/MarshalLoad
+        Marshal.load(raw_session)
+        # rubocop:enable Security/MarshalLoad
+      end
+    end
+  end
+
+  def self.raw_active_session_entries(session_ids, user_id)
+    return [] if session_ids.empty?
+
+    Gitlab::Redis::SharedState.with do |redis|
+      entry_keys = session_ids.map { |session_id| key_name(user_id, session_id) }
+
+      redis.mget(entry_keys)
+    end
+  end
+
+  def self.cleaned_up_lookup_entries(redis, user)
+    session_ids = session_ids_for_user(user)
+    entries = raw_active_session_entries(session_ids, user.id)
 
     # remove expired keys.
     # only the single key entries are automatically expired by redis, the
     # lookup entries in the set need to be removed manually.
+    session_ids_and_entries = session_ids.zip(entries)
     session_ids_and_entries.reject { |_session_id, entry| entry }.each do |session_id, _entry|
-      redis.srem(lookup_key, session_id)
+      redis.srem(lookup_key_name(user.id), session_id)
     end
 
-    session_ids_and_entries.select { |_session_id, entry| entry }.map { |_session_id, entry| entry }
+    entries.compact
   end
 end

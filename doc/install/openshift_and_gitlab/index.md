@@ -1,8 +1,5 @@
 ---
-author: Achilleas Pipinellis
-author_gitlab: axil
-level: intermediary
-article_type: tutorial
+type: howto
 date: 2016-06-28
 ---
 

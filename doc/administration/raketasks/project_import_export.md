@@ -32,5 +32,4 @@ bundle exec rake gitlab:import_export:data RAILS_ENV=production
 ```
 
 [ce-3050]: https://gitlab.com/gitlab-org/gitlab-ce/issues/3050
-[feature-flags]: https://docs.gitlab.com/ee/api/features.html
 [tmp]: ../../development/shared_files.md

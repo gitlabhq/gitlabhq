@@ -1,3 +1,7 @@
+---
+type: reference
+---
+
 # Interactive Web Terminals
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/50144) in GitLab 11.3.

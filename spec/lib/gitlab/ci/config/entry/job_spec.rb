@@ -94,7 +94,7 @@ describe Gitlab::Ci::Config::Entry::Job do
 
         it 'returns error about wrong value type' do
           expect(entry).not_to be_valid
-          expect(entry.errors).to include "job extends should be a string"
+          expect(entry.errors).to include "job extends should be an array of strings or a string"
         end
       end
 

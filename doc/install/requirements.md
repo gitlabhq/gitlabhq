@@ -1,4 +1,11 @@
+---
+type: reference
+---
+
 # Requirements
+
+This page includes useful information on the supported Operating Systems as well
+as the hardware requirements that are needed to install and use GitLab.
 
 ## Operating Systems
 
@@ -12,7 +19,7 @@
 - Scientific Linux (please use the CentOS packages and instructions)
 - Oracle Linux (please use the CentOS packages and instructions)
 
-For the installations options please see [the installation page on the GitLab website](https://about.gitlab.com/installation/).
+For the installations options, see [the main installation page](README.md).
 
 ### Unsupported Unix distributions
 
@@ -105,9 +112,9 @@ features of GitLab work with MySQL/MariaDB:
 
 1. MySQL support for subgroups was [dropped with GitLab 9.3][post].
    See [issue #30472][30472] for more information.
-1. Geo does [not support MySQL](https://docs.gitlab.com/ee/administration/geo/replication/database.html). This means no supported Disaster Recovery solution if using MySQL. **[PREMIUM ONLY]**
+1. Geo does [not support MySQL](../administration/geo/replication/database.md). This means no supported Disaster Recovery solution if using MySQL. **[PREMIUM ONLY]**
 1. [Zero downtime migrations](../update/README.md#upgrading-without-downtime) do not work with MySQL.
-1. [Database load balancing](https://docs.gitlab.com/ee/administration/database_load_balancing.html) is
+1. [Database load balancing](../administration/database_load_balancing.md) is
    supported only for PostgreSQL. **[PREMIUM ONLY]**
 1. GitLab [optimizes the loading of dashboard events](https://gitlab.com/gitlab-org/gitlab-ce/issues/31806) using [PostgreSQL LATERAL JOINs](https://blog.heapanalytics.com/postgresqls-powerful-new-join-type-lateral/).
 1. In general, SQL optimized for PostgreSQL may run much slower in MySQL due to
@@ -143,14 +150,14 @@ On some systems you may need to install an additional package (e.g.
 
 #### Additional requirements for GitLab Geo
 
-If you are using [GitLab Geo](https://docs.gitlab.com/ee/development/geo.html):
+If you are using [GitLab Geo](../development/geo.md):
 
 - We strongly recommend running Omnibus-managed instances as they are actively
   developed and tested. We aim to be compatible with most external (not managed
   by Omnibus) databases (for example, AWS RDS) but we do not guarantee
   compatibility.
 - The
-  [tracking database](https://docs.gitlab.com/ee/development/geo.html#geo-tracking-database)
+  [tracking database](../development/geo.md#using-the-tracking-database)
   requires the
   [postgres_fdw](https://www.postgresql.org/docs/9.6/static/postgres-fdw.html)
   extension.
@@ -201,12 +208,23 @@ you decide to run GitLab Runner and the GitLab Rails application on the same
 machine.
 
 It is also not safe to install everything on a single machine, because of the
-[security reasons](https://docs.gitlab.com/runner/security/) 
-- especially when you plan to use shell executor with GitLab
+[security reasons](https://docs.gitlab.com/runner/security/), especially when you plan to use shell executor with GitLab
 Runner.
 
 We recommend using a separate machine for each GitLab Runner, if you plan to
 use the CI features.
+The GitLab Runner server requirements depend on:
+
+- The type of [executor](https://docs.gitlab.com/runner/executors/) you configured on GitLab Runner.
+- Resources required to run build jobs.
+- Job concurrency settings.
+
+Since the nature of the jobs varies for each use case, you will need to experiment by adjusting the job concurrency to get the optimum setting.
+
+For reference, GitLab.com's [auto-scaling shared runner](../user/gitlab_com/index.md#shared-runners) is configured so that a **single job** will run in a **single instance** with:
+
+- 1vCPU.
+- 3.75GB of RAM.
 
 ## Supported web browsers
 
@@ -225,3 +243,15 @@ Each time a new browser version is released, we begin supporting that version an
 
 NOTE: **Note:** We do not support running GitLab with JavaScript disabled in the browser and have no plans of supporting that
 in the future because we have features such as Issue Boards which require JavaScript extensively.
+
+<!-- ## Troubleshooting
+
+Include any troubleshooting steps that you can foresee. If you know beforehand what issues
+one might have when setting this up, or when something is changed, or on upgrading, it's
+important to describe those, too. Think of things that may go wrong and include them here.
+This is important to minimize requests for support, and to avoid doc comments with
+questions that you know someone might ask.
+
+Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+If you have none to add when creating a doc, leave this section in place
+but commented out to help encourage others to add to it in the future. -->

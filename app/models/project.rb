@@ -56,7 +56,6 @@ class Project < ApplicationRecord
   VALID_MIRROR_PROTOCOLS = %w(http https ssh git).freeze
 
   ignore_column :import_status, :import_jid, :import_error
-  ignore_column :ci_id
 
   cache_markdown_field :description, pipeline: :description
 
@@ -293,6 +292,7 @@ class Project < ApplicationRecord
   accepts_nested_attributes_for :project_feature, update_only: true
   accepts_nested_attributes_for :import_data
   accepts_nested_attributes_for :auto_devops, update_only: true
+  accepts_nested_attributes_for :ci_cd_settings, update_only: true
 
   accepts_nested_attributes_for :remote_mirrors,
                                 allow_destroy: true,
@@ -310,6 +310,8 @@ class Project < ApplicationRecord
   delegate :group_clusters_enabled?, to: :group, allow_nil: true
   delegate :root_ancestor, to: :namespace, allow_nil: true
   delegate :last_pipeline, to: :commit, allow_nil: true
+  delegate :external_dashboard_url, to: :metrics_setting, allow_nil: true, prefix: true
+  delegate :default_git_depth, :default_git_depth=, to: :ci_cd_settings
 
   # Validations
   validates :creator, presence: true, on: :create
@@ -337,8 +339,8 @@ class Project < ApplicationRecord
   validates :star_count, numericality: { greater_than_or_equal_to: 0 }
   validate :check_personal_projects_limit, on: :create
   validate :check_repository_path_availability, on: :update, if: ->(project) { project.renamed? }
-  validate :visibility_level_allowed_by_group, if: -> { changes.has_key?(:visibility_level) }
-  validate :visibility_level_allowed_as_fork, if: -> { changes.has_key?(:visibility_level) }
+  validate :visibility_level_allowed_by_group, if: :should_validate_visibility_level?
+  validate :visibility_level_allowed_as_fork, if: :should_validate_visibility_level?
   validate :check_wiki_path_conflict
   validate :validate_pages_https_only, if: -> { changes.has_key?(:pages_https_only) }
   validates :repository_storage,
@@ -407,6 +409,7 @@ class Project < ApplicationRecord
   scope :with_builds_enabled, -> { with_feature_enabled(:builds) }
   scope :with_issues_enabled, -> { with_feature_enabled(:issues) }
   scope :with_issues_available_for_user, ->(current_user) { with_feature_available_for_user(:issues, current_user) }
+  scope :with_merge_requests_available_for_user, ->(current_user) { with_feature_available_for_user(:merge_requests, current_user) }
   scope :with_merge_requests_enabled, -> { with_feature_enabled(:merge_requests) }
   scope :with_remote_mirrors, -> { joins(:remote_mirrors).where(remote_mirrors: { enabled: true }).distinct }
 
@@ -596,6 +599,17 @@ class Project < ApplicationRecord
 
     def group_ids
       joins(:namespace).where(namespaces: { type: 'Group' }).select(:namespace_id)
+    end
+
+    # Returns ids of projects with milestones available for given user
+    #
+    # Used on queries to find milestones which user can see
+    # For example: Milestone.where(project_id: ids_with_milestone_available_for(user))
+    def ids_with_milestone_available_for(user)
+      with_issues_enabled = with_issues_available_for_user(user).select(:id)
+      with_merge_requests_enabled = with_merge_requests_available_for_user(user).select(:id)
+
+      from_union([with_issues_enabled, with_merge_requests_enabled]).select(:id)
     end
   end
 
@@ -890,6 +904,10 @@ class Project < ApplicationRecord
       end
 
     self.errors.add(:limit_reached, error % { limit: limit })
+  end
+
+  def should_validate_visibility_level?
+    new_record? || changes.has_key?(:visibility_level)
   end
 
   def visibility_level_allowed_by_group

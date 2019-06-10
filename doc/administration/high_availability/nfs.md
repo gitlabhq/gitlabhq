@@ -39,14 +39,8 @@ options:
 
 ### Improving NFS performance with GitLab
 
-NOTE: **Note:**
-This is only available starting in certain versions of GitLab:
-
-  * 11.5.11
-  * 11.6.11
-  * 11.7.12
-  * 11.8.8
-  * 11.9.0 and up (e.g. 11.10, 11.11, etc.)
+NOTE: **Note:** This is only available starting in certain versions of GitLab: 11.5.11,
+11.6.11, 11.7.12, 11.8.8, 11.9.0 and up (e.g. 11.10, 11.11, etc.)
 
 If you are using NFS to share Git data, we recommend that you enable a
 number of feature flags that will allow GitLab application processes to
@@ -59,13 +53,14 @@ details.
 To do this, run the Rake task:
 
 ```sh
-gitlab-rake gitlab:features:enable_rugged
+sudo gitlab-rake gitlab:features:enable_rugged
 ```
 
-If you need to undo this setting for some reason, run:
+If you need to undo this setting for some reason such as switching to [Gitaly without NFS](gitaly.md)
+(recommended), run:
 
 ```sh
-gitlab-rake gitlab:features:disable_rugged
+sudo gitlab-rake gitlab:features:disable_rugged
 ```
 
 ### Known issues
@@ -108,6 +103,11 @@ stored on a local volume.
 For more details on another person's experience with EFS, see
 [Amazon's Elastic File System: Burst Credits](https://rawkode.com/2017/04/16/amazons-elastic-file-system-burst-credits/)
 
+## Avoid using CephFS and GlusterFS
+
+GitLab strongly recommends against using CephFS and GlusterFS.
+These distributed file systems are not well-suited for GitLab's input/output access patterns because git uses many small files and access times and file locking times to propagate will make git activity very slow.
+
 ## Avoid using PostgreSQL with NFS
 
 GitLab strongly recommends against running your PostgreSQL database
@@ -123,7 +123,7 @@ Additionally, this configuration is specifically warned against in the
 >to the NFS server can cause data corruption problems.
 
 For supported database architecture, please see our documentation on
-[Configuring a Database for GitLab HA](https://docs.gitlab.com/ee/administration/high_availability/database.html).
+[Configuring a Database for GitLab HA](database.md).
 
 ## NFS Client mount options
 

@@ -53,6 +53,10 @@ But since 11.8 the indexer uses Gitaly for data access as well. NFS can still
 be leveraged for redudancy on block level of the Git data. But only has to
 be mounted on the Gitaly server.
 
+NOTE: **Note:** While Gitaly can be used as a replacement for NFS, we do not recommend
+using EFS as it may impact GitLab's performance. Please review the [relevant documentation](../high_availability/nfs.md#avoid-using-awss-elastic-file-system-efs)
+for more details.
+
 ### Network architecture
 
 -   gitlab-rails shards repositories into "repository storages"
@@ -73,18 +77,29 @@ be mounted on the Gitaly server.
 -   Gitaly servers must not be exposed to the public internet
 
 Gitaly network traffic is unencrypted by default, but supports
-[TLS](#tls-support). Authentication is done through a static token. For 
-security in depth, its recommended to use a firewall to restrict access 
-to your Gitaly server.
+[TLS](#tls-support). Authentication is done through a static token.
+
+NOTE: **Note:** Gitaly network traffic is unencrypted so we recommend a firewall to
+restrict access to your Gitaly server.
 
 Below we describe how to configure a Gitaly server at address
 `gitaly.internal:8075` with secret token `abc123secret`. We assume
 your GitLab installation has two repository storages, `default` and
 `storage1`.
 
+### Installation
+
+First install Gitaly using either Omnibus or from source.
+
+Omnibus: [Download/install](https://about.gitlab.com/installation) the Omnibus GitLab
+package you want using **steps 1 and 2** from the GitLab downloads page but
+**_do not_** provide the `EXTERNAL_URL=` value.
+
+Source: [Install Gitaly](../../install/installation.md#install-gitaly)
+
 ### Client side token configuration
 
-Start by configuring a token on the client side.
+Configure a token on the client side.
 
 Omnibus installations:
 
@@ -110,7 +125,7 @@ changes to be picked up.
 Next, on the Gitaly server, we need to configure storage paths, enable
 the network listener and configure the token.
 
-Note: if you want to reduce the risk of downtime when you enable
+NOTE: **Note:** if you want to reduce the risk of downtime when you enable
 authentication you can temporarily disable enforcement, see [the
 documentation on configuring Gitaly
 authentication](https://gitlab.com/gitlab-org/gitaly/blob/master/doc/configuration/README.md#authentication)
@@ -122,11 +137,16 @@ the Gitaly server. The easiest way to accomplish this is to copy `/etc/gitlab/gi
 from an existing GitLab server to the Gitaly server. Without this shared secret,
 Git operations in GitLab will result in an API error.
 
-> **NOTE:** In most or all cases the storage paths below end in `/repositories` which is
+NOTE: **Note:** In most or all cases the storage paths below end in `/repositories` which is
 different than `path` in `git_data_dirs` of Omnibus installations. Check the
 directory layout on your Gitaly server to be sure.
 
 Omnibus installations:
+
+<!--
+updates to following example must also be made at
+https://gitlab.com/charts/gitlab/blob/master/doc/advanced/external-gitaly/external-omnibus-gitaly.md#configure-omnibus-gitlab
+-->
 
 ```ruby
 # /etc/gitlab/gitlab.rb
@@ -147,6 +167,7 @@ gitlab_rails['auto_migrate'] = false
 # Configure the gitlab-shell API callback URL. Without this, `git push` will
 # fail. This can be your 'front door' GitLab URL or an internal load
 # balancer.
+# Don't forget to copy `/etc/gitlab/gitlab-secrets.json` from web server to Gitaly server.
 gitlab_rails['internal_api_url'] = 'https://gitlab.example.com'
 
 # Make Gitaly accept connections on all network interfaces. You must use
@@ -198,6 +219,9 @@ configured. This is a risky step because if there is any sort of
 network, firewall, or name resolution problem preventing your GitLab
 server from reaching the Gitaly server then all Gitaly requests will
 fail.
+
+Additionally, you need to 
+[disable Rugged if previously manually enabled](../high_availability/nfs.md#improving-nfs-performance-with-gitlab).
 
 We assume that your Gitaly server can be reached at
 `gitaly.internal:8075` from your GitLab server, and that Gitaly can read and

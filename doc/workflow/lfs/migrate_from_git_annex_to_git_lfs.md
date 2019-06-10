@@ -42,7 +42,7 @@ Annex to Git LFS.
 ### TL; DR
 
 If you know what you are doing and want to skip the reading, this is what you
-need to do (we assume you have [git-annex enabled][annex-gitlab-use] in your
+need to do (we assume you have [git-annex enabled](../git_annex.md#using-gitlab-git-annex) in your
 repository and that you have made backups in case something goes wrong).
 Fire up a terminal, navigate to your Git repository and:
 
@@ -82,7 +82,7 @@ Make sure the you read about the [`direct` mode][annex-direct] as it contains
 useful information that may fit in your use case. Note that `annex direct` is
 deprecated in Git Annex version 6, so you may need to upgrade your repository
 if the server also has Git Annex 6 installed. Read more in the
-[Git Annex troubleshooting tips][annex-tips] section.
+[Git Annex troubleshooting tips](../git_annex.md#troubleshooting-tips) section.
 
 1. Backup your repository
 
@@ -166,44 +166,45 @@ GitLab.com), therefore, you don't need to do anything server-side.
 
 1. First, make sure you have `git-lfs` installed locally:
 
-    ```bash
-    git lfs help
-    ```
+   ```bash
+   git lfs help
+   ```
 
-    If the terminal doesn't prompt you with a full response on `git-lfs` commands,
-    [install the Git LFS client][install-lfs] first.
+   If the terminal doesn't prompt you with a full response on `git-lfs` commands,
+   [install the Git LFS client][install-lfs] first.
 
 1. Inside the repo, run the following command to initiate LFS:
 
-    ```bash
-    git lfs install
-    ```
+   ```bash
+   git lfs install
+   ```
 
 1. Enable `git-lfs` for the group of files you want to track. You
    can track specific files, all files containing the same extension, or an
    entire directory:
 
-    ```bash
-    git lfs track images/01.png   # per file
-    git lfs track **/*.png        # per extension
-    git lfs track images/         # per directory
-    ```
+   ```bash
+   git lfs track images/01.png   # per file
+   git lfs track **/*.png        # per extension
+   git lfs track images/         # per directory
+   ```
 
-    Once you do that, run `git status` and you'll see `.gitattributes` added
-    to your repo. It collects all file patterns that you chose to track via
-    `git-lfs`.
+   Once you do that, run `git status` and you'll see `.gitattributes` added
+   to your repo. It collects all file patterns that you chose to track via
+   `git-lfs`.
 
 1. Add the files, commit and push them to GitLab:
 
-    ```bash
-    git add .
-    git commit -m "commit message"
-    git push
-    ```
+   ```bash
+   git add .
+   git commit -m "commit message"
+   git push
+   ```
 
-    If your remote is set up with HTTP, you will be asked to enter your login
-    credentials. If you have [2FA enabled][2fa], make sure to use a
-    [personal access token][token] instead of your password.
+   If your remote is set up with HTTP, you will be asked to enter your login
+   credentials. If you have [2FA enabled](../../user/profile/account/two_factor_authentication.md), make sure to use a
+   [personal access token](../../user/profile/account/two_factor_authentication.md#personal-access-tokens)
+   instead of your password.
 
 ## Removing the Git Annex branches
 
@@ -238,18 +239,11 @@ git annex uninit
 - (Blog Post) [Getting Started with Git FLS][post-1]
 - (Blog Post) [Announcing LFS Support in GitLab][post-2]
 - (Blog Post) [GitLab Annex Solves the Problem of Versioning Large Binaries with Git][post-3]
-- (GitLab Docs) [Git Annex][doc-1]
-- (GitLab Docs) [Git LFS][doc-2]
+- (GitLab Docs) [Git Annex](../git_annex.md)
+- (GitLab Docs) [Git LFS](manage_large_binaries_with_git_lfs.md)
 
-[2fa]: ../../user/profile/account/two_factor_authentication.md
-[token]: ../../user/profile/account/two_factor_authentication.html#personal-access-tokens
-[annex-tips]: ../git_annex.html#troubleshooting-tips
 [annex-direct]: https://git-annex.branchable.com/direct_mode/
-[annex-gitlab-use]: ../git_annex.md#using-gitlab-git-annex
-[annex-ee]: https://docs.gitlab.com/ee/workflow/git_annex.html
 [bkp-ext-drive]: https://www.thomas-krenn.com/en/wiki/Git-annex_Repository_on_an_External_Hard_Drive
-[doc-1]: https://docs.gitlab.com/ee/workflow/git_annex.html
-[doc-2]: https://docs.gitlab.com/ee/workflow/lfs/manage_large_binaries_with_git_lfs.html
 [Git Annex]: http://git-annex.branchable.com/
 [Git LFS]: https://git-lfs.github.com/
 [install-lfs]: https://git-lfs.github.com/

@@ -1,29 +1,36 @@
+def new_teammates(usernames)
+  usernames.map { |u| ::Gitlab::Danger::Teammate.new('username' => u) }
+end
+
 def mention_single_codebase_approvers
-  frontend_maintainers = %w(@filipa @iamphill)
-  backend_maintainers = %w(@rspeicher @rymai @yorickpeterse @godfat)
+  canonical_branch_name =
+    roulette.canonical_branch_name(gitlab.mr_json['source_branch'])
+
+  random = roulette.new_random(canonical_branch_name)
+
+  frontend_maintainers = new_teammates(%w[filipa iamphill])
+  backend_maintainers = new_teammates(%w[rspeicher rymai yorickpeterse godfat])
 
   rows = []
-  users = []
 
   if gitlab.mr_labels.include?('frontend')
-    frontend_maintainer = frontend_maintainers.sample
+    frontend_maintainer =
+      roulette.spin_for_person(frontend_maintainers, random: random)
 
-    rows << "| ~frontend | `#{frontend_maintainer}`"
-    users << frontend_maintainer
+    rows << "| ~frontend | #{frontend_maintainer.markdown_name}"
   end
 
   if gitlab.mr_labels.include?('backend')
-    backend_maintainer = backend_maintainers.sample
+    backend_maintainer =
+      roulette.spin_for_person(backend_maintainers, random: random)
 
-    rows << "| ~backend | `#{backend_maintainer}`"
-    users << backend_maintainer
+    rows << "| ~backend | #{backend_maintainer.markdown_name}"
   end
 
   if rows.empty?
     backup_maintainer = backend_maintainers.sample
 
-    rows << "| ~frontend / ~backend | `#{backup_maintainer}`"
-    users << backup_maintainer
+    rows << "| ~frontend / ~backend | #{backup_maintainer.markdown_name}"
   end
 
   markdown(<<~MARKDOWN.strip)

@@ -22,6 +22,10 @@
   }
 }
 
+.oneline {
+  line-height: 35px;
+}
+
 .row-content-block {
   margin-top: 0;
   background-color: $gray-light;
@@ -77,10 +81,6 @@
     color: $gl-text-color;
   }
 
-  .oneline {
-    line-height: 35px;
-  }
-
   > p:last-child {
     margin-bottom: 0;
   }
@@ -107,10 +107,6 @@
   border-bottom: 1px solid $white-dark;
   padding: 11px 0;
   margin-bottom: 11px;
-
-  .oneline {
-    line-height: 35px;
-  }
 
   &.no-bottom-space {
     border-bottom: 0;
@@ -160,8 +156,6 @@
   }
 
   .cover-desc {
-    color: $gl-text-color;
-
     &.username:last-child {
       padding-bottom: $gl-padding;
     }
@@ -205,6 +199,7 @@
 
   &.user-cover-block {
     padding: 24px 0 0;
+    border-bottom: 1px solid $border-color;
 
     .nav-links {
       width: 100%;
@@ -236,14 +231,6 @@
 
 .block-connector {
   margin-top: -1px;
-}
-
-.nav-block {
-  .controls {
-    float: right;
-    margin-top: 8px;
-    padding-bottom: 8px;
-  }
 }
 
 .content-block {

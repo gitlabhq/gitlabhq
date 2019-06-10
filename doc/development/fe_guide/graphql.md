@@ -43,9 +43,9 @@ new Vue({
 
 Read more about [Vue Apollo][vue-apollo] in the [Vue Apollo documentation][vue-apollo-docs].
 
-### Local state with `apollo-link-state`
+### Local state with Apollo
 
-It is possible to use our Apollo setup with [apollo-link-state][apollo-link-state] by passing
+It is possible to manage an application state with Apollo by passing
 in a resolvers object when creating the default client. The default state can be set by writing
 to the cache after setting up the default client.
 
@@ -76,6 +76,8 @@ const apolloProvider = new VueApollo({
 });
 ```
 
+Read more about local state management with Apollo in the [Vue Apollo documentation](https://vue-apollo.netlify.com/guide/local-state.html#local-state).
+
 ### Testing
 
 With [Vue test utils][vue-test-utils] it is easy to quickly test components that
@@ -91,6 +93,8 @@ it('tests apollo component', () => {
   });
 });
 ```
+
+Another possible way is testing queries with mocked GraphQL schema. Read more about this way in [Vue Apollo testing documentation](https://vue-apollo.netlify.com/guide/testing.html#tests-with-mocked-graqhql-schema)
 
 ## Usage outside of Vue
 

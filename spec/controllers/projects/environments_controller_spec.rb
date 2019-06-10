@@ -383,6 +383,8 @@ describe Projects::EnvironmentsController do
   end
 
   describe 'GET #additional_metrics' do
+    let(:window_params) { { start: '1554702993.5398998', end: '1554717396.996232' } }
+
     before do
       allow(controller).to receive(:environment).and_return(environment)
     end
@@ -394,7 +396,7 @@ describe Projects::EnvironmentsController do
 
       context 'when requesting metrics as JSON' do
         it 'returns a metrics JSON document' do
-          additional_metrics
+          additional_metrics(window_params)
 
           expect(response).to have_gitlab_http_status(204)
           expect(json_response).to eq({})
@@ -414,43 +416,25 @@ describe Projects::EnvironmentsController do
       end
 
       it 'returns a metrics JSON document' do
-        additional_metrics
+        additional_metrics(window_params)
 
         expect(response).to be_ok
         expect(json_response['success']).to be(true)
         expect(json_response['data']).to eq({})
         expect(json_response['last_update']).to eq(42)
       end
+    end
 
-      context 'when time params are provided' do
-        it 'returns a metrics JSON document' do
-          additional_metrics(start: '1554702993.5398998', end: '1554717396.996232')
-
-          expect(response).to be_ok
-          expect(json_response['success']).to be(true)
-          expect(json_response['data']).to eq({})
-          expect(json_response['last_update']).to eq(42)
-        end
+    context 'when time params are missing' do
+      it 'raises an error when window params are missing' do
+        expect { additional_metrics }
+        .to raise_error(ActionController::ParameterMissing)
       end
     end
 
     context 'when only one time param is provided' do
-      context 'when :metrics_time_window feature flag is disabled' do
-        before do
-          stub_feature_flags(metrics_time_window: false)
-          expect(environment).to receive(:additional_metrics).with(no_args).and_return(nil)
-        end
-
-        it 'returns a time-window agnostic response' do
-          additional_metrics(start: '1552647300.651094')
-
-          expect(response).to have_gitlab_http_status(204)
-          expect(json_response).to eq({})
-        end
-      end
-
       it 'raises an error when start is missing' do
-        expect { additional_metrics(start: '1552647300.651094') }
+        expect { additional_metrics(end: '1552647300.651094') }
           .to raise_error(ActionController::ParameterMissing)
       end
 

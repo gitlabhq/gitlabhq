@@ -245,7 +245,7 @@ production: &base
     host: example.com
     port: 80 # Set to 443 if you serve the pages with HTTPS
     https: false # Set to true if you serve the pages with HTTPS
-    artifacts_server: true
+    artifacts_server: true # Set to false if you want to disable online view of HTML artifacts
     # external_http: ["1.1.1.1:80", "[2001::1]:80"] # If defined, enables custom domain support in GitLab Pages
     # external_https: ["1.1.1.1:443", "[2001::1]:443"] # If defined, enables custom domain and certificate support in GitLab Pages
     admin:
@@ -752,6 +752,8 @@ production: &base
   monitoring:
     # Time between sampling of unicorn socket metrics, in seconds
     # unicorn_sampler_interval: 10
+    # Time between sampling of Puma metrics, in seconds
+    # puma_sampler_interval: 5
     # IP whitelist to access monitoring endpoints
     ip_whitelist:
       - 127.0.0.0/8

@@ -5,12 +5,12 @@ class YoutrackService < IssueTrackerService
 
   prop_accessor :description, :project_url, :issues_url
 
-  # {PROJECT-KEY}-{NUMBER} Examples: YT-1, PRJ-1
+  # {PROJECT-KEY}-{NUMBER} Examples: YT-1, PRJ-1, gl-030
   def self.reference_pattern(only_long: false)
     if only_long
-      /(?<issue>\b[A-Z][A-Za-z0-9_]*-\d+)/
+      /(?<issue>\b[A-Za-z][A-Za-z0-9_]*-\d+)/
     else
-      /(?<issue>\b[A-Z][A-Za-z0-9_]*-\d+)|(#{Issue.reference_prefix}(?<issue>\d+))/
+      /(?<issue>\b[A-Za-z][A-Za-z0-9_]*-\d+)|(#{Issue.reference_prefix}(?<issue>\d+))/
     end
   end
 

@@ -33,10 +33,11 @@ module Gitlab
         end
 
         def self.process_start_time
-          start_time_in_jiffies = Sys::ProcTable.ps(pid: Process.pid).starttime
-          return 0 unless start_time_in_jiffies
+          fields = File.read('/proc/self/stat').split
 
-          start_time_in_jiffies / 100
+          # fields[21] is linux proc stat field "(22) starttime".
+          # The value is expressed in clock ticks, divide by clock ticks for seconds.
+          ( fields[21].to_i || 0 ) / clk_tck
         end
       else
         def self.memory_usage
@@ -81,6 +82,10 @@ module Gitlab
       # Returns the time as a Float.
       def self.monotonic_time
         Process.clock_gettime(Process::CLOCK_MONOTONIC, :float_second)
+      end
+
+      def self.clk_tck
+        @clk_tck ||= `getconf CLK_TCK`.to_i
       end
     end
   end

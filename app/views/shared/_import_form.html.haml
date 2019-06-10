@@ -1,11 +1,26 @@
 - ci_cd_only = local_assigns.fetch(:ci_cd_only, false)
+- import_url = Gitlab::UrlSanitizer.new(f.object.import_url)
 
-.form-group.import-url-data
-  = f.label :import_url, class: 'label-bold' do
-    %span
-      = _('Git repository URL')
+.import-url-data
+  .form-group
+    = f.label :import_url, class: 'label-bold' do
+      %span
+        = _('Git repository URL')
+    = f.text_field :import_url, value: import_url.sanitized_url,
+        autocomplete: 'off', class: 'form-control', placeholder: 'https://gitlab.company.com/group/project.git', required: true
 
-  = f.text_field :import_url, autocomplete: 'off', class: 'form-control', placeholder: 'https://username:password@gitlab.company.com/group/project.git', required: true
+  .row
+    .form-group.col-md-6
+      = f.label :import_url_user, class: 'label-bold' do
+        %span
+          = _('Username (optional)')
+      = f.text_field :import_url_user, value: import_url.user, class: 'form-control', required: false, autocomplete: 'new-password'
+
+    .form-group.col-md-6
+      = f.label :import_url_password, class: 'label-bold' do
+        %span
+          = _('Password (optional)')
+      = f.password_field :import_url_password, class: 'form-control', required: false, autocomplete: 'new-password'
 
   .info-well.prepend-top-20
     .well-segment
@@ -13,8 +28,11 @@
         %li
           = _('The repository must be accessible over <code>http://</code>, <code>https://</code> or <code>git://</code>.').html_safe
         %li
-          = _('If your HTTP repository is not publicly accessible, add authentication information to the URL: <code>https://username:password@gitlab.company.com/group/project.git</code>.').html_safe
+          = _('If your HTTP repository is not publicly accessible, add your credentials.')
         %li
           = import_will_timeout_message(ci_cd_only)
         %li
           = import_svn_message(ci_cd_only)
+        = render_if_exists 'shared/ci_cd_only_link', ci_cd_only: ci_cd_only
+
+= render_if_exists 'shared/ee/import_form', f: f, ci_cd_only: ci_cd_only

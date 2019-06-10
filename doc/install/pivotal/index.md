@@ -1,45 +1,12 @@
 # GitLab Pivotal Tile **[PREMIUM ONLY]**
 
-> Introduced in [GitLab Premium][eep] 8.2.
+CAUTION: **Discontinued:**
+As of September 13, 2017, the GitLab Enterprise Plus for Pivotal Cloud Foundry
+tile on Pivotal Network has reached its End of Availability (“EoA”) and is no
+longer available for download or sale through Pivotal. Current customers with
+active subscriptions will continue to receive support from GitLab through their
+subscription term. Pivotal and GitLab are collaborating on creating a new
+Kubernetes-based tile for the Pivotal Container Service. Please contact GitLab
+support with any questions regarding GitLab Enterprise Plus for Pivotal Cloud Foundry.
 
-Easily deploy GitLab as a pre-configured appliance using Ops Manager (BOSH) for
-[Pivotal Cloud Foundry][pcf].
-
-## Overview
-
-Enterprise admins want their development toolkit to be more customizable, more
-integrated, and more secure. With Pivotal Cloud Foundry, GitLab is installed and
-scales easily in a highly available environment.
-
-The upgrades are pain-free and well tested. All it takes is upload the new tile
-and click a button to begin the upgrade process.
-
-## Use cases
-
-- You want a highly available deployment with minimal effort. Scale horizontally
-  as your user base grows.
-
-## Features
-
-The GitLab Pivotal Tile is based on [GitLab Premium][eep] and includes nearly all of its features. The features in Premium but _not_ supported on the Tile are:
-
-* PostgreSQL
-* Pages
-* Geo
-* Registry
-* Mattermost
-* Subgroups
-* Elasticsearch
-* Service Desk
-* OAuth & Kerberos Authentication
-
-## Installing GitLab with Pivotal
-
-The product information and installation documentation is hosted on Pivotal's
-website:
-
-- [Product page](https://network.pivotal.io/products/p-gitlab/)
-- [Documentation](https://docs.pivotal.io/partners/gitlab/index.html)
-
-[eep]: https://about.gitlab.com/pricing/
-[pcf]: https://pivotal.io/platform
+Original article: <https://docs.pivotal.io/partners/gitlab/index.html>.

@@ -1,23 +1,24 @@
 <script>
 import _ from 'underscore';
-import { mapActions, mapState, mapGetters, createNamespacedHelpers } from 'vuex';
+import { mapState, mapGetters, createNamespacedHelpers } from 'vuex';
 import { sprintf, __ } from '~/locale';
 import consts from '../../stores/modules/commit/constants';
 import RadioGroup from './radio_group.vue';
+import NewMergeRequestOption from './new_merge_request_option.vue';
 
-const { mapState: mapCommitState, mapGetters: mapCommitGetters } = createNamespacedHelpers(
+const { mapState: mapCommitState, mapActions: mapCommitActions } = createNamespacedHelpers(
   'commit',
 );
 
 export default {
   components: {
     RadioGroup,
+    NewMergeRequestOption,
   },
   computed: {
     ...mapState(['currentBranchId', 'changedFiles', 'stagedFiles']),
-    ...mapCommitState(['commitAction', 'shouldCreateMR', 'shouldDisableNewMrOption']),
-    ...mapGetters(['currentProject', 'currentBranch', 'currentMergeRequest']),
-    ...mapCommitGetters(['shouldDisableNewMrOption']),
+    ...mapCommitState(['commitAction']),
+    ...mapGetters(['currentBranch']),
     commitToCurrentBranchText() {
       return sprintf(
         __('Commit to %{branchName} branch'),
@@ -25,12 +26,12 @@ export default {
         false,
       );
     },
-    disableMergeRequestRadio() {
+    containsStagedChanges() {
       return this.changedFiles.length > 0 && this.stagedFiles.length > 0;
     },
   },
   watch: {
-    disableMergeRequestRadio() {
+    containsStagedChanges() {
       this.updateSelectedCommitAction();
     },
   },
@@ -38,11 +39,11 @@ export default {
     this.updateSelectedCommitAction();
   },
   methods: {
-    ...mapActions('commit', ['updateCommitAction', 'toggleShouldCreateMR']),
+    ...mapCommitActions(['updateCommitAction']),
     updateSelectedCommitAction() {
       if (this.currentBranch && !this.currentBranch.can_push) {
         this.updateCommitAction(consts.COMMIT_TO_NEW_BRANCH);
-      } else if (this.disableMergeRequestRadio) {
+      } else if (this.containsStagedChanges) {
         this.updateCommitAction(consts.COMMIT_TO_CURRENT_BRANCH);
       }
     },
@@ -56,7 +57,7 @@ export default {
 </script>
 
 <template>
-  <div class="append-bottom-15 ide-commit-radios">
+  <div class="append-bottom-15 ide-commit-options">
     <radio-group
       :value="$options.commitToCurrentBranch"
       :disabled="currentBranch && !currentBranch.can_push"
@@ -69,17 +70,6 @@ export default {
       :label="__('Create a new branch')"
       :show-input="true"
     />
-    <hr class="my-2" />
-    <label class="mb-0">
-      <input
-        :checked="shouldCreateMR"
-        :disabled="shouldDisableNewMrOption"
-        type="checkbox"
-        @change="toggleShouldCreateMR"
-      />
-      <span class="prepend-left-10" :class="{ 'text-secondary': shouldDisableNewMrOption }">
-        {{ __('Start a new merge request') }}
-      </span>
-    </label>
+    <new-merge-request-option />
   </div>
 </template>

@@ -12,7 +12,7 @@ class GroupMember < Member
   validates :source_type, format: { with: /\ANamespace\z/ }
   default_scope { where(source_type: SOURCE_TYPE) }
 
-  scope :in_groups, ->(groups) { where(source_id: groups.select(:id)) }
+  scope :of_groups, ->(groups) { where(source_id: groups.select(:id)) }
 
   scope :count_users_by_group_id, -> { joins(:user).group(:source_id).count }
 

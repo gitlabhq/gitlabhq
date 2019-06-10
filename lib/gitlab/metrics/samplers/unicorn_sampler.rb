@@ -4,10 +4,6 @@ module Gitlab
   module Metrics
     module Samplers
       class UnicornSampler < BaseSampler
-        def initialize(interval)
-          super(interval)
-        end
-
         def metrics
           @metrics ||= init_metrics
         end
@@ -58,7 +54,7 @@ module Gitlab
         end
 
         def unicorn_workers_count
-          Sys::ProcTable.ps.select {|p| p.cmdline.match(/unicorn_rails worker.+ #{Rails.root.to_s}/)}.count
+          `pgrep -f '[u]nicorn_rails worker.+ #{Rails.root.to_s}'`.split.count
         end
       end
     end

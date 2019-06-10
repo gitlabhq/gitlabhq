@@ -27,8 +27,12 @@ module Ci
 
     scope :active, -> { where(active: true) }
     scope :inactive, -> { where(active: false) }
+    scope :runnable_schedules, -> { active.where("next_run_at < ?", Time.now) }
+    scope :preloaded, -> { preload(:owner, :project) }
 
     accepts_nested_attributes_for :variables, allow_destroy: true
+
+    alias_attribute :real_next_run, :next_run_at
 
     def owned_by?(current_user)
       owner == current_user
@@ -46,8 +50,14 @@ module Ci
       update_attribute(:active, false)
     end
 
+    ##
+    # The `next_run_at` column is set to the actual execution date of `PipelineScheduleWorker`.
+    # This way, a schedule like `*/1 * * * *` won't be triggered in a short interval
+    # when PipelineScheduleWorker runs irregularly by Sidekiq Memory Killer.
     def set_next_run_at
-      self.next_run_at = Gitlab::Ci::CronParser.new(cron, cron_timezone).next_time_from(Time.now)
+      self.next_run_at = Gitlab::Ci::CronParser.new(Settings.cron_jobs['pipeline_schedule_worker']['cron'],
+                                                    Time.zone.name)
+                                               .next_time_from(ideal_next_run_at)
     end
 
     def schedule_next_run!
@@ -56,15 +66,14 @@ module Ci
       update_attribute(:next_run_at, nil) # update without validation
     end
 
-    def real_next_run(
-        worker_cron: Settings.cron_jobs['pipeline_schedule_worker']['cron'],
-        worker_time_zone: Time.zone.name)
-      Gitlab::Ci::CronParser.new(worker_cron, worker_time_zone)
-                            .next_time_from(next_run_at)
-    end
-
     def job_variables
       variables&.map(&:to_runner_variable) || []
+    end
+
+    private
+
+    def ideal_next_run_at
+      Gitlab::Ci::CronParser.new(cron, cron_timezone).next_time_from(Time.now)
     end
   end
 end

@@ -32,6 +32,21 @@ a new presenter specifically for GraphQL.
 The presenter is initialized using the object resolved by a field, and
 the context.
 
+### Exposing Global ids
+
+When exposing an `id` field on a type, we will by default try to
+expose a global id by calling `to_global_id` on the resource being
+rendered.
+
+To override this behaviour, you can implement an `id` method on the
+type for which you are exposing an id. Please make sure that when
+exposing a `GraphQL::ID_TYPE` using a custom method that it is
+globally unique.
+
+The records that are exposing a `full_path` as an `ID_TYPE` are one of
+these exceptions. Since the full path is a unique identifier for a
+`Project` or `Namespace`.
+
 ### Connection Types
 
 GraphQL uses [cursor based
@@ -79,14 +94,14 @@ look like this:
           {
             "cursor": "Nzc=",
             "node": {
-              "id": "77",
+              "id": "gid://gitlab/Pipeline/77",
               "status": "FAILED"
             }
           },
           {
             "cursor": "Njc=",
             "node": {
-              "id": "67",
+              "id": "gid://gitlab/Pipeline/67",
               "status": "FAILED"
             }
           }
@@ -330,7 +345,7 @@ argument :project_path, GraphQL::ID_TYPE,
          required: true,
          description: "The project the merge request to mutate is in"
 
-argument :iid, GraphQL::ID_TYPE,
+argument :iid, GraphQL::STRING_TYPE,
          required: true,
          description: "The iid of the merge request to mutate"
 

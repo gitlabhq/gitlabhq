@@ -6,7 +6,7 @@ module Emails
       @remote_mirror = RemoteMirrorFinder.new(id: remote_mirror_id).execute
       @project = @remote_mirror.project
 
-      mail(to: recipient(recipient_id), subject: subject('Remote mirror update failed'))
+      mail(to: recipient(recipient_id, @project.group), subject: subject('Remote mirror update failed'))
     end
   end
 end

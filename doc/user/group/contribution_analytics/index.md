@@ -1,46 +1,58 @@
+---
+type: reference
+---
+
 # Contribution Analytics **[STARTER]**
 
->**Note:**
-Introduced in [GitLab Starter][ee] 8.3.
-
-Track your team members' activity across your organization.
+> Introduced in [GitLab Starter](https://about.gitlab.com/pricing/) 8.3.
 
 ## Overview
 
-With Contribution Analytics you can get an overview of the activity of
-issues, merge requests, and push events of your organization and its members.
+With Contribution Analytics you can get an overview of the following activity in your
+group:
 
-The analytics page is located at **Group > Contribution Analytics**
-under the URL `/groups/<groupname>/analytics`.
+- Issues
+- Merge requests
+- Push events
+
+To view the Contribution Analytics, go to your group's **Overview > Contribution Analytics**
+page.
 
 ## Use cases
 
-- Analyze your team's contributions over a period of time and offer a bonus for the top contributors
-- Identify opportunities for improvement with group members who may benefit from additional support 
+- Analyze your team's contributions over a period of time, and offer a bonus for the top
+contributors.
+- Identify opportunities for improvement with group members who may benefit from additional
+support.
 
 ## Using Contribution Analytics
 
-There are three main bar graphs that are deducted from the number of
-contributions per group member. These contributions include push events, merge
-requests and closed issues. Hovering on each bar you can see the number of
-events for a specific member.
+There are three main bar graphs that illustrate the number of contributions per group
+member for the following:
+
+- Push events
+- Merge requests
+- Closed issues
+
+Hover over each bar to display the number of events for a specific group member.
 
 ![Contribution analytics bar graphs](img/group_stats_graph.png)
 
 ## Changing the period time
 
-There are three periods you can choose from, 'Last week', 'Last month' and
-'Last three months'. The default is 'Last week'.
+You can choose from the following three periods:
 
-You can choose which period to display by using the dropdown calendar menu in
-the upper right corner.
+- Last week (default)
+- Last month
+- Last three months
+
+Select the desired period from the calendar dropdown.
 
 ![Contribution analytics choose period](img/group_stats_cal.png)
 
 ## Sorting by different factors
 
-Apart from the bar graphs you can also see the contributions per group member
-which are depicted in a table that can be sorted by:
+Contributions per group member are also presented in tabular format. Click a column header to sort the table by that column:
 
 * Member name
 * Number of pushed events
@@ -52,4 +64,14 @@ which are depicted in a table that can be sorted by:
 
 ![Contribution analytics contributions table](img/group_stats_table.png)
 
-[ee]: https://about.gitlab.com/pricing/
+<!-- ## Troubleshooting
+
+Include any troubleshooting steps that you can foresee. If you know beforehand what issues
+one might have when setting this up, or when something is changed, or on upgrading, it's
+important to describe those, too. Think of things that may go wrong and include them here.
+This is important to minimize requests for support, and to avoid doc comments with
+questions that you know someone might ask.
+
+Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+If you have none to add when creating a doc, leave this section in place
+but commented out to help encourage others to add to it in the future. -->

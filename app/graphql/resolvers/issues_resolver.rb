@@ -2,11 +2,11 @@
 
 module Resolvers
   class IssuesResolver < BaseResolver
-    argument :iid, GraphQL::ID_TYPE,
+    argument :iid, GraphQL::STRING_TYPE,
               required: false,
               description: 'The IID of the issue, e.g., "1"'
 
-    argument :iids, [GraphQL::ID_TYPE],
+    argument :iids, [GraphQL::STRING_TYPE],
               required: false,
               description: 'The list of IIDs of issues, e.g., [1, 2]'
     argument :state, Types::IssuableStateEnum,
@@ -46,7 +46,7 @@ module Resolvers
     def resolve(**args)
       # The project could have been loaded in batch by `BatchLoader`.
       # At this point we need the `id` of the project to query for issues, so
-      # make sure it's loaded and not `nil` before continueing.
+      # make sure it's loaded and not `nil` before continuing.
       project.sync if project.respond_to?(:sync)
       return Issue.none if project.nil?
 
@@ -58,7 +58,7 @@ module Resolvers
       IssuesFinder.new(context[:current_user], args).execute
     end
 
-    def self.resolver_complexity(args)
+    def self.resolver_complexity(args, child_complexity:)
       complexity = super
       complexity += 2 if args[:labelName]
 

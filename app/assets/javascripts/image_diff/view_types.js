@@ -5,5 +5,5 @@ export const viewTypes = {
 };
 
 export function isValidViewType(validate) {
-  return !!Object.getOwnPropertyNames(viewTypes).find(viewType => viewType === validate);
+  return Boolean(Object.getOwnPropertyNames(viewTypes).find(viewType => viewType === validate));
 }

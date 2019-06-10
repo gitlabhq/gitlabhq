@@ -6,7 +6,6 @@ import Icon from '~/vue_shared/components/icon.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
 import issueCardInner from 'ee_else_ce/boards/mixins/issue_card_inner';
 import UserAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
-import eventHub from '../eventhub';
 import IssueDueDate from './issue_due_date.vue';
 import IssueTimeEstimate from './issue_time_estimate.vue';
 import boardsStore from '../stores/boards_store';
@@ -136,23 +135,7 @@ export default {
       const labelTitle = encodeURIComponent(label.title);
       const filter = `label_name[]=${labelTitle}`;
 
-      this.applyFilter(filter);
-    },
-    applyFilter(filter) {
-      const filterPath = boardsStore.filter.path.split('&');
-      const filterIndex = filterPath.indexOf(filter);
-
-      if (filterIndex === -1) {
-        filterPath.push(filter);
-      } else {
-        filterPath.splice(filterIndex, 1);
-      }
-
-      boardsStore.filter.path = filterPath.join('&');
-
-      boardsStore.updateFiltersUrl();
-
-      eventHub.$emit('updateTokens');
+      boardsStore.toggleFilter(filter);
     },
     labelStyle(label) {
       return {

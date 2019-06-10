@@ -1,4 +1,4 @@
-- page_title "Notifications"
+- page_title _('Notifications')
 - @content_class = "limit-container-width" unless fluid_layout
 
 %div
@@ -14,12 +14,12 @@
       %h4.prepend-top-0
         = page_title
       %p
-        You can specify notification level per group or per project.
+        = _('You can specify notification level per group or per project.')
       %p
-        By default, all projects and groups will use the global notifications setting.
+        = _('By default, all projects and groups will use the global notifications setting.')
     .col-lg-8
       %h5.prepend-top-0
-        Global notification settings
+        = _('Global notification settings')
 
       = form_for @user, url: profile_notifications_path, method: :put, html: { class: 'update-notifications prepend-top-default' } do |f|
         = render_if_exists 'profiles/notifications/email_settings', form: f
@@ -35,19 +35,18 @@
       = form_for @user, url: profile_notifications_path, method: :put do |f|
         %label{ for: 'user_notified_of_own_activity' }
           = f.check_box :notified_of_own_activity
-          %span Receive notifications about your own activity
+          %span= _('Receive notifications about your own activity')
 
       %hr
       %h5
-        Groups (#{@group_notifications.count})
+        = _('Groups (%{count})') % { count: @group_notifications.count }
       %div
-        %ul.bordered-list
-          - @group_notifications.each do |setting|
-            = render 'group_settings', setting: setting, group: setting.source
+        - @group_notifications.each do |setting|
+          = render 'group_settings', setting: setting, group: setting.source
       %h5
-        Projects (#{@project_notifications.count})
+        = _('Projects (%{count})') % { count: @project_notifications.count }
       %p.account-well
-        To specify the notification level per project of a group you belong to, you need to visit project page and change notification level there.
+        = _('To specify the notification level per project of a group you belong to, you need to visit project page and change notification level there.')
       .append-bottom-default
         %ul.bordered-list
           - @project_notifications.each do |setting|

@@ -47,11 +47,11 @@ project in Jira and then enter the correct values in GitLab.
 
 When connecting to **JIRA Server**, which supports basic authentication, a **username and password** are required. Check the link below and proceed to the next step:
 
-- [Setting up an user in JIRA server](jira_server_configuration.md)
+- [Setting up a user in JIRA server](jira_server_configuration.md)
 
 When connecting to **JIRA Cloud**, which supports authentication via API token, an **email and API token**, are required. Check the link below and proceed to the next step:
 
-- [Setting up an user in JIRA cloud](jira_cloud_configuration.md)
+- [Setting up a user in JIRA cloud](jira_cloud_configuration.md)
 
 ### Configuring GitLab
 

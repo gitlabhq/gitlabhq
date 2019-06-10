@@ -3,6 +3,11 @@
 require_relative '../qa'
 require 'rspec/retry'
 
+if ENV['CI'] && QA::Runtime::Env.knapsack? && !ENV['NO_KNAPSACK']
+  require 'knapsack'
+  Knapsack::Adapters::RSpecAdapter.bind
+end
+
 %w[helpers shared_examples].each do |d|
   Dir[::File.join(__dir__, d, '**', '*.rb')].each { |f| require f }
 end
@@ -35,8 +40,10 @@ RSpec.configure do |config|
   # show exception that triggers a retry if verbose_retry is set to true
   config.display_try_failure_messages = true
 
-  config.around do |example|
-    retry_times = example.metadata.keys.include?(:quarantine) ? 1 : 2
-    example.run_with_retry retry: retry_times
+  if ENV['CI']
+    config.around do |example|
+      retry_times = example.metadata.keys.include?(:quarantine) ? 1 : 2
+      example.run_with_retry retry: retry_times
+    end
   end
 end

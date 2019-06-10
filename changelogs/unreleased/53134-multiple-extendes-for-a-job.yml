@@ -1,0 +1,5 @@
+---
+title: Add support for multiple job parents in GitLab CI YAML.
+merge_request: 26801
+author: Wolphin (Nikita)
+type: added

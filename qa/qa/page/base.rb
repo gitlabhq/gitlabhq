@@ -8,6 +8,7 @@ module QA
       prepend Support::Page::Logging if Runtime::Env.debug?
       include Capybara::DSL
       include Scenario::Actable
+      extend Validatable
       extend SingleForwardable
 
       ElementNotFound = Class.new(RuntimeError)
@@ -77,8 +78,12 @@ module QA
         page.evaluate_script('xhr.status') == 200
       end
 
-      def find_element(name, text: nil, wait: Capybara.default_max_wait_time)
-        find(element_selector_css(name), wait: wait, text: text)
+      def find_element(name, **kwargs)
+        find(element_selector_css(name), kwargs)
+      end
+
+      def active_element?(name)
+        find_element(name, class: 'active')
       end
 
       def all_elements(name)
@@ -93,8 +98,10 @@ module QA
         find_element(name).set(false)
       end
 
-      def click_element(name)
+      # replace with (..., page = self.class)
+      def click_element(name, page = nil)
         find_element(name).click
+        page.validate_elements_present! if page
       end
 
       def fill_element(name, content)
@@ -113,8 +120,8 @@ module QA
         has_css?(element_selector_css(name), wait: wait, text: text)
       end
 
-      def has_no_element?(name, wait: Capybara.default_max_wait_time)
-        has_no_css?(element_selector_css(name), wait: wait)
+      def has_no_element?(name, text: nil, wait: Capybara.default_max_wait_time)
+        has_no_css?(element_selector_css(name), wait: wait, text: text)
       end
 
       def has_text?(text)
@@ -129,8 +136,17 @@ module QA
         has_no_css?('.fa-spinner', wait: Capybara.default_max_wait_time)
       end
 
-      def within_element(name)
-        page.within(element_selector_css(name)) do
+      def wait_for_animated_element(name)
+        # It would be ideal if we could detect when the animation is complete
+        # but in some cases there's nothing we can easily access via capybara
+        # so instead we wait for the element, and then we wait a little longer
+        raise ElementNotFound, %Q(Couldn't find element named "#{name}") unless has_element?(name)
+
+        sleep 1
+      end
+
+      def within_element(name, text: nil)
+        page.within(element_selector_css(name), text: text) do
           yield
         end
       end

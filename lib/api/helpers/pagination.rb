@@ -23,7 +23,7 @@ module API
         def base_request_uri
           @base_request_uri ||= URI.parse(request.url).tap do |uri|
             uri.host = Gitlab.config.gitlab.host
-            uri.port = nil
+            uri.port = Gitlab.config.gitlab.port
           end
         end
 

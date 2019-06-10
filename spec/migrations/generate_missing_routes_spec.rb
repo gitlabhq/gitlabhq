@@ -8,7 +8,7 @@ describe GenerateMissingRoutes, :migration do
     let(:routes) { table(:routes) }
 
     it 'creates routes for projects without a route' do
-      namespace = namespaces.create!(name: 'GitLab', path: 'gitlab')
+      namespace = namespaces.create!(name: 'GitLab', path: 'gitlab', type: 'Group')
 
       routes.create!(
         path: 'gitlab',

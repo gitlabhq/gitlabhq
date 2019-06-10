@@ -17,7 +17,7 @@ module CiVariablesHelper
     if variable && !only_key_value
       variable.masked
     else
-      true
+      false
     end
   end
 
@@ -26,5 +26,9 @@ module CiVariablesHelper
       %w(Variable env_var),
       %w(File file)
     ]
+  end
+
+  def ci_variable_maskable_regex
+    Maskable::REGEX.inspect.sub('\\A', '^').sub('\\z', '$').sub(/^\//, '').sub(/\/[a-z]*$/, '').gsub('\/', '/')
   end
 end

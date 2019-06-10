@@ -155,11 +155,11 @@ describe('text_utility', () => {
       expect(textUtils.truncateNamespace('a / b')).toBe('a');
     });
 
-    it(`should return the first 2 namespaces if the namespace inlcudes exactly 2 levels`, () => {
+    it(`should return the first 2 namespaces if the namespace includes exactly 2 levels`, () => {
       expect(textUtils.truncateNamespace('a / b / c')).toBe('a / b');
     });
 
-    it(`should return the first and last namespaces, separated by "...", if the namespace inlcudes more than 2 levels`, () => {
+    it(`should return the first and last namespaces, separated by "...", if the namespace includes more than 2 levels`, () => {
       expect(textUtils.truncateNamespace('a / b / c / d')).toBe('a / ... / c');
       expect(textUtils.truncateNamespace('a / b / c / d / e / f / g / h / i')).toBe('a / ... / h');
     });

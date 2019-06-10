@@ -1,28 +1,20 @@
 # frozen_string_literal: true
 
 module Milestoneish
-  def closed_items_count(user)
-    memoize_per_user(user, :closed_items_count) do
-      (count_issues_by_state(user)['closed'] || 0) + merge_requests.closed_and_merged.size
-    end
-  end
-
-  def total_items_count(user)
-    memoize_per_user(user, :total_items_count) do
-      total_issues_count(user) + merge_requests.size
-    end
-  end
-
   def total_issues_count(user)
     count_issues_by_state(user).values.sum
   end
 
+  def closed_issues_count(user)
+    count_issues_by_state(user)['closed'].to_i
+  end
+
   def complete?(user)
-    total_items_count(user) > 0 && total_items_count(user) == closed_items_count(user)
+    total_issues_count(user) > 0 && total_issues_count(user) == closed_issues_count(user)
   end
 
   def percent_complete(user)
-    ((closed_items_count(user) * 100) / total_items_count(user)).abs
+    closed_issues_count(user) * 100 / total_issues_count(user)
   rescue ZeroDivisionError
     0
   end

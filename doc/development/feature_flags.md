@@ -20,7 +20,7 @@ dynamic (querying the DB etc.).
 Once defined in `lib/feature.rb`, you will be able to activate a
 feature for a given feature group via the [`feature_group` param of the features API](../api/features.md#set-or-create-a-feature)
 
-For GitLab.com, team members have access to feature flags through chatops. Only
+For GitLab.com, [team members have access to feature flags through Chatops](chatops_on_gitlabcom.md). Only
 percentage gates are supported at this time. Setting a feature to be used 50% of
 the time, you should execute `/chatops run feature set my_feature_flag 50`.
 
@@ -28,7 +28,7 @@ the time, you should execute `/chatops run feature set my_feature_flag 50`.
 
 This document only covers feature flags used in the development of GitLab 
 itself. Feature flags in deployed user applications can be found at 
-[Feature Flags](https://docs.gitlab.com/ee/user/project/operations/feature_flags.html)
+[Feature Flags](../user/project/operations/feature_flags.md)
 
 ## Developing with feature flags
 
@@ -108,11 +108,11 @@ so we make sure behavior under feature flag doesn't go untested in some non-spec
 contexts.
 
 Whenever a feature flag is present, make sure to test _both_ states of the
-feature flag. You can stub a feature flag as follows:
+feature flag.
 
-```ruby
-stub_feature_flags(my_feature_flag: false)
-```
+See the
+[testing guide](testing_guide/best_practices.md#feature-flags-in-tests)
+for information and examples on how to stub feature flags in tests.
 
 ## Enabling a feature flag (in development)
 

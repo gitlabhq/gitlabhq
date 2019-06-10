@@ -3,7 +3,7 @@ import _ from 'underscore';
 import ProjectSelector from '~/vue_shared/components/project_selector/project_selector.vue';
 import ProjectListItem from '~/vue_shared/components/project_selector/project_list_item.vue';
 import { shallowMount } from '@vue/test-utils';
-import { trimText } from 'spec/helpers/vue_component_helper';
+import { trimText } from 'spec/helpers/text_helper';
 
 describe('ProjectSelector component', () => {
   let wrapper;
@@ -99,7 +99,7 @@ describe('ProjectSelector component', () => {
     expect(trimText(noResultsEl.text())).toEqual('Sorry, no projects matched your search');
   });
 
-  it(`shows a "minimum seach query" message if showMinimumSearchQueryMessage === true`, () => {
+  it(`shows a "minimum search query" message if showMinimumSearchQueryMessage === true`, () => {
     wrapper.setProps({ showMinimumSearchQueryMessage: true });
 
     expect(wrapper.contains('.js-minimum-search-query-message')).toBe(true);

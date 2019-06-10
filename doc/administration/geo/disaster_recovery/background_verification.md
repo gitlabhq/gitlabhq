@@ -29,12 +29,7 @@ the node more time before scheduling a planned failover.
 Run the following commands in a Rails console on the **primary** node:
 
 ```sh
-# Omnibus GitLab
 gitlab-rails console
-
-# Installation from source
-cd /home/git/gitlab
-sudo -u git -H bin/rails console RAILS_ENV=production
 ```
 
 To check if automatic background verification is enabled:
@@ -102,12 +97,7 @@ disable if you need. Run the following commands in a Rails console on the
 **primary** node:
 
 ```sh
-# Omnibus GitLab
 gitlab-rails console
-
-# Installation from source
-cd /home/git/gitlab
-sudo -u git -H bin/rails console RAILS_ENV=production
 ```
 
 To disable automatic background re-verification:
@@ -131,31 +121,51 @@ to be resynced without the backoff period:
 
 For repositories:
 
-- Omnibus Installation
-
-    ```sh
-    sudo gitlab-rake geo:verification:repository:reset
-    ```
-
-- Source Installation
-
-    ```sh
-    sudo -u git -H bundle exec rake geo:verification:repository:reset RAILS_ENV=production
-    ```
+```sh
+sudo gitlab-rake geo:verification:repository:reset
+```
 
 For wikis:
 
-- Omnibus Installation
+```sh
+sudo gitlab-rake geo:verification:wiki:reset
+```
+
+## Reconcile differences with checksum mismatches
+
+If the **primary** and **secondary** nodes have a checksum verification mismatch, the cause may not be apparent. To find the cause of a checksum mismatch:
+
+1. Navigate to the **Admin Area > Projects** dashboard on the **primary** node, find the
+   project that you want to check the checksum differences and click on the
+   **Edit** button:
+   ![Projects dashboard](img/checksum-differences-admin-projects.png)
+
+1. On the project admin page get the **Gitaly storage name**, and **Gitaly relative path**:
+   ![Project admin page](img/checksum-differences-admin-project-page.png)
+
+1. Navigate to the project's repository directory on both **primary** and **secondary** nodes (the path is usually `/var/opt/gitlab/git-data/repositories`). Note that if `git_data_dirs` is customized, check the directory layout on your server to be sure.
 
     ```sh
-    sudo gitlab-rake geo:verification:wiki:reset
+    cd /var/opt/gitlab/git-data/repositories
     ```
 
-- Source Installation
+1. Run the following command on the **primary** node, redirecting the output to a file:
 
-    ```sh
-    sudo -u git -H bundle exec rake geo:verification:wiki:reset RAILS_ENV=production
-    ```
+   ```sh
+   git show-ref --head | grep -E "HEAD|(refs/(heads|tags|keep-around|merge-requests|environments|notes)/)" > primary-node-refs
+   ```
+
+1. Run the following command on the **secondary** node, redirecting the output to a file:
+
+   ```sh
+   git show-ref --head | grep -E "HEAD|(refs/(heads|tags|keep-around|merge-requests|environments|notes)/)" > secondary-node-refs
+   ```
+
+1. Copy the files from the previous steps on the same system, and do a diff between the contents:
+
+   ```sh
+   diff primary-node-refs secondary-node-refs
+   ```
 
 ## Current limitations
 

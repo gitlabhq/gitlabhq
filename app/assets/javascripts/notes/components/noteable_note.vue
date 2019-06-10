@@ -10,7 +10,7 @@ import Flash from '../../flash';
 import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
 import noteHeader from './note_header.vue';
 import noteActions from './note_actions.vue';
-import noteBody from './note_body.vue';
+import NoteBody from './note_body.vue';
 import eventHub from '../event_hub';
 import noteable from '../mixins/noteable';
 import resolvable from '../mixins/resolvable';
@@ -21,7 +21,7 @@ export default {
     userAvatarLink,
     noteHeader,
     noteActions,
-    noteBody,
+    NoteBody,
     TimelineEntryItem,
   },
   mixins: [noteable, resolvable, draftMixin],
@@ -75,7 +75,7 @@ export default {
       };
     },
     canReportAsAbuse() {
-      return !!this.note.report_abuse_path && this.author.id !== this.getUserData.id;
+      return Boolean(this.note.report_abuse_path) && this.author.id !== this.getUserData.id;
     },
     noteAnchorId() {
       return `note_${this.note.id}`;
@@ -209,7 +209,10 @@ export default {
       // we need to do this to prevent noteForm inconsistent content warning
       // this is something we intentionally do so we need to recover the content
       this.note.note = noteText;
-      this.$refs.noteBody.note.note = noteText;
+      const { noteBody } = this.$refs;
+      if (noteBody) {
+        noteBody.note.note = noteText;
+      }
     },
   },
 };

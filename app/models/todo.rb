@@ -38,7 +38,9 @@ class Todo < ApplicationRecord
       self
     end
   }, polymorphic: true, touch: true # rubocop:disable Cop/PolymorphicAssociations
+
   belongs_to :user
+  belongs_to :issue, -> { where("target_type = 'Issue'") }, foreign_key: :target_id
 
   delegate :name, :email, to: :author, prefix: true, allow_nil: true
 
@@ -59,6 +61,7 @@ class Todo < ApplicationRecord
   scope :for_target, -> (id) { where(target_id: id) }
   scope :for_commit, -> (id) { where(commit_id: id) }
   scope :with_api_entity_associations, -> { preload(:target, :author, :note, group: :route, project: [:route, { namespace: :route }]) }
+  scope :joins_issue_and_assignees, -> { left_joins(issue: :assignees) }
 
   state_machine :state, initial: :pending do
     event :done do

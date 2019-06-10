@@ -17,5 +17,5 @@ D3 is very popular across many projects outside of GitLab:
 
 Within GitLab, D3 has been used for the following notable features
 
-- [Prometheus graphs](https://docs.gitlab.com/ee/user/project/integrations/prometheus.html)
+- [Prometheus graphs](../../../user/project/integrations/prometheus.md)
 - Contribution calendars

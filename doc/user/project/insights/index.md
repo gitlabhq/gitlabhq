@@ -4,17 +4,24 @@
 
 CAUTION: **Beta:**
 Insights is considered beta, and is not ready for production use.
-Follow [gitlab-org&725](https://gitlab.com/groups/gitlab-org/-/epics/725) for
-updates.
+Follow [gitlab-org/quality/team-tasks#137](https://gitlab.com/gitlab-org/quality/team-tasks/issues/137#general-availability)
+for updates.
 
 Configure the Insights that matter for your projects to explore data such as
 triage hygiene, issues created/closed per a given period, average time for merge
 requests to be merged and much more.
 
-![Insights example stacked bar chart](img/project_insights.png)
+![Insights example bar chart](img/project_insights.png)
 
 NOTE: **Note:**
-This feature is [also available at the group level](https://docs.gitlab.com/ee/user/group/insights/index.html).
+This feature is [also available at the group level](../../group/insights/index.md).
+
+## View your project's Insights
+
+You can access your project's Insights by clicking the **Project > Insights**
+link in the left sidebar:
+
+![Insights sidebar link](img/insights_sidebar_link.png)
 
 ## Configure your Insights
 
@@ -26,7 +33,7 @@ for details about the content of this file.
 
 NOTE: **Note:**
 Once the configuration file is created, you can also
-[use it for your project's group](https://docs.gitlab.com/ee/user/group/insights/index.html#configure-your-insights).
+[use it for your project's group](../../group/insights/index.md#configure-your-insights).
 
 NOTE: **Note:**
 If the project doesn't have any configuration file, it'll try to use
@@ -74,8 +81,7 @@ Each chart definition is made up of a hash composed of key-value pairs.
 For example, here's single chart definition:
 
 ```yaml
-monthlyBugsCreated:
-  title: Monthly Bugs Created (bar)
+- title: Monthly Bugs Created (bar)
   type: bar
   query:
     issuable_type: issue
@@ -173,7 +179,7 @@ Supported values are:
 
 Filter by the state of the queried "issuable".
 
-If you omit it, no state filter will be applied.
+If you omit it, the `opened` state filter will be applied.
 
 Supported values are:
 
@@ -181,6 +187,7 @@ Supported values are:
 - `closed`: Closed Open issues / merge requests.
 - `locked`: Issues / merge requests that have their discussion locked.
 - `merged`: Merged merge requests.
+- `all`: Issues / merge requests in all states
 
 #### `query.filter_labels`
 

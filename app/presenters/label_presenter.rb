@@ -35,6 +35,14 @@ class LabelPresenter < Gitlab::View::Presenter::Delegated
     issuable_subject.is_a?(Project) && label.is_a?(GroupLabel)
   end
 
+  def project_label?
+    label.is_a?(ProjectLabel)
+  end
+
+  def subject_name
+    label.subject.name
+  end
+
   private
 
   def context_subject

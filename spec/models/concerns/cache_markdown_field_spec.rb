@@ -2,383 +2,213 @@
 
 require 'spec_helper'
 
-describe CacheMarkdownField do
-  # The minimum necessary ActiveModel to test this concern
-  class ThingWithMarkdownFields
-    include ActiveModel::Model
-    include ActiveModel::Dirty
-
-    include ActiveModel::Serialization
-
-    class_attribute :attribute_names
-    self.attribute_names = []
-
-    def attributes
-      attribute_names.each_with_object({}) do |name, hsh|
-        hsh[name.to_s] = send(name)
-      end
-    end
-
-    extend ActiveModel::Callbacks
-    define_model_callbacks :create, :update
-
-    include CacheMarkdownField
-    cache_markdown_field :foo
-    cache_markdown_field :baz, pipeline: :single_line
-    cache_markdown_field :zoo, whitelisted: true
-
-    def self.add_attr(name)
-      self.attribute_names += [name]
-      define_attribute_methods(name)
-      attr_reader(name)
-      define_method("#{name}=") do |value|
-        write_attribute(name, value)
-      end
-    end
-
-    add_attr :cached_markdown_version
-
-    [:foo, :foo_html, :bar, :baz, :baz_html, :zoo, :zoo_html].each do |name|
-      add_attr(name)
-    end
-
-    def initialize(*)
-      super
-
-      # Pretend new is load
-      clear_changes_information
-    end
-
-    def read_attribute(name)
-      instance_variable_get("@#{name}")
-    end
-
-    def write_attribute(name, value)
-      send("#{name}_will_change!") unless value == read_attribute(name)
-      instance_variable_set("@#{name}", value)
-    end
-
-    def save
-      run_callbacks :update do
-        changes_applied
-      end
-    end
-
-    def has_attribute?(attr_name)
-      attribute_names.include?(attr_name)
+describe CacheMarkdownField, :clean_gitlab_redis_cache do
+  let(:ar_class) do
+    Class.new(ActiveRecord::Base) do
+      self.table_name = 'issues'
+      include CacheMarkdownField
+      cache_markdown_field :title, pipeline: :single_line
+      cache_markdown_field :description
     end
   end
 
-  def thing_subclass(new_attr)
-    Class.new(ThingWithMarkdownFields) { add_attr(new_attr) }
+  let(:other_class) do
+    Class.new do
+      include CacheMarkdownField
+
+      def initialize(args = {})
+        @title, @description, @cached_markdown_version = args[:title], args[:description], args[:cached_markdown_version]
+        @title_html, @description_html = args[:title_html], args[:description_html]
+        @author, @project = args[:author], args[:project]
+      end
+
+      attr_accessor :title, :description, :cached_markdown_version
+
+      cache_markdown_field :title, pipeline: :single_line
+      cache_markdown_field :description
+
+      def cache_key
+        "cache-key"
+      end
+    end
   end
 
   let(:markdown) { '`Foo`' }
-  let(:html)     { '<p dir="auto"><code>Foo</code></p>' }
+  let(:html) { '<p data-sourcepos="1:1-1:5" dir="auto"><code>Foo</code></p>' }
 
   let(:updated_markdown) { '`Bar`' }
-  let(:updated_html)     { '<p dir="auto"><code>Bar</code></p>' }
+  let(:updated_html) { '<p data-sourcepos="1:1-1:5" dir="auto"><code>Bar</code></p>' }
 
-  let(:thing) { ThingWithMarkdownFields.new(foo: markdown, foo_html: html, cached_markdown_version: cache_version) }
-  let(:cache_version) { CacheMarkdownField::CACHE_COMMONMARK_VERSION << 16 }
+  let(:cache_version) { Gitlab::MarkdownCache::CACHE_COMMONMARK_VERSION << 16 }
 
-  before do
-    stub_commonmark_sourcepos_disabled
+  def thing_subclass(klass, extra_attribute)
+    Class.new(klass) { attr_accessor(extra_attribute) }
   end
 
-  describe '.attributes' do
-    it 'excludes cache attributes that is blacklisted by default' do
-      expect(thing.attributes.keys.sort).to eq(%w[bar baz cached_markdown_version foo zoo zoo_html])
-    end
-  end
+  shared_examples 'a class with cached markdown fields' do
+    describe '#cached_html_up_to_date?' do
+      let(:thing) { klass.new(title: markdown, title_html: html, cached_markdown_version: cache_version) }
 
-  context 'an unchanged markdown field' do
-    before do
-      thing.foo = thing.foo
-      thing.save
-    end
+      subject { thing.cached_html_up_to_date?(:title) }
 
-    it { expect(thing.foo).to eq(markdown) }
-    it { expect(thing.foo_html).to eq(html) }
-    it { expect(thing.foo_html_changed?).not_to be_truthy }
-    it { expect(thing.cached_markdown_version).to eq(cache_version) }
-  end
+      it 'returns false when the version is absent' do
+        thing.cached_markdown_version = nil
 
-  context 'a changed markdown field' do
-    let(:thing) { ThingWithMarkdownFields.new(foo: markdown, foo_html: html, cached_markdown_version: cache_version - 1) }
+        is_expected.to be_falsy
+      end
 
-    before do
-      thing.foo = updated_markdown
-      thing.save
-    end
+      it 'returns false when the version is too early' do
+        thing.cached_markdown_version -= 1
 
-    it { expect(thing.foo_html).to eq(updated_html) }
-    it { expect(thing.cached_markdown_version).to eq(cache_version) }
-  end
+        is_expected.to be_falsy
+      end
 
-  context 'when a markdown field is set repeatedly to an empty string' do
-    it do
-      expect(thing).to receive(:refresh_markdown_cache).once
-      thing.foo = ''
-      thing.save
-      thing.foo = ''
-      thing.save
-    end
-  end
+      it 'returns false when the version is too late' do
+        thing.cached_markdown_version += 1
 
-  context 'when a markdown field is set repeatedly to a string which renders as empty html' do
-    it do
-      expect(thing).to receive(:refresh_markdown_cache).once
-      thing.foo = '[//]: # (This is also a comment.)'
-      thing.save
-      thing.foo = '[//]: # (This is also a comment.)'
-      thing.save
-    end
-  end
+        is_expected.to be_falsy
+      end
 
-  context 'when a markdown field and html field are both changed' do
-    it do
-      expect(thing).not_to receive(:refresh_markdown_cache)
-      thing.foo = '_look over there!_'
-      thing.foo_html = '<em>look over there!</em>'
-      thing.save
-    end
-  end
+      it 'returns false when the local version was bumped' do
+        allow(Gitlab::CurrentSettings.current_application_settings).to receive(:local_markdown_version).and_return(2)
+        thing.cached_markdown_version = cache_version
 
-  context 'a non-markdown field changed' do
-    let(:thing) { ThingWithMarkdownFields.new(foo: markdown, foo_html: html, cached_markdown_version: cache_version - 1) }
+        is_expected.to be_falsy
+      end
 
-    before do
-      thing.bar = 'OK'
-      thing.save
+      it 'returns true when the local version is default' do
+        thing.cached_markdown_version = cache_version
+
+        is_expected.to be_truthy
+      end
+
+      it 'returns true when the cached version is just right' do
+        allow(Gitlab::CurrentSettings.current_application_settings).to receive(:local_markdown_version).and_return(2)
+        thing.cached_markdown_version = cache_version + 2
+
+        is_expected.to be_truthy
+      end
     end
 
-    it { expect(thing.bar).to eq('OK') }
-    it { expect(thing.foo).to eq(markdown) }
-    it { expect(thing.foo_html).to eq(html) }
-    it { expect(thing.cached_markdown_version).to eq(cache_version) }
-  end
+    describe '#latest_cached_markdown_version' do
+      let(:thing) { klass.new }
+      subject { thing.latest_cached_markdown_version }
 
-  context 'version is out of date' do
-    let(:thing) { ThingWithMarkdownFields.new(foo: updated_markdown, foo_html: html, cached_markdown_version: nil) }
-
-    before do
-      thing.save
+      it 'returns default version' do
+        thing.cached_markdown_version = nil
+        is_expected.to eq(cache_version)
+      end
     end
 
-    it { expect(thing.foo_html).to eq(updated_html) }
-    it { expect(thing.cached_markdown_version).to eq(cache_version) }
-  end
+    describe '#refresh_markdown_cache' do
+      let(:thing) { klass.new(description: markdown, description_html: html, cached_markdown_version: cache_version) }
 
-  describe '#cached_html_up_to_date?' do
-    let(:thing) { ThingWithMarkdownFields.new(foo: markdown, foo_html: html, cached_markdown_version: cache_version) }
+      before do
+        thing.description = updated_markdown
+      end
 
-    subject { thing.cached_html_up_to_date?(:foo) }
+      it 'fills all html fields' do
+        thing.refresh_markdown_cache
 
-    it 'returns false when the version is absent' do
-      thing.cached_markdown_version = nil
+        expect(thing.description_html).to eq(updated_html)
+      end
 
-      is_expected.to be_falsy
+      it 'does not save the result' do
+        expect(thing).not_to receive(:save_markdown)
+
+        thing.refresh_markdown_cache
+      end
+
+      it 'updates the markdown cache version' do
+        thing.cached_markdown_version = nil
+        thing.refresh_markdown_cache
+
+        expect(thing.cached_markdown_version).to eq(cache_version)
+      end
     end
 
-    it 'returns false when the cached version is too old' do
-      thing.cached_markdown_version = cache_version - 1
+    describe '#refresh_markdown_cache!' do
+      let(:thing) { klass.new(description: markdown, description_html: html, cached_markdown_version: cache_version) }
 
-      is_expected.to be_falsy
+      before do
+        thing.description = updated_markdown
+      end
+
+      it 'fills all html fields' do
+        thing.refresh_markdown_cache!
+
+        expect(thing.description_html).to eq(updated_html)
+      end
+
+      it 'saves the changes' do
+        expect(thing)
+          .to receive(:save_markdown)
+          .with("description_html" => updated_html, "title_html" => "", "cached_markdown_version" => cache_version)
+
+        thing.refresh_markdown_cache!
+      end
     end
 
-    it 'returns false when the cached version is in future' do
-      thing.cached_markdown_version = cache_version + 1
+    describe '#banzai_render_context' do
+      let(:thing) { klass.new(title: markdown, title_html: html, cached_markdown_version: cache_version) }
+      subject(:context) { thing.banzai_render_context(:title) }
 
-      is_expected.to be_falsy
-    end
-
-    it 'returns false when the local version was bumped' do
-      allow(Gitlab::CurrentSettings.current_application_settings).to receive(:local_markdown_version).and_return(2)
-      thing.cached_markdown_version = cache_version
-
-      is_expected.to be_falsy
-    end
-
-    it 'returns true when the local version is default' do
-      thing.cached_markdown_version = cache_version
-
-      is_expected.to be_truthy
-    end
-
-    it 'returns true when the cached version is just right' do
-      allow(Gitlab::CurrentSettings.current_application_settings).to receive(:local_markdown_version).and_return(2)
-      thing.cached_markdown_version = cache_version + 2
-
-      is_expected.to be_truthy
-    end
-
-    it 'returns false if markdown has been changed but html has not' do
-      thing.foo = updated_html
-
-      is_expected.to be_falsy
-    end
-
-    it 'returns true if markdown has not been changed but html has' do
-      thing.foo_html = updated_html
-
-      is_expected.to be_truthy
-    end
-
-    it 'returns true if markdown and html have both been changed' do
-      thing.foo = updated_markdown
-      thing.foo_html = updated_html
-
-      is_expected.to be_truthy
-    end
-
-    it 'returns false if the markdown field is set but the html is not' do
-      thing.foo_html = nil
-
-      is_expected.to be_falsy
-    end
-  end
-
-  describe '#latest_cached_markdown_version' do
-    subject { thing.latest_cached_markdown_version }
-
-    it 'returns default version' do
-      thing.cached_markdown_version = nil
-      is_expected.to eq(cache_version)
-    end
-  end
-
-  describe '#refresh_markdown_cache' do
-    before do
-      thing.foo = updated_markdown
-    end
-
-    it 'fills all html fields' do
-      thing.refresh_markdown_cache
-
-      expect(thing.foo_html).to eq(updated_html)
-      expect(thing.foo_html_changed?).to be_truthy
-      expect(thing.baz_html_changed?).to be_truthy
-    end
-
-    it 'does not save the result' do
-      expect(thing).not_to receive(:update_columns)
-
-      thing.refresh_markdown_cache
-    end
-
-    it 'updates the markdown cache version' do
-      thing.cached_markdown_version = nil
-      thing.refresh_markdown_cache
-
-      expect(thing.cached_markdown_version).to eq(cache_version)
-    end
-  end
-
-  describe '#refresh_markdown_cache!' do
-    let(:thing) { ThingWithMarkdownFields.new(foo: markdown, foo_html: html, cached_markdown_version: cache_version) }
-
-    before do
-      thing.foo = updated_markdown
-    end
-
-    it 'fills all html fields' do
-      thing.refresh_markdown_cache!
-
-      expect(thing.foo_html).to eq(updated_html)
-      expect(thing.foo_html_changed?).to be_truthy
-      expect(thing.baz_html_changed?).to be_truthy
-    end
-
-    it 'skips saving if not persisted' do
-      expect(thing).to receive(:persisted?).and_return(false)
-      expect(thing).not_to receive(:update_columns)
-
-      thing.refresh_markdown_cache!
-    end
-
-    it 'saves the changes using #update_columns' do
-      expect(thing).to receive(:persisted?).and_return(true)
-      expect(thing).to receive(:update_columns)
-        .with(
-          "foo_html" => updated_html,
-          "baz_html" => "",
-          "zoo_html" => "",
-          "cached_markdown_version" => cache_version
-        )
-
-      thing.refresh_markdown_cache!
-    end
-  end
-
-  describe '#banzai_render_context' do
-    subject(:context) { thing.banzai_render_context(:foo) }
-
-    it 'sets project to nil if the object lacks a project' do
-      is_expected.to have_key(:project)
-      expect(context[:project]).to be_nil
-    end
-
-    it 'excludes author if the object lacks an author' do
-      is_expected.not_to have_key(:author)
-    end
-
-    it 'raises if the context for an unrecognised field is requested' do
-      expect { thing.banzai_render_context(:not_found) }.to raise_error(ArgumentError)
-    end
-
-    it 'includes the pipeline' do
-      baz = thing.banzai_render_context(:baz)
-
-      expect(baz[:pipeline]).to eq(:single_line)
-    end
-
-    it 'returns copies of the context template' do
-      template = thing.cached_markdown_fields[:baz]
-      copy = thing.banzai_render_context(:baz)
-
-      expect(copy).not_to be(template)
-    end
-
-    context 'with a project' do
-      let(:project) { create(:project, group: create(:group)) }
-      let(:thing) { thing_subclass(:project).new(foo: markdown, foo_html: html, project: project) }
-
-      it 'sets the project in the context' do
+      it 'sets project to nil if the object lacks a project' do
         is_expected.to have_key(:project)
-        expect(context[:project]).to eq(project)
+        expect(context[:project]).to be_nil
       end
 
-      it 'invalidates the cache when project changes' do
-        thing.project = :new_project
-        allow(Banzai::Renderer).to receive(:cacheless_render_field).and_return(updated_html)
+      it 'excludes author if the object lacks an author' do
+        is_expected.not_to have_key(:author)
+      end
 
-        thing.save
+      it 'raises if the context for an unrecognised field is requested' do
+        expect { thing.banzai_render_context(:not_found) }.to raise_error(ArgumentError)
+      end
 
-        expect(thing.foo_html).to eq(updated_html)
-        expect(thing.baz_html).to eq(updated_html)
-        expect(thing.cached_markdown_version).to eq(cache_version)
+      it 'includes the pipeline' do
+        title_context = thing.banzai_render_context(:title)
+
+        expect(title_context[:pipeline]).to eq(:single_line)
+      end
+
+      it 'returns copies of the context template' do
+        template = thing.cached_markdown_fields[:description]
+        copy = thing.banzai_render_context(:description)
+
+        expect(copy).not_to be(template)
+      end
+
+      context 'with a project' do
+        let(:project) { build(:project, group: create(:group)) }
+        let(:thing) { thing_subclass(klass, :project).new(title: markdown, title_html: html, project: project) }
+
+        it 'sets the project in the context' do
+          is_expected.to have_key(:project)
+          expect(context[:project]).to eq(project)
+        end
+      end
+
+      context 'with an author' do
+        let(:thing) { thing_subclass(klass, :author).new(title: markdown, title_html: html, author: :author_value) }
+
+        it 'sets the author in the context' do
+          is_expected.to have_key(:author)
+          expect(context[:author]).to eq(:author_value)
+        end
       end
     end
+  end
 
-    context 'with an author' do
-      let(:thing) { thing_subclass(:author).new(foo: markdown, foo_html: html, author: :author_value) }
+  context 'for Active record classes' do
+    let(:klass) { ar_class }
 
-      it 'sets the author in the context' do
-        is_expected.to have_key(:author)
-        expect(context[:author]).to eq(:author_value)
-      end
+    it_behaves_like 'a class with cached markdown fields'
+  end
 
-      it 'invalidates the cache when author changes' do
-        thing.author = :new_author
-        allow(Banzai::Renderer).to receive(:cacheless_render_field).and_return(updated_html)
+  context 'for other classes' do
+    let(:klass) { other_class }
 
-        thing.save
-
-        expect(thing.foo_html).to eq(updated_html)
-        expect(thing.baz_html).to eq(updated_html)
-        expect(thing.cached_markdown_version).to eq(cache_version)
-      end
-    end
+    it_behaves_like 'a class with cached markdown fields'
   end
 end

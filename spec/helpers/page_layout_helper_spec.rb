@@ -38,6 +38,14 @@ describe PageLayoutHelper do
 
       expect(helper.page_description).to eq 'Bold Header'
     end
+
+    it 'truncates before sanitizing' do
+      helper.page_description('<b>Bold</b> <img> <img> <img> <h1>Header</h1> ' * 10)
+
+      # 12 words because <img> was counted as a word
+      expect(helper.page_description)
+        .to eq('Bold    Header Bold    Header Bold    Header Bold    Header Bold    Header Bold    Header...')
+    end
   end
 
   describe 'page_image' do

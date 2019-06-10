@@ -5,20 +5,20 @@
     %fieldset
       %legend Account
       .form-group.row
-        .col-sm-2.text-right
-          = f.label :name, class: 'col-form-label'
+        .col-sm-2.col-form-label
+          = f.label :name
         .col-sm-10
           = f.text_field :name, required: true, autocomplete: 'off', class: 'form-control'
           %span.help-inline * required
       .form-group.row
-        .col-sm-2.text-right
-          = f.label :username, class: 'col-form-label'
+        .col-sm-2.col-form-label
+          = f.label :username
         .col-sm-10
           = f.text_field :username, required: true, autocomplete: 'off', autocorrect: 'off', autocapitalize: 'off', spellcheck: false, class: 'form-control'
           %span.help-inline * required
       .form-group.row
-        .col-sm-2.text-right
-          = f.label :email, class: 'col-form-label'
+        .col-sm-2.col-form-label
+          = f.label :email
         .col-sm-10
           = f.text_field :email, required: true, autocomplete: 'off', class: 'form-control'
           %span.help-inline * required
@@ -27,8 +27,8 @@
       %fieldset
         %legend Password
         .form-group.row
-          .col-sm-2.text-right
-            = f.label :password, class: 'col-form-label'
+          .col-sm-2.col-form-label
+            = f.label :password
           .col-sm-10
             %strong
               Reset link will be generated and sent to the user.
@@ -38,40 +38,52 @@
       %fieldset
         %legend Password
         .form-group.row
-          .col-sm-2.text-right
-            = f.label :password, class: 'col-form-label'
-          .col-sm-10= f.password_field :password, disabled: f.object.force_random_password, class: 'form-control'
+          .col-sm-2.col-form-label
+            = f.label :password
+          .col-sm-10
+            = f.password_field :password, disabled: f.object.force_random_password, class: 'form-control'
         .form-group.row
-          .col-sm-2.text-right
-            = f.label :password_confirmation, class: 'col-form-label'
-          .col-sm-10= f.password_field :password_confirmation, disabled: f.object.force_random_password, class: 'form-control'
+          .col-sm-2.col-form-label
+            = f.label :password_confirmation
+          .col-sm-10
+            = f.password_field :password_confirmation, disabled: f.object.force_random_password, class: 'form-control'
 
     = render partial: 'access_levels', locals: { f: f }
+
+    = render_if_exists 'admin/users/namespace_plan_fieldset', f: f
+
+    = render_if_exists 'admin/users/limits', f: f
 
     %fieldset
       %legend Profile
       .form-group.row
-        .col-sm-2.text-right
-          = f.label :avatar, class: 'col-form-label'
+        .col-sm-2.col-form-label
+          = f.label :avatar
         .col-sm-10
           = f.file_field :avatar
 
       .form-group.row
-        .col-sm-2.text-right
-          = f.label :skype, class: 'col-form-label'
-        .col-sm-10= f.text_field :skype, class: 'form-control'
+        .col-sm-2.col-form-label
+          = f.label :skype
+        .col-sm-10
+          = f.text_field :skype, class: 'form-control'
       .form-group.row
-        .col-sm-2.text-right
-          = f.label :linkedin, class: 'col-form-label'
-        .col-sm-10= f.text_field :linkedin, class: 'form-control'
+        .col-sm-2.col-form-label
+          = f.label :linkedin
+        .col-sm-10
+          = f.text_field :linkedin, class: 'form-control'
       .form-group.row
-        .col-sm-2.text-right
-          = f.label :twitter, class: 'col-form-label'
-        .col-sm-10= f.text_field :twitter, class: 'form-control'
+        .col-sm-2.col-form-label
+          = f.label :twitter
+        .col-sm-10
+          = f.text_field :twitter, class: 'form-control'
       .form-group.row
-        .col-sm-2.text-right
-          = f.label :website_url, 'Website', class: 'col-form-label'
-        .col-sm-10= f.text_field :website_url, class: 'form-control'
+        .col-sm-2.col-form-label
+          = f.label :website_url
+        .col-sm-10
+          = f.text_field :website_url, class: 'form-control'
+
+    = render_if_exists 'admin/users/admin_notes', f: f
 
     .form-actions
       - if @user.new_record?

@@ -1381,6 +1381,40 @@ describe Ci::Pipeline, :mailer do
       end
     end
 
+    describe 'auto merge' do
+      let(:merge_request) { create(:merge_request, :merge_when_pipeline_succeeds) }
+
+      let(:pipeline) do
+        create(:ci_pipeline, :running, project: merge_request.source_project,
+                                       ref: merge_request.source_branch,
+                                       sha: merge_request.diff_head_sha)
+      end
+
+      before do
+        merge_request.update_head_pipeline
+      end
+
+      %w[succeed! drop! cancel! skip!].each do |action|
+        context "when the pipeline recieved #{action} event" do
+          it 'performs AutoMergeProcessWorker' do
+            expect(AutoMergeProcessWorker).to receive(:perform_async).with(merge_request.id)
+
+            pipeline.public_send(action)
+          end
+        end
+      end
+
+      context 'when auto merge is not enabled in the merge request' do
+        let(:merge_request) { create(:merge_request) }
+
+        it 'performs AutoMergeProcessWorker' do
+          expect(AutoMergeProcessWorker).not_to receive(:perform_async)
+
+          pipeline.succeed!
+        end
+      end
+    end
+
     def create_build(name, *traits, queued_at: current, started_from: 0, **opts)
       create(:ci_build, *traits,
              name: name,

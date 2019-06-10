@@ -1,3 +1,7 @@
+---
+type: tutorial
+---
+
 # Triggering pipelines through the API
 
 > **Notes**:

@@ -337,6 +337,8 @@ Please check your network connection and try again.`;
               v-if="hasWarning(getNoteableData)"
               :is-locked="isLocked(getNoteableData)"
               :is-confidential="isConfidential(getNoteableData)"
+              :locked-issue-docs-path="lockedIssueDocsPath"
+              :confidential-issue-docs-path="confidentialIssueDocsPath"
             />
 
             <markdown-field

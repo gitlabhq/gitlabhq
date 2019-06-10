@@ -8,10 +8,11 @@ module Gitlab
           require_dependency 're2'
 
           class Pattern < Lexeme::Value
-            PATTERN = %r{^/.+/[ismU]*$}.freeze
+            PATTERN     = %r{^/.+/[ismU]*$}.freeze
+            NEW_PATTERN = %r{^\/([^\/]|\\/)+[^\\]\/[ismU]*}.freeze
 
             def initialize(regexp)
-              @value = regexp
+              @value = self.class.eager_matching_with_escape_characters? ? regexp.gsub(/\\\//, '/') : regexp
 
               unless Gitlab::UntrustedRegexp::RubySyntax.valid?(@value)
                 raise Lexer::SyntaxError, 'Invalid regular expression!'
@@ -24,8 +25,16 @@ module Gitlab
               raise Expression::RuntimeError, 'Invalid regular expression!'
             end
 
+            def self.pattern
+              eager_matching_with_escape_characters? ? NEW_PATTERN : PATTERN
+            end
+
             def self.build(string)
               new(string)
+            end
+
+            def self.eager_matching_with_escape_characters?
+              Feature.enabled?(:ci_variables_complex_expressions, default_enabled: true)
             end
           end
         end

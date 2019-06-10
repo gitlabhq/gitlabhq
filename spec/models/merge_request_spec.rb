@@ -173,6 +173,42 @@ describe MergeRequest do
       end
     end
 
+    context 'for branch' do
+      before do
+        stub_feature_flags(stricter_mr_branch_name: false)
+      end
+
+      using RSpec::Parameterized::TableSyntax
+
+      where(:branch_name, :valid) do
+        'foo' | true
+        'foo:bar' | false
+        '+foo:bar' | false
+        'foo bar' | false
+        '-foo' | false
+        'HEAD' | true
+        'refs/heads/master' | true
+      end
+
+      with_them do
+        it "validates source_branch" do
+          subject = build(:merge_request, source_branch: branch_name, target_branch: 'master')
+
+          subject.valid?
+
+          expect(subject.errors.added?(:source_branch)).to eq(!valid)
+        end
+
+        it "validates target_branch" do
+          subject = build(:merge_request, source_branch: 'master', target_branch: branch_name)
+
+          subject.valid?
+
+          expect(subject.errors.added?(:target_branch)).to eq(!valid)
+        end
+      end
+    end
+
     context 'for forks' do
       let(:project) { create(:project) }
       let(:fork1) { fork_project(project) }
@@ -1038,19 +1074,17 @@ describe MergeRequest do
     end
   end
 
-  describe "#reset_merge_when_pipeline_succeeds" do
-    let(:merge_if_green) do
-      create :merge_request, merge_when_pipeline_succeeds: true, merge_user: create(:user),
-                             merge_params: { "should_remove_source_branch" => "1", "commit_message" => "msg" }
-    end
+  describe "#auto_merge_strategy" do
+    subject { merge_request.auto_merge_strategy }
 
-    it "sets the item to false" do
-      merge_if_green.reset_merge_when_pipeline_succeeds
-      merge_if_green.reload
+    let(:merge_request) { create(:merge_request, :merge_when_pipeline_succeeds) }
 
-      expect(merge_if_green.merge_when_pipeline_succeeds).to be_falsey
-      expect(merge_if_green.merge_params["should_remove_source_branch"]).to be_nil
-      expect(merge_if_green.merge_params["commit_message"]).to be_nil
+    it { is_expected.to eq('merge_when_pipeline_succeeds') }
+
+    context 'when auto merge is disabled' do
+      let(:merge_request) { create(:merge_request) }
+
+      it { is_expected.to be_nil }
     end
   end
 
@@ -1962,57 +1996,6 @@ describe MergeRequest do
     end
   end
 
-  describe '#check_if_can_be_merged' do
-    let(:project) { create(:project, only_allow_merge_if_pipeline_succeeds: true) }
-
-    shared_examples 'checking if can be merged' do
-      context 'when it is not broken and has no conflicts' do
-        before do
-          allow(subject).to receive(:broken?) { false }
-          allow(project.repository).to receive(:can_be_merged?).and_return(true)
-        end
-
-        it 'is marked as mergeable' do
-          expect { subject.check_if_can_be_merged }.to change { subject.merge_status }.to('can_be_merged')
-        end
-      end
-
-      context 'when broken' do
-        before do
-          allow(subject).to receive(:broken?) { true }
-          allow(project.repository).to receive(:can_be_merged?).and_return(false)
-        end
-
-        it 'becomes unmergeable' do
-          expect { subject.check_if_can_be_merged }.to change { subject.merge_status }.to('cannot_be_merged')
-        end
-      end
-
-      context 'when it has conflicts' do
-        before do
-          allow(subject).to receive(:broken?) { false }
-          allow(project.repository).to receive(:can_be_merged?).and_return(false)
-        end
-
-        it 'becomes unmergeable' do
-          expect { subject.check_if_can_be_merged }.to change { subject.merge_status }.to('cannot_be_merged')
-        end
-      end
-    end
-
-    context 'when merge_status is unchecked' do
-      subject { create(:merge_request, source_project: project, merge_status: :unchecked) }
-
-      it_behaves_like 'checking if can be merged'
-    end
-
-    context 'when merge_status is unchecked' do
-      subject { create(:merge_request, source_project: project, merge_status: :cannot_be_merged_recheck) }
-
-      it_behaves_like 'checking if can be merged'
-    end
-  end
-
   describe '#mergeable?' do
     let(:project) { create(:project) }
 
@@ -2026,7 +2009,7 @@ describe MergeRequest do
 
     it 'return true if #mergeable_state? is true and the MR #can_be_merged? is true' do
       allow(subject).to receive(:mergeable_state?) { true }
-      expect(subject).to receive(:check_if_can_be_merged)
+      expect(subject).to receive(:check_mergeability)
       expect(subject).to receive(:can_be_merged?) { true }
 
       expect(subject.mergeable?).to be_truthy
@@ -2040,7 +2023,7 @@ describe MergeRequest do
 
     it 'checks if merge request can be merged' do
       allow(subject).to receive(:mergeable_ci_state?) { true }
-      expect(subject).to receive(:check_if_can_be_merged)
+      expect(subject).to receive(:check_mergeability)
 
       subject.mergeable?
     end
@@ -3105,38 +3088,6 @@ describe MergeRequest do
       source_project.add_developer(user)
 
       expect(merge_request.can_allow_collaboration?(user)).to be_truthy
-    end
-  end
-
-  describe '#mergeable_to_ref?' do
-    it 'returns true when merge request is mergeable' do
-      subject = create(:merge_request)
-
-      expect(subject.mergeable_to_ref?).to be(true)
-    end
-
-    it 'returns false when merge request is already merged' do
-      subject = create(:merge_request, :merged)
-
-      expect(subject.mergeable_to_ref?).to be(false)
-    end
-
-    it 'returns false when merge request is closed' do
-      subject = create(:merge_request, :closed)
-
-      expect(subject.mergeable_to_ref?).to be(false)
-    end
-
-    it 'returns false when merge request is work in progress' do
-      subject = create(:merge_request, title: 'WIP: The feature')
-
-      expect(subject.mergeable_to_ref?).to be(false)
-    end
-
-    it 'returns false when merge request has no commits' do
-      subject = create(:merge_request, source_branch: 'empty-branch', target_branch: 'master')
-
-      expect(subject.mergeable_to_ref?).to be(false)
     end
   end
 

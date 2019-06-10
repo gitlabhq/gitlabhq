@@ -1,4 +1,5 @@
 <script>
+import { mapState, mapActions } from 'vuex';
 import { GlButton, GlFormGroup, GlFormInput, GlLink } from '@gitlab/ui';
 
 export default {
@@ -8,26 +9,34 @@ export default {
     GlFormInput,
     GlLink,
   },
-  props: {
-    externalDashboardPath: {
-      type: String,
-      required: false,
-      default: '',
+  computed: {
+    ...mapState([
+      'externalDashboardHelpPagePath',
+      'externalDashboardUrl',
+      'operationsSettingsEndpoint',
+    ]),
+    userDashboardUrl: {
+      get() {
+        return this.externalDashboardUrl;
+      },
+      set(url) {
+        this.setExternalDashboardUrl(url);
+      },
     },
-    externalDashboardHelpPagePath: {
-      type: String,
-      required: true,
-    },
+  },
+  methods: {
+    ...mapActions(['setExternalDashboardUrl', 'updateExternalDashboardUrl']),
   },
 };
 </script>
 
 <template>
-  <section class="settings expanded">
+  <section class="settings no-animate">
     <div class="settings-header">
       <h4 class="js-section-header">
         {{ s__('ExternalMetrics|External Dashboard') }}
       </h4>
+      <gl-button class="js-settings-toggle">{{ __('Expand') }}</gl-button>
       <p class="js-section-sub-header">
         {{
           s__(
@@ -44,11 +53,12 @@ export default {
           :description="s__('ExternalMetrics|Enter the URL of the dashboard you want to link to')"
         >
           <gl-form-input
-            :value="externalDashboardPath"
+            v-model="userDashboardUrl"
             placeholder="https://my-org.gitlab.io/my-dashboards"
+            @keydown.enter.native.prevent="updateExternalDashboardUrl"
           />
         </gl-form-group>
-        <gl-button variant="success">
+        <gl-button variant="success" @click="updateExternalDashboardUrl">
           {{ __('Save Changes') }}
         </gl-button>
       </form>

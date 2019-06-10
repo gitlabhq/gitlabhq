@@ -1,6 +1,8 @@
 ---
 - auto_devops:auto_devops_disable
 
+- auto_merge:auto_merge_process
+
 - cronjob:admin_email
 - cronjob:expire_build_artifacts
 - cronjob:gitlab_usage_ping

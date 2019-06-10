@@ -286,6 +286,7 @@ describe API::Jobs do
         expect(json_response['ref']).to eq(job.ref)
         expect(json_response['tag']).to eq(job.tag)
         expect(json_response['coverage']).to eq(job.coverage)
+        expect(json_response['allow_failure']).to eq(job.allow_failure)
         expect(Time.parse(json_response['created_at'])).to be_like_time(job.created_at)
         expect(Time.parse(json_response['started_at'])).to be_like_time(job.started_at)
         expect(Time.parse(json_response['finished_at'])).to be_like_time(job.finished_at)
@@ -863,7 +864,7 @@ describe API::Jobs do
   end
 
   describe 'POST /projects/:id/jobs/:job_id/retry' do
-    let(:job) { create(:ci_build, :failed, pipeline: pipeline) }
+    let(:job) { create(:ci_build, :canceled, pipeline: pipeline) }
 
     before do
       post api("/projects/#{project.id}/jobs/#{job.id}/retry", api_user)
@@ -873,7 +874,7 @@ describe API::Jobs do
       context 'user with :update_build permission' do
         it 'retries non-running job' do
           expect(response).to have_gitlab_http_status(201)
-          expect(project.builds.first.status).to eq('failed')
+          expect(project.builds.first.status).to eq('canceled')
           expect(json_response['status']).to eq('pending')
         end
       end
@@ -912,8 +913,8 @@ describe API::Jobs do
         expect(response).to have_gitlab_http_status(201)
         expect(job.job_artifacts.count).to eq(0)
         expect(job.trace.exist?).to be_falsy
-        expect(job.artifacts_file.exists?).to be_falsy
-        expect(job.artifacts_metadata.exists?).to be_falsy
+        expect(job.artifacts_file.present?).to be_falsy
+        expect(job.artifacts_metadata.present?).to be_falsy
         expect(job.has_job_artifacts?).to be_falsy
       end
 

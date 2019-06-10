@@ -1,2 +1,2 @@
 = render layout: 'projects/protected_branches/shared/protected_branch', locals: { protected_branch: protected_branch } do
-  = render partial: 'projects/protected_branches/update_protected_branch', locals: { protected_branch: protected_branch }
+  = render_if_exists 'projects/protected_branches/update_protected_branch', protected_branch: protected_branch

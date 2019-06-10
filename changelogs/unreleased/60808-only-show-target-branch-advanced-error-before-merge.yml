@@ -1,6 +1,0 @@
----
-title: Only show the "target branch has advanced" message when the merge request is
-  open
-merge_request: 27588
-author:
-type: fixed

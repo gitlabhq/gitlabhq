@@ -13,6 +13,7 @@ describe API::Settings, 'Settings' do
       expect(json_response['default_projects_limit']).to eq(42)
       expect(json_response['password_authentication_enabled_for_web']).to be_truthy
       expect(json_response['repository_storages']).to eq(['default'])
+      expect(json_response['password_authentication_enabled']).to be_truthy
       expect(json_response['plantuml_enabled']).to be_falsey
       expect(json_response['plantuml_url']).to be_nil
       expect(json_response['default_project_visibility']).to be_a String

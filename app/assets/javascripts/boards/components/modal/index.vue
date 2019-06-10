@@ -124,7 +124,7 @@ export default {
           data.issues.forEach(issueObj => {
             const issue = new ListIssue(issueObj);
             const foundSelectedIssue = ModalStore.findSelectedIssue(issue);
-            issue.selected = !!foundSelectedIssue;
+            issue.selected = Boolean(foundSelectedIssue);
 
             this.issues.push(issue);
           });

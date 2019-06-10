@@ -15,7 +15,7 @@ import { sprintf, __ } from '../../locale';
 // </pre>
 //
 
-// This is an arbitary number; Can be iterated upon when suitable.
+// This is an arbitrary number; Can be iterated upon when suitable.
 const MAX_CHAR_LIMIT = 5000;
 
 export default function renderMermaid($els) {

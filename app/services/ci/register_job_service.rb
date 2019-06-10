@@ -6,7 +6,7 @@ module Ci
   class RegisterJobService
     attr_reader :runner
 
-    JOB_QUEUE_DURATION_SECONDS_BUCKETS = [1, 3, 10, 30].freeze
+    JOB_QUEUE_DURATION_SECONDS_BUCKETS = [1, 3, 10, 30, 60, 300].freeze
     JOBS_RUNNING_FOR_PROJECT_MAX_BUCKET = 5.freeze
 
     Result = Struct.new(:build, :valid?)
@@ -34,6 +34,11 @@ module Ci
       # pick builds that have at least one tag
       unless runner.run_untagged?
         builds = builds.with_any_tags
+      end
+
+      # pick builds that older than specified age
+      if params.key?(:job_age)
+        builds = builds.queued_before(params[:job_age].seconds.ago)
       end
 
       builds.each do |build|

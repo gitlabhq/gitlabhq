@@ -31,14 +31,15 @@
   width: 320px;
 
   .dropdown-content {
-    max-height: 162px;
+    max-height: 140px;
   }
 }
 
 .issue-board-dropdown-content {
-  margin: 0 8px 10px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid $dropdown-divider-bg;
+  margin: 0;
+  padding: $gl-padding-4 $gl-padding $gl-padding;
+  border-bottom: 0;
+  color: $gl-text-color-secondary;
 }
 
 .issue-boards-page {

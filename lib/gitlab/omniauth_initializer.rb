@@ -36,10 +36,23 @@ module Gitlab
         hash_arguments = provider['args'].merge(provider_defaults(provider))
 
         # A Hash from the configuration will be passed as is.
-        provider_arguments << hash_arguments.symbolize_keys
+        provider_arguments << normalize_hash_arguments(hash_arguments)
       end
 
       provider_arguments
+    end
+
+    def normalize_hash_arguments(args)
+      args.symbolize_keys!
+
+      # Rails 5.1 deprecated the use of string names in the middleware
+      # (https://github.com/rails/rails/commit/83b767ce), so we need to
+      # pass in the actual class to Devise.
+      if args[:strategy_class].is_a?(String)
+        args[:strategy_class] = args[:strategy_class].constantize
+      end
+
+      args
     end
 
     def provider_defaults(provider)
@@ -50,6 +63,12 @@ module Gitlab
         { remote_sign_out_handler: authentiq_signout_handler }
       when 'shibboleth'
         { fail_with_empty_uid: true }
+      when 'openid_connect'
+        # If a name argument is omitted, OmniAuth will expect that the
+        # matching route is /auth/users/openidconnect instead of
+        # /auth/users/openid_connect because of
+        # https://gitlab.com/gitlab-org/gitlab-ce/issues/62208#note_178780341.
+        { name: 'openid_connect' }
       else
         {}
       end

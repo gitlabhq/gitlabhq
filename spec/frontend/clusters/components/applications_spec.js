@@ -1,9 +1,11 @@
 import Vue from 'vue';
 import applications from '~/clusters/components/applications.vue';
 import { CLUSTER_TYPE } from '~/clusters/constants';
-import eventHub from '~/clusters/event_hub';
 import mountComponent from 'helpers/vue_mount_component_helper';
 import { APPLICATIONS_MOCK_STATE } from '../services/mock_data';
+import eventHub from '~/clusters/event_hub';
+import { shallowMount } from '@vue/test-utils';
+import KnativeDomainEditor from '~/clusters/components/knative_domain_editor.vue';
 
 describe('Applications', () => {
   let vm;
@@ -277,73 +279,48 @@ describe('Applications', () => {
   });
 
   describe('Knative application', () => {
-    describe('when installed', () => {
-      describe('with ip address', () => {
-        const props = {
-          applications: {
-            ...APPLICATIONS_MOCK_STATE,
-            knative: {
-              title: 'Knative',
-              hostname: 'example.com',
-              status: 'installed',
-              externalIp: '1.1.1.1',
-            },
-          },
-        };
-        it('renders ip address with a clipboard button', () => {
-          vm = mountComponent(Applications, props);
+    const propsData = {
+      applications: {
+        ...APPLICATIONS_MOCK_STATE,
+        knative: {
+          title: 'Knative',
+          hostname: 'example.com',
+          status: 'installed',
+          externalIp: '1.1.1.1',
+          installed: true,
+        },
+      },
+    };
+    const newHostname = 'newhostname.com';
+    let wrapper;
+    let knativeDomainEditor;
 
-          expect(vm.$el.querySelector('.js-knative-endpoint').value).toEqual('1.1.1.1');
+    beforeEach(() => {
+      wrapper = shallowMount(Applications, { propsData });
+      jest.spyOn(eventHub, '$emit');
 
-          expect(
-            vm.$el
-              .querySelector('.js-knative-endpoint-clipboard-btn')
-              .getAttribute('data-clipboard-text'),
-          ).toEqual('1.1.1.1');
-        });
+      knativeDomainEditor = wrapper.find(KnativeDomainEditor);
+    });
 
-        it('renders domain & allows editing', () => {
-          expect(vm.$el.querySelector('.js-knative-domainname').value).toEqual('example.com');
-          expect(vm.$el.querySelector('.js-knative-domainname').getAttribute('readonly')).toBe(
-            null,
-          );
-        });
+    afterEach(() => {
+      wrapper.destroy();
+    });
 
-        it('renders an update/save Knative domain button', () => {
-          expect(vm.$el.querySelector('.js-knative-save-domain-button')).not.toBe(null);
-        });
+    it('emits saveKnativeDomain event when knative domain editor emits save event', () => {
+      knativeDomainEditor.vm.$emit('save', newHostname);
 
-        it('emits event when clicking Save changes button', () => {
-          jest.spyOn(eventHub, '$emit');
-          vm = mountComponent(Applications, props);
-
-          const saveButton = vm.$el.querySelector('.js-knative-save-domain-button');
-
-          saveButton.click();
-
-          expect(eventHub.$emit).toHaveBeenCalledWith('saveKnativeDomain', {
-            id: 'knative',
-            params: { hostname: 'example.com' },
-          });
-        });
+      expect(eventHub.$emit).toHaveBeenCalledWith('saveKnativeDomain', {
+        id: 'knative',
+        params: { hostname: newHostname },
       });
+    });
 
-      describe('without ip address', () => {
-        it('renders an input text with a loading icon and an alert text', () => {
-          vm = mountComponent(Applications, {
-            applications: {
-              ...APPLICATIONS_MOCK_STATE,
-              knative: {
-                title: 'Knative',
-                hostname: 'example.com',
-                status: 'installed',
-              },
-            },
-          });
+    it('emits setKnativeHostname event when knative domain editor emits change event', () => {
+      wrapper.find(KnativeDomainEditor).vm.$emit('set', newHostname);
 
-          expect(vm.$el.querySelector('.js-knative-ip-loading-icon')).not.toBe(null);
-          expect(vm.$el.querySelector('.js-no-knative-endpoint-message')).not.toBe(null);
-        });
+      expect(eventHub.$emit).toHaveBeenCalledWith('setKnativeHostname', {
+        id: 'knative',
+        hostname: newHostname,
       });
     });
   });

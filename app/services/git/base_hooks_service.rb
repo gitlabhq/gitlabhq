@@ -17,6 +17,8 @@ module Git
       # Not a hook, but it needs access to the list of changed commits
       enqueue_invalidate_cache
 
+      update_remote_mirrors
+
       push_data
     end
 
@@ -91,6 +93,13 @@ module Git
     # to be overridden in EE
     def pipeline_options
       {}
+    end
+
+    def update_remote_mirrors
+      return unless project.has_remote_mirror?
+
+      project.mark_stuck_remote_mirrors_as_failed!
+      project.update_remote_mirrors
     end
   end
 end

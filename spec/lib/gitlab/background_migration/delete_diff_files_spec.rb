@@ -3,6 +3,12 @@ require 'spec_helper'
 # rubocop:disable RSpec/FactoriesInMigrationSpecs
 describe Gitlab::BackgroundMigration::DeleteDiffFiles, :migration, :sidekiq, schema: 20180619121030 do
   describe '#perform' do
+    before do
+      # This migration was created before we introduced ProjectCiCdSetting#default_git_depth
+      allow_any_instance_of(ProjectCiCdSetting).to receive(:default_git_depth=).and_return(0)
+      allow_any_instance_of(ProjectCiCdSetting).to receive(:default_git_depth).and_return(nil)
+    end
+
     context 'when diff files can be deleted' do
       let(:merge_request) { create(:merge_request, :merged) }
       let!(:merge_request_diff) do

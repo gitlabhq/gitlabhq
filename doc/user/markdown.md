@@ -286,15 +286,15 @@ On Linux, you can download [Noto Color Emoji](https://www.google.com/get/noto/he
 Ubuntu 18.04 (like many modern Linux distros) has this font installed by default.
 ```
 
-Sometimes you want to <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/public/-/emojis/1/monkey.png" width="20px" height="20px" style="display:inline;margin:0"> around a bit and add some <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/public/-/emojis/1/star2.png" width="20px" height="20px" style="display:inline;margin:0"> to your <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/public/-/emojis/1/speech_balloon.png" width="20px" height="20px" style="display:inline;margin:0">. Well we have a gift for you:
+Sometimes you want to <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/monkey.png" width="20px" height="20px" style="display:inline;margin:0"> around a bit and add some <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/star2.png" width="20px" height="20px" style="display:inline;margin:0"> to your <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/speech_balloon.png" width="20px" height="20px" style="display:inline;margin:0">. Well we have a gift for you:
 
-<img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/public/-/emojis/1/zap.png" width="20px" height="20px" style="display:inline;margin:0">You can use emoji anywhere GFM is supported. <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/public/-/emojis/1/v.png" width="20px" height="20px" style="display:inline;margin:0">
+<img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/zap.png" width="20px" height="20px" style="display:inline;margin:0">You can use emoji anywhere GFM is supported. <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/v.png" width="20px" height="20px" style="display:inline;margin:0">
 
-You can use it to point out a <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/public/-/emojis/1/bug.png" width="20px" height="20px" style="display:inline;margin:0"> or warn about <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/public/-/emojis/1/speak_no_evil.png" width="20px" height="20px" style="display:inline;margin:0"> patches. And if someone improves your really <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/public/-/emojis/1/snail.png" width="20px" height="20px" style="display:inline;margin:0"> code, send them some <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/public/-/emojis/1/birthday.png" width="20px" height="20px" style="display:inline;margin:0">. People will <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/public/-/emojis/1/heart.png" width="20px" height="20px" style="display:inline;margin:0"> you for that.
+You can use it to point out a <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/bug.png" width="20px" height="20px" style="display:inline;margin:0"> or warn about <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/speak_no_evil.png" width="20px" height="20px" style="display:inline;margin:0"> patches. And if someone improves your really <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/snail.png" width="20px" height="20px" style="display:inline;margin:0"> code, send them some <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/birthday.png" width="20px" height="20px" style="display:inline;margin:0">. People will <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/heart.png" width="20px" height="20px" style="display:inline;margin:0"> you for that.
 
-If you are new to this, don't be <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/public/-/emojis/1/fearful.png" width="20px" height="20px" style="display:inline;margin:0">. You can easily join the emoji <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/public/-/emojis/1/family.png" width="20px" height="20px" style="display:inline;margin:0">. All you need to do is to look up one of the supported codes.
+If you are new to this, don't be <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/fearful.png" width="20px" height="20px" style="display:inline;margin:0">. You can easily join the emoji <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/family.png" width="20px" height="20px" style="display:inline;margin:0">. All you need to do is to look up one of the supported codes.
 
-Consult the [Emoji Cheat Sheet](https://www.webfx.com/tools/emoji-cheat-sheet/) for a list of all supported emoji codes. <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/public/-/emojis/1/thumbsup.png" width="20px" height="20px" style="display:inline;margin:0">
+Consult the [Emoji Cheat Sheet](https://www.webfx.com/tools/emoji-cheat-sheet/) for a list of all supported emoji codes. <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/thumbsup.png" width="20px" height="20px" style="display:inline;margin:0">
 
 Most emoji are natively supported on macOS, Windows, iOS, Android and will fallback to image-based emoji where there is lack of support.
 
@@ -480,7 +480,7 @@ GitLab 10.3.
 > If this is not rendered correctly, see
 https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#mermaid
 
-It is possible to generate diagrams and flowcharts from text using [Mermaid][mermaid].
+It is possible to generate diagrams and flowcharts from text using [Mermaid](https://mermaidjs.github.io/).
 
 In order to generate a diagram or flowchart, you should write your text inside the `mermaid` block.
 
@@ -496,9 +496,15 @@ Example:
 
 Becomes:
 
-<img src="./img/mermaid_diagram_render_gfm.png" width="200px" height="400px">
+```mermaid
+graph TD;
+  A-->B;
+  A-->C;
+  B-->D;
+  C-->D;
+```
 
-For details see the [Mermaid official page][mermaid].
+For details see the [Mermaid official page](https://mermaidjs.github.io/).
 
 ### Front matter
 
@@ -1021,7 +1027,7 @@ A link can be constructed relative to the current wiki page using `./<page>`,
   it would link to `<your_wiki>/documentation/related`:
 
     ```markdown
-    [Link to Related Page](./related)
+    [Link to Related Page](related)
     ```
 
 - If this snippet was placed on a page at `<your_wiki>/documentation/related/content`,
@@ -1035,7 +1041,7 @@ A link can be constructed relative to the current wiki page using `./<page>`,
   it would link to `<your_wiki>/documentation/related.md`:
 
     ```markdown
-    [Link to Related Page](./related.md)
+    [Link to Related Page](related.md)
     ```
 
 - If this snippet was placed on a page at `<your_wiki>/documentation/related/content`,
@@ -1072,7 +1078,6 @@ A link starting with a `/` is relative to the wiki root.
 [^2]: This is my awesome footnote.
 
 [markdown.md]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md
-[mermaid]: https://mermaidjs.github.io/ "Mermaid website"
 [rouge]: http://rouge.jneen.net/ "Rouge website"
 [redcarpet]: https://github.com/vmg/redcarpet "Redcarpet website"
 [katex]: https://github.com/Khan/KaTeX "KaTeX website"

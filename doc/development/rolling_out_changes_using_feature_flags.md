@@ -65,15 +65,14 @@ the worst case scenario, which we should optimise for, our total cost is now 20.
 If we had used a feature flag, things would have been very different. We don't
 need to revert a release, and because feature flags are disabled by default we
 don't need to revert and pick any Git commits. In fact, all we have to do is
-disable the feature, and _maybe_ perform some cleanup. Let's say that the cost
-of this is 1. In this case, our best case cost is 11: 10 to build the feature,
-and 1 to add the feature flag. The worst case cost is now 12: 10 to build the
-feature, 1 to add the feature flag, and 1 to disable it.
+disable the feature, and in the worst case, perform cleanup. Let's say that 
+the cost of this is 2. In this case, our best case cost is 11: 10 to build the 
+feature, and 1 to add the feature flag. The worst case cost is now 13: 10 to 
+build the feature, 1 to add the feature flag, and 2 to disable and clean up.
 
 Here we can see that in the best case scenario the work necessary is only a tiny
 bit more compared to not using a feature flag. Meanwhile, the process of
-reverting our changes has been made significantly cheaper, to the point of being
-trivial.
+reverting our changes has been made significantly and reliably cheaper.
 
 In other words, feature flags do not slow down the development process. Instead,
 they speed up the process as managing incidents now becomes _much_ easier. Once
@@ -103,7 +102,7 @@ GitLab's feature library (using
 [Flipper](https://github.com/jnunemaker/flipper), and covered in the [Feature
 Flags](feature_flags.md) guide) supports rolling out changes to a percentage of
 users. This in turn can be controlled using [GitLab
-chatops](https://docs.gitlab.com/ee/ci/chatops/).
+chatops](../ci/chatops/README.md).
 
 For an up to date list of feature flag commands please see [the source
 code](https://gitlab.com/gitlab-com/chatops/blob/master/lib/chatops/commands/feature.rb).
@@ -201,10 +200,9 @@ isn't gated by a License or Plan.
 
 ### Undefined feature flags default to "on"
 
-An important side-effect of the [implicit feature
-flags][#implicit-feature-flags] mentioned above is that unless the feature is
-explicitly disabled or limited to a percentage of users, the feature flag check
-will default to `true`.
+An important side-effect of the [implicit feature flags](#implicit-feature-flags) 
+mentioned above is that unless the feature is explicitly disabled or limited to a 
+percentage of users, the feature flag check will default to `true`.
 
 As an example, if you were to ship the backend half of a feature behind a flag,
 you'd want to explicitly disable that flag until the frontend half is also ready

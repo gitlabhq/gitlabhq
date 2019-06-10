@@ -33,15 +33,16 @@ gitlab:assets:compile:
     DOCKER_HOST: tcp://docker:2375
   script:
     - node --version
-    - yarn install --frozen-lockfile --production --cache-folder .yarn-cache
+    - retry yarn install --frozen-lockfile --production --cache-folder .yarn-cache
     - free -m
-    - bundle exec rake gitlab:assets:compile
+    - retry bundle exec rake gitlab:assets:compile
     - time scripts/build_assets_image
     - scripts/clean-old-cached-assets
+    - rm -f /etc/apt/sources.list.d/google*.list  # We don't need to update Chrome here
     # Play dependent manual jobs
     - install_api_client_dependencies_with_apt
-    - play_job "review-build-cng" || true # this job might not exist so ignore the failure if it cannot be played
-    - play_job "schedule:review-build-cng" || true # this job might not exist so ignore the failure if it cannot be played
+    - play_job "review-build-cng" || true  # this job might not exist so ignore the failure if it cannot be played
+    - play_job "schedule:review-build-cng" || true  # this job might not exist so ignore the failure if it cannot be played
   artifacts:
     name: webpack-report
     expire_in: 31d
@@ -64,9 +65,9 @@ compile-assets:
   stage: prepare
   script:
     - node --version
-    - yarn install --frozen-lockfile --cache-folder .yarn-cache
+    - retry yarn install --frozen-lockfile --cache-folder .yarn-cache
     - free -m
-    - bundle exec rake gitlab:assets:compile
+    - retry bundle exec rake gitlab:assets:compile
     - scripts/clean-old-cached-assets
   variables:
     # we override the max_old_space_size to prevent OOM errors
@@ -140,8 +141,8 @@ jest:
   extends: .dedicated-no-docs-and-no-qa-pull-cache-job
   <<: *use-pg
   dependencies:
-  - compile-assets
-  - setup-test-env
+    - compile-assets
+    - setup-test-env
   script:
     - scripts/gitaly-test-spawn
     - date
@@ -153,8 +154,8 @@ jest:
     expire_in: 31d
     when: always
     paths:
-    - coverage-frontend/
-    - junit_jest.xml
+      - coverage-frontend/
+      - junit_jest.xml
     reports:
       junit: junit_jest.xml
   cache:
@@ -219,7 +220,7 @@ lint:javascript:report:
   before_script: []
   script:
     - date
-    - yarn run eslint-report || true # ignore exit code
+    - yarn run eslint-report || true  # ignore exit code
   artifacts:
     name: eslint-report
     expire_in: 31d
@@ -234,7 +235,7 @@ jsdoc:
   before_script: []
   script:
     - date
-    - yarn run jsdoc || true # ignore exit code
+    - yarn run jsdoc || true  # ignore exit code
   artifacts:
     name: jsdoc
     expire_in: 31d

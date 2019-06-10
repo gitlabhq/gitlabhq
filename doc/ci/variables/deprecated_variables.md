@@ -1,4 +1,11 @@
+---
+type: reference
+---
+
 # Deprecated GitLab CI/CD variables
+
+Read through this document to learn what predefined variables
+were deprecated and their new references.
 
 ## GitLab 9.0 renamed variables
 

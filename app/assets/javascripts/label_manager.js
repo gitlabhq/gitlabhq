@@ -5,13 +5,14 @@ import Sortable from 'sortablejs';
 
 import flash from './flash';
 import axios from './lib/utils/axios_utils';
+import { __ } from './locale';
 
 export default class LabelManager {
   constructor({ togglePriorityButton, prioritizedLabels, otherLabels } = {}) {
     this.togglePriorityButton = togglePriorityButton || $('.js-toggle-priority');
     this.prioritizedLabels = prioritizedLabels || $('.js-prioritized-labels');
     this.otherLabels = otherLabels || $('.js-other-labels');
-    this.errorMessage = 'Unable to update label prioritization at this time';
+    this.errorMessage = __('Unable to update label prioritization at this time');
     this.emptyState = document.querySelector('#js-priority-labels-empty-state');
     this.$badgeItemTemplate = $('#js-badge-item-template');
 
@@ -52,7 +53,7 @@ export default class LabelManager {
   toggleEmptyState($label, $btn, action) {
     this.emptyState.classList.toggle(
       'hidden',
-      !!this.prioritizedLabels[0].querySelector(':scope > li'),
+      Boolean(this.prioritizedLabels[0].querySelector(':scope > li')),
     );
   }
 

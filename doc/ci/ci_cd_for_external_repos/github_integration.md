@@ -1,3 +1,7 @@
+---
+type: howto
+---
+
 # Using GitLab CI/CD with a GitHub repository **[PREMIUM]**
 
 GitLab CI/CD can be used with **GitHub.com** and **GitHub Enterprise** by
@@ -15,7 +19,7 @@ administrator:
 
 NOTE: **Note:**
 Due to a 10-token limitation on the [GitHub OAuth Implementation](https://developer.github.com/apps/building-oauth-apps/authorizing-oauth-apps/#creating-multiple-tokens-for-oauth-apps),
-if you import more than 10 times, your oldest imported project's token will be 
+if you import more than 10 times, your oldest imported project's token will be
 revoked. See issue [#9147](https://gitlab.com/gitlab-org/gitlab-ee/issues/9147)
 for more information.
 
@@ -31,23 +35,27 @@ for more information.
 
 1. In GitHub, add a `.gitlab-ci.yml` to [configure GitLab CI/CD](../quick_start/README.md).
 
-GitLab will import the project, enable [Pull Mirroring](../../workflow/repository_mirroring.md#pulling-from-a-remote-repository-starter), enable
-[GitHub project integration](https://docs.gitlab.com/ee/user/project/integrations/github.html), and create a web hook
-on GitHub to notify GitLab of new commits.
+GitLab will:
+
+1. Import the project.
+1. Enable [Pull Mirroring](../../workflow/repository_mirroring.md#pulling-from-a-remote-repository-starter).
+1. Enable [GitHub project integration](https://docs.gitlab.com/ee/user/project/integrations/github.html).
+1. Create a web hook on GitHub to notify GitLab of new commits.
 
 ## Connect with Personal Access Token
 
-NOTE: **Note:** Personal access tokens can only be used to connect GitHub.com
+NOTE: **Note:**
+Personal access tokens can only be used to connect GitHub.com
 repositories to GitLab.
 
 If you are not using the [GitHub integration](../../integration/github.md), you can
 still perform a one-off authorization with GitHub to grant GitLab access your
 repositories:
 
-1. Open https://github.com/settings/tokens/new to create a **Personal Access
+1. Open <https://github.com/settings/tokens/new> to create a **Personal Access
    Token**. This token with be used to access your repository and push commit
    statuses to GitHub.
-   
+
     The `repo` and `admin:repo_hook` should be enable to allow GitLab access to
     your project, update commit statuses, and create a web hook to notify
     GitLab of new commits.
@@ -62,20 +70,23 @@ repositories:
 
 1. In GitHub, add a `.gitlab-ci.yml` to [configure GitLab CI/CD](../quick_start/README.md).
 
-GitLab will import the project, enable [Pull Mirroring](../../workflow/repository_mirroring.md#pulling-from-a-remote-repository-starter), enable
-[GitHub project integration](https://docs.gitlab.com/ee/user/project/integrations/github.html), and create a web hook
-on GitHub to notify GitLab of new commits.
+GitLab will:
+
+1. Import the project.
+1. Enable [Pull Mirroring](../../workflow/repository_mirroring.md#pulling-from-a-remote-repository-starter).
+1. Enable [GitHub project integration](https://docs.gitlab.com/ee/user/project/integrations/github.html).
+1. Create a web hook on GitHub to notify GitLab of new commits.
 
 ## Connect manually
 
 If the [GitHub integration](../../integration/github.md) is not enabled, or is enabled
 for a different GitHub instance, you GitLab CI/CD can be manually enabled for
-your repository.
+your repository:
 
-1. In GitHub open https://github.com/settings/tokens/new create a **Personal
+1. In GitHub open <https://github.com/settings/tokens/new> create a **Personal
    Access Token.** GitLab will use this token to access your repository and
    push commit statuses.
-   
+
     Enter a **Token description** and update the scope to allow:
 
     `repo` so that GitLab can access your project and update commit statuses
@@ -109,3 +120,15 @@ your repository.
     ![Create web hook](img/github_push_webhook.png)
 
 1. In GitHub add a `.gitlab-ci.yml` to configure GitLab CI/CD.
+
+<!-- ## Troubleshooting
+
+Include any troubleshooting steps that you can foresee. If you know beforehand what issues
+one might have when setting this up, or when something is changed, or on upgrading, it's
+important to describe those, too. Think of things that may go wrong and include them here.
+This is important to minimize requests for support, and to avoid doc comments with
+questions that you know someone might ask.
+
+Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+If you have none to add when creating a doc, leave this section in place
+but commented out to help encourage others to add to it in the future. -->

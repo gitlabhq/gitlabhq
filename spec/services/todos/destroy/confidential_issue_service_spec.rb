@@ -9,36 +9,60 @@ describe Todos::Destroy::ConfidentialIssueService do
   let(:assignee)       { create(:user) }
   let(:guest)          { create(:user) }
   let(:project_member) { create(:user) }
-  let(:issue)          { create(:issue, project: project, author: author, assignees: [assignee]) }
-
-  let!(:todo_issue_non_member)   { create(:todo, user: user, target: issue, project: project) }
-  let!(:todo_issue_member)       { create(:todo, user: project_member, target: issue, project: project) }
-  let!(:todo_issue_author)       { create(:todo, user: author, target: issue, project: project) }
-  let!(:todo_issue_asignee)      { create(:todo, user: assignee, target: issue, project: project) }
-  let!(:todo_issue_guest)        { create(:todo, user: guest, target: issue, project: project) }
-  let!(:todo_another_non_member) { create(:todo, user: user, project: project) }
+  let(:issue_1)        { create(:issue, :confidential, project: project, author: author, assignees: [assignee]) }
 
   describe '#execute' do
     before do
       project.add_developer(project_member)
       project.add_guest(guest)
+
+      # todos not to be deleted
+      create(:todo, user: project_member, target: issue_1, project: project)
+      create(:todo, user: author, target: issue_1, project: project)
+      create(:todo, user: assignee, target: issue_1, project: project)
+      create(:todo, user: user, project: project)
+      # Todos to be deleted
+      create(:todo, user: guest, target: issue_1, project: project)
+      create(:todo, user: user, target: issue_1, project: project)
     end
 
-    subject { described_class.new(issue.id).execute }
+    subject { described_class.new(issue_id: issue_1.id).execute }
 
-    context 'when provided issue is confidential' do
-      before do
-        issue.update!(confidential: true)
+    context 'when issue_id parameter is present' do
+      context 'when provided issue is confidential' do
+        it 'removes issue todos for users who can not access the confidential issue' do
+          expect { subject }.to change { Todo.count }.from(6).to(4)
+        end
       end
 
-      it 'removes issue todos for users who can not access the confidential issue' do
-        expect { subject }.to change { Todo.count }.from(6).to(4)
+      context 'when provided issue is not confidential' do
+        it 'does not remove any todos' do
+          issue_1.update(confidential: false)
+
+          expect { subject }.not_to change { Todo.count }
+        end
       end
     end
 
-    context 'when provided issue is not confidential' do
-      it 'does not remove any todos' do
-        expect { subject }.not_to change { Todo.count }
+    context 'when project_id parameter is present' do
+      subject { described_class.new(issue_id: nil, project_id: project.id).execute }
+
+      it 'removes issues todos for users that cannot access confidential issues' do
+        issue_2 = create(:issue, :confidential, project: project)
+        issue_3 = create(:issue, :confidential, project: project, author: author, assignees: [assignee])
+        issue_4 = create(:issue, project: project)
+        # Todos not to be deleted
+        create(:todo, user: guest, target: issue_1, project: project)
+        create(:todo, user: assignee, target: issue_1, project: project)
+        create(:todo, user: project_member, target: issue_2, project: project)
+        create(:todo, user: author, target: issue_3, project: project)
+        create(:todo, user: user, target: issue_4, project: project)
+        create(:todo, user: user, project: project)
+        # Todos to be deleted
+        create(:todo, user: user, target: issue_1, project: project)
+        create(:todo, user: guest, target: issue_2, project: project)
+
+        expect { subject }.to change { Todo.count }.from(14).to(10)
       end
     end
   end

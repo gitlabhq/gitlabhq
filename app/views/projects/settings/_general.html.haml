@@ -27,7 +27,7 @@
 
   .row= render_if_exists 'projects/classification_policy_settings', f: f
 
-  .row= render_if_exists 'shared/repository_size_limit_setting', form: f, type: :project
+  = render_if_exists 'shared/repository_size_limit_setting', form: f, type: :project
 
   .form-group.prepend-top-default.append-bottom-20
     .avatar-container.s90

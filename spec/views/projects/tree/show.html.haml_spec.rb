@@ -7,6 +7,8 @@ describe 'projects/tree/show' do
   let(:repository) { project.repository }
 
   before do
+    stub_feature_flags(vue_file_list: false)
+
     assign(:project, project)
     assign(:repository, repository)
     assign(:lfs_blob_ids, [])

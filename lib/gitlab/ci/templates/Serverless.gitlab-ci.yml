@@ -8,25 +8,13 @@ stages:
   - deploy
 
 .serverless:build:image:
-  variables:
-    DOCKERFILE: "Dockerfile"
   stage: build
-  image:
-    name: gcr.io/kaniko-project/executor:debug
-    entrypoint: [""]
-  only:
-    refs:
-      - master
-  script:
-    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
-    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/$DOCKERFILE --destination $CI_REGISTRY_IMAGE
+  image: registry.gitlab.com/gitlab-org/gitlabktl:latest
+  script: /usr/bin/gitlabktl app build
 
 .serverless:deploy:image:
   stage: deploy
-  image: gcr.io/triggermesh/tm@sha256:e3ee74db94d215bd297738d93577481f3e4db38013326c90d57f873df7ab41d5
-  only:
-    refs:
-      - master
+  image: gcr.io/triggermesh/tm@sha256:3cfdd470a66b741004fb02354319d79f1598c70117ce79978d2e07e192bfb336 # v0.0.11
   environment: development
   script:
     - echo "$CI_REGISTRY_IMAGE"

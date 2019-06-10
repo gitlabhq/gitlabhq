@@ -30,8 +30,8 @@ module Emails
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
-    def closed_issue_email(recipient_id, issue_id, updated_by_user_id, reason = nil)
-      setup_issue_mail(issue_id, recipient_id)
+    def closed_issue_email(recipient_id, issue_id, updated_by_user_id, reason: nil, closed_via: nil)
+      setup_issue_mail(issue_id, recipient_id, closed_via: closed_via)
 
       @updated_by = User.find(updated_by_user_id)
       mail_answer_thread(@issue, issue_thread_options(updated_by_user_id, recipient_id, reason))
@@ -83,7 +83,7 @@ module Emails
       @project = Project.find(project_id)
       @results = results
 
-      mail(to: @user.notification_email, subject: subject('Imported issues')) do |format|
+      mail(to: recipient(@user.id, @project.group), subject: subject('Imported issues')) do |format|
         format.html { render layout: 'mailer' }
         format.text { render layout: 'mailer' }
       end
@@ -91,10 +91,11 @@ module Emails
 
     private
 
-    def setup_issue_mail(issue_id, recipient_id)
+    def setup_issue_mail(issue_id, recipient_id, closed_via: nil)
       @issue = Issue.find(issue_id)
       @project = @issue.project
       @target_url = project_issue_url(@project, @issue)
+      @closed_via = closed_via
 
       @sent_notification = SentNotification.record(@issue, recipient_id, reply_key)
     end
@@ -102,7 +103,7 @@ module Emails
     def issue_thread_options(sender_id, recipient_id, reason)
       {
         from: sender(sender_id),
-        to: recipient(recipient_id),
+        to: recipient(recipient_id, @project.group),
         subject: subject("#{@issue.title} (##{@issue.iid})"),
         'X-GitLab-NotificationReason' => reason
       }

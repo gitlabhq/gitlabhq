@@ -123,9 +123,9 @@ describe PushEvent do
     end
   end
 
-  describe '#push?' do
+  describe '#push_action?' do
     it 'returns true' do
-      expect(event).to be_push
+      expect(event).to be_push_action
     end
   end
 

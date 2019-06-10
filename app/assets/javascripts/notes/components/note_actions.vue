@@ -135,7 +135,7 @@ export default {
         @click="onResolve"
       >
         <template v-if="!isResolving">
-          <icon name="check-circle" />
+          <icon :name="isResolved ? 'check-circle-filled' : 'check-circle'" />
         </template>
         <gl-loading-icon v-else inline />
       </button>
@@ -147,13 +147,11 @@ export default {
         class="note-action-button note-emoji-button js-add-award js-note-emoji"
         href="#"
         title="Add reaction"
+        data-position="right"
       >
-        <icon
-          css-classes="link-highlight award-control-icon-neutral"
-          name="emoji_slightly_smiling_face"
-        />
-        <icon css-classes="link-highlight award-control-icon-positive" name="emoji_smiley" />
-        <icon css-classes="link-highlight award-control-icon-super-positive" name="emoji_smiley" />
+        <icon css-classes="link-highlight award-control-icon-neutral" name="slight-smile" />
+        <icon css-classes="link-highlight award-control-icon-positive" name="smiley" />
+        <icon css-classes="link-highlight award-control-icon-super-positive" name="smiley" />
       </a>
     </div>
     <reply-button
@@ -197,7 +195,7 @@ export default {
       </button>
       <ul class="dropdown-menu more-actions-dropdown dropdown-open-left">
         <li v-if="canReportAsAbuse">
-          <a :href="reportAbusePath">{{ __('Report abuse to GitLab') }}</a>
+          <a :href="reportAbusePath">{{ __('Report abuse to admin') }}</a>
         </li>
         <li v-if="noteUrl">
           <button

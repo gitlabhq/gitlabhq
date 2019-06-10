@@ -10,15 +10,17 @@
       .container.navless-container
         .content
           = render "layouts/flash"
-          .row.append-bottom-15
-            .col-sm-7.brand-holder
-              %h1
+          .row.mt-3
+            .col-sm-12
+              %h1.mb-3.font-weight-normal
                 = brand_title
+          .row.mb-3
+            .col-sm-7.order-12.order-sm-1.brand-holder
               = brand_image
               - if current_appearance&.description?
                 = brand_text
               - else
-                %h3
+                %h3.mt-sm-0
                   = _('Open source software to collaborate on code')
 
                 %p
@@ -26,7 +28,10 @@
 
               - if Gitlab::CurrentSettings.sign_in_text.present?
                 = markdown_field(Gitlab::CurrentSettings.current_application_settings, :sign_in_text)
-            .col-sm-5.new-session-forms-container
+
+              = render_if_exists 'layouts/devise_help_text'
+
+            .col-sm-5.order-1.order-sm-12.new-session-forms-container
               = yield
 
       %hr.footer-fixed

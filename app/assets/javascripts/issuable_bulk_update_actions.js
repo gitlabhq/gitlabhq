@@ -4,6 +4,7 @@ import $ from 'jquery';
 import _ from 'underscore';
 import axios from './lib/utils/axios_utils';
 import Flash from './flash';
+import { __ } from './locale';
 
 export default {
   init({ container, form, issues, prefixId } = {}) {
@@ -32,7 +33,7 @@ export default {
 
   onFormSubmitFailure() {
     this.form.find('[type="submit"]').enable();
-    return new Flash('Issue update failed');
+    return new Flash(__('Issue update failed'));
   },
 
   getSelectedIssues() {

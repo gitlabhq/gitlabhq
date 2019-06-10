@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import component from '~/jobs/components/stages_dropdown.vue';
-import { trimText } from 'spec/helpers/vue_component_helper';
+import { trimText } from 'spec/helpers/text_helper';
 import mountComponent from '../../helpers/vue_mount_component_helper';
 
 describe('Stages Dropdown', () => {
@@ -9,6 +9,7 @@ describe('Stages Dropdown', () => {
 
   const mockPipelineData = {
     id: 28029444,
+    iid: 123,
     details: {
       status: {
         details_path: '/gitlab-org/gitlab-ce/pipelines/28029444',
@@ -77,8 +78,8 @@ describe('Stages Dropdown', () => {
       expect(vm.$el.querySelector('.dropdown .js-selected-stage').textContent).toContain('deploy');
     });
 
-    it(`renders the pipeline info text like "Pipeline #123 for source_branch"`, () => {
-      const expected = `Pipeline #${pipeline.id} for ${pipeline.ref.name}`;
+    it(`renders the pipeline info text like "Pipeline #123 (#12) for source_branch"`, () => {
+      const expected = `Pipeline #${pipeline.id} (#${pipeline.iid}) for ${pipeline.ref.name}`;
       const actual = trimText(vm.$el.querySelector('.js-pipeline-info').innerText);
 
       expect(actual).toBe(expected);
@@ -100,10 +101,10 @@ describe('Stages Dropdown', () => {
       });
     });
 
-    it(`renders the pipeline info text like "Pipeline #123 for !456 with source_branch into target_branch"`, () => {
-      const expected = `Pipeline #${pipeline.id} for !${pipeline.merge_request.iid} with ${
-        pipeline.merge_request.source_branch
-      } into ${pipeline.merge_request.target_branch}`;
+    it(`renders the pipeline info text like "Pipeline #123 (#12) for !456 with source_branch into target_branch"`, () => {
+      const expected = `Pipeline #${pipeline.id} (#${pipeline.iid}) for !${
+        pipeline.merge_request.iid
+      } with ${pipeline.merge_request.source_branch} into ${pipeline.merge_request.target_branch}`;
       const actual = trimText(vm.$el.querySelector('.js-pipeline-info').innerText);
 
       expect(actual).toBe(expected);
@@ -143,10 +144,10 @@ describe('Stages Dropdown', () => {
       });
     });
 
-    it(`renders the pipeline info like "Pipeline #123 for !456 with source_branch"`, () => {
-      const expected = `Pipeline #${pipeline.id} for !${pipeline.merge_request.iid} with ${
-        pipeline.merge_request.source_branch
-      }`;
+    it(`renders the pipeline info like "Pipeline #123 (#12) for !456 with source_branch"`, () => {
+      const expected = `Pipeline #${pipeline.id} (#${pipeline.iid}) for !${
+        pipeline.merge_request.iid
+      } with ${pipeline.merge_request.source_branch}`;
       const actual = trimText(vm.$el.querySelector('.js-pipeline-info').innerText);
 
       expect(actual).toBe(expected);

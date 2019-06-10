@@ -37,6 +37,16 @@ export default {
       type: Number,
       required: true,
     },
+    itemIid: {
+      type: Number,
+      required: false,
+      default: null,
+    },
+    itemIdTooltip: {
+      type: String,
+      required: false,
+      default: '',
+    },
     time: {
       type: String,
       required: true,
@@ -85,7 +95,12 @@ export default {
     <section class="header-main-content">
       <ci-icon-badge :status="status" />
 
-      <strong> {{ itemName }} #{{ itemId }} </strong>
+      <strong v-gl-tooltip :title="itemIdTooltip">
+        {{ itemName }} #{{ itemId }}
+        <template v-if="itemIid"
+          >(#{{ itemIid }})</template
+        >
+      </strong>
 
       <template v-if="shouldRenderTriggeredLabel">
         triggered
@@ -96,9 +111,8 @@ export default {
 
       <timeago-tooltip :time="time" />
 
-      by
-
       <template v-if="user">
+        by
         <gl-link
           v-gl-tooltip
           :href="user.path"

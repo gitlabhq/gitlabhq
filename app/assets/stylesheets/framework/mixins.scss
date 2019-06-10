@@ -218,16 +218,22 @@
   }
 }
 
-@mixin build-trace-top-bar($height) {
+// Used in EE for Web Terminal
+@mixin build-trace-bar($height) {
   height: $height;
   min-height: $height;
   background: $gray-light;
   border: 1px solid $border-color;
   color: $gl-text-color;
+  padding: $grid-size;
+}
+
+@mixin build-trace-top-bar($height) {
+  @include build-trace-bar($height);
+
   position: -webkit-sticky;
   position: sticky;
   top: $header-height;
-  padding: $grid-size;
 
   .with-performance-bar & {
     top: $header-height + $performance-bar-height;
@@ -325,8 +331,8 @@
   line-height: 1;
   padding: 0;
   min-width: 16px;
-  color: $gray-darkest;
-  fill: $gray-darkest;
+  color: $gray-600;
+  fill: $gray-600;
 
   .fa {
     position: relative;
@@ -375,4 +381,18 @@
       opacity: 1;
     }
   }
+}
+
+/*
+* Mixin that handles the size and right margin of avatars.
+*/
+@mixin avatar-size($size, $margin-right) {
+  width: $size;
+  height: $size;
+  margin-right: $margin-right;
+}
+
+@mixin code-icon-size() {
+  width: $gl-font-size * $code-line-height * 0.9;
+  height: $gl-font-size * $code-line-height * 0.9;
 }

@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     saveButton: variableListEl.querySelector('.js-ci-variables-save-button'),
     errorBox: variableListEl.querySelector('.js-ci-variable-error-box'),
     saveEndpoint: variableListEl.dataset.saveEndpoint,
+    maskableRegex: variableListEl.dataset.maskableRegex,
   });
 
   // hide extra auto devops settings based checkbox state

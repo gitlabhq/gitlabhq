@@ -99,6 +99,7 @@ The repository will push soon. To force a push, click the appropriate button.
 ## Pulling from a remote repository **[STARTER]**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/51) in GitLab Enterprise Edition 8.2.
+> [Added Git LFS support](https://gitlab.com/gitlab-org/gitlab-ee/issues/10871) in [GitLab Starter](https://about.gitlab.com/pricing/) 11.11.
 
 You can set up a repository to automatically have its branches, tags, and commits updated from an
 upstream repository.
@@ -282,10 +283,10 @@ project mirroring again by [Forcing an update](#forcing-an-update-core).
 [GitLab Starter](https://about.gitlab.com/pricing/) 10.3.
 
 Pull mirroring uses polling to detect new branches and commits added upstream, often minutes
-afterwards. If you notify GitLab by [API](https://docs.gitlab.com/ee/api/projects.html#start-the-pull-mirroring-process-for-a-project),
+afterwards. If you notify GitLab by [API](https://docs.gitlab.com/ee/api/projects.html#start-the-pull-mirroring-process-for-a-project-starter),
 updates will be pulled immediately.
 
-For more information, see [Start the pull mirroring process for a Project](https://docs.gitlab.com/ee/api/projects.html#start-the-pull-mirroring-process-for-a-project).
+For more information, see [Start the pull mirroring process for a Project](https://docs.gitlab.com/ee/api/projects.html#start-the-pull-mirroring-process-for-a-project-starter).
 
 ## Forcing an update **[CORE]**
 

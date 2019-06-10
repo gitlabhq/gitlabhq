@@ -151,8 +151,7 @@
     outline: 0;
 
     .award-control-icon svg {
-      background: $award-emoji-positive-add-bg;
-      fill: $award-emoji-positive-add-lines;
+      fill: $blue-500;
     }
 
     .award-control-icon-neutral {
@@ -233,10 +232,7 @@
       height: $default-icon-size;
       width: $default-icon-size;
       border-radius: 50%;
-    }
-
-    path {
-      fill: $border-gray-normal;
+      fill: $gray-700;
     }
   }
 

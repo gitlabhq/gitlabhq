@@ -4,7 +4,6 @@ module Ci
   class BuildRunnerPresenter < SimpleDelegator
     include Gitlab::Utils::StrongMemoize
 
-    DEFAULT_GIT_DEPTH_MERGE_REQUEST = 10
     RUNNER_REMOTE_TAG_PREFIX = 'refs/tags/'.freeze
     RUNNER_REMOTE_BRANCH_PREFIX = 'refs/remotes/origin/'.freeze
 
@@ -26,20 +25,20 @@ module Ci
     end
 
     def git_depth
-      strong_memoize(:git_depth) do
-        git_depth = variables&.find { |variable| variable[:key] == 'GIT_DEPTH' }&.dig(:value)
-        git_depth ||= DEFAULT_GIT_DEPTH_MERGE_REQUEST if merge_request_ref?
-        git_depth.to_i
-      end
+      if git_depth_variable
+        git_depth_variable[:value]
+      else
+        project.default_git_depth
+      end.to_i
     end
 
     def refspecs
       specs = []
+      specs << refspec_for_merge_request_ref if merge_request_ref?
 
       if git_depth > 0
         specs << refspec_for_branch(ref) if branch? || legacy_detached_merge_request_pipeline?
         specs << refspec_for_tag(ref) if tag?
-        specs << refspec_for_merge_request_ref if merge_request_ref?
       else
         specs << refspec_for_branch
         specs << refspec_for_tag
@@ -89,6 +88,12 @@ module Ci
 
     def refspec_for_merge_request_ref
       "+#{ref}:#{ref}"
+    end
+
+    def git_depth_variable
+      strong_memoize(:git_depth_variable) do
+        variables&.find { |variable| variable[:key] == 'GIT_DEPTH' }
+      end
     end
   end
 end

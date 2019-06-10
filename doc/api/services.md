@@ -754,6 +754,7 @@ Parameters:
 | `recipients` | string | yes | Comma-separated list of recipient email addresses |
 | `add_pusher` | boolean | no | Add pusher to recipients list |
 | `notify_only_broken_pipelines` | boolean | no | Notify only broken pipelines |
+| `notify_only_default_branch` | boolean | no | Send notifications only for the default branch ([introduced in GitLab 12.0](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/28271)) |
 
 ### Delete Pipeline-Emails service
 
@@ -1098,6 +1099,75 @@ Get JetBrains TeamCity CI service settings for a project.
 
 ```
 GET /projects/:id/services/teamcity
+```
+
+## Jenkins CI **[STARTER]**
+
+A continuous integration and build server
+
+### Create/Edit Jenkins CI service
+
+Set Jenkins CI service for a project.
+
+```
+PUT /projects/:id/services/jenkins
+```
+
+Parameters:
+
+- `jenkins_url` (**required**) - Jenkins URL like http://jenkins.example.com
+- `project_name` (**required**) - The URL-friendly project name. Example: my_project_name
+- `username` (optional) - A user with access to the Jenkins server, if applicable
+- `password` (optional) - The password of the user
+
+### Delete Jenkins CI service
+
+Delete Jenkins CI service for a project.
+
+```
+DELETE /projects/:id/services/jenkins
+```
+
+### Get Jenkins CI service settings
+
+Get Jenkins CI service settings for a project.
+
+```
+GET /projects/:id/services/jenkins
+```
+
+## Jenkins CI (Deprecated) Service
+
+A continuous integration and build server
+
+### Create/Edit Jenkins CI (Deprecated) service
+
+Set Jenkins CI (Deprecated) service for a project.
+
+```
+PUT /projects/:id/services/jenkins-deprecated
+```
+
+Parameters:
+
+- `project_url` (**required**) - Jenkins project URL like http://jenkins.example.com/job/my-project/
+- `multiproject_enabled` (optional) - Multi-project mode is configured in Jenkins GitLab Hook plugin
+- `pass_unstable` (optional) - Unstable builds will be treated as passing
+
+### Delete Jenkins CI (Deprecated) service
+
+Delete Jenkins CI (Deprecated) service for a project.
+
+```
+DELETE /projects/:id/services/jenkins-deprecated
+```
+
+### Get Jenkins CI (Deprecated) service settings
+
+Get Jenkins CI (Deprecated) service settings for a project.
+
+```
+GET /projects/:id/services/jenkins-deprecated
 ```
 
 [jira-doc]: ../user/project/integrations/jira.md

@@ -206,7 +206,7 @@ module API
           delete_note(noteable, params[:note_id])
         end
 
-        if Noteable::RESOLVABLE_TYPES.include?(noteable_type.to_s)
+        if Noteable.resolvable_types.include?(noteable_type.to_s)
           desc "Resolve/unresolve an existing #{noteable_type.to_s.downcase} discussion" do
             success Entities::Discussion
           end

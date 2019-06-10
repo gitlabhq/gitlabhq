@@ -20,7 +20,7 @@
     # want coverage results.
     - julia -e 'using Pkg; Pkg.clone(pwd()); Pkg.build("MyPackage"); Pkg.test("MyPackage"; coverage = true)'
     # Comment out below if you do not want coverage results.
-    - julia -e 'using Pkg; Pkg.add("Coverage"); 
+    - julia -e 'using Pkg; Pkg.add("Coverage");
       import MyPackage; cd(joinpath(dirname(pathof(MyPackage)), ".."));
       using Coverage; cl, tl = get_summary(process_folder());
       println("(", cl/tl*100, "%) covered")'
@@ -55,17 +55,16 @@ pages:
   image: julia:0.7
   stage: deploy
   script:
-    - apt-get update -qq && apt-get install -y git # needed by Documenter
-    - julia -e 'using Pkg; Pkg.clone(pwd()); Pkg.build("MyPackage");' # rebuild Julia (can be put somewhere else I'm sure
-    - julia -e 'using Pkg; import MyPackage; Pkg.add("Documenter")' # install Documenter
-    - julia --color=yes docs/make.jl # make documentation
-    - mv docs/build public # move to the directory picked up by Gitlab pages
+    - apt-get update -qq && apt-get install -y git  # needed by Documenter
+    - julia -e 'using Pkg; Pkg.clone(pwd()); Pkg.build("MyPackage");'  # rebuild Julia (can be put somewhere else I'm sure
+    - julia -e 'using Pkg; import MyPackage; Pkg.add("Documenter")'  # install Documenter
+    - julia --color=yes docs/make.jl  # make documentation
+    - mv docs/build public  # move to the directory picked up by Gitlab pages
   artifacts:
     paths:
       - public
   only:
-  - master
-
+    - master
 
 # WARNING: This template is using the `julia` images from [Docker
 # Hub][3]. One can use custom Julia images and/or the official ones found

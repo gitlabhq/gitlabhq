@@ -123,7 +123,7 @@ You can live preview changes submitted to a new branch with
 [Review Apps](../../../ci/review_apps/index.md).
 
 With [GitLab Starter](https://about.gitlab.com/pricing/), you can also request
-[approval](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html) from your managers.
+[approval](../merge_requests/merge_request_approvals.md) from your managers.
 
 To create, delete, and view [branches](branches/index.md) via GitLab's UI:
 
@@ -154,7 +154,7 @@ Via command line, you can commit multiple times before pushing.
   you will trigger a pipeline per push, not per commit.
   - **Skip pipelines:**
   You can add to you commit message the keyword
-  [`[ci skip]`](../../../ci/yaml/README.html#skipping-jobs)
+  [`[ci skip]`](../../../ci/yaml/README.md#skipping-jobs)
   and GitLab CI will skip that pipeline.
   - **Cross-link issues and merge requests:**
   [Cross-linking](../issues/crosslinking_issues.md#from-commit-messages)
@@ -173,11 +173,15 @@ Via command line, you can commit multiple times before pushing.
 
 ## Repository size
 
-On GitLab.com, your [repository size limit is 10GB](../../gitlab_com/index.md#repository-size-limit)
-(including LFS). For other instances, the repository size is limited by your
-system administrators.
+A project's repository size is reported on the project's **Details** page. The reported size is
+updated every 15 minutes at most, so may not reflect recent activity.
 
-You can also [reduce a repository size using Git](reducing_the_repo_size_using_git.md).
+The repository size for:
+
+- GitLab.com [is set by GitLab](../../gitlab_com/index.md#repository-size-limit).
+- Self-managed instances is set by your GitLab administrators.
+
+You can [reduce a repository's size using Git](reducing_the_repo_size_using_git.md).
 
 ## Contributors
 
@@ -222,7 +226,7 @@ Find it under your project's **Repository > Compare**.
 
 ## Locked files **[PREMIUM]**
 
-Use [File Locking](https://docs.gitlab.com/ee/user/project/file_lock.html) to
+Use [File Locking](../file_lock.md) to
 lock your files to prevent any conflicting changes.
 
 ## Repository's API

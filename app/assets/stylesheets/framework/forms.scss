@@ -27,8 +27,14 @@ input[type='text'].danger {
 }
 
 label {
+  font-weight: $gl-font-weight-bold;
+
   &.inline-label {
     margin: 0;
+  }
+
+  &.form-check-label {
+    font-weight: $gl-font-weight-normal;
   }
 
   &.label-bold {
@@ -39,14 +45,6 @@ label {
 .label-wrapper {
   display: block;
   margin: 0;
-}
-
-.form-label {
-  @extend label;
-}
-
-.form-control-label {
-  @extend .col-md-2;
 }
 
 .inline-input-group {
@@ -81,44 +79,14 @@ label {
   margin-left: 0;
   margin-right: 0;
 
-  .form-control-label {
-    font-weight: $gl-font-weight-bold;
-    padding-top: 4px;
-  }
-
   .form-control {
     height: 29px;
     background: $white-light;
     font-family: $monospace-font;
   }
 
-  .input-group-prepend .btn,
-  .input-group-append .btn {
-    padding: 3px $gl-btn-padding;
-    background-color: $gray-light;
-    border: 1px solid $border-color;
-  }
-
-  .text-block {
-    line-height: 0.8;
-    padding-top: 9px;
-
-    code {
-      line-height: 1.8;
-    }
-
-    img {
-      margin-right: $gl-padding;
-    }
-  }
-
   @include media-breakpoint-down(xs) {
     padding: 0 $gl-padding;
-
-    .form-control-label,
-    .text-block {
-      padding-left: 0;
-    }
   }
 }
 
@@ -137,19 +105,6 @@ label {
     @include media-breakpoint-up(md) {
       width: $input-short-md-width;
     }
-  }
-}
-
-.select-wrapper {
-  position: relative;
-
-  .fa-chevron-down {
-    position: absolute;
-    font-size: 10px;
-    right: 10px;
-    top: 12px;
-    color: $gray-darkest;
-    pointer-events: none;
   }
 }
 
@@ -174,12 +129,6 @@ label {
 .wiki-content {
   margin-top: 35px;
 }
-
-.form-group .form-control-label,
-.form-group .form-control-label-full-width {
-  font-weight: $gl-font-weight-normal;
-}
-
 
 .form-control::placeholder {
   color: $gl-text-color-tertiary;
@@ -224,7 +173,8 @@ label {
     border: 1px solid $green-600;
 
     &:focus {
-      box-shadow: 0 0 0 1px $green-600 inset, 0 1px 1px $gl-field-focus-shadow inset, 0 0 4px 0 $green-600;
+      box-shadow: 0 0 0 1px $green-600 inset, 0 1px 1px $gl-field-focus-shadow inset,
+        0 0 4px 0 $green-600;
       border: 0 none;
     }
   }
@@ -233,7 +183,8 @@ label {
     border: 1px solid $red-500;
 
     &:focus {
-      box-shadow: 0 0 0 1px $red-500 inset, 0 1px 1px $gl-field-focus-shadow inset, 0 0 4px 0 $gl-field-focus-shadow-error;
+      box-shadow: 0 0 0 1px $red-500 inset, 0 1px 1px $gl-field-focus-shadow inset,
+        0 0 4px 0 $gl-field-focus-shadow-error;
       border: 0 none;
     }
   }
@@ -259,16 +210,26 @@ label {
   }
 }
 
-.input-icon-wrapper {
+.input-icon-wrapper,
+.select-wrapper {
   position: relative;
+}
 
-  .input-icon-right {
-    position: absolute;
-    right: 0.8em;
-    top: 50%;
-    transform: translateY(-50%);
-    color: $gray-600;
-  }
+.select-wrapper > .fa-chevron-down {
+  position: absolute;
+  font-size: 10px;
+  right: 10px;
+  top: 12px;
+  color: $gray-darkest;
+  pointer-events: none;
+}
+
+.input-icon-wrapper > .input-icon-right {
+  position: absolute;
+  right: 0.8em;
+  top: 50%;
+  transform: translateY(-50%);
+  color: $gray-600;
 }
 
 .input-md {
@@ -279,4 +240,22 @@ label {
 .input-lg {
   max-width: $input-lg-width;
   width: 100%;
+}
+
+.input-group-text {
+  max-height: $input-height;
+}
+
+.gl-form-checkbox {
+  align-items: baseline;
+
+  &.form-check-inline .form-check-input {
+    align-self: flex-start;
+    margin-right: $gl-padding-8;
+    height: 1.5 * $gl-font-size;
+  }
+
+  .help-text {
+    margin-bottom: 0;
+  }
 }

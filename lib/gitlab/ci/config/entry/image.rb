@@ -24,7 +24,7 @@ module Gitlab
           end
 
           entry :ports, Entry::Ports,
-            description: 'Ports used expose the image'
+            description: 'Ports used to expose the image'
 
           attributes :ports
 

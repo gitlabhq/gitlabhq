@@ -1,9 +1,6 @@
 import $ from 'jquery';
 import '~/lib/utils/text_utility';
 import AbuseReports from '~/pages/admin/abuse_reports/abuse_reports';
-import { setTestTimeout } from 'helpers/timeout';
-
-setTestTimeout(500);
 
 describe('Abuse Reports', () => {
   const FIXTURE = 'abuse_reports/abuse_reports_list.html';

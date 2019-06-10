@@ -3,7 +3,7 @@ import * as jqueryMatchers from 'custom-jquery-matchers';
 import Translate from '~/vue_shared/translate';
 import axios from '~/lib/utils/axios_utils';
 import { initializeTestTimeout } from './helpers/timeout';
-import { getJSONFixture, loadHTMLFixture, setHTMLFixture } from './helpers/fixtures';
+import { loadHTMLFixture, setHTMLFixture } from './helpers/fixtures';
 
 process.on('unhandledRejection', global.promiseRejectionHandler);
 
@@ -15,7 +15,7 @@ afterEach(() =>
   }),
 );
 
-initializeTestTimeout(300);
+initializeTestTimeout(process.env.CI ? 5000 : 500);
 
 // fail tests for unmocked requests
 beforeEach(done => {
@@ -46,9 +46,12 @@ Object.defineProperty(global.Element.prototype, 'innerText', {
 // convenience wrapper for migration from Karma
 Object.assign(global, {
   loadFixtures: loadHTMLFixture,
-  loadJSONFixtures: getJSONFixture,
-  preloadFixtures() {},
   setFixtures: setHTMLFixture,
+
+  // The following functions fill the fixtures cache in Karma.
+  // This is not necessary in Jest because we make no Ajax request.
+  loadJSONFixtures() {},
+  preloadFixtures() {},
 });
 
 // custom-jquery-matchers was written for an old Jest version, we need to make it compatible

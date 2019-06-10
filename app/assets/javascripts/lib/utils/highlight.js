@@ -27,14 +27,14 @@ export default function highlight(string, match = '', matchPrefix = '<b>', match
 
   const sanitizedValue = sanitize(string.toString(), { allowedTags: [] });
 
-  // occurences is an array of character indices that should be
+  // occurrences is an array of character indices that should be
   // highlighted in the original string, i.e. [3, 4, 5, 7]
-  const occurences = fuzzaldrinPlus.match(sanitizedValue, match.toString());
+  const occurrences = fuzzaldrinPlus.match(sanitizedValue, match.toString());
 
   return sanitizedValue
     .split('')
     .map((character, i) => {
-      if (_.contains(occurences, i)) {
+      if (_.contains(occurrences, i)) {
         return `${matchPrefix}${character}${matchSuffix}`;
       }
 

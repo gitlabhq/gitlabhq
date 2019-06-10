@@ -51,10 +51,10 @@ The curriculum is composed of GitLab videos, screencasts, presentations, project
 
 #### 1.5. Migrating from other Source Control
 
-1. [Migrating from BitBucket/Stash](https://docs.gitlab.com/ee/user/project/import/bitbucket.html)
-1. [Migrating from GitHub](https://docs.gitlab.com/ee/user/project/import/github.html)
-1. [Migrating from SVN](https://docs.gitlab.com/ee/user/project/import/svn.html)
-1. [Migrating from Fogbugz](https://docs.gitlab.com/ee/user/project/import/fogbugz.html)
+1. [Migrating from BitBucket/Stash](../user/project/import/bitbucket.md)
+1. [Migrating from GitHub](../user/project/import/github.md)
+1. [Migrating from SVN](../user/project/import/svn.md)
+1. [Migrating from Fogbugz](../user/project/import/fogbugz.md)
 
 #### 1.6. GitLab Inc.
 
@@ -92,7 +92,7 @@ The curriculum is composed of GitLab videos, screencasts, presentations, project
 
 1. [Using any Static Site Generator with GitLab Pages](https://about.gitlab.com/2016/06/17/ssg-overview-gitlab-pages-part-3-examples-ci/)
 1. [Securing GitLab Pages with SSL](https://about.gitlab.com/2016/06/24/secure-gitlab-pages-with-startssl/)
-1. [GitLab Pages Documentation](https://docs.gitlab.com/ce/user/project/pages/)
+1. [GitLab Pages Documentation](../user/project/pages/index.md)
 
 #### 2.2. GitLab Issues
 
@@ -131,7 +131,7 @@ The curriculum is composed of GitLab videos, screencasts, presentations, project
 1. [GitLab Flow vs Forking in GitLab - Video](https://www.youtube.com/watch?v=UGotqAUACZA)
 1. [GitLab Flow Overview](https://about.gitlab.com/2014/09/29/gitlab-flow/)
 1. [Always Start with an Issue](https://about.gitlab.com/2016/03/03/start-with-an-issue/)
-1. [GitLab Flow Documentation](https://docs.gitlab.com/ee/workflow/gitlab_flow.html)
+1. [GitLab Flow Documentation](../workflow/gitlab_flow.md)
 
 #### 2.5. GitLab Comparisons
 
@@ -191,10 +191,10 @@ The curriculum is composed of GitLab videos, screencasts, presentations, project
 #### 3.9. Integrations
 
 1. [How to Integrate JIRA and Jenkins with GitLab - Video](https://gitlabmeetings.webex.com/gitlabmeetings/ldr.php?RCID=44b548147a67ab4d8a62274047146415)
-1. [How to Integrate Jira with GitLab](https://docs.gitlab.com/ce/user/project/integrations/jira.html)
-1. [How to Integrate Jenkins with GitLab](https://docs.gitlab.com/ee/integration/jenkins.html)
-1. [How to Integrate Bamboo with GitLab](https://docs.gitlab.com/ce/user/project/integrations/bamboo.html)
-1. [How to Integrate Slack with GitLab](https://docs.gitlab.com/ce/user/project/integrations/slack.html)
+1. [How to Integrate Jira with GitLab](../user/project/integrations/jira.md)
+1. [How to Integrate Jenkins with GitLab](../integration/jenkins.md)
+1. [How to Integrate Bamboo with GitLab](../user/project/integrations/bamboo.md)
+1. [How to Integrate Slack with GitLab](../user/project/integrations/slack.md)
 1. [How to Integrate Convox with GitLab](https://about.gitlab.com/2016/06/09/continuous-delivery-with-gitlab-and-convox/)
 1. [Getting Started with GitLab and Shippable CI](https://about.gitlab.com/2016/05/05/getting-started-gitlab-and-shippable/)
 

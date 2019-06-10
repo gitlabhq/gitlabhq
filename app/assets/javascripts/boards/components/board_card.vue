@@ -66,7 +66,7 @@ export default {
           eventHub.$emit('clearDetailIssue');
         } else {
           eventHub.$emit('newDetailIssue', this.issue);
-          boardsStore.detail.list = this.list;
+          boardsStore.setListDetail(this.list);
         }
       }
     },

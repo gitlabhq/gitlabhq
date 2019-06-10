@@ -10,7 +10,7 @@ module Resolvers
       end
     end
 
-    def self.resolver_complexity(args)
+    def self.resolver_complexity(args, child_complexity:)
       complexity = 1
       complexity += 1 if args[:sort]
       complexity += 5 if args[:search]

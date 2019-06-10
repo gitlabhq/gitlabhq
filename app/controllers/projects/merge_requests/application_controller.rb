@@ -7,11 +7,15 @@ class Projects::MergeRequests::ApplicationController < Projects::ApplicationCont
 
   private
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def merge_request
-    @issuable = @merge_request ||= @project.merge_requests.includes(author: :status).find_by!(iid: params[:id])
+    @issuable =
+      @merge_request ||=
+        merge_request_includes(@project.merge_requests).find_by_iid!(params[:id])
   end
-  # rubocop: enable CodeReuse/ActiveRecord
+
+  def merge_request_includes(association)
+    association.includes(:metrics, :assignees, author: :status) # rubocop:disable CodeReuse/ActiveRecord
+  end
 
   def merge_request_params
     params.require(:merge_request).permit(merge_request_params_attributes)

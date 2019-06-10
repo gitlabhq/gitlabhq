@@ -67,7 +67,7 @@ sudo -u git -H bundle exec rake gettext:pack RAILS_ENV=production
 sudo -u git -H bundle exec rake gettext:po_to_json RAILS_ENV=production
 
 # Clean up assets and cache
-sudo -u git -H bundle exec rake yarn:install gitlab:assets:clean gitlab:assets:compile cache:clear RAILS_ENV=production NODE_ENV=production
+sudo -u git -H bundle exec rake yarn:install gitlab:assets:clean gitlab:assets:compile cache:clear RAILS_ENV=production NODE_ENV=production NODE_OPTIONS="--max_old_space_size=4096"
 ```
 
 ### 4. Update gitlab-workhorse to the corresponding version
@@ -108,7 +108,7 @@ sudo -u git -H make
 
 ### 8. Install/Update `gitlab-elasticsearch-indexer` (optional) **[STARTER ONLY]**
 
-If you're interested in using GitLab's new [elasticsearch repository indexer](https://docs.gitlab.com/ee/integration/elasticsearch.html#elasticsearch-repository-indexer-beta) (currently in beta)
+If you're interested in using GitLab's new [elasticsearch repository indexer](../integration/elasticsearch.md#elasticsearch-repository-indexer-beta) (currently in beta)
 please follow the instructions on the document linked above and enable the
 indexer usage in the GitLab admin settings.
 

@@ -98,6 +98,7 @@ class GenerateMissingRoutes < ActiveRecord::Migration[4.2]
 
   class Namespace < ActiveRecord::Base
     self.table_name = 'namespaces'
+    self.inheritance_column = :_type_disabled
 
     include EachBatch
     include GenerateMissingRoutes::Routable

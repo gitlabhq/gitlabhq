@@ -1,4 +1,4 @@
-.blank-state-parent-container
+.blank-state-parent-container{ class: ('has-start-trial-container' if has_start_trial?) }
   .section-container.section-welcome{ class: "#{ 'section-admin-welcome' if current_user.admin? }" }
     .container.section-body
       .row
@@ -7,7 +7,12 @@
             Welcome to GitLab
           %p.blank-state-text
             Code, test, and deploy together
-        - if current_user.admin?
-          = render "blank_state_admin_welcome"
-        - else
-          = render "blank_state_welcome"
+        .blank-state-row
+          %div{ class: ('column-large' if has_start_trial?) }
+            - if current_user.admin?
+              = render "blank_state_admin_welcome"
+            - else
+              = render "blank_state_welcome"
+          - if has_start_trial?
+            .column-small
+              = render_if_exists "blank_state_ee_trial"

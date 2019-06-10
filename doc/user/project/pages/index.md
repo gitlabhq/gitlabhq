@@ -1,6 +1,7 @@
 ---
 description: 'Learn how to use GitLab Pages to deploy a static website at no additional cost.'
-last_updated: 2019-03-05
+last_updated: 2019-06-04
+type: index, reference
 ---
 
 # GitLab Pages
@@ -140,7 +141,7 @@ To learn more about configuration options for GitLab Pages, read the following:
 | [Static websites and Pages domains](getting_started_part_one.md) | Understand what is a static website, and how GitLab Pages default domains work. |
 | [Projects and URL structure](getting_started_part_two.md) | Forking projects and creating new ones from scratch, understanding URLs structure and baseurls. |
 | [GitLab CI/CD for GitLab Pages](getting_started_part_four.md) | Understand how to create your own `.gitlab-ci.yml` for your site. |
-| [Exploring GitLab Pages](introduction.md) | Technical aspects, specific configuration options, custom 404 pages, limitations. |
+| [Exploring GitLab Pages](introduction.md) | Requirements, technical aspects, specific GitLab CI's configuration options, custom 404 pages, limitations, FAQ. |
 |---+---|
 | [Custom domains and SSL/TLS Certificates](getting_started_part_three.md) | How to add custom domains and subdomains to your website, configure DNS records and SSL/TLS certificates. |
 | [CloudFlare certificates](https://about.gitlab.com/2017/02/07/setting-up-gitlab-pages-with-cloudflare-certificates/) | Secure your Pages site with CloudFlare certificates. |

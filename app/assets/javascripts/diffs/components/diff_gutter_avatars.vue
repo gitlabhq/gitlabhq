@@ -86,7 +86,6 @@ export default {
         :key="note.id"
         :img-src="note.author.avatar_url"
         :tooltip-text="getTooltipText(note)"
-        :size="19"
         class="diff-comment-avatar js-diff-comment-avatar"
         @click.native="toggleDiscussions"
       />

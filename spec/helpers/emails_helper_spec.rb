@@ -1,6 +1,45 @@
 require 'spec_helper'
 
 describe EmailsHelper do
+  describe 'closure_reason_text' do
+    context 'when given a MergeRequest' do
+      let(:merge_request) { create(:merge_request) }
+      let(:merge_request_presenter) { merge_request.present }
+
+      context "and format is text" do
+        it "returns plain text" do
+          expect(closure_reason_text(merge_request, format: :text)).to eq("via merge request #{merge_request.to_reference} (#{merge_request_presenter.web_url})")
+        end
+      end
+
+      context "and format is HTML" do
+        it "returns HTML" do
+          expect(closure_reason_text(merge_request, format: :html)).to eq("via merge request #{link_to(merge_request.to_reference, merge_request_presenter.web_url)}")
+        end
+      end
+
+      context "and format is unknown" do
+        it "returns plain text" do
+          expect(closure_reason_text(merge_request, format: :text)).to eq("via merge request #{merge_request.to_reference} (#{merge_request_presenter.web_url})")
+        end
+      end
+    end
+
+    context 'when given a String' do
+      let(:closed_via) { "5a0eb6fd7e0f133044378c662fcbbc0d0c16dbfa" }
+
+      it "returns plain text" do
+        expect(closure_reason_text(closed_via)).to eq("via #{closed_via}")
+      end
+    end
+
+    context 'when not given anything' do
+      it "returns empty string" do
+        expect(closure_reason_text(nil)).to eq("")
+      end
+    end
+  end
+
   describe 'sanitize_name' do
     context 'when name contains a valid URL string' do
       it 'returns name with `.` replaced with `_` to prevent mail clients from auto-linking URLs' do

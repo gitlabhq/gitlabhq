@@ -1,4 +1,5 @@
 import { BYTES_IN_KIB } from './constants';
+import { sprintf, __ } from '~/locale';
 
 /**
  * Function that allows a number with an X amount of decimals
@@ -72,13 +73,13 @@ export function bytesToGiB(number) {
  */
 export function numberToHumanSize(size) {
   if (size < BYTES_IN_KIB) {
-    return `${size} bytes`;
+    return sprintf(__('%{size} bytes'), { size });
   } else if (size < BYTES_IN_KIB * BYTES_IN_KIB) {
-    return `${bytesToKiB(size).toFixed(2)} KiB`;
+    return sprintf(__('%{size} KiB'), { size: bytesToKiB(size).toFixed(2) });
   } else if (size < BYTES_IN_KIB * BYTES_IN_KIB * BYTES_IN_KIB) {
-    return `${bytesToMiB(size).toFixed(2)} MiB`;
+    return sprintf(__('%{size} MiB'), { size: bytesToMiB(size).toFixed(2) });
   }
-  return `${bytesToGiB(size).toFixed(2)} GiB`;
+  return sprintf(__('%{size} GiB'), { size: bytesToGiB(size).toFixed(2) });
 }
 
 /**
@@ -99,3 +100,9 @@ export function numberToHumanSize(size) {
  * @returns {Float} The summed value
  */
 export const sum = (a = 0, b = 0) => a + b;
+
+/**
+ * Checks if the provided number is odd
+ * @param {Int} number
+ */
+export const isOdd = (number = 0) => number % 2;

@@ -1,3 +1,7 @@
+---
+type: reference
+---
+
 # Creating and using CI/CD pipelines
 
 > Introduced in GitLab 8.8.
@@ -266,9 +270,6 @@ Clicking on an individual job will show you its job trace, and allow you to:
 - Retry the job.
 - Erase the job trace.
 
-NOTE: **Note:**
-To prevent jobs from being bypassed or run out of order, canceled jobs can only be retried when the whole pipeline they belong to is retried.
-
 ### Seeing the failure reason for jobs
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/17782) in GitLab 10.7.
@@ -329,6 +330,19 @@ GitLab provides API endpoints to:
 - Trigger pipeline runs. For more information, see:
   - [Triggering pipelines through the API](triggers/README.md).
   - [Pipeline triggers API](../api/pipeline_triggers.md).
+
+### Start multiple manual actions in a stage
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/27188) in GitLab 11.11.
+
+Multiple manual actions in a single stage can be started at the same time using the "Play all manual" button.
+Once the user clicks this button, each individual manual action will be triggered and refreshed
+to an updated status.
+
+This functionality is only available:
+
+- For users with at least Developer access.
+- If the the stage contains [manual actions](#manual-actions-from-pipeline-graphs).
 
 ## Security on protected branches
 

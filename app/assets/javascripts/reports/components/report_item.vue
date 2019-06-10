@@ -34,12 +34,22 @@ export default {
       required: false,
       default: false,
     },
+    showReportSectionStatusIcon: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
 };
 </script>
 <template>
   <li :class="{ 'is-dismissed': issue.isDismissed }" class="report-block-list-issue">
-    <issue-status-icon :status="status" :status-icon-size="statusIconSize" class="append-right-5" />
+    <issue-status-icon
+      v-if="showReportSectionStatusIcon"
+      :status="status"
+      :status-icon-size="statusIconSize"
+      class="append-right-5"
+    />
 
     <component :is="component" v-if="component" :issue="issue" :status="status" :is-new="isNew" />
   </li>
