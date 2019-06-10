@@ -2,6 +2,17 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.11.3 (2019-06-10)
+
+### Fixed (5 changes)
+
+- Fix invalid visibility string comparison in project import. !28612
+- Remove a default git depth in Pipelines for merge requests. !28926
+- Fix connection to Tiller error while uninstalling. !29131
+- Fix label click scrolling to top. !29202
+- Make OpenID Connect work without requiring a name. !29312
+
+
 ## 11.11.2 (2019-06-04)
 
 ### Fixed (7 changes)
