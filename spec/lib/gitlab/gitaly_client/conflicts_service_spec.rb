@@ -35,7 +35,7 @@ describe Gitlab::GitalyClient::ConflictsService do
     end
     let(:source_branch) { 'master' }
     let(:target_branch) { 'feature' }
-    let(:commit_message) { 'Solving conflicts' }
+    let(:commit_message) { 'Solving conflicts\n\nTést' }
     let(:resolution) do
       Gitlab::Git::Conflict::Resolution.new(user, files, commit_message)
     end
@@ -47,6 +47,18 @@ describe Gitlab::GitalyClient::ConflictsService do
     it 'sends an RPC request' do
       expect_any_instance_of(Gitaly::ConflictsService::Stub).to receive(:resolve_conflicts)
         .with(kind_of(Enumerator), kind_of(Hash)).and_return(double(resolution_error: ""))
+
+      subject
+    end
+
+    it 'handles commit messages with UTF-8 characters' do
+      allow(::Gitlab::GitalyClient).to receive(:call).and_call_original
+      expect(::Gitlab::GitalyClient).to receive(:call).with(anything, :conflicts_service, :resolve_conflicts, any_args) do |*args|
+        # Force the generation of request messages by iterating through the enumerator
+        args[3].to_a
+
+        double(resolution_error: nil)
+      end
 
       subject
     end
