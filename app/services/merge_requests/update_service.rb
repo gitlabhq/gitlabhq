@@ -43,6 +43,8 @@ module MergeRequests
         create_branch_change_note(merge_request, 'target',
                                   merge_request.previous_changes['target_branch'].first,
                                   merge_request.target_branch)
+
+        cancel_auto_merge(merge_request)
       end
 
       if merge_request.assignees != old_assignees
