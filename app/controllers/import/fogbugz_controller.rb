@@ -11,7 +11,7 @@ class Import::FogbugzController < Import::BaseController
 
   def callback
     begin
-      res = Gitlab::FogbugzImport::Client.new(import_params.symbolize_keys)
+      res = Gitlab::FogbugzImport::Client.new(import_params.to_h.symbolize_keys)
     rescue
       # If the URI is invalid various errors can occur
       return redirect_to new_import_fogbugz_path, alert: _('Could not connect to FogBugz, check your URL')
@@ -26,7 +26,7 @@ class Import::FogbugzController < Import::BaseController
   end
 
   def create_user_map
-    user_map = params[:users]
+    user_map = user_map_params.to_h[:users]
 
     unless user_map.is_a?(Hash) && user_map.all? { |k, v| !v[:name].blank? }
       flash.now[:alert] = _('All users must have a name.')
@@ -97,6 +97,10 @@ class Import::FogbugzController < Import::BaseController
 
   def import_params
     params.permit(:uri, :email, :password)
+  end
+
+  def user_map_params
+    params.permit(users: %w(name email gitlab_user))
   end
 
   def verify_fogbugz_import_enabled
