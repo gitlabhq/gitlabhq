@@ -197,6 +197,18 @@ describe ProjectStatistics do
 
       expect(statistics.storage_size).to eq 9
     end
+
+    it 'works during wiki_size backfill' do
+      statistics.update!(
+        repository_size: 2,
+        wiki_size: nil,
+        lfs_objects_size: 3
+      )
+
+      statistics.reload
+
+      expect(statistics.storage_size).to eq 5
+    end
   end
 
   describe '.increment_statistic' do
