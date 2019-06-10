@@ -565,6 +565,9 @@ msgstr ""
 msgid "Add comment now"
 msgstr ""
 
+msgid "Add email address"
+msgstr ""
+
 msgid "Add header and footer to emails. Please note that color settings will only be applied within the application interface"
 msgstr ""
 
@@ -773,6 +776,9 @@ msgid "All"
 msgstr ""
 
 msgid "All changes are committed"
+msgstr ""
+
+msgid "All email addresses will be used to identify your commits."
 msgstr ""
 
 msgid "All features are enabled for blank projects, from templates, or when importing, but you can disable them afterward in the project settings."
@@ -2798,6 +2804,9 @@ msgstr ""
 msgid "Confirm"
 msgstr ""
 
+msgid "Confirmation email sent to %{email}"
+msgstr ""
+
 msgid "Confirmation required"
 msgstr ""
 
@@ -2904,6 +2913,9 @@ msgid "ContributorsPage|Commits to %{branch_name}, excluding merge commits. Limi
 msgstr ""
 
 msgid "ContributorsPage|Please wait a moment, this page will automatically refresh when ready."
+msgstr ""
+
+msgid "Control emails linked to your account"
 msgstr ""
 
 msgid "Control the display of third party offers."
@@ -5817,6 +5829,9 @@ msgid_plural "Limited to showing %d events at most"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Linked emails (%{email_count})"
+msgstr ""
+
 msgid "LinkedIn"
 msgstr ""
 
@@ -7474,6 +7489,9 @@ msgstr ""
 msgid "Profiles|Click on icon to activate signin with one of the following services"
 msgstr ""
 
+msgid "Profiles|Commit email"
+msgstr ""
+
 msgid "Profiles|Connect"
 msgstr ""
 
@@ -7484,6 +7502,9 @@ msgid "Profiles|Current path: %{path}"
 msgstr ""
 
 msgid "Profiles|Current status"
+msgstr ""
+
+msgid "Profiles|Default notification email"
 msgstr ""
 
 msgid "Profiles|Delete Account"
@@ -7552,6 +7573,9 @@ msgstr ""
 msgid "Profiles|No file chosen"
 msgstr ""
 
+msgid "Profiles|Notification email"
+msgstr ""
+
 msgid "Profiles|Organization"
 msgstr ""
 
@@ -7561,6 +7585,9 @@ msgstr ""
 msgid "Profiles|Position and size your new avatar"
 msgstr ""
 
+msgid "Profiles|Primary email"
+msgstr ""
+
 msgid "Profiles|Private contributions"
 msgstr ""
 
@@ -7568,6 +7595,9 @@ msgid "Profiles|Profile was successfully updated"
 msgstr ""
 
 msgid "Profiles|Public Avatar"
+msgstr ""
+
+msgid "Profiles|Public email"
 msgstr ""
 
 msgid "Profiles|Remove avatar"
@@ -8466,6 +8496,9 @@ msgstr ""
 msgid "Require users to prove ownership of custom domains"
 msgstr ""
 
+msgid "Resend confirmation email"
+msgstr ""
+
 msgid "Resend invite"
 msgstr ""
 
@@ -8868,6 +8901,9 @@ msgid "Selected levels cannot be used by non-admin users for groups, projects or
 msgstr ""
 
 msgid "Selecting a GitLab user will add a link to the GitLab user in the descriptions of issues and comments (e.g. \"By <a href=\"#\">@johnsmith</a>\"). It will also associate and/or assign these issues and comments with the selected user."
+msgstr ""
+
+msgid "Send confirmation email"
 msgstr ""
 
 msgid "Send email"
@@ -10147,6 +10183,9 @@ msgid "There is already a repository with that name on disk"
 msgstr ""
 
 msgid "There was a problem communicating with your device."
+msgstr ""
+
+msgid "There was a problem sending the confirmation email"
 msgstr ""
 
 msgid "There was an error %{message} todo."
@@ -11871,7 +11910,13 @@ msgstr ""
 msgid "YouTube"
 msgstr ""
 
+msgid "Your Commit Email will be used for web based operations, such as edits and merges."
+msgstr ""
+
 msgid "Your Conversational Development Index gives an overview of how you are using GitLab from a feature perspective. View how you compare with other organizations, discover features you are not using, and learn best practices through blog posts and white papers."
+msgstr ""
+
+msgid "Your Default Notification Email will be used for account notifications if a %{openingTag}group-specific email address%{closingTag} is not set."
 msgstr ""
 
 msgid "Your GPG keys (%{count})"
@@ -11883,10 +11928,16 @@ msgstr ""
 msgid "Your Kubernetes cluster information on this page is still editable, but you are advised to disable and reconfigure"
 msgstr ""
 
+msgid "Your Primary Email will be used for avatar detection."
+msgstr ""
+
 msgid "Your Projects (default)"
 msgstr ""
 
 msgid "Your Projects' Activity"
+msgstr ""
+
+msgid "Your Public Email will be displayed on your public profile."
 msgstr ""
 
 msgid "Your SSH keys (%{count})"

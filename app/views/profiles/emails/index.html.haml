@@ -1,4 +1,4 @@
-- page_title "Emails"
+- page_title _('Emails')
 - @content_class = "limit-container-width" unless fluid_layout
 
 .row.prepend-top-default
@@ -6,58 +6,58 @@
     %h4.prepend-top-0
       = page_title
     %p
-      Control emails linked to your account
+      = _('Control emails linked to your account')
   .col-lg-8
     %h4.prepend-top-0
-      Add email address
+      = _('Add email address')
     = form_for 'email', url: profile_emails_path do |f|
       .form-group
-        = f.label :email, class: 'label-bold'
+        = f.label :email, _('Email'), class: 'label-bold'
         = f.text_field :email, class: 'form-control'
       .prepend-top-default
-        = f.submit 'Add email address', class: 'btn btn-success'
+        = f.submit _('Add email address'), class: 'btn btn-success'
     %hr
     %h4.prepend-top-0
-      Linked emails (#{@emails.count + 1})
+      = _('Linked emails (%{email_count})') % { email_count: @emails.count + 1 }
     .account-well.append-bottom-default
       %ul
         %li
-          Your Primary Email will be used for avatar detection.
+          = _('Your Primary Email will be used for avatar detection.')
         %li
-          Your Commit Email will be used for web based operations, such as edits and merges.
+          = _('Your Commit Email will be used for web based operations, such as edits and merges.')
         %li
-          Your Default Notification Email will be used for account notifications if a
-          = link_to 'group-specific email address', profile_notifications_path
-          is not set.
+          - address = profile_notifications_path
+          - notification_message = _('Your Default Notification Email will be used for account notifications if a %{openingTag}group-specific email address%{closingTag} is not set.') % { openingTag: "<a href='#{address}'>".html_safe, closingTag: '</a>'.html_safe}
+          = notification_message.html_safe
         %li
-          Your Public Email will be displayed on your public profile.
+          = _('Your Public Email will be displayed on your public profile.')
         %li
-          All email addresses will be used to identify your commits.
+          = _('All email addresses will be used to identify your commits.')
     %ul.content-list
       %li
         = render partial: 'shared/email_with_badge', locals: { email: @primary_email, verified: current_user.confirmed? }
         %span.float-right
-          %span.badge.badge-success Primary email
+          %span.badge.badge-success= s_('Profiles|Primary email')
           - if @primary_email === current_user.commit_email
-            %span.badge.badge-info Commit email
+            %span.badge.badge-info= s_('Profiles|Commit email')
           - if @primary_email === current_user.public_email
-            %span.badge.badge-info Public email
+            %span.badge.badge-info= s_('Profiles|Public email')
           - if @primary_email === current_user.notification_email
-            %span.badge.badge-info Default notification email
+            %span.badge.badge-info= s_('Profiles|Default notification email')
       - @emails.each do |email|
         %li
           = render partial: 'shared/email_with_badge', locals: { email: email.email, verified: email.confirmed? }
           %span.float-right
             - if email.email === current_user.commit_email
-              %span.badge.badge-info Commit email
+              %span.badge.badge-info= s_('Profiles|Commit email')
             - if email.email === current_user.public_email
-              %span.badge.badge-info Public email
+              %span.badge.badge-info= s_('Profiles|Public email')
             - if email.email === current_user.notification_email
-              %span.badge.badge-info Notification email
+              %span.badge.badge-info= s_('Profiles|Notification email')
             - unless email.confirmed?
-              - confirm_title = "#{email.confirmation_sent_at ? 'Resend' : 'Send'} confirmation email"
+              - confirm_title = "#{email.confirmation_sent_at ? _('Resend confirmation email') : _('Send confirmation email')}"
               = link_to confirm_title, resend_confirmation_instructions_profile_email_path(email), method: :put, class: 'btn btn-sm btn-warning prepend-left-10'
 
-            = link_to profile_email_path(email), data: { confirm: 'Are you sure?'}, method: :delete, class: 'btn btn-sm btn-danger prepend-left-10' do
-              %span.sr-only Remove
+            = link_to profile_email_path(email), data: { confirm: _('Are you sure?')}, method: :delete, class: 'btn btn-sm btn-danger prepend-left-10' do
+              %span.sr-only= _('Remove')
               = icon('trash')
