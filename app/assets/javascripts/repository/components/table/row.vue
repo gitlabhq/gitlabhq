@@ -1,8 +1,12 @@
 <script>
+import { GlBadge } from '@gitlab/ui';
 import { getIconName } from '../../utils/icon';
 import getRefMixin from '../../mixins/get_ref';
 
 export default {
+  components: {
+    GlBadge,
+  },
   mixins: [getRefMixin],
   props: {
     id: {
@@ -22,6 +26,11 @@ export default {
       required: true,
     },
     url: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    lfsOid: {
       type: String,
       required: false,
       default: null,
@@ -67,6 +76,9 @@ export default {
       <component :is="linkComponent" :to="routerLinkTo" :href="url" class="str-truncated">
         {{ fullPath }}
       </component>
+      <gl-badge v-if="lfsOid" variant="default" class="label-lfs ml-1">
+        LFS
+      </gl-badge>
       <template v-if="isSubmodule">
         @ <a href="#" class="commit-sha">{{ shortSha }}</a>
       </template>

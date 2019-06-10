@@ -45,6 +45,7 @@ query getFiles(
             node {
               ...TreeEntry
               webUrl
+              lfsOid
             }
           }
           pageInfo {
