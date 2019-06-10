@@ -11,7 +11,7 @@
     border-radius: 0 0 $border-radius-default $border-radius-default;
     font-family: $monospace-font;
     font-size: $code-font-size;
-    line-height: 19px;
+    line-height: 1.5;
     margin: 0;
     overflow: auto;
     overflow-y: hidden;
@@ -30,7 +30,7 @@
       .line {
         display: block;
         width: 100%;
-        min-height: 19px;
+        min-height: 1.5em;
         padding-left: 10px;
         padding-right: 10px;
         white-space: pre;
@@ -48,7 +48,7 @@
       font-family: $monospace-font;
       display: block;
       font-size: $code-font-size !important;
-      min-height: 19px;
+      min-height: 1.5em;
       white-space: nowrap;
 
       i {
