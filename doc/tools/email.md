@@ -1,5 +1,5 @@
 ---
-type: howto
+type: howto, reference
 ---
 
 # Email from GitLab **[STARTER ONLY]**
