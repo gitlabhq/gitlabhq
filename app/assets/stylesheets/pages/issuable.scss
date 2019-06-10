@@ -682,8 +682,7 @@
   justify-content: center;
   align-items: center;
   margin-top: 0;
-  padding-left: 9px;
-  padding-right: 9px;
+  padding: 0 $gl-padding-8;
 
   @include media-breakpoint-up(sm) {
     display: inline-block;
