@@ -28,7 +28,7 @@
     = link_to project_tree_path(@project, @commit), class: "btn btn-default append-right-10 d-none d-sm-none d-md-inline" do
       #{ _('Browse files') }
     .dropdown.inline
-      %a.btn.btn-default.dropdown-toggle.qa-options-button{ data: { toggle: "dropdown" } }
+      %a.btn.btn-default.dropdown-toggle.qa-options-button.d-md-inline{ data: { toggle: "dropdown" } }
         %span= _('Options')
         = icon('caret-down')
       %ul.dropdown-menu.dropdown-menu-right
