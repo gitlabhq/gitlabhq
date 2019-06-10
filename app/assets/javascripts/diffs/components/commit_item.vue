@@ -91,7 +91,7 @@ export default {
           <icon :size="12" name="ellipsis_h" />
         </button>
 
-        <div class="commiter">
+        <div class="committer">
           <a
             :href="authorUrl"
             :class="authorClass"

@@ -180,6 +180,14 @@
     display: flex;
     align-items: center;
   }
+
+  .committer {
+    color: $gl-text-color-tertiary;
+
+    .commit-author-link {
+      color: $gl-text-color;
+    }
+  }
 }
 
 .commit-actions {
