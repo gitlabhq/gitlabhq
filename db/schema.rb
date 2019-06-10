@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190530154715) do
+ActiveRecord::Schema.define(version: 20190607190856) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -2383,6 +2383,7 @@ ActiveRecord::Schema.define(version: 20190530154715) do
     t.index ["incoming_email_token"], name: "index_users_on_incoming_email_token", using: :btree
     t.index ["name"], name: "index_users_on_name", using: :btree
     t.index ["name"], name: "index_users_on_name_trigram", using: :gin, opclasses: {"name"=>"gin_trgm_ops"}
+    t.index ["public_email"], name: "index_users_on_public_email", where: "((public_email)::text <> ''::text)", using: :btree
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
     t.index ["state"], name: "index_users_on_state", using: :btree
     t.index ["username"], name: "index_users_on_username", using: :btree
