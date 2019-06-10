@@ -129,7 +129,7 @@ module Gitlab
 
       def visibility_level
         level = override_params['visibility_level'] || json_params['visibility_level'] || @project.visibility_level
-        level = @project.group.visibility_level if @project.group && level > @project.group.visibility_level
+        level = @project.group.visibility_level if @project.group && level.to_i > @project.group.visibility_level
 
         { 'visibility_level' => level }
       end

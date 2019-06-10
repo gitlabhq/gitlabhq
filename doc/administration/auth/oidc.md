@@ -31,6 +31,7 @@ The OpenID Connect will provide you with a client details and secret for you to 
       { 'name' => 'openid_connect',
         'label' => '<your_oidc_label>',
         'args' => {
+          "name' => 'openid_connect',
           'scope' => ['openid','profile'],
           'response_type' => 'code',
           'issuer' => '<your_oidc_url>',
@@ -53,6 +54,7 @@ The OpenID Connect will provide you with a client details and secret for you to 
       - { name: 'openid_connect',
           label: '<your_oidc_label>',
           args: {
+            name: 'openid_connect',
             scope: ['openid','profile'],
             response_type: 'code',
             issuer: '<your_oidc_url>',
@@ -103,3 +105,36 @@ On the sign in page, there should now be an OpenID Connect icon below the regula
 Click the icon to begin the authentication process. The OpenID Connect provider will ask the user to
 sign in and authorize the GitLab application (if confirmation required by the client). If everything goes well, the user
 will be redirected to GitLab and will be signed in.
+
+## Example configurations
+
+The following configurations illustrate how to set up OpenID with
+different providers with Omnibus GitLab.
+
+### Google
+
+See the [Google
+documentation](https://developers.google.com/identity/protocols/OpenIDConnect)
+for more details:
+
+```ruby
+ gitlab_rails['omniauth_providers'] = [
+ {
+   'name' => 'openid_connect',
+   'label' => 'Google OpenID',
+   'args' => {
+     'name' => 'openid_connect',
+     'scope' => ['openid', 'profile', 'email'],
+     'response_type' => 'code',
+     'issuer' => 'https://accounts.google.com',
+     'client_auth_method' => 'query',
+     'discovery' => true,
+     'uid_field' => 'preferred_username',
+     'client_options' => {
+       'identifier' => '<YOUR PROJECT CLIENT ID>',
+       'secret' => '<YOUR PROJECT CLIENT SECRET>',
+       'redirect_uri' => 'https://example.com/users/auth/openid_connect/callback',
+     }
+   }
+ }
+```

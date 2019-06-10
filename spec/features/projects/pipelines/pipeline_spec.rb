@@ -115,11 +115,11 @@ describe 'Pipeline', :js do
           end
         end
 
-        it 'cancels the running build and does not show retry button' do
+        it 'cancels the running build and shows retry button' do
           find('#ci-badge-deploy .ci-action-icon-container').click
 
           page.within('#ci-badge-deploy') do
-            expect(page).not_to have_css('.js-icon-retry')
+            expect(page).to have_css('.js-icon-retry')
           end
         end
       end
@@ -133,11 +133,11 @@ describe 'Pipeline', :js do
           end
         end
 
-        it 'cancels the preparing build and does not show retry button' do
+        it 'cancels the preparing build and shows retry button' do
           find('#ci-badge-deploy .ci-action-icon-container').click
 
           page.within('#ci-badge-deploy') do
-            expect(page).not_to have_css('.js-icon-retry')
+            expect(page).to have_css('.js-icon-retry')
           end
         end
       end
