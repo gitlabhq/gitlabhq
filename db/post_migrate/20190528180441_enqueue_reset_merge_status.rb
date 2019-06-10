@@ -16,15 +16,10 @@ class EnqueueResetMergeStatus < ActiveRecord::Migration[5.1]
   def up
     say 'Scheduling `ResetMergeStatus` jobs'
 
-    # We currently have around 135_000 opened, mergeable MRs in GitLab.com. This iteration
-    # will schedule around 13 batches of 10_000 MRs, which should take around 1 hour to
-    # complete.
-    relation = MergeRequest.where(state: 'opened', merge_status: 'can_be_merged')
-
-    relation.each_batch(of: BATCH_SIZE) do |batch, index|
-      range = batch.pluck('MIN(id)', 'MAX(id)').first
-
-      BackgroundMigrationWorker.perform_in(index * DELAY_INTERVAL, MIGRATION, range)
-    end
+    # We currently have more than ~5_000_000 merge request records on GitLab.com.
+    # This means it'll schedule ~500 jobs (10k MRs each) with a 5 minutes gap,
+    # so this should take ~41 hours for all background migrations to complete.
+    # ((5_000_000 / 10_000) * 5) / 60 => 41.6666..
+    queue_background_migration_jobs_by_range_at_intervals(MergeRequest, MIGRATION, DELAY_INTERVAL, batch_size: BATCH_SIZE)
   end
 end
