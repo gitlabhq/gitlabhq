@@ -18,7 +18,7 @@ const getDescExpandElement = vm =>
   vm.$el.querySelector('.commit-content .text-expander.js-toggle-button');
 const getShaElement = vm => vm.$el.querySelector('.commit-sha-group');
 const getAvatarElement = vm => vm.$el.querySelector('.user-avatar-link');
-const getCommitterElement = vm => vm.$el.querySelector('.commiter');
+const getCommitterElement = vm => vm.$el.querySelector('.committer');
 const getCommitActionsElement = vm => vm.$el.querySelector('.commit-actions');
 
 describe('diffs/components/commit_item', () => {
