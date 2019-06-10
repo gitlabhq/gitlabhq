@@ -23,7 +23,7 @@ Here's a list of things that will **not** be deleted:
 - Award emoji that the user created
 
 Instead of being deleted, these records will be moved to a system-wide
-"Ghost User", whose sole purpose is to act as a container for such records.
+user with the username "Ghost User", whose sole purpose is to act as a container for such records. Any commits made by a deleted user will still display the username of the original user.
 
 When a user is deleted from an [abuse report](../../admin_area/abuse_reports.md) or spam log, these associated
 records are not ghosted and will be removed, along with any groups the user
