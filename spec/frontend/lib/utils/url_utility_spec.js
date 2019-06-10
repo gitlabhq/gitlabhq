@@ -1,5 +1,12 @@
 import * as urlUtils from '~/lib/utils/url_utility';
 
+const setWindowLocation = value => {
+  Object.defineProperty(window, 'location', {
+    writable: true,
+    value,
+  });
+};
+
 describe('URL utility', () => {
   describe('webIDEUrl', () => {
     afterEach(() => {
@@ -110,12 +117,9 @@ describe('URL utility', () => {
 
   describe('getBaseURL', () => {
     beforeEach(() => {
-      global.window = Object.create(window);
-      Object.defineProperty(window, 'location', {
-        value: {
-          host: 'gitlab.com',
-          protocol: 'https:',
-        },
+      setWindowLocation({
+        protocol: 'https:',
+        host: 'gitlab.com',
       });
     });
 
@@ -189,6 +193,34 @@ describe('URL utility', () => {
       it.each(unsafeUrls)('returns false for %s', url => {
         expect(urlUtils.isSafeURL(url)).toBe(false);
       });
+    });
+  });
+
+  describe('getWebSocketProtocol', () => {
+    it.each`
+      protocol    | expectation
+      ${'http:'}  | ${'ws:'}
+      ${'https:'} | ${'wss:'}
+    `('returns "$expectation" with "$protocol" protocol', ({ protocol, expectation }) => {
+      setWindowLocation({
+        protocol,
+        host: 'example.com',
+      });
+
+      expect(urlUtils.getWebSocketProtocol()).toEqual(expectation);
+    });
+  });
+
+  describe('getWebSocketUrl', () => {
+    it('joins location host to path', () => {
+      setWindowLocation({
+        protocol: 'http:',
+        host: 'example.com',
+      });
+
+      const path = '/lorem/ipsum?a=bc';
+
+      expect(urlUtils.getWebSocketUrl(path)).toEqual('ws://example.com/lorem/ipsum?a=bc');
     });
   });
 });
