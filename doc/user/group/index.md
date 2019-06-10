@@ -9,6 +9,8 @@ With GitLab Groups, you can:
 - Assemble related projects together.
 - Grant members access to several projects at once.
 
+For a video introduction to GitLab Groups, see [GitLab University: Repositories, Projects and Groups](https://www.youtube.com/watch?v=4TWfh1aKHHw).
+
 Groups can also be nested in [subgroups](subgroups/index.md).
 
 Find your groups by clicking **Groups > Your Groups** in the top navigation.
