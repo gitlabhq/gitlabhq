@@ -107,7 +107,7 @@ module Gitlab
           branch: encode_binary(branch),
           target_ref: encode_binary(target_ref),
           user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
-          message: message
+          message: encode_binary(message)
         )
 
         response = GitalyClient.call(@repository.storage, :operation_service, :user_merge_to_ref, request)
