@@ -617,6 +617,10 @@ versions of the app, all without leaving GitLab.
 
 ![Monitoring dashboard](img/environments_monitoring.png)
 
+#### Linking to external dashboard
+
+Add a [button to the Monitoring dashboard](../user/project/operations/linking_to_an_external_dashboard.md) linking directly to your existing external dashboards.
+
 ### Web terminals
 
 > Web terminals were added in GitLab 8.15 and are only available to project Maintainers and Owners.
