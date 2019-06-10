@@ -28,10 +28,10 @@ The reasons to do it like that are:
   and maximizing security.
 
 With the new behavior, any job that is triggered by the user, is also marked
-with their permissions. When a user does a `git push` or changes files through
+with their read permissions. When a user does a `git push` or changes files through
 the web UI, a new pipeline will be usually created. This pipeline will be marked
 as created be the pusher (local push or via the UI) and any job created in this
-pipeline will have the permissions of the pusher.
+pipeline will have the read permissions of the pusher but not write permissions.
 
 This allows us to make it really easy to evaluate the access for all projects
 that have [Git submodules][gitsub] or are using container images that the pusher
@@ -67,9 +67,10 @@ Let's consider the following scenario:
 
 ## Job token
 
-A unique job token is generated for each job and it allows the user to
+A unique job token is generated for each job and provides the user read
 access all projects that would be normally accessible to the user creating that
-job.
+job. The unique job token does not have any write permissions, but there
+is a [proposal to add support](https://gitlab.com/gitlab-org/gitlab-ce/issues/18106).
 
 We try to make sure that this token doesn't leak by:
 
