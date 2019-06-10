@@ -1,5 +1,0 @@
----
-title: Fix connection to Tiller error while uninstalling
-merge_request: 29131
-author:
-type: fixed
