@@ -54,7 +54,7 @@ class ProjectStatistics < ApplicationRecord
   end
 
   def update_storage_size
-    self.storage_size = repository_size + wiki_size + lfs_objects_size + build_artifacts_size + packages_size
+    self.storage_size = repository_size + wiki_size.to_i + lfs_objects_size + build_artifacts_size + packages_size
   end
 
   # Since this incremental update method does not call update_storage_size above,
