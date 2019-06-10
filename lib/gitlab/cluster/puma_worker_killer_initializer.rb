@@ -27,6 +27,9 @@ module Gitlab
           # is restarted already, thus periodically restarting workers shouldn't be
           # needed.
           config.rolling_restart_frequency = false
+
+          observer = Gitlab::Cluster::PumaWorkerKillerObserver.new
+          config.pre_term = observer.callback
         end
 
         PumaWorkerKiller.start

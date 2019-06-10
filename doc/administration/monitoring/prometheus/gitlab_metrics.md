@@ -125,6 +125,7 @@ When Puma is used instead of Unicorn, following metrics are available:
 | puma_max_threads                             | Gauge   | 12.0  | Maximum number of worker threads |
 | puma_idle_threads                            | Gauge   | 12.0  | Number of spawned threads which are not processing a request |
 | rack_state_total                             | Gauge   | 12.0  | Number of requests in a given rack state |
+| puma_killer_terminations_total               | Gauge   | 12.0  | Number of workers terminated by PumaWorkerKiller |
 
 ## Metrics shared directory
 

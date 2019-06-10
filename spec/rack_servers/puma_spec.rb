@@ -20,7 +20,7 @@ describe 'Puma' do
     File.write(config_path, config_lines)
 
     cmd = %W[puma -e test -C #{config_path} #{File.join(__dir__, 'configs/config.ru')}]
-    @puma_master_pid = spawn(*cmd)
+    @puma_master_pid = spawn({ 'DISABLE_PUMA_WORKER_KILLER' => '1' }, *cmd)
     wait_puma_boot!(@puma_master_pid, File.join(project_root, 'tmp/tests/puma-worker-ready'))
     WebMock.allow_net_connect!
   end
