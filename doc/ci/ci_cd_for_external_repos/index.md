@@ -4,11 +4,11 @@ type: index, howto
 
 # GitLab CI/CD for external repositories **[PREMIUM]**
 
+>[Introduced][ee-4642] in [GitLab Premium][eep] 10.6.
+
 NOTE: **Note:**
 This feature [is available for free](https://about.gitlab.com/2019/03/21/six-more-months-ci-cd-github/) to
 GitLab.com users until September 22nd, 2019.
-
->[Introduced][ee-4642] in [GitLab Premium][eep] 10.6.
 
 GitLab CI/CD can be used with:
 
