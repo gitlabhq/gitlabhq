@@ -1,3 +1,7 @@
+---
+table_display_block: true
+---
+
 # GitLab Architecture Overview
 
 ## Software delivery
