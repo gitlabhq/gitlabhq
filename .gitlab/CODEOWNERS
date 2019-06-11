@@ -3,7 +3,7 @@
 *.rake @ashmckenzie @ayufan @dbalexandre @DouweM @dzaporozhets @godfat @grzesiek @mkozono @mayra-cabrera @nick.thomas @rspeicher @rymai @reprazent @smcgivern @tkuah
 
 # Technical writing team are the default reviewers for everything in `doc/`
-/doc/ @axil @marcia
+/doc/ @axil @marcia @eread
 
 # Frontend maintainers should see everything in `app/assets/`
 app/assets/ @ClemMakesApps @fatihacet @filipa @iamphill @mikegreiling @timzallmann @kushalpandya
