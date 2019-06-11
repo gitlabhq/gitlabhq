@@ -1546,65 +1546,52 @@ describe API::MergeRequests do
     end
   end
 
-  describe "GET /projects/:id/merge_requests/:merge_request_iid/merge_ref" do
-    before do
-      merge_request.mark_as_unchecked!
-    end
-
-    let(:merge_request_iid) { merge_request.iid }
-
+  describe "PUT /projects/:id/merge_requests/:merge_request_iid/merge_to_ref" do
+    let(:pipeline) { create(:ci_pipeline_without_jobs) }
     let(:url) do
-      "/projects/#{project.id}/merge_requests/#{merge_request_iid}/merge_ref"
+      "/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge_to_ref"
     end
 
     it 'returns the generated ID from the merge service in case of success' do
-      get api(url, user)
+      put api(url, user), params: { merge_commit_message: 'Custom message' }
+
+      commit = project.commit(json_response['commit_id'])
 
       expect(response).to have_gitlab_http_status(200)
-      expect(json_response['commit_id']).to eq(merge_request.merge_ref_head.sha)
+      expect(json_response['commit_id']).to be_present
+      expect(commit.message).to eq('Custom message')
     end
 
     it "returns 400 if branch can't be merged" do
-      merge_request.update!(merge_status: 'cannot_be_merged')
+      merge_request.update!(state: 'merged')
 
-      get api(url, user)
+      put api(url, user)
 
       expect(response).to have_gitlab_http_status(400)
-      expect(json_response['message']).to eq('Merge request is not mergeable')
+      expect(json_response['message'])
+        .to eq("Merge request is not mergeable to #{merge_request.merge_ref_path}")
     end
 
-    context 'when user has no access to the MR' do
-      let(:project) { create(:project, :private) }
-      let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+    it 'returns 403 if user has no permissions to merge to the ref' do
+      user2 = create(:user)
+      project.add_reporter(user2)
 
-      it 'returns 404' do
-        project.add_guest(user)
+      put api(url, user2)
 
-        get api(url, user)
-
-        expect(response).to have_gitlab_http_status(404)
-        expect(json_response['message']).to eq('404 Not found')
-      end
+      expect(response).to have_gitlab_http_status(403)
+      expect(json_response['message']).to eq('403 Forbidden')
     end
 
-    context 'when invalid merge request IID' do
-      let(:merge_request_iid) { '12345' }
+    it 'returns 404 for an invalid merge request IID' do
+      put api("/projects/#{project.id}/merge_requests/12345/merge_to_ref", user)
 
-      it 'returns 404' do
-        get api(url, user)
-
-        expect(response).to have_gitlab_http_status(404)
-      end
+      expect(response).to have_gitlab_http_status(404)
     end
 
-    context 'when merge request ID is used instead IID' do
-      let(:merge_request_iid) { merge_request.id }
+    it "returns 404 if the merge request id is used instead of iid" do
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge", user)
 
-      it 'returns 404' do
-        get api(url, user)
-
-        expect(response).to have_gitlab_http_status(404)
-      end
+      expect(response).to have_gitlab_http_status(404)
     end
   end
 
