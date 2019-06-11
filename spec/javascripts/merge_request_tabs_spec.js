@@ -46,15 +46,30 @@ describe('MergeRequestTabs', function() {
   describe('opensInNewTab', function() {
     var tabUrl;
     var windowTarget = '_blank';
+    let clickTabParams;
 
     beforeEach(function() {
       loadFixtures('merge_requests/merge_request_with_task_list.html');
 
       tabUrl = $('.commits-tab a').attr('href');
+
+      clickTabParams = {
+        metaKey: false,
+        ctrlKey: false,
+        which: 1,
+        stopImmediatePropagation: function() {},
+        preventDefault: function() {},
+        currentTarget: {
+          getAttribute: function(attr) {
+            return attr === 'href' ? tabUrl : null;
+          },
+        },
+      };
     });
 
     describe('meta click', () => {
       let metakeyEvent;
+
       beforeEach(function() {
         metakeyEvent = $.Event('click', { keyCode: 91, ctrlKey: true });
       });
@@ -67,6 +82,8 @@ describe('MergeRequestTabs', function() {
 
         this.class.bindEvents();
         $('.merge-request-tabs .commits-tab a').trigger(metakeyEvent);
+
+        expect(window.open).toHaveBeenCalled();
       });
 
       it('opens page when commits badge is clicked', function() {
@@ -77,6 +94,8 @@ describe('MergeRequestTabs', function() {
 
         this.class.bindEvents();
         $('.merge-request-tabs .commits-tab a .badge').trigger(metakeyEvent);
+
+        expect(window.open).toHaveBeenCalled();
       });
     });
 
@@ -86,12 +105,9 @@ describe('MergeRequestTabs', function() {
         expect(name).toEqual(windowTarget);
       });
 
-      this.class.clickTab({
-        metaKey: false,
-        ctrlKey: true,
-        which: 1,
-        stopImmediatePropagation: function() {},
-      });
+      this.class.clickTab({ ...clickTabParams, metaKey: true });
+
+      expect(window.open).toHaveBeenCalled();
     });
 
     it('opens page tab in a new browser tab with Cmd+Click - Mac', function() {
@@ -100,12 +116,9 @@ describe('MergeRequestTabs', function() {
         expect(name).toEqual(windowTarget);
       });
 
-      this.class.clickTab({
-        metaKey: true,
-        ctrlKey: false,
-        which: 1,
-        stopImmediatePropagation: function() {},
-      });
+      this.class.clickTab({ ...clickTabParams, ctrlKey: true });
+
+      expect(window.open).toHaveBeenCalled();
     });
 
     it('opens page tab in a new browser tab with Middle-click - Mac/PC', function() {
@@ -114,12 +127,9 @@ describe('MergeRequestTabs', function() {
         expect(name).toEqual(windowTarget);
       });
 
-      this.class.clickTab({
-        metaKey: false,
-        ctrlKey: false,
-        which: 2,
-        stopImmediatePropagation: function() {},
-      });
+      this.class.clickTab({ ...clickTabParams, which: 2 });
+
+      expect(window.open).toHaveBeenCalled();
     });
   });
 
