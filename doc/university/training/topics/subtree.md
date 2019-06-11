@@ -9,19 +9,15 @@ comments: false
 - For these cases we need a dependency control system.
 - Command are painfully long so aliases are necessary.
 
-----------
-
 ## Subtree Aliases
 
-- Add: git subtree add --prefix <target-folder> <url> <branch> --squash.
-- Pull: git subtree add --prefix <target-folder> <url> <branch> --squash.
-- Push: git subtree add --prefix <target-folder> <url> <branch>.
-- Ex: git config alias.sbp 'subtree pull --prefix st /
-  git@gitlab.com:balameb/subtree-nested-example.git master --squash'.
+- Add: `git subtree add --prefix <target-folder> <url> <branch> --squash`.
+- Pull: `git subtree add --prefix <target-folder> <url> <branch> --squash`.
+- Push: `git subtree add --prefix <target-folder> <url> <branch>`.
+- Ex: `git config alias.sbp 'subtree pull --prefix st /
+  git@gitlab.com:balameb/subtree-nested-example.git master --squash'`.
 
-----------
-
-```
+```sh
   # Add an alias
   # Add
   git config alias.sba 'subtree add --prefix st /
@@ -41,9 +37,7 @@ comments: false
 
 ```
 
-----------
-
-```
+```sh
   # Adding, or committing won't change the sub repo at remote
   # even if we push
   git add -A
