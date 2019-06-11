@@ -1,0 +1,5 @@
+---
+title: Fix diverged branch locals
+merge_request: 29508
+author:
+type: fixed
