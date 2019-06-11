@@ -168,13 +168,13 @@ CREATE EXTENSION postgres_fdw;
 
 ## Unicorn Workers
 
-It's possible to increase the amount of unicorn workers and this will usually help to reduce the response time of the applications and increase the ability to handle parallel requests.
-
 For most instances we recommend using: CPU cores + 1 = unicorn workers.
 So for a machine with 2 cores, 3 unicorn workers is ideal.
 
 For all machines that have 2GB and up we recommend a minimum of three unicorn workers.
 If you have a 1GB machine we recommend to configure only two Unicorn workers to prevent excessive swapping.
+
+As long as you have enough available CPU and memory capacity, it's okay to increase the number of unicorn workers and this will usually help to reduce the response time of the applications and increase the ability to handle parallel requests.
 
 To change the Unicorn workers when you have the Omnibus package (which defaults to the recommendation above) please see [the Unicorn settings in the Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/settings/unicorn.html).
 
