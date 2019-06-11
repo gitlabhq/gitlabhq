@@ -20,7 +20,7 @@ The Admin Area is made up of the following sections:
 
 | Section                    | Description                                                                                                                                              |
 |:---------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Overview                   | View your GitLab [Dashboard](#admin-dashboard), and administer [projects](#administer-projects), [users](#administer-users), groups, [jobs](#administer-jobs), [Runners](#administer-runners), and [Gitaly servers](#administer-gitaly-servers).       |
+| Overview                   | View your GitLab [Dashboard](#admin-dashboard), and administer [projects](#administer-projects), [users](#administer-users), [groups](#administer-groups), [jobs](#administer-jobs), [Runners](#administer-runners), and [Gitaly servers](#administer-gitaly-servers).       |
 | Monitoring                 | View GitLab system information, and information on background jobs, logs, [health checks](monitoring/health_check.md), request profiles, and audit logs. |
 | Messages                   | Send and manage [broadcast messages](broadcast_messages.md) for your users.                                                                              |
 | System Hooks               | Configure [system hooks](../../system_hooks/system_hooks.md) for many events.                                                                            |
@@ -120,13 +120,32 @@ To search for users, enter your criteria in the search field. The user search is
 insensitive, and applies partial matching to name and username. To search for an email address,
 you must provide the complete email address.
 
+## Administer Groups
+
+You can administer all groups in the GitLab instance from the Admin Area's Groups page.
+
+To access the Groups page, go to **Admin Area > Overview > Groups**.
+
+For each group, the page displays their name, description, size, number of projects in the group,
+number of members, and whether the group is private, internal, or public. To edit a group, click
+the **Edit** button in that group's row. To delete the group, click the **Delete** button in
+that group's row.
+
+To change the sort order, click the sort dropdown and select the desired order. The default
+sort order is by **Last created**.
+
+To search for groups by name, enter your criteria in the search field. The group search is case
+insensitive, and applies partial matching.
+
+To [Create a new group](../group/index.md#create-a-new-group) click **New group**.
+
 ## Administer Jobs
 
 You can administer all jobs in the GitLab instance from the Admin Area's Jobs page.
 
 To access the Jobs page, go to **Admin Area > Overview > Jobs**.
 
-All jobs are listed, in reverse order of their job ID.
+All jobs are listed, in descending order of job ID.
 
 Click the **All** tab to list all jobs. Click the **Pending**, **Running**, or **Finished** tab to list only jobs of that status.
 
@@ -169,7 +188,7 @@ find.
 You can also filter Runners by status, type, and tag. To filter:
 
 1. Click in the **Search or filter results...** field.
-1. Select **status:**, **type:**, or **tag:**
+1. Select **status:**, **type:**, or **tag:**.
 1. Select or enter your search criteria.
 
 ![Attributes of a Runner, with the **Search or filter results...** field active](img/index_runners_search_or_filter.png)
