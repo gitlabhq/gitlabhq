@@ -37,6 +37,14 @@ options:
   circumstances it could lead to data loss if a failure occurs before data has
   synced.
 
+Due to the complexities of running Omnibus with LDAP and the complexities of
+maintaining ID mapping without LDAP, in most cases you should enable numeric UIDs
+and GIDs (which is off by default in some cases) for simplified permission
+management between systems:
+
+  - [NetApp instructions](https://library.netapp.com/ecmdocs/ECMP1401220/html/GUID-24367A9F-E17B-4725-ADC1-02D86F56F78E.html)
+  - For non-NetApp devices, disable NFSv4 `idmapping` by performing opposite of [enable NFSv4 idmapper](https://wiki.archlinux.org/index.php/NFS#Enabling_NFSv4_idmapping)
+
 ### Improving NFS performance with GitLab
 
 NOTE: **Note:** This is only available starting in certain versions of GitLab: 11.5.11,
