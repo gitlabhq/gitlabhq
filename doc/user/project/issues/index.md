@@ -123,7 +123,7 @@ For more information, see [Crosslinking issues](crosslinking_issues.md).
 - [Close an issue](closing_issues.md)
 - [Move an issue](moving_issues.md)
 - [Delete an issue](deleting_issues.md)
-- [Create a merge request from an issue](issue_data_and_actions.md#18-new-merge-request)
+- [Create a merge request from an issue](issue_data_and_actions.md#22-create-merge-request)
 
 ## Advanced issue management
 

@@ -4,11 +4,13 @@ Please read through the [GitLab Issue Documentation](index.md) for an overview o
 
 ## Parts of an Issue
 
-The image below illustrates what an issue looks like:
+The image below illustrates what an issue may look like. Note that certain parts will
+look slightly different or will be absent, depending on the version of GitLab being used
+and the permissions of the user viewing the issue.
 
-![Issue view](img/issues_main_view_numbered.jpg)
+![Issue view](img/issues_main_view_numbered.png)
 
-You can find all the information on that issue on one screen.
+You can find all the information for that issue on one screen.
 
 ### Issue screen
 
@@ -16,157 +18,215 @@ An issue starts with its status (open or closed), followed by its author,
 and includes many other functionalities, numbered in the image above to
 explain what they mean, one by one.
 
-Many of the elements of the issue screen refresh automatically, such as the title and description, when they are changed by another user.
-Comments and system notes also appear automatically in response to various actions and content updates.
+Many of the elements of the issue screen refresh automatically, such as the title and
+description, when they are changed by another user. Comments and system notes also
+update automatically in response to various actions and content updates.
 
-#### 1. New Issue, close issue, edit
+#### 1. New Issue, close issue (reopen issue, report issue)
 
-- New issue: create a new issue in the same project
-- Close issue: close this issue
-- Edit: edit the same fields available when you create an issue.
+Clicking on **New issue** will open a new window to create a new issue in the same project.
+Clicking on **Close issue** will close this issue, but it will not be deleted. If the
+issue is already closed, you can still access it and the button will show **Reopen issue**, as shown below,
+which you can click to reopen the issue. A reopened issue is no different from any
+other issue.
+
+![Reopen Issue](img/reopen-issue.png)
+
+If you do not have rights to modify the issue, the **close issue** button will be
+replaced with **report issue**, which you can click to [submit an abuse report](../../abuse_reports.md)
+about the issue. It will also appear if you have rights to modify the issue, but only
+after it is closed.
+
+![Report Abuse](img/report-abuse.png)
 
 #### 2. Todos
 
-- Add todo: add that issue to your [GitLab Todo](../../../workflow/todos.md) list
-- Mark todo as done: mark that issue as done (reflects on the Todo list)
+You can click **add todo** to add the issue to your [GitLab Todo](../../../workflow/todos.md)
+list. If it is already on your todo list, the buttom will show **mark todo as done**,
+which you can click to mark that issue as done (which will be reflected in the Todo list).
 
 #### 3. Assignee
 
-Whenever someone starts to work on an issue, it can be assigned
-to that person. The assignee can be changed as much as needed.
-The idea is that the assignee is responsible for that issue until
-it's reassigned to someone else to take it from there.
+An issue can be assigned to yourself, another person, or [many people](#31-multiple-assignees-STARTER).
+The assignee(s) can be changed as much as needed. The idea is that the assignees are
+responsible for that issue until it's reassigned to someone else to take it from there.
+When assigned to someone, it will appear in their assigned issues list.
 
-> **Tip:**
-if a user is not member of that project, it can only be
+TIP: **Tip:**
+If a user is not member of that project, it can only be
 assigned to them if they created the issue themselves.
 
 ##### 3.1. Multiple Assignees **[STARTER]**
 
-Often multiple people work on the same issue together,
-which can be especially difficult to track in large teams
-where there is shared ownership of an issue.
+Often multiple people work on the same issue together, which can be especially difficult
+to track in large teams where there is shared ownership of an issue.
 
 In [GitLab Starter](https://about.gitlab.com/pricing/), you can
-assign multiple people to an issue.
+[assign multiple people](multiple_assignees_for_issues.md) to an issue.
 
-Learn more in the [Multiple Assignees documentation](multiple_assignees_for_issues.md).
+#### 4. Epic **[ULTIMATE]**
 
-#### 4. Milestone
+You can assign issues to an [Epic](../../group/epics/index.md), which allows better
+management of groups of related issues.
 
-- Select a [milestone](../milestones/index.md) to attribute that issue to.
+#### 5. Milestone
 
-#### 5. Time Tracking
+Select a [milestone](../milestones/index.md) to attribute that issue to.
 
-- Estimate time: add an estimate of the time it will take to resolve the issue.
-- Spend: add the time spent on the resolution of the issue
+#### 6. Time Tracking
 
-> **Note:**
-Both estimate and spend times are set via [GitLab Quick Actions](../quick_actions.md).
+Use [GitLab Quick Actions](../quick_actions.md) to [track estimates and time spent on issues](../../../workflow/time_tracking.md).
+You can add an [estimate of the time it will take](../../../workflow/time_tracking.md#estimates)
+to resolve the issue, and also add [the time spent](../../../workflow/time_tracking.md#time-spent)
+on the resolution of the issue.
 
-Learn more in the [Time Tracking documentation](../../../workflow/time_tracking.md).
+#### 7. Due date
 
-#### 6. Due date
+When you work on a tight schedule, it's important to have a way to set a deadline for
+implementations and for solving problems. This can be done in the [due date](due_dates.md)
+element. Due dates can be changed as many times as needed.
 
-When you work on a tight schedule, it's important to
-have a way to set a deadline for implementations and for solving
-problems. This can be done in the [due date](due_dates.md) element. Due dates
-can be changed as many times as needed.
+#### 8. Labels
 
-#### 7. Labels
+Categorize issues by giving them [labels](../labels.md). They help to organize workflows,
+and they enable you to work with the [GitLab Issue Board](index.md#issue-boards).
 
-Categorize issues by giving them [labels](../labels.md). They help to
-organize workflows, and they enable you to work with the
-[GitLab Issue Board](index.md#issue-boards).
+Group Labels, which allow you to use the same labels for all projects within the same
+group, can be also given to issues. They work exactly the same, but they are immediately
+available to all projects in the group.
 
-Group Labels, which allow you to use the same labels for a
-group of projects, can be also given to issues. They work exactly the same,
-but they are immediately available to all projects in the group.
+TIP: **Tip:**
+If a label doesn't exist yet, you can click **Edit**, and it opens a dropdown menu
+from which you can select **Create new label**.
 
-> **Tip:**
-If a label doesn't exist yet, you can click **Edit**, and it opens a dropdown menu from which you can select **Create new label**.
+#### 9. Weight **[STARTER]**
 
-#### 8. Weight **[STARTER]**
+[Assign a weight](../../../workflow/issue_weight.md) to an issue.
+Larger values are used to indicate more effort is required to complete the issue. Only
+positive values or zero are allowed.
 
-- Assign a weight. Larger values are used to indicate more effort is required to complete the issue. Only positive values or zero are allowed.
+#### 10. Confidentiality
 
-Learn more in the [Issue Weight documentation](../../../workflow/issue_weight.md).
+You can [set an issue to be confidential](confidential_issues.md). When set, unauthorized
+users will not be able to access the issue, and will not see it listed in project
+issue boards or the issue list.
 
-#### 9. Participants
+#### 11. Lock issue
 
-- People involved in that issue (mentioned in the description or in the [discussion](../../discussions/index.md)).
+You can [lock the discussions](../../discussions/index.md#lock-discussions) in the issue,
+to prevent further comments from being added.
 
-#### 10. Notifications
+#### 12. Participants
 
-- Subscribe: if you are not a participant of the discussion on that issue, but
-  want to receive notifications on each new input, subscribe to it.
-- Unsubscribe: if you are receiving notifications on that issue but no
+All the users involved in that issue. Either they participated in the [discussion](../../discussions/index.md),
+or were mentioned in the description or discussions.
+
+#### 13. Notifications
+
+Click on the icon to enable/disable [notifications](../../../workflow/notifications.md#issue--epics--merge-request-events)
+for the issue. This will automatically enable if you participate in the issue in any way.
+
+- **Enable**: If you are not a participant in the discussion on that issue, but
+  want to receive notifications on each update, subscribe to it.
+- **Disable**: If you are receiving notifications for updates to that issue but no
   longer want to receive them, unsubscribe from it.
 
-Read more in the [notifications documentation](../../../workflow/notifications.md#issue--epics--merge-request-events).
+#### 14. Reference
 
-#### 11. Reference
+- A quick "copy to clipboard" button for that issue's reference, which looks like `foo/bar#xxx`,
+  where `foo` is the `username` or `groupname`, `bar` is the `project-name`, and
+  `xxx` is the issue number.
 
-- A quick "copy to clipboard" button for that issue's reference, `foo/bar#xxx`, where `foo` is the `username` or `groupname`, `bar`
-  is the `project-name`, and `xxx` is the issue number.
+#### 15. Edit
 
-#### 12. Title and description
+Clicking this icon opens the issue for editing, and you will have access to all the
+same fields as when the issue was created. This icon will not display if the user
+does not have permission to edit the issue.
 
-- Title: a plain text title for describing the subject of the issue.
-- Description: a large text field which fully supports [GitLab Flavored Markdown](../../markdown.md#gitlab-flavored-markdown-gfm),
-  to describe all the details of the issue.
+#### 16. Description
 
-#### 13. Mentions
+The plain text title and description of the issue fill the top center of the issue page.
+The description fully supports [GitLab Flavored Markdown](../../markdown.md#gitlab-flavored-markdown-gfm),
+allowing many formatting options.
 
-- You can mention a user or a group present in your GitLab instance with
-  `@username` or `@groupname` and they will be notified via todos and email, unless
-  they have disabled all notifications in their profile settings.
-- Mentions for yourself (the current logged in user), will be highlighted
-  in a different color, allowing you to easily see which comments involve you,
-  helping you focus on them quickly.
+#### 17. Mentions
 
-To change your [notification settings](../../../workflow/notifications.md), navigate to
-**Profile Settings** > **Notifications** > **Global notification level**
-and choose your preference from the dropdown menu.
+You can mention a user or a group present in your GitLab instance with `@username` or
+`@groupname` and they will be notified via todos and email, unless they have disabled
+all notifications in their profile settings. This is controlled in the
+[notification settings](../../../workflow/notifications.md).
 
-> **Tip:**
-Avoid mentioning `@all` in issues and merge requests,
-as it sends an email notification
-to all the members of that project's group, which can be
-interpreted as spam.
+Mentions for yourself (the current logged in user), will be highlighted in a different
+color, allowing you to easily see which comments involve you, helping you focus on
+them quickly.
 
-#### 14. Related Merge Requests
+TIP: **Tip:**
+Avoid mentioning `@all` in issues and merge requests, as it sends an email notification
+to all the members of that project's group, which can be interpreted as spam.
 
-- Any merge requests mentioned in that issue's description
-  or in the issue discussion thread.
+#### 18. Related Issues **[STARTER]**
 
-#### 15. Award emoji
+Issues that were mentioned as [related issues](related_issues.md) are listed here.
+You can also click the `+` to add more related issues.
 
-- Award an emoji to that issue.
+#### 19. Related Merge Requests
 
-> **Tip:**
-Posting "+1" as a comment in a thread spams all subscribed
-participants of that issue. Awarding an emoji is a way to let them
-know you like it without spamming them.
+Merge requests that were mentioned in that issue's description or in the issue discussion
+thread are listed as [related merge requests](crosslinking_issues.md#from-merge-requests) here.
+Also, if the current issue was mentioned as related in another merge request, that
+merge request will be listed here.
 
-#### 16. Thread
+#### 20. Award emoji
 
-- Comments: collaborate to that issue by posting comments in its thread.
-  These text fields also fully support
-  [GitLab Flavored Markdown](../../markdown.md#gitlab-flavored-markdown-gfm).
+You can award an emoji to that issue. There are shortcuts to "thumbs_up" and "thumbs_down",
+or you can click on the light gray "face" to choose a different reaction from the
+dropdown list of available [GitLab Flavored Markdown Emoji](../../markdown.md#emoji).
 
-#### 17. Comment, start a discussion, or comment and close
+TIP: **Tip:**
+Posting "+1" as a comment in a thread spams all subscribed participants of that issue,
+clutters the discussion threads, and is not recommended. Awarding an emoji is a way
+to let them know your reaction without spamming them.
 
-Once you write a comment, you can either:
+#### 21. Show all activity
 
-- Click "Comment" and your comment will be published.
-- Click "Start discussion": start a thread within that issue's thread to discuss specific points.
-- Click "Comment and close issue": post your comment and close that issue in one click.
+You can filter what is displayed in the issue history by clicking on **Show all activity**
+and selecting either **Show comments only**, which only shows discussions and hides
+updates to the issue, or **Show history only**, which hides discussions and only shows updates.
 
-#### 18. New Merge Request
+![Show all activity](img/show-all-activity.png)
 
-- Create a new merge request (with a new source branch named after the issue) in one action.
-  The merge request will automatically inherit the milestone and labels of the issue. The merge
-  request will automatically close that issue when it is merged.
-- Optionally, you can just create a [new branch](../repository/web_editor.md#create-a-new-branch-from-an-issue)
-  named after that issue.
+#### 22. Create Merge Request
+
+Create a new branch and [WIP merge request](../merge_requests/work_in_progress_merge_requests.md)
+in one action. The branch will be named `issuenumber-title` by default, but you can
+choose any name, and GitLab will verify that it is not already in use. The merge request
+will automatically inherit the milestone and labels of the issue, and will be set to
+close the issue when it is merged.
+
+![Create MR from issue](img/create_mr_from_issue.png)
+
+Optionally, you can choose to create a [new branch](../repository/web_editor.md#create-a-new-branch-from-an-issue)
+only, named after that issue.
+
+#### 23. Issue history
+
+All comments and updates to the issue are tracked and listed here, but this can be
+filtered, as shown above.
+
+#### 24. Comments
+
+Collaborate in the issue by posting comments in its thread. This text field also fully
+supports [GitLab Flavored Markdown](../../markdown.md#gitlab-flavored-markdown-gfm).
+
+#### 25. Submit Comment, start a discussion, or comment and close
+
+Once you write a comment, you can:
+
+- Click **Comment** and your comment will be published.
+- Choose **Start discussion** from the dropdown list and start a new [discussion thread](../../discussions/index.md#threaded-discussions)
+  within that issue's main thread to discuss specific points. This invites other participants
+  to reply directly to your discussion, keeping related comments grouped together.
+
+![Comment or discussion](img/comment-or-discussion.png)
+
+You can also close the issue from here, so you don't need to scroll to the top of the issue page.
