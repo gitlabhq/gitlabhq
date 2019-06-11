@@ -6223,7 +6223,10 @@
               "erased_by_id": null,
               "erased_at": null,
               "type": "Ci::Build",
-              "token": "abcd"
+              "token": "abcd",
+              "artifacts_file_store": 1,
+              "artifacts_metadata_store": 1,
+              "artifacts_size": 10
             },
             {
               "id": 72,

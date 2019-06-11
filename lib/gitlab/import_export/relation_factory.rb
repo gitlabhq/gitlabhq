@@ -153,6 +153,9 @@ module Gitlab
           @relation_hash.delete('trace') # old export files have trace
           @relation_hash.delete('token')
           @relation_hash.delete('commands')
+          @relation_hash.delete('artifacts_file_store')
+          @relation_hash.delete('artifacts_metadata_store')
+          @relation_hash.delete('artifacts_size')
 
           imported_object
         elsif @relation_name == :merge_requests
