@@ -1,0 +1,5 @@
+---
+title: Fix UTF-8 conversion issues when resolving conflicts
+merge_request: 29453
+author:
+type: fixed
