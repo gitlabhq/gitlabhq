@@ -1,0 +1,5 @@
+---
+title: 'Fix favicon path with uploads of object store'
+merge_request: 29482
+author: Roger Meier
+type: fixed
