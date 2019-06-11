@@ -479,7 +479,10 @@ export const pikadayToString = date => {
  * Seconds can be negative or positive, zero or non-zero. Can be configured for any day
  * or week length.
  */
-export const parseSeconds = (seconds, { daysPerWeek = 5, hoursPerDay = 8 } = {}) => {
+export const parseSeconds = (
+  seconds,
+  { daysPerWeek = 5, hoursPerDay = 8, limitToHours = false } = {},
+) => {
   const DAYS_PER_WEEK = daysPerWeek;
   const HOURS_PER_DAY = hoursPerDay;
   const MINUTES_PER_HOUR = 60;
@@ -496,6 +499,10 @@ export const parseSeconds = (seconds, { daysPerWeek = 5, hoursPerDay = 8 } = {})
   let unorderedMinutes = Math.abs(seconds / MINUTES_PER_HOUR);
 
   return _.mapObject(timePeriodConstraints, minutesPerPeriod => {
+    if (limitToHours && minutesPerPeriod > MINUTES_PER_HOUR) {
+      return 0;
+    }
+
     const periodCount = Math.floor(unorderedMinutes / minutesPerPeriod);
 
     unorderedMinutes -= periodCount * minutesPerPeriod;

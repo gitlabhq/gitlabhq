@@ -32,6 +32,8 @@ module Gitlab
       gon.first_day_of_week      = current_user&.first_day_of_week || Gitlab::CurrentSettings.first_day_of_week
       gon.ee                     = Gitlab.ee?
 
+      gon.time_tracking_display_hours_only = Gitlab::CurrentSettings.time_tracking_display_hours_only
+
       if current_user
         gon.current_user_id = current_user.id
         gon.current_username = current_user.username

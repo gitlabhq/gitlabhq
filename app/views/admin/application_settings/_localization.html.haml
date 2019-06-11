@@ -8,4 +8,10 @@
       .form-text.text-muted
         = _('Default first day of the week in calendars and date pickers.')
 
+    .form-group
+      .form-check
+        = f.check_box :time_tracking_display_hours_only, class: 'form-check-input'
+        = f.label :time_tracking_display_hours_only, class: 'form-check-label' do
+          _('Limit time tracking display to hours.')
+
   = f.submit _('Save changes'), class: "btn btn-success"

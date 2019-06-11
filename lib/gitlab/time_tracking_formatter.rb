@@ -16,7 +16,8 @@ module Gitlab
 
     def output(seconds)
       with_custom_config do
-        ChronicDuration.output(seconds, format: :short, limit_to_hours: false, weeks: true) rescue nil
+        limit_to_hours = Gitlab::CurrentSettings.time_tracking_display_hours_only
+        ChronicDuration.output(seconds, format: :short, limit_to_hours: limit_to_hours, weeks: true) rescue nil
       end
     end
 

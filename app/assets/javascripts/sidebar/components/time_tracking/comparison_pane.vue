@@ -32,7 +32,7 @@ export default {
   computed: {
     parsedTimeRemaining() {
       const diffSeconds = this.timeEstimate - this.timeSpent;
-      return parseSeconds(diffSeconds);
+      return parseSeconds(diffSeconds, { limitToHours: gon.time_tracking_display_hours_only });
     },
     timeRemainingHumanReadable() {
       return stringifyTime(this.parsedTimeRemaining);
