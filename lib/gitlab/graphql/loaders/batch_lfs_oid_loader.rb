@@ -3,7 +3,7 @@
 module Gitlab
   module Graphql
     module Loaders
-      class BatchCommitLoader
+      class BatchLfsOidLoader
         def initialize(repository, blob_id)
           @repository, @blob_id = repository, blob_id
         end

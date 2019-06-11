@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Graphql::Loaders::BatchCommitLoader do
+describe Gitlab::Graphql::Loaders::BatchLfsOidLoader do
   include GraphqlHelpers
 
   set(:project) { create(:project, :repository) }
