@@ -73,7 +73,15 @@ The following time units are available:
 
 Default conversion rates are 1mo = 4w, 1w = 5d and 1d = 8h.
 
-Other interesting links:
+### Limit displayed units to hours
+
+> Introduced in GitLab 12.0.
+
+The display of time units can be limited to hours through the option in **Admin Area > Settings > Preferences** under 'Localization'.
+
+With this option enabled, `75h` is displayed instead of `1w 4d 3h`.
+
+## Other interesting links
 
 - [Time Tracking landing page on about.gitlab.com](https://about.gitlab.com/solutions/time-tracking/)
 

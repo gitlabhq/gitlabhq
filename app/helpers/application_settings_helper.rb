@@ -253,7 +253,7 @@ module ApplicationSettingsHelper
       :throttle_unauthenticated_enabled,
       :throttle_unauthenticated_period_in_seconds,
       :throttle_unauthenticated_requests_per_period,
-      :time_tracking_display_hours_only,
+      :time_tracking_limit_to_hours,
       :two_factor_grace_period,
       :unique_ips_limit_enabled,
       :unique_ips_limit_per_user,

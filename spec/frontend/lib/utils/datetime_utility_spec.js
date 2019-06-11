@@ -334,6 +334,12 @@ describe('prettyTime methods', () => {
       assertTimeUnits(aboveOneDay, 33, 2, 2, 0);
       assertTimeUnits(aboveOneWeek, 26, 0, 1, 9);
     });
+
+    it('should correctly parse values when limitedToHours is true', () => {
+      const twoDays = datetimeUtility.parseSeconds(173000, { limitToHours: true });
+
+      assertTimeUnits(twoDays, 3, 48, 0, 0);
+    });
   });
 
   describe('stringifyTime', () => {

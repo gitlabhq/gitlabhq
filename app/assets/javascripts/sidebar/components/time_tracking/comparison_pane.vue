@@ -28,11 +28,16 @@ export default {
       type: String,
       required: true,
     },
+    limitToHours: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     parsedTimeRemaining() {
       const diffSeconds = this.timeEstimate - this.timeSpent;
-      return parseSeconds(diffSeconds, { limitToHours: gon.time_tracking_display_hours_only });
+      return parseSeconds(diffSeconds, { limitToHours: this.limitToHours });
     },
     timeRemainingHumanReadable() {
       return stringifyTime(this.parsedTimeRemaining);

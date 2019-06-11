@@ -37,6 +37,10 @@ export default {
       required: false,
       default: '',
     },
+    limitToHours: {
+      type: Boolean,
+      default: false,
+    },
     rootPath: {
       type: String,
       required: true,
@@ -129,6 +133,7 @@ export default {
         :time-spent="timeSpent"
         :time-spent-human-readable="humanTimeSpent"
         :time-estimate-human-readable="humanTimeEstimate"
+        :limit-to-hours="limitToHours"
       />
       <transition name="help-state-toggle">
         <time-tracking-help-state v-if="showHelpState" :root-path="rootPath" />

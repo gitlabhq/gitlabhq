@@ -13,6 +13,7 @@ describe('Issuable Time Tracker', () => {
     timeSpent,
     timeEstimateHumanReadable,
     timeSpentHumanReadable,
+    limitToHours,
   }) => {
     setFixtures(`
     <div>
@@ -25,6 +26,7 @@ describe('Issuable Time Tracker', () => {
       timeSpent,
       humanTimeEstimate: timeEstimateHumanReadable,
       humanTimeSpent: timeSpentHumanReadable,
+      limitToHours: Boolean(limitToHours),
       rootPath: '/',
     };
 
@@ -124,6 +126,29 @@ describe('Issuable Time Tracker', () => {
               ).not.toBeNull();
               done();
             });
+          });
+        });
+      });
+
+      describe('Comparison pane when limitToHours is true', () => {
+        beforeEach(() => {
+          initTimeTrackingComponent({
+            timeEstimate: 100000, // 1d 3h
+            timeSpent: 5000, // 1h 23m
+            timeEstimateHumanReadable: '',
+            timeSpentHumanReadable: '',
+            limitToHours: true,
+          });
+        });
+
+        it('should show the correct tooltip text', done => {
+          Vue.nextTick(() => {
+            expect(vm.showComparisonState).toBe(true);
+            const $title = vm.$el.querySelector('.time-tracking-content .compare-meter').dataset
+              .originalTitle;
+
+            expect($title).toBe('Time remaining: 26h 23m');
+            done();
           });
         });
       });
