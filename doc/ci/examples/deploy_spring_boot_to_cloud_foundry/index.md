@@ -3,6 +3,7 @@ author: Dylan Griffith
 author_gitlab: DylanGriffith
 level: intermediate
 article_type: tutorial
+type: tutorial
 date: 2018-06-07
 last_updated: 2019-04-08
 description: "Continuous Deployment of a Spring Boot application to Cloud Foundry with GitLab CI/CD"
@@ -26,13 +27,13 @@ using GitLab CI/CD, read through the blog post [Continuous Delivery of a Spring 
 
 ## Requirements
 
-_We assume you are familiar with Java, GitLab, Cloud Foundry, and GitLab CI/CD._
+This tutorial assumes you are familiar with Java, GitLab, Cloud Foundry, and GitLab CI/CD.
 
-To follow along with this tutorial you will need the following:
+To follow along, you will need:
 
 - An account on [Pivotal Web Services (PWS)](https://run.pivotal.io/) or any
-  other Cloud Foundry instance
-- An account on GitLab
+  other Cloud Foundry (CF) instance.
+- An account on GitLab.
 
 NOTE: **Note:**
 You will need to replace the `api.run.pivotal.io` URL in the all below

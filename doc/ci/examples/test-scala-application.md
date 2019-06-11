@@ -1,9 +1,12 @@
+---
+type: tutorial
+---
+
 # Test and deploy a Scala application to Heroku
 
 This example demonstrates the integration of GitLab CI with Scala
-applications using SBT. Checkout the example
-[project](https://gitlab.com/gitlab-examples/scala-sbt) and
-[build status](https://gitlab.com/gitlab-examples/scala-sbt/builds).
+applications using SBT. You can view or fork the [example project](https://gitlab.com/gitlab-examples/scala-sbt)
+and view the logs of its past [CI jobs](https://gitlab.com/gitlab-examples/scala-sbt/-/jobs?scope=finished).
 
 ## Add `.gitlab-ci.yml` file to project
 
@@ -41,12 +44,14 @@ deploy:
     - dpl --provider=heroku --app=gitlab-play-sample-app --api-key=$HEROKU_API_KEY
 ```
 
-The `before_script` installs [SBT](http://www.scala-sbt.org/) and
-displays the version that is being used. The `test` stage executes SBT
-to compile and test the project.
-[scoverage](https://github.com/scoverage/sbt-scoverage) is used as an SBT
+In the above configuration:
+
+- The `before_script` installs [SBT](http://www.scala-sbt.org/) and
+displays the version that is being used.
+- The `test` stage executes SBT to compile and test the project.
+   - [sbt-scoverage](https://github.com/scoverage/sbt-scoverage) is used as an SBT
 plugin to measure test coverage.
-The `deploy` stage automatically deploys the project to Heroku using dpl.
+- The `deploy` stage automatically deploys the project to Heroku using dpl.
 
 You can use other versions of Scala and SBT by defining them in
 `build.sbt`.

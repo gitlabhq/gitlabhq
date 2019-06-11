@@ -1,12 +1,14 @@
+---
+type: tutorial
+---
+
 # Using Dpl as deployment tool
 
-[Dpl](https://github.com/travis-ci/dpl) (dee-pee-ell) is a deploy tool made for
+[Dpl](https://github.com/travis-ci/dpl) (prouncounced like the letters D-P-L) is a deploy tool made for
 continuous deployment that's developed and used by Travis CI, but can also be
 used with GitLab CI.
 
->**Note:**
-We recommend to use Dpl if you're deploying to any of these services:
-<https://github.com/travis-ci/dpl#supported-providers>.
+Dpl can be used to deploy to any of the [supported providers](https://github.com/travis-ci/dpl#supported-providers).
 
 ## Requirements
 
@@ -50,8 +52,8 @@ To use different provider take a look at long list of [Supported Providers](http
 
 ## Using Dpl with Docker
 
-When you use GitLab Runner you most likely configured it to use your server's shell commands.
-This means that all commands are run in context of local user (ie. gitlab_runner or gitlab_ci_multi_runner).
+In most cases, you will have configured [GitLab Runner](https://docs.gitlab.com/runner/) to use your server's shell commands.
+This means that all commands are run in the context of local user (e.g. gitlab_runner or gitlab_ci_multi_runner).
 It also means that most probably in your Docker container you don't have the Ruby runtime installed.
 You will have to install it:
 

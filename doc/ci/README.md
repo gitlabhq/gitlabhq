@@ -127,12 +127,10 @@ Its feature set is listed on the table below according to DevOps stages.
 
 ## Examples
 
-GitLab provides examples of configuring GitLab CI/CD in the form of:
+Find example project code and tutorials for using GitLab CI/CD with a variety of app frameworks, languages, and platforms
+on the [CI Examples](examples/README.md) page.
 
-- A collection of [examples and other resources](examples/README.md).
-- Example projects that are available at the [`gitlab-examples`](https://gitlab.com/gitlab-examples) group. For example, see:
-  - [`multi-project-pipelines`](https://gitlab.com/gitlab-examples/multi-project-pipelines) for examples of implementing multi-project pipelines.
-  - [`review-apps-nginx`](https://gitlab.com/gitlab-examples/review-apps-nginx/) provides an example of using Review Apps.
+GitLab also provides [example projects](https://gitlab.com/gitlab-examples) pre-configured to use GitLab CI/CD.
 
 ## Administration **[CORE ONLY]**
 

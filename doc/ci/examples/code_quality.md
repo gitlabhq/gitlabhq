@@ -1,3 +1,7 @@
+---
+type: reference, howto
+---
+
 # Analyze your project's Code Quality
 
 CAUTION: **Caution:**
