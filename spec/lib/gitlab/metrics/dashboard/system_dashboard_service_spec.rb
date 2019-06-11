@@ -6,7 +6,7 @@ describe Gitlab::Metrics::Dashboard::SystemDashboardService, :use_clean_rails_me
   include MetricsDashboardHelpers
 
   set(:project) { build(:project) }
-  set(:environment) { build(:environment, project: project) }
+  set(:environment) { create(:environment, project: project) }
 
   describe 'get_dashboard' do
     let(:dashboard_path) { described_class::SYSTEM_DASHBOARD_PATH }

@@ -2,7 +2,8 @@
   "type": "object",
   "required": [
     "unit",
-    "label"
+    "label",
+    "prometheus_endpoint_path"
   ],
   "oneOf": [
     { "required": ["query"] },
@@ -14,7 +15,8 @@
     "query": { "type": "string" },
     "unit": { "type": "string" },
     "label": { "type": "string" },
-    "track": { "type": "string" }
+    "track": { "type": "string" },
+    "prometheus_endpoint_path": { "type": "string" }
   },
   "additionalProperties": false
 }

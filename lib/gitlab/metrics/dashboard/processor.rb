@@ -11,11 +11,13 @@ module Gitlab
         SYSTEM_SEQUENCE = [
           Stages::CommonMetricsInserter,
           Stages::ProjectMetricsInserter,
+          Stages::EndpointInserter,
           Stages::Sorter
         ].freeze
 
         PROJECT_SEQUENCE = [
           Stages::CommonMetricsInserter,
+          Stages::EndpointInserter,
           Stages::Sorter
         ].freeze
 

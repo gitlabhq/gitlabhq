@@ -5,7 +5,8 @@ module Gitlab
     module Dashboard
       module Stages
         class BaseStage
-          DashboardLayoutError = Class.new(StandardError)
+          DashboardProcessingError = Class.new(StandardError)
+          LayoutError = Class.new(DashboardProcessingError)
 
           DEFAULT_PANEL_TYPE = 'area-chart'
 
@@ -25,15 +26,15 @@ module Gitlab
           protected
 
           def missing_panel_groups!
-            raise DashboardLayoutError.new('Top-level key :panel_groups must be an array')
+            raise LayoutError.new('Top-level key :panel_groups must be an array')
           end
 
           def missing_panels!
-            raise DashboardLayoutError.new('Each "panel_group" must define an array :panels')
+            raise LayoutError.new('Each "panel_group" must define an array :panels')
           end
 
           def missing_metrics!
-            raise DashboardLayoutError.new('Each "panel" must define an array :metrics')
+            raise LayoutError.new('Each "panel" must define an array :metrics')
           end
 
           def for_metrics
