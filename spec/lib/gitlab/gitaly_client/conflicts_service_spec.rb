@@ -51,16 +51,23 @@ describe Gitlab::GitalyClient::ConflictsService do
       subject
     end
 
-    it 'handles commit messages with UTF-8 characters' do
-      allow(::Gitlab::GitalyClient).to receive(:call).and_call_original
-      expect(::Gitlab::GitalyClient).to receive(:call).with(anything, :conflicts_service, :resolve_conflicts, any_args) do |*args|
-        # Force the generation of request messages by iterating through the enumerator
-        args[3].to_a
+    context 'with branches with UTF-8 characters' do
+      let(:source_branch) { 'testòbranch' }
+      let(:target_branch) { 'ábranch' }
 
-        double(resolution_error: nil)
+      it 'handles commit messages with UTF-8 characters' do
+        allow(::Gitlab::GitalyClient).to receive(:call).and_call_original
+        expect(::Gitlab::GitalyClient).to receive(:call).with(anything, :conflicts_service, :resolve_conflicts, any_args) do |*args|
+          # Force the generation of request messages by iterating through the enumerator
+          message = args[3].to_a.first
+          params = [message.header.commit_message, message.header.source_branch, message.header.target_branch]
+          expect(params.map(&:encoding).uniq).to eq([Encoding::ASCII_8BIT])
+
+          double(resolution_error: nil)
+        end
+
+        subject
       end
-
-      subject
     end
 
     it 'raises a relevant exception if resolution_error is present' do
