@@ -196,21 +196,22 @@ Any user can remove themselves from a group, unless they are the last Owner of
 the group. The following table depicts the various user permission levels in a
 group.
 
-| Action                                | Guest | Reporter | Developer | Maintainer | Owner |
-|---------------------------------------|-------|----------|-----------|------------|-------|
-| Browse group                          | ✓     | ✓        | ✓         |  ✓         | ✓     |
-| View Insights charts **[ULTIMATE]**   | ✓     | ✓        | ✓         |  ✓         | ✓     |
-| View group epic **[ULTIMATE]**        | ✓     | ✓        | ✓         |  ✓         | ✓     |
-| Create/edit group epic **[ULTIMATE]** |       | ✓        | ✓         | ✓          | ✓     |
-| Manage group labels                   |       | ✓        | ✓         | ✓          | ✓     |
-| Create project in group               |       |          | ✓         | ✓          | ✓     |
-| Create/edit/delete group milestones   |       |          | ✓         | ✓          | ✓     |
-| Edit group                            |       |          |           |            | ✓     |
-| Create subgroup                       |       |          |           |            | ✓     |
-| Manage group members                  |       |          |           |            | ✓     |
-| Remove group                          |       |          |           |            | ✓     |
-| Delete group epic **[ULTIMATE]**      |       |          |           |            | ✓     |
-| View group Audit Events               |       |          |           |            | ✓     |
+| Action                                          | Guest | Reporter | Developer | Maintainer | Owner |
+|-------------------------------------------------|-------|----------|-----------|------------|-------|
+| Browse group                                    | ✓     | ✓        | ✓         | ✓          | ✓     |
+| View Insights charts **[ULTIMATE]**             | ✓     | ✓        | ✓         | ✓          | ✓     |
+| View group epic **[ULTIMATE]**                  | ✓     | ✓        | ✓         | ✓          | ✓     |
+| Create/edit group epic **[ULTIMATE]**           |       | ✓        | ✓         | ✓          | ✓     |
+| Manage group labels                             |       | ✓        | ✓         | ✓          | ✓     |
+| Create project in group                         |       |          | ✓         | ✓          | ✓     |
+| Create/edit/delete group milestones             |       |          | ✓         | ✓          | ✓     |
+| Enable/disable a dependency proxy **[PREMIUM]** |       |          | ✓         | ✓          | ✓     |
+| Edit group                                      |       |          |           |            | ✓     |
+| Create subgroup                                 |       |          |           |            | ✓     |
+| Manage group members                            |       |          |           |            | ✓     |
+| Remove group                                    |       |          |           |            | ✓     |
+| Delete group epic **[ULTIMATE]**                |       |          |           |            | ✓     |
+| View group Audit Events                         |       |          |           |            | ✓     |
 
 ### Subgroup permissions
 
