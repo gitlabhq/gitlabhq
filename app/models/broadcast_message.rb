@@ -17,13 +17,11 @@ class BroadcastMessage < ApplicationRecord
   default_value_for :font,  '#FFFFFF'
 
   CACHE_KEY = 'broadcast_message_current_json'.freeze
-  LEGACY_CACHE_KEY = 'broadcast_message_current'.freeze
 
   after_commit :flush_redis_cache
 
   def self.current
     messages = cache.fetch(CACHE_KEY, as: BroadcastMessage, expires_in: cache_expires_in) do
-      remove_legacy_cache_key
       current_and_future_messages
     end
 
@@ -48,14 +46,6 @@ class BroadcastMessage < ApplicationRecord
 
   def self.cache_expires_in
     nil
-  end
-
-  # This can be removed in GitLab 12.0+
-  # The old cache key had an indefinite lifetime, and in an HA
-  # environment a one-shot migration would not work because the cache
-  # would be repopulated by a node that has not been upgraded.
-  def self.remove_legacy_cache_key
-    cache.expire(LEGACY_CACHE_KEY)
   end
 
   def active?
@@ -84,6 +74,5 @@ class BroadcastMessage < ApplicationRecord
 
   def flush_redis_cache
     self.class.cache.expire(CACHE_KEY)
-    self.class.remove_legacy_cache_key
   end
 end

@@ -210,7 +210,7 @@ describe 'Issues' do
       let(:issue) { @issue }
 
       it 'allows filtering by issues with no specified assignee' do
-        visit project_issues_path(project, assignee_id: IssuableFinder::NONE)
+        visit project_issues_path(project, assignee_id: IssuableFinder::FILTER_NONE)
 
         expect(page).to have_content 'foobar'
         expect(page).not_to have_content 'barbaz'
