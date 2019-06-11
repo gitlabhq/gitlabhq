@@ -314,9 +314,7 @@ describe('Dashboard', () => {
       });
 
       setTimeout(() => {
-        const selectedTimeWindow = component.$el.querySelector(
-          '.js-time-window-dropdown [active="true"]',
-        );
+        const selectedTimeWindow = component.$el.querySelector('.js-time-window-dropdown .active');
 
         expect(selectedTimeWindow.textContent.trim()).toEqual('30 minutes');
         done();
