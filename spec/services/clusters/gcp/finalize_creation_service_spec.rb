@@ -19,10 +19,6 @@ describe Clusters::Gcp::FinalizeCreationService, '#execute' do
 
   subject { described_class.new.execute(provider) }
 
-  before do
-    allow(ClusterConfigureWorker).to receive(:perform_async)
-  end
-
   shared_examples 'success' do
     it 'configures provider and kubernetes' do
       subject
@@ -41,12 +37,6 @@ describe Clusters::Gcp::FinalizeCreationService, '#execute' do
       expect(platform.username).to eq(username)
       expect(platform.password).to eq(password)
       expect(platform.token).to eq(token)
-    end
-
-    it 'calls ClusterConfigureWorker in a ascync fashion' do
-      expect(ClusterConfigureWorker).to receive(:perform_async).with(cluster.id)
-
-      subject
     end
   end
 

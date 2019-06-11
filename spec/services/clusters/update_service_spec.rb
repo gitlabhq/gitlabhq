@@ -39,7 +39,6 @@ describe Clusters::UpdateService do
         end
 
         before do
-          allow(ClusterConfigureWorker).to receive(:perform_async)
           stub_kubeclient_get_namespace('https://kubernetes.example.com', namespace: 'my-namespace')
         end
 

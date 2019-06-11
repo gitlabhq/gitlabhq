@@ -1,0 +1,5 @@
+---
+title: Enable just-in-time Kubernetes resource creation for project-level clusters
+merge_request: 29515
+author:
+type: changed
