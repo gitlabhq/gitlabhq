@@ -24,7 +24,13 @@ describe Gitlab::LegacyGithubImport::Importer do
         end
 
         expect(importer).to receive(:import_comments).with(:issues)
-        expect(importer).to receive(:import_comments).with(:pull_requests)
+
+        if expected_not_called.include? :import_comments_pull_requests
+          expect(importer).not_to receive(:import_comments).with(:pull_requests)
+          expected_not_called.delete_at expected_not_called.index :import_comments_pull_requests
+        else
+          expect(importer).to receive(:import_comments).with(:pull_requests)
+        end
 
         expected_not_called.each do |method_name|
           expect(importer).not_to receive(method_name)
@@ -289,7 +295,7 @@ describe Gitlab::LegacyGithubImport::Importer do
     end
 
     it_behaves_like 'Gitlab::LegacyGithubImport::Importer#execute' do
-      let(:expected_not_called) { [:import_releases] }
+      let(:expected_not_called) { [:import_releases, :import_comments_pull_requests] }
     end
     it_behaves_like 'Gitlab::LegacyGithubImport::Importer#execute an error occurs'
     it_behaves_like 'Gitlab::LegacyGithubImport unit-testing'
