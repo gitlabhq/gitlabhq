@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class BlobPresenter < Gitlab::View::Presenter::Simple
+class BlobPresenter < Gitlab::View::Presenter::Delegated
   presents :blob
 
   def highlight(plain: nil)
