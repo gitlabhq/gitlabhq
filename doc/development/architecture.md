@@ -30,6 +30,21 @@ Gitaly executes git operations from gitlab-shell and the GitLab web app, and pro
 
 You may also be interested in the [production architecture of GitLab.com](https://about.gitlab.com/handbook/engineering/infrastructure/production-architecture/).
 
+### Simplified Component Overview
+
+This is a simplified architecture diagram that can be used to
+understand GitLab's architecture.
+
+A complete architecture diagram is available in our
+[component diagram](#component-diagram) below.
+
+![Simplified Component Overview](img/architecture_simplified.png)
+
+<!-- 
+To update this diagram, GitLab team members can edit this source file:
+https://docs.google.com/drawings/d/1fBzAyklyveF-i-2q-OHUIqDkYfjjxC4mq5shwKSZHLs/edit.
+ -->
+
 ### Component diagram
 
 ```mermaid
