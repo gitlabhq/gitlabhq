@@ -7,7 +7,7 @@ module Ci
       # Otherwise, multiple pipelines could be created in a short interval.
       schedule.schedule_next_run!
 
-      RunPipelineScheduleWorker.perform_async(schedule.id, schedule.owner.id)
+      RunPipelineScheduleWorker.perform_async(schedule.id, schedule.owner&.id)
     end
   end
 end
