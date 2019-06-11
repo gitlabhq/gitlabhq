@@ -1191,29 +1191,33 @@ Parameters:
 }
 ```
 
-## Returns the up to date merge-ref HEAD commit
+## Merge to default merge ref path
 
-Merge the changes between the merge request source and target branches into `refs/merge-requests/:iid/merge`
-ref, of the target project repository, if possible. This ref will have the state the target branch would have if
+Merge the changes between the merge request source and target branches into `refs/merge-requests/:iid/merge` 
+ref, of the target project repository. This ref will have the state the target branch would have if
 a regular merge action was taken.
 
-This is not a regular merge action given it doesn't change the merge request target branch state in any manner.
+This is not a regular merge action given it doesn't change the merge request state in any manner.
 
-This ref (`refs/merge-requests/:iid/merge`) isn't necessarily overwritten when submitting
-requests to this API, though it'll make sure the ref has the latest possible state.
+This ref (`refs/merge-requests/:iid/merge`) is **always** overwritten when submitting
+requests to this API, so none of its state is kept or used in the process.
 
-If the merge request has conflicts, is empty or already merged, you'll get a `400` and a descriptive error message.
+If the merge request has conflicts, is empty or already merged,
+you'll get a `400` and a descriptive error message. If you don't have permissions to do so, 
+you'll get a `403`.
 
-It returns the HEAD commit of `refs/merge-requests/:iid/merge` in the response body in case of `200`.
+It returns the HEAD commit of `refs/merge-requests/:iid/merge` in the response body in
+case of `200`.
 
 ```
-GET /projects/:id/merge_requests/:merge_request_iid/merge_ref
+PUT /projects/:id/merge_requests/:merge_request_iid/merge_to_ref
 ```
 
 Parameters:
 
 - `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `merge_request_iid` (required)            - Internal ID of MR
+- `merge_commit_message` (optional)         - Custom merge commit message
 
 ```json
 {
