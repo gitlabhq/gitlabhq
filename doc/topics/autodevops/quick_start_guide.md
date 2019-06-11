@@ -161,7 +161,7 @@ In the **test** stage, GitLab runs various checks on the application:
 - The `code_quality` job checks the code quality and is allowed to fail
   ([Auto Code Quality](index.md#auto-code-quality-starter)) **[STARTER]**
 - The `container_scanning` job checks the Docker container if it has any
-  vulnerabilities and is allowed to fail ([Auto Container Scanning](index.md#auto-container-scanning))
+  vulnerabilities and is allowed to fail ([Auto Container Scanning](index.md#auto-container-scanning-ultimate))
 - The `dependency_scanning` job checks if the application has any dependencies
   susceptible to vulnerabilities and is allowed to fail ([Auto Dependency Scanning](index.md#auto-dependency-scanning-ultimate)) **[ULTIMATE]**
 - The `sast` job runs static analysis on the current code to check for potential

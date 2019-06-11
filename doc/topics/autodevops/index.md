@@ -8,19 +8,20 @@ to simplify the setup and execution of a mature & modern software development li
 
 ## Overview
 
-NOTE: **Enabled by default:**
+With Auto DevOps, the software development process becomes easier to set up
+as every project can have a complete workflow from verification to monitoring
+with minimal configuration. Just push your code and GitLab takes
+care of everything else. This makes it easier to start new projects and brings
+consistency to how applications are set up throughout a company.
+
+## Enabled by default
+
 Starting with GitLab 11.3, the Auto DevOps pipeline is enabled by default for all
 projects. If it has not been explicitly enabled for the project, Auto DevOps will be automatically
 disabled on the first pipeline failure. Your project will continue to use an alternative
 [CI/CD configuration file](../../ci/yaml/README.md) if one is found. A GitLab
 administrator can [change this setting](../../user/admin_area/settings/continuous_integration.md#auto-devops-core-only)
 in the admin area.
-
-With Auto DevOps, the software development process becomes easier to set up
-as every project can have a complete workflow from verification to monitoring
-with minimal configuration. Just push your code and GitLab takes
-care of everything else. This makes it easier to start new projects and brings
-consistency to how applications are set up throughout a company.
 
 ## Quick start
 
@@ -62,7 +63,7 @@ project in a simple and automatic way:
 1. [Auto SAST (Static Application Security Testing)](#auto-sast-ultimate) **[ULTIMATE]**
 1. [Auto Dependency Scanning](#auto-dependency-scanning-ultimate) **[ULTIMATE]**
 1. [Auto License Management](#auto-license-management-ultimate) **[ULTIMATE]**
-1. [Auto Container Scanning](#auto-container-scanning)
+1. [Auto Container Scanning](#auto-container-scanning-ultimate) **[ULTIMATE]**
 1. [Auto Review Apps](#auto-review-apps)
 1. [Auto DAST (Dynamic Application Security Testing)](#auto-dast-ultimate) **[ULTIMATE]**
 1. [Auto Deploy](#auto-deploy)
@@ -120,7 +121,6 @@ To make full use of Auto DevOps, you will need:
    [default service template](../../user/project/integrations/services_templates.md)
    for the entire GitLab installation.
 
-NOTE: **Note:**
 If you do not have Kubernetes or Prometheus installed, then Auto Review Apps,
 Auto Deploy, and Auto Monitoring will be silently skipped.
 
@@ -135,9 +135,12 @@ in any of the following places:
 - or at the project level as a variable: `KUBE_INGRESS_BASE_DOMAIN`
 - or at the group level as a variable: `KUBE_INGRESS_BASE_DOMAIN`.
 
-NOTE: **Note**
-The Auto DevOps base domain variable (`KUBE_INGRESS_BASE_DOMAIN`) follows the same order of precedence
+The base domain variable `KUBE_INGRESS_BASE_DOMAIN` follows the same order of precedence
 as other environment [variables](../../ci/variables/README.md#priority-of-environment-variables).
+
+NOTE: **Note**
+`AUTO_DEVOPS_DOMAIN` environment variable is deprecated and
+[is scheduled to be removed](https://gitlab.com/gitlab-org/gitlab-ce/issues/56959).
 
 A wildcard DNS A record matching the base domain(s) is required, for example,
 given a base domain of `example.com`, you'd need a DNS entry like:
@@ -222,18 +225,19 @@ can enable/disable Auto DevOps at either the project-level or instance-level.
 
 ### Enabling/disabling Auto DevOps at the instance-level (Administrators only)
 
+Even when disabled at the instance level, group owners and project maintainers can still enable
+Auto DevOps at the group and project level, respectively.
+
 1. Go to **Admin area > Settings > Continuous Integration and Deployment**.
 1. Toggle the checkbox labeled **Default to Auto DevOps pipeline for all projects**.
 1. If enabling, optionally set up the Auto DevOps [base domain](#auto-devops-base-domain) which will be used for Auto Deploy and Auto Review Apps.
 1. Click **Save changes** for the changes to take effect.
 
-NOTE: **Note:**
-Even when disabled at the instance level, group owners and project maintainers are still able to enable
-Auto DevOps at group-level and project-level, respectively.
-
 ### Enabling/disabling Auto DevOps at the group-level
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/52447) in GitLab 11.10.
+
+Only administrators and group owners can enable or disable Auto DevOps at the group level.
 
 To enable or disable Auto DevOps at the group-level:
 
@@ -244,9 +248,6 @@ To enable or disable Auto DevOps at the group-level:
 When enabling or disabling Auto DevOps at group-level, group configuration will be implicitly used for
 the subgroups and projects inside that group, unless Auto DevOps is specifically enabled or disabled on
 the subgroup or project.
-
-NOTE: **Note**
-Only administrators and group owners are allowed to enable or disable Auto DevOps at group-level.
 
 ### Enabling/disabling Auto DevOps at the project-level
 
@@ -261,16 +262,13 @@ If enabling, check that your project doesn't have a `.gitlab-ci.yml`, or if one 
 
 When the feature has been enabled, an Auto DevOps pipeline is triggered on the default branch.
 
-NOTE: **Note:**
-For GitLab versions 10.0 - 10.2, when enabling Auto DevOps, a pipeline needs to be
-manually triggered either by pushing a new commit to the repository or by visiting
-`https://example.gitlab.com/<username>/<project>/pipelines/new` and creating
-a new pipeline for your default branch, generally `master`.
+### Feature flag to enable for a percentage of projects
 
-NOTE: **Note:**
-There is also a feature flag to enable Auto DevOps to a percentage of projects
-which can be enabled from the console with
-`Feature.get(:force_autodevops_on_by_default).enable_percentage_of_actors(10)`.
+There is also a feature flag to enable Auto DevOps by default to your chosen percentage of projects.
+
+This can be enabled from the console with the following, which uses the example of 10%:
+
+`Feature.get(:force_autodevops_on_by_default).enable_percentage_of_actors(10)`
 
 ### Deployment strategy
 
@@ -350,7 +348,6 @@ frameworks are detected automatically, but if your language is not detected,
 you may succeed with a [custom buildpack](#custom-buildpacks). Check the
 [currently supported languages](#currently-supported-languages).
 
-NOTE: **Note:**
 Auto Test uses tests you already have in your application. If there are no
 tests, it's up to you to add them.
 
@@ -371,18 +368,14 @@ Any differences between the source and target branches are also
 
 Static Application Security Testing (SAST) uses the
 [SAST Docker image](https://gitlab.com/gitlab-org/security-products/sast) to run static
-analysis on the current code and checks for potential security issues. Once the
-report is created, it's uploaded as an artifact which you can later download and
+analysis on the current code and checks for potential security issues. The
+the Auto SAST stage will be skipped on licenses other than Ultimate and requires GitLab Runner 11.5 or above.
+
+Once the report is created, it's uploaded as an artifact which you can later download and
 check out.
 
 Any security warnings are also shown in the merge request widget. Read more how
 [SAST works](../../user/application_security/sast/index.md).
-
-NOTE: **Note:**
-The Auto SAST stage will be skipped on licenses other than Ultimate.
-
-NOTE: **Note:**
-The Auto SAST job requires GitLab Runner 11.5 or above.
 
 ### Auto Dependency Scanning **[ULTIMATE]**
 
@@ -390,18 +383,16 @@ The Auto SAST job requires GitLab Runner 11.5 or above.
 
 Dependency Scanning uses the
 [Dependency Scanning Docker image](https://gitlab.com/gitlab-org/security-products/dependency-scanning)
-to run analysis on the project dependencies and checks for potential security issues. Once the
+to run analysis on the project dependencies and checks for potential security issues.
+The Auto Dependency Scanning stage will be skipped on licenses other than Ultimate
+and requires GitLab Runner 11.5 or above.
+
+Once the
 report is created, it's uploaded as an artifact which you can later download and
 check out.
 
 Any security warnings are also shown in the merge request widget. Read more about
 [Dependency Scanning](../../user/application_security/dependency_scanning/index.md).
-
-NOTE: **Note:**
-The Auto Dependency Scanning stage will be skipped on licenses other than Ultimate.
-
-NOTE: **Note:**
-The Auto Dependency Scanning job requires GitLab Runner 11.5 or above.
 
 ### Auto License Management **[ULTIMATE]**
 
@@ -409,35 +400,34 @@ The Auto Dependency Scanning job requires GitLab Runner 11.5 or above.
 
 License Management uses the
 [License Management Docker image](https://gitlab.com/gitlab-org/security-products/license-management)
-to search the project dependencies for their license. Once the
+to search the project dependencies for their license. The Auto License Management stage
+will be skipped on licenses other than Ultimate.
+
+Once the
 report is created, it's uploaded as an artifact which you can later download and
 check out.
 
 Any licenses are also shown in the merge request widget. Read more how
 [License Management works](../../user/application_security/license_management/index.md).
 
-NOTE: **Note:**
-The Auto License Management stage will be skipped on licenses other than Ultimate.
-
-### Auto Container Scanning
+### Auto Container Scanning **[ULTIMATE]**
 
 > Introduced in GitLab 10.4.
 
 Vulnerability Static Analysis for containers uses
 [Clair](https://github.com/coreos/clair) to run static analysis on a
-Docker image and checks for potential security issues. Once the report is
+Docker image and checks for potential security issues. The Auto Container Scanning stage
+will be skipped on licenses other than Ultimate.
+
+Once the report is
 created, it's uploaded as an artifact which you can later download and
 check out.
 
 Any security warnings are also shown in the merge request widget. Read more how
 [Container Scanning works](../../user/application_security/container_scanning/index.md).
 
-NOTE: **Note:**
-The Auto Container Scanning stage will be skipped on licenses other than Ultimate.
-
 ### Auto Review Apps
 
-NOTE: **Note:**
 This is an optional step, since many projects do not have a Kubernetes cluster
 available. If the [requirements](#requirements) are not met, the job will
 silently be skipped.
@@ -482,14 +472,13 @@ in the first place, and thus not realize that it needs to re-apply the old confi
 Dynamic Application Security Testing (DAST) uses the
 popular open source tool [OWASP ZAProxy](https://github.com/zaproxy/zaproxy)
 to perform an analysis on the current code and checks for potential security
-issues. Once the report is created, it's uploaded as an artifact which you can
+issues. The Auto DAST stage will be skipped on licenses other than Ultimate.
+
+Once the report is created, it's uploaded as an artifact which you can
 later download and check out.
 
 Any security warnings are also shown in the merge request widget. Read how
 [DAST works](../../user/application_security/dast/index.md).
-
-NOTE: **Note:**
-The Auto DAST stage will be skipped on licenses other than Ultimate.
 
 ### Auto Browser Performance Testing **[PREMIUM]**
 
@@ -508,7 +497,6 @@ Any performance differences between the source and target branches are also
 
 ### Auto Deploy
 
-NOTE: **Note:**
 This is an optional step, since many projects do not have a Kubernetes cluster
 available. If the [requirements](#requirements) are not met, the job will
 silently be skipped.
@@ -547,7 +535,7 @@ in the first place, and thus not realize that it needs to re-apply the old confi
 
 For internal and private projects a [GitLab Deploy Token](../../user/project/deploy_tokens/index.md#gitlab-deploy-token)
 will be automatically created, when Auto DevOps is enabled and the Auto DevOps settings are saved. This Deploy Token
-can be used for permanent access to the registry.
+can be used for permanent access to the registry. When the GitLab Deploy Token has been manually revoked, it won't be automatically created.
 
 If the GitLab Deploy Token cannot be found, `CI_REGISTRY_PASSWORD` is
 used. Note that `CI_REGISTRY_PASSWORD` is only valid during deployment.
@@ -556,9 +544,6 @@ container image during deployment but in cases where the image needs to
 be pulled again, e.g. after pod eviction, Kubernetes will fail to do so
 as it will be attempting to fetch the image using
 `CI_REGISTRY_PASSWORD`.
-
-NOTE: **Note:**
-When the GitLab Deploy Token has been manually revoked, it won't be automatically created.
 
 #### Migrations
 
@@ -588,17 +573,13 @@ For example, in a Rails application in an image built with
 - `DB_INITIALIZE` can be set to `RAILS_ENV=production /bin/herokuish procfile exec bin/rails db:setup`
 - `DB_MIGRATE` can be set to `RAILS_ENV=production /bin/herokuish procfile exec bin/rails db:migrate`
 
-NOTE: **Note:**
 Unless you have a `Dockerfile` in your repo, your image is built with
-Herokuish. You must prefix commands run in these images with `/bin/herokuish
-procfile exec` in order to replicate the the environment your application is
-run in.
+Herokuish, and you must prefix commands run in these images with `/bin/herokuish
+procfile exec` to replicate the environment where your application will run.
 
 ### Auto Monitoring
 
-NOTE: **Note:**
-Check the [requirements](#requirements) for Auto Monitoring to make this stage
-work.
+See the [requirements](#requirements) for Auto Monitoring to enable this stage.
 
 Once your application is deployed, Auto Monitoring makes it possible to monitor
 your application's server and response metrics right out of the box. Auto
@@ -826,11 +807,6 @@ metadata:
 type: Opaque
 ```
 
-CAUTION: **Caution:**
-Variables with multiline values are not currently supported due to
-limitations with the current Auto DevOps scripting environment.
-
-NOTE: **Note:**
 Environment variables are generally considered immutable in a Kubernetes
 pod. Therefore, if you update an application secret without changing any
 code then manually create a new pipeline, you will find that any running
@@ -838,6 +814,10 @@ application pods will not have the updated secrets. In this case, you
 can either push a code update to GitLab to force the Kubernetes
 Deployment to recreate pods or manually delete running pods to
 cause Kubernetes to create new pods with updated secrets.
+
+NOTE: **Note:**
+Variables with multiline values are not currently supported due to
+limitations with the current Auto DevOps scripting environment.
 
 #### Advanced replica variables setup
 
@@ -1007,8 +987,7 @@ Everything behaves the same way, except:
 
 ## Currently supported languages
 
-NOTE: **Note:**
-Not all buildpacks support Auto Test yet, as it's a relatively new
+Note that not all buildpacks support Auto Test yet, as it's a relatively new
 enhancement. All of Heroku's [officially supported
 languages](https://devcenter.heroku.com/articles/heroku-ci#currently-supported-languages)
 support it, and some third-party buildpacks as well e.g., Go, Node, Java, PHP,
