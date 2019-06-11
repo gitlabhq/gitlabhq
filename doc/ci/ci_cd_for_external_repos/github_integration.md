@@ -5,23 +5,16 @@ type: howto
 # Using GitLab CI/CD with a GitHub repository **[PREMIUM]**
 
 GitLab CI/CD can be used with **GitHub.com** and **GitHub Enterprise** by
-creating a [CI/CD project](https://docs.gitlab.com/ee/user/project/ci_cd_for_external_repo.html) to connect your GitHub repository to
+creating a [CI/CD project](index.md) to connect your GitHub repository to
 GitLab.
 
-NOTE: **Note:**
-To use **GitHub Enterprise** with **GitLab.com** you should use the
-manual method.
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+Watch a video on [Using GitLab CI/CD pipelines with GitHub repositories](https://www.youtube.com/watch?v=qgl3F2j-1cI).
 
 ## Connect with GitHub integration
 
 If the [GitHub integration](../../integration/github.md) has been enabled by your GitLab
 administrator:
-
-NOTE: **Note:**
-Due to a 10-token limitation on the [GitHub OAuth Implementation](https://developer.github.com/apps/building-oauth-apps/authorizing-oauth-apps/#creating-multiple-tokens-for-oauth-apps),
-if you import more than 10 times, your oldest imported project's token will be
-revoked. See issue [#9147](https://gitlab.com/gitlab-org/gitlab-ee/issues/9147)
-for more information.
 
 1. In GitLab create a **CI/CD for external repo** project and select
    **GitHub**.
@@ -41,6 +34,12 @@ GitLab will:
 1. Enable [Pull Mirroring](../../workflow/repository_mirroring.md#pulling-from-a-remote-repository-starter).
 1. Enable [GitHub project integration](https://docs.gitlab.com/ee/user/project/integrations/github.html).
 1. Create a web hook on GitHub to notify GitLab of new commits.
+
+CAUTION: **Caution:**
+Due to a 10-token limitation on the [GitHub OAuth Implementation](https://developer.github.com/apps/building-oauth-apps/authorizing-oauth-apps/#creating-multiple-tokens-for-oauth-apps),
+if you import more than 10 times, your oldest imported project's token will be
+revoked. See issue [#9147](https://gitlab.com/gitlab-org/gitlab-ee/issues/9147)
+for more information.
 
 ## Connect with Personal Access Token
 
@@ -78,6 +77,9 @@ GitLab will:
 1. Create a web hook on GitHub to notify GitLab of new commits.
 
 ## Connect manually
+
+NOTE: **Note:**
+To use **GitHub Enterprise** with **GitLab.com** use this method.
 
 If the [GitHub integration](../../integration/github.md) is not enabled, or is enabled
 for a different GitHub instance, you GitLab CI/CD can be manually enabled for

@@ -63,6 +63,12 @@ For examples of setting up GitLab CI/CD for cloud-based environments, see:
 - [How to autoscale continuous deployment with GitLab Runner on DigitalOcean](https://about.gitlab.com/2018/06/19/autoscale-continuous-deployment-gitlab-runner-digital-ocean/)
 - [How to create a CI/CD pipeline with Auto Deploy to Kubernetes using GitLab and Helm](https://about.gitlab.com/2017/09/21/how-to-create-ci-cd-pipeline-with-autodeploy-to-kubernetes-using-gitlab-and-helm/)
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+See also the following video overviews:
+
+- [Containers, Schedulers, and GitLab CI](https://www.youtube.com/watch?v=d-9awBxEbvQ).
+- [Deploying to IBM Cloud with GitLab CI/CD](https://www.youtube.com/watch?v=6ZF4vgKMd-g).
+
 ### Customer stories
 
 For some customer experiences with GitLab CI/CD, see:

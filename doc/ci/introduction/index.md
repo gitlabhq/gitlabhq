@@ -205,6 +205,9 @@ With GitLab CI/CD you can also:
 
 To see all CI/CD features, navigate back to the [CI/CD index](../README.md).
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+Watch the video [GitLab CI Live Demo](https://www.youtube.com/watch?v=pBe4t1CD8Fc) with a deeper overview of GitLab CI/CD.
+
 ### Setting up GitLab CI/CD for the first time
 
 To get started with GitLab CI/CD, you need to familiarize yourself
