@@ -1,13 +1,13 @@
 <script>
-import { s__ } from '../../locale';
-
-const PAGINATION_UI_BUTTON_LIMIT = 4;
-const UI_LIMIT = 6;
-const SPREAD = '...';
-const PREV = s__('Pagination|Prev');
-const NEXT = s__('Pagination|Next');
-const FIRST = s__('Pagination|« First');
-const LAST = s__('Pagination|Last »');
+import {
+  PAGINATION_UI_BUTTON_LIMIT,
+  UI_LIMIT,
+  SPREAD,
+  PREV,
+  NEXT,
+  FIRST,
+  LAST,
+} from '~/vue_shared/components/pagination/constants';
 
 export default {
   props: {
