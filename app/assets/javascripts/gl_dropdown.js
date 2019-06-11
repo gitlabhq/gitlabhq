@@ -567,7 +567,7 @@ GitLabDropdown = (function() {
         e.stopPropagation();
 
         // This prevents automatic scrolling to the top
-        if ($target.is('a')) {
+        if ($target.closest('a').length) {
           return false;
         }
       }
