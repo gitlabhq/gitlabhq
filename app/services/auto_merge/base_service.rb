@@ -14,6 +14,9 @@ module AutoMerge
 
       yield if block_given?
 
+      # Notify the event that auto merge is enabled or merge param is updated
+      AutoMergeProcessWorker.perform_async(merge_request.id)
+
       strategy.to_sym
     end
 

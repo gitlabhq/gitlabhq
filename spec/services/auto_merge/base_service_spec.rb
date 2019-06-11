@@ -12,6 +12,10 @@ describe AutoMerge::BaseService do
   describe '#execute' do
     subject { service.execute(merge_request) }
 
+    before do
+      allow(AutoMergeProcessWorker).to receive(:perform_async) {}
+    end
+
     it 'sets properies to the merge request' do
       subject
 
@@ -64,6 +68,12 @@ describe AutoMerge::BaseService do
 
       it 'returns activated strategy name' do
         is_expected.to eq(AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS.to_sym)
+      end
+
+      it 'calls AutoMergeProcessWorker' do
+        expect(AutoMergeProcessWorker).to receive(:perform_async).with(merge_request.id).once
+
+        subject
       end
     end
 
