@@ -42,6 +42,9 @@ Capybara.register_driver :chrome do |app|
   # Disable /dev/shm use in CI. See https://gitlab.com/gitlab-org/gitlab-ee/issues/4252
   options.add_argument("disable-dev-shm-usage") if ENV['CI'] || ENV['CI_SERVER']
 
+  # Explicitly set user-data-dir to prevent crashes. See https://gitlab.com/gitlab-org/gitlab-ce/issues/58882#note_179811508
+  options.add_argument("user-data-dir=/tmp/chrome") if ENV['CI'] || ENV['CI_SERVER']
+
   Capybara::Selenium::Driver.new(
     app,
     browser: :chrome,
