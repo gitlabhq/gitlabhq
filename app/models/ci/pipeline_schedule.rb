@@ -73,7 +73,8 @@ module Ci
     private
 
     def ideal_next_run_at
-      Gitlab::Ci::CronParser.new(cron, cron_timezone).next_time_from(Time.now)
+      Gitlab::Ci::CronParser.new(cron, cron_timezone)
+        .next_time_from(Time.zone.now)
     end
   end
 end
