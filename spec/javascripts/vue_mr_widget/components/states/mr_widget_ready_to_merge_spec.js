@@ -6,6 +6,7 @@ import CommitEdit from '~/vue_merge_request_widget/components/states/commit_edit
 import CommitMessageDropdown from '~/vue_merge_request_widget/components/states/commit_message_dropdown.vue';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { MWPS_MERGE_STRATEGY, ATMTWPS_MERGE_STRATEGY } from '~/vue_merge_request_widget/constants';
 
 const commitMessage = 'This is the commit message';
 const squashCommitMessage = 'This is the squash commit message';
@@ -29,6 +30,8 @@ const createTestMr = customConfig => {
     shouldRemoveSourceBranch: true,
     canRemoveSourceBranch: false,
     targetBranch: 'master',
+    preferredAutoMergeStrategy: MWPS_MERGE_STRATEGY,
+    availableAutoMergeStrategies: [MWPS_MERGE_STRATEGY],
   };
 
   Object.assign(mr, customConfig.mr);
@@ -80,7 +83,6 @@ describe('ReadyToMerge', () => {
     it('should have default data', () => {
       expect(vm.mergeWhenBuildSucceeds).toBeFalsy();
       expect(vm.useCommitMessageWithDescription).toBeFalsy();
-      expect(vm.autoMergeStrategy).toBeUndefined();
       expect(vm.showCommitMessageEditor).toBeFalsy();
       expect(vm.isMakingRequest).toBeFalsy();
       expect(vm.isMergingImmediately).toBeFalsy();
@@ -91,47 +93,51 @@ describe('ReadyToMerge', () => {
   });
 
   describe('computed', () => {
-    describe('shouldShowAutoMergeText', () => {
-      it('should return true with active pipeline', () => {
-        vm.mr.isPipelineActive = true;
+    describe('isAutoMergeAvailable', () => {
+      it('should return true when at least one merge strategy is available', () => {
+        vm.mr.availableAutoMergeStrategies = [MWPS_MERGE_STRATEGY];
 
-        expect(vm.shouldShowAutoMergeText).toBeTruthy();
+        expect(vm.isAutoMergeAvailable).toBe(true);
       });
 
-      it('should return false with inactive pipeline', () => {
-        vm.mr.isPipelineActive = false;
+      it('should return false when no merge strategies are available', () => {
+        vm.mr.availableAutoMergeStrategies = [];
 
-        expect(vm.shouldShowAutoMergeText).toBeFalsy();
+        expect(vm.isAutoMergeAvailable).toBe(false);
       });
     });
 
     describe('status', () => {
       it('defaults to success', () => {
-        vm.mr.pipeline = true;
+        Vue.set(vm.mr, 'pipeline', true);
+        Vue.set(vm.mr, 'availableAutoMergeStrategies', []);
 
         expect(vm.status).toEqual('success');
       });
 
       it('returns failed when MR has CI but also has an unknown status', () => {
-        vm.mr.hasCI = true;
+        Vue.set(vm.mr, 'hasCI', true);
 
         expect(vm.status).toEqual('failed');
       });
 
       it('returns default when MR has no pipeline', () => {
+        Vue.set(vm.mr, 'availableAutoMergeStrategies', []);
+
         expect(vm.status).toEqual('success');
       });
 
       it('returns pending when pipeline is active', () => {
-        vm.mr.pipeline = {};
-        vm.mr.isPipelineActive = true;
+        Vue.set(vm.mr, 'pipeline', {});
+        Vue.set(vm.mr, 'isPipelineActive', true);
 
         expect(vm.status).toEqual('pending');
       });
 
       it('returns failed when pipeline is failed', () => {
-        vm.mr.pipeline = {};
-        vm.mr.isPipelineFailed = true;
+        Vue.set(vm.mr, 'pipeline', {});
+        Vue.set(vm.mr, 'isPipelineFailed', true);
+        Vue.set(vm.mr, 'availableAutoMergeStrategies', []);
 
         expect(vm.status).toEqual('failed');
       });
@@ -143,18 +149,20 @@ describe('ReadyToMerge', () => {
       const inActionClass = `${defaultClass} btn-info`;
 
       it('defaults to success class', () => {
+        Vue.set(vm.mr, 'availableAutoMergeStrategies', []);
+
         expect(vm.mergeButtonClass).toEqual(defaultClass);
       });
 
       it('returns success class for success status', () => {
-        vm.mr.pipeline = true;
+        Vue.set(vm.mr, 'availableAutoMergeStrategies', []);
+        Vue.set(vm.mr, 'pipeline', true);
 
         expect(vm.mergeButtonClass).toEqual(defaultClass);
       });
 
       it('returns info class for pending status', () => {
-        vm.mr.pipeline = {};
-        vm.mr.isPipelineActive = true;
+        Vue.set(vm.mr, 'availableAutoMergeStrategies', [ATMTWPS_MERGE_STRATEGY]);
 
         expect(vm.mergeButtonClass).toEqual(inActionClass);
       });
@@ -198,69 +206,82 @@ describe('ReadyToMerge', () => {
     });
 
     describe('mergeButtonText', () => {
-      it('should return Merge', () => {
+      it('should return "Merge" when no auto merge strategies are available', () => {
+        Vue.set(vm.mr, 'availableAutoMergeStrategies', []);
+
         expect(vm.mergeButtonText).toEqual('Merge');
       });
 
-      it('should return Merge in progress', () => {
-        vm.isMergingImmediately = true;
+      it('should return "Merge in progress"', () => {
+        Vue.set(vm, 'isMergingImmediately', true);
 
         expect(vm.mergeButtonText).toEqual('Merge in progress');
       });
 
-      it('should return Merge when pipeline succeeds', () => {
-        vm.isMergingImmediately = false;
-        vm.mr.isPipelineActive = true;
+      it('should return "Merge when pipeline succeeds" when the MWPS auto merge strategy is available', () => {
+        Vue.set(vm, 'isMergingImmediately', false);
+        Vue.set(vm.mr, 'preferredAutoMergeStrategy', MWPS_MERGE_STRATEGY);
 
         expect(vm.mergeButtonText).toEqual('Merge when pipeline succeeds');
       });
     });
 
+    describe('autoMergeText', () => {
+      it('should return Merge when pipeline succeeds', () => {
+        Vue.set(vm.mr, 'preferredAutoMergeStrategy', MWPS_MERGE_STRATEGY);
+
+        expect(vm.autoMergeText).toEqual('Merge when pipeline succeeds');
+      });
+    });
+
     describe('shouldShowMergeOptionsDropdown', () => {
-      it('should return false with initial data', () => {
-        expect(vm.shouldShowMergeOptionsDropdown).toBeFalsy();
+      it('should return false when no auto merge strategies are available', () => {
+        Vue.set(vm.mr, 'availableAutoMergeStrategies', []);
+
+        expect(vm.shouldShowMergeOptionsDropdown).toBe(false);
       });
 
-      it('should return true when pipeline active', () => {
-        vm.mr.isPipelineActive = true;
+      it('should return true when at least one auto merge strategy is available', () => {
+        Vue.set(vm.mr, 'availableAutoMergeStrategies', [ATMTWPS_MERGE_STRATEGY]);
 
-        expect(vm.shouldShowMergeOptionsDropdown).toBeTruthy();
+        expect(vm.shouldShowMergeOptionsDropdown).toBe(true);
       });
 
       it('should return false when pipeline active but only merge when pipeline succeeds set in project options', () => {
-        vm.mr.isPipelineActive = true;
-        vm.mr.onlyAllowMergeIfPipelineSucceeds = true;
+        Vue.set(vm.mr, 'availableAutoMergeStrategies', [ATMTWPS_MERGE_STRATEGY]);
+        Vue.set(vm.mr, 'onlyAllowMergeIfPipelineSucceeds', true);
 
-        expect(vm.shouldShowMergeOptionsDropdown).toBeFalsy();
+        expect(vm.shouldShowMergeOptionsDropdown).toBe(false);
       });
     });
 
     describe('isMergeButtonDisabled', () => {
       it('should return false with initial data', () => {
-        vm.mr.isMergeAllowed = true;
+        Vue.set(vm.mr, 'isMergeAllowed', true);
 
-        expect(vm.isMergeButtonDisabled).toBeFalsy();
+        expect(vm.isMergeButtonDisabled).toBe(false);
       });
 
       it('should return true when there is no commit message', () => {
-        vm.mr.isMergeAllowed = true;
-        vm.commitMessage = '';
+        Vue.set(vm.mr, 'isMergeAllowed', true);
+        Vue.set(vm, 'commitMessage', '');
 
-        expect(vm.isMergeButtonDisabled).toBeTruthy();
+        expect(vm.isMergeButtonDisabled).toBe(true);
       });
 
       it('should return true if merge is not allowed', () => {
-        vm.mr.isMergeAllowed = false;
-        vm.mr.onlyAllowMergeIfPipelineSucceeds = true;
+        Vue.set(vm.mr, 'isMergeAllowed', false);
+        Vue.set(vm.mr, 'availableAutoMergeStrategies', []);
+        Vue.set(vm.mr, 'onlyAllowMergeIfPipelineSucceeds', true);
 
-        expect(vm.isMergeButtonDisabled).toBeTruthy();
+        expect(vm.isMergeButtonDisabled).toBe(true);
       });
 
       it('should return true when the vm instance is making request', () => {
-        vm.mr.isMergeAllowed = true;
-        vm.isMakingRequest = true;
+        Vue.set(vm.mr, 'isMergeAllowed', true);
+        Vue.set(vm, 'isMakingRequest', true);
 
-        expect(vm.isMergeButtonDisabled).toBeTruthy();
+        expect(vm.isMergeButtonDisabled).toBe(true);
       });
     });
   });
@@ -268,31 +289,31 @@ describe('ReadyToMerge', () => {
   describe('methods', () => {
     describe('shouldShowMergeControls', () => {
       it('should return false when an external pipeline is running and required to succeed', () => {
-        vm.mr.isMergeAllowed = false;
-        vm.mr.isPipelineActive = false;
+        Vue.set(vm.mr, 'isMergeAllowed', false);
+        Vue.set(vm.mr, 'availableAutoMergeStrategies', []);
 
-        expect(vm.shouldShowMergeControls).toBeFalsy();
+        expect(vm.shouldShowMergeControls).toBe(false);
       });
 
       it('should return true when the build succeeded or build not required to succeed', () => {
-        vm.mr.isMergeAllowed = true;
-        vm.mr.isPipelineActive = false;
+        Vue.set(vm.mr, 'isMergeAllowed', true);
+        Vue.set(vm.mr, 'availableAutoMergeStrategies', []);
 
-        expect(vm.shouldShowMergeControls).toBeTruthy();
+        expect(vm.shouldShowMergeControls).toBe(true);
       });
 
       it('should return true when showing the MWPS button and a pipeline is running that needs to be successful', () => {
-        vm.mr.isMergeAllowed = false;
-        vm.mr.isPipelineActive = true;
+        Vue.set(vm.mr, 'isMergeAllowed', false);
+        Vue.set(vm.mr, 'availableAutoMergeStrategies', [MWPS_MERGE_STRATEGY]);
 
-        expect(vm.shouldShowMergeControls).toBeTruthy();
+        expect(vm.shouldShowMergeControls).toBe(true);
       });
 
       it('should return true when showing the MWPS button but not required for the pipeline to succeed', () => {
-        vm.mr.isMergeAllowed = true;
-        vm.mr.isPipelineActive = true;
+        Vue.set(vm.mr, 'isMergeAllowed', true);
+        Vue.set(vm.mr, 'availableAutoMergeStrategies', [MWPS_MERGE_STRATEGY]);
 
-        expect(vm.shouldShowMergeControls).toBeTruthy();
+        expect(vm.shouldShowMergeControls).toBe(true);
       });
     });
 
@@ -325,7 +346,6 @@ describe('ReadyToMerge', () => {
         vm.handleMergeButtonClick(true);
 
         setTimeout(() => {
-          expect(vm.autoMergeStrategy).toBe('merge_when_pipeline_succeeds');
           expect(vm.isMakingRequest).toBeTruthy();
           expect(eventHub.$emit).toHaveBeenCalledWith('MRWidgetUpdateRequested');
 
@@ -349,14 +369,13 @@ describe('ReadyToMerge', () => {
         vm.handleMergeButtonClick(false, true);
 
         setTimeout(() => {
-          expect(vm.autoMergeStrategy).toBeUndefined();
           expect(vm.isMakingRequest).toBeTruthy();
           expect(eventHub.$emit).toHaveBeenCalledWith('FailedToMerge', undefined);
 
           const params = vm.service.merge.calls.argsFor(0)[0];
 
           expect(params.should_remove_source_branch).toBeTruthy();
-          expect(params.merge_when_pipeline_succeeds).toBeFalsy();
+          expect(params.auto_merge_strategy).toBeUndefined();
           done();
         }, 333);
       });
@@ -367,14 +386,13 @@ describe('ReadyToMerge', () => {
         vm.handleMergeButtonClick();
 
         setTimeout(() => {
-          expect(vm.autoMergeStrategy).toBeUndefined();
           expect(vm.isMakingRequest).toBeTruthy();
           expect(vm.initiateMergePolling).toHaveBeenCalled();
 
           const params = vm.service.merge.calls.argsFor(0)[0];
 
           expect(params.should_remove_source_branch).toBeTruthy();
-          expect(params.merge_when_pipeline_succeeds).toBeFalsy();
+          expect(params.auto_merge_strategy).toBeUndefined();
           done();
         }, 333);
       });

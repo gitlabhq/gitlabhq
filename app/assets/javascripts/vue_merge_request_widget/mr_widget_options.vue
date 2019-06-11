@@ -29,7 +29,7 @@ import UnresolvedDiscussionsState from './components/states/unresolved_discussio
 import PipelineBlockedState from './components/states/mr_widget_pipeline_blocked.vue';
 import PipelineFailedState from './components/states/pipeline_failed.vue';
 import FailedToMerge from './components/states/mr_widget_failed_to_merge.vue';
-import MergeWhenPipelineSucceedsState from './components/states/mr_widget_merge_when_pipeline_succeeds.vue';
+import MrWidgetAutoMergeEnabled from './components/states/mr_widget_auto_merge_enabled.vue';
 import AutoMergeFailed from './components/states/mr_widget_auto_merge_failed.vue';
 import CheckingState from './components/states/mr_widget_checking.vue';
 import eventHub from './event_hub';
@@ -64,7 +64,7 @@ export default {
     'mr-widget-unresolved-discussions': UnresolvedDiscussionsState,
     'mr-widget-pipeline-blocked': PipelineBlockedState,
     'mr-widget-pipeline-failed': PipelineFailedState,
-    'mr-widget-merge-when-pipeline-succeeds': MergeWhenPipelineSucceedsState,
+    MrWidgetAutoMergeEnabled,
     'mr-widget-auto-merge-failed': AutoMergeFailed,
     'mr-widget-rebase': RebaseState,
     SourceBranchRemovalStatus,

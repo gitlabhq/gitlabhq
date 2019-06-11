@@ -1,17 +1,19 @@
 import Vue from 'vue';
-import mwpsComponent from '~/vue_merge_request_widget/components/states/mr_widget_merge_when_pipeline_succeeds.vue';
+import autoMergeEnabledComponent from '~/vue_merge_request_widget/components/states/mr_widget_auto_merge_enabled.vue';
 import MRWidgetService from '~/vue_merge_request_widget/services/mr_widget_service';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import { trimText } from 'spec/helpers/text_helper';
+import { MWPS_MERGE_STRATEGY } from '~/vue_merge_request_widget/constants';
 
-describe('MRWidgetMergeWhenPipelineSucceeds', () => {
+describe('MRWidgetAutoMergeEnabled', () => {
   let vm;
   const targetBranchPath = '/foo/bar';
   const targetBranch = 'foo';
   const sha = '1EA2EZ34';
 
   beforeEach(() => {
-    const Component = Vue.extend(mwpsComponent);
+    const Component = Vue.extend(autoMergeEnabledComponent);
     spyOn(eventHub, '$emit');
 
     vm = mountComponent(Component, {
@@ -25,6 +27,7 @@ describe('MRWidgetMergeWhenPipelineSucceeds', () => {
         sha,
         targetBranchPath,
         targetBranch,
+        autoMergeStrategy: MWPS_MERGE_STRATEGY,
       },
       service: new MRWidgetService({}),
     });
@@ -66,6 +69,32 @@ describe('MRWidgetMergeWhenPipelineSucceeds', () => {
         expect(vm.canRemoveSourceBranch).toBeFalsy();
       });
     });
+
+    describe('statusTextBeforeAuthor', () => {
+      it('should return "Set by" if the MWPS is selected', () => {
+        Vue.set(vm.mr, 'autoMergeStrategy', MWPS_MERGE_STRATEGY);
+
+        expect(vm.statusTextBeforeAuthor).toBe('Set by');
+      });
+    });
+
+    describe('statusTextAfterAuthor', () => {
+      it('should return "to be merged automatically..." if MWPS is selected', () => {
+        Vue.set(vm.mr, 'autoMergeStrategy', MWPS_MERGE_STRATEGY);
+
+        expect(vm.statusTextAfterAuthor).toBe(
+          'to be merged automatically when the pipeline succeeds',
+        );
+      });
+    });
+
+    describe('cancelButtonText', () => {
+      it('should return "Cancel automatic merge" if MWPS is selected', () => {
+        Vue.set(vm.mr, 'autoMergeStrategy', MWPS_MERGE_STRATEGY);
+
+        expect(vm.cancelButtonText).toBe('Cancel automatic merge');
+      });
+    });
   });
 
   describe('methods', () => {
@@ -96,7 +125,7 @@ describe('MRWidgetMergeWhenPipelineSucceeds', () => {
         spyOn(vm.service, 'merge').and.returnValue(
           Promise.resolve({
             data: {
-              status: 'merge_when_pipeline_succeeds',
+              status: MWPS_MERGE_STRATEGY,
             },
           }),
         );
@@ -106,7 +135,7 @@ describe('MRWidgetMergeWhenPipelineSucceeds', () => {
           expect(eventHub.$emit).toHaveBeenCalledWith('MRWidgetUpdateRequested');
           expect(vm.service.merge).toHaveBeenCalledWith({
             sha,
-            auto_merge_strategy: 'merge_when_pipeline_succeeds',
+            auto_merge_strategy: MWPS_MERGE_STRATEGY,
             should_remove_source_branch: true,
           });
           done();
@@ -119,6 +148,7 @@ describe('MRWidgetMergeWhenPipelineSucceeds', () => {
     it('should have correct elements', () => {
       expect(vm.$el.classList.contains('mr-widget-body')).toBeTruthy();
       expect(vm.$el.innerText).toContain('to be merged automatically when the pipeline succeeds');
+
       expect(vm.$el.innerText).toContain('The changes will be merged into');
       expect(vm.$el.innerText).toContain(targetBranch);
       expect(vm.$el.innerText).toContain('The source branch will not be deleted');
@@ -171,6 +201,28 @@ describe('MRWidgetMergeWhenPipelineSucceeds', () => {
         expect(
           vm.$el.querySelector('.js-remove-source-branch').getAttribute('disabled'),
         ).toBeTruthy();
+        done();
+      });
+    });
+
+    it('should render the status text as "...to merged automatically" if MWPS is selected', done => {
+      Vue.set(vm.mr, 'autoMergeStrategy', MWPS_MERGE_STRATEGY);
+
+      Vue.nextTick(() => {
+        const statusText = trimText(vm.$el.querySelector('.js-status-text-after-author').innerText);
+
+        expect(statusText).toBe('to be merged automatically when the pipeline succeeds');
+        done();
+      });
+    });
+
+    it('should render the cancel button as "Cancel automatic merge" if MWPS is selected', done => {
+      Vue.set(vm.mr, 'autoMergeStrategy', MWPS_MERGE_STRATEGY);
+
+      Vue.nextTick(() => {
+        const cancelButtonText = trimText(vm.$el.querySelector('.js-cancel-auto-merge').innerText);
+
+        expect(cancelButtonText).toBe('Cancel automatic merge');
         done();
       });
     });

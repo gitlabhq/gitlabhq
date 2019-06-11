@@ -6045,6 +6045,9 @@ msgstr ""
 msgid "Members of <strong>%{project_name}</strong>"
 msgstr ""
 
+msgid "Merge"
+msgstr ""
+
 msgid "Merge Request"
 msgstr ""
 

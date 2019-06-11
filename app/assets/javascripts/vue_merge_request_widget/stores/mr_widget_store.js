@@ -1,7 +1,9 @@
 import Timeago from 'timeago.js';
+import _ from 'underscore';
 import getStateKey from 'ee_else_ce/vue_merge_request_widget/stores/get_state_key';
 import { stateKey } from './state_maps';
 import { formatDate } from '../../lib/utils/datetime_utility';
+import { ATMTWPS_MERGE_STRATEGY, MT_MERGE_STRATEGY, MWPS_MERGE_STRATEGY } from '../constants';
 
 export default class MergeRequestStore {
   constructor(data) {
@@ -77,6 +79,10 @@ export default class MergeRequestStore {
     this.onlyAllowMergeIfPipelineSucceeds = data.only_allow_merge_if_pipeline_succeeds || false;
     this.autoMergeEnabled = Boolean(data.auto_merge_enabled);
     this.autoMergeStrategy = data.auto_merge_strategy;
+    this.availableAutoMergeStrategies = data.available_auto_merge_strategies;
+    this.preferredAutoMergeStrategy = MergeRequestStore.getPreferredAutoMergeStrategy(
+      this.availableAutoMergeStrategies,
+    );
     this.mergePath = data.merge_path;
     this.ffOnlyEnabled = data.ff_only_enabled;
     this.shouldBeRebased = Boolean(data.should_be_rebased);
@@ -104,7 +110,9 @@ export default class MergeRequestStore {
     this.sourceProjectFullPath = data.source_project_full_path;
     this.sourceProjectId = data.source_project_id;
     this.targetProjectId = data.target_project_id;
-    this.mergePipelinesEnabled = data.merge_pipelines_enabled;
+    this.mergePipelinesEnabled = Boolean(data.merge_pipelines_enabled);
+    this.mergeTrainsCount = data.merge_trains_count || 0;
+    this.mergeTrainIndex = data.merge_train_index;
 
     // Cherry-pick and Revert actions related
     this.canCherryPickInCurrentMR = currentUser.can_cherry_pick_on_current_merge_request || false;
@@ -203,5 +211,17 @@ export default class MergeRequestStore {
     const timeagoInstance = new Timeago();
 
     return timeagoInstance.format(date);
+  }
+
+  static getPreferredAutoMergeStrategy(availableAutoMergeStrategies) {
+    if (_.includes(availableAutoMergeStrategies, ATMTWPS_MERGE_STRATEGY)) {
+      return ATMTWPS_MERGE_STRATEGY;
+    } else if (_.includes(availableAutoMergeStrategies, MT_MERGE_STRATEGY)) {
+      return MT_MERGE_STRATEGY;
+    } else if (_.includes(availableAutoMergeStrategies, MWPS_MERGE_STRATEGY)) {
+      return MWPS_MERGE_STRATEGY;
+    }
+
+    return undefined;
   }
 }
