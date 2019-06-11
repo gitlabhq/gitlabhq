@@ -4,16 +4,12 @@ comments: false
 
 # Feature branching
 
-----------
-
 - Efficient parallel workflow for teams
 - Develop each feature in a branch
 - Keeps changes isolated
 - Consider a 1-to-1 link to issues
 - Push branches to the server frequently
   - Hint: This is a cheap backup for your work-in-progress code
-
-----------
 
 ## Feature branching
 
@@ -22,11 +18,9 @@ comments: false
 1. Commit
 1. Push
 
-----------
-
 ## Commands
 
-```
+```sh
 git checkout -b squash_some_bugs
 # Edit `bugs.rb`
 git status

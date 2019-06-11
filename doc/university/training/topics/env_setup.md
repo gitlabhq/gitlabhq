@@ -4,7 +4,6 @@ comments: false
 
 # Configure your environment
 
-----------
 ## Install
 
 - **Windows**
@@ -22,8 +21,6 @@ comments: false
   sudo apt-get install git-all
   ```
 
-----------
-
 ## Configure Git
 
 One-time configuration of the Git client
@@ -32,8 +29,6 @@ One-time configuration of the Git client
 git config --global user.name "Your Name"
 git config --global user.email you@example.com
 ```
-
-----------
 
 ## Configure SSH Key
 
