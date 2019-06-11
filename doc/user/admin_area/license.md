@@ -49,16 +49,10 @@ Otherwise, you can:
 
 ## Add your license at install time
 
-The license may be automatically injected during installation using one of
-two methods.
+A license can be automatically imported at install time, by placing a file named
+`Gitlab.gitlab-license` in `/etc/gitlab/` for Omnibus, or `config/` for source installations.
 
-The first requires a license file named `Gitlab.gitlab-release`.
-
-Place it in the `config/` directory if installing from source or in the
-`/etc/gitlab/` directory if installing Omnibus.
-
-The second allows the administrator to configure the location and
-filename of the license.
+It is also possible to specify a custom location and filename for the license.
 
 Source installations should set the `GITLAB_LICENSE_FILE` environment
 variable with the path to a valid GitLab Enterprise Edition license.
