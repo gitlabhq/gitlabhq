@@ -90,7 +90,7 @@ The second approach is to use the special docker-in-docker (dind)
 (`docker`) and run the job script in context of that
 image in privileged mode. 
 
-NOTE: **Note:** `docker-compose` is not part of docker-in-docker (dind). In case you'd like to use `docker-compose` in your CI builds, please follow the (installation instructions for docker-compose)[https://docs.docker.com/compose/install/] provided by docker. 
+NOTE: **Note:** `docker-compose` is not part of docker-in-docker (dind). In case you'd like to use `docker-compose` in your CI builds, please follow the [installation instructions for docker-compose](https://docs.docker.com/compose/install/) provided by docker. 
 
 In order to do that, follow the steps:
 
