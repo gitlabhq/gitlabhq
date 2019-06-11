@@ -3,6 +3,7 @@ author: Ryan Hall
 author_gitlab: blitzgren
 level: intermediate
 article_type: tutorial
+type: tutorial
 date: 2018-03-07
 last_updated: 2019-03-11
 ---
@@ -14,7 +15,7 @@ platforms without the use of plugins like Adobe Flash. Furthermore, by using Git
 single game developers, as well as game dev teams, can easily host browser-based games online.
 
 In this tutorial, we'll focus on DevOps, as well as testing and hosting games with Continuous
-Integration/Deployment methods. We assume you are familiar with GitLab, javascript,
+Integration/Deployment methods using [GitLab CI/CD](../../README.md). We assume you are familiar with GitLab, JavaScript,
 and the basics of game development.
 
 ## The game

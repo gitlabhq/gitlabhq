@@ -3,6 +3,7 @@ author: Vincent Tunru
 author_gitlab: Vinnl
 level: advanced
 article_type: user guide
+type: tutorial
 date: 2019-02-18
 description: 'Confidence checking your entire app every time a new feature is added can quickly become repetitive. Learn how to automate it with GitLab CI/CD.'
 ---
@@ -22,7 +23,9 @@ However, looking at the freshly deployed code to check whether it still looks an
 expected is repetitive manual work, which means it is a prime candidate for automation. This is
 where automated [end-to-end testing](https://martinfowler.com/bliki/BroadStackTest.html) comes in:
 having the computer run through a few simple scenarios that requires the proper functioning of all
-layers of your application, from the frontend to the database. In this article, we will discuss how
+layers of your application, from the frontend to the database.
+
+In this article, we will discuss how
 to write such end-to-end tests, and how to set up GitLab CI/CD to automatically run these tests
 against your new code, on a branch-by-branch basis. For the scope of this article, we will walk you
 through the process of setting up GitLab CI/CD for end-to-end testing Javascript-based applications

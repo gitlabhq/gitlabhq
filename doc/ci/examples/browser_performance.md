@@ -1,13 +1,17 @@
-# Browser Performance Testing with the Sitespeed.io container
+---
+type: howto
+---
 
-CAUTION: **Caution:**
+# Browser Performance Testing with the sitespeed.io container
+
+NOTE: **Note:**
 The job definition shown below is supported on GitLab 11.5 and later versions.
 It also requires the GitLab Runner 11.5 or later.
 For earlier versions, use the [previous job definitions](#previous-job-definitions).
 
 This example shows how to run the
-[Sitespeed.io container](https://hub.docker.com/r/sitespeedio/sitespeed.io/) on
-your code by using GitLab CI/CD and [Sitespeed.io](https://www.sitespeed.io)
+[sitespeed.io container](https://hub.docker.com/r/sitespeedio/sitespeed.io/) on
+your code by using GitLab CI/CD and [sitespeed.io](https://www.sitespeed.io)
 using Docker-in-Docker.
 
 First, you need GitLab Runner with
@@ -38,20 +42,20 @@ performance:
 ```
 
 The above example will create a `performance` job in your CI/CD pipeline and will run
-Sitespeed.io against the webpage you defined in `URL` to gather key metrics.
+sitespeed.io against the webpage you defined in `URL` to gather key metrics.
 The [GitLab plugin](https://gitlab.com/gitlab-org/gl-performance) for
-Sitespeed.io is downloaded in order to save the report as a
+sitespeed.io is downloaded in order to save the report as a
 [Performance report artifact](../yaml/README.md#artifactsreportsperformance-premium)
 that you can later download and analyze.
 Due to implementation limitations we always take the latest Performance artifact available.
 
-The full HTML Sitespeed.io report will also be saved as an artifact, and if you have
+The full HTML sitespeed.io report will also be saved as an artifact, and if you have
 [GitLab Pages](../../user/project/pages/index.md) enabled, it can be viewed
 directly in your browser.
 
-For further customization options of Sitespeed.io, including the ability to
-provide a list of URLs to test, please consult
-[their documentation](https://www.sitespeed.io/documentation/sitespeed.io/configuration/).
+For further customization options for sitespeed.io, including the ability to
+provide a list of URLs to test, please see the
+[Sitespeed.io Configuration](https://www.sitespeed.io/documentation/sitespeed.io/configuration/) documentation.
 
 TIP: **Tip:**
 For [GitLab Premium](https://about.gitlab.com/pricing/) users, key metrics are automatically
@@ -73,7 +77,7 @@ set this up:
 1. In the `performance` job, read the previous artifact into an environment
    variable, like `$CI_ENVIRONMENT_URL`, and use it to parameterize the test
    URLs.
-1. You can now run the Sitespeed.io container against the desired hostname and
+1. You can now run the sitespeed.io container against the desired hostname and
    paths.
 
 Your `.gitlab-ci.yml` file would look like:

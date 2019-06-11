@@ -3,6 +3,7 @@ author: Alexandre S Hostert
 author_gitlab: Hostert
 level: beginner
 article_type: tutorial
+type: tutorial
 date: 2018-02-20
 last_updated: 2019-03-06
 ---
@@ -16,11 +17,11 @@ simultaneous users.
 
 That's why we're hearing so much about Phoenix today.
 
-In this tutorial, we'll teach you how to set up GitLab CI/CD to build and test a Phoenix
+In this tutorial, we'll teach you how to set up [GitLab CI/CD](../../README.md) to build and test a Phoenix
 application.
 
-_We assume that you know how to create a Phoenix app, run tests locally, and how to work with Git
-and GitLab UI._
+The tutorial assumes that you know how to create a Phoenix app, run tests locally, and how to work with Git
+and the GitLab UI.
 
 ## Introduction
 
