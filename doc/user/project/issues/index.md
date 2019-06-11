@@ -86,7 +86,9 @@ For more information, see the [Issue Data and Actions](issue_data_and_actions.md
 
 On the Issues List, you can view all issues in the current project, or from multiple projects when opening the Issues List from the higher-level group context. Filter the issue list by [any search query](../../search/index.md#issues-and-merge-requests-per-project) and/or specific metadata, such as label(s), assignees(s), status, and more. From this view, you can also make certain changes [in bulk](../bulk_editing.md) to the displayed issues.
 
-For more information, see the [Issue Data and Actions](issue_data_and_actions.md) page.
+For more information on interacting with Issues, see the [Issue Data and Actions](issue_data_and_actions.md) page.
+
+For sorting by issue priority, see [Label Priority](../labels.md#label-priority).
 
 ### Issue boards
 
