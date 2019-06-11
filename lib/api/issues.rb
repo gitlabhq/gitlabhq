@@ -252,14 +252,9 @@ module API
         issue = user_project.issues.find_by!(iid: params.delete(:issue_iid))
         authorize! :update_issue, issue
 
-        # Setting updated_at only allowed for admins and owners as well
-        if params[:updated_at].present?
-          if current_user.admin? || user_project.owner == current_user || current_user.owned_groups.include?(user_project.owner)
-            issue.system_note_timestamp = params[:updated_at]
-          else
-            params.delete(:updated_at)
-          end
-        end
+        # Setting updated_at is allowed only for admins and owners
+        params.delete(:updated_at) unless current_user.can?(:set_issue_updated_at, user_project)
+        issue.system_note_timestamp = params[:updated_at]
 
         update_params = declared_params(include_missing: false).merge(request: request, api: true)
 
