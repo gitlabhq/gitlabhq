@@ -2055,6 +2055,21 @@ ActiveRecord::Schema.define(version: 20190620112608) do
     t.index ["title"], name: "index_milestones_on_title_trigram", using: :gin, opclasses: {"title"=>"gin_trgm_ops"}
   end
 
+  create_table "namespace_aggregation_schedules", primary_key: "namespace_id", id: :integer, default: nil, force: :cascade do |t|
+    t.index ["namespace_id"], name: "index_namespace_aggregation_schedules_on_namespace_id", unique: true, using: :btree
+  end
+
+  create_table "namespace_root_storage_statistics", primary_key: "namespace_id", id: :integer, default: nil, force: :cascade do |t|
+    t.datetime_with_timezone "updated_at", null: false
+    t.bigint "repository_size", default: 0, null: false
+    t.bigint "lfs_objects_size", default: 0, null: false
+    t.bigint "wiki_size", default: 0, null: false
+    t.bigint "build_artifacts_size", default: 0, null: false
+    t.bigint "storage_size", default: 0, null: false
+    t.bigint "packages_size", default: 0, null: false
+    t.index ["namespace_id"], name: "index_namespace_root_storage_statistics_on_namespace_id", unique: true, using: :btree
+  end
+
   create_table "namespace_statistics", id: :serial, force: :cascade do |t|
     t.integer "namespace_id", null: false
     t.integer "shared_runners_seconds", default: 0, null: false
@@ -3757,6 +3772,8 @@ ActiveRecord::Schema.define(version: 20190620112608) do
   add_foreign_key "merge_trains", "users", on_delete: :cascade
   add_foreign_key "milestones", "namespaces", column: "group_id", name: "fk_95650a40d4", on_delete: :cascade
   add_foreign_key "milestones", "projects", name: "fk_9bd0a0c791", on_delete: :cascade
+  add_foreign_key "namespace_aggregation_schedules", "namespaces", on_delete: :cascade
+  add_foreign_key "namespace_root_storage_statistics", "namespaces", on_delete: :cascade
   add_foreign_key "namespace_statistics", "namespaces", on_delete: :cascade
   add_foreign_key "namespaces", "namespaces", column: "custom_project_templates_group_id", name: "fk_e7a0b20a6b", on_delete: :nullify
   add_foreign_key "namespaces", "plans", name: "fk_fdd12e5b80", on_delete: :nullify
