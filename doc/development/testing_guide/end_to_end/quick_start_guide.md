@@ -220,7 +220,7 @@ As the pre-conditions for our test suite, the things that needs to happen before
 - The user logging in;
 - A premium license already being set;
 - A project being created with an issue and labels already set;
-- The issue page being opened with only one scoped label applied to the it.
+- The issue page being opened with only one scoped label applied to it.
 
 > When running end-to-end tests as part of the GitLab's continuous integration process [a license is already set as an environment variable](https://gitlab.com/gitlab-org/gitlab-ee/blob/1a60d926740db10e3b5724713285780a4f470531/qa/qa/ee/strategy.rb#L20). For running tests locally you can set up such license by following the document [what tests can be run?](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/what_tests_can_be_run.md#supported-remote-grid-environment-variables), based on the [supported GitLab environment variables](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/what_tests_can_be_run.md#supported-gitlab-environment-variables).
 
@@ -359,9 +359,11 @@ Now, let's make it possible to create an issue resource through the API.
 
 First, in the [issue resource](https://gitlab.com/gitlab-org/gitlab-ee/blob/d3584e80b4236acdf393d815d604801573af72cc/qa/qa/resource/issue.rb), let's expose its labels attribute.
 
-Add the following `attribute :labels` right below the [`attribute :title`](https://gitlab.com/gitlab-org/gitlab-ee/blob/d3584e80b4236acdf393d815d604801573af72cc/qa/qa/resource/issue.rb#L15).
+Add the following `attribute :labels` right above the [`attribute :title`](https://gitlab.com/gitlab-org/gitlab-ee/blob/d3584e80b4236acdf393d815d604801573af72cc/qa/qa/resource/issue.rb#L15).
 
 > This line is needed to allow for labels to be automatically added to an issue when fabricating it via API.
+
+> We add the new line above the existing attribute to keep them alphabetically organized.
 
 Next, add the following code right below the [`fabricate!`](https://gitlab.com/gitlab-org/gitlab-ee/blob/d3584e80b4236acdf393d815d604801573af72cc/qa/qa/resource/issue.rb#L27) method.
 
@@ -376,8 +378,8 @@ end
 
 def api_post_body
   {
-    title: title,
-    labels: [labels]
+    labels: [labels],
+    title: title
   }
 end
 ```
@@ -392,7 +394,7 @@ By defining the `api_post_path` method, we allow the [`ApiFabricator`](https://g
 
 By defining the `api_post_body` method, we allow the [`ApiFabricator.api_post`](https://gitlab.com/gitlab-org/gitlab-ee/blob/a9177ca1812bac57e2b2fa4560e1d5dd8ffac38b/qa/qa/resource/api_fabricator.rb#L68) method to know which data to send when making the `POST` request.
 
-> Notice that we pass both `title` and `labels` attributes in the `api_post_body`, where `labels` receives an array of labels, and [`title` is required](https://docs.gitlab.com/ee/api/issues.html#new-issue).
+> Notice that we pass both `labels` and `title` attributes in the `api_post_body`, where `labels` receives an array of labels, and [`title` is required](https://docs.gitlab.com/ee/api/issues.html#new-issue). Also, notice that we keep them alphabetically organized.
 
 **Label resource**
 
@@ -417,8 +419,8 @@ end
 
 def api_post_body
   {
-    name: @title,
-    color: @color
+    color: @color,
+    name: @title
   }
 end
 ```
@@ -431,13 +433,13 @@ By defining the `api_post_path` method, we allow for the [`ApiFabricator `](http
 
 By defining the `api_post_body` method, we we allow for the [`ApiFabricator.api_post`](https://gitlab.com/gitlab-org/gitlab-ee/blob/a9177ca1812bac57e2b2fa4560e1d5dd8ffac38b/qa/qa/resource/api_fabricator.rb#L68) method to know which data to send when making the `POST` request.
 
-> Notice that we pass both `name` and `color` attributes in the `api_post_body` since [those are required](https://docs.gitlab.com/ee/api/labels.html#create-a-new-label).
+> Notice that we pass both `color` and `name` attributes in the `api_post_body` since [those are required](https://docs.gitlab.com/ee/api/labels.html#create-a-new-label). Also, notice that we keep them alphabetically organized.
 
 ### 8. Page Objects
 
 Page Objects are used in end-to-end tests for maintenance reasons, where a page's elements and methods are defined to be reused in any test.
 
-> Page Objects are auto-loaded in the `qa/qa.rb` file and available in all the test files (`*_spec.rb`).
+> Page Objects are auto-loaded in the [`qa/qa.rb`](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/qa/qa.rb) file and available in all the test files (`*_spec.rb`).
 
 Take a look at the [Page Objects] documentation.
 
@@ -487,17 +489,17 @@ Let's now update the Issue Page Object.
 
 The file we will have to change is the [Issue Page Object](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/qa/qa/page/project/issue/show.rb).
 
-First, add the following code right below the definition of an already implemented view:
+First, add the following code right below the definition of an already implemented view (keep in mind that view's definitions and their elements should be alphabetically ordered):
 
 ```ruby
-view 'app/views/shared/issuable/_sidebar.html.haml' do
-  element :labels_block
-  element :edit_link_labels
-  element :dropdown_menu_labels
-end
-
 view 'app/helpers/dropdowns_helper.rb' do
   element :dropdown_input_field
+end
+
+view 'app/views/shared/issuable/_sidebar.html.haml' do
+  element :dropdown_menu_labels
+  element :edit_link_labels
+  element :labels_block
 end
 ```
 
@@ -505,7 +507,7 @@ Similarly to what we did before, let's first change the Page Object even without
 
 Now, let's implement the methods `select_labels_and_refresh` and `text_of_labels_block`.
 
-Somewhere between the definition of the views and the private methods, add the following snippet of code:
+Somewhere between the definition of the views and the private methods, add the following snippet of code (these should also be alphabetically ordered for organization reasons):
 
 ```ruby
 def select_labels_and_refresh(labels)
@@ -545,11 +547,11 @@ Now let's change the view and the `dropdowns_helper` files to add the selectors 
 
 In the [app/views/shared/issuable/_sidebar.html.haml](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/app/views/shared/issuable/_sidebar.html.haml) file, on [line 105 ](https://gitlab.com/gitlab-org/gitlab-ee/blob/84043fa72ca7f83ae9cde48ad670e6d5d16501a3/app/views/shared/issuable/_sidebar.html.haml#L105), add an extra class `qa-edit-link-labels`.
 
-The code should look like this: `= link_to _('Edit'), '#', class: 'js-sidebar-dropdown-toggle edit-link qa-edit-link-labels float-right'`.
+The code should look like this: `= link_to _('Edit'), '#', class: 'js-sidebar-dropdown-toggle edit-link float-right qa-edit-link-labels'`.
 
 In the same file, on [line 121](https://gitlab.com/gitlab-org/gitlab-ee/blob/84043fa72ca7f83ae9cde48ad670e6d5d16501a3/app/views/shared/issuable/_sidebar.html.haml#L121), add an extra class `.qa-dropdown-menu-labels`.
 
-The code should look like this: `.dropdown-menu.dropdown-select.dropdown-menu-paging.dropdown-menu-labels.qa-dropdown-menu-labels.dropdown-menu-selectable`.
+The code should look like this: `.dropdown-menu.dropdown-select.dropdown-menu-paging.dropdown-menu-labels.dropdown-menu-selectable.qa-dropdown-menu-labels`.
 
 In the [`dropdowns_helper.rb`](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/app/helpers/dropdowns_helper.rb) file, on [line 94](https://gitlab.com/gitlab-org/gitlab-ee/blob/99e51a374f2c20bee0989cac802e4b5621f72714/app/helpers/dropdowns_helper.rb#L94), add an extra class `qa-dropdown-input-field`.
 
@@ -565,7 +567,7 @@ The code should look like this: `filter_output = search_field_tag search_id, nil
 
 The last thing that we have to do is to update `QA::Page::Base` class to add the `send_keys_to_element` method on it.
 
-Add the following snippet of code somewhere where class methods are defined:
+Add the following snippet of code somewhere where class methods are defined (remember to organize methods alphabetically, and if you see a place where this standard is not being followed, it would be helpful if you could rearrange it):
 
 ```ruby
 def send_keys_to_element(name, keys)
