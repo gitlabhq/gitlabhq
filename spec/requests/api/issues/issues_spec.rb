@@ -4,8 +4,9 @@ require 'spec_helper'
 
 describe API::Issues do
   set(:user) { create(:user) }
-  set(:project) do
-    create(:project, :public, creator_id: user.id, namespace: user.namespace)
+  set(:project) { create(:project, :public, :repository, creator_id: user.id, namespace: user.namespace) }
+  set(:private_mrs_project) do
+    create(:project, :public, :repository, creator_id: user.id, namespace: user.namespace, merge_requests_access_level: ProjectFeature::PRIVATE)
   end
 
   let(:user2)       { create(:user) }
@@ -63,6 +64,8 @@ describe API::Issues do
   before(:all) do
     project.add_reporter(user)
     project.add_guest(guest)
+    private_mrs_project.add_reporter(user)
+    private_mrs_project.add_guest(guest)
   end
 
   before do
@@ -723,6 +726,30 @@ describe API::Issues do
           expect(response).to have_gitlab_http_status(400)
           expect(json_response["error"]).to include("mutually exclusive")
         end
+      end
+    end
+
+    context "when returns issue merge_requests_count for different access levels" do
+      let!(:merge_request1) do
+        create(:merge_request,
+               :simple,
+               author: user,
+               source_project: private_mrs_project,
+               target_project: private_mrs_project,
+               description: "closes #{issue.to_reference(private_mrs_project)}")
+      end
+      let!(:merge_request2) do
+        create(:merge_request,
+               :simple,
+               author: user,
+               source_project: project,
+               target_project: project,
+               description: "closes #{issue.to_reference}")
+      end
+
+      it_behaves_like 'accessible merge requests count' do
+        let(:api_url) { "/issues" }
+        let(:target_issue) { issue }
       end
     end
   end

@@ -4,8 +4,9 @@ require 'spec_helper'
 
 describe API::Issues do
   set(:user) { create(:user) }
-  set(:project) do
-    create(:project, :public, creator_id: user.id, namespace: user.namespace)
+  set(:project) { create(:project, :public, :repository, creator_id: user.id, namespace: user.namespace) }
+  set(:private_mrs_project) do
+    create(:project, :public, :repository, creator_id: user.id, namespace: user.namespace, merge_requests_access_level: ProjectFeature::PRIVATE)
   end
 
   let(:user2)       { create(:user) }
@@ -60,9 +61,28 @@ describe API::Issues do
   let(:no_milestone_title) { 'None' }
   let(:any_milestone_title) { 'Any' }
 
+  let!(:merge_request1) do
+    create(:merge_request,
+           :simple,
+           author: user,
+           source_project: project,
+           target_project: project,
+           description: "closes #{issue.to_reference}")
+  end
+  let!(:merge_request2) do
+    create(:merge_request,
+           :simple,
+           author: user,
+           source_project: private_mrs_project,
+           target_project: private_mrs_project,
+           description: "closes #{issue.to_reference(private_mrs_project)}")
+  end
+
   before(:all) do
     project.add_reporter(user)
     project.add_guest(guest)
+    private_mrs_project.add_reporter(user)
+    private_mrs_project.add_guest(guest)
   end
 
   before do
@@ -255,6 +275,11 @@ describe API::Issues do
       get api("#{base_url}/issues", user), params: { labels: [label.title] }
 
       expect_paginated_array_response(issue.id)
+    end
+
+    it_behaves_like 'accessible merge requests count' do
+      let(:api_url) { "/projects/#{project.id}/issues" }
+      let(:target_issue) { issue }
     end
 
     context 'with labeled issues' do
@@ -636,34 +661,26 @@ describe API::Issues do
         expect(json_response['iid']).to eq(confidential_issue.iid)
       end
     end
+
+    it_behaves_like 'accessible merge requests count' do
+      let(:api_url) { "/projects/#{project.id}/issues/#{issue.iid}" }
+      let(:target_issue) { issue }
+    end
   end
 
   describe 'GET :id/issues/:issue_iid/closed_by' do
-    let(:merge_request) do
-      create(:merge_request,
-        :simple,
-        author: user,
-        source_project: project,
-        target_project: project,
-        description: "closes #{issue.to_reference}")
-    end
-
-    before do
-      create(:merge_requests_closing_issues, issue: issue, merge_request: merge_request)
-    end
-
     context 'when unauthenticated' do
       it 'return public project issues' do
         get api("/projects/#{project.id}/issues/#{issue.iid}/closed_by")
 
-        expect_paginated_array_response(merge_request.id)
+        expect_paginated_array_response(merge_request1.id)
       end
     end
 
     it 'returns merge requests that will close issue on merge' do
       get api("/projects/#{project.id}/issues/#{issue.iid}/closed_by", user)
 
-      expect_paginated_array_response(merge_request.id)
+      expect_paginated_array_response(merge_request1.id)
     end
 
     context 'when no merge requests will close issue' do
@@ -721,13 +738,6 @@ describe API::Issues do
     end
 
     it 'returns merge requests that mentioned a issue' do
-      create(:merge_request,
-        :simple,
-        author: user,
-        source_project: project,
-        target_project: project,
-        description: 'Some description')
-
       get_related_merge_requests(project.id, issue.iid, user)
 
       expect_paginated_array_response(related_mr.id)

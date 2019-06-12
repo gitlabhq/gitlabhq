@@ -42,7 +42,7 @@ module IssuableCollections
 
     @issuables          = @issuables.page(params[:page])
     @issuables          = per_page_for_relative_position if params[:sort] == 'relative_position'
-    @issuable_meta_data = issuable_meta_data(@issuables, collection_type)
+    @issuable_meta_data = issuable_meta_data(@issuables, collection_type, current_user)
     @total_pages        = issuable_page_count
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
