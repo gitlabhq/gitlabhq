@@ -53,9 +53,11 @@ Capybara.register_driver :chrome do |app|
   )
 end
 
+Capybara.server = :webrick
 Capybara.javascript_driver = :chrome
 Capybara.default_max_wait_time = timeout
 Capybara.ignore_hidden_elements = true
+Capybara.default_normalize_ws = true
 
 # Keep only the screenshots generated from the last failing test suite
 Capybara::Screenshot.prune_strategy = :keep_last_run

@@ -50,7 +50,7 @@ end
 def check_content_reverted(template_content)
   find('.template-selectors-undo-menu .btn-info').click
   expect(page).not_to have_content(template_content)
-  expect(find('.template-type-selector .dropdown-toggle-text')).to have_content
+  expect(page).to have_css('.template-type-selector .dropdown-toggle-text')
 end
 
 def select_file_template(template_selector_selector, template_name)

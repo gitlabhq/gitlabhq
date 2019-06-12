@@ -174,7 +174,6 @@ describe 'Projects > Files > User creates files' do
 
       it 'creates and commit new file in forked project', :js do
         expect(page).to have_selector('.file-editor')
-        expect(page).to have_content
 
         find('#editor')
         execute_script("ace.edit('editor').setValue('*.rbca')")

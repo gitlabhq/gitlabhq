@@ -313,7 +313,7 @@ describe 'Merge request > User creates image diff notes', :js do
 
   def create_image_diff_note
     expand_text = 'Click to expand it.'
-    page.all('a', text: expand_text).each do |element|
+    page.all('a', text: expand_text, wait: false).each do |element|
       element.click
     end
 

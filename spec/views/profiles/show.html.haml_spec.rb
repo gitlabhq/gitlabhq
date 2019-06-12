@@ -12,8 +12,8 @@ describe 'profiles/show' do
     it 'displays the correct elements' do
       render
 
-      expect(rendered).to have_field('user_name', user.name)
-      expect(rendered).to have_field('user_id', user.id)
+      expect(rendered).to have_field('user_name', with: user.name)
+      expect(rendered).to have_field('user_id', with: user.id)
     end
   end
 end

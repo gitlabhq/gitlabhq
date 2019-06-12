@@ -35,7 +35,7 @@ describe 'User searches for commits' do
       fill_in('search', with: 'deadbeef')
       click_button('Search')
 
-      expect(page).to have_current_path('/search', only_path: true)
+      expect(page).to have_current_path('/search', ignore_query: true)
     end
 
     it 'finds multiple commits' do

@@ -82,7 +82,7 @@ describe 'Commits' do
 
           it 'shows pipeline`s data' do
             expect(page).to have_content pipeline.sha[0..7]
-            expect(page).to have_content pipeline.git_commit_message
+            expect(page).to have_content pipeline.git_commit_message.gsub!(/\s+/, ' ')
             expect(page).to have_content pipeline.user.name
           end
         end
@@ -125,7 +125,7 @@ describe 'Commits' do
 
         it 'Renders header', :js do
           expect(page).to have_content pipeline.sha[0..7]
-          expect(page).to have_content pipeline.git_commit_message
+          expect(page).to have_content pipeline.git_commit_message.gsub!(/\s+/, ' ')
           expect(page).to have_content pipeline.user.name
           expect(page).not_to have_link('Cancel running')
           expect(page).not_to have_link('Retry')
@@ -147,7 +147,7 @@ describe 'Commits' do
 
         it do
           expect(page).to have_content pipeline.sha[0..7]
-          expect(page).to have_content pipeline.git_commit_message
+          expect(page).to have_content pipeline.git_commit_message.gsub!(/\s+/, ' ')
           expect(page).to have_content pipeline.user.name
 
           expect(page).not_to have_link('Cancel running')

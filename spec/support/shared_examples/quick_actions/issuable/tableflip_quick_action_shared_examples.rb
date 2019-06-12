@@ -27,7 +27,7 @@ shared_examples 'tableflip quick action' do |issuable_type|
 
       expect(issuable.description).to eq "bug description\noops (╯°□°)╯︵ ┻━┻"
       expect(page).to have_content 'bug 345'
-      expect(page).to have_content "bug description\noops (╯°□°)╯︵ ┻━┻"
+      expect(page).to have_content "bug description oops (╯°□°)╯︵ ┻━┻"
     end
   end
 

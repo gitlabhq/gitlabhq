@@ -91,7 +91,7 @@ describe 'Pipeline', :js do
 
       within '.pipeline-info' do
         expect(page).to have_content("#{pipeline.statuses.count} jobs " \
-                                      "for #{pipeline.ref} ")
+                                      "for #{pipeline.ref}")
         expect(page).to have_link(pipeline.ref,
           href: project_commits_path(pipeline.project, pipeline.ref))
       end
