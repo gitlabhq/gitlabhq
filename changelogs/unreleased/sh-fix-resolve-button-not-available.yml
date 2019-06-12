@@ -1,0 +1,5 @@
+---
+title: Fix "Resolve conflicts" button not appearing for some users
+merge_request: 29535
+author:
+type: fixed

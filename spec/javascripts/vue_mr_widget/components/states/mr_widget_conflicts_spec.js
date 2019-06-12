@@ -23,11 +23,78 @@ describe('MRWidgetConflicts', () => {
     vm.destroy();
   });
 
-  describe('when allowed to merge', () => {
+  // There are two permissions we need to consider:
+  //
+  // 1. Is the user allowed to merge to the target branch?
+  // 2. Is the user allowed to push to the source branch?
+  //
+  // This yields 4 possible permutations that we need to test, and
+  // we test them below. A user who can push to the source
+  // branch should be allowed to resolve conflicts. This is
+  // consistent with what the backend does.
+  describe('when allowed to merge but not allowed to push to source branch', () => {
     beforeEach(() => {
       createComponent({
         mr: {
           canMerge: true,
+          canPushToSourceBranch: false,
+          conflictResolutionPath: path,
+          conflictsDocsPath: '',
+        },
+      });
+    });
+
+    it('should tell you about conflicts without bothering other people', () => {
+      expect(vm.text()).toContain('There are merge conflicts');
+      expect(vm.text()).not.toContain('ask someone with write access');
+    });
+
+    it('should not allow you to resolve the conflicts', () => {
+      expect(vm.text()).not.toContain('Resolve conflicts');
+    });
+
+    it('should have merge buttons', () => {
+      const mergeLocallyButton = vm.find('.js-merge-locally-button');
+
+      expect(mergeLocallyButton.text()).toContain('Merge locally');
+    });
+  });
+
+  describe('when not allowed to merge but allowed to push to source branch', () => {
+    beforeEach(() => {
+      createComponent({
+        mr: {
+          canMerge: false,
+          canPushToSourceBranch: true,
+          conflictResolutionPath: path,
+          conflictsDocsPath: '',
+        },
+      });
+    });
+
+    it('should tell you about conflicts', () => {
+      expect(vm.text()).toContain('There are merge conflicts');
+      expect(vm.text()).toContain('ask someone with write access');
+    });
+
+    it('should allow you to resolve the conflicts', () => {
+      const resolveButton = vm.find('.js-resolve-conflicts-button');
+
+      expect(resolveButton.text()).toContain('Resolve conflicts');
+      expect(resolveButton.attributes('href')).toEqual(path);
+    });
+
+    it('should not have merge buttons', () => {
+      expect(vm.text()).not.toContain('Merge locally');
+    });
+  });
+
+  describe('when allowed to merge and push to source branch', () => {
+    beforeEach(() => {
+      createComponent({
+        mr: {
+          canMerge: true,
+          canPushToSourceBranch: true,
           conflictResolutionPath: path,
           conflictsDocsPath: '',
         },
@@ -53,11 +120,12 @@ describe('MRWidgetConflicts', () => {
     });
   });
 
-  describe('when user does not have permission to merge', () => {
+  describe('when user does not have permission to push to source branch', () => {
     it('should show proper message', () => {
       createComponent({
         mr: {
           canMerge: false,
+          canPushToSourceBranch: false,
           conflictsDocsPath: '',
         },
       });
@@ -74,6 +142,7 @@ describe('MRWidgetConflicts', () => {
       createComponent({
         mr: {
           canMerge: false,
+          canPushToSourceBranch: false,
           conflictsDocsPath: '',
         },
       });
@@ -115,6 +184,7 @@ describe('MRWidgetConflicts', () => {
       createComponent({
         mr: {
           canMerge: true,
+          canPushToSourceBranch: true,
           conflictResolutionPath: gl.TEST_HOST,
           sourceBranchProtected: true,
           conflictsDocsPath: '',
@@ -136,6 +206,7 @@ describe('MRWidgetConflicts', () => {
       createComponent({
         mr: {
           canMerge: true,
+          canPushToSourceBranch: true,
           conflictResolutionPath: gl.TEST_HOST,
           sourceBranchProtected: false,
           conflictsDocsPath: '',
