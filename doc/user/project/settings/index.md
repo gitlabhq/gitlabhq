@@ -26,6 +26,12 @@ Set up your project's access, [visibility](../../../public_access/public_access.
 
 ![projects sharing permissions](img/sharing_and_permissions_settings.png)
 
+If Issues are disabled, or you can't access Issues because you're not a project member, then Lables and Milestones 
+links will be missing from the sidebar UI.
+
+You can still access them with direct links if you can access Merge Requests. This is deliberate, if you can see 
+Issues or Merge Requests, both of which use Labels and Milestones, then you shouldn't be denied access to Labels and Milestones pages.
+
 ### Issue settings
 
 Add an [issue description template](../description_templates.md#description-templates) to your project, so that every new issue will start with a custom template.
