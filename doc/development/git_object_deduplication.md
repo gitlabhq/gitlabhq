@@ -10,10 +10,10 @@ GitLab implements Git object deduplication.
 
 ## Enabling Git object deduplication via feature flags
 
-As of GitLab 11.9, Git object deduplication in GitLab is in beta. In this
-document, you can read about the caveats of enabling the feature. Also,
-note that Git object deduplication is limited to forks of public
-projects on hashed repository storage.
+As of GitLab 12.0, Git object deduplication in GitLab is still behind a
+feature flag. In this document, you can read about the effects of
+enabling the feature. Also, note that Git object deduplication is
+limited to forks of public projects on hashed repository storage.
 
 You can enable deduplication globally by setting the `object_pools`
 feature flag to `true`:
@@ -51,6 +51,15 @@ configuration. Objects in A that are not in B will remain in A. For this
 to work, it is of course critical that **no objects ever get deleted from
 B** because A might need them.
 
+DANGER: **Danger:**
+Do not run `git prune` or `git gc` in pool repositories! This can
+cause data loss in "real" repositories that depend on the pool in
+question.
+
+The danger lies in `git prune`, and `git gc` calls `git prune`. The
+problem is that `git prune`, when running in a pool repository, cannot
+reliable decide if an object is no longer needed.
+
 ### Git alternates in GitLab: pool repositories
 
 GitLab organizes this object borrowing by creating special **pool
@@ -80,43 +89,10 @@ across a collection of GitLab project repositories at the Git level:
 
 The effectiveness of Git object deduplication in GitLab depends on the
 amount of overlap between the pool repository and each of its
-participants. As of GitLab 11.9, we have a somewhat optimistic system.
-The only data that will be deduplicated is the data in the source
-project repository at the time the pool repository is created. That is,
-the data in the source project at the time of the first fork *after* the
-deduplication feature has been enabled.
-
-When we enable the object deduplication feature for
-gitlab.com/gitlab-org/gitlab-ce, which is about 1GB at the time of
-writing, all new forks of that project would be 1GB smaller than they
-would have been without Git object deduplication. So even in its current
-optimistic form, we expect Git object deduplication in GitLab to make a
-difference.
-
-However, if a lot of Git objects get added to the project repositories
-in a pool after the pool repository was created these new Git objects
-will currently (GitLab 11.9) not get deduplicated. Over time, the
-deduplication factor of the pool will get worse and worse.
-
-As an extreme example, if we create an empty repository A, and fork that
-to repository B, behind the scenes we get an object pool P with no
-objects in it at all. If we then push 1GB of Git data to A, and push the
-same Git data to B, it will not get deduplicated, because that data was
-not in A at the time P was created.
-
-This also matters in less extreme examples. Consider a pool P with
-source project A and 500 active forks B1, B2,...,B500. Suppose,
-optimistically, that the forks are fully deduplicated at the start of
-our scenario. Now some time passes and 200MB of new Git data gets added
-to project A. Because of the forking workflow, this data makes also its way
-into the forks B1, ..., B500. That means we would now have 100GB of Git
-data sitting around (500 \* 200MB) across the forks, that could have
-been deduplicated. But because of the way we do deduplication this new
-data will not be deduplicated.
-
-> TODO Add periodic maintenance of object pools to prevent gradual loss
-> of deduplication over time.
-> https://gitlab.com/groups/gitlab-org/-/epics/524
+participants. Each time garbage collection runs on the source project,
+Git objects from the source project will get migrated to the pool
+repository. One by one, as garbage collection runs, other member
+projects will benefit from the new objects that got added to the pool.
 
 ## SQL model
 
@@ -136,6 +112,9 @@ are as follows:
 -   a `PoolRepository` has exactly one "source `Project`"
     (`pool.source_project`)
 
+> TODO Fix invalid SQL data for pools created prior to GitLab 11.11
+> https://gitlab.com/gitlab-org/gitaly/issues/1653.
+
 ### Assumptions
 
 -   All repositories in a pool must use [hashed
@@ -146,10 +125,6 @@ are as follows:
     The Git alternates mechanism relies on direct disk access across
     multiple repositories, and we can only assume direct disk access to
     be possible within a Gitaly storage shard.
--   All project repositories in a pool must have "Public" visibility in
-    GitLab at the time they join. There are gotchas around visibility of
-    Git objects across alternates links. This restriction is a defense
-    against accidentally leaking private Git data.
 -   The only two ways to remove a member project from a pool are (1) to
     delete the project or (2) to move the project to another Gitaly
     storage shard.
@@ -187,17 +162,14 @@ are as follows:
 ### Consequences
 
 -   If a normal Project participating in a pool gets moved to another
-    Gitaly storage shard, its "belongs to PoolRepository" relation must
+    Gitaly storage shard, its "belongs to PoolRepository" relation will
     be broken. Because of the way moving repositories between shard is
     implemented, we will automatically get a fresh self-contained copy
     of the project's repository on the new storage shard.
 -   If the source project of a pool gets moved to another Gitaly storage
-    shard or is deleted, we may have to break the "PoolRepository has
-    one source Project" relation?
-
-> TODO What happens, or should happen, if a source project changes
-> visibility, is deleted, or moves to another storage shard?
-> https://gitlab.com/gitlab-org/gitaly/issues/1488
+    shard or is deleted the "source project" relation is not broken.
+    However, as of GitLab 12.0 a pool will not fetch from a source
+    unless the source is on the same Gitaly shard.
 
 ## Consistency between the SQL pool relation and Gitaly
 
@@ -209,16 +181,8 @@ repository and a pool.
 ### Pool existence
 
 If GitLab thinks a pool repository exists (i.e. it exists according to
-SQL), but it does not on the Gitaly server, then certain RPC calls that
-take the object pool as an argument will fail.
-
-> TODO What happens if SQL says the pool repo exists but Gitaly says it
-> does not? https://gitlab.com/gitlab-org/gitaly/issues/1533
-
-If GitLab thinks a pool does not exist, while it does exist on disk,
-that has no direct consequences on its own. However, if other
-repositories on disk borrow objects from this unknown pool repository
-then we risk data loss, see below.
+SQL), but it does not on the Gitaly server, then it will be created on
+the fly by Gitaly.
 
 ### Pool relation existence
 
@@ -226,26 +190,19 @@ There are three different things that can go wrong here.
 
 #### 1. SQL says repo A belongs to pool P but Gitaly says A has no alternate objects
 
-In this case, we miss out on disk space savings but all RPC's on A itself
-will function fine. As long as Git can find all its objects, it does not
-matter exactly where those objects are.
+In this case, we miss out on disk space savings but all RPC's on A
+itself will function fine. The next time garbage collection runs on A,
+the alternates connection gets established in Gitaly. This is done by
+`Projects::GitDeduplicationService` in gitlab-rails.
 
 #### 2. SQL says repo A belongs to pool P1 but Gitaly says A has alternate objects in pool P2
 
-If we are not careful, this situation can lead to data loss. During some
-operations (repository maintenance), GitLab will try to re-link A to its
-pool P1. If this clobbers the existing link to P2, then A will loose Git
-objects and become invalid.
-
-Also, keep in mind that if GitLab's database got messed up, it may not
-even know that P2 exists.
-
-> TODO Ensure that Gitaly will not clobber existing, unexpected
-> alternates links. https://gitlab.com/gitlab-org/gitaly/issues/1534
+In this case `Projects::GitDeduplicationService` will throw an exception.
 
 #### 3. SQL says repo A does not belong to any pool but Gitaly says A belongs to P
 
-This has the same data loss possibility as scenario 2 above.
+In this case `Projects::GitDeduplicationService` will try to
+"re-duplicate" the repository A using the DisconnectGitAlternates RPC.
 
 ## Git object deduplication and GitLab Geo
 
