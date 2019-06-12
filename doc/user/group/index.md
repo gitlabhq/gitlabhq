@@ -113,6 +113,8 @@ Add the following information:
 1. Optionally, choose an avatar for your group.
 1. Choose the [visibility level](../../public_access/public_access.md).
 
+For more details on creating groups, watch the video [GitLab Namespaces (users, groups and subgroups)](https://youtu.be/r0sJgjR2f5A).
+
 ## Add users to a group
 
 A benefit of putting multiple projects in one group is that you can
