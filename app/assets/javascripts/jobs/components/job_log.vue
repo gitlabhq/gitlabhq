@@ -29,9 +29,7 @@ export default {
     });
   },
   destroyed() {
-    this.$el
-      .querySelector('.js-section-start')
-      .removeEventListener('click', this.handleSectionClick);
+    this.removeEventListener();
   },
   methods: {
     ...mapActions(['scrollBottom']),
@@ -49,6 +47,11 @@ export default {
         }, 0);
       }
     },
+    removeEventListener() {
+      this.$el
+        .querySelector('.js-section-start')
+        .removeEventListener('click', this.handleSectionClick);
+    },
     /**
      * The collapsible rows are sent in HTML from the backend
      * We need to add a onclick handler for the divs that match `.js-section-start`
@@ -60,7 +63,8 @@ export default {
         .forEach(el => el.addEventListener('click', this.handleSectionClick));
     },
     /**
-     *
+     * On click, we toggle the hidden class of
+     * all the rows that match the `data-section` selector
      */
     handleSectionClick(evt) {
       const clickedArrow = evt.currentTarget;
@@ -70,11 +74,8 @@ export default {
       clickedArrow.classList.toggle('fa-caret-down');
 
       const dataSection = clickedArrow.getAttribute('data-section');
-      const sibilings = this.$el.querySelectorAll(
-        `.s_${dataSection}:not(.js-section-header)`,
-      );
+      const sibilings = this.$el.querySelectorAll(`.js-s_${dataSection}:not(.js-section-header)`);
 
-      // Get all sibilings between the clicked element and the next
       sibilings.forEach(row => row.classList.toggle('hidden'));
     },
   },

@@ -193,7 +193,7 @@ module Gitlab
           if @sections.any?
             css_classes << "section"
             css_classes += sections.map { |section| "s_#{section}" }
-            css_classes << "prepend-left-default line"
+            css_classes << "line"
           end
 
           write_in_tag %{<br/>}
@@ -222,7 +222,7 @@ module Gitlab
           return if @sections.include?(section)
 
           @sections << section
-          write_raw %{<div class="section-start js-section-start fa fa-caret-down js-open append-right-8 cursor-pointer" id="id_#{section}" data-action="start" data-timestamp="#{timestamp}" data-section="#{data_section_names}" role="button"></div>}
+          write_raw %{<div class="js-section-start fa fa-caret-down append-right-8 cursor-pointer" data-timestamp="#{timestamp}" data-section="#{data_section_names}" role="button"></div>}
           @lineno_in_section = 0
         end
 
@@ -231,7 +231,7 @@ module Gitlab
 
           # close all sections up to section
           until @sections.empty?
-            write_raw %{<div class="section-end js-section-end" data-action="end" data-timestamp="#{timestamp}" data-section="#{data_section_names}"></div>}
+            write_raw %{<div class="section-end" data-section="#{data_section_names}"></div>}
 
             last_section = @sections.pop
             break if section == last_section
@@ -309,7 +309,7 @@ module Gitlab
           if @sections.any?
             css_classes << "section"
             css_classes << "js-section-header" if @lineno_in_section == 0
-            css_classes += sections.map { |section| "s_#{section}" }
+            css_classes += sections.map { |section| "js-s_#{section}" }
           end
 
           @out << %{<span class="#{css_classes.join(' ')}">}
