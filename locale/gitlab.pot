@@ -2770,7 +2770,13 @@ msgstr ""
 msgid "Comment & resolve discussion"
 msgstr ""
 
+msgid "Comment & resolve thread"
+msgstr ""
+
 msgid "Comment & unresolve discussion"
+msgstr ""
+
+msgid "Comment & unresolve thread"
 msgstr ""
 
 msgid "Comment form position"
@@ -6301,7 +6307,7 @@ msgstr ""
 msgid "MergeRequests|Reply..."
 msgstr ""
 
-msgid "MergeRequests|Resolve this discussion in a new issue"
+msgid "MergeRequests|Resolve this thread in a new issue"
 msgstr ""
 
 msgid "MergeRequests|Saving the comment failed"
@@ -8767,13 +8773,16 @@ msgstr ""
 msgid "Reset template"
 msgstr ""
 
-msgid "Resolve all discussions in new issue"
+msgid "Resolve all threads in new issue"
 msgstr ""
 
 msgid "Resolve conflicts on source branch"
 msgstr ""
 
 msgid "Resolve discussion"
+msgstr ""
+
+msgid "Resolve thread"
 msgstr ""
 
 msgid "Resolved"
@@ -11303,6 +11312,9 @@ msgstr ""
 msgid "Unresolve discussion"
 msgstr ""
 
+msgid "Unresolve thread"
+msgstr ""
+
 msgid "Unschedule job"
 msgstr ""
 
@@ -12459,11 +12471,6 @@ msgstr ""
 msgid "disabled"
 msgstr ""
 
-msgid "discussion resolved"
-msgid_plural "discussions resolved"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "done"
 msgstr ""
 
@@ -12942,6 +12949,11 @@ msgstr ""
 
 msgid "to list"
 msgstr ""
+
+msgid "thread resolved"
+msgid_plural "threads resolved"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "triggered"
 msgstr ""
