@@ -106,6 +106,11 @@ enabled for individual projects by executing
 be on hashed storage, should not be a fork itself, and hashed storage should be
 enabled for all new projects.
 
+DANGER: **Danger:**
+Do not run `git prune` or `git gc` in pool repositories! This can
+cause data loss in "real" repositories that depend on the pool in
+question.
+
 ### How to migrate to Hashed Storage
 
 To start a migration, enable Hashed Storage for new projects:
