@@ -34,7 +34,7 @@ module Gitlab
             end
 
             def self.eager_matching_with_escape_characters?
-              Feature.enabled?(:ci_variables_complex_expressions, default_enabled: true)
+              Feature.enabled?(:ci_variables_complex_expressions)
             end
           end
         end

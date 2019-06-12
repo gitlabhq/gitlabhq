@@ -36,7 +36,7 @@ module Gitlab
             private
 
             def ci_variables_complex_expressions?
-              Feature.enabled?(:ci_variables_complex_expressions, default_enabled: true)
+              Feature.enabled?(:ci_variables_complex_expressions)
             end
           end
         end
