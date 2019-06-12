@@ -39,7 +39,7 @@
   display: none;
 
   hr {
-    margin: $gl-padding * 0.5 0;
+    margin: $gl-padding 0;
   }
 
   .btn-link {
@@ -71,9 +71,6 @@
 
 .feature-highlight-popover {
   width: 240px;
-  padding: 0;
-  border: 1px solid $border-color;
-  box-shadow: 0 2px 4px $dropdown-shadow-color;
 
   &.right > .arrow {
     border-right-color: $border-color;
@@ -85,7 +82,7 @@
 }
 
 .feature-highlight-popover-sub-content {
-  padding: 9px 14px;
+  padding: $gl-padding $gl-padding-12;
 }
 
 @include keyframes(pulse-highlight) {

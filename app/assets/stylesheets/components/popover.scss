@@ -1,37 +1,98 @@
 .popover {
-  min-width: 300px;
+  max-width: $popover-max-width;
+  border: 1px solid $gray-200;
+  box-shadow: 0 2px 3px 1px $gray-200;
+  font-size: $gl-font-size-small;
 
-  .popover-body .user-popover {
-    padding: $gl-padding-8;
-    font-size: $gl-font-size-small;
-    line-height: $gl-line-height;
-
-    .category-icon {
-      color: $gray-600;
-    }
-  }
-
+  /**
+  * Blue popover variation
+  */
   &.blue {
     background-color: $blue-600;
+    border-color: $blue-600;
 
     .popover-body {
       color: $white-light;
     }
 
     &.bs-popover-bottom {
+      .arrow::before,
       .arrow::after {
         border-bottom-color: $blue-600;
       }
     }
 
     &.bs-popover-top {
+      .arrow::before,
       .arrow::after {
         border-top-color: $blue-600;
+      }
+    }
+
+    &.bs-popover-right {
+      .arrow::after,
+      .arrow::before {
+        border-right-color: $blue-600;
+      }
+    }
+
+    &.bs-popover-left {
+      .arrow::before,
+      .arrow::after {
+        border-left-color: $blue-600;
       }
     }
   }
 }
 
+.bs-popover-top {
+  /* When popover position is top, the arrow is translated 1 pixel
+  *  due to the box-shadow include in our custom styles.
+  */
+  > .arrow::before {
+    border-top-color: $gray-200;
+    bottom: 1px;
+  }
+
+  > .arrow::after {
+    bottom: 2px;
+  }
+}
+
+.bs-popover-bottom {
+  > .arrow::before {
+    border-bottom-color: $gray-200;
+  }
+
+  > .popover-header::before {
+    border-color: $white-light;
+  }
+}
+
+.bs-popover-right > .arrow::before {
+  border-right-color: $gray-200;
+}
+
+.bs-popover-left > .arrow::before {
+  border-left-color: $gray-200;
+}
+
+.popover-header {
+  background-color: $white-light;
+  font-size: $gl-font-size-small;
+}
+
+.popover-body {
+  padding: $gl-padding $gl-padding-12;
+
+  > .popover-hr {
+    margin: $gl-padding 0;
+  }
+}
+
+/**
+* mr_popover component
+*/
 .mr-popover {
   .text-secondary {
     font-size: 12px;
@@ -55,6 +116,18 @@
   .accept-mr-label {
     background-color: $accepting-mr-label-color;
     color: $white-light;
+  }
+}
+
+/**
+* user_popover component
+*/
+.user-popover {
+  padding: $gl-padding-8;
+  line-height: $gl-line-height;
+
+  .category-icon {
+    color: $gray-600;
   }
 }
 
