@@ -26,7 +26,7 @@ export default {
       );
     },
     showResolveButton() {
-      return this.mr.conflictResolutionPath && this.mr.canMerge;
+      return this.mr.conflictResolutionPath && this.mr.canPushToSourceBranch;
     },
     showPopover() {
       return this.showResolveButton && this.mr.sourceBranchProtected;
