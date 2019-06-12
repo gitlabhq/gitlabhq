@@ -83,6 +83,11 @@ describe Banzai::Filter::RelativeLinkFilter do
     expect { filter(act) }.not_to raise_error
   end
 
+  it 'does not explode with an escaped null byte' do
+    act = link("/%00")
+    expect { filter(act) }.not_to raise_error
+  end
+
   it 'does not raise an exception with a space in the path' do
     act = link("/uploads/d18213acd3732630991986120e167e3d/Landscape_8.jpg  \nBut here's some more unexpected text :smile:)")
     expect { filter(act) }.not_to raise_error
