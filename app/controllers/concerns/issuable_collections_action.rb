@@ -11,7 +11,7 @@ module IssuableCollectionsAction
               .non_archived
               .page(params[:page])
 
-    @issuable_meta_data = issuable_meta_data(@issues, collection_type)
+    @issuable_meta_data = issuable_meta_data(@issues, collection_type, current_user)
 
     respond_to do |format|
       format.html
@@ -22,7 +22,7 @@ module IssuableCollectionsAction
   def merge_requests
     @merge_requests = issuables_collection.page(params[:page])
 
-    @issuable_meta_data = issuable_meta_data(@merge_requests, collection_type)
+    @issuable_meta_data = issuable_meta_data(@merge_requests, collection_type, current_user)
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
