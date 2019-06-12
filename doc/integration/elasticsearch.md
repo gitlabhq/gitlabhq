@@ -351,8 +351,6 @@ There are several rake tasks available to you via the command line:
   - This removes the GitLab index on the Elasticsearch instance.
 - [sudo gitlab-rake gitlab:elastic:recreate_index](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/ee/lib/tasks/gitlab/elastic.rake)
   - Does the same thing as `sudo gitlab-rake gitlab:elastic:create_empty_index`
-- [sudo gitlab-rake gitlab:elastic:add_feature_visibility_levels_to_project](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/ee/lib/tasks/gitlab/elastic.rake)
-  - Adds visibility information to the indices for projects.
 - [sudo gitlab-rake gitlab:elastic:index_snippets](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/ee/lib/tasks/gitlab/elastic.rake)
   - Performs an Elasticsearch import that indexes the snippets data.
 
