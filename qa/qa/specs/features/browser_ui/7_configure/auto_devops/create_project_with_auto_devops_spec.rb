@@ -9,7 +9,8 @@ module QA
       Page::Main::Login.perform(&:sign_in_using_credentials)
     end
 
-    describe 'Auto DevOps support', :orchestrated, :kubernetes do
+    # Failure issue: https://gitlab.com/gitlab-org/quality/nightly/issues/108
+    describe 'Auto DevOps support', :orchestrated, :kubernetes, :quarantine do
       context 'when rbac is enabled' do
         before(:all) do
           @cluster = Service::KubernetesCluster.new.create!
