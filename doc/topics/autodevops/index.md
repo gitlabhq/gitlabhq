@@ -14,7 +14,7 @@ with minimal configuration. Just push your code and GitLab takes
 care of everything else. This makes it easier to start new projects and brings
 consistency to how applications are set up throughout a company.
 
-For a demonstration of Auto DevOps, watch the video [GitLab Auto DevOps demo](https://youtu.be/4Uo_QP9rSGM).
+For an introduction to Auto DevOps, watch [AutoDevOps in GitLab 11.0](https://youtu.be/0Tc0YYBxqi4).
 
 ## Enabled by default
 
