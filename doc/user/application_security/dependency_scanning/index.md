@@ -214,6 +214,159 @@ dependency_scanning:
     paths: [gl-dependency-scanning-report.json]
 ```
 
+## Reports JSON format
+
+CAUTION: **Caution:**
+The JSON report artifacts are not a public API of Dependency Scanning and their format may change in future.
+
+The Dependency Scanning tool emits a JSON report file. Here is an example of a structure for a report will all important parts of
+it highlighted:
+
+```json-doc
+{
+  "version": "2.0",
+  "vulnerabilities": [
+    {
+      "category": "dependency_scanning",
+      "name": "Regular Expression Denial of Service",
+      "message": "Regular Expression Denial of Service in debug",
+      "description": "The debug module is vulnerable to regular expression denial of service when untrusted user input is passed into the `o` formatter. It takes around 50k characters to block for 2 seconds making this a low severity issue.",
+      "cve": "yarn.lock:debug:gemnasium:37283ed4-0380-40d7-ada7-2d994afcc62a",
+      "severity": "Unknown",
+      "solution": "Upgrade to latest versions.",
+      "scanner": {
+        "id": "gemnasium",
+        "name": "Gemnasium"
+      },
+      "location": {
+        "file": "yarn.lock",
+        "dependency": {
+          "package": {
+            "name": "debug"
+          },
+          "version": "1.0.5"
+        }
+      },
+      "identifiers": [
+        {
+          "type": "gemnasium",
+          "name": "Gemnasium-37283ed4-0380-40d7-ada7-2d994afcc62a",
+          "value": "37283ed4-0380-40d7-ada7-2d994afcc62a",
+          "url": "https://deps.sec.gitlab.com/packages/npm/debug/versions/1.0.5/advisories"
+        }
+      ],
+      "links": [
+        {
+          "url": "https://nodesecurity.io/advisories/534"
+        },
+        {
+          "url": "https://github.com/visionmedia/debug/issues/501"
+        },
+        {
+          "url": "https://github.com/visionmedia/debug/pull/504"
+        }
+      ]
+    },
+    {
+      "category": "dependency_scanning",
+      "name": "Authentication bypass via incorrect DOM traversal and canonicalization",
+      "message": "Authentication bypass via incorrect DOM traversal and canonicalization in saml2-js",
+      "description": "Some XML DOM traversal and canonicalization APIs may be inconsistent in handling of comments within XML nodes. Incorrect use of these APIs by some SAML libraries results in incorrect parsing of the inner text of XML nodes such that any inner text after the comment is lost prior to cryptographically signing the SAML message. Text after the comment therefore has no impact on the signature on the SAML message.\r\n\r\nA remote attacker can modify SAML content for a SAML service provider without invalidating the cryptographic signature, which may allow attackers to bypass primary authentication for the affected SAML service provider.",
+      "cve": "yarn.lock:saml2-js:gemnasium:9952e574-7b5b-46fa-a270-aeb694198a98",
+      "severity": "Unknown",
+      "solution": "Upgrade to fixed version.\r\n",
+      "scanner": {
+        "id": "gemnasium",
+        "name": "Gemnasium"
+      },
+      "location": {
+        "file": "yarn.lock",
+        "dependency": {
+          "package": {
+            "name": "saml2-js"
+          },
+          "version": "1.5.0"
+        }
+      },
+      "identifiers": [
+        {
+          "type": "gemnasium",
+          "name": "Gemnasium-9952e574-7b5b-46fa-a270-aeb694198a98",
+          "value": "9952e574-7b5b-46fa-a270-aeb694198a98",
+          "url": "https://deps.sec.gitlab.com/packages/npm/saml2-js/versions/1.5.0/advisories"
+        },
+        {
+          "type": "cve",
+          "name": "CVE-2017-11429",
+          "value": "CVE-2017-11429",
+          "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-11429"
+        }
+      ],
+      "links": [
+        {
+          "url": "https://github.com/Clever/saml2/commit/3546cb61fd541f219abda364c5b919633609ef3d#diff-af730f9f738de1c9ad87596df3f6de84R279"
+        },
+        {
+          "url": "https://github.com/Clever/saml2/issues/127"
+        },
+        {
+          "url": "https://www.kb.cert.org/vuls/id/475445"
+        }
+      ]
+    }
+  ],
+  "remediations": [
+    {
+      "fixes": [
+        {
+          "cve": "yarn.lock:saml2-js:gemnasium:9952e574-7b5b-46fa-a270-aeb694198a98"
+        }
+      ],
+      "summary": "Upgrade saml2-js",
+      "diff": "ZGlmZiAtLWdpdCBhL...OR0d1ZUc2THh3UT09Cg==" // some content is omitted for brevity
+    }
+  ]
+}
+```
+
+Here is the description of the report file structure nodes and their meaning. All fields are mandatory to be present in
+the report JSON unless stated otherwise. Presence of optional fields depends on the underlying analyzers being used.
+
+| Report JSON node                                     | Function |
+|------------------------------------------------------|----------|
+| `version`                                            | Report syntax version used to generate this JSON. |
+| `vulnerabilities`                                    | Array of vulnerability objects. |
+| `vulnerabilities[].category`                         | Where this vulnerability belongs (SAST, Dependency Scanning etc.). For Dependency Scanning, it will always be `dependency_scanning`. |
+| `vulnerabilities[].name`                             | Name of the vulnerability, this must not include the occurrence's specific information. Optional. |
+| `vulnerabilities[].message`                          | A short text that describes the vulnerability, it may include occurrence's specific information. Optional. |
+| `vulnerabilities[].description`                      | A long text that describes the vulnerability. Optional. |
+| `vulnerabilities[].cve`                              | A fingerprint string value that represents a concrete occurrence of the vulnerability. It's used to determine whether two vulnerability occurrences are same or different. May not be 100% accurate. **This is NOT a [CVE](https://cve.mitre.org/)**. |
+| `vulnerabilities[].severity`                         | How much the vulnerability impacts the software. Possible values: `Undefined` (an analyzer has not provided this info), `Info`, `Unknown`, `Low`, `Medium`, `High`, `Critical`. |
+| `vulnerabilities[].confidence`                       | How reliable the vulnerability's assessment is. Possible values: `Undefined` (an analyzer has not provided this info), `Ignore`, `Unknown`, `Experimental`, `Low`, `Medium`, `High`, `Confirmed`. |
+| `vulnerabilities[].solution`                         | Explanation of how to fix the vulnerability. Optional. |
+| `vulnerabilities[].scanner`                          | A node that describes the analyzer used find this vulnerability. |
+| `vulnerabilities[].scanner.id`                       | Id of the scanner as a snake_case string. |
+| `vulnerabilities[].scanner.name`                     | Name of the scanner, for display purposes. |
+| `vulnerabilities[].location`                         | A node that tells which class and/or method is affected by the vulnerability. | 
+| `vulnerabilities[].location.file`                    | Path to the dependencies file (e.g., `yarn.lock`). Optional. |
+| `vulnerabilities[].location.dependency`              | A node that describes the dependency of a project where the vulnerability is located. |
+| `vulnerabilities[].location.dependency.package`      | A node that provides the information on the package where the vulnerability is located. |
+| `vulnerabilities[].location.dependency.package.name` | Name of the package where the vulnerability is located. Optional. |
+| `vulnerabilities[].location.dependency.version`      | Version of the vulnerable package. Optional. |
+| `vulnerabilities[].identifiers`                      | An ordered array of references that identify a vulnerability on internal or external DBs. |
+| `vulnerabilities[].identifiers[].type`               | Type of the identifier. Possible values: common identifier types (among `cve`, `cwe`, `osvdb`, and `usn`) or analyzer-dependent ones (e.g. `gemnasium` for [Gemnasium](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/)). |
+| `vulnerabilities[].identifiers[].name`               | Name of the identifier for display purpose. |
+| `vulnerabilities[].identifiers[].value`              | Value of the identifier for matching purpose. |
+| `vulnerabilities[].identifiers[].url`                | URL to identifier's documentation. Optional. |
+| `vulnerabilities[].links`                            | An array of references to external documentation pieces or articles that describe the vulnerability further. Optional. |
+| `vulnerabilities[].links[].name`                     | Name of the vulnerability details link. Optional. |
+| `vulnerabilities[].links[].url`                      | URL of the vulnerability details document. Optional. |
+| `remediations`                                       | An array of objects containing information on cured vulnerabilities along with patch diffs to apply. |
+| `remediations[].fixes`                               | An array of strings that represent references to vulnerabilities fixed by this particular remediation. |
+| `remediations[].fixes[].cve`                         | A string value that describes a fixed vulnerability occurrence in the same format as `vulnerabilities[].cve`. |
+| `remediations[].summary`                             | Overview of how the vulnerabilities have been fixed. |
+| `remediations[].diff`                                | base64-encoded remediation code diff, compatible with [`git apply`](https://git-scm.com/docs/git-format-patch#_discussion). |
+
 ## Security Dashboard
 
 The Security Dashboard is a good place to get an overview of all the security
