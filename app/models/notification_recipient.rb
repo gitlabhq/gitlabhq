@@ -101,6 +101,7 @@ class NotificationRecipient
   end
 
   def excluded_watcher_action?
+    return false unless @type == :watch
     return false unless @custom_action
 
     NotificationSetting::EXCLUDED_WATCHER_EVENTS.include?(@custom_action)
@@ -140,7 +141,7 @@ class NotificationRecipient
 
     return project_setting unless project_setting.nil? || project_setting.global?
 
-    group_setting = closest_non_global_group_notification_settting
+    group_setting = closest_non_global_group_notification_setting
 
     return group_setting unless group_setting.nil?
 
@@ -148,7 +149,7 @@ class NotificationRecipient
   end
 
   # Returns the notification_setting of the lowest group in hierarchy with non global level
-  def closest_non_global_group_notification_settting
+  def closest_non_global_group_notification_setting
     return unless @group
 
     @group
