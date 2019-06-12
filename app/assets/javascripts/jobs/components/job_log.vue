@@ -17,10 +17,21 @@ export default {
     ...mapState(['isScrolledToBottomBeforeReceivingTrace']),
   },
   updated() {
-    this.$nextTick(() => this.handleScrollDown());
+    this.$nextTick(() => {
+      this.handleScrollDown();
+      this.handleCollapsibleRows();
+    });
   },
   mounted() {
-    this.$nextTick(() => this.handleScrollDown());
+    this.$nextTick(() => {
+      this.handleScrollDown();
+      this.handleCollapsibleRows();
+    });
+  },
+  destroyed() {
+    this.$el
+      .querySelector('.js-section-start')
+      .removeEventListener('click', this.handleSectionClick);
   },
   methods: {
     ...mapActions(['scrollBottom']),
@@ -38,21 +49,43 @@ export default {
         }, 0);
       }
     },
+    /**
+     * The collapsible rows are sent in HTML from the backend
+     * We need to add a onclick handler for the divs that match `.js-section-start`
+     *
+     */
+    handleCollapsibleRows() {
+      this.$el
+        .querySelectorAll('.js-section-start')
+        .forEach(el => el.addEventListener('click', this.handleSectionClick));
+    },
+    /**
+     *
+     */
+    handleSectionClick(evt) {
+      const clickedArrow = evt.currentTarget;
+
+      // toggle the arrow class
+      clickedArrow.classList.toggle('fa-caret-right');
+      clickedArrow.classList.toggle('fa-caret-down');
+
+      const dataSection = clickedArrow.getAttribute('data-section');
+      const sibilings = this.$el.querySelectorAll(
+        `.s_${dataSection}:not(.js-section-header)`,
+      );
+
+      // Get all sibilings between the clicked element and the next
+      sibilings.forEach(row => row.classList.toggle('hidden'));
+    },
   },
 };
 </script>
 <template>
   <pre class="js-build-trace build-trace qa-build-trace">
-    <code
-      class="bash"
-      v-html="trace"
-    >
+    <code class="bash" v-html="trace">
     </code>
 
-    <div
-      v-if="!isComplete"
-      class="js-log-animation build-loader-animation"
-    >
+    <div v-if="!isComplete" class="js-log-animation build-loader-animation">
       <div class="dot"></div>
       <div class="dot"></div>
       <div class="dot"></div>

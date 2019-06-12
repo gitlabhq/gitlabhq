@@ -193,7 +193,7 @@ module Gitlab
           if @sections.any?
             css_classes << "section"
             css_classes += sections.map { |section| "s_#{section}" }
-            css_classes << "line"
+            css_classes << "prepend-left-default line"
           end
 
           write_in_tag %{<br/>}
@@ -221,51 +221,8 @@ module Gitlab
         def handle_section_start(section, timestamp, line)
           return if @sections.include?(section)
 
-          js_add_css_class = <<-EOF.strip_heredoc
-            var div = document.getElementById('id_#{section}');
-            var open = div.classList.toggle('open');
-
-            var spans = document.getElementsByClassName('s_#{section}');
-            for (var i = 0; i < spans.length; i++) {
-              if (open) {
-                spans[i].classList.add('open');
-              } else {
-                spans[i].classList.remove('open');
-              }
-            }
-          EOF
-
-          js_add_css_style = <<-EOF.strip_heredoc
-            var div = document.getElementById('id_#{section}');
-            var open = div.classList.toggle('open');
-
-            if (open) {
-              div.classList.remove('fa-caret-right');
-              div.classList.add('fa-caret-down');
-            } else {
-              div.classList.add('fa-caret-right');
-              div.classList.remove('fa-caret-down');
-            }
-
-            var style = document.getElementById('style_#{section}');
-            if (!style && !open) {
-              style = document.createElement('style');
-              style.type = 'text/css';
-              style.id = 'style_#{section}';
-              document.getElementsByClassName('bash')[0].appendChild(style);
-            }
-
-            if (style) {
-              if (open) {
-                style.innerHTML = '';
-              } else {
-                style.innerHTML = '.s_#{section}:not(.section-header):not(.open) { display: none; }';
-              }
-            }
-          EOF
-
           @sections << section
-          write_raw %{<div class="section-start fa fa-caret-down open" id="id_#{section}" data-action="start" data-timestamp="#{timestamp}" data-section="#{data_section_names}" onclick="#{js_add_css_style}"></div>}
+          write_raw %{<div class="section-start js-section-start fa fa-caret-down js-open append-right-8 cursor-pointer" id="id_#{section}" data-action="start" data-timestamp="#{timestamp}" data-section="#{data_section_names}" role="button"></div>}
           @lineno_in_section = 0
         end
 
@@ -274,7 +231,7 @@ module Gitlab
 
           # close all sections up to section
           until @sections.empty?
-            write_raw %{<div class="section-end" data-action="end" data-timestamp="#{timestamp}" data-section="#{data_section_names}"></div>}
+            write_raw %{<div class="section-end js-section-end" data-action="end" data-timestamp="#{timestamp}" data-section="#{data_section_names}"></div>}
 
             last_section = @sections.pop
             break if section == last_section
@@ -351,7 +308,7 @@ module Gitlab
 
           if @sections.any?
             css_classes << "section"
-            css_classes << "section-header" if @lineno_in_section == 0
+            css_classes << "js-section-header" if @lineno_in_section == 0
             css_classes += sections.map { |section| "s_#{section}" }
           end
 
