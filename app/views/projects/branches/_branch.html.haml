@@ -22,7 +22,7 @@
         %span.badge.badge-success.prepend-left-5
           = s_('Branches|protected')
 
-      = render_if_exists 'projects/branches/diverged_from_upstream'
+      = render_if_exists 'projects/branches/diverged_from_upstream', branch: branch
 
     .block-truncated
       - if commit
