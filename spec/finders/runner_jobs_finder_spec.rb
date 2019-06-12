@@ -35,5 +35,42 @@ describe RunnerJobsFinder do
         end
       end
     end
+
+    context 'when order_by and sort are specified' do
+      context 'when order_by created_at' do
+        let(:params) { { order_by: 'created_at', sort: 'asc' } }
+        let!(:jobs) { Array.new(2) { create(:ci_build, runner: runner, project: project, user: create(:user)) } }
+
+        it 'sorts as created_at: :asc' do
+          is_expected.to match_array(jobs)
+        end
+
+        context 'when sort is invalid' do
+          let(:params) { { order_by: 'created_at', sort: 'invalid_sort' } }
+
+          it 'sorts as created_at: :desc' do
+            is_expected.to eq(jobs.sort_by { |p| -p.user.id })
+          end
+        end
+      end
+
+      context 'when order_by is invalid' do
+        let(:params) { { order_by: 'invalid_column', sort: 'asc' } }
+        let!(:jobs) { Array.new(2) { create(:ci_build, runner: runner, project: project, user: create(:user)) } }
+
+        it 'sorts as id: :asc' do
+          is_expected.to eq(jobs.sort_by { |p| p.id })
+        end
+      end
+
+      context 'when both are nil' do
+        let(:params) { { order_by: nil, sort: nil } }
+        let!(:jobs) { Array.new(2) { create(:ci_build, runner: runner, project: project, user: create(:user)) } }
+
+        it 'sorts as id: :desc' do
+          is_expected.to eq(jobs.sort_by { |p| -p.id })
+        end
+      end
+    end
   end
 end
