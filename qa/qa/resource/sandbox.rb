@@ -44,6 +44,10 @@ module QA
         "/groups/#{path}"
       end
 
+      def api_members_path
+        "#{api_get_path}/members"
+      end
+
       def api_post_path
         '/groups'
       end

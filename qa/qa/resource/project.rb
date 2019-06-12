@@ -18,7 +18,11 @@ module QA
       end
 
       attribute :path_with_namespace do
-        "#{group.sandbox.path}/#{group.path}/#{name}" if group
+        "#{sandbox_path}#{group.path}/#{name}" if group
+      end
+
+      def sandbox_path
+        group.respond_to?('sandbox') ? "#{group.sandbox.path}/" : ''
       end
 
       attribute :repository_ssh_location do
