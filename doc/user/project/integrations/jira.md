@@ -8,6 +8,9 @@ While you can always migrate content and process from Jira to GitLab Issues,
 you can also opt to continue using Jira and use it together with GitLab through
 our integration.
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For a video demonstration of integration with Jira, watch [GitLab workflow with Jira issues and Jenkins pipelines](https://youtu.be/Jn-_fyra7xQ).
+
 Once you integrate your GitLab project with your Jira instance, you can automatically
 detect and cross-reference activity between the GitLab project and any of your projects
 in Jira. This includes the ability to close or transition Jira issues when the work
