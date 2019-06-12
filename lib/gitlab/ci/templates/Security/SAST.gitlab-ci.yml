@@ -31,19 +31,29 @@ sast:
     - |
       docker run \
         $(propagate_env_vars \
+          SAST_BANDIT_EXCLUDED_PATHS \
           SAST_ANALYZER_IMAGES \
           SAST_ANALYZER_IMAGE_PREFIX \
           SAST_ANALYZER_IMAGE_TAG \
           SAST_DEFAULT_ANALYZERS \
-          SAST_EXCLUDED_PATHS \
-          SAST_BANDIT_EXCLUDED_PATHS \
+          SAST_PULL_ANALYZER_IMAGES \
           SAST_BRAKEMAN_LEVEL \
-          SAST_GOSEC_LEVEL \
           SAST_FLAWFINDER_LEVEL \
           SAST_GITLEAKS_ENTROPY_LEVEL \
+          SAST_GOSEC_LEVEL \
+          SAST_EXCLUDED_PATHS \
           SAST_DOCKER_CLIENT_NEGOTIATION_TIMEOUT \
           SAST_PULL_ANALYZER_IMAGE_TIMEOUT \
           SAST_RUN_ANALYZER_TIMEOUT \
+          ANT_HOME \
+          ANT_PATH \
+          GRADLE_PATH \
+          JAVA_OPTS \
+          JAVA_PATH \
+          MAVEN_CLI_OPTS \
+          MAVEN_PATH \
+          MAVEN_REPO_PATH \
+          SBT_PATH \
         ) \
         --volume "$PWD:/code" \
         --volume /var/run/docker.sock:/var/run/docker.sock \
