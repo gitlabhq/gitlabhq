@@ -10,8 +10,8 @@ describe AutoMergeService do
   describe '.all_strategies' do
     subject { described_class.all_strategies }
 
-    it 'returns all strategies' do
-      is_expected.to eq(AutoMergeService::STRATEGIES)
+    it 'includes merge when pipeline succeeds' do
+      is_expected.to include(AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS)
     end
   end
 
