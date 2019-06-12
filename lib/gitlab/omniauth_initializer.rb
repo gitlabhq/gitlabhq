@@ -63,12 +63,6 @@ module Gitlab
         { remote_sign_out_handler: authentiq_signout_handler }
       when 'shibboleth'
         { fail_with_empty_uid: true }
-      when 'openid_connect'
-        # If a name argument is omitted, OmniAuth will expect that the
-        # matching route is /auth/users/openidconnect instead of
-        # /auth/users/openid_connect because of
-        # https://gitlab.com/gitlab-org/gitlab-ce/issues/62208#note_178780341.
-        { name: 'openid_connect' }
       else
         {}
       end
