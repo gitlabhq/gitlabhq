@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class BlobPresenter < Gitlab::View::Presenter::Simple
+class BlobPresenter < Gitlab::View::Presenter::Delegated
   presents :blob
 
   def highlight(plain: nil)
@@ -12,5 +12,9 @@ class BlobPresenter < Gitlab::View::Presenter::Simple
       language: blob.language_from_gitattributes,
       plain: plain
     )
+  end
+
+  def web_url
+    Gitlab::Routing.url_helpers.project_blob_url(blob.repository.project, File.join(blob.commit_id, blob.path))
   end
 end

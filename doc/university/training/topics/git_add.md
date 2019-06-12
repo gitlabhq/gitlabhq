@@ -4,8 +4,6 @@ comments: false
 
 # Git Add
 
-----------
-
 ## Git Add
 
 Adds content to the index or staging area.
@@ -21,8 +19,6 @@ Adds content to the index or staging area.
     ```bash
     git add -A
     ```
-
-----------
 
 ## Git add continued
 

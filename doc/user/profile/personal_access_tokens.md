@@ -37,19 +37,18 @@ Personal access tokens can be created with one or more scopes that allow various
 actions that a given token can perform. The available scopes are depicted in
 the following table.
 
-| Scope | Description |
-| ----- | ----------- |
-|`read_user` | Allows access to the read-only endpoints under `/users`. Essentially, any of the `GET` requests in the [Users API][users] are allowed ([introduced][ce-5951] in GitLab 8.15). |
-| `api` | Grants complete access to the API and Container Registry (read/write) ([introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5951) in GitLab 8.15). |
-| `read_registry` | Allows to read (pull) [container registry] images if a project is private and authorization is required ([introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/11845) in GitLab 9.3). |
-| `sudo` | Allows performing API actions as any user in the system (if the authenticated user is an admin) ([introduced][ce-14838] in GitLab 10.2). |
-| `read_repository` | Allows read-only access (pull) to the repository through git clone. |
-| `write_repository` | Allows read-write access (pull, push) to the repository through git clone. Required for accessing Git repositories over HTTP when 2FA is enabled. |
+| Scope              | Introduced in | Description |
+| ------------------ | ------------- | ----------- |
+| `read_user`        | [GitLab 8.15](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5951)   | Allows access to the read-only endpoints under `/users`. Essentially, any of the `GET` requests in the [Users API][users] are allowed. |
+| `api`              | [GitLab 8.15](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5951)   | Grants complete access to the API and Container Registry (read/write). |
+| `read_registry`    | [GitLab 9.3](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/11845)   | Allows to read (pull) [container registry] images if a project is private and authorization is required. |
+| `sudo`             | [GitLab 10.2](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14838)  | Allows performing API actions as any user in the system (if the authenticated user is an admin). |
+| `read_repository`  | [GitLab 10.7](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/17894)  | Allows read-only access (pull) to the repository through git clone. |
+| `write_repository` | [GitLab 11.11](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/26021) | Allows read-write access (pull, push) to the repository through git clone. Required for accessing Git repositories over HTTP when 2FA is enabled. |
 
 [2fa]: ../account/two_factor_authentication.md
 [api]: ../../api/README.md
 [ce-3749]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/3749
-[ce-14838]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14838
 [container registry]: ../project/container_registry.md
 [users]: ../../api/users.md
 [usage]: ../../api/README.md#personal-access-tokens

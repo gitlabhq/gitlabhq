@@ -4,6 +4,7 @@ author: Mehran Rasulian
 author_gitlab: mehranrasulian
 level: intermediate
 article_type: tutorial
+type: tutorial
 date: 2017-08-31
 last_updated: 2019-03-06
 ---

@@ -12,7 +12,7 @@ export default class CreateItemDropdown {
     this.fieldName = options.fieldName;
     this.onSelect = options.onSelect || (() => {});
     this.getDataOption = options.getData;
-    this.getDataRemote = !!options.filterRemote;
+    this.getDataRemote = Boolean(options.filterRemote);
     this.createNewItemFromValueOption = options.createNewItemFromValue;
     this.$dropdown = options.$dropdown;
     this.$dropdownContainer = this.$dropdown.parent();

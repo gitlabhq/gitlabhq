@@ -141,6 +141,28 @@ describe GroupsController do
   end
 
   describe 'POST #create' do
+    it 'allows creating a group' do
+      sign_in(user)
+
+      expect do
+        post :create, params: { group: { name: 'new_group', path: "new_group" } }
+      end.to change { Group.count }.by(1)
+
+      expect(response).to have_gitlab_http_status(302)
+    end
+
+    context 'authorization' do
+      it 'allows an admin to create a group' do
+        sign_in(create(:admin))
+
+        expect do
+          post :create, params: { group: { name: 'new_group', path: "new_group" } }
+        end.to change { Group.count }.by(1)
+
+        expect(response).to have_gitlab_http_status(302)
+      end
+    end
+
     context 'when creating subgroups', :nested_groups do
       [true, false].each do |can_create_group_status|
         context "and can_create_group is #{can_create_group_status}" do

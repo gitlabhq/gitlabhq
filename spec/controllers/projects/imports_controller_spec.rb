@@ -122,4 +122,19 @@ describe Projects::ImportsController do
       end
     end
   end
+
+  describe 'POST #create' do
+    let(:params) { { import_url: 'https://github.com/vim/vim.git', import_url_user: 'user', import_url_password: 'password' } }
+    let(:project) { create(:project) }
+
+    before do
+      allow(RepositoryImportWorker).to receive(:perform_async)
+
+      post :create, params: { project: params, namespace_id: project.namespace.to_param, project_id: project }
+    end
+
+    it 'sets import_url to the project' do
+      expect(project.reload.import_url).to eq('https://user:password@github.com/vim/vim.git')
+    end
+  end
 end

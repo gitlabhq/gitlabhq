@@ -1,3 +1,7 @@
+---
+type: reference
+---
+
 # Creating and using CI/CD pipelines
 
 > Introduced in GitLab 8.8.
@@ -265,9 +269,6 @@ Clicking on an individual job will show you its job trace, and allow you to:
 - Cancel the job.
 - Retry the job.
 - Erase the job trace.
-
-NOTE: **Note:**
-To prevent jobs from being bypassed or run out of order, canceled jobs can only be retried when the whole pipeline they belong to is retried.
 
 ### Seeing the failure reason for jobs
 

@@ -60,6 +60,8 @@ For additional technical details, you can refer to the
 [GitHub Importer](../../../development/github_importer.md "Working with the GitHub importer")
 developer documentation.
 
+For an overview of the import process, see the video [Migrating from GitHub to GitLab](https://youtu.be/VYOXuOg9tQI).
+
 ## Import your GitHub repository into GitLab
 
 ### Using the GitHub integration
@@ -119,9 +121,9 @@ Depending your GitLab tier, [project mirroring](../../../workflow/repository_mir
 your imported project in sync with its GitHub copy.
 
 Additionally, you can configure GitLab to send pipeline status updates back GitHub with the
-[GitHub Project Integration](https://docs.gitlab.com/ee/user/project/integrations/github.html). **[PREMIUM]**
+[GitHub Project Integration](../integrations/github.md). **[PREMIUM]**
 
-If you import your project using [CI/CD for external repo](https://docs.gitlab.com/ee/ci/ci_cd_for_external_repos/), then both
+If you import your project using [CI/CD for external repo](../../../ci/ci_cd_for_external_repos/index.md), then both
 of the above are automatically configured. **[PREMIUM]**
 
 ## Improving the speed of imports on self-hosted instances

@@ -14,7 +14,7 @@ documents in order to understand and properly configure GitLab Performance Monit
 - [Performance bar](performance_bar.md)
 - [Request profiling](request_profiling.md)
 
->**Note:**
+NOTE: **Note:**
 Omnibus GitLab 8.16 includes Prometheus as an additional tool to collect
 metrics. It will eventually replace InfluxDB when their metrics collection is
 on par. Read more in the [Prometheus documentation](../prometheus/index.md).

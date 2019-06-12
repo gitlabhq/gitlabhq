@@ -4,12 +4,12 @@ image: node:4.2.2
 pages:
   cache:
     paths:
-    - node_modules/
+      - node_modules/
   script:
-  - npm install -g brunch
-  - brunch build --production
+    - npm install -g brunch
+    - brunch build --production
   artifacts:
     paths:
-    - public
+      - public
   only:
-  - master
+    - master

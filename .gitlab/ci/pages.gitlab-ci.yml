@@ -1,4 +1,3 @@
-
 pages:
   extends: .dedicated-no-docs-no-db-pull-cache-job
   before_script: []

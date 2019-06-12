@@ -61,7 +61,7 @@ describe 'User browses commits' do
     it 'renders commit ci info' do
       visit project_commit_path(project, sample_commit.id)
 
-      expect(page).to have_content "Pipeline ##{pipeline.id} pending"
+      expect(page).to have_content "Pipeline ##{pipeline.id} (##{pipeline.iid}) pending"
     end
   end
 

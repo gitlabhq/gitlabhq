@@ -86,7 +86,9 @@ For more information, see the [Issue Data and Actions](issue_data_and_actions.md
 
 On the Issues List, you can view all issues in the current project, or from multiple projects when opening the Issues List from the higher-level group context. Filter the issue list by [any search query](../../search/index.md#issues-and-merge-requests-per-project) and/or specific metadata, such as label(s), assignees(s), status, and more. From this view, you can also make certain changes [in bulk](../bulk_editing.md) to the displayed issues.
 
-For more information, see the [Issue Data and Actions](issue_data_and_actions.md) page.
+For more information on interacting with Issues, see the [Issue Data and Actions](issue_data_and_actions.md) page.
+
+For sorting by issue priority, see [Label Priority](../labels.md#label-priority).
 
 ### Issue boards
 
@@ -102,13 +104,13 @@ For more information, see the [Issue Boards](../issue_board.md) page.
 
 Epics let you manage your portfolio of projects more efficiently and with less effort by tracking groups of issues that share a theme, across projects and milestones.
 
-For more information, see the [Epics](https://docs.gitlab.com/ee/user/group/epics/) page.
+For more information, see the [Epics](../../group/epics/index.md) page.
 
 ### Related issues **[STARTER]**
 
 You can mark two issues as related, so that when viewing each one, the other is always listed in its Related Issues section. This can help display important context, such as past work, dependencies, or duplicates.
 
-For more information, see [Related Issues](https://docs.gitlab.com/ee/user/project/issues/related_issues.html).
+For more information, see [Related Issues](related_issues.md).
 
 ### Crosslinking issues
 
@@ -123,13 +125,13 @@ For more information, see [Crosslinking issues](crosslinking_issues.md).
 - [Close an issue](closing_issues.md)
 - [Move an issue](moving_issues.md)
 - [Delete an issue](deleting_issues.md)
-- [Create a merge request from an issue](issue_data_and_actions.md#18-new-merge-request)
+- [Create a merge request from an issue](issue_data_and_actions.md#22-create-merge-request)
 
 ## Advanced issue management
 
 - [Bulk edit issues](../bulk_editing.md) - From the Issues List, select multiple issues in order to change their status, assignee, milestone, or labels in bulk.
 - [Import issues](csv_import.md)
-- [Export issues](https://docs.gitlab.com/ee/user/project/issues/csv_export.html) **[STARTER]**
+- [Export issues](csv_export.md) **[STARTER]**
 - [Issues API](../../../api/issues.md)
 - Configure an [external issue tracker](../../../integration/external-issue-tracker.md) such as Jira, Redmine,
 or Bugzilla.

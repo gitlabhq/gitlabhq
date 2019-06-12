@@ -2,15 +2,18 @@
   = form_errors(@label)
 
   .form-group.row
-    = f.label :title, class: 'col-form-label col-sm-2'
+    .col-sm-2.col-form-label
+      = f.label :title
     .col-sm-10
       = f.text_field :title, class: "form-control", required: true
   .form-group.row
-    = f.label :description, class: 'col-form-label col-sm-2'
+    .col-sm-2.col-form-label
+      = f.label :description
     .col-sm-10
       = f.text_field :description, class: "form-control js-quick-submit"
   .form-group.row
-    = f.label :color, _("Background color"), class: 'col-form-label col-sm-2'
+    .col-sm-2.col-form-label
+      = f.label :color, _("Background color")
     .col-sm-10
       .input-group
         .input-group-prepend
@@ -21,10 +24,7 @@
         %br
         = _("Or you can choose one of the suggested colors below")
 
-      .suggest-colors
-        - suggested_colors.each do |color|
-          = link_to '#', style: "background-color: #{color}", data: { color: color } do
-            &nbsp;
+      = render_suggested_colors
 
   .form-actions
     = f.submit _('Save'), class: 'btn btn-success js-save-button'

@@ -54,14 +54,11 @@ class NotificationSetting < ApplicationRecord
     self.class.email_events(source)
   end
 
-  EXCLUDED_PARTICIPATING_EVENTS = [
-    :success_pipeline
-  ].freeze
-
   EXCLUDED_WATCHER_EVENTS = [
     :push_to_merge_request,
-    :issue_due
-  ].push(*EXCLUDED_PARTICIPATING_EVENTS).freeze
+    :issue_due,
+    :success_pipeline
+  ].freeze
 
   def self.find_or_create_for(source)
     setting = find_or_initialize_by(source: source)

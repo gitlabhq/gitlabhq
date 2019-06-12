@@ -34,7 +34,7 @@
             = icon('spinner spin')
 
   .todos-filters
-    .row-content-block.second-block
+    .issues-details-filters.row-content-block.second-block
       = form_tag todos_filter_path(without: [:project_id, :author_id, :type, :action_id]), method: :get, class: 'filter-form d-sm-flex' do
         .filter-categories.flex-fill
           .filter-item.inline

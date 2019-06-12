@@ -35,7 +35,7 @@ export default () => {
       return createElement('delete-account-modal', {
         props: {
           actionUrl: deleteAccountModalEl.dataset.actionUrl,
-          confirmWithPassword: !!deleteAccountModalEl.dataset.confirmWithPassword,
+          confirmWithPassword: Boolean(deleteAccountModalEl.dataset.confirmWithPassword),
           username: deleteAccountModalEl.dataset.username,
         },
       });

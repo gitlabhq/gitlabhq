@@ -1,5 +1,5 @@
 ---
-redirect_to: 'https://docs.gitlab.com/ee/push_rules/push_rules.html'
+redirect_to: '../push_rules/push_rules.md'
 ---
 
-This document was moved to [another location](https://docs.gitlab.com/ee/push_rules/push_rules.html)
+This document was moved to [another location](../push_rules/push_rules.md)

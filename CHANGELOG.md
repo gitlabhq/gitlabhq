@@ -2,6 +2,34 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.11.3 (2019-06-10)
+
+### Fixed (5 changes)
+
+- Fix invalid visibility string comparison in project import. !28612
+- Remove a default git depth in Pipelines for merge requests. !28926
+- Fix connection to Tiller error while uninstalling. !29131
+- Fix label click scrolling to top. !29202
+- Make OpenID Connect work without requiring a name. !29312
+
+
+## 11.11.2 (2019-06-04)
+
+### Fixed (7 changes)
+
+- Update SAST.gitlab-ci.yml - Add SAST_GITLEAKS_ENTROPY_LEVEL. !28607
+- Fix OmniAuth OAuth2Generic strategy not loading. !28680
+- Use source ref in pipeline webhook. !28772
+- Fix migration failure when groups are missing route. !29022
+- Stop two-step rebase from hanging when errors occur. !29068
+- Fix project settings not being able to update. !29097
+- Fix display of 'Promote to group label' button.
+
+### Other (1 change)
+
+- Fix input group height.
+
+
 ## 11.11.0 (2019-05-22)
 
 ### Security (1 change)
@@ -185,6 +213,23 @@ entry.
 - Replaces CSS with BS4 utility class for pipeline schedules.
 - Creates a vendors folder for external CSS.
 - Add some frozen string to spec/**/*.rb. (gfyoung)
+
+
+## 11.10.6 (2019-06-04)
+
+### Fixed (7 changes, 1 of them is from the community)
+
+- Allow a member to have an access level equal to parent group. !27913
+- Fix uploading of LFS tracked file through UI. !28052
+- Use 3-way merge for squashing commits. !28078
+- Use a path for the related merge requests endpoint. !28171
+- Fix project visibility level validation. !28305 (Peter Marko)
+- Fix Rugged get_tree_entries recursive flag not working. !28494
+- Use source ref in pipeline webhook. !28772
+
+### Other (1 change)
+
+- Fix input group height.
 
 
 ## 11.10.4 (2019-05-01)
@@ -476,6 +521,24 @@ entry.
 - Externalize admin deploy keys strings.
 - Removes EE differences for environments_table.vue.
 - Removes EE differences for environment_item.vue.
+
+
+## 11.9.12 (2019-05-30)
+
+### Security (12 changes, 1 of them is from the community)
+
+- Protect Gitlab::HTTP against DNS rebinding attack.
+- Fix project visibility level validation. (Peter Marko)
+- Update Knative version.
+- Add DNS rebinding protection settings.
+- Prevent XSS injection in note imports.
+- Prevent invalid branch for merge request.
+- Filter relative links in wiki for XSS.
+- Fix confidential issue label disclosure on milestone view.
+- Fix url redaction for issue links.
+- Resolve: Milestones leaked via search API.
+- Prevent bypass of restriction disabling web password sign in.
+- Hide confidential issue title on unsubscribe for anonymous users.
 
 
 ## 11.9.10 (2019-04-26)

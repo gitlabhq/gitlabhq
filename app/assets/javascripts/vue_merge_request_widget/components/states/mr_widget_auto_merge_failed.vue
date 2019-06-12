@@ -35,9 +35,7 @@ export default {
     <status-icon status="warning" />
     <div class="media-body space-children">
       <span class="bold">
-        <template v-if="mr.mergeError"
-          >{{ mr.mergeError }}.</template
-        >
+        <template v-if="mr.mergeError">{{ mr.mergeError }}</template>
         {{ s__('mrWidget|This merge request failed to be merged automatically') }}
       </span>
       <button

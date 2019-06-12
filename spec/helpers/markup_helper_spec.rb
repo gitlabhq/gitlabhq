@@ -78,7 +78,8 @@ describe MarkupHelper do
     let(:link)    { '/commits/0a1b2c3d' }
     let(:issues)  { create_list(:issue, 2, project: project) }
 
-    it 'handles references nested in links with all the text' do
+    # Clean the cache to make sure the title is re-rendered from the stubbed one
+    it 'handles references nested in links with all the text', :clean_gitlab_redis_cache do
       allow(commit).to receive(:title).and_return("This should finally fix #{issues[0].to_reference} and #{issues[1].to_reference} for real")
 
       actual = helper.link_to_markdown_field(commit, :title, link)

@@ -57,7 +57,7 @@ export default {
     removeSourceBranch() {
       const options = {
         sha: this.mr.sha,
-        merge_when_pipeline_succeeds: true,
+        auto_merge_strategy: 'merge_when_pipeline_succeeds',
         should_remove_source_branch: true,
       };
 
@@ -85,7 +85,7 @@ export default {
       <h4 class="d-flex align-items-start">
         <span class="append-right-10">
           {{ s__('mrWidget|Set by') }}
-          <mr-widget-author :author="mr.setToMWPSBy" />
+          <mr-widget-author :author="mr.setToAutoMergeBy" />
           {{ s__('mrWidget|to be merged automatically when the pipeline succeeds') }}
         </span>
         <a

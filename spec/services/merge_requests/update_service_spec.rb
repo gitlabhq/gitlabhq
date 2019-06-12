@@ -217,8 +217,9 @@ describe MergeRequests::UpdateService, :mailer do
             head_pipeline_of: merge_request
           )
 
-          expect(MergeRequests::MergeWhenPipelineSucceedsService).to receive(:new).with(project, user)
+          expect(AutoMerge::MergeWhenPipelineSucceedsService).to receive(:new).with(project, user, {})
             .and_return(service_mock)
+          allow(service_mock).to receive(:available_for?) { true }
           expect(service_mock).to receive(:execute).with(merge_request)
         end
 
@@ -398,6 +399,18 @@ describe MergeRequests::UpdateService, :mailer do
 
       context 'when the target branch change' do
         before do
+          update_merge_request({ target_branch: 'target' })
+        end
+
+        it 'marks pending todos as done' do
+          expect(pending_todo.reload).to be_done
+        end
+      end
+
+      context 'when auto merge is enabled and target branch changed' do
+        before do
+          AutoMergeService.new(project, user).execute(merge_request, AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS)
+
           update_merge_request({ target_branch: 'target' })
         end
 

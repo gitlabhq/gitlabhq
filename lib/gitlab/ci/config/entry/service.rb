@@ -24,6 +24,9 @@ module Gitlab
             validates :alias, type: String, presence: true, unless: ->(record) { record.ports.blank? }
           end
 
+          entry :ports, Entry::Ports,
+            description: 'Ports used to expose the service'
+
           def alias
             value[:alias]
           end

@@ -15,7 +15,9 @@ class DiffNote < Note
   validates :original_position, presence: true
   validates :position, presence: true
   validates :line_code, presence: true, line_code: true, if: :on_text?
-  validates :noteable_type, inclusion: { in: noteable_types }
+  # We need to evaluate the `noteable` types when running the validation since
+  # EE might have added a type when the module was prepended
+  validates :noteable_type, inclusion: { in: -> (_note) { noteable_types } }
   validate :positions_complete
   validate :verify_supported
   validate :diff_refs_match_commit, if: :for_commit?
@@ -44,7 +46,7 @@ class DiffNote < Note
   # Returns the diff file from `position`
   def latest_diff_file
     strong_memoize(:latest_diff_file) do
-      position.diff_file(project.repository)
+      position.diff_file(repository)
     end
   end
 
@@ -75,7 +77,7 @@ class DiffNote < Note
   end
 
   def supports_suggestion?
-    return false unless noteable.supports_suggestion? && on_text?
+    return false unless noteable&.supports_suggestion? && on_text?
     # We don't want to trigger side-effects of `diff_file` call.
     return false unless file = latest_diff_file
     return false unless line = file.line_for_position(self.position)
@@ -88,7 +90,7 @@ class DiffNote < Note
   end
 
   def banzai_render_context(field)
-    super.merge(project: project, suggestions_filter_enabled: supports_suggestion?)
+    super.merge(suggestions_filter_enabled: true)
   end
 
   private
@@ -111,7 +113,7 @@ class DiffNote < Note
       if note_diff_file
         diff = Gitlab::Git::Diff.new(note_diff_file.to_hash)
         Gitlab::Diff::File.new(diff,
-                               repository: project.repository,
+                               repository: repository,
                                diff_refs: original_position.diff_refs)
       elsif created_at_diff?(noteable.diff_refs)
         # We're able to use the already persisted diffs (Postgres) if we're
@@ -122,7 +124,7 @@ class DiffNote < Note
         # `Diff::FileCollection::MergeRequestDiff`.
         noteable.diffs(original_position.diff_options).diff_files.first
       else
-        original_position.diff_file(self.project.repository)
+        original_position.diff_file(repository)
       end
 
     # Since persisted diff files already have its content "unfolded"
@@ -137,7 +139,7 @@ class DiffNote < Note
   end
 
   def set_line_code
-    self.line_code = self.position.line_code(self.project.repository)
+    self.line_code = self.position.line_code(repository)
   end
 
   def verify_supported
@@ -171,6 +173,10 @@ class DiffNote < Note
       shas << self.position.head_sha
     end
 
-    project.repository.keep_around(*shas)
+    repository.keep_around(*shas)
+  end
+
+  def repository
+    noteable.respond_to?(:repository) ? noteable.repository : project.repository
   end
 end

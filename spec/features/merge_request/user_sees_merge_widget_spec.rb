@@ -160,7 +160,7 @@ describe 'Merge request > User sees merge widget', :js do
 
     it 'shows head pipeline information' do
       within '.ci-widget-content' do
-        expect(page).to have_content("Pipeline ##{pipeline.id} pending " \
+        expect(page).to have_content("Pipeline ##{pipeline.id} (##{pipeline.iid}) pending " \
                                      "for #{pipeline.short_sha} " \
                                      "on #{pipeline.ref}")
       end
@@ -189,7 +189,7 @@ describe 'Merge request > User sees merge widget', :js do
 
     it 'shows head pipeline information' do
       within '.ci-widget-content' do
-        expect(page).to have_content("Pipeline ##{pipeline.id} pending " \
+        expect(page).to have_content("Pipeline ##{pipeline.id} (##{pipeline.iid}) pending " \
                                      "for #{pipeline.short_sha} " \
                                      "on #{merge_request.to_reference} " \
                                      "with #{merge_request.source_branch}")
@@ -201,7 +201,7 @@ describe 'Merge request > User sees merge widget', :js do
 
       it 'shows head pipeline information' do
         within '.ci-widget-content' do
-          expect(page).to have_content("Pipeline ##{pipeline.id} pending " \
+          expect(page).to have_content("Pipeline ##{pipeline.id} (##{pipeline.iid}) pending " \
                                        "for #{pipeline.short_sha} " \
                                        "on #{merge_request.to_reference} " \
                                        "with #{merge_request.source_branch}")
@@ -234,7 +234,7 @@ describe 'Merge request > User sees merge widget', :js do
 
     it 'shows head pipeline information' do
       within '.ci-widget-content' do
-        expect(page).to have_content("Pipeline ##{pipeline.id} pending " \
+        expect(page).to have_content("Pipeline ##{pipeline.id} (##{pipeline.iid}) pending " \
                                      "for #{pipeline.short_sha} " \
                                      "on #{merge_request.to_reference} " \
                                      "with #{merge_request.source_branch} " \
@@ -248,7 +248,7 @@ describe 'Merge request > User sees merge widget', :js do
 
       it 'shows head pipeline information' do
         within '.ci-widget-content' do
-          expect(page).to have_content("Pipeline ##{pipeline.id} pending " \
+          expect(page).to have_content("Pipeline ##{pipeline.id} (##{pipeline.iid}) pending " \
                                        "for #{pipeline.short_sha} " \
                                        "on #{merge_request.to_reference} " \
                                        "with #{merge_request.source_branch} " \
@@ -314,7 +314,8 @@ describe 'Merge request > User sees merge widget', :js do
   context 'view merge request with MWPS enabled but automatically merge fails' do
     before do
       merge_request.update(
-        merge_when_pipeline_succeeds: true,
+        auto_merge_enabled: true,
+        auto_merge_strategy: AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS,
         merge_user: merge_request.author,
         merge_error: 'Something went wrong'
       )
@@ -326,8 +327,8 @@ describe 'Merge request > User sees merge widget', :js do
       # Wait for the `ci_status` and `merge_check` requests
       wait_for_requests
 
-      page.within('.mr-widget-body') do
-        expect(page).to have_content('Something went wrong')
+      page.within('.mr-section-container') do
+        expect(page).to have_content('Merge failed: Something went wrong')
       end
     end
   end
@@ -347,8 +348,8 @@ describe 'Merge request > User sees merge widget', :js do
       # Wait for the `ci_status` and `merge_check` requests
       wait_for_requests
 
-      page.within('.mr-widget-body') do
-        expect(page).to have_content('Something went wrong')
+      page.within('.mr-section-container') do
+        expect(page).to have_content('Merge failed: Something went wrong')
       end
     end
   end

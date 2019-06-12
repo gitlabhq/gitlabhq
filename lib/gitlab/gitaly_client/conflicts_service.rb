@@ -65,9 +65,9 @@ module Gitlab
           our_commit_oid: @our_commit_oid,
           target_repository: target_repository.gitaly_repository,
           their_commit_oid: @their_commit_oid,
-          source_branch: source_branch,
-          target_branch: target_branch,
-          commit_message: resolution.commit_message,
+          source_branch: encode_binary(source_branch),
+          target_branch: encode_binary(target_branch),
+          commit_message: encode_binary(resolution.commit_message),
           user: Gitlab::Git::User.from_gitlab(resolution.user).to_gitaly
         )
       end

@@ -16,25 +16,25 @@ variables:
 
 # We use SDKMan as tool for managing versions
 before_script:
-   - apt-get update -qq && apt-get install -y -qq unzip
-   - curl -sSL https://get.sdkman.io | bash
-   - echo sdkman_auto_answer=true > /root/.sdkman/etc/config
-   - source /root/.sdkman/bin/sdkman-init.sh
-   - sdk install gradle $GRADLE_VERSION < /dev/null
-   - sdk use gradle $GRADLE_VERSION
-# As it's not a good idea to version gradle.properties feel free to add your
-# environments variable here
-   - echo grailsVersion=$GRAILS_VERSION > gradle.properties
-   - echo gradleWrapperVersion=2.14 >> gradle.properties
-# refresh dependencies from your project
-   - ./gradlew --refresh-dependencies
-# Be aware that if you are using Angular profile,
-# Bower cannot be run as root if you don't allow it before.
-# Feel free to remove next line if you are not using Bower
-   - echo {\"allow_root\":true} > /root/.bowerrc
+  - apt-get update -qq && apt-get install -y -qq unzip
+  - curl -sSL https://get.sdkman.io | bash
+  - echo sdkman_auto_answer=true > /root/.sdkman/etc/config
+  - source /root/.sdkman/bin/sdkman-init.sh
+  - sdk install gradle $GRADLE_VERSION < /dev/null
+  - sdk use gradle $GRADLE_VERSION
+  # As it's not a good idea to version gradle.properties feel free to add your
+  # environments variable here
+  - echo grailsVersion=$GRAILS_VERSION > gradle.properties
+  - echo gradleWrapperVersion=2.14 >> gradle.properties
+  # refresh dependencies from your project
+  - ./gradlew --refresh-dependencies
+  # Be aware that if you are using Angular profile,
+  # Bower cannot be run as root if you don't allow it before.
+  # Feel free to remove next line if you are not using Bower
+  - echo {\"allow_root\":true} > /root/.bowerrc
 
 # This build job does the full grails pipeline
 # (compile, test, integrationTest, war, assemble).
 build:
- script:
-   - ./gradlew build
+  script:
+    - ./gradlew build

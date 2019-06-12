@@ -2,7 +2,6 @@
 
 module Ci
   class Build < CommitStatus
-    prepend ArtifactMigratable
     include Ci::Processable
     include Ci::Metadatable
     include Ci::Contextable
@@ -16,11 +15,15 @@ module Ci
     include Gitlab::Utils::StrongMemoize
     include Deployable
     include HasRef
-    include UpdateProjectStatistics
 
     BuildArchivedError = Class.new(StandardError)
 
     ignore_column :commands
+    ignore_column :artifacts_file
+    ignore_column :artifacts_metadata
+    ignore_column :artifacts_file_store
+    ignore_column :artifacts_metadata_store
+    ignore_column :artifacts_size
 
     belongs_to :project, inverse_of: :builds
     belongs_to :runner
@@ -83,13 +86,7 @@ module Ci
     scope :unstarted, ->() { where(runner_id: nil) }
     scope :ignore_failures, ->() { where(allow_failure: false) }
     scope :with_artifacts_archive, ->() do
-      if Feature.enabled?(:ci_enable_legacy_artifacts)
-        where('(artifacts_file IS NOT NULL AND artifacts_file <> ?) OR EXISTS (?)',
-          '', Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id').archive)
-      else
-        where('EXISTS (?)',
-          Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id').archive)
-      end
+      where('EXISTS (?)', Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id').archive)
     end
 
     scope :with_existing_job_artifacts, ->(query) do
@@ -111,8 +108,8 @@ module Ci
 
     scope :eager_load_job_artifacts, -> { includes(:job_artifacts) }
 
-    scope :with_artifacts_stored_locally, -> { with_artifacts_archive.where(artifacts_file_store: [nil, LegacyArtifactUploader::Store::LOCAL]) }
-    scope :with_archived_trace_stored_locally, -> { with_archived_trace.where(artifacts_file_store: [nil, LegacyArtifactUploader::Store::LOCAL]) }
+    scope :with_artifacts_stored_locally, -> { with_existing_job_artifacts(Ci::JobArtifact.archive.with_files_stored_locally) }
+    scope :with_archived_trace_stored_locally, -> { with_existing_job_artifacts(Ci::JobArtifact.trace.with_files_stored_locally) }
     scope :with_artifacts_not_expired, ->() { with_artifacts_archive.where('artifacts_expire_at IS NULL OR artifacts_expire_at > ?', Time.now) }
     scope :with_expired_artifacts, ->() { with_artifacts_archive.where('artifacts_expire_at < ?', Time.now) }
     scope :last_month, ->() { where('created_at > ?', Date.today - 1.month) }
@@ -142,24 +139,16 @@ module Ci
 
     scope :queued_before, ->(time) { where(arel_table[:queued_at].lt(time)) }
 
-    ##
-    # TODO: Remove these mounters when we remove :ci_enable_legacy_artifacts feature flag
-    mount_uploader :legacy_artifacts_file, LegacyArtifactUploader, mount_on: :artifacts_file
-    mount_uploader :legacy_artifacts_metadata, LegacyArtifactUploader, mount_on: :artifacts_metadata
-
     acts_as_taggable
 
     add_authentication_token_field :token, encrypted: :optional
 
-    before_save :update_artifacts_size, if: :artifacts_file_changed?
     before_save :ensure_token
     before_destroy { unscoped_project }
 
     after_create unless: :importing? do |build|
       run_after_commit { BuildHooksWorker.perform_async(build.id) }
     end
-
-    update_project_statistics stat: :build_artifacts_size, attribute: :artifacts_size
 
     class << self
       # This is needed for url_for to work,
@@ -354,7 +343,7 @@ module Ci
     end
 
     def retryable?
-      !archived? && (success? || failed?)
+      !archived? && (success? || failed? || canceled?)
     end
 
     def retries_count
@@ -542,6 +531,26 @@ module Ci
       trace.exist?
     end
 
+    def artifacts_file
+      job_artifacts_archive&.file
+    end
+
+    def artifacts_size
+      job_artifacts_archive&.size
+    end
+
+    def artifacts_metadata
+      job_artifacts_metadata&.file
+    end
+
+    def artifacts?
+      !artifacts_expired? && artifacts_file&.exists?
+    end
+
+    def artifacts_metadata?
+      artifacts? && artifacts_metadata&.exists?
+    end
+
     def has_job_artifacts?
       job_artifacts.any?
     end
@@ -610,14 +619,12 @@ module Ci
     # and use that for `ExpireBuildInstanceArtifactsWorker`?
     def erase_erasable_artifacts!
       job_artifacts.erasable.destroy_all # rubocop: disable DestroyAll
-      erase_old_artifacts!
     end
 
     def erase(opts = {})
       return false unless erasable?
 
       job_artifacts.destroy_all # rubocop: disable DestroyAll
-      erase_old_artifacts!
       erase_trace!
       update_erased!(opts[:erased_by])
     end
@@ -655,10 +662,7 @@ module Ci
     end
 
     def artifacts_file_for_type(type)
-      file = job_artifacts.find_by(file_type: Ci::JobArtifact.file_types[type])&.file
-      # TODO: to be removed once legacy artifacts is removed
-      file ||= legacy_artifacts_file if type == :archive
-      file
+      job_artifacts.find_by(file_type: Ci::JobArtifact.file_types[type])&.file
     end
 
     def coverage_regex
@@ -765,6 +769,10 @@ module Ci
       end
     end
 
+    def report_artifacts
+      job_artifacts.with_reports
+    end
+
     # Virtual deployment status depending on the environment status.
     def deployment_status
       return unless starts_environment?
@@ -779,13 +787,6 @@ module Ci
     end
 
     private
-
-    def erase_old_artifacts!
-      # TODO: To be removed once we get rid of ci_enable_legacy_artifacts feature flag
-      remove_artifacts_file!
-      remove_artifacts_metadata!
-      save
-    end
 
     def successful_deployment_status
       if deployment&.last?
@@ -806,10 +807,6 @@ module Ci
     def job_artifacts_for_types(report_types)
       # Use select to leverage cached associations and avoid N+1 queries
       job_artifacts.select { |artifact| artifact.file_type.in?(report_types) }
-    end
-
-    def update_artifacts_size
-      self.artifacts_size = legacy_artifacts_file&.size
     end
 
     def erase_trace!

@@ -27,59 +27,6 @@ describe Projects::UpdatePagesService do
     it { is_expected.not_to match(Gitlab::PathRegex.namespace_format_regex) }
   end
 
-  context 'legacy artifacts' do
-    before do
-      build.update(legacy_artifacts_file: file)
-      build.update(legacy_artifacts_metadata: metadata)
-    end
-
-    describe 'pages artifacts' do
-      it "doesn't delete artifacts after deploying" do
-        expect(execute).to eq(:success)
-
-        expect(build.reload.artifacts?).to eq(true)
-      end
-    end
-
-    it 'succeeds' do
-      expect(project.pages_deployed?).to be_falsey
-      expect(execute).to eq(:success)
-      expect(project.pages_deployed?).to be_truthy
-
-      # Check that all expected files are extracted
-      %w[index.html zero .hidden/file].each do |filename|
-        expect(File.exist?(File.join(project.public_pages_path, filename))).to be_truthy
-      end
-    end
-
-    it 'limits pages size' do
-      stub_application_setting(max_pages_size: 1)
-      expect(execute).not_to eq(:success)
-    end
-
-    it 'removes pages after destroy' do
-      expect(PagesWorker).to receive(:perform_in)
-      expect(project.pages_deployed?).to be_falsey
-      expect(execute).to eq(:success)
-      expect(project.pages_deployed?).to be_truthy
-      project.destroy
-      expect(project.pages_deployed?).to be_falsey
-    end
-
-    it 'fails if sha on branch is not latest' do
-      build.update(ref: 'feature')
-
-      expect(execute).not_to eq(:success)
-    end
-
-    it 'fails for empty file fails' do
-      build.update(legacy_artifacts_file: empty_file)
-
-      expect { execute }
-        .to raise_error(Projects::UpdatePagesService::FailedToExtractError)
-    end
-  end
-
   context 'for new artifacts' do
     context "for a valid job" do
       before do
@@ -207,7 +154,7 @@ describe Projects::UpdatePagesService do
   end
 
   it 'fails for invalid archive' do
-    build.update(legacy_artifacts_file: invalid_file)
+    create(:ci_job_artifact, :archive, file: invalid_file, job: build)
     expect(execute).not_to eq(:success)
   end
 
@@ -218,8 +165,8 @@ describe Projects::UpdatePagesService do
       file = fixture_file_upload('spec/fixtures/pages.zip')
       metafile = fixture_file_upload('spec/fixtures/pages.zip.meta')
 
-      build.update(legacy_artifacts_file: file)
-      build.update(legacy_artifacts_metadata: metafile)
+      create(:ci_job_artifact, :archive, file: file, job: build)
+      create(:ci_job_artifact, :metadata, file: metafile, job: build)
 
       allow(build).to receive(:artifacts_metadata_entry)
         .and_return(metadata)

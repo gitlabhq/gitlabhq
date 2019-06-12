@@ -4,12 +4,18 @@ require 'spec_helper'
 
 describe Gitlab::Metrics::Dashboard::Processor do
   let(:project) { build(:project) }
-  let(:environment) { build(:environment, project: project) }
+  let(:environment) { create(:environment, project: project) }
   let(:dashboard_yml) { YAML.load_file('spec/fixtures/lib/gitlab/metrics/dashboard/sample_dashboard.yml') }
 
   describe 'process' do
     let(:process_params) { [project, environment, dashboard_yml] }
     let(:dashboard) { described_class.new(*process_params).process(insert_project_metrics: true) }
+
+    it 'includes a path for the prometheus endpoint with each metric' do
+      expect(all_metrics).to satisfy_all do |metric|
+        metric[:prometheus_endpoint_path] == prometheus_path(metric[:query_range])
+      end
+    end
 
     context 'when dashboard config corresponds to common metrics' do
       let!(:common_metric) { create(:prometheus_metric, :common, identifier: 'metric_a1') }
@@ -61,7 +67,7 @@ describe Gitlab::Metrics::Dashboard::Processor do
 
     shared_examples_for 'errors with message' do |expected_message|
       it 'raises a DashboardLayoutError' do
-        error_class = Gitlab::Metrics::Dashboard::Stages::BaseStage::DashboardLayoutError
+        error_class = Gitlab::Metrics::Dashboard::Stages::BaseStage::DashboardProcessingError
 
         expect { dashboard }.to raise_error(error_class, expected_message)
       end
@@ -84,6 +90,12 @@ describe Gitlab::Metrics::Dashboard::Processor do
 
       it_behaves_like 'errors with message', 'Each "panel" must define an array :metrics'
     end
+
+    context 'when the dashboard contains a metric which is missing a query' do
+      let(:dashboard_yml) { { panel_groups: [{ panels: [{ metrics: [{}] }] }] } }
+
+      it_behaves_like 'errors with message', 'Each "metric" must define one of :query or :query_range'
+    end
   end
 
   private
@@ -99,7 +111,17 @@ describe Gitlab::Metrics::Dashboard::Processor do
       query_range: metric.query,
       unit: metric.unit,
       label: metric.legend,
-      metric_id: metric.id
+      metric_id: metric.id,
+      prometheus_endpoint_path: prometheus_path(metric.query)
     }
+  end
+
+  def prometheus_path(query)
+    Gitlab::Routing.url_helpers.prometheus_api_project_environment_path(
+      project,
+      environment,
+      proxy_path: :query_range,
+      query: query
+    )
   end
 end

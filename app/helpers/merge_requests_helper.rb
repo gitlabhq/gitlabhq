@@ -103,7 +103,7 @@ module MergeRequestsHelper
 
   def merge_params(merge_request)
     {
-      merge_when_pipeline_succeeds: true,
+      auto_merge_strategy: AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS,
       should_remove_source_branch: true,
       sha: merge_request.diff_head_sha,
       squash: merge_request.squash

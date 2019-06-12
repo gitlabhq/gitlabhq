@@ -150,6 +150,65 @@ describe('VariableList', () => {
         .then(done)
         .catch(done.fail);
     });
+
+    describe('validateMaskability', () => {
+      let $row;
+
+      const maskingErrorElement = '.js-row:last-child .masking-validation-error';
+
+      beforeEach(() => {
+        $row = $wrapper.find('.js-row:last-child');
+        $row.find('.ci-variable-masked-item .js-project-feature-toggle').click();
+      });
+
+      it('has a regex provided via a data attribute', () => {
+        expect($wrapper.attr('data-maskable-regex')).toBe('^[a-zA-Z0-9_+=/-]{8,}$');
+      });
+
+      it('allows values that are 8 characters long', done => {
+        $row.find('.js-ci-variable-input-value').val('looooong');
+
+        getSetTimeoutPromise()
+          .then(() => {
+            expect($wrapper.find(maskingErrorElement)).toHaveClass('hide');
+          })
+          .then(done)
+          .catch(done.fail);
+      });
+
+      it('rejects values that are shorter than 8 characters', done => {
+        $row.find('.js-ci-variable-input-value').val('short');
+
+        getSetTimeoutPromise()
+          .then(() => {
+            expect($wrapper.find(maskingErrorElement)).toBeVisible();
+          })
+          .then(done)
+          .catch(done.fail);
+      });
+
+      it('allows values with base 64 characters', done => {
+        $row.find('.js-ci-variable-input-value').val('abcABC123_+=/-');
+
+        getSetTimeoutPromise()
+          .then(() => {
+            expect($wrapper.find(maskingErrorElement)).toHaveClass('hide');
+          })
+          .then(done)
+          .catch(done.fail);
+      });
+
+      it('rejects values with other special characters', done => {
+        $row.find('.js-ci-variable-input-value').val('1234567$');
+
+        getSetTimeoutPromise()
+          .then(() => {
+            expect($wrapper.find(maskingErrorElement)).toBeVisible();
+          })
+          .then(done)
+          .catch(done.fail);
+      });
+    });
   });
 
   describe('toggleEnableRow method', () => {

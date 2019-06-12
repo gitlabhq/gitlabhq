@@ -38,7 +38,9 @@ class PreviewMarkdownService < BaseService
                                           head_sha: params[:head_sha],
                                           start_sha: params[:start_sha])
 
-    Gitlab::Diff::SuggestionsParser.parse(text, position: position, project: project)
+    Gitlab::Diff::SuggestionsParser.parse(text, position: position,
+                                                project: project,
+                                                supports_suggestion: params[:preview_suggestions])
   end
 
   def preview_sugestions?

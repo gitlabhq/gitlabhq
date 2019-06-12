@@ -444,8 +444,8 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
               'sha' => job.sha,
               'before_sha' => job.before_sha,
               'ref_type' => 'branch',
-              'refspecs' => %w[+refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/*],
-              'depth' => 0 }
+              'refspecs' => ["+refs/heads/#{job.ref}:refs/remotes/origin/#{job.ref}"],
+              'depth' => project.default_git_depth }
           end
 
           let(:expected_steps) do
@@ -531,7 +531,11 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
               end
             end
 
-            context 'when GIT_DEPTH is not specified' do
+            context 'when GIT_DEPTH is not specified and there is no default git depth for the project' do
+              before do
+                project.update!(default_git_depth: nil)
+              end
+
               it 'specifies refspecs' do
                 request_job
 
@@ -587,7 +591,11 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
               end
             end
 
-            context 'when GIT_DEPTH is not specified' do
+            context 'when GIT_DEPTH is not specified and there is no default git depth for the project' do
+              before do
+                project.update!(default_git_depth: nil)
+              end
+
               it 'specifies refspecs' do
                 request_job
 
@@ -1632,8 +1640,8 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
             let!(:metadata) { file_upload2 }
             let!(:metadata_sha256) { Digest::SHA256.file(metadata.path).hexdigest }
 
-            let(:stored_artifacts_file) { job.reload.artifacts_file.file }
-            let(:stored_metadata_file) { job.reload.artifacts_metadata.file }
+            let(:stored_artifacts_file) { job.reload.artifacts_file }
+            let(:stored_metadata_file) { job.reload.artifacts_metadata }
             let(:stored_artifacts_size) { job.reload.artifacts_size }
             let(:stored_artifacts_sha256) { job.reload.job_artifacts_archive.file_sha256 }
             let(:stored_metadata_sha256) { job.reload.job_artifacts_metadata.file_sha256 }
@@ -1654,9 +1662,9 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
 
               it 'stores artifacts and artifacts metadata' do
                 expect(response).to have_gitlab_http_status(201)
-                expect(stored_artifacts_file.original_filename).to eq(artifacts.original_filename)
-                expect(stored_metadata_file.original_filename).to eq(metadata.original_filename)
-                expect(stored_artifacts_size).to eq(72821)
+                expect(stored_artifacts_file.filename).to eq(artifacts.original_filename)
+                expect(stored_metadata_file.filename).to eq(metadata.original_filename)
+                expect(stored_artifacts_size).to eq(artifacts.size)
                 expect(stored_artifacts_sha256).to eq(artifacts_sha256)
                 expect(stored_metadata_sha256).to eq(metadata_sha256)
               end

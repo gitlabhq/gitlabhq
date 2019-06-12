@@ -1,7 +1,7 @@
 - empty_repo = @project.empty_repo?
 - show_auto_devops_callout = show_auto_devops_callout?(@project)
 - max_project_topic_length = 15
-.project-home-panel{ class: [("empty-project" if empty_repo), ("js-hide-on-navigation" if Feature.enabled?(:vue_file_list, @project))] }
+.project-home-panel{ class: [("empty-project" if empty_repo), ("js-keep-hidden-on-navigation" if vue_file_list_enabled?)] }
   .row.append-bottom-8
     .home-panel-title-row.col-md-12.col-lg-6.d-flex
       .avatar-container.rect-avatar.s64.home-panel-avatar.append-right-default.float-none

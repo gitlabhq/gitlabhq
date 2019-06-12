@@ -52,7 +52,7 @@ and select a milestone from your current ones, while for group's, access the **G
 select a group, and go through **Issues > Milestones** on the sidebar.
 
 NOTE: **Note:**
-You're able to [promote project](https://docs.gitlab.com/ee/user/project/milestones/#promoting-project-milestones-to-group-milestones) to group milestones and still see the **Burndown Chart** for them, respecting license limitations.
+You're able to [promote project](index.md#promoting-project-milestones-to-group-milestones) to group milestones and still see the **Burndown Chart** for them, respecting license limitations.
 
 The chart indicates the project's progress throughout that milestone (for issues assigned to it).
 

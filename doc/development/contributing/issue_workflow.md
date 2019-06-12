@@ -7,7 +7,7 @@ scheduling into milestones. Labelling is a task for everyone.
 Most issues will have labels for at least one of the following:
 
 - Type: ~feature, ~bug, ~customer, etc.
-- Subject: ~wiki, ~"container registry", ~ldap, ~api, ~frontend, etc.
+- Subject: ~wiki, ~"Container Registry", ~ldap, ~api, ~frontend, etc.
 - Team: ~Plan, ~Manage, ~Quality, etc.
 - Stage: ~"devops:plan", ~"devops:create", etc.
 - Release Scoping: ~Deliverable, ~Stretch, ~"Next Patch Release"
@@ -44,7 +44,7 @@ Subject labels are labels that define what area or feature of GitLab this issue
 hits. They are not always necessary, but very convenient.
 
 Examples of subject labels are ~wiki, ~ldap, ~api,
-~issues, ~"merge requests", ~labels, and ~"container registry".
+~issues, ~"merge requests", ~labels, and ~"Container Registry".
 
 If you are an expert in a particular area, it makes it easier to find issues to
 work on. You can also subscribe to those labels to receive an email each time an
@@ -92,20 +92,21 @@ Stage labels specify which [DevOps stage][devops-stages] the issue belongs to.
 
 The current stage labels are:
 
-- ~"devops:manage"
-- ~"devops:plan"
-- ~"devops:create"
-- ~"devops:verify"
-- ~"devops:package"
-- ~"devops:release"
-- ~"devops:configure"
-- ~"devops:monitor"
-- ~"devops:secure"
-- ~"devops:defend"
-- ~"devops:enablement"
+- ~"devops::manage"
+- ~"devops::plan"
+- ~"devops::create"
+- ~"devops::verify"
+- ~"devops::package"
+- ~"devops::release"
+- ~"devops::configure"
+- ~"devops::monitor"
+- ~"devops::secure"
+- ~"devops::defend"
+- ~"devops::growth"
+- ~"devops::enablement"
 
-These labels should be mutually exclusive. If an issue belongs to multiple
-stages, the most relevant should be used.
+These labels are [scoped labels](../../user/project/labels.md#scoped-labels-premium)
+and thus are mutually exclusive.
 
 They differ from the [Team labels](#team-labels) because teams may work on
 issues outside their stage.
@@ -127,20 +128,18 @@ Group labels specify which [groups][structure-groups] the issue belongs to.
 
 Examples include:
 
-- ~"group:control"
-- ~"group:editor"
+- ~"group::control"
+- ~"group::editor"
 
-These labels should be mutually exclusive. If an issue belongs to multiple
-groups, the most relevant should be used.
+These labels are [scoped labels](../../user/project/labels.md#scoped-labels-premium)
+and thus are mutually exclusive.
 
 Groups are nested beneath a particular stage, so only one stage label and one group label
-should be applied to a single issue. You can find the groups listed in the
-[Product Categories pages][product-categories]. For example, ~"group:control" and
-~"group:framework" labels can be applied to issues related to the [Manage stage][manage-stage].
+can be applied to a single issue. You can find the groups listed in the
+[Product Categories pages][product-categories].
 
 [structure-groups]: https://about.gitlab.com/company/team/structure/#groups
 [product-categories]: https://about.gitlab.com/handbook/product/categories/
-[manage-stage]: https://about.gitlab.com/handbook/product/categories/#manage-stage
 
 ## Release Scoping labels
 

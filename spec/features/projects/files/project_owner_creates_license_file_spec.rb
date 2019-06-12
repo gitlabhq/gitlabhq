@@ -5,6 +5,7 @@ describe 'Projects > Files > Project owner creates a license file', :js do
   let(:project_maintainer) { project.owner }
 
   before do
+    stub_feature_flags(vue_file_list: false)
     project.repository.delete_file(project_maintainer, 'LICENSE',
       message: 'Remove LICENSE', branch_name: 'master')
     sign_in(project_maintainer)

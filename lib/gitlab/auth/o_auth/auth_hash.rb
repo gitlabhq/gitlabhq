@@ -55,7 +55,7 @@ module Gitlab
         private
 
         def info
-          auth_hash.info
+          auth_hash['info']
         end
 
         def get_info(key)

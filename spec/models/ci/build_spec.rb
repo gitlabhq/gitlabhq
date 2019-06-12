@@ -30,12 +30,6 @@ describe Ci::Build do
   it { is_expected.to delegate_method(:legacy_detached_merge_request_pipeline?).to(:pipeline) }
   it { is_expected.to include_module(Ci::PipelineDelegator) }
 
-  it { is_expected.to be_a(ArtifactMigratable) }
-
-  it_behaves_like 'UpdateProjectStatistics' do
-    subject { FactoryBot.build(:ci_build, pipeline: pipeline, artifacts_size: 23) }
-  end
-
   describe 'associations' do
     it 'has a bidirectional relationship with projects' do
       expect(described_class.reflect_on_association(:project).has_inverse?).to eq(:builds)
@@ -113,24 +107,6 @@ describe Ci::Build do
 
       it 'does not return the job' do
         is_expected.not_to include(job)
-      end
-    end
-
-    context 'when job has a legacy archive' do
-      let!(:job) { create(:ci_build, :legacy_artifacts) }
-
-      it 'returns the job' do
-        is_expected.to include(job)
-      end
-
-      context 'when ci_enable_legacy_artifacts feature flag is disabled' do
-        before do
-          stub_feature_flags(ci_enable_legacy_artifacts: false)
-        end
-
-        it 'does not return the job' do
-          is_expected.not_to include(job)
-        end
       end
     end
 
@@ -464,50 +440,10 @@ describe Ci::Build do
         end
       end
     end
-
-    context 'when legacy artifacts are used' do
-      let(:build) { create(:ci_build, :legacy_artifacts) }
-
-      subject { build.artifacts? }
-
-      context 'is expired' do
-        let(:build) { create(:ci_build, :legacy_artifacts, :expired) }
-
-        it { is_expected.to be_falsy }
-      end
-
-      context 'artifacts archive does not exist' do
-        let(:build) { create(:ci_build) }
-
-        it { is_expected.to be_falsy }
-      end
-
-      context 'artifacts archive exists' do
-        let(:build) { create(:ci_build, :legacy_artifacts) }
-
-        it { is_expected.to be_truthy }
-
-        context 'when ci_enable_legacy_artifacts feature flag is disabled' do
-          before do
-            stub_feature_flags(ci_enable_legacy_artifacts: false)
-          end
-
-          it { is_expected.to be_falsy }
-        end
-      end
-    end
   end
 
   describe '#browsable_artifacts?' do
     subject { build.browsable_artifacts? }
-
-    context 'artifacts metadata does not exist' do
-      before do
-        build.update(legacy_artifacts_metadata: nil)
-      end
-
-      it { is_expected.to be_falsy }
-    end
 
     context 'artifacts metadata does exists' do
       let(:build) { create(:ci_build, :artifacts) }
@@ -763,12 +699,6 @@ describe Ci::Build do
       let(:build) { create(:ci_build, :artifacts) }
 
       it { is_expected.to be_truthy }
-    end
-
-    context 'when build does not have job artifacts' do
-      let(:build) { create(:ci_build, :legacy_artifacts) }
-
-      it { is_expected.to be_falsy }
     end
   end
 
@@ -1096,11 +1026,11 @@ describe Ci::Build do
   describe 'erasable build' do
     shared_examples 'erasable' do
       it 'removes artifact file' do
-        expect(build.artifacts_file.exists?).to be_falsy
+        expect(build.artifacts_file.present?).to be_falsy
       end
 
       it 'removes artifact metadata file' do
-        expect(build.artifacts_metadata.exists?).to be_falsy
+        expect(build.artifacts_metadata.present?).to be_falsy
       end
 
       it 'removes all job_artifacts' do
@@ -1192,82 +1122,12 @@ describe Ci::Build do
           let!(:build) { create(:ci_build, :success, :artifacts) }
 
           before do
-            build.remove_artifacts_metadata!
+            build.erase_erasable_artifacts!
           end
 
           describe '#erase' do
             it 'does not raise error' do
               expect { build.erase }.not_to raise_error
-            end
-          end
-        end
-      end
-    end
-
-    context 'old artifacts' do
-      context 'build is erasable' do
-        context 'new artifacts' do
-          let!(:build) { create(:ci_build, :trace_artifact, :success, :legacy_artifacts) }
-
-          describe '#erase' do
-            before do
-              build.erase(erased_by: erased_by)
-            end
-
-            context 'erased by user' do
-              let!(:erased_by) { create(:user, username: 'eraser') }
-
-              include_examples 'erasable'
-
-              it 'records user who erased a build' do
-                expect(build.erased_by).to eq erased_by
-              end
-            end
-
-            context 'erased by system' do
-              let(:erased_by) { nil }
-
-              include_examples 'erasable'
-
-              it 'does not set user who erased a build' do
-                expect(build.erased_by).to be_nil
-              end
-            end
-          end
-
-          describe '#erasable?' do
-            subject { build.erasable? }
-            it { is_expected.to be_truthy }
-          end
-
-          describe '#erased?' do
-            let!(:build) { create(:ci_build, :trace_artifact, :success, :legacy_artifacts) }
-            subject { build.erased? }
-
-            context 'job has not been erased' do
-              it { is_expected.to be_falsey }
-            end
-
-            context 'job has been erased' do
-              before do
-                build.erase
-              end
-
-              it { is_expected.to be_truthy }
-            end
-          end
-
-          context 'metadata and build trace are not available' do
-            let!(:build) { create(:ci_build, :success, :legacy_artifacts) }
-
-            before do
-              build.remove_artifacts_metadata!
-            end
-
-            describe '#erase' do
-              it 'does not raise error' do
-                expect { build.erase }.not_to raise_error
-              end
             end
           end
         end
@@ -1434,7 +1294,7 @@ describe Ci::Build do
             build.cancel!
           end
 
-          it { is_expected.not_to be_retryable }
+          it { is_expected.to be_retryable }
         end
       end
 
@@ -1964,7 +1824,7 @@ describe Ci::Build do
       context 'when build has been canceled' do
         subject { build_stubbed(:ci_build, :manual, status: :canceled) }
 
-        it { is_expected.not_to be_playable }
+        it { is_expected.to be_playable }
       end
 
       context 'when build is successful' do
@@ -2602,30 +2462,6 @@ describe Ci::Build do
       end
 
       it { is_expected.to include(ci_config_path) }
-    end
-
-    context 'when using auto devops' do
-      context 'and is enabled' do
-        before do
-          project.create_auto_devops!(enabled: true, domain: 'example.com')
-        end
-
-        it "includes AUTO_DEVOPS_DOMAIN" do
-          is_expected.to include(
-            { key: 'AUTO_DEVOPS_DOMAIN', value: 'example.com', public: true, masked: false })
-        end
-      end
-
-      context 'and is disabled' do
-        before do
-          project.create_auto_devops!(enabled: false, domain: 'example.com')
-        end
-
-        it "includes AUTO_DEVOPS_DOMAIN" do
-          is_expected.not_to include(
-            { key: 'AUTO_DEVOPS_DOMAIN', value: 'example.com', public: true, masked: false })
-        end
-      end
     end
 
     context 'when pipeline variable overrides build variable' do
@@ -3510,6 +3346,18 @@ describe Ci::Build do
         it 'raises an error' do
           expect { subject }.to raise_error(Gitlab::Ci::Parsers::Test::Junit::JunitParserError)
         end
+      end
+    end
+  end
+
+  describe '#report_artifacts' do
+    subject { build.report_artifacts }
+
+    context 'when the build has reports' do
+      let!(:report) { create(:ci_job_artifact, :codequality, job: build) }
+
+      it 'returns the artifacts with reports' do
+        expect(subject).to contain_exactly(report)
       end
     end
   end

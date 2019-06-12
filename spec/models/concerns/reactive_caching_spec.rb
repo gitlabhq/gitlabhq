@@ -232,4 +232,17 @@ describe ReactiveCaching, :use_clean_rails_memory_store_caching do
       end
     end
   end
+
+  describe 'default options' do
+    let(:cached_class) { Class.new { include ReactiveCaching } }
+
+    subject { cached_class.new }
+
+    it { expect(subject.reactive_cache_lease_timeout).to be_a(ActiveSupport::Duration) }
+    it { expect(subject.reactive_cache_refresh_interval).to be_a(ActiveSupport::Duration) }
+    it { expect(subject.reactive_cache_lifetime).to be_a(ActiveSupport::Duration) }
+
+    it { expect(subject.reactive_cache_key).to respond_to(:call) }
+    it { expect(subject.reactive_cache_worker_finder).to respond_to(:call) }
+  end
 end

@@ -5,6 +5,7 @@ describe 'Projects > Show > Collaboration links' do
   let(:user) { create(:user) }
 
   before do
+    stub_feature_flags(vue_file_list: false)
     project.add_developer(user)
     sign_in(user)
   end

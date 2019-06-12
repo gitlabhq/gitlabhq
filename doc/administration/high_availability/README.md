@@ -26,8 +26,7 @@ experience with GitLab.com and Enterprise Edition on-premises customers.
 
 For a detailed insight into how GitLab scales and configures GitLab.com, you can
 watch [this 1 hour Q&A](https://www.youtube.com/watch?v=uCU8jdYzpac)
-with [John Northrup](https://gitlab.com/northrup), one of our infrastructure
-engineers, and live questions coming in from some of our customers.
+with [John Northrup](https://gitlab.com/northrup), and live questions coming in from some of our customers.
 
 ## GitLab Components
 
@@ -64,8 +63,8 @@ larger one.
 
 - 1 PostgreSQL node
 - 1 Redis node
-- 2 or more GitLab application nodes (Unicorn, Workhorse, Sidekiq)
 - 1 NFS/Gitaly storage server
+- 2 or more GitLab application nodes (Unicorn, Workhorse, Sidekiq)
 
 #### Installation Instructions
 
@@ -73,10 +72,10 @@ Complete the following installation steps in order. A link at the end of each
 section will bring you back to the Scalable Architecture Examples section so
 you can continue with the next step.
 
-1. [PostgreSQL](./database.md#postgresql-in-a-scaled-environment)
-1. [Redis](./redis.md#redis-in-a-scaled-environment)
-1. [Gitaly](./gitaly.md) (recommended) or [NFS](./nfs.md)
-1. [GitLab application nodes](./gitlab.md)
+1. [PostgreSQL](database.md#postgresql-in-a-scaled-environment)
+1. [Redis](redis.md#redis-in-a-scaled-environment)
+1. [Gitaly](gitaly.md) (recommended) or [NFS](nfs.md)
+1. [GitLab application nodes](gitlab.md)
 
 ### Full Scaling
 
@@ -88,9 +87,9 @@ in size, indicating that there is contention or not enough resources.
 
 - 1 PostgreSQL node
 - 1 Redis node
-- 2 or more GitLab application nodes (Unicorn, Workhorse)
-- 2 or more Sidekiq nodes
 - 2 or more NFS/Gitaly storage servers
+- 2 or more Sidekiq nodes
+- 2 or more GitLab application nodes (Unicorn, Workhorse)
 
 ## High Availability Architecture Examples
 
@@ -135,7 +134,7 @@ the contention.
 - 2 or more GitLab application nodes (Unicorn, Workhorse, Sidekiq, PGBouncer)
 - 1 NFS/Gitaly server
 
-![Horizontal architecture diagram](https://docs.gitlab.com/ee/administration/img/high_availability/horizontal.png)
+![Horizontal architecture diagram](img/horizontal.png)
 
 ### Hybrid
 
@@ -153,7 +152,7 @@ contention due to certain workloads.
 - 1 or more NFS/Gitaly servers
 - 1 Monitoring node (Prometheus, Grafana)
 
-![Hybrid architecture diagram](https://docs.gitlab.com/ee/administration/img/high_availability/hybrid.png)
+![Hybrid architecture diagram](img/hybrid.png)
 
 #### Reference Architecture
 
@@ -194,7 +193,7 @@ with the added complexity of many more nodes to configure, manage and monitor.
 - 2 or more Web nodes (All other web requests)
 - 2 or more NFS/Gitaly servers
 
-![Fully Distributed architecture diagram](https://docs.gitlab.com/ee/administration/img/high_availability/fully-distributed.png)
+![Fully Distributed architecture diagram](img/fully-distributed.png)
 
 The following pages outline the steps necessary to configure each component
 separately:

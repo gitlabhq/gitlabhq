@@ -2,9 +2,12 @@
 - group = group_link.group
 - can_admin_member = can?(current_user, :admin_project_member, @project)
 - dom_id = "group_member_#{group_link.id}"
-%li.member.group_member{ id: dom_id }
-  %span.list-item-name
-    = group_icon(group, class: "avatar s40", alt: '')
+
+-# Note this is just for groups. For individual members please see shared/members/_member
+
+%li.member.group_member.py-2.px-3.d-flex.flex-column.flex-md-row{ id: dom_id }
+  %span.list-item-name.mb-2.m-md-0
+    = group_icon(group, class: "avatar s40 flex-shrink-0 flex-grow-0", alt: '')
     .user-info
       = link_to group.full_name, group_path(group), class: 'member'
       .cgray
@@ -13,10 +16,10 @@
           ·
           %span{ class: ('text-warning' if group_link.expires_soon?) }
             = _("Expires in %{expires_at}").html_safe % { expires_at: distance_of_time_in_words_to_now(group_link.expires_at) }
-  .controls.member-controls
-    = form_tag project_group_link_path(@project, group_link), method: :put, remote: true, class: 'js-edit-member-form form-group row append-right-5' do
+  .controls.member-controls.align-items-center
+    = form_tag project_group_link_path(@project, group_link), method: :put, remote: true, class: 'js-edit-member-form form-group d-sm-flex' do
       = hidden_field_tag "group_link[group_access]", group_link.group_access
-      .member-form-control.dropdown.append-right-5
+      .member-form-control.dropdown.mr-sm-2.d-sm-inline-block
         %button.dropdown-menu-toggle.js-member-permissions-dropdown{ type: "button",
           disabled: !can_admin_member,
           data: { toggle: "dropdown", field_name: "group_link[group_access]" } }
@@ -32,14 +35,14 @@
                   = link_to role, "javascript:void(0)",
                     class: ("is-active" if group_link.group_access == role_id),
                     data: { id: role_id, el_id: dom_id }
-      .prepend-left-5.clearable-input.member-form-control
+      .clearable-input.member-form-control.d-sm-inline-block
         = text_field_tag 'group_link[expires_at]', group_link.expires_at, class: 'form-control js-access-expiration-date js-member-update-control', placeholder: _('Expiration date'), id: "member_expires_at_#{group.id}", disabled: !can_admin_member
         %i.clear-icon.js-clear-input
     - if can_admin_member
       = link_to project_group_link_path(@project, group_link),
         method: :delete,
         data: { confirm: _("Are you sure you want to remove %{group_name}?") % { group_name: group.name } },
-        class: 'btn btn-remove prepend-left-10' do
+        class: 'btn btn-remove m-0 ml-sm-2 align-self-center' do
         %span.d-block.d-sm-none
           = _("Delete")
         = icon('trash', class: 'd-none d-sm-block')

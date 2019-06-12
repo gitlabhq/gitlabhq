@@ -7,20 +7,20 @@ module Emails
       @project = Project.find project_id
       @target_url = project_url(@project)
       @old_path_with_namespace = old_path_with_namespace
-      mail(to: @user.notification_email,
+      mail(to: recipient(user_id, @project.group),
            subject: subject("Project was moved"))
     end
 
     def project_was_exported_email(current_user, project)
       @project = project
-      mail(to: current_user.notification_email,
+      mail(to: recipient(current_user.id, project.group),
            subject: subject("Project was exported"))
     end
 
     def project_was_not_exported_email(current_user, project, errors)
       @project = project
       @errors = errors
-      mail(to: current_user.notification_email,
+      mail(to: recipient(current_user.id, @project.group),
            subject: subject("Project export error"))
     end
 
@@ -28,7 +28,7 @@ module Emails
       @project = project
       @user = user
 
-      mail(to: user.notification_email, subject: subject("Project cleanup has completed"))
+      mail(to: recipient(user.id, project.group), subject: subject("Project cleanup has completed"))
     end
 
     def repository_cleanup_failure_email(project, user, error)
@@ -36,7 +36,7 @@ module Emails
       @user = user
       @error = error
 
-      mail(to: user.notification_email, subject: subject("Project cleanup failure"))
+      mail(to: recipient(user.id, project.group), subject: subject("Project cleanup failure"))
     end
 
     def repository_push_email(project_id, opts = {})

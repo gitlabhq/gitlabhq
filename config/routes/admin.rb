@@ -83,7 +83,7 @@ namespace :admin do
     resources(:projects,
               path: '/',
               constraints: { id: Gitlab::PathRegex.project_route_regex },
-              only: [:show]) do
+              only: [:show, :destroy]) do
 
       member do
         put :transfer

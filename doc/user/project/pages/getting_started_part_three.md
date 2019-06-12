@@ -1,10 +1,6 @@
 ---
-last_updated: 2018-11-19
-author: Marcia Ramos
-author_gitlab: marcia
-level: beginner
-article_type: user guide
-date: 2017-02-22
+last_updated: 2019-06-04
+type: concepts, reference, howto
 ---
 
 # GitLab Pages custom domains and SSL/TLS Certificates
@@ -96,7 +92,7 @@ you need to log into your domain's admin control panel and add a DNS
 `CNAME` record pointing your subdomain to your website URL
 (`namespace.gitlab.io`) address.
 
-Notice that, despite it's a user or project website, the `CNAME`
+Note that, whether it's a user or a project website, the `CNAME`
 should point to your Pages domain (`namespace.gitlab.io`),
 without any `/project-name`.
 

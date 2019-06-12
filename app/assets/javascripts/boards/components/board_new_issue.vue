@@ -72,8 +72,8 @@ export default {
           // Need this because our jQuery very kindly disables buttons on ALL form submissions
           $(this.$refs.submitButton).enable();
 
-          boardsStore.detail.issue = issue;
-          boardsStore.detail.list = this.list;
+          boardsStore.setIssueDetail(issue);
+          boardsStore.setListDetail(this.list);
         })
         .catch(() => {
           // Need this because our jQuery very kindly disables buttons on ALL form submissions

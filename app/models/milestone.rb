@@ -58,6 +58,7 @@ class Milestone < ApplicationRecord
   validate :uniqueness_of_title, if: :title_changed?
   validate :milestone_type_check
   validate :start_date_should_be_less_than_due_date, if: proc { |m| m.start_date.present? && m.due_date.present? }
+  validate :dates_within_4_digits
 
   strip_attributes :title
 
@@ -323,6 +324,16 @@ class Milestone < ApplicationRecord
   def start_date_should_be_less_than_due_date
     if due_date <= start_date
       errors.add(:due_date, _("must be greater than start date"))
+    end
+  end
+
+  def dates_within_4_digits
+    if start_date && start_date > Date.new(9999, 12, 31)
+      errors.add(:start_date, _("date must not be after 9999-12-31"))
+    end
+
+    if due_date && due_date > Date.new(9999, 12, 31)
+      errors.add(:due_date, _("date must not be after 9999-12-31"))
     end
   end
 

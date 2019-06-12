@@ -33,6 +33,8 @@ module Gitlab
       end
 
       def to_content
+        return "" if @text.blank?
+
         # The parsed suggestion doesn't have information about the correct
         # ending characters (we may have a line break, or not), so we take
         # this information from the last line being changed (last

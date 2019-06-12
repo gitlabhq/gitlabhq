@@ -1,3 +1,7 @@
+---
+type: reference
+---
+
 # Environments and deployments
 
 > Introduced in GitLab 8.9.
@@ -88,7 +92,7 @@ deploy_staging:
   - master
 ```
 
-We have defined 3 [stages](yaml/README.md#stages):
+We have defined three [stages](yaml/README.md#stages):
 
 - `test`
 - `build`
@@ -131,7 +135,7 @@ In summary, with the above `.gitlab-ci.yml` we have achieved the following:
 > the name given in `.gitlab-ci.yml` (with any variables expanded), while the
 > second is a "cleaned-up" version of the name, suitable for use in URLs, DNS,
 > etc.
-
+>
 > Starting with GitLab 9.3, the environment URL is exposed to the Runner via
 > `$CI_ENVIRONMENT_URL`. The URL is expanded from `.gitlab-ci.yml`, or if
 > the URL was not defined there, the external URL from the environment is used.
@@ -613,6 +617,10 @@ versions of the app, all without leaving GitLab.
 
 ![Monitoring dashboard](img/environments_monitoring.png)
 
+#### Linking to external dashboard
+
+Add a [button to the Monitoring dashboard](../user/project/operations/linking_to_an_external_dashboard.md) linking directly to your existing external dashboards.
+
 ### Web terminals
 
 > Web terminals were added in GitLab 8.15 and are only available to project Maintainers and Owners.
@@ -667,9 +675,24 @@ fetch = +refs/environments/*:refs/remotes/origin/environments/*
 
 ### Scoping environments with specs **[PREMIUM]**
 
-Some GitLab [Enterprise Edition](https://about.gitlab.com/pricing/) features can
-behave differently for each environment. For example, you can
-[create a secret variable to be injected only into a production environment](variables/README.md#limiting-environment-scopes-of-environment-variables-premium).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2112) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.4.
+
+You can limit the environment scope of a variable by
+defining which environments it can be available for.
+
+Wildcards can be used, and the default environment scope is `*`, which means
+any jobs will have this variable, not matter if an environment is defined or
+not.
+
+For example, if the environment scope is `production`, then only the jobs
+having the environment `production` defined would have this specific variable.
+Wildcards (`*`) can be used along with the environment name, therefore if the
+environment scope is `review/*` then any jobs with environment names starting
+with `review/` would have that particular variable.
+
+Some GitLab features can behave differently for each environment.
+For example, you can
+[create a secret variable to be injected only into a production environment](variables/README.md#limiting-environment-scopes-of-environment-variables-premium). **[PREMIUM]**
 
 In most cases, these features use the _environment specs_ mechanism, which offers
 an efficient way to implement scoping within each environment group.
@@ -693,7 +716,7 @@ Each environment can be matched with the following environment spec:
 
 As you can see, you can use specific matching for selecting a particular environment,
 and also use wildcard matching (`*`) for selecting a particular environment group,
-such as [Review apps](review_apps/index.md) (`review/*`).
+such as [Review Apps](review_apps/index.md) (`review/*`).
 
 NOTE: **Note:**
 The most _specific_ spec takes precedence over the other wildcard matching.
@@ -712,3 +735,15 @@ Below are some links you may find interesting:
 - [A blog post on Deployments & Environments](https://about.gitlab.com/2016/08/26/ci-deployment-and-environments/)
 - [Review Apps - Use dynamic environments to deploy your code for every branch](review_apps/index.md)
 - [Deploy Boards for your applications running on Kubernetes](https://docs.gitlab.com/ee/user/project/deploy_boards.html) **[PREMIUM]**
+
+<!-- ## Troubleshooting
+
+Include any troubleshooting steps that you can foresee. If you know beforehand what issues
+one might have when setting this up, or when something is changed, or on upgrading, it's
+important to describe those, too. Think of things that may go wrong and include them here.
+This is important to minimize requests for support, and to avoid doc comments with
+questions that you know someone might ask.
+
+Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+If you have none to add when creating a doc, leave this section in place
+but commented out to help encourage others to add to it in the future. -->

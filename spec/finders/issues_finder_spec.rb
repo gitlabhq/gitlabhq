@@ -241,14 +241,6 @@ describe IssuesFinder do
         end
       end
 
-      context 'filtering by legacy No+Label' do
-        let(:params) { { label_name: Label::NONE } }
-
-        it 'returns issues with no labels' do
-          expect(issues).to contain_exactly(issue1, issue3, issue4)
-        end
-      end
-
       context 'filtering by any label' do
         let(:params) { { label_name: described_class::FILTER_ANY } }
 

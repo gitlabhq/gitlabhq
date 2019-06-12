@@ -4,8 +4,6 @@ comments: false
 
 # Git introduction
 
-----------
-
 ## Intro
 
 <https://git-scm.com/about>
@@ -16,8 +14,6 @@ comments: false
 - Powerful branching and merging
 - Adapts to nearly any workflow
 - Fast, reliable and stable file format
-
-----------
 
 ## Help!
 

@@ -47,9 +47,9 @@
           - if @user.status
             = emoji_icon @user.status.emoji
           %span#js-no-emoji-placeholder.no-emoji-placeholder{ class: ('hidden' if @user.status) }
-            = sprite_icon('emoji_slightly_smiling_face', css_class: 'award-control-icon-neutral')
-            = sprite_icon('emoji_smiley', css_class: 'award-control-icon-positive')
-            = sprite_icon('emoji_smile', css_class: 'award-control-icon-super-positive')
+            = sprite_icon('slight-smile', css_class: 'award-control-icon-neutral')
+            = sprite_icon('smiley', css_class: 'award-control-icon-positive')
+            = sprite_icon('smile', css_class: 'award-control-icon-super-positive')
         - reset_message_button = button_tag type: :button,
           id: 'js-clear-user-status-button',
           class: 'clear-user-status btn has-tooltip',

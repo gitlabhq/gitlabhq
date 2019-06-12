@@ -1,18 +1,14 @@
----
+# This file is a template, and might need editing before it works on your project.
+
 # Build JAVA applications using Apache Maven (http://maven.apache.org)
 # For docker image tags see https://hub.docker.com/_/maven/
 #
 # For general lifecycle information see https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html
-#
-# This template will build and test your projects as well as create the documentation.
-#
+
+# This template will build and test your projects
 # * Caches downloaded dependencies and plugins between invocation.
 # * Verify but don't deploy merge requests.
 # * Deploy built artifacts from master branch only.
-# * Shows how to use multiple jobs in test stage for verifying functionality
-#   with multiple JDKs.
-# * Uses site:stage to collect the documentation for multi-module projects.
-# * Publishes the documentation for `master` branch.
 
 variables:
   # This will suppress any download for dependencies and plugins or upload messages which would clutter the console log.
@@ -23,78 +19,38 @@ variables:
   # `installAtEnd` and `deployAtEnd` are only effective with recent version of the corresponding plugins.
   MAVEN_CLI_OPTS: "--batch-mode --errors --fail-at-end --show-version -DinstallAtEnd=true -DdeployAtEnd=true"
 
+# This template uses jdk8 for verifying and deploying images
+image: maven:3.3.9-jdk-8
+
 # Cache downloaded dependencies and plugins between builds.
 # To keep cache across branches add 'key: "$CI_JOB_NAME"'
 cache:
   paths:
     - .m2/repository
 
-# This will only validate and compile stuff and run e.g. maven-enforcer-plugin.
-# Because some enforcer rules might check dependency convergence and class duplications
-# we use `test-compile` here instead of `validate`, so the correct classpath is picked up.
-.validate: &validate
-  stage: build
-  script:
-    - 'mvn $MAVEN_CLI_OPTS test-compile'
-
 # For merge requests do not `deploy` but only run `verify`.
 # See https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html
 .verify: &verify
   stage: test
   script:
-    - 'mvn $MAVEN_CLI_OPTS verify site site:stage'
+    - 'mvn $MAVEN_CLI_OPTS verify'
   except:
     - master
-
-# Validate merge requests using JDK7
-validate:jdk7:
-  <<: *validate
-  image: maven:3.3.9-jdk-7
-
-# Validate merge requests using JDK8
-validate:jdk8:
-  <<: *validate
-  image: maven:3.3.9-jdk-8
-
-# Verify merge requests using JDK7
-verify:jdk7:
-  <<: *verify
-  image: maven:3.3.9-jdk-7
 
 # Verify merge requests using JDK8
 verify:jdk8:
   <<: *verify
-  image: maven:3.3.9-jdk-8
 
+# To deploy packages from CI, create a ci_settings.xml file
+# For deploying packages to GitLab's Maven Repository: See https://docs.gitlab.com/ee/user/project/packages/maven_repository.html#creating-maven-packages-with-gitlab-cicd for more details.
+# Please note: The GitLab Maven Repository is currently only available in GitLab Premium / Ultimate.
 # For `master` branch run `mvn deploy` automatically.
-# Here you need to decide whether you want to use JDK7 or 8.
-# To get this working you need to define a volume while configuring your gitlab-ci-multi-runner.
-# Mount your `settings.xml` as `/root/.m2/settings.xml` which holds your secrets.
-# See https://maven.apache.org/settings.html
 deploy:jdk8:
-  # Use stage test here, so the pages job may later pickup the created site.
-  stage: test
-  script:
-    - 'mvn $MAVEN_CLI_OPTS deploy site site:stage'
-  only:
-    - master
-  # Archive up the built documentation site.
-  artifacts:
-    paths:
-    - target/staging
-  image: maven:3.3.9-jdk-8
-
-pages:
-  image: busybox:latest
   stage: deploy
   script:
-    # Because Maven appends the artifactId automatically to the staging path if you did define a parent pom,
-    # you might need to use `mv target/staging/YOUR_ARTIFACT_ID public` instead.
-    - mv target/staging public
-  dependencies:
-    - deploy:jdk8
-  artifacts:
-    paths:
-    - public
+    - if [ ! -f ci_settings.xml ];
+        then echo "CI settings missing\! If deploying to GitLab Maven Repository, please see https://docs.gitlab.com/ee/user/project/packages/maven_repository.html#creating-maven-packages-with-gitlab-cicd for instructions.";
+      fi
+    - 'mvn $MAVEN_CLI_OPTS deploy -s ci_settings.xml'
   only:
     - master

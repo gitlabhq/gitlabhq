@@ -36,12 +36,16 @@ export const currentMergeRequest = state => {
 
 export const currentProject = state => state.projects[state.currentProjectId];
 
+export const emptyRepo = state =>
+  state.projects[state.currentProjectId] && state.projects[state.currentProjectId].empty_repo;
+
 export const currentTree = state =>
   state.trees[`${state.currentProjectId}/${state.currentBranchId}`];
 
-export const hasChanges = state => !!state.changedFiles.length || !!state.stagedFiles.length;
+export const hasChanges = state =>
+  Boolean(state.changedFiles.length) || Boolean(state.stagedFiles.length);
 
-export const hasMergeRequest = state => !!state.currentMergeRequestId;
+export const hasMergeRequest = state => Boolean(state.currentMergeRequestId);
 
 export const allBlobs = state =>
   Object.keys(state.entries)
@@ -67,7 +71,7 @@ export const isCommitModeActive = state => state.currentActivityView === activit
 export const isReviewModeActive = state => state.currentActivityView === activityBarViews.review;
 
 export const someUncommittedChanges = state =>
-  !!(state.changedFiles.length || state.stagedFiles.length);
+  Boolean(state.changedFiles.length || state.stagedFiles.length);
 
 export const getChangesInFolder = state => path => {
   const changedFilesCount = state.changedFiles.filter(f => filePathMatches(f.path, path)).length;
@@ -93,7 +97,12 @@ export const lastCommit = (state, getters) => {
 export const currentBranch = (state, getters) =>
   getters.currentProject && getters.currentProject.branches[state.currentBranchId];
 
+export const branchName = (_state, getters) => getters.currentBranch && getters.currentBranch.name;
+
 export const packageJson = state => state.entries[packageJsonPath];
+
+export const isOnDefaultBranch = (_state, getters) =>
+  getters.currentProject && getters.currentProject.default_branch === getters.branchName;
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};

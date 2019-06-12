@@ -1,5 +1,5 @@
 %inline-conflict-lines{ "inline-template" => "true", ":file" => "file" }
-  %table.diff-wrap-lines.code.js-syntax-highlight
+  %table.diff-wrap-lines.code.code-commit.js-syntax-highlight
     %tr.line_holder.diff-inline{ "v-for" => "line in file.inlineLines" }
       %td.diff-line-num.new_line{ ":class" => "lineCssClass(line)", "v-if" => "!line.isHeader" }
         %a {{line.new_line}}

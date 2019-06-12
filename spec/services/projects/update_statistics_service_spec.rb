@@ -17,18 +17,8 @@ describe Projects::UpdateStatisticsService do
       end
     end
 
-    context 'with an existing project without a repository' do
+    context 'with an existing project' do
       let(:project) { create(:project) }
-
-      it 'does nothing' do
-        expect_any_instance_of(ProjectStatistics).not_to receive(:refresh!)
-
-        service.execute
-      end
-    end
-
-    context 'with an existing project with a repository' do
-      let(:project) { create(:project, :repository) }
 
       it 'refreshes the project statistics' do
         expect_any_instance_of(ProjectStatistics).to receive(:refresh!)

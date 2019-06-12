@@ -140,8 +140,7 @@ GET /users
     "can_create_project": true,
     "two_factor_enabled": true,
     "external": false,
-    "private_profile": false,
-    "highest_role":10
+    "private_profile": false
   }
 ]
 ```
@@ -257,7 +256,8 @@ Parameters:
   "can_create_project": true,
   "two_factor_enabled": true,
   "external": false,
-  "private_profile": false
+  "private_profile": false,
+  "highest_role":10
 }
 ```
 

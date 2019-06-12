@@ -1,11 +1,13 @@
+---
+type: reference, concepts
+---
+
 # Reverting changes
 
-> [Introduced][ce-1990] in GitLab 8.5.
+You can use Git's powerful feature to [revert any commit](https://git-scm.com/docs/git-revert "Git revert documentation")
+by clicking the **Revert** button in merge requests and commit details.
 
-GitLab implements Git's powerful feature to [revert any commit][git-revert]
-with introducing a **Revert** button in merge requests and commit details.
-
-## Reverting a Merge Request
+## Reverting a merge request
 
 NOTE: **Note:**
 The **Revert** button will only be available for merge requests
@@ -30,9 +32,9 @@ create a new merge request with the revert changes.
 After the merge request has been reverted, the **Revert** button will not be
 available anymore.
 
-## Reverting a Commit
+## Reverting a commit
 
-You can revert a Commit from the Commit details page:
+You can revert a commit from the commit details page:
 
 ![Revert commit](img/cherry_pick_changes_commit.png)
 
@@ -54,5 +56,14 @@ mainline:
 git revert -m 2 7a39eb0
 ```
 
-[ce-1990]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/1990 "Revert button Merge Request"
-[git-revert]: https://git-scm.com/docs/git-revert "Git revert documentation"
+<!-- ## Troubleshooting
+
+Include any troubleshooting steps that you can foresee. If you know beforehand what issues
+one might have when setting this up, or when something is changed, or on upgrading, it's
+important to describe those, too. Think of things that may go wrong and include them here.
+This is important to minimize requests for support, and to avoid doc comments with
+questions that you know someone might ask.
+
+Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+If you have none to add when creating a doc, leave this section in place
+but commented out to help encourage others to add to it in the future. -->

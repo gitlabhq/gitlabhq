@@ -27,7 +27,7 @@ Depending on the areas your merge request touches, it must be **approved** by on
 or more [maintainers](https://about.gitlab.com/handbook/engineering/workflow/code-review/#maintainer):
 
 For approvals, we use the approval functionality found in the merge request
-widget. Reviewers can add their approval by [approving additionally](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html#adding-or-removing-an-approval).
+widget. Reviewers can add their approval by [approving additionally](../user/project/merge_requests/merge_request_approvals.md#adding-or-removing-an-approval).
 
 Getting your merge request **merged** also requires a maintainer. If it requires
 more than one approval, the last maintainer to review and approve it will also merge it.
@@ -43,7 +43,7 @@ It picks reviewers and maintainers from the list at the
 [engineering projects](https://about.gitlab.com/handbook/engineering/projects/)
 page, with these behaviours:
 
-1. It will not pick people whose [GitLab status](../user/profile/#current-status)
+1. It will not pick people whose [GitLab status](../user/profile/index.md#current-status)
    contains the string 'OOO'.
 2. [Trainee maintainers](https://about.gitlab.com/handbook/engineering/workflow/code-review/#trainee-maintainer)
    are three times as likely to be picked as other reviewers.
@@ -152,7 +152,7 @@ required approvers.
 
 Maintainers must check before merging if the merge request is introducing new
 vulnerabilities, by inspecting the list in the Merge Request [Security
-Widget](https://docs.gitlab.com/ee/user/project/merge_requests/#security-reports-ultimate).
+Widget](../user/project/merge_requests/index.md#security-reports-ultimate).
 When in doubt, a [Security Engineer][team] can be involved. The list of detected
 vulnerabilities must be either empty or containing:
 
@@ -286,7 +286,7 @@ experience, refactors the existing code). Then:
   author has already set this option or if the merge request clearly contains a
   messy commit history that is intended to be squashed.
 
-[squash-and-merge]: https://docs.gitlab.com/ee/user/project/merge_requests/squash_and_merge.html#squash-and-merge
+[squash-and-merge]: ../user/project/merge_requests/squash_and_merge.md#squash-and-merge
 
 ### The right balance
 
@@ -319,7 +319,7 @@ reviewee.
 GitLab is used in a lot of places. Many users use
 our [Omnibus packages](https://about.gitlab.com/installation/), but some use
 the [Docker images](https://docs.gitlab.com/omnibus/docker/), some are
-[installed from source](https://docs.gitlab.com/ce/install/installation.html),
+[installed from source](../install/installation.md),
 and there are other installation methods available. GitLab.com itself is a large
 Enterprise Edition instance. This has some implications:
 

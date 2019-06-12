@@ -1,7 +1,7 @@
 .search-result-row
   %h4
     = confidential_icon(issue)
-    = link_to [issue.project.namespace.becomes(Namespace), issue.project, issue] do
+    = link_to namespace_project_issue_path(issue.project.namespace.becomes(Namespace), issue.project, issue) do
       %span.term.str-truncated= issue.title
     - if issue.closed?
       %span.badge.badge-danger.prepend-left-5= _("Closed")

@@ -241,6 +241,7 @@
      */
     &.code {
       padding: 0;
+      border-radius: 0 0 $border-radius-default $border-radius-default;
     }
 
     .list-inline.previews {
@@ -328,7 +329,7 @@ span.idiff {
     background-color: $gray-light;
     border-bottom: 1px solid $border-color;
     border-top: 1px solid $border-color;
-    padding: 5px $gl-padding;
+    padding: $gl-padding-8 $gl-padding;
     margin: 0;
     border-radius: $border-radius-default $border-radius-default 0 0;
 
@@ -363,10 +364,6 @@ span.idiff {
 
   a {
     color: $gl-text-color;
-  }
-
-  small {
-    margin: 0 10px 0 0;
   }
 
   .file-actions .btn {
@@ -453,6 +450,28 @@ span.idiff {
     .file-info {
       font-size: $label-font-size;
       color: $diff-image-info-color;
+    }
+  }
+
+  .note-container {
+    .user-avatar-link.new-comment {
+      position: absolute;
+      margin: 40px $gl-padding 0 116px;
+
+      ~ .note-edit-form form.edit-note {
+        @include media-breakpoint-up(sm) {
+          margin-left: $note-icon-gutter-width;
+        }
+      }
+    }
+  }
+
+  .diff-discussions:not(:last-child) .discussion .discussion-body {
+    padding-bottom: $gl-padding;
+
+    .discussion-reply-holder {
+      border-bottom: 1px solid $gray-100;
+      border-radius: 0;
     }
   }
 

@@ -126,10 +126,20 @@ class Group < Namespace
   # Overrides notification_settings has_many association
   # This allows to apply notification settings from parent groups
   # to child groups and projects.
-  def notification_settings
+  def notification_settings(hierarchy_order: nil)
     source_type = self.class.base_class.name
+    settings = NotificationSetting.where(source_type: source_type, source_id: self_and_ancestors_ids)
 
-    NotificationSetting.where(source_type: source_type, source_id: self_and_ancestors_ids)
+    return settings unless hierarchy_order && self_and_ancestors_ids.length > 1
+
+    settings
+      .joins("LEFT JOIN (#{self_and_ancestors(hierarchy_order: hierarchy_order).to_sql}) AS ordered_groups ON notification_settings.source_id = ordered_groups.id")
+      .select('notification_settings.*, ordered_groups.depth AS depth')
+      .order("ordered_groups.depth #{hierarchy_order}")
+  end
+
+  def notification_settings_for(user, hierarchy_order: nil)
+    notification_settings(hierarchy_order: hierarchy_order).where(user: user)
   end
 
   def to_reference(_from = nil, full: nil)

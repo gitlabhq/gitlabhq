@@ -53,6 +53,8 @@ describe Gitlab::DataBuilder::Note do
         .to eq(issue.reload.hook_attrs.except('updated_at'))
       expect(data[:issue]['updated_at'])
         .to be >= issue.hook_attrs['updated_at']
+      expect(data[:issue]['labels'])
+        .to eq(issue.hook_attrs['labels'])
     end
 
     context 'with confidential issue' do

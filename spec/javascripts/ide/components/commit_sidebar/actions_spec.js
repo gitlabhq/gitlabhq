@@ -73,47 +73,4 @@ describe('IDE commit sidebar actions', () => {
       expect(vm.commitToCurrentBranchText).not.toContain(injectedSrc);
     });
   });
-
-  describe('create new MR checkbox', () => {
-    it('disables `createMR` button when an MR already exists and committing to current branch', () => {
-      createComponent({ hasMR: true, commitAction: consts.COMMIT_TO_CURRENT_BRANCH });
-
-      expect(vm.$el.querySelector('input[type="checkbox"]').disabled).toBe(true);
-    });
-
-    it('does not disable checkbox if MR does not exist', () => {
-      createComponent({ hasMR: false });
-
-      expect(vm.$el.querySelector('input[type="checkbox"]').disabled).toBe(false);
-    });
-
-    it('does not disable checkbox when creating a new branch', () => {
-      createComponent({ commitAction: consts.COMMIT_TO_NEW_BRANCH });
-
-      expect(vm.$el.querySelector('input[type="checkbox"]').disabled).toBe(false);
-    });
-
-    it('toggles off new MR when switching back to commit to current branch and MR exists', () => {
-      createComponent({
-        commitAction: consts.COMMIT_TO_NEW_BRANCH,
-        shouldCreateMR: true,
-      });
-      const currentBranchRadio = vm.$el.querySelector(
-        `input[value="${consts.COMMIT_TO_CURRENT_BRANCH}"`,
-      );
-      currentBranchRadio.click();
-
-      vm.$nextTick(() => {
-        expect(vm.$store.state.commit.shouldCreateMR).toBe(false);
-      });
-    });
-
-    it('toggles `shouldCreateMR` when clicking checkbox', () => {
-      createComponent();
-      const el = vm.$el.querySelector('input[type="checkbox"]');
-      el.dispatchEvent(new Event('change'));
-
-      expect(vm.$store.state.commit.shouldCreateMR).toBe(true);
-    });
-  });
 });

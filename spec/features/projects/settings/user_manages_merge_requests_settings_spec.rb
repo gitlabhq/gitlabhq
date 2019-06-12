@@ -51,7 +51,7 @@ describe 'Projects > Settings > User manages merge request settings' do
       end
 
       it 'shows the Merge Requests settings that do not depend on Builds feature' do
-        expect(page).not_to have_content 'Pipelines must succeed'
+        expect(page).to have_content 'Pipelines must succeed'
         expect(page).to have_content 'All discussions must be resolved'
 
         within('.sharing-permissions-form') do

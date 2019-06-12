@@ -211,11 +211,12 @@ export const scrollToLineIfNeededParallel = (_, line) => {
   }
 };
 
-export const loadCollapsedDiff = ({ commit, getters }, file) =>
+export const loadCollapsedDiff = ({ commit, getters, state }, file) =>
   axios
     .get(file.load_collapsed_diff_url, {
       params: {
         commit_id: getters.commitId,
+        w: state.showWhitespace ? '0' : '1',
       },
     })
     .then(res => {

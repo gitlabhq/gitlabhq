@@ -54,5 +54,20 @@ describe('IDE commit module mutations', () => {
 
       expect(state.shouldCreateMR).toBe(false);
     });
+
+    it('sets shouldCreateMR to given value when passed in', () => {
+      state.shouldCreateMR = false;
+      mutations.TOGGLE_SHOULD_CREATE_MR(state, false);
+
+      expect(state.shouldCreateMR).toBe(false);
+    });
+  });
+
+  describe('INTERACT_WITH_NEW_MR', () => {
+    it('sets interactedWithNewMR to true', () => {
+      mutations.INTERACT_WITH_NEW_MR(state);
+
+      expect(state.interactedWithNewMR).toBe(true);
+    });
   });
 });

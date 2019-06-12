@@ -1,0 +1,21 @@
+.row
+  .form-group.project-name.col-sm-12
+    = label_tag :name, _('Project name'), class: 'label-bold'
+    = text_field_tag :name, @name, placeholder: "My awesome project", class: "js-project-name form-control input-lg", autofocus: true
+  .form-group.col-12.col-sm-6
+    = label_tag :namespace_id, _('Project URL'), class: 'label-bold'
+    .form-group
+      .input-group.flex-nowrap
+        - if current_user.can_select_namespace?
+          .input-group-prepend.flex-shrink-0.has-tooltip{ title: root_url }
+            .input-group-text
+              = root_url
+          = select_tag :namespace_id, namespaces_options(namespace_id_from(params) || :current_user, display_path: true, extra_group: namespace_id_from(params)), class: 'select2 js-select-namespace', tabindex: 1
+        - else
+          .input-group-prepend.static-namespace.has-tooltip{ title: user_url(current_user.username) + '/' }
+            .input-group-text.border-0
+              #{user_url(current_user.username)}/
+          = hidden_field_tag :namespace_id, value: current_user.namespace_id
+  .form-group.col-12.col-sm-6.project-path
+    = label_tag :path, _('Project slug'), class: 'label-bold'
+    = text_field_tag :path, @path, placeholder: "my-awesome-project", class: "js-path-name form-control", tabindex: 2, required: true

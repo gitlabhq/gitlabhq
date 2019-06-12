@@ -8,8 +8,8 @@ module QA
           class Show < Page::Base
             view 'app/assets/javascripts/clusters/components/application_row.vue' do
               element :application_row, 'js-cluster-application-row-${this.id}' # rubocop:disable QA/ElementWithPattern
-              element :install_button, "s__('ClusterIntegration|Install')" # rubocop:disable QA/ElementWithPattern
-              element :installed_button, "s__('ClusterIntegration|Installed')" # rubocop:disable QA/ElementWithPattern
+              element :install_button, "__('Install')" # rubocop:disable QA/ElementWithPattern
+              element :installed_button, "__('Installed')" # rubocop:disable QA/ElementWithPattern
             end
 
             view 'app/assets/javascripts/clusters/components/applications.vue' do

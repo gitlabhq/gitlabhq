@@ -2,8 +2,8 @@
 /* global ListIssue */
 
 import { __ } from '~/locale';
-import ListLabel from '~/vue_shared/models/label';
-import ListAssignee from '~/vue_shared/models/assignee';
+import ListLabel from './label';
+import ListAssignee from './assignee';
 import { isEE, urlParamsToObject } from '~/lib/utils/common_utils';
 import boardsStore from '../stores/boards_store';
 import ListMilestone from './milestone';
@@ -37,8 +37,8 @@ class List {
     this.type = obj.list_type;
 
     const typeInfo = this.getTypeInfo(this.type);
-    this.preset = !!typeInfo.isPreset;
-    this.isExpandable = !!typeInfo.isExpandable;
+    this.preset = Boolean(typeInfo.isPreset);
+    this.isExpandable = Boolean(typeInfo.isExpandable);
     this.isExpanded = true;
     this.page = 1;
     this.loading = true;

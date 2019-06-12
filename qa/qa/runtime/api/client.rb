@@ -25,15 +25,12 @@ module QA
         private
 
         def create_personal_access_token
-          if @is_new_session
-            Runtime::Browser.visit(@address, Page::Main::Login) { do_create_personal_access_token }
-          else
-            do_create_personal_access_token
-          end
+          Runtime::Browser.visit(@address, Page::Main::Login) if @is_new_session
+          do_create_personal_access_token
         end
 
         def do_create_personal_access_token
-          Page::Main::Login.act { sign_in_using_credentials }
+          Page::Main::Login.perform(&:sign_in_using_credentials)
           Resource::PersonalAccessToken.fabricate!.access_token
         end
       end

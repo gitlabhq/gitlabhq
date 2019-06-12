@@ -42,7 +42,7 @@ class ApplicationController < ActionController::Base
     :bitbucket_server_import_enabled?,
     :google_code_import_enabled?, :fogbugz_import_enabled?,
     :git_import_enabled?, :gitlab_project_import_enabled?,
-    :manifest_import_enabled?
+    :manifest_import_enabled?, :phabricator_import_enabled?
 
   # Adds `no-store` to the DEFAULT_CACHE_CONTROL, to prevent security
   # concerns due to caching private data.
@@ -424,6 +424,10 @@ class ApplicationController < ActionController::Base
     Group.supports_nested_objects? && Gitlab::CurrentSettings.import_sources.include?('manifest')
   end
 
+  def phabricator_import_enabled?
+    Gitlab::PhabricatorImport.available?
+  end
+
   # U2F (universal 2nd factor) devices need a unique identifier for the application
   # to perform authentication.
   # https://developers.yubico.com/U2F/App_ID.html
@@ -436,6 +440,8 @@ class ApplicationController < ActionController::Base
   end
 
   def set_session_storage(&block)
+    return yield if sessionless_user?
+
     Gitlab::Session.with_session(session, &block)
   end
 

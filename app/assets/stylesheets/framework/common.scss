@@ -489,3 +489,50 @@ img.emoji {
 .cursor-pointer {
   cursor: pointer;
 }
+
+// Make buttons/dropdowns full-width on mobile
+.full-width-mobile {
+  @include media-breakpoint-down(xs) {
+    width: 100%;
+
+    > .dropdown-menu,
+    > .btn {
+      width: 100%;
+    }
+  }
+}
+
+.onboarding-helper-container {
+  bottom: 40px;
+  right: 40px;
+  font-size: $gl-font-size-small;
+  background: $gray-100;
+  width: 200px;
+  border-radius: 24px;
+  box-shadow: 0 2px 4px $issue-boards-card-shadow;
+  z-index: 10000;
+
+  .collapsible {
+    max-height: 0;
+    transition: max-height 0.5s cubic-bezier(0, 1, 0, 1);
+  }
+
+  &.expanded {
+    border-bottom-right-radius: $border-radius-default;
+    border-bottom-left-radius: $border-radius-default;
+
+    .collapsible {
+      max-height: 1000px;
+      transition: max-height 1s ease-in-out;
+    }
+  }
+
+  .avatar {
+    border-color: darken($gray-normal, 10%);
+
+    img {
+      width: 32px;
+      height: 32px;
+    }
+  }
+}

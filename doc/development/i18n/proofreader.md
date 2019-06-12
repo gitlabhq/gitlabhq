@@ -27,7 +27,7 @@ are very appreciative of the work done by translators and proofreaders!
 - Czech
   - Proofreaders needed.
 - Danish
-  - Proofreaders needed.
+  - Saederup92 - [GitLab](https://gitlab.com/Saederup92), [Crowdin](https://crowdin.com/profile/Saederup92)
 - Dutch
   - Emily Hendle - [GitLab](https://gitlab.com/pundachan), [Crowdin](https://crowdin.com/profile/pandachan)
 - Esperanto
@@ -130,7 +130,7 @@ are very appreciative of the work done by translators and proofreaders!
    your previous translations by [GitLab team members](https://about.gitlab.com/team/)
    or [Core team members](https://about.gitlab.com/core-team/) who are fluent in
    the language or current proofreaders.
-   - When a request is made for the first proofreader for a lanuguage and there are no [GitLab team members](https://about.gitlab.com/team/)
+   - When a request is made for the first proofreader for a language and there are no [GitLab team members](https://about.gitlab.com/team/)
    or [Core team members](https://about.gitlab.com/core-team/) who speak the language, we will request links to previous translation work in other communities or projects.  
 
 

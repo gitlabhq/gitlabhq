@@ -6,7 +6,7 @@ describe('getIconName', () => {
   // file types
   it.each`
     type        | path           | icon
-    ${'folder'} | ${''}          | ${'folder'}
+    ${'tree'}   | ${''}          | ${'folder'}
     ${'commit'} | ${''}          | ${'archive'}
     ${'file'}   | ${'test.pdf'}  | ${'file-pdf-o'}
     ${'file'}   | ${'test.jpg'}  | ${'file-image-o'}

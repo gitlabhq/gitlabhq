@@ -154,6 +154,7 @@ end
 group :puma do
   gem 'puma', '~> 3.12', require: false
   gem 'puma_worker_killer', require: false
+  gem 'rack-timeout', require: false
 end
 
 # State machine
@@ -274,7 +275,7 @@ gem 'virtus', '~> 1.0.1'
 gem 'base32', '~> 0.3.0'
 
 # Sentry integration
-gem 'sentry-raven', '~> 2.7'
+gem 'sentry-raven', '~> 2.9'
 
 gem 'premailer-rails', '~> 1.9.7'
 
@@ -335,7 +336,7 @@ group :development, :test do
   gem 'database_cleaner', '~> 1.7.0'
   gem 'factory_bot_rails', '~> 4.8.2'
   gem 'rspec-rails', '~> 3.7.0'
-  gem 'rspec-retry', '~> 0.4.5'
+  gem 'rspec-retry', '~> 0.6.1'
   gem 'rspec_profiling', '~> 0.0.5'
   gem 'rspec-set', '~> 0.1.3'
   gem 'rspec-parameterized', require: false
@@ -361,7 +362,7 @@ group :development, :test do
 
   gem 'scss_lint', '~> 0.56.0', require: false
   gem 'haml_lint', '~> 0.31.0', require: false
-  gem 'simplecov', '~> 0.14.0', require: false
+  gem 'simplecov', '~> 0.16.1', require: false
   gem 'bundler-audit', '~> 0.5.0', require: false
 
   gem 'benchmark-ips', '~> 2.3.0', require: false
@@ -372,6 +373,7 @@ group :development, :test do
   gem 'activerecord_sane_schema_dumper', '1.0'
 
   gem 'stackprof', '~> 0.2.10', require: false
+  gem 'derailed_benchmarks', require: false
 
   gem 'simple_po_parser', '~> 1.1.2', require: false
 
@@ -399,6 +401,9 @@ gem 'html2text'
 
 gem 'ruby-prof', '~> 0.17.0'
 gem 'rbtrace', '~> 0.4', require: false
+gem 'memory_profiler', '~> 0.9', require: false
+gem 'benchmark-memory', '~> 0.1', require: false
+gem 'activerecord-explain-analyze', '~> 0.1', require: false
 
 # OAuth
 gem 'oauth2', '~> 1.4'
@@ -421,7 +426,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 1.27.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 1.32.0', require: 'gitaly'
 
 gem 'grpc', '~> 1.19.0'
 

@@ -8,7 +8,7 @@
 - value = variable&.value
 - is_protected_default = ci_variable_protected_by_default?
 - is_protected = ci_variable_protected?(variable, only_key_value)
-- is_masked_default = true
+- is_masked_default = false
 - is_masked = ci_variable_masked?(variable, only_key_value)
 
 - id_input_name = "#{form_field}[variables_attributes][][id]"
@@ -59,7 +59,7 @@
         .append-right-default
           = s_("CiVariable|Masked")
         %button{ type: 'button',
-          class: "js-project-feature-toggle project-feature-toggle #{'is-checked' if is_masked}",
+          class: "js-project-feature-toggle project-feature-toggle qa-variable-masked #{'is-checked' if is_masked}",
           "aria-label": s_("CiVariable|Toggle masked") }
           %input{ type: "hidden",
             class: 'js-ci-variable-input-masked js-project-feature-toggle-input',

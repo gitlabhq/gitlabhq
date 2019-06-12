@@ -144,33 +144,4 @@ describe('IDE commit module getters', () => {
       });
     });
   });
-
-  describe('shouldDisableNewMrOption', () => {
-    it('returns false if commitAction `COMMIT_TO_NEW_BRANCH`', () => {
-      state.commitAction = consts.COMMIT_TO_NEW_BRANCH;
-      const rootState = {
-        currentMergeRequest: { foo: 'bar' },
-      };
-
-      expect(getters.shouldDisableNewMrOption(state, null, null, rootState)).toBeFalsy();
-    });
-
-    it('returns false if there is no current merge request', () => {
-      state.commitAction = consts.COMMIT_TO_CURRENT_BRANCH;
-      const rootState = {
-        currentMergeRequest: null,
-      };
-
-      expect(getters.shouldDisableNewMrOption(state, null, null, rootState)).toBeFalsy();
-    });
-
-    it('returns true an MR exists and commit action is `COMMIT_TO_CURRENT_BRANCH`', () => {
-      state.commitAction = consts.COMMIT_TO_CURRENT_BRANCH;
-      const rootState = {
-        currentMergeRequest: { foo: 'bar' },
-      };
-
-      expect(getters.shouldDisableNewMrOption(state, null, null, rootState)).toBeTruthy();
-    });
-  });
 });

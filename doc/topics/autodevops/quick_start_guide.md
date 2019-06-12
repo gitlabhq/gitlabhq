@@ -161,7 +161,7 @@ In the **test** stage, GitLab runs various checks on the application:
 - The `code_quality` job checks the code quality and is allowed to fail
   ([Auto Code Quality](index.md#auto-code-quality-starter)) **[STARTER]**
 - The `container_scanning` job checks the Docker container if it has any
-  vulnerabilities and is allowed to fail ([Auto Container Scanning](index.md#auto-container-scanning))
+  vulnerabilities and is allowed to fail ([Auto Container Scanning](index.md#auto-container-scanning-ultimate))
 - The `dependency_scanning` job checks if the application has any dependencies
   susceptible to vulnerabilities and is allowed to fail ([Auto Dependency Scanning](index.md#auto-dependency-scanning-ultimate)) **[ULTIMATE]**
 - The `sast` job runs static analysis on the current code to check for potential
@@ -208,7 +208,7 @@ applications. In the rightmost column for the production environment, you can ma
   application is running.
 
 Right below, there is the
-[Deploy Board](https://docs.gitlab.com/ee/user/project/deploy_boards.html).
+[Deploy Board](../../user/project/deploy_boards.md).
 The squares represent pods in your Kubernetes cluster that are associated with
 the given environment. Hovering above each square you can see the state of a
 deployment and clicking a square will take you to the pod's logs page.

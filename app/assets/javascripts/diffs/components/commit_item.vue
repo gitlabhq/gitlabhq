@@ -69,7 +69,7 @@ export default {
       :link-href="authorUrl"
       :img-src="authorAvatar"
       :img-alt="authorName"
-      :img-size="36"
+      :img-size="40"
       class="avatar-cell d-none d-sm-block"
     />
     <div class="commit-detail flex-list">
@@ -91,7 +91,7 @@ export default {
           <icon :size="12" name="ellipsis_h" />
         </button>
 
-        <div class="commiter">
+        <div class="committer">
           <a
             :href="authorUrl"
             :class="authorClass"

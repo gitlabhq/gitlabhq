@@ -47,6 +47,13 @@ module Gitlab
         response.size
       end
 
+      def get_object_directory_size
+        request = Gitaly::GetObjectDirectorySizeRequest.new(repository: @gitaly_repo)
+        response = GitalyClient.call(@storage, :repository_service, :get_object_directory_size, request, timeout: GitalyClient.medium_timeout)
+
+        response.size
+      end
+
       def apply_gitattributes(revision)
         request = Gitaly::ApplyGitattributesRequest.new(repository: @gitaly_repo, revision: encode_binary(revision))
         GitalyClient.call(@storage, :repository_service, :apply_gitattributes, request, timeout: GitalyClient.fast_timeout)

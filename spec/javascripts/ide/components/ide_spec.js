@@ -5,21 +5,31 @@ import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helpe
 import { file, resetStore } from '../helpers';
 import { projectData } from '../mock_data';
 
-describe('ide component', () => {
+function bootstrap(projData) {
+  const Component = Vue.extend(ide);
+
+  store.state.currentProjectId = 'abcproject';
+  store.state.currentBranchId = 'master';
+  store.state.projects.abcproject = Object.assign({}, projData);
+  Vue.set(store.state.trees, 'abcproject/master', {
+    tree: [],
+    loading: false,
+  });
+
+  return createComponentWithStore(Component, store, {
+    emptyStateSvgPath: 'svg',
+    noChangesStateSvgPath: 'svg',
+    committedStateSvgPath: 'svg',
+  });
+}
+
+describe('ide component, empty repo', () => {
   let vm;
 
   beforeEach(() => {
-    const Component = Vue.extend(ide);
-
-    store.state.currentProjectId = 'abcproject';
-    store.state.currentBranchId = 'master';
-    store.state.projects.abcproject = Object.assign({}, projectData);
-
-    vm = createComponentWithStore(Component, store, {
-      emptyStateSvgPath: 'svg',
-      noChangesStateSvgPath: 'svg',
-      committedStateSvgPath: 'svg',
-    }).$mount();
+    const emptyProjData = Object.assign({}, projectData, { empty_repo: true, branches: {} });
+    vm = bootstrap(emptyProjData);
+    vm.$mount();
   });
 
   afterEach(() => {
@@ -28,17 +38,37 @@ describe('ide component', () => {
     resetStore(vm.$store);
   });
 
-  it('does not render right when no files open', () => {
-    expect(vm.$el.querySelector('.panel-right')).toBeNull();
+  it('renders "New file" button in empty repo', done => {
+    vm.$nextTick(() => {
+      expect(vm.$el.querySelector('.ide-empty-state button[title="New file"]')).not.toBeNull();
+      done();
+    });
+  });
+});
+
+describe('ide component, non-empty repo', () => {
+  let vm;
+
+  beforeEach(() => {
+    vm = bootstrap(projectData);
+    vm.$mount();
   });
 
-  it('renders right panel when files are open', done => {
-    vm.$store.state.trees['abcproject/mybranch'] = {
-      tree: [file()],
+  afterEach(() => {
+    vm.$destroy();
+
+    resetStore(vm.$store);
+  });
+
+  it('shows error message when set', done => {
+    expect(vm.$el.querySelector('.flash-container')).toBe(null);
+
+    vm.$store.state.errorMessage = {
+      text: 'error',
     };
 
-    Vue.nextTick(() => {
-      expect(vm.$el.querySelector('.panel-right')).toBeNull();
+    vm.$nextTick(() => {
+      expect(vm.$el.querySelector('.flash-container')).not.toBe(null);
 
       done();
     });
@@ -71,17 +101,25 @@ describe('ide component', () => {
     });
   });
 
-  it('shows error message when set', done => {
-    expect(vm.$el.querySelector('.flash-container')).toBe(null);
+  describe('non-existent branch', () => {
+    it('does not render "New file" button for non-existent branch when repo is not empty', done => {
+      vm.$nextTick(() => {
+        expect(vm.$el.querySelector('.ide-empty-state button[title="New file"]')).toBeNull();
+        done();
+      });
+    });
+  });
 
-    vm.$store.state.errorMessage = {
-      text: 'error',
-    };
+  describe('branch with files', () => {
+    beforeEach(() => {
+      store.state.trees['abcproject/master'].tree = [file()];
+    });
 
-    vm.$nextTick(() => {
-      expect(vm.$el.querySelector('.flash-container')).not.toBe(null);
-
-      done();
+    it('does not render "New file" button', done => {
+      vm.$nextTick(() => {
+        expect(vm.$el.querySelector('.ide-empty-state button[title="New file"]')).toBeNull();
+        done();
+      });
     });
   });
 });

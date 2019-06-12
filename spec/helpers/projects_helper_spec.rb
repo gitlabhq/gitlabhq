@@ -819,4 +819,26 @@ describe ProjectsHelper do
       expect(helper.can_import_members?).to eq true
     end
   end
+
+  describe '#metrics_external_dashboard_url' do
+    let(:project) { create(:project) }
+
+    before do
+      helper.instance_variable_set(:@project, project)
+    end
+
+    context 'metrics_setting exists' do
+      it 'returns external_dashboard_url' do
+        metrics_setting = create(:project_metrics_setting, project: project)
+
+        expect(helper.metrics_external_dashboard_url).to eq(metrics_setting.external_dashboard_url)
+      end
+    end
+
+    context 'metrics_setting does not exist' do
+      it 'returns nil' do
+        expect(helper.metrics_external_dashboard_url).to eq(nil)
+      end
+    end
+  end
 end

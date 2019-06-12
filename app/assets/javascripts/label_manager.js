@@ -53,7 +53,7 @@ export default class LabelManager {
   toggleEmptyState($label, $btn, action) {
     this.emptyState.classList.toggle(
       'hidden',
-      !!this.prioritizedLabels[0].querySelector(':scope > li'),
+      Boolean(this.prioritizedLabels[0].querySelector(':scope > li')),
     );
   }
 

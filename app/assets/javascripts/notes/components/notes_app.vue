@@ -127,6 +127,9 @@ export default {
       initUserPopovers(this.$el.querySelectorAll('.js-user-link'));
     });
   },
+  beforeDestroy() {
+    this.stopPolling();
+  },
   methods: {
     ...mapActions([
       'setLoadingState',
@@ -144,6 +147,7 @@ export default {
       'expandDiscussion',
       'startTaskList',
       'convertToDiscussion',
+      'stopPolling',
     ]),
     fetchNotes() {
       if (this.isFetching) return null;

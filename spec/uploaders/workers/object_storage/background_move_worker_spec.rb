@@ -48,40 +48,6 @@ describe ObjectStorage::BackgroundMoveWorker do
     end
   end
 
-  context 'for legacy artifacts' do
-    let(:build) { create(:ci_build, :legacy_artifacts) }
-    let(:uploader_class) { LegacyArtifactUploader }
-    let(:subject_class) { Ci::Build }
-    let(:file_field) { :artifacts_file }
-    let(:subject_id) { build.id }
-
-    context 'when local storage is used' do
-      let(:store) { local }
-
-      context 'and remote storage is defined' do
-        before do
-          stub_artifacts_object_storage(background_upload: true)
-        end
-
-        it "migrates file to remote storage" do
-          perform
-
-          expect(build.reload.artifacts_file_store).to eq(remote)
-        end
-
-        context 'for artifacts_metadata' do
-          let(:file_field) { :artifacts_metadata }
-
-          it 'migrates metadata to remote storage' do
-            perform
-
-            expect(build.reload.artifacts_metadata_store).to eq(remote)
-          end
-        end
-      end
-    end
-  end
-
   context 'for job artifacts' do
     let(:artifact) { create(:ci_job_artifact, :archive) }
     let(:uploader_class) { JobArtifactUploader }

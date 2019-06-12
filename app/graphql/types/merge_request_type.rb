@@ -11,7 +11,7 @@ module Types
     present_using MergeRequestPresenter
 
     field :id, GraphQL::ID_TYPE, null: false
-    field :iid, GraphQL::ID_TYPE, null: false
+    field :iid, GraphQL::STRING_TYPE, null: false
     field :title, GraphQL::STRING_TYPE, null: false
     field :description, GraphQL::STRING_TYPE, null: true
     field :state, MergeRequestStateEnum, null: false

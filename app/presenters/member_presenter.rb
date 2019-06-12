@@ -32,6 +32,11 @@ class MemberPresenter < Gitlab::View::Presenter::Delegated
     request? && can_update?
   end
 
+  # This functionality is only available in EE.
+  def can_override?
+    false
+  end
+
   private
 
   def admin_member_permission

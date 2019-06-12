@@ -26,10 +26,13 @@ module Ci
       metrics: 'metrics.txt'
     }.freeze
 
-    TYPE_AND_FORMAT_PAIRS = {
+    INTERNAL_TYPES = {
       archive: :zip,
       metadata: :gzip,
-      trace: :raw,
+      trace: :raw
+    }.freeze
+
+    REPORT_TYPES = {
       junit: :gzip,
       metrics: :gzip,
 
@@ -45,6 +48,8 @@ module Ci
       performance: :raw
     }.freeze
 
+    TYPE_AND_FORMAT_PAIRS = INTERNAL_TYPES.merge(REPORT_TYPES).freeze
+
     belongs_to :project
     belongs_to :job, class_name: "Ci::Build", foreign_key: :job_id
 
@@ -54,7 +59,7 @@ module Ci
     validate :valid_file_format?, unless: :trace?, on: :create
     before_save :set_size, if: :file_changed?
 
-    update_project_statistics stat: :build_artifacts_size
+    update_project_statistics project_statistics_name: :build_artifacts_size
 
     after_save :update_file_store, if: :saved_change_to_file?
 
@@ -64,6 +69,10 @@ module Ci
       types = self.file_types.select { |file_type| file_types.include?(file_type) }.values
 
       where(file_type: types)
+    end
+
+    scope :with_reports, -> do
+      with_file_types(REPORT_TYPES.keys.map(&:to_s))
     end
 
     scope :test_reports, -> do

@@ -1,3 +1,7 @@
+---
+type: howto
+---
+
 # Installing GitLab HA on Amazon Web Services (AWS)
 
 This page offers a walkthrough of a common HA (Highly Available) configuration
@@ -383,7 +387,7 @@ after the instance is created.
 
 CAUTION: **Caution:**
 We **do not** recommend using the AWS Elastic File System (EFS), as it can result
-in [significantly degraded performance](../../administration/high_availability/nfs.html#avoid-using-awss-elastic-file-system-efs).
+in [significantly degraded performance](../../administration/high_availability/nfs.md#avoid-using-awss-elastic-file-system-efs).
 
 ### Configure security group
 
@@ -649,12 +653,24 @@ Have a read through these other resources and feel free to
 [open an issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/new)
 to request additional material:
 
-- [GitLab High Availability](https://docs.gitlab.com/ee/administration/high_availability/):
+- [GitLab High Availability](../../administration/high_availability/README.md):
   GitLab supports several different types of clustering and high-availability.
-- [Geo replication](https://docs.gitlab.com/ee/administration/geo/replication/):
+- [Geo replication](../../administration/geo/replication/index.md):
   Geo is the solution for widely distributed development teams.
 - [Omnibus GitLab](https://docs.gitlab.com/omnibus/) - Everything you need to know
   about administering your GitLab instance.
-- [Upload a license](https://docs.gitlab.com/ee/user/admin_area/license.html):
+- [Upload a license](../../user/admin_area/license.md):
   Activate all GitLab Enterprise Edition functionality with a license.
 - [Pricing](https://about.gitlab.com/pricing): Pricing for the different tiers.
+
+<!-- ## Troubleshooting
+
+Include any troubleshooting steps that you can foresee. If you know beforehand what issues
+one might have when setting this up, or when something is changed, or on upgrading, it's
+important to describe those, too. Think of things that may go wrong and include them here.
+This is important to minimize requests for support and to avoid doc comments with
+questions that you know someone might ask.
+
+Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+If you have none to add when creating a doc, leave this section in place
+but commented out to help encourage others to add to it in the future. -->

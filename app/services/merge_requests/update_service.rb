@@ -43,6 +43,8 @@ module MergeRequests
         create_branch_change_note(merge_request, 'target',
                                   merge_request.previous_changes['target_branch'].first,
                                   merge_request.target_branch)
+
+        cancel_auto_merge(merge_request)
       end
 
       if merge_request.assignees != old_assignees
@@ -89,7 +91,7 @@ module MergeRequests
       merge_request.update(merge_error: nil)
 
       if merge_request.head_pipeline && merge_request.head_pipeline.active?
-        MergeRequests::MergeWhenPipelineSucceedsService.new(project, current_user).execute(merge_request)
+        AutoMergeService.new(project, current_user).execute(merge_request, AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS)
       else
         merge_request.merge_async(current_user.id, {})
       end

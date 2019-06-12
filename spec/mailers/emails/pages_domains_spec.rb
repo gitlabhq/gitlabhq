@@ -5,11 +5,13 @@ describe Emails::PagesDomains do
   include EmailSpec::Matchers
   include_context 'gitlab email notification'
 
-  set(:project) { create(:project) }
   set(:domain) { create(:pages_domain, project: project) }
-  set(:user) { project.owner }
+  set(:user) { project.creator }
 
   shared_examples 'a pages domain email' do
+    let(:test_recipient) { user }
+
+    it_behaves_like 'an email sent to a user'
     it_behaves_like 'an email sent from GitLab'
     it_behaves_like 'it should not have Gmail Actions links'
     it_behaves_like 'a user cannot unsubscribe through footer link'

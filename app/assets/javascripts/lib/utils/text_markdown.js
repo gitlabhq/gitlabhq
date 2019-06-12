@@ -223,9 +223,9 @@ export function insertMarkdownText({
             return tag.replace(textPlaceholder, val);
           }
           if (val.indexOf(tag) === 0) {
-            return '' + val.replace(tag, '');
+            return String(val.replace(tag, ''));
           } else {
-            return '' + tag + val;
+            return String(tag) + val;
           }
         })
         .join('\n');
@@ -233,7 +233,7 @@ export function insertMarkdownText({
   } else if (tag.indexOf(textPlaceholder) > -1) {
     textToInsert = tag.replace(textPlaceholder, selected);
   } else {
-    textToInsert = '' + startChar + tag + selected + (wrap ? tag : ' ');
+    textToInsert = String(startChar) + tag + selected + (wrap ? tag : ' ');
   }
 
   if (removedFirstNewLine) {

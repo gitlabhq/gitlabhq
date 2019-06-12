@@ -51,12 +51,17 @@ export default class LinkedTabs {
 
     this.defaultAction = this.options.defaultAction;
     this.action = this.options.action || this.defaultAction;
+    this.hashedTabs = this.options.hashedTabs || false;
 
     if (this.action === 'show') {
       this.action = this.defaultAction;
     }
 
     this.currentLocation = window.location;
+
+    if (this.hashedTabs) {
+      this.action = this.currentLocation.hash || this.action;
+    }
 
     const tabSelector = `${this.options.parentEl} a[data-toggle="tab"]`;
 
@@ -91,7 +96,9 @@ export default class LinkedTabs {
 
     copySource.replace(/\/+$/, '');
 
-    const newState = `${copySource}${this.currentLocation.search}${this.currentLocation.hash}`;
+    const newState = this.hashedTabs
+      ? copySource
+      : `${copySource}${this.currentLocation.search}${this.currentLocation.hash}`;
 
     window.history.replaceState(
       {

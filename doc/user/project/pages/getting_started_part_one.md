@@ -1,5 +1,6 @@
 ---
-last_updated: 2018-02-16
+last_updated: 2018-06-04
+type: concepts, reference
 ---
 
 # Static sites and GitLab Pages domains

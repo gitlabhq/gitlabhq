@@ -39,7 +39,7 @@ if (BABEL_ENV === 'karma' || BABEL_ENV === 'coverage') {
 }
 
 // Jest is running in node environment, so we need additional plugins
-const isJest = !!process.env.JEST_WORKER_ID;
+const isJest = Boolean(process.env.JEST_WORKER_ID);
 if (isJest) {
   plugins.push('@babel/plugin-transform-modules-commonjs');
   /*

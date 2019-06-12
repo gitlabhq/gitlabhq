@@ -150,44 +150,8 @@ describe('Jobs Store Mutations', () => {
     });
   });
 
-  describe('REQUEST_STAGES', () => {
-    it('sets isLoadingStages to true', () => {
-      mutations[types.REQUEST_STAGES](stateCopy);
-
-      expect(stateCopy.isLoadingStages).toEqual(true);
-    });
-  });
-
-  describe('RECEIVE_STAGES_SUCCESS', () => {
-    beforeEach(() => {
-      mutations[types.RECEIVE_STAGES_SUCCESS](stateCopy, [{ name: 'build' }]);
-    });
-
-    it('sets isLoadingStages to false', () => {
-      expect(stateCopy.isLoadingStages).toEqual(false);
-    });
-
-    it('sets stages', () => {
-      expect(stateCopy.stages).toEqual([{ name: 'build' }]);
-    });
-  });
-
-  describe('RECEIVE_STAGES_ERROR', () => {
-    beforeEach(() => {
-      mutations[types.RECEIVE_STAGES_ERROR](stateCopy);
-    });
-
-    it('sets isLoadingStages to false', () => {
-      expect(stateCopy.isLoadingStages).toEqual(false);
-    });
-
-    it('resets stages', () => {
-      expect(stateCopy.stages).toEqual([]);
-    });
-  });
-
   describe('REQUEST_JOBS_FOR_STAGE', () => {
-    it('sets isLoadingStages to true', () => {
+    it('sets isLoadingJobs to true', () => {
       mutations[types.REQUEST_JOBS_FOR_STAGE](stateCopy, { name: 'deploy' });
 
       expect(stateCopy.isLoadingJobs).toEqual(true);

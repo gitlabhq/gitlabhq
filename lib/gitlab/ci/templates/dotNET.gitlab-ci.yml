@@ -3,12 +3,12 @@
 # (located in gitlab-runner.exe directory):
 #   shell = "powershell"
 #
-# The script is composed of 3 stages: build, test and deploy.  
+# The script is composed of 3 stages: build, test and deploy.
 #
 # The build stage restores NuGet packages and uses msbuild to build the exe and msi
 # One major issue you'll find is that you can't build msi projects from command line
 # if you use vdproj.  There are workarounds building msi via devenv, but they rarely work
-# The best solution is migrating your vdproj projects to WiX, as it can be build directly 
+# The best solution is migrating your vdproj projects to WiX, as it can be build directly
 # by msbuild.
 #
 # The test stage runs nunit from command line against Test project inside your solution
@@ -38,28 +38,28 @@ stages:
 build_job:
   stage: build
   only:
-    - tags # the build process will only be started by git tag commits
+    - tags  # the build process will only be started by git tag commits
   script:
-    - '& "$env:NUGET_PATH" restore' # restore Nuget dependencies
-    - '& "$env:MSBUILD_PATH" /p:Configuration=Release' # build the project
+    - '& "$env:NUGET_PATH" restore'  # restore Nuget dependencies
+    - '& "$env:MSBUILD_PATH" /p:Configuration=Release'  # build the project
   artifacts:
-    expire_in: 1 week # save gitlab server space, we copy the files we need to deploy folder later on
+    expire_in: 1 week  # save gitlab server space, we copy the files we need to deploy folder later on
     paths:
-      - '$env:EXE_RELEASE_FOLDER\YourApp.exe' # saving exe to copy to deploy folder
-      - '$env:MSI_RELEASE_FOLDER\YourApp Setup.msi' # saving msi to copy to deploy folder
-      - '$env:TEST_FOLDER\' # saving entire Test project so NUnit can run tests 
+      - '$env:EXE_RELEASE_FOLDER\YourApp.exe'  # saving exe to copy to deploy folder
+      - '$env:MSI_RELEASE_FOLDER\YourApp Setup.msi'  # saving msi to copy to deploy folder
+      - '$env:TEST_FOLDER\'  # saving entire Test project so NUnit can run tests
 
 test_job:
   stage: test
   only:
     - tags
   script:
-    - '& "$env:NUNIT_PATH" ".\$env:TEST_FOLDER\Tests.dll"' # running NUnit tests
+    - '& "$env:NUNIT_PATH" ".\$env:TEST_FOLDER\Tests.dll"'  # running NUnit tests
   artifacts:
-    when: always # save test results even when the task fails
-    expire_in: 1 week # save gitlab server space, we copy the files we need to deploy folder later on
+    when: always  # save test results even when the task fails
+    expire_in: 1 week  # save gitlab server space, we copy the files we need to deploy folder later on
     paths:
-      - '.\TestResult.xml' # saving NUnit results to copy to deploy folder
+      - '.\TestResult.xml'  # saving NUnit results to copy to deploy folder
   dependencies:
     - build_job
 
@@ -79,7 +79,6 @@ deploy_job:
     - 'xcopy /y ".\$env:EXE_RELEASE_FOLDER\YourApp.exe" "$deployFolder"'
     - 'xcopy /y ".\$env:MSI_RELEASE_FOLDER\YourApp Setup.msi" "$deployFolder"'
     - 'xcopy /y ".\TestResult.xml" "$deployFolder"'
-
   dependencies:
     - build_job
     - test_job

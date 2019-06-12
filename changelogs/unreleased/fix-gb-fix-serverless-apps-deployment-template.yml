@@ -1,0 +1,5 @@
+---
+title: Fix serverless apps deployments by bumping 'tm' version
+merge_request: 29254
+author:
+type: fixed

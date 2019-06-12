@@ -179,25 +179,11 @@ The steps below should be followed in the order they appear. **Make sure the Git
 If you installed GitLab using the Omnibus packages (highly recommended):
 
 1. [Install GitLab Enterprise Edition](https://about.gitlab.com/installation/) on the server that will serve as the **secondary** node. Do not create an account or log in to the new **secondary** node.
-1. [Upload the GitLab License](https://docs.gitlab.com/ee/user/admin_area/license.html) on the **primary** node to unlock Geo. The license must be for [GitLab Premium](https://about.gitlab.com/pricing/) or higher.
+1. [Upload the GitLab License](../../../user/admin_area/license.md) on the **primary** node to unlock Geo. The license must be for [GitLab Premium](https://about.gitlab.com/pricing/) or higher.
 1. [Set up the database replication](database.md) (`primary (read-write) <-> secondary (read-only)` topology).
 1. [Configure fast lookup of authorized SSH keys in the database](../../operations/fast_ssh_key_lookup.md). This step is required and needs to be done on **both** the **primary** and **secondary** nodes.
 1. [Configure GitLab](configuration.md) to set the **primary** and **secondary** nodes.
 1. Optional: [Configure a secondary LDAP server](../../auth/ldap.md) for the **secondary** node. See [notes on LDAP](#ldap).
-1. [Follow the "Using a Geo Server" guide](using_a_geo_server.md).
-
-### Using GitLab installed from source (Deprecated)
-
-NOTE: **Note:**
-In GitLab 11.5, support for using Geo in GitLab source installations was deprecated and will be removed in a future release. Please consider [migrating to GitLab Omnibus install](https://docs.gitlab.com/omnibus/update/convert_to_omnibus.html).
-
-If you installed GitLab from source:
-
-1. [Install GitLab Enterprise Edition](../../../install/installation.md) on the server that will serve as the **secondary** node. Do not create an account or log in to the new **secondary** node.
-1. [Upload the GitLab License](https://docs.gitlab.com/ee/user/admin_area/license.html) on the **primary** node to unlock Geo. The license must be for [GitLab Premium](https://about.gitlab.com/pricing/) or higher.
-1. [Set up the database replication](database_source.md) (`primary (read-write) <-> secondary (read-only)` topology).
-1. [Configure fast lookup of authorized SSH keys in the database](../../operations/fast_ssh_key_lookup.md). Do this step for **both** **primary** and **secondary** nodes.
-1. [Configure GitLab](configuration_source.md) to set the **primary** and **secondary** nodes.
 1. [Follow the "Using a Geo Server" guide](using_a_geo_server.md).
 
 ## Post-installation documentation
@@ -206,10 +192,7 @@ After installing GitLab on the **secondary** nodes and performing the initial co
 
 ### Configuring Geo
 
-For information on configuring Geo, see:
-
-- [Geo configuration (GitLab Omnibus)](configuration.md).
-- [Geo configuration (source)](configuration_source.md). Configuring Geo in GitLab source installations was **deprecated** in GitLab 11.5.
+For information on configuring Geo, see [Geo configuration](configuration.md).
 
 ### Updating Geo
 
@@ -278,7 +261,7 @@ Take special note that these examples of GitLab features are both:
 
 Examples include:
 
-- [Elasticsearch integration](https://docs.gitlab.com/ee/integration/elasticsearch.html).
+- [Elasticsearch integration](../../../integration/elasticsearch.md).
 - [Container Registry](../../container_registry.md). [Object Storage](object_storage.md) can mitigate this.
 - [GitLab Pages](../../pages/index.md).
 - [Mattermost integration](https://docs.gitlab.com/omnibus/gitlab-mattermost/).

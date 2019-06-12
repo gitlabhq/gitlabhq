@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 describe AssemblaService do
+  include StubRequests
+
   describe "Associations" do
     it { is_expected.to belong_to :project }
     it { is_expected.to have_one :service_hook }
@@ -23,12 +25,12 @@ describe AssemblaService do
       )
       @sample_data = Gitlab::DataBuilder::Push.build_sample(project, user)
       @api_url = 'https://atlas.assembla.com/spaces/project_name/github_tool?secret_key=verySecret'
-      WebMock.stub_request(:post, @api_url)
+      stub_full_request(@api_url, method: :post)
     end
 
     it "calls Assembla API" do
       @assembla_service.execute(@sample_data)
-      expect(WebMock).to have_requested(:post, @api_url).with(
+      expect(WebMock).to have_requested(:post, stubbed_hostname(@api_url)).with(
         body: /#{@sample_data[:before]}.*#{@sample_data[:after]}.*#{project.path}/
       ).once
     end

@@ -40,7 +40,7 @@ export default function initCompareAutocomplete(limitTo = null, clickHandler = (
       },
       selectable: true,
       filterable: true,
-      filterRemote: !!$dropdown.data('refsUrl'),
+      filterRemote: Boolean($dropdown.data('refsUrl')),
       fieldName: $dropdown.data('fieldName'),
       filterInput: 'input[type="search"]',
       renderRow: function(ref) {

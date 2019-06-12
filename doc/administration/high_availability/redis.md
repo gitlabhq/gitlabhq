@@ -16,9 +16,9 @@ These will be necessary when configuring the GitLab application servers later.
 
 ## Redis in a Scaled Environment
 
-This section is relevant for [Scaled Architecture](./README.md#scalable-architecture-examples)
-environments including [Basic Scaling](./README.md#basic-scaling) and
-[Full Scaling](./README.md#full-scaling).
+This section is relevant for [Scaled Architecture](README.md#scalable-architecture-examples)
+environments including [Basic Scaling](README.md#basic-scaling) and
+[Full Scaling](README.md#full-scaling).
 
 ### Provide your own Redis instance **[CORE ONLY]**
 
@@ -34,7 +34,7 @@ In this configuration Redis is not highly available, and represents a single
 point of failure. However, in a scaled environment the objective is to allow
 the environment to handle more users or to increase throughput. Redis itself
 is generally stable and can handle many requests so it is an acceptable
-trade off to have only a single instance. See [Scaling and High Availability](./README.md)
+trade off to have only a single instance. See [Scaling and High Availability](README.md)
 for an overview of GitLab scaling and high availability options.
 
 The steps below are the minimum necessary to configure a Redis server with
@@ -79,14 +79,14 @@ Advanced configuration options are supported and can be added if
 needed.
 
 Continue configuration of other components by going
-[back to Scaled Architectures](./README.md#scalable-architecture-examples)
+[back to Scaled Architectures](README.md#scalable-architecture-examples)
 
 ## Redis with High Availability
 
-This section is relevant for [High Availability Architecture](./README.md#high-availability-architecture-examples)
-environments including [Horizontal](./README.md#horizontal),
-[Hybrid](./README.md#hybrid), and
-[Fully Distributed](./README.md#fully-distributed).
+This section is relevant for [High Availability Architecture](README.md#high-availability-architecture-examples)
+environments including [Horizontal](README.md#horizontal),
+[Hybrid](README.md#hybrid), and
+[Fully Distributed](README.md#fully-distributed).
 
 ### Provide your own Redis instance **[CORE ONLY]**
 
@@ -863,7 +863,7 @@ You can check if everything is correct by connecting to each server using
 `redis-cli` application, and sending the `info replication` command as below.
 
 ```
-/opt/gitlab/embedded/bin/redis-cli -a <redis-password> info replication
+/opt/gitlab/embedded/bin/redis-cli -h <redis-host-or-ip> -a '<redis-password>' info replication
 ```
 
 When connected to a `master` redis, you will see the number of connected

@@ -57,7 +57,7 @@ export const validateProjectBilling = ({ dispatch, commit, state }) =>
       resp => {
         const { billingEnabled } = resp.result;
 
-        commit(types.SET_PROJECT_BILLING_STATUS, !!billingEnabled);
+        commit(types.SET_PROJECT_BILLING_STATUS, Boolean(billingEnabled));
         dispatch('setIsValidatingProjectBilling', false);
         resolve();
       },

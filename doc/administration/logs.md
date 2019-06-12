@@ -129,7 +129,7 @@ It contains information about [integrations](../user/project/integrations/projec
 
 ``` json
 {"severity":"ERROR","time":"2018-09-06T14:56:20.439Z","service_class":"JiraService","project_id":8,"project_path":"h5bp/html5-boilerplate","message":"Error sending message","client_url":"http://jira.gitlap.com:8080","error":"execution expired"}
-{"severity":"INFO","time":"2018-09-06T17:15:16.365Z","service_class":"JiraService","project_id":3,"project_path":"namespace2/project2","message":"Successfully posted","client_url":"http://jira.example.net"}
+{"severity":"INFO","time":"2018-09-06T17:15:16.365Z","service_class":"JiraService","project_id":3,"project_path":"namespace2/project2","message":"Successfully posted","client_url":"http://jira.example.com"}
 ```
 
 ## `kubernetes.log`
@@ -280,6 +280,28 @@ installations from source.
 Currently it logs the progress of project imports from the Bitbucket Server
 importer. Future importers may use this file.
 
+## `auth.log`
+
+Introduced in GitLab 12.0. This file lives in `/var/log/gitlab/gitlab-rails/auth.log` for
+Omnibus GitLab packages or in `/home/git/gitlab/log/auth.log` for
+installations from source.
+
+It logs information whenever [Rack Attack] registers an abusive request.
+
+## `graphql_json.log`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/59587) in GitLab 12.0.
+
+This file lives in `/var/log/gitlab/gitlab-rails/graphql_json.log` for
+Omnibus GitLab packages or in `/home/git/gitlab/log/graphql_json.log` for
+installations from source.
+
+GraphQL queries are recorded in that file. For example:
+
+```json
+{"query_string":"query IntrospectionQuery{__schema {queryType { name },mutationType { name }}}...(etc)","variables":{"a":1,"b":2},"complexity":181,"depth":1,"duration":7}
+```
+
 ## Reconfigure Logs
 
 Reconfigure log files live in `/var/log/gitlab/reconfigure` for Omnibus GitLab
@@ -298,3 +320,4 @@ Omnibus GitLab packages or in `/home/git/gitlab/log/sidekiq_exporter.log` for
 installations from source.
 
 [repocheck]: repository_checks.md
+[Rack Attack]: ../security/rack_attack.md

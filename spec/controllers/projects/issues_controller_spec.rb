@@ -130,6 +130,37 @@ describe Projects::IssuesController do
       end
     end
 
+    context 'with relative_position sorting' do
+      let!(:issue_list) { create_list(:issue, 2, project: project) }
+
+      before do
+        sign_in(user)
+        project.add_developer(user)
+        allow(Kaminari.config).to receive(:default_per_page).and_return(1)
+      end
+
+      it 'overrides the number allowed on the page' do
+        get :index,
+          params: {
+            namespace_id: project.namespace.to_param,
+            project_id:   project,
+            sort:         'relative_position'
+          }
+
+        expect(assigns(:issues).count).to eq 2
+      end
+
+      it 'allows the default number on the page' do
+        get :index,
+          params: {
+            namespace_id: project.namespace.to_param,
+            project_id:   project
+          }
+
+        expect(assigns(:issues).count).to eq 1
+      end
+    end
+
     context 'external authorization' do
       before do
         sign_in user

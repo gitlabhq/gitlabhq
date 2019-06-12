@@ -1,14 +1,13 @@
 ---
 description: 'Learn how to install a GitLab instance on Google Cloud Platform.'
+type: howto
 ---
 
 # Installing GitLab on Google Cloud Platform
 
-![GCP landing page](img/gcp_landing.png)
+This guide will help you install GitLab on a [Google Cloud Platform (GCP)][gcp] instance.
 
-Getting started with GitLab on a [Google Cloud Platform (GCP)][gcp] instance is quick and easy.
-
-NOTE: **Note:**
+NOTE: **Alternative installation method:**
 Google provides a whitepaper for [deploying production-ready GitLab on
 Google Kubernetes Engine](https://cloud.google.com/solutions/deploying-production-ready-gitlab-on-gke),
 including all steps and external resource configuration. These are an alternative to using a GCP VM, and use
@@ -26,10 +25,9 @@ Once you have performed those two steps, you can [create a VM](#creating-the-vm)
 
 ## Creating the VM
 
-To deploy GitLab on GCP you need to follow five simple steps:
+To deploy GitLab on GCP you first need to create a virtual machine:
 
-1. Go to <https://console.cloud.google.com/compute/instances> and login with your Google credentials.
-
+1. Go to <https://console.cloud.google.com/compute/instances> and log in with your Google credentials.
 1. Click on **Create**
 
     ![Search for GitLab](img/launch_vm.png)
@@ -142,3 +140,15 @@ Kerberos, etc. Here are some documents you might be interested in reading:
 [ssh]: https://cloud.google.com/compute/docs/instances/connecting-to-instance "Connecting to Linux Instances"
 [omni-smtp]: https://docs.gitlab.com/omnibus/settings/smtp.html#smtp-settings "Omnibus GitLab SMTP settings"
 [omni-ssl]: https://docs.gitlab.com/omnibus/settings/nginx.html#enable-https "Omnibus GitLab enable HTTPS"
+
+<!-- ## Troubleshooting
+
+Include any troubleshooting steps that you can foresee. If you know beforehand what issues
+one might have when setting this up, or when something is changed, or on upgrading, it's
+important to describe those, too. Think of things that may go wrong and include them here.
+This is important to minimize requests for support, and to avoid doc comments with
+questions that you know someone might ask.
+
+Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+If you have none to add when creating a doc, leave this section in place
+but commented out to help encourage others to add to it in the future. -->

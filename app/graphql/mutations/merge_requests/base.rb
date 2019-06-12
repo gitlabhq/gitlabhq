@@ -10,7 +10,7 @@ module Mutations
                required: true,
                description: "The project the merge request to mutate is in"
 
-      argument :iid, GraphQL::ID_TYPE,
+      argument :iid, GraphQL::STRING_TYPE,
                required: true,
                description: "The iid of the merge request to mutate"
 

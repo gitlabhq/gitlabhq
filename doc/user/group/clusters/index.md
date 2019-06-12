@@ -1,3 +1,7 @@
+---
+type: reference
+---
+
 # Group-level Kubernetes clusters
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/34758) in GitLab 11.6.
@@ -12,33 +16,10 @@ your group, enabling you to use the same cluster across multiple projects.
 
 ## Installing applications
 
-GitLab provides a one-click install for various applications that can be
-added directly to your cluster.
-
-NOTE: **Note:**
-Applications will be installed in a dedicated namespace called
-`gitlab-managed-apps`. If you have added an existing Kubernetes cluster
-with Tiller already installed, you should be careful as GitLab cannot
-detect it. In this event, installing Tiller via the applications will
-result in the cluster having it twice. This can lead to confusion during
-deployments.
-
-| Application                                                                | GitLab version | Description | Helm Chart |
-| -----------                                                                | -------------- | ----------- | ---------- |
-| [Helm Tiller](https://docs.helm.sh)                                        | 11.6+          | Helm is a package manager for Kubernetes and is required to install all the other applications. It is installed in its own pod inside the cluster which can run the `helm` CLI in a safe environment. | n/a |
-| [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress) | 11.6+          | Ingress can provide load balancing, SSL termination, and name-based virtual hosting. It acts as a web proxy for your applications and is useful if you want to use [Auto DevOps](../../../topics/autodevops/index.md) or deploy your own web apps. | [stable/nginx-ingress](https://github.com/helm/charts/tree/master/stable/nginx-ingress) |
-| [Cert-Manager](https://docs.cert-manager.io/en/latest/) | 11.6+ | Cert-Manager is a native Kubernetes certificate management controller that helps with issuing certificates. Installing Cert-Manager on your cluster will issue a certificate by [Let's Encrypt](https://letsencrypt.org/) and ensure that certificates are valid and up-to-date. | [stable/cert-manager](https://github.com/helm/charts/tree/master/stable/cert-manager) |
-| [Prometheus](https://prometheus.io/docs/introduction/overview/) | 11.11+ | Prometheus is an open-source monitoring and alerting system useful to supervise your deployed applications. | [stable/prometheus](https://github.com/helm/charts/tree/master/stable/prometheus) |
-| [GitLab Runner](https://docs.gitlab.com/runner/) | 11.10+ | GitLab Runner is the open source project that is used to run your jobs and send the results back to GitLab. It is used in conjunction with [GitLab CI/CD](../../../ci/README.md), the open-source continuous integration service included with GitLab that coordinates the jobs. When installing the GitLab Runner via the applications, it will run in **privileged mode** by default. Make sure you read the [security implications](../../project/clusters/index.md#security-implications) before doing so. | [runner/gitlab-runner](https://gitlab.com/charts/gitlab-runner) |
-
-NOTE: **Note:**
-Some [cluster
-applications](../../project/clusters/index.md#installing-applications)
-are installable only for a project-level cluster. Support for installing these
-applications in a group-level cluster is planned for future releases. For updates, see:
-
-- Support installing [JupyterHub in group-level
-  clusters](https://gitlab.com/gitlab-org/gitlab-ce/issues/51989)
+GitLab can install and manage some applications in your group-level
+cluster. For more information on installing, upgrading, uninstalling,
+and troubleshooting applications for your group cluster, see
+[Gitlab Managed Apps](../../clusters/applications.md).
 
 ## RBAC compatibility
 
@@ -71,7 +52,7 @@ Add another cluster similar to the first one and make sure to
 [set an environment scope](#environment-scopes-premium) that will
 differentiate the new cluster from the rest.
 
-## Gitlab-managed clusters
+## GitLab-managed clusters
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22011) in GitLab 11.5.
 > Became [optional](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/26565) in GitLab 11.11.
@@ -110,7 +91,7 @@ The domain should have a wildcard DNS configured to the Ingress IP address.
 When adding more than one Kubernetes cluster to your project, you need to differentiate
 them with an environment scope. The environment scope associates clusters with
 [environments](../../../ci/environments.md) similar to how the
-[environment-specific variables](https://docs.gitlab.com/ee/ci/variables/#limiting-environment-scopes-of-environment-variables-premium)
+[environment-specific variables](../../../ci/variables/README.md#limiting-environment-scopes-of-environment-variables-premium)
 work.
 
 While evaluating which environment matches the environment scope of a
@@ -168,3 +149,15 @@ The following features are not currently available for group-level clusters:
 1. Terminals (see [related issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/55487)).
 1. Pod logs (see [related issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/55488)).
 1. Deployment boards (see [related issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/55489)).
+
+<!-- ## Troubleshooting
+
+Include any troubleshooting steps that you can foresee. If you know beforehand what issues
+one might have when setting this up, or when something is changed, or on upgrading, it's
+important to describe those, too. Think of things that may go wrong and include them here.
+This is important to minimize requests for support, and to avoid doc comments with
+questions that you know someone might ask.
+
+Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+If you have none to add when creating a doc, leave this section in place
+but commented out to help encourage others to add to it in the future. -->

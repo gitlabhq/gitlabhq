@@ -23,7 +23,7 @@ class DeleteModal {
     const branchData = e.currentTarget.dataset;
     this.branchName = branchData.branchName || '';
     this.deletePath = branchData.deletePath || '';
-    this.isMerged = !!branchData.isMerged;
+    this.isMerged = Boolean(branchData.isMerged);
     this.updateModal();
   }
 

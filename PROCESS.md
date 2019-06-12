@@ -113,7 +113,7 @@ corresponding exception request to be created.
 A level of common sense should be applied when deciding whether to have a feature 
 behind a feature flag off or on by default.
 
-The following guideliness can be applied to help make this decision:
+The following guidelines can be applied to help make this decision:
 
 * If the feature is not fully ready or functioning, the feature flag should be disabled by default.
 * If the feature is ready but there are concerns about performance or impact, the feature flag should be enabled by default, but 
@@ -125,7 +125,7 @@ For more information on rolling out changes using feature flags, read [through t
 In order to build the final package and present the feature for self-hosted
 customers, the feature flag should be removed. This should happen before the
 22nd, ideally _at least_ 2 days before. That means MRs with feature
-flags being picked at the 19th would have a quite tight schedule, so picking
+flags being picked at the 19th would have quite a tight schedule, so picking
 these _earlier_ is preferable.
 
 While rare, release managers may decide to reject picking a change into a stable

@@ -112,6 +112,16 @@ describe Gitlab::Ci::Config::Entry::Service do
           it 'is valid' do
             expect(entry).to be_valid
           end
+
+          context 'when unknown port keys detected' do
+            let(:ports) { [{ number: 80, invalid_key: 'foo' }] }
+
+            it 'is not valid' do
+              expect(entry).not_to be_valid
+              expect(entry.errors.first)
+                .to match /port config contains unknown keys: invalid_key/
+            end
+          end
         end
 
         describe '#ports' do

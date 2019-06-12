@@ -16,4 +16,6 @@ const vNodeContainsText = (vnode, text) =>
  * @param {String} text
  */
 export const shallowWrapperContainsSlotText = (shallowWrapper, slotName, text) =>
-  !!shallowWrapper.vm.$slots[slotName].filter(vnode => vNodeContainsText(vnode, text)).length;
+  Boolean(
+    shallowWrapper.vm.$slots[slotName].filter(vnode => vNodeContainsText(vnode, text)).length,
+  );

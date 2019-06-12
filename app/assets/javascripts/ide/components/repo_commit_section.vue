@@ -30,7 +30,7 @@ export default {
     ...mapGetters(['lastOpenedFile', 'hasChanges', 'someUncommittedChanges', 'activeFile']),
     ...mapGetters('commit', ['discardDraftButtonDisabled']),
     showStageUnstageArea() {
-      return !!(this.someUncommittedChanges || this.lastCommitMsg || !this.unusedSeal);
+      return Boolean(this.someUncommittedChanges || this.lastCommitMsg || !this.unusedSeal);
     },
     activeFileKey() {
       return this.activeFile ? this.activeFile.key : null;

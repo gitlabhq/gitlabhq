@@ -8,18 +8,19 @@
     %div
       %strong= active_session.ip_address
     - if is_current_session
-      %div This is your current session
+      %div
+        = _('This is your current session')
     - else
       %div
-        Last accessed on
+        = _('Last accessed on')
         = l(active_session.updated_at, format: :short)
 
     %div
       %strong= active_session.browser
-      on
+      = s_('ProfileSession|on')
       %strong= active_session.os
 
     %div
-      %strong Signed in
-      on
+      %strong= _('Signed in')
+      = s_('ProfileSession|on')
       = l(active_session.created_at, format: :short)

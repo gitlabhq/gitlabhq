@@ -7,6 +7,10 @@ module QA
         class Edit < Page::Base
           include Page::Component::DropdownFilter
 
+          view 'app/assets/javascripts/ide/components/activity_bar.vue' do
+            element :commit_mode_tab
+          end
+
           view 'app/assets/javascripts/ide/components/ide_tree.vue' do
             element :new_file
           end
@@ -17,6 +21,7 @@ module QA
 
           view 'app/assets/javascripts/ide/components/new_dropdown/modal.vue' do
             element :full_file_path
+            element :new_file_modal
             element :template_list
           end
 
@@ -42,11 +47,18 @@ module QA
 
           def create_new_file_from_template(file_name, template)
             click_element :new_file
+
+            # Wait for the modal animation to complete before clicking on the file name
+            wait_for_animated_element(:new_file_modal)
+
             within_element(:template_list) do
               click_on file_name
             rescue Capybara::ElementNotFound
               raise ElementNotFound, %Q(Couldn't find file template named "#{file_name}". Please confirm that it is a valid option.)
             end
+
+            # Wait for the modal to fade out too
+            has_no_element?(:new_file_modal)
 
             wait(reload: false) do
               within_element(:file_templates_bar) do
@@ -63,10 +75,16 @@ module QA
           end
 
           def commit_changes
+            # Clicking :begin_commit_button the first time switches from the
+            # edit to the commit view
+            click_element :begin_commit_button
+            active_element? :commit_mode_tab
+
+            # We need to click :begin_commit_button again
             click_element :begin_commit_button
 
-            # After clicking :begin_commit_button there is an animation that
-            # hides :begin_commit_button and shows :commit_button
+            # After clicking :begin_commit_button the 2nd time there is an
+            # animation that hides :begin_commit_button and shows :commit_button
             #
             # Wait for the animation to complete before clicking :commit_button
             # otherwise the click will quietly do nothing.
@@ -75,7 +93,10 @@ module QA
                 has_element?(:commit_button)
             end
 
-            # Retry the attempt to click :commit_button just in case part of the
+            # At this point we're ready to commit and the button should be
+            # labelled "Stage & Commit"
+            #
+            # Click :commit_button and keep retrying just in case part of the
             # animation is still in process even when the buttons have the
             # expected visibility.
             commit_success_msg_shown = retry_until do

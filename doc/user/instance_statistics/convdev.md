@@ -5,7 +5,7 @@
 NOTE: **Note:**
 Your GitLab instance's [usage ping](../admin_area/settings/usage_statistics.md#usage-ping-core-only) must be activated in order to use this feature.
 
-The Conversational Development Index (ConvDev Index) gives you an overview of your entire
+The [Conversational Development](http://conversationaldevelopment.com/2017/04/16/what-is-conversational-development/) Index (ConvDev Index) gives you an overview of your entire
 instance's adoption of [Concurrent DevOps](https://about.gitlab.com/concurrent-devops/)
 from planning to monitoring.
 

@@ -2,11 +2,11 @@
 
 module Resolvers
   class IssuesResolver < BaseResolver
-    argument :iid, GraphQL::ID_TYPE,
+    argument :iid, GraphQL::STRING_TYPE,
               required: false,
               description: 'The IID of the issue, e.g., "1"'
 
-    argument :iids, [GraphQL::ID_TYPE],
+    argument :iids, [GraphQL::STRING_TYPE],
               required: false,
               description: 'The list of IIDs of issues, e.g., [1, 2]'
     argument :state, Types::IssuableStateEnum,
@@ -58,7 +58,7 @@ module Resolvers
       IssuesFinder.new(context[:current_user], args).execute
     end
 
-    def self.resolver_complexity(args)
+    def self.resolver_complexity(args, child_complexity:)
       complexity = super
       complexity += 2 if args[:labelName]
 

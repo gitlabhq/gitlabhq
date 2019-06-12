@@ -13,10 +13,10 @@ describe Banzai::Redactor do
 
       it 'redacts an array of documents' do
         doc1 = Nokogiri::HTML
-               .fragment('<a class="gfm" data-reference-type="issue">foo</a>')
+               .fragment('<a class="gfm" href="https://www.gitlab.com" data-reference-type="issue">foo</a>')
 
         doc2 = Nokogiri::HTML
-               .fragment('<a class="gfm" data-reference-type="issue">bar</a>')
+               .fragment('<a class="gfm" href="https://www.gitlab.com" data-reference-type="issue">bar</a>')
 
         redacted_data = redactor.redact([doc1, doc2])
 
@@ -27,7 +27,7 @@ describe Banzai::Redactor do
       end
 
       it 'replaces redacted reference with inner HTML' do
-        doc = Nokogiri::HTML.fragment("<a class='gfm' data-reference-type='issue'>foo</a>")
+        doc = Nokogiri::HTML.fragment("<a class='gfm' href='https://www.gitlab.com' data-reference-type='issue'>foo</a>")
         redactor.redact([doc])
         expect(doc.to_html).to eq('foo')
       end
@@ -35,20 +35,24 @@ describe Banzai::Redactor do
       context 'when data-original attribute provided' do
         let(:original_content) { '<code>foo</code>' }
         it 'replaces redacted reference with original content' do
-          doc = Nokogiri::HTML.fragment("<a class='gfm' data-reference-type='issue' data-original='#{original_content}'>bar</a>")
+          doc = Nokogiri::HTML.fragment("<a class='gfm' href='https://www.gitlab.com' data-reference-type='issue' data-original='#{original_content}'>bar</a>")
           redactor.redact([doc])
           expect(doc.to_html).to eq(original_content)
         end
-      end
 
-      it 'returns <a> tag with original href if it is originally a link reference' do
-        href = 'http://localhost:3000'
-        doc = Nokogiri::HTML
-          .fragment("<a class='gfm' data-reference-type='issue' data-original=#{href} data-link-reference='true'>#{href}</a>")
+        it 'does not replace redacted reference with original content if href is given' do
+          html = "<a href='https://www.gitlab.com' data-link-reference='true' class='gfm' data-reference-type='issue' data-reference-type='issue' data-original='Marge'>Marge</a>"
+          doc = Nokogiri::HTML.fragment(html)
+          redactor.redact([doc])
+          expect(doc.to_html).to eq('<a href="https://www.gitlab.com">Marge</a>')
+        end
 
-        redactor.redact([doc])
-
-        expect(doc.to_html).to eq('<a href="http://localhost:3000">http://localhost:3000</a>')
+        it 'uses the original content as the link content if given' do
+          html = "<a href='https://www.gitlab.com' data-link-reference='true' class='gfm' data-reference-type='issue' data-reference-type='issue' data-original='Homer'>Marge</a>"
+          doc = Nokogiri::HTML.fragment(html)
+          redactor.redact([doc])
+          expect(doc.to_html).to eq('<a href="https://www.gitlab.com">Homer</a>')
+        end
       end
     end
 
@@ -61,7 +65,7 @@ describe Banzai::Redactor do
       end
 
       it 'redacts an issue attached' do
-        doc = Nokogiri::HTML.fragment("<a class='gfm' data-reference-type='issue' data-issue='#{issue.id}'>foo</a>")
+        doc = Nokogiri::HTML.fragment("<a class='gfm' href='https://www.gitlab.com' data-reference-type='issue' data-issue='#{issue.id}'>foo</a>")
 
         redactor.redact([doc])
 
@@ -69,7 +73,7 @@ describe Banzai::Redactor do
       end
 
       it 'redacts an external issue' do
-        doc = Nokogiri::HTML.fragment("<a class='gfm' data-reference-type='issue' data-external-issue='#{issue.id}' data-project='#{project.id}'>foo</a>")
+        doc = Nokogiri::HTML.fragment("<a class='gfm' href='https://www.gitlab.com' data-reference-type='issue' data-external-issue='#{issue.id}' data-project='#{project.id}'>foo</a>")
 
         redactor.redact([doc])
 

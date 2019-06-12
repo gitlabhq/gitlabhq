@@ -25,7 +25,7 @@
     %span.dropdown-toggle-text{ class: ("is-default" if apply_is_default_styles) }
       = multi_label_name(selected, label_name)
     = icon('chevron-down')
-  .dropdown-menu.dropdown-select.dropdown-menu-paging.dropdown-menu-labels.dropdown-menu-selectable
+  .dropdown-menu.dropdown-select.dropdown-menu-paging.dropdown-menu-labels.dropdown-menu-selectable.dropdown-extended-height
     = render partial: "shared/issuable/label_page_default", locals: { title: dropdown_title, show_footer: show_footer, show_create: show_create }
     - if show_create && project && can?(current_user, :admin_label, project)
       = render partial: "shared/issuable/label_page_create"

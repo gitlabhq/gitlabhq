@@ -197,4 +197,44 @@ describe('Report section', () => {
       expect(vm.$el.querySelector('.js-collapse-btn').textContent.trim()).toEqual('Expand');
     });
   });
+
+  describe('Success and Error slots', () => {
+    const createComponent = status => {
+      vm = mountComponentWithSlots(ReportSection, {
+        props: {
+          status,
+          hasIssues: true,
+        },
+        slots: {
+          success: ['This is a success'],
+          loading: ['This is loading'],
+          error: ['This is an error'],
+        },
+      });
+    };
+
+    it('only renders success slot when status is "SUCCESS"', () => {
+      createComponent('SUCCESS');
+
+      expect(vm.$el.textContent.trim()).toContain('This is a success');
+      expect(vm.$el.textContent.trim()).not.toContain('This is an error');
+      expect(vm.$el.textContent.trim()).not.toContain('This is loading');
+    });
+
+    it('only renders error slot when status is "ERROR"', () => {
+      createComponent('ERROR');
+
+      expect(vm.$el.textContent.trim()).toContain('This is an error');
+      expect(vm.$el.textContent.trim()).not.toContain('This is a success');
+      expect(vm.$el.textContent.trim()).not.toContain('This is loading');
+    });
+
+    it('only renders loading slot when status is "LOADING"', () => {
+      createComponent('LOADING');
+
+      expect(vm.$el.textContent.trim()).toContain('This is loading');
+      expect(vm.$el.textContent.trim()).not.toContain('This is an error');
+      expect(vm.$el.textContent.trim()).not.toContain('This is a success');
+    });
+  });
 });

@@ -292,6 +292,7 @@ class Project < ApplicationRecord
   accepts_nested_attributes_for :project_feature, update_only: true
   accepts_nested_attributes_for :import_data
   accepts_nested_attributes_for :auto_devops, update_only: true
+  accepts_nested_attributes_for :ci_cd_settings, update_only: true
 
   accepts_nested_attributes_for :remote_mirrors,
                                 allow_destroy: true,
@@ -309,6 +310,8 @@ class Project < ApplicationRecord
   delegate :group_clusters_enabled?, to: :group, allow_nil: true
   delegate :root_ancestor, to: :namespace, allow_nil: true
   delegate :last_pipeline, to: :commit, allow_nil: true
+  delegate :external_dashboard_url, to: :metrics_setting, allow_nil: true, prefix: true
+  delegate :default_git_depth, :default_git_depth=, to: :ci_cd_settings
 
   # Validations
   validates :creator, presence: true, on: :create
@@ -406,6 +409,7 @@ class Project < ApplicationRecord
   scope :with_builds_enabled, -> { with_feature_enabled(:builds) }
   scope :with_issues_enabled, -> { with_feature_enabled(:issues) }
   scope :with_issues_available_for_user, ->(current_user) { with_feature_available_for_user(:issues, current_user) }
+  scope :with_merge_requests_available_for_user, ->(current_user) { with_feature_available_for_user(:merge_requests, current_user) }
   scope :with_merge_requests_enabled, -> { with_feature_enabled(:merge_requests) }
   scope :with_remote_mirrors, -> { joins(:remote_mirrors).where(remote_mirrors: { enabled: true }).distinct }
 
@@ -595,6 +599,17 @@ class Project < ApplicationRecord
 
     def group_ids
       joins(:namespace).where(namespaces: { type: 'Group' }).select(:namespace_id)
+    end
+
+    # Returns ids of projects with milestones available for given user
+    #
+    # Used on queries to find milestones which user can see
+    # For example: Milestone.where(project_id: ids_with_milestone_available_for(user))
+    def ids_with_milestone_available_for(user)
+      with_issues_enabled = with_issues_available_for_user(user).select(:id)
+      with_merge_requests_enabled = with_merge_requests_available_for_user(user).select(:id)
+
+      from_union([with_issues_enabled, with_merge_requests_enabled]).select(:id)
     end
   end
 

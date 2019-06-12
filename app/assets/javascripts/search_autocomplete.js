@@ -379,7 +379,7 @@ export class SearchAutocomplete {
           }
         }
     }
-    this.wrap.toggleClass('has-value', !!e.target.value);
+    this.wrap.toggleClass('has-value', Boolean(e.target.value));
   }
 
   onSearchInputFocus() {
@@ -396,7 +396,7 @@ export class SearchAutocomplete {
 
   onClearInputClick(e) {
     e.preventDefault();
-    this.wrap.toggleClass('has-value', !!e.target.value);
+    this.wrap.toggleClass('has-value', Boolean(e.target.value));
     return this.searchInput.val('').focus();
   }
 
@@ -405,7 +405,7 @@ export class SearchAutocomplete {
     this.wrap.removeClass('search-active');
     // If input is blank then restore state
     if (this.searchInput.val() === '') {
-      return this.restoreOriginalState();
+      this.restoreOriginalState();
     }
     this.dropdownMenu.removeClass('show');
   }

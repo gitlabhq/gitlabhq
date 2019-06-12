@@ -403,6 +403,7 @@ code {
 
 .git-revision-dropdown .dropdown-content ul li a {
   @extend .ref-name;
+  word-break: break-all;
 }
 
 /**

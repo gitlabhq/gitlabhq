@@ -31,8 +31,8 @@ To disable the internal issue tracker in a project:
 ## Referencing YouTrack issues in GitLab
 
 Issues in YouTrack can be referenced as `<PROJECT>-<ID>`. `<PROJECT>`
-must start with a capital letter and can then be followed by capital or lower case
-letters, numbers or underscores. `<ID>` is a number. An example reference is `YT-101` or `Api_32-143`.
+must start with a letter and is followed by letters, numbers, or underscores.
+`<ID>` is a number. An example reference is `YT-101`, `Api_32-143` or `gl-030`.
 
 References to `<PROJECT>-<ID>` in merge requests, commits, or comments are automatically linked to the YouTrack issue URL.
 For more information, see the [External Issue Tracker](../../../integration/external-issue-tracker.md) documentation.

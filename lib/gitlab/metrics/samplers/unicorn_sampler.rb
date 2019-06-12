@@ -4,16 +4,16 @@ module Gitlab
   module Metrics
     module Samplers
       class UnicornSampler < BaseSampler
-        def initialize(interval)
-          super(interval)
+        def metrics
+          @metrics ||= init_metrics
         end
 
-        def unicorn_active_connections
-          @unicorn_active_connections ||= ::Gitlab::Metrics.gauge(:unicorn_active_connections, 'Unicorn active connections', {}, :max)
-        end
-
-        def unicorn_queued_connections
-          @unicorn_queued_connections ||= ::Gitlab::Metrics.gauge(:unicorn_queued_connections, 'Unicorn queued connections', {}, :max)
+        def init_metrics
+          {
+            unicorn_active_connections: ::Gitlab::Metrics.gauge(:unicorn_active_connections, 'Unicorn active connections', {}, :max),
+            unicorn_queued_connections: ::Gitlab::Metrics.gauge(:unicorn_queued_connections, 'Unicorn queued connections', {}, :max),
+            unicorn_workers:            ::Gitlab::Metrics.gauge(:unicorn_workers, 'Unicorn workers')
+          }
         end
 
         def enabled?
@@ -23,14 +23,13 @@ module Gitlab
 
         def sample
           Raindrops::Linux.tcp_listener_stats(tcp_listeners).each do |addr, stats|
-            unicorn_active_connections.set({ socket_type: 'tcp', socket_address: addr }, stats.active)
-            unicorn_queued_connections.set({ socket_type: 'tcp', socket_address: addr }, stats.queued)
+            set_unicorn_connection_metrics('tcp', addr, stats)
+          end
+          Raindrops::Linux.unix_listener_stats(unix_listeners).each do |addr, stats|
+            set_unicorn_connection_metrics('unix', addr, stats)
           end
 
-          Raindrops::Linux.unix_listener_stats(unix_listeners).each do |addr, stats|
-            unicorn_active_connections.set({ socket_type: 'unix', socket_address: addr }, stats.active)
-            unicorn_queued_connections.set({ socket_type: 'unix', socket_address: addr }, stats.queued)
-          end
+          metrics[:unicorn_workers].set({}, unicorn_workers_count)
         end
 
         private
@@ -39,12 +38,23 @@ module Gitlab
           @tcp_listeners ||= Unicorn.listener_names.grep(%r{\A[^/]+:\d+\z})
         end
 
+        def set_unicorn_connection_metrics(type, addr, stats)
+          labels = { socket_type: type, socket_address: addr }
+
+          metrics[:unicorn_active_connections].set(labels, stats.active)
+          metrics[:unicorn_queued_connections].set(labels, stats.queued)
+        end
+
         def unix_listeners
           @unix_listeners ||= Unicorn.listener_names - tcp_listeners
         end
 
         def unicorn_with_listeners?
           defined?(Unicorn) && Unicorn.listener_names.any?
+        end
+
+        def unicorn_workers_count
+          `pgrep -f '[u]nicorn_rails worker.+ #{Rails.root.to_s}'`.split.count
         end
       end
     end

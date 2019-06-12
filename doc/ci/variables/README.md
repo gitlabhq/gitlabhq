@@ -1,5 +1,6 @@
 ---
 table_display_block: true
+type: reference
 ---
 
 # GitLab CI/CD environment variables
@@ -86,15 +87,14 @@ Variable types can be set via the [UI](#via-the-ui) or the [API](../../api/proje
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/13784) in GitLab 11.10
 
-By default, variables will be created as masked variables.
+Variables can be created as masked variables.
 This means that the value of the variable will be hidden in job logs,
 though it must match certain requirements to do so:
 
 - The value must be in a single line.
-- The value must not have escape characters.
-- The value must not use variables.
-- The value must not have any whitespace.
+- The value must only consist of characters from the Base64 alphabet, defined in [RFC4648](https://tools.ietf.org/html/rfc4648).
 - The value must be at least 8 characters long.
+- The value must not use variables.
 
 If the value does not meet the requirements above, then the CI variable will fail to save.
 In order to save, either alter the value to meet the masking requirements
@@ -389,20 +389,8 @@ Once you set them, they will be available for all subsequent pipelines.
 
 ### Limiting environment scopes of environment variables **[PREMIUM]**
 
-> [Introduced][ee-2112] in [GitLab Premium](https://about.gitlab.com/pricing/) 9.4.
-
 You can limit the environment scope of a variable by
 [defining which environments][envs] it can be available for.
-
-Wildcards can be used, and the default environment scope is `*` which means
-any jobs will have this variable, not matter if an environment is defined or
-not.
-
-For example, if the environment scope is `production`, then only the jobs
-having the environment `production` defined would have this specific variable.
-Wildcards (`*`) can be used along with the environment name, therefore if the
-environment scope is `review/*` then any jobs with environment names starting
-with `review/` would have that particular variable.
 
 To learn more about about scoping environments, see [Scoping environments with specs](../environments.md#scoping-environments-with-specs-premium).
 
@@ -491,6 +479,7 @@ Below you can find supported syntax reference:
 1. Equality matching using a string
 
     > Example: `$VARIABLE == "some value"`
+
     > Example: `$VARIABLE != "some value"` _(added in 11.11)_
 
     You can use equality operator `==` or `!=` to compare a variable content to a
@@ -501,6 +490,7 @@ Below you can find supported syntax reference:
 1. Checking for an undefined value
 
     > Example: `$VARIABLE == null`
+
     > Example: `$VARIABLE != null` _(added in 11.11)_
 
     It sometimes happens that you want to check whether a variable is defined
@@ -511,6 +501,7 @@ Below you can find supported syntax reference:
 1. Checking for an empty variable
 
     > Example: `$VARIABLE == ""`
+
     > Example: `$VARIABLE != ""` _(added in 11.11)_
 
     If you want to check whether a variable is defined, but is empty, you can
@@ -520,6 +511,7 @@ Below you can find supported syntax reference:
 1. Comparing two variables
 
     > Example: `$VARIABLE_1 == $VARIABLE_2`
+
     > Example: `$VARIABLE_1 != $VARIABLE_2` _(added in 11.11)_
 
     It is possible to compare two variables. This is going to compare values
@@ -539,6 +531,7 @@ Below you can find supported syntax reference:
 1. Pattern matching  _(added in 11.0)_
 
     > Example: `$VARIABLE =~ /^content.*/`
+
     > Example: `$VARIABLE_1 !~ /^content.*/` _(added in 11.11)_
 
     It is possible perform pattern matching against a variable and regular
@@ -547,6 +540,19 @@ Below you can find supported syntax reference:
 
     Pattern matching is case-sensitive by default. Use `i` flag modifier, like
     `/pattern/i` to make a pattern case-insensitive.
+
+1. Conjunction / Disjunction
+
+    > Example: `$VARIABLE1 =~ /^content.*/ && $VARIABLE2 == "something"`
+
+    > Example: `$VARIABLE1 =~ /^content.*/ && $VARIABLE2 =~ /thing$/ && $VARIABLE3`
+
+    > Example: `$VARIABLE1 =~ /^content.*/ || $VARIABLE2 =~ /thing$/ && $VARIABLE3`
+
+    It is possible to join multiple conditions using `&&` or `||`. Any of the otherwise
+    supported syntax may be used in a conjunctive or disjunctive statement.
+    Precedence of operators follows standard Ruby 2.5 operation
+    [precedence](https://ruby-doc.org/core-2.5.0/doc/syntax/precedence_rdoc.html).
 
 ## Debug tracing
 
@@ -612,8 +618,8 @@ $'\''git'\'' "checkout" "-f" "-q" "dd648b2e48ce6518303b0bb580b2ee32fadaf045"
 Running on runner-8a2f473d-project-1796893-concurrent-0 via runner-8a2f473d-machine-1480971377-317a7d0f-digital-ocean-4gb...
 ++ export CI=true
 ++ CI=true
-++ export CI_API_V4_API_URL=https://example.com:3000/api/v4
-++ CI_API_V4_API_URL=https://example.com:3000/api/v4
+++ export CI_API_V4_URL=https://example.com:3000/api/v4
+++ CI_API_V4_URL=https://example.com:3000/api/v4
 ++ export CI_DEBUG_TRACE=false
 ++ CI_DEBUG_TRACE=false
 ++ export CI_COMMIT_SHA=dd648b2e48ce6518303b0bb580b2ee32fadaf045
@@ -652,8 +658,8 @@ Running on runner-8a2f473d-project-1796893-concurrent-0 via runner-8a2f473d-mach
 ++ GITLAB_CI=true
 ++ export CI=true
 ++ CI=true
-++ export CI_API_V4_API_URL=https://example.com:3000/api/v4
-++ CI_API_V4_API_URL=https://example.com:3000/api/v4
+++ export CI_API_V4_URL=https://example.com:3000/api/v4
+++ CI_API_V4_URL=https://example.com:3000/api/v4
 ++ export GITLAB_CI=true
 ++ GITLAB_CI=true
 ++ export CI_JOB_ID=7046507
@@ -717,7 +723,6 @@ MIIFQzCCBCugAwIBAgIRAL/ElDjuf15xwja1ZnCocWAwDQYJKoZIhvcNAQELBQAw'
 ...
 ```
 
-[ee-2112]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2112
 [ce-13784]: https://gitlab.com/gitlab-org/gitlab-ce/issues/13784 "Simple protection of CI variables"
 [envs]: ../environments.md
 [protected branches]: ../../user/project/protected_branches.md

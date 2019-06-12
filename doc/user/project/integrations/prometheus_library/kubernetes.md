@@ -27,7 +27,7 @@ integration services must be enabled.
 
 Prometheus needs to be deployed into the cluster and configured properly in order to gather Kubernetes metrics. GitLab supports two methods for doing so:
 
-- GitLab [integrates with Kubernetes](../../clusters/index.md), and can [deploy Prometheus into a connected cluster](../prometheus.html#managed-prometheus-on-kubernetes). It is automatically configured to collect Kubernetes metrics.
+- GitLab [integrates with Kubernetes](../../clusters/index.md), and can [deploy Prometheus into a connected cluster](../prometheus.md#managed-prometheus-on-kubernetes). It is automatically configured to collect Kubernetes metrics.
 - To configure your own Prometheus server, you can follow the [Prometheus documentation](https://prometheus.io/docs/introduction/overview/).
 
 ## Specifying the Environment
@@ -40,7 +40,7 @@ Instead, the [Deployment](https://kubernetes.io/docs/concepts/workloads/controll
 
 > Introduced in [GitLab 10.2](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/15201).
 
-GitLab also gathers Kubernetes metrics for [canary deployments](https://docs.gitlab.com/ee/user/project/canary_deployments.html), allowing easy comparison between the current deployed version and the canary.
+GitLab also gathers Kubernetes metrics for [canary deployments](../../canary_deployments.md), allowing easy comparison between the current deployed version and the canary.
 
 These metrics expect the [Deployment](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) or [DaemonSet](https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/) name to begin with `$CI_ENVIRONMENT_SLUG-canary`, to isolate the canary metrics.
 

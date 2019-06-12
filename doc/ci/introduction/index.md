@@ -1,5 +1,6 @@
 ---
 description: "An overview of Continuous Integration, Continuous Delivery, and Continuous Deployment, as well as an introduction to GitLab CI/CD."
+type: concepts
 ---
 
 # Introduction to CI/CD with GitLab
@@ -203,6 +204,9 @@ With GitLab CI/CD you can also:
 - Check for app vulnerabilities with [Security Test reports](https://docs.gitlab.com/ee/user/project/merge_requests/#security-reports-ultimate). **[ULTIMATE]**
 
 To see all CI/CD features, navigate back to the [CI/CD index](../README.md).
+
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+Watch the video [GitLab CI Live Demo](https://www.youtube.com/watch?v=pBe4t1CD8Fc) with a deeper overview of GitLab CI/CD.
 
 ### Setting up GitLab CI/CD for the first time
 

@@ -90,7 +90,7 @@ describe 'Project Jobs Permissions' do
       before do
         archive = fixture_file_upload('spec/fixtures/ci_build_artifacts.zip')
 
-        job.update(legacy_artifacts_file: archive)
+        create(:ci_job_artifact, :archive, file: archive, job: job)
       end
 
       context 'when public access for jobs is disabled' do

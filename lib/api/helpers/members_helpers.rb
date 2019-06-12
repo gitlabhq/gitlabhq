@@ -19,28 +19,13 @@ module API
           .non_request
       end
 
-      # rubocop: disable CodeReuse/ActiveRecord
       def find_all_members_for_project(project)
-        shared_group_ids = project.project_group_links.pluck(:group_id)
-        project_group_ids = project.group&.self_and_ancestors&.pluck(:id)
-        source_ids = [project.id, project_group_ids, shared_group_ids]
-          .flatten
-          .compact
-        Member.includes(:user)
-          .joins(user: :project_authorizations)
-          .where(project_authorizations: { project_id: project.id })
-          .where(source_id: source_ids)
+        MembersFinder.new(project, current_user).execute(include_invited_groups_members: true)
       end
-      # rubocop: enable CodeReuse/ActiveRecord
 
-      # rubocop: disable CodeReuse/ActiveRecord
       def find_all_members_for_group(group)
-        source_ids = group.self_and_ancestors.pluck(:id)
-        Member.includes(:user)
-          .where(source_id: source_ids)
-          .where(source_type: 'Namespace')
+        GroupMembersFinder.new(group).execute
       end
-      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

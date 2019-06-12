@@ -13,7 +13,7 @@ class Projects::Environments::PrometheusApiController < Projects::ApplicationCon
     ).execute
 
     if result.nil?
-      return render status: :accepted, json: {
+      return render status: :no_content, json: {
         status: _('processing'),
         message: _('Not ready yet. Try again later.')
       }

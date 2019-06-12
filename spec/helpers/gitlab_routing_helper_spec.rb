@@ -101,7 +101,7 @@ describe GitlabRoutingHelper do
     it 'returns project milestone edit path when given entity parent is not a Group' do
       milestone = create(:milestone, group: nil)
 
-      expect(edit_milestone_path(milestone)).to eq("/#{milestone.project.full_path}/milestones/#{milestone.iid}/edit")
+      expect(edit_milestone_path(milestone)).to eq("/#{milestone.project.full_path}/-/milestones/#{milestone.iid}/edit")
     end
   end
 end

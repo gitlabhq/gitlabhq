@@ -7,8 +7,8 @@ import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 
 import eventHub from '~/boards/eventhub';
-import '~/vue_shared/models/label';
-import '~/vue_shared/models/assignee';
+import '~/boards/models/label';
+import '~/boards/models/assignee';
 import '~/boards/models/list';
 import boardsStore from '~/boards/stores/boards_store';
 import boardCard from '~/boards/components/board_card.vue';

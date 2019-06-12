@@ -1,3 +1,7 @@
+---
+type: howto
+---
+
 # Activate all GitLab Enterprise Edition functionality with a license **[STARTER ONLY]**
 
 To activate all GitLab Enterprise Edition (EE) functionality, you need to upload
@@ -45,16 +49,10 @@ Otherwise, you can:
 
 ## Add your license at install time
 
-The license may be automatically injected during installation using one of
-two methods.
+A license can be automatically imported at install time, by placing a file named
+`Gitlab.gitlab-license` in `/etc/gitlab/` for Omnibus, or `config/` for source installations.
 
-The first requires a license file named `Gitlab.gitlab-release`.
-
-Place it in the `config/` directory if installing from source or in the
-`/etc/gitlab/` directory if installing Omnibus.
-
-The second allows the administrator to configure the location and
-filename of the license.
+It is also possible to specify a custom location and filename for the license.
 
 Source installations should set the `GITLAB_LICENSE_FILE` environment
 variable with the path to a valid GitLab Enterprise Edition license.
@@ -108,3 +106,15 @@ but only the latest license will be used as the active license.
 
 [free trial]: https://about.gitlab.com/free-trial/
 [pricing]: https://about.gitlab.com/pricing/
+
+<!-- ## Troubleshooting
+
+Include any troubleshooting steps that you can foresee. If you know beforehand what issues
+one might have when setting this up, or when something is changed, or on upgrading, it's
+important to describe those, too. Think of things that may go wrong and include them here.
+This is important to minimize requests for support, and to avoid doc comments with
+questions that you know someone might ask.
+
+Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+If you have none to add when creating a doc, leave this section in place
+but commented out to help encourage others to add to it in the future. -->

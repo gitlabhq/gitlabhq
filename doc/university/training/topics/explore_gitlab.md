@@ -4,8 +4,6 @@ comments: false
 
 # Explore GitLab projects
 
-----------
-
 - Dashboard
 - User Preferences
 - Issues

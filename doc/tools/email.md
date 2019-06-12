@@ -1,12 +1,12 @@
+---
+type: howto, reference
+---
+
 # Email from GitLab **[STARTER ONLY]**
 
-As a GitLab administrator you can email GitLab users from within GitLab.
-
-## Overview
-
-GitLab provides a simple tool to email all users or users of a chosen group or
-project right from the admin area. Users will receive the email to their primary
-email address.
+GitLab provides a simple tool to administrators for emailing all users, or users of
+a chosen group or project, right from the admin area. Users will receive the email
+at their primary email address.
 
 ## Use-cases
 
@@ -28,11 +28,21 @@ email address.
 
 ## Unsubscribing from emails
 
-User can choose to unsubscribe from receiving emails from GitLab by following
-the unsubscribe link from the email. Unsubscribing is unauthenticated in order
-to keep the simplicity of this feature.
+Users can choose to unsubscribe from receiving emails from GitLab by following
+the unsubscribe link in the email. Unsubscribing is unauthenticated in order
+to keep this feature simple.
 
-On unsubscribe, user will receive an email notifying that unsubscribe happened.
+On unsubscribe, users will receive an email notification that unsubscribe happened.
 The endpoint that provides the unsubscribe option is rate-limited.
 
-[ee]: https://about.gitlab.com/pricing/
+<!-- ## Troubleshooting
+
+Include any troubleshooting steps that you can foresee. If you know beforehand what issues
+one might have when setting this up, or when something is changed, or on upgrading, it's
+important to describe those, too. Think of things that may go wrong and include them here.
+This is important to minimize requests for support, and to avoid doc comments with
+questions that you know someone might ask.
+
+Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+If you have none to add when creating a doc, leave this section in place
+but commented out to help encourage others to add to it in the future. -->

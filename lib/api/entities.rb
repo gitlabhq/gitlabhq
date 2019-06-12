@@ -239,6 +239,7 @@ module API
         end
       end
 
+      expose :empty_repo?, as: :empty_repo
       expose :archived?, as: :archived
       expose :visibility
       expose :owner, using: Entities::UserBasic, unless: ->(project, options) { project.group }
@@ -302,6 +303,7 @@ module API
       expose :commit_count
       expose :storage_size
       expose :repository_size
+      expose :wiki_size
       expose :lfs_objects_size
       expose :build_artifacts_size, as: :job_artifacts_size
     end
@@ -354,6 +356,7 @@ module API
         with_options format_with: -> (value) { value.to_i } do
           expose :storage_size
           expose :repository_size
+          expose :wiki_size
           expose :lfs_objects_size
           expose :build_artifacts_size, as: :job_artifacts_size
         end
@@ -573,6 +576,8 @@ module API
       expose :time_stats, using: 'API::Entities::IssuableTimeStats' do |issue|
         issue
       end
+
+      expose :task_completion_status
     end
 
     class Issue < IssueBasic
@@ -721,6 +726,8 @@ module API
       end
 
       expose :squash
+
+      expose :task_completion_status
     end
 
     class MergeRequest < MergeRequestBasic
@@ -1303,6 +1310,7 @@ module API
     class Variable < Grape::Entity
       expose :variable_type, :key, :value
       expose :protected?, as: :protected, if: -> (entity, _) { entity.respond_to?(:protected?) }
+      expose :masked?, as: :masked, if: -> (entity, _) { entity.respond_to?(:masked?) }
     end
 
     class Pipeline < PipelineBasic

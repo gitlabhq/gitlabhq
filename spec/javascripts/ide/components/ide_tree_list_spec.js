@@ -7,25 +7,23 @@ import { projectData } from '../mock_data';
 
 describe('IDE tree list', () => {
   const Component = Vue.extend(IdeTreeList);
+  const normalBranchTree = [file('fileName')];
+  const emptyBranchTree = [];
   let vm;
 
-  beforeEach(() => {
+  const bootstrapWithTree = (tree = normalBranchTree) => {
     store.state.currentProjectId = 'abcproject';
     store.state.currentBranchId = 'master';
     store.state.projects.abcproject = Object.assign({}, projectData);
     Vue.set(store.state.trees, 'abcproject/master', {
-      tree: [file('fileName')],
+      tree,
       loading: false,
     });
 
     vm = createComponentWithStore(Component, store, {
       viewerType: 'edit',
     });
-
-    spyOn(vm, 'updateViewer').and.callThrough();
-
-    vm.$mount();
-  });
+  };
 
   afterEach(() => {
     vm.$destroy();
@@ -33,22 +31,47 @@ describe('IDE tree list', () => {
     resetStore(vm.$store);
   });
 
-  it('updates viewer on mount', () => {
-    expect(vm.updateViewer).toHaveBeenCalledWith('edit');
-  });
+  describe('normal branch', () => {
+    beforeEach(() => {
+      bootstrapWithTree();
 
-  it('renders loading indicator', done => {
-    store.state.trees['abcproject/master'].loading = true;
+      spyOn(vm, 'updateViewer').and.callThrough();
 
-    vm.$nextTick(() => {
-      expect(vm.$el.querySelector('.multi-file-loading-container')).not.toBeNull();
-      expect(vm.$el.querySelectorAll('.multi-file-loading-container').length).toBe(3);
+      vm.$mount();
+    });
 
-      done();
+    it('updates viewer on mount', () => {
+      expect(vm.updateViewer).toHaveBeenCalledWith('edit');
+    });
+
+    it('renders loading indicator', done => {
+      store.state.trees['abcproject/master'].loading = true;
+
+      vm.$nextTick(() => {
+        expect(vm.$el.querySelector('.multi-file-loading-container')).not.toBeNull();
+        expect(vm.$el.querySelectorAll('.multi-file-loading-container').length).toBe(3);
+
+        done();
+      });
+    });
+
+    it('renders list of files', () => {
+      expect(vm.$el.textContent).toContain('fileName');
     });
   });
 
-  it('renders list of files', () => {
-    expect(vm.$el.textContent).toContain('fileName');
+  describe('empty-branch state', () => {
+    beforeEach(() => {
+      bootstrapWithTree(emptyBranchTree);
+
+      spyOn(vm, 'updateViewer').and.callThrough();
+
+      vm.$mount();
+    });
+
+    it('does not load files if the branch is empty', () => {
+      expect(vm.$el.textContent).not.toContain('fileName');
+      expect(vm.$el.textContent).toContain('No files');
+    });
   });
 });

@@ -28,9 +28,9 @@ class Profiles::EmailsController < Profiles::ApplicationController
 
   def resend_confirmation_instructions
     if Emails::ConfirmService.new(current_user, user: current_user).execute(@email)
-      flash[:notice] = "Confirmation email sent to #{@email.email}"
+      flash[:notice] = _("Confirmation email sent to %{email}") % { email: @email.email }
     else
-      flash[:alert] = "There was a problem sending the confirmation email"
+      flash[:alert] = _("There was a problem sending the confirmation email")
     end
 
     redirect_to profile_emails_url

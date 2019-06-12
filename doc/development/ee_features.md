@@ -459,15 +459,6 @@ Resolving an EE template path that is relative to the CE view path will not work
 = render_if_exists 'projects/button' # Will render `ee/app/views/projects/_button`
 ```
 
-You should not explicitly set render options like `partial` or provide a `locals` hash.
-The first argument should be a path string and the second can be a hash replacing `locals`.
-
-```ruby
-render partial: 'projects/button', locals: { project: project }
-# becomes
-render_if_exists 'projects/button', project: project
-```
-
 #### Using `render_ce`
 
 For `render` and `render_if_exists`, they search for the EE partial first,
@@ -557,40 +548,56 @@ due to `prepend`, but Grape is complex internally and we couldn't easily do
 that, so we'll follow regular object-oriented practices that we define the
 interface first here.
 
-For example, suppose we have a few more optional params for EE, given this CE
-API code:
+For example, suppose we have a few more optional params for EE. We can move the
+params out of the `Grape::API` class to a helper module, so we can `prepend` it
+before it would be used in the class.
 
 ```ruby
 module API
-  class MergeRequests < Grape::API
-    # EE::API::MergeRequests would override the following helpers
-    helpers do
-      params :optional_params_ee do
+  class Projects < Grape::API
+    helpers Helpers::ProjectsHelpers
+  end
+end
+```
+
+Given this CE API `params`:
+
+```ruby
+module API
+  module Helpers
+    module ProjectsHelpers
+      extend ActiveSupport::Concern
+      extend Grape::API::Helpers
+
+      params :optional_project_params_ce do
+        # CE specific params go here...
       end
-    end
 
-    params :optional_params do
-      # CE specific params go here...
+      params :optional_project_params_ee do
+      end
 
-      use :optional_params_ee
+      params :optional_project_params do
+        use :optional_project_params_ce
+        use :optional_project_params_ee
+      end
     end
   end
 end
 
-API::MergeRequests.prepend(EE::API::MergeRequests)
+API::Helpers::ProjectsHelpers.prepend(EE::API::Helpers::ProjectsHelpers)
 ```
 
-And then we could override it in EE module:
+We could override it in EE module:
 
 ```ruby
 module EE
   module API
-    module MergeRequests
-      extend ActiveSupport::Concern
+    module Helpers
+      module ProjectsHelpers
+        extend ActiveSupport::Concern
 
-      prepended do
-        helpers do
-          params :optional_params_ee do
+        prepended do
+          params :optional_project_params_ee do
             # EE specific params go here...
           end
         end
@@ -599,9 +606,6 @@ module EE
   end
 end
 ```
-
-This way, the only difference between CE and EE for that API file would be
-`prepend EE::API::MergeRequests`.
 
 #### EE helpers
 
@@ -902,7 +906,7 @@ import bundle from 'ee/protected_branches/protected_branches_bundle.js';
 import bundle from 'ee_else_ce/protected_branches/protected_branches_bundle.js';
 ```
 
-See the frontend guide [performance section](./fe_guide/performance.md) for
+See the frontend guide [performance section](fe_guide/performance.md) for
 information on managing page-specific javascript within EE.
 
 
@@ -933,7 +937,7 @@ export default {
 ```
 
 #### For JS code that is EE only, like props, computed properties, methods, etc, we will keep the current approach
- - Since we [can't async load a mixin](https://github.com/vuejs/vue-loader/issues/418#issuecomment-254032223) we will use the [`ee_else_ce`](https://docs.gitlab.com/ee/development/ee_features.html#javascript-code-in-assetsjavascripts) alias we already have for webpack.
+ - Since we [can't async load a mixin](https://github.com/vuejs/vue-loader/issues/418#issuecomment-254032223) we will use the [`ee_else_ce`](../development/ee_features.md#javascript-code-in-assetsjavascripts) alias we already have for webpack.
   - This means all the EE specific props, computed properties, methods, etc that are EE only should be in a mixin in the `ee/` folder and we need to create a CE counterpart of the mixin
 
 ##### Example:
@@ -960,7 +964,7 @@ import mixin from 'ee_else_ce/path/mixin';
 ### Non Vue Files
 For regular JS files, the approach is similar.
 
-1. We will keep using the [`ee_else_ce`](https://docs.gitlab.com/ee/development/ee_features.html#javascript-code-in-assetsjavascripts) helper, this means that EE only code should be inside the `ee/` folder.
+1. We will keep using the [`ee_else_ce`](../development/ee_features.md#javascript-code-in-assetsjavascripts) helper, this means that EE only code should be inside the `ee/` folder.
   1. An EE file should be created with the EE only code, and it should extend the CE counterpart.
   1. For code inside functions that can't be extended, the code should be moved into a new file and we should use `ee_else_ce` helper:
 

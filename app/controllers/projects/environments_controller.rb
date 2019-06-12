@@ -11,10 +11,10 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   before_action :verify_api_request!, only: :terminal_websocket_authorize
   before_action :expire_etag_cache, only: [:index]
   before_action only: [:metrics, :additional_metrics, :metrics_dashboard] do
-    push_frontend_feature_flag(:metrics_time_window)
     push_frontend_feature_flag(:environment_metrics_use_prometheus_endpoint)
     push_frontend_feature_flag(:environment_metrics_show_multiple_dashboards)
     push_frontend_feature_flag(:grafana_dashboard_link)
+    push_frontend_feature_flag(:prometheus_computed_alerts)
   end
 
   def index
@@ -220,8 +220,6 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   end
 
   def metrics_params
-    return unless Feature.enabled?(:metrics_time_window, project)
-
     params.require([:start, :end])
   end
 

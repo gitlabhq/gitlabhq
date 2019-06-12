@@ -86,6 +86,7 @@ export default {
       'isScrollTopDisabled',
       'isScrolledToBottomBeforeReceivingTrace',
       'hasError',
+      'selectedStage',
     ]),
     ...mapGetters([
       'headerTime',
@@ -121,7 +122,13 @@ export default {
     // fetch the stages for the dropdown on the sidebar
     job(newVal, oldVal) {
       if (_.isEmpty(oldVal) && !_.isEmpty(newVal.pipeline)) {
-        this.fetchStages();
+        const stages = this.job.pipeline.details.stages || [];
+
+        const defaultStage = stages.find(stage => stage && stage.name === this.selectedStage);
+
+        if (defaultStage) {
+          this.fetchJobsForStage(defaultStage);
+        }
       }
 
       if (newVal.archived) {
@@ -160,7 +167,7 @@ export default {
       'setJobEndpoint',
       'setTraceOptions',
       'fetchJob',
-      'fetchStages',
+      'fetchJobsForStage',
       'hideSidebar',
       'showSidebar',
       'toggleSidebar',
@@ -269,7 +276,6 @@ export default {
           :class="{ 'sticky-top border-bottom-0': hasTrace }"
         >
           <icon name="lock" class="align-text-bottom" />
-
           {{ __('This job is archived. Only the complete pipeline can be retried.') }}
         </div>
         <!-- job log -->

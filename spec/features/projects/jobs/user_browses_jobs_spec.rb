@@ -16,6 +16,12 @@ describe 'User browses jobs' do
     visit(project_jobs_path(project))
   end
 
+  it 'shows pipeline id and IID' do
+    page.within('td.pipeline-link') do
+      expect(page).to have_content("##{pipeline.id} (##{pipeline.iid})")
+    end
+  end
+
   it 'shows the coverage' do
     page.within('td.coverage') do
       expect(page).to have_content('99.9%')

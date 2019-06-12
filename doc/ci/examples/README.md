@@ -1,47 +1,42 @@
 ---
 comments: false
+type: index
 ---
 
 # GitLab CI/CD Examples
 
-Examples are a useful way of understanding how to implement GitLab CI/CD for your specific use case.
+This page contains links to a variety of examples that can help you understand how to
+implement [GitLab CI/CD](../README.md) for your specific use case.
 
 Examples are available in several forms. As a collection of:
 
 - `.gitlab-ci.yml` [template files](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/lib/gitlab/ci/templates) maintained in GitLab. When you create a new file via the UI,
   GitLab will give you the option to choose one of these templates. This will allow you to quickly bootstrap your project for CI/CD.
   If your favorite programming language or framework are missing, we would love your help by sending a merge request with a new `.gitlab-ci.yml` to this project.
-- Repositories with [example projects](https://gitlab.com/gitlab-examples) for various languages. You can fork and adjust them to your own needs.
+- Repositories with [example projects](https://gitlab.com/gitlab-examples) for various languages. You can fork and adjust them to your own needs. Projects include demonstrations of [multi-project pipelines](https://gitlab.com/gitlab-examples/multi-project-pipelines) and using [Review Apps with a static site served by nginx](https://gitlab.com/gitlab-examples/review-apps-nginx/).
 - Examples and [other resources](#other-resources) listed below.
 
 ## CI/CD examples
 
-The following table lists examples for different use cases:
+The following table lists examples with step-by-step tutorials that are contained in this section.
 
-| Use case                                       | Resource                                                                                                                |
-|:-----------------------------------------------|:------------------------------------------------------------------------------------------------------------------------|
-| Browser performance testing                    | [Browser Performance Testing with the Sitespeed.io container](browser_performance.md).                                  |
-| Clojure                                        | [Test a Clojure application with GitLab CI/CD](test-clojure-application.md).                                            |
-| Code quality analysis                          | [Analyze your project's Code Quality](code_quality.md). **[STARTER]**                                                   |
-| Container scanning                             | [Container Scanning with GitLab CI/CD](../../user/application_security/container_scanning/index.md). **[ULTIMATE]**     |
-| Dependency scanning                            | [Dependency Scanning with GitLab CI/CD](../../user/application_security/dependency_scanning/index.md). **[ULTIMATE]**   |
-| Deployment with `dpl`                          | [Using `dpl` as deployment tool](deployment/README.md).                                                                 |
-| Dynamic application<br>security testing (DAST) | [Dynamic Application Security Testing with GitLab CI/CD](../../user/application_security/dast/index.md). **[ULTIMATE]** |
-| Elixir                                         | [Testing a Phoenix application with GitLab CI/CD](test_phoenix_app_with_gitlab_ci_cd/index.md).                         |
-| Game development                               | [DevOps and Game Dev with GitLab CI/CD](devops_and_game_dev_with_gitlab_ci_cd/index.md).                                |
-| GitLab Pages                                   | See the [GitLab Pages](../../user/project/pages/index.md) documentation for a complete example.                         |
-| Java                                           | [Deploy a Spring Boot application to Cloud Foundry with GitLab CI/CD](deploy_spring_boot_to_cloud_foundry/index.md).    |
-| JUnit                                          | [JUnit test reports](../junit_test_reports.md).                                                                         |
-| License management                             | [Dependencies license management with GitLab CI/CD](../../user/application_security/license_management/index.md). **[ULTIMATE]** |
-| Maven                                          | [How to deploy Maven projects to Artifactory with GitLab CI/CD](artifactory_and_gitlab/index.md).                       |
-| PHP                                            | [Testing PHP projects](php.md).                                                                                         |
-| PHP                                            | [Running Composer and NPM scripts with deployment via SCP in GitLab CI/CD](deployment/composer-npm-deploy.md).          |
-| PHP                                            | [Test and deploy Laravel applications with GitLab CI/CD and Envoy](laravel_with_gitlab_and_envoy/index.md).             |
-| Python                                         | [Test and deploy a Python application with GitLab CI/CD](test-and-deploy-python-application-to-heroku.md).              |
-| Ruby                                           | [Test and deploy a Ruby application with GitLab CI/CD](test-and-deploy-ruby-application-to-heroku.md).                  |
-| Scala                                          | [Test and deploy a Scala application to Heroku](test-scala-application.md).                                             |
-| Static application<br>security testing (SAST)  | [Static Application Security Testing with GitLab CI/CD](../../user/application_security/sast/index.md). **[ULTIMATE]**  |
-| Testing                                        | [End-to-end testing with GitLab CI/CD and WebdriverIO](end_to_end_testing_webdriverio/index.md).                        |
+| Use case                    | Resource                                                                                                                   |
+|:----------------------------|:---------------------------------------------------------------------------------------------------------------------------|
+| Browser performance testing | [Browser Performance Testing with the Sitespeed.io container](browser_performance.md).                                     |
+| Clojure                     | [Test a Clojure application with GitLab CI/CD](test-clojure-application.md).                                               |
+| Deployment with Dpl         | [Using `dpl` as deployment tool](deployment/README.md).                                                                    |
+| Elixir                      | [Testing a Phoenix application with GitLab CI/CD](test_phoenix_app_with_gitlab_ci_cd/index.md).                            |
+| End-to-end testing          | [End-to-end testing with GitLab CI/CD and WebdriverIO](end_to_end_testing_webdriverio/index.md).                           |
+| Game development            | [DevOps and Game Dev with GitLab CI/CD](devops_and_game_dev_with_gitlab_ci_cd/index.md).                                   |
+| GitLab Pages                | See the [GitLab Pages](../../user/project/pages/index.md) documentation for a complete example of deploying a static site. |
+| Java with Spring Boot       | [Deploy a Spring Boot application to Cloud Foundry with GitLab CI/CD](deploy_spring_boot_to_cloud_foundry/index.md).       |
+| Java with Maven             | [How to deploy Maven projects to Artifactory with GitLab CI/CD](artifactory_and_gitlab/index.md).                          |
+| PHP with PHPunit, atoum     | [Testing PHP projects](php.md).                                                                                            |
+| PHP with NPM, SCP           | [Running Composer and NPM scripts with deployment via SCP in GitLab CI/CD](deployment/composer-npm-deploy.md).             |
+| PHP with Laravel, Ennvoy    | [Test and deploy Laravel applications with GitLab CI/CD and Envoy](laravel_with_gitlab_and_envoy/index.md).                |
+| Python on Heroku            | [Test and deploy a Python application with GitLab CI/CD](test-and-deploy-python-application-to-heroku.md).                 |
+| Ruby on Heroku              | [Test and deploy a Ruby application with GitLab CI/CD](test-and-deploy-ruby-application-to-heroku.md).                     |
+| Scala on Heroku             | [Test and deploy a Scala application to Heroku](test-scala-application.md).                                                |
 
 ### Contributing examples
 
@@ -50,24 +45,29 @@ language users and GitLab by sending a merge request with a guide for that langu
 You may want to apply for the [GitLab Community Writers Program](https://about.gitlab.com/community-writers/)
 to get paid for writing complete articles for GitLab.
 
-### Adding templates to your GitLab installation **[PREMIUM ONLY]**
+## Adding templates to your GitLab installation **[PREMIUM ONLY]**
 
 If you want to have customized examples and templates for your own self-managed GitLab instance available to your team, your GitLab administrator can [designate an instance template repository](https://docs.gitlab.com/ee/user/admin_area/settings/instance_template_repository.html) that contains examples and templates specific to your enterprise.
 
 ## Other resources
 
-This section provides further resources to help you get familiar with different aspects of GitLab CI/CD.
-
-NOTE: **Note:**
-These resources may no longer reflect the current state of GitLab CI/CD.
+This section provides further resources to help you get familiar with various uses of GitLab CI/CD.
+Note that older articles and videos may not reflect the state of the latest GitLab release.
 
 ### CI/CD in the cloud
 
 For examples of setting up GitLab CI/CD for cloud-based environments, see:
 
 - [How to set up multi-account AWS SAM deployments with GitLab CI](https://about.gitlab.com/2019/02/04/multi-account-aws-sam-deployments-with-gitlab-ci/)
+- [Automating Kubernetes Deployments with GitLab CI/CD](https://www.youtube.com/watch?v=wEDRfAz6_Uw)
 - [How to autoscale continuous deployment with GitLab Runner on DigitalOcean](https://about.gitlab.com/2018/06/19/autoscale-continuous-deployment-gitlab-runner-digital-ocean/)
 - [How to create a CI/CD pipeline with Auto Deploy to Kubernetes using GitLab and Helm](https://about.gitlab.com/2017/09/21/how-to-create-ci-cd-pipeline-with-autodeploy-to-kubernetes-using-gitlab-and-helm/)
+
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+See also the following video overviews:
+
+- [Containers, Schedulers, and GitLab CI](https://www.youtube.com/watch?v=d-9awBxEbvQ).
+- [Deploying to IBM Cloud with GitLab CI/CD](https://www.youtube.com/watch?v=6ZF4vgKMd-g).
 
 ### Customer stories
 
@@ -83,7 +83,6 @@ For some examples to help get you started, see:
 
 - [GitLab CI/CD's 2018 highlights](https://about.gitlab.com/2019/01/21/gitlab-ci-cd-features-improvements/)
 - [A beginner's guide to continuous integration](https://about.gitlab.com/2018/01/22/a-beginners-guide-to-continuous-integration/)
-- [Making CI easier with GitLab](https://about.gitlab.com/2017/07/13/making-ci-easier-with-gitlab/)
 
 ### Implementing GitLab CI/CD
 

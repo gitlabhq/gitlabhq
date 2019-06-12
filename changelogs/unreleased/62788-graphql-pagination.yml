@@ -1,0 +1,5 @@
+---
+title: Adds pagination component for graphql api
+merge_request: 29277
+author:
+type: added

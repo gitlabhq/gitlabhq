@@ -61,6 +61,10 @@ module Clusters
         "http://#{hostname}/hub/oauth_callback"
       end
 
+      def oauth_scopes
+        'api read_repository write_repository'
+      end
+
       private
 
       def specification
@@ -94,7 +98,8 @@ module Clusters
           },
           "singleuser" => {
             "extraEnv" => {
-              "GITLAB_CLUSTER_ID" => cluster.id.to_s
+              "GITLAB_CLUSTER_ID" => cluster.id.to_s,
+              "GITLAB_HOST" => gitlab_host
             }
           }
         }
@@ -110,6 +115,10 @@ module Clusters
 
       def gitlab_url
         Gitlab.config.gitlab.url
+      end
+
+      def gitlab_host
+        Gitlab.config.gitlab.host
       end
 
       def content_values

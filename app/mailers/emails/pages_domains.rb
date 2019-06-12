@@ -7,7 +7,7 @@ module Emails
       @project = domain.project
 
       mail(
-        to: recipient.notification_email,
+        to: recipient(recipient.id, @project.group),
         subject: subject("GitLab Pages domain '#{domain.domain}' has been enabled")
       )
     end
@@ -17,7 +17,7 @@ module Emails
       @project = domain.project
 
       mail(
-        to: recipient.notification_email,
+        to: recipient(recipient.id, @project.group),
         subject: subject("GitLab Pages domain '#{domain.domain}' has been disabled")
       )
     end
@@ -27,7 +27,7 @@ module Emails
       @project = domain.project
 
       mail(
-        to: recipient.notification_email,
+        to: recipient(recipient.id, @project.group),
         subject: subject("Verification succeeded for GitLab Pages domain '#{domain.domain}'")
       )
     end
@@ -37,7 +37,7 @@ module Emails
       @project = domain.project
 
       mail(
-        to: recipient.notification_email,
+        to: recipient(recipient.id, @project.group),
         subject: subject("ACTION REQUIRED: Verification failed for GitLab Pages domain '#{domain.domain}'")
       )
     end

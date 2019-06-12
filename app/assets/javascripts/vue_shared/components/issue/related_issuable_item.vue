@@ -24,6 +24,11 @@ export default {
       required: false,
       default: false,
     },
+    greyLinkWhenMerged: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     stateTitle() {
@@ -35,6 +40,11 @@ export default {
           timestamp: this.stateTimestamp,
         },
       );
+    },
+    issueableLinkClass() {
+      return this.greyLinkWhenMerged
+        ? `sortable-link ${this.state === 'merged' ? ' text-secondary' : ''}`
+        : 'sortable-link';
     },
   },
 };
@@ -69,7 +79,7 @@ export default {
           class="confidential-icon append-right-4 align-self-baseline align-self-md-auto mt-xl-0"
           :aria-label="__('Confidential')"
         />
-        <a :href="computedPath" class="sortable-link">{{ title }}</a>
+        <a :href="computedPath" :class="issueableLinkClass">{{ title }}</a>
       </div>
       <div class="item-meta d-flex flex-wrap mt-xl-0 justify-content-xl-end flex-xl-nowrap">
         <div

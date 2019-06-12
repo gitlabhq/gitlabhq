@@ -1,0 +1,5 @@
+---
+title: Add notify_only_default_branch option to PipelinesEmailService
+merge_request: 28271
+author: Peter Marko
+type: added

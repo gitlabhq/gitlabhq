@@ -95,6 +95,7 @@ See [our current .eslintrc](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/
 #### Modules, Imports, and Exports
 
 1. Use ES module syntax to import modules
+
     ```javascript
       // bad
       const SomeClass = require('some_class');
@@ -168,6 +169,7 @@ See [our current .eslintrc](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/
    Do not use them anymore and feel free to remove them when refactoring legacy code.
 
 1. Avoid adding to the global namespace.
+
     ```javascript
       // bad
       window.MyClass = class { /* ... */ };
@@ -176,7 +178,8 @@ See [our current .eslintrc](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/
       export default class MyClass { /* ... */ }
     ```
 
-1. Side effects are forbidden in any script which contains exports
+1. Side effects are forbidden in any script which contains export
+
     ```javascript
       // bad
       export default class MyClass { /* ... */ }
@@ -449,6 +452,7 @@ Please check this [rules][eslint-plugin-vue-rules] for more documentation.
 #### Props
 
 1. Props should be declared as an object
+
     ```javascript
       // bad
       props: ['foo']
@@ -544,14 +548,24 @@ Please check this [rules][eslint-plugin-vue-rules] for more documentation.
       <component @click="eventHandler"/>
     ```
 
-1. Shorthand `:` is preferable over `v-bind`
+2. Shorthand `:` is preferable over `v-bind`
 
     ```javascript
       // bad
       <component v-bind:class="btn"/>
 
       // good
-      <component :class="btsn"/>
+      <component :class="btn"/>
+    ```
+
+3. Shorthand `#` is preferable over `v-slot`
+
+    ```javascript
+      // bad
+      <template v-slot:header></template>
+
+      // good
+      <template #header></template>
     ```
 
 #### Closing tags

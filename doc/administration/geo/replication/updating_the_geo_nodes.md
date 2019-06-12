@@ -337,6 +337,53 @@ is prepended with the relevant node for better clarity:
     1. **[secondary]** Create the `replica.sh` script as described in the
        [database configuration document][database-source-replication].
 
+    1. 1. **[secondary]** Save the snippet below in a file, let's say `/tmp/replica.sh`. Modify the
+       embedded paths if necessary:
+
+        ```
+        #!/bin/bash
+
+        PORT="5432"
+        USER="gitlab_replicator"
+        echo ---------------------------------------------------------------
+        echo WARNING: Make sure this script is run from the secondary server
+        echo ---------------------------------------------------------------
+        echo
+        echo Enter the IP or FQDN of the primary PostgreSQL server
+        read HOST
+        echo Enter the password for $USER@$HOST
+        read -s PASSWORD
+        echo Enter the required sslmode
+        read SSLMODE
+
+        echo Stopping PostgreSQL and all GitLab services
+        sudo service gitlab stop
+        sudo service postgresql stop
+
+        echo Backing up postgresql.conf
+        sudo -u postgres mv /var/opt/gitlab/postgresql/data/postgresql.conf /var/opt/gitlab/postgresql/
+
+        echo Cleaning up old cluster directory
+        sudo -u postgres rm -rf /var/opt/gitlab/postgresql/data
+
+        echo Starting base backup as the replicator user
+        echo Enter the password for $USER@$HOST
+        sudo -u postgres /opt/gitlab/embedded/bin/pg_basebackup -h $HOST -D /var/opt/gitlab/postgresql/data -U gitlab_replicator -v -x -P
+
+        echo Writing recovery.conf file
+        sudo -u postgres bash -c "cat > /var/opt/gitlab/postgresql/data/recovery.conf <<- _EOF1_
+          standby_mode = 'on'
+          primary_conninfo = 'host=$HOST port=$PORT user=$USER password=$PASSWORD sslmode=$SSLMODE'
+        _EOF1_
+        "
+
+        echo Restoring postgresql.conf
+        sudo -u postgres mv /var/opt/gitlab/postgresql/postgresql.conf /var/opt/gitlab/postgresql/data/
+
+        echo Starting PostgreSQL
+        sudo service postgresql start
+        ```
+
     1. **[secondary]** Run the recovery script using the credentials from the
        previous step:
 
@@ -396,8 +443,6 @@ and it is required since 10.0.
 
 [update]: ../../../update/README.md
 [database]: database.md
-[database-replication]: database.md#step-3-initiate-the-replication-process
-[database-source-replication]: database_source.md#step-3-initiate-the-replication-process
 [Hashed Storage]: ../../repository_storage_types.md
 [hashed-migration]: ../../raketasks/storage.md
 [ssh-fast-lookup]: ../../operations/fast_ssh_key_lookup.md

@@ -4,39 +4,33 @@ comments: false
 
 # Rollback Commits
 
-----------
-
 ## Undo Commits
 
 - Undo last commit putting everything back into the staging area:
 
-    ```
+    ```sh
     git reset --soft HEAD^
     ```
 
 - Add files and change message with:
 
-    ```
+    ```sh
     git commit --amend -m "New Message"
     ```
 
-----------
-
 - Undo last and remove changes:
 
-    ```
+    ```sh
     git reset --hard HEAD^
     ```
 
 - Same as last one but for two commits back:
 
-    ```
+    ```sh
     git reset --hard HEAD^^
     ```
 
 ** Don't reset after pushing **
-
-----------
 
 ## Reset Workflow
 
@@ -51,11 +45,9 @@ comments: false
 1. Pull for updates
 1. Push changes
 
-----------
-
 ## Commands
 
-```
+```sh
 # Change file edit_this_file.rb
 git status
 git commit -am "kjkfjkg"
@@ -68,15 +60,13 @@ git pull origin master
 git push origin master
 ```
 
-----------
-
 ## Note
 
 - git revert vs git reset
 - Reset removes the commit while revert removes the changes but leaves the commit
 - Revert is safer considering we can revert a revert
 
-```
+```sh
 # Changed file
 git commit -am "bug introduced"
 git revert HEAD

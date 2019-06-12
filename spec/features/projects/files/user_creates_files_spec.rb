@@ -12,6 +12,7 @@ describe 'Projects > Files > User creates files' do
   let(:user) { create(:user) }
 
   before do
+    stub_feature_flags(vue_file_list: false)
     stub_feature_flags(web_ide_default: false)
 
     project.add_maintainer(user)

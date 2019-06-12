@@ -1,10 +1,9 @@
 ---
 comments: false
+type: reference
 ---
 
 # GitLab Git Workshop
-
----
 
 ## Agenda
 
@@ -12,8 +11,6 @@ comments: false
 1. GitLab walkthrough.
 1. Configure your environment.
 1. Workshop.
-
----
 
 ## Git introduction
 
@@ -26,8 +23,6 @@ comments: false
 - Adapts to nearly any workflow.
 - Fast, reliable and stable file format.
 
----
-
 ## Help!
 
 Use the tools at your disposal when you get stuck.
@@ -36,13 +31,9 @@ Use the tools at your disposal when you get stuck.
 - Use Google.
 - Read documentation at <https://git-scm.com>.
 
----
-
 ## GitLab Walkthrough
 
 ![fit](logo.png)
-
----
 
 ## Configure your environment
 
@@ -56,8 +47,6 @@ Use the tools at your disposal when you get stuck.
 
 - Debian: '`sudo apt-get install git-all`' or Red Hat '`sudo yum install git-all`'
 
----
-
 ## Git Workshop
 
 ### Overview
@@ -70,8 +59,6 @@ Use the tools at your disposal when you get stuck.
 1. Merge requests.
 1. Feedback and Collaboration.
 
----
-
 ## Configure Git
 
 One-time configuration of the Git client:
@@ -80,8 +67,6 @@ One-time configuration of the Git client:
 git config --global user.name "Your Name"
 git config --global user.email you@example.com
 ```
-
----
 
 ## Configure SSH Key
 
@@ -111,16 +96,12 @@ cat ~/.ssh/id_rsa.pub
 ssh-rsa AAAAB3NzaC1yc2EAAAADAQEL17Ufacg8cDhlQMS5NhV8z3GHZdhCrZbl4gz you@example.com
 ```
 
----
-
 ## Create a project
 
 - Create a project in your user namespace.
   - Choose to import from 'Any Repo by URL' and use <https://gitlab.com/gitlab-org/training-examples.git>.
 - Create a '`development`' or '`workspace`' directory in your home directory.
 - Clone the '`training-examples`' project.
-
----
 
 ## Commands (project)
 
@@ -137,8 +118,6 @@ git clone git@gitlab.example.com:<username>/training-examples.git
 cd training-examples
 ```
 
----
-
 ## Git concepts
 
 ### Untracked files
@@ -153,8 +132,6 @@ Files that have been modified but are not committed.
 
 Modified files that have been marked to go in the next commit.
 
----
-
 ## Committing
 
 1. Edit '`edit_this_file.rb`' in '`training-examples`'.
@@ -164,8 +141,6 @@ Modified files that have been marked to go in the next commit.
 1. Commit.
 1. Push the commit to the remote.
 1. View the git log.
-
----
 
 ## Commands (committing)
 
@@ -179,8 +154,6 @@ git push origin master
 git log
 ```
 
----
-
 ## Feature branching
 
 - Efficient parallel workflow for teams.
@@ -190,16 +163,12 @@ git log
 - Push branches to the server frequently.
   - Hint: This is a cheap backup for your work-in-progress code.
 
----
-
 ## Feature branching steps
 
 1. Create a new feature branch called 'squash_some_bugs'.
 1. Edit '`bugs.rb`' and remove all the bugs.
 1. Commit.
 1. Push.
-
----
 
 ## Commands (feature branching)
 
@@ -212,8 +181,6 @@ git commit -m 'Fix some buggy code'
 git push origin squash_some_bugs
 ```
 
----
-
 ## Merge requests
 
 - When you want feedback create a merge request.
@@ -224,8 +191,6 @@ git push origin squash_some_bugs
 - Anyone can comment, not just the assignee.
 - Push corrections to the same branch.
 
----
-
 ## Merge requests steps
 
 Create your first merge request:
@@ -234,8 +199,6 @@ Create your first merge request:
 1. View the diff (changes) and leave a comment.
 1. Push a new commit to the same branch.
 1. Review the changes again and notice the update.
-
----
 
 ## Feedback and Collaboration
 
@@ -246,16 +209,12 @@ Create your first merge request:
 - Be as receptive as possible.
 - Feedback is about the best code, not the person. You are not your code.
 
----
-
 ## Feedback and Collaboration resources
 
 Review the Thoughtbot code-review guide for suggestions to follow when reviewing merge requests:
 <https://github.com/thoughtbot/guides/tree/master/code-review>.
 
 See GitLab merge requests for examples: <https://gitlab.com/gitlab-org/gitlab-ce/merge_requests>.
-
----
 
 ## Explore GitLab projects
 
@@ -269,8 +228,6 @@ See GitLab merge requests for examples: <https://gitlab.com/gitlab-org/gitlab-ce
 - Manage project members
 - Project settings
 
----
-
 ## Tags
 
 - Useful for marking deployments and releases.
@@ -279,8 +236,6 @@ See GitLab merge requests for examples: <https://gitlab.com/gitlab-org/gitlab-ce
 - Many projects combine an annotated release tag with a stable branch.
 - Consider setting deployment/release tags automatically.
 
----
-
 ## Tags steps
 
 1. Create a lightweight tag.
@@ -288,8 +243,6 @@ See GitLab merge requests for examples: <https://gitlab.com/gitlab-org/gitlab-ce
 1. Push the tags to the remote repository.
 
 Additional resources: <http://git-scm.com/book/en/Git-Basics-Tagging>.
-
----
 
 ## Commands (tags)
 
@@ -306,16 +259,12 @@ git tag
 git push origin --tags
 ```
 
----
-
 ## Merge conflicts
 
 - Happen often.
 - Learning to fix conflicts is hard.
 - Practice makes perfect.
 - Force push after fixing conflicts. Be careful!
-
----
 
 ## Merge conflicts steps
 
@@ -324,8 +273,6 @@ git push origin --tags
 1. Checkout master and edit `conflicts.rb`. Add 'Line6' and 'Line7' below 'Line3'.
 1. Commit and push to master.
 1. Create a merge request.
-
----
 
 ## Merge conflicts commands
 
@@ -343,8 +290,6 @@ git rebase --continue
 git push origin <branch> -f
 ```
 
----
-
 ## Rebase with squash
 
 You may end up with a commit log that looks like this:
@@ -361,8 +306,6 @@ Does this work?
 
 Squash these in to meaningful commits using an interactive rebase.
 
----
-
 ## Rebase with squash commands
 
 Squash the commits on the same branch we used for the merge conflicts step.
@@ -373,8 +316,6 @@ git rebase -i master
 
 In the editor, leave the first commit as 'pick' and set others to 'fixup'.
 
----
-
 ## Questions?
 
 ![fit](logo.png)
@@ -383,9 +324,16 @@ Thank you for your hard work!
 
 ## Additional Resources
 
-- GitLab Documentation: <http://docs.gitlab.com/>.
-- GUI Clients: <http://git-scm.com/downloads/guis>.
-- Pro Git book: <http://git-scm.com/book>.
-- Platzi Course: <https://courses.platzi.com/courses/git-gitlab/>.
-- Code School tutorial: <http://try.github.io/>.
-- Contact us at `subscribers@gitlab.com`.
+See [additional resources](index.md#additional-resources).
+
+<!-- ## Troubleshooting
+
+Include any troubleshooting steps that you can foresee. If you know beforehand what issues
+one might have when setting this up, or when something is changed, or on upgrading, it's
+important to describe those, too. Think of things that may go wrong and include them here.
+This is important to minimize requests for support, and to avoid doc comments with
+questions that you know someone might ask.
+
+Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+If you have none to add when creating a doc, leave this section in place
+but commented out to help encourage others to add to it in the future. -->

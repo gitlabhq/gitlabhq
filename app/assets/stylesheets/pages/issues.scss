@@ -258,8 +258,15 @@ ul.related-merge-requests > li {
   }
 }
 
-.discussion-reply-holder .note-edit-form {
-  display: block;
+.discussion-reply-holder {
+  .avatar-note-form-holder .note-edit-form {
+    display: block;
+    margin-left: $note-icon-gutter-width;
+
+    @include media-breakpoint-down(xs) {
+      margin-left: 0;
+    }
+  }
 }
 
 .issue-sort-dropdown {

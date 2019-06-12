@@ -62,7 +62,7 @@ files and add the full paths of the alternative repository storage paths. In
 the example below, we add two more mountpoints that are named `nfs` and `cephfs`
 respectively.
 
-NOTE: **Note:** This example uses NFS and CephFS. We do not recommend using EFS for storage as it may impact GitLab's performance. See the [relevant documentation](./high_availability/nfs.md#avoid-using-awss-elastic-file-system-efs) for more details.
+NOTE: **Note:** This example uses NFS and CephFS. We do not recommend using EFS for storage as it may impact GitLab's performance. See the [relevant documentation](high_availability/nfs.md#avoid-using-awss-elastic-file-system-efs) for more details.
 
 **For installations from source**
 

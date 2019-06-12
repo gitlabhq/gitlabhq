@@ -51,7 +51,7 @@ export const fetchSearchedItems = ({ state, dispatch }, searchQuery) => {
   const params = {
     simple: true,
     per_page: 20,
-    membership: !!gon.current_user_id,
+    membership: Boolean(gon.current_user_id),
   };
 
   if (state.namespace === 'projects') {

@@ -3,12 +3,15 @@
 module QA
   context 'Create' do
     # failure reported: https://gitlab.com/gitlab-org/quality/nightly/issues/42
-    # also failing in staging until the fix is picked into the next release:
-    #  https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/24533
     describe 'Commit data', :quarantine do
       before(:context) do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
         Page::Main::Login.perform(&:sign_in_using_credentials)
+
+        # Get the user's details to confirm they're included in the email patch
+        @user = Resource::User.fabricate_via_api! do |user|
+          user.username = Runtime::User.username
+        end
 
         project_push = Resource::Repository::ProjectPush.fabricate! do |push|
           push.file_name = 'README.md'
@@ -21,12 +24,13 @@ module QA
         # add second file to repo to enable diff from initial commit
         @commit_message = 'Add second file'
 
-        Page::Project::Show.perform(&:create_new_file!)
-        Page::File::Form.perform do |f|
-          f.add_name('second')
-          f.add_content('second file content')
-          f.add_commit_message(@commit_message)
-          f.commit_changes
+        Resource::File.fabricate_via_api! do |file|
+          file.project = @project
+          file.name = 'second'
+          file.content = 'second file content'
+          file.commit_message = @commit_message
+          file.author_name = @user.name
+          file.author_email = @user.public_email
         end
       end
 
@@ -42,15 +46,11 @@ module QA
       end
 
       it 'user views raw email patch' do
-        user = Resource::User.fabricate_via_api! do |user|
-          user.username = Runtime::User.username
-        end
-
         view_commit
 
         Page::Project::Commit::Show.perform(&:select_email_patches)
 
-        expect(page).to have_content("From: #{user.name} <#{user.public_email}>")
+        expect(page).to have_content("From: #{@user.name} <#{@user.public_email}>")
         expect(page).to have_content('Subject: [PATCH] Add second file')
         expect(page).to have_content('diff --git a/second b/second')
       end

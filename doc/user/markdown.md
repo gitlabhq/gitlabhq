@@ -246,7 +246,7 @@ https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#inline-
 
 With inline diffs tags you can display {+ additions +} or [- deletions -].
 
-The wrapping tags can be either curly braces or square brackets: [+ additions +] or {- deletions -}.
+The wrapping tags can be either curly braces or square brackets.
 
 Examples:
 
@@ -256,6 +256,10 @@ Examples:
 - {- deletions -}
 - [- deletions -]
 ```
+
+becomes:
+
+![inline diffs tags rendered](img/markdown_inline_diffs_tags_rendered.png)
 
 However the wrapping tags cannot be mixed as such:
 
@@ -1027,7 +1031,7 @@ A link can be constructed relative to the current wiki page using `./<page>`,
   it would link to `<your_wiki>/documentation/related`:
 
     ```markdown
-    [Link to Related Page](./related)
+    [Link to Related Page](related)
     ```
 
 - If this snippet was placed on a page at `<your_wiki>/documentation/related/content`,
@@ -1041,7 +1045,7 @@ A link can be constructed relative to the current wiki page using `./<page>`,
   it would link to `<your_wiki>/documentation/related.md`:
 
     ```markdown
-    [Link to Related Page](./related.md)
+    [Link to Related Page](related.md)
     ```
 
 - If this snippet was placed on a page at `<your_wiki>/documentation/related/content`,

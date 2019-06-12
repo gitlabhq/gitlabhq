@@ -129,7 +129,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
         visit project_job_path(project, job)
 
         within '.js-pipeline-info' do
-          expect(page).to have_content("Pipeline ##{pipeline.id} for #{pipeline.ref}")
+          expect(page).to have_content("Pipeline ##{pipeline.id} (##{pipeline.iid}) for #{pipeline.ref}")
         end
       end
 
@@ -314,7 +314,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
 
     context "Download artifacts", :js do
       before do
-        job.update(legacy_artifacts_file: artifacts_file)
+        create(:ci_job_artifact, :archive, file: artifacts_file, job: job)
         visit project_job_path(project, job)
       end
 
@@ -338,8 +338,8 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
 
     context 'Artifacts expire date', :js do
       before do
-        job.update(legacy_artifacts_file: artifacts_file,
-                   artifacts_expire_at: expire_at)
+        create(:ci_job_artifact, :archive, file: artifacts_file, expire_at: expire_at, job: job)
+        job.update!(artifacts_expire_at: expire_at)
 
         visit project_job_path(project, job)
       end
@@ -936,8 +936,8 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
         find('.js-cancel-job').click
       end
 
-      it 'loads the page and shows no controls' do
-        expect(page).not_to have_content 'Retry'
+      it 'loads the page and shows all needed controls' do
+        expect(page).to have_content 'Retry'
       end
     end
   end
@@ -946,7 +946,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
     context "Job from project", :js do
       before do
         job.run!
-        job.drop!(:script_failure)
+        job.cancel!
         visit project_job_path(project, job)
         wait_for_requests
 
@@ -981,7 +981,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
 
   describe "GET /:project/jobs/:id/download", :js do
     before do
-      job.update(legacy_artifacts_file: artifacts_file)
+      create(:ci_job_artifact, :archive, file: artifacts_file, job: job)
       visit project_job_path(project, job)
 
       click_link 'Download'
@@ -989,7 +989,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
 
     context "Build from other project" do
       before do
-        job2.update(legacy_artifacts_file: artifacts_file)
+        create(:ci_job_artifact, :archive, file: artifacts_file, job: job2)
       end
 
       it do

@@ -12,7 +12,7 @@ module QA
         file_content = 'QA Test - File content'
         commit_message_for_create = 'QA Test - Create new file'
 
-        Resource::File.fabricate! do |file|
+        Resource::File.fabricate_via_browser_ui! do |file|
           file.name = file_name
           file.content = file_content
           file.commit_message = commit_message_for_create

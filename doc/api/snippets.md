@@ -165,15 +165,15 @@ Parameters:
 |:--------------|:-------|:---------|:---------------------------------------------------|
 | `title`       | string | yes      | Title of a snippet.                                |
 | `file_name`   | string | yes      | Name of a snippet file.                            |
-| `content`     | string | yes      | Content of a snippet.                              |
+| `code`     | string | yes      | Content of a snippet.                              |
 | `description` | string | no       | Description of a snippet.                          |
-| `visibility`  | string | no       | Snippet's [visibility](#snippet-visibility-level). |
+| `visibility`  | string | yes       | Snippet's [visibility](#snippet-visibility-level). |
 
 Example request:
 
 ```sh
 curl --request POST \
-     --data '{"title": "This is a snippet", "content": "Hello world", "description": "Hello World snippet", "file_name": "test.txt", "visibility": "internal" }' \
+     --data '{"title": "This is a snippet", "code": "Hello world", "description": "Hello World snippet", "file_name": "test.txt", "visibility": "internal" }' \
      --header 'Content-Type: application/json' \
      --header "PRIVATE-TOKEN: valid_api_token" \
      https://gitlab.example.com/api/v4/snippets
@@ -222,14 +222,14 @@ Parameters:
 | `title`       | string  | no       | Title of a snippet.                                |
 | `file_name`   | string  | no       | Name of a snippet file.                            |
 | `description` | string  | no       | Description of a snippet.                          |
-| `content`     | string  | no       | Content of a snippet.                              |
+| `code`     | string  | no       | Content of a snippet.                              |
 | `visibility`  | string  | no       | Snippet's [visibility](#snippet-visibility-level). |
 
 Example request:
 
 ```sh
 curl --request PUT \
-     --data '{"title": "foo", "content": "bar"}' \
+     --data '{"title": "foo", "code": "bar"}' \
      --header 'Content-Type: application/json' \
      --header "PRIVATE-TOKEN: valid_api_token" \
      https://gitlab.example.com/api/v4/snippets/1

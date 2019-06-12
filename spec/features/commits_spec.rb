@@ -89,7 +89,7 @@ describe 'Commits' do
 
         context 'Download artifacts' do
           before do
-            build.update(legacy_artifacts_file: artifacts_file)
+            create(:ci_job_artifact, :archive, file: artifacts_file, job: build)
           end
 
           it do
@@ -119,7 +119,7 @@ describe 'Commits' do
       context "when logged as reporter" do
         before do
           project.add_reporter(user)
-          build.update(legacy_artifacts_file: artifacts_file)
+          create(:ci_job_artifact, :archive, file: artifacts_file, job: build)
           visit pipeline_path(pipeline)
         end
 
@@ -141,7 +141,7 @@ describe 'Commits' do
           project.update(
             visibility_level: Gitlab::VisibilityLevel::INTERNAL,
             public_builds: false)
-          build.update(legacy_artifacts_file: artifacts_file)
+          create(:ci_job_artifact, :archive, file: artifacts_file, job: build)
           visit pipeline_path(pipeline)
         end
 

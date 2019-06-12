@@ -1,3 +1,7 @@
+---
+type: reference
+---
+
 # Metrics Reports **[PREMIUM]**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/9788) in [GitLab Premium](https://about.gitlab.com/pricing) 11.10.
@@ -23,6 +27,11 @@ Consider the following examples of data that can utilize Metrics Reports:
 ## How it works
 
 Metrics are read from the metrics report (default: `metrics.txt`). They are parsed and displayed in the MR widget.
+
+All values are considered strings and string compare is used to find differences between the latest available `metrics` artifact from:
+
+- `master`
+- The feature branch
 
 ## How to set it up
 

@@ -166,7 +166,7 @@ This branch is the place for any work related to this change.
 
 NOTE: **Note:**
 The name of a branch might be dictated by organizational standards.
-For example, in GitLab, any branches in GitLab EE that are equivalent to branches in GitLab CE [must end in `-ee`](https://docs.gitlab.com/ee/development/automatic_ce_ee_merge.html#cherry-picking-from-ce-to-ee).
+For example, in GitLab, any branches in GitLab EE that are equivalent to branches in GitLab CE [must end in `-ee`](../development/automatic_ce_ee_merge.md#cherry-picking-from-ce-to-ee).
 
 When you are done or want to discuss the code, open a merge request.
 A merge request is an online place to discuss the change and review the code.

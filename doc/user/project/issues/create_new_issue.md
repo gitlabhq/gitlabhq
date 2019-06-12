@@ -67,7 +67,7 @@ or contacts to continue working._
 
 ## New issue via Service Desk **[PREMIUM]**
 
-Enable [Service Desk](https://docs.gitlab.com/ee/user/project/service_desk.html) to your project and offer email support.
+Enable [Service Desk](../service_desk.md) to your project and offer email support.
 By doing so, when your customer sends a new email, a new issue can be created in
 the appropriate project and followed up from there.
 

@@ -1147,7 +1147,7 @@ describe Project do
         allow(project).to receive(:avatar_in_git) { true }
       end
 
-      let(:avatar_path) { "/#{project.full_path}/avatar" }
+      let(:avatar_path) { "/#{project.full_path}/-/avatar" }
 
       it { is_expected.to eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
     end
@@ -3170,6 +3170,23 @@ describe Project do
     end
   end
 
+  describe '.ids_with_milestone_available_for' do
+    let!(:user) { create(:user) }
+
+    it 'returns project ids with milestones available for user' do
+      project_1 = create(:project, :public, :merge_requests_disabled, :issues_disabled)
+      project_2 = create(:project, :public, :merge_requests_disabled)
+      project_3 = create(:project, :public, :issues_disabled)
+      project_4 = create(:project, :public)
+      project_4.project_feature.update(issues_access_level: ProjectFeature::PRIVATE, merge_requests_access_level: ProjectFeature::PRIVATE )
+
+      project_ids = described_class.ids_with_milestone_available_for(user).pluck(:id)
+
+      expect(project_ids).to include(project_2.id, project_3.id)
+      expect(project_ids).not_to include(project_1.id, project_4.id)
+    end
+  end
+
   describe '.with_feature_available_for_user' do
     let(:user) { create(:user) }
     let(:feature) { MergeRequest }
@@ -3972,64 +3989,6 @@ describe Project do
 
       expect(project.api_variables.map { |variable| variable[:key] })
         .to contain_exactly(*required_variables)
-    end
-  end
-
-  describe '#auto_devops_variables' do
-    set(:project) { create(:project) }
-
-    subject { project.auto_devops_variables }
-
-    context 'when enabled in instance settings' do
-      before do
-        stub_application_setting(auto_devops_enabled: true)
-      end
-
-      context 'when domain is empty' do
-        before do
-          stub_application_setting(auto_devops_domain: nil)
-        end
-
-        it 'variables does not include AUTO_DEVOPS_DOMAIN' do
-          is_expected.not_to include(domain_variable)
-        end
-      end
-
-      context 'when domain is configured' do
-        before do
-          stub_application_setting(auto_devops_domain: 'example.com')
-        end
-
-        it 'variables includes AUTO_DEVOPS_DOMAIN' do
-          is_expected.to include(domain_variable)
-        end
-      end
-    end
-
-    context 'when explicitly enabled' do
-      context 'when domain is empty' do
-        before do
-          create(:project_auto_devops, project: project, domain: nil)
-        end
-
-        it 'variables does not include AUTO_DEVOPS_DOMAIN' do
-          is_expected.not_to include(domain_variable)
-        end
-      end
-
-      context 'when domain is configured' do
-        before do
-          create(:project_auto_devops, project: project, domain: 'example.com')
-        end
-
-        it 'variables includes AUTO_DEVOPS_DOMAIN' do
-          is_expected.to include(domain_variable)
-        end
-      end
-    end
-
-    def domain_variable
-      { key: 'AUTO_DEVOPS_DOMAIN', value: 'example.com', public: true }
     end
   end
 

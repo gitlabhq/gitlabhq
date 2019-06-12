@@ -62,6 +62,7 @@ export default {
     "Merge branch 'daaaa' into 'master'\n\nUpdate README.md\n\nSee merge request !22",
   pipeline: {
     id: 172,
+    iid: 32,
     user: {
       name: 'Administrator',
       username: 'root',
@@ -241,6 +242,8 @@ export default {
 export const mockStore = {
   pipeline: {
     id: 0,
+    iid: 0,
+    path: '/root/acets-app/pipelines/0',
     details: {
       status: {
         details_path: '/root/review-app-tester/pipelines/66',
@@ -258,6 +261,8 @@ export const mockStore = {
   },
   mergePipeline: {
     id: 1,
+    iid: 1,
+    path: '/root/acets-app/pipelines/0',
     details: {
       status: {
         details_path: '/root/review-app-tester/pipelines/66',

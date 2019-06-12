@@ -3,6 +3,8 @@
 module Gitlab
   module LetsEncrypt
     class Client
+      include Gitlab::Utils::StrongMemoize
+
       PRODUCTION_DIRECTORY_URL = 'https://acme-v02.api.letsencrypt.org/directory'
       STAGING_DIRECTORY_URL = 'https://acme-staging-v02.api.letsencrypt.org/directory'
 
@@ -35,6 +37,8 @@ module Gitlab
       def enabled?
         return false unless Feature.enabled?(:pages_auto_ssl)
 
+        return false unless private_key
+
         Gitlab::CurrentSettings.lets_encrypt_terms_of_service_accepted
       end
 
@@ -45,7 +49,11 @@ module Gitlab
       end
 
       def private_key
-        @private_key ||= OpenSSL::PKey.read(Gitlab::Application.secrets.lets_encrypt_private_key)
+        strong_memoize(:private_key) do
+          private_key_string = Gitlab::CurrentSettings.lets_encrypt_private_key
+          private_key_string ||= generate_private_key
+          OpenSSL::PKey.read(private_key_string) if private_key_string
+        end
       end
 
       def admin_email
@@ -67,6 +75,19 @@ module Gitlab
           PRODUCTION_DIRECTORY_URL
         else
           STAGING_DIRECTORY_URL
+        end
+      end
+
+      def generate_private_key
+        return if Gitlab::Database.read_only?
+
+        application_settings = Gitlab::CurrentSettings.current_application_settings
+        application_settings.with_lock do
+          unless application_settings.lets_encrypt_private_key
+            application_settings.update(lets_encrypt_private_key: OpenSSL::PKey::RSA.new(4096).to_pem)
+          end
+
+          application_settings.lets_encrypt_private_key
         end
       end
     end

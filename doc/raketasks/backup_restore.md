@@ -917,9 +917,9 @@ backup beforehand.
 
 1. Clear all the tokens for projects, groups, and the whole instance:
 
-CAUTION: **Caution:**
-The last UPDATE operation will stop the runners being able to pick up
-new jobs. You must register new runners.
+    CAUTION: **Caution:**
+    The last UPDATE operation will stop the runners being able to pick up
+    new jobs. You must register new runners.
 
     ```sql
     -- Clear project tokens

@@ -16,10 +16,10 @@
     margin-top: 5px;
   }
 
-  border-radius: 3px;
+  border-radius: $border-radius-default;
   display: block;
   float: left;
-  margin-right: 10px;
+  margin-right: $gl-padding-8;
   color: $white-light;
   font-size: $gl-font-size;
   line-height: $gl-line-height-24;

@@ -1,6 +1,6 @@
 .search-result-row
   %h4
-    = link_to [merge_request.target_project.namespace.becomes(Namespace), merge_request.target_project, merge_request] do
+    = link_to namespace_project_merge_request_path(merge_request.target_project.namespace.becomes(Namespace), merge_request.target_project, merge_request) do
       %span.term.str-truncated= merge_request.title
     - if merge_request.merged?
       %span.badge.badge-primary.prepend-left-5= _("Merged")

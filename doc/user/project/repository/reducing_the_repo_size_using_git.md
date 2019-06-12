@@ -1,6 +1,6 @@
 # Reducing the repository size using Git
 
-A GitLab Enterprise Edition administrator can set a [repository size limit][admin-repo-size]
+A GitLab Enterprise Edition administrator can set a [repository size limit](../../admin_area/settings/account_and_limit_settings.md)
 which will prevent you from exceeding it.
 
 When a project has reached its size limit, you will not be able to push to it,
@@ -14,7 +14,8 @@ move some blobs to LFS, or remove some old dependency updates from history.
 Unfortunately, it's not so easy and that workflow won't work. Deleting files in
 a commit doesn't actually reduce the size of the repo since the earlier commits
 and blobs are still around. What you need to do is rewrite history with Git's
-[`filter-branch` option][gitscm], or a tool like the [BFG Repo-Cleaner][bfg].
+[`filter-branch` option](https://git-scm.com/book/en/v2/Git-Tools-Rewriting-History#The-Nuclear-Option:-filter-branch),
+or a tool like the [BFG Repo-Cleaner](https://rtyley.github.io/bfg-repo-cleaner/).
 
 Note that even with that method, until `git gc` runs on the GitLab side, the
 "removed" commits and blobs will still be around. You also need to be able to
@@ -137,7 +138,3 @@ remove some of them, but it should not be depended on for security purposes!
     ```
 
 Your repository should now be below the size limit.
-
-[admin-repo-size]: https://docs.gitlab.com/ee/user/admin_area/settings/account_and_limit_settings.html#repository-size-limit
-[bfg]: https://rtyley.github.io/bfg-repo-cleaner/
-[gitscm]: https://git-scm.com/book/en/v2/Git-Tools-Rewriting-History#The-Nuclear-Option:-filter-branch

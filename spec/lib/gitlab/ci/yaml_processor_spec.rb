@@ -3,6 +3,8 @@ require 'spec_helper'
 module Gitlab
   module Ci
     describe YamlProcessor do
+      include StubRequests
+
       subject { described_class.new(config, user: nil) }
 
       describe '#build_attributes' do
@@ -648,7 +650,7 @@ module Gitlab
             end
 
             before do
-              WebMock.stub_request(:get, 'https://gitlab.com/awesome-project/raw/master/.before-script-template.yml')
+              stub_full_request('https://gitlab.com/awesome-project/raw/master/.before-script-template.yml')
                 .to_return(
                   status: 200,
                   headers: { 'Content-Type' => 'application/json' },
@@ -1468,7 +1470,7 @@ module Gitlab
 
           expect { Gitlab::Ci::YamlProcessor.new(config) }
             .to raise_error(Gitlab::Ci::YamlProcessor::ValidationError,
-                            'rspec: unknown key in `extends`')
+                            'rspec: unknown keys in `extends` (something)')
         end
       end
 

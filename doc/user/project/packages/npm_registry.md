@@ -20,7 +20,7 @@ within a subgroup is not supported yet.
 
 NOTE: **Note:**
 This option is available only if your GitLab administrator has
-[enabled support for the NPM registry](https://docs.gitlab.com/ee/administration/packages.html).**[PREMIUM ONLY]**
+[enabled support for the NPM registry](../../../administration/packages.md).**[PREMIUM ONLY]**
 
 After the NPM registry is enabled, it will be available for all new projects
 by default. To enable it for existing projects, or if you want to disable it:

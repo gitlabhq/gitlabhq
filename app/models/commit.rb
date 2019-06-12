@@ -13,6 +13,7 @@ class Commit
   include StaticModel
   include Presentable
   include ::Gitlab::Utils::StrongMemoize
+  include CacheMarkdownField
 
   attr_mentionable :safe_message, pipeline: :single_line
 
@@ -37,13 +38,9 @@ class Commit
   # Used by GFM to match and present link extensions on node texts and hrefs.
   LINK_EXTENSION_PATTERN = /(patch)/.freeze
 
-  def banzai_render_context(field)
-    pipeline = field == :description ? :commit_description : :single_line
-    context = { pipeline: pipeline, project: self.project }
-    context[:author] = self.author if self.author
-
-    context
-  end
+  cache_markdown_field :title, pipeline: :single_line
+  cache_markdown_field :full_title, pipeline: :single_line
+  cache_markdown_field :description, pipeline: :commit_description
 
   class << self
     def decorate(commits, project)

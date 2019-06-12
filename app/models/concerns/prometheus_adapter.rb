@@ -6,7 +6,6 @@ module PrometheusAdapter
   included do
     include ReactiveCaching
 
-    self.reactive_cache_key = ->(adapter) { [adapter.class.model_name.singular, adapter.id] }
     self.reactive_cache_lease_timeout = 30.seconds
     self.reactive_cache_refresh_interval = 30.seconds
     self.reactive_cache_lifetime = 1.minute

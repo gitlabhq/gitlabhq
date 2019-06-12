@@ -29,51 +29,6 @@ describe Gitlab::Git::Repository, :seed_helper do
   let(:storage_path) { TestEnv.repos_path }
   let(:user) { build(:user) }
 
-  describe '.create_hooks' do
-    let(:repo_path) { File.join(storage_path, 'hook-test.git') }
-    let(:hooks_dir) { File.join(repo_path, 'hooks') }
-    let(:target_hooks_dir) { Gitlab::Shell.new.hooks_path }
-    let(:existing_target) { File.join(repo_path, 'foobar') }
-
-    before do
-      FileUtils.rm_rf(repo_path)
-      FileUtils.mkdir_p(repo_path)
-    end
-
-    context 'hooks is a directory' do
-      let(:existing_file) { File.join(hooks_dir, 'my-file') }
-
-      before do
-        FileUtils.mkdir_p(hooks_dir)
-        FileUtils.touch(existing_file)
-        described_class.create_hooks(repo_path, target_hooks_dir)
-      end
-
-      it { expect(File.readlink(hooks_dir)).to eq(target_hooks_dir) }
-      it { expect(Dir[File.join(repo_path, "hooks.old.*/my-file")].count).to eq(1) }
-    end
-
-    context 'hooks is a valid symlink' do
-      before do
-        FileUtils.mkdir_p existing_target
-        File.symlink(existing_target, hooks_dir)
-        described_class.create_hooks(repo_path, target_hooks_dir)
-      end
-
-      it { expect(File.readlink(hooks_dir)).to eq(target_hooks_dir) }
-    end
-
-    context 'hooks is a broken symlink' do
-      before do
-        FileUtils.rm_f(existing_target)
-        File.symlink(existing_target, hooks_dir)
-        described_class.create_hooks(repo_path, target_hooks_dir)
-      end
-
-      it { expect(File.readlink(hooks_dir)).to eq(target_hooks_dir) }
-    end
-  end
-
   describe "Respond to" do
     subject { repository }
 
@@ -229,6 +184,18 @@ describe Gitlab::Git::Repository, :seed_helper do
     subject { repository.size }
 
     it { is_expected.to be < 2 }
+  end
+
+  describe '#object_directory_size' do
+    before do
+      allow(repository.gitaly_repository_client)
+        .to receive(:get_object_directory_size)
+        .and_return(2)
+    end
+
+    subject { repository.object_directory_size }
+
+    it { is_expected.to eq 2048 }
   end
 
   describe '#empty?' do
@@ -1957,13 +1924,6 @@ describe Gitlab::Git::Repository, :seed_helper do
       expect(result).to be_truthy
       expect(imported_repo).to exist
       expect { imported_repo.fsck }.not_to raise_exception
-    end
-
-    it 'creates a symlink to the global hooks dir' do
-      imported_repo.create_from_bundle(valid_bundle_path)
-      hooks_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access { File.join(imported_repo.path, 'hooks') }
-
-      expect(File.readlink(hooks_path)).to eq(Gitlab::Shell.new.hooks_path)
     end
 
     it 'raises an error if the bundle is an attempted malicious payload' do

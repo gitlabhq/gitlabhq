@@ -1,9 +1,13 @@
-# Admin area settings **[CORE ONLY]**
+---
+type: index
+---
 
-In the admin area settings, you can find various options for your GitLab
+# Admin Area settings **[CORE ONLY]**
+
+In the Admin Area **Settings** page, you can find various options for your GitLab
 instance like sign-up restrictions, account limits and quota, metrics, etc.
 
-Navigate to it by going to **Admin area > Settings**. Some of the settings
+Navigate to it by going to **Admin Area > Settings**. Some of the settings
 include:
 
 - [Account and limit settings](account_and_limit_settings.md) **[STARTER]**
@@ -22,7 +26,7 @@ in the **Localization** section of **Admin area > Settings > Preferences**.
 
 ## GitLab.com admin area settings
 
-Most of the settings under the admin area change the behavior of the whole
+Most of the settings under the Admin Area change the behavior of the whole
 GitLab instance. For GitLab.com, the admin settings are available only for the
 GitLab.com administrators, and the parameters can be found on the
 [GitLab.com settings](../../gitlab_com/index.md) documentation.

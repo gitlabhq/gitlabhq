@@ -101,7 +101,7 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
     end
   end
 
-  describe 'GET show' do
+  describe 'GET show', :request_store do
     let!(:job) { create(:ci_build, :failed, pipeline: pipeline) }
     let!(:second_job) { create(:ci_build, :failed, pipeline: pipeline) }
     let!(:third_job) { create(:ci_build, :failed) }
@@ -143,13 +143,24 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
         project.add_developer(user)
         sign_in(user)
 
-        allow_any_instance_of(Ci::Build).to receive(:merge_request).and_return(merge_request)
+        allow_any_instance_of(Ci::Build)
+          .to receive(:merge_request)
+          .and_return(merge_request)
+      end
 
-        get_show(id: job.id, format: :json)
+      it 'does not serialize builds in exposed stages' do
+        get_show_json
+
+        json_response.dig('pipeline', 'details', 'stages').tap do |stages|
+          expect(stages.map(&:keys).flatten)
+            .to eq %w[name title status path dropdown_path]
+        end
       end
 
       context 'when job failed' do
         it 'exposes needed information' do
+          get_show_json
+
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to match_response_schema('job/job_details')
           expect(json_response['raw_path']).to match(%r{jobs/\d+/raw\z})
@@ -159,6 +170,10 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
       end
 
       context 'when job is running' do
+        before do
+          get_show_json
+        end
+
         context 'job is cancelable' do
           let(:job) { create(:ci_build, :running, pipeline: pipeline) }
 
@@ -181,6 +196,10 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
       end
 
       context 'when job has artifacts' do
+        before do
+          get_show_json
+        end
+
         context 'with not expiry date' do
           let(:job) { create(:ci_build, :success, :artifacts, pipeline: pipeline) }
 
@@ -212,6 +231,8 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
         let(:job) { create(:ci_build, :success, :artifacts, pipeline: pipeline) }
 
         it 'exposes empty state illustrations' do
+          get_show_json
+
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to match_response_schema('job/job_details')
           expect(json_response['status']['illustration']).to have_key('image')
@@ -224,6 +245,8 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
         let(:job) { create(:ci_build, :success, pipeline: pipeline) }
 
         it 'does not exposes the deployment information' do
+          get_show_json
+
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['deployment_status']).to be_nil
         end
@@ -234,11 +257,20 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
         let(:environment) { create(:environment, project: project, name: 'staging', state: :available) }
         let(:job) { create(:ci_build, :running, environment: environment.name, pipeline: pipeline) }
 
+        before do
+          create(:deployment, :success, environment: environment, project: project)
+        end
+
         it 'exposes the deployment information' do
+          get_show_json
+
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response).to match_schema('job/job_details')
-          expect(json_response['deployment_status']["status"]).to eq 'creating'
-          expect(json_response['deployment_status']["environment"]).not_to be_nil
+          expect(json_response.dig('deployment_status', 'status')).to eq 'creating'
+          expect(json_response.dig('deployment_status', 'environment')).not_to be_nil
+          expect(json_response.dig('deployment_status', 'environment', 'last_deployment')).not_to be_nil
+          expect(json_response.dig('deployment_status', 'environment', 'last_deployment'))
+            .not_to include('commit')
         end
       end
 
@@ -250,11 +282,11 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
           before do
             project.add_maintainer(user)
             sign_in(user)
-
-            get_show(id: job.id, format: :json)
           end
 
           it 'user can edit runner' do
+            get_show_json
+
             expect(response).to have_gitlab_http_status(:ok)
             expect(response).to match_response_schema('job/job_details')
             expect(json_response['runner']).to have_key('edit_path')
@@ -270,11 +302,11 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
           before do
             project.add_maintainer(user)
             sign_in(user)
-
-            get_show(id: job.id, format: :json)
           end
 
           it 'user can not edit runner' do
+            get_show_json
+
             expect(response).to have_gitlab_http_status(:ok)
             expect(response).to match_response_schema('job/job_details')
             expect(json_response['runner']).not_to have_key('edit_path')
@@ -289,11 +321,11 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
           before do
             project.add_maintainer(user)
             sign_in(user)
-
-            get_show(id: job.id, format: :json)
           end
 
           it 'user can not edit runner' do
+            get_show_json
+
             expect(response).to have_gitlab_http_status(:ok)
             expect(response).to match_response_schema('job/job_details')
             expect(json_response['runner']).not_to have_key('edit_path')
@@ -306,6 +338,8 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
         let(:job) { create(:ci_build, :pending, pipeline: pipeline, runner: runner) }
 
         it 'exposes needed information' do
+          get_show_json
+
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to match_response_schema('job/job_details')
           expect(json_response['runners']['online']).to be false
@@ -319,6 +353,8 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
         let(:job) { create(:ci_build, :pending, pipeline: pipeline, runner: runner) }
 
         it 'exposes needed information' do
+          get_show_json
+
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to match_response_schema('job/job_details')
           expect(json_response['runners']['online']).to be false
@@ -328,6 +364,10 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
       end
 
       context 'settings_path' do
+        before do
+          get_show_json
+        end
+
         context 'when user is developer' do
           it 'settings_path is not available' do
             expect(response).to have_gitlab_http_status(:ok)
@@ -354,6 +394,8 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
 
       context 'when no trace is available' do
         it 'has_trace is false' do
+          get_show_json
+
           expect(response).to match_response_schema('job/job_details')
           expect(json_response['has_trace']).to be false
         end
@@ -363,17 +405,21 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
         let(:job) { create(:ci_build, :running, :trace_live, pipeline: pipeline) }
 
         it "has_trace is true" do
+          get_show_json
+
           expect(response).to match_response_schema('job/job_details')
           expect(json_response['has_trace']).to be true
         end
       end
 
       it 'exposes the stage the job belongs to' do
+        get_show_json
+
         expect(json_response['stage']).to eq('test')
       end
     end
 
-    context 'when requesting JSON job is triggered' do
+    context 'when requesting triggered job JSON' do
       let!(:merge_request) { create(:merge_request, source_project: project) }
       let(:trigger) { create(:ci_trigger, project: project) }
       let(:trigger_request) { create(:ci_trigger_request, pipeline: pipeline, trigger: trigger) }
@@ -383,15 +429,15 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
         project.add_developer(user)
         sign_in(user)
 
-        allow_any_instance_of(Ci::Build).to receive(:merge_request).and_return(merge_request)
+        allow_any_instance_of(Ci::Build)
+          .to receive(:merge_request)
+          .and_return(merge_request)
       end
 
       context 'with no variables' do
-        before do
-          get_show(id: job.id, format: :json)
-        end
-
         it 'exposes trigger information' do
+          get_show_json
+
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to match_response_schema('job/job_details')
           expect(json_response['trigger']['short_token']).to eq 'toke'
@@ -408,7 +454,7 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
           before do
             project.add_maintainer(user)
 
-            get_show(id: job.id, format: :json)
+            get_show_json
           end
 
           it 'returns a job_detail' do
@@ -432,7 +478,7 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
 
         context 'user is not a mantainer' do
           before do
-            get_show(id: job.id, format: :json)
+            get_show_json
           end
 
           it 'returns a job_detail' do
@@ -454,6 +500,11 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
           end
         end
       end
+    end
+
+    def get_show_json
+      expect { get_show(id: job.id, format: :json) }
+        .not_to change { Gitlab::GitalyClient.get_request_count }
     end
 
     def get_show(**extra_params)
@@ -790,8 +841,8 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
       end
 
       it 'erases artifacts' do
-        expect(job.artifacts_file.exists?).to be_falsey
-        expect(job.artifacts_metadata.exists?).to be_falsey
+        expect(job.artifacts_file.present?).to be_falsey
+        expect(job.artifacts_metadata.present?).to be_falsey
       end
 
       it 'erases trace' do

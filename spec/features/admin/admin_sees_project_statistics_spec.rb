@@ -15,7 +15,7 @@ describe "Admin > Admin sees project statistics" do
     let(:project) { create(:project, :repository) }
 
     it "shows project statistics" do
-      expect(page).to have_content("Storage: 0 Bytes (0 Bytes repositories, 0 Bytes build artifacts, 0 Bytes LFS)")
+      expect(page).to have_content("Storage: 0 Bytes (0 Bytes repositories, 0 Bytes wikis, 0 Bytes build artifacts, 0 Bytes LFS)")
     end
   end
 

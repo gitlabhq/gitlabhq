@@ -60,36 +60,16 @@ module MergeRequests
     end
 
     def create_pipeline_for(merge_request, user)
-      return unless can_create_pipeline_for?(merge_request)
-
-      create_detached_merge_request_pipeline(merge_request, user)
-    end
-
-    def create_detached_merge_request_pipeline(merge_request, user)
-      if can_use_merge_request_ref?(merge_request)
-        Ci::CreatePipelineService.new(merge_request.source_project, user,
-                                      ref: merge_request.ref_path)
-          .execute(:merge_request_event, merge_request: merge_request)
-      else
-        Ci::CreatePipelineService.new(merge_request.source_project, user,
-                                      ref: merge_request.source_branch)
-          .execute(:merge_request_event, merge_request: merge_request)
-      end
-    end
-
-    def can_create_pipeline_for?(merge_request)
-      ##
-      # UpdateMergeRequestsWorker could be retried by an exception.
-      # pipelines for merge request should not be recreated in such case.
-      return false if merge_request.find_actual_head_pipeline&.triggered_by_merge_request?
-      return false if merge_request.has_no_commits?
-
-      true
+      MergeRequests::CreatePipelineService.new(project, user).execute(merge_request)
     end
 
     def can_use_merge_request_ref?(merge_request)
       Feature.enabled?(:ci_use_merge_request_ref, project, default_enabled: true) &&
         !merge_request.for_fork?
+    end
+
+    def cancel_auto_merge(merge_request)
+      AutoMergeService.new(project, current_user).cancel(merge_request)
     end
 
     # Returns all origin and fork merge requests from `@project` satisfying passed arguments.

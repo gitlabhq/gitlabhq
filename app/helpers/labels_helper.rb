@@ -5,7 +5,7 @@ module LabelsHelper
   include ActionView::Helpers::TagHelper
 
   def show_label_issuables_link?(label, issuables_type, current_user: nil, project: nil)
-    return true if label.is_a?(GroupLabel)
+    return true unless label.project_label?
     return true unless project
 
     project.feature_available?(issuables_type, current_user)
@@ -76,29 +76,39 @@ module LabelsHelper
   end
 
   def suggested_colors
-    [
-      '#0033CC',
-      '#428BCA',
-      '#44AD8E',
-      '#A8D695',
-      '#5CB85C',
-      '#69D100',
-      '#004E00',
-      '#34495E',
-      '#7F8C8D',
-      '#A295D6',
-      '#5843AD',
-      '#8E44AD',
-      '#FFECDB',
-      '#AD4363',
-      '#D10069',
-      '#CC0033',
-      '#FF0000',
-      '#D9534F',
-      '#D1D100',
-      '#F0AD4E',
-      '#AD8D43'
-    ]
+    {
+      '#0033CC' => s_('SuggestedColors|UA blue'),
+      '#428BCA' => s_('SuggestedColors|Moderate blue'),
+      '#44AD8E' => s_('SuggestedColors|Lime green'),
+      '#A8D695' => s_('SuggestedColors|Feijoa'),
+      '#5CB85C' => s_('SuggestedColors|Slightly desaturated green'),
+      '#69D100' => s_('SuggestedColors|Bright green'),
+      '#004E00' => s_('SuggestedColors|Very dark lime green'),
+      '#34495E' => s_('SuggestedColors|Very dark desaturated blue'),
+      '#7F8C8D' => s_('SuggestedColors|Dark grayish cyan'),
+      '#A295D6' => s_('SuggestedColors|Slightly desaturated blue'),
+      '#5843AD' => s_('SuggestedColors|Dark moderate blue'),
+      '#8E44AD' => s_('SuggestedColors|Dark moderate violet'),
+      '#FFECDB' => s_('SuggestedColors|Very pale orange'),
+      '#AD4363' => s_('SuggestedColors|Dark moderate pink'),
+      '#D10069' => s_('SuggestedColors|Strong pink'),
+      '#CC0033' => s_('SuggestedColors|Strong red'),
+      '#FF0000' => s_('SuggestedColors|Pure red'),
+      '#D9534F' => s_('SuggestedColors|Soft red'),
+      '#D1D100' => s_('SuggestedColors|Strong yellow'),
+      '#F0AD4E' => s_('SuggestedColors|Soft orange'),
+      '#AD8D43' => s_('SuggestedColors|Dark moderate orange')
+    }
+  end
+
+  def render_suggested_colors
+    colors_html = suggested_colors.map do |color_hex_value, color_name|
+      link_to('', '#', class: "has-tooltip", style: "background-color: #{color_hex_value}", data: { color: color_hex_value }, title: color_name)
+    end
+
+    content_tag(:div, class: 'suggest-colors') do
+      colors_html.join.html_safe
+    end
   end
 
   def text_color_for_bg(bg_color)
@@ -159,13 +169,6 @@ module LabelsHelper
     label.subscribed?(current_user, project) ? 'Unsubscribe' : 'Subscribe'
   end
 
-  def label_deletion_confirm_text(label)
-    case label
-    when GroupLabel then _('Remove this label? This will affect all projects within the group. Are you sure?')
-    when ProjectLabel then _('Remove this label? Are you sure?')
-    end
-  end
-
   def create_label_title(subject)
     case subject
     when Group
@@ -200,7 +203,7 @@ module LabelsHelper
   end
 
   def label_status_tooltip(label, status)
-    type = label.is_a?(ProjectLabel) ? 'project' : 'group'
+    type = label.project_label? ? 'project' : 'group'
     level = status.unsubscribed? ? type : status.sub('-level', '')
     action = status.unsubscribed? ? 'Subscribe' : 'Unsubscribe'
 

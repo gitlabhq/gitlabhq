@@ -42,7 +42,6 @@ bind 'unix:///home/git/gitlab.socket'
 workers 2
 
 require_relative "/home/git/gitlab/lib/gitlab/cluster/lifecycle_events"
-require_relative "/home/git/gitlab/lib/gitlab/cluster/puma_worker_killer_initializer"
 
 on_restart do
   # Signal application hooks that we're about to restart

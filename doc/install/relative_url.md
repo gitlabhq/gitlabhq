@@ -1,17 +1,18 @@
+---
+type: reference
+---
+
 # Install GitLab under a relative URL
 
-NOTE: **Note:**
+While it is recommended to install GitLab on its own (sub)domain, sometimes
+this is not possible due to a variety of reasons. In that case, GitLab can also
+be installed under a relative URL, for example `https://example.com/gitlab`.
+
 This document describes how to run GitLab under a relative URL for installations
 from source. If you are using an Omnibus package,
 [the steps are different][omnibus-rel]. Use this guide along with the
 [installation guide](installation.md) if you are installing GitLab for the
 first time.
-
----
-
-While it is recommended to install GitLab on its own (sub)domain, sometimes
-this is not possible due to a variety of reasons. In that case, GitLab can also
-be installed under a relative URL, for example `https://example.com/gitlab`.
 
 There is no limit to how deeply nested the relative URL can be. For example you
 could serve GitLab under `/foo/bar/gitlab/git` without any issues.
@@ -19,8 +20,6 @@ could serve GitLab under `/foo/bar/gitlab/git` without any issues.
 Note that by changing the URL on an existing GitLab installation, all remote
 URLs will change, so you'll have to manually edit them in any local repository
 that points to your GitLab instance.
-
----
 
 The TL;DR list of configuration files that you need to change in order to
 serve GitLab under a relative URL is:
@@ -126,3 +125,15 @@ To disable the relative URL:
 
 [omnibus-rel]: http://docs.gitlab.com/omnibus/settings/configuration.html#configuring-a-relative-url-for-gitlab "How to set up relative URL in Omnibus GitLab"
 [restart gitlab]: ../administration/restart_gitlab.md#installations-from-source "How to restart GitLab"
+
+<!-- ## Troubleshooting
+
+Include any troubleshooting steps that you can foresee. If you know beforehand what issues
+one might have when setting this up, or when something is changed, or on upgrading, it's
+important to describe those, too. Think of things that may go wrong and include them here.
+This is important to minimize requests for support, and to avoid doc comments with
+questions that you know someone might ask.
+
+Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+If you have none to add when creating a doc, leave this section in place
+but commented out to help encourage others to add to it in the future. -->

@@ -1,0 +1,5 @@
+---
+title: Added reference, web_path, and relative_position fields to GraphQL Issue
+merge_request: 28998
+author:
+type: changed

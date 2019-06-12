@@ -3,13 +3,13 @@ image: ruby:2.3
 
 pages:
   script:
-  - apt-get update -qq && apt-get install -qq nodejs
-  - bundle install -j4
-  - bundle exec rake generate
-  - mv public .public
-  - mv .public/octopress public
+    - apt-get update -qq && apt-get install -qq nodejs
+    - bundle install -j4
+    - bundle exec rake generate
+    - mv public .public
+    - mv .public/octopress public
   artifacts:
     paths:
-    - public
+      - public
   only:
-  - master
+    - master

@@ -36,91 +36,96 @@ In GitLab 11.0, the Master role was renamed to Maintainer.
 
 The following table depicts the various user permission levels in a project.
 
-| Action                                | Guest   | Reporter   | Developer   |Maintainer| Owner  |
-|---------------------------------------|---------|------------|-------------|----------|--------|
-| Create new issue                      | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
-| Create confidential issue             | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
-| View confidential issues              | (✓) [^2] | ✓         | ✓           | ✓        | ✓      |
-| Leave comments                        | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
-| See related issues                    | ✓       | ✓          | ✓           | ✓        | ✓      |
-| See a list of jobs                    | ✓ [^3]  | ✓          | ✓           | ✓        | ✓      |
-| See a job log                         | ✓ [^3]  | ✓          | ✓           | ✓        | ✓      |
-| Download and browse job artifacts     | ✓ [^3]  | ✓          | ✓           | ✓        | ✓      |
-| View wiki pages                       | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
-| Create and edit wiki pages            |         |            | ✓           | ✓        | ✓      |
-| Delete wiki pages                     |         |            |             | ✓        | ✓      |
-| View license management reports **[ULTIMATE]** | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
-| View Security reports **[ULTIMATE]**  | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
-| View project code                     | [^1]    | ✓          | ✓           | ✓        | ✓      |
-| Pull project code                     | [^1]    | ✓          | ✓           | ✓        | ✓      |
-| Download project                      | [^1]    | ✓          | ✓           | ✓        | ✓      |
-| Assign issues                         |         | ✓          | ✓           | ✓        | ✓      |
-| Assign merge requests                 |         |            | ✓           | ✓        | ✓      |
-| Label issues                          |         | ✓          | ✓           | ✓        | ✓      |
-| Label merge requests                  |         |            | ✓           | ✓        | ✓      |
-| Create code snippets                  |         | ✓          | ✓           | ✓        | ✓      |
-| Manage issue tracker                  |         | ✓          | ✓           | ✓        | ✓      |
-| Manage labels                         |         | ✓          | ✓           | ✓        | ✓      |
-| See a commit status                   |         | ✓          | ✓           | ✓        | ✓      |
-| See a container registry              |         | ✓          | ✓           | ✓        | ✓      |
-| See environments                      |         | ✓          | ✓           | ✓        | ✓      |
-| See a list of merge requests          |         | ✓          | ✓           | ✓        | ✓      |
-| Manage related issues **[STARTER]**   |         | ✓          | ✓           | ✓        | ✓      |
-| Lock issue discussions                |         | ✓          | ✓           | ✓        | ✓      |
-| Create issue from vulnerability **[ULTIMATE]** |         | ✓          | ✓           | ✓        | ✓      |
-| View Error Tracking list              |         | ✓          | ✓           | ✓        | ✓      |
-| Pull from [Maven repository](https://docs.gitlab.com/ee/user/project/packages/maven_repository.html) or [NPM registry](https://docs.gitlab.com/ee/user/project/packages/npm_registry.html) **[PREMIUM]** |         | ✓          | ✓           | ✓        | ✓      |
-| Publish to [Maven repository](https://docs.gitlab.com/ee/user/project/packages/maven_repository.html) or [NPM registry](https://docs.gitlab.com/ee/user/project/packages/npm_registry.html) **[PREMIUM]** |         |            | ✓           | ✓        | ✓      |
-| Lock merge request discussions        |         |            | ✓           | ✓        | ✓      |
-| Create new environments               |         |            | ✓           | ✓        | ✓      |
-| Stop environments                     |         |            | ✓           | ✓        | ✓      |
-| Manage/Accept merge requests          |         |            | ✓           | ✓        | ✓      |
-| Create new merge request              |         |            | ✓           | ✓        | ✓      |
-| Create new branches                   |         |            | ✓           | ✓        | ✓      |
-| Push to non-protected branches        |         |            | ✓           | ✓        | ✓      |
-| Force push to non-protected branches  |         |            | ✓           | ✓        | ✓      |
-| Remove non-protected branches         |         |            | ✓           | ✓        | ✓      |
-| Add tags                              |         |            | ✓           | ✓        | ✓      |
-| Cancel and retry jobs                 |         |            | ✓           | ✓        | ✓      |
-| Create or update commit status        |         |            | ✓           | ✓        | ✓      |
-| Update a container registry           |         |            | ✓           | ✓        | ✓      |
-| Remove a container registry image     |         |            | ✓           | ✓        | ✓      |
-| Create/edit/delete project milestones |         |            | ✓           | ✓        | ✓      |
+| Action                                            | Guest   | Reporter   | Developer   |Maintainer| Owner  |
+|---------------------------------------------------|---------|------------|-------------|----------|--------|
+| Download project                                  | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
+| Leave comments                                    | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
+| View Insights charts **[ULTIMATE]**               | ✓       | ✓          | ✓           | ✓        | ✓      |
 | View approved/blacklisted licenses **[ULTIMATE]** | ✓       | ✓          | ✓           | ✓        | ✓      |
-| Use security dashboard **[ULTIMATE]** |         |            | ✓           | ✓        | ✓      |
-| Dismiss vulnerability **[ULTIMATE]**  |         |            | ✓           | ✓        | ✓      |
-| Apply code change suggestions         |         |            | ✓           | ✓        | ✓      |
-| Use environment terminals             |         |            |             | ✓        | ✓      |
-| Run Web IDE's Interactive Web Terminals **[ULTIMATE ONLY]** | |            |          | ✓      | ✓      |
-| Add new team members                  |         |            |             | ✓        | ✓      |
-| Push to protected branches            |         |            |             | ✓        | ✓      |
-| Enable/disable branch protection      |         |            |             | ✓        | ✓      |
-| Turn on/off protected branch push for devs|     |            |             | ✓        | ✓      |
-| Enable/disable tag protections        |         |            |             | ✓        | ✓      |
-| Rewrite/remove Git tags               |         |            |             | ✓        | ✓      |
-| Edit project                          |         |            |             | ✓        | ✓      |
-| Add deploy keys to project            |         |            |             | ✓        | ✓      |
-| Configure project hooks               |         |            |             | ✓        | ✓      |
-| Manage Runners                        |         |            |             | ✓        | ✓      |
-| Manage job triggers                   |         |            |             | ✓        | ✓      |
-| Manage variables                      |         |            |             | ✓        | ✓      |
-| Manage GitLab Pages                   |         |            |             | ✓        | ✓      |
-| Manage GitLab Pages domains and certificates |         |            |             | ✓        | ✓      |
-| Remove GitLab Pages                   |         |            |             | ✓        | ✓      |
+| View license management reports **[ULTIMATE]**    | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
+| View Security reports **[ULTIMATE]**              | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
+| View project code                                 | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
+| Pull project code                                 | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
 | View GitLab Pages protected by [access control](project/pages/introduction.md#gitlab-pages-access-control-core-only) | ✓       | ✓          | ✓           | ✓        | ✓      |
-| Manage clusters                       |         |            |             | ✓        | ✓      |
-| Manage license policy **[ULTIMATE]**  |         |            |             | ✓        | ✓      |
-| Edit comments (posted by any user)    |         |            |             | ✓        | ✓      |
-| Manage Error Tracking                 |         |            |             | ✓        | ✓      |
-| Switch visibility level               |         |            |             |          | ✓      |
-| Transfer project to another namespace |         |            |             |          | ✓      |
-| Remove project                        |         |            |             |          | ✓      |
-| Delete issues                         |         |            |             |          | ✓      |
-| Force push to protected branches [^4] |         |            |             |          |        |
-| Remove protected branches [^4]        |         |            |             |          |        |
-| View project Audit Events             |         |            |             | ✓        | ✓      |
-| View project statistics               |         | ✓          | ✓           | ✓        | ✓      |
-| View Insights charts **[ULTIMATE]**   | ✓       | ✓         | ✓           | ✓        | ✓      |
+| View wiki pages                                   | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
+| See a list of jobs                                | ✓ (*3*) | ✓          | ✓           | ✓        | ✓      |
+| See a job log                                     | ✓ (*3*) | ✓          | ✓           | ✓        | ✓      |
+| Download and browse job artifacts                 | ✓ (*3*) | ✓          | ✓           | ✓        | ✓      |
+| Create new issue                                  | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
+| See related issues                                | ✓       | ✓          | ✓           | ✓        | ✓      |
+| Create confidential issue                         | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
+| View confidential issues                          | (*2*)   | ✓          | ✓           | ✓        | ✓      |
+| Assign issues                                     |         | ✓          | ✓           | ✓        | ✓      |
+| Label issues                                      |         | ✓          | ✓           | ✓        | ✓      |
+| Lock issue discussions                            |         | ✓          | ✓           | ✓        | ✓      |
+| Manage issue tracker                              |         | ✓          | ✓           | ✓        | ✓      |
+| Manage related issues **[STARTER]**               |         | ✓          | ✓           | ✓        | ✓      |
+| Create issue from vulnerability **[ULTIMATE]**    |         | ✓          | ✓           | ✓        | ✓      |
+| Manage labels                                     |         | ✓          | ✓           | ✓        | ✓      |
+| Create code snippets                              |         | ✓          | ✓           | ✓        | ✓      |
+| See a commit status                               |         | ✓          | ✓           | ✓        | ✓      |
+| See a container registry                          |         | ✓          | ✓           | ✓        | ✓      |
+| See environments                                  |         | ✓          | ✓           | ✓        | ✓      |
+| See a list of merge requests                      |         | ✓          | ✓           | ✓        | ✓      |
+| View project statistics                           |         | ✓          | ✓           | ✓        | ✓      |
+| View Error Tracking list                          |         | ✓          | ✓           | ✓        | ✓      |
+| Pull from [Maven repository](project/packages/maven_repository.md) or [NPM registry](project/packages/npm_registry.md) **[PREMIUM]** |         | ✓          | ✓           | ✓        | ✓      |
+| Publish to [Maven repository](project/packages/maven_repository.md) or [NPM registry](project/packages/npm_registry.md) **[PREMIUM]** |         |            | ✓           | ✓        | ✓      ||
+| Create new branches                               |         |            | ✓           | ✓        | ✓      |
+| Push to non-protected branches                    |         |            | ✓           | ✓        | ✓      |
+| Force push to non-protected branches              |         |            | ✓           | ✓        | ✓      |
+| Remove non-protected branches                     |         |            | ✓           | ✓        | ✓      |
+| Create new merge request                          |         |            | ✓           | ✓        | ✓      |
+| Assign merge requests                             |         |            | ✓           | ✓        | ✓      |
+| Label merge requests                              |         |            | ✓           | ✓        | ✓      |
+| Lock merge request discussions                    |         |            | ✓           | ✓        | ✓      |
+| Manage/Accept merge requests                      |         |            | ✓           | ✓        | ✓      |
+| Create new environments                           |         |            | ✓           | ✓        | ✓      |
+| Stop environments                                 |         |            | ✓           | ✓        | ✓      |
+| Add tags                                          |         |            | ✓           | ✓        | ✓      |
+| Cancel and retry jobs                             |         |            | ✓           | ✓        | ✓      |
+| Create or update commit status                    |         |            | ✓           | ✓        | ✓      |
+| Update a container registry                       |         |            | ✓           | ✓        | ✓      |
+| Remove a container registry image                 |         |            | ✓           | ✓        | ✓      |
+| Create/edit/delete project milestones             |         |            | ✓           | ✓        | ✓      |
+| Use security dashboard **[ULTIMATE]**             |         |            | ✓           | ✓        | ✓      |
+| Dismiss vulnerability **[ULTIMATE]**              |         |            | ✓           | ✓        | ✓      |
+| Apply code change suggestions                     |         |            | ✓           | ✓        | ✓      |
+| Create and edit wiki pages                        |         |            | ✓           | ✓        | ✓      |
+| Use environment terminals                         |         |            |             | ✓        | ✓      |
+| Run Web IDE's Interactive Web Terminals **[ULTIMATE ONLY]** |     |      |             | ✓        | ✓      |
+| Add new team members                              |         |            |             | ✓        | ✓      |
+| Enable/disable branch protection                  |         |            |             | ✓        | ✓      |
+| Push to protected branches                        |         |            |             | ✓        | ✓      |
+| Turn on/off protected branch push for devs        |         |            |             | ✓        | ✓      |
+| Enable/disable tag protections                    |         |            |             | ✓        | ✓      |
+| Rewrite/remove Git tags                           |         |            |             | ✓        | ✓      |
+| Edit project                                      |         |            |             | ✓        | ✓      |
+| Add deploy keys to project                        |         |            |             | ✓        | ✓      |
+| Configure project hooks                           |         |            |             | ✓        | ✓      |
+| Manage Runners                                    |         |            |             | ✓        | ✓      |
+| Manage job triggers                               |         |            |             | ✓        | ✓      |
+| Manage variables                                  |         |            |             | ✓        | ✓      |
+| Manage GitLab Pages                               |         |            |             | ✓        | ✓      |
+| Manage GitLab Pages domains and certificates      |         |            |             | ✓        | ✓      |
+| Remove GitLab Pages                               |         |            |             | ✓        | ✓      |
+| Manage clusters                                   |         |            |             | ✓        | ✓      |
+| Manage license policy **[ULTIMATE]**              |         |            |             | ✓        | ✓      |
+| Edit comments (posted by any user)                |         |            |             | ✓        | ✓      |
+| Manage Error Tracking                             |         |            |             | ✓        | ✓      |
+| Delete wiki pages                                 |         |            |             | ✓        | ✓      |
+| View project Audit Events                         |         |            |             | ✓        | ✓      |
+| Switch visibility level                           |         |            |             |          | ✓      |
+| Transfer project to another namespace             |         |            |             |          | ✓      |
+| Remove project                                    |         |            |             |          | ✓      |
+| Delete issues                                     |         |            |             |          | ✓      |
+| Force push to protected branches [^4]             |         |            |             |          |        |
+| Remove protected branches [^4]                    |         |            |             |          |        |
+
+- (*1*): All users are able to perform this action on public and internal projects, but not private projects.
+- (*2*): Guest users can only view the confidential issues they created themselves
+- (*3*): If **Public pipelines** is enabled in **Project Settings > CI/CD**
+- (*4*): Not allowed for Guest, Reporter, Developer, Maintainer, or Owner
 
 ## Project features permissions
 
@@ -163,7 +168,7 @@ to learn more.
 
 The user that locks a file or directory is the only one that can edit and push their changes back to the repository where the locked objects are located.
 
-Read through the documentation on [permissions for File Locking](https://docs.gitlab.com/ee/user/project/file_lock.html#permissions-on-file-locking) to learn more.
+Read through the documentation on [permissions for File Locking](project/file_lock.md#permissions-on-file-locking) to learn more.
 
 ### Confidential Issues permissions
 
@@ -191,21 +196,21 @@ Any user can remove themselves from a group, unless they are the last Owner of
 the group. The following table depicts the various user permission levels in a
 group.
 
-| Action                  | Guest | Reporter | Developer | Maintainer | Owner |
-|-------------------------|-------|----------|-----------|--------|-------|
-| Browse group            | ✓     | ✓        | ✓         | ✓      | ✓     |
-| Edit group              |       |          |           |        | ✓     |
-| Create subgroup         |       |          |           |        | ✓     |
-| Create project in group |       |          |  ✓         | ✓      | ✓     |
-| Manage group members    |       |          |           |        | ✓     |
-| Remove group            |       |          |           |        | ✓     |
-| Manage group labels     |       | ✓        | ✓         | ✓      | ✓     |
-| Create/edit/delete group milestones | |    | ✓         | ✓      | ✓     |
-| View group epic **[ULTIMATE]**   | ✓       | ✓        | ✓         | ✓      | ✓     |
-| Create/edit group epic **[ULTIMATE]**  |         | ✓        | ✓         | ✓      | ✓     |
-| Delete group epic **[ULTIMATE]**       |         |          |           |        | ✓     |
-| View group Audit Events  |         |          |           |        | ✓     |
-| View Insights charts **[ULTIMATE]** | ✓       | ✓         | ✓           | ✓        | ✓      |
+| Action                                | Guest | Reporter | Developer | Maintainer | Owner |
+|---------------------------------------|-------|----------|-----------|------------|-------|
+| Browse group                          | ✓     | ✓        | ✓         |  ✓         | ✓     |
+| View Insights charts **[ULTIMATE]**   | ✓     | ✓        | ✓         |  ✓         | ✓     |
+| View group epic **[ULTIMATE]**        | ✓     | ✓        | ✓         |  ✓         | ✓     |
+| Create/edit group epic **[ULTIMATE]** |       | ✓        | ✓         | ✓          | ✓     |
+| Manage group labels                   |       | ✓        | ✓         | ✓          | ✓     |
+| Create project in group               |       |          | ✓         | ✓          | ✓     |
+| Create/edit/delete group milestones   |       |          | ✓         | ✓          | ✓     |
+| Edit group                            |       |          |           |            | ✓     |
+| Create subgroup                       |       |          |           |            | ✓     |
+| Manage group members                  |       |          |           |            | ✓     |
+| Remove group                          |       |          |           |            | ✓     |
+| Delete group epic **[ULTIMATE]**      |       |          |           |            | ✓     |
+| View group Audit Events               |       |          |           |            | ✓     |
 
 ### Subgroup permissions
 
@@ -257,15 +262,15 @@ Please be aware that this regex could lead to a DOS attack, [see](https://en.wik
 
 ## Auditor users **[PREMIUM ONLY]**
 
->[Introduced][ee-998] in [GitLab Premium][eep] 8.17.
+>[Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/998) in [GitLab Premium](https://about.gitlab.com/pricing/) 8.17.
 
 Auditor users are given read-only access to all projects, groups, and other
 resources on the GitLab instance.
 
 An Auditor user should be able to access all projects and groups of a GitLab instance
-with the permissions described on the documentation on [auditor users permissions](https://docs.gitlab.com/ee/administration/auditor_users.html#permissions-and-restrictions-of-an-auditor-user).
+with the permissions described on the documentation on [auditor users permissions](../administration/auditor_users.md#permissions-and-restrictions-of-an-auditor-user).
 
-[Read more about Auditor users.](https://docs.gitlab.com/ee/administration/auditor_users.html)
+[Read more about Auditor users.](../administration/auditor_users.md)
 
 ## Project features
 
@@ -298,7 +303,7 @@ instance and project. In addition, all admins can use the admin interface under
 |---------------------------------------|-----------------|-------------|----------|--------|
 | See commits and jobs                  | ✓               | ✓           | ✓        | ✓      |
 | Retry or cancel job                   |                 | ✓           | ✓        | ✓      |
-| Erase job artifacts and trace         |                 | ✓ [^5]      | ✓        | ✓      |
+| Erase job artifacts and trace         |                 | ✓ (*1*)     | ✓        | ✓      |
 | Remove project                        |                 |             | ✓        | ✓      |
 | Create project                        |                 |             | ✓        | ✓      |
 | Change project configuration          |                 |             | ✓        | ✓      |
@@ -307,6 +312,8 @@ instance and project. In addition, all admins can use the admin interface under
 | See events in the system              |                 |             |          | ✓      |
 | Admin interface                       |                 |             |          | ✓      |
 
+- *1*: Only if the job was triggered by the user
+
 ### Job permissions
 
 NOTE: **Note:**
@@ -314,25 +321,28 @@ In GitLab 11.0, the Master role was renamed to Maintainer.
 
 >**Note:**
 GitLab 8.12 has a completely redesigned job permissions system.
-Read all about the [new model and its implications][new-mod].
+Read all about the [new model and its implications](project/new_ci_build_permissions_model.md).
 
 This table shows granted privileges for jobs triggered by specific types of
 users:
 
-| Action                                      | Guest, Reporter | Developer   |Maintainer| Admin  |
-|---------------------------------------------|-----------------|-------------|----------|--------|
-| Run CI job                                  |                 | ✓           | ✓        | ✓      |
-| Clone source and LFS from current project   |                 | ✓           | ✓        | ✓      |
-| Clone source and LFS from public projects   |                 | ✓           | ✓        | ✓      |
-| Clone source and LFS from internal projects |                 | ✓ [^6]      | ✓ [^6]   | ✓      |
-| Clone source and LFS from private projects  |                 | ✓ [^7]      | ✓ [^7]   | ✓ [^7] |
-| Push source and LFS                         |                 |             |          |        |
-| Pull container images from current project  |                 | ✓           | ✓        | ✓      |
-| Pull container images from public projects  |                 | ✓           | ✓        | ✓      |
-| Pull container images from internal projects|                 | ✓ [^6]      | ✓ [^6]   | ✓      |
-| Pull container images from private projects |                 | ✓ [^7]      | ✓ [^7]   | ✓ [^7] |
-| Push container images to current project    |                 | ✓           | ✓        | ✓      |
-| Push container images to other projects     |                 |             |          |        |
+| Action                                      | Guest, Reporter | Developer   |Maintainer| Admin   |
+|---------------------------------------------|-----------------|-------------|----------|---------|
+| Run CI job                                  |                 | ✓           | ✓        | ✓       |
+| Clone source and LFS from current project   |                 | ✓           | ✓        | ✓       |
+| Clone source and LFS from public projects   |                 | ✓           | ✓        | ✓       |
+| Clone source and LFS from internal projects |                 | ✓ (*1*)     | ✓  (*1*) | ✓       |
+| Clone source and LFS from private projects  |                 | ✓ (*2*)     | ✓  (*2*) | ✓ (*2*) |
+| Pull container images from current project  |                 | ✓           | ✓        | ✓       |
+| Pull container images from public projects  |                 | ✓           | ✓        | ✓       |
+| Pull container images from internal projects|                 | ✓ (*1*)     | ✓  (*1*) | ✓       |
+| Pull container images from private projects |                 | ✓ (*2*)     | ✓  (*2*) | ✓ (*2*) |
+| Push container images to current project    |                 | ✓           | ✓        | ✓       |
+| Push container images to other projects     |                 |             |          |         |
+| Push source and LFS                         |                 |             |          |         |
+
+- *1*: Only if the user is not an external one
+- *2*: Only if the user is a member of the project
 
 ### New CI job permissions model
 
@@ -350,17 +360,4 @@ for details about the pipelines security model.
 ## LDAP users permissions
 
 Since GitLab 8.15, LDAP user permissions can now be manually overridden by an admin user.
-Read through the documentation on [LDAP users permissions](https://docs.gitlab.com/ee/administration/auth/how_to_configure_ldap_gitlab_ee/index.html) to learn more.
-
-[^1]: On public and internal projects, all users are able to perform this action
-[^2]: Guest users can only view the confidential issues they created themselves
-[^3]: If **Public pipelines** is enabled in **Project Settings > CI/CD**
-[^4]: Not allowed for Guest, Reporter, Developer, Maintainer, or Owner
-[^5]: Only if the job was triggered by the user
-[^6]: Only if user is not external one
-[^7]: Only if user is a member of the project
-
-[ce-18994]: https://gitlab.com/gitlab-org/gitlab-ce/issues/18994
-[new-mod]: project/new_ci_build_permissions_model.md
-[ee-998]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/998
-[eep]: https://about.gitlab.com/pricing/
+Read through the documentation on [LDAP users permissions](../administration/auth/how_to_configure_ldap_gitlab_ee/index.html) to learn more.

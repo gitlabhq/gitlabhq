@@ -23,31 +23,31 @@ stages:
 foodcritic:
   stage: lint
   script:
-  - chef exec foodcritic .
+    - chef exec foodcritic .
 
 cookstyle:
   stage: lint
   script:
-  - chef exec cookstyle .
+    - chef exec cookstyle .
 
 chefspec:
   stage: test
   script:
-  - chef exec rspec spec
+    - chef exec rspec spec
 
 # Set up your test matrix here. Example:
-#verify-centos-6:
-#  stage: functional
-#  before_script:
-#  - apt-get update
-#  - apt-get -y install rsync
-#  script:
-#  - kitchen verify default-centos-6 --destroy=always
+# verify-centos-6:
+#   stage: functional
+#   before_script:
+#     - apt-get update
+#     - apt-get -y install rsync
+#   script:
+#     - kitchen verify default-centos-6 --destroy=always
 #
-#verify-centos-7:
-#  stage: functional
-#  before_script:
-#  - apt-get update
-#  - apt-get -y install rsync
-#  script:
-#  - kitchen verify default-centos-7 --destroy=always
+# verify-centos-7:
+#   stage: functional
+#   before_script:
+#     - apt-get update
+#     - apt-get -y install rsync
+#   script:
+#     - kitchen verify default-centos-7 --destroy=always

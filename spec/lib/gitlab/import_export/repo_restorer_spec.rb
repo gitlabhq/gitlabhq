@@ -34,11 +34,5 @@ describe Gitlab::ImportExport::RepoRestorer do
     it 'restores the repo successfully' do
       expect(restorer.restore).to be_truthy
     end
-
-    it 'has the webhooks' do
-      restorer.restore
-
-      expect(project_hook_exists?(project)).to be true
-    end
   end
 end

@@ -1,3 +1,3 @@
-export const hasProject = state => !!state.selectedProject.projectId;
-export const hasZone = state => !!state.selectedZone;
-export const hasMachineType = state => !!state.selectedMachineType;
+export const hasProject = state => Boolean(state.selectedProject.projectId);
+export const hasZone = state => Boolean(state.selectedZone);
+export const hasMachineType = state => Boolean(state.selectedMachineType);

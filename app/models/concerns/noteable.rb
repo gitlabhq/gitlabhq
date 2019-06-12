@@ -3,13 +3,15 @@
 module Noteable
   extend ActiveSupport::Concern
 
-  # `Noteable` class names that support resolvable notes.
-  RESOLVABLE_TYPES = %w(MergeRequest).freeze
-
   class_methods do
     # `Noteable` class names that support replying to individual notes.
     def replyable_types
       %w(Issue MergeRequest)
+    end
+
+    # `Noteable` class names that support resolvable notes.
+    def resolvable_types
+      %w(MergeRequest)
     end
   end
 
@@ -36,7 +38,7 @@ module Noteable
   end
 
   def supports_resolvable_notes?
-    RESOLVABLE_TYPES.include?(base_class_name)
+    self.class.resolvable_types.include?(base_class_name)
   end
 
   def supports_discussions?
@@ -131,3 +133,5 @@ module Noteable
     )
   end
 end
+
+Noteable.extend(Noteable::ClassMethods)

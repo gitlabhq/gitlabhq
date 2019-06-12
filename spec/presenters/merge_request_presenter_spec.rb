@@ -207,25 +207,25 @@ describe MergeRequestPresenter do
     end
   end
 
-  describe '#cancel_merge_when_pipeline_succeeds_path' do
+  describe '#cancel_auto_merge_path' do
     subject do
       described_class.new(resource, current_user: user)
-        .cancel_merge_when_pipeline_succeeds_path
+        .cancel_auto_merge_path
     end
 
     context 'when can cancel mwps' do
       it 'returns path' do
-        allow(resource).to receive(:can_cancel_merge_when_pipeline_succeeds?)
+        allow(resource).to receive(:can_cancel_auto_merge?)
           .with(user)
           .and_return(true)
 
-        is_expected.to eq("/#{resource.project.full_path}/merge_requests/#{resource.iid}/cancel_merge_when_pipeline_succeeds")
+        is_expected.to eq("/#{resource.project.full_path}/merge_requests/#{resource.iid}/cancel_auto_merge")
       end
     end
 
     context 'when cannot cancel mwps' do
       it 'returns nil' do
-        allow(resource).to receive(:can_cancel_merge_when_pipeline_succeeds?)
+        allow(resource).to receive(:can_cancel_auto_merge?)
           .with(user)
           .and_return(false)
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'Pipeline', :js do
@@ -115,11 +117,11 @@ describe 'Pipeline', :js do
           end
         end
 
-        it 'cancels the running build and does not show retry button' do
+        it 'cancels the running build and shows retry button' do
           find('#ci-badge-deploy .ci-action-icon-container').click
 
           page.within('#ci-badge-deploy') do
-            expect(page).not_to have_css('.js-icon-retry')
+            expect(page).to have_css('.js-icon-retry')
           end
         end
       end
@@ -133,11 +135,11 @@ describe 'Pipeline', :js do
           end
         end
 
-        it 'cancels the preparing build and does not show retry button' do
+        it 'cancels the preparing build and shows retry button' do
           find('#ci-badge-deploy .ci-action-icon-container').click
 
           page.within('#ci-badge-deploy') do
-            expect(page).not_to have_css('.js-icon-retry')
+            expect(page).to have_css('.js-icon-retry')
           end
         end
       end
@@ -327,6 +329,12 @@ describe 'Pipeline', :js do
       it 'does not render link to the pipeline ref' do
         expect(page).not_to have_link(pipeline.ref)
         expect(page).to have_content(pipeline.ref)
+      end
+
+      it 'does not render render raw HTML to the pipeline ref' do
+        page.within '.pipeline-info' do
+          expect(page).not_to have_content('<span class="ref-name"')
+        end
       end
     end
 

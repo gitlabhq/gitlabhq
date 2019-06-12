@@ -6,7 +6,7 @@ described, it is possible to adapt these instructions to your needs.
 
 ## Architecture overview
 
-![Geo HA Diagram](https://docs.gitlab.com/ee/administration/img/high_availability/geo-ha-diagram.png)
+![Geo HA Diagram](../../high_availability/img/geo-ha-diagram.png)
 
 _[diagram source - gitlab employees only][diagram-source]_
 
@@ -68,7 +68,7 @@ NOTE: **Note:** PostgreSQL and Redis should have already been disabled on the
 application servers, and connections from the application servers to those
 services on the backend servers configured, during normal GitLab HA set up. See
 high availability configuration documentation for
-[PostgreSQL](https://docs.gitlab.com/ee/administration/high_availability/database.html#configuring-the-application-nodes)
+[PostgreSQL](../../high_availability/database.md#configuring-the-application-nodes)
 and [Redis](../../high_availability/redis.md#example-configuration-for-the-gitlab-application).
 
 The **primary** database will require modification later, as part of

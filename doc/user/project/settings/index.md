@@ -26,6 +26,12 @@ Set up your project's access, [visibility](../../../public_access/public_access.
 
 ![projects sharing permissions](img/sharing_and_permissions_settings.png)
 
+If Issues are disabled, or you can't access Issues because you're not a project member, then Lables and Milestones 
+links will be missing from the sidebar UI.
+
+You can still access them with direct links if you can access Merge Requests. This is deliberate, if you can see 
+Issues or Merge Requests, both of which use Labels and Milestones, then you shouldn't be denied access to Labels and Milestones pages.
+
 ### Issue settings
 
 Add an [issue description template](../description_templates.md#description-templates) to your project, so that every new issue will start with a custom template.
@@ -36,7 +42,7 @@ Set up your project's merge request settings:
 
 - Set up the merge request method (merge commit, [fast-forward merge](../merge_requests/fast_forward_merge.html)).
 - Merge request [description templates](../description_templates.md#description-templates).
-- Enable [merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html#merge-request-approvals). **[STARTER]**
+- Enable [merge request approvals](../merge_requests/merge_request_approvals.md). **[STARTER]**
 - Enable [merge only of pipeline succeeds](../merge_requests/merge_when_pipeline_succeeds.md).
 - Enable [merge only when all discussions are resolved](../../discussions/index.md#only-allow-merge-requests-to-be-merged-if-all-discussions-are-resolved).
 
@@ -44,7 +50,7 @@ Set up your project's merge request settings:
 
 ### Service Desk **[PREMIUM]**
 
-Enable [Service Desk](https://docs.gitlab.com/ee/user/project/service_desk.html) for your project to offer customer support.
+Enable [Service Desk](../service_desk.md) for your project to offer customer support.
 
 ### Export project
 
@@ -100,9 +106,9 @@ Only project Owners and Admin users have the [permissions] to transfer a project
 
 You can transfer an existing project into a [group](../../group/index.md) if:
 
-1. you have at least **Maintainer** [permissions] to that group
-1. you are an **Owner** of the project.
-
+1. You have at least **Maintainer** [permissions] to that group.
+1. The project is in a subgroup you own.
+1. You are at least a **Maintainer** of the project under your personal namespace.
 Similarly, if you are an owner of a group, you can transfer any of its projects
 under your own user.
 

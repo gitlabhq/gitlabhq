@@ -1,4 +1,5 @@
 import { shallowMount, RouterLinkStub } from '@vue/test-utils';
+import { GlBadge } from '@gitlab/ui';
 import TableRow from '~/repository/components/table/row.vue';
 
 let vm;
@@ -29,9 +30,10 @@ describe('Repository table row component', () => {
 
   it('renders table row', () => {
     factory({
-      id: 1,
+      id: '1',
       path: 'test',
       type: 'file',
+      currentPath: '/',
     });
 
     expect(vm.element).toMatchSnapshot();
@@ -39,14 +41,15 @@ describe('Repository table row component', () => {
 
   it.each`
     type        | component         | componentName
-    ${'folder'} | ${RouterLinkStub} | ${'RouterLink'}
+    ${'tree'}   | ${RouterLinkStub} | ${'RouterLink'}
     ${'file'}   | ${'a'}            | ${'hyperlink'}
     ${'commit'} | ${'a'}            | ${'hyperlink'}
   `('renders a $componentName for type $type', ({ type, component }) => {
     factory({
-      id: 1,
+      id: '1',
       path: 'test',
       type,
+      currentPath: '/',
     });
 
     expect(vm.find(component).exists()).toBe(true);
@@ -54,14 +57,15 @@ describe('Repository table row component', () => {
 
   it.each`
     type        | pushes
-    ${'folder'} | ${true}
+    ${'tree'}   | ${true}
     ${'file'}   | ${false}
     ${'commit'} | ${false}
-  `('pushes new router if type $type is folder', ({ type, pushes }) => {
+  `('pushes new router if type $type is tree', ({ type, pushes }) => {
     factory({
-      id: 1,
+      id: '1',
       path: 'test',
       type,
+      currentPath: '/',
     });
 
     vm.trigger('click');
@@ -75,11 +79,36 @@ describe('Repository table row component', () => {
 
   it('renders commit ID for submodule', () => {
     factory({
-      id: 1,
+      id: '1',
       path: 'test',
       type: 'commit',
+      currentPath: '/',
     });
 
     expect(vm.find('.commit-sha').text()).toContain('1');
+  });
+
+  it('renders link with href', () => {
+    factory({
+      id: '1',
+      path: 'test',
+      type: 'blob',
+      url: 'https://test.com',
+      currentPath: '/',
+    });
+
+    expect(vm.find('a').attributes('href')).toEqual('https://test.com');
+  });
+
+  it('renders LFS badge', () => {
+    factory({
+      id: '1',
+      path: 'test',
+      type: 'commit',
+      currentPath: '/',
+      lfsOid: '1',
+    });
+
+    expect(vm.find(GlBadge).exists()).toBe(true);
   });
 });

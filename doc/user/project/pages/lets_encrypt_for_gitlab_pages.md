@@ -1,5 +1,7 @@
 ---
 description: "How to secure GitLab Pages websites with Let's Encrypt."
+type: howto
+last_updated: 2019-06-04
 ---
 
 # Let's Encrypt for GitLab Pages

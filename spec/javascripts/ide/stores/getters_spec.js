@@ -180,6 +180,38 @@ describe('IDE store getters', () => {
     });
   });
 
+  describe('isOnDefaultBranch', () => {
+    it('returns false when no project exists', () => {
+      const localGetters = {
+        currentProject: undefined,
+      };
+
+      expect(getters.isOnDefaultBranch({}, localGetters)).toBeFalsy();
+    });
+
+    it("returns true when project's default branch matches current branch", () => {
+      const localGetters = {
+        currentProject: {
+          default_branch: 'master',
+        },
+        branchName: 'master',
+      };
+
+      expect(getters.isOnDefaultBranch({}, localGetters)).toBeTruthy();
+    });
+
+    it("returns false when project's default branch doesn't match current branch", () => {
+      const localGetters = {
+        currentProject: {
+          default_branch: 'master',
+        },
+        branchName: 'feature',
+      };
+
+      expect(getters.isOnDefaultBranch({}, localGetters)).toBeFalsy();
+    });
+  });
+
   describe('packageJson', () => {
     it('returns package.json entry', () => {
       localState.entries['package.json'] = { name: 'package.json' };

@@ -30,6 +30,7 @@
   - [pipeline_default, 3]
   - [pipeline_cache, 3]
   - [deployment, 3]
+  - [auto_merge, 3]
   - [pipeline_hooks, 2]
   - [gitlab_shell, 2]
   - [email_receiver, 2]
@@ -91,3 +92,4 @@
   - [chat_notification, 2]
   - [migrate_external_diffs, 1]
   - [update_project_statistics, 1]
+  - [phabricator_import_import_tasks, 1]

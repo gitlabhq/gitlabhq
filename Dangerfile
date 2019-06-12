@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 danger.import_plugin('danger/plugins/helper.rb')
+danger.import_plugin('danger/plugins/roulette.rb')
 
 unless helper.release_automation?
   danger.import_dangerfile(path: 'danger/metadata')

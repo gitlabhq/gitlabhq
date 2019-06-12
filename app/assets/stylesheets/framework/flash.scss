@@ -6,6 +6,19 @@
   position: relative;
   z-index: 1;
 
+  .flash-notice,
+  .flash-alert,
+  .flash-success,
+  .flash-warning {
+    border-radius: $border-radius-default;
+    color: $white-light;
+
+    .container-fluid,
+    .container-fluid.container-limited {
+      background: transparent;
+    }
+  }
+
   .flash-notice {
     @extend .alert;
     background-color: $blue-500;
@@ -28,7 +41,8 @@
 
   .flash-warning {
     @extend .alert;
-    background-color: $orange-500;
+    background-color: $orange-100;
+    color: $orange-900;
     margin: 0;
   }
 
@@ -58,19 +72,6 @@
     @extend .alert;
     background-color: $green-500;
     margin: 0;
-  }
-
-  .flash-notice,
-  .flash-alert,
-  .flash-success,
-  .flash-warning {
-    border-radius: $border-radius-default;
-    color: $white-light;
-
-    .container-fluid,
-    .container-fluid.container-limited {
-      background: transparent;
-    }
   }
 
   &.flash-container-page {

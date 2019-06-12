@@ -13,7 +13,7 @@ module Todos
 
       # rubocop: disable CodeReuse/ActiveRecord
       def without_authorized(items)
-        items.where('user_id NOT IN (?)', authorized_users)
+        items.where('todos.user_id NOT IN (?)', authorized_users)
       end
       # rubocop: enable CodeReuse/ActiveRecord
 

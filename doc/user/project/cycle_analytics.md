@@ -1,10 +1,7 @@
 # Cycle Analytics
 
-> [Introduced][ce-5986] in GitLab 8.12. Further features were added in GitLab
-  8.14.
-
-Cycle Analytics measures the time spent to go from an [idea to production] for
-each of your projects. Cycle Analytics displays the median time for an idea to
+Cycle Analytics measures the time spent to go from an [idea to production] - also known
+as cycle time - for each of your projects. Cycle Analytics displays the median time for an idea to
 reach production, along with the time typically spent in each DevOps stage along the way.
 
 Cycle Analytics is useful in order to quickly determine the velocity of a given
@@ -54,9 +51,9 @@ Below you can see in more detail what the various stages of Cycle Analytics mean
 | Issue     | Measures the median time between creating an issue and taking action to solve it, by either labeling it or adding it to a milestone, whatever comes first. The label will be tracked only if it already has an [Issue Board list][board] created for it. |
 | Plan      | Measures the median time between the action you took for the previous stage, and pushing the first commit to the branch. The very first commit of the branch is the one that triggers the separation between **Plan** and **Code**, and at least one of the commits in the branch needs to contain the related issue number (e.g., `#42`). If none of the commits in the branch mention the related issue number, it is not considered to the measurement time of the stage. |
 | Code      | Measures the median time between pushing a first commit (previous stage) and creating a merge request (MR) related to that commit. The key to keep the process tracked is to include the [issue closing pattern] to the description of the merge request (for example, `Closes #xxx`, where `xxx` is the number of the issue related to this merge request). If the issue closing pattern is not present in the merge request description, the MR is not considered to the measurement time of the stage. |
-| Test      | Measures the median time to run the entire pipeline for that project. It's related to the time GitLab CI takes to run every job for the commits pushed to that merge request defined in the previous stage. It is basically the start->finish time for all pipelines. `master` is not excluded. It does not attempt to track time for any particular stages. |
-| Review    | Measures the median time taken to review the merge request, between its creation and until it's merged. |
-| Staging   | Measures the median time between merging the merge request until the very first deployment to production. It's tracked by the [environment] set to `production` or matching `production/*` (case-sensitive, `Production` won't work) in your GitLab CI configuration. If there isn't a production environment, this is not tracked. |
+| Test      | Measures the median time to run the entire pipeline for that project. It's related to the time GitLab CI takes to run every job for the commits pushed to that merge request defined in the previous stage. It is basically the start->finish time for all pipelines. |
+| Review    | Measures the median time taken to review the merge request that has closing issue pattern, between its creation and until it's merged. |
+| Staging   | Measures the median time between merging the merge request with closing issue pattern until the very first deployment to production. It's tracked by the [environment] set to `production` or matching `production/*` (case-sensitive, `Production` won't work) in your GitLab CI configuration. If there isn't a production environment, this is not tracked. |
 | Production| The sum of all time (medians) taken to run the entire process, from issue creation to deploying the code to production. |
 
 ---
@@ -77,8 +74,7 @@ To sum up, anything that doesn't follow the [GitLab flow] won't be tracked at al
 So, the Cycle Analytics dashboard won't present any data:
 
 - For merge requests that do not close an issue.
-- For issues not labeled with a label present in the Issue Board.
-- For issues not assigned a milestone.
+- For issues not labeled with a label present in the Issue Board or for issues not assigned a milestone.
 - For staging and production stages, if the project has no `production` or `production/*`
   environment.
 
@@ -86,7 +82,7 @@ So, the Cycle Analytics dashboard won't present any data:
 
 Below is a simple fictional workflow of a single cycle that happens in a
 single day passing through all seven stages. Note that if a stage does not have
-a start/stop mark, it is not measured and hence not calculated in the median
+a start and a stop mark, it is not measured and hence not calculated in the median
 time. It is assumed that milestones are created and CI for testing and setting
 environments is configured.
 

@@ -76,8 +76,8 @@ schedule:review-build-cng:
 
 .review-deploy-base: &review-deploy-base
   <<: *review-base
+  allow_failure: true
   stage: review
-  retry: 2
   variables:
     HOST_SUFFIX: "${CI_ENVIRONMENT_SLUG}"
     DOMAIN: "-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}"
@@ -128,6 +128,7 @@ review-stop:
 
 .review-qa-base: &review-qa-base
   <<: *review-docker
+  allow_failure: true
   stage: qa
   variables:
     <<: *review-docker-variables
@@ -157,7 +158,6 @@ review-stop:
 
 review-qa-smoke:
   <<: *review-qa-base
-  retry: 2
   script:
     - gitlab-qa Test::Instance::Smoke "${QA_IMAGE}" "${CI_ENVIRONMENT_URL}"
 
@@ -165,7 +165,10 @@ review-qa-all:
   <<: *review-qa-base
   allow_failure: true
   when: manual
+  parallel: 5
   script:
+    - export KNAPSACK_REPORT_PATH=knapsack/${CI_PROJECT_NAME}/review-qa-all_master_report.json
+    - export KNAPSACK_TEST_FILE_PATTERN=qa/specs/features/**/*_spec.rb
     - gitlab-qa Test::Instance::Any "${QA_IMAGE}" "${CI_ENVIRONMENT_URL}"
 
 .review-performance-base: &review-performance-base

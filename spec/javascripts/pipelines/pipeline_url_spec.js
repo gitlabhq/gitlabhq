@@ -13,6 +13,7 @@ describe('Pipeline Url Component', () => {
       propsData: {
         pipeline: {
           id: 1,
+          iid: 1,
           path: 'foo',
           flags: {},
         },
@@ -28,6 +29,7 @@ describe('Pipeline Url Component', () => {
       propsData: {
         pipeline: {
           id: 1,
+          iid: 1,
           path: 'foo',
           flags: {},
         },
@@ -47,6 +49,7 @@ describe('Pipeline Url Component', () => {
       propsData: {
         pipeline: {
           id: 1,
+          iid: 1,
           path: 'foo',
           flags: {
             latest: true,
@@ -78,6 +81,7 @@ describe('Pipeline Url Component', () => {
       propsData: {
         pipeline: {
           id: 1,
+          iid: 1,
           path: 'foo',
           flags: {
             latest: true,
@@ -100,6 +104,7 @@ describe('Pipeline Url Component', () => {
       propsData: {
         pipeline: {
           id: 1,
+          iid: 1,
           path: 'foo',
           flags: {
             failure_reason: true,

@@ -69,7 +69,11 @@
   }
 
   .emoji-block {
-    padding: 10px 0;
+    padding: $gl-padding-4 0;
+
+    @include media-breakpoint-down(md) {
+      padding: $gl-padding-8 0;
+    }
   }
 }
 
@@ -131,6 +135,10 @@
   background: $gray-light;
   z-index: 200;
   overflow: hidden;
+
+  @include media-breakpoint-down(sm) {
+    z-index: 251;
+  }
 
   a:not(.btn) {
     color: inherit;
@@ -218,7 +226,7 @@
 
   .title {
     color: $gl-text-color;
-    margin-bottom: 10px;
+    margin-bottom: $gl-padding-8;
     line-height: 1;
 
     .avatar {
@@ -604,7 +612,6 @@
 .participants-list {
   display: flex;
   flex-wrap: wrap;
-  margin: -7px;
 }
 
 .user-list {
@@ -614,7 +621,7 @@
 
 .participants-author {
   display: inline-block;
-  padding: 7px;
+  padding: 0 $gl-padding-8 $gl-padding-8 0;
 
   &:nth-of-type(7n) {
     padding-right: 0;
@@ -641,7 +648,6 @@
 
 .participants-more,
 .user-list-more {
-  margin-top: 5px;
   margin-left: 5px;
 
   a,
@@ -676,8 +682,7 @@
   justify-content: center;
   align-items: center;
   margin-top: 0;
-  padding-left: 9px;
-  padding-right: 9px;
+  padding: 0 $gl-padding-8;
 
   @include media-breakpoint-up(sm) {
     display: inline-block;

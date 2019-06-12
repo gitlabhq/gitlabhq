@@ -1,0 +1,422 @@
+{
+  "version": "2.1",
+  "vulnerabilities": [
+    {
+      "category": "dependency_scanning",
+      "name": "Vulnerabilities in libxml2",
+      "message": "Vulnerabilities in libxml2 in nokogiri",
+      "description": "  The version of libxml2 packaged with Nokogiri contains several vulnerabilities.\r\n  Nokogiri has mitigated these issues by upgrading to libxml 2.9.5.\r\n\r\n  It was discovered that a type confusion error existed in libxml2. An\r\n  attacker could use this to specially construct XML data that\r\n  could cause a denial of service or possibly execute arbitrary\r\n  code. (CVE-2017-0663)\r\n\r\n  It was discovered that libxml2 did not properly validate parsed entity\r\n  references. An attacker could use this to specially construct XML\r\n  data that could expose sensitive information. (CVE-2017-7375)\r\n\r\n  It was discovered that a buffer overflow existed in libxml2 when\r\n  handling HTTP redirects. An attacker could use this to specially\r\n  construct XML data that could cause a denial of service or possibly\r\n  execute arbitrary code. (CVE-2017-7376)\r\n\r\n  Marcel Böhme and Van-Thuan Pham discovered a buffer overflow in\r\n  libxml2 when handling elements. An attacker could use this to specially\r\n  construct XML data that could cause a denial of service or possibly\r\n  execute arbitrary code. (CVE-2017-9047)\r\n\r\n  Marcel Böhme and Van-Thuan Pham discovered a buffer overread\r\n  in libxml2 when handling elements. An attacker could use this\r\n  to specially construct XML data that could cause a denial of\r\n  service. (CVE-2017-9048)\r\n\r\n  Marcel Böhme and Van-Thuan Pham discovered multiple buffer overreads\r\n  in libxml2 when handling parameter-entity references. An attacker\r\n  could use these to specially construct XML data that could cause a\r\n  denial of service. (CVE-2017-9049, CVE-2017-9050)",
+      "cve": "rails/Gemfile.lock:nokogiri:gemnasium:06565b64-486d-4326-b906-890d9915804d",
+      "severity": "Unknown",
+      "solution": "Upgrade to latest version.",
+      "scanner": {
+        "id": "gemnasium",
+        "name": "Gemnasium"
+      },
+      "location": {
+        "file": "rails/Gemfile.lock",
+        "dependency": {
+          "package": {
+            "name": "nokogiri"
+          },
+          "version": "1.8.0"
+        }
+      },
+      "identifiers": [
+        {
+          "type": "gemnasium",
+          "name": "Gemnasium-06565b64-486d-4326-b906-890d9915804d",
+          "value": "06565b64-486d-4326-b906-890d9915804d",
+          "url": "https://deps.sec.gitlab.com/packages/gem/nokogiri/versions/1.8.0/advisories"
+        },
+        {
+          "type": "usn",
+          "name": "USN-3424-1",
+          "value": "USN-3424-1",
+          "url": "https://usn.ubuntu.com/3424-1/"
+        }
+      ],
+      "links": [
+        {
+          "url": "https://github.com/sparklemotion/nokogiri/issues/1673"
+        }
+      ]
+    },
+    {
+      "category": "dependency_scanning",
+      "name": "Infinite recursion in parameter entities",
+      "message": "Infinite recursion in parameter entities in nokogiri",
+      "description": "libxml2 incorrectly handles certain parameter entities. An attacker can leverage this with specially constructed XML data to cause libxml2 to consume resources, leading to a denial of service.",
+      "cve": "rails/Gemfile.lock:nokogiri:gemnasium:6a0d56f6-2441-492a-9b14-edb95ac31919",
+      "severity": "Unknown",
+      "solution": "Upgrade to latest version.",
+      "scanner": {
+        "id": "gemnasium",
+        "name": "Gemnasium"
+      },
+      "location": {
+        "file": "rails/Gemfile.lock",
+        "dependency": {
+          "package": {
+            "name": "nokogiri"
+          },
+          "version": "1.8.0"
+        }
+      },
+      "identifiers": [
+        {
+          "type": "gemnasium",
+          "name": "Gemnasium-6a0d56f6-2441-492a-9b14-edb95ac31919",
+          "value": "6a0d56f6-2441-492a-9b14-edb95ac31919",
+          "url": "https://deps.sec.gitlab.com/packages/gem/nokogiri/versions/1.8.0/advisories"
+        },
+        {
+          "type": "cve",
+          "name": "CVE-2017-16932",
+          "value": "CVE-2017-16932",
+          "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-16932"
+        }
+      ],
+      "links": [
+        {
+          "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-16932"
+        },
+        {
+          "url": "https://github.com/sparklemotion/nokogiri/issues/1714"
+        },
+        {
+          "url": "https://people.canonical.com/~ubuntu-security/cve/2017/CVE-2017-16932.html"
+        },
+        {
+          "url": "https://usn.ubuntu.com/usn/usn-3504-1/"
+        }
+      ]
+    },
+    {
+      "category": "dependency_scanning",
+      "name": "Denial of Service",
+      "message": "Denial of Service in nokogiri",
+      "description": "libxml2 incorrectly handles certain files. An attacker can use this issue with specially constructed XML data to cause libxml2 to consume resources, leading to a denial of service.\r\n\r\n",
+      "cve": "rails/Gemfile.lock:nokogiri:gemnasium:78658378-bd8f-4d79-81c8-07c419302426",
+      "severity": "Unknown",
+      "solution": "Upgrade to latest version.",
+      "scanner": {
+        "id": "gemnasium",
+        "name": "Gemnasium"
+      },
+      "location": {
+        "file": "rails/Gemfile.lock",
+        "dependency": {
+          "package": {
+            "name": "nokogiri"
+          },
+          "version": "1.8.0"
+        }
+      },
+      "identifiers": [
+        {
+          "type": "gemnasium",
+          "name": "Gemnasium-78658378-bd8f-4d79-81c8-07c419302426",
+          "value": "78658378-bd8f-4d79-81c8-07c419302426",
+          "url": "https://deps.sec.gitlab.com/packages/gem/nokogiri/versions/1.8.0/advisories"
+        },
+        {
+          "type": "cve",
+          "name": "CVE-2017-15412",
+          "value": "CVE-2017-15412",
+          "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-15412"
+        }
+      ],
+      "links": [
+        {
+          "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-15412"
+        },
+        {
+          "url": "https://github.com/sparklemotion/nokogiri/issues/1714"
+        },
+        {
+          "url": "https://people.canonical.com/~ubuntu-security/cve/2017/CVE-2017-15412.html"
+        }
+      ]
+    },
+    {
+      "category": "dependency_scanning",
+      "name": "Bypass of a protection mechanism in libxslt",
+      "message": "Bypass of a protection mechanism in libxslt in nokogiri",
+      "description": "libxslt through 1.1.33 allows bypass of a protection mechanism because callers of xsltCheckRead and xsltCheckWrite permit access even upon receiving a -1 error code. xsltCheckRead can return -1 for a crafted URL that is not actually invalid and is subsequently loaded. Vendored version of libxslt has been patched to remediate this vulnerability. Note that this patch is not yet (as of 2019-04-22) in an upstream release of libxslt.",
+      "cve": "rails/Gemfile.lock:nokogiri:gemnasium:1a2e2e6e-67ba-4142-bfa1-3391f5416e4c",
+      "severity": "Unknown",
+      "solution": "Upgrade to latest version if using vendored version of libxslt OR update the system library libxslt to a fixed version",
+      "scanner": {
+        "id": "gemnasium",
+        "name": "Gemnasium"
+      },
+      "location": {
+        "file": "rails/Gemfile.lock",
+        "dependency": {
+          "package": {
+            "name": "nokogiri"
+          },
+          "version": "1.8.0"
+        }
+      },
+      "identifiers": [
+        {
+          "type": "gemnasium",
+          "name": "Gemnasium-1a2e2e6e-67ba-4142-bfa1-3391f5416e4c",
+          "value": "1a2e2e6e-67ba-4142-bfa1-3391f5416e4c",
+          "url": "https://deps.sec.gitlab.com/packages/gem/nokogiri/versions/1.8.0/advisories"
+        },
+        {
+          "type": "cve",
+          "name": "CVE-2019-11068",
+          "value": "CVE-2019-11068",
+          "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-11068"
+        }
+      ],
+      "links": [
+        {
+          "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-11068"
+        },
+        {
+          "url": "https://github.com/sparklemotion/nokogiri/issues/1892"
+        },
+        {
+          "url": "https://people.canonical.com/~ubuntu-security/cve/CVE-2019-11068"
+        },
+        {
+          "url": "https://security-tracker.debian.org/tracker/CVE-2019-11068"
+        }
+      ]
+    },
+    {
+      "category": "dependency_scanning",
+      "name": "Regular Expression Denial of Service",
+      "message": "Regular Expression Denial of Service in debug",
+      "description": "The debug module is vulnerable to regular expression denial of service when untrusted user input is passed into the `o` formatter. It takes around 50k characters to block for 2 seconds making this a low severity issue.",
+      "cve": "yarn/yarn.lock:debug:gemnasium:37283ed4-0380-40d7-ada7-2d994afcc62a",
+      "severity": "Unknown",
+      "solution": "Upgrade to latest versions.",
+      "scanner": {
+        "id": "gemnasium",
+        "name": "Gemnasium"
+      },
+      "location": {
+        "file": "yarn/yarn.lock",
+        "dependency": {
+          "package": {
+            "name": "debug"
+          },
+          "version": "1.0.5"
+        }
+      },
+      "identifiers": [
+        {
+          "type": "gemnasium",
+          "name": "Gemnasium-37283ed4-0380-40d7-ada7-2d994afcc62a",
+          "value": "37283ed4-0380-40d7-ada7-2d994afcc62a",
+          "url": "https://deps.sec.gitlab.com/packages/npm/debug/versions/1.0.5/advisories"
+        }
+      ],
+      "links": [
+        {
+          "url": "https://github.com/visionmedia/debug/issues/501"
+        },
+        {
+          "url": "https://github.com/visionmedia/debug/pull/504"
+        },
+        {
+          "url": "https://nodesecurity.io/advisories/534"
+        }
+      ]
+    },
+    {
+      "category": "dependency_scanning",
+      "name": "Authentication bypass via incorrect DOM traversal and canonicalization",
+      "message": "Authentication bypass via incorrect DOM traversal and canonicalization in saml2-js",
+      "description": "Some XML DOM traversal and canonicalization APIs may be inconsistent in handling of comments within XML nodes. Incorrect use of these APIs by some SAML libraries results in incorrect parsing of the inner text of XML nodes such that any inner text after the comment is lost prior to cryptographically signing the SAML message. Text after the comment therefore has no impact on the signature on the SAML message.\r\n\r\nA remote attacker can modify SAML content for a SAML service provider without invalidating the cryptographic signature, which may allow attackers to bypass primary authentication for the affected SAML service provider.",
+      "cve": "yarn/yarn.lock:saml2-js:gemnasium:9952e574-7b5b-46fa-a270-aeb694198a98",
+      "severity": "Unknown",
+      "solution": "Upgrade to fixed version.\r\n",
+      "scanner": {
+        "id": "gemnasium",
+        "name": "Gemnasium"
+      },
+      "location": {
+        "file": "yarn/yarn.lock",
+        "dependency": {
+          "package": {
+            "name": "saml2-js"
+          },
+          "version": "1.5.0"
+        }
+      },
+      "identifiers": [
+        {
+          "type": "gemnasium",
+          "name": "Gemnasium-9952e574-7b5b-46fa-a270-aeb694198a98",
+          "value": "9952e574-7b5b-46fa-a270-aeb694198a98",
+          "url": "https://deps.sec.gitlab.com/packages/npm/saml2-js/versions/1.5.0/advisories"
+        },
+        {
+          "type": "cve",
+          "name": "CVE-2017-11429",
+          "value": "CVE-2017-11429",
+          "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-11429"
+        }
+      ],
+      "links": [
+        {
+          "url": "https://github.com/Clever/saml2/commit/3546cb61fd541f219abda364c5b919633609ef3d#diff-af730f9f738de1c9ad87596df3f6de84R279"
+        },
+        {
+          "url": "https://github.com/Clever/saml2/issues/127"
+        },
+        {
+          "url": "https://www.kb.cert.org/vuls/id/475445"
+        }
+      ]
+    }
+  ],
+  "remediations": [],
+  "dependency_files": [
+    {
+      "path": "rails/Gemfile.lock",
+      "package_manager": "bundler",
+      "dependencies": [
+        {
+          "package": {
+            "name": "mini_portile2"
+          },
+          "version": "2.2.0"
+        },
+        {
+          "package": {
+            "name": "nokogiri"
+          },
+          "version": "1.8.0"
+        }
+      ]
+    },
+    {
+      "path": "yarn/yarn.lock",
+      "package_manager": "yarn",
+      "dependencies": [
+        {
+          "package": {
+            "name": "async"
+          },
+          "version": "0.2.10"
+        },
+        {
+          "package": {
+            "name": "async"
+          },
+          "version": "1.5.2"
+        },
+        {
+          "package": {
+            "name": "debug"
+          },
+          "version": "1.0.5"
+        },
+        {
+          "package": {
+            "name": "ejs"
+          },
+          "version": "0.8.8"
+        },
+        {
+          "package": {
+            "name": "ms"
+          },
+          "version": "2.0.0"
+        },
+        {
+          "package": {
+            "name": "node-forge"
+          },
+          "version": "0.2.24"
+        },
+        {
+          "package": {
+            "name": "saml2-js"
+          },
+          "version": "1.5.0"
+        },
+        {
+          "package": {
+            "name": "sax"
+          },
+          "version": "1.2.4"
+        },
+        {
+          "package": {
+            "name": "underscore"
+          },
+          "version": "1.9.1"
+        },
+        {
+          "package": {
+            "name": "underscore"
+          },
+          "version": "1.6.0"
+        },
+        {
+          "package": {
+            "name": "xml-crypto"
+          },
+          "version": "0.8.5"
+        },
+        {
+          "package": {
+            "name": "xml-encryption"
+          },
+          "version": "0.7.4"
+        },
+        {
+          "package": {
+            "name": "xml2js"
+          },
+          "version": "0.4.19"
+        },
+        {
+          "package": {
+            "name": "xmlbuilder"
+          },
+          "version": "2.1.0"
+        },
+        {
+          "package": {
+            "name": "xmlbuilder"
+          },
+          "version": "9.0.7"
+        },
+        {
+          "package": {
+            "name": "xmldom"
+          },
+          "version": "0.1.19"
+        },
+        {
+          "package": {
+            "name": "xmldom"
+          },
+          "version": "0.1.27"
+        },
+        {
+          "package": {
+            "name": "xpath.js"
+          },
+          "version": "1.1.0"
+        },
+        {
+          "package": {
+            "name": "xpath"
+          },
+          "version": "0.0.5"
+        }
+      ]
+    }
+  ]
+}

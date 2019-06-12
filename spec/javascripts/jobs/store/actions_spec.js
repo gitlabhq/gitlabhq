@@ -16,10 +16,6 @@ import {
   stopPollingTrace,
   receiveTraceSuccess,
   receiveTraceError,
-  requestStages,
-  fetchStages,
-  receiveStagesSuccess,
-  receiveStagesError,
   requestJobsForStage,
   fetchJobsForStage,
   receiveJobsForStageSuccess,
@@ -301,107 +297,6 @@ describe('Job State actions', () => {
         null,
         mockedState,
         [{ type: types.RECEIVE_TRACE_ERROR }],
-        [],
-        done,
-      );
-    });
-  });
-
-  describe('requestStages', () => {
-    it('should commit REQUEST_STAGES mutation ', done => {
-      testAction(requestStages, null, mockedState, [{ type: types.REQUEST_STAGES }], [], done);
-    });
-  });
-
-  describe('fetchStages', () => {
-    let mock;
-
-    beforeEach(() => {
-      mockedState.job.pipeline = {
-        path: `${TEST_HOST}/endpoint`,
-      };
-      mockedState.selectedStage = 'deploy';
-      mock = new MockAdapter(axios);
-    });
-
-    afterEach(() => {
-      mock.restore();
-    });
-
-    describe('success', () => {
-      it('dispatches requestStages and receiveStagesSuccess, fetchJobsForStage ', done => {
-        mock
-          .onGet(`${TEST_HOST}/endpoint.json`)
-          .replyOnce(200, { details: { stages: [{ name: 'build' }, { name: 'deploy' }] } });
-
-        testAction(
-          fetchStages,
-          null,
-          mockedState,
-          [],
-          [
-            {
-              type: 'requestStages',
-            },
-            {
-              payload: [{ name: 'build' }, { name: 'deploy' }],
-              type: 'receiveStagesSuccess',
-            },
-            {
-              payload: { name: 'deploy' },
-              type: 'fetchJobsForStage',
-            },
-          ],
-          done,
-        );
-      });
-    });
-
-    describe('error', () => {
-      beforeEach(() => {
-        mock.onGet(`${TEST_HOST}/endpoint.json`).reply(500);
-      });
-
-      it('dispatches requestStages and receiveStagesError ', done => {
-        testAction(
-          fetchStages,
-          null,
-          mockedState,
-          [],
-          [
-            {
-              type: 'requestStages',
-            },
-            {
-              type: 'receiveStagesError',
-            },
-          ],
-          done,
-        );
-      });
-    });
-  });
-
-  describe('receiveStagesSuccess', () => {
-    it('should commit RECEIVE_STAGES_SUCCESS mutation ', done => {
-      testAction(
-        receiveStagesSuccess,
-        {},
-        mockedState,
-        [{ type: types.RECEIVE_STAGES_SUCCESS, payload: {} }],
-        [],
-        done,
-      );
-    });
-  });
-
-  describe('receiveStagesError', () => {
-    it('should commit RECEIVE_STAGES_ERROR mutation ', done => {
-      testAction(
-        receiveStagesError,
-        null,
-        mockedState,
-        [{ type: types.RECEIVE_STAGES_ERROR }],
         [],
         done,
       );

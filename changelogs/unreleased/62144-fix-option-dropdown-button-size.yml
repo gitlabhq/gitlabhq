@@ -1,0 +1,5 @@
+---
+title: Fix inconsistent option dropdown button height to match adjacent button
+merge_request: 29096
+author:
+type: fixed

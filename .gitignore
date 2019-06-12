@@ -79,3 +79,4 @@ package-lock.json
 /junit_*.xml
 /coverage-frontend/
 jsdoc/
+**/tmp/rubocop_cache/**

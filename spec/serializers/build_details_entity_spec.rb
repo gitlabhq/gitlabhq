@@ -122,5 +122,38 @@ describe BuildDetailsEntity do
 
       it { is_expected.to include(failure_reason: 'unmet_prerequisites') }
     end
+
+    context 'when a build has environment with latest deployment' do
+      let(:build) do
+        create(:ci_build, :running, environment: environment.name, pipeline: pipeline)
+      end
+
+      let(:environment) do
+        create(:environment, project: project, name: 'staging', state: :available)
+      end
+
+      before do
+        create(:deployment, :success, environment: environment, project: project)
+
+        allow(request).to receive(:project).and_return(project)
+      end
+
+      it 'does not serialize latest deployment commit and associated builds' do
+        response = subject.with_indifferent_access
+
+        response.dig(:deployment_status, :environment, :last_deployment).tap do |deployment|
+          expect(deployment).not_to include(:commit, :manual_actions, :scheduled_actions)
+        end
+      end
+    end
+
+    context 'when the build has reports' do
+      let!(:report) { create(:ci_job_artifact, :codequality, job: build) }
+
+      it 'exposes the report artifacts' do
+        expect(subject[:reports].count).to eq(1)
+        expect(subject[:reports].first[:file_type]).to eq('codequality')
+      end
+    end
   end
 end

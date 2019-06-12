@@ -1,5 +1,6 @@
 export default () => ({
   error: null,
+  installed: 'checking',
   isLoading: true,
 
   // functions

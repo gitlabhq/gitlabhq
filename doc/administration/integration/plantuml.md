@@ -27,7 +27,7 @@ own PlantUML server is easy in Debian/Ubuntu distributions using Tomcat.
 First you need to create a `plantuml.war` file from the source code:
 
 ```
-sudo apt-get install graphviz openjdk-7-jdk git-core maven
+sudo apt-get install graphviz openjdk-8-jdk git-core maven
 git clone https://github.com/plantuml/plantuml-server.git
 cd plantuml-server
 mvn package

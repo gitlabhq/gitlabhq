@@ -104,14 +104,6 @@ module Banzai
         matches[:namespace] && matches[:project]
       end
 
-      def unescape_html_entities(text)
-        CGI.unescapeHTML(text.to_s)
-      end
-
-      def escape_html_entities(text)
-        CGI.escapeHTML(text.to_s)
-      end
-
       def object_link_title(object, matches)
         # use title of wrapped element instead
         nil

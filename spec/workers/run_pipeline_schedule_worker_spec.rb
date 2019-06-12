@@ -32,7 +32,37 @@ describe RunPipelineScheduleWorker do
 
       it 'calls the Service' do
         expect(Ci::CreatePipelineService).to receive(:new).with(project, user, ref: pipeline_schedule.ref).and_return(create_pipeline_service)
-        expect(create_pipeline_service).to receive(:execute).with(:schedule, ignore_skip_ci: true, save_on_errors: false, schedule: pipeline_schedule)
+        expect(create_pipeline_service).to receive(:execute!).with(:schedule, ignore_skip_ci: true, save_on_errors: false, schedule: pipeline_schedule)
+
+        worker.perform(pipeline_schedule.id, user.id)
+      end
+    end
+
+    context 'when database statement timeout happens' do
+      before do
+        allow(Ci::CreatePipelineService).to receive(:new) { raise ActiveRecord::StatementInvalid }
+
+        expect(Gitlab::Sentry)
+          .to receive(:track_exception)
+          .with(ActiveRecord::StatementInvalid,
+                issue_url: 'https://gitlab.com/gitlab-org/gitlab-ce/issues/41231',
+                extra: { schedule_id: pipeline_schedule.id } ).once
+      end
+
+      it 'increments Prometheus counter' do
+        expect(Gitlab::Metrics)
+          .to receive(:counter)
+          .with(:pipeline_schedule_creation_failed_total, "Counter of failed attempts of pipeline schedule creation")
+          .and_call_original
+
+        worker.perform(pipeline_schedule.id, user.id)
+      end
+
+      it 'logging a pipeline error' do
+        expect(Rails.logger)
+          .to receive(:error)
+          .with(a_string_matching('ActiveRecord::StatementInvalid'))
+          .and_call_original
 
         worker.perform(pipeline_schedule.id, user.id)
       end

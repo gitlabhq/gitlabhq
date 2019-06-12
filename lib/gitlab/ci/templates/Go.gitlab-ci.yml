@@ -16,21 +16,21 @@ before_script:
   - cd $GOPATH/src/$REPO_NAME
 
 stages:
-    - test
-    - build
-    - deploy
+  - test
+  - build
+  - deploy
 
 format:
-    stage: test
-    script:
-      - go fmt $(go list ./... | grep -v /vendor/)
-      - go vet $(go list ./... | grep -v /vendor/)
-      - go test -race $(go list ./... | grep -v /vendor/)
+  stage: test
+  script:
+    - go fmt $(go list ./... | grep -v /vendor/)
+    - go vet $(go list ./... | grep -v /vendor/)
+    - go test -race $(go list ./... | grep -v /vendor/)
 
 compile:
-    stage: build
-    script:
-      - go build -race -ldflags "-extldflags '-static'" -o $CI_PROJECT_DIR/mybinary
-    artifacts:
-      paths:
-        - mybinary
+  stage: build
+  script:
+    - go build -race -ldflags "-extldflags '-static'" -o $CI_PROJECT_DIR/mybinary
+  artifacts:
+    paths:
+      - mybinary

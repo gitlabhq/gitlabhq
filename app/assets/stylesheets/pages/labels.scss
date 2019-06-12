@@ -456,8 +456,9 @@
 
 // Don't hide the overflow in system messages
 .system-note-message,
-.issuable-detail,
+.issuable-details,
 .md-preview-holder,
+.referenced-commands,
 .note-body {
   .scoped-label-wrapper {
     .badge {

@@ -2,7 +2,7 @@
 
 This area is to maintain a compendium of useful information when working with elasticsearch.
 
-Information on how to enable ElasticSearch and perform the initial indexing is kept in https://docs.gitlab.com/ee/integration/elasticsearch.html#enabling-elasticsearch
+Information on how to enable ElasticSearch and perform the initial indexing is kept in ../integration/elasticsearch.md#enabling-elasticsearch
 
 ## Initial installation on OS X
 
@@ -16,7 +16,7 @@ and use `docker stop elastic56` and `docker start elastic56` to stop/start it.
 
 ### Installing on the host
 
-We currently only support Elasticsearch [5.6 to 6.x](https://docs.gitlab.com/ee/integration/elasticsearch.html#requirements)
+We currently only support Elasticsearch [5.6 to 6.x](../integration/elasticsearch.md#version-requirements)
 
 Version 5.6 is available on homebrew and is the recommended version to use in order to test compatibility.
 
@@ -43,7 +43,7 @@ this adds `gitlab-elasticsearch-indexer` to `$GOPATH/bin`, please make sure that
 - `gitlab:elastic:test:index_size`: Tells you how much space the current index is using, as well as how many documents are in the index.
 - `gitlab:elastic:test:index_size_change`: Outputs index size, reindexes, and outputs index size again. Useful when testing improvements to indexing size.
 
-Additionally, if you need large repos or multiple forks for testing, please consider [following these instructions](https://docs.gitlab.com/ee/development/rake_tasks.html#extra-project-seed-options)
+Additionally, if you need large repos or multiple forks for testing, please consider [following these instructions](rake_tasks.md#extra-project-seed-options)
 
 ## How does it work?
 

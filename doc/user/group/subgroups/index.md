@@ -1,11 +1,17 @@
+---
+type: reference, howto, concepts
+---
+
 # Subgroups
 
 NOTE: **Note:**
 [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/2772) in GitLab 9.0. Not available when using MySQL as external
 database (support removed in GitLab 9.3 [due to performance reasons](https://gitlab.com/gitlab-org/gitlab-ce/issues/30472#note_27747600)).
 
-With subgroups (aka nested groups or hierarchical groups) you can have
-up to 20 levels of nested groups, which among other things can help you to:
+Subgroups, also known as nested groups or hierarchical groups, allow you to have up to 20
+levels of groups.
+
+By using subgroups you can do the following:
 
 - **Separate internal / external organizations.** Since every group
   can have its own visibility level, you are able to host groups for different
@@ -17,8 +23,9 @@ up to 20 levels of nested groups, which among other things can help you to:
 
 ## Database Requirements
 
-Nested groups are only supported when you use PostgreSQL. Supporting nested
-groups on MySQL in an efficient way is not possible due to MySQL's limitations.
+Subgroups are only supported when you use PostgreSQL. Supporting subgroups on MySQL in an
+efficient way is not possible due to MySQL's limitations.
+
 See the following links for more information:
 
 - <https://gitlab.com/gitlab-org/gitlab-ce/issues/30472>
@@ -37,7 +44,7 @@ only 1 parent group. It resembles a directory behavior or a nested items list:
           - Group 1.2.2.1
 
 In a real world example, imagine maintaining a GNU/Linux distribution with the
-first group being the name of the distro and subsequent groups split like:
+first group being the name of the distribution, and subsequent groups split as follows:
 
 - Organization Group - GNU/Linux distro
   - Category Subgroup - Packages
@@ -69,22 +76,22 @@ Another example of GitLab as a company would be the following:
 
 ---
 
-The maximum nested groups a group can have, including the first one in the
+The maximum subgroups a group can have, including the first one in the
 hierarchy, is 21.
 
-Things like transferring or importing a project inside nested groups, work like
+Actions such as transferring or importing a project inside subgroups, work like
 when performing these actions the traditional way with the `group/project`
 structure.
 
 ## Creating a subgroup
 
 NOTE: **Note:**
-You need to be an Owner of a group in order to be able to create a subgroup. For
+You must be an Owner of a group to create a subgroup. For
 more information check the [permissions table](../../permissions.md#group-members-permissions).
 For a list of words that are not allowed to be used as group names see the
 [reserved names](../../reserved_names.md).
 Users can always create subgroups if they are explicitly added as an Owner to
-a parent group even if group creation is disabled by an administrator in their
+a parent group, even if group creation is disabled by an administrator in their
 settings.
 
 To create a subgroup:
@@ -111,7 +118,7 @@ When you add a member to a subgroup, they inherit the membership and permission
 level from the parent group. This model allows access to nested groups if you
 have membership in one of its parents.
 
-The group permissions for a member can be changed only by Owners and only on
+The group permissions for a member can be changed only by Owners, and only on
 the **Members** page of the group the member was added.
 
 You can tell if a member has inherited the permissions from a parent group by
@@ -119,24 +126,24 @@ looking at the group's **Members** page.
 
 ![Group members page](img/group_members.png)
 
-From the image above, we can deduct the following things:
+From the image above, we can deduce the following things:
 
-- There are 5 members that have access to the group `four`
+- There are 5 members that have access to the group `four`.
 - User0 is a Reporter and has inherited their permissions from group `one`
-  which is above the hierarchy of group `four`
+  which is above the hierarchy of group `four`.
 - User1 is a Developer and has inherited their permissions from group
-  `one/two` which is above the hierarchy of group `four`
+  `one/two` which is above the hierarchy of group `four`.
 - User2 is a Developer and has inherited their permissions from group
-  `one/two/three` which is above the hierarchy of group `four`
+  `one/two/three` which is above the hierarchy of group `four`.
 - For User3 there is no indication of a parent group, therefore they belong to
-  group `four`, the one we're inspecting
+  group `four`, the one we're inspecting.
 - Administrator is the Owner and member of **all** subgroups and for that reason,
-  same as User3, there is no indication of an ancestor group
+  as with User3, there is no indication of an ancestor group.
 
 ### Overriding the ancestor group membership
 
 NOTE: **Note:**
-You need to be an Owner of a group in order to be able to add members to it.
+You must be an Owner of a group to be able to add members to it.
 
 NOTE: **Note:**
 A user's permissions in a subgroup cannot be lower than in any of its ancestor groups.
@@ -154,7 +161,7 @@ the permissions will fallback to those of the ancestor group.
 ## Mentioning subgroups
 
 Mentioning groups (`@group`) in issues, commits and merge requests, would
-notify all members of that group. Now with subgroups, there is a more granular
+notify all members of that group. Now with subgroups, there is more granular
 support if you want to split your group's structure. Mentioning works as before
 and you can choose the group of people to be notified.
 
@@ -179,3 +186,15 @@ Here's a list of what you can't do with subgroups:
 [permissions]: ../../permissions.md#group-members-permissions
 [reserved]:  ../../reserved_names.md
 [issue]: https://gitlab.com/gitlab-org/gitlab-ce/issues/30472#note_27747600
+
+<!-- ## Troubleshooting
+
+Include any troubleshooting steps that you can foresee. If you know beforehand what issues
+one might have when setting this up, or when something is changed, or on upgrading, it's
+important to describe those, too. Think of things that may go wrong and include them here.
+This is important to minimize requests for support, and to avoid doc comments with
+questions that you know someone might ask.
+
+Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+If you have none to add when creating a doc, leave this section in place
+but commented out to help encourage others to add to it in the future. -->

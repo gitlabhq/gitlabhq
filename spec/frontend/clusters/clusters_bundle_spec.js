@@ -1,5 +1,10 @@
 import Clusters from '~/clusters/clusters_bundle';
-import { APPLICATION_STATUS, INGRESS_DOMAIN_SUFFIX, APPLICATIONS } from '~/clusters/constants';
+import {
+  APPLICATION_STATUS,
+  INGRESS_DOMAIN_SUFFIX,
+  APPLICATIONS,
+  RUNNER,
+} from '~/clusters/constants';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import { loadHTMLFixture } from 'helpers/fixtures';
@@ -209,6 +214,22 @@ describe('Clusters', () => {
         expect(cluster.errorContainer.classList.contains('hidden')).toBeFalsy();
       });
     });
+
+    describe('when cluster is unreachable', () => {
+      it('should show the unreachable warning container', () => {
+        cluster.updateContainer(null, 'unreachable');
+
+        expect(cluster.unreachableContainer.classList.contains('hidden')).toBe(false);
+      });
+    });
+
+    describe('when cluster has an authentication failure', () => {
+      it('should show the authentication failure warning container', () => {
+        cluster.updateContainer(null, 'authentication_failure');
+
+        expect(cluster.authenticationFailureContainer.classList.contains('hidden')).toBe(false);
+      });
+    });
   });
 
   describe('installApplication', () => {
@@ -335,6 +356,32 @@ describe('Clusters', () => {
 
         expect(cluster.ingressDomainHelpText.classList.contains('hide')).toEqual(true);
       });
+    });
+  });
+
+  describe('updateApplication', () => {
+    const params = { version: '1.0.0' };
+    let storeUpdateApplication;
+    let installApplication;
+
+    beforeEach(() => {
+      storeUpdateApplication = jest.spyOn(cluster.store, 'updateApplication');
+      installApplication = jest.spyOn(cluster.service, 'installApplication');
+
+      cluster.updateApplication({ id: RUNNER, params });
+    });
+
+    afterEach(() => {
+      storeUpdateApplication.mockRestore();
+      installApplication.mockRestore();
+    });
+
+    it('calls store updateApplication method', () => {
+      expect(storeUpdateApplication).toHaveBeenCalledWith(RUNNER);
+    });
+
+    it('sends installApplication request', () => {
+      expect(installApplication).toHaveBeenCalledWith(RUNNER, params);
     });
   });
 });

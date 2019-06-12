@@ -3,7 +3,7 @@
 module Projects
   class UpdateStatisticsService < BaseService
     def execute
-      return unless project && project.repository.exists?
+      return unless project
 
       Rails.logger.info("Updating statistics for project #{project.id}")
 

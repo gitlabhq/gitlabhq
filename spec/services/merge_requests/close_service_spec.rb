@@ -52,6 +52,14 @@ describe MergeRequests::CloseService do
       it 'marks todos as done' do
         expect(todo.reload).to be_done
       end
+
+      context 'when auto merge is enabled' do
+        let(:merge_request) { create(:merge_request, :merge_when_pipeline_succeeds) }
+
+        it 'cancels the auto merge' do
+          expect(@merge_request).not_to be_auto_merge_enabled
+        end
+      end
     end
 
     it 'updates metrics' do

@@ -6,13 +6,13 @@ module Gitlab
   module Metrics
     module Dashboard
       class BaseService < ::BaseService
-        DASHBOARD_LAYOUT_ERROR = Gitlab::Metrics::Dashboard::Stages::BaseStage::DashboardLayoutError
+        PROCESSING_ERROR = Gitlab::Metrics::Dashboard::Stages::BaseStage::DashboardProcessingError
 
         def get_dashboard
           return error("#{dashboard_path} could not be found.", :not_found) unless path_available?
 
           success(dashboard: process_dashboard)
-        rescue DASHBOARD_LAYOUT_ERROR => e
+        rescue PROCESSING_ERROR => e
           error(e.message, :unprocessable_entity)
         end
 

@@ -1,8 +1,12 @@
+---
+type: tutorial
+---
+
 # Testing PHP projects
 
 This guide covers basic building instructions for PHP projects.
 
-There are covered two cases: testing using the Docker executor and testing
+Two testing scenarios are covered: using the Docker executor and 
 using the Shell executor.
 
 ## Test PHP projects using the Docker executor
@@ -245,7 +249,7 @@ before_script:
 ...
 ```
 
-## Access private packages / dependencies
+## Access private packages or dependencies
 
 If your test suite needs to access a private repository, you need to configure
 [the SSH keys](../ssh_keys/README.md) in order to be able to clone it.
@@ -254,7 +258,7 @@ If your test suite needs to access a private repository, you need to configure
 
 Most of the time you will need a running database in order for your tests to
 run. If you are using the Docker executor you can leverage Docker's ability to
-link to other containers. In GitLab Runner lingo, this can be achieved by
+link to other containers. With GitLab Runner, this can be achieved by
 defining a `service`.
 
 This functionality is covered in [the CI services](../services/README.md)
@@ -279,7 +283,7 @@ We have set up an [Example PHP Project][php-example-repo] for your convenience
 that runs on [GitLab.com](https://gitlab.com) using our publicly available
 [shared runners](../runners/README.md).
 
-Want to hack on it? Simply fork it, commit and push  your changes. Within a few
+Want to hack on it? Simply fork it, commit, and push your changes. Within a few
 moments the changes will be picked by a public runner and the job will begin.
 
 [php-hub]: https://hub.docker.com/r/_/php/

@@ -1,8 +1,9 @@
 # Project importing from GitLab.com to your private GitLab instance
 
 You can import your existing GitLab.com projects to your GitLab instance. But keep in mind that it is possible only if
-GitLab support is enabled on your GitLab instance.
-You can read more about GitLab support [here](http://docs.gitlab.com/ce/integration/gitlab.html)
+GitLab.com integration is enabled on your GitLab instance.
+[Read more about GitLab.com integration for self-managed GitLab instances](../../../integration/gitlab.md).
+
 To get to the importer page you need to go to "New project" page.
 
 >**Note:**

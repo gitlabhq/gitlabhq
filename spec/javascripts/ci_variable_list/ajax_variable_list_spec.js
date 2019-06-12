@@ -32,6 +32,7 @@ describe('AjaxFormVariableList', () => {
       saveButton,
       errorBox,
       saveEndpoint: container.dataset.saveEndpoint,
+      maskableRegex: container.dataset.maskableRegex,
     });
 
     spyOn(ajaxVariableList, 'updateRowsWithPersistedVariables').and.callThrough();
@@ -218,6 +219,13 @@ describe('AjaxFormVariableList', () => {
 
       expect(idInput.value).toEqual('3');
       expect(row.dataset.isPersisted).toEqual('true');
+    });
+  });
+
+  describe('maskableRegex', () => {
+    it('takes in the regex provided by the data attribute', () => {
+      expect(container.dataset.maskableRegex).toBe('^[a-zA-Z0-9_+=/-]{8,}$');
+      expect(ajaxVariableList.maskableRegex).toBe(container.dataset.maskableRegex);
     });
   });
 });

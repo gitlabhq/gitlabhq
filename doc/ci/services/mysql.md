@@ -1,3 +1,7 @@
+---
+type: reference
+---
+
 # Using MySQL
 
 As many applications depend on MySQL as their database, you will eventually
