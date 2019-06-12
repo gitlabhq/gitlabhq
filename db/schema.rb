@@ -1440,6 +1440,7 @@ ActiveRecord::Schema.define(version: 20190611161641) do
     t.string "runners_token_encrypted"
     t.integer "project_creation_level"
     t.boolean "auto_devops_enabled"
+    t.datetime_with_timezone "last_ci_minutes_notification_at"
     t.index ["created_at"], name: "index_namespaces_on_created_at", using: :btree
     t.index ["name", "parent_id"], name: "index_namespaces_on_name_and_parent_id", unique: true, using: :btree
     t.index ["name"], name: "index_namespaces_on_name_trigram", using: :gin, opclasses: {"name"=>"gin_trgm_ops"}
