@@ -12,7 +12,7 @@
 #   end
 #
 class ColorValidator < ActiveModel::EachValidator
-  PATTERN = /\A\#[0-9A-Fa-f]{3}{1,2}+\Z/.freeze
+  PATTERN = /\A\#(?:[0-9A-Fa-f]{3}){1,2}\Z/.freeze
 
   def validate_each(record, attribute, value)
     unless value =~ PATTERN
