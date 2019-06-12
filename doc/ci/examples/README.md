@@ -62,8 +62,8 @@ For examples of setting up GitLab CI/CD for cloud-based environments, see:
 - [Automating Kubernetes Deployments with GitLab CI/CD](https://www.youtube.com/watch?v=wEDRfAz6_Uw)
 - [How to autoscale continuous deployment with GitLab Runner on DigitalOcean](https://about.gitlab.com/2018/06/19/autoscale-continuous-deployment-gitlab-runner-digital-ocean/)
 - [How to create a CI/CD pipeline with Auto Deploy to Kubernetes using GitLab and Helm](https://about.gitlab.com/2017/09/21/how-to-create-ci-cd-pipeline-with-autodeploy-to-kubernetes-using-gitlab-and-helm/)
+- [Demo - Deploying from GitLab to OpenShift Container Cluster](https://youtu.be/EwbhA53Jpp4)
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 See also the following video overviews:
 
 - [Containers, Schedulers, and GitLab CI](https://www.youtube.com/watch?v=d-9awBxEbvQ).
@@ -99,6 +99,10 @@ For examples of others who have implemented GitLab CI/CD, see:
 - [Dockerizing GitLab Review Apps](https://about.gitlab.com/2017/07/11/dockerizing-review-apps/)
 - [Fast and natural continuous integration with GitLab CI](https://about.gitlab.com/2017/05/22/fast-and-natural-continuous-integration-with-gitlab-ci/)
 - [Demo: CI/CD with GitLab in action](https://about.gitlab.com/2017/03/13/ci-cd-demo/)
+
+### Migrating to GitLab from third-party CI tools
+
+- [Migrating from Jenkins to GitLab](https://youtu.be/RlEVGOpYF5Y)
 
 ### Integrating GitLab CI/CD with other systems
 
