@@ -65,7 +65,7 @@ export default {
       return this.getUserData.id;
     },
     commentButtonTitle() {
-      return this.noteType === constants.COMMENT ? 'Comment' : 'Start discussion';
+      return this.noteType === constants.COMMENT ? 'Comment' : 'Start thread';
     },
     startDiscussionDescription() {
       let text = 'Discuss a specific suggestion or question';
@@ -418,7 +418,7 @@ append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
                     >
                       <i aria-hidden="true" class="fa fa-check icon"> </i>
                       <div class="description">
-                        <strong>Start discussion</strong>
+                        <strong>Start thread</strong>
                         <p>{{ startDiscussionDescription }}</p>
                       </div>
                     </button>
