@@ -1,3 +1,7 @@
+---
+type: index, reference
+---
+
 # Subscription setup and management
 
 This page will help get you started with your new subscription or manage an existing one, whether you have subscribed to GitLab.com or self-managed GitLab.
@@ -42,7 +46,8 @@ After purchase, the license file is sent to the email address tied to the Custom
 
 ### Link your GitLab.com account with your Customers Portal account
 
-NOTE: **Note:** This is *required* for GitLab.com subscriptions.
+NOTE: **Note:**
+This is *required* for GitLab.com subscriptions.
 
 Once signed into the customers portal, if your account is not already linked, you should be prompted to link your account with a "Link my GitLab Account" button.
 
@@ -109,3 +114,15 @@ These issues are the best avenue for getting updates on specific product plans a
 ### Contacting Support
 
 Learn more about the tiers of [GitLab Support](https://about.gitlab.com/support/) or [submit a request via the Support Portal](https://support.gitlab.com/hc/en-us/requests/new).
+
+<!-- ## Troubleshooting
+
+Include any troubleshooting steps that you can foresee. If you know beforehand what issues
+one might have when setting this up, or when something is changed, or on upgrading, it's
+important to describe those, too. Think of things that may go wrong and include them here.
+This is important to minimize requests for support, and to avoid doc comments with
+questions that you know someone might ask.
+
+Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+If you have none to add when creating a doc, leave this section in place
+but commented out to help encourage others to add to it in the future. -->

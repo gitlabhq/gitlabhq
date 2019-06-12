@@ -1,8 +1,15 @@
-# GitLab Maintenance Policy
+---
+type: concepts
+---
+
+# GitLab Release and Maintenance Policy
+
+GitLab has strict policies governing version naming, as well as release pace for major, minor,
+patch and security releases. New releases are usually announced on the [GitLab blog](https://about.gitlab.com/blog/categories/releases/).
 
 ## Versioning
 
-GitLab follows the [Semantic Versioning](http://semver.org/) for its releases:
+GitLab uses [Semantic Versioning](http://semver.org/) for its releases:
 `(Major).(Minor).(Patch)` in a [pragmatic way](https://gist.github.com/jashkenas/cbd2b088e20279ae2c8e).
 
 For example, for GitLab version 10.5.7:
@@ -15,9 +22,9 @@ Any part of the version number can increment into multiple digits, for example, 
 
 The following table describes the version types and their release cadence:
 
-| Version type | Description | Cadence                                                                                                                                                      |
-|:-------------|:----------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Major        | For significant changes, or when any backward-incompatible changes are introduced to the public API. | Yearly. The next major release is GitLab 12.0 on June 22, 2019. Subsequent major releases will be scheduled for May 22 each year, by default. |                                                           |
+| Version type | Description | Cadence |
+|:-------------|:------------|:--------|
+| Major        | For significant changes, or when any backward-incompatible changes are introduced to the public API. | Yearly. The next major release is GitLab 12.0 on June 22, 2019. Subsequent major releases will be scheduled for May 22 each year, by default. |
 | Minor        | For when new backward-compatible functionality is introduced to the public API, a minor feature is introduced, or when a set of smaller features is rolled out. | Monthly on the 22nd. |
 | Patch        | For backward-compatible bug fixes that fix incorrect behavior. See [Patch releases](#patch-releases). | As needed. |
 
@@ -75,10 +82,10 @@ that could change behavior in the next major release.
 Please see the table below for some examples:
 
 | Latest stable version | Your version | Recommended upgrade path | Note |
-| -------------- | ------------ | ------------------------ | ---------------- |
-| 9.4.5   | 8.13.4   | `8.13.4` -> `8.17.7` -> `9.4.5`     | `8.17.7` is the last version in version `8` |
-| 10.1.4   | 8.13.4   | `8.13.4 -> 8.17.7 -> 9.5.10 -> 10.1.4` | `8.17.7` is the last version in version `8`, `9.5.10` is the last version in version `9` |
-| 11.3.4   | 8.13.4   | `8.13.4` -> `8.17.7` -> `9.5.10` -> `10.8.7` -> `11.3.4` | `8.17.7` is the last version in version `8`, `9.5.10` is the last version in version `9`, `10.8.7` is the last version in version `10` |
+| --------------------- | ------------ | ------------------------ | ---- |
+| 9.4.5                 | 8.13.4       | `8.13.4` -> `8.17.7` -> `9.4.5`                          | `8.17.7` is the last version in version `8` |
+| 10.1.4                | 8.13.4       | `8.13.4 -> 8.17.7 -> 9.5.10 -> 10.1.4`                   | `8.17.7` is the last version in version `8`, `9.5.10` is the last version in version `9` |
+| 11.3.4                | 8.13.4       | `8.13.4` -> `8.17.7` -> `9.5.10` -> `10.8.7` -> `11.3.4` | `8.17.7` is the last version in version `8`, `9.5.10` is the last version in version `9`, `10.8.7` is the last version in version `10` |
 
 More information about the release procedures can be found in our
 [release documentation](https://gitlab.com/gitlab-org/release/docs). You may also want to read our
