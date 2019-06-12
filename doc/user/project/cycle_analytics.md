@@ -1,10 +1,7 @@
 # Cycle Analytics
 
-> [Introduced][ce-5986] in GitLab 8.12. Further features were added in GitLab
-  8.14.
-
-Cycle Analytics measures the time spent to go from an [idea to production] for
-each of your projects. Cycle Analytics displays the median time for an idea to
+Cycle Analytics measures the time spent to go from an [idea to production] - also known
+as cycle time - for each of your projects. Cycle Analytics displays the median time for an idea to
 reach production, along with the time typically spent in each DevOps stage along the way.
 
 Cycle Analytics is useful in order to quickly determine the velocity of a given
