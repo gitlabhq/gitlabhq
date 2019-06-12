@@ -12411,9 +12411,6 @@ msgstr ""
 msgid "mrWidget|The source branch will not be deleted"
 msgstr ""
 
-msgid "mrWidget|The target branch has advanced, which invalidates the merge request pipeline. Please update the source branch and retry merging"
-msgstr ""
-
 msgid "mrWidget|There are merge conflicts"
 msgstr ""
 
