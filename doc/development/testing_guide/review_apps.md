@@ -160,6 +160,78 @@ secure note named **gitlab-{ce,ee} Review App's root password**.
    `review-qa-raise-e-12chm0-migrations.1-nqwtx`.
 1. Click on the `Container logs` link.
 
+### Troubleshoot a pending `dns-gitlab-review-app-external-dns` Deployment
+
+#### Finding the problem
+
+[In the past](https://gitlab.com/gitlab-org/gitlab-ce/issues/62834), it happened
+that the `dns-gitlab-review-app-external-dns` Deployment was in a pending state,
+effectively preventing all the Review Apps from getting a DNS record assigned,
+making them unreachable via domain name.
+
+This in turn prevented other components of the Review App to properly start
+(e.g. `gitlab-runner`).
+
+After some digging, we found that new mounts were failing, when being performed
+with transient scopes (e.g. pods) of `systemd-mount`:
+
+```
+MountVolume.SetUp failed for volume "dns-gitlab-review-app-external-dns-token-sj5jm" : mount failed: exit status 1
+Mounting command: systemd-run
+Mounting arguments: --description=Kubernetes transient mount for /var/lib/kubelet/pods/06add1c3-87b4-11e9-80a9-42010a800107/volumes/kubernetes.io~secret/dns-gitlab-review-app-external-dns-token-sj5jm --scope -- mount -t tmpfs tmpfs /var/lib/kubelet/pods/06add1c3-87b4-11e9-80a9-42010a800107/volumes/kubernetes.io~secret/dns-gitlab-review-app-external-dns-token-sj5jm
+Output: Failed to start transient scope unit: Connection timed out
+```
+
+This probably happened because the GitLab chart creates 67 resources, leading to
+a lot of mount points being created on the underlying GCP node.
+
+The [underlying issue seems to be a `systemd` bug](https://github.com/kubernetes/kubernetes/issues/57345#issuecomment-359068048)
+that was fixed in `systemd` `v237`. Unfortunately, our GCP nodes are currently
+using `v232`.
+
+For the record, the debugging steps to find out this issue were:
+
+1. Switch kubectl context to review-apps-ce (we recommend using [kubectx](https://kubectx.dev/))
+1. `kubectl get pods | grep dns`
+1. `kubectl describe pod <pod name>` & confirm exact error message
+1. Web search for exact error message, following rabbit hole to [a relevant kubernetes bug report](https://github.com/kubernetes/kubernetes/issues/57345)
+1. Access the node over SSH via the GCP console (**Computer Engine > VM
+  instances** then click the "SSH" button for the node where the `dns-gitlab-review-app-external-dns` pod runs)
+1. In the node: `systemctl --version` => systemd 232
+1. Gather some more information:
+   - `mount | grep kube | wc -l` => e.g. 290
+   - `systemctl list-units --all | grep -i var-lib-kube | wc -l` => e.g. 142
+1. Check how many pods are in a bad state:
+   - Get all pods running a given node: `kubectl get pods --field-selector=spec.nodeName=NODE_NAME`
+   - Get all the `Running` pods on a given node: `kubectl get pods --field-selector=spec.nodeName=NODE_NAME | grep Running`
+   - Get all the pods in a bad state on a given node: `kubectl get pods --field-selector=spec.nodeName=NODE_NAME | grep -v 'Running' | grep -v 'Completed'`
+
+#### Solving the problem
+
+To resolve the problem, we needed to (forcibly) drain some nodes:
+
+1. Try a normal drain on the node where the `dns-gitlab-review-app-external-dns`
+  pod runs so that Kubernetes automatically move it to another node: `kubectl drain NODE_NAME`
+1. If that doesn't work, you can also perform a forcible "drain" the node by removing all pods: `kubectl delete pods --field-selector=spec.nodeName=NODE_NAME`
+1. In the node:
+   - Perform `systemctl daemon-reload` to remove the dead/inactive units
+   - If that doesn't solve the problem, perform a hard reboot: `sudo systemctl reboot`
+1. Uncordon any cordoned nodes: `kubectl uncordon NODE_NAME`
+
+In parallel, since most Review Apps were in a broken state, we deleted them to
+clean up the list of non-`Running` pods.
+Following is a command to delete Review Apps based on their last deployment date
+(current date was June 6th at the time) with
+
+```
+helm ls -d | grep "Jun  4" | cut -f1 | xargs helm delete --purge
+```
+
+#### Mitigation steps taken to avoid this problem in the future
+
+We've created a new node pool with smaller machines so that it's less likely
+that a machine will hit the "too many mount points" problem in the future.
+
 ## Frequently Asked Questions
 
 **Isn't it too much to trigger CNG image builds on every test run? This creates
@@ -172,11 +244,11 @@ thousands of unused Docker images.**
 **How big are the Kubernetes clusters (`review-apps-ce` and `review-apps-ee`)?**
 
   > The clusters are currently set up with a single pool of preemptible nodes,
-  with a minimum of 1 node and a maximum of 50 nodes.
+  with a minimum of 1 node and a maximum of 500 nodes.
 
 **What are the machine running on the cluster?**
 
-  > We're currently using `n1-standard-16` (16 vCPUs, 60 GB memory) machines.
+  > We're currently using `n1-standard-1` (1 vCPU, 3.75 GB memory) machines.
 
 **How do we secure this from abuse? Apps are open to the world so we need to
 find a way to limit it to only us.**
