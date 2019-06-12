@@ -214,6 +214,20 @@ describe('Area component', () => {
       });
     });
 
+    describe('chartOptions', () => {
+      describe('yAxis formatter', () => {
+        let format;
+
+        beforeEach(() => {
+          format = areaChart.vm.chartOptions.yAxis.axisLabel.formatter;
+        });
+
+        it('rounds to 3 decimal places', () => {
+          expect(format(0.88888)).toBe('0.889');
+        });
+      });
+    });
+
     describe('scatterSeries', () => {
       it('utilizes deployment data', () => {
         expect(areaChart.vm.scatterSeries.data).toEqual([

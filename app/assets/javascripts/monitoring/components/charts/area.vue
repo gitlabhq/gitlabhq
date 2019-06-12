@@ -1,7 +1,7 @@
 <script>
 import { GlAreaChart, GlChartSeriesLabel } from '@gitlab/ui/dist/charts';
 import dateFormat from 'dateformat';
-import { debounceByAnimationFrame } from '~/lib/utils/common_utils';
+import { debounceByAnimationFrame, roundOffFloat } from '~/lib/utils/common_utils';
 import { getSvgIconPathContent } from '~/lib/utils/icon_utils';
 import Icon from '~/vue_shared/components/icon.vue';
 import { chartHeight, graphTypes, lineTypes } from '../../constants';
@@ -111,7 +111,7 @@ export default {
         yAxis: {
           name: this.yAxisLabel,
           axisLabel: {
-            formatter: value => value.toFixed(3),
+            formatter: num => roundOffFloat(num, 3).toString(),
           },
         },
         series: this.scatterSeries,
