@@ -78,7 +78,7 @@ export default class ContextualSidebar {
     const dbp = ContextualSidebar.isDesktopBreakpoint();
 
     if (this.$sidebar.length) {
-      this.$sidebar.toggleClass('sidebar-collapsed-desktop', collapsed);
+      this.$sidebar.toggleClass(`sidebar-collapsed-desktop ${SIDEBAR_COLLAPSED_CLASS}`, collapsed);
       this.$sidebar.toggleClass('sidebar-expanded-mobile', !dbp ? !collapsed : false);
       this.$page.toggleClass(
         'page-with-icon-sidebar',
