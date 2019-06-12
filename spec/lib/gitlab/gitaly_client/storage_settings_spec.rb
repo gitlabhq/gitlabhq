@@ -28,12 +28,16 @@ describe Gitlab::GitalyClient::StorageSettings do
   end
 
   describe '.disk_access_denied?' do
-    it 'return false when Rugged is enabled', :enable_rugged do
-      expect(described_class.disk_access_denied?).to be_falsey
+    context 'when Rugged is enabled', :enable_rugged do
+      it 'returns false' do
+        expect(described_class.disk_access_denied?).to be_falsey
+      end
     end
 
-    it 'returns true' do
-      expect(described_class.disk_access_denied?).to be_truthy
+    context 'when Rugged is disabled' do
+      it 'returns true' do
+        expect(described_class.disk_access_denied?).to be_truthy
+      end
     end
   end
 end

@@ -34,7 +34,7 @@ module Gitlab
       def self.disk_access_denied?
         return false if rugged_enabled?
 
-        !temporarily_allowed?(ALLOW_KEY) && GitalyClient.feature_enabled?(DISK_ACCESS_DENIED_FLAG)
+        !temporarily_allowed?(ALLOW_KEY) && Feature::Gitaly.enabled?(DISK_ACCESS_DENIED_FLAG)
       rescue
         false # Err on the side of caution, don't break gitlab for people
       end

@@ -240,7 +240,6 @@ module Gitlab
       Gitlab::SafeRequestStore[:gitaly_session_id] ||= SecureRandom.uuid
     end
 
-
     def self.token(storage)
       params = Gitlab.config.repositories.storages[storage]
       raise "storage not found: #{storage.inspect}" if params.nil?
