@@ -4,7 +4,7 @@ import { __, sprintf, s__ } from '../../locale';
 import createFlash from '../../flash';
 import PipelinesService from '../services/pipelines_service';
 import pipelinesMixin from '../mixins/pipelines';
-import TablePagination from '../../vue_shared/components/table_pagination.vue';
+import TablePagination from '../../vue_shared/components/pagination/table_pagination.vue';
 import NavigationTabs from '../../vue_shared/components/navigation_tabs.vue';
 import NavigationControls from './nav_controls.vue';
 import { getParameterByName } from '../../lib/utils/common_utils';
