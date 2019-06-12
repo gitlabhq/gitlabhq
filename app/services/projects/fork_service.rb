@@ -43,10 +43,10 @@ module Projects
         shared_runners_enabled:    @project.shared_runners_enabled,
         namespace_id:              target_namespace.id,
         fork_network:              fork_network,
-        # We need to set default_git_depth to 0 for the forked project when
-        # @project.default_git_depth is nil in order to keep the same behaviour
+        # We need to set ci_default_git_depth to 0 for the forked project when
+        # @project.ci_default_git_depth is nil in order to keep the same behaviour
         # and not get ProjectCiCdSetting::DEFAULT_GIT_DEPTH set on create
-        ci_cd_settings_attributes: { default_git_depth: @project.default_git_depth || 0 },
+        ci_cd_settings_attributes: { default_git_depth: @project.ci_default_git_depth || 0 },
         # We need to assign the fork network membership after the project has
         # been instantiated to avoid ActiveRecord trying to create it when
         # initializing the project, as that would cause a foreign key constraint

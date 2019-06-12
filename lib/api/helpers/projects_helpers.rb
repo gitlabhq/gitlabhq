@@ -29,6 +29,7 @@ module API
         optional :merge_method, type: String, values: %w(ff rebase_merge merge), desc: 'The merge method used when merging merge requests'
         optional :initialize_with_readme, type: Boolean, desc: "Initialize a project with a README.md"
         optional :external_authorization_classification_label, type: String, desc: 'The classification label for the project'
+        optional :ci_default_git_depth, type: Integer, desc: 'Default number of revisions for shallow cloning'
       end
 
       params :optional_project_params_ee do
