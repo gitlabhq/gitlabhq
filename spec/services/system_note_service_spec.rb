@@ -1148,7 +1148,7 @@ describe SystemNoteService do
     end
 
     it 'sets the note text' do
-      expect(subject.note).to eq 'resolved all discussions'
+      expect(subject.note).to eq 'resolved all threads'
     end
   end
 
