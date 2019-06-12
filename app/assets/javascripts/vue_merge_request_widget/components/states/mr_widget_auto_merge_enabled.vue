@@ -1,15 +1,19 @@
 <script>
+import _ from 'underscore';
+import autoMergeMixin from 'ee_else_ce/vue_merge_request_widget/mixins/auto_merge';
 import Flash from '../../../flash';
 import statusIcon from '../mr_widget_status_icon.vue';
 import MrWidgetAuthor from '../../components/mr_widget_author.vue';
 import eventHub from '../../event_hub';
+import { AUTO_MERGE_STRATEGIES } from '../../constants';
 
 export default {
-  name: 'MRWidgetMergeWhenPipelineSucceeds',
+  name: 'MRWidgetAutoMergeEnabled',
   components: {
     MrWidgetAuthor,
     statusIcon,
   },
+  mixins: [autoMergeMixin],
   props: {
     mr: {
       type: Object,
@@ -57,7 +61,7 @@ export default {
     removeSourceBranch() {
       const options = {
         sha: this.mr.sha,
-        auto_merge_strategy: 'merge_when_pipeline_succeeds',
+        auto_merge_strategy: this.mr.autoMergeStrategy,
         should_remove_source_branch: true,
       };
 
@@ -66,7 +70,7 @@ export default {
         .merge(options)
         .then(res => res.data)
         .then(data => {
-          if (data.status === 'merge_when_pipeline_succeeds') {
+          if (_.includes(AUTO_MERGE_STRATEGIES, data.status)) {
             eventHub.$emit('MRWidgetUpdateRequested');
           }
         })
@@ -84,9 +88,9 @@ export default {
     <div class="media-body">
       <h4 class="d-flex align-items-start">
         <span class="append-right-10">
-          {{ s__('mrWidget|Set by') }}
+          <span class="js-status-text-before-author">{{ statusTextBeforeAuthor }}</span>
           <mr-widget-author :author="mr.setToAutoMergeBy" />
-          {{ s__('mrWidget|to be merged automatically when the pipeline succeeds') }}
+          <span class="js-status-text-after-author">{{ statusTextAfterAuthor }}</span>
         </span>
         <a
           v-if="mr.canCancelAutomaticMerge"
@@ -97,7 +101,7 @@ export default {
           @click.prevent="cancelAutomaticMerge"
         >
           <i v-if="isCancellingAutoMerge" class="fa fa-spinner fa-spin" aria-hidden="true"> </i>
-          {{ s__('mrWidget|Cancel automatic merge') }}
+          {{ cancelButtonText }}
         </a>
       </h4>
       <section class="mr-info-list">

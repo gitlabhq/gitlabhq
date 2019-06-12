@@ -1,3 +1,5 @@
+import { __ } from '~/locale';
+
 export default {
   computed: {
     isMergeButtonDisabled() {
@@ -8,6 +10,10 @@ export default {
           this.isMakingRequest ||
           this.mr.preventMerge,
       );
+    },
+    autoMergeText() {
+      // MWPS is currently the only auto merge strategy available in CE
+      return __('Merge when pipeline succeeds');
     },
   },
 };
