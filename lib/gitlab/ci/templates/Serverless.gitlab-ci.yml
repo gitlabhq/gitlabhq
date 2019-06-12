@@ -14,7 +14,7 @@ stages:
 
 .serverless:deploy:image:
   stage: deploy
-  image: gcr.io/triggermesh/tm@sha256:3cfdd470a66b741004fb02354319d79f1598c70117ce79978d2e07e192bfb336 # v0.0.11
+  image: gcr.io/triggermesh/tm@sha256:3cfdd470a66b741004fb02354319d79f1598c70117ce79978d2e07e192bfb336  # v0.0.11
   environment: development
   script:
     - echo "$CI_REGISTRY_IMAGE"
