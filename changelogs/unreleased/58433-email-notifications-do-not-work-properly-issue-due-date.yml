@@ -1,0 +1,5 @@
+---
+title: Fix email notifications for user excluded actions
+merge_request: 28835
+author:
+type: fixed
