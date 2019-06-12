@@ -396,10 +396,6 @@ $ide-commit-header-height: 48px;
     font-size: inherit;
   }
 
-  > div + div {
-    padding-left: $gl-padding;
-  }
-
   svg {
     vertical-align: sub;
   }
@@ -410,13 +406,14 @@ $ide-commit-header-height: 48px;
   }
 }
 
+.ide-status-list {
+  > div + div {
+    padding-left: $gl-padding;
+  }
+}
+
 .ide-status-file {
   text-align: right;
-
-  .ide-status-branch + &,
-  &:first-child {
-    margin-left: auto;
-  }
 }
 // Not great, but this is to deal with our current output
 .multi-file-preview-holder {

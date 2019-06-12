@@ -146,7 +146,7 @@ export default {
       </div>
       <component :is="rightPaneComponent" v-if="currentProjectId" />
     </div>
-    <ide-status-bar :file="activeFile" />
+    <ide-status-bar />
     <new-modal />
   </article>
 </template>
