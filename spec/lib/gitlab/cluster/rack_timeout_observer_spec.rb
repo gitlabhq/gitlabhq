@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::RackTimeoutObserver do
+describe Gitlab::Cluster::RackTimeoutObserver do
   let(:counter) { Gitlab::Metrics::NullMetric.instance }
 
   before do
@@ -25,7 +25,7 @@ describe Gitlab::RackTimeoutObserver do
 
       subject { described_class.new }
 
-      it 'increments timeout counter' do
+      it 'increments counter' do
         expect(counter)
           .to receive(:increment)
           .with({ controller: 'foo', action: 'bar', route: nil, state: :timed_out })
@@ -45,11 +45,30 @@ describe Gitlab::RackTimeoutObserver do
 
       subject { described_class.new }
 
-      it 'increments timeout counter' do
+      it 'increments counter' do
         allow(endpoint).to receive_message_chain('route.pattern.origin') { 'foobar' }
         expect(counter)
           .to receive(:increment)
           .with({ controller: nil, action: nil, route: 'foobar', state: :expired })
+
+        subject.callback.call(env)
+      end
+    end
+
+    context 'when request is being processed' do
+      let(:endpoint) { double }
+      let(:env) do
+        {
+          ::Rack::Timeout::ENV_INFO_KEY => double(state: :active),
+          Grape::Env::API_ENDPOINT => endpoint
+        }
+      end
+
+      subject { described_class.new }
+
+      it 'does not increment counter' do
+        allow(endpoint).to receive_message_chain('route.pattern.origin') { 'foobar' }
+        expect(counter).not_to receive(:increment)
 
         subject.callback.call(env)
       end

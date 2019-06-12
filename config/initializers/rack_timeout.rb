@@ -18,6 +18,6 @@ if defined?(::Puma) && !Rails.env.test?
                                     wait_timeout: 90)
   end
 
-  observer = Gitlab::RackTimeoutObserver.new
+  observer = Gitlab::Cluster::RackTimeoutObserver.new
   Rack::Timeout.register_state_change_observer(:gitlab_rack_timeout, &observer.callback)
 end
