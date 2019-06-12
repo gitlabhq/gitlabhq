@@ -1452,23 +1452,4 @@
   .xterm-fg-255 {
     color: $xterm-fg-255;
   }
-
-  .section-start + p {
-    cursor: pointer;
-  }
-
-  .section-start {
-    width: 1rem;
-  };
-
-  .section.line {
-    padding-left: 0.5rem;
-    margin-left: 0.5rem;
-  }
-
-  .section.not-used:not(.section-header):not(.open) {
-    display: none;
-    height: 0;
-    min-height: 0;
-  }
 }
