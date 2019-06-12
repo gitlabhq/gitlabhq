@@ -7,7 +7,7 @@ describe 'Resolve an open discussion in a merge request by creating an issue', :
   let!(:discussion) { create(:diff_note_on_merge_request, noteable: merge_request, project: project).to_discussion }
 
   def resolve_discussion_selector
-    title = 'Resolve this discussion in a new issue'
+    title = 'Resolve this thread in a new issue'
     url = new_project_issue_path(project, discussion_to_resolve: discussion.id, merge_request_to_resolve_discussions_of: merge_request.iid)
     "a[data-original-title=\"#{title}\"][href=\"#{url}\"]"
   end
@@ -32,7 +32,7 @@ describe 'Resolve an open discussion in a merge request by creating an issue', :
 
     context 'resolving the discussion' do
       before do
-        click_button 'Resolve discussion'
+        click_button 'Resolve thread'
       end
 
       it 'hides the link for creating a new issue' do
@@ -41,7 +41,7 @@ describe 'Resolve an open discussion in a merge request by creating an issue', :
 
       it 'shows the link for creating a new issue when unresolving a discussion' do
         page.within '.diff-content' do
-          click_button 'Unresolve discussion'
+          click_button 'Unresolve thread'
         end
 
         expect(page).to have_css resolve_discussion_selector
