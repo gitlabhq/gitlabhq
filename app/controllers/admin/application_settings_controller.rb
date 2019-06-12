@@ -2,7 +2,9 @@
 
 class Admin::ApplicationSettingsController < Admin::ApplicationController
   include InternalRedirect
+
   before_action :set_application_setting
+  before_action :whitelist_query_limiting, only: [:usage_data]
 
   def show
   end
@@ -100,6 +102,10 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
 
   def set_application_setting
     @application_setting = Gitlab::CurrentSettings.current_application_settings
+  end
+
+  def whitelist_query_limiting
+    Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/63107')
   end
 
   def application_setting_params
