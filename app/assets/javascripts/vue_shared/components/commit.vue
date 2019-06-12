@@ -1,6 +1,7 @@
 <script>
 import _ from 'underscore';
 import { GlTooltipDirective, GlLink } from '@gitlab/ui';
+import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
 import UserAvatarLink from './user_avatar/user_avatar_link.vue';
 import Icon from '../../vue_shared/components/icon.vue';
 
@@ -12,6 +13,7 @@ export default {
     UserAvatarLink,
     Icon,
     GlLink,
+    TooltipOnTruncate,
   },
   props: {
     /**
@@ -165,7 +167,7 @@ export default {
     <gl-link :href="commitUrl" class="commit-sha mr-0"> {{ shortSha }} </gl-link>
 
     <div class="commit-title flex-truncate-parent">
-      <span v-if="title" class="flex-truncate-child">
+      <tooltip-on-truncate v-if="title" class="flex-truncate-child" :title="title">
         <user-avatar-link
           v-if="hasAuthor"
           :link-href="author.path"
@@ -174,8 +176,10 @@ export default {
           :tooltip-text="author.username"
           class="avatar-image-container"
         />
-        <gl-link :href="commitUrl" class="commit-row-message cgray"> {{ title }} </gl-link>
-      </span>
+        <gl-link :href="commitUrl" class="commit-row-message cgray">
+          {{ title }}
+        </gl-link>
+      </tooltip-on-truncate>
       <span v-else> Can't find HEAD commit for this branch </span>
     </div>
   </div>
