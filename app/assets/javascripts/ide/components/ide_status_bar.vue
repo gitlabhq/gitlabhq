@@ -1,5 +1,6 @@
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex';
+import IdeStatusList from 'ee_else_ce/ide/components/ide_status_list.vue';
 import icon from '~/vue_shared/components/icon.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
 import timeAgoMixin from '~/vue_shared/mixins/timeago';
@@ -12,18 +13,12 @@ export default {
     icon,
     userAvatarImage,
     CiIcon,
+    IdeStatusList,
   },
   directives: {
     tooltip,
   },
   mixins: [timeAgoMixin],
-  props: {
-    file: {
-      type: Object,
-      required: false,
-      default: null,
-    },
-  },
   data() {
     return {
       lastCommitFormatedAge: null,
@@ -125,11 +120,6 @@ export default {
         >{{ lastCommitFormatedAge }}</time
       >
     </div>
-    <div v-if="file" class="ide-status-file">{{ file.name }}</div>
-    <div v-if="file" class="ide-status-file">{{ file.eol }}</div>
-    <div v-if="file && !file.binary" class="ide-status-file">
-      {{ file.editorRow }}:{{ file.editorColumn }}
-    </div>
-    <div v-if="file" class="ide-status-file">{{ file.fileLanguage }}</div>
+    <ide-status-list class="ml-auto" />
   </footer>
 </template>
