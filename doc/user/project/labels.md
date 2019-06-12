@@ -32,6 +32,8 @@ An issue, epic, or merge request cannot have two scoped labels with the same key
 For example, if an issue is already labeled `priority::3` and you apply the label `priority::2` to it,
 `priority::3` is automatically removed.
 
+This functionality is demonstrated in a video titled [Use scoped labels in GitLab 11.10 for custom fields and custom workflows](https://www.youtube.com/watch?v=4BCBby6du3c).
+
 ### Labels with multiple colon pairs
 
 If labels have multiple instances of `::`, the longest path from left to right, until the last `::`, is considered the "key" or the "scope".
