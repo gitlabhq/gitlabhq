@@ -61,7 +61,7 @@ export default {
         </span>
         <span class="line-resolve-text">
           {{ resolvedDiscussionsCount }}/{{ resolvableDiscussionsCount }}
-          {{ n__('discussion resolved', 'discussions resolved', resolvableDiscussionsCount) }}
+          {{ n__('thread resolved', 'threads resolved', resolvableDiscussionsCount) }}
         </span>
       </div>
       <div
@@ -72,7 +72,7 @@ export default {
         <a
           v-gl-tooltip
           :href="resolveAllDiscussionsIssuePath"
-          :title="s__('Resolve all discussions in new issue')"
+          :title="s__('Resolve all threads in new issue')"
           class="new-issue-for-discussion btn btn-default discussion-create-issue-btn"
         >
           <icon name="issue-new" />
@@ -81,7 +81,7 @@ export default {
       <div v-if="isLoggedIn && !allResolved" class="btn-group btn-group-sm" role="group">
         <button
           v-gl-tooltip
-          title="Jump to first unresolved discussion"
+          title="Jump to first unresolved thread"
           class="btn btn-default discussion-next-btn"
           @click="jumpToFirstUnresolvedDiscussion"
         >
