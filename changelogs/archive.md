@@ -274,7 +274,7 @@
 - Pass variables from deployment project services to CI runner. !8107
 - New Gitea importer. !8116
 - Introduce "Set up autodeploy" button to help configure GitLab CI for deployment. !8135
-- Prevent enviroment table to overflow when name has underscores. !8142
+- Prevent environment table to overflow when name has underscores. !8142
 - Fix missing service error importing from EE to CE. !8144
 - Milestoneish SQL performance partially improved and memoized. !8146
 - Allow unauthenticated access to Repositories API GET endpoints. !8148
@@ -562,7 +562,7 @@
 - Fix broken issue/merge request links in JIRA comments. !6143 (Brian Kintz)
 - Fix filtering of milestones with quotes in title (airatshigapov)
 - Fix issue boards dragging bug in Safari
-- Refactor less readable existance checking code from CoffeeScript !6289 (jlogandavison)
+- Refactor less readable existence checking code from CoffeeScript !6289 (jlogandavison)
 - Update mail_room and enable sentinel support to Reply By Email (!7101)
 - Add task completion status in Issues and Merge Requests tabs: "X of Y tasks completed" (!6527, @gmesalazar)
 - Simpler arguments passed to named_route on toggle_award_url helper method
@@ -956,7 +956,7 @@
 
 ## 8.12.0 (2016-09-22)
 
-  - Removes inconsistency regarding tagging immediatelly as merged once you create a new branch. !6408
+  - Removes inconsistency regarding tagging immediately as merged once you create a new branch. !6408
   - Update the rouge gem to 2.0.6, which adds highlighting support for JSX, Prometheus, and others. !6251
   - Only check :can_resolve permission if the note is resolvable
   - Bump fog-aws to v0.11.0 to support ap-south-1 region
@@ -1389,7 +1389,7 @@
   - Fix notification_service argument error of declined invitation emails
   - Fix a memory leak caused by Banzai::Filter::SanitizationFilter
   - Speed up todos queries by limiting the projects set we join with
-  - Ensure file editing in UI does not overwrite commited changes without warning user
+  - Ensure file editing in UI does not overwrite committed changes without warning user
   - Eliminate unneeded calls to Repository#blob_at when listing commits with no path
   - Update gitlab_git gem to 10.4.7
   - Simplify SQL queries of marking a todo as done
@@ -2076,7 +2076,7 @@
   - Don't show forks button when user can't view forks
   - Fix atom feed links and rendering
   - Files over 5MB can only be viewed in their raw form, files over 1MB without highlighting !3718
-  - Add support for supressing text diffs using .gitattributes on the default branch (Matt Oakes)
+  - Add support for suppressing text diffs using .gitattributes on the default branch (Matt Oakes)
   - Add eager load paths to help prevent dependency load issues in Sidekiq workers. !3724
   - Added multiple colors for labels in dropdowns when dups happen.
   - Show commits in the same order as `git log`
@@ -2194,7 +2194,7 @@
   - All images in discussions and wikis now link to their source files !3464 (Connor Shea).
   - Return status code 303 after a branch DELETE operation to avoid project deletion (Stan Hu)
   - Add setting for customizing the list of trusted proxies !3524
-  - Allow projects to be transfered to a lower visibility level group
+  - Allow projects to be transferred to a lower visibility level group
   - Fix `signed_in_ip` being set to 127.0.0.1 when using a reverse proxy !3524
   - Improved Markdown rendering performance !3389
   - Make shared runners text in box configurable
@@ -2209,7 +2209,7 @@
   - API: Ability to update a group (Robert Schilling)
   - API: Ability to move issues (Robert Schilling)
   - Fix Error 500 after renaming a project path (Stan Hu)
-  - Fix a bug whith trailing slash in teamcity_url (Charles May)
+  - Fix a bug with trailing slash in teamcity_url (Charles May)
   - Allow back dating on issues when created or updated through the API
   - Allow back dating on issue notes when created through the API
   - Propose license template when creating a new LICENSE file
@@ -2219,7 +2219,7 @@
   - Allow SAML to handle external users based on user's information !3530
   - Allow Omniauth providers to be marked as `external` !3657
   - Add endpoints to archive or unarchive a project !3372
-  - Fix a bug whith trailing slash in bamboo_url
+  - Fix a bug with trailing slash in bamboo_url
   - Add links to CI setup documentation from project settings and builds pages
   - Display project members page to all members
   - Handle nil descriptions in Slack issue messages (Stan Hu)
@@ -2610,7 +2610,7 @@
   - Fixed logo animation on Safari (Roman Rott)
   - Fix Merge When Succeeded when multiple stages
   - Hide remove source branch button when the MR is merged but new commits are pushed (Zeger-Jan van de Weg)
-  - In seach autocomplete show only groups and projects you are member of
+  - In search autocomplete show only groups and projects you are member of
   - Don't process cross-reference notes from forks
   - Fix: init.d script not working on OS X
   - Faster snippet search
@@ -2870,7 +2870,7 @@
   - Bump Redis requirement to 2.8 for Sidekiq 4 (Stan Hu)
   - Fix: Assignee selector is empty when 'Unassigned' is selected (Jose Corcuera)
   - WIP identifier on merge requests no longer requires trailing space
-  - Add rake tasks for git repository maintainance (Zeger-Jan van de Weg)
+  - Add rake tasks for git repository maintenance (Zeger-Jan van de Weg)
   - Fix 500 error when update group member permission
   - Fix: As an admin, cannot add oneself as a member to a group/project
   - Trim leading and trailing whitespace of milestone and issueable titles (Jose Corcuera)
@@ -3199,7 +3199,7 @@
   - Sort issues by creation date in Bitbucket importer (Stan Hu)
   - Prevent too many redirects upon login when home page URL is set to external_url (Stan Hu)
   - Improve dropdown positioning on the project home page (Hannes Rosenögger)
-  - Upgrade browser gem to 1.0.0 to avoid warning in IE11 compatibilty mode (Stan Hu)
+  - Upgrade browser gem to 1.0.0 to avoid warning in IE11 compatibility mode (Stan Hu)
   - Remove user OAuth tokens from the database and request new tokens each session (Stan Hu)
   - Restrict users API endpoints to use integer IDs (Stan Hu)
   - Only show recent push event if the branch still exists or a recent merge request has not been created (Stan Hu)
@@ -3209,7 +3209,7 @@
   - Ability to fetch merge requests from refs/merge-requests/:id
   - Allow displaying of archived projects in the admin interface (Artem Sidorenko)
   - Allow configuration of import sources for new projects (Artem Sidorenko)
-  - Search for comments should be case insensetive
+  - Search for comments should be case insensitive
   - Create cross-reference for closing references on commits pushed to non-default branches (Maël Valais)
   - Ability to search milestones
   - Gracefully handle SMTP user input errors (e.g. incorrect email addresses) to prevent Sidekiq retries (Stan Hu)
@@ -3477,7 +3477,7 @@
 - Update Asciidoctor gem to version 1.5.2. (Jakub Jirutka)
 - Fix resolving of relative links to repository files in AsciiDoc documents. (Jakub Jirutka)
 - Use the user list from the target project in a merge request (Stan Hu)
-- Default extention for wiki pages is now .md instead of .markdown (Jeroen van Baarsen)
+- Default extension for wiki pages is now .md instead of .markdown (Jeroen van Baarsen)
 - Add validation to wiki page creation (only [a-zA-Z0-9/_-] are allowed) (Jeroen van Baarsen)
 - Fix new/empty milestones showing 100% completion value (Jonah Bishop)
 - Add a note when an Issue or Merge Request's title changes
@@ -3613,7 +3613,7 @@
 - Set EmailsOnPush reply-to address to committer email when enabled.
 - Fix broken file browsing with a submodule that contains a relative link (Stan Hu)
 - Fix persistent XSS vulnerability around profile website URLs.
-- Fix project import URL regex to prevent arbitary local repos from being imported.
+- Fix project import URL regex to prevent arbitrary local repos from being imported.
 - Fix directory traversal vulnerability around uploads routes.
 - Fix directory traversal vulnerability around help pages.
 - Don't leak existence of project via search autocomplete.
@@ -3676,7 +3676,7 @@
 - Don't show commit comment button when user is not signed in.
 - Fix admin user projects lists.
 - Don't leak private group existence by redirecting from namespace controller to group controller.
-- Ability to skip some items from backup (database, respositories or uploads)
+- Ability to skip some items from backup (database, repositories or uploads)
 - Archive repositories in background worker.
 - Import GitHub, Bitbucket or GitLab.com projects owned by authenticated user into current namespace.
 - Project labels are now available over the API under the "tag_list" field (Cristian Medina)
@@ -3701,7 +3701,7 @@
 
 ## 7.9.4
 
-- Security: Fix project import URL regex to prevent arbitary local repos from being imported
+- Security: Fix project import URL regex to prevent arbitrary local repos from being imported
 - Fixed issue where only 25 commits would load in file listings
 - Fix LDAP identities  after config update
 
@@ -4199,7 +4199,7 @@
 - Only masters can rewrite/remove git tags
 - Add X-Frame-Options SAMEORIGIN to Nginx config so Sidekiq admin is visible
 - UI improvements
-- Case-insensetive search for issues
+- Case-insensitive search for issues
 - Update to rails 4.1
 - Improve performance of application for projects and groups with a lot of members
 - Formally support Ruby 2.1
@@ -4358,7 +4358,7 @@
 - Group avatar
 - Pygments.rb replaced with highlight.js
 - Improve Merge request diff store logic
-- Improve render performnace for MR show page
+- Improve render performances for MR show page
 - Fixed Assembla hardcoded project name
 - Jira integration documentation
 - Refactored app/services

@@ -245,7 +245,7 @@ Here are the steps to gate a new feature in Gitaly behind a feature flag.
      // go implementation
    } else {
    	findAllTagsRequests.WithLabelValues("ruby").Inc()
-     // ruby impelmentation
+     // ruby implementation
    }
    ```
 

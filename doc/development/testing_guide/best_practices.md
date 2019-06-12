@@ -17,7 +17,7 @@ our test design. We can find some helpful heuristics documented in the Handbook 
 
 ## Run tests against MySQL
 
-By default, tests are only run againts PostgreSQL, but you can run them on
+By default, tests are only run against PostgreSQL, but you can run them on
 demand against MySQL by following one of the following conventions:
 
 | Convention           | Valid example                |

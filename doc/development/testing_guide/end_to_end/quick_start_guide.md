@@ -557,7 +557,7 @@ The code should look like this: `filter_output = search_field_tag search_id, nil
 
 > Classes starting with `qa-` are used for testing purposes only, and by defining such classes in the elements we add **testability** in the application.
 
-> When defining a class like `qa-labels-block`, it is transformed into `:labels_block` for usage in the Page Objects. So, `qa-edit-link-labels` is tranformed into `:edit_link_labels`, `qa-dropdown-menu-labels` is transformed into `:dropdown_menu_labels`, and `qa-dropdown-input-field` is transformed into `:dropdown_input_field`. Also, we use a [sanity test](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/qa/qa/page#how-did-we-solve-fragile-tests-problem) to check that defined elements have their respective `qa-` selectors in the specified views.
+> When defining a class like `qa-labels-block`, it is transformed into `:labels_block` for usage in the Page Objects. So, `qa-edit-link-labels` is transformed into `:edit_link_labels`, `qa-dropdown-menu-labels` is transformed into `:dropdown_menu_labels`, and `qa-dropdown-input-field` is transformed into `:dropdown_input_field`. Also, we use a [sanity test](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/qa/qa/page#how-did-we-solve-fragile-tests-problem) to check that defined elements have their respective `qa-` selectors in the specified views.
 
 > We did not define the `qa-labels-block` class in the `app/views/shared/issuable/_sidebar.html.haml` file because it was already there to be used.
 

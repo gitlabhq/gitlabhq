@@ -232,8 +232,8 @@ to explore data such as:
 From GitLab 10.5, you can transfer groups in the following ways:
 
 - Transfer a subgroup to a new parent group.
-- Convert a top-level group into a subgroup by transfering it to the desired group.
-- Convert a subgroup into a top-level group by transfering it out of its current group.
+- Convert a top-level group into a subgroup by transferring it to the desired group.
+- Convert a subgroup into a top-level group by transferring it out of its current group.
 
 When transferring groups, note:
 
