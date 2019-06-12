@@ -64,7 +64,7 @@
 
   .home-panel-home-desc.mt-1
     - if @project.description.present?
-      .home-panel-description
+      .home-panel-description.text-break
         .home-panel-description-markdown.read-more-container
           = markdown_field(@project, :description)
         %button.btn.btn-blank.btn-link.js-read-more-trigger.d-lg-none{ type: "button" }
