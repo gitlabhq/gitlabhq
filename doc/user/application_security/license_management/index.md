@@ -65,7 +65,7 @@ file that generates the [License Management report artifact](../../../ci/yaml/RE
 
 This can be done in two ways:
 
-- For GitLab 11.9 and later, including the provided License Management `.gitlab-ci.yml` template (recommended).
+- For GitLab 11.9 and later, including the provided `License-Management.gitlab-ci.yml` template (recommended).
 - Manually specifying the job definition. Not recommended unless using GitLab
   11.8 and earlier.
 

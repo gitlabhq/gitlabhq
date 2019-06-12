@@ -80,7 +80,7 @@ To enable SAST in your project, define a job in your `.gitlab-ci.yml` file that 
 
 This can be done in two ways:
 
-- For GitLab 11.9 and later, including the provided SAST `.gitlab-ci.yml` template (recommended).
+- For GitLab 11.9 and later, including the provided `SAST.gitlab-ci.yml` template (recommended).
 - Manually specifying the job definition. Not recommended unless using GitLab
   11.8 and earlier.
 
