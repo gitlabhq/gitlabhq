@@ -217,10 +217,8 @@ Get an overview of the vulnerabilities of all the projects in a group and its su
 
 ## Insights **[ULTIMATE]**
 
-> Introduced in [GitLab Ultimate][ee] 11.9 behind the `insights` feature flag.
-
-Configure the Insights that matter for your groups or projects, allowing users to explore data
-such as:
+Configure the Insights that matter for your groups or projects, allowing users
+to explore data such as:
 
 - Triage hygiene
 - Issues created/closed per a given period

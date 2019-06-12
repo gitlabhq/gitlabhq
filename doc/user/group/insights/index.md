@@ -5,11 +5,7 @@ type: reference, howto
 # Insights **[ULTIMATE]**
 
 > Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.9 behind the `insights` feature flag.
-
-CAUTION: **Beta:**
-Insights is considered beta, and is not ready for production use.
-Follow [gitlab-org/quality/team-tasks#137](https://gitlab.com/gitlab-org/quality/team-tasks/issues/137#general-availability)
-for updates.
+> **Generally Available** (GA) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.0.
 
 Configure the Insights that matter for your groups to explore data such as
 triage hygiene, issues created/closed per a given period, average time for merge
