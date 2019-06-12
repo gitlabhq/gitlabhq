@@ -11,7 +11,7 @@ import Flash from '../../flash';
 import eventHub from '../event_hub';
 
 import EnvironmentsService from '../services/environments_service';
-import tablePagination from '../../vue_shared/components/table_pagination.vue';
+import tablePagination from '../../vue_shared/components/pagination/table_pagination.vue';
 import environmentTable from '../components/environments_table.vue';
 import tabs from '../../vue_shared/components/navigation_tabs.vue';
 import container from '../components/container.vue';

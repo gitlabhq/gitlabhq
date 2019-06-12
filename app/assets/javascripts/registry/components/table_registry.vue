@@ -4,7 +4,7 @@ import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { n__ } from '../../locale';
 import createFlash from '../../flash';
 import ClipboardButton from '../../vue_shared/components/clipboard_button.vue';
-import TablePagination from '../../vue_shared/components/table_pagination.vue';
+import TablePagination from '../../vue_shared/components/pagination/table_pagination.vue';
 import Icon from '../../vue_shared/components/icon.vue';
 import timeagoMixin from '../../vue_shared/mixins/timeago';
 import { errorMessages, errorMessagesTypes } from '../constants';
