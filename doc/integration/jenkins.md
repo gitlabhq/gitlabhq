@@ -19,8 +19,8 @@ GitLab's Jenkins integration allows you to trigger a Jenkins build when you
 push code to a repository, or when a merge request is created. Additionally,
 it shows the pipeline status on merge requests widgets and on the project's home page.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For a video overview, see [Migrating from Jenkins to GitLab](https://www.youtube.com/watch?v=RlEVGOpYF5Y).
+Videos are also available on [GitLab workflow with Jira issues and Jenkins pipelines](https://youtu.be/Jn-_fyra7xQ)
+and [Migrating from Jenkins to GitLab](https://www.youtube.com/watch?v=RlEVGOpYF5Y).
 
 ## Use cases
 
