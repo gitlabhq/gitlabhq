@@ -29,7 +29,8 @@ module QA
 
           # Adds a comment to an issue
           # attachment option should be an absolute path
-          def comment(text, attachment: nil)
+          def comment(text, attachment: nil, filter: :all_activities)
+            method("select_#{filter}_filter").call
             fill_element :comment_input, text
 
             unless attachment.nil?
