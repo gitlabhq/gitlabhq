@@ -60,6 +60,8 @@ For additional technical details, you can refer to the
 [GitHub Importer](../../../development/github_importer.md "Working with the GitHub importer")
 developer documentation.
 
+For an overview of the import process, see the video [Migrating from GitHub to GitLab](https://youtu.be/VYOXuOg9tQI).
+
 ## Import your GitHub repository into GitLab
 
 ### Using the GitHub integration
