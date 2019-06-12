@@ -3,8 +3,10 @@
 module Gitlab
   module Cluster
     class RackTimeoutObserver
+      TRANSITION_STATES = %i(ready active).freeze
+
       def initialize
-        @counter = Gitlab::Metrics.counter(:rack_state_total, 'Number of requests in a given rack state')
+        @counter = Gitlab::Metrics.counter(:rack_requests_total, 'Number of requests in a given rack state')
       end
 
       # returns the Proc to be used as the observer callback block
@@ -17,6 +19,7 @@ module Gitlab
       def log_timeout_exception(env)
         info = env[::Rack::Timeout::ENV_INFO_KEY]
         return unless info
+        return if TRANSITION_STATES.include?(info.state)
 
         @counter.increment(labels(info, env))
       end
