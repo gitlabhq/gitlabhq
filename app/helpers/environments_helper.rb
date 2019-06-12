@@ -26,6 +26,7 @@ module EnvironmentsHelper
       "empty-no-data-svg-path" => image_path('illustrations/monitoring/no_data.svg'),
       "empty-unable-to-connect-svg-path" => image_path('illustrations/monitoring/unable_to_connect.svg'),
       "metrics-endpoint" => additional_metrics_project_environment_path(project, environment, format: :json),
+      "dashboard-endpoint" => metrics_dashboard_project_environment_path(project, environment, format: :json),
       "deployment-endpoint" => project_environment_deployments_path(project, environment, format: :json),
       "environments-endpoint": project_environments_path(project, format: :json),
       "project-path" => project_path(project),

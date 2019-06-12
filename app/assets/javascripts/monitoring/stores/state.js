@@ -4,6 +4,8 @@ export default () => ({
   metricsEndpoint: null,
   environmentsEndpoint: null,
   deploymentsEndpoint: null,
+  dashboardEndpoint: null,
+  useDashboardEndpoint: false,
   emptyState: 'gettingStarted',
   showEmptyState: true,
   groups: [],
