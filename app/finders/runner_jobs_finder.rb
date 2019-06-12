@@ -3,7 +3,7 @@
 class RunnerJobsFinder
   attr_reader :runner, :params
 
-  ALLOWED_INDEXED_COLUMNS = %w[id created_at].freeze
+  ALLOWED_INDEXED_COLUMNS = %w[id].freeze
 
   def initialize(runner, params = {})
     @runner = runner
@@ -28,13 +28,10 @@ class RunnerJobsFinder
 
   # rubocop: disable CodeReuse/ActiveRecord
   def sort_items(items)
-    order_by = if ALLOWED_INDEXED_COLUMNS.include?(params[:order_by])
-                 params[:order_by]
-               else
-                 :id
-               end
+    return items unless ALLOWED_INDEXED_COLUMNS.include?(params[:order_by])
 
-    sort = if params[:sort] =~ /\A(ASC|DESC)\z/i
+    order_by = params[:order_by]
+    sort = if /\A(ASC|DESC)\z/i.match?(params[:sort])
              params[:sort]
            else
              :desc
