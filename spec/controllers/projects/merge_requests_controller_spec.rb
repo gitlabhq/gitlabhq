@@ -412,7 +412,7 @@ describe Projects::MergeRequestsController do
         end
       end
 
-      context 'when the pipeline succeeds is passed' do
+      context 'when merge when pipeline succeeds option is passed' do
         let!(:head_pipeline) do
           create(:ci_empty_pipeline, project: project, sha: merge_request.diff_head_sha, ref: merge_request.source_branch, head_pipeline_of: merge_request)
         end
@@ -460,6 +460,30 @@ describe Projects::MergeRequestsController do
             merge_when_pipeline_succeeds
 
             expect(json_response).to eq('status' => 'merge_when_pipeline_succeeds')
+          end
+        end
+
+        context 'when auto merge has not been enabled yet' do
+          it 'calls AutoMergeService#execute' do
+            expect_next_instance_of(AutoMergeService) do |service|
+              expect(service).to receive(:execute).with(merge_request, 'merge_when_pipeline_succeeds')
+            end
+
+            merge_when_pipeline_succeeds
+          end
+        end
+
+        context 'when auto merge has already been enabled' do
+          before do
+            merge_request.update!(auto_merge_enabled: true, merge_user: user)
+          end
+
+          it 'calls AutoMergeService#update' do
+            expect_next_instance_of(AutoMergeService) do |service|
+              expect(service).to receive(:update).with(merge_request)
+            end
+
+            merge_when_pipeline_succeeds
           end
         end
       end
