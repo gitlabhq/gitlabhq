@@ -194,6 +194,7 @@ ActiveRecord::Schema.define(version: 20190611161641) do
     t.text "encrypted_lets_encrypt_private_key"
     t.text "encrypted_lets_encrypt_private_key_iv"
     t.boolean "dns_rebinding_protection_enabled", default: true, null: false
+    t.boolean "default_project_deletion_protection", default: false, null: false
     t.index ["usage_stats_set_by_user_id"], name: "index_application_settings_on_usage_stats_set_by_user_id", using: :btree
   end
 
