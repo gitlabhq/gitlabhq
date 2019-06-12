@@ -24,6 +24,7 @@ The following are guides to basic GitLab functionality:
 - [Add an image](add-image.md), to add new images to a project's repository.
 - [Create an issue](../user/project/issues/create_new_issue.md), to start collaborating within a project.
 - [Create a merge request](add-merge-request.md), to request changes made in a branch be merged into a project's repository.
+- See how these features come together in the [GitLab Flow introduction video](https://youtu.be/InKNIvky2KE) and [GitLab Flow page](../workflow/gitlab_flow.md).
 
 ## Git basics
 
