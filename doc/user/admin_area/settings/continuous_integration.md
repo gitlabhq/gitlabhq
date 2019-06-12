@@ -134,6 +134,14 @@ to a different Group.
 be deducted from your Additional Minutes quota immediately after your purchase of additional
 minutes.
 
+## What happens when my CI minutes quota run out
+
+When the CI minutes quota run out, an email is sent automatically to notifies the owner(s) of the group/namespace which
+includes a link to [purchase more minutes](https://customers.gitlab.com/plans).
+
+If you are not the owner of the group, you will need to contact them to let them know they need to
+[purchase more minutes](https://customers.gitlab.com/plans).
+
 ## Archive jobs **[CORE ONLY]**
 
 Archiving jobs is useful for reducing the CI/CD footprint on the system by
