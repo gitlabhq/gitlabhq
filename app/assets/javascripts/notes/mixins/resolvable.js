@@ -20,13 +20,13 @@ export default {
     resolveButtonTitle() {
       if (this.updatedNoteBody) {
         if (this.discussionResolved) {
-          return __('Comment & unresolve discussion');
+          return __('Comment & unresolve thread');
         }
 
-        return __('Comment & resolve discussion');
+        return __('Comment & resolve thread');
       }
 
-      return this.discussionResolved ? __('Unresolve discussion') : __('Resolve discussion');
+      return this.discussionResolved ? __('Unresolve thread') : __('Resolve thread');
     },
   },
   methods: {
