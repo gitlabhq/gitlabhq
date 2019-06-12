@@ -52,10 +52,6 @@ class SearchService
     @search_objects ||= search_results.objects(scope, params[:page])
   end
 
-  def display_options
-    @display_options ||= search_results.display_options(scope)
-  end
-
   private
 
   def search_service
