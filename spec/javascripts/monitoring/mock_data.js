@@ -880,6 +880,7 @@ export const metricsDashboardResponse = {
                 label: 'Total',
                 unit: 'GB',
                 metric_id: 12,
+                prometheus_endpoint_path: 'http://test',
               },
             ],
           },

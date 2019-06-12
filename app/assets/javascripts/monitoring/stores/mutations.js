@@ -1,5 +1,6 @@
+import Vue from 'vue';
 import * as types from './mutation_types';
-import { normalizeMetrics, sortMetrics } from './utils';
+import { normalizeMetrics, sortMetrics, normalizeQueryResult } from './utils';
 
 export default {
   [types.REQUEST_METRICS_DATA](state) {
@@ -48,6 +49,26 @@ export default {
   [types.RECEIVE_ENVIRONMENTS_DATA_FAILURE](state) {
     state.environments = [];
   },
+  [types.SET_QUERY_RESULT](state, { metricId, result }) {
+    if (!metricId || !result || result.length === 0) {
+      return;
+    }
+
+    state.showEmptyState = false;
+
+    state.groups.forEach(group => {
+      group.metrics.forEach(metric => {
+        metric.queries.forEach(query => {
+          if (query.metric_id === metricId) {
+            state.metricsWithData.push(metricId);
+            // ensure dates/numbers are correctly formatted for charts
+            const normalizedResults = result.map(normalizeQueryResult);
+            Vue.set(query, 'result', Object.freeze(normalizedResults));
+          }
+        });
+      });
+    });
+  },
   [types.SET_ENDPOINTS](state, endpoints) {
     state.metricsEndpoint = endpoints.metricsEndpoint;
     state.environmentsEndpoint = endpoints.environmentsEndpoint;
@@ -59,5 +80,9 @@ export default {
   },
   [types.SET_GETTING_STARTED_EMPTY_STATE](state) {
     state.emptyState = 'gettingStarted';
+  },
+  [types.SET_NO_DATA_EMPTY_STATE](state) {
+    state.showEmptyState = true;
+    state.emptyState = 'noData';
   },
 };

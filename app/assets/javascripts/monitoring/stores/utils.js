@@ -58,6 +58,14 @@ export const sortMetrics = metrics =>
     .sortBy('weight')
     .value();
 
+export const normalizeQueryResult = timeSeries => ({
+  ...timeSeries,
+  values: timeSeries.values.map(([timestamp, value]) => [
+    new Date(timestamp * 1000).toISOString(),
+    Number(value),
+  ]),
+});
+
 export const normalizeMetrics = metrics => {
   const groupedMetrics = groupQueriesByChartInfo(metrics);
 
@@ -66,13 +74,7 @@ export const normalizeMetrics = metrics => {
       ...query,
       // custom metrics do not require a label, so we should ensure this attribute is defined
       label: query.label || metric.y_label,
-      result: (query.result || []).map(timeSeries => ({
-        ...timeSeries,
-        values: timeSeries.values.map(([timestamp, value]) => [
-          new Date(timestamp * 1000).toISOString(),
-          Number(value),
-        ]),
-      })),
+      result: (query.result || []).map(normalizeQueryResult),
     }));
 
     return {

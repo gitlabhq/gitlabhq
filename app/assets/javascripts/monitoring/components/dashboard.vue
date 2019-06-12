@@ -137,7 +137,12 @@ export default {
       'showEmptyState',
       'environments',
       'deploymentData',
+      'metricsWithData',
+      'useDashboardEndpoint',
     ]),
+    groupsWithData() {
+      return this.groups.filter(group => this.chartsWithData(group.metrics).length > 0);
+    },
   },
   created() {
     this.setEndpoints({
@@ -182,7 +187,16 @@ export default {
       'fetchData',
       'setGettingStartedEmptyState',
       'setEndpoints',
+      'setDashboardEnabled',
     ]),
+    chartsWithData(charts) {
+      if (!this.useDashboardEndpoint) {
+        return charts;
+      }
+      return charts.filter(chart =>
+        chart.metrics.some(metric => this.metricsWithData.includes(metric.metric_id)),
+      );
+    },
     getGraphAlerts(queries) {
       if (!this.allAlerts) return {};
       const metricIdsForChart = queries.map(q => q.metricId);
@@ -308,13 +322,13 @@ export default {
       </div>
     </div>
     <graph-group
-      v-for="(groupData, index) in groups"
+      v-for="(groupData, index) in groupsWithData"
       :key="index"
       :name="groupData.group"
       :show-panels="showPanels"
     >
       <monitor-area-chart
-        v-for="(graphData, graphIndex) in groupData.metrics"
+        v-for="(graphData, graphIndex) in chartsWithData(groupData.metrics)"
         :key="graphIndex"
         :graph-data="graphData"
         :deployment-data="deploymentData"

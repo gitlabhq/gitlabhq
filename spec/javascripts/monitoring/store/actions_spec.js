@@ -8,6 +8,8 @@ import {
   receiveMetricsDashboardFailure,
   fetchDeploymentsData,
   fetchEnvironmentsData,
+  fetchPrometheusMetrics,
+  fetchPrometheusMetric,
   requestMetricsData,
   setEndpoints,
   setGettingStartedEmptyState,
@@ -15,7 +17,12 @@ import {
 import storeState from '~/monitoring/stores/state';
 import testAction from 'spec/helpers/vuex_action_helper';
 import { resetStore } from '../helpers';
-import { deploymentData, environmentData, metricsDashboardResponse } from '../mock_data';
+import {
+  deploymentData,
+  environmentData,
+  metricsDashboardResponse,
+  metricsGroupsAPIResponse,
+} from '../mock_data';
 
 describe('Monitoring store actions', () => {
   let mock;
@@ -179,6 +186,7 @@ describe('Monitoring store actions', () => {
           expect(dispatch).toHaveBeenCalledWith('requestMetricsDashboard');
           expect(dispatch).toHaveBeenCalledWith('receiveMetricsDashboardSuccess', {
             response,
+            params,
           });
           done();
         })
@@ -220,6 +228,8 @@ describe('Monitoring store actions', () => {
         types.RECEIVE_METRICS_DATA_SUCCESS,
         metricsDashboardResponse.dashboard.panel_groups,
       );
+
+      expect(dispatch).toHaveBeenCalledWith('fetchPrometheusMetrics', params);
     });
   });
 
@@ -240,6 +250,73 @@ describe('Monitoring store actions', () => {
       receiveMetricsDashboardFailure({ commit }, 'uh-oh');
 
       expect(commit).toHaveBeenCalledWith(types.RECEIVE_METRICS_DATA_FAILURE, 'uh-oh');
+    });
+  });
+
+  describe('fetchPrometheusMetrics', () => {
+    let commit;
+    let dispatch;
+
+    beforeEach(() => {
+      commit = jasmine.createSpy();
+      dispatch = jasmine.createSpy();
+    });
+
+    it('commits empty state when state.groups is empty', done => {
+      const state = storeState();
+      const params = {};
+
+      fetchPrometheusMetrics({ state, commit, dispatch }, params)
+        .then(() => {
+          expect(commit).toHaveBeenCalledWith(types.SET_NO_DATA_EMPTY_STATE);
+          expect(dispatch).not.toHaveBeenCalled();
+          done();
+        })
+        .catch(done.fail);
+    });
+
+    it('dispatches fetchPrometheusMetric for each panel query', done => {
+      const params = {};
+      const state = storeState();
+      state.groups = metricsDashboardResponse.dashboard.panel_groups;
+
+      const metric = state.groups[0].panels[0].metrics[0];
+
+      fetchPrometheusMetrics({ state, commit, dispatch }, params)
+        .then(() => {
+          expect(dispatch.calls.count()).toEqual(3);
+          expect(dispatch).toHaveBeenCalledWith('fetchPrometheusMetric', { metric, params });
+          done();
+        })
+        .catch(done.fail);
+
+      done();
+    });
+  });
+
+  describe('fetchPrometheusMetric', () => {
+    it('commits prometheus query result', done => {
+      const commit = jasmine.createSpy();
+      const params = {
+        start: '1557216349.469',
+        end: '1557218149.469',
+      };
+      const metric = metricsDashboardResponse.dashboard.panel_groups[0].panels[0].metrics[0];
+      const state = storeState();
+
+      const data = metricsGroupsAPIResponse.data[0].metrics[0].queries[0];
+      const response = { data };
+      mock.onGet('http://test').reply(200, response);
+
+      fetchPrometheusMetric({ state, commit }, { metric, params });
+
+      setTimeout(() => {
+        expect(commit).toHaveBeenCalledWith(types.SET_QUERY_RESULT, {
+          metricId: metric.metric_id,
+          result: data.result,
+        });
+        done();
+      });
     });
   });
 });
