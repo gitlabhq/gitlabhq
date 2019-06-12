@@ -78,7 +78,6 @@ The GitLab University curriculum is composed of GitLab videos, screencasts, pres
 
 ### 1.8 GitLab Training Material
 
-1. [Git and GitLab Terminology](glossary/README.md)
 1. [Git and GitLab Workshop - Slides](https://docs.google.com/presentation/d/1JzTYD8ij9slejV2-TO-NzjCvlvj6mVn9BORePXNJoMI/edit?usp=drive_web)
 
 ## 2. GitLab Intermediate
