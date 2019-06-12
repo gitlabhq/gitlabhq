@@ -72,7 +72,7 @@ module API
         if params[:view] == 'simple'
           options[:with] = Entities::MergeRequestSimple
         else
-          options[:issuable_metadata] = issuable_meta_data(merge_requests, 'MergeRequest')
+          options[:issuable_metadata] = issuable_meta_data(merge_requests, 'MergeRequest', current_user)
         end
 
         options
