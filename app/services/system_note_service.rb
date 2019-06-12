@@ -249,7 +249,7 @@ module SystemNoteService
   end
 
   def resolve_all_discussions(merge_request, project, author)
-    body = "resolved all discussions"
+    body = "resolved all threads"
 
     create_note(NoteSummary.new(merge_request, project, author, body, action: 'discussion'))
   end
