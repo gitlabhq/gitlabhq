@@ -466,6 +466,29 @@ that runner.
 > - If the repository is private you need to authenticate your GitLab Runner in the
 >   registry. Learn more about how [GitLab Runner works in this case][runner-priv-reg].
 
+To access private container registries, the GitLab Runner process can use:
+
+- [Statically defined credentials](#using-statically-defined-credentials). That is, a username and password for a specific registry.
+- [Credentials Store](#using-credentials-store). For more information, see [the relevant Docker documentation](https://docs.docker.com/engine/reference/commandline/login/#credentials-store).
+- [Credential Helpers](#using-credential-helpers). For more information, see [the relevant Docker documentation](https://docs.docker.com/engine/reference/commandline/login/#credential-helpers).
+
+To define which should be used, the GitLab Runner process reads the configuration in the following order:
+
+- `DOCKER_AUTH_CONFIG` variable provided as either:
+  - A [variable](../variables/README.md#gitlab-cicd-environment-variables) in `.gitlab-ci.yml`.
+  - A project's variables stored on the projects **Settings > CI/CD** page.
+- `DOCKER_AUTH_CONFIG` variable provided as environment variable in `config.toml` of the Runner.
+- `config.json` file placed in `$HOME/docker` directory of the user running GitLab Runner process.
+  If the `--user` flag is provided to run the GitLab Runner child processes as unprivileged user,
+  the home directory of the main GitLab Runner process user will be used.
+
+NOTE: **Note:** 
+GitLab Runner reads this configuration **only** from `config.toml` and ignores it if 
+it's provided as an environment variable. This is because GitLab Runnner uses **only**
+`config.toml` configuration and doesn't interpolate **ANY** environment variables at
+runtime.
+
+### Using statically-defined credentials
 As an example, let's assume that you want to use the `registry.example.com:5000/private/image:latest`
 image which is private and requires you to login into a private container registry.
 
@@ -542,6 +565,78 @@ for the Runner to match the `DOCKER_AUTH_CONFIG`. For example, if
 `registry.example.com:5000/namespace/image:tag` is specified in `.gitlab-ci.yml`,
 then the `DOCKER_AUTH_CONFIG` must also specify `registry.example.com:5000`.
 Specifying only `registry.example.com` will not work.
+
+
+### Using Credentials Store
+
+> Support for using Credentials Store was added in GitLab Runner 9.5.
+
+To configure credentials store, follow these steps:
+
+1. To use a credentials store, you need an external helper program to interact with a specific keychain or external store.
+Make sure helper program is available in GitLab Runner `$PATH`.
+
+1. Make GitLab Runner use it. There are two ways to accomplish this. Either:
+   - Create a 
+     [variable](../variables/README.md#gitlab-cicd-environment-variables)
+     `DOCKER_AUTH_CONFIG` with the content of the
+   Docker configuration file as the value:
+
+    ```json
+      {
+        "credsStore": "osxkeychain"
+      }
+    ```
+
+   - Or, if you are running self-hosted Runners, add the above JSON to
+     `${GITLAB_RUNNER_HOME}/.docker/config.json`. GitLab Runner will read this config file
+     and will use the needed helper for this specific repository.
+
+NOTE: **Note:** `credsStore` is used to access ALL the registries.
+If you will want to use both images from private registry and public images from DockerHub,
+pulling from DockerHub will fail, because Docker daemon will try to use the same credentials for **ALL** the registries.
+
+### Using Credential Helpers
+
+> Support for using Credential Helpers was added in GitLab Runner 12.0
+
+As an example, let's assume that you want to use the `aws_account_id.dkr.ecr.region.amazonaws.com/private/image:latest`
+image which is private and requires you to log in into a private container registry.
+
+To configure access for `aws_account_id.dkr.ecr.region.amazonaws.com`, follow these steps:
+
+1. Make sure `docker-credential-ecr-login` is available in GitLab Runner's `$PATH`.
+
+1. Make GitLab Runner use it. There are two ways to accomplish this. Either:
+   - Create a [variable](../variables/README.md#gitlab-cicd-environment-variables)
+     `DOCKER_AUTH_CONFIG` with the content of the
+   Docker configuration file as the value:
+
+    ```json
+    {
+      "credHelpers": {
+        "aws_account_id.dkr.ecr.region.amazonaws.com": "ecr-login"
+      }
+    }
+    ```
+
+   - Or, if you are running self-hosted Runners,
+     add the above JSON to `${GITLAB_RUNNER_HOME}/.docker/config.json`.
+     GitLab Runner will read this config file and will use the needed helper for this
+     specific repository.
+
+1. You can now use any private image from `aws_account_id.dkr.ecr.region.amazonaws.com` defined in
+   `image` and/or `services` in your `.gitlab-ci.yml` file:
+
+    ```yaml
+    image: aws_account_id.dkr.ecr.region.amazonaws.com/private/image:latest
+    ```
+
+    In the example above, GitLab Runner will look at `aws_account_id.dkr.ecr.region.amazonaws.com` for the
+    image `private/image:latest`.
+
+You can add configuration for as many registries as you want, adding more
+registries to the `"credHelpers"` hash as described above.
 
 ## Configuring services
 
