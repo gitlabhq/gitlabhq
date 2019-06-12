@@ -41,7 +41,7 @@ module IssuableCollections
     return if pagination_disabled?
 
     @issuables          = @issuables.page(params[:page])
-    @issuable_meta_data = issuable_meta_data(@issuables, collection_type)
+    @issuable_meta_data = issuable_meta_data(@issuables, collection_type, current_user)
     @total_pages        = issuable_page_count
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables

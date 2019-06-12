@@ -29,7 +29,11 @@ module Issuable
   # This object is used to gather issuable meta data for displaying
   # upvotes, downvotes, notes and closing merge requests count for issues and merge requests
   # lists avoiding n+1 queries and improving performance.
-  IssuableMeta = Struct.new(:upvotes, :downvotes, :user_notes_count, :merge_requests_count)
+  IssuableMeta = Struct.new(:upvotes, :downvotes, :user_notes_count, :mrs_count) do
+    def merge_requests_count(user = nil)
+      mrs_count
+    end
+  end
 
   included do
     cache_markdown_field :title, pipeline: :single_line
