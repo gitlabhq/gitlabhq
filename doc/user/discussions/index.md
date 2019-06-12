@@ -53,6 +53,8 @@ persist through a commit ID change when:
 - force-pushing after a rebase
 - amending a commit
 
+This functionality is also demonstrated in the video [How to use Merge Request Commit Discussions](https://www.youtube.com/watch?v=TviJH6oRboo).
+
 To create a commit diff discussion:
 
 1. Navigate to the merge request **Commits** tab. A list of commits that
