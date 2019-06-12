@@ -51,7 +51,7 @@ will get rejected.
 
 ## Enabling push rules
 
->**Note:**
+NOTE: **Note:**
 GitLab administrators can set push rules globally under
 **Admin area > Push Rules** that all new projects will inherit. You can later
 override them in a project's settings.
@@ -76,7 +76,7 @@ The following options are available.
 | Prohibited file names | **Starter** 7.10 | Any committed filenames that match this regular expression are not allowed to be pushed. Leave empty to allow any filenames. |
 | Maximum file size | **Starter** 7.12 | Pushes that contain added or updated files that exceed this file size (in MB) are rejected. Set to 0 to allow files of any size. |
 
->**Tip:**
+TIP: **Tip:**
 GitLab uses [RE2 syntax](https://github.com/google/re2/wiki/Syntax) for regular expressions in push rules, and you can test them at the [GoLang regex tester](https://regex-golang.appspot.com).
 
 ## Prevent pushing secrets to the repository
@@ -91,7 +91,7 @@ pushes to the repository when a file matches a regular expression as read from
 [`files_blacklist.yml`][list] (make sure you are at the right branch
 as your GitLab version when viewing this file).
 
-NOTE: **Note**:
+NOTE: **Note:**
 Files already committed won't get restricted by this push rule.
 
 Below is an example list of what will be rejected by these regular expressions:

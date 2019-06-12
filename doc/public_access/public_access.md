@@ -42,18 +42,16 @@ They will appear in the public access directory (`/public`) for project members 
 
 ## Visibility of groups
 
->**Note:**
-[Starting with][3323] GitLab 8.6, the group visibility has changed and can be
-configured the same way as projects. In previous versions, a group's page was
-always visible to all users.
+NOTE: **Note:**
+[Starting with](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/3323) GitLab 8.6,
+the group visibility has changed and can be configured the same way as projects.
+In previous versions, a group's page was always visible to all users.
 
 Like with projects, the visibility of a group can be set to dictate whether
 anonymous users, all signed in users, or only explicit group members can view
 it. The restriction for visibility levels on the application setting level also
 applies to groups, so if that's set to internal, the explore page will be empty
 for anonymous users. The group page now has a visibility level icon.
-
-[3323]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/3323
 
 ## Visibility of users
 

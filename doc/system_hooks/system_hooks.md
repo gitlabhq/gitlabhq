@@ -31,7 +31,9 @@ The triggers for most of these are self-explanatory, but `project_update` and `p
 
 System hooks can be used, e.g. for logging or changing information in a LDAP server.
 
-NOTE: **Note:** We follow the same structure and deprecations as [Webhooks](../user/project/integrations/webhooks.md) for Push and Tag events, but we never display commits.
+NOTE: **Note:**
+We follow the same structure and deprecations as [Webhooks](../user/project/integrations/webhooks.md)
+for Push and Tag events, but we never display commits.
 
 ## Hooks request example
 

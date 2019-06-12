@@ -46,7 +46,8 @@ After purchase, the license file is sent to the email address tied to the Custom
 
 ### Link your GitLab.com account with your Customers Portal account
 
-NOTE: **Note:** This is *required* for GitLab.com subscriptions.
+NOTE: **Note:**
+This is *required* for GitLab.com subscriptions.
 
 Once signed into the customers portal, if your account is not already linked, you should be prompted to link your account with a "Link my GitLab Account" button.
 
