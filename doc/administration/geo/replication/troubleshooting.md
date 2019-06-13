@@ -504,6 +504,15 @@ To resolve this, run the following command:
 sudo gitlab-rake geo:db:refresh_foreign_tables
 ```
 
+## Expired artifacts
+
+If you notice for some reason there are more artifacts on the Geo
+secondary node than on the Geo primary node, you can use the rake task
+to [cleanup orphan artifact files](../../../raketasks/cleanup.md#remove-orphan-artifact-files).
+
+On a Geo **secondary** node, this command will also clean up all Geo
+registry record related to the orphan files on disk.
+
 ## Fixing common errors
 
 This section documents common errors reported in the Admin UI and how to fix them.
