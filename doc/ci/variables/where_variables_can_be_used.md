@@ -89,6 +89,14 @@ Supported:
   - In `script`, it will work in the following lines of `script`.
   - In `after_script`, it will work in following lines of `after_script`.
 
+Please notice the specific case of `after_script` scripts, that can:
+
+- Only use variables defined before the script within the same `after_script` section.
+- Not use variables defined in `before_script` and `script`.
+
+Both restrictions are caused by the fact, that `after_script` script is executed in a
+[separated shell context](https://docs.gitlab.com/ee/ci/yaml/README.html#before_script-and-after_script).
+
 ## Persisted variables
 
 NOTE: **Note:**

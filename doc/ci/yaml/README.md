@@ -215,10 +215,20 @@ This can be an array or a multi-line string.
 `after_script` is used to define the command that will be run after all
 jobs, including failed ones. This has to be an array or a multi-line string.
 
-The `before_script` and the main `script` are concatenated and run in a single context/container.
-The `after_script` is run separately. The current working directory is set back to
-default. Depending on the executor, changes done outside of the working tree might
-not be visible, e.g. software installed in the `before_script`.
+Script specified in `before_script` is:
+
+- Concatenated with script specified in the main `script`. Job-level `before_script` definition
+  override global-level `before_script` definition when concatenated with `script` definition.
+- Executed together with main `script` script as one script in a single shell context.
+
+Script specified in `after_script`:
+
+- Have a current working directory set back to the default.
+- Is executed in a shell context separated from `before_script` and `script` scripts.
+- Because of separated context, cannot see changes done by scripts defined in `before_script` or `script` scripts:
+    - in shell - for example, command aliases and variables exported in `script` script,
+    - outside of the working tree (depending on the Runner executor) - for example, software installed
+      by a `before_script` or `script` script.
 
 It's possible to overwrite the globally defined `before_script` and `after_script`
 if you set it per-job:
