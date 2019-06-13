@@ -1,5 +1,6 @@
 <script>
 import { GlBadge } from '@gitlab/ui';
+import { visitUrl } from '~/lib/utils/url_utility';
 import { getIconName } from '../../utils/icon';
 import getRefMixin from '../../mixins/get_ref';
 
@@ -63,6 +64,8 @@ export default {
     openRow() {
       if (this.isFolder) {
         this.$router.push(this.routerLinkTo);
+      } else {
+        visitUrl(this.url);
       }
     },
   },
