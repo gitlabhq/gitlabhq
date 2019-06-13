@@ -98,4 +98,47 @@ describe Gitlab::Danger::Roulette do
       is_expected.to contain_exactly(ce_teammate_matcher)
     end
   end
+
+  describe '#spin_for_person' do
+    let(:person1) { Gitlab::Danger::Teammate.new('username' => 'rymai') }
+    let(:person2) { Gitlab::Danger::Teammate.new('username' => 'godfat') }
+    let(:author) { Gitlab::Danger::Teammate.new('username' => 'filipa') }
+    let(:ooo) { Gitlab::Danger::Teammate.new('username' => 'jacopo-beschi') }
+
+    before do
+      stub_person_message(person1, 'making GitLab magic')
+      stub_person_message(person2, 'making GitLab magic')
+      stub_person_message(ooo, 'OOO till 15th')
+      # we don't stub Filipa, as she is the author and
+      # we should not fire request checking for her
+
+      allow(subject).to receive_message_chain(:gitlab, :mr_author).and_return(author.username)
+    end
+
+    it 'returns a random person' do
+      persons = [person1, person2]
+
+      selected = subject.spin_for_person(persons, random: Random.new)
+
+      expect(selected.username).to be_in(persons.map(&:username))
+    end
+
+    it 'excludes OOO persons' do
+      expect(subject.spin_for_person([ooo], random: Random.new)).to be_nil
+    end
+
+    it 'excludes mr.author' do
+      expect(subject.spin_for_person([author], random: Random.new)).to be_nil
+    end
+
+    private
+
+    def stub_person_message(person, message)
+      body = { message: message }.to_json
+
+      WebMock
+        .stub_request(:get, "https://gitlab.com/api/v4/users/#{person.username}/status")
+        .to_return(body: body)
+    end
+  end
 end

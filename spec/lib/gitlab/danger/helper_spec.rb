@@ -202,4 +202,14 @@ describe Gitlab::Danger::Helper do
       it { is_expected.to eq(expected_label) }
     end
   end
+
+  describe '#new_teammates' do
+    it 'returns an array of Teammate' do
+      usernames = %w[filipa iamphil]
+
+      teammates = helper.new_teammates(usernames)
+
+      expect(teammates.map(&:username)).to eq(usernames)
+    end
+  end
 end

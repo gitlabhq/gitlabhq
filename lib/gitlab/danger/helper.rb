@@ -124,6 +124,10 @@ module Gitlab
         %r{\.(md|txt)\z} => :none, # To reinstate roulette for documentation, set to `:docs`.
         %r{\.js\z} => :frontend
       }.freeze
+
+      def new_teammates(usernames)
+        usernames.map { |u| Gitlab::Danger::Teammate.new('username' => u) }
+      end
     end
   end
 end

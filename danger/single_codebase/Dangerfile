@@ -1,6 +1,6 @@
-def new_teammates(usernames)
-  usernames.map { |u| ::Gitlab::Danger::Teammate.new('username' => u) }
-end
+FRONTEND_MAINTAINERS = %w[filipa iamphill].freeze
+BACKEND_MAINTAINERS = %w[rspeicher rymai yorickpeterse godfat].freeze
+NO_REVIEWER = 'No reviewer available'.freeze
 
 def mention_single_codebase_approvers
   canonical_branch_name =
@@ -8,8 +8,8 @@ def mention_single_codebase_approvers
 
   random = roulette.new_random(canonical_branch_name)
 
-  frontend_maintainers = new_teammates(%w[filipa iamphill])
-  backend_maintainers = new_teammates(%w[rspeicher rymai yorickpeterse godfat])
+  frontend_maintainers = helper.new_teammates(FRONTEND_MAINTAINERS)
+  backend_maintainers = helper.new_teammates(BACKEND_MAINTAINERS)
 
   rows = []
 
@@ -17,14 +17,14 @@ def mention_single_codebase_approvers
     frontend_maintainer =
       roulette.spin_for_person(frontend_maintainers, random: random)
 
-    rows << "| ~frontend | #{frontend_maintainer.markdown_name}"
+    rows << "| ~frontend | #{frontend_maintainer&.markdown_name || NO_REVIEWER}"
   end
 
   if gitlab.mr_labels.include?('backend')
     backend_maintainer =
       roulette.spin_for_person(backend_maintainers, random: random)
 
-    rows << "| ~backend | #{backend_maintainer.markdown_name}"
+    rows << "| ~backend | #{backend_maintainer&.markdown_name || NO_REVIEWER}"
   end
 
   if rows.empty?

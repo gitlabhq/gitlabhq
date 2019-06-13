@@ -45,21 +45,19 @@ module Gitlab
       # Known issue: If someone is rejected due to OOO, and then becomes not OOO, the
       # selection will change on next spin
       def spin_for_person(people, random:)
-        person = nil
-        people = people.dup
-
-        people.size.times do
-          person = people.sample(random: random)
-
-          break person unless out_of_office?(person)
-
-          people -= [person]
-        end
-
-        person
+        people.shuffle(random: random)
+          .find(&method(:valid_person?))
       end
 
       private
+
+      def valid_person?(person)
+        !mr_author?(person) && !out_of_office?(person)
+      end
+
+      def mr_author?(person)
+        person.username == gitlab.mr_author
+      end
 
       def out_of_office?(person)
         username = CGI.escape(person.username)
