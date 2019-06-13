@@ -9,14 +9,16 @@ module Gitlab
       REGEX_QUOTED_WORD = /(?<=\A| )"[^"]+"(?= |\z)/.freeze
 
       class_methods do
-        def fuzzy_search(query, columns)
-          matches = columns.map { |col| fuzzy_arel_match(col, query) }.compact.reduce(:or)
+        def fuzzy_search(query, columns, use_minimum_char_limit: true)
+          matches = columns.map do |col|
+            fuzzy_arel_match(col, query, use_minimum_char_limit: use_minimum_char_limit)
+          end.compact.reduce(:or)
 
           where(matches)
         end
 
-        def to_pattern(query)
-          if partial_matching?(query)
+        def to_pattern(query, use_minimum_char_limit: true)
+          if partial_matching?(query, use_minimum_char_limit: use_minimum_char_limit)
             "%#{sanitize_sql_like(query)}%"
           else
             sanitize_sql_like(query)
@@ -27,7 +29,9 @@ module Gitlab
           MIN_CHARS_FOR_PARTIAL_MATCHING
         end
 
-        def partial_matching?(query)
+        def partial_matching?(query, use_minimum_char_limit: true)
+          return true unless use_minimum_char_limit
+
           query.length >= min_chars_for_partial_matching
         end
 
@@ -35,14 +39,14 @@ module Gitlab
         # query - The text to search for.
         # lower_exact_match - When set to `true` we'll fall back to using
         #                     `LOWER(column) = query` instead of using `ILIKE`.
-        def fuzzy_arel_match(column, query, lower_exact_match: false)
+        def fuzzy_arel_match(column, query, lower_exact_match: false, use_minimum_char_limit: true)
           query = query.squish
           return unless query.present?
 
-          words = select_fuzzy_words(query)
+          words = select_fuzzy_words(query, use_minimum_char_limit: use_minimum_char_limit)
 
           if words.any?
-            words.map { |word| arel_table[column].matches(to_pattern(word)) }.reduce(:and)
+            words.map { |word| arel_table[column].matches(to_pattern(word, use_minimum_char_limit: use_minimum_char_limit)) }.reduce(:and)
           else
             # No words of at least 3 chars, but we can search for an exact
             # case insensitive match with the query as a whole
@@ -56,7 +60,7 @@ module Gitlab
           end
         end
 
-        def select_fuzzy_words(query)
+        def select_fuzzy_words(query, use_minimum_char_limit: true)
           quoted_words = query.scan(REGEX_QUOTED_WORD)
 
           query = quoted_words.reduce(query) { |q, quoted_word| q.sub(quoted_word, '') }
@@ -67,7 +71,7 @@ module Gitlab
 
           words.concat(quoted_words)
 
-          words.select { |word| partial_matching?(word) }
+          words.select { |word| partial_matching?(word, use_minimum_char_limit: use_minimum_char_limit) }
         end
       end
     end

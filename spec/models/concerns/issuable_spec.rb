@@ -223,6 +223,16 @@ describe Issuable do
       expect(issuable_class.full_search(searchable_issue2.description.downcase)).to eq([searchable_issue2])
     end
 
+    it 'returns issues with a fuzzy matching description for a query shorter than 3 chars if told to do so' do
+      search = searchable_issue2.description.downcase.scan(/\w+/).sample[-1]
+
+      expect(issuable_class.full_search(search, use_minimum_char_limit: false)).to include(searchable_issue2)
+    end
+
+    it 'returns issues with a fuzzy matching title for a query shorter than 3 chars if told to do so' do
+      expect(issuable_class.full_search('i', use_minimum_char_limit: false)).to include(searchable_issue)
+    end
+
     context 'when matching columns is "title"' do
       it 'returns issues with a matching title' do
         expect(issuable_class.full_search(searchable_issue.title, matched_columns: 'title'))
