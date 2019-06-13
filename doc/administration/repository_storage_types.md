@@ -80,25 +80,20 @@ by another folder with the next 2 characters. They are both stored in a special
 
 ### Hashed object pools
 
-CAUTION: **Beta:**
-Hashed objects pools are considered beta, and are not ready for production use.
-Follow [gitaly#1548](https://gitlab.com/gitlab-org/gitaly/issues/1548) for
-updates.
+> [Introduced](https://gitlab.com/gitlab-org/gitaly/issues/1606) in GitLab 12.1.
 
-For deduplication of public forks and their parent repository, objects are pooled
-in an object pool. These object pools are a third repository where shared objects
-are stored.
+Forks of public projects are deduplicated by creating a third repository, the object pool, containing the objects from the source project. Using `objects/info/alternates`, the source project and forks use the object pool for shared objects. Objects are moved from the source project to the object pool when housekeeping is run on the source project.
 
 ```ruby
 # object pool paths
 "@pools/#{hash[0..1]}/#{hash[2..3]}/#{hash}.git"
 ```
 
-The object pool feature is behind the `object_pools` feature flag, and can be
-enabled for individual projects by executing
-`Feature.enable(:object_pools, Project.find(<id>))`. Note that the project has to
-be on hashed storage, should not be a fork itself, and hashed storage should be
-enabled for all new projects.
+Object pools can be disabled using the `object_pools` feature flag, and can be
+disabled for individual projects by executing
+`Feature.disable(:object_pools, Project.find(<id>))`. Disabling object pools
+will not change existing deduplicated forks, but will prevent new forks from
+being deduplicated.
 
 DANGER: **Danger:**
 Do not run `git prune` or `git gc` in pool repositories! This can
