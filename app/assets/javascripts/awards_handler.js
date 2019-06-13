@@ -1,4 +1,4 @@
-/* eslint-disable class-methods-use-this */
+/* eslint-disable class-methods-use-this, @gitlab/i18n/no-non-i18n-strings */
 
 import $ from 'jquery';
 import _ from 'underscore';

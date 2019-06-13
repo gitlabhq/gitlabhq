@@ -427,6 +427,7 @@ function UsersSelect(currentUser, els, options = {}) {
               const isActive = $el.hasClass('is-active');
               const previouslySelected = $dropdown
                 .closest('.selectbox')
+                /* eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings */
                 .find("input[name='" + $dropdown.data('fieldName') + "'][value!=0]");
 
               // Enables support for limiting the number of users selected

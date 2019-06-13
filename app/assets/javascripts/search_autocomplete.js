@@ -447,9 +447,11 @@ export class SearchAutocomplete {
   onClick(item, $el, e) {
     if (window.location.pathname.indexOf(item.url) !== -1) {
       if (!e.metaKey) e.preventDefault();
+      /* eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings */
       if (item.category === 'Projects') {
         this.projectInputEl.val(item.id);
       }
+      /* eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings */
       if (item.category === 'Groups') {
         this.groupInputEl.val(item.id);
       }

@@ -29,4 +29,5 @@ export const updateDraft = (autosaveKey, text) => {
 };
 
 export const getDiscussionReplyKey = (noteableType, discussionId) =>
+  /* eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings */
   ['Note', capitalizeFirstCharacter(noteableType), discussionId, 'Reply'].join('/');
