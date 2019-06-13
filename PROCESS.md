@@ -86,12 +86,10 @@ star, smile, etc.). Some good tips about code reviews can be found in our
 
 ## Feature freeze on the 7th for the release on the 22nd
 
-The feature freeze on the 7th has been discontinued. [Transition period overview]
+The feature freeze on the 7th has been discontinued. The [transition period overview](https://gitlab.com/gitlab-org/release/docs/blob/21cbd409dd5f157fe252f254f3e897f01908abe2/general/deploy/auto-deploy-transition.md#transition)
 describes the change to this process. During the transition period, the only guarantee that
 a change will be included in the release on the 22nd is if the change has been
 deployed to GitLab.com prior to this date.
-
-[Transition period]: https://gitlab.com/gitlab-org/release/docs/blob/21cbd409dd5f157fe252f254f3e897f01908abe2/general/deploy/auto-deploy-transition.md#transition
 
 ### Feature flags
 
