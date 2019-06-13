@@ -13,6 +13,8 @@
   .settings-content
     = render 'ci_cd'
 
+= render_if_exists 'admin/application_settings/required_instance_ci_setting', expanded: expanded_by_default?
+
 - if Gitlab.config.registry.enabled
   %section.settings.as-registry.no-animate#js-registry-settings{ class: ('expanded' if expanded_by_default?) }
     .settings-header
