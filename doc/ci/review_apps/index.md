@@ -158,7 +158,7 @@ After adding Review Apps to your workflow, you follow the branched Git flow. Tha
 
 The Review Toolbar can be added to a Review App to make it easier to post comments directly from the app back to the merge request that spawned the Review App.
 
-![feedback form](img/toolbar_feedback_form.png)
+![feedback form](img/toolbar_feeback_form.png)
 
 #### Using the Toolbar
 
