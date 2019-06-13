@@ -24,10 +24,6 @@ in the label’s title, using the format `key::value`. For example:
 
 ![A sample scoped label](img/key_value_labels.png)
 
-Two scoped labels with the same key but a different value cannot simultaneously
-apply to an issue, epic, or merge request. For example, if an issue already has `priority::3`
-and you apply `priority::2` to it, `priority::3` is automatically removed from the issue.
-
 An issue, epic, or merge request cannot have two scoped labels with the same key.
 For example, if an issue is already labeled `priority::3` and you apply the label `priority::2` to it,
 `priority::3` is automatically removed.
