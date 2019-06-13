@@ -18,6 +18,7 @@ const defaultClient = createDefaultClient(
     cacheConfig: {
       fragmentMatcher,
       dataIdFromObject: obj => {
+        /* eslint-disable @gitlab/i18n/no-non-i18n-strings */
         // eslint-disable-next-line no-underscore-dangle
         switch (obj.__typename) {
           // We need to create a dynamic ID for each entry
@@ -33,6 +34,7 @@ const defaultClient = createDefaultClient(
             // eslint-disable-next-line no-underscore-dangle
             return obj.id || obj._id;
         }
+        /* eslint-enable @gitlab/i18n/no-non-i18n-strings */
       },
     },
   },

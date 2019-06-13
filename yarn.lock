@@ -693,6 +693,13 @@
     eslint-plugin-promise "^4.1.1"
     eslint-plugin-vue "^5.0.0"
 
+"@gitlab/eslint-plugin-i18n@^1.0.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/eslint-plugin-i18n/-/eslint-plugin-i18n-1.1.0.tgz#e494d599e644ce3a094ea85f87dbbda41a924c5e"
+  integrity sha512-Cwm7sLtQnUDqvxE9Ez8UMslyosPCpMVLxBnFb+2n6QcBZmXRao4aNSVRkmlsDZYgYegWhOGn3Qq3MLy4BSqauQ==
+  dependencies:
+    requireindex "~1.1.0"
+
 "@gitlab/svgs@^1.63.0":
   version "1.63.0"
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.63.0.tgz#9dd544026d203e4ce6efed72b05db68f710c4d49"
@@ -9438,6 +9445,11 @@ require-uncached@^1.0.3:
   dependencies:
     caller-path "^0.1.0"
     resolve-from "^1.0.0"
+
+requireindex@~1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/requireindex/-/requireindex-1.1.0.tgz#e5404b81557ef75db6e49c5a72004893fe03e162"
+  integrity sha1-5UBLgVV+91225JxacgBIk/4D4WI=
 
 requires-port@1.x.x, requires-port@^1.0.0:
   version "1.0.0"

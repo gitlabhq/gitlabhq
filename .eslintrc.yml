@@ -8,11 +8,13 @@ globals:
 plugins:
   - import
   - html
+  - "@gitlab/i18n"
 settings:
   import/resolver:
     webpack:
       config: './config/webpack.config.js'
 rules:
+  "@gitlab/i18n/no-non-i18n-strings": error
   import/no-commonjs: error
   no-underscore-dangle:
     - error
@@ -31,3 +33,11 @@ rules:
   vue/no-use-v-if-with-v-for: off
   vue/no-v-html: off
   vue/use-v-on-exact: off
+overrides:
+  files:
+    # Vue is temporarily being disabled until the autofix errors are resolved
+    # Follow up issue https://gitlab.com/gitlab-org/gitlab-ce/issues/57969
+    - '*.vue'
+    - '**/spec/**/*'
+  rules:
+    "@gitlab/i18n/no-non-i18n-strings": off
