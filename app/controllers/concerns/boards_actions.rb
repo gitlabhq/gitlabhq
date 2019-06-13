@@ -35,4 +35,12 @@ module BoardsActions
       boards.find(params[:id])
     end
   end
+
+  def serializer
+    BoardSerializer.new(current_user: current_user)
+  end
+
+  def serialize_as_json(resource)
+    serializer.represent(resource, serializer: 'board', include_full_project_path: board.group_board?)
+  end
 end
