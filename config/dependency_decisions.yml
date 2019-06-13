@@ -599,3 +599,10 @@
     :why: https://github.com/apache/incubator-echarts/blob/master/LICENSE
     :versions: []
     :when: 2018-12-07 20:46:12.421256000 Z
+- - :license
+  - contracts
+  - BSD
+  - :who: Jarka Košanová
+    :why: https://github.com/egonSchiele/contracts.ruby/blob/master/LICENSE
+    :versions: []
+    :when: 2019-04-01 11:29:39.361015000 Z
