@@ -122,7 +122,14 @@ module Trigger
     end
 
     def ref
-      ENV['CNG_BRANCH'] || 'master'
+      default_ref =
+        if ENV['CI_COMMIT_REF_NAME'] =~ /^[\d-]+-stable(-ee)?$/
+          ENV['CI_COMMIT_REF_NAME']
+        else
+          'master'
+        end
+
+      ENV['CNG_BRANCH'] || default_ref
     end
 
     def trigger_token
