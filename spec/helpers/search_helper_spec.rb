@@ -113,8 +113,10 @@ describe SearchHelper do
         expect(search_filter_input_options('')[:data]['project-id']).to eq(@project.id)
       end
 
-      it 'includes project base-endpoint' do
+      it 'includes project endpoints' do
         expect(search_filter_input_options('')[:data]['base-endpoint']).to eq(project_path(@project))
+        expect(search_filter_input_options('')[:data]['labels-endpoint']).to eq(project_labels_path(@project))
+        expect(search_filter_input_options('')[:data]['milestones-endpoint']).to eq(project_milestones_path(@project))
       end
 
       it 'includes autocomplete=off flag' do
@@ -131,8 +133,10 @@ describe SearchHelper do
         expect(search_filter_input_options('')[:data]['project-id']).to eq(nil)
       end
 
-      it 'includes group base-endpoint' do
+      it 'includes group endpoints' do
         expect(search_filter_input_options('')[:data]['base-endpoint']).to eq("/groups#{group_path(@group)}")
+        expect(search_filter_input_options('')[:data]['labels-endpoint']).to eq(group_labels_path(@group))
+        expect(search_filter_input_options('')[:data]['milestones-endpoint']).to eq(group_milestones_path(@group))
       end
     end
 
@@ -142,8 +146,10 @@ describe SearchHelper do
         expect(search_filter_input_options('')[:data]['group-id']).to eq(nil)
       end
 
-      it 'includes dashboard base-endpoint' do
+      it 'includes dashboard endpoints' do
         expect(search_filter_input_options('')[:data]['base-endpoint']).to eq("/dashboard")
+        expect(search_filter_input_options('')[:data]['labels-endpoint']).to eq(dashboard_labels_path)
+        expect(search_filter_input_options('')[:data]['milestones-endpoint']).to eq(dashboard_milestones_path)
       end
     end
   end

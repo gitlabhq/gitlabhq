@@ -9,6 +9,8 @@ import FilteredSearchVisualTokens from './filtered_search_visual_tokens';
 export default class FilteredSearchDropdownManager {
   constructor({
     baseEndpoint = '',
+    labelsEndpoint = '',
+    milestonesEndpoint = '',
     tokenizer,
     page,
     isGroup,
@@ -18,6 +20,8 @@ export default class FilteredSearchDropdownManager {
   }) {
     this.container = FilteredSearchContainer.container;
     this.baseEndpoint = baseEndpoint.replace(/\/$/, '');
+    this.labelsEndpoint = labelsEndpoint.replace(/\/$/, '');
+    this.milestonesEndpoint = milestonesEndpoint.replace(/\/$/, '');
     this.tokenizer = tokenizer;
     this.filteredSearchTokenKeys = filteredSearchTokenKeys || FilteredSearchTokenKeys;
     this.filteredSearchInput = this.container.querySelector('.filtered-search');
@@ -48,6 +52,8 @@ export default class FilteredSearchDropdownManager {
     const availableMappings = new AvailableDropdownMappings(
       this.container,
       this.baseEndpoint,
+      this.labelsEndpoint,
+      this.milestonesEndpoint,
       this.groupsOnly,
       this.includeAncestorGroups,
       this.includeDescendantGroups,
