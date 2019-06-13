@@ -172,7 +172,7 @@ describe 'Projects > Files > User edits files', :js do
         wait_for_requests
       end
 
-      it 'links to the forked project for editing', :quarantine do
+      it 'links to the forked project for editing' do
         click_link('.gitignore')
         find('.js-edit-blob').click
 
