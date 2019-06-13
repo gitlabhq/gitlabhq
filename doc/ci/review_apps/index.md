@@ -170,8 +170,8 @@ Comments can make use of all the markdown annotations available in merge request
 
 The toolbar is served through a script injected into the pages in your Review App. The base script to be included can be found by clicking the Review button in the Review App footer in the MR.
 
-_Screenshot of button_
-_Screenshot of open modal_
+![review button](img/review_button.png)
+![review modal](img/review_modal.png)
 
 The base script hardcodes the project and merge request ids. You may want to consider using features of your programming language to use environment variables or another means to inject these at runtime. (And keep your eyes peeled for new features to make it even easier in upcoming releases!)
 
