@@ -34,6 +34,23 @@ describe 'User browses a job', :js do
     expect(page).to have_content('Job has been erased')
   end
 
+  context 'when job trace contains sections' do
+    let!(:build) { create(:ci_build, :success, :trace_with_sections, :coverage, pipeline: pipeline) }
+
+    it 'collapses a section' do
+      wait_for_requests
+      text_to_hide = "Cloning into '/nolith/ci-tests'"
+
+      expect(page).to have_content(text_to_hide)
+      expect(page).to have_css('.js-s_get-sources')
+
+      find('.js-section-start[data-section="get-sources"]').click
+
+      expect(page).not_to have_content(text_to_hide)
+      expect(page).to have_no_css('.js-s_get-sources')
+    end
+  end
+
   context 'with a failed job' do
     let!(:build) { create(:ci_build, :failed, :trace_artifact, pipeline: pipeline) }
 
