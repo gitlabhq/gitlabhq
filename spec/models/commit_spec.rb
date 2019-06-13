@@ -44,6 +44,14 @@ describe Commit do
           expect(commit.id).to eq(oids[i])
         end
       end
+
+      it 'does not attempt to replace methods via BatchLoader' do
+        subject.each do |commit|
+          expect(commit).to receive(:method_missing).and_call_original
+
+          commit.id
+        end
+      end
     end
 
     context 'when not found' do
