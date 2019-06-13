@@ -13,19 +13,11 @@ module Gitlab
           def all_dashboard_paths(project)
             file_finder(project)
               .list_files_for(DASHBOARD_ROOT)
-              .map do |filepath|
-                Rails.cache.delete(cache_key(project.id, filepath))
-
-                { path: filepath, default: false }
-              end
+              .map { |filepath| { path: filepath, default: false } }
           end
 
           def file_finder(project)
             Gitlab::Template::Finders::RepoTemplateFinder.new(project, DASHBOARD_ROOT, '.yml')
-          end
-
-          def cache_key(id, dashboard_path)
-            "project_#{id}_metrics_dashboard_#{dashboard_path}"
           end
         end
 
@@ -39,7 +31,7 @@ module Gitlab
         end
 
         def cache_key
-          self.class.cache_key(project.id, dashboard_path)
+          "project_#{project.id}_metrics_dashboard_#{dashboard_path}"
         end
       end
     end
