@@ -118,7 +118,7 @@ describe('Filtered Search Visual Tokens', () => {
 
   describe('getEndpointWithQueryParams', () => {
     it('returns `endpoint` string as is when second param `endpointQueryParams` is undefined, null or empty string', () => {
-      const endpoint = 'foo/bar/labels.json';
+      const endpoint = 'foo/bar/-/labels.json';
 
       expect(subject.getEndpointWithQueryParams(endpoint)).toBe(endpoint);
       expect(subject.getEndpointWithQueryParams(endpoint, null)).toBe(endpoint);
@@ -126,7 +126,7 @@ describe('Filtered Search Visual Tokens', () => {
     });
 
     it('returns `endpoint` string with values of `endpointQueryParams`', () => {
-      const endpoint = 'foo/bar/labels.json';
+      const endpoint = 'foo/bar/-/labels.json';
       const singleQueryParams = '{"foo":"true"}';
       const multipleQueryParams = '{"foo":"true","bar":"true"}';
 

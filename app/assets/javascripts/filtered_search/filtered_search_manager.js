@@ -86,6 +86,8 @@ export default class FilteredSearchManager {
       this.tokenizer = FilteredSearchTokenizer;
       this.dropdownManager = new FilteredSearchDropdownManager({
         baseEndpoint: this.filteredSearchInput.getAttribute('data-base-endpoint') || '',
+        labelsEndpoint: this.filteredSearchInput.getAttribute('data-labels-endpoint') || '',
+        milestonesEndpoint: this.filteredSearchInput.getAttribute('data-milestones-endpoint') || '',
         tokenizer: this.tokenizer,
         page: this.page,
         isGroup: this.isGroup,

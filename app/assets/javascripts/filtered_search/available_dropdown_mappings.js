@@ -8,9 +8,19 @@ import DropdownUtils from './dropdown_utils';
 import { mergeUrlParams } from '../lib/utils/url_utility';
 
 export default class AvailableDropdownMappings {
-  constructor(container, baseEndpoint, groupsOnly, includeAncestorGroups, includeDescendantGroups) {
+  constructor(
+    container,
+    baseEndpoint,
+    labelsEndpoint,
+    milestonesEndpoint,
+    groupsOnly,
+    includeAncestorGroups,
+    includeDescendantGroups,
+  ) {
     this.container = container;
     this.baseEndpoint = baseEndpoint;
+    this.labelsEndpoint = labelsEndpoint;
+    this.milestonesEndpoint = milestonesEndpoint;
     this.groupsOnly = groupsOnly;
     this.includeAncestorGroups = includeAncestorGroups;
     this.includeDescendantGroups = includeDescendantGroups;
@@ -117,11 +127,11 @@ export default class AvailableDropdownMappings {
   }
 
   getMilestoneEndpoint() {
-    return `${this.baseEndpoint}/milestones.json`;
+    return `${this.milestonesEndpoint}.json`;
   }
 
   getLabelsEndpoint() {
-    let endpoint = `${this.baseEndpoint}/labels.json?`;
+    let endpoint = `${this.labelsEndpoint}.json?`;
 
     if (this.groupsOnly) {
       endpoint = `${endpoint}only_group_labels=true&`;
