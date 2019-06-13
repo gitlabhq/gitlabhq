@@ -164,7 +164,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     if Feature.enabled?(:environment_metrics_show_multiple_dashboards, project)
       result = dashboard_finder.find(project, current_user, environment, params[:dashboard])
 
-      result[:all_dashboards] = project.repository.metrics_dashboard_paths
+      result[:all_dashboards] = dashboard_finder.find_all_paths(project)
     else
       result = dashboard_finder.find(project, current_user, environment)
     end

@@ -27,6 +27,8 @@ module Gitlab
           # Summary of all known dashboards. Used to populate repo cache.
           # Prefer #find_all_paths.
           def find_all_paths_from_source(project)
+            Gitlab::Metrics::Dashboard::Cache.delete_all!
+
             system_service.all_dashboard_paths(project)
             .+ project_service.all_dashboard_paths(project)
           end
