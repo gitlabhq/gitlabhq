@@ -693,7 +693,7 @@
     eslint-plugin-promise "^4.1.1"
     eslint-plugin-vue "^5.0.0"
 
-"@gitlab/eslint-plugin-i18n@^1.0.0":
+"@gitlab/eslint-plugin-i18n@^1.1.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@gitlab/eslint-plugin-i18n/-/eslint-plugin-i18n-1.1.0.tgz#e494d599e644ce3a094ea85f87dbbda41a924c5e"
   integrity sha512-Cwm7sLtQnUDqvxE9Ez8UMslyosPCpMVLxBnFb+2n6QcBZmXRao4aNSVRkmlsDZYgYegWhOGn3Qq3MLy4BSqauQ==
