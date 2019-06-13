@@ -85,10 +85,6 @@ module Gitlab
       UsersFinder.new(current_user, search: query).execute
     end
 
-    def display_options(_scope)
-      {}
-    end
-
     private
 
     def projects
