@@ -9,11 +9,11 @@ Requires GitLab Runner 11.10 and above.
 
 ## Overview
 
-GitLab provides a lot of great reporting tools for [merge requests](../user/project/merge_requests/index.md) - [JUnit reports](./junit_test_reports.md), [codequality](https://docs.gitlab.com/ee/user/project/merge_requests/code_quality.html), performance tests, etc. While JUnit is a great open framework for tests that "pass" or "fail", it is also important to see other types of metrics from a given change.
+GitLab provides a lot of great reporting tools for [merge requests](../user/project/merge_requests/index.md) - [JUnit reports](junit_test_reports.md), [codequality](../user/project/merge_requests/code_quality.md), performance tests, etc. While JUnit is a great open framework for tests that "pass" or "fail", it is also important to see other types of metrics from a given change.
 
 You can configure your job to use custom Metrics Reports, and GitLab will display a report on the merge request so that it's easier and faster to identify changes without having to check the entire log.
 
-![Metrics Reports](./img/metrics_reports.png)
+![Metrics Reports](img/metrics_reports.png)
 
 ## Use cases
 
