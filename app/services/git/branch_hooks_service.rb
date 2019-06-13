@@ -20,8 +20,7 @@ module Git
       strong_memoize(:commits) do
         if creating_default_branch?
           # The most recent PROCESS_COMMIT_LIMIT commits in the default branch
-          offset = [count_commits_in_branch - PROCESS_COMMIT_LIMIT, 0].max
-          project.repository.commits(params[:newrev], offset: offset, limit: PROCESS_COMMIT_LIMIT)
+          project.repository.commits(params[:newrev], limit: PROCESS_COMMIT_LIMIT)
         elsif creating_branch?
           # Use the pushed commits that aren't reachable by the default branch
           # as a heuristic. This may include more commits than are actually
@@ -84,9 +83,6 @@ module Git
 
     # Schedules processing of commit messages
     def enqueue_process_commit_messages
-      # don't process commits for the initial push to the default branch
-      return if creating_default_branch?
-
       limited_commits.each do |commit|
         next unless commit.matches_cross_reference_regex?
 

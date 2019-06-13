@@ -287,8 +287,8 @@ describe Git::BranchHooksService do
     context 'creating the default branch' do
       let(:oldrev) { Gitlab::Git::BLANK_SHA }
 
-      it 'does not process commit messages' do
-        expect(ProcessCommitWorker).not_to receive(:perform_async)
+      it 'processes a limited number of commit messages' do
+        expect(ProcessCommitWorker).to receive(:perform_async).once
 
         service.execute
       end
