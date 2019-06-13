@@ -154,6 +154,27 @@ After adding Review Apps to your workflow, you follow the branched Git flow. Tha
 1. Wait for the Runner to build and deploy your web application.
 1. Click on the link that provided in the merge request related to the branch to see the changes live.
 
+### Review Toolbar
+
+The Review Toolbar can be added to a Review App to make it easier to post comments directly from the app back to the merge request that spawned the Review App.
+
+![feedback form](img/toolbar_feedback_form.png)
+
+#### Using the Toolbar
+
+To use the toolbar, you will need a [personal access token](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html) with the [API scope](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html#limiting-scopes-of-a-personal-access-token).
+
+Comments can make use of all the markdown annotations available in merge request comment boxes.
+
+#### Configuring the Toolbar
+
+The toolbar is served through a script injected into the pages in your Review App. The base script to be included can be found by clicking the Review button in the Review App footer in the MR.
+
+_Screenshot of button_
+_Screenshot of open modal_
+
+The base script hardcodes the project and merge request ids. You may want to consider using features of your programming language to use environment variables or another means to inject these at runtime. (And keep your eyes peeled for new features to make it even easier in upcoming releases!)
+
 ## Limitations
 
 Review App limitations are the same as [environments limitations](../environments.md#limitations).
