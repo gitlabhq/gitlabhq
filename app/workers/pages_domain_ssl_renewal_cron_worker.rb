@@ -5,9 +5,9 @@ class PagesDomainSslRenewalCronWorker
   include CronjobQueue
 
   def perform
-    return unless ::Gitlab::LetsEncrypt::Client.new.enabled?
-
     PagesDomain.need_auto_ssl_renewal.find_each do |domain|
+      next unless ::Gitlab::LetsEncrypt.enabled?(domain)
+
       PagesDomainSslRenewalWorker.perform_async(domain.id)
     end
   end

@@ -34,14 +34,6 @@ module Gitlab
         acme_client.terms_of_service
       end
 
-      def enabled?
-        return false unless Feature.enabled?(:pages_auto_ssl)
-
-        return false unless private_key
-
-        Gitlab::CurrentSettings.lets_encrypt_terms_of_service_accepted
-      end
-
       private
 
       def acme_client
@@ -65,7 +57,7 @@ module Gitlab
       end
 
       def ensure_account
-        raise 'Acme integration is disabled' unless enabled?
+        raise 'Acme integration is disabled' unless ::Gitlab::LetsEncrypt.enabled?
 
         @acme_account ||= acme_client.new_account(contact: contact, terms_of_service_agreed: true)
       end
