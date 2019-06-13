@@ -11093,13 +11093,13 @@ msgstr ""
 msgid "Toggle commit list"
 msgstr ""
 
-msgid "Toggle discussion"
-msgstr ""
-
 msgid "Toggle emoji award"
 msgstr ""
 
 msgid "Toggle navigation"
+msgstr ""
+
+msgid "Toggle thread"
 msgstr ""
 
 msgid "ToggleButton|Toggle Status: OFF"
@@ -12773,7 +12773,7 @@ msgstr ""
 msgid "mrWidget|There are merge conflicts"
 msgstr ""
 
-msgid "mrWidget|There are unresolved discussions. Please resolve these discussions"
+msgid "mrWidget|There are unresolved threads. Please resolve these threads"
 msgstr ""
 
 msgid "mrWidget|This feature merges changes from the target branch to the source branch. You cannot use this feature since the source branch is protected."
