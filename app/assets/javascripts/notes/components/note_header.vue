@@ -70,7 +70,7 @@ export default {
         @click="handleToggle"
       >
         <i :class="toggleChevronClass" class="fa" aria-hidden="true"></i>
-        {{ __('Toggle discussion') }}
+        {{ __('Toggle thread') }}
       </button>
     </div>
     <a
