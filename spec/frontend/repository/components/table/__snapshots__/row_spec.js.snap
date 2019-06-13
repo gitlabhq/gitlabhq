@@ -15,6 +15,7 @@ exports[`Repository table row component renders table row 1`] = `
      
     <a
       class="str-truncated"
+      href="https://test.com"
     >
       
       test
