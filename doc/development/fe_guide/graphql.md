@@ -18,6 +18,12 @@ To save query compilation at runtime, webpack can directly import `.graphql`
 files. This allows webpack to preprocess the query at compile time instead
 of the client doing compilation of queries.
 
+To distinguish queries from mutations and fragments, the following naming convention is recommended:
+
+- `allUsers.query.graphql` for queries;
+- `addUser.mutation.graphql` for mutations;
+- `basicUser.fragment.graphql` for fragments.
+
 ## Usage in Vue
 
 To use Vue Apollo, import the [Vue Apollo][vue-apollo] plugin as well
