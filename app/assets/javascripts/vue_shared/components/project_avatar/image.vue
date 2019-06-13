@@ -17,13 +17,9 @@
 
 import defaultAvatarUrl from 'images/no_avatar.png';
 import { placeholderImage } from '../../../lazy_loader';
-import tooltip from '../../directives/tooltip';
 
 export default {
   name: 'ProjectAvatarImage',
-  directives: {
-    tooltip,
-  },
   props: {
     lazy: {
       type: Boolean,
@@ -50,16 +46,6 @@ export default {
       required: false,
       default: 20,
     },
-    tooltipText: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    tooltipPlacement: {
-      type: String,
-      required: false,
-      default: 'top',
-    },
   },
   computed: {
     // API response sends null when gravatar is disabled and
@@ -71,9 +57,6 @@ export default {
     resultantSrcAttribute() {
       return this.lazy ? placeholderImage : this.sanitizedSource;
     },
-    tooltipContainer() {
-      return this.tooltipText ? 'body' : null;
-    },
     avatarSizeClass() {
       return `s${this.size}`;
     },
@@ -83,7 +66,6 @@ export default {
 
 <template>
   <img
-    v-tooltip
     :class="{
       lazy: lazy,
       [avatarSizeClass]: true,
@@ -94,9 +76,6 @@ export default {
     :height="size"
     :alt="imgAlt"
     :data-src="sanitizedSource"
-    :data-container="tooltipContainer"
-    :data-placement="tooltipPlacement"
-    :title="tooltipText"
     class="avatar"
   />
 </template>
