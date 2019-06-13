@@ -45,7 +45,6 @@
                     = _('Contribution Analytics')
 
             = render_if_exists 'layouts/nav/group_insights_link'
-            = render_if_exists 'groups/sidebar/dependency_proxy' # EE-specific
 
       = render_if_exists "layouts/nav/ee/epic_link", group: @group
 
@@ -118,6 +117,8 @@
               = link_to group_clusters_path(@group), title: _('Kubernetes'), class: 'shortcuts-kubernetes' do
                 %strong.fly-out-top-item-name
                   = _('Kubernetes')
+
+      = render_if_exists 'groups/sidebar/packages' # EE-specific
 
       - if group_sidebar_link?(:group_members)
         = nav_link(path: 'group_members#index') do
