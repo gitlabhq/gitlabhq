@@ -117,6 +117,15 @@ if github_settings
     end
 end
 
+# SAML should be enabled for the tests automatically, but only for EE.
+saml_provider_enabled = Settings.omniauth.providers.any? do |provider|
+  provider['name'] == 'group_saml'
+end
+
+if Gitlab.ee? && Rails.env.test? && !saml_provider_enabled
+  Settings.omniauth.providers << Settingslogic.new({ 'name' => 'group_saml' })
+end
+
 Settings['shared'] ||= Settingslogic.new({})
 Settings.shared['path'] = Settings.absolute(Settings.shared['path'] || "shared")
 
@@ -291,6 +300,11 @@ Settings.gravatar['host']         = Settings.host_without_www(Settings.gravatar[
 # Cron Jobs
 #
 Settings['cron_jobs'] ||= Settingslogic.new({})
+
+if Gitlab.ee? && Settings['ee_cron_jobs']
+  Settings.cron_jobs.merge!(Settings.ee_cron_jobs)
+end
+
 Settings.cron_jobs['stuck_ci_jobs_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['stuck_ci_jobs_worker']['cron'] ||= '0 * * * *'
 Settings.cron_jobs['stuck_ci_jobs_worker']['job_class'] = 'StuckCiJobsWorker'

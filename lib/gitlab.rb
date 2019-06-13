@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_dependency 'gitlab/popen'
+require_dependency File.expand_path('gitlab/popen', __dir__)
 
 module Gitlab
   def self.root
@@ -60,11 +60,15 @@ module Gitlab
   end
 
   def self.ee?
-    if ENV['IS_GITLAB_EE'].present?
-      Gitlab::Utils.to_boolean(ENV['IS_GITLAB_EE'])
-    else
-      Object.const_defined?(:License)
-    end
+    @is_ee ||=
+      if ENV['IS_GITLAB_EE'].present?
+        Gitlab::Utils.to_boolean(ENV['IS_GITLAB_EE'])
+      else
+        # We may use this method when the Rails environment is not loaded. This
+        # means that checking the presence of the License class could result in
+        # this method returning `false`, even for an EE installation.
+        root.join('ee/app/models/license.rb').exist?
+      end
   end
 
   def self.http_proxy_env?

@@ -1,5 +1,11 @@
 require 'settingslogic'
 
+# We can not use `Rails.root` here, as this file might be loaded without the
+# full Rails environment being loaded. We can not use `require_relative` either,
+# as Rails uses `load` for `require_dependency` (used when loading the Rails
+# environment). This could then lead to this file being loaded twice.
+require_dependency File.expand_path('../lib/gitlab', __dir__)
+
 class Settings < Settingslogic
   source ENV.fetch('GITLAB_CONFIG') { Pathname.new(File.expand_path('..', __dir__)).join('config/gitlab.yml') }
   namespace ENV.fetch('GITLAB_ENV') { Rails.env }
