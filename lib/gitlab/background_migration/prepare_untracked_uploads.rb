@@ -133,12 +133,9 @@ module Gitlab
       def insert_sql(file_paths)
         if postgresql_pre_9_5?
           "INSERT INTO #{table_columns_and_values_for_insert(file_paths)};"
-        elsif postgresql?
+        else
           "INSERT INTO #{table_columns_and_values_for_insert(file_paths)}"\
             " ON CONFLICT DO NOTHING;"
-        else # MySQL
-          "INSERT IGNORE INTO"\
-            " #{table_columns_and_values_for_insert(file_paths)};"
         end
       end
 

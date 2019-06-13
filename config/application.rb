@@ -22,11 +22,6 @@ module Gitlab
     require_dependency Rails.root.join('lib/gitlab/middleware/read_only')
     require_dependency Rails.root.join('lib/gitlab/middleware/basic_health_check')
 
-    # This needs to be loaded before DB connection is made
-    # to make sure that all connections have NO_ZERO_DATE
-    # setting disabled
-    require_dependency Rails.root.join('lib/mysql_zero_date')
-
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.

@@ -49,7 +49,7 @@ class UpdateProjectImportVisibilityLevel < ActiveRecord::Migration[5.0]
   def update_projects_visibility(visibility)
     say_with_time("Updating project visibility to #{visibility} on #{Project::IMPORT_TYPE} imports.") do
       Project.with_group_visibility(visibility).select(:id).each_batch(of: BATCH_SIZE) do |batch, _index|
-        batch_sql = Gitlab::Database.mysql? ? batch.pluck(:id).join(', ') : batch.select(:id).to_sql
+        batch_sql = batch.select(:id).to_sql
 
         say("Updating #{batch.size} items.", true)
 

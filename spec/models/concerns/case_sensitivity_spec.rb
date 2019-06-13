@@ -28,28 +28,13 @@ describe CaseSensitivity do
         .to contain_exactly(model_1)
     end
 
-    # Using `mysql` & `postgresql` metadata-tags here because both adapters build
-    # the query slightly differently
-    context 'for MySQL', :mysql do
-      it 'builds a simple query' do
-        query = model.iwhere(path: %w(MODEL-1 model-2), name: 'model 1').to_sql
-        expected_query = <<~QRY.strip
-        SELECT `namespaces`.* FROM `namespaces` WHERE (`namespaces`.`path` IN ('MODEL-1', 'model-2')) AND (`namespaces`.`name` = 'model 1')
-        QRY
+    it 'builds a query using LOWER' do
+      query = model.iwhere(path: %w(MODEL-1 model-2), name: 'model 1').to_sql
+      expected_query = <<~QRY.strip
+      SELECT \"namespaces\".* FROM \"namespaces\" WHERE (LOWER(\"namespaces\".\"path\") IN (LOWER('MODEL-1'), LOWER('model-2'))) AND (LOWER(\"namespaces\".\"name\") = LOWER('model 1'))
+      QRY
 
-        expect(query).to eq(expected_query)
-      end
-    end
-
-    context 'for PostgreSQL', :postgresql do
-      it 'builds a query using LOWER' do
-        query = model.iwhere(path: %w(MODEL-1 model-2), name: 'model 1').to_sql
-        expected_query = <<~QRY.strip
-        SELECT \"namespaces\".* FROM \"namespaces\" WHERE (LOWER(\"namespaces\".\"path\") IN (LOWER('MODEL-1'), LOWER('model-2'))) AND (LOWER(\"namespaces\".\"name\") = LOWER('model 1'))
-        QRY
-
-        expect(query).to eq(expected_query)
-      end
+      expect(query).to eq(expected_query)
     end
   end
 end

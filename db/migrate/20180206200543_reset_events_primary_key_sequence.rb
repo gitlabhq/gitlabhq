@@ -12,24 +12,10 @@ class ResetEventsPrimaryKeySequence < ActiveRecord::Migration[4.2]
   end
 
   def up
-    if Gitlab::Database.postgresql?
-      reset_primary_key_for_postgresql
-    else
-      reset_primary_key_for_mysql
-    end
+    reset_pk_sequence!(Event.table_name)
   end
 
   def down
     # No-op
-  end
-
-  def reset_primary_key_for_postgresql
-    reset_pk_sequence!(Event.table_name)
-  end
-
-  def reset_primary_key_for_mysql
-    amount = Event.pluck('COALESCE(MAX(id), 1)').first
-
-    execute "ALTER TABLE #{Event.table_name} AUTO_INCREMENT = #{amount}"
   end
 end

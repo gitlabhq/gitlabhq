@@ -68,10 +68,7 @@ module Gitlab
         end
       end
 
-      # Creates a new index, concurrently when supported
-      #
-      # On PostgreSQL this method creates an index concurrently, on MySQL this
-      # creates a regular index.
+      # Creates a new index, concurrently
       #
       # Example:
       #
@@ -85,9 +82,7 @@ module Gitlab
             'in the body of your migration class'
         end
 
-        if Database.postgresql?
-          options = options.merge({ algorithm: :concurrently })
-        end
+        options = options.merge({ algorithm: :concurrently })
 
         if index_exists?(table_name, column_name, options)
           Rails.logger.warn "Index not created because it already exists (this may be due to an aborted migration or similar): table_name: #{table_name}, column_name: #{column_name}" # rubocop:disable Gitlab/RailsLogger
@@ -99,9 +94,7 @@ module Gitlab
         end
       end
 
-      # Removes an existed index, concurrently when supported
-      #
-      # On PostgreSQL this method removes an index concurrently.
+      # Removes an existed index, concurrently
       #
       # Example:
       #
@@ -129,9 +122,7 @@ module Gitlab
         end
       end
 
-      # Removes an existing index, concurrently when supported
-      #
-      # On PostgreSQL this method removes an index concurrently.
+      # Removes an existing index, concurrently
       #
       # Example:
       #
@@ -170,8 +161,7 @@ module Gitlab
 
       # Adds a foreign key with only minimal locking on the tables involved.
       #
-      # This method only requires minimal locking when using PostgreSQL. When
-      # using MySQL this method will use Rails' default `add_foreign_key`.
+      # This method only requires minimal locking
       #
       # source - The source table containing the foreign key.
       # target - The target table the key points to.
@@ -187,27 +177,7 @@ module Gitlab
           raise 'add_concurrent_foreign_key can not be run inside a transaction'
         end
 
-        # While MySQL does allow disabling of foreign keys it has no equivalent
-        # of PostgreSQL's "VALIDATE CONSTRAINT". As a result we'll just fall
-        # back to the normal foreign key procedure.
-        if Database.mysql?
-          if foreign_key_exists?(source, target, column: column)
-            Rails.logger.warn "Foreign key not created because it exists already " \
-              "(this may be due to an aborted migration or similar): " \
-              "source: #{source}, target: #{target}, column: #{column}"
-            return
-          end
-
-          key_options = { column: column, on_delete: on_delete }
-
-          # The MySQL adapter tries to create a foreign key without a name when
-          # `:name` is nil, instead of generating a name for us.
-          key_options[:name] = name if name
-
-          return add_foreign_key(source, target, key_options)
-        else
-          on_delete = 'SET NULL' if on_delete == :nullify
-        end
+        on_delete = 'SET NULL' if on_delete == :nullify
 
         key_name = name || concurrent_foreign_key_name(source, column)
 
@@ -265,7 +235,7 @@ module Gitlab
 
       # Long-running migrations may take more than the timeout allowed by
       # the database. Disable the session's statement timeout to ensure
-      # migrations don't get killed prematurely. (PostgreSQL only)
+      # migrations don't get killed prematurely.
       #
       # There are two possible ways to disable the statement timeout:
       #
@@ -277,15 +247,6 @@ module Gitlab
       # otherwise the statement will still be disabled until connection is dropped
       # or `RESET ALL` is executed
       def disable_statement_timeout
-        # bypass disabled_statement logic when not using postgres, but still execute block when one is given
-        unless Database.postgresql?
-          if block_given?
-            yield
-          end
-
-          return
-        end
-
         if block_given?
           begin
             execute('SET statement_timeout TO 0')
@@ -535,13 +496,12 @@ module Gitlab
         quoted_old = quote_column_name(old_column)
         quoted_new = quote_column_name(new_column)
 
-        if Database.postgresql?
-          install_rename_triggers_for_postgresql(trigger_name, quoted_table,
-                                                 quoted_old, quoted_new)
-        else
-          install_rename_triggers_for_mysql(trigger_name, quoted_table,
-                                            quoted_old, quoted_new)
-        end
+        install_rename_triggers_for_postgresql(
+          trigger_name,
+          quoted_table,
+          quoted_old,
+          quoted_new
+        )
       end
 
       # Changes the type of a column concurrently.
@@ -584,11 +544,7 @@ module Gitlab
 
         check_trigger_permissions!(table)
 
-        if Database.postgresql?
-          remove_rename_triggers_for_postgresql(table, trigger_name)
-        else
-          remove_rename_triggers_for_mysql(trigger_name)
-        end
+        remove_rename_triggers_for_postgresql(table, trigger_name)
 
         remove_column(table, old)
       end
@@ -801,36 +757,10 @@ module Gitlab
         EOF
       end
 
-      # Installs the triggers necessary to perform a concurrent column rename on
-      # MySQL.
-      def install_rename_triggers_for_mysql(trigger, table, old, new)
-        execute <<-EOF.strip_heredoc
-        CREATE TRIGGER #{trigger}_insert
-        BEFORE INSERT
-        ON #{table}
-        FOR EACH ROW
-        SET NEW.#{new} = NEW.#{old}
-        EOF
-
-        execute <<-EOF.strip_heredoc
-        CREATE TRIGGER #{trigger}_update
-        BEFORE UPDATE
-        ON #{table}
-        FOR EACH ROW
-        SET NEW.#{new} = NEW.#{old}
-        EOF
-      end
-
       # Removes the triggers used for renaming a PostgreSQL column concurrently.
       def remove_rename_triggers_for_postgresql(table, trigger)
         execute("DROP TRIGGER IF EXISTS #{trigger} ON #{table}")
         execute("DROP FUNCTION IF EXISTS #{trigger}()")
-      end
-
-      # Removes the triggers used for renaming a MySQL column concurrently.
-      def remove_rename_triggers_for_mysql(trigger)
-        execute("DROP TRIGGER IF EXISTS #{trigger}_insert")
-        execute("DROP TRIGGER IF EXISTS #{trigger}_update")
       end
 
       # Returns the (base) name to use for triggers when renaming columns.
@@ -882,8 +812,6 @@ module Gitlab
             order: index.orders
           }
 
-          # These options are not supported by MySQL, so we only add them if
-          # they were previously set.
           options[:using] = index.using if index.using
           options[:where] = index.where if index.where
 
@@ -923,26 +851,16 @@ module Gitlab
       end
 
       # This will replace the first occurrence of a string in a column with
-      # the replacement
-      # On postgresql we can use `regexp_replace` for that.
-      # On mysql we find the location of the pattern, and overwrite it
-      # with the replacement
+      # the replacement using `regexp_replace`
       def replace_sql(column, pattern, replacement)
         quoted_pattern = Arel::Nodes::Quoted.new(pattern.to_s)
         quoted_replacement = Arel::Nodes::Quoted.new(replacement.to_s)
 
-        if Database.mysql?
-          locate = Arel::Nodes::NamedFunction
-            .new('locate', [quoted_pattern, column])
-          insert_in_place = Arel::Nodes::NamedFunction
-            .new('insert', [column, locate, pattern.size, quoted_replacement])
+        replace = Arel::Nodes::NamedFunction.new(
+          "regexp_replace", [column, quoted_pattern, quoted_replacement]
+        )
 
-          Arel::Nodes::SqlLiteral.new(insert_in_place.to_sql)
-        else
-          replace = Arel::Nodes::NamedFunction
-            .new("regexp_replace", [column, quoted_pattern, quoted_replacement])
-          Arel::Nodes::SqlLiteral.new(replace.to_sql)
-        end
+        Arel::Nodes::SqlLiteral.new(replace.to_sql)
       end
 
       def remove_foreign_key_if_exists(*args)
@@ -984,11 +902,7 @@ database (#{dbname}) using a super user and running:
 
     ALTER #{user} WITH SUPERUSER
 
-For MySQL you instead need to run:
-
-    GRANT ALL PRIVILEGES ON #{dbname}.* TO #{user}@'%'
-
-Both queries will grant the user super user permissions, ensuring you don't run
+This query will grant the user super user permissions, ensuring you don't run
 into similar problems in the future (e.g. when new tables are created).
           EOF
         end
@@ -1091,10 +1005,6 @@ into similar problems in the future (e.g. when new tables are created).
       # This will include indexes using an expression on the column, for example:
       # `CREATE INDEX CONCURRENTLY index_name ON table (LOWER(column));`
       #
-      # For mysql, it falls back to the default ActiveRecord implementation that
-      # will not find custom indexes. But it will select by name without passing
-      # a column.
-      #
       # We can remove this when upgrading to Rails 5 with an updated `index_exists?`:
       # - https://github.com/rails/rails/commit/edc2b7718725016e988089b5fb6d6fb9d6e16882
       #
@@ -1105,10 +1015,8 @@ into similar problems in the future (e.g. when new tables are created).
         # does not find indexes without passing a column name.
         if indexes(table).map(&:name).include?(index.to_s)
           true
-        elsif Gitlab::Database.postgresql?
-          postgres_exists_by_name?(table, index)
         else
-          false
+          postgres_exists_by_name?(table, index)
         end
       end
 
@@ -1122,10 +1030,6 @@ into similar problems in the future (e.g. when new tables are created).
         SQL
 
         connection.select_value(index_sql).to_i > 0
-      end
-
-      def mysql_compatible_index_length
-        Gitlab::Database.mysql? ? 20 : nil
       end
 
       private

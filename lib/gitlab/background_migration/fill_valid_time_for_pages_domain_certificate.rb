@@ -19,18 +19,11 @@ module Gitlab
 
       def perform(start_id, stop_id)
         PagesDomain.where(id: start_id..stop_id).find_each do |domain|
-          if Gitlab::Database.mysql?
-            domain.update_columns(
-              certificate_valid_not_before: domain.x509&.not_before,
-              certificate_valid_not_after: domain.x509&.not_after
-            )
-          else
-            # for some reason activerecord doesn't append timezone, iso8601 forces this
-            domain.update_columns(
-              certificate_valid_not_before: domain.x509&.not_before&.iso8601,
-              certificate_valid_not_after: domain.x509&.not_after&.iso8601
-            )
-          end
+          # for some reason activerecord doesn't append timezone, iso8601 forces this
+          domain.update_columns(
+            certificate_valid_not_before: domain.x509&.not_before&.iso8601,
+            certificate_valid_not_after: domain.x509&.not_after&.iso8601
+          )
         rescue => e
           Rails.logger.error "Failed to update pages domain certificate valid time. id: #{domain.id}, message: #{e.message}" # rubocop:disable Gitlab/RailsLogger
         end

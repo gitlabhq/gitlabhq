@@ -34,10 +34,6 @@ class AddMissingIndexesForForeignKeys < ActiveRecord::Migration[4.2]
   end
 
   def down
-    # MySQL requires index for FK,
-    # thus removal of indexes does fail
-    return if Gitlab::Database.mysql?
-
     remove_concurrent_index(:application_settings, :usage_stats_set_by_user_id)
     remove_concurrent_index(:ci_pipeline_schedules, :owner_id)
     remove_concurrent_index(:ci_trigger_requests, :trigger_id)

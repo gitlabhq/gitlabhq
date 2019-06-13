@@ -40,14 +40,10 @@ module CaseSensitivity
     end
 
     def lower_value(value)
-      return value if Gitlab::Database.mysql?
-
       Arel::Nodes::NamedFunction.new('LOWER', [Arel::Nodes.build_quoted(value)])
     end
 
     def lower_column(column)
-      return column if Gitlab::Database.mysql?
-
       column.lower
     end
   end

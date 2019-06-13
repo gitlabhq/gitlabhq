@@ -28,27 +28,7 @@ describe Gitlab::CycleAnalytics::UsageData do
       end
     end
 
-    shared_examples 'a valid usage data result' do
-      it 'returns the aggregated usage data of every selected project' do
-        result = subject.to_json
-
-        expect(result).to have_key(:avg_cycle_analytics)
-
-        CycleAnalytics::LevelBase::STAGES.each do |stage|
-          expect(result[:avg_cycle_analytics]).to have_key(stage)
-
-          stage_values    = result[:avg_cycle_analytics][stage]
-          expected_values = expect_values_per_stage[stage]
-
-          expected_values.each_pair do |op, value|
-            expect(stage_values).to have_key(op)
-            expect(stage_values[op]).to eq(value)
-          end
-        end
-      end
-    end
-
-    context 'when using postgresql', :postgresql do
+    context 'a valid usage data result' do
       let(:expect_values_per_stage) do
         {
           issue: {
@@ -89,51 +69,23 @@ describe Gitlab::CycleAnalytics::UsageData do
         }
       end
 
-      it_behaves_like 'a valid usage data result'
-    end
+      it 'returns the aggregated usage data of every selected project' do
+        result = subject.to_json
 
-    context 'when using mysql', :mysql do
-      let(:expect_values_per_stage) do
-        {
-          issue: {
-            average: nil,
-            sd: 0,
-            missing: 2
-          },
-          plan: {
-            average: nil,
-            sd: 0,
-            missing: 2
-          },
-          code: {
-            average: nil,
-            sd: 0,
-            missing: 2
-          },
-          test: {
-            average: nil,
-            sd: 0,
-            missing: 2
-          },
-          review: {
-            average: nil,
-            sd: 0,
-            missing: 2
-          },
-          staging: {
-            average: nil,
-            sd: 0,
-            missing: 2
-          },
-          production: {
-            average: nil,
-            sd: 0,
-            missing: 2
-          }
-        }
+        expect(result).to have_key(:avg_cycle_analytics)
+
+        CycleAnalytics::LevelBase::STAGES.each do |stage|
+          expect(result[:avg_cycle_analytics]).to have_key(stage)
+
+          stage_values    = result[:avg_cycle_analytics][stage]
+          expected_values = expect_values_per_stage[stage]
+
+          expected_values.each_pair do |op, value|
+            expect(stage_values).to have_key(op)
+            expect(stage_values[op]).to eq(value)
+          end
+        end
       end
-
-      it_behaves_like 'a valid usage data result'
     end
   end
 end
