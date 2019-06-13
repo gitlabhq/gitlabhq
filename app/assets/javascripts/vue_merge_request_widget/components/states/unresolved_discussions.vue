@@ -20,7 +20,7 @@ export default {
     <status-icon :show-disabled-button="true" status="warning" />
     <div class="media-body space-children">
       <span class="bold">
-        {{ s__('mrWidget|There are unresolved discussions. Please resolve these discussions') }}
+        {{ s__('mrWidget|There are unresolved threads. Please resolve these threads') }}
       </span>
       <a
         v-if="mr.createIssueToResolveDiscussionsPath"
