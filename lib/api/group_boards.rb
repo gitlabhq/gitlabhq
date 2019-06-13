@@ -37,7 +37,7 @@ module API
           use :pagination
         end
         get '/' do
-          present paginate(board_parent.boards), with: Entities::Board
+          present paginate(board_parent.boards.with_associations), with: Entities::Board
         end
       end
 

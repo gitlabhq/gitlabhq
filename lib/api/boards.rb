@@ -27,7 +27,7 @@ module API
         end
         get '/' do
           authorize!(:read_board, user_project)
-          present paginate(board_parent.boards), with: Entities::Board
+          present paginate(board_parent.boards.with_associations), with: Entities::Board
         end
 
         desc 'Find a project board' do
