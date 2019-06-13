@@ -163,9 +163,9 @@ or ~"Stretch". Any open issue for a previous milestone should be labeled
 
 Priority labels help us define the time a ~bug fix should be completed. Priority determines how quickly the defect turnaround time must be.
 If there are multiple defects, the priority decides which defect has to be fixed immediately versus later.
-This label documents the planned timeline & urgency which is used to measure against our actual SLA on delivering ~bug fixes.
+This label documents the planned timeline & urgency which is used to measure against our target SLO on delivering ~bug fixes.
 
-| Label | Meaning         | Defect SLA (applies only to ~bug and ~security defects)                                                    |
+| Label | Meaning         | Target SLO (applies only to ~bug and ~security defects)                                                    |
 |-------|-----------------|----------------------------------------------------------------------------|
 | ~P1   | Urgent Priority | The current release + potentially immediate hotfix to GitLab.com (30 days) |
 | ~P2   | High Priority   | The next release (60 days)                                                 |
