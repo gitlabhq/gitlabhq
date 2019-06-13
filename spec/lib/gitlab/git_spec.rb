@@ -39,6 +39,26 @@ describe Gitlab::Git do
     end
   end
 
+  describe '.commit_id?' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:sha, :result) do
+      ''                                         | false
+      'foobar'                                   | false
+      '4b825dc'                                  | false
+      'zzz25dc642cb6eb9a060e54bf8d69288fbee4904' | false
+
+      '4b825dc642cb6eb9a060e54bf8d69288fbee4904' | true
+      Gitlab::Git::BLANK_SHA                     | true
+    end
+
+    with_them do
+      it 'returns the expected result' do
+        expect(described_class.commit_id?(sha)).to eq(result)
+      end
+    end
+  end
+
   describe '.shas_eql?' do
     using RSpec::Parameterized::TableSyntax
 

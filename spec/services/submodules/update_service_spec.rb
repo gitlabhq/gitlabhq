@@ -142,7 +142,7 @@ describe Submodules::UpdateService do
             let(:branch_name) { nil }
 
             it_behaves_like 'returns error result' do
-              let(:error_message) { 'You can only create or edit files when you are on a branch' }
+              let(:error_message) { 'Invalid parameters' }
             end
           end
 

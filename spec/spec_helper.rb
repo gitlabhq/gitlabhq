@@ -104,6 +104,7 @@ RSpec.configure do |config|
   config.include Rails.application.routes.url_helpers, type: :routing
   config.include PolicyHelpers, type: :policy
   config.include MemoryUsageHelper
+  config.include ExpectRequestWithStatus, type: :request
 
   if ENV['CI']
     # This includes the first try, i.e. tests will be run 4 times before failing.
