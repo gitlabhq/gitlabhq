@@ -94,7 +94,7 @@ class Commit
     end
 
     def lazy(project, oid)
-      BatchLoader.for({ project: project, oid: oid }).batch do |items, loader|
+      BatchLoader.for({ project: project, oid: oid }).batch(replace_methods: false) do |items, loader|
         items_by_project = items.group_by { |i| i[:project] }
 
         items_by_project.each do |project, commit_ids|
