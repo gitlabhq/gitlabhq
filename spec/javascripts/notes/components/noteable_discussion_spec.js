@@ -39,11 +39,11 @@ describe('noteable_discussion component', () => {
     expect(wrapper.find('.user-avatar-link').exists()).toBe(true);
   });
 
-  it('should not render discussion header for non diff discussions', () => {
+  it('should not render thread header for non diff threads', () => {
     expect(wrapper.find('.discussion-header').exists()).toBe(false);
   });
 
-  it('should render discussion header', done => {
+  it('should render thread header', done => {
     const discussion = { ...discussionMock };
     discussion.diff_file = mockDiffFile;
     discussion.diff_discussion = true;
@@ -90,16 +90,16 @@ describe('noteable_discussion component', () => {
         .catch(done.fail);
     });
 
-    it('does not render jump to discussion button', () => {
+    it('does not render jump to thread button', () => {
       expect(
-        wrapper.find('*[data-original-title="Jump to next unresolved discussion"]').exists(),
+        wrapper.find('*[data-original-title="Jump to next unresolved thread"]').exists(),
       ).toBe(false);
     });
   });
 
   describe('methods', () => {
     describe('jumpToNextDiscussion', () => {
-      it('expands next unresolved discussion', done => {
+      it('expands next unresolved thread', done => {
         const discussion2 = getJSONFixture(discussionWithTwoUnresolvedNotes)[0];
         discussion2.resolved = false;
         discussion2.active = true;
@@ -162,20 +162,20 @@ describe('noteable_discussion component', () => {
         .catch(done.fail);
     });
 
-    describe('for commit discussions', () => {
-      it('should display a monospace started a discussion on commit', () => {
-        expect(wrapper.text()).toContain(`started a discussion on commit ${truncatedCommitId}`);
+    describe('for commit threads', () => {
+      it('should display a monospace started a thread on commit', () => {
+        expect(wrapper.text()).toContain(`started a thread on commit ${truncatedCommitId}`);
         expect(commitElement.exists()).toBe(true);
         expect(commitElement.text()).toContain(truncatedCommitId);
       });
     });
 
-    describe('for diff discussion with a commit id', () => {
-      it('should display started discussion on commit header', done => {
+    describe('for diff thread with a commit id', () => {
+      it('should display started thread on commit header', done => {
         wrapper.vm.discussion.for_commit = false;
 
         wrapper.vm.$nextTick(() => {
-          expect(wrapper.text()).toContain(`started a discussion on commit ${truncatedCommitId}`);
+          expect(wrapper.text()).toContain(`started a thread on commit ${truncatedCommitId}`);
 
           expect(commitElement).not.toBe(null);
 
@@ -199,21 +199,21 @@ describe('noteable_discussion component', () => {
       });
     });
 
-    describe('for diff discussions without a commit id', () => {
-      it('should show started a discussion on the diff text', done => {
+    describe('for diff threads without a commit id', () => {
+      it('should show started a thread on the diff text', done => {
         Object.assign(wrapper.vm.discussion, {
           for_commit: false,
           commit_id: null,
         });
 
         wrapper.vm.$nextTick(() => {
-          expect(wrapper.text()).toContain('started a discussion on the diff');
+          expect(wrapper.text()).toContain('started a thread on the diff');
 
           done();
         });
       });
 
-      it('should show discussion on older version text', done => {
+      it('should show thread on older version text', done => {
         Object.assign(wrapper.vm.discussion, {
           for_commit: false,
           commit_id: null,
@@ -221,7 +221,7 @@ describe('noteable_discussion component', () => {
         });
 
         wrapper.vm.$nextTick(() => {
-          expect(wrapper.text()).toContain('started a discussion on an old version of the diff');
+          expect(wrapper.text()).toContain('started a thread on an old version of the diff');
 
           done();
         });
@@ -229,7 +229,7 @@ describe('noteable_discussion component', () => {
     });
   });
 
-  describe('for resolved discussion', () => {
+  describe('for resolved thread', () => {
     beforeEach(() => {
       const discussion = getJSONFixture(discussionWithTwoUnresolvedNotes)[0];
       wrapper.setProps({ discussion });
@@ -242,7 +242,7 @@ describe('noteable_discussion component', () => {
     });
   });
 
-  describe('for unresolved discussion', () => {
+  describe('for unresolved thread', () => {
     beforeEach(done => {
       const discussion = {
         ...getJSONFixture(discussionWithTwoUnresolvedNotes)[0],
