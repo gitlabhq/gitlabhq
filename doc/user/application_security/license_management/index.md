@@ -69,6 +69,9 @@ This can be done in two ways:
 - Manually specifying the job definition. Not recommended unless using GitLab
   11.8 and earlier.
 
+The License Management settings can be changed through environment variables by using the
+[`variables`](../../../ci/yaml/README.md#variables) parameter in `.gitlab-ci.yml`. These variables are documented in the [License Management documentation](https://gitlab.com/gitlab-org/security-products/license-management#settings).
+
 ### Including the provided template
 
 NOTE: **Note:**

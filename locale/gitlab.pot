@@ -4761,6 +4761,9 @@ msgstr ""
 msgid "Google authentication is not %{link_to_documentation}. Ask your GitLab administrator if you want to use this service."
 msgstr ""
 
+msgid "Got it"
+msgstr ""
+
 msgid "Got it!"
 msgstr ""
 
@@ -6156,6 +6159,9 @@ msgstr ""
 msgid "MergeRequest| %{paragraphStart}changed the description %{descriptionChangedTimes} times %{timeDifferenceMinutes}%{paragraphEnd}"
 msgstr ""
 
+msgid "MergeRequest|Error dismissing suggestion popover. Please try again."
+msgstr ""
+
 msgid "MergeRequest|Error loading full diff. Please try again."
 msgstr ""
 
@@ -6510,6 +6516,9 @@ msgid "New tag"
 msgstr ""
 
 msgid "New users set to external"
+msgstr ""
+
+msgid "New! Suggest changes directly"
 msgstr ""
 
 msgid "New..."
@@ -6917,6 +6926,18 @@ msgid "Pages Domains"
 msgstr ""
 
 msgid "Pages getting started guide"
+msgstr ""
+
+msgid "Pagination|Go to first page"
+msgstr ""
+
+msgid "Pagination|Go to last page"
+msgstr ""
+
+msgid "Pagination|Go to next page"
+msgstr ""
+
+msgid "Pagination|Go to previous page"
 msgstr ""
 
 msgid "Pagination|Last »"
@@ -9644,6 +9665,9 @@ msgid "Successfully unblocked"
 msgstr ""
 
 msgid "Successfully unlocked"
+msgstr ""
+
+msgid "Suggest code changes which are immediately applied. Try it out!"
 msgstr ""
 
 msgid "Suggested change"

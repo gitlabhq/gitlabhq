@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: es-ES\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2019-06-13 13:22\n"
+"PO-Revision-Date: 2019-06-14 10:17\n"
 
 msgid " Please sign in."
 msgstr " Por favor, inicie sesión."
@@ -5041,6 +5041,9 @@ msgstr "Se ha producido un error al cargar los datos de la rama. Por favor, vuel
 
 msgid "Error loading branches."
 msgstr "Error al cargar ramas."
+
+msgid "Error loading burndown chart data"
+msgstr ""
 
 msgid "Error loading file viewer."
 msgstr "Se ha producido un error al cargar el visor de archivos."
@@ -10839,11 +10842,17 @@ msgid_plural "Refreshing in %d seconds to show the updated status..."
 msgstr[0] "Actualizar en un segundo para mostrar el estado actualizado..."
 msgstr[1] "Actualizar en %d segundos para mostrar el estado actualizado..."
 
+msgid "Regenerate instance ID"
+msgstr ""
+
 msgid "Regenerate key"
 msgstr "Regenerar clave"
 
 msgid "Regenerate recovery codes"
 msgstr "Regenerar los códigos de recuperación"
+
+msgid "Regenerating the instance ID can break integration depending on the client you are using."
+msgstr ""
 
 msgid "Regex pattern"
 msgstr "Patrón regex"
@@ -14183,6 +14192,9 @@ msgstr "URL"
 msgid "Unable to connect to server: %{error}"
 msgstr "Imposible conectar con el servidor: %{error}"
 
+msgid "Unable to generate new instance ID"
+msgstr ""
+
 msgid "Unable to load the diff. %{button_try_again}"
 msgstr "No se puede cargar el fichero diff. %{button_try_again}"
 
@@ -14455,9 +14467,6 @@ msgstr "Cuotas de uso"
 
 msgid "UsageQuota|Usage of group resources across the projects in the %{strong_start}%{group_name}%{strong_end} group"
 msgstr "Uso de los recursos del grupo a través de los proyectos en el grupo %{strong_start}%{group_name}%{strong_end}"
-
-msgid "UsageQuota|Usage quotas"
-msgstr "Cuotas de uso"
 
 msgid "UsageQuota|Usage since"
 msgstr "Uso desde"

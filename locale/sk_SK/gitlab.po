@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: sk\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2019-06-13 13:21\n"
+"PO-Revision-Date: 2019-06-14 10:17\n"
 
 msgid " Please sign in."
 msgstr ""
@@ -5138,6 +5138,9 @@ msgid "Error loading branch data. Please try again."
 msgstr ""
 
 msgid "Error loading branches."
+msgstr ""
+
+msgid "Error loading burndown chart data"
 msgstr ""
 
 msgid "Error loading file viewer."
@@ -10953,10 +10956,16 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
+msgid "Regenerate instance ID"
+msgstr ""
+
 msgid "Regenerate key"
 msgstr ""
 
 msgid "Regenerate recovery codes"
+msgstr ""
+
+msgid "Regenerating the instance ID can break integration depending on the client you are using."
 msgstr ""
 
 msgid "Regex pattern"
@@ -14311,6 +14320,9 @@ msgstr ""
 msgid "Unable to connect to server: %{error}"
 msgstr ""
 
+msgid "Unable to generate new instance ID"
+msgstr ""
+
 msgid "Unable to load the diff. %{button_try_again}"
 msgstr ""
 
@@ -14582,9 +14594,6 @@ msgid "UsageQuota|Usage Quotas"
 msgstr ""
 
 msgid "UsageQuota|Usage of group resources across the projects in the %{strong_start}%{group_name}%{strong_end} group"
-msgstr ""
-
-msgid "UsageQuota|Usage quotas"
 msgstr ""
 
 msgid "UsageQuota|Usage since"

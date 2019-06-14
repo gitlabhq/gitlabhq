@@ -37,6 +37,7 @@ import actions, {
   toggleFullDiff,
   setFileCollapsed,
   setExpandedDiffLines,
+  setSuggestPopoverDismissed,
 } from '~/diffs/store/actions';
 import eventHub from '~/notes/event_hub';
 import * as types from '~/diffs/store/mutation_types';
@@ -68,12 +69,19 @@ describe('DiffsStoreActions', () => {
     it('should set given endpoint and project path', done => {
       const endpoint = '/diffs/set/endpoint';
       const projectPath = '/root/project';
+      const dismissEndpoint = '/-/user_callouts';
+      const showSuggestPopover = false;
 
       testAction(
         setBaseConfig,
-        { endpoint, projectPath },
-        { endpoint: '', projectPath: '' },
-        [{ type: types.SET_BASE_CONFIG, payload: { endpoint, projectPath } }],
+        { endpoint, projectPath, dismissEndpoint, showSuggestPopover },
+        { endpoint: '', projectPath: '', dismissEndpoint: '', showSuggestPopover: true },
+        [
+          {
+            type: types.SET_BASE_CONFIG,
+            payload: { endpoint, projectPath, dismissEndpoint, showSuggestPopover },
+          },
+        ],
         [],
         done,
       );
@@ -1077,6 +1085,32 @@ describe('DiffsStoreActions', () => {
         ],
         [],
         done,
+      );
+    });
+  });
+
+  describe('setSuggestPopoverDismissed', () => {
+    it('commits SET_SHOW_SUGGEST_POPOVER', done => {
+      const state = { dismissEndpoint: `${gl.TEST_HOST}/-/user_callouts` };
+      const mock = new MockAdapter(axios);
+      mock.onPost(state.dismissEndpoint).reply(200, {});
+
+      spyOn(axios, 'post').and.callThrough();
+
+      testAction(
+        setSuggestPopoverDismissed,
+        null,
+        state,
+        [{ type: types.SET_SHOW_SUGGEST_POPOVER }],
+        [],
+        () => {
+          expect(axios.post).toHaveBeenCalledWith(state.dismissEndpoint, {
+            feature_name: 'suggest_popover_dismissed',
+          });
+
+          mock.restore();
+          done();
+        },
       );
     });
   });

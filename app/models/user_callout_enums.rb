@@ -10,7 +10,8 @@ module UserCalloutEnums
     {
       gke_cluster_integration: 1,
       gcp_signup_offer: 2,
-      cluster_security_warning: 3
+      cluster_security_warning: 3,
+      suggest_popover_dismissed: 4
     }
   end
 end

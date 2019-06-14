@@ -36,8 +36,8 @@ import {
 import { diffViewerModes } from '~/ide/constants';
 
 export const setBaseConfig = ({ commit }, options) => {
-  const { endpoint, projectPath } = options;
-  commit(types.SET_BASE_CONFIG, { endpoint, projectPath });
+  const { endpoint, projectPath, dismissEndpoint, showSuggestPopover } = options;
+  commit(types.SET_BASE_CONFIG, { endpoint, projectPath, dismissEndpoint, showSuggestPopover });
 };
 
 export const fetchDiffFiles = ({ state, commit }) => {
@@ -454,6 +454,18 @@ export const toggleFullDiff = ({ dispatch, getters, state }, filePath) => {
 
 export const setFileCollapsed = ({ commit }, { filePath, collapsed }) =>
   commit(types.SET_FILE_COLLAPSED, { filePath, collapsed });
+
+export const setSuggestPopoverDismissed = ({ commit, state }) =>
+  axios
+    .post(state.dismissEndpoint, {
+      feature_name: 'suggest_popover_dismissed',
+    })
+    .then(() => {
+      commit(types.SET_SHOW_SUGGEST_POPOVER);
+    })
+    .catch(() => {
+      createFlash(s__('MergeRequest|Error dismissing suggestion popover. Please try again.'));
+    });
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};

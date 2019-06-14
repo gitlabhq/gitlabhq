@@ -850,4 +850,14 @@ describe('DiffsStoreMutations', () => {
       expect(file.renderingLines).toBe(false);
     });
   });
+
+  describe('SET_SHOW_SUGGEST_POPOVER', () => {
+    it('sets showSuggestPopover to false', () => {
+      const state = { showSuggestPopover: true };
+
+      mutations[types.SET_SHOW_SUGGEST_POPOVER](state);
+
+      expect(state.showSuggestPopover).toBe(false);
+    });
+  });
 });

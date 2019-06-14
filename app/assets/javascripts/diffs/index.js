@@ -72,6 +72,8 @@ export default function initDiffsApp(store) {
         currentUser: JSON.parse(dataset.currentUserData) || {},
         changesEmptyStateIllustration: dataset.changesEmptyStateIllustration,
         isFluidLayout: parseBoolean(dataset.isFluidLayout),
+        dismissEndpoint: dataset.dismissEndpoint,
+        showSuggestPopover: parseBoolean(dataset.showSuggestPopover),
       };
     },
     computed: {
@@ -99,6 +101,8 @@ export default function initDiffsApp(store) {
           shouldShow: this.activeTab === 'diffs',
           changesEmptyStateIllustration: this.changesEmptyStateIllustration,
           isFluidLayout: this.isFluidLayout,
+          dismissEndpoint: this.dismissEndpoint,
+          showSuggestPopover: this.showSuggestPopover,
         },
       });
     },

@@ -154,11 +154,9 @@
 }
 
 .toolbar-fullscreen-btn {
-  margin-left: $gl-padding;
   margin-right: -5px;
 
   @include media-breakpoint-down(xs) {
-    margin-left: 0;
     margin-right: 0;
   }
 }
