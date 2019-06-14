@@ -209,6 +209,7 @@ HELM_CMD=$(cat << EOF
     --timeout 600 \
     --set global.appConfig.enableUsagePing=false \
     --set releaseOverride="$CI_ENVIRONMENT_SLUG" \
+    --set global.imagePullPolicy=Always \
     --set global.hosts.hostSuffix="$HOST_SUFFIX" \
     --set global.hosts.domain="$REVIEW_APPS_DOMAIN" \
     --set certmanager.install=false \
