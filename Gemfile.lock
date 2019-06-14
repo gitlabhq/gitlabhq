@@ -67,6 +67,8 @@ GEM
       faraday_middleware-multi_json (~> 0.0)
       oauth2 (~> 1.0)
     asciidoctor (1.5.8)
+    asciidoctor-include-ext (0.3.1)
+      asciidoctor (>= 1.5.6, < 3.0.0)
     asciidoctor-plantuml (0.0.8)
       asciidoctor (~> 1.5)
     ast (2.4.0)
@@ -1024,6 +1026,7 @@ DEPENDENCIES
   apollo_upload_server (~> 2.0.0.beta3)
   asana (~> 0.8.1)
   asciidoctor (~> 1.5.8)
+  asciidoctor-include-ext (~> 0.3.1)
   asciidoctor-plantuml (= 0.0.8)
   attr_encrypted (~> 3.1.0)
   awesome_print

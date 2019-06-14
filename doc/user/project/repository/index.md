@@ -68,7 +68,7 @@ according to the markup language.
 | Plain text | `txt` |
 | [Markdown](../../markdown.md) | `mdown`, `mkd`, `mkdn`, `md`, `markdown` |
 | [reStructuredText](http://docutils.sourceforge.net/rst.html) | `rst` |
-| [Asciidoc](https://asciidoctor.org/docs/what-is-asciidoc/) | `adoc`, `ad`, `asciidoc` |
+| [AsciiDoc](../../asciidoc.md) | `adoc`, `ad`, `asciidoc` |
 | [Textile](https://txstyle.org/) | `textile` |
 | [rdoc](http://rdoc.sourceforge.net/doc/index.html)  | `rdoc` |
 | [Orgmode](https://orgmode.org/) | `org` |
