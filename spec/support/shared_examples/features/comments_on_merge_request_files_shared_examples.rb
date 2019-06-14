@@ -16,7 +16,7 @@ shared_examples 'comment on merge request file' do
     visit(merge_request_path(merge_request))
 
     page.within('.notes .discussion') do
-      expect(page).to have_content("#{user.name} #{user.to_reference} started a discussion")
+      expect(page).to have_content("#{user.name} #{user.to_reference} started a thread")
       expect(page).to have_content(sample_commit.line_code_path)
       expect(page).to have_content('Line is wrong')
     end
