@@ -27,7 +27,7 @@ describe 'projects/commit/_commit_box.html.haml' do
 
         render
 
-        expect(rendered).to have_text("Pipeline ##{third_pipeline.id} (##{third_pipeline.iid}) failed")
+        expect(rendered).to have_text("Pipeline ##{third_pipeline.id} failed")
       end
     end
 
@@ -40,7 +40,7 @@ describe 'projects/commit/_commit_box.html.haml' do
       it 'shows correct pipeline description' do
         render
 
-        expect(rendered).to have_text "Pipeline ##{pipeline.id} (##{pipeline.iid}) " \
+        expect(rendered).to have_text "Pipeline ##{pipeline.id} " \
                                       'waiting for manual action'
       end
     end

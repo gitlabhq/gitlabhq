@@ -544,7 +544,6 @@ describe('mrWidgetOptions', () => {
     ];
     const deploymentMockData = {
       id: 15,
-      iid: 7,
       name: 'review/diplo',
       url: '/root/acets-review-apps/environments/15',
       stop_url: '/root/acets-review-apps/environments/15/stop',
@@ -591,7 +590,6 @@ describe('mrWidgetOptions', () => {
         vm.mr.state = 'merged';
         vm.mr.mergePipeline = {
           id: 127,
-          iid: 35,
           user: {
             id: 1,
             name: 'Administrator',
