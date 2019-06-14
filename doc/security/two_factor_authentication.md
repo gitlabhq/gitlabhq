@@ -39,8 +39,26 @@ If you want to enforce 2FA only for certain groups, you can:
 
 To change this setting, you need to be administrator or owner of the group.
 
-If there are multiple 2FA requirements (i.e. group + all users, or multiple
-groups) the shortest grace period will be used.
+> [From](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/24965) GitLab 12.0, 2FA settings for a group are also applied to subgroups.
+
+If you want to enforce 2FA only for certain groups, you can enable it in the
+group settings and specify a grace period as above. To change this setting you
+need to be administrator or owner of the group.
+
+The following are important notes about 2FA:
+
+- Projects belonging to a 2FA-enabled group that
+  [is shared](../user/project/members/share_project_with_groups.md) 
+  with a 2FA-disabled group will *not* require members of the 2FA-disabled group to use
+  2FA for the project. For example, if project *P* belongs to 2FA-enabled group *A* and 
+  is shared with 2FA-disabled group *B*, members of group *B* can access project *P*
+  without 2FA. To ensure this scenario doesn't occur, 
+  [prevent sharing of projects](../user/group/index.md#share-with-group-lock)
+  for the 2FA-enabled group.
+- If you add additional members to a project within a group or subgroup that has
+  2FA enabled, 2FA is **not** required for those individually added members.
+- If there are multiple 2FA requirements (for example, group + all users, or multiple
+  groups) the shortest grace period will be used.
 
 ## Disabling 2FA for everyone
 

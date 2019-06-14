@@ -2655,9 +2655,9 @@ describe User do
       end
     end
 
-    context 'with 2FA requirement on nested parent group', :nested_groups do
+    context 'with 2FA requirement from expanded groups', :nested_groups do
       let!(:group1) { create :group, require_two_factor_authentication: true }
-      let!(:group1a) { create :group, require_two_factor_authentication: false, parent: group1 }
+      let!(:group1a) { create :group, parent: group1 }
 
       before do
         group1a.add_user(user, GroupMember::OWNER)
@@ -2682,6 +2682,27 @@ describe User do
 
       it 'requires 2FA' do
         expect(user.require_two_factor_authentication_from_group).to be true
+      end
+    end
+
+    context "with 2FA requirement from shared project's group" do
+      let!(:group1) { create :group, require_two_factor_authentication: true }
+      let!(:group2) { create :group }
+      let(:shared_project) { create(:project, namespace: group1) }
+
+      before do
+        shared_project.project_group_links.create!(
+          group: group2,
+          group_access: ProjectGroupLink.default_access
+        )
+
+        group2.add_user(user, GroupMember::OWNER)
+      end
+
+      it 'does not require 2FA' do
+        user.update_two_factor_requirement
+
+        expect(user.require_two_factor_authentication_from_group).to be false
       end
     end
 

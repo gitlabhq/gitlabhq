@@ -1,0 +1,4 @@
+title: Apply the group setting "require 2FA" across all subgroup members as well when changing the group setting
+merge_request: 24965
+author: rroger
+type: changed
