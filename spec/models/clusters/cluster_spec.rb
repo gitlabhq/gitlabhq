@@ -555,6 +555,63 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
     end
   end
 
+  describe '#find_or_initialize_kubernetes_namespace_for_project' do
+    let(:cluster) { create(:cluster, :project, :provided_by_gcp) }
+    let(:project) { cluster.projects.first }
+
+    subject { cluster.find_or_initialize_kubernetes_namespace_for_project(project) }
+
+    context 'kubernetes namespace exists' do
+      context 'with no service account token' do
+        let!(:kubernetes_namespace) { create(:cluster_kubernetes_namespace, project: project, cluster: cluster) }
+
+        it { is_expected.to eq kubernetes_namespace }
+      end
+
+      context 'with a service account token' do
+        let!(:kubernetes_namespace) { create(:cluster_kubernetes_namespace, :with_token, project: project, cluster: cluster) }
+
+        it { is_expected.to eq kubernetes_namespace }
+      end
+    end
+
+    context 'kubernetes namespace does not exist' do
+      it 'initializes a new namespace and sets default values' do
+        expect(subject).to be_new_record
+        expect(subject.project).to eq project
+        expect(subject.cluster).to eq cluster
+        expect(subject.namespace).to be_present
+        expect(subject.service_account_name).to be_present
+      end
+    end
+
+    context 'a custom scope is provided' do
+      let(:scope) { cluster.kubernetes_namespaces.has_service_account_token }
+
+      subject { cluster.find_or_initialize_kubernetes_namespace_for_project(project, scope: scope) }
+
+      context 'kubernetes namespace exists' do
+        context 'with no service account token' do
+          let!(:kubernetes_namespace) { create(:cluster_kubernetes_namespace, project: project, cluster: cluster) }
+
+          it 'initializes a new namespace and sets default values' do
+            expect(subject).to be_new_record
+            expect(subject.project).to eq project
+            expect(subject.cluster).to eq cluster
+            expect(subject.namespace).to be_present
+            expect(subject.service_account_name).to be_present
+          end
+        end
+
+        context 'with a service account token' do
+          let!(:kubernetes_namespace) { create(:cluster_kubernetes_namespace, :with_token, project: project, cluster: cluster) }
+
+          it { is_expected.to eq kubernetes_namespace }
+        end
+      end
+    end
+  end
+
   describe '#predefined_variables' do
     subject { cluster.predefined_variables }
 
