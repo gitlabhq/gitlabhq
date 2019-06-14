@@ -166,7 +166,11 @@ text field into the discussion thread of a merge request:
 
 #### Using Visual Reviews
 
-To use the Visual Reviews feedback form, you will need a [personal access token](../../user/profile/personal_access_tokens.md) with the [API scope](../../user/profile/personal_access_tokens.md#limiting-scopes-of-a-personal-access-token).
+If Visual Reviews has been [enabled](#configuring-visual-reviews) for the Review App, the Visual Reviews feedback form is overlaid on the app's pages at the bottom-right corner.
+
+To use the feedback form, you will need to create a [personal access token](../../user/profile/personal_access_tokens.md) with the API scope selected.
+
+Paste the token into the feedback box, when prompted. If you select **Remember me**, your browser stores the token so that future visits to Review Apps at the same URL will not require you to re-enter the token. To clear the token, click **Log out**.
 
 Comments can make use of all the [Markdown annotations](../../user/markdown.md)
 available in merge request comment boxes.
@@ -174,14 +178,13 @@ available in merge request comment boxes.
 #### Configuring Visual Reviews
 
 The feedback form is served through a script you add to pages in your Review App.
-The contents of the script can be found by clicking the **Review** button in the
-Review App footer in the MR.
+To access the code to include the script, click the **Review** button in the **Pipeline** section of the merge request.
 
 ![review button](img/review_button.png)
 ![review modal](img/review_modal.png)
 
-The base script hardcodes the project and merge request IDs. You may want to consider
-using features of your programming language to use environment variables or another
+The provided script hardcodes the project and merge request IDs. You may want to consider
+using features of your programming language to use environment variables or other
 means to inject these at runtime.
 
 Future enhancements will make this process even easier.
