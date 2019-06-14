@@ -9,7 +9,7 @@
     - gitlab-org
 
 .default-cache: &default-cache
-  key: "debian-stretch-ruby-2.6.3-node-10.x"
+  key: "debian-stretch-ruby-2.6.3-node-12.x"
   paths:
     - vendor/ruby
     - .yarn-cache/
