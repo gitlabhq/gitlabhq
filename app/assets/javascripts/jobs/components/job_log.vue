@@ -49,12 +49,12 @@ export default {
     },
     removeEventListener() {
       this.$el
-        .querySelector('.js-section-start')
-        .removeEventListener('click', this.handleSectionClick);
+        .querySelectorAll('.js-section-start')
+        .forEach(el => el.removeEventListener('click', this.handleSectionClick));
     },
     /**
      * The collapsible rows are sent in HTML from the backend
-     * We need to add a onclick handler for the divs that match `.js-section-start`
+     * We need tos add a onclick handler for the divs that match `.js-section-start`
      *
      */
     handleCollapsibleRows() {
@@ -68,13 +68,12 @@ export default {
      */
     handleSectionClick(evt) {
       const clickedArrow = evt.currentTarget;
-
       // toggle the arrow class
       clickedArrow.classList.toggle('fa-caret-right');
       clickedArrow.classList.toggle('fa-caret-down');
 
-      const dataSection = clickedArrow.getAttribute('data-section');
-      const sibilings = this.$el.querySelectorAll(`.js-s_${dataSection}:not(.js-section-header)`);
+      const { section } = clickedArrow.dataset;
+      const sibilings = this.$el.querySelectorAll(`.js-s-${section}:not(.js-section-header)`);
 
       sibilings.forEach(row => row.classList.toggle('hidden'));
     },

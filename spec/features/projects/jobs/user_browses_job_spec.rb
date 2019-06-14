@@ -42,12 +42,12 @@ describe 'User browses a job', :js do
       text_to_hide = "Cloning into '/nolith/ci-tests'"
 
       expect(page).to have_content(text_to_hide)
-      expect(page).to have_css('.js-s_get-sources')
+      expect(page).to have_css('.js-s-get-sources')
 
       find('.js-section-start[data-section="get-sources"]').click
 
       expect(page).not_to have_content(text_to_hide)
-      expect(page).to have_no_css('.js-s_get-sources')
+      expect(page).to have_no_css('.js-s-get-sources')
     end
   end
 
