@@ -193,6 +193,18 @@ password <personal_access_token>
 To quickly access a project from the GitLab UI using the project ID,
 visit the `/projects/:id` URL in your browser or other tool accessing the project.
 
+## Project aliases
+
+Projects' repositories are usually cloned with a namespace and project name. It is
+also possible to clone them via a project alias. This feature is only available on Git over SSH.
+
+A project alias can be created via API only by administrators. Follow the
+[Project Aliases API documentation](../../api/project_aliases.md) for more details.
+
+Once an alias has been created for a project (e.g. gitlab-ce for gitlab-org/gitlab-ce),
+the repository can be cloned using the alias (e.g `git clone git@gitlab.com:gitlab-ce.git`
+instead of `git clone git@gitlab.com:gitlab-org/gitlab-ce.git`).
+
 ## Project APIs
 
 There are numerous [APIs](../../api/README.md) to use with your projects:
@@ -212,3 +224,4 @@ There are numerous [APIs](../../api/README.md) to use with your projects:
 - [Templates](../../api/project_templates.md)
 - [Traffic](../../api/project_statistics.md)
 - [Variables](../../api/project_level_variables.md)
+- [Aliases](../../api/project_aliases.md)
