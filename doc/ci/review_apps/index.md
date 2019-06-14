@@ -159,7 +159,7 @@ After adding Review Apps to your workflow, you follow the branched Git flow. Tha
 The Visual Reviews feedback form can be added to a Review App to enable reviewers to post comments
 directly from the app back to the merge request that spawned the Review App.
 
-For example, a form like the following can be made to post the contents of the
+For example, a form like the following can be configured to post the contents of the
 text field into the discussion thread of a merge request:
 
 ![feedback form](img/toolbar_feeback_form.png)
