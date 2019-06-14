@@ -96,12 +96,6 @@ navigate to the environments page under **Operations > Environments**.
 
 Deploy Boards are visible by default. You can explicitly click
 the triangle next to their respective environment name in order to hide them.
-GitLab will then query Kubernetes for the state of each pod (e.g., waiting,
-deploying, finished, unknown), and the Deploy Board status will finally appear.
-
-GitLab will only display a Deploy Board for top-level environments. Foldered
-environments like `review/*` (usually used for [Review Apps]) won't have a
-Deploy Board attached to them.
 
 ## Canary Deployments
 
