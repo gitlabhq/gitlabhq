@@ -7,11 +7,13 @@ module Gitlab
     module Dashboard
       class SystemDashboardService < Gitlab::Metrics::Dashboard::BaseService
         SYSTEM_DASHBOARD_PATH = 'config/prometheus/common_metrics.yml'
+        SYSTEM_DASHBOARD_NAME = 'Default'
 
         class << self
           def all_dashboard_paths(_project)
             [{
               path: SYSTEM_DASHBOARD_PATH,
+              display_name: SYSTEM_DASHBOARD_NAME,
               default: true
             }]
           end

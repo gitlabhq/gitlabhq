@@ -59,4 +59,29 @@ describe Gitlab::Metrics::Dashboard::ProjectDashboardService, :use_clean_rails_m
       it_behaves_like 'misconfigured dashboard service response', :unprocessable_entity
     end
   end
+
+  describe '::all_dashboard_paths' do
+    let(:all_dashboards) { described_class.all_dashboard_paths(project) }
+
+    context 'when there are no project dashboards' do
+      it 'returns an empty array' do
+        expect(all_dashboards).to be_empty
+      end
+    end
+
+    context 'when there are project dashboards available' do
+      let(:dashboard_path) { '.gitlab/dashboards/test.yml' }
+      let(:project) { project_with_dashboard(dashboard_path) }
+
+      it 'returns the dashboard attributes' do
+        expect(all_dashboards).to eq(
+          [{
+            path: dashboard_path,
+            display_name: 'test.yml',
+            default: false
+          }]
+        )
+      end
+    end
+  end
 end

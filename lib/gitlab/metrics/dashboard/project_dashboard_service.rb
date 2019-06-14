@@ -13,11 +13,22 @@ module Gitlab
           def all_dashboard_paths(project)
             file_finder(project)
               .list_files_for(DASHBOARD_ROOT)
-              .map { |filepath| { path: filepath, default: false } }
+              .map do |filepath|
+                {
+                  path: filepath,
+                  display_name: name_for_path(filepath),
+                  default: false
+                }
+              end
           end
 
           def file_finder(project)
             Gitlab::Template::Finders::RepoTemplateFinder.new(project, DASHBOARD_ROOT, '.yml')
+          end
+
+          # Grabs the filepath after the base directory.
+          def name_for_path(filepath)
+            filepath.delete_prefix("#{DASHBOARD_ROOT}/")
           end
         end
 
