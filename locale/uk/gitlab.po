@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: uk\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2019-04-13 17:07\n"
+"PO-Revision-Date: 2019-06-14 19:57\n"
 
 msgid " Please sign in."
 msgstr ""
@@ -5578,6 +5578,9 @@ msgstr "Google Takeout"
 msgid "Google authentication is not %{link_to_documentation}. Ask your GitLab administrator if you want to use this service."
 msgstr "Автентифікація Google не %{link_to_documentation}. Попросіть свого адміністратора GitLab, якщо ви хочете скористатися цим сервісом."
 
+msgid "Got it"
+msgstr ""
+
 msgid "Got it!"
 msgstr "Зрозуміло!"
 
@@ -6010,6 +6013,9 @@ msgstr ""
 
 msgid "If checked, group owners can manage LDAP group links and LDAP member overrides"
 msgstr "Якщо увімкнено, тоді власники груп зможуть керувати зв'язками груп LDAP та перевизначенням членів LDAP"
+
+msgid "If checked, new group memberships and permissions can only be added via LDAP synchronization"
+msgstr ""
 
 msgid "If disabled, a diverged local branch will not be automatically updated with commits from its remote counterpart, to prevent local data loss. If the default branch (%{default_branch}) has diverged and cannot be updated, mirroring will fail. Other diverged branches are silently ignored."
 msgstr "Якщо вимкнено, локальна гілка зі змінами не буде автоматично підтягувати коміти з віддаленої гілки, щоб уникнути втрати локальних даних. Якщо гілка за замовчуванням (%{default_branch}) містить зміни і не може бути оновлена, тоді дзеркалювання буде неможливим. Інші гілки зі змінами автоматично ігноруються."
@@ -6480,6 +6486,9 @@ msgstr ""
 msgid "Job|with"
 msgstr ""
 
+msgid "Join Zoom meeting"
+msgstr ""
+
 msgid "Jul"
 msgstr "лип."
 
@@ -6833,6 +6842,9 @@ msgstr "Блокувати"
 msgid "Lock %{issuableDisplayName}"
 msgstr "Заблокувати %{issuableDisplayName}"
 
+msgid "Lock memberships to LDAP synchronization"
+msgstr ""
+
 msgid "Lock not found"
 msgstr "Блокування не знайдено"
 
@@ -7123,6 +7135,9 @@ msgstr "розпочав (-ла) коміту %{linkStart}%{commitId}%{linkEnd}"
 
 msgid "MergeRequest| %{paragraphStart}changed the description %{descriptionChangedTimes} times %{timeDifferenceMinutes}%{paragraphEnd}"
 msgstr "%{paragraphStart} опис змінено %{descriptionChangedTimes} раз(а,ів) %{timeDifferenceMinutes}%{paragraphEnd}"
+
+msgid "MergeRequest|Error dismissing suggestion popover. Please try again."
+msgstr ""
 
 msgid "MergeRequest|Error loading full diff. Please try again."
 msgstr "Помилка при заванаженні повного порівняння. Будь ласка, спробуйте знову."
@@ -7537,6 +7552,9 @@ msgid "New tag"
 msgstr "Новий тег"
 
 msgid "New users set to external"
+msgstr ""
+
+msgid "New! Suggest changes directly"
 msgstr ""
 
 msgid "New..."
@@ -7998,6 +8016,21 @@ msgstr "Домен Pages"
 
 msgid "Pages Domains"
 msgstr "Домени Pages"
+
+msgid "Pages getting started guide"
+msgstr ""
+
+msgid "Pagination|Go to first page"
+msgstr ""
+
+msgid "Pagination|Go to last page"
+msgstr ""
+
+msgid "Pagination|Go to next page"
+msgstr ""
+
+msgid "Pagination|Go to previous page"
+msgstr ""
 
 msgid "Pagination|Last »"
 msgstr "Остання »"
@@ -10861,6 +10894,9 @@ msgid "Successfully unblocked"
 msgstr ""
 
 msgid "Successfully unlocked"
+msgstr ""
+
+msgid "Suggest code changes which are immediately applied. Try it out!"
 msgstr ""
 
 msgid "Suggested change"
