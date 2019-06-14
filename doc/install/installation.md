@@ -263,7 +263,7 @@ Since GitLab 8.17, GitLab requires the use of Node to compile JavaScript
 assets, and Yarn to manage JavaScript dependencies. The current minimum
 requirements for these are:
 
-- `node` >= v8.10.0.
+- `node` >= v8.10.0. (We recommend node 12.x as it is faster)
 - `yarn` >= v1.10.0.
 
 In many distros,
@@ -271,8 +271,8 @@ the versions provided by the official package repositories are out of date, so
 we'll need to install through the following commands:
 
 ```sh
-# install node v8.x
-curl --location https://deb.nodesource.com/setup_8.x | sudo bash -
+# install node v12.x
+curl --location https://deb.nodesource.com/setup_12.x | sudo bash -
 sudo apt-get install -y nodejs
 
 curl --silent --show-error https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
@@ -493,7 +493,7 @@ sudo -u git -H editor config/resque.yml
 ```
 
 CAUTION: **Caution:**
-Make sure to edit both `gitlab.yml` and `unicorn.rb` to match your setup. 
+Make sure to edit both `gitlab.yml` and `unicorn.rb` to match your setup.
 If you want to use Puma web server, see [Using Puma](#using-puma) for the additional steps.
 
 NOTE: **Note:**
