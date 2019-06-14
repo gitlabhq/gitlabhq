@@ -309,7 +309,7 @@ module Gitlab
           if @sections.any?
             css_classes << "section"
             css_classes << "js-section-header" if @lineno_in_section == 0
-            css_classes += sections.map { |section| "js-s_#{section}" }
+            css_classes += sections.map { |section| "js-s-#{section}" }
           end
 
           @out << %{<span class="#{css_classes.join(' ')}">}

@@ -73,7 +73,7 @@ export default {
       clickedArrow.classList.toggle('fa-caret-down');
 
       const { section } = clickedArrow.dataset;
-      const sibilings = this.$el.querySelectorAll(`.js-s_${section}:not(.js-section-header)`);
+      const sibilings = this.$el.querySelectorAll(`.js-s-${section}:not(.js-section-header)`);
 
       sibilings.forEach(row => row.classList.toggle('hidden'));
     },

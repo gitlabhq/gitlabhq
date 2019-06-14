@@ -85,13 +85,13 @@ describe('Job Log', () => {
           const { section } = vm.$el.querySelector('.js-section-start').dataset;
           vm.$el.querySelector('.js-section-start').click();
 
-          vm.$el.querySelectorAll(`.js-s_${section}:not(.js-section-header)`).forEach(el => {
+          vm.$el.querySelectorAll(`.js-s-${section}:not(.js-section-header)`).forEach(el => {
             expect(el.classList.contains('hidden')).toEqual(true);
           });
 
           vm.$el.querySelector('.js-section-start').click();
 
-          vm.$el.querySelectorAll(`.js-s_${section}:not(.js-section-header)`).forEach(el => {
+          vm.$el.querySelectorAll(`.js-s-${section}:not(.js-section-header)`).forEach(el => {
             expect(el.classList.contains('hidden')).toEqual(false);
           });
         })
