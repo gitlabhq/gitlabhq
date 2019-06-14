@@ -64,9 +64,14 @@ Following [best practices](https://linux-audit.com/using-ed25519-openssh-keys-in
 you should always favor [ED25519](https://ed25519.cr.yp.to/) SSH keys, since they
 are more secure and have better performance over the other types.
 
-They were introduced in OpenSSH 6.5, so any modern OS should include the
-option to create them. If for any reason your OS or the GitLab instance you
-interact with doesn't support this, you can fallback to RSA.
+ED25519 SSH keys were introduced in OpenSSH 6.5, 
+so any modern OS should include the option to create them. 
+If for any reason your OS or the GitLab instance you interact with doesn't 
+support ED25519, you can fallback to RSA.
+
+NOTE: **Note:**
+Omnibus does not ship with OpenSSH, so it uses the version on your GitLab server. If using 
+Omnibus, ensure the version of OpenSSH installed is version 6.5 or newer if you want to use ED25519 SSH keys.
 
 ### RSA SSH keys
 
