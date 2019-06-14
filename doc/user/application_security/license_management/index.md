@@ -44,14 +44,14 @@ library whose license is incompatible with yours.
 
 The following languages and package managers are supported.
 
-| Language   | Package managers                                                  |
-|------------|-------------------------------------------------------------------|
-| JavaScript | [Bower](https://bower.io/), [npm](https://www.npmjs.com/)         |
-| Go         | [Godep](https://github.com/tools/godep), go get                   |
-| Java       | [Gradle](https://gradle.org/), [Maven](https://maven.apache.org/) |
-| .NET       | [Nuget](https://www.nuget.org/)                                   |
-| Python     | [pip](https://pip.pypa.io/en/stable/)                             |
-| Ruby       | [gem](https://rubygems.org/)                                      |
+| Language   | Package managers                                                  | Scan Tool                                                |
+|------------|-------------------------------------------------------------------|----------------------------------------------------------|
+| JavaScript | [Bower](https://bower.io/), [npm](https://www.npmjs.com/)         |[License Finder](https://github.com/pivotal/LicenseFinder)|
+| Go         | [Godep](https://github.com/tools/godep), go get                   |[License Finder](https://github.com/pivotal/LicenseFinder)|
+| Java       | [Gradle](https://gradle.org/), [Maven](https://maven.apache.org/) |[License Finder](https://github.com/pivotal/LicenseFinder)|
+| .NET       | [Nuget](https://www.nuget.org/)                                   |[License Finder](https://github.com/pivotal/LicenseFinder)|
+| Python     | [pip](https://pip.pypa.io/en/stable/)                             |[License Finder](https://github.com/pivotal/LicenseFinder)|
+| Ruby       | [gem](https://rubygems.org/)                                      |[License Finder](https://github.com/pivotal/LicenseFinder)|
 
 ## Requirements
 
