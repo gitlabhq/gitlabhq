@@ -40,6 +40,7 @@ const authorizeUser = state => {
   const token = selectToken().value;
 
   if (!token) {
+    /* eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings */
     postError('Please enter your token.', TOKEN_BOX);
     return;
   }

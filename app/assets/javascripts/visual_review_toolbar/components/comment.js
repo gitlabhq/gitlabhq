@@ -18,6 +18,7 @@ const resetCommentBox = () => {
   const commentBox = selectCommentBox();
   const commentButton = selectCommentButton();
 
+  /* eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings */
   commentButton.innerText = 'Send feedback';
   commentButton.classList.replace('gitlab-button-secondary', 'gitlab-button-success');
   commentButton.style.opacity = 1;
@@ -43,7 +44,9 @@ const confirmAndClear = mergeRequestId => {
   const commentButton = selectCommentButton();
   const currentNote = selectNote();
 
+  /* eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings */
   commentButton.innerText = 'Feedback sent';
+  /* eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings */
   currentNote.innerText = `Your comment was successfully posted to merge request #${mergeRequestId}`;
   setTimeout(resetComment, 2000);
 };
@@ -52,6 +55,7 @@ const setInProgressState = () => {
   const commentButton = selectCommentButton();
   const commentBox = selectCommentBox();
 
+  /* eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings */
   commentButton.innerText = 'Sending feedback';
   commentButton.classList.replace('gitlab-button-success', 'gitlab-button-secondary');
   commentButton.style.opacity = 0.5;
@@ -79,6 +83,7 @@ const postComment = ({
   const commentText = selectCommentBox().value.trim();
 
   if (!commentText) {
+    /* eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings */
     postError('Your comment appears to be empty.', COMMENT_BOX);
     resetCommentBox();
     return;

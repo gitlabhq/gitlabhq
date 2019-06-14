@@ -12,6 +12,7 @@ import {
 } from './constants';
 
 // this style must be applied inline in a handful of components
+/* eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings */
 const buttonClearStyles = `
   -webkit-appearance: none;
 `;
