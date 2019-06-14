@@ -15,6 +15,7 @@ const state = {
 
 // adapted from https://developer.mozilla.org/en-US/docs/Web/API/Window/navigator#Example_2_Browser_detect_and_return_an_index
 const getBrowserId = sUsrAg => {
+  /* eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings */
   const aKeys = ['MSIE', 'Edge', 'Firefox', 'Safari', 'Chrome', 'Opera'];
   let nIdx = aKeys.length - 1;
 
