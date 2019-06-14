@@ -156,7 +156,7 @@ After adding Review Apps to your workflow, you follow the branched Git flow. Tha
 
 ### Visual Reviews
 
-The Visual Review feedback form can be added to a Review App to make it possible to post comments
+The Visual Reviews feedback form can be added to a Review App to enable reviewers to post comments
 directly from the app back to the merge request that spawned the Review App.
 
 For example, a form like the following can be made to post the contents of the
