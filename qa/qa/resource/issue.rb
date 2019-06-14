@@ -12,6 +12,8 @@ module QA
         end
       end
 
+      attribute :id
+      attribute :labels
       attribute :title
 
       def fabricate!
@@ -24,6 +26,21 @@ module QA
           page.add_description(@description)
           page.create_new_issue
         end
+      end
+
+      def api_get_path
+        "/projects/#{project.id}/issues/#{id}"
+      end
+
+      def api_post_path
+        "/projects/#{project.id}/issues"
+      end
+
+      def api_post_body
+        {
+          labels: [labels],
+          title: title
+        }
       end
     end
   end

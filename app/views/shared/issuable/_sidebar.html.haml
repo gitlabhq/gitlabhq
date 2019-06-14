@@ -102,7 +102,7 @@
           = _('Labels')
           = icon('spinner spin', class: 'hidden block-loading', 'aria-hidden': 'true')
           - if can_edit_issuable
-            = link_to _('Edit'), '#', class: 'js-sidebar-dropdown-toggle edit-link float-right'
+            = link_to _('Edit'), '#', class: 'js-sidebar-dropdown-toggle edit-link qa-edit-link-labels float-right'
         .value.issuable-show-labels.dont-hide.hide-collapsed.qa-labels-block{ class: ("has-labels" if selected_labels.any?) }
           - if selected_labels.any?
             - selected_labels.each do |label_hash|
@@ -118,7 +118,7 @@
               %span.dropdown-toggle-text{ class: ("is-default" if selected_labels.empty?) }
                 = multi_label_name(selected_labels, "Labels")
               = icon('chevron-down', 'aria-hidden': 'true')
-            .dropdown-menu.dropdown-select.dropdown-menu-paging.dropdown-menu-labels.dropdown-menu-selectable.dropdown-extended-height
+            .dropdown-menu.dropdown-select.dropdown-menu-paging.qa-dropdown-menu-labels.dropdown-menu-labels.dropdown-menu-selectable.dropdown-extended-height
               = render partial: "shared/issuable/label_page_default"
               - if issuable_sidebar.dig(:current_user, :can_admin_label)
                 = render partial: "shared/issuable/label_page_create"

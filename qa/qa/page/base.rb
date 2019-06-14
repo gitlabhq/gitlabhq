@@ -197,6 +197,10 @@ module QA
         views.map(&:elements).flatten
       end
 
+      def send_keys_to_element(name, keys)
+        find_element(name).send_keys(keys)
+      end
+
       class DSL
         attr_reader :views
 
