@@ -50,21 +50,21 @@ describe Gitlab::Ci::Pipeline::Expression::Lexeme::Matches do
       let(:left_value)  { 'my-string' }
       let(:right_value) { Gitlab::UntrustedRegexp.new('something') }
 
-      it { is_expected.to eq(nil) }
+      it { is_expected.to eq(false) }
     end
 
     context 'when left and right match' do
       let(:left_value)  { 'my-awesome-string' }
       let(:right_value) { Gitlab::UntrustedRegexp.new('awesome.string$') }
 
-      it { is_expected.to eq(3) }
+      it { is_expected.to eq(true) }
     end
 
     context 'when left is nil' do
       let(:left_value)  { nil }
       let(:right_value) { Gitlab::UntrustedRegexp.new('pattern') }
 
-      it { is_expected.to eq(nil) }
+      it { is_expected.to eq(false) }
     end
 
     context 'when left is a multiline string and matches right' do
@@ -78,7 +78,7 @@ describe Gitlab::Ci::Pipeline::Expression::Lexeme::Matches do
 
       let(:right_value) { Gitlab::UntrustedRegexp.new('text-string') }
 
-      it { is_expected.to eq(24) }
+      it { is_expected.to eq(true) }
     end
 
     context 'when left is a multiline string and does not match right' do
@@ -92,7 +92,7 @@ describe Gitlab::Ci::Pipeline::Expression::Lexeme::Matches do
 
       let(:right_value) { Gitlab::UntrustedRegexp.new('text-string') }
 
-      it { is_expected.to eq(nil) }
+      it { is_expected.to eq(false) }
     end
 
     context 'when a matching pattern uses regex flags' do
@@ -104,7 +104,7 @@ describe Gitlab::Ci::Pipeline::Expression::Lexeme::Matches do
 
       let(:right_value) { Gitlab::UntrustedRegexp.new('(?i)awesome') }
 
-      it { is_expected.to eq(3) }
+      it { is_expected.to eq(true) }
     end
 
     context 'when a non-matching pattern uses regex flags' do
@@ -116,7 +116,7 @@ describe Gitlab::Ci::Pipeline::Expression::Lexeme::Matches do
 
       let(:right_value) { Gitlab::UntrustedRegexp.new('(?i)terrible') }
 
-      it { is_expected.to eq(nil) }
+      it { is_expected.to eq(false) }
     end
   end
 end
