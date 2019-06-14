@@ -176,9 +176,7 @@ export default {
 
       let text = s__('MergeRequests|started a thread');
       if (isForCommit) {
-        text = s__(
-          'MergeRequests|started a thread on commit %{linkStart}%{commitId}%{linkEnd}',
-        );
+        text = s__('MergeRequests|started a thread on commit %{linkStart}%{commitId}%{linkEnd}');
       } else if (isDiffDiscussion && commitId) {
         text = isActive
           ? s__('MergeRequests|started a thread on commit %{linkStart}%{commitId}%{linkEnd}')
