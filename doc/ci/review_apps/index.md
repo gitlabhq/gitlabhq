@@ -156,24 +156,35 @@ After adding Review Apps to your workflow, you follow the branched Git flow. Tha
 
 ### Review Toolbar
 
-The Review Toolbar can be added to a Review App to make it easier to post comments directly from the app back to the merge request that spawned the Review App.
+The Review Toolbar can be added to a Review App to make it possible to post comments
+directly from the app back to the merge request that spawned the Review App.
+
+For example, a form like the following can be made to post the contents of the 
+text field into the discussion thread of a merge request:
 
 ![feedback form](img/toolbar_feeback_form.png)
 
 #### Using the Toolbar
 
-To use the toolbar, you will need a [personal access token](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html) with the [API scope](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html#limiting-scopes-of-a-personal-access-token).
+To use the toolbar, you will need a [personal access token](../../user/profile/personal_access_tokens.md) with the [API scope](../../user/profile/personal_access_tokens.md#limiting-scopes-of-a-personal-access-token).
 
-Comments can make use of all the markdown annotations available in merge request comment boxes.
+Comments can make use of all the [Markdown annotations](../../user/markdown.md)
+available in merge request comment boxes.
 
 #### Configuring the Toolbar
 
-The toolbar is served through a script injected into the pages in your Review App. The base script to be included can be found by clicking the Review button in the Review App footer in the MR.
+The toolbar is served through a script you add to pages in your Review App. 
+The contents of the script can be found by clicking the **Review** button in the 
+Review App footer in the MR.
 
 ![review button](img/review_button.png)
 ![review modal](img/review_modal.png)
 
-The base script hardcodes the project and merge request ids. You may want to consider using features of your programming language to use environment variables or another means to inject these at runtime. (And keep your eyes peeled for new features to make it even easier in upcoming releases!)
+The base script hardcodes the project and merge request IDs. You may want to consider
+using features of your programming language to use environment variables or another
+means to inject these at runtime. 
+
+Future enhancements will make this process even easier.
 
 ## Limitations
 
