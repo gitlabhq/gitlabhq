@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: uk\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2019-06-14 19:57\n"
+"PO-Revision-Date: 2019-06-14 21:26\n"
 
 msgid " Please sign in."
 msgstr ""
@@ -125,6 +125,13 @@ msgstr[0] "%d запит на злиття"
 msgstr[1] "%d запита на злиття"
 msgstr[2] "%d запитів на злиття"
 msgstr[3] "%d запитів на злиття"
+
+msgid "%d merge request that you don't have access to."
+msgid_plural "%d merge requests that you don't have access to."
+msgstr[0] "%d запит на злиття, до якого ви не маєте доступу."
+msgstr[1] "%d запити на злиття, до яких ви не маєте доступу."
+msgstr[2] "%d запитів на злиття, до яких ви не маєте доступу."
+msgstr[3] "%d запитів на злиття, до яких ви не маєте доступу."
 
 msgid "%d metric"
 msgid_plural "%d metrics"
@@ -307,6 +314,25 @@ msgstr "%{usage_ping_link_start}Довідатись більше%{usage_ping_li
 
 msgid "%{user_name} profile page"
 msgstr "%{user_name} сторінка профілю"
+
+msgid "%{verb} %{time_spent_value} spent time."
+msgstr "%{verb} %{time_spent_value} витрачено часу."
+
+msgid "'%{level}' is not a valid visibility level"
+msgstr "\"%{level}\" не є допустимим рівнем видимості"
+
+msgid "'%{source}' is not a import source"
+msgstr "\"%{source}\" не є джерелом імпорту"
+
+msgid "(%d closed)"
+msgid_plural "(%d closed)"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+
+msgid "(%{mrCount} merged)"
+msgstr "(%{mrCount} злито)"
 
 msgid "(No changes)"
 msgstr ""
@@ -1393,11 +1419,35 @@ msgstr "Ви дійсно бажаєте скасувати підписку н�
 msgid "Are you sure?"
 msgstr "Ви впевнені?"
 
+msgid "Are you sure? All commits that were signed with this GPG key will be unverified."
+msgstr ""
+
+msgid "Are you sure? Removing this GPG key does not affect already signed commits."
+msgstr ""
+
+msgid "Are you sure? This will invalidate your registered applications and U2F devices."
+msgstr "Ви впевнені? Це призведе до анулювання зареєстрованих застосунків та U2F пристроїв."
+
 msgid "Artifact ID"
 msgstr "ID артефакту"
 
 msgid "Artifacts"
 msgstr "Артефакти"
+
+msgid "As U2F devices are only supported by a few browsers, we require that you set up a two-factor authentication app before a U2F device. That way you'll always be able to log in - even when you're using an unsupported browser."
+msgstr "Оскільки пристрої U2F підтримуються лише кількома браузерами, ми вимагаємо, щоб ви налаштували застосунок для двофакторної автентифікації перед пристроєм U2F. Таким чином ви завжди зможете увійти, навіть при використанні непідтримуваного браузера."
+
+msgid "AsanaService|%{user} pushed to branch %{branch} of %{project_name} ( %{commit_url} ):"
+msgstr "%{user} відправив код в гілку %{branch} проекту %{project_name} (%{commit_url}):"
+
+msgid "AsanaService|Asana - Teamwork without email"
+msgstr "Asana — командна робота без електронної пошти"
+
+msgid "AsanaService|Comma-separated list of branches which will be automatically inspected. Leave blank to include all branches."
+msgstr "Розділений комами список гілок, які будуть автоматично перевірятися. Залиште порожнім, щоб включити усі гілки."
+
+msgid "AsanaService|User Personal Access Token. User must have access to task, all comments will be attributed to this user."
+msgstr "Особистий токен доступу користувача. Користувач повинен мати доступ до завдання, усі коментарі будуть відноситися до нього."
 
 msgid "Ascending"
 msgstr "За зростанням"
@@ -2894,7 +2944,7 @@ msgid "Code owners"
 msgstr "Власники коду"
 
 msgid "CodeOwner|Pattern"
-msgstr ""
+msgstr "Шаблон"
 
 msgid "Cohorts"
 msgstr "Когорти"
@@ -4161,6 +4211,9 @@ msgstr ""
 msgid "Enter in your Bitbucket Server URL and personal access token below"
 msgstr "Введіть URL-адресу вашого Bitbucket Server і ключ доступу"
 
+msgid "Enter in your Phabricator Server URL and personal access token below"
+msgstr "Введіть URL-адресу вашого сервера Phabricator і персональний ключ доступу"
+
 msgid "Enter the issue description"
 msgstr "Введіть опис задачі"
 
@@ -5165,7 +5218,7 @@ msgid "GeoNodes|Out of sync"
 msgstr "Розсинхронізовані"
 
 msgid "GeoNodes|Pausing replication stops the sync process."
-msgstr ""
+msgstr "Призупинення реплікації зупиняє процес синхронізації."
 
 msgid "GeoNodes|Removing a primary node stops the sync process for all nodes. Syncing cannot be resumed without losing some data on all secondaries. In this case we would recommend setting up all nodes from scratch. Are you sure?"
 msgstr "Видалення основного вузла зупиняє процес синхронізації для всіх вузлів. Синхронізацію неможливо буде відновити без втрати деяких даних на всіх вторинних вузлах. У цьому випадку рекомендовано налаштувати всі вузли з нуля. Ви впевнені?"
@@ -5291,7 +5344,7 @@ msgid "Geo|Could not remove tracking entry for an existing project."
 msgstr "Не вдалося видалити запис відстеження для існуючого проекту."
 
 msgid "Geo|Could not remove tracking entry for an existing upload."
-msgstr ""
+msgstr "Не вдалося видалити запис відстеження для існуючого завантаження."
 
 msgid "Geo|Failed"
 msgstr "Невдало"
@@ -5342,7 +5395,7 @@ msgid "Geo|Pending verification"
 msgstr "Очікування перевірки"
 
 msgid "Geo|Please refer to Geo Troubleshooting."
-msgstr ""
+msgstr "Будь ласка, перегляньте документацію з усунення неполадок Geo."
 
 msgid "Geo|Project"
 msgstr ""
@@ -5396,19 +5449,19 @@ msgid "Geo|Status"
 msgstr "Статус"
 
 msgid "Geo|Sync"
-msgstr ""
+msgstr "Синхронізувати"
 
 msgid "Geo|Synced"
 msgstr "Синхронізовано"
 
 msgid "Geo|Synced at"
-msgstr ""
+msgstr "Синхронізовано"
 
 msgid "Geo|Synchronization failed - %{error}"
 msgstr "Синхронізація невдала: %{error}"
 
 msgid "Geo|The URL defined on the primary node that secondary nodes should use to contact it. Returns `url` if not set"
-msgstr ""
+msgstr "URL-адреса, визначена на основному вузлі, яку використовують вторинні вузли, щоб зв'язатися з ним. Повертає \"url\", якщо не встановлено"
 
 msgid "Geo|This is a primary node"
 msgstr "Це — первинний вузол"
