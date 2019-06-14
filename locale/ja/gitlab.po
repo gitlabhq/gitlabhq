@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: ja\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2019-06-13 13:20\n"
+"PO-Revision-Date: 2019-06-14 10:20\n"
 
 msgid " Please sign in."
 msgstr " サインインしてください。"
@@ -4992,6 +4992,9 @@ msgstr "ブランチ データの読み込み中にエラーが発生しまし�
 
 msgid "Error loading branches."
 msgstr "ブランチのロードに失敗しました。"
+
+msgid "Error loading burndown chart data"
+msgstr ""
 
 msgid "Error loading file viewer."
 msgstr "ファイルビューワーの読み込みに失敗しました。"
@@ -10782,10 +10785,16 @@ msgid "Refreshing in a second to show the updated status..."
 msgid_plural "Refreshing in %d seconds to show the updated status..."
 msgstr[0] ""
 
+msgid "Regenerate instance ID"
+msgstr ""
+
 msgid "Regenerate key"
 msgstr ""
 
 msgid "Regenerate recovery codes"
+msgstr ""
+
+msgid "Regenerating the instance ID can break integration depending on the client you are using."
 msgstr ""
 
 msgid "Regex pattern"
@@ -14119,6 +14128,9 @@ msgstr "URL"
 msgid "Unable to connect to server: %{error}"
 msgstr ""
 
+msgid "Unable to generate new instance ID"
+msgstr ""
+
 msgid "Unable to load the diff. %{button_try_again}"
 msgstr "差分を読み込むことができません。%{button_try_again}"
 
@@ -14390,9 +14402,6 @@ msgid "UsageQuota|Usage Quotas"
 msgstr ""
 
 msgid "UsageQuota|Usage of group resources across the projects in the %{strong_start}%{group_name}%{strong_end} group"
-msgstr ""
-
-msgid "UsageQuota|Usage quotas"
 msgstr ""
 
 msgid "UsageQuota|Usage since"
