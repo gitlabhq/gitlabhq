@@ -189,7 +189,7 @@ describe('noteable_discussion component', () => {
 
         wrapper.vm.$nextTick(() => {
           expect(wrapper.text()).toContain(
-            `started a discussion on an outdated change in commit ${truncatedCommitId}`,
+            `started a thread on an outdated change in commit ${truncatedCommitId}`,
           );
 
           expect(commitElement).not.toBe(null);
