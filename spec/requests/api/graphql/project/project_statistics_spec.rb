@@ -34,10 +34,10 @@ describe 'rendering namespace statistics' do
   context 'when the project is public' do
     let(:project) { create(:project, :public) }
 
-    it 'includes the statistics regardless of the user' do
+    it 'hides statistics for unauthenticated requests' do
       post_graphql(query, current_user: nil)
 
-      expect(graphql_data['project']['statistics']).to be_present
+      expect(graphql_data['project']['statistics']).to be_blank
     end
   end
 end

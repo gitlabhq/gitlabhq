@@ -4,6 +4,8 @@ module Types
   class ProjectStatisticsType < BaseObject
     graphql_name 'ProjectStatistics'
 
+    authorize :read_statistics
+
     field :commit_count, GraphQL::INT_TYPE, null: false
 
     field :storage_size, GraphQL::INT_TYPE, null: false
