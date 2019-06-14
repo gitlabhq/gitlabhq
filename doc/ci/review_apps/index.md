@@ -183,7 +183,6 @@ The feedback form is served through a script you add to pages in your Review App
 To access the code to include the script, click the **Review** button in the **Pipeline** section of the merge request.
 
 ![review button](img/review_button.png)
-![review modal](img/review_modal.png)
 
 The provided script hardcodes the project and merge request IDs. You may want to consider
 using features of your programming language to use environment variables or other
