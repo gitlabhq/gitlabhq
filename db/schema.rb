@@ -2388,6 +2388,7 @@ ActiveRecord::Schema.define(version: 20190611161641) do
     t.index ["incoming_email_token"], name: "index_users_on_incoming_email_token", using: :btree
     t.index ["name"], name: "index_users_on_name", using: :btree
     t.index ["name"], name: "index_users_on_name_trigram", using: :gin, opclasses: {"name"=>"gin_trgm_ops"}
+    t.index ["public_email"], name: "index_users_on_public_email", where: "((public_email)::text <> ''::text)", using: :btree
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
     t.index ["state"], name: "index_users_on_state", using: :btree
     t.index ["username"], name: "index_users_on_username", using: :btree
