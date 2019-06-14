@@ -154,27 +154,27 @@ After adding Review Apps to your workflow, you follow the branched Git flow. Tha
 1. Wait for the Runner to build and deploy your web application.
 1. Click on the link that provided in the merge request related to the branch to see the changes live.
 
-### Review Toolbar
+### Visual Reviews
 
-The Review Toolbar can be added to a Review App to make it possible to post comments
+The Visual Review feedback form can be added to a Review App to make it possible to post comments
 directly from the app back to the merge request that spawned the Review App.
 
-For example, a form like the following can be made to post the contents of the 
+For example, a form like the following can be made to post the contents of the
 text field into the discussion thread of a merge request:
 
 ![feedback form](img/toolbar_feeback_form.png)
 
-#### Using the Toolbar
+#### Using Visual Reviews
 
-To use the toolbar, you will need a [personal access token](../../user/profile/personal_access_tokens.md) with the [API scope](../../user/profile/personal_access_tokens.md#limiting-scopes-of-a-personal-access-token).
+To use the Visual Reviews feedback form, you will need a [personal access token](../../user/profile/personal_access_tokens.md) with the [API scope](../../user/profile/personal_access_tokens.md#limiting-scopes-of-a-personal-access-token).
 
 Comments can make use of all the [Markdown annotations](../../user/markdown.md)
 available in merge request comment boxes.
 
-#### Configuring the Toolbar
+#### Configuring Visual Reviews
 
-The toolbar is served through a script you add to pages in your Review App. 
-The contents of the script can be found by clicking the **Review** button in the 
+The feedback form is served through a script you add to pages in your Review App.
+The contents of the script can be found by clicking the **Review** button in the
 Review App footer in the MR.
 
 ![review button](img/review_button.png)
@@ -182,7 +182,7 @@ Review App footer in the MR.
 
 The base script hardcodes the project and merge request IDs. You may want to consider
 using features of your programming language to use environment variables or another
-means to inject these at runtime. 
+means to inject these at runtime.
 
 Future enhancements will make this process even easier.
 
