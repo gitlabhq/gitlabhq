@@ -1,0 +1,5 @@
+---
+title: Fix Denial of Service for comments when rendering issues/MR comments
+merge_request:
+author:
+type: security
