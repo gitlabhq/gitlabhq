@@ -183,6 +183,15 @@ group, as opposed to the full DN.
 
 1. [Restart GitLab][restart] for the changes to take effect.
 
+## Global group memberships lock
+
+"Lock memberships to LDAP synchronization" setting allows instance administrators 
+to lock down user abilities to invite new members to a group. When enabled following happens:
+
+1. Only administrator can manage memberships of any group including access levels.
+2. Users are not allowed to share project with other groups or invite members to a project created in a group.
+
+
 ## Adjusting LDAP user sync schedule
 
 > Introduced in GitLab Enterprise Edition Starter.
