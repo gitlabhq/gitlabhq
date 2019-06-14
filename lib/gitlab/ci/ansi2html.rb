@@ -155,7 +155,9 @@ module Gitlab
 
           stream.each_line do |line|
             s = StringScanner.new(line)
+
             until s.eos?
+
               if s.scan(Gitlab::Regex.build_trace_section_regex)
                 handle_section(s)
               elsif s.scan(/\e([@-_])(.*?)([@-~])/)
