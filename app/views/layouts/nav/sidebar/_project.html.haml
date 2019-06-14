@@ -9,7 +9,7 @@
           = @project.name
     %ul.sidebar-top-level-items
       = nav_link(path: sidebar_projects_paths, html_options: { class: 'home' }) do
-        = link_to project_path(@project), class: 'shortcuts-project' do
+        = link_to project_path(@project), class: 'shortcuts-project qa-link-project' do
           .nav-icon-container
             = sprite_icon('home')
           %span.nav-item-name
