@@ -56,32 +56,67 @@ describe 'Group show page' do
   end
 
   context 'subgroup support' do
-    let(:user) { create(:user) }
+    let(:owner) { create(:user) }
+    let(:maintainer) { create(:user) }
 
     before do
-      group.add_owner(user)
-      sign_in(user)
+      group.add_owner(owner)
+      group.add_maintainer(maintainer)
     end
 
-    context 'when subgroups are supported', :js, :nested_groups do
+    context 'for owners' do
       before do
-        allow(Group).to receive(:supports_nested_objects?) { true }
-        visit path
+        sign_in(owner)
       end
 
-      it 'allows creating subgroups' do
-        expect(page).to have_css("li[data-text='New subgroup']", visible: false)
+      context 'when subgroups are supported', :js, :nested_groups do
+        before do
+          allow(Group).to receive(:supports_nested_objects?) { true }
+          visit path
+        end
+
+        it 'allows creating subgroups' do
+          expect(page).to have_css("li[data-text='New subgroup']", visible: false)
+        end
+      end
+
+      context 'when subgroups are not supported' do
+        before do
+          allow(Group).to receive(:supports_nested_objects?) { false }
+          visit path
+        end
+
+        it 'allows creating subgroups' do
+          expect(page).not_to have_selector("li[data-text='New subgroup']", visible: false)
+        end
       end
     end
 
-    context 'when subgroups are not supported' do
+    context 'for maintainers' do
       before do
-        allow(Group).to receive(:supports_nested_objects?) { false }
-        visit path
+        sign_in(maintainer)
       end
 
-      it 'allows creating subgroups' do
-        expect(page).not_to have_selector("li[data-text='New subgroup']", visible: false)
+      context 'when subgroups are supported', :js, :nested_groups do
+        before do
+          allow(Group).to receive(:supports_nested_objects?) { true }
+          visit path
+        end
+
+        it 'allows creating subgroups' do
+          expect(page).to have_css("li[data-text='New subgroup']", visible: false)
+        end
+      end
+
+      context 'when subgroups are not supported' do
+        before do
+          allow(Group).to receive(:supports_nested_objects?) { false }
+          visit path
+        end
+
+        it 'allows creating subgroups' do
+          expect(page).not_to have_selector("li[data-text='New subgroup']", visible: false)
+        end
       end
     end
   end
