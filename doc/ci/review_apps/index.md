@@ -172,6 +172,8 @@ To use the feedback form, you will need to create a [personal access token](../.
 
 Paste the token into the feedback box, when prompted. If you select **Remember me**, your browser stores the token so that future visits to Review Apps at the same URL will not require you to re-enter the token. To clear the token, click **Log out**.
 
+Because tokens must be entered on a per-domain basis and they can only be accessed once, we recommend saving the token to your password manager specifically for the purpose of Visual Reviews. This way, you will not need to create additional tokens for each merge request.
+
 Comments can make use of all the [Markdown annotations](../../user/markdown.md)
 available in merge request comment boxes.
 
