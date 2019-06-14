@@ -147,14 +147,14 @@ export default class MergeRequestTabs {
       e.stopImmediatePropagation();
       e.preventDefault();
 
-      const { action } = e.currentTarget.dataset;
+      const { action } = e.currentTarget.dataset || {};
 
-      if (action) {
-        const href = e.currentTarget.getAttribute('href');
-        this.tabShown(action, href);
-      } else if (isMetaClick(e)) {
+      if (isMetaClick(e)) {
         const targetLink = e.currentTarget.getAttribute('href');
         window.open(targetLink, '_blank');
+      } else if (action) {
+        const href = e.currentTarget.getAttribute('href');
+        this.tabShown(action, href);
       }
     }
   }
