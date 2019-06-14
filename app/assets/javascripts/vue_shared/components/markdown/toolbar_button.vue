@@ -66,6 +66,7 @@ export default {
     class="toolbar-btn js-md"
     tabindex="-1"
     data-container="body"
+    @click="() => $emit('click')"
   >
     <icon :name="icon" />
   </button>

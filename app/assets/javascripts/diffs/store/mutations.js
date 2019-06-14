@@ -11,8 +11,8 @@ import * as types from './mutation_types';
 
 export default {
   [types.SET_BASE_CONFIG](state, options) {
-    const { endpoint, projectPath } = options;
-    Object.assign(state, { endpoint, projectPath });
+    const { endpoint, projectPath, dismissEndpoint, showSuggestPopover } = options;
+    Object.assign(state, { endpoint, projectPath, dismissEndpoint, showSuggestPopover });
   },
 
   [types.SET_LOADING](state, isLoading) {
@@ -301,5 +301,8 @@ export default {
     const file = state.diffFiles.find(f => f.file_path === filePath);
 
     file.renderingLines = !file.renderingLines;
+  },
+  [types.SET_SHOW_SUGGEST_POPOVER](state) {
+    state.showSuggestPopover = false;
   },
 };

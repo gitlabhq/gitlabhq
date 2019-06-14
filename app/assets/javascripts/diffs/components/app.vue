@@ -69,6 +69,16 @@ export default {
       required: false,
       default: false,
     },
+    dismissEndpoint: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    showSuggestPopover: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     const treeWidth =
@@ -141,7 +151,12 @@ export default {
     showTreeList: 'adjustView',
   },
   mounted() {
-    this.setBaseConfig({ endpoint: this.endpoint, projectPath: this.projectPath });
+    this.setBaseConfig({
+      endpoint: this.endpoint,
+      projectPath: this.projectPath,
+      dismissEndpoint: this.dismissEndpoint,
+      showSuggestPopover: this.showSuggestPopover,
+    });
 
     if (this.shouldShow) {
       this.fetchData();

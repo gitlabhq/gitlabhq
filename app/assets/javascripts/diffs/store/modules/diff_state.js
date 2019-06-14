@@ -28,4 +28,6 @@ export default () => ({
   renderTreeList: true,
   showWhitespace: true,
   fileFinderVisible: false,
+  dismissEndpoint: '',
+  showSuggestPopover: true,
 });

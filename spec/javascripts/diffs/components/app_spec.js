@@ -37,6 +37,8 @@ describe('diffs/components/app', () => {
         projectPath: 'namespace/project',
         currentUser: {},
         changesEmptyStateIllustration: '',
+        dismissEndpoint: '',
+        showSuggestPopover: true,
         ...props,
       },
       store,

@@ -28,6 +28,18 @@ describe 'User comments on a diff', :js do
   end
 
   context 'single suggestion note' do
+    it 'hides suggestion popover' do
+      click_diff_line(find("[id='#{sample_compare.changes[1][:line_code]}']"))
+
+      expect(page).to have_selector('.diff-suggest-popover')
+
+      page.within('.diff-suggest-popover') do
+        click_button 'Got it'
+      end
+
+      expect(page).not_to have_selector('.diff-suggest-popover')
+    end
+
     it 'suggestion is presented' do
       click_diff_line(find("[id='#{sample_compare.changes[1][:line_code]}']"))
 

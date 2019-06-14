@@ -42,6 +42,7 @@ export default {
       noteableData: state => state.notes.noteableData,
       diffViewType: state => state.diffs.diffViewType,
     }),
+    ...mapState('diffs', ['showSuggestPopover']),
     ...mapGetters('diffs', ['getDiffFileByHash']),
     ...mapGetters([
       'isLoggedIn',
@@ -80,7 +81,12 @@ export default {
     }
   },
   methods: {
-    ...mapActions('diffs', ['cancelCommentForm', 'assignDiscussionsToDiff', 'saveDiffDiscussion']),
+    ...mapActions('diffs', [
+      'cancelCommentForm',
+      'assignDiscussionsToDiff',
+      'saveDiffDiscussion',
+      'setSuggestPopoverDismissed',
+    ]),
     handleCancelCommentForm(shouldConfirm, isDirty) {
       if (shouldConfirm && isDirty) {
         const msg = s__('Notes|Are you sure you want to cancel creating this comment?');
@@ -125,11 +131,13 @@ export default {
       :line="line"
       :help-page-path="helpPagePath"
       :diff-file="diffFile"
+      :show-suggest-popover="showSuggestPopover"
       save-button-title="Comment"
       class="diff-comment-form"
       @handleFormUpdateAddToReview="addToReview"
       @cancelForm="handleCancelCommentForm"
       @handleFormUpdate="handleSaveNote"
+      @handleSuggestDismissed="setSuggestPopoverDismissed"
     />
   </div>
 </template>
