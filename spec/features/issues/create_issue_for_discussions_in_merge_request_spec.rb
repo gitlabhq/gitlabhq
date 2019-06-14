@@ -40,7 +40,7 @@ describe 'Resolving all open threads in a merge request from an issue', :js do
         find(resolve_all_discussions_link_selector).click
       end
 
-      it_behaves_like 'creating an issue for a discussion'
+      it_behaves_like 'creating an issue for a thread'
     end
 
     context 'for a project where all threads need to be resolved before merging' do
@@ -79,7 +79,7 @@ describe 'Resolving all open threads in a merge request from an issue', :js do
             page.click_link 'Create an issue to resolve them later', href: new_project_issue_path(project, merge_request_to_resolve_discussions_of: merge_request.iid)
           end
 
-          it_behaves_like 'creating an issue for a discussion'
+          it_behaves_like 'creating an issue for a thread'
         end
       end
     end
