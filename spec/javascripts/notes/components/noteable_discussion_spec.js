@@ -91,9 +91,9 @@ describe('noteable_discussion component', () => {
     });
 
     it('does not render jump to thread button', () => {
-      expect(
-        wrapper.find('*[data-original-title="Jump to next unresolved thread"]').exists(),
-      ).toBe(false);
+      expect(wrapper.find('*[data-original-title="Jump to next unresolved thread"]').exists()).toBe(
+        false,
+      );
     });
   });
 
@@ -114,9 +114,7 @@ describe('noteable_discussion component', () => {
 
             const nextDiscussionId = discussion2.id;
 
-            setFixtures(
-              `<div class="discussion" data-discussion-id="${nextDiscussionId}"></div>`,
-            );
+            setFixtures(`<div class="discussion" data-discussion-id="${nextDiscussionId}"></div>`);
 
             wrapper.vm.jumpToNextDiscussion();
 
