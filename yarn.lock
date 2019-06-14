@@ -700,10 +700,10 @@
   dependencies:
     requireindex "~1.1.0"
 
-"@gitlab/svgs@^1.63.0":
-  version "1.63.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.63.0.tgz#9dd544026d203e4ce6efed72b05db68f710c4d49"
-  integrity sha512-YztrReFTg31B7v5wtUC5j15KHNcMebtW+kACytEU42XomMaIwk4USIbygqWlq0VRHA2VHJrHApfJHIjxiCCQcA==
+"@gitlab/svgs@^1.64.0":
+  version "1.64.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.64.0.tgz#1370bcbe9ca0ecc9fb919956cd4241bea090ddd3"
+  integrity sha512-y9p73NGDnQJc18Dtk0oJfgxedancBT6UceATcnZMceLV6iWylzdMbQWxCl4O2aBXwsAoCrLUJQ9jhRkbNicYNA==
 
 "@gitlab/ui@^4.0.0":
   version "4.0.0"

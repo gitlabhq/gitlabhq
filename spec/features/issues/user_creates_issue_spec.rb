@@ -92,6 +92,19 @@ describe "User creates issue" do
           .and have_content(label_titles.first)
       end
     end
+
+    context "with Zoom link" do
+      it "adds Zoom button" do
+        issue_title = "Issue containing Zoom meeting link"
+        zoom_url = "https://gitlab.zoom.us/j/123456789"
+
+        fill_in("Title", with: issue_title)
+        fill_in("Description", with: zoom_url)
+        click_button("Submit issue")
+
+        expect(page).to have_link('Join Zoom meeting', href: zoom_url)
+      end
+    end
   end
 
   context "when signed in as user with special characters in their name" do
