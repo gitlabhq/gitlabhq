@@ -14,7 +14,7 @@
       position: -webkit-sticky;
       position: sticky;
       top: $mr-file-header-top;
-      z-index: 102;
+      z-index: 220;
 
       &::before {
         content: '';
@@ -1120,5 +1120,17 @@ table.code {
   &:active,
   &:focus {
     outline: 0;
+  }
+}
+
+.diff-suggest-popover {
+  &.popover {
+    width: 250px;
+    min-width: 250px;
+    z-index: 210;
+  }
+
+  .popover-header {
+    display: none;
   }
 }

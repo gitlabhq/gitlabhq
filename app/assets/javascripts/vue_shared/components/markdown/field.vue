@@ -67,6 +67,11 @@ export default {
       required: false,
       default: '',
     },
+    showSuggestPopover: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -194,8 +199,10 @@ export default {
       :preview-markdown="previewMarkdown"
       :line-content="lineContent"
       :can-suggest="canSuggest"
+      :show-suggest-popover="showSuggestPopover"
       @preview-markdown="showPreviewTab"
       @write-markdown="showWriteTab"
+      @handleSuggestDismissed="() => $emit('handleSuggestDismissed')"
     />
     <div v-show="!previewMarkdown" class="md-write-holder">
       <div class="zen-backdrop">

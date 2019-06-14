@@ -22,13 +22,13 @@ describe('Markdown field header component', () => {
       'Add bold text',
       'Add italic text',
       'Insert a quote',
+      'Insert suggestion',
       'Insert code',
       'Add a link',
       'Add a bullet list',
       'Add a numbered list',
       'Add a task list',
       'Add a table',
-      'Insert suggestion',
       'Go full screen',
     ];
     const elements = vm.$el.querySelectorAll('.toolbar-btn');
