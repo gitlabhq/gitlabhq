@@ -17,7 +17,10 @@ will be unassigned automatically.
 GitLab [administrators](../administration/index.md) receive all permissions.
 
 To add or import a user, you can follow the
-[project members documentation](../user/project/members/index.md).
+[project members documentation](project/members/index.md).
+
+For information on eligible approvers for Merge Requests, see
+[Eligible approvers](project/merge_requests/merge_request_approvals.md#eligible-approvers).
 
 ## Principles behind permissions
 
