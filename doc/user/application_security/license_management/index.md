@@ -168,6 +168,23 @@ to explicitly add `-DskipTests` to your options.
 If you still need to run tests during `mvn install`, add `-DskipTests=false` to
 `MAVEN_CLI_OPTS`.
 
+### Selecting the version of Python
+
+> [Introduced](https://gitlab.com/gitlab-org/security-products/license-management/merge_requests/36) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.0.
+
+License Management uses Python 2.7 and pip 10.0 by default.
+If your project requires Python 3, you can switch to Python 3.5 and pip 19.1
+by setting the `LM_PYTHON_VERSION` environment variable to `3`.
+
+```yaml
+include:
+  template: License-Management.gitlab-ci.yml
+
+license_management:
+  variables:
+    LM_PYTHON_VERSION: 3
+```
+
 ### Manual job definition for GitLab 11.5 and later
 
 For GitLab 11.5 and GitLab Runner 11.5 and later, the following `license_management`
