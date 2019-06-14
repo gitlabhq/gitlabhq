@@ -1,27 +1,41 @@
 # frozen_string_literal: true
 
 require 'asciidoctor'
-require 'asciidoctor/converter/html5'
-require "asciidoctor-plantuml"
+require 'asciidoctor-plantuml'
+require 'asciidoctor/extensions'
+require 'gitlab/asciidoc/html5_converter'
 
 module Gitlab
   # Parser/renderer for the AsciiDoc format that uses Asciidoctor and filters
   # the resulting HTML through HTML pipeline filters.
   module Asciidoc
-    DEFAULT_ADOC_ATTRS = [
-      'showtitle', 'idprefix=user-content-', 'idseparator=-', 'env=gitlab',
-      'env-gitlab', 'source-highlighter=html-pipeline', 'icons=font',
-      'outfilesuffix=.adoc'
-    ].freeze
+    MAX_INCLUDE_DEPTH = 5
+    DEFAULT_ADOC_ATTRS = {
+        'showtitle' => true,
+        'idprefix' => 'user-content-',
+        'idseparator' => '-',
+        'env' => 'gitlab',
+        'env-gitlab' => '',
+        'source-highlighter' => 'html-pipeline',
+        'icons' => 'font',
+        'outfilesuffix' => '.adoc',
+        'max-include-depth' => MAX_INCLUDE_DEPTH
+    }.freeze
 
     # Public: Converts the provided Asciidoc markup into HTML.
     #
     # input         - the source text in Asciidoc format
+    # context       - :commit, :project, :ref, :requested_path
     #
     def self.render(input, context)
+      extensions = proc do
+        include_processor ::Gitlab::Asciidoc::IncludeProcessor.new(context)
+      end
+
       asciidoc_opts = { safe: :secure,
                         backend: :gitlab_html5,
-                        attributes: DEFAULT_ADOC_ATTRS }
+                        attributes: DEFAULT_ADOC_ATTRS,
+                        extensions: extensions }
 
       context[:pipeline] = :ascii_doc
 
@@ -38,30 +52,6 @@ module Gitlab
         conf.svg_enable = Gitlab::CurrentSettings.plantuml_enabled
         conf.png_enable = Gitlab::CurrentSettings.plantuml_enabled
         conf.txt_enable = false
-      end
-    end
-
-    class Html5Converter < Asciidoctor::Converter::Html5Converter
-      extend Asciidoctor::Converter::Config
-
-      register_for 'gitlab_html5'
-
-      def stem(node)
-        return super unless node.style.to_sym == :latexmath
-
-        %(<pre#{id_attribute(node)} data-math-style="display"><code>#{node.content}</code></pre>)
-      end
-
-      def inline_quoted(node)
-        return super unless node.type.to_sym == :latexmath
-
-        %(<code#{id_attribute(node)} data-math-style="inline">#{node.text}</code>)
-      end
-
-      private
-
-      def id_attribute(node)
-        node.id ? %( id="#{node.id}") : nil
       end
     end
   end
