@@ -164,10 +164,10 @@ export const fetchPrometheusMetrics = ({ state, commit, dispatch }, params) => {
 };
 
 export const fetchDeploymentsData = ({ state, dispatch }) => {
-  if (!state.deploymentEndpoint) {
+  if (!state.deploymentsEndpoint) {
     return Promise.resolve([]);
   }
-  return backOffRequest(() => axios.get(state.deploymentEndpoint))
+  return backOffRequest(() => axios.get(state.deploymentsEndpoint))
     .then(resp => resp.data)
     .then(response => {
       if (!response || !response.deployments) {

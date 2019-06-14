@@ -20,7 +20,7 @@ const propsData = {
   tagsPath: '/path/to/tags',
   projectPath: '/path/to/project',
   metricsEndpoint: mockApiEndpoint,
-  deploymentEndpoint: null,
+  deploymentsEndpoint: null,
   emptyGettingStartedSvgPath: '/path/to/getting-started.svg',
   emptyLoadingSvgPath: '/path/to/loading.svg',
   emptyNoDataSvgPath: '/path/to/no-data.svg',
