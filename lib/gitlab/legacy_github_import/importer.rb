@@ -55,7 +55,12 @@ module Gitlab
         import_pull_requests
         import_issues
         import_comments(:issues)
-        import_comments(:pull_requests)
+
+        # Gitea doesn't have an API endpoint for pull requests comments
+        unless project.gitea_import?
+          import_comments(:pull_requests)
+        end
+
         import_wiki
 
         # Gitea doesn't have a Release API yet
