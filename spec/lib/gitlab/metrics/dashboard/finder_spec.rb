@@ -49,7 +49,7 @@ describe Gitlab::Metrics::Dashboard::Finder, :use_clean_rails_memory_store_cachi
 
   describe '.find_all_paths' do
     let(:all_dashboard_paths) { described_class.find_all_paths(project) }
-    let(:system_dashboard) { { path: system_dashboard_path, default: true } }
+    let(:system_dashboard) { { path: system_dashboard_path, display_name: 'Default', default: true } }
 
     it 'includes only the system dashboard by default' do
       expect(all_dashboard_paths).to eq([system_dashboard])
@@ -60,7 +60,7 @@ describe Gitlab::Metrics::Dashboard::Finder, :use_clean_rails_memory_store_cachi
       let(:project) { project_with_dashboard(dashboard_path) }
 
       it 'includes system and project dashboards' do
-        project_dashboard = { path: dashboard_path, default: false }
+        project_dashboard = { path: dashboard_path, display_name: 'test.yml', default: false }
 
         expect(all_dashboard_paths).to contain_exactly(system_dashboard, project_dashboard)
       end
