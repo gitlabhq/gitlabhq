@@ -70,7 +70,7 @@ export default {
       type: String,
       required: true,
     },
-    deploymentEndpoint: {
+    deploymentsEndpoint: {
       type: String,
       required: false,
       default: null,
@@ -148,7 +148,7 @@ export default {
     this.setEndpoints({
       metricsEndpoint: this.metricsEndpoint,
       environmentsEndpoint: this.environmentsEndpoint,
-      deploymentsEndpoint: this.deploymentEndpoint,
+      deploymentsEndpoint: this.deploymentsEndpoint,
       dashboardEndpoint: this.dashboardEndpoint,
     });
 
@@ -280,9 +280,8 @@ export default {
           <gl-button
             v-gl-modal-directive="$options.addMetric.modalId"
             class="js-add-metric-button text-success border-success"
+            >{{ $options.addMetric.title }}</gl-button
           >
-            {{ $options.addMetric.title }}
-          </gl-button>
           <gl-modal
             ref="addMetricModal"
             :modal-id="$options.addMetric.modalId"
@@ -296,16 +295,13 @@ export default {
               />
             </form>
             <div slot="modal-footer">
-              <gl-button @click="hideAddMetricModal">
-                {{ __('Cancel') }}
-              </gl-button>
+              <gl-button @click="hideAddMetricModal">{{ __('Cancel') }}</gl-button>
               <gl-button
                 :disabled="!formIsValid"
                 variant="success"
                 @click="submitCustomMetricsForm"
+                >{{ __('Save changes') }}</gl-button
               >
-                {{ __('Save changes') }}
-              </gl-button>
             </div>
           </gl-modal>
         </div>

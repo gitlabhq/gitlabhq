@@ -51,9 +51,9 @@ describe('Monitoring store actions', () => {
     it('commits RECEIVE_DEPLOYMENTS_DATA_SUCCESS on error', done => {
       const dispatch = jasmine.createSpy();
       const { state } = store;
-      state.deploymentEndpoint = '/success';
+      state.deploymentsEndpoint = '/success';
 
-      mock.onGet(state.deploymentEndpoint).reply(200, {
+      mock.onGet(state.deploymentsEndpoint).reply(200, {
         deployments: deploymentData,
       });
 
@@ -68,9 +68,9 @@ describe('Monitoring store actions', () => {
     it('commits RECEIVE_DEPLOYMENTS_DATA_FAILURE on error', done => {
       const dispatch = jasmine.createSpy();
       const { state } = store;
-      state.deploymentEndpoint = '/error';
+      state.deploymentsEndpoint = '/error';
 
-      mock.onGet(state.deploymentEndpoint).reply(500);
+      mock.onGet(state.deploymentsEndpoint).reply(500);
 
       fetchDeploymentsData({ state, dispatch })
         .then(() => {
