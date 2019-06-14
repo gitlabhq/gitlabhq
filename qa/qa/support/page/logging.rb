@@ -125,7 +125,7 @@ module QA
           super
         end
 
-        def within_element(name)
+        def within_element(name, text: nil)
           log("within element :#{name}")
 
           element = super

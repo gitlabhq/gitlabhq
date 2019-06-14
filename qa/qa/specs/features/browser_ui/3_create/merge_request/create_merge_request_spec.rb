@@ -23,7 +23,7 @@ module QA
 
         expect(page).to have_content(merge_request_title)
         expect(page).to have_content(merge_request_description)
-        expect(page).to have_content(/Opened [\w\s]+ ago/)
+        expect(page).to have_content('Opened just now')
       end
 
       it 'user creates a new merge request with a milestone and label' do
@@ -41,7 +41,7 @@ module QA
           milestone.project = current_project
         end
 
-        new_label = Resource::Label.fabricate! do |label|
+        new_label = Resource::Label.fabricate_via_browser_ui! do |label|
           label.project = current_project
           label.title = 'qa-mr-test-label'
           label.description = 'Merge Request label'
@@ -62,7 +62,7 @@ module QA
         Page::MergeRequest::Show.perform do |merge_request|
           expect(merge_request).to have_content(merge_request_title)
           expect(merge_request).to have_content(merge_request_description)
-          expect(merge_request).to have_content(/Opened [\w\s]+ ago/)
+          expect(merge_request).to have_content('Opened just now')
           expect(merge_request).to have_assignee(gitlab_account_username)
           expect(merge_request).to have_label(new_label.title)
         end

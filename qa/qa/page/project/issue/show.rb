@@ -8,11 +8,6 @@ module QA
           include Page::Component::Issuable::Common
           include Page::Component::Note
 
-          view 'app/views/shared/notes/_form.html.haml' do
-            element :new_note_form, 'new-note' # rubocop:disable QA/ElementWithPattern
-            element :new_note_form, 'attr: :note' # rubocop:disable QA/ElementWithPattern
-          end
-
           view 'app/assets/javascripts/notes/components/comment_form.vue' do
             element :comment_button
             element :comment_input
@@ -25,6 +20,21 @@ module QA
 
           view 'app/assets/javascripts/notes/components/noteable_note.vue' do
             element :noteable_note_item
+          end
+
+          view 'app/helpers/dropdowns_helper.rb' do
+            element :dropdown_input_field
+          end
+
+          view 'app/views/shared/notes/_form.html.haml' do
+            element :new_note_form, 'new-note' # rubocop:disable QA/ElementWithPattern
+            element :new_note_form, 'attr: :note' # rubocop:disable QA/ElementWithPattern
+          end
+
+          view 'app/views/shared/issuable/_sidebar.html.haml' do
+            element :labels_block
+            element :edit_link_labels
+            element :dropdown_menu_labels
           end
 
           # Adds a comment to an issue
@@ -47,6 +57,10 @@ module QA
             end
           end
 
+          def select_all_activities_filter
+            select_filter_with_text('Show all activity')
+          end
+
           def select_comments_only_filter
             select_filter_with_text('Show comments only')
           end
@@ -55,8 +69,26 @@ module QA
             select_filter_with_text('Show history only')
           end
 
-          def select_all_activities_filter
-            select_filter_with_text('Show all activity')
+          def select_labels_and_refresh(labels)
+            click_element(:edit_link_labels)
+
+            labels.each do |label|
+              within_element(:dropdown_menu_labels, text: label) do
+                send_keys_to_element(:dropdown_input_field, [label, :enter])
+              end
+            end
+
+            click_body
+
+            labels.each do |label|
+              has_element?(:labels_block, text: label)
+            end
+
+            refresh
+          end
+
+          def text_of_labels_block
+            find_element(:labels_block)
           end
 
           private

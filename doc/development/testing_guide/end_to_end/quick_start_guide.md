@@ -357,13 +357,13 @@ In the following we describe the changes needed in each of the resource files me
 
 Now, let's make it possible to create an issue resource through the API.
 
-First, in the [issue resource](https://gitlab.com/gitlab-org/gitlab-ee/blob/d3584e80b4236acdf393d815d604801573af72cc/qa/qa/resource/issue.rb), let's expose its labels attribute.
+First, in the [issue resource](https://gitlab.com/gitlab-org/gitlab-ee/blob/d3584e80b4236acdf393d815d604801573af72cc/qa/qa/resource/issue.rb), let's expose its id and labels attributes.
 
-Add the following `attribute :labels` right above the [`attribute :title`](https://gitlab.com/gitlab-org/gitlab-ee/blob/d3584e80b4236acdf393d815d604801573af72cc/qa/qa/resource/issue.rb#L15).
+Add the following `attribute :id` and `attribute :labels` right above the [`attribute :title`](https://gitlab.com/gitlab-org/gitlab-ee/blob/d3584e80b4236acdf393d815d604801573af72cc/qa/qa/resource/issue.rb#L15).
 
-> This line is needed to allow for labels to be automatically added to an issue when fabricating it via API.
+> This line is needed to allow for the issue fabrication, and for labels to be automatically added to the issue when fabricating it via API.
 
-> We add the new line above the existing attribute to keep them alphabetically organized.
+> We add the attributes above the existing attribute to keep them alphabetically organized.
 
 Next, add the following code right below the [`fabricate!`](https://gitlab.com/gitlab-org/gitlab-ee/blob/d3584e80b4236acdf393d815d604801573af72cc/qa/qa/resource/issue.rb#L27) method.
 

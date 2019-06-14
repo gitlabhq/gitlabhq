@@ -135,9 +135,9 @@ describe QA::Support::Page::Logging do
   end
 
   it 'logs within_element' do
-    expect { subject.within_element(:element) }
+    expect { subject.within_element(:element, text: nil) }
       .to output(/within element :element/).to_stdout_from_any_process
-    expect { subject.within_element(:element) }
+    expect { subject.within_element(:element, text: nil) }
       .to output(/end within element :element/).to_stdout_from_any_process
   end
 
