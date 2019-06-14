@@ -3,6 +3,7 @@ module DiffPositionableNote
   extend ActiveSupport::Concern
 
   included do
+    delegate :on_text?, :on_image?, to: :position, allow_nil: true
     before_validation :set_original_position, on: :create
     before_validation :update_position, on: :create, if: :on_text?
 
@@ -26,14 +27,6 @@ module DiffPositionableNote
 
       super(new_position)
     end
-  end
-
-  def on_text?
-    position&.position_type == "text"
-  end
-
-  def on_image?
-    position&.position_type == "image"
   end
 
   def supported?

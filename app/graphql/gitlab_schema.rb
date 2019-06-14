@@ -7,8 +7,8 @@ class GitlabSchema < GraphQL::Schema
   AUTHENTICATED_COMPLEXITY = 250
   ADMIN_COMPLEXITY         = 300
 
-  DEFAULT_MAX_DEPTH = 10
-  AUTHENTICATED_MAX_DEPTH = 15
+  DEFAULT_MAX_DEPTH = 15
+  AUTHENTICATED_MAX_DEPTH = 20
 
   use BatchLoader::GraphQL
   use Gitlab::Graphql::Authorize
