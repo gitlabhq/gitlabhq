@@ -18,7 +18,7 @@
 
           .inline.discussion-headline-light
             = discussion.author.to_reference
-            started a discussion
+            started a thread
 
             - url = discussion_path(discussion)
             - if discussion.for_commit? && @noteable != discussion.noteable
