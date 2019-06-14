@@ -6141,19 +6141,19 @@ msgstr ""
 msgid "MergeRequests|commented on commit %{commitLink}"
 msgstr ""
 
-msgid "MergeRequests|started a discussion"
+msgid "MergeRequests|started a thread"
 msgstr ""
 
-msgid "MergeRequests|started a discussion on %{linkStart}an old version of the diff%{linkEnd}"
+msgid "MergeRequests|started a thread on %{linkStart}an old version of the diff%{linkEnd}"
 msgstr ""
 
-msgid "MergeRequests|started a discussion on %{linkStart}the diff%{linkEnd}"
+msgid "MergeRequests|started a thread on %{linkStart}the diff%{linkEnd}"
 msgstr ""
 
-msgid "MergeRequests|started a discussion on an outdated change in commit %{linkStart}%{commitId}%{linkEnd}"
+msgid "MergeRequests|started a thread on an outdated change in commit %{linkStart}%{commitId}%{linkEnd}"
 msgstr ""
 
-msgid "MergeRequests|started a discussion on commit %{linkStart}%{commitId}%{linkEnd}"
+msgid "MergeRequests|started a thread on commit %{linkStart}%{commitId}%{linkEnd}"
 msgstr ""
 
 msgid "MergeRequest| %{paragraphStart}changed the description %{descriptionChangedTimes} times %{timeDifferenceMinutes}%{paragraphEnd}"
@@ -9529,16 +9529,16 @@ msgstr ""
 msgid "Start date"
 msgstr ""
 
-msgid "Start discussion"
-msgstr ""
-
-msgid "Start discussion & close %{noteable_name}"
-msgstr ""
-
-msgid "Start discussion & reopen %{noteable_name}"
-msgstr ""
-
 msgid "Start the Runner!"
+msgstr ""
+
+msgid "Start thread"
+msgstr ""
+
+msgid "Start thread & close %{noteable_name}"
+msgstr ""
+
+msgid "Start thread & reopen %{noteable_name}"
 msgstr ""
 
 msgid "Started"
