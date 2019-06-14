@@ -187,6 +187,10 @@ module Gitlab
           )
         end
 
+        def section_to_class_name(section)
+          section.to_s.downcase.gsub(/[^a-z0-9]/, '-')
+        end
+
         def handle_new_line
           css_classes = []
 
@@ -208,8 +212,7 @@ module Gitlab
           section = scanner[3]
           line = scanner.matched[0...-5] # strips \r\033[0K
 
-          # generate section class
-          normalized_section = section.to_s.downcase.gsub(/[^a-z0-9]/, '-')
+          normalized_section = section_to_class_name(section)
 
           if action == "start"
             handle_section_start(normalized_section, timestamp, line)
