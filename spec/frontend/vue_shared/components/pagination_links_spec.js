@@ -1,59 +1,77 @@
-import Vue from 'vue';
+import { mount, createLocalVue } from '@vue/test-utils';
+import { GlPagination } from '@gitlab/ui';
 import PaginationLinks from '~/vue_shared/components/pagination_links.vue';
-import { s__ } from '~/locale';
-import mountComponent from '../../helpers/vue_mount_component_helper';
+import {
+  PREV,
+  NEXT,
+  LABEL_FIRST_PAGE,
+  LABEL_PREV_PAGE,
+  LABEL_NEXT_PAGE,
+  LABEL_LAST_PAGE,
+} from '~/vue_shared/components/pagination/constants';
+
+const localVue = createLocalVue();
 
 describe('Pagination links component', () => {
-  const paginationLinksComponent = Vue.extend(PaginationLinks);
-  const change = page => page;
   const pageInfo = {
     page: 3,
     perPage: 5,
     total: 30,
   };
   const translations = {
-    firstText: s__('Pagination|« First'),
-    prevText: s__('Pagination|Prev'),
-    nextText: s__('Pagination|Next'),
-    lastText: s__('Pagination|Last »'),
+    prevText: PREV,
+    nextText: NEXT,
+    labelFirstPage: LABEL_FIRST_PAGE,
+    labelPrevPage: LABEL_PREV_PAGE,
+    labelNextPage: LABEL_NEXT_PAGE,
+    labelLastPage: LABEL_LAST_PAGE,
   };
 
-  let paginationLinks;
+  let wrapper;
   let glPagination;
-  let destinationComponent;
+  let changeMock;
+
+  const createComponent = () => {
+    changeMock = jest.fn();
+    wrapper = mount(PaginationLinks, {
+      propsData: {
+        change: changeMock,
+        pageInfo,
+      },
+      localVue,
+      sync: false,
+    });
+  };
 
   beforeEach(() => {
-    paginationLinks = mountComponent(paginationLinksComponent, {
-      change,
-      pageInfo,
-    });
-    [glPagination] = paginationLinks.$children;
-    [destinationComponent] = glPagination.$children;
+    createComponent();
+    glPagination = wrapper.find(GlPagination);
   });
 
   afterEach(() => {
-    paginationLinks.$destroy();
+    wrapper.destroy();
   });
 
   it('should provide translated text to GitLab UI pagination', () => {
     Object.entries(translations).forEach(entry => {
-      expect(destinationComponent[entry[0]]).toBe(entry[1]);
+      expect(glPagination.vm[entry[0]]).toBe(entry[1]);
     });
   });
 
-  it('should pass change to GitLab UI pagination', () => {
-    expect(Object.is(glPagination.change, change)).toBe(true);
+  it('should call change when page changes', () => {
+    wrapper.find('a').trigger('click');
+    expect(changeMock).toHaveBeenCalled();
   });
 
   it('should pass page from pageInfo to GitLab UI pagination', () => {
-    expect(destinationComponent.value).toBe(pageInfo.page);
+    expect(glPagination.vm.value).toBe(pageInfo.page);
   });
 
   it('should pass per page from pageInfo to GitLab UI pagination', () => {
-    expect(destinationComponent.perPage).toBe(pageInfo.perPage);
+    expect(glPagination.vm.perPage).toBe(pageInfo.perPage);
   });
 
   it('should pass total items from pageInfo to GitLab UI pagination', () => {
-    expect(destinationComponent.totalRows).toBe(pageInfo.total);
+    expect(glPagination.vm.totalItems).toBe(pageInfo.total);
   });
 });

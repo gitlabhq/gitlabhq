@@ -6916,6 +6916,18 @@ msgstr ""
 msgid "Pages getting started guide"
 msgstr ""
 
+msgid "Pagination|Go to first page"
+msgstr ""
+
+msgid "Pagination|Go to last page"
+msgstr ""
+
+msgid "Pagination|Go to next page"
+msgstr ""
+
+msgid "Pagination|Go to previous page"
+msgstr ""
+
 msgid "Pagination|Last »"
 msgstr ""
 
