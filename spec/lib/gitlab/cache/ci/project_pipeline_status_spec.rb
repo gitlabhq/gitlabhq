@@ -26,6 +26,7 @@ describe Gitlab::Cache::Ci::ProjectPipelineStatus, :clean_gitlab_redis_cache do
       end
 
       it 'loads 10 projects without hitting Gitaly call limit', :request_store do
+        allow(Gitlab::GitalyClient).to receive(:can_access_disk?).and_return(false)
         projects = Gitlab::GitalyClient.allow_n_plus_1_calls do
           (1..10).map { create(:project, :repository) }
         end

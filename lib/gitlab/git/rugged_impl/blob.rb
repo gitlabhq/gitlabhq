@@ -11,10 +11,11 @@ module Gitlab
       module Blob
         module ClassMethods
           extend ::Gitlab::Utils::Override
+          include Gitlab::Git::RuggedImpl::UseRugged
 
           override :tree_entry
           def tree_entry(repository, sha, path, limit)
-            if Feature.enabled?(:rugged_tree_entry)
+            if use_rugged?(repository, :rugged_tree_entry)
               rugged_tree_entry(repository, sha, path, limit)
             else
               super
