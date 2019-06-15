@@ -157,7 +157,7 @@ module GraphqlHelpers
     when Array # multiplexed queries
       json_response.map { |response| response['errors'] }
     else
-      raise "Unkown GraphQL response type #{json_response.class}"
+      raise "Unknown GraphQL response type #{json_response.class}"
     end
   end
 

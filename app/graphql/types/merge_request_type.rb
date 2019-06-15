@@ -53,5 +53,7 @@ module Types
     field :head_pipeline, Types::Ci::PipelineType, null: true, method: :actual_head_pipeline
     field :pipelines, Types::Ci::PipelineType.connection_type,
           resolver: Resolvers::MergeRequestPipelinesResolver
+
+    field :task_completion_status, Types::TaskCompletionStatus, null: false
   end
 end
