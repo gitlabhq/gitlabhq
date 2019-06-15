@@ -37,7 +37,7 @@ class NotesFinder
     target_iid  = @params[:target_iid]
 
     return @target = nil unless target_type
-    return @target = nil unless (target_id || target_iid)
+    return @target = nil unless target_id || target_iid
 
     @target =
       if target_type == "commit"
