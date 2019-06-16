@@ -23,6 +23,15 @@ RSpec.shared_context 'GroupPolicy context' do
       create_projects
       read_cluster create_cluster update_cluster admin_cluster add_cluster
     ]
+    [
+      :create_projects,
+      :read_cluster,
+      :create_cluster,
+      :update_cluster,
+      :admin_cluster,
+      :add_cluster,
+      (Gitlab::Database.postgresql? ? :create_subgroup : nil)
+    ].compact
   end
   let(:owner_permissions) do
     [
@@ -30,8 +39,7 @@ RSpec.shared_context 'GroupPolicy context' do
       :admin_namespace,
       :admin_group_member,
       :change_visibility_level,
-      :set_note_created_at,
-      (Gitlab::Database.postgresql? ? :create_subgroup : nil)
+      :set_note_created_at
     ].compact
   end
 
