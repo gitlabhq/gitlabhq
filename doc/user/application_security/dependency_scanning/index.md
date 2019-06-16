@@ -384,7 +384,7 @@ in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.0.
 
 An additional benefit of Dependency Scanning is the ability to get a list of your project's dependencies with their versions. 
 
-This list can be generated only for [supported languages and package managers](#supported-languages-and-package-managers).
+This list can be generated only for [languages and package managers](#supported-languages-and-package-managers) supported by [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium/general).
 
 To see the generated dependency list, navigate to the Dependency List page under your project's left sidebar menu **Project > Dependency List**.
 
