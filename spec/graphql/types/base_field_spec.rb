@@ -22,6 +22,24 @@ describe Types::BaseField do
       expect(field.to_graphql.complexity).to eq 1
     end
 
+    describe '#base_complexity' do
+      context 'with no gitaly calls' do
+        it 'defaults to 1' do
+          field = described_class.new(name: 'test', type: GraphQL::STRING_TYPE, null: true)
+
+          expect(field.base_complexity).to eq 1
+        end
+      end
+
+      context 'with a gitaly call' do
+        it 'adds 1 to the default value' do
+          field = described_class.new(name: 'test', type: GraphQL::STRING_TYPE, null: true, calls_gitaly: true)
+
+          expect(field.base_complexity).to eq 2
+        end
+      end
+    end
+
     it 'has specified value' do
       field = described_class.new(name: 'test', type: GraphQL::STRING_TYPE, null: true, complexity: 12)
 
@@ -49,6 +67,69 @@ describe Types::BaseField do
 
           expect(field.to_graphql.complexity.call({}, {}, 2)).to eq 2
           expect(field.to_graphql.complexity.call({}, { first: 50 }, 2)).to eq 2
+        end
+      end
+    end
+
+    context 'calls_gitaly' do
+      context 'for fields with a resolver' do
+        it 'adds 1 if true' do
+          field = described_class.new(name: 'test', type: GraphQL::STRING_TYPE, null: true, calls_gitaly: true)
+
+          expect(field.to_graphql.complexity).to eq 2
+        end
+      end
+
+      context 'for fields without a resolver' do
+        it 'adds 1 if true' do
+          field = described_class.new(name: 'test', type: GraphQL::STRING_TYPE, null: true, calls_gitaly: true)
+
+          expect(field.to_graphql.complexity).to eq 2
+        end
+      end
+
+      it 'defaults to false' do
+        field = described_class.new(name: 'test', type: GraphQL::STRING_TYPE, null: true)
+
+        expect(field.base_complexity).to eq Types::BaseField::DEFAULT_COMPLEXITY
+      end
+
+      it 'is overridden by declared complexity value' do
+        field = described_class.new(name: 'test', type: GraphQL::STRING_TYPE, null: true, calls_gitaly: true, complexity: 12)
+
+        expect(field.to_graphql.complexity).to eq 12
+      end
+    end
+
+    describe '#calls_gitaly_check' do
+      let(:gitaly_field) { described_class.new(name: 'test', type: GraphQL::STRING_TYPE, null: true, calls_gitaly: true) }
+      let(:no_gitaly_field) { described_class.new(name: 'test', type: GraphQL::STRING_TYPE, null: true, calls_gitaly: false) }
+
+      context 'if there are no Gitaly calls' do
+        before do
+          allow(Gitlab::GitalyClient).to receive(:get_request_count).and_return(0)
+        end
+
+        it 'does not raise an error if calls_gitaly is false' do
+          expect { no_gitaly_field.send(:calls_gitaly_check) }.not_to raise_error
+        end
+
+        it 'raises an error if calls_gitaly: true appears' do
+          expect { gitaly_field.send(:calls_gitaly_check) }.to raise_error(/please add `calls_gitaly: true`/)
+        end
+      end
+
+      context 'if there is at least 1 Gitaly call' do
+        before do
+          allow(Gitlab::GitalyClient).to receive(:get_request_count).and_return(1)
+        end
+
+        it 'does not raise an error if calls_gitaly is true' do
+          expect { gitaly_field.send(:calls_gitaly_check) }.not_to raise_error
+        end
+
+        it 'raises an error if calls_gitaly is not decalared' do
+          expect { no_gitaly_field.send(:calls_gitaly_check) }.to raise_error(/please remove `calls_gitaly: true`/)
         end
       end
     end

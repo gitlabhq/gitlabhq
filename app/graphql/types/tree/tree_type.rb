@@ -15,9 +15,9 @@ module Types
         Gitlab::Graphql::Representation::TreeEntry.decorate(obj.trees, obj.repository)
       end
 
-      field :submodules, Types::Tree::SubmoduleType.connection_type, null: false
+      field :submodules, Types::Tree::SubmoduleType.connection_type, null: false, calls_gitaly: true
 
-      field :blobs, Types::Tree::BlobType.connection_type, null: false, resolve: -> (obj, args, ctx) do
+      field :blobs, Types::Tree::BlobType.connection_type, null: false, calls_gitaly: true, resolve: -> (obj, args, ctx) do
         Gitlab::Graphql::Representation::TreeEntry.decorate(obj.blobs, obj.repository)
       end
       # rubocop: enable Graphql/AuthorizeTypes

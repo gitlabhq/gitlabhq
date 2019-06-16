@@ -26,7 +26,7 @@ module Types
     field :web_url, GraphQL::STRING_TYPE, null: true
 
     field :star_count, GraphQL::INT_TYPE, null: false
-    field :forks_count, GraphQL::INT_TYPE, null: false
+    field :forks_count, GraphQL::INT_TYPE, null: false, calls_gitaly: true # 4 times
 
     field :created_at, Types::TimeType, null: true
     field :last_activity_at, Types::TimeType, null: true

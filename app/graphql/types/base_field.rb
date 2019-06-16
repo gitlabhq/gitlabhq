@@ -4,12 +4,21 @@ module Types
   class BaseField < GraphQL::Schema::Field
     prepend Gitlab::Graphql::Authorize
 
+    attr_reader :calls_gitaly
+
     DEFAULT_COMPLEXITY = 1
 
     def initialize(*args, **kwargs, &block)
+      @calls_gitaly = !!kwargs.delete(:calls_gitaly)
       kwargs[:complexity] ||= field_complexity(kwargs[:resolver_class])
 
       super(*args, **kwargs, &block)
+    end
+
+    def base_complexity
+      complexity = DEFAULT_COMPLEXITY
+      complexity += 1 if @calls_gitaly
+      complexity
     end
 
     private
@@ -18,7 +27,7 @@ module Types
       if resolver_class
         field_resolver_complexity
       else
-        DEFAULT_COMPLEXITY
+        base_complexity
       end
     end
 
@@ -44,6 +53,18 @@ module Types
 
         complexity.to_i
       end
+    end
+
+    def calls_gitaly_check
+      # Will inform you if :calls_gitaly should be true or false based on the number of Gitaly calls
+      # involved with the request.
+      if @calls_gitaly && Gitlab::GitalyClient.get_request_count == 0
+        raise "Gitaly is called for field '#{name}' - please add `calls_gitaly: true` to the field declaration"
+      elsif !@calls_gitaly && Gitlab::GitalyClient.get_request_count > 0
+        raise "Gitaly not called for field '#{name}' - please remove `calls_gitaly: true` from the field declaration"
+      end
+    rescue => e
+      Gitlab::Sentry.track_exception(e)
     end
   end
 end
