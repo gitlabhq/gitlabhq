@@ -2,6 +2,7 @@
 
 class TeamcityService < CiService
   include ReactiveService
+  include ServicePushDataValidations
 
   prop_accessor :teamcity_url, :build_type, :username, :password
 
@@ -89,19 +90,25 @@ class TeamcityService < CiService
   end
 
   def execute(data)
-    return unless supported_events.include?(data[:object_kind])
-
     case data[:object_kind]
     when 'push'
-      branch = Gitlab::Git.ref_name(data[:ref])
-      post_to_build_queue(data, branch) if push_valid?(data)
+      execute_push(data)
     when 'merge_request'
-      branch = data[:object_attributes][:source_branch]
-      post_to_build_queue(data, branch) if merge_request_valid?(data)
+      execute_merge_request(data)
     end
   end
 
   private
+
+  def execute_push(data)
+    branch = Gitlab::Git.ref_name(data[:ref])
+    post_to_build_queue(data, branch) if push_valid?(data)
+  end
+
+  def execute_merge_request(data)
+    branch = data[:object_attributes][:source_branch]
+    post_to_build_queue(data, branch) if merge_request_valid?(data)
+  end
 
   def read_build_page(response)
     if response.code != 200
@@ -158,28 +165,5 @@ class TeamcityService < CiService
 
   def basic_auth
     { username: username, password: password }
-  end
-
-  def push_valid?(data)
-    data[:total_commits_count] > 0 &&
-      !branch_removed?(data) &&
-      no_open_merge_requests?(data)
-  end
-
-  def merge_request_valid?(data)
-    data.dig(:object_attributes, :state) == 'opened' &&
-      MergeRequest.state_machines[:merge_status].check_state?(data.dig(:object_attributes, :merge_status))
-  end
-
-  def branch_removed?(data)
-    Gitlab::Git.blank_ref?(data[:after])
-  end
-
-  def no_open_merge_requests?(data)
-    !project.merge_requests
-      .opened
-      .from_project(project)
-      .from_source_branches(Gitlab::Git.ref_name(data[:ref]))
-      .exists?
   end
 end

@@ -7,10 +7,11 @@ describe TeamcityService, :use_clean_rails_memory_store_caching do
   include StubRequests
 
   let(:teamcity_url) { 'http://gitlab.com/teamcity' }
+  let(:project) { create(:project) }
 
   subject(:service) do
     described_class.create(
-      project: create(:project),
+      project: project,
       properties: {
         teamcity_url: teamcity_url,
         username: 'mic',
@@ -225,13 +226,19 @@ describe TeamcityService, :use_clean_rails_memory_store_caching do
       end
 
       it 'returns nil when ref is blank' do
-        data[:after] = "0000000000000000000000000000000000000000"
+        data[:after] = Gitlab::Git::BLANK_SHA
 
         expect(service.execute(data)).to be_nil
       end
 
       it 'returns nil when there is no content' do
         data[:total_commits_count] = 0
+
+        expect(service.execute(data)).to be_nil
+      end
+
+      it 'returns nil when a merge request is opened for the same ref' do
+        create(:merge_request, source_project: project, source_branch: 'dev-123_branch')
 
         expect(service.execute(data)).to be_nil
       end
@@ -264,8 +271,8 @@ describe TeamcityService, :use_clean_rails_memory_store_caching do
         expect(service.execute(data)).to be_nil
       end
 
-      it 'returns nil when merge request is not unchecked or cannot_be_merged_recheck' do
-        data[:object_attributes][:merge_status] = 'checked'
+      it 'returns nil unless merge request is marked as unchecked' do
+        data[:object_attributes][:merge_status] = 'can_be_merged'
 
         expect(service.execute(data)).to be_nil
       end
