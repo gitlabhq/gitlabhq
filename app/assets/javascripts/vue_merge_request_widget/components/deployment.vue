@@ -49,6 +49,7 @@ export default {
       required: false,
       default: () => ({
         sourceProjectId: '',
+        sourceProjectPath: '',
         mergeRequestId: '',
         appUrl: '',
       }),

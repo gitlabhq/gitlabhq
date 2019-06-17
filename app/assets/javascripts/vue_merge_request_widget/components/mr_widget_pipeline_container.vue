@@ -53,6 +53,7 @@ export default {
         appUrl: this.mr.appUrl,
         mergeRequestId: this.mr.iid,
         sourceProjectId: this.mr.sourceProjectId,
+        sourceProjectPath: this.mr.sourceProjectFullPath,
       };
     },
     pipeline() {
