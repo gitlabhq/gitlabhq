@@ -103,6 +103,20 @@ describe Project do
       expect(described_class.reflect_on_association(:merge_requests).has_inverse?).to eq(:target_project)
     end
 
+    it 'has a distinct has_many :lfs_objects relation through lfs_objects_projects' do
+      project = create(:project)
+      lfs_object = create(:lfs_object)
+      [:project, :design].each do |repository_type|
+        create(:lfs_objects_project, project: project,
+                                     lfs_object: lfs_object,
+                                     repository_type: repository_type)
+      end
+
+      expect(project.lfs_objects_projects.size).to eq(2)
+      expect(project.lfs_objects.size).to eq(1)
+      expect(project.lfs_objects.to_a).to eql([lfs_object])
+    end
+
     context 'after initialized' do
       it "has a project_feature" do
         expect(described_class.new.project_feature).to be_present

@@ -5,7 +5,7 @@ module Files
     UPDATE_FILE_ACTIONS = %w(update move delete chmod).freeze
 
     def create_commit!
-      transformer = Lfs::FileTransformer.new(project, @branch_name)
+      transformer = Lfs::FileTransformer.new(project, repository, @branch_name)
 
       actions = actions_after_lfs_transformation(transformer, params[:actions])
       actions = transform_move_actions(actions)

@@ -3,6 +3,20 @@
 require 'spec_helper'
 
 describe LfsObject do
+  it 'has a distinct has_many :projects relation through lfs_objects_projects' do
+    lfs_object = create(:lfs_object)
+    project = create(:project)
+    [:project, :design].each do |repository_type|
+      create(:lfs_objects_project, project: project,
+                                   lfs_object: lfs_object,
+                                   repository_type: repository_type)
+    end
+
+    expect(lfs_object.lfs_objects_projects.size).to eq(2)
+    expect(lfs_object.projects.size).to eq(1)
+    expect(lfs_object.projects.to_a).to eql([project])
+  end
+
   describe '#local_store?' do
     it 'returns true when file_store is equal to LfsObjectUploader::Store::LOCAL' do
       subject.file_store = LfsObjectUploader::Store::LOCAL

@@ -3,13 +3,13 @@
 require "spec_helper"
 
 describe Lfs::FileTransformer do
-  let(:project) { create(:project, :repository) }
+  let(:project) { create(:project, :repository, :wiki_repo) }
   let(:repository) { project.repository }
   let(:file_content) { 'Test file content' }
   let(:branch_name) { 'lfs' }
   let(:file_path) { 'test_file.lfs' }
 
-  subject { described_class.new(project, branch_name) }
+  subject { described_class.new(project, repository, branch_name) }
 
   describe '#new_file' do
     context 'with lfs disabled' do
@@ -100,6 +100,12 @@ describe Lfs::FileTransformer do
         end.to change { project.lfs_objects.count }.by(1)
       end
 
+      it 'saves the repository_type to LfsObjectsProject' do
+        subject.new_file(file_path, file_content)
+
+        expect(project.lfs_objects_projects.first.repository_type).to eq('project')
+      end
+
       context 'when LfsObject already exists' do
         let(:lfs_pointer) { Gitlab::Git::LfsPointerFile.new(file_content) }
 
@@ -111,6 +117,56 @@ describe Lfs::FileTransformer do
           expect do
             subject.new_file(file_path, file_content)
           end.to change { project.lfs_objects.count }.by(1)
+        end
+      end
+
+      context 'when the LfsObject is already linked to project' do
+        before do
+          subject.new_file(file_path, file_content)
+        end
+
+        shared_examples 'a new LfsObject is not created' do
+          it do
+            expect do
+              second_service.new_file(file_path, file_content)
+            end.not_to change { project.lfs_objects.count }
+          end
+        end
+
+        context 'and the service is called again with the same repository type' do
+          let(:second_service) { described_class.new(project, repository, branch_name) }
+
+          include_examples 'a new LfsObject is not created'
+
+          it 'does not create a new LfsObjectsProject record' do
+            expect do
+              second_service.new_file(file_path, file_content)
+            end.not_to change { project.lfs_objects_projects.count }
+          end
+        end
+
+        context 'and the service is called again with a different repository type' do
+          let(:second_service) { described_class.new(project, project.wiki.repository, branch_name) }
+
+          before do
+            expect(second_service).to receive(:lfs_file?).and_return(true)
+          end
+
+          include_examples 'a new LfsObject is not created'
+
+          it 'creates a new LfsObjectsProject record' do
+            expect do
+              second_service.new_file(file_path, file_content)
+            end.to change { project.lfs_objects_projects.count }.by(1)
+          end
+
+          it 'sets the correct repository_type on the new LfsObjectsProject record' do
+            second_service.new_file(file_path, file_content)
+
+            repository_types = project.lfs_objects_projects.order(:id).pluck(:repository_type)
+
+            expect(repository_types).to eq(%w(project wiki))
+          end
         end
       end
     end

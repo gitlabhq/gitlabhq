@@ -3,7 +3,7 @@
 module Files
   class CreateService < Files::BaseService
     def create_commit!
-      transformer = Lfs::FileTransformer.new(project, @branch_name)
+      transformer = Lfs::FileTransformer.new(project, repository, @branch_name)
 
       result = transformer.new_file(@file_path, @file_content)
 
