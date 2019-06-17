@@ -33,7 +33,7 @@ module Gitlab
       end
 
       asciidoc_opts = { safe: :secure,
-                        backend: :html5,
+                        backend: :gitlab_html5,
                         attributes: DEFAULT_ADOC_ATTRS,
                         extensions: extensions }
 
