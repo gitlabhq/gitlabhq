@@ -210,7 +210,6 @@ module Gitlab
           action = scanner[1]
           timestamp = scanner[2]
           section = scanner[3]
-          line = scanner.matched[0...-5] # strips \r\033[0K
 
           normalized_section = section_to_class_name(section)
 
