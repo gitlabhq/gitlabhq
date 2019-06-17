@@ -532,6 +532,7 @@ end
 ##### Details of `select_labels_and_refresh`
 
 Notice that we have not only moved the `select_labels_and_refresh` method, but we have also changed its implementation to:
+
 1. Click the `:edit_link_labels` element previously defined, instead of using `find('.block.labels .edit-link').click`
 2. Use `within_element(:dropdown_menu_labels, text: label)`, and inside of it, we call `send_keys_to_element(:dropdown_input_field, [label, :enter])`, which is a method that we will implement in the `QA::Page::Base` class to replace `find('.dropdown-menu-labels .dropdown-input-field').send_keys [label, :enter]`
 3. Use `click_body` after iterating on each label, instead of using `find('#content-body').click`
