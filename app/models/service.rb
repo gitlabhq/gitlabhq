@@ -6,6 +6,7 @@ class Service < ApplicationRecord
   include Sortable
   include Importable
   include ProjectServicesLoggable
+  include DataFields
 
   serialize :properties, JSON # rubocop:disable Cop/ActiveRecordSerialize
 

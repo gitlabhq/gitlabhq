@@ -26,6 +26,7 @@ describe 'Database schema' do
     forked_project_links: %w[forked_from_project_id],
     identities: %w[user_id],
     issues: %w[last_edited_by_id state_id],
+    jira_tracker_data: %w[jira_issue_transition_id],
     keys: %w[user_id],
     label_links: %w[target_id],
     lfs_objects_projects: %w[lfs_object_id project_id],

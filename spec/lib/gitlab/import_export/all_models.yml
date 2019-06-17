@@ -175,6 +175,8 @@ deploy_keys:
 services:
 - project
 - service_hook
+- jira_tracker_data
+- issue_tracker_data
 hooks:
 - project
 - web_hook_logs
