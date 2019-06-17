@@ -152,6 +152,33 @@ describe Projects::CreateService, '#execute' do
     end
   end
 
+  context 'default visibility level' do
+    let(:group) { create(:group, :private) }
+
+    before do
+      stub_application_setting(default_project_visibility: Gitlab::VisibilityLevel::INTERNAL)
+      group.add_developer(user)
+
+      opts.merge!(
+        visibility: 'private',
+        name: 'test',
+        namespace: group,
+        path: 'foo'
+      )
+    end
+
+    it 'creates a private project' do
+      project = create_project(user, opts)
+
+      expect(project).to respond_to(:errors)
+
+      expect(project.errors.any?).to be(false)
+      expect(project.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
+      expect(project.saved?).to be(true)
+      expect(project.valid?).to be(true)
+    end
+  end
+
   context 'restricted visibility level' do
     before do
       stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
