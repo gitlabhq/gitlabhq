@@ -154,7 +154,7 @@ After adding Review Apps to your workflow, you follow the branched Git flow. Tha
 1. Wait for the Runner to build and deploy your web application.
 1. Click on the link that provided in the merge request related to the branch to see the changes live.
 
-### Visual Reviews
+### Visual Reviews **[STARTER]**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/10761) in GitLab Starter 12.0.
 
@@ -190,7 +190,7 @@ The provided script hardcodes the project and merge request IDs. You may want to
 using features of your programming language to use environment variables or other
 means to inject these at runtime.
 
-Future enhancements will make this process even easier.
+Future enhancements [are planned](https://gitlab.com/gitlab-org/gitlab-ee/issues/11322) make this process even easier.
 
 ## Limitations
 
