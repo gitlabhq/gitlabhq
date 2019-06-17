@@ -116,11 +116,12 @@ describe Projects::ForkService do
         end
       end
 
-      context 'repository already exists' do
+      context 'repository in legacy storage already exists' do
         let(:repository_storage) { 'default' }
         let(:repository_storage_path) { Gitlab.config.repositories.storages[repository_storage].legacy_disk_path }
 
         before do
+          stub_application_setting(hashed_storage_enabled: false)
           gitlab_shell.create_repository(repository_storage, "#{@to_user.namespace.full_path}/#{@from_project.path}", "#{@to_user.namespace.full_path}/#{@from_project.path}")
         end
 

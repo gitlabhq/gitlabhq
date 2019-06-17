@@ -228,6 +228,7 @@ describe Projects::CreateService, '#execute' do
 
       context 'with legacy storage' do
         before do
+          stub_application_setting(hashed_storage_enabled: false)
           gitlab_shell.create_repository(repository_storage, "#{user.namespace.full_path}/existing", 'group/project')
         end
 
@@ -259,7 +260,6 @@ describe Projects::CreateService, '#execute' do
         let(:hashed_path) { '@hashed/6b/86/6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b' }
 
         before do
-          stub_application_setting(hashed_storage_enabled: true)
           allow(Digest::SHA2).to receive(:hexdigest) { hash }
         end
 
