@@ -25,7 +25,7 @@ module QA
         Page::MergeRequest::Show.perform do |merge_request|
           expect(merge_request).to have_title(@merge_request_title)
           expect(merge_request).to have_description(@merge_request_description)
-        end        
+        end
       end
 
       it 'creates a merge request with a milestone and label' do
