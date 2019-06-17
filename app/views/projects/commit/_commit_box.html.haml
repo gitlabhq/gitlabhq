@@ -81,7 +81,7 @@
         = link_to project_pipeline_path(@project, last_pipeline.id), class: "ci-status-icon-#{last_pipeline.status}" do
           = ci_icon_for_status(last_pipeline.status)
       #{ _('Pipeline') }
-      = link_to "##{last_pipeline.id} (##{last_pipeline.iid})", project_pipeline_path(@project, last_pipeline.id), class: "has-tooltip", title: _('Pipeline ID (IID)')
+      = link_to "##{last_pipeline.id}", project_pipeline_path(@project, last_pipeline.id)
       = ci_label_for_status(last_pipeline.status)
       - if last_pipeline.stages_count.nonzero?
         #{ n_(s_('Pipeline|with stage'), s_('Pipeline|with stages'), last_pipeline.stages_count) }

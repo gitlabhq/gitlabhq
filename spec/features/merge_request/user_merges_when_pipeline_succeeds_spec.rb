@@ -52,7 +52,7 @@ describe 'Merge request > User merges when pipeline succeeds', :js do
           # so we have to wait for asynchronous call to reload it
           # and have_content expectation handles that.
           #
-          expect(page).to have_content "Pipeline ##{pipeline.id} (##{pipeline.iid}) running"
+          expect(page).to have_content "Pipeline ##{pipeline.id} running"
         end
 
         it_behaves_like 'Merge when pipeline succeeds activator'

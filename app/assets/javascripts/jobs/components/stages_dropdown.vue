@@ -2,7 +2,6 @@
 import _ from 'underscore';
 import { GlLink } from '@gitlab/ui';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
-import PipelineLink from '~/vue_shared/components/ci_pipeline_link.vue';
 import Icon from '~/vue_shared/components/icon.vue';
 
 export default {
@@ -10,7 +9,6 @@ export default {
     CiIcon,
     Icon,
     GlLink,
-    PipelineLink,
   },
   props: {
     pipeline: {
@@ -50,12 +48,9 @@ export default {
       <ci-icon :status="pipeline.details.status" class="vertical-align-middle" />
 
       <span class="font-weight-bold">{{ s__('Job|Pipeline') }}</span>
-      <pipeline-link
-        :href="pipeline.path"
-        :pipeline-id="pipeline.id"
-        :pipeline-iid="pipeline.iid"
-        class="js-pipeline-path link-commit qa-pipeline-path"
-      />
+      <gl-link :href="pipeline.path" class="js-pipeline-path link-commit qa-pipeline-path"
+        >#{{ pipeline.id }}</gl-link
+      >
       <template v-if="hasRef">
         {{ s__('Job|for') }}
 

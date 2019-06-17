@@ -160,7 +160,7 @@ describe 'Merge request > User sees merge widget', :js do
 
     it 'shows head pipeline information' do
       within '.ci-widget-content' do
-        expect(page).to have_content("Pipeline ##{pipeline.id} (##{pipeline.iid}) pending " \
+        expect(page).to have_content("Pipeline ##{pipeline.id} pending " \
                                      "for #{pipeline.short_sha} " \
                                      "on #{pipeline.ref}")
       end
@@ -189,7 +189,7 @@ describe 'Merge request > User sees merge widget', :js do
 
     it 'shows head pipeline information' do
       within '.ci-widget-content' do
-        expect(page).to have_content("Pipeline ##{pipeline.id} (##{pipeline.iid}) pending " \
+        expect(page).to have_content("Pipeline ##{pipeline.id} pending " \
                                      "for #{pipeline.short_sha} " \
                                      "on #{merge_request.to_reference} " \
                                      "with #{merge_request.source_branch}")
@@ -201,7 +201,7 @@ describe 'Merge request > User sees merge widget', :js do
 
       it 'shows head pipeline information' do
         within '.ci-widget-content' do
-          expect(page).to have_content("Pipeline ##{pipeline.id} (##{pipeline.iid}) pending " \
+          expect(page).to have_content("Pipeline ##{pipeline.id} pending " \
                                        "for #{pipeline.short_sha} " \
                                        "on #{merge_request.to_reference} " \
                                        "with #{merge_request.source_branch}")
@@ -234,7 +234,7 @@ describe 'Merge request > User sees merge widget', :js do
 
     it 'shows head pipeline information' do
       within '.ci-widget-content' do
-        expect(page).to have_content("Pipeline ##{pipeline.id} (##{pipeline.iid}) pending " \
+        expect(page).to have_content("Pipeline ##{pipeline.id} pending " \
                                      "for #{pipeline.short_sha} " \
                                      "on #{merge_request.to_reference} " \
                                      "with #{merge_request.source_branch} " \
@@ -248,7 +248,7 @@ describe 'Merge request > User sees merge widget', :js do
 
       it 'shows head pipeline information' do
         within '.ci-widget-content' do
-          expect(page).to have_content("Pipeline ##{pipeline.id} (##{pipeline.iid}) pending " \
+          expect(page).to have_content("Pipeline ##{pipeline.id} pending " \
                                        "for #{pipeline.short_sha} " \
                                        "on #{merge_request.to_reference} " \
                                        "with #{merge_request.source_branch} " \

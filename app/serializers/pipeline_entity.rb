@@ -4,7 +4,6 @@ class PipelineEntity < Grape::Entity
   include RequestAwareEntity
 
   expose :id
-  expose :iid
   expose :user, using: UserEntity
   expose :active?, as: :active
 

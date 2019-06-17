@@ -1,6 +1,5 @@
 export const pipelineWithStages = {
   id: 20333396,
-  iid: 304399,
   user: {
     id: 128633,
     name: 'Rémy Coutable',

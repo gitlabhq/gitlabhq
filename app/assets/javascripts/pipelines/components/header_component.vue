@@ -83,8 +83,6 @@ export default {
       v-if="shouldRenderContent"
       :status="status"
       :item-id="pipeline.id"
-      :item-iid="pipeline.iid"
-      :item-id-tooltip="__('Pipeline ID (IID)')"
       :time="pipeline.created_at"
       :user="pipeline.user"
       :actions="actions"

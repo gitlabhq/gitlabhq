@@ -53,10 +53,9 @@
         %span.badge.badge-info= _('manual')
 
   - if pipeline_link
-    %td.pipeline-link
-      = link_to pipeline_path(pipeline), class: 'has-tooltip', title: _('Pipeline ID (IID)') do
+    %td
+      = link_to pipeline_path(pipeline) do
         %span.pipeline-id ##{pipeline.id}
-        %span.pipeline-iid (##{pipeline.iid})
       %span by
       - if pipeline.user
         = user_avatar(user: pipeline.user, size: 20)
