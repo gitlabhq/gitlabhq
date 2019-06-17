@@ -105,8 +105,14 @@ module Git
       CreateGpgSignatureWorker.perform_async(signable, project.id)
     end
 
+    # It's not sufficient to just check for a blank SHA as it's possible for the
+    # branch to be pushed, but for the `post-receive` hook to never run:
+    # https://gitlab.com/gitlab-org/gitlab-ce/issues/59257
     def creating_branch?
-      Gitlab::Git.blank_ref?(params[:oldrev])
+      strong_memoize(:creating_branch) do
+        Gitlab::Git.blank_ref?(params[:oldrev]) ||
+          !project.repository.branch_exists?(branch_name)
+      end
     end
 
     def updating_branch?

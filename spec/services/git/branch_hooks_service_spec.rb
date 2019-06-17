@@ -344,4 +344,38 @@ describe Git::BranchHooksService do
       end
     end
   end
+
+  describe 'New branch detection' do
+    let(:branch) { 'fix' }
+
+    context 'oldrev is the blank SHA' do
+      let(:oldrev) { Gitlab::Git::BLANK_SHA }
+
+      it 'is treated as a new branch' do
+        expect(service).to receive(:branch_create_hooks)
+
+        service.execute
+      end
+    end
+
+    context 'oldrev is set' do
+      context 'Gitaly does not know about the branch' do
+        it 'is treated as a new branch' do
+          allow(project.repository).to receive(:branch_names) { [] }
+
+          expect(service).to receive(:branch_create_hooks)
+
+          service.execute
+        end
+      end
+
+      context 'Gitaly knows about the branch' do
+        it 'is not treated as a new branch' do
+          expect(service).not_to receive(:branch_create_hooks)
+
+          service.execute
+        end
+      end
+    end
+  end
 end
