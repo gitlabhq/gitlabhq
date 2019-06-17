@@ -64,7 +64,7 @@ export default {
           <th>{{ s__('ContainerRegistry|Tag') }}</th>
           <th>{{ s__('ContainerRegistry|Tag ID') }}</th>
           <th>{{ s__('ContainerRegistry|Size') }}</th>
-          <th>{{ s__('ContainerRegistry|Created') }}</th>
+          <th>{{ s__('ContainerRegistry|Last Updated') }}</th>
           <th></th>
         </tr>
       </thead>
