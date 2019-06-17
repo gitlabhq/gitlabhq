@@ -197,9 +197,7 @@ module Gitlab
           css_classes = []
 
           if @sections.any?
-            css_classes << "section"
-            css_classes += sections.map { |section| "s_#{section}" }
-            css_classes << "line"
+            css_classes = %w[section line] + sections.map { |section| "s_#{section}" }
           end
 
           write_in_tag %{<br/>}
@@ -217,13 +215,13 @@ module Gitlab
           normalized_section = section_to_class_name(section)
 
           if action == "start"
-            handle_section_start(normalized_section, timestamp, line)
+            handle_section_start(normalized_section, timestamp)
           elsif action == "end"
             handle_section_end(normalized_section, timestamp)
           end
         end
 
-        def handle_section_start(section, timestamp, line)
+        def handle_section_start(section, timestamp)
           return if @sections.include?(section)
 
           @sections << section
