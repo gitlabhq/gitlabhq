@@ -904,7 +904,8 @@
   margin-right: -5px;
 }
 
-.deploy-heading {
+.deploy-heading,
+.merge-train-info {
   @include media-breakpoint-up(md) {
     padding: $gl-padding-8 $gl-padding;
   }
