@@ -79,7 +79,7 @@ export default {
           :class="deploymentClass"
           :deployment="deployment"
           :show-metrics="hasDeploymentMetrics"
-          :show-visual-review-app="true"
+          :show-visual-review-app="showVisualReviewAppLink"
           :visual-review-app-meta="visualReviewAppMeta"
         />
       </div>
