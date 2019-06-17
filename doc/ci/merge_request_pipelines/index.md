@@ -74,7 +74,7 @@ when a merge request was created or updated. For example:
 ## Pipelines for Merged Results **[PREMIUM]**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/7380) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.10.
-> This feature is disabled by default until we resolve issues with [contention handling](https://gitlab.com/gitlab-org/gitlab-ee/issues/9186), but [can be enabled manually](#enabling-pipelines-for-merged-results).
+> This feature is disabled by default until we resolve issues with [contention handling](https://gitlab.com/gitlab-org/gitlab-ee/issues/11222), but [can be enabled manually](#enabling-pipelines-for-merged-results).
 
 It's possible for your source and target branches to diverge, which can result
 in the scenario that source branch's pipeline was green, the target's pipeline was green,
@@ -118,9 +118,78 @@ otherwise pipelines for merged results won't run and your merge requests will be
 
 - This feature requires [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-runner) 11.9 or newer.
 - This feature requires [Gitaly](https://gitlab.com/gitlab-org/gitaly) 1.21.0 or newer.
-- After the merge request pipeline succeeds, if the target branch has moved forward, the result of the pipeline is stale and must be retried. In busy repos, this can become a problem as it is highly probable that the target branch will have moved ahead. Improvements are [planned](https://gitlab.com/gitlab-org/gitlab-ee/issues/9186) for future versions of GitLab.
 - Forking/cross-repo workflows are not currently supported. To follow progress, see [#9713](https://gitlab.com/gitlab-org/gitlab-ee/issues/9713).
 - This feature is not available for [fast forward merges](../../user/project/merge_requests/fast_forward_merge.md) yet. To follow progress, see [#58226](https://gitlab.com/gitlab-org/gitlab-ce/issues/58226).
+
+## Merge Trains **[PREMIUM]**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/9186) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.0.
+> This feature is disabled by default until we resolve issues with [contention handling](https://gitlab.com/gitlab-org/gitlab-ee/issues/11222), but [can be enabled manually](#enabling-merge-trains).
+
+[Pipelines for merged results](#pipelines-for-merged-results-premium) introduces
+running a build on the result of the merged code prior to merging, as a way to keep master green.
+There's a scenario, however, for teams with a high number of changes in the target branch (typically master) where in many or even all cases,
+by the time the merged code is validated another commit has made it to master, invalidating the merged result.
+You'd need some kind of queuing, cancellation or retry mechanism for these scenarios
+in order to ensure an orderly flow of changes into the target branch.
+
+Each MR that joins a merge train joins as the last item in the train,
+just as it works in the current state. However, instead of queuing and waiting,
+each item takes the completed state of the previous (pending) merge ref, adds its own changes,
+and starts the pipeline immediately in parallel under the assumption that everything is going to pass.
+In this way, if all the pipelines in the train merge successfully, no pipeline time is wasted either queuing or retrying.
+If the button is subsequently pressed in a different MR, instead of creating a new pipeline for the target branch,
+it creates a new pipeline targeting the merge result of the previous MR plus the target branch.
+Pipelines invalidated through failures are immediately canceled and requeued.
+
+CAUTION: **Warning:**
+At this moment, each merge train can generate a merge ref and run a pipeline **one at a time** due to a technical challenge.
+We have [an issue](https://gitlab.com/gitlab-org/gitlab-ee/issues/11222) to tackle this problem to make the pipelines for merged results run in parallel.
+
+### Enabling Merge Trains
+
+To enable merge trains at the project level:
+
+1. Visit your project's **Settings > General** and expand **Merge requests**.
+1. Check **Allow merge trains**.
+1. Click **Save changes** button.
+
+![Merge request pipeline config](img/merge_train_config.png)
+
+CAUTION: **Warning:**
+This feature requires [Pipelines for merged results](#pipelines-for-merged-results-premium) to be **configured properly**.
+
+### How to add a merge request to a merge train
+
+To add a merge request to a merge train:
+
+1. Click "Start/Add merge train" button in a merge request
+
+![Start merge train](img/merge_train_start.png)
+
+### How to remove a merge request from a merge train
+
+1. Click "Remove from merge train" button in the merge request widget.
+
+![Cancel merge train](img/merge_train_cancel.png)
+
+### Tips: Start/Add to merge train when pipeline succeeds
+
+You can add a merge request to a merge train only when the latest pipeline in the
+merge request finished. While the pipeline is running or pending, you cannot add
+the merge request to a train because the current change of the merge request may
+be broken thus it could affect the following merge requests.
+
+In this case, you can schedule to add the merge request to a merge train **when the latest
+pipeline succeeds**. You can see the following button instead of the regular "Start/Add merge train"
+button while the latest pipeline is running.
+
+![Add to merge train when pipeline succeeds](img/merge_train_start_when_pipeline_succeeds.png)
+
+### Merge Train's limitations
+
+- At this moment, each merge train can generate a merge ref and run a pipeline **one at a time** due to a technical challenge.
+  We have [an issue](https://gitlab.com/gitlab-org/gitlab-ee/issues/11222) to tackle this problem to make the pipelines for merged results run in parallel.
 
 ## Excluding certain jobs
 
