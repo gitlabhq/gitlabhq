@@ -16,5 +16,9 @@ FactoryBot.define do
     trait :with_token do
       service_account_token { FFaker::Lorem.characters(10) }
     end
+
+    trait :without_token do
+      service_account_token nil
+    end
   end
 end
