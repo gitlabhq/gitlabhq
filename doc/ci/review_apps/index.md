@@ -190,7 +190,7 @@ The provided script hardcodes the project and merge request IDs. You may want to
 using features of your programming language to use environment variables or other
 means to inject these at runtime.
 
-Future enhancements [are planned](https://gitlab.com/gitlab-org/gitlab-ee/issues/11322) make this process even easier.
+Future enhancements [are planned](https://gitlab.com/gitlab-org/gitlab-ee/issues/11322) to make this process even easier.
 
 ## Limitations
 
