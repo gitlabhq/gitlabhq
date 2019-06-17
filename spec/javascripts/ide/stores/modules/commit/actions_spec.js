@@ -7,6 +7,8 @@ import consts from '~/ide/stores/modules/commit/constants';
 import { commitActionTypes } from '~/ide/constants';
 import { resetStore, file } from 'spec/ide/helpers';
 
+const TEST_COMMIT_SHA = '123456789';
+
 describe('IDE commit module actions', () => {
   beforeEach(() => {
     spyOn(router, 'push');
@@ -136,6 +138,9 @@ describe('IDE commit module actions', () => {
         branches: {
           master: {
             workingReference: '',
+            commit: {
+              short_id: TEST_COMMIT_SHA,
+            },
           },
         },
       };
@@ -236,6 +241,9 @@ describe('IDE commit module actions', () => {
         branches: {
           master: {
             workingReference: '1',
+            commit: {
+              short_id: TEST_COMMIT_SHA,
+            },
           },
         },
       };
@@ -244,7 +252,7 @@ describe('IDE commit module actions', () => {
         ...file('changed'),
         type: 'blob',
         active: true,
-        lastCommitSha: '123456789',
+        lastCommitSha: TEST_COMMIT_SHA,
       };
       store.state.stagedFiles.push(f);
       store.state.changedFiles = [
@@ -303,7 +311,7 @@ describe('IDE commit module actions', () => {
                   previous_path: undefined,
                 },
               ],
-              start_branch: 'master',
+              start_sha: TEST_COMMIT_SHA,
             });
 
             done();
@@ -326,11 +334,11 @@ describe('IDE commit module actions', () => {
                   file_path: jasmine.anything(),
                   content: undefined,
                   encoding: jasmine.anything(),
-                  last_commit_id: '123456789',
+                  last_commit_id: TEST_COMMIT_SHA,
                   previous_path: undefined,
                 },
               ],
-              start_branch: undefined,
+              start_sha: undefined,
             });
 
             done();
