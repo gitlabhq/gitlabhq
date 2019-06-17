@@ -6,9 +6,11 @@ import eventHub from '~/ide/eventhub';
 import consts from '~/ide/stores/modules/commit/constants';
 import * as mutationTypes from '~/ide/stores/modules/commit/mutation_types';
 import * as actions from '~/ide/stores/modules/commit/actions';
-import testAction from '../../../../helpers/vuex_action_helper';
 import { commitActionTypes } from '~/ide/constants';
 import { resetStore, file } from 'spec/ide/helpers';
+import testAction from '../../../../helpers/vuex_action_helper';
+
+const TEST_COMMIT_SHA = '123456789';
 
 describe('IDE commit module actions', () => {
   beforeEach(() => {
@@ -139,6 +141,9 @@ describe('IDE commit module actions', () => {
         branches: {
           master: {
             workingReference: '',
+            commit: {
+              short_id: TEST_COMMIT_SHA,
+            },
           },
         },
       };
@@ -239,6 +244,9 @@ describe('IDE commit module actions', () => {
         branches: {
           master: {
             workingReference: '1',
+            commit: {
+              short_id: TEST_COMMIT_SHA,
+            },
           },
         },
       };
@@ -247,7 +255,7 @@ describe('IDE commit module actions', () => {
         ...file('changed'),
         type: 'blob',
         active: true,
-        lastCommitSha: '123456789',
+        lastCommitSha: TEST_COMMIT_SHA,
       };
       store.state.stagedFiles.push(f);
       store.state.changedFiles = [
@@ -307,7 +315,7 @@ describe('IDE commit module actions', () => {
                   previous_path: undefined,
                 },
               ],
-              start_branch: 'master',
+              start_sha: TEST_COMMIT_SHA,
             });
 
             done();
@@ -330,11 +338,11 @@ describe('IDE commit module actions', () => {
                   file_path: jasmine.anything(),
                   content: undefined,
                   encoding: jasmine.anything(),
-                  last_commit_id: '123456789',
+                  last_commit_id: TEST_COMMIT_SHA,
                   previous_path: undefined,
                 },
               ],
-              start_branch: undefined,
+              start_sha: undefined,
             });
 
             done();
