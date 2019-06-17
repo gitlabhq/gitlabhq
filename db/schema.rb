@@ -1661,6 +1661,24 @@ ActiveRecord::Schema.define(version: 20190611161641) do
     t.index ["updated_by_id"], name: "index_issues_on_updated_by_id", where: "(updated_by_id IS NOT NULL)", using: :btree
   end
 
+  create_table "jira_connect_installations", force: :cascade do |t|
+    t.string "client_key"
+    t.string "encrypted_shared_secret"
+    t.string "encrypted_shared_secret_iv"
+    t.string "base_url"
+    t.index ["client_key"], name: "index_jira_connect_installations_on_client_key", unique: true, using: :btree
+  end
+
+  create_table "jira_connect_subscriptions", force: :cascade do |t|
+    t.datetime_with_timezone "created_at", null: false
+    t.bigint "jira_connect_installation_id", null: false
+    t.integer "namespace_id", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.index ["jira_connect_installation_id", "namespace_id"], name: "idx_jira_connect_subscriptions_on_installation_id_namespace_id", unique: true, using: :btree
+    t.index ["jira_connect_installation_id"], name: "idx_jira_connect_subscriptions_on_installation_id", using: :btree
+    t.index ["namespace_id"], name: "index_jira_connect_subscriptions_on_namespace_id", using: :btree
+  end
+
   create_table "keys", id: :serial, force: :cascade do |t|
     t.integer "user_id"
     t.datetime "created_at"
@@ -3648,6 +3666,8 @@ ActiveRecord::Schema.define(version: 20190611161641) do
   add_foreign_key "issues", "users", column: "author_id", name: "fk_05f1e72feb", on_delete: :nullify
   add_foreign_key "issues", "users", column: "closed_by_id", name: "fk_c63cbf6c25", on_delete: :nullify
   add_foreign_key "issues", "users", column: "updated_by_id", name: "fk_ffed080f01", on_delete: :nullify
+  add_foreign_key "jira_connect_subscriptions", "jira_connect_installations", name: "fk_f1d617343f", on_delete: :cascade
+  add_foreign_key "jira_connect_subscriptions", "namespaces", name: "fk_a3c10bcf7d", on_delete: :cascade
   add_foreign_key "label_links", "labels", name: "fk_d97dd08678", on_delete: :cascade
   add_foreign_key "label_priorities", "labels", on_delete: :cascade
   add_foreign_key "label_priorities", "projects", on_delete: :cascade
