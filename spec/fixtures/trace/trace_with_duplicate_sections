@@ -1,0 +1,30 @@
+[0KRunning with gitlab-runner dev (HEAD)
+  on kitsune minikube (a21b584f)
+[0;m[0;33mWARNING: Namespace is empty, therefore assuming 'default'.
+[0;m[0KUsing Kubernetes namespace: default
+[0;m[0KUsing Kubernetes executor with image alpine:3.4 ...
+[0;msection_start:1506004954:prepare_script[0KWaiting for pod default/runner-a21b584f-project-1208199-concurrent-0sg03f to be running, status is Pending
+Running on runner-a21b584f-project-1208199-concurrent-0sg03f via kitsune.local...
+section_end:1506004957:prepare_script[0Ksection_start:1506004957:get_sources[0K[32;1mCloning repository...[0;m
+Cloning into '/nolith/ci-tests'...
+[32;1mChecking out dddd7a6e as master...[0;m
+[32;1mSkipping Git submodules setup[0;m
+section_end:1506004958:get_sources[0Ksection_start:1506004958:restore_cache[0Ksection_end:1506004958:restore_cache[0Ksection_start:1506004958:download_artifacts[0Ksection_end:1506004958:download_artifacts[0Ksection_start:1506004958:build_script[0K[32;1m$ whoami[0;m
+root
+section_end:1506004959:build_script[0Ksection_start:1506004959:after_script[0Ksection_end:1506004959:after_script[0Ksection_start:1506004959:archive_cache[0Ksection_end:1506004959:archive_cache[0Ksection_start:1506004959:upload_artifacts[0Ksection_end:1506004959:upload_artifacts[0K[32;1mJob succeeded
+[0;m
+[0KRunning with gitlab-runner dev (HEAD)
+  on kitsune minikube (a21b584f)
+[0;m[0;33mWARNING: Namespace is empty, therefore assuming 'default'.
+[0;m[0KUsing Kubernetes namespace: default
+[0;m[0KUsing Kubernetes executor with image alpine:3.4 ...
+[0;msection_start:1506004954:prepare_script[0KWaiting for pod default/runner-a21b584f-project-1208199-concurrent-0sg03f to be running, status is Pending
+Running on runner-a21b584f-project-1208199-concurrent-0sg03f via kitsune.local...
+section_end:1506004957:prepare_script[0Ksection_start:1506004957:get_sources[0K[32;1mCloning repository...[0;m
+Cloning into '/nolith/ci-tests'...
+[32;1mChecking out dddd7a6e as master...[0;m
+[32;1mSkipping Git submodules setup[0;m
+section_end:1506004958:get_sources[0Ksection_start:1506004958:restore_cache[0Ksection_end:1506004958:restore_cache[0Ksection_start:1506004958:download_artifacts[0Ksection_end:1506004958:download_artifacts[0Ksection_start:1506004958:build_script[0K[32;1m$ whoami[0;m
+root
+section_end:1506004959:build_script[0Ksection_start:1506004959:after_script[0Ksection_end:1506004959:after_script[0Ksection_start:1506004959:archive_cache[0Ksection_end:1506004959:archive_cache[0Ksection_start:1506004959:upload_artifacts[0Ksection_end:1506004959:upload_artifacts[0K[32;1mJob succeeded
+[0;m

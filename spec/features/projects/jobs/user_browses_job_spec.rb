@@ -35,7 +35,7 @@ describe 'User browses a job', :js do
   end
 
   context 'when job trace contains sections' do
-    let!(:build) { create(:ci_build, :success, :trace_with_sections, :coverage, pipeline: pipeline) }
+    let!(:build) { create(:ci_build, :success, :trace_with_duplicate_sections, :coverage, pipeline: pipeline) }
 
     it 'collapses a section' do
       wait_for_requests
