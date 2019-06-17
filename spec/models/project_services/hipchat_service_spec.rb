@@ -301,7 +301,7 @@ describe HipchatService do
     end
 
     context 'pipeline events' do
-      let(:pipeline) { create(:ci_empty_pipeline, user: create(:user)) }
+      let(:pipeline) { create(:ci_empty_pipeline, user: project.owner) }
       let(:data) { Gitlab::DataBuilder::Pipeline.build(pipeline) }
 
       context 'for failed' do

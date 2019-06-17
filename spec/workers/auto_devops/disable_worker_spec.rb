@@ -2,7 +2,7 @@
 require 'spec_helper'
 
 describe AutoDevops::DisableWorker, '#perform' do
-  let(:user) { create(:user) }
+  let(:user) { create(:user, developer_projects: [project]) }
   let(:project) { create(:project, :repository, :auto_devops) }
   let(:auto_devops) { project.auto_devops }
   let(:pipeline) { create(:ci_pipeline, :failed, :auto_devops_source, project: project, user: user) }
@@ -10,6 +10,7 @@ describe AutoDevops::DisableWorker, '#perform' do
   subject { described_class.new }
 
   before do
+    project.add_developer(user)
     stub_application_setting(auto_devops_enabled: true)
     auto_devops.update_attribute(:enabled, nil)
   end

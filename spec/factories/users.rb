@@ -66,6 +66,16 @@ FactoryBot.define do
       end
     end
 
+    transient do
+      developer_projects []
+    end
+
+    after(:create) do |user, evaluator|
+      evaluator.developer_projects.each do |project|
+        project.add_developer(user)
+      end
+    end
+
     factory :omniauth_user do
       transient do
         extern_uid '123456'

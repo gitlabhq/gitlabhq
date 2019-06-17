@@ -447,6 +447,10 @@ class ProjectPolicy < BasePolicy
     prevent :owner_access
   end
 
+  rule { blocked }.policy do
+    prevent :create_pipeline
+  end
+
   private
 
   def team_member?

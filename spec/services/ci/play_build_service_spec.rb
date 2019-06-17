@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe Ci::PlayBuildService, '#execute' do
-  let(:user) { create(:user) }
+  let(:user) { create(:user, developer_projects: [project]) }
   let(:project) { create(:project) }
   let(:pipeline) { create(:ci_pipeline, project: project) }
   let(:build) { create(:ci_build, :manual, pipeline: pipeline) }
@@ -16,8 +16,6 @@ describe Ci::PlayBuildService, '#execute' do
     let(:project) { create(:project) }
 
     it 'allows user to play build if protected branch rules are met' do
-      project.add_developer(user)
-
       create(:protected_branch, :developers_can_merge,
              name: build.ref, project: project)
 
@@ -27,8 +25,6 @@ describe Ci::PlayBuildService, '#execute' do
     end
 
     it 'does not allow user with developer role to play build' do
-      project.add_developer(user)
-
       expect { service.execute(build) }
         .to raise_error Gitlab::Access::AccessDeniedError
     end
@@ -38,23 +34,21 @@ describe Ci::PlayBuildService, '#execute' do
     let(:project) { create(:project, :repository) }
 
     it 'allows user with developer role to play a build' do
-      project.add_developer(user)
-
       service.execute(build)
 
       expect(build.reload).to be_pending
+    end
+
+    it 'prevents a blocked developer from playing a build' do
+      user.block!
+
+      expect { service.execute(build) }.to raise_error(Gitlab::Access::AccessDeniedError)
     end
   end
 
   context 'when build is a playable manual action' do
     let(:build) { create(:ci_build, :manual, pipeline: pipeline) }
-
-    before do
-      project.add_developer(user)
-
-      create(:protected_branch, :developers_can_merge,
-             name: build.ref, project: project)
-    end
+    let!(:branch) { create(:protected_branch, :developers_can_merge, name: build.ref, project: project) }
 
     it 'enqueues the build' do
       expect(service.execute(build)).to eq build
@@ -70,13 +64,7 @@ describe Ci::PlayBuildService, '#execute' do
 
   context 'when build is not a playable manual action' do
     let(:build) { create(:ci_build, when: :manual, pipeline: pipeline) }
-
-    before do
-      project.add_developer(user)
-
-      create(:protected_branch, :developers_can_merge,
-             name: build.ref, project: project)
-    end
+    let!(:branch) { create(:protected_branch, :developers_can_merge, name: build.ref, project: project) }
 
     it 'duplicates the build' do
       duplicate = service.execute(build)
@@ -94,6 +82,7 @@ describe Ci::PlayBuildService, '#execute' do
   end
 
   context 'when build is not action' do
+    let(:user) { create(:user) }
     let(:build) { create(:ci_build, :success, pipeline: pipeline) }
 
     it 'raises an error' do
@@ -103,10 +92,8 @@ describe Ci::PlayBuildService, '#execute' do
   end
 
   context 'when user does not have ability to trigger action' do
-    before do
-      create(:protected_branch, :no_one_can_push,
-             name: build.ref, project: project)
-    end
+    let(:user) { create(:user) }
+    let!(:branch) { create(:protected_branch, :developers_can_merge, name: build.ref, project: project) }
 
     it 'raises an error' do
       expect { service.execute(build) }

@@ -10,8 +10,7 @@ describe 'Commits' do
       stub_ci_pipeline_to_return_yaml_file
     end
 
-    let(:creator) { create(:user) }
-
+    let(:creator) { create(:user, developer_projects: [project]) }
     let!(:pipeline) do
       create(:ci_pipeline,
              project: project,
@@ -77,10 +76,11 @@ describe 'Commits' do
 
         describe 'Commit builds', :js do
           before do
+            project.add_developer(user)
             visit pipeline_path(pipeline)
           end
 
-          it 'shows pipeline`s data' do
+          it 'shows pipeline data' do
             expect(page).to have_content pipeline.sha[0..7]
             expect(page).to have_content pipeline.git_commit_message.gsub!(/\s+/, ' ')
             expect(page).to have_content pipeline.user.name
