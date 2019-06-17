@@ -32,10 +32,10 @@ describe 'cycle analytics events' do
     it 'lists the plan events' do
       get project_cycle_analytics_plan_path(project, format: :json)
 
-      first_mr_short_sha = project.merge_requests.sort_by_attribute(:created_asc).first.commits.first.short_id
+      first_issue_iid = project.issues.sort_by_attribute(:created_desc).pluck(:iid).first.to_s
 
       expect(json_response['events']).not_to be_empty
-      expect(json_response['events'].first['short_sha']).to eq(first_mr_short_sha)
+      expect(json_response['events'].first['iid']).to eq(first_issue_iid)
     end
 
     it 'lists the code events' do

@@ -4,6 +4,7 @@ module Gitlab
   module CycleAnalytics
     class StagingStage < BaseStage
       include ProductionHelper
+
       def start_time_attrs
         @start_time_attrs ||= mr_metrics_table[:merged_at]
       end

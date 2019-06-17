@@ -58,7 +58,7 @@ describe 'Cycle Analytics', :js do
         expect_issue_to_be_present
 
         click_stage('Plan')
-        expect(find('.stage-events')).to have_content(mr.commits.last.title)
+        expect_issue_to_be_present
 
         click_stage('Code')
         expect_merge_request_to_be_present

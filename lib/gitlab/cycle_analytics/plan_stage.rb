@@ -3,6 +3,8 @@
 module Gitlab
   module CycleAnalytics
     class PlanStage < BaseStage
+      include PlanHelper
+
       def start_time_attrs
         @start_time_attrs ||= [issue_metrics_table[:first_associated_with_milestone_at],
                                issue_metrics_table[:first_added_to_board_at]]
@@ -21,7 +23,7 @@ module Gitlab
       end
 
       def legend
-        _("Related Commits")
+        _("Related Issues")
       end
 
       def description
