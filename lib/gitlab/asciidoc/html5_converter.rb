@@ -1,13 +1,12 @@
 # frozen_string_literal: true
 
 require 'asciidoctor'
-require 'asciidoctor/converter/html5'
 
 module Gitlab
   module Asciidoc
     class Html5Converter < (Asciidoctor::Converter.for 'html5')
 
-      register_for 'gitlab_html5'
+      register_for 'html5'
 
       def convert_stem(node)
         return super unless node.style.to_sym == :latexmath
