@@ -3,6 +3,7 @@ import component from '~/jobs/components/job_log.vue';
 import createStore from '~/jobs/store';
 import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import { resetStore } from '../store/helpers';
+import { logWithCollapsibleSections } from '../mock_data';
 
 describe('Job Log', () => {
   const Component = Vue.extend(component);
@@ -60,6 +61,42 @@ describe('Job Log', () => {
       });
 
       expect(vm.$el.querySelector('.js-log-animation')).toBeNull();
+    });
+  });
+
+  describe('Collapsible sections', () => {
+    beforeEach(() => {
+      vm = mountComponentWithStore(Component, {
+        props: {
+          trace: logWithCollapsibleSections.html,
+          isComplete: true,
+        },
+        store,
+      });
+    });
+
+    it('renders open arrow', () => {
+      expect(vm.$el.querySelector('.fa-caret-down')).not.toBeNull();
+    });
+
+    it('toggles hidden class to the sibilings rows when arrow is clicked', done => {
+      vm.$nextTick()
+        .then(() => {
+          const { section } = vm.$el.querySelector('.js-section-start').dataset;
+          vm.$el.querySelector('.js-section-start').click();
+
+          vm.$el.querySelectorAll(`.js-s-${section}:not(.js-section-header)`).forEach(el => {
+            expect(el.classList.contains('hidden')).toEqual(true);
+          });
+
+          vm.$el.querySelector('.js-section-start').click();
+
+          vm.$el.querySelectorAll(`.js-s-${section}:not(.js-section-header)`).forEach(el => {
+            expect(el.classList.contains('hidden')).toEqual(false);
+          });
+        })
+        .then(done)
+        .catch(done.fail);
     });
   });
 });

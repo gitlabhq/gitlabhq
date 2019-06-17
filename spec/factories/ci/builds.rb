@@ -228,6 +228,26 @@ FactoryBot.define do
       end
     end
 
+    trait :trace_with_duplicate_sections do
+      after(:create) do |build, evaluator|
+        trace = File.binread(
+          File.expand_path(
+            Rails.root.join('spec/fixtures/trace/trace_with_duplicate_sections')))
+
+        build.trace.set(trace)
+      end
+    end
+
+    trait :trace_with_sections do
+      after(:create) do |build, evaluator|
+        trace = File.binread(
+          File.expand_path(
+            Rails.root.join('spec/fixtures/trace/trace_with_sections')))
+
+        build.trace.set(trace)
+      end
+    end
+
     trait :unicode_trace_live do
       after(:create) do |build, evaluator|
         trace = File.binread(

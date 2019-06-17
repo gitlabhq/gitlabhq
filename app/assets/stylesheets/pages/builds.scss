@@ -124,6 +124,10 @@
     float: left;
     padding-left: $gl-padding-8;
   }
+
+  .section-header ~ .section.line {
+    margin-left: $gl-padding;
+  }
 }
 
 .build-header {
