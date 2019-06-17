@@ -145,7 +145,7 @@ Zendesk is our Support Centre and our main communication line with our Customers
 
 Some tickets need specific knowledge or a deep understanding of a particular component and will need to be escalated to a Senior Service Engineer or Developer
 
-- Read about [Escalation](https://about.gitlab.com/handbook/support/onboarding/#create-issuesa-namecreate-issuea)
+- Read about [Escalation](https://about.gitlab.com/handbook/support/workflows/shared/support_workflows/issue_escalations.html)
 - Find the macros in Zendesk for ticket escalations
 - Take a look at the [GitLab.com Team page](https://about.gitlab.com/team/) to find the resident experts in their fields
 
