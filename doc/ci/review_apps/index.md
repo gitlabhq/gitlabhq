@@ -154,6 +154,44 @@ After adding Review Apps to your workflow, you follow the branched Git flow. Tha
 1. Wait for the Runner to build and deploy your web application.
 1. Click on the link that provided in the merge request related to the branch to see the changes live.
 
+### Visual Reviews **[STARTER]**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/10761) in GitLab Starter 12.0.
+
+The Visual Reviews feedback form can be added to a Review App to enable reviewers to post comments
+directly from the app back to the merge request that spawned the Review App.
+
+For example, a form like the following can be configured to post the contents of the
+text field into the discussion thread of a merge request:
+
+![feedback form](img/toolbar_feeback_form.png)
+
+#### Using Visual Reviews
+
+If Visual Reviews has been [enabled](#configuring-visual-reviews) for the Review App, the Visual Reviews feedback form is overlaid on the app's pages at the bottom-right corner.
+
+To use the feedback form, you will need to create a [personal access token](../../user/profile/personal_access_tokens.md) with the API scope selected.
+
+Paste the token into the feedback box, when prompted. If you select **Remember me**, your browser stores the token so that future visits to Review Apps at the same URL will not require you to re-enter the token. To clear the token, click **Log out**.
+
+Because tokens must be entered on a per-domain basis and they can only be accessed once, you can save the token to your password manager specifically for the purpose of Visual Reviews. This way, you will not need to create additional tokens for each merge request.
+
+Comments can make use of all the [Markdown annotations](../../user/markdown.md)
+available in merge request comment boxes.
+
+#### Configuring Visual Reviews
+
+The feedback form is served through a script you add to pages in your Review App.
+To access the code to include the script, click the **Review** button in the **Pipeline** section of the merge request.
+
+![review button](img/review_button.png)
+
+The provided script hardcodes the project and merge request IDs. You may want to consider
+using features of your programming language to use environment variables or other
+means to inject these at runtime.
+
+Future enhancements [are planned](https://gitlab.com/gitlab-org/gitlab-ee/issues/11322) to make this process even easier.
+
 ## Limitations
 
 Review App limitations are the same as [environments limitations](../environments.md#limitations).
