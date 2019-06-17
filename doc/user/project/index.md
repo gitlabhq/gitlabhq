@@ -193,17 +193,27 @@ password <personal_access_token>
 To quickly access a project from the GitLab UI using the project ID,
 visit the `/projects/:id` URL in your browser or other tool accessing the project.
 
-## Project aliases
+## Project aliases **[PREMIUM ONLY]**
 
-Projects' repositories are usually cloned with a namespace and project name. It is
-also possible to clone them via a project alias. This feature is only available on Git over SSH.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/3264) in GitLab 12.1.
 
-A project alias can be created via API only by administrators. Follow the
-[Project Aliases API documentation](../../api/project_aliases.md) for more details.
+When migrating repositories to GitLab and they are being accessed by other systems,
+it's very useful to be able to access them using the same name especially when
+they are a lot. It reduces the risk of changing significant number of Git URLs in
+a large number of systems.
 
-Once an alias has been created for a project (e.g. gitlab-ce for gitlab-org/gitlab-ce),
-the repository can be cloned using the alias (e.g `git clone git@gitlab.com:gitlab-ce.git`
-instead of `git clone git@gitlab.com:gitlab-org/gitlab-ce.git`).
+GitLab provides a functionality to help with this. In GitLab, repositories are
+usually accessed with a namespace and project name. It is also possible to access
+them via a project alias. This feature is only available on Git over SSH.
+
+A project alias can be only created via API and only by GitLab administrators.
+Follow the [Project Aliases API documentation](../../api/project_aliases.md) for
+more details.
+
+Once an alias has been created for a project (e.g., an alias `gitlab-ce` for the
+project `https://gitlab.com/gitlab-org/gitlab-ce`), the repository can be cloned
+using the alias (e.g `git clone git@gitlab.com:gitlab-ce.git` instead of
+`git clone git@gitlab.com:gitlab-org/gitlab-ce.git`).
 
 ## Project APIs
 

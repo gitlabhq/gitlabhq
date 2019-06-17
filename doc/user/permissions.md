@@ -365,3 +365,8 @@ for details about the pipelines security model.
 
 Since GitLab 8.15, LDAP user permissions can now be manually overridden by an admin user.
 Read through the documentation on [LDAP users permissions](../administration/auth/how_to_configure_ldap_gitlab_ee/index.html) to learn more.
+
+## Project aliases
+
+Project aliases can only be read, created and deleted by a GitLab administrator.
+Read through the documentation on [Project aliases](../user/project/index.md#project-aliases-premium-only) to learn more.
