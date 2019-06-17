@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: pl\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2019-06-14 10:14\n"
+"PO-Revision-Date: 2019-06-14 19:53\n"
 
 msgid " Please sign in."
 msgstr ""
@@ -6497,6 +6497,9 @@ msgstr ""
 msgid "Google authentication is not %{link_to_documentation}. Ask your GitLab administrator if you want to use this service."
 msgstr ""
 
+msgid "Got it"
+msgstr ""
+
 msgid "Got it!"
 msgstr ""
 
@@ -6976,6 +6979,9 @@ msgid "If any job surpasses this timeout threshold, it will be marked as failed.
 msgstr ""
 
 msgid "If checked, group owners can manage LDAP group links and LDAP member overrides"
+msgstr ""
+
+msgid "If checked, new group memberships and permissions can only be added via LDAP synchronization"
 msgstr ""
 
 msgid "If disabled, a diverged local branch will not be automatically updated with commits from its remote counterpart, to prevent local data loss. If the default branch (%{default_branch}) has diverged and cannot be updated, mirroring will fail. Other diverged branches are silently ignored."
@@ -7576,6 +7582,9 @@ msgstr ""
 msgid "Job|with"
 msgstr ""
 
+msgid "Join Zoom meeting"
+msgstr ""
+
 msgid "Jul"
 msgstr ""
 
@@ -7986,6 +7995,9 @@ msgstr ""
 msgid "Lock %{issuableDisplayName}"
 msgstr ""
 
+msgid "Lock memberships to LDAP synchronization"
+msgstr ""
+
 msgid "Lock not found"
 msgstr ""
 
@@ -8332,6 +8344,9 @@ msgid "MergeRequests|started a discussion on commit %{linkStart}%{commitId}%{lin
 msgstr ""
 
 msgid "MergeRequest| %{paragraphStart}changed the description %{descriptionChangedTimes} times %{timeDifferenceMinutes}%{paragraphEnd}"
+msgstr ""
+
+msgid "MergeRequest|Error dismissing suggestion popover. Please try again."
 msgstr ""
 
 msgid "MergeRequest|Error loading full diff. Please try again."
@@ -8810,6 +8825,9 @@ msgid "New tag"
 msgstr ""
 
 msgid "New users set to external"
+msgstr ""
+
+msgid "New! Suggest changes directly"
 msgstr ""
 
 msgid "New..."
@@ -9342,6 +9360,18 @@ msgid "Pages Domains"
 msgstr ""
 
 msgid "Pages getting started guide"
+msgstr ""
+
+msgid "Pagination|Go to first page"
+msgstr ""
+
+msgid "Pagination|Go to last page"
+msgstr ""
+
+msgid "Pagination|Go to next page"
+msgstr ""
+
+msgid "Pagination|Go to previous page"
 msgstr ""
 
 msgid "Pagination|Last »"
@@ -12842,6 +12872,9 @@ msgid "Successfully unblocked"
 msgstr ""
 
 msgid "Successfully unlocked"
+msgstr ""
+
+msgid "Suggest code changes which are immediately applied. Try it out!"
 msgstr ""
 
 msgid "Suggested change"
