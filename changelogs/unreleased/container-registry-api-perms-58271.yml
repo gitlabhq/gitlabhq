@@ -1,0 +1,5 @@
+---
+title: Allow developer role to delete docker tags via container registry API
+merge_request: 29512
+author:
+type: fixed

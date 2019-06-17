@@ -39,7 +39,7 @@ describe ProjectPolicy do
       admin_milestone admin_merge_request update_merge_request create_commit_status
       update_commit_status create_build update_build create_pipeline
       update_pipeline create_merge_request_from create_wiki push_code
-      resolve_note create_container_image update_container_image
+      resolve_note create_container_image update_container_image destroy_container_image
       create_environment create_deployment create_release update_release
     ]
   end
