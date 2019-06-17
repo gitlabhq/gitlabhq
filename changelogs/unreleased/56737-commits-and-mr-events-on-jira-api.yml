@@ -1,0 +1,5 @@
+---
+title: Expose all current events properly on services API
+merge_request: 29736
+author: Zsolt Kovari
+type: fixed

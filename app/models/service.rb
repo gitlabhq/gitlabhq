@@ -120,7 +120,7 @@ class Service < ApplicationRecord
   end
 
   def self.event_names
-    self.supported_events.map { |event| "#{event}_events" }
+    self.supported_events.map { |event| ServicesHelper.service_event_field_name(event) }
   end
 
   def event_field(event)
@@ -152,7 +152,7 @@ class Service < ApplicationRecord
   end
 
   def self.supported_events
-    %w(push tag_push issue confidential_issue merge_request wiki_page)
+    %w(commit push tag_push issue confidential_issue merge_request wiki_page)
   end
 
   def execute(data)

@@ -22,6 +22,7 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `api_key` | string | true | User API token. User must have access to task, all comments will be attributed to this user. |
 | `restrict_to_branch` | string | false | Comma-separated list of branches which will be automatically inspected. Leave blank to include all branches. |
+| `push_events` | boolean | false | Enable notifications for push events |
 
 ### Delete Asana service
 
@@ -57,6 +58,7 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `token` | string | true | The authentication token
 | `subdomain` | string | false | The subdomain setting |
+| `push_events` | boolean | false | Enable notifications for push events |
 
 ### Delete Assembla service
 
@@ -96,6 +98,7 @@ Parameters:
 | `build_key` | string | true | Bamboo build plan key like KEY |
 | `username` | string | true | A user with API access, if applicable |
 | `password` | string | true | Password of the user |
+| `push_events` | boolean | false | Enable notifications for push events |
 
 ### Delete Atlassian Bamboo CI service
 
@@ -134,6 +137,7 @@ Parameters:
 | `project_url` | string | true | Project url |
 | `description` | string | false | Description |
 | `title` | string | false | Title |
+| `push_events` | boolean | false | Enable notifications for push events |
 
 ### Delete Bugzilla Service
 
@@ -170,6 +174,7 @@ Parameters:
 | `token` | string | true | Buildkite project GitLab token |
 | `project_url` | string | true | `https://buildkite.com/example/project` |
 | `enable_ssl_verification` | boolean | false | Enable SSL verification |
+| `push_events` | boolean | false | Enable notifications for push events |
 
 ### Delete Buildkite service
 
@@ -206,6 +211,7 @@ Parameters:
 | `token` | string | true | Campfire token |
 | `subdomain` | string | false | Campfire subdomain |
 | `room`  | string | false | Campfire room |
+| `push_events` | boolean | false | Enable notifications for push events |
 
 ### Delete Campfire service
 
@@ -244,6 +250,7 @@ Parameters:
 | `project_url` | string | true | Project url
 | `description` | string | false | Description
 | `title` | string | false | Title
+| `push_events` | boolean | false | Enable notifications for push events |
 
 ### Delete Custom Issue Tracker service
 
@@ -280,6 +287,10 @@ Parameters:
 | `token` | string | true | Drone CI project specific token |
 | `drone_url` | string | true | `http://drone.example.com` |
 | `enable_ssl_verification` | boolean | false | Enable SSL verification |
+| `push_events` | boolean | false | Enable notifications for push events |
+| `merge_requests_events` | boolean | false | Enable notifications for merge request events |
+| `tag_push_events` | boolean | false | Enable notifications for tag push events |
+
 
 ### Delete Drone CI service
 
@@ -316,6 +327,8 @@ Parameters:
 | `recipients` | string | true | Emails separated by whitespace |
 | `disable_diffs` | boolean | false | Disable code diffs |
 | `send_from_committer_email` | boolean | false | Send from committer |
+| `push_events` | boolean | false | Enable notifications for push events |
+| `tag_push_events` | boolean | false | Enable notifications for tag push events |
 
 ### Delete Emails on push service
 
@@ -384,6 +397,7 @@ Parameters:
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `token` | string | true | Flowdock Git source token |
+| `push_events` | boolean | false | Enable notifications for push events |
 
 ### Delete Flowdock service
 
@@ -471,6 +485,14 @@ Parameters:
 | `room` | string | false |Room name or ID |
 | `api_version` | string | false | Leave blank for default (v2) |
 | `server` | string | false | Leave blank for default. For example, `https://hipchat.example.com`. |
+| `push_events` | boolean | false | Enable notifications for push events |
+| `issues_events` | boolean | false | Enable notifications for issue events |
+| `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events |
+| `merge_requests_events` | boolean | false | Enable notifications for merge request events |
+| `tag_push_events` | boolean | false | Enable notifications for tag push events |
+| `note_events` | boolean | false | Enable notifications for note events |
+| `confidental_note_events` | boolean | false | Enable notifications for confidential note events |
+| `pipeline_events` | boolean | false | Enable notifications for pipeline events |
 
 ### Delete HipChat service
 
@@ -511,6 +533,7 @@ Parameters:
 | `server_host` | string | false | localhost |
 | `server_port` | integer | false | 6659 |
 | `colorize_messages` | boolean | false | Colorize messages |
+| `push_events` | boolean | false | Enable notifications for push events |
 
 ### Delete Irker (IRC gateway) service
 
@@ -562,6 +585,8 @@ Parameters:
 | `password`      | string | yes  | The password of the user created to be used with GitLab/JIRA. |
 | `active`        | boolean | no  | Activates or deactivates the service. Defaults to false (deactivated). |
 | `jira_issue_transition_id` | string | no | The ID of a transition that moves issues to a closed state. You can find this number under the JIRA workflow administration (**Administration > Issues > Workflows**) by selecting **View** under **Operations** of the desired workflow of your project. The ID of each state can be found inside the parenthesis of each transition name under the **Transitions (id)** column ([see screenshot][trans]). By default, this ID is set to `2`. |
+| `commit_events` | boolean | false | Enable notifications for commit events |
+| `merge_requests_events` | boolean | false | Enable notifications for merge request events |
 
 ### Delete JIRA service
 
@@ -715,9 +740,14 @@ PUT /projects/:id/services/packagist
 
 Parameters:
 
-- `username` (**required**)
-- `token` (**required**)
-- `server` (optional)
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `username` | string | yes | The username of a Packagist account |
+| `token` | string | yes | API token to the Packagist server |
+| `server` | boolean | no | URL of the Packagist server. Leave blank for default: https://packagist.org |
+| `push_events` | boolean | false | Enable notifications for push events |
+| `merge_requests_events` | boolean | false | Enable notifications for merge request events |
+| `tag_push_events` | boolean | false | Enable notifications for tag push events |
 
 ### Delete Packagist service
 
@@ -755,6 +785,7 @@ Parameters:
 | `add_pusher` | boolean | no | Add pusher to recipients list |
 | `notify_only_broken_pipelines` | boolean | no | Notify only broken pipelines |
 | `notify_only_default_branch` | boolean | no | Send notifications only for the default branch ([introduced in GitLab 12.0](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/28271)) |
+| `pipeline_events` | boolean | false | Enable notifications for pipeline events |
 
 ### Delete Pipeline-Emails service
 
@@ -790,6 +821,7 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `token` | string | true | The PivotalTracker token |
 | `restrict_to_branch` | boolean | false | Comma-separated list of branches which will be automatically inspected. Leave blank to include all branches. |
+| `push_events` | boolean | false | Enable notifications for push events |
 
 ### Delete PivotalTracker service
 
@@ -862,6 +894,7 @@ Parameters:
 | `priority` | string | true | The priority |
 | `device` | string | false | Leave blank for all active devices |
 | `sound` | string | false | The sound of the notification |
+| `push_events` | boolean | false | Enable notifications for push events |
 
 ### Delete Pushover service
 
@@ -899,6 +932,7 @@ Parameters:
 | `project_url` | string | true | Project url |
 | `issues_url` | string | true | Issue url |
 | `description` | string | false | Description |
+| `push_events` | boolean | false | Enable notifications for push events |
 
 ### Delete Redmine service
 
@@ -989,6 +1023,15 @@ Parameters:
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `webhook` | string | true | The Microsoft Teams webhook. For example, `https://outlook.office.com/webhook/...` |
+| `push_events` | boolean | false | Enable notifications for push events |
+| `issues_events` | boolean | false | Enable notifications for issue events |
+| `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events |
+| `merge_requests_events` | boolean | false | Enable notifications for merge request events |
+| `tag_push_events` | boolean | false | Enable notifications for tag push events |
+| `note_events` | boolean | false | Enable notifications for note events |
+| `confidental_note_events` | boolean | false | Enable notifications for confidential note events |
+| `pipeline_events` | boolean | false | Enable notifications for pipeline events |
+| `wiki_page_events` | boolean | false | Enable notifications for wiki page events |
 
 ### Delete Microsoft Teams service
 
@@ -1084,6 +1127,7 @@ Parameters:
 | `build_type` | string | true | Build configuration ID |
 | `username` | string | true | A user with permissions to trigger a manual build |
 | `password` | string | true | The password of the user |
+| `push_events` | boolean | false | Enable notifications for push events |
 
 ### Delete JetBrains TeamCity CI service
 
@@ -1230,6 +1274,7 @@ Parameters:
 | `issues_url` | string | true | Issue url |
 | `project_url` | string | true | Project url |
 | `description` | string | false | Description |
+| `push_events` | boolean | false | Enable notifications for push events |
 
 ### Delete YouTrack Service
 
