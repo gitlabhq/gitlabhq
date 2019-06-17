@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: zh-CN\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2019-06-14 10:19\n"
+"PO-Revision-Date: 2019-06-14 20:00\n"
 
 msgid " Please sign in."
 msgstr " 请登录。"
@@ -6347,6 +6347,9 @@ msgstr "Google Takeout"
 msgid "Google authentication is not %{link_to_documentation}. Ask your GitLab administrator if you want to use this service."
 msgstr "Google身份验证未%{link_to_documentation}。如需使用此服务，请咨询GitLab管理员。"
 
+msgid "Got it"
+msgstr ""
+
 msgid "Got it!"
 msgstr "了解！"
 
@@ -6824,6 +6827,9 @@ msgstr "如果任何作业超过这个超时阈值，它将被标记为失败。
 
 msgid "If checked, group owners can manage LDAP group links and LDAP member overrides"
 msgstr "如果选中，则群组所有者可以管理 LDAP 群组链接和 LDAP 成员覆盖"
+
+msgid "If checked, new group memberships and permissions can only be added via LDAP synchronization"
+msgstr ""
 
 msgid "If disabled, a diverged local branch will not be automatically updated with commits from its remote counterpart, to prevent local data loss. If the default branch (%{default_branch}) has diverged and cannot be updated, mirroring will fail. Other diverged branches are silently ignored."
 msgstr "如果禁用，则不会使用远程副本的提交自动更新分叉的本地分支，以防止本地数据丢失。如果默认分支 (%{default_branch}) 已分叉且无法更新，则镜像将失败。其他分叉的分支默默被忽略。"
@@ -7420,6 +7426,9 @@ msgstr "合并入"
 msgid "Job|with"
 msgstr "由"
 
+msgid "Join Zoom meeting"
+msgstr ""
+
 msgid "Jul"
 msgstr "7月"
 
@@ -7824,6 +7833,9 @@ msgstr "锁定"
 msgid "Lock %{issuableDisplayName}"
 msgstr "锁定 %{issuableDisplayName}"
 
+msgid "Lock memberships to LDAP synchronization"
+msgstr ""
+
 msgid "Lock not found"
 msgstr "未找到锁"
 
@@ -8171,6 +8183,9 @@ msgstr "开始讨论提交%{linkStart}%{commitId}%{linkEnd}"
 
 msgid "MergeRequest| %{paragraphStart}changed the description %{descriptionChangedTimes} times %{timeDifferenceMinutes}%{paragraphEnd}"
 msgstr "%{paragraphStart}%{timeDifferenceMinutes}%{descriptionChangedTimes}次更改了描述%{paragraphEnd}"
+
+msgid "MergeRequest|Error dismissing suggestion popover. Please try again."
+msgstr ""
 
 msgid "MergeRequest|Error loading full diff. Please try again."
 msgstr "加载完整差异时出错。请再试一次。"
@@ -8646,6 +8661,9 @@ msgstr "新建标签"
 
 msgid "New users set to external"
 msgstr "新用户设置为外部"
+
+msgid "New! Suggest changes directly"
+msgstr ""
 
 msgid "New..."
 msgstr "新建..."
@@ -9175,6 +9193,18 @@ msgstr "Pages域名"
 
 msgid "Pages getting started guide"
 msgstr "Pages 入门指南"
+
+msgid "Pagination|Go to first page"
+msgstr ""
+
+msgid "Pagination|Go to last page"
+msgstr ""
+
+msgid "Pagination|Go to next page"
+msgstr ""
+
+msgid "Pagination|Go to previous page"
+msgstr ""
 
 msgid "Pagination|Last »"
 msgstr "尾页 »"
@@ -12660,6 +12690,9 @@ msgstr "成功解除禁用"
 
 msgid "Successfully unlocked"
 msgstr "成功解除禁用"
+
+msgid "Suggest code changes which are immediately applied. Try it out!"
+msgstr ""
 
 msgid "Suggested change"
 msgstr "变更建议"
