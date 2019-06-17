@@ -226,7 +226,7 @@ module Clusters
     end
 
     def allow_user_defined_namespace?
-      project_type?
+      project_type? || !managed?
     end
 
     def kube_ingress_domain

@@ -514,19 +514,43 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
     subject { cluster.allow_user_defined_namespace? }
 
     context 'project type cluster' do
-      it { is_expected.to be_truthy }
+      context 'gitlab managed' do
+        it { is_expected.to be_truthy }
+      end
+
+      context 'not managed' do
+        let(:cluster) { create(:cluster, :provided_by_gcp, managed: false) }
+
+        it { is_expected.to be_truthy }
+      end
     end
 
     context 'group type cluster' do
-      let(:cluster) { create(:cluster, :provided_by_gcp, :group) }
+      context 'gitlab managed' do
+        let(:cluster) { create(:cluster, :provided_by_gcp, :group) }
 
-      it { is_expected.to be_falsey }
+        it { is_expected.to be_falsey }
+      end
+
+      context 'not managed' do
+        let(:cluster) { create(:cluster, :provided_by_gcp, :group, managed: false) }
+
+        it { is_expected.to be_truthy }
+      end
     end
 
     context 'instance type cluster' do
-      let(:cluster) { create(:cluster, :provided_by_gcp, :instance) }
+      context 'gitlab managed' do
+        let(:cluster) { create(:cluster, :provided_by_gcp, :instance) }
 
-      it { is_expected.to be_falsey }
+        it { is_expected.to be_falsey }
+      end
+
+      context 'not managed' do
+        let(:cluster) { create(:cluster, :provided_by_gcp, :instance, managed: false) }
+
+        it { is_expected.to be_truthy }
+      end
     end
   end
 
