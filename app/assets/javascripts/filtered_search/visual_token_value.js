@@ -6,6 +6,7 @@ import DropdownUtils from '~/filtered_search/dropdown_utils';
 import Flash from '~/flash';
 import UsersCache from '~/lib/utils/users_cache';
 import { __ } from '~/locale';
+import { TOKEN_TYPES } from 'ee_else_ce/filtered_search/constants';
 
 export default class VisualTokenValue {
   constructor(tokenValue, tokenType) {
@@ -22,7 +23,7 @@ export default class VisualTokenValue {
 
     if (tokenType === 'label') {
       this.updateLabelTokenColor(tokenValueContainer);
-    } else if (tokenType === 'author' || tokenType === 'assignee') {
+    } else if (TOKEN_TYPES.includes(tokenType)) {
       this.updateUserTokenAppearance(tokenValueContainer, tokenValueElement);
     } else if (tokenType === 'my-reaction') {
       this.updateEmojiTokenAppearance(tokenValueContainer, tokenValueElement);

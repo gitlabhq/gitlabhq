@@ -1,4 +1,4 @@
-import VisualTokenValue from 'ee_else_ce/filtered_search/visual_token_value';
+import VisualTokenValue from './visual_token_value';
 import { objectToQueryString } from '~/lib/utils/common_utils';
 import FilteredSearchContainer from './container';
 
