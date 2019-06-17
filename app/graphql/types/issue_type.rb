@@ -51,5 +51,7 @@ module Types
 
     field :created_at, Types::TimeType, null: false
     field :updated_at, Types::TimeType, null: false
+
+    field :task_completion_status, Types::TaskCompletionStatus, null: false
   end
 end
