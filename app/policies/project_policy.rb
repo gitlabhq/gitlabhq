@@ -258,6 +258,7 @@ class ProjectPolicy < BasePolicy
     enable :resolve_note
     enable :create_container_image
     enable :update_container_image
+    enable :destroy_container_image
     enable :create_environment
     enable :create_deployment
     enable :create_release

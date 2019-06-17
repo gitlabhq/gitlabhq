@@ -201,10 +201,10 @@ describe API::ContainerRegistry do
   describe 'DELETE /projects/:id/registry/repositories/:repository_id/tags/:tag_name' do
     subject { delete api("/projects/#{project.id}/registry/repositories/#{root_repository.id}/tags/rootA", api_user) }
 
-    it_behaves_like 'being disallowed', :developer
+    it_behaves_like 'being disallowed', :reporter
 
-    context 'for maintainer' do
-      let(:api_user) { maintainer }
+    context 'for developer' do
+      let(:api_user) { developer }
 
       before do
         stub_container_registry_tags(repository: root_repository.path, tags: %w(rootA), with_manifest: true)

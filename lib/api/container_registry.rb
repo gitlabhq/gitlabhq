@@ -115,12 +115,8 @@ module API
         authorize! :read_container_image, repository
       end
 
-      def authorize_update_container_image!
-        authorize! :update_container_image, repository
-      end
-
       def authorize_destroy_container_image!
-        authorize! :admin_container_image, repository
+        authorize! :destroy_container_image, repository
       end
 
       def authorize_admin_container_image!
