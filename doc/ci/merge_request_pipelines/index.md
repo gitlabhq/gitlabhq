@@ -124,7 +124,7 @@ otherwise pipelines for merged results won't run and your merge requests will be
 ## Merge Trains **[PREMIUM]**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/9186) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.0.
-> This feature is disabled by default until we resolve issues with [contention handling](https://gitlab.com/gitlab-org/gitlab-ee/issues/11222), but [can be enabled manually](#enabling-merge-trains).
+> This feature is disabled by default, but [can be enabled manually](#enabling-merge-trains).
 
 [Pipelines for merged results](#pipelines-for-merged-results-premium) introduces
 running a build on the result of the merged code prior to merging, as a way to keep master green.
@@ -142,9 +142,8 @@ If the button is subsequently pressed in a different MR, instead of creating a n
 it creates a new pipeline targeting the merge result of the previous MR plus the target branch.
 Pipelines invalidated through failures are immediately canceled and requeued.
 
-CAUTION: **Warning:**
-At this moment, each merge train can generate a merge ref and run a pipeline **one at a time** due to a technical challenge.
-We have [an issue](https://gitlab.com/gitlab-org/gitlab-ee/issues/11222) to tackle this problem to make the pipelines for merged results run in parallel.
+CAUTION: **Caution:**
+At the moment, each merge train can generate a merge ref and run a pipeline **one at a time**. We plan to make the pipelines for merged results [run in parallel](https://gitlab.com/gitlab-org/gitlab-ee/issues/11222) in a future release.
 
 ### Enabling Merge Trains
 
@@ -185,11 +184,6 @@ pipeline succeeds**. You can see the following button instead of the regular "St
 button while the latest pipeline is running.
 
 ![Add to merge train when pipeline succeeds](img/merge_train_start_when_pipeline_succeeds.png)
-
-### Merge Train's limitations
-
-- At this moment, each merge train can generate a merge ref and run a pipeline **one at a time** due to a technical challenge.
-  We have [an issue](https://gitlab.com/gitlab-org/gitlab-ee/issues/11222) to tackle this problem to make the pipelines for merged results run in parallel.
 
 ## Excluding certain jobs
 
