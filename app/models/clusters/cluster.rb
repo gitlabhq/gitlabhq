@@ -193,15 +193,34 @@ module Clusters
       platform_kubernetes.kubeclient if kubernetes?
     end
 
+    ##
+    # This is subtly different to #find_or_initialize_kubernetes_namespace_for_project
+    # below because it will ignore any namespaces that have not got a service account
+    # token. This provides a guarantee that any namespace selected here can be used
+    # for cluster operations - a namespace needs to have a service account configured
+    # before it it can be used.
+    #
+    # This is used for selecting a namespace to use when querying a cluster, or
+    # generating variables to pass to CI.
     def kubernetes_namespace_for(project)
-      find_or_initialize_kubernetes_namespace_for_project(project).namespace
+      find_or_initialize_kubernetes_namespace_for_project(
+        project, scope: kubernetes_namespaces.has_service_account_token
+      ).namespace
     end
 
-    def find_or_initialize_kubernetes_namespace_for_project(project)
+    ##
+    # This is subtly different to #kubernetes_namespace_for because it will include
+    # namespaces that have yet to receive a service account token. This allows
+    # the namespace configuration process to be repeatable - if a namespace has
+    # already been created without a token we don't need to create another
+    # record entirely, just set the token on the pre-existing namespace.
+    #
+    # This is used for configuring cluster namespaces.
+    def find_or_initialize_kubernetes_namespace_for_project(project, scope: kubernetes_namespaces)
       attributes = { project: project }
       attributes[:cluster_project] = cluster_project if project_type?
 
-      kubernetes_namespaces.find_or_initialize_by(attributes).tap do |namespace|
+      scope.find_or_initialize_by(attributes).tap do |namespace|
         namespace.set_defaults
       end
     end
