@@ -1848,6 +1848,7 @@ ActiveRecord::Schema.define(version: 20190611161641) do
     t.boolean "ldap", default: false, null: false
     t.boolean "override", default: false, null: false
     t.index ["access_level"], name: "index_members_on_access_level", using: :btree
+    t.index ["invite_email"], name: "index_members_on_invite_email", using: :btree
     t.index ["invite_token"], name: "index_members_on_invite_token", unique: true, using: :btree
     t.index ["requested_at"], name: "index_members_on_requested_at", using: :btree
     t.index ["source_id", "source_type"], name: "index_members_on_source_id_and_source_type", using: :btree
