@@ -46,7 +46,7 @@ curl --data "value=100" --header "PRIVATE-TOKEN: <your_access_token>" https://gi
 A first iteration of a GraphQL API includes the following queries
 
 1. `project` : Within a project it is also possible to fetch a `mergeRequest` by IID.
-1. `group` : Only basic group information is currently supported.
+1. `group` : Basic group information and epics **[ULTIMATE]** are currently supported.
 1. `namespace` : Within a namespace it is also possible to fetch `projects`.
 
 ### Multiplex queries
