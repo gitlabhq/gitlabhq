@@ -7,7 +7,7 @@ module Gitlab
 
       def initialize(shared:)
         @shared = shared
-        config_hash = YAML.load_file(Gitlab::ImportExport.config_file).deep_symbolize_keys
+        config_hash = ImportExport::Config.new.to_h.deep_symbolize_keys
         @tree = config_hash[:project_tree]
         @attributes_finder = Gitlab::ImportExport::AttributesFinder.new(included_attributes: config_hash[:included_attributes],
                                                                         excluded_attributes: config_hash[:excluded_attributes],

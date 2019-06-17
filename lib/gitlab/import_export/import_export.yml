@@ -1,7 +1,11 @@
 # Model relationships to be included in the project import/export
+#
+# This list _must_ only contain relationships that are available to both CE and
+# EE. EE specific relationships must be defined in the `ee` section further
+# down below.
 project_tree:
   - labels:
-      :priorities
+    - :priorities
   - milestones:
     - events:
       - :push_event_payload
@@ -15,18 +19,18 @@ project_tree:
         - :push_event_payload
     - label_links:
       - label:
-          :priorities
+        - :priorities
     - milestone:
       - events:
         - :push_event_payload
     - resource_label_events:
       - label:
-          :priorities
+        - :priorities
     - :issue_assignees
   - snippets:
     - :award_emoji
     - notes:
-        :author
+      - :author
   - releases:
     - :links
   - project_members:
@@ -46,13 +50,13 @@ project_tree:
     - :timelogs
     - label_links:
       - label:
-          :priorities
+        - :priorities
     - milestone:
       - events:
         - :push_event_payload
     - resource_label_events:
       - label:
-          :priorities
+        - :priorities
   - ci_pipelines:
     - notes:
       - :author
@@ -121,12 +125,22 @@ excluded_attributes:
     - :bfg_object_map
     - :detected_repository_languages
     - :tag_list
+    - :mirror_user_id
+    - :mirror_trigger_builds
+    - :only_mirror_protected_branches
+    - :pull_mirror_available_overridden
+    - :mirror_overwrites_diverged_branches
+    - :packages_enabled
+    - :mirror_last_update_at
+    - :mirror_last_successful_update_at
   namespaces:
     - :runners_token
     - :runners_token_encrypted
   project_import_state:
     - :last_error
     - :jid
+    - :last_update_at
+    - :last_successful_update_at
   prometheus_metrics:
     - :common
     - :identifier
@@ -201,3 +215,12 @@ methods:
     - :action
   project_badges:
     - :type
+
+# EE specific relationships and settings to include. All of this will be merged
+# into the previous structures if EE is used.
+ee:
+  project_tree:
+    - protected_branches:
+      - :unprotect_access_levels
+    - protected_environments:
+      - :deploy_access_levels

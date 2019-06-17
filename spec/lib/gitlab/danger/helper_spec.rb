@@ -162,7 +162,6 @@ describe Gitlab::Danger::Helper do
       'db/foo' | :database
       'qa/foo' | :qa
 
-      'ee/db/foo' | :database
       'ee/qa/foo' | :qa
 
       'changelogs/foo'    | :none

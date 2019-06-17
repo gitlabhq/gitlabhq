@@ -10,6 +10,6 @@ class AddRemoteMirrorAvailableOverriddenToProjects < ActiveRecord::Migration[4.2
   end
 
   def down
-    remove_column(:projects, :remote_mirror_available_overridden) if column_exists?(:projects, :remote_mirror_available_overridden)
+    # ee/db/migrate/20171017130239_add_remote_mirror_available_overridden_to_projects_ee.rb will remove the column.
   end
 end
