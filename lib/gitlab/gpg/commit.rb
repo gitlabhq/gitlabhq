@@ -52,12 +52,13 @@ module Gitlab
 
       def using_keychain
         Gitlab::Gpg.using_tmp_keychain do
-          # first we need to get the keyid from the signature to query the gpg
-          # key belonging to the keyid.
+          # first we need to get the fingerprint from the signature to query the gpg
+          # key belonging to the fingerprint.
           # This way we can add the key to the temporary keychain and extract
           # the proper signature.
-          # NOTE: the invoked method is #fingerprint but it's only returning
-          # 16 characters (the format used by keyid) instead of 40.
+          # NOTE: the invoked method is #fingerprint but versions of GnuPG
+          # prior to 2.2.13 return 16 characters (the format used by keyid)
+          # instead of 40.
           fingerprint = verified_signature&.fingerprint
 
           break unless fingerprint
@@ -128,11 +129,13 @@ module Gitlab
         gpg_key&.verified_user_infos&.first || gpg_key&.user_infos&.first || {}
       end
 
-      # rubocop: disable CodeReuse/ActiveRecord
-      def find_gpg_key(keyid)
-        GpgKey.find_by(primary_keyid: keyid) || GpgKeySubkey.find_by(keyid: keyid)
+      def find_gpg_key(fingerprint)
+        if fingerprint.length > 16
+          GpgKey.find_by_fingerprint(fingerprint) || GpgKeySubkey.find_by_fingerprint(fingerprint)
+        else
+          GpgKey.find_by_primary_keyid(fingerprint) || GpgKeySubkey.find_by_keyid(fingerprint)
+        end
       end
-      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end
