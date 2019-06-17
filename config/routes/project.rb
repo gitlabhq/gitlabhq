@@ -155,7 +155,11 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
         end
 
-        resources :boards, only: [:index, :show], constraints: { id: /\d+/ }
+        resources :boards, only: [:index, :show, :create, :update, :destroy], constraints: { id: /\d+/ } do
+          collection do
+            get :recent
+          end
+        end
         resources :releases, only: [:index]
         resources :forks, only: [:index, :new, :create]
         resources :group_links, only: [:index, :create, :update, :destroy], constraints: { id: /\d+/ }

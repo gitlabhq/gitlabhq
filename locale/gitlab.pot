@@ -5479,6 +5479,9 @@ msgstr ""
 msgid "IssueBoards|Board"
 msgstr ""
 
+msgid "IssueBoards|Boards"
+msgstr ""
+
 msgid "Issues"
 msgstr ""
 
