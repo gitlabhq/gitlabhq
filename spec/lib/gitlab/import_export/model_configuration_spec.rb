@@ -6,7 +6,7 @@ require 'spec_helper'
 describe 'Import/Export model configuration' do
   include ConfigurationHelper
 
-  let(:config_hash) { YAML.load_file(Gitlab::ImportExport.config_file).deep_stringify_keys }
+  let(:config_hash) { Gitlab::ImportExport::Config.new.to_h.deep_stringify_keys }
   let(:model_names) do
     names = names_from_tree(config_hash['project_tree'])
 
@@ -16,26 +16,9 @@ describe 'Import/Export model configuration' do
     # - User, Author... Models we do not care about for checking models
     names.flatten.uniq - %w(milestones labels user author) + ['project']
   end
-  let(:ce_models_yml) { 'spec/lib/gitlab/import_export/all_models.yml' }
-  let(:ce_models_hash) { YAML.load_file(ce_models_yml) }
-
-  let(:ee_models_yml) { 'ee/spec/lib/gitlab/import_export/all_models.yml' }
-  let(:ee_models_hash) { File.exist?(ee_models_yml) ? YAML.load_file(ee_models_yml) : {} }
-
+  let(:all_models_yml) { 'spec/lib/gitlab/import_export/all_models.yml' }
+  let(:all_models_hash) { YAML.load_file(all_models_yml) }
   let(:current_models) { setup_models }
-  let(:all_models_hash) do
-    all_models_hash = ce_models_hash.dup
-
-    all_models_hash.each do |model, associations|
-      associations.concat(ee_models_hash[model] || [])
-    end
-
-    ee_models_hash.each do |model, associations|
-      all_models_hash[model] ||= associations
-    end
-
-    all_models_hash
-  end
 
   it 'has no new models' do
     model_names.each do |model_name|
@@ -59,8 +42,7 @@ describe 'Import/Export model configuration' do
 
       If you think this model should be included in the export, please add it to `#{Gitlab::ImportExport.config_file}`.
 
-      Definitely add it to `#{File.expand_path(ce_models_yml)}`
-      #{"or `#{File.expand_path(ee_models_yml)}` if the model/associations are EE-specific\n" if ee_models_hash.any?}
+      Definitely add it to `#{File.expand_path(all_models_yml)}`
       to signal that you've handled this error and to prevent it from showing up in the future.
     MSG
   end

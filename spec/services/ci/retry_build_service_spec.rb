@@ -38,7 +38,7 @@ describe Ci::RetryBuildService do
        runner_id tag_taggings taggings tags trigger_request_id
        user_id auto_canceled_by_id retried failure_reason
        sourced_pipelines artifacts_file_store artifacts_metadata_store
-       metadata runner_session trace_chunks
+       metadata runner_session trace_chunks upstream_pipeline_id
        artifacts_file artifacts_metadata artifacts_size].freeze
 
   shared_examples 'build duplication' do

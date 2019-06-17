@@ -10,6 +10,6 @@ class AddMirrorAvailableToApplicationSettings < ActiveRecord::Migration[4.2]
   end
 
   def down
-    remove_column(:application_settings, :mirror_available) if column_exists?(:application_settings, :mirror_available)
+    # ee/db/migrate/20171017125928_add_remote_mirror_available_to_application_settings.rb will remove the column.
   end
 end
