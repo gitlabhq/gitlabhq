@@ -3,6 +3,8 @@
 module Gitlab
   module CycleAnalytics
     class CodeEventFetcher < BaseEventFetcher
+      include CodeHelper
+
       def initialize(*args)
         @projections = [mr_table[:title],
                         mr_table[:iid],

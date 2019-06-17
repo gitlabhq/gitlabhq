@@ -5,7 +5,6 @@ import Flash from '../flash';
 import Translate from '../vue_shared/translate';
 import banner from './components/banner.vue';
 import stageCodeComponent from './components/stage_code_component.vue';
-import stagePlanComponent from './components/stage_plan_component.vue';
 import stageComponent from './components/stage_component.vue';
 import stageReviewComponent from './components/stage_review_component.vue';
 import stageStagingComponent from './components/stage_staging_component.vue';
@@ -26,7 +25,7 @@ export default () => {
     components: {
       banner,
       'stage-issue-component': stageComponent,
-      'stage-plan-component': stagePlanComponent,
+      'stage-plan-component': stageComponent,
       'stage-code-component': stageCodeComponent,
       'stage-test-component': stageTestComponent,
       'stage-review-component': stageReviewComponent,

@@ -4500,12 +4500,6 @@ msgstr ""
 msgid "First day of the week"
 msgstr ""
 
-msgid "FirstPushedBy|First"
-msgstr ""
-
-msgid "FirstPushedBy|pushed by"
-msgstr ""
-
 msgid "FlowdockService|Flowdock Git source token"
 msgstr ""
 
@@ -8311,9 +8305,6 @@ msgid "Register with two-factor app"
 msgstr ""
 
 msgid "Registry"
-msgstr ""
-
-msgid "Related Commits"
 msgstr ""
 
 msgid "Related Deployed Jobs"

@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 shared_examples 'base stage' do
+  ISSUES_MEDIAN = 30.minutes.to_i
+
   let(:stage) { described_class.new(project: double, options: {}) }
 
   before do
