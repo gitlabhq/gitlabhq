@@ -54,8 +54,6 @@ Just select your operating system, download the respective package (Debian or RP
 
 There are various other options to install GitLab, please refer to the [installation page on the GitLab website](https://about.gitlab.com/installation/) for more information.
 
-You can access a new installation with the login **`root`** and password **`5iveL!fe`**, after login you are required to set a unique password.
-
 ## Contributing
 
 GitLab is an open source project and we are very happy to accept community contributions. Please refer to [Contributing to GitLab page](https://about.gitlab.com/contributing/) for more details.
@@ -125,4 +123,3 @@ Please see [Getting help for GitLab](https://about.gitlab.com/getting-help/) on 
 ## Is it awesome?
 
 [These people](https://twitter.com/gitlab/likes) seem to like it.
-
