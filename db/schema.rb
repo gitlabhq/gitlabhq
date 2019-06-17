@@ -1051,6 +1051,12 @@ ActiveRecord::Schema.define(version: 20190611161641) do
     t.index ["usage", "project_id"], name: "index_internal_ids_on_usage_and_project_id", unique: true, where: "(project_id IS NOT NULL)", using: :btree
   end
 
+  create_table "ip_restrictions", force: :cascade do |t|
+    t.integer "group_id", null: false
+    t.string "range", null: false
+    t.index ["group_id"], name: "index_ip_restrictions_on_group_id", using: :btree
+  end
+
   create_table "issue_assignees", id: false, force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "issue_id", null: false
@@ -2565,6 +2571,7 @@ ActiveRecord::Schema.define(version: 20190611161641) do
   add_foreign_key "import_export_uploads", "projects", on_delete: :cascade
   add_foreign_key "internal_ids", "namespaces", name: "fk_162941d509", on_delete: :cascade
   add_foreign_key "internal_ids", "projects", on_delete: :cascade
+  add_foreign_key "ip_restrictions", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "issue_assignees", "issues", name: "fk_b7d881734a", on_delete: :cascade
   add_foreign_key "issue_assignees", "users", name: "fk_5e0c8d9154", on_delete: :cascade
   add_foreign_key "issue_metrics", "issues", on_delete: :cascade
