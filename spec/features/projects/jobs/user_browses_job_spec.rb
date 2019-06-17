@@ -40,12 +40,15 @@ describe 'User browses a job', :js do
     it 'collapses a section' do
       wait_for_requests
       text_to_hide = "Cloning into '/nolith/ci-tests'"
+      text_to_show = 'Waiting for pod'
 
       expect(page).to have_content(text_to_hide)
+      expect(page).to have_content(text_to_show)
 
-      find('.js-section-start[data-section="get-sources"]').click
+      first('.js-section-start[data-section="get-sources"]').click
 
       expect(page).not_to have_content(text_to_hide)
+      expect(page).to have_content(text_to_show)
     end
   end
 
