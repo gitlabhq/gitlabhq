@@ -231,6 +231,65 @@ While the terminal is running, it can be stopped by clicking **Stop Terminal**.
 This will disconnect the terminal and stop the runner's terminal job. From here,
 click **Restart Terminal** to start a new terminal session.
 
+### File Syncing to Web Terminal
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/5276) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.0.
+
+File changes in the Web IDE can be synced to a running Web Terminal.
+This enables users to test their code changes in a preconfigured terminal
+environment.
+
+NOTE: **Note:**
+Only file changes in the Web IDE are synced to the terminal.
+Changes made in the terminal are **not** synced to the Web IDE.
+
+Once you have [configured the Web Terminal for File Syncing](#configuring-file-syncing),
+then when the Web terminal is started, a **Terminal** status will be visible
+in the status bar.
+
+![Web IDE Client Side Evaluation](img/terminal_status.png)
+
+Changes made to your files via the Web IDE will sync to the running terminal
+when:
+
+- <kbd>Ctrl</kbd> + <kbd>S</kbd> (or <kbd>Cmd</kbd> + <kbd>S</kbd> on Mac) 
+  is pressed while editing a file.
+- Anything outside the file editor is clicked after editing a file.
+- A file or folder is created, deleted, or renamed.
+
+### Configuring File Syncing
+
+NOTE: **Note:**
+This feature is only available for Kubernetes runners.
+
+To enable file syncing to the Web Terminal, the `.gitlab/.gitlab-webide.yml` 
+file needs to have a `webide-file-sync` service configured. Here is an example 
+configuration for a Node JS project which uses this service:
+
+```yaml
+terminal:
+  # This can be any image that has the necessary runtime environment for your project.
+  image: 
+    name: node:10-alpine
+  services:
+    - name: registry.gitlab.com/gitlab-org/webide-file-sync:latest
+      alias: webide-file-sync
+      entrypoint: ["/bin/sh"]
+      command: ["-c", "sleep 5 && ./webide-file-sync -project-dir $CI_PROJECT_DIR"]
+      ports:
+        # The `webide-file-sync` executable defaults to port 3000.
+        - number: 3000
+```
+
+> **Notes:**
+> - For now, the `webide-file-sync` executable must start **after** the project
+>  directory is available. This is why we need to add `sleep 5` to the `command`.
+>  See [this issue](https://gitlab.com/gitlab-org/webide-file-sync/issues/7) for 
+>  more info.
+> - `$CI_PROJECT_DIR` is a 
+>  [predefined environment variable](../../../ci/variables/predefined_variables.md) 
+>  for GitLab Runners. This is where your project's repository will be.
+
 ### Limitations
 
 Interactive Terminals is in a beta phase and will continue to be improved upon in upcoming 
