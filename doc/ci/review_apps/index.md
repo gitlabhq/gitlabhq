@@ -156,6 +156,8 @@ After adding Review Apps to your workflow, you follow the branched Git flow. Tha
 
 ### Visual Reviews
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/10761) in GitLab Starter 12.0.
+
 The Visual Reviews feedback form can be added to a Review App to enable reviewers to post comments
 directly from the app back to the merge request that spawned the Review App.
 
