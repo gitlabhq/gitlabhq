@@ -275,18 +275,17 @@ You can also use the `gitlab:elastic:clear_index_status` Rake task to force the
 indexer to "forget" all progress, so retrying the indexing process from the
 start.
 
-To index all wikis:
+The `index_projects` command enqueues jobs to index all project and wiki
+repositories, and most database content. However, snippets still need to be
+indexed separately. To do so, run one of these commands:
 
 ```sh
 # Omnibus installations
-sudo gitlab-rake gitlab:elastic:index_wikis
+sudo gitlab-rake gitlab:elastic:index_snippets
 
 # Installations from source
-bundle exec rake gitlab:elastic:index_wikis RAILS_ENV=production
+bundle exec rake gitlab:elastic:index_snippets RAILS_ENV=production
 ```
-
-The wiki indexer also supports the `ID_FROM` and `ID_TO` parameters if you want
-to limit a project set.
 
 Enable replication and refreshing again after indexing (only if you previously disabled it):
 
@@ -335,14 +334,11 @@ There are several rake tasks available to you via the command line:
     - `sudo gitlab-rake gitlab:elastic:create_empty_index`
     - `sudo gitlab-rake gitlab:elastic:clear_index_status`
     - `sudo gitlab-rake gitlab:elastic:index_projects`
-    - `sudo gitlab-rake gitlab:elastic:index_wikis`
     - `sudo gitlab-rake gitlab:elastic:index_snippets`
 - [sudo gitlab-rake gitlab:elastic:index_projects](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/ee/lib/tasks/gitlab/elastic.rake)
   - This iterates over all projects and queues sidekiq jobs to index them in the background.
 - [sudo gitlab-rake gitlab:elastic:index_projects_status](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/ee/lib/tasks/gitlab/elastic.rake)
   - This determines the overall status of the indexing. It is done by counting the total number of indexed projects, dividing by a count of the total number of projects, then multiplying by 100.
-- [sudo gitlab-rake gitlab:elastic:index_wikis](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/ee/lib/tasks/gitlab/elastic.rake)
-  - Iterates over every project, determines if said project contains wiki data, and then indexes the blobs (content) of said wiki data.
 - [sudo gitlab-rake gitlab:elastic:create_empty_index](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/ee/lib/tasks/gitlab/elastic.rake)
   - This generates an empty index on the Elasticsearch side.
 - [sudo gitlab-rake gitlab:elastic:clear_index_status](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/ee/lib/tasks/gitlab/elastic.rake)
