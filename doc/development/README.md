@@ -35,7 +35,7 @@ description: 'Learn how to contribute to GitLab.'
 - [API styleguide](api_styleguide.md) Use this styleguide if you are
   contributing to the API.
 - [GraphQL API styleguide](api_graphql_styleguide.md) Use this
-  styleguide if you are contribution to the [GraphQL API](../api/graphql/index.md)
+  styleguide if you are contributing to the [GraphQL API](../api/graphql/index.md)
 - [Sidekiq guidelines](sidekiq_style_guide.md) for working with Sidekiq workers
 - [Working with Gitaly](gitaly.md)
 - [Manage feature flags](feature_flags.md)
