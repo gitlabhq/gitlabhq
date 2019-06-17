@@ -335,6 +335,7 @@ ActiveRecord::Schema.define(version: 20190613030606) do
     t.text "details"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.index ["created_at", "author_id"], name: "analytics_index_audit_events_on_created_at_and_author_id", using: :btree
     t.index ["entity_id", "entity_type"], name: "index_audit_events_on_entity_id_and_entity_type", using: :btree
   end
 
@@ -1219,6 +1220,7 @@ ActiveRecord::Schema.define(version: 20190613030606) do
     t.string "target_type"
     t.index ["action"], name: "index_events_on_action", using: :btree
     t.index ["author_id", "project_id"], name: "index_events_on_author_id_and_project_id", using: :btree
+    t.index ["created_at", "author_id"], name: "analytics_index_events_on_created_at_and_author_id", using: :btree
     t.index ["project_id", "created_at"], name: "index_events_on_project_id_and_created_at", using: :btree
     t.index ["project_id", "id"], name: "index_events_on_project_id_and_id", using: :btree
     t.index ["target_type", "target_id"], name: "index_events_on_target_type_and_target_id", using: :btree
