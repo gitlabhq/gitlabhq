@@ -2,6 +2,11 @@
 
 require 'rails_helper'
 
+# These are written as feature specs because they cover more specific test scenarios
+# than the ones described on spec/services/notes/create_service_spec.rb for quick actions,
+# for example, adding quick actions when creating the issue and checking DateTime formats on UI.
+# Because this kind of spec takes more time to run there is no need to add new ones
+# for each existing quick action unless they test something not tested by existing tests.
 describe 'Issues > User uses quick actions', :js do
   include Spec::Support::Helpers::Features::NotesHelpers
 
@@ -15,30 +20,7 @@ describe 'Issues > User uses quick actions', :js do
     let(:issuable) { create(:issue, project: project) }
     let(:source_issuable) { create(:issue, project: project, milestone: milestone, labels: [label_bug, label_feature])}
 
-    it_behaves_like 'assign quick action', :issue
-    it_behaves_like 'unassign quick action', :issue
     it_behaves_like 'close quick action', :issue
-    it_behaves_like 'reopen quick action', :issue
-    it_behaves_like 'title quick action', :issue
-    it_behaves_like 'todo quick action', :issue
-    it_behaves_like 'done quick action', :issue
-    it_behaves_like 'subscribe quick action', :issue
-    it_behaves_like 'unsubscribe quick action', :issue
-    it_behaves_like 'lock quick action', :issue
-    it_behaves_like 'unlock quick action', :issue
-    it_behaves_like 'milestone quick action', :issue
-    it_behaves_like 'remove_milestone quick action', :issue
-    it_behaves_like 'label quick action', :issue
-    it_behaves_like 'unlabel quick action', :issue
-    it_behaves_like 'relabel quick action', :issue
-    it_behaves_like 'award quick action', :issue
-    it_behaves_like 'estimate quick action', :issue
-    it_behaves_like 'remove_estimate quick action', :issue
-    it_behaves_like 'spend quick action', :issue
-    it_behaves_like 'remove_time_spent quick action', :issue
-    it_behaves_like 'shrug quick action', :issue
-    it_behaves_like 'tableflip quick action', :issue
-    it_behaves_like 'copy_metadata quick action', :issue
     it_behaves_like 'issuable time tracker', :issue
   end
 
@@ -58,11 +40,7 @@ describe 'Issues > User uses quick actions', :js do
       wait_for_requests
     end
 
-    it_behaves_like 'confidential quick action'
-    it_behaves_like 'remove_due_date quick action'
-    it_behaves_like 'duplicate quick action'
     it_behaves_like 'create_merge_request quick action'
-    it_behaves_like 'due quick action'
     it_behaves_like 'move quick action'
   end
 end

@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 describe Notes::CreateService do
-  let(:project) { create(:project) }
-  let(:issue) { create(:issue, project: project) }
-  let(:user) { create(:user) }
+  set(:project) { create(:project, :repository) }
+  set(:issue) { create(:issue, project: project) }
+  set(:user) { create(:user) }
   let(:opts) do
     { note: 'Awesome comment', noteable_type: 'Issue', noteable_id: issue.id }
   end
@@ -197,64 +197,113 @@ describe Notes::CreateService do
     end
 
     context 'note with commands' do
-      context 'as a user who can update the target' do
-        context '/close, /label, /assign & /milestone' do
-          let(:note_text) { %(HELLO\n/close\n/assign @#{user.username}\nWORLD) }
+      context 'all quick actions' do
+        set(:milestone) { create(:milestone, project: project, title: "sprint") }
+        set(:bug_label) { create(:label, project: project, title: 'bug') }
+        set(:to_be_copied_label) { create(:label, project: project, title: 'to be copied') }
+        set(:feature_label) { create(:label, project: project, title: 'feature') }
+        set(:issue) { create(:issue, project: project, labels: [bug_label], due_date: '2019-01-01') }
+        set(:issue_2) { create(:issue, project: project, labels: [bug_label, to_be_copied_label]) }
 
-          it 'saves the note and does not alter the note text' do
-            service = double(:service)
-            allow(Issues::UpdateService).to receive(:new).and_return(service)
-            expect(service).to receive(:execute)
+        context 'for issues' do
+          let(:issuable) { issue }
+          let(:note_params) { opts }
+          let(:issue_quick_actions) do
+            [
+              QuickAction.new(
+                action_text: '/confidential',
+                expectation: ->(noteable, can_use_quick_action) {
+                  if can_use_quick_action
+                    expect(noteable).to be_confidential
+                  else
+                    expect(noteable).not_to be_confidential
+                  end
+                }
+              ),
+              QuickAction.new(
+                action_text: '/due 2016-08-28',
+                expectation: ->(noteable, can_use_quick_action) {
+                  expect(noteable.due_date == Date.new(2016, 8, 28)).to eq(can_use_quick_action)
+                }
+              ),
+              QuickAction.new(
+                action_text: '/remove_due_date',
+                expectation: ->(noteable, can_use_quick_action) {
+                  if can_use_quick_action
+                    expect(noteable.due_date).to be_nil
+                  else
+                    expect(noteable.due_date).not_to be_nil
+                  end
+                }
+              ),
+              QuickAction.new(
+                action_text: "/duplicate #{issue_2.to_reference}",
+                before_action: -> {
+                  issuable.reopen
+                },
+                expectation: ->(noteable, can_use_quick_action) {
+                  expect(noteable.closed?).to eq(can_use_quick_action)
+                }
+              )
+            ]
+          end
 
-            note = described_class.new(project, user, opts.merge(note: note_text)).execute
-
-            expect(note.note).to eq "HELLO\nWORLD"
+          it_behaves_like 'issuable quick actions' do
+            let(:quick_actions) { issuable_quick_actions + issue_quick_actions }
           end
         end
 
-        context '/merge with sha option' do
-          let(:note_text) { %(HELLO\n/merge\nWORLD) }
-          let(:params) { opts.merge(note: note_text, merge_request_diff_head_sha: 'sha') }
-
-          it 'saves the note and exectues merge command' do
-            note = described_class.new(project, user, params).execute
-
-            expect(note.note).to eq "HELLO\nWORLD"
+        context 'for merge requests' do
+          set(:merge_request) { create(:merge_request, source_project: project, labels: [bug_label]) }
+          let(:issuable) { merge_request }
+          let(:note_params) { opts.merge(noteable_type: 'MergeRequest', noteable_id: merge_request.id) }
+          let(:merge_request_quick_actions) do
+            [
+              QuickAction.new(
+                action_text: "/target_branch fix",
+                expectation: ->(noteable, can_use_quick_action) {
+                  expect(noteable.target_branch == "fix").to eq(can_use_quick_action)
+                }
+              ),
+              # Set WIP status
+              QuickAction.new(
+                action_text: "/wip",
+                before_action: -> {
+                  issuable.reload.update(title: "title")
+                },
+                expectation: ->(issuable, can_use_quick_action) {
+                  expect(issuable.work_in_progress?).to eq(can_use_quick_action)
+                }
+              ),
+              # Remove WIP status
+              QuickAction.new(
+                action_text: "/wip",
+                before_action: -> {
+                  issuable.reload.update(title: "WIP: title")
+                },
+                expectation: ->(noteable, can_use_quick_action) {
+                  expect(noteable.work_in_progress?).not_to eq(can_use_quick_action)
+                }
+              )
+            ]
           end
-        end
 
-        context 'when note only have commands' do
-          it 'adds commands applied message to note errors' do
-            note_text = %(/close)
-            service = double(:service)
-            allow(Issues::UpdateService).to receive(:new).and_return(service)
-            expect(service).to receive(:execute)
-
-            note = described_class.new(project, user, opts.merge(note: note_text)).execute
-
-            expect(note.errors[:commands_only]).to be_present
+          it_behaves_like 'issuable quick actions' do
+            let(:quick_actions) { issuable_quick_actions + merge_request_quick_actions }
           end
         end
       end
 
-      context 'as a user who cannot update the target' do
-        let(:note_text) { "HELLO\n/todo\n/assign #{user.to_reference}\nWORLD" }
-        let(:note) { described_class.new(project, user, opts.merge(note: note_text)).execute }
+      context 'when note only have commands' do
+        it 'adds commands applied message to note errors' do
+          note_text = %(/close)
+          service = double(:service)
+          allow(Issues::UpdateService).to receive(:new).and_return(service)
+          expect(service).to receive(:execute)
 
-        before do
-          project.team.find_member(user.id).update!(access_level: Gitlab::Access::GUEST)
-        end
+          note = described_class.new(project, user, opts.merge(note: note_text)).execute
 
-        it 'applies commands the user can execute' do
-          expect { note }.to change { user.todos_pending_count }.from(0).to(1)
-        end
-
-        it 'does not apply commands the user cannot execute' do
-          expect { note }.not_to change { issue.assignees }
-        end
-
-        it 'saves the note' do
-          expect(note.note).to eq "HELLO\nWORLD"
+          expect(note.errors[:commands_only]).to be_present
         end
       end
     end
