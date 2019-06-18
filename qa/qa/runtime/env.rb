@@ -10,11 +10,24 @@ module QA
       # The environment variables used to indicate if the environment under test
       # supports the given feature
       SUPPORTED_FEATURES = {
-        git_protocol_v2: 'QA_CAN_TEST_GIT_PROTOCOL_V2'
+        git_protocol_v2: 'QA_CAN_TEST_GIT_PROTOCOL_V2',
+        admin: 'QA_CAN_TEST_ADMIN_FEATURES'
       }.freeze
 
       def supported_features
         SUPPORTED_FEATURES
+      end
+
+      def admin_password
+        ENV['GITLAB_ADMIN_PASSWORD']
+      end
+
+      def admin_username
+        ENV['GITLAB_ADMIN_USERNAME']
+      end
+
+      def admin_personal_access_token
+        ENV['GITLAB_QA_ADMIN_ACCESS_TOKEN']
       end
 
       def debug?
@@ -90,14 +103,6 @@ module QA
 
       def user_password
         ENV['GITLAB_PASSWORD']
-      end
-
-      def admin_username
-        ENV['GITLAB_ADMIN_USERNAME']
-      end
-
-      def admin_password
-        ENV['GITLAB_ADMIN_PASSWORD']
       end
 
       def github_username
