@@ -14,7 +14,7 @@ to provide a full environment for software developers. It comprises the followin
 1. Observability
 
 We believe the use of these common building blocks equate to big gains for teams of all sizes, resulting from the adoption
-of newer, more efficient, more paid, and less error-prone techniques for shipping software applications.
+of newer, more efficient, more profitable, and less error-prone techniques for shipping software applications.
 
 ### Compute
 
