@@ -1,0 +1,5 @@
+---
+title: Add endpoint for fetching diverging commit counts
+merge_request: 29802
+author:
+type: performance
