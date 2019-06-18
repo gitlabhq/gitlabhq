@@ -35,16 +35,16 @@ BFG Repo-Cleaner](#using-the-bfg-repo-cleaner). It's faster and simpler than
 `git filter-branch`, and GitLab can use its account of what has changed to clean
 up its own internal state, maximizing the space saved.
 
-> **Warning:**
-> Make sure to first make a copy of your repository since rewriting history will
-> purge the files and information you are about to delete. Also make sure to
-> inform any collaborators to not use `pull` after your changes, but use `rebase`.
+CAUTION: **Caution:**
+Make sure to first make a copy of your repository since rewriting history will
+purge the files and information you are about to delete. Also make sure to
+inform any collaborators to not use `pull` after your changes, but use `rebase`.
 
-> **Warning:**
-> This process is not suitable for removing sensitive data like password or keys
-> from your repository. Information about commits, including file content, is
-> cached in the database, and will remain visible even after they have been
-> removed from the repository.
+CAUTION: **Caution:**
+This process is not suitable for removing sensitive data like password or keys
+from your repository. Information about commits, including file content, is
+cached in the database, and will remain visible even after they have been
+removed from the repository.
 
 ## Using the BFG Repo-Cleaner
 
@@ -99,10 +99,11 @@ up its own internal state, maximizing the space saved.
     `git gc` against the repository. You will receive an email once it has
     completed.
 
+NOTE: **Note:**
 This process will remove some copies of the rewritten commits from GitLab's
 cache and database, but there are still numerous gaps in coverage - at present,
-some of the copies may persist indefinitely. [Clearing the instance cache](../../../administration/raketasks/maintenance.md#clear-redis-cache) 
-may help to remove some of them, but it should not be depended on for security 
+some of the copies may persist indefinitely. [Clearing the instance cache](../../../administration/raketasks/maintenance.md#clear-redis-cache)
+may help to remove some of them, but it should not be depended on for security
 purposes!
 
 ## Using `git filter-branch`
