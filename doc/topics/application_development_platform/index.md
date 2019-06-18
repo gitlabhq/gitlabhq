@@ -19,7 +19,7 @@ of newer, more efficient, more profitable, and less error-prone techniques for s
 ### Compute
 
 Because at GitLab we are [cloud-native first](https://about.gitlab.com/handbook/product/#cloud-native-first) our
-Application Development Platform will focus on providing robust support for Kubernetes first with other platforms
+Application Development Platform initially focuses on providing robust support for Kubernetes, with other platforms
 to follow. Teams can bring their own clusters and we will additionally make it easy to create new infrastructure
 with various cloud providers.
 
