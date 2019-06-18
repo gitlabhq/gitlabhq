@@ -36,7 +36,7 @@ class AutocompleteController < ApplicationController
   end
 
   def award_emojis
-    render json: AwardedEmojiFinder.new(current_user).execute
+    render json: AwardEmojis::CollectUserEmojiService.new(current_user).execute
   end
 
   def merge_request_target_branches
