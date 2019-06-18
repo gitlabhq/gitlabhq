@@ -298,6 +298,46 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
           { key: 'KUBE_TOKEN', value: kubernetes_namespace.service_account_token, public: false, masked: true }
         )
       end
+
+      context 'the cluster has been set to unmanaged after the namespace was created' do
+        before do
+          cluster.update!(managed: false)
+        end
+
+        it_behaves_like 'setting variables'
+
+        it 'sets KUBE_TOKEN from the platform' do
+          expect(subject).to include(
+            { key: 'KUBE_TOKEN', value: kubernetes.token, public: false, masked: true }
+          )
+        end
+
+        context 'the platform has a custom namespace set' do
+          before do
+            kubernetes.update!(namespace: 'custom-namespace')
+          end
+
+          it 'sets KUBE_NAMESPACE from the platform' do
+            expect(subject).to include(
+              { key: 'KUBE_NAMESPACE', value: kubernetes.namespace, public: true, masked: false }
+            )
+          end
+        end
+
+        context 'there is no namespace specified on the platform' do
+          let(:project) { cluster.project }
+
+          before do
+            kubernetes.update!(namespace: nil)
+          end
+
+          it 'sets KUBE_NAMESPACE to a default for the project' do
+            expect(subject).to include(
+              { key: 'KUBE_NAMESPACE', value: "#{project.path}-#{project.id}", public: true, masked: false }
+            )
+          end
+        end
+      end
     end
 
     context 'namespace is provided' do

@@ -128,6 +128,7 @@ class Clusters::ClustersController < Clusters::BaseController
         :enabled,
         :name,
         :environment_scope,
+        :managed,
         :base_domain,
         platform_kubernetes_attributes: [
           :api_url,
@@ -140,6 +141,7 @@ class Clusters::ClustersController < Clusters::BaseController
       params.require(:cluster).permit(
         :enabled,
         :environment_scope,
+        :managed,
         :base_domain,
         platform_kubernetes_attributes: [
           :namespace
