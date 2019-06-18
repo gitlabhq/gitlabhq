@@ -59,15 +59,5 @@ describe EnvironmentEntity do
         expect(subject[:cluster_type]).to eq('project_type')
       end
     end
-
-    context 'when deployment platform is a Kubernetes Service' do
-      before do
-        create(:kubernetes_service, project: project)
-      end
-
-      it 'does not include cluster_type' do
-        expect(subject).not_to include(:cluster_type)
-      end
-    end
   end
 end

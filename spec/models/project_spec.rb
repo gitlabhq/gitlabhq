@@ -2652,25 +2652,15 @@ describe Project do
     end
 
     context 'when project has a deployment service' do
-      shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
+      context 'when user configured kubernetes from CI/CD > Clusters and KubernetesNamespace migration has not been executed' do
+        let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
+        let(:project) { cluster.project }
+
         it 'returns variables from this service' do
           expect(project.deployment_variables).to include(
             { key: 'KUBE_TOKEN', value: project.deployment_platform.token, public: false, masked: true }
           )
         end
-      end
-
-      context 'when user configured kubernetes from Integration > Kubernetes' do
-        let(:project) { create(:kubernetes_project) }
-
-        it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
-      end
-
-      context 'when user configured kubernetes from CI/CD > Clusters and KubernetesNamespace migration has not been executed' do
-        let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
-        let(:project) { cluster.project }
-
-        it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
       end
 
       context 'when user configured kubernetes from CI/CD > Clusters and KubernetesNamespace migration has been executed' do

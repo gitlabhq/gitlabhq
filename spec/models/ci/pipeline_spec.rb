@@ -962,7 +962,11 @@ describe Ci::Pipeline, :mailer do
         end
 
         context 'when kubernetes is active' do
-          shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
+          context 'when user configured kubernetes from CI/CD > Clusters' do
+            let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
+            let(:project) { cluster.project }
+            let(:pipeline) { build(:ci_pipeline, project: project, config: config) }
+
             it 'returns seeds for kubernetes dependent job' do
               seeds = pipeline.stage_seeds
 
@@ -970,21 +974,6 @@ describe Ci::Pipeline, :mailer do
               expect(seeds.dig(0, 0, :name)).to eq 'spinach'
               expect(seeds.dig(1, 0, :name)).to eq 'production'
             end
-          end
-
-          context 'when user configured kubernetes from Integration > Kubernetes' do
-            let(:project) { create(:kubernetes_project) }
-            let(:pipeline) { build(:ci_pipeline, project: project, config: config) }
-
-            it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
-          end
-
-          context 'when user configured kubernetes from CI/CD > Clusters' do
-            let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
-            let(:project) { cluster.project }
-            let(:pipeline) { build(:ci_pipeline, project: project, config: config) }
-
-            it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
           end
         end
 
@@ -1679,23 +1668,13 @@ describe Ci::Pipeline, :mailer do
 
   describe '#has_kubernetes_active?' do
     context 'when kubernetes is active' do
-      shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
-        it 'returns true' do
-          expect(pipeline).to have_kubernetes_active
-        end
-      end
-
-      context 'when user configured kubernetes from Integration > Kubernetes' do
-        let(:project) { create(:kubernetes_project) }
-
-        it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
-      end
-
       context 'when user configured kubernetes from CI/CD > Clusters' do
         let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
         let(:project) { cluster.project }
 
-        it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
+        it 'returns true' do
+          expect(pipeline).to have_kubernetes_active
+        end
       end
     end
 

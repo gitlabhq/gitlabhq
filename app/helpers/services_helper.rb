@@ -39,7 +39,7 @@ module ServicesHelper
   end
 
   def disable_fields_service?(service)
-    !current_controller?("admin/services") && service.deprecated?
+    service.is_a?(KubernetesService) || (!current_controller?("admin/services") && service.deprecated?)
   end
 
   extend self

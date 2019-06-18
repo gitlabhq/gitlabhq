@@ -515,28 +515,18 @@ describe Environment do
 
     context 'when the environment is available' do
       context 'with a deployment service' do
-        shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
-          context 'and a deployment' do
-            let!(:deployment) { create(:deployment, :success, environment: environment) }
-            it { is_expected.to be_truthy }
-          end
-
-          context 'but no deployments' do
-            it { is_expected.to be_falsy }
-          end
-        end
-
-        context 'when user configured kubernetes from Integration > Kubernetes' do
-          let(:project) { create(:kubernetes_project) }
-
-          it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
-        end
-
         context 'when user configured kubernetes from CI/CD > Clusters' do
           let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
           let(:project) { cluster.project }
 
-          it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
+          context 'with deployment' do
+            let!(:deployment) { create(:deployment, :success, environment: environment) }
+            it { is_expected.to be_truthy }
+          end
+
+          context 'without deployments' do
+            it { is_expected.to be_falsy }
+          end
         end
       end
 
@@ -546,8 +536,6 @@ describe Environment do
     end
 
     context 'when the environment is unavailable' do
-      let(:project) { create(:kubernetes_project) }
-
       before do
         environment.stop
       end
@@ -590,7 +578,10 @@ describe Environment do
         allow(environment).to receive(:has_terminals?).and_return(true)
       end
 
-      shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
+      context 'when user configured kubernetes from CI/CD > Clusters' do
+        let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
+        let(:project) { cluster.project }
+
         it 'returns the terminals from the deployment service' do
           expect(environment.deployment_platform)
             .to receive(:terminals).with(environment)
@@ -598,19 +589,6 @@ describe Environment do
 
           is_expected.to eq(:fake_terminals)
         end
-      end
-
-      context 'when user configured kubernetes from Integration > Kubernetes' do
-        let(:project) { create(:kubernetes_project) }
-
-        it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
-      end
-
-      context 'when user configured kubernetes from CI/CD > Clusters' do
-        let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
-        let(:project) { cluster.project }
-
-        it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
       end
     end
 

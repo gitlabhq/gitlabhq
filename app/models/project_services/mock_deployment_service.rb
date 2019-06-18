@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-class MockDeploymentService < DeploymentService
+class MockDeploymentService < Service
+  default_value_for :category, 'deployment'
+
   def title
     'Mock deployment'
   end
@@ -16,5 +18,17 @@ class MockDeploymentService < DeploymentService
   # No terminals support
   def terminals(environment)
     []
+  end
+
+  def self.supported_events
+    %w()
+  end
+
+  def predefined_variables(project:)
+    []
+  end
+
+  def can_test?
+    false
   end
 end

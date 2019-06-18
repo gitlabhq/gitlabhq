@@ -5,9 +5,11 @@
 # We'll move this class to Clusters::Platforms::Kubernetes, which contains exactly the same logic.
 # After we've migrated data, we'll remove KubernetesService. This would happen in a few months.
 # If you're modyfiyng this class, please note that you should update the same change in Clusters::Platforms::Kubernetes.
-class KubernetesService < DeploymentService
+class KubernetesService < Service
   include Gitlab::Kubernetes
   include ReactiveCaching
+
+  default_value_for :category, 'deployment'
 
   self.reactive_cache_key = ->(service) { [service.class.model_name.singular, service.project_id] }
 
@@ -32,7 +34,10 @@ class KubernetesService < DeploymentService
 
   before_validation :enforce_namespace_to_lower_case
 
-  validate :deprecation_validation, unless: :template?
+  attr_accessor :skip_deprecation_validation
+
+  validate :deprecation_validation, unless: :skip_deprecation_validation
+
   validates :namespace,
     allow_blank: true,
     length: 1..63,
@@ -44,6 +49,14 @@ class KubernetesService < DeploymentService
 
   after_save :clear_reactive_cache!
 
+  def self.supported_events
+    %w()
+  end
+
+  def can_test?
+    false
+  end
+
   def initialize_properties
     self.properties = {} if properties.nil?
   end
@@ -54,11 +67,6 @@ class KubernetesService < DeploymentService
 
   def description
     'Kubernetes / OpenShift integration'
-  end
-
-  def help
-    'To enable terminal access to Kubernetes environments, label your ' \
-    'deployments with `app=$CI_ENVIRONMENT_SLUG`'
   end
 
   def self.to_param
@@ -153,14 +161,25 @@ class KubernetesService < DeploymentService
   end
 
   def deprecated?
-    !active
+    true
+  end
+
+  def editable?
+    false
   end
 
   def deprecation_message
-    content = _("Kubernetes service integration has been deprecated. %{deprecated_message_content} your Kubernetes clusters using the new <a href=\"%{url}\"/>Kubernetes Clusters</a> page") % {
-      deprecated_message_content: deprecated_message_content,
-      url: Gitlab::Routing.url_helpers.project_clusters_path(project)
-    }
+    content = if project
+                _("Kubernetes service integration has been deprecated. %{deprecated_message_content} your Kubernetes clusters using the new <a href=\"%{url}\"/>Kubernetes Clusters</a> page") % {
+                  deprecated_message_content: deprecated_message_content,
+                  url: Gitlab::Routing.url_helpers.project_clusters_path(project)
+                }
+              else
+                _("The instance-level Kubernetes service integration is deprecated. Your data has been migrated to an <a href=\"%{url}\"/>instance-level cluster</a>.") % {
+                  url: Gitlab::Routing.url_helpers.admin_clusters_path
+                }
+              end
+
     content.html_safe
   end
 
@@ -243,10 +262,6 @@ class KubernetesService < DeploymentService
   end
 
   def deprecated_message_content
-    if active?
-      _("Your Kubernetes cluster information on this page is still editable, but you are advised to disable and reconfigure")
-    else
-      _("Fields on this page are now uneditable, you can configure")
-    end
+    _("Fields on this page are now uneditable, you can configure")
   end
 end

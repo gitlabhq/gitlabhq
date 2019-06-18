@@ -141,20 +141,6 @@ describe Projects::ServicesController do
       end
     end
 
-    context 'with a deprecated service' do
-      let(:service) { create(:kubernetes_service, project: project) }
-
-      before do
-        put :update,
-          params: { namespace_id: project.namespace, project_id: project, id: service.to_param, service: { namespace: 'updated_namespace' } }
-      end
-
-      it 'does not update the service' do
-        service.reload
-        expect(service.namespace).not_to eq('updated_namespace')
-      end
-    end
-
     context 'when activating JIRA service from a template' do
       let(:template_service) { create(:jira_service, project: project, template: true) }
 
@@ -168,20 +154,10 @@ describe Projects::ServicesController do
 
   describe "GET #edit" do
     before do
-      get :edit, params: { namespace_id: project.namespace, project_id: project, id: service_id }
+      get :edit, params: { namespace_id: project.namespace, project_id: project, id: 'jira' }
     end
 
     context 'with approved services' do
-      let(:service_id) { 'jira' }
-
-      it 'renders edit page' do
-        expect(response).to be_success
-      end
-    end
-
-    context 'with a deprecated service' do
-      let(:service_id) { 'kubernetes' }
-
       it 'renders edit page' do
         expect(response).to be_success
       end

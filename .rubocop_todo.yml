@@ -799,7 +799,6 @@ Style/SelfAssignment:
   Exclude:
     - 'app/models/concerns/bulk_member_access_load.rb'
     - 'app/serializers/base_serializer.rb'
-    - 'spec/features/projects/clusters/interchangeability_spec.rb'
     - 'spec/support/import_export/configuration_helper.rb'
 
 # Offense count: 50

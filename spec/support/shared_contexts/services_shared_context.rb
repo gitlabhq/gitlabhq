@@ -37,8 +37,7 @@ Service.available_services_names.each do |service|
     def initialize_service(service)
       service_item = project.find_or_initialize_service(service)
       service_item.properties = service_attrs
-      service_item.active = true if service == "kubernetes"
-      service_item.save
+      service_item.save!
       service_item
     end
   end
