@@ -7,7 +7,7 @@ module Gitlab
 
       include Gitlab::Config::Entry::LegacyValidationHelpers
 
-      attr_reader :cache, :stages, :jobs
+      attr_reader :stages, :jobs
 
       def initialize(config, opts = {})
         @ci_config = Gitlab::Ci::Config.new(config, **opts)
@@ -95,13 +95,8 @@ module Gitlab
         ##
         # Global config
         #
-        @before_script = @ci_config.before_script
-        @image = @ci_config.image
-        @after_script = @ci_config.after_script
-        @services = @ci_config.services
         @variables = @ci_config.variables
         @stages = @ci_config.stages
-        @cache = @ci_config.cache
 
         ##
         # Jobs

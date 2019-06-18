@@ -34,18 +34,25 @@ describe Gitlab::Config::Entry::Configurable do
 
     before do
       entry.class_exec(entry_class) do |entry_class|
-        entry :object, entry_class, description: 'test object'
+        entry :object, entry_class,
+          description: 'test object',
+          inherit: true,
+          reserved: true
       end
     end
 
     describe '.nodes' do
       it 'has valid nodes' do
-        expect(entry.nodes).to include :object
+        expect(entry.nodes).to include(:object)
       end
 
       it 'creates a node factory' do
-        expect(entry.nodes[:object])
-          .to be_an_instance_of Gitlab::Config::Entry::Factory
+        factory = entry.nodes[:object]
+
+        expect(factory).to be_an_instance_of(Gitlab::Config::Entry::Factory)
+        expect(factory.description).to eq('test object')
+        expect(factory.inheritable?).to eq(true)
+        expect(factory.reserved?).to eq(true)
       end
 
       it 'returns a duplicated factory object' do
@@ -53,6 +60,18 @@ describe Gitlab::Config::Entry::Configurable do
         second_factory = entry.nodes[:object]
 
         expect(first_factory).not_to be_equal(second_factory)
+      end
+    end
+
+    describe '.reserved_node_names' do
+      before do
+        entry.class_exec(entry_class) do |entry_class|
+          entry :not_reserved, entry_class
+        end
+      end
+
+      it 'returns all nodes with reserved: true' do
+        expect(entry.reserved_node_names).to contain_exactly(:object)
       end
     end
   end

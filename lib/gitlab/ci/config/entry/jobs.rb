@@ -14,29 +14,48 @@ module Gitlab
             validates :config, type: Hash
 
             validate do
+              unless has_valid_jobs?
+                errors.add(:config, 'should contain valid jobs')
+              end
+
               unless has_visible_job?
                 errors.add(:config, 'should contain at least one visible job')
               end
             end
 
+            def has_valid_jobs?
+              config.all? do |name, value|
+                Jobs.find_type(name, value)
+              end
+            end
+
             def has_visible_job?
-              config.any? { |name, _| !hidden?(name) }
+              config.any? do |name, value|
+                Jobs.find_type(name, value)&.visible?
+              end
             end
           end
 
-          def hidden?(name)
-            name.to_s.start_with?('.')
+          TYPES = [Entry::Hidden, Entry::Job].freeze
+
+          private_constant :TYPES
+
+          def self.all_types
+            TYPES
           end
 
-          def node_type(name)
-            hidden?(name) ? Entry::Hidden : Entry::Job
+          def self.find_type(name, config)
+            self.all_types.find do |type|
+              type.matching?(name, config)
+            end
           end
 
           # rubocop: disable CodeReuse/ActiveRecord
           def compose!(deps = nil)
             super do
               @config.each do |name, config|
-                node = node_type(name)
+                node = self.class.find_type(name, config)
+                next unless node
 
                 factory = ::Gitlab::Config::Entry::Factory.new(node)
                   .value(config || {})

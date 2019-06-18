@@ -23,14 +23,33 @@ describe Gitlab::Config::Entry::Factory do
       end
 
       context 'when setting description' do
-        it 'creates entry with description' do
-          entry = factory
+        before do
+          factory
             .value(%w(ls pwd))
             .with(description: 'test description')
-            .create!
+        end
+
+        it 'configures description' do
+          expect(factory.description).to eq 'test description'
+        end
+
+        it 'creates entry with description' do
+          entry = factory.create!
 
           expect(entry.value).to eq %w(ls pwd)
           expect(entry.description).to eq 'test description'
+        end
+      end
+
+      context 'when setting inherit' do
+        before do
+          factory
+            .value(%w(ls pwd))
+            .with(inherit: true)
+        end
+
+        it 'makes object inheritable' do
+          expect(factory.inheritable?).to eq true
         end
       end
 

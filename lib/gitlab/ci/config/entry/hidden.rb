@@ -14,6 +14,14 @@ module Gitlab
             validates :config, presence: true
           end
 
+          def self.matching?(name, config)
+            name.to_s.start_with?('.')
+          end
+
+          def self.visible?
+            false
+          end
+
           def relevant?
             false
           end
