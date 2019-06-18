@@ -74,7 +74,7 @@ module Types
           null: true,
           resolve: -> (obj, _args, _ctx) { Gitlab::Graphql::Loaders::BatchProjectStatisticsLoader.new(obj.id).find }
 
-    field :repository, Types::RepositoryType, null: false
+    field :repository, Types::RepositoryType, null: true
 
     field :merge_requests,
           Types::MergeRequestType.connection_type,
