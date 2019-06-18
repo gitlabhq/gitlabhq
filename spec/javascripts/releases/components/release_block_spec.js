@@ -78,8 +78,10 @@ describe('Release block', () => {
   };
   let vm;
 
+  const factory = props => mountComponent(Component, { release: props });
+
   beforeEach(() => {
-    vm = mountComponent(Component, { release });
+    vm = factory(release);
   });
 
   afterEach(() => {
@@ -147,6 +149,16 @@ describe('Release block', () => {
       expect(vm.$el.querySelector('.js-assets-list li:nth-child(2) a').textContent).not.toContain(
         'external source',
       );
+    });
+  });
+
+  describe('with pre_release flag', () => {
+    beforeEach(() => {
+      vm = factory(Object.assign({}, release, { pre_release: true }));
+    });
+
+    it('renders pre-release badge', () => {
+      expect(vm.$el.textContent).toContain('Pre-release');
     });
   });
 });
