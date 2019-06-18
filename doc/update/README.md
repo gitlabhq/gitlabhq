@@ -146,7 +146,7 @@ possible.
 - [Upgrading PostgreSQL Using Slony](upgrading_postgresql_using_slony.md), for
   upgrading a PostgreSQL database with minimal downtime.
 
-[omnidocker]: http://docs.gitlab.com/omnibus/docker/README.html
+[omnidocker]: https://docs.gitlab.com/omnibus/docker/README.html
 [old-ee-upgrade-docs]: https://gitlab.com/gitlab-org/gitlab-ee/tree/11-8-stable-ee/doc/update
 [old-ce-upgrade-docs]: https://gitlab.com/gitlab-org/gitlab-ce/tree/11-8-stable/doc/update
 [source-ce-to-ee]: upgrading_from_ce_to_ee.md

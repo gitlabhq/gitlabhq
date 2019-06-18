@@ -43,4 +43,4 @@ Install and update your GitLab installation.
 
 - [Install GitLab](https://about.gitlab.com/installation/)
 - [Update GitLab](https://about.gitlab.com/update/)
-- [Explore Omnibus GitLab configuration options](http://docs.gitlab.com/omnibus/settings/configuration.html)
+- [Explore Omnibus GitLab configuration options](https://docs.gitlab.com/omnibus/settings/configuration.html)

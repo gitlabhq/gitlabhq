@@ -123,7 +123,7 @@ To disable the relative URL:
 1.  Follow the same as above starting from 2. and set up the
     GitLab URL to one that doesn't contain a relative path.
 
-[omnibus-rel]: http://docs.gitlab.com/omnibus/settings/configuration.html#configuring-a-relative-url-for-gitlab "How to set up relative URL in Omnibus GitLab"
+[omnibus-rel]: https://docs.gitlab.com/omnibus/settings/configuration.html#configuring-a-relative-url-for-gitlab "How to set up relative URL in Omnibus GitLab"
 [restart gitlab]: ../administration/restart_gitlab.md#installations-from-source "How to restart GitLab"
 
 <!-- ## Troubleshooting

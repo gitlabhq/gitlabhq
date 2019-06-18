@@ -482,8 +482,8 @@ To define which should be used, the GitLab Runner process reads the configuratio
   If the `--user` flag is provided to run the GitLab Runner child processes as unprivileged user,
   the home directory of the main GitLab Runner process user will be used.
 
-NOTE: **Note:** 
-GitLab Runner reads this configuration **only** from `config.toml` and ignores it if 
+NOTE: **Note:**
+GitLab Runner reads this configuration **only** from `config.toml` and ignores it if
 it's provided as an environment variable. This is because GitLab Runnner uses **only**
 `config.toml` configuration and doesn't interpolate **ANY** environment variables at
 runtime.
@@ -577,7 +577,7 @@ To configure credentials store, follow these steps:
 Make sure helper program is available in GitLab Runner `$PATH`.
 
 1. Make GitLab Runner use it. There are two ways to accomplish this. Either:
-   - Create a 
+   - Create a
      [variable](../variables/README.md#gitlab-cicd-environment-variables)
      `DOCKER_AUTH_CONFIG` with the content of the
    Docker configuration file as the value:
@@ -741,7 +741,7 @@ creation.
 [tutum/wordpress]: https://hub.docker.com/r/tutum/wordpress/
 [postgres-hub]: https://hub.docker.com/r/_/postgres/
 [mysql-hub]: https://hub.docker.com/r/_/mysql/
-[runner-priv-reg]: http://docs.gitlab.com/runner/configuration/advanced-configuration.html#using-a-private-container-registry
+[runner-priv-reg]: https://docs.gitlab.com/runner/configuration/advanced-configuration.html#using-a-private-container-registry
 [entrypoint]: https://docs.docker.com/engine/reference/builder/#entrypoint
 [cmd]: https://docs.docker.com/engine/reference/builder/#cmd
 [register]: https://docs.gitlab.com/runner/register/
