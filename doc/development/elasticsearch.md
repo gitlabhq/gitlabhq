@@ -4,6 +4,16 @@ This area is to maintain a compendium of useful information when working with el
 
 Information on how to enable ElasticSearch and perform the initial indexing is kept in ../integration/elasticsearch.md#enabling-elasticsearch
 
+## Deep Dive
+
+In June 2019, Mario de la Ossa hosted a [Deep Dive] on GitLab's [ElasticSearch integration] to share his domain specific knowledge with anyone who may work in this part of the code base in the future. You can find the [recording on YouTube], and the slides on [Google Slides] and in [PDF]. Everything covered in this deep dive was accurate as of GitLab 12.0, and while specific details may have changed since then, it should still serve as a good introduction.
+
+[Deep Dive]: https://gitlab.com/gitlab-org/create-stage/issues/1
+[ElasticSearch integration]: ../integration/elasticsearch.md
+[recording on YouTube]: https://www.youtube.com/watch?v=vrvl-tN2EaA
+[Google Slides]: https://docs.google.com/presentation/d/1H-pCzI_LNrgrL5pJAIQgvLX8Ji0-jIKOg1QeJQzChug/edit
+[PDF]: https://gitlab.com/gitlab-org/create-stage/uploads/c5aa32b6b07476fa8b597004899ec538/Elasticsearch_Deep_Dive.pdf
+
 ## Initial installation on OS X
 
 It is recommended to use the Docker image. After installing docker you can immediately spin up an instance with

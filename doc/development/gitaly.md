@@ -3,6 +3,16 @@
 [Gitaly](https://gitlab.com/gitlab-org/gitaly) is a high-level Git RPC service used by GitLab CE/EE,
 Workhorse and GitLab-Shell.
 
+## Deep Dive
+
+In May 2019, Bob Van Landuyt hosted a [Deep Dive] on GitLab's [Gitaly project] and how to contribute to it as a Ruby developer, to share his domain specific knowledge with anyone who may work in this part of the code base in the future. You can find the [recording on YouTube], and the slides on [Google Slides] and in [PDF]. Everything covered in this deep dive was accurate as of GitLab 11.11, and while specific details may have changed since then, it should still serve as a good introduction.
+
+[Deep Dive]: https://gitlab.com/gitlab-org/create-stage/issues/1
+[Gitaly project]: https://gitlab.com/gitlab-org/gitaly
+[recording on YouTube]: https://www.youtube.com/watch?v=BmlEWFS8ORo
+[Google Slides]: https://docs.google.com/presentation/d/1VgRbiYih9ODhcPnL8dS0W98EwFYpJ7GXMPpX-1TM6YE/edit
+[PDF]: https://gitlab.com/gitlab-org/create-stage/uploads/a4fdb1026278bda5c1c5bb574379cf80/Create_Deep_Dive__Gitaly_for_Create_Ruby_Devs.pdf
+
 ## Beginner's guide
 
 Start by reading the gitaly repository's

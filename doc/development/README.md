@@ -61,6 +61,8 @@ description: 'Learn how to contribute to GitLab.'
 - [How Git object deduplication works in GitLab](git_object_deduplication.md)
 - [Geo development](geo.md)
 - [Routing](routing.md)
+- [Repository mirroring](repository_mirroring.md)
+- [Git LFS](lfs.md)
 
 ## Performance guides
 

@@ -1,5 +1,15 @@
 # GraphQL API
 
+## Deep Dive
+
+In March 2019, Nick Thomas hosted a [Deep Dive] on GitLab's [GraphQL API] to share his domain specific knowledge with anyone who may work in this part of the code base in the future. You can find the [recording on YouTube], and the slides on [Google Slides] and in [PDF]. Everything covered in this deep dive was accurate as of GitLab 11.9, and while specific details may have changed since then, it should still serve as a good introduction.
+
+[Deep Dive]: https://gitlab.com/gitlab-org/create-stage/issues/1
+[Pull Repository Mirroring functionality]: ../api/graphql/
+[recording on YouTube]: https://www.youtube.com/watch?v=-9L_1MWrjkg
+[Google Slides]: https://docs.google.com/presentation/d/1qOTxpkTdHIp1CRjuTvO-aXg0_rUtzE3ETfLUdnBB5uQ/edit
+[PDF]: https://gitlab.com/gitlab-org/create-stage/uploads/8e78ea7f326b2ef649e7d7d569c26d56/GraphQL_Deep_Dive__Create_.pdf
+
 ## Authentication
 
 Authentication happens through the `GraphqlController`, right now this
