@@ -2,7 +2,8 @@
 @import 'framework/variables_overrides';
 @import 'framework/mixins';
 
-@import 'bootstrap';
+@import '../../../node_modules/@gitlab/ui/scss/gitlab_ui';
+
 @import 'bootstrap_migration';
 @import 'framework/layout';
 
