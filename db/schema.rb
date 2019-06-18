@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190613030606) do
+ActiveRecord::Schema.define(version: 20190618171120) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1391,7 +1391,7 @@ ActiveRecord::Schema.define(version: 20190613030606) do
   end
 
   create_table "geo_nodes", id: :serial, force: :cascade do |t|
-    t.boolean "primary"
+    t.boolean "primary", default: false, null: false
     t.integer "oauth_application_id"
     t.boolean "enabled", default: true, null: false
     t.string "access_key"
