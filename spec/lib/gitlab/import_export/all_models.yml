@@ -397,6 +397,7 @@ project:
 - incident_management_setting
 - merge_trains
 - designs
+- project_aliases
 award_emoji:
 - awardable
 - user
