@@ -71,7 +71,6 @@ new Kubernetes cluster to your project:
    - **Number of nodes** - Enter the number of nodes you wish the cluster to have.
    - **Machine type** - The [machine type](https://cloud.google.com/compute/docs/machine-types)
      of the Virtual Machine instance that the cluster will be based on.
-   - **RBAC-enabled cluster** - Leave this checked if using default GKE creation options, see the [RBAC section](#rbac-cluster-resources) for more information.
    - **GitLab-managed cluster** - Leave this checked if you want GitLab to manage namespaces and service accounts for this cluster. See the [Managed clusters section](#gitlab-managed-clusters) for more information.
 1. Finally, click the **Create Kubernetes cluster** button.
 
@@ -85,6 +84,9 @@ account](#access-controls). Starting from [GitLab
 11.10](https://gitlab.com/gitlab-org/gitlab-ce/issues/58208), the cluster
 creation process will explicitly request that basic authentication and
 client certificate is enabled.
+
+NOTE: **Note:**
+Starting from [GitLab 12.1](https://gitlab.com/gitlab-org/gitlab-ce/issues/55902), all GKE clusters created by GitLab are RBAC enabled. Take a look at the [RBAC section](#rbac-cluster-resources) for more information.
 
 ## Adding an existing Kubernetes cluster
 
