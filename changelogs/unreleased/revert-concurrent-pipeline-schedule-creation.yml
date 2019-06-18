@@ -1,0 +1,5 @@
+---
+title: Revert concurrent pipeline creation for pipeline schedules
+merge_request: 29794
+author:
+type: fixed
