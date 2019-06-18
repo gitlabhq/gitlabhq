@@ -47,6 +47,19 @@ module Gitlab
 
     config.generators.templates.push("#{config.root}/generator_templates")
 
+    ee_paths = config.eager_load_paths.each_with_object([]) do |path, memo|
+      ee_path = config.root.join('ee', Pathname.new(path).relative_path_from(config.root))
+      memo << ee_path.to_s if ee_path.exist?
+    end
+
+    # Eager load should load CE first
+    config.eager_load_paths.push(*ee_paths)
+    config.helpers_paths.push "#{config.root}/ee/app/helpers"
+
+    # Other than Ruby modules we load EE first
+    config.paths['lib/tasks'].unshift "#{config.root}/ee/lib/tasks"
+    config.paths['app/views'].unshift "#{config.root}/ee/app/views"
+
     # Rake tasks ignore the eager loading settings, so we need to set the
     # autoload paths explicitly
     config.autoload_paths = config.eager_load_paths.dup
@@ -160,6 +173,23 @@ module Gitlab
     # Import css for xterm
     config.assets.paths << "#{config.root}/node_modules/xterm/src/"
     config.assets.precompile << "xterm.css"
+
+    %w[images javascripts stylesheets].each do |path|
+      config.assets.paths << "#{config.root}/ee/app/assets/#{path}"
+      config.assets.precompile << "jira_connect.js"
+      config.assets.precompile << "pages/jira_connect.css"
+    end
+
+    config.assets.paths << "#{config.root}/vendor/assets/javascripts/"
+    config.assets.precompile << "snowplow/sp.js"
+
+    # Compile non-JS/CSS assets in the ee/app/assets folder by default
+    # Mimic sprockets-rails default: https://github.com/rails/sprockets-rails/blob/v3.2.1/lib/sprockets/railtie.rb#L84-L87
+    LOOSE_EE_APP_ASSETS = lambda do |logical_path, filename|
+      filename.start_with?(config.root.join("ee/app/assets").to_s) &&
+        !['.js', '.css', ''].include?(File.extname(logical_path))
+    end
+    config.assets.precompile << LOOSE_EE_APP_ASSETS
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
