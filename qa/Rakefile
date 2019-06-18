@@ -13,8 +13,9 @@ task :delete_subgroups do
 end
 
 desc "Generate Performance Testdata"
-task :generate_perf_testdata do
-  QA::Tools::GeneratePerfTestdata.new.run
+task :generate_perf_testdata, :type do |t, args|
+  args.with_defaults(type: :all)
+  QA::Tools::GeneratePerfTestdata.new.method(args[:type]).call
 end
 
 desc "Run artillery load tests"
