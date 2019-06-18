@@ -44,6 +44,29 @@ describe AwardEmoji do
     end
   end
 
+  describe 'scopes' do
+    set(:thumbsup) { create(:award_emoji, name: 'thumbsup') }
+    set(:thumbsdown) { create(:award_emoji, name: 'thumbsdown') }
+
+    describe '.upvotes' do
+      it { expect(described_class.upvotes).to contain_exactly(thumbsup) }
+    end
+
+    describe '.downvotes' do
+      it { expect(described_class.downvotes).to contain_exactly(thumbsdown) }
+    end
+
+    describe '.named' do
+      it { expect(described_class.named('thumbsup')).to contain_exactly(thumbsup) }
+      it { expect(described_class.named(%w[thumbsup thumbsdown])).to contain_exactly(thumbsup, thumbsdown) }
+    end
+
+    describe '.awarded_by' do
+      it { expect(described_class.awarded_by(thumbsup.user)).to contain_exactly(thumbsup) }
+      it { expect(described_class.awarded_by([thumbsup.user, thumbsdown.user])).to contain_exactly(thumbsup, thumbsdown) }
+    end
+  end
+
   describe 'expiring ETag cache' do
     context 'on a note' do
       let(:note) { create(:note_on_issue) }

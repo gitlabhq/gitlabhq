@@ -78,6 +78,7 @@ describe Projects::CreateService, '#execute' do
       expect(project).to be_valid
       expect(project.owner).to eq(group)
       expect(project.namespace).to eq(group)
+      expect(project.team.owners).to include(user)
       expect(user.authorized_projects).to include(project)
     end
   end
