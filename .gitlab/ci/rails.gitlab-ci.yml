@@ -236,6 +236,7 @@ static-analysis:
   extends: .dedicated-no-docs-no-db-pull-cache-job
   dependencies:
     - compile-assets
+    - compile-assets pull-cache
     - setup-test-env
   script:
     - scripts/static-analysis

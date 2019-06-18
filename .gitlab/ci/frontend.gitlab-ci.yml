@@ -1,11 +1,10 @@
 .assets-compile-cache: &assets-compile-cache
   cache:
-    key: "assets-compile:vendor_ruby:.yarn-cache:tmp_cache_assets_sprockets:v5"
+    key: "assets-compile:vendor_ruby:.yarn-cache:tmp_cache_assets_sprockets:v6"
     paths:
       - vendor/ruby/
       - .yarn-cache/
       - tmp/cache/assets/sprockets
-    policy: pull-push
 
 .use-pg: &use-pg
   services:
@@ -13,7 +12,7 @@
       command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
     - name: redis:alpine
 
-gitlab:assets:compile:
+.gitlab:assets:compile-metadata:
   <<: *assets-compile-cache
   extends: .dedicated-no-docs-pull-cache-job
   image: dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.6.3-git-2.21-chrome-73.0-node-12.x-yarn-1.16-graphicsmagick-1.3.29-docker-18.06.1
@@ -58,7 +57,23 @@ gitlab:assets:compile:
     - docker
     - gitlab-org
 
-compile-assets:
+gitlab:assets:compile:
+  extends: .gitlab:assets:compile-metadata
+  cache:
+    policy: pull-push
+  only:
+    - master@gitlab-org/gitlab-ce
+    - master@gitlab-org/gitlab-ee
+
+gitlab:assets:compile pull-cache:
+  extends: .gitlab:assets:compile-metadata
+  cache:
+    policy: pull
+  except:
+    - master@gitlab-org/gitlab-ce
+    - master@gitlab-org/gitlab-ee
+
+.compile-assets-metadata:
   extends: .dedicated-runner
   <<: *use-pg
   <<: *assets-compile-cache
@@ -77,9 +92,23 @@ compile-assets:
     paths:
       - node_modules
       - public/assets
+
+compile-assets:
+  extends: .compile-assets-metadata
+  cache:
+    policy: pull-push
+  only:
+    - master@gitlab-org/gitlab-ce
+    - master@gitlab-org/gitlab-ee
+
+compile-assets pull-cache:
+  extends: .compile-assets-metadata
+  cache:
+    policy: pull
   except:
-    refs:
-      - /(^docs[\/-].*|.*-docs$)/
+    - master@gitlab-org/gitlab-ce
+    - master@gitlab-org/gitlab-ee
+    - /(^docs[\/-].*|.*-docs$)/
 
 gitlab:ui:visual:
   extends: .dedicated-runner
@@ -87,6 +116,7 @@ gitlab:ui:visual:
   allow_failure: true
   dependencies:
     - compile-assets
+    - compile-assets pull-cache
   script:
     # Remove node modules from GitLab that may conflict with gitlab-ui
     - rm -r node_modules
@@ -116,6 +146,7 @@ karma:
   <<: *use-pg
   dependencies:
     - compile-assets
+    - compile-assets pull-cache
     - setup-test-env
   variables:
     # we override the max_old_space_size to prevent OOM errors
@@ -142,6 +173,7 @@ jest:
   <<: *use-pg
   dependencies:
     - compile-assets
+    - compile-assets pull-cache
     - setup-test-env
   script:
     - scripts/gitaly-test-spawn
@@ -232,6 +264,7 @@ jsdoc:
   stage: post-test
   dependencies:
     - compile-assets
+    - compile-assets pull-cache
   before_script: []
   script:
     - date
