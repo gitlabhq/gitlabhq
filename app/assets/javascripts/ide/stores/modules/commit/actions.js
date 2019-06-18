@@ -142,6 +142,7 @@ export const commitChanges = ({ commit, state, getters, dispatch, rootState, roo
         getters,
         state,
         rootState,
+        rootGetters,
       });
 
       return service.commit(rootState.currentProjectId, payload);
