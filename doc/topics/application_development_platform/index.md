@@ -34,9 +34,9 @@ you can use as much or as little of the default pipeline as you'd like, and deep
 ### Security
 
 The Application Development Platform helps you ensure that the applications you create are not affected by vulnerabilities 
-that may lead to security problems and unintended use. This can be achieved by making use of the embedded security features of Auto DevOps
-which allow both security teams and developers to know if there is something that they should consider changing in their apps, 
-before it is too late to create a fix. The following features are included:
+that may lead to security problems and unintended use. This can be achieved by making use of the embedded security features of Auto DevOps,
+which inform security teams and developers if there is something to consider changing in their apps 
+before it is too late to create a preventative fix. The following features are included:
 
 - [Auto SAST (Static Application Security Testing)](https://docs.gitlab.com/ee/topics/autodevops/#auto-sast-ultimate)
 - [Auto Dependency Scanning](https://docs.gitlab.com/ee/topics/autodevops/#auto-dependency-scanning-ultimate)
