@@ -16,7 +16,7 @@ description: 'Learn how to contribute to GitLab.'
 
 - [GitLab core team & GitLab Inc. contribution process](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/PROCESS.md)
 - [Generate a changelog entry with `bin/changelog`](changelog.md)
-- [Code review guidelines](code_review.md) for reviewing code and having code reviewed.
+- [Code review guidelines](code_review.md) for reviewing code and having code reviewed
 - [Automatic CE->EE merge](automatic_ce_ee_merge.md)
 - [Guidelines for implementing Enterprise Edition features](ee_features.md)
 - [Security process for developers](https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/developer.md#security-releases-critical-non-critical-as-a-developer)
@@ -33,7 +33,7 @@ description: 'Learn how to contribute to GitLab.'
 - [GitLab utilities](utilities.md)
 - [Logging](logging.md)
 - [API styleguide](api_styleguide.md) Use this styleguide if you are
-  contributing to the API.
+  contributing to the API
 - [GraphQL API styleguide](api_graphql_styleguide.md) Use this
   styleguide if you are contributing to the [GraphQL API](../api/graphql/index.md)
 - [Sidekiq guidelines](sidekiq_style_guide.md) for working with Sidekiq workers
