@@ -195,7 +195,7 @@ visit the `/projects/:id` URL in your browser or other tool accessing the projec
 
 ## Project aliases **[PREMIUM ONLY]**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/3264) in GitLab 12.1.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/3264) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.1.
 
 When migrating repositories to GitLab and they are being accessed by other systems,
 it's very useful to be able to access them using the same name especially when
