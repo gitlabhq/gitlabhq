@@ -24,7 +24,7 @@ to the webhook URL.
 
 In most cases, you'll need to set up your own [webhook receiver](#example-webhook-receiver)
 to receive information from GitLab, and send it to another app, according to your needs.
-We already have a [built-in receiver](http://docs.gitlab.com/ce/project_services/slack.html)
+We already have a [built-in receiver](https://docs.gitlab.com/ce/project_services/slack.html)
 for sending [Slack](https://api.slack.com/incoming-webhooks) notifications _per project_.
 
 ## Overview
@@ -326,7 +326,7 @@ X-Gitlab-Event: Issue Hook
       "current": 1
     },
     "updated_at": {
-      "previous": "2017-09-15 16:50:55 UTC", 
+      "previous": "2017-09-15 16:50:55 UTC",
       "current": "2017-09-15 16:52:00 UTC"
     },
     "labels": {
@@ -888,7 +888,7 @@ X-Gitlab-Event: Merge Request Hook
       "current": 1
     },
     "updated_at": {
-      "previous": "2017-09-15 16:50:55 UTC", 
+      "previous": "2017-09-15 16:50:55 UTC",
       "current":"2017-09-15 16:52:00 UTC"
     },
     "labels": {

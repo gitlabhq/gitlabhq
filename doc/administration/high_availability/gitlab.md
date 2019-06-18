@@ -66,7 +66,7 @@
     gitlab_rails['redis_port'] = '6379'
     gitlab_rails['redis_host'] = '10.1.0.6' # IP/hostname of Redis server
     gitlab_rails['redis_password'] = 'Redis Password'
-    
+
     # Ensure UIDs and GIDs match between servers for permissions via NFS
     user['uid'] = 9000
     user['gid'] = 9000
@@ -81,11 +81,11 @@
     servers should point to the external url that users will use to access GitLab.
     In a typical HA setup, this will be the url of the load balancer which will
     route traffic to all GitLab application servers in the HA cluster.
-    > 
+    >
     > **Note:** When you specify `https` in the `external_url`, as in the example
     above, GitLab assumes you have SSL certificates in `/etc/gitlab/ssl/`. If
     certificates are not present, Nginx will fail to start. See
-    [Nginx documentation](http://docs.gitlab.com/omnibus/settings/nginx.html#enable-https)
+    [Nginx documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#enable-https)
     for more information.
     >
     > **Note:** It is best to set the `uid` and `gid`s prior to the initial reconfigure of GitLab. Omnibus will not recursively `chown` directories if set after the initial reconfigure.

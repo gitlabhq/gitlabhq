@@ -111,7 +111,7 @@ deploy the bundled PostgreSQL.
 > - If you are a Community Edition or Starter user, consider using a cloud hosted solution.
 > - This document will not cover installations from source.
 >
-> - If HA setup is not what you were looking for, see the [database configuration document](http://docs.gitlab.com/omnibus/settings/database.html)
+> - If HA setup is not what you were looking for, see the [database configuration document](https://docs.gitlab.com/omnibus/settings/database.html)
 >   for the Omnibus GitLab packages.
 >
 > Please read this document fully before attempting to configure PostgreSQL HA
@@ -1146,7 +1146,7 @@ postgresql['trust_auth_cidr_addresses'] = %w(123.123.123.123/32 <other_cidrs>)
 If you're running into an issue with a component not outlined here, be sure to check the troubleshooting section of their specific documentation page.
 
 - [Consul](consul.md#troubleshooting)
-- [PostgreSQL](http://docs.gitlab.com/omnibus/settings/database.html#troubleshooting)
+- [PostgreSQL](https://docs.gitlab.com/omnibus/settings/database.html#troubleshooting)
 - [GitLab application](gitlab.md#troubleshooting)
 
 ## Configure using Omnibus

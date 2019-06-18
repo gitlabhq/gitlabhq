@@ -283,7 +283,7 @@ For instance, for `https://docs.gitlab.com/ce/user/index.html`,
 #### Default URL
 
 The default and canonical URL for GitLab documentation is
-`http://docs.gitlab.com/ee/`, thus, all links
+`https://docs.gitlab.com/ee/`, thus, all links
 in the docs site should link to `/ee/` except when linking
 among `/ce/` docs themselves.
 

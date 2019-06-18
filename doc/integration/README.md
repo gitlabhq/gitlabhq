@@ -55,7 +55,7 @@ at Super User also has relevant information.
 
 **Omnibus Trusted Chain**
 
-[Install the self signed certificate or custom certificate authorities](http://docs.gitlab.com/omnibus/common_installation_problems/README.html#using-self-signed-certificate-or-custom-certificate-authorities)
+[Install the self signed certificate or custom certificate authorities](https://docs.gitlab.com/omnibus/common_installation_problems/README.html#using-self-signed-certificate-or-custom-certificate-authorities)
 in to GitLab Omnibus.
 
 It is enough to concatenate the certificate to the main trusted certificate
@@ -71,4 +71,4 @@ After that restart GitLab with:
 sudo gitlab-ctl restart
 ```
 
-[jenkins]: http://docs.gitlab.com/ee/integration/jenkins.html
+[jenkins]: https://docs.gitlab.com/ee/integration/jenkins.html

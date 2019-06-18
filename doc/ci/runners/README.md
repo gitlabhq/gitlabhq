@@ -418,9 +418,9 @@ You can find the IP address of a Runner for a specific project by:
 
 ![specific Runner IP address](img/specific_runner_ip_address.png)
 
-[install]: http://docs.gitlab.com/runner/install/
+[install]: https://docs.gitlab.com/runner/install/
 [fifo]: https://en.wikipedia.org/wiki/FIFO_(computing_and_electronics)
-[register]: http://docs.gitlab.com/runner/register/
+[register]: https://docs.gitlab.com/runner/register/
 [protected branches]: ../../user/project/protected_branches.md
 [protected tags]: ../../user/project/protected_tags.md
 [project defined timeout]: ../../user/project/pipelines/settings.html#timeout
