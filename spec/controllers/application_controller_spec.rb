@@ -289,6 +289,13 @@ describe ApplicationController do
 
         expect(subject).to be_truthy
       end
+
+      it 'returns true if user has signed up using omniauth-ultraauth' do
+        user = create(:omniauth_user, provider: 'ultraauth')
+        allow(controller).to receive(:current_user).and_return(user)
+
+        expect(subject).to be_truthy
+      end
     end
 
     describe '#two_factor_grace_period' do

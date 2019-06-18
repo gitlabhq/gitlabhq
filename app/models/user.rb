@@ -835,11 +835,11 @@ class User < ApplicationRecord
   end
 
   def allow_password_authentication_for_web?
-    Gitlab::CurrentSettings.password_authentication_enabled_for_web? && !ldap_user?
+    Gitlab::CurrentSettings.password_authentication_enabled_for_web? && !ldap_user? && !ultraauth_user?
   end
 
   def allow_password_authentication_for_git?
-    Gitlab::CurrentSettings.password_authentication_enabled_for_git? && !ldap_user?
+    Gitlab::CurrentSettings.password_authentication_enabled_for_git? && !ldap_user? && !ultraauth_user?
   end
 
   def can_change_username?
@@ -916,6 +916,14 @@ class User < ApplicationRecord
       identities.find { |identity| Gitlab::Auth::OAuth::Provider.ldap_provider?(identity.provider) && !identity.extern_uid.nil? }
     else
       identities.exists?(["provider LIKE ? AND extern_uid IS NOT NULL", "ldap%"])
+    end
+  end
+
+  def ultraauth_user?
+    if identities.loaded?
+      identities.find { |identity| Gitlab::Auth::OAuth::Provider.ultraauth_provider?(identity.provider) && !identity.extern_uid.nil? }
+    else
+      identities.exists?(["provider = ? AND extern_uid IS NOT NULL", "ultraauth"])
     end
   end
 

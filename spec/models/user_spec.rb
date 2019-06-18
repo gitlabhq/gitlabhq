@@ -1769,6 +1769,26 @@ describe User do
     end
   end
 
+  describe '#ultraauth_user?' do
+    it 'is true if provider is ultraauth' do
+      user = create(:omniauth_user, provider: 'ultraauth')
+
+      expect(user.ultraauth_user?).to be_truthy
+    end
+
+    it 'is false with othe provider' do
+      user = create(:omniauth_user, provider: 'not-ultraauth')
+
+      expect(user.ultraauth_user?).to be_falsey
+    end
+
+    it 'is false if no extern_uid is provided' do
+      user = create(:omniauth_user, extern_uid: nil)
+
+      expect(user.ldap_user?).to be_falsey
+    end
+  end
+
   describe '#full_website_url' do
     let(:user) { create(:user) }
 
@@ -2807,6 +2827,12 @@ describe User do
 
       expect(user.allow_password_authentication_for_web?).to be_falsey
     end
+
+    it 'returns false for ultraauth user' do
+      user = create(:omniauth_user, provider: 'ultraauth')
+
+      expect(user.allow_password_authentication_for_web?).to be_falsey
+    end
   end
 
   describe '#allow_password_authentication_for_git?' do
@@ -2826,6 +2852,12 @@ describe User do
 
     it 'returns false for ldap user' do
       user = create(:omniauth_user, provider: 'ldapmain')
+
+      expect(user.allow_password_authentication_for_git?).to be_falsey
+    end
+
+    it 'returns false for ultraauth user' do
+      user = create(:omniauth_user, provider: 'ultraauth')
 
       expect(user.allow_password_authentication_for_git?).to be_falsey
     end
