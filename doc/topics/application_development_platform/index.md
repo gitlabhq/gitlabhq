@@ -6,10 +6,10 @@ provide a full development environment to internal software development teams.
 ## Overview
 
 The GitLab Application Development Platform aims to reduce and even eliminate the time it takes for an Operations team
-to provide a full environment for software developers, comprised of the following high-level elements:
+to provide a full environment for software developers. It comprises the following high-level elements:
 
 1. Compute
-1. Build, test, deploy a wide range of applications
+1. Build, test, and deploy a wide range of applications
 1. Security
 1. Observability
 
