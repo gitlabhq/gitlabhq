@@ -8,6 +8,12 @@ module Gitlab
     class Config
       ConfigError = Class.new(StandardError)
 
+      RESCUE_ERRORS = [
+        Gitlab::Config::Loader::FormatError,
+        Extendable::ExtensionError,
+        External::Processor::IncludeError
+      ].freeze
+
       def initialize(config, project: nil, sha: nil, user: nil)
         @config = Config::Extendable
           .new(build_config(config, project: project, sha: sha, user: user))
@@ -15,9 +21,7 @@ module Gitlab
 
         @global = Entry::Global.new(@config)
         @global.compose!
-      rescue Gitlab::Config::Loader::FormatError,
-             Extendable::ExtensionError,
-             External::Processor::IncludeError => e
+      rescue *rescue_errors => e
         raise Config::ConfigError, e.message
       end
 
@@ -82,6 +86,11 @@ module Gitlab
           sha: sha || project&.repository&.root_ref_sha,
           user: user,
           expandset: Set.new).perform
+      end
+
+      # Overriden in EE
+      def rescue_errors
+        RESCUE_ERRORS
       end
     end
   end

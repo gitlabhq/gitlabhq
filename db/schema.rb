@@ -194,6 +194,7 @@ ActiveRecord::Schema.define(version: 20190613030606) do
     t.integer "elasticsearch_replicas", default: 1, null: false
     t.text "encrypted_lets_encrypt_private_key"
     t.text "encrypted_lets_encrypt_private_key_iv"
+    t.string "required_instance_ci_template"
     t.boolean "dns_rebinding_protection_enabled", default: true, null: false
     t.boolean "default_project_deletion_protection", default: false, null: false
     t.boolean "lock_memberships_to_ldap", default: false, null: false
