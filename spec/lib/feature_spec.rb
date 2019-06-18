@@ -31,12 +31,19 @@ describe Feature do
       expect(described_class.persisted_names).to be_empty
     end
 
-    it 'caches the feature names when request store is active', :request_store do
+    it 'caches the feature names when request store is active',
+       :request_store, :use_clean_rails_memory_store_caching do
       Feature::FlipperFeature.create!(key: 'foo')
 
       expect(Feature::FlipperFeature)
         .to receive(:feature_names)
         .once
+        .and_call_original
+
+      expect(Rails.cache)
+        .to receive(:fetch)
+        .once
+        .with('flipper:persisted_names', expires_in: 1.minute)
         .and_call_original
 
       2.times do
