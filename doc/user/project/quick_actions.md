@@ -57,6 +57,7 @@ discussions, and descriptions:
 | `/approve`                 | Approve the merge request      |       | ✓             |
 | `/merge`                   | Merge (when pipeline succeeds) |       | ✓             |
 | `/create_merge_request <branch name>` | Create a new merge request starting from the current issue | ✓ | |
+| `/relate #issue1 #issue2`  | Mark issues as related **[STARTER]** | ✓     |               |
 
 ## Quick actions for commit messages
 
