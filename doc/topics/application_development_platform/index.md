@@ -46,7 +46,7 @@ before it is too late to create a fix. The following features are included:
 ### Observability
 
 Performance is a critical aspect of the user experience, and ensuring your application is responsive and available is everyone's
-responsibility. The Application Development Platform aims to integrate key performance analytics and feedback 
+responsibility. The Application Development Platform integrates key performance analytics and feedback 
 into GitLab, automatically. The following features are included:
 
 - [Auto Monitoring](https://docs.gitlab.com/ee/topics/autodevops/#auto-monitoring)
