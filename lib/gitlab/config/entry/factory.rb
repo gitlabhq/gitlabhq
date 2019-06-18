@@ -30,6 +30,18 @@ module Gitlab
           self
         end
 
+        def description
+          @attributes[:description]
+        end
+
+        def inheritable?
+          @attributes[:inherit]
+        end
+
+        def reserved?
+          @attributes[:reserved]
+        end
+
         def create!
           raise InvalidFactory unless defined?(@value)
 

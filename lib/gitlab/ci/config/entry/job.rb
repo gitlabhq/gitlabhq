@@ -42,7 +42,8 @@ module Gitlab
           end
 
           entry :before_script, Entry::Script,
-            description: 'Global before script overridden in this job.'
+            description: 'Global before script overridden in this job.',
+            inherit: true
 
           entry :script, Entry::Commands,
             description: 'Commands that will be executed in this job.'
@@ -54,16 +55,20 @@ module Gitlab
             description: 'Deprecated: stage this job will be executed into.'
 
           entry :after_script, Entry::Script,
-            description: 'Commands that will be executed when finishing job.'
+            description: 'Commands that will be executed when finishing job.',
+            inherit: true
 
           entry :cache, Entry::Cache,
-            description: 'Cache definition for this job.'
+            description: 'Cache definition for this job.',
+            inherit: true
 
           entry :image, Entry::Image,
-            description: 'Image that will be used to execute this job.'
+            description: 'Image that will be used to execute this job.',
+            inherit: true
 
           entry :services, Entry::Services,
-            description: 'Services that will be used to execute this job.'
+            description: 'Services that will be used to execute this job.',
+            inherit: true
 
           entry :only, Entry::Policy,
             description: 'Refs policy this job will be executed for.',
@@ -94,6 +99,15 @@ module Gitlab
 
           attributes :script, :tags, :allow_failure, :when, :dependencies,
                      :retry, :parallel, :extends, :start_in
+
+          def self.matching?(name, config)
+            !name.to_s.start_with?('.') &&
+              config.is_a?(Hash) && config.key?(:script)
+          end
+
+          def self.visible?
+            true
+          end
 
           def compose!(deps = nil)
             super do
@@ -129,15 +143,19 @@ module Gitlab
 
           private
 
+          # We inherit config entries from `default:`
+          # if the entry has the `inherit: true` flag set
           def inherit!(deps)
             return unless deps
 
-            self.class.nodes.each_key do |key|
-              global_entry = deps[key]
+            self.class.nodes.each do |key, factory|
+              next unless factory.inheritable?
+
+              default_entry = deps.default[key]
               job_entry = self[key]
 
-              if global_entry.specified? && !job_entry.specified?
-                @entries[key] = global_entry
+              if default_entry.specified? && !job_entry.specified?
+                @entries[key] = default_entry
               end
             end
           end
@@ -152,7 +170,7 @@ module Gitlab
               cache: cache_value,
               only: only_value,
               except: except_value,
-              variables: variables_defined? ? variables_value : nil,
+              variables: variables_defined? ? variables_value : {},
               environment: environment_defined? ? environment_value : nil,
               environment_name: environment_defined? ? environment_value[:name] : nil,
               coverage: coverage_defined? ? coverage_value : nil,

@@ -58,13 +58,21 @@ module Gitlab
             Hash[(@nodes || {}).map { |key, factory| [key, factory.dup] }]
           end
 
+          def reserved_node_names
+            self.nodes.select do |_, node|
+              node.reserved?
+            end.keys
+          end
+
           private
 
           # rubocop: disable CodeReuse/ActiveRecord
-          def entry(key, entry, metadata)
+          def entry(key, entry, description: nil, default: nil, inherit: nil, reserved: nil)
             factory = ::Gitlab::Config::Entry::Factory.new(entry)
-              .with(description: metadata[:description])
-              .with(default: metadata[:default])
+              .with(description: description)
+              .with(default: default)
+              .with(inherit: inherit)
+              .with(reserved: reserved)
 
             (@nodes ||= {}).merge!(key.to_sym => factory)
           end

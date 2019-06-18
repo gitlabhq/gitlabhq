@@ -107,7 +107,7 @@ describe Projects::Ci::LintsController do
       end
 
       it 'assigns errors' do
-        expect(assigns[:error]).to eq('jobs:rubocop config contains unknown keys: scriptt')
+        expect(assigns[:error]).to eq('root config contains unknown keys: rubocop')
       end
     end
 

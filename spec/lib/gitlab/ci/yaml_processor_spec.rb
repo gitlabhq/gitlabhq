@@ -265,6 +265,19 @@ module Gitlab
             end
           end
 
+          context "in default context" do
+            let(:config) do
+              {
+                default: { before_script: ["global script"] },
+                test: { script: ["script"] }
+              }
+            end
+
+            it "return commands with scripts concencaced" do
+              expect(subject[:options][:before_script]).to eq(["global script"])
+            end
+          end
+
           context "overwritten in local context" do
             let(:config) do
               {
@@ -293,6 +306,19 @@ module Gitlab
 
         describe "after_script" do
           context "in global context" do
+            let(:config) do
+              {
+                after_script: ["after_script"],
+                test: { script: ["script"] }
+              }
+            end
+
+            it "return after_script in options" do
+              expect(subject[:options][:after_script]).to eq(["after_script"])
+            end
+          end
+
+          context "in default context" do
             let(:config) do
               {
                 after_script: ["after_script"],
@@ -762,6 +788,28 @@ module Gitlab
                                  script: "rspec"
                                }
                              })
+
+          config_processor = Gitlab::Ci::YamlProcessor.new(config)
+
+          expect(config_processor.stage_builds_attributes("test").size).to eq(1)
+          expect(config_processor.stage_builds_attributes("test").first[:options][:cache]).to eq(
+            paths: ["logs/", "binaries/"],
+            untracked: true,
+            key: 'key',
+            policy: 'pull-push'
+          )
+        end
+
+        it "returns cache when defined in default context" do
+          config = YAML.dump(
+            {
+              default: {
+                cache: { paths: ["logs/", "binaries/"], untracked: true, key: 'key' }
+              },
+              rspec: {
+                script: "rspec"
+              }
+            })
 
           config_processor = Gitlab::Ci::YamlProcessor.new(config)
 
@@ -1271,7 +1319,7 @@ module Gitlab
           config = YAML.dump({ extra: "bundle update" })
           expect do
             Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "jobs:extra config should be a hash")
+          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "root config contains unknown keys: extra")
         end
 
         it "returns errors if services configuration is not correct" do
