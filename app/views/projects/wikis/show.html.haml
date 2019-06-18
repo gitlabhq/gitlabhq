@@ -8,7 +8,7 @@
   %button.btn.btn-default.sidebar-toggle.js-sidebar-wiki-toggle{ role: "button", type: "button" }
     = icon('angle-double-left')
 
-  .nav-text
+  .nav-text.flex-fill
     %h2.wiki-page-title= @page.human_title
     %span.wiki-last-edit-by
       - if @page.last_version
