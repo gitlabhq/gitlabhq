@@ -68,6 +68,9 @@ module API
       delete ':id/registry/repositories/:repository_id/tags', requirements: REGISTRY_ENDPOINT_REQUIREMENTS do
         authorize_admin_container_image!
 
+        message = 'This request has already been made. You can run this at most once an hour for a given container repository'
+        render_api_error!(message, 400) unless obtain_new_cleanup_container_lease
+
         CleanupContainerRepositoryWorker.perform_async(current_user.id, repository.id,
           declared_params.except(:repository_id)) # rubocop: disable CodeReuse/ActiveRecord
 
@@ -121,6 +124,13 @@ module API
 
       def authorize_admin_container_image!
         authorize! :admin_container_image, repository
+      end
+
+      def obtain_new_cleanup_container_lease
+        Gitlab::ExclusiveLease
+          .new("container_repository:cleanup_tags:#{repository.id}",
+               timeout: 1.hour)
+          .try_obtain
       end
 
       def repository
