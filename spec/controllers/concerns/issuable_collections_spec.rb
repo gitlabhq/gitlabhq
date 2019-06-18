@@ -180,5 +180,16 @@ describe IssuableCollections do
         is_expected.not_to include('invalid_param', 'invalid_array')
       end
     end
+
+    context 'search using an issue iid' do
+      let(:params) { { search: "#5" } }
+
+      it 'mutates the search into a filter by iid' do
+        is_expected.to include({
+            'iids' => '5',
+            'search' => nil
+        })
+      end
+    end
   end
 end

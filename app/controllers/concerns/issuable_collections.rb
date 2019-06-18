@@ -104,6 +104,12 @@ module IssuableCollections
     # Used by view to highlight active option
     @sort = options[:sort]
 
+    # When a user looks for an exact iid, we do not filter by search but only by iid
+    if params[:search] =~ /^#(?<iid>\d+)\z/
+      options[:iids] = Regexp.last_match[:iid]
+      params[:search] = nil
+    end
+
     if @project
       options[:project_id] = @project.id
       options[:attempt_project_search_optimizations] = true
