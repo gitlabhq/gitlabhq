@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe API::ContainerRegistry do
+  include ExclusiveLeaseHelpers
+
   set(:project) { create(:project, :private) }
   set(:maintainer) { create(:user) }
   set(:developer) { create(:user) }
@@ -155,13 +157,32 @@ describe API::ContainerRegistry do
             older_than: '1 day' }
         end
 
+        let(:lease_key) { "container_repository:cleanup_tags:#{root_repository.id}" }
+
         it 'schedules cleanup of tags repository' do
+          stub_exclusive_lease(lease_key, timeout: 1.hour)
           expect(CleanupContainerRepositoryWorker).to receive(:perform_async)
             .with(maintainer.id, root_repository.id, worker_params)
 
           subject
 
           expect(response).to have_gitlab_http_status(:accepted)
+        end
+
+        context 'called multiple times in one hour' do
+          it 'returns 400 with an error message' do
+            stub_exclusive_lease_taken(lease_key, timeout: 1.hour)
+            subject
+
+            expect(response).to have_gitlab_http_status(400)
+            expect(response.body).to include('This request has already been made.')
+          end
+
+          it 'executes service only for the first time' do
+            expect(CleanupContainerRepositoryWorker).to receive(:perform_async).once
+
+            2.times { subject }
+          end
         end
       end
     end
