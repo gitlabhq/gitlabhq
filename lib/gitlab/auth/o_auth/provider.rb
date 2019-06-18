@@ -40,6 +40,10 @@ module Gitlab
           name.to_s.start_with?('ldap')
         end
 
+        def self.ultraauth_provider?(name)
+          name.to_s.eql?('ultraauth')
+        end
+
         def self.sync_profile_from_provider?(provider)
           return true if ldap_provider?(provider)
 
