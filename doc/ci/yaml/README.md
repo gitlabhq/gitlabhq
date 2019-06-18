@@ -2620,6 +2620,24 @@ test:
     - pwd
 ```
 
+### Nested paths
+
+The value of `GIT_CLONE_PATH` is expanded once and nesting variables
+within it is not supported.
+
+For example, you define both the variables below in your
+`.gitlab-ci.yml` file:
+
+```yml
+variables:
+  GOPATH: $CI_BUILDS_DIR/go
+  GIT_CLONE_PATH: $GOPATH/src/namespace/project
+```
+
+The value of `GIT_CLONE_PATH` is expanded once into
+`$CI_BUILDS_DIR/go/src/namespace/project`, and results in failure
+because `$CI_BUILDS_DIR` is not expanded.   
+
 ## Special YAML features
 
 It's possible to use special YAML features like anchors (`&`), aliases (`*`)
