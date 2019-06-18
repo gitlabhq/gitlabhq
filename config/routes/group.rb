@@ -88,12 +88,4 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
     put '/', action: :update
     delete '/', action: :destroy
   end
-
-  # Legacy paths should be defined last, so they would be ignored if routes with
-  # one of the previously reserved words exist.
-  scope(path: 'groups/*group_id') do
-    Gitlab::Routing.redirect_legacy_paths(self, :labels, :milestones, :group_members,
-                                          :edit, :issues, :merge_requests, :projects,
-                                          :activity)
-  end
 end

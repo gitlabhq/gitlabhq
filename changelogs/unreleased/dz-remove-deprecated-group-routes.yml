@@ -1,0 +1,5 @@
+---
+title: Remove deprecated group routes
+merge_request: 29351
+author:
+type: removed
