@@ -330,20 +330,6 @@ describe Gitlab::GitalyClient do
     end
   end
 
-  describe 'feature_enabled?' do
-    let(:feature_name) { 'my_feature' }
-    let(:real_feature_name) { "gitaly_#{feature_name}" }
-
-    before do
-      allow(Feature).to receive(:enabled?).and_return(false)
-    end
-
-    it 'returns false' do
-      expect(Feature).to receive(:enabled?).with(real_feature_name)
-      expect(described_class.feature_enabled?(feature_name)).to be(false)
-    end
-  end
-
   describe 'timeouts' do
     context 'with default values' do
       before do
