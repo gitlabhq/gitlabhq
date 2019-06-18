@@ -33,7 +33,7 @@ you can use as much or as little of the default pipeline as you'd like, and deep
 
 ### Security
 
-The Application Development Platform aims to ensure that applications developed with it are not affected by vulnerabilities 
+The Application Development Platform helps you ensure that the applications you create are not affected by vulnerabilities 
 that may lead to security problems and unintended use. This can be achieved by making use of the embeded security features of Auto DevOps
 which allow both security teams and developers to know if there is something that they should consider in their apps, 
 before it is too late to create a fix. The following features are included:
