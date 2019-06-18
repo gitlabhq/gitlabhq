@@ -123,7 +123,11 @@ describe Projects::BranchesController do
           expect(response).to redirect_to project_tree_path(project, branch)
         end
 
-        shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
+        context 'when user configured kubernetes from CI/CD > Clusters' do
+          before do
+            create(:cluster, :provided_by_gcp, projects: [project])
+          end
+
           it 'redirects to autodeploy setup page' do
             result = { status: :success, branch: double(name: branch) }
 
@@ -141,22 +145,6 @@ describe Projects::BranchesController do
             expect(response.location).to include(project_new_blob_path(project, branch))
             expect(response).to have_gitlab_http_status(302)
           end
-        end
-
-        context 'when user configured kubernetes from Integration > Kubernetes' do
-          before do
-            project.services << build(:kubernetes_service)
-          end
-
-          it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
-        end
-
-        context 'when user configured kubernetes from CI/CD > Clusters' do
-          before do
-            create(:cluster, :provided_by_gcp, projects: [project])
-          end
-
-          it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
         end
 
         it 'redirects to autodeploy setup page' do

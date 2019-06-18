@@ -248,7 +248,10 @@ describe 'Environments page', :js do
         end
 
         context 'when kubernetes terminal is available' do
-          shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
+          context 'when user configured kubernetes from CI/CD > Clusters' do
+            let(:cluster) { create(:cluster, :provided_by_gcp, projects: [create(:project, :repository)]) }
+            let(:project) { cluster.project }
+
             context 'for project maintainer' do
               let(:role) { :maintainer }
 
@@ -264,19 +267,6 @@ describe 'Environments page', :js do
                 expect(page).not_to have_terminal_button
               end
             end
-          end
-
-          context 'when user configured kubernetes from Integration > Kubernetes' do
-            let(:project) { create(:kubernetes_project, :test_repo) }
-
-            it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
-          end
-
-          context 'when user configured kubernetes from CI/CD > Clusters' do
-            let(:cluster) { create(:cluster, :provided_by_gcp, projects: [create(:project, :repository)]) }
-            let(:project) { cluster.project }
-
-            it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
           end
         end
       end

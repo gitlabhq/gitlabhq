@@ -44,7 +44,9 @@ RSpec.shared_examples 'additional metrics query' do
     end
 
     describe 'project has Kubernetes service' do
-      shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
+      context 'when user configured kubernetes from CI/CD > Clusters' do
+        let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
+        let(:project) { cluster.project }
         let(:environment) { create(:environment, slug: 'environment-slug', project: project) }
         let(:kube_namespace) { project.deployment_platform.kubernetes_namespace_for(project) }
 
@@ -55,19 +57,6 @@ RSpec.shared_examples 'additional metrics query' do
 
           subject.query(*query_params)
         end
-      end
-
-      context 'when user configured kubernetes from Integration > Kubernetes' do
-        let(:project) { create(:kubernetes_project) }
-
-        it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
-      end
-
-      context 'when user configured kubernetes from CI/CD > Clusters' do
-        let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
-        let(:project) { cluster.project }
-
-        it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
       end
     end
 

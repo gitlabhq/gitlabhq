@@ -9999,6 +9999,9 @@ msgstr ""
 msgid "The import will time out after %{timeout}. For repositories that take longer, use a clone/push combination."
 msgstr ""
 
+msgid "The instance-level Kubernetes service integration is deprecated. Your data has been migrated to an <a href=\"%{url}\"/>instance-level cluster</a>."
+msgstr ""
+
 msgid "The invitation could not be accepted."
 msgstr ""
 
@@ -11941,9 +11944,6 @@ msgid "Your GPG keys (%{count})"
 msgstr ""
 
 msgid "Your Groups"
-msgstr ""
-
-msgid "Your Kubernetes cluster information on this page is still editable, but you are advised to disable and reconfigure"
 msgstr ""
 
 msgid "Your Primary Email will be used for avatar detection."
