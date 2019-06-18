@@ -1,0 +1,6 @@
+---
+title: Make sure we are receiving the proper information on the MR Popover by updating
+  the IID in the graphql query
+merge_request:
+author:
+type: fixed

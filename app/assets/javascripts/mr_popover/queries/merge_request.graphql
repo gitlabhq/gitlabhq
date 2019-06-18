@@ -1,4 +1,4 @@
-query mergeRequest($projectPath: ID!, $mergeRequestIID: ID!) {
+query mergeRequest($projectPath: ID!, $mergeRequestIID: String!) {
   project(fullPath: $projectPath) {
     mergeRequest(iid: $mergeRequestIID) {
       createdAt
