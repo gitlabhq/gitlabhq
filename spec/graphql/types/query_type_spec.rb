@@ -34,9 +34,5 @@ describe GitlabSchema.types['Query'] do
       is_expected.to have_graphql_type(Types::MetadataType)
       is_expected.to have_graphql_resolver(Resolvers::MetadataResolver)
     end
-
-    it 'authorizes with read_instance_metadata' do
-      is_expected.to require_graphql_authorizations(:read_instance_metadata)
-    end
   end
 end

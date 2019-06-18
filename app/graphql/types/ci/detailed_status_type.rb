@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 module Types
   module Ci
+    # rubocop: disable Graphql/AuthorizeTypes
+    # This is presented through `PipelineType` that has its own authorization
     class DetailedStatusType < BaseObject
       graphql_name 'DetailedStatus'
 
@@ -13,5 +15,6 @@ module Types
       field :text, GraphQL::STRING_TYPE, null: false
       field :tooltip, GraphQL::STRING_TYPE, null: false, method: :status_tooltip
     end
+    # rubocop: enable Graphql/AuthorizeTypes
   end
 end
