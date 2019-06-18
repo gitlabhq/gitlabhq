@@ -1,2 +1,2 @@
 /* eslint-disable import/prefer-default-export */
-export const TOKEN_TYPES = ['author', 'assignee'];
+export const USER_TOKEN_TYPES = ['author', 'assignee'];
