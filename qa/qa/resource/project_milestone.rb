@@ -31,6 +31,21 @@ module QA
           milestone_new.click_milestone_create_button
         end
       end
+
+      def api_get_path
+        "/projects/#{project.id}/milestones/#{id}"
+      end
+
+      def api_post_path
+        "/projects/#{project.id}/milestones"
+      end
+
+      def api_post_body
+        {
+          description: @description,
+          title: @title
+        }
+      end
     end
   end
 end

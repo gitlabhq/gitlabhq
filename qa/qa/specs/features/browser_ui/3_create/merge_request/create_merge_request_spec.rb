@@ -1,74 +1,64 @@
 # frozen_string_literal: true
 
 module QA
-  # Failure issue: https://gitlab.com/gitlab-org/quality/staging/issues/50
-  context 'Create', :quarantine do
-    describe 'Merge request creation' do
-      it 'user creates a new merge request', :smoke do
+  context 'Create' do
+    describe 'Create a new merge request' do
+      before do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.act { sign_in_using_credentials }
+        Page::Main::Login.perform(&:sign_in_using_credentials)
 
-        current_project = Resource::Project.fabricate! do |project|
-          project.name = 'project-with-merge-request'
+        @project = Resource::Project.fabricate_via_api! do |project|
+          project.name = 'project'
         end
 
-        merge_request_title = 'This is a merge request'
-        merge_request_description = 'Great feature'
-
-        Resource::MergeRequest.fabricate! do |merge_request|
-          merge_request.title = merge_request_title
-          merge_request.description = merge_request_description
-          merge_request.project = current_project
-        end
-
-        expect(page).to have_content(merge_request_title)
-        expect(page).to have_content(merge_request_description)
-        expect(page).to have_content('Opened just now')
+        @merge_request_title = 'One merge request to rule them all'
+        @merge_request_description = '... to find them, to bring them all, and in the darkness bind them'
       end
 
-      it 'user creates a new merge request with a milestone and label' do
-        gitlab_account_username = "@#{Runtime::User.username}"
-
-        Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.act { sign_in_using_credentials }
-
-        current_project = Resource::Project.fabricate! do |project|
-          project.name = 'project-with-merge-request-and-milestone'
-        end
-
-        current_milestone = Resource::ProjectMilestone.fabricate! do |milestone|
-          milestone.title = 'unique-milestone'
-          milestone.project = current_project
-        end
-
-        new_label = Resource::Label.fabricate_via_browser_ui! do |label|
-          label.project = current_project
-          label.title = 'qa-mr-test-label'
-          label.description = 'Merge Request label'
-        end
-
-        merge_request_title = 'This is a merge request with a milestone and a label'
-        merge_request_description = 'Great feature with milestone'
-
-        Resource::MergeRequest.fabricate! do |merge_request|
-          merge_request.title = merge_request_title
-          merge_request.description = merge_request_description
-          merge_request.project = current_project
-          merge_request.milestone = current_milestone
-          merge_request.assignee = 'me'
-          merge_request.labels.push(new_label)
+      it 'creates a basic merge request', :smoke do
+        Resource::MergeRequest.fabricate_via_browser_ui! do |merge_request|
+          merge_request.project = @project
+          merge_request.title = @merge_request_title
+          merge_request.description = @merge_request_description
         end
 
         Page::MergeRequest::Show.perform do |merge_request|
-          expect(merge_request).to have_content(merge_request_title)
-          expect(merge_request).to have_content(merge_request_description)
-          expect(merge_request).to have_content('Opened just now')
+          expect(merge_request).to have_title(@merge_request_title)
+          expect(merge_request).to have_description(@merge_request_description)
+        end
+      end
+
+      it 'creates a merge request with a milestone and label' do
+        gitlab_account_username = "@#{Runtime::User.username}"
+
+        milestone = Resource::ProjectMilestone.fabricate_via_api! do |milestone|
+          milestone.project = @project
+          milestone.title = 'milestone'
+        end
+
+        label = Resource::Label.fabricate_via_api! do |label|
+          label.project = @project
+          label.title = 'label'
+        end
+
+        Resource::MergeRequest.fabricate_via_browser_ui! do |merge_request|
+          merge_request.title = @merge_request_title
+          merge_request.description = @merge_request_description
+          merge_request.project = @project
+          merge_request.milestone = milestone
+          merge_request.assignee = 'me'
+          merge_request.labels.push(label)
+        end
+
+        Page::MergeRequest::Show.perform do |merge_request|
+          expect(merge_request).to have_title(@merge_request_title)
+          expect(merge_request).to have_description(@merge_request_description)
           expect(merge_request).to have_assignee(gitlab_account_username)
-          expect(merge_request).to have_label(new_label.title)
+          expect(merge_request).to have_label(label.title)
         end
 
         Page::Issuable::Sidebar.perform do |sidebar|
-          expect(sidebar).to have_milestone(current_milestone.title)
+          expect(sidebar).to have_milestone(milestone.title)
         end
       end
     end

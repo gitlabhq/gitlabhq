@@ -46,7 +46,7 @@ module QA
       end
 
       def api_post_path
-        "/projects/#{project}/labels"
+        "/projects/#{project.id}/labels"
       end
 
       def api_post_body

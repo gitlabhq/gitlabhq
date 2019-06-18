@@ -1,10 +1,10 @@
 .detail-page-description
-  %h2.title
+  %h2.title.qa-title
     = markdown_field(@merge_request, :title)
 
   %div
     - if @merge_request.description.present?
-      .description{ class: can?(current_user, :update_merge_request, @merge_request) ? 'js-task-list-container' : '' }
+      .description.qa-description{ class: can?(current_user, :update_merge_request, @merge_request) ? 'js-task-list-container' : '' }
         .md
           = markdown_field(@merge_request, :description)
         %textarea.hidden.js-task-list-field
