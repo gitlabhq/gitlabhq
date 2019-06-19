@@ -6,6 +6,9 @@ Mattermost commands give users an extra interface to perform common operations
 from the chat environment. This allows one to, for example, create an issue as
 soon as the idea was discussed in Mattermost.
 
+GitLab can also send events (e.g., `issue created`) to Mattermost as notifications.
+This is the separately configured [Mattermost Notifications Service](mattermost.md).
+
 ## Prerequisites
 
 Mattermost 3.4 and up is required.

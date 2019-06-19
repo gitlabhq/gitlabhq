@@ -95,6 +95,7 @@ The following table depicts the various user permission levels in a project.
 | Dismiss vulnerability **[ULTIMATE]**              |         |            | ✓           | ✓        | ✓      |
 | Apply code change suggestions                     |         |            | ✓           | ✓        | ✓      |
 | Create and edit wiki pages                        |         |            | ✓           | ✓        | ✓      |
+| Rewrite/remove Git tags                           |         |            | ✓           | ✓        | ✓      |
 | Use environment terminals                         |         |            |             | ✓        | ✓      |
 | Run Web IDE's Interactive Web Terminals **[ULTIMATE ONLY]** |     |      |             | ✓        | ✓      |
 | Add new team members                              |         |            |             | ✓        | ✓      |
@@ -102,7 +103,6 @@ The following table depicts the various user permission levels in a project.
 | Push to protected branches                        |         |            |             | ✓        | ✓      |
 | Turn on/off protected branch push for devs        |         |            |             | ✓        | ✓      |
 | Enable/disable tag protections                    |         |            |             | ✓        | ✓      |
-| Rewrite/remove Git tags                           |         |            |             | ✓        | ✓      |
 | Edit project                                      |         |            |             | ✓        | ✓      |
 | Add deploy keys to project                        |         |            |             | ✓        | ✓      |
 | Configure project hooks                           |         |            |             | ✓        | ✓      |

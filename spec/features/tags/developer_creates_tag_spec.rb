@@ -1,11 +1,12 @@
 require 'spec_helper'
 
-describe 'Maintainer creates tag' do
+describe 'Developer creates tag' do
   let(:user) { create(:user) }
-  let(:project) { create(:project, :repository, namespace: user.namespace) }
+  let(:group) { create(:group) }
+  let(:project) { create(:project, :repository, namespace: group) }
 
   before do
-    project.add_maintainer(user)
+    project.add_developer(user)
     sign_in(user)
   end
 

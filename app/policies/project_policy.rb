@@ -297,6 +297,7 @@ class ProjectPolicy < BasePolicy
   end
 
   rule { (mirror_available & can?(:admin_project)) | admin }.enable :admin_remote_mirror
+  rule { can?(:push_code) }.enable :admin_tag
 
   rule { archived }.policy do
     prevent :push_code

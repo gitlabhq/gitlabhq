@@ -129,7 +129,7 @@ describe Ci::PipelineSchedule do
       let(:pipeline_schedule) { create(:ci_pipeline_schedule, :every_minute) }
 
       it "updates next_run_at to the sidekiq worker's execution time" do
-        Timecop.freeze do
+        Timecop.freeze(2019, 06, 19, 12, 00) do
           expect(pipeline_schedule.next_run_at).to eq(cron_worker_next_run_at)
         end
       end
