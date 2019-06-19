@@ -1,0 +1,5 @@
+---
+title: Remove import columns from projects table
+merge_request: 29863
+author:
+type: performance
