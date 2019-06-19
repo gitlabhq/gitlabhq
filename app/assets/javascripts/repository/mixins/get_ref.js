@@ -1,4 +1,4 @@
-import getRef from '../queries/getRef.graphql';
+import getRef from '../queries/getRef.query.graphql';
 
 export default {
   apollo: {

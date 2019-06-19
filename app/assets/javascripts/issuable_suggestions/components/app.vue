@@ -4,7 +4,7 @@ import { GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
 import Suggestion from './item.vue';
-import query from '../queries/issues.graphql';
+import query from '../queries/issues.query.graphql';
 
 export default {
   components: {
