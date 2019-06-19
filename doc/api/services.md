@@ -1023,6 +1023,8 @@ Parameters:
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `webhook` | string | true | The Microsoft Teams webhook. For example, `https://outlook.office.com/webhook/...` |
+| `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines |
+| `notify_only_default_branch` | boolean | false | Send notifications only for the default branch |
 | `push_events` | boolean | false | Enable notifications for push events |
 | `issues_events` | boolean | false | Enable notifications for issue events |
 | `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events |

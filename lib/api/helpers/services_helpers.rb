@@ -683,8 +683,9 @@ module API
               name: :webhook,
               type: String,
               desc: 'The Microsoft Teams webhook. e.g. https://outlook.office.com/webhook/…'
-            }
-          ],
+            },
+            chat_notification_flags
+          ].flatten,
           'mattermost' => [
             chat_notification_settings,
             chat_notification_flags,
