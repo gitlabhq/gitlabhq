@@ -1572,6 +1572,8 @@ ActiveRecord::Schema.define(version: 20190613030606) do
     t.string "last_commit"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.binary "last_wiki_commit"
+    t.datetime_with_timezone "wiki_indexed_at"
     t.index ["project_id"], name: "index_index_statuses_on_project_id", unique: true, using: :btree
   end
 

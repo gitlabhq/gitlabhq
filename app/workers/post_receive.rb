@@ -30,15 +30,17 @@ class PostReceive
 
   private
 
+  def identify_user(post_received)
+    post_received.identify.tap do |user|
+      log("Triggered hook for non-existing user \"#{post_received.identifier}\"") unless user
+    end
+  end
+
   def process_project_changes(post_received)
     changes = []
     refs = Set.new
-    @user = post_received.identify
-
-    unless @user
-      log("Triggered hook for non-existing user \"#{post_received.identifier}\"")
-      return false
-    end
+    user = identify_user(post_received)
+    return false unless user
 
     post_received.enum_for(:changes_refs).with_index do |(oldrev, newrev, ref), index|
       service_klass =
@@ -51,7 +53,7 @@ class PostReceive
       if service_klass
         service_klass.new(
           post_received.project,
-          @user,
+          user,
           oldrev: oldrev,
           newrev: newrev,
           ref: ref,
@@ -64,7 +66,7 @@ class PostReceive
       refs << ref
     end
 
-    after_project_changes_hooks(post_received, @user, refs.to_a, changes)
+    after_project_changes_hooks(post_received, user, refs.to_a, changes)
   end
 
   def after_project_changes_hooks(post_received, user, refs, changes)
@@ -76,6 +78,11 @@ class PostReceive
     post_received.project.touch(:last_activity_at, :last_repository_updated_at)
     post_received.project.wiki.repository.expire_statistics_caches
     ProjectCacheWorker.perform_async(post_received.project.id, [], [:wiki_size])
+
+    user = identify_user(post_received)
+    return false unless user
+
+    ::Git::WikiPushService.new(post_received.project, user, changes: post_received.enum_for(:changes_refs)).execute
   end
 
   def log(message)
