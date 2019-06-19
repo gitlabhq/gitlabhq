@@ -33,7 +33,6 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 
 - [Install](../install/README.md): Requirements, directory structures, and installation methods.
   - [Database load balancing](database_load_balancing.md): Distribute database queries among multiple database servers. **[STARTER ONLY]**
-  - [Omnibus support for external MySQL DB](https://docs.gitlab.com/omnibus/settings/database.html#using-a-mysql-database-management-server-enterprise-edition-only): Omnibus package supports configuring an external MySQL database. **[STARTER ONLY]**
   - [Omnibus support for log forwarding](https://docs.gitlab.com/omnibus/settings/logs.html#udp-log-shipping-gitlab-enterprise-edition-only) **[STARTER ONLY]**
 - [High Availability](high_availability/README.md): Configure multiple servers for scaling or high availability.
   - [Installing GitLab HA on Amazon Web Services (AWS)](../install/aws/index.md): Set up GitLab High Availability on Amazon AWS.

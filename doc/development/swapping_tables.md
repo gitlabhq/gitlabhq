@@ -39,14 +39,6 @@ PostgreSQL you can use the `reset_pk_sequence!` method like so:
 reset_pk_sequence!('events')
 ```
 
-For MySQL however you need to do run the following:
-
-```ruby
-amount = Event.pluck('COALESCE(MAX(id), 1)').first
-
-execute "ALTER TABLE events AUTO_INCREMENT = #{amount}"
-```
-
 Failure to reset the primary keys will result in newly created rows starting
 with an ID value of 1. Depending on the existing data this can then lead to
 duplicate key constraints from popping up, preventing users from creating new

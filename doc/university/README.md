@@ -149,7 +149,6 @@ The GitLab University curriculum is composed of GitLab videos, screencasts, pres
 1. [How to Install GitLab with Omnibus - Video](https://www.youtube.com/watch?v=Q69YaOjqNhg)
 1. [Installing GitLab - Online Course](https://courses.platzi.com/classes/git-gitlab/concepto/part-1/part-3/material/)
 1. [Using a Non-Packaged PostgreSQL Database](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/README.md#using-a-non-packaged-postgresql-database-management-server)
-1. [Using a MySQL Database](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/README.md#using-a-mysql-database-management-server-enterprise-edition-only)
 1. [Installing GitLab on Microsoft Azure](https://about.gitlab.com/2016/07/13/how-to-setup-a-gitlab-instance-on-microsoft-azure/)
 1. [Installing GitLab on Digital Ocean](https://about.gitlab.com/2016/04/27/getting-started-with-gitlab-and-digitalocean/)
 
