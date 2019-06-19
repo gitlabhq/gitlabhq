@@ -139,7 +139,7 @@ The union of A, B, and C is (1, 4) and (6, 7). Therefore, the total running time
 (4 - 1) + (7 - 6) => 4
 ```
 
-## Expanding and collapsing job log sections
+### Expanding and collapsing job log sections
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/14664) in GitLab
 > 12.0.
