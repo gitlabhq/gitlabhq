@@ -9,7 +9,7 @@
   = auto_discovery_link_tag(:atom, user_url(@user, format: :atom), title: "#{@user.name} activity")
 
 .user-profile
-  .cover-block.user-cover-block
+  .cover-block.user-cover-block{ class: [('border-bottom' if profile_tabs.empty?)] }
     .cover-controls
       - if @user == current_user
         = link_to profile_path, class: 'btn btn-default has-tooltip', title: s_('UserProfile|Edit profile'), 'aria-label': 'Edit profile' do
