@@ -80,7 +80,7 @@ def unicode_emoji_regex
   ))x
 end
 
-def lint_commit(commit)
+def lint_commit(commit) # rubocop:disable Metrics/AbcSize
   # For now we'll ignore merge commits, as getting rid of those is a problem
   # separate from enforcing good commit messages.
   return false if commit.message.start_with?('Merge branch')
@@ -112,6 +112,16 @@ def lint_commit(commit)
       commit,
       "This commit's subject line is acceptable, but please try to [reduce it to 50 characters](#{URL_LIMIT_SUBJECT})."
     )
+  end
+
+  # Fail if a suggestion commit is used and squash is not enabled
+  if commit.message.start_with?('Apply suggestion to') && !gitlab.mr_json['squash']
+    fail_commit(
+      commit,
+      'If you are applying suggestions, squash needs to be enabled in the merge request'
+    )
+
+    failures = true
   end
 
   unless subject_starts_with_capital?(subject)
