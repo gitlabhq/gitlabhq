@@ -225,7 +225,7 @@ module Gitlab
       # here is based on Rails' foreign_key_name() method, which unfortunately
       # is private so we can't rely on it directly.
       def concurrent_foreign_key_name(table, column)
-        identifier = "#{table_name}_#{column}_fk"
+        identifier = "#{table}_#{column}_fk"
         hashed_identifier = Digest::SHA256.hexdigest(identifier).first(10)
 
         "fk_#{hashed_identifier}"
