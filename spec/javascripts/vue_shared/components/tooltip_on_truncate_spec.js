@@ -1,68 +1,72 @@
-import { mountComponentWithRender } from 'spec/helpers/vue_mount_component_helper';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
 
 const TEST_TITLE = 'lorem-ipsum-dolar-sit-amit-consectur-adipiscing-elit-sed-do';
-const CLASS_SHOW_TOOLTIP = 'js-show-tooltip';
-const STYLE_TRUNCATED = {
-  display: 'inline-block',
-  'max-width': '20px',
-};
-const STYLE_NORMAL = {
-  display: 'inline-block',
-  'max-width': '1000px',
-};
+const STYLE_TRUNCATED = 'display: inline-block; max-width: 20px;';
+const STYLE_NORMAL = 'display: inline-block; max-width: 1000px;';
 
-function mountTooltipOnTruncate(options, createChildren) {
-  return mountComponentWithRender(h => h(TooltipOnTruncate, options, createChildren(h)), '#app');
-}
+const localVue = createLocalVue();
+
+const createElementWithStyle = (style, content) => `<a href="#" style="${style}">${content}</a>`;
 
 describe('TooltipOnTruncate component', () => {
-  let vm;
+  let wrapper;
 
-  beforeEach(() => {
-    const el = document.createElement('div');
-    el.id = 'app';
-    document.body.appendChild(el);
-  });
+  const createComponent = ({ propsData, ...options } = {}) => {
+    wrapper = shallowMount(localVue.extend(TooltipOnTruncate), {
+      localVue,
+      sync: false,
+      attachToDocument: true,
+      propsData: {
+        title: TEST_TITLE,
+        ...propsData,
+      },
+      ...options,
+    });
+  };
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
   });
+
+  const hasTooltip = () => wrapper.classes('js-show-tooltip');
 
   describe('with default target', () => {
     it('renders tooltip if truncated', done => {
-      const options = {
-        style: STYLE_TRUNCATED,
-        props: {
-          title: TEST_TITLE,
+      createComponent({
+        attrs: {
+          style: STYLE_TRUNCATED,
         },
-      };
+        slots: {
+          default: [TEST_TITLE],
+        },
+      });
 
-      vm = mountTooltipOnTruncate(options, () => [TEST_TITLE]);
-
-      vm.$nextTick()
+      wrapper.vm
+        .$nextTick()
         .then(() => {
-          expect(vm.$el).toHaveClass(CLASS_SHOW_TOOLTIP);
-          expect(vm.$el).toHaveData('original-title', TEST_TITLE);
-          expect(vm.$el).toHaveData('placement', 'top');
+          expect(hasTooltip()).toBe(true);
+          expect(wrapper.attributes('data-original-title')).toEqual(TEST_TITLE);
+          expect(wrapper.attributes('data-placement')).toEqual('top');
         })
         .then(done)
         .catch(done.fail);
     });
 
     it('does not render tooltip if normal', done => {
-      const options = {
-        style: STYLE_NORMAL,
-        props: {
-          title: TEST_TITLE,
+      createComponent({
+        attrs: {
+          style: STYLE_NORMAL,
         },
-      };
+        slots: {
+          default: [TEST_TITLE],
+        },
+      });
 
-      vm = mountTooltipOnTruncate(options, () => [TEST_TITLE]);
-
-      vm.$nextTick()
+      wrapper.vm
+        .$nextTick()
         .then(() => {
-          expect(vm.$el).not.toHaveClass(CLASS_SHOW_TOOLTIP);
+          expect(hasTooltip()).toBe(false);
         })
         .then(done)
         .catch(done.fail);
@@ -71,37 +75,41 @@ describe('TooltipOnTruncate component', () => {
 
   describe('with child target', () => {
     it('renders tooltip if truncated', done => {
-      const options = {
-        style: STYLE_NORMAL,
-        props: {
-          title: TEST_TITLE,
+      createComponent({
+        attrs: {
+          style: STYLE_NORMAL,
+        },
+        propsData: {
           truncateTarget: 'child',
         },
-      };
+        slots: {
+          default: createElementWithStyle(STYLE_TRUNCATED, TEST_TITLE),
+        },
+      });
 
-      vm = mountTooltipOnTruncate(options, h => [h('a', { style: STYLE_TRUNCATED }, TEST_TITLE)]);
-
-      vm.$nextTick()
+      wrapper.vm
+        .$nextTick()
         .then(() => {
-          expect(vm.$el).toHaveClass(CLASS_SHOW_TOOLTIP);
+          expect(hasTooltip()).toBe(true);
         })
         .then(done)
         .catch(done.fail);
     });
 
     it('does not render tooltip if normal', done => {
-      const options = {
-        props: {
-          title: TEST_TITLE,
+      createComponent({
+        propsData: {
           truncateTarget: 'child',
         },
-      };
+        slots: {
+          default: createElementWithStyle(STYLE_NORMAL, TEST_TITLE),
+        },
+      });
 
-      vm = mountTooltipOnTruncate(options, h => [h('a', { style: STYLE_NORMAL }, TEST_TITLE)]);
-
-      vm.$nextTick()
+      wrapper.vm
+        .$nextTick()
         .then(() => {
-          expect(vm.$el).not.toHaveClass(CLASS_SHOW_TOOLTIP);
+          expect(hasTooltip()).toBe(false);
         })
         .then(done)
         .catch(done.fail);
@@ -110,22 +118,25 @@ describe('TooltipOnTruncate component', () => {
 
   describe('with fn target', () => {
     it('renders tooltip if truncated', done => {
-      const options = {
-        style: STYLE_NORMAL,
-        props: {
-          title: TEST_TITLE,
+      createComponent({
+        attrs: {
+          style: STYLE_NORMAL,
+        },
+        propsData: {
           truncateTarget: el => el.childNodes[1],
         },
-      };
+        slots: {
+          default: [
+            createElementWithStyle('', TEST_TITLE),
+            createElementWithStyle(STYLE_TRUNCATED, TEST_TITLE),
+          ],
+        },
+      });
 
-      vm = mountTooltipOnTruncate(options, h => [
-        h('a', { style: STYLE_NORMAL }, TEST_TITLE),
-        h('span', { style: STYLE_TRUNCATED }, TEST_TITLE),
-      ]);
-
-      vm.$nextTick()
+      wrapper.vm
+        .$nextTick()
         .then(() => {
-          expect(vm.$el).toHaveClass(CLASS_SHOW_TOOLTIP);
+          expect(hasTooltip()).toBe(true);
         })
         .then(done)
         .catch(done.fail);
@@ -134,20 +145,25 @@ describe('TooltipOnTruncate component', () => {
 
   describe('placement', () => {
     it('sets data-placement when tooltip is rendered', done => {
-      const options = {
-        props: {
-          title: TEST_TITLE,
-          truncateTarget: 'child',
-          placement: 'bottom',
+      const placement = 'bottom';
+
+      createComponent({
+        propsData: {
+          placement,
         },
-      };
+        attrs: {
+          style: STYLE_TRUNCATED,
+        },
+        slots: {
+          default: TEST_TITLE,
+        },
+      });
 
-      vm = mountTooltipOnTruncate(options, h => [h('a', { style: STYLE_TRUNCATED }, TEST_TITLE)]);
-
-      vm.$nextTick()
+      wrapper.vm
+        .$nextTick()
         .then(() => {
-          expect(vm.$el).toHaveClass(CLASS_SHOW_TOOLTIP);
-          expect(vm.$el).toHaveData('placement', options.props.placement);
+          expect(hasTooltip()).toBe(true);
+          expect(wrapper.attributes('data-placement')).toEqual(placement);
         })
         .then(done)
         .catch(done.fail);
