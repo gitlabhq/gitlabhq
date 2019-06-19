@@ -101,6 +101,13 @@ describe Banzai::Filter::RelativeLinkFilter do
         .to eq "/#{project_path}/blob/#{ref}/doc/api/README.md"
     end
 
+    it 'does not modify relative URLs in system notes' do
+      path = "#{project_path}/merge_requests/1/diffs"
+      doc = filter(link(path), system_note: true)
+
+      expect(doc.at_css('a')['href']).to eq path
+    end
+
     it 'ignores absolute URLs with two leading slashes' do
       doc = filter(link('//doc/api/README.md'))
       expect(doc.at_css('a')['href']).to eq '//doc/api/README.md'
