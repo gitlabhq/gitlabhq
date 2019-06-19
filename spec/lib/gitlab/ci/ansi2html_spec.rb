@@ -231,8 +231,8 @@ describe Gitlab::Ci::Ansi2html do
 
       it 'prints light red' do
         text = "#{section_start}\e[91mHello\e[0m\n#{section_end}"
-        header = %{<span class="term-fg-l-red section js-section-header js-s-#{class_name(section_name)}">Hello</span>}
-        line_break = %{<span class="section js-section-header js-s-#{class_name(section_name)}"><br/></span>}
+        header = %{<span class="term-fg-l-red section js-section-header section-header js-s-#{class_name(section_name)}">Hello</span>}
+        line_break = %{<span class="section js-section-header section-header js-s-#{class_name(section_name)}"><br/></span>}
         line = %{<span class="section line s_#{class_name(section_name)}"></span>}
         empty_line = %{<span class="section js-s-#{class_name(section_name)}"></span>}
         html = "#{section_start_html}#{header}#{line_break}#{line}#{empty_line}#{section_end_html}"
