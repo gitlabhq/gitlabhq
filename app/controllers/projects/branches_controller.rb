@@ -64,7 +64,7 @@ class Projects::BranchesController < Projects::ApplicationController
     success = (result[:status] == :success)
 
     if params[:issue_iid] && success
-      issue = IssuesFinder.new(current_user, project_id: @project.id).find_by(iid: params[:issue_iid])
+      issue = IssuesFinder.new(current_user, project_id: (confidential_issue_project || @project).id).find_by(iid: params[:issue_iid])
       SystemNoteService.new_issue_branch(issue, @project, current_user, branch_name) if issue
     end
 
@@ -161,5 +161,16 @@ class Projects::BranchesController < Projects::ApplicationController
       @branches = @branches.select { |b| b.state.to_s == @mode } if %w[active stale].include?(@mode)
       @branches = Kaminari.paginate_array(@branches).page(params[:page])
     end
+  end
+
+  def confidential_issue_project
+    return unless Feature.enabled?(:create_confidential_merge_request, @project)
+    return if params[:confidential_issue_project_id].blank?
+
+    confidential_issue_project = Project.find(params[:confidential_issue_project_id])
+
+    return unless can?(current_user, :push_code, confidential_issue_project)
+
+    confidential_issue_project
   end
 end
