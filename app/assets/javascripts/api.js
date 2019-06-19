@@ -12,6 +12,7 @@ const Api = {
   groupProjectsPath: '/api/:version/groups/:id/projects.json',
   projectsPath: '/api/:version/projects.json',
   projectPath: '/api/:version/projects/:id',
+  forkedProjectsPath: '/api/:version/projects/:id/forks',
   projectLabelsPath: '/:namespace_path/:project_path/-/labels',
   projectMergeRequestsPath: '/api/:version/projects/:id/merge_requests',
   projectMergeRequestPath: '/api/:version/projects/:id/merge_requests/:mrid',
@@ -111,6 +112,21 @@ const Api = {
     const url = Api.buildUrl(Api.projectPath).replace(':id', encodeURIComponent(projectPath));
 
     return axios.get(url);
+  },
+
+  /**
+   * Get all projects for a forked relationship to a specified project
+   * @param {string} projectPath - Path or ID of a project
+   * @param {Object} params - Get request parameters
+   * @returns {Promise} - Request promise
+   */
+  projectForks(projectPath, params) {
+    const url = Api.buildUrl(Api.forkedProjectsPath).replace(
+      ':id',
+      encodeURIComponent(projectPath),
+    );
+
+    return axios.get(url, { params });
   },
 
   /**
