@@ -1,0 +1,6 @@
+---
+title: Fix pipeline schedule does not run correctly when it's scheduled at the same
+  time with the cron worker
+merge_request: 29848
+author:
+type: fixed
