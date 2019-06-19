@@ -78,9 +78,7 @@ module API
 
         noteable = NotesFinder.new(user_project, current_user, params).target
         noteable = nil unless can?(current_user, noteable_read_ability_name(noteable), noteable)
-        return not_found!(noteable_type) unless noteable
-
-        noteable
+        noteable || not_found!(noteable_type)
       end
 
       def params_by_noteable_type_and_id(type, id)
