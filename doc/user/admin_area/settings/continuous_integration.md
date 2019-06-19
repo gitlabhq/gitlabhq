@@ -89,10 +89,8 @@ are enabled.
 
 ![Project admin info](img/admin_project_quota_view.png)
 
-When the pipeline minutes quota for a group is set to a value different than 0,
-the **Pipelines quota** page is available to the group page settings list.
-You can see there an overview of the pipeline minutes quota of all projects of
-the group.
+You can see an overview of the pipeline minutes quota of all projects of
+a group in the **Usage Quotas** page available to the group page settings list.
 
 ![Group pipelines quota](img/group_pipelines_quota.png)
 
