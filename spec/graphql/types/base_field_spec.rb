@@ -127,10 +127,6 @@ describe Types::BaseField do
         it 'does not raise an error if calls_gitaly is true' do
           expect { gitaly_field.send(:calls_gitaly_check) }.not_to raise_error
         end
-
-        it 'raises an error if calls_gitaly is not decalared' do
-          expect { no_gitaly_field.send(:calls_gitaly_check) }.to raise_error(/please remove `calls_gitaly: true`/)
-        end
       end
     end
   end

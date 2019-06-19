@@ -60,8 +60,6 @@ module Types
       # involved with the request.
       if @calls_gitaly && Gitlab::GitalyClient.get_request_count == 0
         raise "Gitaly is called for field '#{name}' - please add `calls_gitaly: true` to the field declaration"
-      elsif !@calls_gitaly && Gitlab::GitalyClient.get_request_count > 0
-        raise "Gitaly not called for field '#{name}' - please remove `calls_gitaly: true` from the field declaration"
       end
     rescue => e
       Gitlab::Sentry.track_exception(e)
