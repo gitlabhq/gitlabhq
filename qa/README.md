@@ -34,8 +34,23 @@ using `package-and-qa` manual action, to test if everything works fine.
 
 ## How can I use it?
 
-You can use GitLab QA to exercise tests on any live instance! For example, the
-following call would login to a local [GDK] instance and run all specs in
+You can use GitLab QA to exercise tests on any live instance! If you don't
+have an instance available you can follow the instructions below to use
+the [GitLab Development Kit (GDK)][GDK].
+This is the recommended option if you would like to contribute to the tests.
+
+### Run the end-to-end tests in a local development environment
+
+Follow the GDK instructions to [prepare](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/prepare.md)
+and [install](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/set-up-gdk.md)
+your local GitLab development environment.
+
+Once you have GDK running, switch to the `qa` directory. E.g., if you setup
+GDK to develop in the main `gitlab-ce` repo, the GitLab source code will be
+in a `gitlab` directory and so the end-to-end test code will be in `gitlab/qa`.
+
+From there you can run the tests. For example, the
+following call would login to the GDK instance and run all specs in
 `qa/specs/features`:
 
 ```
