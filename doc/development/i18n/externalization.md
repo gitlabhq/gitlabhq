@@ -77,6 +77,9 @@ Or:
 hello = _("Hello world!")
 ```
 
+NOTE: **Note:** Messages in the API (`lib/api/` or `app/graphql`) do
+not need to be externalised.
+
 ### HAML files
 
 Given the following content in HAML:
