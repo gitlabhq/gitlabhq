@@ -31,8 +31,12 @@ class Projects::JobsController < Projects::ApplicationController
         @builds
       end
     @builds = @builds.includes([
-      { pipeline: :project },
+      { pipeline: [:project, :user] },
+      :job_artifacts_archive,
+      :metadata,
+      :trigger_request,
       :project,
+      :user,
       :tags
     ])
     @builds = @builds.page(params[:page]).per(30).without_count

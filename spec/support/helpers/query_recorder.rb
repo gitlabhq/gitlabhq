@@ -35,5 +35,9 @@ module ActiveRecord
     def log_message
       @log.join("\n\n")
     end
+
+    def occurrences
+      @log.group_by(&:to_s).transform_values(&:count)
+    end
   end
 end
