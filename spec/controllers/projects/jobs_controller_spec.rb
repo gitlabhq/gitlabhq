@@ -73,21 +73,27 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
     end
 
     context 'number of queries' do
+      render_views
+
       before do
         Ci::Build::AVAILABLE_STATUSES.each do |status|
           create_job(status, status)
         end
+
+        allow(Appearance).to receive(:current_without_cache)
+          .and_return(nil)
       end
 
       it 'verifies number of queries', :request_store do
-        recorded = ActiveRecord::QueryRecorder.new { get_index }
-        expect(recorded.count).to be_within(5).of(7)
+        expect { get_index }.not_to be_n_plus_1_query.with_threshold(3)
       end
 
       def create_job(name, status)
-        pipeline = create(:ci_pipeline, project: project)
+        user = create(:user)
+        pipeline = create(:ci_pipeline, project: project, user: user)
         create(:ci_build, :tags, :triggered, :artifacts,
-               pipeline: pipeline, name: name, status: status)
+               pipeline: pipeline, name: name, status: status,
+               user: user)
       end
     end
 
