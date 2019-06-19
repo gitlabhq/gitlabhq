@@ -432,6 +432,24 @@ gitaly_enabled=false
 When you run `service gitlab restart` Gitaly will be disabled on this
 particular machine.
 
+## Eliminating NFS altogether
+
+If you are planning to use Gitaly without NFS for your storage needs 
+and want to eliminate NFS from your environment altogether, there are 
+a few things that you need to do:
+
+ 1. Make sure the [`git` user home directory](https://docs.gitlab.com/omnibus/settings/configuration.html#moving-the-home-directory-for-a-user) is on local disk.
+ 1. Configure [database lookup of SSH keys](https://docs.gitlab.com/ce/administration/operations/fast_ssh_key_lookup.html)
+ to eliminate the need for a shared authorized_keys file.
+ 1. Configure [object storage for job artifacts](https://docs.gitlab.com/ce/administration/job_artifacts.html#using-object-storage)
+ including [live tracing](https://docs.gitlab.com/ce/administration/job_traces.html#new-live-trace-architecture).
+ 1. Configure [object storage for LFS objects](https://docs.gitlab.com/ce/workflow/lfs/lfs_administration.html#storing-lfs-objects-in-remote-object-storage).
+ 1. Configure [object storage for uploads](https://docs.gitlab.com/ce/administration/uploads.html#using-object-storage-core-only).
+
+NOTE: **Note:** One current feature of GitLab still requires a shared directory (NFS): [GitLab Pages](../../user/project/pages/index.md).
+There is [work in progress](https://gitlab.com/gitlab-org/gitlab-pages/issues/196)
+to eliminate the need for NFS to support GitLab Pages.
+
 ## Troubleshooting Gitaly in production
 
 Since GitLab 11.6, Gitaly comes with a command-line tool called
