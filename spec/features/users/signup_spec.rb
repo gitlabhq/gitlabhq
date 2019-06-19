@@ -19,7 +19,7 @@ describe 'Signup' do
     end
 
     it 'does not show an error border if the username contains dots (.)' do
-      fill_in 'new_user_username', with: 'new.user.username'
+      simulate_input('#new_user_username', 'new.user.username')
       wait_for_requests
 
       expect(find('.username')).not_to have_css '.gl-field-error-outline'
@@ -41,7 +41,14 @@ describe 'Signup' do
       expect(find('.username')).to have_css '.gl-field-error-outline'
     end
 
-    it 'shows an  error border if the username contains special characters' do
+    it 'shows a success border if the username is available' do
+      fill_in 'new_user_username', with: 'new-user'
+      wait_for_requests
+
+      expect(find('.username')).to have_css '.gl-field-success-outline'
+    end
+
+    it 'shows an error border if the username contains special characters' do
       fill_in 'new_user_username', with: 'new$user!username'
       wait_for_requests
 
@@ -71,7 +78,7 @@ describe 'Signup' do
       expect(page).to have_content("Please create a username with only alphanumeric characters.")
     end
 
-    it 'shows an  error border if the username contains emojis' do
+    it 'shows an error border if the username contains emojis' do
       simulate_input('#new_user_username', 'ehsan😀')
 
       expect(find('.username')).to have_css '.gl-field-error-outline'
@@ -81,6 +88,37 @@ describe 'Signup' do
       simulate_input('#new_user_username', 'ehsan😀')
 
       expect(page).to have_content("Invalid input, please avoid emojis")
+    end
+
+    it 'shows a pending message if the username availability is being fetched' do
+      fill_in 'new_user_username', with: 'new-user'
+
+      expect(find('.username > .validation-pending')).not_to have_css '.hide'
+    end
+
+    it 'shows a success message if the username is available' do
+      fill_in 'new_user_username', with: 'new-user'
+      wait_for_requests
+
+      expect(find('.username > .validation-success')).not_to have_css '.hide'
+    end
+
+    it 'shows an error message if the username is unavailable' do
+      existing_user = create(:user)
+
+      fill_in 'new_user_username', with: existing_user.username
+      wait_for_requests
+
+      expect(find('.username > .validation-error')).not_to have_css '.hide'
+    end
+
+    it 'shows a success message if the username is corrected and then available' do
+      fill_in 'new_user_username', with: 'new-user$'
+      wait_for_requests
+      fill_in 'new_user_username', with: 'new-user'
+      wait_for_requests
+
+      expect(page).to have_content("Username is available.")
     end
   end
 
