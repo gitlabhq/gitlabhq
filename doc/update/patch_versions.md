@@ -13,8 +13,6 @@ You can select the tag in the version dropdown in the top left corner of GitLab 
 ### 0. Backup
 
 It's useful to make a backup just in case things go south:
-(With MySQL, this may require granting "LOCK TABLES" privileges to the GitLab
-user on the database version)
 
 ```bash
 cd /home/git/gitlab
@@ -48,11 +46,7 @@ sudo -u git -H git checkout LATEST_TAG -b LATEST_TAG
 ```bash
 cd /home/git/gitlab
 
-# PostgreSQL
 sudo -u git -H bundle install --without development test mysql --deployment
-
-# MySQL
-sudo -u git -H bundle install --without development test postgres --deployment
 
 # Optional: clean up old gems
 sudo -u git -H bundle clean

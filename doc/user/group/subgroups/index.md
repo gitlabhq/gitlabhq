@@ -5,8 +5,7 @@ type: reference, howto, concepts
 # Subgroups
 
 NOTE: **Note:**
-[Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/2772) in GitLab 9.0. Not available when using MySQL as external
-database (support removed in GitLab 9.3 [due to performance reasons](https://gitlab.com/gitlab-org/gitlab-ce/issues/30472#note_27747600)).
+[Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/2772) in GitLab 9.0.
 
 Subgroups, also known as nested groups or hierarchical groups, allow you to have up to 20
 levels of groups.
@@ -20,16 +19,6 @@ By using subgroups you can do the following:
   potentially easier to separate permissions on parts of the source code.
 - **Make it easier to manage people and control visibility.** Give people
   different [permissions](../../permissions.md#group-members-permissions) depending on their group [membership](#membership).
-
-## Database Requirements
-
-Subgroups are only supported when you use PostgreSQL. Supporting subgroups on MySQL in an
-efficient way is not possible due to MySQL's limitations.
-
-See the following links for more information:
-
-- <https://gitlab.com/gitlab-org/gitlab-ce/issues/30472>
-- <https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/10885>
 
 ## Overview
 

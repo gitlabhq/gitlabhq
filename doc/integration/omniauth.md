@@ -194,11 +194,7 @@ from the Omniauth provider's documentation.
 
         gem "omniauth-your-auth-provider"
 
--   If you're using MySQL, install the new Omniauth provider gem by running the following command:
-
-        sudo -u git -H bundle install --without development test postgres --path vendor/bundle --no-deployment
-
--   If you're using PostgreSQL, install the new Omniauth provider gem by running the following command:
+-   Install the new Omniauth provider gem by running the following command:
 
         sudo -u git -H bundle install --without development test mysql --path vendor/bundle --no-deployment
 

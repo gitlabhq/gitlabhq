@@ -239,29 +239,7 @@ sudo -u git -H git checkout v$(</home/git/gitlab/GITLAB_PAGES_VERSION)
 sudo -u git -H make
 ```
 
-### 12. Update MySQL permissions
-
-If you are using MySQL you need to grant the GitLab user the necessary
-permissions on the database:
-
-```bash
-mysql -u root -p -e "GRANT TRIGGER ON \`gitlabhq_production\`.* TO 'git'@'localhost';"
-```
-
-If you use MySQL with replication, or just have MySQL configured with binary logging,
-you will need to also run the following on all of your MySQL servers:
-
-```bash
-mysql -u root -p -e "SET GLOBAL log_bin_trust_function_creators = 1;"
-```
-
-You can make this setting permanent by adding it to your `my.cnf`:
-
-```
-log_bin_trust_function_creators=1
-```
-
-### 13. Update configuration files
+### 12. Update configuration files
 
 #### New configuration options for `gitlab.yml`
 
@@ -335,17 +313,12 @@ For Ubuntu 16.04.1 LTS:
 sudo systemctl daemon-reload
 ```
 
-### 14. Install libs, migrations, etc.
+### 13. Install libs, migrations, etc.
 
 ```bash
 cd /home/git/gitlab
 
-# PostgreSQL installations (note: the line below states '--without mysql')
 sudo -u git -H bundle install --deployment --without development test mysql aws kerberos
-
-# MySQL installations (note: the line below states '--without postgres')
-sudo -u git -H bundle install --deployment --without development test postgres aws kerberos
-
 
 # Optional: clean up old gems
 sudo -u git -H bundle clean
@@ -364,17 +337,14 @@ sudo -u git -H bundle exec rake yarn:install gitlab:assets:clean gitlab:assets:c
 sudo -u git -H bundle exec rake cache:clear RAILS_ENV=production
 ```
 
-**MySQL installations**: Run through the `MySQL strings limits` and `Tables and
-data conversion to utf8mb4` [tasks](../install/database_mysql.md).
-
-### 15. Start application
+### 14. Start application
 
 ```bash
 sudo service gitlab start
 sudo service nginx restart
 ```
 
-### 16. Check application status
+### 15. Check application status
 
 Check if GitLab and its environment are configured correctly:
 

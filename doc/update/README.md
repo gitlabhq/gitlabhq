@@ -49,8 +49,7 @@ However, for this to work there are the following requirements:
 - You have to use [post-deployment
    migrations](../development/post_deployment_migrations.md) (included in
    zero downtime update steps below).
-- You are using PostgreSQL. If you are using MySQL please look at the release
-   post to see if downtime is required.
+- You are using PostgreSQL. Starting from GitLab 12.1, MySQL is not supported.
 
 Most of the time you can safely upgrade from a patch release to the next minor
 release if the patch release is not the latest. For example, upgrading from
@@ -140,8 +139,6 @@ possible.
 
 - [MySQL to PostgreSQL](mysql_to_postgresql.md) guides you through migrating
   your database from MySQL to PostgreSQL.
-- [MySQL installation guide](../install/database_mysql.md) contains additional
-  information about configuring GitLab to work with a MySQL database.
 - [Restoring from backup after a failed upgrade](restore_after_failure.md)
 - [Upgrading PostgreSQL Using Slony](upgrading_postgresql_using_slony.md), for
   upgrading a PostgreSQL database with minimal downtime.
