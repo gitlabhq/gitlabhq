@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  # Failure issue: https://gitlab.com/gitlab-org/quality/nightly/issues/62
-  context 'Create', :quarantine do
+  context 'Create' do
     describe 'Create, list, and delete branches via web' do
       master_branch = 'master'
       second_branch = 'second-branch'
