@@ -48,7 +48,8 @@ module Gitlab
         @body ||= begin
                     body = {
                       user_identifier: @user.email,
-                      project_classification_label: @label
+                      project_classification_label: @label,
+                      identities: @user.identities.map { |identity| { provider: identity.provider, extern_uid: identity.extern_uid } }
                     }
 
                     if @user.ldap_identity
