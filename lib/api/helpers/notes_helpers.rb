@@ -73,14 +73,23 @@ module API
         "read_#{noteable.class.to_s.underscore}".to_sym
       end
 
-      def find_noteable(parent, noteables_str, noteable_id)
-        noteable = public_send("find_#{parent}_#{noteables_str.singularize}", noteable_id) # rubocop:disable GitlabSecurity/PublicSend
+      def find_noteable(parent_type, parent_id, noteable_type, noteable_id)
+        params = params_by_noteable_type_and_id(noteable_type, noteable_id)
 
-        readable = can?(current_user, noteable_read_ability_name(noteable), noteable)
+        noteable = NotesFinder.new(user_project, current_user, params).target
+        noteable = nil unless can?(current_user, noteable_read_ability_name(noteable), noteable)
+        noteable || not_found!(noteable_type)
+      end
 
-        return not_found!(noteables_str) unless readable
-
-        noteable
+      def params_by_noteable_type_and_id(type, id)
+        target_type = type.name.underscore
+        { target_type: target_type }.tap do |h|
+          if %w(issue merge_request).include?(target_type)
+            h[:target_iid] = id
+          else
+            h[:target_id] = id
+          end
+        end
       end
 
       def noteable_parent(noteable)

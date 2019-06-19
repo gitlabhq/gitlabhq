@@ -292,5 +292,31 @@ describe NotesFinder do
         expect(subject.target).to eq(commit)
       end
     end
+
+    context 'target_iid' do
+      let(:issue) { create(:issue, project: project) }
+      let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+
+      it 'finds issues by iid' do
+        iid_params = { target_type: 'issue', target_iid: issue.iid }
+        expect(described_class.new(project, user, iid_params).target).to eq(issue)
+      end
+
+      it 'finds merge requests by iid' do
+        iid_params = { target_type: 'merge_request', target_iid: merge_request.iid }
+        expect(described_class.new(project, user, iid_params).target).to eq(merge_request)
+      end
+
+      it 'returns nil if both target_id and target_iid are not given' do
+        params_without_any_id = { target_type: 'issue' }
+        expect(described_class.new(project, user, params_without_any_id).target).to be_nil
+      end
+
+      it 'prioritizes target_id over target_iid' do
+        issue2 = create(:issue, project: project)
+        iid_params = { target_type: 'issue', target_id: issue2.id, target_iid: issue.iid }
+        expect(described_class.new(project, user, iid_params).target).to eq(issue2)
+      end
+    end
   end
 end

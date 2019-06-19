@@ -183,11 +183,6 @@ module API
       user_project.commit_by(oid: id)
     end
 
-    def find_project_snippet(id)
-      finder_params = { project: user_project }
-      SnippetsFinder.new(current_user, finder_params).find(id)
-    end
-
     # rubocop: disable CodeReuse/ActiveRecord
     def find_merge_request_with_access(iid, access_level = :read_merge_request)
       merge_request = user_project.merge_requests.find_by!(iid: iid)

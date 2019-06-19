@@ -34,8 +34,10 @@ class NotesFinder
 
     target_type = @params[:target_type]
     target_id   = @params[:target_id]
+    target_iid  = @params[:target_iid]
 
-    return @target = nil unless target_type && target_id
+    return @target = nil unless target_type
+    return @target = nil unless target_id || target_iid
 
     @target =
       if target_type == "commit"
@@ -43,11 +45,21 @@ class NotesFinder
           @project.commit(target_id)
         end
       else
-        noteables_for_type(target_type).find(target_id)
+        noteables_for_type_by_id(target_type, target_id, target_iid)
       end
   end
 
   private
+
+  def noteables_for_type_by_id(type, id, iid)
+    query = if id
+              { id: id }
+            else
+              { iid: iid }
+            end
+
+    noteables_for_type(type).find_by!(query) # rubocop: disable CodeReuse/ActiveRecord
+  end
 
   def init_collection
     if target
