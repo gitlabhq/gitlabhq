@@ -10,7 +10,7 @@ module CycleAnalyticsHelpers
     repository = project.repository
     oldrev = repository.commit(branch_name)&.sha || Gitlab::Git::BLANK_SHA
 
-    if Timecop.frozen? && Gitlab::GitalyClient.feature_enabled?(:operation_user_commit_files)
+    if Timecop.frozen?
       mock_gitaly_multi_action_dates(repository, commit_time)
     end
 

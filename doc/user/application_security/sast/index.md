@@ -226,7 +226,7 @@ sast:
 CAUTION: **Caution:**
 The JSON report artifacts are not a public API of SAST and their format may change in the future.
 
-The SAST tool emits a JSON report report file. Here is an example of a structure for a report will all important parts of
+The SAST tool emits a JSON report report file. Here is an example of the report structure with all important parts of
 it highlighted:
 
 ```json-doc
@@ -272,7 +272,6 @@ it highlighted:
     },   
     {
       "category": "sast",
-      // "name" may be omitted because it could be not reported by a particular analyzer
       "message": "Probable insecure usage of temp file/directory.",
       "cve": "python/hardcoded/hardcoded-tmp.py:4ad6d4c40a8c263fc265f3384724014e0a4f8dd6200af83e51ff120420038031:B108",
       "severity": "Medium",
@@ -318,10 +317,10 @@ the report JSON unless stated otherwise. Presence of optional fields depends on 
 | `vulnerabilities[].severity`            | How much the vulnerability impacts the software. Possible values: `Undefined` (an analyzer has not provided this info), `Info`, `Unknown`, `Low`, `Medium`, `High`, `Critical`. |
 | `vulnerabilities[].confidence`          | How reliable the vulnerability's assessment is. Possible values: `Undefined` (an analyzer has not provided this info), `Ignore`, `Unknown`, `Experimental`, `Low`, `Medium`, `High`, `Confirmed`. |
 | `vulnerabilities[].solution`            | Explanation of how to fix the vulnerability. Optional. |
-| `vulnerabilities[].scanner`             | A node that describes the analyzer used find this vulnerability. |
+| `vulnerabilities[].scanner`             | A node that describes the analyzer used to find this vulnerability. |
 | `vulnerabilities[].scanner.id`          | Id of the scanner as a snake_case string. |
 | `vulnerabilities[].scanner.name`        | Name of the scanner, for display purposes. |
-| `vulnerabilities[].location`            | A node that tells which class and/or method is affected by the vulnerability. | 
+| `vulnerabilities[].location`            | A node that tells where the vulnerability is located. | 
 | `vulnerabilities[].location.file`       | Path to the file where the vulnerability is located. Optional. |
 | `vulnerabilities[].location.start_line` | The first line of the code affected by the vulnerability. Optional. |
 | `vulnerabilities[].location.end_line`   | The last line of the code affected by the vulnerability. Optional. |

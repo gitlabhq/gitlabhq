@@ -362,6 +362,14 @@ Define project templates at a group level by setting a group as the template sou
   for the group. **[STARTER ONLY]**
 - **Pipelines quota**: Keep track of the [pipeline quota](../admin_area/settings/continuous_integration.md) for the group.
 
+#### Storage usage quota **[STARTER]**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/13294) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.0.
+
+A group owner can check the aggregated storage usage for all the project in a group, sub-groups included, in the **Storage** tab of the **Usage Quotas** page available to the group page settings list.
+
+![Group storage usage quota](img/group_storage_usage_quota.png)
+
 ## User contribution analysis **[STARTER]**
 
 With [GitLab Contribution Analytics](contribution_analytics/index.md),
