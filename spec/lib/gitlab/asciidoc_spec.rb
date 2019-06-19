@@ -56,7 +56,7 @@ module Gitlab
           },
           'pre' => {
             input: '```mypre"><script>alert(3)</script>',
-            output: "<div>\n<div>\n<pre lang=\"mypre\">\"&gt;<code></code></pre>\n</div>\n</div>"
+            output: "<div>\n<div>\n<pre class=\"code highlight js-syntax-highlight plaintext\" lang=\"plaintext\" v-pre=\"true\"><code><span id=\"LC1\" class=\"line\" lang=\"plaintext\">\"&gt;</span></code></pre>\n</div>\n</div>"
           }
         }
 
@@ -64,6 +64,72 @@ module Gitlab
           it "does not convert dangerous #{name} into HTML" do
             expect(render(data[:input], context)).to include(data[:output])
           end
+        end
+      end
+
+      context 'with fenced block' do
+        it 'highlights syntax' do
+          input = <<~ADOC
+            ```js
+            console.log('hello world')
+            ```
+          ADOC
+
+          output = <<~HTML
+            <div>
+            <div>
+            <pre class="code highlight js-syntax-highlight javascript" lang="javascript" v-pre="true"><code><span id="LC1" class="line" lang="javascript"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">hello world</span><span class="dl">'</span><span class="p">)</span></span></code></pre>
+            </div>
+            </div>
+          HTML
+
+          expect(render(input, context)).to include(output.strip)
+        end
+      end
+
+      context 'with listing block' do
+        it 'highlights syntax' do
+          input = <<~ADOC
+            [source,c++]
+            .class.cpp
+            ----
+            #include <stdio.h>
+
+            for (int i = 0; i < 5; i++) {
+              std::cout<<"*"<<std::endl;
+            }
+            ----
+          ADOC
+
+          output = <<~HTML
+            <div>
+            <div>class.cpp</div>
+            <div>
+            <pre class="code highlight js-syntax-highlight cpp" lang="cpp" v-pre="true"><code><span id="LC1" class="line" lang="cpp"><span class="cp">#include &lt;stdio.h&gt;</span></span>
+            <span id="LC2" class="line" lang="cpp"></span>
+            <span id="LC3" class="line" lang="cpp"><span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span></span>
+            <span id="LC4" class="line" lang="cpp">  <span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">"*"</span><span class="o">&lt;&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span></span>
+            <span id="LC5" class="line" lang="cpp"><span class="p">}</span></span></code></pre>
+            </div>
+            </div>
+          HTML
+
+          expect(render(input, context)).to include(output.strip)
+        end
+      end
+
+      context 'with stem block' do
+        it 'does not apply syntax highlighting' do
+          input = <<~ADOC
+            [stem]
+            ++++
+            \sqrt{4} = 2
+            ++++
+          ADOC
+
+          output = "<div>\n<div>\n\\$ qrt{4} = 2\\$\n</div>\n</div>"
+
+          expect(render(input, context)).to include(output)
         end
       end
 

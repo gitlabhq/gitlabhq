@@ -6,6 +6,7 @@ module Banzai
       def self.filters
         FilterArray[
           Filter::SanitizationFilter,
+          Filter::SyntaxHighlightFilter,
           Filter::ExternalLinkFilter,
           Filter::PlantumlFilter,
           Filter::AsciiDocPostProcessingFilter

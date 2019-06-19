@@ -14,7 +14,7 @@ module Banzai
       LANG_PARAMS_ATTR = 'data-lang-params'.freeze
 
       def call
-        doc.search('pre > code').each do |node|
+        doc.search('pre:not([data-math-style]) > code').each do |node|
           highlight_node(node)
         end
 

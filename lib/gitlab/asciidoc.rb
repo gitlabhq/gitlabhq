@@ -4,6 +4,7 @@ require 'asciidoctor'
 require 'asciidoctor-plantuml'
 require 'asciidoctor/extensions'
 require 'gitlab/asciidoc/html5_converter'
+require 'gitlab/asciidoc/syntax_highlighter/html_pipeline_adapter'
 
 module Gitlab
   # Parser/renderer for the AsciiDoc format that uses Asciidoctor and filters
@@ -16,7 +17,7 @@ module Gitlab
         'idseparator' => '-',
         'env' => 'gitlab',
         'env-gitlab' => '',
-        'source-highlighter' => 'html-pipeline',
+        'source-highlighter' => 'gitlab-html-pipeline',
         'icons' => 'font',
         'outfilesuffix' => '.adoc',
         'max-include-depth' => MAX_INCLUDE_DEPTH
