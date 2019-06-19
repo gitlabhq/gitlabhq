@@ -3,11 +3,13 @@
 module Users
   class UpdateService < BaseService
     include NewUserNotifier
+    attr_reader :user, :identity_params
 
     def initialize(current_user, params = {})
       @current_user = current_user
       @user = params.delete(:user)
       @status_params = params.delete(:status)
+      @identity_params = params.slice(*identity_attributes)
       @params = params.dup
     end
 
@@ -15,8 +17,8 @@ module Users
       yield(@user) if block_given?
 
       user_exists = @user.persisted?
-
       assign_attributes
+      assign_identity
 
       if @user.save(validate: validate) && update_status
         notify_success(user_exists)
@@ -55,7 +57,18 @@ module Users
         params.reject! { |key, _| read_only.include?(key.to_sym) }
       end
 
-      @user.assign_attributes(params) unless params.empty?
+      @user.assign_attributes(params.except(*identity_attributes)) unless params.empty? # rubocop: disable CodeReuse/ActiveRecord
+    end
+
+    def assign_identity
+      return unless identity_params.present?
+
+      identity = user.identities.find_or_create_by(provider: identity_params[:provider]) # rubocop: disable CodeReuse/ActiveRecord
+      identity.update(identity_params)
+    end
+
+    def identity_attributes
+      [:provider, :extern_uid]
     end
   end
 end

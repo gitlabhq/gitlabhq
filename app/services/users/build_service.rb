@@ -5,10 +5,12 @@ module Users
     delegate :user_default_internal_regex_enabled?,
              :user_default_internal_regex_instance,
              to: :'Gitlab::CurrentSettings.current_application_settings'
+    attr_reader :identity_params
 
     def initialize(current_user, params = {})
       @current_user = current_user
       @params = params.dup
+      @identity_params = params.slice(*identity_attributes)
     end
 
     def execute(skip_authorization: false)
@@ -26,10 +28,8 @@ module Users
         end
       end
 
-      identity_attrs = params.slice(*identity_params)
-
-      unless identity_attrs.empty?
-        user.identities.build(identity_attrs)
+      unless identity_params.empty?
+        user.identities.build(identity_params)
       end
 
       user
@@ -37,7 +37,7 @@ module Users
 
     private
 
-    def identity_params
+    def identity_attributes
       [:extern_uid, :provider]
     end
 

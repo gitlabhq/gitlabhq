@@ -209,22 +209,9 @@ module API
                 .where.not(id: user.id).count > 0
 
         user_params = declared_params(include_missing: false)
-        identity_attrs = user_params.slice(:provider, :extern_uid)
-
-        if identity_attrs.any?
-          identity = user.identities.find_by(provider: identity_attrs[:provider])
-
-          if identity
-            identity.update(identity_attrs)
-          else
-            identity = user.identities.build(identity_attrs)
-            identity.save
-          end
-        end
 
         user_params[:password_expires_at] = Time.now if user_params[:password].present?
-
-        result = ::Users::UpdateService.new(current_user, user_params.except(:extern_uid, :provider).merge(user: user)).execute
+        result = ::Users::UpdateService.new(current_user, user_params.merge(user: user)).execute
 
         if result[:status] == :success
           present user, with: Entities::UserPublic, current_user: current_user
