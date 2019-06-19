@@ -247,7 +247,7 @@ module QA
 
         [@new_label_same_scope, @new_label_different_scope].each do |label|
           Resource::Label.fabricate_via_api! do |l|
-            l.project = issue.project.id
+            l.project = issue.project
             l.title = label
           end
         end
@@ -414,7 +414,7 @@ def api_get_path
 end
 
 def api_post_path
-  "/projects/#{project}/labels"
+  "/projects/#{project.id}/labels"
 end
 
 def api_post_body
