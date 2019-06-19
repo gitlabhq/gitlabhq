@@ -163,7 +163,7 @@ class Environment < ApplicationRecord
   end
 
   def has_metrics?
-    prometheus_adapter&.can_query? && available?
+    available? && prometheus_adapter&.can_query?
   end
 
   def metrics
