@@ -30,7 +30,7 @@ container_scanning:
   services:
     - docker:stable-dind
   script:
-    - if [ -z "$DOCKER_HOST" -a "$KUBERNETES_PORT" ]; then { export DOCKER_SERVICE="localhost" ; export DOCKER_HOST="tcp://${DOCKER_SERVICE}:2375" ; } fi
+    - if [[ -n "$KUBERNETES_PORT" ]]; then { export DOCKER_SERVICE="localhost" ; export DOCKER_HOST="tcp://${DOCKER_SERVICE}:2375" ; } fi
     - |
       if [[ -n "$CI_REGISTRY_USER" ]]; then
         echo "Logging to GitLab Container Registry with CI credentials..."

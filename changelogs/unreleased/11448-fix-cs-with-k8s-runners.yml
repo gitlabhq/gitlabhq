@@ -1,0 +1,5 @@
+---
+title: Fix Container Scanning job timeout when using the kubernetes executor
+merge_request: 29706
+author: 
+type: fixed
