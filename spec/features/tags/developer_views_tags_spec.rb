@@ -1,7 +1,8 @@
 require 'spec_helper'
 
-describe 'Maintainer views tags' do
+describe 'Developer views tags' do
   let(:user) { create(:user) }
+  let(:group) { create(:group) }
 
   before do
     project.add_maintainer(user)
@@ -9,7 +10,7 @@ describe 'Maintainer views tags' do
   end
 
   context 'when project has no tags' do
-    let(:project) { create(:project_empty_repo) }
+    let(:project) { create(:project_empty_repo, namespace: group) }
 
     before do
       visit project_path(project)
@@ -25,7 +26,7 @@ describe 'Maintainer views tags' do
   end
 
   context 'when project has tags' do
-    let(:project) { create(:project, :repository, namespace: user.namespace) }
+    let(:project) { create(:project, :repository, namespace: group) }
     let(:repository) { project.repository }
 
     before do

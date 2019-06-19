@@ -45,7 +45,7 @@ module Gitlab
       if protected?(ProtectedTag, project, ref)
         protected_tag_accessible_to?(ref, action: :create)
       else
-        user.can?(:push_code, project)
+        user.can?(:admin_tag, project)
       end
     end
 

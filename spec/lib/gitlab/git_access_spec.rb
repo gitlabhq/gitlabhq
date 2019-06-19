@@ -831,7 +831,7 @@ describe Gitlab::GitAccess do
         push_master: true,
         push_protected_branch: false,
         push_remove_protected_branch: false,
-        push_tag: false,
+        push_tag: true,
         push_new_tag: true,
         push_all: false,
         merge_into_protected_branch: false
