@@ -221,6 +221,11 @@
   ol {
     padding: 0;
     margin: 0 0 16px;
+
+    ul,
+    ol {
+      margin-bottom: 0;
+    }
   }
 
   ul:dir(rtl),
