@@ -1,0 +1,5 @@
+---
+title: Uses projects_authorizations.access_level in MembersFinder
+merge_request: 28887
+author: Jacopo Beschi @jacopo-beschi
+type: fixed

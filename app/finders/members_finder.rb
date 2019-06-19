@@ -60,15 +60,32 @@ class MembersFinder
     # We're interested in a list of members without duplicates by user_id.
     # We prefer project members over group members, project members should go first.
     <<~SQL
-        SELECT DISTINCT ON (user_id, invite_email) member_union.*
-        FROM (#{union.to_sql}) AS member_union
-        ORDER BY user_id,
-          invite_email,
-          CASE
-            WHEN type = 'ProjectMember' THEN 1
-            WHEN type = 'GroupMember' THEN 2
-            ELSE 3
-          END
+          SELECT DISTINCT ON (user_id, invite_email) #{member_columns}
+          FROM (#{union.to_sql}) AS #{member_union_table}
+          LEFT JOIN users on users.id = member_union.user_id
+          LEFT JOIN project_authorizations on project_authorizations.user_id = users.id
+               AND
+               project_authorizations.project_id = #{project.id}
+          ORDER BY user_id,
+            invite_email,
+            CASE
+              WHEN type = 'ProjectMember' THEN 1
+              WHEN type = 'GroupMember' THEN 2
+              ELSE 3
+            END
     SQL
+  end
+
+  def member_union_table
+    'member_union'
+  end
+
+  def member_columns
+    Member.column_names.map do |column_name|
+      # fallback to members.access_level when project_authorizations.access_level is missing
+      next "COALESCE(#{ProjectAuthorization.table_name}.access_level, #{member_union_table}.access_level) access_level" if column_name == 'access_level'
+
+      "#{member_union_table}.#{column_name}"
+    end.join(',')
   end
 end
