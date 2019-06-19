@@ -1,0 +1,5 @@
+---
+title: Fix nested lists unnecessary margin
+merge_request: 29775
+author: Kuba Kopeć
+type: fixed
