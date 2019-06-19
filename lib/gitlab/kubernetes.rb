@@ -37,14 +37,9 @@ module Gitlab
 
     # Filters an array of pods (as returned by the kubernetes API) by their project and environment
     def filter_by_project_environment(items, app, env)
-      pods = filter_by_annotation(items, {
+      filter_by_annotation(items, {
         'app.gitlab.com/app' => app,
         'app.gitlab.com/env' => env
-      })
-      return pods unless pods.empty?
-
-      filter_by_label(items, {
-        'app' => env, # deprecated: replaced by app.gitlab.com/env
       })
     end
 

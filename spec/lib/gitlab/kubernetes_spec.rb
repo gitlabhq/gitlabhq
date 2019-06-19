@@ -59,16 +59,6 @@ describe Gitlab::Kubernetes do
   describe '#filter_by_project_environment' do
     let(:matching_pod) { kube_pod(environment_slug: 'production', project_slug: 'my-cool-app') }
 
-    it 'returns matching legacy env label' do
-      matching_pod['metadata']['annotations'].delete('app.gitlab.com/app')
-      matching_pod['metadata']['annotations'].delete('app.gitlab.com/env')
-      matching_pod['metadata']['labels']['app'] = 'production'
-      matching_items = [matching_pod]
-      items = matching_items + [kube_pod]
-
-      expect(filter_by_project_environment(items, 'my-cool-app', 'production')).to eq(matching_items)
-    end
-
     it 'returns matching env label' do
       matching_items = [matching_pod]
       items = matching_items + [kube_pod]
