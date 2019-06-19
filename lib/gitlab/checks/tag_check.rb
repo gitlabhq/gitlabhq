@@ -19,7 +19,7 @@ module Gitlab
         return unless tag_name
 
         logger.log_timed(LOG_MESSAGES[:tag_checks]) do
-          if tag_exists? && user_access.cannot_do_action?(:admin_project)
+          if tag_exists? && user_access.cannot_do_action?(:admin_tag)
             raise GitAccess::UnauthorizedError, ERROR_MESSAGES[:change_existing_tags]
           end
         end

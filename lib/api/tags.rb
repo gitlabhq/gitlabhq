@@ -55,7 +55,7 @@ module API
         optional :release_description, type: String, desc: 'Specifying release notes stored in the GitLab database (deprecated in GitLab 11.7)'
       end
       post ':id/repository/tags' do
-        authorize_push_project
+        authorize_admin_tag
 
         result = ::Tags::CreateService.new(user_project, current_user)
           .execute(params[:tag_name], params[:ref], params[:message])
@@ -87,7 +87,7 @@ module API
         requires :tag_name, type: String, desc: 'The name of the tag'
       end
       delete ':id/repository/tags/:tag_name', requirements: TAG_ENDPOINT_REQUIREMENTS do
-        authorize_push_project
+        authorize_admin_tag
 
         tag = user_project.repository.find_tag(params[:tag_name])
         not_found!('Tag') unless tag

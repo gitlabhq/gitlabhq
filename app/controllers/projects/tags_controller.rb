@@ -8,8 +8,7 @@ class Projects::TagsController < Projects::ApplicationController
   # Authorize
   before_action :require_non_empty_project
   before_action :authorize_download_code!
-  before_action :authorize_push_code!, only: [:new, :create]
-  before_action :authorize_admin_project!, only: [:destroy]
+  before_action :authorize_admin_tag!, only: [:new, :create, :destroy]
 
   # rubocop: disable CodeReuse/ActiveRecord
   def index
