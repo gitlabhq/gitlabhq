@@ -25,6 +25,38 @@ describe Ci::PipelineScheduleService do
       subject
     end
 
+    context 'when ci_pipeline_schedule_async feature flag is disabled' do
+      before do
+        stub_feature_flags(ci_pipeline_schedule_async: false)
+      end
+
+      it 'runs RunPipelineScheduleWorker synchronously' do
+        expect_next_instance_of(RunPipelineScheduleWorker) do |worker|
+          expect(worker).to receive(:perform).with(schedule.id, schedule.owner.id)
+        end
+
+        subject
+      end
+
+      it 'calls Garbage Collection manually' do
+        expect(GC).to receive(:start)
+
+        subject
+      end
+
+      context 'when ci_pipeline_schedule_force_gc feature flag is disabled' do
+        before do
+          stub_feature_flags(ci_pipeline_schedule_force_gc: false)
+        end
+
+        it 'does not call Garbage Collection manually' do
+          expect(GC).not_to receive(:start)
+
+          subject
+        end
+      end
+    end
+
     context 'when owner is nil' do
       let(:schedule) { create(:ci_pipeline_schedule, project: project, owner: nil) }
 

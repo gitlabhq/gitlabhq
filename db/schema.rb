@@ -248,6 +248,7 @@ ActiveRecord::Schema.define(version: 20190613030606) do
     t.boolean "code_owner", default: false, null: false
     t.string "name", null: false
     t.integer "rule_type", limit: 2, default: 1, null: false
+    t.integer "report_type", limit: 2
     t.index ["merge_request_id", "code_owner", "name"], name: "approval_rule_name_index_for_code_owners", unique: true, where: "(code_owner = true)", using: :btree
     t.index ["merge_request_id", "code_owner"], name: "index_approval_merge_request_rules_1", using: :btree
     t.index ["merge_request_id", "rule_type", "name"], name: "index_approval_rule_name_for_code_owners_rule_type", unique: true, where: "(rule_type = 2)", using: :btree
