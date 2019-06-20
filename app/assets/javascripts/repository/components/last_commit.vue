@@ -8,7 +8,7 @@ import CommitPipelineStatus from '../../projects/tree/components/commit_pipeline
 import CiIcon from '../../vue_shared/components/ci_icon.vue';
 import ClipboardButton from '../../vue_shared/components/clipboard_button.vue';
 import getRefMixin from '../mixins/get_ref';
-import getProjectPath from '../queries/getProjectPath.graphql';
+import getProjectPath from '../queries/getProjectPath.query.graphql';
 import pathLastCommit from '../queries/pathLastCommit.query.graphql';
 
 export default {
