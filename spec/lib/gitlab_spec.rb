@@ -97,14 +97,42 @@ describe Gitlab do
   end
 
   describe '.ee?' do
+    before do
+      described_class.instance_variable_set(:@is_ee, nil)
+    end
+
+    after do
+      described_class.instance_variable_set(:@is_ee, nil)
+    end
+
     it 'returns true when using Enterprise Edition' do
-      stub_const('License', Class.new)
+      root = Pathname.new('dummy')
+      license_path = double(:path, exist?: true)
+
+      allow(described_class)
+        .to receive(:root)
+        .and_return(root)
+
+      allow(root)
+        .to receive(:join)
+        .with('ee/app/models/license.rb')
+        .and_return(license_path)
 
       expect(described_class.ee?).to eq(true)
     end
 
     it 'returns false when using Community Edition' do
-      hide_const('License')
+      root = double(:path)
+      license_path = double(:path, exists?: false)
+
+      allow(described_class)
+        .to receive(:root)
+        .and_return(Pathname.new('dummy'))
+
+      allow(root)
+        .to receive(:join)
+        .with('ee/app/models/license.rb')
+        .and_return(license_path)
 
       expect(described_class.ee?).to eq(false)
     end
