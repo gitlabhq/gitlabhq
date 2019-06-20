@@ -270,7 +270,7 @@ msgid "%{text} is available"
 msgstr "%{text} が利用できます。"
 
 msgid "%{title} %{operator} %{threshold}"
-msgstr ""
+msgstr "%{title} %{operator} %{threshold}"
 
 msgid "%{title} changes"
 msgstr "%{title} の変更"
@@ -819,8 +819,26 @@ msgstr "新しいプロジェクトで共有 Runner を有効にする"
 msgid "AdminSettings|Environment variables are protected by default"
 msgstr "環境変数はデフォルトで保護されています"
 
+msgid "AdminSettings|No required pipeline"
+msgstr ""
+
+msgid "AdminSettings|Required pipeline configuration"
+msgstr ""
+
+msgid "AdminSettings|Select a pipeline configuration file"
+msgstr ""
+
+msgid "AdminSettings|Select a template"
+msgstr ""
+
+msgid "AdminSettings|Set an instance-wide auto included %{link_start}pipeline configuration%{link_end}. This pipeline configuration will be run after the project's own configuration."
+msgstr ""
+
 msgid "AdminSettings|Specify a domain to use by default for every project's Auto Review Apps and Auto Deploy stages."
 msgstr "すべてのプロジェクトのAuto Review AppsおよびAuto Deployステージで使用する、デフォルトのドメインを指定します。"
+
+msgid "AdminSettings|The required pipeline configuration can be selected from the %{code_start}gitlab-ci%{code_end} directory inside of the configured %{link_start}instance template repository%{link_end} or from GitLab provided configurations."
+msgstr ""
 
 msgid "AdminSettings|When creating a new environment variable it will be protected by default."
 msgstr "環境変数の新規作成時にデフォルトで保護されます"
@@ -959,7 +977,7 @@ msgid "All users must have a name."
 msgstr "すべてのユーザーに名前が必要です。"
 
 msgid "Allow \"%{group_name}\" to sign you in"
-msgstr ""
+msgstr "%{group_name} にサインインを許可"
 
 msgid "Allow commits from members who can merge to the target branch."
 msgstr "ターゲットブランチにマージできるメンバーからのコミットを許可します。"
@@ -1473,7 +1491,7 @@ msgid "Are you sure you want to unlock %{path_lock_path}?"
 msgstr "%{path_lock_path} のロックを解除してもよろしいですか？"
 
 msgid "Are you sure you want to unsubscribe from the %{type}: %{link_to_noteable_text}?"
-msgstr ""
+msgstr "%{type}： %{link_to_noteable_text} の購読を解除してよろしいですか？"
 
 msgid "Are you sure?"
 msgstr "本当によろしいですか？"
@@ -2379,7 +2397,7 @@ msgid "Checking branch availability..."
 msgstr "ブランチが利用可能か確認しています…"
 
 msgid "Checking username availability..."
-msgstr "ユーザー名が利用可能か確認しています..."
+msgstr ""
 
 msgid "Cherry-pick this commit"
 msgstr "このコミットをチェリーピック"
@@ -3435,9 +3453,6 @@ msgstr "コンテナレジストリ"
 msgid "Container registry images"
 msgstr "コンテナレジストリのイメージ"
 
-msgid "ContainerRegistry|Created"
-msgstr "作成済み"
-
 msgid "ContainerRegistry|First log in to GitLab&rsquo;s Container Registry using your GitLab username and password. If you have %{link_2fa} you need to use a %{link_token}:"
 msgstr "まず、GitLab のコンテナレジストリに GitLab ユーザー名とパスワードを使ってログインします。%{link_2fa} を利用していれば、%{link_token} を使用する必要があります:"
 
@@ -3446,6 +3461,9 @@ msgstr "GitLab では、最大 3 つのレベルのイメージ名をサポー�
 
 msgid "ContainerRegistry|How to use the Container Registry"
 msgstr "コンテナレジストリ使用方法"
+
+msgid "ContainerRegistry|Last Updated"
+msgstr ""
 
 msgid "ContainerRegistry|Learn more about"
 msgstr "詳細について"
@@ -4696,6 +4714,9 @@ msgstr "終了時刻 (UTC)"
 msgid "Enforce DNS rebinding attack protection"
 msgstr ""
 
+msgid "Enter IP address range"
+msgstr ""
+
 msgid "Enter at least three characters to search"
 msgstr "少なくとも3文字以上で検索してください"
 
@@ -5644,12 +5665,6 @@ msgstr "完了"
 
 msgid "First day of the week"
 msgstr "一週間の開始曜日"
-
-msgid "FirstPushedBy|First"
-msgstr "初回"
-
-msgid "FirstPushedBy|pushed by"
-msgstr "プッシュした人"
 
 msgid "Fixed date"
 msgstr ""
@@ -6815,6 +6830,12 @@ msgstr "レビュー"
 
 msgid "IP Address"
 msgstr "IP アドレス"
+
+msgid "IP address restriction is not editable in subgroups. Value inherited from top-level parent group."
+msgstr ""
+
+msgid "IP subnet restriction only allowed for top-level groups"
+msgstr ""
 
 msgid "Identifier"
 msgstr "識別子"
@@ -8800,6 +8821,9 @@ msgstr "選択した期間にプッシュはありません。"
 msgid "No repository"
 msgstr "リポジトリがありません"
 
+msgid "No required pipeline"
+msgstr ""
+
 msgid "No runners found"
 msgstr "Runner が見つかりません"
 
@@ -8809,7 +8833,13 @@ msgstr "スケジュールなし"
 msgid "No start date"
 msgstr "開始日なし"
 
+msgid "No value set by top-level parent group."
+msgstr ""
+
 msgid "No, directly import the existing email addresses and usernames."
+msgstr ""
+
+msgid "No, not interested right now"
 msgstr ""
 
 msgid "Node was successfully created."
@@ -9322,9 +9352,6 @@ msgstr ""
 
 msgid "Pipeline"
 msgstr "パイプライン"
-
-msgid "Pipeline ID (IID)"
-msgstr ""
 
 msgid "Pipeline Schedule"
 msgstr "パイプラインスケジュール"
@@ -10860,9 +10887,6 @@ msgstr ""
 msgid "Registry"
 msgstr "レジストリ"
 
-msgid "Related Commits"
-msgstr "関連するコミット"
-
 msgid "Related Deployed Jobs"
 msgstr "関連するデプロイ済ジョブ"
 
@@ -11224,6 +11248,9 @@ msgstr "レスポンスメトリクス (NGINX)"
 
 msgid "Restart Terminal"
 msgstr "ターミナルを再起動"
+
+msgid "Restrict access by IP address"
+msgstr ""
 
 msgid "Resume"
 msgstr "再開"
@@ -11821,7 +11848,7 @@ msgid "Service URL"
 msgstr "サービス URL"
 
 msgid "Session duration (minutes)"
-msgstr ""
+msgstr "セッション期間 (分)"
 
 msgid "Session expiration, projects limit and attachment size."
 msgstr "セッションの有効期限、プロジェクトの上限、添付ファイルのサイズ"
@@ -12134,13 +12161,13 @@ msgid "SnippetsEmptyState|There are no snippets to show."
 msgstr "表示するスニペットはありません。"
 
 msgid "SnippetsEmptyState|They can be either public or private."
-msgstr ""
+msgstr "公開または非公開に設定できます。"
 
 msgid "Some email servers do not support overriding the email sender name. Enable this option to include the name of the author of the issue, merge request or comment in the email body instead."
 msgstr "一部のメールサーバーは、メール送信者名の上書きをサポートしていません。このオプションを有効にすると、代わりにメール本文に課題、マージリクエスト、またはコメントの作成者の名前を含めることができます。"
 
 msgid "Someone edited this %{issueType} at the same time you did. The description has been updated and you will need to make your changes again."
-msgstr ""
+msgstr "あなたの編集と同時に誰かがこの %{issueType} を編集したため、説明が更新されました。もう一度編集する必要があります。"
 
 msgid "Someone edited this merge request at the same time you did. Please refresh the page to see changes."
 msgstr ""
@@ -12605,7 +12632,7 @@ msgid "SubscriptionTable|GitLab allows you to continue using your subscription e
 msgstr ""
 
 msgid "SubscriptionTable|GitLab.com %{planName} %{suffix}"
-msgstr ""
+msgstr "GitLab.com %{planName} %{suffix}"
 
 msgid "SubscriptionTable|Last invoice"
 msgstr ""
@@ -13073,6 +13100,9 @@ msgstr ""
 msgid "The import will time out after %{timeout}. For repositories that take longer, use a clone/push combination."
 msgstr "インポートは %{timeout} でタイムアウトします。タイムアウトするリポジトリでは、clone/push を組み合わせて使用してください。"
 
+msgid "The instance-level Kubernetes service integration is deprecated. Your data has been migrated to an <a href=\"%{url}\"/>instance-level cluster</a>."
+msgstr ""
+
 msgid "The invitation could not be accepted."
 msgstr ""
 
@@ -13440,7 +13470,7 @@ msgid "This date is before the start date, so this epic won't appear in the road
 msgstr ""
 
 msgid "This device has already been registered with us."
-msgstr ""
+msgstr "このデバイスは既に登録されています。"
 
 msgid "This device has not been registered with us."
 msgstr ""
@@ -13468,6 +13498,9 @@ msgstr "このグループ"
 
 msgid "This group does not provide any group Runners yet."
 msgstr "このグループはまだグループ Runner を提供していません。"
+
+msgid "This group, including all subgroups, projects and git repositories, will only be reachable from the specified IP address range. Example: <code>192.168.0.0/24</code>. %{read_more_link}."
+msgstr ""
 
 msgid "This is a \"Ghost User\", created to hold all issues authored by users that have since been deleted. This user cannot be removed."
 msgstr ""
@@ -13946,7 +13979,7 @@ msgid "Todo was successfully marked as done."
 msgstr ""
 
 msgid "Todos"
-msgstr ""
+msgstr "Todo"
 
 msgid "Toggle Sidebar"
 msgstr "サイドバーを切り替え"
@@ -13997,7 +14030,7 @@ msgid "Too many changes to show."
 msgstr ""
 
 msgid "Topics"
-msgstr ""
+msgstr "トピック"
 
 msgid "Total"
 msgstr ""
@@ -14090,13 +14123,13 @@ msgid "Trigger variables:"
 msgstr "トリガー変数:"
 
 msgid "Trigger was created successfully."
-msgstr ""
+msgstr "トリガーは正常に作成されました。"
 
 msgid "Trigger was re-assigned."
 msgstr ""
 
 msgid "Trigger was successfully updated."
-msgstr ""
+msgstr "トリガーは正常に更新されました。"
 
 msgid "Triggerer"
 msgstr "トリガー"
@@ -14542,7 +14575,7 @@ msgstr ""
 msgid "UserOnboardingTour|%{emphasisStart}Well done!%{emphasisEnd}%{lineBreak}%{lineBreak}That's it for our guided tour, congratulations for making it all the way to the end!%{lineBreak}%{lineBreak}We hope this gave you a good overview of GitLab and how it can help you. We'll now show you how to create your own project and invite your colleagues."
 msgstr ""
 
-msgid "UserOnboardingTour|Adding other memembers to a project is done through Project Settings. Click on %{emphasisStart}Settings%{emphasisEnd}."
+msgid "UserOnboardingTour|Adding other members to a project is done through Project Settings. Click on %{emphasisStart}Settings%{emphasisEnd}."
 msgstr ""
 
 msgid "UserOnboardingTour|Alright, that's it for Commits. Let's take a look at the %{emphasisStart}Branches%{emphasisEnd}."
@@ -14726,7 +14759,7 @@ msgid "UserProfile|This user hasn't contributed to any projects"
 msgstr ""
 
 msgid "UserProfile|View all"
-msgstr ""
+msgstr "すべて表示"
 
 msgid "UserProfile|View user in admin area"
 msgstr ""
@@ -14849,7 +14882,7 @@ msgid "View eligible approvers"
 msgstr ""
 
 msgid "View epics list"
-msgstr ""
+msgstr "エピックリストを表示"
 
 msgid "View file @ "
 msgstr "ファイルを表示 @ "
@@ -15411,7 +15444,7 @@ msgid "You cannot write to this read-only GitLab instance."
 msgstr "この読み取り専用 GitLab インスタンスには書き込むことができません。"
 
 msgid "You could not create a new trigger."
-msgstr ""
+msgstr "新しいトリガーを作成できませんでした。"
 
 msgid "You could not take ownership of trigger."
 msgstr ""
@@ -15595,9 +15628,6 @@ msgstr ""
 
 msgid "Your Groups"
 msgstr "所属グループ"
-
-msgid "Your Kubernetes cluster information on this page is still editable, but you are advised to disable and reconfigure"
-msgstr "このページの Kubernetes クラスター情報は編集可能ですが、無効にして再設定することを推奨します"
 
 msgid "Your Primary Email will be used for avatar detection."
 msgstr ""
@@ -16176,6 +16206,9 @@ msgstr[0] "インスタンスが完了しました"
 msgid "invalid milestone state `%{state}`"
 msgstr ""
 
+msgid "is an invalid IP address range"
+msgstr ""
+
 msgid "is enabled."
 msgstr ""
 
@@ -16195,7 +16228,7 @@ msgid "is out of the hierarchy of the Group owning the template"
 msgstr ""
 
 msgid "issue"
-msgstr ""
+msgstr "課題"
 
 msgid "issue boards"
 msgstr "課題ボード"
@@ -16266,6 +16299,9 @@ msgstr "%{metricsLinkStart} メモリ %{metricsLinkEnd} 使用率が %{memoryFro
 
 msgid "mrWidget|%{metricsLinkStart} Memory %{metricsLinkEnd} usage is %{emphasisStart} unchanged %{emphasisEnd} at %{memoryFrom}MB"
 msgstr "%{metricsLinkStart} メモリ %{metricsLinkEnd} 使用率は %{memoryFrom} MBで %{emphasisStart} 変化なし %{emphasisEnd}"
+
+msgid "mrWidget|Added to the merge train at position %{mergeTrainPosition}"
+msgstr ""
 
 msgid "mrWidget|Added to the merge train by"
 msgstr ""

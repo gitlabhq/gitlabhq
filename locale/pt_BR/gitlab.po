@@ -858,8 +858,26 @@ msgstr "Ativar runners compartilhados para novos projetos"
 msgid "AdminSettings|Environment variables are protected by default"
 msgstr "Variáveis de ambiente são protegidas por padrão"
 
+msgid "AdminSettings|No required pipeline"
+msgstr ""
+
+msgid "AdminSettings|Required pipeline configuration"
+msgstr ""
+
+msgid "AdminSettings|Select a pipeline configuration file"
+msgstr ""
+
+msgid "AdminSettings|Select a template"
+msgstr ""
+
+msgid "AdminSettings|Set an instance-wide auto included %{link_start}pipeline configuration%{link_end}. This pipeline configuration will be run after the project's own configuration."
+msgstr ""
+
 msgid "AdminSettings|Specify a domain to use by default for every project's Auto Review Apps and Auto Deploy stages."
 msgstr "Especifique um domínio a ser usado por padrão para os estágios de Auto Review Application e Auto Deploy de cada projeto."
+
+msgid "AdminSettings|The required pipeline configuration can be selected from the %{code_start}gitlab-ci%{code_end} directory inside of the configured %{link_start}instance template repository%{link_end} or from GitLab provided configurations."
+msgstr ""
 
 msgid "AdminSettings|When creating a new environment variable it will be protected by default."
 msgstr "Ao criar uma nova variável de ambiente, ela será protegida por padrão."
@@ -3483,9 +3501,6 @@ msgstr "Container Registry"
 msgid "Container registry images"
 msgstr ""
 
-msgid "ContainerRegistry|Created"
-msgstr "Criado"
-
 msgid "ContainerRegistry|First log in to GitLab&rsquo;s Container Registry using your GitLab username and password. If you have %{link_2fa} you need to use a %{link_token}:"
 msgstr "Primeiro faça login no Container Registry do Gitlab usando seu nome de usuário e senha. Se você tiver %{link_2fa}, será necessário usar um %{link_token}:"
 
@@ -3494,6 +3509,9 @@ msgstr "Gitlab suporta até três níveis de nomes de imagens. Os exemplos a seg
 
 msgid "ContainerRegistry|How to use the Container Registry"
 msgstr "Como usar o Container Registry"
+
+msgid "ContainerRegistry|Last Updated"
+msgstr ""
 
 msgid "ContainerRegistry|Learn more about"
 msgstr "Leia mais sobre"
@@ -3550,7 +3568,7 @@ msgid "Contribution"
 msgstr "Contribuições"
 
 msgid "Contribution Analytics"
-msgstr "Gráficos de contribuição"
+msgstr "Análise de contribuição"
 
 msgid "Contribution Charts"
 msgstr "Gráficos de contribuição"
@@ -4745,6 +4763,9 @@ msgstr "Termina em (UTC)"
 msgid "Enforce DNS rebinding attack protection"
 msgstr ""
 
+msgid "Enter IP address range"
+msgstr ""
+
 msgid "Enter at least three characters to search"
 msgstr ""
 
@@ -5004,7 +5025,7 @@ msgid "Error Reporting and Logging"
 msgstr "Relatório e registro de erros"
 
 msgid "Error Tracking"
-msgstr "Acompanhamento de erros"
+msgstr "Rastreamento de erros"
 
 msgid "Error creating a new path"
 msgstr "Erro ao criar um novo caminho"
@@ -5695,12 +5716,6 @@ msgstr "Finalizado"
 msgid "First day of the week"
 msgstr "Primeiro dia da semana"
 
-msgid "FirstPushedBy|First"
-msgstr "Primeiro"
-
-msgid "FirstPushedBy|pushed by"
-msgstr "publicado por"
-
 msgid "Fixed date"
 msgstr "Data fixa"
 
@@ -6269,7 +6284,7 @@ msgid "Git LFS is not enabled on this GitLab server, contact your admin."
 msgstr "Git LFS não está habilitado neste servidor GitLab, contate seu administrador."
 
 msgid "Git LFS objects will be synced in pull mirrors if LFS is %{docs_link_start}enabled for the project%{docs_link_end}. They will <strong>not</strong> be synced in push mirrors."
-msgstr ""
+msgstr "Objetos Git de LFS serão sincronizados em espelhos de pull se o LFS for %{docs_link_start}ativado para o projeto%{docs_link_end}. Eles <strong>não</strong> serão sincronizados em espelhos de push."
 
 msgid "Git global setup"
 msgstr "Configuração global do Git"
@@ -6867,6 +6882,12 @@ msgstr "Revisar"
 msgid "IP Address"
 msgstr "Endereço IP"
 
+msgid "IP address restriction is not editable in subgroups. Value inherited from top-level parent group."
+msgstr ""
+
+msgid "IP subnet restriction only allowed for top-level groups"
+msgstr ""
+
 msgid "Identifier"
 msgstr "Identificador"
 
@@ -7069,7 +7090,7 @@ msgid "Include the username in the URL if required: <code>https://username@gitla
 msgstr "Inclua o nome de usuário no URL, se necessário: <code>https: //username@gitlab.company.com/group/project.git</code>."
 
 msgid "Includes LFS objects. It can be overridden per group, or per project. 0 for unlimited."
-msgstr ""
+msgstr "Inclui objetos LFS. Pode ser substituído individualmente por grupo ou por projeto. 0 para ilimitado."
 
 msgid "Includes an MVC structure to help you get started."
 msgstr ""
@@ -7413,7 +7434,7 @@ msgid "Job is stuck. Check runners."
 msgstr "A tarefa travou. Verifique os runners."
 
 msgid "Job traces and artifacts"
-msgstr ""
+msgstr "Rastreamento e artefatos de tarefas"
 
 msgid "Job was retried"
 msgstr ""
@@ -7545,7 +7566,7 @@ msgid "LFS"
 msgstr "LFS"
 
 msgid "LFS objects"
-msgstr ""
+msgstr "Objetos LFS"
 
 msgid "LFSStatus|Disabled"
 msgstr "Desabilitado"
@@ -8855,6 +8876,9 @@ msgstr "Nenhum push para o período de tempo selecionado."
 msgid "No repository"
 msgstr "Nenhum repositório"
 
+msgid "No required pipeline"
+msgstr ""
+
 msgid "No runners found"
 msgstr "Nenhum runner encontrado"
 
@@ -8864,8 +8888,14 @@ msgstr "Nenhum agendamento"
 msgid "No start date"
 msgstr ""
 
+msgid "No value set by top-level parent group."
+msgstr ""
+
 msgid "No, directly import the existing email addresses and usernames."
 msgstr "Não, importe diretamente os endereços de e-mail e nomes de usuários existentes."
+
+msgid "No, not interested right now"
+msgstr ""
 
 msgid "Node was successfully created."
 msgstr ""
@@ -9060,10 +9090,10 @@ msgid "Once imported, repositories can be mirrored over SSH. Read more %{link_st
 msgstr "Uma vez importados, os repositórios podem ser espelhados por SSH. Leia mais %{link_start}aqui%{link_end}."
 
 msgid "Once removed, the fork relationship cannot be restored and you will no longer be able to send merge requests to the source."
-msgstr ""
+msgstr "Uma vez removido, o relacionamento do fork não pode ser restaurando e você não poderá mais enviar merge requests para o repositório original."
 
 msgid "Once the exported file is ready, you will receive a notification email with a download link, or you can download it from this page."
-msgstr ""
+msgstr "Quando o arquivo exportado estiver pronto, você receberá um e-mail de notificação com um link para download ou poderá fazer o download a partir desta página."
 
 msgid "One more item"
 msgid_plural "%d more items"
@@ -9378,9 +9408,6 @@ msgstr ""
 
 msgid "Pipeline"
 msgstr "Pipeline"
-
-msgid "Pipeline ID (IID)"
-msgstr ""
 
 msgid "Pipeline Schedule"
 msgstr "Agendamento da Pipeline"
@@ -10917,9 +10944,6 @@ msgstr ""
 msgid "Registry"
 msgstr "Container Registry"
 
-msgid "Related Commits"
-msgstr "Commits Relacionados"
-
 msgid "Related Deployed Jobs"
 msgstr "Tarefas Implantadas Relacionadas"
 
@@ -10987,7 +11011,7 @@ msgid "Remove due date"
 msgstr ""
 
 msgid "Remove fork relationship"
-msgstr ""
+msgstr "Remover relacionamento de fork"
 
 msgid "Remove group"
 msgstr "Remover grupo"
@@ -11283,6 +11307,9 @@ msgstr "Métricas de resposta (NGINX)"
 
 msgid "Restart Terminal"
 msgstr "Reiniciar terminal"
+
+msgid "Restrict access by IP address"
+msgstr ""
 
 msgid "Resume"
 msgstr "Continuar"
@@ -13109,10 +13136,10 @@ msgid "The file has been successfully deleted."
 msgstr ""
 
 msgid "The following items will NOT be exported:"
-msgstr ""
+msgstr "Os seguintes itens NÃO serão exportados:"
 
 msgid "The following items will be exported:"
-msgstr ""
+msgstr "Os seguintes itens serão exportados:"
 
 msgid "The fork relationship has been removed."
 msgstr "O relacionamento como fork foi removido."
@@ -13134,6 +13161,9 @@ msgstr ""
 
 msgid "The import will time out after %{timeout}. For repositories that take longer, use a clone/push combination."
 msgstr "A importação expirará após %{timeout}. Para repositórios que demoram mais tempo, use a combinação clone/push."
+
+msgid "The instance-level Kubernetes service integration is deprecated. Your data has been migrated to an <a href=\"%{url}\"/>instance-level cluster</a>."
+msgstr ""
 
 msgid "The invitation could not be accepted."
 msgstr "O convite não pôde ser aceito."
@@ -13211,7 +13241,7 @@ msgid "The project can be accessed by any user who is logged in."
 msgstr ""
 
 msgid "The project can be accessed by anyone, regardless of authentication."
-msgstr ""
+msgstr "O projeto pode ser acessado por qualquer pessoa, independentemente da autenticação."
 
 msgid "The project can be accessed without any authentication."
 msgstr "O projeto pode ser acessado sem a necessidade de autenticação."
@@ -13531,6 +13561,9 @@ msgstr "Esse grupo"
 msgid "This group does not provide any group Runners yet."
 msgstr "Este grupo não fornece nenhum grupo de Runners ainda."
 
+msgid "This group, including all subgroups, projects and git repositories, will only be reachable from the specified IP address range. Example: <code>192.168.0.0/24</code>. %{read_more_link}."
+msgstr ""
+
 msgid "This is a \"Ghost User\", created to hold all issues authored by users that have since been deleted. This user cannot be removed."
 msgstr ""
 
@@ -13694,7 +13727,7 @@ msgid "This will redirect you to an external sign in page."
 msgstr ""
 
 msgid "This will remove the fork relationship to source project"
-msgstr ""
+msgstr "Isto irá remover o relacionamento de fork para o projeto de origem"
 
 msgid "Those emails automatically become issues (with the comments becoming the email conversation) listed here."
 msgstr "Esses e-mails se tornam automaticamente issues (com os comentários se tornando a conversa por e-mail) listados aqui."
@@ -14112,19 +14145,19 @@ msgid "TransferGroup|You don't have enough permissions."
 msgstr ""
 
 msgid "TransferProject|Cannot move project"
-msgstr ""
+msgstr "Não é possível mover o projeto"
 
 msgid "TransferProject|Please select a new namespace for your project."
-msgstr ""
+msgstr "Por favor, selecione um novo namespace para o seu projeto."
 
 msgid "TransferProject|Project cannot be transferred, because tags are present in its container registry"
-msgstr ""
+msgstr "O projeto não pode ser transferido porque as tags estão presentes em seu container registry"
 
 msgid "TransferProject|Project with same name or path in target namespace already exists"
-msgstr ""
+msgstr "Um projeto com o mesmo nome ou caminho no namespace de destino já existe"
 
 msgid "TransferProject|Transfer failed, please contact an admin."
-msgstr ""
+msgstr "A transferência falhou, por favor contate um administrador."
 
 msgid "Tree"
 msgstr ""
@@ -14606,7 +14639,7 @@ msgstr ""
 msgid "UserOnboardingTour|%{emphasisStart}Well done!%{emphasisEnd}%{lineBreak}%{lineBreak}That's it for our guided tour, congratulations for making it all the way to the end!%{lineBreak}%{lineBreak}We hope this gave you a good overview of GitLab and how it can help you. We'll now show you how to create your own project and invite your colleagues."
 msgstr ""
 
-msgid "UserOnboardingTour|Adding other memembers to a project is done through Project Settings. Click on %{emphasisStart}Settings%{emphasisEnd}."
+msgid "UserOnboardingTour|Adding other members to a project is done through Project Settings. Click on %{emphasisStart}Settings%{emphasisEnd}."
 msgstr ""
 
 msgid "UserOnboardingTour|Alright, that's it for Commits. Let's take a look at the %{emphasisStart}Branches%{emphasisEnd}."
@@ -15590,7 +15623,7 @@ msgid "You will lose all the unstaged changes you've made in this project. This 
 msgstr ""
 
 msgid "You will need to update your local repositories to point to the new location."
-msgstr ""
+msgstr "Você precisará atualizar seus repositórios locais para apontar para a nova localização."
 
 msgid "You will not get any notifications via email"
 msgstr "Você não será notificado por email"
@@ -15660,9 +15693,6 @@ msgstr ""
 
 msgid "Your Groups"
 msgstr "Seus Grupos"
-
-msgid "Your Kubernetes cluster information on this page is still editable, but you are advised to disable and reconfigure"
-msgstr "As informações do cluster do Kubernetes nesta página ainda são editáveis, mas é recomendado que você desative e reconfigure"
 
 msgid "Your Primary Email will be used for avatar detection."
 msgstr ""
@@ -16254,6 +16284,9 @@ msgstr[1] "instâncias completas"
 msgid "invalid milestone state `%{state}`"
 msgstr ""
 
+msgid "is an invalid IP address range"
+msgstr ""
+
 msgid "is enabled."
 msgstr ""
 
@@ -16345,6 +16378,9 @@ msgstr "%{metricsLinkStart} Memória %{metricsLinkEnd} uso %{emphasisStart} aume
 
 msgid "mrWidget|%{metricsLinkStart} Memory %{metricsLinkEnd} usage is %{emphasisStart} unchanged %{emphasisEnd} at %{memoryFrom}MB"
 msgstr "%{metricsLinkStart} Memória %{metricsLinkEnd} uso é %{emphasisStart} inalterado %{emphasisEnd} em %{memoryFrom}MB"
+
+msgid "mrWidget|Added to the merge train at position %{mergeTrainPosition}"
+msgstr ""
 
 msgid "mrWidget|Added to the merge train by"
 msgstr ""
