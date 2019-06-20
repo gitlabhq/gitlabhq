@@ -3,7 +3,7 @@ require 'rails_helper'
 describe 'User creates branch and merge request on issue page', :js do
   let(:membership_level) { :developer }
   let(:user) { create(:user) }
-  let!(:project) { create(:project, :repository) }
+  let!(:project) { create(:project, :repository, :public) }
   let(:issue) { create(:issue, project: project, title: 'Cherry-Coloured Funk') }
 
   context 'when signed out' do
@@ -163,9 +163,20 @@ describe 'User creates branch and merge request on issue page', :js do
       let(:issue) { create(:issue, :confidential, project: project) }
 
       it 'disables the create branch button' do
+        stub_feature_flags(create_confidential_merge_request: false)
+
         visit project_issue_path(project, issue)
 
         expect(page).not_to have_css('.create-mr-dropdown-wrap')
+      end
+
+      it 'enables the create branch button when feature flag is enabled' do
+        stub_feature_flags(create_confidential_merge_request: true)
+
+        visit project_issue_path(project, issue)
+
+        expect(page).to have_css('.create-mr-dropdown-wrap')
+        expect(page).to have_button('Create confidential merge request')
       end
     end
 
