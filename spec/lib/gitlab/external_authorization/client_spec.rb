@@ -19,7 +19,8 @@ describe Gitlab::ExternalAuthorization::Client do
     it 'adds the correct params for the user to the body of the request' do
       expected_body = {
         user_identifier: 'dummy_user@example.com',
-        project_classification_label: 'dummy_label'
+        project_classification_label: 'dummy_label',
+        identities: []
       }.to_json
       expect(Excon).to receive(:post)
                          .with(dummy_url, hash_including(body: expected_body))
@@ -81,11 +82,35 @@ describe Gitlab::ExternalAuthorization::Client do
                provider: 'ldapprovider')
       end
 
-      it 'includes the ldap dn for ldap users' do
+      it 'includes the ldap dn and identities for ldap users' do
         expected_body = {
           user_identifier: 'dummy_user@example.com',
           project_classification_label: 'dummy_label',
+          identities: [{ provider: 'ldapprovider', extern_uid: 'external id' }],
           user_ldap_dn: 'external id'
+        }.to_json
+        expect(Excon).to receive(:post)
+                           .with(dummy_url, hash_including(body: expected_body))
+
+        client.request_access
+      end
+    end
+
+    describe 'for non-ldap users with identities' do
+      before do
+        %w(twitter facebook).each do |provider|
+          create(:identity, provider: provider, extern_uid: "#{provider}_external_id", user: user)
+        end
+      end
+
+      it 'includes all the identities' do
+        expected_body = {
+          user_identifier: 'dummy_user@example.com',
+          project_classification_label: 'dummy_label',
+          identities: [
+            { provider: 'twitter', extern_uid: 'twitter_external_id' },
+            { provider: 'facebook', extern_uid: 'facebook_external_id' }
+          ]
         }.to_json
         expect(Excon).to receive(:post)
                            .with(dummy_url, hash_including(body: expected_body))

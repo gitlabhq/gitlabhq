@@ -17,6 +17,7 @@ RSpec.shared_examples 'archived project policies' do
       upload_file
       resolve_note
       award_emoji
+      admin_tag
     ]
   end
 

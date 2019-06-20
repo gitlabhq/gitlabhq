@@ -8,9 +8,8 @@ describe Gitlab::Checks::TagCheck do
   describe '#validate!' do
     let(:ref) { 'refs/tags/v1.0.0' }
 
-    it 'raises an error' do
-      allow(user_access).to receive(:can_do_action?).with(:push_code).and_return(true)
-      expect(user_access).to receive(:can_do_action?).with(:admin_project).and_return(false)
+    it 'raises an error when user does not have access' do
+      allow(user_access).to receive(:can_do_action?).with(:admin_tag).and_return(false)
 
       expect { subject.validate! }.to raise_error(Gitlab::GitAccess::UnauthorizedError, 'You are not allowed to change existing tags on this project.')
     end

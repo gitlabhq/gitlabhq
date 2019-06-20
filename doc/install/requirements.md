@@ -104,32 +104,10 @@ installation (e.g. the number of users, projects, etc).
 
 We currently support the following databases:
 
-- PostgreSQL (highly recommended)
-- MySQL/MariaDB (strongly discouraged, not all GitLab features are supported, no support for [MySQL/MariaDB GTID](https://mariadb.com/kb/en/mariadb/gtid/))
+- PostgreSQL
 
-We highly recommend the use of PostgreSQL instead of MySQL/MariaDB as not all
-features of GitLab work with MySQL/MariaDB:
-
-1. MySQL support for subgroups was [dropped with GitLab 9.3][post].
-   See [issue #30472][30472] for more information.
-1. Geo does [not support MySQL](../administration/geo/replication/database.md). This means no supported Disaster Recovery solution if using MySQL. **[PREMIUM ONLY]**
-1. [Zero downtime migrations](../update/README.md#upgrading-without-downtime) do not work with MySQL.
-1. [Database load balancing](../administration/database_load_balancing.md) is
-   supported only for PostgreSQL. **[PREMIUM ONLY]**
-1. GitLab [optimizes the loading of dashboard events](https://gitlab.com/gitlab-org/gitlab-ce/issues/31806) using [PostgreSQL LATERAL JOINs](https://blog.heapanalytics.com/postgresqls-powerful-new-join-type-lateral/).
-1. In general, SQL optimized for PostgreSQL may run much slower in MySQL due to
-   differences in query planners. For example, subqueries that work well in PostgreSQL
-   may not be [performant in MySQL](https://dev.mysql.com/doc/refman/5.7/en/optimizing-subqueries.html).
-1. Binary column index length is limited to 20 bytes. This is accomplished with [a hack](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/config/initializers/mysql_set_length_for_binary_indexes.rb).
-1. MySQL requires a variety of hacks to increase limits on various columns, [for example](https://gitlab.com/gitlab-org/gitlab-ce/issues/49583).
-1. [The milestone filter runs slower queries on MySQL](https://gitlab.com/gitlab-org/gitlab-ce/issues/51173#note_99391731).
-1. We expect this list to grow over time.
-
-Existing users using GitLab with MySQL/MariaDB are advised to
-[migrate to PostgreSQL](../update/mysql_to_postgresql.md) instead.
-
-[30472]: https://gitlab.com/gitlab-org/gitlab-ce/issues/30472
-[post]: https://about.gitlab.com/2017/06/22/gitlab-9-3-released/#dropping-support-for-subgroups-in-mysql
+Support for MySQL was removed in GitLab 12.1. Existing users using GitLab with
+MySQL/MariaDB are advised to [migrate to PostgreSQL](../update/mysql_to_postgresql.md) before upgrading.
 
 ### PostgreSQL Requirements
 

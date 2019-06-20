@@ -936,5 +936,36 @@ A similar strategy can be employed for the remaining features - by removing the
 data that cannot be decrypted, GitLab can be brought back into working order,
 and the lost data can be manually replaced.
 
+### Container Registry push failures after restoring from a backup
+
+If you use the [Container Registry](../user/project/container_registry.md), you
+may see pushes to the registry fail after restoring your backup on an Omnibus
+GitLab instance after restoring the registry data.
+
+These failures will mention permission issues in the registry logs, like:
+
+```
+level=error
+msg="response completed with error"
+err.code=unknown
+err.detail="filesystem: mkdir /var/opt/gitlab/gitlab-rails/shared/registry/docker/registry/v2/repositories/...: permission denied"
+err.message="unknown error"
+```
+
+This is caused by the restore being run as the unprivileged user `git` which was
+unable to assign the correct ownership to the registry files during the restore
+([issue 62759](https://gitlab.com/gitlab-org/gitlab-ce/issues/62759 "Incorrect permissions on registry filesystem after restore")).
+
+To get your registry working again:
+
+```bash
+sudo chown -R registry:registry /var/opt/gitlab/gitlab-rails/shared/registry/docker
+```
+
+NOTE: **Note:**
+If you have changed the default filesystem location for the registry, you will
+want to run the chown against your custom location instead of
+`/var/opt/gitlab/gitlab-rails/shared/registry/docker`.
+
 [reconfigure GitLab]: ../administration/restart_gitlab.md#omnibus-gitlab-reconfigure
 [restart GitLab]: ../administration/restart_gitlab.md#installations-from-source

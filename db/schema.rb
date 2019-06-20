@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190618171120) do
+ActiveRecord::Schema.define(version: 20190619175843) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1572,6 +1572,8 @@ ActiveRecord::Schema.define(version: 20190618171120) do
     t.string "last_commit"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.binary "last_wiki_commit"
+    t.datetime_with_timezone "wiki_indexed_at"
     t.index ["project_id"], name: "index_index_statuses_on_project_id", unique: true, using: :btree
   end
 
@@ -2593,11 +2595,9 @@ ActiveRecord::Schema.define(version: 20190618171120) do
     t.integer "visibility_level", default: 0, null: false
     t.boolean "archived", default: false, null: false
     t.string "avatar"
-    t.string "import_status"
     t.integer "star_count", default: 0, null: false
     t.string "import_type"
     t.string "import_source"
-    t.text "import_error"
     t.boolean "shared_runners_enabled", default: true, null: false
     t.string "runners_token"
     t.string "build_coverage_regex"
@@ -2619,7 +2619,6 @@ ActiveRecord::Schema.define(version: 20190618171120) do
     t.boolean "only_allow_merge_if_all_discussions_are_resolved"
     t.boolean "printing_merge_request_link_enabled", default: true, null: false
     t.integer "auto_cancel_pending_pipelines", default: 1, null: false
-    t.string "import_jid"
     t.integer "cached_markdown_version"
     t.text "delete_error"
     t.datetime "last_repository_updated_at"

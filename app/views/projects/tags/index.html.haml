@@ -24,7 +24,7 @@
           - tags_sort_options_hash.each do |value, title|
             %li
               = link_to title, filter_tags_path(sort: value), class: ("is-active" if @sort == value)
-      - if can?(current_user, :push_code, @project)
+      - if can?(current_user, :admin_tag, @project)
         = link_to new_project_tag_path(@project), class: 'btn btn-success new-tag-btn' do
           = s_('TagsPage|New tag')
       = link_to project_tags_path(@project, rss_url_options), title: _("Tags feed"), class: 'btn d-none d-sm-inline-block has-tooltip' do

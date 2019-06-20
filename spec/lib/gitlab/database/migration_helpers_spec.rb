@@ -461,9 +461,9 @@ describe Gitlab::Database::MigrationHelpers do
       end
 
       it 'updates all the rows in a table' do
-        model.update_column_in_batches(:projects, :import_error, 'foo')
+        model.update_column_in_batches(:projects, :description_html, 'foo')
 
-        expect(Project.where(import_error: 'foo').count).to eq(5)
+        expect(Project.where(description_html: 'foo').count).to eq(5)
       end
 
       it 'updates boolean values correctly' do

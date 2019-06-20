@@ -145,6 +145,9 @@ DELETE /projects/:id/registry/repositories/:repository_id/tags/:tag_name
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2/tags/v10.0.0"
 ```
 
+This action does not delete blobs. In order to delete them and recycle disk space,
+[run the garbage collection](https://docs.gitlab.com/omnibus/maintenance/README.html#removing-unused-layers-not-referenced-by-manifests).
+
 ## Delete repository tags in bulk
 
 Delete repository tags in bulk based on given criteria.
@@ -174,6 +177,8 @@ This API call performs the following operations:
 These operations are executed asynchronously and it might
 take time to get executed. You can run this at most
 once an hour for a given container repository.
+This action does not delete blobs. In order to delete them and recycle disk space,
+[run the garbage collection](https://docs.gitlab.com/omnibus/maintenance/README.html#removing-unused-layers-not-referenced-by-manifests).
 
 NOTE: **Note:**
 Due to a [Docker Distribution deficiency](https://gitlab.com/gitlab-org/gitlab-ce/issues/21405),

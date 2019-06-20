@@ -5,8 +5,8 @@ module Gitlab
     class << self
       def main
         image_name =
-          if appearance_favicon.exists?
-            appearance_favicon.url
+          if appearance.favicon.exists?
+            appearance.favicon_path
           elsif Gitlab::Utils.to_boolean(ENV['CANARY'])
             'favicon-yellow.png'
           elsif Rails.env.development?
@@ -56,10 +56,6 @@ module Gitlab
 
       def appearance
         Gitlab::SafeRequestStore[:appearance] ||= (Appearance.current || Appearance.new)
-      end
-
-      def appearance_favicon
-        appearance.favicon
       end
     end
   end

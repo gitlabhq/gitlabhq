@@ -4,6 +4,14 @@ module Lfs
   # Usage: Calling `new_file` check to see if a file should be in LFS and
   #        return a transformed result with `content` and `encoding` to commit.
   #
+  #        The `repository` passed to the initializer can be a Repository or
+  #        a DesignManagement::Repository (an EE-specific class that inherits
+  #        from Repository).
+  #
+  #        The `repository_type` property will be one of the types named in
+  #        `Gitlab::GlRepository.types`, and is recorded on the `LfsObjectsProject`
+  #        in order to identify the repository location of the blob.
+  #
   #        For LFS an LfsObject linked to the project is stored and an LFS
   #        pointer returned. If the file isn't in LFS the untransformed content
   #        is returned to save in the commit.
@@ -52,7 +60,7 @@ module Lfs
     end
 
     def cached_attributes
-      @cached_attributes ||= Gitlab::Git::AttributesAtRefParser.new(repository, branch_name)
+      @cached_attributes ||= repository.attributes_at(branch_name)
     end
 
     # rubocop: disable CodeReuse/ActiveRecord

@@ -149,7 +149,7 @@ Component statuses are linked to configuration documentation for each component.
 | [PgBouncer Exporter](#pgbouncer-exporter) | Prometheus endpoint with PgBouncer metrics | [⚙][pgbouncer-exporter-omnibus] | [❌][pgbouncer-exporter-charts] | [❌][pgbouncer-exporter-charts] | [✅](https://about.gitlab.com/handbook/engineering/monitoring/) | ❌ | ❌ | CE & EE |
 | [GitLab Monitor](#gitlab-monitor) | Generates a variety of GitLab metrics | [✅][gitlab-monitor-omnibus] | [❌][gitab-monitor-charts] | [❌][gitab-monitor-charts] | [✅](https://about.gitlab.com/handbook/engineering/monitoring/) | ❌ | ❌ | CE & EE |
 | [Node Exporter](#node-exporter) | Prometheus endpoint with system metrics | [✅][node-exporter-omnibus] | [❌][node-exporter-charts] | [❌][node-exporter-charts] | [✅](https://about.gitlab.com/handbook/engineering/monitoring/) | ❌ | ❌ | CE & EE |
-| [Mattermost](#mattermost) | Open-source Slack alternative | [⚙][mattermost-omnibus] | [⤓][mattermost-charts] | [⤓][mattermost-charts] | [⤓](../user/project/integrations/mattermost_slash_commands.md#manual-configuration), [⤓](../user/project/integrations/mattermost.html) | ❌ | ❌ | CE & EE |
+| [Mattermost](#mattermost) | Open-source Slack alternative | [⚙][mattermost-omnibus] | [⤓][mattermost-charts] | [⤓][mattermost-charts] | [⤓](../user/project/integrations/mattermost.md) | ❌ | ❌ | CE & EE |
 | [MinIO](#minio) | Object storage service | [⤓][minio-omnibus] | [✅][minio-charts] | [✅][minio-charts] | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production-architecture/#storage-architecture) | ❌ | [⚙][minio-gdk] | CE & EE |
 | [Runner](#gitlab-runner) | Executes GitLab CI jobs | [⤓][runner-omnibus] | [✅][runner-charts] | [⚙][runner-charts] | [✅](../user/gitlab_com/index.md#shared-runners) | [⚙][runner-source] | [⚙][runner-gdk] | CE & EE |
 | [Database Migrations](#database-migrations) | Database migrations | [✅][database-migrations-omnibus] | [✅][database-migrations-charts] | [✅][database-migrations-charts] | ✅ | [⚙][database-migrations-source] | ✅ | CE & EE |
@@ -695,7 +695,7 @@ We've also detailed [our architecture of GitLab.com](https://about.gitlab.com/ha
 [runner-gdk]: https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/runner.md
 [database-migrations-omnibus]: https://docs.gitlab.com/omnibus/settings/database.html#disabling-automatic-database-migration
 [database-migrations-charts]: https://docs.gitlab.com/charts/charts/gitlab/migrations/
-[database-migrations-source]: ../update/upgrading_from_source.md#14-install-libs-migrations-etc
+[database-migrations-source]: ../update/upgrading_from_source.md#13-install-libs-migrations-etc
 [certificate-management-omnibus]: https://docs.gitlab.com/omnibus/settings/ssl.html
 [certificate-management-charts]: https://docs.gitlab.com/charts/installation/tls.html
 [certificate-management-source]: ../install/installation.md#using-https

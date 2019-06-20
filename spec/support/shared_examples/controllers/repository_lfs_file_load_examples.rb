@@ -9,7 +9,15 @@
 # - `filepath`: path of the file (contains filename)
 # - `subject`: the request to be made to the controller. Example:
 # subject { get :show, namespace_id: project.namespace, project_id: project }
-shared_examples 'a controller that can serve LFS files' do
+#
+# The LFS disabled scenario can be skipped by passing `skip_lfs_disabled_tests: true`
+# when including the examples (Note, at time of writing this is only used by
+# an EE-specific spec):
+#
+# it_behaves_like 'a controller that can serve LFS files', skip_lfs_disabled_tests: true do
+#   ...
+# end
+shared_examples 'a controller that can serve LFS files' do |options = {}|
   let(:lfs_oid) { '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897' }
   let(:lfs_size) { '1575078' }
   let!(:lfs_object) { create(:lfs_object, oid: lfs_oid, size: lfs_size) }
@@ -83,6 +91,8 @@ shared_examples 'a controller that can serve LFS files' do
     end
 
     it 'delivers ASCII file' do
+      skip 'Calling spec asked to skip testing LFS disabled scenario' if options[:skip_lfs_disabled_tests]
+
       subject
 
       expect(response).to have_gitlab_http_status(200)

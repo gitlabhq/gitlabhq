@@ -1,7 +1,6 @@
 image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.6.3-golang-1.11-git-2.21-chrome-73.0-node-12.x-yarn-1.16-postgresql-9.6-graphicsmagick-1.3.29"
 
 variables:
-  MYSQL_ALLOW_EMPTY_PASSWORD: "1"
   RAILS_ENV: "test"
   NODE_ENV: "test"
   SIMPLECOV: "true"
@@ -37,6 +36,7 @@ include:
   - local: .gitlab/ci/cng.gitlab-ci.yml
   - local: .gitlab/ci/docs.gitlab-ci.yml
   - local: .gitlab/ci/frontend.gitlab-ci.yml
+  - local: .gitlab/ci/memory.gitlab-ci.yml
   - local: .gitlab/ci/pages.gitlab-ci.yml
   - local: .gitlab/ci/qa.gitlab-ci.yml
   - local: .gitlab/ci/reports.gitlab-ci.yml

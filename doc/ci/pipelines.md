@@ -139,6 +139,20 @@ The union of A, B, and C is (1, 4) and (6, 7). Therefore, the total running time
 (4 - 1) + (7 - 6) => 4
 ```
 
+### Expanding and collapsing job log sections
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/14664) in GitLab
+> 12.0.
+
+Job logs are divided into sections that can be collapsed or expanded.
+
+In the following example:
+
+- Two sections are expanded and can be collapsed.
+- One section is collapsed and can be expanded.
+
+![Collapsible sections](img/collapsible_log.png)
+
 ## Configuring pipelines
 
 Pipelines, and their component jobs and stages, are defined in the [`.gitlab-ci.yml`](yaml/README.md) file for each project.

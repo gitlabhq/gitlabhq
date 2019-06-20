@@ -3,7 +3,7 @@ import { GlPopover, GlSkeletonLoading } from '@gitlab/ui';
 import Icon from '../../vue_shared/components/icon.vue';
 import CiIcon from '../../vue_shared/components/ci_icon.vue';
 import timeagoMixin from '../../vue_shared/mixins/timeago';
-import query from '../queries/merge_request.graphql';
+import query from '../queries/merge_request.query.graphql';
 import { mrStates, humanMRStates } from '../constants';
 
 export default {

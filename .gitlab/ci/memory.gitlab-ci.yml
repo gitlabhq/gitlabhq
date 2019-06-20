@@ -1,0 +1,19 @@
+memory-static:
+  extends: .dedicated-no-docs-no-db-pull-cache-job
+  script:
+    # Uses two different reports from the 'derailed_benchmars' gem.
+
+    # Loads each of gems in the Gemfile and checks how much memory they consume when they are required.
+    # 'derailed_benchmarks' internally uses 'get_process_mem'
+    - scripts/memory-static 'tmp/memory_static_full_report.txt' 'tmp/memory_static_metrics.txt'
+
+    # Outputs detailed information about objects created while gems are loaded.
+    # 'derailed_benchmarks' internally uses 'memory_profiler'
+    - scripts/memory-static-objects 'tmp/memory_static_objects_full_report.txt' 'tmp/memory_static_metrics.txt'
+  artifacts:
+    paths:
+      - tmp/memory_static_full_report.txt
+      - tmp/memory_static_objects_full_report.txt
+      - tmp/memory_static_metrics.txt
+    reports:
+      metrics: tmp/memory_static_metrics.txt

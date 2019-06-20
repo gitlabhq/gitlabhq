@@ -1,0 +1,5 @@
+---
+title: Cache feature flag names in Redis for a minute
+merge_request: 29816
+author:
+type: performance

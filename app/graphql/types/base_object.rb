@@ -4,6 +4,7 @@ module Types
   class BaseObject < GraphQL::Schema::Object
     prepend Gitlab::Graphql::Present
     prepend Gitlab::Graphql::ExposePermissions
+    prepend Gitlab::Graphql::MarkdownField
 
     field_class Types::BaseField
 

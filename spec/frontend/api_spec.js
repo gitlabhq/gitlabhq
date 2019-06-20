@@ -474,4 +474,27 @@ describe('Api', () => {
         .catch(done.fail);
     });
   });
+
+  describe('projectForks', () => {
+    it('gets forked projects', done => {
+      const dummyProjectPath = 'gitlab-org/gitlab-ce';
+      const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${encodeURIComponent(
+        dummyProjectPath,
+      )}/forks`;
+
+      jest.spyOn(axios, 'get');
+
+      mock.onGet(expectedUrl).replyOnce(200, ['fork']);
+
+      Api.projectForks(dummyProjectPath, { visibility: 'private' })
+        .then(({ data }) => {
+          expect(data).toEqual(['fork']);
+          expect(axios.get).toHaveBeenCalledWith(expectedUrl, {
+            params: { visibility: 'private' },
+          });
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+  });
 });

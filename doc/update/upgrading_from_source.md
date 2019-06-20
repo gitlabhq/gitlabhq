@@ -4,6 +4,10 @@ comments: false
 
 # Upgrading Community Edition and Enterprise Edition from source
 
+NOTE: **Note:**
+Users wishing to upgrade to 12.0.0 will have to take some extra steps. See the
+version specific upgrade instructions for 12.0.0 for more details.
+
 Make sure you view this update guide from the branch (version) of GitLab you
 would like to install (e.g., `11.8`. You can select the version in the version
 dropdown at the top left corner of GitLab (below the menu bar).
@@ -235,29 +239,7 @@ sudo -u git -H git checkout v$(</home/git/gitlab/GITLAB_PAGES_VERSION)
 sudo -u git -H make
 ```
 
-### 12. Update MySQL permissions
-
-If you are using MySQL you need to grant the GitLab user the necessary
-permissions on the database:
-
-```bash
-mysql -u root -p -e "GRANT TRIGGER ON \`gitlabhq_production\`.* TO 'git'@'localhost';"
-```
-
-If you use MySQL with replication, or just have MySQL configured with binary logging,
-you will need to also run the following on all of your MySQL servers:
-
-```bash
-mysql -u root -p -e "SET GLOBAL log_bin_trust_function_creators = 1;"
-```
-
-You can make this setting permanent by adding it to your `my.cnf`:
-
-```
-log_bin_trust_function_creators=1
-```
-
-### 13. Update configuration files
+### 12. Update configuration files
 
 #### New configuration options for `gitlab.yml`
 
@@ -331,17 +313,12 @@ For Ubuntu 16.04.1 LTS:
 sudo systemctl daemon-reload
 ```
 
-### 14. Install libs, migrations, etc.
+### 13. Install libs, migrations, etc.
 
 ```bash
 cd /home/git/gitlab
 
-# PostgreSQL installations (note: the line below states '--without mysql')
 sudo -u git -H bundle install --deployment --without development test mysql aws kerberos
-
-# MySQL installations (note: the line below states '--without postgres')
-sudo -u git -H bundle install --deployment --without development test postgres aws kerberos
-
 
 # Optional: clean up old gems
 sudo -u git -H bundle clean
@@ -360,17 +337,14 @@ sudo -u git -H bundle exec rake yarn:install gitlab:assets:clean gitlab:assets:c
 sudo -u git -H bundle exec rake cache:clear RAILS_ENV=production
 ```
 
-**MySQL installations**: Run through the `MySQL strings limits` and `Tables and
-data conversion to utf8mb4` [tasks](../install/database_mysql.md).
-
-### 15. Start application
+### 14. Start application
 
 ```bash
 sudo service gitlab start
 sudo service nginx restart
 ```
 
-### 16. Check application status
+### 15. Check application status
 
 Check if GitLab and its environment are configured correctly:
 
@@ -403,6 +377,20 @@ Example:
 
 Additional instructions here.
 -->
+
+### 12.0.0
+
+In 12.0.0 we made various database related changes. These changes require that
+users first upgrade to the latest 11.11 patch release. Once upgraded to 11.11.x,
+users can upgrade to 12.x. Failure to do so may result in database migrations
+not being applied, which could lead to application errors.
+
+Example 1: you are currently using GitLab 11.11.3, which is the latest patch
+release for 11.11.x. You can upgrade as usual to 12.0.0, 12.1.0, etc.
+
+Example 2: you are currently using a version of GitLab 10.x. To upgrade, first
+upgrade to 11.11.3. Once upgraded to 11.11.3 you can safely upgrade to 12.0.0
+or future versions.
 
 ## Things went south? Revert to previous version
 

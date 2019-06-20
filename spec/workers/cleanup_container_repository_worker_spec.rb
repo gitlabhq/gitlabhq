@@ -35,13 +35,5 @@ describe CleanupContainerRepositoryWorker, :clean_gitlab_redis_shared_state do
         subject.perform(user.id, -1, params)
       end.not_to raise_error
     end
-
-    context 'when executed twice in short period' do
-      it 'executes service only for the first time' do
-        expect(service).to receive(:execute).once
-
-        2.times { subject.perform(user.id, repository.id, params) }
-      end
-    end
   end
 end

@@ -1,133 +1,79 @@
-/* eslint-disable consistent-return, class-methods-use-this */
+import InputValidator from '~/validators/input_validator';
 
-import $ from 'jquery';
 import _ from 'underscore';
 import axios from '~/lib/utils/axios_utils';
 import flash from '~/flash';
 import { __ } from '~/locale';
 
 const debounceTimeoutDuration = 1000;
+const rootUrl = gon.relative_url_root;
 const invalidInputClass = 'gl-field-error-outline';
 const successInputClass = 'gl-field-success-outline';
-const unavailableMessageSelector = '.username .validation-error';
-const successMessageSelector = '.username .validation-success';
-const pendingMessageSelector = '.username .validation-pending';
-const invalidMessageSelector = '.username .gl-field-error';
+const successMessageSelector = '.validation-success';
+const pendingMessageSelector = '.validation-pending';
+const unavailableMessageSelector = '.validation-error';
 
-export default class UsernameValidator {
-  constructor() {
-    this.inputElement = $('#new_user_username');
-    this.inputDomElement = this.inputElement.get(0);
-    this.state = {
-      available: false,
-      valid: false,
-      pending: false,
-      empty: true,
-    };
+export default class UsernameValidator extends InputValidator {
+  constructor(opts = {}) {
+    super();
 
-    const debounceTimeout = _.debounce(username => {
-      this.validateUsername(username);
+    const container = opts.container || '';
+    const validateLengthElements = document.querySelectorAll(`${container} .js-validate-username`);
+
+    this.debounceValidateInput = _.debounce(inputDomElement => {
+      UsernameValidator.validateUsernameInput(inputDomElement);
     }, debounceTimeoutDuration);
 
-    this.inputElement.on('keyup.username_check', () => {
-      const username = this.inputElement.val();
-
-      this.state.valid = this.inputDomElement.validity.valid;
-      this.state.empty = !username.length;
-
-      if (this.state.valid) {
-        return debounceTimeout(username);
-      }
-
-      this.renderState();
-    });
-
-    // Override generic field validation
-    this.inputElement.on('invalid', this.interceptInvalid.bind(this));
+    validateLengthElements.forEach(element =>
+      element.addEventListener('input', this.eventHandler.bind(this)),
+    );
   }
 
-  renderState() {
-    // Clear all state
-    this.clearFieldValidationState();
+  eventHandler(event) {
+    const inputDomElement = event.target;
 
-    if (this.state.valid && this.state.available) {
-      return this.setSuccessState();
-    }
-
-    if (this.state.empty) {
-      return this.clearFieldValidationState();
-    }
-
-    if (this.state.pending) {
-      return this.setPendingState();
-    }
-
-    if (!this.state.valid) {
-      return this.setInvalidState();
-    }
-
-    if (!this.state.available) {
-      return this.setUnavailableState();
-    }
+    UsernameValidator.resetInputState(inputDomElement);
+    this.debounceValidateInput(inputDomElement);
   }
 
-  interceptInvalid(event) {
-    event.preventDefault();
-    event.stopPropagation();
-  }
+  static validateUsernameInput(inputDomElement) {
+    const username = inputDomElement.value;
 
-  validateUsername(username) {
-    if (this.state.valid) {
-      this.state.pending = true;
-      this.state.available = false;
-      this.renderState();
-      axios
-        .get(`${gon.relative_url_root}/users/${username}/exists`)
-        .then(({ data }) => this.setAvailabilityState(data.exists))
+    if (inputDomElement.checkValidity() && username.length > 0) {
+      UsernameValidator.setMessageVisibility(inputDomElement, pendingMessageSelector);
+      UsernameValidator.fetchUsernameAvailability(username)
+        .then(usernameTaken => {
+          UsernameValidator.setInputState(inputDomElement, !usernameTaken);
+          UsernameValidator.setMessageVisibility(inputDomElement, pendingMessageSelector, false);
+          UsernameValidator.setMessageVisibility(
+            inputDomElement,
+            usernameTaken ? unavailableMessageSelector : successMessageSelector,
+          );
+        })
         .catch(() => flash(__('An error occurred while validating username')));
     }
   }
 
-  setAvailabilityState(usernameTaken) {
-    if (usernameTaken) {
-      this.state.available = false;
-    } else {
-      this.state.available = true;
+  static fetchUsernameAvailability(username) {
+    return axios.get(`${rootUrl}/users/${username}/exists`).then(({ data }) => data.exists);
+  }
+
+  static setMessageVisibility(inputDomElement, messageSelector, isVisible = true) {
+    const messageElement = inputDomElement.parentElement.querySelector(messageSelector);
+    messageElement.classList.toggle('hide', !isVisible);
+  }
+
+  static setInputState(inputDomElement, success = true) {
+    inputDomElement.classList.toggle(successInputClass, success);
+    inputDomElement.classList.toggle(invalidInputClass, !success);
+  }
+
+  static resetInputState(inputDomElement) {
+    UsernameValidator.setMessageVisibility(inputDomElement, successMessageSelector, false);
+    UsernameValidator.setMessageVisibility(inputDomElement, unavailableMessageSelector, false);
+
+    if (inputDomElement.checkValidity()) {
+      inputDomElement.classList.remove(successInputClass, invalidInputClass);
     }
-    this.state.pending = false;
-    this.renderState();
-  }
-
-  clearFieldValidationState() {
-    this.inputElement.siblings('p').hide();
-
-    this.inputElement.removeClass(invalidInputClass).removeClass(successInputClass);
-  }
-
-  setUnavailableState() {
-    const $usernameUnavailableMessage = this.inputElement.siblings(unavailableMessageSelector);
-    this.inputElement.addClass(invalidInputClass).removeClass(successInputClass);
-    $usernameUnavailableMessage.show();
-  }
-
-  setSuccessState() {
-    const $usernameSuccessMessage = this.inputElement.siblings(successMessageSelector);
-    this.inputElement.addClass(successInputClass).removeClass(invalidInputClass);
-    $usernameSuccessMessage.show();
-  }
-
-  setPendingState() {
-    const $usernamePendingMessage = $(pendingMessageSelector);
-    if (this.state.pending) {
-      $usernamePendingMessage.show();
-    } else {
-      $usernamePendingMessage.hide();
-    }
-  }
-
-  setInvalidState() {
-    const $inputErrorMessage = $(invalidMessageSelector);
-    this.inputElement.addClass(invalidInputClass).removeClass(successInputClass);
-    $inputErrorMessage.show();
   }
 }

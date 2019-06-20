@@ -7,8 +7,8 @@ import OAuthRememberMe from './oauth_remember_me';
 import preserveUrlFragment from './preserve_url_fragment';
 
 document.addEventListener('DOMContentLoaded', () => {
-  new LengthValidator(); // eslint-disable-line no-new
   new UsernameValidator(); // eslint-disable-line no-new
+  new LengthValidator(); // eslint-disable-line no-new
   new SigninTabsMemoizer(); // eslint-disable-line no-new
   new NoEmojiValidator(); // eslint-disable-line no-new
 

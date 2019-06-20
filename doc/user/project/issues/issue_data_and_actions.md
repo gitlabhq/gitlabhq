@@ -149,6 +149,19 @@ The plain text title and description of the issue fill the top center of the iss
 The description fully supports [GitLab Flavored Markdown](../../markdown.md#gitlab-flavored-markdown-gfm),
 allowing many formatting options.
 
+##### Zoom call links
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/62966) in GitLab 12.0.
+
+Including a link to a [Zoom](https://zoom.us) call in the description of an issue
+results in a **Join Zoom meeting** button at the top of the issue, just under the header.
+
+For example:
+
+![Link Zoom Call in Issue](img/link_zoom_call_in_issue.png)
+
+To remove the button, edit the description and remove the Zoom call link.
+
 #### 17. Mentions
 
 You can mention a user or a group present in your GitLab instance with `@username` or

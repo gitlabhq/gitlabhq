@@ -278,7 +278,7 @@ module MarkupHelper
   def prepare_for_rendering(html, context = {})
     return '' unless html.present?
 
-    context.merge!(
+    context.reverse_merge!(
       current_user: (current_user if defined?(current_user)),
 
       # RelativeLinkFilter

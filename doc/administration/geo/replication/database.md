@@ -489,10 +489,6 @@ work:
     gitlab-ctl reconfigure
     ```
 
-## MySQL replication
-
-MySQL replication is not supported for Geo.
-
 ## Troubleshooting
 
 Read the [troubleshooting document](troubleshooting.md).

@@ -293,10 +293,9 @@ sudo adduser --disabled-login --gecos 'GitLab' git
 
 ## 6. Database
 
-We recommend using a PostgreSQL database. For MySQL, see the [MySQL setup guide](database_mysql.md).
-
 NOTE: **Note:**
-Because we need to make use of extensions and concurrent index removal, you need at least PostgreSQL 9.2.
+Starting from GitLab 12.1, only PostgreSQL is supported. Because we need to make
+use of extensions and concurrent index removal, you need at least PostgreSQL 9.2.
 
 1. Install the database packages:
 
@@ -502,13 +501,8 @@ If you want to use HTTPS, see [Using HTTPS](#using-https) for the additional ste
 ### Configure GitLab DB Settings
 
 ```sh
-# PostgreSQL only:
 sudo -u git cp config/database.yml.postgresql config/database.yml
 
-# MySQL only:
-sudo -u git cp config/database.yml.mysql config/database.yml
-
-# PostgreSQL only:
 # Remove host, username, and password lines from config/database.yml.
 # Once modified, the `production` settings will be as follows:
 #
@@ -520,7 +514,7 @@ sudo -u git cp config/database.yml.mysql config/database.yml
 #
 sudo -u git -H editor config/database.yml
 
-# MySQL and remote PostgreSQL only:
+# Remote PostgreSQL only:
 # Update username/password in config/database.yml.
 # You only need to adapt the production settings (first part).
 # If you followed the database guide then please do as follows:
@@ -528,7 +522,6 @@ sudo -u git -H editor config/database.yml
 # You can keep the double quotes around the password
 sudo -u git -H editor config/database.yml
 
-# PostgreSQL and MySQL:
 # Make config/database.yml readable to git only
 sudo -u git -H chmod o-rwx config/database.yml
 ```
@@ -544,11 +537,7 @@ Make sure you have `bundle` (run `bundle -v`):
 - `< 2.x`.
 
 ```sh
-# For PostgreSQL (note, the option says "without ... mysql")
 sudo -u git -H bundle install --deployment --without development test mysql aws kerberos
-
-# Or if you use MySQL (note, the option says "without ... postgres")
-sudo -u git -H bundle install --deployment --without development test postgres aws kerberos
 ```
 
 NOTE: **Note:**
