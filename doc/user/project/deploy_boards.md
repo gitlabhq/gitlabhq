@@ -59,6 +59,8 @@ specific environment, there are lot of uses cases. To name a few:
 
 To display the Deploy Boards for a specific [environment] you should:
 
+1. Have [defined an environment](../../ci/environments.md#defining-environments) with a deploy stage.
+
 1. Have a Kubernetes cluster up and running.
 
     NOTE: **Running on OpenShift:**
