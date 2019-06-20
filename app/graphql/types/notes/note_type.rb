@@ -35,6 +35,8 @@ module Types
             method: :note,
             description: "The content note itself"
 
+      markdown_field :body_html, null: true, method: :note
+
       field :created_at, Types::TimeType, null: false
       field :updated_at, Types::TimeType, null: false
       field :discussion, Types::Notes::DiscussionType, null: true, description: "The discussion this note is a part of"

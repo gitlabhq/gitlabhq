@@ -14,7 +14,9 @@ module Types
 
     field :iid, GraphQL::ID_TYPE, null: false
     field :title, GraphQL::STRING_TYPE, null: false
+    markdown_field :title_html, null: true
     field :description, GraphQL::STRING_TYPE, null: true
+    markdown_field :description_html, null: true
     field :state, IssueStateEnum, null: false
 
     field :reference, GraphQL::STRING_TYPE, null: false, method: :to_reference do

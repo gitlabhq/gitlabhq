@@ -10,7 +10,10 @@ describe GitlabSchema.types['Issue'] do
   it { expect(described_class.interfaces).to include(Types::Notes::NoteableType.to_graphql) }
 
   it 'has specific fields' do
-    %i[relative_position web_path web_url reference].each do |field_name|
+    fields = %i[title_html description_html relative_position web_path web_url
+                reference]
+
+    fields.each do |field_name|
       expect(described_class).to have_graphql_field(field_name)
     end
   end

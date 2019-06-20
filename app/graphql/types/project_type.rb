@@ -17,6 +17,7 @@ module Types
     field :name, GraphQL::STRING_TYPE, null: false
 
     field :description, GraphQL::STRING_TYPE, null: true
+    markdown_field :description_html, null: true
 
     field :tag_list, GraphQL::STRING_TYPE, null: true
 
