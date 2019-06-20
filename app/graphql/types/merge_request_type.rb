@@ -15,7 +15,9 @@ module Types
     field :id, GraphQL::ID_TYPE, null: false
     field :iid, GraphQL::STRING_TYPE, null: false
     field :title, GraphQL::STRING_TYPE, null: false
+    markdown_field :title_html, null: true
     field :description, GraphQL::STRING_TYPE, null: true
+    markdown_field :description_html, null: true
     field :state, MergeRequestStateEnum, null: false
     field :created_at, Types::TimeType, null: false
     field :updated_at, Types::TimeType, null: false
