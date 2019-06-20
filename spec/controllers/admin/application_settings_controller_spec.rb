@@ -116,6 +116,34 @@ describe Admin::ApplicationSettingsController do
         end
       end
     end
+
+    describe 'verify panel actions' do
+      shared_examples 'renders correct panels' do
+        it 'renders correct action on error' do
+          allow_any_instance_of(ApplicationSettings::UpdateService).to receive(:execute).and_return(false)
+
+          patch action, params: { application_setting: { unused_param: true } }
+
+          expect(subject).to render_template(action)
+        end
+
+        it 'redirects to same panel on success' do
+          allow_any_instance_of(ApplicationSettings::UpdateService).to receive(:execute).and_return(true)
+          referer_path = public_send("#{action}_admin_application_settings_path")
+          request.env["HTTP_REFERER"] = referer_path
+
+          patch action, params: { application_setting: { unused_param: true } }
+
+          expect(subject).to redirect_to(referer_path)
+        end
+      end
+
+      (Admin::ApplicationSettingsController::VALID_SETTING_PANELS - %w(show templates geo)).each do |valid_action|
+        it_behaves_like 'renders correct panels' do
+          let(:action) { valid_action }
+        end
+      end
+    end
   end
 
   describe 'PUT #reset_registration_token' do

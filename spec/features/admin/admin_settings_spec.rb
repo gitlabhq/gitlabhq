@@ -379,6 +379,27 @@ describe 'Admin updates settings' do
       expect(page).to have_content "Application settings saved successfully"
     end
 
+    it 'Change Real-time features settings' do
+      page.within('.as-realtime') do
+        fill_in 'Polling interval multiplier', with: 5.0
+        click_button 'Save changes'
+      end
+
+      expect(Gitlab::CurrentSettings.polling_interval_multiplier).to eq 5.0
+      expect(page).to have_content "Application settings saved successfully"
+    end
+
+    it 'shows an error when validation fails' do
+      page.within('.as-realtime') do
+        fill_in 'Polling interval multiplier', with: -1.0
+        click_button 'Save changes'
+      end
+
+      expect(Gitlab::CurrentSettings.polling_interval_multiplier).not_to eq(-1.0)
+      expect(page)
+        .to have_content "The form contains the following error: Polling interval multiplier must be greater than or equal to 0"
+    end
+
     context 'When pages_auto_ssl is enabled' do
       before do
         stub_feature_flags(pages_auto_ssl: true)

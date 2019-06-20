@@ -6,56 +6,19 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   before_action :set_application_setting
   before_action :whitelist_query_limiting, only: [:usage_data]
 
+  VALID_SETTING_PANELS = %w(show integrations repository templates
+                            ci_cd reporting metrics_and_profiling
+                            network geo preferences).freeze
+
   def show
   end
 
-  def integrations
-  end
-
-  def repository
-  end
-
-  def templates
-  end
-
-  def ci_cd
-  end
-
-  def reporting
-  end
-
-  def metrics_and_profiling
-  end
-
-  def network
-  end
-
-  def geo
-  end
-
-  def preferences
+  (VALID_SETTING_PANELS - %w(show)).each do |action|
+    define_method(action) { perform_update if submitted? }
   end
 
   def update
-    successful = ApplicationSettings::UpdateService
-      .new(@application_setting, current_user, application_setting_params)
-      .execute
-
-    if recheck_user_consent?
-      session[:ask_for_usage_stats_consent] = current_user.requires_usage_stats_consent?
-    end
-
-    redirect_path = referer_path(request) || admin_application_settings_path
-
-    respond_to do |format|
-      if successful
-        format.json { head :ok }
-        format.html { redirect_to redirect_path, notice: _('Application settings saved successfully') }
-      else
-        format.json { head :bad_request }
-        format.html { render :show }
-      end
-    end
+    perform_update
   end
 
   def usage_data
@@ -147,6 +110,38 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       repository_storages: [],
       restricted_visibility_levels: []
     ]
+  end
+
+  def submitted?
+    request.patch?
+  end
+
+  def perform_update
+    successful = ApplicationSettings::UpdateService
+      .new(@application_setting, current_user, application_setting_params)
+      .execute
+
+    if recheck_user_consent?
+      session[:ask_for_usage_stats_consent] = current_user.requires_usage_stats_consent?
+    end
+
+    redirect_path = referer_path(request) || admin_application_settings_path
+
+    respond_to do |format|
+      if successful
+        format.json { head :ok }
+        format.html { redirect_to redirect_path, notice: _('Application settings saved successfully') }
+      else
+        format.json { head :bad_request }
+        format.html { render_update_error }
+      end
+    end
+  end
+
+  def render_update_error
+    action = VALID_SETTING_PANELS.include?(action_name) ? action_name : :show
+
+    render action
   end
 
   def lets_encrypt_visible_attributes
