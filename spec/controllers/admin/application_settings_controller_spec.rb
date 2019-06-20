@@ -120,7 +120,9 @@ describe Admin::ApplicationSettingsController do
     describe 'verify panel actions' do
       shared_examples 'renders correct panels' do
         it 'renders correct action on error' do
-          allow_any_instance_of(ApplicationSettings::UpdateService).to receive(:execute).and_return(false)
+          expect_next_instance_of(ApplicationSettings::UpdateService) do |service|
+            allow(service).to receive(:execute).and_return(false)
+          end
 
           patch action, params: { application_setting: { unused_param: true } }
 
@@ -128,7 +130,10 @@ describe Admin::ApplicationSettingsController do
         end
 
         it 'redirects to same panel on success' do
-          allow_any_instance_of(ApplicationSettings::UpdateService).to receive(:execute).and_return(true)
+          expect_next_instance_of(ApplicationSettings::UpdateService) do |service|
+            allow(service).to receive(:execute).and_return(true)
+          end
+
           referer_path = public_send("#{action}_admin_application_settings_path")
           request.env["HTTP_REFERER"] = referer_path
 
