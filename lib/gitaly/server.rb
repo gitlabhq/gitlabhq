@@ -2,8 +2,18 @@
 
 module Gitaly
   class Server
-    def self.all
-      Gitlab.config.repositories.storages.keys.map { |s| Gitaly::Server.new(s) }
+    class << self
+      def all
+        Gitlab.config.repositories.storages.keys.map { |s| Gitaly::Server.new(s) }
+      end
+
+      def count
+        all.size
+      end
+
+      def filesystems
+        all.map(&:filesystem_type).compact.uniq
+      end
     end
 
     attr_reader :storage
@@ -34,6 +44,10 @@ module Gitaly
 
     def writeable?
       storage_status&.writeable
+    end
+
+    def filesystem_type
+      storage_status&.fs_type
     end
 
     def address

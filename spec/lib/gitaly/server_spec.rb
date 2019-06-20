@@ -47,6 +47,12 @@ describe Gitaly::Server do
     end
   end
 
+  describe "#filesystem_type" do
+    subject { server.filesystem_type }
+
+    it { is_expected.to be_present }
+  end
+
   describe 'request memoization' do
     context 'when requesting multiple properties', :request_store do
       it 'uses memoization for the info request' do
