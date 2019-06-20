@@ -819,8 +819,26 @@ msgstr ""
 msgid "AdminSettings|Environment variables are protected by default"
 msgstr ""
 
+msgid "AdminSettings|No required pipeline"
+msgstr ""
+
+msgid "AdminSettings|Required pipeline configuration"
+msgstr ""
+
+msgid "AdminSettings|Select a pipeline configuration file"
+msgstr ""
+
+msgid "AdminSettings|Select a template"
+msgstr ""
+
+msgid "AdminSettings|Set an instance-wide auto included %{link_start}pipeline configuration%{link_end}. This pipeline configuration will be run after the project's own configuration."
+msgstr ""
+
 msgid "AdminSettings|Specify a domain to use by default for every project's Auto Review Apps and Auto Deploy stages."
 msgstr "對每個專案的「自動檢閱應用程式程式」和「自動佈署階段」指定預設網域。"
+
+msgid "AdminSettings|The required pipeline configuration can be selected from the %{code_start}gitlab-ci%{code_end} directory inside of the configured %{link_start}instance template repository%{link_end} or from GitLab provided configurations."
+msgstr ""
 
 msgid "AdminSettings|When creating a new environment variable it will be protected by default."
 msgstr ""
@@ -3435,9 +3453,6 @@ msgstr "容器登錄表"
 msgid "Container registry images"
 msgstr ""
 
-msgid "ContainerRegistry|Created"
-msgstr "已建立"
-
 msgid "ContainerRegistry|First log in to GitLab&rsquo;s Container Registry using your GitLab username and password. If you have %{link_2fa} you need to use a %{link_token}:"
 msgstr "請先使用您的 GitLab 帳號登入到 GitLab 的容器登錄表。若您有設定 %{link_2fa} ，則必須使用 %{link_token}:"
 
@@ -3446,6 +3461,9 @@ msgstr "GitLab 支援多達 3 級的映像名稱。以下的映像範例對您�
 
 msgid "ContainerRegistry|How to use the Container Registry"
 msgstr "如何使用容器登錄表"
+
+msgid "ContainerRegistry|Last Updated"
+msgstr ""
 
 msgid "ContainerRegistry|Learn more about"
 msgstr "了解更多"
@@ -4696,6 +4714,9 @@ msgstr "於 (UTC) 結束"
 msgid "Enforce DNS rebinding attack protection"
 msgstr ""
 
+msgid "Enter IP address range"
+msgstr ""
+
 msgid "Enter at least three characters to search"
 msgstr ""
 
@@ -5644,12 +5665,6 @@ msgstr "已完成"
 
 msgid "First day of the week"
 msgstr ""
-
-msgid "FirstPushedBy|First"
-msgstr "第一次"
-
-msgid "FirstPushedBy|pushed by"
-msgstr "推送者："
 
 msgid "Fixed date"
 msgstr "修復日期"
@@ -6815,6 +6830,12 @@ msgstr "檢閱"
 
 msgid "IP Address"
 msgstr "IP 位址"
+
+msgid "IP address restriction is not editable in subgroups. Value inherited from top-level parent group."
+msgstr ""
+
+msgid "IP subnet restriction only allowed for top-level groups"
+msgstr ""
 
 msgid "Identifier"
 msgstr "識別碼"
@@ -8800,6 +8821,9 @@ msgstr "選取的時間範圍中沒有推送。"
 msgid "No repository"
 msgstr "找不到版本庫"
 
+msgid "No required pipeline"
+msgstr ""
+
 msgid "No runners found"
 msgstr "找不到執行器"
 
@@ -8809,8 +8833,14 @@ msgstr "找不到排程"
 msgid "No start date"
 msgstr ""
 
+msgid "No value set by top-level parent group."
+msgstr ""
+
 msgid "No, directly import the existing email addresses and usernames."
 msgstr "不，直接匯入現有的電子郵件位址和使用者名稱。"
+
+msgid "No, not interested right now"
+msgstr ""
 
 msgid "Node was successfully created."
 msgstr ""
@@ -9322,9 +9352,6 @@ msgstr ""
 
 msgid "Pipeline"
 msgstr "管線"
-
-msgid "Pipeline ID (IID)"
-msgstr ""
 
 msgid "Pipeline Schedule"
 msgstr "排程管線"
@@ -10860,9 +10887,6 @@ msgstr ""
 msgid "Registry"
 msgstr "註冊表"
 
-msgid "Related Commits"
-msgstr "相關提交"
-
 msgid "Related Deployed Jobs"
 msgstr "相關佈署作業"
 
@@ -11223,6 +11247,9 @@ msgid "Response metrics (NGINX)"
 msgstr "回應指標 (NGINX)"
 
 msgid "Restart Terminal"
+msgstr ""
+
+msgid "Restrict access by IP address"
 msgstr ""
 
 msgid "Resume"
@@ -13073,6 +13100,9 @@ msgstr ""
 msgid "The import will time out after %{timeout}. For repositories that take longer, use a clone/push combination."
 msgstr "匯入將在 %{timeout} 之後逾時。對於需要更長時間的存儲庫，請使用 clone / push 組合。"
 
+msgid "The instance-level Kubernetes service integration is deprecated. Your data has been migrated to an <a href=\"%{url}\"/>instance-level cluster</a>."
+msgstr ""
+
 msgid "The invitation could not be accepted."
 msgstr ""
 
@@ -13468,6 +13498,9 @@ msgstr "此群組"
 
 msgid "This group does not provide any group Runners yet."
 msgstr "這群組尚未提供任何群組執行器。"
+
+msgid "This group, including all subgroups, projects and git repositories, will only be reachable from the specified IP address range. Example: <code>192.168.0.0/24</code>. %{read_more_link}."
+msgstr ""
 
 msgid "This is a \"Ghost User\", created to hold all issues authored by users that have since been deleted. This user cannot be removed."
 msgstr ""
@@ -14542,7 +14575,7 @@ msgstr ""
 msgid "UserOnboardingTour|%{emphasisStart}Well done!%{emphasisEnd}%{lineBreak}%{lineBreak}That's it for our guided tour, congratulations for making it all the way to the end!%{lineBreak}%{lineBreak}We hope this gave you a good overview of GitLab and how it can help you. We'll now show you how to create your own project and invite your colleagues."
 msgstr ""
 
-msgid "UserOnboardingTour|Adding other memembers to a project is done through Project Settings. Click on %{emphasisStart}Settings%{emphasisEnd}."
+msgid "UserOnboardingTour|Adding other members to a project is done through Project Settings. Click on %{emphasisStart}Settings%{emphasisEnd}."
 msgstr ""
 
 msgid "UserOnboardingTour|Alright, that's it for Commits. Let's take a look at the %{emphasisStart}Branches%{emphasisEnd}."
@@ -15596,9 +15629,6 @@ msgstr ""
 msgid "Your Groups"
 msgstr "你的群組"
 
-msgid "Your Kubernetes cluster information on this page is still editable, but you are advised to disable and reconfigure"
-msgstr "您的Kubernetes叢集資訊仍然可以編輯，但建議您禁用並重新設定。"
-
 msgid "Your Primary Email will be used for avatar detection."
 msgstr ""
 
@@ -16176,6 +16206,9 @@ msgstr[0] "實例完成"
 msgid "invalid milestone state `%{state}`"
 msgstr ""
 
+msgid "is an invalid IP address range"
+msgstr ""
+
 msgid "is enabled."
 msgstr ""
 
@@ -16266,6 +16299,9 @@ msgstr "%{metricsLinkStart} 記憶體 %{metricsLinkEnd} 使用 %{emphasisStart} 
 
 msgid "mrWidget|%{metricsLinkStart} Memory %{metricsLinkEnd} usage is %{emphasisStart} unchanged %{emphasisEnd} at %{memoryFrom}MB"
 msgstr "%{metricsLinkStart} 記憶體 %{metricsLinkEnd} 使用 %{emphasisStart} 沒有發生變化 %{emphasisEnd} 於 %{memoryFrom} MB"
+
+msgid "mrWidget|Added to the merge train at position %{mergeTrainPosition}"
+msgstr ""
 
 msgid "mrWidget|Added to the merge train by"
 msgstr ""

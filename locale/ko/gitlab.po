@@ -16,13 +16,13 @@ msgstr ""
 "PO-Revision-Date: 2019-06-14 19:52\n"
 
 msgid " Please sign in."
-msgstr ""
+msgstr " 로그인 해주세요."
 
 msgid " Try to %{action} this file again."
-msgstr ""
+msgstr " 이 파일에 대해 %{action} 동작을 다시 시도하세요."
 
 msgid " You need to do this before %{grace_period_deadline}."
-msgstr ""
+msgstr " %{grace_period_deadline} 이전에 이 작업을 수행 하셔야 합니다."
 
 msgid " and"
 msgstr " 그리고"
@@ -61,7 +61,7 @@ msgstr "%d개의 커밋"
 
 msgid "%d contribution"
 msgid_plural "%d contributions"
-msgstr[0] ""
+msgstr[0] "%d 기여"
 
 msgid "%d exporter"
 msgid_plural "%d exporters"
@@ -101,7 +101,7 @@ msgstr[0] "%d 측정치"
 
 msgid "%d more comment"
 msgid_plural "%d more comments"
-msgstr[0] ""
+msgstr[0] "%d 댓글 더 보기"
 
 msgid "%d staged change"
 msgid_plural "%d staged changes"
@@ -129,10 +129,10 @@ msgstr ""
 
 msgid "%{count} approval required from %{name}"
 msgid_plural "%{count} approvals required from %{name}"
-msgstr[0] ""
+msgstr[0] "%{name}에게서 %{count} 건에 대한 승인을 요청받음"
 
 msgid "%{count} approvals from %{name}"
-msgstr ""
+msgstr "%{name}께서 %{count} 건의 승인"
 
 msgid "%{count} more"
 msgstr "%{count} 개 더보기"
@@ -141,7 +141,7 @@ msgid "%{count} more assignees"
 msgstr "%{count}명의 담당자"
 
 msgid "%{count} of %{required} approvals from %{name}"
-msgstr ""
+msgstr "%{name}님이 %{required} 중 %{count} 승인"
 
 msgid "%{count} of %{total}"
 msgstr "%{total} 중 %{count}"
@@ -819,8 +819,26 @@ msgstr ""
 msgid "AdminSettings|Environment variables are protected by default"
 msgstr "환경 변수는 기본적으로 보호됩니다."
 
+msgid "AdminSettings|No required pipeline"
+msgstr ""
+
+msgid "AdminSettings|Required pipeline configuration"
+msgstr ""
+
+msgid "AdminSettings|Select a pipeline configuration file"
+msgstr ""
+
+msgid "AdminSettings|Select a template"
+msgstr ""
+
+msgid "AdminSettings|Set an instance-wide auto included %{link_start}pipeline configuration%{link_end}. This pipeline configuration will be run after the project's own configuration."
+msgstr ""
+
 msgid "AdminSettings|Specify a domain to use by default for every project's Auto Review Apps and Auto Deploy stages."
 msgstr "모든 프로젝트의 자동 앱 리뷰 및 자동 배포 단계에서 기본적으로 사용할 도메인을 지정하십시오."
+
+msgid "AdminSettings|The required pipeline configuration can be selected from the %{code_start}gitlab-ci%{code_end} directory inside of the configured %{link_start}instance template repository%{link_end} or from GitLab provided configurations."
+msgstr ""
 
 msgid "AdminSettings|When creating a new environment variable it will be protected by default."
 msgstr "새 환경 변수를 작성할 때 기본적으로 보호됩니다."
@@ -3435,9 +3453,6 @@ msgstr "컨테이너 레지스트리"
 msgid "Container registry images"
 msgstr ""
 
-msgid "ContainerRegistry|Created"
-msgstr "만든"
-
 msgid "ContainerRegistry|First log in to GitLab&rsquo;s Container Registry using your GitLab username and password. If you have %{link_2fa} you need to use a %{link_token}:"
 msgstr "GitLab 사용자 이름 및 암호를 사용 하여 GitLab의 컨테이너 레지스트리에 처음 로그인 합니다. %{link_2fa} 를 사용한다면 %{link_token} 를 사용해야 합니다."
 
@@ -3446,6 +3461,9 @@ msgstr "GitLab은 이미지 이름에 최대 3 레벨을 지원합니다. 다음
 
 msgid "ContainerRegistry|How to use the Container Registry"
 msgstr "컨테이너 레지스트리를 사용 하는 방법"
+
+msgid "ContainerRegistry|Last Updated"
+msgstr ""
 
 msgid "ContainerRegistry|Learn more about"
 msgstr "더 알아보기"
@@ -4696,6 +4714,9 @@ msgstr "(UTC)에 종료됩니다"
 msgid "Enforce DNS rebinding attack protection"
 msgstr ""
 
+msgid "Enter IP address range"
+msgstr ""
+
 msgid "Enter at least three characters to search"
 msgstr ""
 
@@ -5644,12 +5665,6 @@ msgstr "완료"
 
 msgid "First day of the week"
 msgstr ""
-
-msgid "FirstPushedBy|First"
-msgstr "처음"
-
-msgid "FirstPushedBy|pushed by"
-msgstr "푸시한 사용자"
 
 msgid "Fixed date"
 msgstr "수정 날짜"
@@ -6815,6 +6830,12 @@ msgstr "리뷰"
 
 msgid "IP Address"
 msgstr "IP 주소"
+
+msgid "IP address restriction is not editable in subgroups. Value inherited from top-level parent group."
+msgstr ""
+
+msgid "IP subnet restriction only allowed for top-level groups"
+msgstr ""
 
 msgid "Identifier"
 msgstr "식별자"
@@ -8800,6 +8821,9 @@ msgstr "선택한 기간 동안 푸시하지 않습니다."
 msgid "No repository"
 msgstr "저장소 없음"
 
+msgid "No required pipeline"
+msgstr ""
+
 msgid "No runners found"
 msgstr "Runners 없음"
 
@@ -8809,7 +8833,13 @@ msgstr "일정 없음"
 msgid "No start date"
 msgstr ""
 
+msgid "No value set by top-level parent group."
+msgstr ""
+
 msgid "No, directly import the existing email addresses and usernames."
+msgstr ""
+
+msgid "No, not interested right now"
 msgstr ""
 
 msgid "Node was successfully created."
@@ -9322,9 +9352,6 @@ msgstr ""
 
 msgid "Pipeline"
 msgstr "파이프라인"
-
-msgid "Pipeline ID (IID)"
-msgstr ""
 
 msgid "Pipeline Schedule"
 msgstr "파이프라인 스케쥴"
@@ -10860,9 +10887,6 @@ msgstr ""
 msgid "Registry"
 msgstr "레지스트리"
 
-msgid "Related Commits"
-msgstr "관련 커밋"
-
 msgid "Related Deployed Jobs"
 msgstr "관련 배포 된 작업"
 
@@ -11223,6 +11247,9 @@ msgid "Response metrics (NGINX)"
 msgstr ""
 
 msgid "Restart Terminal"
+msgstr ""
+
+msgid "Restrict access by IP address"
 msgstr ""
 
 msgid "Resume"
@@ -13073,6 +13100,9 @@ msgstr ""
 msgid "The import will time out after %{timeout}. For repositories that take longer, use a clone/push combination."
 msgstr "%{timeout} 이후 가져오기 시간이 초과되었습니다. 저장소가 느린 경우 복제/푸시 조합을 사용합시오."
 
+msgid "The instance-level Kubernetes service integration is deprecated. Your data has been migrated to an <a href=\"%{url}\"/>instance-level cluster</a>."
+msgstr ""
+
 msgid "The invitation could not be accepted."
 msgstr ""
 
@@ -13468,6 +13498,9 @@ msgstr "이 그룹"
 
 msgid "This group does not provide any group Runners yet."
 msgstr "이 그룹은 아직 그룹 Runners를 제공하지 않습니다."
+
+msgid "This group, including all subgroups, projects and git repositories, will only be reachable from the specified IP address range. Example: <code>192.168.0.0/24</code>. %{read_more_link}."
+msgstr ""
 
 msgid "This is a \"Ghost User\", created to hold all issues authored by users that have since been deleted. This user cannot be removed."
 msgstr ""
@@ -14542,7 +14575,7 @@ msgstr ""
 msgid "UserOnboardingTour|%{emphasisStart}Well done!%{emphasisEnd}%{lineBreak}%{lineBreak}That's it for our guided tour, congratulations for making it all the way to the end!%{lineBreak}%{lineBreak}We hope this gave you a good overview of GitLab and how it can help you. We'll now show you how to create your own project and invite your colleagues."
 msgstr ""
 
-msgid "UserOnboardingTour|Adding other memembers to a project is done through Project Settings. Click on %{emphasisStart}Settings%{emphasisEnd}."
+msgid "UserOnboardingTour|Adding other members to a project is done through Project Settings. Click on %{emphasisStart}Settings%{emphasisEnd}."
 msgstr ""
 
 msgid "UserOnboardingTour|Alright, that's it for Commits. Let's take a look at the %{emphasisStart}Branches%{emphasisEnd}."
@@ -15596,9 +15629,6 @@ msgstr ""
 msgid "Your Groups"
 msgstr "나의 그룹들"
 
-msgid "Your Kubernetes cluster information on this page is still editable, but you are advised to disable and reconfigure"
-msgstr "이 페이지에서 Kubernetes 클러스터 정보를 계속해서 편집할 수 있지만, 비활성화 하거나 재설정하는 것이 좋습니다."
-
 msgid "Your Primary Email will be used for avatar detection."
 msgstr ""
 
@@ -16176,6 +16206,9 @@ msgstr[0] ""
 msgid "invalid milestone state `%{state}`"
 msgstr ""
 
+msgid "is an invalid IP address range"
+msgstr ""
+
 msgid "is enabled."
 msgstr ""
 
@@ -16266,6 +16299,9 @@ msgstr "%{metricsLinkStart} 메모리 사용률 %{metricsLinkEnd} 이 %{memoryFr
 
 msgid "mrWidget|%{metricsLinkStart} Memory %{metricsLinkEnd} usage is %{emphasisStart} unchanged %{emphasisEnd} at %{memoryFrom}MB"
 msgstr "%{metricsLinkStart} 메모리 사용률 %{metricsLinkEnd} 이 %{memoryFrom}MB 에서 %{emphasisStart} 변하지 않았습니다. %{emphasisEnd}"
+
+msgid "mrWidget|Added to the merge train at position %{mergeTrainPosition}"
+msgstr ""
 
 msgid "mrWidget|Added to the merge train by"
 msgstr ""

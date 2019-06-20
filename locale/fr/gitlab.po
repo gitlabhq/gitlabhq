@@ -858,8 +858,26 @@ msgstr ""
 msgid "AdminSettings|Environment variables are protected by default"
 msgstr ""
 
+msgid "AdminSettings|No required pipeline"
+msgstr ""
+
+msgid "AdminSettings|Required pipeline configuration"
+msgstr ""
+
+msgid "AdminSettings|Select a pipeline configuration file"
+msgstr ""
+
+msgid "AdminSettings|Select a template"
+msgstr ""
+
+msgid "AdminSettings|Set an instance-wide auto included %{link_start}pipeline configuration%{link_end}. This pipeline configuration will be run after the project's own configuration."
+msgstr ""
+
 msgid "AdminSettings|Specify a domain to use by default for every project's Auto Review Apps and Auto Deploy stages."
 msgstr "Spécifiez un domaine à utiliser par défaut pour les étapes Auto Review Apps et Auto Deploy de chaque projet."
+
+msgid "AdminSettings|The required pipeline configuration can be selected from the %{code_start}gitlab-ci%{code_end} directory inside of the configured %{link_start}instance template repository%{link_end} or from GitLab provided configurations."
+msgstr ""
 
 msgid "AdminSettings|When creating a new environment variable it will be protected by default."
 msgstr ""
@@ -3483,9 +3501,6 @@ msgstr "Registre de conteneur"
 msgid "Container registry images"
 msgstr ""
 
-msgid "ContainerRegistry|Created"
-msgstr "Créé"
-
 msgid "ContainerRegistry|First log in to GitLab&rsquo;s Container Registry using your GitLab username and password. If you have %{link_2fa} you need to use a %{link_token}:"
 msgstr "Inscrivez‐vous d’abord au registre de conteneur GitLab à l’aide de votre nom d’utilisateur GitLab et de votre mot de passe. Si vous avez %{link_2fa} vous devrez utiliser un %{link_token} :"
 
@@ -3494,6 +3509,9 @@ msgstr "GitLab prend en charge jusqu’à trois niveaux de noms d’image. Les e
 
 msgid "ContainerRegistry|How to use the Container Registry"
 msgstr "Comment utiliser le registre de conteneur"
+
+msgid "ContainerRegistry|Last Updated"
+msgstr ""
 
 msgid "ContainerRegistry|Learn more about"
 msgstr "En savoir plus sur"
@@ -4745,6 +4763,9 @@ msgstr "Se termine à (UTC)"
 msgid "Enforce DNS rebinding attack protection"
 msgstr ""
 
+msgid "Enter IP address range"
+msgstr ""
+
 msgid "Enter at least three characters to search"
 msgstr ""
 
@@ -5694,12 +5715,6 @@ msgstr "Terminé"
 
 msgid "First day of the week"
 msgstr ""
-
-msgid "FirstPushedBy|First"
-msgstr "En premier"
-
-msgid "FirstPushedBy|pushed by"
-msgstr "poussé par"
 
 msgid "Fixed date"
 msgstr "Date fixée"
@@ -6866,6 +6881,12 @@ msgstr "Examiner"
 
 msgid "IP Address"
 msgstr "Adresse IP"
+
+msgid "IP address restriction is not editable in subgroups. Value inherited from top-level parent group."
+msgstr ""
+
+msgid "IP subnet restriction only allowed for top-level groups"
+msgstr ""
 
 msgid "Identifier"
 msgstr "Identifiant"
@@ -8855,6 +8876,9 @@ msgstr "Rien n’a été poussé vers GIt durant la période sélectionnée."
 msgid "No repository"
 msgstr "Aucun dépôt"
 
+msgid "No required pipeline"
+msgstr ""
+
 msgid "No runners found"
 msgstr "Aucun exécuteur trouvé"
 
@@ -8864,8 +8888,14 @@ msgstr "Aucune planification"
 msgid "No start date"
 msgstr ""
 
+msgid "No value set by top-level parent group."
+msgstr ""
+
 msgid "No, directly import the existing email addresses and usernames."
 msgstr "Non, importer directement les adresses de courriel et les noms d’utilisateur existants."
+
+msgid "No, not interested right now"
+msgstr ""
 
 msgid "Node was successfully created."
 msgstr ""
@@ -9378,9 +9408,6 @@ msgstr ""
 
 msgid "Pipeline"
 msgstr "Pipeline"
-
-msgid "Pipeline ID (IID)"
-msgstr ""
 
 msgid "Pipeline Schedule"
 msgstr "Planification de pipeline"
@@ -10917,9 +10944,6 @@ msgstr ""
 msgid "Registry"
 msgstr "Registre"
 
-msgid "Related Commits"
-msgstr "Commits liés"
-
 msgid "Related Deployed Jobs"
 msgstr "Tâches déployées liées"
 
@@ -11282,6 +11306,9 @@ msgid "Response metrics (NGINX)"
 msgstr "Métriques de réponse (nginx)"
 
 msgid "Restart Terminal"
+msgstr ""
+
+msgid "Restrict access by IP address"
 msgstr ""
 
 msgid "Resume"
@@ -13135,6 +13162,9 @@ msgstr ""
 msgid "The import will time out after %{timeout}. For repositories that take longer, use a clone/push combination."
 msgstr "L’importation expirera après %{timeout}. Pour les dépôts qui prennent plus de temps, utilisez une combinaison de clone et push."
 
+msgid "The instance-level Kubernetes service integration is deprecated. Your data has been migrated to an <a href=\"%{url}\"/>instance-level cluster</a>."
+msgstr ""
+
 msgid "The invitation could not be accepted."
 msgstr ""
 
@@ -13530,6 +13560,9 @@ msgstr "Ce groupe"
 
 msgid "This group does not provide any group Runners yet."
 msgstr "Ce groupe ne fournit pas encore d’exécuteurs de groupe."
+
+msgid "This group, including all subgroups, projects and git repositories, will only be reachable from the specified IP address range. Example: <code>192.168.0.0/24</code>. %{read_more_link}."
+msgstr ""
 
 msgid "This is a \"Ghost User\", created to hold all issues authored by users that have since been deleted. This user cannot be removed."
 msgstr ""
@@ -14606,7 +14639,7 @@ msgstr ""
 msgid "UserOnboardingTour|%{emphasisStart}Well done!%{emphasisEnd}%{lineBreak}%{lineBreak}That's it for our guided tour, congratulations for making it all the way to the end!%{lineBreak}%{lineBreak}We hope this gave you a good overview of GitLab and how it can help you. We'll now show you how to create your own project and invite your colleagues."
 msgstr ""
 
-msgid "UserOnboardingTour|Adding other memembers to a project is done through Project Settings. Click on %{emphasisStart}Settings%{emphasisEnd}."
+msgid "UserOnboardingTour|Adding other members to a project is done through Project Settings. Click on %{emphasisStart}Settings%{emphasisEnd}."
 msgstr ""
 
 msgid "UserOnboardingTour|Alright, that's it for Commits. Let's take a look at the %{emphasisStart}Branches%{emphasisEnd}."
@@ -15661,9 +15694,6 @@ msgstr ""
 msgid "Your Groups"
 msgstr "Vos groupes"
 
-msgid "Your Kubernetes cluster information on this page is still editable, but you are advised to disable and reconfigure"
-msgstr "Vos informations de cluster Kubernetes sur cette page sont toujours modifiables, mais il est conseillé de désactiver et reconfigurer"
-
 msgid "Your Primary Email will be used for avatar detection."
 msgstr ""
 
@@ -16254,6 +16284,9 @@ msgstr[1] "instances terminées"
 msgid "invalid milestone state `%{state}`"
 msgstr ""
 
+msgid "is an invalid IP address range"
+msgstr ""
+
 msgid "is enabled."
 msgstr ""
 
@@ -16345,6 +16378,9 @@ msgstr "%{metricsLinkStart}L’usage mémoire%{metricsLinkEnd} %{emphasisStart}a
 
 msgid "mrWidget|%{metricsLinkStart} Memory %{metricsLinkEnd} usage is %{emphasisStart} unchanged %{emphasisEnd} at %{memoryFrom}MB"
 msgstr "%{metricsLinkStart}L’usage mémoire%{metricsLinkEnd} %{emphasisStart}est resté stable%{emphasisEnd} à %{memoryFrom}MO"
+
+msgid "mrWidget|Added to the merge train at position %{mergeTrainPosition}"
+msgstr ""
 
 msgid "mrWidget|Added to the merge train by"
 msgstr ""

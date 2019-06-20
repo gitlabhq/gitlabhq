@@ -706,7 +706,7 @@ msgid "Add an SSH key"
 msgstr "Añadir una clave SSH"
 
 msgid "Add an issue"
-msgstr ""
+msgstr "Agregar una incidencia"
 
 msgid "Add approvers"
 msgstr "Añadir aprobadores"
@@ -858,8 +858,26 @@ msgstr "Habilitar ejecutores compartidos para los nuevos proyectos"
 msgid "AdminSettings|Environment variables are protected by default"
 msgstr "Las variables de entorno están protegidas por defecto"
 
+msgid "AdminSettings|No required pipeline"
+msgstr ""
+
+msgid "AdminSettings|Required pipeline configuration"
+msgstr ""
+
+msgid "AdminSettings|Select a pipeline configuration file"
+msgstr ""
+
+msgid "AdminSettings|Select a template"
+msgstr ""
+
+msgid "AdminSettings|Set an instance-wide auto included %{link_start}pipeline configuration%{link_end}. This pipeline configuration will be run after the project's own configuration."
+msgstr ""
+
 msgid "AdminSettings|Specify a domain to use by default for every project's Auto Review Apps and Auto Deploy stages."
 msgstr "Especifique un dominio para utilizar por defecto durante las etapas despliegue automático de cada proyecto y las de los mismos."
+
+msgid "AdminSettings|The required pipeline configuration can be selected from the %{code_start}gitlab-ci%{code_end} directory inside of the configured %{link_start}instance template repository%{link_end} or from GitLab provided configurations."
+msgstr ""
 
 msgid "AdminSettings|When creating a new environment variable it will be protected by default."
 msgstr "Cuando crea una nueva variable de entorno, se protegerá por defecto."
@@ -1714,10 +1732,10 @@ msgid "AutoDevOps|The Auto DevOps pipeline has been enabled and will be used if 
 msgstr "El pipeline de Auto DevOps ha sido habilitado y será utilizado si no se encuentra un archivo de configuración CI alternativo. %{more_information_link}"
 
 msgid "Automatic certificate management using %{lets_encrypt_link_start}Let's Encrypt%{lets_encrypt_link_end}"
-msgstr ""
+msgstr "Gestión automática de los certificados utilizando %{lets_encrypt_link_start}Let's Encrypt%{lets_encrypt_link_end}"
 
 msgid "Automatic certificate management using Let's Encrypt"
-msgstr ""
+msgstr "Gestión automática de los certificados utilizando Let's Encrypt"
 
 msgid "Automatically marked as default internal user"
 msgstr "Marcado automáticamente como usuario interno por defecto"
@@ -1988,10 +2006,10 @@ msgid "Boards"
 msgstr "Tableros"
 
 msgid "Boards|Edit board"
-msgstr ""
+msgstr "Editar tablero"
 
 msgid "Boards|View scope"
-msgstr ""
+msgstr "Ver alcance"
 
 msgid "Branch %{branchName} was not found in this project's repository."
 msgstr "No se encontró la rama %{branchName} en el repositorio de este proyecto."
@@ -2120,10 +2138,10 @@ msgid "Branches|To avoid data loss, consider merging this branch before deleting
 msgstr "Para evitar pérdida de datos, considere hacer un merge request de esta rama antes de borrarla."
 
 msgid "Branches|To confirm, type %{branch_name_confirmation}:"
-msgstr ""
+msgstr "Para confirmar, teclee %{branch_name_confirmation}:"
 
 msgid "Branches|To discard the local changes and overwrite the branch with the upstream version, delete it here and choose 'Update Now' above."
-msgstr ""
+msgstr "Para descartar los cambios locales y sobreescribir la rama actual en el servidor, elimínela aquí y seleccione 'Actualizar ahora' en el enlace situado la parte superior."
 
 msgid "Branches|You’re about to permanently delete the protected branch %{branch_name}."
 msgstr "Va a eliminar de forma permanente la rama protegida %{branch_name}."
@@ -2645,7 +2663,7 @@ msgid "Click any <strong>project name</strong> in the project list below to navi
 msgstr "Haga clic en cualquier <strong>nombre de proyecto</strong> en la lista de proyectos que se muestra a continuación para navegar hasta el hito de proyecto correspondiente."
 
 msgid "Click here"
-msgstr ""
+msgstr "Haga click aquí"
 
 msgid "Click the <strong>Download</strong> button and wait for downloading to complete."
 msgstr "Haga click en el botón <strong>Descargar</strong> y espere a que se complete la descarga."
@@ -2726,7 +2744,7 @@ msgid "ClusterIntegration|%{title} uninstalled successfully."
 msgstr "%{title} desinstalado correctamente."
 
 msgid "ClusterIntegration|%{title} updated successfully."
-msgstr ""
+msgstr "%{title} actualizado correctamente."
 
 msgid "ClusterIntegration|A service token scoped to %{code}kube-system%{end_code} with %{code}cluster-admin%{end_code} privileges."
 msgstr ""
@@ -3436,7 +3454,7 @@ msgid "Confirm"
 msgstr "Confirmar"
 
 msgid "Confirmation email sent to %{email}"
-msgstr ""
+msgstr "Email de confirmación enviado a %{email}"
 
 msgid "Confirmation required"
 msgstr "Se requiere confirmación"
@@ -3483,9 +3501,6 @@ msgstr "Registro de contenedores"
 msgid "Container registry images"
 msgstr "Imágenes del registro de contenedores"
 
-msgid "ContainerRegistry|Created"
-msgstr "Creado"
-
 msgid "ContainerRegistry|First log in to GitLab&rsquo;s Container Registry using your GitLab username and password. If you have %{link_2fa} you need to use a %{link_token}:"
 msgstr "Inicie sesión por primera vez en el Container Registry de GitLab&rsquo; utilizando su usuario y su contraseña. Si tiene %{link_2fa} necesita utilizar un %{link_token}:"
 
@@ -3494,6 +3509,9 @@ msgstr "Gitlab soporta hasta 3 niveles para nombres de imágenes. Los siguientes
 
 msgid "ContainerRegistry|How to use the Container Registry"
 msgstr "Cómo utilizar el registro de contenedores"
+
+msgid "ContainerRegistry|Last Updated"
+msgstr ""
 
 msgid "ContainerRegistry|Learn more about"
 msgstr "Conozca más sobre"
@@ -3988,7 +4006,7 @@ msgid "Default issue template"
 msgstr "Plantilla de incidencia por defecto"
 
 msgid "Default project deletion protection"
-msgstr ""
+msgstr "Protección por defecto de eliminación de proyectos"
 
 msgid "Default: Directly import the Google Code email address or username"
 msgstr "Por defecto: Importar directamente el nombre de usuario o la dirección de correo electrónico de Google Code"
@@ -4078,37 +4096,37 @@ msgid "Deny"
 msgstr "Denegar"
 
 msgid "Dependencies"
-msgstr ""
+msgstr "Dependencias"
 
 msgid "Dependencies|Component"
-msgstr ""
+msgstr "Componente"
 
 msgid "Dependencies|Component name"
-msgstr ""
+msgstr "Nombre del componente"
 
 msgid "Dependencies|Export as JSON"
-msgstr ""
+msgstr "Exportar como JSON"
 
 msgid "Dependencies|Job failed to generate the dependency list"
-msgstr ""
+msgstr "El trabajo ha fallado al generar la lista de dependencias"
 
 msgid "Dependencies|Location"
-msgstr ""
+msgstr "Ubicación"
 
 msgid "Dependencies|Packager"
-msgstr ""
+msgstr "Empaquetador"
 
 msgid "Dependencies|The %{codeStartTag}dependency_scanning%{codeEndTag} job has failed and cannot generate the list. Please ensure the job is running properly and run the pipeline again."
 msgstr ""
 
 msgid "Dependencies|Unsupported file(s) detected"
-msgstr ""
+msgstr "Ficheros no admitidos detectados"
 
 msgid "Dependencies|Version"
-msgstr ""
+msgstr "Versión"
 
 msgid "Dependency List"
-msgstr ""
+msgstr "Lista de dependencias"
 
 msgid "Dependency Proxy"
 msgstr "Proxy de dependencias"
@@ -4744,6 +4762,9 @@ msgstr "Finaliza a las (UTC)"
 
 msgid "Enforce DNS rebinding attack protection"
 msgstr "Reforzar la protección de ataques a DNS"
+
+msgid "Enter IP address range"
+msgstr ""
 
 msgid "Enter at least three characters to search"
 msgstr "Introduzca al menos tres caracteres para buscar"
@@ -5694,12 +5715,6 @@ msgstr "Finalizado"
 
 msgid "First day of the week"
 msgstr "Primer día de la semana"
-
-msgid "FirstPushedBy|First"
-msgstr "Primer"
-
-msgid "FirstPushedBy|pushed by"
-msgstr "enviado por"
 
 msgid "Fixed date"
 msgstr "Fecha fija"
@@ -6866,6 +6881,12 @@ msgstr "Revisión"
 
 msgid "IP Address"
 msgstr "Direccion IP"
+
+msgid "IP address restriction is not editable in subgroups. Value inherited from top-level parent group."
+msgstr ""
+
+msgid "IP subnet restriction only allowed for top-level groups"
+msgstr ""
 
 msgid "Identifier"
 msgstr "Identificador"
@@ -8855,6 +8876,9 @@ msgstr "No hay pushes para el período de tiempo seleccionado."
 msgid "No repository"
 msgstr "No hay repositorio"
 
+msgid "No required pipeline"
+msgstr ""
+
 msgid "No runners found"
 msgstr "No se encontraron ejecutores"
 
@@ -8864,8 +8888,14 @@ msgstr "No hay programaciones"
 msgid "No start date"
 msgstr "Sin fecha de inicio"
 
+msgid "No value set by top-level parent group."
+msgstr ""
+
 msgid "No, directly import the existing email addresses and usernames."
 msgstr "No, importe directamente las direcciones de correo electrónico y los nombres de usuario existentes."
+
+msgid "No, not interested right now"
+msgstr ""
 
 msgid "Node was successfully created."
 msgstr "El nodo se ha creado correctamente."
@@ -9378,9 +9408,6 @@ msgstr "Código pin"
 
 msgid "Pipeline"
 msgstr "Pipeline"
-
-msgid "Pipeline ID (IID)"
-msgstr "ID del pipeline (IID)"
 
 msgid "Pipeline Schedule"
 msgstr "Programación del Pipeline"
@@ -10917,9 +10944,6 @@ msgstr "Registro"
 msgid "Registry"
 msgstr "Registro"
 
-msgid "Related Commits"
-msgstr "Cambios Relacionados"
-
 msgid "Related Deployed Jobs"
 msgstr "Trabajos Desplegados Relacionados"
 
@@ -11283,6 +11307,9 @@ msgstr "Respuesta métricas (NGINX)"
 
 msgid "Restart Terminal"
 msgstr "Reiniciar el terminal"
+
+msgid "Restrict access by IP address"
+msgstr ""
 
 msgid "Resume"
 msgstr "Reanudar"
@@ -13135,6 +13162,9 @@ msgstr "La configuración de grupos para %{group_links} requiere que habilite la
 msgid "The import will time out after %{timeout}. For repositories that take longer, use a clone/push combination."
 msgstr "La importación finalizará después de %{timeout}. Para los repositorios que necesiten más tiempo, utilice una combinación de comandos 'clone'/'push'."
 
+msgid "The instance-level Kubernetes service integration is deprecated. Your data has been migrated to an <a href=\"%{url}\"/>instance-level cluster</a>."
+msgstr ""
+
 msgid "The invitation could not be accepted."
 msgstr "No se ha podido aceptar la invitación."
 
@@ -13530,6 +13560,9 @@ msgstr "Este grupo"
 
 msgid "This group does not provide any group Runners yet."
 msgstr "Este grupo aún no proporciona ningún grupo de 'runners'."
+
+msgid "This group, including all subgroups, projects and git repositories, will only be reachable from the specified IP address range. Example: <code>192.168.0.0/24</code>. %{read_more_link}."
+msgstr ""
 
 msgid "This is a \"Ghost User\", created to hold all issues authored by users that have since been deleted. This user cannot be removed."
 msgstr "Este es un usuario \"fantasma\", creado para mantener todas las incidencias creadass por usuarios de Gitlab que ya han sido eliminados. Este usuario no se puede eliminar."
@@ -14606,7 +14639,7 @@ msgstr ""
 msgid "UserOnboardingTour|%{emphasisStart}Well done!%{emphasisEnd}%{lineBreak}%{lineBreak}That's it for our guided tour, congratulations for making it all the way to the end!%{lineBreak}%{lineBreak}We hope this gave you a good overview of GitLab and how it can help you. We'll now show you how to create your own project and invite your colleagues."
 msgstr ""
 
-msgid "UserOnboardingTour|Adding other memembers to a project is done through Project Settings. Click on %{emphasisStart}Settings%{emphasisEnd}."
+msgid "UserOnboardingTour|Adding other members to a project is done through Project Settings. Click on %{emphasisStart}Settings%{emphasisEnd}."
 msgstr ""
 
 msgid "UserOnboardingTour|Alright, that's it for Commits. Let's take a look at the %{emphasisStart}Branches%{emphasisEnd}."
@@ -15661,9 +15694,6 @@ msgstr "Sus claves GPG (%{count})"
 msgid "Your Groups"
 msgstr "Sus grupos"
 
-msgid "Your Kubernetes cluster information on this page is still editable, but you are advised to disable and reconfigure"
-msgstr "La información del cluster de Kubernetes en esta página aún se puede editar, pero se recomienda desactivarla y modificar"
-
 msgid "Your Primary Email will be used for avatar detection."
 msgstr ""
 
@@ -16254,6 +16284,9 @@ msgstr[1] "instancias completadas"
 msgid "invalid milestone state `%{state}`"
 msgstr "estado del hito invalido '%{state}'"
 
+msgid "is an invalid IP address range"
+msgstr ""
+
 msgid "is enabled."
 msgstr "está habilitado."
 
@@ -16345,6 +16378,9 @@ msgstr "Uso de %{metricsLinkStart} memoria %{metricsLinkEnd} %{emphasisStart} in
 
 msgid "mrWidget|%{metricsLinkStart} Memory %{metricsLinkEnd} usage is %{emphasisStart} unchanged %{emphasisEnd} at %{memoryFrom}MB"
 msgstr "%{metricsLinkStart} El uso de la memoria %{metricsLinkEnd} es %{emphasisStart} sin cambios %{emphasisEnd} en %{memoryFrom}MB"
+
+msgid "mrWidget|Added to the merge train at position %{mergeTrainPosition}"
+msgstr ""
 
 msgid "mrWidget|Added to the merge train by"
 msgstr ""
