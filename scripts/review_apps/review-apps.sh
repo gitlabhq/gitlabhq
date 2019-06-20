@@ -66,7 +66,7 @@ function get_pod() {
 
     if [[ "${elapsed_seconds}" -gt "${max_seconds}" ]]; then
       echoerr "The pod name couldn't be found after ${elapsed_seconds} seconds, aborting."
-      echo "" && return 0
+      break
     fi
 
     printf "."
@@ -103,9 +103,16 @@ function install_tiller() {
   echoinfo "Initiating the Helm client..."
   helm init --client-only
 
+  # Set toleration for Tiller to be installed on a specific node pool
   helm init \
+    --wait \
     --upgrade \
-    --replicas 2
+    --node-selectors "app=helm" \
+    --replicas 3 \
+    --override "spec.template.spec.tolerations[0].key"="dedicated" \
+    --override "spec.template.spec.tolerations[0].operator"="Equal" \
+    --override "spec.template.spec.tolerations[0].value"="helm" \
+    --override "spec.template.spec.tolerations[0].effect"="NoSchedule"
 
   kubectl rollout status -n "$TILLER_NAMESPACE" -w "deployment/tiller-deploy"
 
