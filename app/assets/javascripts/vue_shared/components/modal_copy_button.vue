@@ -26,6 +26,11 @@ export default {
       required: false,
       default: '',
     },
+    cssClasses: {
+      type: String,
+      required: false,
+      default: '',
+    },
     modalId: {
       type: String,
       required: false,
@@ -110,6 +115,7 @@ export default {
 <template>
   <gl-button
     v-gl-tooltip="{ placement: tooltipPlacement, container: tooltipContainer }"
+    :class="cssClasses"
     :data-clipboard-target="target"
     :data-clipboard-text="text"
     :title="title"
