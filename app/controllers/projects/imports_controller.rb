@@ -23,7 +23,7 @@ class Projects::ImportsController < Projects::ApplicationController
 
   def show
     if @project.import_finished?
-      if continue_params&.key?(:to)
+      if continue_params[:to]
         redirect_to continue_params[:to], notice: continue_params[:notice]
       else
         redirect_to project_path(@project), notice: finished_notice
@@ -31,11 +31,7 @@ class Projects::ImportsController < Projects::ApplicationController
     elsif @project.import_failed?
       redirect_to new_project_import_path(@project)
     else
-      if continue_params && continue_params[:notice_now]
-        flash.now[:notice] = continue_params[:notice_now]
-      end
-
-      # Render
+      flash.now[:notice] = continue_params[:notice_now]
     end
   end
 

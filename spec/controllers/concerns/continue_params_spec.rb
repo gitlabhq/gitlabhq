@@ -18,6 +18,14 @@ describe ContinueParams do
     ActionController::Parameters.new(continue: params)
   end
 
+  it 'returns an empty hash if params are not present' do
+    allow(controller).to receive(:params) do
+      ActionController::Parameters.new
+    end
+
+    expect(controller.continue_params).to eq({})
+  end
+
   it 'cleans up any params that are not allowed' do
     allow(controller).to receive(:params) do
       strong_continue_params(to: '/hello',
