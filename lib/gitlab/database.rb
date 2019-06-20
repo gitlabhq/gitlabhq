@@ -14,6 +14,7 @@ module Gitlab
     # Minimum schema version from which migrations are be supported
     # Migrations before this version may have been removed
     MIN_SCHEMA_VERSION = 20190506135400
+    MIN_SCHEMA_GITLAB_VERSION = '11.11.0'
 
     def self.config
       ActiveRecord::Base.configurations[Rails.env]

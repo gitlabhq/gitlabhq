@@ -31,7 +31,7 @@ describe 'gitlab:db namespace rake task' do
     it 'raises an when schema has been loaded, but version is too old to migrate' do
       allow(ActiveRecord::Base.connection).to receive(:tables).and_return(%w[table1 table2])
       allow(ActiveRecord::Migrator).to receive(:current_version).and_return(25)
-      expect { run_rake_task('gitlab:db:configure') }.to raise_error(RuntimeErrorm, /current database version is too old to be migrated/)
+      expect { run_rake_task('gitlab:db:configure') }.to raise_error(RuntimeError, /current database version is too old to be migrated/)
     end
 
     it 'invokes db:shema:load and db:seed_fu when schema is not loaded' do
