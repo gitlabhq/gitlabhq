@@ -115,23 +115,33 @@ describe Projects::ForksController do
   end
 
   describe 'POST create' do
-    def post_create
+    def post_create(params = {})
       post :create,
         params: {
           namespace_id: project.namespace,
           project_id: project,
           namespace_key: user.namespace.id
-        }
+        }.merge(params)
     end
 
     context 'when user is signed in' do
-      it 'responds with status 302' do
+      before do
         sign_in(user)
+      end
 
+      it 'responds with status 302' do
         post_create
 
         expect(response).to have_gitlab_http_status(302)
         expect(response).to redirect_to(namespace_project_import_path(user.namespace, project))
+      end
+
+      it 'passes continue params to the redirect' do
+        continue_params = { to: '/-/ide/project/path', notice: 'message' }
+        post_create continue: continue_params
+
+        expect(response).to have_gitlab_http_status(302)
+        expect(response).to redirect_to(namespace_project_import_path(user.namespace, project, continue: continue_params))
       end
     end
 
