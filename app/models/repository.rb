@@ -839,10 +839,10 @@ class Repository
     end
   end
 
-  def merge_to_ref(user, source_sha, merge_request, target_ref, message)
+  def merge_to_ref(user, source_sha, merge_request, target_ref, message, first_parent_ref)
     branch = merge_request.target_branch
 
-    raw.merge_to_ref(user, source_sha, branch, target_ref, message)
+    raw.merge_to_ref(user, source_sha, branch, target_ref, message, first_parent_ref)
   end
 
   def ff_merge(user, source, target_branch, merge_request: nil)

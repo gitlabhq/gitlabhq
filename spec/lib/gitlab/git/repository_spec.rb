@@ -1694,14 +1694,15 @@ describe Gitlab::Git::Repository, :seed_helper do
     let(:branch_head) { '6d394385cf567f80a8fd85055db1ab4c5295806f' }
     let(:left_sha) { 'cfe32cf61b73a0d5e9f13e774abde7ff789b1660' }
     let(:right_branch) { 'test-master' }
+    let(:first_parent_ref) { 'refs/heads/test-master' }
     let(:target_ref) { 'refs/merge-requests/999/merge' }
 
     before do
-      repository.create_branch(right_branch, branch_head) unless repository.branch_exists?(right_branch)
+      repository.create_branch(right_branch, branch_head) unless repository.ref_exists?(first_parent_ref)
     end
 
     def merge_to_ref
-      repository.merge_to_ref(user, left_sha, right_branch, target_ref, 'Merge message')
+      repository.merge_to_ref(user, left_sha, right_branch, target_ref, 'Merge message', first_parent_ref)
     end
 
     it 'generates a commit in the target_ref' do
@@ -1716,7 +1717,7 @@ describe Gitlab::Git::Repository, :seed_helper do
     end
 
     it 'does not change the right branch HEAD' do
-      expect { merge_to_ref }.not_to change { repository.find_branch(right_branch).target }
+      expect { merge_to_ref }.not_to change { repository.commit(first_parent_ref).sha }
     end
   end
 

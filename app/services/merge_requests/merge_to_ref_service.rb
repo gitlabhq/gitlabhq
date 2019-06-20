@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module MergeRequests
-  # Performs the merge between source SHA and the target branch. Instead
+  # Performs the merge between source SHA and the target branch or the specified first parent ref. Instead
   # of writing the result to the MR target branch, it targets the `target_ref`.
   #
   # Ideally this should leave the `target_ref` state with the same state the
@@ -56,12 +56,22 @@ module MergeRequests
       raise_error(error) if error
     end
 
+    ##
+    # The parameter `target_ref` is where the merge result will be written.
+    # Default is the merge ref i.e. `refs/merge-requests/:iid/merge`.
     def target_ref
-      merge_request.merge_ref_path
+      params[:target_ref] || merge_request.merge_ref_path
+    end
+
+    ##
+    # The parameter `first_parent_ref` is the main line of the merge commit.
+    # Default is the target branch ref of the merge request.
+    def first_parent_ref
+      params[:first_parent_ref] || merge_request.target_branch_ref
     end
 
     def commit
-      repository.merge_to_ref(current_user, source, merge_request, target_ref, commit_message)
+      repository.merge_to_ref(current_user, source, merge_request, target_ref, commit_message, first_parent_ref)
     rescue Gitlab::Git::PreReceiveError => error
       raise MergeError, error.message
     end
