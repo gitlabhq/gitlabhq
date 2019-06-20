@@ -35,6 +35,7 @@ The following API resources are available in the project context:
 | [Environments](environments.md)                                     | `/projects/:id/environments`                                                                                                                                                                          |
 | [Events](events.md)                                                 | `/projects/:id/events` (also available for users and standalone)                                                                                                                                      |
 | [Issues](issues.md)                                                 | `/projects/:id/issues` (also available for groups and standalone)                                                                                                                                     |
+| [Issues Statistics](issues_statistics.md)                           | `/projects/:id/issues_statistics` (also available for groups and standalone)                                                                                                                          |
 | [Issue boards](boards.md)                                           | `/projects/:id/boards`                                                                                                                                                                                |
 | [Issue links](issue_links.md) **[STARTER]**                         | `/projects/:id/issues/.../links`                                                                                                                                                                      |
 | [Jobs](jobs.md)                                                     | `/projects/:id/jobs`, `/projects/:id/pipelines/.../jobs`                                                                                                                                              |
@@ -92,6 +93,7 @@ The following API resources are available in the group context:
 | [Group-level variables](group_level_variables.md)                | `/groups/:id/variables`                                                          |
 | [Group milestones](group_milestones.md)                          | `/groups/:id/milestones`                                                         |
 | [Issues](issues.md)                                              | `/groups/:id/issues` (also available for projects and standalone)                |
+| [Issues Statistics](issues_statistics.md)                        | `/groups/:id/issues_statistics` (also available for projects and standalone)     |
 | [Members](members.md)                                            | `/groups/:id/members` (also available for projects)                              |
 | [Merge requests](merge_requests.md)                              | `/groups/:id/merge_requests` (also available for projects and standalone)        |
 | [Notes](notes.md) (comments)                                     | `/groups/:id/epics/.../notes` (also available for projects)                      |
@@ -116,6 +118,7 @@ The following API resources are available outside of project and group contexts 
 | [Geo Nodes](geo_nodes.md) **[PREMIUM ONLY]**      | `/geo_nodes`                                                            |
 | [Import repository from GitHub](import.md)        | `/import/github`                                                        |
 | [Issues](issues.md)                               | `/issues` (also available for groups and projects)                      |
+| [Issues Statistics](issues_statistics.md)         | `/issues_statistics` (also available for groups and projects)           |
 | [Keys](keys.md)                                   | `/keys`                                                                 |
 | [License](license.md) **[CORE ONLY]**             | `/license`                                                              |
 | [Markdown](markdown.md)                           | `/markdown`                                                             |
