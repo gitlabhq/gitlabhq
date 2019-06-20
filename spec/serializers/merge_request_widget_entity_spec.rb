@@ -32,6 +32,19 @@ describe MergeRequestWidgetEntity do
     end
   end
 
+  describe 'issues links' do
+    it 'includes issues links when requested' do
+      data = described_class.new(resource, request: request, issues_links: true).as_json
+
+      expect(data).to include(:issues_links)
+      expect(data[:issues_links]).to include(:assign_to_closing, :closing, :mentioned_but_not_closing)
+    end
+
+    it 'omits issue links by default' do
+      expect(subject).not_to include(:issues_links)
+    end
+  end
+
   describe 'pipeline' do
     let(:pipeline) { create(:ci_empty_pipeline, project: project, ref: resource.source_branch, sha: resource.source_branch_sha, head_pipeline_of: resource) }
 
