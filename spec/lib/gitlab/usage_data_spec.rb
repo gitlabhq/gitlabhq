@@ -54,6 +54,7 @@ describe Gitlab::UsageData do
         gitlab_shared_runners_enabled
         gitlab_pages
         git
+        gitaly
         database
         avg_cycle_analytics
         web_ide_commits
@@ -205,6 +206,10 @@ describe Gitlab::UsageData do
       expect(subject[:git][:version]).to eq(Gitlab::Git.version)
       expect(subject[:database][:adapter]).to eq(Gitlab::Database.adapter_name)
       expect(subject[:database][:version]).to eq(Gitlab::Database.version)
+      expect(subject[:gitaly][:version]).to be_present
+      expect(subject[:gitaly][:servers]).to be >= 1
+      expect(subject[:gitaly][:filesystems]).to be_an(Array)
+      expect(subject[:gitaly][:filesystems].first).to be_a(String)
     end
   end
 
