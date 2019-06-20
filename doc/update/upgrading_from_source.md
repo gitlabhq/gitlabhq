@@ -324,7 +324,7 @@ sudo -u git -H bundle install --deployment --without development test mysql aws 
 sudo -u git -H bundle clean
 
 # Run database migrations
-sudo -u git -H bundle exec rake db:migrate RAILS_ENV=production
+sudo -u git -H bundle exec rake gitlab:db:configure RAILS_ENV=production
 
 # Compile GetText PO files
 
