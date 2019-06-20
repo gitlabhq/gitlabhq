@@ -91,7 +91,7 @@ describe MergeRequests::MergeabilityCheckService do
         expect(result.payload).to be_empty
       end
 
-      it 'updates the merge_status' do
+      it 'ignores merge-ref and updates merge status' do
         expect { subject }.to change(merge_request, :merge_status).from('unchecked').to('can_be_merged')
       end
     end
@@ -206,12 +206,55 @@ describe MergeRequests::MergeabilityCheckService do
     context 'recheck enforced' do
       subject { described_class.new(merge_request).execute(recheck: true) }
 
+      context 'when MR is mergeable and merge-ref auto-sync is disabled' do
+        before do
+          stub_feature_flags(merge_ref_auto_sync: false)
+          merge_request.mark_as_mergeable!
+        end
+
+        it 'returns ServiceResponse.error' do
+          result = subject
+
+          expect(result).to be_a(ServiceResponse)
+          expect(result.error?).to be(true)
+          expect(result.message).to eq('Merge ref is outdated due to disabled feature')
+          expect(result.payload).to be_empty
+        end
+
+        it 'merge status is not changed' do
+          subject
+
+          expect(merge_request.merge_status).to eq('can_be_merged')
+        end
+      end
+
       context 'when MR is mergeable but merge-ref does not exists' do
         before do
           merge_request.mark_as_mergeable!
         end
 
         it_behaves_like 'mergeable merge request'
+      end
+
+      context 'when MR is mergeable but merge-ref is already updated' do
+        before do
+          MergeRequests::MergeToRefService.new(project, merge_request.author).execute(merge_request)
+          merge_request.mark_as_mergeable!
+        end
+
+        it 'returns ServiceResponse.success' do
+          result = subject
+
+          expect(result).to be_a(ServiceResponse)
+          expect(result).to be_success
+          expect(result.payload[:merge_ref_head]).to be_present
+        end
+
+        it 'does not recreate the merge-ref' do
+          expect(MergeRequests::MergeToRefService).not_to receive(:new)
+
+          subject
+        end
       end
     end
   end

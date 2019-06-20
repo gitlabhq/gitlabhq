@@ -15,7 +15,7 @@ module MergeRequests
     # the merge-ref is refreshed.
     #
     # recheck - When given, it'll enforce a merge-ref refresh if the current merge_status is
-    # can_be_merged or cannot_be_merged.
+    # can_be_merged or cannot_be_merged and merge-ref is outdated.
     # Given MergeRequests::RefreshService is called async, it might happen that the target
     # branch gets updated, but the MergeRequest#merge_status lags behind. So in scenarios
     # where we need the current state of the merge ref in repository, the `recheck`
@@ -79,7 +79,22 @@ module MergeRequests
     end
 
     def recheck!
-      merge_request.mark_as_unchecked unless merge_request.recheck_merge_status?
+      if !merge_request.recheck_merge_status? && outdated_merge_ref?
+        merge_request.mark_as_unchecked
+      end
+    end
+
+    # Checks if the existing merge-ref is synced with the target branch.
+    #
+    # Returns true if the merge-ref does not exists or is out of sync.
+    def outdated_merge_ref?
+      return false unless merge_ref_auto_sync_enabled?
+
+      return true unless ref_head = merge_request.merge_ref_head
+      return true unless target_sha = merge_request.target_branch_sha
+      return true unless source_sha = merge_request.source_branch_sha
+
+      ref_head.parent_ids != [target_sha, source_sha]
     end
 
     def can_git_merge?
