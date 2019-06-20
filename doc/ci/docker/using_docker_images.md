@@ -478,7 +478,7 @@ To define which should be used, the GitLab Runner process reads the configuratio
   - A [variable](../variables/README.md#gitlab-cicd-environment-variables) in `.gitlab-ci.yml`.
   - A project's variables stored on the projects **Settings > CI/CD** page.
 - `DOCKER_AUTH_CONFIG` variable provided as environment variable in `config.toml` of the Runner.
-- `config.json` file placed in `$HOME/docker` directory of the user running GitLab Runner process.
+- `config.json` file placed in `$HOME/.docker` directory of the user running GitLab Runner process.
   If the `--user` flag is provided to run the GitLab Runner child processes as unprivileged user,
   the home directory of the main GitLab Runner process user will be used.
 
