@@ -23,6 +23,11 @@ module Gitlab
           raise NotImplementedError
         end
 
+        # Returns an un-processed dashboard from the cache.
+        def raw_dashboard
+          Gitlab::Metrics::Dashboard::Cache.fetch(cache_key) { get_raw_dashboard }
+        end
+
         private
 
         # Returns a new dashboard Hash, supplemented with DB info
@@ -37,11 +42,6 @@ module Gitlab
           params[:dashboard_path]
         end
 
-        # Returns an un-processed dashboard from the cache.
-        def raw_dashboard
-          Gitlab::Metrics::Dashboard::Cache.fetch(cache_key) { get_raw_dashboard }
-        end
-
         # @return [Hash] an unmodified dashboard
         def get_raw_dashboard
           raise NotImplementedError
@@ -54,6 +54,7 @@ module Gitlab
 
         # Determines whether custom metrics should be included
         # in the processed output.
+        # @return [Boolean]
         def insert_project_metrics?
           false
         end

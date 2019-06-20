@@ -11,7 +11,7 @@ describe Gitlab::Metrics::Dashboard::Finder, :use_clean_rails_memory_store_cachi
 
   describe '.find' do
     let(:dashboard_path) { '.gitlab/dashboards/test.yml' }
-    let(:service_call) { described_class.find(project, nil, environment, dashboard_path) }
+    let(:service_call) { described_class.find(project, nil, environment, dashboard_path: dashboard_path) }
 
     it_behaves_like 'misconfigured dashboard service response', :not_found
 
@@ -44,6 +44,12 @@ describe Gitlab::Metrics::Dashboard::Finder, :use_clean_rails_memory_store_cachi
       let(:service_call) { described_class.find(project, nil, environment) }
 
       it_behaves_like 'valid dashboard service response'
+    end
+
+    context 'when the dashboard is expected to be embedded' do
+      let(:service_call) { described_class.find(project, nil, environment, dashboard_path: nil, embedded: true) }
+
+      it_behaves_like 'valid embedded dashboard service response'
     end
   end
 

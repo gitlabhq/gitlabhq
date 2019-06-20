@@ -162,9 +162,17 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     return render_403 unless Feature.enabled?(:environment_metrics_use_prometheus_endpoint, project)
 
     if Feature.enabled?(:environment_metrics_show_multiple_dashboards, project)
-      result = dashboard_finder.find(project, current_user, environment, params[:dashboard])
+      result = dashboard_finder.find(
+        project,
+        current_user,
+        environment,
+        dashboard_path: params[:dashboard],
+        embedded: params[:embedded]
+      )
 
-      result[:all_dashboards] = dashboard_finder.find_all_paths(project)
+      unless params[:embedded]
+        result[:all_dashboards] = dashboard_finder.find_all_paths(project)
+      end
     else
       result = dashboard_finder.find(project, current_user, environment)
     end

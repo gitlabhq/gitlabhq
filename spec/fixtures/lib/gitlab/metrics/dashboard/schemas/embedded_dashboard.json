@@ -1,0 +1,13 @@
+{
+  "type": "object",
+  "required": ["panel_groups"],
+  "properties": {
+    "panel_groups": {
+      "type": "array",
+      "items": {
+        "$ref": "spec/fixtures/lib/gitlab/metrics/dashboard/schemas/embedded_panel_groups.json"
+      }
+    }
+  },
+  "additionalProperties": false
+}
