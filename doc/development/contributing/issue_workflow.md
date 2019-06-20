@@ -172,35 +172,35 @@ This label documents the planned timeline & urgency which is used to measure aga
 | ~P3   | Medium Priority | Within the next 3 releases (approx one quarter or 90 days)                 |
 | ~P4   | Low Priority    | Anything outside the next 3 releases (more than one quarter or 120 days)   |
 
-If an issue seems to fall between two priority labels, assign it to the higher-
-priority label.
-
 ## Severity labels
 
 Severity labels help us clearly communicate the impact of a ~bug on users.
+There can be multiple facets of the impact. The below is a guideline.
 
-| Label | Meaning           | Impact on Functionality                               | Example |
-|-------|-------------------|-------------------------------------------------------|---------|
-| ~S1   | Blocker           | Outage, broken feature with no workaround             | Unable to create an issue. Data corruption/loss. Security breach. |
-| ~S2   | Critical Severity | Broken Feature, workaround too complex & unacceptable | Can push commits, but only via the command line. |
-| ~S3   | Major Severity    | Broken Feature, workaround acceptable                 | Can create merge requests only from the Merge Requests page, not through the Issue. |
-| ~S4   | Low Severity      | Functionality inconvenience or cosmetic issue         | Label colors are incorrect / not being displayed. |
+| Label | Meaning           | Functionality                                         | Affected Users                   | GitLab.com Availability                            | Performance Degradation      |
+|-------|-------------------|-------------------------------------------------------|----------------------------------|----------------------------------------------------|------------------------------|
+| ~S1   | Blocker           | Unusable feature with no workaround, user is blocked  | Impacts 50% or more of users     | Outage, Significant impact on all of GitLab.com    |                                                       |
+| ~S2   | Critical Severity | Broken Feature, workaround too complex & unacceptable | Impacts between 25%-50% of users | Significant impact on large portions of GitLab.com | Degradation is guaranteed to occur in the near future |
+| ~S3   | Major Severity    | Broken feature with an acceptable workaround          | Impacts up to 25% of users       | Limited impact on important portions of GitLab.com | Degradation is likely to occur in the near future     |
+| ~S4   | Low Severity      | Functionality inconvenience or cosmetic issue         | Impacts less than 5% of users    | Minor impact on GitLab.com                         | Degradation _may_ occur but it's not likely           |
 
-If an issue seems to fall between two severity labels, even taking the
-[severity impact guidance](#severity-impact-guidance) into account, assign
-it to the higher-severity label.
+If a bug seems to fall between two severity labels, assign it to the higher-severity label.
 
-### Severity impact guidance
-
-Severity levels can be applied further depending on the facet of the impact; e.g. Affected customers, GitLab.com availability, performance and etc. The below is a guideline.
-
-| Severity | Affected Customers/Users                                            | GitLab.com Availability                            |  Performance Degradation     |
-|----------|---------------------------------------------------------------------|----------------------------------------------------|------------------------------|
-| ~S1      | >50% users affected (possible company extinction level event)       | Significant impact on all of GitLab.com            |                              |
-| ~S2      | Many users or multiple paid customers affected (but not apocalyptic)| Significant impact on large portions of GitLab.com | Degradation is guaranteed to occur in the near future |
-| ~S3      | A few users or a single paid customer affected                      | Limited impact on important portions of GitLab.com | Degradation is likely to occur in the near future     |
-| ~S4      | No paid users/customer affected, or expected to in the near future  | Minor impact on GitLab.com                         | Degradation _may_ occur but it's not likely           |
-
+* Example(s) of ~S1
+  * Data corruption/loss. 
+  * Security breach.
+  * Unable to create an issue or merge request. 
+  * Unable to add a comment or discussion to the issue or merge request.
+* Example(s) of ~S2
+  * Cannot submit changes through the web IDE but the commandline works.
+  * A status widget on the merge request page is not working but information can be seen in the test pipeline page.
+* Example(s) of ~S3
+  * Can create merge requests only from the Merge Requests list view, not from an Issue page.
+  * Status is not updated in real time and needs a page refresh.
+* Example(s) of ~S4
+  * Label colors are incorrect.
+  * UI elements are not fully aligned.
+  
 ## Label for community contributors
 
 Issues that are beneficial to our users, 'nice to haves', that we currently do
