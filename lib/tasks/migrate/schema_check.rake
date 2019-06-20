@@ -1,5 +1,7 @@
 desc 'Configures the database by running migrate, or by loading the schema and seeding if needed'
 task schema_version_check: :environment do
+  next if ENV['SKIP_SCHEMA_VERSION_CHECK']
+
   schema_version = ActiveRecord::Migrator.current_version
 
   # Ensure migrations are being run from a supported schema version
