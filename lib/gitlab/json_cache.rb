@@ -58,7 +58,7 @@ module Gitlab
     private
 
     def parse_value(raw, klass)
-      value = ActiveSupport::JSON.decode(raw)
+      value = ActiveSupport::JSON.decode(raw.to_s)
 
       case value
       when Hash then parse_entry(value, klass)
