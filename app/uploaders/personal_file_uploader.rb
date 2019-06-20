@@ -93,6 +93,6 @@ class PersonalFileUploader < FileUploader
   end
 
   def secure_url
-    File.join('/', base_dir, secret, file.filename)
+    File.join('/', base_dir, secret, filename)
   end
 end
