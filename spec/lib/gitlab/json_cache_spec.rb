@@ -106,6 +106,16 @@ describe Gitlab::JsonCache do
       expect(cache.read(key)).to be_nil
     end
 
+    context 'when the cached value is a boolean' do
+      it 'parses the cached value' do
+        allow(backend).to receive(:read)
+          .with(expanded_key)
+          .and_return(true)
+
+        expect(cache.read(key, BroadcastMessage)).to eq(true)
+      end
+    end
+
     context 'when the cached value is a hash' do
       it 'parses the cached value' do
         allow(backend).to receive(:read)
