@@ -556,6 +556,19 @@ describe Projects::EnvironmentsController do
           it_behaves_like 'has all dashboards'
         end
       end
+
+      context 'when the dashboard is intended for embedding' do
+        let(:dashboard_params) { { format: :json, embedded: true } }
+
+        it_behaves_like '200 response'
+
+        context 'when a dashboard path is provided' do
+          let(:dashboard_params) { { format: :json, dashboard: '.gitlab/dashboards/test.yml', embedded: true } }
+
+          # The dashboard path should simple be ignored.
+          it_behaves_like '200 response'
+        end
+      end
     end
   end
 

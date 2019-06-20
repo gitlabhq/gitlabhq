@@ -1,0 +1,11 @@
+{
+  "type": "object",
+  "required": ["panels"],
+  "properties": {
+    "panels": {
+      "type": "array",
+      "items": { "$ref": "panels.json" }
+    }
+  },
+  "additionalProperties": false
+}
