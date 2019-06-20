@@ -878,6 +878,18 @@ describe Projects::MergeRequestsController do
         expect(control_count).to be <= 137
       end
 
+      it 'has no N+1 issues for environments', :request_store do
+        # First run to insert test data from lets, which does take up some 30 queries
+        get_ci_environments_status
+
+        control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) { get_ci_environments_status }.count
+
+        environment2 = create(:environment, project: forked)
+        create(:deployment, :succeed, environment: environment2, sha: sha, ref: 'master', deployable: build)
+
+        expect { get_ci_environments_status }.not_to exceed_all_query_limit(control_count)
+      end
+
       def get_ci_environments_status(extra_params = {})
         params = {
           namespace_id: merge_request.project.namespace.to_param,
