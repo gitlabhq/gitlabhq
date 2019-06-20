@@ -85,12 +85,22 @@ on a given project but not both. The current implementation makes use of a `serv
 
 ## Using an existing installation of Knative
 
-NOTE: **Note:**
-The "invocations" monitoring feature of GitLab serverless will not work when adding an existing installation of Knative.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/58941) in GitLab 12.0.
 
-It is also possible to use GitLab Serverless with an existing Kubernetes cluster which already has Knative installed.
-Simply follow the steps to [add an existing Kubernetes cluster](../index.md#adding-an-existing-kubernetes-cluster)
-and then follow the steps to deploy [functions](#deploying-functions) or [serverless applications](#deploying-serverless-applications) onto your cluster.
+NOTE: **Note:**
+The "invocations" monitoring feature of GitLab serverless will not work when
+adding an existing installation of Knative.
+
+It is also possible to use GitLab Serverless with an existing Kubernetes
+cluster which already has Knative installed.
+
+Simply:
+
+1. Follow the steps to
+   [add an existing Kubernetes cluster](../index.md#adding-an-existing-kubernetes-cluster).
+1. Follow the steps to deploy [functions](#deploying-functions)
+   or [serverless applications](#deploying-serverless-applications) onto your
+   cluster.
 
 ## Deploying functions
 
