@@ -6,7 +6,7 @@ describe Gitlab::JsonCache do
   let(:backend) { double('backend').as_null_object }
   let(:namespace) { 'geo' }
   let(:key) { 'foo' }
-  let(:expanded_key) { "#{namespace}:#{key}:#{Rails.version}" }
+  let(:expanded_key) { "#{namespace}:#{key}:#{Gitlab::VERSION}:#{Rails.version}" }
   set(:broadcast_message) { create(:broadcast_message) }
 
   subject(:cache) { described_class.new(namespace: namespace, backend: backend) }
@@ -35,42 +35,68 @@ describe Gitlab::JsonCache do
 
   describe '#cache_key' do
     context 'when namespace is not defined' do
-      it 'expands out the key with Rails version' do
-        cache = described_class.new(cache_key_with_version: true)
+      context 'when cache_key_with_version is true' do
+        it 'expands out the key with GitLab, and Rails versions' do
+          cache = described_class.new(cache_key_with_version: true)
 
-        cache_key = cache.cache_key(key)
+          cache_key = cache.cache_key(key)
 
-        expect(cache_key).to eq("#{key}:#{Rails.version}")
+          expect(cache_key).to eq("#{key}:#{Gitlab::VERSION}:#{Rails.version}")
+        end
+      end
+
+      context 'when cache_key_with_version is false' do
+        it 'returns the key' do
+          cache = described_class.new(namespace: nil, cache_key_with_version: false)
+
+          cache_key = cache.cache_key(key)
+
+          expect(cache_key).to eq(key)
+        end
       end
     end
 
-    context 'when cache_key_with_version is true' do
-      it 'expands out the key with namespace and Rails version' do
-        cache = described_class.new(namespace: namespace, cache_key_with_version: true)
+    context 'when namespace is nil' do
+      context 'when cache_key_with_version is true' do
+        it 'expands out the key with GitLab, and Rails versions' do
+          cache = described_class.new(cache_key_with_version: true)
 
-        cache_key = cache.cache_key(key)
+          cache_key = cache.cache_key(key)
 
-        expect(cache_key).to eq("#{namespace}:#{key}:#{Rails.version}")
+          expect(cache_key).to eq("#{key}:#{Gitlab::VERSION}:#{Rails.version}")
+        end
+      end
+
+      context 'when cache_key_with_version is false' do
+        it 'returns the key' do
+          cache = described_class.new(namespace: nil, cache_key_with_version: false)
+
+          cache_key = cache.cache_key(key)
+
+          expect(cache_key).to eq(key)
+        end
       end
     end
 
-    context 'when cache_key_with_version is false' do
-      it 'expands out the key with namespace' do
-        cache = described_class.new(namespace: namespace, cache_key_with_version: false)
+    context 'when namespace is set' do
+      context 'when cache_key_with_version is true' do
+        it 'expands out the key with namespace and Rails version' do
+          cache = described_class.new(namespace: namespace, cache_key_with_version: true)
 
-        cache_key = cache.cache_key(key)
+          cache_key = cache.cache_key(key)
 
-        expect(cache_key).to eq("#{namespace}:#{key}")
+          expect(cache_key).to eq("#{namespace}:#{key}:#{Gitlab::VERSION}:#{Rails.version}")
+        end
       end
-    end
 
-    context 'when namespace is nil, and cache_key_with_version is false' do
-      it 'returns the key' do
-        cache = described_class.new(namespace: nil, cache_key_with_version: false)
+      context 'when cache_key_with_version is false' do
+        it 'expands out the key with namespace' do
+          cache = described_class.new(namespace: namespace, cache_key_with_version: false)
 
-        cache_key = cache.cache_key(key)
+          cache_key = cache.cache_key(key)
 
-        expect(cache_key).to eq(key)
+          expect(cache_key).to eq("#{namespace}:#{key}")
+        end
       end
     end
   end
