@@ -346,7 +346,7 @@ the report JSON unless stated otherwise. Presence of optional fields depends on 
 | `vulnerabilities[].scanner`                          | A node that describes the analyzer used to find this vulnerability. |
 | `vulnerabilities[].scanner.id`                       | Id of the scanner as a snake_case string. |
 | `vulnerabilities[].scanner.name`                     | Name of the scanner, for display purposes. |
-| `vulnerabilities[].location`                         | A node that tells where the vulnerability is located. | 
+| `vulnerabilities[].location`                         | A node that tells where the vulnerability is located. |
 | `vulnerabilities[].location.file`                    | Path to the dependencies file (e.g., `yarn.lock`). Optional. |
 | `vulnerabilities[].location.dependency`              | A node that describes the dependency of a project where the vulnerability is located. |
 | `vulnerabilities[].location.dependency.package`      | A node that provides the information on the package where the vulnerability is located. |
@@ -379,14 +379,14 @@ Once a vulnerability is found, you can interact with it. Read more on how to
 
 ## Dependency List
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/10075)
-in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/10075) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.0.
 
-An additional benefit of Dependency Scanning is the ability to get a list of your project's dependencies with their versions. 
+An additional benefit of Dependency Scanning is the ability to get a list of your
+project's dependencies with their versions. This list can be generated only for
+[languages and package managers](#supported-languages-and-package-managers)
+supported by Gemnasium.
 
-This list can be generated only for [languages and package managers](#supported-languages-and-package-managers) supported by [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium/general).
-
-To see the generated dependency list, navigate to the Dependency List page under your project's left sidebar menu **Project > Dependency List**.
+To see the generated dependency list, navigate to your project's **Project > Dependency List**.
 
 ## Contributing to the vulnerability database
 
