@@ -17,6 +17,8 @@ module Banzai
       include Gitlab::Utils::StrongMemoize
 
       def call
+        return doc if context[:system_note]
+
         @uri_types = {}
         clear_memoization(:linkable_files)
 
