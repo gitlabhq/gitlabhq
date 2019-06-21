@@ -1,15 +1,23 @@
 # Geo Troubleshooting **[PREMIUM ONLY]**
 
-NOTE: **Note:**
-This list is an attempt to document all the moving parts that can go wrong.
-We are working into getting all this steps verified automatically in a
-rake task in the future.
-
 Setting up Geo requires careful attention to details and sometimes it's easy to
-miss a step. Here is a list of questions you should ask to try to detect
-what you need to fix (all commands and path locations are for Omnibus installs):
+miss a step.
 
-## First check the health of the **secondary** node
+Here is a list of steps you should take to attempt to fix problem:
+
+- Perform [basic troubleshooting](#basic-troubleshooting).
+- Fix any [replication errors](#fixing-replication-errors).
+- Fix any [Foreign Data Wrapper](#fixing-foreign-data-wrapper-errors) errors.
+- Fix any [common](#fixing-common-errors) errors.
+
+## Basic troubleshooting
+
+Before attempting more advanced troubleshooting:
+
+- Check [the health of the **secondary** node](#check-the-health-of-the-secondary-node).
+- Check [if PostgreSQL replication is working](#check-if-postgresql-replication-is-working).
+
+### Check the health of the **secondary** node
 
 Visit the **primary** node's **Admin Area > Geo** (`/admin/geo/nodes`) in
 your browser. We perform the following health checks on each **secondary** node
@@ -23,10 +31,12 @@ to help identify if something is wrong:
 
 ![Geo health check](img/geo_node_healthcheck.png)
 
-For information on how to resolve common errors reported from the UI, see [common errors](#common-errors).
+For information on how to resolve common errors reported from the UI, see
+[Fixing Common Errors](#fixing-common-errors).
 
 If the UI is not working, or you are unable to log in, you can run the Geo
 health check manually to get this information as well as a few more details.
+
 This rake task can be run on an app node in the **primary** or **secondary**
 Geo nodes:
 
@@ -36,7 +46,7 @@ sudo gitlab-rake gitlab:geo:check
 
 Example output:
 
-```
+```text
 Checking Geo ...
 
 GitLab Geo is available ... yes
@@ -68,7 +78,7 @@ sudo gitlab-rake geo:status
 
 Example output:
 
-```
+```text
 http://secondary.example.com/
 -----------------------------------------------------
                         GitLab Version: 11.10.4-ee
@@ -89,16 +99,21 @@ http://secondary.example.com/
                 Last status report was: 2 minutes ago
 ```
 
-## Is Postgres replication working?
+### Check if PostgreSQL replication is working
 
-### Are my nodes pointing to the correct database instance?
+To check if PostgreSQL replication is working, check if:
+
+- [Nodes are pointing to the correct database instance](#are-nodes-pointing-to-the-correct-database-instance).
+- [Geo can detect the current node correctly](#can-geo-detect-the-current-node-correctly).
+
+#### Are nodes pointing to the correct database instance?
 
 You should make sure your **primary** Geo node points to the instance with
 writing permissions.
 
 Any **secondary** nodes should point only to read-only instances.
 
-### Can Geo detect my current node correctly?
+#### Can Geo detect the current node correctly?
 
 Geo uses the defined node from the **Admin Area > Geo** screen, and tries to match
 it with the value defined in the `/etc/gitlab/gitlab.rb` configuration file.
@@ -112,29 +127,38 @@ sudo gitlab-rails runner "puts Gitlab::Geo.current_node.inspect"
 
 and expect something like:
 
-```
+```ruby
 #<GeoNode id: 2, schema: "https", host: "gitlab.example.com", port: 443, relative_url_root: "", primary: false, ...>
 ```
 
 By running the command above, `primary` should be `true` when executed in
 the **primary** node, and `false` on any **secondary** node.
 
-## How do I fix the message, "ERROR:  replication slots can only be used if max_replication_slots > 0"?
+## Fixing replication errors
+
+The following sections outline troubleshooting steps for fixing replication
+errors.
+
+### Message: "ERROR:  replication slots can only be used if max_replication_slots > 0"?
 
 This means that the `max_replication_slots` PostgreSQL variable needs to
 be set on the **primary** database. In GitLab 9.4, we have made this setting
 default to 1. You may need to increase this value if you have more
-**secondary** nodes. Be sure to restart PostgreSQL for this to take
+**secondary** nodes.
+
+Be sure to restart PostgreSQL for this to take
 effect. See the [PostgreSQL replication
 setup][database-pg-replication] guide for more details.
 
-## How do I fix the message, "FATAL:  could not start WAL streaming: ERROR:  replication slot "geo_secondary_my_domain_com" does not exist"?
+### Message: "FATAL:  could not start WAL streaming: ERROR:  replication slot "geo_secondary_my_domain_com" does not exist"?
 
 This occurs when PostgreSQL does not have a replication slot for the
-**secondary** node by that name. You may want to rerun the [replication
+**secondary** node by that name.
+
+You may want to rerun the [replication
 process](database.md) on the **secondary** node .
 
-## How do I fix the message, "Command exceeded allowed execution time" when setting up replication?
+### Message: "Command exceeded allowed execution time" when setting up replication?
 
 This may happen while [initiating the replication process][database-start-replication] on the **secondary** node,
 and indicates that your initial dataset is too large to be replicated in the default timeout (30 minutes).
@@ -153,7 +177,7 @@ sudo gitlab-ctl \
 This will give the initial replication up to six hours to complete, rather than
 the default thirty minutes. Adjust as required for your installation.
 
-## How do I fix the message, "PANIC: could not write to file 'pg_xlog/xlogtemp.123': No space left on device"
+### Message: "PANIC: could not write to file 'pg_xlog/xlogtemp.123': No space left on device"
 
 Determine if you have any unused replication slots in the **primary** database. This can cause large amounts of
 log data to build up in `pg_xlog`. Removing the unused slots can reduce the amount of space used in the `pg_xlog`.
@@ -184,11 +208,12 @@ Slots where `active` is `f` are not active.
     SELECT pg_drop_replication_slot('<name_of_extra_slot>');
     ```
 
-## Very large repositories never successfully synchronize on the **secondary** node
+### Very large repositories never successfully synchronize on the **secondary** node
 
 GitLab places a timeout on all repository clones, including project imports
 and Geo synchronization operations. If a fresh `git clone` of a repository
 on the primary takes more than a few minutes, you may be affected by this.
+
 To increase the timeout, add the following line to `/etc/gitlab/gitlab.rb`
 on the **secondary** node:
 
@@ -205,7 +230,7 @@ sudo gitlab-ctl reconfigure
 This will increase the timeout to three hours (10800 seconds). Choose a time
 long enough to accommodate a full clone of your largest repositories.
 
-## How to reset Geo **secondary** node replication
+### Reseting Geo **secondary** node replication
 
 If you get a **secondary** node in a broken state and want to reset the replication state,
 to start again from scratch, there are a few steps that can help you:
@@ -289,12 +314,16 @@ to start again from scratch, there are a few steps that can help you:
     gitlab-ctl start
     ```
 
-## How do I fix a "Foreign Data Wrapper (FDW) is not configured" error?
+## Fixing Foreign Data Wrapper errors
+
+This section documents ways to fix potential Foreign Data Wrapper errors.
+
+### "Foreign Data Wrapper (FDW) is not configured" error
 
 When setting up Geo, you might see this warning in the `gitlab-rake
 gitlab:geo:check` output:
 
-```
+```text
 GitLab Geo tracking database Foreign Data Wrapper schema is up-to-date? ... foreign data wrapper is not configured
 ```
 
@@ -307,7 +336,7 @@ There are a few key points to remember:
 By default, the Geo secondary and tracking database are running on the
 same host on different ports. That is, 5432 and 5431 respectively.
 
-### Checking configuration
+#### Checking configuration
 
 NOTE: **Note:**
 The following steps are for Omnibus installs only. Using Geo with source-based installs was **deprecated** in GitLab 11.5.
@@ -419,7 +448,7 @@ should see something like this:
     - `geo_postgresql['fdw_external_user']`
     - `geo_postgresql['fdw_external_password']`
 
-### Manual reload of FDW schema
+#### Manual reload of FDW schema
 
 If you're still unable to get FDW working, you may want to try a manual
 reload of the FDW schema. To manually reload the FDW schema:
@@ -459,9 +488,25 @@ reload of the FDW schema. To manually reload the FDW schema:
 [database-start-replication]: database.md#step-3-initiate-the-replication-process
 [database-pg-replication]: database.md#postgresql-replication
 
-## Common errors
+### "Geo database has an outdated FDW remote schema" error
 
-This section documents common errors reported in the admin UI and how to fix them.
+GitLab can error with a `Geo database has an outdated FDW remote schema` message.
+
+For example:
+
+```text
+Geo database has an outdated FDW remote schema. It contains 229 of 236 expected tables. Please refer to Geo Troubleshooting.
+```
+
+To resolve this, run the following command:
+
+```sh
+sudo gitlab-rake geo:db:refresh_foreign_tables
+```
+
+## Fixing common errors
+
+This section documents common errors reported in the Admin UI and how to fix them.
 
 ### Geo database configuration file is missing
 
@@ -469,7 +514,6 @@ GitLab cannot find or doesn't have permission to access the `database_geo.yml` c
 
 In an Omnibus GitLab installation, the file should be in `/var/opt/gitlab/gitlab-rails/etc`.
 If it doesn't exist or inadvertent changes have been made to it, run `sudo gitlab-ctl reconfigure` to restore it to its correct state.
-
 
 If this path is mounted on a remote volume, please check your volume configuration and that it has correct permissions.
 
@@ -503,7 +547,7 @@ Make sure you follow the [Geo database replication](database.md) instructions fo
 
 If you are using GitLab Omnibus installation, something might have failed during upgrade. You can:
 
-- Run `sudo gitlab-ctl reconfigure`. 
+- Run `sudo gitlab-ctl reconfigure`.
 - Manually trigger the database migration by running: `sudo gitlab-rake geo:db:migrate` as root on the **secondary** node.
 
 ### Geo database is not configured to use Foreign Data Wrapper
@@ -511,4 +555,4 @@ If you are using GitLab Omnibus installation, something might have failed during
 This error means the Geo Tracking Database doesn't have the FDW server and credentials
 configured.
 
-See [How do I fix a "Foreign Data Wrapper (FDW) is not configured" error?](#how-do-i-fix-a-foreign-data-wrapper-fdw-is-not-configured-error).
+See ["Foreign Data Wrapper (FDW) is not configured" error?](#foreign-data-wrapper-fdw-is-not-configured-error).
