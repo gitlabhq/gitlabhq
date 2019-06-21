@@ -73,7 +73,7 @@ module Gitlab
           end
 
           def available_lexemes
-            Feature.enabled?(:ci_variables_complex_expressions) ? NEW_LEXEMES : LEXEMES
+            Feature.enabled?(:ci_variables_complex_expressions, default_enabled: true) ? NEW_LEXEMES : LEXEMES
           end
         end
       end
