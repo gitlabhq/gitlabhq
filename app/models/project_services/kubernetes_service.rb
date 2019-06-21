@@ -170,12 +170,11 @@ class KubernetesService < Service
 
   def deprecation_message
     content = if project
-                _("Kubernetes service integration has been deprecated. %{deprecated_message_content} your Kubernetes clusters using the new <a href=\"%{url}\"/>Kubernetes Clusters</a> page") % {
-                  deprecated_message_content: deprecated_message_content,
+                _("Kubernetes service integration has been disabled. Fields on this page are not used by GitLab, you can configure your Kubernetes clusters using the new <a href=\"%{url}\"/>Kubernetes Clusters</a> page") % {
                   url: Gitlab::Routing.url_helpers.project_clusters_path(project)
                 }
               else
-                _("The instance-level Kubernetes service integration is deprecated. Your data has been migrated to an <a href=\"%{url}\"/>instance-level cluster</a>.") % {
+                _("The instance-level Kubernetes service integration is disabled. Your data has been migrated to an <a href=\"%{url}\"/>instance-level cluster</a>.") % {
                   url: Gitlab::Routing.url_helpers.admin_clusters_path
                 }
               end
@@ -259,9 +258,5 @@ class KubernetesService < Service
     if deprecated?
       errors[:base] << deprecation_message
     end
-  end
-
-  def deprecated_message_content
-    _("Fields on this page are now uneditable, you can configure")
   end
 end
