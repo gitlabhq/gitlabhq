@@ -320,6 +320,90 @@ describe Projects::IssuesController do
     end
   end
 
+  describe 'PUT #reorder' do
+    let(:group)   { create(:group, projects: [project]) }
+    let!(:issue1) { create(:issue, project: project, relative_position: 10) }
+    let!(:issue2) { create(:issue, project: project, relative_position: 20) }
+    let!(:issue3) { create(:issue, project: project, relative_position: 30) }
+
+    before do
+      sign_in(user)
+    end
+
+    context 'when user has access' do
+      before do
+        project.add_developer(user)
+      end
+
+      context 'with valid params' do
+        it 'reorders issues and returns a successful 200 response' do
+          reorder_issue(issue1,
+            move_after_id: issue2.id,
+            move_before_id: issue3.id,
+            group_full_path: group.full_path)
+
+          [issue1, issue2, issue3].map(&:reload)
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(issue1.relative_position)
+            .to be_between(issue2.relative_position, issue3.relative_position)
+        end
+      end
+
+      context 'with invalid params' do
+        it 'returns a unprocessable entity 422 response for invalid move ids' do
+          reorder_issue(issue1, move_after_id: 99, move_before_id: 999)
+
+          expect(response).to have_gitlab_http_status(422)
+        end
+
+        it 'returns a not found 404 response for invalid issue id' do
+          reorder_issue(object_double(issue1, iid: 999),
+            move_after_id: issue2.id,
+            move_before_id: issue3.id)
+
+          expect(response).to have_gitlab_http_status(404)
+        end
+
+        it 'returns a unprocessable entity 422 response for issues not in group' do
+          another_group = create(:group)
+
+          reorder_issue(issue1,
+            move_after_id: issue2.id,
+            move_before_id: issue3.id,
+            group_full_path: another_group.full_path)
+
+          expect(response).to have_gitlab_http_status(422)
+        end
+      end
+    end
+
+    context 'with unauthorized user' do
+      before do
+        project.add_guest(user)
+      end
+
+      it 'responds with 404' do
+        reorder_issue(issue1, move_after_id: issue2.id, move_before_id: issue3.id)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    def reorder_issue(issue, move_after_id: nil, move_before_id: nil, group_full_path: nil)
+      put :reorder,
+           params: {
+               namespace_id: project.namespace.to_param,
+               project_id: project,
+               id: issue.iid,
+               move_after_id: move_after_id,
+               move_before_id: move_before_id,
+               group_full_path: group_full_path
+           },
+           format: :json
+    end
+  end
+
   describe 'PUT #update' do
     subject do
       put :update,

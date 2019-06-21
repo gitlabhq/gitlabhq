@@ -76,6 +76,7 @@ module Issues
 
       issue_before = get_issue_if_allowed(before_id, board_group_id)
       issue_after = get_issue_if_allowed(after_id, board_group_id)
+      raise ActiveRecord::RecordNotFound unless issue_before || issue_after
 
       issue.move_between(issue_before, issue_after)
     end
