@@ -101,6 +101,51 @@ describe Gitlab::Graphql::Authorize::AuthorizeResource do
     end
   end
 
+  context 'when the class does not define authorize' do
+    let(:fake_class) do
+      Class.new do
+        include Gitlab::Graphql::Authorize::AuthorizeResource
+
+        attr_reader :user, :found_object
+
+        def initialize(user, found_object)
+          @user, @found_object = user, found_object
+        end
+
+        def find_object(*_args)
+          found_object
+        end
+
+        def current_user
+          user
+        end
+
+        def self.name
+          'TestClass'
+        end
+      end
+    end
+    let(:error) { /#{fake_class.name} has no authorizations/ }
+
+    describe '#authorized_find' do
+      it 'raises a comprehensive error message' do
+        expect { loading_resource.authorized_find }.to raise_error(error)
+      end
+    end
+
+    describe '#authorized_find!' do
+      it 'raises a comprehensive error message' do
+        expect { loading_resource.authorized_find! }.to raise_error(error)
+      end
+    end
+
+    describe '#authorized?' do
+      it 'raises a comprehensive error message' do
+        expect { loading_resource.authorized?(project) }.to raise_error(error)
+      end
+    end
+  end
+
   describe '#authorize' do
     it 'adds permissions from subclasses to those of superclasses when used on classes' do
       base_class = Class.new do

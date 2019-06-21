@@ -48,6 +48,12 @@ module Gitlab
         end
 
         def authorized?(object)
+          # Sanity check. We don't want to accidentally allow a developer to authorize
+          # without first adding permissions to authorize against
+          if self.class.required_permissions.empty?
+            raise Gitlab::Graphql::Errors::ArgumentError, "#{self.class.name} has no authorizations"
+          end
+
           self.class.required_permissions.all? do |ability|
             # The actions could be performed across multiple objects. In which
             # case the current user is common, and we could benefit from the
