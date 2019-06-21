@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# The RebaseWorker must be wrapped in important concurrency code, so should only
+# be scheduled via MergeRequest#rebase_async
 class RebaseWorker
   include ApplicationWorker
 
