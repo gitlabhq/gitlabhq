@@ -1,0 +1,6 @@
+---
+title: Migrate GitLab managed project-level clusters to unmanaged if a Kubernetes
+  namespace was unable to be created
+merge_request: 29251
+author:
+type: other
