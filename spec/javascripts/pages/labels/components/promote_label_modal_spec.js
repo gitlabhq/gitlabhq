@@ -26,9 +26,7 @@ describe('Promote label modal', () => {
 
     it('contains the proper description', () => {
       expect(vm.text).toContain(
-        `Promoting ${labelMockData.labelTitle} will make it available for all projects inside ${
-          labelMockData.groupName
-        }`,
+        `Promoting ${labelMockData.labelTitle} will make it available for all projects inside ${labelMockData.groupName}`,
       );
     });
 

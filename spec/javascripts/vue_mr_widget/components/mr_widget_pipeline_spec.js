@@ -222,9 +222,7 @@ describe('MRWidgetPipeline', () => {
           sourceBranchLink: mockCopy.source_branch_link,
         });
 
-        const expected = `Pipeline #${pipeline.id} ${pipeline.details.status.label} for ${
-          pipeline.commit.short_id
-        } on ${mockCopy.source_branch_link}`;
+        const expected = `Pipeline #${pipeline.id} ${pipeline.details.status.label} for ${pipeline.commit.short_id} on ${mockCopy.source_branch_link}`;
 
         const actual = trimText(vm.$el.querySelector('.js-pipeline-info-container').innerText);
 
@@ -247,11 +245,7 @@ describe('MRWidgetPipeline', () => {
           sourceBranchLink: mockCopy.source_branch_link,
         });
 
-        const expected = `Pipeline #${pipeline.id} ${pipeline.details.status.label} for ${
-          pipeline.commit.short_id
-        } on !${pipeline.merge_request.iid} with ${pipeline.merge_request.source_branch} into ${
-          pipeline.merge_request.target_branch
-        }`;
+        const expected = `Pipeline #${pipeline.id} ${pipeline.details.status.label} for ${pipeline.commit.short_id} on !${pipeline.merge_request.iid} with ${pipeline.merge_request.source_branch} into ${pipeline.merge_request.target_branch}`;
 
         const actual = trimText(vm.$el.querySelector('.js-pipeline-info-container').innerText);
 
@@ -274,9 +268,7 @@ describe('MRWidgetPipeline', () => {
           sourceBranchLink: mockCopy.source_branch_link,
         });
 
-        const expected = `Pipeline #${pipeline.id} ${pipeline.details.status.label} for ${
-          pipeline.commit.short_id
-        } on !${pipeline.merge_request.iid} with ${pipeline.merge_request.source_branch}`;
+        const expected = `Pipeline #${pipeline.id} ${pipeline.details.status.label} for ${pipeline.commit.short_id} on !${pipeline.merge_request.iid} with ${pipeline.merge_request.source_branch}`;
 
         const actual = trimText(vm.$el.querySelector('.js-pipeline-info-container').innerText);
 

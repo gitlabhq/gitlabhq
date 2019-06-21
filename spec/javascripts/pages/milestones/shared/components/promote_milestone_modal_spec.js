@@ -24,9 +24,7 @@ describe('Promote milestone modal', () => {
 
     it('contains the proper description', () => {
       expect(vm.text).toContain(
-        `Promoting ${
-          milestoneMockData.milestoneTitle
-        } will make it available for all projects inside ${milestoneMockData.groupName}.`,
+        `Promoting ${milestoneMockData.milestoneTitle} will make it available for all projects inside ${milestoneMockData.groupName}.`,
       );
     });
 

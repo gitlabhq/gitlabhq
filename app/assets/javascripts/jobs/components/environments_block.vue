@@ -86,9 +86,7 @@ export default {
         return sprintf(
           '%{startLink}%{name}%{endLink}',
           {
-            startLink: `<a href="${
-              this.deploymentStatus.environment.environment_path
-            }" class="js-environment-link">`,
+            startLink: `<a href="${this.deploymentStatus.environment.environment_path}" class="js-environment-link">`,
             name: _.escape(this.deploymentStatus.environment.name),
             endLink: '</a>',
           },
