@@ -74,6 +74,7 @@ Omnibus:
 1. Note the Redis node's IP address or hostname, port, and
    Redis password. These will be necessary when configuring the GitLab
    application servers later.
+1. [Enable Monitoring](#enable-monitoring)   
 
 Advanced configuration options are supported and can be added if
 needed.
@@ -748,6 +749,33 @@ gitlab_rails['redis_sentinels'] = [
 ```
 
 [Reconfigure Omnibus GitLab][reconfigure] for the changes to take effect.
+
+## Enable Monitoring
+
+> [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/issues/3786) in GitLab 12.0.
+
+  If you enable Monitoring, it must be enabled on **all** Redis servers.
+
+  1. Create/edit `/etc/gitlab/gitlab.rb` and add the following configuration:
+
+     ```ruby
+     # Enable service discovery for Prometheus
+     consul['enable'] = true
+     consul['monitoring_service_discovery'] =  true
+
+     # Replace placeholders
+     # Y.Y.Y.Y consul1.gitlab.example.com Z.Z.Z.Z
+     # with the addresses of the Consul server nodes
+     consul['configuration'] = {
+        retry_join: %w(Y.Y.Y.Y consul1.gitlab.example.com Z.Z.Z.Z),
+     }
+
+     # Set the network addresses that the exporters will listen on
+     node_exporter['listen_address'] = '0.0.0.0:9100'
+     redis_exporter['listen_address'] = '0.0.0.0:9121'
+     ```
+
+  1. Run `sudo gitlab-ctl reconfigure` to compile the configuration.
 
 ## Advanced configuration
 
