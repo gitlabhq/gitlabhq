@@ -104,6 +104,26 @@ module KubernetesHelpers
       .to_return(status: [status, "Internal Server Error"])
   end
 
+  def stub_kubeclient_get_secret_not_found_then_found(api_url, **options)
+    options[:metadata_name] ||= "default-token-1"
+    options[:namespace] ||= "default"
+
+    WebMock.stub_request(:get, api_url + "/api/v1/namespaces/#{options[:namespace]}/secrets/#{options[:metadata_name]}")
+      .to_return(status: [404, "Not Found"])
+      .then
+      .to_return(kube_response(kube_v1_secret_body(options)))
+  end
+
+  def stub_kubeclient_get_secret_missing_token_then_with_token(api_url, **options)
+    options[:metadata_name] ||= "default-token-1"
+    options[:namespace] ||= "default"
+
+    WebMock.stub_request(:get, api_url + "/api/v1/namespaces/#{options[:namespace]}/secrets/#{options[:metadata_name]}")
+      .to_return(kube_response(kube_v1_secret_body(options.merge(token: nil))))
+      .then
+      .to_return(kube_response(kube_v1_secret_body(options)))
+  end
+
   def stub_kubeclient_get_service_account(api_url, name, namespace: 'default')
     WebMock.stub_request(:get, api_url + "/api/v1/namespaces/#{namespace}/serviceaccounts/#{name}")
       .to_return(kube_response({}))
@@ -184,11 +204,11 @@ module KubernetesHelpers
       "kind" => "SecretList",
       "apiVersion": "v1",
       "metadata": {
-        "name": options[:metadata_name] || "default-token-1",
+        "name": options.fetch(:metadata_name, "default-token-1"),
         "namespace": "kube-system"
       },
       "data": {
-        "token": options[:token] || Base64.encode64('token-sample-123')
+        "token": options.fetch(:token, Base64.encode64('token-sample-123'))
       }
     }
   end
