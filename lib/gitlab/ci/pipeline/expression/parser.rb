@@ -13,7 +13,7 @@ module Gitlab
           end
 
           def tree
-            if Feature.enabled?(:ci_variables_complex_expressions)
+            if Feature.enabled?(:ci_variables_complex_expressions, default_enabled: true)
               rpn_parse_tree
             else
               reverse_descent_parse_tree
