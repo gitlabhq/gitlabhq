@@ -2849,10 +2849,13 @@ msgstr ""
 msgid "ContainerRegistry|Once you log in, you&rsquo;re free to create and upload a container image using the common %{build} and %{push} commands"
 msgstr ""
 
-msgid "ContainerRegistry|Remove repository"
+msgid "ContainerRegistry|Remove image"
 msgstr ""
 
-msgid "ContainerRegistry|Remove tag"
+msgid "ContainerRegistry|Remove image and tags"
+msgstr ""
+
+msgid "ContainerRegistry|Remove repository"
 msgstr ""
 
 msgid "ContainerRegistry|Size"
@@ -2868,6 +2871,12 @@ msgid "ContainerRegistry|Use different image names"
 msgstr ""
 
 msgid "ContainerRegistry|With the Docker Container Registry integrated into GitLab, every project can have its own space to store its Docker images."
+msgstr ""
+
+msgid "ContainerRegistry|You are about to delete the image <b>%{title}</b>. This will delete the image and all tags pointing to this image."
+msgstr ""
+
+msgid "ContainerRegistry|You are about to remove repository <b>%{title}</b>. Once you confirm, this repository will be permanently deleted."
 msgstr ""
 
 msgid "ContainerRegistry|You can also use a %{deploy_token} for read-only access to the registry images."
