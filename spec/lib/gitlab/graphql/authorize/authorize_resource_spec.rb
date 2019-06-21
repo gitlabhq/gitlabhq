@@ -67,7 +67,7 @@ describe Gitlab::Graphql::Authorize::AuthorizeResource do
     end
 
     describe '#authorize!' do
-      it 'does not raise an error' do
+      it 'raises an error' do
         expect { loading_resource.authorize!(project) }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
       end
     end

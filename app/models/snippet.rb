@@ -194,6 +194,10 @@ class Snippet < ApplicationRecord
     'snippet'
   end
 
+  def to_ability_name
+    model_name.singular
+  end
+
   class << self
     # Searches for snippets with a matching title or file name.
     #
