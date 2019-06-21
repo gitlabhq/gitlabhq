@@ -1284,9 +1284,7 @@ export default class Notes {
 
   putConflictEditWarningInPlace(noteEntity, $note) {
     if ($note.find('.js-conflict-edit-warning').length === 0) {
-      const open_link = `<a href="#note_${
-        noteEntity.id
-      }" target="_blank" rel="noopener noreferrer">`;
+      const open_link = `<a href="#note_${noteEntity.id}" target="_blank" rel="noopener noreferrer">`;
       const $alert = $(`<div class="js-conflict-edit-warning alert alert-danger">
         ${sprintf(
           s__(

@@ -101,9 +101,7 @@ describe('Stages Dropdown', () => {
     });
 
     it(`renders the pipeline info text like "Pipeline #123 for !456 with source_branch into target_branch"`, () => {
-      const expected = `Pipeline #${pipeline.id} for !${pipeline.merge_request.iid} with ${
-        pipeline.merge_request.source_branch
-      } into ${pipeline.merge_request.target_branch}`;
+      const expected = `Pipeline #${pipeline.id} for !${pipeline.merge_request.iid} with ${pipeline.merge_request.source_branch} into ${pipeline.merge_request.target_branch}`;
       const actual = trimText(vm.$el.querySelector('.js-pipeline-info').innerText);
 
       expect(actual).toBe(expected);
@@ -144,9 +142,7 @@ describe('Stages Dropdown', () => {
     });
 
     it(`renders the pipeline info like "Pipeline #123 for !456 with source_branch"`, () => {
-      const expected = `Pipeline #${pipeline.id} for !${pipeline.merge_request.iid} with ${
-        pipeline.merge_request.source_branch
-      }`;
+      const expected = `Pipeline #${pipeline.id} for !${pipeline.merge_request.iid} with ${pipeline.merge_request.source_branch}`;
       const actual = trimText(vm.$el.querySelector('.js-pipeline-info').innerText);
 
       expect(actual).toBe(expected);

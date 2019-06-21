@@ -201,9 +201,7 @@ class GfmAutoComplete {
             const autoCompleteAvatar = m.avatar_url || m.username.charAt(0).toUpperCase();
 
             const rectAvatarClass = m.type === GROUP_TYPE ? 'rect-avatar' : '';
-            const imgAvatar = `<img src="${m.avatar_url}" alt="${
-              m.username
-            }" class="avatar ${rectAvatarClass} avatar-inline center s26"/>`;
+            const imgAvatar = `<img src="${m.avatar_url}" alt="${m.username}" class="avatar ${rectAvatarClass} avatar-inline center s26"/>`;
             const txtAvatar = `<div class="avatar ${rectAvatarClass} center avatar-inline s26">${autoCompleteAvatar}</div>`;
 
             return {
