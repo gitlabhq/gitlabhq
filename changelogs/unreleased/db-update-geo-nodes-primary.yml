@@ -1,0 +1,5 @@
+---
+title: Disallow `NULL` values for `geo_nodes.primary` column
+merge_request: 29818
+author: Arun Kumar Mohan
+type: other

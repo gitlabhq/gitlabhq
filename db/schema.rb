@@ -1391,7 +1391,7 @@ ActiveRecord::Schema.define(version: 20190619175843) do
   end
 
   create_table "geo_nodes", id: :serial, force: :cascade do |t|
-    t.boolean "primary"
+    t.boolean "primary", default: false, null: false
     t.integer "oauth_application_id"
     t.boolean "enabled", default: true, null: false
     t.string "access_key"
