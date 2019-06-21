@@ -30,11 +30,11 @@ export default class MRWidgetService {
   }
 
   poll() {
-    return axios.get(`${this.endpoints.statusPath}?serializer=basic`);
+    return axios.get(this.endpoints.mergeRequestBasicPath);
   }
 
   checkStatus() {
-    return axios.get(`${this.endpoints.statusPath}?serializer=widget`);
+    return axios.get(this.endpoints.mergeRequestWidgetPath);
   }
 
   fetchMergeActionsContent() {

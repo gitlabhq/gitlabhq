@@ -86,7 +86,8 @@ export default class MergeRequestStore {
     this.mergePath = data.merge_path;
     this.ffOnlyEnabled = data.ff_only_enabled;
     this.shouldBeRebased = Boolean(data.should_be_rebased);
-    this.statusPath = data.status_path;
+    this.mergeRequestBasicPath = data.merge_request_basic_path;
+    this.mergeRequestWidgetPath = data.merge_request_widget_path;
     this.emailPatchesPath = data.email_patches_path;
     this.plainDiffPath = data.plain_diff_path;
     this.newBlobPath = data.new_blob_path;
