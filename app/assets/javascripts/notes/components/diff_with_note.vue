@@ -7,6 +7,8 @@ import { GlSkeletonLoading } from '@gitlab/ui';
 import { getDiffMode } from '~/diffs/store/utils';
 import { diffViewerModes } from '~/ide/constants';
 
+const FIRST_CHAR_REGEX = /^(\+|-| )/;
+
 export default {
   components: {
     DiffFileHeader,
@@ -59,6 +61,9 @@ export default {
           this.error = true;
         });
     },
+    trimChar(line) {
+      return line.replace(FIRST_CHAR_REGEX, '');
+    },
   },
   userColorSchemeClass: window.gon.user_color_scheme,
 };
@@ -83,7 +88,7 @@ export default {
           >
             <td :class="line.type" class="diff-line-num old_line">{{ line.old_line }}</td>
             <td :class="line.type" class="diff-line-num new_line">{{ line.new_line }}</td>
-            <td :class="line.type" class="line_content" v-html="line.rich_text"></td>
+            <td :class="line.type" class="line_content" v-html="trimChar(line.rich_text)"></td>
           </tr>
         </template>
         <tr v-if="!hasTruncatedDiffLines" class="line_holder line-holder-placeholder">

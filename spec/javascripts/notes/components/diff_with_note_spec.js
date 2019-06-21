@@ -47,6 +47,19 @@ describe('diff_with_note', () => {
       vm = mountComponentWithStore(Component, { props, store });
     });
 
+    it('removes trailing "+" char', () => {
+      const richText = vm.$el.querySelectorAll('.line_holder')[4].querySelector('.line_content')
+        .textContent[0];
+
+      expect(richText).not.toEqual('+');
+    });
+
+    it('removes trailing "-" char', () => {
+      const richText = vm.$el.querySelector('#LC13').parentNode.textContent[0];
+
+      expect(richText).not.toEqual('-');
+    });
+
     it('shows text diff', () => {
       expect(selectors.container).toHaveClass('text-file');
       expect(selectors.diffTable).toExist();

@@ -1,0 +1,5 @@
+---
+title: Remove duplicate trailing +/- char in merge request discussions
+merge_request: 29518
+author:
+type: fixed
