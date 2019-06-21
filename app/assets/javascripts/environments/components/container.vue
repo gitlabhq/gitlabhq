@@ -57,6 +57,7 @@ export default {
         :user-callouts-path="userCalloutsPath"
         :lock-promotion-svg-path="lockPromotionSvgPath"
         :help-canary-deployments-path="helpCanaryDeploymentsPath"
+        :deploy-boards-help-path="deployBoardsHelpPath"
       />
 
       <table-pagination

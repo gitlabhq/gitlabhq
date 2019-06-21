@@ -6,4 +6,5 @@
   "can-create-environment" => can?(current_user, :create_environment, @project).to_s,
   "new-environment-path" => new_project_environment_path(@project),
   "help-page-path" => help_page_path("ci/environments"),
+  "deploy-boards-help-path" => help_page_path("user/project/deploy_boards", anchor: "enabling-deploy-boards"),
   "css-class" => container_class } }

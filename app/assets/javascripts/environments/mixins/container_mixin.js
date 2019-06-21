@@ -25,5 +25,10 @@ export default {
       required: false,
       default: null,
     },
+    deployBoardsHelpPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
 };

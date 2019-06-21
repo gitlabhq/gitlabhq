@@ -43,6 +43,11 @@ export default {
       type: String,
       required: true,
     },
+    deployBoardsHelpPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
 
   created() {
@@ -112,6 +117,7 @@ export default {
       :user-callouts-path="userCalloutsPath"
       :lock-promotion-svg-path="lockPromotionSvgPath"
       :help-canary-deployments-path="helpCanaryDeploymentsPath"
+      :deploy-boards-help-path="deployBoardsHelpPath"
       @onChangePage="onChangePage"
     >
       <empty-state
