@@ -21,6 +21,18 @@ module Types
       complexity
     end
 
+    def calls_gitaly_check(calls)
+      return if @calls_gitaly
+
+      # Will inform you if :calls_gitaly should be true or false based on the number of Gitaly calls
+      # involved with the request.
+      if calls > 0
+        raise "Gitaly is called for field '#{name}' - please add `calls_gitaly: true` to the field declaration"
+      end
+    rescue => e
+      Gitlab::Sentry.track_exception(e)
+    end
+
     private
 
     def field_complexity(resolver_class)
@@ -53,16 +65,6 @@ module Types
 
         complexity.to_i
       end
-    end
-
-    def calls_gitaly_check
-      # Will inform you if :calls_gitaly should be true or false based on the number of Gitaly calls
-      # involved with the request.
-      if @calls_gitaly && Gitlab::GitalyClient.get_request_count == 0
-        raise "Gitaly is called for field '#{name}' - please add `calls_gitaly: true` to the field declaration"
-      end
-    rescue => e
-      Gitlab::Sentry.track_exception(e)
     end
   end
 end

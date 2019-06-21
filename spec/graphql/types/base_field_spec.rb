@@ -106,26 +106,18 @@ describe Types::BaseField do
       let(:no_gitaly_field) { described_class.new(name: 'test', type: GraphQL::STRING_TYPE, null: true, calls_gitaly: false) }
 
       context 'if there are no Gitaly calls' do
-        before do
-          allow(Gitlab::GitalyClient).to receive(:get_request_count).and_return(0)
-        end
-
         it 'does not raise an error if calls_gitaly is false' do
-          expect { no_gitaly_field.send(:calls_gitaly_check) }.not_to raise_error
-        end
-
-        it 'raises an error if calls_gitaly: true appears' do
-          expect { gitaly_field.send(:calls_gitaly_check) }.to raise_error(/please add `calls_gitaly: true`/)
+          expect { no_gitaly_field.send(:calls_gitaly_check, 0) }.not_to raise_error
         end
       end
 
       context 'if there is at least 1 Gitaly call' do
-        before do
-          allow(Gitlab::GitalyClient).to receive(:get_request_count).and_return(1)
+        it 'does not raise an error if calls_gitaly is true' do
+          expect { gitaly_field.send(:calls_gitaly_check, 1) }.not_to raise_error
         end
 
-        it 'does not raise an error if calls_gitaly is true' do
-          expect { gitaly_field.send(:calls_gitaly_check) }.not_to raise_error
+        it 'raises an error if calls_gitaly: is false or not defined' do
+          expect { no_gitaly_field.send(:calls_gitaly_check, 1) }.to raise_error(/please add `calls_gitaly: true`/)
         end
       end
     end
