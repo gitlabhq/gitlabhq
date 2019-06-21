@@ -40,6 +40,9 @@ To enable Container Scanning in your pipeline, you need:
   [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html#running-privileged-containers-for-the-runners)
   executor running in privileged mode. If you're using the shared Runners on GitLab.com,
   this is enabled by default.
+- Docker `18.09.03` or higher installed on the machine where the Runners are
+  running. If you're using the shared Runners on GitLab.com, this is already
+  the case.
 - To [build and push](../../../ci/docker/using_docker_build.md#container-registry-examples)
   your Docker image to your project's [Container Registry](../../project/container_registry.md).
   The name of the Docker image should match the following scheme:
@@ -202,3 +205,20 @@ vulnerabilities in your groups and projects. Read more about the
 
 Once a vulnerability is found, you can interact with it. Read more on how to
 [interact with the vulnerabilities](../index.md#interacting-with-the-vulnerabilities).
+
+## Troubleshooting
+
+### docker: Error response from daemon: failed to copy xattrs
+
+When the GitLab Runner uses the Docker executor and NFS is used
+(e.g., `/var/lib/docker` is on an NFS mount), Container Scanning might fail with
+an error like the following:
+
+```
+docker: Error response from daemon: failed to copy xattrs: failed to set xattr "security.selinux" on /path/to/file: operation not supported.
+```
+
+This is a result of a bug in Docker which is now [fixed](https://github.com/containerd/continuity/pull/138 "fs: add WithAllowXAttrErrors CopyOpt").
+To prevent the error, ensure the Docker version that the Runner is using is
+`18.09.03` or higher. For more information, see
+[issue #10241](https://gitlab.com/gitlab-org/gitlab-ee/issues/10241 "Investigate why Container Scanning is not working with NFS mounts").
