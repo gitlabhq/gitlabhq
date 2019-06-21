@@ -466,12 +466,10 @@ Rails/LinkToBlank:
 Rails/Presence:
   Exclude:
     - 'app/models/ci/pipeline.rb'
-    - 'app/models/clusters/platforms/kubernetes.rb'
     - 'app/models/concerns/mentionable.rb'
     - 'app/models/project_services/hipchat_service.rb'
     - 'app/models/project_services/irker_service.rb'
     - 'app/models/project_services/jira_service.rb'
-    - 'app/models/project_services/kubernetes_service.rb'
     - 'app/models/project_services/packagist_service.rb'
     - 'app/models/wiki_page.rb'
     - 'lib/gitlab/github_import/importer/releases_importer.rb'
@@ -514,7 +512,6 @@ Security/YAMLLoad:
     - 'spec/config/mail_room_spec.rb'
     - 'spec/initializers/secret_token_spec.rb'
     - 'spec/lib/gitlab/prometheus/additional_metrics_parser_spec.rb'
-    - 'spec/models/project_services/kubernetes_service_spec.rb'
 
 # Offense count: 34
 # Configuration parameters: EnforcedStyle.
