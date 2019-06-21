@@ -231,10 +231,6 @@ class MergeRequest < ApplicationRecord
     end
   end
 
-  def merge_ref_auto_sync_enabled?
-    Feature.enabled?(:merge_ref_auto_sync, project, default_enabled: true)
-  end
-
   # Use this method whenever you need to make sure the head_pipeline is synced with the
   # branch head commit, for example checking if a merge request can be merged.
   # For more information check: https://gitlab.com/gitlab-org/gitlab-ce/issues/40004

@@ -228,6 +228,30 @@ describe MergeRequests::MergeabilityCheckService do
         end
       end
 
+      context 'when MR is marked as mergeable, but repo is not mergeable and MR is not opened' do
+        before do
+          # Making sure that we don't touch the merge-status after
+          # the MR is not opened any longer. Source branch might
+          # have been removed, etc.
+          allow(merge_request).to receive(:broken?) { true }
+          merge_request.mark_as_mergeable!
+          merge_request.close!
+        end
+
+        it 'returns ServiceResponse.error' do
+          result = subject
+
+          expect(result).to be_a(ServiceResponse)
+          expect(result.error?).to be(true)
+          expect(result.message).to eq('Merge ref cannot be updated')
+          expect(result.payload).to be_empty
+        end
+
+        it 'does not change the merge status' do
+          expect { subject }.not_to change(merge_request, :merge_status).from('can_be_merged')
+        end
+      end
+
       context 'when MR is mergeable but merge-ref does not exists' do
         before do
           merge_request.mark_as_mergeable!

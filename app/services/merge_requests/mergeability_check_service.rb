@@ -4,7 +4,7 @@ module MergeRequests
   class MergeabilityCheckService < ::BaseService
     include Gitlab::Utils::StrongMemoize
 
-    delegate :project, :merge_ref_auto_sync_enabled?, to: :@merge_request
+    delegate :project, to: :@merge_request
     delegate :repository, to: :project
 
     def initialize(merge_request)
@@ -37,6 +37,10 @@ module MergeRequests
 
       unless merge_ref_auto_sync_enabled?
         return ServiceResponse.error(message: 'Merge ref is outdated due to disabled feature')
+      end
+
+      unless payload.fetch(:merge_ref_head)
+        return ServiceResponse.error(message: 'Merge ref cannot be updated')
       end
 
       ServiceResponse.success(payload: payload)
@@ -89,6 +93,7 @@ module MergeRequests
     # Returns true if the merge-ref does not exists or is out of sync.
     def outdated_merge_ref?
       return false unless merge_ref_auto_sync_enabled?
+      return false unless merge_request.open?
 
       return true unless ref_head = merge_request.merge_ref_head
       return true unless target_sha = merge_request.target_branch_sha
@@ -106,6 +111,10 @@ module MergeRequests
 
       result = MergeRequests::MergeToRefService.new(project, merge_request.author).execute(merge_request)
       result[:status] == :success
+    end
+
+    def merge_ref_auto_sync_enabled?
+      Feature.enabled?(:merge_ref_auto_sync, project, default_enabled: true)
     end
   end
 end
