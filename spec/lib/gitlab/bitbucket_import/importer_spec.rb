@@ -98,12 +98,8 @@ describe Gitlab::BitbucketImport::Importer do
   describe '#import_pull_requests' do
     let(:source_branch_sha) { sample.commits.last }
     let(:target_branch_sha) { sample.commits.first }
-
-    before do
-      allow(subject).to receive(:import_wiki)
-      allow(subject).to receive(:import_issues)
-
-      pull_request = instance_double(
+    let(:pull_request) do
+      instance_double(
         Bitbucket::Representation::PullRequest,
         iid: 10,
         source_branch_sha: source_branch_sha,
@@ -116,6 +112,11 @@ describe Gitlab::BitbucketImport::Importer do
         author: 'other',
         created_at: Time.now,
         updated_at: Time.now)
+    end
+
+    before do
+      allow(subject).to receive(:import_wiki)
+      allow(subject).to receive(:import_issues)
 
       # https://gitlab.com/gitlab-org/gitlab-test/compare/c1acaa58bbcbc3eafe538cb8274ba387047b69f8...5937ac0a7beb003549fc5fd26fc247ad
       @inline_note = instance_double(
@@ -165,6 +166,20 @@ describe Gitlab::BitbucketImport::Importer do
       reply_note = notes.last
       expect(reply_note).to be_a(DiffNote)
       expect(reply_note.note).to eq(@reply.note)
+    end
+
+    context 'when importing a pull request throws an exception' do
+      before do
+        allow(pull_request).to receive(:raw).and_return('hello world')
+        allow(subject.client).to receive(:pull_request_comments).and_raise(HTTParty::Error)
+      end
+
+      it 'logs an error without the backtrace' do
+        subject.execute
+
+        expect(subject.errors.count).to eq(1)
+        expect(subject.errors.first.keys).to match_array(%i(type iid errors))
+      end
     end
 
     context "when branches' sha is not found in the repository" do

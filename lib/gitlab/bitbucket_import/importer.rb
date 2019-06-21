@@ -11,6 +11,7 @@ module Gitlab
                 { title: 'task', color: '#7F8C8D' }].freeze
 
       attr_reader :project, :client, :errors, :users
+      attr_accessor :logger
 
       def initialize(project)
         @project = project
@@ -19,6 +20,7 @@ module Gitlab
         @labels = {}
         @errors = []
         @users = {}
+        @logger = Gitlab::Import::Logger.build
       end
 
       def execute
@@ -39,6 +41,18 @@ module Gitlab
           message: 'The remote data could not be fully imported.',
           errors: errors
         }.to_json)
+      end
+
+      def store_pull_request_error(pull_request, ex)
+        backtrace = Gitlab::Profiler.clean_backtrace(ex.backtrace)
+        error = { type: :pull_request, iid: pull_request.iid, errors: ex.message, trace: backtrace, raw_response: pull_request.raw }
+
+        log_error(error)
+        # Omit the details from the database to avoid blowing up usage in the error column
+        error.delete(:trace)
+        error.delete(:raw_response)
+
+        errors << error
       end
 
       def gitlab_user_id(project, username)
@@ -176,7 +190,7 @@ module Gitlab
 
           import_pull_request_comments(pull_request, merge_request) if merge_request.persisted?
         rescue StandardError => e
-          errors << { type: :pull_request, iid: pull_request.iid, errors: e.message, trace: e.backtrace.join("\n"), raw_response: pull_request.raw }
+          store_pull_request_error(pull_request, e)
         end
       end
 
@@ -252,6 +266,18 @@ module Gitlab
           author_id: gitlab_user_id(project, comment.author),
           created_at: comment.created_at,
           updated_at: comment.updated_at
+        }
+      end
+
+      def log_error(details)
+        logger.error(log_base_data.merge(details))
+      end
+
+      def log_base_data
+        {
+          class: self.class.name,
+          project_id: project.id,
+          project_path: project.full_path
         }
       end
     end
