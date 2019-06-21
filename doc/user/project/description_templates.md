@@ -58,6 +58,7 @@ changes you made after picking the template and return it to its initial status.
 ## Setting a default template for issues and merge requests  **[STARTER]**
 
 > **Notes:**
+>
 > - This feature was introduced before [description templates](#overview) and is
 >   available in [GitLab Starter][products]. It can be enabled
 >   in the project's settings.
