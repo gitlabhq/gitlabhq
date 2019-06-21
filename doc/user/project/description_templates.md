@@ -65,7 +65,7 @@ changes you made after picking the template and return it to its initial status.
 > - Templates for merge requests were [introduced][ee-7478ece] in GitLab EE 6.9.
 
 The visibility of issues and/or merge requests should be set to either "Everyone
-with access" or "Only team members" in your project's **Settings** otherwise the
+with access" or "Only Project Members" in your project's **Settings** otherwise the
 template text areas won't show. This is the default behavior so in most cases
 you should be fine.
 
