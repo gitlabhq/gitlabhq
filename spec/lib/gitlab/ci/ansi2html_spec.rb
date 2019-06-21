@@ -141,11 +141,11 @@ describe Gitlab::Ci::Ansi2html do
   end
 
   it "replaces newlines with line break tags" do
-    expect(convert_html("\n")).to eq('<span class=""><br/><span class=""></span></span>')
+    expect(convert_html("\n")).to eq('<span class=""></span><br/><span class=""></span>')
   end
 
   it "groups carriage returns with newlines" do
-    expect(convert_html("\r\n")).to eq('<span class=""><br/><span class=""></span></span>')
+    expect(convert_html("\r\n")).to eq('<span class=""></span><br/><span class=""></span>')
   end
 
   describe "incremental update" do
@@ -193,7 +193,7 @@ describe Gitlab::Ci::Ansi2html do
       let(:pre_text) { "Hello\r" }
       let(:pre_html) { "<span class=\"\">Hello\r</span>" }
       let(:text) { "\nWorld" }
-      let(:html) { "<span class=\"\"><br/><span class=\"\">World</span></span>" }
+      let(:html) { "<span class=\"\"></span><br/><span class=\"\">World</span>" }
 
       it_behaves_like 'stateable converter'
     end
@@ -232,7 +232,7 @@ describe Gitlab::Ci::Ansi2html do
       it 'prints light red' do
         text = "#{section_start}\e[91mHello\e[0m\n#{section_end}"
         header = %{<span class="term-fg-l-red section js-section-header section-header js-s-#{class_name(section_name)}">Hello</span>}
-        line_break = %{<span class="section js-section-header section-header js-s-#{class_name(section_name)}"><br/></span>}
+        line_break = %{<span class="section js-section-header section-header js-s-#{class_name(section_name)}"></span><br/>}
         line = %{<span class="section line s_#{class_name(section_name)}"></span>}
         empty_line = %{<span class="section js-s-#{class_name(section_name)}"></span>}
         html = "#{section_start_html}#{header}#{line_break}#{line}#{empty_line}#{section_end_html}"
