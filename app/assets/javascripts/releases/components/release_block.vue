@@ -1,6 +1,6 @@
 <script>
 import _ from 'underscore';
-import { GlTooltipDirective, GlLink } from '@gitlab/ui';
+import { GlTooltipDirective, GlLink, GlBadge } from '@gitlab/ui';
 import Icon from '~/vue_shared/components/icon.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
@@ -10,6 +10,7 @@ export default {
   name: 'ReleaseBlock',
   components: {
     GlLink,
+    GlBadge,
     Icon,
     UserAvatarLink,
   },
@@ -53,7 +54,12 @@ export default {
 <template>
   <div class="card">
     <div class="card-body">
-      <h2 class="card-title mt-0">{{ release.name }}</h2>
+      <h2 class="card-title mt-0">
+        {{ release.name }}
+        <gl-badge v-if="release.pre_release" variant="warning" class="align-middle">{{
+          __('Pre-release')
+        }}</gl-badge>
+      </h2>
 
       <div class="card-subtitle d-flex flex-wrap text-secondary">
         <div class="append-right-8">
@@ -68,9 +74,9 @@ export default {
 
         <div class="append-right-4">
           &bull;
-          <span v-gl-tooltip.bottom :title="tooltipTitle(release.created_at)">{{
-            releasedTimeAgo
-          }}</span>
+          <span v-gl-tooltip.bottom :title="tooltipTitle(release.created_at)">
+            {{ releasedTimeAgo }}
+          </span>
         </div>
 
         <div v-if="hasAuthor" class="d-flex">
@@ -98,7 +104,8 @@ export default {
           <li v-for="link in assets.links" :key="link.name" class="append-bottom-8">
             <gl-link v-gl-tooltip.bottom :title="__('Download asset')" :href="link.url">
               <icon name="package" class="align-middle append-right-4 align-text-bottom" />
-              {{ link.name }} <span v-if="link.external"> {{ __('(external source)') }}</span>
+              {{ link.name }}
+              <span v-if="link.external">{{ __('(external source)') }}</span>
             </gl-link>
           </li>
         </ul>
@@ -111,7 +118,8 @@ export default {
             aria-haspopup="true"
             aria-expanded="false"
           >
-            <icon name="doc-code" class="align-top append-right-4" /> {{ __('Source code') }}
+            <icon name="doc-code" class="align-top append-right-4" />
+            {{ __('Source code') }}
             <icon name="arrow-down" />
           </button>
 
@@ -123,7 +131,9 @@ export default {
         </div>
       </div>
 
-      <div class="card-text prepend-top-default"><div v-html="release.description_html"></div></div>
+      <div class="card-text prepend-top-default">
+        <div v-html="release.description_html"></div>
+      </div>
     </div>
   </div>
 </template>
