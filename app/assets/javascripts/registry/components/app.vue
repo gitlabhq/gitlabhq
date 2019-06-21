@@ -33,7 +33,7 @@ export default {
 </script>
 <template>
   <div>
-    <gl-loading-icon v-if="isLoading" :size="3" />
+    <gl-loading-icon v-if="isLoading" size="md" />
 
     <collapsible-container
       v-for="item in repos"
@@ -45,7 +45,7 @@ export default {
     <p v-else-if="!isLoading && !repos.length">
       {{
         __(`No container images stored for this project.
-Add one by following the instructions above.`)
+      Add one by following the instructions above.`)
       }}
     </p>
   </div>

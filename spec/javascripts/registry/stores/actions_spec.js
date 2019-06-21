@@ -105,4 +105,28 @@ describe('Actions Registry Store', () => {
       );
     });
   });
+
+  describe('deleteItem', () => {
+    it('should perform DELETE request on destroyPath', done => {
+      const destroyPath = `${TEST_HOST}/mygroup/myproject/container_registry/1.json`;
+      let deleted = false;
+      mock.onDelete(destroyPath).replyOnce(() => {
+        deleted = true;
+        return [200];
+      });
+      testAction(
+        actions.deleteItem,
+        {
+          destroyPath,
+        },
+        mockedState,
+      )
+        .then(() => {
+          expect(mock.history.delete.length).toBe(1);
+          expect(deleted).toBe(true);
+          done();
+        })
+        .catch(done.fail);
+    });
+  });
 });

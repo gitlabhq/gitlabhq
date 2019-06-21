@@ -1,6 +1,6 @@
 <script>
 import { mapActions } from 'vuex';
-import { GlLoadingIcon, GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { GlLoadingIcon, GlButton, GlTooltipDirective, GlModal, GlModalDirective } from '@gitlab/ui';
 import createFlash from '../../flash';
 import ClipboardButton from '../../vue_shared/components/clipboard_button.vue';
 import Icon from '../../vue_shared/components/icon.vue';
@@ -16,9 +16,11 @@ export default {
     GlLoadingIcon,
     GlButton,
     Icon,
+    GlModal,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
+    GlModal: GlModalDirective,
   },
   props: {
     repo: {
@@ -37,7 +39,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['fetchRepos', 'fetchList', 'deleteRepo']),
+    ...mapActions(['fetchRepos', 'fetchList', 'deleteItem']),
     toggleRepo() {
       this.isOpen = !this.isOpen;
 
@@ -46,7 +48,7 @@ export default {
       }
     },
     handleDeleteRepository() {
-      this.deleteRepo(this.repo)
+      this.deleteItem(this.repo)
         .then(() => {
           createFlash(__('This container registry has been scheduled for deletion.'), 'notice');
           this.fetchRepos();
@@ -78,18 +80,18 @@ export default {
         <gl-button
           v-if="repo.canDelete"
           v-gl-tooltip
+          v-gl-modal="'confirm-repo-deletion-modal'"
           :title="s__('ContainerRegistry|Remove repository')"
           :aria-label="s__('ContainerRegistry|Remove repository')"
           class="js-remove-repo"
           variant="danger"
-          @click="handleDeleteRepository"
         >
           <icon name="remove" />
         </gl-button>
       </div>
     </div>
 
-    <gl-loading-icon v-if="repo.isLoading" :size="2" class="append-bottom-20" />
+    <gl-loading-icon v-if="repo.isLoading" size="md" class="append-bottom-20" />
 
     <div v-else-if="!repo.isLoading && isOpen" class="container-image-tags">
       <table-registry v-if="repo.list.length" :repo="repo" />
@@ -98,5 +100,24 @@ export default {
         {{ s__('ContainerRegistry|No tags in Container Registry for this container image.') }}
       </div>
     </div>
+
+    <gl-modal
+      modal-id="confirm-repo-deletion-modal"
+      ok-variant="danger"
+      @ok="handleDeleteRepository"
+    >
+      <template v-slot:modal-title>{{ s__('ContainerRegistry|Remove repository') }}</template>
+      <p
+        v-html="
+          sprintf(
+            s__(
+              'ContainerRegistry|You are about to remove repository <b>%{title}</b>. Once you confirm, this repository will be permanently deleted.',
+            ),
+            { title: repo.name },
+          )
+        "
+      ></p>
+      <template v-slot:modal-ok>{{ __('Remove') }}</template>
+    </gl-modal>
   </div>
 </template>

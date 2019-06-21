@@ -1,6 +1,6 @@
 <script>
 import { mapActions } from 'vuex';
-import { GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { GlButton, GlTooltipDirective, GlModal, GlModalDirective } from '@gitlab/ui';
 import { n__ } from '../../locale';
 import createFlash from '../../flash';
 import ClipboardButton from '../../vue_shared/components/clipboard_button.vue';
@@ -16,9 +16,11 @@ export default {
     TablePagination,
     GlButton,
     Icon,
+    GlModal,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
+    GlModal: GlModalDirective,
   },
   mixins: [timeagoMixin],
   props: {
@@ -27,21 +29,31 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      itemToBeDeleted: null,
+    };
+  },
   computed: {
     shouldRenderPagination() {
       return this.repo.pagination.total > this.repo.pagination.perPage;
     },
   },
   methods: {
-    ...mapActions(['fetchList', 'deleteRegistry']),
+    ...mapActions(['fetchList', 'deleteItem']),
     layers(item) {
       return item.layers ? n__('%d layer', '%d layers', item.layers) : '';
     },
     formatSize(size) {
       return numberToHumanSize(size);
     },
-    handleDeleteRegistry(registry) {
-      this.deleteRegistry(registry)
+    setItemToBeDeleted(item) {
+      this.itemToBeDeleted = item;
+    },
+    handleDeleteRegistry() {
+      const { itemToBeDeleted } = this;
+      this.itemToBeDeleted = null;
+      this.deleteItem(itemToBeDeleted)
         .then(() => this.fetchList({ repo: this.repo }))
         .catch(() => this.showError(errorMessagesTypes.DELETE_REGISTRY));
     },
@@ -80,9 +92,9 @@ export default {
             />
           </td>
           <td>
-            <span v-gl-tooltip.bottom class="monospace" :title="item.revision">{{
-              item.shortRevision
-            }}</span>
+            <span v-gl-tooltip.bottom class="monospace" :title="item.revision">
+              {{ item.shortRevision }}
+            </span>
           </td>
           <td>
             {{ formatSize(item.size) }}
@@ -93,20 +105,21 @@ export default {
           </td>
 
           <td>
-            <span v-gl-tooltip.bottom :title="tooltipTitle(item.createdAt)">{{
-              timeFormated(item.createdAt)
-            }}</span>
+            <span v-gl-tooltip.bottom :title="tooltipTitle(item.createdAt)">
+              {{ timeFormated(item.createdAt) }}
+            </span>
           </td>
 
           <td class="content">
             <gl-button
               v-if="item.canDelete"
               v-gl-tooltip
-              :title="s__('ContainerRegistry|Remove tag')"
-              :aria-label="s__('ContainerRegistry|Remove tag')"
+              v-gl-modal="'confirm-image-deletion-modal'"
+              :title="s__('ContainerRegistry|Remove image')"
+              :aria-label="s__('ContainerRegistry|Remove image')"
               variant="danger"
               class="js-delete-registry d-none d-sm-block float-right"
-              @click="handleDeleteRegistry(item)"
+              @click="setItemToBeDeleted(item)"
             >
               <icon name="remove" />
             </gl-button>
@@ -120,5 +133,24 @@ export default {
       :change="onPageChange"
       :page-info="repo.pagination"
     />
+
+    <gl-modal
+      modal-id="confirm-image-deletion-modal"
+      ok-variant="danger"
+      @ok="handleDeleteRegistry"
+    >
+      <template v-slot:modal-title>{{ s__('ContainerRegistry|Remove image') }}</template>
+      <template v-slot:modal-ok>{{ s__('ContainerRegistry|Remove image and tags') }}</template>
+      <p
+        v-html="
+          sprintf(
+            s__(
+              'ContainerRegistry|You are about to delete the image <b>%{title}</b>. This will delete the image and all tags pointing to this image.',
+            ),
+            { title: repo.name },
+          )
+        "
+      ></p>
+    </gl-modal>
   </div>
 </template>

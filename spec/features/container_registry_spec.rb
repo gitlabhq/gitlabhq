@@ -42,6 +42,8 @@ describe "Container Registry", :js do
         .to receive(:delete_tags!).and_return(true)
 
       click_on(class: 'js-remove-repo')
+      expect(find('.modal .modal-title')).to have_content 'Remove repository'
+      find('.modal .modal-footer .btn-danger').click
     end
 
     it 'user removes a specific tag from container repository' do
@@ -54,6 +56,8 @@ describe "Container Registry", :js do
         .to receive(:delete).and_return(true)
 
       click_on(class: 'js-delete-registry')
+      expect(find('.modal .modal-title')).to have_content 'Remove image'
+      find('.modal .modal-footer .btn-danger').click
     end
   end
 
