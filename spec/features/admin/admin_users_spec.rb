@@ -419,6 +419,32 @@ describe "Admin::Users" do
         end
       end
     end
+
+    describe 'Email verification status' do
+      let!(:secondary_email) do
+        create :email, email: 'secondary@example.com', user: user
+      end
+
+      it 'displays the correct status for an unverified email address' do
+        user.update(confirmed_at: nil, unconfirmed_email: user.email)
+        visit admin_user_path(user)
+
+        expect(page).to have_content("#{user.email} Unverified")
+
+        expect(page).to have_content("#{secondary_email.email} Unverified")
+      end
+
+      it 'displays the correct status for a verified email address' do
+        visit admin_user_path(user)
+        expect(page).to have_content("#{user.email} Verified")
+
+        secondary_email.confirm
+        expect(secondary_email.confirmed?).to be_truthy
+
+        visit admin_user_path(user)
+        expect(page).to have_content("#{secondary_email.email} Verified")
+      end
+    end
   end
 
   describe "GET /admin/users/:id/edit" do
