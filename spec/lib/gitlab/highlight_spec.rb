@@ -18,9 +18,10 @@ describe Gitlab::Highlight do
   end
 
   describe '#highlight' do
+    let(:plain_text_file_name) { "test.txt" }
+    let(:plain_text_content) { "plain text contents" }
     let(:file_name) { 'test.lisp' }
-    let(:no_context_content) { ":type \"assem\"))" }
-    let(:content) { "(make-pathname :defaults name\n#{no_context_content}" }
+    let(:content) { "(make-pathname :defaults name\n:type \"assem\")" }
     let(:multiline_content) do
       %q(
       def test(input):
@@ -32,22 +33,22 @@ describe Gitlab::Highlight do
 
     it 'highlights' do
       expected = %Q[<span id="LC1" class="line" lang="common_lisp"><span class="p">(</span><span class="nb">make-pathname</span> <span class="ss">:defaults</span> <span class="nv">name</span></span>
-<span id="LC2" class="line" lang="common_lisp"><span class="ss">:type</span> <span class="s">"assem"</span><span class="p">))</span></span>]
+<span id="LC2" class="line" lang="common_lisp"><span class="ss">:type</span> <span class="s">"assem"</span><span class="p">)</span></span>]
 
       expect(described_class.highlight(file_name, content)).to eq(expected)
     end
 
     it 'returns plain version for unknown lexer context' do
-      result = described_class.highlight(file_name, no_context_content)
+      result = described_class.highlight(plain_text_file_name, plain_text_content)
 
-      expect(result).to eq(%[<span id="LC1" class="line" lang="">:type "assem"))</span>])
+      expect(result).to eq(%[<span id="LC1" class="line" lang="plaintext">plain text contents</span>])
     end
 
     it 'returns plain version for long content' do
       stub_const('Gitlab::Highlight::MAXIMUM_TEXT_HIGHLIGHT_SIZE', 1)
       result = described_class.highlight(file_name, content)
 
-      expect(result).to eq(%[<span id="LC1" class="line" lang="">(make-pathname :defaults name</span>\n<span id="LC2" class="line" lang="">:type "assem"))</span>])
+      expect(result).to eq(%[<span id="LC1" class="line" lang="">(make-pathname :defaults name</span>\n<span id="LC2" class="line" lang="">:type "assem")</span>])
     end
 
     it 'highlights multi-line comments' do
