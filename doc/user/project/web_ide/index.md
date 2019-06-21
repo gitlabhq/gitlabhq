@@ -67,8 +67,8 @@ shows you a preview of the merge request diff if you commit your changes.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/19279) in [GitLab Core][ce] 11.0.
 
-You can use the Web IDE to quickly fix failing tests by opening 
-the branch or merge request in the Web IDE and opening the logs of the failed 
+You can use the Web IDE to quickly fix failing tests by opening
+the branch or merge request in the Web IDE and opening the logs of the failed
 job. You can access the status of all jobs for the most recent pipeline and job
 traces for the current commit by clicking the **Pipelines** button in the top
 right.
@@ -80,8 +80,8 @@ left.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/19318) in [GitLab Core][ce] 11.0.
 
-To switch between your authored and assigned merge requests, click the 
-dropdown in the top of the sidebar to open a list of merge requests. You will 
+To switch between your authored and assigned merge requests, click the
+dropdown in the top of the sidebar to open a list of merge requests. You will
 need to commit or discard all your changes before switching to a different merge
 request.
 
@@ -89,9 +89,9 @@ request.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/20850) in [GitLab Core][ce] 11.2.
 
-To switch between branches of the current project repository, click the dropdown 
-in the top of the sidebar to open a list of branches. 
-You will need to commit or discard all your changes before switching to a 
+To switch between branches of the current project repository, click the dropdown
+in the top of the sidebar to open a list of branches.
+You will need to commit or discard all your changes before switching to a
 different branch.
 
 ## Client Side Evaluation
@@ -117,7 +117,7 @@ GitLab.com
 ![Admin Client Side Evaluation setting](img/admin_clientside_evaluation.png)
 
 Once you have done that, you can preview projects with a `package.json` file and
-a `main` entry point inside the Web IDE. An example `package.json` is shown 
+a `main` entry point inside the Web IDE. An example `package.json` is shown
 below.
 
 ```json
@@ -135,24 +135,20 @@ below.
 
 CAUTION: **Warning:**
 Interactive Web Terminals for the Web IDE is currently in **Beta**.
+Shared Runners [do not yet support Interactive Web Terminals](https://gitlab.com/gitlab-org/gitlab-ce/issues/52611),
+so you would need to use your own private Runner(s) to make use of this feature.
 
-[Interactive web terminals](../../../ci/interactive_web_terminal/index.md)
-give the user access to a terminal to interact with the Runner directly from
+[Interactive Web Terminals](../../../ci/interactive_web_terminal/index.md)
+give the project [Maintainers](../../permissions.md#project-members-permissions)
+user access to a terminal to interact with the Runner directly from
 GitLab, including through the Web IDE.
-
-Only project [**maintainers**](../../permissions.md#project-members-permissions)
-can run Interactive Web Terminals through the Web IDE.
-
-CAUTION: **Warning:**
-GitLab.com [does not support Interactive Web Terminals yet](https://gitlab.com/gitlab-org/gitlab-ce/issues/52611).
-Shared Runners in private instances are not supported either.
 
 ### Runner configuration
 
 Some things need to be configured in the runner for the interactive web terminal
 to work:
 
-- The Runner needs to have 
+- The Runner needs to have
   [`[session_server]` configured properly](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-session_server-section).
 - If you are using a reverse proxy with your GitLab instance, web terminals need to be
   [enabled](../../../administration/integration/terminal.md#enabling-and-disabling-terminal-support). **[ULTIMATE ONLY]**
@@ -204,7 +200,7 @@ the selected branch of the Web IDE.
 
 If there is no configuration file in a branch, an error message will be shown.
 
-### Running Interactive Terminals in the Web IDE
+### Running interactive terminals in the Web IDE
 
 If Interactive Terminals are available for the current user, the **Terminal** button
 will be visible in the right sidebar of the Web IDE. Click this button to open
@@ -212,7 +208,7 @@ or close the terminal tab.
 
 Once open, the tab will show the **Start Web Terminal** button. This button may
 be disabled if the environment is not configured correctly. If so, a status
-message will describe the issue. Here are some reasons why **Start Web Terminal** 
+message will describe the issue. Here are some reasons why **Start Web Terminal**
 may be disabled:
 
 - `.gitlab/.gitlab-webide.yml` does not exist or is set up incorrectly.
@@ -231,45 +227,27 @@ While the terminal is running, it can be stopped by clicking **Stop Terminal**.
 This will disconnect the terminal and stop the runner's terminal job. From here,
 click **Restart Terminal** to start a new terminal session.
 
-### File Syncing to Web Terminal
+### File syncing to web terminal
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/5276) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.0.
 
-File changes in the Web IDE can be synced to a running Web Terminal.
+File changes in the Web IDE can be synced to a running web terminal.
 This enables users to test their code changes in a preconfigured terminal
 environment.
 
 NOTE: **Note:**
 Only file changes in the Web IDE are synced to the terminal.
 Changes made in the terminal are **not** synced to the Web IDE.
+This feature is only available for Kubernetes Runners.
 
-Once you have [configured the Web Terminal for File Syncing](#configuring-file-syncing),
-then when the Web terminal is started, a **Terminal** status will be visible
-in the status bar.
-
-![Web IDE Client Side Evaluation](img/terminal_status.png)
-
-Changes made to your files via the Web IDE will sync to the running terminal
-when:
-
-- <kbd>Ctrl</kbd> + <kbd>S</kbd> (or <kbd>Cmd</kbd> + <kbd>S</kbd> on Mac) 
-  is pressed while editing a file.
-- Anything outside the file editor is clicked after editing a file.
-- A file or folder is created, deleted, or renamed.
-
-### Configuring File Syncing
-
-NOTE: **Note:**
-This feature is only available for Kubernetes runners.
-
-To enable file syncing to the Web Terminal, the `.gitlab/.gitlab-webide.yml` 
-file needs to have a `webide-file-sync` service configured. Here is an example 
+To enable file syncing to the web terminal, the `.gitlab/.gitlab-webide.yml`
+file needs to have a `webide-file-sync` service configured. Here is an example
 configuration for a Node JS project which uses this service:
 
 ```yaml
 terminal:
   # This can be any image that has the necessary runtime environment for your project.
-  image: 
+  image:
     name: node:10-alpine
   services:
     - name: registry.gitlab.com/gitlab-org/webide-file-sync:latest
@@ -281,18 +259,30 @@ terminal:
         - number: 3000
 ```
 
-> **Notes:**
-> - For now, the `webide-file-sync` executable must start **after** the project
->  directory is available. This is why we need to add `sleep 5` to the `command`.
->  See [this issue](https://gitlab.com/gitlab-org/webide-file-sync/issues/7) for 
->  more info.
-> - `$CI_PROJECT_DIR` is a 
->  [predefined environment variable](../../../ci/variables/predefined_variables.md) 
->  for GitLab Runners. This is where your project's repository will be.
+- The `webide-file-sync` executable must start **after** the project
+  directory is available. This is why we need to add `sleep 5` to the `command`.
+  See [this issue](https://gitlab.com/gitlab-org/webide-file-sync/issues/7) for
+  more info.
+- `$CI_PROJECT_DIR` is a
+  [predefined environment variable](../../../ci/variables/predefined_variables.md)
+  for GitLab Runners. This is where your project's repository will be.
+
+Once you have configured the web terminal for file syncing, then when the web
+terminal is started, a **Terminal** status will be visible in the status bar.
+
+![Web IDE Client Side Evaluation](img/terminal_status.png)
+
+Changes made to your files via the Web IDE will sync to the running terminal
+when:
+
+- <kbd>Ctrl</kbd> + <kbd>S</kbd> (or <kbd>Cmd</kbd> + <kbd>S</kbd> on Mac)
+  is pressed while editing a file.
+- Anything outside the file editor is clicked after editing a file.
+- A file or folder is created, deleted, or renamed.
 
 ### Limitations
 
-Interactive Terminals is in a beta phase and will continue to be improved upon in upcoming 
+Interactive Terminals is in a beta phase and will continue to be improved upon in upcoming
 releases. In the meantime, please note that the user is limited to having only one
 active terminal at a time.
 
