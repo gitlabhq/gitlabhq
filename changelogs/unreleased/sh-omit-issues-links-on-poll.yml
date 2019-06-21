@@ -1,0 +1,5 @@
+---
+title: Omit issues links in merge request entity API response
+merge_request: 29917
+author:
+type: performance
