@@ -1,29 +1,25 @@
 <% note = local_assigns.fetch(:note, @note) -%>
 <% diff_limit = local_assigns.fetch(:diff_limit, nil) -%>
 <% target_url = local_assigns.fetch(:target_url, @target_url) -%>
+<% discussion = note.discussion if note.part_of_discussion? -%>
 
-<%  discussion = note.discussion if note.part_of_discussion? -%>
-<%  if discussion && !discussion.individual_note? -%>
-<%=   sanitize_name(note.author_name) -%>
+<%= sanitize_name(note.author_name) -%>
+<%  if discussion.nil? -%>
+ <%= 'commented' -%>:
+<%  else -%>
 <%    if discussion.new_discussion? -%>
-<%=     " started a new discussion" -%>
+ <%=    'started a new discussion' -%>
 <%    else -%>
-<%=     " commented on a discussion" -%>
+ <%=    'commented on a discussion' -%>
 <%    end -%>
 <%    if discussion.diff_discussion? -%>
-<%=     " on #{discussion.file_path}" -%>
+ <%=    "on #{discussion.file_path}" -%>
 <%    end -%>
-<%=   ":" -%>
-<%    if discussion.diff_discussion? || !discussion.new_discussion? -%>
-<%=     " #{target_url}" -%>
-<%    end -%>
-
-
-<%  elsif Gitlab::CurrentSettings.email_author_in_body -%>
-<%=     "#{sanitize_name(note.author_name)} commented:" -%>
-
-
+<%=   ':' -%>
+<%=   " #{target_url}" -%>
 <%  end -%>
+
+
 <%  if discussion&.diff_discussion? && discussion.on_text? -%>
 <%    discussion.truncated_diff_lines(highlight: false, diff_limit: diff_limit).each do |line| -%>
 <%=     "> #{line.text}\n" -%>
