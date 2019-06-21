@@ -2656,8 +2656,8 @@ describe Project do
         let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
         let(:project) { cluster.project }
 
-        it 'returns variables from this service' do
-          expect(project.deployment_variables).to include(
+        it 'does not return variables from this service' do
+          expect(project.deployment_variables).not_to include(
             { key: 'KUBE_TOKEN', value: project.deployment_platform.token, public: false, masked: true }
           )
         end
