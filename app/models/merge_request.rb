@@ -1030,7 +1030,7 @@ class MergeRequest < ApplicationRecord
 
   def mergeable_ci_state?
     return true unless project.only_allow_merge_if_pipeline_succeeds?
-    return true unless head_pipeline
+    return false unless head_pipeline
 
     actual_head_pipeline&.success? || actual_head_pipeline&.skipped?
   end
