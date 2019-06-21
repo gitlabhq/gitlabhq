@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-shared_examples 'pages domain editing' do
+shared_examples 'pages settings editing' do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
   let(:role) { :maintainer }
@@ -321,19 +321,15 @@ shared_examples 'pages domain editing' do
 end
 
 describe 'Pages' do
-  context 'when pages_auto_ssl feature flag is disabled' do
+  include LetsEncryptHelpers
+
+  include_examples 'pages settings editing'
+
+  context 'when letsencrypt support is enabled' do
     before do
-      stub_feature_flags(pages_auto_ssl: false)
+      stub_lets_encrypt_settings
     end
 
-    include_examples 'pages domain editing'
-  end
-
-  context 'when pages_auto_ssl feature flag is enabled' do
-    before do
-      stub_feature_flags(pages_auto_ssl: true)
-    end
-
-    include_examples 'pages domain editing'
+    include_examples 'pages settings editing'
   end
 end

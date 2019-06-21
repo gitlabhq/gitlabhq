@@ -180,5 +180,9 @@ Iy6oRpHaCF/2obZdIdgf9rlyz0fkqyHJc9GkioSoOhJZxEV2SgAkap8yS0sX2tJ9
 ZDXgrA==
 -----END CERTIFICATE-----'
     end
+
+    trait :letsencrypt do
+      certificate_source { :gitlab_provided }
+    end
   end
 end

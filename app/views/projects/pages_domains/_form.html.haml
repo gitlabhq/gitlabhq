@@ -11,7 +11,7 @@
 
 - if Gitlab.config.pages.external_https
 
-  - auto_ssl_available = Feature.enabled?(:pages_auto_ssl)
+  - auto_ssl_available = ::Gitlab::LetsEncrypt::Client.new.enabled?
   - auto_ssl_enabled = @domain.auto_ssl_enabled?
   - auto_ssl_available_and_enabled = auto_ssl_available && auto_ssl_enabled
 
@@ -38,40 +38,24 @@
           - docs_link_end = "</a>".html_safe
           = _("Let's Encrypt is a free, automated, and open certificate authority (CA) that gives digital certificates in order to enable HTTPS (SSL/TLS) for websites. Learn more about Let's Encrypt configuration by following the %{docs_link_start}documentation on GitLab Pages%{docs_link_end}.").html_safe % { docs_link_url: docs_link_url, docs_link_start: docs_link_start, docs_link_end: docs_link_end }
 
-  .js-shown-if-auto-ssl{ class: ("d-none" unless auto_ssl_available_and_enabled) }
-    .form-group.row
-      .col-sm-2.col-form-label
-        = f.label :certificate, _("Certificate (PEM)")
-      .col-sm-10
-        - if auto_ssl_available_and_enabled && !@domain.certificate.empty?
-          = f.text_area :certificate,
-            rows: 5,
-            class: "form-control",
-            disabled: true
-          %span.help-inline.text-muted= _("This certificate is automatically managed by Let's Encrypt")
-        - else
-          %p.text-secondary.form-control-plaintext= _("The certificate will be shown here once it has been obtained from Let's Encrypt. This process may take up to an hour to complete.")
-
   .js-shown-unless-auto-ssl{ class: ("d-none" if auto_ssl_available_and_enabled) }
     .form-group.row
       .col-sm-2.col-form-label
-        = f.label :certificate, _("Certificate (PEM)")
+        = f.label :user_provided_certificate, _("Certificate (PEM)")
       .col-sm-10
-        = f.text_area :certificate,
+        = f.text_area :user_provided_certificate,
           rows: 5,
           class: "form-control js-enabled-unless-auto-ssl",
-          value: (@domain.certificate unless auto_ssl_available_and_enabled),
           disabled: auto_ssl_available_and_enabled
         %span.help-inline.text-muted= _("Upload a certificate for your domain with all intermediates")
 
     .form-group.row
       .col-sm-2.col-form-label
-        = f.label :key, _("Key (PEM)")
+        = f.label :user_provided_key, _("Key (PEM)")
       .col-sm-10
-        = f.text_area :key,
+        = f.text_area :user_provided_key,
           rows: 5,
           class: "form-control js-enabled-unless-auto-ssl",
-          value: (@domain.key unless auto_ssl_available_and_enabled),
           disabled: auto_ssl_available_and_enabled
         %span.help-inline.text-muted= _("Upload a private key for your certificate")
 

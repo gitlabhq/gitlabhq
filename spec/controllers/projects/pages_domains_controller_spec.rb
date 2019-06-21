@@ -15,7 +15,10 @@ describe Projects::PagesDomainsController do
   end
 
   let(:pages_domain_params) do
-    build(:pages_domain, domain: 'my.otherdomain.com').slice(:key, :certificate, :domain)
+    attributes_for(:pages_domain, domain: 'my.otherdomain.com').slice(:key, :certificate, :domain).tap do |params|
+      params[:user_provided_key] = params.delete(:key)
+      params[:user_provided_certificate] = params.delete(:certificate)
+    end
   end
 
   before do
@@ -84,48 +87,59 @@ describe Projects::PagesDomainsController do
       controller.instance_variable_set(:@domain, pages_domain)
     end
 
-    let(:pages_domain_params) do
-      attributes_for(:pages_domain).slice(:key, :certificate)
-    end
-
     let(:params) do
       request_params.merge(id: pages_domain.domain, pages_domain: pages_domain_params)
     end
 
-    it 'updates the domain' do
-      expect(pages_domain)
-        .to receive(:update)
-        .with(ActionController::Parameters.new(pages_domain_params).permit!)
-        .and_return(true)
+    context 'with valid params' do
+      let(:pages_domain_params) do
+        attributes_for(:pages_domain, :with_trusted_chain).slice(:key, :certificate).tap do |params|
+          params[:user_provided_key] = params.delete(:key)
+          params[:user_provided_certificate] = params.delete(:certificate)
+        end
+      end
 
-      patch(:update, params: params)
+      it 'updates the domain' do
+        expect do
+          patch(:update, params: params)
+        end.to change { pages_domain.reload.certificate }.to(pages_domain_params[:user_provided_certificate])
+      end
+
+      it 'redirects to the project page' do
+        patch(:update, params: params)
+
+        expect(flash[:notice]).to eq 'Domain was updated'
+        expect(response).to redirect_to(project_pages_path(project))
+      end
     end
 
-    it 'redirects to the project page' do
-      patch(:update, params: params)
+    context 'with key parameter' do
+      before do
+        pages_domain.update!(key: nil, certificate: nil, certificate_source: 'gitlab_provided')
+      end
 
-      expect(flash[:notice]).to eq 'Domain was updated'
-      expect(response).to redirect_to(project_pages_path(project))
+      it 'marks certificate as provided by user' do
+        expect do
+          patch(:update, params: params)
+        end.to change { pages_domain.reload.certificate_source }.from('gitlab_provided').to('user_provided')
+      end
     end
 
     context 'the domain is invalid' do
-      it 'renders the edit action' do
-        allow(pages_domain).to receive(:update).and_return(false)
+      let(:pages_domain_params) { { user_provided_certificate: 'blabla' } }
 
+      it 'renders the edit action' do
         patch(:update, params: params)
 
         expect(response).to render_template('edit')
       end
     end
 
-    context 'the parameters include the domain' do
-      it 'renders 400 Bad Request' do
-        expect(pages_domain)
-          .to receive(:update)
-          .with(hash_not_including(:domain))
-          .and_return(true)
-
-        patch(:update, params: params.deep_merge(pages_domain: { domain: 'abc' }))
+    context 'when parameters include the domain' do
+      it 'does not update domain' do
+        expect do
+          patch(:update, params: params.deep_merge(pages_domain: { domain: 'abc' }))
+        end.not_to change { pages_domain.reload.domain }
       end
     end
   end

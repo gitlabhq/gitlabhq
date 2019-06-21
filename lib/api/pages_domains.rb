@@ -90,14 +90,15 @@ module API
       end
       params do
         requires :domain, type: String, desc: 'The domain'
-        optional :certificate, allow_blank: false, types: [File, String], desc: 'The certificate'
-        optional :key, allow_blank: false, types: [File, String], desc: 'The key'
-        all_or_none_of :certificate, :key
+        optional :certificate, allow_blank: false, types: [File, String], desc: 'The certificate', as: :user_provided_certificate
+        optional :key, allow_blank: false, types: [File, String], desc: 'The key', as: :user_provided_key
+        all_or_none_of :user_provided_certificate, :user_provided_key
       end
       post ":id/pages/domains" do
         authorize! :update_pages, user_project
 
         pages_domain_params = declared(params, include_parent_namespaces: false)
+
         pages_domain = user_project.pages_domains.create(pages_domain_params)
 
         if pages_domain.persisted?
@@ -110,8 +111,8 @@ module API
       desc 'Updates a pages domain'
       params do
         requires :domain, type: String, desc: 'The domain'
-        optional :certificate, allow_blank: false, types: [File, String], desc: 'The certificate'
-        optional :key, allow_blank: false, types: [File, String], desc: 'The key'
+        optional :certificate, allow_blank: false, types: [File, String], desc: 'The certificate', as: :user_provided_certificate
+        optional :key, allow_blank: false, types: [File, String], desc: 'The key', as: :user_provided_key
       end
       put ":id/pages/domains/:domain", requirements: PAGES_DOMAINS_ENDPOINT_REQUIREMENTS do
         authorize! :update_pages, user_project
@@ -119,8 +120,8 @@ module API
         pages_domain_params = declared(params, include_parent_namespaces: false)
 
         # Remove empty private key if certificate is not empty.
-        if pages_domain_params[:certificate] && !pages_domain_params[:key]
-          pages_domain_params.delete(:key)
+        if pages_domain_params[:user_provided_certificate] && !pages_domain_params[:user_provided_key]
+          pages_domain_params.delete(:user_provided_key)
         end
 
         if pages_domain.update(pages_domain_params)
