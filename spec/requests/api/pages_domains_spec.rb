@@ -359,6 +359,14 @@ describe API::PagesDomains do
         expect(pages_domain_secure.certificate).to eq(params_secure_nokey[:certificate])
       end
 
+      it 'updates certificate source to user_provided if is changed' do
+        pages_domain.update!(certificate_source: 'gitlab_provided')
+
+        expect do
+          put api(route_domain, user), params: params_secure
+        end.to change { pages_domain.reload.certificate_source }.from('gitlab_provided').to('user_provided')
+      end
+
       it 'fails to update pages domain adding certificate without key' do
         put api(route_domain, user), params: params_secure_nokey
 

@@ -35,7 +35,7 @@ module PagesDomains
 
     def save_certificate(private_key, api_order)
       certificate = api_order.certificate
-      pages_domain.update!(key: private_key, certificate: certificate)
+      pages_domain.update!(gitlab_provided_key: private_key, gitlab_provided_certificate: certificate)
     end
   end
 end

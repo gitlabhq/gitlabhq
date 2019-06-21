@@ -356,6 +356,102 @@ describe PagesDomain do
     end
   end
 
+  describe '#user_provided_key' do
+    subject { domain.user_provided_key }
+
+    context 'when certificate is provided by user' do
+      let(:domain) { create(:pages_domain) }
+
+      it 'returns key' do
+        is_expected.to eq(domain.key)
+      end
+    end
+
+    context 'when certificate is provided by gitlab' do
+      let(:domain) { create(:pages_domain, :letsencrypt) }
+
+      it 'returns nil' do
+        is_expected.to be_nil
+      end
+    end
+  end
+
+  describe '#user_provided_certificate' do
+    subject { domain.user_provided_certificate }
+
+    context 'when certificate is provided by user' do
+      let(:domain) { create(:pages_domain) }
+
+      it 'returns key' do
+        is_expected.to eq(domain.certificate)
+      end
+    end
+
+    context 'when certificate is provided by gitlab' do
+      let(:domain) { create(:pages_domain, :letsencrypt) }
+
+      it 'returns nil' do
+        is_expected.to be_nil
+      end
+    end
+  end
+
+  shared_examples 'certificate setter' do |attribute, setter_name, old_certificate_source, new_certificate_source|
+    let(:domain) do
+      create(:pages_domain, certificate_source: old_certificate_source)
+    end
+
+    let(:old_value) { domain.public_send(attribute) }
+
+    subject { domain.public_send(setter_name, new_value) }
+
+    context 'when value has been changed' do
+      let(:new_value) { 'new_value' }
+
+      it "assignes new value to #{attribute}" do
+        expect do
+          subject
+        end.to change { domain.public_send(attribute) }.from(old_value).to('new_value')
+      end
+
+      it 'changes certificate source' do
+        expect do
+          subject
+        end.to change { domain.certificate_source }.from(old_certificate_source).to(new_certificate_source)
+      end
+    end
+
+    context 'when value has not been not changed' do
+      let(:new_value) { old_value }
+
+      it 'does not change certificate source' do
+        expect do
+          subject
+        end.not_to change { domain.certificate_source }.from(old_certificate_source)
+      end
+    end
+  end
+
+  describe '#user_provided_key=' do
+    include_examples('certificate setter', 'key', 'user_provided_key=',
+                     'gitlab_provided', 'user_provided')
+  end
+
+  describe '#gitlab_provided_key=' do
+    include_examples('certificate setter', 'key', 'gitlab_provided_key=',
+                     'user_provided', 'gitlab_provided')
+  end
+
+  describe '#user_provided_certificate=' do
+    include_examples('certificate setter', 'certificate', 'user_provided_certificate=',
+                     'gitlab_provided', 'user_provided')
+  end
+
+  describe '#gitlab_provided_certificate=' do
+    include_examples('certificate setter', 'certificate', 'gitlab_provided_certificate=',
+                     'user_provided', 'gitlab_provided')
+  end
+
   describe '.for_removal' do
     subject { described_class.for_removal }
 

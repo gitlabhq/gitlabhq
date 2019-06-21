@@ -137,6 +137,12 @@ describe PagesDomains::ObtainLetsEncryptCertificateService do
       expect(pages_domain.certificate).to eq(certificate)
     end
 
+    it 'marks certificate as gitlab_provided' do
+      service.execute
+
+      expect(pages_domain.certificate_source).to eq("gitlab_provided")
+    end
+
     it 'removes order from database' do
       service.execute
 

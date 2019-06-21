@@ -5,27 +5,11 @@ export default () => {
 
   if (toggleContainer) {
     const onToggleButtonClicked = isAutoSslEnabled => {
-      Array.from(document.querySelectorAll('.js-shown-if-auto-ssl')).forEach(el => {
-        if (isAutoSslEnabled) {
-          el.classList.remove('d-none');
-        } else {
-          el.classList.add('d-none');
-        }
-      });
-
       Array.from(document.querySelectorAll('.js-shown-unless-auto-ssl')).forEach(el => {
         if (isAutoSslEnabled) {
           el.classList.add('d-none');
         } else {
           el.classList.remove('d-none');
-        }
-      });
-
-      Array.from(document.querySelectorAll('.js-enabled-if-auto-ssl')).forEach(el => {
-        if (isAutoSslEnabled) {
-          el.removeAttribute('disabled');
-        } else {
-          el.setAttribute('disabled', 'disabled');
         }
       });
 
