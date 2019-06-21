@@ -67,6 +67,30 @@ describe Gitlab::Kubernetes do
     end
   end
 
+  describe '#filter_by_legacy_label' do
+    let(:non_matching_pod) { kube_pod(environment_slug: 'production', project_slug: 'my-cool-app') }
+
+    let(:non_matching_pod_2) do
+      kube_pod(environment_slug: 'production', project_slug: 'my-cool-app').tap do |pod|
+        pod['metadata']['labels']['app'] = 'production'
+      end
+    end
+
+    let(:matching_pod) do
+      kube_pod.tap do |pod|
+        pod['metadata']['annotations'].delete('app.gitlab.com/env')
+        pod['metadata']['annotations'].delete('app.gitlab.com/app')
+        pod['metadata']['labels']['app'] = 'production'
+      end
+    end
+
+    it 'returns matching labels' do
+      items = [non_matching_pod, non_matching_pod_2, matching_pod]
+
+      expect(filter_by_legacy_label(items, 'my-cool-app', 'production')).to contain_exactly(matching_pod)
+    end
+  end
+
   describe '#to_kubeconfig' do
     let(:token) { 'TOKEN' }
     let(:ca_pem) { 'PEM' }

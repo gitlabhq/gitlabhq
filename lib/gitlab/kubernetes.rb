@@ -43,6 +43,14 @@ module Gitlab
       })
     end
 
+    def filter_by_legacy_label(items, app, env)
+      legacy_items = filter_by_label(items, { app: env })
+
+      non_legacy_items = filter_by_project_environment(legacy_items, app, env)
+
+      legacy_items - non_legacy_items
+    end
+
     # Converts a pod (as returned by the kubernetes API) into a terminal
     def terminals_for_pod(api_url, namespace, pod)
       metadata = pod.fetch("metadata", {})
