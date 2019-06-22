@@ -1,5 +1,0 @@
----
-title: Cancel Auto Merge when target branch is changed
-merge_request: 29416
-author:
-type: fixed

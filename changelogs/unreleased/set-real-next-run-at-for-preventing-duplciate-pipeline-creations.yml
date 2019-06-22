@@ -1,5 +1,0 @@
----
-title: Make pipeline schedule worker resilient
-merge_request: 28407
-author:
-type: performance

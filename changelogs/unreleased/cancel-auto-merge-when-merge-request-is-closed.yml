@@ -1,5 +1,0 @@
----
-title: Cancel auto merge when merge request is closed
-merge_request: 28782
-author:
-type: fixed

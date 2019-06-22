@@ -1,6 +1,0 @@
----
-title: Changed the 'Created' label to 'Last Updated' on the container registry table
-  to more accurately reflect what the date represents.
-merge_request: 29464
-author:
-type: other

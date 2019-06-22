@@ -1,5 +1,0 @@
----
-title: Add index on invite_email for members
-merge_request: 29768
-author:
-type: performance

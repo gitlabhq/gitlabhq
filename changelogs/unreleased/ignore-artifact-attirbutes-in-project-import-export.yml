@@ -1,5 +1,0 @@
----
-title: Ignore legacy artifact columns in Project Import/Export
-merge_request: 29427
-author:
-type: fixed

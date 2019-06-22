@@ -1,5 +1,0 @@
----
-title: "Added option to filter jobs by age in the /job/request API endpoint."
-merge_request: 1340
-author: Dmitry Chepurovskiy
-type: added

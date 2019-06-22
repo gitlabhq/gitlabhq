@@ -1,5 +1,0 @@
----
-title: Removes duplicated members from api/projects/:id/members/all
-merge_request: 24005
-author: Jacopo Beschi @jacopo-beschi
-type: changed

@@ -1,5 +1,0 @@
----
-title: Fix. `db:migrate` is failed on MySQL 8
-merge_request: 28351
-author: sue445
-type: fixed

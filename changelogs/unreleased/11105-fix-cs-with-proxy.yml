@@ -1,5 +1,0 @@
----
-title: Fix proxy support in Container Scanning
-merge_request: 27246
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Improve performance of users autocomplete when there are lots of results
-merge_request:
-author:
-type: performance

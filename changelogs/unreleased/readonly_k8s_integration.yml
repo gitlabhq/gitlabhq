@@ -1,5 +1,0 @@
----
-title: Make Kubernetes service templates readonly
-merge_request: 29044
-author:
-type: removed

@@ -1,5 +1,0 @@
----
-title: Fix pipeline schedules when owner is nil
-merge_request:
-author:
-type: fixed

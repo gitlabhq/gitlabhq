@@ -1,5 +1,0 @@
----
-title: Handle encoding errors for MergeToRefService
-merge_request: 29440
-author:
-type: fixed

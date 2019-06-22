@@ -1,5 +1,0 @@
----
-title: Avoid setting Gitlab::Session on sessionless requests and Git HTTP
-merge_request: 29146
-author:
-type: fixed

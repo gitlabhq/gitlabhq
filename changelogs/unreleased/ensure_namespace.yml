@@ -1,5 +1,0 @@
----
-title: AutoDevops function ensure_namespace() now explicitly tests the namespace
-merge_request: 29567
-author: Jack Lei
-type: fixed

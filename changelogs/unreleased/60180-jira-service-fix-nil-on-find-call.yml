@@ -1,5 +1,0 @@
----
-title: 'Resolved JIRA service: NoMethodError: undefined method ''find'' for nil:NilClass'
-merge_request: 28206
-author:
-type: fixed

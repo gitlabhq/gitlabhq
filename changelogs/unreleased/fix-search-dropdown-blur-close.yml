@@ -1,5 +1,0 @@
----
-title: Fix search dropdown not closing on blur if empty
-merge_request: 28730
-author:
-type: fixed

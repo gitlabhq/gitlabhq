@@ -1,5 +1,0 @@
----
-title: Fix an error in projects admin when statistics are missing
-merge_request: 28355
-author:
-type: fixed

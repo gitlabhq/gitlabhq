@@ -1,6 +1,0 @@
----
-title: Process up to 100 commit messages for references when pushing to a new default
-  branch
-merge_request: 29511
-author: Fabio Papa
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Add index on public_email for users
-merge_request: 29430
-author:
-type: performance

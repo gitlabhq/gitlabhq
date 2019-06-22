@@ -1,5 +1,0 @@
----
-title: Reduce Gitaly calls to improve performance when rendering suggestions
-merge_request: 29027
-author:
-type: performance

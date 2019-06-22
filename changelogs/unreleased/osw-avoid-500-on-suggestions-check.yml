@@ -1,5 +1,0 @@
----
-title: Avoid 500 when rendering users ATOM data
-merge_request: 25408
-author:
-type: fixed

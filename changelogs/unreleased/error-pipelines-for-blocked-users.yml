@@ -1,5 +1,0 @@
----
-title: preventing blocked users and their PipelineSchdules from creating new Pipelines
-merge_request: 27318
-author:
-type: fixed
