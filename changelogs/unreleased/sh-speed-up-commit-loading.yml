@@ -1,5 +1,0 @@
----
-title: Speed up commit loads by disabling BatchLoader replace_methods
-merge_request: 29633
-author:
-type: performance

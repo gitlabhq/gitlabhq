@@ -1,5 +1,0 @@
----
-title: Omit blocked admins from repository check e-mails
-merge_request: 29507
-author:
-type: fixed

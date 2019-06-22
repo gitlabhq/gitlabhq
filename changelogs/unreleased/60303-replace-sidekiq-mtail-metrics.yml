@@ -1,5 +1,0 @@
----
-title: Replaces sidekiq mtail metrics with ruby instrumentation metrics
-merge_request: 29215
-author:
-type: changed

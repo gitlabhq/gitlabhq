@@ -1,5 +1,0 @@
----
-title: Fix inability to set visibility_level on project via API
-merge_request: 29578
-author:
-type: fixed

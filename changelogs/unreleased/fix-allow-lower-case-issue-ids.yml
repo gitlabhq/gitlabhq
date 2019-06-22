@@ -1,5 +1,0 @@
----
-title: Allow lowercase prefix for Youtrack issue ids
-merge_request: 29057
-author: Matthias Baur
-type: fixed

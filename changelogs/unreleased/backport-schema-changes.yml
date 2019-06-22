@@ -1,5 +1,0 @@
----
-title: Backport the EE schema and migrations to CE
-merge_request: 26940
-author: Yorick Peterse
-type: other

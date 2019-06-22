@@ -1,5 +1,0 @@
----
-title: Fix nil coercion updating storage size on project statistics
-merge_request: 29425
-author:
-type: fixed

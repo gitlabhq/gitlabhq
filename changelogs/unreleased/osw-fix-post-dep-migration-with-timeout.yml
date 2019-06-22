@@ -1,5 +1,0 @@
----
-title: Avoid DB timeouts when scheduling migrations
-merge_request: 29437
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Prevent common name collisions when requesting multiple Let's Encrypt certificates concurrently
-merge_request: 28373
-author:
-type: fixed

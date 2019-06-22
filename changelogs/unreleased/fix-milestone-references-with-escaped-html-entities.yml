@@ -1,5 +1,0 @@
----
-title: Fix milestone references containing &, <, or >
-merge_request: 28667
-author:
-type: fixed

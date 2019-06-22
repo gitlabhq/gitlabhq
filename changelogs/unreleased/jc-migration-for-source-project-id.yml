@@ -1,5 +1,0 @@
----
-title: Fix null source_project_id in pool_repositories
-merge_request: 29157
-author:
-type: other

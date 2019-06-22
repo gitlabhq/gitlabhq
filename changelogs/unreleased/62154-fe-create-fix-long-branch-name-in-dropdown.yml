@@ -1,6 +1,0 @@
----
-title: Add support to view entirety of long branch name in dropdown instead of it
-  being cut off
-merge_request: 29069
-author:
-type: fixed

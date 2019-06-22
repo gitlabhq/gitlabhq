@@ -1,5 +1,0 @@
----
-title: Use Redis for CacheMarkDownField on non AR models
-merge_request: 29054
-author:
-type: performance

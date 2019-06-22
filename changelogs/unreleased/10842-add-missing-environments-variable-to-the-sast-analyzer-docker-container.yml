@@ -1,5 +1,0 @@
----
-title: 'Fix: propagate all documented ENV vars to CI when using SAST'
-merge_request: 29564
-author:
-type: fixed

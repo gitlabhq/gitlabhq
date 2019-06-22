@@ -1,5 +1,0 @@
----
-title: Fix yaml linting for GitLab CI inside project (.gitlab/ci) *.yml files and CI template files
-merge_request: 27576
-author: Will Hall
-type: fixed

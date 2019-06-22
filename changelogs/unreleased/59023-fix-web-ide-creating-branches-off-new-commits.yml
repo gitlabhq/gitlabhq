@@ -1,5 +1,0 @@
----
-title: Fix IDE commit using latest ref in branch and overriding contents
-merge_request: 29769
-author:
-type: fixed

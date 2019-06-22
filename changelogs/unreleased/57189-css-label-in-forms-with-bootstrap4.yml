@@ -1,5 +1,0 @@
----
-title: Fix col-sm-* in forms to keep layout
-merge_request: 24885
-author: Takuya Noguchi
-type: fixed

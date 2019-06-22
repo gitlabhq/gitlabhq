@@ -1,5 +1,0 @@
----
-title: Fix remote mirrors not updating after tag push
-merge_request:
-author:
-type: fixed

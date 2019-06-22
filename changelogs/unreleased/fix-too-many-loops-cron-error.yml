@@ -1,5 +1,0 @@
----
-title: Fix "too many loops" error by handling gracefully cron schedules for non existent days
-merge_request: 28002
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Fix GPG signature verification with recent GnuPG versions
-merge_request: 29388
-author: David Palubin
-type: fixed

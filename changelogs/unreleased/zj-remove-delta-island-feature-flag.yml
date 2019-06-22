@@ -1,3 +1,0 @@
-merge_request: 28871
-title: Improve clone performance by using delta islands
-type: performance
