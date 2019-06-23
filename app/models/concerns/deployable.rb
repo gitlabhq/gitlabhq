@@ -18,6 +18,7 @@ module Deployable
       return unless environment.persisted?
 
       create_deployment!(
+        cluster_id: environment.deployment_platform&.cluster_id,
         project_id: environment.project_id,
         environment: environment,
         ref: ref,

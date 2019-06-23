@@ -1,0 +1,5 @@
+---
+title: Persist the cluster a deployment was deployed to
+merge_request: 29960
+author:
+type: fixed
