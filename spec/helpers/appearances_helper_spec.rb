@@ -8,6 +8,22 @@ describe AppearancesHelper do
     allow(helper).to receive(:current_user).and_return(user)
   end
 
+  describe '.current_appearance' do
+    it 'memoizes empty appearance' do
+      expect(Appearance).to receive(:current).once
+
+      2.times { helper.current_appearance }
+    end
+
+    it 'memoizes custom appearance' do
+      create(:appearance)
+
+      expect(Appearance).to receive(:current).once.and_call_original
+
+      2.times { helper.current_appearance }
+    end
+  end
+
   describe '#header_message' do
     it 'returns nil when header message field is not set' do
       create(:appearance)

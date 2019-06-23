@@ -2,6 +2,7 @@
 
 module AppearancesHelper
   include MarkupHelper
+  include Gitlab::Utils::StrongMemoize
 
   def brand_title
     current_appearance&.title.presence || default_brand_title
@@ -25,7 +26,9 @@ module AppearancesHelper
   end
 
   def current_appearance
-    @appearance ||= Appearance.current
+    strong_memoize(:current_appearance) do
+      Appearance.current
+    end
   end
 
   def brand_header_logo
