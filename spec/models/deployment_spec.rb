@@ -7,6 +7,7 @@ describe Deployment do
 
   it { is_expected.to belong_to(:project).required }
   it { is_expected.to belong_to(:environment).required }
+  it { is_expected.to belong_to(:cluster).class_name('Clusters::Cluster') }
   it { is_expected.to belong_to(:user) }
   it { is_expected.to belong_to(:deployable) }
 

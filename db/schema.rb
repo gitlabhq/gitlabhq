@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190625184066) do
+ActiveRecord::Schema.define(version: 20190627051902) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1066,6 +1066,8 @@ ActiveRecord::Schema.define(version: 20190625184066) do
     t.string "on_stop"
     t.integer "status", limit: 2, null: false
     t.datetime_with_timezone "finished_at"
+    t.integer "cluster_id"
+    t.index ["cluster_id"], name: "index_deployments_on_cluster_id", using: :btree
     t.index ["created_at"], name: "index_deployments_on_created_at", using: :btree
     t.index ["deployable_type", "deployable_id"], name: "index_deployments_on_deployable_type_and_deployable_id", using: :btree
     t.index ["environment_id", "id"], name: "index_deployments_on_environment_id_and_id", using: :btree
@@ -3650,6 +3652,7 @@ ActiveRecord::Schema.define(version: 20190625184066) do
   add_foreign_key "dependency_proxy_blobs", "namespaces", column: "group_id", name: "fk_db58bbc5d7", on_delete: :cascade
   add_foreign_key "dependency_proxy_group_settings", "namespaces", column: "group_id", name: "fk_616ddd680a", on_delete: :cascade
   add_foreign_key "deploy_keys_projects", "projects", name: "fk_58a901ca7e", on_delete: :cascade
+  add_foreign_key "deployments", "clusters", name: "fk_289bba3222", on_delete: :nullify
   add_foreign_key "deployments", "projects", name: "fk_b9a3851b82", on_delete: :cascade
   add_foreign_key "design_management_designs", "issues", on_delete: :cascade
   add_foreign_key "design_management_designs", "projects", on_delete: :cascade
