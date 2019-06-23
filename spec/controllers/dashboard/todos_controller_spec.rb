@@ -44,6 +44,34 @@ describe Dashboard::TodosController do
       end
     end
 
+    context "with render_views" do
+      render_views
+
+      it 'avoids N+1 queries', :request_store do
+        merge_request = create(:merge_request, source_project: project)
+        create(:todo, project: project, author: author, user: user, target: merge_request)
+        create(:issue, project: project, assignees: [user])
+
+        group = create(:group)
+        group.add_owner(user)
+
+        get :index
+
+        control = ActiveRecord::QueryRecorder.new { get :index }
+
+        create(:issue, project: project, assignees: [user])
+        group_2 = create(:group)
+        group_2.add_owner(user)
+        project_2 = create(:project)
+        project_2.add_developer(user)
+        merge_request_2 = create(:merge_request, source_project: project_2)
+        create(:todo, project: project, author: author, user: user, target: merge_request_2)
+
+        expect { get :index }.not_to exceed_query_limit(control)
+        expect(response.status).to eq(200)
+      end
+    end
+
     context 'group authorization' do
       it 'renders 404 when user does not have read access on given group' do
         unauthorized_group = create(:group, :private)

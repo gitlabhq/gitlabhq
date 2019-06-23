@@ -170,7 +170,7 @@ module TodosHelper
   end
 
   def todo_group_options
-    groups = current_user.authorized_groups.map do |group|
+    groups = current_user.authorized_groups.with_route.map do |group|
       { id: group.id, text: group.full_name }
     end
 
