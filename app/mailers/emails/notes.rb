@@ -60,7 +60,7 @@ module Emails
       # `note_id` is a `Note` when originating in `NotifyPreview`
       @note = note_id.is_a?(Note) ? note_id : Note.find(note_id)
       @project = @note.project
-      @group = @note.noteable.try(:group)
+      @group = @project.try(:group) || @note.noteable.try(:group)
 
       if (@project || @group) && @note.persisted?
         @sent_notification = SentNotification.record_note(@note, recipient_id, reply_key)
