@@ -2,6 +2,7 @@
 
 class TeamcityService < CiService
   include ReactiveService
+  include ServicePushDataValidations
 
   prop_accessor :teamcity_url, :build_type, :username, :password
 
@@ -18,6 +19,25 @@ class TeamcityService < CiService
 
   after_save :compose_service_hook, if: :activated?
   before_update :reset_password
+
+  class << self
+    def to_param
+      'teamcity'
+    end
+
+    def supported_events
+      %w(push merge_request)
+    end
+
+    def event_description(event)
+      case event
+      when 'push', 'push_events'
+        'TeamCity CI will be triggered after every push to the repository except branch delete'
+      when 'merge_request', 'merge_request_events'
+        'TeamCity CI will be triggered after a merge request has been created or updated'
+      end
+    end
+  end
 
   def compose_service_hook
     hook = service_hook || build_service_hook
@@ -41,10 +61,6 @@ class TeamcityService < CiService
   def help
     'You will want to configure monitoring of all branches so merge '\
     'requests build, that setting is in the vsc root advanced settings.'
-  end
-
-  def self.to_param
-    'teamcity'
   end
 
   def fields
@@ -74,26 +90,25 @@ class TeamcityService < CiService
   end
 
   def execute(data)
-    return unless supported_events.include?(data[:object_kind])
-
-    auth = {
-      username: username,
-      password: password
-    }
-
-    branch = Gitlab::Git.ref_name(data[:ref])
-
-    Gitlab::HTTP.post(
-      build_url('httpAuth/app/rest/buildQueue'),
-      body: "<build branchName=\"#{branch}\">"\
-            "<buildType id=\"#{build_type}\"/>"\
-            '</build>',
-      headers: { 'Content-type' => 'application/xml' },
-      basic_auth: auth
-    )
+    case data[:object_kind]
+    when 'push'
+      execute_push(data)
+    when 'merge_request'
+      execute_merge_request(data)
+    end
   end
 
   private
+
+  def execute_push(data)
+    branch = Gitlab::Git.ref_name(data[:ref])
+    post_to_build_queue(data, branch) if push_valid?(data)
+  end
+
+  def execute_merge_request(data)
+    branch = data[:object_attributes][:source_branch]
+    post_to_build_queue(data, branch) if merge_request_valid?(data)
+  end
 
   def read_build_page(response)
     if response.code != 200
@@ -134,10 +149,21 @@ class TeamcityService < CiService
   end
 
   def get_path(path)
-    Gitlab::HTTP.get(build_url(path), verify: false,
-                                      basic_auth: {
-                                        username: username,
-                                        password: password
-                                      })
+    Gitlab::HTTP.get(build_url(path), verify: false, basic_auth: basic_auth)
+  end
+
+  def post_to_build_queue(data, branch)
+    Gitlab::HTTP.post(
+      build_url('httpAuth/app/rest/buildQueue'),
+      body: "<build branchName=#{branch.encode(xml: :attr)}>"\
+            "<buildType id=#{build_type.encode(xml: :attr)}/>"\
+            '</build>',
+      headers: { 'Content-type' => 'application/xml' },
+      basic_auth: basic_auth
+    )
+  end
+
+  def basic_auth
+    { username: username, password: password }
   end
 end
