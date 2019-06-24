@@ -1001,6 +1001,8 @@ describe Projects::MergeRequestsController do
       before do
         project.add_developer(user)
         sign_in(user)
+
+        expect(::Gitlab::GitalyClient).to receive(:allow_ref_name_caching).and_call_original
       end
 
       it 'returns 200' do

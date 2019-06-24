@@ -1,0 +1,5 @@
+---
+title: Enable Gitaly ref name caching for discussions.json
+merge_request: 29951
+author:
+type: performance
