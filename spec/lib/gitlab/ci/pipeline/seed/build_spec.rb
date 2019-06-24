@@ -153,75 +153,71 @@ describe Gitlab::Ci::Pipeline::Seed::Build do
       end
     end
 
-    context 'when keywords and pipeline source policy matches' do
-      possibilities = [%w[pushes push],
-                       %w[web web],
-                       %w[triggers trigger],
-                       %w[schedules schedule],
-                       %w[api api],
-                       %w[external external]]
+    context 'with source-keyword policy' do
+      using RSpec::Parameterized
 
-      context 'when using only' do
-        possibilities.each do |keyword, source|
-          context "when using keyword `#{keyword}` and source `#{source}`" do
-            let(:pipeline) do
-              build(:ci_empty_pipeline, ref: 'deploy', tag: false, source: source)
-            end
+      let(:pipeline) { build(:ci_empty_pipeline, ref: 'deploy', tag: false, source: source) }
 
+      context 'matches' do
+        where(:keyword, :source) do
+          [
+            %w(pushes push),
+            %w(web web),
+            %w(triggers trigger),
+            %w(schedules schedule),
+            %w(api api),
+            %w(external external)
+          ]
+        end
+
+        with_them do
+          context 'using an only policy' do
             let(:attributes) { { name: 'rspec', only: { refs: [keyword] } } }
 
             it { is_expected.to be_included }
           end
-        end
-      end
 
-      context 'when using except' do
-        possibilities.each do |keyword, source|
-          context "when using keyword `#{keyword}` and source `#{source}`" do
-            let(:pipeline) do
-              build(:ci_empty_pipeline, ref: 'deploy', tag: false, source: source)
-            end
-
+          context 'using an except policy' do
             let(:attributes) { { name: 'rspec', except: { refs: [keyword] } } }
 
             it { is_expected.not_to be_included }
           end
-        end
-      end
-    end
 
-    context 'when keywords and pipeline source does not match' do
-      possibilities = [%w[pushes web],
-                       %w[web push],
-                       %w[triggers schedule],
-                       %w[schedules external],
-                       %w[api trigger],
-                       %w[external api]]
-
-      context 'when using only' do
-        possibilities.each do |keyword, source|
-          context "when using keyword `#{keyword}` and source `#{source}`" do
-            let(:pipeline) do
-              build(:ci_empty_pipeline, ref: 'deploy', tag: false, source: source)
-            end
-
-            let(:attributes) { { name: 'rspec', only: { refs: [keyword] } } }
+          context 'using both only and except policies' do
+            let(:attributes) { { name: 'rspec', only: { refs: [keyword] }, except: { refs: [keyword] } } }
 
             it { is_expected.not_to be_included }
           end
         end
       end
 
-      context 'when using except' do
-        possibilities.each do |keyword, source|
-          context "when using keyword `#{keyword}` and source `#{source}`" do
-            let(:pipeline) do
-              build(:ci_empty_pipeline, ref: 'deploy', tag: false, source: source)
-            end
+      context 'non-matches' do
+        where(:keyword, :source) do
+          %w(web trigger schedule api external).map { |source| ['pushes', source] } +
+          %w(push trigger schedule api external).map { |source| ['web', source] } +
+          %w(push web schedule api external).map { |source| ['triggers', source] } +
+          %w(push web trigger api external).map { |source| ['schedules', source] } +
+          %w(push web trigger schedule external).map { |source| ['api', source] } +
+          %w(push web trigger schedule api).map { |source| ['external', source] }
+        end
 
+        with_them do
+          context 'using an only policy' do
+            let(:attributes) { { name: 'rspec', only: { refs: [keyword] } } }
+
+            it { is_expected.not_to be_included }
+          end
+
+          context 'using an except policy' do
             let(:attributes) { { name: 'rspec', except: { refs: [keyword] } } }
 
             it { is_expected.to be_included }
+          end
+
+          context 'using both only and except policies' do
+            let(:attributes) { { name: 'rspec', only: { refs: [keyword] }, except: { refs: [keyword] } } }
+
+            it { is_expected.not_to be_included }
           end
         end
       end
