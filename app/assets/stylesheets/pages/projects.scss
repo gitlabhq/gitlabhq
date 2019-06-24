@@ -889,7 +889,6 @@ pre.light-well {
     @include basic-list-stats;
     display: flex;
     align-items: center;
-    color: $gl-text-color-secondary;
     padding: $gl-padding 0;
 
     @include media-breakpoint-up(lg) {
@@ -952,10 +951,6 @@ pre.light-well {
 
     .description {
       line-height: 1.5;
-
-      @include media-breakpoint-up(md) {
-        color: $gl-text-color;
-      }
     }
 
     @include media-breakpoint-down(md) {
