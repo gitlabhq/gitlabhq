@@ -50,7 +50,7 @@
           = link_to project_tree_path(@project), class: 'shortcuts-tree qa-project-menu-repo' do
             .nav-icon-container
               = sprite_icon('doc-text')
-            %span.nav-item-name
+            %span.nav-item-name#js-onboarding-repo-link
               = _('Repository')
 
           %ul.sidebar-sub-level-items
@@ -64,11 +64,11 @@
                 = _('Files')
 
             = nav_link(controller: [:commit, :commits]) do
-              = link_to project_commits_path(@project, current_ref) do
+              = link_to project_commits_path(@project, current_ref), id: 'js-onboarding-commits-link' do
                 = _('Commits')
 
             = nav_link(html_options: {class: branches_tab_class}) do
-              = link_to project_branches_path(@project), class: 'qa-branches-link' do
+              = link_to project_branches_path(@project), class: 'qa-branches-link', id: 'js-onboarding-branches-link' do
                 = _('Branches')
 
             = nav_link(controller: [:tags]) do
@@ -98,7 +98,7 @@
           = link_to project_issues_path(@project), class: 'shortcuts-issues qa-issues-item' do
             .nav-icon-container
               = sprite_icon('issues')
-            %span.nav-item-name
+            %span.nav-item-name#js-onboarding-issues-link
               = _('Issues')
             - if @project.issues_enabled?
               %span.badge.badge-pill.count.issue_counter
@@ -153,7 +153,7 @@
           = link_to project_merge_requests_path(@project), class: 'shortcuts-merge_requests qa-merge-requests-link' do
             .nav-icon-container
               = sprite_icon('git-merge')
-            %span.nav-item-name
+            %span.nav-item-name#js-onboarding-mr-link
               = _('Merge Requests')
             %span.badge.badge-pill.count.merge_counter.js-merge-counter
               = number_with_delimiter(@project.open_merge_requests_count)
@@ -170,7 +170,7 @@
           = link_to project_pipelines_path(@project), class: 'shortcuts-pipelines qa-link-pipelines' do
             .nav-icon-container
               = sprite_icon('rocket')
-            %span.nav-item-name
+            %span.nav-item-name#js-onboarding-pipelines-link
               = _('CI / CD')
 
           %ul.sidebar-sub-level-items
@@ -335,7 +335,7 @@
           = link_to edit_project_path(@project), class: 'shortcuts-tree' do
             .nav-icon-container
               = sprite_icon('settings')
-            %span.nav-item-name.qa-settings-item
+            %span.nav-item-name.qa-settings-item#js-onboarding-settings-link
               = _('Settings')
 
           %ul.sidebar-sub-level-items
@@ -351,7 +351,7 @@
                   %span
                     = _('General')
             = nav_link(controller: :project_members) do
-              = link_to project_project_members_path(@project), title: _('Members'), class: 'qa-link-members-settings' do
+              = link_to project_project_members_path(@project), title: _('Members'), class: 'qa-link-members-settings', id: 'js-onboarding-settings-members-link' do
                 %span
                   = _('Members')
             - if can_edit

@@ -56,7 +56,7 @@
 
     - if branch.name != @repository.root_ref
       = link_to project_compare_path(@project, @repository.root_ref, branch.name),
-        class: "btn btn-default #{'prepend-left-10' unless merge_project}",
+        class: "btn btn-default js-onboarding-compare-branches #{'prepend-left-10' unless merge_project}",
         title: s_('Branches|Compare') do
         = s_('Branches|Compare')
 
