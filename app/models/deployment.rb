@@ -84,7 +84,8 @@ class Deployment < ApplicationRecord
     Commit.truncate_sha(sha)
   end
 
-  def cluster
+  # Deprecated - will be replaced by a persisted cluster_id
+  def deployment_platform_cluster
     environment.deployment_platform&.cluster
   end
 

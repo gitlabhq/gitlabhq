@@ -380,12 +380,12 @@ describe Deployment do
     end
   end
 
-  describe '#cluster' do
+  describe '#deployment_platform_cluster' do
     let(:deployment) { create(:deployment) }
     let(:project) { deployment.project }
     let(:environment) { deployment.environment }
 
-    subject { deployment.cluster }
+    subject { deployment.deployment_platform_cluster }
 
     before do
       expect(project).to receive(:deployment_platform)
