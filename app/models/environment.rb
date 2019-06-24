@@ -155,7 +155,7 @@ class Environment < ApplicationRecord
   end
 
   def has_terminals?
-    deployment_platform.present? && available? && last_deployment.present?
+    available? && deployment_platform.present? && last_deployment.present?
   end
 
   def terminals
@@ -163,7 +163,7 @@ class Environment < ApplicationRecord
   end
 
   def has_metrics?
-    prometheus_adapter&.can_query? && available?
+    available? && prometheus_adapter&.can_query?
   end
 
   def metrics

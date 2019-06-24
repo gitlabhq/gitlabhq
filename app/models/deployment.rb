@@ -179,7 +179,7 @@ class Deployment < ApplicationRecord
   end
 
   def has_metrics?
-    prometheus_adapter&.can_query? && success?
+    success? && prometheus_adapter&.can_query?
   end
 
   def metrics
