@@ -77,7 +77,7 @@ module API
         use :pagination
       end
       get do
-        todos = paginate(find_todos.with_api_entity_associations)
+        todos = paginate(find_todos.with_entity_associations)
         options = { with: Entities::Todo, current_user: current_user }
         batch_load_issuable_metadata(todos, options)
 

@@ -60,7 +60,7 @@ class Todo < ApplicationRecord
   scope :for_type, -> (type) { where(target_type: type) }
   scope :for_target, -> (id) { where(target_id: id) }
   scope :for_commit, -> (id) { where(commit_id: id) }
-  scope :with_api_entity_associations, -> { preload(:target, :author, :note, group: :route, project: [:route, { namespace: :route }]) }
+  scope :with_entity_associations, -> { preload(:target, :author, :note, group: :route, project: [:route, { namespace: :route }]) }
   scope :joins_issue_and_assignees, -> { left_joins(issue: :assignees) }
 
   state_machine :state, initial: :pending do

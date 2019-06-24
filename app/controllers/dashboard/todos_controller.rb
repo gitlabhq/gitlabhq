@@ -10,6 +10,7 @@ class Dashboard::TodosController < Dashboard::ApplicationController
   def index
     @sort = params[:sort]
     @todos = @todos.page(params[:page])
+    @todos = @todos.with_entity_associations
 
     return if redirect_out_of_range(@todos)
   end
