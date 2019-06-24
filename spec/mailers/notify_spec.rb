@@ -45,7 +45,7 @@ describe Notify do
 
   context 'for a project' do
     shared_examples 'an assignee email' do
-      let(:test_recipient) { assignee }
+      let(:recipient) { assignee }
 
       it_behaves_like 'an email sent to a user'
 
@@ -55,7 +55,7 @@ describe Notify do
         aggregate_failures do
           expect(sender.display_name).to eq(current_user.name)
           expect(sender.address).to eq(gitlab_sender)
-          expect(subject).to deliver_to(assignee.email)
+          expect(subject).to deliver_to(recipient.notification_email)
         end
       end
     end
@@ -547,12 +547,13 @@ describe Notify do
       let(:host) { Gitlab.config.gitlab.host }
 
       context 'in discussion' do
-        set(:first_note) { create(:discussion_note_on_issue) }
-        set(:second_note) { create(:discussion_note_on_issue, in_reply_to: first_note) }
-        set(:third_note) { create(:discussion_note_on_issue, in_reply_to: second_note) }
+        set(:first_note) { create(:discussion_note_on_issue, project: project) }
+        set(:second_note) { create(:discussion_note_on_issue, in_reply_to: first_note, project: project) }
+        set(:third_note) { create(:discussion_note_on_issue, in_reply_to: second_note, project: project) }
 
         subject { described_class.note_issue_email(recipient.id, third_note.id) }
 
+        it_behaves_like 'an email sent to a user'
         it_behaves_like 'appearance header and footer enabled'
         it_behaves_like 'appearance header and footer not enabled'
 
@@ -572,10 +573,11 @@ describe Notify do
       end
 
       context 'individual issue comments' do
-        set(:note) { create(:note_on_issue) }
+        set(:note) { create(:note_on_issue, project: project) }
 
         subject { described_class.note_issue_email(recipient.id, note.id) }
 
+        it_behaves_like 'an email sent to a user'
         it_behaves_like 'appearance header and footer enabled'
         it_behaves_like 'appearance header and footer not enabled'
 
@@ -604,13 +606,13 @@ describe Notify do
       it_behaves_like 'a user cannot unsubscribe through footer link'
 
       it 'has the correct subject and body' do
-        is_expected.to have_referable_subject(project_snippet, reply: true)
+        is_expected.to have_referable_subject(project_snippet, include_group: true, reply: true)
         is_expected.to have_body_text project_snippet_note.note
       end
     end
 
     describe 'project was moved' do
-      let(:test_recipient) { user }
+      let(:recipient) { user }
       subject { described_class.project_was_moved_email(project.id, user.id, "gitlab/gitlab") }
 
       it_behaves_like 'an email sent to a user'
@@ -811,7 +813,7 @@ describe Notify do
 
         it 'has the correct subject and body' do
           aggregate_failures do
-            is_expected.to have_subject("Re: #{project.name} | #{commit.title} (#{commit.short_id})")
+            is_expected.to have_subject("Re: #{project.name} | #{project.group.name} | #{commit.title} (#{commit.short_id})")
             is_expected.to have_body_text(commit.short_id)
           end
         end
@@ -837,7 +839,7 @@ describe Notify do
 
         it 'has the correct subject and body' do
           aggregate_failures do
-            is_expected.to have_referable_subject(merge_request, reply: true)
+            is_expected.to have_referable_subject(merge_request, include_group: true, reply: true)
             is_expected.to have_body_text note_on_merge_request_path
           end
         end
@@ -863,7 +865,7 @@ describe Notify do
 
         it 'has the correct subject and body' do
           aggregate_failures do
-            is_expected.to have_referable_subject(issue, reply: true)
+            is_expected.to have_referable_subject(issue, include_group: true, reply: true)
             is_expected.to have_body_text(note_on_issue_path)
           end
         end
@@ -929,7 +931,7 @@ describe Notify do
         it_behaves_like 'appearance header and footer not enabled'
 
         it 'has the correct subject' do
-          is_expected.to have_subject "Re: #{project.name} | #{commit.title} (#{commit.short_id})"
+          is_expected.to have_subject "Re: #{project.name} | #{project.group.name} | #{commit.title} (#{commit.short_id})"
         end
 
         it 'contains a link to the commit' do
@@ -957,7 +959,7 @@ describe Notify do
         it_behaves_like 'appearance header and footer not enabled'
 
         it 'has the correct subject' do
-          is_expected.to have_referable_subject(merge_request, reply: true)
+          is_expected.to have_referable_subject(merge_request, include_group: true, reply: true)
         end
 
         it 'contains a link to the merge request note' do
@@ -985,7 +987,7 @@ describe Notify do
         it_behaves_like 'appearance header and footer not enabled'
 
         it 'has the correct subject' do
-          is_expected.to have_referable_subject(issue, reply: true)
+          is_expected.to have_referable_subject(issue, include_group: true, reply: true)
         end
 
         it 'contains a link to the issue note' do
