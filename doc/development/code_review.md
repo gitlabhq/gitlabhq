@@ -60,6 +60,8 @@ from teams other than your own.
 
    1. If your merge request includes backend changes [^1], it must be
       **approved by a [backend maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab-ce_maintainers_backend)**.
+   1. If your merge request includes database migrations or changes to expensive queries [^2], it must be
+      **approved by a [database maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab-ce_maintainers_database)**.
    1. If your merge request includes frontend changes [^1], it must be
       **approved by a [frontend maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab-ce_maintainers_frontend)**.
    1. If your merge request includes UX changes [^1], it must be
@@ -377,3 +379,4 @@ Largely based on the [thoughtbot code review guide].
 [team]: https://about.gitlab.com/team/
 [build handbook]: https://about.gitlab.com/handbook/build/handbook/build#how-to-work-with-build
 [^1]: Please note that specs other than JavaScript specs are considered backend code.
+[^2]: We encourage you to seek guidance from a database maintainer if your merge request is potentially introducing expensive queries. It is most efficient to comment on the line of code in question with the SQL queries so they can give their advice.
