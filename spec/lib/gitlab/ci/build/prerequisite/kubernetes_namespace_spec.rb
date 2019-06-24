@@ -23,7 +23,7 @@ describe Gitlab::Ci::Build::Prerequisite::KubernetesNamespace do
         let(:cluster) { create(:cluster, :group) }
 
         before do
-          allow(build.deployment).to receive(:cluster).and_return(cluster)
+          allow(build.deployment).to receive(:deployment_platform_cluster).and_return(cluster)
         end
 
         it { is_expected.to be_truthy }
@@ -49,7 +49,7 @@ describe Gitlab::Ci::Build::Prerequisite::KubernetesNamespace do
 
       context 'and no cluster to deploy to' do
         before do
-          expect(deployment.cluster).to be_nil
+          expect(deployment.deployment_platform_cluster).to be_nil
         end
 
         it { is_expected.to be_falsey }
@@ -67,7 +67,7 @@ describe Gitlab::Ci::Build::Prerequisite::KubernetesNamespace do
       let(:cluster) { create(:cluster, :group) }
 
       before do
-        allow(build.deployment).to receive(:cluster).and_return(cluster)
+        allow(build.deployment).to receive(:deployment_platform_cluster).and_return(cluster)
       end
 
       it 'creates a kubernetes namespace' do
@@ -84,7 +84,7 @@ describe Gitlab::Ci::Build::Prerequisite::KubernetesNamespace do
 
     context 'completion is not required' do
       before do
-        expect(deployment.cluster).to be_nil
+        expect(deployment.deployment_platform_cluster).to be_nil
       end
 
       it 'does not create a namespace' do
