@@ -41,8 +41,7 @@ class Namespace < ApplicationRecord
   validates :owner, presence: true, unless: ->(n) { n.type == "Group" }
   validates :name,
     presence: true,
-    length: { maximum: 255 },
-    namespace_name: true
+    length: { maximum: 255 }
 
   validates :description, length: { maximum: 255 }
   validates :path,
