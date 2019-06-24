@@ -10,7 +10,7 @@ import { mergeUrlParams } from '../lib/utils/url_utility';
 export default class AvailableDropdownMappings {
   constructor(
     container,
-    baseEndpoint,
+    runnerTagsEndpoint,
     labelsEndpoint,
     milestonesEndpoint,
     groupsOnly,
@@ -18,7 +18,7 @@ export default class AvailableDropdownMappings {
     includeDescendantGroups,
   ) {
     this.container = container;
-    this.baseEndpoint = baseEndpoint;
+    this.runnerTagsEndpoint = runnerTagsEndpoint;
     this.labelsEndpoint = labelsEndpoint;
     this.milestonesEndpoint = milestonesEndpoint;
     this.groupsOnly = groupsOnly;
@@ -149,7 +149,7 @@ export default class AvailableDropdownMappings {
   }
 
   getRunnerTagsEndpoint() {
-    return `${this.baseEndpoint}/admin/runners/tag_list.json`;
+    return `${this.runnerTagsEndpoint}.json`;
   }
 
   getMergeRequestTargetBranchesEndpoint() {
