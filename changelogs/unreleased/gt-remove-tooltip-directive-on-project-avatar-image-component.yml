@@ -1,0 +1,5 @@
+---
+title: Remove tooltip directive on project avatar image component
+merge_request: 29631
+author: George Tsiolis
+type: performance
