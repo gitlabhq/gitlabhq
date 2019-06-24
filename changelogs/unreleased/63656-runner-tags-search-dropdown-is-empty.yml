@@ -1,0 +1,5 @@
+---
+title: Fix runner tags search dropdown being empty when there are tags
+merge_request: 29985
+author:
+type: fixed
