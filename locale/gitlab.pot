@@ -6943,13 +6943,13 @@ msgstr ""
 msgid "Pagination|Last »"
 msgstr ""
 
-msgid "Pagination|Next"
-msgstr ""
-
-msgid "Pagination|Prev"
+msgid "Pagination|Next ›"
 msgstr ""
 
 msgid "Pagination|« First"
+msgstr ""
+
+msgid "Pagination|‹ Prev"
 msgstr ""
 
 msgid "Parameter"
