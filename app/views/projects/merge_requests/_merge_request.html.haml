@@ -6,7 +6,7 @@
   .issuable-info-container
     .issuable-main-info
       .merge-request-title.title
-        %span.merge-request-title-text
+        %span.merge-request-title-text.js-onboarding-mr-item
           = link_to merge_request.title, merge_request_path(merge_request)
         - if merge_request.tasks?
           %span.task-status.d-none.d-sm-inline-block
