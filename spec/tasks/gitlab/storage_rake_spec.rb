@@ -50,7 +50,7 @@ describe 'rake gitlab:storage:*', :sidekiq do
 
         expect(Project).not_to receive(:with_unmigrated_storage)
 
-        expect { run_rake_task(task) }.to output(/This task requires database write access. Exiting./).to_stderr
+        expect { run_rake_task(task) }.to abort_execution.with_message(/This task requires database write access. Exiting./)
       end
     end
   end
@@ -96,7 +96,7 @@ describe 'rake gitlab:storage:*', :sidekiq do
 
           expect(Project).not_to receive(:with_unmigrated_storage)
 
-          expect { run_rake_task(task) }.to output(/There is already a rollback operation in progress/).to_stderr
+          expect { run_rake_task(task) }.to abort_execution.with_message(/There is already a rollback operation in progress/)
         end
       end
     end
@@ -105,14 +105,23 @@ describe 'rake gitlab:storage:*', :sidekiq do
       it 'does nothing' do
         expect(::HashedStorage::MigratorWorker).not_to receive(:perform_async)
 
-        run_rake_task(task)
+        expect { run_rake_task(task) }.to abort_execution.with_message('There are no projects requiring storage migration. Nothing to do!')
       end
     end
 
     context 'with 3 legacy projects' do
       let(:projects) { create_list(:project, 3, :legacy_storage) }
 
-      it_behaves_like "handles custom BATCH env var", ::HashedStorage::MigratorWorker
+      it 'enqueues migrations and count projects correctly' do
+        projects.map(&:id).sort.tap do |ids|
+          stub_env('ID_FROM', ids[0])
+          stub_env('ID_TO', ids[1])
+        end
+
+        expect { run_rake_task(task) }.to output(/Enqueuing migration of 2 projects in batches/).to_stdout
+      end
+
+      it_behaves_like 'handles custom BATCH env var', ::HashedStorage::MigratorWorker
     end
 
     context 'with same id in range' do
@@ -120,7 +129,7 @@ describe 'rake gitlab:storage:*', :sidekiq do
         stub_env('ID_FROM', 99999)
         stub_env('ID_TO', 99999)
 
-        expect { run_rake_task(task) }.to output(/There are no projects requiring storage migration with ID=99999/).to_stderr
+        expect { run_rake_task(task) }.to abort_execution.with_message(/There are no projects requiring storage migration with ID=99999/)
       end
 
       it 'displays a message when project exists but its already migrated' do
@@ -128,7 +137,7 @@ describe 'rake gitlab:storage:*', :sidekiq do
         stub_env('ID_FROM', project.id)
         stub_env('ID_TO', project.id)
 
-        expect { run_rake_task(task) }.to output(/There are no projects requiring storage migration with ID=#{project.id}/).to_stderr
+        expect { run_rake_task(task) }.to abort_execution.with_message(/There are no projects requiring storage migration with ID=#{project.id}/)
       end
 
       it 'enqueues migration when project can be found' do
@@ -153,7 +162,7 @@ describe 'rake gitlab:storage:*', :sidekiq do
 
           expect(Project).not_to receive(:with_unmigrated_storage)
 
-          expect { run_rake_task(task) }.to output(/There is already a migration operation in progress/).to_stderr
+          expect { run_rake_task(task) }.to abort_execution.with_message(/There is already a migration operation in progress/)
         end
       end
     end
@@ -162,12 +171,21 @@ describe 'rake gitlab:storage:*', :sidekiq do
       it 'does nothing' do
         expect(::HashedStorage::RollbackerWorker).not_to receive(:perform_async)
 
-        run_rake_task(task)
+        expect { run_rake_task(task) }.to abort_execution.with_message('There are no projects that can have storage rolledback. Nothing to do!')
       end
     end
 
     context 'with 3 hashed projects' do
       let(:projects) { create_list(:project, 3) }
+
+      it 'enqueues migrations and count projects correctly' do
+        projects.map(&:id).sort.tap do |ids|
+          stub_env('ID_FROM', ids[0])
+          stub_env('ID_TO', ids[1])
+        end
+
+        expect { run_rake_task(task) }.to output(/Enqueuing rollback of 2 projects in batches/).to_stdout
+      end
 
       it_behaves_like "handles custom BATCH env var", ::HashedStorage::RollbackerWorker
     end
