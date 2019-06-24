@@ -2,6 +2,7 @@
   - can_create_merge_request = can?(current_user, :create_merge_request_in, @project)
   - data_action = can_create_merge_request ? 'create-mr' : 'create-branch'
   - value = can_create_merge_request ? 'Create merge request' : 'Create branch'
+  - value = can_create_confidential_merge_request? ? _('Create confidential merge request') : value
 
   - can_create_path = can_create_branch_project_issue_path(@project, @issue)
   - create_mr_path = create_merge_request_project_issue_path(@project, @issue, branch_name: @issue.to_branch_name, ref: @project.default_branch)
@@ -23,12 +24,15 @@
         = icon('caret-down')
 
       .droplab-dropdown
-        %ul#create-merge-request-dropdown.create-merge-request-dropdown-menu.dropdown-menu.dropdown-menu-right.gl-show-field-errors{ data: { dropdown: true } }
+        %ul#create-merge-request-dropdown.create-merge-request-dropdown-menu.dropdown-menu.dropdown-menu-right.gl-show-field-errors{ class: ("create-confidential-merge-request-dropdown-menu" if can_create_confidential_merge_request?), data: { dropdown: true } }
           - if can_create_merge_request
             %li.droplab-item-selected{ role: 'button', data: { value: 'create-mr', text: _('Create merge request') } }
               .menu-item
                 = icon('check', class: 'icon')
-                = _('Create merge request and branch')
+                - if can_create_confidential_merge_request?
+                  = _('Create confidential merge request and branch')
+                - else
+                  = _('Create merge request and branch')
 
           %li{ class: [!can_create_merge_request && 'droplab-item-selected'], role: 'button', data: { value: 'create-branch', text: _('Create branch') } }
             .menu-item

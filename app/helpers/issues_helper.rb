@@ -135,6 +135,20 @@ module IssuesHelper
     can?(current_user, :create_issue, project)
   end
 
+  def create_confidential_merge_request_enabled?
+    Feature.enabled?(:create_confidential_merge_request, @project)
+  end
+
+  def show_new_branch_button?
+    can_create_confidential_merge_request? || !@issue.confidential?
+  end
+
+  def can_create_confidential_merge_request?
+    @issue.confidential? && !@project.private? &&
+      create_confidential_merge_request_enabled? &&
+      can?(current_user, :create_merge_request_in, @project)
+  end
+
   # Required for Banzai::Filter::IssueReferenceFilter
   module_function :url_for_issue
   module_function :url_for_internal_issue

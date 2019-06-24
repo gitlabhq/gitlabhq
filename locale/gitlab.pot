@@ -3056,6 +3056,12 @@ msgstr ""
 msgid "Create commit"
 msgstr ""
 
+msgid "Create confidential merge request"
+msgstr ""
+
+msgid "Create confidential merge request and branch"
+msgstr ""
+
 msgid "Create directory"
 msgstr ""
 
