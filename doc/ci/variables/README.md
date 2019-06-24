@@ -27,8 +27,7 @@ CI/CD's pipelines. Using variables means no hardcoded values.
 
 ### Predefined environment variables
 
-GitLab CI/CD has a default set of
-[predefined variables](predefined_variables.md)
+GitLab CI/CD has a [default set of predefined variables](predefined_variables.md)
 which can be used without any specification needed.
 You can call issues numbers, user names, branch names,
 pipeline and commit IDs, and much more.
@@ -36,13 +35,16 @@ pipeline and commit IDs, and much more.
 Predefined environment variables are the ones that GitLab
 provides out of the box for the local environment of the Runner.
 
-GitLab reads the .gitlab-ci.yml file, sends the information
+GitLab reads the `.gitlab-ci.yml` file, sends the information
 to the Runner (which runs the script commands), under which
 the variables are exposed.
 
 For example, two jobs under the same pipeline can share the same
 `CI_PIPELINE_ID` variable, but each one has its own `CI_JOB_ID`
 variable.
+
+NOTE: **Note:**
+Find here the full [**predefined variables reference table**](predefined_variables.md).
 
 ### Custom environment variables
 
