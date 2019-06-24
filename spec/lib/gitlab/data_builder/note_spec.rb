@@ -38,9 +38,11 @@ describe Gitlab::DataBuilder::Note do
   end
 
   describe 'When asking for a note on issue' do
+    let(:label) { create(:label, project: project) }
+
     let(:issue) do
-      create(:issue, created_at: fixed_time, updated_at: fixed_time,
-                     project: project)
+      create(:labeled_issue, created_at: fixed_time, updated_at: fixed_time,
+             project: project, labels: [label])
     end
 
     let(:note) do
@@ -48,13 +50,16 @@ describe Gitlab::DataBuilder::Note do
     end
 
     it 'returns the note and issue-specific data' do
+      without_timestamps = lambda { |label| label.except('created_at', 'updated_at') }
+      hook_attrs = issue.reload.hook_attrs
+
       expect(data).to have_key(:issue)
-      expect(data[:issue].except('updated_at'))
-        .to eq(issue.reload.hook_attrs.except('updated_at'))
+      expect(data[:issue].except('updated_at', 'labels'))
+        .to eq(hook_attrs.except('updated_at', 'labels'))
       expect(data[:issue]['updated_at'])
-        .to be >= issue.hook_attrs['updated_at']
-      expect(data[:issue]['labels'])
-        .to eq(issue.hook_attrs['labels'])
+        .to be >= hook_attrs['updated_at']
+      expect(data[:issue]['labels'].map(&without_timestamps))
+        .to eq(hook_attrs['labels'].map(&without_timestamps))
     end
 
     context 'with confidential issue' do
