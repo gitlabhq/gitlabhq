@@ -47,7 +47,6 @@ module Clusters
       validate :prevent_modification, on: :update
 
       after_save :clear_reactive_cache!
-      after_update :update_kubernetes_namespace
 
       alias_attribute :ca_pem, :ca_cert
 
@@ -209,14 +208,6 @@ module Clusters
         end
 
         true
-      end
-
-      def update_kubernetes_namespace
-        return unless saved_change_to_namespace?
-
-        run_after_commit do
-          ClusterConfigureWorker.perform_async(cluster_id)
-        end
       end
     end
   end

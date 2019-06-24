@@ -8,7 +8,6 @@ module Gitlab
           def unmet?
             deployment_cluster.present? &&
               deployment_cluster.managed? &&
-              !deployment_cluster.project_type? &&
               (kubernetes_namespace.new_record? || kubernetes_namespace.service_account_token.blank?)
           end
 

@@ -484,27 +484,4 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
       it { is_expected.to include(pods: []) }
     end
   end
-
-  describe '#update_kubernetes_namespace' do
-    let(:cluster) { create(:cluster, :provided_by_gcp) }
-    let(:platform) { cluster.platform }
-
-    context 'when namespace is updated' do
-      it 'calls ConfigureWorker' do
-        expect(ClusterConfigureWorker).to receive(:perform_async).with(cluster.id).once
-
-        platform.namespace = 'new-namespace'
-        platform.save
-      end
-    end
-
-    context 'when namespace is not updated' do
-      it 'does not call ConfigureWorker' do
-        expect(ClusterConfigureWorker).not_to receive(:perform_async)
-
-        platform.username = "new-username"
-        platform.save
-      end
-    end
-  end
 end

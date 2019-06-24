@@ -23,18 +23,11 @@ describe ClusterProvisionWorker do
 
         described_class.new.perform(cluster.id)
       end
-
-      it 'configures kubernetes platform' do
-        expect(ClusterConfigureWorker).to receive(:perform_async).with(cluster.id)
-
-        described_class.new.perform(cluster.id)
-      end
     end
 
     context 'when cluster does not exist' do
       it 'does not provision a cluster' do
         expect_any_instance_of(Clusters::Gcp::ProvisionService).not_to receive(:execute)
-        expect(ClusterConfigureWorker).not_to receive(:perform_async)
 
         described_class.new.perform(123)
       end

@@ -118,7 +118,6 @@ describe 'Gcp Cluster', :js do
 
       context 'when user changes cluster parameters' do
         before do
-          allow(ClusterConfigureWorker).to receive(:perform_async)
           fill_in 'cluster_platform_kubernetes_attributes_namespace', with: 'my-namespace'
           page.within('#js-cluster-details') { click_button 'Save changes' }
         end
