@@ -4,12 +4,15 @@ type: reference
 
 # Visibility and access controls
 
-GitLab allows admins to:
+GitLab allows administrators to:
 
 - Control access and visibility to GitLab resources including branches and projects.
 - Select from which hosting sites code can be imported into GitLab.
 - Select the protocols permitted to access GitLab.
 - Enable or disable repository mirroring.
+- Prevent non-administrators from deleting projects
+  ([introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/5615) in GitLab 12.0).
+  **[PREMIUM ONLY]**
 
 To access the visibility and access control options:
 
