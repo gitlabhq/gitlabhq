@@ -72,6 +72,7 @@
   - [project_rollback_hashed_storage, 1]
   - [hashed_storage, 1]
   - [pages_domain_verification, 1]
+  - [pages_domain_ssl_renewal, 1]
   - [object_storage_upload, 1]
   - [object_storage, 1]
   - [plugin, 1]

@@ -479,4 +479,30 @@ describe PagesDomain do
       end
     end
   end
+
+  describe '.need_auto_ssl_renewal' do
+    subject { described_class.need_auto_ssl_renewal }
+
+    let!(:domain_with_user_provided_certificate) { create(:pages_domain) }
+    let!(:domain_with_expired_user_provided_certificate) do
+      create(:pages_domain, :with_expired_certificate)
+    end
+    let!(:domain_with_user_provided_certificate_and_auto_ssl) do
+      create(:pages_domain, auto_ssl_enabled: true)
+    end
+
+    let!(:domain_with_gitlab_provided_certificate) { create(:pages_domain, :letsencrypt) }
+    let!(:domain_with_expired_gitlab_provided_certificate) do
+      create(:pages_domain, :letsencrypt, :with_expired_certificate)
+    end
+
+    it 'contains only domains needing verification' do
+      is_expected.to(
+        contain_exactly(
+          domain_with_user_provided_certificate_and_auto_ssl,
+          domain_with_expired_gitlab_provided_certificate
+        )
+      )
+    end
+  end
 end

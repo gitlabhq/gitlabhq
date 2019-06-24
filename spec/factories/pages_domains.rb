@@ -182,6 +182,7 @@ ZDXgrA==
     end
 
     trait :letsencrypt do
+      auto_ssl_enabled { true }
       certificate_source { :gitlab_provided }
     end
   end
