@@ -1,5 +1,6 @@
 <script>
 import settingsMixin from 'ee_else_ce/pages/projects/shared/permissions/mixins/settings_pannel_mixin';
+import { __ } from '~/locale';
 import projectFeatureSetting from './project_feature_setting.vue';
 import projectFeatureToggle from '~/vue_shared/components/toggle_button.vue';
 import projectSettingRow from './project_setting_row.vue';
@@ -102,9 +103,9 @@ export default {
 
   computed: {
     featureAccessLevelOptions() {
-      const options = [[10, 'Only Project Members']];
+      const options = [[10, __('Only Project Members')]];
       if (this.visibilityLevel !== visibilityOptions.PRIVATE) {
-        options.push([20, 'Everyone With Access']);
+        options.push([20, __('Everyone With Access')]);
       }
       return options;
     },
@@ -117,7 +118,7 @@ export default {
 
     pagesFeatureAccessLevelOptions() {
       if (this.visibilityLevel !== visibilityOptions.PUBLIC) {
-        return this.featureAccessLevelOptions.concat([[30, 'Everyone']]);
+        return this.featureAccessLevelOptions.concat([[30, __('Everyone')]]);
       }
       return this.featureAccessLevelOptions;
     },
@@ -200,17 +201,17 @@ export default {
               <option
                 :value="visibilityOptions.PRIVATE"
                 :disabled="!visibilityAllowed(visibilityOptions.PRIVATE)"
-                >Private</option
+                >{{ __('Private') }}</option
               >
               <option
                 :value="visibilityOptions.INTERNAL"
                 :disabled="!visibilityAllowed(visibilityOptions.INTERNAL)"
-                >Internal</option
+                >{{ __('Internal') }}</option
               >
               <option
                 :value="visibilityOptions.PUBLIC"
                 :disabled="!visibilityAllowed(visibilityOptions.PUBLIC)"
-                >Public</option
+                >{{ __('Public') }}</option
               >
             </select>
             <i aria-hidden="true" data-hidden="true" class="fa fa-chevron-down"></i>
