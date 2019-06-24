@@ -11,6 +11,8 @@ module MergeRequests
   # be executed regardless of the `target_ref` current state).
   #
   class MergeToRefService < MergeRequests::MergeBaseService
+    extend ::Gitlab::Utils::Override
+
     def execute(merge_request)
       @merge_request = merge_request
 
@@ -26,14 +28,18 @@ module MergeRequests
       success(commit_id: commit.id,
               target_id: target_id,
               source_id: source_id)
-    rescue MergeError => error
+    rescue MergeError, ArgumentError => error
       error(error.message)
     end
 
     private
 
+    override :source
+    def source
+      merge_request.diff_head_sha
+    end
+
     def validate!
-      authorization_check!
       error_check!
     end
 
@@ -43,19 +49,11 @@ module MergeRequests
       error =
         if !hooks_validation_pass?(merge_request)
           hooks_validation_error(merge_request)
-        elsif !@merge_request.mergeable_to_ref?
-          "Merge request is not mergeable to #{target_ref}"
-        elsif !source
+        elsif source.blank?
           'No source for merge'
         end
 
       raise_error(error) if error
-    end
-
-    def authorization_check!
-      unless Ability.allowed?(current_user, :admin_merge_request, project)
-        raise_error("You are not allowed to merge to this ref")
-      end
     end
 
     def target_ref
