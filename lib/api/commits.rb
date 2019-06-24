@@ -6,7 +6,10 @@ module API
   class Commits < Grape::API
     include PaginationParams
 
-    before { authorize! :download_code, user_project }
+    before do
+      require_repository_enabled!
+      authorize! :download_code, user_project
+    end
 
     helpers do
       def user_access
