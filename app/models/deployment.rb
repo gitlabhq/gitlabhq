@@ -85,11 +85,7 @@ class Deployment < ApplicationRecord
   end
 
   def cluster
-    platform = project.deployment_platform(environment: environment.name)
-
-    if platform.present? && platform.respond_to?(:cluster)
-      platform.cluster
-    end
+    environment.deployment_platform&.cluster
   end
 
   def execute_hooks
