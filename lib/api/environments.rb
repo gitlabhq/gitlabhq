@@ -18,11 +18,16 @@ module API
       end
       params do
         use :pagination
+        optional :name, type: String, desc: 'Returns the environment with this name'
+        optional :search, type: String, desc: 'Returns list of environments matching the search criteria'
+        mutually_exclusive :name, :search, message: 'cannot be used together'
       end
       get ':id/environments' do
         authorize! :read_environment, user_project
 
-        present paginate(user_project.environments), with: Entities::Environment, current_user: current_user
+        environments = ::EnvironmentsFinder.new(user_project, current_user, params).find
+
+        present paginate(environments), with: Entities::Environment, current_user: current_user
       end
 
       desc 'Creates a new environment' do

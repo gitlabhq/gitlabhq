@@ -34,6 +34,47 @@ describe API::Environments do
         expect(json_response.first['project'].keys).to contain_exactly(*project_data_keys)
         expect(json_response.first).not_to have_key("last_deployment")
       end
+
+      context 'when filtering' do
+        let!(:environment2) { create(:environment, project: project) }
+
+        it 'returns environment by name' do
+          get api("/projects/#{project.id}/environments?name=#{environment.name}", user)
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.size).to eq(1)
+          expect(json_response.first['name']).to eq(environment.name)
+        end
+
+        it 'returns no environment by non-existent name' do
+          get api("/projects/#{project.id}/environments?name=test", user)
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.size).to eq(0)
+        end
+
+        it 'returns environments by name_like' do
+          get api("/projects/#{project.id}/environments?search=envir", user)
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.size).to eq(2)
+        end
+
+        it 'returns no environment by non-existent name_like' do
+          get api("/projects/#{project.id}/environments?search=test", user)
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.size).to eq(0)
+        end
+      end
     end
 
     context 'as non member' do
