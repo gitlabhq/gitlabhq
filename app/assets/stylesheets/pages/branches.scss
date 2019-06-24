@@ -14,62 +14,26 @@
   $graph-side-width: 80px;
   $graph-separator-width: 1px;
 
-  padding: 0 6px;
-
   .graph-side {
-    position: relative;
     width: $graph-side-width;
-    height: 22px;
-    padding: 5px 0 13px;
-    float: left;
 
     &.full {
       width: $graph-side-width * 2 + $graph-separator-width;
-      display: flex;
-      justify-content: center;
     }
 
     .bar {
-      position: absolute;
       height: 4px;
       background-color: $gl-gray-200;
     }
 
-    .bar-behind {
-      right: 0;
-      border-radius: 3px 0 0 3px;
-    }
-
-    .bar-ahead {
-      left: 0;
-      border-radius: 0 3px 3px 0;
-    }
-
     .count {
-      padding-top: 6px;
-      padding-bottom: 0;
       font-size: 12px;
-      color: $gl-text-color;
-      display: block;
-    }
-
-    .count-behind {
-      padding-right: 4px;
-      text-align: right;
-    }
-
-    .count-ahead {
-      padding-left: 4px;
-      text-align: left;
     }
   }
 
   .graph-separator {
-    position: relative;
     width: $graph-separator-width;
     height: 18px;
-    margin: 5px 0 0;
-    float: left;
     background-color: $gl-gray-200;
   }
 }

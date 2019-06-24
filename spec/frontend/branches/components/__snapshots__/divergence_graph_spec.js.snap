@@ -1,0 +1,37 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Branch divergence graph component renders ahead and behind count 1`] = `
+<div
+  class="divergence-graph px-2 d-none d-md-block"
+  title="10 commits behind master, 10 commits ahead"
+>
+  <graphbar-stub
+    count="10"
+    maxcommits="100"
+    position="left"
+  />
+   
+  <div
+    class="graph-separator pull-left mt-1"
+  />
+   
+  <graphbar-stub
+    count="10"
+    maxcommits="100"
+    position="right"
+  />
+</div>
+`;
+
+exports[`Branch divergence graph component renders distance count 1`] = `
+<div
+  class="divergence-graph px-2 d-none d-md-block"
+  title="More than 900 commits different with master"
+>
+  <graphbar-stub
+    count="900"
+    maxcommits="100"
+    position="full"
+  />
+</div>
+`;
