@@ -88,23 +88,8 @@ describe Ci::PipelineSchedule do
 
   describe '#set_next_run_at' do
     let(:pipeline_schedule) { create(:ci_pipeline_schedule, :nightly) }
-    let(:ideal_next_run_at) { pipeline_schedule.send(:ideal_next_run_at) }
-
-    let(:expected_next_run_at) do
-      Gitlab::Ci::CronParser.new(Settings.cron_jobs['pipeline_schedule_worker']['cron'], Time.zone.name)
-        .next_time_from(ideal_next_run_at)
-    end
-
-    let(:cron_worker_next_run_at) do
-      Gitlab::Ci::CronParser.new(Settings.cron_jobs['pipeline_schedule_worker']['cron'], Time.zone.name)
-        .next_time_from(Time.zone.now)
-    end
-
-    context 'when creates new pipeline schedule' do
-      it 'updates next_run_at automatically' do
-        expect(pipeline_schedule.next_run_at).to eq(expected_next_run_at)
-      end
-    end
+    let(:ideal_next_run_at) { pipeline_schedule.send(:ideal_next_run_from, Time.zone.now) }
+    let(:cron_worker_next_run_at) { pipeline_schedule.send(:cron_worker_next_run_from, Time.zone.now) }
 
     context 'when PipelineScheduleWorker runs at a specific interval' do
       before do
@@ -129,7 +114,7 @@ describe Ci::PipelineSchedule do
       let(:pipeline_schedule) { create(:ci_pipeline_schedule, :every_minute) }
 
       it "updates next_run_at to the sidekiq worker's execution time" do
-        Timecop.freeze(2019, 06, 19, 12, 00) do
+        Timecop.freeze(Time.parse("2019-06-01 12:18:00+0000")) do
           expect(pipeline_schedule.next_run_at).to eq(cron_worker_next_run_at)
         end
       end
@@ -157,9 +142,8 @@ describe Ci::PipelineSchedule do
       let(:new_cron) { '0 0 1 1 *' }
 
       it 'updates next_run_at automatically' do
-        pipeline_schedule.update!(cron: new_cron)
-
-        expect(pipeline_schedule.next_run_at).to eq(expected_next_run_at)
+        expect { pipeline_schedule.update!(cron: new_cron) }
+          .to change { pipeline_schedule.next_run_at }
       end
     end
   end
@@ -167,21 +151,24 @@ describe Ci::PipelineSchedule do
   describe '#schedule_next_run!' do
     let!(:pipeline_schedule) { create(:ci_pipeline_schedule, :nightly) }
 
-    context 'when reschedules after 10 days from now' do
-      let(:future_time) { 10.days.from_now }
-      let(:ideal_next_run_at) { pipeline_schedule.send(:ideal_next_run_at) }
+    before do
+      pipeline_schedule.update_column(:next_run_at, nil)
+    end
 
-      let(:expected_next_run_at) do
-        Gitlab::Ci::CronParser.new(Settings.cron_jobs['pipeline_schedule_worker']['cron'], Time.zone.name)
-          .next_time_from(ideal_next_run_at)
+    it 'updates next_run_at' do
+      expect { pipeline_schedule.schedule_next_run! }
+        .to change { pipeline_schedule.next_run_at }
+    end
+
+    context 'when record is invalid' do
+      before do
+        allow(pipeline_schedule).to receive(:save!) { raise ActiveRecord::RecordInvalid.new(pipeline_schedule) }
       end
 
-      it 'points to proper next_run_at' do
-        Timecop.freeze(future_time) do
-          pipeline_schedule.schedule_next_run!
+      it 'nullifies the next run at' do
+        pipeline_schedule.schedule_next_run!
 
-          expect(pipeline_schedule.next_run_at).to eq(expected_next_run_at)
-        end
+        expect(pipeline_schedule.next_run_at).to be_nil
       end
     end
   end

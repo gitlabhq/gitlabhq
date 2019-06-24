@@ -55,15 +55,20 @@ module Ci
     # This way, a schedule like `*/1 * * * *` won't be triggered in a short interval
     # when PipelineScheduleWorker runs irregularly by Sidekiq Memory Killer.
     def set_next_run_at
-      self.next_run_at = Gitlab::Ci::CronParser.new(Settings.cron_jobs['pipeline_schedule_worker']['cron'],
-                                                    Time.zone.name)
-                                               .next_time_from(ideal_next_run_at)
+      now = Time.zone.now
+      ideal_next_run = ideal_next_run_from(now)
+
+      self.next_run_at = if ideal_next_run == cron_worker_next_run_from(now)
+                           ideal_next_run
+                         else
+                           cron_worker_next_run_from(ideal_next_run)
+                         end
     end
 
     def schedule_next_run!
       save! # with set_next_run_at
     rescue ActiveRecord::RecordInvalid
-      update_attribute(:next_run_at, nil) # update without validation
+      update_column(:next_run_at, nil) # update without validation
     end
 
     def job_variables
@@ -72,9 +77,15 @@ module Ci
 
     private
 
-    def ideal_next_run_at
+    def ideal_next_run_from(start_time)
       Gitlab::Ci::CronParser.new(cron, cron_timezone)
-        .next_time_from(Time.zone.now)
+                            .next_time_from(start_time)
+    end
+
+    def cron_worker_next_run_from(start_time)
+      Gitlab::Ci::CronParser.new(Settings.cron_jobs['pipeline_schedule_worker']['cron'],
+                                Time.zone.name)
+                            .next_time_from(start_time)
     end
   end
 end
