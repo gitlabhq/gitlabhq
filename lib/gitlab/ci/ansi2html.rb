@@ -200,9 +200,7 @@ module Gitlab
             css_classes = %w[section line] + sections.map { |section| "s_#{section}" }
           end
 
-          ensure_open_new_tag
-          write_raw %{<br/>}
-          close_open_tags
+          write_in_tag %{<br/>}
           write_raw %{<span class="#{css_classes.join(' ')}"></span>} if css_classes.any?
           @lineno_in_section += 1
           open_new_tag
