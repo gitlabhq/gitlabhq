@@ -9,7 +9,7 @@ describe Emails::PagesDomains do
   set(:user) { project.creator }
 
   shared_examples 'a pages domain email' do
-    let(:test_recipient) { user }
+    let(:recipient) { user }
 
     it_behaves_like 'an email sent to a user'
     it_behaves_like 'an email sent from GitLab'

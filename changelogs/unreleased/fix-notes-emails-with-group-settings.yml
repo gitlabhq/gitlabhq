@@ -1,0 +1,5 @@
+---
+title: Fix comment emails not respecting group-level notification email
+merge_request:
+author:
+type: fixed
