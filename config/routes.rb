@@ -27,10 +27,13 @@ Rails.application.routes.draw do
                 authorizations: 'oauth/authorizations'
   end
 
-  # This is here so we can "reserve" the path for the Jira integration in GitLab EE
-  # Having a non-existent controller here does not affect the scope in any way since all possible routes
-  # get a 404 proc returned. It is written in this way to minimize merge conflicts with EE
+  # This prefixless path is required because Jira gets confused if we set it up with a path
+  # More information: https://gitlab.com/gitlab-org/gitlab-ee/issues/6752
   scope path: '/login/oauth', controller: 'oauth/jira/authorizations', as: :oauth_jira do
+    get :authorize, action: :new
+    get :callback
+    post :access_token
+    # This helps minimize merge conflicts with CE for this scope block
     match '*all', via: [:get, :post], to: proc { [404, {}, ['']] }
   end
 
@@ -43,6 +46,7 @@ Rails.application.routes.draw do
   get '/autocomplete/users/:id' => 'autocomplete#user'
   get '/autocomplete/projects' => 'autocomplete#projects'
   get '/autocomplete/award_emojis' => 'autocomplete#award_emojis'
+  get '/autocomplete/project_groups' => 'autocomplete#project_groups'
   get '/autocomplete/merge_request_target_branches' => 'autocomplete#merge_request_target_branches'
 
   # Search
@@ -73,6 +77,9 @@ Rails.application.routes.draw do
       end
 
       resources :issues, module: :boards, only: [:index, :update]
+
+      resources :users, module: :boards, only: [:index]
+      resources :milestones, module: :boards, only: [:index]
     end
 
     get 'acme-challenge/' => 'acme_challenges#show'
@@ -85,6 +92,8 @@ Rails.application.routes.draw do
 
     draw :operations
     draw :instance_statistics
+    draw :smartcard
+    draw :jira_connect
 
     if ENV['GITLAB_ENABLE_CHAOS_ENDPOINTS']
       get '/chaos/leakmem' => 'chaos#leakmem'
@@ -102,6 +111,10 @@ Rails.application.routes.draw do
       end
 
       member do
+        Gitlab.ee do
+          get :metrics, format: :json
+        end
+
         scope :applications do
           post '/:application', to: 'clusters/applications#create', as: :install_applications
           patch '/:application', to: 'clusters/applications#update', as: :update_applications

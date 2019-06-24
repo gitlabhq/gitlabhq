@@ -58,7 +58,7 @@ scope format: false do
       resource :release, controller: 'tags/releases', only: [:edit, :update]
     end
 
-    resources :protected_branches, only: [:index, :show, :create, :update, :destroy]
+    resources :protected_branches, only: [:index, :show, :create, :update, :destroy, :patch], constraints: { id: Gitlab::PathRegex.git_reference_regex }
     resources :protected_tags, only: [:index, :show, :create, :update, :destroy]
   end
 
