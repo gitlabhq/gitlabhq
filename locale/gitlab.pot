@@ -16,6 +16,9 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
+msgid " (from %{timeoutSource})"
+msgstr ""
+
 msgid " Please sign in."
 msgstr ""
 
@@ -9180,6 +9183,9 @@ msgid "Showing %d event"
 msgid_plural "Showing %d events"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Showing last %{size} of log -"
+msgstr ""
 
 msgid "Side-by-side"
 msgstr ""
