@@ -268,9 +268,10 @@ be unique.
 
 To change your group path:
 
-1. Navigate to your group's **Settings > General**.
-1. Enter a new name under **Group path**.
-1. Click **Save group**.
+1. Navigate to your group's **Settings > General** page.
+1. Expand the **Path, transfer, remove** section.
+1. Enter a new name under **Change group path**.
+1. Click **Change group path**.
 
 CAUTION: **Caution:**
 It is currently not possible to rename a namespace if it contains a
