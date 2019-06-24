@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'User searches for wiki pages', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository, :wiki_repo, namespace: user.namespace) }
-  let!(:wiki_page) { create(:wiki_page, wiki: project.wiki, attrs: { title: 'test_wiki', content: 'Some Wiki content' }) }
+  let!(:wiki_page) { create(:wiki_page, wiki: project.wiki, attrs: { title: 'directory/title', content: 'Some Wiki content' }) }
 
   before do
     project.add_maintainer(user)
@@ -22,7 +22,7 @@ describe 'User searches for wiki pages', :js do
         click_link(project.full_name)
       end
 
-      fill_in('dashboard_search', with: 'content')
+      fill_in('dashboard_search', with: search_term)
       find('.btn-search').click
 
       page.within('.search-filter') do
@@ -43,7 +43,7 @@ describe 'User searches for wiki pages', :js do
 
   context 'when searching by title' do
     it_behaves_like 'search wiki blobs' do
-      let(:search_term) { 'test_wiki' }
+      let(:search_term) { 'title' }
     end
   end
 end

@@ -3,14 +3,15 @@
 require 'spec_helper'
 
 describe Gitlab::Search::FoundBlob do
-  describe 'parsing results' do
-    let(:project) { create(:project, :public, :repository) }
+  let(:project) { create(:project, :public, :repository) }
+
+  describe 'parsing content results' do
     let(:results) { project.repository.search_files_by_content('feature', 'master') }
     let(:search_result) { results.first }
 
     subject { described_class.new(content_match: search_result, project: project) }
 
-    it "returns a valid FoundBlob" do
+    it 'returns a valid FoundBlob' do
       is_expected.to be_an described_class
       expect(subject.id).to be_nil
       expect(subject.path).to eq('CHANGELOG')
@@ -21,13 +22,13 @@ describe Gitlab::Search::FoundBlob do
       expect(subject.data.lines[2]).to eq("  - Feature: Replace teams with group membership\n")
     end
 
-    it "doesn't parses content if not needed" do
+    it 'does not parse content if not needed' do
       expect(subject).not_to receive(:parse_search_result)
       expect(subject.project_id).to eq(project.id)
       expect(subject.binary_filename).to eq('CHANGELOG')
     end
 
-    it "parses content only once when needed" do
+    it 'parses content only once when needed' do
       expect(subject).to receive(:parse_search_result).once.and_call_original
       expect(subject.filename).to eq('CHANGELOG')
       expect(subject.startline).to eq(188)
@@ -119,7 +120,7 @@ describe Gitlab::Search::FoundBlob do
       end
     end
 
-    context "when filename has extension" do
+    context 'when filename has extension' do
       let(:search_result) { "master:CONTRIBUTE.md\x005\x00- [Contribute to GitLab](#contribute-to-gitlab)\n" }
 
       it { expect(subject.path).to eq('CONTRIBUTE.md') }
@@ -127,12 +128,36 @@ describe Gitlab::Search::FoundBlob do
       it { expect(subject.basename).to eq('CONTRIBUTE') }
     end
 
-    context "when file under directory" do
+    context 'when file is under directory' do
       let(:search_result) { "master:a/b/c.md\x005\x00a b c\n" }
 
       it { expect(subject.path).to eq('a/b/c.md') }
       it { expect(subject.filename).to eq('a/b/c.md') }
       it { expect(subject.basename).to eq('a/b/c') }
+    end
+  end
+
+  describe 'parsing title results' do
+    context 'when file is under directory' do
+      let(:path) { 'a/b/c.md' }
+
+      subject { described_class.new(blob_filename: path, project: project, ref: 'master') }
+
+      before do
+        allow(Gitlab::Git::Blob).to receive(:batch).and_return([
+          Gitlab::Git::Blob.new(path: path)
+        ])
+      end
+
+      it { expect(subject.path).to eq('a/b/c.md') }
+      it { expect(subject.filename).to eq('a/b/c.md') }
+      it { expect(subject.basename).to eq('a/b/c') }
+
+      context 'when filename has multiple extensions' do
+        let(:path) { 'a/b/c.whatever.md' }
+
+        it { expect(subject.basename).to eq('a/b/c.whatever') }
+      end
     end
   end
 end

@@ -93,7 +93,7 @@ module Gitlab
             data = {
               id: blob.id,
               binary_filename: blob.path,
-              binary_basename: File.basename(blob.path, File.extname(blob.path)),
+              binary_basename: path_without_extension(blob.path),
               ref: ref,
               startline: 1,
               binary_data: blob.data,
@@ -109,6 +109,10 @@ module Gitlab
 
       def search_result_filename
         content_match.match(FILENAME_REGEXP) { |matches| matches[:filename] }
+      end
+
+      def path_without_extension(path)
+        Pathname.new(path).sub_ext('').to_s
       end
 
       def parsed_content
@@ -137,8 +141,7 @@ module Gitlab
             filename = matches[:filename]
             startline = matches[:startline]
             startline = startline.to_i - index
-            extname = Regexp.escape(File.extname(filename))
-            basename = filename.sub(/#{extname}$/, '')
+            basename = path_without_extension(filename)
           end
 
           data << line.sub(prefix.to_s, '')
