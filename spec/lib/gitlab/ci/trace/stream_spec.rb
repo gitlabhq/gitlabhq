@@ -65,9 +65,9 @@ describe Gitlab::Ci::Trace::Stream, :clean_gitlab_redis_cache do
           result = stream.html
 
           expect(result).to eq(
-            "<span class=\"\">ヾ(´༎ຶД༎ຶ`)ﾉ</span><br/><span class=\"\"></span>"\
-            "<span class=\"term-fg-green\">許功蓋</span><span class=\"\"></span><br/>"\
-            "<span class=\"\"></span>")
+            "<span class=\"\">ヾ(´༎ຶД༎ຶ`)ﾉ<br/><span class=\"\"></span></span>"\
+            "<span class=\"term-fg-green\">許功蓋</span><span class=\"\"><br/>"\
+            "<span class=\"\"></span></span>")
           expect(result.encoding).to eq(Encoding.default_external)
         end
       end
@@ -306,8 +306,8 @@ describe Gitlab::Ci::Trace::Stream, :clean_gitlab_redis_cache do
     shared_examples_for 'htmls' do
       it "returns html" do
         expect(stream.html).to eq(
-          "<span class=\"\">12</span><br/><span class=\"\">34</span><br/>"\
-          "<span class=\"\">56</span>")
+          "<span class=\"\">12<br/><span class=\"\">34<br/>"\
+          "<span class=\"\">56</span></span></span>")
       end
 
       it "returns html for last line only" do

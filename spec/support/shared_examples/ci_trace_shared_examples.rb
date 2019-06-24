@@ -5,7 +5,7 @@ shared_examples_for 'common trace features' do
     end
 
     it "returns formatted html" do
-      expect(trace.html).to eq("<span class=\"\">12</span><br/><span class=\"\">34</span>")
+      expect(trace.html).to eq("<span class=\"\">12<br/><span class=\"\">34</span></span>")
     end
 
     it "returns last line of formatted html" do
