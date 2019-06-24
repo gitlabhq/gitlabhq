@@ -45,18 +45,18 @@ shared_examples 'an email sent to a user' do
   let(:group_notification_email) { 'user+group@example.com' }
 
   it 'is sent to user\'s global notification email address' do
-    expect(subject).to deliver_to(test_recipient.notification_email)
+    expect(subject).to deliver_to(recipient.notification_email)
   end
 
   context 'that is part of a project\'s group' do
     it 'is sent to user\'s group notification email address when set' do
-      create(:notification_setting, user: test_recipient, source: project.group, notification_email: group_notification_email)
+      create(:notification_setting, user: recipient, source: project.group, notification_email: group_notification_email)
       expect(subject).to deliver_to(group_notification_email)
     end
 
     it 'is sent to user\'s global notification email address when no group email set' do
-      create(:notification_setting, user: test_recipient, source: project.group, notification_email: '')
-      expect(subject).to deliver_to(test_recipient.notification_email)
+      create(:notification_setting, user: recipient, source: project.group, notification_email: '')
+      expect(subject).to deliver_to(recipient.notification_email)
     end
   end
 
@@ -67,17 +67,17 @@ shared_examples 'an email sent to a user' do
 
     it 'is sent to user\'s subgroup notification email address when set' do
       # Set top-level group notification email address to make sure it doesn't get selected
-      create(:notification_setting, user: test_recipient, source: group, notification_email: group_notification_email)
+      create(:notification_setting, user: recipient, source: group, notification_email: group_notification_email)
 
       subgroup_notification_email = 'user+subgroup@example.com'
-      create(:notification_setting, user: test_recipient, source: subgroup, notification_email: subgroup_notification_email)
+      create(:notification_setting, user: recipient, source: subgroup, notification_email: subgroup_notification_email)
 
       expect(subject).to deliver_to(subgroup_notification_email)
     end
 
     it 'is sent to user\'s group notification email address when set and subgroup email address not set' do
-      create(:notification_setting, user: test_recipient, source: subgroup, notification_email: '')
-      expect(subject).to deliver_to(test_recipient.notification_email)
+      create(:notification_setting, user: recipient, source: subgroup, notification_email: '')
+      expect(subject).to deliver_to(recipient.notification_email)
     end
   end
 end
