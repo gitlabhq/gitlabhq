@@ -9,6 +9,7 @@
 - cronjob:import_export_project_cleanup
 - cronjob:pages_domain_verification_cron
 - cronjob:pages_domain_removal_cron
+- cronjob:pages_domain_ssl_renewal_cron
 - cronjob:pipeline_schedule
 - cronjob:prune_old_events
 - cronjob:remove_expired_group_links
@@ -133,6 +134,7 @@
 - new_note
 - pages
 - pages_domain_verification
+- pages_domain_ssl_renewal
 - plugin
 - post_receive
 - process_commit

@@ -3,6 +3,7 @@
 class PagesDomain < ApplicationRecord
   VERIFICATION_KEY = 'gitlab-pages-verification-code'.freeze
   VERIFICATION_THRESHOLD = 3.days.freeze
+  SSL_RENEWAL_THRESHOLD = 30.days.freeze
 
   enum certificate_source: { user_provided: 0, gitlab_provided: 1 }, _prefix: :certificate
 
@@ -39,6 +40,15 @@ class PagesDomain < ApplicationRecord
     threshold = Time.now + VERIFICATION_THRESHOLD
 
     where(verified_at.eq(nil).or(enabled_until.eq(nil).or(enabled_until.lt(threshold))))
+  end
+
+  scope :need_auto_ssl_renewal, -> do
+    expiring = where(certificate_valid_not_after: nil).or(
+      where(arel_table[:certificate_valid_not_after].lt(SSL_RENEWAL_THRESHOLD.from_now)))
+
+    user_provided_or_expiring = certificate_user_provided.or(expiring)
+
+    where(auto_ssl_enabled: true).merge(user_provided_or_expiring)
   end
 
   scope :for_removal, -> { where("remove_at < ?", Time.now) }

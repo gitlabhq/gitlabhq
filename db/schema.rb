@@ -2334,6 +2334,7 @@ ActiveRecord::Schema.define(version: 20190620112608) do
     t.datetime_with_timezone "certificate_valid_not_before"
     t.datetime_with_timezone "certificate_valid_not_after"
     t.integer "certificate_source", limit: 2, default: 0, null: false
+    t.index ["certificate_source", "certificate_valid_not_after"], name: "index_pages_domains_need_auto_ssl_renewal", where: "(auto_ssl_enabled = true)", using: :btree
     t.index ["domain"], name: "index_pages_domains_on_domain", unique: true, using: :btree
     t.index ["project_id", "enabled_until"], name: "index_pages_domains_on_project_id_and_enabled_until", using: :btree
     t.index ["project_id"], name: "index_pages_domains_on_project_id", using: :btree
