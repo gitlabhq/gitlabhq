@@ -38,10 +38,6 @@ For routes that require authorization you will need to provide a user to
 Gitlab::Profiler.profile('/gitlab-org/gitlab-test', user: User.first)
 ```
 
-The user you provide will need to have a [personal access
-token](https://docs.gitlab.com/ce/user/profile/personal_access_tokens.html) in
-the GitLab instance.
-
 Passing a `logger:` keyword argument to `Gitlab::Profiler.profile` will send
 ActiveRecord and ActionController log output to that logger. Further options are
 documented with the method source.
