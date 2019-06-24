@@ -8,7 +8,10 @@ module API
 
     BRANCH_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(branch: API::NO_SLASH_URL_PART_REGEX)
 
-    before { authorize! :download_code, user_project }
+    before do
+      require_repository_enabled!
+      authorize! :download_code, user_project
+    end
 
     helpers do
       params :filter_params do

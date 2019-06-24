@@ -250,6 +250,10 @@ module API
       authorize! :update_build, user_project
     end
 
+    def require_repository_enabled!(subject = :global)
+      not_found!("Repository") unless user_project.feature_available?(:repository, current_user)
+    end
+
     def require_gitlab_workhorse!
       unless env['HTTP_GITLAB_WORKHORSE'].present?
         forbidden!('Request should be executed via GitLab Workhorse')
