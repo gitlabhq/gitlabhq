@@ -862,4 +862,13 @@ describe Issue do
       end
     end
   end
+
+  describe "#labels_hook_attrs" do
+    let(:label) { create(:label) }
+    let(:issue) { create(:labeled_issue, labels: [label]) }
+
+    it "returns a list of label hook attributes" do
+      expect(issue.labels_hook_attrs).to eq([label.hook_attrs])
+    end
+  end
 end
