@@ -72,9 +72,10 @@ describe('applicationStateMachine', () => {
 
   describe(`current state is ${INSTALLABLE}`, () => {
     it.each`
-      expectedState | event            | effects
-      ${INSTALLING} | ${INSTALL_EVENT} | ${{ installFailed: false }}
-      ${INSTALLED}  | ${INSTALLED}     | ${NO_EFFECTS}
+      expectedState      | event              | effects
+      ${INSTALLING}      | ${INSTALL_EVENT}   | ${{ installFailed: false }}
+      ${INSTALLED}       | ${INSTALLED}       | ${NO_EFFECTS}
+      ${NOT_INSTALLABLE} | ${NOT_INSTALLABLE} | ${NO_EFFECTS}
     `(`transitions to $expectedState on $event event and applies $effects`, data => {
       const { expectedState, event, effects } = data;
       const currentAppState = {
@@ -108,9 +109,10 @@ describe('applicationStateMachine', () => {
 
   describe(`current state is ${INSTALLED}`, () => {
     it.each`
-      expectedState   | event              | effects
-      ${UPDATING}     | ${UPDATE_EVENT}    | ${{ updateFailed: false, updateSuccessful: false }}
-      ${UNINSTALLING} | ${UNINSTALL_EVENT} | ${{ uninstallFailed: false, uninstallSuccessful: false }}
+      expectedState      | event              | effects
+      ${UPDATING}        | ${UPDATE_EVENT}    | ${{ updateFailed: false, updateSuccessful: false }}
+      ${UNINSTALLING}    | ${UNINSTALL_EVENT} | ${{ uninstallFailed: false, uninstallSuccessful: false }}
+      ${NOT_INSTALLABLE} | ${NOT_INSTALLABLE} | ${NO_EFFECTS}
     `(`transitions to $expectedState on $event event and applies $effects`, data => {
       const { expectedState, event, effects } = data;
       const currentAppState = {
@@ -119,7 +121,7 @@ describe('applicationStateMachine', () => {
 
       expect(transitionApplicationState(currentAppState, event)).toEqual({
         status: expectedState,
-        ...effects,
+        ...noEffectsToEmptyObject(effects),
       });
     });
   });
