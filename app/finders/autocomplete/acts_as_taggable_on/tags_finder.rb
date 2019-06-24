@@ -22,8 +22,7 @@ module Autocomplete
       end
 
       def filter_by_name(tags)
-        return tags unless search
-        return tags.none if search.empty?
+        return tags unless search.present?
 
         if search.length >= Gitlab::SQL::Pattern::MIN_CHARS_FOR_PARTIAL_MATCHING
           tags.named_like(search)

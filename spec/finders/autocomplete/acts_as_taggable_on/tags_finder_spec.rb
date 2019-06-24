@@ -17,13 +17,13 @@ describe Autocomplete::ActsAsTaggableOn::TagsFinder do
 
     context 'filter by search' do
       context 'with an empty search term' do
-        it 'returns an empty collection' do
-          ActsAsTaggableOn::Tag.create!(name: 'tag1')
-          ActsAsTaggableOn::Tag.create!(name: 'tag2')
+        it 'returns all tags' do
+          tag1 = ActsAsTaggableOn::Tag.create!(name: 'tag1')
+          tag2 = ActsAsTaggableOn::Tag.create!(name: 'tag2')
 
           tags = described_class.new(params: { search: '' }).execute
 
-          expect(tags).to be_empty
+          expect(tags).to match_array [tag1, tag2]
         end
       end
 
