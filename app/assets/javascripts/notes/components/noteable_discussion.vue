@@ -382,7 +382,7 @@ Please check your network connection and try again.`;
                   class="discussion-reply-holder"
                 >
                   <user-avatar-link
-                    v-if="!isReplying && currentUser"
+                    v-if="!isReplying && userCanReply"
                     :link-href="currentUser.path"
                     :img-src="currentUser.avatar_url"
                     :img-alt="currentUser.name"
