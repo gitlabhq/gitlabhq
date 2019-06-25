@@ -28,6 +28,8 @@ we need to solve before being able to use Jest for all our needs.
 
 - Jest runs in a Node.js environment, not in a browser. Support for running Jest tests in a browser [is planned](https://gitlab.com/gitlab-org/gitlab-ce/issues/58205).
 - Because Jest runs in a Node.js environment, it uses [jsdom](https://github.com/jsdom/jsdom) by default.
+- Jest does not have access to Webpack loaders or aliases.
+  The aliases used by Jest are defined in its [own config](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/jest.config.js).
 - All calls to `setTimeout` and `setInterval` are mocked away. See also [Jest Timer Mocks](https://jestjs.io/docs/en/timer-mocks).
 - `rewire` is not required because Jest supports mocking modules. See also [Manual Mocks](https://jestjs.io/docs/en/manual-mocks).
 - The following will cause tests to fail in Jest:
