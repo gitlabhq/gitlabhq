@@ -3,14 +3,9 @@ require 'spec_helper'
 describe Gitlab::Ci::Pipeline::Seed::Build do
   let(:project) { create(:project, :repository) }
   let(:pipeline) { create(:ci_empty_pipeline, project: project) }
+  let(:attributes) { { name: 'rspec', ref: 'master' } }
 
-  let(:attributes) do
-    { name: 'rspec', ref: 'master' }
-  end
-
-  subject do
-    described_class.new(pipeline, attributes)
-  end
+  subject { described_class.new(pipeline, attributes) }
 
   describe '#attributes' do
     it 'returns hash attributes of a build' do
@@ -76,7 +71,7 @@ describe Gitlab::Ci::Pipeline::Seed::Build do
     end
   end
 
-  describe 'applying only/except policies' do
+  describe 'applying job inclusion policies' do
     context 'when no branch policy is specified' do
       let(:attributes) { { name: 'rspec' } }
 
@@ -95,6 +90,12 @@ describe Gitlab::Ci::Pipeline::Seed::Build do
 
         it { is_expected.to be_included }
       end
+
+      context 'with both only and except policies' do
+        let(:attributes) { { name: 'rspec', only: { refs: %w(deploy) }, except: { refs: %(deploy) } } }
+
+        it { is_expected.not_to be_included }
+      end
     end
 
     context 'when branch regexp policy does not match' do
@@ -109,6 +110,12 @@ describe Gitlab::Ci::Pipeline::Seed::Build do
 
         it { is_expected.to be_included }
       end
+
+      context 'with both only and except policies' do
+        let(:attributes) { { name: 'rspec', only: { refs: %w(/^deploy$/) }, except: { refs: %w(/^deploy$/) } } }
+
+        it { is_expected.not_to be_included }
+      end
     end
 
     context 'when branch policy matches' do
@@ -120,6 +127,12 @@ describe Gitlab::Ci::Pipeline::Seed::Build do
 
       context 'when using except' do
         let(:attributes) { { name: 'rspec', except: { refs: %w[deploy master] } } }
+
+        it { is_expected.not_to be_included }
+      end
+
+      context 'when using both only and except policies' do
+        let(:attributes) { { name: 'rspec', only: { refs: %w(deploy master) }, except: { refs: %w(deploy master) } } }
 
         it { is_expected.not_to be_included }
       end
@@ -137,6 +150,12 @@ describe Gitlab::Ci::Pipeline::Seed::Build do
 
         it { is_expected.not_to be_included }
       end
+
+      context 'when using both only and except policies' do
+        let(:attributes) { { name: 'rspec', only: { refs: %w(branches) }, except: { refs: %(branches) } } }
+
+        it { is_expected.not_to be_included }
+      end
     end
 
     context 'when keyword policy does not match' do
@@ -150,6 +169,12 @@ describe Gitlab::Ci::Pipeline::Seed::Build do
         let(:attributes) { { name: 'rspec', except: { refs: ['tags'] } } }
 
         it { is_expected.to be_included }
+      end
+
+      context 'when using both only and except policies' do
+        let(:attributes) { { name: 'rspec', only: { refs: %(tags) }, except: { refs: %(tags) } } }
+
+        it { is_expected.not_to be_included }
       end
     end
 
@@ -239,6 +264,14 @@ describe Gitlab::Ci::Pipeline::Seed::Build do
 
         it { is_expected.not_to be_included }
       end
+
+      context 'when using both only and except policies' do
+        let(:attributes) do
+          { name: 'rspec', only: { refs: ["branches@#{pipeline.project_full_path}"] }, except: { refs: ["branches@#{pipeline.project_full_path}"] } }
+        end
+
+        it { is_expected.not_to be_included }
+      end
     end
 
     context 'when repository path does not matches' do
@@ -256,6 +289,14 @@ describe Gitlab::Ci::Pipeline::Seed::Build do
         end
 
         it { is_expected.to be_included }
+      end
+
+      context 'when using both only and except policies' do
+        let(:attributes) do
+          { name: 'rspec', only: { refs: ['branches@fork'] }, except: { refs: ['branches@fork'] } }
+        end
+
+        it { is_expected.not_to be_included }
       end
     end
   end
