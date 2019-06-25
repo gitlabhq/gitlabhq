@@ -48,14 +48,14 @@ describe BroadcastMessage do
       expect(described_class.current).to be_empty
     end
 
-    it 'caches the output of the query' do
+    it 'caches the output of the query for two weeks' do
       create(:broadcast_message)
 
-      expect(described_class).to receive(:current_and_future_messages).and_call_original.once
+      expect(described_class).to receive(:current_and_future_messages).and_call_original.twice
 
       described_class.current
 
-      Timecop.travel(1.year) do
+      Timecop.travel(3.weeks) do
         described_class.current
       end
     end
