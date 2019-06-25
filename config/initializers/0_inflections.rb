@@ -14,6 +14,14 @@ ActiveSupport::Inflector.inflections do |inflect|
     award_emoji
     project_statistics
     system_note_metadata
+    event_log
     project_auto_devops
+    project_registry
+    file_registry
+    job_artifact_registry
+    vulnerability_feedback
+    vulnerabilities_feedback
+    group_view
   )
+  inflect.acronym 'EE'
 end
