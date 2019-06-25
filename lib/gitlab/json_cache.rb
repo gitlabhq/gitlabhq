@@ -34,7 +34,7 @@ module Gitlab
 
     def read(key, klass = nil)
       value = backend.read(cache_key(key))
-      value = parse_value(value, klass) if value
+      value = parse_value(value, klass) unless value.nil?
       value
     end
 
