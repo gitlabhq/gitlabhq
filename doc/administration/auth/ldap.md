@@ -396,21 +396,34 @@ omniauth-ldap.
 
 ### Escaping special characters
 
-If the `user_filter` DN contains special characters. For example, a comma:
+The `user_filter` DN can contain special characters. For example:
 
-```
-OU=GitLab, Inc,DC=gitlab,DC=com
-```
+- A comma:
 
-This character needs to be escaped as documented in [RFC 4515](https://tools.ietf.org/search/rfc4515).
+    ```
+    OU=GitLab, Inc,DC=gitlab,DC=com
+    ```
 
-Due to the way the string is parsed, the special character needs to be converted
-to hex and `\\5C\\` (`5C` = `\` in hex) added before it.
-As an example the above DN would look like
+- Open and close brackets:
 
-```
-OU=GitLab\\5C\\2C Inc,DC=gitlab,DC=com
-```
+    ```
+    OU=Gitlab (Inc),DC=gitlab,DC=com
+    ```
+
+    These characters must be escaped as documented in 
+    [RFC 4515](https://tools.ietf.org/search/rfc4515).
+
+- Escape commas with `\2C`. For example:
+
+    ```
+    OU=GitLab\2C Inc,DC=gitlab,DC=com
+    ```
+
+- Escape open and close brackets with `\28` and `\29`, respectively. For example:
+
+    ```
+    OU=Gitlab \28Inc\29,DC=gitlab,DC=com
+    ```
 
 ## Enabling LDAP sign-in for existing GitLab users
 
