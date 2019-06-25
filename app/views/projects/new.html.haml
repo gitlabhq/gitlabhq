@@ -46,11 +46,11 @@
         = render_if_exists 'projects/new_ci_cd_only_project_tab', active_tab: active_tab
 
       .tab-content.gitlab-tab-content
-        .tab-pane{ id: 'blank-project-pane', class: active_when(active_tab == 'blank'), role: 'tabpanel' }
+        .tab-pane.js-toggle-container{ id: 'blank-project-pane', class: active_when(active_tab == 'blank'), role: 'tabpanel' }
           = form_for @project, html: { class: 'new_project' } do |f|
             = render 'new_project_fields', f: f, project_name_id: "blank-project-name"
 
-        #create-from-template-pane.tab-pane.px-0.pb-0{ class: active_when(active_tab == 'template'), role: 'tabpanel' }
+        #create-from-template-pane.tab-pane.js-toggle-container.px-0.pb-0{ class: active_when(active_tab == 'template'), role: 'tabpanel' }
           .card-slim.m-4.p-4
             %div
               - contributing_templates_url = 'https://gitlab.com/gitlab-org/project-templates/contributing'
