@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-desc 'Configures the database by running migrate, or by loading the schema and seeding if needed'
+# Configures the database by running migrate, or by loading the schema and seeding if needed
 task schema_version_check: :environment do
   next if ENV['SKIP_SCHEMA_VERSION_CHECK']
 
