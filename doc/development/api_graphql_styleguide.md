@@ -447,7 +447,7 @@ want to validate the abilities for.
 
 Alternatively, we can add a `find_object` method that will load the
 object on the mutation. This would allow you to use the
-`authorized_find!` and `authorized_find!` helper methods.
+`authorized_find!` helper method.
 
 When a user is not allowed to perform the action, or an object is not
 found, we should raise a

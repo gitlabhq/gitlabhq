@@ -34,12 +34,6 @@ describe Gitlab::Graphql::Authorize::AuthorizeResource do
       end
     end
 
-    describe '#authorized_find' do
-      it 'returns the object' do
-        expect(loading_resource.authorized_find).to eq(project)
-      end
-    end
-
     describe '#authorized_find!' do
       it 'returns the object' do
         expect(loading_resource.authorized_find!).to eq(project)
@@ -63,12 +57,6 @@ describe Gitlab::Graphql::Authorize::AuthorizeResource do
     before do
       allow(Ability).to receive(:allowed?).with(user, :read_the_thing, project, scope: :user) do
         false
-      end
-    end
-
-    describe '#authorized_find' do
-      it 'returns `nil`' do
-        expect(loading_resource.authorized_find).to be_nil
       end
     end
 
@@ -126,12 +114,6 @@ describe Gitlab::Graphql::Authorize::AuthorizeResource do
       end
     end
     let(:error) { /#{fake_class.name} has no authorizations/ }
-
-    describe '#authorized_find' do
-      it 'raises a comprehensive error message' do
-        expect { loading_resource.authorized_find }.to raise_error(error)
-      end
-    end
 
     describe '#authorized_find!' do
       it 'raises a comprehensive error message' do

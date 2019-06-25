@@ -27,12 +27,6 @@ module Gitlab
           raise NotImplementedError, "Implement #find_object in #{self.class.name}"
         end
 
-        def authorized_find(*args)
-          object = find_object(*args)
-
-          object if authorized?(object)
-        end
-
         def authorized_find!(*args)
           object = find_object(*args)
           authorize!(object)
