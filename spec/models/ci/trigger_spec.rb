@@ -54,19 +54,31 @@ describe Ci::Trigger do
   end
 
   describe '#can_access_project?' do
+    let(:owner) { create(:user) }
     let(:trigger) { create(:ci_trigger, owner: owner, project: project) }
 
     context 'when owner is blank' do
-      let(:owner) { nil }
+      before do
+        stub_feature_flags(use_legacy_pipeline_triggers: false)
+        trigger.update_attribute(:owner, nil)
+      end
 
       subject { trigger.can_access_project? }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to eq(false) }
+
+      context 'when :use_legacy_pipeline_triggers feature flag is enabled' do
+        before do
+          stub_feature_flags(use_legacy_pipeline_triggers: true)
+        end
+
+        subject { trigger.can_access_project? }
+
+        it { is_expected.to eq(true) }
+      end
     end
 
     context 'when owner is set' do
-      let(:owner) { create(:user) }
-
       subject { trigger.can_access_project? }
 
       context 'and is member of the project' do

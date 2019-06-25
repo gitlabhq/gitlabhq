@@ -5,7 +5,7 @@ module Ci
     delegate { @subject.project }
 
     with_options scope: :subject, score: 0
-    condition(:legacy) { @subject.legacy? }
+    condition(:legacy) { @subject.supports_legacy_tokens? && @subject.legacy? }
 
     with_score 0
     condition(:is_owner) { @user && @subject.owner_id == @user.id }

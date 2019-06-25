@@ -10,7 +10,11 @@ describe Gitlab::Ci::Pipeline::Chain::Validate::Abilities do
 
   let(:command) do
     Gitlab::Ci::Pipeline::Chain::Command.new(
-      project: project, current_user: user, origin_ref: origin_ref, merge_request: merge_request)
+      project: project,
+      current_user: user,
+      origin_ref: origin_ref,
+      merge_request: merge_request,
+      trigger_request: trigger_request)
   end
 
   let(:step) { described_class.new(pipeline, command) }
@@ -18,6 +22,7 @@ describe Gitlab::Ci::Pipeline::Chain::Validate::Abilities do
   let(:ref) { 'master' }
   let(:origin_ref) { ref }
   let(:merge_request) { nil }
+  let(:trigger_request) { nil }
 
   shared_context 'detached merge request pipeline' do
     let(:merge_request) do
@@ -66,6 +71,43 @@ describe Gitlab::Ci::Pipeline::Chain::Validate::Abilities do
 
     it 'does not break the chain' do
       expect(step.break?).to eq false
+    end
+  end
+
+  context 'when pipeline triggered by legacy trigger' do
+    let(:user) { nil }
+    let(:trigger_request) do
+      build_stubbed(:ci_trigger_request, trigger: build_stubbed(:ci_trigger, owner: nil))
+    end
+
+    context 'when :use_legacy_pipeline_triggers feature flag is enabled' do
+      before do
+        stub_feature_flags(use_legacy_pipeline_triggers: true)
+        step.perform!
+      end
+
+      it 'allows legacy triggers to create a pipeline' do
+        expect(pipeline).to be_valid
+      end
+
+      it 'does not break the chain' do
+        expect(step.break?).to eq false
+      end
+    end
+
+    context 'when :use_legacy_pipeline_triggers feature flag is disabled' do
+      before do
+        stub_feature_flags(use_legacy_pipeline_triggers: false)
+        step.perform!
+      end
+
+      it 'prevents legacy triggers from creating a pipeline' do
+        expect(pipeline.errors.to_a).to include /Trigger token is invalid/
+      end
+
+      it 'breaks the pipeline builder chain' do
+        expect(step.break?).to eq true
+      end
     end
   end
 

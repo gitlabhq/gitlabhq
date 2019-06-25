@@ -14,6 +14,7 @@ module Ci
     has_many :trigger_requests
 
     validates :token, presence: true, uniqueness: true
+    validates :owner, presence: true, unless: :supports_legacy_tokens?
 
     before_validation :set_default_values
 
@@ -37,8 +38,13 @@ module Ci
       self.owner_id.blank?
     end
 
+    def supports_legacy_tokens?
+      Feature.enabled?(:use_legacy_pipeline_triggers, project)
+    end
+
     def can_access_project?
-      self.owner_id.blank? || Ability.allowed?(self.owner, :create_build, project)
+      supports_legacy_tokens? && legacy? ||
+        Ability.allowed?(self.owner, :create_build, project)
     end
   end
 end

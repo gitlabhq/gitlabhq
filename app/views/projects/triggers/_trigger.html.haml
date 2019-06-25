@@ -8,8 +8,11 @@
 
     .label-container
       - if trigger.legacy?
-        %span.badge.badge-primary.has-tooltip{ title: "Trigger makes use of deprecated functionality" } legacy
-      - if !trigger.can_access_project?
+        - if trigger.supports_legacy_tokens?
+          %span.badge.badge-primary.has-tooltip{ title: "Trigger makes use of deprecated functionality" } legacy
+        - else
+          %span.badge.badge-danger.has-tooltip{ title: "Trigger is invalid due to being a legacy trigger. We recommend replacing it with a new trigger" } invalid
+      - elsif !trigger.can_access_project?
         %span.badge.badge-danger.has-tooltip{ title: "Trigger user has insufficient permissions to project" } invalid
 
   %td
