@@ -54,9 +54,22 @@ The following languages and dependency managers are supported.
 | Java ([Maven](https://maven.apache.org/))                                   | [gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium/general)                                                            |
 | PHP ([Composer](https://getcomposer.org/))                                  | [gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium/general)                                                            |
 
-Some scanners require to send a list of project dependencies to GitLab's central
-servers to check for vulnerabilities. To learn more about this or to disable it,
-refer to the [GitLab Dependency Scanning tool documentation](https://gitlab.com/gitlab-org/security-products/dependency-scanning#remote-checks).
+## Remote checks
+
+While some tools pull a local database to check vulnerabilities, some others
+like Gemnasium require sending data to GitLab central servers to analyze them:
+
+1. Gemnasium scans the dependencies of your project locally and sends a list of
+   packages to GitLab central servers.
+1. The servers return the list of known vulnerabilities for all versions of
+   these packages.
+1. The client picks up the relevant vulnerabilities by comparing with the versions
+   of the packages that are used by the project.
+
+The Gemnasium client does **NOT** send the exact package versions your project relies on.
+
+You can disable the remote checks by [using](#customizing-the-dependency-scanning-settings)
+the `DS_DISABLE_REMOTE_CHECKS` environment variable and setting it to `true`.
 
 ## Configuring Dependency Scanning
 
@@ -97,17 +110,10 @@ The report will be saved as a
 that you can later download and analyze. Due to implementation limitations, we
 always take the latest Dependency Scanning artifact available.
 
-Some security scanners require to send a list of project dependencies to GitLab
-central servers to check for vulnerabilities. To learn more about this or to
-disable it, check the
-[GitLab Dependency Scanning tool documentation](https://gitlab.com/gitlab-org/security-products/dependency-scanning#remote-checks).
-
 #### Customizing the Dependency Scanning settings
 
-The Dependency Scanning settings can be changed through environment variables by using the
+The Dependency Scanning settings can be changed through [environment variables](#available-variables) by using the
 [`variables`](../../../ci/yaml/README.md#variables) parameter in `.gitlab-ci.yml`.
-These variables are documented in the
-[Dependency Scanning tool documentation](https://gitlab.com/gitlab-org/security-products/dependency-scanning#settings).
 
 For example:
 
@@ -116,7 +122,7 @@ include:
   template: Dependency-Scanning.gitlab-ci.yml
 
 variables:
-  DEP_SCAN_DISABLE_REMOTE_CHECKS: true
+  DS_DISABLE_REMOTE_CHECKS: true
 ```
 
 Because template is [evaluated before](../../../ci/yaml/README.md#include) the pipeline
@@ -136,6 +142,24 @@ dependency_scanning:
   variables:
     CI_DEBUG_TRACE: "true"
 ```
+
+#### Available variables
+
+Dependency Scanning can be [configured](#customizing-the-dependency-scanning-settings)
+using environment variables.
+
+| Environment variable                    | Function |
+|--------------------------------         |----------|
+| `DS_ANALYZER_IMAGES`                    | Comma separated list of custom images. The official default images are still enabled. Read more about [customizing analyzers](analyzers.md). |
+| `DS_ANALYZER_IMAGE_PREFIX`              | Override the name of the Docker registry providing the official default images (proxy). Read more about [customizing analyzers](analyzers.md). |
+| `DS_ANALYZER_IMAGE_TAG`                 | Override the Docker tag of the official default images. Read more about [customizing analyzers](analyzers.md). |
+| `DS_DEFAULT_ANALYZERS`                  | Override the names of the official default images. Read more about [customizing analyzers](analyzers.md). |
+| `DS_DISABLE_REMOTE_CHECKS`              | Do not send any data to GitLab. Used in the [Gemnasium analyzer](#remote-checks). |
+| `DS_PULL_ANALYZER_IMAGES`               | Pull the images from the Docker registry (set to `0` to disable). |
+| `DS_EXCLUDED_PATHS`                     | Exclude vulnerabilities from output based on the paths. A comma-separated list of patterns. Patterns can be globs, file or folder paths. Parent directories will also match patterns. |
+| `DS_DOCKER_CLIENT_NEGOTIATION_TIMEOUT`  | Time limit for Docker client negotiation. Timeouts are parsed using Go's [`ParseDuration`](https://golang.org/pkg/time/#ParseDuration). Valid time units are `ns`, `us` (or `µs`), `ms`, `s`, `m`, `h`. For example, `300ms`, `1.5h`, or `2h45m`. |
+| `DS_PULL_ANALYZER_IMAGE_TIMEOUT`        | Time limit when pulling the image of an analyzer. Timeouts are parsed using Go's [`ParseDuration`](https://golang.org/pkg/time/#ParseDuration). Valid time units are `ns`, `us` (or `µs`), `ms`, `s`, `m`, `h`. For example, `300ms`, `1.5h`, or `2h45m`. |
+| `DS_RUN_ANALYZER_TIMEOUT`               | Time limit when running an analyzer. Timeouts are parsed using Go's [`ParseDuration`](https://golang.org/pkg/time/#ParseDuration). Valid time units are `ns`, `us` (or `µs`), `ms`, `s`, `m`, `h`. For example, `300ms`, `1.5h`, or `2h45m`. |
 
 ### Manual job definition for GitLab 11.5 and later
 
@@ -171,7 +195,7 @@ dependency_scanning:
       dependency_scanning: gl-dependency-scanning-report.json
 ```
 
-You can supply many other [settings variables](https://gitlab.com/gitlab-org/security-products/dependency-scanning#settings)
+You can supply many other [settings variables](#available-variables)
 via `docker run --env` to customize your job execution.
 
 ### Manual job definition for GitLab 11.4 and earlier (deprecated)
@@ -387,6 +411,10 @@ project's dependencies with their versions. This list can be generated only for
 supported by Gemnasium.
 
 To see the generated dependency list, navigate to your project's **Project > Dependency List**.
+
+## Versioning and release process
+
+Please check the [Release Process documentation](https://gitlab.com/gitlab-org/security-products/release/blob/master/docs/release_process.md).
 
 ## Contributing to the vulnerability database
 
