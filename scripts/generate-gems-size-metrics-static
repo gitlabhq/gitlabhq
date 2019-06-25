@@ -1,0 +1,30 @@
+#!/usr/bin/env ruby
+
+abort "usage: #{__FILE__} <memory_bundle_mem_file_name>" unless ARGV.length == 1
+memory_bundle_mem_file_name = ARGV.first
+
+full_report = File.readlines(memory_bundle_mem_file_name)
+
+def total_size(memory_bundle_mem_report)
+  stats = /TOP: (?<total_mibs_str>.*) MiB/.match(memory_bundle_mem_report.first)
+  abort 'failed to process the benchmark output' unless stats
+  "gem_total_size_mb #{stats[:total_mibs_str].to_f.round(1)}"
+end
+
+TOP_LEVEL_GEM_LOG_FORMAT = /^  (?<gem_name>\S.*):\s*(?<gem_size>\d[.\d]*)\s*MiB/.freeze
+def all_gems(memory_bundle_mem_report)
+  memory_bundle_mem_report.map do |line|
+    TOP_LEVEL_GEM_LOG_FORMAT.match(line)
+  end.compact
+end
+
+def gems_as_metrics(gems_match_data)
+  gems_match_data.map do |gem|
+    gem_name = gem[:gem_name]
+    gem_size_mb = gem[:gem_size].to_f.round(1)
+    "gem_size_mb{name=\"#{gem_name}\"} #{gem_size_mb}"
+  end
+end
+
+puts total_size(full_report)
+puts gems_as_metrics(all_gems(full_report)).sort(&:casecmp)

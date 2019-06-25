@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby
+
+abort "usage: #{__FILE__} <memory_bundle_objects_file_name>" unless ARGV.length == 1
+memory_bundle_objects_file_name = ARGV.first
+
+full_report = File.readlines(memory_bundle_objects_file_name)
+
+allocated_str = full_report[1]
+retained_str = full_report[2]
+allocated_stats = /Total allocated: (?<bytes>.*) bytes \((?<objects>.*) objects\)/.match(allocated_str)
+retained_stats = /Total retained: (?<bytes>.*) bytes \((?<objects>.*) objects\)/.match(retained_str)
+
+abort 'failed to process the benchmark output' unless allocated_stats && retained_stats
+
+puts "memory_static_objects_allocated_mb #{(allocated_stats[:bytes].to_f / (1024 * 1024)).round(1)}"
+puts "memory_static_objects_retained_mb #{(retained_stats[:bytes].to_f / (1024 * 1024)).round(1)}"
+puts "memory_static_objects_allocated_items #{allocated_stats[:objects]}"
+puts "memory_static_objects_retained_items #{retained_stats[:objects]}"

@@ -5,15 +5,15 @@ memory-static:
 
     # Loads each of gems in the Gemfile and checks how much memory they consume when they are required.
     # 'derailed_benchmarks' internally uses 'get_process_mem'
-    - scripts/memory-static 'tmp/memory_static_full_report.txt' 'tmp/memory_static_metrics.txt'
+    - bundle exec derailed bundle:mem > tmp/memory_bundle_mem.txt
+    - scripts/generate-gems-size-metrics-static tmp/memory_bundle_mem.txt >> 'tmp/memory_metrics.txt'
 
     # Outputs detailed information about objects created while gems are loaded.
     # 'derailed_benchmarks' internally uses 'memory_profiler'
-    - scripts/memory-static-objects 'tmp/memory_static_objects_full_report.txt' 'tmp/memory_static_metrics.txt'
+    - bundle exec derailed bundle:objects > tmp/memory_bundle_objects.txt
+    - scripts/generate-gems-memory-metrics-static tmp/memory_bundle_objects.txt >> 'tmp/memory_metrics.txt'
   artifacts:
     paths:
-      - tmp/memory_static_full_report.txt
-      - tmp/memory_static_objects_full_report.txt
-      - tmp/memory_static_metrics.txt
+      - tmp/memory_*.txt
     reports:
-      metrics: tmp/memory_static_metrics.txt
+      metrics: tmp/memory_metrics.txt
