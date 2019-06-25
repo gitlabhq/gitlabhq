@@ -24,7 +24,7 @@ module Gitlab
 
           begin
             from(nil)
-              .pluck("has_table_privilege(#{quoted_table}, 'TRIGGER')")
+              .pluck(Arel.sql("has_table_privilege(#{quoted_table}, 'TRIGGER')"))
               .first
           rescue ActiveRecord::StatementInvalid
             # This error is raised when using a non-existing table name. In this

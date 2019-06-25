@@ -128,7 +128,7 @@ module Gitlab
         order = "#{field} IS NULL, #{order}" if direction == 'ASC'
       end
 
-      order
+      Arel.sql(order)
     end
 
     def self.nulls_first_order(field, direction = 'ASC')
@@ -142,7 +142,7 @@ module Gitlab
         order = "#{field} IS NULL, #{order}" if direction == 'DESC'
       end
 
-      order
+      Arel.sql(order)
     end
 
     def self.random

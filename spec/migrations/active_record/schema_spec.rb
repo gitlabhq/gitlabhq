@@ -15,7 +15,7 @@ describe ActiveRecord::Schema do
   it '> schema version equals last migration timestamp' do
     defined_schema_version = File.open(Rails.root.join('db', 'schema.rb')) do |file|
       file.find { |line| line =~ /ActiveRecord::Schema.define/ }
-    end.match(/(\d+)/)[0].to_i
+    end.match(/(\d{4}_\d{2}_\d{2}_\d{6})/)[0].to_i
 
     expect(defined_schema_version).to eq(latest_migration_timestamp)
   end

@@ -357,7 +357,7 @@ class Project < ApplicationRecord
   scope :with_unmigrated_storage, -> { where('storage_version < :version OR storage_version IS NULL', version: LATEST_STORAGE_VERSION) }
 
   # last_activity_at is throttled every minute, but last_repository_updated_at is updated with every push
-  scope :sorted_by_activity, -> { reorder("GREATEST(COALESCE(last_activity_at, '1970-01-01'), COALESCE(last_repository_updated_at, '1970-01-01')) DESC") }
+  scope :sorted_by_activity, -> { reorder(Arel.sql("GREATEST(COALESCE(last_activity_at, '1970-01-01'), COALESCE(last_repository_updated_at, '1970-01-01')) DESC")) }
   scope :sorted_by_stars_desc, -> { reorder(star_count: :desc) }
   scope :sorted_by_stars_asc, -> { reorder(star_count: :asc) }
 
@@ -612,7 +612,7 @@ class Project < ApplicationRecord
     end
   end
 
-  def initialize(attributes = {})
+  def initialize(attributes = nil)
     # We can't use default_value_for because the database has a default
     # value of 0 for visibility_level. If someone attempts to create a
     # private project, default_value_for will assume that the
@@ -622,6 +622,8 @@ class Project < ApplicationRecord
     #
     # To fix the problem, we assign the actual default in the application if
     # no explicit visibility has been initialized.
+    attributes ||= {}
+
     unless visibility_attribute_present?(attributes)
       attributes[:visibility_level] = Gitlab::CurrentSettings.default_project_visibility
     end
@@ -1557,7 +1559,7 @@ class Project < ApplicationRecord
   end
 
   def valid_runners_token?(token)
-    self.runners_token && ActiveSupport::SecurityUtils.variable_size_secure_compare(token, self.runners_token)
+    self.runners_token && ActiveSupport::SecurityUtils.secure_compare(token, self.runners_token)
   end
 
   # rubocop: disable CodeReuse/ServiceClass

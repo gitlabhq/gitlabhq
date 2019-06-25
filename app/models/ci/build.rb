@@ -578,7 +578,7 @@ module Ci
     end
 
     def valid_token?(token)
-      self.token && ActiveSupport::SecurityUtils.variable_size_secure_compare(token, self.token)
+      self.token && ActiveSupport::SecurityUtils.secure_compare(token, self.token)
     end
 
     def has_tags?

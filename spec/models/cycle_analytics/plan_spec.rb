@@ -25,7 +25,7 @@ describe 'CycleAnalytics#plan' do
                              end],
                             ["list label added to issue",
                              -> (context, data) do
-                               data[:issue].update(label_ids: [context.create(:label, lists: [context.create(:list)]).id])
+                               data[:issue].update(label_ids: [context.create(:list).label_id])
                              end]],
     end_time_conditions:   [["issue mentioned in a commit",
                              -> (context, data) do

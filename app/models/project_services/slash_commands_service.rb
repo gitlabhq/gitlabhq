@@ -12,7 +12,7 @@ class SlashCommandsService < Service
   def valid_token?(token)
     self.respond_to?(:token) &&
       self.token.present? &&
-      ActiveSupport::SecurityUtils.variable_size_secure_compare(token, self.token)
+      ActiveSupport::SecurityUtils.secure_compare(token, self.token)
   end
 
   def self.supported_events

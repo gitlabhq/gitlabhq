@@ -15,18 +15,11 @@ if defined?(ActiveRecord::ConnectionAdapters::Mysql2Adapter)
     module ConnectionAdapters
       class Mysql2Adapter < AbstractMysqlAdapter
         alias_method :__gitlab_add_index, :add_index
-        alias_method :__gitlab_add_index_sql, :add_index_sql
         alias_method :__gitlab_add_index_options, :add_index_options
 
         def add_index(table_name, column_name, options = {})
           unless options[:opclasses]
             __gitlab_add_index(table_name, column_name, options)
-          end
-        end
-
-        def add_index_sql(table_name, column_name, options = {})
-          unless options[:opclasses]
-            __gitlab_add_index_sql(table_name, column_name, options)
           end
         end
 

@@ -23,10 +23,11 @@ describe Admin::RunnersController do
 
       control_count = ActiveRecord::QueryRecorder.new { get :index }.count
 
-      create(:ci_runner, :tagged_only)
+      create_list(:ci_runner, 5, :tagged_only)
 
       # There is still an N+1 query for `runner.builds.count`
-      expect { get :index }.not_to exceed_query_limit(control_count + 1)
+      # We also need to add 1 because it takes 2 queries to preload tags
+      expect { get :index }.not_to exceed_query_limit(control_count + 6)
 
       expect(response).to have_gitlab_http_status(200)
       expect(response.body).to have_content('tag1')

@@ -52,7 +52,7 @@ module TokenAuthenticatable
 
       mod.define_method("#{token_field}_matches?") do |other_token|
         token = read_attribute(token_field)
-        token.present? && ActiveSupport::SecurityUtils.variable_size_secure_compare(other_token, token)
+        token.present? && ActiveSupport::SecurityUtils.secure_compare(other_token, token)
       end
     end
 

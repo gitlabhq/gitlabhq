@@ -1844,7 +1844,7 @@ describe NotificationService, :mailer do
 
   describe 'ProjectMember' do
     let(:project) { create(:project) }
-    set(:added_user) { create(:user) }
+    let(:added_user) { create(:user) }
 
     describe '#new_access_request' do
       context 'for a project in a user namespace' do
