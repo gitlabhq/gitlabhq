@@ -160,7 +160,7 @@ receivers:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/4925) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.11.
 
-Alerts can be used to trigger actions, like open an issue automatically. To configure the actions:
+Alerts can be used to trigger actions, like open an issue automatically (enabled by default since `12.1`). To configure the actions:
 
 1. Navigate to your project's **Settings > Operations > Incidents**.
 1. Enable the option to create issues.
