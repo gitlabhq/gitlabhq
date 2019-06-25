@@ -47,5 +47,13 @@ describe Postgresql::ReplicationSlot, :postgresql do
 
       expect(described_class.lag_too_great?).to eq(false)
     end
+
+    it 'returns false when there is a nil replication lag' do
+      expect(described_class)
+        .to receive(:pluck)
+        .and_return([0.megabytes, nil])
+
+      expect(described_class.lag_too_great?).to eq(false)
+    end
   end
 end
