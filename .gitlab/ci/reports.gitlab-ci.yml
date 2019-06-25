@@ -1,98 +1,26 @@
 include:
   - template: Code-Quality.gitlab-ci.yml
+  - template: Security/SAST.gitlab-ci.yml
+  - template: Security/Dependency-Scanning.gitlab-ci.yml
 
 code_quality:
-  extends: .dedicated-no-docs-no-db-pull-cache-job
+  extends: .dedicated-no-docs
   # gitlab-org runners set `privileged: false` but we need to have it set to true
   # since we're using Docker in Docker
   tags: []
   before_script: []
   cache: {}
   dependencies: []
-  variables:
-    SETUP_DB: "false"
 
 sast:
-  extends: .dedicated-no-docs-no-db-pull-cache-job
-  image: docker:stable
+  extends: .dedicated-no-docs
+  before_script: []
+  tags: []
   variables:
     SAST_CONFIDENCE_LEVEL: 2
     DOCKER_DRIVER: overlay2
-  allow_failure: true
-  tags: []
-  before_script: []
-  cache: {}
-  dependencies: []
-  services:
-    - docker:stable-dind
-  script:
-    - | # this is required to avoid undesirable reset of Docker image ENV variables being set on build stage
-      function propagate_env_vars() {
-        CURRENT_ENV=$(printenv)
-
-        for VAR_NAME; do
-          echo $CURRENT_ENV | grep "${VAR_NAME}=" > /dev/null && echo "--env $VAR_NAME "
-        done
-      }
-    - export SP_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
-    - |
-      docker run \
-        $(propagate_env_vars \
-          SAST_ANALYZER_IMAGES \
-          SAST_ANALYZER_IMAGE_PREFIX \
-          SAST_ANALYZER_IMAGE_TAG \
-          SAST_DEFAULT_ANALYZERS \
-          SAST_BRAKEMAN_LEVEL \
-          SAST_GOSEC_LEVEL \
-          SAST_FLAWFINDER_LEVEL \
-          SAST_DOCKER_CLIENT_NEGOTIATION_TIMEOUT \
-          SAST_PULL_ANALYZER_IMAGE_TIMEOUT \
-          SAST_RUN_ANALYZER_TIMEOUT \
-        ) \
-        --volume "$PWD:/code" \
-        --volume /var/run/docker.sock:/var/run/docker.sock \
-        "registry.gitlab.com/gitlab-org/security-products/sast:$SP_VERSION" /app/bin/run /code
-  artifacts:
-    reports:
-      sast: gl-sast-report.json
 
 dependency_scanning:
-  extends: .dedicated-no-docs-no-db-pull-cache-job
-  image: docker:stable
-  variables:
-    DOCKER_DRIVER: overlay2
-  allow_failure: true
-  tags: []
   before_script: []
-  cache: {}
-  dependencies: []
-  services:
-    - docker:stable-dind
-  script:
-    - export SP_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
-    - | # this is required to avoid undesirable reset of Docker image ENV variables being set on build stage
-      function propagate_env_vars() {
-        CURRENT_ENV=$(printenv)
-
-        for VAR_NAME; do
-          echo $CURRENT_ENV | grep "${VAR_NAME}=" > /dev/null && echo "--env $VAR_NAME "
-        done
-      }
-    - |
-      docker run \
-        $(propagate_env_vars \
-          DS_ANALYZER_IMAGES \
-          DS_ANALYZER_IMAGE_PREFIX \
-          DS_ANALYZER_IMAGE_TAG \
-          DS_DEFAULT_ANALYZERS \
-          DEP_SCAN_DISABLE_REMOTE_CHECKS \
-          DS_DOCKER_CLIENT_NEGOTIATION_TIMEOUT \
-          DS_PULL_ANALYZER_IMAGE_TIMEOUT \
-          DS_RUN_ANALYZER_TIMEOUT \
-        ) \
-        --volume "$PWD:/code" \
-        --volume /var/run/docker.sock:/var/run/docker.sock \
-        "registry.gitlab.com/gitlab-org/security-products/dependency-scanning:$SP_VERSION" /code
-  artifacts:
-    reports:
-      dependency_scanning: gl-dependency-scanning-report.json
+  tags: []
+  extends: .dedicated-no-docs

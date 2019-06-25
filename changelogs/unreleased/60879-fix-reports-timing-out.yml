@@ -1,0 +1,5 @@
+---
+title: Fix reports jobs timing out because of cache
+merge_request: 29780
+author:
+type: fixed
