@@ -72,7 +72,7 @@ describe Projects::PropagateServiceTemplate do
       expect(project.pushover_service.properties).to eq(service_template.properties)
     end
 
-    describe 'bulk update' do
+    describe 'bulk update', :use_sql_query_cache do
       let(:project_total) { 5 }
 
       before do
