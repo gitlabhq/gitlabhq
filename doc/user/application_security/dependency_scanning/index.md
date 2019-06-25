@@ -46,13 +46,16 @@ this is enabled by default.
 
 The following languages and dependency managers are supported.
 
-| Language (package managers)                                                 | Scan tool                                                                                                                         |
-|-----------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------|
-| JavaScript ([npm](https://www.npmjs.com/), [yarn](https://yarnpkg.com/en/)) | [gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium/general), [Retire.js](https://retirejs.github.io/retire.js)         |
-| Python ([pip](https://pip.pypa.io/en/stable/)) (only `requirements.txt` supported)  | [gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium/general)                                                            |
-| Ruby ([gem](https://rubygems.org/))                                         | [gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium/general), [bundler-audit](https://github.com/rubysec/bundler-audit) |
-| Java ([Maven](https://maven.apache.org/))                                   | [gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium/general)                                                            |
-| PHP ([Composer](https://getcomposer.org/))                                  | [gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium/general)                                                            |
+| Language (package managers)  | Supported | Scan tool(s) |
+|----------------------------- | --------- | ------------ |
+| JavaScript ([npm](https://www.npmjs.com/), [yarn](https://yarnpkg.com/en/)) | yes | [gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium), [Retire.js](https://retirejs.github.io/retire.js)         |
+| Python ([pip](https://pip.pypa.io/en/stable/)) (only `requirements.txt` supported)  | yes | [gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
+| Ruby ([gem](https://rubygems.org/)) | yes | [gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium), [bundler-audit](https://github.com/rubysec/bundler-audit) |
+| Java ([Maven](https://maven.apache.org/)) | yes | [gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
+| PHP ([Composer](https://getcomposer.org/))  | yes | [gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
+| Python ([poetry](https://poetry.eustace.io/)) | no ([issue](https://gitlab.com/gitlab-org/gitlab-ee/issues/7006 "Support Poetry in Dependency Scanning")) | not available |
+| Python ([Pipfile](https://docs.pipenv.org/en/latest/basics/)) | no ([issue](https://gitlab.com/gitlab-org/gitlab-ee/issues/11756 "Pipfile.lock support for Dependency Scanning"))| not available |
+| Go ([Golang](https://golang.org/)) | no ([issue](https://gitlab.com/gitlab-org/gitlab-ee/issues/7132 "Dependency Scanning for Go")) | not available |
 
 ## Remote checks
 
