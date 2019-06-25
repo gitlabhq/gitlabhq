@@ -18,6 +18,8 @@ class RemoveSentryFromApplicationSettings < ActiveRecord::Migration[5.0]
     :clientside_sentry_dsn
   ].freeze
 
+  disable_ddl_transaction!
+
   def up
     (SENTRY_ENABLED_COLUMNS + SENTRY_DSN_COLUMNS).each do |column|
       remove_column(:application_settings, column) if column_exists?(:application_settings, column)
