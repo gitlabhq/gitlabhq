@@ -519,8 +519,11 @@ service account of the cluster integration.
 
 ### Troubleshooting failed deployment jobs
 
-GitLab will create a namespace and service account specifically for your
-deployment jobs. This happens immediately before the deployment job starts.
+Before the deployment jobs starts, GitLab creates the following specifically for
+the deployment job:
+
+- A namespace.
+- A service account.
 
 However, sometimes GitLab can not create them. In such instances, your job will fail with the message:
 
