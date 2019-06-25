@@ -108,6 +108,7 @@ description: 'Learn how to contribute to GitLab.'
 - [Database Debugging and Troubleshooting](database_debugging.md)
 - [Query Count Limits](query_count_limits.md)
 - [Database helper modules](database_helpers.md)
+- [Code comments](code_comments.md)
 
 ## Integration guides
 
