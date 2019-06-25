@@ -113,6 +113,7 @@ This feature requires GitLab 8.8 and GitLab Runner 1.2.
 Make sure that your GitLab Runner is configured to allow building Docker images by
 following the [Using Docker Build](../../ci/docker/using_docker_build.md)
 and [Using the GitLab Container Registry documentation](../../ci/docker/using_docker_build.md#using-the-gitlab-container-registry).
+Alternatively, you can [build images with Kaniko](../../ci/docker/using_kaniko.md) if the Docker builds are not an option for you.
 
 ## Using with private projects
 
