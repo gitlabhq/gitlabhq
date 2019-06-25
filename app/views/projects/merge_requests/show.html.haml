@@ -19,7 +19,7 @@
     -# haml-lint:disable InlineJavaScript
     :javascript
       window.gl = window.gl || {};
-      window.gl.mrWidgetData = #{serialize_issuable(@merge_request, serializer: 'widget')}
+      window.gl.mrWidgetData = #{serialize_issuable(@merge_request, serializer: 'widget', issues_links: true)}
 
       window.gl.mrWidgetData.squash_before_merge_help_path = '#{help_page_path("user/project/merge_requests/squash_and_merge")}';
       window.gl.mrWidgetData.troubleshooting_docs_path = '#{help_page_path('user/project/merge_requests/index.md', anchor: 'troubleshooting')}';

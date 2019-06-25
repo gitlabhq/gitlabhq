@@ -457,7 +457,7 @@ class Note < ApplicationRecord
   end
 
   def banzai_render_context(field)
-    super.merge(noteable: noteable)
+    super.merge(noteable: noteable, system_note: system?)
   end
 
   def retrieve_upload(_identifier, paths)

@@ -65,6 +65,7 @@ larger one.
 - 1 Redis node
 - 1 NFS/Gitaly storage server
 - 2 or more GitLab application nodes (Unicorn, Workhorse, Sidekiq)
+- 1 Monitoring node (Prometheus, Grafana)
 
 #### Installation Instructions
 
@@ -76,6 +77,7 @@ you can continue with the next step.
 1. [Redis](redis.md#redis-in-a-scaled-environment)
 1. [Gitaly](gitaly.md) (recommended) or [NFS](nfs.md)
 1. [GitLab application nodes](gitlab.md)
+1. [Monitoring node (Prometheus and Grafana)](monitoring_node.md)
 
 ### Full Scaling
 
@@ -90,6 +92,7 @@ in size, indicating that there is contention or not enough resources.
 - 2 or more NFS/Gitaly storage servers
 - 2 or more Sidekiq nodes
 - 2 or more GitLab application nodes (Unicorn, Workhorse)
+- 1 Monitoring node (Prometheus, Grafana)
 
 ## High Availability Architecture Examples
 
@@ -133,6 +136,7 @@ the contention.
 - 3 Consul/Sentinel nodes
 - 2 or more GitLab application nodes (Unicorn, Workhorse, Sidekiq, PGBouncer)
 - 1 NFS/Gitaly server
+- 1 Monitoring node (Prometheus, Grafana)
 
 ![Horizontal architecture diagram](img/horizontal.png)
 
@@ -192,6 +196,7 @@ with the added complexity of many more nodes to configure, manage and monitor.
 - 2 or more API nodes (All requests to `/api`)
 - 2 or more Web nodes (All other web requests)
 - 2 or more NFS/Gitaly servers
+- 1 Monitoring node (Prometheus, Grafana)
 
 ![Fully Distributed architecture diagram](img/fully-distributed.png)
 
@@ -205,4 +210,5 @@ separately:
    1. [NFS Client and Host setup](nfs_host_client_setup.md)
 1. [Configure the GitLab application servers](gitlab.md)
 1. [Configure the load balancers](load_balancer.md)
+1. [Monitoring node (Prometheus and Grafana)](monitoring_node.md)
 

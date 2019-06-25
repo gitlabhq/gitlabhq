@@ -480,7 +480,7 @@ Below you can find supported syntax reference:
 
     > Example: `$VARIABLE == "some value"`
 
-    > Example: `$VARIABLE != "some value"` _(added in 11.11)_
+    > Example: `$VARIABLE != "some value"` (introduced in GitLab 11.11)
 
     You can use equality operator `==` or `!=` to compare a variable content to a
     string. We support both, double quotes and single quotes to define a string
@@ -491,7 +491,7 @@ Below you can find supported syntax reference:
 
     > Example: `$VARIABLE == null`
 
-    > Example: `$VARIABLE != null` _(added in 11.11)_
+    > Example: `$VARIABLE != null` (introduced in GitLab 11.11)
 
     It sometimes happens that you want to check whether a variable is defined
     or not. To do that, you can compare a variable to `null` keyword, like
@@ -502,7 +502,7 @@ Below you can find supported syntax reference:
 
     > Example: `$VARIABLE == ""`
 
-    > Example: `$VARIABLE != ""` _(added in 11.11)_
+    > Example: `$VARIABLE != ""` (introduced in GitLab 11.11)
 
     If you want to check whether a variable is defined, but is empty, you can
     simply compare it against an empty string, like `$VAR == ''` or non-empty
@@ -512,7 +512,7 @@ Below you can find supported syntax reference:
 
     > Example: `$VARIABLE_1 == $VARIABLE_2`
 
-    > Example: `$VARIABLE_1 != $VARIABLE_2` _(added in 11.11)_
+    > Example: `$VARIABLE_1 != $VARIABLE_2` (introduced in GitLab 11.11)
 
     It is possible to compare two variables. This is going to compare values
     of these variables.
@@ -528,11 +528,11 @@ Below you can find supported syntax reference:
     `$STAGING` value needs to a string, with length higher than zero.
     Variable that contains only whitespace characters is not an empty variable.
 
-1. Pattern matching  _(added in 11.0)_
+1. Pattern matching (introduced in GitLab 11.0)
 
     > Example: `$VARIABLE =~ /^content.*/`
 
-    > Example: `$VARIABLE_1 !~ /^content.*/` _(added in 11.11)_
+    > Example: `$VARIABLE_1 !~ /^content.*/` (introduced in GitLab 11.11)
 
     It is possible perform pattern matching against a variable and regular
     expression. Expression like this evaluates to truth if matches are found
@@ -541,7 +541,7 @@ Below you can find supported syntax reference:
     Pattern matching is case-sensitive by default. Use `i` flag modifier, like
     `/pattern/i` to make a pattern case-insensitive.
 
-1. Conjunction / Disjunction
+1. Conjunction / Disjunction ([introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/27925) in GitLab 12.0)
 
     > Example: `$VARIABLE1 =~ /^content.*/ && $VARIABLE2 == "something"`
 
