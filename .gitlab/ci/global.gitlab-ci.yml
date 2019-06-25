@@ -28,10 +28,14 @@
     policy: pull
   stage: test
 
-.dedicated-no-docs-pull-cache-job:
-  extends: .dedicated-pull-cache-job
+.no-docs:
   except:
     - /(^docs[\/-].*|.*-docs$)/
+
+.dedicated-no-docs-pull-cache-job:
+  extends:
+    - .dedicated-pull-cache-job
+    - .no-docs
 
 .dedicated-no-docs-and-no-qa-pull-cache-job:
   extends: .dedicated-pull-cache-job
@@ -44,6 +48,12 @@
   extends: .dedicated-no-docs-pull-cache-job
   variables:
     SETUP_DB: "false"
+
+# Jobs that need a dedicated runner, with no cache
+.dedicated-no-docs:
+  extends:
+    - .dedicated-runner
+    - .no-docs
 
 .single-script-job-dedicated-runner:
   extends: .dedicated-runner
