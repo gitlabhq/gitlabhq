@@ -169,18 +169,17 @@ module SearchHelper
         autocomplete: 'off'
       }
 
+    opts[:data]['runner-tags-endpoint'] = tag_list_admin_runners_path
+
     if @project.present?
       opts[:data]['project-id'] = @project.id
-      opts[:data]['base-endpoint'] = project_path(@project)
       opts[:data]['labels-endpoint'] = project_labels_path(@project)
       opts[:data]['milestones-endpoint'] = project_milestones_path(@project)
     elsif @group.present?
       opts[:data]['group-id'] = @group.id
-      opts[:data]['base-endpoint'] = group_canonical_path(@group)
       opts[:data]['labels-endpoint'] = group_labels_path(@group)
       opts[:data]['milestones-endpoint'] = group_milestones_path(@group)
     else
-      opts[:data]['base-endpoint'] = root_dashboard_path
       opts[:data]['labels-endpoint'] = dashboard_labels_path
       opts[:data]['milestones-endpoint'] = dashboard_milestones_path
     end
