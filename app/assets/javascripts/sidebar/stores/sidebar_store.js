@@ -8,7 +8,7 @@ export default class SidebarStore {
   }
 
   initSingleton(options) {
-    const { currentUser, rootPath, editable } = options;
+    const { currentUser, rootPath, editable, timeTrackingLimitToHours } = options;
     this.currentUser = currentUser;
     this.rootPath = rootPath;
     this.editable = editable;
@@ -16,6 +16,7 @@ export default class SidebarStore {
     this.totalTimeSpent = 0;
     this.humanTimeEstimate = '';
     this.humanTimeSpent = '';
+    this.timeTrackingLimitToHours = timeTrackingLimitToHours;
     this.assignees = [];
     this.isFetching = {
       assignees: true,

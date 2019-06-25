@@ -946,6 +946,18 @@ describe SystemNoteService do
 
         expect(subject.note).to eq "changed time estimate to 1w 4d 5h"
       end
+
+      context 'when time_tracking_limit_to_hours setting is true' do
+        before do
+          stub_application_setting(time_tracking_limit_to_hours: true)
+        end
+
+        it 'sets the note text' do
+          noteable.update_attribute(:time_estimate, 277200)
+
+          expect(subject.note).to eq "changed time estimate to 77h"
+        end
+      end
     end
 
     context 'without a time estimate' do
@@ -1019,6 +1031,18 @@ describe SystemNoteService do
         spend_time!(:reset)
 
         expect(subject.note).to eq "removed time spent"
+      end
+    end
+
+    context 'when time_tracking_limit_to_hours setting is true' do
+      before do
+        stub_application_setting(time_tracking_limit_to_hours: true)
+      end
+
+      it 'sets the note text' do
+        spend_time!(277200)
+
+        expect(subject.note).to eq "added 77h of time spent"
       end
     end
 

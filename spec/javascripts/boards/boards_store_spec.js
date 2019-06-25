@@ -355,4 +355,14 @@ describe('Store', () => {
       expect(boardsStore.moving.list).toEqual(dummyList);
     });
   });
+
+  describe('setTimeTrackingLimitToHours', () => {
+    it('sets the timeTracking.LimitToHours option', () => {
+      boardsStore.timeTracking.limitToHours = false;
+
+      boardsStore.setTimeTrackingLimitToHours('true');
+
+      expect(boardsStore.timeTracking.limitToHours).toEqual(true);
+    });
+  });
 });

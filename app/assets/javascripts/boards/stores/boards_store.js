@@ -12,6 +12,9 @@ import eventHub from '../eventhub';
 
 const boardsStore = {
   disabled: false,
+  timeTracking: {
+    limitToHours: false,
+  },
   scopedLabels: {
     helpLink: '',
     enabled: false,
@@ -221,6 +224,10 @@ const boardsStore = {
 
   setIssueDetail(issueDetail) {
     this.detail.issue = issueDetail;
+  },
+
+  setTimeTrackingLimitToHours(limitToHours) {
+    this.timeTracking.limitToHours = parseBoolean(limitToHours);
   },
 };
 

@@ -430,7 +430,8 @@ module IssuablesHelper
       editable: issuable.dig(:current_user, :can_edit),
       currentUser: issuable[:current_user],
       rootPath: root_path,
-      fullPath: issuable[:project_full_path]
+      fullPath: issuable[:project_full_path],
+      timeTrackingLimitToHours: Gitlab::CurrentSettings.time_tracking_limit_to_hours
     }
   end
 

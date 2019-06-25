@@ -28,11 +28,16 @@ export default {
       type: String,
       required: true,
     },
+    limitToHours: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     parsedTimeRemaining() {
       const diffSeconds = this.timeEstimate - this.timeSpent;
-      return parseSeconds(diffSeconds);
+      return parseSeconds(diffSeconds, { limitToHours: this.limitToHours });
     },
     timeRemainingHumanReadable() {
       return stringifyTime(this.parsedTimeRemaining);

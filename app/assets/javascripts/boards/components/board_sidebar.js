@@ -38,6 +38,7 @@ export default Vue.extend({
       issue: {},
       list: {},
       loadingAssignees: false,
+      timeTrackingLimitToHours: boardsStore.timeTracking.limitToHours,
     };
   },
   computed: {

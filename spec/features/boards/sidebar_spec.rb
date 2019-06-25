@@ -16,7 +16,9 @@ describe 'Issue Boards', :js do
   let!(:issue2)      { create(:labeled_issue, project: project, labels: [development, stretch], relative_position: 1) }
   let(:board)        { create(:board, project: project) }
   let!(:list)        { create(:list, board: board, label: development, position: 0) }
-  let(:card) { find('.board:nth-child(2)').first('.board-card') }
+  let(:card)         { find('.board:nth-child(2)').first('.board-card') }
+
+  let(:application_settings) { {} }
 
   around do |example|
     Timecop.freeze { example.run }
@@ -26,6 +28,8 @@ describe 'Issue Boards', :js do
     project.add_maintainer(user)
 
     sign_in(user)
+
+    stub_application_setting(application_settings)
 
     visit project_board_path(project, board)
     wait_for_requests
@@ -223,16 +227,24 @@ describe 'Issue Boards', :js do
   end
 
   context 'time tracking' do
+    let(:compare_meter_tooltip) { find('.time-tracking .time-tracking-content .compare-meter')['data-original-title'] }
+
     before do
       issue2.timelogs.create(time_spent: 14400, user: user)
-      issue2.update!(time_estimate: 28800)
+      issue2.update!(time_estimate: 128800)
+
+      click_card(card)
     end
 
     it 'shows time tracking progress bar' do
-      click_card(card)
+      expect(compare_meter_tooltip).to eq('Time remaining: 3d 7h 46m')
+    end
 
-      page.within('.time-tracking') do
-        expect(find('.time-tracking-content .compare-meter')['data-original-title']).to eq('Time remaining: 4h')
+    context 'when time_tracking_limit_to_hours is true' do
+      let(:application_settings) { { time_tracking_limit_to_hours: true } }
+
+      it 'shows time tracking progress bar' do
+        expect(compare_meter_tooltip).to eq('Time remaining: 31h 46m')
       end
     end
   end
