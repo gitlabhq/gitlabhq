@@ -218,6 +218,12 @@ RSpec.configure do |config|
     ActionController::Base.cache_store = caching_store
   end
 
+  config.around(:each, :use_sql_query_cache) do |example|
+    ActiveRecord::Base.cache do
+      example.run
+    end
+  end
+
   # The :each scope runs "inside" the example, so this hook ensures the DB is in the
   # correct state before any examples' before hooks are called. This prevents a
   # problem where `ScheduleIssuesClosedAtTypeChange` (or any migration that depends
