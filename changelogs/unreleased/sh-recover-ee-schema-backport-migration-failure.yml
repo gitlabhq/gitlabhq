@@ -1,5 +1,0 @@
----
-title: Prevent EE backport migrations from running if CE is not migrated
-merge_request: 30002
-author:
-type: fixed
