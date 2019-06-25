@@ -2038,24 +2038,24 @@ describe Gitlab::Git::Repository, :seed_helper do
   end
 
   describe '#clean_stale_repository_files' do
-    let(:worktree_path) { File.join(repository_path, 'worktrees', 'delete-me') }
+    let(:worktree_id) { 'rebase-1' }
+    let(:gitlab_worktree_path) { File.join(repository_path, 'gitlab-worktree', worktree_id) }
+    let(:admin_dir) { File.join(repository_path, 'worktrees') }
 
     it 'cleans up the files' do
-      create_worktree = %W[git -C #{repository_path} worktree add --detach #{worktree_path} master]
+      create_worktree = %W[git -C #{repository_path} worktree add --detach #{gitlab_worktree_path} master]
       raise 'preparation failed' unless system(*create_worktree, err: '/dev/null')
 
-      FileUtils.touch(worktree_path, mtime: Time.now - 8.hours)
+      FileUtils.touch(gitlab_worktree_path, mtime: Time.now - 8.hours)
       # git rev-list --all will fail in git 2.16 if HEAD is pointing to a non-existent object,
       # but the HEAD must be 40 characters long or git will ignore it.
-      File.write(File.join(worktree_path, 'HEAD'), Gitlab::Git::BLANK_SHA)
+      File.write(File.join(admin_dir, worktree_id, 'HEAD'), Gitlab::Git::BLANK_SHA)
 
-      # git 2.16 fails with "fatal: bad object HEAD"
-      expect(rev_list_all).to be false
-
+      expect(rev_list_all).to be(false)
       repository.clean_stale_repository_files
 
-      expect(rev_list_all).to be true
-      expect(File.exist?(worktree_path)).to be_falsey
+      expect(rev_list_all).to be(true)
+      expect(File.exist?(gitlab_worktree_path)).to be_falsey
     end
 
     def rev_list_all
