@@ -20,9 +20,7 @@ module Gitlab
           private
 
           def deployment_cluster
-            strong_memoize(:deployment_cluster) do
-              build.deployment&.cluster || build.deployment&.deployment_platform_cluster
-            end
+            build.deployment&.cluster
           end
 
           def kubernetes_namespace
