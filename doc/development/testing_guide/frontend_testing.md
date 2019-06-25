@@ -32,6 +32,9 @@ we need to solve before being able to use Jest for all our needs.
   The aliases used by Jest are defined in its [own config](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/jest.config.js).
 - All calls to `setTimeout` and `setInterval` are mocked away. See also [Jest Timer Mocks](https://jestjs.io/docs/en/timer-mocks).
 - `rewire` is not required because Jest supports mocking modules. See also [Manual Mocks](https://jestjs.io/docs/en/manual-mocks).
+- No [context object](https://jasmine.github.io/tutorials/your_first_suite#section-The_%3Ccode%3Ethis%3C/code%3E_keyword) is passed to tests in Jest.
+  This means sharing `this.something` between `beforeEach()` and `it()` for example does not work.
+  Instead you should declare shared variables in the context that they are needed (via `const` / `let`).
 - The following will cause tests to fail in Jest:
   - Unmocked requests.
   - Unhandled Promise rejections.
