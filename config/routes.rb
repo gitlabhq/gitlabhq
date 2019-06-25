@@ -30,9 +30,12 @@ Rails.application.routes.draw do
   # This prefixless path is required because Jira gets confused if we set it up with a path
   # More information: https://gitlab.com/gitlab-org/gitlab-ee/issues/6752
   scope path: '/login/oauth', controller: 'oauth/jira/authorizations', as: :oauth_jira do
-    get :authorize, action: :new
-    get :callback
-    post :access_token
+    Gitlab.ee do
+      get :authorize, action: :new
+      get :callback
+      post :access_token
+    end
+
     # This helps minimize merge conflicts with CE for this scope block
     match '*all', via: [:get, :post], to: proc { [404, {}, ['']] }
   end
@@ -46,8 +49,11 @@ Rails.application.routes.draw do
   get '/autocomplete/users/:id' => 'autocomplete#user'
   get '/autocomplete/projects' => 'autocomplete#projects'
   get '/autocomplete/award_emojis' => 'autocomplete#award_emojis'
-  get '/autocomplete/project_groups' => 'autocomplete#project_groups'
   get '/autocomplete/merge_request_target_branches' => 'autocomplete#merge_request_target_branches'
+
+  Gitlab.ee do
+    get '/autocomplete/project_groups' => 'autocomplete#project_groups'
+  end
 
   # Search
   get 'search' => 'search#show'
@@ -78,8 +84,10 @@ Rails.application.routes.draw do
 
       resources :issues, module: :boards, only: [:index, :update]
 
-      resources :users, module: :boards, only: [:index]
-      resources :milestones, module: :boards, only: [:index]
+      Gitlab.ee do
+        resources :users, module: :boards, only: [:index]
+        resources :milestones, module: :boards, only: [:index]
+      end
     end
 
     get 'acme-challenge/' => 'acme_challenges#show'
@@ -92,8 +100,11 @@ Rails.application.routes.draw do
 
     draw :operations
     draw :instance_statistics
-    draw :smartcard
-    draw :jira_connect
+
+    Gitlab.ee do
+      draw :smartcard
+      draw :jira_connect
+    end
 
     if ENV['GITLAB_ENABLE_CHAOS_ENDPOINTS']
       get '/chaos/leakmem' => 'chaos#leakmem'
