@@ -55,6 +55,7 @@ class Projects::RefsController < Projects::ApplicationController
       format.html { render_404 }
       format.json do
         response.headers["More-Logs-Url"] = @more_log_url if summary.more?
+        response.headers["More-Logs-Offset"] = summary.next_offset if summary.more?
         render json: @logs
       end
 

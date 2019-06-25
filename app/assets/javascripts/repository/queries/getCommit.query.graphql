@@ -1,0 +1,10 @@
+query getCommit($fileName: String!, $type: String!, $path: String!) {
+  commit(path: $path, fileName: $fileName, type: $type) @client {
+    sha
+    message
+    committedDate
+    commitPath
+    fileName
+    type
+  }
+}

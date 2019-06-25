@@ -1,0 +1,10 @@
+query getCommits {
+  commits @client {
+    sha
+    message
+    committedDate
+    commitPath
+    fileName
+    type
+  }
+}
