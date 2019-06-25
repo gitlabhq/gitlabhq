@@ -39,7 +39,7 @@ export default {
 
 <template>
   <div class="common-note-form">
-    <label class="sr-only" for="issue-description"> Description </label>
+    <label class="sr-only" for="issue-description">{{ __('Description') }}</label>
     <markdown-field
       :markdown-preview-path="markdownPreviewPath"
       :markdown-docs-path="markdownDocsPath"
@@ -55,8 +55,8 @@ export default {
         qa-description-textarea"
         dir="auto"
         data-supports-quick-actions="false"
-        aria-label="Description"
-        placeholder="Write a comment or drag your files here…"
+        :aria-label="__('Description')"
+        :placeholder="__('Write a comment or drag your files here…')"
         @keydown.meta.enter="updateIssuable"
         @keydown.ctrl.enter="updateIssuable"
       >

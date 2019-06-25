@@ -73,7 +73,9 @@ export default {
       Save changes
       <i v-if="formState.updateLoading" class="fa fa-spinner fa-spin" aria-hidden="true"> </i>
     </button>
-    <button class="btn btn-default float-right" type="button" @click="closeForm">Cancel</button>
+    <button class="btn btn-default float-right" type="button" @click="closeForm">
+      {{ __('Cancel') }}
+    </button>
     <button
       v-if="shouldShowDeleteButton"
       :class="{ disabled: deleteLoading }"

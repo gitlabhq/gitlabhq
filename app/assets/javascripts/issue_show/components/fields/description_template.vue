@@ -56,22 +56,31 @@ export default {
       data-selected="null"
       data-toggle="dropdown"
     >
-      <span class="dropdown-toggle-text"> Choose a template </span>
+      <span class="dropdown-toggle-text">{{ __('Choose a template') }}</span>
       <i aria-hidden="true" class="fa fa-chevron-down"> </i>
     </button>
     <div class="dropdown-menu dropdown-select">
       <div class="dropdown-title">
         Choose a template
-        <button class="dropdown-title-button dropdown-menu-close" aria-label="Close" type="button">
+        <button
+          class="dropdown-title-button dropdown-menu-close"
+          :aria-label="__('Close')"
+          type="button"
+        >
           <i aria-hidden="true" class="fa fa-times dropdown-menu-close-icon"> </i>
         </button>
       </div>
       <div class="dropdown-input">
-        <input type="search" class="dropdown-input-field" placeholder="Filter" autocomplete="off" />
+        <input
+          type="search"
+          class="dropdown-input-field"
+          :placeholder="__('Filter')"
+          autocomplete="off"
+        />
         <i aria-hidden="true" class="fa fa-search dropdown-input-search"> </i>
         <i
           role="button"
-          aria-label="Clear templates search input"
+          :aria-label="__('Clear templates search input')"
           class="fa fa-times dropdown-input-clear js-dropdown-input-clear"
         >
         </i>
@@ -79,8 +88,12 @@ export default {
       <div class="dropdown-content"></div>
       <div class="dropdown-footer">
         <ul class="dropdown-footer-list">
-          <li><a class="no-template"> No template </a></li>
-          <li><a class="reset-template"> Reset template </a></li>
+          <li>
+            <a class="no-template">{{ __('No template') }}</a>
+          </li>
+          <li>
+            <a class="reset-template">{{ __('Reset template') }}</a>
+          </li>
         </ul>
       </div>
     </div>
