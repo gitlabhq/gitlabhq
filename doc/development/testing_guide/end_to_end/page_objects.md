@@ -82,7 +82,7 @@ module Page
       end
 
       # ...
-    end 
+    end
   end
 end
 ```
@@ -134,7 +134,7 @@ for each element defined.
 
 In our case, `qa-login-field`, `qa-password-field` and `qa-sign-in-button`
 
-**app/views/my/view.html.haml**  
+**app/views/my/view.html.haml**
 
 ```haml
 = f.text_field :login, class: "form-control top qa-login-field", autofocus: "autofocus", autocapitalize: "off", autocorrect: "off", required: true, title: "This field is required."
@@ -146,7 +146,7 @@ Things to note:
 
 - The CSS class must be `kebab-cased` (separated with hyphens "`-`")
 - If the element appears on the page unconditionally, add `required: true` to the element. See
-[Dynamic element validation](dynamic_element_validation.md)
+  [Dynamic element validation](dynamic_element_validation.md)
 
 ## Running the test locally
 

@@ -186,7 +186,7 @@ the sort order to *Last Contacted* from the dropdown beside the search field.
 To search Runners' descriptions:
 
 1. In the **Search or filter results...** field, type the description of the Runner you want to
-find.
+   find.
 1. Press Enter.
 
 You can also filter Runners by status, type, and tag. To filter:

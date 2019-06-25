@@ -202,8 +202,8 @@ You may also consult the [group permissions table][permissions].
 ## Thread
 
 - Comments: collaborate on that epic by posting comments in its thread.
-These text fields also fully support
-[GitLab Flavored Markdown](../../markdown.md#gitlab-flavored-markdown-gfm).
+  These text fields also fully support
+  [GitLab Flavored Markdown](../../markdown.md#gitlab-flavored-markdown-gfm).
 
 ## Comment, or start a discussion
 
@@ -216,7 +216,7 @@ Once you wrote your comment, you can either:
 
 - You can [award an emoji](../../award_emojis.md) to that epic or its comments.
 
-## Notifications            
+## Notifications
 
 - [Receive notifications](../../../workflow/notifications.md) for epic events.
 

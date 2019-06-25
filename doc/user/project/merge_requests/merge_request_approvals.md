@@ -12,9 +12,9 @@ to approve a merge request before it can be unblocked for merging.
 ## Use cases
 
 1. Enforcing review of all code that gets merged into a repository.
-2. Specifying code maintainers for an entire repository.
-3. Specifying reviewers for a given proposed code change.
-4. Specifying categories of reviewers, such as BE, FE, QA, DB, etc., for all proposed code changes.
+1. Specifying code maintainers for an entire repository.
+1. Specifying reviewers for a given proposed code change.
+1. Specifying categories of reviewers, such as BE, FE, QA, DB, etc., for all proposed code changes.
 
 ## Enabling the new approvals interface
 
@@ -246,7 +246,7 @@ restrictions (compared to [GitLab Starter](#overriding-the-merge-request-approva
 - Approval rules can be added to an MR with no restriction.
 - For project sourced approval rules, editing and removing approvers is not allowed.
 - The approvals required of all approval rules is configurable, but if a rule is backed by a project rule, then it is restricted
-to the minimum approvals required set in the project's corresponding rule.
+  to the minimum approvals required set in the project's corresponding rule.
 
 ## Resetting approvals on push
 

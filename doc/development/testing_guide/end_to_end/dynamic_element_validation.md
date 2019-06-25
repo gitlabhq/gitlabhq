@@ -5,8 +5,8 @@ We devised a solution to solve common test automation problems such as the dread
 Other problems that dynamic element validations solve are...
 
 - When we perform an action with the mouse, we expect something to occur.
-- When our test is navigating to (or from) a page, we ensure that we are on the page we expect before 
-test continuation.
+- When our test is navigating to (or from) a page, we ensure that we are on the page we expect before
+  test continuation.
 
 ## How it works
 
@@ -19,7 +19,7 @@ We interpret user actions on the page to have some sort of effect. These actions
 
 When a page is navigated to, there are elements that will always appear on the page unconditionally.
 
-Dynamic element validation is instituted when using 
+Dynamic element validation is instituted when using
 
 ```ruby
 Runtime::Browser.visit(:gitlab, Some::Page)
@@ -27,7 +27,7 @@ Runtime::Browser.visit(:gitlab, Some::Page)
 
 ### Clicks
 
-When we perform a click within our tests, we expect something to occur.  That something could be a component to now 
+When we perform a click within our tests, we expect something to occur.  That something could be a component to now
 appear on the webpage, or the test to navigate away from the page entirely.
 
 Dynamic element validation is instituted when using
@@ -71,7 +71,7 @@ class MyPage < Page::Base
     element :another_element, required: true
     element :conditional_element
   end
-  
+
   def open_layer
     click_element :my_element, Layer::MyLayer
   end
@@ -95,7 +95,7 @@ execute_stuff
 ```
 
 will invoke GitLab QA to scan `MyPage` for `my_element` and `another_element` to be on the page before continuing to
-`execute_stuff` 
+`execute_stuff`
 
 ### Clicking
 

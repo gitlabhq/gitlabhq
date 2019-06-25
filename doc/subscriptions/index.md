@@ -14,7 +14,7 @@ Learn how GitLab helps you in the stages of the DevOps lifecycle by learning mor
 
 ### Self-managed: Install GitLab
 
-Take a look at [installing GitLab](https://about.gitlab.com/install/) and our [administrator documentation](../administration/index.md). Then, follow the instructions below under [Your subscription](#your-subscription) to apply your license file. 
+Take a look at [installing GitLab](https://about.gitlab.com/install/) and our [administrator documentation](../administration/index.md). Then, follow the instructions below under [Your subscription](#your-subscription) to apply your license file.
 
 ### GitLab.com: Create a user and group
 
@@ -74,11 +74,11 @@ Please note that you need to be a group owner to associate a group to your subsc
 To see the status of your GitLab.com subscription, you can click on the Billings
 section of the relevant namespace:
 
-* For individuals, this is located at https://gitlab.com/profile/billings under
-in your Settings,
-* For groups, this is located under the group's Settings dropdown, under Billing.
+- For individuals, this is located at https://gitlab.com/profile/billings under
+  in your Settings,
+- For groups, this is located under the group's Settings dropdown, under Billing.
 
-For groups, you can see details of your subscription - including your current 
+For groups, you can see details of your subscription - including your current
 plan - in the included table:
 
 ![Billing table](billing_table.png)
@@ -86,11 +86,11 @@ plan - in the included table:
 | Field | Description |
 | ------ | ------ |
 | Seats in subscription | If this is a paid plan, this represents the number of seats you've paid to support in your group. |
-| Seats currently in use | The number of active seats currently in use. | 
-| Max seats used | The highest number of seats you've used. If this exceeds the seats in subscription, you may owe an additional fee for the additional users. | 
-| Seats owed | If your max seats used exceeds the seats in your subscription, you'll owe an additional fee for the users you've added. | 
-| Subscription start date | The date your subscription started. If this is for a Free plan, this is the date you transitioned off your group's paid plan. | 
-| Subscription end date | The date your current subscription will end. This does not apply to Free plans. | 
+| Seats currently in use | The number of active seats currently in use. |
+| Max seats used | The highest number of seats you've used. If this exceeds the seats in subscription, you may owe an additional fee for the additional users. |
+| Seats owed | If your max seats used exceeds the seats in your subscription, you'll owe an additional fee for the users you've added. |
+| Subscription start date | The date your subscription started. If this is for a Free plan, this is the date you transitioned off your group's paid plan. |
+| Subscription end date | The date your current subscription will end. This does not apply to Free plans. |
 
 ### Subscription changes and your data
 

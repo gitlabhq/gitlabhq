@@ -13,17 +13,17 @@ To familiarize yourself with GitLab Pages first:
 - Read an [introduction to GitLab Pages](index.md#overview).
 - Learn [how to get started with Pages](index.md#getting-started).
 - Learn how to enable GitLab Pages
-across your GitLab instance on the [administrator documentation](../../../administration/pages/index.md).
+  across your GitLab instance on the [administrator documentation](../../../administration/pages/index.md).
 
 ## GitLab Pages requirements
 
 In brief, this is what you need to upload your website in GitLab Pages:
 
 1. Domain of the instance: domain name that is used for GitLab Pages
-(ask your administrator).
+   (ask your administrator).
 1. GitLab CI/CD: a `.gitlab-ci.yml` file with a specific job named [`pages`][pages] in the root directory of your repository.
 1. A directory called `public` in your site's repo containing the content
-to be published.
+   to be published.
 1. GitLab Runner enabled for the project.
 
 ## GitLab Pages on GitLab.com

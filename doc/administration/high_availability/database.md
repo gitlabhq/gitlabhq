@@ -83,7 +83,7 @@ deploy the bundled PostgreSQL.
    plain text password. These will be necessary when configuring the GitLab
    application servers later.
 1. [Enable monitoring](#enable-monitoring)
-   
+
 Advanced configuration options are supported and can be added if
 needed.
 
@@ -204,9 +204,9 @@ Few notes on the service itself:
 
 - The service runs under a system account, by default `gitlab-consul`.
   - If you are using a different username, you will have to specify it. We
-will refer to it with `CONSUL_USERNAME`,
+    will refer to it with `CONSUL_USERNAME`,
 - There will be a database user created with read only access to the repmgr
-database
+  database
 - Passwords will be stored in the following locations:
   - `/etc/gitlab/gitlab.rb`: hashed
   - `/var/opt/gitlab/pgbouncer/pg_auth`: hashed

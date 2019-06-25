@@ -14,10 +14,10 @@ Geo handles replication for different components:
 - [Database](#database-replication): includes the entire application, except cache and jobs.
 - [Git repositories](#repository-replication): includes both projects and wikis.
 - [Uploaded blobs](#uploads-replication): includes anything from images attached on issues
-to raw logs and assets from CI.
+  to raw logs and assets from CI.
 
 With the exception of the Database replication, on a *secondary* node, everything is coordinated
-by the [Geo Log Cursor](#geo-log-cursor). 
+by the [Geo Log Cursor](#geo-log-cursor).
 
 ### Geo Log Cursor daemon
 
@@ -31,8 +31,8 @@ picks the event up and schedules a `Geo::ProjectSyncWorker` job which will
 use the `Geo::RepositorySyncService` and `Geo::WikiSyncService` classes
 to update the repository and the wiki respectively.
 
-The Geo Log Cursor daemon can operate in High Availability mode automatically. 
-The daemon will try to acquire a lock from time to time and once acquired, it 
+The Geo Log Cursor daemon can operate in High Availability mode automatically.
+The daemon will try to acquire a lock from time to time and once acquired, it
 will behave as the *active* daemon.
 
 Any additional running daemons on the same node, will be in standby
@@ -164,20 +164,20 @@ The Git Push Proxy exists as a functionality built inside the `gitlab-shell` com
 It is active on a **secondary** node only. It allows the user that has cloned a repository
 from the secondary node to push to the same URL.
 
-Git `push` requests directed to a **secondary** node will be sent over to the **primary** node, 
+Git `push` requests directed to a **secondary** node will be sent over to the **primary** node,
 while `pull` requests will continue to be served by the **secondary** node for maximum efficiency.
 
 HTTPS and SSH requests are handled differently:
 
 - With HTTPS, we will give the user a `HTTP 302 Redirect` pointing to the project on the **primary** node.
-The git client is wise enough to understand that status code and process the redirection.
+  The git client is wise enough to understand that status code and process the redirection.
 - With SSH, because there is no equivalent way to perform a redirect, we have to proxy the request.
-This is done inside [`gitlab-shell`](https://gitlab.com/gitlab-org/gitlab-shell), by first translating the request 
-to the HTTP protocol, and then proxying it to the **primary** node.
+  This is done inside [`gitlab-shell`](https://gitlab.com/gitlab-org/gitlab-shell), by first translating the request
+  to the HTTP protocol, and then proxying it to the **primary** node.
 
-The [`gitlab-shell`](https://gitlab.com/gitlab-org/gitlab-shell) daemon knows when to proxy based on the response 
-from `/api/v4/allowed`. A special `HTTP 300` status code is returned and we execute a "custom action", 
-specified in the response body. The response contains additional data that allows the proxied `push` operation 
+The [`gitlab-shell`](https://gitlab.com/gitlab-org/gitlab-shell) daemon knows when to proxy based on the response
+from `/api/v4/allowed`. A special `HTTP 300` status code is returned and we execute a "custom action",
+specified in the response body. The response contains additional data that allows the proxied `push` operation
 to happen on the **primary** node.
 
 ## Using the Tracking Database
@@ -229,17 +229,17 @@ named `gitlab_secondary`. This configuration exists within the database's user
 context only. To access the `gitlab_secondary`, GitLab needs to use the
 same database user that had previously been configured.
 
-The Geo Tracking Database accesses the readonly database replica via FDW as a regular user, 
-limited by its own restrictions. The credentials are configured as a 
-`USER MAPPING` associated with the `SERVER` mapped previously 
+The Geo Tracking Database accesses the readonly database replica via FDW as a regular user,
+limited by its own restrictions. The credentials are configured as a
+`USER MAPPING` associated with the `SERVER` mapped previously
 (`gitlab_secondary`).
 
 FDW configuration and credentials definition are managed automatically by the
-Omnibus GitLab `gitlab-ctl reconfigure` command. 
+Omnibus GitLab `gitlab-ctl reconfigure` command.
 
 #### Refeshing the Foreign Tables
 
-Whenever a new Geo node is configured or the database schema changes on the 
+Whenever a new Geo node is configured or the database schema changes on the
 **primary** node, you must refresh the foreign tables on the **secondary** node
 by running the following:
 
@@ -279,11 +279,11 @@ on the Tracking Database:
 SELECT project_registry.*
   FROM project_registry
   JOIN gitlab_secondary.projects
-    ON (project_registry.project_id = gitlab_secondary.projects.id 
+    ON (project_registry.project_id = gitlab_secondary.projects.id
    AND gitlab_secondary.projects.archived IS FALSE)
 ```
 
-At the ActiveRecord level, we have additional Models that represent the 
+At the ActiveRecord level, we have additional Models that represent the
 foreign tables. They must be mapped in a slightly different way, and they are read-only.
 
 Check the existing FDW models in `ee/app/models/geo/fdw` for reference.

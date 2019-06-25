@@ -489,6 +489,7 @@ it's provided as an environment variable. This is because GitLab Runnner uses **
 runtime.
 
 ### Using statically-defined credentials
+
 As an example, let's assume that you want to use the `registry.example.com:5000/private/image:latest`
 image which is private and requires you to login into a private container registry.
 
@@ -566,7 +567,6 @@ for the Runner to match the `DOCKER_AUTH_CONFIG`. For example, if
 then the `DOCKER_AUTH_CONFIG` must also specify `registry.example.com:5000`.
 Specifying only `registry.example.com` will not work.
 
-
 ### Using Credentials Store
 
 > Support for using Credentials Store was added in GitLab Runner 9.5.
@@ -574,7 +574,7 @@ Specifying only `registry.example.com` will not work.
 To configure credentials store, follow these steps:
 
 1. To use a credentials store, you need an external helper program to interact with a specific keychain or external store.
-Make sure helper program is available in GitLab Runner `$PATH`.
+   Make sure helper program is available in GitLab Runner `$PATH`.
 
 1. Make GitLab Runner use it. There are two ways to accomplish this. Either:
    - Create a
