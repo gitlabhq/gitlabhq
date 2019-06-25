@@ -234,6 +234,7 @@ module Gitlab
     def self.connection
       ActiveRecord::Base.connection
     end
+    private_class_method :connection
 
     def self.cached_column_exists?(table_name, column_name)
       connection.schema_cache.columns_hash(table_name).has_key?(column_name.to_s)
@@ -242,8 +243,6 @@ module Gitlab
     def self.cached_table_exists?(table_name)
       connection.schema_cache.data_source_exists?(table_name)
     end
-
-    private_class_method :connection
 
     def self.database_version
       row = connection.execute("SELECT VERSION()").first
@@ -272,5 +271,20 @@ module Gitlab
         end
       end
     end
+
+    # inside_transaction? will return true if the caller is running within a transaction. Handles special cases
+    # when running inside a test environment, in which the entire test is running with a DatabaseCleaner transaction
+    def self.inside_transaction?
+      ActiveRecord::Base.connection.open_transactions > open_transactions_baseline
+    end
+
+    def self.open_transactions_baseline
+      if ::Rails.env.test?
+        return DatabaseCleaner.connections.count { |conn| conn.strategy.is_a?(DatabaseCleaner::ActiveRecord::Transaction) }
+      end
+
+      0
+    end
+    private_class_method :open_transactions_baseline
   end
 end

@@ -15,7 +15,7 @@ module AfterCommitQueue
   end
 
   def run_after_commit_or_now(&block)
-    if AfterCommitQueue.inside_transaction?
+    if Gitlab::Database.inside_transaction?
       if ActiveRecord::Base.connection.current_transaction.records.include?(self)
         run_after_commit(&block)
       else
@@ -30,18 +30,6 @@ module AfterCommitQueue
     end
 
     true
-  end
-
-  def self.open_transactions_baseline
-    if ::Rails.env.test?
-      return DatabaseCleaner.connections.count { |conn| conn.strategy.is_a?(DatabaseCleaner::ActiveRecord::Transaction) }
-    end
-
-    0
-  end
-
-  def self.inside_transaction?
-    ActiveRecord::Base.connection.open_transactions > open_transactions_baseline
   end
 
   protected
