@@ -1,0 +1,5 @@
+---
+title: Enforce presence of pipeline when "Pipeline must succeed" project setting is enabled
+merge_request: 29926
+author:
+type: fixed
