@@ -1,4 +1,6 @@
 <script>
+import { __ } from '~/locale';
+
 export default {
   props: {
     documentationPath: {
@@ -41,35 +43,35 @@ export default {
       states: {
         gettingStarted: {
           svgUrl: this.emptyGettingStartedSvgPath,
-          title: 'Get started with performance monitoring',
-          description: `Stay updated about the performance and health
-              of your environment by configuring Prometheus to monitor your deployments.`,
-          buttonText: 'Install on clusters',
+          title: __('Get started with performance monitoring'),
+          description: __(`Stay updated about the performance and health
+              of your environment by configuring Prometheus to monitor your deployments.`),
+          buttonText: __('Install on clusters'),
           buttonPath: this.clustersPath,
-          secondaryButtonText: 'Configure existing installation',
+          secondaryButtonText: __('Configure existing installation'),
           secondaryButtonPath: this.settingsPath,
         },
         loading: {
           svgUrl: this.emptyLoadingSvgPath,
-          title: 'Waiting for performance data',
-          description: `Creating graphs uses the data from the Prometheus server.
-              If this takes a long time, ensure that data is available.`,
-          buttonText: 'View documentation',
+          title: __('Waiting for performance data'),
+          description: __(`Creating graphs uses the data from the Prometheus server.
+              If this takes a long time, ensure that data is available.`),
+          buttonText: __('View documentation'),
           buttonPath: this.documentationPath,
         },
         noData: {
           svgUrl: this.emptyNoDataSvgPath,
-          title: 'No data found',
-          description: `You are connected to the Prometheus server, but there is currently
-              no data to display.`,
-          buttonText: 'Configure Prometheus',
+          title: __('No data found'),
+          description: __(`You are connected to the Prometheus server, but there is currently
+              no data to display.`),
+          buttonText: __('Configure Prometheus'),
           buttonPath: this.settingsPath,
         },
         unableToConnect: {
           svgUrl: this.emptyUnableToConnectSvgPath,
-          title: 'Unable to connect to Prometheus server',
+          title: __('Unable to connect to Prometheus server'),
           description: 'Ensure connectivity is available from the GitLab server to the ',
-          buttonText: 'View documentation',
+          buttonText: __('View documentation'),
           buttonPath: this.documentationPath,
         },
       },
@@ -90,7 +92,9 @@ export default {
 <template>
   <div class="row empty-state js-empty-state">
     <div class="col-12">
-      <div class="state-svg svg-content"><img :src="currentState.svgUrl" /></div>
+      <div class="state-svg svg-content">
+        <img :src="currentState.svgUrl" />
+      </div>
     </div>
 
     <div class="col-12">
@@ -98,20 +102,22 @@ export default {
         <h4 class="state-title text-center">{{ currentState.title }}</h4>
         <p class="state-description">
           {{ currentState.description }}
-          <a v-if="showButtonDescription" :href="settingsPath"> Prometheus server </a>
+          <a v-if="showButtonDescription" :href="settingsPath">{{ __('Prometheus server') }}</a>
         </p>
 
         <div class="text-center">
-          <a v-if="currentState.buttonPath" :href="currentState.buttonPath" class="btn btn-success">
-            {{ currentState.buttonText }}
-          </a>
+          <a
+            v-if="currentState.buttonPath"
+            :href="currentState.buttonPath"
+            class="btn btn-success"
+            >{{ currentState.buttonText }}</a
+          >
           <a
             v-if="currentState.secondaryButtonPath"
             :href="currentState.secondaryButtonPath"
             class="btn"
+            >{{ currentState.secondaryButtonText }}</a
           >
-            {{ currentState.secondaryButtonText }}
-          </a>
         </div>
       </div>
     </div>

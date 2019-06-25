@@ -1,4 +1,5 @@
 <script>
+import { __ } from '~/locale';
 import { GlAreaChart, GlChartSeriesLabel } from '@gitlab/ui/dist/charts';
 import dateFormat from 'dateformat';
 import { debounceByAnimationFrame, roundOffFloat } from '~/lib/utils/common_utils';
@@ -99,7 +100,7 @@ export default {
     chartOptions() {
       return {
         xAxis: {
-          name: 'Time',
+          name: __('Time'),
           type: 'time',
           axisLabel: {
             formatter: date => dateFormat(date, 'h:MM TT'),

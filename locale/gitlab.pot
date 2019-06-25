@@ -2789,7 +2789,13 @@ msgstr ""
 msgid "Configure Let's Encrypt"
 msgstr ""
 
+msgid "Configure Prometheus"
+msgstr ""
+
 msgid "Configure automatic git checks and housekeeping on repositories."
+msgstr ""
+
+msgid "Configure existing installation"
 msgstr ""
 
 msgid "Configure limits for web and API requests."
@@ -3144,6 +3150,9 @@ msgid "Created on:"
 msgstr ""
 
 msgid "Creates branch '%{branch_name}' and a merge request to resolve this issue"
+msgstr ""
+
+msgid "Creating graphs uses the data from the Prometheus server. If this takes a long time, ensure that data is available."
 msgstr ""
 
 msgid "Cron Timezone"
@@ -4656,6 +4665,9 @@ msgstr ""
 msgid "Get started with error tracking"
 msgstr ""
 
+msgid "Get started with performance monitoring"
+msgstr ""
+
 msgid "Getting started with releases"
 msgstr ""
 
@@ -5331,6 +5343,9 @@ msgid "Install Runner on Kubernetes"
 msgstr ""
 
 msgid "Install a soft token authenticator like %{free_otp_link} or Google Authenticator from your application repository and scan this QR code. More information is available in the %{help_link_start}documentation%{help_link_end}."
+msgstr ""
+
+msgid "Install on clusters"
 msgstr ""
 
 msgid "Installed"
@@ -6582,6 +6597,9 @@ msgid "No contributions"
 msgstr ""
 
 msgid "No contributions were found"
+msgstr ""
+
+msgid "No data found"
 msgstr ""
 
 msgid "No details available"
@@ -8069,6 +8087,9 @@ msgid "ProjectsDropdown|Sorry, no projects matched your search"
 msgstr ""
 
 msgid "ProjectsDropdown|This feature requires browser localStorage support"
+msgstr ""
+
+msgid "Prometheus server"
 msgstr ""
 
 msgid "PrometheusService|%{exporters} with %{metrics} were found"
@@ -9592,6 +9613,9 @@ msgstr ""
 msgid "Status:"
 msgstr ""
 
+msgid "Stay updated about the performance and health of your environment by configuring Prometheus to monitor your deployments."
+msgstr ""
+
 msgid "Stop environment"
 msgstr ""
 
@@ -10503,6 +10527,9 @@ msgstr ""
 msgid "Thursday"
 msgstr ""
 
+msgid "Time"
+msgstr ""
+
 msgid "Time based: Yes"
 msgstr ""
 
@@ -10948,6 +10975,9 @@ msgstr ""
 msgid "U2F only works with HTTPS-enabled websites. Contact your administrator for more details."
 msgstr ""
 
+msgid "Unable to connect to Prometheus server"
+msgstr ""
+
 msgid "Unable to connect to server: %{error}"
 msgstr ""
 
@@ -11353,6 +11383,9 @@ msgstr ""
 msgid "View details: %{details_url}"
 msgstr ""
 
+msgid "View documentation"
+msgstr ""
+
 msgid "View file @ "
 msgstr ""
 
@@ -11426,6 +11459,9 @@ msgid "VisibilityLevel|Unknown"
 msgstr ""
 
 msgid "Wait for the source to load to copy it to the clipboard"
+msgstr ""
+
+msgid "Waiting for performance data"
 msgstr ""
 
 msgid "Want to see the data? Please ask an administrator for access."
@@ -11683,6 +11719,9 @@ msgid "You are attempting to delete a file that has been previously updated."
 msgstr ""
 
 msgid "You are attempting to update a file that has changed since you started editing it."
+msgstr ""
+
+msgid "You are connected to the Prometheus server, but there is currently no data to display."
 msgstr ""
 
 msgid "You are going to remove %{group_name}, this will also remove all of its subgroups and projects. Removed groups CANNOT be restored! Are you ABSOLUTELY sure?"
