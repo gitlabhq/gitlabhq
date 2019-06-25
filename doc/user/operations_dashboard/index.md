@@ -1,9 +1,6 @@
 # Operations Dashboard **[PREMIUM]**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/5781)
-in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.5.
-[Moved](https://gitlab.com/gitlab-org/gitlab-ee/issues/9218) to
-[GitLab Premium](https://about.gitlab.com/pricing/) in 11.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/5781) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.5. [Moved](https://gitlab.com/gitlab-org/gitlab-ee/issues/9218) to [GitLab Premium](https://about.gitlab.com/pricing/) in 11.10.
 
 The Operations Dashboard provides a summary of each project's operational health,
 including pipeline and alert status.
@@ -16,9 +13,9 @@ dashboard icon:
 ## Adding a project to the dashboard
 
 NOTE: **Note:**
-For GitLab.com, the Operations Dashboard is available for free for public projects.
-If your project is private, the group it belongs to must have a
-[Gold](https://about.gitlab.com/pricing/) plan.
+For GitLab.com, you can add your project to the Operations Dashboard for free if
+your project is public. If your project is private, the group it belongs to must
+have a [Silver](https://about.gitlab.com/pricing/) plan.
 
 To add a project to the dashboard:
 
