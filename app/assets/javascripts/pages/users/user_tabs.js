@@ -18,12 +18,12 @@ import UserOverviewBlock from './user_overview_block';
  *
  * <ul class="nav-links">
  *   <li class="activity-tab active">
- *     <a data-action="activity" data-target="#activity" data-toggle="tab" href="/u/username">
+ *     <a data-action="activity" data-target="#activity" data-toggle="tab" href="/username">
  *       Activity
  *     </a>
  *   </li>
  *   <li class="groups-tab">
- *     <a data-action="groups" data-target="#groups" data-toggle="tab" href="/u/username/groups">
+ *     <a data-action="groups" data-target="#groups" data-toggle="tab" href="/users/username/groups">
  *       Groups
  *     </a>
  *   </li>

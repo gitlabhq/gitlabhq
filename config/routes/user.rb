@@ -48,15 +48,6 @@ scope(constraints: { username: Gitlab::PathRegex.root_namespace_route_regex }) d
     get :activity
     get '/', to: redirect('%{username}'), as: nil
   end
-
-  # Compatibility with old routing
-  # TODO (dzaporozhets): remove in 10.0
-  get '/u/:username', to: redirect('%{username}')
-  # TODO (dzaporozhets): remove in 9.0
-  get '/u/:username/groups', to: redirect('users/%{username}/groups')
-  get '/u/:username/projects', to: redirect('users/%{username}/projects')
-  get '/u/:username/snippets', to: redirect('users/%{username}/snippets')
-  get '/u/:username/contributed', to: redirect('users/%{username}/contributed')
 end
 
 constraints(::Constraints::UserUrlConstrainer.new) do
