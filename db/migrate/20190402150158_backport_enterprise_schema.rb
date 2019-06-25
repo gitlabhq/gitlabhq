@@ -117,6 +117,8 @@ class BackportEnterpriseSchema < ActiveRecord::Migration[5.0]
   end
 
   def up
+    check_schema!
+
     create_missing_tables
 
     update_appearances
@@ -866,6 +868,52 @@ class BackportEnterpriseSchema < ActiveRecord::Migration[5.0]
 
   def revert_geo_nodes
     remove_column_if_exists(:geo_nodes, :internal_url)
+  end
+
+  # Some users may have upgraded to EE at some point but downgraded to
+  # CE v11.11.3.  As a result, their EE tables may not be in the right
+  # state. Here we check for these such cases and attempt to guide the
+  # user into recovering from this state by upgrading to v11.11.3 EE
+  # before installing v12.0.0 CE.
+  def check_schema!
+    # The following cases will fail later when this migration attempts
+    # to add a foreign key for non-existent columns.
+    columns_to_check = [
+      [:epics, :parent_id], # Added in GitLab 11.7
+      [:geo_event_log, :cache_invalidation_event_id], # Added in GitLab 11.4
+      [:vulnerability_feedback, :merge_request_id] # Added in GitLab 11.9
+    ].freeze
+
+    columns_to_check.each do |table, column|
+      check_ee_columns!(table, column)
+    end
+  end
+
+  def check_ee_columns!(table, column)
+    return unless table_exists?(table)
+    return if column_exists?(table, column)
+
+    raise_ee_migration_error!(table, column)
+  end
+
+  def raise_ee_migration_error!(table, column)
+    message = "Your database is missing the '#{column}' column from the '#{table}' table that is present for GitLab EE."
+
+    message +=
+      if ::Gitlab.ee?
+        "\nUpgrade your GitLab instance to 11.11.3 EE first!"
+      else
+        <<~MSG
+
+          Even though it looks like you're running a CE installation, it appears
+          you may have installed GitLab EE at some point. To migrate to GitLab 12.0:
+
+          1. Install GitLab 11.11.3 EE
+          2. Install GitLab 12.0.x CE
+        MSG
+      end
+
+    raise Exception.new(message)
   end
 
   def create_missing_tables
