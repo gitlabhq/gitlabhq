@@ -12,15 +12,18 @@ describe PagesDomainSslRenewalCronWorker do
   end
 
   describe '#perform' do
-    let!(:domain) { create(:pages_domain) }
-    let!(:domain_with_enabled_auto_ssl) { create(:pages_domain, auto_ssl_enabled: true) }
-    let!(:domain_with_obtained_letsencrypt) { create(:pages_domain, :letsencrypt, auto_ssl_enabled: true) }
+    let(:project) { create :project }
+    let!(:domain) { create(:pages_domain, project: project) }
+    let!(:domain_with_enabled_auto_ssl) { create(:pages_domain, project: project, auto_ssl_enabled: true) }
+    let!(:domain_with_obtained_letsencrypt) do
+      create(:pages_domain, :letsencrypt, project: project, auto_ssl_enabled: true)
+    end
     let!(:domain_without_auto_certificate) do
-      create(:pages_domain, :without_certificate, :without_key, auto_ssl_enabled: true)
+      create(:pages_domain, :without_certificate, :without_key, project: project, auto_ssl_enabled: true)
     end
 
     let!(:domain_with_expired_auto_ssl) do
-      create(:pages_domain, :letsencrypt, :with_expired_certificate)
+      create(:pages_domain, :letsencrypt, :with_expired_certificate, project: project)
     end
 
     it 'enqueues a PagesDomainSslRenewalWorker for domains needing renewal' do

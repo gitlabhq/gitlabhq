@@ -116,42 +116,6 @@ describe ::Gitlab::LetsEncrypt::Client do
     end
   end
 
-  describe '#enabled?' do
-    subject { client.enabled? }
-
-    context 'when terms of service are accepted' do
-      it { is_expected.to eq(true) }
-
-      context "when private_key isn't present and database is read only" do
-        before do
-          allow(::Gitlab::Database).to receive(:read_only?).and_return(true)
-        end
-
-        it 'returns false' do
-          expect(::Gitlab::CurrentSettings.lets_encrypt_private_key).to eq(nil)
-
-          is_expected.to eq(false)
-        end
-      end
-
-      context 'when feature flag is disabled' do
-        before do
-          stub_feature_flags(pages_auto_ssl: false)
-        end
-
-        it { is_expected.to eq(false) }
-      end
-    end
-
-    context 'when terms of service are not accepted' do
-      before do
-        stub_application_setting(lets_encrypt_terms_of_service_accepted: false)
-      end
-
-      it { is_expected.to eq(false) }
-    end
-  end
-
   describe '#terms_of_service_url' do
     subject { client.terms_of_service_url }
 

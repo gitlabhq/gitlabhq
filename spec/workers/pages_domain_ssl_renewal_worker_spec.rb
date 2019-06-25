@@ -7,7 +7,8 @@ describe PagesDomainSslRenewalWorker do
 
   subject(:worker) { described_class.new }
 
-  let(:domain) { create(:pages_domain) }
+  let(:project) { create(:project) }
+  let(:domain) { create(:pages_domain, project: project) }
 
   before do
     stub_lets_encrypt_settings
@@ -22,14 +23,24 @@ describe PagesDomainSslRenewalWorker do
       worker.perform(domain.id)
     end
 
+    shared_examples 'does nothing' do
+      it 'does nothing' do
+        expect(::PagesDomains::ObtainLetsEncryptCertificateService).not_to receive(:new)
+      end
+    end
+
     context 'when domain was deleted' do
       before do
         domain.destroy!
       end
 
-      it 'does nothing' do
-        expect(::PagesDomains::ObtainLetsEncryptCertificateService).not_to receive(:new)
-      end
+      include_examples 'does nothing'
+    end
+
+    context 'when domain is disabled' do
+      let(:domain) { create(:pages_domain, :disabled) }
+
+      include_examples 'does nothing'
     end
   end
 end
