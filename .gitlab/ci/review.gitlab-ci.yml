@@ -77,6 +77,7 @@ schedule:review-build-cng:
 .review-deploy-base: &review-deploy-base
   <<: *review-base
   allow_failure: true
+  retry: 2
   stage: review
   variables:
     HOST_SUFFIX: "${CI_ENVIRONMENT_SLUG}"
@@ -95,10 +96,16 @@ schedule:review-build-cng:
     - install_api_client_dependencies_with_apk
     - source scripts/review_apps/review-apps.sh
   script:
-    - perform_review_app_deployment
+    - check_kube_domain
+    - ensure_namespace
+    - install_tiller
+    - install_external_dns
+    - download_chart
+    - deploy || display_deployment_debug
+    - wait_for_review_app_to_be_accessible
+    - add_license
   artifacts:
-    paths:
-      - review_app_url.txt
+    paths: [review_app_url.txt]
     expire_in: 2 days
     when: always
 
@@ -108,8 +115,6 @@ review-deploy:
 schedule:review-deploy:
   <<: *review-deploy-base
   <<: *review-schedules-only
-  script:
-    - perform_review_app_deployment
 
 review-stop:
   <<: *review-base
@@ -124,11 +129,11 @@ review-stop:
   script:
     - source scripts/review_apps/review-apps.sh
     - delete
-    - cleanup
 
 .review-qa-base: &review-qa-base
   <<: *review-docker
   allow_failure: true
+  retry: 2
   stage: qa
   variables:
     <<: *review-docker-variables

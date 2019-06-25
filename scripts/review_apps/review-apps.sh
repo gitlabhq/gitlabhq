@@ -1,7 +1,7 @@
 [[ "$TRACE" ]] && set -x
 export TILLER_NAMESPACE="$KUBE_NAMESPACE"
 
-function deployExists() {
+function deploy_exists() {
   local namespace="${1}"
   local deploy="${2}"
   echoinfo "Checking if ${deploy} exists in the ${namespace} namespace..." true
@@ -13,8 +13,7 @@ function deployExists() {
   return $deploy_exists
 }
 
-function previousDeployFailed() {
-  set +e
+function previous_deploy_failed() {
   local deploy="${1}"
   echoinfo "Checking for previous deployment of ${deploy}" true
 
@@ -34,7 +33,6 @@ function previousDeployFailed() {
   else
     echoerr "Previous deployment NOT found."
   fi
-  set -e
   return $status
 }
 
@@ -51,47 +49,33 @@ function delete() {
   helm delete --purge "$name"
 }
 
-function cleanup() {
-  if [ -z "$CI_ENVIRONMENT_SLUG" ]; then
-    echoerr "No release given, aborting the delete!"
-    return
-  fi
-
-  echoinfo "Cleaning up '$CI_ENVIRONMENT_SLUG'..." true
-
-  kubectl -n "$KUBE_NAMESPACE" delete \
-    ingress,svc,pdb,hpa,deploy,statefulset,job,pod,secret,configmap,pvc,secret,clusterrole,clusterrolebinding,role,rolebinding,sa \
-    --now --ignore-not-found --include-uninitialized \
-    -l release="$CI_ENVIRONMENT_SLUG"
-}
-
 function get_pod() {
   local app_name="${1}"
   local status="${2-Running}"
   get_pod_cmd="kubectl get pods -n ${KUBE_NAMESPACE} --field-selector=status.phase=${status} -lapp=${app_name},release=${CI_ENVIRONMENT_SLUG} --no-headers -o=custom-columns=NAME:.metadata.name"
-  echoinfo "Running '${get_pod_cmd}'" true
+  echoinfo "Waiting till '${app_name}' pod is ready" true
+  echoinfo "Running '${get_pod_cmd}'"
 
+  local interval=5
+  local elapsed_seconds=0
+  local max_seconds=$((2 * 60))
   while true; do
     local pod_name
     pod_name="$(eval "${get_pod_cmd}")"
     [[ "${pod_name}" == "" ]] || break
 
-    echoinfo "Waiting till '${app_name}' pod is ready";
-    sleep 5;
+    if [[ "${elapsed_seconds}" -gt "${max_seconds}" ]]; then
+      echoerr "The pod name couldn't be found after ${elapsed_seconds} seconds, aborting."
+      break
+    fi
+
+    printf "."
+    let "elapsed_seconds+=interval"
+    sleep ${interval}
   done
 
   echoinfo "The pod name is '${pod_name}'."
   echo "${pod_name}"
-}
-
-function perform_review_app_deployment() {
-  check_kube_domain
-  ensure_namespace
-  install_tiller
-  install_external_dns
-  time deploy
-  wait_for_review_app_to_be_accessible
-  add_license
 }
 
 function check_kube_domain() {
@@ -119,9 +103,16 @@ function install_tiller() {
   echoinfo "Initiating the Helm client..."
   helm init --client-only
 
+  # Set toleration for Tiller to be installed on a specific node pool
   helm init \
+    --wait \
     --upgrade \
-    --replicas 2
+    --node-selectors "app=helm" \
+    --replicas 3 \
+    --override "spec.template.spec.tolerations[0].key"="dedicated" \
+    --override "spec.template.spec.tolerations[0].operator"="Equal" \
+    --override "spec.template.spec.tolerations[0].value"="helm" \
+    --override "spec.template.spec.tolerations[0].effect"="NoSchedule"
 
   kubectl rollout status -n "$TILLER_NAMESPACE" -w "deployment/tiller-deploy"
 
@@ -137,7 +128,7 @@ function install_external_dns() {
   domain=$(echo "${REVIEW_APPS_DOMAIN}" | awk -F. '{printf "%s.%s", $(NF-1), $NF}')
   echoinfo "Installing external DNS for domain ${domain}..." true
 
-  if ! deployExists "${KUBE_NAMESPACE}" "${release_name}" || previousDeployFailed "${release_name}" ; then
+  if ! deploy_exists "${KUBE_NAMESPACE}" "${release_name}" || previous_deploy_failed "${release_name}" ; then
     echoinfo "Installing external-dns Helm chart"
     helm repo update
     helm install stable/external-dns \
@@ -156,7 +147,7 @@ function install_external_dns() {
   fi
 }
 
-function create_secret() {
+function create_application_secret() {
   echoinfo "Creating the ${CI_ENVIRONMENT_SLUG}-gitlab-initial-root-password secret in the ${KUBE_NAMESPACE} namespace..." true
 
   kubectl create secret generic -n "$KUBE_NAMESPACE" \
@@ -165,7 +156,7 @@ function create_secret() {
     --dry-run -o json | kubectl apply -f -
 }
 
-function download_gitlab_chart() {
+function download_chart() {
   echoinfo "Downloading the GitLab chart..." true
 
   curl -o gitlab.tar.bz2 "https://gitlab.com/charts/gitlab/-/archive/${GITLAB_HELM_CHART_REF}/gitlab-${GITLAB_HELM_CHART_REF}.tar.bz2"
@@ -194,14 +185,12 @@ function deploy() {
   gitlab_workhorse_image_repository="${IMAGE_REPOSITORY}/gitlab-workhorse-${IMAGE_VERSION}"
 
   # Cleanup and previous installs, as FAILED and PENDING_UPGRADE will cause errors with `upgrade`
-  if [ "$CI_ENVIRONMENT_SLUG" != "production" ] && previousDeployFailed "$CI_ENVIRONMENT_SLUG" ; then
+  if [ "$CI_ENVIRONMENT_SLUG" != "production" ] && previous_deploy_failed "$CI_ENVIRONMENT_SLUG" ; then
     echo "Deployment in bad state, cleaning up $CI_ENVIRONMENT_SLUG"
     delete
-    cleanup
   fi
 
-  create_secret
-  download_gitlab_chart
+  create_application_secret
 
 HELM_CMD=$(cat << EOF
   helm upgrade --install \
@@ -216,7 +205,7 @@ HELM_CMD=$(cat << EOF
     --set prometheus.install=false \
     --set global.ingress.configureCertmanager=false \
     --set global.ingress.tls.secretName=tls-cert \
-    --set global.ingress.annotations."external-dns\.alpha\.kubernetes\.io/ttl"="10"
+    --set global.ingress.annotations."external-dns\.alpha\.kubernetes\.io/ttl"="10" \
     --set nginx-ingress.controller.service.enableHttp=false \
     --set nginx-ingress.defaultBackend.resources.requests.memory=7Mi \
     --set nginx-ingress.controller.resources.requests.memory=440M \
@@ -252,14 +241,35 @@ EOF
   echoinfo "Deploying with:"
   echoinfo "${HELM_CMD}"
 
-  eval $HELM_CMD || true
+  eval "${HELM_CMD}"
+}
+
+function display_deployment_debug() {
+  migrations_pod=$(get_pod "migrations");
+  if [ -z "${migrations_pod}" ]; then
+    echoerr "Migrations pod not found."
+  else
+    echoinfo "Logs tail of the ${migrations_pod} pod..."
+
+    kubectl logs -n "$KUBE_NAMESPACE" "${migrations_pod}" | sed "s/${REVIEW_APPS_ROOT_PASSWORD}/[REDACTED]/g"
+  fi
+
+  unicorn_pod=$(get_pod "unicorn");
+  if [ -z "${unicorn_pod}" ]; then
+    echoerr "Unicorn pod not found."
+  else
+    echoinfo "Logs tail of the ${unicorn_pod} pod..."
+
+    kubectl logs -n "$KUBE_NAMESPACE" -c unicorn "${unicorn_pod}" | sed "s/${REVIEW_APPS_ROOT_PASSWORD}/[REDACTED]/g"
+  fi
 }
 
 function wait_for_review_app_to_be_accessible() {
-  # In case the Review App isn't completely available yet. Keep trying for 5 minutes.
+  echoinfo "Waiting for the Review App at ${CI_ENVIRONMENT_URL} to be accessible..." true
+
   local interval=5
   local elapsed_seconds=0
-  local max_seconds=$((5 * 60))
+  local max_seconds=$((2 * 60))
   while true; do
     local review_app_http_code
     review_app_http_code=$(curl --silent --output /dev/null --max-time 5 --write-out "%{http_code}" "${CI_ENVIRONMENT_URL}/users/sign_in")
@@ -272,10 +282,10 @@ function wait_for_review_app_to_be_accessible() {
     sleep ${interval}
   done
 
-  if [[ "${review_app_http_code}" == "200" ]]; then
-    echoinfo "The Review App at ${CI_ENVIRONMENT_URL} is ready!"
+  if [[ "${review_app_http_code}" -eq "200" ]]; then
+    echoinfo "The Review App at ${CI_ENVIRONMENT_URL} is ready after ${elapsed_seconds} seconds!"
   else
-    echoerr "The Review App at ${CI_ENVIRONMENT_URL} isn't ready after 5 minutes of polling..."
+    echoerr "The Review App at ${CI_ENVIRONMENT_URL} isn't ready after ${max_seconds} seconds of polling..."
     exit 1
   fi
 }
