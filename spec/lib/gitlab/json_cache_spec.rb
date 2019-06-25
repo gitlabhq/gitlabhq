@@ -129,16 +129,49 @@ describe Gitlab::JsonCache do
         .with(expanded_key)
         .and_return(nil)
 
+      expect(ActiveSupport::JSON).not_to receive(:decode)
       expect(cache.read(key)).to be_nil
     end
 
-    context 'when the cached value is a boolean' do
+    context 'when the cached value is true' do
       it 'parses the cached value' do
         allow(backend).to receive(:read)
           .with(expanded_key)
           .and_return(true)
 
+        expect(ActiveSupport::JSON).to receive(:decode).with("true").and_call_original
         expect(cache.read(key, BroadcastMessage)).to eq(true)
+      end
+    end
+
+    context 'when the cached value is false' do
+      it 'parses the cached value' do
+        allow(backend).to receive(:read)
+          .with(expanded_key)
+          .and_return(false)
+
+        expect(ActiveSupport::JSON).to receive(:decode).with("false").and_call_original
+        expect(cache.read(key, BroadcastMessage)).to eq(false)
+      end
+    end
+
+    context 'when the cached value is a JSON true value' do
+      it 'parses the cached value' do
+        allow(backend).to receive(:read)
+          .with(expanded_key)
+          .and_return("true")
+
+        expect(cache.read(key, BroadcastMessage)).to eq(true)
+      end
+    end
+
+    context 'when the cached value is a JSON false value' do
+      it 'parses the cached value' do
+        allow(backend).to receive(:read)
+          .with(expanded_key)
+          .and_return("false")
+
+        expect(cache.read(key, BroadcastMessage)).to eq(false)
       end
     end
 
