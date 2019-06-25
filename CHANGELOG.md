@@ -2,6 +2,23 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 12.0.2 (2019-06-25)
+
+### Fixed (7 changes, 1 of them is from the community)
+
+- Fix missing API notification flags for Microsoft Teams. !29824 (Seiji Suenaga)
+- Fixed 'diff version changes' link not working. !29825
+- Fix label serialization in issue and note hooks. !29850
+- Include the GitLab version in the cache key for Gitlab::JsonCache. !29938
+- Prevent EE backport migrations from running if CE is not migrated. !30002
+- Silence backup warnings when CRON=1 in use. !30033
+- Fix comment emails not respecting group-level notification email.
+
+### Performance (1 change)
+
+- Omit issues links in merge request entity API response. !29917
+
+
 ## 12.0.1 (2019-06-24)
 
 - No changes.

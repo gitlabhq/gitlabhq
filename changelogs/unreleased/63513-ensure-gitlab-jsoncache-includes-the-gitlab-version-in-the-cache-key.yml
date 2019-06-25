@@ -1,5 +1,0 @@
----
-title: Include the GitLab version in the cache key for Gitlab::JsonCache
-merge_request: 29938
-author:
-type: fixed
