@@ -72,6 +72,7 @@ gitlab:assets:compile pull-cache:
   except:
     - master@gitlab-org/gitlab-ce
     - master@gitlab-org/gitlab-ee
+    - /(^docs[\/-].*|.*-docs$)/
 
 .compile-assets-metadata:
   extends: .dedicated-runner
