@@ -21,9 +21,9 @@ page.
 ## Use cases
 
 - Analyze your team's contributions over a period of time, and offer a bonus for the top
-contributors.
+  contributors.
 - Identify opportunities for improvement with group members who may benefit from additional
-support.
+  support.
 
 ## Using Contribution Analytics
 

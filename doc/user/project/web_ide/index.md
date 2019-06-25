@@ -171,13 +171,13 @@ syntax but with some restrictions:
 - No global blocks can be defined (ie: `before_script` or `after_script`)
 - Only one job named `terminal` can be added to this file.
 - Only the keywords `image`, `services`, `tags`, `before_script`, `script`, and
-`variables` are allowed to be used to configure the job.
+  `variables` are allowed to be used to configure the job.
 - To connect to the interactive terminal, the `terminal` job must be still alive
-and running, otherwise the terminal won't be able to connect to the job's session.
-By default the `script` keyword has the value `sleep 60` to prevent
-the job from ending and giving the Web IDE enough time to connect. This means
-that, if you override the default `script` value, you'll have to add a command
-which would keep the job running, like `sleep`.
+  and running, otherwise the terminal won't be able to connect to the job's session.
+  By default the `script` keyword has the value `sleep 60` to prevent
+  the job from ending and giving the Web IDE enough time to connect. This means
+  that, if you override the default `script` value, you'll have to add a command
+  which would keep the job running, like `sleep`.
 
 In the code below there is an example of this configuration file:
 

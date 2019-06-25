@@ -76,10 +76,10 @@ After a given documentation path is aligned across CE and EE, all merge requests
 affecting that path must be submitted to CE, regardless of the content it has.
 This means that:
 
-* For **EE-only docs changes**, you only have to submit a CE MR.
-* For **EE-only features** that touch both the code and the docs, you have to submit
-an EE MR containing all changes, and a CE MR containing only the docs changes
-and without a changelog entry.
+- For **EE-only docs changes**, you only have to submit a CE MR.
+- For **EE-only features** that touch both the code and the docs, you have to submit
+  an EE MR containing all changes, and a CE MR containing only the docs changes
+  and without a changelog entry.
 
 This might seem like a duplicate effort, but it's only for the short term.
 A list of the already aligned docs can be found in

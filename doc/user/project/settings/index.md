@@ -26,10 +26,10 @@ Set up your project's access, [visibility](../../../public_access/public_access.
 
 ![projects sharing permissions](img/sharing_and_permissions_settings.png)
 
-If Issues are disabled, or you can't access Issues because you're not a project member, then Lables and Milestones 
+If Issues are disabled, or you can't access Issues because you're not a project member, then Lables and Milestones
 links will be missing from the sidebar UI.
 
-You can still access them with direct links if you can access Merge Requests. This is deliberate, if you can see 
+You can still access them with direct links if you can access Merge Requests. This is deliberate, if you can see
 Issues or Merge Requests, both of which use Labels and Milestones, then you shouldn't be denied access to Labels and Milestones pages.
 
 ### Issue settings
@@ -109,8 +109,8 @@ You can transfer an existing project into a [group](../../group/index.md) if:
 1. You have at least **Maintainer** [permissions] to that group.
 1. The project is in a subgroup you own.
 1. You are at least a **Maintainer** of the project under your personal namespace.
-Similarly, if you are an owner of a group, you can transfer any of its projects
-under your own user.
+   Similarly, if you are an owner of a group, you can transfer any of its projects
+   under your own user.
 
 To transfer a project:
 

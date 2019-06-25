@@ -909,11 +909,12 @@ import bundle from 'ee_else_ce/protected_branches/protected_branches_bundle.js';
 See the frontend guide [performance section](fe_guide/performance.md) for
 information on managing page-specific javascript within EE.
 
-
 ## Vue code in `assets/javascript`
+
 ### script tag
 
 #### Child Component only used in EE
+
 To separate Vue template differences we should [async import the components](https://vuejs.org/v2/guide/components-dynamic-async.html#Async-Components).
 
 Doing this allows for us to load the correct component in EE whilst in CE
@@ -937,10 +938,12 @@ export default {
 ```
 
 #### For JS code that is EE only, like props, computed properties, methods, etc, we will keep the current approach
- - Since we [can't async load a mixin](https://github.com/vuejs/vue-loader/issues/418#issuecomment-254032223) we will use the [`ee_else_ce`](../development/ee_features.md#javascript-code-in-assetsjavascripts) alias we already have for webpack.
+
+- Since we [can't async load a mixin](https://github.com/vuejs/vue-loader/issues/418#issuecomment-254032223) we will use the [`ee_else_ce`](../development/ee_features.md#javascript-code-in-assetsjavascripts) alias we already have for webpack.
   - This means all the EE specific props, computed properties, methods, etc that are EE only should be in a mixin in the `ee/` folder and we need to create a CE counterpart of the mixin
 
 ##### Example:
+
 ```javascript
 import mixin from 'ee_else_ce/path/mixin';
 
@@ -955,6 +958,7 @@ import mixin from 'ee_else_ce/path/mixin';
 - You can see an MR with an example [here](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/9762)
 
 #### `template` tag
+
 * **EE Child components**
   - Since we are using the async loading to check which component to load, we'd still use the component's name, check [this example](#child-component-only-used-in-ee).
 
@@ -962,11 +966,12 @@ import mixin from 'ee_else_ce/path/mixin';
   - For the templates that have extra HTML in EE we should move it into a new component and use the `ee_else_ce` dynamic import
 
 ### Non Vue Files
+
 For regular JS files, the approach is similar.
 
 1. We will keep using the [`ee_else_ce`](../development/ee_features.md#javascript-code-in-assetsjavascripts) helper, this means that EE only code should be inside the `ee/` folder.
-  1. An EE file should be created with the EE only code, and it should extend the CE counterpart.
-  1. For code inside functions that can't be extended, the code should be moved into a new file and we should use `ee_else_ce` helper:
+   1. An EE file should be created with the EE only code, and it should extend the CE counterpart.
+   1. For code inside functions that can't be extended, the code should be moved into a new file and we should use `ee_else_ce` helper:
 
 ##### Example:
 
@@ -996,6 +1001,7 @@ to isolate such ruleset from rest of CE rules (along with adding comment describ
 to avoid conflicts during CE to EE merge.
 
 #### Bad
+
 ```scss
 .section-body {
   .section-title {
@@ -1011,6 +1017,7 @@ to avoid conflicts during CE to EE merge.
 ```
 
 #### Good
+
 ```scss
 .section-body {
   .section-title {

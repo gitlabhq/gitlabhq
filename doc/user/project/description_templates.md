@@ -25,14 +25,14 @@ templates of the default branch will be taken into account.
 ## Use-cases
 
 - Add a template to be used in every issue for a specific project,
-giving instructions and guidelines, requiring for information specific to that subject.
-For example, if you have a project for tracking new blog posts, you can require the
-title, outlines, author name, author social media information, etc.
+  giving instructions and guidelines, requiring for information specific to that subject.
+  For example, if you have a project for tracking new blog posts, you can require the
+  title, outlines, author name, author social media information, etc.
 - Following the previous example, you can make a template for every MR submitted
-with a new blog post, requiring information about the post date, frontmatter data,
-images guidelines, link to the related issue, reviewer name, etc.
+  with a new blog post, requiring information about the post date, frontmatter data,
+  images guidelines, link to the related issue, reviewer name, etc.
 - You can also create issues and merge request templates for different
-stages of your workflow, e.g., feature proposal, feature improvement, bug report, etc.
+  stages of your workflow, e.g., feature proposal, feature improvement, bug report, etc.
 
 ## Creating issue templates
 

@@ -47,10 +47,10 @@ deploy:
 In the above configuration:
 
 - The `before_script` installs [SBT](http://www.scala-sbt.org/) and
-displays the version that is being used.
+  displays the version that is being used.
 - The `test` stage executes SBT to compile and test the project.
-   - [sbt-scoverage](https://github.com/scoverage/sbt-scoverage) is used as an SBT
-plugin to measure test coverage.
+  - [sbt-scoverage](https://github.com/scoverage/sbt-scoverage) is used as an SBT
+    plugin to measure test coverage.
 - The `deploy` stage automatically deploys the project to Heroku using dpl.
 
 You can use other versions of Scala and SBT by defining them in

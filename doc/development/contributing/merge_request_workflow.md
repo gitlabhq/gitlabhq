@@ -126,16 +126,16 @@ When writing commit messages, please follow the guidelines below:
 
 - The commit subject must contain at least 3 words.
 - The commit subject should ideally contain up to 50 characters,
-and must not be longer than 72 characters.
+  and must not be longer than 72 characters.
 - The commit subject must start with a capital letter.
 - The commit subject must not end with a period.
 - The commit subject and body must be separated by a blank line.
 - The commit body must not contain more than 72 characters per line.
 - Commits that change 30 or more lines across at least 3 files must
-describe these changes in the commit body.
+  describe these changes in the commit body.
 - The commit subject or body must not contain Emojis.
 - Use issues and merge requests' full URLs instead of short references,
-as they are displayed as plain text outside of GitLab.
+  as they are displayed as plain text outside of GitLab.
 - The merge request must not contain more than 10 commit messages.
 
 If the guidelines are not met, the MR will not pass the

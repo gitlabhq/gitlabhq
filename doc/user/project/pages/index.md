@@ -12,7 +12,6 @@ type: index, reference
 > - Support for subgroup project's websites was [introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/30548) in GitLab 11.8.
 > - Bundled project templates were [introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/47857) in GitLab 11.8.
 
-
 **GitLab Pages is a feature that allows you to publish static websites
 directly from a repository in GitLab.**
 
@@ -105,10 +104,10 @@ To get started with GitLab Pages, you can either:
     ![Project templates for Pages](img/pages_project_templates_11-8.png)
 
 1. From the left sidebar, navigate to your project's **CI/CD > Pipelines**
-and click **Run pipeline** to trigger GitLab CI/CD to build and deploy your
-site to the server.
+   and click **Run pipeline** to trigger GitLab CI/CD to build and deploy your
+   site to the server.
 1. Once the pipeline has finished successfully, find the link to visit your
-website from your project's **Settings > Pages**.
+   website from your project's **Settings > Pages**.
 
 Your website is then visible on your domain, and you can modify yourfiles
 as you wish. For every modification pushed to your repository, GitLab CI/CD

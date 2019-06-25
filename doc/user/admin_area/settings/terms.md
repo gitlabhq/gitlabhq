@@ -17,7 +17,7 @@ To enforce acceptance of a Terms of Service and Privacy Policy:
 1. Go to **Admin Area > Settings > General**.
 1. Expand the **Terms of Service and Privacy Policy** section.
 1. Check the **Require all users to accept Terms of Service and Privacy Policy when they access
-GitLab.** checkbox.
+   GitLab.** checkbox.
 1. Input the text of the **Terms of Service and Privacy Policy**. Markdown formatting can be used in this input box.
 1. Click **Save changes**.
 1. When you are presented with the **Terms of Service** statement, click **Accept terms**.

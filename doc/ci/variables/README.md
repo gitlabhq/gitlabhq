@@ -339,7 +339,7 @@ Group-level variables can be added by:
 
 1. Navigating to your group's **Settings > CI/CD** page.
 1. Inputing variable types, keys, and values in the **Variables** section.
-Any variables of [subgroups](../../user/group/subgroups/index.md) will be inherited recursively.
+   Any variables of [subgroups](../../user/group/subgroups/index.md) will be inherited recursively.
 
 Once you set them, they will be available for all subsequent pipelines.
 

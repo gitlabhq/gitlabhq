@@ -134,4 +134,4 @@ For more information, see [Crosslinking issues](crosslinking_issues.md).
 - [Export issues](csv_export.md) **[STARTER]**
 - [Issues API](../../../api/issues.md)
 - Configure an [external issue tracker](../../../integration/external-issue-tracker.md) such as Jira, Redmine,
-or Bugzilla.
+  or Bugzilla.

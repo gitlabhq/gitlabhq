@@ -25,22 +25,22 @@ and [Migrating from Jenkins to GitLab](https://www.youtube.com/watch?v=RlEVGOpYF
 ## Use cases
 
 - Suppose you are new to GitLab, and want to keep using Jenkins until you prepare
-your projects to build with [GitLab CI/CD](../ci/README.md). You set up the
-integration between GitLab and Jenkins, then you migrate to GitLab CI later. While
-you organize yourself and your team to onboard GitLab, you keep your pipelines
-running with Jenkins, but view the results in your project's repository in GitLab.
+  your projects to build with [GitLab CI/CD](../ci/README.md). You set up the
+  integration between GitLab and Jenkins, then you migrate to GitLab CI later. While
+  you organize yourself and your team to onboard GitLab, you keep your pipelines
+  running with Jenkins, but view the results in your project's repository in GitLab.
 - Your team uses [Jenkins Plugins](https://plugins.jenkins.io/) for other proceedings,
-therefore, you opt for keep using Jenkins to build your apps. Show the results of your
-pipelines directly in GitLab.
+  therefore, you opt for keep using Jenkins to build your apps. Show the results of your
+  pipelines directly in GitLab.
 
 For a real use case, read the blog post [Continuous integration: From Jenkins to GitLab using Docker](https://about.gitlab.com/2017/07/27/docker-my-precious/).
 
 ## Requirements
 
-* [Jenkins GitLab Plugin](https://wiki.jenkins.io/display/JENKINS/GitLab+Plugin)
-* [Jenkins Git Plugin](https://wiki.jenkins.io/display/JENKINS/Git+Plugin)
-* Git clone access for Jenkins from the GitLab repository
-* GitLab API access to report build status
+- [Jenkins GitLab Plugin](https://wiki.jenkins.io/display/JENKINS/GitLab+Plugin)
+- [Jenkins Git Plugin](https://wiki.jenkins.io/display/JENKINS/Git+Plugin)
+- Git clone access for Jenkins from the GitLab repository
+- GitLab API access to report build status
 
 ## Configure GitLab users
 
@@ -65,7 +65,7 @@ Go to Manage Jenkins -> Configure System and scroll down to the 'GitLab' section
 Enter the GitLab server URL in the 'GitLab host URL' field and paste the API token
 copied earlier in the 'API Token' field.
 
-For more information, see GitLab Plugin documentation about 
+For more information, see GitLab Plugin documentation about
 [Jenkins-to-GitLab authentication](https://github.com/jenkinsci/gitlab-plugin#jenkins-to-gitlab-authentication)
 
 ![Jenkins GitLab plugin configuration](img/jenkins_gitlab_plugin_config.png)
@@ -76,8 +76,8 @@ Follow the GitLab Plugin documentation about [Jenkins Job Configuration](https:/
 
 NOTE: **Note:**
 Be sure to include the steps about [Build status configuration](https://github.com/jenkinsci/gitlab-plugin#build-status-configuration).
-The 'Publish build status to GitLab' post-build step is required to view 
-Jenkins build status in GitLab Merge Requests. 
+The 'Publish build status to GitLab' post-build step is required to view
+Jenkins build status in GitLab Merge Requests.
 
 ## Configure a GitLab project
 
@@ -114,21 +114,21 @@ and storing build status for Commits and Merge Requests.
 All steps are implemented using AJAX requests on the merge request page.
 
 1. In order to display the build status in a merge request you must create a project service in GitLab.
-2. Your project service will do a (JSON) query to a URL of the CI tool with the SHA1 of the commit.
-3. The project service builds this URL and payload based on project service settings and knowledge of the CI tool.
-4. The response is parsed to give a response in GitLab (success/failed/pending).
+1. Your project service will do a (JSON) query to a URL of the CI tool with the SHA1 of the commit.
+1. The project service builds this URL and payload based on project service settings and knowledge of the CI tool.
+1. The response is parsed to give a response in GitLab (success/failed/pending).
 
 ## Troubleshooting
 
 ### Error in merge requests - "Could not connect to the CI server"
 
 This integration relies on Jenkins reporting the build status back to GitLab via
-the [Commit Status API](../api/commits.md#commit-status). 
+the [Commit Status API](../api/commits.md#commit-status).
 
 The error 'Could not connect to the CI server' usually means that GitLab did not
 receive a build status update via the API. Either Jenkins was not properly
-configured or there was an error reporting the status via the API. 
+configured or there was an error reporting the status via the API.
 
 1. [Configure the Jenkins server](#configure-the-jenkins-server) for GitLab API access
-2. [Configure a Jenkins project](#configure-a-jenkins-project), including the 
-   'Publish build status to GitLab' post-build action. 
+1. [Configure a Jenkins project](#configure-a-jenkins-project), including the
+   'Publish build status to GitLab' post-build action.

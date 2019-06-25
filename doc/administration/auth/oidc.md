@@ -144,20 +144,20 @@ for more details:
 If you're having trouble, here are some tips:
 
 1. Ensure `discovery` is set to `true`. Setting it to `false` requires
-specifying all the URLs and keys required to make OpenID work.
+   specifying all the URLs and keys required to make OpenID work.
 
 1. Check your system clock to ensure the time is synchronized properly.
 
 1. As mentioned in [the
-documentation](https://github.com/m0n9oose/omniauth_openid_connect),
-make sure `issuer` corresponds to the base URL of the Discovery URL. For
-example, `https://accounts.google.com` is used for the URL
-`https://accounts.google.com/.well-known/openid-configuration`.
+   documentation](https://github.com/m0n9oose/omniauth_openid_connect),
+   make sure `issuer` corresponds to the base URL of the Discovery URL. For
+   example, `https://accounts.google.com` is used for the URL
+   `https://accounts.google.com/.well-known/openid-configuration`.
 
 1. The OpenID Connect client uses HTTP Basic Authentication to send the
-OAuth2 access token. For example, if you are seeing 401 errors upon
-retrieving the `userinfo` endpoint, you may want to check your OpenID
-Web server configuration. For example, for
-[oauth2-server-php](https://github.com/bshaffer/oauth2-server-php), you
-may need to [add a configuration parameter to
-Apache](https://github.com/bshaffer/oauth2-server-php/issues/926#issuecomment-387502778).
+   OAuth2 access token. For example, if you are seeing 401 errors upon
+   retrieving the `userinfo` endpoint, you may want to check your OpenID
+   Web server configuration. For example, for
+   [oauth2-server-php](https://github.com/bshaffer/oauth2-server-php), you
+   may need to [add a configuration parameter to
+   Apache](https://github.com/bshaffer/oauth2-server-php/issues/926#issuecomment-387502778).

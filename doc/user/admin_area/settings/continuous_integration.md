@@ -94,7 +94,6 @@ a group in the **Usage Quotas** page available to the group page settings list.
 
 ![Group pipelines quota](img/group_pipelines_quota.png)
 
-
 ## Extra Shared Runners pipeline minutes quota
 
 NOTE: **Note:**
@@ -110,27 +109,27 @@ In order to purchase additional minutes, you should follow these steps:
     ![Buy additional minutes](img/buy_btn.png)
 
 1. Locate the subscription card that is linked to your group on GitLab.com,
-click on **Buy more CI minutes**, and complete the details about the transaction.
+   click on **Buy more CI minutes**, and complete the details about the transaction.
 
     ![Buy additional minutes](img/buy_minutes_card.png)
 
 1. Once we have processed your payment, the extra CI minutes
-will be synced to your Group and you can visualize it from  the
-**Group > Settings > Pipelines quota** page:
+   will be synced to your Group and you can visualize it from  the
+   **Group > Settings > Pipelines quota** page:
 
     ![Additional minutes](img/additional_minutes.png)
 
 Be aware that:
 
 1. If you have purchased extra CI minutes before the purchase of a paid plan,
-we will calculate a pro-rated charge for your paid plan. That means you may
-be charged for less than one year since your subscription was previously
-created with the extra CI minutes.
+   we will calculate a pro-rated charge for your paid plan. That means you may
+   be charged for less than one year since your subscription was previously
+   created with the extra CI minutes.
 1. Once the extra CI minutes has been assigned to a Group they cannot be transferred
-to a different Group.
+   to a different Group.
 1. If you have some minutes used over your default quota, these minutes will
-be deducted from your Additional Minutes quota immediately after your purchase of additional
-minutes.
+   be deducted from your Additional Minutes quota immediately after your purchase of additional
+   minutes.
 
 ## What happens when my CI minutes quota run out
 

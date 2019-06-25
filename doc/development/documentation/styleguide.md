@@ -165,8 +165,8 @@ The table below shows what kind of documentation goes where.
    `doc/topics/topic-name/subtopic-name/index.md` when subtopics become necessary.
    General user- and admin- related documentation, should be placed accordingly.
 1. The directories `/workflow/`, `/university/`, and `/articles/` have
-been **deprecated** and the majority their docs have been moved to their correct location
-in small iterations.
+   been **deprecated** and the majority their docs have been moved to their correct location
+   in small iterations.
 
 If you are unsure where a document or a content addition should live, this should
 not stop you from authoring and contributing. You can use your best judgment and

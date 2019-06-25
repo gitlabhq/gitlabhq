@@ -285,7 +285,7 @@ Example response:
 
 ### Scope: wiki_blobs **[STARTER]**
 
-This scope is available only if [Elasticsearch](../integration/elasticsearch.md) is enabled. 
+This scope is available only if [Elasticsearch](../integration/elasticsearch.md) is enabled.
 
 ```bash
 curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/search?scope=wiki_blobs&search=bye
@@ -346,6 +346,7 @@ Example response:
 This scope is available only if [Elasticsearch](../integration/elasticsearch.md) is enabled.
 
 Filters are available for this scope:
+
 - filename
 - path
 - extension
@@ -679,6 +680,7 @@ Example response:
 This scope is available only if [Elasticsearch](../integration/elasticsearch.md) is enabled.
 
 Filters are available for this scope:
+
 - filename
 - path
 - extension

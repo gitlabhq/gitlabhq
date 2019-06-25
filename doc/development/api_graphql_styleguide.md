@@ -198,9 +198,9 @@ abilities as in the Rails app.
 If the:
 
 - Currently authenticated user fails the authorization, the authorized
-resource will be returned as `null`.
+  resource will be returned as `null`.
 - Resource is part of a collection, the collection will be filtered to
-exclude the objects that the user's authorization checks failed against.
+  exclude the objects that the user's authorization checks failed against.
 
 TIP: **Tip:**
 Try to load only what the currently authenticated user is allowed to

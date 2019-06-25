@@ -6,8 +6,8 @@ The requirements are listed [on the index page](index.md#requirements-for-runnin
 
 ## How does Geo know which projects to sync?
 
-On each **secondary** node, there is a read-only replicated copy of the GitLab database. 
-A **secondary** node also has a tracking database where it stores which projects have been synced. 
+On each **secondary** node, there is a read-only replicated copy of the GitLab database.
+A **secondary** node also has a tracking database where it stores which projects have been synced.
 Geo compares the two databases to find projects that are not yet tracked.
 
 At the start, this tracking database is empty, so Geo will start trying to update from every project that it can see in the GitLab database.
@@ -15,19 +15,19 @@ At the start, this tracking database is empty, so Geo will start trying to updat
 For each project to sync:
 
 1. Geo will issue a `git fetch geo --mirror` to get the latest information from the **primary** node.
-If there are no changes, the sync will be fast and end quickly. Otherwise, it will pull the latest commits.
+   If there are no changes, the sync will be fast and end quickly. Otherwise, it will pull the latest commits.
 1. The **secondary** node will update the tracking database to store the fact that it has synced projects A, B, C, etc.
 1. Repeat until all projects are synced.
 
-When someone pushes a commit to the **primary** node, it generates an event in the GitLab database that the repository has changed. 
+When someone pushes a commit to the **primary** node, it generates an event in the GitLab database that the repository has changed.
 The **secondary** node sees this event, marks the project in question as dirty, and schedules the project to be resynced.
 
 To ensure that problems with pipelines (for example, syncs failing too many times or jobs being lost) don't permanently stop projects syncing, Geo also periodically checks the tracking database for projects that are marked as dirty. This check happens when
-the number of concurrent syncs falls below `repos_max_capacity` and there are no new projects waiting to be synced. 
+the number of concurrent syncs falls below `repos_max_capacity` and there are no new projects waiting to be synced.
 
-Geo also has a checksum feature which runs a SHA256 sum across all the Git references to the SHA values. 
-If the refs don't match between the **primary** node and the **secondary** node, then the **secondary** node will mark that project as dirty and try to resync it. 
-So even if we have an outdated tracking database, the validation should activate and find discrepancies in the repository state and resync.   
+Geo also has a checksum feature which runs a SHA256 sum across all the Git references to the SHA values.
+If the refs don't match between the **primary** node and the **secondary** node, then the **secondary** node will mark that project as dirty and try to resync it.
+So even if we have an outdated tracking database, the validation should activate and find discrepancies in the repository state and resync.
 
 ## Can I use Geo in a disaster recovery situation?
 
