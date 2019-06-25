@@ -4808,6 +4808,9 @@ msgstr ""
 msgid "Gitaly Servers"
 msgstr ""
 
+msgid "Gitaly calls"
+msgstr ""
+
 msgid "Gitaly|Address"
 msgstr ""
 
@@ -8836,6 +8839,9 @@ msgstr ""
 msgid "Runs a number of housekeeping tasks within the current repository, such as compressing file revisions and removing unreachable objects."
 msgstr ""
 
+msgid "SQL queries"
+msgstr ""
+
 msgid "SSH Key"
 msgstr ""
 
@@ -12708,6 +12714,9 @@ msgstr ""
 msgid "processing"
 msgstr ""
 
+msgid "profile"
+msgstr ""
+
 msgid "project"
 msgstr ""
 
@@ -12780,6 +12789,9 @@ msgid "syntax is incorrect"
 msgstr ""
 
 msgid "this document"
+msgstr ""
+
+msgid "trace"
 msgstr ""
 
 msgid "triggered"

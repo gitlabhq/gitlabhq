@@ -5,6 +5,7 @@ import { glEmojiTag } from '~/emoji';
 import detailedMetric from './detailed_metric.vue';
 import requestSelector from './request_selector.vue';
 import simpleMetric from './simple_metric.vue';
+import { __ } from '~/locale';
 
 export default {
   components: {
@@ -35,10 +36,10 @@ export default {
     },
   },
   detailedMetrics: [
-    { metric: 'pg', header: 'SQL queries', details: 'queries', keys: ['sql'] },
+    { metric: 'pg', header: __('SQL queries'), details: 'queries', keys: ['sql'] },
     {
       metric: 'gitaly',
-      header: 'Gitaly calls',
+      header: __('Gitaly calls'),
       details: 'details',
       keys: ['feature', 'request'],
     },
@@ -99,7 +100,8 @@ export default {
           class="current-host"
           :class="{ canary: currentRequest.details.host.canary }"
         >
-          <span v-html="birdEmoji"></span> {{ currentRequest.details.host.hostname }}
+          <span v-html="birdEmoji"></span>
+          {{ currentRequest.details.host.hostname }}
         </span>
       </div>
       <detailed-metric
@@ -118,9 +120,9 @@ export default {
           data-toggle="modal"
           data-target="#modal-peek-line-profile"
         >
-          profile
+          {{ __('profile') }}
         </button>
-        <a v-else :href="profileUrl"> profile </a>
+        <a v-else :href="profileUrl">{{ __('profile') }}</a>
       </div>
       <simple-metric
         v-for="metric in $options.simpleMetrics"
@@ -139,7 +141,7 @@ export default {
         id="peek-view-trace"
         class="view"
       >
-        <a :href="currentRequest.details.tracing.tracing_url"> trace </a>
+        <a :href="currentRequest.details.tracing.tracing_url">{{ __('trace') }}</a>
       </div>
       <request-selector
         v-if="currentRequest"
