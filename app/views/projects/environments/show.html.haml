@@ -31,21 +31,19 @@
             = button_to stop_project_environment_path(@project, @environment), class: 'btn btn-danger has-tooltip', method: :post do
               = s_('Environments|Stop environment')
 
-  .row.top-area.adjust
-    .col-md-7
-      %h3.page-title= @environment.name
-    .col-md-5
-      .nav-controls
-        = render 'projects/environments/terminal_button', environment: @environment
-        = render 'projects/environments/external_url', environment: @environment
-        = render 'projects/environments/metrics_button', environment: @environment
-        - if can?(current_user, :update_environment, @environment)
-          = link_to _('Edit'), edit_project_environment_path(@project, @environment), class: 'btn'
-        - if can?(current_user, :stop_environment, @environment)
-          = button_tag class: 'btn btn-danger', type: 'button', data: { toggle: 'modal',
-            target: '#stop-environment-modal' } do
-            = sprite_icon('stop')
-            = s_('Environments|Stop')
+  .top-area
+    %h3.page-title= @environment.name
+    .nav-controls.ml-auto.my-2
+      = render 'projects/environments/terminal_button', environment: @environment
+      = render 'projects/environments/external_url', environment: @environment
+      = render 'projects/environments/metrics_button', environment: @environment
+      - if can?(current_user, :update_environment, @environment)
+        = link_to _('Edit'), edit_project_environment_path(@project, @environment), class: 'btn'
+      - if can?(current_user, :stop_environment, @environment)
+        = button_tag class: 'btn btn-danger', type: 'button', data: { toggle: 'modal',
+          target: '#stop-environment-modal' } do
+          = sprite_icon('stop')
+          = s_('Environments|Stop')
 
   .environments-container
     - if @deployments.blank?
