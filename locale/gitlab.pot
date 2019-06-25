@@ -5016,6 +5016,9 @@ msgstr ""
 msgid "Help page text and support page url."
 msgstr ""
 
+msgid "Helps prevent bots from creating accounts. We currently only support %{recaptcha_v2_link_start}reCAPTCHA v2%{recaptcha_v2_link_end}"
+msgstr ""
+
 msgid "Hide archived projects"
 msgstr ""
 

@@ -33,7 +33,7 @@
             = accept_terms_label.html_safe
       = render_if_exists 'devise/shared/email_opted_in', f: f
       %div
-      - if Gitlab::Recaptcha.enabled?
+      - if show_recaptcha_sign_up?
         = recaptcha_tags
       .submit-container
         = f.submit _("Register"), class: "btn-register btn qa-new-user-register-button"
