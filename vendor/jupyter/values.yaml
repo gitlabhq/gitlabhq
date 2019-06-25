@@ -46,7 +46,7 @@ singleuser:
           - "-c"
           - >
             git clone https://gitlab.com/gitlab-org/nurtch-demo.git DevOps-Runbook-Demo || true;
-            echo "https://${GITLAB_USER_LOGIN}:${GITLAB_ACCESS_TOKEN}@${GITLAB_HOST}" > ~/.git-credentials;
+            echo "https://oauth2:${GITLAB_ACCESS_TOKEN}@${GITLAB_HOST}" > ~/.git-credentials;
             git config --global credential.helper store;
             git config --global user.email "${GITLAB_USER_EMAIL}";
             git config --global user.name "${GITLAB_USER_NAME}";
