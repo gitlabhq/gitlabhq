@@ -3,14 +3,14 @@ require 'rails_helper'
 describe 'GFM autocomplete', :js do
   let(:issue_xss_title) { 'This will execute alert<img src=x onerror=alert(2)&lt;img src=x onerror=alert(1)&gt;' }
   let(:user_xss_title) { 'eve <img src=x onerror=alert(2)&lt;img src=x onerror=alert(1)&gt;' }
-  let(:label_xss_title) { 'alert label &lt;img src=x onerror="alert(\'Hello xss\');" a'}
+  let(:label_xss_title) { 'alert label &lt;img src=x onerror="alert(\'Hello xss\');" a' }
   let(:milestone_xss_title) { 'alert milestone &lt;img src=x onerror="alert(\'Hello xss\');" a' }
 
   let(:user_xss) { create(:user, name: user_xss_title, username: 'xss.user') }
-  let(:user)    { create(:user, name: '💃speciąl someone💃', username: 'someone.special') }
+  let(:user) { create(:user, name: '💃speciąl someone💃', username: 'someone.special') }
   let(:project) { create(:project) }
   let(:label) { create(:label, project: project, title: 'special+') }
-  let(:issue)   { create(:issue, project: project) }
+  let(:issue) { create(:issue, project: project) }
 
   before do
     project.add_maintainer(user)
@@ -292,6 +292,70 @@ describe 'GFM autocomplete', :js do
       page.within '.atwho-container #at-view-labels' do
         expect(find('.atwho-view-ul').text).to have_content('alert label')
       end
+    end
+
+    it 'allows colons when autocompleting scoped labels' do
+      create(:label, project: project, title: 'scoped:label')
+
+      note = find('#note-body')
+      type(note, '~scoped:')
+
+      wait_for_requests
+
+      page.within '.atwho-container #at-view-labels' do
+        expect(find('.atwho-view-ul').text).to have_content('scoped:label')
+      end
+    end
+
+    it 'allows colons when autocompleting scoped labels with double colons' do
+      create(:label, project: project, title: 'scoped::label')
+
+      note = find('#note-body')
+      type(note, '~scoped::')
+
+      wait_for_requests
+
+      page.within '.atwho-container #at-view-labels' do
+        expect(find('.atwho-view-ul').text).to have_content('scoped::label')
+      end
+    end
+
+    it 'allows spaces when autocompleting multi-word labels' do
+      create(:label, project: project, title: 'Accepting merge requests')
+
+      note = find('#note-body')
+      type(note, '~Accepting merge')
+
+      wait_for_requests
+
+      page.within '.atwho-container #at-view-labels' do
+        expect(find('.atwho-view-ul').text).to have_content('Accepting merge requests')
+      end
+    end
+
+    it 'only autocompletes the latest label' do
+      create(:label, project: project, title: 'Accepting merge requests')
+      create(:label, project: project, title: 'Accepting job applicants')
+
+      note = find('#note-body')
+      type(note, '~Accepting merge requests foo bar ~Accepting job')
+
+      wait_for_requests
+
+      page.within '.atwho-container #at-view-labels' do
+        expect(find('.atwho-view-ul').text).to have_content('Accepting job applicants')
+      end
+    end
+
+    it 'does not autocomplete labels if no tilde is typed' do
+      create(:label, project: project, title: 'Accepting merge requests')
+
+      note = find('#note-body')
+      type(note, 'Accepting merge')
+
+      wait_for_requests
+
+      expect(page).not_to have_css('.atwho-container #at-view-labels')
     end
   end
 
