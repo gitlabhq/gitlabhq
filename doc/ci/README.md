@@ -63,7 +63,7 @@ Once you're familiar with how GitLab CI/CD works, see the
 for all the attributes you can set and use.
 
 NOTE: **Note:**
-GitLab CI/CD and [shared runners](runners/README.md#shared-specific-and-group-runners) are enabled in GitLab.com and available for all users, limited only to the [user's pipelines quota](../user/admin_area/settings/continuous_integration.md#extra-shared-runners-pipeline-minutes-quota).
+GitLab CI/CD and [shared runners](runners/README.md#shared-specific-and-group-runners) are enabled in GitLab.com and available for all users, limited only to the [user's pipelines quota](../user/admin_area/settings/continuous_integration.md#extra-shared-runners-pipeline-minutes-quota-free-only).
 
 ## Configuration
 
