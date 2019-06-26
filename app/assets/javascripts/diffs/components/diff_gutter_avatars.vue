@@ -74,7 +74,7 @@ export default {
     <button
       v-if="discussionsExpanded"
       type="button"
-      aria-label="Show comments"
+      :aria-label="__('Show comments')"
       class="diff-notes-collapse js-diff-comment-avatar js-diff-comment-button"
       @click="toggleDiscussions"
     >
