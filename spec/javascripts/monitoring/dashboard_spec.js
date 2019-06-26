@@ -62,15 +62,33 @@ describe('Dashboard', () => {
   });
 
   describe('no metrics are available yet', () => {
-    it('shows a getting started empty state when no metrics are present', () => {
+    beforeEach(() => {
       component = new DashboardComponent({
         el: document.querySelector('.prometheus-graphs'),
         propsData: { ...propsData },
         store,
       });
+    });
 
+    it('shows a getting started empty state when no metrics are present', () => {
       expect(component.$el.querySelector('.prometheus-graphs')).toBe(null);
       expect(component.emptyState).toEqual('gettingStarted');
+    });
+
+    it('shows the environment selector', () => {
+      expect(component.$el.querySelector('.js-environments-dropdown')).toBeTruthy();
+    });
+  });
+
+  describe('no data found', () => {
+    it('shows the environment selector dropdown', () => {
+      component = new DashboardComponent({
+        el: document.querySelector('.prometheus-graphs'),
+        propsData: { ...propsData, showEmptyState: true },
+        store,
+      });
+
+      expect(component.$el.querySelector('.js-environments-dropdown')).toBeTruthy();
     });
   });
 
@@ -150,14 +168,24 @@ describe('Dashboard', () => {
         singleGroupResponse,
       );
 
-      setTimeout(() => {
-        const dropdownMenuEnvironments = component.$el.querySelectorAll(
-          '.js-environments-dropdown .dropdown-item',
-        );
+      Vue.nextTick()
+        .then(() => {
+          const dropdownMenuEnvironments = component.$el.querySelectorAll(
+            '.js-environments-dropdown .dropdown-item',
+          );
 
-        expect(dropdownMenuEnvironments.length).toEqual(component.environments.length);
-        done();
-      });
+          expect(component.environments.length).toEqual(environmentData.length);
+          expect(dropdownMenuEnvironments.length).toEqual(component.environments.length);
+
+          Array.from(dropdownMenuEnvironments).forEach((value, index) => {
+            if (environmentData[index].metrics_path) {
+              expect(value).toHaveAttr('href', environmentData[index].metrics_path);
+            }
+          });
+
+          done();
+        })
+        .catch(done.fail);
     });
 
     it('hides the environments dropdown list when there is no environments', done => {
@@ -212,7 +240,7 @@ describe('Dashboard', () => {
       Vue.nextTick()
         .then(() => {
           const dropdownItems = component.$el.querySelectorAll(
-            '.js-environments-dropdown .dropdown-item[active="true"]',
+            '.js-environments-dropdown .dropdown-item.is-active',
           );
 
           expect(dropdownItems.length).toEqual(1);
