@@ -333,6 +333,15 @@ entry.
 - Moves snowplow to CE repo.
 
 
+## 11.11.4 (2019-06-26)
+
+### Fixed (3 changes)
+
+- Fix Fogbugz Importer not working. !29383
+- Fix scrolling to top on assignee change. !29500
+- Fix IDE commit using latest ref in branch and overriding contents. !29769
+
+
 ## 11.11.3 (2019-06-10)
 
 ### Fixed (5 changes)
