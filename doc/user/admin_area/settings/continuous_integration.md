@@ -94,13 +94,11 @@ a group in the **Usage Quotas** page available to the group page settings list.
 
 ![Group pipelines quota](img/group_pipelines_quota.png)
 
-## Extra Shared Runners pipeline minutes quota
+## Extra Shared Runners pipeline minutes quota **[FREE ONLY]**
 
-NOTE: **Note:**
-Only available on GitLab.com.
-
-You can purchase additional CI minutes so your pipelines will not be blocked after you have
-used all your CI minutes from your main quota.
+If you're using GitLab.com, you can purchase additional CI minutes so your
+pipelines will not be blocked after you have used all your CI minutes from your
+main quota.
 
 In order to purchase additional minutes, you should follow these steps:
 
