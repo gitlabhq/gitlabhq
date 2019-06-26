@@ -203,17 +203,17 @@ module NotesActions
 
       # These params are also sent by the client but we need to set these based on
       # target_type and target_id because we're checking permissions based on that
-      create_params[:noteable_type] = params[:target_type].classify
+      create_params[:noteable_type] = noteable.class.name
 
-      case params[:target_type]
-      when 'commit'
-        create_params[:commit_id] = params[:target_id]
-      when 'merge_request'
-        create_params[:noteable_id] = params[:target_id]
+      case noteable
+      when Commit
+        create_params[:commit_id] = noteable.id
+      when MergeRequest
+        create_params[:noteable_id] = noteable.id
         # Notes on MergeRequest can have an extra `commit_id` context
         create_params[:commit_id] = params.dig(:note, :commit_id)
       else
-        create_params[:noteable_id] = params[:target_id]
+        create_params[:noteable_id] = noteable.id
       end
     end
   end
