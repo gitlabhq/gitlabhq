@@ -2,6 +2,14 @@
 
 module PagesDomains
   class ObtainLetsEncryptCertificateService
+    # time for processing validation requests for acme challenges
+    # 5-15 seconds is usually enough
+    CHALLENGE_PROCESSING_DELAY = 1.minute.freeze
+
+    # time LetsEncrypt ACME server needs to generate the certificate
+    # no particular SLA, usually takes 10-15 seconds
+    CERTIFICATE_PROCESSING_DELAY = 1.minute.freeze
+
     attr_reader :pages_domain
 
     def initialize(pages_domain)
@@ -14,6 +22,7 @@ module PagesDomains
 
       unless acme_order
         ::PagesDomains::CreateAcmeOrderService.new(pages_domain).execute
+        PagesDomainSslRenewalWorker.perform_in(CHALLENGE_PROCESSING_DELAY, pages_domain.id)
         return
       end
 
@@ -23,6 +32,7 @@ module PagesDomains
       case api_order.status
       when 'ready'
         api_order.request_certificate(private_key: acme_order.private_key, domain: pages_domain.domain)
+        PagesDomainSslRenewalWorker.perform_in(CERTIFICATE_PROCESSING_DELAY, pages_domain.id)
       when 'valid'
         save_certificate(acme_order.private_key, api_order)
         acme_order.destroy!
