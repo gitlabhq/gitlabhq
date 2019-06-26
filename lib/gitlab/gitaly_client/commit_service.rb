@@ -271,26 +271,30 @@ module Gitlab
       end
 
       def find_commit(revision)
-        if Gitlab::SafeRequestStore.active?
-          # We don't use Gitlab::SafeRequestStore.fetch(key) { ... } directly
-          # because `revision` can be a branch name, so we can't use it as a key
-          # as it could point to another commit later on (happens a lot in
-          # tests).
-          key = {
-            storage: @gitaly_repo.storage_name,
-            relative_path: @gitaly_repo.relative_path,
-            commit_id: revision
-          }
-          return Gitlab::SafeRequestStore[key] if Gitlab::SafeRequestStore.exist?(key)
+        return call_find_commit(revision) unless Gitlab::SafeRequestStore.active?
 
-          commit = call_find_commit(revision)
-          return unless commit
+        # We don't use Gitlab::SafeRequestStore.fetch(key) { ... } directly
+        # because `revision` can be a branch name, so we can't use it as a key
+        # as it could point to another commit later on (happens a lot in
+        # tests).
+        key = {
+          storage: @gitaly_repo.storage_name,
+          relative_path: @gitaly_repo.relative_path,
+          commit_id: revision
+        }
+        return Gitlab::SafeRequestStore[key] if Gitlab::SafeRequestStore.exist?(key)
 
-          key[:commit_id] = commit.id unless GitalyClient.ref_name_caching_allowed?
+        commit = call_find_commit(revision)
+
+        if GitalyClient.ref_name_caching_allowed?
           Gitlab::SafeRequestStore[key] = commit
-        else
-          call_find_commit(revision)
+          return commit
         end
+
+        return unless commit
+
+        key[:commit_id] = commit.id
+        Gitlab::SafeRequestStore[key] = commit
       end
 
       # rubocop: disable CodeReuse/ActiveRecord
