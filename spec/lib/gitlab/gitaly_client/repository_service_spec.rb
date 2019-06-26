@@ -73,6 +73,17 @@ describe Gitlab::GitalyClient::RepositoryService do
     end
   end
 
+  describe '#get_object_directory_size' do
+    it 'sends a get_object_directory_size message' do
+      expect_any_instance_of(Gitaly::RepositoryService::Stub)
+        .to receive(:get_object_directory_size)
+        .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
+        .and_return(size: 0)
+
+      client.get_object_directory_size
+    end
+  end
+
   describe '#apply_gitattributes' do
     let(:revision) { 'master' }
 
