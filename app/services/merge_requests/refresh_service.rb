@@ -24,7 +24,7 @@ module MergeRequests
       reload_merge_requests
       outdate_suggestions
       refresh_pipelines_on_merge_requests
-      cancel_auto_merges
+      abort_auto_merges
       mark_pending_todos_done
       cache_merge_requests_closing_issues
 
@@ -142,9 +142,9 @@ module MergeRequests
       end
     end
 
-    def cancel_auto_merges
+    def abort_auto_merges
       merge_requests_for_source_branch.each do |merge_request|
-        cancel_auto_merge(merge_request)
+        abort_auto_merge(merge_request, 'source branch was updated')
       end
     end
 

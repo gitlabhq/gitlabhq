@@ -234,6 +234,16 @@ module SystemNoteService
     create_note(NoteSummary.new(noteable, project, author, body, action: 'merge'))
   end
 
+  # Called when 'merge when pipeline succeeds' is aborted
+  def abort_merge_when_pipeline_succeeds(noteable, project, author, reason)
+    body = "aborted the automatic merge because #{reason}"
+
+    ##
+    # TODO: Abort message should be sent by the system, not a particular user.
+    # See https://gitlab.com/gitlab-org/gitlab-ce/issues/63187.
+    create_note(NoteSummary.new(noteable, project, author, body, action: 'merge'))
+  end
+
   def handle_merge_request_wip(noteable, project, author)
     prefix = noteable.work_in_progress? ? "marked" : "unmarked"
 

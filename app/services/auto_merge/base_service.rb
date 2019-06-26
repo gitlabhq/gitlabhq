@@ -29,12 +29,22 @@ module AutoMerge
     end
 
     def cancel(merge_request)
-      if cancel_auto_merge(merge_request)
+      if clear_auto_merge_parameters(merge_request)
         yield if block_given?
 
         success
       else
         error("Can't cancel the automatic merge", 406)
+      end
+    end
+
+    def abort(merge_request, reason)
+      if clear_auto_merge_parameters(merge_request)
+        yield if block_given?
+
+        success
+      else
+        error("Can't abort the automatic merge", 406)
       end
     end
 
@@ -46,7 +56,7 @@ module AutoMerge
       end
     end
 
-    def cancel_auto_merge(merge_request)
+    def clear_auto_merge_parameters(merge_request)
       merge_request.auto_merge_enabled = false
       merge_request.merge_user = nil
 

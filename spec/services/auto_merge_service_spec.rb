@@ -161,4 +161,29 @@ describe AutoMergeService do
       end
     end
   end
+
+  describe '#abort' do
+    subject { service.abort(merge_request, error) }
+
+    let(:merge_request) { create(:merge_request, :merge_when_pipeline_succeeds) }
+    let(:error) { 'an error' }
+
+    it 'delegates to a relevant service instance' do
+      expect_next_instance_of(AutoMerge::MergeWhenPipelineSucceedsService) do |service|
+        expect(service).to receive(:abort).with(merge_request, error)
+      end
+
+      subject
+    end
+
+    context 'when auto merge is not enabled' do
+      let(:merge_request) { create(:merge_request) }
+
+      it 'returns error' do
+        expect(subject[:message]).to eq("Can't abort the automatic merge")
+        expect(subject[:status]).to eq(:error)
+        expect(subject[:http_status]).to eq(406)
+      end
+    end
+  end
 end
