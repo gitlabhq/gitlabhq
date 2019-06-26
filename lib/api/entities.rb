@@ -757,7 +757,9 @@ module API
         merge_request.metrics&.pipeline
       end
 
-      expose :head_pipeline, using: 'API::Entities::Pipeline'
+      expose :head_pipeline, using: 'API::Entities::Pipeline', if: -> (_, options) do
+        Ability.allowed?(options[:current_user], :read_pipeline, options[:project])
+      end
 
       expose :diff_refs, using: Entities::DiffRefs
 
