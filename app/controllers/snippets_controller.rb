@@ -137,7 +137,7 @@ class SnippetsController < ApplicationController
 
   def move_temporary_files
     params[:files].each do |file|
-      FileMover.new(file, @snippet).execute
+      FileMover.new(file, from_model: current_user, to_model: @snippet).execute
     end
   end
 end
