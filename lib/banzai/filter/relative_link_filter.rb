@@ -102,7 +102,7 @@ module Banzai
       end
 
       def relative_file_path(uri)
-        path = Addressable::URI.unescape(uri.path)
+        path = Addressable::URI.unescape(uri.path).delete("\0")
         request_path = Addressable::URI.unescape(context[:requested_path])
         nested_path = build_relative_path(path, request_path)
         file_exists?(nested_path) ? nested_path : path
