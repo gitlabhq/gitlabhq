@@ -102,6 +102,10 @@ describe 'Group issues page' do
   end
 
   context 'manual ordering' do
+    before do
+      stub_feature_flags(manual_sorting: true)
+    end
+
     let!(:issue1) { create(:issue, project: project, title: 'Issue #1') }
     let!(:issue2) { create(:issue, project: project, title: 'Issue #2') }
     let!(:issue3) { create(:issue, project: project, title: 'Issue #3') }
@@ -138,10 +142,12 @@ describe 'Group issues page' do
         to_index: 2,
         list_to_index: 0)
 
+      wait_for_requests
+
       page.within('.manual-ordering') do
         expect(find('.issue:nth-child(1) .title')).to have_content('Issue #2')
-        expect(find('.issue:nth-child(2) .title')).to have_content('Issue #1')
-        expect(find('.issue:nth-child(3) .title')).to have_content('Issue #3')
+        expect(find('.issue:nth-child(2) .title')).to have_content('Issue #3')
+        expect(find('.issue:nth-child(3) .title')).to have_content('Issue #1')
       end
     end
   end
