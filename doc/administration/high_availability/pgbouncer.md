@@ -62,6 +62,33 @@ See our [HA documentation for PostgreSQL](database.md) for information on runnin
 
 1. At this point, your instance should connect to the database through pgbouncer. If you are having issues, see the [Troubleshooting](#troubleshooting) section
 
+## Enable Monitoring
+
+> [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/issues/3786) in GitLab 12.0.
+
+  If you enable Monitoring, it must be enabled on **all** pgbouncer servers.
+
+  1. Create/edit `/etc/gitlab/gitlab.rb` and add the following configuration:
+
+     ```ruby
+     # Enable service discovery for Prometheus
+     consul['enable'] = true
+     consul['monitoring_service_discovery'] =  true
+
+     # Replace placeholders
+     # Y.Y.Y.Y consul1.gitlab.example.com Z.Z.Z.Z
+     # with the addresses of the Consul server nodes
+     consul['configuration'] = {
+        retry_join: %w(Y.Y.Y.Y consul1.gitlab.example.com Z.Z.Z.Z),
+     }
+
+     # Set the network addresses that the exporters will listen on
+     node_exporter['listen_address'] = '0.0.0.0:9100'
+     pgbouncer_exporter['listen_address'] = '0.0.0.0:9188'
+     ```
+
+  1. Run `sudo gitlab-ctl reconfigure` to compile the configuration.
+
 ### Interacting with pgbouncer
 
 #### Administrative console
