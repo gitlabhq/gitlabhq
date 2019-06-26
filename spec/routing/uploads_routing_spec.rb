@@ -12,10 +12,19 @@ describe 'Uploads', 'routing' do
     )
   end
 
-  it 'does not allow creating uploads for other models' do
-    UploadsController::MODEL_CLASSES.keys.compact.each do |model|
-      next if model == 'personal_snippet'
+  it 'allows creating uploads for users' do
+    expect(post('/uploads/user?id=1')).to route_to(
+      controller: 'uploads',
+      action: 'create',
+      model: 'user',
+      id: '1'
+    )
+  end
 
+  it 'does not allow creating uploads for other models' do
+    unroutable_models = UploadsController::MODEL_CLASSES.keys.compact - %w(personal_snippet user)
+
+    unroutable_models.each do |model|
       expect(post("/uploads/#{model}?id=1")).not_to be_routable
     end
   end
