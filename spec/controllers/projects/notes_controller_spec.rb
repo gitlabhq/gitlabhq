@@ -252,7 +252,7 @@ describe Projects::NotesController do
       before do
         service_params = ActionController::Parameters.new({
           note: 'some note',
-          noteable_id: merge_request.id.to_s,
+          noteable_id: merge_request.id,
           noteable_type: 'MergeRequest',
           commit_id: nil,
           merge_request_diff_head_sha: 'sha'
