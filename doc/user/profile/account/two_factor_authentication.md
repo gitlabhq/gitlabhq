@@ -10,17 +10,18 @@ is to know your username and password *and* have access to your one time passwor
 
 ## Overview
 
-> **Note:**
-When you enable 2FA, don't forget to back up your recovery codes.
+TIP: **Tip:**
+When you enable 2FA, don't forget to back up your [recovery codes](#recovery-codes)!
 
-In addition to one time authenticators (TOTP), GitLab supports U2F (universal 2nd factor) devices as
-the second factor of authentication. Once enabled, in addition to supplying your username and
-password to login, you'll be prompted to activate your U2F device (usually by pressing
-a button on it), and it will perform secure authentication on your behalf.
+In addition to time-based one time passwords (TOTP), GitLab supports U2F
+(universal 2nd factor) devices as the second factor of authentication. Once
+enabled, in addition to supplying your username and password to login, you'll
+be prompted to activate your U2F device (usually by pressing a button on it),
+and it will perform secure authentication on your behalf.
 
-The U2F workflow is [supported by](https://caniuse.com/#search=U2F) Google Chrome, Opera, and Firefox.
-
-We recommend that you set up 2FA with both a [one-time password authenticator](#enable-2fa-via-one-time-password-authenticator) and a [U2F device](#enable-2fa-via-u2f-device), so you can still access your account
+It is highly recommended that you set up 2FA with both a
+[one-time password authenticator](#enable-2fa-via-one-time-password-authenticator)
+and a [U2F device](#enable-2fa-via-u2f-device), so you can still access your account
 if you lose your U2F device.
 
 ## Enabling 2FA
@@ -30,41 +31,52 @@ or a U2F device.
 
 ### Enable 2FA via one time password authenticator
 
-**In GitLab:**
+To enable 2FA:
 
-1. Log in to your GitLab account.
-1. Go to your **Profile Settings**.
-1. Go to **Account**.
-1. Click **Enable Two-factor Authentication**.
-
-![Two-factor setup](img/2fa.png)
-
-**On your phone:**
-
-1. Install a compatible application. We recommend [Google Authenticator]
-   \(proprietary\) or [FreeOTP] \(open source\).
-1. In the application, add a new entry in one of two ways:
-    - Scan the code with your phone's camera to add the entry automatically.
-    - Enter the details provided to add the entry manually.
-
-**In GitLab:**
-
-1. Enter the six-digit pin number from the entry on your phone into the **Pin
-   code** field.
-1. Click **Submit**.
+1. **In GitLab:**
+   1. Log in to your GitLab account.
+   1. Go to your **Profile Settings**.
+   1. Go to **Account**.
+   1. Click **Enable Two-factor Authentication**.
+1. **On your device (usually your phone):**
+   1. Install a compatible application, like:
+      - [Authenticator](https://mattrubin.me/authenticator/): open source app for iOS devices.
+      - [andOTP](https://github.com/andOTP/andOTP): feature rich open source app for Android which supports PGP encrypted backups.
+      - [FreeOTP](https://freeotp.github.io/): open source app for Android.
+      - [Google Authenticator](https://support.google.com/accounts/answer/1066447?hl=en): proprietary app for iOS and Android.
+   1. In the application, add a new entry in one of two ways:
+      - Scan the code presented in GitLab with your device's camera to add the
+        entry automatically.
+      - Enter the details provided to add the entry manually.
+1. **In GitLab:**
+   1. Enter the six-digit pin number from the entry on your device into the **Pin
+      code** field.
+   1. Click **Submit**.
 
 If the pin you entered was correct, you'll see a message indicating that
 Two-Factor Authentication has been enabled, and you'll be presented with a list
-of recovery codes.
+of [recovery codes](#recovery-codes). Make sure you download them and keep them
+in a safe place.
 
 ### Enable 2FA via U2F device
 
-> **Notes:**
->
-> - GitLab officially only supports [Yubikey] U2F devices.
-> - Support for U2F devices was added in GitLab 8.8.
+GitLab officially only supports [YubiKey](https://www.yubico.com/products/yubikey-hardware/)
+U2F devices, but users have successfully used [SoloKeys](https://solokeys.com/).
 
-**In GitLab:**
+The U2F workflow is [supported by](https://caniuse.com/#search=U2F) the
+following desktop browsers:
+
+- Chrome
+- Edge
+- Firefox (disabled by default)
+- Opera
+
+NOTE: **Note:**
+For Firefox, you can enable the FIDO U2F API in
+[about:config](https://support.mozilla.org/en-US/kb/about-config-editor-firefox).
+Search for `security.webauth.u2f` and double click on it to toggle to `true`.
+
+To set up 2FA with a U2F device:
 
 1. Log in to your GitLab account.
 1. Go to your **Profile Settings**.
@@ -77,18 +89,20 @@ of recovery codes.
 You will see a message indicating that your device was successfully set up.
 Click on **Register U2F Device** to complete the process.
 
-![Two-Factor U2F Setup](img/2fa_u2f_register.png)
+## Recovery codes
 
-## Recovery Codes
-
-> **Note:**
+NOTE: **Note:**
 Recovery codes are not generated for U2F devices.
-
-Immediately after successfully enabling two-factor authentication, you'll be prompted to download a set of set recovery codes. Should you ever lose access to your one time password authenticator, you can use one of them to log in to your account. We suggest copying them, printing them, or downloading them using
-the **Download codes** button for storage in a safe place. If you choose to download them, the file will be called **gitlab-recovery-codes.txt**.
 
 CAUTION: **Caution:**
 Each code can be used only once to log in to your account.
+
+Immediately after successfully enabling two-factor authentication, you'll be
+prompted to download a set of set recovery codes. Should you ever lose access
+to your one time password authenticator, you can use one of them to log in to
+your account. We suggest copying them, printing them, or downloading them using
+the **Download codes** button for storage in a safe place. If you choose to
+download them, the file will be called **gitlab-recovery-codes.txt**.
 
 If you lose the recovery codes or just want to generate new ones, you can do so
 [using SSH](#generate-new-recovery-codes-using-ssh).
@@ -99,23 +113,25 @@ Logging in with 2FA enabled is only slightly different than a normal login.
 Enter your username and password credentials as you normally would, and you'll
 be presented with a second prompt, depending on which type of 2FA you've enabled.
 
-### Log in via mobile application
+### Log in via a one-time password
 
-Enter the pin from your one time password authenticator's application or a recovery code to log in.
-
-![Two-Factor Authentication on sign in via OTP](img/2fa_auth.png)
+When asked, enter the pin from your one time password authenticator's application or a
+recovery code to log in.
 
 ### Log in via U2F device
 
+To log in via a U2F device:
+
 1. Click **Login via U2F Device**.
-1. A light will start blinking on your device. Activate it by pressing its button.
+1. A light will start blinking on your device. Activate it by touching/pressing
+   its button.
 
-You will see a message indicating that your device responded to the authentication request.
-Click on **Authenticate via U2F Device** to complete the process.
-
-![Two-Factor Authentication on sign in via U2F device](img/2fa_u2f_authenticate.png)
+You will see a message indicating that your device responded to the authentication
+request and you will be automatically logged in.
 
 ## Disabling 2FA
+
+If you ever need to disable 2FA:
 
 1. Log in to your GitLab account.
 1. Go to your **Profile Settings**.
@@ -129,7 +145,8 @@ applications and U2F devices.
 
 When 2FA is enabled, you can no longer use your normal account password to
 authenticate with Git over HTTPS on the command line or when using
-[GitLab's API][api], you must use a [personal access token][pat] instead.
+[GitLab's API](../../../api/README.md). You must use a
+[personal access token](../personal_access_tokens.md) instead.
 
 ## Recovery options
 
@@ -148,7 +165,6 @@ codes. If you saved these codes, you can use one of them to sign in.
 To use a recovery code, enter your username/email and password on the GitLab
 sign-in page. When prompted for a two-factor code, enter the recovery code.
 
-> **Note:**
 Once you use a recovery code, you cannot re-use it. You can still use the other
 recovery codes you saved.
 
@@ -156,13 +172,18 @@ recovery codes you saved.
 
 Users often forget to save their recovery codes when enabling two-factor
 authentication. If an SSH key is added to your GitLab account, you can generate
-a new set of recovery codes with SSH.
+a new set of recovery codes with SSH:
 
-1. Run `ssh git@gitlab.example.com 2fa_recovery_codes`.
-1. You are prompted to confirm that you want to generate new codes. Continuing this process invalidates previously saved codes.
+1. Run:
+
+   ```sh
+   ssh git@gitlab.example.com 2fa_recovery_codes
+   ```
+
+1. You will then be prompted to confirm that you want to generate new codes.
+   Continuing this process invalidates previously saved codes:
 
     ```sh
-    $ ssh git@gitlab.example.com 2fa_recovery_codes
     Are you sure you want to generate new two-factor recovery codes?
     Any existing recovery codes you saved will be invalidated. (yes/no)
 
@@ -190,7 +211,6 @@ a new set of recovery codes with SSH.
    When prompted for a two-factor code, enter one of the recovery codes obtained
    from the command-line output.
 
-> **Note:**
 After signing in, visit your **Profile settings > Account**  immediately to set
 up two-factor authentication with a new device.
 
@@ -218,9 +238,3 @@ Sign in and re-enable two-factor authentication as soon as possible.
   - The user logs out and attempts to log in via `first.host.xyz` - U2F authentication succeeds.
   - The user logs out and attempts to log in via `second.host.xyz` - U2F authentication fails, because
     the U2F key has only been registered on `first.host.xyz`.
-
-[Google Authenticator]: https://support.google.com/accounts/answer/1066447?hl=en
-[FreeOTP]: https://freeotp.github.io/
-[YubiKey]: https://www.yubico.com/products/yubikey-hardware/
-[api]: ../../../api/README.md
-[pat]: ../personal_access_tokens.md
