@@ -6011,6 +6011,9 @@ msgstr ""
 msgid "Manual job"
 msgstr ""
 
+msgid "ManualOrdering|Couldn't save the order of the issues"
+msgstr ""
+
 msgid "Map a FogBugz account ID to a GitLab user"
 msgstr ""
 

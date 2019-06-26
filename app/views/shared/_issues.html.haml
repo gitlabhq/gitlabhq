@@ -1,6 +1,6 @@
 - if @issues.to_a.any?
   .card.card-small.card-without-border
-    %ul.content-list.issues-list.issuable-list
+    %ul.content-list.issues-list.issuable-list{ class: ("manual-ordering" if @sort == 'relative_position'), data: { group_full_path: @group&.full_path } }
       = render partial: 'projects/issues/issue', collection: @issues
   = paginate @issues, theme: "gitlab"
 - else

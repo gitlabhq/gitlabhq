@@ -1,6 +1,7 @@
 - sort_value = @sort
 - sort_title = issuable_sort_option_title(sort_value)
 - viewing_issues = controller.controller_name == 'issues' || controller.action_name == 'issues'
+- manual_sorting = viewing_issues && controller.controller_name != 'dashboard' && Feature.enabled?(:manual_sorting)
 
 .dropdown.inline.prepend-left-10.issue-sort-dropdown
   .btn-group{ role: 'group' }
@@ -17,6 +18,6 @@
           = sortable_item(sort_title_due_date,          page_filter_path(sort: sort_value_due_date),          sort_title) if viewing_issues
           = sortable_item(sort_title_popularity,        page_filter_path(sort: sort_value_popularity),        sort_title)
           = sortable_item(sort_title_label_priority,    page_filter_path(sort: sort_value_label_priority),    sort_title)
-          = sortable_item(sort_title_relative_position, page_filter_path(sort: sort_value_relative_position), sort_title) if viewing_issues && Feature.enabled?(:manual_sorting)
+          = sortable_item(sort_title_relative_position, page_filter_path(sort: sort_value_relative_position), sort_title) if manual_sorting
           = render_if_exists('shared/ee/issuable/sort_dropdown', viewing_issues: viewing_issues, sort_title: sort_title)
     = issuable_sort_direction_button(sort_value)
