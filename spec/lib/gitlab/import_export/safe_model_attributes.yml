@@ -429,6 +429,7 @@ Service:
 - confidential_issues_events
 - confidential_note_events
 - deployment_events
+- description
 ProjectHook:
 - id
 - url

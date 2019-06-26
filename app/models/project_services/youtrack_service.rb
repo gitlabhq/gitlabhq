@@ -3,7 +3,7 @@
 class YoutrackService < IssueTrackerService
   validates :project_url, :issues_url, presence: true, public_url: true, if: :activated?
 
-  prop_accessor :description, :project_url, :issues_url
+  prop_accessor :project_url, :issues_url
 
   # {PROJECT-KEY}-{NUMBER} Examples: YT-1, PRJ-1, gl-030
   def self.reference_pattern(only_long: false)
@@ -14,16 +14,12 @@ class YoutrackService < IssueTrackerService
     end
   end
 
-  def title
+  def default_title
     'YouTrack'
   end
 
-  def description
-    if self.properties && self.properties['description'].present?
-      self.properties['description']
-    else
-      'YouTrack issue tracker'
-    end
+  def default_description
+    s_('IssueTracker|YouTrack issue tracker')
   end
 
   def self.to_param

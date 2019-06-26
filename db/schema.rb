@@ -3028,6 +3028,7 @@ ActiveRecord::Schema.define(version: 20190627051902) do
     t.boolean "job_events", default: false, null: false
     t.boolean "confidential_note_events", default: true
     t.boolean "deployment_events", default: false, null: false
+    t.string "description", limit: 500
     t.index ["project_id"], name: "index_services_on_project_id", using: :btree
     t.index ["template"], name: "index_services_on_template", using: :btree
     t.index ["type"], name: "index_services_on_type", using: :btree
