@@ -34,4 +34,28 @@ describe 'getting a repository in a project' do
       expect(graphql_data['project']).to be(nil)
     end
   end
+
+  context 'when the repository is only accessible to members' do
+    let(:project) do
+      create(:project, :public, :repository, repository_access_level: ProjectFeature::PRIVATE)
+    end
+
+    it 'returns a repository for the owner' do
+      post_graphql(query, current_user: current_user)
+
+      expect(graphql_data['project']['repository']).not_to be_nil
+    end
+
+    it 'returns nil for the repository for other users' do
+      post_graphql(query, current_user: create(:user))
+
+      expect(graphql_data['project']['repository']).to be_nil
+    end
+
+    it 'returns nil for the repository for other users' do
+      post_graphql(query, current_user: nil)
+
+      expect(graphql_data['project']['repository']).to be_nil
+    end
+  end
 end
