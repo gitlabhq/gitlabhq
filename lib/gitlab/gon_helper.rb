@@ -16,8 +16,8 @@ module Gitlab
       gon.shortcuts_path         = Gitlab::Routing.url_helpers.help_page_path('shortcuts')
       gon.user_color_scheme      = Gitlab::ColorSchemes.for_user(current_user).css_class
 
-      if Gitlab::CurrentSettings.clientside_sentry_enabled
-        gon.sentry_dsn           = Gitlab::CurrentSettings.clientside_sentry_dsn
+      if Gitlab.config.sentry.enabled
+        gon.sentry_dsn           = Gitlab.config.sentry.clientside_dsn
         gon.sentry_environment   = Gitlab.config.sentry.environment
       end
 

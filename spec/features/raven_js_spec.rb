@@ -10,7 +10,7 @@ describe 'RavenJS' do
   end
 
   it 'loads raven if sentry is enabled' do
-    stub_application_setting(clientside_sentry_dsn: 'https://key@domain.com/id', clientside_sentry_enabled: true)
+    stub_sentry_settings
 
     visit new_user_session_path
 

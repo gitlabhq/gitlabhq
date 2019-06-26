@@ -3804,9 +3804,6 @@ msgstr ""
 msgid "Enable HTML emails"
 msgstr ""
 
-msgid "Enable Sentry for error reporting and logging."
-msgstr ""
-
 msgid "Enable access to the Performance Bar for a given group."
 msgstr ""
 
@@ -4024,9 +4021,6 @@ msgid "Epic"
 msgstr ""
 
 msgid "Error"
-msgstr ""
-
-msgid "Error Reporting and Logging"
 msgstr ""
 
 msgid "Error Tracking"

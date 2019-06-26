@@ -4,7 +4,7 @@ module Gitlab
   module Sentry
     def self.enabled?
       (Rails.env.production? || Rails.env.development?) &&
-        Gitlab::CurrentSettings.sentry_enabled?
+        Gitlab.config.sentry.enabled
     end
 
     def self.context(current_user = nil)
