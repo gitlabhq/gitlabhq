@@ -63,12 +63,20 @@ module Users
     def assign_identity
       return unless identity_params.present?
 
-      identity = user.identities.find_or_create_by(provider: identity_params[:provider]) # rubocop: disable CodeReuse/ActiveRecord
+      identity = user.identities.find_or_create_by(provider_params) # rubocop: disable CodeReuse/ActiveRecord
       identity.update(identity_params)
     end
 
     def identity_attributes
       [:provider, :extern_uid]
+    end
+
+    def provider_attributes
+      [:provider]
+    end
+
+    def provider_params
+      identity_params.slice(*provider_attributes)
     end
   end
 end
