@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Discussion Comments Merge Request', :js do
+describe 'Thread Comments Merge Request', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
   let(:merge_request) { create(:merge_request, source_project: project) }
@@ -12,5 +12,5 @@ describe 'Discussion Comments Merge Request', :js do
     visit project_merge_request_path(project, merge_request)
   end
 
-  it_behaves_like 'discussion comments', 'merge request'
+  it_behaves_like 'thread comments', 'merge request'
 end

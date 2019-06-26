@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Discussion Comments Commit', :js do
+describe 'Thread Comments Commit', :js do
   include RepoHelpers
 
   let(:user) { create(:user) }
@@ -16,7 +16,7 @@ describe 'Discussion Comments Commit', :js do
     visit project_commit_path(project, sample_commit.id)
   end
 
-  it_behaves_like 'discussion comments', 'commit'
+  it_behaves_like 'thread comments', 'commit'
 
   it 'has class .js-note-emoji' do
     expect(page).to have_css('.js-note-emoji')
