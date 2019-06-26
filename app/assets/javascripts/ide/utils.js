@@ -3,7 +3,7 @@ import { commitItemIconMap } from './constants';
 export const getCommitIconMap = file => {
   if (file.deleted) {
     return commitItemIconMap.deleted;
-  } else if (file.tempFile) {
+  } else if (file.tempFile && !file.prevPath) {
     return commitItemIconMap.addition;
   }
 

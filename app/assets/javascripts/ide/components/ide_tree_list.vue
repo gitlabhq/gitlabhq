@@ -30,6 +30,9 @@ export default {
     showLoading() {
       return !this.currentTree || this.currentTree.loading;
     },
+    actualTreeList() {
+      return this.currentTree.tree.filter(entry => !entry.moved);
+    },
   },
   mounted() {
     this.updateViewer(this.viewerType);
@@ -54,9 +57,9 @@ export default {
         <slot name="header"></slot>
       </header>
       <div class="ide-tree-body h-100">
-        <template v-if="currentTree.tree.length">
+        <template v-if="actualTreeList.length">
           <file-row
-            v-for="file in currentTree.tree"
+            v-for="file in actualTreeList"
             :key="file.key"
             :file="file"
             :level="0"
