@@ -155,7 +155,7 @@ export const createCommitPayload = ({
     last_commit_id:
       newBranch || f.deleted || f.prevPath || f.replaces ? undefined : f.lastCommitSha,
   })),
-  start_sha: newBranch ? rootGetters.lastCommit.short_id : undefined,
+  start_sha: newBranch ? rootGetters.lastCommit.id : undefined,
 });
 
 export const createNewMergeRequestUrl = (projectUrl, source, target) =>
