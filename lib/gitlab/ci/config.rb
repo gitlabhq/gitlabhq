@@ -15,6 +15,9 @@ module Gitlab
 
         @global = Entry::Global.new(@config)
         @global.compose!
+      rescue Gitlab::Config::Loader::Yaml::DataTooLargeError => e
+        Gitlab::Sentry.track_exception(e, extra: { user: user.inspect, project: project.inspect })
+        raise Config::ConfigError, e.message
       rescue Gitlab::Config::Loader::FormatError,
              Extendable::ExtensionError,
              External::Processor::IncludeError => e
