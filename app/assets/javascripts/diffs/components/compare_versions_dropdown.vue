@@ -1,6 +1,6 @@
 <script>
 import Icon from '~/vue_shared/components/icon.vue';
-import { n__, __ } from '~/locale';
+import { n__, __, sprintf } from '~/locale';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 
 export default {
@@ -54,11 +54,7 @@ export default {
   },
   methods: {
     commitsText(version) {
-      return n__(
-        `${version.commits_count} commit,`,
-        `${version.commits_count} commits,`,
-        version.commits_count,
-      );
+      return n__(`%d commit,`, `%d commits,`, version.commits_count);
     },
     href(version) {
       if (this.isBase(version)) {
@@ -76,7 +72,7 @@ export default {
       if (this.targetBranch && (this.isBase(version) || !version)) {
         return this.targetBranch.branchName;
       }
-      return `version ${version.version_index}`;
+      return sprintf(__(`version %{versionIndex}`), { versionIndex: version.version_index });
     },
     isActive(version) {
       if (!version) {
@@ -125,9 +121,9 @@ export default {
               <div>
                 <strong>
                   {{ versionName(version) }}
-                  <template v-if="isBase(version)">
-                    (base)
-                  </template>
+                  <template v-if="isBase(version)">{{
+                    s__('DiffsCompareBaseBranch|(base)')
+                  }}</template>
                 </strong>
               </div>
               <div>

@@ -41,6 +41,11 @@ msgid_plural "%d commits behind"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d commit,"
+msgid_plural "%d commits,"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d commits"
 msgstr ""
 
@@ -3527,6 +3532,9 @@ msgid "Diff content limits"
 msgstr ""
 
 msgid "Diff limits"
+msgstr ""
+
+msgid "DiffsCompareBaseBranch|(base)"
 msgstr ""
 
 msgid "Diffs|No file name available"
@@ -9191,6 +9199,9 @@ msgstr ""
 msgid "Show command"
 msgstr ""
 
+msgid "Show comments"
+msgstr ""
+
 msgid "Show comments only"
 msgstr ""
 
@@ -12682,6 +12693,9 @@ msgid "uses Kubernetes clusters to deploy your code!"
 msgstr ""
 
 msgid "verify ownership"
+msgstr ""
+
+msgid "version %{versionIndex}"
 msgstr ""
 
 msgid "via %{closed_via}"
