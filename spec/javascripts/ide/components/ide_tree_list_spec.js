@@ -58,6 +58,20 @@ describe('IDE tree list', () => {
     it('renders list of files', () => {
       expect(vm.$el.textContent).toContain('fileName');
     });
+
+    it('does not render moved entries', done => {
+      const tree = [file('moved entry'), file('normal entry')];
+      tree[0].moved = true;
+      store.state.trees['abcproject/master'].tree = tree;
+      const container = vm.$el.querySelector('.ide-tree-body');
+
+      vm.$nextTick(() => {
+        expect(container.children.length).toBe(1);
+        expect(vm.$el.textContent).not.toContain('moved entry');
+        expect(vm.$el.textContent).toContain('normal entry');
+        done();
+      });
+    });
   });
 
   describe('empty-branch state', () => {

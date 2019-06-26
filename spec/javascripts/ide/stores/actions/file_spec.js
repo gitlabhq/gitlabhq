@@ -275,6 +275,43 @@ describe('IDE store file actions', () => {
       });
     });
 
+    describe('Re-named success', () => {
+      beforeEach(() => {
+        localFile = file(`newCreate-${Math.random()}`);
+        localFile.url = `project/getFileDataURL`;
+        localFile.prevPath = 'old-dull-file';
+        localFile.path = 'new-shiny-file';
+        store.state.entries[localFile.path] = localFile;
+
+        mock.onGet(`${RELATIVE_URL_ROOT}/project/getFileDataURL`).replyOnce(
+          200,
+          {
+            blame_path: 'blame_path',
+            commits_path: 'commits_path',
+            permalink: 'permalink',
+            raw_path: 'raw_path',
+            binary: false,
+            html: '123',
+            render_error: '',
+          },
+          {
+            'page-title': 'testing old-dull-file',
+          },
+        );
+      });
+
+      it('sets document title considering `prevPath` on a file', done => {
+        store
+          .dispatch('getFileData', { path: localFile.path })
+          .then(() => {
+            expect(document.title).toBe('testing new-shiny-file');
+
+            done();
+          })
+          .catch(done.fail);
+      });
+    });
+
     describe('error', () => {
       beforeEach(() => {
         mock.onGet(`project/getFileDataURL`).networkError();
