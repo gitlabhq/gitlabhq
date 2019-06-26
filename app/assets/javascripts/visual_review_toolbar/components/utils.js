@@ -5,7 +5,9 @@ import {
   COMMENT_BOX,
   COMMENT_BUTTON,
   FORM,
+  FORM_CONTAINER,
   NOTE,
+  NOTE_CONTAINER,
   REMEMBER_TOKEN,
   REVIEW_CONTAINER,
   TOKEN_BOX,
@@ -24,7 +26,9 @@ const selectCommentBox = () => document.getElementById(COMMENT_BOX);
 const selectCommentButton = () => document.getElementById(COMMENT_BUTTON);
 const selectContainer = () => document.getElementById(REVIEW_CONTAINER);
 const selectForm = () => document.getElementById(FORM);
+const selectFormContainer = () => document.getElementById(FORM_CONTAINER);
 const selectNote = () => document.getElementById(NOTE);
+const selectNoteContainer = () => document.getElementById(NOTE_CONTAINER);
 const selectRemember = () => document.getElementById(REMEMBER_TOKEN);
 const selectToken = () => document.getElementById(TOKEN_BOX);
 
@@ -36,7 +40,9 @@ export {
   selectCommentBox,
   selectCommentButton,
   selectForm,
+  selectFormContainer,
   selectNote,
+  selectNoteContainer,
   selectRemember,
   selectToken,
 };

@@ -6,23 +6,42 @@
   pointer-events: none;
 }
 
-#gitlab-form-wrapper {
+#gitlab-comment {
+  background-color: #fafafa;
+}
+
+#gitlab-form {
   display: flex;
   flex-direction: column;
-  width: 100%
+  width: 100%;
+  margin-bottom: 0;
+}
+
+#gitlab-note-wrapper {
+  display: flex;
+  flex-direction: column;
+  background-color: #fafafa;
+  border-radius: 4px;
+  margin-bottom: .5rem;
+  padding: 1rem;
+}
+
+#gitlab-form-wrapper {
+  overflow: auto;
+  display: flex;
+  flex-direction: row-reverse;
+  border-radius: 4px;
 }
 
 #gitlab-review-container {
   max-width: 22rem;
   max-height: 22rem;
-  overflow: scroll;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
   position: fixed;
   bottom: 1rem;
   right: 1rem;
-  display: flex;
-  flex-direction: row-reverse;
-  padding: 1rem;
-  background-color: #fff;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell,
   'Helvetica Neue', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
   'Noto Color Emoji';
@@ -31,12 +50,12 @@
   color: #2e2e2e;
 }
 
-.gitlab-open-wrapper {
+.gitlab-wrapper-open {
   max-width: 22rem;
   max-height: 22rem;
 }
 
-.gitlab-closed-wrapper {
+.gitlab-wrapper-closed {
   max-width: 3.4rem;
   max-height: 3.4rem;
 }
@@ -47,7 +66,7 @@
 }
 
 .gitlab-button-secondary {
-  background: none #fff;
+  background: none #fafafa;
   margin: 0 .5rem;
   border: 1px solid #e3e3e3;
 }
@@ -113,6 +132,11 @@
   align-items: baseline;
 }
 
+.gitlab-form-open {
+  padding: 1rem;
+  background-color: #fafafa;
+}
+
 .gitlab-label {
   font-weight: 600;
   display: inline-block;
@@ -124,6 +148,10 @@
   text-decoration: none;
   background-color: transparent;
   background-image: none;
+}
+
+.gitlab-link:hover {
+  text-decoration: underline;
 }
 
 .gitlab-message {

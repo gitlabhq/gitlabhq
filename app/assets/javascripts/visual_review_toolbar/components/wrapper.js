@@ -1,13 +1,26 @@
 import { comment } from './comment';
-import { CLEAR, FORM, WHITE } from './constants';
+import { CLEAR, FORM, FORM_CONTAINER, WHITE } from './constants';
 import { login } from './login';
-import { selectCollapseButton, selectContainer, selectForm } from './utils';
+import { clearNote } from './note';
+import {
+  selectCollapseButton,
+  selectForm,
+  selectFormContainer,
+  selectNoteContainer,
+} from './utils';
 import { commentIcon, compressIcon } from './wrapper_icons';
 
 const form = content => `
-  <form id=${FORM}>
+  <form id="${FORM}">
     ${content}
   </form>
+`;
+
+const buttonAndForm = ({ content, toggleButton }) => `
+  <div id="${FORM_CONTAINER}" class="gitlab-form-open">
+    ${toggleButton}
+    ${form(content)}
+  </div>
 `;
 
 const addCommentForm = () => {
@@ -31,13 +44,15 @@ function logoutUser() {
     return;
   }
 
+  clearNote();
   addLoginForm();
 }
 
 function toggleForm() {
-  const container = selectContainer();
   const collapseButton = selectCollapseButton();
   const currentForm = selectForm();
+  const formContainer = selectFormContainer();
+  const noteContainer = selectNoteContainer();
   const OPEN = 'open';
   const CLOSED = 'closed';
 
@@ -49,7 +64,7 @@ function toggleForm() {
 
   const openButtonClasses = ['gitlab-collapse-closed', 'gitlab-collapse-open'];
   const closedButtonClasses = [...openButtonClasses].reverse();
-  const openContainerClasses = ['gitlab-closed-wrapper', 'gitlab-open-wrapper'];
+  const openContainerClasses = ['gitlab-wrapper-closed', 'gitlab-wrapper-open'];
   const closedContainerClasses = [...openContainerClasses].reverse();
 
   const stateVals = {
@@ -72,11 +87,16 @@ function toggleForm() {
   const nextState = collapseButton.classList.contains('gitlab-collapse-open') ? CLOSED : OPEN;
   const currentVals = stateVals[nextState];
 
-  container.classList.replace(...currentVals.containerClasses);
-  container.style.backgroundColor = currentVals.backgroundColor;
+  formContainer.classList.replace(...currentVals.containerClasses);
+  formContainer.style.backgroundColor = currentVals.backgroundColor;
+  formContainer.classList.toggle('gitlab-form-open');
   currentForm.style.display = currentVals.display;
   collapseButton.classList.replace(...currentVals.buttonClasses);
   collapseButton.innerHTML = currentVals.icon;
+
+  if (noteContainer && noteContainer.innerText.length > 0) {
+    noteContainer.style.display = currentVals.display;
+  }
 }
 
-export { addCommentForm, addLoginForm, form, logoutUser, toggleForm };
+export { addCommentForm, addLoginForm, buttonAndForm, logoutUser, toggleForm };
