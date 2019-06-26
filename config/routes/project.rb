@@ -41,7 +41,10 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       #
       # Templates
       #
-      get '/templates/:template_type/:key' => 'templates#show', as: :template, constraints: { key: %r{[^/]+} }
+      get '/templates/:template_type/:key' => 'templates#show',
+          as: :template,
+          defaults: { format: 'json' },
+          constraints: { key: %r{[^/]+}, template_type: /issue|merge_request/, format: 'json' }
 
       resource  :avatar, only: [:show, :destroy]
       resources :commit, only: [:show], constraints: { id: /\h{7,40}/ } do
