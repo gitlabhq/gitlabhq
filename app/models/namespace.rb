@@ -35,6 +35,8 @@ class Namespace < ApplicationRecord
   belongs_to :parent, class_name: "Namespace"
   has_many :children, class_name: "Namespace", foreign_key: :parent_id
   has_one :chat_team, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_one :root_storage_statistics, class_name: 'Namespace::RootStorageStatistics'
+  has_one :aggregation_schedule, class_name: 'Namespace::AggregationSchedule'
 
   validates :owner, presence: true, unless: ->(n) { n.type == "Group" }
   validates :name,

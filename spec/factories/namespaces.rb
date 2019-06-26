@@ -19,5 +19,13 @@ FactoryBot.define do
         owner.namespace = namespace
       end
     end
+
+    trait :with_aggregation_schedule do
+      association :aggregation_schedule, factory: :namespace_aggregation_schedules
+    end
+
+    trait :with_root_storage_statistics do
+      association :root_storage_statistics, factory: :namespace_root_storage_statistics
+    end
   end
 end
