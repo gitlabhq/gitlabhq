@@ -74,9 +74,13 @@ export default {
     state.environmentsEndpoint = endpoints.environmentsEndpoint;
     state.deploymentsEndpoint = endpoints.deploymentsEndpoint;
     state.dashboardEndpoint = endpoints.dashboardEndpoint;
+    state.currentDashboard = endpoints.currentDashboard;
   },
   [types.SET_DASHBOARD_ENABLED](state, enabled) {
     state.useDashboardEndpoint = enabled;
+  },
+  [types.SET_MULTIPLE_DASHBOARDS_ENABLED](state, enabled) {
+    state.multipleDashboardsEnabled = enabled;
   },
   [types.SET_GETTING_STARTED_EMPTY_STATE](state) {
     state.emptyState = 'gettingStarted';
@@ -84,5 +88,8 @@ export default {
   [types.SET_NO_DATA_EMPTY_STATE](state) {
     state.showEmptyState = true;
     state.emptyState = 'noData';
+  },
+  [types.SET_ALL_DASHBOARDS](state, dashboards) {
+    state.allDashboards = dashboards;
   },
 };

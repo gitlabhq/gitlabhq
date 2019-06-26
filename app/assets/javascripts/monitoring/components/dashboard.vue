@@ -106,16 +106,23 @@ export default {
     },
     customMetricsPath: {
       type: String,
-      required: true,
+      required: false,
+      default: invalidUrl,
     },
     validateQueryPath: {
       type: String,
-      required: true,
+      required: false,
+      default: invalidUrl,
     },
     dashboardEndpoint: {
       type: String,
       required: false,
       default: invalidUrl,
+    },
+    currentDashboard: {
+      type: String,
+      required: false,
+      default: '',
     },
   },
   data() {
@@ -139,9 +146,14 @@ export default {
       'deploymentData',
       'metricsWithData',
       'useDashboardEndpoint',
+      'allDashboards',
+      'multipleDashboardsEnabled',
     ]),
     groupsWithData() {
       return this.groups.filter(group => this.chartsWithData(group.metrics).length > 0);
+    },
+    selectedDashboardText() {
+      return this.currentDashboard || (this.allDashboards[0] && this.allDashboards[0].display_name);
     },
   },
   created() {
@@ -150,6 +162,7 @@ export default {
       environmentsEndpoint: this.environmentsEndpoint,
       deploymentsEndpoint: this.deploymentsEndpoint,
       dashboardEndpoint: this.dashboardEndpoint,
+      currentDashboard: this.currentDashboard,
     });
 
     this.timeWindows = timeWindows;
@@ -240,6 +253,24 @@ export default {
         v-if="environmentsEndpoint"
         class="dropdowns d-flex align-items-center justify-content-between"
       >
+        <div v-if="multipleDashboardsEnabled" class="d-flex align-items-center">
+          <label class="mb-0">{{ __('Dashboard') }}</label>
+          <gl-dropdown
+            class="ml-2 mr-3 js-dashboards-dropdown"
+            toggle-class="dropdown-menu-toggle"
+            :text="selectedDashboardText"
+          >
+            <gl-dropdown-item
+              v-for="dashboard in allDashboards"
+              :key="dashboard.path"
+              :active="dashboard.path === currentDashboard"
+              active-class="is-active"
+              :href="`?dashboard=${dashboard.path}`"
+            >
+              {{ dashboard.display_name || dashboard.path }}
+            </gl-dropdown-item>
+          </gl-dropdown>
+        </div>
         <div class="d-flex align-items-center">
           <strong>{{ s__('Metrics|Environment') }}</strong>
           <gl-dropdown

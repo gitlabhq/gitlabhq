@@ -22,6 +22,7 @@ import {
   environmentData,
   metricsDashboardResponse,
   metricsGroupsAPIResponse,
+  dashboardGitResponse,
 } from '../mock_data';
 
 describe('Monitoring store actions', () => {
@@ -212,17 +213,19 @@ describe('Monitoring store actions', () => {
   describe('receiveMetricsDashboardSuccess', () => {
     let commit;
     let dispatch;
+    let state;
 
     beforeEach(() => {
       commit = jasmine.createSpy();
       dispatch = jasmine.createSpy();
+      state = storeState();
     });
 
     it('stores groups ', () => {
       const params = {};
       const response = metricsDashboardResponse;
 
-      receiveMetricsDashboardSuccess({ commit, dispatch }, { response, params });
+      receiveMetricsDashboardSuccess({ state, commit, dispatch }, { response, params });
 
       expect(commit).toHaveBeenCalledWith(
         types.RECEIVE_METRICS_DATA_SUCCESS,
@@ -230,6 +233,18 @@ describe('Monitoring store actions', () => {
       );
 
       expect(dispatch).toHaveBeenCalledWith('fetchPrometheusMetrics', params);
+    });
+
+    it('sets the dashboards loaded from the repository', () => {
+      const params = {};
+      const response = metricsDashboardResponse;
+
+      response.all_dashboards = dashboardGitResponse;
+      state.multipleDashboardsEnabled = true;
+
+      receiveMetricsDashboardSuccess({ state, commit, dispatch }, { response, params });
+
+      expect(commit).toHaveBeenCalledWith(types.SET_ALL_DASHBOARDS, dashboardGitResponse);
     });
   });
 

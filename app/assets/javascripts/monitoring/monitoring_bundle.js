@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
+import { getParameterValues } from '~/lib/utils/url_utility';
 import Dashboard from 'ee_else_ce/monitoring/components/dashboard.vue';
 import store from './stores';
 
@@ -7,10 +8,12 @@ export default (props = {}) => {
   const el = document.getElementById('prometheus-graphs');
 
   if (el && el.dataset) {
-    store.dispatch(
-      'monitoringDashboard/setDashboardEnabled',
-      gon.features.environmentMetricsUsePrometheusEndpoint,
-    );
+    store.dispatch('monitoringDashboard/setFeatureFlags', {
+      prometheusEndpointEnabled: gon.features.environmentMetricsUsePrometheusEndpoint,
+      multipleDashboardsEnabled: gon.features.environmentMetricsShowMultipleDashboards,
+    });
+
+    const [currentDashboard] = getParameterValues('dashboard');
 
     // eslint-disable-next-line no-new
     new Vue({
@@ -20,6 +23,7 @@ export default (props = {}) => {
         return createElement(Dashboard, {
           props: {
             ...el.dataset,
+            currentDashboard,
             hasMetrics: parseBoolean(el.dataset.hasMetrics),
             ...props,
           },
