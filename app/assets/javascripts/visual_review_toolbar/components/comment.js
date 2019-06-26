@@ -1,54 +1,62 @@
 import { BLACK, COMMENT_BOX, MUTED, LOGOUT } from './constants';
-import { clearNote, note, postError } from './note';
-import { buttonClearStyles, selectCommentBox, selectCommentButton, selectNote } from './utils';
+import { clearNote, postError } from './note';
+import {
+  buttonClearStyles,
+  selectCommentBox,
+  selectCommentButton,
+  selectNote,
+  selectNoteContainer,
+} from './utils';
 
 const comment = `
   <div>
     <textarea id="${COMMENT_BOX}" name="${COMMENT_BOX}" rows="3" placeholder="Enter your feedback or idea" class="gitlab-input" aria-required="true"></textarea>
-    ${note}
     <p class="gitlab-metadata-note">Additional metadata will be included: browser, OS, current page, user agent, and viewport dimensions.</p>
   </div>
   <div class="gitlab-button-wrapper">
-    <button class="gitlab-button gitlab-button-secondary" style="${buttonClearStyles}" type="button" id="${LOGOUT}"> Logout </button>
+    <button class="gitlab-button gitlab-button-secondary" style="${buttonClearStyles}" type="button" id="${LOGOUT}"> Log out </button>
     <button class="gitlab-button gitlab-button-success" style="${buttonClearStyles}" type="button" id="gitlab-comment-button"> Send feedback </button>
   </div>
 `;
 
-const resetCommentBox = () => {
-  const commentBox = selectCommentBox();
+const resetCommentButton = () => {
   const commentButton = selectCommentButton();
 
   /* eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings */
   commentButton.innerText = 'Send feedback';
   commentButton.classList.replace('gitlab-button-secondary', 'gitlab-button-success');
   commentButton.style.opacity = 1;
+};
 
+const resetCommentBox = () => {
+  const commentBox = selectCommentBox();
   commentBox.style.pointerEvents = 'auto';
   commentBox.style.color = BLACK;
 };
 
-const resetCommentButton = () => {
+const resetCommentText = () => {
   const commentBox = selectCommentBox();
-  const currentNote = selectNote();
-
   commentBox.value = '';
-  currentNote.innerText = '';
 };
 
 const resetComment = () => {
-  resetCommentBox();
   resetCommentButton();
+  resetCommentBox();
+  resetCommentText();
 };
 
-const confirmAndClear = mergeRequestId => {
+const confirmAndClear = feedbackInfo => {
   const commentButton = selectCommentButton();
   const currentNote = selectNote();
+  const noteContainer = selectNoteContainer();
 
   /* eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings */
   commentButton.innerText = 'Feedback sent';
-  /* eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings */
-  currentNote.innerText = `Your comment was successfully posted to merge request #${mergeRequestId}`;
-  setTimeout(resetComment, 2000);
+  noteContainer.style.visibility = 'visible';
+  currentNote.insertAdjacentHTML('beforeend', feedbackInfo);
+
+  setTimeout(resetComment, 1000);
+  setTimeout(clearNote, 6000);
 };
 
 const setInProgressState = () => {
@@ -71,6 +79,7 @@ const postComment = ({
   innerWidth,
   innerHeight,
   projectId,
+  projectPath,
   mergeRequestId,
   mrUrl,
   token,
@@ -86,6 +95,7 @@ const postComment = ({
     /* eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings */
     postError('Your comment appears to be empty.', COMMENT_BOX);
     resetCommentBox();
+    resetCommentButton();
     return;
   }
 
@@ -114,11 +124,16 @@ const postComment = ({
   })
     .then(response => {
       if (response.ok) {
-        confirmAndClear(mergeRequestId);
-        return;
+        return response.json();
       }
 
       throw new Error(`${response.status}: ${response.statusText}`);
+    })
+    .then(data => {
+      const commentId = data.notes[0].id;
+      const feedbackLink = `${mrUrl}/${projectPath}/merge_requests/${mergeRequestId}#note_${commentId}`;
+      const feedbackInfo = `Feedback sent. View at <a class="gitlab-link" href="${feedbackLink}">${projectPath} #${mergeRequestId} (comment ${commentId})</a>`;
+      confirmAndClear(feedbackInfo);
     })
     .catch(err => {
       postError(
@@ -126,6 +141,7 @@ const postComment = ({
         COMMENT_BOX,
       );
       resetCommentBox();
+      resetCommentButton();
     });
 };
 

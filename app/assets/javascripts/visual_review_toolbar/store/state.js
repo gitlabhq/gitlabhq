@@ -34,7 +34,7 @@ const initializeState = (wind, doc) => {
   const browser = getBrowserId(userAgent);
 
   const scriptEl = doc.getElementById('review-app-toolbar-script');
-  const { projectId, mergeRequestId, mrUrl } = scriptEl.dataset;
+  const { projectId, mergeRequestId, mrUrl, projectPath } = scriptEl.dataset;
 
   // This mutates our default state object above. It's weird but it makes the linter happy.
   Object.assign(state, {
@@ -46,6 +46,7 @@ const initializeState = (wind, doc) => {
     mrUrl,
     platform,
     projectId,
+    projectPath,
     userAgent,
   });
 };
