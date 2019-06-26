@@ -158,7 +158,7 @@ describe InternalId do
       before do
         described_class.reset_column_information
         # Project factory will also call the current_version
-        expect(ActiveRecord::Migrator).to receive(:current_version).twice.and_return(InternalId::REQUIRED_SCHEMA_VERSION - 1)
+        expect(ActiveRecord::Migrator).to receive(:current_version).at_least(:once).and_return(InternalId::REQUIRED_SCHEMA_VERSION - 1)
       end
 
       it 'does not reset any of the iids' do
