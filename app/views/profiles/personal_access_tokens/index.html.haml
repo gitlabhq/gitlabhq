@@ -1,5 +1,5 @@
-- breadcrumb_title "Access Tokens"
-- page_title "Personal Access Tokens"
+- breadcrumb_title s_('AccessTokens|Access Tokens')
+- page_title s_('AccessTokens|Personal Access Tokens')
 - @content_class = "limit-container-width" unless fluid_layout
 
 .row.prepend-top-default
@@ -7,10 +7,10 @@
     %h4.prepend-top-0
       = page_title
     %p
-      You can generate a personal access token for each application you use that needs access to the GitLab API.
+      = s_('AccessTokens|You can generate a personal access token for each application you use that needs access to the GitLab API.')
     %p
-      You can also use personal access tokens to authenticate against Git over HTTP.
-      They are the only accepted password when you have Two-Factor Authentication (2FA) enabled.
+      = s_('AccessTokens|You can also use personal access tokens to authenticate against Git over HTTP.')
+      = s_('AccessTokens|They are the only accepted password when you have Two-Factor Authentication (2FA) enabled.')
 
   .col-lg-8
     - if @new_personal_access_token
@@ -24,35 +24,33 @@
 .row.prepend-top-default
   .col-lg-4.profile-settings-sidebar
     %h4.prepend-top-0
-      Feed token
+      = s_('AccessTokens|Feed token')
     %p
-      Your feed token is used to authenticate you when your RSS reader loads a personalized RSS feed or when your calendar application loads a personalized calendar, and is included in those feed URLs.
+      = s_('AccessTokens|Your feed token is used to authenticate you when your RSS reader loads a personalized RSS feed or when your calendar application loads a personalized calendar, and is included in those feed URLs.')
     %p
-      It cannot be used to access any other data.
+      = s_('AccessTokens|It cannot be used to access any other data.')
   .col-lg-8.feed-token-reset
-    = label_tag :feed_token, 'Feed token', class: "label-bold"
+    = label_tag :feed_token, s_('AccessTokens|Feed token'), class: "label-bold"
     = text_field_tag :feed_token, current_user.feed_token, class: 'form-control', readonly: true, onclick: 'this.select()'
     %p.form-text.text-muted
-      Keep this token secret. Anyone who gets ahold of it can read activity and issue RSS feeds or your calendar feed as if they were you.
-      You should
-      = link_to 'reset it', [:reset, :feed_token, :profile], method: :put, data: { confirm: 'Are you sure? Any RSS or calendar URLs currently in use will stop working.' }
-      if that ever happens.
+      - reset_link = link_to s_('AccessTokens|reset it'), [:reset, :feed_token, :profile], method: :put, data: { confirm: s_('AccessTokens|Are you sure? Any RSS or calendar URLs currently in use will stop working.') }
+      - reset_message = s_('AccessTokens|Keep this token secret. Anyone who gets ahold of it can read activity and issue RSS feeds or your calendar feed as if they were you. You should %{link_reset_it} if that ever happens.') % { link_reset_it: reset_link }
+      = reset_message.html_safe
 
 - if incoming_email_token_enabled?
   %hr
   .row.prepend-top-default
     .col-lg-4.profile-settings-sidebar
       %h4.prepend-top-0
-        Incoming email token
+        = s_('AccessTokens|Incoming email token')
       %p
-        Your incoming email token is used to authenticate you when you create a new issue by email, and is included in your personal project-specific email addresses.
+        = s_('AccessTokens|Your incoming email token is used to authenticate you when you create a new issue by email, and is included in your personal project-specific email addresses.')
       %p
-        It cannot be used to access any other data.
+        = s_('AccessTokens|It cannot be used to access any other data.')
     .col-lg-8.incoming-email-token-reset
-      = label_tag :incoming_email_token, 'Incoming email token', class: "label-bold"
+      = label_tag :incoming_email_token, s_('AccessTokens|Incoming email token'), class: "label-bold"
       = text_field_tag :incoming_email_token, current_user.incoming_email_token, class: 'form-control', readonly: true, onclick: 'this.select()'
       %p.form-text.text-muted
-        Keep this token secret. Anyone who gets ahold of it can create issues as if they were you.
-        You should
-        = link_to 'reset it', [:reset, :incoming_email_token, :profile], method: :put, data: { confirm: 'Are you sure? Any issue email addresses currently in use will stop working.' }
-        if that ever happens.
+        - reset_link = link_to s_('AccessTokens|reset it'), [:reset, :incoming_email_token, :profile], method: :put, data: { confirm: s_('AccessTokens|Are you sure? Any issue email addresses currently in use will stop working.') }
+        - reset_message = s_('AccessTokens|Keep this token secret. Anyone who gets ahold of it can create issues as if they were you. You should %{link_reset_it} if that ever happens.') % { link_reset_it: reset_link }
+        = reset_message.html_safe

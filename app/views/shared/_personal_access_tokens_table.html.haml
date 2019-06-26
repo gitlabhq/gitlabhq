@@ -1,20 +1,21 @@
-- type = impersonation ? "Impersonation" : "Personal Access"
+- type = impersonation ? s_('Profiles|Impersonation') : s_('Profiles|Personal Access')
 %hr
 
-%h5 Active #{type} Tokens (#{active_tokens.length})
+%h5
+  = _('Active %{type} Tokens (%{token_length})') % { type: type, token_length: active_tokens.length }
 - if impersonation
   %p.profile-settings-content
-    To see all the user's personal access tokens you must impersonate them first.
+    = _("To see all the user's personal access tokens you must impersonate them first.")
 
 - if active_tokens.present?
   .table-responsive
     %table.table.active-tokens
       %thead
         %tr
-          %th Name
-          %th Created
-          %th Expires
-          %th Scopes
+          %th= _('Name')
+          %th= s_('AccessTokens|Created')
+          %th= _('Expires')
+          %th= _('Scopes')
           %th
       %tbody
         - active_tokens.each do |token|
@@ -26,10 +27,10 @@
                 %span{ class: ('text-warning' if token.expires_soon?) }
                   In #{distance_of_time_in_words_to_now(token.expires_at)}
               - else
-                %span.token-never-expires-label Never
-            %td= token.scopes.present? ? token.scopes.join(", ") : "<no scopes selected>"
+                %span.token-never-expires-label= _('Never')
+            %td= token.scopes.present? ? token.scopes.join(", ") : _('<no scopes selected>')
             - path = impersonation ? revoke_admin_user_impersonation_token_path(token.user, token) : revoke_profile_personal_access_token_path(token)
-            %td= link_to "Revoke", path, method: :put, class: "btn btn-danger float-right qa-revoke-button", data: { confirm: "Are you sure you want to revoke this #{type} Token? This action cannot be undone." }
+            %td= link_to _('Revoke'), path, method: :put, class: "btn btn-danger float-right qa-revoke-button", data: { confirm: _('Are you sure you want to revoke this %{type} Token? This action cannot be undone.') % { type: type } }
 - else
   .settings-message.text-center
-    This user has no active #{type} Tokens.
+    = _('This user has no active %{type} Tokens.') % { type: type }

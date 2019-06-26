@@ -396,6 +396,9 @@ msgstr ""
 msgid "<no name set>"
 msgstr ""
 
+msgid "<no scopes selected>"
+msgstr ""
+
 msgid "<strong>%{changedFilesLength} unstaged</strong> and <strong>%{stagedFilesLength} staged</strong> changes"
 msgstr ""
 
@@ -507,6 +510,54 @@ msgstr ""
 msgid "Access to '%{classification_label}' not allowed"
 msgstr ""
 
+msgid "AccessTokens|Access Tokens"
+msgstr ""
+
+msgid "AccessTokens|Are you sure? Any RSS or calendar URLs currently in use will stop working."
+msgstr ""
+
+msgid "AccessTokens|Are you sure? Any issue email addresses currently in use will stop working."
+msgstr ""
+
+msgid "AccessTokens|Created"
+msgstr ""
+
+msgid "AccessTokens|Feed token"
+msgstr ""
+
+msgid "AccessTokens|Incoming email token"
+msgstr ""
+
+msgid "AccessTokens|It cannot be used to access any other data."
+msgstr ""
+
+msgid "AccessTokens|Keep this token secret. Anyone who gets ahold of it can create issues as if they were you. You should %{link_reset_it} if that ever happens."
+msgstr ""
+
+msgid "AccessTokens|Keep this token secret. Anyone who gets ahold of it can read activity and issue RSS feeds or your calendar feed as if they were you. You should %{link_reset_it} if that ever happens."
+msgstr ""
+
+msgid "AccessTokens|Personal Access Tokens"
+msgstr ""
+
+msgid "AccessTokens|They are the only accepted password when you have Two-Factor Authentication (2FA) enabled."
+msgstr ""
+
+msgid "AccessTokens|You can also use personal access tokens to authenticate against Git over HTTP."
+msgstr ""
+
+msgid "AccessTokens|You can generate a personal access token for each application you use that needs access to the GitLab API."
+msgstr ""
+
+msgid "AccessTokens|Your feed token is used to authenticate you when your RSS reader loads a personalized RSS feed or when your calendar application loads a personalized calendar, and is included in those feed URLs."
+msgstr ""
+
+msgid "AccessTokens|Your incoming email token is used to authenticate you when you create a new issue by email, and is included in your personal project-specific email addresses."
+msgstr ""
+
+msgid "AccessTokens|reset it"
+msgstr ""
+
 msgid "Account"
 msgstr ""
 
@@ -517,6 +568,9 @@ msgid "Account: %{account}"
 msgstr ""
 
 msgid "Active"
+msgstr ""
+
+msgid "Active %{type} Tokens (%{token_length})"
 msgstr ""
 
 msgid "Active Sessions"
@@ -535,6 +589,9 @@ msgid "Add Kubernetes cluster"
 msgstr ""
 
 msgid "Add README"
+msgstr ""
+
+msgid "Add a %{type} token"
 msgstr ""
 
 msgid "Add a GPG key"
@@ -1162,6 +1219,9 @@ msgid "Are you sure you want to reset registration token?"
 msgstr ""
 
 msgid "Are you sure you want to reset the health check token?"
+msgstr ""
+
+msgid "Are you sure you want to revoke this %{type} Token? This action cannot be undone."
 msgstr ""
 
 msgid "Are you sure you want to revoke this nickname?"
@@ -2992,6 +3052,9 @@ msgstr ""
 msgid "Copy link"
 msgstr ""
 
+msgid "Copy personal access token to clipboard"
+msgstr ""
+
 msgid "Copy reference to clipboard"
 msgstr ""
 
@@ -3038,6 +3101,9 @@ msgid "Coverage"
 msgstr ""
 
 msgid "Create"
+msgstr ""
+
+msgid "Create %{type} token"
 msgstr ""
 
 msgid "Create New Directory"
@@ -4243,6 +4309,12 @@ msgid "Expiration date"
 msgstr ""
 
 msgid "Expired %{expiredOn}"
+msgstr ""
+
+msgid "Expires"
+msgstr ""
+
+msgid "Expires at"
 msgstr ""
 
 msgid "Expires in %{expires_at}"
@@ -5957,6 +6029,9 @@ msgstr ""
 msgid "Make issue confidential."
 msgstr ""
 
+msgid "Make sure you save it - you won't be able to access it again."
+msgstr ""
+
 msgid "Make sure you're logged into the account that owns the projects you'd like to import."
 msgstr ""
 
@@ -7086,6 +7161,9 @@ msgstr ""
 msgid "Pick a name"
 msgstr ""
 
+msgid "Pick a name for the application, and we'll give you a unique %{type} token."
+msgstr ""
+
 msgid "Pin code"
 msgstr ""
 
@@ -7611,6 +7689,9 @@ msgstr ""
 msgid "Profiles|Full name"
 msgstr ""
 
+msgid "Profiles|Impersonation"
+msgstr ""
+
 msgid "Profiles|Include private contributions on my profile"
 msgstr ""
 
@@ -7651,6 +7732,9 @@ msgid "Profiles|Organization"
 msgstr ""
 
 msgid "Profiles|Path"
+msgstr ""
+
+msgid "Profiles|Personal Access"
 msgstr ""
 
 msgid "Profiles|Position and size your new avatar"
@@ -7786,6 +7870,12 @@ msgid "Profiles|Your status"
 msgstr ""
 
 msgid "Profiles|e.g. My MacBook key"
+msgstr ""
+
+msgid "Profiles|impersonation"
+msgstr ""
+
+msgid "Profiles|personal access"
 msgstr ""
 
 msgid "Profiles|username"
@@ -8819,6 +8909,9 @@ msgid "Scope not supported with disabled 'users_search' feature!"
 msgstr ""
 
 msgid "Scoped label"
+msgstr ""
+
+msgid "Scopes"
 msgstr ""
 
 msgid "Scroll down to <strong>Google Code Project Hosting</strong> and enable the switch on the right."
@@ -10538,6 +10631,9 @@ msgstr ""
 msgid "This user cannot be unlocked manually from GitLab"
 msgstr ""
 
+msgid "This user has no active %{type} Tokens."
+msgstr ""
+
 msgid "This user has no identities"
 msgstr ""
 
@@ -10801,6 +10897,9 @@ msgid "To move or copy an entire GitLab project from another GitLab installation
 msgstr ""
 
 msgid "To preserve performance only <strong>%{display_size} of %{real_size}</strong> files are displayed."
+msgstr ""
+
+msgid "To see all the user's personal access tokens you must impersonate them first."
 msgstr ""
 
 msgid "To specify the notification level per project of a group you belong to, you need to visit project page and change notification level there."
@@ -12024,6 +12123,9 @@ msgid "Your GPG keys (%{count})"
 msgstr ""
 
 msgid "Your Groups"
+msgstr ""
+
+msgid "Your New Personal Access Token"
 msgstr ""
 
 msgid "Your Primary Email will be used for avatar detection."
