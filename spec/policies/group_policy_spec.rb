@@ -506,11 +506,15 @@ describe GroupPolicy do
 
   context "create_subgroup" do
     context 'when group has subgroup creation level set to owner' do
+<<<<<<< HEAD
       let(:group) do
         create(
           :group,
           subgroup_creation_level: ::Gitlab::Access::OWNER_SUBGROUP_ACCESS)
       end
+=======
+      let(:group) { create(:group, subgroup_creation_level: ::Gitlab::Access::OWNER_SUBGROUP_ACCESS) }
+>>>>>>> Add examples specing the setting to choose who can create subgroups
 
       context 'reporter' do
         let(:current_user) { reporter }
@@ -538,11 +542,15 @@ describe GroupPolicy do
     end
 
     context 'when group has subgroup creation level set to maintainer' do
+<<<<<<< HEAD
       let(:group) do
         create(
           :group,
           subgroup_creation_level: ::Gitlab::Access::MAINTAINER_SUBGROUP_ACCESS)
       end
+=======
+      let(:group) { create(:group, subgroup_creation_level: ::Gitlab::Access::MAINTAINER_SUBGROUP_ACCESS) }
+>>>>>>> Add examples specing the setting to choose who can create subgroups
 
       context 'reporter' do
         let(:current_user) { reporter }
