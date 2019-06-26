@@ -2998,4 +2998,28 @@ describe Ci::Pipeline, :mailer do
       end
     end
   end
+
+  describe '#error_messages' do
+    subject { pipeline.error_messages }
+
+    before do
+      pipeline.valid?
+    end
+
+    context 'when pipeline has errors' do
+      let(:pipeline) { build(:ci_pipeline, sha: nil, ref: nil) }
+
+      it 'returns the full error messages' do
+        is_expected.to eq("Sha can't be blank and Ref can't be blank")
+      end
+    end
+
+    context 'when pipeline does not have errors' do
+      let(:pipeline) { build(:ci_pipeline) }
+
+      it 'returns empty string' do
+        is_expected.to be_empty
+      end
+    end
+  end
 end
