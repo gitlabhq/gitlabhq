@@ -102,13 +102,9 @@ describe 'Group issues page' do
   end
 
   context 'manual ordering' do
-    before do
-      stub_feature_flags(manual_sorting: true)
-    end
-
-    let!(:issue1) { create(:issue, project: project, title: 'Issue #1') }
-    let!(:issue2) { create(:issue, project: project, title: 'Issue #2') }
-    let!(:issue3) { create(:issue, project: project, title: 'Issue #3') }
+    let!(:issue1) { create(:issue, project: project, title: 'Issue #1', relative_position: 1) }
+    let!(:issue2) { create(:issue, project: project, title: 'Issue #2', relative_position: 2) }
+    let!(:issue3) { create(:issue, project: project, title: 'Issue #3', relative_position: 3) }
 
     it 'displays all issues' do
       visit issues_group_path(group, sort: 'relative_position')
@@ -136,13 +132,8 @@ describe 'Group issues page' do
       visit issues_group_path(group, sort: 'relative_position')
 
       drag_to(selector: '.manual-ordering',
-        scrollable: '#board-app',
-        list_from_index: 0,
         from_index: 0,
-        to_index: 2,
-        list_to_index: 0)
-
-      wait_for_requests
+        to_index: 2)
 
       page.within('.manual-ordering') do
         expect(find('.issue:nth-child(1) .title')).to have_content('Issue #2')
