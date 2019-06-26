@@ -1,8 +1,8 @@
 import Visibility from 'visibilityjs';
+import PipelineStore from 'ee_else_ce/pipelines/stores/pipeline_store';
 import Flash from '../flash';
 import Poll from '../lib/utils/poll';
 import { __ } from '../locale';
-import PipelineStore from './stores/pipeline_store';
 import PipelineService from './services/pipeline_service';
 
 export default class pipelinesMediator {
