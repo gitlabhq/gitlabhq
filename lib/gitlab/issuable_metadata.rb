@@ -2,7 +2,7 @@
 
 module Gitlab
   module IssuableMetadata
-    def issuable_meta_data(issuable_collection, collection_type)
+    def issuable_meta_data(issuable_collection, collection_type, user = nil)
       # ActiveRecord uses Object#extend for null relations.
       if !(issuable_collection.singleton_class < ActiveRecord::NullRelation) &&
           issuable_collection.respond_to?(:limit_value) &&
@@ -23,7 +23,7 @@ module Gitlab
       issuable_votes_count = ::AwardEmoji.votes_for_collection(issuable_ids, collection_type)
       issuable_merge_requests_count =
         if collection_type == 'Issue'
-          ::MergeRequestsClosingIssues.count_for_collection(issuable_ids)
+          ::MergeRequestsClosingIssues.count_for_collection(issuable_ids, user)
         else
           []
         end
