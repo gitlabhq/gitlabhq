@@ -260,6 +260,7 @@ FactoryBot.define do
     trait(:merge_requests_enabled)  { merge_requests_access_level ProjectFeature::ENABLED }
     trait(:merge_requests_disabled) { merge_requests_access_level ProjectFeature::DISABLED }
     trait(:merge_requests_private)  { merge_requests_access_level ProjectFeature::PRIVATE }
+    trait(:merge_requests_public)   { merge_requests_access_level ProjectFeature::PUBLIC }
     trait(:repository_enabled)      { repository_access_level ProjectFeature::ENABLED }
     trait(:repository_disabled)     { repository_access_level ProjectFeature::DISABLED }
     trait(:repository_private)      { repository_access_level ProjectFeature::PRIVATE }
