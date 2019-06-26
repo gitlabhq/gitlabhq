@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe 'Group issues page' do
   include FilteredSearchHelpers
+  include DragTo
 
   let(:group) { create(:group) }
   let(:project) { create(:project, :public, group: group)}
@@ -96,6 +97,51 @@ describe 'Group issues page' do
           expect(page).to have_content(project.full_name)
           expect(page).not_to have_content(project_with_issues_disabled.full_name)
         end
+      end
+    end
+  end
+
+  context 'manual ordering' do
+    let!(:issue1) { create(:issue, project: project, title: 'Issue #1') }
+    let!(:issue2) { create(:issue, project: project, title: 'Issue #2') }
+    let!(:issue3) { create(:issue, project: project, title: 'Issue #3') }
+
+    it 'displays all issues' do
+      visit issues_group_path(group, sort: 'relative_position')
+
+      page.within('.issues-list') do
+        expect(page).to have_selector('li.issue', count: 3)
+      end
+    end
+
+    it 'has manual-ordering css applied' do
+      visit issues_group_path(group, sort: 'relative_position')
+
+      expect(page).to have_selector('.manual-ordering')
+    end
+
+    it 'each issue item has a user-can-drag css applied' do
+      visit issues_group_path(group, sort: 'relative_position')
+
+      page.within('.manual-ordering') do
+        expect(page).to have_selector('.issue.user-can-drag', count: 3)
+      end
+    end
+
+    it 'issues should be draggable and persist order', :js do
+      visit issues_group_path(group, sort: 'relative_position')
+
+      drag_to(selector: '.manual-ordering',
+        scrollable: '#board-app',
+        list_from_index: 0,
+        from_index: 0,
+        to_index: 2,
+        list_to_index: 0)
+
+      page.within('.manual-ordering') do
+        expect(find('.issue:nth-child(1) .title')).to have_content('Issue #2')
+        expect(find('.issue:nth-child(2) .title')).to have_content('Issue #1')
+        expect(find('.issue:nth-child(3) .title')).to have_content('Issue #3')
       end
     end
   end
