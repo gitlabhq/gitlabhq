@@ -234,7 +234,7 @@ export default {
 </script>
 
 <template>
-  <div v-if="!showEmptyState" class="prometheus-graphs">
+  <div class="prometheus-graphs">
     <div class="gl-p-3 border-bottom bg-gray-light d-flex justify-content-between">
       <div
         v-if="environmentsEndpoint"
@@ -253,11 +253,12 @@ export default {
               :key="environment.id"
               :active="environment.name === currentEnvironmentName"
               active-class="is-active"
+              :href="environment.metrics_path"
               >{{ environment.name }}</gl-dropdown-item
             >
           </gl-dropdown>
         </div>
-        <div class="d-flex align-items-center prepend-left-8">
+        <div v-if="!showEmptyState" class="d-flex align-items-center prepend-left-8">
           <strong>{{ s__('Metrics|Show last') }}</strong>
           <gl-dropdown
             class="prepend-left-10 js-time-window-dropdown"
@@ -276,7 +277,7 @@ export default {
         </div>
       </div>
       <div class="d-flex">
-        <div v-if="isEE && canAddMetrics">
+        <div v-if="isEE && canAddMetrics && !showEmptyState">
           <gl-button
             v-gl-modal-directive="$options.addMetric.modalId"
             class="js-add-metric-button text-success border-success"
@@ -317,40 +318,42 @@ export default {
         </gl-button>
       </div>
     </div>
-    <graph-group
-      v-for="(groupData, index) in groupsWithData"
-      :key="index"
-      :name="groupData.group"
-      :show-panels="showPanels"
-    >
-      <monitor-area-chart
-        v-for="(graphData, graphIndex) in chartsWithData(groupData.metrics)"
-        :key="graphIndex"
-        :graph-data="graphData"
-        :deployment-data="deploymentData"
-        :thresholds="getGraphAlertValues(graphData.queries)"
-        :container-width="elWidth"
-        group-id="monitor-area-chart"
+    <div v-if="!showEmptyState">
+      <graph-group
+        v-for="(groupData, index) in groupsWithData"
+        :key="index"
+        :name="groupData.group"
+        :show-panels="showPanels"
       >
-        <alert-widget
-          v-if="isEE && prometheusAlertsAvailable && alertsEndpoint && graphData"
-          :alerts-endpoint="alertsEndpoint"
-          :relevant-queries="graphData.queries"
-          :alerts-to-manage="getGraphAlerts(graphData.queries)"
-          @setAlerts="setAlerts"
-        />
-      </monitor-area-chart>
-    </graph-group>
+        <monitor-area-chart
+          v-for="(graphData, graphIndex) in chartsWithData(groupData.metrics)"
+          :key="graphIndex"
+          :graph-data="graphData"
+          :deployment-data="deploymentData"
+          :thresholds="getGraphAlertValues(graphData.queries)"
+          :container-width="elWidth"
+          group-id="monitor-area-chart"
+        >
+          <alert-widget
+            v-if="isEE && prometheusAlertsAvailable && alertsEndpoint && graphData"
+            :alerts-endpoint="alertsEndpoint"
+            :relevant-queries="graphData.queries"
+            :alerts-to-manage="getGraphAlerts(graphData.queries)"
+            @setAlerts="setAlerts"
+          />
+        </monitor-area-chart>
+      </graph-group>
+    </div>
+    <empty-state
+      v-else
+      :selected-state="emptyState"
+      :documentation-path="documentationPath"
+      :settings-path="settingsPath"
+      :clusters-path="clustersPath"
+      :empty-getting-started-svg-path="emptyGettingStartedSvgPath"
+      :empty-loading-svg-path="emptyLoadingSvgPath"
+      :empty-no-data-svg-path="emptyNoDataSvgPath"
+      :empty-unable-to-connect-svg-path="emptyUnableToConnectSvgPath"
+    />
   </div>
-  <empty-state
-    v-else
-    :selected-state="emptyState"
-    :documentation-path="documentationPath"
-    :settings-path="settingsPath"
-    :clusters-path="clustersPath"
-    :empty-getting-started-svg-path="emptyGettingStartedSvgPath"
-    :empty-loading-svg-path="emptyLoadingSvgPath"
-    :empty-no-data-svg-path="emptyNoDataSvgPath"
-    :empty-unable-to-connect-svg-path="emptyUnableToConnectSvgPath"
-  />
 </template>
