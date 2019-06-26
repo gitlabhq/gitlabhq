@@ -8,10 +8,12 @@ export default (props = {}) => {
   const el = document.getElementById('prometheus-graphs');
 
   if (el && el.dataset) {
-    store.dispatch('monitoringDashboard/setFeatureFlags', {
-      prometheusEndpointEnabled: gon.features.environmentMetricsUsePrometheusEndpoint,
-      multipleDashboardsEnabled: gon.features.environmentMetricsShowMultipleDashboards,
-    });
+    if (gon.features) {
+      store.dispatch('monitoringDashboard/setFeatureFlags', {
+        prometheusEndpointEnabled: gon.features.environmentMetricsUsePrometheusEndpoint,
+        multipleDashboardsEnabled: gon.features.environmentMetricsShowMultipleDashboards,
+      });
+    }
 
     const [currentDashboard] = getParameterValues('dashboard');
 
