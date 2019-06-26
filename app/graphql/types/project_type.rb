@@ -40,7 +40,7 @@ module Types
     field :lfs_enabled, GraphQL::BOOLEAN_TYPE, null: true
     field :merge_requests_ff_only_enabled, GraphQL::BOOLEAN_TYPE, null: true
 
-    field :avatar_url, GraphQL::STRING_TYPE, null: true, resolve: -> (project, args, ctx) do
+    field :avatar_url, GraphQL::STRING_TYPE, null: true, calls_gitaly: true, resolve: -> (project, args, ctx) do
       project.avatar_url(only_path: false)
     end
 

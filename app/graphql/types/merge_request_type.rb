@@ -43,7 +43,7 @@ module Types
     field :allow_collaboration, GraphQL::BOOLEAN_TYPE, null: true
     field :should_be_rebased, GraphQL::BOOLEAN_TYPE, method: :should_be_rebased?, null: false
     field :rebase_commit_sha, GraphQL::STRING_TYPE, null: true
-    field :rebase_in_progress, GraphQL::BOOLEAN_TYPE, method: :rebase_in_progress?, null: false
+    field :rebase_in_progress, GraphQL::BOOLEAN_TYPE, method: :rebase_in_progress?, null: false, calls_gitaly: true
     field :merge_commit_message, GraphQL::STRING_TYPE, method: :default_merge_commit_message, null: true, deprecation_reason: "Renamed to defaultMergeCommitMessage"
     field :default_merge_commit_message, GraphQL::STRING_TYPE, null: true
     field :merge_ongoing, GraphQL::BOOLEAN_TYPE, method: :merge_ongoing?, null: false

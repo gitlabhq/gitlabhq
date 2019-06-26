@@ -9,6 +9,6 @@ module Types
     mount_mutation Mutations::AwardEmojis::Add
     mount_mutation Mutations::AwardEmojis::Remove
     mount_mutation Mutations::AwardEmojis::Toggle
-    mount_mutation Mutations::MergeRequests::SetWip
+    mount_mutation Mutations::MergeRequests::SetWip, calls_gitaly: true
   end
 end

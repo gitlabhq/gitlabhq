@@ -23,12 +23,11 @@ module Types
 
     def calls_gitaly_check(calls)
       return if @calls_gitaly
+      return if calls < 1
 
       # Will inform you if :calls_gitaly should be true or false based on the number of Gitaly calls
       # involved with the request.
-      if calls > 0
-        raise "Gitaly is called for field '#{name}' - please add `calls_gitaly: true` to the field declaration"
-      end
+      raise "Gitaly is called for field '#{name}' #{"on type #{owner.name} " if owner}- please add `calls_gitaly: true` to the field declaration"
     rescue => e
       Gitlab::Sentry.track_exception(e)
     end
