@@ -270,7 +270,7 @@ shared_examples_for 'common trace features' do
           include ExclusiveLeaseHelpers
 
           before do
-            stub_exclusive_lease_taken("trace:write:lock:#{trace.job.id}", timeout: 1.minute)
+            stub_exclusive_lease_taken("trace:write:lock:#{trace.job.id}", timeout: 10.minutes)
           end
 
           it 'blocks concurrent archiving' do
