@@ -87,10 +87,4 @@ class Projects::ApplicationController < ApplicationController
   def check_issues_available!
     return render_404 unless @project.feature_available?(:issues, current_user)
   end
-
-  def allow_gitaly_ref_name_caching
-    ::Gitlab::GitalyClient.allow_ref_name_caching do
-      yield
-    end
-  end
 end

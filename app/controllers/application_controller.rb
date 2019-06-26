@@ -516,4 +516,10 @@ class ApplicationController < ActionController::Base
   def sentry_context
     Gitlab::Sentry.context(current_user)
   end
+
+  def allow_gitaly_ref_name_caching
+    ::Gitlab::GitalyClient.allow_ref_name_caching do
+      yield
+    end
+  end
 end
