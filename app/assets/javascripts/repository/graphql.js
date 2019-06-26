@@ -3,6 +3,7 @@ import VueApollo from 'vue-apollo';
 import { IntrospectionFragmentMatcher } from 'apollo-cache-inmemory';
 import createDefaultClient from '~/lib/graphql';
 import introspectionQueryResultData from './fragmentTypes.json';
+import { fetchLogsTree } from './log_tree';
 
 Vue.use(VueApollo);
 
@@ -13,7 +14,21 @@ const fragmentMatcher = new IntrospectionFragmentMatcher({
 });
 
 const defaultClient = createDefaultClient(
-  {},
+  {
+    Query: {
+      commit(_, { path, fileName, type }) {
+        return new Promise(resolve => {
+          fetchLogsTree(defaultClient, path, '0', {
+            resolve,
+            entry: {
+              name: fileName,
+              type,
+            },
+          });
+        });
+      },
+    },
+  },
   {
     cacheConfig: {
       fragmentMatcher,

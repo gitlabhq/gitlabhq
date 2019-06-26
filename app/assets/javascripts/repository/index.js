@@ -16,6 +16,7 @@ export default function setupVueRepositoryList() {
       projectPath,
       projectShortPath,
       ref,
+      commits: [],
     },
   });
 

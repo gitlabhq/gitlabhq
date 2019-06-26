@@ -29,10 +29,20 @@ exports[`Repository table row component renders table row 1`] = `
    
   <td
     class="d-none d-sm-table-cell tree-commit"
-  />
+  >
+    <glskeletonloading-stub
+      class="h-auto"
+      lines="1"
+    />
+  </td>
    
   <td
     class="tree-time-ago text-right"
-  />
+  >
+    <glskeletonloading-stub
+      class="ml-auto h-auto w-50"
+      lines="1"
+    />
+  </td>
 </tr>
 `;
