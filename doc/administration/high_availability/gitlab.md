@@ -158,12 +158,11 @@ If you enable Monitoring, it must be enabled on **all** GitLab servers.
    sidekiq['listen_address'] = "0.0.0.0"
    unicorn['listen'] = '0.0.0.0'
 
-   # Add the monitoring node's IP address to the monitoring whitelist and allow it to scrape the NGINX metrics
-   # Replace placeholder
-   # monitoring.gitlab.example.com
-   # with the addresses gathered for the monitoring node
-   gitlab_rails['monitoring_whitelist'] = ['monitoring.gitlab.example.com']
-   nginx['status']['options']['allow'] = ['monitoring.gitlab.example.com']
+   # Add the monitoring node's IP address to the monitoring whitelist and allow it to
+   # scrape the NGINX metrics. Replace placeholder `monitoring.gitlab.example.com` with
+   # the address and/or subnets gathered from the monitoring node(s).
+   gitlab_rails['monitoring_whitelist'] = ['monitoring.gitlab.example.com', '127.0.0.0/8']
+   nginx['status']['options']['allow'] = ['monitoring.gitlab.example.com', '127.0.0.0/8']
    ```
 
 1. Run `sudo gitlab-ctl reconfigure` to compile the configuration.
