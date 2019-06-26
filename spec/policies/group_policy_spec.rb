@@ -163,6 +163,18 @@ describe GroupPolicy do
         expect_allowed(*updated_owner_permissions)
       end
     end
+
+    context 'maintainer' do
+      let(:current_user) { maintainer }
+
+      it 'allows every maintainer permission except creating subgroups' do
+        create_subgroup_permission = [:create_subgroup]
+        updated_maintainer_permissions = maintainer_permissions - create_subgroup_permission
+
+        expect_disallowed(*create_subgroup_permission)
+        expect_allowed(*updated_maintainer_permissions)
+      end
+    end
   end
 
   describe 'private nested group use the highest access level from the group and inherited permissions', :nested_groups do
@@ -457,6 +469,64 @@ describe GroupPolicy do
         let(:current_user) { owner }
 
         it { is_expected.to be_allowed(:create_projects) }
+      end
+    end
+  end
+
+  context "create_subgroup" do
+    context 'when group has subgroup creation level set to owner' do
+      let(:group) { create(:group, subgroup_creation_level: ::Gitlab::Access::OWNER_SUBGROUP_ACCESS) }
+
+      context 'reporter' do
+        let(:current_user) { reporter }
+
+        it { is_expected.to be_disallowed(:create_subgroup) }
+      end
+
+      context 'developer' do
+        let(:current_user) { developer }
+
+        it { is_expected.to be_disallowed(:create_subgroup) }
+      end
+
+      context 'maintainer' do
+        let(:current_user) { maintainer }
+
+        it { is_expected.to be_disallowed(:create_subgroup) }
+      end
+
+      context 'owner' do
+        let(:current_user) { owner }
+
+        it { is_expected.to be_allowed(:create_subgroup) }
+      end
+    end
+
+    context 'when group has subgroup creation level set to maintainer' do
+      let(:group) { create(:group, subgroup_creation_level: ::Gitlab::Access::MAINTAINER_SUBGROUP_ACCESS) }
+
+      context 'reporter' do
+        let(:current_user) { reporter }
+
+        it { is_expected.to be_disallowed(:create_subgroup) }
+      end
+
+      context 'developer' do
+        let(:current_user) { developer }
+
+        it { is_expected.to be_disallowed(:create_subgroup) }
+      end
+
+      context 'maintainer' do
+        let(:current_user) { maintainer }
+
+        it { is_expected.to be_allowed(:create_subgroup) }
+      end
+
+      context 'owner' do
+        let(:current_user) { owner }
+
+        it { is_expected.to be_allowed(:create_subgroup) }
       end
     end
   end
