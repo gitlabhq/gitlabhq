@@ -80,6 +80,9 @@ const applicationStateMachine = {
           installFailed: false,
         },
       },
+      [NOT_INSTALLABLE]: {
+        target: NOT_INSTALLABLE,
+      },
       // This is possible in artificial environments for E2E testing
       [INSTALLED]: {
         target: INSTALLED,
@@ -107,6 +110,9 @@ const applicationStateMachine = {
           updateFailed: false,
           updateSuccessful: false,
         },
+      },
+      [NOT_INSTALLABLE]: {
+        target: NOT_INSTALLABLE,
       },
       [UNINSTALL_EVENT]: {
         target: UNINSTALLING,
