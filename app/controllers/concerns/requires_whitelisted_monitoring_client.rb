@@ -14,6 +14,10 @@ module RequiresWhitelistedMonitoringClient
   end
 
   def client_ip_whitelisted?
+    # Always allow developers to access http://localhost:3000/-/metrics for
+    # debugging purposes
+    return true if Rails.env.development? && request.local?
+
     ip_whitelist.any? { |e| e.include?(Gitlab::RequestContext.client_ip) }
   end
 
