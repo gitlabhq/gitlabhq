@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Discussion Comments Snippet', :js do
+describe 'Thread Comments Snippet', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
   let(:snippet) { create(:project_snippet, :private, project: project, author: user) }
@@ -12,5 +12,5 @@ describe 'Discussion Comments Snippet', :js do
     visit project_snippet_path(project, snippet)
   end
 
-  it_behaves_like 'discussion comments', 'snippet'
+  it_behaves_like 'thread comments', 'snippet'
 end

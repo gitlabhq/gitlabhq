@@ -1,4 +1,4 @@
-shared_examples 'discussion comments' do |resource_name|
+shared_examples 'thread comments' do |resource_name|
   let(:form_selector) { '.js-main-target-form' }
   let(:dropdown_selector) { "#{form_selector} .comment-type-dropdown" }
   let(:toggle_selector) { "#{dropdown_selector} .dropdown-toggle" }
