@@ -7,11 +7,11 @@ describe Gitlab::IssuableMetadata do
   subject { Class.new { include Gitlab::IssuableMetadata }.new }
 
   it 'returns an empty Hash if an empty collection is provided' do
-    expect(subject.issuable_meta_data(Issue.none, 'Issue')).to eq({})
+    expect(subject.issuable_meta_data(Issue.none, 'Issue', user)).to eq({})
   end
 
   it 'raises an error when given a collection with no limit' do
-    expect { subject.issuable_meta_data(Issue.all, 'Issue') }.to raise_error(/must have a limit/)
+    expect { subject.issuable_meta_data(Issue.all, 'Issue', user) }.to raise_error(/must have a limit/)
   end
 
   context 'issues' do
@@ -23,7 +23,7 @@ describe Gitlab::IssuableMetadata do
     let!(:closing_issues) { create(:merge_requests_closing_issues, issue: issue, merge_request: merge_request) }
 
     it 'aggregates stats on issues' do
-      data = subject.issuable_meta_data(Issue.all.limit(10), 'Issue')
+      data = subject.issuable_meta_data(Issue.all.limit(10), 'Issue', user)
 
       expect(data.count).to eq(2)
       expect(data[issue.id].upvotes).to eq(1)
@@ -46,7 +46,7 @@ describe Gitlab::IssuableMetadata do
     let!(:note) { create(:note_on_merge_request, author: user, project: project, noteable: merge_request, note: "a comment on a MR") }
 
     it 'aggregates stats on merge requests' do
-      data = subject.issuable_meta_data(MergeRequest.all.limit(10), 'MergeRequest')
+      data = subject.issuable_meta_data(MergeRequest.all.limit(10), 'MergeRequest', user)
 
       expect(data.count).to eq(2)
       expect(data[merge_request.id].upvotes).to eq(1)
