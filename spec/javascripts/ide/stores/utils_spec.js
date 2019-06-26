@@ -132,7 +132,7 @@ describe('Multi-file store utils', () => {
             previous_path: undefined,
           },
         ],
-        start_branch: undefined,
+        start_sha: undefined,
       });
     });
 
@@ -187,7 +187,7 @@ describe('Multi-file store utils', () => {
             previous_path: undefined,
           },
         ],
-        start_branch: undefined,
+        start_sha: undefined,
       });
     });
   });
