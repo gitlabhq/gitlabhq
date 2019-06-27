@@ -1,0 +1,3 @@
+.form-group
+  = f.label s_('SubgroupCreationLevel|Allowed to create subgroups'), class: 'label-bold'
+  = f.select :subgroup_creation_level, options_for_select(::Gitlab::Access.subgroup_creation_options, group.subgroup_creation_level), {}, class: 'form-control'
