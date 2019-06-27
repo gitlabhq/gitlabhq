@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'ruby-prof'
+require 'memory_profiler'
 
 module Gitlab
   module RequestProfiler
@@ -28,22 +29,73 @@ module Gitlab
       end
 
       def call_with_profiling(env)
+        case env['HTTP_X_PROFILE_MODE']
+        when 'execution', nil
+          call_with_call_stack_profiling(env)
+        when 'memory'
+          call_with_memory_profiling(env)
+        else
+          raise ActionController::BadRequest, invalid_profile_mode(env)
+        end
+      end
+
+      def invalid_profile_mode(env)
+        <<~HEREDOC
+          Invalid X-Profile-Mode: #{env['HTTP_X_PROFILE_MODE']}.
+          Supported profile mode request header:
+            - X-Profile-Mode: execution
+            - X-Profile-Mode: memory
+        HEREDOC
+      end
+
+      def call_with_call_stack_profiling(env)
         ret = nil
-        result = RubyProf::Profile.profile do
+        report = RubyProf::Profile.profile do
           ret = catch(:warden) do
             @app.call(env)
           end
         end
 
-        printer   = RubyProf::CallStackPrinter.new(result)
-        file_name = "#{env['PATH_INFO'].tr('/', '|')}_#{Time.current.to_i}.html"
-        file_path = "#{PROFILES_DIR}/#{file_name}"
-
-        FileUtils.mkdir_p(PROFILES_DIR)
-        File.open(file_path, 'wb') do |file|
+        generate_report(env, 'execution', 'html') do |file|
+          printer = RubyProf::CallStackPrinter.new(report)
           printer.print(file)
         end
 
+        handle_request_ret(ret)
+      end
+
+      def call_with_memory_profiling(env)
+        ret = nil
+        report = MemoryProfiler.report do
+          ret = catch(:warden) do
+            @app.call(env)
+          end
+        end
+
+        generate_report(env, 'memory', 'txt') do |file|
+          report.pretty_print(to_file: file)
+        end
+
+        handle_request_ret(ret)
+      end
+
+      def generate_report(env, report_type, extension)
+        file_name = "#{env['PATH_INFO'].tr('/', '|')}_#{Time.current.to_i}"\
+                    "_#{report_type}.#{extension}"
+        file_path = "#{PROFILES_DIR}/#{file_name}"
+
+        FileUtils.mkdir_p(PROFILES_DIR)
+
+        begin
+          File.open(file_path, 'wb') do |file|
+            yield(file)
+          end
+        rescue
+          FileUtils.rm(file_path)
+        end
+      end
+
+      def handle_request_ret(ret)
         if ret.is_a?(Array)
           ret
         else

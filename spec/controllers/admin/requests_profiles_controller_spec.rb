@@ -10,38 +10,63 @@ describe Admin::RequestsProfilesController do
   end
 
   describe '#show' do
-    let(:basename) { "profile_#{Time.now.to_i}.html" }
     let(:tmpdir) { Dir.mktmpdir('profiler-test') }
     let(:test_file) { File.join(tmpdir, basename) }
-    let(:profile) { Gitlab::RequestProfiler::Profile.new(basename) }
-    let(:sample_data) do
-      <<~HTML
-        <!DOCTYPE html>
-        <html>
-        <body>
-        <h1>My First Heading</h1>
-        <p>My first paragraph.</p>
-        </body>
-        </html>
-      HTML
+
+    subject do
+      get :show, params: { name: basename }
     end
 
     before do
       stub_const('Gitlab::RequestProfiler::PROFILES_DIR', tmpdir)
-      output = File.open(test_file, 'w')
-      output.write(sample_data)
-      output.close
+      File.write(test_file, sample_data)
     end
 
     after do
       File.unlink(test_file)
     end
 
-    it 'loads an HTML profile' do
-      get :show, params: { name: basename }
+    context 'when loading HTML profile' do
+      let(:basename) { "profile_#{Time.now.to_i}_execution.html" }
 
-      expect(response).to have_gitlab_http_status(200)
-      expect(response.body).to eq(sample_data)
+      let(:sample_data) do
+        '<html> <body> <h1>Heading</h1> <p>paragraph.</p> </body> </html>'
+      end
+
+      it 'renders the data' do
+        subject
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response.body).to eq(sample_data)
+      end
+    end
+
+    context 'when loading TXT profile' do
+      let(:basename) { "profile_#{Time.now.to_i}_memory.txt" }
+
+      let(:sample_data) do
+        <<~TXT
+          Total allocated: 112096396 bytes (1080431 objects)
+          Total retained:  10312598 bytes (53567 objects)
+        TXT
+      end
+
+      it 'renders the data' do
+        subject
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response.body).to eq(sample_data)
+      end
+    end
+
+    context 'when loading PDF profile' do
+      let(:basename) { "profile_#{Time.now.to_i}_anything.pdf" }
+
+      let(:sample_data) { 'mocked pdf content' }
+
+      it 'fails to render the data' do
+        expect { subject }.to raise_error(ActionController::UrlGenerationError, /No route matches.*unmatched constraints:/)
+      end
     end
   end
 end

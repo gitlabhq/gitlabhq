@@ -19,7 +19,8 @@
           %ul.content-list
             - profiles.each do |profile|
               %li
-                = link_to profile.time.to_s(:long), admin_requests_profile_path(profile)
+                = link_to profile.time.to_s(:long) + ' ' + profile.profile_mode.capitalize,
+                  admin_requests_profile_path(profile)
   - else
     %p
       No profiles found
