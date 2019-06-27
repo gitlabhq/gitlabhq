@@ -109,7 +109,7 @@ class GroupPolicy < BasePolicy
     enable :read_nested_project_resources
   end
 
-  rule { maintainer & nested_groups_supported }.enable :create_subgroup
+  rule { owner & nested_groups_supported }.enable :create_subgroup
 
   rule { public_group | logged_in_viewable }.enable :view_globally
 
