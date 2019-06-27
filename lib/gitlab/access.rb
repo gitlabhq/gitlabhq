@@ -29,6 +29,10 @@ module Gitlab
     MAINTAINER_PROJECT_ACCESS = 1
     DEVELOPER_MAINTAINER_PROJECT_ACCESS = 2
 
+    # Default subgroup creation level
+    OWNER_SUBGROUP_ACCESS = 0
+    MAINTAINER_SUBGROUP_ACCESS = 1
+
     class << self
       delegate :values, to: :options
 
