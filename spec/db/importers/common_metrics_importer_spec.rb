@@ -3,9 +3,9 @@
 require 'rails_helper'
 require Rails.root.join("db", "importers", "common_metrics_importer.rb")
 
-describe Importers::PrometheusMetric do
+describe Importers::CommonMetrics::PrometheusMetric do
   let(:existing_group_titles) do
-    ::PrometheusMetric::GROUP_DETAILS.each_with_object({}) do |(key, value), memo|
+    ::PrometheusMetricEnums.group_details.each_with_object({}) do |(key, value), memo|
       memo[key] = value[:group_title]
     end
   end
@@ -15,7 +15,7 @@ describe Importers::PrometheusMetric do
   end
 
   it 'GROUP_TITLES equals ::PrometheusMetric' do
-    expect(described_class::GROUP_TITLES).to eq(existing_group_titles)
+    expect(Importers::CommonMetrics::PrometheusMetricEnums.group_titles).to eq(existing_group_titles)
   end
 end
 
@@ -104,7 +104,7 @@ describe Importers::CommonMetricsImporter do
       let(:query_identifier) { }
 
       it 'raises exception' do
-        expect { subject.execute }.to raise_error(described_class::MissingQueryId)
+        expect { subject.execute }.to raise_error(Importers::CommonMetrics::Importer::MissingQueryId)
       end
     end
 
