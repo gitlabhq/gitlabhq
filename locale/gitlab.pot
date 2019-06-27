@@ -309,6 +309,9 @@ msgstr ""
 msgid "(external source)"
 msgstr ""
 
+msgid "(removed)"
+msgstr ""
+
 msgid "+ %{amount} more"
 msgstr ""
 

@@ -31,9 +31,9 @@ describe 'Dashboard > User filters todos', :js do
   end
 
   it 'displays all todos without a filter' do
-    expect(page).to have_content issue1.to_reference(full: true)
-    expect(page).to have_content merge_request.to_reference(full: true)
-    expect(page).to have_content issue2.to_reference(full: true)
+    expect(page).to have_content issue1.to_reference(full: false)
+    expect(page).to have_content merge_request.to_reference(full: false)
+    expect(page).to have_content issue2.to_reference(full: false)
   end
 
   it 'filters by project' do
@@ -58,9 +58,9 @@ describe 'Dashboard > User filters todos', :js do
 
     wait_for_requests
 
-    expect(page).to     have_content issue1.to_reference(full: true)
-    expect(page).to     have_content merge_request.to_reference(full: true)
-    expect(page).not_to have_content issue2.to_reference(full: true)
+    expect(page).to     have_content "issue #{issue1.to_reference} \"issue\" at #{group1.name} / project_1"
+    expect(page).to     have_content "merge request #{merge_request.to_reference}"
+    expect(page).not_to have_content "issue #{issue2.to_reference} \"issue\" at #{group2.name} / project_3"
   end
 
   context 'Author filter' do

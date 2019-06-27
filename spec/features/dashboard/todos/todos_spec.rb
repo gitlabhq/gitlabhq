@@ -3,10 +3,10 @@
 require 'spec_helper'
 
 describe 'Dashboard Todos' do
-  let(:user)    { create(:user) }
+  let(:user)    { create(:user, username: 'john') }
   let(:author)  { create(:user) }
   let(:project) { create(:project, :public) }
-  let(:issue)   { create(:issue, due_date: Date.today) }
+  let(:issue)   { create(:issue, due_date: Date.today, title: "Fix bug") }
 
   context 'User does not have todos' do
     before do
@@ -135,7 +135,7 @@ describe 'Dashboard Todos' do
 
       it 'shows issue assigned to yourself message' do
         page.within('.js-todos-all') do
-          expect(page).to have_content("You assigned issue #{issue.to_reference(full: true)} to yourself")
+          expect(page).to have_content("You assigned issue #{issue.to_reference} \"Fix bug\" at #{project.namespace.owner_name} / #{project.name} to yourself")
         end
       end
     end
@@ -148,7 +148,7 @@ describe 'Dashboard Todos' do
 
       it 'shows you added a todo message' do
         page.within('.js-todos-all') do
-          expect(page).to have_content("You added a todo for issue #{issue.to_reference(full: true)}")
+          expect(page).to have_content("You added a todo for issue #{issue.to_reference} \"Fix bug\" at #{project.namespace.owner_name} / #{project.name}")
           expect(page).not_to have_content('to yourself')
         end
       end
@@ -162,7 +162,7 @@ describe 'Dashboard Todos' do
 
       it 'shows you mentioned yourself message' do
         page.within('.js-todos-all') do
-          expect(page).to have_content("You mentioned yourself on issue #{issue.to_reference(full: true)}")
+          expect(page).to have_content("You mentioned yourself on issue #{issue.to_reference} \"Fix bug\" at #{project.namespace.owner_name} / #{project.name}")
           expect(page).not_to have_content('to yourself')
         end
       end
@@ -176,14 +176,14 @@ describe 'Dashboard Todos' do
 
       it 'shows you directly addressed yourself message' do
         page.within('.js-todos-all') do
-          expect(page).to have_content("You directly addressed yourself on issue #{issue.to_reference(full: true)}")
+          expect(page).to have_content("You directly addressed yourself on issue #{issue.to_reference} \"Fix bug\" at #{project.namespace.owner_name} / #{project.name}")
           expect(page).not_to have_content('to yourself')
         end
       end
     end
 
     context 'approval todo' do
-      let(:merge_request) { create(:merge_request) }
+      let(:merge_request) { create(:merge_request, title: "Fixes issue") }
 
       before do
         create(:todo, :approval_required, user: user, project: project, target: merge_request, author: user)
@@ -192,7 +192,7 @@ describe 'Dashboard Todos' do
 
       it 'shows you set yourself as an approver message' do
         page.within('.js-todos-all') do
-          expect(page).to have_content("You set yourself as an approver for merge request #{merge_request.to_reference(full: true)}")
+          expect(page).to have_content("You set yourself as an approver for merge request #{merge_request.to_reference} \"Fixes issue\" at #{project.namespace.owner_name} / #{project.name}")
           expect(page).not_to have_content('to yourself')
         end
       end
@@ -354,7 +354,7 @@ describe 'Dashboard Todos' do
     it 'links to the pipelines for the merge request' do
       href = pipelines_project_merge_request_path(project, todo.target)
 
-      expect(page).to have_link "merge request #{todo.target.to_reference(full: true)}", href: href
+      expect(page).to have_link "merge request #{todo.target.to_reference}", href: href
     end
   end
 end

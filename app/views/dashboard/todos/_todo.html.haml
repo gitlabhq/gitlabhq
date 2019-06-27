@@ -2,41 +2,49 @@
   .todo-avatar
     = author_avatar(todo, size: 40)
 
-  .todo-item.todo-block
-    .todo-title.title
+  .todo-item.todo-block.align-self-center
+    .todo-title
       - unless todo.build_failed? || todo.unmergeable?
         = todo_target_state_pill(todo)
 
-        .title-item.author-name
+        %span.title-item.author-name.bold
           - if todo.author
             = link_to_author(todo, self_added: todo.self_added?)
           - else
             (removed)
 
-      .title-item.action-name
+      %span.title-item.action-name
         = todo_action_name(todo)
 
-      .title-item.todo-label
+      %span.title-item.todo-label.todo-target-link
         - if todo.target
           = todo_target_link(todo)
         - else
-          (removed)
+          = _("(removed)")
+
+      %span.title-item.todo-target-title
+        = todo_target_title(todo)
+
+      %span.title-item.todo-project.todo-label
+        at
+        = todo_parent_path(todo)
 
       - if todo.self_assigned?
-        .title-item.action-name
+        %span.title-item.action-name
           to yourself
 
-      .title-item
+      %span.title-item
         &middot;
 
-      .title-item
+      %span.title-item.todo-timestamp
         #{time_ago_with_tooltip(todo.created_at)}
         = todo_due_date(todo)
 
-    .todo-body
-      .todo-note.break-word
-        .md
-          = first_line_in_markdown(todo, :body, 150, project: todo.project)
+    - if todo.note.present?
+      .todo-body
+        .todo-note.break-word
+          .md
+            = first_line_in_markdown(todo, :body, 150, project: todo.project)
 
   - if todo.pending?
     .todo-actions
