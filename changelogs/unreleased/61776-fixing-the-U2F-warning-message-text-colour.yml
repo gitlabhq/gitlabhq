@@ -1,0 +1,5 @@
+---
+title: Remove the warning style from the U2F device message in user settings > account
+merge_request: 30119
+author: matejlatin
+type: other
