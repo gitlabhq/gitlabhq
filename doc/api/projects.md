@@ -483,95 +483,88 @@ GET /projects/:id
 
 ```json
 {
-  "id": 3,
-  "description": null,
+  "id": 26,
+  "description": "My amazing project",
+  "name": "myproject",
+  "name_with_namespace": "mygroup / myproject",
+  "path": "myproject",
+  "path_with_namespace": "mygroup/myproject",
+  "created_at": "2019-06-27T12:32:51.444Z",
   "default_branch": "master",
-  "visibility": "private",
-  "ssh_url_to_repo": "git@example.com:diaspora/diaspora-project-site.git",
-  "http_url_to_repo": "http://example.com/diaspora/diaspora-project-site.git",
-  "web_url": "http://example.com/diaspora/diaspora-project-site",
-  "readme_url": "http://example.com/diaspora/diaspora-project-site/blob/master/README.md",
   "tag_list": [
-    "example",
-    "disapora project"
+    "topic1",
+    "topic2"
   ],
-  "owner": {
-    "id": 3,
-    "name": "Diaspora",
-    "created_at": "2013-09-30T13:46:02Z"
-  },
-  "name": "Diaspora Project Site",
-  "name_with_namespace": "Diaspora / Diaspora Project Site",
-  "path": "diaspora-project-site",
-  "path_with_namespace": "diaspora/diaspora-project-site",
-  "issues_enabled": true,
-  "open_issues_count": 1,
-  "merge_requests_enabled": true,
-  "jobs_enabled": true,
-  "wiki_enabled": true,
-  "snippets_enabled": false,
-  "resolve_outdated_diff_discussions": false,
-  "container_registry_enabled": false,
-  "created_at": "2013-09-30T13:46:02Z",
-  "last_activity_at": "2013-09-30T13:46:02Z",
-  "creator_id": 3,
+  "ssh_url_to_repo": "git@gitlab.example.com:mygroup/myproject.git",
+  "http_url_to_repo": "http://gitlab.example.com/mygroup/myproject.git",
+  "web_url": "http://gitlab.example.com/mygroup/myproject",
+  "readme_url": "http://gitlab.example.com/mygroup/myproject/blob/master/README.md",
+  "avatar_url": null,
+  "star_count": 0,
+  "forks_count": 0,
+  "last_activity_at": "2019-06-27T12:32:51.444Z",
   "namespace": {
-    "id": 3,
-    "name": "Diaspora",
-    "path": "diaspora",
+    "id": 23,
+    "name": "mygroup",
+    "path": "mygroup",
     "kind": "group",
-    "full_path": "diaspora",
-    "avatar_url": "http://localhost:3000/uploads/group/avatar/3/foo.jpg",
-    "web_url": "http://localhost:3000/groups/diaspora"
+    "full_path": "mygroup",
+    "parent_id": null,
+    "avatar_url": null,
+    "web_url": "http://gitlab.example.com/groups/mygroup"
   },
+  "_links": {
+    "self": "http://gitlab.example.com/api/v4/projects/26",
+    "issues": "http://gitlab.example.com/api/v4/projects/26/issues",
+    "merge_requests": "http://gitlab.example.com/api/v4/projects/26/merge_requests",
+    "repo_branches": "http://gitlab.example.com/api/v4/projects/26/repository/branches",
+    "labels": "http://gitlab.example.com/api/v4/projects/26/labels",
+    "events": "http://gitlab.example.com/api/v4/projects/26/events",
+    "members": "http://gitlab.example.com/api/v4/projects/26/members"
+  },
+  "empty_repo": false,
+  "archived": false,
+  "visibility": "private",
+  "resolve_outdated_diff_discussions": false,
+  "container_registry_enabled": true,
+  "issues_enabled": true,
+  "merge_requests_enabled": true,
+  "wiki_enabled": true,
+  "jobs_enabled": true,
+  "snippets_enabled": true,
+  "shared_runners_enabled": true,
+  "lfs_enabled": true,
+  "creator_id": 1,
   "import_status": "none",
   "import_error": null,
+  "open_issues_count": 0,
+  "runners_token": "sQewQBDHAMkqnMFVXzuW",
+  "ci_default_git_depth": 50,
+  "public_jobs": true,
+  "ci_config_path": null,
+  "shared_with_groups": [
+    {
+      "group_id": 3,
+      "group_name": "test",
+      "group_full_path": "test",
+      "group_access_level": 30,
+      "expires_at": null
+    }
+  ],
+  "repository_storage": "default",
+  "only_allow_merge_if_pipeline_succeeds": false,
+  "request_access_enabled": false,
+  "only_allow_merge_if_all_discussions_are_resolved": false,
+  "printing_merge_request_link_enabled": true,
+  "merge_method": "merge",
+  "external_authorization_classification_label": null,
   "permissions": {
-    "project_access": {
-      "access_level": 10,
-      "notification_level": 3
-    },
+    "project_access": null,
     "group_access": {
       "access_level": 50,
       "notification_level": 3
     }
   },
-  "archived": false,
-  "avatar_url": "http://example.com/uploads/project/avatar/3/uploads/avatar.png",
-  "license_url": "http://example.com/diaspora/diaspora-client/blob/master/LICENSE",
-  "license": {
-    "key": "lgpl-3.0",
-    "name": "GNU Lesser General Public License v3.0",
-    "nickname": "GNU LGPLv3",
-    "html_url": "http://choosealicense.com/licenses/lgpl-3.0/",
-    "source_url": "http://www.gnu.org/licenses/lgpl-3.0.txt"
-  },
-  "shared_runners_enabled": true,
-  "forks_count": 0,
-  "star_count": 0,
-  "runners_token": "b8bc4a7a29eb76ea83cf79e4908c2b",
-  "ci_default_git_depth": 50,
-  "public_jobs": true,
-  "shared_with_groups": [
-    {
-      "group_id": 4,
-      "group_name": "Twitter",
-      "group_full_path": "twitter",
-      "group_access_level": 30
-    },
-    {
-      "group_id": 3,
-      "group_name": "Gitlab Org",
-      "group_full_path": "gitlab-org",
-      "group_access_level": 10
-    }
-  ],
-  "repository_storage": "default",
-  "only_allow_merge_if_pipeline_succeeds": false,
-  "only_allow_merge_if_all_discussions_are_resolved": false,
-  "printing_merge_requests_link_enabled": true,
-  "request_access_enabled": false,
-  "merge_method": "merge",
   "statistics": {
     "commit_count": 37,
     "storage_size": 1038090,
