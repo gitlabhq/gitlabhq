@@ -844,6 +844,19 @@ describe Repository do
     end
   end
 
+  describe '#get_raw_changes' do
+    context `with non-UTF8 bytes in paths` do
+      let(:old_rev) { 'd0888d297eadcd7a345427915c309413b1231e65' }
+      let(:new_rev) { '19950f03c765f7ac8723a73a0599764095f52fc0' }
+      let(:changes) { repository.raw_changes_between(old_rev, new_rev) }
+
+      it 'returns the changes' do
+        expect { changes }.not_to raise_error
+        expect(changes.first.new_path.bytes).to eq("hello\x80world".bytes)
+      end
+    end
+  end
+
   describe '#create_ref' do
     it 'redirects the call to write_ref' do
       ref, ref_path = '1', '2'
