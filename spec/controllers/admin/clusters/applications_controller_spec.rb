@@ -13,16 +13,6 @@ describe Admin::Clusters::ApplicationsController do
     it { expect { subject }.to be_allowed_for(:admin) }
     it { expect { subject }.to be_denied_for(:user) }
     it { expect { subject }.to be_denied_for(:external) }
-
-    context 'when instance clusters are disabled' do
-      before do
-        stub_feature_flags(instance_clusters: false)
-      end
-
-      it 'returns 404' do
-        is_expected.to have_http_status(:not_found)
-      end
-    end
   end
 
   let(:cluster) { create(:cluster, :instance, :provided_by_gcp) }

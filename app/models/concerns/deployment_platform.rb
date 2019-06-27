@@ -14,7 +14,7 @@ module DeploymentPlatform
   def find_deployment_platform(environment)
     find_cluster_platform_kubernetes(environment: environment) ||
       find_group_cluster_platform_kubernetes(environment: environment) ||
-      find_instance_cluster_platform_kubernetes_with_feature_guard(environment: environment)
+      find_instance_cluster_platform_kubernetes(environment: environment)
   end
 
   # EE would override this and utilize environment argument
@@ -27,12 +27,6 @@ module DeploymentPlatform
   def find_group_cluster_platform_kubernetes(environment: nil)
     Clusters::Cluster.enabled.default_environment.ancestor_clusters_for_clusterable(self)
       .first&.platform_kubernetes
-  end
-
-  def find_instance_cluster_platform_kubernetes_with_feature_guard(environment: nil)
-    return unless Clusters::Instance.enabled?
-
-    find_instance_cluster_platform_kubernetes(environment: environment)
   end
 
   # EE would override this and utilize environment argument
