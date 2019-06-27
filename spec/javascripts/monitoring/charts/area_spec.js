@@ -1,14 +1,19 @@
 import { shallowMount } from '@vue/test-utils';
+import { GlLink } from '@gitlab/ui';
 import { GlAreaChart, GlChartSeriesLabel } from '@gitlab/ui/dist/charts';
 import { shallowWrapperContainsSlotText } from 'spec/helpers/vue_test_utils_helper';
 import Area from '~/monitoring/components/charts/area.vue';
 import { createStore } from '~/monitoring/stores';
 import * as types from '~/monitoring/stores/mutation_types';
+import { TEST_HOST } from 'spec/test_constants';
 import MonitoringMock, { deploymentData } from '../mock_data';
 
 describe('Area component', () => {
+  const mockSha = 'mockSha';
   const mockWidgets = 'mockWidgets';
   const mockSvgPathContent = 'mockSvgPathContent';
+  const projectPath = `${TEST_HOST}/path/to/project`;
+  const commitUrl = `${projectPath}/commit/${mockSha}`;
   let mockGraphData;
   let areaChart;
   let spriteSpy;
@@ -26,6 +31,7 @@ describe('Area component', () => {
         graphData: mockGraphData,
         containerWidth: 0,
         deploymentData: store.state.monitoringDashboard.deploymentData,
+        projectPath,
       },
       slots: {
         default: mockWidgets,
@@ -88,11 +94,14 @@ describe('Area component', () => {
           );
         });
 
-        it('renders commit sha in tooltip content', () => {
-          const mockSha = 'mockSha';
+        it('renders clickable commit sha in tooltip content', () => {
           areaChart.vm.tooltip.sha = mockSha;
+          areaChart.vm.tooltip.commitUrl = commitUrl;
 
-          expect(shallowWrapperContainsSlotText(glAreaChart, 'tooltipContent', mockSha)).toBe(true);
+          const commitLink = areaChart.find(GlLink);
+
+          expect(shallowWrapperContainsSlotText(commitLink, 'default', mockSha)).toBe(true);
+          expect(commitLink.attributes('href')).toEqual(commitUrl);
         });
       });
     });
