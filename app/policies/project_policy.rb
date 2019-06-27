@@ -196,6 +196,7 @@ class ProjectPolicy < BasePolicy
   rule { guest & can?(:read_container_image) }.enable :build_read_container_image
 
   rule { can?(:reporter_access) }.policy do
+    enable :admin_board
     enable :download_code
     enable :read_statistics
     enable :download_wiki_code
@@ -240,6 +241,7 @@ class ProjectPolicy < BasePolicy
   rule { can?(:developer_access) & can?(:create_issue) }.enable :import_issues
 
   rule { can?(:developer_access) }.policy do
+    enable :admin_board
     enable :admin_merge_request
     enable :admin_milestone
     enable :update_merge_request
@@ -266,6 +268,7 @@ class ProjectPolicy < BasePolicy
   end
 
   rule { can?(:maintainer_access) }.policy do
+    enable :admin_board
     enable :push_to_delete_protected_branch
     enable :update_project_snippet
     enable :update_environment

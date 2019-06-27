@@ -59,7 +59,7 @@ describe Groups::BoardsController do
       it 'return an array with one group board' do
         create(:board, group: group)
 
-        expect(Boards::Visits::LatestService).not_to receive(:new)
+        expect(Boards::VisitsFinder).not_to receive(:new)
 
         list_boards format: :json
 
