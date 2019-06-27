@@ -555,6 +555,26 @@ entry.
 - Add some frozen string to spec/**/*.rb. (gfyoung)
 
 
+## 11.10.8 (2019-06-27)
+
+### Security (10 changes)
+
+- Fix Denial of Service for comments when rendering issues/MR comments.
+- Gate MR head_pipeline behind read_pipeline ability.
+- Fix DoS vulnerability in color validation regex.
+- Expose merge requests count based on user access.
+- Persist tmp snippet uploads at users.
+- Add missing authorizations in GraphQL.
+- Disable Rails SQL query cache when applying service templates.
+- Prevent Billion Laughs attack.
+- Correctly check permissions when creating snippet notes.
+- Prevent the detection of merge request templates by unauthorized users.
+
+### Performance (1 change)
+
+- Add improvements to global search of issues and merge requests. !27817
+
+
 ## 11.10.6 (2019-06-04)
 
 ### Fixed (7 changes, 1 of them is from the community)
