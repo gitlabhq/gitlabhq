@@ -79,10 +79,20 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           resource :operations, only: [:show, :update]
           resource :integrations, only: [:show]
 
+          Gitlab.ee do
+            resource :slack, only: [:destroy, :edit, :update] do
+              get :slack_auth
+            end
+          end
+
           resource :repository, only: [:show], controller: :repository do
             post :create_deploy_token, path: 'deploy_token/create'
             post :cleanup
           end
+        end
+
+        Gitlab.ee do
+          resources :feature_flags
         end
 
         resources :autocomplete_sources, only: [] do
@@ -203,8 +213,18 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       resource :mattermost, only: [:new, :create]
 
       namespace :prometheus do
-        resources :metrics, constraints: { id: %r{[^\/]+} }, only: [] do
+        resources :metrics, constraints: { id: %r{[^\/]+} }, only: [:index, :new, :create, :edit, :update, :destroy] do
           get :active_common, on: :collection
+
+          Gitlab.ee do
+            post :validate_query, on: :collection
+          end
+        end
+
+        Gitlab.ee do
+          resources :alerts, constraints: { id: /\d+/ }, only: [:index, :create, :show, :update, :destroy] do
+            post :notify, on: :collection
+          end
         end
       end
 
@@ -216,6 +236,15 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           get :pipeline_status
           get :ci_environments_status
           post :toggle_subscription
+
+          Gitlab.ee do
+            get :approvals
+            post :approvals, action: :approve
+            delete :approvals, action: :unapprove
+
+            post :rebase
+          end
+
           post :remove_wip
           post :assign_related_issues
           get :discussions, format: :json
@@ -248,6 +277,21 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           post :bulk_update
         end
 
+        Gitlab.ee do
+          resources :approvers, only: :destroy
+          delete 'approvers', to: 'approvers#destroy_via_user_id', as: :approver_via_user_id
+          resources :approver_groups, only: :destroy
+
+          scope module: :merge_requests do
+            resources :drafts, only: [:index, :update, :create, :destroy] do
+              collection do
+                post :publish
+                delete :discard
+              end
+            end
+          end
+        end
+
         resources :discussions, only: [:show], constraints: { id: /\h{40}/ } do
           member do
             post :resolve
@@ -278,6 +322,17 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
       end
 
+      Gitlab.ee do
+        resources :path_locks, only: [:index, :destroy] do
+          collection do
+            post :toggle
+          end
+        end
+
+        get '/service_desk' => 'service_desk#show', as: :service_desk
+        put '/service_desk' => 'service_desk#update', as: :service_desk_refresh
+      end
+
       resource :variables, only: [:show, :update]
 
       resources :triggers, only: [:index, :create, :edit, :update, :destroy] do
@@ -291,6 +346,10 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           get :ssh_host_keys, constraints: { format: :json }
           post :update_now
         end
+      end
+
+      Gitlab.ee do
+        resources :push_rules, constraints: { id: /\d+/ }, only: [:update]
       end
 
       resources :pipelines, only: [:index, :new, :create, :show] do
@@ -307,6 +366,11 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           get :builds
           get :failures
           get :status
+
+          Gitlab.ee do
+            get :security
+            get :licenses
+          end
         end
 
         member do
@@ -335,6 +399,10 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           get '/terminal.ws/authorize', to: 'environments#terminal_websocket_authorize', constraints: { format: nil }
 
           get '/prometheus/api/v1/*proxy_path', to: 'environments/prometheus_api#proxy', as: :prometheus_api
+
+          Gitlab.ee do
+            get :logs
+          end
         end
 
         collection do
@@ -347,6 +415,14 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           member do
             get :metrics
             get :additional_metrics
+          end
+        end
+      end
+
+      Gitlab.ee do
+        resources :protected_environments, only: [:create, :update, :destroy], constraints: { id: /\d+/ } do
+          collection do
+            get 'search'
           end
         end
       end
@@ -403,6 +479,14 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
       end
 
+      Gitlab.ee do
+        namespace :security do
+          resource :dashboard, only: [:show], controller: :dashboard
+        end
+
+        resources :vulnerability_feedback, only: [:index, :create, :update, :destroy], constraints: { id: /\d+/ }
+      end
+
       get :issues, to: 'issues#calendar', constraints: lambda { |req| req.format == :ics }
 
       resources :issues, concerns: :awardable, constraints: { id: /\d+/ } do
@@ -421,6 +505,15 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         collection do
           post :bulk_update
           post :import_csv
+
+          Gitlab.ee do
+            post :export_csv
+            get :service_desk
+          end
+        end
+
+        Gitlab.ee do
+          resources :issue_links, only: [:index, :create, :destroy], as: 'links', path: 'links'
         end
       end
 
@@ -455,6 +548,11 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
       end
 
+      Gitlab.ee do
+        resources :approvers, only: :destroy
+        resources :approver_groups, only: :destroy
+      end
+
       resources :runner_projects, only: [:create, :destroy]
       resources :badges, only: [:index] do
         collection do
@@ -469,6 +567,10 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
       end
 
+      Gitlab.ee do
+        resources :audit_events, only: [:index]
+      end
+
       resources :error_tracking, only: [:index], controller: :error_tracking do
         collection do
           post :list_projects
@@ -479,6 +581,10 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       # its preferable to keep it below all other project routes
       draw :wiki
       draw :repository
+
+      Gitlab.ee do
+        resources :managed_licenses, only: [:index, :show, :new, :create, :edit, :update, :destroy]
+      end
     end
 
     resources(:projects,

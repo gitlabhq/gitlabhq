@@ -71,6 +71,10 @@ module Gitlab
       end
   end
 
+  def self.ee
+    yield if ee?
+  end
+
   def self.http_proxy_env?
     HTTP_PROXY_ENV_VARS.any? { |name| ENV[name] }
   end
