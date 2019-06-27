@@ -17,6 +17,10 @@ describe SearchController do
 
     set(:project) { create(:project, :public, :repository, :wiki_repo) }
 
+    before do
+      expect(::Gitlab::GitalyClient).to receive(:allow_ref_name_caching).and_call_original
+    end
+
     subject { get(:show, params: { project_id: project.id, scope: scope, search: 'merge' }) }
 
     where(:partial, :scope) do
