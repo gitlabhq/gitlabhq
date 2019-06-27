@@ -33,11 +33,6 @@ module Gitlab
 
     MUTEX = Mutex.new
 
-    define_histogram :gitaly_controller_action_duration_seconds do
-      docstring "Gitaly endpoint histogram by controller and action combination"
-      base_labels Gitlab::Metrics::Transaction::BASE_LABELS.merge(gitaly_service: nil, rpc: nil)
-    end
-
     def self.stub(name, storage)
       MUTEX.synchronize do
         @stubs ||= {}
@@ -161,10 +156,6 @@ module Gitlab
 
       # Keep track, separately, for the performance bar
       self.query_time += duration
-      gitaly_controller_action_duration_seconds.observe(
-        current_transaction_labels.merge(gitaly_service: service.to_s, rpc: rpc.to_s),
-        duration)
-
       if peek_enabled?
         add_call_details(feature: "#{service}##{rpc}", duration: duration, request: request_hash, rpc: rpc,
                          backtrace: Gitlab::Profiler.clean_backtrace(caller))
