@@ -1062,7 +1062,6 @@ There are two ways to create links, inline-style and reference-style:
 ```md
 - This is an [inline-style link](https://www.google.com)
 - This is a [link to a repository file in the same directory](index.md)
-- This is an [absolute reference within the repository](/doc/user/index.md)
 - This is a [relative link to a readme one directory higher](../README.md)
 - This is a [link that also has title text](https://www.google.com "This link takes you to Google!")
 
@@ -1086,7 +1085,6 @@ Some text to show that the reference links can follow later.
 
 - This is an [inline-style link](https://www.google.com)
 - This is a [link to a repository file in the same directory](index.md)
-- This is an [absolute reference within the repository](/doc/user/index.md)
 - This is a [relative link to a readme one directory higher](../README.md)
 - This is a [link that also has title text](https://www.google.com "This link takes you to Google!")
 
