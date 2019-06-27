@@ -1445,11 +1445,6 @@ class Project < ApplicationRecord
   end
 
   def in_fork_network_of?(other_project)
-    # TODO: Remove this in a next release when all fork_networks are populated
-    # This makes sure all MergeRequests remain valid while the projects don't
-    # have a fork_network yet.
-    return true if forked_from?(other_project)
-
     return false if fork_network.nil? || other_project.fork_network.nil?
 
     fork_network == other_project.fork_network
