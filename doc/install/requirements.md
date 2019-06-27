@@ -9,7 +9,7 @@ as the hardware requirements that are needed to install and use GitLab.
 
 ## Operating Systems
 
-### Supported Unix distributions
+### Supported Linux distributions
 
 - Ubuntu
 - Debian
@@ -21,7 +21,7 @@ as the hardware requirements that are needed to install and use GitLab.
 
 For the installations options, see [the main installation page](README.md).
 
-### Unsupported Unix distributions
+### Unsupported Linux distributions and Unix-like operating systems
 
 - Arch Linux
 - Fedora
@@ -29,13 +29,13 @@ For the installations options, see [the main installation page](README.md).
 - Gentoo
 - macOS
 
-On the above unsupported distributions is still possible to install GitLab yourself.
+Installation of GitLab on these operating systems is possible, but not supported.
 Please see the [installation from source guide](installation.md) and the [installation guides](https://about.gitlab.com/installation/) for more information.
 
-### Non-Unix operating systems such as Windows
+### Microsoft Windows
 
-GitLab is developed for Unix operating systems.
-It does **not** run on Windows, and we have no plans to support it in the near future. For the latest development status view this [issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/46567).
+GitLab is developed for Linux-based operating systems.
+It does **not** run on Microsoft Windows, and we have no plans to support it in the near future. For the latest development status view this [issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/46567).
 Please consider using a virtual machine to run GitLab.
 
 ## Ruby versions
