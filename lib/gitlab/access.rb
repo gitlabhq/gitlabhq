@@ -110,6 +110,13 @@ module Gitlab
       def project_creation_level_name(name)
         project_creation_options.key(name)
       end
+
+      def subgroup_creation_options
+        {
+          s_('SubgroupCreationlevel|Owners') => OWNER_SUBGROUP_ACCESS,
+          s_('SubgroupCreationlevel|Maintainers') => MAINTAINER_SUBGROUP_ACCESS
+        }
+      end
     end
 
     def human_access
