@@ -39,6 +39,19 @@ describe SearchController do
     end
   end
 
+  context 'global search' do
+    render_views
+
+    it 'omits pipeline status from load' do
+      project = create(:project, :public)
+      expect(Gitlab::Cache::Ci::ProjectPipelineStatus).not_to receive(:load_in_batch_for_projects)
+
+      get :show, params: { scope: 'projects', search: project.name }
+
+      expect(assigns[:search_objects].first).to eq project
+    end
+  end
+
   it 'finds issue comments' do
     project = create(:project, :public)
     note = create(:note_on_issue, project: project)

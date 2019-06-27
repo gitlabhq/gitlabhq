@@ -1,0 +1,5 @@
+---
+title: Avoid loading pipeline status in search results
+merge_request: 30111
+author:
+type: performance
