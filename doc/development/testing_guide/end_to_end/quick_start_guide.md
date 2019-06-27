@@ -365,7 +365,7 @@ Add the following `attribute :id` and `attribute :labels` right above the [`attr
 
 > We add the attributes above the existing attribute to keep them alphabetically organized.
 
-Then, let's initialize an instance variable for labels to allow an empty array as default value when such information is not passed during the resource fabricatioin, since this optional. [Between the attributes and the `fabricate!` method](https://gitlab.com/gitlab-org/gitlab-ee/blob/1a1f1408728f19b2aa15887cd20bddab7e70c8bd/qa/qa/resource/issue.rb#L18), add the following:
+Then, let's initialize an instance variable for labels to allow an empty array as default value when such information is not passed during the resource fabrication, since this optional. [Between the attributes and the `fabricate!` method](https://gitlab.com/gitlab-org/gitlab-ee/blob/1a1f1408728f19b2aa15887cd20bddab7e70c8bd/qa/qa/resource/issue.rb#L18), add the following:
 
 ```ruby
 def initialize
