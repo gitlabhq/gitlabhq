@@ -1,0 +1,24 @@
+# rubocop:disable Style/SignalException
+# frozen_string_literal: true
+
+has_only_docs_changes = helper.all_changed_files.all? { |file| file.start_with?('doc/') }
+is_docs_only_branch = gitlab.branch_for_head =~ /(^docs[\/-].*|.*-docs$)/
+
+if is_docs_only_branch && !has_only_docs_changes
+  fail "It seems like your branch name has a `docs` prefix or suffix. "\
+    "The CI won't run the full pipeline, but you also have changed non-docs files. "\
+    "Please recreate this MR with a new branch name."
+end
+
+if has_only_docs_changes && !is_docs_only_branch
+  markdown(<<~MARKDOWN)
+
+  ## Documentation only changes
+
+  Hey! Seems your merge request contains only docs changes.
+  Tired of waiting 2 hours for the pipeline to finish?
+  Next time, prepend `docs-` to [your branch name](https://docs.gitlab.com/ee/development/documentation/#branch-naming)
+  and the pipeline will finish before you say GitLab (x300)!
+
+  MARKDOWN
+end
