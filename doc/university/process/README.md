@@ -9,11 +9,11 @@ title: University | Process
 # Suggesting improvements
 
 If you would like to teach a class or participate or help in any way please
-submit a merge request and assign it to [Job](https://gitlab.com/u/JobV).
+submit a merge request and assign it to [Job](https://gitlab.com/JobV).
 
 If you have suggestions for additional courses you would like to see,
 please submit a merge request to add an upcoming class, assign to
-[Chad](https://gitlab.com/u/chadmalchow) and /cc [Job](https://gitlab.com/u/JobV).
+[Chad](https://gitlab.com/chadmalchow) and /cc [Job](https://gitlab.com/JobV).
 
 ## Adding classes
 
@@ -31,4 +31,4 @@ please submit a merge request to add an upcoming class, assign to
 1. Please upload any video recordings to our Youtube channel. We prefer them to
    be public, if needed they can be unlisted but if so they should be linked from
    this page.
-1. Please create a merge request and assign to [Erica](https://gitlab.com/u/Erica).
+1. Please create a merge request and assign to [Erica](https://gitlab.com/Erica).

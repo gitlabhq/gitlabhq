@@ -1,0 +1,5 @@
+---
+title: Remove depreated /u/:username routing
+merge_request: 30044
+author:
+type: removed
