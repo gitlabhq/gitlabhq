@@ -65,10 +65,12 @@ The current team labels are:
 - ~Defend
 - ~Distribution
 - ~Documentation
+- ~Ecosystem
 - ~Geo
 - ~Gitaly
 - ~Growth
 - ~Manage
+- ~Memory
 - ~Monitor
 - ~Plan
 - ~Quality
