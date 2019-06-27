@@ -76,6 +76,7 @@
                       #{ _('New tag') }
 
 .tree-controls
+  = render_if_exists 'projects/tree/lock_link'
   = link_to s_('Commits|History'), project_commits_path(@project, @id), class: 'btn'
 
   = render 'projects/find_file_link'
