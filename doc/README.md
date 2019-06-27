@@ -54,7 +54,7 @@ GitLab provides solutions for [all the stages of the DevOps lifecycle](https://a
 ![DevOps Stages](img/devops-stages.png)
 
 GitLab is like a top-of-the-line kitchen for making software. As the executive
-chef, you decide what software you want serve. Using your recipe, GitLab handles
+chef, you decide what software you want to serve. Using your recipe, GitLab handles
 all the prep work, cooking, and delivery, so you can turn around orders faster
 than ever.
 
