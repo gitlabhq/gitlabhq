@@ -192,7 +192,8 @@ class GroupsController < Groups::ApplicationController
       :chat_team_name,
       :require_two_factor_authentication,
       :two_factor_grace_period,
-      :project_creation_level
+      :project_creation_level,
+      :subgroup_creation_level
     ]
   end
 
