@@ -10,6 +10,8 @@ module Gitlab
         NOT_FOUND_ERROR = Gitlab::Template::Finders::RepoTemplateFinder::FileNotFoundError
 
         def get_dashboard
+          return error('Insufficient permissions.', :unauthorized) unless allowed?
+
           success(dashboard: process_dashboard)
         rescue NOT_FOUND_ERROR
           error("#{dashboard_path} could not be found.", :not_found)
@@ -29,6 +31,12 @@ module Gitlab
         end
 
         private
+
+        # Determines whether users should be able to view
+        # dashboards at all.
+        def allowed?
+          Ability.allowed?(current_user, :read_environment, project)
+        end
 
         # Returns a new dashboard Hash, supplemented with DB info
         def process_dashboard
