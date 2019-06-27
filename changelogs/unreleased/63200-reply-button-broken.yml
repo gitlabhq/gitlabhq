@@ -1,0 +1,5 @@
+---
+title: Fix unresponsive reply button in discussions
+merge_request: 29936
+author:
+type: fixed
