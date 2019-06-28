@@ -23,63 +23,110 @@ describe FileMover do
   subject { described_class.new(temp_file_path, from_model: user, to_model: snippet).execute }
 
   describe '#execute' do
-    before do
-      tmp_uploader.store!(file)
-
-      expect(FileUtils).to receive(:mkdir_p).with(a_string_including(File.dirname(file_path)))
-      expect(FileUtils).to receive(:move).with(a_string_including(temp_file_path), a_string_including(file_path))
-      allow_any_instance_of(CarrierWave::SanitizedFile).to receive(:exists?).and_return(true)
-      allow_any_instance_of(CarrierWave::SanitizedFile).to receive(:size).and_return(10)
-
-      stub_file_mover(temp_file_path)
-    end
-
     let(:tmp_upload) { tmp_uploader.upload }
 
-    context 'when move and field update successful' do
-      it 'updates the description correctly' do
-        subject
+    before do
+      tmp_uploader.store!(file)
+    end
 
-        expect(snippet.reload.description)
-          .to eq(
-            "test ![banana_sample](/uploads/-/system/personal_snippet/#{snippet.id}/secret55/banana_sample.gif) "\
-            "same ![banana_sample](/uploads/-/system/personal_snippet/#{snippet.id}/secret55/banana_sample.gif) "
-          )
+    context 'local storage' do
+      before do
+        allow(FileUtils).to receive(:mkdir_p).with(a_string_including(File.dirname(file_path)))
+        allow(FileUtils).to receive(:move).with(a_string_including(temp_file_path), a_string_including(file_path))
+        allow_any_instance_of(CarrierWave::SanitizedFile).to receive(:exists?).and_return(true)
+        allow_any_instance_of(CarrierWave::SanitizedFile).to receive(:size).and_return(10)
+
+        stub_file_mover(temp_file_path)
       end
 
-      it 'updates existing upload record' do
-        expect { subject }
-          .to change { tmp_upload.reload.attributes.values_at('model_id', 'model_type') }
-          .from([user.id, 'User']).to([snippet.id, 'PersonalSnippet'])
+      context 'when move and field update successful' do
+        it 'updates the description correctly' do
+          subject
+
+          expect(snippet.reload.description)
+            .to eq("test ![banana_sample](/uploads/-/system/personal_snippet/#{snippet.id}/secret55/banana_sample.gif) "\
+                   "same ![banana_sample](/uploads/-/system/personal_snippet/#{snippet.id}/secret55/banana_sample.gif) ")
+        end
+
+        it 'updates existing upload record' do
+          expect { subject }
+            .to change { tmp_upload.reload.attributes.values_at('model_id', 'model_type') }
+            .from([user.id, 'User']).to([snippet.id, 'Snippet'])
+        end
+
+        it 'schedules a background migration' do
+          expect_any_instance_of(PersonalFileUploader).to receive(:schedule_background_upload).once
+
+          subject
+        end
       end
 
-      it 'schedules a background migration' do
-        expect_any_instance_of(PersonalFileUploader).to receive(:schedule_background_upload).once
+      context 'when update_markdown fails' do
+        before do
+          expect(FileUtils).to receive(:move).with(a_string_including(file_path), a_string_including(temp_file_path))
+        end
 
-        subject
+        subject { described_class.new(file_path, :non_existing_field, from_model: user, to_model: snippet).execute }
+
+        it 'does not update the description' do
+          subject
+
+          expect(snippet.reload.description)
+            .to eq("test ![banana_sample](/uploads/-/system/user/#{user.id}/secret55/banana_sample.gif) "\
+                   "same ![banana_sample](/uploads/-/system/user/#{user.id}/secret55/banana_sample.gif) ")
+        end
+
+        it 'does not change the upload record' do
+          expect { subject }
+            .not_to change { tmp_upload.reload.attributes.values_at('model_id', 'model_type') }
+        end
       end
     end
 
-    context 'when update_markdown fails' do
+    context 'when tmp uploader is not local storage' do
       before do
-        expect(FileUtils).to receive(:move).with(a_string_including(file_path), a_string_including(temp_file_path))
+        allow(PersonalFileUploader).to receive(:object_store_enabled?) { true }
+        tmp_uploader.object_store = ObjectStorage::Store::REMOTE
+        allow_any_instance_of(PersonalFileUploader).to receive(:file_storage?) { false }
       end
 
-      subject { described_class.new(file_path, :non_existing_field, from_model: user, to_model: snippet).execute }
-
-      it 'does not update the description' do
-        subject
-
-        expect(snippet.reload.description)
-          .to eq(
-            "test ![banana_sample](/uploads/-/system/user/#{user.id}/secret55/banana_sample.gif) "\
-            "same ![banana_sample](/uploads/-/system/user/#{user.id}/secret55/banana_sample.gif) "
-          )
+      after do
+        FileUtils.rm_f(File.join('personal_snippet', snippet.id.to_s, secret, filename))
       end
 
-      it 'does not change the upload record' do
-        expect { subject }
-          .not_to change { tmp_upload.reload.attributes.values_at('model_id', 'model_type') }
+      context 'when move and field update successful' do
+        it 'updates the description correctly' do
+          subject
+
+          expect(snippet.reload.description)
+            .to eq("test ![banana_sample](/uploads/-/system/personal_snippet/#{snippet.id}/secret55/banana_sample.gif) "\
+                   "same ![banana_sample](/uploads/-/system/personal_snippet/#{snippet.id}/secret55/banana_sample.gif) ")
+        end
+
+        it 'creates new target upload record an delete the old upload' do
+          expect { subject }
+            .to change { Upload.last.attributes.values_at('model_id', 'model_type') }
+            .from([user.id, 'User']).to([snippet.id, 'Snippet'])
+
+          expect(Upload.count).to eq(1)
+        end
+      end
+
+      context 'when update_markdown fails' do
+        subject { described_class.new(file_path, :non_existing_field, from_model: user, to_model: snippet).execute }
+
+        it 'does not update the description' do
+          subject
+
+          expect(snippet.reload.description)
+            .to eq("test ![banana_sample](/uploads/-/system/user/#{user.id}/secret55/banana_sample.gif) "\
+                   "same ![banana_sample](/uploads/-/system/user/#{user.id}/secret55/banana_sample.gif) ")
+        end
+
+        it 'does not change the upload record' do
+          expect { subject }
+            .to change { Upload.last.attributes.values_at('model_id', 'model_type') }.from([user.id, 'User'])
+        end
       end
     end
   end
