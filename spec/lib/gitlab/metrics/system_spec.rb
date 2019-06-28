@@ -52,13 +52,13 @@ describe Gitlab::Metrics::System do
   end
 
   describe '.cpu_time' do
-    it 'returns a Fixnum' do
+    it 'returns a Float' do
       expect(described_class.cpu_time).to be_an(Float)
     end
   end
 
   describe '.real_time' do
-    it 'returns a Fixnum' do
+    it 'returns a Float' do
       expect(described_class.real_time).to be_an(Float)
     end
   end
