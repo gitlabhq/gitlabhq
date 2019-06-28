@@ -89,9 +89,9 @@ describe Groups::CreateService, '#execute' do
         it { is_expected.to be_persisted }
       end
 
-      context 'as maintainer' do
+      context 'as Owner' do
         before do
-          group.add_maintainer(user)
+          group.add_owner(user)
         end
 
         it { is_expected.to be_persisted }
