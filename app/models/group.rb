@@ -58,6 +58,8 @@ class Group < Namespace
 
   add_authentication_token_field :runners_token, encrypted: -> { Feature.enabled?(:groups_tokens_optional_encryption, default_enabled: true) ? :optional : :required }
 
+  before_create :default_subgroup_creation_level_to_maintainers
+
   after_create :post_create_hook
   after_destroy :post_destroy_hook
   after_save :update_two_factor_requirement
@@ -416,10 +418,6 @@ class Group < Namespace
     super || ::Gitlab::CurrentSettings.default_project_creation
   end
 
-  def subgroup_creation_level
-    super || ::Gitlab::Access::MAINTAINER_SUBGROUP_ACCESS
-  end
-
   private
 
   def update_two_factor_requirement
@@ -448,5 +446,9 @@ class Group < Namespace
     return if visibility_level_allowed_by_sub_groups?
 
     errors.add(:visibility_level, "#{visibility} is not allowed since there are sub-groups with higher visibility.")
+  end
+
+  def default_subgroup_creation_level_to_maintainers
+    self.subgroup_creation_level = ::Gitlab::Access::MAINTAINER_SUBGROUP_ACCESS
   end
 end
