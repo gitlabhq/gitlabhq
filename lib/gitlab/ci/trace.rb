@@ -5,7 +5,7 @@ module Gitlab
     class Trace
       include ::Gitlab::ExclusiveLeaseHelpers
 
-      LOCK_TTL = 1.minute
+      LOCK_TTL = 10.minutes
       LOCK_RETRIES = 2
       LOCK_SLEEP = 0.001.seconds
 
