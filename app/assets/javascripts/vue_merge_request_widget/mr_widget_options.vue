@@ -162,7 +162,8 @@ export default {
         removeWIPPath: store.removeWIPPath,
         sourceBranchPath: store.sourceBranchPath,
         ciEnvironmentsStatusPath: store.ciEnvironmentsStatusPath,
-        statusPath: store.statusPath,
+        mergeRequestBasicPath: store.mergeRequestBasicPath,
+        mergeRequestWidgetPath: store.mergeRequestWidgetPath,
         mergeActionsContentPath: store.mergeActionsContentPath,
         rebasePath: store.rebasePath,
       };

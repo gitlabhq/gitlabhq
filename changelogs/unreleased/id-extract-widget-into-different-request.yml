@@ -1,0 +1,5 @@
+---
+title: Add a separate endpoint for fetching MRs serialized as widgets
+merge_request: 29979
+author:
+type: performance

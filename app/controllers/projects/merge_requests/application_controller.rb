@@ -51,4 +51,11 @@ class Projects::MergeRequests::ApplicationController < Projects::ApplicationCont
         Ci::Pipeline.none
       end
   end
+
+  def close_merge_request_if_no_source_project
+    return if @merge_request.source_project
+    return unless @merge_request.open?
+
+    @merge_request.close
+  end
 end
