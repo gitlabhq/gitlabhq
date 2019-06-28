@@ -4,6 +4,11 @@ module Types
     class TreeType < BaseObject
       graphql_name 'Tree'
 
+      # Complexity 10 as it triggers a Gitaly call on each render
+      field :last_commit, Types::CommitType, null: true, complexity: 10, resolve: -> (tree, args, ctx) do
+        tree.repository.last_commit_for_path(tree.sha, tree.path)
+      end
+
       field :trees, Types::Tree::TreeEntryType.connection_type, null: false, resolve: -> (obj, args, ctx) do
         Gitlab::Graphql::Representation::TreeEntry.decorate(obj.trees, obj.repository)
       end

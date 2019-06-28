@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-class CommitPresenter < Gitlab::View::Presenter::Simple
+class CommitPresenter < Gitlab::View::Presenter::Delegated
+  include GlobalID::Identification
+
   presents :commit
 
   def status_for(ref)
@@ -9,5 +11,9 @@ class CommitPresenter < Gitlab::View::Presenter::Simple
 
   def any_pipelines?
     can?(current_user, :read_pipeline, commit.project) && commit.pipelines.any?
+  end
+
+  def web_url
+    Gitlab::UrlBuilder.new(commit).url
   end
 end
