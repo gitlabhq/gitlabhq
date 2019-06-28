@@ -85,3 +85,21 @@ eric             37709   0.0  0.0  2518640   7524 s006  S    Wed11AM   0:00.79 s
 $ kill 87304
 $ kill 37709
 ```
+
+### db:migrate `database version is too old to be migrated` error
+
+Users receive this error when `db:migrate` detects that the current schema version
+is older than the `MIN_SCHEMA_VERSION` defined in the `Gitlab::Database` library
+module.
+
+Over time we cleanup/combine old migrations in the codebase, so it is not always
+possible to migrate GitLab from every previous version.
+
+In some cases you may want to bypass this check. For example, if you were on a version
+of GitLab schema later than the `MIN_SCHEMA_VERSION`, and then rolled back the
+to an older migration, from before. In this case, in order to migrate forward again,
+you should set the `SKIP_SCHEMA_VERSION_CHECK` environment variable.
+
+```sh
+bundle exec rake db:migrate SKIP_SCHEMA_VERSION_CHECK=true
+```

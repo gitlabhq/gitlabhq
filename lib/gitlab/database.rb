@@ -13,6 +13,11 @@ module Gitlab
     # https://dev.mysql.com/doc/refman/5.7/en/datetime.html
     MAX_TIMESTAMP_VALUE = Time.at((1 << 31) - 1).freeze
 
+    # Minimum schema version from which migrations are supported
+    # Migrations before this version may have been removed
+    MIN_SCHEMA_VERSION = 20190506135400
+    MIN_SCHEMA_GITLAB_VERSION = '11.11.0'
+
     define_histogram :gitlab_database_transaction_seconds do
       docstring "Time spent in database transactions, in seconds"
     end
