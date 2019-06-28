@@ -4,14 +4,12 @@ import { glEmojiTag } from '~/emoji';
 
 import detailedMetric from './detailed_metric.vue';
 import requestSelector from './request_selector.vue';
-import simpleMetric from './simple_metric.vue';
 import { s__ } from '~/locale';
 
 export default {
   components: {
     detailedMetric,
     requestSelector,
-    simpleMetric,
   },
   props: {
     store: {
@@ -43,8 +41,13 @@ export default {
       details: 'details',
       keys: ['feature', 'request'],
     },
+    {
+      metric: 'redis',
+      header: 'Redis calls',
+      details: 'details',
+      keys: ['cmd'],
+    },
   ],
-  simpleMetrics: ['redis'],
   data() {
     return { currentRequestId: '' };
   },
@@ -124,12 +127,6 @@ export default {
         </button>
         <a v-else :href="profileUrl">{{ s__('PerformanceBar|profile') }}</a>
       </div>
-      <simple-metric
-        v-for="metric in $options.simpleMetrics"
-        :key="metric"
-        :current-request="currentRequest"
-        :metric="metric"
-      />
       <div id="peek-view-gc" class="view">
         <span v-if="currentRequest.details" class="bold">
           <span title="Invoke Time">{{ currentRequest.details.gc.gc_time }}</span
