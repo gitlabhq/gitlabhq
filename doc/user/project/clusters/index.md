@@ -533,21 +533,19 @@ This job failed because the necessary resources were not successfully created.
 
 To find the cause of this error when creating a namespace and service account, check the [logs](../../../administration/logs.md#kuberneteslog).
 
-NOTE: **NOTE:**
-As of GitLab 12.1 we require [`cluster-admin`](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles)
-tokens for all project level clusters unless you unselect the
-[GitLab-managed cluster](#gitlab-managed-clusters) option. If you
-want to manage namespaces and service accounts yourself and don't
-want to provide a `cluster-admin` token to GitLab you must unselect this
-option or you will get the above error.
+Reasons for failure include:
 
-Common reasons for failure include:
-
-- The token you gave GitLab did not have [`cluster-admin`](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles)
+- The token you gave GitLab does not have [`cluster-admin`](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles)
   privileges required by GitLab.
 - Missing `KUBECONFIG` or `KUBE_TOKEN` variables. To be passed to your job, they must have a matching
   [`environment:name`](../../../ci/environments.md#defining-environments). If your job has no
   `environment:name` set, it will not be passed the Kubernetes credentials.
+
+NOTE: **NOTE:**
+Project-level clusters upgraded from GitLab 12.0 or older may be configured
+in a way that causes this error. Ensure you deselect the
+[GitLab-managed cluster](#gitlab-managed-clusters) option if you want to manage
+namespaces and service accounts yourself.
 
 ## Monitoring your Kubernetes cluster **[ULTIMATE]**
 
