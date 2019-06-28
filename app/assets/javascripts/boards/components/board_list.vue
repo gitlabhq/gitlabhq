@@ -227,7 +227,7 @@ export default {
     :class="{ 'd-none': !list.isExpanded, 'd-flex flex-column': list.isExpanded }"
     class="board-list-component position-relative h-100"
   >
-    <div v-if="loading" class="board-list-loading text-center" aria-label="Loading issues">
+    <div v-if="loading" class="board-list-loading text-center" :aria-label="__('Loading issues')">
       <gl-loading-icon />
     </div>
     <board-new-issue
@@ -257,7 +257,7 @@ export default {
       />
       <li v-if="showCount" class="board-list-count text-center" data-issue-id="-1">
         <gl-loading-icon v-show="list.loadingMore" label="Loading more issues" />
-        <span v-if="list.issues.length === list.issuesSize"> Showing all issues </span>
+        <span v-if="list.issues.length === list.issuesSize">{{ __('Showing all issues') }}</span>
         <span v-else> Showing {{ list.issues.length }} of {{ list.issuesSize }} issues </span>
       </li>
     </ul>

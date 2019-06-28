@@ -1,4 +1,5 @@
 <script>
+import { __ } from '~/locale';
 /* global ListLabel */
 import Cookies from 'js-cookie';
 import boardsStore from '../stores/boards_store';
@@ -7,8 +8,8 @@ export default {
   data() {
     return {
       predefinedLabels: [
-        new ListLabel({ title: 'To Do', color: '#F0AD4E' }),
-        new ListLabel({ title: 'Doing', color: '#5CB85C' }),
+        new ListLabel({ title: __('To Do'), color: '#F0AD4E' }),
+        new ListLabel({ title: __('Doing'), color: '#5CB85C' }),
       ],
     };
   },
@@ -58,7 +59,11 @@ export default {
 
 <template>
   <div class="board-blank-state p-3">
-    <p>Add the following default lists to your Issue Board with one click:</p>
+    <p>
+      {{
+        __('BoardBlankState|Add the following default lists to your Issue Board with one click:')
+      }}
+    </p>
     <ul class="list-unstyled board-blank-state-list">
       <li v-for="(label, index) in predefinedLabels" :key="index">
         <span
@@ -70,18 +75,21 @@ export default {
       </li>
     </ul>
     <p>
-      Starting out with the default set of lists will get you right on the way to making the most of
-      your board.
+      {{
+        __(
+          'BoardBlankState|Starting out with the default set of lists will get you right on the way to making the most of your board.',
+        )
+      }}
     </p>
     <button
       class="btn btn-success btn-inverted btn-block"
       type="button"
       @click.stop="addDefaultLists"
     >
-      Add default lists
+      {{ __('BoardBlankState|Add default lists') }}
     </button>
     <button class="btn btn-default btn-block" type="button" @click.stop="clearBlankState">
-      Nevermind, I'll use my own
+      {{ __("BoardBlankState|Nevermind, I'll use my own") }}
     </button>
   </div>
 </template>

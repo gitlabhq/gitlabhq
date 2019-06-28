@@ -1,4 +1,5 @@
 <script>
+import { __ } from '~/locale';
 import ModalFilters from './filters';
 import ModalTabs from './tabs.vue';
 import ModalStore from '../../stores/modal_store';
@@ -30,10 +31,10 @@ export default {
   computed: {
     selectAllText() {
       if (ModalStore.selectedCount() !== this.issues.length || this.issues.length === 0) {
-        return 'Select all';
+        return __('Select all');
       }
 
-      return 'Deselect all';
+      return __('Deselect all');
     },
     showSearch() {
       return this.activeTab === 'all' && !this.loading && this.issuesCount > 0;
@@ -57,7 +58,7 @@ export default {
           type="button"
           class="close"
           data-dismiss="modal"
-          aria-label="Close"
+          :aria-label="__('Close')"
           @click="toggleModal(false)"
         >
           <span aria-hidden="true">×</span>

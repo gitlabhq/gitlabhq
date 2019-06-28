@@ -1,4 +1,5 @@
 <script>
+import { __, sprintf } from '~/locale';
 import ModalStore from '../../stores/modal_store';
 import modalMixin from '../../mixins/modal_mixins';
 
@@ -20,19 +21,20 @@ export default {
   computed: {
     contents() {
       const obj = {
-        title: "You haven't added any issues to your project yet",
-        content: `
-          An issue can be a bug, a todo or a feature request that needs to be
-          discussed in a project. Besides, issues are searchable and filterable.
-        `,
+        title: __("You haven't added any issues to your project yet"),
+        content: __(
+          'An issue can be a bug, a todo or a feature request that needs to be discussed in a project. Besides, issues are searchable and filterable.',
+        ),
       };
 
       if (this.activeTab === 'selected') {
-        obj.title = "You haven't selected any issues yet";
-        obj.content = `
-          Go back to <strong>Open issues</strong> and select some issues
-          to add to your board.
-        `;
+        obj.title = __("You haven't selected any issues yet");
+        obj.content = sprintf(
+          __(
+            'Go back to %{startTag}Open issues%{endTag} and select some issues to add to your board.',
+          ),
+          { startTag: '<strong>', endTag: '</strong>' },
+        );
       }
 
       return obj;
@@ -51,16 +53,16 @@ export default {
         <div class="text-content">
           <h4>{{ contents.title }}</h4>
           <p v-html="contents.content"></p>
-          <a v-if="activeTab === 'all'" :href="newIssuePath" class="btn btn-success btn-inverted">
-            New issue
-          </a>
+          <a v-if="activeTab === 'all'" :href="newIssuePath" class="btn btn-success btn-inverted">{{
+            __('New issue')
+          }}</a>
           <button
             v-if="activeTab === 'selected'"
             class="btn btn-default"
             type="button"
             @click="changeTab('all')"
           >
-            Open issues
+            {{ __('Open issues') }}
           </button>
         </div>
       </div>

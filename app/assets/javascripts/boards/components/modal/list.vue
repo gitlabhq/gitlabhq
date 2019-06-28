@@ -123,7 +123,9 @@ export default {
       class="empty-state add-issues-empty-state-filter text-center"
     >
       <div class="svg-content"><img :src="emptyStateSvg" /></div>
-      <div class="text-content"><h4>There are no issues to show.</h4></div>
+      <div class="text-content">
+        <h4>{{ __('There are no issues to show.') }}</h4>
+      </div>
     </div>
     <div v-for="(group, index) in groupedIssues" :key="index" class="add-issues-list-column">
       <div v-for="issue in group" v-if="showIssue(issue)" :key="issue.id" class="board-card-parent">
