@@ -5,6 +5,7 @@ module Gitlab
     module_function
 
     def retry_lock(subject, retries = 100, &block)
+      # TODO(Observability): We should be recording details of the number of retries and the duration of the total execution here
       ActiveRecord::Base.transaction do
         yield(subject)
       end
