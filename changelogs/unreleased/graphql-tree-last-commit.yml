@@ -1,0 +1,5 @@
+---
+title: Added commit type to tree GraphQL response
+merge_request: 29412
+author:
+type: added

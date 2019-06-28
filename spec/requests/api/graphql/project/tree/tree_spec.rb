@@ -33,6 +33,12 @@ describe 'getting a tree in a project' do
       expect(graphql_data['project']['repository']['tree']['submodules']['edges']).to eq([])
       expect(graphql_data['project']['repository']['tree']['blobs']['edges']).to eq([])
     end
+
+    it 'returns null commit' do
+      post_graphql(query, current_user: current_user)
+
+      expect(graphql_data['project']['repository']['last_commit']).to be_nil
+    end
   end
 
   context 'when ref does not exist' do
@@ -44,6 +50,12 @@ describe 'getting a tree in a project' do
       expect(graphql_data['project']['repository']['tree']['trees']['edges']).to eq([])
       expect(graphql_data['project']['repository']['tree']['submodules']['edges']).to eq([])
       expect(graphql_data['project']['repository']['tree']['blobs']['edges']).to eq([])
+    end
+
+    it 'returns null commit' do
+      post_graphql(query, current_user: current_user)
+
+      expect(graphql_data['project']['repository']['last_commit']).to be_nil
     end
   end
 
@@ -60,6 +72,12 @@ describe 'getting a tree in a project' do
       expect(graphql_data['project']['repository']['tree']['trees']['edges'].size).to be > 0
       expect(graphql_data['project']['repository']['tree']['blobs']['edges'].size).to be > 0
       expect(graphql_data['project']['repository']['tree']['submodules']['edges'].size).to be > 0
+    end
+
+    it 'returns tree latest commit' do
+      post_graphql(query, current_user: current_user)
+
+      expect(graphql_data['project']['repository']['tree']['lastCommit']).to be_present
     end
   end
 
