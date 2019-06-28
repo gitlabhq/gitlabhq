@@ -189,9 +189,6 @@ Settings.gitlab['webhook_timeout'] ||= 10
 Settings.gitlab['max_attachment_size'] ||= 10
 Settings.gitlab['session_expire_delay'] ||= 10080
 Settings.gitlab['unauthenticated_session_expire_delay'] ||= 2.hours.to_i
-Settings.gitlab['mirror_max_delay'] ||= 300
-Settings.gitlab['mirror_max_capacity'] ||= 30
-Settings.gitlab['mirror_capacity_threshold'] ||= 15
 Settings.gitlab.default_projects_features['issues']             = true if Settings.gitlab.default_projects_features['issues'].nil?
 Settings.gitlab.default_projects_features['merge_requests']     = true if Settings.gitlab.default_projects_features['merge_requests'].nil?
 Settings.gitlab.default_projects_features['wiki']               = true if Settings.gitlab.default_projects_features['wiki'].nil?
@@ -205,6 +202,12 @@ Settings.gitlab['trusted_proxies'] ||= []
 Settings.gitlab['no_todos_messages'] ||= YAML.load_file(Rails.root.join('config', 'no_todos_messages.yml'))
 Settings.gitlab['impersonation_enabled'] ||= true if Settings.gitlab['impersonation_enabled'].nil?
 Settings.gitlab['usage_ping_enabled'] = true if Settings.gitlab['usage_ping_enabled'].nil?
+
+Gitlab.ee do
+  Settings.gitlab['mirror_max_delay'] ||= 300
+  Settings.gitlab['mirror_max_capacity'] ||= 30
+  Settings.gitlab['mirror_capacity_threshold'] ||= 15
+end
 
 #
 # Elasticseacrh
