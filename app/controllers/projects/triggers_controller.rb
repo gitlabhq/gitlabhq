@@ -4,7 +4,7 @@ class Projects::TriggersController < Projects::ApplicationController
   before_action :authorize_admin_build!
   before_action :authorize_manage_trigger!, except: [:index, :create]
   before_action :authorize_admin_trigger!, only: [:edit, :update]
-  before_action :trigger, only: [:take_ownership, :edit, :update, :destroy]
+  before_action :trigger, only: [:edit, :update, :destroy]
 
   layout 'project_settings'
 
@@ -19,16 +19,6 @@ class Projects::TriggersController < Projects::ApplicationController
       flash[:notice] = _('Trigger was created successfully.')
     else
       flash[:alert] = _('You could not create a new trigger.')
-    end
-
-    redirect_to project_settings_ci_cd_path(@project, anchor: 'js-pipeline-triggers')
-  end
-
-  def take_ownership
-    if trigger.update(owner: current_user)
-      flash[:notice] = _('Trigger was re-assigned.')
-    else
-      flash[:alert] = _('You could not take ownership of trigger.')
     end
 
     redirect_to project_settings_ci_cd_path(@project, anchor: 'js-pipeline-triggers')

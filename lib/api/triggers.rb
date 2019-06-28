@@ -112,27 +112,6 @@ module API
         end
       end
 
-      desc 'Take ownership of trigger' do
-        success Entities::Trigger
-      end
-      params do
-        requires :trigger_id, type: Integer, desc: 'The trigger ID'
-      end
-      post ':id/triggers/:trigger_id/take_ownership' do
-        authenticate!
-        authorize! :admin_build, user_project
-
-        trigger = user_project.triggers.find(params.delete(:trigger_id))
-        break not_found!('Trigger') unless trigger
-
-        if trigger.update(owner: current_user)
-          status :ok
-          present trigger, with: Entities::Trigger, current_user: current_user
-        else
-          render_validation_error!(trigger)
-        end
-      end
-
       desc 'Delete a trigger' do
         success Entities::Trigger
       end

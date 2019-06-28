@@ -93,17 +93,6 @@ overview of the time the triggers were last used.
 
 ![Triggers page overview](img/triggers_page.png)
 
-## Taking ownership of a trigger
-
-> **Note**:
-GitLab 9.0 introduced a trigger ownership to solve permission problems.
-
-Each created trigger when run will impersonate their associated user including
-their access to projects and their project permissions.
-
-You can take ownership of existing triggers by clicking *Take ownership*.
-From now on the trigger will be run as you.
-
 ## Revoking a trigger
 
 You can revoke a trigger any time by going at your project's
@@ -278,8 +267,7 @@ Old triggers, created before GitLab 9.0 will be marked as legacy.
 
 Triggers with the legacy label do not have an associated user and only have
 access to the current project. They are considered deprecated and will be
-removed with one of the future versions of GitLab. You are advised to
-[take ownership](#taking-ownership-of-a-trigger) of any legacy triggers.
+removed with one of the future versions of GitLab. 
 
 [ee-2017]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2017
 [ee-2346]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2346
