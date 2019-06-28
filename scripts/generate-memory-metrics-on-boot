@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+
+abort "usage: #{__FILE__} <memory_bundle_mem_file_name>" unless ARGV.length == 1
+memory_bundle_mem_file_name = ARGV.first
+
+full_report = File.open(memory_bundle_mem_file_name).read
+
+stats = /TOP: (?<total_mibs_str>.*) MiB/.match(full_report)
+abort 'failed to process the benchmark output' unless stats
+
+puts "total_memory_used_by_dependencies_on_boot_prod_env_mb #{stats[:total_mibs_str].to_f.round(1)}"

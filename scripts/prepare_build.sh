@@ -35,6 +35,7 @@ sed -i 's/username: root/username: gitlab/g' config/database.yml
 
 if [ "$GITLAB_DATABASE" = 'postgresql' ]; then
   sed -i 's/localhost/postgres/g' config/database.yml
+  sed -i 's/username: git/username: postgres/g' config/database.yml
 
   if [ -f config/database_geo.yml ]; then
     sed -i 's/localhost/postgres/g' config/database_geo.yml
@@ -48,16 +49,16 @@ else # Assume it's mysql
 fi
 
 cp config/resque.yml.example config/resque.yml
-sed -i 's/localhost/redis/g' config/resque.yml
+sed -i 's|url:.*$|url: redis://redis:6379|g' config/resque.yml
 
 cp config/redis.cache.yml.example config/redis.cache.yml
-sed -i 's/localhost/redis/g' config/redis.cache.yml
+sed -i 's|url:.*$|url: redis://redis:6379/10|g' config/redis.cache.yml
 
 cp config/redis.queues.yml.example config/redis.queues.yml
-sed -i 's/localhost/redis/g' config/redis.queues.yml
+sed -i 's|url:.*$|url: redis://redis:6379/11|g' config/redis.queues.yml
 
 cp config/redis.shared_state.yml.example config/redis.shared_state.yml
-sed -i 's/localhost/redis/g' config/redis.shared_state.yml
+sed -i 's|url:.*$|url: redis://redis:6379/12|g' config/redis.shared_state.yml
 
 if [ "$SETUP_DB" != "false" ]; then
   setup_db
