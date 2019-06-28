@@ -92,7 +92,7 @@ describe Projects::BranchesController do
       end
 
       it 'posts a system note' do
-        expect(SystemNoteService).to receive(:new_issue_branch).with(issue, project, user, "1-feature-branch")
+        expect(SystemNoteService).to receive(:new_issue_branch).with(issue, project, user, "1-feature-branch", branch_project: project)
 
         post :create,
              params: {

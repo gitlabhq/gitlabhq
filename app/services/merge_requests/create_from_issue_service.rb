@@ -25,11 +25,11 @@ module MergeRequests
       new_merge_request = create(merge_request)
 
       if new_merge_request.valid?
-        SystemNoteService.new_merge_request(issue, target_project, current_user, new_merge_request)
+        SystemNoteService.new_merge_request(issue, project, current_user, new_merge_request)
 
         success(new_merge_request)
       else
-        SystemNoteService.new_issue_branch(issue, target_project, current_user, branch_name)
+        SystemNoteService.new_issue_branch(issue, project, current_user, branch_name, branch_project: target_project)
 
         error(new_merge_request.errors)
       end
