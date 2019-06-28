@@ -13,7 +13,7 @@ FactoryBot.define do
       cluster_type { Clusters::Cluster.cluster_types[:project_type] }
 
       before(:create) do |cluster, evaluator|
-        cluster.projects << create(:project, :repository) unless cluster.projects.present?
+        cluster.projects << create(:project) unless cluster.projects.present?
       end
     end
 
