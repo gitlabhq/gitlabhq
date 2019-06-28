@@ -20,7 +20,7 @@ export function getBoardSortableDefaultOptions(obj) {
     'ontouchstart' in window || (window.DocumentTouch && document instanceof DocumentTouch);
 
   const defaultSortOptions = Object.assign({}, sortableConfig, {
-    filter: '.board-delete, .btn',
+    filter: '.no-drag',
     delay: touchEnabled ? 100 : 0,
     scrollSensitivity: touchEnabled ? 60 : 100,
     scrollSpeed: 20,
