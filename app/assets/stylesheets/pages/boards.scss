@@ -92,9 +92,20 @@
     width: 400px;
   }
 
-  &.is-expandable {
-    .board-header {
-      cursor: pointer;
+  .board-title-caret {
+    cursor: pointer;
+    border-radius: $border-radius-default;
+    padding: 4px;
+
+    &:hover {
+      background-color: $gray-dark;
+      transition: background-color 0.1s linear;
+    }
+  }
+
+  &:not(.is-collapsed) {
+    .board-title-caret {
+      margin: 0 $gl-padding-4 0 -10px;
     }
   }
 
@@ -102,20 +113,51 @@
     width: 50px;
 
     .board-title {
-      > span {
-        width: 100%;
-        margin-top: -12px;
+      flex-direction: column;
+      height: 100%;
+      padding: $gl-padding-8 0;
+    }
+
+    .board-title-caret {
+      margin-top: 1px;
+    }
+
+    .user-avatar-link,
+    .milestone-icon {
+      margin-top: $gl-padding-8;
+      transform: rotate(90deg);
+    }
+
+    .board-title-text {
+      flex-grow: 0;
+      margin: $gl-padding-8 0;
+
+      .board-title-main-text {
         display: block;
-        transform: rotate(90deg) translate(35px, 0);
-        overflow: initial;
+      }
+
+      .board-title-sub-text {
+        display: none;
       }
     }
 
-    .board-title-expandable-toggle {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      margin-left: -10px;
+    .issue-count-badge {
+      border: 0;
+      white-space: nowrap;
+    }
+
+    .board-title-text > span,
+    .issue-count-badge > span {
+      height: 16px;
+
+      // Force the height to be equal to the parent's width while centering the contents.
+      // The contents *should* be about 16 px.
+      // We do this because the flow of elements isn't affected by the rotate transform, so we must ensure that a
+      // rotated element has square dimensions so it won't overlap with its siblings.
+      margin: calc(50% - 8px) 0;
+
+      transform: rotate(90deg);
+      transform-origin: center;
     }
   }
 }
@@ -152,12 +194,14 @@
 }
 
 .board-title {
+  align-items: center;
   font-size: 1em;
   border-bottom: 1px solid $border-color;
+  padding: $gl-padding-8 $gl-padding;
 }
 
 .board-title-text {
-  margin: $gl-vert-padding auto $gl-vert-padding 0;
+  flex-grow: 1;
 }
 
 .board-delete {

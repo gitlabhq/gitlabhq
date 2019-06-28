@@ -1606,6 +1606,12 @@ msgstr ""
 msgid "Boards"
 msgstr ""
 
+msgid "Boards|Collapse"
+msgstr ""
+
+msgid "Boards|Expand"
+msgstr ""
+
 msgid "Branch %{branchName} was not found in this project's repository."
 msgstr ""
 
