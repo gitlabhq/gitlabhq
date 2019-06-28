@@ -4,8 +4,6 @@ module Types
   class BaseField < GraphQL::Schema::Field
     prepend Gitlab::Graphql::Authorize
 
-    attr_reader :calls_gitaly
-
     DEFAULT_COMPLEXITY = 1
 
     def initialize(*args, **kwargs, &block)
@@ -17,19 +15,12 @@ module Types
 
     def base_complexity
       complexity = DEFAULT_COMPLEXITY
-      complexity += 1 if @calls_gitaly
+      complexity += 1 if calls_gitaly?
       complexity
     end
 
-    def calls_gitaly_check(calls)
-      return if @calls_gitaly
-      return if calls < 1
-
-      # Will inform you if :calls_gitaly should be true or false based on the number of Gitaly calls
-      # involved with the request.
-      raise "Gitaly is called for field '#{name}' #{"on type #{owner.name} " if owner}- please add `calls_gitaly: true` to the field declaration"
-    rescue => e
-      Gitlab::Sentry.track_exception(e)
+    def calls_gitaly?
+      @calls_gitaly
     end
 
     private
@@ -51,6 +42,7 @@ module Types
       proc do |ctx, args, child_complexity|
         # Resolvers may add extra complexity depending on used arguments
         complexity = child_complexity + self.resolver&.try(:resolver_complexity, args, child_complexity: child_complexity).to_i
+        complexity += 1 if calls_gitaly?
 
         field_defn = to_graphql
 

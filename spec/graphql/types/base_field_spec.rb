@@ -74,9 +74,11 @@ describe Types::BaseField do
     context 'calls_gitaly' do
       context 'for fields with a resolver' do
         it 'adds 1 if true' do
-          field = described_class.new(name: 'test', type: GraphQL::STRING_TYPE, null: true, calls_gitaly: true)
+          with_gitaly_field = described_class.new(name: 'test', type: GraphQL::STRING_TYPE, resolver_class: resolver, null: true, calls_gitaly: true)
+          without_gitaly_field = described_class.new(name: 'test', type: GraphQL::STRING_TYPE, resolver_class: resolver, null: true)
+          base_result = without_gitaly_field.to_graphql.complexity.call({}, {}, 2)
 
-          expect(field.to_graphql.complexity).to eq 2
+          expect(with_gitaly_field.to_graphql.complexity.call({}, {}, 2)).to eq base_result + 1
         end
       end
 
@@ -98,27 +100,6 @@ describe Types::BaseField do
         field = described_class.new(name: 'test', type: GraphQL::STRING_TYPE, null: true, calls_gitaly: true, complexity: 12)
 
         expect(field.to_graphql.complexity).to eq 12
-      end
-    end
-
-    describe '#calls_gitaly_check' do
-      let(:gitaly_field) { described_class.new(name: 'test', type: GraphQL::STRING_TYPE, null: true, calls_gitaly: true) }
-      let(:no_gitaly_field) { described_class.new(name: 'test', type: GraphQL::STRING_TYPE, null: true, calls_gitaly: false) }
-
-      context 'if there are no Gitaly calls' do
-        it 'does not raise an error if calls_gitaly is false' do
-          expect { no_gitaly_field.send(:calls_gitaly_check, 0) }.not_to raise_error
-        end
-      end
-
-      context 'if there is at least 1 Gitaly call' do
-        it 'does not raise an error if calls_gitaly is true' do
-          expect { gitaly_field.send(:calls_gitaly_check, 1) }.not_to raise_error
-        end
-
-        it 'raises an error if calls_gitaly: is false or not defined' do
-          expect { no_gitaly_field.send(:calls_gitaly_check, 1) }.to raise_error(/please add `calls_gitaly: true`/)
-        end
       end
     end
   end

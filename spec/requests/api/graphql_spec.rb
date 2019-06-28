@@ -137,7 +137,7 @@ describe 'GraphQL' do
     let(:user) { create(:user) }
 
     let(:query) do
-      graphql_query_for('project', { 'fullPath' => project.full_path }, %w(forksCount))
+      graphql_query_for('project', { 'fullPath' => project.full_path }, %w(id))
     end
 
     before do
