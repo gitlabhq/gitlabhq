@@ -434,7 +434,8 @@ module Gitlab
           end
 
           begin
-            update_column_in_batches(table, column, default, &block)
+            default_after_type_cast = connection.type_cast(default, column_for(table, column))
+            update_column_in_batches(table, column, default_after_type_cast, &block)
 
             change_column_null(table, column, false) unless allow_null
           # We want to rescue _all_ exceptions here, even those that don't inherit

@@ -583,6 +583,24 @@ describe Gitlab::Database::MigrationHelpers do
           model.add_column_with_default(:projects, :foo, :integer, default: 10, limit: 8)
         end
       end
+
+      it 'adds a column with an array default value for a jsonb type' do
+        create(:project)
+        allow(model).to receive(:transaction_open?).and_return(false)
+        allow(model).to receive(:transaction).and_yield
+        expect(model).to receive(:update_column_in_batches).with(:projects, :foo, '[{"foo":"json"}]').and_call_original
+
+        model.add_column_with_default(:projects, :foo, :jsonb, default: [{ foo: "json" }])
+      end
+
+      it 'adds a column with an object default value for a jsonb type' do
+        create(:project)
+        allow(model).to receive(:transaction_open?).and_return(false)
+        allow(model).to receive(:transaction).and_yield
+        expect(model).to receive(:update_column_in_batches).with(:projects, :foo, '{"foo":"json"}').and_call_original
+
+        model.add_column_with_default(:projects, :foo, :jsonb, default: { foo: "json" })
+      end
     end
 
     context 'inside a transaction' do
