@@ -1,17 +1,19 @@
 - Gitlab::VisibilityLevel.values.each do |level|
   - disallowed = disallowed_visibility_level?(form_model, level)
   - restricted = restricted_visibility_levels.include?(level)
-  - disabled = disallowed || restricted
-  .form-check{ class: [('disabled' if disabled), ('restricted' if restricted)] }
-    = form.radio_button model_method, level, checked: (selected_level == level), disabled: disabled, class: 'form-check-input', data: { track_label: "blank_project", track_event: "activate_form_input", track_property: "#{model_method}", track_value: "#{level}" }
+  - next if disallowed || restricted
+
+  .form-check
+    = form.radio_button model_method, level, checked: (selected_level == level), class: 'form-check-input', data: { track_label: "blank_project", track_event: "activate_form_input", track_property: "#{model_method}", track_value: "#{level}" }
     = form.label "#{model_method}_#{level}", class: 'form-check-label' do
       = visibility_level_icon(level)
       .option-title
         = visibility_level_label(level)
       .option-description
         = visibility_level_description(level, form_model)
-      .option-disabled-reason
-        - if restricted
-          = restricted_visibility_level_description(level)
-        - elsif disallowed
-          = disallowed_visibility_level_description(level, form_model)
+
+.text-muted
+  - if all_visibility_levels_restricted?
+    = _('Visibility settings have been disabled by the administrator.')
+  - elsif multiple_visibility_levels_restricted?
+    = _('Other visibility settings have been disabled by the administrator.')
