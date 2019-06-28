@@ -6652,6 +6652,9 @@ msgstr ""
 msgid "No"
 msgstr ""
 
+msgid "No %{header} for this request."
+msgstr ""
+
 msgid "No %{providerTitle} repositories available to import"
 msgstr ""
 
@@ -7135,6 +7138,18 @@ msgid "Perform advanced options such as changing path, transferring, or removing
 msgstr ""
 
 msgid "Performance optimization"
+msgstr ""
+
+msgid "PerformanceBar|Gitaly calls"
+msgstr ""
+
+msgid "PerformanceBar|SQL queries"
+msgstr ""
+
+msgid "PerformanceBar|profile"
+msgstr ""
+
+msgid "PerformanceBar|trace"
 msgstr ""
 
 msgid "Permissions"
