@@ -3,6 +3,7 @@ import * as jqueryMatchers from 'custom-jquery-matchers';
 import $ from 'jquery';
 import Translate from '~/vue_shared/translate';
 import axios from '~/lib/utils/axios_utils';
+import { config as testUtilsConfig } from '@vue/test-utils';
 import { initializeTestTimeout } from './helpers/timeout';
 import { loadHTMLFixture, setHTMLFixture } from './helpers/fixtures';
 
@@ -60,9 +61,21 @@ Object.assign(global, {
   preloadFixtures() {},
 });
 
+Object.assign(global, {
+  MutationObserver() {
+    return {
+      disconnect() {},
+      observe() {},
+    };
+  },
+});
+
 // custom-jquery-matchers was written for an old Jest version, we need to make it compatible
 Object.entries(jqueryMatchers).forEach(([matcherName, matcherFactory]) => {
   expect.extend({
     [matcherName]: matcherFactory().compare,
   });
 });
+
+// Tech debt issue TBD
+testUtilsConfig.logModifiedComponents = false;

@@ -10,11 +10,15 @@ import VueResource from 'vue-resource';
 import Translate from '~/vue_shared/translate';
 import CheckEE from '~/vue_shared/mixins/is_ee';
 import jasmineDiff from 'jasmine-diff';
+import { config as testUtilsConfig } from '@vue/test-utils';
 
 import { getDefaultAdapter } from '~/lib/utils/axios_utils';
 import { FIXTURES_PATH, TEST_HOST } from './test_constants';
 
 import customMatchers from './matchers';
+
+// Tech debt issue TBD
+testUtilsConfig.logModifiedComponents = false;
 
 const isHeadlessChrome = /\bHeadlessChrome\//.test(navigator.userAgent);
 Vue.config.devtools = !isHeadlessChrome;

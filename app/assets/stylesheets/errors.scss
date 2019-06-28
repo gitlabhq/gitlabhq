@@ -2,12 +2,12 @@
  * This is a minimal stylesheet, meant to be used for error pages.
  */
 @import 'framework/variables';
-@import '../../../node_modules/bootstrap/scss/functions';
-@import '../../../node_modules/bootstrap/scss/variables';
-@import '../../../node_modules/bootstrap/scss/mixins';
-@import '../../../node_modules/bootstrap/scss/reboot';
-@import '../../../node_modules/bootstrap/scss/buttons';
-@import '../../../node_modules/bootstrap/scss/forms';
+@import 'bootstrap/scss/functions';
+@import 'bootstrap/scss/variables';
+@import 'bootstrap/scss/mixins';
+@import 'bootstrap/scss/reboot';
+@import 'bootstrap/scss/buttons';
+@import 'bootstrap/scss/forms';
 
 $body-color: #666;
 $header-color: #456;
