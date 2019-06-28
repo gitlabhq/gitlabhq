@@ -11,10 +11,10 @@
 // like a table or typography then make changes in the framework/ directory.
 // If you need to add unique style that should affect only one page - use pages/
 // directory.
-@import "../../../node_modules/at.js/dist/css/jquery.atwho";
-@import "../../../node_modules/pikaday/scss/pikaday";
-@import "../../../node_modules/dropzone/dist/basic";
-@import "../../../node_modules/select2/select2";
+@import "at.js/dist/css/jquery.atwho";
+@import "pikaday/scss/pikaday";
+@import "dropzone/dist/basic";
+@import "select2/select2";
 
 // GitLab UI framework
 @import "framework";
