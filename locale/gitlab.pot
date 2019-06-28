@@ -4808,9 +4808,6 @@ msgstr ""
 msgid "Gitaly Servers"
 msgstr ""
 
-msgid "Gitaly calls"
-msgstr ""
-
 msgid "Gitaly|Address"
 msgstr ""
 
@@ -6655,6 +6652,9 @@ msgstr ""
 msgid "No"
 msgstr ""
 
+msgid "No %{header} for this request."
+msgstr ""
+
 msgid "No %{providerTitle} repositories available to import"
 msgstr ""
 
@@ -7138,6 +7138,18 @@ msgid "Perform advanced options such as changing path, transferring, or removing
 msgstr ""
 
 msgid "Performance optimization"
+msgstr ""
+
+msgid "PerformanceBar|Gitaly calls"
+msgstr ""
+
+msgid "PerformanceBar|SQL queries"
+msgstr ""
+
+msgid "PerformanceBar|profile"
+msgstr ""
+
+msgid "PerformanceBar|trace"
 msgstr ""
 
 msgid "Permissions"
@@ -8837,9 +8849,6 @@ msgid "Running…"
 msgstr ""
 
 msgid "Runs a number of housekeeping tasks within the current repository, such as compressing file revisions and removing unreachable objects."
-msgstr ""
-
-msgid "SQL queries"
 msgstr ""
 
 msgid "SSH Key"
@@ -12714,9 +12723,6 @@ msgstr ""
 msgid "processing"
 msgstr ""
 
-msgid "profile"
-msgstr ""
-
 msgid "project"
 msgstr ""
 
@@ -12789,9 +12795,6 @@ msgid "syntax is incorrect"
 msgstr ""
 
 msgid "this document"
-msgstr ""
-
-msgid "trace"
 msgstr ""
 
 msgid "triggered"

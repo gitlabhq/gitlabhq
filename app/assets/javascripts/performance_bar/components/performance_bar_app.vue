@@ -5,7 +5,7 @@ import { glEmojiTag } from '~/emoji';
 import detailedMetric from './detailed_metric.vue';
 import requestSelector from './request_selector.vue';
 import simpleMetric from './simple_metric.vue';
-import { __ } from '~/locale';
+import { s__ } from '~/locale';
 
 export default {
   components: {
@@ -36,10 +36,10 @@ export default {
     },
   },
   detailedMetrics: [
-    { metric: 'pg', header: __('SQL queries'), details: 'queries', keys: ['sql'] },
+    { metric: 'pg', header: s__('PerformanceBar|SQL queries'), details: 'queries', keys: ['sql'] },
     {
       metric: 'gitaly',
-      header: __('Gitaly calls'),
+      header: s__('PerformanceBar|Gitaly calls'),
       details: 'details',
       keys: ['feature', 'request'],
     },
@@ -120,9 +120,9 @@ export default {
           data-toggle="modal"
           data-target="#modal-peek-line-profile"
         >
-          {{ __('profile') }}
+          {{ s__('PerformanceBar|profile') }}
         </button>
-        <a v-else :href="profileUrl">{{ __('profile') }}</a>
+        <a v-else :href="profileUrl">{{ s__('PerformanceBar|profile') }}</a>
       </div>
       <simple-metric
         v-for="metric in $options.simpleMetrics"
@@ -141,7 +141,7 @@ export default {
         id="peek-view-trace"
         class="view"
       >
-        <a :href="currentRequest.details.tracing.tracing_url">{{ __('trace') }}</a>
+        <a :href="currentRequest.details.tracing.tracing_url">{{ s__('PerformanceBar|trace') }}</a>
       </div>
       <request-selector
         v-if="currentRequest"
