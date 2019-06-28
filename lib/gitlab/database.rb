@@ -22,7 +22,6 @@ module Gitlab
       docstring "Time spent in database transactions, in seconds"
     end
 
-
     def self.config
       ActiveRecord::Base.configurations[Rails.env]
     end
