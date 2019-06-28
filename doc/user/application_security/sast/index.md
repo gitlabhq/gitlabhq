@@ -269,7 +269,7 @@ it highlighted:
           "url": "https://cwe.mitre.org/data/definitions/330.html"
         }
       ]
-    },   
+    },
     {
       "category": "sast",
       "message": "Probable insecure usage of temp file/directory.",
@@ -296,7 +296,7 @@ it highlighted:
           "url": "https://docs.openstack.org/bandit/latest/plugins/b108_hardcoded_tmp_directory.html"
         }
       ]
-    },    
+    },
   ],
   "remediations": []
 }
@@ -320,7 +320,7 @@ the report JSON unless stated otherwise. Presence of optional fields depends on 
 | `vulnerabilities[].scanner`             | A node that describes the analyzer used to find this vulnerability. |
 | `vulnerabilities[].scanner.id`          | Id of the scanner as a snake_case string. |
 | `vulnerabilities[].scanner.name`        | Name of the scanner, for display purposes. |
-| `vulnerabilities[].location`            | A node that tells where the vulnerability is located. | 
+| `vulnerabilities[].location`            | A node that tells where the vulnerability is located. |
 | `vulnerabilities[].location.file`       | Path to the file where the vulnerability is located. Optional. |
 | `vulnerabilities[].location.start_line` | The first line of the code affected by the vulnerability. Optional. |
 | `vulnerabilities[].location.end_line`   | The last line of the code affected by the vulnerability. Optional. |
@@ -330,7 +330,7 @@ the report JSON unless stated otherwise. Presence of optional fields depends on 
 | `vulnerabilities[].identifiers[].type`  | Type of the identifier. Possible values: common identifier types (among `cve`, `cwe`, `osvdb`, and `usn`) or analyzer-dependent ones (e.g., `bandit_test_id` for [Bandit analyzer](https://wiki.openstack.org/wiki/Security/Projects/Bandit)). |
 | `vulnerabilities[].identifiers[].name`  | Name of the identifier for display purposes. |
 | `vulnerabilities[].identifiers[].value` | Value of the identifier for matching purposes. |
-| `vulnerabilities[].identifiers[].url`   | URL to identifier's documentation. Optional. | 
+| `vulnerabilities[].identifiers[].url`   | URL to identifier's documentation. Optional. |
 
 ## Secret detection
 
@@ -363,3 +363,8 @@ vulnerabilities in your groups and projects. Read more about the
 
 Once a vulnerability is found, you can interact with it. Read more on how to
 [interact with the vulnerabilities](../index.md#interacting-with-the-vulnerabilities).
+
+## Vulnerabilities database update
+
+For more information about the vulnerabilities database update, check the
+[maintenance table](../index.md#maintenance-and-update-of-the-vulnerabilities-database).
