@@ -16,6 +16,7 @@ class List < ApplicationRecord
   scope :destroyable, -> { where(list_type: list_types.slice(*destroyable_types).values) }
   scope :movable, -> { where(list_type: list_types.slice(*movable_types).values) }
   scope :preload_associations, -> { preload(:board, :label) }
+  scope :ordered, -> { order(:list_type, :position) }
 
   class << self
     def destroyable_types

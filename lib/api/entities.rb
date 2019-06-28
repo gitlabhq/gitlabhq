@@ -1101,7 +1101,7 @@ module API
       expose :project, using: Entities::BasicProjectDetails
 
       expose :lists, using: Entities::List do |board|
-        board.lists.destroyable
+        board.destroyable_lists
       end
     end
 
