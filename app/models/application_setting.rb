@@ -23,11 +23,6 @@ class ApplicationSetting < ApplicationRecord
   serialize :domain_blacklist, Array # rubocop:disable Cop/ActiveRecordSerialize
   serialize :repository_storages # rubocop:disable Cop/ActiveRecordSerialize
 
-  ignore_column :circuitbreaker_failure_count_threshold
-  ignore_column :circuitbreaker_failure_reset_time
-  ignore_column :circuitbreaker_storage_timeout
-  ignore_column :circuitbreaker_access_retries
-  ignore_column :circuitbreaker_check_interval
   ignore_column :koding_url
   ignore_column :koding_enabled
   ignore_column :sentry_enabled
