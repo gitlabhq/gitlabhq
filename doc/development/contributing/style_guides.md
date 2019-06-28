@@ -31,8 +31,8 @@ This is also the style used by linting tools such as
 
 [Return to Contributing documentation](index.md)
 
-[rss-source]: https://github.com/bbatsov/ruby-style-guide/blob/master/README.md#source-code-layout
-[rss-naming]: https://github.com/bbatsov/ruby-style-guide/blob/master/README.md#naming
+[rss-source]: https://github.com/rubocop-hq/ruby-style-guide/blob/master/README.adoc#source-code-layout
+[rss-naming]: https://github.com/rubocop-hq/ruby-style-guide/blob/master/README.adoc#naming-conventions
 [doc-guidelines]: ../documentation/index.md "Documentation guidelines"
 [js-styleguide]: ../fe_guide/style_guide_js.md "JavaScript styleguide"
 [scss-styleguide]: ../fe_guide/style_guide_scss.md "SCSS styleguide"
