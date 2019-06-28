@@ -579,6 +579,11 @@ msgstr ""
 msgid "Activity"
 msgstr ""
 
+msgid "Add %d issue"
+msgid_plural "Add %d issues"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Add CHANGELOG"
 msgstr ""
 
@@ -637,6 +642,9 @@ msgid "Add header and footer to emails. Please note that color settings will onl
 msgstr ""
 
 msgid "Add image comment"
+msgstr ""
+
+msgid "Add issues"
 msgstr ""
 
 msgid "Add italic text"
@@ -1069,6 +1077,9 @@ msgid "An error occurred whilst loading the pipelines jobs."
 msgstr ""
 
 msgid "An error occurred. Please try again."
+msgstr ""
+
+msgid "An issue can be a bug, a todo or a feature request that needs to be discussed in a project. Besides, issues are searchable and filterable."
 msgstr ""
 
 msgid "Anonymous"
@@ -1578,6 +1589,18 @@ msgid "Blocked"
 msgstr ""
 
 msgid "Blog"
+msgstr ""
+
+msgid "BoardBlankState|Add default lists"
+msgstr ""
+
+msgid "BoardBlankState|Add the following default lists to your Issue Board with one click:"
+msgstr ""
+
+msgid "BoardBlankState|Nevermind, I'll use my own"
+msgstr ""
+
+msgid "BoardBlankState|Starting out with the default set of lists will get you right on the way to making the most of your board."
 msgstr ""
 
 msgid "Boards"
@@ -3582,6 +3605,9 @@ msgstr ""
 msgid "Description:"
 msgstr ""
 
+msgid "Deselect all"
+msgstr ""
+
 msgid "Destroy"
 msgstr ""
 
@@ -3682,6 +3708,9 @@ msgid "Do you want to customize how Google Code email addresses and usernames ar
 msgstr ""
 
 msgid "Dockerfile"
+msgstr ""
+
+msgid "Doing"
 msgstr ""
 
 msgid "Domain"
@@ -4829,6 +4858,9 @@ msgstr ""
 msgid "Go back"
 msgstr ""
 
+msgid "Go back to %{startTag}Open issues%{endTag} and select some issues to add to your board."
+msgstr ""
+
 msgid "Go full screen"
 msgstr ""
 
@@ -5972,6 +6004,9 @@ msgstr ""
 msgid "Loading functions timed out. Please reload the page to try again."
 msgstr ""
 
+msgid "Loading issues"
+msgstr ""
+
 msgid "Loading the GitLab IDE..."
 msgstr ""
 
@@ -6967,6 +7002,9 @@ msgid "Open errors"
 msgstr ""
 
 msgid "Open in Xcode"
+msgstr ""
+
+msgid "Open issues"
 msgstr ""
 
 msgid "Open raw"
@@ -8525,6 +8563,9 @@ msgstr ""
 msgid "Remove fork relationship"
 msgstr ""
 
+msgid "Remove from board"
+msgstr ""
+
 msgid "Remove group"
 msgstr ""
 
@@ -9049,7 +9090,13 @@ msgstr ""
 msgid "Select a new namespace"
 msgstr ""
 
+msgid "Select a project"
+msgstr ""
+
 msgid "Select a timezone"
+msgstr ""
+
+msgid "Select all"
 msgstr ""
 
 msgid "Select an existing Kubernetes cluster or create a new one"
@@ -9338,6 +9385,9 @@ msgid "Showing %d event"
 msgid_plural "Showing %d events"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Showing all issues"
+msgstr ""
 
 msgid "Showing last %{size} of log -"
 msgstr ""
@@ -9787,6 +9837,9 @@ msgid "Submit as spam"
 msgstr ""
 
 msgid "Submit feedback"
+msgstr ""
+
+msgid "Submit issue"
 msgstr ""
 
 msgid "Submit search"
@@ -10361,6 +10414,9 @@ msgstr ""
 msgid "There are no issues to show"
 msgstr ""
 
+msgid "There are no issues to show."
+msgstr ""
+
 msgid "There are no labels yet"
 msgstr ""
 
@@ -10861,6 +10917,9 @@ msgid "Titles and Filenames"
 msgstr ""
 
 msgid "To %{link_to_help} of your domain, add the above key to a TXT record within to your DNS configuration."
+msgstr ""
+
+msgid "To Do"
 msgstr ""
 
 msgid "To GitLab"
@@ -12026,6 +12085,12 @@ msgstr ""
 msgid "You have reached your project limit"
 msgstr ""
 
+msgid "You haven't added any issues to your project yet"
+msgstr ""
+
+msgid "You haven't selected any issues yet"
+msgstr ""
+
 msgid "You left the \"%{membershipable_human_name}\" %{source_type}."
 msgstr ""
 
@@ -12795,6 +12860,9 @@ msgid "syntax is incorrect"
 msgstr ""
 
 msgid "this document"
+msgstr ""
+
+msgid "to list"
 msgstr ""
 
 msgid "triggered"
