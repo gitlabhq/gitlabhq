@@ -241,7 +241,7 @@ describe('Dashboard', () => {
       Vue.nextTick()
         .then(() => {
           const dropdownItems = component.$el.querySelectorAll(
-            '.js-environments-dropdown .dropdown-item.is-active',
+            '.js-environments-dropdown .dropdown-item.active',
           );
 
           expect(dropdownItems.length).toEqual(1);
