@@ -87,4 +87,5 @@
           = _("Milestones")
           %span.badge.badge-pill
             = limited_count(@search_results.limited_milestones_count)
+      = render_if_exists 'search/category_elasticsearch'
       = users
