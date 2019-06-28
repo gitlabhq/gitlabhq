@@ -1,6 +1,6 @@
 <script>
-import { __ } from '~/locale';
-import projectFeatureToggle from '../../../../../vue_shared/components/toggle_button.vue';
+import projectFeatureToggle from '~/vue_shared/components/toggle_button.vue';
+import { featureAccessLevelNone } from '../constants';
 
 export default {
   components: {
@@ -44,7 +44,7 @@ export default {
       if (this.featureEnabled) {
         return this.options;
       }
-      return [[0, __('Enable feature to choose access level')]];
+      return [featureAccessLevelNone];
     },
 
     displaySelectInput() {

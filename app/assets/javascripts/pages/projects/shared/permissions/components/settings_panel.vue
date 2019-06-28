@@ -4,8 +4,15 @@ import { __ } from '~/locale';
 import projectFeatureSetting from './project_feature_setting.vue';
 import projectFeatureToggle from '~/vue_shared/components/toggle_button.vue';
 import projectSettingRow from './project_setting_row.vue';
-import { visibilityOptions, visibilityLevelDescriptions } from '../constants';
+import {
+  visibilityOptions,
+  visibilityLevelDescriptions,
+  featureAccessLevelMembers,
+  featureAccessLevelEveryone,
+} from '../constants';
 import { toggleHiddenClassBySelector } from '../external';
+
+const PAGE_FEATURE_ACCESS_LEVEL = __('Everyone');
 
 export default {
   components: {
@@ -103,9 +110,9 @@ export default {
 
   computed: {
     featureAccessLevelOptions() {
-      const options = [[10, __('Only Project Members')]];
+      const options = [featureAccessLevelMembers];
       if (this.visibilityLevel !== visibilityOptions.PRIVATE) {
-        options.push([20, __('Everyone With Access')]);
+        options.push(featureAccessLevelEveryone);
       }
       return options;
     },
@@ -118,7 +125,7 @@ export default {
 
     pagesFeatureAccessLevelOptions() {
       if (this.visibilityLevel !== visibilityOptions.PUBLIC) {
-        return this.featureAccessLevelOptions.concat([[30, __('Everyone')]]);
+        return this.featureAccessLevelOptions.concat([[30, PAGE_FEATURE_ACCESS_LEVEL]]);
       }
       return this.featureAccessLevelOptions;
     },

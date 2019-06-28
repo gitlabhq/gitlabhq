@@ -15,3 +15,30 @@ export const visibilityLevelDescriptions = {
     'The project can be accessed by anyone, regardless of authentication.',
   ),
 };
+
+const featureAccessLevel = {
+  NOT_ENABLED: 0,
+  PROJECT_MEMBERS: 10,
+  EVERYONE: 20,
+};
+
+const featureAccessLevelDescriptions = {
+  [featureAccessLevel.NOT_ENABLED]: __('Enable feature to choose access level'),
+  [featureAccessLevel.PROJECT_MEMBERS]: __('Only Project Members'),
+  [featureAccessLevel.EVERYONE]: __('Everyone With Access'),
+};
+
+export const featureAccessLevelNone = [
+  featureAccessLevel.NOT_ENABLED,
+  featureAccessLevelDescriptions[featureAccessLevel.NOT_ENABLED],
+];
+
+export const featureAccessLevelMembers = [
+  featureAccessLevel.PROJECT_MEMBERS,
+  featureAccessLevelDescriptions[featureAccessLevel.PROJECT_MEMBERS],
+];
+
+export const featureAccessLevelEveryone = [
+  featureAccessLevel.EVERYONE,
+  featureAccessLevelDescriptions[featureAccessLevel.EVERYONE],
+];
