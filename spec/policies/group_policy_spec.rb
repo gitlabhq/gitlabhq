@@ -145,7 +145,8 @@ describe GroupPolicy do
 
       it 'allows every owner permission except creating subgroups' do
         create_subgroup_permission = [:create_subgroup]
-        updated_owner_permissions = owner_permissions - create_subgroup_permission
+        updated_owner_permissions =
+          owner_permissions - create_subgroup_permission
 
         expect_disallowed(*create_subgroup_permission)
         expect_allowed(*updated_owner_permissions)
@@ -157,7 +158,8 @@ describe GroupPolicy do
 
       it 'allows every owner permission except creating subgroups' do
         create_subgroup_permission = [:create_subgroup]
-        updated_owner_permissions = owner_permissions - create_subgroup_permission
+        updated_owner_permissions =
+          owner_permissions - create_subgroup_permission
 
         expect_disallowed(*create_subgroup_permission)
         expect_allowed(*updated_owner_permissions)
@@ -169,7 +171,8 @@ describe GroupPolicy do
 
       it 'allows every maintainer permission except creating subgroups' do
         create_subgroup_permission = [:create_subgroup]
-        updated_maintainer_permissions = maintainer_permissions - create_subgroup_permission
+        updated_maintainer_permissions =
+          maintainer_permissions - create_subgroup_permission
 
         expect_disallowed(*create_subgroup_permission)
         expect_allowed(*updated_maintainer_permissions)
@@ -475,7 +478,11 @@ describe GroupPolicy do
 
   context "create_subgroup" do
     context 'when group has subgroup creation level set to owner' do
-      let(:group) { create(:group, subgroup_creation_level: ::Gitlab::Access::OWNER_SUBGROUP_ACCESS) }
+      let(:group) do
+        create(
+          :group,
+          subgroup_creation_level: ::Gitlab::Access::OWNER_SUBGROUP_ACCESS)
+      end
 
       context 'reporter' do
         let(:current_user) { reporter }
@@ -503,7 +510,11 @@ describe GroupPolicy do
     end
 
     context 'when group has subgroup creation level set to maintainer' do
-      let(:group) { create(:group, subgroup_creation_level: ::Gitlab::Access::MAINTAINER_SUBGROUP_ACCESS) }
+      let(:group) do
+        create(
+          :group,
+          subgroup_creation_level: ::Gitlab::Access::MAINTAINER_SUBGROUP_ACCESS)
+      end
 
       context 'reporter' do
         let(:current_user) { reporter }

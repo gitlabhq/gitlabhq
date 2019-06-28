@@ -70,9 +70,14 @@ describe Admin::GroupsController do
     end
 
     it 'updates the subgroup_creation_level successfully' do
+      MAINTAINER = ::Gitlab::Access::MAINTAINER_SUBGROUP_ACCESS
+
       expect do
-        post :update, params: { id: group.to_param, group: { subgroup_creation_level: ::Gitlab::Access::MAINTAINER_SUBGROUP_ACCESS } }
-      end.to change { group.reload.subgroup_creation_level }.to(::Gitlab::Access::MAINTAINER_SUBGROUP_ACCESS)
+        post :update,
+             params: { id: group.to_param,
+                       group: { subgroup_creation_level: MAINTAINER } }
+      end.to change { group.reload.subgroup_creation_level }
+               .to(MAINTAINER)
     end
   end
 end
