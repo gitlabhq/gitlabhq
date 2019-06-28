@@ -2412,6 +2412,15 @@ ActiveRecord::Schema.define(version: 20190625184066) do
     t.string "encrypted_token_iv", null: false
   end
 
+  create_table "project_aliases", force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.string "name", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.index ["name"], name: "index_project_aliases_on_name", unique: true, using: :btree
+    t.index ["project_id"], name: "index_project_aliases_on_project_id", using: :btree
+  end
+
   create_table "project_authorizations", id: false, force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "project_id", null: false
@@ -3793,6 +3802,7 @@ ActiveRecord::Schema.define(version: 20190625184066) do
   add_foreign_key "pool_repositories", "projects", column: "source_project_id", on_delete: :nullify
   add_foreign_key "pool_repositories", "shards", on_delete: :restrict
   add_foreign_key "project_alerting_settings", "projects", on_delete: :cascade
+  add_foreign_key "project_aliases", "projects", on_delete: :cascade
   add_foreign_key "project_authorizations", "projects", on_delete: :cascade
   add_foreign_key "project_authorizations", "users", on_delete: :cascade
   add_foreign_key "project_auto_devops", "projects", on_delete: :cascade
