@@ -994,4 +994,12 @@ describe Group do
       expect(group.project_creation_level).to eq(Gitlab::CurrentSettings.default_project_creation)
     end
   end
+
+  describe 'subgroup_creation_level' do
+    it 'defaults to maintainers' do
+      group = create (:group)
+
+      expect(group.subgroup_creation_level).to eq(Gitlab::Access::MAINTAINER_SUBGROUP_ACCESS)
+    end
+  end
 end
