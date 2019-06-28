@@ -803,10 +803,10 @@ describe API::Groups do
           group2.add_maintainer(user1)
         end
 
-        it 'can create subgroups' do
+        it 'cannot create subgroups' do
           post api("/groups", user1), params: { parent_id: group2.id, name: 'foo', path: 'foo' }
 
-          expect(response).to have_gitlab_http_status(201)
+          expect(response).to have_gitlab_http_status(403)
         end
       end
     end

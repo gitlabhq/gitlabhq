@@ -5,10 +5,13 @@ class AddGroupCreationLevelToNamespaces < ActiveRecord::Migration[5.1]
 
   DOWNTIME = false
   disable_ddl_transaction!
-  
+
   def up
     unless column_exists?(:namespaces, :subgroup_creation_level)
-      add_column_with_default(:namespaces, :subgroup_creation_level, :integer, default: 0)
+      add_column_with_default(:namespaces,
+                              :subgroup_creation_level,
+                              :integer,
+                              default: 0)
     end
   end
 
