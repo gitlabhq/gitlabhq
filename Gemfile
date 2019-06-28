@@ -11,7 +11,7 @@ gem 'responders', '~> 2.0'
 gem 'sprockets', '~> 3.7.0'
 
 # Default values for AR models
-gem 'gitlab-default_value_for', '~> 3.1.1', require: 'default_value_for'
+gem 'default_value_for', '~> 3.2.0'
 
 # Supported DBs
 gem 'mysql2', '~> 0.4.10', group: :mysql
