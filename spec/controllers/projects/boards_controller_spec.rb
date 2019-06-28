@@ -65,7 +65,7 @@ describe Projects::BoardsController do
       it 'returns a list of project boards' do
         create_list(:board, 2, project: project)
 
-        expect(Boards::Visits::LatestService).not_to receive(:new)
+        expect(Boards::VisitsFinder).not_to receive(:new)
 
         list_boards format: :json
 

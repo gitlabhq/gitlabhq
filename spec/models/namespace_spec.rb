@@ -15,6 +15,8 @@ describe Namespace do
     it { is_expected.to have_many :project_statistics }
     it { is_expected.to belong_to :parent }
     it { is_expected.to have_many :children }
+    it { is_expected.to have_one :root_storage_statistics }
+    it { is_expected.to have_one :aggregation_schedule }
   end
 
   describe 'validations' do

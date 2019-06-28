@@ -5,6 +5,7 @@ module IssuesHelper
     classes = ["issue"]
     classes << "closed" if issue.closed?
     classes << "today" if issue.today?
+    classes << "user-can-drag" if @sort == 'relative_position'
     classes.join(' ')
   end
 

@@ -73,7 +73,9 @@ export const getFileData = (
     .getFileData(joinPaths(gon.relative_url_root || '', url.replace('/-/', '/')))
     .then(({ data, headers }) => {
       const normalizedHeaders = normalizeHeaders(headers);
-      setPageTitle(decodeURI(normalizedHeaders['PAGE-TITLE']));
+      let title = normalizedHeaders['PAGE-TITLE'];
+      title = file.prevPath ? title.replace(file.prevPath, file.path) : title;
+      setPageTitle(decodeURI(title));
 
       if (data) commit(types.SET_FILE_DATA, { data, file });
       if (openFile) commit(types.TOGGLE_FILE_OPEN, path);

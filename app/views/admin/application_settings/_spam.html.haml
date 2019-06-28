@@ -7,7 +7,10 @@
         = f.check_box :recaptcha_enabled, class: 'form-check-input'
         = f.label :recaptcha_enabled, class: 'form-check-label' do
           Enable reCAPTCHA
-        %span.form-text.text-muted#recaptcha_help_block Helps prevent bots from creating accounts
+        - recaptcha_v2_link_url = 'https://developers.google.com/recaptcha/docs/versions'
+        - recaptcha_v2_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: recaptcha_v2_link_url }
+        %span.form-text.text-muted#recaptcha_help_block
+          = _('Helps prevent bots from creating accounts. We currently only support %{recaptcha_v2_link_start}reCAPTCHA v2%{recaptcha_v2_link_end}').html_safe % { recaptcha_v2_link_start: recaptcha_v2_link_start, recaptcha_v2_link_end: '</a>'.html_safe }
 
     .form-group
       = f.label :recaptcha_site_key, 'reCAPTCHA Site Key', class: 'label-bold'

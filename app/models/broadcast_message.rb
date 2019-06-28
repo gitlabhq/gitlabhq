@@ -45,7 +45,7 @@ class BroadcastMessage < ApplicationRecord
   end
 
   def self.cache_expires_in
-    nil
+    2.weeks
   end
 
   def active?

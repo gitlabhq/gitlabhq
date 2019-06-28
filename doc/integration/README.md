@@ -13,10 +13,10 @@ See the documentation below for details on how to configure these services.
 - [Auth0 OmniAuth](auth0.md) Enable the Auth0 OmniAuth provider
 - [Bitbucket](bitbucket.md) Import projects from Bitbucket.org and login to your GitLab instance with your Bitbucket.org account
 - [CAS](cas.md) Configure GitLab to sign in using CAS
-- [External issue tracker](external-issue-tracker.md) Redmine, JIRA, etc.
+- [External issue tracker](external-issue-tracker.md) Redmine, Jira, etc.
 - [Gmail actions buttons](gmail_action_buttons_for_gitlab.md) Adds GitLab actions to messages
 - [Jenkins](jenkins.md) Integrate with the Jenkins CI
-- [JIRA](../user/project/integrations/jira.md) Integrate with the JIRA issue tracker
+- [Jira](../user/project/integrations/jira.md) Integrate with the Jira issue tracker
 - [Kerberos](kerberos.md) Integrate with Kerberos
 - [LDAP](ldap.md) Set up sign in via LDAP
 - [OAuth2 provider](oauth_provider.md) OAuth2 application creation

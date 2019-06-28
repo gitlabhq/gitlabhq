@@ -1,5 +1,0 @@
----
-title: Fix label serialization in issue and note hooks
-merge_request: 29850
-author:
-type: fixed

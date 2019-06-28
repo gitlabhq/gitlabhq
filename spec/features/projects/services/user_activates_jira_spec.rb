@@ -29,27 +29,27 @@ describe 'User activates Jira', :js do
         server_info = { key: 'value' }.to_json
         WebMock.stub_request(:get, test_url).with(basic_auth: %w(username password)).to_return(body: server_info)
 
-        click_link('JIRA')
+        click_link('Jira')
         fill_form
         click_button('Test settings and save changes')
         wait_for_requests
       end
 
-      it 'activates the JIRA service' do
-        expect(page).to have_content('JIRA activated.')
+      it 'activates the Jira service' do
+        expect(page).to have_content('Jira activated.')
         expect(current_path).to eq(project_settings_integrations_path(project))
       end
 
-      it 'shows the JIRA link in the menu' do
+      it 'shows the Jira link in the menu' do
         page.within('.nav-sidebar') do
-          expect(page).to have_link('JIRA', href: url)
+          expect(page).to have_link('Jira', href: url)
         end
       end
     end
 
     context 'when Jira connection test fails' do
       it 'shows errors when some required fields are not filled in' do
-        click_link('JIRA')
+        click_link('Jira')
 
         check 'Active'
         fill_in 'service_password', with: 'password'
@@ -60,11 +60,11 @@ describe 'User activates Jira', :js do
         end
       end
 
-      it 'activates the JIRA service' do
+      it 'activates the Jira service' do
         WebMock.stub_request(:get, test_url).with(basic_auth: %w(username password))
           .to_raise(JIRA::HTTPError.new(double(message: 'message')))
 
-        click_link('JIRA')
+        click_link('Jira')
         fill_form
         click_button('Test settings and save changes')
         wait_for_requests
@@ -75,7 +75,7 @@ describe 'User activates Jira', :js do
         find('.flash-alert .flash-action').click
         wait_for_requests
 
-        expect(page).to have_content('JIRA activated.')
+        expect(page).to have_content('Jira activated.')
         expect(current_path).to eq(project_settings_integrations_path(project))
       end
     end
@@ -83,19 +83,19 @@ describe 'User activates Jira', :js do
 
   describe 'user sets Jira Service but keeps it disabled' do
     before do
-      click_link('JIRA')
+      click_link('Jira')
       fill_form(false)
       click_button('Save changes')
     end
 
-    it 'saves but does not activate the JIRA service' do
-      expect(page).to have_content('JIRA settings saved, but not activated.')
+    it 'saves but does not activate the Jira service' do
+      expect(page).to have_content('Jira settings saved, but not activated.')
       expect(current_path).to eq(project_settings_integrations_path(project))
     end
 
-    it 'does not show the JIRA link in the menu' do
+    it 'does not show the Jira link in the menu' do
       page.within('.nav-sidebar') do
-        expect(page).not_to have_link('JIRA', href: url)
+        expect(page).not_to have_link('Jira', href: url)
       end
     end
   end

@@ -2,6 +2,8 @@
 
 module Gitlab
   module Database
+    include Gitlab::Metrics::Methods
+
     # The max value of INTEGER type is the same between MySQL and PostgreSQL:
     # https://www.postgresql.org/docs/9.2/static/datatype-numeric.html
     # http://dev.mysql.com/doc/refman/5.7/en/integer-types.html
@@ -15,6 +17,11 @@ module Gitlab
     # Migrations before this version may have been removed
     MIN_SCHEMA_VERSION = 20190506135400
     MIN_SCHEMA_GITLAB_VERSION = '11.11.0'
+
+    define_histogram :gitlab_database_transaction_seconds do
+      docstring "Time spent in database transactions, in seconds"
+    end
+
 
     def self.config
       ActiveRecord::Base.configurations[Rails.env]
@@ -291,5 +298,32 @@ module Gitlab
       0
     end
     private_class_method :open_transactions_baseline
+
+    # Monkeypatch rails with upgraded database observability
+    def self.install_monkey_patches
+      ActiveRecord::Base.prepend(ActiveRecordBaseTransactionMetrics)
+    end
+
+    # observe_transaction_duration is called from ActiveRecordBaseTransactionMetrics.transaction and used to
+    # record transaction durations.
+    def self.observe_transaction_duration(duration_seconds)
+      labels = Gitlab::Metrics::Transaction.current&.labels || {}
+      gitlab_database_transaction_seconds.observe(labels, duration_seconds)
+    rescue Prometheus::Client::LabelSetValidator::LabelSetError => err
+      # Ensure that errors in recording these metrics don't affect the operation of the application
+      Rails.logger.error("Unable to observe database transaction duration: #{err}")
+    end
+
+    # MonkeyPatch for ActiveRecord::Base for adding observability
+    module ActiveRecordBaseTransactionMetrics
+      # A monkeypatch over ActiveRecord::Base.transaction.
+      # It provides observability into transactional methods.
+      def transaction(options = {}, &block)
+        start_time = Gitlab::Metrics::System.monotonic_time
+        super(options, &block)
+      ensure
+        Gitlab::Database.observe_transaction_duration(Gitlab::Metrics::System.monotonic_time - start_time)
+      end
+    end
   end
 end

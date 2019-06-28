@@ -19,3 +19,5 @@ db/ @abrandl @NikolayS
 /lib/gitlab/ci/templates/ @nolith @zj
 /lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml @DylanGriffith @mayra-cabrera @tkuah
 /lib/gitlab/ci/templates/Security/ @plafoucriere @gonzoyumo @twoodham
+/ee/app/models/project_alias.rb @patrickbajao
+/ee/lib/api/project_aliases.rb @patrickbajao

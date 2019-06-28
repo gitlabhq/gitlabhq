@@ -3,5 +3,5 @@ constraints(::Constraints::FeatureConstrainer.new(:graphql, default_enabled: tru
   mount GraphiQL::Rails::Engine, at: '/-/graphql-explorer', graphql_path: '/api/graphql'
 end
 
-API::API.logger Rails.logger
-mount API::API => '/'
+::API::API.logger Rails.logger
+mount ::API::API => '/'

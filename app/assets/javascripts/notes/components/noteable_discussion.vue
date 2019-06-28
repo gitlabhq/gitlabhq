@@ -126,10 +126,7 @@ export default {
       return this.discussion.resolved_by_push ? __('Automatically resolved') : __('Resolved');
     },
     shouldShowJumpToNextDiscussion() {
-      return this.showJumpToNextDiscussion(
-        this.discussion.id,
-        this.discussionsByDiffOrder ? 'diff' : 'discussion',
-      );
+      return this.showJumpToNextDiscussion(this.discussionsByDiffOrder ? 'diff' : 'discussion');
     },
     shouldRenderDiffs() {
       return this.discussion.diff_discussion && this.renderDiffFile;

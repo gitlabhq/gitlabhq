@@ -6,7 +6,8 @@ describe RegistrationsController do
   include TermsHelper
 
   describe '#create' do
-    let(:user_params) { { user: { name: 'new_user', username: 'new_username', email: 'new@user.com', password: 'Any_password' } } }
+    let(:base_user_params) { { name: 'new_user', username: 'new_username', email: 'new@user.com', password: 'Any_password' } }
+    let(:user_params) { { user: base_user_params } }
 
     context 'email confirmation' do
       around do |example|
@@ -104,6 +105,20 @@ describe RegistrationsController do
         expect(subject.current_user).to be_present
         expect(subject.current_user.terms_accepted?).to be(true)
       end
+    end
+
+    it "logs a 'User Created' message" do
+      stub_feature_flags(registrations_recaptcha: false)
+
+      expect(Gitlab::AppLogger).to receive(:info).with(/\AUser Created: username=new_username email=new@user.com.+\z/).and_call_original
+
+      post(:create, params: user_params)
+    end
+
+    it 'handles when params are new_user' do
+      post(:create, params: { new_user: base_user_params })
+
+      expect(subject.current_user).not_to be_nil
     end
   end
 

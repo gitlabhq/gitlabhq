@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190620112608) do
+ActiveRecord::Schema.define(version: 20190625184066) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -93,8 +93,6 @@ ActiveRecord::Schema.define(version: 20190620112608) do
     t.boolean "akismet_enabled", default: false
     t.string "akismet_api_key"
     t.integer "metrics_sample_interval", default: 15
-    t.boolean "sentry_enabled", default: false
-    t.string "sentry_dsn"
     t.boolean "email_author_in_body", default: false
     t.integer "default_group_visibility"
     t.boolean "repository_checks_enabled", default: false
@@ -135,8 +133,6 @@ ActiveRecord::Schema.define(version: 20190620112608) do
     t.string "uuid"
     t.decimal "polling_interval_multiplier", default: "1.0", null: false
     t.integer "cached_markdown_version"
-    t.boolean "clientside_sentry_enabled", default: false, null: false
-    t.string "clientside_sentry_dsn"
     t.boolean "prometheus_metrics_enabled", default: true, null: false
     t.boolean "help_page_hide_commercial_content", default: false
     t.string "help_page_support_url"
@@ -2055,6 +2051,21 @@ ActiveRecord::Schema.define(version: 20190620112608) do
     t.index ["title"], name: "index_milestones_on_title_trigram", using: :gin, opclasses: {"title"=>"gin_trgm_ops"}
   end
 
+  create_table "namespace_aggregation_schedules", primary_key: "namespace_id", id: :integer, default: nil, force: :cascade do |t|
+    t.index ["namespace_id"], name: "index_namespace_aggregation_schedules_on_namespace_id", unique: true, using: :btree
+  end
+
+  create_table "namespace_root_storage_statistics", primary_key: "namespace_id", id: :integer, default: nil, force: :cascade do |t|
+    t.datetime_with_timezone "updated_at", null: false
+    t.bigint "repository_size", default: 0, null: false
+    t.bigint "lfs_objects_size", default: 0, null: false
+    t.bigint "wiki_size", default: 0, null: false
+    t.bigint "build_artifacts_size", default: 0, null: false
+    t.bigint "storage_size", default: 0, null: false
+    t.bigint "packages_size", default: 0, null: false
+    t.index ["namespace_id"], name: "index_namespace_root_storage_statistics_on_namespace_id", unique: true, using: :btree
+  end
+
   create_table "namespace_statistics", id: :serial, force: :cascade do |t|
     t.integer "namespace_id", null: false
     t.integer "shared_runners_seconds", default: 0, null: false
@@ -2399,6 +2410,15 @@ ActiveRecord::Schema.define(version: 20190620112608) do
   create_table "project_alerting_settings", primary_key: "project_id", id: :integer, default: nil, force: :cascade do |t|
     t.string "encrypted_token", null: false
     t.string "encrypted_token_iv", null: false
+  end
+
+  create_table "project_aliases", force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.string "name", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.index ["name"], name: "index_project_aliases_on_name", unique: true, using: :btree
+    t.index ["project_id"], name: "index_project_aliases_on_project_id", using: :btree
   end
 
   create_table "project_authorizations", id: false, force: :cascade do |t|
@@ -3757,6 +3777,8 @@ ActiveRecord::Schema.define(version: 20190620112608) do
   add_foreign_key "merge_trains", "users", on_delete: :cascade
   add_foreign_key "milestones", "namespaces", column: "group_id", name: "fk_95650a40d4", on_delete: :cascade
   add_foreign_key "milestones", "projects", name: "fk_9bd0a0c791", on_delete: :cascade
+  add_foreign_key "namespace_aggregation_schedules", "namespaces", on_delete: :cascade
+  add_foreign_key "namespace_root_storage_statistics", "namespaces", on_delete: :cascade
   add_foreign_key "namespace_statistics", "namespaces", on_delete: :cascade
   add_foreign_key "namespaces", "namespaces", column: "custom_project_templates_group_id", name: "fk_e7a0b20a6b", on_delete: :nullify
   add_foreign_key "namespaces", "plans", name: "fk_fdd12e5b80", on_delete: :nullify
@@ -3780,6 +3802,7 @@ ActiveRecord::Schema.define(version: 20190620112608) do
   add_foreign_key "pool_repositories", "projects", column: "source_project_id", on_delete: :nullify
   add_foreign_key "pool_repositories", "shards", on_delete: :restrict
   add_foreign_key "project_alerting_settings", "projects", on_delete: :cascade
+  add_foreign_key "project_aliases", "projects", on_delete: :cascade
   add_foreign_key "project_authorizations", "projects", on_delete: :cascade
   add_foreign_key "project_authorizations", "users", on_delete: :cascade
   add_foreign_key "project_auto_devops", "projects", on_delete: :cascade

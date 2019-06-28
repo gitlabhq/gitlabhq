@@ -112,6 +112,44 @@ describe('DiscussionNotes', () => {
     });
   });
 
+  describe('events', () => {
+    describe('with groupped notes and replies expanded', () => {
+      const findNoteAtIndex = index => wrapper.find(`.note:nth-of-type(${index + 1}`);
+
+      beforeEach(() => {
+        createComponent({ shouldGroupReplies: true, isExpanded: true });
+      });
+
+      it('emits deleteNote when first note emits handleDeleteNote', () => {
+        findNoteAtIndex(0).vm.$emit('handleDeleteNote');
+        expect(wrapper.emitted().deleteNote).toBeTruthy();
+      });
+
+      it('emits startReplying when first note emits startReplying', () => {
+        findNoteAtIndex(0).vm.$emit('startReplying');
+        expect(wrapper.emitted().startReplying).toBeTruthy();
+      });
+
+      it('emits deleteNote when second note emits handleDeleteNote', () => {
+        findNoteAtIndex(1).vm.$emit('handleDeleteNote');
+        expect(wrapper.emitted().deleteNote).toBeTruthy();
+      });
+    });
+
+    describe('with ungroupped notes', () => {
+      let note;
+      beforeEach(() => {
+        createComponent();
+        note = wrapper.find('.note');
+      });
+
+      it('emits deleteNote when first note emits handleDeleteNote', () => {
+        note.vm.$emit('handleDeleteNote');
+        expect(wrapper.emitted().deleteNote).toBeTruthy();
+      });
+    });
+  });
+
   describe('componentData', () => {
     beforeEach(() => {
       createComponent();

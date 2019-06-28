@@ -151,21 +151,22 @@ export default {
 
     <div v-if="forkMessageVisible" class="js-file-fork-suggestion-section file-fork-suggestion">
       <span class="file-fork-suggestion-note">
-        You're not allowed to <span class="js-file-fork-suggestion-section-action">edit</span> files
-        in this project directly. Please fork this project, make your changes there, and submit a
-        merge request.
+        {{ sprintf(__("You're not allowed to %{tag_start}edit%{tag_end} files in this project
+        directly. Please fork this project, make your changes there, and submit a merge request."),
+        { tag_start: '<span class="js-file-fork-suggestion-section-action">', tag_end: '</span>' })
+        }}
       </span>
       <a
         :href="file.fork_path"
         class="js-fork-suggestion-button btn btn-grouped btn-inverted btn-success"
-        >Fork</a
+        >{{ __('Fork') }}</a
       >
       <button
         class="js-cancel-fork-suggestion-button btn btn-grouped"
         type="button"
         @click="hideForkMessage"
       >
-        Cancel
+        {{ __('Cancel') }}
       </button>
     </div>
     <gl-loading-icon v-if="showLoadingIcon" class="diff-content loading" />

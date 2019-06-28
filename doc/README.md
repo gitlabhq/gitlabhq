@@ -54,7 +54,7 @@ GitLab provides solutions for [all the stages of the DevOps lifecycle](https://a
 ![DevOps Stages](img/devops-stages.png)
 
 GitLab is like a top-of-the-line kitchen for making software. As the executive
-chef, you decide what software you want serve. Using your recipe, GitLab handles
+chef, you decide what software you want to serve. Using your recipe, GitLab handles
 all the prep work, cooking, and delivery, so you can turn around orders faster
 than ever.
 
@@ -209,7 +209,7 @@ The following documentation relates to the DevOps **Create** stage:
 | [GitLab API](api/README.md)                                                   | Integrate GitLab via a simple and powerful API.                                                                        |
 | [GitLab Integration](integration/README.md)                                   | Integrate with multiple third-party services with GitLab to allow external issue trackers and external authentication. |
 | [GitLab Webhooks](user/project/integrations/webhooks.md)                      | Let GitLab notify you when new code has been pushed to your project.                                                   |
-| [JIRA Development Panel](integration/jira_development_panel.md) **[PREMIUM]** | See GitLab information in the JIRA Development Panel.                                                                  |
+| [Jira Development Panel](integration/jira_development_panel.md) **[PREMIUM]** | See GitLab information in the Jira Development Panel.                                                                  |
 | [Project Services](user/project/integrations/project_services.md)             | Integrate a project with external services, such as CI and chat.                                                       |
 | [Trello Power-Up](integration/trello_power_up.md)                             | Integrate with GitLab's Trello Power-Up.                                                                               |
 

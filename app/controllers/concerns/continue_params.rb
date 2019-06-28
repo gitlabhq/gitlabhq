@@ -6,7 +6,7 @@ module ContinueParams
 
   def continue_params
     continue_params = params[:continue]
-    return unless continue_params
+    return {} unless continue_params
 
     continue_params = continue_params.permit(:to, :notice, :notice_now)
     continue_params[:to] = safe_redirect_path(continue_params[:to])

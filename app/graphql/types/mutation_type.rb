@@ -6,6 +6,9 @@ module Types
 
     graphql_name "Mutation"
 
+    mount_mutation Mutations::AwardEmojis::Add
+    mount_mutation Mutations::AwardEmojis::Remove
+    mount_mutation Mutations::AwardEmojis::Toggle
     mount_mutation Mutations::MergeRequests::SetWip
   end
 end

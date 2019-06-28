@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  # Failure issue: https://gitlab.com/gitlab-org/quality/staging/issues/46
-  context 'Create', :quarantine do
+  context 'Create' do
     describe 'Web IDE file templates' do
       include Runtime::Fixtures
 

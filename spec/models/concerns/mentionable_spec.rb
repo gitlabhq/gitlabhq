@@ -18,7 +18,7 @@ describe Mentionable do
     let(:project) { create(:project) }
     let(:mentionable) { Example.new }
 
-    it 'excludes JIRA references' do
+    it 'excludes Jira references' do
       allow(project).to receive_messages(jira_tracker?: true)
 
       mentionable.project = project

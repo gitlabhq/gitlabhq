@@ -105,8 +105,8 @@ export default {
           :commit="commit"
           :help-page-path="helpPagePath"
           :show-reply-button="userCanReply"
-          @handle-delete-note="$emit('deleteNote')"
-          @start-replying="$emit('startReplying')"
+          @handleDeleteNote="$emit('deleteNote')"
+          @startReplying="$emit('startReplying')"
         >
           <note-edited-text
             v-if="discussion.resolved"
@@ -132,7 +132,7 @@ export default {
             :note="componentData(note)"
             :help-page-path="helpPagePath"
             :line="line"
-            @handle-delete-note="$emit('deleteNote')"
+            @handleDeleteNote="$emit('deleteNote')"
           />
         </template>
       </template>
@@ -144,7 +144,7 @@ export default {
           :note="componentData(note)"
           :help-page-path="helpPagePath"
           :line="diffLine"
-          @handle-delete-note="$emit('deleteNote')"
+          @handleDeleteNote="$emit('deleteNote')"
         >
           <slot v-if="index === 0" slot="avatar-badge" name="avatar-badge"></slot>
         </component>

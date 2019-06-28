@@ -2,4 +2,5 @@
 
 class BoardSimpleEntity < Grape::Entity
   expose :id
+  expose :name
 end

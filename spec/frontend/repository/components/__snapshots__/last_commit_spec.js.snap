@@ -27,8 +27,8 @@ exports[`Repository last commit component renders commit widget 1`] = `
         href="https://test.com/commit/123"
       >
         
-        Commit title
-      
+          Commit title
+        
       </gllink-stub>
        
       <!---->
@@ -41,12 +41,12 @@ exports[`Repository last commit component renders commit widget 1`] = `
           href="https://test.com/test"
         >
           
-          Test
-        
+            Test
+          
         </gllink-stub>
         
-        authored
-        
+          authored
+          
         <timeagotooltip-stub
           cssclass=""
           time="2019-01-01"
@@ -81,8 +81,8 @@ exports[`Repository last commit component renders commit widget 1`] = `
           class="label label-monospace monospace"
         >
           
-          12345678
-        
+            12345678
+          
         </div>
          
         <clipboardbutton-stub

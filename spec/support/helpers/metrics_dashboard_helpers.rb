@@ -50,4 +50,12 @@ module MetricsDashboardHelpers
 
     it_behaves_like 'valid dashboard service response for schema'
   end
+
+  shared_examples_for 'raises error for users with insufficient permissions' do
+    context 'when the user does not have sufficient access' do
+      let(:user) { build(:user) }
+
+      it_behaves_like 'misconfigured dashboard service response', :unauthorized
+    end
+  end
 end

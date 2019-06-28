@@ -83,6 +83,20 @@ $item-weight-max-width: 48px;
     flex-basis: 100%;
   }
 
+  .item-attributes-area {
+    > * {
+      margin-left: 8px;
+    }
+
+    .board-card-info {
+      margin-right: 0;
+    }
+
+    @include media-breakpoint-down(sm) {
+      margin-left: -8px;
+    }
+  }
+
   .item-milestone,
   .item-weight {
     cursor: help;
@@ -101,39 +115,39 @@ $item-weight-max-width: 48px;
   .item-weight {
     max-width: $item-weight-max-width;
   }
+}
 
-  .item-assignees {
-    .user-avatar-link {
-      margin-right: -$gl-padding-4;
+.item-assignees {
+  .user-avatar-link {
+    margin-right: -$gl-padding-4;
 
-      &:nth-of-type(1) {
-        z-index: 2;
-      }
-
-      &:nth-of-type(2) {
-        z-index: 1;
-      }
-
-      &:last-child {
-        margin-right: 0;
-      }
+    &:nth-of-type(1) {
+      z-index: 2;
     }
 
-    .avatar {
-      height: $gl-padding;
-      width: $gl-padding;
+    &:nth-of-type(2) {
+      z-index: 1;
+    }
+
+    &:last-child {
       margin-right: 0;
-      vertical-align: bottom;
     }
+  }
 
-    .avatar-counter {
-      height: $gl-padding;
-      border: 1px solid transparent;
-      background-color: $gl-text-color-tertiary;
-      font-weight: $gl-font-weight-bold;
-      padding: 0 $gl-padding-4;
-      line-height: $gl-padding;
-    }
+  .avatar {
+    height: $gl-padding;
+    width: $gl-padding;
+    margin-right: 0;
+    vertical-align: bottom;
+  }
+
+  .avatar-counter {
+    height: $gl-padding;
+    border: 1px solid transparent;
+    background-color: $gl-text-color-tertiary;
+    font-weight: $gl-font-weight-bold;
+    padding: 0 $gl-padding-4;
+    line-height: $gl-padding;
   }
 }
 
@@ -149,12 +163,6 @@ $item-weight-max-width: 48px;
   .issue-token-state-icon-open,
   .issue-token-state-icon-closed {
     display: block;
-  }
-
-  @include media-breakpoint-down(sm) {
-    &:not(.mr-item-path) {
-      order: 1;
-    }
   }
 }
 
@@ -179,6 +187,10 @@ $item-weight-max-width: 48px;
 }
 
 @include media-breakpoint-up(sm) {
+  .item-info-area {
+    flex-basis: 100%;
+  }
+
   .sortable-link {
     max-width: 90%;
   }
@@ -241,7 +253,8 @@ $item-weight-max-width: 48px;
     .item-title {
       min-width: 0;
       width: auto;
-      flex-basis: unset;
+      flex-basis: auto;
+      flex-shrink: 1;
       font-weight: $gl-font-weight-normal;
 
       .issue-token-state-icon-open,
@@ -249,6 +262,10 @@ $item-weight-max-width: 48px;
         display: block;
         margin-right: $gl-padding-8;
       }
+    }
+
+    .item-info-area {
+      flex-basis: auto;
     }
   }
 

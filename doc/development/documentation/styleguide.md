@@ -100,6 +100,13 @@ use regular Markdown markup, following the rules in the linked style guide.
 
 Note that Kramdown-specific markup (e.g., `{:.class}`) will not render properly on GitLab instances under [`/help`](index.md#gitlab-help).
 
+Hard-coded HTML is valid, although it's discouraged to be used while we have `/help`. HTML is permitted as long as:
+
+- There's no equivalent markup in markdown.
+- Advanced tables are necessary.
+- Special styling is required.
+- Reviewed and approved by a technical writer.
+
 ## Structure
 
 ### Organize by topic, not by type
@@ -143,7 +150,8 @@ The table below shows what kind of documentation goes where.
    a proper naming would be `import_projects_from_github.md`. The same rule
    applies to images.
 1. For image files, do not exceed 100KB.
-1. We do not yet support embedded videos. Please link out.
+1. Do not upload video files to the product repositories.
+[Link or embed videos](#videos) instead.
 1. There are four main directories, `user`, `administration`, `api` and `development`.
 1. The `doc/user/` directory has five main subdirectories: `project/`, `group/`,
    `profile/`, `dashboard/` and `admin_area/`.
@@ -207,6 +215,7 @@ Do not include the same information in multiple places. [Link to a SSOT instead.
 
 ## Text
 
+- [Write in markdown](#markdown).
 - Splitting long lines (preferably up to 100 characters) can make it easier to provide feedback on small chunks of text.
 - Insert an empty line for new paragraphs.
 - Use sentence case for titles, headings, labels, menu items, and buttons.
@@ -409,11 +418,20 @@ To indicate the steps of navigation through the UI:
 ## Images
 
 - Place images in a separate directory named `img/` in the same directory where
-  the `.md` document that you're working on is located. Always prepend their
-  names with the name of the document that they will be included in. For
-  example, if there is a document called `twitter.md`, then a valid image name
-  could be `twitter_login_screen.png`.
-- Images should have a specific, non-generic name that will differentiate and describe them properly.
+  the `.md` document that you're working on is located.
+- Images should have a specific, non-generic name that will
+  differentiate and describe them properly.
+- Always add to the end of the file name the GitLab release version
+  number corresponding to the release milestone the image was added to,
+  or corresponding to the release the screenshot was taken from, using the
+  format `image_name_vX_Y.png`.
+  ([Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/61027) in GitLab 12.1.)
+- For example, for a screenshot taken from the pipelines page of
+  GitLab 11.1, a valid name is `pipelines_v11_1.png`. If you're
+  adding an illustration that does not include parts of the UI,
+  add the release number corresponding to the release the image
+  was added to. Example, for an MR added to 11.1's milestone,
+  a valid name for an illustration is `devops_diagram_v11_1.png`.
 - Keep all file names in lower case.
 - Consider using PNG images instead of JPEG.
 - Compress all images with <https://tinypng.com/> or similar tool.
@@ -421,12 +439,12 @@ To indicate the steps of navigation through the UI:
 - Images should be used (only when necessary) to _illustrate_ the description
   of a process, not to _replace_ it.
 - Max image size: 100KB (gifs included).
-- The GitLab docs do not support videos yet.
+- See also how to link and embed [videos](#videos) to illustrate the docs.
 
 Inside the document:
 
 - The Markdown way of using an image inside a document is:
-  `![Proper description what the image is about](img/document_image_title.png)`
+  `![Proper description what the image is about](img/document_image_title_vX_Y.png)`
 - Always use a proper description for what the image is about. That way, when a
   browser fails to show the image, this text will be used as an alternative
   description.
@@ -445,6 +463,85 @@ directly to an HTML `img` tag:
 ```html
 <img src="path/to/image.jpg" alt="Alt text (required)" class="image-noshadow">
 ```
+
+## Videos
+
+Adding GitLab's existing YouTube video tutorials to the documentation is
+highly encouraged, unless the video is outdated. Videos should not
+replace documentation, but complement or illustrate it. If content in a video is
+fundamental to a feature and its key use cases, but this is not adequately covered in the documentation,
+add this detail to the documentation text or create an issue to review the video and do so.
+
+Do not upload videos to the product repositories. [Link](#link-to-video) or [embed](#embed-videos) them instead.
+
+### Link to video
+
+To link out to a video, include a YouTube icon so that readers can 
+quickly and easily scan the page for videos before reading:
+
+```md
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview, see [Video Title](link-to-video).
+```
+
+You can link any up-to-date video that is useful to the GitLab user.
+
+### Embed videos
+
+> [Introduced](https://gitlab.com/gitlab-com/gitlab-docs/merge_requests/472) in GitLab 12.1.
+
+GitLab docs (docs.gitlab.com) support embedded videos.
+
+You can only embed videos from
+[GitLab's official YouTube account](https://www.youtube.com/channel/UCnMGQ8QHMAnVIsI3xJrihhg).
+For videos from other sources, [link](#link-to-video) them instead.
+
+In most cases, it is better to [link to video](#link-to-video) instead,
+because an embed takes up a lot of space on the page and can be distracting
+to readers.
+
+To embed a video, follow the instructions below and make sure
+you have your MR reviewed and approved by a technical writer.
+
+1. Copy the code below and paste it into your markdown file.
+  Leave a blank line above and below it. Do NOT edit the code
+  (don't remove or add any spaces, etc).
+1. On YouTube, visit the video URL you want to display. Copy
+  the regular URL from your browser (`https://www.youtube.com/watch?v=VIDEO-ID`)
+  and replace the video title and link in the line under `<div class="video-fallback">`.
+1. On YouTube, click **Share**, then **Embed**.
+1. Copy the `<iframe>` source (`src`) **URL only**
+  (`https://www.youtube.com/embed/VIDEO-ID`),
+  and paste it, replacing the content of the `src` field in the
+  `iframe` tag.
+
+```html
+leave a blank line here
+<div class="video-fallback">
+  See the video: [Video title](https://www.youtube.com/watch?v=MqL6BMOySIQ).
+</div>
+<figure class="video-container">
+  <iframe src="https://www.youtube.com/embed/MqL6BMOySIQ" frameborder="0" allowfullscreen="true"> </iframe>
+</figure>
+leave a blank line here
+```
+
+This is how it renders on docs.gitlab.com:
+
+<div class="video-fallback">
+  See the video: [What is GitLab](https://www.youtube.com/watch?v=enMumwvLAug).
+</div>
+<figure class="video-container">
+  <iframe src="https://www.youtube.com/embed/MqL6BMOySIQ" frameborder="0" allowfullscreen="true"> </iframe>
+</figure>
+
+> Notes:
+>
+> - The `figure` tag is required for semantic SEO and the `video_container`
+class is necessary to make sure the video is responsive and displays
+nicely on different mobile devices.
+> - The `<div class="video-fallback">` is a fallback necessary for GitLab's
+`/help`, as GitLab's markdown processor does not support iframes. It's hidden on the docs site but will be displayed on GitLab's `/help`.
 
 ## Code blocks
 

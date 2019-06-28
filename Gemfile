@@ -211,7 +211,7 @@ gem 'discordrb-webhooks-blackst0ne', '~> 3.3', require: false
 # HipChat integration
 gem 'hipchat', '~> 1.5.0'
 
-# JIRA integration
+# Jira integration
 gem 'jira-ruby', '~> 1.4'
 
 # Flowdock integration
@@ -309,7 +309,7 @@ group :metrics do
   gem 'influxdb', '~> 0.2', require: false
 
   # Prometheus
-  gem 'prometheus-client-mmap', '~> 0.9.4'
+  gem 'prometheus-client-mmap', '~> 0.9.6'
   gem 'raindrops', '~> 0.18'
 end
 

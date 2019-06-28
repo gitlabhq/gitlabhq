@@ -1,6 +1,6 @@
 <script>
 import '~/commons/bootstrap';
-import { GlTooltipDirective } from '@gitlab/ui';
+import { GlTooltip, GlTooltipDirective } from '@gitlab/ui';
 import { sprintf } from '~/locale';
 import IssueMilestone from '../../components/issue/issue_milestone.vue';
 import IssueAssignees from '../../components/issue/issue_assignees.vue';
@@ -13,6 +13,7 @@ export default {
     IssueMilestone,
     IssueAssignees,
     CiIcon,
+    GlTooltip,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -20,11 +21,6 @@ export default {
   mixins: [relatedIssuableMixin],
   props: {
     canReorder: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    greyLinkWhenMerged: {
       type: Boolean,
       required: false,
       default: false,
@@ -41,10 +37,12 @@ export default {
         },
       );
     },
-    issueableLinkClass() {
-      return this.greyLinkWhenMerged
-        ? `sortable-link ${this.state === 'merged' ? ' text-secondary' : ''}`
-        : 'sortable-link';
+    heightStyle() {
+      return {
+        minHeight: '32px',
+        width: '0px',
+        visibility: 'hidden',
+      };
     },
   },
 };
@@ -56,20 +54,25 @@ export default {
       'issuable-info-container': !canReorder,
       'card-body': canReorder,
     }"
-    class="item-body d-flex align-items-center p-2 p-lg-3 p-xl-2 pl-xl-3"
+    class="item-body d-flex align-items-center p-2 p-lg-3 py-xl-2 px-xl-3"
   >
     <div class="item-contents d-flex align-items-center flex-wrap flex-grow-1 flex-xl-nowrap">
-      <div class="item-title d-flex align-items-center mb-1 mb-xl-0">
-        <icon
-          v-if="hasState"
-          v-tooltip
-          :css-classes="iconClass"
-          :name="iconName"
-          :size="16"
-          :title="stateTitle"
-          :aria-label="state"
-          data-html="true"
-        />
+      <!-- Title area: Status icon (XL) and title -->
+      <div class="item-title d-flex align-items-center mb-xl-0">
+        <span ref="iconElementXL">
+          <icon
+            v-if="hasState"
+            ref="iconElementXL"
+            :css-classes="iconClass"
+            :name="iconName"
+            :size="16"
+            :title="stateTitle"
+            :aria-label="state"
+          />
+        </span>
+        <gl-tooltip :target="() => $refs.iconElementXL">
+          <span v-html="stateTitle"></span>
+        </gl-tooltip>
         <icon
           v-if="confidential"
           v-gl-tooltip
@@ -79,55 +82,81 @@ export default {
           class="confidential-icon append-right-4 align-self-baseline align-self-md-auto mt-xl-0"
           :aria-label="__('Confidential')"
         />
-        <a :href="computedPath" :class="issueableLinkClass">{{ title }}</a>
+        <a :href="computedPath" class="sortable-link">{{ title }}</a>
       </div>
-      <div class="item-meta d-flex flex-wrap mt-xl-0 justify-content-xl-end flex-xl-nowrap">
+
+      <!-- Info area: meta, path, and assignees -->
+      <div class="item-info-area d-flex flex-xl-grow-1 flex-shrink-0">
+        <!-- Meta area: path and attributes -->
+        <!-- If there is no room beside the path, meta attributes are put ABOVE it (flex-wrap-reverse). -->
+        <!-- See design: https://gitlab-org.gitlab.io/gitlab-design/hosted/pedro/%2383-issue-mr-rows-cards-spec-previews/#artboard16 -->
         <div
-          class="d-flex align-items-center item-path-id order-md-0 mt-md-0 mt-1 ml-xl-2 mr-xl-auto"
+          class="item-meta d-flex flex-wrap-reverse justify-content-start justify-content-md-between"
         >
-          <icon
-            v-if="hasState"
-            v-tooltip
-            :css-classes="iconClass"
-            :name="iconName"
-            :size="16"
-            :title="stateTitle"
-            :aria-label="state"
-            data-html="true"
-            class="d-xl-none"
-          />
-          <span v-tooltip :title="itemPath" class="path-id-text d-inline-block">{{
-            itemPath
-          }}</span>
-          {{ pathIdSeparator }}{{ itemId }}
+          <!-- Path area: status icon (<XL), path, issue # -->
+          <div
+            class="item-path-area item-path-id d-flex align-items-center mr-2 mt-2 mt-xl-0 ml-xl-2"
+          >
+            <span ref="iconElement">
+              <icon
+                v-if="hasState"
+                :css-classes="iconClass"
+                :name="iconName"
+                :title="stateTitle"
+                :aria-label="state"
+                data-html="true"
+                class="d-xl-none"
+              />
+            </span>
+            <gl-tooltip :target="() => this.$refs.iconElement">
+              <span v-html="stateTitle"></span>
+            </gl-tooltip>
+            <span v-gl-tooltip :title="itemPath" class="path-id-text d-inline-block">{{
+              itemPath
+            }}</span>
+            <span>{{ pathIdSeparator }}{{ itemId }}</span>
+          </div>
+
+          <!-- Attributes area: CI, epic count, weight, milestone -->
+          <!-- They have a different order on large screen sizes -->
+          <div class="item-attributes-area d-flex align-items-center mt-2 mt-xl-0">
+            <span v-if="hasPipeline" class="mr-ci-status order-md-last">
+              <a :href="pipelineStatus.details_path">
+                <ci-icon v-gl-tooltip :status="pipelineStatus" :title="pipelineStatusTooltip" />
+              </a>
+            </span>
+
+            <issue-milestone
+              v-if="hasMilestone"
+              :milestone="milestone"
+              class="d-flex align-items-center item-milestone order-md-first ml-md-0"
+            />
+
+            <!-- Flex order for slots is defined in the parent component: e.g. related_issues_block.vue -->
+            <slot name="dueDate"></slot>
+            <slot name="weight"></slot>
+
+            <issue-assignees
+              v-if="hasAssignees"
+              :assignees="assignees"
+              class="item-assignees align-items-center align-self-end flex-shrink-0 order-md-2 d-none d-md-flex"
+            />
+          </div>
         </div>
-        <div
-          class="item-meta-child d-flex align-items-center order-0 flex-wrap mr-md-1 ml-md-auto ml-xl-2 flex-xl-nowrap"
-        >
-          <span v-if="hasPipeline" class="mr-ci-status pr-2">
-            <a :href="pipelineStatus.details_path">
-              <ci-icon v-gl-tooltip :status="pipelineStatus" :title="pipelineStatusTooltip" />
-            </a>
-          </span>
-          <issue-milestone
-            v-if="hasMilestone"
-            :milestone="milestone"
-            class="d-flex align-items-center item-milestone"
-          />
-          <slot name="dueDate"></slot>
-          <slot name="weight"></slot>
-        </div>
+
+        <!-- Assignees. On small layouts, these are put here, at the end of the card. -->
         <issue-assignees
-          v-if="assignees.length"
+          v-if="assignees.length !== 0"
           :assignees="assignees"
-          class="item-assignees d-inline-flex align-items-center align-self-end ml-auto ml-md-0 mb-md-0 order-2 flex-xl-grow-0 mt-xl-0 mr-xl-1"
+          class="item-assignees d-flex align-items-center align-self-end flex-shrink-0 d-md-none ml-2"
         />
       </div>
     </div>
+
     <button
       v-if="canRemove"
       ref="removeButton"
-      v-tooltip
+      v-gl-tooltip
       :disabled="removeDisabled"
       type="button"
       class="btn btn-default btn-svg btn-item-remove js-issue-item-remove-button qa-remove-issue-button mr-xl-0 align-self-xl-center"
@@ -137,5 +166,9 @@ export default {
     >
       <icon :size="16" class="btn-item-remove-icon" name="close" />
     </button>
+
+    <!-- This element serves to set the issue card's height at a minimum of 32 px. -->
+    <!-- It fixes #59594: when the remove button is missing, issues have inconsistent heights. -->
+    <span :style="heightStyle"></span>
   </div>
 </template>

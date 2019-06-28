@@ -17,6 +17,10 @@ describe SearchController do
 
     set(:project) { create(:project, :public, :repository, :wiki_repo) }
 
+    before do
+      expect(::Gitlab::GitalyClient).to receive(:allow_ref_name_caching).and_call_original
+    end
+
     subject { get(:show, params: { project_id: project.id, scope: scope, search: 'merge' }) }
 
     where(:partial, :scope) do
@@ -32,6 +36,19 @@ describe SearchController do
 
         expect(subject).to render_template("search/results/#{partial}")
       end
+    end
+  end
+
+  context 'global search' do
+    render_views
+
+    it 'omits pipeline status from load' do
+      project = create(:project, :public)
+      expect(Gitlab::Cache::Ci::ProjectPipelineStatus).not_to receive(:load_in_batch_for_projects)
+
+      get :show, params: { scope: 'projects', search: project.name }
+
+      expect(assigns[:search_objects].first).to eq project
     end
   end
 

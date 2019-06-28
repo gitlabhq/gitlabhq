@@ -5,6 +5,8 @@ class SearchController < ApplicationController
   include SearchHelper
   include RendersCommits
 
+  around_action :allow_gitaly_ref_name_caching
+
   skip_before_action :authenticate_user!
   requires_cross_project_access if: -> do
     search_term_present = params[:search].present? || params[:term].present?

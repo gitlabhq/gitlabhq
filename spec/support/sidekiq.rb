@@ -30,6 +30,8 @@ RSpec.configure do |config|
   end
 
   config.after(:each, :sidekiq, :redis) do
-    Sidekiq.redis { |redis| redis.flushdb }
+    Sidekiq.redis do |connection|
+      connection.redis.flushdb
+    end
   end
 end

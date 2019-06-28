@@ -235,12 +235,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     params[:auto_merge_strategy].present? || params[:merge_when_pipeline_succeeds].present?
   end
 
-  def close_merge_request_if_no_source_project
-    if !@merge_request.source_project && @merge_request.open?
-      @merge_request.close
-    end
-  end
-
   private
 
   def ci_environments_status_on_merge_result?

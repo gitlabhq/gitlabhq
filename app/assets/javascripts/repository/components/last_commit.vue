@@ -1,10 +1,9 @@
 <script>
-import { GlTooltipDirective, GlLink, GlButton } from '@gitlab/ui';
+import { GlTooltipDirective, GlLink, GlButton, GlLoadingIcon } from '@gitlab/ui';
 import { sprintf, s__ } from '~/locale';
 import Icon from '../../vue_shared/components/icon.vue';
 import UserAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
 import TimeagoTooltip from '../../vue_shared/components/time_ago_tooltip.vue';
-import CommitPipelineStatus from '../../projects/tree/components/commit_pipeline_status_component.vue';
 import CiIcon from '../../vue_shared/components/ci_icon.vue';
 import ClipboardButton from '../../vue_shared/components/clipboard_button.vue';
 import getRefMixin from '../mixins/get_ref';
@@ -16,11 +15,11 @@ export default {
     Icon,
     UserAvatarLink,
     TimeagoTooltip,
-    CommitPipelineStatus,
     ClipboardButton,
     CiIcon,
     GlLink,
     GlButton,
+    GlLoadingIcon,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -39,7 +38,10 @@ export default {
           path: this.currentPath.replace(/^\//, ''),
         };
       },
-      update: data => data.project.repository.tree.commit,
+      update: data => data.project.repository.tree.lastCommit,
+      context: {
+        isSingleRequest: true,
+      },
     },
   },
   props: {
@@ -59,14 +61,14 @@ export default {
   computed: {
     statusTitle() {
       return sprintf(s__('Commits|Commit: %{commitText}'), {
-        commitText: this.commit.pipeline.detailedStatus.text,
+        commitText: this.commit.latestPipeline.detailedStatus.text,
       });
     },
     isLoading() {
       return this.$apollo.queries.commit.loading;
     },
     showCommitId() {
-      return this.commit.id.substr(0, 8);
+      return this.commit.sha.substr(0, 8);
     },
   },
   methods: {
@@ -78,68 +80,75 @@ export default {
 </script>
 
 <template>
-  <div v-if="!isLoading" class="info-well d-none d-sm-flex project-last-commit commit p-3">
-    <user-avatar-link
-      v-if="commit.author"
-      :link-href="commit.author.webUrl"
-      :img-src="commit.author.avatarUrl"
-      :img-size="40"
-      class="avatar-cell"
-    />
-    <div class="commit-detail flex-list">
-      <div class="commit-content qa-commit-content">
-        <gl-link :href="commit.webUrl" class="commit-row-message item-title">
-          {{ commit.title }}
-        </gl-link>
-        <gl-button
-          v-if="commit.description"
-          :class="{ open: showDescription }"
-          :aria-label="__('Show commit description')"
-          class="text-expander"
-          @click="toggleShowDescription"
-        >
-          <icon name="ellipsis_h" />
-        </gl-button>
-        <div class="committer">
-          <gl-link
-            v-if="commit.author"
-            :href="commit.author.webUrl"
-            class="commit-author-link js-user-link"
-          >
-            {{ commit.author.name }}
+  <div class="info-well d-none d-sm-flex project-last-commit commit p-3">
+    <gl-loading-icon v-if="isLoading" size="md" class="mx-auto" />
+    <template v-else>
+      <user-avatar-link
+        v-if="commit.author"
+        :link-href="commit.author.webUrl"
+        :img-src="commit.author.avatarUrl"
+        :img-size="40"
+        class="avatar-cell"
+      />
+      <div class="commit-detail flex-list">
+        <div class="commit-content qa-commit-content">
+          <gl-link :href="commit.webUrl" class="commit-row-message item-title">
+            {{ commit.title }}
           </gl-link>
-          authored
-          <timeago-tooltip :time="commit.authoredDate" tooltip-placement="bottom" />
-        </div>
-        <pre
-          v-if="commit.description"
-          v-show="showDescription"
-          class="commit-row-description append-bottom-8"
-        >
-          {{ commit.description }}
-        </pre>
-      </div>
-      <div class="commit-actions flex-row">
-        <gl-link
-          v-if="commit.pipeline"
-          v-gl-tooltip
-          :href="commit.pipeline.detailedStatus.detailsPath"
-          :title="statusTitle"
-          class="js-commit-pipeline"
-        >
-          <ci-icon :status="commit.pipeline.detailedStatus" :size="24" :aria-label="statusTitle" />
-        </gl-link>
-        <div class="commit-sha-group d-flex">
-          <div class="label label-monospace monospace">
-            {{ showCommitId }}
+          <gl-button
+            v-if="commit.description"
+            :class="{ open: showDescription }"
+            :aria-label="__('Show commit description')"
+            class="text-expander"
+            @click="toggleShowDescription"
+          >
+            <icon name="ellipsis_h" />
+          </gl-button>
+          <div class="committer">
+            <gl-link
+              v-if="commit.author"
+              :href="commit.author.webUrl"
+              class="commit-author-link js-user-link"
+            >
+              {{ commit.author.name }}
+            </gl-link>
+            authored
+            <timeago-tooltip :time="commit.authoredDate" tooltip-placement="bottom" />
           </div>
-          <clipboard-button
-            :text="commit.id"
-            :title="__('Copy commit SHA to clipboard')"
-            tooltip-placement="bottom"
-          />
+          <pre
+            v-if="commit.description"
+            v-show="showDescription"
+            class="commit-row-description append-bottom-8"
+          >
+            {{ commit.description }}
+          </pre>
+        </div>
+        <div class="commit-actions flex-row">
+          <gl-link
+            v-if="commit.latestPipeline"
+            v-gl-tooltip
+            :href="commit.latestPipeline.detailedStatus.detailsPath"
+            :title="statusTitle"
+            class="js-commit-pipeline"
+          >
+            <ci-icon
+              :status="commit.latestPipeline.detailedStatus"
+              :size="24"
+              :aria-label="statusTitle"
+            />
+          </gl-link>
+          <div class="commit-sha-group d-flex">
+            <div class="label label-monospace monospace">
+              {{ showCommitId }}
+            </div>
+            <clipboard-button
+              :text="commit.sha"
+              :title="__('Copy commit SHA to clipboard')"
+              tooltip-placement="bottom"
+            />
+          </div>
         </div>
       </div>
-    </div>
+    </template>
   </div>
 </template>

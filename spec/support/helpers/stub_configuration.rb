@@ -81,12 +81,23 @@ module StubConfiguration
     allow(Gitlab.config.repositories).to receive(:storages).and_return(Settingslogic.new(messages))
   end
 
+  def stub_sentry_settings
+    allow(Gitlab.config.sentry).to receive(:enabled).and_return(true)
+    allow(Gitlab.config.sentry).to receive(:dsn).and_return('dummy://b44a0828b72421a6d8e99efd68d44fa8@example.com/42')
+    allow(Gitlab.config.sentry).to receive(:clientside_dsn).and_return('dummy://b44a0828b72421a6d8e99efd68d44fa8@example.com/43')
+  end
+
   def stub_kerberos_setting(messages)
     allow(Gitlab.config.kerberos).to receive_messages(to_settings(messages))
   end
 
   def stub_gitlab_shell_setting(messages)
     allow(Gitlab.config.gitlab_shell).to receive_messages(to_settings(messages))
+  end
+
+  def stub_rack_attack_setting(messages)
+    allow(Gitlab.config.rack_attack).to receive(:git_basic_auth).and_return(messages)
+    allow(Gitlab.config.rack_attack.git_basic_auth).to receive_messages(to_settings(messages))
   end
 
   private

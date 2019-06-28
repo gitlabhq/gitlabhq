@@ -1,5 +1,0 @@
----
-title: Fix missing API notification flags for Microsoft Teams
-merge_request: 29824
-author: Seiji Suenaga
-type: fixed

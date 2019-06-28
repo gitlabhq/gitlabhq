@@ -1,0 +1,5 @@
+---
+title: Fix charts on Cluster health page
+merge_request: 30073
+author:
+type: fixed

@@ -309,7 +309,7 @@ describe('Multi-file store mutations', () => {
         ...localState.entries.oldPath,
         id: 'newPath',
         name: 'newPath',
-        key: 'newPath-blob-name',
+        key: 'newPath-blob-oldPath',
         path: 'newPath',
         tempFile: true,
         prevPath: 'oldPath',
@@ -318,6 +318,7 @@ describe('Multi-file store mutations', () => {
         url: `${gl.TEST_HOST}/newPath`,
         moved: jasmine.anything(),
         movedPath: jasmine.anything(),
+        opened: false,
       });
     });
 
@@ -348,14 +349,6 @@ describe('Multi-file store mutations', () => {
       });
 
       expect(localState.entries.parentPath.tree.length).toBe(1);
-    });
-
-    it('adds to openFiles if previously opened', () => {
-      localState.entries.oldPath.opened = true;
-
-      mutations.RENAME_ENTRY(localState, { path: 'oldPath', name: 'newPath' });
-
-      expect(localState.openFiles).toEqual([localState.entries.newPath]);
     });
   });
 });

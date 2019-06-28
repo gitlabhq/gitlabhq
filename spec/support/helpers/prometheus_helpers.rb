@@ -70,6 +70,10 @@ module PrometheusHelpers
     WebMock.stub_request(:get, url).to_raise(exception_type)
   end
 
+  def stub_any_prometheus_request
+    WebMock.stub_request(:any, /prometheus.example.com/)
+  end
+
   def stub_all_prometheus_requests(environment_slug, body: nil, status: 200)
     stub_prometheus_request(
       prometheus_query_with_time_url(prometheus_memory_query(environment_slug), Time.now.utc),

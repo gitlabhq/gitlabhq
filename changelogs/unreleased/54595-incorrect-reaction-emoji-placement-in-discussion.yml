@@ -1,0 +1,5 @@
+---
+title: Fix incorrect emoji placement in commit diff discussion
+merge_request: 29445
+author:
+type: fixed

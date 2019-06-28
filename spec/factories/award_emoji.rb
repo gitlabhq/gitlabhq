@@ -5,7 +5,7 @@ FactoryBot.define do
     awardable factory: :issue
 
     after(:create) do |award, evaluator|
-      award.awardable.project.add_guest(evaluator.user)
+      award.awardable.project&.add_guest(evaluator.user)
     end
 
     trait :upvote

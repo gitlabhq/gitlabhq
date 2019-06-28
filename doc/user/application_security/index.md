@@ -10,7 +10,7 @@ high-level view on projects and groups, and start remediation processes when nee
 
 GitLab can scan and report any vulnerabilities found in your project.
 
-| Secure scanning tools                                                        | Description                                                            |
+| Secure scanning tool                                                         | Description                                                            |
 |:-----------------------------------------------------------------------------|:-----------------------------------------------------------------------|
 | [Container Scanning](container_scanning/index.md) **[ULTIMATE]**             | Scan Docker containers for known vulnerabilities.                      |
 | [Dependency Scanning](dependency_scanning/index.md) **[ULTIMATE]**           | Analyze your dependencies for known vulnerabilities.                   |
@@ -18,6 +18,29 @@ GitLab can scan and report any vulnerabilities found in your project.
 | [License Management](license_management/index.md) **[ULTIMATE]**             | Search your project's dependencies for their licenses.                 |
 | [Security Dashboard](security_dashboard/index.md) **[ULTIMATE]**             | View vulnerabilities in all your projects and groups.                  |
 | [Static Application Security Testing (SAST)](sast/index.md) **[ULTIMATE]**   | Analyze source code for known vulnerabilities.                         |
+
+## Maintenance and update of the vulnerabilities database
+
+The various scanning tools and the vulnerabilities database are updated regularly.
+
+| Secure scanning tool                                         | Vulnerabilities database updates          |
+|:-------------------------------------------------------------|-------------------------------------------|
+| [Container Scanning](container_scanning/index.md)            | Uses `clair` underneath and the latest `clair-db` version is used for each job run by running the [`latest` docker image tag](https://gitlab.com/gitlab-org/gitlab-ee/blob/438a0a56dc0882f22bdd82e700554525f552d91b/lib/gitlab/ci/templates/Security/Container-Scanning.gitlab-ci.yml#L37). The `clair-db` database [is updated daily according to the author](https://github.com/arminc/clair-local-scan#clair-server-or-local). |
+| [Dependency Scanning](dependency_scanning/index.md)          | Relies on `bundler-audit` (for Rubygems), `retire.js` (for NPM packages) and `gemnasium` (GitLab's own tool for all libraries). `bundler-audit` and `retire.js` both fetch their vulnerabilities data from GitHub repositories, so vulnerabilities added to `ruby-advisory-db` and `retire.js` are immediately available. The tools themselves are updated once per month if there's a new version. The [Gemnasium DB](https://gitlab.com/gitlab-org/security-products/gemnasium-db) is updated at least once a week. |
+| [Dynamic Application Security Testing (DAST)](dast/index.md) | Updated weekly on Sundays. The underlying tool, `zaproxy`, downloads fresh rules at startup. |
+| [Static Application Security Testing (SAST)](sast/index.md)  | Relies exclusively on [the tools GitLab is wrapping](sast/index.md#supported-languages-and-frameworks). The underlying analyzers are updated at least once per month if a relevant update is available. The vulnerabilities database is updated by the upstream tools. |
+
+You don't have to update GitLab to benefit from the latest vulnerabilities definitions,
+but you may have to in the future.
+
+The security tools are released as Docker images, and the vendored job definitions
+to enable them are using the `x-y-stable` image tags that get overridden each time a new
+release of the tools is pushed. The Docker images are updated to match the
+previous GitLab releases, so they automatically get the latest versions of the
+scanning tools without the user having to do anything.
+
+This workflow comes with some drawbacks and there's a
+[plan to change this](https://gitlab.com/gitlab-org/gitlab-ee/issues/9725).
 
 ## Interacting with the vulnerabilities
 

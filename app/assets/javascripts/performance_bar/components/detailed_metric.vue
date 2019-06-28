@@ -92,7 +92,9 @@ export default {
         </template>
         <template v-else>
           <tr>
-            <td>No {{ header.toLowerCase() }} for this request.</td>
+            <td>
+              {{ sprintf(__('No %{header} for this request.'), { header: header.toLowerCase() }) }}
+            </td>
           </tr>
         </template>
       </table>

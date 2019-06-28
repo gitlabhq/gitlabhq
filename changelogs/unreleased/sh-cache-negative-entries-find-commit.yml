@@ -1,0 +1,5 @@
+---
+title: Allow caching of negative FindCommit matches
+merge_request: 29952
+author:
+type: performance

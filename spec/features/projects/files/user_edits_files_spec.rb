@@ -118,19 +118,31 @@ describe 'Projects > Files > User edits files', :js do
       wait_for_requests
     end
 
-    it 'inserts a content of a file in a forked project' do
-      click_link('.gitignore')
-      find('.js-edit-blob').click
-
+    def expect_fork_prompt
       expect(page).to have_link('Fork')
       expect(page).to have_button('Cancel')
+      expect(page).to have_content(
+        "You're not allowed to edit files in this project directly. "\
+        "Please fork this project, make your changes there, and submit a merge request."
+      )
+    end
 
-      click_link('Fork')
-
+    def expect_fork_status
       expect(page).to have_content(
         "You're not allowed to make changes to this project directly. "\
         "A fork of this project has been created that you can make changes in, so you can submit a merge request."
       )
+    end
+
+    it 'inserts a content of a file in a forked project' do
+      click_link('.gitignore')
+      click_button('Edit')
+
+      expect_fork_prompt
+
+      click_link('Fork')
+
+      expect_fork_status
 
       find('.file-editor', match: :first)
 
@@ -140,12 +152,24 @@ describe 'Projects > Files > User edits files', :js do
       expect(evaluate_script('ace.edit("editor").getValue()')).to eq('*.rbca')
     end
 
+    it 'opens the Web IDE in a forked project' do
+      click_link('.gitignore')
+      click_button('Web IDE')
+
+      expect_fork_prompt
+
+      click_link('Fork')
+
+      expect_fork_status
+
+      expect(page).to have_css('.ide .multi-file-tab', text: '.gitignore')
+    end
+
     it 'commits an edited file in a forked project' do
       click_link('.gitignore')
       find('.js-edit-blob').click
 
-      expect(page).to have_link('Fork')
-      expect(page).to have_button('Cancel')
+      expect_fork_prompt
 
       click_link('Fork')
 

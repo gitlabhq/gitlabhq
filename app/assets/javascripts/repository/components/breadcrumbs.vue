@@ -36,7 +36,7 @@ export default {
               to: `/tree/${this.ref}${path}`,
             });
           },
-          [{ name: this.projectShortPath, path: '/', to: `/tree/${this.ref}` }],
+          [{ name: this.projectShortPath, path: '/', to: `/tree/${this.ref}/` }],
         );
     },
   },

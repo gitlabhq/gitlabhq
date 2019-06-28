@@ -113,7 +113,7 @@ describe GitlabSchema do
     end
 
     it "raises a meaningful error if a global id couldn't be generated" do
-      expect { described_class.id_from_object(build(:commit)) }
+      expect { described_class.id_from_object(build(:wiki_directory)) }
         .to raise_error(RuntimeError, /include `GlobalID::Identification` into/i)
     end
   end

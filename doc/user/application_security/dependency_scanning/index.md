@@ -404,6 +404,11 @@ vulnerabilities in your groups and projects. Read more about the
 Once a vulnerability is found, you can interact with it. Read more on how to
 [interact with the vulnerabilities](../index.md#interacting-with-the-vulnerabilities).
 
+## Vulnerabilities database update
+
+For more information about the vulnerabilities database update, check the
+[maintenance table](../index.md#maintenance-and-update-of-the-vulnerabilities-database).
+
 ## Dependency List
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/10075) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.0.

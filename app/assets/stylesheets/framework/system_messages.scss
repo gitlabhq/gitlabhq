@@ -98,14 +98,4 @@
     top: auto;
     bottom: auto;
   }
-
-  .content-wrapper {
-    .with-system-header & {
-      margin-top: 0;
-    }
-
-    .with-system-footer & {
-      margin-top: 0;
-    }
-  }
 }

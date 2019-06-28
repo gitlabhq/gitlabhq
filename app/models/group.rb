@@ -410,10 +410,6 @@ class Group < Namespace
     ensure_runners_token!
   end
 
-  def group_clusters_enabled?
-    Feature.enabled?(:group_clusters, root_ancestor, default_enabled: true)
-  end
-
   def project_creation_level
     super || ::Gitlab::CurrentSettings.default_project_creation
   end

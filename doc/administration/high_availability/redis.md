@@ -22,10 +22,10 @@ environments including [Basic Scaling](README.md#basic-scaling) and
 
 ### Provide your own Redis instance **[CORE ONLY]**
 
-If you want to use your own deployed Redis instance(s), 
-see [Provide your own Redis instance](#provide-your-own-redis-instance-core-only) 
-for more details. However, you can use the GitLab Omnibus package to easily 
-deploy the bundled Redis.  
+If you want to use your own deployed Redis instance(s),
+see [Provide your own Redis instance](#provide-your-own-redis-instance-core-only)
+for more details. However, you can use the GitLab Omnibus package to easily
+deploy the bundled Redis.
 
 ### Standalone Redis using GitLab Omnibus **[CORE ONLY]**
 
@@ -62,11 +62,11 @@ Omnibus:
     pgbouncer_exporter['enable'] = false
     gitlab_monitor['enable'] = false
     gitaly['enable'] = false
- 
+
     redis['bind'] = '0.0.0.0'
     redis['port'] = '6379'
     redis['password'] = 'SECRET_PASSWORD_HERE'
- 
+
     gitlab_rails['auto_migrate'] = false
     ```
 
@@ -74,7 +74,7 @@ Omnibus:
 1. Note the Redis node's IP address or hostname, port, and
    Redis password. These will be necessary when configuring the GitLab
    application servers later.
-1. [Enable Monitoring](#enable-monitoring)   
+1. [Enable Monitoring](#enable-monitoring)
 
 Advanced configuration options are supported and can be added if
 needed.
@@ -91,10 +91,10 @@ environments including [Horizontal](README.md#horizontal),
 
 ### Provide your own Redis instance **[CORE ONLY]**
 
-If you want to use your own deployed Redis instance(s), 
-see [Provide your own Redis instance](#provide-your-own-redis-instance-core-only) 
-for more details. However, you can use the GitLab Omnibus package to easily 
-deploy the bundled Redis.  
+If you want to use your own deployed Redis instance(s),
+see [Provide your own Redis instance](#provide-your-own-redis-instance-core-only)
+for more details. However, you can use the GitLab Omnibus package to easily
+deploy the bundled Redis.
 
 ### High Availability with GitLab Omnibus **[PREMIUM ONLY]**
 
@@ -368,7 +368,7 @@ The prerequisites for a HA Redis setup are the following:
     ```ruby
     # Specify server role as 'redis_master_role'
     roles ['redis_master_role']
-    
+
     # IP address pointing to a local IP that the other machines can reach to.
     # You can also set bind to '0.0.0.0' which listen in all interfaces.
     # If you really need to bind to an external accessible IP, make
@@ -382,7 +382,7 @@ The prerequisites for a HA Redis setup are the following:
     # Set up password authentication for Redis (use the same password in all nodes).
     redis['password'] = 'redis-password-goes-here'
     ```
-    
+
 
 1. Only the primary GitLab application server should handle migrations. To
    prevent database migrations from running on upgrade, add the following
@@ -394,8 +394,8 @@ The prerequisites for a HA Redis setup are the following:
 
 1. [Reconfigure Omnibus GitLab][reconfigure] for the changes to take effect.
 
-> Note: You can specify multiple roles like sentinel and redis as: 
-> roles ['redis_sentinel_role', 'redis_master_role']. Read more about high 
+> Note: You can specify multiple roles like sentinel and redis as:
+> roles ['redis_sentinel_role', 'redis_master_role']. Read more about high
 > availability roles at https://docs.gitlab.com/omnibus/roles/
 
 ### Step 2. Configuring the slave Redis instances
@@ -412,7 +412,7 @@ The prerequisites for a HA Redis setup are the following:
     ```ruby
     # Specify server role as 'redis_slave_role'
     roles ['redis_slave_role']
-    
+
     # IP address pointing to a local IP that the other machines can reach to.
     # You can also set bind to '0.0.0.0' which listen in all interfaces.
     # If you really need to bind to an external accessible IP, make
@@ -443,8 +443,8 @@ The prerequisites for a HA Redis setup are the following:
 1. [Reconfigure Omnibus GitLab][reconfigure] for the changes to take effect.
 1. Go through the steps again for all the other slave nodes.
 
-> Note: You can specify multiple roles like sentinel and redis as: 
-> roles ['redis_sentinel_role', 'redis_slave_role']. Read more about high 
+> Note: You can specify multiple roles like sentinel and redis as:
+> roles ['redis_sentinel_role', 'redis_slave_role']. Read more about high
 > availability roles at https://docs.gitlab.com/omnibus/roles/
 
 ---
@@ -754,28 +754,30 @@ gitlab_rails['redis_sentinels'] = [
 
 > [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/issues/3786) in GitLab 12.0.
 
-  If you enable Monitoring, it must be enabled on **all** Redis servers.
+If you enable Monitoring, it must be enabled on **all** Redis servers.
 
-  1. Create/edit `/etc/gitlab/gitlab.rb` and add the following configuration:
+1. Make sure to collect [`CONSUL_SERVER_NODES`](database.md#consul-information), which are the IP addresses or DNS records of the Consul server nodes, for the next step. Note they are presented as `Y.Y.Y.Y consul1.gitlab.example.com Z.Z.Z.Z`
 
-     ```ruby
-     # Enable service discovery for Prometheus
-     consul['enable'] = true
-     consul['monitoring_service_discovery'] =  true
+1. Create/edit `/etc/gitlab/gitlab.rb` and add the following configuration:
 
-     # Replace placeholders
-     # Y.Y.Y.Y consul1.gitlab.example.com Z.Z.Z.Z
-     # with the addresses of the Consul server nodes
-     consul['configuration'] = {
-        retry_join: %w(Y.Y.Y.Y consul1.gitlab.example.com Z.Z.Z.Z),
-     }
+   ```ruby
+   # Enable service discovery for Prometheus
+   consul['enable'] = true
+   consul['monitoring_service_discovery'] =  true
 
-     # Set the network addresses that the exporters will listen on
-     node_exporter['listen_address'] = '0.0.0.0:9100'
-     redis_exporter['listen_address'] = '0.0.0.0:9121'
-     ```
+   # Replace placeholders
+   # Y.Y.Y.Y consul1.gitlab.example.com Z.Z.Z.Z
+   # with the addresses of the Consul server nodes
+   consul['configuration'] = {
+      retry_join: %w(Y.Y.Y.Y consul1.gitlab.example.com Z.Z.Z.Z),
+   }
 
-  1. Run `sudo gitlab-ctl reconfigure` to compile the configuration.
+   # Set the network addresses that the exporters will listen on
+   node_exporter['listen_address'] = '0.0.0.0:9100'
+   redis_exporter['listen_address'] = '0.0.0.0:9121'
+   ```
+
+1. Run `sudo gitlab-ctl reconfigure` to compile the configuration.
 
 ## Advanced configuration
 

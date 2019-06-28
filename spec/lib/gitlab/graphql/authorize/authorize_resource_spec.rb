@@ -34,12 +34,6 @@ describe Gitlab::Graphql::Authorize::AuthorizeResource do
       end
     end
 
-    describe '#authorized_find' do
-      it 'returns the object' do
-        expect(loading_resource.authorized_find).to eq(project)
-      end
-    end
-
     describe '#authorized_find!' do
       it 'returns the object' do
         expect(loading_resource.authorized_find!).to eq(project)
@@ -66,12 +60,6 @@ describe Gitlab::Graphql::Authorize::AuthorizeResource do
       end
     end
 
-    describe '#authorized_find' do
-      it 'returns `nil`' do
-        expect(loading_resource.authorized_find).to be_nil
-      end
-    end
-
     describe '#authorized_find!' do
       it 'raises an error' do
         expect { loading_resource.authorize!(project) }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
@@ -79,7 +67,7 @@ describe Gitlab::Graphql::Authorize::AuthorizeResource do
     end
 
     describe '#authorize!' do
-      it 'does not raise an error' do
+      it 'raises an error' do
         expect { loading_resource.authorize!(project) }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
       end
     end
@@ -98,6 +86,45 @@ describe Gitlab::Graphql::Authorize::AuthorizeResource do
 
     it 'raises a comprehensive error message' do
       expect { fake_class.new.find_object }.to raise_error(/Implement #find_object in #{fake_class.name}/)
+    end
+  end
+
+  context 'when the class does not define authorize' do
+    let(:fake_class) do
+      Class.new do
+        include Gitlab::Graphql::Authorize::AuthorizeResource
+
+        attr_reader :user, :found_object
+
+        def initialize(user, found_object)
+          @user, @found_object = user, found_object
+        end
+
+        def find_object(*_args)
+          found_object
+        end
+
+        def current_user
+          user
+        end
+
+        def self.name
+          'TestClass'
+        end
+      end
+    end
+    let(:error) { /#{fake_class.name} has no authorizations/ }
+
+    describe '#authorized_find!' do
+      it 'raises a comprehensive error message' do
+        expect { loading_resource.authorized_find! }.to raise_error(error)
+      end
+    end
+
+    describe '#authorized?' do
+      it 'raises a comprehensive error message' do
+        expect { loading_resource.authorized?(project) }.to raise_error(error)
+      end
     end
   end
 

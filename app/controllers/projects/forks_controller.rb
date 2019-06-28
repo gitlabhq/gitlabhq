@@ -46,18 +46,14 @@ class Projects::ForksController < Projects::ApplicationController
 
     @forked_project ||= ::Projects::ForkService.new(project, current_user, namespace: namespace).execute
 
-    if @forked_project.saved? && @forked_project.forked?
-      if @forked_project.import_in_progress?
-        redirect_to project_import_path(@forked_project, continue: continue_params)
-      else
-        if continue_params
-          redirect_to continue_params[:to], notice: continue_params[:notice]
-        else
-          redirect_to project_path(@forked_project), notice: "The project '#{@forked_project.name}' was successfully forked."
-        end
-      end
-    else
+    if !@forked_project.saved? || !@forked_project.forked?
       render :error
+    elsif @forked_project.import_in_progress?
+      redirect_to project_import_path(@forked_project, continue: continue_params)
+    elsif continue_params[:to]
+      redirect_to continue_params[:to], notice: continue_params[:notice]
+    else
+      redirect_to project_path(@forked_project), notice: "The project '#{@forked_project.name}' was successfully forked."
     end
   end
   # rubocop: enable CodeReuse/ActiveRecord

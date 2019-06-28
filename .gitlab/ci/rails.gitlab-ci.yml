@@ -139,7 +139,7 @@ setup-test-env:
 
 rspec unit pg:
   <<: *rspec-metadata-pg
-  parallel: 20
+  parallel: 25
 
 rspec integration pg:
   <<: *rspec-metadata-pg
@@ -152,7 +152,7 @@ rspec system pg:
 rspec unit pg-10:
   <<: *rspec-metadata-pg-10
   <<: *only-schedules-master
-  parallel: 20
+  parallel: 25
 
 rspec integration pg-10:
   <<: *rspec-metadata-pg-10

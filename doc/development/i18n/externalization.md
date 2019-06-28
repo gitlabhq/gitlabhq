@@ -135,7 +135,7 @@ There is also and alternative method to [translate messages from validation erro
 ### Interpolation
 
 Placeholders in translated text should match the code style of the respective source file.
-For example use `%{created_at}` in Ruby but `%{createdAt}` in JavaScript.
+For example use `%{created_at}` in Ruby but `%{createdAt}` in JavaScript. Make sure to [avoid splitting sentences when adding links](#avoid-splitting-sentences-when-adding-links).
 
 - In Ruby/HAML:
 
@@ -267,20 +267,41 @@ should be externalized as follows:
 
 This also applies when using links in between translated sentences, otherwise these texts are not translatable in certain languages.
 
-Instead of:
+- In Ruby/HAML, instead of:
+    
+    ```haml
+    - zones_link = link_to(s_('ClusterIntegration|zones'), 'https://cloud.google.com/compute/docs/regions-zones/regions-zones', target: '_blank', rel: 'noopener noreferrer')
+    = s_('ClusterIntegration|Learn more about %{zones_link}').html_safe % { zones_link: zones_link }
+    ```
+    
+    Set the link starting and ending HTML fragments as variables like so:
+    
+    ```haml
+    - zones_link_url = 'https://cloud.google.com/compute/docs/regions-zones/regions-zones'
+    - zones_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: zones_link_url }
+    = s_('ClusterIntegration|Learn more about %{zones_link_start}zones%{zones_link_end}').html_safe % { zones_link_start: zones_link_start, zones_link_end: '</a>'.html_safe }
+    ```
 
-```haml
-- zones_link = link_to(s_('ClusterIntegration|zones'), 'https://cloud.google.com/compute/docs/regions-zones/regions-zones', target: '_blank', rel: 'noopener noreferrer')
-= s_('ClusterIntegration|Learn more about %{zones_link}').html_safe % { zones_link: zones_link }
-```
+- In JavaScript, instead of:
 
-Set the link starting and ending HTML fragments as variables like so:
+    ```js
+    {{
+        sprintf(s__("ClusterIntegration|Learn more about %{link}"), {
+            link: '<a href="https://cloud.google.com/compute/docs/regions-zones/regions-zones" target="_blank" rel="noopener noreferrer">zones</a>'
+        })
+    }}
+    ```
 
-```haml
-- zones_link_url = 'https://cloud.google.com/compute/docs/regions-zones/regions-zones'
-- zones_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: zones_link_url }
-= s_('ClusterIntegration|Learn more about %{zones_link_start}zones%{zones_link_end}').html_safe % { zones_link_start: zones_link_start, zones_link_end: '</a>'.html_safe }
-```
+    Set the link starting and ending HTML fragments as variables like so:
+
+    ```js
+    {{ 
+        sprintf(s__("ClusterIntegration|Learn more about %{linkStart}zones%{linkEnd}"), {
+            linkStart: '<a href="https://cloud.google.com/compute/docs/regions-zones/regions-zones" target="_blank" rel="noopener noreferrer">'
+            linkEnd: '</a>',
+        }) 
+    }}
+    ```
 
 The reasoning behind this is that in some languages words change depending on context. For example in Japanese は is added to the subject of a sentence and を to the object. This is impossible to translate correctly if we extract individual words from the sentence.
 

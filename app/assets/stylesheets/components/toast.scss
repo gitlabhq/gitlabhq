@@ -21,7 +21,7 @@
     background-color: rgba($gray-900, $toast-background-opacity);
 
     @include media-breakpoint-down(xs) {
-      .action:first-child {
+      .action:first-of-type {
         // Ensures actions buttons are right aligned on mobile
         margin-left: auto;
       }
@@ -33,7 +33,7 @@
       text-transform: none;
       font-size: $gl-font-size;
 
-      &:first-child {
+      &:first-of-type {
         padding-right: 0;
       }
     }

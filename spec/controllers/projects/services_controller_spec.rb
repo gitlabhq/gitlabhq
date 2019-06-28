@@ -128,7 +128,7 @@ describe Projects::ServicesController do
           params: { namespace_id: project.namespace, project_id: project, id: service.to_param, service: { active: true } }
 
         expect(response).to redirect_to(project_settings_integrations_path(project))
-        expect(flash[:notice]).to eq 'JIRA activated.'
+        expect(flash[:notice]).to eq 'Jira activated.'
       end
     end
 
@@ -137,17 +137,17 @@ describe Projects::ServicesController do
         put :update,
           params: { namespace_id: project.namespace, project_id: project, id: service.to_param, service: { active: false } }
 
-        expect(flash[:notice]).to eq 'JIRA settings saved, but not activated.'
+        expect(flash[:notice]).to eq 'Jira settings saved, but not activated.'
       end
     end
 
-    context 'when activating JIRA service from a template' do
+    context 'when activating Jira service from a template' do
       let(:template_service) { create(:jira_service, project: project, template: true) }
 
-      it 'activate JIRA service from template' do
+      it 'activate Jira service from template' do
         put :update, params: { namespace_id: project.namespace, project_id: project, id: service.to_param, service: { active: true } }
 
-        expect(flash[:notice]).to eq 'JIRA activated.'
+        expect(flash[:notice]).to eq 'Jira activated.'
       end
     end
   end

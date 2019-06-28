@@ -3,8 +3,9 @@
 module BoardsResponses
   include Gitlab::Utils::StrongMemoize
 
+  # Overridden on EE module
   def board_params
-    params.require(:board).permit(:name, :weight, :milestone_id, :assignee_id, label_ids: [])
+    params.require(:board).permit(:name)
   end
 
   def parent

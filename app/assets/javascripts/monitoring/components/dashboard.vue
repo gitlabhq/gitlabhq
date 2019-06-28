@@ -106,16 +106,23 @@ export default {
     },
     customMetricsPath: {
       type: String,
-      required: true,
+      required: false,
+      default: invalidUrl,
     },
     validateQueryPath: {
       type: String,
-      required: true,
+      required: false,
+      default: invalidUrl,
     },
     dashboardEndpoint: {
       type: String,
       required: false,
       default: invalidUrl,
+    },
+    currentDashboard: {
+      type: String,
+      required: false,
+      default: '',
     },
   },
   data() {
@@ -139,9 +146,14 @@ export default {
       'deploymentData',
       'metricsWithData',
       'useDashboardEndpoint',
+      'allDashboards',
+      'multipleDashboardsEnabled',
     ]),
     groupsWithData() {
       return this.groups.filter(group => this.chartsWithData(group.metrics).length > 0);
+    },
+    selectedDashboardText() {
+      return this.currentDashboard || (this.allDashboards[0] && this.allDashboards[0].display_name);
     },
   },
   created() {
@@ -150,6 +162,7 @@ export default {
       environmentsEndpoint: this.environmentsEndpoint,
       deploymentsEndpoint: this.deploymentsEndpoint,
       dashboardEndpoint: this.dashboardEndpoint,
+      currentDashboard: this.currentDashboard,
     });
 
     this.timeWindows = timeWindows;
@@ -234,12 +247,30 @@ export default {
 </script>
 
 <template>
-  <div v-if="!showEmptyState" class="prometheus-graphs">
+  <div class="prometheus-graphs">
     <div class="gl-p-3 border-bottom bg-gray-light d-flex justify-content-between">
       <div
         v-if="environmentsEndpoint"
         class="dropdowns d-flex align-items-center justify-content-between"
       >
+        <div v-if="multipleDashboardsEnabled" class="d-flex align-items-center">
+          <label class="mb-0">{{ __('Dashboard') }}</label>
+          <gl-dropdown
+            class="ml-2 mr-3 js-dashboards-dropdown"
+            toggle-class="dropdown-menu-toggle"
+            :text="selectedDashboardText"
+          >
+            <gl-dropdown-item
+              v-for="dashboard in allDashboards"
+              :key="dashboard.path"
+              :active="dashboard.path === currentDashboard"
+              active-class="is-active"
+              :href="`?dashboard=${dashboard.path}`"
+            >
+              {{ dashboard.display_name || dashboard.path }}
+            </gl-dropdown-item>
+          </gl-dropdown>
+        </div>
         <div class="d-flex align-items-center">
           <strong>{{ s__('Metrics|Environment') }}</strong>
           <gl-dropdown
@@ -253,11 +284,12 @@ export default {
               :key="environment.id"
               :active="environment.name === currentEnvironmentName"
               active-class="is-active"
+              :href="environment.metrics_path"
               >{{ environment.name }}</gl-dropdown-item
             >
           </gl-dropdown>
         </div>
-        <div class="d-flex align-items-center prepend-left-8">
+        <div v-if="!showEmptyState" class="d-flex align-items-center prepend-left-8">
           <strong>{{ s__('Metrics|Show last') }}</strong>
           <gl-dropdown
             class="prepend-left-10 js-time-window-dropdown"
@@ -276,7 +308,7 @@ export default {
         </div>
       </div>
       <div class="d-flex">
-        <div v-if="isEE && canAddMetrics">
+        <div v-if="isEE && canAddMetrics && !showEmptyState">
           <gl-button
             v-gl-modal-directive="$options.addMetric.modalId"
             class="js-add-metric-button text-success border-success"
@@ -317,40 +349,43 @@ export default {
         </gl-button>
       </div>
     </div>
-    <graph-group
-      v-for="(groupData, index) in groupsWithData"
-      :key="index"
-      :name="groupData.group"
-      :show-panels="showPanels"
-    >
-      <monitor-area-chart
-        v-for="(graphData, graphIndex) in chartsWithData(groupData.metrics)"
-        :key="graphIndex"
-        :graph-data="graphData"
-        :deployment-data="deploymentData"
-        :thresholds="getGraphAlertValues(graphData.queries)"
-        :container-width="elWidth"
-        group-id="monitor-area-chart"
+    <div v-if="!showEmptyState">
+      <graph-group
+        v-for="(groupData, index) in groupsWithData"
+        :key="index"
+        :name="groupData.group"
+        :show-panels="showPanels"
       >
-        <alert-widget
-          v-if="isEE && prometheusAlertsAvailable && alertsEndpoint && graphData"
-          :alerts-endpoint="alertsEndpoint"
-          :relevant-queries="graphData.queries"
-          :alerts-to-manage="getGraphAlerts(graphData.queries)"
-          @setAlerts="setAlerts"
-        />
-      </monitor-area-chart>
-    </graph-group>
+        <monitor-area-chart
+          v-for="(graphData, graphIndex) in chartsWithData(groupData.metrics)"
+          :key="graphIndex"
+          :project-path="projectPath"
+          :graph-data="graphData"
+          :deployment-data="deploymentData"
+          :thresholds="getGraphAlertValues(graphData.queries)"
+          :container-width="elWidth"
+          group-id="monitor-area-chart"
+        >
+          <alert-widget
+            v-if="isEE && prometheusAlertsAvailable && alertsEndpoint && graphData"
+            :alerts-endpoint="alertsEndpoint"
+            :relevant-queries="graphData.queries"
+            :alerts-to-manage="getGraphAlerts(graphData.queries)"
+            @setAlerts="setAlerts"
+          />
+        </monitor-area-chart>
+      </graph-group>
+    </div>
+    <empty-state
+      v-else
+      :selected-state="emptyState"
+      :documentation-path="documentationPath"
+      :settings-path="settingsPath"
+      :clusters-path="clustersPath"
+      :empty-getting-started-svg-path="emptyGettingStartedSvgPath"
+      :empty-loading-svg-path="emptyLoadingSvgPath"
+      :empty-no-data-svg-path="emptyNoDataSvgPath"
+      :empty-unable-to-connect-svg-path="emptyUnableToConnectSvgPath"
+    />
   </div>
-  <empty-state
-    v-else
-    :selected-state="emptyState"
-    :documentation-path="documentationPath"
-    :settings-path="settingsPath"
-    :clusters-path="clustersPath"
-    :empty-getting-started-svg-path="emptyGettingStartedSvgPath"
-    :empty-loading-svg-path="emptyLoadingSvgPath"
-    :empty-no-data-svg-path="emptyNoDataSvgPath"
-    :empty-unable-to-connect-svg-path="emptyUnableToConnectSvgPath"
-  />
 </template>

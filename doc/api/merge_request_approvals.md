@@ -222,7 +222,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/approvals
         "id": 1,
         "state": "active",
         "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon",
-        "web_url": "http://localhost:3000/u/root"
+        "web_url": "http://localhost:3000/root"
       }
     }
   ],
@@ -314,7 +314,7 @@ PUT /projects/:id/merge_requests/:merge_request_iid/approvers
         "id": 1,
         "state": "active",
         "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon",
-        "web_url": "http://localhost:3000/u/root" 
+        "web_url": "http://localhost:3000/root"
       }
     }
   ],
@@ -387,7 +387,7 @@ does not match, the response code will be `409`.
         "id": 1,
         "state": "active",
         "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon",
-        "web_url": "http://localhost:3000/u/root"
+        "web_url": "http://localhost:3000/root"
       }
     },
     {
@@ -397,7 +397,7 @@ does not match, the response code will be `409`.
         "id": 2,
         "state": "active",
         "avatar_url": "http://www.gravatar.com/avatar/cf7ad14b34162a76d593e3affca2adca?s=80\u0026d=identicon",
-        "web_url": "http://localhost:3000/u/ryley"
+        "web_url": "http://localhost:3000/ryley"
       }
     }
   ],

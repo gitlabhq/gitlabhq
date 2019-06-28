@@ -628,7 +628,7 @@ $note-form-margin-left: 72px;
 
 .note-headline-meta {
   .system-note-separator {
-    color: $gl-text-color-disabled;
+    color: $gray-700;
   }
 
   .note-timestamp {
@@ -655,6 +655,10 @@ $note-form-margin-left: 72px;
 
   .btn-group > .discussion-next-btn {
     margin-left: -1px;
+  }
+
+  .btn-group > .discussion-create-issue-btn {
+    margin-left: -2px;
   }
 
   svg {

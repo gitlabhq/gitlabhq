@@ -551,21 +551,21 @@ Get Irker (IRC gateway) service settings for a project.
 GET /projects/:id/services/irker
 ```
 
-## JIRA
+## Jira
 
-JIRA issue tracker.
+Jira issue tracker.
 
-### Get JIRA service settings
+### Get Jira service settings
 
-Get JIRA service settings for a project.
+Get Jira service settings for a project.
 
 ```
 GET /projects/:id/services/jira
 ```
 
-### Create/Edit JIRA service
+### Create/Edit Jira service
 
-Set JIRA service for a project.
+Set Jira service for a project.
 
 > Starting with GitLab 8.14, `api_url`, `issues_url`, `new_issue_url` and
 > `project_url` are replaced by `url`. If you are using an
@@ -579,18 +579,18 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `url`           | string | yes | The URL to the JIRA project which is being linked to this GitLab project. For example, `https://jira.example.com`. |
-| `api_url`   | string | no | The base URL to the JIRA instance API. Web URL value will be used if not set. For example, `https://jira-api.example.com`. |
-| `username`      | string | yes  | The username of the user created to be used with GitLab/JIRA. |
-| `password`      | string | yes  | The password of the user created to be used with GitLab/JIRA. |
+| `url`           | string | yes | The URL to the Jira project which is being linked to this GitLab project. For example, `https://jira.example.com`. |
+| `api_url`   | string | no | The base URL to the Jira instance API. Web URL value will be used if not set. For example, `https://jira-api.example.com`. |
+| `username`      | string | yes  | The username of the user created to be used with GitLab/Jira. |
+| `password`      | string | yes  | The password of the user created to be used with GitLab/Jira. |
 | `active`        | boolean | no  | Activates or deactivates the service. Defaults to false (deactivated). |
-| `jira_issue_transition_id` | string | no | The ID of a transition that moves issues to a closed state. You can find this number under the JIRA workflow administration (**Administration > Issues > Workflows**) by selecting **View** under **Operations** of the desired workflow of your project. The ID of each state can be found inside the parenthesis of each transition name under the **Transitions (id)** column ([see screenshot][trans]). By default, this ID is set to `2`. |
+| `jira_issue_transition_id` | string | no | The ID of a transition that moves issues to a closed state. You can find this number under the Jira workflow administration (**Administration > Issues > Workflows**) by selecting **View** under **Operations** of the desired workflow of your project. The ID of each state can be found inside the parenthesis of each transition name under the **Transitions (id)** column ([see screenshot][trans]). By default, this ID is set to `2`. |
 | `commit_events` | boolean | false | Enable notifications for commit events |
 | `merge_requests_events` | boolean | false | Enable notifications for merge request events |
 
-### Delete JIRA service
+### Delete Jira service
 
-Remove all previously JIRA settings from a project.
+Remove all previously Jira settings from a project.
 
 ```
 DELETE /projects/:id/services/jira

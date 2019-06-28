@@ -103,7 +103,7 @@ class Projects::JobsController < Projects::ApplicationController
 
     @build.cancel
 
-    if continue_params
+    if continue_params[:to]
       redirect_to continue_params[:to]
     else
       redirect_to builds_project_pipeline_path(@project, @build.pipeline.id)

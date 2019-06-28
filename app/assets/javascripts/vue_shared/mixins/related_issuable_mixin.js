@@ -126,6 +126,9 @@ const mixins = {
     hasTitle() {
       return this.title.length > 0;
     },
+    hasAssignees() {
+      return this.assignees.length > 0;
+    },
     hasMilestone() {
       return !_.isEmpty(this.milestone);
     },

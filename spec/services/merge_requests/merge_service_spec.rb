@@ -58,7 +58,7 @@ describe MergeRequests::MergeService do
         expect(issue.reload.closed?).to be_truthy
       end
 
-      context 'with JIRA integration' do
+      context 'with Jira integration' do
         include JiraServiceHelper
 
         let(:jira_tracker) { project.create_jira_service }
@@ -72,7 +72,7 @@ describe MergeRequests::MergeService do
           allow(merge_request).to receive(:commits).and_return([commit])
         end
 
-        it 'closes issues on JIRA issue tracker' do
+        it 'closes issues on Jira issue tracker' do
           jira_issue = ExternalIssue.new('JIRA-123', project)
           stub_jira_urls(jira_issue)
           commit = double('commit', safe_message: "Fixes #{jira_issue.to_reference}")
@@ -98,7 +98,7 @@ describe MergeRequests::MergeService do
         end
 
         context "wrong issue markdown" do
-          it 'does not close issues on JIRA issue tracker' do
+          it 'does not close issues on Jira issue tracker' do
             jira_issue = ExternalIssue.new('#JIRA-123', project)
             stub_jira_urls(jira_issue)
             commit = double('commit', safe_message: "Fixes #{jira_issue.to_reference}")

@@ -53,7 +53,6 @@ module Gitlab
       sent_notifications
       slash-command-logo.png
       snippets
-      u
       unsubscribes
       uploads
       users

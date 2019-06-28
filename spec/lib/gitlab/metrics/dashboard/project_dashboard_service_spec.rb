@@ -5,8 +5,8 @@ require 'rails_helper'
 describe Gitlab::Metrics::Dashboard::ProjectDashboardService, :use_clean_rails_memory_store_caching do
   include MetricsDashboardHelpers
 
-  set(:user) { build(:user) }
-  set(:project) { build(:project) }
+  set(:user) { create(:user) }
+  set(:project) { create(:project) }
   set(:environment) { create(:environment, project: project) }
 
   before do
@@ -21,6 +21,8 @@ describe Gitlab::Metrics::Dashboard::ProjectDashboardService, :use_clean_rails_m
     context 'when the dashboard does not exist' do
       it_behaves_like 'misconfigured dashboard service response', :not_found
     end
+
+    it_behaves_like 'raises error for users with insufficient permissions'
 
     context 'when the dashboard exists' do
       let(:project) { project_with_dashboard(dashboard_path) }

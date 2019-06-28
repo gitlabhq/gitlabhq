@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Projects::BoardsController < Projects::ApplicationController
-  include BoardsActions
+  include MultipleBoardsActions
   include IssuableCollections
 
   before_action :check_issues_available!

@@ -84,9 +84,8 @@ Click on **Register U2F Device** to complete the process.
 > **Note:**
 Recovery codes are not generated for U2F devices.
 
-Should you ever lose access to your one time password authenticator, you can use one of the ten provided
-backup codes to login to your account. We suggest copying them, printing them, or downloading them using
-the **Download codes** button for storage in a safe place.
+Immediately after successfully enabling two-factor authentication, you'll be prompted to download a set of set recovery codes. Should you ever lose access to your one time password authenticator, you can use one of them to log in to your account. We suggest copying them, printing them, or downloading them using
+the **Download codes** button for storage in a safe place. If you choose to download them, the file will be called **gitlab-recovery-codes.txt**.
 
 CAUTION: **Caution:**
 Each code can be used only once to log in to your account.

@@ -3,18 +3,11 @@
 require 'gitlab/current_settings'
 
 def configure_sentry
-  # allow it to fail: it may do so when create_from_defaults is executed before migrations are actually done
-  begin
-    sentry_enabled = Gitlab::CurrentSettings.current_application_settings.sentry_enabled
-  rescue
-    sentry_enabled = false
-  end
-
-  if sentry_enabled
+  if Gitlab::Sentry.enabled?
     Raven.configure do |config|
-      config.dsn = Gitlab::CurrentSettings.current_application_settings.sentry_dsn
+      config.dsn = Gitlab.config.sentry.dsn
       config.release = Gitlab.revision
-      config.current_environment = Gitlab.config.sentry.environment.presence
+      config.current_environment = Gitlab.config.sentry.environment
 
       # Sanitize fields based on those sanitized from Rails.
       config.sanitize_fields = Rails.application.config.filter_parameters.map(&:to_s)

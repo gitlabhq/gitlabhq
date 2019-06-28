@@ -53,8 +53,9 @@ For more information on how to use these options check out
 The following settings can be configured:
 
 - `enabled`: By default this is set to `false`. Set this to `true` to enable Rack Attack.
-- `ip_whitelist`: Whitelist any IPs from being blocked. They must be formatted as strings within a ruby array.
-   For example, `["127.0.0.1", "127.0.0.2", "127.0.0.3"]`.
+- `ip_whitelist`: Whitelist any IPs from being blocked. They must be formatted as strings within a Ruby array.
+   CIDR notation is supported in GitLab v12.1 and up.
+   For example, `["127.0.0.1", "127.0.0.2", "127.0.0.3", "192.168.0.1/24"]`.
 - `maxretry`: The maximum amount of times a request can be made in the
    specified time.
 - `findtime`: The maximum amount of time that failed requests can count against an IP

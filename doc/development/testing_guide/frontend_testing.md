@@ -27,7 +27,7 @@ we need to solve before being able to use Jest for all our needs.
 ### Differences to Karma
 
 - Jest runs in a Node.js environment, not in a browser. Support for running Jest tests in a browser [is planned](https://gitlab.com/gitlab-org/gitlab-ce/issues/58205).
-- Because Jest runs in a Node.js environment, it uses [jsdom](https://github.com/jsdom/jsdom) by default.
+- Because Jest runs in a Node.js environment, it uses [jsdom](https://github.com/jsdom/jsdom) by default. See also its [limitations](#limitations-of-jsdom) below.
 - Jest does not have access to Webpack loaders or aliases.
   The aliases used by Jest are defined in its [own config](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/jest.config.js).
 - All calls to `setTimeout` and `setInterval` are mocked away. See also [Jest Timer Mocks](https://jestjs.io/docs/en/timer-mocks).
@@ -39,6 +39,17 @@ we need to solve before being able to use Jest for all our needs.
   - Unmocked requests.
   - Unhandled Promise rejections.
   - Calls to `console.warn`, including warnings from libraries like Vue.
+
+### Limitations of jsdom
+
+As mentioned [above](#differences-to-karma), Jest uses jsdom instead of a browser for running tests.
+This comes with a number of limitations, namely:
+
+- [No scrolling support](https://github.com/jsdom/jsdom/blob/15.1.1/lib/jsdom/browser/Window.js#L623-L625)
+- [No element sizes or positions](https://github.com/jsdom/jsdom/blob/15.1.1/lib/jsdom/living/nodes/Element-impl.js#L334-L371)
+- [No layout engine](https://github.com/jsdom/jsdom/issues/1322) in general
+
+See also the issue for [support running Jest tests in browsers](https://gitlab.com/gitlab-org/gitlab-ce/issues/58205).
 
 ### Debugging Jest tests
 
