@@ -43,6 +43,10 @@ The descriptions on the [labels page][labels-page] explain what falls under each
 Subject labels are labels that define what area or feature of GitLab this issue
 hits. They are not always necessary, but very convenient.
 
+Subject labels are now used to infer and apply relevant group and devops stage
+labels. Please apply them whenever possible to facilitate accurate matching.
+Please refer to [this merge request][inferred-labels] for more information.
+
 Examples of subject labels are ~wiki, ~ldap, ~api,
 ~issues, ~"merge requests", ~labels, and ~"Container Registry".
 
@@ -444,3 +448,4 @@ A recent example of this was the issue for
 [labels-page]: https://gitlab.com/gitlab-org/gitlab-ce/labels
 [ce-tracker]: https://gitlab.com/gitlab-org/gitlab-ce/issues
 [ee-tracker]: https://gitlab.com/gitlab-org/gitlab-ee/issues
+[inferred-labels]: https://gitlab.com/gitlab-org/quality/triage-ops/merge_requests/155
