@@ -3,6 +3,8 @@
 module Gitlab
   module Auth
     class IpRateLimiter
+      include ::Gitlab::Utils::StrongMemoize
+
       attr_reader :ip
 
       def initialize(ip)
@@ -37,7 +39,20 @@ module Gitlab
       end
 
       def ip_can_be_banned?
-        config.ip_whitelist.exclude?(ip)
+        !trusted_ip?
+      end
+
+      def trusted_ip?
+        trusted_ips.any? { |netmask| netmask.include?(ip) }
+      end
+
+      def trusted_ips
+        strong_memoize(:trusted_ips) do
+          config.ip_whitelist.map do |proxy|
+            IPAddr.new(proxy)
+          rescue IPAddr::InvalidAddressError
+          end.compact
+        end
       end
     end
   end
