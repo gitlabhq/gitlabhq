@@ -7,6 +7,8 @@ describe 'user reads pipeline status', :js do
   let(:x110_pipeline) { create_pipeline('x1.1.0', 'failed') }
 
   before do
+    stub_feature_flags(vue_file_list: false)
+
     project.add_maintainer(user)
 
     project.repository.add_tag(user, 'x1.1.0', 'v1.1.0')

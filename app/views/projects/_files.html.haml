@@ -9,7 +9,9 @@
   .nav-block
     = render 'projects/tree/tree_header', tree: @tree
 
-  - if commit
+  - if vue_file_list_enabled?
+    #js-last-commit
+  - elsif commit
     = render 'shared/commit_well', commit: commit, ref: ref, project: project
 
   - if is_project_overview
