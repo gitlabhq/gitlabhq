@@ -32,6 +32,26 @@ describe('Getters Notes Store', () => {
     };
   });
 
+  describe('showJumpToNextDiscussion', () => {
+    it('should return true if there are 2 or more unresolved discussions', () => {
+      const localGetters = {
+        unresolvedDiscussionsIdsByDate: ['123', '456'],
+        allResolvableDiscussions: [],
+      };
+
+      expect(getters.showJumpToNextDiscussion(state, localGetters)()).toBe(true);
+    });
+
+    it('should return false if there are 1 or less unresolved discussions', () => {
+      const localGetters = {
+        unresolvedDiscussionsIdsByDate: ['123'],
+        allResolvableDiscussions: [],
+      };
+
+      expect(getters.showJumpToNextDiscussion(state, localGetters)()).toBe(false);
+    });
+  });
+
   describe('discussions', () => {
     it('should return all discussions in the store', () => {
       expect(getters.discussions(state)).toEqual([individualNote]);
