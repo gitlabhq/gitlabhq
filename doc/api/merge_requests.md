@@ -1473,7 +1473,7 @@ Example response when the GitLab issue tracker is used:
 ]
 ```
 
-Example response when an external issue tracker (e.g. JIRA) is used:
+Example response when an external issue tracker (e.g. Jira) is used:
 
 ```json
 [

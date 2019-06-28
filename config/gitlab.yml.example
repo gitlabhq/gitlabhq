@@ -1078,7 +1078,7 @@ test:
       issues_url: "http://redmine/:project_id/:issues_tracker_id/:id"
       new_issue_url: "http://redmine/projects/:issues_tracker_id/issues/new"
     jira:
-      title: "JIRA"
+      title: "Jira"
       url: https://sample_company.atlassian.net
       project_key: PROJECT
 

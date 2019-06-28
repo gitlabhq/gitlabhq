@@ -158,7 +158,7 @@ describe JiraService do
         WebMock.stub_request(:post, @remote_link_url).with(basic_auth: %w(gitlab_jira_username gitlab_jira_password))
       end
 
-      it 'calls JIRA API' do
+      it 'calls Jira API' do
         @jira_service.close_issue(resource, ExternalIssue.new('JIRA-123', project))
 
         expect(WebMock).to have_requested(:post, @comment_url).with(
@@ -175,14 +175,14 @@ describe JiraService do
 
       # Check https://developer.atlassian.com/jiradev/jira-platform/guides/other/guide-jira-remote-issue-links/fields-in-remote-issue-links
       # for more information
-      it 'creates Remote Link reference in JIRA for comment' do
+      it 'creates Remote Link reference in Jira for comment' do
         @jira_service.close_issue(resource, ExternalIssue.new('JIRA-123', project))
 
         favicon_path = "http://localhost/assets/#{find_asset('favicon.png').digest_path}"
 
         # Creates comment
         expect(WebMock).to have_requested(:post, @comment_url)
-        # Creates Remote Link in JIRA issue fields
+        # Creates Remote Link in Jira issue fields
         expect(WebMock).to have_requested(:post, @remote_link_url).with(
           body: hash_including(
             GlobalID: 'GitLab',
@@ -319,7 +319,7 @@ describe JiraService do
     end
 
     context 'when the test succeeds' do
-      it 'tries to get JIRA project with URL when API URL not set' do
+      it 'tries to get Jira project with URL when API URL not set' do
         test_settings('jira.example.com')
       end
 
@@ -327,7 +327,7 @@ describe JiraService do
         expect(test_settings).to eq( { success: true, result: { 'url' => 'http://url' } })
       end
 
-      it 'tries to get JIRA project with API URL if set' do
+      it 'tries to get Jira project with API URL if set' do
         jira_service.update(api_url: 'http://jira.api.com')
         test_settings('jira.api.com')
       end
@@ -462,7 +462,7 @@ describe JiraService do
       end
 
       it 'is initialized' do
-        expect(@service.title).to eq('JIRA')
+        expect(@service.title).to eq('Jira')
         expect(@service.description).to eq('Jira issue tracker')
       end
     end

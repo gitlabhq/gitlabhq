@@ -80,7 +80,7 @@ Our integrations add great value to GitLab. User questions often relate to integ
 
 - Learn about our Integrations (specially, not only):
   - [LDAP](../../integration/ldap.md)
-  - [JIRA](../../project_services/jira.md)
+  - [Jira](../../project_services/jira.md)
   - [Jenkins](../../integration/jenkins.md)
   - [SAML](../../integration/saml.md)
 

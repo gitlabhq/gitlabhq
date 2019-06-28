@@ -181,7 +181,7 @@ The GitLab University curriculum is composed of GitLab videos, screencasts, pres
 
 ### 3.9. Integrations
 
-1. [How to Integrate JIRA and Jenkins with GitLab - Video](https://gitlabmeetings.webex.com/gitlabmeetings/ldr.php?RCID=44b548147a67ab4d8a62274047146415)
+1. [How to Integrate Jira and Jenkins with GitLab - Video](https://gitlabmeetings.webex.com/gitlabmeetings/ldr.php?RCID=44b548147a67ab4d8a62274047146415)
 1. [How to Integrate Jira with GitLab](../user/project/integrations/jira.md)
 1. [How to Integrate Jenkins with GitLab](../integration/jenkins.md)
 1. [How to Integrate Bamboo with GitLab](../user/project/integrations/bamboo.md)

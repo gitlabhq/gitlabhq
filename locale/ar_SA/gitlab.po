@@ -7581,13 +7581,13 @@ msgstr ""
 msgid "JiraService|If different from Web URL"
 msgstr ""
 
-msgid "JiraService|JIRA API URL"
+msgid "JiraService|Jira API URL"
 msgstr ""
 
-msgid "JiraService|JIRA comments will be created when an issue gets referenced in a commit."
+msgid "JiraService|Jira comments will be created when an issue gets referenced in a commit."
 msgstr ""
 
-msgid "JiraService|JIRA comments will be created when an issue gets referenced in a merge request."
+msgid "JiraService|Jira comments will be created when an issue gets referenced in a merge request."
 msgstr ""
 
 msgid "JiraService|Jira issue tracker"

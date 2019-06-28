@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Changes JIRA DVCS user agent requests in order to be successfully handled
+# Changes Jira DVCS user agent requests in order to be successfully handled
 # by our API.
 #
 # Gitlab::Jira::Middleware is only defined on EE

@@ -197,14 +197,14 @@ describe Gitlab::ReferenceExtractor do
     let(:issue)   { create(:issue, project: project) }
 
     context 'when GitLab issues are enabled' do
-      it 'returns both JIRA and internal issues' do
+      it 'returns both Jira and internal issues' do
         subject.analyze("JIRA-123 and FOOBAR-4567 and #{issue.to_reference}")
         expect(subject.issues).to eq [ExternalIssue.new('JIRA-123', project),
                                       ExternalIssue.new('FOOBAR-4567', project),
                                       issue]
       end
 
-      it 'returns only JIRA issues if the internal one does not exists' do
+      it 'returns only Jira issues if the internal one does not exists' do
         subject.analyze("JIRA-123 and FOOBAR-4567 and #999")
         expect(subject.issues).to eq [ExternalIssue.new('JIRA-123', project),
                                       ExternalIssue.new('FOOBAR-4567', project)]
@@ -217,7 +217,7 @@ describe Gitlab::ReferenceExtractor do
         project.save!
       end
 
-      it 'returns only JIRA issues' do
+      it 'returns only Jira issues' do
         subject.analyze("JIRA-123 and FOOBAR-4567 and #{issue.to_reference}")
         expect(subject.issues).to eq [ExternalIssue.new('JIRA-123', project),
                                       ExternalIssue.new('FOOBAR-4567', project)]

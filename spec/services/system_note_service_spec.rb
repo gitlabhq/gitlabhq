@@ -750,7 +750,7 @@ describe SystemNoteService do
     end
   end
 
-  describe 'JIRA integration' do
+  describe 'Jira integration' do
     include JiraServiceHelper
 
     let(:project)         { create(:jira_project, :repository) }
