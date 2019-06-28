@@ -456,7 +456,7 @@ Here are some common pitfalls and how to overcome them:
     
     See [Elasticsearch Index Scopes](elasticsearch.md#elasticsearch-index-scopes) for more information on searching for specific types of data.
 
-- **I indexed all the repositories but then switched elastic search servers and now I can't find anything**
+- **I indexed all the repositories but then switched Elasticsearch servers and now I can't find anything**
 
     You will need to re-run all the rake tasks to re-index the database, repositories, and wikis.
     
