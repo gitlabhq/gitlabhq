@@ -7321,13 +7321,13 @@ msgstr "%{noteable_model_name} 事件已禁用。"
 msgid "JiraService|If different from Web URL"
 msgstr "如果与 Web URL 不同"
 
-msgid "JiraService|JIRA API URL"
+msgid "JiraService|Jira API URL"
 msgstr "JIRA API URL"
 
-msgid "JiraService|JIRA comments will be created when an issue gets referenced in a commit."
+msgid "JiraService|Jira comments will be created when an issue gets referenced in a commit."
 msgstr "在提交中引用议题时将创建 JIRA 评论。"
 
-msgid "JiraService|JIRA comments will be created when an issue gets referenced in a merge request."
+msgid "JiraService|Jira comments will be created when an issue gets referenced in a merge request."
 msgstr "在合并请求中引用议题时将创建 JIRA 评论。"
 
 msgid "JiraService|Jira issue tracker"

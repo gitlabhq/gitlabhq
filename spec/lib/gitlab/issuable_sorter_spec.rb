@@ -26,7 +26,7 @@ describe Gitlab::IssuableSorter do
     expect(described_class.sort(project1, unsorted)).to eq(sorted)
   end
 
-  context 'for JIRA issues' do
+  context 'for Jira issues' do
     let(:sorted) do
       [ExternalIssue.new('JIRA-1', project1),
        ExternalIssue.new('JIRA-2', project1),

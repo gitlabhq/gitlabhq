@@ -7373,13 +7373,13 @@ msgstr "Los eventos para %{noteable_model_name} están deshabilitados."
 msgid "JiraService|If different from Web URL"
 msgstr "Si es diferente de la URL Web"
 
-msgid "JiraService|JIRA API URL"
+msgid "JiraService|Jira API URL"
 msgstr "URL del API de JIRA"
 
-msgid "JiraService|JIRA comments will be created when an issue gets referenced in a commit."
+msgid "JiraService|Jira comments will be created when an issue gets referenced in a commit."
 msgstr "Los comentarios de JIRA se crearán cuando se haga referencia a una incidencia en un commit."
 
-msgid "JiraService|JIRA comments will be created when an issue gets referenced in a merge request."
+msgid "JiraService|Jira comments will be created when an issue gets referenced in a merge request."
 msgstr "Los comentarios de JIRA se crearán cuando se haga referencia a una incidencia en un commit."
 
 msgid "JiraService|Jira issue tracker"

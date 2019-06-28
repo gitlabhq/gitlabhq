@@ -39,7 +39,7 @@ a GitLab project with any single Jira project.
 If you have one Jira instance, you can pre-fill the settings page with a default
 template. See the [Services Templates][services-templates] docs.
 
-Configuration happens via user name and password. Connecting to a Jira server
+Configuration happens via user name and password. Connecting to a Jira Server
 via CAS is not possible.
 
 In order to enable the Jira service in GitLab, you need to first configure the
@@ -47,13 +47,13 @@ project in Jira and then enter the correct values in GitLab.
 
 ### Configuring Jira
 
-When connecting to **JIRA Server**, which supports basic authentication, a **username and password** are required. Check the link below and proceed to the next step:
+When connecting to **Jira Server**, which supports basic authentication, a **username and password** are required. Check the link below and proceed to the next step:
 
-- [Setting up a user in JIRA server](jira_server_configuration.md)
+- [Setting up a user in Jira Server](jira_server_configuration.md)
 
-When connecting to **JIRA Cloud**, which supports authentication via API token, an **email and API token**, are required. Check the link below and proceed to the next step:
+When connecting to **Jira Cloud**, which supports authentication via API token, an **email and API token**, are required. Check the link below and proceed to the next step:
 
-- [Setting up a user in JIRA cloud](jira_cloud_configuration.md)
+- [Setting up a user in Jira Cloud](jira_cloud_configuration.md)
 
 ### Configuring GitLab
 
@@ -77,8 +77,8 @@ in the table below.
 | ----- | ----------- |
 | `Web URL` | The base URL to the Jira instance web interface which is being linked to this GitLab project. E.g., `https://Jira.example.com`. |
 | `Jira API URL` | The base URL to the Jira instance API. Web URL value will be used if not set. E.g., `https://jira-api.example.com`. |
-| `Username/Email` | Created when [configuring Jira step](#configuring-jira). Use `username` for **JIRA server** or `email` for **JIRA cloud**. |
-| `Password/API token` |Created in [configuring Jira step](#configuring-jira). Use `password` for **JIRA server** or `API token` for **JIRA cloud**. |
+| `Username/Email` | Created when [configuring Jira step](#configuring-jira). Use `username` for **Jira Server** or `email` for **Jira Cloud**. |
+| `Password/API token` |Created in [configuring Jira step](#configuring-jira). Use `password` for **Jira Server** or `API token` for **Jira Cloud**. |
 | `Transition ID` | This is the ID of a transition that moves issues to the desired state. It is possible to insert transition ids separated by `,` or `;` which means the issue will be moved to each state after another using the given order.  **Closing Jira issues via commits or Merge Requests won't work if you don't set the ID correctly.** |
 
 ### Obtaining a transition ID

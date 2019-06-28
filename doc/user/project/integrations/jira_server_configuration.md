@@ -1,4 +1,4 @@
-# Creating a username and password for JIRA server
+# Creating a username and password for Jira Server
 
 We need to create a user in Jira which will have access to all projects that
 need to integrate with GitLab.

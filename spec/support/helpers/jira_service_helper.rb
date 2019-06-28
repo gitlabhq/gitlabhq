@@ -4,7 +4,7 @@ module JiraServiceHelper
 
   def jira_service_settings
     properties = {
-      title: "JIRA tracker",
+      title: "Jira tracker",
       url: JIRA_URL,
       username: 'jira-user',
       password: 'my-secret-password',

@@ -14,8 +14,8 @@ class JiraService < IssueTrackerService
             format: { with: Gitlab::Regex.jira_transition_id_regex, message: s_("JiraService|transition ids can have only numbers which can be split with , or ;") },
             allow_blank: true
 
-  # JIRA cloud version is deprecating authentication via username and password.
-  # We should use username/password for JIRA server and email/api_token for JIRA cloud,
+  # Jira Cloud version is deprecating authentication via username and password.
+  # We should use username/password for Jira Server and email/api_token for Jira Cloud,
   # for more information check: https://gitlab.com/gitlab-org/gitlab-ce/issues/49936.
   prop_accessor :username, :password, :url, :api_url, :jira_issue_transition_id, :title, :description
 
@@ -24,7 +24,7 @@ class JiraService < IssueTrackerService
   alias_method :project_url, :url
 
   # When these are false GitLab does not create cross reference
-  # comments on JIRA except when an issue gets transitioned.
+  # comments on Jira except when an issue gets transitioned.
   def self.supported_events
     %w(commit merge_request)
   end
@@ -69,16 +69,16 @@ class JiraService < IssueTrackerService
   end
 
   def help
-    "You need to configure JIRA before enabling this service. For more details
+    "You need to configure Jira before enabling this service. For more details
     read the
-    [JIRA service documentation](#{help_page_url('user/project/integrations/jira')})."
+    [Jira service documentation](#{help_page_url('user/project/integrations/jira')})."
   end
 
   def title
     if self.properties && self.properties['title'].present?
       self.properties['title']
     else
-      'JIRA'
+      'Jira'
     end
   end
 
@@ -97,7 +97,7 @@ class JiraService < IssueTrackerService
   def fields
     [
       { type: 'text', name: 'url', title: s_('JiraService|Web URL'), placeholder: 'https://jira.example.com', required: true },
-      { type: 'text', name: 'api_url', title: s_('JiraService|JIRA API URL'), placeholder: s_('JiraService|If different from Web URL') },
+      { type: 'text', name: 'api_url', title: s_('JiraService|Jira API URL'), placeholder: s_('JiraService|If different from Web URL') },
       { type: 'text', name: 'username', title: s_('JiraService|Username or Email'), placeholder: s_('JiraService|Use a username for server version and an email for cloud version'), required: true },
       { type: 'password', name: 'password', title: s_('JiraService|Password or API token'), placeholder: s_('JiraService|Use a password for server version and an API token for cloud version'), required: true },
       { type: 'text', name: 'jira_issue_transition_id', title: s_('JiraService|Transition ID(s)'), placeholder: s_('JiraService|Use , or ; to separate multiple transition IDs') }
@@ -130,7 +130,7 @@ class JiraService < IssueTrackerService
 
     commit_url = build_entity_url(:commit, commit_id)
 
-    # Depending on the JIRA project's workflow, a comment during transition
+    # Depending on the Jira project's workflow, a comment during transition
     # may or may not be allowed. Refresh the issue after transition and check
     # if it is closed, so we don't have one comment for every commit.
     issue = jira_request { client.Issue.find(issue.key) } if transition_issue(issue)
@@ -177,7 +177,7 @@ class JiraService < IssueTrackerService
     { success: success, result: result }
   end
 
-  # JIRA does not need test data.
+  # Jira does not need test data.
   # We are requesting the project that belongs to the project key.
   def test_data(user = nil, project = nil)
     nil
@@ -313,7 +313,7 @@ class JiraService < IssueTrackerService
     name == "project_snippet" ? "snippet" : name
   end
 
-  # Handle errors when doing JIRA API calls
+  # Handle errors when doing Jira API calls
   def jira_request
     yield
 
@@ -339,9 +339,9 @@ class JiraService < IssueTrackerService
   def self.event_description(event)
     case event
     when "merge_request", "merge_request_events"
-      s_("JiraService|JIRA comments will be created when an issue gets referenced in a merge request.")
+      s_("JiraService|Jira comments will be created when an issue gets referenced in a merge request.")
     when "commit", "commit_events"
-      s_("JiraService|JIRA comments will be created when an issue gets referenced in a commit.")
+      s_("JiraService|Jira comments will be created when an issue gets referenced in a commit.")
     end
   end
 end
