@@ -11,8 +11,40 @@ and deploy it to <https://docs.gitlab.com>.
 
 While the source of the documentation content is stored in GitLab's respective product
 repositories, the source that is used to build the documentation site _from that content_
-is located at <https://gitlab.com/gitlab-com/gitlab-docs>. See the README there for
-detailed information.
+is located at <https://gitlab.com/gitlab-com/gitlab-docs>.
+
+The following diagram illustrates the relationship between the repositories
+from where content is sourced, the `gitlab-docs` project, and the published output.
+
+```mermaid
+  graph LR
+    A[gitlab-ce/doc]
+    B[gitlab-ee/doc]
+    C[gitlab-runner/docs]
+    D[omnibus-gitlab/doc]
+    E[charts/doc]
+    F[gitlab-docs]
+    A --> F
+    B --> F
+    C --> F
+    D --> F
+    E --> F
+    F -- Build pipeline --> G
+    G[docs.gitlab.com]
+    H[/ce/]
+    I[/ee/]
+    J[/runner/]
+    K[/omnibus/]
+    L[/charts/]
+    G --> H
+    G --> I
+    G --> J
+    G --> K
+    G --> L
+```
+
+See the [README there](https://gitlab.com/gitlab-com/gitlab-docs/blob/master/README.md)
+for detailed information.
 
 ## Assets
 
@@ -22,9 +54,9 @@ the GitLab Documentation website.
 
 ### Libraries
 
-- [Bootstrap 3.3 components](https://getbootstrap.com/docs/3.3/components/)
-- [Bootstrap 3.3 JS](https://getbootstrap.com/docs/3.3/javascript/)
-- [jQuery](https://jquery.com/) 3.2.1
+- [Bootstrap 4.3.1 components](https://getbootstrap.com/docs/4.3/components/)
+- [Bootstrap 4.3.1 JS](https://getbootstrap.com/docs/4.3/getting-started/javascript/)
+- [jQuery](https://jquery.com/) 3.3.1
 - [Clipboard JS](https://clipboardjs.com/)
 - [Font Awesome 4.7.0](https://fontawesome.com/v4.7.0/icons/)
 
