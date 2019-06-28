@@ -92,7 +92,7 @@ describe 'Edit group settings' do
       expect(page).to have_content('Allowed to create subgroups')
     end
   end
-  
+
   describe 'edit group avatar' do
     before do
       visit edit_group_path(group)

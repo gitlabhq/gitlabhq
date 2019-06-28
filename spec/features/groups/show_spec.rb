@@ -76,7 +76,8 @@ describe 'Group show page' do
         end
 
         it 'allows creating subgroups' do
-          expect(page).to have_css("li[data-text='New subgroup']", visible: false)
+          expect(page)
+            .to have_css("li[data-text='New subgroup']", visible: false)
         end
       end
 
@@ -87,7 +88,8 @@ describe 'Group show page' do
         end
 
         it 'does not allow creating subgroups' do
-          expect(page).not_to have_selector("li[data-text='New subgroup']", visible: false)
+          expect(page)
+            .not_to have_selector("li[data-text='New subgroup']", visible: false)
         end
       end
     end
@@ -104,8 +106,11 @@ describe 'Group show page' do
         end
 
         context 'when subgroup_creation_level is set to maintainer' do
-          let(:group) { create(:group, subgroup_creation_level: ::Gitlab::Access::MAINTAINER_SUBGROUP_ACCESS) }
-          
+          let(:group) do
+            create(:group,
+                   subgroup_creation_level: ::Gitlab::Access::MAINTAINER_SUBGROUP_ACCESS)
+          end
+
           it 'allows creating subgroups' do
             visit path
             expect(page).to have_css("li[data-text='New subgroup']", visible: false)
@@ -113,11 +118,15 @@ describe 'Group show page' do
         end
 
         context 'when subgroup_creation_level is set to owners' do
-          let(:group) { create(:group, subgroup_creation_level: ::Gitlab::Access::OWNER_SUBGROUP_ACCESS) }
+          let(:group) do
+            create(:group,
+                   subgroup_creation_level: ::Gitlab::Access::OWNER_SUBGROUP_ACCESS)
+          end
 
           it 'does not allow creating subgroups' do
             visit path
-            expect(page).not_to have_css("li[data-text='New subgroup']", visible: false)
+            expect(page)
+              .not_to have_css("li[data-text='New subgroup']", visible: false)
           end
         end
       end
@@ -129,7 +138,8 @@ describe 'Group show page' do
         end
 
         it 'does not allow creating subgroups' do
-          expect(page).not_to have_selector("li[data-text='New subgroup']", visible: false)
+          expect(page)
+            .not_to have_selector("li[data-text='New subgroup']", visible: false)
         end
       end
     end
