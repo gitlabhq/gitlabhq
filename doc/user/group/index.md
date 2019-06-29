@@ -218,6 +218,8 @@ Get an overview of the vulnerabilities of all the projects in a group and its su
 
 ## Insights **[ULTIMATE]**
 
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/725) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.0.
+
 Configure the Insights that matter for your groups or projects, allowing users
 to explore data such as:
 
