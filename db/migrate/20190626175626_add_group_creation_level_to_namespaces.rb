@@ -12,6 +12,7 @@ class AddGroupCreationLevelToNamespaces < ActiveRecord::Migration[5.1]
                               :subgroup_creation_level,
                               :integer,
                               default: 0)
+      change_column_default(:namespaces, :subgroup_creation_level, 1)
     end
   end
 
