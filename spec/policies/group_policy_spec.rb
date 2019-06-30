@@ -98,12 +98,38 @@ describe GroupPolicy do
   context 'maintainer' do
     let(:current_user) { maintainer }
 
-    it do
-      expect_allowed(*guest_permissions)
-      expect_allowed(*reporter_permissions)
-      expect_allowed(*developer_permissions)
-      expect_allowed(*maintainer_permissions)
-      expect_disallowed(*owner_permissions)
+    context 'with subgroup_creation level set to maintainer' do
+      let(:group) { create(:group,
+                           :private,
+                           subgroup_creation_level: ::Gitlab::Access::MAINTAINER_SUBGROUP_ACCESS) }
+
+      it do
+        allow(Group).to receive(:supports_nested_objects?).and_return(true)
+
+        create_subgroup_permission = [:create_subgroup]
+        updated_maintainer_permissions =
+          maintainer_permissions + create_subgroup_permission
+        updated_owner_permissions =
+          owner_permissions - create_subgroup_permission
+
+        expect_allowed(*guest_permissions)
+        expect_allowed(*reporter_permissions)
+        expect_allowed(*developer_permissions)
+        expect_allowed(*updated_maintainer_permissions)
+        expect_disallowed(*updated_owner_permissions)
+      end
+    end
+
+    context 'with subgroup_creation_level set to owner' do
+      it do
+        allow(Group).to receive(:supports_nested_objects?).and_return(true)
+
+        expect_allowed(*guest_permissions)
+        expect_allowed(*reporter_permissions)
+        expect_allowed(*developer_permissions)
+        expect_allowed(*maintainer_permissions)
+        expect_disallowed(*owner_permissions)
+      end
     end
   end
 
@@ -181,7 +207,10 @@ describe GroupPolicy do
   end
 
   describe 'private nested group use the highest access level from the group and inherited permissions', :nested_groups do
-    let(:nested_group) { create(:group, :private, parent: group) }
+    let(:nested_group) { create(:group,
+                                :private,
+                                :owner_subgroup_creation_only,
+                                parent: group) }
 
     before do
       nested_group.add_guest(guest)
