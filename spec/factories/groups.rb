@@ -5,7 +5,6 @@ FactoryBot.define do
     type 'Group'
     owner nil
     project_creation_level ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS
-    subgroup_creation_level ::Gitlab::Access::OWNER_SUBGROUP_ACCESS
 
     after(:create) do |group|
       if group.owner
