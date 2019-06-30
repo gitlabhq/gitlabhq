@@ -1026,9 +1026,8 @@ describe Group do
 
   describe 'subgroup_creation_level' do
     it 'defaults to maintainers' do
-      group = create (:group)
-
-      expect(group.subgroup_creation_level).to eq(Gitlab::Access::MAINTAINER_SUBGROUP_ACCESS)
+      expect(group.subgroup_creation_level)
+        .to eq(Gitlab::Access::MAINTAINER_SUBGROUP_ACCESS)
     end
   end
 end
