@@ -1,4 +1,14 @@
-class InitSchema < ActiveRecord::Migration
+# frozen_string_literal: true
+
+# rubocop:disable Layout/SpaceInsideHashLiteralBraces
+# rubocop:disable Layout/SpaceAroundOperators
+# rubocop:disable Metrics/AbcSize
+# rubocop:disable Migration/AddConcurrentForeignKey
+# rubocop:disable Style/WordArray
+
+class InitSchema < ActiveRecord::Migration[4.2]
+  DOWNTIME = false
+
   def up
     # These are extensions that must be enabled in order to support this database
     enable_extension "plpgsql"
