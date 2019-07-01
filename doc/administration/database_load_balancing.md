@@ -40,16 +40,16 @@ For example, say you have a primary (`db1.gitlab.com`) and two secondaries,
 `db2.gitlab.com` and `db3.gitlab.com`. For this setup you will need to have 3
 load balancers, one for every host. For example:
 
-* `primary.gitlab.com` forwards to `db1.gitlab.com`
-* `secondary1.gitlab.com` forwards to `db2.gitlab.com`
-* `secondary2.gitlab.com` forwards to `db3.gitlab.com`
+- `primary.gitlab.com` forwards to `db1.gitlab.com`
+- `secondary1.gitlab.com` forwards to `db2.gitlab.com`
+- `secondary2.gitlab.com` forwards to `db3.gitlab.com`
 
 Now let's say that a failover happens and db2 becomes the new primary. This
 means forwarding should now happen as follows:
 
-* `primary.gitlab.com` forwards to `db2.gitlab.com`
-* `secondary1.gitlab.com` forwards to `db1.gitlab.com`
-* `secondary2.gitlab.com` forwards to `db3.gitlab.com`
+- `primary.gitlab.com` forwards to `db2.gitlab.com`
+- `secondary1.gitlab.com` forwards to `db1.gitlab.com`
+- `secondary2.gitlab.com` forwards to `db3.gitlab.com`
 
 GitLab does not take care of this for you, so you will need to do so yourself.
 
@@ -209,9 +209,9 @@ without it immediately leading to errors being presented to the users.
 
 The load balancer logs various messages, such as:
 
-* When a host is marked as offline
-* When a host comes back online
-* When all secondaries are offline
+- When a host is marked as offline
+- When a host comes back online
+- When all secondaries are offline
 
 Each log message contains the tag `[DB-LB]` to make searching/filtering of such
 log entries easier. For example:

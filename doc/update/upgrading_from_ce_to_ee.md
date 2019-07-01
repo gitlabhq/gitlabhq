@@ -25,14 +25,14 @@ Branch names use the format `major-minor-stable-ee` for Enterprise Edition, and
 `major-minor-stable` for Community Edition. For example, for 11.8.0 you would
 use the following branches:
 
-* Enterprise Edition: `11-8-stable-ee`
-* Community Edition: `11-8-stable`
+- Enterprise Edition: `11-8-stable-ee`
+- Community Edition: `11-8-stable`
 
 ### 0. Backup
 
 Make a backup just in case something goes wrong:
 
-```bash
+```sh
 cd /home/git/gitlab
 sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production
 ```
@@ -42,13 +42,13 @@ privileges to the GitLab user on the database version.
 
 ### 1. Stop server
 
-```bash
+```sh
 sudo service gitlab stop
 ```
 
 ### 2. Get the EE code
 
-```bash
+```sh
 cd /home/git/gitlab
 sudo -u git -H git remote add -f ee https://gitlab.com/gitlab-org/gitlab-ee.git
 sudo -u git -H git checkout EE_BRANCH
@@ -56,7 +56,7 @@ sudo -u git -H git checkout EE_BRANCH
 
 ### 3. Install libs, migrations, etc.
 
-```bash
+```sh
 cd /home/git/gitlab
 
 # MySQL installations (note: the line below states '--without postgres')
@@ -80,7 +80,7 @@ document linked above and enable the indexer usage in the GitLab admin settings.
 
 ### 5. Start application
 
-```bash
+```sh
 sudo service gitlab start
 sudo service nginx restart
 ```
@@ -89,13 +89,13 @@ sudo service nginx restart
 
 Check if GitLab and its environment are configured correctly:
 
-```bash
+```sh
 sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production
 ```
 
 To make sure you didn't miss anything run a more thorough check with:
 
-```bash
+```sh
 sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production
 ```
 
@@ -105,14 +105,14 @@ If all items are green, then congratulations upgrade complete!
 
 ### 1. Revert the code to the previous version
 
-```bash
+```sh
 cd /home/git/gitlab
 sudo -u git -H git checkout CE_BRANCH
 ```
 
 ### 2. Restore from the backup
 
-```bash
+```sh
 cd /home/git/gitlab
 sudo -u git -H bundle exec rake gitlab:backup:restore RAILS_ENV=production
 ```

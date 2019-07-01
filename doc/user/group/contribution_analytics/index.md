@@ -54,13 +54,13 @@ Select the desired period from the calendar dropdown.
 
 Contributions per group member are also presented in tabular format. Click a column header to sort the table by that column:
 
-* Member name
-* Number of pushed events
-* Number of opened issues
-* Number of closed issues
-* Number of opened MRs
-* Number of accepted MRs
-* Number of total contributions
+- Member name
+- Number of pushed events
+- Number of opened issues
+- Number of closed issues
+- Number of opened MRs
+- Number of accepted MRs
+- Number of total contributions
 
 ![Contribution analytics contributions table](img/group_stats_table.png)
 

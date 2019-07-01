@@ -88,12 +88,12 @@ Until GitLab has eliminated most of these inefficiencies or the use of
 NFS is discontinued for Git data, Rugged implementations of some of the
 most commonly-used RPCs can be enabled via feature flags:
 
-* `rugged_find_commit`
-* `rugged_get_tree_entries`
-* `rugged_tree_entry`
-* `rugged_commit_is_ancestor`
-* `rugged_commit_tree_entry`
-* `rugged_list_commits_by_oid`
+- `rugged_find_commit`
+- `rugged_get_tree_entries`
+- `rugged_tree_entry`
+- `rugged_commit_is_ancestor`
+- `rugged_commit_tree_entry`
+- `rugged_list_commits_by_oid`
 
 A convenience Rake task can be used to enable or disable these flags
 all together. To enable:

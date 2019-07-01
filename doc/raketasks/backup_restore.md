@@ -18,16 +18,16 @@ installed on your system.
 
 If you installed GitLab:
 
--   Using the Omnibus package, you're all set.
--   From source, make sure `rsync` is installed:
+- Using the Omnibus package, you're all set.
+- From source, make sure `rsync` is installed:
 
-    ```sh
-    # Debian/Ubuntu
-    sudo apt-get install rsync
+  ```sh
+  # Debian/Ubuntu
+  sudo apt-get install rsync
 
-    # RHEL/CentOS
-    sudo yum install rsync
-    ```
+  # RHEL/CentOS
+  sudo yum install rsync
+  ```
 
 ### Tar
 
@@ -269,17 +269,17 @@ For Omnibus GitLab packages:
 
 1. Add the following to `/etc/gitlab/gitlab.rb`:
 
-    ```ruby
-    gitlab_rails['backup_upload_connection'] = {
-      'provider' => 'AWS',
-      'region' => 'eu-west-1',
-      'aws_access_key_id' => 'AKIAKIAKI',
-      'aws_secret_access_key' => 'secret123'
-      # If using an IAM Profile, don't configure aws_access_key_id & aws_secret_access_key
-      # 'use_iam_profile' => true
-    }
-    gitlab_rails['backup_upload_remote_directory'] = 'my.s3.bucket'
-    ```
+   ```ruby
+   gitlab_rails['backup_upload_connection'] = {
+     'provider' => 'AWS',
+     'region' => 'eu-west-1',
+     'aws_access_key_id' => 'AKIAKIAKI',
+     'aws_secret_access_key' => 'secret123'
+     # If using an IAM Profile, don't configure aws_access_key_id & aws_secret_access_key
+     # 'use_iam_profile' => true
+   }
+   gitlab_rails['backup_upload_remote_directory'] = 'my.s3.bucket'
+   ```
 
 1. [Reconfigure GitLab] for the changes to take effect
 
@@ -289,16 +289,16 @@ This example can be used for a bucket in Amsterdam (AMS3).
 
 1. Add the following to `/etc/gitlab/gitlab.rb`:
 
-    ```ruby
-    gitlab_rails['backup_upload_connection'] = {
-      'provider' => 'AWS',
-      'region' => 'ams3',
-      'aws_access_key_id' => 'AKIAKIAKI',
-      'aws_secret_access_key' => 'secret123',
-      'endpoint'              => 'https://ams3.digitaloceanspaces.com'
-    }
-    gitlab_rails['backup_upload_remote_directory'] = 'my.s3.bucket'
-    ```
+   ```ruby
+   gitlab_rails['backup_upload_connection'] = {
+     'provider' => 'AWS',
+     'region' => 'ams3',
+     'aws_access_key_id' => 'AKIAKIAKI',
+     'aws_secret_access_key' => 'secret123',
+     'endpoint'              => 'https://ams3.digitaloceanspaces.com'
+   }
+   gitlab_rails['backup_upload_remote_directory'] = 'my.s3.bucket'
+   ```
 
 1. [Reconfigure GitLab] for the changes to take effect
 
@@ -321,31 +321,31 @@ For installations from source:
 
 1. Edit `home/git/gitlab/config/gitlab.yml`:
 
-    ```yaml
-      backup:
-        # snip
-        upload:
-          # Fog storage connection settings, see http://fog.io/storage/ .
-          connection:
-            provider: AWS
-            region: eu-west-1
-            aws_access_key_id: AKIAKIAKI
-            aws_secret_access_key: 'secret123'
-            # If using an IAM Profile, leave aws_access_key_id & aws_secret_access_key empty
-            # ie. aws_access_key_id: ''
-            # use_iam_profile: 'true'
-          # The remote 'directory' to store your backups. For S3, this would be the bucket name.
-          remote_directory: 'my.s3.bucket'
-          # Turns on AWS Server-Side Encryption with Amazon S3-Managed Keys for backups, this is optional
-          # encryption: 'AES256'
-          # Turns on AWS Server-Side Encryption with Amazon Customer-Provided Encryption Keys for backups, this is optional
-          #   This should be set to the base64-encoded encryption key for Amazon S3 to use to encrypt or decrypt your data.
-          #   'encryption' must also be set in order for this to have any effect.
-          #   To avoid storing the key on disk, the key can also be specified via the `GITLAB_BACKUP_ENCRYPTION_KEY` environment variable.
-          # encryption_key: '<base64 key>'
-          # Specifies Amazon S3 storage class to use for backups, this is optional
-          # storage_class: 'STANDARD'
-    ```
+   ```yaml
+     backup:
+       # snip
+       upload:
+         # Fog storage connection settings, see http://fog.io/storage/ .
+         connection:
+           provider: AWS
+           region: eu-west-1
+           aws_access_key_id: AKIAKIAKI
+           aws_secret_access_key: 'secret123'
+           # If using an IAM Profile, leave aws_access_key_id & aws_secret_access_key empty
+           # ie. aws_access_key_id: ''
+           # use_iam_profile: 'true'
+         # The remote 'directory' to store your backups. For S3, this would be the bucket name.
+         remote_directory: 'my.s3.bucket'
+         # Turns on AWS Server-Side Encryption with Amazon S3-Managed Keys for backups, this is optional
+         # encryption: 'AES256'
+         # Turns on AWS Server-Side Encryption with Amazon Customer-Provided Encryption Keys for backups, this is optional
+         #   This should be set to the base64-encoded encryption key for Amazon S3 to use to encrypt or decrypt your data.
+         #   'encryption' must also be set in order for this to have any effect.
+         #   To avoid storing the key on disk, the key can also be specified via the `GITLAB_BACKUP_ENCRYPTION_KEY` environment variable.
+         # encryption_key: '<base64 key>'
+         # Specifies Amazon S3 storage class to use for backups, this is optional
+         # storage_class: 'STANDARD'
+   ```
 
 1. [Restart GitLab] for the changes to take effect
 
@@ -417,14 +417,14 @@ For Omnibus GitLab packages:
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
-    ```ruby
-    gitlab_rails['backup_upload_connection'] = {
-      'provider' => 'Google',
-      'google_storage_access_key_id' => 'Access Key',
-      'google_storage_secret_access_key' => 'Secret'
-    }
-    gitlab_rails['backup_upload_remote_directory'] = 'my.google.bucket'
-    ```
+   ```ruby
+   gitlab_rails['backup_upload_connection'] = {
+     'provider' => 'Google',
+     'google_storage_access_key_id' => 'Access Key',
+     'google_storage_secret_access_key' => 'Secret'
+   }
+   gitlab_rails['backup_upload_remote_directory'] = 'my.google.bucket'
+   ```
 
 1. [Reconfigure GitLab] for the changes to take effect
 
@@ -434,15 +434,15 @@ For installations from source:
 
 1. Edit `home/git/gitlab/config/gitlab.yml`:
 
-    ```yaml
-      backup:
-        upload:
-          connection:
-            provider: 'Google'
-            google_storage_access_key_id: 'Access Key'
-            google_storage_secret_access_key: 'Secret'
-          remote_directory: 'my.google.bucket'
-    ```
+   ```yaml
+     backup:
+       upload:
+         connection:
+           provider: 'Google'
+           google_storage_access_key_id: 'Access Key'
+           google_storage_secret_access_key: 'Secret'
+         remote_directory: 'my.google.bucket'
+   ```
 
 1. [Restart GitLab] for the changes to take effect
 
@@ -477,16 +477,16 @@ For Omnibus GitLab packages:
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
-    ```ruby
-    gitlab_rails['backup_upload_connection'] = {
-      :provider => 'Local',
-      :local_root => '/mnt/backups'
-    }
+   ```ruby
+   gitlab_rails['backup_upload_connection'] = {
+     :provider => 'Local',
+     :local_root => '/mnt/backups'
+   }
 
-    # The directory inside the mounted folder to copy backups to
-    # Use '.' to store them in the root directory
-    gitlab_rails['backup_upload_remote_directory'] = 'gitlab_backups'
-    ```
+   # The directory inside the mounted folder to copy backups to
+   # Use '.' to store them in the root directory
+   gitlab_rails['backup_upload_remote_directory'] = 'gitlab_backups'
+   ```
 
 1. [Reconfigure GitLab] for the changes to take effect.
 
@@ -496,17 +496,17 @@ For installations from source:
 
 1. Edit `home/git/gitlab/config/gitlab.yml`:
 
-    ```yaml
-    backup:
-      upload:
-        # Fog storage connection settings, see http://fog.io/storage/ .
-        connection:
-          provider: Local
-          local_root: '/mnt/backups'
-        # The directory inside the mounted folder to copy backups to
-        # Use '.' to store them in the root directory
-        remote_directory: 'gitlab_backups'
-    ```
+   ```yaml
+   backup:
+     upload:
+       # Fog storage connection settings, see http://fog.io/storage/ .
+       connection:
+         provider: Local
+         local_root: '/mnt/backups'
+       # The directory inside the mounted folder to copy backups to
+       # Use '.' to store them in the root directory
+       remote_directory: 'gitlab_backups'
+   ```
 
 1. [Restart GitLab] for the changes to take effect.
 
@@ -521,9 +521,9 @@ For Omnibus GitLab packages:
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
-    ```ruby
-    gitlab_rails['backup_archive_permissions'] = 0644 # Makes the backup archives world-readable
-    ```
+   ```ruby
+   gitlab_rails['backup_archive_permissions'] = 0644 # Makes the backup archives world-readable
+   ```
 
 1. [Reconfigure GitLab] for the changes to take effect.
 
@@ -533,10 +533,10 @@ For installations from source:
 
 1. Edit `/home/git/gitlab/config/gitlab.yml`:
 
-    ```yaml
-    backup:
-      archive_permissions: 0644 # Makes the backup archives world-readable
-    ```
+   ```yaml
+   backup:
+     archive_permissions: 0644 # Makes the backup archives world-readable
+   ```
 
 1. [Restart GitLab] for the changes to take effect.
 
@@ -550,10 +550,10 @@ For Omnibus GitLab packages:
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
-    ```ruby
-    ## Limit backup lifetime to 7 days - 604800 seconds
-    gitlab_rails['backup_keep_time'] = 604800
-    ```
+   ```ruby
+   ## Limit backup lifetime to 7 days - 604800 seconds
+   gitlab_rails['backup_keep_time'] = 604800
+   ```
 
 1. [Reconfigure GitLab] for the changes to take effect.
 
@@ -586,11 +586,11 @@ For installations from source:
 
 1. Edit `home/git/gitlab/config/gitlab.yml`:
 
-    ```yaml
-    backup:
-      ## Limit backup lifetime to 7 days - 604800 seconds
-      keep_time: 604800
-    ```
+   ```yaml
+   backup:
+     ## Limit backup lifetime to 7 days - 604800 seconds
+     keep_time: 604800
+   ```
 
 1. [Restart GitLab] for the changes to take effect.
 
@@ -840,13 +840,13 @@ columns containing sensitive information. If the key is lost, GitLab will be
 unable to decrypt those columns. This will break a wide range of functionality,
 including (but not restricted to):
 
-* [CI/CD variables](../ci/variables/README.md)
-* [Kubernetes / GCP integration](../user/project/clusters/index.md)
-* [Custom Pages domains](../user/project/pages/getting_started_part_three.md)
-* [Project error tracking](../user/project/operations/error_tracking.md)
-* [Runner authentication](../ci/runners/README.md)
-* [Project mirroring](../workflow/repository_mirroring.md)
-* [Web hooks](../user/project/integrations/webhooks.md)
+- [CI/CD variables](../ci/variables/README.md)
+- [Kubernetes / GCP integration](../user/project/clusters/index.md)
+- [Custom Pages domains](../user/project/pages/getting_started_part_three.md)
+- [Project error tracking](../user/project/operations/error_tracking.md)
+- [Runner authentication](../ci/runners/README.md)
+- [Project mirroring](../workflow/repository_mirroring.md)
+- [Web hooks](../user/project/integrations/webhooks.md)
 
 In cases like CI/CD variables and Runner authentication, you might
 experience some unexpected behavior such as:
@@ -865,72 +865,71 @@ backup beforehand.
 
 #### Reset CI/CD variables
 
-1.  Enter the DB console:
+1. Enter the DB console:
 
-    For Omnibus GitLab packages:
+   For Omnibus GitLab packages:
 
-    ```sh
-    sudo gitlab-rails dbconsole
-    ```
+   ```sh
+   sudo gitlab-rails dbconsole
+   ```
 
-    For installations from source:
+   For installations from source:
 
-    ```sh
-    sudo -u git -H bundle exec rails dbconsole RAILS_ENV=production
-    ```
+   ```sh
+   sudo -u git -H bundle exec rails dbconsole RAILS_ENV=production
+   ```
 
-1.  Check the `ci_group_variables` and `ci_variables` tables:
+1. Check the `ci_group_variables` and `ci_variables` tables:
 
-    ```sql
-    SELECT * FROM public."ci_group_variables";
-    SELECT * FROM public."ci_variables";
-    ```
+   ```sql
+   SELECT * FROM public."ci_group_variables";
+   SELECT * FROM public."ci_variables";
+   ```
 
-    Those are the variables that you need to delete.
+   Those are the variables that you need to delete.
 
-1.  Drop the table:
+1. Drop the table:
 
-    ```sql
-    DELETE FROM ci_group_variables;
-    DELETE FROM ci_variables;
-    ```
+   ```sql
+   DELETE FROM ci_group_variables;
+   DELETE FROM ci_variables;
+   ```
 
 1. You may need to reconfigure or restart GitLab for the changes to take
    effect.
 
-
 #### Reset Runner registration tokens
 
-1.  Enter the DB console:
+1. Enter the DB console:
 
-    For Omnibus GitLab packages:
+   For Omnibus GitLab packages:
 
-    ```sh
-    sudo gitlab-rails dbconsole
-    ```
+   ```sh
+   sudo gitlab-rails dbconsole
+   ```
 
-    For installations from source:
+   For installations from source:
 
-    ```sh
-    sudo -u git -H bundle exec rails dbconsole RAILS_ENV=production
-    ```
+   ```sh
+   sudo -u git -H bundle exec rails dbconsole RAILS_ENV=production
+   ```
 
 1. Clear all the tokens for projects, groups, and the whole instance:
 
-    CAUTION: **Caution:**
-    The last UPDATE operation will stop the runners being able to pick up
-    new jobs. You must register new runners.
+   CAUTION: **Caution:**
+   The last UPDATE operation will stop the runners being able to pick up
+   new jobs. You must register new runners.
 
-    ```sql
-    -- Clear project tokens
-    UPDATE projects SET runners_token = null, runners_token_encrypted = null;
-    -- Clear group tokens
-    UPDATE namespaces SET runners_token = null, runners_token_encrypted = null;
-    -- Clear instance tokens
-    UPDATE application_settings SET runners_registration_token_encrypted = null;
-    -- Clear runner tokens
-    UPDATE ci_runners SET token = null, token_encrypted = null;
-    ```
+   ```sql
+   -- Clear project tokens
+   UPDATE projects SET runners_token = null, runners_token_encrypted = null;
+   -- Clear group tokens
+   UPDATE namespaces SET runners_token = null, runners_token_encrypted = null;
+   -- Clear instance tokens
+   UPDATE application_settings SET runners_registration_token_encrypted = null;
+   -- Clear runner tokens
+   UPDATE ci_runners SET token = null, token_encrypted = null;
+   ```
 
 A similar strategy can be employed for the remaining features - by removing the
 data that cannot be decrypted, GitLab can be brought back into working order,

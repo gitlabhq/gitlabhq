@@ -257,7 +257,7 @@ find a way to limit it to only us.**
 
 ## Other resources
 
-* [Review Apps integration for CE/EE (presentation)](https://docs.google.com/presentation/d/1QPLr6FO4LduROU8pQIPkX1yfGvD13GEJIBOenqoKxR8/edit?usp=sharing)
+- [Review Apps integration for CE/EE (presentation)](https://docs.google.com/presentation/d/1QPLr6FO4LduROU8pQIPkX1yfGvD13GEJIBOenqoKxR8/edit?usp=sharing)
 
 [charts-1068]: https://gitlab.com/charts/gitlab/issues/1068
 [gitlab-pipeline]: https://gitlab.com/gitlab-org/gitlab-ce/pipelines/44362587
