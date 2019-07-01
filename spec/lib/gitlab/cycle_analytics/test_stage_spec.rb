@@ -16,7 +16,7 @@ describe Gitlab::CycleAnalytics::TestStage do
 
   before do
     mr_1.metrics.update!(latest_build_started_at: 32.minutes.ago, latest_build_finished_at: 2.minutes.ago)
-    mr_2.metrics.update!(latest_build_started_at: 62.minutes.ago, latest_build_finished_at: 32.minute.ago)
+    mr_2.metrics.update!(latest_build_started_at: 62.minutes.ago, latest_build_finished_at: 32.minutes.ago)
     mr_3.metrics.update!(latest_build_started_at: nil, latest_build_finished_at: nil)
     mr_4.metrics.update!(latest_build_started_at: nil, latest_build_finished_at: nil)
     mr_5.metrics.update!(latest_build_started_at: nil, latest_build_finished_at: nil)
