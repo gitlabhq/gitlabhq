@@ -1,4 +1,5 @@
 <script>
+import { __ } from '~/locale';
 /**
  * Renders the Monitoring (Metrics) link in environments table.
  */
@@ -21,7 +22,7 @@ export default {
   },
   computed: {
     title() {
-      return 'Monitoring';
+      return __('Monitoring');
     },
   },
 };

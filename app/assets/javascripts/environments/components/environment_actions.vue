@@ -1,5 +1,5 @@
 <script>
-import { s__, sprintf } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
 import { formatTime } from '~/lib/utils/datetime_utility';
 import Icon from '~/vue_shared/components/icon.vue';
 import eventHub from '../event_hub';
@@ -28,7 +28,7 @@ export default {
   },
   computed: {
     title() {
-      return 'Deploy to...';
+      return __('Deploy to...');
     },
   },
   methods: {
@@ -80,7 +80,8 @@ export default {
       data-toggle="dropdown"
     >
       <span>
-        <icon name="play" /> <icon name="chevron-down" />
+        <icon name="play" />
+        <icon name="chevron-down" />
         <gl-loading-icon v-if="isLoading" />
       </span>
     </button>
@@ -94,9 +95,10 @@ export default {
           class="js-manual-action-link no-btn btn d-flex align-items-center"
           @click="onClickAction(action)"
         >
-          <span class="flex-fill"> {{ action.name }} </span>
+          <span class="flex-fill">{{ action.name }}</span>
           <span v-if="action.scheduledAt" class="text-secondary">
-            <icon name="clock" /> {{ remainingTime(action) }}
+            <icon name="clock" />
+            {{ remainingTime(action) }}
           </span>
         </button>
       </li>
