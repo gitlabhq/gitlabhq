@@ -574,6 +574,7 @@ entry.
 
 ## 11.10.8 (2019-06-27)
 
+- No changes.
 ### Security (10 changes)
 
 - Fix Denial of Service for comments when rendering issues/MR comments.
