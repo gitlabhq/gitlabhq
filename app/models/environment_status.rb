@@ -3,11 +3,10 @@
 class EnvironmentStatus
   include Gitlab::Utils::StrongMemoize
 
-  attr_reader :environment, :merge_request, :sha
+  attr_reader :project, :environment, :merge_request, :sha
 
   delegate :id, to: :environment
   delegate :name, to: :environment
-  delegate :project, to: :environment
   delegate :status, to: :deployment, allow_nil: true
   delegate :deployed_at, to: :deployment, allow_nil: true
 
@@ -21,7 +20,8 @@ class EnvironmentStatus
     build_environments_status(mr, user, mr.merge_pipeline)
   end
 
-  def initialize(environment, merge_request, sha)
+  def initialize(project, environment, merge_request, sha)
+    @project = project
     @environment = environment
     @merge_request = merge_request
     @sha = sha
@@ -67,7 +67,7 @@ class EnvironmentStatus
     pipeline.environments.available.map do |environment|
       next unless Ability.allowed?(user, :read_environment, environment)
 
-      EnvironmentStatus.new(environment, mr, pipeline.sha)
+      EnvironmentStatus.new(pipeline.project, environment, mr, pipeline.sha)
     end.compact
   end
   private_class_method :build_environments_status
