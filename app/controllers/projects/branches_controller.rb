@@ -25,15 +25,6 @@ class Projects::BranchesController < Projects::ApplicationController
         @refs_pipelines = @project.ci_pipelines.latest_successful_for_refs(@branches.map(&:name))
         @merged_branch_names = repository.merged_branch_names(@branches.map(&:name))
 
-        # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/48097
-        Gitlab::GitalyClient.allow_n_plus_1_calls do
-          @max_commits = @branches.reduce(0) do |memo, branch|
-            diverging_commit_counts = repository.diverging_commit_counts(branch)
-            [memo, diverging_commit_counts.values_at(:behind, :ahead, :distance)]
-              .flatten.compact.max
-          end
-        end
-
         # https://gitlab.com/gitlab-org/gitlab-ce/issues/48097
         Gitlab::GitalyClient.allow_n_plus_1_calls do
           render
@@ -49,6 +40,19 @@ class Projects::BranchesController < Projects::ApplicationController
 
   def recent
     @branches = @repository.recent_branches
+  end
+
+  def diverging_commit_counts
+    respond_to do |format|
+      format.json do
+        service = Branches::DivergingCommitCountsService.new(repository)
+        branches = BranchesFinder.new(repository, params.permit(names: [])).execute
+
+        Gitlab::GitalyClient.allow_n_plus_1_calls do
+          render json: branches.to_h { |branch| [branch.name, service.call(branch)] }
+        end
+      end
+    end
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

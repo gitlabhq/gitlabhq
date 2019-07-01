@@ -1,6 +1,6 @@
 - merged = local_assigns.fetch(:merged, false)
 - commit = @repository.commit(branch.dereferenced_target)
-- diverging_commit_counts = @repository.diverging_commit_counts(branch)
+- diverging_commit_counts = Branches::DivergingCommitCountsService.new(@repository).call(branch)
 - number_commits_distance = diverging_commit_counts[:distance]
 - number_commits_behind = diverging_commit_counts[:behind]
 - number_commits_ahead = diverging_commit_counts[:ahead]
