@@ -125,11 +125,14 @@ describe GroupsController do
     end
 
     context 'as json' do
-      it 'includes all projects in event feed' do
-        3.times do
+      it 'includes all projects from groups and subgroups in event feed' do
+        2.times do
           project = create(:project, group: group)
           create(:event, project: project)
         end
+        subgroup = create(:group, parent: group)
+        project = create(:project, group: subgroup)
+        create(:event, project: project)
 
         get :activity, params: { id: group.to_param }, format: :json
 
