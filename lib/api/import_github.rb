@@ -28,7 +28,7 @@ module API
 
     desc 'Import a GitHub project' do
       detail 'This feature was introduced in GitLab 11.3.4.'
-      success Entities::ProjectEntity
+      success ::ProjectEntity
     end
     params do
       requires :personal_access_token, type: String, desc: 'GitHub personal access token'
