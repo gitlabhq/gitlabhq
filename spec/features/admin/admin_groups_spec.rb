@@ -102,6 +102,15 @@ describe 'Admin Groups' do
       expect_selected_visibility(group.visibility_level)
     end
 
+    it 'shows the subgroup creation level dropdown populated with the group subgroup_creation_level value' do
+      group = create(:group, :private, :owner_subgroup_creation_only)
+
+      visit admin_group_edit_path(group)
+
+      expect(page).to have_select("group_subgroup_creation_level",
+                                  selected: ::Gitlab::Access.subgroup_creation_options.keys[group.subgroup_creation_level])
+    end
+
     it 'edit group path does not change group name', :js do
       group = create(:group, :private)
 

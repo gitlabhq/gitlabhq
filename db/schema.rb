@@ -2119,7 +2119,7 @@ ActiveRecord::Schema.define(version: 2019_07_15_114644) do
     t.string "ldap_sync_status", default: "ready", null: false
     t.boolean "membership_lock", default: false
     t.integer "last_ci_minutes_usage_notification_level"
-    t.integer "subgroup_creation_level", default: 0, null: false
+    t.integer "subgroup_creation_level", default: 1
     t.index ["created_at"], name: "index_namespaces_on_created_at", using: :btree
     t.index ["custom_project_templates_group_id", "type"], name: "index_namespaces_on_custom_project_templates_group_id_and_type", where: "(custom_project_templates_group_id IS NOT NULL)", using: :btree
     t.index ["file_template_project_id"], name: "index_namespaces_on_file_template_project_id", using: :btree

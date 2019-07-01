@@ -17,6 +17,12 @@
     = f.select :project_creation_level, options_for_select(::Gitlab::Access.project_creation_options, @group.project_creation_level), {}, class: 'form-control'
 
 .form-group.row
+  .col-sm-2.col-form-label
+    = f.label s_('SubgroupCreationlevel|Allowed to create subgroups')
+  .col-sm-10
+    = f.select :subgroup_creation_level, options_for_select(::Gitlab::Access.subgroup_creation_options, @group.subgroup_creation_level), {}, class: 'form-control'
+
+.form-group.row
   .col-sm-2.col-form-label.pt-0
     = f.label :require_two_factor_authentication, 'Two-factor authentication'
   .col-sm-10
