@@ -11,6 +11,9 @@ module Gitlab
     # We have three lifecycle events.
     #
     # - before_fork (only in forking processes)
+    #     In forking processes (Unicorn and Puma in multiprocess mode) this
+    #     will be called exactly once, on startup, before the workers are
+    #     forked. This will be called in the parent process.
     # - worker_start
     # - before_master_restart (only in forking processes)
     #

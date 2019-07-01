@@ -88,9 +88,21 @@ before_exec do |server|
   Gitlab::Cluster::LifecycleEvents.do_master_restart
 end
 
+run_once = true
+
 before_fork do |server, worker|
-  # Signal application hooks that we're about to fork
-  Gitlab::Cluster::LifecycleEvents.do_before_fork
+  if run_once
+    # There is a difference between Puma and Unicorn:
+    # - Puma calls before_fork once when booting up master process
+    # - Unicorn runs before_fork whenever new work is spawned
+    # To unify this behavior we call before_fork only once (we use
+    # this callback for deleting Prometheus files so for our purposes
+    # it makes sense to align behavior with Puma)
+    run_once = false
+
+    # Signal application hooks that we're about to fork
+    Gitlab::Cluster::LifecycleEvents.do_before_fork
+  end
 
   # The following is only recommended for memory/DB-constrained
   # installations.  It is not needed if your system can house
