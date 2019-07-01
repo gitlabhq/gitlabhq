@@ -78,11 +78,10 @@ describe 'Group show page' do
       context 'when subgroups are supported', :nested_groups do
         before do
           allow(Group).to receive(:supports_nested_objects?) { true }
+          visit path
         end
 
         it 'allows creating subgroups' do
-          visit path
-
           expect(page)
             .to have_css("li[data-text='New subgroup']", visible: false)
         end
@@ -91,11 +90,10 @@ describe 'Group show page' do
       context 'when subgroups are not supported' do
         before do
           allow(Group).to receive(:supports_nested_objects?) { false }
+          visit path
         end
 
         it 'does not allow creating subgroups' do
-          visit path
-
           expect(page)
             .not_to have_selector("li[data-text='New subgroup']", visible: false)
         end
