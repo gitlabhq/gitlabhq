@@ -6,5 +6,3 @@ module Gitlab
     end
   end
 end
-
-Gitlab::Importers::CommonMetrics.prepend(EE::Gitlab::Importers::CommonMetrics)
