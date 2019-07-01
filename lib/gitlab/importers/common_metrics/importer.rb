@@ -13,7 +13,7 @@ module Gitlab
         end
 
         def execute
-          PrometheusMetric.reset_column_information
+          ::Gitlab::Importers::CommonMetrics::PrometheusMetric.reset_column_information
 
           process_content do |id, attributes|
             find_or_build_metric!(id)
@@ -62,17 +62,17 @@ module Gitlab
         def find_or_build_metric!(id)
           raise MissingQueryId unless id
 
-          PrometheusMetric.common.find_by(identifier: id) ||
-            PrometheusMetric.new(common: true, identifier: id)
+          ::Gitlab::Importers::CommonMetrics::PrometheusMetric.common.find_by(identifier: id) ||
+            ::Gitlab::Importers::CommonMetrics::PrometheusMetric.new(common: true, identifier: id)
         end
         # rubocop: enable CodeReuse/ActiveRecord
 
         def find_group_title_key(title)
-          PrometheusMetricEnums.groups[find_group_title(title)]
+          ::Gitlab::Importers::CommonMetrics::PrometheusMetricEnums.groups[find_group_title(title)]
         end
 
         def find_group_title(title)
-          PrometheusMetricEnums.group_titles.invert[title]
+          ::Gitlab::Importers::CommonMetrics::PrometheusMetricEnums.group_titles.invert[title]
         end
       end
     end
