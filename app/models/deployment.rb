@@ -206,13 +206,8 @@ class Deployment < ApplicationRecord
     end
   end
 
-  # TODO remove fallback case to deployment_platform_cluster.
-  # Otherwise we will continue to pay the performance penalty described in
-  # https://gitlab.com/gitlab-org/gitlab-ce/issues/63475
   def cluster_prometheus
-    cluster_with_fallback = cluster || deployment_platform_cluster
-
-    cluster_with_fallback.application_prometheus if cluster_with_fallback&.application_prometheus_available?
+    cluster.application_prometheus if cluster&.application_prometheus_available?
   end
 
   def ref_path

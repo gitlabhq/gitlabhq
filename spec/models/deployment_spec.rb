@@ -341,18 +341,6 @@ describe Deployment do
 
         it { is_expected.to be_truthy }
       end
-
-      context 'fallback deployment platform' do
-        let(:cluster) { create(:cluster, :provided_by_user, environment_scope: '*', projects: [deployment.project]) }
-        let!(:prometheus) { create(:clusters_applications_prometheus, :installed, cluster: cluster) }
-
-        before do
-          expect(deployment.project).to receive(:deployment_platform).and_return(cluster.platform)
-          expect(cluster.application_prometheus).to receive(:can_query?).and_return(true)
-        end
-
-        it { is_expected.to be_truthy }
-      end
     end
   end
 
