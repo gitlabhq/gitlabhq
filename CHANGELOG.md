@@ -4,6 +4,7 @@ entry.
 
 ## 11.11.5 (2019-06-27)
 
+- No changes.
 ### Security (10 changes)
 
 - Disable Rails SQL query cache when applying service templates. !30060
