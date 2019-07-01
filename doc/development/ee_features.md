@@ -959,10 +959,10 @@ import mixin from 'ee_else_ce/path/mixin';
 
 #### `template` tag
 
-* **EE Child components**
+- **EE Child components**
   - Since we are using the async loading to check which component to load, we'd still use the component's name, check [this example](#child-component-only-used-in-ee).
 
-* **EE extra HTML**
+- **EE extra HTML**
   - For the templates that have extra HTML in EE we should move it into a new component and use the `ee_else_ce` dynamic import
 
 ### Non Vue Files

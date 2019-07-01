@@ -116,10 +116,10 @@ graph TB
 
 ### Component legend
 
-* ✅ - Installed by default
-* ⚙ - Requires additional configuration, or GitLab Managed Apps
-* ⤓ - Manual installation required
-* ❌ - Not supported or no instructions available
+- ✅ - Installed by default
+- ⚙ - Requires additional configuration, or GitLab Managed Apps
+- ⤓ - Manual installation required
+- ❌ - Not supported or no instructions available
 
 Component statuses are linked to configuration documentation for each component.
 

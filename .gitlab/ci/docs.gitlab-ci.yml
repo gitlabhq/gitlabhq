@@ -69,7 +69,7 @@ docs lint:
     # Lint Markdown
     # https://github.com/markdownlint/markdownlint/blob/master/docs/RULES.md
     - bundle exec mdl content/$DOCS_GITLAB_REPO_SUFFIX/**/*.md --rules \
-        MD032
+        MD004,MD032
     # Build HTML from Markdown
     - bundle exec nanoc
     # Check the internal links

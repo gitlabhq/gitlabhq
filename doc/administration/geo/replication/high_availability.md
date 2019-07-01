@@ -79,9 +79,9 @@ The **primary** database will require modification later, as part of
 A **secondary** cluster is similar to any other GitLab HA cluster, with two
 major differences:
 
-* The main PostgreSQL database is a read-only replica of the **primary** node's
+- The main PostgreSQL database is a read-only replica of the **primary** node's
   PostgreSQL database.
-* There is also a single PostgreSQL database for the **secondary** cluster,
+- There is also a single PostgreSQL database for the **secondary** cluster,
   called the "tracking database", which tracks the synchronization state of
   various resources.
 
@@ -93,9 +93,9 @@ from the normal HA setup.
 Configure the following services, again using the non-Geo high availability
 documentation:
 
-* [Configuring Redis for GitLab HA](../../high_availability/redis.md) for high
+- [Configuring Redis for GitLab HA](../../high_availability/redis.md) for high
   availability.
-* [NFS](../../high_availability/nfs.md) which will store data that is
+- [NFS](../../high_availability/nfs.md) which will store data that is
   synchronized from the **primary** node.
 
 ### Step 2: Configure the main read-only replica PostgreSQL database on the **secondary** node
@@ -270,15 +270,15 @@ After making these changes [Reconfigure GitLab][gitlab-reconfigure] so the chang
 
 On the secondary the following GitLab frontend services will be enabled:
 
-* geo-logcursor
-* gitlab-pages
-* gitlab-workhorse
-* logrotate
-* nginx
-* registry
-* remote-syslog
-* sidekiq
-* unicorn
+- geo-logcursor
+- gitlab-pages
+- gitlab-workhorse
+- logrotate
+- nginx
+- registry
+- remote-syslog
+- sidekiq
+- unicorn
 
 Verify these services by running `sudo gitlab-ctl status` on the frontend
 application servers.

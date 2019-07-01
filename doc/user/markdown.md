@@ -1115,20 +1115,20 @@ will point the link to `wikis/style` only when the link is inside of a wiki mark
 GFM will autolink almost any URL you put into your text:
 
 ```markdown
-* https://www.google.com
-* https://google.com/
-* ftp://ftp.us.debian.org/debian/
-* smb://foo/bar/baz
-* irc://irc.freenode.net/gitlab
-* http://localhost:3000
+- https://www.google.com
+- https://google.com/
+- ftp://ftp.us.debian.org/debian/
+- smb://foo/bar/baz
+- irc://irc.freenode.net/gitlab
+- http://localhost:3000
 ```
 
-* https://www.google.com
-* https://google.com/
-* ftp://ftp.us.debian.org/debian/
-* smb://foo/bar/baz
-* irc://irc.freenode.net/gitlab
-* http://localhost:3000
+- https://www.google.com
+- https://google.com/
+- ftp://ftp.us.debian.org/debian/
+- smb://foo/bar/baz
+- irc://irc.freenode.net/gitlab
+- http://localhost:3000
 
 ### Lists
 
@@ -1147,7 +1147,7 @@ Examples:
 ```md
 1. First ordered list item
 2. Another item
-   * Unordered sub-list.
+   - Unordered sub-list.
 1. Actual numbers don't matter, just that it's a number
    1. Ordered sub-list
    1. Next ordered sub-list item
@@ -1160,7 +1160,7 @@ Examples:
 
 1. First ordered list item
 2. Another item
-   * Unordered sub-list.
+   - Unordered sub-list.
 1. Actual numbers don't matter, just that it's a number
    1. Ordered sub-list
    1. Next ordered sub-list item

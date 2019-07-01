@@ -192,20 +192,20 @@ There can be multiple facets of the impact. The below is a guideline.
 
 If a bug seems to fall between two severity labels, assign it to the higher-severity label.
 
-* Example(s) of ~S1
-  * Data corruption/loss. 
-  * Security breach.
-  * Unable to create an issue or merge request. 
-  * Unable to add a comment or discussion to the issue or merge request.
-* Example(s) of ~S2
-  * Cannot submit changes through the web IDE but the commandline works.
-  * A status widget on the merge request page is not working but information can be seen in the test pipeline page.
-* Example(s) of ~S3
-  * Can create merge requests only from the Merge Requests list view, not from an Issue page.
-  * Status is not updated in real time and needs a page refresh.
-* Example(s) of ~S4
-  * Label colors are incorrect.
-  * UI elements are not fully aligned.
+- Example(s) of ~S1
+  - Data corruption/loss. 
+  - Security breach.
+  - Unable to create an issue or merge request. 
+  - Unable to add a comment or discussion to the issue or merge request.
+- Example(s) of ~S2
+  - Cannot submit changes through the web IDE but the commandline works.
+  - A status widget on the merge request page is not working but information can be seen in the test pipeline page.
+- Example(s) of ~S3
+  - Can create merge requests only from the Merge Requests list view, not from an Issue page.
+  - Status is not updated in real time and needs a page refresh.
+- Example(s) of ~S4
+  - Label colors are incorrect.
+  - UI elements are not fully aligned.
   
 ## Label for community contributors
 
