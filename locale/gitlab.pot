@@ -251,6 +251,9 @@ msgstr ""
 msgid "%{user_name} profile page"
 msgstr ""
 
+msgid "%{username}'s avatar"
+msgstr ""
+
 msgid "%{verb} %{time_spent_value} spent time."
 msgstr ""
 
@@ -2147,6 +2150,9 @@ msgid "ClassificationLabelUnavailable|is unavailable: %{reason}"
 msgstr ""
 
 msgid "Clear"
+msgstr ""
+
+msgid "Clear recent searches"
 msgstr ""
 
 msgid "Clear search"
@@ -10555,6 +10561,9 @@ msgstr ""
 msgid "This domain is not verified. You will need to verify ownership before access is enabled."
 msgstr ""
 
+msgid "This feature requires local storage to be enabled"
+msgstr ""
+
 msgid "This field is required."
 msgstr ""
 
@@ -12070,6 +12079,9 @@ msgstr ""
 msgid "You don't have any deployments right now."
 msgstr ""
 
+msgid "You don't have any recent searches"
+msgstr ""
+
 msgid "You have been granted %{access_level} access to the %{source_link} %{source_type}."
 msgstr ""
 
@@ -12754,6 +12766,9 @@ msgstr ""
 msgid "none"
 msgstr ""
 
+msgid "not found"
+msgstr ""
+
 msgid "notification emails"
 msgstr ""
 
@@ -12801,6 +12816,9 @@ msgid "quick actions"
 msgstr ""
 
 msgid "register"
+msgstr ""
+
+msgid "released %{time}"
 msgstr ""
 
 msgid "remaining"
