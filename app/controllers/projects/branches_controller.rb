@@ -170,7 +170,7 @@ class Projects::BranchesController < Projects::ApplicationController
 
     confidential_issue_project = Project.find(params[:confidential_issue_project_id])
 
-    return unless can?(current_user, :push_code, confidential_issue_project)
+    return unless can?(current_user, :update_issue, confidential_issue_project)
 
     confidential_issue_project
   end

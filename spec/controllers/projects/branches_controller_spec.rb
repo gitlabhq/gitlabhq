@@ -124,7 +124,7 @@ describe Projects::BranchesController do
             stub_feature_flags(create_confidential_merge_request: true)
           end
 
-          context 'user cannot push code to issue project' do
+          context 'user cannot update issue' do
             let(:issue) { create(:issue, project: confidential_issue_project) }
 
             it 'does not post a system note' do
@@ -134,9 +134,9 @@ describe Projects::BranchesController do
             end
           end
 
-          context 'user can push code to issue project' do
+          context 'user can update issue' do
             before do
-              confidential_issue_project.add_developer(user)
+              confidential_issue_project.add_reporter(user)
             end
 
             context 'issue is under the specified project' do
