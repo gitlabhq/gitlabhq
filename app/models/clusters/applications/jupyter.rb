@@ -40,12 +40,6 @@ module Clusters
         content_values.to_yaml
       end
 
-      # Will be addressed in future MRs
-      # We need to investigate and document what will be permanently deleted.
-      def allowed_to_uninstall?
-        false
-      end
-
       def install_command
         Gitlab::Kubernetes::Helm::InstallCommand.new(
           name: name,

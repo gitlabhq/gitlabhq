@@ -16,7 +16,7 @@ describe Clusters::Applications::Jupyter do
 
     subject { jupyter.can_uninstall? }
 
-    it { is_expected.to be_falsey }
+    it { is_expected.to be_truthy }
   end
 
   describe '#set_initial_status' do
