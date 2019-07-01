@@ -414,6 +414,10 @@ class Group < Namespace
     super || ::Gitlab::CurrentSettings.default_project_creation
   end
 
+  def subgroup_creation_level
+    super || ::Gitlab::Access::MAINTAINER_SUBGROUP_ACCESS
+  end
+
   private
 
   def update_two_factor_requirement
