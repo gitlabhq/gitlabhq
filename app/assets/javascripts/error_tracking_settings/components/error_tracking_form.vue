@@ -49,9 +49,9 @@ export default {
       </p>
     </div>
     <div class="form-group" :class="{ 'gl-show-field-errors': connectError }">
-      <label class="label-bold" for="error-tracking-token">{{
-        s__('ErrorTracking|Auth Token')
-      }}</label>
+      <label class="label-bold" for="error-tracking-token">
+        {{ s__('ErrorTracking|Auth Token') }}
+      </label>
       <div class="row">
         <div class="col-8 col-md-9 gl-pr-0">
           <gl-form-input
@@ -65,9 +65,8 @@ export default {
           <gl-button
             class="js-error-tracking-connect prepend-left-5"
             @click="$emit('handle-connect')"
+            >{{ __('Connect') }}</gl-button
           >
-            {{ __('Connect') }}
-          </gl-button>
           <icon
             v-show="connectSuccessful"
             class="js-error-tracking-connect-success prepend-left-5 text-success align-middle"

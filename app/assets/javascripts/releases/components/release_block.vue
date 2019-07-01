@@ -4,7 +4,7 @@ import { GlTooltipDirective, GlLink, GlBadge } from '@gitlab/ui';
 import Icon from '~/vue_shared/components/icon.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
-import { sprintf } from '../../locale';
+import { __, sprintf } from '../../locale';
 
 export default {
   name: 'ReleaseBlock',
@@ -27,13 +27,13 @@ export default {
   },
   computed: {
     releasedTimeAgo() {
-      return sprintf('released %{time}', {
+      return sprintf(__('released %{time}'), {
         time: this.timeFormated(this.release.created_at),
       });
     },
     userImageAltDescription() {
       return this.author && this.author.username
-        ? sprintf("%{username}'s avatar", { username: this.author.username })
+        ? sprintf(__("%{username}'s avatar"), { username: this.author.username })
         : null;
     },
     commit() {
