@@ -70,8 +70,6 @@ describe Admin::GroupsController do
     end
 
     it 'updates the subgroup_creation_level successfully' do
-      OWNER = ::Gitlab::Access::OWNER_SUBGROUP_ACCESS
-
       expect do
         post :update,
              params: { id: group.to_param,
