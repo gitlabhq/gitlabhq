@@ -3,6 +3,7 @@
 class Dashboard::ProjectsController < Dashboard::ApplicationController
   include ParamsBackwardCompatibility
   include RendersMemberAccess
+  include OnboardingExperimentHelper
 
   prepend_before_action(only: [:index]) { authenticate_sessionless_user!(:rss) }
   before_action :set_non_archived_param
