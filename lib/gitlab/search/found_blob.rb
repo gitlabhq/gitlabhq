@@ -28,7 +28,7 @@ module Gitlab
         @binary_data = opts.fetch(:data, nil)
         @per_page = opts.fetch(:per_page, 20)
         @project = opts.fetch(:project, nil)
-        # Some caller (e.g. Elasticsearch) does not have project object,
+        # Some callers (e.g. Elasticsearch) do not have the Project object,
         # yet they can trigger many calls in one go,
         # causing duplicated queries.
         # Allow those to just pass project_id instead.
