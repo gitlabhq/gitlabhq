@@ -89,7 +89,9 @@ export default {
         }}
       </p>
     </div>
-    <div v-else><p>No pods loaded at this time.</p></div>
+    <div v-else>
+      <p>{{ s__('ServerlessDetails|No pods loaded at this time.') }}</p>
+    </div>
 
     <area-chart v-if="hasPrometheusData" :graph-data="graphData" :container-width="elWidth" />
     <missing-prometheus

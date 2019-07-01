@@ -1,4 +1,5 @@
 <script>
+import { sprintf, s__ } from '~/locale';
 import { mapState, mapActions, mapGetters } from 'vuex';
 import { GlLoadingIcon } from '@gitlab/ui';
 import FunctionRow from './function_row.vue';
@@ -36,6 +37,28 @@ export default {
     },
     isInstalled() {
       return this.installed === true;
+    },
+    noServerlessConfigFile() {
+      return sprintf(
+        s__(
+          'Serverless|Your repository does not have a corresponding %{startTag}serverless.yml%{endTag} file.',
+        ),
+        { startTag: '<code>', endTag: '</code>' },
+      );
+    },
+    noGitlabYamlConfigured() {
+      return sprintf(
+        s__('Serverless|Your %{startTag}.gitlab-ci.yml%{endTag} file is not properly configured.'),
+        { startTag: '<code>', endTag: '</code>' },
+      );
+    },
+    mismatchedServerlessFunctions() {
+      return sprintf(
+        s__(
+          "Serverless|The functions listed in the %{startTag}serverless.yml%{endTag} file don't match the namespace of your cluster.",
+        ),
+        { startTag: '<code>', endTag: '</code>' },
+      );
     },
   },
   created() {
@@ -82,25 +105,29 @@ export default {
           <h4 class="state-title text-center">{{ s__('Serverless|No functions available') }}</h4>
           <p class="state-description">
             {{
-              s__(`Serverless|There is currently no function data available from Knative.
-                   This could be for a variety of reasons including:`)
+              s__(
+                'Serverless|There is currently no function data available from Knative. This could be for a variety of reasons including:',
+              )
             }}
           </p>
           <ul>
-            <li>Your repository does not have a corresponding <code>serverless.yml</code> file.</li>
-            <li>Your <code>.gitlab-ci.yml</code> file is not properly configured.</li>
             <li>
-              The functions listed in the <code>serverless.yml</code> file don't match the namespace
-              of your cluster.
+              {{ noServerlessConfigFile }}
             </li>
-            <li>The deploy job has not finished.</li>
+            <li>
+              {{ noGitlabYamlConfigured }}
+            </li>
+            <li>
+              {{ mismatchedServerlessFunctions }}
+            </li>
+            <li>{{ s__('Serverless|The deploy job has not finished.') }}</li>
           </ul>
 
           <p>
             {{
-              s__(`Serverless|If you believe none of these apply, please check
-                   back later as the function data may be in the process of becoming
-                   available.`)
+              s__(
+                'Serverless|If you believe none of these apply, please check back later as the function data may be in the process of becoming available.',
+              )
             }}
           </p>
           <div class="text-center">
