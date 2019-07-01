@@ -99,9 +99,9 @@ describe GroupPolicy do
     let(:current_user) { maintainer }
 
     context 'with subgroup_creation level set to maintainer' do
-      let(:group) { create(:group,
-                           :private,
-                           subgroup_creation_level: ::Gitlab::Access::MAINTAINER_SUBGROUP_ACCESS) }
+      let(:group) do
+        create(:group, :private, subgroup_creation_level: ::Gitlab::Access::MAINTAINER_SUBGROUP_ACCESS)
+      end
 
       it 'allows every maintainer permission plus creating subgroups' do
         allow(Group).to receive(:supports_nested_objects?).and_return(true)
@@ -207,10 +207,9 @@ describe GroupPolicy do
   end
 
   describe 'private nested group use the highest access level from the group and inherited permissions', :nested_groups do
-    let(:nested_group) { create(:group,
-                                :private,
-                                :owner_subgroup_creation_only,
-                                parent: group) }
+    let(:nested_group) do
+      create(:group, :private, :owner_subgroup_creation_only, parent: group)
+    end
 
     before do
       nested_group.add_guest(guest)

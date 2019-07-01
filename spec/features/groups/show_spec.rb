@@ -56,10 +56,14 @@ describe 'Group show page' do
   end
 
   context 'subgroup support' do
-    let(:restricted_group) { create(:group,
-                                    subgroup_creation_level: ::Gitlab::Access::OWNER_SUBGROUP_ACCESS) }
-    let(:relaxed_group) { create(:group,
-                                 subgroup_creation_level: ::Gitlab::Access::MAINTAINER_SUBGROUP_ACCESS) }
+    let(:restricted_group) do
+      create(:group, subgroup_creation_level: ::Gitlab::Access::OWNER_SUBGROUP_ACCESS) 
+    end
+
+    let(:relaxed_group) do
+      create(:group, subgroup_creation_level: ::Gitlab::Access::MAINTAINER_SUBGROUP_ACCESS) 
+    end
+
     let(:owner) { create(:user) }
     let(:maintainer) { create(:user) }
 
