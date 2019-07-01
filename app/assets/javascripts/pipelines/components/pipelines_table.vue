@@ -44,6 +44,11 @@ export default {
       cancelingPipeline: null,
     };
   },
+  watch: {
+    pipelines() {
+      this.cancelingPipeline = null;
+    },
+  },
   created() {
     eventHub.$on('openConfirmationModal', this.setModalData);
   },

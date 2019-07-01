@@ -736,10 +736,9 @@ describe('Pipelines', () => {
     });
 
     describe('when a request is being made', () => {
-      it('stops polling, cancels the request, fetches pipelines & restarts polling', done => {
+      it('stops polling, cancels the request, & restarts polling', done => {
         spyOn(vm.poll, 'stop');
         spyOn(vm.poll, 'restart');
-        spyOn(vm, 'getPipelines').and.returnValue(Promise.resolve());
         spyOn(vm.service.cancelationSource, 'cancel').and.callThrough();
 
         setTimeout(() => {
@@ -754,7 +753,6 @@ describe('Pipelines', () => {
               expect(vm.poll.stop).toHaveBeenCalled();
 
               setTimeout(() => {
-                expect(vm.getPipelines).toHaveBeenCalled();
                 expect(vm.poll.restart).toHaveBeenCalled();
                 done();
               }, 0);
@@ -765,10 +763,9 @@ describe('Pipelines', () => {
     });
 
     describe('when no request is being made', () => {
-      it('stops polling, fetches pipelines & restarts polling', done => {
+      it('stops polling & restarts polling', done => {
         spyOn(vm.poll, 'stop');
         spyOn(vm.poll, 'restart');
-        spyOn(vm, 'getPipelines').and.returnValue(Promise.resolve());
 
         setTimeout(() => {
           vm.$el.querySelector('.js-builds-dropdown-button').click();
@@ -776,7 +773,6 @@ describe('Pipelines', () => {
           expect(vm.poll.stop).toHaveBeenCalled();
 
           setTimeout(() => {
-            expect(vm.getPipelines).toHaveBeenCalled();
             expect(vm.poll.restart).toHaveBeenCalled();
             done();
           }, 0);

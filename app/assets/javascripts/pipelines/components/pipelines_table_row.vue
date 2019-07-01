@@ -241,7 +241,11 @@ export default {
       return this.cancelingPipeline === this.pipeline.id;
     },
   },
-
+  watch: {
+    pipeline() {
+      this.isRetrying = false;
+    },
+  },
   methods: {
     handleCancelClick() {
       eventHub.$emit('openConfirmationModal', {
