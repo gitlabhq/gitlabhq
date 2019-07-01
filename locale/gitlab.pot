@@ -5559,6 +5559,9 @@ msgstr ""
 msgid "Invite member"
 msgstr ""
 
+msgid "Invocations"
+msgstr ""
+
 msgid "Invoke Count"
 msgstr ""
 
@@ -9198,6 +9201,9 @@ msgstr ""
 msgid "ServerlessDetails|More information"
 msgstr ""
 
+msgid "ServerlessDetails|No pods loaded at this time."
+msgstr ""
+
 msgid "ServerlessDetails|Number of Kubernetes pods in use over time based on necessity."
 msgstr ""
 
@@ -9228,7 +9234,19 @@ msgstr ""
 msgid "Serverless|No functions available"
 msgstr ""
 
+msgid "Serverless|The deploy job has not finished."
+msgstr ""
+
+msgid "Serverless|The functions listed in the %{startTag}serverless.yml%{endTag} file don't match the namespace of your cluster."
+msgstr ""
+
 msgid "Serverless|There is currently no function data available from Knative. This could be for a variety of reasons including:"
+msgstr ""
+
+msgid "Serverless|Your %{startTag}.gitlab-ci.yml%{endTag} file is not properly configured."
+msgstr ""
+
+msgid "Serverless|Your repository does not have a corresponding %{startTag}serverless.yml%{endTag} file."
 msgstr ""
 
 msgid "Service"

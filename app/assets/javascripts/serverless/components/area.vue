@@ -4,6 +4,7 @@ import { debounceByAnimationFrame } from '~/lib/utils/common_utils';
 import dateFormat from 'dateformat';
 import { X_INTERVAL } from '../constants';
 import { validateGraphData } from '../utils';
+import { __ } from '~/locale';
 
 let debouncedResize;
 
@@ -42,7 +43,7 @@ export default {
     },
     generateSeries() {
       return {
-        name: 'Invocations',
+        name: __('Invocations'),
         type: 'line',
         data: this.chartData.requests.map(data => [data.time, data.value]),
         symbolSize: 0,
@@ -124,7 +125,9 @@ export default {
   <div class="prometheus-graph">
     <div class="prometheus-graph-header">
       <h5 ref="graphTitle" class="prometheus-graph-title">{{ graphData.title }}</h5>
-      <div ref="graphWidgets" class="prometheus-graph-widgets"><slot></slot></div>
+      <div ref="graphWidgets" class="prometheus-graph-widgets">
+        <slot></slot>
+      </div>
     </div>
     <gl-area-chart
       ref="areaChart"
@@ -135,12 +138,8 @@ export default {
       :width="width"
       :include-legend-avg-max="false"
     >
-      <template slot="tooltipTitle">
-        {{ tooltipPopoverTitle }}
-      </template>
-      <template slot="tooltipContent">
-        {{ tooltipPopoverContent }}
-      </template>
+      <template slot="tooltipTitle">{{ tooltipPopoverTitle }}</template>
+      <template slot="tooltipContent">{{ tooltipPopoverContent }}</template>
     </gl-area-chart>
   </div>
 </template>
