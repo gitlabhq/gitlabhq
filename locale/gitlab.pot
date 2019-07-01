@@ -3485,6 +3485,9 @@ msgstr ""
 msgid "Deploy key was successfully updated."
 msgstr ""
 
+msgid "Deploy to..."
+msgstr ""
+
 msgid "DeployKeys|+%{count} others"
 msgstr ""
 
@@ -10161,6 +10164,9 @@ msgid "Template"
 msgstr ""
 
 msgid "Templates"
+msgstr ""
+
+msgid "Terminal"
 msgstr ""
 
 msgid "Terminal for environment"
