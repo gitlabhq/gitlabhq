@@ -37,19 +37,8 @@ module EmailHelpers
     ActionMailer::Base.deliveries.find { |d| d.to.include?(user.notification_email) }
   end
 
-  def have_referable_subject(referable, include_project: true, include_group: false, reply: false)
-    context = []
-
-    context << referable.project.name if include_project && referable.project
-    context << referable.project.group.name if include_group && referable.project.group
-
-    prefix =
-      if context.any?
-        context.join(' | ') + ' | '
-      else
-        ''
-      end
-
+  def have_referable_subject(referable, include_project: true, reply: false)
+    prefix = (include_project && referable.project ? "#{referable.project.name} | " : '').freeze
     prefix = "Re: #{prefix}" if reply
 
     suffix = "#{referable.title} (#{referable.to_reference})"

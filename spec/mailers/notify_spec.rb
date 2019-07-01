@@ -606,7 +606,7 @@ describe Notify do
       it_behaves_like 'a user cannot unsubscribe through footer link'
 
       it 'has the correct subject and body' do
-        is_expected.to have_referable_subject(project_snippet, include_group: true, reply: true)
+        is_expected.to have_referable_subject(project_snippet, reply: true)
         is_expected.to have_body_text project_snippet_note.note
       end
     end
@@ -813,7 +813,7 @@ describe Notify do
 
         it 'has the correct subject and body' do
           aggregate_failures do
-            is_expected.to have_subject("Re: #{project.name} | #{project.group.name} | #{commit.title} (#{commit.short_id})")
+            is_expected.to have_subject("Re: #{project.name} | #{commit.title} (#{commit.short_id})")
             is_expected.to have_body_text(commit.short_id)
           end
         end
@@ -839,7 +839,7 @@ describe Notify do
 
         it 'has the correct subject and body' do
           aggregate_failures do
-            is_expected.to have_referable_subject(merge_request, include_group: true, reply: true)
+            is_expected.to have_referable_subject(merge_request, reply: true)
             is_expected.to have_body_text note_on_merge_request_path
           end
         end
@@ -865,7 +865,7 @@ describe Notify do
 
         it 'has the correct subject and body' do
           aggregate_failures do
-            is_expected.to have_referable_subject(issue, include_group: true, reply: true)
+            is_expected.to have_referable_subject(issue, reply: true)
             is_expected.to have_body_text(note_on_issue_path)
           end
         end
@@ -931,7 +931,7 @@ describe Notify do
         it_behaves_like 'appearance header and footer not enabled'
 
         it 'has the correct subject' do
-          is_expected.to have_subject "Re: #{project.name} | #{project.group.name} | #{commit.title} (#{commit.short_id})"
+          is_expected.to have_subject "Re: #{project.name} | #{commit.title} (#{commit.short_id})"
         end
 
         it 'contains a link to the commit' do
@@ -959,7 +959,7 @@ describe Notify do
         it_behaves_like 'appearance header and footer not enabled'
 
         it 'has the correct subject' do
-          is_expected.to have_referable_subject(merge_request, include_group: true, reply: true)
+          is_expected.to have_referable_subject(merge_request, reply: true)
         end
 
         it 'contains a link to the merge request note' do
@@ -987,7 +987,7 @@ describe Notify do
         it_behaves_like 'appearance header and footer not enabled'
 
         it 'has the correct subject' do
-          is_expected.to have_referable_subject(issue, include_group: true, reply: true)
+          is_expected.to have_referable_subject(issue, reply: true)
         end
 
         it 'contains a link to the issue note' do
