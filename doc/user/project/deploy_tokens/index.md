@@ -15,7 +15,7 @@ You can create as many deploy tokens as you like from the settings of your proje
 1. Go to the project you want to create Deploy Tokens for.
 1. Go to **Settings** > **Repository**.
 1. Click on "Expand" on **Deploy Tokens** section.
-1. Choose a name and optionally an expiry date for the token.
+1. Choose a name, expiry date (optional), and username (optional) for the token.
 1. Choose the [desired scopes](#limiting-scopes-of-a-deploy-token).
 1. Click on **Create deploy token**.
 1. Save the deploy token somewhere safe. Once you leave or refresh
@@ -38,6 +38,13 @@ the following table.
 | ----- | ----------- |
 | `read_repository` | Allows read-access to the repository through `git clone` |
 | `read_registry` | Allows read-access to [container registry] images if a project is private and authorization is required. |
+
+## Deploy token custom username
+
+> [Introduced][https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/29639] in GitLab 12.1.
+
+The default username format is `gitlab+deploy-token-#{n}`. Some tools or platforms may not support this format,
+in such case you can specify custom username to be used when creating the deploy token.
 
 ## Usage
 
