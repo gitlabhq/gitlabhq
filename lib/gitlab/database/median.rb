@@ -158,7 +158,7 @@ module Gitlab
               Arel::Nodes::Window.new.order(arel_table[column_sym])
             ).as('row_id')
 
-          count = arel_table.project("COUNT(1)").as('ct')
+          count = arel_table.where(arel_table[column_sym].gteq(zero_interval)).project("COUNT(1)").as('ct')
 
           [column_row, row_id, count]
         end
