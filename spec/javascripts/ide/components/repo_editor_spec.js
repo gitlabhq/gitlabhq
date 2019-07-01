@@ -14,7 +14,10 @@ describe('RepoEditor', () => {
   let vm;
 
   beforeEach(done => {
-    const f = file();
+    const f = {
+      ...file(),
+      viewMode: 'editor',
+    };
     const RepoEditor = Vue.extend(repoEditor);
 
     vm = createComponentWithStore(RepoEditor, store, {
@@ -41,12 +44,17 @@ describe('RepoEditor', () => {
     Editor.editorInstance.dispose();
   });
 
-  it('renders an ide container', done => {
-    Vue.nextTick(() => {
-      expect(vm.shouldHideEditor).toBeFalsy();
+  const findEditor = () => vm.$el.querySelector('.multi-file-editor-holder');
+  const changeRightPanelCollapsed = () => {
+    const { state } = vm.$store;
 
-      done();
-    });
+    state.rightPanelCollapsed = !state.rightPanelCollapsed;
+  };
+
+  it('renders an ide container', () => {
+    expect(vm.shouldHideEditor).toBeFalsy();
+    expect(vm.showEditor).toBe(true);
+    expect(findEditor()).not.toHaveCss({ display: 'none' });
   });
 
   it('renders only an edit tab', done => {
@@ -283,7 +291,7 @@ describe('RepoEditor', () => {
     });
 
     it('calls updateDimensions when rightPanelCollapsed is changed', done => {
-      vm.$store.state.rightPanelCollapsed = true;
+      changeRightPanelCollapsed();
 
       vm.$nextTick(() => {
         expect(vm.editor.updateDimensions).toHaveBeenCalled();
@@ -354,6 +362,47 @@ describe('RepoEditor', () => {
         expect(vm.$el.querySelector('.nav-links')).toBe(null);
 
         done();
+      });
+    });
+  });
+
+  describe('when files view mode is preview', () => {
+    beforeEach(done => {
+      spyOn(vm.editor, 'updateDimensions');
+      vm.file.viewMode = 'preview';
+      vm.$nextTick(done);
+    });
+
+    it('should hide editor', () => {
+      expect(vm.showEditor).toBe(false);
+      expect(findEditor()).toHaveCss({ display: 'none' });
+    });
+
+    it('should not update dimensions', done => {
+      changeRightPanelCollapsed();
+
+      vm.$nextTick()
+        .then(() => {
+          expect(vm.editor.updateDimensions).not.toHaveBeenCalled();
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+
+    describe('when file view mode changes to editor', () => {
+      beforeEach(done => {
+        vm.file.viewMode = 'editor';
+
+        // one tick to trigger watch
+        vm.$nextTick()
+          // another tick needed until we can update dimensions
+          .then(() => vm.$nextTick())
+          .then(done)
+          .catch(done.fail);
+      });
+
+      it('should update dimensions', () => {
+        expect(vm.editor.updateDimensions).toHaveBeenCalled();
       });
     });
   });
