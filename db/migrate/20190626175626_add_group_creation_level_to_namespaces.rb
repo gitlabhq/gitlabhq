@@ -7,18 +7,13 @@ class AddGroupCreationLevelToNamespaces < ActiveRecord::Migration[5.1]
   disable_ddl_transaction!
 
   def up
-    unless column_exists?(:namespaces, :subgroup_creation_level)
-      add_column_with_default(:namespaces,
-                              :subgroup_creation_level,
-                              :integer,
-                              default: 0)
-      change_column_default(:namespaces, :subgroup_creation_level, 1)
-    end
+    add_column(:namespaces, :subgroup_creation_level, :integer)
+    change_column_default(:namespaces,
+                          :subgroup_creation_level,
+                          ::Gitlab::Access::MAINTAINER_SUBGROUP_ACCESS)
   end
 
   def down
-    if column_exists?(:namespaces, :subgroup_creation_level)
-      remove_column(:namespaces, :subgroup_creation_level)
-    end
+    remove_column(:namespaces, :subgroup_creation_level)
   end
 end

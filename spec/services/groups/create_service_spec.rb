@@ -1,4 +1,3 @@
-# coding: utf-8
 # frozen_string_literal: true
 
 require 'spec_helper'
@@ -84,14 +83,6 @@ describe Groups::CreateService, '#execute' do
       context 'as owner' do
         before do
           group.add_owner(user)
-        end
-
-        it { is_expected.to be_persisted }
-      end
-
-      context 'as maintainer' do
-        before do
-          group.add_maintainer(user)
         end
 
         it { is_expected.to be_persisted }

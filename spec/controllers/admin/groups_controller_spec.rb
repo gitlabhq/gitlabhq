@@ -70,13 +70,11 @@ describe Admin::GroupsController do
     end
 
     it 'updates the subgroup_creation_level successfully' do
-      OWNER = ::Gitlab::Access::OWNER_SUBGROUP_ACCESS
-
       expect do
         post :update,
              params: { id: group.to_param,
-                       group: { subgroup_creation_level: OWNER } }
-      end.to change { group.reload.subgroup_creation_level }.to(OWNER)
+                       group: { subgroup_creation_level: ::Gitlab::Access::OWNER_SUBGROUP_ACCESS } }
+      end.to change { group.reload.subgroup_creation_level }.to(::Gitlab::Access::OWNER_SUBGROUP_ACCESS)
     end
   end
 end
