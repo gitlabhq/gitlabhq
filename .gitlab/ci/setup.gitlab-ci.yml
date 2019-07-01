@@ -15,7 +15,9 @@ cache gems:
     - setup-test-env
 
 gitlab_git_test:
-  extends: .dedicated-runner
+  extends:
+    - .dedicated-runner
+    - .no-docs-and-no-qa
   variables:
     SETUP_DB: "false"
   before_script: []
@@ -23,12 +25,11 @@ gitlab_git_test:
   cache: {}
   script:
     - spec/support/prepare-gitlab-git-test-for-commit --check-for-changes
-  except:
-    - /(^docs[\/-].*|.*-docs$)/
-    - /(^qa[\/-].*|.*-qa$)/
 
 no_ee_check:
-  extends: .dedicated-runner
+  extends:
+    - .dedicated-runner
+    - .no-docs-and-no-qa
   variables:
     SETUP_DB: "false"
   before_script: []
@@ -38,6 +39,3 @@ no_ee_check:
     - scripts/no-ee-check
   only:
     - /.+/@gitlab-org/gitlab-ce
-  except:
-    - /(^docs[\/-].*|.*-docs$)/
-    - /(^qa[\/-].*|.*-qa$)/

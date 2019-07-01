@@ -70,9 +70,10 @@ gitlab:assets:compile pull-cache:
   cache:
     policy: pull
   except:
-    - master@gitlab-org/gitlab-ce
-    - master@gitlab-org/gitlab-ee
-    - /(^docs[\/-].*|.*-docs$)/
+    refs:
+      - master@gitlab-org/gitlab-ce
+      - master@gitlab-org/gitlab-ee
+      - /(^docs[\/-].*|.*-docs$)/
 
 .compile-assets-metadata:
   extends: .dedicated-runner
@@ -107,9 +108,10 @@ compile-assets pull-cache:
   cache:
     policy: pull
   except:
-    - master@gitlab-org/gitlab-ce
-    - master@gitlab-org/gitlab-ee
-    - /(^docs[\/-].*|.*-docs$)/
+    refs:
+      - master@gitlab-org/gitlab-ce
+      - master@gitlab-org/gitlab-ee
+      - /(^docs[\/-].*|.*-docs$)/
 
 gitlab:ui:visual:
   extends: .dedicated-runner
