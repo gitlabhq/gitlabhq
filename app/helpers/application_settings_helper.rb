@@ -69,7 +69,7 @@ module ApplicationSettingsHelper
   # toggle button effect.
   def import_sources_checkboxes(help_block_id, options = {})
     Gitlab::ImportSources.options.map do |name, source|
-      checked = Gitlab::CurrentSettings.import_sources.include?(source)
+      checked = @application_setting.import_sources.include?(source)
       css_class = checked ? 'active' : ''
       checkbox_name = 'application_setting[import_sources][]'
 
@@ -85,7 +85,7 @@ module ApplicationSettingsHelper
 
   def oauth_providers_checkboxes
     button_based_providers.map do |source|
-      disabled = Gitlab::CurrentSettings.disabled_oauth_sign_in_sources.include?(source.to_s)
+      disabled = @application_setting.disabled_oauth_sign_in_sources.include?(source.to_s)
       css_class = ['btn']
       css_class << 'active' unless disabled
       checkbox_name = 'application_setting[enabled_oauth_sign_in_sources][]'

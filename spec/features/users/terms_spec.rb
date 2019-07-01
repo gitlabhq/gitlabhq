@@ -81,15 +81,18 @@ describe 'Users > Terms' do
 
         enforce_terms
 
-        within('.nav-sidebar') do
-          click_link 'Issues'
+        # Application settings are cached for a minute
+        Timecop.travel 2.minutes do
+          within('.nav-sidebar') do
+            click_link 'Issues'
+          end
+
+          expect_to_be_on_terms_page
+
+          click_button('Accept terms')
+
+          expect(current_path).to eq(project_issues_path(project))
         end
-
-        expect_to_be_on_terms_page
-
-        click_button('Accept terms')
-
-        expect(current_path).to eq(project_issues_path(project))
       end
 
       # Disabled until https://gitlab.com/gitlab-org/gitlab-ce/issues/37162 is solved properly
