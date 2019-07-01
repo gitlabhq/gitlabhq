@@ -71,7 +71,7 @@ describe 'Group show page' do
         sign_in(owner)
       end
 
-      context 'when subgroups are supported', :js, :nested_groups do
+      context 'when subgroups are supported', :nested_groups do
         before do
           allow(Group).to receive(:supports_nested_objects?) { true }
           visit path
@@ -101,7 +101,7 @@ describe 'Group show page' do
         sign_in(maintainer)
       end
 
-      context 'when subgroups are supported', :js, :nested_groups do
+      context 'when subgroups are supported', :nested_groups do
         before do
           allow(Group).to receive(:supports_nested_objects?) { true }
         end
