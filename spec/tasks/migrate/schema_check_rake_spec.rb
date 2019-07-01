@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'rake'
 
-describe 'schema_version_check rake task' do
+describe 'schema_version_check rake task', :quarantine do
   include StubENV
 
   before :all do
