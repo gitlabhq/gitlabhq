@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 describe Projects::IssuesController do
+  include ProjectForksHelper
+
   let(:project) { create(:project) }
   let(:user)    { create(:user) }
   let(:issue)   { create(:issue, project: project) }
@@ -1130,6 +1132,7 @@ describe Projects::IssuesController do
   end
 
   describe 'POST create_merge_request' do
+    let(:target_project_id) { nil }
     let(:project) { create(:project, :repository, :public) }
 
     before do
@@ -1163,13 +1166,42 @@ describe Projects::IssuesController do
       expect(response).to have_gitlab_http_status(404)
     end
 
+    context 'target_project_id is set' do
+      let(:target_project) { fork_project(project, user, repository: true) }
+      let(:target_project_id) { target_project.id }
+
+      context 'create_confidential_merge_request feature is enabled' do
+        before do
+          stub_feature_flags(create_confidential_merge_request: true)
+        end
+
+        it 'creates a new merge request' do
+          expect { create_merge_request }.to change(target_project.merge_requests, :count).by(1)
+        end
+      end
+
+      context 'create_confidential_merge_request feature is disabled' do
+        before do
+          stub_feature_flags(create_confidential_merge_request: false)
+        end
+
+        it 'creates a new merge request' do
+          expect { create_merge_request }.to change(project.merge_requests, :count).by(1)
+        end
+      end
+    end
+
     def create_merge_request
-      post :create_merge_request, params: {
-                                    namespace_id: project.namespace.to_param,
-                                    project_id: project.to_param,
-                                    id: issue.to_param
-                                  },
-                                  format: :json
+      post(
+        :create_merge_request,
+        params: {
+          namespace_id: project.namespace.to_param,
+          project_id: project.to_param,
+          id: issue.to_param,
+          target_project_id: target_project_id
+        },
+        format: :json
+      )
     end
   end
 

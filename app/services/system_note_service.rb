@@ -404,8 +404,9 @@ module SystemNoteService
   # Example note text:
   #
   #   "created branch `201-issue-branch-button`"
-  def new_issue_branch(issue, project, author, branch)
-    link = url_helpers.project_compare_path(project, from: project.default_branch, to: branch)
+  def new_issue_branch(issue, project, author, branch, branch_project: nil)
+    branch_project ||= project
+    link = url_helpers.project_compare_path(branch_project, from: branch_project.default_branch, to: branch)
 
     body = "created branch [`#{branch}`](#{link}) to address this issue"
 
@@ -413,7 +414,7 @@ module SystemNoteService
   end
 
   def new_merge_request(issue, project, author, merge_request)
-    body = "created merge request #{merge_request.to_reference} to address this issue"
+    body = "created merge request #{merge_request.to_reference(project)} to address this issue"
 
     create_note(NoteSummary.new(issue, project, author, body, action: 'merge'))
   end

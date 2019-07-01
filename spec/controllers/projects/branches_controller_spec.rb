@@ -92,7 +92,7 @@ describe Projects::BranchesController do
       end
 
       it 'posts a system note' do
-        expect(SystemNoteService).to receive(:new_issue_branch).with(issue, project, user, "1-feature-branch")
+        expect(SystemNoteService).to receive(:new_issue_branch).with(issue, project, user, "1-feature-branch", branch_project: project)
 
         post :create,
              params: {
@@ -101,6 +101,75 @@ describe Projects::BranchesController do
                branch_name: branch,
                issue_iid: issue.iid
              }
+      end
+
+      context 'confidential_issue_project_id is present' do
+        let(:confidential_issue_project) { create(:project) }
+
+        def create_branch_with_confidential_issue_project
+          post(
+            :create,
+            params: {
+              namespace_id: project.namespace,
+              project_id: project,
+              branch_name: branch,
+              confidential_issue_project_id: confidential_issue_project.id,
+              issue_iid: issue.iid
+            }
+          )
+        end
+
+        context 'create_confidential_merge_request feature is enabled' do
+          before do
+            stub_feature_flags(create_confidential_merge_request: true)
+          end
+
+          context 'user cannot update issue' do
+            let(:issue) { create(:issue, project: confidential_issue_project) }
+
+            it 'does not post a system note' do
+              expect(SystemNoteService).not_to receive(:new_issue_branch)
+
+              create_branch_with_confidential_issue_project
+            end
+          end
+
+          context 'user can update issue' do
+            before do
+              confidential_issue_project.add_reporter(user)
+            end
+
+            context 'issue is under the specified project' do
+              let(:issue) { create(:issue, project: confidential_issue_project) }
+
+              it 'posts a system note' do
+                expect(SystemNoteService).to receive(:new_issue_branch).with(issue, confidential_issue_project, user, "1-feature-branch", branch_project: project)
+
+                create_branch_with_confidential_issue_project
+              end
+            end
+
+            context 'issue is not under the specified project' do
+              it 'does not post a system note' do
+                expect(SystemNoteService).not_to receive(:new_issue_branch)
+
+                create_branch_with_confidential_issue_project
+              end
+            end
+          end
+        end
+
+        context 'create_confidential_merge_request feature is disabled' do
+          before do
+            stub_feature_flags(create_confidential_merge_request: false)
+          end
+
+          it 'posts a system note on project' do
+            expect(SystemNoteService).to receive(:new_issue_branch).with(issue, project, user, "1-feature-branch", branch_project: project)
+
+            create_branch_with_confidential_issue_project
+          end
+        end
       end
 
       context 'repository-less project' do
