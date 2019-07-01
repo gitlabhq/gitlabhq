@@ -123,7 +123,7 @@ Check this [page](vuex.md) for more details.
 ### Mixing Vue and jQuery
 
 - Mixing Vue and jQuery is not recommended.
-- If you need to use a specific jQuery plugin in Vue, [create a wrapper around it][https://vuejs.org/v2/examples/select2.html].
+- If you need to use a specific jQuery plugin in Vue, [create a wrapper around it](https://vuejs.org/v2/examples/select2.html).
 - It is acceptable for Vue to listen to existing jQuery events using jQuery event listeners.
 - It is not recommended to add new jQuery events for Vue to interact with jQuery.
 
