@@ -103,7 +103,7 @@ describe GroupPolicy do
                            :private,
                            subgroup_creation_level: ::Gitlab::Access::MAINTAINER_SUBGROUP_ACCESS) }
 
-      it do
+      it 'allows every maintainer permission plus creating subgroups' do
         allow(Group).to receive(:supports_nested_objects?).and_return(true)
 
         create_subgroup_permission = [:create_subgroup]
@@ -121,7 +121,7 @@ describe GroupPolicy do
     end
 
     context 'with subgroup_creation_level set to owner' do
-      it do
+      it 'allows every maintainer permission' do
         allow(Group).to receive(:supports_nested_objects?).and_return(true)
 
         expect_allowed(*guest_permissions)
