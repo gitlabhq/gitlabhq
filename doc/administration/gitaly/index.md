@@ -48,7 +48,7 @@ used by Omnibus and the GitLab source installation guide.
 Starting with GitLab 11.4, Gitaly is able to serve all Git requests without
 needed a shared NFS mount for Git repository data.
 Between 11.4 and 11.8 the exception was the
-[Elastic Search indexer](https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer).
+[Elasticsearch indexer](https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer).
 But since 11.8 the indexer uses Gitaly for data access as well. NFS can still
 be leveraged for redudancy on block level of the Git data. But only has to
 be mounted on the Gitaly server.

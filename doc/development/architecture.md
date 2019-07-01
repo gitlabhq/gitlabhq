@@ -93,8 +93,8 @@ graph TB
   Prometheus --> Alertmanager
   Migrations --> PostgreSQL
   Runner -- TCP 443 --> NGINX
-  Unicorn -- TCP 9200 --> ElasticSearch
-  Sidekiq -- TCP 9200 --> ElasticSearch
+  Unicorn -- TCP 9200 --> Elasticsearch
+  Sidekiq -- TCP 9200 --> Elasticsearch
   Sidekiq -- TCP 80, 443 --> Sentry
   Unicorn -- TCP 80, 443 --> Sentry
   Sidekiq -- UDP 6831 --> Jaeger
@@ -158,7 +158,7 @@ Component statuses are linked to configuration documentation for each component.
 | [LDAP Authentication](#ldap-authentication) | Authenticate users against centralized LDAP directory | [⤓][ldap-omnibus] | [⤓][ldap-charts] | [⤓][ldap-charts] | [❌](https://about.gitlab.com/pricing/#gitlab-com) | [⤓][gitlab-yml] | [⤓][ldap-gdk] | CE & EE |
 | [Outbound email (SMTP)](#outbound-email) | Send email messages to users | [⤓][outbound-email-omnibus] | [⤓][outbound-email-charts] | [⤓][outbound-email-charts] | [✅](../user/gitlab_com/index.md#mail-configuration) | [⤓][gitlab-yml] | [⤓][gitlab-yml] | CE & EE |
 | [Inbound email (SMTP)](#inbound-email) | Receive messages to update issues | [⤓][inbound-email-omnibus] | [⤓][inbound-email-charts] | [⤓][inbound-email-charts] | [✅](../user/gitlab_com/index.md#mail-configuration) | [⤓][gitlab-yml] | [⤓][gitlab-yml] |  CE & EE |
-| [ElasticSearch](#elasticsearch) | Improved search within GitLab | [⤓][elasticsearch-omnibus] | [⤓][elasticsearch-charts] | [⤓][elasticsearch-charts] | [❌](https://gitlab.com/groups/gitlab-org/-/epics/153) | [⤓][elasticsearch-source] | [⤓][elasticsearch-gdk] | EE Only |
+| [Elasticsearch](#elasticsearch) | Improved search within GitLab | [⤓][elasticsearch-omnibus] | [⤓][elasticsearch-charts] | [⤓][elasticsearch-charts] | [❌](https://gitlab.com/groups/gitlab-org/-/epics/153) | [⤓][elasticsearch-source] | [⤓][elasticsearch-gdk] | EE Only |
 | [Sentry integration](#sentry) | Error tracking for deployed apps | [⤓][sentry-integration] | [⤓][sentry-integration] | [⤓][sentry-integration] | [⤓][sentry-integration] | [⤓][sentry-integration] | [⤓][sentry-integration] | CE & EE |
 | [Jaeger integration](#jaeger) | Distributed tracing for deployed apps | [⤓][jaeger-integration] | [⤓][jaeger-integration] | [⤓][jaeger-integration] | [⤓][jaeger-integration] | [⤓][jaeger-integration] | [⤓][jaeger-integration] | EE Only |
 | [GitLab Managed Apps](#gitlab-managed-apps) | Deploy [Helm](https://docs.helm.sh/), [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/), [Cert-Manager](https://docs.cert-manager.io/en/latest/), [Prometheus](https://prometheus.io/docs/introduction/overview/), a [Runner](https://docs.gitlab.com/runner/), [JupyterHub](http://jupyter.org/), [Knative](https://cloud.google.com/knative) to a cluster | [⤓][managed-k8s-apps] | [⤓][managed-k8s-apps] | [⤓][managed-k8s-apps] | [⤓][managed-k8s-apps] | [⤓][managed-k8s-apps] | [⤓][managed-k8s-apps] | CE & EE |
