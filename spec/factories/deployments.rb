@@ -22,6 +22,10 @@ FactoryBot.define do
       ref 'pages-deploy'
     end
 
+    trait :on_cluster do
+      cluster factory: %i(cluster provided_by_gcp)
+    end
+
     trait :running do
       status :running
     end

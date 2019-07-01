@@ -7,6 +7,7 @@ describe Deployment do
 
   it { is_expected.to belong_to(:project).required }
   it { is_expected.to belong_to(:environment).required }
+  it { is_expected.to belong_to(:cluster).class_name('Clusters::Cluster') }
   it { is_expected.to belong_to(:user) }
   it { is_expected.to belong_to(:deployable) }
 
@@ -290,6 +291,67 @@ describe Deployment do
         commit = project.commit
 
         expect(deployment.includes_commit?(commit)).to be false
+      end
+    end
+  end
+
+  describe '#has_metrics?' do
+    subject { deployment.has_metrics? }
+
+    context 'when deployment is failed' do
+      let(:deployment) { create(:deployment, :failed) }
+
+      it { is_expected.to be_falsy }
+    end
+
+    context 'when deployment is success' do
+      let(:deployment) { create(:deployment, :success) }
+
+      context 'without a monitoring service' do
+        it { is_expected.to be_falsy }
+      end
+
+      context 'with a Prometheus Service' do
+        let(:prometheus_service) { double(:prometheus_service, can_query?: true) }
+
+        before do
+          allow(deployment.project).to receive(:find_or_initialize_service).with('prometheus').and_return prometheus_service
+        end
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'with a Prometheus Service that cannot query' do
+        let(:prometheus_service) { double(:prometheus_service, can_query?: false) }
+
+        before do
+          allow(deployment.project).to receive(:find_or_initialize_service).with('prometheus').and_return prometheus_service
+        end
+
+        it { is_expected.to be_falsy }
+      end
+
+      context 'with a cluster Prometheus' do
+        let(:deployment) { create(:deployment, :success, :on_cluster) }
+        let!(:prometheus) { create(:clusters_applications_prometheus, :installed, cluster: deployment.cluster) }
+
+        before do
+          expect(deployment.cluster.application_prometheus).to receive(:can_query?).and_return(true)
+        end
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'fallback deployment platform' do
+        let(:cluster) { create(:cluster, :provided_by_user, environment_scope: '*', projects: [deployment.project]) }
+        let!(:prometheus) { create(:clusters_applications_prometheus, :installed, cluster: cluster) }
+
+        before do
+          expect(deployment.project).to receive(:deployment_platform).and_return(cluster.platform)
+          expect(cluster.application_prometheus).to receive(:can_query?).and_return(true)
+        end
+
+        it { is_expected.to be_truthy }
       end
     end
   end

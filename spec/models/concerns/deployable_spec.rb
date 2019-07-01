@@ -7,10 +7,6 @@ describe Deployable do
     let(:deployment) { job.deployment }
     let(:environment) { deployment&.environment }
 
-    before do
-      job.reload
-    end
-
     context 'when the deployable object will deploy to production' do
       let!(:job) { create(:ci_build, :start_review_app) }
 
@@ -23,6 +19,16 @@ describe Deployable do
         expect(deployment.deployable).to eq(job)
         expect(deployment.on_stop).to eq('stop_review_app')
         expect(environment.name).to eq('review/master')
+      end
+    end
+
+    context 'when the deployable object will deploy to a cluster' do
+      let(:project) { create(:project) }
+      let!(:cluster) { create(:cluster, :provided_by_user, projects: [project]) }
+      let!(:job) { create(:ci_build, :start_review_app, project: project) }
+
+      it 'creates a deployment with cluster association' do
+        expect(deployment.cluster).to eq(cluster)
       end
     end
 
