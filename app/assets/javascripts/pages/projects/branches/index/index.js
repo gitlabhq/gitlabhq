@@ -5,5 +5,5 @@ import initDiverganceGraph from '~/branches/divergence_graph';
 document.addEventListener('DOMContentLoaded', () => {
   AjaxLoadingSpinner.init();
   new DeleteModal(); // eslint-disable-line no-new
-  initDiverganceGraph();
+  initDiverganceGraph(document.querySelector('.js-branch-list').dataset.divergingCountsEndpoint);
 });

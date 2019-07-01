@@ -4133,6 +4133,9 @@ msgstr ""
 msgid "Error fetching contributors data."
 msgstr ""
 
+msgid "Error fetching diverging counts for branches. Please try again."
+msgstr ""
+
 msgid "Error fetching labels."
 msgstr ""
 
