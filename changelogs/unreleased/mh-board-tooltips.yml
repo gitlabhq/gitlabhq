@@ -1,0 +1,5 @@
+---
+title: "'Open' and 'Closed' issue board lists no longer display a redundant tooltip"
+merge_request: 30187
+author:
+type: fixed
