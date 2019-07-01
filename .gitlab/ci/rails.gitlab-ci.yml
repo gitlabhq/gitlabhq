@@ -20,8 +20,9 @@
     - master@gitlab/gitlab-ee
 
 .gitlab-setup: &gitlab-setup
-  extends: .dedicated-no-docs-and-no-qa-pull-cache-job
-  <<: *use-pg
+  extends:
+    - .dedicated-no-docs-and-no-qa-pull-cache-job
+    - .use-pg
   variables:
     SETUP_DB: "false"
   script:
@@ -43,7 +44,9 @@
     - bundle exec rake $CI_JOB_NAME
 
 .rspec-metadata: &rspec-metadata
-  extends: .dedicated-pull-cache-job
+  extends:
+    - .dedicated-pull-cache-job
+    - .no-docs-and-no-qa
   stage: test
   script:
     - JOB_NAME=( $CI_JOB_NAME )
@@ -76,9 +79,6 @@
       - tmp/capybara/
     reports:
       junit: junit_rspec.xml
-  except:
-    - /(^docs[\/-].*|.*-docs$)/
-    - /(^qa[\/-].*|.*-qa$)/
 
 .rspec-metadata-pg: &rspec-metadata-pg
   <<: *rspec-metadata
@@ -122,8 +122,10 @@
     - setup-test-env
 
 setup-test-env:
-  extends: .dedicated-runner-default-cache
-  <<: *use-pg
+  extends:
+    - .dedicated-runner-default-cache
+    - .no-docs
+    - .use-pg
   stage: prepare
   script:
     - bundle exec ruby -Ispec -e 'require "spec_helper" ; TestEnv.init'
@@ -134,8 +136,6 @@ setup-test-env:
       - tmp/tests
       - config/secrets.yml
       - vendor/gitaly-ruby
-  except:
-    - /(^docs[\/-].*|.*-docs$)/
 
 rspec unit pg:
   <<: *rspec-metadata-pg
@@ -200,11 +200,12 @@ static-analysis:
 downtime_check:
   <<: *rake-exec
   except:
-    - master
-    - tags
-    - /^[\d-]+-stable(-ee)?$/
-    - /(^docs[\/-].*|.*-docs$)/
-    - /(^qa[\/-].*|.*-qa$)/
+    refs:
+      - master
+      - tags
+      - /^[\d-]+-stable(-ee)?$/
+      - /(^docs[\/-].*|.*-docs$)/
+      - /(^qa[\/-].*|.*-qa$)/
   dependencies:
     - setup-test-env
 
@@ -212,12 +213,13 @@ ee_compat_check:
   <<: *rake-exec
   dependencies: []
   except:
-    - master
-    - tags
-    - /[\d-]+-stable(-ee)?/
-    - /^security-/
-    - branches@gitlab-org/gitlab-ee
-    - branches@gitlab/gitlab-ee
+    refs:
+      - master
+      - tags
+      - /[\d-]+-stable(-ee)?/
+      - /^security-/
+      - branches@gitlab-org/gitlab-ee
+      - branches@gitlab/gitlab-ee
   retry: 0
   artifacts:
     name: "${CI_JOB_NAME}_${CI_COMIT_REF_NAME}_${CI_COMMIT_SHA}"
@@ -261,7 +263,9 @@ gitlab:setup-pg:
 coverage:
   # Don't include dedicated-no-docs-no-db-pull-cache-job here since we need to
   # download artifacts from all the rspec jobs instead of from setup-test-env only
-  extends: .dedicated-runner-default-cache
+  extends:
+    - .dedicated-runner-default-cache
+    - .no-docs-and-no-qa
   cache:
     policy: pull
   variables:
@@ -276,6 +280,3 @@ coverage:
     paths:
       - coverage/index.html
       - coverage/assets/
-  except:
-    - /(^docs[\/-].*|.*-docs$)/
-    - /(^qa[\/-].*|.*-qa$)/

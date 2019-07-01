@@ -30,7 +30,14 @@
 
 .no-docs:
   except:
-    - /(^docs[\/-].*|.*-docs$)/
+    refs:
+      - /(^docs[\/-].*|.*-docs$)/
+
+.no-docs-and-no-qa:
+  except:
+    refs:
+      - /(^docs[\/-].*|.*-docs$)/
+      - /(^qa[\/-].*|.*-qa$)/
 
 .dedicated-no-docs-pull-cache-job:
   extends:
@@ -38,10 +45,9 @@
     - .no-docs
 
 .dedicated-no-docs-and-no-qa-pull-cache-job:
-  extends: .dedicated-pull-cache-job
-  except:
-    - /(^docs[\/-].*|.*-docs$)/
-    - /(^qa[\/-].*|.*-qa$)/
+  extends:
+    - .dedicated-pull-cache-job
+    - .no-docs-and-no-qa
 
 # Jobs that do not need a DB
 .dedicated-no-docs-no-db-pull-cache-job:
