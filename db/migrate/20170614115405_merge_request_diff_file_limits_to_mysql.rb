@@ -1,1 +1,0 @@
-require_relative 'merge_request_diff_file_limits_to_mysql'
