@@ -5,6 +5,9 @@
 Connect your project to Google Kubernetes Engine (GKE) or an existing Kubernetes
 cluster in a few steps.
 
+NOTE: **Scalable app deployment with GitLab and Google Cloud Platform**
+[Watch the webcast](https://about.gitlab.com/webcast/scalable-app-deploy/) and learn how to spin up a Kubernetes cluster managed by Google Cloud Platform (GCP) in a few clicks.
+
 ## Overview
 
 With one or more Kubernetes clusters associated to your project, you can use
