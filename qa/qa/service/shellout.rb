@@ -19,7 +19,7 @@ module QA
         Open3.popen2e(*command) do |stdin, out, wait|
           stdin.puts(stdin_data) if stdin_data
           stdin.close if stdin_data
-          out.each { |line| puts line }
+          out.each_char { |char| print char }
 
           if wait.value.exited? && wait.value.exitstatus.nonzero?
             raise CommandError, "Command `#{command}` failed!"
