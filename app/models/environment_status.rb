@@ -33,6 +33,10 @@ class EnvironmentStatus
     end
   end
 
+  def has_metrics?
+    DeploymentMetrics.new(project, deployment).has_metrics?
+  end
+
   def changes
     return [] if project.route_map_for(sha).nil?
 
