@@ -85,11 +85,6 @@ class Deployment < ApplicationRecord
     Commit.truncate_sha(sha)
   end
 
-  # Deprecated - will be replaced by a persisted cluster_id
-  def deployment_platform_cluster
-    environment.deployment_platform&.cluster
-  end
-
   def execute_hooks
     deployment_data = Gitlab::DataBuilder::Deployment.build(self)
     project.execute_services(deployment_data, :deployment_hooks)

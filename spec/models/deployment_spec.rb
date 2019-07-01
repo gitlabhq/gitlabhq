@@ -322,32 +322,4 @@ describe Deployment do
       end
     end
   end
-
-  describe '#deployment_platform_cluster' do
-    let(:deployment) { create(:deployment) }
-    let(:project) { deployment.project }
-    let(:environment) { deployment.environment }
-
-    subject { deployment.deployment_platform_cluster }
-
-    before do
-      expect(project).to receive(:deployment_platform)
-        .with(environment: environment.name).and_call_original
-    end
-
-    context 'project has no deployment platform' do
-      before do
-        expect(project.clusters).to be_empty
-      end
-
-      it { is_expected.to be_nil }
-    end
-
-    context 'project has a deployment platform' do
-      let!(:cluster) { create(:cluster, projects: [project]) }
-      let!(:platform) { create(:cluster_platform_kubernetes, cluster: cluster) }
-
-      it { is_expected.to eq cluster }
-    end
-  end
 end
