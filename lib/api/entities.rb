@@ -1666,5 +1666,9 @@ module API
     class ClusterProject < Cluster
       expose :project, using: Entities::BasicProjectDetails
     end
+
+    class ClusterGroup < Cluster
+      expose :group, using: Entities::BasicGroupDetails
+    end
   end
 end
