@@ -11,7 +11,9 @@ module QA
 
       attribute :id
       attribute :name
+      attribute :add_name_uuid
       attribute :description
+      attribute :standalone
 
       attribute :group do
         Group.fabricate!
@@ -38,18 +40,21 @@ module QA
       end
 
       def initialize
+        @add_name_uuid = true
+        @standalone = false
         @description = 'My awesome project'
         @initialize_with_readme = false
       end
 
       def name=(raw_name)
-        @name = "#{raw_name}-#{SecureRandom.hex(8)}"
+        @name = @add_name_uuid ? "#{raw_name}-#{SecureRandom.hex(8)}" : raw_name
       end
 
       def fabricate!
-        group.visit!
-
-        Page::Group::Show.perform(&:go_to_new_project)
+        unless @standalone
+          group.visit!
+          Page::Group::Show.perform(&:go_to_new_project)
+        end
 
         Page::Project::New.perform do |page|
           page.choose_test_namespace
@@ -71,19 +76,28 @@ module QA
         "/projects/#{CGI.escape(path_with_namespace)}"
       end
 
+      def api_get_archive_path(type = 'tar.gz')
+        "#{api_get_path}/repository/archive.#{type}"
+      end
+
       def api_post_path
         '/projects'
       end
 
       def api_post_body
-        {
-          namespace_id: group.id,
-          path: name,
+        post_body = {
           name: name,
           description: description,
           visibility: 'public',
           initialize_with_readme: @initialize_with_readme
         }
+
+        unless @standalone
+          post_body[:namespace_id] = group.id
+          post_body[:path] = name
+        end
+
+        post_body
       end
 
       private

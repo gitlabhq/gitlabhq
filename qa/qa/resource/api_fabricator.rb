@@ -13,6 +13,8 @@ module QA
       ResourceURLMissingError = Class.new(RuntimeError)
 
       attr_reader :api_resource, :api_response
+      attr_writer :api_client
+      attr_accessor :user
 
       def api_support?
         respond_to?(:api_get_path) &&
@@ -29,9 +31,12 @@ module QA
       end
 
       def eager_load_api_client!
+        return unless api_client.nil?
+
         api_client.tap do |client|
           # Eager-load the API client so that the personal token creation isn't
           # taken in account in the actual resource creation timing.
+          client.user = user
           client.personal_access_token
         end
       end
@@ -76,7 +81,7 @@ module QA
 
       def api_client
         @api_client ||= begin
-          Runtime::API::Client.new(:gitlab, is_new_session: !current_url.start_with?('http'))
+          Runtime::API::Client.new(:gitlab, is_new_session: !current_url.start_with?('http'), user: user)
         end
       end
 
