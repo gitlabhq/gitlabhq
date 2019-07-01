@@ -50,6 +50,43 @@ describe MarkupHelper do
         expect(markdown(actual, project: second_project)).to match(expected)
       end
     end
+
+    describe 'uploads' do
+      let(:text) { "![ImageTest](/uploads/test.png)" }
+      let(:group) { create(:group) }
+
+      subject { helper.markdown(text) }
+
+      describe 'inside a project' do
+        it 'renders uploads relative to project' do
+          expect(subject).to include("#{project.full_path}/uploads/test.png")
+        end
+      end
+
+      describe 'inside a group' do
+        before do
+          helper.instance_variable_set(:@group, group)
+          helper.instance_variable_set(:@project, nil)
+        end
+
+        it 'renders uploads relative to the group' do
+          expect(subject).to include("#{group.full_path}/-/uploads/test.png")
+        end
+      end
+
+      describe "with a group in the context" do
+        let(:project_in_group) { create(:project, group: group) }
+
+        before do
+          helper.instance_variable_set(:@group, group)
+          helper.instance_variable_set(:@project, project_in_group)
+        end
+
+        it 'renders uploads relative to project' do
+          expect(subject).to include("#{project_in_group.path_with_namespace}/uploads/test.png")
+        end
+      end
+    end
   end
 
   describe '#markdown_field' do
