@@ -2,6 +2,7 @@
 
 module Mutations
   class BaseMutation < GraphQL::Schema::RelayClassicMutation
+    prepend Gitlab::Graphql::Authorize::AuthorizeResource
     prepend Gitlab::Graphql::CopyFieldDescription
 
     field :errors, [GraphQL::STRING_TYPE],
