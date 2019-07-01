@@ -3,7 +3,7 @@
 require 'rails_helper'
 require Rails.root.join("db", "importers", "common_metrics_importer.rb")
 
-describe Importers::CommonMetrics::PrometheusMetric do
+describe Gitlab::Importers::CommonMetrics::PrometheusMetric do
   let(:existing_group_titles) do
     ::PrometheusMetricEnums.group_details.each_with_object({}) do |(key, value), memo|
       memo[key] = value[:group_title]
@@ -15,7 +15,7 @@ describe Importers::CommonMetrics::PrometheusMetric do
   end
 
   it 'GROUP_TITLES equals ::PrometheusMetric' do
-    expect(Importers::CommonMetrics::PrometheusMetricEnums.group_titles).to eq(existing_group_titles)
+    expect(Gitlab::Importers::CommonMetrics::PrometheusMetricEnums.group_titles).to eq(existing_group_titles)
   end
 end
 
@@ -104,7 +104,7 @@ describe Importers::CommonMetricsImporter do
       let(:query_identifier) { }
 
       it 'raises exception' do
-        expect { subject.execute }.to raise_error(Importers::CommonMetrics::Importer::MissingQueryId)
+        expect { subject.execute }.to raise_error(Gitlab::Importers::CommonMetrics::Importer::MissingQueryId)
       end
     end
 

@@ -1,3 +1,9 @@
-# This functionality has been moved to the common_metrics module.
+# This functionality has been moved to the lib/gitlab/importers/common_metrics module.
 # This is here only to preserve existing ::Importers::CommonMetricsImporter api
-require_relative './common_metrics'
+module Importers
+  module CommonMetricsImporter
+    def self.new(*args)
+      Gitlab::Importers::CommonMetrics::Importer.new(*args)
+    end
+  end
+end
