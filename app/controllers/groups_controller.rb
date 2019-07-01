@@ -201,8 +201,7 @@ class GroupsController < Groups::ApplicationController
     params[:sort] ||= 'latest_activity_desc'
 
     options = {}
-    options[:only_owned] = true if params[:shared] == '0'
-    options[:only_shared] = true if params[:shared] == '1'
+    options[:include_subgroups] = true
 
     @projects = GroupProjectsFinder.new(params: params, group: group, options: options, current_user: current_user)
                   .execute
