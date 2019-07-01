@@ -2272,6 +2272,9 @@ msgstr ""
 msgid "ClusterIntegration|Advanced options on this Kubernetes cluster's integration"
 msgstr ""
 
+msgid "ClusterIntegration|All data not committed to GitLab will be deleted and cannot be restored."
+msgstr ""
+
 msgid "ClusterIntegration|All data will be deleted and cannot be restored."
 msgstr ""
 
