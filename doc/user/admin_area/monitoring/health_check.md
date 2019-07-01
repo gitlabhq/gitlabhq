@@ -41,42 +41,51 @@ The readiness and liveness probes will provide a report of system health in JSON
 
 ```json
 {
-   "queues_check" : {
-      "status" : "ok"
+   "db_check":{
+      "status":"ok"
    },
-   "redis_check" : {
-      "status" : "ok"
+   "redis_check":{
+      "status":"ok"
    },
-   "shared_state_check" : {
-      "status" : "ok"
+   "cache_check":{
+      "status":"ok"
    },
-   "db_check" : {
-      "status" : "ok"
+   "queues_check":{
+      "status":"ok"
    },
-   "cache_check" : {
-      "status" : "ok"
+   "shared_state_check":{
+      "status":"ok"
+   },
+   "gitaly_check":{
+      "status":"ok",
+      "labels":{
+         "shard":"default"
+         }
+      }
    }
-}
 ```
 
 `liveness` probe example output:
 
 ```json
 {
-   "cache_check" : {
-      "status" : "ok"
+   "db_check":{
+      "status":"ok"
    },
-   "db_check" : {
-      "status" : "ok"
+   "redis_check":{
+      "status":"ok"
    },
-   "redis_check" : {
-      "status" : "ok"
+   "cache_check":{
+      "status":"ok"
    },
-   "queues_check" : {
-      "status" : "ok"
+   "queues_check":{
+      "status":"ok"
    },
-   "shared_state_check" : {
-      "status" : "ok"
+   "shared_state_check":{
+      "status":"ok"
+   },
+   "gitaly_check":{
+      "status":"ok"
    }
 }
 ```
