@@ -16,11 +16,12 @@ module QA
         e.response
       end
 
-      def get(url)
+      def get(url, raw_response: false)
         RestClient::Request.execute(
           method: :get,
           url: url,
-          verify_ssl: false)
+          verify_ssl: false,
+          raw_response: raw_response)
       rescue RestClient::ExceptionWithResponse => e
         e.response
       end
