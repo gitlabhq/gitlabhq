@@ -143,14 +143,14 @@ describe CacheableAttributes do
         allow(ApplicationSetting).to receive(:current_without_cache).twice.and_return(nil)
 
         expect(ApplicationSetting.current).to be_nil
-        expect(Rails.cache.exist?(ApplicationSetting.cache_key)).to be(false)
+        expect(ApplicationSetting.cache_backend.exist?(ApplicationSetting.cache_key)).to be(false)
       end
 
       it 'caches non-nil object' do
         create(:application_setting)
 
         expect(ApplicationSetting.current).to eq(ApplicationSetting.last)
-        expect(Rails.cache.exist?(ApplicationSetting.cache_key)).to be(true)
+        expect(ApplicationSetting.cache_backend.exist?(ApplicationSetting.cache_key)).to be(true)
 
         # subsequent calls retrieve the record from the cache
         last_record = ApplicationSetting.last
@@ -188,11 +188,12 @@ describe CacheableAttributes do
       end
     end
 
-    it 'uses RequestStore in addition to Rails.cache', :request_store do
+    it 'uses RequestStore in addition to Thread memory cache', :request_store do
       # Warm up the cache
       create(:application_setting).cache!
 
-      expect(Rails.cache).to receive(:read).with(ApplicationSetting.cache_key).once.and_call_original
+      expect(ApplicationSetting.cache_backend).to eq(Gitlab::ThreadMemoryCache.cache_backend)
+      expect(ApplicationSetting.cache_backend).to receive(:read).with(ApplicationSetting.cache_key).once.and_call_original
 
       2.times { ApplicationSetting.current }
     end
