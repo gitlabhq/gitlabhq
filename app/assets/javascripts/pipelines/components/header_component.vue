@@ -2,6 +2,7 @@
 import { GlLoadingIcon } from '@gitlab/ui';
 import ciHeader from '../../vue_shared/components/header_ci_component.vue';
 import eventHub from '../event_hub';
+import { __ } from '~/locale';
 
 export default {
   name: 'PipelineHeaderSection',
@@ -54,7 +55,7 @@ export default {
 
       if (this.pipeline.retry_path) {
         actions.push({
-          label: 'Retry',
+          label: __('Retry'),
           path: this.pipeline.retry_path,
           cssClass: 'js-retry-button btn btn-inverted-secondary',
           type: 'button',
@@ -64,7 +65,7 @@ export default {
 
       if (this.pipeline.cancel_path) {
         actions.push({
-          label: 'Cancel running',
+          label: __('Cancel running'),
           path: this.pipeline.cancel_path,
           cssClass: 'js-btn-cancel-pipeline btn btn-danger',
           type: 'button',

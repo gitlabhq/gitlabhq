@@ -1873,6 +1873,9 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
+msgid "Cancel running"
+msgstr ""
+
 msgid "Cancel this job"
 msgstr ""
 
