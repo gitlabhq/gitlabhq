@@ -40,14 +40,14 @@ some steps to migrate your projects. There is no automatic import since GitLab
 doesn't know anything about any projects which existed on Gemnasium.com.
 Security features are free for public (open-source) projects hosted on GitLab.com.
 
-### If your project is hosted on GitLab (https://gitlab.com / self-hosted)
+### If your project is hosted on GitLab (`https://gitlab.com` / self-hosted)
 
 You're almost set! If you're already using
 [Auto DevOps](../../../topics/autodevops/), you are already covered.
 Otherwise, you must configure your `.gitlab-ci.yml` according to the
 [dependency scanning page](../../application_security/dependency_scanning/index.md).
 
-### If your project is hosted on GitHub (https://github.com / GitHub Enterprise)
+### If your project is hosted on GitHub (`https://github.com` / GitHub Enterprise)
 
 Since [GitLab 10.6 comes with GitHub integration](https://about.gitlab.com/features/github/),
 GitLab users can now create a CI/CD project in GitLab connected to an external

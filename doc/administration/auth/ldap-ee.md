@@ -185,7 +185,7 @@ group, as opposed to the full DN.
 
 ## Global group memberships lock
 
-"Lock memberships to LDAP synchronization" setting allows instance administrators 
+"Lock memberships to LDAP synchronization" setting allows instance administrators
 to lock down user abilities to invite new members to a group. When enabled following happens:
 
 1. Only administrator can manage memberships of any group including access levels.
@@ -198,14 +198,14 @@ to lock down user abilities to invite new members to a group. When enabled follo
 
 NOTE: **Note:**
 These are cron formatted values. You can use a crontab generator to create
-these values, for example http://www.crontabgenerator.com/.
+these values, for example <http://www.crontabgenerator.com/>.
 
 By default, GitLab will run a worker once per day at 01:30 a.m. server time to
 check and update GitLab users against LDAP.
 
 You can manually configure LDAP user sync times by setting the
 following configuration values. The example below shows how to set LDAP user
-sync to run once every 12 hours at the top of the hour. 
+sync to run once every 12 hours at the top of the hour.
 
 **Omnibus installations**
 
@@ -233,7 +233,7 @@ sync to run once every 12 hours at the top of the hour.
 
 NOTE: **Note:**
 These are cron formatted values. You can use a crontab generator to create
-these values, for example http://www.crontabgenerator.com/.
+these values, for example <http://www.crontabgenerator.com/>.
 
 By default, GitLab will run a group sync process every hour, on the hour.
 
@@ -245,8 +245,8 @@ for installations with a large number of LDAP users. Please review the
 your installation compares before proceeding.
 
 You can manually configure LDAP group sync times by setting the
-following configuration values. The example below shows how to set group 
-sync to run once every 2 hours at the top of the hour. 
+following configuration values. The example below shows how to set group
+sync to run once every 2 hours at the top of the hour.
 
 **Omnibus installations**
 

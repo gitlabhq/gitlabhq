@@ -13,7 +13,7 @@ The steps below cover:
 
 ## Configuring Google LDAP client
 
-1. Navigate to https://admin.google.com and sign in as a GSuite domain administrator.
+1. Navigate to <https://admin.google.com> and sign in as a GSuite domain administrator.
 
 1. Go to **Apps > LDAP > Add Client**.
 
