@@ -14,12 +14,22 @@ export default () =>
       const { dataset } = document.querySelector(this.$options.el);
       return {
         endpoint: dataset.endpoint,
+        characterError: Boolean(dataset.characterError),
+        helpPagePath: dataset.helpPagePath,
+        noContainersImage: dataset.noContainersImage,
+        containersErrorImage: dataset.containersErrorImage,
+        repositoryUrl: dataset.repositoryUrl,
       };
     },
     render(createElement) {
       return createElement('registry-app', {
         props: {
           endpoint: this.endpoint,
+          characterError: this.characterError,
+          helpPagePath: this.helpPagePath,
+          noContainersImage: this.noContainersImage,
+          containersErrorImage: this.containersErrorImage,
+          repositoryUrl: this.repositoryUrl,
         },
       });
     },

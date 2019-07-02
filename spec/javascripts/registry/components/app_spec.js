@@ -8,6 +8,13 @@ import { reposServerResponse } from '../mock_data';
 
 describe('Registry List', () => {
   const Component = Vue.extend(registry);
+  const props = {
+    endpoint: `${TEST_HOST}/foo`,
+    helpPagePath: 'foo',
+    noContainersImage: 'foo',
+    containersErrorImage: 'foo',
+    repositoryUrl: 'foo',
+  };
   let vm;
   let mock;
 
@@ -24,7 +31,7 @@ describe('Registry List', () => {
     beforeEach(() => {
       mock.onGet(`${TEST_HOST}/foo`).replyOnce(200, reposServerResponse);
 
-      vm = mountComponent(Component, { endpoint: `${TEST_HOST}/foo` });
+      vm = mountComponent(Component, { ...props });
     });
 
     it('should render a list of repos', done => {
@@ -72,7 +79,7 @@ describe('Registry List', () => {
     beforeEach(() => {
       mock.onGet(`${TEST_HOST}/foo`).replyOnce(200, []);
 
-      vm = mountComponent(Component, { endpoint: `${TEST_HOST}/foo` });
+      vm = mountComponent(Component, { ...props });
     });
 
     it('should render empty message', done => {
@@ -83,7 +90,7 @@ describe('Registry List', () => {
             .textContent.trim()
             .replace(/[\r\n]+/g, ' '),
         ).toEqual(
-          'No container images stored for this project. Add one by following the instructions above.',
+          'With the Container Registry, every project can have its own space to store its Docker images. Learn more about the Container Registry.',
         );
         done();
       }, 0);
@@ -94,12 +101,30 @@ describe('Registry List', () => {
     beforeEach(() => {
       mock.onGet(`${TEST_HOST}/foo`).replyOnce(200, []);
 
-      vm = mountComponent(Component, { endpoint: `${TEST_HOST}/foo` });
+      vm = mountComponent(Component, { ...props });
     });
 
     it('should render a loading spinner', done => {
       Vue.nextTick(() => {
         expect(vm.$el.querySelector('.spinner')).not.toBe(null);
+        done();
+      });
+    });
+  });
+
+  describe('invalid characters in path', () => {
+    beforeEach(() => {
+      mock.onGet(`${TEST_HOST}/foo`).replyOnce(200, []);
+
+      vm = mountComponent(Component, {
+        ...props,
+        characterError: true,
+      });
+    });
+
+    it('should render invalid characters error message', done => {
+      setTimeout(() => {
+        expect(vm.$el.querySelector('.container-message')).not.toBe(null);
         done();
       });
     });
