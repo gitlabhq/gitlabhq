@@ -40,7 +40,7 @@ describe Feature do
         .once
         .and_call_original
 
-      expect(Rails.cache)
+      expect(Gitlab::ThreadMemoryCache.cache_backend)
         .to receive(:fetch)
         .once
         .with('flipper:persisted_names', expires_in: 1.minute)
