@@ -3378,7 +3378,7 @@ describe User do
       end
 
       it 'does not require consent if usage stats were set by this user' do
-        allow(Gitlab::CurrentSettings).to receive(:usage_stats_set_by_user_id).and_return(user.id)
+        create(:application_setting, usage_stats_set_by_user_id: user.id)
 
         expect(user.requires_usage_stats_consent?).to be false
       end
