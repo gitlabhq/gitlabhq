@@ -3354,7 +3354,7 @@ describe User do
   end
 
   describe '#requires_usage_stats_consent?' do
-    let(:user) { create(:user, created_at: 8.days.ago) }
+    let(:user) { create(:user, :admin, created_at: 8.days.ago) }
 
     before do
       allow(user).to receive(:has_current_license?).and_return false
