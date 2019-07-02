@@ -107,8 +107,7 @@ describe 'Admin Groups' do
 
       visit admin_group_edit_path(group)
 
-      expect(page).to have_select("group_subgroup_creation_level",
-                                  selected: ::Gitlab::Access.subgroup_creation_options.keys[group.subgroup_creation_level])
+      expect(page).to have_content('Allowed to create subgroups')
     end
 
     it 'edit group path does not change group name', :js do
