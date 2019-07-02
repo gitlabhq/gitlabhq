@@ -170,12 +170,16 @@ export default {
       entries: Object.assign(state.entries, {
         [path]: Object.assign(state.entries[path], {
           staged: true,
-          changed: false,
         }),
       }),
     });
 
     if (stagedFile) {
+      Object.assign(state, {
+        replacedFiles: state.replacedFiles.concat({
+          ...stagedFile,
+        }),
+      });
       Object.assign(stagedFile, {
         ...state.entries[path],
       });
