@@ -2,7 +2,7 @@
 import LoadingButton from '~/vue_shared/components/loading_button.vue';
 import ClipboardButton from '../../vue_shared/components/clipboard_button.vue';
 import { GlLoadingIcon } from '@gitlab/ui';
-import { s__ } from '~/locale';
+import { __, s__ } from '~/locale';
 
 import { APPLICATION_STATUS } from '~/clusters/constants';
 
@@ -32,7 +32,7 @@ export default {
       return [UPDATING].includes(this.knative.status);
     },
     saveButtonLabel() {
-      return this.saving ? this.__('Saving') : this.__('Save changes');
+      return this.saving ? __('Saving') : __('Save changes');
     },
     knativeInstalled() {
       return this.knative.installed;
@@ -122,9 +122,9 @@ export default {
             `ClusterIntegration|To access your application after deployment, point a wildcard DNS to the Knative Endpoint.`,
           )
         }}
-        <a :href="ingressDnsHelpPath" target="_blank" rel="noopener noreferrer">
-          {{ __('More information') }}
-        </a>
+        <a :href="ingressDnsHelpPath" target="_blank" rel="noopener noreferrer">{{
+          __('More information')
+        }}</a>
       </p>
 
       <p

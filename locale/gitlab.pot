@@ -8979,6 +8979,9 @@ msgstr ""
 msgid "Save variables"
 msgstr ""
 
+msgid "Saving"
+msgstr ""
+
 msgid "Saving project."
 msgstr ""
 
@@ -11267,6 +11270,12 @@ msgstr ""
 msgid "Unfortunately, your email message to GitLab could not be processed."
 msgstr ""
 
+msgid "Uninstall"
+msgstr ""
+
+msgid "Uninstalling"
+msgstr ""
+
 msgid "Unknown encryption strategy: %{encrypted_strategy}!"
 msgstr ""
 
@@ -11370,6 +11379,9 @@ msgid "UpdateProject|Project could not be updated!"
 msgstr ""
 
 msgid "Updated"
+msgstr ""
+
+msgid "Updated to"
 msgstr ""
 
 msgid "Updating"
