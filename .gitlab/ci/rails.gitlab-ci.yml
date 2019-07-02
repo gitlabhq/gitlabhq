@@ -245,7 +245,7 @@ migration:path-pg:
 .db-rollback: &db-rollback
   extends: .dedicated-no-docs-and-no-qa-pull-cache-job
   script:
-    - bundle exec rake db:migrate VERSION=20170523121229
+    - bundle exec rake db:migrate VERSION=20180101160629
     - bundle exec rake db:migrate SKIP_SCHEMA_VERSION_CHECK=true
   dependencies:
     - setup-test-env
