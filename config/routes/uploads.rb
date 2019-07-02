@@ -7,7 +7,7 @@ scope path: :uploads do
   # show uploads for models, snippets (notes) available for now
   get '-/system/:model/:id/:secret/:filename',
     to: 'uploads#show',
-    constraints: { model: /personal_snippet/, id: /\d+/, filename: %r{[^/]+} }
+    constraints: { model: /personal_snippet|user/, id: /\d+/, filename: %r{[^/]+} }
 
   # show temporary uploads
   get '-/system/temp/:secret/:filename',
@@ -28,7 +28,7 @@ scope path: :uploads do
   # create uploads for models, snippets (notes) available for now
   post ':model',
     to: 'uploads#create',
-    constraints: { model: /personal_snippet/, id: /\d+/ },
+    constraints: { model: /personal_snippet|user/, id: /\d+/ },
     as: 'upload'
 end
 

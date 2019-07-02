@@ -24,121 +24,160 @@ describe UploadsController do
   let!(:user) { create(:user, avatar: fixture_file_upload("spec/fixtures/dk.png", "image/png")) }
 
   describe 'POST create' do
-    let(:model)   { 'personal_snippet' }
-    let(:snippet) { create(:personal_snippet, :public) }
     let(:jpg)     { fixture_file_upload('spec/fixtures/rails_sample.jpg', 'image/jpg') }
     let(:txt)     { fixture_file_upload('spec/fixtures/doc_sample.txt', 'text/plain') }
 
-    context 'when a user does not have permissions to upload a file' do
-      it "returns 401 when the user is not logged in" do
-        post :create, params: { model: model, id: snippet.id }, format: :json
+    context 'snippet uploads' do
+      let(:model)   { 'personal_snippet' }
+      let(:snippet) { create(:personal_snippet, :public) }
+
+      context 'when a user does not have permissions to upload a file' do
+        it "returns 401 when the user is not logged in" do
+          post :create, params: { model: model, id: snippet.id }, format: :json
+
+          expect(response).to have_gitlab_http_status(401)
+        end
+
+        it "returns 404 when user can't comment on a snippet" do
+          private_snippet = create(:personal_snippet, :private)
+
+          sign_in(user)
+          post :create, params: { model: model, id: private_snippet.id }, format: :json
+
+          expect(response).to have_gitlab_http_status(404)
+        end
+      end
+
+      context 'when a user is logged in' do
+        before do
+          sign_in(user)
+        end
+
+        it "returns an error without file" do
+          post :create, params: { model: model, id: snippet.id }, format: :json
+
+          expect(response).to have_gitlab_http_status(422)
+        end
+
+        it "returns an error with invalid model" do
+          expect { post :create, params: { model: 'invalid', id: snippet.id }, format: :json }
+            .to raise_error(ActionController::UrlGenerationError)
+        end
+
+        it "returns 404 status when object not found" do
+          post :create, params: { model: model, id: 9999 }, format: :json
+
+          expect(response).to have_gitlab_http_status(404)
+        end
+
+        context 'with valid image' do
+          before do
+            post :create, params: { model: 'personal_snippet', id: snippet.id, file: jpg }, format: :json
+          end
+
+          it 'returns a content with original filename, new link, and correct type.' do
+            expect(response.body).to match '\"alt\":\"rails_sample\"'
+            expect(response.body).to match "\"url\":\"/uploads"
+          end
+
+          it 'creates a corresponding Upload record' do
+            upload = Upload.last
+
+            aggregate_failures do
+              expect(upload).to exist
+              expect(upload.model).to eq snippet
+            end
+          end
+        end
+
+        context 'with valid non-image file' do
+          before do
+            post :create, params: { model: 'personal_snippet', id: snippet.id, file: txt }, format: :json
+          end
+
+          it 'returns a content with original filename, new link, and correct type.' do
+            expect(response.body).to match '\"alt\":\"doc_sample.txt\"'
+            expect(response.body).to match "\"url\":\"/uploads"
+          end
+
+          it 'creates a corresponding Upload record' do
+            upload = Upload.last
+
+            aggregate_failures do
+              expect(upload).to exist
+              expect(upload.model).to eq snippet
+            end
+          end
+        end
+      end
+    end
+
+    context 'user uploads' do
+      let(:model) { 'user' }
+
+      it 'returns 401 when the user has no access' do
+        post :create, params: { model: 'user', id: user.id }, format: :json
 
         expect(response).to have_gitlab_http_status(401)
       end
 
-      it "returns 404 when user can't comment on a snippet" do
-        private_snippet = create(:personal_snippet, :private)
-
-        sign_in(user)
-        post :create, params: { model: model, id: private_snippet.id }, format: :json
-
-        expect(response).to have_gitlab_http_status(404)
-      end
-    end
-
-    context 'when a user is logged in' do
-      before do
-        sign_in(user)
-      end
-
-      it "returns an error without file" do
-        post :create, params: { model: model, id: snippet.id }, format: :json
-
-        expect(response).to have_gitlab_http_status(422)
-      end
-
-      it "returns an error with invalid model" do
-        expect { post :create, params: { model: 'invalid', id: snippet.id }, format: :json }
-        .to raise_error(ActionController::UrlGenerationError)
-      end
-
-      it "returns 404 status when object not found" do
-        post :create, params: { model: model, id: 9999 }, format: :json
-
-        expect(response).to have_gitlab_http_status(404)
-      end
-
-      context 'with valid image' do
+      context 'when user is logged in' do
         before do
-          post :create, params: { model: 'personal_snippet', id: snippet.id, file: jpg }, format: :json
+          sign_in(user)
         end
 
-        it 'returns a content with original filename, new link, and correct type.' do
-          expect(response.body).to match '\"alt\":\"rails_sample\"'
-          expect(response.body).to match "\"url\":\"/uploads"
-        end
-
-        it 'creates a corresponding Upload record' do
-          upload = Upload.last
-
-          aggregate_failures do
-            expect(upload).to exist
-            expect(upload.model).to eq snippet
-          end
-        end
-      end
-
-      context 'with valid non-image file' do
-        before do
-          post :create, params: { model: 'personal_snippet', id: snippet.id, file: txt }, format: :json
-        end
-
-        it 'returns a content with original filename, new link, and correct type.' do
-          expect(response.body).to match '\"alt\":\"doc_sample.txt\"'
-          expect(response.body).to match "\"url\":\"/uploads"
-        end
-
-        it 'creates a corresponding Upload record' do
-          upload = Upload.last
-
-          aggregate_failures do
-            expect(upload).to exist
-            expect(upload.model).to eq snippet
-          end
-        end
-      end
-
-      context 'temporal with valid image' do
         subject do
-          post :create, params: { model: 'personal_snippet', file: jpg }, format: :json
+          post :create, params: { model: model, id: user.id, file: jpg }, format: :json
         end
 
         it 'returns a content with original filename, new link, and correct type.' do
           subject
 
           expect(response.body).to match '\"alt\":\"rails_sample\"'
-          expect(response.body).to match "\"url\":\"/uploads/-/system/temp"
+          expect(response.body).to match "\"url\":\"/uploads/-/system/user/#{user.id}/"
         end
 
-        it 'does not create an Upload record' do
-          expect { subject }.not_to change { Upload.count }
-        end
-      end
+        it 'creates a corresponding Upload record' do
+          expect { subject }.to change { Upload.count }
 
-      context 'temporal with valid non-image file' do
-        subject do
-          post :create, params: { model: 'personal_snippet', file: txt }, format: :json
-        end
+          upload = Upload.last
 
-        it 'returns a content with original filename, new link, and correct type.' do
-          subject
-
-          expect(response.body).to match '\"alt\":\"doc_sample.txt\"'
-          expect(response.body).to match "\"url\":\"/uploads/-/system/temp"
+          aggregate_failures do
+            expect(upload).to exist
+            expect(upload.model).to eq user
+          end
         end
 
-        it 'does not create an Upload record' do
-          expect { subject }.not_to change { Upload.count }
+        context 'with valid non-image file' do
+          subject do
+            post :create, params: { model: model, id: user.id, file: txt }, format: :json
+          end
+
+          it 'returns a content with original filename, new link, and correct type.' do
+            subject
+
+            expect(response.body).to match '\"alt\":\"doc_sample.txt\"'
+            expect(response.body).to match "\"url\":\"/uploads/-/system/user/#{user.id}/"
+          end
+
+          it 'creates a corresponding Upload record' do
+            expect { subject }.to change { Upload.count }
+
+            upload = Upload.last
+
+            aggregate_failures do
+              expect(upload).to exist
+              expect(upload.model).to eq user
+            end
+          end
+        end
+
+        it 'returns 404 when given user is not the logged in one' do
+          another_user = create(:user)
+
+          post :create, params: { model: model, id: another_user.id, file: txt }, format: :json
+
+          expect(response).to have_gitlab_http_status(404)
         end
       end
     end
