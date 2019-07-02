@@ -6,10 +6,13 @@ scheduling into milestones. Labelling is a task for everyone.
 
 Most issues will have labels for at least one of the following:
 
-- Type: ~feature, ~bug, ~customer, etc.
-- Subject: ~wiki, ~"Container Registry", ~ldap, ~api, ~frontend, etc.
-- Team: ~Plan, ~Manage, ~Quality, etc.
-- Stage: ~"devops:plan", ~"devops:create", etc.
+- Type: ~feature, ~bug, ~backstage, etc.
+- Subject: ~wiki, ~"Container Registry", ~ldap, ~api, etc.
+- Team: ~Documentation, ~Delivery, etc.
+- Stage: ~"devops::plan", ~"devops::create", etc.
+- Group: ~"group::source code" ~"group::knowledge" ~"group::editor", etc.
+- Department: ~UX, ~Quality
+- Specialization: ~frontend, ~backend
 - Release Scoping: ~Deliverable, ~Stretch, ~"Next Patch Release"
 - Priority: ~P1, ~P2, ~P3, ~P4
 - Severity: ~S1, ~S2, ~S3, ~S4
@@ -27,8 +30,7 @@ labels, you can _always_ add the team and type, and often also the subject.
 Type labels are very important. They define what kind of issue this is. Every
 issue should have one or more.
 
-Examples of type labels are ~feature, ~bug, ~customer, ~security,
-and ~direction.
+Examples of type labels are ~feature, ~bug, ~backstage and ~security
 
 A number of type labels have a priority assigned to them, which automatically
 makes them float to the top, depending on their importance.
@@ -56,19 +58,20 @@ issue is labeled with a subject label corresponding to your expertise.
 
 Subject labels are always all-lowercase.
 
-## Team labels
+## Team labels 
+
+**Important**: Most of the team labels will be soon deprecated in favor of [Group labels](#group-labels). 
 
 Team labels specify what team is responsible for this issue.
 Assigning a team label makes sure issues get the attention of the appropriate
 people.
 
-The current team labels are:
+The team labels planned for deprecation are:
 
 - ~Configure
 - ~Create
 - ~Defend
 - ~Distribution
-- ~Documentation
 - ~Ecosystem
 - ~Geo
 - ~Gitaly
@@ -77,11 +80,14 @@ The current team labels are:
 - ~Memory
 - ~Monitor
 - ~Plan
-- ~Quality
 - ~Release
 - ~Secure
-- ~UX
 - ~Verify
+
+The following team labels are **true** teams per our [organization structure](https://about.gitlab.com/company/team/structure/#organizational-structure) which will remain post deprecation.
+
+- ~Delivery
+- ~Documentation
 
 The descriptions on the [labels page][labels-page] explain what falls under the
 responsibility of each team.
@@ -91,6 +97,7 @@ indicate if an issue needs backend work, frontend work, or both.
 
 Team labels are always capitalized so that they show up as the first label for
 any issue.
+
 
 ## Stage labels
 
@@ -132,10 +139,44 @@ The Stage labels are used to generate the [direction pages][direction-pages] aut
 
 Group labels specify which [groups][structure-groups] the issue belongs to.
 
-Examples include:
+The current group labels are:
 
-- ~"group::control"
-- ~"group::editor"
+* ~"group::access"
+* ~"group::measure"
+* ~"group::source code" 
+* ~"group::knowledge" 
+* ~"group::editor" 
+* ~"group::gitaly"  
+* ~"group::gitter"  
+* ~"group::team planning" 
+* ~"group::enterprise planning" 
+* ~"group::certify" 
+* ~"group::ci and runner" 
+* ~"group::testing" 
+* ~"group::package" 
+* ~"group::core release" 
+* ~"group::supporting capabilities" 
+* ~"group::autodevops and kubernetes" 
+* ~"group::serverless and paas"
+* ~"group::apm" 
+* ~"group::health"
+* ~"group::static analysis"
+* ~"group::dynamic analysis"
+* ~"group::software composition analysis" 
+* ~"group::runtime application security" 
+* ~"group::threat management" 
+* ~"group::application infrastructure security" 
+* ~"group::activation" 
+* ~"group::adoption" 
+* ~"group::upsell" 
+* ~"group::retention" 
+* ~"group::fulfillment" 
+* ~"group::telemetry" 
+* ~"group::distribution" 
+* ~"group::geo" 
+* ~"group::memory" 
+* ~"group::ecosystem" 
+  
 
 These labels are [scoped labels](../../user/project/labels.md#scoped-labels-premium)
 and thus are mutually exclusive.
@@ -146,6 +187,20 @@ can be applied to a single issue. You can find the groups listed in the
 
 [structure-groups]: https://about.gitlab.com/company/team/structure/#groups
 [product-categories]: https://about.gitlab.com/handbook/product/categories/
+
+## Department labels
+
+The current department labels are:
+
+* ~UX
+* ~Quality
+
+## Specialization labels
+
+These labels narrow the [specialization](https://about.gitlab.com/company/team/structure/#specialist) on a unit of work.
+
+* ~frontend
+* ~backend
 
 ## Release Scoping labels
 
