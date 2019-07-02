@@ -57,11 +57,11 @@ describe 'Group show page' do
 
   context 'subgroup support' do
     let(:restricted_group) do
-      create(:group, subgroup_creation_level: ::Gitlab::Access::OWNER_SUBGROUP_ACCESS) 
+      create(:group, subgroup_creation_level: ::Gitlab::Access::OWNER_SUBGROUP_ACCESS)
     end
 
     let(:relaxed_group) do
-      create(:group, subgroup_creation_level: ::Gitlab::Access::MAINTAINER_SUBGROUP_ACCESS) 
+      create(:group, subgroup_creation_level: ::Gitlab::Access::MAINTAINER_SUBGROUP_ACCESS)
     end
 
     let(:owner) { create(:user) }
@@ -78,10 +78,11 @@ describe 'Group show page' do
       context 'when subgroups are supported', :nested_groups do
         before do
           allow(Group).to receive(:supports_nested_objects?) { true }
-          visit path
         end
 
         it 'allows creating subgroups' do
+          visit path
+
           expect(page)
             .to have_css("li[data-text='New subgroup']", visible: false)
         end
@@ -90,10 +91,11 @@ describe 'Group show page' do
       context 'when subgroups are not supported' do
         before do
           allow(Group).to receive(:supports_nested_objects?) { false }
-          visit path
         end
 
         it 'does not allow creating subgroups' do
+          visit path
+
           expect(page)
             .not_to have_selector("li[data-text='New subgroup']", visible: false)
         end
@@ -113,11 +115,12 @@ describe 'Group show page' do
         context 'when subgroup_creation_level is set to maintainers' do
           before do
             relaxed_group.add_maintainer(maintainer)
-            path = group_path(relaxed_group)
-            visit path
           end
 
           it 'allows creating subgroups' do
+            path = group_path(relaxed_group)
+            visit path
+
             expect(page)
               .to have_css("li[data-text='New subgroup']", visible: false)
           end
