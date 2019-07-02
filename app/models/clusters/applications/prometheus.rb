@@ -49,14 +49,6 @@ module Clusters
         )
       end
 
-      def uninstall_command
-        Gitlab::Kubernetes::Helm::DeleteCommand.new(
-          name: name,
-          rbac: cluster.platform_kubernetes_rbac?,
-          files: files
-        )
-      end
-
       def upgrade_command(values)
         ::Gitlab::Kubernetes::Helm::InstallCommand.new(
           name: name,
