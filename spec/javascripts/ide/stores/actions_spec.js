@@ -10,6 +10,7 @@ import actions, {
   deleteEntry,
   renameEntry,
   getBranchData,
+  createTempEntry,
 } from '~/ide/stores/actions';
 import axios from '~/lib/utils/axios_utils';
 import store from '~/ide/stores';
@@ -247,18 +248,30 @@ describe('Multi-file store actions', () => {
       });
 
       it('sets tmp file as active', done => {
-        store
-          .dispatch('createTempEntry', {
+        testAction(
+          createTempEntry,
+          {
             name: 'test',
             branchId: 'mybranch',
             type: 'blob',
-          })
-          .then(f => {
-            expect(f.active).toBeTruthy();
-
-            done();
-          })
-          .catch(done.fail);
+          },
+          store.state,
+          [
+            { type: types.CREATE_TMP_ENTRY, payload: jasmine.any(Object) },
+            { type: types.TOGGLE_FILE_OPEN, payload: 'test' },
+            { type: types.ADD_FILE_TO_CHANGED, payload: 'test' },
+          ],
+          [
+            {
+              type: 'setFileActive',
+              payload: 'test',
+            },
+            {
+              type: 'triggerFilesChange',
+            },
+          ],
+          done,
+        );
       });
 
       it('creates flash message if file already exists', done => {
@@ -488,7 +501,11 @@ describe('Multi-file store actions', () => {
         'path',
         store.state,
         [{ type: types.DELETE_ENTRY, payload: 'path' }],
-        [{ type: 'burstUnusedSeal' }, { type: 'triggerFilesChange' }],
+        [
+          { type: 'burstUnusedSeal' },
+          { type: 'stageChange', payload: 'path' },
+          { type: 'triggerFilesChange' },
+        ],
         done,
       );
     });
@@ -515,7 +532,11 @@ describe('Multi-file store actions', () => {
         'testFolder/entry-to-delete',
         store.state,
         [{ type: types.DELETE_ENTRY, payload: 'testFolder/entry-to-delete' }],
-        [{ type: 'burstUnusedSeal' }, { type: 'triggerFilesChange' }],
+        [
+          { type: 'burstUnusedSeal' },
+          { type: 'stageChange', payload: 'testFolder/entry-to-delete' },
+          { type: 'triggerFilesChange' },
+        ],
         done,
       );
     });

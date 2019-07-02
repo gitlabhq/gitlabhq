@@ -315,6 +315,19 @@ describe('IDE store file mutations', () => {
       expect(localState.stagedFiles.length).toBe(1);
       expect(localState.stagedFiles[0].raw).toEqual('testing 123');
     });
+
+    it('adds already-staged file to `replacedFiles`', () => {
+      localFile.raw = 'already-staged';
+
+      mutations.STAGE_CHANGE(localState, localFile.path);
+
+      localFile.raw = 'testing 123';
+
+      mutations.STAGE_CHANGE(localState, localFile.path);
+
+      expect(localState.replacedFiles.length).toBe(1);
+      expect(localState.replacedFiles[0].raw).toEqual('already-staged');
+    });
   });
 
   describe('UNSTAGE_CHANGE', () => {
