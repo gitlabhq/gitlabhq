@@ -77,8 +77,8 @@
       - rspec_flaky/
       - rspec_profiling/
       - tmp/capybara/
-    reports:
-      junit: junit_rspec.xml
+#    reports:
+#      junit: junit_rspec.xml
 
 .rspec-metadata-pg: &rspec-metadata-pg
   <<: *rspec-metadata
