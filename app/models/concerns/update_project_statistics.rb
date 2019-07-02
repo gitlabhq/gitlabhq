@@ -19,9 +19,9 @@
 #
 # - `statistic_attribute` must be an ActiveRecord attribute
 # - The model must implement `project` and `project_id`. i.e. direct Project relationship or delegation
-#
 module UpdateProjectStatistics
   extend ActiveSupport::Concern
+  include AfterCommitQueue
 
   class_methods do
     attr_reader :project_statistics_name, :statistic_attribute
@@ -31,7 +31,6 @@ module UpdateProjectStatistics
     #
     # - project_statistics_name: A column of `ProjectStatistics` to update
     # - statistic_attribute: An attribute of the current model, default to `size`
-    #
     def update_project_statistics(project_statistics_name:, statistic_attribute: :size)
       @project_statistics_name = project_statistics_name
       @statistic_attribute = statistic_attribute
@@ -51,6 +50,7 @@ module UpdateProjectStatistics
       delta = read_attribute(attr).to_i - attribute_before_last_save(attr).to_i
 
       update_project_statistics(delta)
+      schedule_namespace_aggregation_worker
     end
 
     def update_project_statistics_attribute_changed?
@@ -59,6 +59,8 @@ module UpdateProjectStatistics
 
     def update_project_statistics_after_destroy
       update_project_statistics(-read_attribute(self.class.statistic_attribute).to_i)
+
+      schedule_namespace_aggregation_worker
     end
 
     def project_destroyed?
@@ -67,6 +69,19 @@ module UpdateProjectStatistics
 
     def update_project_statistics(delta)
       ProjectStatistics.increment_statistic(project_id, self.class.project_statistics_name, delta)
+    end
+
+    def schedule_namespace_aggregation_worker
+      run_after_commit do
+        next unless schedule_aggregation_worker?
+
+        Namespaces::ScheduleAggregationWorker.perform_async(project.namespace_id)
+      end
+    end
+
+    def schedule_aggregation_worker?
+      !project.nil? &&
+        Feature.enabled?(:update_statistics_namespace, project.root_ancestor)
     end
   end
 end

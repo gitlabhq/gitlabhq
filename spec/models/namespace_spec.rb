@@ -837,4 +837,20 @@ describe Namespace do
       it { is_expected.to be_falsy }
     end
   end
+
+  describe '#aggregation_scheduled?' do
+    let(:namespace) { create(:namespace) }
+
+    subject { namespace.aggregation_scheduled? }
+
+    context 'with an aggregation scheduled association' do
+      let(:namespace) { create(:namespace, :with_aggregation_schedule) }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'without an aggregation scheduled association' do
+      it { is_expected.to be_falsy }
+    end
+  end
 end
