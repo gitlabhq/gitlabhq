@@ -6,6 +6,8 @@ module QA
       module Settings
         class Main < Page::Base
           include Common
+          include Component::Select2
+          include SubMenus::Project
 
           view 'app/views/projects/edit.html.haml' do
             element :advanced_settings

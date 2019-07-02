@@ -121,7 +121,7 @@
               %li= _('You can only transfer the project to namespaces you manage.')
               %li= _('You will need to update your local repositories to point to the new location.')
               %li= _('Project visibility level will be changed to match namespace rules when transferring to a group.')
-          = f.submit 'Transfer project', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => transfer_project_message(@project) }
+          = f.submit 'Transfer project', class: "btn btn-remove js-confirm-danger qa-transfer-button", data: { "confirm-danger-message" => transfer_project_message(@project) }
 
     - if @project.forked? && can?(current_user, :remove_fork_project, @project)
       .sub-section

@@ -1,4 +1,4 @@
-#modal-confirm-danger.modal{ tabindex: -1 }
+#modal-confirm-danger.modal.qa-confirm-modal{ tabindex: -1 }
   .modal-dialog
     .modal-content
       .modal-header
@@ -17,6 +17,6 @@
           to proceed or close this modal to cancel.
 
         .form-group
-          = text_field_tag 'confirm_name_input', '', class: 'form-control js-confirm-danger-input'
+          = text_field_tag 'confirm_name_input', '', class: 'form-control js-confirm-danger-input qa-confirm-input'
         .form-actions
-          = submit_tag _('Confirm'), class: "btn btn-danger js-confirm-danger-submit"
+          = submit_tag _('Confirm'), class: "btn btn-danger js-confirm-danger-submit qa-confirm-button"

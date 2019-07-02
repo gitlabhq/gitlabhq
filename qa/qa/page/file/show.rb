@@ -5,6 +5,8 @@ module QA
     module File
       class Show < Page::Base
         include Shared::CommitMessage
+        include Project::SubMenus::Settings
+        include Project::SubMenus::Common
 
         view 'app/helpers/blob_helper.rb' do
           element :edit_button, "_('Edit')" # rubocop:disable QA/ElementWithPattern
