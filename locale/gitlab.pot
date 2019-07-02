@@ -2767,13 +2767,7 @@ msgstr ""
 msgid "Comment & reopen %{noteable_name}"
 msgstr ""
 
-msgid "Comment & resolve discussion"
-msgstr ""
-
 msgid "Comment & resolve thread"
-msgstr ""
-
-msgid "Comment & unresolve discussion"
 msgstr ""
 
 msgid "Comment & unresolve thread"
