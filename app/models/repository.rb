@@ -845,6 +845,10 @@ class Repository
     raw.merge_to_ref(user, source_sha, branch, target_ref, message, first_parent_ref)
   end
 
+  def delete_refs(*ref_names)
+    raw.delete_refs(*ref_names)
+  end
+
   def ff_merge(user, source, target_branch, merge_request: nil)
     their_commit_id = commit(source)&.id
     raise 'Invalid merge source' if their_commit_id.nil?
