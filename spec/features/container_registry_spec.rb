@@ -19,7 +19,7 @@ describe "Container Registry", :js do
     it 'user visits container registry main page' do
       visit_container_registry
 
-      expect(page).to have_content 'No container images'
+      expect(page).to have_content 'no container images'
     end
   end
 
