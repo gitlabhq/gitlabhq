@@ -1,0 +1,5 @@
+---
+title: Allow Ingress to be uninstalled from the UI
+merge_request: 29977
+author:
+type: added
