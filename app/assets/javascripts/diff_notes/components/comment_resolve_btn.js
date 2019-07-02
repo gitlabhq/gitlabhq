@@ -32,15 +32,15 @@ const CommentAndResolveBtn = Vue.extend({
     buttonText: function() {
       if (this.isDiscussionResolved) {
         if (this.textareaIsEmpty) {
-          return __('Unresolve discussion');
+          return __('Unresolve thread');
         } else {
-          return __('Comment & unresolve discussion');
+          return __('Comment & unresolve thread');
         }
       } else {
         if (this.textareaIsEmpty) {
-          return __('Resolve discussion');
+          return __('Resolve thread');
         } else {
-          return __('Comment & resolve discussion');
+          return __('Comment & resolve thread');
         }
       }
     },
