@@ -1,0 +1,37 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`EmptyState shows gettingStarted state 1`] = `
+<glemptystate-stub
+  description="Stay updated about the performance and health of your environment by configuring Prometheus to monitor your deployments."
+  primarybuttonlink="/clustersPath"
+  primarybuttontext="Install on clusters"
+  secondarybuttonlink="/settingsPath"
+  secondarybuttontext="Configure existing installation"
+  svgpath="/path/to/getting-started.svg"
+  title="Get started with performance monitoring"
+/>
+`;
+
+exports[`EmptyState shows loading state 1`] = `
+<glemptystate-stub
+  description="Creating graphs uses the data from the Prometheus server. If this takes a long time, ensure that data is available."
+  primarybuttonlink="/documentationPath"
+  primarybuttontext="View documentation"
+  secondarybuttonlink=""
+  secondarybuttontext=""
+  svgpath="/path/to/loading.svg"
+  title="Waiting for performance data"
+/>
+`;
+
+exports[`EmptyState shows unableToConnect state 1`] = `
+<glemptystate-stub
+  description="Ensure connectivity is available from the GitLab server to the Prometheus server"
+  primarybuttonlink="/documentationPath"
+  primarybuttontext="View documentation"
+  secondarybuttonlink="/settingsPath"
+  secondarybuttontext="Configure Prometheus"
+  svgpath="/path/to/unable-to-connect.svg"
+  title="Unable to connect to Prometheus server"
+/>
+`;

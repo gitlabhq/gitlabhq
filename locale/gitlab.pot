@@ -3995,6 +3995,9 @@ msgstr ""
 msgid "Enforce DNS rebinding attack protection"
 msgstr ""
 
+msgid "Ensure connectivity is available from the GitLab server to the Prometheus server"
+msgstr ""
+
 msgid "Enter at least three characters to search"
 msgstr ""
 
@@ -8328,9 +8331,6 @@ msgid "ProjectsDropdown|Sorry, no projects matched your search"
 msgstr ""
 
 msgid "ProjectsDropdown|This feature requires browser localStorage support"
-msgstr ""
-
-msgid "Prometheus server"
 msgstr ""
 
 msgid "PrometheusService|%{exporters} with %{metrics} were found"

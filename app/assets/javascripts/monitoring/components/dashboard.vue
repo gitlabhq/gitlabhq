@@ -124,6 +124,11 @@ export default {
       required: false,
       default: '',
     },
+    smallEmptyState: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -386,6 +391,7 @@ export default {
       :empty-loading-svg-path="emptyLoadingSvgPath"
       :empty-no-data-svg-path="emptyNoDataSvgPath"
       :empty-unable-to-connect-svg-path="emptyUnableToConnectSvgPath"
+      :compact="smallEmptyState"
     />
   </div>
 </template>
