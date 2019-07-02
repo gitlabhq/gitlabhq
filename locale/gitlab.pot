@@ -3557,6 +3557,9 @@ msgstr ""
 msgid "DeployTokens|Created"
 msgstr ""
 
+msgid "DeployTokens|Default format is \"gitlab+deploy-token-{n}\". Enter custom username if you want to change it."
+msgstr ""
+
 msgid "DeployTokens|Deploy Tokens"
 msgstr ""
 

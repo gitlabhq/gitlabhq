@@ -99,7 +99,7 @@ module Projects
       end
 
       def deploy_token_params
-        params.require(:deploy_token).permit(:name, :expires_at, :read_repository, :read_registry)
+        params.require(:deploy_token).permit(:name, :expires_at, :read_repository, :read_registry, :username)
       end
     end
   end
