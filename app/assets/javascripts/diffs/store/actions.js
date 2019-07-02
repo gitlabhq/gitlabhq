@@ -267,7 +267,7 @@ export const saveDiffDiscussion = ({ state, dispatch }, { note, formData }) => {
   return dispatch('saveNote', postData, { root: true })
     .then(result => dispatch('updateDiscussion', result.discussion, { root: true }))
     .then(discussion => dispatch('assignDiscussionsToDiff', [discussion]))
-    .then(() => dispatch('updateResolvableDiscussonsCounts', null, { root: true }))
+    .then(() => dispatch('updateResolvableDiscussionsCounts', null, { root: true }))
     .then(() => dispatch('closeDiffFileCommentForm', formData.diffFile.file_hash))
     .catch(() => createFlash(s__('MergeRequests|Saving the comment failed')));
 };
