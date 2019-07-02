@@ -139,6 +139,8 @@ RSpec.configure do |config|
     allow(Feature).to receive(:enabled?)
       .with(:force_autodevops_on_by_default, anything)
       .and_return(false)
+
+    Gitlab::ThreadMemoryCache.cache_backend.clear
   end
 
   config.around(:example, :quarantine) do

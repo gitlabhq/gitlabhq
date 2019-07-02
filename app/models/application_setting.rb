@@ -272,4 +272,12 @@ class ApplicationSetting < ApplicationRecord
     # We already have an ApplicationSetting record, so just return it.
     current_without_cache
   end
+
+  # By default, the backend is Rails.cache, which uses
+  # ActiveSupport::Cache::RedisStore. Since loading ApplicationSetting
+  # can cause a significant amount of load on Redis, let's cache it in
+  # memory.
+  def self.cache_backend
+    Gitlab::ThreadMemoryCache.cache_backend
+  end
 end

@@ -3354,7 +3354,7 @@ describe User do
   end
 
   describe '#requires_usage_stats_consent?' do
-    let(:user) { create(:user, created_at: 8.days.ago) }
+    let(:user) { create(:user, :admin, created_at: 8.days.ago) }
 
     before do
       allow(user).to receive(:has_current_license?).and_return false
@@ -3378,7 +3378,7 @@ describe User do
       end
 
       it 'does not require consent if usage stats were set by this user' do
-        allow(Gitlab::CurrentSettings).to receive(:usage_stats_set_by_user_id).and_return(user.id)
+        create(:application_setting, usage_stats_set_by_user_id: user.id)
 
         expect(user.requires_usage_stats_consent?).to be false
       end
