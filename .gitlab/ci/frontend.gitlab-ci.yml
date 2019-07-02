@@ -168,8 +168,8 @@ karma:
     paths:
       - chrome_debug.log
       - coverage-javascript/
-    reports:
-      junit: junit_karma.xml
+#    reports:
+#      junit: junit_karma.xml
 
 jest:
   extends: .dedicated-no-docs-and-no-qa-pull-cache-job
@@ -191,8 +191,8 @@ jest:
     paths:
       - coverage-frontend/
       - junit_jest.xml
-    reports:
-      junit: junit_jest.xml
+#    reports:
+#      junit: junit_jest.xml
   cache:
     key: jest
     paths:
