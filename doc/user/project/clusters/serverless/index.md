@@ -94,10 +94,55 @@ adding an existing installation of Knative.
 It is also possible to use GitLab Serverless with an existing Kubernetes
 cluster which already has Knative installed.
 
-Simply:
+You must do the following:
 
 1. Follow the steps to
    [add an existing Kubernetes cluster](../index.md#adding-an-existing-kubernetes-cluster).
+
+1. Ensure GitLab can manage Knative:
+    - For a non-GitLab managed cluster, ensure that the service account for the token
+      provided can manage resources in the `serving.knative.dev` API group.
+    - For a GitLab managed cluster,
+      GitLab uses a service account with the `edit` cluster role. This account needs
+      the ability to manage resources in the `serving.knative.dev` API group.
+      We suggest you do this with an [aggregated ClusterRole](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#aggregated-clusterroles)
+      adding rules to the default `edit` cluster role:
+      First, save the following YAML as `knative-serving-only-role.yaml`:
+
+      ```yaml
+      apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRole
+      metadata:
+        name: knative-serving-only-role
+        labels:
+          rbac.authorization.k8s.io/aggregate-to-edit: "true"
+      rules:
+      - apiGroups:
+        - serving.knative.dev
+        resources:
+        - configurations
+        - configurationgenerations
+        - routes
+        - revisions
+        - revisionuids
+        - autoscalers
+        - services
+        verbs:
+        - get
+        - list
+        - create
+        - update
+        - delete
+        - patch
+        - watch
+        ```
+
+        Then run the following command:
+
+        ```bash
+        kubectl apply -f knative-serving-only-role.yaml
+        ```
+
 1. Follow the steps to deploy [functions](#deploying-functions)
    or [serverless applications](#deploying-serverless-applications) onto your
    cluster.
