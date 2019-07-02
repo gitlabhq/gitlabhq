@@ -16,6 +16,14 @@ class DeployToken < ApplicationRecord
   has_many :projects, through: :project_deploy_tokens
 
   validate :ensure_at_least_one_scope
+  validates :username,
+    length: { maximum: 255 },
+    allow_nil: true,
+    format: {
+      with: /\A[a-zA-Z0-9\.\+_-]+\z/,
+      message: "can contain only letters, digits, '_', '-', '+', and '.'"
+    }
+
   before_save :ensure_token
 
   accepts_nested_attributes_for :project_deploy_tokens
@@ -39,7 +47,7 @@ class DeployToken < ApplicationRecord
   end
 
   def username
-    "gitlab+deploy-token-#{id}"
+    super || default_username
   end
 
   def has_access_to?(requested_project)
@@ -74,5 +82,9 @@ class DeployToken < ApplicationRecord
 
   def ensure_at_least_one_scope
     errors.add(:base, "Scopes can't be blank") unless read_repository || read_registry
+  end
+
+  def default_username
+    "gitlab+deploy-token-#{id}" if persisted?
   end
 end

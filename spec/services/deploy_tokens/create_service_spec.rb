@@ -32,6 +32,22 @@ describe DeployTokens::CreateService do
       end
     end
 
+    context 'when username is empty string' do
+      let(:deploy_token_params) { attributes_for(:deploy_token, username: '') }
+
+      it 'converts it to nil' do
+        expect(subject.read_attribute(:username)).to be_nil
+      end
+    end
+
+    context 'when username is provided' do
+      let(:deploy_token_params) { attributes_for(:deploy_token, username: 'deployer') }
+
+      it 'keeps the provided username' do
+        expect(subject.read_attribute(:username)).to eq('deployer')
+      end
+    end
+
     context 'when the deploy token is invalid' do
       let(:deploy_token_params) { attributes_for(:deploy_token, read_repository: false, read_registry: false) }
 
