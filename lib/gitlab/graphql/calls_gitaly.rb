@@ -2,8 +2,8 @@
 
 module Gitlab
   module Graphql
-    # Allow fields to declare permissions their objects must have. The field
-    # will be set to nil unless all required permissions are present.
+    # Wraps the field resolution to count Gitaly calls before and after.
+    # Raises an error if the field calls Gitaly but hadn't declared such.
     module CallsGitaly
       extend ActiveSupport::Concern
 

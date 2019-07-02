@@ -8,6 +8,7 @@ module Types
 
     def initialize(*args, **kwargs, &block)
       @calls_gitaly = !!kwargs.delete(:calls_gitaly)
+      @constant_complexity = !!kwargs[:complexity]
       kwargs[:complexity] ||= field_complexity(kwargs[:resolver_class])
 
       super(*args, **kwargs, &block)
@@ -21,6 +22,10 @@ module Types
 
     def calls_gitaly?
       @calls_gitaly
+    end
+
+    def constant_complexity?
+      @constant_complexity
     end
 
     private

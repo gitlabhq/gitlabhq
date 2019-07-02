@@ -96,10 +96,19 @@ describe Types::BaseField do
         expect(field.base_complexity).to eq Types::BaseField::DEFAULT_COMPLEXITY
       end
 
-      it 'is overridden by declared complexity value' do
-        field = described_class.new(name: 'test', type: GraphQL::STRING_TYPE, null: true, calls_gitaly: true, complexity: 12)
+      context 'with declared constant complexity value' do
+        it 'has complexity set to that constant' do
+          field = described_class.new(name: 'test', type: GraphQL::STRING_TYPE, null: true, complexity: 12)
 
-        expect(field.to_graphql.complexity).to eq 12
+          expect(field.to_graphql.complexity).to eq 12
+        end
+
+        it 'does not raise an error even with Gitaly calls' do
+          allow(Gitlab::GitalyClient).to receive(:get_request_count).and_return([0, 1])
+          field = described_class.new(name: 'test', type: GraphQL::STRING_TYPE, null: true, complexity: 12)
+
+          expect(field.to_graphql.complexity).to eq 12
+        end
       end
     end
   end
