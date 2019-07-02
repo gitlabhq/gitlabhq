@@ -6,6 +6,7 @@ easy to maintain, and performant for the end-user.
 ## Rules
 
 ### Utility Classes
+
 As part of the effort for [cleaning up our CSS and moving our components into GitLab-UI](https://gitlab.com/groups/gitlab-org/-/epics/950)
 led by the [GitLab UI WG](https://gitlab.com/gitlab-com/www-gitlab-com/merge_requests/20623) we prefer the use of utility classes over adding new CSS. However, complex CSS can be addressed by adding component classes.
 
@@ -31,12 +32,12 @@ New utility classes should be added to [`utilities.scss`](https://gitlab.com/git
 
 #### When should I create component classes?
 
-We recommend a "utility-first" approach. 
+We recommend a "utility-first" approach.
 
 1. Start with utility classes.
 2. If composing utility classes into a component class removes code duplication and encapsulates a clear responsibility, do it.
 
-This encourages an organic growth of component classes and prevents the creation of one-off unreusable classes. Also, the kind of classes that emerge from "utility-first" tend to be design-centered (e.g. `.button`, `.alert`, `.card`) rather than domain-centered (e.g. `.security-report-widget`, `.commit-header-icon`). 
+This encourages an organic growth of component classes and prevents the creation of one-off unreusable classes. Also, the kind of classes that emerge from "utility-first" tend to be design-centered (e.g. `.button`, `.alert`, `.card`) rather than domain-centered (e.g. `.security-report-widget`, `.commit-header-icon`).
 
 Examples of component classes that were created using "utility-first" include:
 
@@ -45,8 +46,8 @@ Examples of component classes that were created using "utility-first" include:
 
 Inspiration:
 
-- https://tailwindcss.com/docs/utility-first
-- https://tailwindcss.com/docs/extracting-components 
+- <https://tailwindcss.com/docs/utility-first>
+- <https://tailwindcss.com/docs/extracting-components>
 
 ### Naming
 

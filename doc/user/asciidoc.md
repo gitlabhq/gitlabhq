@@ -6,7 +6,7 @@ Consult the [Asciidoctor User Manual](https://asciidoctor.org/docs/user-manual) 
 ## Syntax
 
 Here's a brief reference of the most commonly used AsciiDoc syntax.
-You can find the full documentation for the AsciiDoc syntax at https://asciidoctor.org/docs.
+You can find the full documentation for the AsciiDoc syntax at <https://asciidoctor.org/docs>.
 
 ### Paragraphs
 

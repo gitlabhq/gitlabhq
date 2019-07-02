@@ -17,7 +17,7 @@ and is automatically configured on [GitHub import](../../../integration/github.m
 This integration requires a [GitHub API token](https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/)
 with `repo:status` access granted:
 
-1. Go to your "Personal access tokens" page at https://github.com/settings/tokens
+1. Go to your "Personal access tokens" page at <https://github.com/settings/tokens>
 1. Click "Generate New Token"
 1. Ensure that `repo:status` is checked and click "Generate token"
 1. Copy the generated token to use on GitLab

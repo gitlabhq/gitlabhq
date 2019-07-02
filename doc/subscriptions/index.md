@@ -74,7 +74,7 @@ Please note that you need to be a group owner to associate a group to your subsc
 To see the status of your GitLab.com subscription, you can click on the Billings
 section of the relevant namespace:
 
-- For individuals, this is located at https://gitlab.com/profile/billings under
+- For individuals, this is located at <https://gitlab.com/profile/billings> under
   in your Settings,
 - For groups, this is located under the group's Settings dropdown, under Billing.
 

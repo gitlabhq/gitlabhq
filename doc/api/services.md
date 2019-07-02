@@ -291,7 +291,6 @@ Parameters:
 | `merge_requests_events` | boolean | false | Enable notifications for merge request events |
 | `tag_push_events` | boolean | false | Enable notifications for tag push events |
 
-
 ### Delete Drone CI service
 
 Delete Drone CI service for a project.
@@ -744,7 +743,7 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `username` | string | yes | The username of a Packagist account |
 | `token` | string | yes | API token to the Packagist server |
-| `server` | boolean | no | URL of the Packagist server. Leave blank for default: https://packagist.org |
+| `server` | boolean | no | URL of the Packagist server. Leave blank for default: <https://packagist.org> |
 | `push_events` | boolean | false | Enable notifications for push events |
 | `merge_requests_events` | boolean | false | Enable notifications for merge request events |
 | `tag_push_events` | boolean | false | Enable notifications for tag push events |
@@ -1161,7 +1160,7 @@ PUT /projects/:id/services/jenkins
 
 Parameters:
 
-- `jenkins_url` (**required**) - Jenkins URL like http://jenkins.example.com
+- `jenkins_url` (**required**) - Jenkins URL like `http://jenkins.example.com`
 - `project_name` (**required**) - The URL-friendly project name. Example: my_project_name
 - `username` (optional) - A user with access to the Jenkins server, if applicable
 - `password` (optional) - The password of the user
@@ -1196,7 +1195,7 @@ PUT /projects/:id/services/jenkins-deprecated
 
 Parameters:
 
-- `project_url` (**required**) - Jenkins project URL like http://jenkins.example.com/job/my-project/
+- `project_url` (**required**) - Jenkins project URL like `http://jenkins.example.com/job/my-project/`
 - `multiproject_enabled` (optional) - Multi-project mode is configured in Jenkins GitLab Hook plugin
 - `pass_unstable` (optional) - Unstable builds will be treated as passing
 

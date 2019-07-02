@@ -40,7 +40,7 @@ A complete architecture diagram is available in our
 
 ![Simplified Component Overview](img/architecture_simplified.png)
 
-<!-- 
+<!--
 To update this diagram, GitLab team members can edit this source file:
 https://docs.google.com/drawings/d/1fBzAyklyveF-i-2q-OHUIqDkYfjjxC4mq5shwKSZHLs/edit.
  -->
@@ -304,7 +304,7 @@ GitLab is comprised of a large number of services that all log. We started bundl
 - Configuration: [Omnibus][mattermost-omnibus], [Charts][mattermost-charts]
 - Layer: Core Service (Processor)
 
-Mattermost is an open source, private cloud, Slack-alternative from https://mattermost.com.
+Mattermost is an open source, private cloud, Slack-alternative from <https://mattermost.com>.
 
 #### MinIO
 
@@ -321,7 +321,7 @@ MinIO is an object storage server released under Apache License v2.0. It is comp
 - Layer: Core Service (Processor)
 - Process: `nginx`
 
-Nginx as an ingress port for all HTTP requests and routes them to the approriate sub-systems within GitLab. We are bundling an unmodified version of the popular open source webserver.
+Nginx as an ingress port for all HTTP requests and routes them to the appropriate sub-systems within GitLab. We are bundling an unmodified version of the popular open source webserver.
 
 #### Node Exporter
 

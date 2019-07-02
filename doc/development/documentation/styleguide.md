@@ -151,7 +151,7 @@ The table below shows what kind of documentation goes where.
    applies to images.
 1. For image files, do not exceed 100KB.
 1. Do not upload video files to the product repositories.
-[Link or embed videos](#videos) instead.
+   [Link or embed videos](#videos) instead.
 1. There are four main directories, `user`, `administration`, `api` and `development`.
 1. The `doc/user/` directory has five main subdirectories: `project/`, `group/`,
    `profile/`, `dashboard/` and `admin_area/`.
@@ -179,7 +179,7 @@ The table below shows what kind of documentation goes where.
 If you are unsure where a document or a content addition should live, this should
 not stop you from authoring and contributing. You can use your best judgment and
 then ask the reviewer of your MR to confirm your decision, and/or ask a technical writer
-at any stage in the process. The techncial writing team will review all documentation
+at any stage in the process. The technical writing team will review all documentation
 changes, regardless, and can move content if there is a better place for it.
 
 ### Avoid duplication
@@ -476,7 +476,7 @@ Do not upload videos to the product repositories. [Link](#link-to-video) or [emb
 
 ### Link to video
 
-To link out to a video, include a YouTube icon so that readers can 
+To link out to a video, include a YouTube icon so that readers can
 quickly and easily scan the page for videos before reading:
 
 ```md

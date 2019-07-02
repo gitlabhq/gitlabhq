@@ -1,4 +1,5 @@
 # Feature flags process
+
 ## Feature flags for user applications
 
 This document only covers feature flags used in the development of GitLab
@@ -12,12 +13,12 @@ should be leveraged:
 
 - By default, the feature flags should be **off**.
 - Feature flags should remain in the codebase for as short period as possible
-to reduce the need for feature flag accounting.
+  to reduce the need for feature flag accounting.
 - The person operating with feature flags is responsible for clearly communicating
-the status of a feature behind the feature flag with responsible stakeholders.
+  the status of a feature behind the feature flag with responsible stakeholders.
 - Merge requests that make changes hidden behind a feature flag, or remove an
-existing feature flag because a feature is deemed stable must have the
-~"feature flag" label assigned.
+  existing feature flag because a feature is deemed stable must have the
+  ~"feature flag" label assigned.
 
 One might be tempted to think that feature flags will delay the release of a
 feature by at least one month (= one release). This is not the case. A feature
@@ -64,12 +65,12 @@ to be included in the final self-managed release.
 In addition to this, the feature behind feature flag should:
 
 - Run in all GitLab.com environments for a sufficient period of time. This time
-period depends on the feature behind the feature flag, but as a general rule of
-thumb 2-4 working days should be sufficient to gather enough feedback.
+  period depends on the feature behind the feature flag, but as a general rule of
+  thumb 2-4 working days should be sufficient to gather enough feedback.
 - The feature should be exposed to all users within the GitLab.com plan during
-the above mentioned period of time. Exposing the feature to a smaller percentage
-or only a group of users might not expose a sufficient amount of information to aid in
-making a decision on feature stability.
+  the above mentioned period of time. Exposing the feature to a smaller percentage
+  or only a group of users might not expose a sufficient amount of information to aid in
+  making a decision on feature stability.
 
 While rare, release managers may decide to reject picking or revert a change in
 a stable branch, even when feature flags are used. This might be necessary if
