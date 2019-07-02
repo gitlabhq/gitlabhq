@@ -1,4 +1,4 @@
-= form_for @cluster, url: clusterable.cluster_path(@cluster), as: :cluster do |field|
+= form_for @cluster, url: clusterable.cluster_path(@cluster), as: :cluster, html: { class: 'cluster_integration_form' } do |field|
   = form_errors(@cluster)
   .form-group
     %h5= s_('ClusterIntegration|Integration status')
