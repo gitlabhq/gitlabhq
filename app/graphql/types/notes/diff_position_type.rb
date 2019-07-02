@@ -7,12 +7,7 @@ module Types
     class DiffPositionType < BaseObject
       graphql_name 'DiffPosition'
 
-      field :head_sha, GraphQL::STRING_TYPE, null: false,
-            description: "The sha of the head at the time the comment was made"
-      field :base_sha,  GraphQL::STRING_TYPE, null: true,
-            description: "The merge base of the branch the comment was made on"
-      field :start_sha, GraphQL::STRING_TYPE, null: false,
-            description: "The sha of the branch being compared against"
+      field :diff_refs, Types::DiffRefsType, null: false
 
       field :file_path, GraphQL::STRING_TYPE, null: false,
             description: "The path of the file that was changed"

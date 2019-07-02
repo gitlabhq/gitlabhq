@@ -5,11 +5,11 @@ module Types
     # rubocop: disable Graphql/AuthorizeTypes
     class DiffPositionBaseInputType < BaseInputObject
       argument :head_sha, GraphQL::STRING_TYPE, required: true,
-               description: copy_field_description(Types::Notes::DiffPositionType, :head_sha)
+               description: copy_field_description(Types::DiffRefsType, :head_sha)
       argument :base_sha,  GraphQL::STRING_TYPE, required: false,
-               description: copy_field_description(Types::Notes::DiffPositionType, :base_sha)
+               description: copy_field_description(Types::DiffRefsType, :base_sha)
       argument :start_sha, GraphQL::STRING_TYPE, required: true,
-               description: copy_field_description(Types::Notes::DiffPositionType, :start_sha)
+               description: copy_field_description(Types::DiffRefsType, :start_sha)
 
       argument :paths,
                Types::DiffPathsInputType,
