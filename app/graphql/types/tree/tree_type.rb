@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 module Types
   module Tree
+    # rubocop: disable Graphql/AuthorizeTypes
+    # This is presented through `Repository` that has its own authorization
     class TreeType < BaseObject
       graphql_name 'Tree'
 
@@ -13,6 +15,7 @@ module Types
       field :blobs, Types::Tree::BlobType.connection_type, null: false, resolve: -> (obj, args, ctx) do
         Gitlab::Graphql::Representation::TreeEntry.decorate(obj.blobs, obj.repository)
       end
+      # rubocop: enable Graphql/AuthorizeTypes
     end
   end
 end

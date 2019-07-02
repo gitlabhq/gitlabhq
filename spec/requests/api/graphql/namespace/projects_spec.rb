@@ -58,9 +58,7 @@ describe 'getting projects', :nested_groups do
       it 'finds only public projects' do
         post_graphql(query, current_user: nil)
 
-        expect(graphql_data['namespace']['projects']['edges'].size).to eq(1)
-        project = graphql_data['namespace']['projects']['edges'][0]['node']
-        expect(project['id']).to eq(public_project.to_global_id.to_s)
+        expect(graphql_data['namespace']).to be_nil
       end
     end
   end

@@ -2,6 +2,8 @@
 
 module Types
   module Notes
+    # rubocop: disable Graphql/AuthorizeTypes
+    # This is presented through `NoteType` that has its own authorization
     class DiffPositionType < BaseObject
       graphql_name 'DiffPosition'
 
@@ -42,5 +44,6 @@ module Types
             description: "The total height of the image",
             resolve: -> (position, _args, _ctx) { position.height if position.on_image? }
     end
+    # rubocop: enable Graphql/AuthorizeTypes
   end
 end

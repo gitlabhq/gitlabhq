@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 module Types
   module Tree
+    # rubocop: disable Graphql/AuthorizeTypes
+    # This is presented through `Repository` that has its own authorization
     class TreeEntryType < BaseObject
       implements Types::Tree::EntryType
 
@@ -11,5 +13,6 @@ module Types
 
       field :web_url, GraphQL::STRING_TYPE, null: true
     end
+    # rubocop: enable Graphql/AuthorizeTypes
   end
 end
