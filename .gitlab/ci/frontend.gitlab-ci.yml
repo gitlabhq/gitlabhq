@@ -32,7 +32,7 @@
     DOCKER_HOST: tcp://docker:2375
   script:
     - node --version
-    - retry yarn install --frozen-lockfile --production --cache-folder .yarn-cache
+    - retry yarn install --frozen-lockfile --production --cache-folder .yarn-cache --prefer-offline
     - free -m
     - retry bundle exec rake gitlab:assets:compile
     - time scripts/build_assets_image
@@ -82,7 +82,7 @@ gitlab:assets:compile pull-cache:
   stage: prepare
   script:
     - node --version
-    - retry yarn install --frozen-lockfile --cache-folder .yarn-cache
+    - retry yarn install --frozen-lockfile --cache-folder .yarn-cache --prefer-offline
     - free -m
     - retry bundle exec rake gitlab:assets:compile
     - scripts/clean-old-cached-assets
@@ -231,7 +231,7 @@ qa:selectors:
   before_script: []
   script:
     - date
-    - yarn install --frozen-lockfile --cache-folder .yarn-cache
+    - yarn install --frozen-lockfile --cache-folder .yarn-cache --prefer-offline
     - date
     - yarn run webpack-prod
 
