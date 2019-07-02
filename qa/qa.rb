@@ -162,9 +162,12 @@ module QA
     module File
       autoload :Form, 'qa/page/file/form'
       autoload :Show, 'qa/page/file/show'
+      autoload :Edit, 'qa/page/file/edit'
 
       module Shared
         autoload :CommitMessage, 'qa/page/file/shared/commit_message'
+        autoload :CommitButton, 'qa/page/file/shared/commit_button'
+        autoload :Editor, 'qa/page/file/shared/editor'
       end
     end
 
@@ -218,6 +221,7 @@ module QA
         autoload :Operations, 'qa/page/project/sub_menus/operations'
         autoload :Repository, 'qa/page/project/sub_menus/repository'
         autoload :Settings, 'qa/page/project/sub_menus/settings'
+        autoload :Project, 'qa/page/project/sub_menus/project'
       end
 
       module Issue
@@ -323,6 +327,7 @@ module QA
       autoload :DropdownFilter, 'qa/page/component/dropdown_filter'
       autoload :UsersSelect, 'qa/page/component/users_select'
       autoload :Note, 'qa/page/component/note'
+      autoload :ConfirmModal, 'qa/page/component/confirm_modal'
 
       module Issuable
         autoload :Common, 'qa/page/component/issuable/common'
