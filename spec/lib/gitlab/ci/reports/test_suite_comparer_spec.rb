@@ -10,12 +10,6 @@ describe Gitlab::Ci::Reports::TestSuiteComparer do
   let(:test_case_success) { create_test_case_rspec_success }
   let(:test_case_failed) { create_test_case_rspec_failed }
 
-  let(:test_case_resolved) do
-    create_test_case_rspec_failed.tap do |test_case|
-      test_case.instance_variable_set("@status", Gitlab::Ci::Reports::TestCase::STATUS_SUCCESS)
-    end
-  end
-
   describe '#new_failures' do
     subject { comparer.new_failures }
 
@@ -44,7 +38,7 @@ describe Gitlab::Ci::Reports::TestSuiteComparer do
     context 'when head sutie has a success test case which failed in base' do
       before do
         base_suite.add_test_case(test_case_failed)
-        head_suite.add_test_case(test_case_resolved)
+        head_suite.add_test_case(test_case_success)
       end
 
       it 'does not return the failed test case' do
@@ -81,7 +75,7 @@ describe Gitlab::Ci::Reports::TestSuiteComparer do
     context 'when head sutie has a success test case which failed in base' do
       before do
         base_suite.add_test_case(test_case_failed)
-        head_suite.add_test_case(test_case_resolved)
+        head_suite.add_test_case(test_case_success)
       end
 
       it 'does not return the failed test case' do
@@ -126,11 +120,11 @@ describe Gitlab::Ci::Reports::TestSuiteComparer do
     context 'when head sutie has a success test case which failed in base' do
       before do
         base_suite.add_test_case(test_case_failed)
-        head_suite.add_test_case(test_case_resolved)
+        head_suite.add_test_case(test_case_success)
       end
 
       it 'does not return the resolved test case' do
-        is_expected.to eq([test_case_resolved])
+        is_expected.to eq([test_case_success])
       end
 
       it 'returns the correct resolved count' do
@@ -156,13 +150,8 @@ describe Gitlab::Ci::Reports::TestSuiteComparer do
 
     context 'when there are a new failure and an existing failure' do
       let(:test_case_1_success) { create_test_case_rspec_success }
-      let(:test_case_2_failed) { create_test_case_rspec_failed }
-
-      let(:test_case_1_failed) do
-        create_test_case_rspec_success.tap do |test_case|
-          test_case.instance_variable_set("@status", Gitlab::Ci::Reports::TestCase::STATUS_FAILED)
-        end
-      end
+      let(:test_case_1_failed) { create_test_case_rspec_failed }
+      let(:test_case_2_failed) { create_test_case_rspec_failed('case2') }
 
       before do
         base_suite.add_test_case(test_case_1_success)
