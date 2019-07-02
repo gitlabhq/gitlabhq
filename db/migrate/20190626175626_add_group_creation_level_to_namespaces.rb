@@ -4,7 +4,6 @@ class AddGroupCreationLevelToNamespaces < ActiveRecord::Migration[5.1]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
-  disable_ddl_transaction!
 
   def up
     add_column(:namespaces, :subgroup_creation_level, :integer)
