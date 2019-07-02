@@ -250,8 +250,8 @@ class Issue < ApplicationRecord
   end
   # rubocop: enable CodeReuse/ServiceClass
 
-  def merge_requests_count
-    merge_requests_closing_issues.count
+  def merge_requests_count(user = nil)
+    ::MergeRequestsClosingIssues.count_for_issue(self.id, user)
   end
 
   def labels_hook_attrs
