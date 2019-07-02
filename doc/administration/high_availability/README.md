@@ -171,12 +171,12 @@ are a work-in-progress representation of the work so far. Quality will be
 certifying this environment in FY20-Q2. The specifications may be adjusted 
 prior to certification based on performance testing. 
 
-- 3 PostgreSQL - 4 CPU, 8GB RAM
+- 3 PostgreSQL - 4 CPU, 8GB RAM per node
 - 1 PgBouncer - 2 CPU, 4GB RAM
-- 2 Redis - 2 CPU, 8GB RAM
-- 3 Consul/Sentinel - 2 CPU, 2GB RAM
-- 4 Sidekiq - 4 CPU, 8GB RAM
-- 5 GitLab application nodes - 20 CPU, 64GB RAM
+- 2 Redis - 2 CPU, 8GB RAM per node
+- 3 Consul/Sentinel - 2 CPU, 2GB RAM per node
+- 4 Sidekiq - 4 CPU, 8GB RAM per node
+- 5 GitLab application nodes - 20 CPU, 64GB RAM per node
 - 1 Gitaly - 20 CPU, 64GB RAM
 - 1 Monitoring node - 4 CPU, 8GB RAM
 
