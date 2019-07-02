@@ -21,7 +21,7 @@ const updateIssue = (url, issueList, { move_before_id, move_after_id }) =>
 const initManualOrdering = () => {
   const issueList = document.querySelector('.manual-ordering');
 
-  if (!issueList || !(gon.features && gon.features.manualSorting)) {
+  if (!issueList || !(gon.features && gon.features.manualSorting) || !(gon.current_user_id > 0)) {
     return;
   }
 
