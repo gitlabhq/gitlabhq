@@ -274,19 +274,6 @@
 
             = render_if_exists 'layouts/nav/sidebar/project_feature_flags_link'
 
-      - if project_nav_tab? :container_registry
-        = nav_link(controller: %w[projects/registry/repositories]) do
-          = link_to project_container_registry_index_path(@project), class: 'shortcuts-container-registry' do
-            .nav-icon-container
-              = sprite_icon('disk')
-            %span.nav-item-name
-              = _('Registry')
-          %ul.sidebar-sub-level-items.is-fly-out-only
-            = nav_link(controller: %w[projects/registry/repositories], html_options: { class: "fly-out-top-item" } ) do
-              = link_to project_container_registry_index_path(@project) do
-                %strong.fly-out-top-item-name
-                  = _('Registry')
-
       = render_if_exists 'layouts/nav/sidebar/project_packages_link'
 
       - if project_nav_tab? :wiki
