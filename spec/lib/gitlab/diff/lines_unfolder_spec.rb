@@ -842,4 +842,37 @@ describe Gitlab::Diff::LinesUnfolder do
       end
     end
   end
+
+  context 'positioned on an image' do
+    let(:position) do
+      Gitlab::Diff::Position.new(
+        base_sha: '1c59dfa64afbea8c721bb09a06a9d326c952ea19',
+        start_sha: '1c59dfa64afbea8c721bb09a06a9d326c952ea19',
+        head_sha: '1487062132228de836236c522fe52fed4980a46c',
+        old_path: 'image.jpg',
+        new_path: 'image.jpg',
+        position_type: 'image'
+      )
+    end
+
+    before do
+      allow(old_blob).to receive(:binary?).and_return(binary?)
+    end
+
+    context 'diff file is not text' do
+      let(:binary?) { true }
+
+      it 'returns nil' do
+        expect(subject.unfolded_diff_lines).to be_nil
+      end
+    end
+
+    context 'diff file is text' do
+      let(:binary?) { false }
+
+      it 'returns nil' do
+        expect(subject.unfolded_diff_lines).to be_nil
+      end
+    end
+  end
 end
