@@ -27,14 +27,19 @@ describe Gitlab::BackgroundMigration::PopulateMergeRequestAssigneesTable, :migra
     merge_requests.create(params)
   end
 
+  before do
+    create_merge_request(2, assignee_id: user.id)
+    create_merge_request(3, assignee_id: user_2.id)
+    create_merge_request(4, assignee_id: user_3.id)
+
+    # Test filtering MRs without assignees
+    create_merge_request(5, assignee_id: nil)
+    # Test filtering already migrated row
+    merge_request_assignees.create!(merge_request_id: 2, user_id: user_3.id)
+  end
+
   describe '#perform' do
     it 'creates merge_request_assignees rows according to merge_requests' do
-      create_merge_request(2, assignee_id: user.id)
-      create_merge_request(3, assignee_id: user_2.id)
-      create_merge_request(4, assignee_id: user_3.id)
-      # Test filtering already migrated row
-      merge_request_assignees.create!(merge_request_id: 2, user_id: user_3.id)
-
       subject.perform(1, 4)
 
       rows = merge_request_assignees.order(:id).map { |row| row.attributes.slice('merge_request_id', 'user_id') }
@@ -51,6 +56,15 @@ describe Gitlab::BackgroundMigration::PopulateMergeRequestAssigneesTable, :migra
       expected_rows.each do |expected_row|
         expect(rows).to include(expected_row)
       end
+    end
+  end
+
+  describe '#perform_all_sync' do
+    it 'executes peform for all merge requests in batches' do
+      expect(subject).to receive(:perform).with(2, 4).ordered
+      expect(subject).to receive(:perform).with(5, 5).ordered
+
+      subject.perform_all_sync(batch_size: 3)
     end
   end
 end
