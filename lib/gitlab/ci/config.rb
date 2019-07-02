@@ -23,6 +23,11 @@ module Gitlab
 
         @root = Entry::Root.new(@config)
         @root.compose!
+
+      rescue Gitlab::Config::Loader::Yaml::DataTooLargeError => e
+        Gitlab::Sentry.track_exception(e, extra: { user: user.inspect, project: project.inspect })
+        raise Config::ConfigError, e.message
+
       rescue *rescue_errors => e
         raise Config::ConfigError, e.message
       end
