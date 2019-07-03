@@ -12,12 +12,16 @@ class Release < ApplicationRecord
 
   has_many :links, class_name: 'Releases::Link'
 
+  default_value_for :released_at, allows_nil: false do
+    Time.zone.now
+  end
+
   accepts_nested_attributes_for :links, allow_destroy: true
 
   validates :description, :project, :tag, presence: true
   validates :name, presence: true, on: :create
 
-  scope :sorted, -> { order(created_at: :desc) }
+  scope :sorted, -> { order(released_at: :desc) }
 
   delegate :repository, to: :project
 
@@ -42,6 +46,10 @@ class Release < ApplicationRecord
     strong_memoize(:sources) do
       Releases::Source.all(project, tag)
     end
+  end
+
+  def upcoming_release?
+    released_at.present? && released_at > Time.zone.now
   end
 
   private

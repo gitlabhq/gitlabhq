@@ -14,7 +14,7 @@ describe('Release block', () => {
     description_html: '<div><h2>changelog</h2><ul><li>line1</li<li>line 2</li></ul></div>',
     author_name: 'Release bot',
     author_email: 'release-bot@example.com',
-    created_at: '2012-05-28T05:00:00-07:00',
+    released_at: '2012-05-28T05:00:00-07:00',
     author: {
       avatar_url: 'uploads/-/system/user/avatar/johndoe/avatar.png',
       id: 482476,
@@ -101,7 +101,7 @@ describe('Release block', () => {
   });
 
   it('renders release date', () => {
-    expect(vm.$el.textContent).toContain(timeagoMixin.methods.timeFormated(release.created_at));
+    expect(vm.$el.textContent).toContain(timeagoMixin.methods.timeFormated(release.released_at));
   });
 
   it('renders number of assets provided', () => {
@@ -152,13 +152,13 @@ describe('Release block', () => {
     });
   });
 
-  describe('with pre_release flag', () => {
+  describe('with upcoming_release flag', () => {
     beforeEach(() => {
-      vm = factory(Object.assign({}, release, { pre_release: true }));
+      vm = factory(Object.assign({}, release, { upcoming_release: true }));
     });
 
-    it('renders pre-release badge', () => {
-      expect(vm.$el.textContent).toContain('Pre-release');
+    it('renders upcoming release badge', () => {
+      expect(vm.$el.textContent).toContain('Upcoming Release');
     });
   });
 });

@@ -22,6 +22,10 @@ module Releases
         params[:description]
       end
 
+      def released_at
+        params[:released_at]
+      end
+
       def release
         strong_memoize(:release) do
           project.releases.find_by_tag(tag_name)

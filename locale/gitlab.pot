@@ -7574,9 +7574,6 @@ msgstr ""
 msgid "Please wait while we import the repository for you. Refresh at will."
 msgstr ""
 
-msgid "Pre-release"
-msgstr ""
-
 msgid "Preferences"
 msgstr ""
 
@@ -11376,6 +11373,9 @@ msgid "Up to date"
 msgstr ""
 
 msgid "Upcoming"
+msgstr ""
+
+msgid "Upcoming Release"
 msgstr ""
 
 msgid "Update"
