@@ -26,10 +26,6 @@ module Gitlab
           attrs
         end
 
-        def changed_markdown_fields
-          changed_attributes.keys.map(&:to_s) & cached_markdown_fields.markdown_fields.map(&:to_s)
-        end
-
         def write_markdown_field(field_name, value)
           write_attribute(field_name, value)
         end
