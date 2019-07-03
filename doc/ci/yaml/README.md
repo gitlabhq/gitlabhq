@@ -973,6 +973,8 @@ review_app:
 
 stop_review_app:
   stage: deploy
+  variables:
+    GIT_STRATEGY: none  
   script: make delete-app
   when: manual
   environment:
@@ -986,6 +988,10 @@ Once the `review_app` job is successfully finished, it will trigger the
 `stop_review_app` job based on what is defined under `when`. In this case we
 set it up to `manual` so it will need a [manual action](#whenmanual) via
 GitLab's web interface in order to run.
+
+Also in the example, `GIT_STRATEGY` is set to `none` so that GitLab Runner won’t
+try to check out the code after the branch is deleted when the `stop_review_app`
+job is [automatically triggered](../environments.md#automatically-stopping-an-environment).
 
 The `stop_review_app` job is **required** to have the following keywords defined:
 
