@@ -105,7 +105,13 @@ export default {
     },
   },
   methods: {
-    ...mapActions('diffs', ['loadMoreLines', 'showCommentForm', 'setHighlightedRow']),
+    ...mapActions('diffs', [
+      'loadMoreLines',
+      'showCommentForm',
+      'setHighlightedRow',
+      'toggleLineDiscussions',
+      'toggleLineDiscussionWrappers',
+    ]),
     handleCommentButton() {
       this.showCommentForm({ lineCode: this.line.line_code, fileHash: this.fileHash });
     },
@@ -184,7 +190,14 @@ export default {
         @click="setHighlightedRow(lineCode)"
       >
       </a>
-      <diff-gutter-avatars v-if="shouldShowAvatarsOnGutter" :discussions="line.discussions" />
+      <diff-gutter-avatars
+        v-if="shouldShowAvatarsOnGutter"
+        :discussions="line.discussions"
+        :discussions-expanded="line.discussionsExpanded"
+        @toggleLineDiscussions="
+          toggleLineDiscussions({ lineCode, fileHash, expanded: !line.discussionsExpanded })
+        "
+      />
     </template>
   </div>
 </template>

@@ -87,7 +87,7 @@ describe('DiscussionNotes', () => {
         discussion.notes[0],
       ];
       discussion.notes = notesData;
-      createComponent({ discussion });
+      createComponent({ discussion, shouldRenderDiffs: true });
       const notes = wrapper.findAll('.notes > li');
 
       expect(notes.at(0).is(PlaceholderSystemNote)).toBe(true);

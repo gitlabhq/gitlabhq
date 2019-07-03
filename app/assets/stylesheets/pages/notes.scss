@@ -134,6 +134,16 @@ $note-form-margin-left: 72px;
     }
   }
 
+  .discussion-toggle-replies {
+    border-top: 0;
+    border-radius: 4px 4px 0 0;
+
+    &.collapsed {
+      border: 0;
+      border-radius: 4px;
+    }
+  }
+
   .note-created-ago,
   .note-updated-at {
     white-space: normal;
@@ -462,6 +472,14 @@ $note-form-margin-left: 72px;
     position: relative;
   }
 
+  .notes-content .discussion-notes.diff-discussions {
+    border-bottom: 1px solid $border-color;
+
+    &:nth-last-child(1) {
+      border-bottom: 0;
+    }
+  }
+
   .notes_holder {
     font-family: $regular-font;
 
@@ -517,6 +535,17 @@ $note-form-margin-left: 72px;
   .discussion-reply-holder {
     border-radius: 0 0 $border-radius-default $border-radius-default;
     position: relative;
+
+    .discussion-form {
+      width: 100%;
+      background-color: $gray-light;
+      padding: 0;
+    }
+
+    .disabled-comment {
+      padding: $gl-vert-padding 0;
+      width: 100%;
+    }
   }
 }
 

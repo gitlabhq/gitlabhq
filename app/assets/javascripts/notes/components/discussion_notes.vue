@@ -1,11 +1,11 @@
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 import { SYSTEM_NOTE } from '../constants';
 import { __ } from '~/locale';
-import NoteableNote from './noteable_note.vue';
-import PlaceholderNote from '../../vue_shared/components/notes/placeholder_note.vue';
-import PlaceholderSystemNote from '../../vue_shared/components/notes/placeholder_system_note.vue';
+import PlaceholderNote from '~/vue_shared/components/notes/placeholder_note.vue';
+import PlaceholderSystemNote from '~/vue_shared/components/notes/placeholder_system_note.vue';
 import SystemNote from '~/vue_shared/components/notes/system_note.vue';
+import NoteableNote from './noteable_note.vue';
 import ToggleRepliesWidget from './toggle_replies_widget.vue';
 import NoteEditedText from './note_edited_text.vue';
 
@@ -72,6 +72,7 @@ export default {
     },
   },
   methods: {
+    ...mapActions(['toggleDiscussion']),
     componentName(note) {
       if (note.isPlaceholderNote) {
         if (note.placeholderType === SYSTEM_NOTE) {
@@ -101,7 +102,7 @@ export default {
         <component
           :is="componentName(firstNote)"
           :note="componentData(firstNote)"
-          :line="line"
+          :line="line || diffLine"
           :commit="commit"
           :help-page-path="helpPagePath"
           :show-reply-button="userCanReply"
@@ -118,23 +119,29 @@ export default {
           />
           <slot slot="avatar-badge" name="avatar-badge"></slot>
         </component>
-        <toggle-replies-widget
-          v-if="hasReplies"
-          :collapsed="!isExpanded"
-          :replies="replies"
-          @toggle="$emit('toggleDiscussion')"
-        />
-        <template v-if="isExpanded">
-          <component
-            :is="componentName(note)"
-            v-for="note in replies"
-            :key="note.id"
-            :note="componentData(note)"
-            :help-page-path="helpPagePath"
-            :line="line"
-            @handleDeleteNote="$emit('deleteNote')"
+        <div
+          :class="discussion.diff_discussion ? 'discussion-collapsible bordered-box clearfix' : ''"
+        >
+          <toggle-replies-widget
+            v-if="hasReplies"
+            :collapsed="!isExpanded"
+            :replies="replies"
+            :class="{ 'discussion-toggle-replies': discussion.diff_discussion }"
+            @toggle="toggleDiscussion({ discussionId: discussion.id })"
           />
-        </template>
+          <template v-if="isExpanded">
+            <component
+              :is="componentName(note)"
+              v-for="note in replies"
+              :key="note.id"
+              :note="componentData(note)"
+              :help-page-path="helpPagePath"
+              :line="line"
+              @handleDeleteNote="$emit('deleteNote')"
+            />
+          </template>
+          <slot :show-replies="isExpanded || !hasReplies" name="footer"></slot>
+        </div>
       </template>
       <template v-else>
         <component
@@ -148,8 +155,8 @@ export default {
         >
           <slot v-if="index === 0" slot="avatar-badge" name="avatar-badge"></slot>
         </component>
+        <slot :show-replies="isExpanded || !hasReplies" name="footer"></slot>
       </template>
     </ul>
-    <slot :show-replies="isExpanded || !hasReplies" name="footer"></slot>
   </div>
 </template>
