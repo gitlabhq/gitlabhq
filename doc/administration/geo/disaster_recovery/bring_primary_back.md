@@ -21,20 +21,20 @@ To bring the former **primary** node up to date:
 1. SSH into the former **primary** node that has fallen behind.
 1. Make sure all the services are up:
 
-    ```sh
-    sudo gitlab-ctl start
-    ```
+   ```sh
+   sudo gitlab-ctl start
+   ```
 
-    > **Note 1:** If you [disabled the **primary** node permanently][disaster-recovery-disable-primary],
-    > you need to undo those steps now. For Debian/Ubuntu you just need to run
-    > `sudo systemctl enable gitlab-runsvdir`. For CentOS 6, you need to install
-    > the GitLab instance from scratch and set it up as a **secondary** node by
-    > following [Setup instructions][setup-geo]. In this case, you don't need to follow the next step.
-    >
-    > **Note 2:** If you [changed the DNS records](index.md#step-4-optional-updating-the-primary-domain-dns-record)
-    > for this node during disaster recovery procedure you may need to [block
-    > all the writes to this node](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/doc/gitlab-geo/planned-failover.md#block-primary-traffic)
-    > during this procedure.
+   NOTE: **Note:** If you [disabled the **primary** node permanently][disaster-recovery-disable-primary],
+   you need to undo those steps now. For Debian/Ubuntu you just need to run
+   `sudo systemctl enable gitlab-runsvdir`. For CentOS 6, you need to install
+   the GitLab instance from scratch and set it up as a **secondary** node by
+   following [Setup instructions][setup-geo]. In this case, you don't need to follow the next step.
+   
+   NOTE: **Note:** If you [changed the DNS records](index.md#step-4-optional-updating-the-primary-domain-dns-record)
+   for this node during disaster recovery procedure you may need to [block
+   all the writes to this node](planned_failover.md#prevent-updates-to-the-primary-node)
+   during this procedure.
 
 1. [Setup database replication][database-replication]. Note that in this
    case, **primary** node refers to the current **primary** node, and **secondary** node refers to the

@@ -39,48 +39,50 @@ must disable the **primary** node.
 
 1. SSH into the **primary** node to stop and disable GitLab, if possible:
 
-    ```sh
-    sudo gitlab-ctl stop
-    ```
+   ```sh
+   sudo gitlab-ctl stop
+   ```
 
-    Prevent GitLab from starting up again if the server unexpectedly reboots:
+   Prevent GitLab from starting up again if the server unexpectedly reboots:
 
-    ```sh
-    sudo systemctl disable gitlab-runsvdir
-    ```
+   ```sh
+   sudo systemctl disable gitlab-runsvdir
+   ```
 
-    > **CentOS only**: In CentOS 6 or older, there is no easy way to prevent GitLab from being
-    > started if the machine reboots isn't available (see [gitlab-org/omnibus-gitlab#3058]).
-    > It may be safest to uninstall the GitLab package completely:
+   NOTE: **Note:**
+   (**CentOS only**) In CentOS 6 or older, there is no easy way to prevent GitLab from being
+   started if the machine reboots isn't available (see [gitlab-org/omnibus-gitlab#3058]).
+   It may be safest to uninstall the GitLab package completely:
 
-    ```sh
-    yum remove gitlab-ee
-    ```
+   ```sh
+   yum remove gitlab-ee
+   ```
 
-    > **Ubuntu 14.04 LTS**: If you are using an older version of Ubuntu
-    > or any other distro based on the Upstart init system, you can prevent GitLab
-    > from starting if the machine reboots by doing the following:
+   NOTE: **Note:**
+   (**Ubuntu 14.04 LTS**) If you are using an older version of Ubuntu
+   or any other distro based on the Upstart init system, you can prevent GitLab
+   from starting if the machine reboots by doing the following:
 
-    ```sh
-    initctl stop gitlab-runsvvdir
-    echo 'manual' > /etc/init/gitlab-runsvdir.override
-    initctl reload-configuration
-    ```
+   ```sh
+   initctl stop gitlab-runsvvdir
+   echo 'manual' > /etc/init/gitlab-runsvdir.override
+   initctl reload-configuration
+   ```
 
 1. If you do not have SSH access to the **primary** node, take the machine offline and
-    prevent it from rebooting by any means at your disposal.
-    Since there are many ways you may prefer to accomplish this, we will avoid a
-    single recommendation. You may need to:
-      - Reconfigure the load balancers.
-      - Change DNS records (e.g., point the primary DNS record to the **secondary**
-        node in order to stop usage of the **primary** node).
-      - Stop the virtual servers.
-      - Block traffic through a firewall.
-      - Revoke object storage permissions from the **primary** node.
-      - Physically disconnect a machine.
+   prevent it from rebooting by any means at your disposal.
+   Since there are many ways you may prefer to accomplish this, we will avoid a
+   single recommendation. You may need to:
 
-1. If you plan to
-   [update the primary domain DNS record](#step-4-optional-updating-the-primary-domain-dns-record),
+   - Reconfigure the load balancers.
+   - Change DNS records (e.g., point the primary DNS record to the **secondary**
+     node in order to stop usage of the **primary** node).
+   - Stop the virtual servers.
+   - Block traffic through a firewall.
+   - Revoke object storage permissions from the **primary** node.
+   - Physically disconnect a machine.
+
+1. If you plan to [update the primary domain DNS record](#step-4-optional-updating-the-primary-domain-dns-record),
    you may wish to lower the TTL now to speed up propagation.
 
 ### Step 3. Promoting a **secondary** node
@@ -94,26 +96,26 @@ the **secondary** to the **primary**.
 
 1. SSH in to your **secondary** node and login as root:
 
-    ```sh
-    sudo -i
-    ```
+   ```sh
+   sudo -i
+   ```
 
 1. Edit `/etc/gitlab/gitlab.rb` to reflect its new status as **primary** by
    removing any lines that enabled the `geo_secondary_role`:
 
-    ```ruby
-    ## In pre-11.5 documentation, the role was enabled as follows. Remove this line.
-    geo_secondary_role['enable'] = true
+   ```ruby
+   ## In pre-11.5 documentation, the role was enabled as follows. Remove this line.
+   geo_secondary_role['enable'] = true
 
-    ## In 11.5+ documentation, the role was enabled as follows. Remove this line.
-    roles ['geo_secondary_role']
-    ```
+   ## In 11.5+ documentation, the role was enabled as follows. Remove this line.
+   roles ['geo_secondary_role']
+   ```
 
 1. Promote the **secondary** node to the **primary** node. Execute:
 
-    ```sh
-    gitlab-ctl promote-to-primary-node
-    ```
+   ```sh
+   gitlab-ctl promote-to-primary-node
+   ```
 
 1. Verify you can connect to the newly promoted **primary** node using the URL used
    previously for the **secondary** node.
@@ -129,31 +131,31 @@ do this manually.
 1. SSH in to the database node in the **secondary** and trigger PostgreSQL to
    promote to read-write:
 
-    ```bash
-    sudo gitlab-pg-ctl promote
-    ```
+   ```bash
+   sudo gitlab-pg-ctl promote
+   ```
 
 1. Edit `/etc/gitlab/gitlab.rb` on every machine in the **secondary** to
    reflect its new status as **primary** by removing any lines that enabled the
    `geo_secondary_role`:
 
-    ```ruby
-    ## In pre-11.5 documentation, the role was enabled as follows. Remove this line.
-    geo_secondary_role['enable'] = true
+   ```ruby
+   ## In pre-11.5 documentation, the role was enabled as follows. Remove this line.
+   geo_secondary_role['enable'] = true
 
-    ## In 11.5+ documentation, the role was enabled as follows. Remove this line.
-    roles ['geo_secondary_role']
-    ```
+   ## In 11.5+ documentation, the role was enabled as follows. Remove this line.
+   roles ['geo_secondary_role']
+   ```
 
-    After making these changes [Reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure) each
-    machine so the changes take effect.
+   After making these changes [Reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure) each
+   machine so the changes take effect.
 
 1. Promote the **secondary** to **primary**. SSH into a single application
    server and execute:
 
-    ```bash
-    sudo gitlab-rake geo:set_secondary_as_primary
-    ```
+   ```bash
+   sudo gitlab-rake geo:set_secondary_as_primary
+   ```
 
 1. Verify you can connect to the newly promoted **primary** using the URL used
    previously for the **secondary**.
@@ -167,37 +169,37 @@ secondary domain, like changing Git remotes and API URLs.
 
 1. SSH into the **secondary** node and login as root:
 
-    ```sh
-    sudo -i
-    ```
+   ```sh
+   sudo -i
+   ```
 
 1. Update the primary domain's DNS record. After updating the primary domain's
    DNS records to point to the **secondary** node, edit `/etc/gitlab/gitlab.rb` on the
    **secondary** node to reflect the new URL:
 
-    ```ruby
-    # Change the existing external_url configuration
-    external_url 'https://<new_external_url>'
-    ```
+   ```ruby
+   # Change the existing external_url configuration
+   external_url 'https://<new_external_url>'
+   ```
 
-    NOTE: **Note**
-    Changing `external_url` won't prevent access via the old secondary URL, as
-    long as the secondary DNS records are still intact.
+   NOTE: **Note**
+   Changing `external_url` won't prevent access via the old secondary URL, as
+   long as the secondary DNS records are still intact.
 
 1. Reconfigure the **secondary** node for the change to take effect:
 
-    ```sh
-    gitlab-ctl reconfigure
-    ```
+   ```sh
+   gitlab-ctl reconfigure
+   ```
 
 1. Execute the command below to update the newly promoted **primary** node URL:
 
-    ```sh
-    gitlab-rake geo:update_primary_node_url
-    ```
+   ```sh
+   gitlab-rake geo:update_primary_node_url
+   ```
 
-    This command will use the changed `external_url` configuration defined
-    in `/etc/gitlab/gitlab.rb`.
+   This command will use the changed `external_url` configuration defined
+   in `/etc/gitlab/gitlab.rb`.
 
 1. Verify you can connect to the newly promoted **primary** using its URL.
    If you updated the DNS records for the primary domain, these changes may
@@ -231,62 +233,61 @@ and after that you also need two extra steps.
 
 1. SSH into the new **primary** node and login as root:
 
-    ```sh
-    sudo -i
-    ```
+   ```sh
+   sudo -i
+   ```
 
 1. Edit `/etc/gitlab/gitlab.rb`
 
-    ```ruby
-    ## Enable a Geo Primary role (if you haven't yet)
-    roles ['geo_primary_role']
+   ```ruby
+   ## Enable a Geo Primary role (if you haven't yet)
+   roles ['geo_primary_role']
 
-    ##
-    # Allow PostgreSQL client authentication from the primary and secondary IPs. These IPs may be
-    # public or VPC addresses in CIDR format, for example ['198.51.100.1/32', '198.51.100.2/32']
-    ##
-    postgresql['md5_auth_cidr_addresses'] = ['<primary_node_ip>/32', '<secondary_node_ip>/32']
+   ##
+   # Allow PostgreSQL client authentication from the primary and secondary IPs. These IPs may be
+   # public or VPC addresses in CIDR format, for example ['198.51.100.1/32', '198.51.100.2/32']
+   ##
+   postgresql['md5_auth_cidr_addresses'] = ['<primary_node_ip>/32', '<secondary_node_ip>/32']
 
-    # Every secondary server needs to have its own slot so specify the number of secondary nodes you're going to have
-    postgresql['max_replication_slots'] = 1
+   # Every secondary server needs to have its own slot so specify the number of secondary nodes you're going to have
+   postgresql['max_replication_slots'] = 1
 
-    ##
-    ## Disable automatic database migrations temporarily
-    ## (until PostgreSQL is restarted and listening on the private address).
-    ##
-    gitlab_rails['auto_migrate'] = false
+   ##
+   ## Disable automatic database migrations temporarily
+   ## (until PostgreSQL is restarted and listening on the private address).
+   ##
+   gitlab_rails['auto_migrate'] = false
+   ```
 
-    ```
-
-    (For more details about these settings you can read [Configure the primary server][configure-the-primary-server])
+   (For more details about these settings you can read [Configure the primary server][configure-the-primary-server])
 
 1. Save the file and reconfigure GitLab for the database listen changes and
    the replication slot changes to be applied.
 
-    ```sh
-    gitlab-ctl reconfigure
-    ```
+   ```sh
+   gitlab-ctl reconfigure
+   ```
 
-    Restart PostgreSQL for its changes to take effect:
+   Restart PostgreSQL for its changes to take effect:
 
-    ```sh
-    gitlab-ctl restart postgresql
-    ```
+   ```sh
+   gitlab-ctl restart postgresql
+   ```
 
 1. Re-enable migrations now that PostgreSQL is restarted and listening on the
    private address.
 
-    Edit `/etc/gitlab/gitlab.rb` and **change** the configuration to `true`:
+   Edit `/etc/gitlab/gitlab.rb` and **change** the configuration to `true`:
 
-    ```ruby
-    gitlab_rails['auto_migrate'] = true
-    ```
+   ```ruby
+   gitlab_rails['auto_migrate'] = true
+   ```
 
-    Save the file and reconfigure GitLab:
+   Save the file and reconfigure GitLab:
 
-    ```sh
-    gitlab-ctl reconfigure
-    ```
+   ```sh
+   gitlab-ctl reconfigure
+   ```
 
 ### Step 2. Initiate the replication process
 

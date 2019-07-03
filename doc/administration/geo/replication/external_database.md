@@ -4,7 +4,7 @@ This document is relevant if you are using a PostgreSQL instance that is *not
 managed by Omnibus*. This includes cloud-managed instances like AWS RDS, or
 manually installed and configured PostgreSQL instances.
 
-NOTE: **Note**:
+NOTE: **Note:**
 We strongly recommend running Omnibus-managed instances as they are actively
 developed and tested. We aim to be compatible with most external
 (not managed by Omnibus) databases but we do not guarantee compatibility.
@@ -13,17 +13,17 @@ developed and tested. We aim to be compatible with most external
 
 1. SSH into a GitLab **primary** application server and login as root:
 
-    ```sh
-    sudo -i
-    ```
+   ```sh
+   sudo -i
+   ```
 
 1. Execute the command below to define the node as **primary** node:
 
-    ```sh
-    gitlab-ctl set-geo-primary-node
-    ```
+   ```sh
+   gitlab-ctl set-geo-primary-node
+   ```
 
-    This command will use your defined `external_url` in `/etc/gitlab/gitlab.rb`.
+   This command will use your defined `external_url` in `/etc/gitlab/gitlab.rb`.
 
 
 ### Configure the external database to be replicated
@@ -101,26 +101,27 @@ To configure the connection to the external read-replica database and enable Log
 
 1. SSH into a GitLab **secondary** application server and login as root:
 
-    ```bash
-    sudo -i
-    ```
+   ```bash
+   sudo -i
+   ```
 
 1. Edit `/etc/gitlab/gitlab.rb` and add the following
 
-    ```ruby
-    ##
-    ## Geo Secondary role
-    ## - configure dependent flags automatically to enable Geo
-    ##
-    roles ['geo_secondary_role']
+   ```ruby
+   ##
+   ## Geo Secondary role
+   ## - configure dependent flags automatically to enable Geo
+   ##
+   roles ['geo_secondary_role']
 
-    # note this is shared between both databases,
-    # make sure you define the same password in both
-    gitlab_rails['db_password'] = '<your_password_here>'
+   # note this is shared between both databases,
+   # make sure you define the same password in both
+   gitlab_rails['db_password'] = '<your_password_here>'
 
-    gitlab_rails['db_username'] = 'gitlab'
-    gitlab_rails['db_host'] = '<database_read_replica_host>'
-    ```
+   gitlab_rails['db_username'] = 'gitlab'
+   gitlab_rails['db_host'] = '<database_read_replica_host>'
+   ```
+
 1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure)
 
 ### Configure the tracking database
@@ -147,73 +148,72 @@ the tracking database on port 5432.
 
 1. SSH into a GitLab **secondary** server and login as root:
 
-    ```bash
-    sudo -i
-    ```
+   ```bash
+   sudo -i
+   ```
 
 1. Edit `/etc/gitlab/gitlab.rb` with the connection params and credentials for
-    the machine with the PostgreSQL instance:
+   the machine with the PostgreSQL instance:
 
-    ```ruby
-    geo_secondary['db_username'] = 'gitlab_geo'
-    geo_secondary['db_password'] = '<your_password_here>'
+   ```ruby
+   geo_secondary['db_username'] = 'gitlab_geo'
+   geo_secondary['db_password'] = '<your_password_here>'
 
-    geo_secondary['db_host'] = '<tracking_database_host>'
-    geo_secondary['db_port'] = <tracking_database_port>      # change to the correct port
-    geo_secondary['db_fdw'] = true       # enable FDW
-    geo_postgresql['enable'] = false     # don't use internal managed instance
-    ```
+   geo_secondary['db_host'] = '<tracking_database_host>'
+   geo_secondary['db_port'] = <tracking_database_port>      # change to the correct port
+   geo_secondary['db_fdw'] = true       # enable FDW
+   geo_postgresql['enable'] = false     # don't use internal managed instance
+   ```
 
 1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure)
 
 1. Run the tracking database migrations:
 
-    ```bash
-    gitlab-rake geo:db:create
-    gitlab-rake geo:db:migrate
-    ```
+   ```bash
+   gitlab-rake geo:db:create
+   gitlab-rake geo:db:migrate
+   ```
 
-1. Configure the
-    [PostgreSQL FDW](https://www.postgresql.org/docs/9.6/static/postgres-fdw.html)
-    connection and credentials:
+1. Configure the [PostgreSQL FDW](https://www.postgresql.org/docs/9.6/static/postgres-fdw.html)
+   connection and credentials:
 
-    Save the script below in a file, ex. `/tmp/geo_fdw.sh` and modify the connection
-    params to match your environment. Execute it to set up the FDW connection.
+   Save the script below in a file, ex. `/tmp/geo_fdw.sh` and modify the connection
+   params to match your environment. Execute it to set up the FDW connection.
 
-    ```bash
-    #!/bin/bash
+   ```bash
+   #!/bin/bash
 
-    # Secondary Database connection params:
-    DB_HOST="<public_ip_or_vpc_private_ip>"
-    DB_NAME="gitlabhq_production"
-    DB_USER="gitlab"
-    DB_PASS="<your_password_here>"
-    DB_PORT="5432"
+   # Secondary Database connection params:
+   DB_HOST="<public_ip_or_vpc_private_ip>"
+   DB_NAME="gitlabhq_production"
+   DB_USER="gitlab"
+   DB_PASS="<your_password_here>"
+   DB_PORT="5432"
 
-    # Tracking Database connection params:
-    GEO_DB_HOST="<public_ip_or_vpc_private_ip>"
-    GEO_DB_NAME="gitlabhq_geo_production"
-    GEO_DB_USER="gitlab_geo"
-    GEO_DB_PORT="5432"
+   # Tracking Database connection params:
+   GEO_DB_HOST="<public_ip_or_vpc_private_ip>"
+   GEO_DB_NAME="gitlabhq_geo_production"
+   GEO_DB_USER="gitlab_geo"
+   GEO_DB_PORT="5432"
 
-    query_exec () {
-      gitlab-psql -h $GEO_DB_HOST -d $GEO_DB_NAME -p $GEO_DB_PORT -c "${1}"
-    }
+   query_exec () {
+     gitlab-psql -h $GEO_DB_HOST -d $GEO_DB_NAME -p $GEO_DB_PORT -c "${1}"
+   }
 
-    query_exec "CREATE EXTENSION postgres_fdw;"
-    query_exec "CREATE SERVER gitlab_secondary FOREIGN DATA WRAPPER postgres_fdw OPTIONS (host '${DB_HOST}', dbname '${DB_NAME}', port '${DB_PORT}');"
-    query_exec "CREATE USER MAPPING FOR ${GEO_DB_USER} SERVER gitlab_secondary OPTIONS (user '${DB_USER}', password '${DB_PASS}');"
-    query_exec "CREATE SCHEMA gitlab_secondary;"
-    query_exec "GRANT USAGE ON FOREIGN SERVER gitlab_secondary TO ${GEO_DB_USER};"
-    ```
+   query_exec "CREATE EXTENSION postgres_fdw;"
+   query_exec "CREATE SERVER gitlab_secondary FOREIGN DATA WRAPPER postgres_fdw OPTIONS (host '${DB_HOST}', dbname '${DB_NAME}', port '${DB_PORT}');"
+   query_exec "CREATE USER MAPPING FOR ${GEO_DB_USER} SERVER gitlab_secondary OPTIONS (user '${DB_USER}', password '${DB_PASS}');"
+   query_exec "CREATE SCHEMA gitlab_secondary;"
+   query_exec "GRANT USAGE ON FOREIGN SERVER gitlab_secondary TO ${GEO_DB_USER};"
+   ```
 
-    NOTE: **Note:** The script template above uses `gitlab-psql` as it's intended to be executed from the Geo machine,
-    but you can change it to `psql` and run it from any machine that has access to the database. We also recommend using
-    `psql` for AWS RDS.
+   NOTE: **Note:** The script template above uses `gitlab-psql` as it's intended to be executed from the Geo machine,
+   but you can change it to `psql` and run it from any machine that has access to the database. We also recommend using
+   `psql` for AWS RDS.
 
 1. Save the file and [restart GitLab](../../restart_gitlab.md#omnibus-gitlab-restart)
 1. Populate the FDW tables:
 
-    ```bash
-    gitlab-rake geo:db:refresh_foreign_tables
-    ```
+   ```bash
+   gitlab-rake geo:db:refresh_foreign_tables
+   ```
