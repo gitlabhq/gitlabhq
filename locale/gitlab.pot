@@ -231,6 +231,9 @@ msgid_plural "%{strong_start}%{tag_count}%{strong_end} Tags"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%{tabname} changed"
+msgstr ""
+
 msgid "%{text} %{files}"
 msgid_plural "%{text} %{files} files"
 msgstr[0] ""
@@ -2210,6 +2213,9 @@ msgid "Clone with SSH"
 msgstr ""
 
 msgid "Close"
+msgstr ""
+
+msgid "Close %{tabname}"
 msgstr ""
 
 msgid "Close milestone"
@@ -4226,6 +4232,9 @@ msgstr ""
 msgid "Error saving label update."
 msgstr ""
 
+msgid "Error setting up editor. Please try again."
+msgstr ""
+
 msgid "Error updating %{issuableType}"
 msgstr ""
 
@@ -6088,6 +6097,9 @@ msgstr ""
 msgid "Locked"
 msgstr ""
 
+msgid "Locked by %{fileLockUserName}"
+msgstr ""
+
 msgid "Locked to current projects"
 msgstr ""
 
@@ -7050,6 +7062,9 @@ msgid "Open errors"
 msgstr ""
 
 msgid "Open in Xcode"
+msgstr ""
+
+msgid "Open in file view"
 msgstr ""
 
 msgid "Open issues"

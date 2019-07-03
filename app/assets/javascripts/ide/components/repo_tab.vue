@@ -1,4 +1,5 @@
 <script>
+import { __, sprintf } from '~/locale';
 import { mapActions } from 'vuex';
 
 import FileIcon from '~/vue_shared/components/file_icon.vue';
@@ -27,9 +28,9 @@ export default {
   computed: {
     closeLabel() {
       if (this.fileHasChanged) {
-        return `${this.tab.name} changed`;
+        return sprintf(__(`%{tabname} changed`), { tabname: this.tab.name });
       }
-      return `Close ${this.tab.name}`;
+      return sprintf(__(`Close %{tabname}`, { tabname: this.tab.name }));
     },
     showChangedIcon() {
       if (this.tab.pending) return true;
