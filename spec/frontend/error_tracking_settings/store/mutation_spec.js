@@ -1,4 +1,4 @@
-import { TEST_HOST } from 'spec/test_constants';
+import { TEST_HOST } from 'helpers/test_constants';
 import mutations from '~/error_tracking_settings/store/mutations';
 import defaultState from '~/error_tracking_settings/store/state';
 import * as types from '~/error_tracking_settings/store/mutation_types';

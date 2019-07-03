@@ -4,7 +4,7 @@ import ErrorTrackingSettings from '~/error_tracking_settings/components/app.vue'
 import ErrorTrackingForm from '~/error_tracking_settings/components/error_tracking_form.vue';
 import ProjectDropdown from '~/error_tracking_settings/components/project_dropdown.vue';
 import createStore from '~/error_tracking_settings/store';
-import { TEST_HOST } from 'spec/test_constants';
+import { TEST_HOST } from 'helpers/test_constants';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
