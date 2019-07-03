@@ -291,7 +291,7 @@ GET /runners/:id/jobs
 |-----------|---------|----------|---------------------|
 | `id`      | integer | yes      | The ID of a runner  |
 | `status`  | string  | no       | Status of the job; one of: `running`, `success`, `failed`, `canceled` |
-| `order_by`| string  | no       | Order jobs by `id` or `created_at` (default: id) |
+| `order_by`| string  | no       | Order jobs by `id`. |
 | `sort`    | string  | no       | Sort jobs in `asc` or `desc` order (default: `desc`) |
 
 ```

@@ -1,5 +1,5 @@
 ---
-title: 51794-add-order-by-to-list-runner-jobs-api
-merge_request:
+title: Add order_by and sort params to list runner jobs api
+merge_request: 29629
 author: Sujay Patel
 type: added

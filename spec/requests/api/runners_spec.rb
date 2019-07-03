@@ -584,9 +584,53 @@ describe API::Runners do
           end
         end
 
+        context 'when valid order_by is provided' do
+          context 'when sort order is not specified' do
+            it 'return jobs in descending order' do
+              get api("/runners/#{project_runner.id}/jobs?order_by=id", admin)
+
+              expect(response).to have_gitlab_http_status(200)
+              expect(response).to include_pagination_headers
+
+              expect(json_response).to be_an(Array)
+              expect(json_response.length).to eq(2)
+              expect(json_response.first).to include('id' => job_5.id)
+            end
+          end
+
+          context 'when sort order is specified as asc' do
+            it 'return jobs sorted in ascending order' do
+              get api("/runners/#{project_runner.id}/jobs?order_by=id&sort=asc", admin)
+
+              expect(response).to have_gitlab_http_status(200)
+              expect(response).to include_pagination_headers
+
+              expect(json_response).to be_an(Array)
+              expect(json_response.length).to eq(2)
+              expect(json_response.first).to include('id' => job_4.id)
+            end
+          end
+        end
+
         context 'when invalid status is provided' do
           it 'return 400' do
             get api("/runners/#{project_runner.id}/jobs?status=non-existing", admin)
+
+            expect(response).to have_gitlab_http_status(400)
+          end
+        end
+
+        context 'when invalid order_by is provided' do
+          it 'return 400' do
+            get api("/runners/#{project_runner.id}/jobs?order_by=non-existing", admin)
+
+            expect(response).to have_gitlab_http_status(400)
+          end
+        end
+
+        context 'when invalid sort is provided' do
+          it 'return 400' do
+            get api("/runners/#{project_runner.id}/jobs?sort=non-existing", admin)
 
             expect(response).to have_gitlab_http_status(400)
           end
