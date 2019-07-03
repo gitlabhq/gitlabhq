@@ -13,6 +13,12 @@ Constants for snippet visibility levels are:
 | `internal` | The snippet is visible for any logged in user |
 | `public`   | The snippet can be accessed without any authentication |
 
+NOTE: **Note:**
+From July 2019, the `Internal` visibility setting is disabled for new projects, groups, 
+and snippets on GitLab.com. Existing projects, groups, and snippets using the `Internal`
+visibility setting keep this setting. You can read more about the change in the
+[relevant issue](https://gitlab.com/gitlab-org/gitlab-ee/issues/12388).
+
 ## List snippets
 
 Get a list of project snippets.
