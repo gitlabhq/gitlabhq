@@ -352,3 +352,13 @@ High Performance TCP/HTTP Load Balancer:
 [unicorn-worker-killer]: https://rubygems.org/gems/unicorn-worker-killer "unicorn-worker-killer"
 [4010]: https://gitlab.com/gitlab-com/infrastructure/issues/4010 "Find a good value for maximum timeout for Shared Runners"
 [4070]: https://gitlab.com/gitlab-com/infrastructure/issues/4070 "Configure per-runner timeout for shared-runners-manager-X on GitLab.com"
+
+## Other admin area settings
+
+This area highlights other noteworthy admin area settings on GitLab.com that differ from default settings. This list is not exhaustive.
+
+NOTE: **Note:**
+From July 2019, the `Internal` visibility setting is disabled for new projects, groups, 
+and snippets on GitLab.com. Existing projects, groups, and snippets using the `Internal`
+visibility setting keep this setting. You can read more about the change in the
+[relevant issue](https://gitlab.com/gitlab-org/gitlab-ee/issues/12388).

@@ -29,6 +29,12 @@ in users.
 Any logged in user will have [Guest permissions](../user/permissions.md)
 on the repository.
 
+NOTE: **Note:**
+From July 2019, the `Internal` visibility setting is disabled for new projects, groups,
+and snippets on GitLab.com. Existing projects, groups, and snippets using the `Internal`
+visibility setting keep this setting. You can read more about the change in the
+[relevant issue](https://gitlab.com/gitlab-org/gitlab-ee/issues/12388).
+
 ### Private projects
 
 Private projects can only be cloned and viewed by project members.
