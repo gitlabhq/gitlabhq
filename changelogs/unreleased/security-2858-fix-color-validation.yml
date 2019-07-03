@@ -1,0 +1,5 @@
+---
+title: Fix DoS vulnerability in color validation regex
+merge_request:
+author:
+type: security

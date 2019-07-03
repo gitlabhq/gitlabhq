@@ -12,6 +12,11 @@ class Projects::ApplicationController < ApplicationController
 
   helper_method :repository, :can_collaborate_with_project?, :user_access
 
+  rescue_from Gitlab::Template::Finders::RepoTemplateFinder::FileNotFoundError do |exception|
+    log_exception(exception)
+    render_404
+  end
+
   private
 
   def project

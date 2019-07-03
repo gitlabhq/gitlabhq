@@ -90,6 +90,27 @@ describe Gitlab::Ci::Config do
       end
     end
 
+    context 'when yml is too big' do
+      let(:yml) do
+        <<~YAML
+          --- &1
+          - hi
+          - *1
+        YAML
+      end
+
+      describe '.new' do
+        it 'raises error' do
+          expect(Gitlab::Sentry).to receive(:track_exception)
+
+          expect { config }.to raise_error(
+            described_class::ConfigError,
+            /The parsed YAML is too big/
+          )
+        end
+      end
+    end
+
     context 'when config logic is incorrect' do
       let(:yml) { 'before_script: "ls"' }
 

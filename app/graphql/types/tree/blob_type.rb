@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 module Types
   module Tree
+    # rubocop: disable Graphql/AuthorizeTypes
+    # This is presented through `Repository` that has its own authorization
     class BlobType < BaseObject
       implements Types::Tree::EntryType
 
@@ -12,6 +14,7 @@ module Types
       field :lfs_oid, GraphQL::STRING_TYPE, null: true, resolve: -> (blob, args, ctx) do
         Gitlab::Graphql::Loaders::BatchLfsOidLoader.new(blob.repository, blob.id).find
       end
+      # rubocop: enable Graphql/AuthorizeTypes
     end
   end
 end

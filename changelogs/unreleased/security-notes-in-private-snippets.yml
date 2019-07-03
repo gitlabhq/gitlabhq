@@ -1,0 +1,5 @@
+---
+title: Correctly check permissions when creating snippet notes
+merge_request:
+author:
+type: security

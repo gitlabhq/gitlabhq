@@ -39,6 +39,8 @@ module Gitlab
             type = node_type_for_basic_connection(type)
           end
 
+          type = type.unwrap if type.kind.non_null?
+
           Array.wrap(type.metadata[:authorize])
         end
 

@@ -182,7 +182,10 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       #
       # Templates
       #
-      get '/templates/:template_type/:key' => 'templates#show', as: :template, constraints: { key: %r{[^/]+} }
+      get '/templates/:template_type/:key' => 'templates#show',
+          as: :template,
+          defaults: { format: 'json' },
+          constraints: { key: %r{[^/]+}, template_type: %r{issue|merge_request}, format: 'json' }
 
       resources :commit, only: [:show], constraints: { id: /\h{7,40}/ } do
         member do

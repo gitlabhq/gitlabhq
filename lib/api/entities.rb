@@ -498,9 +498,9 @@ module API
       expose :state, :created_at, :updated_at
 
       # Avoids an N+1 query when metadata is included
-      def issuable_metadata(subject, options, method)
+      def issuable_metadata(subject, options, method, args = nil)
         cached_subject = options.dig(:issuable_metadata, subject.id)
-        (cached_subject || subject).public_send(method) # rubocop: disable GitlabSecurity/PublicSend
+        (cached_subject || subject).public_send(method, *args) # rubocop: disable GitlabSecurity/PublicSend
       end
     end
 
@@ -564,7 +564,7 @@ module API
       end
 
       expose(:user_notes_count)     { |issue, options| issuable_metadata(issue, options, :user_notes_count) }
-      expose(:merge_requests_count) { |issue, options| issuable_metadata(issue, options, :merge_requests_count) }
+      expose(:merge_requests_count) { |issue, options| issuable_metadata(issue, options, :merge_requests_count, options[:current_user]) }
       expose(:upvotes)              { |issue, options| issuable_metadata(issue, options, :upvotes) }
       expose(:downvotes)            { |issue, options| issuable_metadata(issue, options, :downvotes) }
       expose :due_date
@@ -757,7 +757,9 @@ module API
         merge_request.metrics&.pipeline
       end
 
-      expose :head_pipeline, using: 'API::Entities::Pipeline'
+      expose :head_pipeline, using: 'API::Entities::Pipeline', if: -> (_, options) do
+        Ability.allowed?(options[:current_user], :read_pipeline, options[:project])
+      end
 
       expose :diff_refs, using: Entities::DiffRefs
 

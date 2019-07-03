@@ -4,6 +4,8 @@ module Types
   class NamespaceType < BaseObject
     graphql_name 'Namespace'
 
+    authorize :read_namespace
+
     field :id, GraphQL::ID_TYPE, null: false
 
     field :name, GraphQL::STRING_TYPE, null: false

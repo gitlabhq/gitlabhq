@@ -834,6 +834,31 @@ describe API::MergeRequests do
       end
     end
 
+    context 'head_pipeline' do
+      before do
+        merge_request.update(head_pipeline: create(:ci_pipeline))
+        merge_request.project.project_feature.update(builds_access_level: 10)
+      end
+
+      context 'when user can read the pipeline' do
+        it 'exposes pipeline information' do
+          get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user)
+
+          expect(json_response).to include('head_pipeline')
+        end
+      end
+
+      context 'when user can not read the pipeline' do
+        let(:guest) { create(:user) }
+
+        it 'does not expose pipeline information' do
+          get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", guest)
+
+          expect(json_response).not_to include('head_pipeline')
+        end
+      end
+    end
+
     it 'returns the commits behind the target branch when include_diverged_commits_count is present' do
       allow_any_instance_of(merge_request.class).to receive(:diverged_commits_count).and_return(1)
 
