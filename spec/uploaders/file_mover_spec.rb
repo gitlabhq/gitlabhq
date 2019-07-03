@@ -85,8 +85,7 @@ describe FileMover do
 
     context 'when tmp uploader is not local storage' do
       before do
-        allow(PersonalFileUploader).to receive(:object_store_enabled?) { true }
-        tmp_uploader.object_store = ObjectStorage::Store::REMOTE
+        stub_uploads_object_storage(uploader: PersonalFileUploader)
         allow_any_instance_of(PersonalFileUploader).to receive(:file_storage?) { false }
       end
 
