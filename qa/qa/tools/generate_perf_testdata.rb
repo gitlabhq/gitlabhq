@@ -59,8 +59,8 @@ module QA
         group_search_response = create_a_group_api_req(@group_name, @visibility)
         group = JSON.parse(group_search_response.body)
         @urls[:group_page] = group["web_url"]
-        group["id"]
         STDOUT.puts "Created a group: #{@urls[:group_page]}"
+        group["id"]
       end
 
       def create_project(group_id)
