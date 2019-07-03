@@ -209,7 +209,7 @@ group.
 | Create project in group                         |       |          | ✓         | ✓          | ✓     |
 | Create/edit/delete group milestones             |       |          | ✓         | ✓          | ✓     |
 | Enable/disable a dependency proxy **[PREMIUM]** |       |          | ✓         | ✓          | ✓     |
-| Create subgroup                                 |       |          |           | ✓*         | ✓     |
+| Create subgroup                                 |       |          |           | ✓ (1)        | ✓     |
 | Edit group                                      |       |          |           |            | ✓     |
 | Manage group members                            |       |          |           |            | ✓     |
 | Remove group                                    |       |          |           |            | ✓     |
