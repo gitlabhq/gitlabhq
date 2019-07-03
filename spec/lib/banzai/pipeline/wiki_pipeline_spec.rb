@@ -177,6 +177,85 @@ describe Banzai::Pipeline::WikiPipeline do
         end
       end
     end
+
+    describe "checking slug validity when assembling links" do
+      context "with a valid slug" do
+        let(:valid_slug) { "http://example.com" }
+
+        it "includes the slug in a (.) relative link" do
+          output = described_class.to_html(
+            "[Link](./alert(1);)",
+            project: project,
+            project_wiki: project_wiki,
+            page_slug: valid_slug
+          )
+
+          expect(output).to include(valid_slug)
+        end
+
+        it "includeds the slug in a (..) relative link" do
+          output = described_class.to_html(
+            "[Link](../alert(1);)",
+            project: project,
+            project_wiki: project_wiki,
+            page_slug: valid_slug
+          )
+
+          expect(output).to include(valid_slug)
+        end
+      end
+
+      context "when the slug is deemed unsafe or invalid" do
+        invalid_slugs = [
+          "javascript:",
+          "JaVaScRiPt:",
+          "\u0001java\u0003script:",
+          "javascript    :",
+          "javascript:    ",
+          "javascript    :   ",
+          ":javascript:",
+          "javascript&#58;",
+          "javascript&#0058;",
+          "javascript&#x3A;",
+          "javascript&#x003A;",
+          "java\0script:",
+          " &#14;  javascript:"
+        ]
+
+        invalid_js_links = [
+          "alert(1);",
+          "alert(document.location);"
+        ]
+
+        invalid_slugs.each do |slug|
+          context "with the invalid slug #{slug}" do
+            invalid_js_links.each do |link|
+              it "doesn't include a prohibited slug in a (.) relative link '#{link}'" do
+                output = described_class.to_html(
+                  "[Link](./#{link})",
+                  project: project,
+                  project_wiki: project_wiki,
+                  page_slug: slug
+                )
+
+                expect(output).not_to include(slug)
+              end
+
+              it "doesn't include a prohibited slug in a (..) relative link '#{link}'" do
+                output = described_class.to_html(
+                  "[Link](../#{link})",
+                  project: project,
+                  project_wiki: project_wiki,
+                  page_slug: slug
+                )
+
+                expect(output).not_to include(slug)
+              end
+            end
+          end
+        end
+      end
+    end
   end
 
   describe 'videos' do
