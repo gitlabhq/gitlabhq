@@ -605,6 +605,9 @@ msgstr ""
 msgid "Add a GPG key"
 msgstr ""
 
+msgid "Add a Grafana button in the admin sidebar, monitoring section, to access a variety of statistics on the health and performance of GitLab."
+msgstr ""
+
 msgid "Add a bullet list"
 msgstr ""
 
@@ -3923,7 +3926,13 @@ msgstr ""
 msgid "Enable HTML emails"
 msgstr ""
 
+msgid "Enable access to Grafana"
+msgstr ""
+
 msgid "Enable access to the Performance Bar for a given group."
+msgstr ""
+
+msgid "Enable and configure Grafana."
 msgstr ""
 
 msgid "Enable and configure InfluxDB metrics."
@@ -4931,6 +4940,9 @@ msgid "Got it"
 msgstr ""
 
 msgid "Got it!"
+msgstr ""
+
+msgid "Grafana URL"
 msgstr ""
 
 msgid "Grant access"
@@ -6391,10 +6403,16 @@ msgstr ""
 msgid "Metrics"
 msgstr ""
 
+msgid "Metrics - Grafana"
+msgstr ""
+
 msgid "Metrics - Influx"
 msgstr ""
 
 msgid "Metrics - Prometheus"
+msgstr ""
+
+msgid "Metrics Dashboard"
 msgstr ""
 
 msgid "Metrics and profiling"
