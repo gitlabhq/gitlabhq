@@ -27,7 +27,16 @@ Example response:
 [
   {
     "id": 1,
-    "group_id": 5,
+    "name:": "group issue board",
+    "group": {
+      "id": 5,
+      "name": "Documentcloud",
+      "web_url": "http://example.com/groups/documentcloud"
+    },
+    "milestone":   {
+      "id": 12
+      "title": "10.0"
+    },
     "lists" : [
       {
         "id" : 1,
@@ -136,7 +145,16 @@ Example response:
 ```json
   {
     "id": 1,
-    "group_id": 5,
+    "name:": "group issue board",
+    "group": {
+      "id": 5,
+      "name": "Documentcloud",
+      "web_url": "http://example.com/groups/documentcloud"
+    },
+    "milestone":   {
+      "id": 12
+      "title": "10.0"
+    },
     "lists" : [
       {
         "id" : 1,
