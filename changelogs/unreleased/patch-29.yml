@@ -1,0 +1,5 @@
+---
+title: Updates PHP template to php:latest to ensure always targeting latest stable
+merge_request: 30319
+author: Paul Giberson
+type: changed
