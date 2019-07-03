@@ -6,12 +6,10 @@
 class PrometheusKnative05Fix < ActiveRecord::Migration[5.0]
   include Gitlab::Database::MigrationHelpers
 
-  require Rails.root.join('db/importers/common_metrics_importer.rb')
-
   DOWNTIME = false
 
   def up
-    Importers::CommonMetricsImporter.new.execute
+    ::Gitlab::Importers::CommonMetrics::Importer.new.execute
   end
 
   def down

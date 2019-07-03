@@ -38,3 +38,5 @@ module Gitlab
     end
   end
 end
+
+::Gitlab::Importers::CommonMetrics::PrometheusMetricEnums.prepend EE::Gitlab::Importers::CommonMetrics::PrometheusMetricEnums

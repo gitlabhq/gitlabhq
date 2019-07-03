@@ -1,25 +1,8 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require Rails.root.join("db", "importers", "common_metrics_importer.rb")
 
-describe Gitlab::Importers::CommonMetrics::PrometheusMetric do
-  let(:existing_group_titles) do
-    ::PrometheusMetricEnums.group_details.each_with_object({}) do |(key, value), memo|
-      memo[key] = value[:group_title]
-    end
-  end
-
-  it 'group enum equals ::PrometheusMetric' do
-    expect(described_class.groups).to eq(::PrometheusMetric.groups)
-  end
-
-  it 'GROUP_TITLES equals ::PrometheusMetric' do
-    expect(Gitlab::Importers::CommonMetrics::PrometheusMetricEnums.group_titles).to eq(existing_group_titles)
-  end
-end
-
-describe Importers::CommonMetricsImporter do
+describe Gitlab::Importers::CommonMetrics::Importer do
   subject { described_class.new }
 
   context "does import common_metrics.yml" do
