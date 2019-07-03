@@ -1,13 +1,13 @@
 require 'rails_helper'
 
-describe 'Resolve an open discussion in a merge request by creating an issue', :js do
+describe 'Resolve an open thread in a merge request by creating an issue', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository, only_allow_merge_if_all_discussions_are_resolved: true) }
   let(:merge_request) { create(:merge_request, source_project: project) }
   let!(:discussion) { create(:diff_note_on_merge_request, noteable: merge_request, project: project).to_discussion }
 
   def resolve_discussion_selector
-    title = 'Resolve this discussion in a new issue'
+    title = 'Resolve this thread in a new issue'
     url = new_project_issue_path(project, discussion_to_resolve: discussion.id, merge_request_to_resolve_discussions_of: merge_request.iid)
     "a[data-original-title=\"#{title}\"][href=\"#{url}\"]"
   end
@@ -30,25 +30,25 @@ describe 'Resolve an open discussion in a merge request by creating an issue', :
       end
     end
 
-    context 'resolving the discussion' do
+    context 'resolving the thread' do
       before do
-        click_button 'Resolve discussion'
+        click_button 'Resolve thread'
       end
 
       it 'hides the link for creating a new issue' do
         expect(page).not_to have_css resolve_discussion_selector
       end
 
-      it 'shows the link for creating a new issue when unresolving a discussion' do
+      it 'shows the link for creating a new issue when unresolving a thread' do
         page.within '.diff-content' do
-          click_button 'Unresolve discussion'
+          click_button 'Unresolve thread'
         end
 
         expect(page).to have_css resolve_discussion_selector
       end
     end
 
-    it 'has a link to create a new issue for a discussion' do
+    it 'has a link to create a new issue for a thread' do
       expect(page).to have_css resolve_discussion_selector
     end
 
@@ -57,13 +57,13 @@ describe 'Resolve an open discussion in a merge request by creating an issue', :
         find(resolve_discussion_selector, match: :first).click
       end
 
-      it 'has a hidden field for the discussion' do
+      it 'has a hidden field for the thread' do
         discussion_field = find('#discussion_to_resolve', visible: false)
 
         expect(discussion_field.value).to eq(discussion.id.to_s)
       end
 
-      it_behaves_like 'creating an issue for a discussion'
+      it_behaves_like 'creating an issue for a thread'
     end
   end
 
@@ -75,8 +75,8 @@ describe 'Resolve an open discussion in a merge request by creating an issue', :
                                             discussion_to_resolve: discussion.id)
     end
 
-    it 'Shows a notice to ask someone else to resolve the discussions' do
-      expect(page).to have_content("The discussion at #{merge_request.to_reference}"\
+    it 'Shows a notice to ask someone else to resolve the threads' do
+      expect(page).to have_content("The thread at #{merge_request.to_reference}"\
                                    " (discussion #{discussion.first_note.id}) will stay unresolved."\
                                    " Ask someone with permission to resolve it.")
     end

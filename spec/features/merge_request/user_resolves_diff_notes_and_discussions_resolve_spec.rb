@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Merge request > User resolves diff notes and discussions', :js do
+describe 'Merge request > User resolves diff notes and threads', :js do
   let(:project)       { create(:project, :public, :repository) }
   let(:user)          { project.creator }
   let(:guest)         { create(:user) }
@@ -17,7 +17,7 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
     )
   end
 
-  context 'no discussions' do
+  context 'no threads' do
     before do
       project.add_maintainer(user)
       sign_in(user)
@@ -25,8 +25,8 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
       visit_merge_request
     end
 
-    it 'displays no discussion resolved data' do
-      expect(page).not_to have_content('discussion resolved')
+    it 'displays no thread resolved data' do
+      expect(page).not_to have_content('thread resolved')
       expect(page).not_to have_selector('.discussion-next-btn')
     end
   end
@@ -38,10 +38,10 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
       visit_merge_request
     end
 
-    context 'single discussion' do
-      it 'shows text with how many discussions' do
+    context 'single thread' do
+      it 'shows text with how many threads' do
         page.within '.line-resolve-all-container' do
-          expect(page).to have_content('0/1 discussion resolved')
+          expect(page).to have_content('0/1 thread resolved')
         end
       end
 
@@ -54,18 +54,18 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
         end
 
         page.within '.diff-content' do
-          expect(page).to have_selector('.btn', text: 'Unresolve discussion')
+          expect(page).to have_selector('.btn', text: 'Unresolve thread')
         end
 
         page.within '.line-resolve-all-container' do
-          expect(page).to have_content('1/1 discussion resolved')
+          expect(page).to have_content('1/1 thread resolved')
           expect(page).to have_selector('.line-resolve-btn.is-active')
         end
       end
 
-      it 'allows user to mark discussion as resolved' do
+      it 'allows user to mark thread as resolved' do
         page.within '.diff-content' do
-          click_button 'Resolve discussion'
+          click_button 'Resolve thread'
         end
 
         expect(page).to have_selector('.discussion-body', visible: false)
@@ -75,38 +75,38 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
         end
 
         page.within '.line-resolve-all-container' do
-          expect(page).to have_content('1/1 discussion resolved')
+          expect(page).to have_content('1/1 thread resolved')
           expect(page).to have_selector('.line-resolve-btn.is-active')
         end
       end
 
-      it 'allows user to unresolve discussion' do
+      it 'allows user to unresolve thread' do
         page.within '.diff-content' do
-          click_button 'Resolve discussion'
-          click_button 'Unresolve discussion'
+          click_button 'Resolve thread'
+          click_button 'Unresolve thread'
         end
 
         page.within '.line-resolve-all-container' do
-          expect(page).to have_content('0/1 discussion resolved')
+          expect(page).to have_content('0/1 thread resolved')
         end
       end
 
-      describe 'resolved discussion' do
+      describe 'resolved thread' do
         before do
           page.within '.diff-content' do
-            click_button 'Resolve discussion'
+            click_button 'Resolve thread'
           end
 
           visit_merge_request
         end
 
         describe 'timeline view' do
-          it 'hides when resolve discussion is clicked' do
+          it 'hides when resolve thread is clicked' do
             expect(page).to have_selector('.discussion-header')
             expect(page).not_to have_selector('.discussion-body')
           end
 
-          it 'shows resolved discussion when toggled' do
+          it 'shows resolved thread when toggled' do
             find(".timeline-content .discussion[data-discussion-id='#{note.discussion_id}'] .discussion-toggle-button").click
 
             expect(page.find(".line-holder-placeholder")).to be_visible
@@ -130,11 +130,11 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
             page.find('#parallel-diff-btn').click
           end
 
-          it 'hides when resolve discussion is clicked' do
+          it 'hides when resolve thread is clicked' do
             expect(page).not_to have_selector('.diffs .diff-file .notes_holder')
           end
 
-          it 'shows resolved discussion when toggled' do
+          it 'shows resolved thread when toggled' do
             find('.diff-comment-avatar-holders').click
 
             expect(find('.diffs .diff-file .notes_holder')).to be_visible
@@ -143,7 +143,7 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
 
         describe 'reply form' do
           before do
-            click_button 'Toggle discussion'
+            click_button 'Toggle thread'
 
             page.within '.diff-content' do
               click_button 'Reply...'
@@ -160,34 +160,34 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
             end
 
             page.within '.line-resolve-all-container' do
-              expect(page).to have_content('1/1 discussion resolved')
+              expect(page).to have_content('1/1 thread resolved')
             end
           end
 
           it 'allows user to unresolve from reply form without a comment' do
             page.within '.diff-content' do
-              click_button 'Unresolve discussion'
+              click_button 'Unresolve thread'
 
               wait_for_requests
             end
 
             page.within '.line-resolve-all-container' do
-              expect(page).to have_content('0/1 discussion resolved')
+              expect(page).to have_content('0/1 thread resolved')
               expect(page).not_to have_selector('.line-resolve-btn.is-active')
             end
           end
 
-          it 'allows user to comment & unresolve discussion' do
+          it 'allows user to comment & unresolve thread' do
             page.within '.diff-content' do
               find('.js-note-text').set 'testing'
 
-              click_button 'Comment & unresolve discussion'
+              click_button 'Comment & unresolve thread'
 
               wait_for_requests
             end
 
             page.within '.line-resolve-all-container' do
-              expect(page).to have_content('0/1 discussion resolved')
+              expect(page).to have_content('0/1 thread resolved')
             end
           end
         end
@@ -197,31 +197,31 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
         page.within '.diff-content' do
           click_button 'Reply...'
 
-          click_button 'Resolve discussion'
+          click_button 'Resolve thread'
         end
 
         page.within '.line-resolve-all-container' do
-          expect(page).to have_content('1/1 discussion resolved')
+          expect(page).to have_content('1/1 thread resolved')
           expect(page).to have_selector('.line-resolve-btn.is-active')
         end
       end
 
-      it 'allows user to comment & resolve discussion' do
+      it 'allows user to comment & resolve thread' do
         page.within '.diff-content' do
           click_button 'Reply...'
 
           find('.js-note-text').set 'testing'
 
-          click_button 'Comment & resolve discussion'
+          click_button 'Comment & resolve thread'
         end
 
         page.within '.line-resolve-all-container' do
-          expect(page).to have_content('1/1 discussion resolved')
+          expect(page).to have_content('1/1 thread resolved')
           expect(page).to have_selector('.line-resolve-btn.is-active')
         end
       end
 
-      it 'allows user to quickly scroll to next unresolved discussion' do
+      it 'allows user to quickly scroll to next unresolved thread' do
         page.within '.line-resolve-all-container' do
           page.find('.discussion-next-btn').click
         end
@@ -231,7 +231,7 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
 
       it 'hides jump to next button when all resolved' do
         page.within '.diff-content' do
-          click_button 'Resolve discussion'
+          click_button 'Resolve thread'
         end
 
         expect(page).to have_selector('.discussion-next-btn', visible: false)
@@ -248,7 +248,7 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
         end
       end
 
-      it 'hides jump to next discussion button' do
+      it 'hides jump to next thread button' do
         page.within '.discussion-reply-holder' do
           expect(page).not_to have_selector('.discussion-next-btn')
         end
@@ -261,7 +261,7 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
         visit_merge_request
       end
 
-      it 'does not mark discussion as resolved when resolving single note' do
+      it 'does not mark thread as resolved when resolving single note' do
         page.within("#note_#{note.id}") do
           first('.line-resolve-btn').click
 
@@ -273,11 +273,11 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
         expect(page).to have_content('Last updated')
 
         page.within '.line-resolve-all-container' do
-          expect(page).to have_content('0/1 discussion resolved')
+          expect(page).to have_content('0/1 thread resolved')
         end
       end
 
-      it 'resolves discussion' do
+      it 'resolves thread' do
         resolve_buttons = page.all('.note .line-resolve-btn', count: 2)
         resolve_buttons.each do |button|
           button.click
@@ -290,28 +290,28 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
         end
 
         page.within '.line-resolve-all-container' do
-          expect(page).to have_content('1/1 discussion resolved')
+          expect(page).to have_content('1/1 thread resolved')
         end
       end
     end
 
-    context 'muliple discussions' do
+    context 'muliple threads' do
       before do
         create(:diff_note_on_merge_request, project: project, position: position, noteable: merge_request)
         visit_merge_request
       end
 
-      it 'shows text with how many discussions' do
+      it 'shows text with how many threads' do
         page.within '.line-resolve-all-container' do
-          expect(page).to have_content('0/2 discussions resolved')
+          expect(page).to have_content('0/2 threads resolved')
         end
       end
 
       it 'allows user to mark a single note as resolved' do
-        click_button('Resolve discussion', match: :first)
+        click_button('Resolve thread', match: :first)
 
         page.within '.line-resolve-all-container' do
-          expect(page).to have_content('1/2 discussions resolved')
+          expect(page).to have_content('1/2 threads resolved')
         end
       end
 
@@ -321,27 +321,27 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
         end
 
         page.within '.line-resolve-all-container' do
-          expect(page).to have_content('2/2 discussions resolved')
+          expect(page).to have_content('2/2 threads resolved')
           expect(page).to have_selector('.line-resolve-btn.is-active')
         end
       end
 
-      it 'allows user to mark all discussions as resolved' do
+      it 'allows user to mark all threads as resolved' do
         page.all('.discussion-reply-holder', count: 2).each do |reply_holder|
           page.within reply_holder do
-            click_button 'Resolve discussion'
+            click_button 'Resolve thread'
           end
         end
 
         page.within '.line-resolve-all-container' do
-          expect(page).to have_content('2/2 discussions resolved')
+          expect(page).to have_content('2/2 threads resolved')
           expect(page).to have_selector('.line-resolve-btn.is-active')
         end
       end
 
-      it 'allows user to quickly scroll to next unresolved discussion' do
+      it 'allows user to quickly scroll to next unresolved thread' do
         page.within('.discussion-reply-holder', match: :first) do
-          click_button 'Resolve discussion'
+          click_button 'Resolve thread'
         end
 
         page.within '.line-resolve-all-container' do
@@ -362,7 +362,7 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
         end
       end
 
-      it 'shows jump to next discussion button on all discussions' do
+      it 'shows jump to next thread button except on last thread' do
         wait_for_requests
 
         all_discussion_replies = page.all('.discussion-reply-holder')
@@ -372,15 +372,15 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
         expect(all_discussion_replies.last.all('.discussion-next-btn').count).to eq(2)
       end
 
-      it 'displays next discussion even if hidden' do
+      it 'displays next thread even if hidden' do
         page.all('.note-discussion', count: 2).each do |discussion|
           page.within discussion do
-            click_button 'Toggle discussion'
+            click_button 'Toggle thread'
           end
         end
 
         page.within('.issuable-discussion #notes') do
-          expect(page).not_to have_selector('.btn', text: 'Resolve discussion')
+          expect(page).not_to have_selector('.btn', text: 'Resolve thread')
         end
 
         page.within '.line-resolve-all-container' do
@@ -388,19 +388,19 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
         end
 
         page.all('.note-discussion').first do
-          expect(page.find('.discussion-with-resolve-btn')).to have_selector('.btn', text: 'Resolve discussion')
+          expect(page.find('.discussion-with-resolve-btn')).to have_selector('.btn', text: 'Resolve thread')
         end
 
         page.all('.note-discussion').last do
-          expect(page.find('.discussion-with-resolve-btn')).not.to have_selector('.btn', text: 'Resolve discussion')
+          expect(page.find('.discussion-with-resolve-btn')).not.to have_selector('.btn', text: 'Resolve thread')
         end
       end
     end
 
     context 'changes tab' do
-      it 'shows text with how many discussions' do
+      it 'shows text with how many threads' do
         page.within '.line-resolve-all-container' do
-          expect(page).to have_content('0/1 discussion resolved')
+          expect(page).to have_content('0/1 thread resolved')
         end
       end
 
@@ -412,18 +412,18 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
         end
 
         page.within '.diff-content' do
-          expect(page).to have_selector('.btn', text: 'Unresolve discussion')
+          expect(page).to have_selector('.btn', text: 'Unresolve thread')
         end
 
         page.within '.line-resolve-all-container' do
-          expect(page).to have_content('1/1 discussion resolved')
+          expect(page).to have_content('1/1 thread resolved')
           expect(page).to have_selector('.line-resolve-btn.is-active')
         end
       end
 
-      it 'allows user to mark discussion as resolved' do
+      it 'allows user to mark thread as resolved' do
         page.within '.diff-content' do
-          click_button 'Resolve discussion'
+          click_button 'Resolve thread'
         end
 
         page.within '.diff-content .note' do
@@ -431,50 +431,50 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
         end
 
         page.within '.line-resolve-all-container' do
-          expect(page).to have_content('1/1 discussion resolved')
+          expect(page).to have_content('1/1 thread resolved')
           expect(page).to have_selector('.line-resolve-btn.is-active')
         end
       end
 
-      it 'allows user to unresolve discussion' do
+      it 'allows user to unresolve thread' do
         page.within '.diff-content' do
-          click_button 'Resolve discussion'
-          click_button 'Unresolve discussion'
+          click_button 'Resolve thread'
+          click_button 'Unresolve thread'
         end
 
         page.within '.line-resolve-all-container' do
-          expect(page).to have_content('0/1 discussion resolved')
+          expect(page).to have_content('0/1 thread resolved')
         end
       end
 
-      it 'allows user to comment & resolve discussion' do
+      it 'allows user to comment & resolve thread' do
         page.within '.diff-content' do
           click_button 'Reply...'
 
           find('.js-note-text').set 'testing'
 
-          click_button 'Comment & resolve discussion'
+          click_button 'Comment & resolve thread'
         end
 
         page.within '.line-resolve-all-container' do
-          expect(page).to have_content('1/1 discussion resolved')
+          expect(page).to have_content('1/1 thread resolved')
           expect(page).to have_selector('.line-resolve-btn.is-active')
         end
       end
 
-      it 'allows user to comment & unresolve discussion' do
+      it 'allows user to comment & unresolve thread' do
         page.within '.diff-content' do
-          click_button 'Resolve discussion'
+          click_button 'Resolve thread'
 
           click_button 'Reply...'
 
           find('.js-note-text').set 'testing'
 
-          click_button 'Comment & unresolve discussion'
+          click_button 'Comment & unresolve thread'
         end
 
         page.within '.line-resolve-all-container' do
-          expect(page).to have_content('0/1 discussion resolved')
+          expect(page).to have_content('0/1 thread resolved')
         end
       end
     end
@@ -497,13 +497,13 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
         end
 
         page.within '.line-resolve-all-container' do
-          expect(page).to have_content('0/1 discussion resolved')
+          expect(page).to have_content('0/1 thread resolved')
         end
       end
 
-      it 'does not allow user to mark discussion as resolved' do
+      it 'does not allow user to mark thread as resolved' do
         page.within '.diff-content .note' do
-          expect(page).not_to have_selector('.btn', text: 'Resolve discussion')
+          expect(page).not_to have_selector('.btn', text: 'Resolve thread')
         end
       end
     end
@@ -523,11 +523,11 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
         end
 
         page.within '.diff-content' do
-          expect(page).to have_selector('.btn', text: 'Unresolve discussion')
+          expect(page).to have_selector('.btn', text: 'Unresolve thread')
         end
 
         page.within '.line-resolve-all-container' do
-          expect(page).to have_content('1/1 discussion resolved')
+          expect(page).to have_content('1/1 thread resolved')
           expect(page).to have_selector('.line-resolve-btn.is-active')
         end
       end
@@ -546,7 +546,7 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
         end
 
         page.within '.line-resolve-all-container' do
-          expect(page).to have_content('0/1 discussion resolved')
+          expect(page).to have_content('0/1 thread resolved')
         end
       end
     end
@@ -558,15 +558,15 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
       end
 
       it 'shows resolved icon' do
-        expect(page).to have_content '1/1 discussion resolved'
+        expect(page).to have_content '1/1 thread resolved'
 
-        click_button 'Toggle discussion'
+        click_button 'Toggle thread'
         expect(page).to have_selector('.line-resolve-btn.is-active')
       end
 
       it 'does not allow user to click resolve button' do
         expect(page).to have_selector('.line-resolve-btn.is-disabled')
-        click_button 'Toggle discussion'
+        click_button 'Toggle thread'
 
         expect(page).to have_selector('.line-resolve-btn.is-disabled')
       end

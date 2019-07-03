@@ -25,7 +25,7 @@ export default {
     <gl-button
       v-gl-tooltip
       :href="url"
-      :title="s__('MergeRequests|Resolve this discussion in a new issue')"
+      :title="s__('MergeRequests|Resolve this thread in a new issue')"
       class="new-issue-for-discussion discussion-create-issue-btn"
     >
       <icon name="issue-new" />

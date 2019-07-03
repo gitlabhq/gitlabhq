@@ -48,13 +48,13 @@
         = hidden_field_tag 'merge_request_to_resolve_discussions_of', @merge_request_to_resolve_discussions_of.iid
         - if @discussion_to_resolve
           = hidden_field_tag 'discussion_to_resolve', @discussion_to_resolve.id
-          Creating this issue will resolve the discussion in
+          Creating this issue will resolve the thread in
         - else
-          Creating this issue will resolve all discussions in
+          Creating this issue will resolve all threads in
         = link_to_discussions_to_resolve(@merge_request_to_resolve_discussions_of, @discussion_to_resolve)
       - else
         The
-        = @discussion_to_resolve ? 'discussion' : 'discussions'
+        = @discussion_to_resolve ? 'thread' : 'threads'
         at
         = link_to_discussions_to_resolve(@merge_request_to_resolve_discussions_of, @discussion_to_resolve)
         will stay unresolved. Ask someone with permission to resolve

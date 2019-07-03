@@ -13,12 +13,12 @@
                 = icon("chevron-up")
               - else
                 = icon("chevron-down")
-              = _('Toggle discussion')
+              = _('Toggle thread')
           = link_to_member(@project, discussion.author, avatar: false)
 
           .inline.discussion-headline-light
             = discussion.author.to_reference
-            started a discussion
+            started a thread
 
             - url = discussion_path(discussion)
             - if discussion.for_commit? && @noteable != discussion.noteable

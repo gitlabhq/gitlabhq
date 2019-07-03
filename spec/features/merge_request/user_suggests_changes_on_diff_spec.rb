@@ -186,12 +186,12 @@ describe 'User comments on a diff', :js do
 
     it 'resolves discussion when applied' do
       page.within('.diff-discussions') do
-        expect(page).not_to have_content('Unresolve discussion')
+        expect(page).not_to have_content('Unresolve thread')
 
         click_button('Apply suggestion')
         wait_for_requests
 
-        expect(page).to have_content('Unresolve discussion')
+        expect(page).to have_content('Unresolve thread')
       end
     end
   end

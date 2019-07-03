@@ -2770,10 +2770,10 @@ msgstr ""
 msgid "Comment & reopen %{noteable_name}"
 msgstr ""
 
-msgid "Comment & resolve discussion"
+msgid "Comment & resolve thread"
 msgstr ""
 
-msgid "Comment & unresolve discussion"
+msgid "Comment & unresolve thread"
 msgstr ""
 
 msgid "Comment form position"
@@ -6328,7 +6328,7 @@ msgstr ""
 msgid "MergeRequests|Reply..."
 msgstr ""
 
-msgid "MergeRequests|Resolve this discussion in a new issue"
+msgid "MergeRequests|Resolve this thread in a new issue"
 msgstr ""
 
 msgid "MergeRequests|Saving the comment failed"
@@ -6349,19 +6349,19 @@ msgstr ""
 msgid "MergeRequests|commented on commit %{commitLink}"
 msgstr ""
 
-msgid "MergeRequests|started a discussion"
+msgid "MergeRequests|started a thread"
 msgstr ""
 
-msgid "MergeRequests|started a discussion on %{linkStart}an old version of the diff%{linkEnd}"
+msgid "MergeRequests|started a thread on %{linkStart}an old version of the diff%{linkEnd}"
 msgstr ""
 
-msgid "MergeRequests|started a discussion on %{linkStart}the diff%{linkEnd}"
+msgid "MergeRequests|started a thread on %{linkStart}the diff%{linkEnd}"
 msgstr ""
 
-msgid "MergeRequests|started a discussion on an outdated change in commit %{linkStart}%{commitId}%{linkEnd}"
+msgid "MergeRequests|started a thread on an outdated change in commit %{linkStart}%{commitId}%{linkEnd}"
 msgstr ""
 
-msgid "MergeRequests|started a discussion on commit %{linkStart}%{commitId}%{linkEnd}"
+msgid "MergeRequests|started a thread on commit %{linkStart}%{commitId}%{linkEnd}"
 msgstr ""
 
 msgid "MergeRequest| %{paragraphStart}changed the description %{descriptionChangedTimes} times %{timeDifferenceMinutes}%{paragraphEnd}"
@@ -8791,13 +8791,16 @@ msgstr ""
 msgid "Reset template"
 msgstr ""
 
-msgid "Resolve all discussions in new issue"
+msgid "Resolve all threads in new issue"
 msgstr ""
 
 msgid "Resolve conflicts on source branch"
 msgstr ""
 
 msgid "Resolve discussion"
+msgstr ""
+
+msgid "Resolve thread"
 msgstr ""
 
 msgid "Resolved"
@@ -9842,16 +9845,16 @@ msgstr ""
 msgid "Start date"
 msgstr ""
 
-msgid "Start discussion"
-msgstr ""
-
-msgid "Start discussion & close %{noteable_name}"
-msgstr ""
-
-msgid "Start discussion & reopen %{noteable_name}"
-msgstr ""
-
 msgid "Start the Runner!"
+msgstr ""
+
+msgid "Start thread"
+msgstr ""
+
+msgid "Start thread & close %{noteable_name}"
+msgstr ""
+
+msgid "Start thread & reopen %{noteable_name}"
 msgstr ""
 
 msgid "Started"
@@ -11111,13 +11114,13 @@ msgstr ""
 msgid "Toggle commit list"
 msgstr ""
 
-msgid "Toggle discussion"
-msgstr ""
-
 msgid "Toggle emoji award"
 msgstr ""
 
 msgid "Toggle navigation"
+msgstr ""
+
+msgid "Toggle thread"
 msgstr ""
 
 msgid "ToggleButton|Toggle Status: OFF"
@@ -11328,6 +11331,9 @@ msgid "Unlocks the discussion"
 msgstr ""
 
 msgid "Unresolve discussion"
+msgstr ""
+
+msgid "Unresolve thread"
 msgstr ""
 
 msgid "Unschedule job"
@@ -12486,11 +12492,6 @@ msgstr ""
 msgid "disabled"
 msgstr ""
 
-msgid "discussion resolved"
-msgid_plural "discussions resolved"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "done"
 msgstr ""
 
@@ -12793,7 +12794,7 @@ msgstr ""
 msgid "mrWidget|There are merge conflicts"
 msgstr ""
 
-msgid "mrWidget|There are unresolved discussions. Please resolve these discussions"
+msgid "mrWidget|There are unresolved threads. Please resolve these threads"
 msgstr ""
 
 msgid "mrWidget|This feature merges changes from the target branch to the source branch. You cannot use this feature since the source branch is protected."
@@ -12963,6 +12964,11 @@ msgstr ""
 
 msgid "this document"
 msgstr ""
+
+msgid "thread resolved"
+msgid_plural "threads resolved"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "to list"
 msgstr ""

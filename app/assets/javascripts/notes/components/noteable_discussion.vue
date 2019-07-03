@@ -174,22 +174,20 @@ export default {
         active: isActive,
       } = this.discussion;
 
-      let text = s__('MergeRequests|started a discussion');
+      let text = s__('MergeRequests|started a thread');
       if (isForCommit) {
-        text = s__(
-          'MergeRequests|started a discussion on commit %{linkStart}%{commitId}%{linkEnd}',
-        );
+        text = s__('MergeRequests|started a thread on commit %{linkStart}%{commitId}%{linkEnd}');
       } else if (isDiffDiscussion && commitId) {
         text = isActive
-          ? s__('MergeRequests|started a discussion on commit %{linkStart}%{commitId}%{linkEnd}')
+          ? s__('MergeRequests|started a thread on commit %{linkStart}%{commitId}%{linkEnd}')
           : s__(
-              'MergeRequests|started a discussion on an outdated change in commit %{linkStart}%{commitId}%{linkEnd}',
+              'MergeRequests|started a thread on an outdated change in commit %{linkStart}%{commitId}%{linkEnd}',
             );
       } else if (isDiffDiscussion) {
         text = isActive
-          ? s__('MergeRequests|started a discussion on %{linkStart}the diff%{linkEnd}')
+          ? s__('MergeRequests|started a thread on %{linkStart}the diff%{linkEnd}')
           : s__(
-              'MergeRequests|started a discussion on %{linkStart}an old version of the diff%{linkEnd}',
+              'MergeRequests|started a thread on %{linkStart}an old version of the diff%{linkEnd}',
             );
       }
 

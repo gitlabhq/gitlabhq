@@ -37,7 +37,7 @@ describe 'User comments on a merge request', :js do
     wait_for_requests
 
     page.within('.notes .discussion') do
-      expect(page).to have_content("#{user.name} #{user.to_reference} started a discussion")
+      expect(page).to have_content("#{user.name} #{user.to_reference} started a thread")
       expect(page).to have_content(sample_commit.line_code_path)
       expect(page).to have_content('Line is wrong')
     end

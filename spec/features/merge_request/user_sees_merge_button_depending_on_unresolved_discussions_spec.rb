@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Merge request > User sees merge button depending on unresolved discussions', :js do
+describe 'Merge request > User sees merge button depending on unresolved threads', :js do
   let(:project)        { create(:project, :repository) }
   let(:user)           { project.creator }
   let!(:merge_request) { create(:merge_request_with_diff_notes, source_project: project, author: user) }
@@ -16,14 +16,14 @@ describe 'Merge request > User sees merge button depending on unresolved discuss
       visit project_merge_request_path(project, merge_request)
     end
 
-    context 'with unresolved discussions' do
+    context 'with unresolved threads' do
       it 'does not allow to merge' do
         expect(page).not_to have_button 'Merge'
-        expect(page).to have_content('There are unresolved discussions.')
+        expect(page).to have_content('There are unresolved threads.')
       end
     end
 
-    context 'with all discussions resolved' do
+    context 'with all threads resolved' do
       before do
         merge_request.discussions.each { |d| d.resolve!(user) }
         visit project_merge_request_path(project, merge_request)
@@ -41,13 +41,13 @@ describe 'Merge request > User sees merge button depending on unresolved discuss
       visit project_merge_request_path(project, merge_request)
     end
 
-    context 'with unresolved discussions' do
+    context 'with unresolved threads' do
       it 'does not allow to merge' do
         expect(page).to have_button 'Merge'
       end
     end
 
-    context 'with all discussions resolved' do
+    context 'with all threads resolved' do
       before do
         merge_request.discussions.each { |d| d.resolve!(user) }
         visit project_merge_request_path(project, merge_request)

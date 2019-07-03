@@ -283,11 +283,11 @@ export default {
                   type="checkbox"
                   class="qa-unresolve-review-discussion"
                 />
-                {{ __('Unresolve discussion') }}
+                {{ __('Unresolve thread') }}
               </template>
               <template v-else>
                 <input v-model="isResolving" type="checkbox" class="qa-resolve-review-discussion" />
-                {{ __('Resolve discussion') }}
+                {{ __('Resolve thread') }}
               </template>
             </label>
           </p>

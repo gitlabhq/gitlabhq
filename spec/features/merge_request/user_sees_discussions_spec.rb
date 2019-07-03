@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Merge request > User sees discussions', :js do
+describe 'Merge request > User sees threads', :js do
   let(:project) { create(:project, :public, :repository) }
   let(:user) { project.creator }
   let(:merge_request) { create(:merge_request, source_project: project) }
@@ -30,7 +30,7 @@ describe 'Merge request > User sees discussions', :js do
       visit project_merge_request_path(project, merge_request)
     end
 
-    context 'active discussions' do
+    context 'active threads' do
       it 'shows a link to the diff' do
         within(".discussion[data-discussion-id='#{active_discussion.id}']") do
           path = diffs_project_merge_request_path(project, merge_request, anchor: active_discussion.line_code)
@@ -39,7 +39,7 @@ describe 'Merge request > User sees discussions', :js do
       end
     end
 
-    context 'outdated discussions' do
+    context 'outdated threads' do
       it 'shows a link to the outdated diff' do
         within(".discussion[data-discussion-id='#{outdated_discussion.id}']") do
           path = diffs_project_merge_request_path(project, merge_request, diff_id: old_merge_request_diff.id, anchor: outdated_discussion.line_code)
@@ -85,7 +85,7 @@ describe 'Merge request > User sees discussions', :js do
       it_behaves_like 'a functional discussion'
 
       it 'displays correct header' do
-        expect(page).to have_content "started a discussion on commit #{note.commit_id[0...7]}"
+        expect(page).to have_content "started a thread on commit #{note.commit_id[0...7]}"
       end
     end
 

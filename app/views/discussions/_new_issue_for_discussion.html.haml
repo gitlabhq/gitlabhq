@@ -4,7 +4,7 @@
     .btn-group{ role: "group", "v-if" => "showButton" }
       = link_to custom_icon('icon_mr_issue'),
                 new_project_issue_path(@project, merge_request_to_resolve_discussions_of: merge_request.iid, discussion_to_resolve: discussion.id),
-                title: 'Resolve this discussion in a new issue',
-                aria: { label: 'Resolve this discussion in a new issue' },
+                title: 'Resolve this thread in a new issue',
+                aria: { label: 'Resolve this thread in a new issue' },
                 data: { container: 'body' },
                 class: 'new-issue-for-discussion btn btn-default discussion-create-issue-btn has-tooltip'
