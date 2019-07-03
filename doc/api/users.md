@@ -223,6 +223,8 @@ Parameters:
 
 - `id` (required) - The ID of a user
 
+Example Responses:
+
 ```json
 {
   "id": 1,
@@ -264,6 +266,19 @@ Parameters:
 }
 ```
 
+Users on GitLab [Starter, Bronze, or higher](https://about.gitlab.com/pricing/) will also see
+the `shared_runners_minutes_limit` and `extra_shared_runners_minutes_limit` parameters: **[STARTER]**
+
+```json
+{
+  "id": 1,
+  "username": "john_smith",
+  "shared_runners_minutes_limit": 133,
+  "extra_shared_runners_minutes_limit": 133
+  ...
+}
+```
+
 You can include the user's [custom attributes](custom_attributes.md) in the response with:
 
 ```
@@ -287,32 +302,30 @@ POST /users
 
 Parameters:
 
-- `email` (required)                 - Email
-- `password` (optional)              - Password
-- `reset_password` (optional)        - Send user password reset link - true or false (default)
-- `force_random_password` (optional) - Set user password to a random value - true or false (default)
-- `username` (required)              - Username
-- `name` (required)                  - Name
-- `skype` (optional)                 - Skype ID
-- `linkedin` (optional)              - LinkedIn
-- `twitter` (optional)               - Twitter account
-- `website_url` (optional)           - Website URL
-- `organization` (optional)          - Organization name
-- `projects_limit` (optional)        - Number of projects user can create
-- `extern_uid` (optional)            - External UID
-- `provider` (optional)              - External provider name
-- `group_id_for_saml` (optional)     - ID of group where SAML has been configured
-- `bio` (optional)                   - User's biography
-- `location` (optional)              - User's location
-- `public_email` (optional)          - The public email of the user
-- `admin` (optional)                 - User is admin - true or false (default)
-- `can_create_group` (optional)      - User can create groups - true or false
-- `skip_confirmation` (optional)     - Skip confirmation - true or false (default)
-- `external` (optional)              - Flags the user as external - true or false(default)
-- `avatar` (optional)                - Image file for user's avatar
-- `private_profile` (optional)       - User's profile is private - true or false
-- `shared_runners_minutes_limit` (optional) - Pipeline minutes quota for this user
-- `extra_shared_runners_minutes_limit` (optional) - Extra pipeline minutes quota for this user
+- `email` (required)             - Email
+- `password` (optional)          - Password
+- `reset_password` (optional)    - Send user password reset link - true or false(default)
+- `username` (required)          - Username
+- `name` (required)              - Name
+- `skype` (optional)             - Skype ID
+- `linkedin` (optional)          - LinkedIn
+- `twitter` (optional)           - Twitter account
+- `website_url` (optional)       - Website URL
+- `organization` (optional)      - Organization name
+- `projects_limit` (optional)    - Number of projects user can create
+- `extern_uid` (optional)        - External UID
+- `provider` (optional)          - External provider name
+- `bio` (optional)               - User's biography
+- `location` (optional)          - User's location
+- `public_email` (optional)      - The public email of the user
+- `admin` (optional)             - User is admin - true or false (default)
+- `can_create_group` (optional)  - User can create groups - true or false
+- `skip_confirmation` (optional) - Skip confirmation - true or false (default)
+- `external` (optional)          - Flags the user as external - true or false(default)
+- `avatar` (optional)            - Image file for user's avatar
+- `private_profile` (optional)   - User's profile is private - true or false
+- `shared_runners_minutes_limit` (optional)       - Pipeline minutes quota for this user **[STARTER]**
+- `extra_shared_runners_minutes_limit` (optional) - Extra pipeline minutes quota for this user **[STARTER]**
 
 ## User modification
 
@@ -348,6 +361,8 @@ Parameters:
 - `extra_shared_runners_minutes_limit` (optional) - Extra pipeline minutes quota for this user
 - `avatar` (optional)              - Image file for user's avatar
 - `private_profile` (optional)     - User's profile is private - true or false
+- `shared_runners_minutes_limit` (optional)       - Pipeline minutes quota for this user **[STARTER]**
+- `extra_shared_runners_minutes_limit` (optional) - Extra pipeline minutes quota for this user **[STARTER]**
 
 On password update, user will be forced to change it upon next login.
 Note, at the moment this method does only return a `404` error,

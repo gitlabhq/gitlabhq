@@ -136,3 +136,18 @@ Parameters:
 - `milestone_id` (required) - The ID of a group milestone
 
 [ce-12819]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/12819
+
+## Get all burndown chart events for a single milestone **[STARTER]**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/4737) in GitLab 12.1
+
+Get all burndown chart events for a single milestone.
+
+```
+GET /groups/:id/milestones/:milestone_id/burndown_events
+```
+
+Parameters:
+
+- `id` (required) - The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user
+- `milestone_id` (required) - The ID of a group milestone
