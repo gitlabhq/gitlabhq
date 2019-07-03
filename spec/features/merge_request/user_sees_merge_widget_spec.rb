@@ -519,6 +519,8 @@ describe 'Merge request > User sees merge widget', :js do
       end
 
       before do
+        allow_any_instance_of(TestSuiteComparerEntity)
+          .to receive(:max_tests).and_return(2)
         allow_any_instance_of(MergeRequest)
           .to receive(:has_test_reports?).and_return(true)
         allow_any_instance_of(MergeRequest)
@@ -551,7 +553,7 @@ describe 'Merge request > User sees merge widget', :js do
               expect(page).to have_content('rspec found no changed test results out of 1 total test')
               expect(page).to have_content('junit found 1 failed test result out of 1 total test')
               expect(page).to have_content('New')
-              expect(page).to have_content('subtractTest')
+              expect(page).to have_content('addTest')
             end
           end
         end
@@ -562,7 +564,7 @@ describe 'Merge request > User sees merge widget', :js do
               click_button 'Expand'
 
               within(".js-report-section-container") do
-                click_button 'subtractTest'
+                click_button 'addTest'
 
                 expect(page).to have_content('6.66')
                 expect(page).to have_content(sample_java_failed_message.gsub!(/\s+/, ' ').strip)
@@ -596,7 +598,7 @@ describe 'Merge request > User sees merge widget', :js do
               expect(page).to have_content('rspec found 1 failed test result out of 1 total test')
               expect(page).to have_content('junit found no changed test results out of 1 total test')
               expect(page).not_to have_content('New')
-              expect(page).to have_content('Test#sum when a is 2 and b is 2 returns summary')
+              expect(page).to have_content('Test#sum when a is 1 and b is 3 returns summary')
             end
           end
         end
@@ -607,7 +609,7 @@ describe 'Merge request > User sees merge widget', :js do
               click_button 'Expand'
 
               within(".js-report-section-container") do
-                click_button 'Test#sum when a is 2 and b is 2 returns summary'
+                click_button 'Test#sum when a is 1 and b is 3 returns summary'
 
                 expect(page).to have_content('2.22')
                 expect(page).to have_content(sample_rspec_failed_message.gsub!(/\s+/, ' ').strip)
@@ -628,13 +630,7 @@ describe 'Merge request > User sees merge widget', :js do
         let(:head_reports) do
           Gitlab::Ci::Reports::TestReports.new.tap do |reports|
             reports.get_suite('rspec').add_test_case(create_test_case_rspec_success)
-            reports.get_suite('junit').add_test_case(create_test_case_java_resolved)
-          end
-        end
-
-        let(:create_test_case_java_resolved) do
-          create_test_case_java_failed.tap do |test_case|
-            test_case.instance_variable_set("@status", Gitlab::Ci::Reports::TestCase::STATUS_SUCCESS)
+            reports.get_suite('junit').add_test_case(create_test_case_java_success)
           end
         end
 
@@ -646,7 +642,7 @@ describe 'Merge request > User sees merge widget', :js do
             within(".js-report-section-container") do
               expect(page).to have_content('rspec found no changed test results out of 1 total test')
               expect(page).to have_content('junit found 1 fixed test result out of 1 total test')
-              expect(page).to have_content('subtractTest')
+              expect(page).to have_content('addTest')
             end
           end
         end
@@ -657,10 +653,48 @@ describe 'Merge request > User sees merge widget', :js do
               click_button 'Expand'
 
               within(".js-report-section-container") do
-                click_button 'subtractTest'
+                click_button 'addTest'
 
-                expect(page).to have_content('6.66')
+                expect(page).to have_content('5.55')
               end
+            end
+          end
+        end
+      end
+
+      context 'properly truncates the report' do
+        let(:base_reports) do
+          Gitlab::Ci::Reports::TestReports.new.tap do |reports|
+            10.times do |index|
+              reports.get_suite('rspec').add_test_case(
+                create_test_case_rspec_failed(index))
+              reports.get_suite('junit').add_test_case(
+                create_test_case_java_success(index))
+            end
+          end
+        end
+
+        let(:head_reports) do
+          Gitlab::Ci::Reports::TestReports.new.tap do |reports|
+            10.times do |index|
+              reports.get_suite('rspec').add_test_case(
+                create_test_case_rspec_failed(index))
+              reports.get_suite('junit').add_test_case(
+                create_test_case_java_failed(index))
+            end
+          end
+        end
+
+        it 'shows test reports summary which includes the resolved failure' do
+          within(".js-reports-container") do
+            click_button 'Expand'
+
+            expect(page).to have_content('Test summary contained 20 failed test results out of 20 total tests')
+            within(".js-report-section-container") do
+              expect(page).to have_content('rspec found 10 failed test results out of 10 total tests')
+              expect(page).to have_content('junit found 10 failed test results out of 10 total tests')
+
+              expect(page).to have_content('Test#sum when a is 1 and b is 3 returns summary', count: 2)
             end
           end
         end

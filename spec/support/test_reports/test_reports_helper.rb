@@ -1,36 +1,36 @@
 module TestReportsHelper
-  def create_test_case_rspec_success
+  def create_test_case_rspec_success(name = 'test_spec')
     Gitlab::Ci::Reports::TestCase.new(
       name: 'Test#sum when a is 1 and b is 3 returns summary',
-      classname: 'spec.test_spec',
+      classname: "spec.#{name}",
       file: './spec/test_spec.rb',
       execution_time: 1.11,
       status: Gitlab::Ci::Reports::TestCase::STATUS_SUCCESS)
   end
 
-  def create_test_case_rspec_failed
+  def create_test_case_rspec_failed(name = 'test_spec')
     Gitlab::Ci::Reports::TestCase.new(
-      name: 'Test#sum when a is 2 and b is 2 returns summary',
-      classname: 'spec.test_spec',
+      name: 'Test#sum when a is 1 and b is 3 returns summary',
+      classname: "spec.#{name}",
       file: './spec/test_spec.rb',
       execution_time: 2.22,
       system_output: sample_rspec_failed_message,
       status: Gitlab::Ci::Reports::TestCase::STATUS_FAILED)
   end
 
-  def create_test_case_rspec_skipped
+  def create_test_case_rspec_skipped(name = 'test_spec')
     Gitlab::Ci::Reports::TestCase.new(
       name: 'Test#sum when a is 3 and b is 3 returns summary',
-      classname: 'spec.test_spec',
+      classname: "spec.#{name}",
       file: './spec/test_spec.rb',
       execution_time: 3.33,
       status: Gitlab::Ci::Reports::TestCase::STATUS_SKIPPED)
   end
 
-  def create_test_case_rspec_error
+  def create_test_case_rspec_error(name = 'test_spec')
     Gitlab::Ci::Reports::TestCase.new(
       name: 'Test#sum when a is 4 and b is 4 returns summary',
-      classname: 'spec.test_spec',
+      classname: "spec.#{name}",
       file: './spec/test_spec.rb',
       execution_time: 4.44,
       status: Gitlab::Ci::Reports::TestCase::STATUS_ERROR)
@@ -48,34 +48,34 @@ module TestReportsHelper
     EOF
   end
 
-  def create_test_case_java_success
+  def create_test_case_java_success(name = 'addTest')
     Gitlab::Ci::Reports::TestCase.new(
-      name: 'addTest',
+      name: name,
       classname: 'CalculatorTest',
       execution_time: 5.55,
       status: Gitlab::Ci::Reports::TestCase::STATUS_SUCCESS)
   end
 
-  def create_test_case_java_failed
+  def create_test_case_java_failed(name = 'addTest')
     Gitlab::Ci::Reports::TestCase.new(
-      name: 'subtractTest',
+      name: name,
       classname: 'CalculatorTest',
       execution_time: 6.66,
       system_output: sample_java_failed_message,
       status: Gitlab::Ci::Reports::TestCase::STATUS_FAILED)
   end
 
-  def create_test_case_java_skipped
+  def create_test_case_java_skipped(name = 'addTest')
     Gitlab::Ci::Reports::TestCase.new(
-      name: 'multiplyTest',
+      name: name,
       classname: 'CalculatorTest',
       execution_time: 7.77,
       status: Gitlab::Ci::Reports::TestCase::STATUS_SKIPPED)
   end
 
-  def create_test_case_java_error
+  def create_test_case_java_error(name = 'addTest')
     Gitlab::Ci::Reports::TestCase.new(
-      name: 'divideTest',
+      name: name,
       classname: 'CalculatorTest',
       execution_time: 8.88,
       status: Gitlab::Ci::Reports::TestCase::STATUS_ERROR)
