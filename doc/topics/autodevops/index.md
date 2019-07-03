@@ -175,8 +175,8 @@ When using Auto DevOps, you may want to deploy different environments to
 different Kubernetes clusters. This is possible due to the 1:1 connection that
 [exists between them](../../user/project/clusters/index.md#multiple-kubernetes-clusters-premium).
 
-In the [Auto DevOps template](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml)
-(used behind the scenes by Auto DevOps), there are currently 3 defined environment names that you need to know:
+In the [Auto DevOps template] (used behind the scenes by Auto DevOps), there
+are currently 3 defined environment names that you need to know:
 
 - `review/` (every environment starting with `review/`)
 - `staging`
@@ -662,25 +662,32 @@ to the desired environment. See [Limiting environment scopes of variables](../..
 
 ### Customizing `.gitlab-ci.yml`
 
-If you want to modify the CI/CD pipeline used by Auto DevOps, you can copy the
-[Auto DevOps template] into your project's repo and edit as you see fit.
+Everything about Auto DevOps is customizable since the [Auto DevOps template]
+is just an example of a [`.gitlab-ci.yml`](../../ci/yaml/README.md) and uses
+only features that are available to any `.gitlab-ci.yml`.
 
-Assuming that your project is new or it doesn't have a `.gitlab-ci.yml` file
-present:
+Auto DevOps is completely customizable because the [Auto DevOps template]:
 
-1. From your project home page, either click on the "Set up CI/CD" button, or click
-   on the plus button and (`+`), then "New file"
-1. Pick `.gitlab-ci.yml` as the template type
-1. Select "Auto-DevOps" from the template dropdown
-1. Edit the template or add any jobs needed
-1. Give an appropriate commit message and hit "Commit changes"
+- Is just an implementation of a [`.gitlab-ci.yml`](../../ci/yaml/README.md) file.
+- Uses only features available to any implementation of `.gitlab-ci.yml`.
 
-TIP: **Tip:** The Auto DevOps template includes useful comments to help you
-customize it. For example, if you want deployments to go to a staging environment
-instead of directly to a production one, you can enable the `staging` job by
-renaming `.staging` to `staging`. Then make sure to uncomment the `when` key of
-the `production` job to turn it into a manual action instead of deploying
-automatically.
+If you want to modify the CI/CD pipeline used by Auto DevOps, you can [`include`
+the template](../../ci/yaml/README.md#includetemplate) and customize as
+needed. To do this, add a `.gitlab-ci.yml` file to the root of your repository
+containing the following:
+
+```yml
+include:
+  - template: Auto-DevOps.gitlab-ci.yml
+```
+
+Then add any extra changes you want. Your additions will be merged with the
+[Auto DevOps template] using the behaviour described for
+[`include`](../../ci/yaml/README.md#include).
+
+It is also possible to copy and paste the contents of the [Auto DevOps
+template] into your project and edit this as needed. You may prefer to do it
+that way if you want to specifically remove any part of it.
 
 ### Using components of Auto-DevOps
 
