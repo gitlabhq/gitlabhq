@@ -21,7 +21,7 @@ describe Appearance do
     end
   end
 
-  context 'with uploads' do
+  context 'with uploads', :quarantine do
     it_behaves_like 'model with uploads', false do
       let(:model_object) { create(:appearance, :with_logo) }
       let(:upload_attribute) { :logo }
