@@ -74,7 +74,6 @@ structure.
 
 ## Creating a subgroup
 
-NOTE: **Note:**
 In order to create a subgroup you must either be an Owner or a Maintainer of the
 group, depending on the group's setting. By default groups allow both Owners and
 Maintainers to create subgroups, but this can be changed by an Owner or
