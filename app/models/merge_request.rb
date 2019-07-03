@@ -1353,6 +1353,7 @@ class MergeRequest < ApplicationRecord
   end
 
   # TODO: remove once production database rename completes
+  # https://gitlab.com/gitlab-org/gitlab-ce/issues/47592
   alias_attribute :allow_collaboration, :allow_maintainer_to_push
 
   def allow_collaboration
