@@ -147,6 +147,24 @@ GET /users
 ]
 ```
 
+Users on GitLab [Silver or higher](https://about.gitlab.com/pricing/) will also see
+the `group_saml` provider option:
+
+```json
+[
+  {
+    "id": 1,
+    ...
+    "identities": [
+      {"provider": "github", "extern_uid": "2435223452345"},
+      {"provider": "bitbucket", "extern_uid": "john.smith"},
+      {"provider": "google_oauth2", "extern_uid": "8776128412476123468721346"},
+      {"provider": "group_saml", "extern_uid": "123789", "saml_provider_id": 10}
+    ],
+    ...
+  }
+]
+
 You can lookup users by external UID and provider:
 
 ```
@@ -260,14 +278,13 @@ Example Responses:
   "can_create_project": true,
   "two_factor_enabled": true,
   "external": false,
-  "private_profile": false,
-  "shared_runners_minutes_limit": 133
-  "extra_shared_runners_minutes_limit": 133
+  "private_profile": false
 }
 ```
 
 Users on GitLab [Starter, Bronze, or higher](https://about.gitlab.com/pricing/) will also see
-the `shared_runners_minutes_limit` and `extra_shared_runners_minutes_limit` parameters: **[STARTER]**
+the `shared_runners_minutes_limit` and `extra_shared_runners_minutes_limit` parameters.
+Users on GitLab Silver will also see the `group_saml` option:
 
 ```json
 {
@@ -275,6 +292,12 @@ the `shared_runners_minutes_limit` and `extra_shared_runners_minutes_limit` para
   "username": "john_smith",
   "shared_runners_minutes_limit": 133,
   "extra_shared_runners_minutes_limit": 133
+  "identities": [
+    {"provider": "github", "extern_uid": "2435223452345"},
+    {"provider": "bitbucket", "extern_uid": "john.smith"},
+    {"provider": "google_oauth2", "extern_uid": "8776128412476123468721346"},
+    {"provider": "group_saml", "extern_uid": "123789", "saml_provider_id": 10}
+  ],
   ...
 }
 ```
