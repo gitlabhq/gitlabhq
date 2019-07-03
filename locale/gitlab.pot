@@ -11123,9 +11123,6 @@ msgstr ""
 msgid "Toggle thread"
 msgstr ""
 
-msgid "Toggle thread"
-msgstr ""
-
 msgid "ToggleButton|Toggle Status: OFF"
 msgstr ""
 
@@ -11334,9 +11331,6 @@ msgid "Unlocks the discussion"
 msgstr ""
 
 msgid "Unresolve discussion"
-msgstr ""
-
-msgid "Unresolve thread"
 msgstr ""
 
 msgid "Unresolve thread"
@@ -12971,13 +12965,13 @@ msgstr ""
 msgid "this document"
 msgstr ""
 
-msgid "to list"
-msgstr ""
-
 msgid "thread resolved"
 msgid_plural "threads resolved"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "to list"
+msgstr ""
 
 msgid "triggered"
 msgstr ""
