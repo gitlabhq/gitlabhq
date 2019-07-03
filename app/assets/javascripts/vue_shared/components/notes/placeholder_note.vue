@@ -39,7 +39,7 @@ export default {
 </script>
 
 <template>
-  <timeline-entry-item class="note being-posted fade-in-half">
+  <timeline-entry-item class="note note-wrapper being-posted fade-in-half">
     <div class="timeline-icon">
       <user-avatar-link
         :link-href="getUserData.path"

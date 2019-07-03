@@ -454,3 +454,48 @@ export const convertExpandLines = ({
 };
 
 export const idleCallback = cb => requestIdleCallback(cb);
+
+export const updateLineInFile = (selectedFile, lineCode, updateFn) => {
+  if (selectedFile.parallel_diff_lines) {
+    const targetLine = selectedFile.parallel_diff_lines.find(
+      line =>
+        (line.left && line.left.line_code === lineCode) ||
+        (line.right && line.right.line_code === lineCode),
+    );
+    if (targetLine) {
+      const side = targetLine.left && targetLine.left.line_code === lineCode ? 'left' : 'right';
+
+      updateFn(targetLine[side]);
+    }
+  }
+  if (selectedFile.highlighted_diff_lines) {
+    const targetInlineLine = selectedFile.highlighted_diff_lines.find(
+      line => line.line_code === lineCode,
+    );
+
+    if (targetInlineLine) {
+      updateFn(targetInlineLine);
+    }
+  }
+};
+
+export const allDiscussionWrappersExpanded = diff => {
+  const discussionsExpandedArray = [];
+  if (diff.parallel_diff_lines) {
+    diff.parallel_diff_lines.forEach(line => {
+      if (line.left && line.left.discussions.length) {
+        discussionsExpandedArray.push(line.left.discussionsExpanded);
+      }
+      if (line.right && line.right.discussions.length) {
+        discussionsExpandedArray.push(line.right.discussionsExpanded);
+      }
+    });
+  } else if (diff.highlighted_diff_lines) {
+    diff.parallel_diff_lines.forEach(line => {
+      if (line.discussions.length) {
+        discussionsExpandedArray.push(line.discussionsExpanded);
+      }
+    });
+  }
+  return discussionsExpandedArray.every(el => el);
+};

@@ -368,8 +368,8 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
         all_discussion_replies = page.all('.discussion-reply-holder')
 
         expect(all_discussion_replies.count).to eq(2)
-        expect(all_discussion_replies.first.all('.discussion-next-btn').count).to eq(1)
-        expect(all_discussion_replies.last.all('.discussion-next-btn').count).to eq(1)
+        expect(all_discussion_replies.first.all('.discussion-next-btn').count).to eq(2)
+        expect(all_discussion_replies.last.all('.discussion-next-btn').count).to eq(2)
       end
 
       it 'displays next discussion even if hidden' do

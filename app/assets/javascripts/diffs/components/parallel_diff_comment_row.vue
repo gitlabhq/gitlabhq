@@ -1,11 +1,14 @@
 <script>
-import diffDiscussions from './diff_discussions.vue';
-import diffLineNoteForm from './diff_line_note_form.vue';
+import { mapActions } from 'vuex';
+import DiffDiscussions from './diff_discussions.vue';
+import DiffLineNoteForm from './diff_line_note_form.vue';
+import DiffDiscussionReply from './diff_discussion_reply.vue';
 
 export default {
   components: {
-    diffDiscussions,
-    diffLineNoteForm,
+    DiffDiscussions,
+    DiffLineNoteForm,
+    DiffDiscussionReply,
   },
   props: {
     line: {
@@ -29,24 +32,30 @@ export default {
   computed: {
     hasExpandedDiscussionOnLeft() {
       return this.line.left && this.line.left.discussions.length
-        ? this.line.left.discussions.every(discussion => discussion.expanded)
+        ? this.line.left.discussionsExpanded
         : false;
     },
     hasExpandedDiscussionOnRight() {
       return this.line.right && this.line.right.discussions.length
-        ? this.line.right.discussions.every(discussion => discussion.expanded)
+        ? this.line.right.discussionsExpanded
         : false;
     },
     hasAnyExpandedDiscussion() {
       return this.hasExpandedDiscussionOnLeft || this.hasExpandedDiscussionOnRight;
     },
     shouldRenderDiscussionsOnLeft() {
-      return this.line.left && this.line.left.discussions && this.hasExpandedDiscussionOnLeft;
+      return (
+        this.line.left &&
+        this.line.left.discussions &&
+        this.line.left.discussions.length &&
+        this.hasExpandedDiscussionOnLeft
+      );
     },
     shouldRenderDiscussionsOnRight() {
       return (
         this.line.right &&
         this.line.right.discussions &&
+        this.line.right.discussions.length &&
         this.hasExpandedDiscussionOnRight &&
         this.line.right.type
       );
@@ -81,6 +90,22 @@ export default {
 
       return hasCommentFormOnLeft || hasCommentFormOnRight;
     },
+    shouldRenderReplyPlaceholderOnLeft() {
+      return Boolean(
+        this.line.left && this.line.left.discussions && this.line.left.discussions.length,
+      );
+    },
+    shouldRenderReplyPlaceholderOnRight() {
+      return Boolean(
+        this.line.right && this.line.right.discussions && this.line.right.discussions.length,
+      );
+    },
+  },
+  methods: {
+    ...mapActions('diffs', ['showCommentForm']),
+    showNewDiscussionForm() {
+      this.showCommentForm({ lineCode: this.line.line_code, fileHash: this.diffFileHash });
+    },
   },
 };
 </script>
@@ -90,37 +115,49 @@ export default {
     <td class="notes-content parallel old" colspan="2">
       <div v-if="shouldRenderDiscussionsOnLeft" class="content">
         <diff-discussions
-          v-if="line.left.discussions.length"
           :discussions="line.left.discussions"
           :line="line.left"
           :help-page-path="helpPagePath"
         />
       </div>
-      <diff-line-note-form
-        v-if="showLeftSideCommentForm"
-        :diff-file-hash="diffFileHash"
-        :line="line.left"
-        :note-target-line="line.left"
-        :help-page-path="helpPagePath"
-        line-position="left"
-      />
+      <diff-discussion-reply
+        :has-form="showLeftSideCommentForm"
+        :render-reply-placeholder="shouldRenderReplyPlaceholderOnLeft"
+        @showNewDiscussionForm="showNewDiscussionForm"
+      >
+        <template #form>
+          <diff-line-note-form
+            :diff-file-hash="diffFileHash"
+            :line="line.left"
+            :note-target-line="line.left"
+            :help-page-path="helpPagePath"
+            line-position="left"
+          />
+        </template>
+      </diff-discussion-reply>
     </td>
     <td class="notes-content parallel new" colspan="2">
       <div v-if="shouldRenderDiscussionsOnRight" class="content">
         <diff-discussions
-          v-if="line.right.discussions.length"
           :discussions="line.right.discussions"
           :line="line.right"
           :help-page-path="helpPagePath"
         />
       </div>
-      <diff-line-note-form
-        v-if="showRightSideCommentForm"
-        :diff-file-hash="diffFileHash"
-        :line="line.right"
-        :note-target-line="line.right"
-        line-position="right"
-      />
+      <diff-discussion-reply
+        :has-form="showRightSideCommentForm"
+        :render-reply-placeholder="shouldRenderReplyPlaceholderOnRight"
+        @showNewDiscussionForm="showNewDiscussionForm"
+      >
+        <template #form>
+          <diff-line-note-form
+            :diff-file-hash="diffFileHash"
+            :line="line.right"
+            :note-target-line="line.right"
+            line-position="right"
+          />
+        </template>
+      </diff-discussion-reply>
     </td>
   </tr>
 </template>

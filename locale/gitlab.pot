@@ -9827,6 +9827,9 @@ msgstr ""
 msgid "Start a %{new_merge_request} with these changes"
 msgstr ""
 
+msgid "Start a new discussion..."
+msgstr ""
+
 msgid "Start a new merge request"
 msgstr ""
 

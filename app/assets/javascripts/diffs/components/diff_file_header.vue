@@ -151,7 +151,11 @@ export default {
     stickyMonitor(this.$refs.header, contentTop() - fileHeaderHeight - 1, false);
   },
   methods: {
-    ...mapActions('diffs', ['toggleFileDiscussions', 'toggleFullDiff']),
+    ...mapActions('diffs', [
+      'toggleFileDiscussions',
+      'toggleFileDiscussionWrappers',
+      'toggleFullDiff',
+    ]),
     handleToggleFile(e, checkTarget) {
       if (
         !checkTarget ||
@@ -165,7 +169,7 @@ export default {
       this.$emit('showForkMessage');
     },
     handleToggleDiscussions() {
-      this.toggleFileDiscussions(this.diffFile);
+      this.toggleFileDiscussionWrappers(this.diffFile);
     },
     handleFileNameClick(e) {
       const isLinkToOtherPage =

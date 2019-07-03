@@ -176,7 +176,7 @@ shared_examples 'discussion comments' do |resource_name|
 
         if resource_name == 'merge request'
           let(:note_id) { find("#{comments_selector} .note:first-child", match: :first)['data-note-id'] }
-          let(:reply_id) { find("#{comments_selector} .note:last-child", match: :first)['data-note-id'] }
+          let(:reply_id) { find("#{comments_selector} .note:last-of-type", match: :first)['data-note-id'] }
 
           it 'can be replied to after resolving' do
             click_button "Resolve discussion"
