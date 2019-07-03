@@ -14,7 +14,7 @@ module QA
           resource.description = 'project for issue suggestions'
         end
 
-        Resource::Issue.fabricate_via_browser_ui! do |issue|
+        Resource::Issue.fabricate_via_api! do |issue|
           issue.title = issue_title
           issue.project = project
         end
