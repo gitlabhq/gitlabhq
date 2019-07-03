@@ -53,7 +53,7 @@ describe('Markdown field header component', () => {
   });
 
   it('emits toggle markdown event when clicking preview', () => {
-    spyOn(vm, '$emit');
+    jest.spyOn(vm, '$emit').mockImplementation();
 
     vm.$el.querySelector('.js-preview-link').click();
 
@@ -65,7 +65,7 @@ describe('Markdown field header component', () => {
   });
 
   it('does not emit toggle markdown event when triggered from another form', () => {
-    spyOn(vm, '$emit');
+    jest.spyOn(vm, '$emit').mockImplementation();
 
     $(document).triggerHandler('markdown-preview:show', [
       $(
@@ -76,17 +76,13 @@ describe('Markdown field header component', () => {
     expect(vm.$emit).not.toHaveBeenCalled();
   });
 
-  it('blurs preview link after click', done => {
+  it('blurs preview link after click', () => {
     const link = vm.$el.querySelector('li:nth-child(2) button');
-    spyOn(HTMLElement.prototype, 'blur');
+    jest.spyOn(HTMLElement.prototype, 'blur').mockImplementation();
 
     link.click();
 
-    setTimeout(() => {
-      expect(link.blur).toHaveBeenCalled();
-
-      done();
-    });
+    expect(link.blur).toHaveBeenCalled();
   });
 
   it('renders markdown table template', () => {
