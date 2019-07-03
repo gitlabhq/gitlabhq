@@ -68,13 +68,19 @@ Add a new alias for a project. Responds with a 201 when successful,
 POST /project_aliases
 ```
 
-| Attribute    | Type   | Required | Description                                   |
-|--------------|--------|----------|-----------------------------------------------|
-| `project_id` | string | yes      | The ID or URL-encoded path of the project.    |
-| `name`       | string | yes      | The name of the alias. Must be unique.        |
+| Attribute    | Type           | Required | Description                            |
+|--------------|----------------|----------|----------------------------------------|
+| `project_id` | integer/string | yes      | The ID or path of the project.         |
+| `name`       | string         | yes      | The name of the alias. Must be unique. |
 
 ```
-curl --request POST "https://gitlab.example.com/api/v4/project_aliases" --form "project_id=gitlab-org%2Fgitlab-ee" --form "name=gitlab-ee"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/project_aliases" --form "project_id=1" --form "name=gitlab-ee"
+```
+
+or
+
+```
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/project_aliases" --form "project_id=gitlab-org/gitlab-ee" --form "name=gitlab-ee"
 ```
 
 Example response:
