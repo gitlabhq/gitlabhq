@@ -28,7 +28,7 @@ export default {
   computed: {
     releasedTimeAgo() {
       return sprintf(__('released %{time}'), {
-        time: this.timeFormated(this.release.created_at),
+        time: this.timeFormated(this.release.released_at),
       });
     },
     userImageAltDescription() {
@@ -56,8 +56,8 @@ export default {
     <div class="card-body">
       <h2 class="card-title mt-0">
         {{ release.name }}
-        <gl-badge v-if="release.pre_release" variant="warning" class="align-middle">{{
-          __('Pre-release')
+        <gl-badge v-if="release.upcoming_release" variant="warning" class="align-middle">{{
+          __('Upcoming Release')
         }}</gl-badge>
       </h2>
 
@@ -74,7 +74,7 @@ export default {
 
         <div class="append-right-4">
           &bull;
-          <span v-gl-tooltip.bottom :title="tooltipTitle(release.created_at)">
+          <span v-gl-tooltip.bottom :title="tooltipTitle(release.released_at)">
             {{ releasedTimeAgo }}
           </span>
         </div>

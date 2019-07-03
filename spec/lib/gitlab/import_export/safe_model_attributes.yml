@@ -123,6 +123,7 @@ Release:
 - project_id
 - created_at
 - updated_at
+- released_at
 Releases::Link:
 - id
 - release_id

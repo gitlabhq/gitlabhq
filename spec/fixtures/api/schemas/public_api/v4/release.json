@@ -1,12 +1,14 @@
 {
   "type": "object",
-  "required": ["name", "tag_name", "commit"],
+  "required": ["name", "tag_name", "commit", "released_at"],
   "properties": {
     "name": { "type": "string" },
     "tag_name": { "type": "string" },
     "description": { "type": "string" },
     "description_html": { "type": "string" },
     "created_at": { "type": "date" },
+    "released_at": { "type": "date" },
+    "upcoming_release": { "type": "boolean" },
     "commit": {
       "oneOf": [{ "type": "null" }, { "$ref": "commit/basic.json" }]
     },

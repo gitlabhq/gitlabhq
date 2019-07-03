@@ -16,6 +16,7 @@ describe 'User views releases', :js do
 
     expect(page).to have_content(release.name)
     expect(page).to have_content(release.tag)
+    expect(page).not_to have_content('Upcoming Release')
   end
 
   context 'when there is a link as an asset' do
@@ -41,6 +42,17 @@ describe 'User views releases', :js do
           expect(page).to have_content('(external source)')
         end
       end
+    end
+  end
+
+  context 'with an upcoming release' do
+    let(:tomorrow) { Time.zone.now + 1.day }
+    let!(:release) { create(:release, project: project, released_at: tomorrow ) }
+
+    it 'sees the upcoming tag' do
+      visit project_releases_path(project)
+
+      expect(page).to have_content('Upcoming Release')
     end
   end
 end

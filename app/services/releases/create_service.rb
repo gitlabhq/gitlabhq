@@ -58,6 +58,7 @@ module Releases
         author: current_user,
         tag: tag.name,
         sha: tag.dereferenced_target.sha,
+        released_at: released_at,
         links_attributes: params.dig(:assets, 'links') || []
       )
     end

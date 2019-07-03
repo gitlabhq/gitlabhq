@@ -6,6 +6,7 @@ FactoryBot.define do
     description "Awesome release"
     project
     author
+    released_at { Time.zone.parse('2018-10-20T18:00:00Z') }
 
     trait :legacy do
       sha nil
