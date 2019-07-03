@@ -6,7 +6,6 @@ class Repository
   REF_MERGE_REQUEST = 'merge-requests'.freeze
   REF_KEEP_AROUND = 'keep-around'.freeze
   REF_ENVIRONMENTS = 'environments'.freeze
-  MAX_DIVERGING_COUNT = 1000
 
   RESERVED_REFS_NAMES = %W[
     heads
