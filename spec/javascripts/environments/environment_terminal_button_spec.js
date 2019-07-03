@@ -12,36 +12,24 @@ describe('Stop Component', () => {
     }).$mount();
   };
 
-  describe('enabled', () => {
-    beforeEach(() => {
-      mountWithProps({ terminalPath });
-    });
+  beforeEach(() => {
+    mountWithProps({ terminalPath });
+  });
 
-    describe('computed', () => {
-      it('title', () => {
-        expect(component.title).toEqual('Terminal');
-      });
-    });
-
-    it('should render a link to open a web terminal with the provided path', () => {
-      expect(component.$el.tagName).toEqual('A');
-      expect(component.$el.getAttribute('data-original-title')).toEqual('Terminal');
-      expect(component.$el.getAttribute('aria-label')).toEqual('Terminal');
-      expect(component.$el.getAttribute('href')).toEqual(terminalPath);
-    });
-
-    it('should render a non-disabled button', () => {
-      expect(component.$el.classList).not.toContain('disabled');
+  describe('computed', () => {
+    it('title', () => {
+      expect(component.title).toEqual('Terminal');
     });
   });
 
-  describe('disabled', () => {
-    beforeEach(() => {
-      mountWithProps({ terminalPath, disabled: true });
-    });
+  it('should render a link to open a web terminal with the provided path', () => {
+    expect(component.$el.tagName).toEqual('A');
+    expect(component.$el.getAttribute('data-original-title')).toEqual('Terminal');
+    expect(component.$el.getAttribute('aria-label')).toEqual('Terminal');
+    expect(component.$el.getAttribute('href')).toEqual(terminalPath);
+  });
 
-    it('should render a disabled button', () => {
-      expect(component.$el.classList).toContain('disabled');
-    });
+  it('should render a non-disabled button', () => {
+    expect(component.$el.classList).not.toContain('disabled');
   });
 });
