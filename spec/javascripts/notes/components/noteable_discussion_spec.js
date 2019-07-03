@@ -36,6 +36,12 @@ describe('noteable_discussion component', () => {
   });
 
   it('should render user avatar', () => {
+    const discussion = { ...discussionMock };
+    discussion.diff_file = mockDiffFile;
+    discussion.diff_discussion = true;
+
+    wrapper.setProps({ discussion, renderDiffFile: true });
+
     expect(wrapper.find('.user-avatar-link').exists()).toBe(true);
   });
 

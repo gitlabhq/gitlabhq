@@ -231,6 +231,9 @@ msgid_plural "%{strong_start}%{tag_count}%{strong_end} Tags"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%{tabname} changed"
+msgstr ""
+
 msgid "%{text} %{files}"
 msgid_plural "%{text} %{files} files"
 msgstr[0] ""
@@ -346,9 +349,6 @@ msgid "20-29 contributions"
 msgstr ""
 
 msgid "2FA"
-msgstr ""
-
-msgid "2FA enabled"
 msgstr ""
 
 msgid "2FADevice|Registered On"
@@ -2215,6 +2215,9 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
+msgid "Close %{tabname}"
+msgstr ""
+
 msgid "Close milestone"
 msgstr ""
 
@@ -2943,25 +2946,19 @@ msgstr ""
 msgid "Container registry images"
 msgstr ""
 
-msgid "ContainerRegistry|First log in to GitLab&rsquo;s Container Registry using your GitLab username and password. If you have %{link_2fa} you need to use a %{link_token}:"
+msgid "ContainerRegistry|Container Registry"
 msgstr ""
 
-msgid "ContainerRegistry|GitLab supports up to 3 levels of image names. The following examples of images are valid for your project:"
-msgstr ""
-
-msgid "ContainerRegistry|How to use the Container Registry"
+msgid "ContainerRegistry|Docker connection error"
 msgstr ""
 
 msgid "ContainerRegistry|Last Updated"
 msgstr ""
 
-msgid "ContainerRegistry|Learn more about"
-msgstr ""
-
 msgid "ContainerRegistry|No tags in Container Registry for this container image."
 msgstr ""
 
-msgid "ContainerRegistry|Once you log in, you&rsquo;re free to create and upload a container image using the common %{build} and %{push} commands"
+msgid "ContainerRegistry|Quick Start"
 msgstr ""
 
 msgid "ContainerRegistry|Remove image"
@@ -2982,10 +2979,16 @@ msgstr ""
 msgid "ContainerRegistry|Tag ID"
 msgstr ""
 
-msgid "ContainerRegistry|Use different image names"
+msgid "ContainerRegistry|There are no container images stored for this project"
 msgstr ""
 
-msgid "ContainerRegistry|With the Docker Container Registry integrated into GitLab, every project can have its own space to store its Docker images."
+msgid "ContainerRegistry|We are having trouble connecting to Docker, which could be due to an issue with your project name or path. For more information, please review the %{docLinkStart}Container Registry documentation%{docLinkEnd}."
+msgstr ""
+
+msgid "ContainerRegistry|With the Container Registry, every project can have its own space to store its Docker images. Learn more about the %{docLinkStart}Container Registry%{docLinkEnd}."
+msgstr ""
+
+msgid "ContainerRegistry|With the Docker Container Registry integrated into GitLab, every project can have its own space to store its Docker images. Learn more about the %{docLinkStart}Container Registry%{docLinkEnd}."
 msgstr ""
 
 msgid "ContainerRegistry|You are about to delete the image <b>%{title}</b>. This will delete the image and all tags pointing to this image."
@@ -2994,7 +2997,7 @@ msgstr ""
 msgid "ContainerRegistry|You are about to remove repository <b>%{title}</b>. Once you confirm, this repository will be permanently deleted."
 msgstr ""
 
-msgid "ContainerRegistry|You can also use a %{deploy_token} for read-only access to the registry images."
+msgid "ContainerRegistry|You can add an image to this registry with the following commands:"
 msgstr ""
 
 msgid "Contents of .gitlab-ci.yml"
@@ -3558,6 +3561,9 @@ msgid "DeployTokens|Create deploy token"
 msgstr ""
 
 msgid "DeployTokens|Created"
+msgstr ""
+
+msgid "DeployTokens|Default format is \"gitlab+deploy-token-{n}\". Enter custom username if you want to change it."
 msgstr ""
 
 msgid "DeployTokens|Deploy Tokens"
@@ -4224,6 +4230,9 @@ msgid "Error rendering markdown preview"
 msgstr ""
 
 msgid "Error saving label update."
+msgstr ""
+
+msgid "Error setting up editor. Please try again."
 msgstr ""
 
 msgid "Error updating %{issuableType}"
@@ -5610,6 +5619,21 @@ msgstr ""
 msgid "IssueBoards|Boards"
 msgstr ""
 
+msgid "IssueTracker|Bugzilla issue tracker"
+msgstr ""
+
+msgid "IssueTracker|Custom issue tracker"
+msgstr ""
+
+msgid "IssueTracker|GitLab issue tracker"
+msgstr ""
+
+msgid "IssueTracker|Redmine issue tracker"
+msgstr ""
+
+msgid "IssueTracker|YouTrack issue tracker"
+msgstr ""
+
 msgid "Issues"
 msgstr ""
 
@@ -6071,6 +6095,9 @@ msgid "Lock to current projects"
 msgstr ""
 
 msgid "Locked"
+msgstr ""
+
+msgid "Locked by %{fileLockUserName}"
 msgstr ""
 
 msgid "Locked to current projects"
@@ -6750,9 +6777,6 @@ msgstr ""
 msgid "No connection could be made to a Gitaly Server, please check your logs!"
 msgstr ""
 
-msgid "No container images stored for this project. Add one by following the instructions above."
-msgstr ""
-
 msgid "No contributions"
 msgstr ""
 
@@ -7038,6 +7062,9 @@ msgid "Open errors"
 msgstr ""
 
 msgid "Open in Xcode"
+msgstr ""
+
+msgid "Open in file view"
 msgstr ""
 
 msgid "Open issues"
@@ -7545,9 +7572,6 @@ msgid "Please wait a moment, this page will automatically refresh when ready."
 msgstr ""
 
 msgid "Please wait while we import the repository for you. Refresh at will."
-msgstr ""
-
-msgid "Pre-release"
 msgstr ""
 
 msgid "Preferences"
@@ -9803,6 +9827,9 @@ msgstr ""
 msgid "Start a %{new_merge_request} with these changes"
 msgstr ""
 
+msgid "Start a new discussion..."
+msgstr ""
+
 msgid "Start a new merge request"
 msgstr ""
 
@@ -11360,6 +11387,9 @@ msgstr ""
 msgid "Upcoming"
 msgstr ""
 
+msgid "Upcoming Release"
+msgstr ""
+
 msgid "Update"
 msgstr ""
 
@@ -12462,9 +12492,6 @@ msgstr[1] ""
 msgid "deleted"
 msgstr ""
 
-msgid "deploy token"
-msgstr ""
-
 msgid "detached"
 msgstr ""
 
@@ -12856,9 +12883,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "password"
-msgstr ""
-
-msgid "personal access token"
 msgstr ""
 
 msgid "private"

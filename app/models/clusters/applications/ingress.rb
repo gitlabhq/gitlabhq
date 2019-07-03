@@ -35,11 +35,8 @@ module Clusters
         'stable/nginx-ingress'
       end
 
-      # We will implement this in future MRs.
-      # Basically we need to check all dependent applications are not installed
-      # first.
       def allowed_to_uninstall?
-        false
+        external_ip_or_hostname? && application_jupyter_nil_or_installable?
       end
 
       def install_command
@@ -52,6 +49,10 @@ module Clusters
         )
       end
 
+      def external_ip_or_hostname?
+        external_ip.present? || external_hostname.present?
+      end
+
       def schedule_status_update
         return unless installed?
         return if external_ip
@@ -62,6 +63,12 @@ module Clusters
 
       def ingress_service
         cluster.kubeclient.get_service('ingress-nginx-ingress-controller', Gitlab::Kubernetes::Helm::NAMESPACE)
+      end
+
+      private
+
+      def application_jupyter_nil_or_installable?
+        cluster.application_jupyter.nil? || cluster.application_jupyter&.installable?
       end
     end
   end

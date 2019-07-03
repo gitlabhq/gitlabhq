@@ -14,9 +14,9 @@ GitLab has support for automatically detecting and monitoring the Kubernetes NGI
 
 | Name | Query |
 | ---- | ----- |
-| Throughput (req/sec) | sum(label_replace(rate(nginx_ingress_controller_requests{namespace="%{kube_namespace}",ingress=~".*%{ci_environment_slug}.*"}[2m]), "status_code", "${1}xx", "status", "(.)..")) by (status_code) |
-| Latency (ms) | sum(rate(nginx_ingress_controller_ingress_upstream_latency_seconds_sum{namespace="%{kube_namespace}",ingress=~".*%{ci_environment_slug}.*"}[2m])) / sum(rate(nginx_ingress_controller_ingress_upstream_latency_seconds_count{namespace="%{kube_namespace}",ingress=~".*%{ci_environment_slug}.*"}[2m])) * 1000 |
-| HTTP Error Rate (%) | sum(rate(nginx_ingress_controller_requests{status=~"5.*",namespace="%{kube_namespace}",ingress=~".*%{ci_environment_slug}.*"}[2m])) / sum(rate(nginx_ingress_controller_requests{namespace="%{kube_namespace}",ingress=~".*%{ci_environment_slug}.*"}[2m])) * 100 |
+| Throughput (req/sec) | `sum(label_replace(rate(nginx_ingress_controller_requests{namespace="%{kube_namespace}",ingress=~".*%{ci_environment_slug}.*"}[2m]), "status_code", "${1}xx", "status", "(.)..")) by (status_code)` |
+| Latency (ms) | `sum(rate(nginx_ingress_controller_ingress_upstream_latency_seconds_sum{namespace="%{kube_namespace}",ingress=~".*%{ci_environment_slug}.*"}[2m])) / sum(rate(nginx_ingress_controller_ingress_upstream_latency_seconds_count{namespace="%{kube_namespace}",ingress=~".*%{ci_environment_slug}.*"}[2m])) * 1000` |
+| HTTP Error Rate (%) | `sum(rate(nginx_ingress_controller_requests{status=~"5.*",namespace="%{kube_namespace}",ingress=~".*%{ci_environment_slug}.*"}[2m])) / sum(rate(nginx_ingress_controller_requests{namespace="%{kube_namespace}",ingress=~".*%{ci_environment_slug}.*"}[2m])) * 100` |
 
 ## Configuring NGINX ingress monitoring
 

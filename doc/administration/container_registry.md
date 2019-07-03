@@ -689,6 +689,20 @@ You can add a configuration option for backwards compatibility.
 
 1. Restart the registry for the changes to take affect.
 
+### Docker connection error
+
+A Docker connection error can occur when there are special characters in either the group,
+project or branch name. Special characters can include:
+
+* Leading underscore
+* Trailing hyphen/dash
+* Double hyphen/dash
+
+To get around this, you can [change the group path](../user/group/index.md#changing-a-groups-path), 
+[change the project path](../user/project/settings/index.md#renaming-a-repository) or change the 
+branch name. Another option is to create a [push rule](../push_rules/push_rules.html) to prevent 
+this at the instance level.
+
 
 [ce-18239]: https://gitlab.com/gitlab-org/gitlab-ce/issues/18239
 [docker-insecure-self-signed]: https://docs.docker.com/registry/insecure/#use-self-signed-certificates

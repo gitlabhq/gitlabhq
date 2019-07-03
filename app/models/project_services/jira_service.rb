@@ -17,7 +17,7 @@ class JiraService < IssueTrackerService
   # Jira Cloud version is deprecating authentication via username and password.
   # We should use username/password for Jira Server and email/api_token for Jira Cloud,
   # for more information check: https://gitlab.com/gitlab-org/gitlab-ce/issues/49936.
-  prop_accessor :username, :password, :url, :api_url, :jira_issue_transition_id, :title, :description
+  prop_accessor :username, :password, :url, :api_url, :jira_issue_transition_id
 
   before_update :reset_password
 
@@ -37,7 +37,6 @@ class JiraService < IssueTrackerService
   def initialize_properties
     super do
       self.properties = {
-        title: issues_tracker['title'],
         url: issues_tracker['url'],
         api_url: issues_tracker['api_url']
       }
@@ -74,20 +73,12 @@ class JiraService < IssueTrackerService
     [Jira service documentation](#{help_page_url('user/project/integrations/jira')})."
   end
 
-  def title
-    if self.properties && self.properties['title'].present?
-      self.properties['title']
-    else
-      'Jira'
-    end
+  def default_title
+    'Jira'
   end
 
-  def description
-    if self.properties && self.properties['description'].present?
-      self.properties['description']
-    else
-      s_('JiraService|Jira issue tracker')
-    end
+  def default_description
+    s_('JiraService|Jira issue tracker')
   end
 
   def self.to_param

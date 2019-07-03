@@ -167,7 +167,7 @@ To disable the Elasticsearch integration:
 1. Find the 'Elasticsearch' section and uncheck 'Search with Elasticsearch enabled'
    and 'Elasticsearch indexing'
 1. Click **Save** for the changes to take effect
-1. [Optional] Delete the existing index by running the command `sudo gitlab-rake gitlab:elastic:delete_index`
+1. (Optional) Delete the existing index by running the command `sudo gitlab-rake gitlab:elastic:delete_index`
 
 ## Adding GitLab's data to the Elasticsearch index
 

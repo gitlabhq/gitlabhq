@@ -373,7 +373,7 @@ describe('Actions Notes Store', () => {
             type: 'updateMergeRequestWidget',
           },
           {
-            type: 'updateResolvableDiscussonsCounts',
+            type: 'updateResolvableDiscussionsCounts',
           },
         ],
         done,
@@ -400,7 +400,7 @@ describe('Actions Notes Store', () => {
             type: 'updateMergeRequestWidget',
           },
           {
-            type: 'updateResolvableDiscussonsCounts',
+            type: 'updateResolvableDiscussionsCounts',
           },
           {
             type: 'diffs/removeDiscussionsFromDiff',
@@ -452,7 +452,7 @@ describe('Actions Notes Store', () => {
               type: 'startTaskList',
             },
             {
-              type: 'updateResolvableDiscussonsCounts',
+              type: 'updateResolvableDiscussionsCounts',
             },
           ],
           done,
@@ -527,7 +527,7 @@ describe('Actions Notes Store', () => {
           ],
           [
             {
-              type: 'updateResolvableDiscussonsCounts',
+              type: 'updateResolvableDiscussionsCounts',
             },
             {
               type: 'updateMergeRequestWidget',
@@ -552,7 +552,7 @@ describe('Actions Notes Store', () => {
           ],
           [
             {
-              type: 'updateResolvableDiscussonsCounts',
+              type: 'updateResolvableDiscussionsCounts',
             },
             {
               type: 'updateMergeRequestWidget',
@@ -587,10 +587,10 @@ describe('Actions Notes Store', () => {
     });
   });
 
-  describe('updateResolvableDiscussonsCounts', () => {
+  describe('updateResolvableDiscussionsCounts', () => {
     it('commits UPDATE_RESOLVABLE_DISCUSSIONS_COUNTS', done => {
       testAction(
-        actions.updateResolvableDiscussonsCounts,
+        actions.updateResolvableDiscussionsCounts,
         null,
         {},
         [{ type: 'UPDATE_RESOLVABLE_DISCUSSIONS_COUNTS' }],
@@ -712,7 +712,7 @@ describe('Actions Notes Store', () => {
         [
           { type: 'updateMergeRequestWidget' },
           { type: 'startTaskList' },
-          { type: 'updateResolvableDiscussonsCounts' },
+          { type: 'updateResolvableDiscussionsCounts' },
         ],
         done,
       );

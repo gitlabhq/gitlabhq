@@ -1,0 +1,5 @@
+---
+title: Don't let logged out user do manual order
+merge_request: 30264
+author:
+type: fixed

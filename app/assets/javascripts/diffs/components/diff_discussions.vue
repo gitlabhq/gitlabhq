@@ -80,7 +80,6 @@ export default {
           v-show="isExpanded(discussion)"
           :discussion="discussion"
           :render-diff-file="false"
-          :always-expanded="true"
           :discussions-by-diff-order="true"
           :line="line"
           :help-page-path="helpPagePath"

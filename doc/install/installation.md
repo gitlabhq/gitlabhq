@@ -560,7 +560,7 @@ NOTE: **Note:**
 If you want to use HTTPS, see [Using HTTPS](#using-https) for the additional steps.
 
 NOTE: **Note:**
-Make sure your hostname can be resolved on the machine itself by either a proper DNS record or an additional line in `/etc/hosts` ("127.0.0.1  hostname"). This might be necessary, for example, if you set up GitLab behind a reverse proxy. If the hostname cannot be resolved, the final installation check will fail with "Check GitLab API access: FAILED. code: 401" and pushing commits will be rejected with "[remote rejected] master -> master (hook declined)".
+Make sure your hostname can be resolved on the machine itself by either a proper DNS record or an additional line in `/etc/hosts` ("127.0.0.1  hostname"). This might be necessary, for example, if you set up GitLab behind a reverse proxy. If the hostname cannot be resolved, the final installation check will fail with `Check GitLab API access: FAILED. code: 401` and pushing commits will be rejected with `[remote rejected] master -> master (hook declined)`.
 
 NOTE: **Note:**
 GitLab Shell application startup time can be greatly reduced by disabling RubyGems. This can be done in several ways:

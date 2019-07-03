@@ -23,9 +23,7 @@ module Clusters
         return unless cluster&.application_ingress_available?
 
         ingress = cluster.application_ingress
-        if ingress.external_ip || ingress.external_hostname
-          self.status = 'installable'
-        end
+        self.status = 'installable' if ingress.external_ip_or_hostname?
       end
 
       def chart

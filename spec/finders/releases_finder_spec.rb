@@ -12,8 +12,8 @@ describe ReleasesFinder do
   subject { described_class.new(project, user)}
 
   before do
-    v1_0_0.update_attribute(:created_at, 2.days.ago)
-    v1_1_0.update_attribute(:created_at, 1.day.ago)
+    v1_0_0.update_attribute(:released_at, 2.days.ago)
+    v1_1_0.update_attribute(:released_at, 1.day.ago)
   end
 
   describe '#execute' do
@@ -30,7 +30,7 @@ describe ReleasesFinder do
         project.add_developer(user)
       end
 
-      it 'sorts by creation date' do
+      it 'sorts by release date' do
         releases = subject.execute
 
         expect(releases).to be_present

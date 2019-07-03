@@ -54,7 +54,7 @@ describe 'Resolve an open thread in a merge request by creating an issue', :js d
 
     context 'creating the issue' do
       before do
-        find(resolve_discussion_selector).click
+        find(resolve_discussion_selector, match: :first).click
       end
 
       it 'has a hidden field for the thread' do

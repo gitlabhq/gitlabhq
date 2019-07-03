@@ -143,11 +143,13 @@ If the **primary** and **secondary** nodes have a checksum verification mismatch
 1. On the project admin page get the **Gitaly storage name**, and **Gitaly relative path**:
    ![Project admin page](img/checksum-differences-admin-project-page.png)
 
-1. Navigate to the project's repository directory on both **primary** and **secondary** nodes (the path is usually `/var/opt/gitlab/git-data/repositories`). Note that if `git_data_dirs` is customized, check the directory layout on your server to be sure.
+1. Navigate to the project's repository directory on both **primary** and **secondary** nodes
+   (the path is usually `/var/opt/gitlab/git-data/repositories`). Note that if `git_data_dirs`
+   is customized, check the directory layout on your server to be sure.
 
-    ```sh
-    cd /var/opt/gitlab/git-data/repositories
-    ```
+   ```sh
+   cd /var/opt/gitlab/git-data/repositories
+   ```
 
 1. Run the following command on the **primary** node, redirecting the output to a file:
 

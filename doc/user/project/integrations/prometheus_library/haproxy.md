@@ -11,8 +11,8 @@ The [Prometheus service](../prometheus.md) must be enabled.
 
 | Name | Query |
 | ---- | ----- |
-| Throughput (req/sec) | sum(rate(haproxy_frontend_http_requests_total{%{environment_filter}}[2m])) by (code) |
-| HTTP Error Rate (%) | sum(rate(haproxy_frontend_http_requests_total{code="5xx",%{environment_filter}}[2m])) / sum(rate(haproxy_frontend_http_requests_total{%{environment_filter}}[2m])) |
+| Throughput (req/sec) | `sum(rate(haproxy_frontend_http_requests_total{%{environment_filter}}[2m])) by (code)` |
+| HTTP Error Rate (%) | `sum(rate(haproxy_frontend_http_requests_total{code="5xx",%{environment_filter}}[2m])) / sum(rate(haproxy_frontend_http_requests_total{%{environment_filter}}[2m]))` |
 
 ## Configuring Prometheus to monitor for HAProxy metrics
 

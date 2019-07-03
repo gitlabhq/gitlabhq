@@ -107,7 +107,8 @@ export default {
       @click="openFileInEditor"
     >
       <span class="multi-file-commit-list-file-path d-flex align-items-center">
-        <file-icon :file-name="file.name" class="append-right-8" />{{ file.name }}
+        <file-icon :file-name="file.name" class="append-right-8" />
+        {{ file.name }}
       </span>
       <div class="ml-auto d-flex align-items-center">
         <div class="d-flex align-items-center ide-commit-list-changed-icon">

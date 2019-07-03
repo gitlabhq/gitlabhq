@@ -168,7 +168,6 @@
     "gettext-extractor": "^3.4.3",
     "gettext-extractor-vue": "^4.0.2",
     "graphql-tag": "^2.10.0",
-    "istanbul": "^0.4.5",
     "jasmine-core": "^2.9.0",
     "jasmine-diff": "^0.1.3",
     "jasmine-jquery": "^2.1.1",

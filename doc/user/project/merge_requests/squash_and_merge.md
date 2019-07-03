@@ -50,7 +50,10 @@ all you have to do is enable squashing before you press merge to join
 the commits in the merge request into a single commit.
 
 This way, the history of your base branch remains clean with
-meaningful commit messages and is simpler to [revert](revert_changes.md) if necessary.
+meaningful commit messages and:
+
+- It's simpler to [revert](revert_changes.md) if necessary.
+- The merged branch will retain the full commit history.
 
 ## Enabling squash for a merge request
 

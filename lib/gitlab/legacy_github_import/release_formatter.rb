@@ -10,6 +10,7 @@ module Gitlab
           name: raw_data.name,
           description: raw_data.body,
           created_at: raw_data.created_at,
+          released_at: raw_data.published_at,
           updated_at: raw_data.created_at
         }
       end

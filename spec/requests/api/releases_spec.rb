@@ -24,7 +24,7 @@ describe API::Releases do
                project: project,
                tag: 'v0.1',
                author: maintainer,
-               created_at: 2.days.ago)
+               released_at: 2.days.ago)
       end
 
       let!(:release_2) do
@@ -32,7 +32,7 @@ describe API::Releases do
                project: project,
                tag: 'v0.2',
                author: maintainer,
-               created_at: 1.day.ago)
+               released_at: 1.day.ago)
       end
 
       it 'returns 200 HTTP status' do
@@ -41,7 +41,7 @@ describe API::Releases do
         expect(response).to have_gitlab_http_status(:ok)
       end
 
-      it 'returns releases ordered by created_at' do
+      it 'returns releases ordered by released_at' do
         get api("/projects/#{project.id}/releases", maintainer)
 
         expect(json_response.count).to eq(2)
@@ -54,6 +54,26 @@ describe API::Releases do
 
         expect(response).to match_response_schema('public_api/v4/releases')
       end
+    end
+
+    it 'returns an upcoming_release status for a future release' do
+      tomorrow = Time.now.utc + 1.day
+      create(:release, project: project, tag: 'v0.1', author: maintainer, released_at: tomorrow)
+
+      get api("/projects/#{project.id}/releases", maintainer)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response.first['upcoming_release']).to eq(true)
+    end
+
+    it 'returns an upcoming_release status for a past release' do
+      yesterday = Time.now.utc - 1.day
+      create(:release, project: project, tag: 'v0.1', author: maintainer, released_at: yesterday)
+
+      get api("/projects/#{project.id}/releases", maintainer)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response.first['upcoming_release']).to eq(false)
     end
 
     context 'when tag does not exist in git repository' do
@@ -316,6 +336,51 @@ describe API::Releases do
       expect(project.releases.last.description).to eq('Super nice release')
     end
 
+    it 'sets the released_at to the current time if the released_at parameter is not provided' do
+      now = Time.zone.parse('2015-08-25 06:00:00Z')
+      Timecop.freeze(now) do
+        post api("/projects/#{project.id}/releases", maintainer), params: params
+
+        expect(project.releases.last.released_at).to eq(now)
+      end
+    end
+
+    it 'sets the released_at to the value in the parameters if specified' do
+      params = {
+        name: 'New release',
+        tag_name: 'v0.1',
+        description: 'Super nice release',
+        released_at: '2019-03-20T10:00:00Z'
+      }
+      post api("/projects/#{project.id}/releases", maintainer), params: params
+
+      expect(project.releases.last.released_at).to eq('2019-03-20T10:00:00Z')
+    end
+
+    it 'assumes the utc timezone for released_at if the timezone is not provided' do
+      params = {
+        name: 'New release',
+        tag_name: 'v0.1',
+        description: 'Super nice release',
+        released_at: '2019-03-25 10:00:00'
+      }
+      post api("/projects/#{project.id}/releases", maintainer), params: params
+
+      expect(project.releases.last.released_at).to eq('2019-03-25T10:00:00Z')
+    end
+
+    it 'allows specifying a released_at with a local time zone' do
+      params = {
+        name: 'New release',
+        tag_name: 'v0.1',
+        description: 'Super nice release',
+        released_at: '2019-03-25T10:00:00+09:00'
+      }
+      post api("/projects/#{project.id}/releases", maintainer), params: params
+
+      expect(project.releases.last.released_at).to eq('2019-03-25T01:00:00Z')
+    end
+
     context 'when description is empty' do
       let(:params) do
         {
@@ -540,6 +605,7 @@ describe API::Releases do
              project: project,
              tag: 'v0.1',
              name: 'New release',
+             released_at: '2018-03-01T22:00:00Z',
              description: 'Super nice release')
     end
 
@@ -560,12 +626,21 @@ describe API::Releases do
 
       expect(project.releases.last.tag).to eq('v0.1')
       expect(project.releases.last.name).to eq('New release')
+      expect(project.releases.last.released_at).to eq('2018-03-01T22:00:00Z')
     end
 
     it 'matches response schema' do
       put api("/projects/#{project.id}/releases/v0.1", maintainer), params: params
 
       expect(response).to match_response_schema('public_api/v4/release')
+    end
+
+    it 'updates released_at' do
+      params = { released_at: '2015-10-10T05:00:00Z' }
+
+      put api("/projects/#{project.id}/releases/v0.1", maintainer), params: params
+
+      expect(project.releases.last.released_at).to eq('2015-10-10T05:00:00Z')
     end
 
     context 'when user tries to update sha' do

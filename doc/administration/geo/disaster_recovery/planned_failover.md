@@ -143,26 +143,26 @@ access to the **primary** node during the maintenance window.
    all HTTP, HTTPS and SSH traffic to/from the **primary** node, **except** for your IP and
    the **secondary** node's IP.
 
-    For instance, you might run the following commands on the server(s) making up your **primary** node:
+   For instance, you might run the following commands on the server(s) making up your **primary** node:
 
-    ```sh
-    sudo iptables -A INPUT -p tcp -s <secondary_node_ip> --destination-port 22 -j ACCEPT
-    sudo iptables -A INPUT -p tcp -s <your_ip> --destination-port 22 -j ACCEPT
-    sudo iptables -A INPUT --destination-port 22 -j REJECT
+   ```sh
+   sudo iptables -A INPUT -p tcp -s <secondary_node_ip> --destination-port 22 -j ACCEPT
+   sudo iptables -A INPUT -p tcp -s <your_ip> --destination-port 22 -j ACCEPT
+   sudo iptables -A INPUT --destination-port 22 -j REJECT
 
-    sudo iptables -A INPUT -p tcp -s <secondary_node_ip> --destination-port 80 -j ACCEPT
-    sudo iptables -A INPUT -p tcp -s <your_ip> --destination-port 80 -j ACCEPT
-    sudo iptables -A INPUT --tcp-dport 80 -j REJECT
+   sudo iptables -A INPUT -p tcp -s <secondary_node_ip> --destination-port 80 -j ACCEPT
+   sudo iptables -A INPUT -p tcp -s <your_ip> --destination-port 80 -j ACCEPT
+   sudo iptables -A INPUT --tcp-dport 80 -j REJECT
 
-    sudo iptables -A INPUT -p tcp -s <secondary_node_ip> --destination-port 443 -j ACCEPT
-    sudo iptables -A INPUT -p tcp -s <your_ip> --destination-port 443 -j ACCEPT
-    sudo iptables -A INPUT --tcp-dport 443 -j REJECT
-    ```
+   sudo iptables -A INPUT -p tcp -s <secondary_node_ip> --destination-port 443 -j ACCEPT
+   sudo iptables -A INPUT -p tcp -s <your_ip> --destination-port 443 -j ACCEPT
+   sudo iptables -A INPUT --tcp-dport 443 -j REJECT
+   ```
 
-    From this point, users will be unable to view their data or make changes on the
-    **primary** node. They will also be unable to log in to the **secondary** node.
-    However, existing sessions will work for the remainder of the maintenance period, and
-    public data will be accessible throughout.
+   From this point, users will be unable to view their data or make changes on the
+   **primary** node. They will also be unable to log in to the **secondary** node.
+   However, existing sessions will work for the remainder of the maintenance period, and
+   public data will be accessible throughout.
 
 1. Verify the **primary** node is blocked to HTTP traffic by visiting it in browser via
    another IP. The server should refuse connection.
@@ -187,10 +187,11 @@ access to the **primary** node during the maintenance window.
    before it is completed will cause the work to be lost.
 1. On the **primary** node, navigate to **Admin Area > Geo** and wait for the
    following conditions to be true of the **secondary** node you are failing over to:
-    - All replication meters to each 100% replicated, 0% failures.
-    - All verification meters reach 100% verified, 0% failures.
-    - Database replication lag is 0ms.
-    - The Geo log cursor is up to date (0 events behind).
+   
+   - All replication meters to each 100% replicated, 0% failures.
+   - All verification meters reach 100% verified, 0% failures.
+   - Database replication lag is 0ms.
+   - The Geo log cursor is up to date (0 events behind).
 
 1. On the **secondary** node, navigate to **Admin Area > Monitoring > Background Jobs > Queues**
    and wait for all the `geo` queues to drop to 0 queued and 0 running jobs.

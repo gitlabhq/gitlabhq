@@ -441,6 +441,9 @@ Settings.cron_jobs['prune_web_hook_logs_worker']['job_class'] = 'PruneWebHookLog
 Settings.cron_jobs['schedule_migrate_external_diffs_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['schedule_migrate_external_diffs_worker']['cron'] ||= '15 * * * *'
 Settings.cron_jobs['schedule_migrate_external_diffs_worker']['job_class'] = 'ScheduleMigrateExternalDiffsWorker'
+Settings.cron_jobs['namespaces_prune_aggregation_schedules_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['namespaces_prune_aggregation_schedules_worker']['cron'] ||= '5 1 * * *'
+Settings.cron_jobs['namespaces_prune_aggregation_schedules_worker']['job_class'] = 'Namespaces::PruneAggregationSchedulesWorker'
 
 Gitlab.ee do
   Settings.cron_jobs['clear_shared_runners_minutes_worker'] ||= Settingslogic.new({})

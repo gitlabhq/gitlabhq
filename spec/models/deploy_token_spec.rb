@@ -8,6 +8,15 @@ describe DeployToken do
   it { is_expected.to have_many :project_deploy_tokens }
   it { is_expected.to have_many(:projects).through(:project_deploy_tokens) }
 
+  describe 'validations' do
+    let(:username_format_message) { "can contain only letters, digits, '_', '-', '+', and '.'" }
+
+    it { is_expected.to validate_length_of(:username).is_at_most(255) }
+    it { is_expected.to allow_value('GitLab+deploy_token-3.14').for(:username) }
+    it { is_expected.not_to allow_value('<script>').for(:username).with_message(username_format_message) }
+    it { is_expected.not_to allow_value('').for(:username).with_message(username_format_message) }
+  end
+
   describe '#ensure_token' do
     it 'ensures a token' do
       deploy_token.token = nil
@@ -87,8 +96,30 @@ describe DeployToken do
   end
 
   describe '#username' do
-    it 'returns a harcoded username' do
-      expect(deploy_token.username).to eq("gitlab+deploy-token-#{deploy_token.id}")
+    context 'persisted records' do
+      it 'returns a default username if none is set' do
+        expect(deploy_token.username).to eq("gitlab+deploy-token-#{deploy_token.id}")
+      end
+
+      it 'returns the username provided if one is set' do
+        deploy_token = create(:deploy_token, username: 'deployer')
+
+        expect(deploy_token.username).to eq('deployer')
+      end
+    end
+
+    context 'new records' do
+      it 'returns nil if no username is set' do
+        deploy_token = build(:deploy_token)
+
+        expect(deploy_token.username).to be_nil
+      end
+
+      it 'returns the username provided if one is set' do
+        deploy_token = build(:deploy_token, username: 'deployer')
+
+        expect(deploy_token.username).to eq('deployer')
+      end
     end
   end
 

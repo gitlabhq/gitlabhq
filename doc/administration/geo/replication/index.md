@@ -80,8 +80,8 @@ In this diagram:
 - If present, the [LDAP server](#ldap) should be configured to replicate for [Disaster Recovery](../disaster_recovery/index.md) scenarios.
 - A **secondary** node performs different type of synchronizations against the **primary** node, using a special
   authorization protected by JWT:
-   - Repositories are cloned/updated via Git over HTTPS.
-   - Attachments, LFS objects, and other files are downloaded via HTTPS using a private API endpoint.
+  - Repositories are cloned/updated via Git over HTTPS.
+  - Attachments, LFS objects, and other files are downloaded via HTTPS using a private API endpoint.
 
 From the perspective of a user performing Git operations:
 
@@ -107,8 +107,8 @@ The following are required to run Geo:
 - An operating system that supports OpenSSH 6.9+ (needed for
   [fast lookup of authorized SSH keys in the database](../../operations/fast_ssh_key_lookup.md))
   The following operating systems are known to ship with a current version of OpenSSH:
-    - [CentOS](https://www.centos.org) 7.4+
-    - [Ubuntu](https://www.ubuntu.com) 16.04+
+  - [CentOS](https://www.centos.org) 7.4+
+  - [Ubuntu](https://www.ubuntu.com) 16.04+
 - PostgreSQL 9.6+ with [FDW](https://www.postgresql.org/docs/9.6/postgres-fdw.html) support and [Streaming Replication](https://wiki.postgresql.org/wiki/Streaming_Replication)
 - Git 2.9+
 

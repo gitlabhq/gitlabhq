@@ -26,6 +26,7 @@
 - cronjob:issue_due_scheduler
 - cronjob:prune_web_hook_logs
 - cronjob:schedule_migrate_external_diffs
+- cronjob:namespaces_prune_aggregation_schedules
 
 - gcp_cluster:cluster_install_app
 - gcp_cluster:cluster_patch_app
@@ -100,6 +101,9 @@
 - todos_destroyer:todos_destroyer_group_private
 - todos_destroyer:todos_destroyer_project_private
 - todos_destroyer:todos_destroyer_private_features
+
+- update_namespace_statistics:namespaces_schedule_aggregation
+- update_namespace_statistics:namespaces_root_statistics
 
 - object_pool:object_pool_create
 - object_pool:object_pool_schedule_join

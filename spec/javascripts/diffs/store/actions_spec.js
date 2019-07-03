@@ -206,6 +206,7 @@ describe('DiffsStoreActions', () => {
                   position_type: 'text',
                 },
               },
+              hash: 'diff-content-1c497fbb3a46b78edf04cc2a2fa33f67e3ffbe2a',
             },
           },
         ],
