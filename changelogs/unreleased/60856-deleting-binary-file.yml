@@ -1,0 +1,5 @@
+---
+title: Removing an image should not output binary data
+merge_request: 30314
+author:
+type: fixed
