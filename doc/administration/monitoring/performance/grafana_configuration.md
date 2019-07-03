@@ -103,6 +103,21 @@ repository for more information on this process.
 
 [grafana-dashboards]: https://gitlab.com/gitlab-org/grafana-dashboards
 
+## Integration with GitLab UI
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/61005) in GitLab 12.1.
+
+If you have set up Grafana, you can enable a link to access it easily from the sidebar:
+
+1. Go to the admin area under **Settings > Metrics and profiling**
+   and expand "Metrics - Grafana".
+1. Check the "Enable access to Grafana" checkbox.
+1. If Grafana is enabled through Omnibus GitLab and on the same server,
+   leave "Grafana URL" unchanged. In any other case, enter the full URL
+   path of the Grafana instance.
+1. Click **Save changes**.
+1. The new link will be available in the admin area under **Monitoring > Metrics Dashboard**.
+
 ---
 
 Read more on:

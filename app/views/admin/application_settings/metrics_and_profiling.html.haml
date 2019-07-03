@@ -24,6 +24,17 @@
   .settings-content
     = render 'prometheus'
 
+%section.settings.as-grafana.no-animate#js-grafana-settings{ class: ('expanded' if expanded_by_default?) }
+  .settings-header
+    %h4
+      = _('Metrics - Grafana')
+    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded_by_default? ? _('Collapse') : _('Expand')
+    %p
+      = _('Enable and configure Grafana.')
+  .settings-content
+    = render 'grafana'
+
 %section.settings.qa-performance-bar-settings.as-performance-bar.no-animate#js-performance-bar-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header
     %h4
