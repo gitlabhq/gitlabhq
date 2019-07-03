@@ -8,9 +8,7 @@ module Gitlab
         end
 
         def execute
-          # TODO: get the user from the project namespace from the username loaded by Phab-id
-          # https://gitlab.com/gitlab-org/gitlab-ce/issues/60565
-          issue.author = User.ghost
+          issue.author = user_finder.find(task.author_phid) || User.ghost
 
           # TODO: Reformat the description with attachments, escaping accidental
           # links and add attachments
@@ -18,6 +16,10 @@ module Gitlab
           issue.assign_attributes(task.issue_attributes)
 
           save!
+
+          if owner = user_finder.find(task.owner_phid)
+            issue.assignees << owner
+          end
 
           issue
         end
@@ -39,6 +41,10 @@ module Gitlab
         def issue
           @issue ||= find_issue_by_phabricator_id(task.phabricator_id) ||
             project.issues.new
+        end
+
+        def user_finder
+          @issue_finder ||= Gitlab::PhabricatorImport::UserFinder.new(project, task.phids)
         end
 
         def find_issue_by_phabricator_id(phabricator_id)
