@@ -9,27 +9,33 @@ module QA
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
         Page::Main::Login.perform(&:sign_in_using_credentials)
 
-        Resource::Issue.fabricate_via_browser_ui! do |issue|
+        issue = Resource::Issue.fabricate_via_api! do |issue|
           issue.title = issue_title
         end
+
+        issue.visit!
 
         expect(page).to have_content(issue_title)
 
         Page::Project::Issue::Show.perform do |show_page|
-          show_page.select_all_activities_filter
-          show_page.start_discussion("My first discussion")
-          expect(show_page).to have_content("My first discussion")
+          my_first_discussion = "My first discussion"
+          my_first_reply = "My First Reply"
+          one_reply = "1 reply"
 
-          show_page.reply_to_discussion("My First Reply")
-          expect(show_page).to have_content("My First Reply")
+          show_page.select_all_activities_filter
+          show_page.start_discussion(my_first_discussion)
+          expect(show_page).to have_content(my_first_discussion)
+
+          show_page.reply_to_discussion(my_first_reply)
+          expect(show_page).to have_content(my_first_reply)
 
           show_page.collapse_replies
-          expect(show_page).to have_content("1 reply")
-          expect(show_page).not_to have_content("My First Reply")
+          expect(show_page).to have_content(one_reply)
+          expect(show_page).not_to have_content(my_first_reply)
 
           show_page.expand_replies
-          expect(show_page).to have_content("My First Reply")
-          expect(show_page).not_to have_content("1 reply")
+          expect(show_page).to have_content(my_first_reply)
+          expect(show_page).not_to have_content(one_reply)
         end
       end
     end
