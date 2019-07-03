@@ -182,7 +182,7 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def housekeeping
-    ::Projects::HousekeepingService.new(@project).execute
+    ::Projects::HousekeepingService.new(@project, :gc).execute
 
     redirect_to(
       project_path(@project),
