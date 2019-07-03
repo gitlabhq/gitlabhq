@@ -82,7 +82,7 @@ go lint:
   image: golang:1.11
   script:
     - go get -u golang.org/x/lint/golint
-    - golint -set_exit_status
+    - golint -set_exit_status $(go list ./... | grep -v "vendor/")
 ```
 
 Once [recursive includes](https://gitlab.com/gitlab-org/gitlab-ce/issues/56836)
