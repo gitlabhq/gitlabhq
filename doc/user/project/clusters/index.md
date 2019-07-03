@@ -222,7 +222,7 @@ functionalities needed to successfully build and deploy a containerized
 application. Bear in mind that the same credentials are used for all the
 applications running on the cluster.
 
-## Gitlab-managed clusters
+## GitLab-managed clusters
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22011) in GitLab 11.5.
 > Became [optional](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/26565) in GitLab 11.11.
