@@ -1,12 +1,15 @@
 import MockAdapter from 'axios-mock-adapter';
-import testAction from 'spec/helpers/vuex_action_helper';
-import { TEST_HOST } from 'spec/test_constants';
+import testAction from 'helpers/vuex_action_helper';
+import { TEST_HOST } from 'helpers/test_constants';
 import axios from '~/lib/utils/axios_utils';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import actionsDefaultExport, * as actions from '~/error_tracking_settings/store/actions';
+import { refreshCurrentPage } from '~/lib/utils/url_utility';
+import * as actions from '~/error_tracking_settings/store/actions';
 import * as types from '~/error_tracking_settings/store/mutation_types';
 import defaultState from '~/error_tracking_settings/store/state';
 import { projectList } from '../mock';
+
+jest.mock('~/lib/utils/url_utility');
 
 describe('error tracking settings actions', () => {
   let state;
@@ -21,6 +24,7 @@ describe('error tracking settings actions', () => {
 
     afterEach(() => {
       mock.restore();
+      refreshCurrentPage.mockClear();
     });
 
     it('should request and transform the project list', done => {
@@ -111,7 +115,6 @@ describe('error tracking settings actions', () => {
     });
 
     it('should save the page', done => {
-      const refreshCurrentPage = spyOnDependency(actionsDefaultExport, 'refreshCurrentPage');
       mock.onPatch(TEST_HOST).reply(200);
       testAction(actions.updateSettings, null, state, [], [{ type: 'requestSettings' }], () => {
         expect(mock.history.patch.length).toBe(1);
