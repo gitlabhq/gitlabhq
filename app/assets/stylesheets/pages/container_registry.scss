@@ -2,6 +2,12 @@
  * Container Registry
  */
 
+.container-message {
+  pre {
+    white-space: pre-line;
+  }
+}
+
 .container-image {
   border-bottom: 1px solid $white-normal;
 }

@@ -46,23 +46,16 @@ describe('table registry', () => {
       expect(findDeleteBtn()).toBeDefined();
     });
 
-    describe('clicked on delete', () => {
-      beforeEach(done => {
-        findDeleteBtn().click();
-        Vue.nextTick(done);
-      });
+    it('should call deleteItem and reset itemToBeDeleted when confirming deletion', done => {
+      findDeleteBtn().click();
+      spyOn(vm, 'deleteItem').and.returnValue(Promise.resolve());
 
-      it('should open confirmation modal and set itemToBeDeleted properly', () => {
-        expect(vm.itemToBeDeleted).toEqual(firstImage);
-        expect(vm.$el.querySelector('#confirm-image-deletion-modal')).not.toBeNull();
-      });
-
-      it('should call deleteItem and reset itemToBeDeleted when confirming deletion', () => {
-        spyOn(vm, 'deleteItem').and.returnValue(Promise.resolve());
-        vm.$el.querySelector('#confirm-image-deletion-modal .btn-danger').click();
+      Vue.nextTick(() => {
+        document.querySelector('#confirm-image-deletion-modal .btn-danger').click();
 
         expect(vm.deleteItem).toHaveBeenCalledWith(firstImage);
         expect(vm.itemToBeDeleted).toBeNull();
+        done();
       });
     });
   });

@@ -54,7 +54,21 @@ Example response:
 ]
 ```
 
-**Note**: `members_count_with_descendants` are presented only for group maintainers/owners.
+Users on GitLab.com [Bronze or higher](https://about.gitlab.com/pricing/#gitlab-com) may also see
+the `plan` parameter associated with a namespace:
+
+```json
+[
+  {
+    "id": 1,
+    "name": "user1",
+    "plan": "bronze",
+    ...
+  }
+]
+```
+
+**Note**: Only group maintainers/owners are presented with `members_count_with_descendants`, as well as `plan` **[BRONZE ONLY]**.
 
 ## Search for namespace
 

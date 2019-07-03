@@ -24,7 +24,7 @@ namespace :yarn do
 
   desc 'Install Node dependencies with Yarn'
   task install: ['yarn:available'] do
-    unless system('yarn install --pure-lockfile --ignore-engines')
+    unless system('yarn install --pure-lockfile --ignore-engines --prefer-offline')
       abort 'Error: Unable to install node modules.'.color(:red)
     end
   end

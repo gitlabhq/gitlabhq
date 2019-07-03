@@ -25,15 +25,6 @@ class Projects::BranchesController < Projects::ApplicationController
         @refs_pipelines = @project.ci_pipelines.latest_successful_for_refs(@branches.map(&:name))
         @merged_branch_names = repository.merged_branch_names(@branches.map(&:name))
 
-        # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/48097
-        Gitlab::GitalyClient.allow_n_plus_1_calls do
-          @max_commits = @branches.reduce(0) do |memo, branch|
-            diverging_commit_counts = repository.diverging_commit_counts(branch)
-            [memo, diverging_commit_counts.values_at(:behind, :ahead, :distance)]
-              .flatten.compact.max
-          end
-        end
-
         # https://gitlab.com/gitlab-org/gitlab-ce/issues/48097
         Gitlab::GitalyClient.allow_n_plus_1_calls do
           render
@@ -51,6 +42,19 @@ class Projects::BranchesController < Projects::ApplicationController
     @branches = @repository.recent_branches
   end
 
+  def diverging_commit_counts
+    respond_to do |format|
+      format.json do
+        service = Branches::DivergingCommitCountsService.new(repository)
+        branches = BranchesFinder.new(repository, params.permit(names: [])).execute
+
+        Gitlab::GitalyClient.allow_n_plus_1_calls do
+          render json: branches.to_h { |branch| [branch.name, service.call(branch)] }
+        end
+      end
+    end
+  end
+
   # rubocop: disable CodeReuse/ActiveRecord
   def create
     branch_name = strip_tags(sanitize(params[:branch_name]))
@@ -64,8 +68,9 @@ class Projects::BranchesController < Projects::ApplicationController
     success = (result[:status] == :success)
 
     if params[:issue_iid] && success
-      issue = IssuesFinder.new(current_user, project_id: @project.id).find_by(iid: params[:issue_iid])
-      SystemNoteService.new_issue_branch(issue, @project, current_user, branch_name) if issue
+      target_project = confidential_issue_project || @project
+      issue = IssuesFinder.new(current_user, project_id: target_project.id).find_by(iid: params[:issue_iid])
+      SystemNoteService.new_issue_branch(issue, target_project, current_user, branch_name, branch_project: @project) if issue
     end
 
     respond_to do |format|
@@ -161,5 +166,16 @@ class Projects::BranchesController < Projects::ApplicationController
       @branches = @branches.select { |b| b.state.to_s == @mode } if %w[active stale].include?(@mode)
       @branches = Kaminari.paginate_array(@branches).page(params[:page])
     end
+  end
+
+  def confidential_issue_project
+    return unless Feature.enabled?(:create_confidential_merge_request, @project)
+    return if params[:confidential_issue_project_id].blank?
+
+    confidential_issue_project = Project.find(params[:confidential_issue_project_id])
+
+    return unless can?(current_user, :update_issue, confidential_issue_project)
+
+    confidential_issue_project
   end
 end

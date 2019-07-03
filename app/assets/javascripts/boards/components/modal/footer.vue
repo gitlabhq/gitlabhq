@@ -1,8 +1,7 @@
 <script>
 import Flash from '../../../flash';
-import { __ } from '../../../locale';
+import { __, n__ } from '../../../locale';
 import ListsDropdown from './lists_dropdown.vue';
-import { pluralize } from '../../../lib/utils/text_utility';
 import ModalStore from '../../stores/modal_store';
 import modalMixin from '../../mixins/modal_mixins';
 import boardsStore from '../../stores/boards_store';
@@ -24,8 +23,8 @@ export default {
     },
     submitText() {
       const count = ModalStore.selectedCount();
-
-      return `Add ${count > 0 ? count : ''} ${pluralize('issue', count)}`;
+      if (!count) return __('Add issues');
+      return n__(`Add %d issue`, `Add %d issues`, count);
     },
   },
   methods: {
@@ -68,11 +67,11 @@ export default {
       <button :disabled="submitDisabled" class="btn btn-success" type="button" @click="addIssues">
         {{ submitText }}
       </button>
-      <span class="inline add-issues-footer-to-list"> to list </span>
+      <span class="inline add-issues-footer-to-list">{{ __('to list') }}</span>
       <lists-dropdown />
     </div>
     <button class="btn btn-default float-right" type="button" @click="toggleModal(false)">
-      Cancel
+      {{ __('Cancel') }}
     </button>
   </footer>
 </template>

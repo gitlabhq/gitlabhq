@@ -454,16 +454,32 @@ describe SystemNoteService do
   end
 
   describe '.new_issue_branch' do
-    subject { described_class.new_issue_branch(noteable, project, author, "1-mepmep") }
+    let(:branch) { '1-mepmep' }
 
-    it_behaves_like 'a system note' do
-      let(:action) { 'branch' }
+    subject { described_class.new_issue_branch(noteable, project, author, branch, branch_project: branch_project) }
+
+    shared_examples_for 'a system note for new issue branch' do
+      it_behaves_like 'a system note' do
+        let(:action) { 'branch' }
+      end
+
+      context 'when a branch is created from the new branch button' do
+        it 'sets the note text' do
+          expect(subject.note).to start_with("created branch [`#{branch}`]")
+        end
+      end
     end
 
-    context 'when a branch is created from the new branch button' do
-      it 'sets the note text' do
-        expect(subject.note).to start_with("created branch [`1-mepmep`]")
-      end
+    context 'branch_project is set' do
+      let(:branch_project) { create(:project, :repository) }
+
+      it_behaves_like 'a system note for new issue branch'
+    end
+
+    context 'branch_project is not set' do
+      let(:branch_project) { nil }
+
+      it_behaves_like 'a system note for new issue branch'
     end
   end
 
@@ -477,7 +493,7 @@ describe SystemNoteService do
     end
 
     it 'sets the new merge request note text' do
-      expect(subject.note).to eq("created merge request #{merge_request.to_reference} to address this issue")
+      expect(subject.note).to eq("created merge request #{merge_request.to_reference(project)} to address this issue")
     end
   end
 
@@ -750,7 +766,7 @@ describe SystemNoteService do
     end
   end
 
-  describe 'JIRA integration' do
+  describe 'Jira integration' do
     include JiraServiceHelper
 
     let(:project)         { create(:jira_project, :repository) }

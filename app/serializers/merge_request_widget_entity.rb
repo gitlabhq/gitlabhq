@@ -217,8 +217,12 @@ class MergeRequestWidgetEntity < IssuableEntity
     project_merge_request_path(merge_request.project, merge_request, format: :diff)
   end
 
-  expose :status_path do |merge_request|
-    project_merge_request_path(merge_request.target_project, merge_request, format: :json)
+  expose :merge_request_basic_path do |merge_request|
+    project_merge_request_path(merge_request.target_project, merge_request, serializer: :basic, format: :json)
+  end
+
+  expose :merge_request_widget_path do |merge_request|
+    widget_project_json_merge_request_path(merge_request.target_project, merge_request, format: :json)
   end
 
   expose :ci_environments_status_path do |merge_request|

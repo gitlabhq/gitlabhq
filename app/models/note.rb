@@ -452,7 +452,7 @@ class Note < ApplicationRecord
 
     noteable_object&.touch
 
-    # We return the noteable object so we can re-use it in EE for ElasticSearch.
+    # We return the noteable object so we can re-use it in EE for Elasticsearch.
     noteable_object
   end
 

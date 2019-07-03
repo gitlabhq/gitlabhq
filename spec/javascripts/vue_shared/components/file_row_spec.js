@@ -90,6 +90,19 @@ describe('File row component', () => {
     expect(vm.$el.querySelector('.js-file-row-header')).not.toBe(null);
   });
 
+  it('is not rendered for `moved` entries in subfolders', () => {
+    createComponent({
+      file: {
+        path: 't5',
+        moved: true,
+        tree: [],
+      },
+      level: 2,
+    });
+
+    expect(vm.$el.nodeType).not.toEqual(1);
+  });
+
   describe('new dropdown', () => {
     beforeEach(() => {
       createComponent({

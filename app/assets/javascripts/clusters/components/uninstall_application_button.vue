@@ -1,6 +1,7 @@
 <script>
 import LoadingButton from '~/vue_shared/components/loading_button.vue';
 import { APPLICATION_STATUS } from '~/clusters/constants';
+import { __ } from '~/locale';
 
 const { UPDATING, UNINSTALLING } = APPLICATION_STATUS;
 
@@ -22,7 +23,7 @@ export default {
       return this.status === UNINSTALLING;
     },
     label() {
-      return this.loading ? this.__('Uninstalling') : this.__('Uninstall');
+      return this.loading ? __('Uninstalling') : __('Uninstall');
     },
   },
 };

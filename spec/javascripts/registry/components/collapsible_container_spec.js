@@ -72,21 +72,15 @@ describe('collapsible registry container', () => {
       expect(findDeleteBtn()).not.toBeNull();
     });
 
-    describe('clicked on delete', () => {
-      beforeEach(done => {
-        findDeleteBtn().click();
-        Vue.nextTick(done);
-      });
+    it('should call deleteItem when confirming deletion', done => {
+      findDeleteBtn().click();
+      spyOn(vm, 'deleteItem').and.returnValue(Promise.resolve());
 
-      it('should open confirmation modal', () => {
-        expect(vm.$el.querySelector('#confirm-repo-deletion-modal')).not.toBeNull();
-      });
-
-      it('should call deleteItem when confirming deletion', () => {
-        spyOn(vm, 'deleteItem').and.returnValue(Promise.resolve());
-        vm.$el.querySelector('#confirm-repo-deletion-modal .btn-danger').click();
+      Vue.nextTick(() => {
+        document.querySelector('#confirm-repo-deletion-modal .btn-danger').click();
 
         expect(vm.deleteItem).toHaveBeenCalledWith(vm.repo);
+        done();
       });
     });
   });

@@ -205,7 +205,7 @@ class IssuableBaseService < BaseService
     end
 
     if issuable.changed? || params.present?
-      issuable.assign_attributes(params.merge(updated_by: current_user))
+      issuable.assign_attributes(params)
 
       if has_title_or_description_changed?(issuable)
         issuable.assign_attributes(last_edited_at: Time.now, last_edited_by: current_user)
@@ -213,11 +213,16 @@ class IssuableBaseService < BaseService
 
       before_update(issuable)
 
+      # Do not touch when saving the issuable if only changes position within a list. We should call
+      # this method at this point to capture all possible changes.
+      should_touch = update_timestamp?(issuable)
+
+      issuable.updated_by = current_user if should_touch
       # We have to perform this check before saving the issuable as Rails resets
       # the changed fields upon calling #save.
       update_project_counters = issuable.project && update_project_counter_caches?(issuable)
 
-      if issuable.with_transaction_returning_status { issuable.save }
+      if issuable.with_transaction_returning_status { issuable.save(touch: should_touch) }
         # We do not touch as it will affect a update on updated_at field
         ActiveRecord::Base.no_touching do
           Issuable::CommonSystemNotesService.new(project, current_user).execute(issuable, old_labels: old_associations[:labels])
@@ -401,5 +406,9 @@ class IssuableBaseService < BaseService
   # where private project milestone could leak without this check
   def ensure_milestone_available(issuable)
     issuable.milestone_id = nil unless issuable.milestone_available?
+  end
+
+  def update_timestamp?(issuable)
+    issuable.changes.keys != ["relative_position"]
   end
 end

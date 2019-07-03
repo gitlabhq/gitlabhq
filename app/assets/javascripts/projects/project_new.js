@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import { addSelectOnFocusBehaviour } from '../lib/utils/common_utils';
-import { slugifyWithHyphens } from '../lib/utils/text_utility';
+import { slugify } from '../lib/utils/text_utility';
 import { s__ } from '~/locale';
 
 let hasUserDefinedProjectPath = false;
@@ -34,7 +34,7 @@ const deriveProjectPathFromUrl = $projectImportUrl => {
 };
 
 const onProjectNameChange = ($projectNameInput, $projectPathInput) => {
-  const slug = slugifyWithHyphens($projectNameInput.val());
+  const slug = slugify($projectNameInput.val());
   $projectPathInput.val(slug);
 };
 

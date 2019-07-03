@@ -47,6 +47,7 @@
 
   = render_if_exists 'projects/commits/mirror_status'
 
+  .js-branch-list{ data: { diverging_counts_endpoint: diverging_commit_counts_namespace_project_branches_path(@project.namespace, @project, format: :json) } }
   - if can?(current_user, :admin_project, @project)
     - project_settings_link = link_to s_('Branches|project settings'), project_protected_branches_path(@project)
     .row-content-block

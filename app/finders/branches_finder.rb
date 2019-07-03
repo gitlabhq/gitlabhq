@@ -9,12 +9,17 @@ class BranchesFinder
   def execute
     branches = repository.branches_sorted_by(sort)
     branches = by_search(branches)
+    branches = by_names(branches)
     branches
   end
 
   private
 
   attr_reader :repository, :params
+
+  def names
+    @params[:names].presence
+  end
 
   def search
     @params[:search].presence
@@ -58,5 +63,14 @@ class BranchesFinder
 
   def find_exact_match_index(matches, term)
     matches.index { |branch| branch.name.casecmp(term) == 0 }
+  end
+
+  def by_names(branches)
+    return branches unless names
+
+    branch_names = names.to_set
+    branches.filter do |branch|
+      branch_names.include?(branch.name)
+    end
   end
 end

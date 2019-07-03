@@ -4,8 +4,9 @@ description: "Learn how GitLab docs' global navigation works and how to add new 
 
 # Global navigation
 
-> [Introduced](https://gitlab.com/gitlab-com/gitlab-docs/merge_requests/362)
-in November 2018 for GitLab 11.6.
+> - [Introduced](https://gitlab.com/gitlab-com/gitlab-docs/merge_requests/362)
+in GitLab 11.6.
+> - [Updated](https://gitlab.com/gitlab-com/gitlab-docs/merge_requests/482) in GitLab 12.1.
 
 The global nav adds to the left sidebar the ability to
 navigate and explore the contents of GitLab's documentation.
@@ -217,13 +218,13 @@ and the following syntax rules.
 - Always use relative paths against the home of CE and EE. Examples:
   - For `https://docs.gitlab.com/ee/README.html`, the relative URL is `README.html`.
   - For `https://docs.gitlab.com/ee/user/project/cycle_analytics.html`, the relative
-    URL is `user/project/cycle_analytics.html`
+    URL is `user/project/cycle_analytics.html`.
 - For `README.html` files, add the complete path `path/to/README.html`.
 - For `index.html` files, use the clean (canonical) URL: `path/to/`.
 - For EE-only docs, use the same relative path, but add the attribute `ee_only: true` below
-  the `doc_url` or `category_url`, as explained above. This will guarantee that when
-  the user is looking at the CE docs, it will link to the EE docs. It also displays
-  an "info" icon on the CE nav to make the user aware that it's a different link.
+  the `doc_url` or `category_url`, as explained above. This displays
+  an "info" icon on the nav to make the user aware that the feature is
+  EE-only.
 
 DANGER: **Important!**
 All links present on the data file must end in `.html`, not `.md`. Do not
@@ -293,7 +294,7 @@ point to `/ee/` docs.
 
 On the other hand, if the user is looking at `/ce/` docs,
 all the links in the CE nav should link internally to `/ce/`
-files, except for [`ee-only` docs](#ee-only-docs).
+files.
 
 ```html
 <% if dir != 'ce' %>
@@ -314,21 +315,12 @@ categories (`cat[:category_url]`), and docs (`doc[:doc_url]`) URLs.
 
 #### `ee-only` docs
 
-If the user is looking at the CE nav, a given doc is present only
-in `/ee/`, it's tagged in the data file by `ee-only`, linking it
-directly to `/ee/`.
+Docs for features present only in GitLab EE are tagged
+in the data file by `ee-only` and an icon is displayed on the nav
+link indicating that the `ee-only` feature is not available in CE.
 
-```html
-<% if dir == 'ce' && cat[:ee_only] %>
-   <a href="/ee/<%= cat[:category_url] %>">...</a>
-<% end %>
-```
-
-To make it clear that it it's a different link, an icon is displayed
-on the nav link indicating that the `ee-only` doc is not available in CE.
-
-The `ee-only` attribute is available for `categories` (`<% if dir == 'ce' && cat[:ee_only] %>`)
-and `docs` (`<% if dir == 'ce' && doc[:ee_only] %>`), but not for `sections`.
+The `ee-only` attribute is available for `categories` (`<% if cat[:ee_only] %>`)
+and `docs` (`<% if doc[:ee_only] %>`), but not for `sections`.
 
 ### CSS classes
 

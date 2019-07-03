@@ -1,0 +1,5 @@
+---
+title: Replace slugifyWithHyphens with improved slugify function
+merge_request: 30172
+author: Luke Ward
+type: fixed

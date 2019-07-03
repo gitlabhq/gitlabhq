@@ -18,6 +18,7 @@ export const dataStructure = () => ({
   active: false,
   changed: false,
   staged: false,
+  replaces: false,
   lastCommitPath: '',
   lastCommitSha: '',
   lastCommit: {
@@ -119,7 +120,7 @@ export const commitActionForFile = file => {
     return commitActionTypes.move;
   } else if (file.deleted) {
     return commitActionTypes.delete;
-  } else if (file.tempFile) {
+  } else if (file.tempFile && !file.replaces) {
     return commitActionTypes.create;
   }
 
@@ -151,7 +152,8 @@ export const createCommitPayload = ({
     previous_path: f.prevPath === '' ? undefined : f.prevPath,
     content: f.prevPath ? null : f.content || undefined,
     encoding: f.base64 ? 'base64' : 'text',
-    last_commit_id: newBranch || f.deleted || f.prevPath ? undefined : f.lastCommitSha,
+    last_commit_id:
+      newBranch || f.deleted || f.prevPath || f.replaces ? undefined : f.lastCommitSha,
   })),
   start_sha: newBranch ? rootGetters.lastCommit.short_id : undefined,
 });

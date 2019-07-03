@@ -1,0 +1,5 @@
+---
+title: Fix IDE editor not showing when switching back from preview
+merge_request: 30135
+author:
+type: fixed

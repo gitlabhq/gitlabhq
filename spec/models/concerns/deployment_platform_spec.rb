@@ -82,16 +82,6 @@ describe DeploymentPlatform do
           end
         end
       end
-
-      context 'feature flag disabled' do
-        before do
-          stub_feature_flags(group_clusters: false)
-        end
-
-        it 'returns nil' do
-          is_expected.to be_nil
-        end
-      end
     end
   end
 end

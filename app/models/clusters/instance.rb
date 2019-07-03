@@ -9,9 +9,5 @@ module Clusters
     def feature_available?(feature)
       ::Feature.enabled?(feature, default_enabled: true)
     end
-
-    def self.enabled?
-      ::Feature.enabled?(:instance_clusters, default_enabled: true)
-    end
   end
 end

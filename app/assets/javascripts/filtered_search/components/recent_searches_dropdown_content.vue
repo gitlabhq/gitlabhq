@@ -59,7 +59,7 @@ export default {
 <template>
   <div>
     <div v-if="!isLocalStorageAvailable" class="dropdown-info-note">
-      This feature requires local storage to be enabled
+      {{ __('This feature requires local storage to be enabled') }}
     </div>
     <ul v-else-if="hasItems">
       <li v-for="(item, index) in processedItems" :key="`processed-items-${index}`">
@@ -90,10 +90,10 @@ export default {
           class="filtered-search-history-clear-button"
           @click="onRequestClearRecentSearches($event)"
         >
-          Clear recent searches
+          {{ __('Clear recent searches') }}
         </button>
       </li>
     </ul>
-    <div v-else class="dropdown-info-note">You don't have any recent searches</div>
+    <div v-else class="dropdown-info-note">{{ __("You don't have any recent searches") }}</div>
   </div>
 </template>

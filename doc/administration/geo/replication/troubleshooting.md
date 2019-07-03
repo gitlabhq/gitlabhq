@@ -184,17 +184,17 @@ log data to build up in `pg_xlog`. Removing the unused slots can reduce the amou
 
 1. Start a PostgreSQL console session:
 
-    ```sh
-    sudo gitlab-psql gitlabhq_production
-    ```
+   ```sh
+   sudo gitlab-psql gitlabhq_production
+   ```
 
-    > Note that using `gitlab-rails dbconsole` will not work, because managing replication slots requires superuser permissions.
+   Note: **Note:** Using `gitlab-rails dbconsole` will not work, because managing replication slots requires superuser permissions.
 
 1. View your replication slots with:
 
-    ```sql
-    SELECT * FROM pg_replication_slots;
-    ```
+   ```sql
+   SELECT * FROM pg_replication_slots;
+   ```
 
 Slots where `active` is `f` are not active.
 
@@ -204,9 +204,9 @@ Slots where `active` is `f` are not active.
 - If you are no longer using the slot (e.g. you no longer have Geo enabled), you can remove it with in the
   PostgreSQL console session:
 
-    ```sql
-    SELECT pg_drop_replication_slot('<name_of_extra_slot>');
-    ```
+  ```sql
+  SELECT pg_drop_replication_slot('<name_of_extra_slot>');
+  ```
 
 ### Very large repositories never successfully synchronize on the **secondary** node
 
@@ -237,82 +237,82 @@ to start again from scratch, there are a few steps that can help you:
 
 1. Stop Sidekiq and the Geo LogCursor
 
-    It's possible to make Sidekiq stop gracefully, but making it stop getting new jobs and
-    wait until the current jobs to finish processing.
+   It's possible to make Sidekiq stop gracefully, but making it stop getting new jobs and
+   wait until the current jobs to finish processing.
 
-    You need to send a **SIGTSTP** kill signal for the first phase and them a **SIGTERM**
-    when all jobs have finished. Otherwise just use the `gitlab-ctl stop` commands.
+   You need to send a **SIGTSTP** kill signal for the first phase and them a **SIGTERM**
+   when all jobs have finished. Otherwise just use the `gitlab-ctl stop` commands.
 
-    ```sh
-    gitlab-ctl status sidekiq
-    # run: sidekiq: (pid 10180) <- this is the PID you will use
-    kill -TSTP 10180 # change to the correct PID
+   ```sh
+   gitlab-ctl status sidekiq
+   # run: sidekiq: (pid 10180) <- this is the PID you will use
+   kill -TSTP 10180 # change to the correct PID
 
-    gitlab-ctl stop sidekiq
-    gitlab-ctl stop geo-logcursor
-    ```
+   gitlab-ctl stop sidekiq
+   gitlab-ctl stop geo-logcursor
+   ```
 
-    You can watch sidekiq logs to know when sidekiq jobs processing have finished:
+   You can watch sidekiq logs to know when sidekiq jobs processing have finished:
 
-    ```sh
-    gitlab-ctl tail sidekiq
-    ```
+   ```sh
+   gitlab-ctl tail sidekiq
+   ```
 
 1. Rename repository storage folders and create new ones
 
-    ```sh
-    mv /var/opt/gitlab/git-data/repositories /var/opt/gitlab/git-data/repositories.old
-    mkdir -p /var/opt/gitlab/git-data/repositories
-    chown git:git /var/opt/gitlab/git-data/repositories
-    ```
+   ```sh
+   mv /var/opt/gitlab/git-data/repositories /var/opt/gitlab/git-data/repositories.old
+   mkdir -p /var/opt/gitlab/git-data/repositories
+   chown git:git /var/opt/gitlab/git-data/repositories
+   ```
 
-    TIP: **Tip**
-    You may want to remove the `/var/opt/gitlab/git-data/repositories.old` in the future
-    as soon as you confirmed that you don't need it anymore, to save disk space.
+   TIP: **Tip**
+   You may want to remove the `/var/opt/gitlab/git-data/repositories.old` in the future
+   as soon as you confirmed that you don't need it anymore, to save disk space.
 
 1. _(Optional)_ Rename other data folders and create new ones
 
-    CAUTION: **Caution**:
-    You may still have files on the **secondary** node that have been removed from **primary** node but
-    removal have not been reflected. If you skip this step, they will never be removed
-    from this Geo node.
+   CAUTION: **Caution**:
+   You may still have files on the **secondary** node that have been removed from **primary** node but
+   removal have not been reflected. If you skip this step, they will never be removed
+   from this Geo node.
 
-    Any uploaded content like file attachments, avatars or LFS objects are stored in a
-    subfolder in one of the two paths below:
+   Any uploaded content like file attachments, avatars or LFS objects are stored in a
+   subfolder in one of the two paths below:
 
-    1. /var/opt/gitlab/gitlab-rails/shared
-    1. /var/opt/gitlab/gitlab-rails/uploads
+   - /var/opt/gitlab/gitlab-rails/shared
+   - /var/opt/gitlab/gitlab-rails/uploads
 
-    To rename all of them:
+   To rename all of them:
 
-    ```sh
-    gitlab-ctl stop
+   ```sh
+   gitlab-ctl stop
 
-    mv /var/opt/gitlab/gitlab-rails/shared /var/opt/gitlab/gitlab-rails/shared.old
-    mkdir -p /var/opt/gitlab/gitlab-rails/shared
+   mv /var/opt/gitlab/gitlab-rails/shared /var/opt/gitlab/gitlab-rails/shared.old
+   mkdir -p /var/opt/gitlab/gitlab-rails/shared
 
-    mv /var/opt/gitlab/gitlab-rails/uploads /var/opt/gitlab/gitlab-rails/uploads.old
-    mkdir -p /var/opt/gitlab/gitlab-rails/uploads
-    ```
+   mv /var/opt/gitlab/gitlab-rails/uploads /var/opt/gitlab/gitlab-rails/uploads.old
+   mkdir -p /var/opt/gitlab/gitlab-rails/uploads
+   ```
 
-    Reconfigure in order to recreate the folders and make sure permissions and ownership
-    are correctly
+   Reconfigure in order to recreate the folders and make sure permissions and ownership
+   are correctly
 
-    ```sh
-    gitlab-ctl reconfigure
-    ```
+   ```sh
+   gitlab-ctl reconfigure
+   ```
 
 1. Reset the Tracking Database
 
-    ```sh
-    gitlab-rake geo:db:reset
-    ```
+   ```sh
+   gitlab-rake geo:db:reset
+   ```
 
 1. Restart previously stopped services
 
-    ```sh
-    gitlab-ctl start
-    ```
+   ```sh
+   gitlab-ctl start
+   ```
 
 ## Fixing Foreign Data Wrapper errors
 
@@ -345,108 +345,106 @@ To check the configuration:
 
 1. Enter the database console:
 
-    ```sh
-    gitlab-geo-psql
-    ```
+   ```sh
+   gitlab-geo-psql
+   ```
 
 1. Check whether any tables are present. If everything is working, you
    should see something like this:
 
-    ```sql
-    gitlabhq_geo_production=# SELECT * from information_schema.foreign_tables;
-      foreign_table_catalog  | foreign_table_schema |               foreign_table_name                | foreign_server_catalog  | foreign_server_n
-    ame
-    -------------------------+----------------------+-------------------------------------------------+-------------------------+-----------------
-    ----
-     gitlabhq_geo_production | gitlab_secondary     | abuse_reports                                   | gitlabhq_geo_production | gitlab_secondary
-     gitlabhq_geo_production | gitlab_secondary     | appearances                                     | gitlabhq_geo_production | gitlab_secondary
-     gitlabhq_geo_production | gitlab_secondary     | application_setting_terms                       | gitlabhq_geo_production | gitlab_secondary
-     gitlabhq_geo_production | gitlab_secondary     | application_settings                            | gitlabhq_geo_production | gitlab_secondary
-    <snip>
-    ```
+   ```sql
+   gitlabhq_geo_production=# SELECT * from information_schema.foreign_tables;
+     foreign_table_catalog  | foreign_table_schema |               foreign_table_name                | foreign_server_catalog  | foreign_server_name
+   -------------------------+----------------------+-------------------------------------------------+-------------------------+---------------------
+    gitlabhq_geo_production | gitlab_secondary     | abuse_reports                                   | gitlabhq_geo_production | gitlab_secondary
+    gitlabhq_geo_production | gitlab_secondary     | appearances                                     | gitlabhq_geo_production | gitlab_secondary
+    gitlabhq_geo_production | gitlab_secondary     | application_setting_terms                       | gitlabhq_geo_production | gitlab_secondary
+    gitlabhq_geo_production | gitlab_secondary     | application_settings                            | gitlabhq_geo_production | gitlab_secondary
+   <snip>
+   ```
 
-    However, if the query returns with `0 rows`, then continue onto the next steps.
+   However, if the query returns with `0 rows`, then continue onto the next steps.
 
 1. Check that the foreign server mapping is correct via `\des+`. The
    results should look something like this:
 
-    ```sql
-    gitlabhq_geo_production=# \des+
-    List of foreign servers
-    -[ RECORD 1 ]--------+------------------------------------------------------------
-    Name                 | gitlab_secondary
-    Owner                | gitlab-psql
-    Foreign-data wrapper | postgres_fdw
-    Access privileges    | "gitlab-psql"=U/"gitlab-psql"                              +
-                         | gitlab_geo=U/"gitlab-psql"
-    Type                 |
-    Version              |
-    FDW Options          | (host '0.0.0.0', port '5432', dbname 'gitlabhq_production')
-    Description          |
-    ```
+   ```sql
+   gitlabhq_geo_production=# \des+
+   List of foreign servers
+   -[ RECORD 1 ]--------+------------------------------------------------------------
+   Name                 | gitlab_secondary
+   Owner                | gitlab-psql
+   Foreign-data wrapper | postgres_fdw
+   Access privileges    | "gitlab-psql"=U/"gitlab-psql"                              +
+                        | gitlab_geo=U/"gitlab-psql"
+   Type                 |
+   Version              |
+   FDW Options          | (host '0.0.0.0', port '5432', dbname 'gitlabhq_production')
+   Description          |
+   ```
 
-    NOTE: **Note:** Pay particular attention to the host and port under
-    FDW options. That configuration should point to the Geo secondary
-    database.
+   NOTE: **Note:** Pay particular attention to the host and port under
+   FDW options. That configuration should point to the Geo secondary
+   database.
 
-    If you need to experiment with changing the host or password, the
-    following queries demonstrate how:
+   If you need to experiment with changing the host or password, the
+   following queries demonstrate how:
 
-    ```sql
-    ALTER SERVER gitlab_secondary OPTIONS (SET host '<my_new_host>');
-    ALTER SERVER gitlab_secondary OPTIONS (SET port 5432);
-    ```
+   ```sql
+   ALTER SERVER gitlab_secondary OPTIONS (SET host '<my_new_host>');
+   ALTER SERVER gitlab_secondary OPTIONS (SET port 5432);
+   ```
 
-    If you change the host and/or port, you will also have to adjust the
-    following settings in `/etc/gitlab/gitlab.rb` and run `gitlab-ctl
-    reconfigure`:
+   If you change the host and/or port, you will also have to adjust the
+   following settings in `/etc/gitlab/gitlab.rb` and run `gitlab-ctl
+   reconfigure`:
 
-    - `gitlab_rails['db_host']`
-    - `gitlab_rails['db_port']`
+   - `gitlab_rails['db_host']`
+   - `gitlab_rails['db_port']`
 
 1. Check that the user mapping is configured properly via `\deu+`:
 
-    ```sql
-    gitlabhq_geo_production=# \deu+
-                                                 List of user mappings
-          Server      | User name  |                                  FDW Options
-    ------------------+------------+--------------------------------------------------------------------------------
-     gitlab_secondary | gitlab_geo | ("user" 'gitlab', password 'YOUR-PASSWORD-HERE')
-    (1 row)
-    ```
+   ```sql
+   gitlabhq_geo_production=# \deu+
+                                                List of user mappings
+         Server      | User name  |                                  FDW Options
+   ------------------+------------+--------------------------------------------------------------------------------
+    gitlab_secondary | gitlab_geo | ("user" 'gitlab', password 'YOUR-PASSWORD-HERE')
+   (1 row)
+   ```
 
-    Make sure the password is correct. You can test that logins work by running `psql`:
+   Make sure the password is correct. You can test that logins work by running `psql`:
 
-    ```sh
-    # Connect to the tracking database as the `gitlab_geo` user
-    sudo \
-       -u git /opt/gitlab/embedded/bin/psql \
-       -h /var/opt/gitlab/geo-postgresql \
-       -p 5431 \
-       -U gitlab_geo \
-       -W \
-       -d gitlabhq_geo_production
-    ```
+   ```sh
+   # Connect to the tracking database as the `gitlab_geo` user
+   sudo \
+      -u git /opt/gitlab/embedded/bin/psql \
+      -h /var/opt/gitlab/geo-postgresql \
+      -p 5431 \
+      -U gitlab_geo \
+      -W \
+      -d gitlabhq_geo_production
+   ```
 
-    If you need to correct the password, the following query shows how:
+   If you need to correct the password, the following query shows how:
 
-    ```sql
-    ALTER USER MAPPING FOR gitlab_geo SERVER gitlab_secondary OPTIONS (SET password '<my_new_password>');
-    ```
+   ```sql
+   ALTER USER MAPPING FOR gitlab_geo SERVER gitlab_secondary OPTIONS (SET password '<my_new_password>');
+   ```
 
-    If you change the user or password, you will also have to adjust the
-    following settings in `/etc/gitlab/gitlab.rb` and run `gitlab-ctl
-    reconfigure`:
+   If you change the user or password, you will also have to adjust the
+   following settings in `/etc/gitlab/gitlab.rb` and run `gitlab-ctl
+   reconfigure`:
 
-    - `gitlab_rails['db_username']`
-    - `gitlab_rails['db_password']`
+   - `gitlab_rails['db_username']`
+   - `gitlab_rails['db_password']`
 
-    If you are using [PgBouncer in front of the secondary
-    database](database.md#pgbouncer-support-optional), be sure to update
-    the following settings:
+   If you are using [PgBouncer in front of the secondary
+   database](database.md#pgbouncer-support-optional), be sure to update
+   the following settings:
 
-    - `geo_postgresql['fdw_external_user']`
-    - `geo_postgresql['fdw_external_password']`
+   - `geo_postgresql['fdw_external_user']`
+   - `geo_postgresql['fdw_external_password']`
 
 #### Manual reload of FDW schema
 
@@ -456,34 +454,34 @@ reload of the FDW schema. To manually reload the FDW schema:
 1. On the node running the Geo tracking database, enter the PostgreSQL console via
    the `gitlab_geo` user:
 
-    ```sh
-    sudo \
-       -u git /opt/gitlab/embedded/bin/psql \
-       -h /var/opt/gitlab/geo-postgresql \
-       -p 5431 \
-       -U gitlab_geo \
-       -W \
-       -d gitlabhq_geo_production
-    ```
+   ```sh
+   sudo \
+      -u git /opt/gitlab/embedded/bin/psql \
+      -h /var/opt/gitlab/geo-postgresql \
+      -p 5431 \
+      -U gitlab_geo \
+      -W \
+      -d gitlabhq_geo_production
+   ```
 
-    Be sure to adjust the port and hostname for your configuration. You
-    may be asked to enter a password.
+   Be sure to adjust the port and hostname for your configuration. You
+   may be asked to enter a password.
 
 1. Reload the schema via:
 
-    ```sql
-    DROP SCHEMA IF EXISTS gitlab_secondary CASCADE;
-    CREATE SCHEMA gitlab_secondary;
-    GRANT USAGE ON FOREIGN SERVER gitlab_secondary TO gitlab_geo;
-    IMPORT FOREIGN SCHEMA public FROM SERVER gitlab_secondary INTO gitlab_secondary;
-    ```
+   ```sql
+   DROP SCHEMA IF EXISTS gitlab_secondary CASCADE;
+   CREATE SCHEMA gitlab_secondary;
+   GRANT USAGE ON FOREIGN SERVER gitlab_secondary TO gitlab_geo;
+   IMPORT FOREIGN SCHEMA public FROM SERVER gitlab_secondary INTO gitlab_secondary;
+   ```
 
 1. Test that queries work:
 
-    ```sql
-    SELECT * from information_schema.foreign_tables;
-    SELECT * FROM gitlab_secondary.projects limit 1;
-    ```
+   ```sql
+   SELECT * from information_schema.foreign_tables;
+   SELECT * FROM gitlab_secondary.projects limit 1;
+   ```
 
 [database-start-replication]: database.md#step-3-initiate-the-replication-process
 [database-pg-replication]: database.md#postgresql-replication
@@ -503,6 +501,15 @@ To resolve this, run the following command:
 ```sh
 sudo gitlab-rake geo:db:refresh_foreign_tables
 ```
+
+## Expired artifacts
+
+If you notice for some reason there are more artifacts on the Geo
+secondary node than on the Geo primary node, you can use the rake task
+to [cleanup orphan artifact files](../../../raketasks/cleanup.md#remove-orphan-artifact-files).
+
+On a Geo **secondary** node, this command will also clean up all Geo
+registry record related to the orphan files on disk.
 
 ## Fixing common errors
 

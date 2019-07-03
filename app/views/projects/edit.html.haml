@@ -27,7 +27,7 @@
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Merge requests')
     %button.btn.btn-default.js-settings-toggle{ type: 'button' }= expanded ? _('Collapse') : _('Expand')
-    %p= _('Choose your merge method, options, checks, and set up a default merge request description template.')
+    = render_if_exists 'projects/merge_request_settings_description_text'
 
   .settings-content
     = render_if_exists 'shared/promotions/promote_mr_features'
@@ -121,7 +121,7 @@
               %li= _('You can only transfer the project to namespaces you manage.')
               %li= _('You will need to update your local repositories to point to the new location.')
               %li= _('Project visibility level will be changed to match namespace rules when transferring to a group.')
-          = f.submit 'Transfer project', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => transfer_project_message(@project) }
+          = f.submit 'Transfer project', class: "btn btn-remove js-confirm-danger qa-transfer-button", data: { "confirm-danger-message" => transfer_project_message(@project) }
 
     - if @project.forked? && can?(current_user, :remove_fork_project, @project)
       .sub-section

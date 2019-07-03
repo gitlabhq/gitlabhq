@@ -36,7 +36,7 @@ module CacheableAttributes
     end
 
     def retrieve_from_cache
-      record = Rails.cache.read(cache_key)
+      record = cache_backend.read(cache_key)
       ensure_cache_setup if record.present?
 
       record
@@ -58,7 +58,7 @@ module CacheableAttributes
     end
 
     def expire
-      Rails.cache.delete(cache_key)
+      cache_backend.delete(cache_key)
     rescue
       # Gracefully handle when Redis is not available. For example,
       # omnibus may fail here during gitlab:assets:compile.
@@ -69,9 +69,13 @@ module CacheableAttributes
       # to be loaded when read from cache: https://github.com/rails/rails/issues/27348
       define_attribute_methods
     end
+
+    def cache_backend
+      Rails.cache
+    end
   end
 
   def cache!
-    Rails.cache.write(self.class.cache_key, self, expires_in: 1.minute)
+    self.class.cache_backend.write(self.class.cache_key, self, expires_in: 1.minute)
   end
 end

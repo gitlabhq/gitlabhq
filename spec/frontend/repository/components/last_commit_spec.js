@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import { GlLoadingIcon } from '@gitlab/ui';
 import LastCommit from '~/repository/components/last_commit.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 
@@ -6,7 +7,7 @@ let vm;
 
 function createCommitData(data = {}) {
   return {
-    id: '123456789',
+    sha: '123456789',
     title: 'Commit title',
     message: 'Commit message',
     webUrl: 'https://test.com/commit/123',
@@ -16,7 +17,7 @@ function createCommitData(data = {}) {
       avatarUrl: 'https://test.com',
       webUrl: 'https://test.com/test',
     },
-    pipeline: {
+    latestPipeline: {
       detailedStatus: {
         detailsPath: 'https://test.com/pipeline',
         icon: 'failed',
@@ -52,12 +53,12 @@ describe('Repository last commit component', () => {
 
   it.each`
     loading  | label
-    ${true}  | ${'hides'}
-    ${false} | ${'shows'}
-  `('$label when $loading is true', ({ loading }) => {
+    ${true}  | ${'shows'}
+    ${false} | ${'hides'}
+  `('$label when loading icon $loading is true', ({ loading }) => {
     factory(createCommitData(), loading);
 
-    expect(vm.isEmpty()).toBe(loading);
+    expect(vm.find(GlLoadingIcon).exists()).toBe(loading);
   });
 
   it('renders commit widget', () => {
@@ -73,9 +74,15 @@ describe('Repository last commit component', () => {
   });
 
   it('hides pipeline components when pipeline does not exist', () => {
-    factory(createCommitData({ pipeline: null }));
+    factory(createCommitData({ latestPipeline: null }));
 
     expect(vm.find('.js-commit-pipeline').exists()).toBe(false);
+  });
+
+  it('renders pipeline components', () => {
+    factory();
+
+    expect(vm.find('.js-commit-pipeline').exists()).toBe(true);
   });
 
   it('hides author component when author does not exist', () => {

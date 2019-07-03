@@ -50,23 +50,19 @@ export default function setupVueRepositoryList() {
     },
   });
 
-  const commitEl = document.getElementById('js-last-commit');
-
-  if (commitEl) {
-    // eslint-disable-next-line no-new
-    new Vue({
-      el: commitEl,
-      router,
-      apolloProvider,
-      render(h) {
-        return h(LastCommit, {
-          props: {
-            currentPath: this.$route.params.pathMatch,
-          },
-        });
-      },
-    });
-  }
+  // eslint-disable-next-line no-new
+  new Vue({
+    el: document.getElementById('js-last-commit'),
+    router,
+    apolloProvider,
+    render(h) {
+      return h(LastCommit, {
+        props: {
+          currentPath: this.$route.params.pathMatch,
+        },
+      });
+    },
+  });
 
   return new Vue({
     el,

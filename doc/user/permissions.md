@@ -122,8 +122,8 @@ The following table depicts the various user permission levels in a project.
 | Transfer project to another namespace             |         |            |             |          | ✓      |
 | Remove project                                    |         |            |             |          | ✓      |
 | Delete issues                                     |         |            |             |          | ✓      |
-| Force push to protected branches [^4]             |         |            |             |          |        |
-| Remove protected branches [^4]                    |         |            |             |          |        |
+| Force push to protected branches (*4*)            |         |            |             |          |        |
+| Remove protected branches (*4*)                   |         |            |             |          |        |
 
 - (*1*): All users are able to perform this action on public and internal projects, but not private projects.
 - (*2*): Guest users can only view the confidential issues they created themselves
@@ -365,3 +365,8 @@ for details about the pipelines security model.
 
 Since GitLab 8.15, LDAP user permissions can now be manually overridden by an admin user.
 Read through the documentation on [LDAP users permissions](../administration/auth/how_to_configure_ldap_gitlab_ee/index.html) to learn more.
+
+## Project aliases
+
+Project aliases can only be read, created and deleted by a GitLab administrator.
+Read through the documentation on [Project aliases](../user/project/index.md#project-aliases-premium-only) to learn more.

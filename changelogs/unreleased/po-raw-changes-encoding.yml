@@ -1,0 +1,5 @@
+---
+title: Expect bytes from Gitaly RPC GetRawChanges
+merge_request: 28164
+author:
+type: fixed

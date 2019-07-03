@@ -383,7 +383,6 @@ The prerequisites for a HA Redis setup are the following:
     redis['password'] = 'redis-password-goes-here'
     ```
 
-
 1. Only the primary GitLab application server should handle migrations. To
    prevent database migrations from running on upgrade, add the following
    configuration to your `/etc/gitlab/gitlab.rb` file:
@@ -395,8 +394,8 @@ The prerequisites for a HA Redis setup are the following:
 1. [Reconfigure Omnibus GitLab][reconfigure] for the changes to take effect.
 
 > Note: You can specify multiple roles like sentinel and redis as:
-> roles ['redis_sentinel_role', 'redis_master_role']. Read more about high
-> availability roles at https://docs.gitlab.com/omnibus/roles/
+> `roles ['redis_sentinel_role', 'redis_master_role']`. Read more about high
+> availability roles at <https://docs.gitlab.com/omnibus/roles/>.
 
 ### Step 2. Configuring the slave Redis instances
 
@@ -444,8 +443,8 @@ The prerequisites for a HA Redis setup are the following:
 1. Go through the steps again for all the other slave nodes.
 
 > Note: You can specify multiple roles like sentinel and redis as:
-> roles ['redis_sentinel_role', 'redis_slave_role']. Read more about high
-> availability roles at https://docs.gitlab.com/omnibus/roles/
+> `roles ['redis_sentinel_role', 'redis_slave_role']`. Read more about high
+> availability roles at <https://docs.gitlab.com/omnibus/roles/>.
 
 ---
 

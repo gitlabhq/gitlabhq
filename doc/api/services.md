@@ -291,7 +291,6 @@ Parameters:
 | `merge_requests_events` | boolean | false | Enable notifications for merge request events |
 | `tag_push_events` | boolean | false | Enable notifications for tag push events |
 
-
 ### Delete Drone CI service
 
 Delete Drone CI service for a project.
@@ -551,21 +550,21 @@ Get Irker (IRC gateway) service settings for a project.
 GET /projects/:id/services/irker
 ```
 
-## JIRA
+## Jira
 
-JIRA issue tracker.
+Jira issue tracker.
 
-### Get JIRA service settings
+### Get Jira service settings
 
-Get JIRA service settings for a project.
+Get Jira service settings for a project.
 
 ```
 GET /projects/:id/services/jira
 ```
 
-### Create/Edit JIRA service
+### Create/Edit Jira service
 
-Set JIRA service for a project.
+Set Jira service for a project.
 
 > Starting with GitLab 8.14, `api_url`, `issues_url`, `new_issue_url` and
 > `project_url` are replaced by `url`. If you are using an
@@ -579,18 +578,18 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `url`           | string | yes | The URL to the JIRA project which is being linked to this GitLab project. For example, `https://jira.example.com`. |
-| `api_url`   | string | no | The base URL to the JIRA instance API. Web URL value will be used if not set. For example, `https://jira-api.example.com`. |
-| `username`      | string | yes  | The username of the user created to be used with GitLab/JIRA. |
-| `password`      | string | yes  | The password of the user created to be used with GitLab/JIRA. |
+| `url`           | string | yes | The URL to the Jira project which is being linked to this GitLab project. For example, `https://jira.example.com`. |
+| `api_url`   | string | no | The base URL to the Jira instance API. Web URL value will be used if not set. For example, `https://jira-api.example.com`. |
+| `username`      | string | yes  | The username of the user created to be used with GitLab/Jira. |
+| `password`      | string | yes  | The password of the user created to be used with GitLab/Jira. |
 | `active`        | boolean | no  | Activates or deactivates the service. Defaults to false (deactivated). |
-| `jira_issue_transition_id` | string | no | The ID of a transition that moves issues to a closed state. You can find this number under the JIRA workflow administration (**Administration > Issues > Workflows**) by selecting **View** under **Operations** of the desired workflow of your project. The ID of each state can be found inside the parenthesis of each transition name under the **Transitions (id)** column ([see screenshot][trans]). By default, this ID is set to `2`. |
+| `jira_issue_transition_id` | string | no | The ID of a transition that moves issues to a closed state. You can find this number under the Jira workflow administration (**Administration > Issues > Workflows**) by selecting **View** under **Operations** of the desired workflow of your project. The ID of each state can be found inside the parenthesis of each transition name under the **Transitions (id)** column ([see screenshot][trans]). By default, this ID is set to `2`. |
 | `commit_events` | boolean | false | Enable notifications for commit events |
 | `merge_requests_events` | boolean | false | Enable notifications for merge request events |
 
-### Delete JIRA service
+### Delete Jira service
 
-Remove all previously JIRA settings from a project.
+Remove all previously Jira settings from a project.
 
 ```
 DELETE /projects/:id/services/jira
@@ -744,7 +743,7 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `username` | string | yes | The username of a Packagist account |
 | `token` | string | yes | API token to the Packagist server |
-| `server` | boolean | no | URL of the Packagist server. Leave blank for default: https://packagist.org |
+| `server` | boolean | no | URL of the Packagist server. Leave blank for default: <https://packagist.org> |
 | `push_events` | boolean | false | Enable notifications for push events |
 | `merge_requests_events` | boolean | false | Enable notifications for merge request events |
 | `tag_push_events` | boolean | false | Enable notifications for tag push events |
@@ -1161,7 +1160,7 @@ PUT /projects/:id/services/jenkins
 
 Parameters:
 
-- `jenkins_url` (**required**) - Jenkins URL like http://jenkins.example.com
+- `jenkins_url` (**required**) - Jenkins URL like `http://jenkins.example.com`
 - `project_name` (**required**) - The URL-friendly project name. Example: my_project_name
 - `username` (optional) - A user with access to the Jenkins server, if applicable
 - `password` (optional) - The password of the user
@@ -1196,7 +1195,7 @@ PUT /projects/:id/services/jenkins-deprecated
 
 Parameters:
 
-- `project_url` (**required**) - Jenkins project URL like http://jenkins.example.com/job/my-project/
+- `project_url` (**required**) - Jenkins project URL like `http://jenkins.example.com/job/my-project/`
 - `multiproject_enabled` (optional) - Multi-project mode is configured in Jenkins GitLab Hook plugin
 - `pass_unstable` (optional) - Unstable builds will be treated as passing
 

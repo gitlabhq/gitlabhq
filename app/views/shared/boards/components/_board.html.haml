@@ -1,52 +1,62 @@
 .board.d-inline-block.h-100.px-2.align-top.ws-normal{ ":class" => '{ "is-draggable": !list.preset, "is-expandable": list.isExpandable, "is-collapsed": !list.isExpanded, "board-type-assignee": list.type === "assignee" }',
   ":data-id" => "list.id" }
   .board-inner.d-flex.flex-column.position-relative.h-100.rounded
-    %header.board-header{ ":class" => '{ "has-border": list.label && list.label.color, "position-relative": list.isExpanded, "position-absolute position-top-0 position-left-0 w-100 h-100": !list.isExpanded }', ":style" => "{ borderTopColor: (list.label && list.label.color ? list.label.color : null) }", "@click" => "toggleExpanded($event)" }
-      %h3.board-title.m-0.d-flex.align-items-center.py-2.px-3.js-board-handle{ ":class" => '{ "user-can-drag": (!disabled && !list.preset), "p-0 border-bottom-0 justify-content-center": !list.isExpanded }' }
-        %i.fa.fa-fw.board-title-expandable-toggle{ "v-if": "list.isExpandable",
-          ":class": "{ \"fa-caret-down\": list.isExpanded, \"fa-caret-right\": !list.isExpanded }",
-          "aria-hidden": "true" }
+    %header.board-header{ ":class" => '{ "has-border": list.label && list.label.color, "position-relative": list.isExpanded, "position-absolute position-top-0 position-left-0 w-100 h-100": !list.isExpanded }', ":style" => "{ borderTopColor: (list.label && list.label.color ? list.label.color : null) }" }
+      %h3.board-title.m-0.d-flex.js-board-handle{ ":class" => '{ "user-can-drag": (!disabled && !list.preset), "border-bottom-0": !list.isExpanded }' }
+
+        .board-title-caret.no-drag{ "v-if": "list.isExpandable",
+          "aria-hidden": "true",
+          ":aria-label": "caretTooltip",
+          ":title": "caretTooltip",
+          "v-tooltip": "",
+          data: { placement: "bottom" },
+          "@click": "toggleExpanded" }
+          %i.fa.fa-fw{ ":class": '{ "fa-caret-right": list.isExpanded, "fa-caret-down": !list.isExpanded }' }
         = render_if_exists "shared/boards/components/list_milestone"
 
         %a.user-avatar-link.js-no-trigger{ "v-if": "list.type === \"assignee\"", ":href": "list.assignee.path" }
           -# haml-lint:disable AltText
           %img.avatar.s20.has-tooltip{ height: "20", width: "20", ":src": "list.assignee.avatar", ":alt": "list.assignee.name" }
 
-        %span.board-title-text.has-tooltip.block-truncated{ "v-if": "list.type !== \"label\"",
-          ":title" => '((list.label && list.label.description) || list.title || "")', data: { container: "body" } }
-          {{ list.title }}
+        .board-title-text
+          %span.board-title-main-text.block-truncated{ "v-if": "list.type !== \"label\"",
+            ":title" => '((list.label && list.label.description) || list.title || "")',
+            data: { container: "body" },
+            ":class": "{ 'has-tooltip': !['backlog', 'closed'].includes(list.type) }" }
+            {{ list.title }}
 
-        %span.board-title-sub-text.prepend-left-5.has-tooltip{ "v-if": "list.type === \"assignee\"",
-          ":title" => '(list.assignee && list.assignee.username || "")' }
-          @{{ list.assignee.username }}
+          %span.board-title-sub-text.prepend-left-5.has-tooltip{ "v-if": "list.type === \"assignee\"",
+            ":title" => '(list.assignee && list.assignee.username || "")' }
+            @{{ list.assignee.username }}
 
-        %span.has-tooltip{ "v-if": "list.type === \"label\"",
-          ":title" => '(list.label ? list.label.description : "")',
-          data: { container: "body", placement: "bottom" },
-          class: "badge color-label title board-title-text",
-          ":style" => "{ backgroundColor: (list.label && list.label.color ? list.label.color : null), color: (list.label && list.label.textColor ? list.label.textColor : \"#2e2e2e\") }" }
-          {{ list.title }}
+          %span.has-tooltip.badge.color-label.title{ "v-if": "list.type === \"label\"",
+            ":title" => '(list.label ? list.label.description : "")',
+            data: { container: "body", placement: "bottom" },
+            ":style" => "{ backgroundColor: (list.label && list.label.color ? list.label.color : null), color: (list.label && list.label.textColor ? list.label.textColor : \"#2e2e2e\") }" }
+            {{ list.title }}
 
         - if can?(current_user, :admin_list, current_board_parent)
           %board-delete{ "inline-template" => true,
             ":list" => "list",
             "v-if" => "!list.preset && list.id" }
-            %button.board-delete.p-0.border-0.has-tooltip.float-right{ type: "button", title: _("Delete list"), ":class": "{ 'd-none': !list.isExpanded }", "aria-label" => _("Delete list"), data: { placement: "bottom" }, "@click.stop" => "deleteBoard" }
+            %button.board-delete.no-drag.p-0.border-0.has-tooltip.float-right{ type: "button", title: _("Delete list"), ":class": "{ 'd-none': !list.isExpanded }", "aria-label" => _("Delete list"), data: { placement: "bottom" }, "@click.stop" => "deleteBoard" }
               = icon("trash")
-        .issue-count-badge.text-secondary{ "v-if" => 'list.type !== "blank" && list.type !== "promotion"', ":title": "counterTooltip", ":class": "{ 'd-none': !list.isExpanded }", "v-tooltip": true, data: { placement: "top" } }
-          %span.issue-count-badge-count
-            %icon.mr-1{ name: "issues" }
-            {{ list.issuesSize }}
-          = render_if_exists "shared/boards/components/list_weight"
 
-        %button.issue-count-badge-add-button.btn.btn-sm.btn-default.ml-1.has-tooltip.js-no-trigger-collapse{ type: "button",
+        .issue-count-badge.no-drag.text-secondary{ "v-if" => 'list.type !== "blank" && list.type !== "promotion"', ":title": "counterTooltip", "v-tooltip": true, data: { placement: "top" } }
+          %span.d-inline-flex
+            %span.issue-count-badge-count
+              %icon.mr-1{ name: "issues" }
+              {{ list.issuesSize }}
+            = render_if_exists "shared/boards/components/list_weight"
+
+        %button.issue-count-badge-add-button.no-drag.btn.btn-sm.btn-default.ml-1.has-tooltip{ type: "button",
           "@click" => "showNewIssueForm",
           "v-if" => "isNewIssueShown",
           ":class": "{ 'd-none': !list.isExpanded }",
           "aria-label" => _("New issue"),
           "title" => _("New issue"),
           data: { placement: "top", container: "body" } }
-          = icon("plus", class: "js-no-trigger-collapse")
+          = icon("plus")
 
     %board-list{ "v-if" => 'list.type !== "blank" && list.type !== "promotion"',
       ":list" => "list",

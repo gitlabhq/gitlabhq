@@ -26,11 +26,11 @@ Every push rule could have its own use case, but let's consider some examples.
 
 Let's assume you have the following requirements for your workflow:
 
-- every commit should reference a JIRA issue, for example: `Refactored css. Fixes JIRA-123.`
+- every commit should reference a Jira issue, for example: `Refactored css. Fixes JIRA-123.`
 - users should not be able to remove git tags with `git push`
 
 All you need to do is write a simple regular expression that requires the mention
-of a JIRA issue in the commit message, like `JIRA\-\d+`.
+of a Jira issue in the commit message, like `JIRA\-\d+`.
 
 Now when a user tries to push a commit with a message `Bugfix`, their push will
 be declined. Only pushing commits with messages like `Bugfix according to JIRA-123`

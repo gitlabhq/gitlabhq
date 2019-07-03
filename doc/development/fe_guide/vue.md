@@ -49,7 +49,9 @@ provided as a prop to the main component.
 Be sure to read about [page-specific JavaScript][page_specific_javascript].
 
 ### Bootstrapping Gotchas
+
 #### Providing data from HAML to JavaScript
+
 While mounting a Vue application may be a need to provide data from Rails to JavaScript.
 To do that, provide the data through `data` attributes in the HTML element and query them while mounting the application.
 
@@ -83,7 +85,8 @@ document.addEventListener('DOMContentLoaded', () => new Vue({
 ```
 
 #### Accessing the `gl` object
-When we need to query the `gl` object for data that won't change during the application's life cyle, we should do it in the same place where we query the DOM.
+
+When we need to query the `gl` object for data that won't change during the application's life cycle, we should do it in the same place where we query the DOM.
 By following this practice, we can avoid the need to mock the `gl` object, which will make tests easier.
 It should be done while initializing our Vue instance, and the data should be provided as `props` to the main component:
 
@@ -118,12 +121,13 @@ You can read more about components in Vue.js site, [Component System][component-
 ### A folder for the Store
 
 #### Vuex
+
 Check this [page](vuex.md) for more details.
 
 ### Mixing Vue and jQuery
 
 - Mixing Vue and jQuery is not recommended.
-- If you need to use a specific jQuery plugin in Vue, [create a wrapper around it][https://vuejs.org/v2/examples/select2.html].
+- If you need to use a specific jQuery plugin in Vue, [create a wrapper around it](https://vuejs.org/v2/examples/select2.html).
 - It is acceptable for Vue to listen to existing jQuery events using jQuery event listeners.
 - It is not recommended to add new jQuery events for Vue to interact with jQuery.
 
@@ -212,6 +216,7 @@ describe('Todos App', () => {
 ```
 
 ### `mountComponent` helper
+
 There is a helper in `spec/javascripts/helpers/vue_mount_component_helper.js` that allows you to mount a component with the given props:
 
 ```javascript
@@ -225,10 +230,12 @@ const vm = mountComponent(Component, data);
 ```
 
 ### Test the component's output
+
 The main return value of a Vue component is the rendered output. In order to test the component we
 need to test the rendered output. [Vue][vue-test] guide's to unit test show us exactly that:
 
 ## Vue.js Expert Role
+
 One should apply to be a Vue.js expert by opening an MR when the Merge Request's they create and review show:
 
 - Deep understanding of Vue and Vuex reactivy

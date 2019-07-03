@@ -6,8 +6,8 @@
 /doc/ @axil @marcia @eread @mikelewis
 
 # Frontend maintainers should see everything in `app/assets/`
-app/assets/ @ClemMakesApps @fatihacet @filipa @iamphill @mikegreiling @timzallmann @kushalpandya
-*.scss @annabeldunstone @ClemMakesApps @fatihacet @filipa @iamphill @mikegreiling @timzallmann @kushalpandya
+app/assets/ @ClemMakesApps @fatihacet @filipa @iamphill @mikegreiling @timzallmann @kushalpandya @pslaughter
+*.scss @annabeldunstone @ClemMakesApps @fatihacet @filipa @iamphill @mikegreiling @timzallmann @kushalpandya @pslaughter
 
 # Someone from the database team should review changes in `db/`
 db/ @abrandl @NikolayS
@@ -19,3 +19,5 @@ db/ @abrandl @NikolayS
 /lib/gitlab/ci/templates/ @nolith @zj
 /lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml @DylanGriffith @mayra-cabrera @tkuah
 /lib/gitlab/ci/templates/Security/ @plafoucriere @gonzoyumo @twoodham
+/ee/app/models/project_alias.rb @patrickbajao
+/ee/lib/api/project_aliases.rb @patrickbajao

@@ -102,9 +102,9 @@ export default {
     <div class="board-card position-relative p-3 rounded">
       <form @submit="submit($event)">
         <div v-if="error" class="flash-container">
-          <div class="flash-alert">An error occurred. Please try again.</div>
+          <div class="flash-alert">{{ __('An error occurred. Please try again.') }}</div>
         </div>
-        <label :for="list.id + '-title'" class="label-bold"> Title </label>
+        <label :for="list.id + '-title'" class="label-bold">{{ __('Title') }}</label>
         <input
           :id="list.id + '-title'"
           ref="input"
@@ -122,12 +122,11 @@ export default {
             class="float-left"
             variant="success"
             type="submit"
+            >{{ __('Submit issue') }}</gl-button
           >
-            Submit issue
-          </gl-button>
-          <gl-button class="float-right" type="button" variant="default" @click="cancel">
-            Cancel
-          </gl-button>
+          <gl-button class="float-right" type="button" variant="default" @click="cancel">{{
+            __('Cancel')
+          }}</gl-button>
         </div>
       </form>
     </div>

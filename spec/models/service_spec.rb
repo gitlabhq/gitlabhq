@@ -244,7 +244,8 @@ describe Service do
     let(:service) do
       GitlabIssueTrackerService.create(
         project: create(:project),
-        title: 'random title'
+        title: 'random title',
+        project_url: 'http://gitlab.example.com'
       )
     end
 
@@ -252,8 +253,12 @@ describe Service do
       expect { service }.not_to raise_error
     end
 
+    it 'sets title correctly' do
+      expect(service.title).to eq('random title')
+    end
+
     it 'creates the properties' do
-      expect(service.properties).to eq({ "title" => "random title" })
+      expect(service.properties).to eq({ "project_url" => "http://gitlab.example.com" })
     end
   end
 

@@ -115,6 +115,70 @@ describe JiraService do
     end
   end
 
+  describe '#create' do
+    let(:params) do
+      {
+        project: create(:project), title: 'custom title', description: 'custom description'
+      }
+    end
+
+    subject { described_class.create(params) }
+
+    it 'does not store title & description into properties' do
+      expect(subject.properties.keys).not_to include('title', 'description')
+    end
+
+    it 'sets title & description correctly' do
+      service = subject
+
+      expect(service.title).to eq('custom title')
+      expect(service.description).to eq('custom description')
+    end
+  end
+
+  context 'overriding properties' do
+    let(:url) { 'http://issue_tracker.example.com' }
+    let(:access_params) do
+      { url: url, username: 'username', password: 'password' }
+    end
+
+    # this  will be removed as part of https://gitlab.com/gitlab-org/gitlab-ce/issues/63084
+    context 'when data are stored in properties' do
+      let(:properties) { access_params.merge(title: title, description: description) }
+      let(:service) { create(:jira_service, properties: properties) }
+
+      include_examples 'issue tracker fields'
+    end
+
+    context 'when data are stored in separated fields' do
+      let(:service) do
+        create(:jira_service, title: title, description: description, properties: access_params)
+      end
+
+      include_examples 'issue tracker fields'
+    end
+
+    context 'when data are stored in both properties and separated fields' do
+      let(:properties) { access_params.merge(title: 'wrong title', description: 'wrong description') }
+      let(:service) do
+        create(:jira_service, title: title, description: description, properties: properties)
+      end
+
+      include_examples 'issue tracker fields'
+    end
+
+    context 'when no title & description are set' do
+      let(:service) do
+        create(:jira_service, properties: access_params)
+      end
+
+      it 'returns default values' do
+        expect(service.title).to eq('Jira')
+        expect(service.description).to eq('Jira issue tracker')
+      end
+    end
+  end
+
   describe '#close_issue' do
     let(:custom_base_url) { 'http://custom_url' }
     let(:user)    { create(:user) }
@@ -158,7 +222,7 @@ describe JiraService do
         WebMock.stub_request(:post, @remote_link_url).with(basic_auth: %w(gitlab_jira_username gitlab_jira_password))
       end
 
-      it 'calls JIRA API' do
+      it 'calls Jira API' do
         @jira_service.close_issue(resource, ExternalIssue.new('JIRA-123', project))
 
         expect(WebMock).to have_requested(:post, @comment_url).with(
@@ -175,14 +239,14 @@ describe JiraService do
 
       # Check https://developer.atlassian.com/jiradev/jira-platform/guides/other/guide-jira-remote-issue-links/fields-in-remote-issue-links
       # for more information
-      it 'creates Remote Link reference in JIRA for comment' do
+      it 'creates Remote Link reference in Jira for comment' do
         @jira_service.close_issue(resource, ExternalIssue.new('JIRA-123', project))
 
         favicon_path = "http://localhost/assets/#{find_asset('favicon.png').digest_path}"
 
         # Creates comment
         expect(WebMock).to have_requested(:post, @comment_url)
-        # Creates Remote Link in JIRA issue fields
+        # Creates Remote Link in Jira issue fields
         expect(WebMock).to have_requested(:post, @remote_link_url).with(
           body: hash_including(
             GlobalID: 'GitLab',
@@ -319,7 +383,7 @@ describe JiraService do
     end
 
     context 'when the test succeeds' do
-      it 'tries to get JIRA project with URL when API URL not set' do
+      it 'tries to get Jira project with URL when API URL not set' do
         test_settings('jira.example.com')
       end
 
@@ -327,7 +391,7 @@ describe JiraService do
         expect(test_settings).to eq( { success: true, result: { 'url' => 'http://url' } })
       end
 
-      it 'tries to get JIRA project with API URL if set' do
+      it 'tries to get Jira project with API URL if set' do
         jira_service.update(api_url: 'http://jira.api.com')
         test_settings('jira.api.com')
       end
@@ -450,36 +514,54 @@ describe JiraService do
   end
 
   describe 'description and title' do
-    let(:project) { create(:project) }
+    let(:title) { 'Jira One' }
+    let(:description) { 'Jira One issue tracker' }
+    let(:properties) do
+      {
+        url: 'http://jira.example.com/web',
+        username: 'mic',
+        password: 'password',
+        title: title,
+        description: description
+      }
+    end
 
     context 'when it is not set' do
-      before do
-        @service = project.create_jira_service(active: true)
-      end
+      it 'default values are returned' do
+        service = create(:jira_service)
 
-      after do
-        @service.destroy!
-      end
-
-      it 'is initialized' do
-        expect(@service.title).to eq('JIRA')
-        expect(@service.description).to eq('Jira issue tracker')
+        expect(service.title).to eq('Jira')
+        expect(service.description).to eq('Jira issue tracker')
       end
     end
 
-    context 'when it is set' do
-      before do
-        properties = { 'title' => 'Jira One', 'description' => 'Jira One issue tracker' }
-        @service = project.create_jira_service(active: true, properties: properties)
-      end
+    context 'when it is set in properties' do
+      it 'values from properties are returned' do
+        service = create(:jira_service, properties: properties)
 
-      after do
-        @service.destroy!
+        expect(service.title).to eq(title)
+        expect(service.description).to eq(description)
       end
+    end
 
-      it 'is correct' do
-        expect(@service.title).to eq('Jira One')
-        expect(@service.description).to eq('Jira One issue tracker')
+    context 'when it is in title & description fields' do
+      it 'values from title and description fields are returned' do
+        service = create(:jira_service, title: title, description: description)
+
+        expect(service.title).to eq(title)
+        expect(service.description).to eq(description)
+      end
+    end
+
+    context 'when it is in both properites & title & description fields' do
+      it 'values from title and description fields are returned' do
+        title2 = 'Jira 2'
+        description2 = 'Jira description 2'
+
+        service = create(:jira_service, title: title2, description: description2, properties: properties)
+
+        expect(service.title).to eq(title2)
+        expect(service.description).to eq(description2)
       end
     end
   end
@@ -505,29 +587,21 @@ describe JiraService do
   end
 
   describe 'project and issue urls' do
-    let(:project) { create(:project) }
-
     context 'when gitlab.yml was initialized' do
-      before do
+      it 'is prepopulated with the settings' do
         settings = {
           'jira' => {
-            'title' => 'Jira',
             'url' => 'http://jira.sample/projects/project_a',
             'api_url' => 'http://jira.sample/api'
           }
         }
         allow(Gitlab.config).to receive(:issues_tracker).and_return(settings)
-        @service = project.create_jira_service(active: true)
-      end
 
-      after do
-        @service.destroy!
-      end
+        project = create(:project)
+        service = project.create_jira_service(active: true)
 
-      it 'is prepopulated with the settings' do
-        expect(@service.properties['title']).to eq('Jira')
-        expect(@service.properties['url']).to eq('http://jira.sample/projects/project_a')
-        expect(@service.properties['api_url']).to eq('http://jira.sample/api')
+        expect(service.properties['url']).to eq('http://jira.sample/projects/project_a')
+        expect(service.properties['api_url']).to eq('http://jira.sample/api')
       end
     end
   end

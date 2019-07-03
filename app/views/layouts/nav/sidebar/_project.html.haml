@@ -347,7 +347,7 @@
                     = _('Settings')
               %li.divider.fly-out-top-item
               = nav_link(path: %w[projects#edit]) do
-                = link_to edit_project_path(@project), title: _('General') do
+                = link_to edit_project_path(@project), title: _('General'), class: 'qa-general-settings-link' do
                   %span
                     = _('General')
             = nav_link(controller: :project_members) do

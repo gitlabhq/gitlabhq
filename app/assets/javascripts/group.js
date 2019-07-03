@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import { slugifyWithHyphens } from './lib/utils/text_utility';
+import { slugify } from './lib/utils/text_utility';
 
 export default class Group {
   constructor() {
@@ -14,7 +14,7 @@ export default class Group {
   }
 
   update() {
-    const slug = slugifyWithHyphens(this.groupName.val());
+    const slug = slugify(this.groupName.val());
     this.groupPath.val(slug);
   }
 

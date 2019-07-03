@@ -26,6 +26,12 @@ const TYPES = {
     isExpandable: false,
     isBlank: true,
   },
+  default: {
+    // includes label, assignee, and milestone lists
+    isPreset: false,
+    isExpandable: true,
+    isBlank: false,
+  },
 };
 
 class List {
@@ -249,7 +255,7 @@ class List {
   }
 
   getTypeInfo(type) {
-    return TYPES[type] || {};
+    return TYPES[type] || TYPES.default;
   }
 
   onNewIssueResponse(issue, data) {

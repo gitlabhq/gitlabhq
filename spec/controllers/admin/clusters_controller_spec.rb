@@ -17,66 +17,48 @@ describe Admin::ClustersController do
       get :index, params: params
     end
 
-    context 'when feature flag is not enabled' do
-      before do
-        stub_feature_flags(instance_clusters: false)
-      end
-
-      it 'responds with not found' do
-        get_index
-
-        expect(response).to have_gitlab_http_status(404)
-      end
-    end
-
-    context 'when feature flag is enabled' do
-      before do
-        stub_feature_flags(instance_clusters: true)
-      end
-
-      describe 'functionality' do
-        context 'when instance has one or more clusters' do
-          let!(:enabled_cluster) do
-            create(:cluster, :provided_by_gcp, :instance)
-          end
-
-          let!(:disabled_cluster) do
-            create(:cluster, :disabled, :provided_by_gcp, :production_environment, :instance)
-          end
-
-          it 'lists available clusters' do
-            get_index
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(response).to render_template(:index)
-            expect(assigns(:clusters)).to match_array([enabled_cluster, disabled_cluster])
-          end
-
-          context 'when page is specified' do
-            let(:last_page) { Clusters::Cluster.instance_type.page.total_pages }
-
-            before do
-              allow(Clusters::Cluster).to receive(:paginates_per).and_return(1)
-              create_list(:cluster, 2, :provided_by_gcp, :production_environment, :instance)
-            end
-
-            it 'redirects to the page' do
-              get_index(page: last_page)
-
-              expect(response).to have_gitlab_http_status(:ok)
-              expect(assigns(:clusters).current_page).to eq(last_page)
-            end
-          end
+    describe 'functionality' do
+      context 'when instance has one or more clusters' do
+        let!(:enabled_cluster) do
+          create(:cluster, :provided_by_gcp, :instance)
         end
 
-        context 'when instance does not have a cluster' do
-          it 'returns an empty state page' do
-            get_index
+        let!(:disabled_cluster) do
+          create(:cluster, :disabled, :provided_by_gcp, :production_environment, :instance)
+        end
+
+        it 'lists available clusters' do
+          get_index
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to render_template(:index)
+          expect(assigns(:clusters)).to match_array([enabled_cluster, disabled_cluster])
+        end
+
+        context 'when page is specified' do
+          let(:last_page) { Clusters::Cluster.instance_type.page.total_pages }
+
+          before do
+            allow(Clusters::Cluster).to receive(:paginates_per).and_return(1)
+            create_list(:cluster, 2, :provided_by_gcp, :production_environment, :instance)
+          end
+
+          it 'redirects to the page' do
+            get_index(page: last_page)
 
             expect(response).to have_gitlab_http_status(:ok)
-            expect(response).to render_template(:index, partial: :empty_state)
-            expect(assigns(:clusters)).to eq([])
+            expect(assigns(:clusters).current_page).to eq(last_page)
           end
+        end
+      end
+
+      context 'when instance does not have a cluster' do
+        it 'returns an empty state page' do
+          get_index
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to render_template(:index, partial: :empty_state)
+          expect(assigns(:clusters)).to eq([])
         end
       end
     end

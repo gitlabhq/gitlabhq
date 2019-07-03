@@ -5,24 +5,12 @@ class CustomIssueTrackerService < IssueTrackerService
 
   prop_accessor :title, :description, :project_url, :issues_url, :new_issue_url
 
-  def title
-    if self.properties && self.properties['title'].present?
-      self.properties['title']
-    else
-      'Custom Issue Tracker'
-    end
+  def default_title
+    'Custom Issue Tracker'
   end
 
-  def title=(value)
-    self.properties['title'] = value if self.properties
-  end
-
-  def description
-    if self.properties && self.properties['description'].present?
-      self.properties['description']
-    else
-      'Custom issue tracker'
-    end
+  def default_description
+    s_('IssueTracker|Custom issue tracker')
   end
 
   def self.to_param

@@ -61,15 +61,13 @@ export const unresolvedDiscussionsCount = state => state.unresolvedDiscussionsCo
 export const resolvableDiscussionsCount = state => state.resolvableDiscussionsCount;
 export const hasUnresolvedDiscussions = state => state.hasUnresolvedDiscussions;
 
-export const showJumpToNextDiscussion = (state, getters) => (discussionId, mode = 'discussion') => {
+export const showJumpToNextDiscussion = (state, getters) => (mode = 'discussion') => {
   const orderedDiffs =
     mode !== 'discussion'
       ? getters.unresolvedDiscussionsIdsByDiff
       : getters.unresolvedDiscussionsIdsByDate;
 
-  const indexOf = orderedDiffs.indexOf(discussionId);
-
-  return indexOf !== -1 && indexOf < orderedDiffs.length - 1;
+  return orderedDiffs.length > 1;
 };
 
 export const isDiscussionResolved = (state, getters) => discussionId =>

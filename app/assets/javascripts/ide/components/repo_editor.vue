@@ -8,6 +8,7 @@ import { activityBarViews, viewerTypes } from '../constants';
 import Editor from '../lib/editor';
 import ExternalLink from './external_link.vue';
 import FileTemplatesBar from './file_templates/bar.vue';
+import { __ } from '~/locale';
 
 export default {
   components: {
@@ -40,26 +41,35 @@ export default {
     },
     showContentViewer() {
       return (
-        (this.shouldHideEditor || this.file.viewMode === 'preview') &&
+        (this.shouldHideEditor || this.isPreviewViewMode) &&
         (this.viewer !== viewerTypes.mr || !this.file.mrChange)
       );
     },
     showDiffViewer() {
       return this.shouldHideEditor && this.file.mrChange && this.viewer === viewerTypes.mr;
     },
+    isEditorViewMode() {
+      return this.file.viewMode === 'editor';
+    },
+    isPreviewViewMode() {
+      return this.file.viewMode === 'preview';
+    },
     editTabCSS() {
       return {
-        active: this.file.viewMode === 'editor',
+        active: this.isEditorViewMode,
       };
     },
     previewTabCSS() {
       return {
-        active: this.file.viewMode === 'preview',
+        active: this.isPreviewViewMode,
       };
     },
     fileType() {
       const info = viewerInformationForPath(this.file.path);
       return (info && info.id) || '';
+    },
+    showEditor() {
+      return !this.shouldHideEditor && this.isEditorViewMode;
     },
   },
   watch: {
@@ -89,7 +99,7 @@ export default {
       }
     },
     rightPanelCollapsed() {
-      this.editor.updateDimensions();
+      this.refreshEditorDimensions();
     },
     viewer() {
       if (!this.file.pending) {
@@ -98,11 +108,17 @@ export default {
     },
     panelResizing() {
       if (!this.panelResizing) {
-        this.editor.updateDimensions();
+        this.refreshEditorDimensions();
       }
     },
     rightPaneIsOpen() {
-      this.editor.updateDimensions();
+      this.refreshEditorDimensions();
+    },
+    showEditor(val) {
+      if (val) {
+        // We need to wait for the editor to actually be rendered.
+        this.$nextTick(() => this.refreshEditorDimensions());
+      }
     },
   },
   beforeDestroy() {
@@ -145,7 +161,14 @@ export default {
           this.createEditorInstance();
         })
         .catch(err => {
-          flash('Error setting up editor. Please try again.', 'alert', document, null, false, true);
+          flash(
+            __('Error setting up editor. Please try again.'),
+            'alert',
+            document,
+            null,
+            false,
+            true,
+          );
           throw err;
         });
     },
@@ -212,6 +235,11 @@ export default {
         eol: this.model.eol,
       });
     },
+    refreshEditorDimensions() {
+      if (this.showEditor) {
+        this.editor.updateDimensions();
+      }
+    },
   },
   viewerTypes,
 };
@@ -227,12 +255,8 @@ export default {
             role="button"
             @click.prevent="setFileViewMode({ file, viewMode: 'editor' })"
           >
-            <template v-if="viewer === $options.viewerTypes.edit">
-              {{ __('Edit') }}
-            </template>
-            <template v-else>
-              {{ __('Review') }}
-            </template>
+            <template v-if="viewer === $options.viewerTypes.edit">{{ __('Edit') }}</template>
+            <template v-else>{{ __('Review') }}</template>
           </a>
         </li>
         <li v-if="file.previewMode" :class="previewTabCSS">
@@ -240,16 +264,15 @@ export default {
             href="javascript:void(0);"
             role="button"
             @click.prevent="setFileViewMode({ file, viewMode: 'preview' })"
+            >{{ file.previewMode.previewTitle }}</a
           >
-            {{ file.previewMode.previewTitle }}
-          </a>
         </li>
       </ul>
       <external-link :file="file" />
     </div>
     <file-templates-bar v-if="showFileTemplatesBar(file.name)" />
     <div
-      v-show="!shouldHideEditor && file.viewMode === 'editor'"
+      v-show="showEditor"
       ref="editor"
       :class="{
         'is-readonly': isCommitModeActive,

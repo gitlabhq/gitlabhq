@@ -462,31 +462,31 @@ module API
               required: true,
               name: :url,
               type: String,
-              desc: 'The base URL to the JIRA instance web interface which is being linked to this GitLab project. E.g., https://jira.example.com'
+              desc: 'The base URL to the Jira instance web interface which is being linked to this GitLab project. E.g., https://jira.example.com'
             },
             {
               required: false,
               name: :api_url,
               type: String,
-              desc: 'The base URL to the JIRA instance API. Web URL value will be used if not set. E.g., https://jira-api.example.com'
+              desc: 'The base URL to the Jira instance API. Web URL value will be used if not set. E.g., https://jira-api.example.com'
             },
             {
               required: true,
               name: :username,
               type: String,
-              desc: 'The username of the user created to be used with GitLab/JIRA'
+              desc: 'The username of the user created to be used with GitLab/Jira'
             },
             {
               required: true,
               name: :password,
               type: String,
-              desc: 'The password of the user created to be used with GitLab/JIRA'
+              desc: 'The password of the user created to be used with GitLab/Jira'
             },
             {
               required: false,
               name: :jira_issue_transition_id,
               type: String,
-              desc: 'The ID of a transition that moves issues to a closed state. You can find this number under the JIRA workflow administration (**Administration > Issues > Workflows**) by selecting **View** under **Operations** of the desired workflow of your project. The ID of each state can be found inside the parenthesis of each transition name under the **Transitions (id)** column ([see screenshot][trans]). By default, this ID is set to `2`'
+              desc: 'The ID of a transition that moves issues to a closed state. You can find this number under the Jira workflow administration (**Administration > Issues > Workflows**) by selecting **View** under **Operations** of the desired workflow of your project. The ID of each state can be found inside the parenthesis of each transition name under the **Transitions (id)** column ([see screenshot][trans]). By default, this ID is set to `2`'
             }
           ],
           'kubernetes' => [

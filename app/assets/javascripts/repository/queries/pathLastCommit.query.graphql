@@ -2,8 +2,8 @@ query pathLastCommit($projectPath: ID!, $path: String, $ref: String!) {
   project(fullPath: $projectPath) {
     repository {
       tree(path: $path, ref: $ref) {
-        commit {
-          id
+        lastCommit {
+          sha
           title
           message
           webUrl
@@ -13,7 +13,7 @@ query pathLastCommit($projectPath: ID!, $path: String, $ref: String!) {
             avatarUrl
             webUrl
           }
-          pipeline {
+          latestPipeline {
             detailedStatus {
               detailsPath
               icon

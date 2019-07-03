@@ -76,8 +76,8 @@ and cross-link between any related content.
 
 We employ a **docs-first methodology** to help ensure that the docs remain a complete and trusted resource, and to make communicating about the use of GitLab more efficient.
 
-* If the answer to a question exists in documentation, share the link to the docs instead of rephrasing the information.
-* When you encounter new information not available in GitLab’s documentation (for example, when working on a support case or testing a feature), your first step should be to create a merge request to add this information to the docs. You can then share the MR in order to communicate this information.
+- If the answer to a question exists in documentation, share the link to the docs instead of rephrasing the information.
+- When you encounter new information not available in GitLab’s documentation (for example, when working on a support case or testing a feature), your first step should be to create a merge request to add this information to the docs. You can then share the MR in order to communicate this information.
 
 New information that would be useful toward the future usage or troubleshooting of GitLab should not be written directly in a forum or other messaging system, but added to a docs MR and then referenced, as described above. Note that among any other doc changes, you can always add a Troubleshooting section to a doc if none exists, or un-comment and use the placeholder Troubleshooting section included as part of our [doc template](structure.md#template-for-new-docs), if present.
 
@@ -99,6 +99,13 @@ all markup that is supported for display in the GitLab application itself. For n
 use regular Markdown markup, following the rules in the linked style guide.
 
 Note that Kramdown-specific markup (e.g., `{:.class}`) will not render properly on GitLab instances under [`/help`](index.md#gitlab-help).
+
+Hard-coded HTML is valid, although it's discouraged to be used while we have `/help`. HTML is permitted as long as:
+
+- There's no equivalent markup in markdown.
+- Advanced tables are necessary.
+- Special styling is required.
+- Reviewed and approved by a technical writer.
 
 ## Structure
 
@@ -143,7 +150,8 @@ The table below shows what kind of documentation goes where.
    a proper naming would be `import_projects_from_github.md`. The same rule
    applies to images.
 1. For image files, do not exceed 100KB.
-1. We do not yet support embedded videos. Please link out.
+1. Do not upload video files to the product repositories.
+   [Link or embed videos](#videos) instead.
 1. There are four main directories, `user`, `administration`, `api` and `development`.
 1. The `doc/user/` directory has five main subdirectories: `project/`, `group/`,
    `profile/`, `dashboard/` and `admin_area/`.
@@ -171,7 +179,7 @@ The table below shows what kind of documentation goes where.
 If you are unsure where a document or a content addition should live, this should
 not stop you from authoring and contributing. You can use your best judgment and
 then ask the reviewer of your MR to confirm your decision, and/or ask a technical writer
-at any stage in the process. The techncial writing team will review all documentation
+at any stage in the process. The technical writing team will review all documentation
 changes, regardless, and can move content if there is a better place for it.
 
 ### Avoid duplication
@@ -207,6 +215,7 @@ Do not include the same information in multiple places. [Link to a SSOT instead.
 
 ## Text
 
+- [Write in markdown](#markdown).
 - Splitting long lines (preferably up to 100 characters) can make it easier to provide feedback on small chunks of text.
 - Insert an empty line for new paragraphs.
 - Use sentence case for titles, headings, labels, menu items, and buttons.
@@ -430,7 +439,7 @@ To indicate the steps of navigation through the UI:
 - Images should be used (only when necessary) to _illustrate_ the description
   of a process, not to _replace_ it.
 - Max image size: 100KB (gifs included).
-- The GitLab docs do not support videos yet.
+- See also how to link and embed [videos](#videos) to illustrate the docs.
 
 Inside the document:
 
@@ -454,6 +463,85 @@ directly to an HTML `img` tag:
 ```html
 <img src="path/to/image.jpg" alt="Alt text (required)" class="image-noshadow">
 ```
+
+## Videos
+
+Adding GitLab's existing YouTube video tutorials to the documentation is
+highly encouraged, unless the video is outdated. Videos should not
+replace documentation, but complement or illustrate it. If content in a video is
+fundamental to a feature and its key use cases, but this is not adequately covered in the documentation,
+add this detail to the documentation text or create an issue to review the video and do so.
+
+Do not upload videos to the product repositories. [Link](#link-to-video) or [embed](#embed-videos) them instead.
+
+### Link to video
+
+To link out to a video, include a YouTube icon so that readers can
+quickly and easily scan the page for videos before reading:
+
+```md
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview, see [Video Title](link-to-video).
+```
+
+You can link any up-to-date video that is useful to the GitLab user.
+
+### Embed videos
+
+> [Introduced](https://gitlab.com/gitlab-com/gitlab-docs/merge_requests/472) in GitLab 12.1.
+
+GitLab docs (docs.gitlab.com) support embedded videos.
+
+You can only embed videos from
+[GitLab's official YouTube account](https://www.youtube.com/channel/UCnMGQ8QHMAnVIsI3xJrihhg).
+For videos from other sources, [link](#link-to-video) them instead.
+
+In most cases, it is better to [link to video](#link-to-video) instead,
+because an embed takes up a lot of space on the page and can be distracting
+to readers.
+
+To embed a video, follow the instructions below and make sure
+you have your MR reviewed and approved by a technical writer.
+
+1. Copy the code below and paste it into your markdown file.
+  Leave a blank line above and below it. Do NOT edit the code
+  (don't remove or add any spaces, etc).
+1. On YouTube, visit the video URL you want to display. Copy
+  the regular URL from your browser (`https://www.youtube.com/watch?v=VIDEO-ID`)
+  and replace the video title and link in the line under `<div class="video-fallback">`.
+1. On YouTube, click **Share**, then **Embed**.
+1. Copy the `<iframe>` source (`src`) **URL only**
+  (`https://www.youtube.com/embed/VIDEO-ID`),
+  and paste it, replacing the content of the `src` field in the
+  `iframe` tag.
+
+```html
+leave a blank line here
+<div class="video-fallback">
+  See the video: [Video title](https://www.youtube.com/watch?v=MqL6BMOySIQ).
+</div>
+<figure class="video-container">
+  <iframe src="https://www.youtube.com/embed/MqL6BMOySIQ" frameborder="0" allowfullscreen="true"> </iframe>
+</figure>
+leave a blank line here
+```
+
+This is how it renders on docs.gitlab.com:
+
+<div class="video-fallback">
+  See the video: [What is GitLab](https://www.youtube.com/watch?v=enMumwvLAug).
+</div>
+<figure class="video-container">
+  <iframe src="https://www.youtube.com/embed/MqL6BMOySIQ" frameborder="0" allowfullscreen="true"> </iframe>
+</figure>
+
+> Notes:
+>
+> - The `figure` tag is required for semantic SEO and the `video_container`
+class is necessary to make sure the video is responsive and displays
+nicely on different mobile devices.
+> - The `<div class="video-fallback">` is a fallback necessary for GitLab's
+`/help`, as GitLab's markdown processor does not support iframes. It's hidden on the docs site but will be displayed on GitLab's `/help`.
 
 ## Code blocks
 
@@ -489,13 +577,30 @@ directly to an HTML `img` tag:
 
 ## Alert boxes
 
-Whenever you want to call the attention to a particular sentence,
+Whenever you need to call special attention to particular sentences,
 use the following markup for highlighting.
 
 _Note that the alert boxes only work for one paragraph only. Multiple paragraphs,
 lists, headers, etc will not render correctly. For multiple lines, use blockquotes instead._
 
 ### Note
+
+Notes catch the eye of most readers, and therefore should be used very sparingly.
+In most cases, content considered for a note should be included:
+
+- As just another sentence in the previous paragraph or the most-relevant paragraph.
+- As its own standalone paragraph.
+- As content under a new subheading that introduces the topic, making it more visible/findable.
+
+#### When to use
+
+Use a note when there is a reason that most or all readers who browse the
+section should see the content. That is, if missed, it’s likely to cause 
+major trouble for a minority of users or significant trouble for a majority
+of users.
+
+Weigh the costs of distracting users to whom the content is not relevant against
+the cost of users missing the content if it were not expressed as a note.
 
 ```md
 NOTE: **Note:**

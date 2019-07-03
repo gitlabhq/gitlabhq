@@ -40,7 +40,11 @@ export default {
 
 <template>
   <div class="discussion-with-resolve-btn">
-    <reply-placeholder class="qa-discussion-reply" @onClick="$emit('showReplyForm')" />
+    <reply-placeholder
+      :button-text="s__('MergeRequests|Reply...')"
+      class="qa-discussion-reply"
+      @onClick="$emit('showReplyForm')"
+    />
     <resolve-discussion-button
       v-if="discussion.resolvable"
       :is-resolving="isResolving"
@@ -53,6 +57,17 @@ export default {
         v-if="shouldShowJumpToNextDiscussion"
         @onClick="$emit('jumpToNextDiscussion')"
       />
+      <resolve-with-issue-button
+        v-if="discussion.resolvable && resolveWithIssuePath"
+        :url="resolveWithIssuePath"
+      />
+    </div>
+
+    <div
+      v-if="discussion.resolvable && shouldShowJumpToNextDiscussion"
+      class="btn-group discussion-actions ml-sm-2"
+    >
+      <jump-to-next-discussion-button @onClick="$emit('jumpToNextDiscussion')" />
     </div>
   </div>
 </template>

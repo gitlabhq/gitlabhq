@@ -108,7 +108,7 @@ Some basic Ruby runtime metrics are available:
 
 [GC.stat]: https://ruby-doc.org/core-2.3.0/GC.html#method-c-stat
 
-## Puma Metrics **[EXPERIMENTAL]**
+## Puma Metrics **(EXPERIMENTAL)**
 
 When Puma is used instead of Unicorn, following metrics are available:
 

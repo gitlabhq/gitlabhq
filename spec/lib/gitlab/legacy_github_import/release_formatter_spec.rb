@@ -4,6 +4,7 @@ describe Gitlab::LegacyGithubImport::ReleaseFormatter do
   let!(:project) { create(:project, namespace: create(:namespace, path: 'octocat')) }
   let(:octocat) { double(id: 123456, login: 'octocat') }
   let(:created_at) { DateTime.strptime('2011-01-26T19:01:12Z') }
+  let(:published_at) { DateTime.strptime('2011-01-26T20:00:00Z') }
 
   let(:base_data) do
     {
@@ -11,7 +12,7 @@ describe Gitlab::LegacyGithubImport::ReleaseFormatter do
       name: 'First release',
       draft: false,
       created_at: created_at,
-      published_at: created_at,
+      published_at: published_at,
       body: 'Release v1.0.0'
     }
   end
@@ -28,6 +29,7 @@ describe Gitlab::LegacyGithubImport::ReleaseFormatter do
         name: 'First release',
         description: 'Release v1.0.0',
         created_at: created_at,
+        released_at: published_at,
         updated_at: created_at
       }
 

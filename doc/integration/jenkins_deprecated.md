@@ -8,13 +8,13 @@ Please use documentation for the new [Jenkins CI service](jenkins.md).
 
 Integration includes:
 
-* Trigger Jenkins build after push to repo
-* Show build status on Merge Request page
+- Trigger Jenkins build after push to repo
+- Show build status on Merge Request page
 
 Requirements:
 
-* [Jenkins GitLab Hook plugin](https://wiki.jenkins.io/display/JENKINS/GitLab+Hook+Plugin)
-* git clone access for Jenkins from GitLab repo (via ssh key)
+- [Jenkins GitLab Hook plugin](https://wiki.jenkins.io/display/JENKINS/GitLab+Hook+Plugin)
+- git clone access for Jenkins from GitLab repo (via ssh key)
 
 ## Jenkins
 

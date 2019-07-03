@@ -282,46 +282,6 @@ class Repository
     ref_exists?(keep_around_ref_name(sha))
   end
 
-  def diverging_commit_counts(branch)
-    return diverging_commit_counts_without_max(branch) if Feature.enabled?('gitaly_count_diverging_commits_no_max')
-
-    ## TODO: deprecate the below code after 12.0
-    @root_ref_hash ||= raw_repository.commit(root_ref).id
-    cache.fetch(:"diverging_commit_counts_#{branch.name}") do
-      # Rugged seems to throw a `ReferenceError` when given branch_names rather
-      # than SHA-1 hashes
-      branch_sha = branch.dereferenced_target.sha
-
-      number_commits_behind, number_commits_ahead =
-        raw_repository.diverging_commit_count(
-          @root_ref_hash,
-          branch_sha,
-          max_count: MAX_DIVERGING_COUNT)
-
-      if number_commits_behind + number_commits_ahead >= MAX_DIVERGING_COUNT
-        { distance: MAX_DIVERGING_COUNT }
-      else
-        { behind: number_commits_behind, ahead: number_commits_ahead }
-      end
-    end
-  end
-
-  def diverging_commit_counts_without_max(branch)
-    @root_ref_hash ||= raw_repository.commit(root_ref).id
-    cache.fetch(:"diverging_commit_counts_without_max_#{branch.name}") do
-      # Rugged seems to throw a `ReferenceError` when given branch_names rather
-      # than SHA-1 hashes
-      branch_sha = branch.dereferenced_target.sha
-
-      number_commits_behind, number_commits_ahead =
-        raw_repository.diverging_commit_count(
-          @root_ref_hash,
-          branch_sha)
-
-      { behind: number_commits_behind, ahead: number_commits_ahead }
-    end
-  end
-
   def archive_metadata(ref, storage_path, format = "tar.gz", append_sha:, path: nil)
     raw_repository.archive_metadata(
       ref,

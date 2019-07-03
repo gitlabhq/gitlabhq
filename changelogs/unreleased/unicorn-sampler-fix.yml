@@ -1,0 +1,5 @@
+---
+title: Make sure UnicornSampler is started only in master process.
+merge_request: 30215
+author:
+type: fixed

@@ -119,7 +119,7 @@ changing how standard markdown is used:
 | [links](#links)                       | [automatically linking URLs](#url-auto-linking) |
 
 ## New GFM markdown extensions
-    
+
 ### Colors
 
 > If this is not rendered correctly, [view it in GitLab itself](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#colors).
@@ -136,26 +136,26 @@ Supported formats (named colors are not supported):
 Color written inside backticks will be followed by a color "chip":
 
 ```markdown
-`#F00`  
-`#F00A`  
-`#FF0000`  
-`#FF0000AA`  
-`RGB(0,255,0)`  
-`RGB(0%,100%,0%)`  
-`RGBA(0,255,0,0.3)`  
-`HSL(540,70%,50%)`  
-`HSLA(540,70%,50%,0.3)`  
+`#F00`
+`#F00A`
+`#FF0000`
+`#FF0000AA`
+`RGB(0,255,0)`
+`RGB(0%,100%,0%)`
+`RGBA(0,255,0,0.3)`
+`HSL(540,70%,50%)`
+`HSLA(540,70%,50%,0.3)`
 ```
 
-`#F00`  
-`#F00A`  
-`#FF0000`  
-`#FF0000AA`  
-`RGB(0,255,0)`  
-`RGB(0%,100%,0%)`  
-`RGBA(0,255,0,0.3)`  
-`HSL(540,70%,50%)`  
-`HSLA(540,70%,50%,0.3)`  
+`#F00`
+`#F00A`
+`#FF0000`
+`#FF0000AA`
+`RGB(0,255,0)`
+`RGB(0%,100%,0%)`
+`RGBA(0,255,0,0.3)`
+`HSL(540,70%,50%)`
+`HSLA(540,70%,50%,0.3)`
 
 ### Diagrams and flowcharts using Mermaid
 
@@ -288,7 +288,7 @@ $example = array(
 
 > If this is not rendered correctly, [view it in GitLab itself](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#inline-diff).
 
-With inline diff tags you can display {+ additions +} or [- deletions -].
+With inline diff tags you can display `{+ additions +}` or `[- deletions -]`.
 
 The wrapping tags can be either curly braces or square brackets:
 
@@ -359,7 +359,7 @@ version to reference other projects from the same namespace.
 
 GFM will recognize the following:
 
-| references                      | input                      | cross-project reference                 | shortcut within same namespace | 
+| references                      | input                      | cross-project reference                 | shortcut within same namespace |
 | :------------------------------ | :------------------------- | :-------------------------------------- | :----------------------------- |
 | specific user                   | `@user_name`               |                                         |                                |
 | specific group                  | `@group_name`              |                                         |                                |
@@ -704,7 +704,7 @@ but_emphasis is_desired _here_
 ```
 
 perform_complicated_task
- 
+
 do_this_and_do_that_and_another_thing
 
 but_emphasis is_desired _here_
@@ -715,12 +715,12 @@ If you wish to emphasize only a part of a word, it can still be done with asteri
 
 ```md
 perform*complicated*task
- 
+
 do*this*and*do*that*and*another thing
 ```
 
 perform*complicated*task
- 
+
 do*this*and*do*that*and*another thing
 
 ### Footnotes
@@ -910,9 +910,9 @@ are separated into their own lines:
 
   <dt>Markdown in HTML</dt>
   <dd>
-  
+
   Does *not* work **very** well. HTML tags will always work.
-  
+
   </dd>
 </dl>
 ```
@@ -925,9 +925,9 @@ are separated into their own lines:
 
   <dt>Markdown in HTML</dt>
   <dd>
-  
+
   Does <em>not</em> work <b>very</b> well. HTML tags will always work.
-  
+
   </dd>
 </dl>
 
@@ -1045,14 +1045,14 @@ A new line due to the previous backslash.
 
 First paragraph.
 Another line in the same paragraph.
-A third line in the same paragraph, but this time ending with two spaces.  
+A third line in the same paragraph, but this time ending with two spaces.
 A new line directly under the first paragraph.
 
 <!-- (Do *NOT* remove the two ending whitespaces in the second line) -->
 <!-- (They are needed for the Markdown text to render correctly on docs.gitlab.com, the backslash works fine inside GitLab itself) -->
 
 Second paragraph.
-Another line, this time ending with a backslash.  
+Another line, this time ending with a backslash.
 A new line due to the previous backslash.
 
 ### Links
@@ -1115,20 +1115,20 @@ will point the link to `wikis/style` only when the link is inside of a wiki mark
 GFM will autolink almost any URL you put into your text:
 
 ```markdown
-* https://www.google.com
-* https://google.com/
-* ftp://ftp.us.debian.org/debian/
-* smb://foo/bar/baz
-* irc://irc.freenode.net/gitlab
-* http://localhost:3000
+- https://www.google.com
+- https://google.com/
+- ftp://ftp.us.debian.org/debian/
+- smb://foo/bar/baz
+- irc://irc.freenode.net/gitlab
+- http://localhost:3000
 ```
 
-* https://www.google.com
-* https://google.com/
-* ftp://ftp.us.debian.org/debian/
-* smb://foo/bar/baz
-* irc://irc.freenode.net/gitlab
-* http://localhost:3000
+- <https://www.google.com>
+- <https://google.com/>
+- <ftp://ftp.us.debian.org/debian/>
+- <smb://foo/bar/baz>
+- <irc://irc.freenode.net/gitlab>
+- <http://localhost:3000>
 
 ### Lists
 
@@ -1147,7 +1147,7 @@ Examples:
 ```md
 1. First ordered list item
 2. Another item
-   * Unordered sub-list.
+   - Unordered sub-list.
 1. Actual numbers don't matter, just that it's a number
    1. Ordered sub-list
    1. Next ordered sub-list item
@@ -1160,7 +1160,7 @@ Examples:
 
 1. First ordered list item
 2. Another item
-   * Unordered sub-list.
+   - Unordered sub-list.
 1. Actual numbers don't matter, just that it's a number
    1. Ordered sub-list
    1. Next ordered sub-list item
@@ -1229,7 +1229,7 @@ while the equation for the theory of relativity is E = mc<sup>2</sup>.
 
 Tables aren't part of the core Markdown spec, but they are part of GFM.
 
-1. The first line contains the headers, separated by "pipes" (`|`). 
+1. The first line contains the headers, separated by "pipes" (`|`).
 1. The second line separates the headers from the cells, and must contain three or more dashes.
 1. The third, and any following lines, contain the cell values.
    - You **can't** have cells separated over many lines in the markdown, they must be kept to single lines,

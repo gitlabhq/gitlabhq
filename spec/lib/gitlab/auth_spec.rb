@@ -309,6 +309,15 @@ describe Gitlab::Auth do
             .to eq(auth_success)
         end
 
+        it 'succeeds when custom login and token are valid' do
+          deploy_token = create(:deploy_token, username: 'deployer', read_registry: false, projects: [project])
+          auth_success = Gitlab::Auth::Result.new(deploy_token, project, :deploy_token, [:download_code])
+
+          expect(gl_auth).to receive(:rate_limit!).with('ip', success: true, login: 'deployer')
+          expect(gl_auth.find_for_git_client('deployer', deploy_token.token, project: project, ip: 'ip'))
+            .to eq(auth_success)
+        end
+
         it 'fails when login is not valid' do
           expect(gl_auth).to receive(:rate_limit!).with('ip', success: false, login: 'random_login')
           expect(gl_auth.find_for_git_client('random_login', deploy_token.token, project: project, ip: 'ip'))

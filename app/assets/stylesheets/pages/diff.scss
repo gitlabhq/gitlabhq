@@ -1093,6 +1093,17 @@ table.code {
   line-height: 0;
 }
 
+.discussion-collapsible {
+  margin: 0 $gl-padding $gl-padding 71px;
+}
+
+.parallel {
+  .discussion-collapsible {
+    margin: $gl-padding;
+    margin-top: 0;
+  }
+}
+
 @media (max-width: map-get($grid-breakpoints, md)-1) {
   .diffs .files {
     @include fixed-width-container;
@@ -1109,6 +1120,11 @@ table.code {
       max-height: calc(50px + 50vh);
       padding-right: 0;
     }
+  }
+
+  .discussion-collapsible {
+    margin: $gl-padding;
+    margin-top: 0;
   }
 }
 

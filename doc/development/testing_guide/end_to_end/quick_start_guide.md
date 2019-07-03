@@ -242,7 +242,7 @@ module QA
 
         issue = Resource::Issue.fabricate_via_api! do |issue|
           issue.title = 'Issue to test the scoped labels'
-          issue.labels = @initial_label
+          issue.labels = [@initial_label]
         end
 
         [@new_label_same_scope, @new_label_different_scope].each do |label|
@@ -365,6 +365,14 @@ Add the following `attribute :id` and `attribute :labels` right above the [`attr
 
 > We add the attributes above the existing attribute to keep them alphabetically organized.
 
+Then, let's initialize an instance variable for labels to allow an empty array as default value when such information is not passed during the resource fabrication, since this optional. [Between the attributes and the `fabricate!` method](https://gitlab.com/gitlab-org/gitlab-ee/blob/1a1f1408728f19b2aa15887cd20bddab7e70c8bd/qa/qa/resource/issue.rb#L18), add the following:
+
+```ruby
+def initialize
+  @labels = []
+end
+```
+
 Next, add the following code right below the [`fabricate!`](https://gitlab.com/gitlab-org/gitlab-ee/blob/d3584e80b4236acdf393d815d604801573af72cc/qa/qa/resource/issue.rb#L27) method.
 
 ```ruby
@@ -378,7 +386,7 @@ end
 
 def api_post_body
   {
-    labels: [labels],
+    labels: labels,
     title: title
   }
 end

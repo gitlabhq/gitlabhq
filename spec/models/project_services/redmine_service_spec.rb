@@ -40,4 +40,47 @@ describe RedmineService do
       expect(described_class.reference_pattern.match('#123')[:issue]).to eq('123')
     end
   end
+
+  context 'overriding properties' do
+    let(:url) { 'http://redmine.example.com' }
+    let(:access_params) do
+      { project_url: url, issues_url: url, new_issue_url: url }
+    end
+
+    # this  will be removed as part of https://gitlab.com/gitlab-org/gitlab-ce/issues/63084
+    context 'when data are stored in properties' do
+      let(:properties) { access_params.merge(title: title, description: description) }
+      let(:service) { create(:redmine_service, properties: properties) }
+
+      include_examples 'issue tracker fields'
+    end
+
+    context 'when data are stored in separated fields' do
+      let(:service) do
+        create(:redmine_service, title: title, description: description, properties: access_params)
+      end
+
+      include_examples 'issue tracker fields'
+    end
+
+    context 'when data are stored in both properties and separated fields' do
+      let(:properties) { access_params.merge(title: 'wrong title', description: 'wrong description') }
+      let(:service) do
+        create(:redmine_service, title: title, description: description, properties: properties)
+      end
+
+      include_examples 'issue tracker fields'
+    end
+
+    context 'when no title & description are set' do
+      let(:service) do
+        create(:redmine_service, properties: access_params)
+      end
+
+      it 'returns default values' do
+        expect(service.title).to eq('Redmine')
+        expect(service.description).to eq('Redmine issue tracker')
+      end
+    end
+  end
 end

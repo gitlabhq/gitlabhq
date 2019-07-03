@@ -13,9 +13,9 @@ Sidekiq::Testing.inline! do
       fork_project = Projects::ForkService.new(source_project, user, namespace: user.namespace).execute
 
       if fork_project.valid?
-        puts '.'
+        print '.'
       else
-        puts 'F'
+        print 'F'
       end
     end
   end

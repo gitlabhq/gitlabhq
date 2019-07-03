@@ -250,7 +250,9 @@ class Namespace < ApplicationRecord
   end
 
   def root_ancestor
-    self_and_ancestors.reorder(nil).find_by(parent_id: nil)
+    strong_memoize(:root_ancestor) do
+      self_and_ancestors.reorder(nil).find_by(parent_id: nil)
+    end
   end
 
   def subgroup?
@@ -289,6 +291,10 @@ class Namespace < ApplicationRecord
         { scope: :instance, status: Gitlab::CurrentSettings.auto_devops_enabled? }
       end
     end
+  end
+
+  def aggregation_scheduled?
+    aggregation_schedule.present?
   end
 
   private

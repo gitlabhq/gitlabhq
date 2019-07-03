@@ -40,7 +40,7 @@ describe 'Admin updates settings' do
     end
 
     it 'Modify import sources' do
-      expect(Gitlab::CurrentSettings.import_sources).not_to be_empty
+      expect(current_settings.import_sources).not_to be_empty
 
       page.within('.as-visibility-access') do
         Gitlab::ImportSources.options.map do |name, _|
@@ -51,7 +51,7 @@ describe 'Admin updates settings' do
       end
 
       expect(page).to have_content "Application settings saved successfully"
-      expect(Gitlab::CurrentSettings.import_sources).to be_empty
+      expect(current_settings.import_sources).to be_empty
 
       page.within('.as-visibility-access') do
         check "Repo by URL"
@@ -59,7 +59,7 @@ describe 'Admin updates settings' do
       end
 
       expect(page).to have_content "Application settings saved successfully"
-      expect(Gitlab::CurrentSettings.import_sources).to eq(['git'])
+      expect(current_settings.import_sources).to eq(['git'])
     end
 
     it 'Change Visibility and Access Controls' do
@@ -68,7 +68,7 @@ describe 'Admin updates settings' do
         click_button 'Save changes'
       end
 
-      expect(Gitlab::CurrentSettings.project_export_enabled).to be_falsey
+      expect(current_settings.project_export_enabled).to be_falsey
       expect(page).to have_content "Application settings saved successfully"
     end
 
@@ -96,7 +96,7 @@ describe 'Admin updates settings' do
         click_button 'Save changes'
       end
 
-      expect(Gitlab::CurrentSettings.gravatar_enabled).to be_falsey
+      expect(current_settings.gravatar_enabled).to be_falsey
       expect(page).to have_content "Application settings saved successfully"
     end
 
@@ -118,7 +118,7 @@ describe 'Admin updates settings' do
         click_button 'Save changes'
       end
 
-      expect(Gitlab::CurrentSettings.home_page_url).to eq "https://about.gitlab.com/"
+      expect(current_settings.home_page_url).to eq "https://about.gitlab.com/"
       expect(page).to have_content "Application settings saved successfully"
     end
 
@@ -133,13 +133,13 @@ describe 'Admin updates settings' do
         click_button 'Save changes'
       end
 
-      expect(Gitlab::CurrentSettings.enforce_terms).to be(true)
-      expect(Gitlab::CurrentSettings.terms).to eq 'Be nice!'
+      expect(current_settings.enforce_terms).to be(true)
+      expect(current_settings.terms).to eq 'Be nice!'
       expect(page).to have_content 'Application settings saved successfully'
     end
 
     it 'Modify oauth providers' do
-      expect(Gitlab::CurrentSettings.disabled_oauth_sign_in_sources).to be_empty
+      expect(current_settings.disabled_oauth_sign_in_sources).to be_empty
 
       page.within('.as-signin') do
         uncheck 'Google'
@@ -147,7 +147,7 @@ describe 'Admin updates settings' do
       end
 
       expect(page).to have_content "Application settings saved successfully"
-      expect(Gitlab::CurrentSettings.disabled_oauth_sign_in_sources).to include('google_oauth2')
+      expect(current_settings.disabled_oauth_sign_in_sources).to include('google_oauth2')
 
       page.within('.as-signin') do
         check "Google"
@@ -155,11 +155,11 @@ describe 'Admin updates settings' do
       end
 
       expect(page).to have_content "Application settings saved successfully"
-      expect(Gitlab::CurrentSettings.disabled_oauth_sign_in_sources).not_to include('google_oauth2')
+      expect(current_settings.disabled_oauth_sign_in_sources).not_to include('google_oauth2')
     end
 
     it 'Oauth providers do not raise validation errors when saving unrelated changes' do
-      expect(Gitlab::CurrentSettings.disabled_oauth_sign_in_sources).to be_empty
+      expect(current_settings.disabled_oauth_sign_in_sources).to be_empty
 
       page.within('.as-signin') do
         uncheck 'Google'
@@ -167,7 +167,7 @@ describe 'Admin updates settings' do
       end
 
       expect(page).to have_content "Application settings saved successfully"
-      expect(Gitlab::CurrentSettings.disabled_oauth_sign_in_sources).to include('google_oauth2')
+      expect(current_settings.disabled_oauth_sign_in_sources).to include('google_oauth2')
 
       # Remove google_oauth2 from the Omniauth strategies
       allow(Devise).to receive(:omniauth_providers).and_return([])
@@ -178,7 +178,7 @@ describe 'Admin updates settings' do
       end
 
       expect(page).to have_content "Application settings saved successfully"
-      expect(Gitlab::CurrentSettings.disabled_oauth_sign_in_sources).to include('google_oauth2')
+      expect(current_settings.disabled_oauth_sign_in_sources).to include('google_oauth2')
     end
 
     it 'Configure web terminal' do
@@ -188,7 +188,7 @@ describe 'Admin updates settings' do
       end
 
       expect(page).to have_content "Application settings saved successfully"
-      expect(Gitlab::CurrentSettings.terminal_max_session_time).to eq(15)
+      expect(current_settings.terminal_max_session_time).to eq(15)
     end
   end
 
@@ -204,7 +204,7 @@ describe 'Admin updates settings' do
       end
 
       expect(page).to have_content "Application settings saved successfully"
-      expect(Gitlab::CurrentSettings.hide_third_party_offers).to be true
+      expect(current_settings.hide_third_party_offers).to be true
     end
 
     it 'Change Slack Notifications Service template settings' do
@@ -249,8 +249,8 @@ describe 'Admin updates settings' do
         click_button 'Save changes'
       end
 
-      expect(Gitlab::CurrentSettings.auto_devops_enabled?).to be true
-      expect(Gitlab::CurrentSettings.auto_devops_domain).to eq('domain.com')
+      expect(current_settings.auto_devops_enabled?).to be true
+      expect(current_settings.auto_devops_domain).to eq('domain.com')
       expect(page).to have_content "Application settings saved successfully"
     end
   end
@@ -268,8 +268,8 @@ describe 'Admin updates settings' do
       end
 
       expect(page).to have_content "Application settings saved successfully"
-      expect(Gitlab::CurrentSettings.recaptcha_enabled).to be true
-      expect(Gitlab::CurrentSettings.unique_ips_limit_per_user).to eq(15)
+      expect(current_settings.recaptcha_enabled).to be true
+      expect(current_settings.unique_ips_limit_per_user).to eq(15)
     end
   end
 
@@ -284,7 +284,7 @@ describe 'Admin updates settings' do
         click_button 'Save changes'
       end
 
-      expect(Gitlab::CurrentSettings.metrics_enabled?).to be true
+      expect(current_settings.metrics_enabled?).to be true
       expect(page).to have_content "Application settings saved successfully"
     end
 
@@ -294,7 +294,7 @@ describe 'Admin updates settings' do
         click_button 'Save changes'
       end
 
-      expect(Gitlab::CurrentSettings.prometheus_metrics_enabled?).to be true
+      expect(current_settings.prometheus_metrics_enabled?).to be true
       expect(page).to have_content "Application settings saved successfully"
     end
 
@@ -343,8 +343,8 @@ describe 'Admin updates settings' do
       end
 
       expect(page).to have_content "Application settings saved successfully"
-      expect(Gitlab::CurrentSettings.allow_local_requests_from_hooks_and_services).to be true
-      expect(Gitlab::CurrentSettings.dns_rebinding_protection_enabled).to be false
+      expect(current_settings.allow_local_requests_from_hooks_and_services).to be true
+      expect(current_settings.dns_rebinding_protection_enabled).to be false
     end
   end
 
@@ -361,9 +361,9 @@ describe 'Admin updates settings' do
         click_button 'Save changes'
       end
 
-      expect(Gitlab::CurrentSettings.help_page_text).to eq "Example text"
-      expect(Gitlab::CurrentSettings.help_page_hide_commercial_content).to be_truthy
-      expect(Gitlab::CurrentSettings.help_page_support_url).to eq "http://example.com/help"
+      expect(current_settings.help_page_text).to eq "Example text"
+      expect(current_settings.help_page_hide_commercial_content).to be_truthy
+      expect(current_settings.help_page_support_url).to eq "http://example.com/help"
       expect(page).to have_content "Application settings saved successfully"
     end
 
@@ -374,8 +374,8 @@ describe 'Admin updates settings' do
         click_button 'Save changes'
       end
 
-      expect(Gitlab::CurrentSettings.max_pages_size).to eq 15
-      expect(Gitlab::CurrentSettings.pages_domain_verification_enabled?).to be_truthy
+      expect(current_settings.max_pages_size).to eq 15
+      expect(current_settings.pages_domain_verification_enabled?).to be_truthy
       expect(page).to have_content "Application settings saved successfully"
     end
 
@@ -385,7 +385,7 @@ describe 'Admin updates settings' do
         click_button 'Save changes'
       end
 
-      expect(Gitlab::CurrentSettings.polling_interval_multiplier).to eq 5.0
+      expect(current_settings.polling_interval_multiplier).to eq 5.0
       expect(page).to have_content "Application settings saved successfully"
     end
 
@@ -395,7 +395,7 @@ describe 'Admin updates settings' do
         click_button 'Save changes'
       end
 
-      expect(Gitlab::CurrentSettings.polling_interval_multiplier).not_to eq(-1.0)
+      expect(current_settings.polling_interval_multiplier).not_to eq(-1.0)
       expect(page)
         .to have_content "The form contains the following error: Polling interval multiplier must be greater than or equal to 0"
     end
@@ -413,8 +413,8 @@ describe 'Admin updates settings' do
           click_button 'Save changes'
         end
 
-        expect(Gitlab::CurrentSettings.lets_encrypt_notification_email).to eq 'my@test.example.com'
-        expect(Gitlab::CurrentSettings.lets_encrypt_terms_of_service_accepted).to eq true
+        expect(current_settings.lets_encrypt_notification_email).to eq 'my@test.example.com'
+        expect(current_settings.lets_encrypt_terms_of_service_accepted).to eq true
       end
     end
 
@@ -444,5 +444,9 @@ describe 'Admin updates settings' do
     page.check('Pipeline')
     page.check('Wiki page')
     page.check('Deployment')
+  end
+
+  def current_settings
+    ApplicationSetting.current_without_cache
   end
 end

@@ -6,11 +6,12 @@ describe API::ProjectClusters do
   include KubernetesHelpers
 
   let(:current_user) { create(:user) }
-  let(:non_member) { create(:user) }
-  let(:project) { create(:project, :repository) }
+  let(:developer_user) { create(:user) }
+  let(:project) { create(:project) }
 
   before do
     project.add_maintainer(current_user)
+    project.add_developer(developer_user)
   end
 
   describe 'GET /projects/:id/clusters' do
@@ -22,10 +23,10 @@ describe API::ProjectClusters do
     end
 
     context 'non-authorized user' do
-      it 'responds with 404' do
-        get api("/projects/#{project.id}/clusters", non_member)
+      it 'responds with 403' do
+        get api("/projects/#{project.id}/clusters", developer_user)
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(403)
       end
     end
 
@@ -67,10 +68,10 @@ describe API::ProjectClusters do
     end
 
     context 'non-authorized user' do
-      it 'responds with 404' do
-        get api("/projects/#{project.id}/clusters/#{cluster_id}", non_member)
+      it 'responds with 403' do
+        get api("/projects/#{project.id}/clusters/#{cluster_id}", developer_user)
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(403)
       end
     end
 
@@ -147,31 +148,7 @@ describe API::ProjectClusters do
     end
   end
 
-  shared_context 'kubernetes calls stubbed' do
-    before do
-      stub_kubeclient_discover(api_url)
-      stub_kubeclient_get_namespace(api_url, namespace: namespace)
-      stub_kubeclient_get_service_account(api_url, "#{namespace}-service-account", namespace: namespace)
-      stub_kubeclient_put_service_account(api_url, "#{namespace}-service-account", namespace: namespace)
-
-      stub_kubeclient_get_secret(
-        api_url,
-        {
-          metadata_name: "#{namespace}-token",
-          token: Base64.encode64('sample-token'),
-          namespace: namespace
-        }
-      )
-
-      stub_kubeclient_put_secret(api_url, "#{namespace}-token", namespace: namespace)
-      stub_kubeclient_get_role_binding(api_url, "gitlab-#{namespace}", namespace: namespace)
-      stub_kubeclient_put_role_binding(api_url, "gitlab-#{namespace}", namespace: namespace)
-    end
-  end
-
   describe 'POST /projects/:id/clusters/user' do
-    include_context 'kubernetes calls stubbed'
-
     let(:api_url) { 'https://kubernetes.example.com' }
     let(:namespace) { project.path }
     let(:authorization_type) { 'rbac' }
@@ -195,10 +172,10 @@ describe API::ProjectClusters do
     end
 
     context 'non-authorized user' do
-      it 'responds with 404' do
-        post api("/projects/#{project.id}/clusters/user", non_member), params: cluster_params
+      it 'responds with 403' do
+        post api("/projects/#{project.id}/clusters/user", developer_user), params: cluster_params
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(403)
       end
     end
 
@@ -291,8 +268,6 @@ describe API::ProjectClusters do
   end
 
   describe 'PUT /projects/:id/clusters/:cluster_id' do
-    include_context 'kubernetes calls stubbed'
-
     let(:api_url) { 'https://kubernetes.example.com' }
     let(:namespace) { 'new-namespace' }
     let(:platform_kubernetes_attributes) { { namespace: namespace } }
@@ -316,10 +291,10 @@ describe API::ProjectClusters do
     end
 
     context 'non-authorized user' do
-      it 'responds with 404' do
-        put api("/projects/#{project.id}/clusters/#{cluster.id}", non_member), params: update_params
+      it 'responds with 403' do
+        put api("/projects/#{project.id}/clusters/#{cluster.id}", developer_user), params: update_params
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(403)
       end
     end
 
@@ -442,10 +417,10 @@ describe API::ProjectClusters do
     end
 
     context 'non-authorized user' do
-      it 'responds with 404' do
-        delete api("/projects/#{project.id}/clusters/#{cluster.id}", non_member), params: cluster_params
+      it 'responds with 403' do
+        delete api("/projects/#{project.id}/clusters/#{cluster.id}", developer_user), params: cluster_params
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(403)
       end
     end
 

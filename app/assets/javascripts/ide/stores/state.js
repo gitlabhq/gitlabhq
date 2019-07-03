@@ -6,6 +6,7 @@ export default () => ({
   currentMergeRequestId: '',
   changedFiles: [],
   stagedFiles: [],
+  replacedFiles: [],
   endpoints: {},
   lastCommitMsg: '',
   lastCommitPath: '',

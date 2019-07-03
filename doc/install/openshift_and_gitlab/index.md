@@ -145,12 +145,12 @@ Login successful.
 
 You have access to the following projects and can switch between them with 'oc project <projectname>':
 
-  * cockpit
-  * default (current)
-  * delete
-  * openshift
-  * openshift-infra
-  * sample
+- cockpit
+- default (current)
+- delete
+- openshift
+- openshift-infra
+- sample
 
 Using project "default".
 ```

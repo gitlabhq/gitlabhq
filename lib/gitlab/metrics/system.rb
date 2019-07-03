@@ -57,17 +57,9 @@ module Gitlab
         end
       end
 
-      # THREAD_CPUTIME is not supported on OS X
-      if Process.const_defined?(:CLOCK_THREAD_CPUTIME_ID)
-        def self.cpu_time
-          Process
-            .clock_gettime(Process::CLOCK_THREAD_CPUTIME_ID, :float_second)
-        end
-      else
-        def self.cpu_time
-          Process
-            .clock_gettime(Process::CLOCK_PROCESS_CPUTIME_ID, :float_second)
-        end
+      def self.cpu_time
+        Process
+          .clock_gettime(Process::CLOCK_PROCESS_CPUTIME_ID, :float_second)
       end
 
       # Returns the current real time in a given precision.

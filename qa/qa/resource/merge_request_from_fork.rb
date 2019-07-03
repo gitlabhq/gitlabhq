@@ -21,7 +21,7 @@ module QA
       def fabricate!
         populate(:push)
 
-        fork.visit!
+        fork.project.visit!
 
         Page::Project::Show.perform(&:new_merge_request)
         Page::MergeRequest::New.perform(&:create_merge_request)

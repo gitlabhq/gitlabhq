@@ -67,6 +67,10 @@ module QA
           visibility: 'public'
         }
       end
+
+      def full_path
+        sandbox.path + ' / ' + path
+      end
     end
   end
 end

@@ -1,6 +1,4 @@
-[//]: # (Do *NOT* modify this file in EE documentation. All changes in this)
-[//]: # (file should happen in CE, too. If the change is EE-specific, put)
-[//]: # (it in `ldap-ee.md`.)
+<!-- If the change is EE-specific, put it in `ldap-ee.md`, NOT here. -->
 
 # LDAP
 

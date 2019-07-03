@@ -10,6 +10,7 @@ module QA
               view 'app/views/layouts/nav/sidebar/_project.html.haml' do
                 element :settings_item
                 element :link_members_settings
+                element :general_settings_link
               end
             end
           end
@@ -34,6 +35,14 @@ module QA
             hover_settings do
               within_submenu do
                 click_link('Repository')
+              end
+            end
+          end
+
+          def go_to_general_settings
+            hover_settings do
+              within_submenu do
+                click_element :general_settings_link
               end
             end
           end

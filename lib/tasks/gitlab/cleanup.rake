@@ -115,6 +115,18 @@ namespace :gitlab do
       end
     end
 
+    desc 'GitLab | Cleanup | Clean orphan job artifact files'
+    task orphan_job_artifact_files: :gitlab_environment do
+      warn_user_is_not_gitlab
+
+      cleaner = Gitlab::Cleanup::OrphanJobArtifactFiles.new(limit: limit, dry_run: dry_run?, niceness: niceness, logger: logger)
+      cleaner.run!
+
+      if dry_run?
+        logger.info "To clean up these files run this command with DRY_RUN=false".color(:yellow)
+      end
+    end
+
     def remove?
       ENV['REMOVE'] == 'true'
     end
@@ -123,12 +135,25 @@ namespace :gitlab do
       ENV['DRY_RUN'] != 'false'
     end
 
+    def debug?
+      ENV['DEBUG'].present?
+    end
+
+    def limit
+      ENV['LIMIT']&.to_i
+    end
+
+    def niceness
+      ENV['NICENESS'].presence
+    end
+
     def logger
       return @logger if defined?(@logger)
 
       @logger = if Rails.env.development? || Rails.env.production?
                   Logger.new(STDOUT).tap do |stdout_logger|
                     stdout_logger.extend(ActiveSupport::Logger.broadcast(Rails.logger))
+                    stdout_logger.level = debug? ? Logger::DEBUG : Logger::INFO
                   end
                 else
                   Rails.logger

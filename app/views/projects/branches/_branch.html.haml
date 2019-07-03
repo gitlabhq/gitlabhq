@@ -1,11 +1,7 @@
 - merged = local_assigns.fetch(:merged, false)
 - commit = @repository.commit(branch.dereferenced_target)
-- diverging_commit_counts = @repository.diverging_commit_counts(branch)
-- number_commits_distance = diverging_commit_counts[:distance]
-- number_commits_behind = diverging_commit_counts[:behind]
-- number_commits_ahead = diverging_commit_counts[:ahead]
 - merge_project = merge_request_source_project_for_project(@project)
-%li{ class: "branch-item js-branch-#{branch.name}" }
+%li{ class: "branch-item js-branch-item js-branch-#{branch.name}", data: { name: branch.name } }
   .branch-info
     .branch-title
       = sprite_icon('fork', size: 12)
@@ -30,7 +26,7 @@
         = s_('Branches|Cant find HEAD commit for this branch')
 
   - if branch.name != @repository.root_ref
-    .js-branch-divergence-graph{ data: { distance: number_commits_distance, ahead_count: number_commits_ahead, behind_count: number_commits_behind, default_branch: @repository.root_ref, max_commits: @max_commits } }
+    .js-branch-divergence-graph
 
   .controls.d-none.d-md-block<
     - if merge_project && create_mr_button?(@repository.root_ref, branch.name)

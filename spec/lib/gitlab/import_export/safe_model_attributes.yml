@@ -123,6 +123,7 @@ Release:
 - project_id
 - created_at
 - updated_at
+- released_at
 Releases::Link:
 - id
 - release_id
@@ -429,6 +430,7 @@ Service:
 - confidential_issues_events
 - confidential_note_events
 - deployment_events
+- description
 ProjectHook:
 - id
 - url

@@ -306,7 +306,6 @@ class Project < ApplicationRecord
   delegate :add_guest, :add_reporter, :add_developer, :add_maintainer, :add_role, to: :team
   delegate :add_master, to: :team # @deprecated
   delegate :group_runners_enabled, :group_runners_enabled=, :group_runners_enabled?, to: :ci_cd_settings
-  delegate :group_clusters_enabled?, to: :group, allow_nil: true
   delegate :root_ancestor, to: :namespace, allow_nil: true
   delegate :last_pipeline, to: :commit, allow_nil: true
   delegate :external_dashboard_url, to: :metrics_setting, allow_nil: true, prefix: true
@@ -1446,11 +1445,6 @@ class Project < ApplicationRecord
   end
 
   def in_fork_network_of?(other_project)
-    # TODO: Remove this in a next release when all fork_networks are populated
-    # This makes sure all MergeRequests remain valid while the projects don't
-    # have a fork_network yet.
-    return true if forked_from?(other_project)
-
     return false if fork_network.nil? || other_project.fork_network.nil?
 
     fork_network == other_project.fork_network

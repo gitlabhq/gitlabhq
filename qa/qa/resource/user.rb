@@ -88,7 +88,7 @@ module QA
         }.merge(ldap_post_body)
       end
 
-      def self.fabricate_or_use(username, password)
+      def self.fabricate_or_use(username = nil, password = nil)
         if Runtime::Env.signup_disabled?
           self.new.tap do |user|
             user.username = username

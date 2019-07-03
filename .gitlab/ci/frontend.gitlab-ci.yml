@@ -8,7 +8,7 @@
 
 .use-pg: &use-pg
   services:
-    - name: postgres:9.6
+    - name: postgres:9.6.11
       command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
     - name: redis:alpine
 
@@ -32,7 +32,7 @@
     DOCKER_HOST: tcp://docker:2375
   script:
     - node --version
-    - retry yarn install --frozen-lockfile --production --cache-folder .yarn-cache
+    - retry yarn install --frozen-lockfile --production --cache-folder .yarn-cache --prefer-offline
     - free -m
     - retry bundle exec rake gitlab:assets:compile
     - time scripts/build_assets_image
@@ -70,9 +70,10 @@ gitlab:assets:compile pull-cache:
   cache:
     policy: pull
   except:
-    - master@gitlab-org/gitlab-ce
-    - master@gitlab-org/gitlab-ee
-    - /(^docs[\/-].*|.*-docs$)/
+    refs:
+      - master@gitlab-org/gitlab-ce
+      - master@gitlab-org/gitlab-ee
+      - /(^docs[\/-].*|.*-docs$)/
 
 .compile-assets-metadata:
   extends: .dedicated-runner
@@ -81,7 +82,7 @@ gitlab:assets:compile pull-cache:
   stage: prepare
   script:
     - node --version
-    - retry yarn install --frozen-lockfile --cache-folder .yarn-cache
+    - retry yarn install --frozen-lockfile --cache-folder .yarn-cache --prefer-offline
     - free -m
     - retry bundle exec rake gitlab:assets:compile
     - scripts/clean-old-cached-assets
@@ -107,9 +108,10 @@ compile-assets pull-cache:
   cache:
     policy: pull
   except:
-    - master@gitlab-org/gitlab-ce
-    - master@gitlab-org/gitlab-ee
-    - /(^docs[\/-].*|.*-docs$)/
+    refs:
+      - master@gitlab-org/gitlab-ce
+      - master@gitlab-org/gitlab-ee
+      - /(^docs[\/-].*|.*-docs$)/
 
 gitlab:ui:visual:
   extends: .dedicated-runner
@@ -166,8 +168,8 @@ karma:
     paths:
       - chrome_debug.log
       - coverage-javascript/
-    reports:
-      junit: junit_karma.xml
+#    reports:
+#      junit: junit_karma.xml
 
 jest:
   extends: .dedicated-no-docs-and-no-qa-pull-cache-job
@@ -189,8 +191,8 @@ jest:
     paths:
       - coverage-frontend/
       - junit_jest.xml
-    reports:
-      junit: junit_jest.xml
+#    reports:
+#      junit: junit_jest.xml
   cache:
     key: jest
     paths:
@@ -229,7 +231,7 @@ qa:selectors:
   before_script: []
   script:
     - date
-    - yarn install --frozen-lockfile --cache-folder .yarn-cache
+    - yarn install --frozen-lockfile --cache-folder .yarn-cache --prefer-offline
     - date
     - yarn run webpack-prod
 

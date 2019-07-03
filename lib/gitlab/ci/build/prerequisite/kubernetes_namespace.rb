@@ -20,7 +20,7 @@ module Gitlab
           private
 
           def deployment_cluster
-            build.deployment&.deployment_platform_cluster
+            build.deployment&.cluster
           end
 
           def kubernetes_namespace

@@ -132,6 +132,7 @@ describe Gitlab::LegacyGithubImport::Importer do
         body: 'Release v1.0.0',
         draft: false,
         created_at: created_at,
+        published_at: created_at,
         updated_at: updated_at,
         url: "#{api_root}/repos/octocat/Hello-World/releases/1"
       )
@@ -144,6 +145,7 @@ describe Gitlab::LegacyGithubImport::Importer do
         body: nil,
         draft: false,
         created_at: created_at,
+        published_at: created_at,
         updated_at: updated_at,
         url: "#{api_root}/repos/octocat/Hello-World/releases/2"
       )

@@ -9,6 +9,6 @@ end
 
 RSpec::Matchers.define :gitaly_request_with_params do |params|
   match do |actual|
-    params.reduce(true) { |r, (key, val)| r && actual.send(key) == val }
+    params.reduce(true) { |r, (key, val)| r && actual[key.to_s] == val }
   end
 end

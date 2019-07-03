@@ -2,13 +2,19 @@ import ReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vu
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 
 const localVue = createLocalVue();
+const buttonText = 'Test Button Text';
 
 describe('ReplyPlaceholder', () => {
   let wrapper;
 
+  const findButton = () => wrapper.find({ ref: 'button' });
+
   beforeEach(() => {
     wrapper = shallowMount(ReplyPlaceholder, {
       localVue,
+      propsData: {
+        buttonText,
+      },
     });
   });
 
@@ -17,9 +23,7 @@ describe('ReplyPlaceholder', () => {
   });
 
   it('emits onClick even on button click', () => {
-    const button = wrapper.find({ ref: 'button' });
-
-    button.trigger('click');
+    findButton().trigger('click');
 
     expect(wrapper.emitted()).toEqual({
       onClick: [[]],
@@ -27,8 +31,6 @@ describe('ReplyPlaceholder', () => {
   });
 
   it('should render reply button', () => {
-    const button = wrapper.find({ ref: 'button' });
-
-    expect(button.text()).toEqual('Reply...');
+    expect(findButton().text()).toEqual(buttonText);
   });
 });

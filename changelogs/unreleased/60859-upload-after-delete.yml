@@ -1,0 +1,5 @@
+---
+title: In WebIDE allow adding new entries of the same name as deleted entry
+merge_request: 30239
+author:
+type: fixed

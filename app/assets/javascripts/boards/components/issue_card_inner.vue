@@ -124,7 +124,7 @@ export default {
       return `${this.rootPath}${assignee.username}`;
     },
     avatarUrlTitle(assignee) {
-      return `Avatar for ${assignee.name}`;
+      return sprintf(__(`Avatar for %{assigneeName}`), { assigneeName: assignee.name });
     },
     showLabel(label) {
       if (!label.id) return false;
@@ -160,9 +160,10 @@ export default {
           :title="__('Confidential')"
           class="confidential-icon append-right-4"
           :aria-label="__('Confidential')"
-        /><a :href="issue.path" :title="issue.title" class="js-no-trigger" @mousemove.stop>{{
-          issue.title
-        }}</a>
+        />
+        <a :href="issue.path" :title="issue.title" class="js-no-trigger" @mousemove.stop>
+          {{ issue.title }}
+        </a>
       </h4>
     </div>
     <div v-if="showLabelFooter" class="board-card-labels prepend-top-4 d-flex flex-wrap">
@@ -204,13 +205,13 @@ export default {
             placement="bottom"
             class="board-issue-path block-truncated bold"
             >{{ issueReferencePath }}</tooltip-on-truncate
-          >#{{ issue.iid }}
+          >
+          #{{ issue.iid }}
         </span>
         <span class="board-info-items prepend-top-8 d-inline-block">
-          <issue-due-date v-if="issue.dueDate" :date="issue.dueDate" /><issue-time-estimate
-            v-if="issue.timeEstimate"
-            :estimate="issue.timeEstimate"
-          /><issue-card-weight
+          <issue-due-date v-if="issue.dueDate" :date="issue.dueDate" />
+          <issue-time-estimate v-if="issue.timeEstimate" :estimate="issue.timeEstimate" />
+          <issue-card-weight
             v-if="issue.weight"
             :weight="issue.weight"
             @click="filterByWeight(issue.weight)"
@@ -230,7 +231,8 @@ export default {
           tooltip-placement="bottom"
         >
           <span class="js-assignee-tooltip">
-            <span class="bold d-block">Assignee</span> {{ assignee.name }}
+            <span class="bold d-block">{{ __('Assignee') }}</span>
+            {{ assignee.name }}
             <span class="text-white-50">@{{ assignee.username }}</span>
           </span>
         </user-avatar-link>
@@ -240,9 +242,8 @@ export default {
           :title="assigneeCounterTooltip"
           class="avatar-counter"
           data-placement="bottom"
+          >{{ assigneeCounterLabel }}</span
         >
-          {{ assigneeCounterLabel }}
-        </span>
       </div>
     </div>
   </div>

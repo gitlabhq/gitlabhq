@@ -84,43 +84,28 @@ star, smile, etc.). Some good tips about code reviews can be found in our
 
 [Code Review Guidelines]: https://docs.gitlab.com/ce/development/code_review.html
 
+## Feature flags
+
+Overview and details of feature flag processes in development of GitLab itself is described in [feature flags process documentation](https://docs.gitlab.com/ee/development/feature_flags/process.html).
+
+Guides on how to include feature flags in your backend/frontend code while developing GitLab are described in [developing with feature flags documentation](https://docs.gitlab.com/ee/development/feature_flags/developing.html).
+
+Getting access and how to expose the feature to users is detailed in [controlling feature flags documentation](https://docs.gitlab.com/ee/development/feature_flags/controls.html).
+
+## Feature proposals from the 22nd to the 1st
+
+To allow the Product and Engineering teams time to discuss issues that will be placed into an upcoming milestone,
+Product Managers must have their proposal for that milestone ready by the 22nd of each month.
+
+This proposal will be shared with Engineering for discussion, feedback, and planning.
+The plan for the upcoming milestone must be finalized by the 1st of the month, one week before kickoff on the 8th.
+
 ## Feature freeze on the 7th for the release on the 22nd
 
-The feature freeze on the 7th has been discontinued. The [transition period overview](https://gitlab.com/gitlab-org/release/docs/blob/21cbd409dd5f157fe252f254f3e897f01908abe2/general/deploy/auto-deploy-transition.md#transition)
+The feature freeze on the 7th has been discontinued. [Transition period overview](https://gitlab.com/gitlab-org/release/docs/blob/21cbd409dd5f157fe252f254f3e897f01908abe2/general/deploy/auto-deploy-transition.md#transition)
 describes the change to this process. During the transition period, the only guarantee that
 a change will be included in the release on the 22nd is if the change has been
 deployed to GitLab.com prior to this date.
-
-### Feature flags
-
-Merge requests that make changes hidden behind a feature flag, or remove an
-existing feature flag because a feature is deemed stable, may be merged (and
-picked into the stable branches) up to the 19th of the month. Such merge
-requests should have the ~"feature flag" label assigned, and don't require a
-corresponding exception request to be created.
-
-A level of common sense should be applied when deciding whether to have a feature
-behind a feature flag off or on by default.
-
-The following guidelines can be applied to help make this decision:
-
-* If the feature is not fully ready or functioning, the feature flag should be disabled by default.
-* If the feature is ready but there are concerns about performance or impact, the feature flag should be enabled by default, but
-disabled via chatops before deployment on GitLab.com environments. If the performance concern is confirmed, the final release should have the feature flag disabled by default.
-* In most other cases, the feature flag can be enabled by default.
-
-For more information on rolling out changes using feature flags, read [through the documentation](https://docs.gitlab.com/ee/development/rolling_out_changes_using_feature_flags.html).
-
-In order to build the final package and present the feature for self-hosted
-customers, the feature flag should be removed. This should happen before the
-22nd, ideally _at least_ 2 days before. That means MRs with feature
-flags being picked at the 19th would have quite a tight schedule, so picking
-these _earlier_ is preferable.
-
-While rare, release managers may decide to reject picking a change into a stable
-branch, even when feature flags are used. This might be necessary if the changes
-are deemed problematic, too invasive, or there simply isn't enough time to
-properly test how the changes behave on GitLab.com.
 
 ### Between the 1st and the 7th
 

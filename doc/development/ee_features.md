@@ -959,10 +959,10 @@ import mixin from 'ee_else_ce/path/mixin';
 
 #### `template` tag
 
-* **EE Child components**
+- **EE Child components**
   - Since we are using the async loading to check which component to load, we'd still use the component's name, check [this example](#child-component-only-used-in-ee).
 
-* **EE extra HTML**
+- **EE extra HTML**
   - For the templates that have extra HTML in EE we should move it into a new component and use the `ee_else_ce` dynamic import
 
 ### Non Vue Files
@@ -1036,7 +1036,14 @@ to avoid conflicts during CE to EE merge.
 
 ### Backporting changes from EE to CE
 
-When working in EE-specific features, you might have to tweak a few files that are not EE-specific. Here is a workflow to make sure those changes end up backported safely into CE too.
+Until the work completed to merge the ce and ee codebases, which is tracked on [epic &802](https://gitlab.com/groups/gitlab-org/-/epics/802), there exists times in which some changes for EE require specific changes to the CE
+code base.  Examples of backports include the following:
+
+* Features intended or originally built for EE that are later decided to move to CE
+* Sometimes some code in CE may impact the EE feature
+
+Here is a workflow to make sure those changes end up backported safely into CE too.
+
 (This approach does not refer to changes introduced via [csslab](https://gitlab.com/gitlab-org/csslab/).)
 
 1. **Make your changes in the EE branch.** If possible, keep a separated commit (to be squashed) to help backporting and review.

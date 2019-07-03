@@ -231,6 +231,9 @@ msgid_plural "%{strong_start}%{tag_count}%{strong_end} Tags"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%{tabname} changed"
+msgstr ""
+
 msgid "%{text} %{files}"
 msgid_plural "%{text} %{files} files"
 msgstr[0] ""
@@ -249,6 +252,9 @@ msgid "%{usage_ping_link_start}Learn more%{usage_ping_link_end} about what infor
 msgstr ""
 
 msgid "%{user_name} profile page"
+msgstr ""
+
+msgid "%{username}'s avatar"
 msgstr ""
 
 msgid "%{verb} %{time_spent_value} spent time."
@@ -343,9 +349,6 @@ msgid "20-29 contributions"
 msgstr ""
 
 msgid "2FA"
-msgstr ""
-
-msgid "2FA enabled"
 msgstr ""
 
 msgid "2FADevice|Registered On"
@@ -579,6 +582,11 @@ msgstr ""
 msgid "Activity"
 msgstr ""
 
+msgid "Add %d issue"
+msgid_plural "Add %d issues"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Add CHANGELOG"
 msgstr ""
 
@@ -637,6 +645,9 @@ msgid "Add header and footer to emails. Please note that color settings will onl
 msgstr ""
 
 msgid "Add image comment"
+msgstr ""
+
+msgid "Add issues"
 msgstr ""
 
 msgid "Add italic text"
@@ -1069,6 +1080,9 @@ msgid "An error occurred whilst loading the pipelines jobs."
 msgstr ""
 
 msgid "An error occurred. Please try again."
+msgstr ""
+
+msgid "An issue can be a bug, a todo or a feature request that needs to be discussed in a project. Besides, issues are searchable and filterable."
 msgstr ""
 
 msgid "Anonymous"
@@ -1580,7 +1594,25 @@ msgstr ""
 msgid "Blog"
 msgstr ""
 
+msgid "BoardBlankState|Add default lists"
+msgstr ""
+
+msgid "BoardBlankState|Add the following default lists to your Issue Board with one click:"
+msgstr ""
+
+msgid "BoardBlankState|Nevermind, I'll use my own"
+msgstr ""
+
+msgid "BoardBlankState|Starting out with the default set of lists will get you right on the way to making the most of your board."
+msgstr ""
+
 msgid "Boards"
+msgstr ""
+
+msgid "Boards|Collapse"
+msgstr ""
+
+msgid "Boards|Expand"
 msgstr ""
 
 msgid "Branch %{branchName} was not found in this project's repository."
@@ -1841,6 +1873,9 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
+msgid "Cancel running"
+msgstr ""
+
 msgid "Cancel this job"
 msgstr ""
 
@@ -1991,9 +2026,6 @@ msgstr ""
 msgid "Choose visibility level, enable/disable project features (issues, repository, wiki, snippets) and set permissions."
 msgstr ""
 
-msgid "Choose your merge method, options, checks, and set up a default merge request description template."
-msgstr ""
-
 msgid "CiStatusLabel|canceled"
 msgstr ""
 
@@ -2123,6 +2155,9 @@ msgstr ""
 msgid "Clear"
 msgstr ""
 
+msgid "Clear recent searches"
+msgstr ""
+
 msgid "Clear search"
 msgstr ""
 
@@ -2180,6 +2215,9 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
+msgid "Close %{tabname}"
+msgstr ""
+
 msgid "Close milestone"
 msgstr ""
 
@@ -2235,6 +2273,9 @@ msgid "ClusterIntegration|Adding an integration will share the cluster across al
 msgstr ""
 
 msgid "ClusterIntegration|Advanced options on this Kubernetes cluster's integration"
+msgstr ""
+
+msgid "ClusterIntegration|All data not committed to GitLab will be deleted and cannot be restored."
 msgstr ""
 
 msgid "ClusterIntegration|All data will be deleted and cannot be restored."
@@ -2905,25 +2946,19 @@ msgstr ""
 msgid "Container registry images"
 msgstr ""
 
-msgid "ContainerRegistry|First log in to GitLab&rsquo;s Container Registry using your GitLab username and password. If you have %{link_2fa} you need to use a %{link_token}:"
+msgid "ContainerRegistry|Container Registry"
 msgstr ""
 
-msgid "ContainerRegistry|GitLab supports up to 3 levels of image names. The following examples of images are valid for your project:"
-msgstr ""
-
-msgid "ContainerRegistry|How to use the Container Registry"
+msgid "ContainerRegistry|Docker connection error"
 msgstr ""
 
 msgid "ContainerRegistry|Last Updated"
 msgstr ""
 
-msgid "ContainerRegistry|Learn more about"
-msgstr ""
-
 msgid "ContainerRegistry|No tags in Container Registry for this container image."
 msgstr ""
 
-msgid "ContainerRegistry|Once you log in, you&rsquo;re free to create and upload a container image using the common %{build} and %{push} commands"
+msgid "ContainerRegistry|Quick Start"
 msgstr ""
 
 msgid "ContainerRegistry|Remove image"
@@ -2944,10 +2979,16 @@ msgstr ""
 msgid "ContainerRegistry|Tag ID"
 msgstr ""
 
-msgid "ContainerRegistry|Use different image names"
+msgid "ContainerRegistry|There are no container images stored for this project"
 msgstr ""
 
-msgid "ContainerRegistry|With the Docker Container Registry integrated into GitLab, every project can have its own space to store its Docker images."
+msgid "ContainerRegistry|We are having trouble connecting to Docker, which could be due to an issue with your project name or path. For more information, please review the %{docLinkStart}Container Registry documentation%{docLinkEnd}."
+msgstr ""
+
+msgid "ContainerRegistry|With the Container Registry, every project can have its own space to store its Docker images. Learn more about the %{docLinkStart}Container Registry%{docLinkEnd}."
+msgstr ""
+
+msgid "ContainerRegistry|With the Docker Container Registry integrated into GitLab, every project can have its own space to store its Docker images. Learn more about the %{docLinkStart}Container Registry%{docLinkEnd}."
 msgstr ""
 
 msgid "ContainerRegistry|You are about to delete the image <b>%{title}</b>. This will delete the image and all tags pointing to this image."
@@ -2956,7 +2997,7 @@ msgstr ""
 msgid "ContainerRegistry|You are about to remove repository <b>%{title}</b>. Once you confirm, this repository will be permanently deleted."
 msgstr ""
 
-msgid "ContainerRegistry|You can also use a %{deploy_token} for read-only access to the registry images."
+msgid "ContainerRegistry|You can add an image to this registry with the following commands:"
 msgstr ""
 
 msgid "Contents of .gitlab-ci.yml"
@@ -3447,6 +3488,9 @@ msgstr ""
 msgid "Deploy key was successfully updated."
 msgstr ""
 
+msgid "Deploy to..."
+msgstr ""
+
 msgid "DeployKeys|+%{count} others"
 msgstr ""
 
@@ -3519,6 +3563,9 @@ msgstr ""
 msgid "DeployTokens|Created"
 msgstr ""
 
+msgid "DeployTokens|Default format is \"gitlab+deploy-token-{n}\". Enter custom username if you want to change it."
+msgstr ""
+
 msgid "DeployTokens|Deploy Tokens"
 msgstr ""
 
@@ -3583,6 +3630,9 @@ msgid "Description"
 msgstr ""
 
 msgid "Description:"
+msgstr ""
+
+msgid "Deselect all"
 msgstr ""
 
 msgid "Destroy"
@@ -3685,6 +3735,9 @@ msgid "Do you want to customize how Google Code email addresses and usernames ar
 msgstr ""
 
 msgid "Dockerfile"
+msgstr ""
+
+msgid "Doing"
 msgstr ""
 
 msgid "Domain"
@@ -3883,6 +3936,9 @@ msgid "Enable classification control using an external service"
 msgstr ""
 
 msgid "Enable error tracking"
+msgstr ""
+
+msgid "Enable feature to choose access level"
 msgstr ""
 
 msgid "Enable for this project"
@@ -4101,6 +4157,9 @@ msgstr ""
 msgid "Error fetching contributors data."
 msgstr ""
 
+msgid "Error fetching diverging counts for branches. Please try again."
+msgstr ""
+
 msgid "Error fetching labels."
 msgstr ""
 
@@ -4171,6 +4230,9 @@ msgid "Error rendering markdown preview"
 msgstr ""
 
 msgid "Error saving label update."
+msgstr ""
+
+msgid "Error setting up editor. Please try again."
 msgstr ""
 
 msgid "Error updating %{issuableType}"
@@ -4270,6 +4332,9 @@ msgid "Every week (Sundays at 4:00am)"
 msgstr ""
 
 msgid "Everyone"
+msgstr ""
+
+msgid "Everyone With Access"
 msgstr ""
 
 msgid "Everyone can contribute"
@@ -4830,6 +4895,9 @@ msgid "Go Micro is a framework for micro service development."
 msgstr ""
 
 msgid "Go back"
+msgstr ""
+
+msgid "Go back to %{startTag}Open issues%{endTag} and select some issues to add to your board."
 msgstr ""
 
 msgid "Go full screen"
@@ -5518,6 +5586,9 @@ msgstr ""
 msgid "Invite member"
 msgstr ""
 
+msgid "Invocations"
+msgstr ""
+
 msgid "Invoke Count"
 msgstr ""
 
@@ -5546,6 +5617,21 @@ msgid "IssueBoards|Board"
 msgstr ""
 
 msgid "IssueBoards|Boards"
+msgstr ""
+
+msgid "IssueTracker|Bugzilla issue tracker"
+msgstr ""
+
+msgid "IssueTracker|Custom issue tracker"
+msgstr ""
+
+msgid "IssueTracker|GitLab issue tracker"
+msgstr ""
+
+msgid "IssueTracker|Redmine issue tracker"
+msgstr ""
+
+msgid "IssueTracker|YouTrack issue tracker"
 msgstr ""
 
 msgid "Issues"
@@ -5578,13 +5664,13 @@ msgstr ""
 msgid "JiraService|If different from Web URL"
 msgstr ""
 
-msgid "JiraService|JIRA API URL"
+msgid "JiraService|Jira API URL"
 msgstr ""
 
-msgid "JiraService|JIRA comments will be created when an issue gets referenced in a commit."
+msgid "JiraService|Jira comments will be created when an issue gets referenced in a commit."
 msgstr ""
 
-msgid "JiraService|JIRA comments will be created when an issue gets referenced in a merge request."
+msgid "JiraService|Jira comments will be created when an issue gets referenced in a merge request."
 msgstr ""
 
 msgid "JiraService|Jira issue tracker"
@@ -5975,6 +6061,9 @@ msgstr ""
 msgid "Loading functions timed out. Please reload the page to try again."
 msgstr ""
 
+msgid "Loading issues"
+msgstr ""
+
 msgid "Loading the GitLab IDE..."
 msgstr ""
 
@@ -6006,6 +6095,9 @@ msgid "Lock to current projects"
 msgstr ""
 
 msgid "Locked"
+msgstr ""
+
+msgid "Locked by %{fileLockUserName}"
 msgstr ""
 
 msgid "Locked to current projects"
@@ -6652,6 +6744,9 @@ msgstr ""
 msgid "No"
 msgstr ""
 
+msgid "No %{header} for this request."
+msgstr ""
+
 msgid "No %{providerTitle} repositories available to import"
 msgstr ""
 
@@ -6680,9 +6775,6 @@ msgid "No changes between %{ref_start}%{source_branch}%{ref_end} and %{ref_start
 msgstr ""
 
 msgid "No connection could be made to a Gitaly Server, please check your logs!"
-msgstr ""
-
-msgid "No container images stored for this project. Add one by following the instructions above."
 msgstr ""
 
 msgid "No contributions"
@@ -6936,6 +7028,9 @@ msgstr ""
 msgid "One or more of your Google Code projects cannot be imported into GitLab directly because they use Subversion or Mercurial for version control, rather than Git."
 msgstr ""
 
+msgid "Only Project Members"
+msgstr ""
+
 msgid "Only admins"
 msgstr ""
 
@@ -6967,6 +7062,12 @@ msgid "Open errors"
 msgstr ""
 
 msgid "Open in Xcode"
+msgstr ""
+
+msgid "Open in file view"
+msgstr ""
+
+msgid "Open issues"
 msgstr ""
 
 msgid "Open raw"
@@ -7135,6 +7236,18 @@ msgid "Perform advanced options such as changing path, transferring, or removing
 msgstr ""
 
 msgid "Performance optimization"
+msgstr ""
+
+msgid "PerformanceBar|Gitaly calls"
+msgstr ""
+
+msgid "PerformanceBar|SQL queries"
+msgstr ""
+
+msgid "PerformanceBar|profile"
+msgstr ""
+
+msgid "PerformanceBar|trace"
 msgstr ""
 
 msgid "Permissions"
@@ -7459,9 +7572,6 @@ msgid "Please wait a moment, this page will automatically refresh when ready."
 msgstr ""
 
 msgid "Please wait while we import the repository for you. Refresh at will."
-msgstr ""
-
-msgid "Pre-release"
 msgstr ""
 
 msgid "Preferences"
@@ -8058,6 +8168,9 @@ msgstr ""
 msgid "ProjectSettings|Badges"
 msgstr ""
 
+msgid "ProjectSettings|Choose your merge method, merge options, and merge checks."
+msgstr ""
+
 msgid "ProjectSettings|Customize your project badges."
 msgstr ""
 
@@ -8510,6 +8623,9 @@ msgstr ""
 msgid "Remove fork relationship"
 msgstr ""
 
+msgid "Remove from board"
+msgstr ""
+
 msgid "Remove group"
 msgstr ""
 
@@ -8887,6 +9003,9 @@ msgstr ""
 msgid "Save variables"
 msgstr ""
 
+msgid "Saving"
+msgstr ""
+
 msgid "Saving project."
 msgstr ""
 
@@ -9034,7 +9153,13 @@ msgstr ""
 msgid "Select a new namespace"
 msgstr ""
 
+msgid "Select a project"
+msgstr ""
+
 msgid "Select a timezone"
+msgstr ""
+
+msgid "Select all"
 msgstr ""
 
 msgid "Select an existing Kubernetes cluster or create a new one"
@@ -9124,6 +9249,9 @@ msgstr ""
 msgid "ServerlessDetails|More information"
 msgstr ""
 
+msgid "ServerlessDetails|No pods loaded at this time."
+msgstr ""
+
 msgid "ServerlessDetails|Number of Kubernetes pods in use over time based on necessity."
 msgstr ""
 
@@ -9154,7 +9282,19 @@ msgstr ""
 msgid "Serverless|No functions available"
 msgstr ""
 
+msgid "Serverless|The deploy job has not finished."
+msgstr ""
+
+msgid "Serverless|The functions listed in the %{startTag}serverless.yml%{endTag} file don't match the namespace of your cluster."
+msgstr ""
+
 msgid "Serverless|There is currently no function data available from Knative. This could be for a variety of reasons including:"
+msgstr ""
+
+msgid "Serverless|Your %{startTag}.gitlab-ci.yml%{endTag} file is not properly configured."
+msgstr ""
+
+msgid "Serverless|Your repository does not have a corresponding %{startTag}serverless.yml%{endTag} file."
 msgstr ""
 
 msgid "Service"
@@ -9323,6 +9463,9 @@ msgid "Showing %d event"
 msgid_plural "Showing %d events"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Showing all issues"
+msgstr ""
 
 msgid "Showing last %{size} of log -"
 msgstr ""
@@ -9681,6 +9824,9 @@ msgstr ""
 msgid "Start a %{new_merge_request} with these changes"
 msgstr ""
 
+msgid "Start a new discussion..."
+msgstr ""
+
 msgid "Start a new merge request"
 msgstr ""
 
@@ -9772,6 +9918,9 @@ msgid "Submit as spam"
 msgstr ""
 
 msgid "Submit feedback"
+msgstr ""
+
+msgid "Submit issue"
 msgstr ""
 
 msgid "Submit search"
@@ -10045,6 +10194,9 @@ msgid "Template"
 msgstr ""
 
 msgid "Templates"
+msgstr ""
+
+msgid "Terminal"
 msgstr ""
 
 msgid "Terminal for environment"
@@ -10346,6 +10498,9 @@ msgstr ""
 msgid "There are no issues to show"
 msgstr ""
 
+msgid "There are no issues to show."
+msgstr ""
+
 msgid "There are no labels yet"
 msgstr ""
 
@@ -10476,6 +10631,9 @@ msgid "This directory"
 msgstr ""
 
 msgid "This domain is not verified. You will need to verify ownership before access is enabled."
+msgstr ""
+
+msgid "This feature requires local storage to be enabled"
 msgstr ""
 
 msgid "This field is required."
@@ -10848,6 +11006,9 @@ msgstr ""
 msgid "To %{link_to_help} of your domain, add the above key to a TXT record within to your DNS configuration."
 msgstr ""
 
+msgid "To Do"
+msgstr ""
+
 msgid "To GitLab"
 msgstr ""
 
@@ -11136,6 +11297,12 @@ msgstr ""
 msgid "Unfortunately, your email message to GitLab could not be processed."
 msgstr ""
 
+msgid "Uninstall"
+msgstr ""
+
+msgid "Uninstalling"
+msgstr ""
+
 msgid "Unknown encryption strategy: %{encrypted_strategy}!"
 msgstr ""
 
@@ -11208,6 +11375,9 @@ msgstr ""
 msgid "Upcoming"
 msgstr ""
 
+msgid "Upcoming Release"
+msgstr ""
+
 msgid "Update"
 msgstr ""
 
@@ -11239,6 +11409,9 @@ msgid "UpdateProject|Project could not be updated!"
 msgstr ""
 
 msgid "Updated"
+msgstr ""
+
+msgid "Updated to"
 msgstr ""
 
 msgid "Updating"
@@ -11990,6 +12163,9 @@ msgstr ""
 msgid "You don't have any deployments right now."
 msgstr ""
 
+msgid "You don't have any recent searches"
+msgstr ""
+
 msgid "You have been granted %{access_level} access to the %{source_link} %{source_type}."
 msgstr ""
 
@@ -12009,6 +12185,12 @@ msgid "You have no permissions"
 msgstr ""
 
 msgid "You have reached your project limit"
+msgstr ""
+
+msgid "You haven't added any issues to your project yet"
+msgstr ""
+
+msgid "You haven't selected any issues yet"
 msgstr ""
 
 msgid "You left the \"%{membershipable_human_name}\" %{source_type}."
@@ -12296,9 +12478,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "deleted"
-msgstr ""
-
-msgid "deploy token"
 msgstr ""
 
 msgid "detached"
@@ -12668,6 +12847,9 @@ msgstr ""
 msgid "none"
 msgstr ""
 
+msgid "not found"
+msgstr ""
+
 msgid "notification emails"
 msgstr ""
 
@@ -12696,9 +12878,6 @@ msgstr[1] ""
 msgid "password"
 msgstr ""
 
-msgid "personal access token"
-msgstr ""
-
 msgid "private"
 msgstr ""
 
@@ -12715,6 +12894,9 @@ msgid "quick actions"
 msgstr ""
 
 msgid "register"
+msgstr ""
+
+msgid "released %{time}"
 msgstr ""
 
 msgid "remaining"
@@ -12780,6 +12962,9 @@ msgid "syntax is incorrect"
 msgstr ""
 
 msgid "this document"
+msgstr ""
+
+msgid "to list"
 msgstr ""
 
 msgid "triggered"

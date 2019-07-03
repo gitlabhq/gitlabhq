@@ -130,7 +130,7 @@ The following Elasticsearch settings are available:
 | `Elasticsearch indexing`            | Enables/disables Elasticsearch indexing. You may want to enable indexing but disable search in order to give the index time to be fully completed, for example. Also, keep in mind that this option doesn't have any impact on existing data, this only enables/disables background indexer which tracks data changes. So by enabling this you will not get your existing data indexed, use special rake task for that as explained in [Adding GitLab's data to the Elasticsearch index](#adding-gitlabs-data-to-the-elasticsearch-index). |
 | `Use the new repository indexer (beta)` | Perform repository indexing using [GitLab Elasticsearch Indexer](https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer). |
 | `Search with Elasticsearch enabled` | Enables/disables using Elasticsearch in search. |
-| `URL`                              | The URL to use for connecting to Elasticsearch. Use a comma-separated list to support clustering (e.g., "http://host1, https://host2:9200"). If your Elasticsearch instance is password protected, pass the `username:password` in the URL (e.g., `http://<username>:<password>@<elastic_host>:9200/`). |
+| `URL`                              | The URL to use for connecting to Elasticsearch. Use a comma-separated list to support clustering (e.g., `http://host1, https://host2:9200`). If your Elasticsearch instance is password protected, pass the `username:password` in the URL (e.g., `http://<username>:<password>@<elastic_host>:9200/`). |
 | `Number of Elasticsearch shards` | Elasticsearch indexes are split into multiple shards for performance reasons. In general, larger indexes need to have more shards. Changes to this value do not take effect until the index is recreated. You can read more about tradeoffs in the [Elasticsearch documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-create-index.html#create-index-settings) |
 | `Number of Elasticsearch replicas` | Each Elasticsearch shard can have a number of replicas. These are a complete copy of the shard, and can provide increased query performance or resilience against hardware failure. Increasing this value will greatly increase total disk space required by the index. |
 | `Limit namespaces and projects that can be indexed` | Enabling this will allow you to select namespaces and projects to index. All other namespaces and projects will use database search instead. Please note that if you enable this option but do not select any namespaces or projects, none will be indexed. [Read more below](#limiting-namespaces-and-projects).
@@ -156,7 +156,7 @@ If no namespaces or projects are selected, no Elasticsearch indexing will take p
 CAUTION: **Warning**:
 If you have already indexed your instance, you will have to regenerate the index in order to delete all existing data
 for filtering to work correctly. To do this run the rake tasks `gitlab:elastic:create_empty_index` and
-`gitlab:elastic:clear_index_status` Afterwards, removing a namespace or a projeect from the list will delete the data
+`gitlab:elastic:clear_index_status`. Afterwards, removing a namespace or a project from the list will delete the data
 from the Elasticsearch index as expected.
 
 ## Disabling Elasticsearch
@@ -167,7 +167,7 @@ To disable the Elasticsearch integration:
 1. Find the 'Elasticsearch' section and uncheck 'Search with Elasticsearch enabled'
    and 'Elasticsearch indexing'
 1. Click **Save** for the changes to take effect
-1. [Optional] Delete the existing index by running the command `sudo gitlab-rake gitlab:elastic:delete_index`
+1. (Optional) Delete the existing index by running the command `sudo gitlab-rake gitlab:elastic:delete_index`
 
 ## Adding GitLab's data to the Elasticsearch index
 
@@ -304,7 +304,7 @@ For Elasticsearch 6.x, before proceeding with the force merge, the index should 
 ```bash
 curl --request PUT localhost:9200/gitlab-production/_settings --data '{
   "settings": {
-    "index.blocks.write": true 
+    "index.blocks.write": true
   } }'
 ```
 
@@ -319,7 +319,7 @@ After this, if your index is in read-only, switch back to read-write:
 ```bash
 curl --request PUT localhost:9200/gitlab-production/_settings --data '{
   "settings": {
-    "index.blocks.write": false 
+    "index.blocks.write": false
   } }'
 ```
 
@@ -392,9 +392,9 @@ When performing a search, the GitLab index will use the following scopes:
 
 Whenever a change or deletion is made to an indexed GitLab object (a merge request description is changed, a file is deleted from the master branch in a repository, a project is deleted, etc), a document in the index is deleted.  However, since these are "soft" deletes, the overall number of "deleted documents", and therefore wasted space, increases.  Elasticsearch does intelligent merging of segments in order to remove these deleted documents.  However, depending on the amount and type of activity in your GitLab installation, it's possible to see as much as 50% wasted space in the index.
 
-In general, we recommend simply letting Elasticseach merge and reclaim space automatically, with the default settings.  From [Lucene's Handling of Deleted Documents](https://www.elastic.co/blog/lucenes-handling-of-deleted-documents "Lucene's Handling of Deleted Documents"), _"Overall, besides perhaps decreasing the maximum segment size, it is best to leave Lucene's defaults as-is and not fret too much about when deletes are reclaimed."_
+In general, we recommend simply letting Elasticsearch merge and reclaim space automatically, with the default settings. From [Lucene's Handling of Deleted Documents](https://www.elastic.co/blog/lucenes-handling-of-deleted-documents "Lucene's Handling of Deleted Documents"), _"Overall, besides perhaps decreasing the maximum segment size, it is best to leave Lucene's defaults as-is and not fret too much about when deletes are reclaimed."_
 
-However, some larger installations may wish to tune the merge policy settings: 
+However, some larger installations may wish to tune the merge policy settings:
 
 - Consider reducing the `index.merge.policy.max_merged_segment` size from the default 5 GB to maybe 2 GB or 3 GB.  Merging only happens when a segment has at least 50% deletions.  Smaller segment sizes will allow merging to happen more frequently.
 
@@ -425,14 +425,14 @@ Here are some common pitfalls and how to overcome them:
 - **How can I verify my GitLab instance is using Elasticsearch?**
 
     The easiest method is via the rails console (`sudo gitlab-rails console`) by running the following:
-    
+
     ```ruby
     u = User.find_by_username('your-username')
     s = SearchService.new(u, {:search => 'search_term'})
     pp s.search_objects.class.name
     ```
-    
-    If you see `Elasticsearch::Model::Response::Records`, you are using Elasticsearch. 
+
+    If you see `Elasticsearch::Model::Response::Records`, you are using Elasticsearch.
 
 - **I updated GitLab and now I can't find anything**
 
@@ -443,23 +443,23 @@ Here are some common pitfalls and how to overcome them:
 - **I indexed all the repositories but I can't find anything**
 
     Make sure you indexed all the database data [as stated above](#adding-gitlabs-data-to-the-elasticsearch-index).
-    
+
     Beyond that, check via the [Elasticsearch Search API](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-search.html) to see if the data shows up on the Elasticsearch side.
-    
+
     If it shows up via the [Elasticsearch Search API](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-search.html), check that it shows up via the rails console (`sudo gitlab-rails console`):
-    
+
     ```ruby
     u = User.find_by_username('your-username')
     s = SearchService.new(u, {:search => 'search_term', :scope => ‘blobs’})
     pp s.search_objects.to_a
     ```
-    
+
     See [Elasticsearch Index Scopes](elasticsearch.md#elasticsearch-index-scopes) for more information on searching for specific types of data.
 
-- **I indexed all the repositories but then switched elastic search servers and now I can't find anything**
+- **I indexed all the repositories but then switched Elasticsearch servers and now I can't find anything**
 
     You will need to re-run all the rake tasks to re-index the database, repositories, and wikis.
-    
+
 - **The indexing process is taking a very long time**
 
     The more data present in your GitLab instance, the longer the indexing process takes.

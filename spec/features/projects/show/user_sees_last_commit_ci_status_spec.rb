@@ -3,6 +3,10 @@ require 'spec_helper'
 describe 'Projects > Show > User sees last commit CI status' do
   set(:project) { create(:project, :repository, :public) }
 
+  before do
+    stub_feature_flags(vue_file_list: false)
+  end
+
   it 'shows the project README', :js do
     project.enable_ci
     pipeline = create(:ci_pipeline, project: project, sha: project.commit.sha, ref: 'master')

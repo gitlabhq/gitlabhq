@@ -11,7 +11,7 @@ module API
         end
 
         def board_lists
-          board.lists.destroyable
+          board.destroyable_lists
         end
 
         def create_list

@@ -7,6 +7,7 @@ class Deployment < ApplicationRecord
 
   belongs_to :project, required: true
   belongs_to :environment, required: true
+  belongs_to :cluster, class_name: 'Clusters::Cluster', optional: true
   belongs_to :user
   belongs_to :deployable, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
 
@@ -196,7 +197,22 @@ class Deployment < ApplicationRecord
   private
 
   def prometheus_adapter
-    environment.prometheus_adapter
+    service = project.find_or_initialize_service('prometheus')
+
+    if service.can_query?
+      service
+    else
+      cluster_prometheus
+    end
+  end
+
+  # TODO remove fallback case to deployment_platform_cluster.
+  # Otherwise we will continue to pay the performance penalty described in
+  # https://gitlab.com/gitlab-org/gitlab-ce/issues/63475
+  def cluster_prometheus
+    cluster_with_fallback = cluster || deployment_platform_cluster
+
+    cluster_with_fallback.application_prometheus if cluster_with_fallback&.application_prometheus_available?
   end
 
   def ref_path

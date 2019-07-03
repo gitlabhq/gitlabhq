@@ -6,10 +6,13 @@ scheduling into milestones. Labelling is a task for everyone.
 
 Most issues will have labels for at least one of the following:
 
-- Type: ~feature, ~bug, ~customer, etc.
-- Subject: ~wiki, ~"Container Registry", ~ldap, ~api, ~frontend, etc.
-- Team: ~Plan, ~Manage, ~Quality, etc.
-- Stage: ~"devops:plan", ~"devops:create", etc.
+- Type: ~feature, ~bug, ~backstage, etc.
+- Subject: ~wiki, ~"Container Registry", ~ldap, ~api, etc.
+- Team: ~Documentation, ~Delivery, etc.
+- Stage: ~"devops::plan", ~"devops::create", etc.
+- Group: ~"group::source code" ~"group::knowledge" ~"group::editor", etc.
+- Department: ~UX, ~Quality
+- Specialization: ~frontend, ~backend
 - Release Scoping: ~Deliverable, ~Stretch, ~"Next Patch Release"
 - Priority: ~P1, ~P2, ~P3, ~P4
 - Severity: ~S1, ~S2, ~S3, ~S4
@@ -27,8 +30,7 @@ labels, you can _always_ add the team and type, and often also the subject.
 Type labels are very important. They define what kind of issue this is. Every
 issue should have one or more.
 
-Examples of type labels are ~feature, ~bug, ~customer, ~security,
-and ~direction.
+Examples of type labels are ~feature, ~bug, ~backstage and ~security
 
 A number of type labels have a priority assigned to them, which automatically
 makes them float to the top, depending on their importance.
@@ -43,6 +45,10 @@ The descriptions on the [labels page][labels-page] explain what falls under each
 Subject labels are labels that define what area or feature of GitLab this issue
 hits. They are not always necessary, but very convenient.
 
+Subject labels are now used to infer and apply relevant group and devops stage
+labels. Please apply them whenever possible to facilitate accurate matching.
+Please refer to [this merge request][inferred-labels] for more information.
+
 Examples of subject labels are ~wiki, ~ldap, ~api,
 ~issues, ~"merge requests", ~labels, and ~"Container Registry".
 
@@ -52,30 +58,36 @@ issue is labeled with a subject label corresponding to your expertise.
 
 Subject labels are always all-lowercase.
 
-## Team labels
+## Team labels 
+
+**Important**: Most of the team labels will be soon deprecated in favor of [Group labels](#group-labels). 
 
 Team labels specify what team is responsible for this issue.
 Assigning a team label makes sure issues get the attention of the appropriate
 people.
 
-The current team labels are:
+The team labels planned for deprecation are:
 
 - ~Configure
 - ~Create
 - ~Defend
 - ~Distribution
-- ~Documentation
+- ~Ecosystem
 - ~Geo
 - ~Gitaly
 - ~Growth
 - ~Manage
+- ~Memory
 - ~Monitor
 - ~Plan
-- ~Quality
 - ~Release
 - ~Secure
-- ~UX
 - ~Verify
+
+The following team labels are **true** teams per our [organization structure](https://about.gitlab.com/company/team/structure/#organizational-structure) which will remain post deprecation.
+
+- ~Delivery
+- ~Documentation
 
 The descriptions on the [labels page][labels-page] explain what falls under the
 responsibility of each team.
@@ -85,6 +97,7 @@ indicate if an issue needs backend work, frontend work, or both.
 
 Team labels are always capitalized so that they show up as the first label for
 any issue.
+
 
 ## Stage labels
 
@@ -126,10 +139,44 @@ The Stage labels are used to generate the [direction pages][direction-pages] aut
 
 Group labels specify which [groups][structure-groups] the issue belongs to.
 
-Examples include:
+The current group labels are:
 
-- ~"group::control"
-- ~"group::editor"
+* ~"group::access"
+* ~"group::measure"
+* ~"group::source code" 
+* ~"group::knowledge" 
+* ~"group::editor" 
+* ~"group::gitaly"  
+* ~"group::gitter"  
+* ~"group::team planning" 
+* ~"group::enterprise planning" 
+* ~"group::certify" 
+* ~"group::ci and runner" 
+* ~"group::testing" 
+* ~"group::package" 
+* ~"group::core release" 
+* ~"group::supporting capabilities" 
+* ~"group::autodevops and kubernetes" 
+* ~"group::serverless and paas"
+* ~"group::apm" 
+* ~"group::health"
+* ~"group::static analysis"
+* ~"group::dynamic analysis"
+* ~"group::software composition analysis" 
+* ~"group::runtime application security" 
+* ~"group::threat management" 
+* ~"group::application infrastructure security" 
+* ~"group::activation" 
+* ~"group::adoption" 
+* ~"group::upsell" 
+* ~"group::retention" 
+* ~"group::fulfillment" 
+* ~"group::telemetry" 
+* ~"group::distribution" 
+* ~"group::geo" 
+* ~"group::memory" 
+* ~"group::ecosystem" 
+  
 
 These labels are [scoped labels](../../user/project/labels.md#scoped-labels-premium)
 and thus are mutually exclusive.
@@ -140,6 +187,20 @@ can be applied to a single issue. You can find the groups listed in the
 
 [structure-groups]: https://about.gitlab.com/company/team/structure/#groups
 [product-categories]: https://about.gitlab.com/handbook/product/categories/
+
+## Department labels
+
+The current department labels are:
+
+* ~UX
+* ~Quality
+
+## Specialization labels
+
+These labels narrow the [specialization](https://about.gitlab.com/company/team/structure/#specialist) on a unit of work.
+
+* ~frontend
+* ~backend
 
 ## Release Scoping labels
 
@@ -186,20 +247,20 @@ There can be multiple facets of the impact. The below is a guideline.
 
 If a bug seems to fall between two severity labels, assign it to the higher-severity label.
 
-* Example(s) of ~S1
-  * Data corruption/loss. 
-  * Security breach.
-  * Unable to create an issue or merge request. 
-  * Unable to add a comment or discussion to the issue or merge request.
-* Example(s) of ~S2
-  * Cannot submit changes through the web IDE but the commandline works.
-  * A status widget on the merge request page is not working but information can be seen in the test pipeline page.
-* Example(s) of ~S3
-  * Can create merge requests only from the Merge Requests list view, not from an Issue page.
-  * Status is not updated in real time and needs a page refresh.
-* Example(s) of ~S4
-  * Label colors are incorrect.
-  * UI elements are not fully aligned.
+- Example(s) of ~S1
+  - Data corruption/loss. 
+  - Security breach.
+  - Unable to create an issue or merge request. 
+  - Unable to add a comment or discussion to the issue or merge request.
+- Example(s) of ~S2
+  - Cannot submit changes through the web IDE but the commandline works.
+  - A status widget on the merge request page is not working but information can be seen in the test pipeline page.
+- Example(s) of ~S3
+  - Can create merge requests only from the Merge Requests list view, not from an Issue page.
+  - Status is not updated in real time and needs a page refresh.
+- Example(s) of ~S4
+  - Label colors are incorrect.
+  - UI elements are not fully aligned.
   
 ## Label for community contributors
 
@@ -442,3 +503,4 @@ A recent example of this was the issue for
 [labels-page]: https://gitlab.com/gitlab-org/gitlab-ce/labels
 [ce-tracker]: https://gitlab.com/gitlab-org/gitlab-ce/issues
 [ee-tracker]: https://gitlab.com/gitlab-org/gitlab-ee/issues
+[inferred-labels]: https://gitlab.com/gitlab-org/quality/triage-ops/merge_requests/155

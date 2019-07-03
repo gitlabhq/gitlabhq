@@ -156,4 +156,33 @@ describe 'gitlab:cleanup rake tasks' do
       end
     end
   end
+
+  describe 'gitlab:cleanup:orphan_job_artifact_files' do
+    subject(:rake_task) { run_rake_task('gitlab:cleanup:orphan_job_artifact_files') }
+
+    it 'runs the task without errors' do
+      expect(Gitlab::Cleanup::OrphanJobArtifactFiles)
+        .to receive(:new).and_call_original
+
+      expect { rake_task }.not_to raise_error
+    end
+
+    context 'with DRY_RUN set to false' do
+      before do
+        stub_env('DRY_RUN', 'false')
+      end
+
+      it 'passes dry_run correctly' do
+        expect(Gitlab::Cleanup::OrphanJobArtifactFiles)
+          .to receive(:new)
+          .with(limit: anything,
+                dry_run: false,
+                niceness: anything,
+                logger: anything)
+          .and_call_original
+
+        rake_task
+      end
+    end
+  end
 end

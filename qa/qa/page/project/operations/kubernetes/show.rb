@@ -28,10 +28,14 @@ module QA
               end
             end
 
-            def await_installed(application_name)
+            def await_installed(application_name, button_text: 'Installed')
               within(".js-cluster-application-row-#{application_name}") do
-                page.has_text?('Installed', wait: 300)
+                page.has_text?(button_text, wait: 300)
               end
+            end
+
+            def await_uninstallable(application_name)
+              await_installed(application_name, button_text: 'Uninstall')
             end
 
             def ingress_ip

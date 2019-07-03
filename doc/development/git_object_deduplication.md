@@ -113,7 +113,7 @@ are as follows:
     (`pool.source_project`)
 
 > TODO Fix invalid SQL data for pools created prior to GitLab 11.11
-> https://gitlab.com/gitlab-org/gitaly/issues/1653.
+> <https://gitlab.com/gitlab-org/gitaly/issues/1653>.
 
 ### Assumptions
 
@@ -157,7 +157,7 @@ are as follows:
     repository.
 
 > TODO should forks of forks be deduplicated?
-> https://gitlab.com/gitlab-org/gitaly/issues/1532
+> <https://gitlab.com/gitlab-org/gitaly/issues/1532>
 
 ### Consequences
 
@@ -215,4 +215,4 @@ the secondary, at which stage Git objects will get deduplicated.
 
 > TODO How do we handle the edge case where at the time the Geo
 > secondary tries to create the pool repository, the source project does
-> not exist? https://gitlab.com/gitlab-org/gitaly/issues/1533
+> not exist? <https://gitlab.com/gitlab-org/gitaly/issues/1533>

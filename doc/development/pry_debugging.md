@@ -73,7 +73,7 @@ Similar to source browsing, is [Documentation browsing](https://github.com/pry/p
 
 ### Command history
 
-With <kdb>Ctrl+R</kbd> you can search your [command history](https://github.com/pry/pry/wiki/History).
+With **Ctrl+R** you can search your [command history](https://github.com/pry/pry/wiki/History).
 
 ## Stepping
 

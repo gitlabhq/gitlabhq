@@ -6,6 +6,7 @@ import {
   addContextLines,
   prepareDiffData,
   isDiscussionApplicableToLine,
+  updateLineInFile,
 } from './utils';
 import * as types from './mutation_types';
 
@@ -109,7 +110,7 @@ export default {
     }));
   },
 
-  [types.SET_LINE_DISCUSSIONS_FOR_FILE](state, { discussion, diffPositionByLineCode }) {
+  [types.SET_LINE_DISCUSSIONS_FOR_FILE](state, { discussion, diffPositionByLineCode, hash }) {
     const { latestDiff } = state;
 
     const discussionLineCode = discussion.line_code;
@@ -130,13 +131,27 @@ export default {
         : [],
     });
 
+    const setDiscussionsExpanded = line => {
+      const isLineNoteTargeted = line.discussions.some(
+        disc => disc.notes && disc.notes.find(note => hash === `note_${note.id}`),
+      );
+
+      return {
+        ...line,
+        discussionsExpanded:
+          line.discussions && line.discussions.length
+            ? line.discussions.some(disc => !disc.resolved) || isLineNoteTargeted
+            : false,
+      };
+    };
+
     state.diffFiles = state.diffFiles.map(diffFile => {
       if (diffFile.file_hash === fileHash) {
         const file = { ...diffFile };
 
         if (file.highlighted_diff_lines) {
           file.highlighted_diff_lines = file.highlighted_diff_lines.map(line =>
-            lineCheck(line) ? mapDiscussions(line) : line,
+            setDiscussionsExpanded(lineCheck(line) ? mapDiscussions(line) : line),
           );
         }
 
@@ -148,8 +163,10 @@ export default {
             if (left || right) {
               return {
                 ...line,
-                left: line.left ? mapDiscussions(line.left) : null,
-                right: line.right ? mapDiscussions(line.right, () => !left) : null,
+                left: line.left ? setDiscussionsExpanded(mapDiscussions(line.left)) : null,
+                right: line.right
+                  ? setDiscussionsExpanded(mapDiscussions(line.right, () => !left))
+                  : null,
               };
             }
 
@@ -173,32 +190,11 @@ export default {
   [types.REMOVE_LINE_DISCUSSIONS_FOR_FILE](state, { fileHash, lineCode }) {
     const selectedFile = state.diffFiles.find(f => f.file_hash === fileHash);
     if (selectedFile) {
-      if (selectedFile.parallel_diff_lines) {
-        const targetLine = selectedFile.parallel_diff_lines.find(
-          line =>
-            (line.left && line.left.line_code === lineCode) ||
-            (line.right && line.right.line_code === lineCode),
-        );
-        if (targetLine) {
-          const side = targetLine.left && targetLine.left.line_code === lineCode ? 'left' : 'right';
-
-          Object.assign(targetLine[side], {
-            discussions: targetLine[side].discussions.filter(discussion => discussion.notes.length),
-          });
-        }
-      }
-
-      if (selectedFile.highlighted_diff_lines) {
-        const targetInlineLine = selectedFile.highlighted_diff_lines.find(
-          line => line.line_code === lineCode,
-        );
-
-        if (targetInlineLine) {
-          Object.assign(targetInlineLine, {
-            discussions: targetInlineLine.discussions.filter(discussion => discussion.notes.length),
-          });
-        }
-      }
+      updateLineInFile(selectedFile, lineCode, line =>
+        Object.assign(line, {
+          discussions: line.discussions.filter(discussion => discussion.notes.length),
+        }),
+      );
 
       if (selectedFile.discussions && selectedFile.discussions.length) {
         selectedFile.discussions = selectedFile.discussions.filter(
@@ -207,6 +203,15 @@ export default {
       }
     }
   },
+
+  [types.TOGGLE_LINE_DISCUSSIONS](state, { fileHash, lineCode, expanded }) {
+    const selectedFile = state.diffFiles.find(f => f.file_hash === fileHash);
+
+    updateLineInFile(selectedFile, lineCode, line =>
+      Object.assign(line, { discussionsExpanded: expanded }),
+    );
+  },
+
   [types.TOGGLE_FOLDER_OPEN](state, path) {
     state.treeEntries[path].opened = !state.treeEntries[path].opened;
   },

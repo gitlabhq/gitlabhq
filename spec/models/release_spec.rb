@@ -64,4 +64,14 @@ RSpec.describe Release do
       is_expected.to all(be_a(Releases::Source))
     end
   end
+
+  describe '#upcoming_release?' do
+    context 'during the backfill migration when released_at could be nil' do
+      it 'handles a nil released_at value and returns false' do
+        allow(release).to receive(:released_at).and_return nil
+
+        expect(release.upcoming_release?).to eq(false)
+      end
+    end
+  end
 end

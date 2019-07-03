@@ -32,7 +32,7 @@
         = select_tag :encoding, options_for_select([ "base64", "text" ], "text"), class: 'select2', tabindex: '-1'
 
   .file-editor.code
-    %pre.js-edit-mode-pane#editor= params[:content] || local_assigns[:blob_data]
+    %pre.js-edit-mode-pane.qa-editor#editor= params[:content] || local_assigns[:blob_data]
     - if local_assigns[:path]
       .js-edit-mode-pane#preview.hide
         .center

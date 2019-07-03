@@ -359,6 +359,7 @@ export default {
         <monitor-area-chart
           v-for="(graphData, graphIndex) in chartsWithData(groupData.metrics)"
           :key="graphIndex"
+          :project-path="projectPath"
           :graph-data="graphData"
           :deployment-data="deploymentData"
           :thresholds="getGraphAlertValues(graphData.queries)"

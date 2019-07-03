@@ -17,3 +17,26 @@ memory-static:
       - tmp/memory_*.txt
     reports:
       metrics: tmp/memory_metrics.txt
+
+# Show memory usage caused by invoking require per gem.
+# Unlike `memory-static`, it hits the app with one request to ensure that any last minute require-s have been called.
+# The application is booted in `production` environment.
+# All tests are run without a webserver (directly using Rack::Mock by default).
+memory-on-boot:
+  extends: .rspec-metadata-pg-10
+  variables:
+    NODE_ENV: "production"
+    RAILS_ENV: "production"
+    SETUP_DB: "true"
+    SKIP_STORAGE_VALIDATION: "true"
+    # we override the max_old_space_size to prevent OOM errors
+    NODE_OPTIONS: --max_old_space_size=3584
+  script:
+    # Both bootsnap and derailed monkey-patch Kernel#require, which leads to circular dependency
+    - DISABLE_BOOTSNAP=true PATH_TO_HIT="/users/sign_in" CUT_OFF=0.3 bundle exec derailed exec perf:mem >> 'tmp/memory_on_boot.txt'
+    - scripts/generate-memory-metrics-on-boot tmp/memory_on_boot.txt >> 'tmp/memory_on_boot_metrics.txt'
+  artifacts:
+    paths:
+      - tmp/memory_*.txt
+    reports:
+      metrics: tmp/memory_on_boot_metrics.txt

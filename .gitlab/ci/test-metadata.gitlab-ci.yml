@@ -12,7 +12,9 @@
       - rspec_profiling/
 
 retrieve-tests-metadata:
-  <<: *tests-metadata-state
+  extends:
+    - .tests-metadata-state
+    - .no-docs-and-no-qa
   stage: prepare
   cache:
     key: tests_metadata
@@ -25,9 +27,6 @@ retrieve-tests-metadata:
     - mkdir -p rspec_profiling/
     - wget -O $FLAKY_RSPEC_SUITE_REPORT_PATH http://${TESTS_METADATA_S3_BUCKET}.s3.amazonaws.com/$FLAKY_RSPEC_SUITE_REPORT_PATH || rm $FLAKY_RSPEC_SUITE_REPORT_PATH
     - '[[ -f $FLAKY_RSPEC_SUITE_REPORT_PATH ]] || echo "{}" > ${FLAKY_RSPEC_SUITE_REPORT_PATH}'
-  except:
-    - /(^docs[\/-].*|.*-docs$)/
-    - /(^qa[\/-].*|.*-qa$)/
 
 update-tests-metadata:
   <<: *tests-metadata-state
@@ -69,9 +68,10 @@ flaky-examples-check:
   only:
     - branches
   except:
-    - master
-    - /(^docs[\/-].*|.*-docs$)/
-    - /(^qa[\/-].*|.*-qa$)/
+    refs:
+      - master
+      - /(^docs[\/-].*|.*-docs$)/
+      - /(^qa[\/-].*|.*-qa$)/
   artifacts:
     expire_in: 30d
     paths:

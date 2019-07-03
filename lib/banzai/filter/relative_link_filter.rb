@@ -56,10 +56,10 @@ module Banzai
       def process_link_to_upload_attr(html_attr)
         path_parts = [Addressable::URI.unescape(html_attr.value)]
 
-        if group
-          path_parts.unshift(relative_url_root, 'groups', group.full_path, '-')
-        elsif project
+        if project
           path_parts.unshift(relative_url_root, project.full_path)
+        elsif group
+          path_parts.unshift(relative_url_root, 'groups', group.full_path, '-')
         else
           path_parts.unshift(relative_url_root)
         end

@@ -29,7 +29,9 @@ git clone PASTE HTTPS OR SSH HERE
 
 A clone of the project will be created in your computer.
 
->**Note:** If you clone your project via a URL that contains special characters, make sure that characters are URL-encoded.
+NOTE: **Note:**
+If you clone your project via a URL that contains special characters, make sure
+that characters are URL-encoded.
 
 ### Go into a project directory to work in it
 
@@ -86,11 +88,17 @@ cat README.md
 
 ### Remove a file
 
+DANGER: **Danger:**
+This will permanently delete the file.
+
 ```
 rm NAME-OF-FILE
 ```
 
 ### Remove a directory and all of its contents
+
+DANGER: **Danger:**
+This will permanently delete the directory and all of its contents.
 
 ```
 rm -r NAME-OF-DIRECTORY
@@ -113,8 +121,12 @@ history
 You will be asked for an administrator’s password.
 
 ```
-sudo
+sudo COMMAND
 ```
+
+CAUTION: **Caution:**
+Be careful of the commands you run with `sudo`. Certain commands may cause
+damage to your data and system.
 
 ### Show which directory I am in
 

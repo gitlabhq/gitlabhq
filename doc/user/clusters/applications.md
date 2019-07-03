@@ -111,7 +111,7 @@ file.
 [Ingress](https://kubernetes.github.io/ingress-nginx/) can provide load
 balancing, SSL termination, and name-based virtual hosting. It acts as a
 web proxy for your applications and is useful if you want to use [Auto
-DevOps] or deploy your own web apps.
+DevOps](../../topics/autodevops/index.md) or deploy your own web apps.
 
 NOTE: **Note:**
 The
@@ -251,6 +251,8 @@ The applications below can be uninstalled.
 
 | Application | GitLab version | Notes |
 | ----------- | -------------- | ----- |
+| Ingress  | 12.1+         | The associated load balancer and IP will be deleted and cannot be restored. Furthermore, it can only be uninstalled if JupyterHub is not installed. |
+| JupyterHub  | 12.1+         | All data not committed to GitLab will be deleted and cannot be restored. |
 | Prometheus  | 11.11+         | All data will be deleted and cannot be restored. |
 
 To uninstall an application:
@@ -287,4 +289,3 @@ To avoid installation errors:
   kubectl get secrets/tiller-secret -n gitlab-managed-apps -o "jsonpath={.data['ca\.crt']}" | base64 -d > b.pem
   diff a.pem b.pem
   ```
-

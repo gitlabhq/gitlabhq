@@ -15,7 +15,7 @@ being merged, and it will stay disabled until the "WIP" flag has been removed.
 
 There are several ways to flag a merge request as a Work In Progress:
 
-- Add "[WIP]" or "WIP:" to the start of the merge request's title. Clicking on
+- Add `[WIP]` or `WIP:` to the start of the merge request's title. Clicking on
   **Start the title with WIP:**, under the title box, when editing the merge request's
   description will have the same effect.
 - Add the `/wip` [quick action](../quick_actions.md#quick-actions-for-issues-and-merge-requests)
@@ -30,7 +30,7 @@ There are several ways to flag a merge request as a Work In Progress:
 Similar to above, when a Merge Request is ready to be merged, you can remove the
 "Work in Progress" flag in several ways:
 
-- Remove "[WIP]" or "WIP:" from the start of the merge request's title. Clicking on
+- Remove `[WIP]` or `WIP:` from the start of the merge request's title. Clicking on
   **Remove the WIP: prefix from the title**, under the title box, when editing the merge
   request's description, will have the same effect.
 - Add the `/wip` [quick action](../quick_actions.md#quick-actions-for-issues-and-merge-requests)

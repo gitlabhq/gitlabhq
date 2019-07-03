@@ -1460,7 +1460,7 @@ class User < ApplicationRecord
   end
 
   def requires_usage_stats_consent?
-    !consented_usage_stats? && 7.days.ago > self.created_at && !has_current_license? && User.single_user?
+    self.admin? && 7.days.ago > self.created_at && !has_current_license? && User.single_user? && !consented_usage_stats?
   end
 
   # Avoid migrations only building user preference object when needed.
@@ -1495,7 +1495,14 @@ class User < ApplicationRecord
   end
 
   def consented_usage_stats?
-    Gitlab::CurrentSettings.usage_stats_set_by_user_id == self.id
+    # Bypass the cache here because it's possible the admin enabled the
+    # usage ping, and we don't want to annoy the user again if they
+    # already set the value. This is a bit of hack, but the alternative
+    # would be to put in a more complex cache invalidation step. Since
+    # this call only gets called in the uncommon situation where the
+    # user is an admin and the only user in the instance, this shouldn't
+    # cause too much load on the system.
+    ApplicationSetting.current_without_cache&.usage_stats_set_by_user_id == self.id
   end
 
   # Added according to https://github.com/plataformatec/devise/blob/7df57d5081f9884849ca15e4fde179ef164a575f/README.md#activejob-integration

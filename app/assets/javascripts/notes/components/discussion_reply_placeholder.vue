@@ -1,6 +1,12 @@
 <script>
 export default {
   name: 'ReplyPlaceholder',
+  props: {
+    buttonText: {
+      type: String,
+      required: true,
+    },
+  },
 };
 </script>
 
@@ -12,6 +18,6 @@ export default {
     :title="s__('MergeRequests|Add a reply')"
     @click="$emit('onClick')"
   >
-    {{ s__('MergeRequests|Reply...') }}
+    {{ buttonText }}
   </button>
 </template>

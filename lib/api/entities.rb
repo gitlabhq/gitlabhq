@@ -1103,7 +1103,7 @@ module API
       expose :project, using: Entities::BasicProjectDetails
 
       expose :lists, using: Entities::List do |board|
-        board.lists.destroyable
+        board.destroyable_lists
       end
     end
 
@@ -1188,8 +1188,10 @@ module API
         MarkupHelper.markdown_field(entity, :description)
       end
       expose :created_at
+      expose :released_at
       expose :author, using: Entities::UserBasic, if: -> (release, _) { release.author.present? }
       expose :commit, using: Entities::Commit, if: lambda { |_, _| can_download_code? }
+      expose :upcoming_release?, as: :upcoming_release
 
       expose :assets do
         expose :assets_count, as: :count do |release, _|

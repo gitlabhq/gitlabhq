@@ -38,7 +38,7 @@ Click on the service links to see further configuration instructions and details
 | [Hangouts Chat](hangouts_chat.md) | Receive events notifications in Google Hangouts Chat |
 | [HipChat](hipchat.md) | Private group chat and IM |
 | [Irker (IRC gateway)](irker.md) | Send IRC messages, on update, to a list of recipients through an Irker gateway |
-| [JIRA](jira.md) | JIRA issue tracker |
+| [Jira](jira.md) | Jira issue tracker |
 | [Jenkins](../../../integration/jenkins.md) **[STARTER]** | An extendable open source continuous integration server |
 | JetBrains TeamCity CI | A continuous integration and build server |
 | [Mattermost slash commands](mattermost_slash_commands.md) | Mattermost chat and ChatOps slash commands |

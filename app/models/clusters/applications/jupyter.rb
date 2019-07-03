@@ -23,9 +23,7 @@ module Clusters
         return unless cluster&.application_ingress_available?
 
         ingress = cluster.application_ingress
-        if ingress.external_ip || ingress.external_hostname
-          self.status = 'installable'
-        end
+        self.status = 'installable' if ingress.external_ip_or_hostname?
       end
 
       def chart
@@ -38,12 +36,6 @@ module Clusters
 
       def values
         content_values.to_yaml
-      end
-
-      # Will be addressed in future MRs
-      # We need to investigate and document what will be permanently deleted.
-      def allowed_to_uninstall?
-        false
       end
 
       def install_command

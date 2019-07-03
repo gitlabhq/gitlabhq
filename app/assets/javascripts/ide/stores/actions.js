@@ -62,7 +62,7 @@ export const createTempEntry = (
   new Promise(resolve => {
     const fullName = name.slice(-1) !== '/' && type === 'tree' ? `${name}/` : name;
 
-    if (state.entries[name]) {
+    if (state.entries[name] && !state.entries[name].deleted) {
       flash(
         `The name "${name.split('/').pop()}" is already taken in this directory.`,
         'alert',
@@ -208,6 +208,7 @@ export const deleteEntry = ({ commit, dispatch, state }, path) => {
   }
 
   commit(types.DELETE_ENTRY, path);
+  dispatch('stageChange', path);
 
   dispatch('triggerFilesChange');
 };
