@@ -42,3 +42,6 @@ class PEEK_DB_CLIENT
 end
 
 PEEK_DB_VIEW.prepend ::Gitlab::PerformanceBar::PeekQueryTracker
+
+require 'peek/adapters/redis'
+Peek::Adapters::Redis.prepend ::Gitlab::PerformanceBar::RedisAdapterWhenPeekEnabled
