@@ -64,18 +64,18 @@ These settings can be configured on project page under the name of the project. 
 
 Below is the table of events users can be notified of:
 
-| Event                        | Sent to                                                           | Settings level               |
-|------------------------------|-------------------------------------------------------------------|------------------------------|
-| New SSH key added            | User                                                              | Security email, always sent. |
-| New email added              | User                                                              | Security email, always sent. |
-| Email changed                | User                                                              | Security email, always sent. |
-| Password changed             | User                                                              | Security email, always sent. |
-| New user created             | User                                                              | Sent on user creation, except for omniauth (LDAP)|
-| User added to project        | User                                                              | Sent when user is added to project |
-| Project access level changed | User                                                              | Sent when user project access level is changed |
-| User added to group          | User                                                              | Sent when user is added to group |
-| Group access level changed   | User                                                              | Sent when user group access level is changed |
-| Project moved                | Project members [1]                                               | [1] not disabled |
+| Event                        | Sent to             | Settings level               |
+|------------------------------|---------------------|------------------------------|
+| New SSH key added            | User                | Security email, always sent. |
+| New email added              | User                | Security email, always sent. |
+| Email changed                | User                | Security email, always sent. |
+| Password changed             | User                | Security email, always sent. |
+| New user created             | User                | Sent on user creation, except for omniauth (LDAP)|
+| User added to project        | User                | Sent when user is added to project |
+| Project access level changed | User                | Sent when user project access level is changed |
+| User added to group          | User                | Sent when user is added to group |
+| Group access level changed   | User                | Sent when user group access level is changed |
+| Project moved                | Project members (1) | (1) not disabled |
 
 ### Issue / Epics / Merge request events
 

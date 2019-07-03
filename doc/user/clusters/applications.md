@@ -111,7 +111,7 @@ file.
 [Ingress](https://kubernetes.github.io/ingress-nginx/) can provide load
 balancing, SSL termination, and name-based virtual hosting. It acts as a
 web proxy for your applications and is useful if you want to use [Auto
-DevOps] or deploy your own web apps.
+DevOps](../../topics/autodevops/index.md) or deploy your own web apps.
 
 NOTE: **Note:**
 The

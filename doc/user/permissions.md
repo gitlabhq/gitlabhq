@@ -122,8 +122,8 @@ The following table depicts the various user permission levels in a project.
 | Transfer project to another namespace             |         |            |             |          | ✓      |
 | Remove project                                    |         |            |             |          | ✓      |
 | Delete issues                                     |         |            |             |          | ✓      |
-| Force push to protected branches [^4]             |         |            |             |          |        |
-| Remove protected branches [^4]                    |         |            |             |          |        |
+| Force push to protected branches (*4*)            |         |            |             |          |        |
+| Remove protected branches (*4*)                   |         |            |             |          |        |
 
 - (*1*): All users are able to perform this action on public and internal projects, but not private projects.
 - (*2*): Guest users can only view the confidential issues they created themselves

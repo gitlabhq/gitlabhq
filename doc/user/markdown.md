@@ -288,7 +288,7 @@ $example = array(
 
 > If this is not rendered correctly, [view it in GitLab itself](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#inline-diff).
 
-With inline diff tags you can display {+ additions +} or [- deletions -].
+With inline diff tags you can display `{+ additions +}` or `[- deletions -]`.
 
 The wrapping tags can be either curly braces or square brackets:
 
