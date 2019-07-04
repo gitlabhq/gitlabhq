@@ -19,12 +19,6 @@ describe Gitlab::Metrics::System do
         expect(described_class.max_open_file_descriptors).to be > 0
       end
     end
-
-    describe '.process_start_time' do
-      it 'returns the process start time' do
-        expect(described_class.process_start_time).to be > 0
-      end
-    end
   else
     describe '.memory_usage' do
       it 'returns 0.0' do
@@ -41,12 +35,6 @@ describe Gitlab::Metrics::System do
     describe '.max_open_file_descriptors' do
       it 'returns 0' do
         expect(described_class.max_open_file_descriptors).to eq(0)
-      end
-    end
-
-    describe 'process_start_time' do
-      it 'returns 0' do
-        expect(described_class.process_start_time).to eq(0)
       end
     end
   end
