@@ -144,7 +144,7 @@ message in the Activity stream about the reference, with a link to the other iss
 To prevent duplication of issues for the same topic, GitLab searches for similar issues
 when new issues are being created.
 
-When typing in the title in the new issue form, GitLab searches titles and descriptions
+When typing in the title in the **New Issue** page, GitLab searches titles and descriptions
 across all issues the user has access to in the current project. Up 5 similar issues,
 sorted by most recently updated, are displayed below the title box. Note that this feature
 requires [GraphQL](../../../api/graphql/index.md) to be enabled.

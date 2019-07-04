@@ -111,6 +111,27 @@ The "Move issue" button is at the bottom of the right-sidebar when viewing the i
 
 ![move issue - button](img/sidebar_move_issue.png)
 
+### Moving Issues in Bulk
+
+If you have advanced technical skills you can also bulk move all the issues from one project to another in the rails console. The below script will move all the issues from one project to another that are not in status **closed**.
+
+To access rails console run `sudo gitlab-rails console` on the GitLab server and run the below script. Please be sure to change **project**, **admin_user** and **target_project** to your values. We do also recommend [creating a backup](https://docs.gitlab.com/ee/raketasks/backup_restore.html#creating-a-backup-of-the-gitlab-system) before attempting any changes in the console.
+
+```ruby
+project = Project.find_by_full_path('full path of the project where issues are moved from')
+issues = project.issues
+admin_user = User.find_by_username('username of admin user') # make sure user has permissions to move the issues
+target_project = Project.find_by_full_path('full path of target project where issues moved to')
+
+issues.each do |issue|
+   if issue.state != "closed" && issue.moved_to.nil?
+      Issues::MoveService.new(project, admin_user).execute(issue, target_project)
+   else
+      puts "issue with id: #{issue.id} and title: #{issue.title} was not moved"
+   end
+end; nil
+```
+
 ## Closing Issues
 
 When you decide that an issue is resolved, or no longer needed, you can close the issue
@@ -190,7 +211,7 @@ when used from the command line with `git commit -m`.
 
 #### Customizing the issue closing pattern **[CORE ONLY]**
 
-In order to change the default issue closing pattern, you must edit the
+In order to change the default issue closing pattern, GitLab administrators must edit the
 [`gitlab.rb` or `gitlab.yml` file](../../../administration/issue_closing_pattern.md)
 of your installation.
 
@@ -199,6 +220,6 @@ of your installation.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/2982) in GitLab 8.6
 
 Users with [project owner permission](../../permissions.md) can delete an issue by
-editing it and clicking on the delete button. 
+editing it and clicking on the delete button.
 
 ![delete issue - button](img/delete_issue.png)
