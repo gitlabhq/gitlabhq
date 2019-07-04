@@ -44,4 +44,12 @@ class Namespace::AggregationSchedule < ApplicationRecord
   def lease_key
     "namespace:namespaces_root_statistics:#{namespace_id}"
   end
+
+  # Used by ExclusiveLeaseGuard
+  # Overriding value as we never release the lease
+  # before the timeout in order to prevent multiple
+  # RootStatisticsWorker to start in a short span of time
+  def lease_release?
+    false
+  end
 end
