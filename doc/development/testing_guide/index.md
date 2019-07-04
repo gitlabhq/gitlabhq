@@ -80,8 +80,6 @@ Everything you should know about how to run end-to-end tests using
 
 [Return to Development documentation](../README.md)
 
-[^1]: /ci/yaml/README.html#dependencies
-
 [rails]: http://rubyonrails.org/
 [RSpec]: https://github.com/rspec/rspec-rails#feature-specs
 [Capybara]: https://github.com/teamcapybara/capybara

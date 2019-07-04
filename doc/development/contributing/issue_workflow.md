@@ -345,7 +345,7 @@ For feature proposals for EE, open an issue on the
 
 In order to help track the feature proposals, we have created a
 [`feature`][fl] label. For the time being, users that are not members
-of the project cannot add labels. You can instead ask one of the [core team]
+of the project cannot add labels. You can instead ask one of the [core team](https://about.gitlab.com/community/core-team/)
 members to add the label ~feature to the issue or add the following
 code snippet right after your description in a new line: `~feature`.
 
@@ -356,7 +356,7 @@ Please submit Feature Proposals using the ['Feature Proposal' issue template](ht
 
 For changes in the interface, it is helpful to include a mockup. Issues that add to, or change, the interface should
 be given the ~"UX" label. This will allow the UX team to provide input and guidance. You may
-need to ask one of the [core team] members to add the label, if you do not have permissions to do it by yourself.
+need to ask one of the [core team](https://about.gitlab.com/community/core-team/) members to add the label, if you do not have permissions to do it by yourself.
 
 If you want to create something yourself, consider opening an issue first to
 discuss whether it is interesting to include this in GitLab.

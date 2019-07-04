@@ -115,7 +115,7 @@ Now, every time you create an MR for CE and EE:
    1. Continue cherry-picking: `git cherry-pick --continue`
    1. Push to EE: `git push origin branch-example-ee`
 1. Create the EE-equivalent MR and link to the CE MR from the
-   description "Ports [CE-MR-LINK] to EE"
+   description `Ports [CE-MR-LINK] to EE`
 1. Once all the jobs are passing in both CE and EE, you've addressed the
    feedback from your own team, and got them approved, the merge requests can be merged.
 1. When both MRs are ready, the EE merge request will be merged first, and the
@@ -125,42 +125,43 @@ Now, every time you create an MR for CE and EE:
 
 - The commit SHA can be easily found from the GitLab UI. From a merge request,
   open the tab **Commits** and click the copy icon to copy the commit SHA.
-- To cherry-pick a **commit range**, such as [A > B > C > D] use:
+- To cherry-pick a **commit range**, such as (A > B > C > D) use:
 
-    ```shell
-    git cherry-pick "oldest-commit-SHA^..newest-commit-SHA"
-    ```
+  ```shell
+  git cherry-pick "oldest-commit-SHA^..newest-commit-SHA"
+  ```
 
-    For example, suppose the commit A is the oldest, and its SHA is `4f5e4018c09ed797fdf446b3752f82e46f5af502`,
-    and the commit D is the newest, and its SHA is `80e1c9e56783bd57bd7129828ec20b252ebc0538`.
-    The cherry-pick command will be:
+  For example, suppose the commit A is the oldest, and its SHA is `4f5e4018c09ed797fdf446b3752f82e46f5af502`,
+  and the commit D is the newest, and its SHA is `80e1c9e56783bd57bd7129828ec20b252ebc0538`.
+  The cherry-pick command will be:
 
-    ```shell
-    git cherry-pick "4f5e4018c09ed797fdf446b3752f82e46f5af502^..80e1c9e56783bd57bd7129828ec20b252ebc0538"
-    ```
+  ```shell
+  git cherry-pick "4f5e4018c09ed797fdf446b3752f82e46f5af502^..80e1c9e56783bd57bd7129828ec20b252ebc0538"
+  ```
 
 - To cherry-pick a **merge commit**, use the flag `-m 1`. For example, suppose that the
   merge commit SHA is `138f5e2f20289bb376caffa0303adb0cac859ce1`:
 
-    ```shell
-    git cherry-pick -m 1 138f5e2f20289bb376caffa0303adb0cac859ce1
-    ```
-- To cherry-pick multiple commits, such as B and D in a range [A > B > C > D], use:
+  ```shell
+  git cherry-pick -m 1 138f5e2f20289bb376caffa0303adb0cac859ce1
+  ```
 
-    ```shell
-    git cherry-pick commit-B-SHA commit-D-SHA
-    ```
+- To cherry-pick multiple commits, such as B and D in a range (A > B > C > D), use:
 
-    For example, suppose commit B SHA = `4f5e4018c09ed797fdf446b3752f82e46f5af502`,
-    and the commit D SHA = `80e1c9e56783bd57bd7129828ec20b252ebc0538`.
-    The cherry-pick command will be:
+  ```shell
+  git cherry-pick commit-B-SHA commit-D-SHA
+  ```
 
-    ```shell
-    git cherry-pick 4f5e4018c09ed797fdf446b3752f82e46f5af502 80e1c9e56783bd57bd7129828ec20b252ebc0538
-    ```
+  For example, suppose commit B SHA = `4f5e4018c09ed797fdf446b3752f82e46f5af502`,
+  and the commit D SHA = `80e1c9e56783bd57bd7129828ec20b252ebc0538`.
+  The cherry-pick command will be:
 
-    This case is particularly useful when you have a merge commit in a sequence of
-    commits and you want to cherry-pick all but the merge commit.
+  ```shell
+  git cherry-pick 4f5e4018c09ed797fdf446b3752f82e46f5af502 80e1c9e56783bd57bd7129828ec20b252ebc0538
+  ```
+
+  This case is particularly useful when you have a merge commit in a sequence of
+  commits and you want to cherry-pick all but the merge commit.
 
 - If you push more commits to the CE branch, you can safely repeat the procedure
   to cherry-pick them to the EE-equivalent branch. You can do that as many times as

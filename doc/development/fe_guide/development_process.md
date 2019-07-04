@@ -12,8 +12,7 @@ This checklist is intended to help us during development of bigger features/refa
 
 Please use your best judgement when to use it and please contribute new points through merge requests if something comes to your mind.
 
----
-
+```
 ### Frontend development
 
 #### Planning development
@@ -24,15 +23,15 @@ Please use your best judgement when to use it and please contribute new points t
 - [ ] Are all necessary UX specifications available that you will need in order to implement? Are there new UX components/patterns in the designs? Then contact the UI component team early on. How should error messages or validation be handled?
 - [ ] **Library usage** Use Vuex as soon as you have even a medium state to manage, use Vue router if you need to have different views internally and want to link from the outside. Check what libraries we already have for which occasions.
 - [ ] **Plan your implementation:**
-    - [ ] **Architecture plan:** Create a plan aligned with GitLab's architecture, how you are going to do the implementation, for example Vue application setup and its components (through [onion skinning](https://gitlab.com/gitlab-org/gitlab-ce/issues/35873#note_39994091)), Store structure and data flow, which existing Vue components can you reuse. It's a good idea to go through your plan with another engineer to refine it.
-    - [ ] **Backend:** The best way is to kickoff the implementation in a call and discuss with the assigned Backend engineer what you will need from the backend and also when. Can you reuse existing API's? How is the performance with the planned architecture? Maybe create together a JSON mock object to already start with development.
-    - [ ] **Communication:** It also makes sense to have for bigger features an own slack channel (normally called #f_{feature_name}) and even weekly demo calls with all people involved.
-    - [ ] **Dependency Plan:** Are there big dependencies in the plan between you and others, then maybe create an execution diagram to show what is blocking which part and the order of the different parts.
-    - [ ] **Task list:** Create a simple checklist of the subtasks that are needed for the implementation, also consider creating even sub issues. (for example show a comment, delete a comment, update a comment, etc.). This helps you and also everyone else following the implementation
+  - [ ] **Architecture plan:** Create a plan aligned with GitLab's architecture, how you are going to do the implementation, for example Vue application setup and its components (through [onion skinning](https://gitlab.com/gitlab-org/gitlab-ce/issues/35873#note_39994091)), Store structure and data flow, which existing Vue components can you reuse. It's a good idea to go through your plan with another engineer to refine it.
+  - [ ] **Backend:** The best way is to kickoff the implementation in a call and discuss with the assigned Backend engineer what you will need from the backend and also when. Can you reuse existing API's? How is the performance with the planned architecture? Maybe create together a JSON mock object to already start with development.
+  - [ ] **Communication:** It also makes sense to have for bigger features an own slack channel (normally called #f_{feature_name}) and even weekly demo calls with all people involved.
+  - [ ] **Dependency Plan:** Are there big dependencies in the plan between you and others, then maybe create an execution diagram to show what is blocking which part and the order of the different parts.
+  - [ ] **Task list:** Create a simple checklist of the subtasks that are needed for the implementation, also consider creating even sub issues. (for example show a comment, delete a comment, update a comment, etc.). This helps you and also everyone else following the implementation
 - [ ] **Keep it small** To make it easier for you and also all reviewers try to keep merge requests small and merge into a feature branch if needed. To accomplish that you need to plan that from the start. Different methods are:
-    - [ ] **Skeleton based plan** Start with an MR that has the skeleton of the components with placeholder content. In following MRs you can fill the components with interactivity. This also makes it easier to spread out development on multiple people.
-    - [ ] **Cookie Mode** Think about hiding the feature behind a cookie flag if the implementation is on top of existing features
-    - [ ] **New route** Are you refactoring something big then you might consider adding a new route where you implement the new feature and when finished delete the current route and rename the new one. (for example 'merge_request' and 'new_merge_request')
+  - [ ] **Skeleton based plan** Start with an MR that has the skeleton of the components with placeholder content. In following MRs you can fill the components with interactivity. This also makes it easier to spread out development on multiple people.
+  - [ ] **Cookie Mode** Think about hiding the feature behind a cookie flag if the implementation is on top of existing features
+  - [ ] **New route** Are you refactoring something big then you might consider adding a new route where you implement the new feature and when finished delete the current route and rename the new one. (for example 'merge_request' and 'new_merge_request')
 - [ ] **Setup** Is there any specific setup needed for your implementation (for example a kubernetes cluster)? Then let everyone know if it is not already mentioned where they can find documentation (if it doesn't exist - create it)
 - [ ] **Security** Are there any new security relevant implementations? Then please contact the security team for an app security review. If you are not sure ask our [domain expert](https://about.gitlab.com/handbook/engineering/frontend/#frontend-domain-experts)
 
@@ -57,8 +56,7 @@ Please use your best judgement when to use it and please contribute new points t
 - [ ] Are there any big changes on how and especially how frequently we use the API then let production know about it
 - [ ] Smoke test of the RC on dev., staging., canary deployments and .com
 - [ ] Follow up on issues that came out of the review. Create issues for discovered edge cases that should be covered in future iterations.
-
----
+```
 
 ### Share your work early
 
@@ -66,7 +64,7 @@ Please use your best judgement when to use it and please contribute new points t
    GitLab's architecture.
 1. Add a diagram to the issue and ask a frontend architect in the slack channel `#fe_architectural` about it.
 
-  ![Diagram of Issue Boards Architecture](img/boards_diagram.png)
+   ![Diagram of Issue Boards Architecture](img/boards_diagram.png)
 
 1. Don't take more than one week between starting work on a feature and
    sharing a Merge Request with a reviewer or a maintainer.
