@@ -2033,6 +2033,9 @@ describe API::MergeRequests do
 
       expect(response).to have_gitlab_http_status(202)
       expect(RebaseWorker.jobs.size).to eq(1)
+
+      expect(merge_request.reload).to be_rebase_in_progress
+      expect(json_response['rebase_in_progress']).to be(true)
     end
 
     it 'returns 403 if the user cannot push to the branch' do
@@ -2042,6 +2045,16 @@ describe API::MergeRequests do
       put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/rebase", guest)
 
       expect(response).to have_gitlab_http_status(403)
+    end
+
+    it 'returns 409 if a rebase is already in progress' do
+      Sidekiq::Testing.fake! do
+        merge_request.rebase_async(user.id)
+
+        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/rebase", user)
+      end
+
+      expect(response).to have_gitlab_http_status(409)
     end
   end
 

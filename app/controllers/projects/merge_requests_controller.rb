@@ -201,7 +201,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def rebase
-    RebaseWorker.perform_async(@merge_request.id, current_user.id)
+    @merge_request.rebase_async(current_user.id)
 
     head :ok
   end

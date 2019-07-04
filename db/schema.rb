@@ -1989,6 +1989,7 @@ ActiveRecord::Schema.define(version: 20190628185004) do
     t.boolean "allow_maintainer_to_push"
     t.integer "state_id", limit: 2
     t.integer "approvals_before_merge"
+    t.string "rebase_jid"
     t.index ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree
     t.index ["author_id"], name: "index_merge_requests_on_author_id", using: :btree
     t.index ["created_at"], name: "index_merge_requests_on_created_at", using: :btree

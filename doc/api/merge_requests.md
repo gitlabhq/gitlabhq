@@ -1485,8 +1485,14 @@ PUT /projects/:id/merge_requests/:merge_request_iid/rebase
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/76/merge_requests/1/rebase
 ```
 
-This is an asynchronous request. The API will return an empty `202 Accepted`
-response if the request is enqueued successfully.
+This is an asynchronous request. The API will return a `202 Accepted` response
+if the request is enqueued successfully, with a response containing:
+
+```json
+{
+  "rebase_in_progress": true
+}
+```
 
 You can poll the [Get single MR](#get-single-mr) endpoint with the
 `include_rebase_in_progress` parameter to check the status of the
