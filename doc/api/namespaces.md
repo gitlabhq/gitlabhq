@@ -68,7 +68,7 @@ the `plan` parameter associated with a namespace:
 ]
 ```
 
-**Note**: Only group maintainers/owners are presented with `members_count_with_descendants`, as well as `plan` **[BRONZE ONLY]**.
+NOTE: **Note:** Only group maintainers/owners are presented with `members_count_with_descendants`, as well as `plan` **[BRONZE ONLY]**.
 
 ## Search for namespace
 

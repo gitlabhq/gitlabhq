@@ -55,8 +55,8 @@ GET /projects
 | `with_issues_enabled`         | boolean | no | Limit by enabled issues feature |
 | `with_merge_requests_enabled` | boolean | no | Limit by enabled merge requests feature |
 | `with_programming_language`   | string  | no | Limit by projects which use the given programming language |
-| `wiki_checksum_failed`        | boolean | no | **[PREMIUM]** Limit projects where the wiki checksum calculation has failed *([Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/6137) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.2)* |
-| `repository_checksum_failed`  | boolean | no | **[PREMIUM]** Limit projects where the repository checksum calculation has failed *([Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/6137) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.2)* |
+| `wiki_checksum_failed`        | boolean | no | **[PREMIUM]** Limit projects where the wiki checksum calculation has failed ([Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/6137) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.2) |
+| `repository_checksum_failed`  | boolean | no | **[PREMIUM]** Limit projects where the repository checksum calculation has failed ([Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/6137) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.2) |
 | `min_access_level`            | integer | no | Limit by current user minimal [access level](members.md) |
 
 When `simple=true` or the user is unauthenticated this returns something like:
@@ -734,7 +734,7 @@ POST /projects
 | `mirror_trigger_builds` | boolean | no | **[STARTER]** Pull mirroring triggers builds |
 | `initialize_with_readme` | boolean | no | `false` by default |
 
->**Note**: If your HTTP repository is not publicly accessible,
+NOTE: **Note:** If your HTTP repository is not publicly accessible,
 add authentication information to the URL: `https://username:password@gitlab.company.com/group/project.git`
 where `password` is a public access key with the `api` scope enabled.
 
@@ -779,7 +779,7 @@ POST /projects/user/:user_id
 | `mirror` | boolean | no | **[STARTER]** Enables pull mirroring in a project |
 | `mirror_trigger_builds` | boolean | no | **[STARTER]** Pull mirroring triggers builds |
 
->**Note**: If your HTTP repository is not publicly accessible,
+NOTE: **Note:** If your HTTP repository is not publicly accessible,
 add authentication information to the URL: `https://username:password@gitlab.company.com/group/project.git`
 where `password` is a public access key with the `api` scope enabled.
 
@@ -828,7 +828,7 @@ PUT /projects/:id
 | `mirror_overwrites_diverged_branches` | boolean | no | **[STARTER]** Pull mirror overwrites diverged branches |
 | `packages_enabled` | boolean | no | **[PREMIUM ONLY]** Enable or disable packages repository feature |
 
->**Note**: If your HTTP repository is not publicly accessible,
+NOTE: **Note:** If your HTTP repository is not publicly accessible,
 add authentication information to the URL: `https://username:password@gitlab.company.com/group/project.git`
 where `password` is a public access key with the `api` scope enabled.
 
@@ -1354,7 +1354,7 @@ Example response:
 
 ## Remove project
 
-Removes a project including all associated resources (issues, merge requests etc.)
+Removes a project including all associated resources (issues, merge requests etc).
 
 ```
 DELETE /projects/:id
@@ -1643,10 +1643,17 @@ GET /projects/:id/push_rule
 }
 ```
 
-The following attributes are restricted to certain plans, and will not appear if
-you do not have access to those features:
+Users on GitLab [Premium, Silver, or higher](https://about.gitlab.com/pricing/) will also see
+the `commit_committer_check` parameter:
 
-* `commit_committer_check` only available on **[PREMIUM]**
+```json
+{
+  "id": 1,
+  "project_id": 3,
+  "commit_committer_check": false
+  ...
+}
+```
 
 ### Add project push rule
 

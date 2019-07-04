@@ -7,17 +7,17 @@ authentication, only public groups are returned.
 
 Parameters:
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `skip_groups` | array of integers | no | Skip the group IDs passed |
-| `all_available` | boolean | no | Show all the groups you have access to (defaults to `false` for authenticated users, `true` for admin); Attributes `owned` and `min_access_level` have precedence |
-| `search` | string | no | Return the list of authorized groups matching the search criteria |
-| `order_by` | string | no | Order groups by `name`, `path` or `id`. Default is `name` |
-| `sort` | string | no | Order groups in `asc` or `desc` order. Default is `asc` |
-| `statistics` | boolean | no | Include group statistics (admins only) |
-| `with_custom_attributes` | boolean | no | Include [custom attributes](custom_attributes.md) in response (admins only) |
-| `owned` | boolean | no | Limit to groups explicitly owned by the current user |
-| `min_access_level` | integer | no | Limit to groups where current user has at least this [access level](members.md) |
+| Attribute                | Type              | Required | Description |
+| ------------------------ | ----------------- | -------- | ---------- |
+| `skip_groups`            | array of integers | no       | Skip the group IDs passed |
+| `all_available`          | boolean           | no       | Show all the groups you have access to (defaults to `false` for authenticated users, `true` for admin); Attributes `owned` and `min_access_level` have precedence |
+| `search`                 | string            | no       | Return the list of authorized groups matching the search criteria |
+| `order_by`               | string            | no       | Order groups by `name`, `path` or `id`. Default is `name` |
+| `sort`                   | string            | no       | Order groups in `asc` or `desc` order. Default is `asc` |
+| `statistics`             | boolean           | no       | Include group statistics (admins only) |
+| `with_custom_attributes` | boolean           | no       | Include [custom attributes](custom_attributes.md) in response (admins only) |
+| `owned`                  | boolean           | no       | Limit to groups explicitly owned by the current user |
+| `min_access_level`       | integer           | no       | Limit to groups where current user has at least this [access level](members.md) |
 
 ```
 GET /groups
@@ -94,18 +94,18 @@ When accessed without authentication, only public groups are returned.
 
 Parameters:
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) of the parent group |
-| `skip_groups` | array of integers | no | Skip the group IDs passed |
-| `all_available` | boolean | no | Show all the groups you have access to (defaults to `false` for authenticated users, `true` for admin); Attributes `owned` and `min_access_level` have precedence |
-| `search` | string | no | Return the list of authorized groups matching the search criteria |
-| `order_by` | string | no | Order groups by `name`, `path` or `id`. Default is `name` |
-| `sort` | string | no | Order groups in `asc` or `desc` order. Default is `asc` |
-| `statistics` | boolean | no | Include group statistics (admins only) |
-| `with_custom_attributes` | boolean | no | Include [custom attributes](custom_attributes.md) in response (admins only) |
-| `owned` | boolean | no | Limit to groups explicitly owned by the current user |
-| `min_access_level` | integer | no | Limit to groups where current user has at least this [access level](members.md) |
+| Attribute                | Type              | Required | Description |
+| ------------------------ | ----------------- | -------- | ----------- |
+| `id`                     | integer/string    | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) of the parent group |
+| `skip_groups`            | array of integers | no       | Skip the group IDs passed |
+| `all_available`          | boolean           | no       | Show all the groups you have access to (defaults to `false` for authenticated users, `true` for admin); Attributes `owned` and `min_access_level` have preceden |
+| `search`                 | string            | no       | Return the list of authorized groups matching the search criteria |
+| `order_by`               | string            | no       | Order groups by `name`, `path` or `id`. Default is `name` |
+| `sort`                   | string            | no       | Order groups in `asc` or `desc` order. Default is `asc` |
+| `statistics`             | boolean           | no       | Include group statistics (admins only) |
+| `with_custom_attributes` | boolean           | no       | Include [custom attributes](custom_attributes.md) in response (admins only) |
+| `owned`                  | boolean           | no       | Limit to groups explicitly owned by the current user |
+| `min_access_level`       | integer           | no       | Limit to groups where current user has at least this [access level](members.md) |
 
 ```
 GET /groups/:id/subgroups
@@ -142,22 +142,22 @@ GET /groups/:id/projects
 
 Parameters:
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
-| `archived` | boolean | no | Limit by archived status |
-| `visibility` | string | no | Limit by visibility `public`, `internal`, or `private` |
-| `order_by` | string | no | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, or `last_activity_at` fields. Default is `created_at` |
-| `sort` | string | no | Return projects sorted in `asc` or `desc` order. Default is `desc` |
-| `search` | string | no | Return list of authorized projects matching the search criteria |
-| `simple` | boolean | no | Return only the ID, URL, name, and path of each project |
-| `owned` | boolean | no | Limit by projects owned by the current user |
-| `starred` | boolean | no | Limit by projects starred by the current user |
-| `with_issues_enabled` | boolean | no | Limit by projects with issues feature enabled. Default is `false` |
-| `with_merge_requests_enabled` | boolean | no | Limit by projects with merge requests feature enabled. Default is `false` |
-| `with_shared` | boolean | no | Include projects shared to this group. Default is `true` |
-| `include_subgroups` | boolean | no | Include projects in subgroups of this group. Default is `false` |
-| `with_custom_attributes` | boolean | no | Include [custom attributes](custom_attributes.md) in response (admins only) |
+| Attribute                     | Type           | Required | Description |
+| ----------------------------- | -------------- | -------- | ----------- |
+| `id`                          | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `archived`                    | boolean        | no       | Limit by archived status |
+| `visibility`                  | string         | no       | Limit by visibility `public`, `internal`, or `private` |
+| `order_by`                    | string         | no       | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, or `last_activity_at` fields. Default is `created_at` |
+| `sort`                        | string         | no       | Return projects sorted in `asc` or `desc` order. Default is `desc` |
+| `search`                      | string         | no       | Return list of authorized projects matching the search criteria |
+| `simple`                      | boolean        | no       | Return only the ID, URL, name, and path of each project |
+| `owned`                       | boolean        | no       | Limit by projects owned by the current user |
+| `starred`                     | boolean        | no       | Limit by projects starred by the current user |
+| `with_issues_enabled`         | boolean        | no       | Limit by projects with issues feature enabled. Default is `false` |
+| `with_merge_requests_enabled` | boolean        | no       | Limit by projects with merge requests feature enabled. Default is `false` |
+| `with_shared`                 | boolean        | no       | Include projects shared to this group. Default is `true` |
+| `include_subgroups`           | boolean        | no       | Include projects in subgroups of this group. Default is `false` |
+| `with_custom_attributes`      | boolean        | no       | Include [custom attributes](custom_attributes.md) in response (admins only) |
 
 Example response:
 
@@ -214,11 +214,11 @@ GET /groups/:id
 
 Parameters:
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
-| `with_custom_attributes` | boolean | no | Include [custom attributes](custom_attributes.md) in response (admins only) |
-| `with_projects` | boolean | no | Include details from projects that belong to the specified group (defaults to `true`). |
+| Attribute                | Type           | Required | Description |
+| ------------------------ | -------------- | -------- | ----------- |
+| `id`                     | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `with_custom_attributes` | boolean        | no       | Include [custom attributes](custom_attributes.md) in response (admins only). |
+| `with_projects`          | boolean        | no       | Include details from projects that belong to the specified group (defaults to `true`). |
 
 ```bash
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/4
@@ -378,11 +378,16 @@ Example response:
 Users on GitLab [Starter, Bronze, or higher](https://about.gitlab.com/pricing/) will also see
 the `shared_runners_minutes_limit` and `extra_shared_runners_minutes_limit` parameters:
 
-Additional response parameters: **[STARTER]**
+Additional response parameters:
 
 ```json
+{
+  "id": 4,
+  "description": "Aliquid qui quis dignissimos distinctio ut commodi voluptas est.",
   "shared_runners_minutes_limit": 133,
   "extra_shared_runners_minutes_limit": 133,
+  ...
+}
 ```
 
 When adding the parameter `with_projects=false`, projects will not be returned.
@@ -420,17 +425,17 @@ POST /groups
 
 Parameters:
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `name`                               | string  | yes | The name of the group |
-| `path`                               | string  | yes | The path of the group |
-| `description`                        | string  | no  | The group's description |
-| `visibility`                         | string  | no  | The group's visibility. Can be `private`, `internal`, or `public`. |
-| `lfs_enabled`                        | boolean | no  | Enable/disable Large File Storage (LFS) for the projects in this group |
-| `request_access_enabled`             | boolean | no  | Allow users to request member access. |
-| `parent_id`                          | integer | no  | The parent group ID for creating nested group. |
-| `shared_runners_minutes_limit`       | integer | no  | **[STARTER ONLY]** Pipeline minutes quota for this group. |
-| `extra_shared_runners_minutes_limit` | integer | no  | **[STARTER ONLY]** Extra pipeline minutes quota for this group. |
+| Attribute                            | Type    | Required | Description |
+| ------------------------------------ | ------- | -------- | ----------- |
+| `name`                               | string  | yes      | The name of the group. |
+| `path`                               | string  | yes      | The path of the group. |
+| `description`                        | string  | no       | The group's description. |
+| `visibility`                         | string  | no       | The group's visibility. Can be `private`, `internal`, or `public`. |
+| `lfs_enabled`                        | boolean | no       | Enable/disable Large File Storage (LFS) for the projects in this group. |
+| `request_access_enabled`             | boolean | no       | Allow users to request member access. |
+| `parent_id`                          | integer | no       | The parent group ID for creating nested group. |
+| `shared_runners_minutes_limit`       | integer | no       | **[STARTER ONLY]** Pipeline minutes quota for this group. |
+| `extra_shared_runners_minutes_limit` | integer | no       | **[STARTER ONLY]** Extra pipeline minutes quota for this group. |
 
 ## Transfer project to group
 
@@ -442,10 +447,10 @@ POST  /groups/:id/projects/:project_id
 
 Parameters:
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
-| `project_id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| Attribute    | Type           | Required | Description |
+| ------------ | -------------- | -------- | ----------- |
+| `id`         | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `project_id` | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 
 ## Update group
 
@@ -455,20 +460,20 @@ Updates the project group. Only available to group owners and administrators.
 PUT /groups/:id
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id`                                 | integer | yes | The ID of the group |
-| `name`                               | string  | no  | The name of the group |
-| `path`                               | string  | no  | The path of the group |
-| `description`                        | string  | no  | The description of the group |
-| `membership_lock`                    | boolean | no  | **[STARTER]** Prevent adding new members to project membership within this group |
-| `share_with_group_lock`              | boolean | no  | Prevent sharing a project with another group within this group |
-| `visibility`                         | string  | no  | The visibility level of the group. Can be `private`, `internal`, or `public`. |
-| `lfs_enabled` (optional)             | boolean | no  | Enable/disable Large File Storage (LFS) for the projects in this group |
-| `request_access_enabled`             | boolean | no  | Allow users to request member access. |
-| `file_template_project_id`           | integer | no  | **[PREMIUM]** The ID of a project to load custom file templates from |
-| `shared_runners_minutes_limit`       | integer | no  | **[STARTER ONLY]** Pipeline minutes quota for this group |
-| `extra_shared_runners_minutes_limit` | integer | no  | **[STARTER ONLY]** Extra pipeline minutes quota for this group |
+| Attribute                            | Type    | Required | Description |
+| ------------------------------------ | ------- | -------- | ----------- |
+| `id`                                 | integer | yes      | The ID of the group. |
+| `name`                               | string  | no       | The name of the group. |
+| `path`                               | string  | no       | The path of the group. |
+| `description`                        | string  | no       | The description of the group. |
+| `membership_lock`                    | boolean | no       | **[STARTER]** Prevent adding new members to project membership within this group. |
+| `share_with_group_lock`              | boolean | no       | Prevent sharing a project with another group within this group. |
+| `visibility`                         | string  | no       | The visibility level of the group. Can be `private`, `internal`, or `public`. |
+| `lfs_enabled` (optional)             | boolean | no       | Enable/disable Large File Storage (LFS) for the projects in this group. |
+| `request_access_enabled`             | boolean | no       | Allow users to request member access. |
+| `file_template_project_id`           | integer | no       | **[PREMIUM]** The ID of a project to load custom file templates from. |
+| `shared_runners_minutes_limit`       | integer | no       | **[STARTER ONLY]** Pipeline minutes quota for this group. |
+| `extra_shared_runners_minutes_limit` | integer | no       | **[STARTER ONLY]** Extra pipeline minutes quota for this group. |
 
 ```bash
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5?name=Experimental"
