@@ -79,13 +79,14 @@ export default () => {
       },
     },
     created() {
-      gl.boardService = new BoardService({
+      boardsStore.setEndpoints({
         boardsEndpoint: this.boardsEndpoint,
         recentBoardsEndpoint: this.recentBoardsEndpoint,
         listsEndpoint: this.listsEndpoint,
         bulkUpdatePath: this.bulkUpdatePath,
         boardId: this.boardId,
       });
+      gl.boardService = new BoardService();
       boardsStore.rootPath = this.boardsEndpoint;
 
       eventHub.$on('updateTokens', this.updateTokens);
