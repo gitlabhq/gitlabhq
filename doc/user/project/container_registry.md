@@ -29,7 +29,7 @@ to enable it.
    following the [administration documentation](../../administration/container_registry.md).
    If you are using GitLab.com, this is enabled by default so you can start using
    the Registry immediately. Currently there is a soft (10GB) size restriction for
-   registry on GitLab.com, as part of the [repository size limit](repository/index.html#repository-size).
+   registry on GitLab.com, as part of the [repository size limit](repository/index.md).
 1. Go to your [project's General settings](settings/index.md#sharing-and-permissions)
    and enable the **Container Registry** feature on your project. For new
    projects this might be enabled by default. For existing projects

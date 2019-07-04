@@ -44,10 +44,12 @@ The first push of a new project, including LFS objects, will be checked for size
 and **will** be rejected if the sum of their sizes exceeds the maximum allowed 
 repository size.
 
+**Note:** The repository size limit includes repository files and LFS, and does not include artifacts.
+
 For details on manually purging files, see [reducing the repository size using Git](../../project/repository/reducing_the_repo_size_using_git.md).
 
 NOTE: **Note:**
-For GitLab.com, the repository size limit is 10 GB.
+GitLab.com repository size [is set by GitLab](../../gitlab_com/index.md#repository-size-limit).
 
 <!-- ## Troubleshooting
 
