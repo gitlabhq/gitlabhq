@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import Vue from 'vue';
 
+import mountMultipleBoardsSwitcher from 'ee_else_ce/boards/mount_multiple_boards_switcher';
 import Flash from '~/flash';
 import { __ } from '~/locale';
 import './models/label';
@@ -278,4 +279,6 @@ export default () => {
       `,
     });
   }
+
+  mountMultipleBoardsSwitcher();
 };
