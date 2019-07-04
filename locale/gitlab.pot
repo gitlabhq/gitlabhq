@@ -28,6 +28,12 @@ msgstr ""
 msgid " You need to do this before %{grace_period_deadline}."
 msgstr ""
 
+msgid " and "
+msgstr ""
+
+msgid " and %{sliced}"
+msgstr ""
+
 msgid " or "
 msgstr ""
 
@@ -166,6 +172,9 @@ msgid "%{level_name} visibility has been restricted by the administrator."
 msgstr ""
 
 msgid "%{link_start}Read more%{link_end} about role permissions"
+msgstr ""
+
+msgid "%{listToShow}, and %{awardsListLength} more."
 msgstr ""
 
 msgid "%{loadingIcon} Started"
@@ -609,6 +618,9 @@ msgid "Add a Grafana button in the admin sidebar, monitoring section, to access 
 msgstr ""
 
 msgid "Add a bullet list"
+msgstr ""
+
+msgid "Add a general comment to this %{noteableDisplayName}."
 msgstr ""
 
 msgid "Add a general comment to this %{noteable_name}."
@@ -1200,6 +1212,9 @@ msgid "Are you sure you want to cancel creating this comment?"
 msgstr ""
 
 msgid "Are you sure you want to cancel editing this comment?"
+msgstr ""
+
+msgid "Are you sure you want to delete this %{typeOfComment}?"
 msgstr ""
 
 msgid "Are you sure you want to delete this device? This action cannot be undone."
@@ -3720,6 +3735,12 @@ msgid "Discuss a specific suggestion or question"
 msgstr ""
 
 msgid "Discuss a specific suggestion or question that needs to be resolved"
+msgstr ""
+
+msgid "Discuss a specific suggestion or question that needs to be resolved."
+msgstr ""
+
+msgid "Discuss a specific suggestion or question."
 msgstr ""
 
 msgid "Discussion"
@@ -6906,6 +6927,9 @@ msgstr ""
 msgid "Not started"
 msgstr ""
 
+msgid "Note"
+msgstr ""
+
 msgid "Note that this invitation was sent to %{mail_to_invite_email}, but you are signed in as %{link_to_current_user} with email %{mail_to_current_user}."
 msgstr ""
 
@@ -7530,6 +7554,9 @@ msgid "Play all manual"
 msgstr ""
 
 msgid "Please %{link_to_register} or %{link_to_sign_in} to comment"
+msgstr ""
+
+msgid "Please %{startTagRegister}register%{endRegisterTag} or %{startTagSignIn}sign in%{endSignInTag} to reply"
 msgstr ""
 
 msgid "Please accept the Terms of Service before continuing."
@@ -9593,6 +9620,9 @@ msgstr ""
 msgid "Something went wrong while adding your award. Please try again."
 msgstr ""
 
+msgid "Something went wrong while adding your comment. Please try again."
+msgstr ""
+
 msgid "Something went wrong while applying the suggestion. Please try again."
 msgstr ""
 
@@ -9600,6 +9630,12 @@ msgid "Something went wrong while closing the %{issuable}. Please try again late
 msgstr ""
 
 msgid "Something went wrong while deleting the source branch. Please try again."
+msgstr ""
+
+msgid "Something went wrong while deleting your note. Please try again."
+msgstr ""
+
+msgid "Something went wrong while editing your comment. Please try again."
 msgstr ""
 
 msgid "Something went wrong while fetching comments. Please try again."
@@ -10616,6 +10652,9 @@ msgid "This application will be able to:"
 msgstr ""
 
 msgid "This branch has changed since you started editing. Would you like to create a new branch?"
+msgstr ""
+
+msgid "This comment has changed since you started editing, please review the %{startTag}updated comment%{endTag} to ensure information is not lost."
 msgstr ""
 
 msgid "This commit is part of merge request %{link_to_merge_request}. Comments created here will be created in the context of that merge request."
@@ -12472,6 +12511,9 @@ msgstr ""
 msgid "cannot include leading slash or directory traversal."
 msgstr ""
 
+msgid "comment"
+msgstr ""
+
 msgid "commented on %{link_to_project}"
 msgstr ""
 
@@ -12595,6 +12637,9 @@ msgid "is not a valid X509 certificate."
 msgstr ""
 
 msgid "is not an email you own"
+msgstr ""
+
+msgid "issue"
 msgstr ""
 
 msgid "issue boards"
@@ -12895,6 +12940,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "password"
+msgstr ""
+
+msgid "pending comment"
 msgstr ""
 
 msgid "private"

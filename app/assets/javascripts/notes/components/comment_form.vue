@@ -65,14 +65,12 @@ export default {
       return this.getUserData.id;
     },
     commentButtonTitle() {
-      return this.noteType === constants.COMMENT ? 'Comment' : 'Start thread';
+      return this.noteType === constants.COMMENT ? __('Comment') : __('Start thread');
     },
     startDiscussionDescription() {
-      let text = 'Discuss a specific suggestion or question';
-      if (this.getNoteableData.noteableType === constants.MERGE_REQUEST_NOTEABLE_TYPE) {
-        text += ' that needs to be resolved';
-      }
-      return `${text}.`;
+      return this.getNoteableData.noteableType === constants.MERGE_REQUEST_NOTEABLE_TYPE
+        ? __('Discuss a specific suggestion or question that needs to be resolved.')
+        : __('Discuss a specific suggestion or question.');
     },
     isOpen() {
       return this.openState === constants.OPENED || this.openState === constants.REOPENED;
@@ -127,8 +125,8 @@ export default {
     },
     issuableTypeTitle() {
       return this.noteableType === constants.MERGE_REQUEST_NOTEABLE_TYPE
-        ? 'merge request'
-        : 'issue';
+        ? __('merge request')
+        : __('issue');
     },
     trackingLabel() {
       return slugifyWithUnderscore(`${this.commentButtonTitle} button`);
@@ -203,7 +201,7 @@ export default {
                 this.discard();
               } else {
                 Flash(
-                  'Something went wrong while adding your comment. Please try again.',
+                  __('Something went wrong while adding your comment. Please try again.'),
                   'alert',
                   this.$refs.commentForm,
                 );
@@ -219,8 +217,9 @@ export default {
           .catch(() => {
             this.enableButton();
             this.discard(false);
-            const msg = `Your comment could not be submitted!
-Please check your network connection and try again.`;
+            const msg = __(
+              'Your comment could not be submitted! Please check your network connection and try again.',
+            );
             Flash(msg, 'alert', this.$el);
             this.note = noteData.data.note.note; // Restore textarea content.
             this.removePlaceholderNotes();
@@ -298,7 +297,7 @@ Please check your network connection and try again.`;
         const noteableType = capitalizeFirstCharacter(convertToCamelCase(this.noteableType));
 
         this.autosave = new Autosave($(this.$refs.textarea), [
-          'Note',
+          __('Note'),
           noteableType,
           this.getNoteableData.id,
         ]);
@@ -359,8 +358,8 @@ Please check your network connection and try again.`;
                 class="note-textarea js-vue-comment-form js-note-text
 js-gfm-input js-autosize markdown-area js-vue-textarea qa-comment-input"
                 data-supports-quick-actions="true"
-                aria-label="Description"
-                placeholder="Write a comment or drag your files here…"
+                :aria-label="__('Description')"
+                :placeholder="__('Write a comment or drag your files here…')"
                 @keydown.up="editCurrentUserLastNote()"
                 @keydown.meta.enter="handleSave()"
                 @keydown.ctrl.enter="handleSave()"
@@ -381,7 +380,7 @@ append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
                   data-track-event="click_button"
                   @click.prevent="handleSave()"
                 >
-                  {{ __(commentButtonTitle) }}
+                  {{ commentButtonTitle }}
                 </button>
                 <button
                   :disabled="isSubmitButtonDisabled"
@@ -390,7 +389,7 @@ append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
                   class="btn btn-success note-type-toggle js-note-new-discussion dropdown-toggle qa-note-dropdown"
                   data-display="static"
                   data-toggle="dropdown"
-                  aria-label="Open comment type dropdown"
+                  :aria-label="__('Open comment type dropdown')"
                 >
                   <i aria-hidden="true" class="fa fa-caret-down toggle-icon"> </i>
                 </button>
@@ -404,8 +403,14 @@ append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
                     >
                       <i aria-hidden="true" class="fa fa-check icon"> </i>
                       <div class="description">
-                        <strong>Comment</strong>
-                        <p>Add a general comment to this {{ noteableDisplayName }}.</p>
+                        <strong>{{ __('Comment') }}</strong>
+                        <p>
+                          {{
+                            sprintf(__('Add a general comment to this %{noteableDisplayName}.'), {
+                              noteableDisplayName,
+                            })
+                          }}
+                        </p>
                       </div>
                     </button>
                   </li>
@@ -418,7 +423,7 @@ append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
                     >
                       <i aria-hidden="true" class="fa fa-check icon"> </i>
                       <div class="description">
-                        <strong>Start thread</strong>
+                        <strong>{{ __('Start thread') }}</strong>
                         <p>{{ startDiscussionDescription }}</p>
                       </div>
                     </button>

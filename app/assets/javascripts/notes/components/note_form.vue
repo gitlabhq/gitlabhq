@@ -1,14 +1,14 @@
 <script>
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import { mapGetters, mapActions } from 'vuex';
+import noteFormMixin from 'ee_else_ce/notes/mixins/note_form';
 import eventHub from '../event_hub';
 import issueWarning from '../../vue_shared/components/issue/issue_warning.vue';
 import markdownField from '../../vue_shared/components/markdown/field.vue';
 import issuableStateMixin from '../mixins/issuable_state';
 import resolvable from '../mixins/resolvable';
-import { __ } from '~/locale';
+import { __, sprintf } from '~/locale';
 import { getDraft, updateDraft } from '~/lib/utils/autosave';
-import noteFormMixin from 'ee_else_ce/notes/mixins/note_form';
 
 export default {
   name: 'NoteForm',
@@ -174,6 +174,18 @@ export default {
         (this.line && this.line.can_receive_suggestion)
       );
     },
+    changedCommentText() {
+      return sprintf(
+        __(
+          'This comment has changed since you started editing, please review the %{startTag}updated comment%{endTag} to ensure information is not lost.',
+        ),
+        {
+          startTag: `<a href="${this.noteHash}" target="_blank" rel="noopener noreferrer">`,
+          endTag: '</a>',
+        },
+        false,
+      );
+    },
   },
   watch: {
     noteBody() {
@@ -228,11 +240,11 @@ export default {
 
 <template>
   <div ref="editNoteForm" class="note-edit-form current-note-edit-form js-discussion-note-form">
-    <div v-if="conflictWhileEditing" class="js-conflict-edit-warning alert alert-danger">
-      This comment has changed since you started editing, please review the
-      <a :href="noteHash" target="_blank" rel="noopener noreferrer">updated comment</a> to ensure
-      information is not lost.
-    </div>
+    <div
+      v-if="conflictWhileEditing"
+      class="js-conflict-edit-warning alert alert-danger"
+      v-html="changedCommentText"
+    ></div>
     <div class="flash-container timeline-content"></div>
     <form :data-line-code="lineCode" class="edit-note common-note-form js-quick-submit gfm-form">
       <issue-warning
@@ -264,8 +276,8 @@ export default {
           name="note[note]"
           class="note-textarea js-gfm-input js-note-text js-autosize markdown-area js-vue-issue-note-form js-vue-textarea qa-reply-input"
           dir="auto"
-          aria-label="Description"
-          placeholder="Write a comment or drag your files here…"
+          :aria-label="__('Description')"
+          :placeholder="__('Write a comment or drag your files here…')"
           @keydown.meta.enter="handleKeySubmit()"
           @keydown.ctrl.enter="handleKeySubmit()"
           @keydown.exact.up="editMyLastNote()"
@@ -339,7 +351,7 @@ export default {
             type="button"
             @click="cancelHandler()"
           >
-            Cancel
+            {{ __('Cancel') }}
           </button>
         </template>
       </div>
