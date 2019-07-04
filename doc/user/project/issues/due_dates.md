@@ -39,10 +39,10 @@ Due dates also appear in your [todos list](../../../workflow/todos.md).
 
 The day before an open issue is due, an email will be sent to all participants
 of the issue. Like the due date, the "day before the due date" is determined by the
-server's timezone, ignoring the participants' timezones.
+server's timezone.
 
 Issues with due dates can also be exported as an iCalendar feed. The URL of the
-feed can be added to many calendar applications. The feed is accessible by clicking
+feed can be added to calendar applications. The feed is accessible by clicking
 on the **Subscribe to calendar** button on the following pages:
 
 - on the **Assigned Issues** page that is linked on the right-hand side of the GitLab header
