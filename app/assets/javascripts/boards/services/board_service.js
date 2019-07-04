@@ -1,106 +1,66 @@
-import axios from '../../lib/utils/axios_utils';
-import { mergeUrlParams } from '../../lib/utils/url_utility';
+/* eslint-disable class-methods-use-this */
+
+import boardsStore from '~/boards/stores/boards_store';
 
 export default class BoardService {
-  constructor({ boardsEndpoint, listsEndpoint, bulkUpdatePath, boardId, recentBoardsEndpoint }) {
-    this.boardsEndpoint = boardsEndpoint;
-    this.boardId = boardId;
-    this.listsEndpoint = listsEndpoint;
-    this.listsEndpointGenerate = `${listsEndpoint}/generate.json`;
-    this.bulkUpdatePath = bulkUpdatePath;
-    this.recentBoardsEndpoint = `${recentBoardsEndpoint}.json`;
-  }
-
   generateBoardsPath(id) {
-    return `${this.boardsEndpoint}${id ? `/${id}` : ''}.json`;
+    return boardsStore.generateBoardsPath(id);
   }
 
   generateIssuesPath(id) {
-    return `${this.listsEndpoint}${id ? `/${id}` : ''}/issues`;
+    return boardsStore.generateIssuesPath(id);
   }
 
   static generateIssuePath(boardId, id) {
-    return `${gon.relative_url_root}/-/boards/${boardId ? `${boardId}` : ''}/issues${
-      id ? `/${id}` : ''
-    }`;
+    return boardsStore.generateIssuePath(boardId, id);
   }
 
   all() {
-    return axios.get(this.listsEndpoint);
+    return boardsStore.all();
   }
 
   generateDefaultLists() {
-    return axios.post(this.listsEndpointGenerate, {});
+    return boardsStore.generateDefaultLists();
   }
 
   createList(entityId, entityType) {
-    const list = {
-      [entityType]: entityId,
-    };
-
-    return axios.post(this.listsEndpoint, {
-      list,
-    });
+    return boardsStore.createList(entityId, entityType);
   }
 
   updateList(id, position) {
-    return axios.put(`${this.listsEndpoint}/${id}`, {
-      list: {
-        position,
-      },
-    });
+    return boardsStore.updateList(id, position);
   }
 
   destroyList(id) {
-    return axios.delete(`${this.listsEndpoint}/${id}`);
+    return boardsStore.destroyList(id);
   }
 
   getIssuesForList(id, filter = {}) {
-    const data = { id };
-    Object.keys(filter).forEach(key => {
-      data[key] = filter[key];
-    });
-
-    return axios.get(mergeUrlParams(data, this.generateIssuesPath(id)));
+    return boardsStore.getIssuesForList(id, filter);
   }
 
   moveIssue(id, fromListId = null, toListId = null, moveBeforeId = null, moveAfterId = null) {
-    return axios.put(BoardService.generateIssuePath(this.boardId, id), {
-      from_list_id: fromListId,
-      to_list_id: toListId,
-      move_before_id: moveBeforeId,
-      move_after_id: moveAfterId,
-    });
+    return boardsStore.moveIssue(id, fromListId, toListId, moveBeforeId, moveAfterId);
   }
 
   newIssue(id, issue) {
-    return axios.post(this.generateIssuesPath(id), {
-      issue,
-    });
+    return boardsStore.newIssue(id, issue);
   }
 
   getBacklog(data) {
-    return axios.get(
-      mergeUrlParams(data, `${gon.relative_url_root}/-/boards/${this.boardId}/issues.json`),
-    );
+    return boardsStore.getBacklog(data);
   }
 
   bulkUpdate(issueIds, extraData = {}) {
-    const data = {
-      update: Object.assign(extraData, {
-        issuable_ids: issueIds.join(','),
-      }),
-    };
-
-    return axios.post(this.bulkUpdatePath, data);
+    return boardsStore.bulkUpdate(issueIds, extraData);
   }
 
   static getIssueInfo(endpoint) {
-    return axios.get(endpoint);
+    return boardsStore.getIssueInfo(endpoint);
   }
 
   static toggleIssueSubscription(endpoint) {
-    return axios.post(endpoint);
+    return boardsStore.toggleIssueSubscription(endpoint);
   }
 }
 

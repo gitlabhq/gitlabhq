@@ -8,6 +8,8 @@ import Cookies from 'js-cookie';
 import BoardsStoreEE from 'ee_else_ce/boards/stores/boards_store_ee';
 import { getUrlParamsArray, parseBoolean } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
+import axios from '~/lib/utils/axios_utils';
+import { mergeUrlParams } from '~/lib/utils/url_utility';
 import eventHub from '../eventhub';
 
 const boardsStore = {
@@ -28,6 +30,7 @@ const boardsStore = {
     },
     currentPage: '',
     reload: false,
+    endpoints: {},
   },
   detail: {
     issue: {},
@@ -36,6 +39,19 @@ const boardsStore = {
     issue: {},
     list: {},
   },
+
+  setEndpoints({ boardsEndpoint, listsEndpoint, bulkUpdatePath, boardId, recentBoardsEndpoint }) {
+    const listsEndpointGenerate = `${listsEndpoint}/generate.json`;
+    this.state.endpoints = {
+      boardsEndpoint,
+      boardId,
+      listsEndpoint,
+      listsEndpointGenerate,
+      bulkUpdatePath,
+      recentBoardsEndpoint: `${recentBoardsEndpoint}.json`,
+    };
+  },
+
   create() {
     this.state.lists = [];
     this.filter.path = getUrlParamsArray().join('&');
@@ -228,6 +244,101 @@ const boardsStore = {
 
   setTimeTrackingLimitToHours(limitToHours) {
     this.timeTracking.limitToHours = parseBoolean(limitToHours);
+  },
+
+  generateBoardsPath(id) {
+    return `${this.state.endpoints.boardsEndpoint}${id ? `/${id}` : ''}.json`;
+  },
+
+  generateIssuesPath(id) {
+    return `${this.state.endpoints.listsEndpoint}${id ? `/${id}` : ''}/issues`;
+  },
+
+  generateIssuePath(boardId, id) {
+    return `${gon.relative_url_root}/-/boards/${boardId ? `${boardId}` : ''}/issues${
+      id ? `/${id}` : ''
+    }`;
+  },
+
+  all() {
+    return axios.get(this.state.endpoints.listsEndpoint);
+  },
+
+  generateDefaultLists() {
+    return axios.post(this.state.endpoints.listsEndpointGenerate, {});
+  },
+
+  createList(entityId, entityType) {
+    const list = {
+      [entityType]: entityId,
+    };
+
+    return axios.post(this.state.endpoints.listsEndpoint, {
+      list,
+    });
+  },
+
+  updateList(id, position) {
+    return axios.put(`${this.state.endpoints.listsEndpoint}/${id}`, {
+      list: {
+        position,
+      },
+    });
+  },
+
+  destroyList(id) {
+    return axios.delete(`${this.state.endpoints.listsEndpoint}/${id}`);
+  },
+
+  getIssuesForList(id, filter = {}) {
+    const data = { id };
+    Object.keys(filter).forEach(key => {
+      data[key] = filter[key];
+    });
+
+    return axios.get(mergeUrlParams(data, this.generateIssuesPath(id)));
+  },
+
+  moveIssue(id, fromListId = null, toListId = null, moveBeforeId = null, moveAfterId = null) {
+    return axios.put(this.generateIssuePath(this.state.endpoints.boardId, id), {
+      from_list_id: fromListId,
+      to_list_id: toListId,
+      move_before_id: moveBeforeId,
+      move_after_id: moveAfterId,
+    });
+  },
+
+  newIssue(id, issue) {
+    return axios.post(this.generateIssuesPath(id), {
+      issue,
+    });
+  },
+
+  getBacklog(data) {
+    return axios.get(
+      mergeUrlParams(
+        data,
+        `${gon.relative_url_root}/-/boards/${this.state.endpoints.boardId}/issues.json`,
+      ),
+    );
+  },
+
+  bulkUpdate(issueIds, extraData = {}) {
+    const data = {
+      update: Object.assign(extraData, {
+        issuable_ids: issueIds.join(','),
+      }),
+    };
+
+    return axios.post(this.state.endpoints.bulkUpdatePath, data);
+  },
+
+  getIssueInfo(endpoint) {
+    return axios.get(endpoint);
+  },
+
+  toggleIssueSubscription(endpoint) {
+    return axios.post(endpoint);
   },
 };
 
