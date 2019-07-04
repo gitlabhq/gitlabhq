@@ -50,7 +50,7 @@ module Projects
       end
 
       def cycle_analytics
-        @cycle_analytics ||= ::CycleAnalytics.new(project, options(events_params))
+        @cycle_analytics ||= ::CycleAnalytics::ProjectLevel.new(project: project, options: options(events_params))
       end
 
       def events_params
