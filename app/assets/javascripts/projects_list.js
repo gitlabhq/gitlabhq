@@ -1,4 +1,4 @@
-import FilterableList from './filterable_list';
+import ProjectsFilterableList from './projects/projects_filterable_list';
 
 /**
  * Makes search request for projects when user types a value in the search input.
@@ -11,7 +11,7 @@ export default class ProjectsList {
     const holder = document.querySelector('.js-projects-list-holder');
 
     if (form && filter && holder) {
-      const list = new FilterableList(form, filter, holder);
+      const list = new ProjectsFilterableList(form, filter, holder);
       list.initSearch();
     }
   }
