@@ -1,0 +1,3 @@
+---
+title: "Don't leak private members in project member autocomplete suggestions"
+type: security
