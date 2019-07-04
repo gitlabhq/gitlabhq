@@ -119,11 +119,15 @@ function deferredInitialisation() {
       .catch(() => {});
   }
 
+  const glTooltipDelay = localStorage.getItem('gl-tooltip-delay');
+  const delay = glTooltipDelay ? JSON.parse(glTooltipDelay) : 0;
+
   // Initialize tooltips
   $body.tooltip({
     selector: '.has-tooltip, [data-toggle="tooltip"]',
     trigger: 'hover',
     boundary: 'viewport',
+    delay,
   });
 
   // Initialize popovers
