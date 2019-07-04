@@ -103,6 +103,11 @@ module Gitlab
           yarn\.lock
         )\z}x => :frontend,
 
+        %r{\A(ee/)?db/} => :database,
+        %r{\A(ee/)?lib/gitlab/(database|background_migration|sql|github_import)(/|\.rb)} => :database,
+        %r{\A(app/models/project_authorization|app/services/users/refresh_authorized_projects_service)(/|\.rb)} => :database,
+        %r{\Arubocop/cop/migration(/|\.rb)} => :database,
+
         %r{\A(ee/)?app/(?!assets|views)[^/]+} => :backend,
         %r{\A(ee/)?(bin|config|danger|generator_templates|lib|rubocop|scripts)/} => :backend,
         %r{\A(ee/)?spec/features/} => :test,
@@ -112,7 +117,6 @@ module Gitlab
         %r{\A(Dangerfile|Gemfile|Gemfile.lock|Procfile|Rakefile|\.gitlab-ci\.yml)\z} => :backend,
         %r{\A[A-Z_]+_VERSION\z} => :backend,
 
-        %r{\A(ee/)?db/} => :database,
         %r{\A(ee/)?qa/} => :qa,
 
         # Files that don't fit into any category are marked with :none
