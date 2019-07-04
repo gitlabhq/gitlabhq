@@ -474,7 +474,7 @@ module API
         authorize_admin_project
 
         begin
-          ::Projects::HousekeepingService.new(user_project).execute
+          ::Projects::HousekeepingService.new(user_project, :gc).execute
         rescue ::Projects::HousekeepingService::LeaseTaken => error
           conflict!(error.message)
         end
