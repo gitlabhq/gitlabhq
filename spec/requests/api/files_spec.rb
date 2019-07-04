@@ -186,6 +186,14 @@ describe API::Files do
         expect(headers[Gitlab::Workhorse::DETECT_HEADER]).to eq "true"
       end
 
+      it 'returns blame file info' do
+        url = route(file_path) + '/blame'
+
+        get api(url, current_user), params: params
+
+        expect(response).to have_gitlab_http_status(200)
+      end
+
       it 'sets inline content disposition by default' do
         url = route(file_path) + "/raw"
 
@@ -248,6 +256,160 @@ describe API::Files do
     context 'when authenticated', 'as a guest' do
       it_behaves_like '403 response' do
         let(:request) { get api(route(file_path), guest), params: params }
+      end
+    end
+  end
+
+  describe 'GET /projects/:id/repository/files/:file_path/blame' do
+    shared_examples_for 'repository blame files' do
+      let(:expected_blame_range_sizes) do
+        [3, 2, 1, 2, 1, 1, 1, 1, 8, 1, 3, 1, 2, 1, 4, 1, 2, 2]
+      end
+
+      let(:expected_blame_range_commit_ids) do
+        %w[
+          913c66a37b4a45b9769037c55c2d238bd0942d2e
+          874797c3a73b60d2187ed6e2fcabd289ff75171e
+          913c66a37b4a45b9769037c55c2d238bd0942d2e
+          874797c3a73b60d2187ed6e2fcabd289ff75171e
+          570e7b2abdd848b95f2f578043fc23bd6f6fd24d
+          874797c3a73b60d2187ed6e2fcabd289ff75171e
+          913c66a37b4a45b9769037c55c2d238bd0942d2e
+          874797c3a73b60d2187ed6e2fcabd289ff75171e
+          570e7b2abdd848b95f2f578043fc23bd6f6fd24d
+          913c66a37b4a45b9769037c55c2d238bd0942d2e
+          874797c3a73b60d2187ed6e2fcabd289ff75171e
+          913c66a37b4a45b9769037c55c2d238bd0942d2e
+          874797c3a73b60d2187ed6e2fcabd289ff75171e
+          570e7b2abdd848b95f2f578043fc23bd6f6fd24d
+          874797c3a73b60d2187ed6e2fcabd289ff75171e
+          913c66a37b4a45b9769037c55c2d238bd0942d2e
+          874797c3a73b60d2187ed6e2fcabd289ff75171e
+          913c66a37b4a45b9769037c55c2d238bd0942d2e
+        ]
+      end
+
+      it 'returns file attributes in headers' do
+        head api(route(file_path) + '/blame', current_user), params: params
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response.headers['X-Gitlab-File-Path']).to eq(CGI.unescape(file_path))
+        expect(response.headers['X-Gitlab-File-Name']).to eq('popen.rb')
+        expect(response.headers['X-Gitlab-Last-Commit-Id']).to eq('570e7b2abdd848b95f2f578043fc23bd6f6fd24d')
+        expect(response.headers['X-Gitlab-Content-Sha256'])
+          .to eq('c440cd09bae50c4632cc58638ad33c6aa375b6109d811e76a9cc3a613c1e8887')
+      end
+
+      it 'returns blame file attributes as json' do
+        get api(route(file_path) + '/blame', current_user), params: params
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response.map { |x| x['lines'].size }).to eq(expected_blame_range_sizes)
+        expect(json_response.map { |x| x['commit']['id'] }).to eq(expected_blame_range_commit_ids)
+        range = json_response[0]
+        expect(range['lines']).to eq(["require 'fileutils'", "require 'open3'", ''])
+        expect(range['commit']['id']).to eq('913c66a37b4a45b9769037c55c2d238bd0942d2e')
+        expect(range['commit']['parent_ids']).to eq(['cfe32cf61b73a0d5e9f13e774abde7ff789b1660'])
+        expect(range['commit']['message'])
+          .to eq("Files, encoding and much more\n\nSigned-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>\n")
+
+        expect(range['commit']['authored_date']).to eq('2014-02-27T08:14:56.000Z')
+        expect(range['commit']['author_name']).to eq('Dmitriy Zaporozhets')
+        expect(range['commit']['author_email']).to eq('dmitriy.zaporozhets@gmail.com')
+
+        expect(range['commit']['committed_date']).to eq('2014-02-27T08:14:56.000Z')
+        expect(range['commit']['committer_name']).to eq('Dmitriy Zaporozhets')
+        expect(range['commit']['committer_email']).to eq('dmitriy.zaporozhets@gmail.com')
+      end
+
+      it 'returns blame file info for files with dots' do
+        url = route('.gitignore') + '/blame'
+
+        get api(url, current_user), params: params
+
+        expect(response).to have_gitlab_http_status(200)
+      end
+
+      it 'returns file by commit sha' do
+        # This file is deleted on HEAD
+        file_path = 'files%2Fjs%2Fcommit%2Ejs%2Ecoffee'
+        params[:ref] = '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9'
+
+        get api(route(file_path) + '/blame', current_user), params: params
+
+        expect(response).to have_gitlab_http_status(200)
+      end
+
+      context 'when mandatory params are not given' do
+        it_behaves_like '400 response' do
+          let(:request) { get api(route('any%2Ffile/blame'), current_user) }
+        end
+      end
+
+      context 'when file_path does not exist' do
+        let(:params) { { ref: 'master' } }
+
+        it_behaves_like '404 response' do
+          let(:request) { get api(route('app%2Fmodels%2Fapplication%2Erb/blame'), current_user), params: params }
+          let(:message) { '404 File Not Found' }
+        end
+      end
+
+      context 'when commit does not exist' do
+        let(:params) { { ref: '1111111111111111111111111111111111111111' } }
+
+        it_behaves_like '404 response' do
+          let(:request) { get api(route(file_path + '/blame'), current_user), params: params }
+          let(:message) { '404 Commit Not Found' }
+        end
+      end
+
+      context 'when repository is disabled' do
+        include_context 'disabled repository'
+
+        it_behaves_like '403 response' do
+          let(:request) { get api(route(file_path + '/blame'), current_user), params: params }
+        end
+      end
+    end
+
+    context 'when unauthenticated', 'and project is public' do
+      it_behaves_like 'repository blame files' do
+        let(:project) { create(:project, :public, :repository) }
+        let(:current_user) { nil }
+      end
+    end
+
+    context 'when unauthenticated', 'and project is private' do
+      it_behaves_like '404 response' do
+        let(:request) { get api(route(file_path)), params: params }
+        let(:message) { '404 Project Not Found' }
+      end
+    end
+
+    context 'when authenticated', 'as a developer' do
+      it_behaves_like 'repository blame files' do
+        let(:current_user) { user }
+      end
+    end
+
+    context 'when authenticated', 'as a guest' do
+      it_behaves_like '403 response' do
+        let(:request) { get api(route(file_path) + '/blame', guest), params: params }
+      end
+    end
+
+    context 'when PATs are used' do
+      it 'returns blame file by commit sha' do
+        token = create(:personal_access_token, scopes: ['read_repository'], user: user)
+
+        # This file is deleted on HEAD
+        file_path = 'files%2Fjs%2Fcommit%2Ejs%2Ecoffee'
+        params[:ref] = '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9'
+
+        get api(route(file_path) + '/blame', personal_access_token: token), params: params
+
+        expect(response).to have_gitlab_http_status(200)
       end
     end
   end

@@ -83,6 +83,31 @@ module API
     resource :projects, requirements: FILE_ENDPOINT_REQUIREMENTS do
       allow_access_with_scope :read_repository, if: -> (request) { request.get? || request.head? }
 
+      desc 'Get blame file metadata from repository'
+      params do
+        requires :file_path, type: String, desc: 'The url encoded path to the file. Ex. lib%2Fclass%2Erb'
+        requires :ref, type: String, desc: 'The name of branch, tag or commit', allow_blank: false
+      end
+      head ":id/repository/files/:file_path/blame", requirements: FILE_ENDPOINT_REQUIREMENTS do
+        assign_file_vars!
+
+        set_http_headers(blob_data)
+      end
+
+      desc 'Get blame file from the repository'
+      params do
+        requires :file_path, type: String, desc: 'The url encoded path to the file. Ex. lib%2Fclass%2Erb'
+        requires :ref, type: String, desc: 'The name of branch, tag or commit', allow_blank: false
+      end
+      get ":id/repository/files/:file_path/blame", requirements: FILE_ENDPOINT_REQUIREMENTS do
+        assign_file_vars!
+
+        set_http_headers(blob_data)
+
+        blame_ranges = Gitlab::Blame.new(@blob, @commit).groups(highlight: false)
+        present blame_ranges, with: Entities::BlameRange
+      end
+
       desc 'Get raw file metadata from repository'
       params do
         requires :file_path, type: String, desc: 'The url encoded path to the file. Ex. lib%2Fclass%2Erb'
