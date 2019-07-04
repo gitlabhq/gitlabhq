@@ -1,0 +1,5 @@
+---
+title: Fix broken URLs for uploads with a plus in the filename
+merge_request: 29915
+author:
+type: fixed

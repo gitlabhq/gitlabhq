@@ -203,6 +203,6 @@ class FileUploader < GitlabUploader
   end
 
   def secure_url
-    File.join('/uploads', @secret, file.filename)
+    File.join('/uploads', @secret, filename)
   end
 end
