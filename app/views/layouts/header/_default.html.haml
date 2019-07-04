@@ -53,7 +53,7 @@
                   = number_with_delimiter(merge_requests_count)
           - if header_link?(:todos)
             = nav_link(controller: 'dashboard/todos', html_options: { class: "user-counter" }) do
-              = link_to dashboard_todos_path, title: _('Todos'), aria: { label: _('Todos') }, class: 'shortcuts-todos', data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+              = link_to dashboard_todos_path, title: _('To-Do List'), aria: { label: _('To-Do List') }, class: 'shortcuts-todos', data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
                 = sprite_icon('todo-done', size: 16)
                 %span.badge.badge-pill.todos-count{ class: ('hidden' if todos_pending_count.zero?) }
                   = todos_count_format(todos_pending_count)

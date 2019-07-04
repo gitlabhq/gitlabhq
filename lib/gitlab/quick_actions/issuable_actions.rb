@@ -146,8 +146,8 @@ module Gitlab
           @updates[:todo_event] = 'add'
         end
 
-        desc _('Mark todo as done')
-        explanation _('Marks todo as done.')
+        desc _('Mark to do as done')
+        explanation _('Marks to do as done.')
         types Issuable
         condition do
           quick_action_target.persisted? &&
