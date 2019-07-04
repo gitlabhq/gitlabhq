@@ -20,12 +20,12 @@ class AnalyticsIssueEntity < Grape::Entity
   end
 
   expose :url do |object|
-    url_to(:namespace_project_issue, id: object[:iid].to_s)
+    url_to(:namespace_project_issue, object)
   end
 
   private
 
-  def url_to(route, id)
-    public_send("#{route}_url", request.project.namespace, request.project, id) # rubocop:disable GitlabSecurity/PublicSend
+  def url_to(route, object)
+    public_send("#{route}_url", object[:path], object[:name], object[:iid].to_s) # rubocop:disable GitlabSecurity/PublicSend
   end
 end

@@ -5,8 +5,11 @@ module Gitlab
     module IssueHelper
       def stage_query(project_ids)
         query = issue_table.join(issue_metrics_table).on(issue_table[:id].eq(issue_metrics_table[:issue_id]))
+          .join(projects_table).on(issue_table[:project_id].eq(projects_table[:id]))
+          .join(routes_table).on(projects_table[:namespace_id].eq(routes_table[:source_id]))
           .project(issue_table[:project_id].as("project_id"))
           .where(issue_table[:project_id].in(project_ids))
+          .where(routes_table[:source_type].eq('Namespace'))
           .where(issue_table[:created_at].gteq(options[:from]))
           .where(issue_metrics_table[:first_added_to_board_at].not_eq(nil).or(issue_metrics_table[:first_associated_with_milestone_at].not_eq(nil)))
 

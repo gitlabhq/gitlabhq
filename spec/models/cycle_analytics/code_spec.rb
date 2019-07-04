@@ -38,7 +38,7 @@ describe 'CycleAnalytics#code' do
         merge_merge_requests_closing_issue(user, project, issue)
         deploy_master(user, project)
 
-        expect(subject[:code].median).to be_nil
+        expect(subject[:code].project_median).to be_nil
       end
     end
   end
@@ -68,7 +68,7 @@ describe 'CycleAnalytics#code' do
 
         merge_merge_requests_closing_issue(user, project, issue)
 
-        expect(subject[:code].median).to be_nil
+        expect(subject[:code].project_median).to be_nil
       end
     end
   end

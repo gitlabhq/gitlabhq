@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 module CycleAnalytics
-  class Base
+  module BaseMethods
     STAGES = %i[issue plan code test review staging production].freeze
 
     def all_medians_by_stage
       STAGES.each_with_object({}) do |stage_name, medians_per_stage|
-        medians_per_stage[stage_name] = self[stage_name].median
+        medians_per_stage[stage_name] = self[stage_name].project_median
       end
     end
 
@@ -21,7 +21,7 @@ module CycleAnalytics
     end
 
     def [](stage_name)
-      Gitlab::CycleAnalytics::Stage[stage_name].new(project: @project, options: @options)
+      Gitlab::CycleAnalytics::Stage[stage_name].new(options: options)
     end
   end
 end

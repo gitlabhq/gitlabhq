@@ -5,12 +5,11 @@ module Gitlab
     class BaseEventFetcher
       include BaseQuery
 
-      attr_reader :projections, :query, :stage, :order, :project, :options
+      attr_reader :projections, :query, :stage, :order, :options
 
       MAX_EVENTS = 50
 
-      def initialize(project: nil, stage:, options:)
-        @project = project
+      def initialize(stage:, options:)
         @stage = stage
         @options = options
       end
@@ -68,11 +67,23 @@ module Gitlab
       end
 
       def allowed_ids_source
-        { project_id: project.id }
+        group ? { group_id: group.id, include_subgroups: true } : { project_id: project.id }
+      end
+
+      def serialization_context
+        {}
       end
 
       def projects
-        [project]
+        group ? Project.inside_path(group.full_path) : [project]
+      end
+
+      def group
+        @group ||= options.fetch(:group, nil)
+      end
+
+      def project
+        @project ||= options.fetch(:project, nil)
       end
     end
   end

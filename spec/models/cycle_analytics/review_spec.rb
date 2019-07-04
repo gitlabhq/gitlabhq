@@ -28,7 +28,7 @@ describe 'CycleAnalytics#review' do
     it "returns nil" do
       MergeRequests::MergeService.new(project, user).execute(create(:merge_request))
 
-      expect(subject[:review].median).to be_nil
+      expect(subject[:review].project_median).to be_nil
     end
   end
 end
