@@ -39,11 +39,14 @@ after it is closed.
 
 ![Report Abuse](img/report-abuse.png)
 
-#### 2. Todos
+#### 2. To Do
 
-You can click **add todo** to add the issue to your [GitLab Todo](../../../workflow/todos.md)
-list. If it is already on your todo list, the buttom will show **mark todo as done**,
-which you can click to mark that issue as done (which will be reflected in the Todo list).
+You can add issues to and remove issues from your [GitLab To-Do List](../../../workflow/todos.md).
+
+The button to do this has a different label depending on whether the issue is already on your To-Do List or not. If the issue is:
+
+- Already on your To-Do List: The button is labeled **Mark as done**. Click the button to remove the issue from your To-Do List.
+- Not on your To-Do List: The button is labelled **Add a To Do**. Click the button to add the issue to your To-Do List.
 
 #### 3. Assignee
 
@@ -205,6 +208,14 @@ to let them know your reaction without spamming them.
 You can filter what is displayed in the issue history by clicking on **Show all activity**
 and selecting either **Show comments only**, which only shows discussions and hides
 updates to the issue, or **Show history only**, which hides discussions and only shows updates.
+
+- You can mention a user or a group present in your GitLab instance with
+  `@username` or `@groupname` and they will be notified via To-Do items 
+  and email, unless they have [disabled all notifications](#13-notifications)
+  in their profile settings.
+- Mentions for yourself (the current logged in user), will be highlighted
+  in a different color, allowing you to easily see which comments involve you,
+  helping you focus on them quickly.
 
 ![Show all activity](img/show-all-activity.png)
 

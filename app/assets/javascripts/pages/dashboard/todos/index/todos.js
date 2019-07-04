@@ -82,7 +82,7 @@ export default class Todos {
       })
       .catch(() => {
         this.updateRowState(target, true);
-        return flash(__('Error updating todo status.'));
+        return flash(__('Error updating status of to-do item.'));
       });
   }
 
@@ -124,7 +124,7 @@ export default class Todos {
         this.updateAllState(target, data);
         this.updateBadges(data);
       })
-      .catch(() => flash(__('Error updating status for all todos.')));
+      .catch(() => flash(__('Error updating status for all to-do items.')));
   }
 
   updateAllState(target, data) {

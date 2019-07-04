@@ -58,7 +58,7 @@ describe('Issuable right sidebar collapsed todo toggle', () => {
   it('sets default tooltip title', () => {
     expect(
       document.querySelector('.js-issuable-todo.sidebar-collapsed-icon').getAttribute('title'),
-    ).toBe('Add todo');
+    ).toBe('Add a To Do');
   });
 
   it('toggle todo state', done => {
@@ -85,7 +85,7 @@ describe('Issuable right sidebar collapsed todo toggle', () => {
     setTimeout(() => {
       expect(
         document.querySelector('.issuable-sidebar-header .js-issuable-todo').textContent.trim(),
-      ).toBe('Mark todo as done');
+      ).toBe('Mark as done');
 
       done();
     });
@@ -99,7 +99,7 @@ describe('Issuable right sidebar collapsed todo toggle', () => {
         document
           .querySelector('.js-issuable-todo.sidebar-collapsed-icon')
           .getAttribute('data-original-title'),
-      ).toBe('Mark todo as done');
+      ).toBe('Mark as done');
 
       done();
     });
@@ -124,13 +124,13 @@ describe('Issuable right sidebar collapsed todo toggle', () => {
 
         expect(
           document.querySelector('.issuable-sidebar-header .js-issuable-todo').textContent.trim(),
-        ).toBe('Add todo');
+        ).toBe('Add a To Do');
       })
       .then(done)
       .catch(done.fail);
   });
 
-  it('updates aria-label to mark todo as done', done => {
+  it('updates aria-label to Mark as done', done => {
     document.querySelector('.js-issuable-todo.sidebar-collapsed-icon').click();
 
     setTimeout(() => {
@@ -138,7 +138,7 @@ describe('Issuable right sidebar collapsed todo toggle', () => {
         document
           .querySelector('.js-issuable-todo.sidebar-collapsed-icon')
           .getAttribute('aria-label'),
-      ).toBe('Mark todo as done');
+      ).toBe('Mark as done');
 
       done();
     });
@@ -153,7 +153,7 @@ describe('Issuable right sidebar collapsed todo toggle', () => {
           document
             .querySelector('.js-issuable-todo.sidebar-collapsed-icon')
             .getAttribute('aria-label'),
-        ).toBe('Mark todo as done');
+        ).toBe('Mark as done');
 
         document.querySelector('.js-issuable-todo.sidebar-collapsed-icon').click();
       })
@@ -163,7 +163,7 @@ describe('Issuable right sidebar collapsed todo toggle', () => {
           document
             .querySelector('.js-issuable-todo.sidebar-collapsed-icon')
             .getAttribute('aria-label'),
-        ).toBe('Add todo');
+        ).toBe('Add a To Do');
       })
       .then(done)
       .catch(done.fail);

@@ -22,7 +22,7 @@ describe 'Dashboard shortcuts', :js do
 
       find('body').send_keys([:shift, 'T'])
 
-      check_page_title('Todos')
+      check_page_title('To-Do List')
 
       find('body').send_keys([:shift, 'P'])
 

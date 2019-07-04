@@ -16,8 +16,8 @@ discussions, and descriptions:
 |:---------------------------|:------------------------------ |:------|:--------------|
 | `/tableflip <Comment>`     | Append the comment with `(╯°□°)╯︵ ┻━┻` | ✓ | ✓        |
 | `/shrug <Comment>`         | Append the comment with `¯\＿(ツ)＿/¯` | ✓ | ✓         |
-| `/todo`                    | Add a todo                     | ✓     | ✓             |
-| `/done`                    | Mark todo as done              | ✓     | ✓             |
+| `/todo`                    | Add a To Do                    | ✓     | ✓             |
+| `/done`                    | Mark To Do as done             | ✓     | ✓             |
 | `/subscribe`               | Subscribe                      | ✓     | ✓             |
 | `/unsubscribe`             | Unsubscribe                    | ✓     | ✓             |
 | `/close`                   | Close                          | ✓     | ✓             |
@@ -75,8 +75,8 @@ The following quick actions are applicable for epics threads and description:
 |:---------------------------|:----------------------------------------|
 | `/tableflip <Comment>`     | Append the comment with `(╯°□°)╯︵ ┻━┻` |
 | `/shrug <Comment>`         | Append the comment with `¯\＿(ツ)＿/¯`  |
-| `/todo`                    | Add a todo                              |
-| `/done`                    | Mark todo as done                       |
+| `/todo`                    | Add a To Do                              |
+| `/done`                    | Mark To Do as done                       |
 | `/subscribe`               | Subscribe                               |
 | `/unsubscribe`             | Unsubscribe                             |
 | `/close`                   | Close                                   |

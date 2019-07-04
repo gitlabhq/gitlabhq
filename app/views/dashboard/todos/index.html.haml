@@ -1,11 +1,11 @@
 - @hide_top_links = true
-- page_title "Todos"
-- header_title "Todos", dashboard_todos_path
+- page_title "To-Do List"
+- header_title "To-Do List", dashboard_todos_path
 
 = render_dashboard_gold_trial(current_user)
 
 .page-title-holder.d-flex.align-items-center
-  %h1.page-title= _('Todos')
+  %h1.page-title= _('To-Do List')
 
 - if current_user.todos.any?
   .top-area
@@ -13,7 +13,7 @@
       %li.todos-pending{ class: active_when(params[:state].blank? || params[:state] == 'pending') }>
         = link_to todos_filter_path(state: 'pending') do
           %span
-            Todos
+            To Do
           %span.badge.badge-pill
             = number_with_delimiter(todos_pending_count)
       %li.todos-done{ class: active_when(params[:state] == 'done') }>
@@ -102,24 +102,24 @@
         %p
           Are you looking for things to do? Take a look at
           = succeed "," do
-            = link_to "the opened issues", issues_dashboard_path
+            = link_to "open issues", issues_dashboard_path
           contribute to
-          = link_to "merge requests", merge_requests_dashboard_path
-          or mention someone in a comment to assign a new todo automatically.
+          = link_to "a merge request\,", merge_requests_dashboard_path
+          or mention someone in a comment to automatically assign them a new to-do item.
       - else
         %h4.text-center
-          There are no todos to show.
+          Nothing is on your to-do list. Nice work!
   - else
     .todos-empty
       .todos-empty-hero.svg-content
         = image_tag 'illustrations/todos_empty.svg'
       .todos-empty-content
         %h4
-          Todos let you see what you should do next
+          Your To-Do List shows what to work on next
         %p
-          When an issue or merge request is assigned to you, or when you
+          When an issue or merge request is assigned to you, or when you receive a
           %strong
             @mention
-          in a comment, this will trigger a new item in your todo list, automatically.
+          in a comment, this automatically triggers a new item in your To-Do List.
         %p
-          You will always know what to work on next.
+          It's how you always know what to work on next.

@@ -626,6 +626,9 @@ msgstr ""
 msgid "Add a Grafana button in the admin sidebar, monitoring section, to access a variety of statistics on the health and performance of GitLab."
 msgstr ""
 
+msgid "Add a To Do"
+msgstr ""
+
 msgid "Add a bullet list"
 msgstr ""
 
@@ -702,9 +705,6 @@ msgid "Add to project"
 msgstr ""
 
 msgid "Add to review"
-msgstr ""
-
-msgid "Add todo"
 msgstr ""
 
 msgid "Add user(s) to the group:"
@@ -891,9 +891,6 @@ msgid "All merge conflicts were resolved. The merge request can now be merged."
 msgstr ""
 
 msgid "All projects"
-msgstr ""
-
-msgid "All todos were marked as done."
 msgstr ""
 
 msgid "All users"
@@ -4288,10 +4285,10 @@ msgstr ""
 msgid "Error updating %{issuableType}"
 msgstr ""
 
-msgid "Error updating status for all todos."
+msgid "Error updating status for all to-do items."
 msgstr ""
 
-msgid "Error updating todo status."
+msgid "Error updating status of to-do item."
 msgstr ""
 
 msgid "Error uploading file"
@@ -4388,6 +4385,9 @@ msgid "Everyone With Access"
 msgstr ""
 
 msgid "Everyone can contribute"
+msgstr ""
+
+msgid "Everything on your to-do list is marked as done."
 msgstr ""
 
 msgid "Everything you need to create a GitLab Pages site using GitBook."
@@ -6249,6 +6249,9 @@ msgstr ""
 msgid "March"
 msgstr ""
 
+msgid "Mark as done"
+msgstr ""
+
 msgid "Mark as resolved"
 msgstr ""
 
@@ -6258,7 +6261,7 @@ msgstr ""
 msgid "Mark this issue as a duplicate of another issue"
 msgstr ""
 
-msgid "Mark todo as done"
+msgid "Mark to do as done"
 msgstr ""
 
 msgid "Markdown"
@@ -6273,7 +6276,7 @@ msgstr ""
 msgid "Marks this issue as a duplicate of %{duplicate_reference}."
 msgstr ""
 
-msgid "Marks todo as done."
+msgid "Marks to do as done."
 msgstr ""
 
 msgid "Max access level"
@@ -11173,16 +11176,13 @@ msgstr ""
 msgid "To widen your search, change or remove filters above"
 msgstr ""
 
+msgid "To-Do List"
+msgstr ""
+
+msgid "To-do item successfully marked as done."
+msgstr ""
+
 msgid "Today"
-msgstr ""
-
-msgid "Todo"
-msgstr ""
-
-msgid "Todo was successfully marked as done."
-msgstr ""
-
-msgid "Todos"
 msgstr ""
 
 msgid "Toggle Sidebar"
@@ -12429,7 +12429,7 @@ msgstr ""
 msgid "Your SSH keys (%{count})"
 msgstr ""
 
-msgid "Your Todos"
+msgid "Your To-Do List"
 msgstr ""
 
 msgid "Your U2F device did not send a valid JSON response."

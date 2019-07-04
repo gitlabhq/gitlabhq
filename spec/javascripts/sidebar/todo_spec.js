@@ -53,14 +53,14 @@ describe('SidebarTodo', () => {
 
     describe('buttonLabel', () => {
       it('returns todo button text for marking todo as done when `isTodo` prop is `true`', () => {
-        expect(vm.buttonLabel).toBe('Mark todo as done');
+        expect(vm.buttonLabel).toBe('Mark as done');
       });
 
       it('returns todo button text for add todo when `isTodo` prop is `false`', done => {
         vm.isTodo = false;
         Vue.nextTick()
           .then(() => {
-            expect(vm.buttonLabel).toBe('Add todo');
+            expect(vm.buttonLabel).toBe('Add a To Do');
           })
           .then(done)
           .catch(done.fail);
@@ -131,14 +131,14 @@ describe('SidebarTodo', () => {
     });
 
     it('check button label computed property', () => {
-      expect(vm.buttonLabel).toEqual('Mark todo as done');
+      expect(vm.buttonLabel).toEqual('Mark as done');
     });
 
     it('renders button label element when `collapsed` prop is `false`', () => {
       const buttonLabelEl = vm.$el.querySelector('span.issuable-todo-inner');
 
       expect(buttonLabelEl).not.toBeNull();
-      expect(buttonLabelEl.innerText.trim()).toBe('Mark todo as done');
+      expect(buttonLabelEl.innerText.trim()).toBe('Mark as done');
     });
 
     it('renders button icon when `collapsed` prop is `true`', done => {
