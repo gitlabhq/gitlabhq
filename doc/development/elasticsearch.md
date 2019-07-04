@@ -150,7 +150,7 @@ Uses an [Edge NGram token filter](https://www.elastic.co/guide/en/elasticsearch/
 
 ## Troubleshooting
 
-### Getting "flood stage disk watermark [95%] exceeded"
+### Getting `flood stage disk watermark [95%] exceeded`
 
 You might get an error such as
 

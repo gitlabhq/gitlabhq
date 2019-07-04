@@ -62,7 +62,7 @@ making it both concise and descriptive, err on the side of descriptive.
 The first example provides no context of where the change was made, or why, or
 how it benefits the user.
 
-- **Bad:** Copy [some text] to clipboard.
+- **Bad:** Copy (some text) to clipboard.
 - **Good:** Update the "Copy to clipboard" tooltip to indicate what's being
   copied.
 

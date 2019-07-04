@@ -267,7 +267,7 @@ GitLab CI is the open-source continuous integration service included with GitLab
 #### Gitlab Workhorse
 
 - [Project page](https://gitlab.com/gitlab-org/gitlab-workhorse/blob/master/README.md)
-- Configuration: [Omnibus][gitlab-workhorse-omnibus], [Charts][gitlab-workhorse-charts], [Source][workhorse-source]
+- Configuration: [Omnibus][workhorse-omnibus], [Charts][workhorse-charts], [Source][workhorse-source]
 - Layer: Core Service (Processor)
 - Process: `gitlab-workhorse`
 
@@ -681,7 +681,7 @@ We've also detailed [our architecture of GitLab.com](https://about.gitlab.com/ha
 [pgbouncer-exporter-omnibus]: ../administration/monitoring/prometheus/pgbouncer_exporter.md
 [pgbouncer-exporter-charts]: https://docs.gitlab.com/charts/installation/deployment.html#postgresql
 [gitlab-monitor-omnibus]: ../administration/monitoring/prometheus/gitlab_monitor_exporter.md
-[gitab-monitor-charts]: https://docs.gitlab.com/charts/charts/gitlab/gitlab-monitor/index.html
+[gitlab-monitor-charts]: https://docs.gitlab.com/charts/charts/gitlab/gitlab-monitor/index.html
 [node-exporter-omnibus]: ../administration/monitoring/prometheus/node_exporter.md
 [node-exporter-charts]: https://gitlab.com/charts/gitlab/issues/1332
 [mattermost-omnibus]: https://docs.gitlab.com/omnibus/gitlab-mattermost/

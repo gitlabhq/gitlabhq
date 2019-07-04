@@ -79,7 +79,7 @@ subgraph gitlab-ce/ee pipeline
     end
 
 subgraph omnibus-gitlab pipeline
-    A2[<b>`Trigger-docker` stage</b></b><br />`Trigger:gitlab-docker` job] -->|once done| B2
+    A2[<b>`Trigger-docker` stage</b><br />`Trigger:gitlab-docker` job] -->|once done| B2
     end
 
 subgraph gitlab-qa pipeline

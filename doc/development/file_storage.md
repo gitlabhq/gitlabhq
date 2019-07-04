@@ -33,9 +33,9 @@ they are still not 100% standardized. You can see them below:
 | User avatars                          | yes    | uploads/-/system/user/avatar/:id/:filename                  | `AvatarUploader`       | User       |
 | User snippet attachments              | yes    | uploads/-/system/personal_snippet/:id/:random_hex/:filename | `PersonalFileUploader` | Snippet    |
 | Project avatars                       | yes    | uploads/-/system/project/avatar/:id/:filename               | `AvatarUploader`       | Project    |
-| Issues/MR/Notes Markdown attachments        | yes    | uploads/:project_path_with_namespace/:random_hex/:filename  | `FileUploader`         | Project    |
-| Issues/MR/Notes Legacy Markdown attachments | no     | uploads/-/system/note/attachment/:id/:filename              | `AttachmentUploader`   | Note       |
-| CI Artifacts (CE)                     | yes    | shared/artifacts/:disk_hash[0..1]/:disk_hash[2..3]/:disk_hash/:year_:month_:date/:job_id/:job_artifact_id (:disk_hash is SHA256 digest of project_id) | `JobArtifactUploader`  | Ci::JobArtifact  |
+| Issues/MR/Notes Markdown attachments  | yes    | uploads/:project_path_with_namespace/:random_hex/:filename  | `FileUploader`         | Project    |
+| Issues/MR/Notes Legacy Markdown attachments | no | uploads/-/system/note/attachment/:id/:filename            | `AttachmentUploader`   | Note       |
+| CI Artifacts (CE)                     | yes    | `shared/artifacts/:disk_hash[0..1]/:disk_hash[2..3]/:disk_hash/:year_:month_:date/:job_id/:job_artifact_id` (:disk_hash is SHA256 digest of project_id) | `JobArtifactUploader`  | Ci::JobArtifact  |
 | LFS Objects  (CE)                     | yes    | shared/lfs-objects/:hex/:hex/:object_hash                   | `LfsObjectUploader`    | LfsObject  |
 | External merge request diffs          | yes    | shared/external-diffs/merge_request_diffs/mr-:parent_id/diff-:id | `ExternalDiffUploader` | MergeRequestDiff |
 
