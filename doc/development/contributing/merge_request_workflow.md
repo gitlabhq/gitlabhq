@@ -65,7 +65,7 @@ request is as follows:
    1. If you are contributing documentation, choose `Documentation` from the
       "Choose a template" menu and fill in the description according to the template.
    1. Mention the issue(s) your merge request solves, using the `Solves #XXX` or
-      `Closes #XXX` syntax to [auto-close](../../user/project/issues/automatic_issue_closing.md)
+      `Closes #XXX` syntax to [auto-close](../../user/project/issues/managing_issues.md#closing-issues-automatically)
       the issue(s) once the merge request is merged.
 1. If you're allowed to (Core team members, for example), set a relevant milestone
    and [labels](issue_workflow.md).

@@ -1,4 +1,4 @@
-# Issue closing pattern
+# Issue closing pattern **[CORE ONLY]**
 
 >**Note:**
 This is the administration documentation.
@@ -46,4 +46,4 @@ Because Rubular doesn't understand `%{issue_ref}`, you can replace this by
 [gitlab.yml.example]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/config/gitlab.yml.example
 [reconfigure]: restart_gitlab.md#omnibus-gitlab-reconfigure
 [restart]: restart_gitlab.md#installations-from-source
-[user documentation]: ../user/project/issues/automatic_issue_closing.md
+[user documentation]: ../user/project/issues/managing_issues.md#closing-issues-automatically
