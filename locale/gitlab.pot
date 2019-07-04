@@ -118,6 +118,9 @@ msgstr[1] ""
 msgid "%{actionText} & %{openOrClose} %{noteable}"
 msgstr ""
 
+msgid "%{canMergeCount}/%{assigneesCount} can merge"
+msgstr ""
+
 msgid "%{commit_author_link} authored %{commit_timeago}"
 msgstr ""
 
@@ -260,6 +263,9 @@ msgstr ""
 msgid "%{usage_ping_link_start}Learn more%{usage_ping_link_end} about what information is shared with GitLab Inc."
 msgstr ""
 
+msgid "%{userName}'s avatar"
+msgstr ""
+
 msgid "%{user_name} profile page"
 msgstr ""
 
@@ -282,6 +288,9 @@ msgid "+ %{count} more"
 msgstr ""
 
 msgid "+ %{moreCount} more"
+msgstr ""
+
+msgid "+ %{numberOfHiddenAssignees} more"
 msgstr ""
 
 msgid ", or "
@@ -1335,7 +1344,9 @@ msgid "Assigned to me"
 msgstr ""
 
 msgid "Assignee"
-msgstr ""
+msgid_plural "%d Assignees"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Assignee(s)"
 msgstr ""
@@ -1904,6 +1915,9 @@ msgid "Cannot create the abuse report. The user has been deleted."
 msgstr ""
 
 msgid "Cannot create the abuse report. This user has been blocked."
+msgstr ""
+
+msgid "Cannot merge"
 msgstr ""
 
 msgid "Cannot modify managed Kubernetes cluster"
@@ -4242,6 +4256,9 @@ msgid "Error loading viewer"
 msgstr ""
 
 msgid "Error occurred when fetching sidebar data"
+msgstr ""
+
+msgid "Error occurred when saving assignees"
 msgstr ""
 
 msgid "Error occurred when toggling the notification subscription"
@@ -6865,6 +6882,9 @@ msgid "No messages were logged"
 msgstr ""
 
 msgid "No milestones to show"
+msgstr ""
+
+msgid "No one can merge"
 msgstr ""
 
 msgid "No other labels with such name or description"
@@ -10906,10 +10926,19 @@ msgstr ""
 msgid "TimeTrackingEstimated|Est"
 msgstr ""
 
+msgid "TimeTracking|%{startTag}Spent: %{endTag}%{timeSpentHumanReadable}"
+msgstr ""
+
 msgid "TimeTracking|Estimated:"
 msgstr ""
 
+msgid "TimeTracking|Over by %{timeRemainingHumanReadable}"
+msgstr ""
+
 msgid "TimeTracking|Spent"
+msgstr ""
+
+msgid "TimeTracking|Time remaining: %{timeRemainingHumanReadable}"
 msgstr ""
 
 msgid "Timeago|%s days ago"
@@ -11177,6 +11206,9 @@ msgstr ""
 msgid "Toggle navigation"
 msgstr ""
 
+msgid "Toggle sidebar"
+msgstr ""
+
 msgid "Toggle thread"
 msgstr ""
 
@@ -11292,6 +11324,12 @@ msgid "Trying to communicate with your device. Plug it in (if you haven't alread
 msgstr ""
 
 msgid "Tuesday"
+msgstr ""
+
+msgid "Turn Off"
+msgstr ""
+
+msgid "Turn On"
 msgstr ""
 
 msgid "Twitter"
@@ -12491,6 +12529,9 @@ msgid "already shared with this group"
 msgstr ""
 
 msgid "among other things"
+msgstr ""
+
+msgid "assign yourself"
 msgstr ""
 
 msgid "attach a new file"
