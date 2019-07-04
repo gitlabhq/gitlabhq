@@ -4,7 +4,7 @@ GitLab has several features based on receiving incoming emails:
 
 - [Reply by Email](reply_by_email.md): allow GitLab users to comment on issues
   and merge requests by replying to notification emails.
-- [New issue by email](../user/project/issues/create_new_issue.md#new-issue-via-email):
+- [New issue by email](../user/project/issues/managing_issues.md#new-issue-via-email):
   allow GitLab users to create a new issue by sending an email to a
   user-specific email address.
 - [New merge request by email](../user/project/merge_requests/index.md#create-new-merge-requests-by-email):

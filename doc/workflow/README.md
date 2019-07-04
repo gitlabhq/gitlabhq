@@ -4,7 +4,7 @@ comments: false
 
 # Workflow
 
-- [Automatic issue closing](../user/project/issues/automatic_issue_closing.md)
+- [Automatic issue closing](../user/project/issues/managing_issues.md#closing-issues-automatically)
 - [Change your time zone](timezone.md)
 - [Cycle Analytics](../user/project/cycle_analytics.md)
 - [Description templates](../user/project/description_templates.md)

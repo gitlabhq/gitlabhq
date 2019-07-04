@@ -21,7 +21,7 @@ branch for your project. You can choose another branch to be your project's
 default under your project's **Settings > Repository**.
 
 The default branch is the branch affected by the
-[issue closing pattern](../../issues/automatic_issue_closing.md),
+[issue closing pattern](../../issues/managing_issues.md#closing-issues-automatically),
 which means that _an issue will be closed when a merge request is merged to
 the **default branch**_.
 

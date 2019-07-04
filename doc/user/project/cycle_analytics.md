@@ -156,6 +156,6 @@ Learn more about Cycle Analytics in the following resources:
 [environment]: ../../ci/yaml/README.md#environment
 [GitLab flow]: ../../workflow/gitlab_flow.md
 [idea to production]: https://about.gitlab.com/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/#from-idea-to-production-with-gitlab
-[issue closing pattern]: issues/automatic_issue_closing.md
+[issue closing pattern]: issues/managing_issues.md#closing-issues-automatically
 [permissions]: ../permissions.md
 [yml]: ../../ci/yaml/README.md
