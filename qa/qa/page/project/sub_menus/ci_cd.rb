@@ -5,6 +5,8 @@ module QA
     module Project
       module SubMenus
         module CiCd
+          include Page::Project::SubMenus::Common
+
           def self.included(base)
             base.class_eval do
               view 'app/views/layouts/nav/sidebar/_project.html.haml' do
