@@ -1,4 +1,5 @@
 <script>
+import { __ } from '~/locale';
 import { mapGetters, mapActions } from 'vuex';
 import { getLocationHash } from '../../lib/utils/url_utility';
 import Flash from '../../flash';
@@ -170,7 +171,7 @@ export default {
         .catch(() => {
           this.setLoadingState(false);
           this.setNotesFetchedState(true);
-          Flash('Something went wrong while fetching comments. Please try again.');
+          Flash(__('Something went wrong while fetching comments. Please try again.'));
         });
     },
     initPolling() {
