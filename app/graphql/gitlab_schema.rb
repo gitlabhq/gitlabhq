@@ -66,6 +66,8 @@ class GitlabSchema < GraphQL::Schema
 
       if gid.model_class < ApplicationRecord
         Gitlab::Graphql::Loaders::BatchModelLoader.new(gid.model_class, gid.model_id).find
+      elsif gid.model_class.respond_to?(:lazy_find)
+        gid.model_class.lazy_find(gid.model_id)
       else
         gid.find
       end
