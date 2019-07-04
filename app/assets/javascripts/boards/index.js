@@ -21,7 +21,7 @@ import modalMixin from './mixins/modal_mixins';
 import './filters/due_date_filters';
 import Board from './components/board';
 import BoardSidebar from './components/board_sidebar';
-import initNewListDropdown from './components/new_list_dropdown';
+import initNewListDropdown from 'ee_else_ce/boards/components/new_list_dropdown';
 import BoardAddIssuesModal from './components/modal/index.vue';
 import '~/vue_shared/vue_resource_interceptor';
 import {
