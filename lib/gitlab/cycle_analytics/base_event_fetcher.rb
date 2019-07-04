@@ -70,6 +70,10 @@ module Gitlab
       def allowed_ids_source
         { project_id: @project.id }
       end
+
+      def projects
+        [@project]
+      end
     end
   end
 end
