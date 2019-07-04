@@ -11,8 +11,10 @@ describe Dashboard::ProjectsController do
     end
 
     context 'user logged in' do
+      let(:user) { create(:user) }
+
       before do
-        sign_in create(:user)
+        sign_in(user)
       end
 
       context 'external authorization' do
@@ -23,6 +25,20 @@ describe Dashboard::ProjectsController do
 
           expect(response).to have_gitlab_http_status(200)
         end
+      end
+
+      it 'orders the projects by last activity by default' do
+        project = create(:project)
+        project.add_developer(user)
+        project.update!(last_repository_updated_at: 3.days.ago, last_activity_at: 3.days.ago)
+
+        project2 = create(:project)
+        project2.add_developer(user)
+        project2.update!(last_repository_updated_at: 10.days.ago, last_activity_at: 10.days.ago)
+
+        get :index
+
+        expect(assigns(:projects)).to eq([project, project2])
       end
     end
   end

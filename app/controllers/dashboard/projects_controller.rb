@@ -7,8 +7,8 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
 
   prepend_before_action(only: [:index]) { authenticate_sessionless_user!(:rss) }
   before_action :set_non_archived_param
-  before_action :projects, only: [:index]
   before_action :default_sorting
+  before_action :projects, only: [:index]
   skip_cross_project_access_check :index, :starred
 
   def index
