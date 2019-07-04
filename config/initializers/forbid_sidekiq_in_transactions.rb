@@ -2,15 +2,16 @@ module Sidekiq
   module Worker
     EnqueueFromTransactionError = Class.new(StandardError)
 
-    mattr_accessor :skip_transaction_check
-    self.skip_transaction_check = false
-
     def self.skipping_transaction_check(&block)
-      skip_transaction_check = self.skip_transaction_check
-      self.skip_transaction_check = true
+      previous_skip_transaction_check = self.skip_transaction_check
+      Thread.current[:sidekiq_worker_skip_transaction_check] = true
       yield
     ensure
-      self.skip_transaction_check = skip_transaction_check
+      Thread.current[:sidekiq_worker_skip_transaction_check] = previous_skip_transaction_check
+    end
+
+    def self.skip_transaction_check
+      Thread.current[:sidekiq_worker_skip_transaction_check]
     end
 
     module ClassMethods
