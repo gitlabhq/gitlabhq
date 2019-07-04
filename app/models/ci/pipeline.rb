@@ -790,6 +790,10 @@ module Ci
       stages.find_by!(name: name)
     end
 
+    def error_messages
+      errors ? errors.full_messages.to_sentence : ""
+    end
+
     private
 
     def ci_yaml_from_repo
