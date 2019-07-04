@@ -489,17 +489,17 @@ runtime.
 ### Using statically-defined credentials
 There are two approaches that you can take in order to access a
 private registry. Both require setting the environment variable
-`DOCKER_AUTH_LOGIN` with appropriate authentication info.
+`DOCKER_AUTH_CONFIG` with appropriate authentication info.
 
 1. Per-job: To configure one job to access a private registry, add
-   `DOCKER_AUTH_LOGIN` as a job variable.
+   `DOCKER_AUTH_CONFIG` as a job variable.
 1. Per-runner: To configure a Runner so all its jobs can access a
-   private registry, add `DOCKER_AUTH_LOGIN` to the environment in the
+   private registry, add `DOCKER_AUTH_CONFIG` to the environment in the
    Runner's configuration.
 
 See below for examples of each.
 
-#### Determining your `DOCKER_AUTH_LOGIN` data
+#### Determining your `DOCKER_AUTH_CONFIG` data
 
 As an example, let's assume that you want to use the `registry.example.com:5000/private/image:latest`
 image which is private and requires you to login into a private container registry.
