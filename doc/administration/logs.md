@@ -288,6 +288,9 @@ installations from source.
 
 It logs information whenever [Rack Attack] registers an abusive request.
 
+NOTE: **Note:**
+From [%12.1](https://gitlab.com/gitlab-org/gitlab-ce/issues/62756), user id and username are available on this log.
+
 ## `graphql_json.log`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/59587) in GitLab 12.0.
