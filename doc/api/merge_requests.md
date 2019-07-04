@@ -850,9 +850,9 @@ If `approvals_before_merge` **[STARTER]** is not provided, it inherits the value
 target project. If it is provided, then the following conditions must hold in
 order for it to take effect:
 
-1. The target project's `approvals_before_merge` must be greater than zero. (A
-   value of zero disables approvals for that project.)
-2. The provided value of `approvals_before_merge` must be greater than the
+1. The target project's `approvals_before_merge` must be greater than zero. A
+   value of zero disables approvals for that project.
+1. The provided value of `approvals_before_merge` must be greater than the
    target project's `approvals_before_merge`.
 
 ```json
@@ -1296,7 +1296,7 @@ the `approvals_before_merge` parameter:
 
 ## Merge to default merge ref path
 
-Merge the changes between the merge request source and target branches into `refs/merge-requests/:iid/merge` 
+Merge the changes between the merge request source and target branches into `refs/merge-requests/:iid/merge`
 ref, of the target project repository, if possible. This ref will have the state the target branch would have if
 a regular merge action was taken.
 

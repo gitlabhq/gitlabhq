@@ -1,8 +1,8 @@
 # Notification settings API
 
->**Note:** This feature was [introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5632) in GitLab 8.12.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5632) in GitLab 8.12.
 
-**Valid notification levels**
+## Valid notification levels
 
 The notification levels are defined in the `NotificationSetting.level` model enumeration. Currently, these levels are recognized:
 
@@ -32,7 +32,6 @@ If the `custom` level is used, specific email events can be controlled. Availabl
 - `failed_pipeline`
 - `success_pipeline`
 - `new_epic` **[ULTIMATE]**
-
 
 ## Global notification settings
 

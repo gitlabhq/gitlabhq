@@ -5,7 +5,7 @@ Every API call to group boards must be authenticated.
 If a user is not a member of a group and the group is private, a `GET`
 request will result in `404` status code.
 
-## Group Board
+## List all group issue boards in a group
 
 Lists Issue Boards in the given group.
 
@@ -71,8 +71,7 @@ Example response:
 ```
 
 Users on GitLab [Premium, Silver, or higher](https://about.gitlab.com/pricing/) will see
-different parameters, due to the ability to have multiple group boards. Refer to the table
-above to see what enpoint(s) belong to each tier.
+different parameters, due to the ability to have multiple group boards.
 
 Example response:
 
@@ -123,9 +122,9 @@ Example response:
 ]
 ```
 
-## Single board
+## Single group issue board
 
-Gets a single board.
+Gets a single group issue board.
 
 ```
 GET /groups/:id/boards/:board_id
@@ -188,7 +187,7 @@ Example response:
 ```
 
 Users on GitLab [Premium, Silver, or higher](https://about.gitlab.com/pricing/) will see
-different parameters, due to the ability to have multiple group boards:
+different parameters, due to the ability to have multiple group issue boards.s
 
 Example response:
 
@@ -237,7 +236,7 @@ Example response:
   }
 ```
 
-## Create a Group Issue Board **[PREMIUM]**
+## Create a group issue board **[PREMIUM]**
 
 Creates a Group Issue Board.
 
@@ -301,9 +300,9 @@ Example response:
   }
 ```
 
-## Update a Group Issue Board **[PREMIUM]**
+## Update a group issue board **[PREMIUM]**
 
-> [Introduced][ee-5954] in GitLab 11.1.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/5954) in GitLab 11.1.
 
 Updates a Group Issue Board.
 
@@ -320,7 +319,6 @@ PUT /groups/:id/boards/:board_id
 | `milestone_id`      | integer        | no       | The milestone the board should be scoped to |
 | `labels`            | string         | no       | Comma-separated list of label names which the board should be scoped to |
 | `weight`            | integer        | no       | The weight range from 0 to 9, to which the board should be scoped to |
-
 
 ```bash
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/5/boards/1?name=new_name&milestone_id=44&assignee_id=1&labels=GroupLabel&weight=4
@@ -370,7 +368,7 @@ Example response:
   }
 ```
 
-## Delete a Group Issue Board **[PREMIUM]**
+## Delete a group issue board **[PREMIUM]**
 
 Deletes a Group Issue Board.
 
@@ -387,7 +385,7 @@ DELETE /groups/:id/boards/:board_id
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/5/boards/1
 ```
 
-## List board lists
+## List group issue board lists
 
 Get a list of the board's lists.
 Does not include `open` and `closed` lists
@@ -439,7 +437,7 @@ Example response:
 ]
 ```
 
-## Single board list
+## Single group issue board list
 
 Get a single board list.
 
@@ -471,7 +469,7 @@ Example response:
 }
 ```
 
-## New board list
+## New group issue board list
 
 Creates a new Issue Board list.
 
@@ -503,7 +501,7 @@ Example response:
 }
 ```
 
-## Edit board list
+## Edit group issue board list
 
 Updates an existing Issue Board list. This call is used to change list position.
 
@@ -536,7 +534,7 @@ Example response:
 }
 ```
 
-## Delete a board list
+## Delete a group issue board list
 
 Only for admins and group owners. Soft deletes the board list in question.
 
@@ -553,5 +551,3 @@ DELETE /groups/:id/boards/:board_id/lists/:list_id
 ```bash
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/5/boards/1/lists/1
 ```
-
-[ee-5954]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/5954
