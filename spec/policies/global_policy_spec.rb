@@ -226,4 +226,32 @@ describe GlobalPolicy do
       it { is_expected.not_to be_allowed(:read_instance_statistics) }
     end
   end
+
+  describe 'slash commands' do
+    context 'regular user' do
+      it { is_expected.to be_allowed(:use_slash_commands) }
+    end
+
+    context 'when internal' do
+      let(:current_user) { User.ghost }
+
+      it { is_expected.not_to be_allowed(:use_slash_commands) }
+    end
+
+    context 'when blocked' do
+      before do
+        current_user.block
+      end
+
+      it { is_expected.not_to be_allowed(:use_slash_commands) }
+    end
+
+    context 'when access locked' do
+      before do
+        current_user.lock_access!
+      end
+
+      it { is_expected.not_to be_allowed(:use_slash_commands) }
+    end
+  end
 end
