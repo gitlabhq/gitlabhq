@@ -32,6 +32,10 @@ class FakeU2fDevice
     ")
   end
 
+  def fake_u2f_authentication
+    @page.execute_script("window.gl.u2fAuthenticate.renderAuthenticated('abc');")
+  end
+
   private
 
   def u2f_device(app_id)

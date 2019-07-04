@@ -21,4 +21,16 @@ module DeviseHelpers
       context.env
     end
   end
+
+  def with_omniauth_full_host(&block)
+    # The OmniAuth `full_host` parameter doesn't get set correctly (it gets set to something like `http://localhost`
+    # here), and causes integration tests to fail with 404s. We set the `full_host` by removing the request path (and
+    # anything after it) from the request URI.
+    omniauth_config_full_host = OmniAuth.config.full_host
+    OmniAuth.config.full_host = ->(request) { ActionDispatch::Request.new(request).base_url }
+
+    yield
+
+    OmniAuth.config.full_host = omniauth_config_full_host
+  end
 end
