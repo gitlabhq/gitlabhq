@@ -64,8 +64,11 @@ describe AutoMerge::MergeWhenPipelineSucceedsService do
       end
 
       it 'creates a system note' do
+        pipeline = build(:ci_pipeline)
+        allow(merge_request).to receive(:actual_head_pipeline) { pipeline }
+
         note = merge_request.notes.last
-        expect(note.note).to match %r{enabled an automatic merge when the pipeline for (\w+/\w+@)?\h{8}}
+        expect(note.note).to match "enabled an automatic merge when the pipeline for #{pipeline.sha}"
       end
     end
 
