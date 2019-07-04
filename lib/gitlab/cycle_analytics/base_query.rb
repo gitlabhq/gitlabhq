@@ -10,7 +10,7 @@ module Gitlab
       private
 
       def base_query
-        @base_query ||= stage_query(@project.id) # rubocop:disable Gitlab/ModuleWithInstanceVariables
+        @base_query ||= stage_query(projects.map(&:id)) # rubocop:disable Gitlab/ModuleWithInstanceVariables
       end
 
       def stage_query(project_ids)

@@ -9,7 +9,7 @@ module Gitlab
 
       MAX_EVENTS = 50
 
-      def initialize(project:, stage:, options:)
+      def initialize(project: nil, stage:, options:)
         @project = project
         @stage = stage
         @options = options
@@ -59,12 +59,16 @@ module Gitlab
 
       def allowed_ids
         @allowed_ids ||= allowed_ids_finder_class
-          .new(@options[:current_user], project_id: @project.id)
+          .new(@options[:current_user], allowed_ids_source)
           .execute.where(id: event_result_ids).pluck(:id)
       end
 
       def event_result_ids
         event_result.map { |event| event['id'] }
+      end
+
+      def allowed_ids_source
+        { project_id: @project.id }
       end
     end
   end
