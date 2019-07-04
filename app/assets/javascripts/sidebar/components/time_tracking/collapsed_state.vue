@@ -79,7 +79,7 @@ export default {
       } else if (this.showSpentOnlyState) {
         return `${this.timeSpent} / --`;
       } else if (this.showNoTimeTrackingState) {
-        return 'None';
+        return __('None');
       }
 
       return '';

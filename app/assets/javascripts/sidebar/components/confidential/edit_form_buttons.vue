@@ -1,6 +1,7 @@
 <script>
 import $ from 'jquery';
 import eventHub from '../../event_hub';
+import { __ } from '~/locale';
 
 export default {
   props: {
@@ -15,7 +16,7 @@ export default {
   },
   computed: {
     toggleButtonText() {
-      return this.isConfidential ? 'Turn Off' : 'Turn On';
+      return this.isConfidential ? __('Turn Off') : __('Turn On');
     },
     updateConfidentialBool() {
       return !this.isConfidential;

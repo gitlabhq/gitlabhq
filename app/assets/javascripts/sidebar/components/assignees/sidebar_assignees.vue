@@ -4,6 +4,7 @@ import eventHub from '~/sidebar/event_hub';
 import Store from '~/sidebar/stores/sidebar_store';
 import AssigneeTitle from './assignee_title.vue';
 import Assignees from './assignees.vue';
+import { __ } from '~/locale';
 
 export default {
   name: 'SidebarAssignees',
@@ -74,7 +75,7 @@ export default {
         .then(setLoadingFalse.bind(this))
         .catch(() => {
           setLoadingFalse();
-          return new Flash('Error occurred when saving assignees');
+          return new Flash(__('Error occurred when saving assignees'));
         });
     },
   },
