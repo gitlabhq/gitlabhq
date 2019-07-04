@@ -91,6 +91,19 @@ RSpec.shared_examples 'chat slash commands service' do
 
           subject.trigger(params)
         end
+
+        context 'when user is blocked' do
+          before do
+            chat_name.user.block
+          end
+
+          it 'blocks command execution' do
+            expect_any_instance_of(Gitlab::SlashCommands::Command).not_to receive(:execute)
+
+            result = subject.trigger(params)
+            expect(result).to include(text: /^Whoops! This action is not allowed/)
+          end
+        end
       end
     end
   end
