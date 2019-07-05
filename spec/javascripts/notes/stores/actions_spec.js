@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import $ from 'jquery';
 import _ from 'underscore';
+import Api from '~/api';
 import { TEST_HOST } from 'spec/test_constants';
 import { headersInterceptor } from 'spec/helpers/vue_resource_helper';
 import actionsModule, * as actions from '~/notes/stores/actions';
@@ -8,7 +9,6 @@ import * as mutationTypes from '~/notes/stores/mutation_types';
 import * as notesConstants from '~/notes/constants';
 import createStore from '~/notes/stores';
 import mrWidgetEventHub from '~/vue_merge_request_widget/event_hub';
-import service from '~/notes/services/notes_service';
 import testAction from '../../helpers/vuex_action_helper';
 import { resetStore } from '../helpers';
 import {
@@ -846,9 +846,9 @@ describe('Actions Notes Store', () => {
     let flashContainer;
 
     beforeEach(() => {
-      spyOn(service, 'applySuggestion');
+      spyOn(Api, 'applySuggestion');
       dispatch.and.returnValue(Promise.resolve());
-      service.applySuggestion.and.returnValue(Promise.resolve());
+      Api.applySuggestion.and.returnValue(Promise.resolve());
       flashContainer = {};
     });
 
@@ -877,7 +877,7 @@ describe('Actions Notes Store', () => {
     it('when service fails, flashes error message', done => {
       const response = { response: { data: { message: TEST_ERROR_MESSAGE } } };
 
-      service.applySuggestion.and.returnValue(Promise.reject(response));
+      Api.applySuggestion.and.returnValue(Promise.reject(response));
 
       testSubmitSuggestion(done, () => {
         expect(commit).not.toHaveBeenCalled();
