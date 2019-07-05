@@ -128,9 +128,9 @@ GitLab can be configured to authenticate with other OAuth providers, LDAP, SAML,
 Kerberos, etc. Here are some documents you might be interested in reading:
 
 - [Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/)
-- [Integration documentation](https://docs.gitlab.com/ce/integration/)
-- [GitLab Pages configuration](https://docs.gitlab.com/ce/administration/pages/index.html)
-- [GitLab Container Registry configuration](https://docs.gitlab.com/ce/administration/container_registry.html)
+- [Integration documentation](../../integration/README.md)
+- [GitLab Pages configuration](../../administration/pages/index.md)
+- [GitLab Container Registry configuration](../../administration/container_registry.md)
 
 [freetrial]: https://console.cloud.google.com/freetrial "GCP free trial"
 [ip]: https://cloud.google.com/compute/docs/configure-instance-ip-addresses#promote_ephemeral_ip "Configuring an Instance's IP Addresses"
