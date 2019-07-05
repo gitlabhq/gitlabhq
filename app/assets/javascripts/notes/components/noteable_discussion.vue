@@ -144,15 +144,6 @@ export default {
 
       return {};
     },
-    componentClassName() {
-      if (this.shouldRenderDiffs) {
-        if (!this.lastUpdatedAt && !this.discussion.resolved) {
-          return 'unresolved';
-        }
-      }
-
-      return '';
-    },
     isExpanded() {
       return this.discussion.expanded || this.alwaysExpanded;
     },
@@ -313,11 +304,11 @@ export default {
 </script>
 
 <template>
-  <timeline-entry-item class="note note-discussion" :class="componentClassName">
+  <timeline-entry-item class="note note-discussion">
     <div class="timeline-content">
       <div :data-discussion-id="discussion.id" class="discussion js-discussion-container">
         <div v-if="shouldRenderDiffs" class="discussion-header note-wrapper">
-          <div v-once class="timeline-icon">
+          <div v-once class="timeline-icon align-self-start flex-shrink-0">
             <user-avatar-link
               v-if="author"
               :link-href="author.path"
@@ -326,7 +317,7 @@ export default {
               :img-size="40"
             />
           </div>
-          <div class="timeline-content">
+          <div class="timeline-content w-100">
             <note-header
               :author="author"
               :created-at="firstNote.created_at"
