@@ -73,9 +73,9 @@ or over the size limit, you can [reduce your repository size with Git](../projec
 
 ## IP range
 
-GitLab.com, CI/CD, and related services are deployed into Google Cloud Platform (GCP). Any 
-IP based firewall can be configured by looking up all 
-[IP address ranges or CIDR blocks for GCP](https://cloud.google.com/compute/docs/faq#where_can_i_find_product_name_short_ip_ranges). 
+GitLab.com, CI/CD, and related services are deployed into Google Cloud Platform (GCP). Any
+IP based firewall can be configured by looking up all
+[IP address ranges or CIDR blocks for GCP](https://cloud.google.com/compute/docs/faq#where_can_i_find_product_name_short_ip_ranges).
 
 [Static endpoints](https://gitlab.com/gitlab-com/gl-infra/infrastructure/issues/5071) are being considered.
 
@@ -353,12 +353,10 @@ High Performance TCP/HTTP Load Balancer:
 [4010]: https://gitlab.com/gitlab-com/infrastructure/issues/4010 "Find a good value for maximum timeout for Shared Runners"
 [4070]: https://gitlab.com/gitlab-com/infrastructure/issues/4070 "Configure per-runner timeout for shared-runners-manager-X on GitLab.com"
 
-## Other admin area settings
+## Group and project settings
 
-This area highlights other noteworthy admin area settings on GitLab.com that differ from default settings. This list is not exhaustive.
+On GitLab.com, projects, groups, and snippets created
+after July 2019 have the `Internal` visibility setting disabled.
 
-NOTE: **Note:**
-From July 2019, the `Internal` visibility setting is disabled for new projects, groups, 
-and snippets on GitLab.com. Existing projects, groups, and snippets using the `Internal`
-visibility setting keep this setting. You can read more about the change in the
+You can read more about the change in the
 [relevant issue](https://gitlab.com/gitlab-org/gitlab-ee/issues/12388).
