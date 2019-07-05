@@ -160,7 +160,7 @@ describe Boards::IssuesController do
       end
     end
 
-    describe 'PUT move_multiple' do
+    describe 'PUT bulk_move' do
       let(:todo) { create(:group_label, group: group, name: 'Todo') }
       let(:development) { create(:group_label, group: group, name: 'Development') }
       let(:user) { create(:group_member, :maintainer, user: create(:user), group: group ).user }
@@ -200,12 +200,21 @@ describe Boards::IssuesController do
           put :bulk_move, params: move_issues_params
           expect(response).to have_gitlab_http_status(expected_status)
 
+          if expected_status == 200
+            expect(json_response).to include(
+              'count' => move_issues_params[:ids].size,
+              'success' => true
+            )
+
+            expect(json_response['issues'].pluck('id')).to include(*move_issues_params[:ids])
+          end
+
           list_issues user: requesting_user, board: board, list: list2
           expect(response).to have_gitlab_http_status(200)
 
           expect(response).to match_response_schema('entities/issue_boards')
 
-          responded_issues = json_response['issues']
+          responded_issues = JSON.parse(response.body)['issues']
           expect(responded_issues.length).to eq expected_issue_count
 
           ids_in_order = responded_issues.pluck('id')
