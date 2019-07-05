@@ -4,19 +4,24 @@ module Gitlab
   class NamespacedSessionStore
     delegate :[], :[]=, to: :store
 
-    def initialize(key)
+    def initialize(key, session = Session.current)
       @key = key
+      @session = session
     end
 
     def initiated?
-      !Session.current.nil?
+      !session.nil?
     end
 
     def store
-      return unless Session.current
+      return unless session
 
-      Session.current[@key] ||= {}
-      Session.current[@key]
+      session[@key] ||= {}
+      session[@key]
     end
+
+    private
+
+    attr_reader :session
   end
 end
