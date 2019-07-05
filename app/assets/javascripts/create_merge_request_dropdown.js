@@ -5,12 +5,29 @@ import Flash from './flash';
 import DropLab from './droplab/drop_lab';
 import ISetter from './droplab/plugins/input_setter';
 import { __, sprintf } from './locale';
+import {
+  init as initConfidentialMergeRequest,
+  isConfidentialIssue,
+  canCreateConfidentialMergeRequest,
+} from './confidential_merge_request';
+import confidentialMergeRequestState from './confidential_merge_request/state';
 
 // Todo: Remove this when fixing issue in input_setter plugin
 const InputSetter = Object.assign({}, ISetter);
 
 const CREATE_MERGE_REQUEST = 'create-mr';
 const CREATE_BRANCH = 'create-branch';
+
+function createEndpoint(projectPath, endpoint) {
+  if (canCreateConfidentialMergeRequest()) {
+    return endpoint.replace(
+      projectPath,
+      confidentialMergeRequestState.selectedProject.pathWithNamespace,
+    );
+  }
+
+  return endpoint;
+}
 
 export default class CreateMergeRequestDropdown {
   constructor(wrapperEl) {
@@ -42,6 +59,8 @@ export default class CreateMergeRequestDropdown {
     this.refIsValid = true;
     this.refsPath = this.wrapperEl.dataset.refsPath;
     this.suggestedRef = this.refInput.value;
+    this.projectPath = this.wrapperEl.dataset.projectPath;
+    this.projectId = this.wrapperEl.dataset.projectId;
 
     // These regexps are used to replace
     // a backend generated new branch name and its source (ref)
@@ -58,6 +77,14 @@ export default class CreateMergeRequestDropdown {
     };
 
     this.init();
+
+    if (isConfidentialIssue()) {
+      this.createMergeRequestButton.setAttribute(
+        'data-dropdown-trigger',
+        '#create-merge-request-dropdown',
+      );
+      initConfidentialMergeRequest();
+    }
   }
 
   available() {
@@ -113,7 +140,9 @@ export default class CreateMergeRequestDropdown {
     this.isCreatingBranch = true;
 
     return axios
-      .post(this.createBranchPath)
+      .post(createEndpoint(this.projectPath, this.createBranchPath), {
+        confidential_issue_project_id: canCreateConfidentialMergeRequest() ? this.projectId : null,
+      })
       .then(({ data }) => {
         this.branchCreated = true;
         window.location.href = data.url;
@@ -125,7 +154,11 @@ export default class CreateMergeRequestDropdown {
     this.isCreatingMergeRequest = true;
 
     return axios
-      .post(this.createMrPath)
+      .post(this.createMrPath, {
+        target_project_id: canCreateConfidentialMergeRequest()
+          ? confidentialMergeRequestState.selectedProject.id
+          : null,
+      })
       .then(({ data }) => {
         this.mergeRequestCreated = true;
         window.location.href = data.url;
@@ -149,6 +182,8 @@ export default class CreateMergeRequestDropdown {
   }
 
   enable() {
+    if (!canCreateConfidentialMergeRequest()) return;
+
     this.createMergeRequestButton.classList.remove('disabled');
     this.createMergeRequestButton.removeAttribute('disabled');
 
@@ -205,7 +240,7 @@ export default class CreateMergeRequestDropdown {
     if (!ref) return false;
 
     return axios
-      .get(`${this.refsPath}${encodeURIComponent(ref)}`)
+      .get(`${createEndpoint(this.projectPath, this.refsPath)}${encodeURIComponent(ref)}`)
       .then(({ data }) => {
         const branches = data[Object.keys(data)[0]];
         const tags = data[Object.keys(data)[1]];
@@ -324,6 +359,12 @@ export default class CreateMergeRequestDropdown {
   onClickCreateMergeRequestButton(event) {
     let xhr = null;
     event.preventDefault();
+
+    if (isConfidentialIssue() && !event.target.classList.contains('js-create-target')) {
+      this.droplab.hooks.forEach(hook => hook.list.toggle());
+
+      return;
+    }
 
     if (this.isBusy()) {
       return;

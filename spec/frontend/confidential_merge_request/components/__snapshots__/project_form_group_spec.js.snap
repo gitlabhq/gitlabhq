@@ -1,0 +1,101 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Confidential merge request project form group component renders empty state when response is empty 1`] = `
+<div
+  class="form-group"
+>
+  <label>
+    Project
+  </label>
+   
+  <div>
+    <!---->
+     
+    <p
+      class="text-muted mt-1 mb-0"
+    >
+      
+        No forks available to you.
+      <br />
+       
+      <span>
+        To protect this issues confidentiality, 
+        <a
+          class="help-link"
+          href="https://test.com"
+        >
+          fork the project
+        </a>
+         and set the forks visiblity to private.
+      </span>
+       
+      <gllink-stub
+        class="help-link"
+        href="/help"
+        target="_blank"
+      >
+        <span
+          class="sr-only"
+        >
+          Read more
+        </span>
+         
+        <i
+          aria-hidden="true"
+          class="fa fa-question-circle"
+        />
+      </gllink-stub>
+    </p>
+  </div>
+</div>
+`;
+
+exports[`Confidential merge request project form group component renders fork dropdown 1`] = `
+<div
+  class="form-group"
+>
+  <label>
+    Project
+  </label>
+   
+  <div>
+    <!---->
+     
+    <p
+      class="text-muted mt-1 mb-0"
+    >
+      
+        No forks available to you.
+      <br />
+       
+      <span>
+        To protect this issues confidentiality, 
+        <a
+          class="help-link"
+          href="https://test.com"
+        >
+          fork the project
+        </a>
+         and set the forks visiblity to private.
+      </span>
+       
+      <gllink-stub
+        class="help-link"
+        href="/help"
+        target="_blank"
+      >
+        <span
+          class="sr-only"
+        >
+          Read more
+        </span>
+         
+        <i
+          aria-hidden="true"
+          class="fa fa-question-circle"
+        />
+      </gllink-stub>
+    </p>
+  </div>
+</div>
+`;
