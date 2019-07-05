@@ -406,7 +406,7 @@ $note-form-margin-left: 72px;
     border-radius: 0;
 
     @media (min-width: map-get($grid-breakpoints, md)) {
-      top: 91px;
+      top: $mr-tabs-height + $header-height;
 
       .with-performance-bar & {
         top: 126px;
