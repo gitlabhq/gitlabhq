@@ -1,6 +1,7 @@
-![GitLab Flow](gitlab_flow.png)
 
 # Introduction to GitLab Flow
+
+![GitLab Flow](img/gitlab_flow.png)
 
 Git allows a wide variety of branching strategies and workflows.
 Because of this, many organizations end up with workflows that are too complicated, not clearly defined, or not integrated with issue tracking systems.
@@ -11,7 +12,7 @@ Organizations coming to Git from other version control systems frequently find i
 This article describes GitLab flow, which integrates the Git workflow with an issue tracking system.
 It offers a simple, transparent, and effective way to work with Git.
 
-![Four stages (working copy, index, local repo, remote repo) and three steps between them](four_stages.png)
+![Four stages (working copy, index, local repo, remote repo) and three steps between them](img/four_stages.png)
 
 When converting to Git, you have to get used to the fact that it takes three steps to share a commit with colleagues.
 Most version control systems have only one step: committing from the working copy to a shared server.
@@ -19,7 +20,7 @@ In Git, you add files from the working copy to the staging area. After that, you
 The third step is pushing to a shared remote repository.
 After getting used to these three steps, the next challenge is the branching model.
 
-![Multiple long-running branches and merging in all directions](messy_flow.png)
+![Multiple long-running branches and merging in all directions](img/messy_flow.png)
 
 Since many organizations new to Git have no conventions for how to work with it, their repositories can quickly become messy.
 The biggest problem is that many long-running branches emerge that all contain part of the changes.
@@ -31,7 +32,7 @@ For a video introduction of how this works in GitLab, see [GitLab Flow](https://
 
 ## Git flow and its problems
 
-![Git Flow timeline by Vincent Driessen, used with permission](gitdashflow.png)
+![Git Flow timeline by Vincent Driessen, used with permission](img/gitdashflow.png)
 
 Git flow was one of the first proposals to use Git branches, and it has received a lot of attention.
 It suggests a `master` branch and a separate `develop` branch, as well as supporting branches for features, releases, and hotfixes.
@@ -54,7 +55,7 @@ For example, many projects do releases but don't need to do hotfixes.
 
 ## GitHub flow as a simpler alternative
 
-![Master branch with feature branches merged in](github_flow.png)
+![Master branch with feature branches merged in](img/github_flow.png)
 
 In reaction to Git flow, GitHub created a simpler alternative.
 [GitHub flow](https://guides.github.com/introduction/flow/index.html) has only feature branches and a `master` branch.
@@ -66,7 +67,7 @@ With GitLab flow, we offer additional guidance for these questions.
 
 ## Production branch with GitLab flow
 
-![Master branch and production branch with an arrow that indicates a deployment](production_branch.png)
+![Master branch and production branch with an arrow that indicates a deployment](img/production_branch.png)
 
 GitHub flow assumes you can deploy to production every time you merge a feature branch.
 While this is possible in some cases, such as SaaS applications, there are many cases where this is not possible.
@@ -82,7 +83,7 @@ This flow prevents the overhead of releasing, tagging, and merging that happens 
 
 ## Environment branches with GitLab flow
 
-![Multiple branches with the code cascading from one to another](environment_branches.png)
+![Multiple branches with the code cascading from one to another](img/environment_branches.png)
 
 It might be a good idea to have an environment that is automatically updated to the `master` branch.
 Only, in this case, the name of this environment might differ from the branch name.
@@ -98,7 +99,7 @@ If this is not possible because more manual testing is required, you can send me
 
 ## Release branches with GitLab flow
 
-![Master and multiple release branches that vary in length with cherry-picks from master](release_branches.png)
+![Master and multiple release branches that vary in length with cherry-picks from master](img/release_branches.png)
 
 You only need to work with release branches if you need to release software to the outside world.
 In this case, each branch contains a minor version, for example, 2-3-stable, 2-4-stable, etc.
@@ -114,7 +115,7 @@ In this flow, it is not common to have a production branch (or Git flow `master`
 
 ## Merge/pull requests with GitLab flow
 
-![Merge request with inline comments](mr_inline_comments.png)
+![Merge request with inline comments](img/mr_inline_comments.png)
 
 Merge or pull requests are created in a Git management application. They ask an assigned person to merge two branches.
 Tools such as GitHub and Bitbucket choose the name "pull request" since the first manual action is to pull the feature branch.
@@ -147,11 +148,11 @@ It also ensures that if someone reopens the issue, they can use the same branch 
 NOTE: **Note:**
 When you reopen an issue you need to create a new merge request.
 
-![Remove checkbox for branch in merge requests](remove_checkbox.png)
+![Remove checkbox for branch in merge requests](img/remove_checkbox.png)
 
 ## Issue tracking with GitLab flow
 
-![Merge request with the branch name "15-require-a-password-to-change-it" and assignee field shown](merge_request.png)
+![Merge request with the branch name "15-require-a-password-to-change-it" and assignee field shown](img/merge_request.png)
 
 GitLab flow is a way to make the relation between the code and the issue tracker more transparent.
 
@@ -192,7 +193,7 @@ It is possible that one feature branch solves more than one issue.
 
 ## Linking and closing issues from merge requests
 
-![Merge request showing the linked issues that will be closed](close_issue_mr.png)
+![Merge request showing the linked issues that will be closed](img/close_issue_mr.png)
 
 Link to issues by mentioning them in commit messages or the description of a merge request, for example, "Fixes #16" or "Duck typing is preferred. See #12."
 GitLab then creates links to the mentioned issues and creates comments in the issues linking back to the merge request.
@@ -203,7 +204,7 @@ If you have an issue that spans across multiple repositories, create an issue fo
 
 ## Squashing commits with rebase
 
-![Vim screen showing the rebase view](rebase.png)
+![Vim screen showing the rebase view](img/rebase.png)
 
 With Git, you can use an interactive rebase (`rebase -i`) to squash multiple commits into one or reorder them.
 This functionality is useful if you want to replace a couple of small commits with a single commit, or if you want to make the order more logical.
@@ -229,7 +230,7 @@ Git does not allow you to merge the code again otherwise.
 
 ## Reducing merge commits in feature branches
 
-![List of sequential merge commits](merge_commits.png)
+![List of sequential merge commits](img/merge_commits.png)
 
 Having lots of merge commits can make your repository history messy.
 Therefore, you should try to avoid merge commits in feature branches.
@@ -289,7 +290,7 @@ Sharing your work before it's complete also allows for discussion and feedback a
 
 ## How to write a good commit message
 
-![Good and bad commit message](good_commit.png)
+![Good and bad commit message](img/good_commit.png)
 
 A commit message should reflect your intention, not just the contents of the commit.
 It is easy to see the changes in a commit, so the commit message should explain why you made those changes.
@@ -300,7 +301,7 @@ For more information about formatting commit messages, please see this excellent
 
 ## Testing before merging
 
-![Merge requests showing the test states: red, yellow, and green](ci_mr.png)
+![Merge requests showing the test states: red, yellow, and green](img/ci_mr.png)
 
 In old workflows, the continuous integration (CI) server commonly ran tests on the `master` branch only.
 Developers had to ensure their code did not break the `master` branch.
@@ -317,7 +318,7 @@ As said before, if you often have feature branches that last for more than a few
 
 ## Working with feature branches
 
-![Shell output showing git pull output](git_pull.png)
+![Shell output showing git pull output](img/git_pull.png)
 
 When creating a feature branch, always branch from an up-to-date `master`.
 If you know before you start that your work depends on another branch, you can also branch from there.
