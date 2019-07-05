@@ -46,7 +46,7 @@ class DroneCiService < CiService
   end
 
   def commit_status(sha, ref)
-    with_reactive_cache(sha, ref) {|cached| cached[:commit_status] }
+    with_reactive_cache(sha, ref) { |cached| cached[:commit_status] }
   end
 
   def calculate_reactive_cache(sha, ref)
@@ -68,7 +68,7 @@ class DroneCiService < CiService
       end
 
     { commit_status: status }
-  rescue Errno::ECONNREFUSED
+  rescue *Gitlab::HTTP::HTTP_ERRORS
     { commit_status: :error }
   end
 
