@@ -268,11 +268,13 @@ module SystemNoteService
     merge_request = discussion.noteable
     diff_refs = change_position.diff_refs
     version_index = merge_request.merge_request_diffs.viewable.count
+    position_on_text = change_position.on_text?
+    text_parts = ["changed this #{position_on_text ? 'line' : 'file'} in"]
 
-    text_parts = ["changed this line in"]
     if version_params = merge_request.version_params_for(diff_refs)
-      line_code = change_position.line_code(project.repository)
-      url = url_helpers.diffs_project_merge_request_path(project, merge_request, version_params.merge(anchor: line_code))
+      repository = project.repository
+      anchor = position_on_text ? change_position.line_code(repository) : change_position.file_hash
+      url = url_helpers.diffs_project_merge_request_path(project, merge_request, version_params.merge(anchor: anchor))
 
       text_parts << "[version #{version_index} of the diff](#{url})"
     else

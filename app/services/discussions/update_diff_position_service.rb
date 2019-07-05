@@ -3,7 +3,8 @@
 module Discussions
   class UpdateDiffPositionService < BaseService
     def execute(discussion)
-      result = tracer.trace(discussion.position)
+      old_position = discussion.position
+      result = tracer.trace(old_position)
       return unless result
 
       position = result[:position]
