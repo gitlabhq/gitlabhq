@@ -17,6 +17,6 @@ To request access to Chatops on GitLab.com:
 
 ## See also
 
- - [Chatops Usage](https://docs.gitlab.com/ee/ci/chatops/README.html)
+ - [Chatops Usage](../ci/chatops/README.md)
  - [Understanding EXPLAIN plans](understanding_explain_plans.md)
  - [Feature Groups](feature_flags/development.md#feature-groups)

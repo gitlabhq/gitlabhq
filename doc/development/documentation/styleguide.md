@@ -393,7 +393,7 @@ Instead:
 Example:
 
 ```md
-For more information, see the [confidential issue](https://docs.gitlab.com/ee/user/project/issues/confidential_issues.html) `https://gitlab.com/gitlab-org/gitlab-ce/issues/<issue_number>`.
+For more information, see the [confidential issue](../../user/project/issues/confidential_issues.md) `https://gitlab.com/gitlab-org/gitlab-ce/issues/<issue_number>`.
 ```
 
 ### Unlinking emails

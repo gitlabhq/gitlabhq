@@ -73,7 +73,7 @@ The GitLab University curriculum is composed of GitLab videos, screencasts, pres
    - Being part of our Great Community and Contributing to GitLab
 1. [Getting Started with the GitLab Development Kit (GDK)](https://about.gitlab.com/2016/06/08/getting-started-with-gitlab-development-kit/)
 1. [Contributing Technical Articles to the GitLab Blog](https://about.gitlab.com/2016/01/26/call-for-writers/)
-1. [GitLab Training Workshops](https://docs.gitlab.com/ce/university/training/end-user/)
+1. [GitLab Training Workshops](training/end-user/README.md)
 1. [GitLab Professional Services](https://about.gitlab.com/services/)
 
 ### 1.8 GitLab Training Material
