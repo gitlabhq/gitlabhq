@@ -214,6 +214,19 @@ describe MergeRequests::MergeService do
         allow(Rails.logger).to receive(:error)
       end
 
+      context 'when source is missing' do
+        it 'logs and saves error' do
+          allow(merge_request).to receive(:diff_head_sha) { nil }
+
+          error_message = 'No source for merge'
+
+          service.execute(merge_request)
+
+          expect(merge_request.merge_error).to eq(error_message)
+          expect(Rails.logger).to have_received(:error).with(a_string_matching(error_message))
+        end
+      end
+
       it 'logs and saves error if there is an exception' do
         error_message = 'error message'
 

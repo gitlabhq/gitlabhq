@@ -191,6 +191,19 @@ describe MergeRequests::MergeToRefService do
       it { expect(todo).not_to be_done }
     end
 
+    context 'when source is missing' do
+      it 'returns error' do
+        allow(merge_request).to receive(:diff_head_sha) { nil }
+
+        error_message = 'No source for merge'
+
+        result = service.execute(merge_request)
+
+        expect(result[:status]).to eq(:error)
+        expect(result[:message]).to eq(error_message)
+      end
+    end
+
     context 'when target ref is passed as a parameter' do
       let(:params) { { commit_message: 'merge train', target_ref: target_ref } }
 

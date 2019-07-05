@@ -48,13 +48,13 @@ module MergeRequests
     def error_check!
       super
 
+      check_source
+
       error =
         if @merge_request.should_be_rebased?
           'Only fast-forward merge is allowed for your project. Please update your source branch'
         elsif !@merge_request.mergeable?
           'Merge request is not mergeable'
-        elsif !source
-          'No source for merge'
         end
 
       raise_error(error) if error

@@ -16,7 +16,7 @@ module MergeRequests
     def execute(merge_request)
       @merge_request = merge_request
 
-      validate!
+      error_check!
 
       commit_id = commit
 
@@ -39,21 +39,9 @@ module MergeRequests
       merge_request.diff_head_sha
     end
 
-    def validate!
-      error_check!
-    end
-
+    override :error_check!
     def error_check!
-      super
-
-      error =
-        if !hooks_validation_pass?(merge_request)
-          hooks_validation_error(merge_request)
-        elsif source.blank?
-          'No source for merge'
-        end
-
-      raise_error(error) if error
+      check_source
     end
 
     ##
