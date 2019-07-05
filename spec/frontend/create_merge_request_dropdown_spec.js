@@ -1,7 +1,7 @@
 import axios from '~/lib/utils/axios_utils';
 import MockAdapter from 'axios-mock-adapter';
 import CreateMergeRequestDropdown from '~/create_merge_request_dropdown';
-import { TEST_HOST } from 'spec/test_constants';
+import { TEST_HOST } from './helpers/test_constants';
 
 describe('CreateMergeRequestDropdown', () => {
   let axiosMock;
@@ -10,7 +10,7 @@ describe('CreateMergeRequestDropdown', () => {
   beforeEach(() => {
     axiosMock = new MockAdapter(axios);
 
-    setFixtures(`
+    document.body.innerHTML = `
       <div id="dummy-wrapper-element">
         <div class="available"></div>
         <div class="unavailable">
@@ -18,11 +18,12 @@ describe('CreateMergeRequestDropdown', () => {
           <div class="text"></div>
         </div>
         <div class="js-ref"></div>
+        <div class="js-create-mr"></div>
         <div class="js-create-merge-request"></div>
         <div class="js-create-target"></div>
         <div class="js-dropdown-toggle"></div>
       </div>
-    `);
+    `;
 
     const dummyElement = document.getElementById('dummy-wrapper-element');
     dropdown = new CreateMergeRequestDropdown(dummyElement);
@@ -36,7 +37,7 @@ describe('CreateMergeRequestDropdown', () => {
   describe('getRef', () => {
     it('escapes branch names correctly', done => {
       const endpoint = `${dropdown.refsPath}contains%23hash`;
-      spyOn(axios, 'get').and.callThrough();
+      jest.spyOn(axios, 'get');
       axiosMock.onGet(endpoint).replyOnce({});
 
       dropdown

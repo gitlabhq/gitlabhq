@@ -4169,6 +4169,9 @@ msgstr ""
 msgid "Error fetching diverging counts for branches. Please try again."
 msgstr ""
 
+msgid "Error fetching forked projects. Please try again."
+msgstr ""
+
 msgid "Error fetching labels."
 msgstr ""
 
@@ -6825,6 +6828,9 @@ msgstr ""
 msgid "No files found."
 msgstr ""
 
+msgid "No forks available to you."
+msgstr ""
+
 msgid "No job trace"
 msgstr ""
 
@@ -9192,6 +9198,9 @@ msgstr ""
 msgid "Select members to invite"
 msgstr ""
 
+msgid "Select private project"
+msgstr ""
+
 msgid "Select project"
 msgstr ""
 
@@ -10753,6 +10762,9 @@ msgstr ""
 msgid "This job will automatically run after its timer finishes. Often they are used for incremental roll-out deploys to production environments. When unscheduled it converts into a manual action."
 msgstr ""
 
+msgid "This may expose confidential information as the selected fork is in another namespace that can have other members."
+msgstr ""
+
 msgid "This means you can not push code until you create an empty repository or import existing one."
 msgstr ""
 
@@ -11082,6 +11094,12 @@ msgid "To move or copy an entire GitLab project from another GitLab installation
 msgstr ""
 
 msgid "To preserve performance only <strong>%{display_size} of %{real_size}</strong> files are displayed."
+msgstr ""
+
+msgid "To protect this issues confidentiality, %{link_start}fork the project%{link_end} and set the forks visiblity to private."
+msgstr ""
+
+msgid "To protect this issues confidentiality, a private fork of this project was selected."
 msgstr ""
 
 msgid "To see all the user's personal access tokens you must impersonate them first."

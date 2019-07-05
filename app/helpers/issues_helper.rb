@@ -137,7 +137,7 @@ module IssuesHelper
   end
 
   def create_confidential_merge_request_enabled?
-    Feature.enabled?(:create_confidential_merge_request, @project)
+    Feature.enabled?(:create_confidential_merge_request, @project, default_enabled: true)
   end
 
   def show_new_branch_button?
