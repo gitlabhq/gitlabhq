@@ -10135,6 +10135,18 @@ msgstr ""
 msgid "StorageSize|Unknown"
 msgstr ""
 
+msgid "SubgroupCreationLevel|Allowed to create subgroups"
+msgstr ""
+
+msgid "SubgroupCreationlevel|Allowed to create subgroups"
+msgstr ""
+
+msgid "SubgroupCreationlevel|Maintainers"
+msgstr ""
+
+msgid "SubgroupCreationlevel|Owners"
+msgstr ""
+
 msgid "Subgroups"
 msgstr ""
 
