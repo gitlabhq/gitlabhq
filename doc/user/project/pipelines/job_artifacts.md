@@ -187,10 +187,13 @@ information in the UI.
 DANGER: **Warning:**
 This is a destructive action that leads to data loss. Use with caution.
 
-If you are either the owner of a given job or have Master
-[permissions](../../permissions.md#gitlab-cicd-permissions)
-on the project, you can erase a single job via the UI which will also remove the
-artifacts and the job's trace.
+You can erase a single job via the UI, which will also remove the job's
+artifacts and trace, if you are:
+
+- The owner of the job.
+- A [Maintainer](../../permissions.md#gitlab-cicd-permissions) of the project.
+
+To erase a job:
 
 1. Navigate to a job's page.
 1. Click the trash icon at the top right of the job's trace.
