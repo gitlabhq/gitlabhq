@@ -462,12 +462,6 @@ describe Deployment do
       it { is_expected.to be_nil }
     end
 
-    context 'project uses the kubernetes service for deployments' do
-      let!(:service) { create(:kubernetes_service, project: project) }
-
-      it { is_expected.to be_nil }
-    end
-
     context 'project has a deployment platform' do
       let!(:cluster) { create(:cluster, projects: [project]) }
       let!(:platform) { create(:cluster_platform_kubernetes, cluster: cluster) }
