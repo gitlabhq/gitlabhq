@@ -74,17 +74,19 @@ structure.
 
 ## Creating a subgroup
 
-NOTE: **Note:**
-In order to create a subgroup you must either be an Owner or a Maintainer of the
-group, depending on the group's setting. By default groups allow both Owners and
+To create a subgroup you must either be an Owner or a Maintainer of the group,
+depending on the group's setting. By default groups allow both Owners and
 Maintainers to create subgroups, but this can be changed by an Owner or
-Administrator to only allow Owners to create subgroups. For more information
-check the [permissions table](../../permissions.md#group-members-permissions).
-For a list of words that are not allowed to be used as group names see the
-[reserved names](../../reserved_names.md).  Users can always create subgroups if
-they are explicitly added as an Owner (or Maintainer, if that setting is
-enabled) to a parent group, even if group creation is disabled by an
-administrator in their settings.
+Administrator to only allow Owners to create subgroups.
+
+For more information check the
+[permissions table](../../permissions.md#group-members-permissions). For a list
+of words that are not allowed to be used as group names see the
+[reserved names](../../reserved_names.md).
+
+Users can always create subgroups if they are explicitly added as an Owner (or
+Maintainer, if that setting is enabled) to a parent group, even if group
+creation is disabled by an administrator in their settings.
 
 To create a subgroup:
 
