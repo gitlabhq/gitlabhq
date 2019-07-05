@@ -22,6 +22,24 @@ describe Types::BaseField do
       expect(field.to_graphql.complexity).to eq 1
     end
 
+    describe '#base_complexity' do
+      context 'with no gitaly calls' do
+        it 'defaults to 1' do
+          field = described_class.new(name: 'test', type: GraphQL::STRING_TYPE, null: true)
+
+          expect(field.base_complexity).to eq 1
+        end
+      end
+
+      context 'with a gitaly call' do
+        it 'adds 1 to the default value' do
+          field = described_class.new(name: 'test', type: GraphQL::STRING_TYPE, null: true, calls_gitaly: true)
+
+          expect(field.base_complexity).to eq 2
+        end
+      end
+    end
+
     it 'has specified value' do
       field = described_class.new(name: 'test', type: GraphQL::STRING_TYPE, null: true, complexity: 12)
 
@@ -49,6 +67,47 @@ describe Types::BaseField do
 
           expect(field.to_graphql.complexity.call({}, {}, 2)).to eq 2
           expect(field.to_graphql.complexity.call({}, { first: 50 }, 2)).to eq 2
+        end
+      end
+    end
+
+    context 'calls_gitaly' do
+      context 'for fields with a resolver' do
+        it 'adds 1 if true' do
+          with_gitaly_field = described_class.new(name: 'test', type: GraphQL::STRING_TYPE, resolver_class: resolver, null: true, calls_gitaly: true)
+          without_gitaly_field = described_class.new(name: 'test', type: GraphQL::STRING_TYPE, resolver_class: resolver, null: true)
+          base_result = without_gitaly_field.to_graphql.complexity.call({}, {}, 2)
+
+          expect(with_gitaly_field.to_graphql.complexity.call({}, {}, 2)).to eq base_result + 1
+        end
+      end
+
+      context 'for fields without a resolver' do
+        it 'adds 1 if true' do
+          field = described_class.new(name: 'test', type: GraphQL::STRING_TYPE, null: true, calls_gitaly: true)
+
+          expect(field.to_graphql.complexity).to eq 2
+        end
+      end
+
+      it 'defaults to false' do
+        field = described_class.new(name: 'test', type: GraphQL::STRING_TYPE, null: true)
+
+        expect(field.base_complexity).to eq Types::BaseField::DEFAULT_COMPLEXITY
+      end
+
+      context 'with declared constant complexity value' do
+        it 'has complexity set to that constant' do
+          field = described_class.new(name: 'test', type: GraphQL::STRING_TYPE, null: true, complexity: 12)
+
+          expect(field.to_graphql.complexity).to eq 12
+        end
+
+        it 'does not raise an error even with Gitaly calls' do
+          allow(Gitlab::GitalyClient).to receive(:get_request_count).and_return([0, 1])
+          field = described_class.new(name: 'test', type: GraphQL::STRING_TYPE, null: true, complexity: 12)
+
+          expect(field.to_graphql.complexity).to eq 12
         end
       end
     end

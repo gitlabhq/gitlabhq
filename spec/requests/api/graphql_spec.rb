@@ -131,4 +131,35 @@ describe 'GraphQL' do
       end
     end
   end
+
+  describe 'testing for Gitaly calls' do
+    let(:project) { create(:project, :repository) }
+    let(:user) { create(:user) }
+
+    let(:query) do
+      graphql_query_for('project', { 'fullPath' => project.full_path }, %w(id))
+    end
+
+    before do
+      project.add_developer(user)
+    end
+
+    it_behaves_like 'a working graphql query' do
+      before do
+        post_graphql(query, current_user: user)
+      end
+    end
+
+    context 'when Gitaly is called' do
+      before do
+        allow(Gitlab::GitalyClient).to receive(:get_request_count).and_return(1, 2)
+      end
+
+      it "logs a warning that the 'calls_gitaly' field declaration is missing" do
+        expect(Gitlab::Sentry).to receive(:track_exception).once
+
+        post_graphql(query, current_user: user)
+      end
+    end
+  end
 end

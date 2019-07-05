@@ -13,6 +13,7 @@ class GitlabSchema < GraphQL::Schema
   use BatchLoader::GraphQL
   use Gitlab::Graphql::Authorize
   use Gitlab::Graphql::Present
+  use Gitlab::Graphql::CallsGitaly
   use Gitlab::Graphql::Connections
   use Gitlab::Graphql::GenericTracing
 
