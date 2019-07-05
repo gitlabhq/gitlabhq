@@ -54,6 +54,7 @@ sast:
           MAVEN_PATH \
           MAVEN_REPO_PATH \
           SBT_PATH \
+          FAIL_NEVER \
         ) \
         --volume "$PWD:/code" \
         --volume /var/run/docker.sock:/var/run/docker.sock \
