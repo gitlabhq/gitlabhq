@@ -216,7 +216,7 @@ group.
 | Delete group epic **(ULTIMATE)**                |       |          |           |            | ✓     |
 | View group Audit Events                         |       |          |           |            | ✓     |
 
-- (1): Groups can be set to allow either Owners or Owners and maintainers to create subgroups
+- (1): Groups can be set to allow either Owners or Owners and Maintainers to create subgroups
 
 ### Subgroup permissions
 
