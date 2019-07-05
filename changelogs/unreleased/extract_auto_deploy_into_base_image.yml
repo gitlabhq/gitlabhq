@@ -1,0 +1,5 @@
+---
+title: Extract Auto DevOps deploy functions into a base image
+merge_request: 30404
+author:
+type: changed
