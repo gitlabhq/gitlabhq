@@ -9,7 +9,7 @@ to your project's homepage and clicking **Settings**.
 
 ## General settings
 
-Under a project's general settings you can find everything concerning the
+Under a project's general settings, you can find everything concerning the
 functionality of a project.
 
 ### General project settings
@@ -26,7 +26,7 @@ Set up your project's access, [visibility](../../../public_access/public_access.
 
 ![projects sharing permissions](img/sharing_and_permissions_settings.png)
 
-If Issues are disabled, or you can't access Issues because you're not a project member, then Lables and Milestones
+If Issues are disabled, or you can't access Issues because you're not a project member, then Labels and Milestones
 links will be missing from the sidebar UI.
 
 You can still access them with direct links if you can access Merge Requests. This is deliberate, if you can see
@@ -96,7 +96,7 @@ To rename a repository:
 1. Hit **Rename project**.
 
 Remember that this can have unintended side effects since everyone with the
-old URL will not be able to push or pull. Read more about what happens with the
+old URL will not be able to push or pull. Read more about what happens with the 
 [redirects when renaming repositories](../index.md#redirects-when-changing-repository-paths).
 
 #### Transferring an existing project into another namespace
