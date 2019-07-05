@@ -1,0 +1,5 @@
+---
+title: Extend `MergeToRefService` to create merge ref from an arbitrary ref
+merge_request: 30361
+author:
+type: added

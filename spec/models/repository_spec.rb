@@ -1420,12 +1420,13 @@ describe Repository do
                              source_project: project)
     end
 
-    it 'writes merge of source and target to MR merge_ref_path' do
+    it 'writes merge of source SHA and first parent ref to MR merge_ref_path' do
       merge_commit_id = repository.merge_to_ref(user,
                                                 merge_request.diff_head_sha,
                                                 merge_request,
                                                 merge_request.merge_ref_path,
-                                                'Custom message')
+                                                'Custom message',
+                                                merge_request.target_branch_ref)
 
       merge_commit = repository.commit(merge_commit_id)
 
