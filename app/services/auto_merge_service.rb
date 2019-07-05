@@ -42,6 +42,12 @@ class AutoMergeService < BaseService
     get_service_instance(merge_request.auto_merge_strategy).cancel(merge_request)
   end
 
+  def abort(merge_request, reason)
+    return error("Can't abort the automatic merge", 406) unless merge_request.auto_merge_enabled?
+
+    get_service_instance(merge_request.auto_merge_strategy).abort(merge_request, reason)
+  end
+
   def available_strategies(merge_request)
     self.class.all_strategies.select do |strategy|
       get_service_instance(strategy).available_for?(merge_request)

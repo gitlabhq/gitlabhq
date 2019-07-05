@@ -18,7 +18,7 @@ module MergeRequests
         invalidate_cache_counts(merge_request, users: merge_request.assignees)
         merge_request.update_project_counter_caches
         cleanup_environments(merge_request)
-        cancel_auto_merge(merge_request)
+        abort_auto_merge(merge_request, 'merge request was closed')
       end
 
       merge_request

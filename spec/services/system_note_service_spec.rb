@@ -359,6 +359,22 @@ describe SystemNoteService do
     end
   end
 
+  describe '.abort_merge_when_pipeline_succeeds' do
+    let(:noteable) do
+      create(:merge_request, source_project: project, target_project: project)
+    end
+
+    subject { described_class.abort_merge_when_pipeline_succeeds(noteable, project, author, 'merge request was closed') }
+
+    it_behaves_like 'a system note' do
+      let(:action) { 'merge' }
+    end
+
+    it "posts the 'merge when pipeline succeeds' system note" do
+      expect(subject.note).to eq "aborted the automatic merge because merge request was closed"
+    end
+  end
+
   describe '.change_title' do
     let(:noteable) { create(:issue, project: project, title: 'Lorem ipsum') }
 
