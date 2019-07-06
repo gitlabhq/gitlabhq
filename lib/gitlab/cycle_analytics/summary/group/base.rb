@@ -5,9 +5,10 @@ module Gitlab
     module Summary
       module Group
         class Base
-          def initialize(group:, from:)
+          def initialize(group:, from:, options:)
             @group = group
             @from = from
+            @options = options
           end
 
           def title

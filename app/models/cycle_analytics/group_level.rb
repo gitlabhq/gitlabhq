@@ -13,7 +13,8 @@ module CycleAnalytics
     def summary
       @summary ||= ::Gitlab::CycleAnalytics::GroupStageSummary.new(group,
                                                               from: options[:from],
-                                                              current_user: options[:current_user]).data
+                                                              current_user: options[:current_user],
+                                                              options: options).data
     end
 
     def permissions(*)

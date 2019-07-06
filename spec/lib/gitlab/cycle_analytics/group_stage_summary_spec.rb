@@ -8,7 +8,7 @@ describe Gitlab::CycleAnalytics::GroupStageSummary do
   let(:from) { 1.day.ago }
   let(:user) { create(:user, :admin) }
 
-  subject { described_class.new(group, from: Time.now, current_user: user).data }
+  subject { described_class.new(group, from: Time.now, current_user: user, options: {}).data }
 
   describe "#new_issues" do
     context 'with from date' do
@@ -30,6 +30,18 @@ describe Gitlab::CycleAnalytics::GroupStageSummary do
 
         it "finds issues from them" do
           expect(subject.first[:value]).to eq(3)
+        end
+      end
+
+      context 'with projects specified in options' do
+        before do
+          Timecop.freeze(5.days.from_now) { create(:issue, project: create(:project, namespace: group)) }
+        end
+
+        subject { described_class.new(group, from: Time.now, current_user: user, options: { projects: [project.id, project_2.id] }).data }
+
+        it 'finds issues from those projects' do
+          expect(subject.first[:value]).to eq(2)
         end
       end
     end
@@ -71,6 +83,20 @@ describe Gitlab::CycleAnalytics::GroupStageSummary do
           expect(subject.second[:value]).to eq(3)
         end
       end
+
+      context 'with projects specified in options' do
+        before do
+          Timecop.freeze(5.days.from_now) do
+            create(:deployment, :success, project: create(:project, :repository, namespace: group, name: 'not_applicable'))
+          end
+        end
+
+        subject { described_class.new(group, from: Time.now, current_user: user, options: { projects: [project.id, project_2.id] }).data }
+
+        it 'shows deploys from those projects' do
+          expect(subject.second[:value]).to eq(2)
+        end
+      end
     end
 
     context 'with other projects' do
@@ -84,5 +110,6 @@ describe Gitlab::CycleAnalytics::GroupStageSummary do
         expect(subject.second[:value]).to eq(0)
       end
     end
+
   end
 end
