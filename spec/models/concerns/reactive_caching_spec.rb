@@ -206,8 +206,9 @@ describe ReactiveCaching, :use_clean_rails_memory_store_caching do
           expect(read_reactive_cache(instance)).to eq("preexisting")
         end
 
-        it 'enqueues a repeat worker' do
-          expect_reactive_cache_update_queued(instance)
+        it 'does not enqueue a repeat worker' do
+          expect(ReactiveCachingWorker)
+            .not_to receive(:perform_in)
 
           expect { go! }.to raise_error("foo")
         end
