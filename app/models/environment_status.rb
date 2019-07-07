@@ -34,7 +34,9 @@ class EnvironmentStatus
   end
 
   def has_metrics?
-    DeploymentMetrics.new(project, deployment).has_metrics?
+    strong_memoize(:has_metrics) do
+      deployment_metrics.has_metrics?
+    end
   end
 
   def changes
@@ -51,6 +53,10 @@ class EnvironmentStatus
   private
 
   PAGE_EXTENSIONS = /\A\.(s?html?|php|asp|cgi|pl)\z/i.freeze
+
+  def deployment_metrics
+    @deployment_metrics ||= DeploymentMetrics.new(project, deployment)
+  end
 
   def build_change(file)
     public_path = project.public_path_for_source_path(file.new_path, sha)
