@@ -226,7 +226,7 @@ Now, it's time to create the database:
        choose a General Purpose (SSD) to reduce the costs). Read more about it at
        [Storage for Amazon RDS](http://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Storage.html).
 
-1. The rest of the settings on this page request a DB isntance identifier, username
+1. The rest of the settings on this page request a DB instance identifier, username
    and a master password. We've chosen to use `gitlab-db-ha`, `gitlab` and a
    very secure password respectively. Keep these in hand for later.
 1. Click **Next** to proceed to the advanced settings.
