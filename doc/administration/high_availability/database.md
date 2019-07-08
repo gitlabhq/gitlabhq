@@ -288,61 +288,10 @@ Make sure you install the necessary dependencies from step 1,
 add GitLab package repository from step 2.
 When installing the GitLab package, do not supply `EXTERNAL_URL` value.
 
-#### Configuring the Consul nodes
-
-On each Consul node perform the following:
-
-1. Make sure you collect [`CONSUL_SERVER_NODES`](#consul-information) before executing the next step.
-
-1. Edit `/etc/gitlab/gitlab.rb` replacing values noted in the `# START user configuration` section:
-
-    ```ruby
-    # Disable all components except Consul
-    roles ['consul_role']
-
-    # START user configuration
-    # Replace placeholders:
-    #
-    # Y.Y.Y.Y consul1.gitlab.example.com Z.Z.Z.Z
-    # with the addresses gathered for CONSUL_SERVER_NODES
-    consul['configuration'] = {
-      server: true,
-      retry_join: %w(Y.Y.Y.Y consul1.gitlab.example.com Z.Z.Z.Z)
-    }
-
-    # Disable auto migrations
-    gitlab_rails['auto_migrate'] = false
-    #
-    # END user configuration
-    ```
-
-    > `consul_role` was introduced with GitLab 10.3
-
-1. [Reconfigure GitLab] for the changes to take effect.
-
-##### Consul Checkpoint
-
-Before moving on, make sure Consul is configured correctly. Run the following
-command to verify all server nodes are communicating:
-
-```sh
-/opt/gitlab/embedded/bin/consul members
-```
-
-The output should be similar to:
-
-```
-Node                 Address               Status  Type    Build  Protocol  DC
-CONSUL_NODE_ONE      XXX.XXX.XXX.YYY:8301  alive   server  0.9.2  2         gitlab_consul
-CONSUL_NODE_TWO      XXX.XXX.XXX.YYY:8301  alive   server  0.9.2  2         gitlab_consul
-CONSUL_NODE_THREE    XXX.XXX.XXX.YYY:8301  alive   server  0.9.2  2         gitlab_consul
-```
-
-If any of the nodes isn't `alive` or if any of the three nodes are missing,
-check the [Troubleshooting section](#troubleshooting) before proceeding.
 
 #### Configuring the Database nodes
 
+1. Make sure to [configure the Consul nodes](consul.md).
 1. Make sure you collect [`CONSUL_SERVER_NODES`](#consul-information), [`PGBOUNCER_PASSWORD_HASH`](#pgbouncer-information), [`POSTGRESQL_PASSWORD_HASH`](#postgresql-information), the [number of db nodes](#postgresql-information), and the [network address](#network-information) before executing the next step.
 
 1. On the master database node, edit `/etc/gitlab/gitlab.rb` replacing values noted in the `# START user configuration` section:
@@ -570,7 +519,7 @@ Check the [Troubleshooting section](#troubleshooting) before proceeding.
 
 1. [Reconfigure GitLab] for the changes to take effect.
 
-1. Create a `.pgpass` file so Consule is able to
+1. Create a `.pgpass` file so Consul is able to
    reload pgbouncer. Enter the `PGBOUNCER_PASSWORD` twice when asked:
 
     ```sh

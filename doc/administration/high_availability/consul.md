@@ -6,6 +6,72 @@ As part of its High Availability stack, GitLab Premium includes a bundled versio
 
 A Consul cluster consists of multiple server agents, as well as client agents that run on other nodes which need to talk to the consul cluster.
 
+## Prerequisites
+
+First, make sure to [download/install](https://about.gitlab.com/install/)
+GitLab Omnibus **on each node**.
+
+Choose an installation method, then make sure you complete steps:
+
+1. Install and configure the necessary dependencies.
+1. Add the GitLab package repository and install the package.
+
+When installing the GitLab package, do not supply `EXTERNAL_URL` value.
+
+## Configuring the Consul nodes
+
+On each Consul node perform the following:
+
+1. Make sure you collect [`CONSUL_SERVER_NODES`](database.md#consul-information), which are the IP addresses or DNS records of the Consul server nodes, for the next step, before executing the next step.
+
+1. Edit `/etc/gitlab/gitlab.rb` replacing values noted in the `# START user configuration` section:
+
+    ```ruby
+    # Disable all components except Consul
+    roles ['consul_role']
+
+    # START user configuration
+    # Replace placeholders:
+    #
+    # Y.Y.Y.Y consul1.gitlab.example.com Z.Z.Z.Z
+    # with the addresses gathered for CONSUL_SERVER_NODES
+    consul['configuration'] = {
+      server: true,
+      retry_join: %w(Y.Y.Y.Y consul1.gitlab.example.com Z.Z.Z.Z)
+    }
+
+    # Disable auto migrations
+    gitlab_rails['auto_migrate'] = false
+    #
+    # END user configuration
+    ```
+
+    > `consul_role` was introduced with GitLab 10.3
+
+1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes
+   to take effect.
+
+### Consul checkpoint
+
+Before moving on, make sure Consul is configured correctly. Run the following
+command to verify all server nodes are communicating:
+
+```sh
+/opt/gitlab/embedded/bin/consul members
+```
+
+The output should be similar to:
+
+```
+Node                 Address               Status  Type    Build  Protocol  DC
+CONSUL_NODE_ONE      XXX.XXX.XXX.YYY:8301  alive   server  0.9.2  2         gitlab_consul
+CONSUL_NODE_TWO      XXX.XXX.XXX.YYY:8301  alive   server  0.9.2  2         gitlab_consul
+CONSUL_NODE_THREE    XXX.XXX.XXX.YYY:8301  alive   server  0.9.2  2         gitlab_consul
+```
+
+If any of the nodes isn't `alive` or if any of the three nodes are missing,
+check the [Troubleshooting section](#troubleshooting) before proceeding.
+
 ## Operations
 
 ### Checking cluster membership
