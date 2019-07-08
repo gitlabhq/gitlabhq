@@ -31,19 +31,23 @@ module SortingHelper
   end
 
   def projects_sort_options_hash
-    Feature.enabled?(:project_list_filter_bar) && !current_controller?('admin/projects') ? projects_sort_common_options_hash : old_projects_sort_options_hash
-  end
+    use_old_sorting = !Feature.enabled?(:project_list_filter_bar) || current_controller?('admin/projects') 
 
-  # TODO: Simplify these sorting options
-  # https://gitlab.com/gitlab-org/gitlab-ce/issues/60798
-  # https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/11209#note_162234858
-  def old_projects_sort_options_hash
-    options = projects_sort_common_options_hash.merge({
-      sort_value_oldest_activity  => sort_title_oldest_activity,
-      sort_value_oldest_created   => sort_title_oldest_created,
-      sort_value_recently_created => sort_title_recently_created,
-      sort_value_stars_desc       => sort_title_most_stars
-    })
+    options = {
+      sort_value_latest_activity  => sort_title_latest_activity,
+      sort_value_recently_created => sort_title_created_date,
+      sort_value_name             => sort_title_name,
+      sort_value_stars_desc       => sort_title_stars
+    }
+
+    if use_old_sorting
+      options = options.merge({
+        sort_value_oldest_activity  => sort_title_oldest_activity,
+        sort_value_oldest_created   => sort_title_oldest_created,
+        sort_value_recently_created => sort_title_recently_created,
+        sort_value_stars_desc       => sort_title_most_stars
+      })
+    end
 
     if current_controller?('admin/projects')
       options[sort_value_largest_repo] = sort_title_largest_repo
@@ -52,17 +56,9 @@ module SortingHelper
     options
   end
 
-  def projects_sort_common_options_hash
-    {
-      sort_value_latest_activity  => sort_title_latest_activity,
-      sort_value_recently_created => sort_title_created_date,
-      sort_value_name             => sort_title_name,
-      sort_value_stars_desc       => sort_title_stars
-    }
-  end
-
   def projects_sort_option_titles
-    projects_sort_common_options_hash.merge({
+    # Only used for the project filter search bar
+    projects_sort_options_hash.merge({
       sort_value_oldest_activity  => sort_title_latest_activity,
       sort_value_oldest_created   => sort_title_created_date,
       sort_value_name_desc        => sort_title_name,
