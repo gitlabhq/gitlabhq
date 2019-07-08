@@ -76,6 +76,7 @@ Gitlab.ee do
   Settings['smartcard'] ||= Settingslogic.new({})
   Settings.smartcard['enabled'] = false if Settings.smartcard['enabled'].nil?
   Settings.smartcard['client_certificate_required_port'] = 3444 if Settings.smartcard['client_certificate_required_port'].nil?
+  Settings.smartcard['required_for_git_access'] = false if Settings.smartcard['required_for_git_access'].nil?
 end
 
 Settings['omniauth'] ||= Settingslogic.new({})
