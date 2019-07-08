@@ -11,17 +11,6 @@ This means that it is not complicated to switch to Libravatar avatar service or 
 In [gitlab.yml gravatar section](https://gitlab.com/gitlab-org/gitlab-ce/blob/672bd3902d86b78d730cea809fce312ec49d39d7/config/gitlab.yml.example#L122) set
 the configuration options as follows:
 
-## For HTTP
-
-```yml
-  gravatar:
-    enabled: true
-    # gravatar URLs: possible placeholders: %{hash} %{size} %{email} %{username}
-    plain_url: "http://cdn.libravatar.org/avatar/%{hash}?s=%{size}&d=identicon"
-```
-
-## For HTTPS
-
 ```yml
   gravatar:
     enabled: true
@@ -36,20 +25,11 @@ but the important part is to provide the same placeholders so GitLab can parse t
 
 For example, you host a service on `http://libravatar.example.com` the `plain_url` you need to supply in `gitlab.yml` is
 
-`http://libravatar.example.com/avatar/%{hash}?s=%{size}&d=identicon`
+`https://libravatar.example.com/avatar/%{hash}?s=%{size}&d=identicon`
 
 ## Omnibus-gitlab example
 
 In `/etc/gitlab/gitlab.rb`:
-
-#### For http
-
-```ruby
-gitlab_rails['gravatar_enabled'] = true
-gitlab_rails['gravatar_plain_url'] = "http://cdn.libravatar.org/avatar/%{hash}?s=%{size}&d=identicon"
-```
-
-#### For https
 
 ```ruby
 gitlab_rails['gravatar_enabled'] = true
@@ -73,6 +53,6 @@ If your users are Office 365-users, the "GetPersonaPhoto" service can be used. N
 most useful in a corporate installation, where all users have access to Office 365.
 
 ```ruby
-gitlab_rails['gravatar_plain_url'] = 'http://outlook.office365.com/owa/service.svc/s/GetPersonaPhoto?email=%{email}&size=HR120x120'
+gitlab_rails['gravatar_plain_url'] = 'https://outlook.office365.com/owa/service.svc/s/GetPersonaPhoto?email=%{email}&size=HR120x120'
 gitlab_rails['gravatar_ssl_url'] = 'https://outlook.office365.com/owa/service.svc/s/GetPersonaPhoto?email=%{email}&size=HR120x120'
 ```
