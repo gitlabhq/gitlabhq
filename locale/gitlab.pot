@@ -156,6 +156,9 @@ msgstr ""
 msgid "%{group_docs_link_start}Groups%{group_docs_link_end} allow you to manage and collaborate across multiple projects. Members of a group have access to all of its projects."
 msgstr ""
 
+msgid "%{icon}You are about to add %{usersTag} people to the discussion. Proceed with caution."
+msgstr ""
+
 msgid "%{issuableType} will be removed! Are you sure?"
 msgstr ""
 
@@ -1905,6 +1908,9 @@ msgstr ""
 msgid "Cancel this job"
 msgstr ""
 
+msgid "Cancelling Preview"
+msgstr ""
+
 msgid "Cannot be merged automatically"
 msgstr ""
 
@@ -3646,6 +3652,9 @@ msgstr ""
 msgid "Deployed"
 msgstr ""
 
+msgid "Deployed %{deployedSince}"
+msgstr ""
+
 msgid "Deployed to"
 msgstr ""
 
@@ -4054,6 +4063,9 @@ msgstr ""
 msgid "Enter the merge request title"
 msgstr ""
 
+msgid "Enter zen mode"
+msgstr ""
+
 msgid "Environment variables are applied to environments via the runner. They can be protected by only exposing them to protected branches or tags. Additionally, they can be masked so they are hidden in job logs, though they must match certain regexp requirements to do so. You can use environment variables for passwords, secret keys, or whatever you want."
 msgstr ""
 
@@ -4421,6 +4433,9 @@ msgid "Expand"
 msgstr ""
 
 msgid "Expand all"
+msgstr ""
+
+msgid "Expand dropdown"
 msgstr ""
 
 msgid "Expand sidebar"
@@ -4801,6 +4816,9 @@ msgid "Found errors in your .gitlab-ci.yml:"
 msgstr ""
 
 msgid "Friday"
+msgstr ""
+
+msgid "From"
 msgstr ""
 
 msgid "From %{providerTitle}"
@@ -5373,6 +5391,12 @@ msgid "ImageDiffViewer|Onion skin"
 msgstr ""
 
 msgid "ImageDiffViewer|Swipe"
+msgstr ""
+
+msgid "ImageViewerDimensions|H"
+msgstr ""
+
+msgid "ImageViewerDimensions|W"
 msgstr ""
 
 msgid "Impersonation has been disabled"
@@ -6280,6 +6304,9 @@ msgid "Markdown Help"
 msgstr ""
 
 msgid "Markdown enabled"
+msgstr ""
+
+msgid "Markdown is supported"
 msgstr ""
 
 msgid "Marks this issue as a duplicate of %{duplicate_reference}."
@@ -10785,6 +10812,9 @@ msgstr ""
 msgid "This is your current session"
 msgstr ""
 
+msgid "This issue is %{confidentialLinkStart}confidential%{linkEnd} and %{lockedLinkStart}locked%{linkEnd}."
+msgstr ""
+
 msgid "This issue is confidential"
 msgstr ""
 
@@ -11404,6 +11434,9 @@ msgstr ""
 msgid "U2F only works with HTTPS-enabled websites. Contact your administrator for more details."
 msgstr ""
 
+msgid "Unable to apply suggestions to a deleted line."
+msgstr ""
+
 msgid "Unable to connect to Prometheus server"
 msgstr ""
 
@@ -11510,6 +11543,9 @@ msgid "Unsubscribe at project level"
 msgstr ""
 
 msgid "Unsubscribe from %{type}"
+msgstr ""
+
+msgid "Until"
 msgstr ""
 
 msgid "Unverified"
@@ -12588,6 +12624,9 @@ msgstr ""
 msgid "branch name"
 msgstr ""
 
+msgid "by"
+msgstr ""
+
 msgid "cannot be changed if a personal project has container registry tags."
 msgstr ""
 
@@ -12616,6 +12655,9 @@ msgid "connecting"
 msgstr ""
 
 msgid "could not read private key, is the passphrase correct?"
+msgstr ""
+
+msgid "created"
 msgstr ""
 
 msgid "customize"
@@ -13058,6 +13100,9 @@ msgstr ""
 msgid "project"
 msgstr ""
 
+msgid "project avatar"
+msgstr ""
+
 msgid "quick actions"
 msgstr ""
 
@@ -13068,6 +13113,9 @@ msgid "released %{time}"
 msgstr ""
 
 msgid "remaining"
+msgstr ""
+
+msgid "remove"
 msgstr ""
 
 msgid "remove due date"
@@ -13140,10 +13188,19 @@ msgstr[1] ""
 msgid "to list"
 msgstr ""
 
+msgid "toggle collapse"
+msgstr ""
+
+msgid "toggle dropdown"
+msgstr ""
+
 msgid "triggered"
 msgstr ""
 
 msgid "updated"
+msgstr ""
+
+msgid "user avatar"
 msgstr ""
 
 msgid "username"

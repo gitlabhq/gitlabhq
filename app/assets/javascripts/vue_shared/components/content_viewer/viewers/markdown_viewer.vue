@@ -40,7 +40,7 @@ export default {
     this.fetchMarkdownPreview();
   },
   destroyed() {
-    if (this.isLoading) axiosSource.cancel('Cancelling Preview');
+    if (this.isLoading) axiosSource.cancel(__('Cancelling Preview'));
   },
   methods: {
     fetchMarkdownPreview() {

@@ -85,7 +85,7 @@ export default {
       @click="toggleSidebar"
     >
       <span class="sidebar-collapsed-value">
-        <span v-if="showFromText">From</span> <span>{{ dateText('min') }}</span>
+        <span v-if="showFromText">{{ __('From') }}</span> <span>{{ dateText('min') }}</span>
       </span>
     </collapsed-calendar-icon>
     <div v-if="hasMinAndMaxDates" class="text-center sidebar-collapsed-divider">-</div>
@@ -96,7 +96,7 @@ export default {
       @click="toggleSidebar"
     >
       <span class="sidebar-collapsed-value">
-        <span v-if="!minDate">Until</span> <span>{{ dateText('max') }}</span>
+        <span v-if="!minDate">{{ __('Until') }}</span> <span>{{ dateText('max') }}</span>
       </span>
     </collapsed-calendar-icon>
   </div>
