@@ -46,7 +46,7 @@ deploy:
 
 In the above configuration:
 
-- The `before_script` installs [SBT](http://www.scala-sbt.org/) and
+- The `before_script` installs [SBT](https://www.scala-sbt.org/) and
   displays the version that is being used.
 - The `test` stage executes SBT to compile and test the project.
   - [sbt-scoverage](https://github.com/scoverage/sbt-scoverage) is used as an SBT

@@ -2,7 +2,7 @@
 
 ## Overview
 
-As part of its High Availability stack, GitLab Premium includes a bundled version of [Consul](http://consul.io) that can be managed through `/etc/gitlab/gitlab.rb`.
+As part of its High Availability stack, GitLab Premium includes a bundled version of [Consul](https://www.consul.io/) that can be managed through `/etc/gitlab/gitlab.rb`.
 
 A Consul cluster consists of multiple server agents, as well as client agents that run on other nodes which need to talk to the consul cluster.
 

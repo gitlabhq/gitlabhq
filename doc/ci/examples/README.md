@@ -42,7 +42,7 @@ The following table lists examples with step-by-step tutorials that are containe
 
 Contributions are welcome! You can help your favorite programming
 language users and GitLab by sending a merge request with a guide for that language.
-You may want to apply for the [GitLab Community Writers Program](https://about.gitlab.com/community-writers/)
+You may want to apply for the [GitLab Community Writers Program](https://about.gitlab.com/community/writers/)
 to get paid for writing complete articles for GitLab.
 
 ## Adding templates to your GitLab installation **[PREMIUM ONLY]**
