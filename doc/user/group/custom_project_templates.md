@@ -4,7 +4,7 @@ type: reference
 
 # Custom group-level project templates **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/6861) in [GitLab Premium](https://about.gitlab.com/pricing) 11.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/6861) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.6.
 
 When you create a new [project](../project/index.md), creating it based on custom project templates is
 a convenient bootstrap option.

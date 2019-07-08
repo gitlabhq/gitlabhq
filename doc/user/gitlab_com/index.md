@@ -1,7 +1,7 @@
 # GitLab.com settings
 
 In this page you will find information about the settings that are used on
-[GitLab.com](https://about.gitlab.com/pricing).
+[GitLab.com](https://about.gitlab.com/pricing/).
 
 ## SSH host keys fingerprints
 
@@ -260,7 +260,7 @@ The list of GitLab.com specific settings (and their defaults) is as follows:
 | hot_standby_feedback                | on                                                                  | off                                   |
 | log_autovacuum_min_duration         | 0                                                                   | -1                                    |
 | log_checkpoints                     | on                                                                  | off                                   |
-| log_line_prefix                     | `%t [%p]: [%l-1] `                                                  | empty                                 |
+| log_line_prefix                     | `%t [%p]: [%l-1]`                                                   | empty                                 |
 | log_min_duration_statement          | 1000                                                                | -1                                    |
 | log_temp_files                      | 0                                                                   | -1                                    |
 | maintenance_work_mem                | 2048MB                                                              | 16 MB                                 |

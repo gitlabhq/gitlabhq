@@ -19,7 +19,7 @@ tool for measuring the performance of web sites, and has built a simple
 which outputs the results in a file called `performance.json`. This plugin
 outputs the performance score for each page that is analyzed.
 
-The [Sitespeed.io performance score](http://examples.sitespeed.io/6.0/2017-11-23-23-43-35/help.html)
+The [Sitespeed.io performance score](https://examples.sitespeed.io/6.0/2017-11-23-23-43-35/help.html)
 is a composite value based on best practices, and we will be expanding support
 for [additional metrics](https://gitlab.com/gitlab-org/gitlab-ee/issues/4370)
 in a future release.

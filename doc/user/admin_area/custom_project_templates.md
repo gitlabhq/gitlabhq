@@ -1,6 +1,6 @@
 # Custom instance-level project templates **(PREMIUM ONLY)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/6860) in [GitLab Premium](https://about.gitlab.com/pricing) 11.2.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/6860) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.2.
 
 When you create a new [project](../project/index.md), creating it based on custom project templates is
 a convenient bootstrap option.

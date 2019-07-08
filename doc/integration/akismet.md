@@ -3,7 +3,7 @@
 > *Note:* Before 8.11 only issues submitted via the API and for non-project
 members were submitted to Akismet.
 
-GitLab leverages [Akismet](http://akismet.com) to protect against spam. Currently
+GitLab leverages [Akismet](https://akismet.com/) to protect against spam. Currently
 GitLab uses Akismet to prevent the creation of spam issues on public projects. Issues
 created via the WebUI or the API can be submitted to Akismet for review.
 

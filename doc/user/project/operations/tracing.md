@@ -17,8 +17,8 @@ systems.
 ### Deploying Jaeger
 
 To learn more about deploying Jaeger, read the official
-[Getting Started documentation](https://www.jaegertracing.io/docs/latest/getting-started/).
-There is an easy to use [all-in-one Docker image](https://www.jaegertracing.io/docs/latest/getting-started/#AllinoneDockerimage),
+[Getting Started documentation](https://www.jaegertracing.io/docs/1.13/getting-started/).
+There is an easy to use [all-in-one Docker image](https://www.jaegertracing.io/docs/1.13/getting-started/#AllinoneDockerimage),
 as well as deployment options for [Kubernetes](https://github.com/jaegertracing/jaeger-kubernetes)
 and [OpenShift](https://github.com/jaegertracing/jaeger-openshift).
 
@@ -27,7 +27,7 @@ and [OpenShift](https://github.com/jaegertracing/jaeger-openshift).
 GitLab provides an easy way to open the Jaeger UI from within your project:
 
 1. [Set up Jaeger](#deploying-jaeger) and configure your application using one of the
-   [client libraries](https://www.jaegertracing.io/docs/latest/client-libraries/).
+   [client libraries](https://www.jaegertracing.io/docs/1.13/client-libraries/).
 1. Navigate to your project's **Settings > Operations** and provide the Jaeger URL.
 1. Click **Save changes** for the changes to take effect.
 1. You can now visit **Operations > Tracing** in your project's sidebar and
