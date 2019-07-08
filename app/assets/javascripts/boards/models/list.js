@@ -4,7 +4,7 @@
 import { __ } from '~/locale';
 import ListLabel from './label';
 import ListAssignee from './assignee';
-import { isEE, urlParamsToObject } from '~/lib/utils/common_utils';
+import { urlParamsToObject } from '~/lib/utils/common_utils';
 import boardsStore from '../stores/boards_store';
 import ListMilestone from './milestone';
 
@@ -58,7 +58,7 @@ class List {
     } else if (obj.user) {
       this.assignee = new ListAssignee(obj.user);
       this.title = this.assignee.name;
-    } else if (isEE && obj.milestone) {
+    } else if (IS_EE && obj.milestone) {
       this.milestone = new ListMilestone(obj.milestone);
       this.title = this.milestone.title;
     }
@@ -85,7 +85,7 @@ class List {
       entityType = 'label_id';
     } else if (this.assignee) {
       entityType = 'assignee_id';
-    } else if (isEE && this.milestone) {
+    } else if (IS_EE && this.milestone) {
       entityType = 'milestone_id';
     }
 
@@ -205,7 +205,7 @@ class List {
         issue.addAssignee(this.assignee);
       }
 
-      if (isEE && this.milestone) {
+      if (IS_EE && this.milestone) {
         if (listFrom && listFrom.type === 'milestone') {
           issue.removeMilestone(listFrom.milestone);
         }
