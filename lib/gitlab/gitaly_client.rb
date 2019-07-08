@@ -30,6 +30,7 @@ module Gitlab
     SERVER_VERSION_FILE = 'GITALY_SERVER_VERSION'
     MAXIMUM_GITALY_CALLS = 30
     CLIENT_NAME = (Sidekiq.server? ? 'gitlab-sidekiq' : 'gitlab-web').freeze
+    GITALY_METADATA_FILENAME = '.gitaly-metadata'
 
     MUTEX = Mutex.new
 
@@ -376,6 +377,45 @@ module Gitlab
 
     def self.no_timeout
       0
+    end
+
+    def self.storage_metadata_file_path(storage)
+      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        File.join(
+          Gitlab.config.repositories.storages[storage].legacy_disk_path, GITALY_METADATA_FILENAME
+        )
+      end
+    end
+
+    def self.can_use_disk?(storage)
+      cached_value = MUTEX.synchronize do
+        @can_use_disk ||= {}
+        @can_use_disk[storage]
+      end
+
+      return cached_value unless cached_value.nil?
+
+      gitaly_filesystem_id = filesystem_id(storage)
+      direct_filesystem_id = filesystem_id_from_disk(storage)
+
+      MUTEX.synchronize do
+        @can_use_disk[storage] = gitaly_filesystem_id.present? &&
+          gitaly_filesystem_id == direct_filesystem_id
+      end
+    end
+
+    def self.filesystem_id(storage)
+      response = Gitlab::GitalyClient::ServerService.new(storage).info
+      storage_status = response.storage_statuses.find { |status| status.storage_name == storage }
+      storage_status.filesystem_id
+    end
+
+    def self.filesystem_id_from_disk(storage)
+      metadata_file = File.read(storage_metadata_file_path(storage))
+      metadata_hash = JSON.parse(metadata_file)
+      metadata_hash['gitaly_filesystem_id']
+    rescue Errno::ENOENT, JSON::ParserError
+      nil
     end
 
     def self.timeout(timeout_name)
