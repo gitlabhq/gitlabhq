@@ -2,4 +2,4 @@
 title: Allow ReactiveCaching to support nil value
 merge_request: 30456
 author:
-type: fixed
+type: performance
