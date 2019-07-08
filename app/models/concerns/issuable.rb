@@ -168,7 +168,7 @@ module Issuable
     # matched_columns - Modify the scope of the query. 'title', 'description' or joining them with a comma.
     #
     # Returns an ActiveRecord::Relation.
-    def full_search(query, matched_columns: 'title,description')
+    def full_search(query, matched_columns: 'title,description', use_minimum_char_limit: true)
       allowed_columns = [:title, :description]
       matched_columns = matched_columns.to_s.split(',').map(&:to_sym)
       matched_columns &= allowed_columns
@@ -176,7 +176,7 @@ module Issuable
       # Matching title or description if the matched_columns did not contain any allowed columns.
       matched_columns = [:title, :description] if matched_columns.empty?
 
-      fuzzy_search(query, matched_columns)
+      fuzzy_search(query, matched_columns, use_minimum_char_limit: use_minimum_char_limit)
     end
 
     def simple_sorts
