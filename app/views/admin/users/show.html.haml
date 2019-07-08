@@ -139,7 +139,7 @@
             %strong
               = link_to @user.created_by.name, [:admin, @user.created_by]
 
-        = render_if_exists partial: "namespaces/shared_runner_status", locals: { namespace: @user.namespace }
+        = render_if_exists 'namespaces/shared_runner_status', namespace: @user.namespace
 
   .col-md-6
     - unless @user == current_user
