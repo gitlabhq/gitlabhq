@@ -191,6 +191,15 @@ describe MergeRequests::MergeToRefService do
       it { expect(todo).not_to be_done }
     end
 
+    context 'when target ref is passed as a parameter' do
+      let(:params) { { commit_message: 'merge train', target_ref: target_ref } }
+
+      it_behaves_like 'successfully merges to ref with merge method' do
+        let(:first_parent_ref) { 'refs/heads/master' }
+        let(:target_ref) { 'refs/merge-requests/1/train' }
+      end
+    end
+
     describe 'cascading merge refs' do
       set(:project) { create(:project, :repository) }
       let(:params) { { commit_message: 'Cascading merge', first_parent_ref: first_parent_ref, target_ref: target_ref } }

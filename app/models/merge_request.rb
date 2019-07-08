@@ -1127,6 +1127,19 @@ class MergeRequest < ApplicationRecord
     "refs/#{Repository::REF_MERGE_REQUEST}/#{iid}/merge"
   end
 
+  def train_ref_path
+    "refs/#{Repository::REF_MERGE_REQUEST}/#{iid}/train"
+  end
+
+  def cleanup_refs(only: :all)
+    target_refs = []
+    target_refs << ref_path       if %i[all head].include?(only)
+    target_refs << merge_ref_path if %i[all merge].include?(only)
+    target_refs << train_ref_path if %i[all train].include?(only)
+
+    project.repository.delete_refs(*target_refs)
+  end
+
   def self.merge_request_ref?(ref)
     ref.start_with?("refs/#{Repository::REF_MERGE_REQUEST}/")
   end

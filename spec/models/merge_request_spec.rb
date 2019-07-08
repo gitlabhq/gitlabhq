@@ -3220,4 +3220,34 @@ describe MergeRequest do
       it { is_expected.to be_truthy }
     end
   end
+
+  describe '#cleanup_refs' do
+    subject { merge_request.cleanup_refs(only: only) }
+
+    let(:merge_request) { build(:merge_request) }
+
+    context 'when removing all refs' do
+      let(:only) { :all }
+
+      it 'deletes all refs from the target project' do
+        expect(merge_request.target_project.repository)
+          .to receive(:delete_refs)
+          .with(merge_request.ref_path, merge_request.merge_ref_path, merge_request.train_ref_path)
+
+        subject
+      end
+    end
+
+    context 'when removing only train ref' do
+      let(:only) { :train }
+
+      it 'deletes train ref from the target project' do
+        expect(merge_request.target_project.repository)
+          .to receive(:delete_refs)
+          .with(merge_request.train_ref_path)
+
+        subject
+      end
+    end
+  end
 end
