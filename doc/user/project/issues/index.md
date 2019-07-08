@@ -119,6 +119,12 @@ associated label or assignee will change to match that of the new column. The en
 board can also be filtered to only include issues from a certain milestone or an overarching
 label.
 
+### Design Management **(PREMIUM)**
+
+With [Design Management](design_management.md), you can upload design
+assets to issues and view them all together to easily share and
+collaborate with your team.
+
 ### Epics **(ULTIMATE)**
 
 [Epics](../../group/epics/index.md) let you manage your portfolio of projects more
