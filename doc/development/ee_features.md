@@ -446,7 +446,6 @@ The disadvantage of this:
   port `render_if_exists` to CE.
 - If we have typos in the partial name, it would be silently ignored.
 
-
 ##### Caveats
 
 The `render_if_exists` view path argument must be relative to `app/views/` and `ee/app/views`.
@@ -973,7 +972,7 @@ For regular JS files, the approach is similar.
    1. An EE file should be created with the EE only code, and it should extend the CE counterpart.
    1. For code inside functions that can't be extended, the code should be moved into a new file and we should use `ee_else_ce` helper:
 
-##### Example:
+#### Example:
 
 ```javascript
   import eeCode from 'ee_else_ce/ee_code';
@@ -1000,7 +999,7 @@ styles are usually kept in stylesheet that is common for both CE and EE, and it 
 to isolate such ruleset from rest of CE rules (along with adding comment describing the same)
 to avoid conflicts during CE to EE merge.
 
-#### Bad
+### Bad
 
 ```scss
 .section-body {
@@ -1016,7 +1015,7 @@ to avoid conflicts during CE to EE merge.
 }
 ```
 
-#### Good
+### Good
 
 ```scss
 .section-body {
@@ -1034,7 +1033,7 @@ to avoid conflicts during CE to EE merge.
 // EE-specific end
 ```
 
-### Backporting changes from EE to CE
+## Backporting changes from EE to CE
 
 Until the work completed to merge the ce and ee codebases, which is tracked on [epic &802](https://gitlab.com/groups/gitlab-org/-/epics/802), there exists times in which some changes for EE require specific changes to the CE
 code base.  Examples of backports include the following:

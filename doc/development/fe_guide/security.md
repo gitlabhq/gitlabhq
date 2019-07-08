@@ -1,5 +1,6 @@
 # Security
-### Resources
+
+## Resources
 
 [Mozilla’s HTTP Observatory CLI][observatory-cli] and the
 [Qualys SSL Labs Server Test][qualys-ssl] are good resources for finding
@@ -56,7 +57,7 @@ Some resources on implementing Subresource Integrity:
 
 -->
 
-### Including external resources
+## Including external resources
 
 External fonts, CSS, and JavaScript should never be used with the exception of
 Google Analytics and Piwik - and only when the instance has enabled it. Assets
@@ -64,7 +65,7 @@ should always be hosted and served locally from the GitLab instance. Embedded
 resources via `iframes` should never be used except in certain circumstances
 such as with ReCaptcha, which cannot be used without an `iframe`.
 
-### Avoiding inline scripts and styles
+## Avoiding inline scripts and styles
 
 In order to protect users from [XSS vulnerabilities][xss], we will disable
 inline scripts in the future using Content Security Policy.

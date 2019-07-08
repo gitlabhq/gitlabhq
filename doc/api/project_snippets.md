@@ -1,6 +1,6 @@
 # Project snippets
 
-### Snippet visibility level
+## Snippet visibility level
 
 Snippets in GitLab can be either private, internal or public.
 You can set it with the `visibility` field in the snippet.
@@ -14,7 +14,7 @@ Constants for snippet visibility levels are:
 | `public`   | The snippet can be accessed without any authentication |
 
 NOTE: **Note:**
-From July 2019, the `Internal` visibility setting is disabled for new projects, groups, 
+From July 2019, the `Internal` visibility setting is disabled for new projects, groups,
 and snippets on GitLab.com. Existing projects, groups, and snippets using the `Internal`
 visibility setting keep this setting. You can read more about the change in the
 [relevant issue](https://gitlab.com/gitlab-org/gitlab-ee/issues/12388).
