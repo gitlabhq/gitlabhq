@@ -1,6 +1,6 @@
 # Pages domains API
 
-Endpoints for connecting custom domain(s) and TLS certificates in [GitLab Pages](https://about.gitlab.com/features/pages/).
+Endpoints for connecting custom domain(s) and TLS certificates in [GitLab Pages](https://about.gitlab.com/product/pages/).
 
 The GitLab Pages feature must be enabled to use these endpoints. Find out more about [administering](../administration/pages/index.md) and [using](../user/project/pages/index.md) the feature.
 

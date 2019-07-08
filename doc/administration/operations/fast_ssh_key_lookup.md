@@ -6,7 +6,7 @@ using [ssh certificates](ssh_certificates.md), they are even faster,
 but are not a drop-in replacement.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/1631) in
-> [GitLab Starter](https://about.gitlab.com/gitlab-ee) 9.3.
+> [GitLab Starter](https://about.gitlab.com/pricing/) 9.3.
 >
 > [Available in](https://gitlab.com/gitlab-org/gitlab-ee/issues/3953) GitLab
 > Community Edition 10.4.

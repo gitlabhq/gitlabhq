@@ -265,7 +265,7 @@ production:
     replica_check_interval: 30
 ```
 
-[hot-standby]: https://www.postgresql.org/docs/9.6/static/hot-standby.html
+[hot-standby]: https://www.postgresql.org/docs/9.6/hot-standby.html
 [ee-1283]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1283
 [eep]: https://about.gitlab.com/pricing/
 [reconfigure gitlab]: restart_gitlab.md#omnibus-gitlab-reconfigure "How to reconfigure Omnibus GitLab"

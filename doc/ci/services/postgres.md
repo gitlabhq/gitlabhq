@@ -114,5 +114,5 @@ available [shared runners](../runners/README.md).
 Want to hack on it? Simply fork it, commit and push  your changes. Within a few
 moments the changes will be picked by a public runner and the job will begin.
 
-[hub-pg]: https://hub.docker.com/r/_/postgres/
+[hub-pg]: https://hub.docker.com/_/postgres
 [postgres-example-repo]: https://gitlab.com/gitlab-examples/postgres

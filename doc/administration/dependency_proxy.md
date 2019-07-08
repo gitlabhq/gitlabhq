@@ -1,6 +1,6 @@
 # GitLab Dependency Proxy administration **[PREMIUM ONLY]**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/7934) in [GitLab Premium](https://about.gitlab.com/pricing) 11.11.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/7934) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.11.
 
 GitLab can be utilized as a dependency proxy for a variety of common package managers.
 
