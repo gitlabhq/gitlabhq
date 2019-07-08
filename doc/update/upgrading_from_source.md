@@ -76,7 +76,7 @@ sudo gem install bundler --no-document --version '< 2'
 NOTE: Beginning in GitLab 11.8, we only support node 8 or higher, and dropped
 support for node 6. Be sure to upgrade if necessary.
 
-GitLab utilizes [webpack](http://webpack.js.org) to compile frontend assets.
+GitLab utilizes [webpack](https://webpack.js.org/) to compile frontend assets.
 This requires a minimum version of node v8.10.0.
 
 You can check which version you are running with `node -v`. If you are running

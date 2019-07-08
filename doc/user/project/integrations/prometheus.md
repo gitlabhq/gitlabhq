@@ -18,6 +18,7 @@ Once enabled, GitLab will automatically detect metrics from known services in th
 ## Enabling Prometheus Integration
 
 ### Managed Prometheus on Kubernetes
+
 > **Note**: [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/28916) in GitLab 10.5
 
 GitLab can seamlessly deploy and manage Prometheus on a [connected Kubernetes cluster](../clusters/index.md), making monitoring of your apps easy.
@@ -39,9 +40,9 @@ Once you have a connected Kubernetes cluster with Helm installed, deploying a ma
 
 #### About managed Prometheus deployments
 
-Prometheus is deployed into the `gitlab-managed-apps` namespace, using the [official Helm chart](https://github.com/kubernetes/charts/tree/master/stable/prometheus). Prometheus is only accessible within the cluster, with GitLab communicating through the [Kubernetes API](https://kubernetes.io/docs/concepts/overview/kubernetes-api/).
+Prometheus is deployed into the `gitlab-managed-apps` namespace, using the [official Helm chart](https://github.com/helm/charts/tree/master/stable/prometheus). Prometheus is only accessible within the cluster, with GitLab communicating through the [Kubernetes API](https://kubernetes.io/docs/concepts/overview/kubernetes-api/).
 
-The Prometheus server will [automatically detect and monitor](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#%3Ckubernetes_sd_config%3E) nodes, pods, and endpoints. To configure a resource to be monitored by Prometheus, simply set the following [Kubernetes annotations](https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/):
+The Prometheus server will [automatically detect and monitor](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#kubernetes_sd_config) nodes, pods, and endpoints. To configure a resource to be monitored by Prometheus, simply set the following [Kubernetes annotations](https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/):
 
 - `prometheus.io/scrape` to `true` to enable monitoring of the resource.
 - `prometheus.io/port` to define the port of the metrics endpoint.
@@ -66,9 +67,9 @@ Integration with Prometheus requires the following:
 
 Installing and configuring Prometheus to monitor applications is fairly straight forward.
 
-1. [Install Prometheus](https://prometheus.io/docs/introduction/install/)
+1. [Install Prometheus](https://prometheus.io/docs/prometheus/latest/installation/)
 1. Set up one of the [supported monitoring targets](prometheus_library/index.md)
-1. Configure the Prometheus server to [collect their metrics](https://prometheus.io/docs/operating/configuration/#scrape_config)
+1. Configure the Prometheus server to [collect their metrics](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#scrape_config)
 
 #### Configuration in GitLab
 

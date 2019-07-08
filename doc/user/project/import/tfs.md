@@ -1,6 +1,6 @@
 # Migrating from TFS
 
-[TFS](https://www.visualstudio.com/tfs/) is a set of tools developed by Microsoft
+[TFS](https://visualstudio.microsoft.com/tfs/) is a set of tools developed by Microsoft
 which also includes a centralized version control system (TFVC) similar to Git.
 
 In this document, we emphasize on the TFVC to Git migration.
@@ -18,10 +18,10 @@ The following list illustrates the main differences between TFVC and Git:
   a committed file(s) is stored in its entirety (snapshot). That means that's
   very easy in Git to revert or undo a whole change.
 
-_Check also Microsoft's documentation on the
-[comparison of Git and TFVC](https://www.visualstudio.com/en-us/docs/tfvc/comparison-git-tfvc)
-and the Wikipedia article on
-[comparing the different version control software](https://en.wikipedia.org/wiki/Comparison_of_version_control_software)._
+Check also Microsoft's documentation on the
+[comparison of Git and TFVC](https://docs.microsoft.com/en-us/azure/devops/repos/tfvc/comparison-git-tfvc?view=azure-devops)
+and the Wikipedia
+[comparison of version control software](https://en.wikipedia.org/wiki/Comparison_of_version_control_software).
 
 ## Why migrate
 
