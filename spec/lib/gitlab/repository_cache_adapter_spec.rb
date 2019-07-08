@@ -4,6 +4,7 @@ describe Gitlab::RepositoryCacheAdapter do
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
   let(:cache) { repository.send(:cache) }
+  let(:redis_set_cache) { repository.send(:redis_set_cache) }
 
   describe '#cache_method_output', :use_clean_rails_memory_store_caching do
     let(:fallback) { 10 }
@@ -206,9 +207,11 @@ describe Gitlab::RepositoryCacheAdapter do
   describe '#expire_method_caches' do
     it 'expires the caches of the given methods' do
       expect(cache).to receive(:expire).with(:rendered_readme)
-      expect(cache).to receive(:expire).with(:gitignore)
+      expect(cache).to receive(:expire).with(:branch_names)
+      expect(redis_set_cache).to receive(:expire).with(:rendered_readme)
+      expect(redis_set_cache).to receive(:expire).with(:branch_names)
 
-      repository.expire_method_caches(%i(rendered_readme gitignore))
+      repository.expire_method_caches(%i(rendered_readme branch_names))
     end
 
     it 'does not expire caches for non-existent methods' do
