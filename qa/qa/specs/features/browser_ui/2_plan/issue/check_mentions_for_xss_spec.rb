@@ -9,12 +9,12 @@ module QA
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
         Page::Main::Login.perform(&:sign_in_using_credentials)
 
-        user = Resource::User.fabricate! do |user|
+        user = Resource::User.fabricate_via_api! do |user|
           user.name = "eve <img src=x onerror=alert(2)&lt;img src=x onerror=alert(1)&gt;"
           user.password = "test1234"
         end
 
-        project = Resource::Project.fabricate! do |resource|
+        project = Resource::Project.fabricate_via_api! do |resource|
           resource.name = 'xss-test-for-mentions-project'
         end
         project.visit!
@@ -24,10 +24,11 @@ module QA
           page.add_member(user.username)
         end
 
-        Resource::Issue.fabricate_via_browser_ui! do |issue|
+        issue = Resource::Issue.fabricate_via_api! do |issue|
           issue.title = issue_title
           issue.project = project
         end
+        issue.visit!
 
         Page::Project::Issue::Show.perform do |show_page|
           show_page.select_all_activities_filter
