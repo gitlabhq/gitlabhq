@@ -1057,7 +1057,7 @@ globally and all jobs will use that definition.
 #### `cache:paths`
 
 Use the `paths` directive to choose which files or directories will be cached.
-Wildcards can be used as well.
+Wildcards can be used that follow the [glob](https://en.wikipedia.org/wiki/Glob_(programming)) patterns and [filepath.Match](https://golang.org/pkg/path/filepath/#Match).
 
 Cache all files in `binaries` that end in `.apk` and the `.config` file:
 
@@ -1219,8 +1219,10 @@ be available for download in the GitLab UI.
 
 #### `artifacts:paths`
 
-You can only use paths that are within the project workspace. To pass artifacts
-between different jobs, see [dependencies](#dependencies).
+You can only use paths that are within the project workspace.
+Wildcards can be used that follow the [glob](https://en.wikipedia.org/wiki/Glob_(programming)) patterns and [filepath.Match](https://golang.org/pkg/path/filepath/#Match).
+
+To pass artifacts between different jobs, see [dependencies](#dependencies).
 
 Send all files in `binaries` and `.config`:
 
