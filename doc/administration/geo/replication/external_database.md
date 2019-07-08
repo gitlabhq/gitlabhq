@@ -1,4 +1,4 @@
-# Geo with external PostgreSQL instances **[PREMIUM ONLY]**
+# Geo with external PostgreSQL instances **(PREMIUM ONLY)**
 
 This document is relevant if you are using a PostgreSQL instance that is *not
 managed by Omnibus*. This includes cloud-managed instances like AWS RDS, or

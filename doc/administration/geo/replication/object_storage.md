@@ -1,4 +1,4 @@
-# Geo with Object storage **[PREMIUM ONLY]**
+# Geo with Object storage **(PREMIUM ONLY)**
 
 Geo can be used in combination with Object Storage (AWS S3, or
 other compatible object storage).

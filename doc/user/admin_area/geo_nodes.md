@@ -2,7 +2,7 @@
 type: howto
 ---
 
-# Geo nodes admin area **[PREMIUM ONLY]**
+# Geo nodes admin area **(PREMIUM ONLY)**
 
 You can configure various settings for GitLab Geo nodes. For more information, see
 [Geo documentation](../../administration/geo/replication/index.md).

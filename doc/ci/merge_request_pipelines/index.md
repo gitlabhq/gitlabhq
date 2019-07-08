@@ -76,11 +76,11 @@ when a merge request was created or updated. For example:
 
 ![Merge request page](img/merge_request.png)
 
-## Pipelines for Merged Results **[PREMIUM]**
+## Pipelines for Merged Results **(PREMIUM)**
 
 Read the [documentation on Pipelines for Merged Results](pipelines_for_merged_results/index.md).
 
-### Merge Trains **[PREMIUM]**
+### Merge Trains **(PREMIUM)**
 
 Read the [documentation on Merge Trains](pipelines_for_merged_results/merge_trains/index.md).
 

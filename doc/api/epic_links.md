@@ -1,4 +1,4 @@
-# Epic Links API **[ULTIMATE]**
+# Epic Links API **(ULTIMATE)**
 
 >**Note:**
 > This endpoint was [introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/9188) in GitLab 11.8.

@@ -1,4 +1,4 @@
-# SCIM API **[SILVER ONLY]**
+# SCIM API **(SILVER ONLY)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/9388) in [GitLab Silver](https://about.gitlab.com/pricing/) 11.10.
 

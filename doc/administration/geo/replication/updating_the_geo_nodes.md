@@ -1,4 +1,4 @@
-# Updating the Geo nodes **[PREMIUM ONLY]**
+# Updating the Geo nodes **(PREMIUM ONLY)**
 
 Depending on which version of Geo you are updating to/from, there may be
 different steps.

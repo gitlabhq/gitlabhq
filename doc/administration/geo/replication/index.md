@@ -1,4 +1,4 @@
-# Geo Replication **[PREMIUM ONLY]**
+# Geo Replication **(PREMIUM ONLY)**
 
 Geo is the solution for widely distributed development teams.
 

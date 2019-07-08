@@ -32,7 +32,7 @@ to protect trigger tokens.
 You can use the `CI_JOB_TOKEN` [variable][predef] (used to authenticate
 with the [GitLab Container Registry][registry]) in the following cases.
 
-#### When used with multi-project pipelines **[PREMIUM]**
+#### When used with multi-project pipelines **(PREMIUM)**
 
 > **Note**:
 The use of `CI_JOB_TOKEN` for multi-project pipelines was [introduced][ee-2017]
@@ -56,7 +56,7 @@ Pipelines triggered that way also expose a special variable:
 
 Read more about the [pipelines trigger API][trigapi].
 
-#### When a pipeline depends on the artifacts of another pipeline **[PREMIUM]**
+#### When a pipeline depends on the artifacts of another pipeline **(PREMIUM)**
 
 > The use of `CI_JOB_TOKEN` in the artifacts download API was [introduced][ee-2346]
   in [GitLab Premium][ee] 9.5.

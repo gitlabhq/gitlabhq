@@ -1,4 +1,4 @@
-# File Locking **[PREMIUM]**
+# File Locking **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/440) in [GitLab Premium](https://about.gitlab.com/pricing/) 8.9.
 

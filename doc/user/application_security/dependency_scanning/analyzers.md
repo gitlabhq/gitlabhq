@@ -1,4 +1,4 @@
-# Dependency Scanning Analyzers **[ULTIMATE]**
+# Dependency Scanning Analyzers **(ULTIMATE)**
 
 Dependency Scanning relies on underlying third party tools that are wrapped into
 what we call "Analyzers". An analyzer is a

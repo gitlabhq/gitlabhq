@@ -1,4 +1,4 @@
-# Geo database replication **[PREMIUM ONLY]**
+# Geo database replication **(PREMIUM ONLY)**
 
 NOTE: **Note:**
 The following steps are for Omnibus installs only. Using Geo with source-based installs was **deprecated** in GitLab 11.5.

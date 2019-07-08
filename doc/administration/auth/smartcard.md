@@ -1,4 +1,4 @@
-# Smartcard authentication **[PREMIUM ONLY]**
+# Smartcard authentication **(PREMIUM ONLY)**
 
 GitLab supports authentication using smartcards.
 

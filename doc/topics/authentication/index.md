@@ -17,11 +17,11 @@ This page gathers all the resources for the topic **Authentication** within GitL
 ## GitLab administrators
 
 - [LDAP (Community Edition)](../../administration/auth/ldap.md)
-- [LDAP (Enterprise Edition)](../../administration/auth/ldap-ee.md) **[STARTER]**
+- [LDAP (Enterprise Edition)](../../administration/auth/ldap-ee.md) **(STARTER)**
 - [Enforce Two-factor Authentication (2FA)](../../security/two_factor_authentication.md#enforce-two-factor-authentication-2fa)
 - **Articles:**
   - [How to Configure LDAP with GitLab CE](../../administration/auth/how_to_configure_ldap_gitlab_ce/index.md)
-  - [How to Configure LDAP with GitLab EE](../../administration/auth/how_to_configure_ldap_gitlab_ee/index.md) **[STARTER]**
+  - [How to Configure LDAP with GitLab EE](../../administration/auth/how_to_configure_ldap_gitlab_ee/index.md) **(STARTER)**
   - [Feature Highlight: LDAP Integration](https://about.gitlab.com/2014/07/10/feature-highlight-ldap-sync/)
   - [Debugging LDAP](https://about.gitlab.com/handbook/support/workflows/support-engineering/ldap/debugging_ldap.html)
 - **Integrations:**
@@ -30,10 +30,10 @@ This page gathers all the resources for the topic **Authentication** within GitL
   - [Atlassian Crowd OmniAuth Provider](../../administration/auth/crowd.md)
   - [CAS OmniAuth Provider](../../integration/cas.md)
   - [SAML OmniAuth Provider](../../integration/saml.md)
-  - [SAML for GitLab.com Groups](../../user/group/saml_sso/index.md) **[SILVER ONLY]**
-  - [SCIM user provisioning for GitLab.com Groups](../../user/group/saml_sso/scim_setup.md) **[SILVER ONLY]**
+  - [SAML for GitLab.com Groups](../../user/group/saml_sso/index.md) **(SILVER ONLY)**
+  - [SCIM user provisioning for GitLab.com Groups](../../user/group/saml_sso/scim_setup.md) **(SILVER ONLY)**
   - [Okta SSO provider](../../administration/auth/okta.md)
-  - [Kerberos integration (GitLab EE)](../../integration/kerberos.md) **[STARTER]**
+  - [Kerberos integration (GitLab EE)](../../integration/kerberos.md) **(STARTER)**
 
 ## API
 

@@ -1,4 +1,4 @@
-# GitHub project integration **[PREMIUM]**
+# GitHub project integration **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/3836) in GitLab Premium 10.6.
 

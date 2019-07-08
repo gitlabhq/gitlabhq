@@ -1,4 +1,4 @@
-# Extra Sidekiq processes **[STARTER ONLY]**
+# Extra Sidekiq processes **(STARTER ONLY)**
 
 NOTE: **Note:**
 The information in this page applies only to Omnibus GitLab.

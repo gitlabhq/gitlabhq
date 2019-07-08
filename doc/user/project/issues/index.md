@@ -75,7 +75,7 @@ must be set.
 
 While you can view and manage the full details of an issue on the [issue page](#issue-page),
 you can also work with multiple issues at a time using the [Issues List](#issues-list),
-[Issue Boards](#issue-boards), Issue references, and [Epics](#epics-ultimate)**[ULTIMATE]**.
+[Issue Boards](#issue-boards), Issue references, and [Epics](#epics-ultimate)**(ULTIMATE)**.
 
 Key actions for Issues include:
 
@@ -111,7 +111,7 @@ For sorting by issue priority, see [Label Priority](../labels.md#label-priority)
 ![Issue board](img/issue_board.png)
 
 [Issue boards](../issue_board.md) are Kanban boards with columns that display issues based on their labels
-or their assignees**[PREMIUM]**. They offer the flexibility to manage issues using
+or their assignees**(PREMIUM)**. They offer the flexibility to manage issues using
 highly customizable workflows.
 
 You can reorder issues within a column. If you drag an issue card to another column, its
@@ -119,13 +119,13 @@ associated label or assignee will change to match that of the new column. The en
 board can also be filtered to only include issues from a certain milestone or an overarching
 label.
 
-### Epics **[ULTIMATE]**
+### Epics **(ULTIMATE)**
 
 [Epics](../../group/epics/index.md) let you manage your portfolio of projects more
 efficiently and with less effort by tracking groups of issues that share a theme, across
 projects and milestones.
 
-### Related issues **[STARTER]**
+### Related issues **(STARTER)**
 
 You can mark two issues as related, so that when viewing one, the other is always
 listed in its [Related Issues](related_issues.md) section. This can help display important
@@ -158,7 +158,7 @@ requires [GraphQL](../../../api/graphql/index.md) to be enabled.
 - [Bulk edit issues](../bulk_editing.md) - From the Issues List, select multiple issues
   in order to change their status, assignee, milestone, or labels in bulk.
 - [Import issues](csv_import.md)
-- [Export issues](csv_export.md) **[STARTER]**
+- [Export issues](csv_export.md) **(STARTER)**
 - [Issues API](../../../api/issues.md)
 - Configure an [external issue tracker](../../../integration/external-issue-tracker.md)
   such as Jira, Redmine, or Bugzilla.

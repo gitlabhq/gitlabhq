@@ -1,4 +1,4 @@
-# Geo security review (Q&A) **[PREMIUM ONLY]**
+# Geo security review (Q&A) **(PREMIUM ONLY)**
 
 The following security review of the Geo feature set focuses on security
 aspects of the feature as they apply to customers running their own GitLab

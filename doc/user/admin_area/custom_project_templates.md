@@ -1,4 +1,4 @@
-# Custom instance-level project templates **[PREMIUM ONLY]**
+# Custom instance-level project templates **(PREMIUM ONLY)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/6860) in [GitLab Premium](https://about.gitlab.com/pricing) 11.2.
 

@@ -1,4 +1,4 @@
-# Removing secondary Geo nodes **[PREMIUM ONLY]**
+# Removing secondary Geo nodes **(PREMIUM ONLY)**
 
 **Secondary** nodes can be removed from the Geo cluster using the Geo admin page of the **primary** node. To remove a **secondary** node:
 

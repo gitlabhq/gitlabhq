@@ -48,7 +48,7 @@ create issues for the same project.
 
 ![Create issue from group-level issue tracker](img/create_issue_from_group_level_issue_tracker.png)
 
-### New issue via Service Desk **[PREMIUM]**
+### New issue via Service Desk **(PREMIUM)**
 
 Enable [Service Desk](../service_desk.md) for your project and offer email support.
 By doing so, when your customer sends a new email, a new issue can be created in
@@ -209,7 +209,7 @@ as well as `#22` and `#23` in group/otherproject. `#17` won't be closed as it do
 not match the pattern. It works with multi-line commit messages as well as one-liners
 when used from the command line with `git commit -m`.
 
-#### Customizing the issue closing pattern **[CORE ONLY]**
+#### Customizing the issue closing pattern **(CORE ONLY)**
 
 In order to change the default issue closing pattern, GitLab administrators must edit the
 [`gitlab.rb` or `gitlab.yml` file](../../../administration/issue_closing_pattern.md)

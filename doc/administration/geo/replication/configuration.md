@@ -1,4 +1,4 @@
-# Geo configuration **[PREMIUM ONLY]**
+# Geo configuration **(PREMIUM ONLY)**
 
 ## Configuring a new **secondary** node
 

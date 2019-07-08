@@ -48,7 +48,7 @@ _The uploads are stored by default in
 
 1. Save the file and [restart GitLab][] for the changes to take effect.
 
-### Using object storage **[CORE ONLY]**
+### Using object storage **(CORE ONLY)**
 
 > **Notes:**
 >

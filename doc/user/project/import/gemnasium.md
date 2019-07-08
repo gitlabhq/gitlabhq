@@ -1,4 +1,4 @@
-# Gemnasium **[ULTIMATE]**
+# Gemnasium **(ULTIMATE)**
 
 This guide describes how to migrate from Gemnasium.com to your own GitLab
 instance or GitLab.com.

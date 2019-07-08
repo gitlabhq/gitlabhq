@@ -434,8 +434,8 @@ Parameters:
 | `lfs_enabled`                        | boolean | no       | Enable/disable Large File Storage (LFS) for the projects in this group. |
 | `request_access_enabled`             | boolean | no       | Allow users to request member access. |
 | `parent_id`                          | integer | no       | The parent group ID for creating nested group. |
-| `shared_runners_minutes_limit`       | integer | no       | **[STARTER ONLY]** Pipeline minutes quota for this group. |
-| `extra_shared_runners_minutes_limit` | integer | no       | **[STARTER ONLY]** Extra pipeline minutes quota for this group. |
+| `shared_runners_minutes_limit`       | integer | no       | **(STARTER ONLY)** Pipeline minutes quota for this group. |
+| `extra_shared_runners_minutes_limit` | integer | no       | **(STARTER ONLY)** Extra pipeline minutes quota for this group. |
 
 ## Transfer project to group
 
@@ -466,14 +466,14 @@ PUT /groups/:id
 | `name`                               | string  | no       | The name of the group. |
 | `path`                               | string  | no       | The path of the group. |
 | `description`                        | string  | no       | The description of the group. |
-| `membership_lock`                    | boolean | no       | **[STARTER]** Prevent adding new members to project membership within this group. |
+| `membership_lock`                    | boolean | no       | **(STARTER)** Prevent adding new members to project membership within this group. |
 | `share_with_group_lock`              | boolean | no       | Prevent sharing a project with another group within this group. |
 | `visibility`                         | string  | no       | The visibility level of the group. Can be `private`, `internal`, or `public`. |
 | `lfs_enabled` (optional)             | boolean | no       | Enable/disable Large File Storage (LFS) for the projects in this group. |
 | `request_access_enabled`             | boolean | no       | Allow users to request member access. |
-| `file_template_project_id`           | integer | no       | **[PREMIUM]** The ID of a project to load custom file templates from. |
-| `shared_runners_minutes_limit`       | integer | no       | **[STARTER ONLY]** Pipeline minutes quota for this group. |
-| `extra_shared_runners_minutes_limit` | integer | no       | **[STARTER ONLY]** Extra pipeline minutes quota for this group. |
+| `file_template_project_id`           | integer | no       | **(PREMIUM)** The ID of a project to load custom file templates from. |
+| `shared_runners_minutes_limit`       | integer | no       | **(STARTER ONLY)** Pipeline minutes quota for this group. |
+| `extra_shared_runners_minutes_limit` | integer | no       | **(STARTER ONLY)** Extra pipeline minutes quota for this group. |
 
 ```bash
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5?name=Experimental"
@@ -573,7 +573,7 @@ GET /groups?search=foobar
 ]
 ```
 
-## Sync group with LDAP **[CORE ONLY]**
+## Sync group with LDAP **(CORE ONLY)**
 
 Syncs the group with its linked LDAP group. Only available to group owners and administrators.
 
@@ -589,7 +589,7 @@ Parameters:
 
 Please consult the [Group Members](members.md) documentation.
 
-### Add LDAP group link **[CORE ONLY]**
+### Add LDAP group link **(CORE ONLY)**
 
 Adds an LDAP group link.
 
@@ -604,7 +604,7 @@ Parameters:
 - `group_access` (required) - Minimum access level for members of the LDAP group
 - `provider` (required) - LDAP provider for the LDAP group
 
-### Delete LDAP group link **[CORE ONLY]**
+### Delete LDAP group link **(CORE ONLY)**
 
 Deletes an LDAP group link.
 

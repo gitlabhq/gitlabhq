@@ -1,4 +1,4 @@
-# License Management **[ULTIMATE]**
+# License Management **(ULTIMATE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/5483)
 in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.0.

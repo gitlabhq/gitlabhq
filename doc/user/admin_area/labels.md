@@ -2,7 +2,7 @@
 type: reference
 ---
 
-# Labels administration **[CORE ONLY]**
+# Labels administration **(CORE ONLY)**
 
 In the Admin Area, you can manage labels for the GitLab instance. For more details, see [Labels](../project/labels.md).
 

@@ -1,4 +1,4 @@
-# Issue closing pattern **[CORE ONLY]**
+# Issue closing pattern **(CORE ONLY)**
 
 >**Note:**
 This is the administration documentation.

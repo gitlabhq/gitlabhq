@@ -1,4 +1,4 @@
-# Service Desk **[PREMIUM]**
+# Service Desk **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/149) in [GitLab Premium 9.1](https://about.gitlab.com/2017/04/22/gitlab-9-1-released/#service-desk-eep).
 

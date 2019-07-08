@@ -1,4 +1,4 @@
-# Code Owners **[STARTER]**
+# Code Owners **(STARTER)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/6916)
 in [GitLab Starter](https://about.gitlab.com/pricing/) 11.3.

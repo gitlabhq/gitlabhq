@@ -1,4 +1,4 @@
-# Epics API **[ULTIMATE]**
+# Epics API **(ULTIMATE)**
 
 Every API call to epic must be authenticated.
 

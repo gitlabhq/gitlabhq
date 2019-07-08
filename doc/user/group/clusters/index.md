@@ -42,7 +42,7 @@ to the group containing the project if the project's cluster is available and no
 In the case of sub-groups, GitLab will use the cluster of the closest ancestor group
 to the project, provided the cluster is not disabled.
 
-## Multiple Kubernetes clusters **[PREMIUM]**
+## Multiple Kubernetes clusters **(PREMIUM)**
 
 With GitLab Premium, you can associate more than one Kubernetes clusters to your
 group. That way you can have different clusters for different environments,
@@ -82,7 +82,7 @@ the [Auto DevOps](../../../topics/autodevops/index.md) stages.
 
 The domain should have a wildcard DNS configured to the Ingress IP address.
 
-## Environment scopes **[PREMIUM]**
+## Environment scopes **(PREMIUM)**
 
 When adding more than one Kubernetes cluster to your project, you need to differentiate
 them with an environment scope. The environment scope associates clusters with
