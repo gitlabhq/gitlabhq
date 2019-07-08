@@ -9,6 +9,52 @@ module QA
       Page::Main::Login.perform(&:sign_in_using_credentials)
     end
 
+    def disable_optional_jobs(project)
+      # Disable code_quality check in Auto DevOps pipeline as it takes
+      # too long and times out the test
+      Resource::CiVariable.fabricate_via_api! do |resource|
+        resource.project = project
+        resource.key = 'CODE_QUALITY_DISABLED'
+        resource.value = '1'
+        resource.masked = false
+      end
+
+      Resource::CiVariable.fabricate_via_api! do |resource|
+        resource.project = project
+        resource.key = 'LICENSE_MANAGEMENT_DISABLED'
+        resource.value = '1'
+        resource.masked = false
+      end
+
+      Resource::CiVariable.fabricate_via_api! do |resource|
+        resource.project = project
+        resource.key = 'SAST_DISABLED'
+        resource.value = '1'
+        resource.masked = false
+      end
+
+      Resource::CiVariable.fabricate_via_api! do |resource|
+        resource.project = project
+        resource.key = 'DEPENDENCY_SCANNING_DISABLED'
+        resource.value = '1'
+        resource.masked = false
+      end
+
+      Resource::CiVariable.fabricate_via_api! do |resource|
+        resource.project = project
+        resource.key = 'CONTAINER_SCANNING_DISABLED'
+        resource.value = '1'
+        resource.masked = false
+      end
+
+      Resource::CiVariable.fabricate_via_api! do |resource|
+        resource.project = project
+        resource.key = 'DAST_DISABLED'
+        resource.value = '1'
+        resource.masked = false
+      end
+    end
+
     # Failure issue: https://gitlab.com/gitlab-org/quality/nightly/issues/108
     describe 'Auto DevOps support', :orchestrated, :kubernetes, :quarantine do
       context 'when rbac is enabled' do
@@ -28,14 +74,7 @@ module QA
             p.description = 'Project with Auto DevOps'
           end
 
-          # Disable code_quality check in Auto DevOps pipeline as it takes
-          # too long and times out the test
-          Resource::CiVariable.fabricate! do |resource|
-            resource.project = @project
-            resource.key = 'CODE_QUALITY_DISABLED'
-            resource.value = '1'
-            resource.masked = false
-          end
+          disable_optional_jobs(@project)
 
           # Set an application secret CI variable (prefixed with K8S_SECRET_)
           Resource::CiVariable.fabricate! do |resource|
