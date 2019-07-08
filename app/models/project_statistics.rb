@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class ProjectStatistics < ApplicationRecord
+  include AfterCommitQueue
+
   belongs_to :project
   belongs_to :namespace
 
@@ -15,6 +17,7 @@ class ProjectStatistics < ApplicationRecord
 
   COLUMNS_TO_REFRESH = [:repository_size, :wiki_size, :lfs_objects_size, :commit_count].freeze
   INCREMENTABLE_COLUMNS = { build_artifacts_size: %i[storage_size], packages_size: %i[storage_size] }.freeze
+  NAMESPACE_RELATABLE_COLUMNS = [:repository_size, :wiki_size, :lfs_objects_size].freeze
 
   scope :for_project_ids, ->(project_ids) { where(project_id: project_ids) }
 
@@ -22,11 +25,15 @@ class ProjectStatistics < ApplicationRecord
     repository_size + lfs_objects_size
   end
 
-  def refresh!(only: nil)
+  def refresh!(only: [])
     COLUMNS_TO_REFRESH.each do |column, generator|
-      if only.blank? || only.include?(column)
+      if only.empty? || only.include?(column)
         public_send("update_#{column}") # rubocop:disable GitlabSecurity/PublicSend
       end
+    end
+
+    if only.empty? || only.any? { |column| NAMESPACE_RELATABLE_COLUMNS.include?(column) }
+      schedule_namespace_aggregation_worker
     end
 
     save!
@@ -80,5 +87,19 @@ class ProjectStatistics < ApplicationRecord
     end
 
     update_all(updates.join(', '))
+  end
+
+  private
+
+  def schedule_namespace_aggregation_worker
+    run_after_commit do
+      next unless schedule_aggregation_worker?
+
+      Namespaces::ScheduleAggregationWorker.perform_async(project.namespace_id)
+    end
+  end
+
+  def schedule_aggregation_worker?
+    Feature.enabled?(:update_statistics_namespace, project&.root_ancestor)
   end
 end
