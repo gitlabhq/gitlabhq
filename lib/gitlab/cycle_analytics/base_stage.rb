@@ -23,6 +23,8 @@ module Gitlab
       end
 
       def median
+        return if @project.nil?
+
         BatchLoader.for(@project.id).batch(key: name) do |project_ids, loader|
           if project_ids.one?
             loader.call(@project.id, median_query(project_ids))
