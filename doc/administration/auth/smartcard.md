@@ -184,3 +184,31 @@ attribute. As a prerequisite, you must use an LDAP server that:
 
 1. Save the file and [restart](../restart_gitlab.md#installations-from-source)
    GitLab for the changes to take effect.
+
+### Require browser session with smartcard sign-in for Git access
+
+**For Omnibus installations**
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+    ```ruby
+    gitlab_rails['smartcard_required_for_git_access'] = true
+    ```
+
+1. Save the file and [reconfigure](../restart_gitlab.md#omnibus-gitlab-reconfigure)
+   GitLab for the changes to take effect.
+
+**For installations from source**
+
+1. Edit `config/gitlab.yml`:
+
+    ```yaml
+    ## Smartcard authentication settings
+    smartcard:
+      # snip...
+      # Browser session with smartcard sign-in is required for Git access
+      required_for_git_access: true
+    ```
+
+1. Save the file and [restart](../restart_gitlab.md#installations-from-source)
+   GitLab for the changes to take effect.
