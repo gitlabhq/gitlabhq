@@ -41,7 +41,7 @@ The steps below are the minimum necessary to configure a Redis server with
 Omnibus:
 
 1. SSH into the Redis server.
-1. [Download/install](https://about.gitlab.com/installation) the Omnibus GitLab
+1. [Download/install](https://about.gitlab.com/install/) the Omnibus GitLab
    package you want using **steps 1 and 2** from the GitLab downloads page.
      - Do not complete any other steps on the download page.
 
@@ -357,7 +357,7 @@ The prerequisites for a HA Redis setup are the following:
 ### Step 1. Configuring the master Redis instance
 
 1. SSH into the **master** Redis server.
-1. [Download/install](https://about.gitlab.com/installation) the Omnibus GitLab
+1. [Download/install](https://about.gitlab.com/install/) the Omnibus GitLab
    package you want using **steps 1 and 2** from the GitLab downloads page.
      - Make sure you select the correct Omnibus package, with the same version
        and type (Community, Enterprise editions) of your current install.
@@ -400,7 +400,7 @@ The prerequisites for a HA Redis setup are the following:
 ### Step 2. Configuring the slave Redis instances
 
 1. SSH into the **slave** Redis server.
-1. [Download/install](https://about.gitlab.com/installation) the Omnibus GitLab
+1. [Download/install](https://about.gitlab.com/install/) the Omnibus GitLab
    package you want using **steps 1 and 2** from the GitLab downloads page.
      - Make sure you select the correct Omnibus package, with the same version
        and type (Community, Enterprise editions) of your current install.

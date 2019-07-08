@@ -45,7 +45,7 @@ It's important to understand how to install GitLab in the same way that our user
 
 Sometimes we need to upgrade customers from old versions of GitLab to latest, so it's good to get some experience of doing that now.
 
-- [Installation Methods](https://about.gitlab.com/installation/):
+- [Installation Methods](https://about.gitlab.com/install/):
   - [Omnibus](https://gitlab.com/gitlab-org/omnibus-gitlab/)
   - [Docker](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/docker)
   - [Source](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/install/installation.md)

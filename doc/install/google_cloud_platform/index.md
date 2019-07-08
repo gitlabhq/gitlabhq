@@ -55,7 +55,7 @@ After a few seconds, the instance will be created and available to log in. The n
 
     ![GitLab first sign in](img/ssh_terminal.png)
 
-1. Next, follow the instructions for installing GitLab for the operating system you choose, at <https://about.gitlab.com/installation/>. You can use the IP address from the step above, as the hostname.
+1. Next, follow the instructions for installing GitLab for the operating system you choose, at <https://about.gitlab.com/install/>. You can use the IP address from the step above, as the hostname.
 
 1. Congratulations! GitLab is now installed and you can access it via your browser. To finish installation, open the URL in your browser and provide the initial administrator password. The username for this account is `root`.
 

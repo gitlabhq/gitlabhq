@@ -31,7 +31,7 @@ deploy the bundled PostgreSQL.
 ### Standalone PostgreSQL using GitLab Omnibus **(CORE ONLY)**
 
 1. SSH into the PostgreSQL server.
-1. [Download/install](https://about.gitlab.com/installation) the Omnibus GitLab
+1. [Download/install](https://about.gitlab.com/install/) the Omnibus GitLab
    package you want using **steps 1 and 2** from the GitLab downloads page.
      - Do not complete any other steps on the download page.
 1. Generate a password hash for PostgreSQL. This assumes you will use the default
@@ -281,7 +281,7 @@ Few notes on the service itself:
 
 #### Installing Omnibus GitLab
 
-First, make sure to [download/install](https://about.gitlab.com/installation)
+First, make sure to [download/install](https://about.gitlab.com/install/)
 GitLab Omnibus **on each node**.
 
 Make sure you install the necessary dependencies from step 1,

@@ -30,7 +30,7 @@ For the installations options, see [the main installation page](README.md).
 - macOS
 
 Installation of GitLab on these operating systems is possible, but not supported.
-Please see the [installation from source guide](installation.md) and the [installation guides](https://about.gitlab.com/installation/) for more information.
+Please see the [installation from source guide](installation.md) and the [installation guides](https://about.gitlab.com/install/) for more information.
 
 ### Microsoft Windows
 
