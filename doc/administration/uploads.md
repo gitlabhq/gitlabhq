@@ -3,7 +3,7 @@
 >**Notes:**
 Uploads represent all user data that may be sent to GitLab as a single file. As an example, avatars and notes' attachments are uploads. Uploads are integral to GitLab functionality, and therefore cannot be disabled.
 
-### Using local storage
+## Using local storage
 
 >**Notes:**
 This is the default configuration
@@ -48,7 +48,7 @@ _The uploads are stored by default in
 
 1. Save the file and [restart GitLab][] for the changes to take effect.
 
-### Using object storage **(CORE ONLY)**
+## Using object storage **(CORE ONLY)**
 
 > **Notes:**
 >
@@ -60,7 +60,7 @@ If you don't want to use the local disk where GitLab is installed to store the
 uploads, you can use an object storage provider like AWS S3 instead.
 This configuration relies on valid AWS credentials to be configured already.
 
-### Object Storage Settings
+## Object Storage Settings
 
 For source installations the following settings are nested under `uploads:` and then `object_store:`. On omnibus installs they are prefixed by `uploads_object_store_`.
 
@@ -73,7 +73,7 @@ For source installations the following settings are nested under `uploads:` and 
 | `proxy_download` | Set to true to enable proxying all files served. Option allows to reduce egress traffic as this allows clients to download directly from remote storage instead of proxying all data | `false` |
 | `connection` | Various connection options described below | |
 
-#### S3 compatible connection settings
+### S3 compatible connection settings
 
 The connection settings match those provided by [Fog](https://github.com/fog), and are as follows:
 

@@ -10,7 +10,7 @@ By default, merge request diffs are stored in the database, in a table named
 `merge_request_diff_files`. Larger installations may find this table grows too
 large, in which case, switching to external storage is recommended.
 
-### Using external storage
+## Using external storage
 
 Merge request diffs can be stored on disk, or in object storage. In general, it
 is better to store the diffs in the database than on disk.
@@ -46,7 +46,7 @@ To enable external storage of merge request diffs, follow the instructions below
       enabled: true
     ```
 
-1. _The external diffs will be stored in 
+1. _The external diffs will be stored in
    `/home/git/gitlab/shared/external-diffs`._ To change the path, for example,
    to `/mnt/storage/external-diffs`, edit `/home/git/gitlab/config/gitlab.yml`
    and add or amend the following lines:
@@ -59,13 +59,13 @@ To enable external storage of merge request diffs, follow the instructions below
 
 1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
 
-### Using object storage
+## Using object storage
 
 Instead of storing the external diffs on disk, we recommended the use of an object
 store like AWS S3 instead. This configuration relies on valid AWS credentials to
 be configured already.
 
-### Object Storage Settings
+## Object Storage Settings
 
 For source installations, these settings are nested under `external_diffs:` and
 then `object_store:`. On Omnibus installations, they are prefixed by
@@ -80,7 +80,7 @@ then `object_store:`. On Omnibus installations, they are prefixed by
 | `proxy_download` | Set to true to enable proxying all files served. Option allows to reduce egress traffic as this allows clients to download directly from remote storage instead of proxying all data | `false` |
 | `connection` | Various connection options described below | |
 
-#### S3 compatible connection settings
+### S3 compatible connection settings
 
 The connection settings match those provided by [Fog](https://github.com/fog), and are as follows:
 
@@ -146,7 +146,7 @@ The connection settings match those provided by [Fog](https://github.com/fog), a
 
 1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
 
-### Alternative in-database storage
+## Alternative in-database storage
 
 Enabling external diffs may reduce the performance of merge requests, as they
 must be retrieved in a separate operation to other data. A compromise may be

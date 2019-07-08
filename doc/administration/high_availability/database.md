@@ -1109,7 +1109,7 @@ If you enable Monitoring, it must be enabled on **all** database servers.
 
 ## Troubleshooting
 
-#### Consul and PostgreSQL changes not taking effect.
+### Consul and PostgreSQL changes not taking effect.
 
 Due to the potential impacts, `gitlab-ctl reconfigure` only reloads Consul and PostgreSQL, it will not restart the services. However, not all changes can be activated by reloading.
 
@@ -1119,7 +1119,7 @@ For PostgreSQL, it is usually safe to restart the master node by default. Automa
 
 On the consul server nodes, it is important to restart the consul service in a controlled fashion. Read our [consul documentation](consul.md#restarting-the-server-cluster) for instructions on how to restart the service.
 
-#### `gitlab-ctl repmgr-check-master` command produces errors
+### `gitlab-ctl repmgr-check-master` command produces errors
 
 If this command displays errors about database permissions it is likely that something failed during
 install, resulting in the `gitlab-consul` database user getting incorrect permissions. Follow these
@@ -1134,7 +1134,7 @@ steps to fix the problem:
 
 Now there should not be errors. If errors still occur then there is another problem.
 
-#### PGBouncer error `ERROR: pgbouncer cannot connect to server`
+### PGBouncer error `ERROR: pgbouncer cannot connect to server`
 
 You may get this error when running `gitlab-rake gitlab:db:configure` or you
 may see the error in the PGBouncer log file.
@@ -1162,7 +1162,7 @@ postgresql['trust_auth_cidr_addresses'] = %w(123.123.123.123/32 <other_cidrs>)
 
 [Reconfigure GitLab] for the changes to take effect.
 
-#### Issues with other components
+### Issues with other components
 
 If you're running into an issue with a component not outlined here, be sure to check the troubleshooting section of their specific documentation page.
 
