@@ -17,6 +17,7 @@
 
 import { GlTooltip } from '@gitlab/ui';
 import defaultAvatarUrl from 'images/no_avatar.png';
+import { __ } from '~/locale';
 import { placeholderImage } from '../../../lazy_loader';
 
 export default {
@@ -43,7 +44,7 @@ export default {
     imgAlt: {
       type: String,
       required: false,
-      default: 'user avatar',
+      default: __('user avatar'),
     },
     size: {
       type: Number,

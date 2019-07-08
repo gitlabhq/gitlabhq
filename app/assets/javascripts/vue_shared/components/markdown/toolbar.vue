@@ -33,13 +33,18 @@ export default {
   <div class="comment-toolbar clearfix">
     <div class="toolbar-text">
       <template v-if="!hasQuickActionsDocsPath && markdownDocsPath">
-        <gl-link :href="markdownDocsPath" target="_blank" tabindex="-1"
-          >Markdown is supported</gl-link
-        >
+        <gl-link :href="markdownDocsPath" target="_blank" tabindex="-1">{{
+          __('Markdown is supported')
+        }}</gl-link>
       </template>
       <template v-if="hasQuickActionsDocsPath && markdownDocsPath">
-        <gl-link :href="markdownDocsPath" target="_blank" tabindex="-1">Markdown</gl-link> and
-        <gl-link :href="quickActionsDocsPath" target="_blank" tabindex="-1">quick actions</gl-link>
+        <gl-link :href="markdownDocsPath" target="_blank" tabindex="-1">{{
+          __('Markdown')
+        }}</gl-link>
+        and
+        <gl-link :href="quickActionsDocsPath" target="_blank" tabindex="-1">{{
+          __('quick actions')
+        }}</gl-link>
         are supported
       </template>
     </div>
@@ -57,15 +62,17 @@ export default {
           <i class="fa fa-file-image-o toolbar-button-icon" aria-hidden="true"></i>
         </span>
         <span class="uploading-error-message"></span>
-        <button class="retry-uploading-link" type="button">Try again</button> or
-        <button class="attach-new-file markdown-selector" type="button">attach a new file</button>
+        <button class="retry-uploading-link" type="button">{{ __('Try again') }}</button> or
+        <button class="attach-new-file markdown-selector" type="button">
+          {{ __('attach a new file') }}
+        </button>
       </span>
       <button class="markdown-selector button-attach-file btn-link" tabindex="-1" type="button">
         <i class="fa fa-file-image-o toolbar-button-icon" aria-hidden="true"></i
-        ><span class="text-attach-file">Attach a file</span>
+        ><span class="text-attach-file">{{ __('Attach a file') }}</span>
       </button>
       <button class="btn btn-default btn-sm hide button-cancel-uploading-files" type="button">
-        Cancel
+        {{ __('Cancel') }}
       </button>
     </span>
   </div>

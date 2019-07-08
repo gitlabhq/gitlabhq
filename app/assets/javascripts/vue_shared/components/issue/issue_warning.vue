@@ -1,7 +1,7 @@
 <script>
 import { GlLink } from '@gitlab/ui';
 import _ from 'underscore';
-import { sprintf } from '~/locale';
+import { __, sprintf } from '~/locale';
 import icon from '../../../vue_shared/components/icon.vue';
 
 function buildDocsLinkStart(path) {
@@ -47,7 +47,9 @@ export default {
     },
     confidentialAndLockedDiscussionText() {
       return sprintf(
-        'This issue is %{confidentialLinkStart}confidential%{linkEnd} and %{lockedLinkStart}locked%{linkEnd}.',
+        __(
+          'This issue is %{confidentialLinkStart}confidential%{linkEnd} and %{lockedLinkStart}locked%{linkEnd}.',
+        ),
         {
           confidentialLinkStart: buildDocsLinkStart(this.confidentialIssueDocsPath),
           lockedLinkStart: buildDocsLinkStart(this.lockedIssueDocsPath),
@@ -66,7 +68,7 @@ export default {
     <span v-if="isLockedAndConfidential">
       <span v-html="confidentialAndLockedDiscussionText"></span>
       {{
-        __(`People without permission will never get a notification and won't be able to comment.`)
+        __("People without permission will never get a notification and won't be able to comment.")
       }}
     </span>
 

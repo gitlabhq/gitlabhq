@@ -14,7 +14,7 @@
     />
 
   */
-
+import { __ } from '~/locale';
 import defaultAvatarUrl from 'images/no_avatar.png';
 import { placeholderImage } from '../../../lazy_loader';
 
@@ -39,7 +39,7 @@ export default {
     imgAlt: {
       type: String,
       required: false,
-      default: 'project avatar',
+      default: __('project avatar'),
     },
     size: {
       type: Number,

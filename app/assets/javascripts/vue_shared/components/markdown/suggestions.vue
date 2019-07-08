@@ -1,5 +1,6 @@
 <script>
 import Vue from 'vue';
+import { __ } from '~/locale';
 import SuggestionDiff from './suggestion_diff.vue';
 import Flash from '~/flash';
 
@@ -56,7 +57,7 @@ export default {
       const suggestionElements = container.querySelectorAll('.js-render-suggestion');
 
       if (this.lineType === 'old') {
-        Flash('Unable to apply suggestions to a deleted line.', 'alert', this.$el);
+        Flash(__('Unable to apply suggestions to a deleted line.'), 'alert', this.$el);
       }
 
       suggestionElements.forEach((suggestionEl, i) => {
