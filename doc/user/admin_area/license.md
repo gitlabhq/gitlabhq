@@ -2,7 +2,7 @@
 type: howto
 ---
 
-# Activate all GitLab Enterprise Edition functionality with a license **[STARTER ONLY]**
+# Activate all GitLab Enterprise Edition functionality with a license **(STARTER ONLY)**
 
 To activate all GitLab Enterprise Edition (EE) functionality, you need to upload
 a license. Once you've received your license from GitLab Inc., you can upload it

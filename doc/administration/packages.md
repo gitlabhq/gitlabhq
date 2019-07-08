@@ -1,4 +1,4 @@
-# GitLab Packages administration **[PREMIUM ONLY]**
+# GitLab Packages administration **(PREMIUM ONLY)**
 
 GitLab Packages allows organizations to utilize GitLab as a private repository
 for a variety of common package managers. Users are able to build and publish

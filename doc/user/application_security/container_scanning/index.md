@@ -1,4 +1,4 @@
-# Container Scanning **[ULTIMATE]**
+# Container Scanning **(ULTIMATE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3672)
 in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.4.

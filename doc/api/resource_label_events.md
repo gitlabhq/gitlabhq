@@ -88,7 +88,7 @@ Parameters:
 curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/issues/11/resource_label_events/1
 ```
 
-## Epics **[ULTIMATE]**
+## Epics **(ULTIMATE)**
 
 ### List group epic label events
 

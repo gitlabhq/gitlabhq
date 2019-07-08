@@ -12,7 +12,7 @@ including group membership syncing as well as multiple LDAP servers support.
 
 The information on this page is relevant for both GitLab CE and EE. For more
 details about EE-specific LDAP features, see the
-[LDAP Enterprise Edition documentation](ldap-ee.md). **[STARTER ONLY]**
+[LDAP Enterprise Edition documentation](ldap-ee.md). **(STARTER ONLY)**
 
 ## Security
 
@@ -46,7 +46,7 @@ LDAP-enabled users can always authenticate with Git using their GitLab username
 or email and LDAP password, even if password authentication for Git is disabled
 in the application settings.
 
-## Google Secure LDAP **[CORE ONLY]**
+## Google Secure LDAP **(CORE ONLY)**
 
 > Introduced in GitLab 11.9.
 
@@ -62,7 +62,7 @@ to connect to one GitLab server.
 
 For a complete guide on configuring LDAP with GitLab Community Edition, please check
 the admin guide [How to configure LDAP with GitLab CE](how_to_configure_ldap_gitlab_ce/index.md).
-For GitLab Enterprise Editions, see also [How to configure LDAP with GitLab EE](how_to_configure_ldap_gitlab_ee/index.md). **[STARTER ONLY]**
+For GitLab Enterprise Editions, see also [How to configure LDAP with GitLab EE](how_to_configure_ldap_gitlab_ee/index.md). **(STARTER ONLY)**
 
 To enable LDAP integration you need to add your LDAP server settings in
 `/etc/gitlab/gitlab.rb` or `/home/git/gitlab/config/gitlab.yml` for Omnibus
@@ -387,7 +387,7 @@ group, you can use the following syntax:
 Find more information about this "LDAP_MATCHING_RULE_IN_CHAIN" filter at
 <https://docs.microsoft.com/en-us/windows/desktop/ADSI/search-filter-syntax>. Support for
 nested members in the user filter should not be confused with
-[group sync nested groups support](ldap-ee.md#supported-ldap-group-typesattributes). **[STARTER ONLY]**
+[group sync nested groups support](ldap-ee.md#supported-ldap-group-typesattributes). **(STARTER ONLY)**
 
 Please note that GitLab does not support the custom filter syntax used by
 omniauth-ldap.

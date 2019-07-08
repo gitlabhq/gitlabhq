@@ -59,7 +59,7 @@ TIP: **Tip:**
 If a user is not member of that project, it can only be
 assigned to them if they created the issue themselves.
 
-##### 3.1. Multiple Assignees **[STARTER]**
+##### 3.1. Multiple Assignees **(STARTER)**
 
 Often multiple people work on the same issue together, which can be especially difficult
 to track in large teams where there is shared ownership of an issue.
@@ -67,7 +67,7 @@ to track in large teams where there is shared ownership of an issue.
 In [GitLab Starter](https://about.gitlab.com/pricing/), you can
 [assign multiple people](multiple_assignees_for_issues.md) to an issue.
 
-#### 4. Epic **[ULTIMATE]**
+#### 4. Epic **(ULTIMATE)**
 
 You can assign issues to an [Epic](../../group/epics/index.md), which allows better
 management of groups of related issues.
@@ -102,7 +102,7 @@ TIP: **Tip:**
 If a label doesn't exist yet, you can click **Edit**, and it opens a dropdown menu
 from which you can select **Create new label**.
 
-#### 9. Weight **[STARTER]**
+#### 9. Weight **(STARTER)**
 
 [Assign a weight](../../../workflow/issue_weight.md) to an issue.
 Larger values are used to indicate more effort is required to complete the issue. Only
@@ -180,7 +180,7 @@ TIP: **Tip:**
 Avoid mentioning `@all` in issues and merge requests, as it sends an email notification
 to all the members of that project's group, which can be interpreted as spam.
 
-#### 18. Related Issues **[STARTER]**
+#### 18. Related Issues **(STARTER)**
 
 Issues that were mentioned as [related issues](related_issues.md) are listed here.
 You can also click the `+` to add more related issues.

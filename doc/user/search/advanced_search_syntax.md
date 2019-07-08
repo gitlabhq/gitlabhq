@@ -1,4 +1,4 @@
-# Advanced Syntax Search **[STARTER ONLY]**
+# Advanced Syntax Search **(STARTER ONLY)**
 
 > **Notes:**
 > - Introduced in [GitLab Enterprise Starter][ee] 9.2

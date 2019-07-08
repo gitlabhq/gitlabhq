@@ -1,4 +1,4 @@
-# Tracing **[ULTIMATE]**
+# Tracing **(ULTIMATE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/7903) in GitLab Ultimate 11.5.
 

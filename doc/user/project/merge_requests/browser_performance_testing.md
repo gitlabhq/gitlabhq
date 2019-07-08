@@ -2,7 +2,7 @@
 type: reference, howto
 ---
 
-# Browser Performance Testing **[PREMIUM]**
+# Browser Performance Testing **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3507)
 in [GitLab Premium](https://about.gitlab.com/pricing/) 10.3.

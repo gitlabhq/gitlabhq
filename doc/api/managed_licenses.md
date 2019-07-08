@@ -1,4 +1,4 @@
-# Managed Licenses API **[ULTIMATE]**
+# Managed Licenses API **(ULTIMATE)**
 
 ## List managed licenses
 

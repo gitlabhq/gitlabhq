@@ -4,7 +4,7 @@ type: reference
 
 # Account and limit settings
 
-## Repository size limit **[STARTER]**
+## Repository size limit **(STARTER)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/740) in [GitLab Enterprise Edition 8.12](https://about.gitlab.com/2016/09/22/gitlab-8-12-released/#limit-project-size-ee).
 > Available in [GitLab Starter](https://about.gitlab.com/pricing/).

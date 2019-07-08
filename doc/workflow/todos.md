@@ -33,7 +33,7 @@ A To Do displays on your To-Do List when:
 - You are `@mentioned` in the description or comment of an:
     - Issue
     - Merge Request
-    - Epic **[ULTIMATE]**
+    - Epic **(ULTIMATE)**
 - You are `@mentioned` in a comment on a commit
 - A job in the CI pipeline running for your merge request failed, but this
   job is not allowed to fail
@@ -75,7 +75,7 @@ You can also add the following to your To-Do List by clicking the **Add a To Do*
 
 - Issue
 - Merge Request
-- Epic **[ULTIMATE]**
+- Epic **(ULTIMATE)**
 
 ![Adding a To Do from the issuable sidebar](img/todos_add_todo_sidebar.png)
 
@@ -85,7 +85,7 @@ Any action to the following will mark the corresponding To Do as done:
 
 - Issue
 - Merge Request
-- Epic **[ULTIMATE]**
+- Epic **(ULTIMATE)**
 
 Actions that dismiss To-Do items include:
 
@@ -104,7 +104,7 @@ To prevent other users from closing issues without you being notified, if someon
 
 - Issue
 - Merge request
-- Epic **[ULTIMATE]**
+- Epic **(ULTIMATE)**
 
 There is just one To Do for each of these, so mentioning a user a hundred times in an issue will only trigger one To Do.
 
@@ -119,7 +119,7 @@ You can also mark a To Do as done by clicking the **Mark as done** button in the
 
 - Issue
 - Merge Request
-- Epic **[ULTIMATE]**
+- Epic **(ULTIMATE)**
 
 ![Mark as done from the issuable sidebar](img/todos_mark_done_sidebar.png)
 
@@ -135,7 +135,7 @@ There are four kinds of filters you can use on your To-Do List.
 | Project | Filter by project |
 | Group   | Filter by group |
 | Author  | Filter by the author that triggered the To Do |
-| Type    | Filter by issue, merge request, or epic **[ULTIMATE]** |
+| Type    | Filter by issue, merge request, or epic **(ULTIMATE)** |
 | Action  | Filter by the action that triggered the To Do |
 
 You can also filter by more than one of these at the same time. The possible Actions are `Any Action`, `Assigned`, `Mentioned`, `Added`, `Pipelines`, and `Directly Addressed`, [as described above](#what-triggers-a-to-do).

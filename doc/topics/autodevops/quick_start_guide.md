@@ -159,15 +159,15 @@ In the **test** stage, GitLab runs various checks on the application:
 - The `test` job runs unit and integration tests by detecting the language and
   framework ([Auto Test](index.md#auto-test))
 - The `code_quality` job checks the code quality and is allowed to fail
-  ([Auto Code Quality](index.md#auto-code-quality-starter)) **[STARTER]**
+  ([Auto Code Quality](index.md#auto-code-quality-starter)) **(STARTER)**
 - The `container_scanning` job checks the Docker container if it has any
   vulnerabilities and is allowed to fail ([Auto Container Scanning](index.md#auto-container-scanning-ultimate))
 - The `dependency_scanning` job checks if the application has any dependencies
-  susceptible to vulnerabilities and is allowed to fail ([Auto Dependency Scanning](index.md#auto-dependency-scanning-ultimate)) **[ULTIMATE]**
+  susceptible to vulnerabilities and is allowed to fail ([Auto Dependency Scanning](index.md#auto-dependency-scanning-ultimate)) **(ULTIMATE)**
 - The `sast` job runs static analysis on the current code to check for potential
-  security issues and is allowed to fail([Auto SAST](index.md#auto-sast-ultimate)) **[ULTIMATE]**
+  security issues and is allowed to fail([Auto SAST](index.md#auto-sast-ultimate)) **(ULTIMATE)**
 - The `license_management` job searches the application's dependencies to determine each of their
-  licenses and is allowed to fail ([Auto License Management](index.md#auto-license-management-ultimate)) **[ULTIMATE]**
+  licenses and is allowed to fail ([Auto License Management](index.md#auto-license-management-ultimate)) **(ULTIMATE)**
 
 NOTE: **Note:**
 As you might have noticed, all jobs except `test` are allowed to fail in the
@@ -178,7 +178,7 @@ deploys the application in Kubernetes ([Auto Deploy](index.md#auto-deploy)).
 
 Lastly, in the **performance** stage, some performance tests will run
 on the deployed application
-([Auto Browser Performance Testing](index.md#auto-browser-performance-testing-premium)). **[PREMIUM]**
+([Auto Browser Performance Testing](index.md#auto-browser-performance-testing-premium)). **(PREMIUM)**
 
 ---
 
@@ -285,8 +285,8 @@ all within GitLab. Despite its automatic nature, Auto DevOps can also be configu
 and customized to fit your workflow. Here are some helpful resources for further reading:
 
 1. [Auto DevOps](index.md)
-1. [Multiple Kubernetes clusters](index.md#using-multiple-kubernetes-clusters-premium) **[PREMIUM]**
-1. [Incremental rollout to production](index.md#incremental-rollout-to-production-premium) **[PREMIUM]**
+1. [Multiple Kubernetes clusters](index.md#using-multiple-kubernetes-clusters-premium) **(PREMIUM)**
+1. [Incremental rollout to production](index.md#incremental-rollout-to-production-premium) **(PREMIUM)**
 1. [Disable jobs you don't need with environment variables](index.md#environment-variables)
 1. [Use a static IP for your cluster](../../user/project/clusters/index.md#using-a-static-ip)
 1. [Use your own buildpacks to build your application](index.md#custom-buildpacks)

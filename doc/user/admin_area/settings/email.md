@@ -10,7 +10,7 @@ You can customize some of the content in emails sent from your GitLab instance.
 
 The logo in the header of some emails can be customized, see the [logo customization section](../../../customization/branded_page_and_email_header.md).
 
-## Custom additional text **[PREMIUM ONLY]**
+## Custom additional text **(PREMIUM ONLY)**
 
 > [Introduced][ee-5031] in [GitLab Premium][eep] 10.7.
 

@@ -1,4 +1,4 @@
-# Google Secure LDAP **[CORE ONLY]**
+# Google Secure LDAP **(CORE ONLY)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/46391) in GitLab 11.9.
 

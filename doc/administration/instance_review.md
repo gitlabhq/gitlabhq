@@ -1,4 +1,4 @@
-# Instance Review **[CORE ONLY]**
+# Instance Review **(CORE ONLY)**
 
 > [Introduced][6995] in [GitLab Core][ee] 11.3.
 

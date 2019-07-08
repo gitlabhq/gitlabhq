@@ -1,4 +1,4 @@
-# GitLab NPM Registry **[PREMIUM]**
+# GitLab NPM Registry **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/5934)
   in [GitLab Premium](https://about.gitlab.com/pricing/) 11.7.
@@ -20,7 +20,7 @@ within a subgroup is not supported yet.
 
 NOTE: **Note:**
 This option is available only if your GitLab administrator has
-[enabled support for the NPM registry](../../../administration/packages.md).**[PREMIUM ONLY]**
+[enabled support for the NPM registry](../../../administration/packages.md).**(PREMIUM ONLY)**
 
 After the NPM registry is enabled, it will be available for all new projects
 by default. To enable it for existing projects, or if you want to disable it:

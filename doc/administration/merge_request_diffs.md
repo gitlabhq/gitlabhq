@@ -1,4 +1,4 @@
-# Merge request diffs storage **[CORE ONLY]**
+# Merge request diffs storage **(CORE ONLY)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/52568) in GitLab 11.8.
 

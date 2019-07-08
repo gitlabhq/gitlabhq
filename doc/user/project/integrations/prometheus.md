@@ -93,7 +93,7 @@ GitLab will automatically scan the Prometheus server for metrics from known serv
 
 You can view the performance dashboard for an environment by [clicking on the monitoring button](../../../ci/environments.md#monitoring-environments).
 
-### Adding additional metrics **[PREMIUM]**
+### Adding additional metrics **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3799) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.6.
 
@@ -120,7 +120,7 @@ GitLab supports a limited set of [CI variables](../../../ci/variables/README.htm
 
 To specify a variable in a query, enclose it in curly braces with a leading percent. For example: `%{ci_environment_slug}`.
 
-### Setting up alerts for Prometheus metrics **[ULTIMATE]**
+### Setting up alerts for Prometheus metrics **(ULTIMATE)**
 
 #### Managed Prometheus instances
 
@@ -156,7 +156,7 @@ receivers:
   ...
 ```
 
-### Taking action on incidents **[ULTIMATE]**
+### Taking action on incidents **(ULTIMATE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/4925) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.11.
 

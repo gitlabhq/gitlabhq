@@ -1,4 +1,4 @@
-# Licensed feature availability **[STARTER]**
+# Licensed feature availability **(STARTER)**
 
 As of GitLab 9.4, we've been supporting a simplified version of licensed 
 feature availability checks via `ee/app/models/license.rb`, both for 

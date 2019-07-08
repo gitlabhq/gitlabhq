@@ -1,4 +1,4 @@
-# GitLab Pivotal Tile **[PREMIUM ONLY]**
+# GitLab Pivotal Tile **(PREMIUM ONLY)**
 
 CAUTION: **Discontinued:**
 As of September 13, 2017, the GitLab Enterprise Plus for Pivotal Cloud Foundry

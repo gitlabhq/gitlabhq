@@ -1,4 +1,4 @@
-# Issue links API **[STARTER]**
+# Issue links API **(STARTER)**
 
 ## List issue relations
 

@@ -72,7 +72,7 @@ sudo -u git -H bundle exec rake db:migrate RAILS_ENV=production
 sudo -u git -H bundle exec rake assets:clean assets:precompile cache:clear RAILS_ENV=production
 ```
 
-### 4. Install `gitlab-elasticsearch-indexer` (optional) **[STARTER ONLY]**
+### 4. Install `gitlab-elasticsearch-indexer` (optional) **(STARTER ONLY)**
 
 If you're interested in using GitLab's new [elasticsearch repository
 indexer](../integration/elasticsearch.md) (currently in beta) please follow the instructions on the

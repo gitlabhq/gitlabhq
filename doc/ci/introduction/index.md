@@ -177,22 +177,22 @@ according to each stage (Verify, Package, Release).
 
 1. **Verify**:
     - Automatically build and test your application with Continuous Integration.
-    - Analyze your source code quality with [GitLab Code Quality](../../user/project/merge_requests/code_quality.md). **[STARTER]**
-    - Determine the performance impact of code changes with [Browser Performance Testing](../../user/project/merge_requests/browser_performance_testing.md). **[PREMIUM]**
-    - Perform a series of tests, such as [Container Scanning](../../user/application_security/container_scanning/index.md) **[ULTIMATE]**, [Dependency Scanning](../../user/application_security/dependency_scanning/index.md) **[ULTIMATE]**, and [JUnit tests](../junit_test_reports.md).
+    - Analyze your source code quality with [GitLab Code Quality](../../user/project/merge_requests/code_quality.md). **(STARTER)**
+    - Determine the performance impact of code changes with [Browser Performance Testing](../../user/project/merge_requests/browser_performance_testing.md). **(PREMIUM)**
+    - Perform a series of tests, such as [Container Scanning](../../user/application_security/container_scanning/index.md) **(ULTIMATE)**, [Dependency Scanning](../../user/application_security/dependency_scanning/index.md) **(ULTIMATE)**, and [JUnit tests](../junit_test_reports.md).
     - Deploy your changes with [Review Apps](../review_apps/index.md) to preview the app changes on every branch.
 1. **Package**:
     - Store Docker images with [Container Registry](../../user/project/container_registry.md).
-    - Store NPM packages with [NPM Registry](../../user/project/packages/npm_registry.md). **[PREMIUM]**
-    - Store Maven artifacts with [Maven Repository](../../user/project/packages/maven_repository.md). **[PREMIUM]**
+    - Store NPM packages with [NPM Registry](../../user/project/packages/npm_registry.md). **(PREMIUM)**
+    - Store Maven artifacts with [Maven Repository](../../user/project/packages/maven_repository.md). **(PREMIUM)**
 1. **Release**:
     - Continuous Deployment, automatically deploying your app to production.
     - Continuous Delivery, manually click to deploy your app to production.
     - Deploy static websites with [GitLab Pages](../../user/project/pages/index.md).
-    - Ship features to only a portion of your pods and let a percentage of your user base to visit the temporarily deployed feature with [Canary Deployments](../../user/project/canary_deployments.md). **[PREMIUM]**
-    - Deploy your features behind [Feature Flags](../../user/project/operations/feature_flags.md). **[PREMIUM]**
+    - Ship features to only a portion of your pods and let a percentage of your user base to visit the temporarily deployed feature with [Canary Deployments](../../user/project/canary_deployments.md). **(PREMIUM)**
+    - Deploy your features behind [Feature Flags](../../user/project/operations/feature_flags.md). **(PREMIUM)**
     - Add release notes to any Git tag with [GitLab Releases](../../user/project/releases/index.md).
-    - View of the current health and status of each CI environment running on Kubernetes with [Deploy Boards](../../user/project/deploy_boards.md). **[PREMIUM]**
+    - View of the current health and status of each CI environment running on Kubernetes with [Deploy Boards](../../user/project/deploy_boards.md). **(PREMIUM)**
     -  Deploy your application to a production environment in a Kubernetes cluster with [Auto Deploy](../../topics/autodevops/index.md#auto-deploy).
 
 With GitLab CI/CD you can also:
@@ -201,7 +201,7 @@ With GitLab CI/CD you can also:
 - Deploy your app to different [environments](../environments.md).
 - Install your own [GitLab Runner](https://docs.gitlab.com/runner/).
 - [Schedule pipelines](../../user/project/pipelines/schedules.md).
-- Check for app vulnerabilities with [Security Test reports](../../user/project/merge_requests/index.md#security-reports-ultimate). **[ULTIMATE]**
+- Check for app vulnerabilities with [Security Test reports](../../user/project/merge_requests/index.md#security-reports-ultimate). **(ULTIMATE)**
 
 To see all CI/CD features, navigate back to the [CI/CD index](../README.md).
 

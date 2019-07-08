@@ -100,7 +100,7 @@ sudo -u git -H git checkout v$(</home/git/gitlab/GITLAB_PAGES_VERSION)
 sudo -u git -H make
 ```
 
-### 8. Install/Update `gitlab-elasticsearch-indexer` (optional) **[STARTER ONLY]**
+### 8. Install/Update `gitlab-elasticsearch-indexer` (optional) **(STARTER ONLY)**
 
 If you're interested in using GitLab's new [elasticsearch repository indexer](../integration/elasticsearch.md#elasticsearch-repository-indexer-beta) (currently in beta)
 please follow the instructions on the document linked above and enable the

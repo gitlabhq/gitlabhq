@@ -1,4 +1,4 @@
-# Packages **[PREMIUM]**
+# Packages **(PREMIUM)**
 
 This document will guide you through adding another [package management system](../administration/packages.md) support to GitLab.
 

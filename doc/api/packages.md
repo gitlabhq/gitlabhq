@@ -1,4 +1,4 @@
-# Packages API **[PREMIUM]**
+# Packages API **(PREMIUM)**
 
 This is the API docs of [GitLab Packages](../administration/packages.md).
 

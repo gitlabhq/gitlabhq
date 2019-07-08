@@ -67,7 +67,7 @@ Some static site generators provide plugins for that functionality so that you
 don't have to create and edit HTML files manually. For example, Jekyll has the
 [redirect-from plugin](https://github.com/jekyll/jekyll-redirect-from).
 
-## GitLab Pages Access Control **[CORE ONLY]**
+## GitLab Pages Access Control **(CORE ONLY)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/33422) in GitLab 11.5.
 

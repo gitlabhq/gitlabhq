@@ -1,4 +1,4 @@
-# Vulnerabilities API **[ULTIMATE]**
+# Vulnerabilities API **(ULTIMATE)**
 
 Every API call to vulnerabilities must be authenticated.
 

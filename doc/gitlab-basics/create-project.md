@@ -16,7 +16,7 @@ To create a project in GitLab:
    - [Import a project](../user/project/import/index.md) from a different repository,
      if enabled on your GitLab instance. Contact your GitLab admin if this
      is unavailable.
-   - Run [CI/CD pipelines for external repositories](../ci/ci_cd_for_external_repos/index.md). **[PREMIUM]**
+   - Run [CI/CD pipelines for external repositories](../ci/ci_cd_for_external_repos/index.md). **(PREMIUM)**
 
 ## Blank projects
 
@@ -69,7 +69,7 @@ TIP: **Tip:**
 You can improve the existing built-in templates or contribute new ones on the
 [`project-templates`](https://gitlab.com/gitlab-org/project-templates) and [`pages`](https://gitlab.com/pages) groups.
 
-### Custom project templates **[PREMIUM ONLY]**
+### Custom project templates **(PREMIUM ONLY)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/6860) in
 [GitLab Premium](https://about.gitlab.com/pricing) 11.2.

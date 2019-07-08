@@ -16,7 +16,7 @@ Support will be added for [Issue and Merge Request templates](../user/project/de
 in a future release.
 
 Support for [Group-level file templates](../user/group/index.md#group-file-templates-premium)
-**[PREMIUM]** was [added](https://gitlab.com/gitlab-org/gitlab-ee/issues/5987)
+**(PREMIUM)** was [added](https://gitlab.com/gitlab-org/gitlab-ee/issues/5987)
 in GitLab 11.5
 
 ## Get all templates of a particular type

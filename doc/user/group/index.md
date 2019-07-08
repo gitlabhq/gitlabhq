@@ -200,7 +200,7 @@ Alternatively, you can [lock the sharing with group feature](#share-with-group-l
 In GitLab Enterprise Edition, it is possible to manage GitLab group memberships using LDAP groups.
 See [the GitLab Enterprise Edition documentation](../../integration/ldap.md) for more information.
 
-## Epics **[ULTIMATE]**
+## Epics **(ULTIMATE)**
 
 > Introduced in [GitLab Ultimate][ee] 10.2.
 
@@ -210,13 +210,13 @@ milestones.
 
 [Learn more about Epics.](epics/index.md)
 
-## Group Security Dashboard **[ULTIMATE]**
+## Group Security Dashboard **(ULTIMATE)**
 
 Get an overview of the vulnerabilities of all the projects in a group and its subgroups.
 
 [Learn more about the Group Security Dashboard.](security_dashboard/index.md)
 
-## Insights **[ULTIMATE]**
+## Insights **(ULTIMATE)**
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/725) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.0.
 
@@ -307,7 +307,7 @@ To enable this feature, navigate to the group settings page. Select
 
 ![Checkbox for share with group lock](img/share_with_group_lock.png)
 
-#### Member Lock **[STARTER]**
+#### Member Lock **(STARTER)**
 
 Member lock lets a group owner prevent any new project membership to all of the
 projects within a group, allowing tighter control over project membership.
@@ -327,7 +327,7 @@ This will disable the option for all users who previously had permissions to
 operate project memberships, so no new users can be added. Furthermore, any
 request to add a new user to a project through API will not be possible.
 
-#### IP access restriction **[ULTIMATE]**
+#### IP access restriction **(ULTIMATE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/1985) in
 [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.0.
@@ -346,7 +346,7 @@ Restriction currently applies to UI, API access is not restricted.
 To avoid accidental lock-out, admins and group owners are are able to access
 the group regardless of the IP restriction.
 
-#### Group file templates **[PREMIUM]**
+#### Group file templates **(PREMIUM)**
 
 Group file templates allow you to share a set of templates for common file
 types with every project in a group. It is analogous to the
@@ -370,7 +370,7 @@ To enable this feature, navigate to the group settings page, expand the
 
 ![Group file template settings](img/group_file_template_settings.png)
 
-#### Group-level project templates **[PREMIUM]**
+#### Group-level project templates **(PREMIUM)**
 
 Define project templates at a group level by setting a group as the template source.
 [Learn more about group-level project templates](custom_project_templates.md).
@@ -382,10 +382,10 @@ Define project templates at a group level by setting a group as the template sou
 - **Webhooks**: Configure [webhooks](../project/integrations/webhooks.md) for your group.
 - **Kubernetes cluster integration**: Connect your GitLab group with [Kubernetes clusters](clusters/index.md).
 - **Audit Events**: View [Audit Events](../../administration/audit_events.md)
-  for the group. **[STARTER ONLY]**
+  for the group. **(STARTER ONLY)**
 - **Pipelines quota**: Keep track of the [pipeline quota](../admin_area/settings/continuous_integration.md) for the group.
 
-#### Storage usage quota **[STARTER]**
+#### Storage usage quota **(STARTER)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/13294) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.0.
 
@@ -393,17 +393,17 @@ A group owner can check the aggregated storage usage for all the project in a gr
 
 ![Group storage usage quota](img/group_storage_usage_quota.png)
 
-## User contribution analysis **[STARTER]**
+## User contribution analysis **(STARTER)**
 
 With [GitLab Contribution Analytics](contribution_analytics/index.md),
 you have an overview of the contributions (pushes, merge requests,
 and issues) performed by your group members.
 
-## Issues analytics **[PREMIUM]**
+## Issues analytics **(PREMIUM)**
 
 With [GitLab Issues Analytics](issues_analytics/index.md), you can see a bar chart of the number of issues created each month in your groups.
 
-## Dependency Proxy **[PREMIUM]**
+## Dependency Proxy **(PREMIUM)**
 
 Use GitLab as a [dependency proxy](dependency_proxy/index.md) for upstream Docker images.
 

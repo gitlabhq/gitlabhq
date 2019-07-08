@@ -1,4 +1,4 @@
-# GitLab Jira development panel integration **[PREMIUM]**
+# GitLab Jira development panel integration **(PREMIUM)**
 
 > [Introduced][ee-2381] in [GitLab Premium][eep] 10.0.
 

@@ -45,7 +45,7 @@ language users and GitLab by sending a merge request with a guide for that langu
 You may want to apply for the [GitLab Community Writers Program](https://about.gitlab.com/community/writers/)
 to get paid for writing complete articles for GitLab.
 
-## Adding templates to your GitLab installation **[PREMIUM ONLY]**
+## Adding templates to your GitLab installation **(PREMIUM ONLY)**
 
 If you want to have customized examples and templates for your own self-managed GitLab instance available to your team, your GitLab administrator can [designate an instance template repository](../../user/admin_area/settings/instance_template_repository.md) that contains examples and templates specific to your enterprise.
 

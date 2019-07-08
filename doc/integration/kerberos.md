@@ -1,4 +1,4 @@
-# Kerberos integration **[STARTER ONLY]**
+# Kerberos integration **(STARTER ONLY)**
 
 GitLab can integrate with [Kerberos][kerb] as an authentication mechanism.
 

@@ -141,7 +141,7 @@ Example response:
   }
 ```
 
-## Create a board **[STARTER]**
+## Create a board **(STARTER)**
 
 Creates a board.
 
@@ -209,7 +209,7 @@ Example response:
   }
 ```
 
-## Update a board **[STARTER]**
+## Update a board **(STARTER)**
 
 > [Introduced][ee-5954] in [GitLab Starter](https://about.gitlab.com/pricing/) 11.1.
 
@@ -291,7 +291,7 @@ Example response:
   }
 ```
 
-## Delete a board **[STARTER]**
+## Delete a board **(STARTER)**
 
 Deletes a board.
 
@@ -405,8 +405,8 @@ POST /projects/:id/boards/:board_id/lists
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `board_id` | integer | yes | The ID of a board |
 | `label_id` | integer | no | The ID of a label |
-| `assignee_id` **[PREMIUM]** | integer | no | The ID of a user |
-| `milestone_id` **[PREMIUM]** | integer | no | The ID of a milestone |
+| `assignee_id` **(PREMIUM)** | integer | no | The ID of a user |
+| `milestone_id` **(PREMIUM)** | integer | no | The ID of a milestone |
 
 NOTE: **Note**:
 Label, assignee and milestone arguments are mutually exclusive,

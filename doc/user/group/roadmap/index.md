@@ -2,7 +2,7 @@
 type: reference
 ---
 
-# Roadmap **[ULTIMATE]**
+# Roadmap **(ULTIMATE)**
 
 > Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing) 10.5.
 
