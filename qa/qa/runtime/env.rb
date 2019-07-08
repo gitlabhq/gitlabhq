@@ -173,8 +173,8 @@ module QA
         ENV.fetch("GCLOUD_ACCOUNT_EMAIL")
       end
 
-      def gcloud_zone
-        ENV.fetch('GCLOUD_ZONE')
+      def gcloud_region
+        ENV.fetch('GCLOUD_REGION')
       end
 
       def has_gcloud_credentials?
