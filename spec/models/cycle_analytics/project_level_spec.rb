@@ -13,7 +13,7 @@ describe CycleAnalytics::ProjectLevel do
 
   subject { described_class.new(project: project, options: { from: from_date }) }
 
-  describe '#all_medians_per_stage' do
+  describe '#all_medians_by_stage' do
     before do
       allow_any_instance_of(Gitlab::ReferenceExtractor).to receive(:issues).and_return([issue])
 
@@ -26,7 +26,7 @@ describe CycleAnalytics::ProjectLevel do
         hsh[stage_name] = subject[stage_name].median.presence
       end
 
-      expect(subject.all_medians_per_stage).to eq(values)
+      expect(subject.all_medians_by_stage).to eq(values)
     end
   end
 end
