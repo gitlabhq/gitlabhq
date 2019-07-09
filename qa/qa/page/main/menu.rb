@@ -53,7 +53,7 @@ module QA
 
         def sign_out
           within_user_menu do
-            click_link 'Sign out'
+            click_element :user_sign_out_link, Page::Main::Login
           end
         end
 
