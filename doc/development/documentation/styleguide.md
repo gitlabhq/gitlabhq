@@ -518,7 +518,7 @@ you have your MR reviewed and approved by a technical writer.
 ```html
 leave a blank line here
 <div class="video-fallback">
-  See the video: [Video title](https://www.youtube.com/watch?v=MqL6BMOySIQ).
+  See the video: <a href="https://www.youtube.com/watch?v=MqL6BMOySIQ">Video title</a>.
 </div>
 <figure class="video-container">
   <iframe src="https://www.youtube.com/embed/MqL6BMOySIQ" frameborder="0" allowfullscreen="true"> </iframe>
@@ -529,7 +529,7 @@ leave a blank line here
 This is how it renders on docs.gitlab.com:
 
 <div class="video-fallback">
-  See the video: [What is GitLab](https://www.youtube.com/watch?v=enMumwvLAug).
+  See the video: <a href="https://www.youtube.com/watch?v=enMumwvLAug">What is GitLab</a>.
 </div>
 <figure class="video-container">
   <iframe src="https://www.youtube.com/embed/MqL6BMOySIQ" frameborder="0" allowfullscreen="true"> </iframe>
