@@ -708,11 +708,17 @@ POST /projects
 | `namespace_id` | integer | no | Namespace for the new project (defaults to the current user's namespace) |
 | `default_branch` | string | no | `master` by default |
 | `description` | string | no | Short project description |
-| `issues_enabled` | boolean | no | Enable issues for this project |
-| `merge_requests_enabled` | boolean | no | Enable merge requests for this project |
-| `jobs_enabled` | boolean | no | Enable jobs for this project |
-| `wiki_enabled` | boolean | no | Enable wiki for this project |
-| `snippets_enabled` | boolean | no | Enable snippets for this project |
+| `issues_enabled` | boolean | no | (deprecated) Enable issues for this project. Use `issues_access_level` instead |
+| `merge_requests_enabled` | boolean | no | (deprecated) Enable merge requests for this project. Use `merge_requests_access_level` instead |
+| `jobs_enabled` | boolean | no | (deprecated) Enable jobs for this project. Use `builds_access_level` instead |
+| `wiki_enabled` | boolean | no | (deprecated) Enable wiki for this project. Use `wiki_access_level` instead |
+| `snippets_enabled` | boolean | no | (deprecated) Enable snippets for this project. Use `snippets_access_level` instead |
+| `issues_access_level` | string | no | One of `disabled`, `private` or `enabled` |
+| `repository_access_level` | string | no | One of `disabled`, `private` or `enabled` |
+| `merge_requests_access_level` | string | no | One of `disabled`, `private` or `enabled` |
+| `builds_access_level` | string | no | One of `disabled`, `private` or `enabled` |
+| `wiki_access_level` | string | no | One of `disabled`, `private` or `enabled` |
+| `snippets_access_level` | string | no | One of `disabled`, `private` or `enabled` |
 | `resolve_outdated_diff_discussions` | boolean | no | Automatically resolve merge request diffs discussions on lines changed with a push |
 | `container_registry_enabled` | boolean | no | Enable container registry for this project |
 | `shared_runners_enabled` | boolean | no | Enable shared runners for this project |
@@ -727,7 +733,13 @@ POST /projects
 | `tag_list`    | array   | no       | The list of tags for a project; put array of tags, that should be finally assigned to a project |
 | `avatar`    | mixed   | no      | Image file for avatar of the project                |
 | `printing_merge_request_link_enabled` | boolean | no | Show link to create/view merge request when pushing from the command line |
+| `build_git_strategy` | string | no | The Git strategy. Defaults to `fetch` |
+| `build_timeout` | integer | no | The maximum amount of time in minutes that a job is able run (in seconds) |
+| `auto_cancel_pending_pipelines` | string | no | Auto-cancel pending pipelines (Note: this is not a boolean, but enabled/disabled |
+| `build_coverage_regex` | string | no | Test coverage parsing |
 | `ci_config_path` | string | no | The path to CI config file |
+| `auto_devops_enabled` | boolean | no | Enable Auto DevOps for this project |
+| `auto_devops_deploy_strategy` | string | no | Auto Deploy strategy (`continuous`, `manual` or `timed_incremental`) |
 | `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
 | `approvals_before_merge` | integer | no | **(STARTER)** How many approvers should approve merge requests by default |
 | `mirror` | boolean | no | **(STARTER)** Enables pull mirroring in a project |
@@ -753,11 +765,17 @@ POST /projects/user/:user_id
 | `path` | string | no | Custom repository name for new project. By default generated based on name |
 | `namespace_id` | integer | no | Namespace for the new project (defaults to the current user's namespace) |
 | `description` | string | no | Short project description |
-| `issues_enabled` | boolean | no | Enable issues for this project |
-| `merge_requests_enabled` | boolean | no | Enable merge requests for this project |
-| `jobs_enabled` | boolean | no | Enable jobs for this project |
-| `wiki_enabled` | boolean | no | Enable wiki for this project |
-| `snippets_enabled` | boolean | no | Enable snippets for this project |
+| `issues_enabled` | boolean | no | (deprecated) Enable issues for this project. Use `issues_access_level` instead |
+| `merge_requests_enabled` | boolean | no | (deprecated) Enable merge requests for this project. Use `merge_requests_access_level` instead |
+| `jobs_enabled` | boolean | no | (deprecated) Enable jobs for this project. Use `builds_access_level` instead |
+| `wiki_enabled` | boolean | no | (deprecated) Enable wiki for this project. Use `wiki_access_level` instead |
+| `snippets_enabled` | boolean | no | (deprecated) Enable snippets for this project. Use `snippets_access_level` instead |
+| `issues_access_level` | string | no | One of `disabled`, `private` or `enabled` |
+| `repository_access_level` | string | no | One of `disabled`, `private` or `enabled` |
+| `merge_requests_access_level` | string | no | One of `disabled`, `private` or `enabled` |
+| `builds_access_level` | string | no | One of `disabled`, `private` or `enabled` |
+| `wiki_access_level` | string | no | One of `disabled`, `private` or `enabled` |
+| `snippets_access_level` | string | no | One of `disabled`, `private` or `enabled` |
 | `resolve_outdated_diff_discussions` | boolean | no | Automatically resolve merge request diffs discussions on lines changed with a push |
 | `container_registry_enabled` | boolean | no | Enable container registry for this project |
 | `shared_runners_enabled` | boolean | no | Enable shared runners for this project |
@@ -772,7 +790,13 @@ POST /projects/user/:user_id
 | `tag_list`    | array   | no       | The list of tags for a project; put array of tags, that should be finally assigned to a project |
 | `avatar`    | mixed   | no      | Image file for avatar of the project                |
 | `printing_merge_request_link_enabled` | boolean | no | Show link to create/view merge request when pushing from the command line |
+| `build_git_strategy` | string | no | The Git strategy. Defaults to `fetch` |
+| `build_timeout` | integer | no | The maximum amount of time in minutes that a job is able run (in seconds) |
+| `auto_cancel_pending_pipelines` | string | no | Auto-cancel pending pipelines (Note: this is not a boolean, but enabled/disabled |
+| `build_coverage_regex` | string | no | Test coverage parsing |
 | `ci_config_path` | string | no | The path to CI config file |
+| `auto_devops_enabled` | boolean | no | Enable Auto DevOps for this project |
+| `auto_devops_deploy_strategy` | string | no | Auto Deploy strategy (`continuous`, `manual` or `timed_incremental`) |
 | `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
 | `approvals_before_merge` | integer | no | **(STARTER)** How many approvers should approve merge requests by default |
 | `external_authorization_classification_label` | string | no | **(CORE ONLY)** The classification label for the project |
@@ -798,11 +822,17 @@ PUT /projects/:id
 | `path` | string | no | Custom repository name for the project. By default generated based on name |
 | `default_branch` | string | no | `master` by default |
 | `description` | string | no | Short project description |
-| `issues_enabled` | boolean | no | Enable issues for this project |
-| `merge_requests_enabled` | boolean | no | Enable merge requests for this project |
-| `jobs_enabled` | boolean | no | Enable jobs for this project |
-| `wiki_enabled` | boolean | no | Enable wiki for this project |
-| `snippets_enabled` | boolean | no | Enable snippets for this project |
+| `issues_enabled` | boolean | no | (deprecated) Enable issues for this project. Use `issues_access_level` instead |
+| `merge_requests_enabled` | boolean | no | (deprecated) Enable merge requests for this project. Use `merge_requests_access_level` instead |
+| `jobs_enabled` | boolean | no | (deprecated) Enable jobs for this project. Use `builds_access_level` instead |
+| `wiki_enabled` | boolean | no | (deprecated) Enable wiki for this project. Use `wiki_access_level` instead |
+| `snippets_enabled` | boolean | no | (deprecated) Enable snippets for this project. Use `snippets_access_level` instead |
+| `issues_access_level` | string | no | One of `disabled`, `private` or `enabled` |
+| `repository_access_level` | string | no | One of `disabled`, `private` or `enabled` |
+| `merge_requests_access_level` | string | no | One of `disabled`, `private` or `enabled` |
+| `builds_access_level` | string | no | One of `disabled`, `private` or `enabled` |
+| `wiki_access_level` | string | no | One of `disabled`, `private` or `enabled` |
+| `snippets_access_level` | string | no | One of `disabled`, `private` or `enabled` |
 | `resolve_outdated_diff_discussions` | boolean | no | Automatically resolve merge request diffs discussions on lines changed with a push |
 | `container_registry_enabled` | boolean | no | Enable container registry for this project |
 | `shared_runners_enabled` | boolean | no | Enable shared runners for this project |
@@ -816,8 +846,14 @@ PUT /projects/:id
 | `request_access_enabled` | boolean | no | Allow users to request member access |
 | `tag_list`    | array   | no       | The list of tags for a project; put array of tags, that should be finally assigned to a project |
 | `avatar`    | mixed   | no      | Image file for avatar of the project                |
+| `build_git_strategy` | string | no | The Git strategy. Defaults to `fetch` |
+| `build_timeout` | integer | no | The maximum amount of time in minutes that a job is able run (in seconds) |
+| `auto_cancel_pending_pipelines` | string | no | Auto-cancel pending pipelines (Note: this is not a boolean, but enabled/disabled |
+| `build_coverage_regex` | string | no | Test coverage parsing |
 | `ci_config_path` | string | no | The path to CI config file |
 | `ci_default_git_depth` | integer | no | Default number of revisions for [shallow cloning](../user/project/pipelines/settings.md#git-shallow-clone) |
+| `auto_devops_enabled` | boolean | no | Enable Auto DevOps for this project |
+| `auto_devops_deploy_strategy` | string | no | Auto Deploy strategy (`continuous`, `manual` or `timed_incremental`) |
 | `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
 | `approvals_before_merge` | integer | no | **(STARTER)** How many approvers should approve merge request by default |
 | `external_authorization_classification_label` | string | no | **(CORE ONLY)** The classification label for the project |
