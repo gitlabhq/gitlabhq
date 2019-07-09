@@ -87,7 +87,17 @@ body.modal-open {
   background-color: $black-transparent;
 
   .modal-content {
-    border-radius: 0.25rem;
+    border-radius: $modal-border-radius;
+
+    *:first-child {
+      border-top-left-radius: $modal-border-radius;
+      border-top-right-radius: $modal-border-radius;
+    }
+
+    *:last-child {
+      border-bottom-left-radius: $modal-border-radius;
+      border-bottom-right-radius: $modal-border-radius;
+    }
   }
 
   @include media-breakpoint-up(sm) {
