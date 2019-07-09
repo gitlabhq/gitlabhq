@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Gitlab.ee do
   begin
     public_key_file = File.read(Rails.root.join(".license_encryption_key.pub"))

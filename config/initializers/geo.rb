@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Gitlab.ee do
   if File.exist?(Rails.root.join('config/database_geo.yml'))
     Rails.application.configure do

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # We need to run this initializer after migrations are done so it doesn't fail on CI
 
 Gitlab.ee do
