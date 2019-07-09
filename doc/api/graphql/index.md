@@ -1,4 +1,4 @@
-# GraphQL API (Alpha)
+# GraphQL API
 
 > [Introduced][ce-19008] in GitLab 11.0.
 
@@ -23,23 +23,13 @@ programmatically with GitLab. To achieve this, it needs full coverage - anything
 possible in the REST API should also be possible in the GraphQL API.
 
 To help us meet this vision, the frontend should use GraphQL in preference to
-the REST API for new features, although the alpha status of GraphQL may prevent
-this from being a possibility at times.
+the REST API for new features.
 
 There are no plans to deprecate the REST API. To reduce the technical burden of
 supporting two APIs in parallel, they should share implementations as much as
 possible.
 
-## Enabling the GraphQL feature
-
-The GraphQL API itself is currently in Alpha, and therefore hidden behind a
-feature flag. You can enable the feature using the [features api][features-api] on a self-hosted instance.
-
-For example:
-
-```shell
-curl --data "value=100" --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/features/graphql
-```
+As of the 12.1 release, GraphQL is always enabled.
 
 ## Available queries
 
