@@ -192,7 +192,7 @@ access_token = client.password.get_token('user@example.com', 'secret')
 puts access_token.token
 ```
 
-##  Access GitLab API with `access token`
+## Access GitLab API with `access token`
 
 The `access token` allows you to make requests to the API on behalf of a user.
 You can pass the token either as GET parameter:

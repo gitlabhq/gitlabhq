@@ -654,7 +654,6 @@ and related tools such as:
 - <https://explain.depesz.com/>
 - <http://tatiyants.com/postgres-query-plan-visualization/>
 
-
 ## Producing query plans
 
 There are a few ways to get the output of a query plan. Of course you

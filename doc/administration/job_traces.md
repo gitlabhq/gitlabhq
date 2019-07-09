@@ -72,7 +72,7 @@ To archive those legacy job traces, please follow the instruction below.
     ```
 
     After you executed this task, GitLab instance queues up Sidekiq jobs (asynchronous processes)
-    for migrating job trace files from local storage to object storage. 
+    for migrating job trace files from local storage to object storage.
     It could take time to complete the all migration jobs. You can check the progress by the following command
 
     ```bash

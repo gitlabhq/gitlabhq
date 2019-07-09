@@ -76,7 +76,7 @@ Example response:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/9305) in GitLab 11.8.
 
-Get a list of package files of a single package. 
+Get a list of package files of a single package.
 
 ```
 GET /projects/:id/packages/:package_id/package_files

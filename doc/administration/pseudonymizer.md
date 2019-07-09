@@ -22,9 +22,9 @@ To configure the pseudonymizer, you need to:
 
 - Provide a manifest file that describes which fields should be included or
   pseudonymized ([example `manifest.yml` file](https://gitlab.com/gitlab-org/gitlab-ee/tree/master/config/pseudonymizer.yml)).
-  A default manifest is provided with the GitLab installation. Using a relative file path will be resolved from the Rails root. 
+  A default manifest is provided with the GitLab installation. Using a relative file path will be resolved from the Rails root.
   Alternatively, you can use an absolute file path.
-- Use an object storage and specify the connection parameters in the `pseudonymizer.upload.connection` configuration option. 
+- Use an object storage and specify the connection parameters in the `pseudonymizer.upload.connection` configuration option.
 
 **For Omnibus installations:**
 

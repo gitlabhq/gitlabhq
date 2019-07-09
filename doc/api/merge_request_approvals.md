@@ -178,7 +178,6 @@ PUT /projects/:id/approvers
 }
 ```
 
-
 ## Merge Request-level MR approvals
 
 Configuration for approvals on a specific Merge Request. Must be authenticated for all endpoints.
@@ -249,7 +248,6 @@ POST /projects/:id/merge_requests/:merge_request_iid/approvals
 | `id`                 | integer | yes      | The ID of a project                        |
 | `merge_request_iid`  | integer | yes      | The IID of MR                              |
 | `approvals_required` | integer | yes      | Approvals required before MR can be merged |
-
 
 ```json
 {

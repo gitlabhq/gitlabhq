@@ -131,7 +131,6 @@ Returns:
 - `201 Created` if the license is successfully added.
 - `400 Bad Request` if the license couldn't be added, with an error message explaining the reason.
 
-
 ## Delete a license
 
 ```
