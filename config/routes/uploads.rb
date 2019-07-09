@@ -30,6 +30,10 @@ scope path: :uploads do
     to: 'uploads#create',
     constraints: { model: /personal_snippet|user/, id: /\d+/ },
     as: 'upload'
+
+  post ':model/authorize',
+    to: 'uploads#authorize',
+    constraints: { model: /personal_snippet|user/ }
 end
 
 # Redirect old note attachments path to new uploads path.

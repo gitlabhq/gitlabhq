@@ -2,6 +2,7 @@
 
 class UploadsController < ApplicationController
   include UploadsActions
+  include WorkhorseRequest
 
   UnknownUploadModelError = Class.new(StandardError)
 
@@ -21,7 +22,8 @@ class UploadsController < ApplicationController
   before_action :upload_mount_satisfied?
   before_action :find_model
   before_action :authorize_access!, only: [:show]
-  before_action :authorize_create_access!, only: [:create]
+  before_action :authorize_create_access!, only: [:create, :authorize]
+  before_action :verify_workhorse_api!, only: [:authorize]
 
   def uploader_class
     PersonalFileUploader
@@ -72,7 +74,7 @@ class UploadsController < ApplicationController
   end
 
   def render_unauthorized
-    if current_user
+    if current_user || workhorse_authorize_request?
       render_404
     else
       authenticate_user!
