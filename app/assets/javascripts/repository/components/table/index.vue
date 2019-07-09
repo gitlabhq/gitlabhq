@@ -76,7 +76,7 @@ export default {
           variables: {
             projectPath: this.projectPath,
             ref: this.ref,
-            path: this.path,
+            path: this.path || '/',
             nextPageCursor: this.nextPageCursor,
             pageSize: PAGE_SIZE,
           },
