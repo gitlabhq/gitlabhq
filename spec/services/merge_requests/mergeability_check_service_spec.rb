@@ -11,7 +11,11 @@ describe MergeRequests::MergeabilityCheckService do
     end
 
     it 'does not change the merge ref HEAD' do
-      expect { subject }.not_to change(merge_request, :merge_ref_head)
+      merge_ref_head = merge_request.merge_ref_head
+
+      subject
+
+      expect(merge_request.reload.merge_ref_head).to eq merge_ref_head
     end
 
     it 'returns ServiceResponse.error' do
@@ -73,7 +77,7 @@ describe MergeRequests::MergeabilityCheckService do
 
       it 'second call does not change the merge-ref' do
         expect { subject }.to change(merge_request, :merge_ref_head).from(nil)
-        expect { subject }.not_to change(merge_request, :merge_ref_head)
+        expect { subject }.not_to change(merge_request.merge_ref_head, :id)
       end
     end
 

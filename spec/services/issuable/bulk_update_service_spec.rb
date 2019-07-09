@@ -165,7 +165,7 @@ describe Issuable::BulkUpdateService do
       context 'when the new assignee ID is not present' do
         it 'does not unassign' do
           expect { bulk_update(issue, assignee_ids: []) }
-            .not_to change { issue.reload.assignees }
+            .not_to change(issue.assignees, :count)
         end
       end
     end
