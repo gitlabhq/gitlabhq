@@ -5,7 +5,7 @@ module QA
     module Main
       class Menu < Page::Base
         view 'app/views/layouts/header/_current_user_dropdown.html.haml' do
-          element :user_sign_out_link, 'link_to _("Sign out")' # rubocop:disable QA/ElementWithPattern
+          element :sign_out_link
           element :settings_link, 'link_to s_("CurrentUser|Settings")' # rubocop:disable QA/ElementWithPattern
         end
 
@@ -53,7 +53,7 @@ module QA
 
         def sign_out
           within_user_menu do
-            click_element :user_sign_out_link, Page::Main::Login
+            click_element :sign_out_link
           end
         end
 
