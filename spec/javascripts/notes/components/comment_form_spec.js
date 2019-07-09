@@ -251,6 +251,21 @@ describe('issue_comment_form component', () => {
           });
         });
       });
+
+      describe('when toggling state', () => {
+        it('should update MR count', done => {
+          spyOn(vm, 'closeIssue').and.returnValue(Promise.resolve());
+
+          const updateMrCountSpy = spyOnDependency(CommentForm, 'refreshUserMergeRequestCounts');
+          vm.toggleIssueState();
+
+          Vue.nextTick(() => {
+            expect(updateMrCountSpy).toHaveBeenCalled();
+
+            done();
+          });
+        });
+      });
     });
 
     describe('issue is confidential', () => {

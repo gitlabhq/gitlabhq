@@ -13,6 +13,7 @@ import {
   splitCamelCase,
   slugifyWithUnderscore,
 } from '../../lib/utils/text_utility';
+import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
 import * as constants from '../constants';
 import eventHub from '../event_hub';
 import issueWarning from '../../vue_shared/components/issue/issue_warning.vue';
@@ -234,7 +235,10 @@ export default {
     toggleIssueState() {
       if (this.isOpen) {
         this.closeIssue()
-          .then(() => this.enableButton())
+          .then(() => {
+            this.enableButton();
+            refreshUserMergeRequestCounts();
+          })
           .catch(() => {
             this.enableButton();
             this.toggleStateButtonLoading(false);
@@ -247,7 +251,10 @@ export default {
           });
       } else {
         this.reopenIssue()
-          .then(() => this.enableButton())
+          .then(() => {
+            this.enableButton();
+            refreshUserMergeRequestCounts();
+          })
           .catch(({ data }) => {
             this.enableButton();
             this.toggleStateButtonLoading(false);

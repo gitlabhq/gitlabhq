@@ -593,6 +593,30 @@ Example responses
 }
 ```
 
+## User counts
+
+Get the counts (same as in top right menu) of the currently signed in user. 
+
+| Attribute | Type | Description |
+| --------- | ---- | ----------- |
+| `merge_requests`   | number | Merge requests that are active and assigned to current user. |
+
+```
+GET /user_counts
+```
+
+```bash
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/user_counts"
+```
+
+Example response:
+
+```json
+{
+  "merge_requests": 4
+}
+```
+
 ## List user projects
 
 Please refer to the [List of user projects](projects.md#list-user-projects).
