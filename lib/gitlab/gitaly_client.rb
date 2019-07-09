@@ -388,20 +388,21 @@ module Gitlab
     end
 
     def self.can_use_disk?(storage)
-      cached_value = MUTEX.synchronize do
-        @can_use_disk ||= {}
-        @can_use_disk[storage]
-      end
+      false
+      # cached_value = MUTEX.synchronize do
+      #   @can_use_disk ||= {}
+      #   @can_use_disk[storage]
+      # end
 
-      return cached_value unless cached_value.nil?
+      # return cached_value unless cached_value.nil?
 
-      gitaly_filesystem_id = filesystem_id(storage)
-      direct_filesystem_id = filesystem_id_from_disk(storage)
+      # gitaly_filesystem_id = filesystem_id(storage)
+      # direct_filesystem_id = filesystem_id_from_disk(storage)
 
-      MUTEX.synchronize do
-        @can_use_disk[storage] = gitaly_filesystem_id.present? &&
-          gitaly_filesystem_id == direct_filesystem_id
-      end
+      # MUTEX.synchronize do
+      #   @can_use_disk[storage] = gitaly_filesystem_id.present? &&
+      #     gitaly_filesystem_id == direct_filesystem_id
+      # end
     end
 
     def self.filesystem_id(storage)
