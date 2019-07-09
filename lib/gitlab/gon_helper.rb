@@ -38,6 +38,11 @@ module Gitlab
         gon.current_user_fullname = current_user.name
         gon.current_user_avatar_url = current_user.avatar_url
       end
+
+      # Flag controls a GFM feature used across many routes.
+      # Pushing the flag from one place simplifies control
+      # and facilitates easy removal.
+      push_frontend_feature_flag(:gfm_embedded_metrics)
     end
 
     # Exposes the state of a feature flag to the frontend code.
