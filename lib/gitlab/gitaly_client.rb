@@ -211,8 +211,7 @@ module Gitlab
       metadata['call_site'] = feature.to_s if feature
       metadata['gitaly-servers'] = address_metadata(remote_storage) if remote_storage
       metadata['x-gitlab-correlation-id'] = Labkit::Correlation::CorrelationId.current_id if Labkit::Correlation::CorrelationId.current_id
-      metadata['gitaly-session-id'] = session_id if Feature::Gitaly.enabled?(Feature::Gitaly::CATFILE_CACHE)
-
+      metadata['gitaly-session-id'] = session_id
       metadata.merge!(Feature::Gitaly.server_feature_flags)
 
       result = { metadata: metadata }

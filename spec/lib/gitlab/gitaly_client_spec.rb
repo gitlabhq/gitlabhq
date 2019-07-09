@@ -171,17 +171,6 @@ describe Gitlab::GitalyClient do
         end
       end
     end
-
-    context 'when catfile-cache feature is disabled' do
-      before do
-        stub_feature_flags({ 'gitaly_catfile-cache': false })
-      end
-
-      it 'does not set the gitaly-session-id in the metadata' do
-        results = described_class.request_kwargs('default', nil)
-        expect(results[:metadata]).not_to include('gitaly-session-id')
-      end
-    end
   end
 
   describe 'enforce_gitaly_request_limits?' do

@@ -1,0 +1,5 @@
+---
+title: Remove catfile cache feature flag
+merge_request: 30750
+author:
+type: performance
