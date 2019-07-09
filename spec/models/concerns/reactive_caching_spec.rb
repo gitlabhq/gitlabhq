@@ -47,30 +47,12 @@ describe ReactiveCaching, :use_clean_rails_memory_store_caching do
 
     subject(:go!) { instance.result }
 
-    context 'when cache is empty' do
-      it { is_expected.to be_nil }
-
-      it 'enqueues a background worker to bootstrap the cache' do
-        expect(ReactiveCachingWorker).to receive(:perform_async).with(CacheTest, 666)
-
-        go!
-      end
-
-      it 'updates the cache lifespan' do
-        expect(reactive_cache_alive?(instance)).to be_falsy
-
-        go!
-
-        expect(reactive_cache_alive?(instance)).to be_truthy
-      end
-    end
-
-    context 'when the cache is full' do
+    shared_examples 'a cacheable value' do |cached_value|
       before do
-        stub_reactive_cache(instance, 4)
+        stub_reactive_cache(instance, cached_value)
       end
 
-      it { is_expected.to eq(4) }
+      it { is_expected.to eq(cached_value) }
 
       it 'does not enqueue a background worker' do
         expect(ReactiveCachingWorker).not_to receive(:perform_async)
@@ -90,9 +72,7 @@ describe ReactiveCaching, :use_clean_rails_memory_store_caching do
         end
 
         it { is_expected.to be_nil }
-      end
 
-      context 'when cache was invalidated' do
         it 'refreshes cache' do
           expect(ReactiveCachingWorker).to receive(:perform_async).with(CacheTest, 666)
 
@@ -101,12 +81,34 @@ describe ReactiveCaching, :use_clean_rails_memory_store_caching do
       end
     end
 
-    context 'when cache contains non-nil but blank value' do
-      before do
-        stub_reactive_cache(instance, false)
+    context 'when cache is empty' do
+      it { is_expected.to be_nil }
+
+      it 'enqueues a background worker to bootstrap the cache' do
+        expect(ReactiveCachingWorker).to receive(:perform_async).with(CacheTest, 666)
+
+        go!
       end
 
-      it { is_expected.to eq(false) }
+      it 'updates the cache lifespan' do
+        expect(reactive_cache_alive?(instance)).to be_falsy
+
+        go!
+
+        expect(reactive_cache_alive?(instance)).to be_truthy
+      end
+    end
+
+    context 'when the cache is full' do
+      it_behaves_like 'a cacheable value', 4
+    end
+
+    context 'when the cache contains non-nil but blank value' do
+      it_behaves_like 'a cacheable value', false
+    end
+
+    context 'when the cache contains nil value' do
+      it_behaves_like 'a cacheable value', nil
     end
   end
 
