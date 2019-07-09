@@ -127,4 +127,8 @@ module UploadsActions
   def model
     strong_memoize(:model) { find_model }
   end
+
+  def workhorse_authorize_request?
+    action_name == 'authorize'
+  end
 end
