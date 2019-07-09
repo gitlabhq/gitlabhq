@@ -30,6 +30,7 @@ describe Gitlab::Git::RuggedImpl::UseRugged, :seed_helper do
     end
 
     it 'returns true when gitaly matches disk' do
+      pending('temporary disabled because of https://gitlab.com/gitlab-org/gitlab-ce/issues/64338')
       expect(subject.use_rugged?(repository, feature_flag_name)).to be true
     end
 
@@ -48,6 +49,7 @@ describe Gitlab::Git::RuggedImpl::UseRugged, :seed_helper do
     end
 
     it "doesn't lead to a second rpc call because gitaly client should use the cached value" do
+      pending('temporary disabled because of https://gitlab.com/gitlab-org/gitlab-ce/issues/64338')
       expect(subject.use_rugged?(repository, feature_flag_name)).to be true
 
       expect(Gitlab::GitalyClient).not_to receive(:filesystem_id)
