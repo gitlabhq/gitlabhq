@@ -514,7 +514,7 @@ Auto Deploy doesn't include deployments to staging or canary by default, but the
 enable them.
 
 You can make use of [environment variables](#environment-variables) to automatically
-scale your pod replicas and to apply custom arguments to the Auto DevOps `helm upgrade` commands. This is an easy way to [customize the Auto Deploy helm chart](https://docs.gitlab.com/ee/topics/autodevops/index.html#custom-helm-chart).
+scale your pod replicas and to apply custom arguments to the Auto DevOps `helm upgrade` commands. This is an easy way to [customize the Auto Deploy helm chart](#custom-helm-chart).
 
 Apps are deployed using the
 [auto-deploy-app](https://gitlab.com/gitlab-org/charts/auto-deploy-app) chart with
