@@ -274,7 +274,8 @@ branch already exists, the patches will be applied on top of it.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/26752) in GitLab 11.10.
 
 NOTE: **Note:**
-Git push options are only available with Git 2.10 or newer.
+Git push options are only available with Git 2.10 or newer. With Git older than 2.18
+`git push --push-option=...` should be used instead of `git push -o ...`.
 
 GitLab supports using
 [Git push options](https://git-scm.com/docs/git-push#Documentation/git-push.txt--oltoptiongt)
