@@ -452,7 +452,7 @@ be deleted.
 
 Review apps are deployed using the
 [auto-deploy-app](https://gitlab.com/gitlab-org/charts/auto-deploy-app) chart with
-Helm, which can be [customized](https://docs.gitlab.com/ee/topics/autodevops/index.html#custom-helm-chart). The app will be deployed into the [Kubernetes
+Helm, which can be [customized](#custom-helm-chart). The app will be deployed into the [Kubernetes
 namespace](../../user/project/clusters/index.md#deployment-variables)
 for the environment.
 
