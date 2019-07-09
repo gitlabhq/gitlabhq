@@ -8,7 +8,7 @@ in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.7.
 If you are using [GitLab CI/CD](../../../ci/README.md), you can analyze your dependencies for known
 vulnerabilities using Dependency Scanning.
 
-You can take advantage of Dependency Scanning by either [including the CI job](#including-the-provided-template)
+You can take advantage of Dependency Scanning by either [including the CI job](#configuration)
 in your existing `.gitlab-ci.yml` file or by implicitly using
 [Auto Dependency Scanning](../../../topics/autodevops/index.md#auto-dependency-scanning-ultimate)
 that is provided by [Auto DevOps](../../../topics/autodevops/index.md).
@@ -74,31 +74,16 @@ The Gemnasium client does **NOT** send the exact package versions your project r
 You can disable the remote checks by [using](#customizing-the-dependency-scanning-settings)
 the `DS_DISABLE_REMOTE_CHECKS` environment variable and setting it to `true`.
 
-## Configuring Dependency Scanning
+## Configuration
 
-To enable Dependency Scanning in your project, define a job in your `.gitlab-ci.yml`
-file that generates the
-[Dependency Scanning report artifact](../../../ci/yaml/README.md#artifactsreportsdependency_scanning-ultimate).
+For GitLab 11.9 and later, to enable Dependency Scanning, you must
+[include](../../../ci/yaml/README.md#includetemplate) the
+[`Dependency-Scanning.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/lib/gitlab/ci/templates/Security/Dependency-Scanning.gitlab-ci.yml)
+that's provided as a part of your GitLab installation.
+For GitLab versions earlier than 11.9, you can copy and use the job as defined
+that template.
 
-This can be done in two ways:
-
-- For GitLab 11.9 and later, including the provided `Dependency-Scanning.gitlab-ci.yml` template (recommended).
-- Manually specifying the job definition. Not recommended unless using GitLab
-  11.8 and earlier.
-
-### Including the provided template
-
-NOTE: **Note:**
-The CI/CD Dependency Scanning template is supported on GitLab 11.9 and later versions.
-For earlier versions, use the [manual job definition](#manual-job-definition-for-gitlab-115-and-later).
-
-A CI/CD [Dependency Scanning template](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/lib/gitlab/ci/templates/Security/Dependency-Scanning.gitlab-ci.yml)
-with the default Dependency Scanning job definition is provided as a part of your GitLab
-installation which you can [include](../../../ci/yaml/README.md#includetemplate)
-in your `.gitlab-ci.yml` file.
-
-To enable Dependency Scanning using the provided template, add the following to
-your `.gitlab-ci.yml` file:
+Add the following to your `.gitlab-ci.yml` file:
 
 ```yaml
 include:
@@ -108,12 +93,12 @@ include:
 The included template will create a `dependency_scanning` job in your CI/CD
 pipeline and scan your project's source code for possible vulnerabilities.
 
-The report will be saved as a
+The results will be saved as a
 [Dependency Scanning report artifact](../../../ci/yaml/README.md#artifactsreportsdependency_scanning-ultimate)
 that you can later download and analyze. Due to implementation limitations, we
 always take the latest Dependency Scanning artifact available.
 
-#### Customizing the Dependency Scanning settings
+### Customizing the Dependency Scanning settings
 
 The Dependency Scanning settings can be changed through [environment variables](#available-variables) by using the
 [`variables`](../../../ci/yaml/README.md#variables) parameter in `.gitlab-ci.yml`.
@@ -131,7 +116,7 @@ variables:
 Because template is [evaluated before](../../../ci/yaml/README.md#include) the pipeline
 configuration, the last mention of the variable will take precedence.
 
-#### Overriding the Dependency Scanning template
+### Overriding the Dependency Scanning template
 
 If you want to override the job definition (for example, change properties like
 `variables` or `dependencies`), you need to declare a `dependency_scanning` job
@@ -146,7 +131,7 @@ dependency_scanning:
     CI_DEBUG_TRACE: "true"
 ```
 
-#### Available variables
+### Available variables
 
 Dependency Scanning can be [configured](#customizing-the-dependency-scanning-settings)
 using environment variables.
@@ -163,82 +148,6 @@ using environment variables.
 | `DS_DOCKER_CLIENT_NEGOTIATION_TIMEOUT`  | Time limit for Docker client negotiation. Timeouts are parsed using Go's [`ParseDuration`](https://golang.org/pkg/time/#ParseDuration). Valid time units are `ns`, `us` (or `µs`), `ms`, `s`, `m`, `h`. For example, `300ms`, `1.5h`, or `2h45m`. |
 | `DS_PULL_ANALYZER_IMAGE_TIMEOUT`        | Time limit when pulling the image of an analyzer. Timeouts are parsed using Go's [`ParseDuration`](https://golang.org/pkg/time/#ParseDuration). Valid time units are `ns`, `us` (or `µs`), `ms`, `s`, `m`, `h`. For example, `300ms`, `1.5h`, or `2h45m`. |
 | `DS_RUN_ANALYZER_TIMEOUT`               | Time limit when running an analyzer. Timeouts are parsed using Go's [`ParseDuration`](https://golang.org/pkg/time/#ParseDuration). Valid time units are `ns`, `us` (or `µs`), `ms`, `s`, `m`, `h`. For example, `300ms`, `1.5h`, or `2h45m`. |
-
-### Manual job definition for GitLab 11.5 and later
-
-For GitLab 11.5 and GitLab Runner 11.5 and later, the following `dependency_scanning`
-job can be added:
-
-```yaml
-dependency_scanning:
-  image: docker:stable
-  variables:
-    DOCKER_DRIVER: overlay2
-  allow_failure: true
-  services:
-    - docker:stable-dind
-  script:
-    - export DS_VERSION=${SP_VERSION:-$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')}
-    - |
-      docker run \
-      --env DS_ANALYZER_IMAGES \
-      --env DS_ANALYZER_IMAGE_PREFIX \
-      --env DS_ANALYZER_IMAGE_TAG \
-      --env DS_DEFAULT_ANALYZERS \
-      --env DEP_SCAN_DISABLE_REMOTE_CHECKS \
-      --env DS_DOCKER_CLIENT_NEGOTIATION_TIMEOUT \
-      --env DS_PULL_ANALYZER_IMAGE_TIMEOUT \
-      --env DS_RUN_ANALYZER_TIMEOUT \
-      --volume "$PWD:/code" \
-      --volume /var/run/docker.sock:/var/run/docker.sock \
-      "registry.gitlab.com/gitlab-org/security-products/dependency-scanning:$DS_VERSION" /code
-  dependencies: []
-  artifacts:
-    reports:
-      dependency_scanning: gl-dependency-scanning-report.json
-```
-
-You can supply many other [settings variables](#available-variables)
-via `docker run --env` to customize your job execution.
-
-### Manual job definition for GitLab 11.4 and earlier (deprecated)
-
-CAUTION: **Caution:**
-Before GitLab 11.5, the Dependency Scanning job and artifact had to be named specifically
-to automatically extract the report data and show it in the merge request widget.
-While these old job definitions are still maintained, they have been deprecated
-and may be removed in the next major release, GitLab 12.0. You are strongly advised
-to update your current `.gitlab-ci.yml` configuration to reflect that change.
-
-For GitLab 11.4 and earlier, the job should look like:
-
-```yaml
-dependency_scanning:
-  image: docker:stable
-  variables:
-    DOCKER_DRIVER: overlay2
-  allow_failure: true
-  services:
-    - docker:stable-dind
-  script:
-    - export DS_VERSION=${SP_VERSION:-$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')}
-    - |
-      docker run \
-      --env DS_ANALYZER_IMAGES \
-      --env DS_ANALYZER_IMAGE_PREFIX \
-      --env DS_ANALYZER_IMAGE_TAG \
-      --env DS_DEFAULT_ANALYZERS \
-      --env DS_EXCLUDED_PATHS \
-      --env DEP_SCAN_DISABLE_REMOTE_CHECKS \
-      --env DS_DOCKER_CLIENT_NEGOTIATION_TIMEOUT \
-      --env DS_PULL_ANALYZER_IMAGE_TIMEOUT \
-      --env DS_RUN_ANALYZER_TIMEOUT \
-      --volume "$PWD:/code" \
-      --volume /var/run/docker.sock:/var/run/docker.sock \
-      "registry.gitlab.com/gitlab-org/security-products/dependency-scanning:$DS_VERSION" /code
-  artifacts:
-    paths: [gl-dependency-scanning-report.json]
-```
 
 ## Reports JSON format
 

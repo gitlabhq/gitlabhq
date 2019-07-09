@@ -8,7 +8,7 @@ in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.0.
 If you are using [GitLab CI/CD](../../../ci/README.md), you can search your project dependencies for their licenses
 using License Management.
 
-You can take advantage of License Management by either [including the job](#configuring-license-management)
+You can take advantage of License Management by either [including the job](#configuration)
 in your existing `.gitlab-ci.yml` file or by implicitly using
 [Auto License Management](../../../topics/autodevops/index.md#auto-license-management-ultimate)
 that is provided by [Auto DevOps](../../../topics/autodevops/index.md).
@@ -65,33 +65,16 @@ The following languages and package managers are supported.
 To run a License Management scanning job, you need GitLab Runner with the
 [`docker` executor](https://docs.gitlab.com/runner/executors/docker.html).
 
-## Configuring License Management
+## Configuration
 
-To enable License Management in your project, define a job in your `.gitlab-ci.yml`
-file that generates the [License Management report artifact](../../../ci/yaml/README.md#artifactsreportslicense_management-ultimate).
+For GitLab 11.9 and later, to enable License Management, you must
+[include](../../../ci/yaml/README.md#includetemplate) the
+[`License-Management.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/lib/gitlab/ci/templates/Security/License-Management.gitlab-ci.yml)
+that's provided as a part of your GitLab installation.
+For GitLab versions earlier than 11.9, you can copy and use the job as defined
+that template.
 
-This can be done in two ways:
-
-- For GitLab 11.9 and later, including the provided `License-Management.gitlab-ci.yml` template (recommended).
-- Manually specifying the job definition. Not recommended unless using GitLab
-  11.8 and earlier.
-
-The License Management settings can be changed through environment variables by using the
-[`variables`](../../../ci/yaml/README.md#variables) parameter in `.gitlab-ci.yml`. These variables are documented in the [License Management documentation](https://gitlab.com/gitlab-org/security-products/license-management#settings).
-
-### Including the provided template
-
-NOTE: **Note:**
-The CI/CD License Management template is supported on GitLab 11.9 and later versions.
-For earlier versions, use the [manual job definition](#manual-job-definition-for-gitlab-115-and-later).
-
-A CI/CD [License Management template](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/lib/gitlab/ci/templates/Security/License-Management.gitlab-ci.yml)
-with the default License Management job definition is provided as a part of your GitLab
-installation which you can [include](../../../ci/yaml/README.md#includetemplate)
-in your `.gitlab-ci.yml` file.
-
-To enable License Management using the provided template, add the following to
-your `.gitlab-ci.yml` file:
+Add the following to your `.gitlab-ci.yml` file:
 
 ```yaml
 include:
@@ -101,14 +84,17 @@ include:
 The included template will create a `license_management` job in your CI/CD pipeline
 and scan your dependencies to find their licenses.
 
-The report will be saved as a
+The results will be saved as a
 [License Management report artifact](../../../ci/yaml/README.md#artifactsreportslicense_management-ultimate)
 that you can later download and analyze. Due to implementation limitations, we
 always take the latest License Management artifact available. Behind the scenes, the
 [GitLab License Management Docker image](https://gitlab.com/gitlab-org/security-products/license-management)
 is used to detect the languages/frameworks and in turn analyzes the licenses.
 
-#### Installing custom dependencies
+The License Management settings can be changed through environment variables by using the
+[`variables`](../../../ci/yaml/README.md#variables) parameter in `.gitlab-ci.yml`. These variables are documented in the [License Management documentation](https://gitlab.com/gitlab-org/security-products/license-management#settings).
+
+### Installing custom dependencies
 
 > Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.4.
 
@@ -136,7 +122,7 @@ variables:
 In this example, `my-custom-install-script.sh` is a shell script at the root
 directory of your project.
 
-#### Overriding the template
+### Overriding the template
 
 If you want to override the job definition (for example, change properties like
 `variables` or `dependencies`), you need to declare a `license_management` job
@@ -151,7 +137,7 @@ license_management:
     CI_DEBUG_TRACE: "true"
 ```
 
-#### Configuring Maven projects
+### Configuring Maven projects
 
 The License Management tool provides a `MAVEN_CLI_OPTS` environment variable which can hold
 the command line arguments to pass to the `mvn install` command which is executed under the hood.
@@ -192,67 +178,6 @@ license_management:
     LM_PYTHON_VERSION: 3
 ```
 
-### Manual job definition for GitLab 11.5 and later
-
-For GitLab 11.5 and GitLab Runner 11.5 and later, the following `license_management`
-job can be added:
-
-```yaml
-license_management:
-  image:
-    name: "registry.gitlab.com/gitlab-org/security-products/license-management:$CI_SERVER_VERSION_MAJOR-$CI_SERVER_VERSION_MINOR-stable"
-    entrypoint: [""]
-  stage: test
-  allow_failure: true
-  script:
-    - /run.sh analyze .
-  artifacts:
-    reports:
-      license_management: gl-license-management-report.json
-```
-
-If you want to install custom project dependencies via the `SETUP_CMD` variable:
-
-```yaml
-license_management:
-  image:
-    name: "registry.gitlab.com/gitlab-org/security-products/license-management:$CI_SERVER_VERSION_MAJOR-$CI_SERVER_VERSION_MINOR-stable"
-    entrypoint: [""]
-  stage: test
-  variables:
-    SETUP_CMD: ./my-custom-install-script.sh
-  allow_failure: true
-  script:
-    - /run.sh analyze .
-  artifacts:
-    reports:
-      license_management: gl-license-management-report.json
-```
-
-### Manual job definition for GitLab 11.4 and earlier (deprecated)
-
-CAUTION: **Caution:**
-Before GitLab 11.5, the License Management job and artifact had to be named specifically
-to automatically extract the report data and show it in the merge request widget.
-While these old job definitions are still maintained, they have been deprecated
-and may be removed in the next major release, GitLab 12.0. You are strongly advised
-to update your current `.gitlab-ci.yml` configuration to reflect that change.
-
-For GitLab 11.4 and earlier, the job should look like:
-
-```yaml
-license_management:
-  image:
-    name: "registry.gitlab.com/gitlab-org/security-products/license-management:$CI_SERVER_VERSION_MAJOR-$CI_SERVER_VERSION_MINOR-stable"
-    entrypoint: [""]
-  stage: test
-  allow_failure: true
-  script:
-    - /run.sh analyze .
-  artifacts:
-    paths: [gl-license-management-report.json]
-```
-
 ## Project policies for License Management
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/5940)
@@ -279,8 +204,6 @@ To approve or blacklist a license:
 1. Select the **Approve** or **Blacklist** radio button to approve or blacklist respectively
    the selected license.
 
-
-
 To modify an existing license:
 
 1. In the **License Management** list, click the **Approved/Declined** dropdown to change it to the desired status.
@@ -292,8 +215,6 @@ Searching for Licenses:
 1. Use the **Search** box to search for a specific license.
 
    ![License Management Search](img/license_management_search.png)
-
-
 
 ## License Management report under pipelines
 
