@@ -287,8 +287,8 @@
     list-style: none;
     padding: 0 1px;
 
-    a:not(.help-link),
-    button:not(.btn),
+    a,
+    button:not(.dropdown-toggle,.ci-action-icon-container),
     .menu-item {
       @include dropdown-link;
     }
