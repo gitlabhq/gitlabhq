@@ -1,4 +1,4 @@
-/* eslint-disable consistent-return, func-names, array-callback-return, prefer-arrow-callback, no-unused-vars */
+/* eslint-disable consistent-return, func-names, array-callback-return, prefer-arrow-callback */
 
 import $ from 'jquery';
 import _ from 'underscore';
@@ -7,7 +7,7 @@ import Flash from './flash';
 import { __ } from './locale';
 
 export default {
-  init({ container, form, issues, prefixId } = {}) {
+  init({ form, issues, prefixId } = {}) {
     this.prefixId = prefixId || 'issue_';
     this.form = form || this.getElement('.bulk-update');
     this.$labelDropdown = this.form.find('.js-label-select');
