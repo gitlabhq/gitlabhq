@@ -99,7 +99,7 @@ It is possible to filter particular actions by choosing an audit data type from
 the filter drop-down. You can further filter by specific group, project or user
 (for authentication events).
 
-![audit log](audit_log.png)
+![audit log](img/audit_log.png)
 
 ### Missing events
 
