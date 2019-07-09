@@ -155,6 +155,14 @@ describe API::AwardEmoji do
         expect(json_response['user']['username']).to eq(user.username)
       end
 
+      it 'marks Todos on the Issue as done' do
+        todo = create(:todo, target: issue, project: project, user: user)
+
+        post api("/projects/#{project.id}/issues/#{issue.iid}/award_emoji", user), params: { name: '8ball' }
+
+        expect(todo.reload).to be_done
+      end
+
       it "returns a 400 bad request error if the name is not given" do
         post api("/projects/#{project.id}/issues/#{issue.iid}/award_emoji", user)
 
@@ -207,6 +215,14 @@ describe API::AwardEmoji do
 
       expect(response).to have_gitlab_http_status(201)
       expect(json_response['user']['username']).to eq(user.username)
+    end
+
+    it 'marks Todos on the Noteable as done' do
+      todo = create(:todo, target: note2.noteable, project: project, user: user)
+
+      post api("/projects/#{project.id}/issues/#{issue.iid}/notes/#{note.id}/award_emoji", user), params: { name: 'rocket' }
+
+      expect(todo.reload).to be_done
     end
 
     it "normalizes +1 as thumbsup award" do

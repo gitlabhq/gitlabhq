@@ -1104,17 +1104,38 @@ describe Projects::IssuesController do
       project.add_developer(user)
     end
 
+    subject do
+      post(:toggle_award_emoji, params: {
+        namespace_id: project.namespace,
+        project_id: project,
+        id: issue.iid,
+        name: emoji_name
+      })
+    end
+    let(:emoji_name) { 'thumbsup' }
+
     it "toggles the award emoji" do
       expect do
-        post(:toggle_award_emoji, params: {
-                                    namespace_id: project.namespace,
-                                    project_id: project,
-                                    id: issue.iid,
-                                    name: "thumbsup"
-                                  })
+        subject
       end.to change { issue.award_emoji.count }.by(1)
 
       expect(response).to have_gitlab_http_status(200)
+    end
+
+    it "removes the already awarded emoji" do
+      create(:award_emoji, awardable: issue, name: emoji_name, user: user)
+
+      expect { subject }.to change { AwardEmoji.count }.by(-1)
+
+      expect(response).to have_gitlab_http_status(200)
+    end
+
+    it 'marks Todos on the Issue as done' do
+      todo = create(:todo, target: issue, project: project, user: user)
+
+      subject
+
+      expect(todo.reload).to be_done
     end
   end
 

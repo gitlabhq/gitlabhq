@@ -543,22 +543,31 @@ describe Projects::NotesController do
       project.add_developer(user)
     end
 
+    subject { post(:toggle_award_emoji, params: request_params.merge(name: emoji_name)) }
+    let(:emoji_name) { 'thumbsup' }
+
     it "toggles the award emoji" do
       expect do
-        post(:toggle_award_emoji, params: request_params.merge(name: "thumbsup"))
+        subject
       end.to change { note.award_emoji.count }.by(1)
 
       expect(response).to have_gitlab_http_status(200)
     end
 
     it "removes the already awarded emoji" do
-      post(:toggle_award_emoji, params: request_params.merge(name: "thumbsup"))
+      create(:award_emoji, awardable: note, name: emoji_name, user: user)
 
-      expect do
-        post(:toggle_award_emoji, params: request_params.merge(name: "thumbsup"))
-      end.to change { AwardEmoji.count }.by(-1)
+      expect { subject }.to change { AwardEmoji.count }.by(-1)
 
       expect(response).to have_gitlab_http_status(200)
+    end
+
+    it 'marks Todos on the Noteable as done' do
+      todo = create(:todo, target: note.noteable, project: project, user: user)
+
+      subject
+
+      expect(todo.reload).to be_done
     end
   end
 
