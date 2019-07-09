@@ -105,7 +105,7 @@ export default {
 </script>
 
 <template>
-  <div class="form-group">
+  <div class="confidential-merge-request-fork-group form-group">
     <label>{{ __('Project') }}</label>
     <div>
       <dropdown
@@ -126,6 +126,14 @@ export default {
           {{ __('No forks available to you.') }}<br />
           <span v-html="noForkText"></span>
         </template>
+        <gl-link
+          :href="helpPagePath"
+          class="w-auto p-0 d-inline-block text-primary bg-transparent"
+          target="_blank"
+        >
+          <span class="sr-only">{{ __('Read more') }}</span>
+          <i class="fa fa-question-circle" aria-hidden="true"></i>
+        </gl-link>
       </p>
     </div>
   </div>
