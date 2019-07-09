@@ -62,6 +62,31 @@ class Settings < Settingslogic
       (base_url(gitlab) + [gitlab.relative_url_root]).join('')
     end
 
+    def kerberos_protocol
+      kerberos.https ? "https" : "http"
+    end
+
+    def kerberos_port
+      kerberos.use_dedicated_port ? kerberos.port : gitlab.port
+    end
+
+    # Curl expects username/password for authentication. However when using GSS-Negotiate not credentials should be needed.
+    # By inserting in the Kerberos dedicated URL ":@", we give to curl an empty username and password and GSS auth goes ahead
+    # Known bug reported in http://sourceforge.net/p/curl/bugs/440/ and http://curl.haxx.se/docs/knownbugs.html
+    def build_gitlab_kerberos_url
+      [
+        kerberos_protocol,
+        "://:@",
+        gitlab.host,
+        ":#{kerberos_port}",
+        gitlab.relative_url_root
+      ].join('')
+    end
+
+    def alternative_gitlab_kerberos_url?
+      kerberos.enabled && (build_gitlab_kerberos_url != build_gitlab_url)
+    end
+
     # check that values in `current` (string or integer) is a contant in `modul`.
     def verify_constant_array(modul, current, default)
       values = default || []
