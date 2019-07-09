@@ -485,7 +485,7 @@ Parameters
 | Attribute       | Type           | Required | Description                                                                                                      |
 |-----------------|----------------|----------|------------------------------------------------------------------------------------------------------------------|
 | `id`            | integer/string | yes      | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
-| `job_id  `      | integer        | yes      | The unique job identifier.                                                                                       |
+| `job_id`        | integer        | yes      | The unique job identifier.                                                                                       |
 | `artifact_path` | string         | yes      | Path to a file inside the artifacts archive.                                                                     |
 
 Example request:
@@ -781,7 +781,6 @@ DELETE /projects/:id/jobs/:job_id/artifacts
 |-----------|----------------|----------|------------------------------------------------------------------------------------------------------------------|
 | `id`      | integer/string | yes      | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `job_id`  | integer        | yes      | ID of a job.                                                                |
-
 
 Example request:
 

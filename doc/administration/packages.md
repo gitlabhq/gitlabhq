@@ -11,7 +11,7 @@ The Packages feature allows GitLab to act as a repository for the following:
 | [Maven Repository](../user/project/packages/maven_repository.md) | The GitLab Maven Repository enables every project in GitLab to have its own space to store [Maven](https://maven.apache.org/) packages. | 11.3+ |
 | [NPM Registry](../user/project/packages/npm_registry.md)   | The GitLab NPM Registry enables every project in GitLab to have its own space to store [NPM](https://www.npmjs.com/) packages. | 11.7+ |
 
-Don't you see your package management system supported yet? 
+Don't you see your package management system supported yet?
 Please consider contributing
 to GitLab. This [development documentation](../development/packages.md) will guide you through the process.
 
