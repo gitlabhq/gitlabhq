@@ -2829,7 +2829,8 @@ Alternatively, one can pass the `ci.skip` [Git push option][push-option] if
 using Git 2.10 or newer:
 
 ```sh
-git push -o ci.skip
+git push --push-option=ci.skip    # using git 2.10+
+git push -o ci.skip               # using git 2.18+
 ```
 
 <!-- ## Troubleshooting
