@@ -41,7 +41,7 @@ export default {
     noForkText() {
       return sprintf(
         __(
-          'To protect this issues confidentiality, %{link_start}fork the project%{link_end} and set the forks visiblity to private.',
+          "To protect this issue's confidentiality, %{link_start}fork the project%{link_end} and set the forks visiblity to private.",
         ),
         { link_start: `<a href="${this.newForkPath}" class="help-link">`, link_end: '</a>' },
         false,
@@ -118,7 +118,7 @@ export default {
         <template v-if="projects.length">
           {{
             __(
-              'To protect this issues confidentiality, a private fork of this project was selected.',
+              "To protect this issue's confidentiality, a private fork of this project was selected.",
             )
           }}
         </template>
