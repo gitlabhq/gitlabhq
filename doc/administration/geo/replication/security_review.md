@@ -1,4 +1,4 @@
-# Geo security review (Q&A) **[PREMIUM ONLY]**
+# Geo security review (Q&A) **(PREMIUM ONLY)**
 
 The following security review of the Geo feature set focuses on security
 aspects of the feature as they apply to customers running their own GitLab
@@ -115,7 +115,7 @@ questions from [owasp.org](https://www.owasp.org).
 ### What operating systems support the application?
 
 - Geo imposes no additional restrictions on operating system (see the
-  [GitLab installation](https://about.gitlab.com/installation/) page for more
+  [GitLab installation](https://about.gitlab.com/install/) page for more
   details), however we recommend using the operating systems listed in the [Geo documentation](index.md#requirements-for-running-geo).
 
 ### What details regarding required OS components and lock‐down needs have been defined?

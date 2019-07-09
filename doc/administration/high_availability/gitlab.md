@@ -125,7 +125,7 @@ need some extra configuration.
    from running on upgrade. Only the primary GitLab application server should
    handle migrations.
 
-1. **Optional** Configure host keys. Copy all contents(primary and public keys) inside `/etc/ssh/` on
+1. **Recommended** Configure host keys. Copy the contents (primary and public keys) of `/etc/ssh/` on
    the primary application server to `/etc/ssh` on all secondary servers. This
    prevents false man-in-the-middle-attack alerts when accessing servers in your
    High Availability cluster behind a load balancer.

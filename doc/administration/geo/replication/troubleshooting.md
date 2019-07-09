@@ -1,4 +1,4 @@
-# Geo Troubleshooting **[PREMIUM ONLY]**
+# Geo Troubleshooting **(PREMIUM ONLY)**
 
 Setting up Geo requires careful attention to details and sometimes it's easy to
 miss a step.

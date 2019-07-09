@@ -1,7 +1,6 @@
 <script>
 import { GlTooltipDirective } from '@gitlab/ui';
 import Icon from '~/vue_shared/components/icon.vue';
-import { pluralize } from '~/lib/utils/text_utility';
 import { __, sprintf } from '~/locale';
 import { getCommitIconMap } from '~/ide/utils';
 
@@ -69,7 +68,7 @@ export default {
         });
       } else if (this.file.changed && this.file.staged) {
         return sprintf(__('Unstaged and staged %{type}'), {
-          type: pluralize(type),
+          type,
         });
       }
 

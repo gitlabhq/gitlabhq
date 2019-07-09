@@ -103,7 +103,7 @@ export default {
         <div v-if="hasMoreCommits" class="flex-list">
           <div class="system-note-commit-list-toggler flex-row" @click="expanded = !expanded">
             <icon :name="toggleIcon" :size="8" class="append-right-5" />
-            <span>Toggle commit list</span>
+            <span>{{ __('Toggle commit list') }}</span>
           </div>
         </div>
       </div>

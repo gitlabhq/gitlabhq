@@ -1,6 +1,6 @@
 # Configuring PostgreSQL for Scaling and High Availability
 
-## Provide your own PostgreSQL instance **[CORE ONLY]**
+## Provide your own PostgreSQL instance **(CORE ONLY)**
 
 If you're hosting GitLab on a cloud provider, you can optionally use a
 managed service for PostgreSQL. For example, AWS offers a managed Relational
@@ -21,17 +21,17 @@ This section is relevant for [Scaled Architecture](README.md#scalable-architectu
 environments including [Basic Scaling](README.md#basic-scaling) and
 [Full Scaling](README.md#full-scaling).
 
-### Provide your own PostgreSQL instance **[CORE ONLY]**
+### Provide your own PostgreSQL instance **(CORE ONLY)**
 
 If you want to use your own deployed PostgreSQL instance(s),
 see [Provide your own PostgreSQL instance](#provide-your-own-postgresql-instance-core-only)
 for more details. However, you can use the GitLab Omnibus package to easily
 deploy the bundled PostgreSQL.
 
-### Standalone PostgreSQL using GitLab Omnibus **[CORE ONLY]**
+### Standalone PostgreSQL using GitLab Omnibus **(CORE ONLY)**
 
 1. SSH into the PostgreSQL server.
-1. [Download/install](https://about.gitlab.com/installation) the Omnibus GitLab
+1. [Download/install](https://about.gitlab.com/install/) the Omnibus GitLab
    package you want using **steps 1 and 2** from the GitLab downloads page.
      - Do not complete any other steps on the download page.
 1. Generate a password hash for PostgreSQL. This assumes you will use the default
@@ -97,14 +97,14 @@ environments including [Horizontal](README.md#horizontal),
 [Hybrid](README.md#hybrid), and
 [Fully Distributed](README.md#fully-distributed).
 
-### Provide your own PostgreSQL instance **[CORE ONLY]**
+### Provide your own PostgreSQL instance **(CORE ONLY)**
 
 If you want to use your own deployed PostgreSQL instance(s),
 see [Provide your own PostgreSQL instance](#provide-your-own-postgresql-instance-core-only)
 for more details. However, you can use the GitLab Omnibus package to easily
 deploy the bundled PostgreSQL.
 
-### High Availability with GitLab Omnibus **[PREMIUM ONLY]**
+### High Availability with GitLab Omnibus **(PREMIUM ONLY)**
 
 > Important notes:
 >
@@ -281,68 +281,17 @@ Few notes on the service itself:
 
 #### Installing Omnibus GitLab
 
-First, make sure to [download/install](https://about.gitlab.com/installation)
+First, make sure to [download/install](https://about.gitlab.com/install/)
 GitLab Omnibus **on each node**.
 
 Make sure you install the necessary dependencies from step 1,
 add GitLab package repository from step 2.
 When installing the GitLab package, do not supply `EXTERNAL_URL` value.
 
-#### Configuring the Consul nodes
-
-On each Consul node perform the following:
-
-1. Make sure you collect [`CONSUL_SERVER_NODES`](#consul-information) before executing the next step.
-
-1. Edit `/etc/gitlab/gitlab.rb` replacing values noted in the `# START user configuration` section:
-
-    ```ruby
-    # Disable all components except Consul
-    roles ['consul_role']
-
-    # START user configuration
-    # Replace placeholders:
-    #
-    # Y.Y.Y.Y consul1.gitlab.example.com Z.Z.Z.Z
-    # with the addresses gathered for CONSUL_SERVER_NODES
-    consul['configuration'] = {
-      server: true,
-      retry_join: %w(Y.Y.Y.Y consul1.gitlab.example.com Z.Z.Z.Z)
-    }
-
-    # Disable auto migrations
-    gitlab_rails['auto_migrate'] = false
-    #
-    # END user configuration
-    ```
-
-    > `consul_role` was introduced with GitLab 10.3
-
-1. [Reconfigure GitLab] for the changes to take effect.
-
-##### Consul Checkpoint
-
-Before moving on, make sure Consul is configured correctly. Run the following
-command to verify all server nodes are communicating:
-
-```sh
-/opt/gitlab/embedded/bin/consul members
-```
-
-The output should be similar to:
-
-```
-Node                 Address               Status  Type    Build  Protocol  DC
-CONSUL_NODE_ONE      XXX.XXX.XXX.YYY:8301  alive   server  0.9.2  2         gitlab_consul
-CONSUL_NODE_TWO      XXX.XXX.XXX.YYY:8301  alive   server  0.9.2  2         gitlab_consul
-CONSUL_NODE_THREE    XXX.XXX.XXX.YYY:8301  alive   server  0.9.2  2         gitlab_consul
-```
-
-If any of the nodes isn't `alive` or if any of the three nodes are missing,
-check the [Troubleshooting section](#troubleshooting) before proceeding.
 
 #### Configuring the Database nodes
 
+1. Make sure to [configure the Consul nodes](consul.md).
 1. Make sure you collect [`CONSUL_SERVER_NODES`](#consul-information), [`PGBOUNCER_PASSWORD_HASH`](#pgbouncer-information), [`POSTGRESQL_PASSWORD_HASH`](#postgresql-information), the [number of db nodes](#postgresql-information), and the [network address](#network-information) before executing the next step.
 
 1. On the master database node, edit `/etc/gitlab/gitlab.rb` replacing values noted in the `# START user configuration` section:
@@ -570,7 +519,7 @@ Check the [Troubleshooting section](#troubleshooting) before proceeding.
 
 1. [Reconfigure GitLab] for the changes to take effect.
 
-1. Create a `.pgpass` file so Consule is able to
+1. Create a `.pgpass` file so Consul is able to
    reload pgbouncer. Enter the `PGBOUNCER_PASSWORD` twice when asked:
 
     ```sh
@@ -1109,7 +1058,7 @@ If you enable Monitoring, it must be enabled on **all** database servers.
 
 ## Troubleshooting
 
-#### Consul and PostgreSQL changes not taking effect.
+### Consul and PostgreSQL changes not taking effect.
 
 Due to the potential impacts, `gitlab-ctl reconfigure` only reloads Consul and PostgreSQL, it will not restart the services. However, not all changes can be activated by reloading.
 
@@ -1119,7 +1068,7 @@ For PostgreSQL, it is usually safe to restart the master node by default. Automa
 
 On the consul server nodes, it is important to restart the consul service in a controlled fashion. Read our [consul documentation](consul.md#restarting-the-server-cluster) for instructions on how to restart the service.
 
-#### `gitlab-ctl repmgr-check-master` command produces errors
+### `gitlab-ctl repmgr-check-master` command produces errors
 
 If this command displays errors about database permissions it is likely that something failed during
 install, resulting in the `gitlab-consul` database user getting incorrect permissions. Follow these
@@ -1134,7 +1083,7 @@ steps to fix the problem:
 
 Now there should not be errors. If errors still occur then there is another problem.
 
-#### PGBouncer error `ERROR: pgbouncer cannot connect to server`
+### PGBouncer error `ERROR: pgbouncer cannot connect to server`
 
 You may get this error when running `gitlab-rake gitlab:db:configure` or you
 may see the error in the PGBouncer log file.
@@ -1162,7 +1111,7 @@ postgresql['trust_auth_cidr_addresses'] = %w(123.123.123.123/32 <other_cidrs>)
 
 [Reconfigure GitLab] for the changes to take effect.
 
-#### Issues with other components
+### Issues with other components
 
 If you're running into an issue with a component not outlined here, be sure to check the troubleshooting section of their specific documentation page.
 

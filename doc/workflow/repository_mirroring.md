@@ -13,7 +13,7 @@ Repository mirroring is useful when you want to use a repository outside of GitL
 There are two kinds of repository mirroring supported by GitLab:
 
 - Push: for mirroring a GitLab repository to another location.
-- Pull: for mirroring a repository from another location to GitLab. **[STARTER]**
+- Pull: for mirroring a repository from another location to GitLab. **(STARTER)**
 
 When the mirror repository is updated, all new branches, tags, and commits will be visible in the
 project's activity feed.
@@ -30,12 +30,12 @@ The following are some possible use cases for repository mirroring:
 
 - You migrated to GitLab but still need to keep your project in another source. In that case, you
   can simply set it up to mirror to GitLab (pull) and all the essential history of commits, tags,
-  and branches will be available in your GitLab instance. **[STARTER]**
+  and branches will be available in your GitLab instance. **(STARTER)**
 - You have old projects in another source that you don't use actively anymore, but don't want to
   remove for archiving purposes. In that case, you can create a push mirror so that your active
   GitLab repository can push its changes to the old location.
 
-## Pushing to a remote repository **[CORE]**
+## Pushing to a remote repository **(CORE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/249) in GitLab Enterprise
 > Edition 8.7. [Moved to GitLab Core](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/18715) in 10.8.
@@ -65,7 +65,7 @@ Changes pushed to files in the repository are automatically pushed to the remote
 In the case of a diverged branch, you will see an error indicated at the **Mirroring repositories**
 section.
 
-### Push only protected branches **[CORE]**
+### Push only protected branches **(CORE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3350) in
 > [GitLab Starter](https://about.gitlab.com/pricing/) 10.3. [Moved to GitLab Core](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/18715) in 10.8.
@@ -75,7 +75,7 @@ You can choose to only push your protected branches from GitLab to your remote r
 To use this option, check the **Only mirror protected branches** box when creating a repository
 mirror.
 
-## Setting up a push mirror from GitLab to GitHub **[CORE]**
+## Setting up a push mirror from GitLab to GitHub **(CORE)**
 
 To set up a mirror from GitLab to GitHub, you need to follow these steps:
 
@@ -96,7 +96,7 @@ The repository will push soon. To force a push, click the appropriate button.
     1. Fill in **Password** field with the GitLab personal access token created on the destination GitLab instance.
     1. Click the **Mirror repository** button.
 
-## Pulling from a remote repository **[STARTER]**
+## Pulling from a remote repository **(STARTER)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/51) in GitLab Enterprise Edition 8.2.
 > [Added Git LFS support](https://gitlab.com/gitlab-org/gitlab-ee/issues/10871) in [GitLab Starter](https://about.gitlab.com/pricing/) 11.11.
@@ -243,7 +243,7 @@ If you need to change the key at any time, you can remove and re-add the mirror
 to generate a new key. You'll have to update the other repository with the new
 key to keep the mirror running.
 
-### Overwrite diverged branches **[STARTER]**
+### Overwrite diverged branches **(STARTER)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/4559) in
 > [GitLab Starter](https://about.gitlab.com/pricing/) 10.6.
@@ -256,7 +256,7 @@ For mirrored branches, enabling this option results in the loss of local changes
 
 To use this option, check the **Overwrite diverged branches** box when creating a repository mirror.
 
-### Only mirror protected branches **[STARTER]**
+### Only mirror protected branches **(STARTER)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3326) in
 > [GitLab Starter](https://about.gitlab.com/pricing/) 10.3.
@@ -266,7 +266,7 @@ Non-protected branches are not mirrored and can diverge.
 
 To use this option, check the **Only mirror protected branches** box when creating a repository mirror.
 
-### Hard failure **[STARTER]**
+### Hard failure **(STARTER)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3117) in
 > [GitLab Starter](https://about.gitlab.com/pricing/) 10.2.
@@ -280,25 +280,25 @@ failed. This will become visible in either the:
 When a project is hard failed, it will no longer get picked up for mirroring. A user can resume the
 project mirroring again by [Forcing an update](#forcing-an-update-core).
 
-### Trigger update using API **[STARTER]**
+### Trigger update using API **(STARTER)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3453) in
 [GitLab Starter](https://about.gitlab.com/pricing/) 10.3.
 
 Pull mirroring uses polling to detect new branches and commits added upstream, often minutes
-afterwards. If you notify GitLab by [API](https://docs.gitlab.com/ee/api/projects.html#start-the-pull-mirroring-process-for-a-project-starter),
+afterwards. If you notify GitLab by [API](../api/projects.md#start-the-pull-mirroring-process-for-a-project-starter),
 updates will be pulled immediately.
 
-For more information, see [Start the pull mirroring process for a Project](https://docs.gitlab.com/ee/api/projects.html#start-the-pull-mirroring-process-for-a-project-starter).
+For more information, see [Start the pull mirroring process for a Project](../api/projects.md#start-the-pull-mirroring-process-for-a-project-starter).
 
-## Forcing an update **[CORE]**
+## Forcing an update **(CORE)**
 
 While mirrors are scheduled to update automatically, you can always force an update by using the
 update button which is available on the **Mirroring repositories** section of the **Repository Settings** page.
 
 ![Repository mirroring force update user interface](img/repository_mirroring_force_update.png)
 
-## Bidirectional mirroring **[STARTER]**
+## Bidirectional mirroring **(STARTER)**
 
 CAUTION: **Caution:**
 Bidirectional mirroring may cause conflicts.
@@ -395,7 +395,7 @@ else
 fi
 ```
 
-### Mirroring with Perforce Helix via Git Fusion **[STARTER]**
+### Mirroring with Perforce Helix via Git Fusion **(STARTER)**
 
 CAUTION: **Warning:**
 Bidirectional mirroring should not be used as a permanent configuration. Refer to

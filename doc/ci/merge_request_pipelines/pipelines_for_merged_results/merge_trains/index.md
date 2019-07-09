@@ -3,7 +3,7 @@ type: reference
 last_update: 2019-07-03
 ---
 
-# Merge Trains **[PREMIUM]**
+# Merge Trains **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/9186) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.0.
 > This feature is disabled by default, but [can be enabled manually](#enabling-merge-trains).

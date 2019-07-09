@@ -24,6 +24,11 @@ export default {
       required: false,
       default: '',
     },
+    hasDraft: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     className() {
@@ -55,6 +60,7 @@ export default {
           :help-page-path="helpPagePath"
         />
         <diff-discussion-reply
+          v-if="!hasDraft"
           :has-form="line.hasForm"
           :render-reply-placeholder="Boolean(line.discussions.length)"
           @showNewDiscussionForm="

@@ -673,7 +673,7 @@ fetch line:
 fetch = +refs/environments/*:refs/remotes/origin/environments/*
 ```
 
-### Scoping environments with specs **[PREMIUM]**
+### Scoping environments with specs **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2112) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.4.
 
@@ -692,7 +692,7 @@ with `review/` would have that particular variable.
 
 Some GitLab features can behave differently for each environment.
 For example, you can
-[create a secret variable to be injected only into a production environment](variables/README.md#limiting-environment-scopes-of-environment-variables-premium). **[PREMIUM]**
+[create a secret variable to be injected only into a production environment](variables/README.md#limiting-environment-scopes-of-environment-variables-premium). **(PREMIUM)**
 
 In most cases, these features use the _environment specs_ mechanism, which offers
 an efficient way to implement scoping within each environment group.
@@ -734,7 +734,7 @@ Below are some links you may find interesting:
 - [The `.gitlab-ci.yml` definition of environments](yaml/README.md#environment)
 - [A blog post on Deployments & Environments](https://about.gitlab.com/2016/08/26/ci-deployment-and-environments/)
 - [Review Apps - Use dynamic environments to deploy your code for every branch](review_apps/index.md)
-- [Deploy Boards for your applications running on Kubernetes](../user/project/deploy_boards.md) **[PREMIUM]**
+- [Deploy Boards for your applications running on Kubernetes](../user/project/deploy_boards.md) **(PREMIUM)**
 
 <!-- ## Troubleshooting
 

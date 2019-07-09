@@ -1,4 +1,4 @@
-# GitLab Secure **[ULTIMATE]**
+# GitLab Secure **(ULTIMATE)**
 
 Check your application for security vulnerabilities that may lead to unauthorized access,
 data leaks, and denial of services. GitLab will perform static and dynamic tests on the
@@ -12,12 +12,12 @@ GitLab can scan and report any vulnerabilities found in your project.
 
 | Secure scanning tool                                                         | Description                                                            |
 |:-----------------------------------------------------------------------------|:-----------------------------------------------------------------------|
-| [Container Scanning](container_scanning/index.md) **[ULTIMATE]**             | Scan Docker containers for known vulnerabilities.                      |
-| [Dependency Scanning](dependency_scanning/index.md) **[ULTIMATE]**           | Analyze your dependencies for known vulnerabilities.                   |
-| [Dynamic Application Security Testing (DAST)](dast/index.md) **[ULTIMATE]**  | Analyze running web applications for known vulnerabilities.            |
-| [License Management](license_management/index.md) **[ULTIMATE]**             | Search your project's dependencies for their licenses.                 |
-| [Security Dashboard](security_dashboard/index.md) **[ULTIMATE]**             | View vulnerabilities in all your projects and groups.                  |
-| [Static Application Security Testing (SAST)](sast/index.md) **[ULTIMATE]**   | Analyze source code for known vulnerabilities.                         |
+| [Container Scanning](container_scanning/index.md) **(ULTIMATE)**             | Scan Docker containers for known vulnerabilities.                      |
+| [Dependency Scanning](dependency_scanning/index.md) **(ULTIMATE)**           | Analyze your dependencies for known vulnerabilities.                   |
+| [Dynamic Application Security Testing (DAST)](dast/index.md) **(ULTIMATE)**  | Analyze running web applications for known vulnerabilities.            |
+| [License Management](license_management/index.md) **(ULTIMATE)**             | Search your project's dependencies for their licenses.                 |
+| [Security Dashboard](security_dashboard/index.md) **(ULTIMATE)**             | View vulnerabilities in all your projects and groups.                  |
+| [Static Application Security Testing (SAST)](sast/index.md) **(ULTIMATE)**   | Analyze source code for known vulnerabilities.                         |
 
 ## Maintenance and update of the vulnerabilities database
 

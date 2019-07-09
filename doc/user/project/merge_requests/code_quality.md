@@ -2,7 +2,7 @@
 type: reference, howto
 ---
 
-# Code Quality **[STARTER]**
+# Code Quality **(STARTER)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1984)
 in [GitLab Starter](https://about.gitlab.com/pricing/) 9.3.

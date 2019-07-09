@@ -1,6 +1,6 @@
 # Grafana Configuration
 
-[Grafana](http://grafana.org/) is a tool that allows you to visualize time
+[Grafana](https://grafana.org/) is a tool that allows you to visualize time
 series metrics through graphs and dashboards. It supports several backend
 data stores, including InfluxDB. GitLab writes performance data to InfluxDB
 and Grafana will allow you to query to display useful graphs.
@@ -13,7 +13,7 @@ services.
 
 [GitLab Omnibus can help you install Grafana (recommended)](https://docs.gitlab.com/omnibus/settings/grafana.html)
 or Grafana supplies package repositories (Yum/Apt) for easy installation.
-See [Grafana installation documentation](http://docs.grafana.org/installation/)
+See [Grafana installation documentation](https://grafana.com/docs/installation/)
 for detailed steps.
 
 NOTE: **Note:**

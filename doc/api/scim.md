@@ -1,4 +1,4 @@
-# SCIM API **[SILVER ONLY]**
+# SCIM API **(SILVER ONLY)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/9388) in [GitLab Silver](https://about.gitlab.com/pricing/) 11.10.
 
@@ -6,7 +6,7 @@ The SCIM API implements the [the RFC7644 protocol](https://tools.ietf.org/html/r
 
 NOTE: **Note:**
 [Group SSO](../user/group/saml_sso/index.md) and the feature
-flag `:group_scim` must be enabled for the group. For more information, see [SCIM setup documentation](../user/group/saml_sso/scim_setup.md#requirements). 
+flag `:group_scim` must be enabled for the group. For more information, see [SCIM setup documentation](../user/group/saml_sso/scim_setup.md#requirements).
 
 ## Get a list of SAML users
 

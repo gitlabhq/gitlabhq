@@ -2,7 +2,7 @@
 type: howto, reference
 ---
 
-# SCIM provisioning using SAML SSO for Groups **[SILVER ONLY]**
+# SCIM provisioning using SAML SSO for Groups **(SILVER ONLY)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/9388) in [GitLab.com Silver](https://about.gitlab.com/pricing/) 11.10.
 

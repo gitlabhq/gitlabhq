@@ -4,7 +4,7 @@ The following are required to install and test the app:
 
 1. A Jira Cloud instance
 
-   Atlassian provides free instances for development and testing. [Click here to sign up](http://go.atlassian.com/cloud-dev).
+   Atlassian provides free instances for development and testing. [Click here to sign up](https://developer.atlassian.com/platform/marketplace/getting-started/#free-developer-instances-to-build-and-test-your-app).
 
 1. A GitLab instance available over the internet
 
@@ -15,7 +15,7 @@ The following are required to install and test the app:
 
 > This feature is currently behind the `:jira_connect_app` feature flag
 
-# Installing the app in Jira
+## Installing the app in Jira
 
 1. Enable Jira development mode to install apps that are not from the Atlassian Marketplace
 

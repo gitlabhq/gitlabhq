@@ -150,7 +150,7 @@ these parameters:
 - `file_template_project_id`
 - `geo_node_allowed_ips`
 
-Example responses: **[PREMIUM ONLY]**
+Example responses: **(PREMIUM ONLY)**
 
 ```json
   "external_authorization_service_enabled": true,
@@ -174,12 +174,12 @@ are listed in the descriptions of the relevant settings.
 | `after_sign_up_text`                     | string           | no                                   | Text shown to the user after signing up |
 | `akismet_api_key`                        | string           | required by: `akismet_enabled`       | API key for akismet spam protection. |
 | `akismet_enabled`                        | boolean          | no                                   | (**If enabled, requires:** `akismet_api_key`) Enable or disable akismet spam protection. |
-| `allow_group_owners_to_manage_ldap`      | boolean          | no                                   | **[PREMIUM]** Set to `true` to allow group owners to manage LDAP |
+| `allow_group_owners_to_manage_ldap`      | boolean          | no                                   | **(PREMIUM)** Set to `true` to allow group owners to manage LDAP |
 | `allow_local_requests_from_hooks_and_services` | boolean    | no                                   | Allow requests to the local network from hooks and services. |
 | `authorized_keys_enabled`                | boolean          | no                                   | By default, we write to the `authorized_keys` file to support Git over SSH without additional configuration. GitLab can be optimized to authenticate SSH keys via the database file. Only disable this if you have configured your OpenSSH server to use the AuthorizedKeysCommand. |
 | `auto_devops_domain`                     | string           | no                                   | Specify a domain to use by default for every project's Auto Review Apps and Auto Deploy stages. |
 | `auto_devops_enabled`                    | boolean          | no                                   | Enable Auto DevOps for projects by default. It will automatically build, test, and deploy applications based on a predefined CI/CD configuration. |
-| `check_namespace_plan`                   | boolean          | no                                   | **[PREMIUM]** Enabling this will make only licensed EE features available to projects if the project namespace's plan includes the feature or if the project is public. |
+| `check_namespace_plan`                   | boolean          | no                                   | **(PREMIUM)** Enabling this will make only licensed EE features available to projects if the project namespace's plan includes the feature or if the project is public. |
 | `clientside_sentry_dsn`                  | string           | required by: `clientside_sentry_enabled` | Clientside Sentry Data Source Name. |
 | `clientside_sentry_enabled`              | boolean          | no                                   | (**If enabled, requires:** `clientside_sentry_dsn`) Enable Sentry error reporting for the client side. |
 | `container_registry_token_expire_delay`  | integer          | no                                   | Container Registry token duration in minutes. |
@@ -196,31 +196,31 @@ are listed in the descriptions of the relevant settings.
 | `dsa_key_restriction`                    | integer          | no                                   | The minimum allowed bit length of an uploaded DSA key. Default is `0` (no restriction). `-1` disables DSA keys. |
 | `ecdsa_key_restriction`                  | integer          | no                                   | The minimum allowed curve size (in bits) of an uploaded ECDSA key. Default is `0` (no restriction). `-1` disables ECDSA keys. |
 | `ed25519_key_restriction`                | integer          | no                                   | The minimum allowed curve size (in bits) of an uploaded ED25519 key. Default is `0` (no restriction). `-1` disables ED25519 keys. |
-| `elasticsearch_aws`                      | boolean          | no                                   | **[PREMIUM]** Enable the use of AWS hosted Elasticsearch |
-| `elasticsearch_aws_access_key`           | string           | no                                   | **[PREMIUM]** AWS IAM access key |
-| `elasticsearch_aws_region`               | string           | no                                   | **[PREMIUM]** The AWS region the elasticsearch domain is configured |
-| `elasticsearch_aws_secret_access_key`    | string           | no                                   | **[PREMIUM]** AWS IAM secret access key |
-| `elasticsearch_experimental_indexer`     | boolean          | no                                   | **[PREMIUM]** Use the experimental elasticsearch indexer. More info: <https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer> |
-| `elasticsearch_indexing`                 | boolean          | no                                   | **[PREMIUM]** Enable Elasticsearch indexing |
-| `elasticsearch_search`                   | boolean          | no                                   | **[PREMIUM]** Enable Elasticsearch search |
-| `elasticsearch_url`                      | string           | no                                   | **[PREMIUM]** The url to use for connecting to Elasticsearch. Use a comma-separated list to support cluster (e.g., `http://localhost:9200, http://localhost:9201"`). If your Elasticsearch instance is password protected, pass the `username:password` in the URL (e.g., `http://<username>:<password>@<elastic_host>:9200/`). |
-| `elasticsearch_limit_indexing`           | boolean          | no                                   | **[PREMIUM]** Limit Elasticsearch to index certain namespaces and projects |
-| `elasticsearch_project_ids`              | array of integers | no                                  | **[PREMIUM]** The projects to index via Elasticsearch if `elasticsearch_limit_indexing` is enabled. |
-| `elasticsearch_namespace_ids`            | array of integers | no                                  | **[PREMIUM]** The namespaces to index via Elasticsearch if `elasticsearch_limit_indexing` is enabled. |
-| `email_additional_text`                  | string           | no                                   | **[PREMIUM]** Additional text added to the bottom of every email for legal/auditing/compliance reasons |
+| `elasticsearch_aws`                      | boolean          | no                                   | **(PREMIUM)** Enable the use of AWS hosted Elasticsearch |
+| `elasticsearch_aws_access_key`           | string           | no                                   | **(PREMIUM)** AWS IAM access key |
+| `elasticsearch_aws_region`               | string           | no                                   | **(PREMIUM)** The AWS region the elasticsearch domain is configured |
+| `elasticsearch_aws_secret_access_key`    | string           | no                                   | **(PREMIUM)** AWS IAM secret access key |
+| `elasticsearch_experimental_indexer`     | boolean          | no                                   | **(PREMIUM)** Use the experimental elasticsearch indexer. More info: <https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer> |
+| `elasticsearch_indexing`                 | boolean          | no                                   | **(PREMIUM)** Enable Elasticsearch indexing |
+| `elasticsearch_search`                   | boolean          | no                                   | **(PREMIUM)** Enable Elasticsearch search |
+| `elasticsearch_url`                      | string           | no                                   | **(PREMIUM)** The url to use for connecting to Elasticsearch. Use a comma-separated list to support cluster (e.g., `http://localhost:9200, http://localhost:9201"`). If your Elasticsearch instance is password protected, pass the `username:password` in the URL (e.g., `http://<username>:<password>@<elastic_host>:9200/`). |
+| `elasticsearch_limit_indexing`           | boolean          | no                                   | **(PREMIUM)** Limit Elasticsearch to index certain namespaces and projects |
+| `elasticsearch_project_ids`              | array of integers | no                                  | **(PREMIUM)** The projects to index via Elasticsearch if `elasticsearch_limit_indexing` is enabled. |
+| `elasticsearch_namespace_ids`            | array of integers | no                                  | **(PREMIUM)** The namespaces to index via Elasticsearch if `elasticsearch_limit_indexing` is enabled. |
+| `email_additional_text`                  | string           | no                                   | **(PREMIUM)** Additional text added to the bottom of every email for legal/auditing/compliance reasons |
 | `email_author_in_body`                   | boolean          | no                                   | Some email servers do not support overriding the email sender name. Enable this option to include the name of the author of the issue, merge request or comment in the email body instead. |
 | `enabled_git_access_protocol`            | string           | no                                   | Enabled protocols for Git access. Allowed values are: `ssh`, `http`, and `nil` to allow both protocols. |
 | `enforce_terms`                          | boolean          | no                                   | (**If enabled, requires:** `terms`) Enforce application ToS to all users. |
-| `external_auth_client_cert`              | string           | no                                   | **[PREMIUM]** (**If enabled, requires:** `external_auth_client_key`) The certificate to use to authenticate with the external authorization service |
-| `external_auth_client_key`               | string           | required by: `external_auth_client_cert` | **[PREMIUM]** Private key for the certificate when authentication is required for the external authorization service, this is encrypted when stored |
-| `external_auth_client_key_pass`          | string           | no                                   | **[PREMIUM]** Passphrase to use for the private key when authenticating with the external service this is encrypted when stored |
-| `external_authorization_service_enabled` | boolean          | no                                   | **[PREMIUM]** (**If enabled, requires:** `external_authorization_service_default_label`, `external_authorization_service_timeout` and `external_authorization_service_url` )  Enable using an external authorization service for accessing projects |
-| `external_authorization_service_default_label` | string     | required by: `external_authorization_service_enabled` | **[PREMIUM]** The default classification label to use when requesting authorization and no classification label has been specified on the project |
-| `external_authorization_service_timeout` | float            | required by: `external_authorization_service_enabled` | **[PREMIUM]** The timeout after which an authorization request is aborted, in seconds. When a request times out, access is denied to the user. (min: 0.001, max: 10, step: 0.001) |
-| `external_authorization_service_url`     | string           | required by: `external_authorization_service_enabled` | **[PREMIUM]** URL to which authorization requests will be directed |
-| `file_template_project_id`               | integer          | no                                   | **[PREMIUM]** The ID of a project to load custom file templates from |
+| `external_auth_client_cert`              | string           | no                                   | **(PREMIUM)** (**If enabled, requires:** `external_auth_client_key`) The certificate to use to authenticate with the external authorization service |
+| `external_auth_client_key`               | string           | required by: `external_auth_client_cert` | **(PREMIUM)** Private key for the certificate when authentication is required for the external authorization service, this is encrypted when stored |
+| `external_auth_client_key_pass`          | string           | no                                   | **(PREMIUM)** Passphrase to use for the private key when authenticating with the external service this is encrypted when stored |
+| `external_authorization_service_enabled` | boolean          | no                                   | **(PREMIUM)** (**If enabled, requires:** `external_authorization_service_default_label`, `external_authorization_service_timeout` and `external_authorization_service_url` )  Enable using an external authorization service for accessing projects |
+| `external_authorization_service_default_label` | string     | required by: `external_authorization_service_enabled` | **(PREMIUM)** The default classification label to use when requesting authorization and no classification label has been specified on the project |
+| `external_authorization_service_timeout` | float            | required by: `external_authorization_service_enabled` | **(PREMIUM)** The timeout after which an authorization request is aborted, in seconds. When a request times out, access is denied to the user. (min: 0.001, max: 10, step: 0.001) |
+| `external_authorization_service_url`     | string           | required by: `external_authorization_service_enabled` | **(PREMIUM)** URL to which authorization requests will be directed |
+| `file_template_project_id`               | integer          | no                                   | **(PREMIUM)** The ID of a project to load custom file templates from |
 | `first_day_of_week`                      | integer          | no                                   | Start day of the week for calendar views and date pickers. Valid values are `0` (default) for Sunday, `1` for Monday, and `6` for Saturday. |
-| `geo_status_timeout`                     | integer          | no                                   | **[PREMIUM]** The amount of seconds after which a request to get a secondary node status will time out. |
+| `geo_status_timeout`                     | integer          | no                                   | **(PREMIUM)** The amount of seconds after which a request to get a secondary node status will time out. |
 | `gitaly_timeout_default`                 | integer          | no                                   | Default Gitaly timeout, in seconds. This timeout is not enforced for git fetch/push operations or Sidekiq jobs. Set to `0` to disable timeouts. |
 | `gitaly_timeout_fast`                    | integer          | no                                   | Gitaly fast operation timeout, in seconds. Some Gitaly operations are expected to be fast. If they exceed this threshold, there may be a problem with a storage shard and 'failing fast' can help maintain the stability of the GitLab instance. Set to `0` to disable timeouts. |
 | `gitaly_timeout_medium`                  | integer          | no                                   | Medium Gitaly timeout, in seconds. This should be a value between the Fast and the Default timeout. Set to `0` to disable timeouts. |
@@ -229,7 +229,7 @@ are listed in the descriptions of the relevant settings.
 | `help_page_hide_commercial_content`      | boolean          | no                                   | Hide marketing-related entries from help. |
 | `help_page_support_url`                  | string           | no                                   | Alternate support URL for help page. |
 | `help_page_text`                         | string           | no                                   | Custom text displayed on the help page. |
-| `help_text`                              | string           | no                                   | **[PREMIUM]** GitLab server administrator information |
+| `help_text`                              | string           | no                                   | **(PREMIUM)** GitLab server administrator information |
 | `hide_third_party_offers`                | boolean          | no                                   | Do not display offers from third parties within GitLab. |
 | `home_page_url`                          | string           | no                                   | Redirect to this URL when not logged in. |
 | `housekeeping_bitmaps_enabled`           | boolean          | required by: `housekeeping_enabled`  | Enable Git pack file bitmap creation. |
@@ -252,9 +252,9 @@ are listed in the descriptions of the relevant settings.
 | `metrics_sample_interval`                | integer          | required by: `metrics_enabled`       | The sampling interval in seconds. |
 | `metrics_timeout`                        | integer          | required by: `metrics_enabled`       | The amount of seconds after which InfluxDB will time out. |
 | `mirror_available`                       | boolean          | no                                   | Allow mirrors to be set up for projects. If disabled, only admins will be able to set up mirrors in projects. |
-| `mirror_capacity_threshold`              | integer          | no                                   | **[PREMIUM]** Minimum capacity to be available before scheduling more mirrors preemptively |
-| `mirror_max_capacity`                    | integer          | no                                   | **[PREMIUM]** Maximum number of mirrors that can be synchronizing at the same time. |
-| `mirror_max_delay`                       | integer          | no                                   | **[PREMIUM]** Maximum time (in minutes) between updates that a mirror can have when scheduled to synchronize. |
+| `mirror_capacity_threshold`              | integer          | no                                   | **(PREMIUM)** Minimum capacity to be available before scheduling more mirrors preemptively |
+| `mirror_max_capacity`                    | integer          | no                                   | **(PREMIUM)** Maximum number of mirrors that can be synchronizing at the same time. |
+| `mirror_max_delay`                       | integer          | no                                   | **(PREMIUM)** Maximum time (in minutes) between updates that a mirror can have when scheduled to synchronize. |
 | `pages_domain_verification_enabled`      | boolean          | no                                   | Require users to prove ownership of custom domains. Domain verification is an essential security measure for public GitLab sites. Users are required to demonstrate they control a domain before it is enabled. |
 | `password_authentication_enabled_for_git` | boolean         | no                                   | Enable authentication for Git over HTTP(S) via a GitLab account password. Default is `true`. |
 | `password_authentication_enabled_for_web` | boolean         | no                                   | Enable authentication for the web interface via a GitLab account password. Default is `true`. |
@@ -266,12 +266,12 @@ are listed in the descriptions of the relevant settings.
 | `polling_interval_multiplier`            | decimal          | no                                   | Interval multiplier used by endpoints that perform polling. Set to `0` to disable polling. |
 | `project_export_enabled`                 | boolean          | no                                   | Enable project export. |
 | `prometheus_metrics_enabled`             | boolean          | no                                   | Enable prometheus metrics. |
-| `pseudonymizer_enabled`                  | boolean          | no                                   | **[PREMIUM]** When enabled, GitLab will run a background job that will produce pseudonymized CSVs of the GitLab database that will be uploaded to your configured object storage directory.
+| `pseudonymizer_enabled`                  | boolean          | no                                   | **(PREMIUM)** When enabled, GitLab will run a background job that will produce pseudonymized CSVs of the GitLab database that will be uploaded to your configured object storage directory.
 | `recaptcha_enabled`                      | boolean          | no                                   | (**If enabled, requires:** `recaptcha_private_key` and `recaptcha_site_key`) Enable recaptcha. |
 | `recaptcha_private_key`                  | string           | required by: `recaptcha_enabled`     | Private key for recaptcha. |
 | `recaptcha_site_key`                     | string           | required by: `recaptcha_enabled`     | Site key for recaptcha. |
 | `repository_checks_enabled`              | boolean          | no                                   | GitLab will periodically run `git fsck` in all project and wiki repositories to look for silent disk corruption issues. |
-| `repository_size_limit`                  | integer          | no                                   | **[PREMIUM]** Size limit per repository (MB) |
+| `repository_size_limit`                  | integer          | no                                   | **(PREMIUM)** Size limit per repository (MB) |
 | `repository_storages`                    | array of strings | no                                   | A list of names of enabled storage paths, taken from `gitlab.yml`. New projects will be created in one of these stores, chosen at random. |
 | `require_two_factor_authentication`      | boolean          | no                                   | (**If enabled, requires:** `two_factor_grace_period`) Require all users to set up Two-factor authentication. |
 | `restricted_visibility_levels`           | array of strings | no                                   | Selected levels cannot be used by non-admin users for groups, projects or snippets. Can take `private`, `internal` and `public` as a parameter. Default is `null` which means there is no restriction. |
@@ -279,15 +279,15 @@ are listed in the descriptions of the relevant settings.
 | `send_user_confirmation_email`           | boolean          | no                                   | Send confirmation email on sign-up. |
 | `session_expire_delay`                   | integer          | no                                   | Session duration in minutes. GitLab restart is required to apply changes |
 | `shared_runners_enabled`                 | boolean          | no                                   | (**If enabled, requires:** `shared_runners_text` and `shared_runners_minutes`) Enable shared runners for new projects. |
-| `shared_runners_minutes`                 | integer          | required by: `shared_runners_enabled` | **[PREMIUM]** Set the maximum number of pipeline minutes that a group can use on shared Runners per month. |
+| `shared_runners_minutes`                 | integer          | required by: `shared_runners_enabled` | **(PREMIUM)** Set the maximum number of pipeline minutes that a group can use on shared Runners per month. |
 | `shared_runners_text`                    | string           | required by: `shared_runners_enabled` | Shared runners text. |
 | `sign_in_text`                           | string           | no                                   | Text on the login page. |
 | `signin_enabled`                         | string           | no                                   | (Deprecated: Use `password_authentication_enabled_for_web` instead) Flag indicating if password authentication is enabled for the web interface. |
 | `signup_enabled`                         | boolean          | no                                   | Enable registration. Default is `true`. |
-| `slack_app_enabled`                      | boolean          | no                                   | **[PREMIUM]** (**If enabled, requires:** `slack_app_id`, `slack_app_secret` and `slack_app_secret`) Enable Slack app. |
-| `slack_app_id`                           | string           | required by: `slack_app_enabled`      | **[PREMIUM]** The app id of the Slack-app. |
-| `slack_app_secret`                       | string           | required by: `slack_app_enabled`      | **[PREMIUM]** The app secret of the Slack-app. |
-| `slack_app_verification_token`           | string           | required by: `slack_app_enabled`      | **[PREMIUM]** The verification token of the Slack-app. |
+| `slack_app_enabled`                      | boolean          | no                                   | **(PREMIUM)** (**If enabled, requires:** `slack_app_id`, `slack_app_secret` and `slack_app_secret`) Enable Slack app. |
+| `slack_app_id`                           | string           | required by: `slack_app_enabled`      | **(PREMIUM)** The app id of the Slack-app. |
+| `slack_app_secret`                       | string           | required by: `slack_app_enabled`      | **(PREMIUM)** The app secret of the Slack-app. |
+| `slack_app_verification_token`           | string           | required by: `slack_app_enabled`      | **(PREMIUM)** The verification token of the Slack-app. |
 | `terminal_max_session_time`              | integer          | no                                   | Maximum time for web terminal websocket connection (in seconds). Set to `0` for unlimited time. |
 | `terms`                                  | text             | required by: `enforce_terms`         | (**Required by:** `enforce_terms`) Markdown content for the ToS. |
 | `throttle_authenticated_api_enabled`     | boolean          | no                                   | (**If enabled, requires:** `throttle_authenticated_api_period_in_seconds` and `throttle_authenticated_api_requests_per_period`) Enable authenticated API request rate limit. Helps reduce request volume (e.g. from crawlers or abusive bots). |
@@ -310,4 +310,4 @@ are listed in the descriptions of the relevant settings.
 | `user_show_add_ssh_key_message`          | boolean          | no                                   | When set to `false` disable the "You won't be able to pull or push project code via SSH" warning shown to users with no uploaded SSH key. |
 | `version_check_enabled`                  | boolean          | no                                   | Let GitLab inform you when an update is available. |
 | `local_markdown_version`                 | integer          | no                                   | Increase this value when any cached markdown should be invalidated. |
-| `geo_node_allowed_ips`                   | string           | yes                                  | **[PREMIUM]** Comma-separated list of IPs and CIDRs of allowed secondary nodes. For example, `1.1.1.1, 2.2.2.0/24`. |
+| `geo_node_allowed_ips`                   | string           | yes                                  | **(PREMIUM)** Comma-separated list of IPs and CIDRs of allowed secondary nodes. For example, `1.1.1.1, 2.2.2.0/24`. |

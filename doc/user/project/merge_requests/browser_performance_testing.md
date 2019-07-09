@@ -2,7 +2,7 @@
 type: reference, howto
 ---
 
-# Browser Performance Testing **[PREMIUM]**
+# Browser Performance Testing **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3507)
 in [GitLab Premium](https://about.gitlab.com/pricing/) 10.3.
@@ -19,7 +19,7 @@ tool for measuring the performance of web sites, and has built a simple
 which outputs the results in a file called `performance.json`. This plugin
 outputs the performance score for each page that is analyzed.
 
-The [Sitespeed.io performance score](http://examples.sitespeed.io/6.0/2017-11-23-23-43-35/help.html)
+The [Sitespeed.io performance score](https://examples.sitespeed.io/6.0/2017-11-23-23-43-35/help.html)
 is a composite value based on best practices, and we will be expanding support
 for [additional metrics](https://gitlab.com/gitlab-org/gitlab-ee/issues/4370)
 in a future release.

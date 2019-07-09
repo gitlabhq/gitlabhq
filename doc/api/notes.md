@@ -5,7 +5,7 @@ Notes are comments on:
 - Snippets
 - Issues
 - Merge requests
-- Epics **[ULTIMATE]**
+- Epics **(ULTIMATE)**
 
 This includes system notes, which are notes about changes to the object (for example, when a milestone changes, there will be a corresponding system note). Label notes are not part of this API, but recorded as separate events in [resource label events](resource_label_events.md).
 
@@ -396,7 +396,7 @@ Parameters:
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/merge_requests/7/notes/1602
 ```
 
-## Epics **[ULTIMATE]**
+## Epics **(ULTIMATE)**
 
 ### List all epic notes
 

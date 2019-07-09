@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  # https://gitlab.com/gitlab-org/quality/staging/issues/40
-  context 'Create', :quarantine do
+  context 'Create' do
     describe 'Push mirror a repository over HTTP' do
       it 'configures and syncs a (push) mirrored repository' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)

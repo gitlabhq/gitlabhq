@@ -9,7 +9,7 @@ describe EnvironmentStatusEntity do
   let(:project)       { deployment.project }
   let(:merge_request) { create(:merge_request, :deployed_review_app, deployment: deployment) }
 
-  let(:environment_status) { EnvironmentStatus.new(environment, merge_request, merge_request.diff_head_sha) }
+  let(:environment_status) { EnvironmentStatus.new(project, environment, merge_request, merge_request.diff_head_sha) }
   let(:entity)             { described_class.new(environment_status, request: request) }
 
   subject { entity.as_json }
@@ -55,8 +55,14 @@ describe EnvironmentStatusEntity do
     before do
       project.add_maintainer(user)
       allow(deployment).to receive(:prometheus_adapter).and_return(prometheus_adapter)
-      allow(prometheus_adapter).to receive(:query).with(:deployment, deployment).and_return(simple_metrics)
       allow(entity).to receive(:deployment).and_return(deployment)
+
+      expect_next_instance_of(DeploymentMetrics) do |deployment_metrics|
+        allow(deployment_metrics).to receive(:prometheus_adapter).and_return(prometheus_adapter)
+
+        allow(prometheus_adapter).to receive(:query)
+          .with(:deployment, deployment).and_return(simple_metrics)
+      end
     end
 
     context 'when deployment succeeded' do

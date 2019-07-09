@@ -44,7 +44,7 @@ module MergeRequests
                                   merge_request.previous_changes['target_branch'].first,
                                   merge_request.target_branch)
 
-        cancel_auto_merge(merge_request)
+        abort_auto_merge(merge_request, 'target branch was changed')
       end
 
       if merge_request.assignees != old_assignees

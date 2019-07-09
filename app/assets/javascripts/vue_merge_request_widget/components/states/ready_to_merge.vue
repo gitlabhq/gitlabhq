@@ -248,7 +248,7 @@ export default {
               type="button"
               class="btn btn-sm btn-info dropdown-toggle js-merge-moment"
               data-toggle="dropdown"
-              aria-label="Select merge moment"
+              :aria-label="__('Select merge moment')"
             >
               <i class="fa fa-chevron-down qa-merge-moment-dropdown" aria-hidden="true"></i>
             </button>

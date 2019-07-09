@@ -11,7 +11,7 @@ Keep your GitLab instance up and running smoothly.
   by GitLab to another file system or another server.
 - [Sidekiq MemoryKiller](sidekiq_memory_killer.md): Configure Sidekiq MemoryKiller
   to restart Sidekiq.
-- [Extra Sidekiq operations](extra_sidekiq_processes.md): Configure an extra set of Sidekiq processes to ensure certain queues always have dedicated workers, no matter the amount of jobs that need to be processed. **[STARTER ONLY]**
+- [Extra Sidekiq operations](extra_sidekiq_processes.md): Configure an extra set of Sidekiq processes to ensure certain queues always have dedicated workers, no matter the amount of jobs that need to be processed. **(STARTER ONLY)**
 - [Unicorn](unicorn.md): Understand Unicorn and unicorn-worker-killer.
 - Speed up SSH operations by [Authorizing SSH users via a fast,
   indexed lookup to the GitLab database](fast_ssh_key_lookup.md), and/or

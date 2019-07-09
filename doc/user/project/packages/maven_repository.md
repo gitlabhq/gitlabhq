@@ -1,4 +1,4 @@
-# GitLab Maven Repository **[PREMIUM]**
+# GitLab Maven Repository **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/5811) in
   [GitLab Premium](https://about.gitlab.com/pricing/) 11.3.
@@ -12,7 +12,7 @@ project can have its own space to store its Maven artifacts.
 
 NOTE: **Note:**
 This option is available only if your GitLab administrator has
-[enabled support for the Maven repository](../../../administration/packages.md).**[PREMIUM ONLY]**
+[enabled support for the Maven repository](../../../administration/packages.md).**(PREMIUM ONLY)**
 
 After the Packages feature is enabled, the Maven Repository will be available for
 all new projects by default. To enable it for existing projects, or if you want

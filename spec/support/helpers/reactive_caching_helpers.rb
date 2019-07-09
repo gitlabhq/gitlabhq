@@ -10,7 +10,7 @@ module ReactiveCachingHelpers
   def stub_reactive_cache(subject = nil, data = nil, *qualifiers)
     allow(ReactiveCachingWorker).to receive(:perform_async)
     allow(ReactiveCachingWorker).to receive(:perform_in)
-    write_reactive_cache(subject, data, *qualifiers) unless data.nil?
+    write_reactive_cache(subject, data, *qualifiers) unless subject.nil?
   end
 
   def synchronous_reactive_cache(subject)

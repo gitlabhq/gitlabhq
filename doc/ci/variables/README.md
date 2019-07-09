@@ -389,7 +389,7 @@ Protected variables can be added by going to your project's
 
 Once you set them, they will be available for all subsequent pipelines.
 
-### Limiting environment scopes of environment variables **[PREMIUM]**
+### Limiting environment scopes of environment variables **(PREMIUM)**
 
 You can limit the environment scope of a variable by
 [defining which environments][envs] it can be available for.

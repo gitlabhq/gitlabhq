@@ -1,4 +1,4 @@
-# Tuning Geo **[PREMIUM ONLY]**
+# Tuning Geo **(PREMIUM ONLY)**
 
 ## Changing the sync capacity values
 

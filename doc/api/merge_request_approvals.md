@@ -1,4 +1,4 @@
-# Merge request approvals API **[STARTER]**
+# Merge request approvals API **(STARTER)**
 
 Configuration for approvals on all Merge Requests (MR) in the project. Must be authenticated for all endpoints.
 
@@ -178,7 +178,6 @@ PUT /projects/:id/approvers
 }
 ```
 
-
 ## Merge Request-level MR approvals
 
 Configuration for approvals on a specific Merge Request. Must be authenticated for all endpoints.
@@ -249,7 +248,6 @@ POST /projects/:id/merge_requests/:merge_request_iid/approvals
 | `id`                 | integer | yes      | The ID of a project                        |
 | `merge_request_iid`  | integer | yes      | The IID of MR                              |
 | `approvals_required` | integer | yes      | Approvals required before MR can be merged |
-
 
 ```json
 {
@@ -359,7 +357,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/approve
 | `id`                | integer | yes      | The ID of a project     |
 | `merge_request_iid` | integer | yes      | The IID of MR           |
 | `sha`               | string  | no       | The HEAD of the MR      |
-| `approval_password` **[STARTER]** | string  | no      | Current user's password. Required if [**Require user password to approve**](../user/project/merge_requests/merge_request_approvals.md#require-authentication-when-approving-a-merge-request-starter) is enabled in the project settings. |
+| `approval_password` **(STARTER)** | string  | no      | Current user's password. Required if [**Require user password to approve**](../user/project/merge_requests/merge_request_approvals.md#require-authentication-when-approving-a-merge-request-starter) is enabled in the project settings. |
 
 The `sha` parameter works in the same way as
 when [accepting a merge request](merge_requests.md#accept-mr): if it is passed, then it must

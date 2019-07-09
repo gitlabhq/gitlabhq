@@ -44,7 +44,7 @@ Parameters:
 | `scope`             | string         | no       | Return merge requests for the given scope: `created_by_me`, `assigned_to_me` or `all`. Defaults to `created_by_me`<br> For versions before 11.0, use the now deprecated `created-by-me` or `assigned-to-me` scopes instead. |
 | `author_id`         | integer        | no       | Returns merge requests created by the given user `id`. Combine with `scope=all` or `scope=assigned_to_me`              |
 | `assignee_id`       | integer        | no       | Returns merge requests assigned to the given user `id`. `None` returns unassigned merge requests. `Any` returns merge requests with an assignee. |
-| `approver_ids` **[STARTER]** | Array[integer] | no | Returns merge requests which have specified all the users with the given `id`s as individual approvers. `None` returns merge requests without approvers. `Any` returns merge requests with an approver. |
+| `approver_ids` **(STARTER)** | Array[integer] | no | Returns merge requests which have specified all the users with the given `id`s as individual approvers. `None` returns merge requests without approvers. `Any` returns merge requests with an approver. |
 | `my_reaction_emoji` | string         | no       | Return merge requests reacted by the authenticated user by the given `emoji`. `None` returns issues not given a reaction. `Any` returns issues given at least one reaction. _([Introduced][ce-14016] in GitLab 10.0)_ |
 | `source_branch`     | string         | no       | Return merge requests with the given source branch                                                                     |
 | `target_branch`     | string         | no       | Return merge requests with the given target branch                                                                     |
@@ -192,7 +192,7 @@ Parameters:
 | Attribute           | Type           | Required | Description                                                                                                                    |
 | ------------------- | -------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------ |
 | `id`                | integer        | yes      | The ID of a project                                                                                                            |
-| `iids[]`            | Array[integer] | no       | Return the request having the given `iid`                                                                                      |
+| `iids[]`            | integer array  | no     | Return the request having the given `iid`                                                                                      |
 | `state`             | string         | no       | Return all merge requests or just those that are `opened`, `closed`, `locked`, or `merged`                                     |
 | `order_by`          | string         | no       | Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at`                                        |
 | `sort`              | string         | no       | Return requests sorted in `asc` or `desc` order. Default is `desc`                                                             |
@@ -206,7 +206,7 @@ Parameters:
 | `scope`             | string         | no       | Return merge requests for the given scope: `created_by_me`, `assigned_to_me` or `all`.<br> For versions before 11.0, use the now deprecated `created-by-me` or `assigned-to-me` scopes instead.<br> _([Introduced][ce-13060] in GitLab 9.5. [Changed to snake_case][ce-18935] in GitLab 11.0)_ |
 | `author_id`         | integer        | no       | Returns merge requests created by the given user `id` _([Introduced][ce-13060] in GitLab 9.5)_                                 |
 | `assignee_id`       | integer        | no       | Returns merge requests assigned to the given user `id`. `None` returns unassigned merge requests. `Any` returns merge requests with an assignee. _([Introduced][ce-13060] in GitLab 9.5)_ |
-| `approver_ids` **[STARTER]** | Array[integer] | no | Returns merge requests which have specified all the users with the given `id`s as individual approvers. `None` returns merge requests without approvers. `Any` returns merge requests with an approver. |
+| `approver_ids` **(STARTER)** | Array[integer] | no | Returns merge requests which have specified all the users with the given `id`s as individual approvers. `None` returns merge requests without approvers. `Any` returns merge requests with an approver. |
 | `my_reaction_emoji` | string         | no       | Return merge requests reacted by the authenticated user by the given `emoji`. `None` returns issues not given a reaction. `Any` returns issues given at least one reaction. _([Introduced][ce-14016] in GitLab 10.0)_ |
 | `source_branch`     | string         | no       | Return merge requests with the given source branch                                                                             |
 | `target_branch`     | string         | no       | Return merge requests with the given target branch                                                                             |
@@ -358,7 +358,7 @@ Parameters:
 | `scope`             | string         | no       | Return merge requests for the given scope: `created_by_me`, `assigned_to_me` or `all`.<br>                                     |
 | `author_id`         | integer        | no       | Returns merge requests created by the given user `id` _([Introduced][ce-13060] in GitLab 9.5)_                                 |
 | `assignee_id`       | integer        | no       | Returns merge requests assigned to the given user `id`. `None` returns unassigned merge requests. `Any` returns merge requests with an assignee. _([Introduced][ce-13060] in GitLab 9.5)_ |
-| `approver_ids` **[STARTER]** | Array[integer] | no | Returns merge requests which have specified all the users with the given `id`s as individual approvers. `None` returns merge requests without approvers. `Any` returns merge requests with an approver. |
+| `approver_ids` **(STARTER)** | Array[integer] | no | Returns merge requests which have specified all the users with the given `id`s as individual approvers. `None` returns merge requests without approvers. `Any` returns merge requests with an approver. |
 | `my_reaction_emoji` | string         | no       | Return merge requests reacted by the authenticated user by the given `emoji`. `None` returns issues not given a reaction. `Any` returns issues given at least one reaction. _([Introduced][ce-14016] in GitLab 10.0)_ |
 | `source_branch`     | string         | no       | Return merge requests with the given source branch                                                                             |
 | `target_branch`     | string         | no       | Return merge requests with the given target branch                                                                             |
@@ -831,12 +831,12 @@ POST /projects/:id/merge_requests
 
 | Attribute                  | Type    | Required | Description                                                                     |
 | ---------                  | ----    | -------- | -----------                                                                     |
-| `id`                       | integer/string  | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`                       | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `source_branch`            | string  | yes      | The source branch                                                               |
 | `target_branch`            | string  | yes      | The target branch                                                               |
 | `title`                    | string  | yes      | Title of MR                                                                     |
 | `assignee_id`              | integer | no       | Assignee user ID                                                                |
-| `assignee_ids`             | Array[integer] | no  | The ID of the user(s) to assign the MR to. Set to `0` or provide an empty value to unassign all assignees.  |
+| `assignee_ids`             | integer array | no | The ID of the user(s) to assign the MR to. Set to `0` or provide an empty value to unassign all assignees.  |
 | `description`              | string  | no       | Description of MR                                                               |
 | `target_project_id`        | integer | no       | The target project (numeric id)                                                 |
 | `labels`                   | string  | no       | Labels for MR as a comma-separated list                                         |
@@ -846,7 +846,7 @@ POST /projects/:id/merge_requests
 | `allow_maintainer_to_push` | boolean | no       | Deprecated, see allow_collaboration                                             |
 | `squash`                   | boolean | no       | Squash commits into a single commit when merging                                |
 
-If `approvals_before_merge` **[STARTER]** is not provided, it inherits the value from the
+If `approvals_before_merge` **(STARTER)** is not provided, it inherits the value from the
 target project. If it is provided, then the following conditions must hold in
 order for it to take effect:
 
@@ -987,7 +987,7 @@ PUT /projects/:id/merge_requests/:merge_request_iid
 | `target_branch`            | string  | no       | The target branch                                                               |
 | `title`                    | string  | no       | Title of MR                                                                     |
 | `assignee_id`              | integer | no       | The ID of the user to assign the merge request to. Set to `0` or provide an empty value to unassign all assignees.  |
-| `assignee_ids`             | Array[integer] | no  | The ID of the user(s) to assign the MR to. Set to `0` or provide an empty value to unassign all assignees.  |
+| `assignee_ids`             | integer array | no | The ID of the user(s) to assign the MR to. Set to `0` or provide an empty value to unassign all assignees.  |
 | `milestone_id`             | integer | no       | The global ID of a milestone to assign the merge request to. Set to `0` or provide an empty value to unassign a milestone.|
 | `labels`                   | string  | no       | Comma-separated label names for a merge request. Set to an empty string to unassign all labels.                    |
 | `description`              | string  | no       | Description of MR                                                               |
@@ -2261,6 +2261,6 @@ Example response:
 [ce-15454]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/15454
 [ce-18935]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/18935
 
-## Approvals **[STARTER]**
+## Approvals **(STARTER)**
 
 For approvals, please see [Merge Request Approvals](merge_request_approvals.md)

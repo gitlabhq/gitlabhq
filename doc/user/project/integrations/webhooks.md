@@ -24,7 +24,7 @@ to the webhook URL.
 
 In most cases, you'll need to set up your own [webhook receiver](#example-webhook-receiver)
 to receive information from GitLab, and send it to another app, according to your needs.
-We already have a [built-in receiver](https://docs.gitlab.com/ce/project_services/slack.html)
+We already have a [built-in receiver](slack.md)
 for sending [Slack](https://api.slack.com/incoming-webhooks) notifications _per project_.
 
 ## Overview

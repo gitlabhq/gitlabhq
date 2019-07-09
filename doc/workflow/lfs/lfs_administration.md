@@ -54,7 +54,7 @@ to offload local hard disk R/W operations, and free up disk space significantly.
 GitLab is tightly integrated with `Fog`, so you can refer to its [documentation](http://fog.io/about/provider_documentation.html)
 to check which storage services can be integrated with GitLab.
 You can also use external object storage in a private local network. For example,
-[Minio](https://www.minio.io/) is a standalone object storage service, is easy to set up, and works well with GitLab instances.
+[Minio](https://min.io/) is a standalone object storage service, is easy to set up, and works well with GitLab instances.
 
 GitLab provides two different options for the uploading mechanism: "Direct upload" and "Background upload".
 

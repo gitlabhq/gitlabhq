@@ -5,7 +5,7 @@
 
 import Vue from 'vue';
 import './label';
-import { isEE, convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import IssueProject from './project';
 import boardsStore from '../stores/boards_store';
 
@@ -91,13 +91,13 @@ class ListIssue {
 
   addMilestone(milestone) {
     const miletoneId = this.milestone ? this.milestone.id : null;
-    if (isEE && milestone.id !== miletoneId) {
+    if (IS_EE && milestone.id !== miletoneId) {
       this.milestone = new ListMilestone(milestone);
     }
   }
 
   removeMilestone(removeMilestone) {
-    if (isEE && removeMilestone && removeMilestone.id === this.milestone.id) {
+    if (IS_EE && removeMilestone && removeMilestone.id === this.milestone.id) {
       this.milestone = {};
     }
   }

@@ -121,10 +121,10 @@ Depending your GitLab tier, [project mirroring](../../../workflow/repository_mir
 your imported project in sync with its GitHub copy.
 
 Additionally, you can configure GitLab to send pipeline status updates back GitHub with the
-[GitHub Project Integration](../integrations/github.md). **[PREMIUM]**
+[GitHub Project Integration](../integrations/github.md). **(PREMIUM)**
 
 If you import your project using [CI/CD for external repo](../../../ci/ci_cd_for_external_repos/index.md), then both
-of the above are automatically configured. **[PREMIUM]**
+of the above are automatically configured. **(PREMIUM)**
 
 ## Improving the speed of imports on self-hosted instances
 

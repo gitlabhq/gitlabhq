@@ -134,6 +134,10 @@ module Gitlab
         @line_code ||= diff_file(repository)&.line_code_for_position(self)
       end
 
+      def file_hash
+        @file_hash ||= Digest::SHA1.hexdigest(file_path)
+      end
+
       def on_image?
         position_type == 'image'
       end

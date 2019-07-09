@@ -146,11 +146,13 @@ class Gitlab::Seeder::CycleAnalytics
       commit_sha = issue.project.repository.create_file(@user, filename, "content", message: "Commit for #{issue.to_reference}", branch_name: branch_name)
       issue.project.repository.commit(commit_sha)
 
-      GitPushService.new(issue.project,
-                         @user,
-                         oldrev: issue.project.repository.commit("master").sha,
-                         newrev: commit_sha,
-                         ref: 'refs/heads/master').execute
+      Git::BranchPushService.new(
+        issue.project,
+        @user,
+        oldrev: issue.project.repository.commit("master").sha,
+        newrev: commit_sha,
+        ref: 'refs/heads/master'
+      ).execute
 
       branch_name
     end

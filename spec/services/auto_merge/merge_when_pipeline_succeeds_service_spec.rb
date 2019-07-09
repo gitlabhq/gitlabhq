@@ -177,6 +177,17 @@ describe AutoMerge::MergeWhenPipelineSucceedsService do
     end
   end
 
+  describe "#abort" do
+    before do
+      service.abort(mr_merge_if_green_enabled, 'an error')
+    end
+
+    it 'posts a system note' do
+      note = mr_merge_if_green_enabled.notes.last
+      expect(note.note).to include 'aborted the automatic merge'
+    end
+  end
+
   describe 'pipeline integration' do
     context 'when there are multiple stages in the pipeline' do
       let(:ref) { mr_merge_if_green_enabled.source_branch }

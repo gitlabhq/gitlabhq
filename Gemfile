@@ -132,7 +132,7 @@ gem 'wikicloth', '0.8.1'
 gem 'asciidoctor', '~> 2.0.10'
 gem 'asciidoctor-include-ext', '~> 0.3.1', require: false
 gem 'asciidoctor-plantuml', '0.0.9'
-gem 'rouge', '~> 3.1'
+gem 'rouge', '~> 3.5'
 gem 'truncato', '~> 0.7.11'
 gem 'bootstrap_form', '~> 4.2.0'
 gem 'nokogiri', '~> 1.10.3'
@@ -309,7 +309,7 @@ group :metrics do
   gem 'influxdb', '~> 0.2', require: false
 
   # Prometheus
-  gem 'prometheus-client-mmap', '~> 0.9.6'
+  gem 'prometheus-client-mmap', '~> 0.9.8'
   gem 'raindrops', '~> 0.18'
 end
 
@@ -368,6 +368,7 @@ group :development, :test do
   gem 'haml_lint', '~> 0.31.0', require: false
   gem 'simplecov', '~> 0.16.1', require: false
   gem 'bundler-audit', '~> 0.5.0', require: false
+  gem 'mdl', '~> 0.5.0', require: false
 
   gem 'benchmark-ips', '~> 2.3.0', require: false
 
@@ -429,7 +430,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 1.32.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 1.36.0', require: 'gitaly'
 
 gem 'grpc', '~> 1.19.0'
 

@@ -1,4 +1,4 @@
-# Docker Registry for a secondary node **[PREMIUM ONLY]**
+# Docker Registry for a secondary node **(PREMIUM ONLY)**
 
 You can set up a [Docker Registry] on your
 **secondary** Geo node that mirrors the one on the **primary** Geo node.

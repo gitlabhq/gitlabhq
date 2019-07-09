@@ -1,7 +1,7 @@
 <script>
 import $ from 'jquery';
 import _ from 'underscore';
-import { __ } from '~/locale';
+import { __, sprintf } from '~/locale';
 import { stripHtml } from '~/lib/utils/text_utility';
 import Flash from '../../../flash';
 import GLForm from '../../../gl_form';
@@ -118,6 +118,18 @@ export default {
     lineType() {
       return this.line ? this.line.type : '';
     },
+    addMultipleToDiscussionWarning() {
+      return sprintf(
+        __(
+          '%{icon}You are about to add %{usersTag} people to the discussion. Proceed with caution.',
+        ),
+        {
+          icon: '<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>',
+          usersTag: `<strong><span class="js-referenced-users-count">${this.referencedUsers.length}</span></strong>`,
+        },
+        false,
+      );
+    },
   },
   mounted() {
     /*
@@ -172,7 +184,7 @@ export default {
 
     renderMarkdown(data = {}) {
       this.markdownPreviewLoading = false;
-      this.markdownPreview = data.body || 'Nothing to preview.';
+      this.markdownPreview = data.body || __('Nothing to preview.');
 
       if (data.references) {
         this.referencedCommands = data.references.commands;
@@ -207,7 +219,11 @@ export default {
     <div v-show="!previewMarkdown" class="md-write-holder">
       <div class="zen-backdrop">
         <slot name="textarea"></slot>
-        <a class="zen-control zen-control-leave js-zen-leave" href="#" aria-label="Enter zen mode">
+        <a
+          class="zen-control zen-control-leave js-zen-leave"
+          href="#"
+          :aria-label="__('Enter zen mode')"
+        >
           <icon :size="32" name="screen-normal" />
         </a>
         <markdown-toolbar
@@ -246,13 +262,7 @@ export default {
     <template v-if="previewMarkdown && !markdownPreviewLoading">
       <div v-if="referencedCommands" class="referenced-commands" v-html="referencedCommands"></div>
       <div v-if="shouldShowReferencedUsers" class="referenced-users">
-        <span>
-          <i class="fa fa-exclamation-triangle" aria-hidden="true"></i> You are about to add
-          <strong>
-            <span class="js-referenced-users-count">{{ referencedUsers.length }}</span>
-          </strong>
-          people to the discussion. Proceed with caution.
-        </span>
+        <span v-html="addMultipleToDiscussionWarning"></span>
       </div>
     </template>
   </div>

@@ -115,7 +115,7 @@ export default {
         data-toggle="dropdown"
         aria-haspopup="true"
         aria-expanded="false"
-        aria-label="Expand dropdown"
+        :aria-label="__('Expand dropdown')"
       >
         <icon name="angle-down" :size="12" />
       </button>
@@ -125,7 +125,7 @@ export default {
             ref="searchInput"
             v-model="filter"
             type="search"
-            placeholder="Filter"
+            :placeholder="__('Filter')"
             class="js-filtered-dropdown-input dropdown-input-field"
           />
           <icon class="dropdown-input-search" name="search" />

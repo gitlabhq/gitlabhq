@@ -49,7 +49,7 @@ The following metrics are available:
 | unicorn_queued_connections        | Gauge     | 11.0  | The number of queued Unicorn connections |
 | unicorn_workers                   | Gauge     | 12.0  | The number of Unicorn workers |
 
-## Sidekiq Metrics available for Geo **[PREMIUM]**
+## Sidekiq Metrics available for Geo **(PREMIUM)**
 
 Sidekiq jobs may also gather metrics, and these metrics can be accessed if the Sidekiq exporter is enabled (e.g. via
 the `monitoring.sidekiq_exporter` configuration option in `gitlab.yml`.

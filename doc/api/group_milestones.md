@@ -18,13 +18,13 @@ GET /groups/:id/milestones?search=version
 
 Parameters:
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
-| `iids[]` | Array[integer] | optional | Return only the milestones having the given `iid` |
-| `state` | string | optional | Return only `active` or `closed` milestones |
-| `title` | string | optional | Return only the milestones having the given `title` |
-| `search` | string | optional | Return only milestones with a title or description matching the provided string |
+| Attribute | Type   | Required | Description |
+| --------- | ------ | -------- | ----------- |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `iids[]`  | integer array | optional | Return only the milestones having the given `iid` |
+| `state`   | string | optional | Return only `active` or `closed` milestones |
+| `title`   | string | optional | Return only the milestones having the given `title` |
+| `search`  | string | optional | Return only milestones with a title or description matching the provided string |
 
 ```bash
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/5/milestones
@@ -137,7 +137,7 @@ Parameters:
 
 [ce-12819]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/12819
 
-## Get all burndown chart events for a single milestone **[STARTER]**
+## Get all burndown chart events for a single milestone **(STARTER)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/4737) in GitLab 12.1
 

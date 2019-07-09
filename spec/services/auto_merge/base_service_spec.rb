@@ -121,11 +121,7 @@ describe AutoMerge::BaseService do
     end
   end
 
-  describe '#cancel' do
-    subject { service.cancel(merge_request) }
-
-    let(:merge_request) { create(:merge_request, :merge_when_pipeline_succeeds) }
-
+  shared_examples_for 'Canceled or Dropped' do
     it 'removes properies from the merge request' do
       subject
 
@@ -173,10 +169,44 @@ describe AutoMerge::BaseService do
       it 'does not yield block' do
         expect { |b| service.execute(merge_request, &b) }.not_to yield_control
       end
+    end
+  end
+
+  describe '#cancel' do
+    subject { service.cancel(merge_request) }
+
+    let(:merge_request) { create(:merge_request, :merge_when_pipeline_succeeds) }
+
+    it_behaves_like 'Canceled or Dropped'
+
+    context 'when failed to save' do
+      before do
+        allow(merge_request).to receive(:save) { false }
+      end
 
       it 'returns error status' do
         expect(subject[:status]).to eq(:error)
         expect(subject[:message]).to eq("Can't cancel the automatic merge")
+      end
+    end
+  end
+
+  describe '#abort' do
+    subject { service.abort(merge_request, reason) }
+
+    let(:merge_request) { create(:merge_request, :merge_when_pipeline_succeeds) }
+    let(:reason) { 'an error'}
+
+    it_behaves_like 'Canceled or Dropped'
+
+    context 'when failed to save' do
+      before do
+        allow(merge_request).to receive(:save) { false }
+      end
+
+      it 'returns error status' do
+        expect(subject[:status]).to eq(:error)
+        expect(subject[:message]).to eq("Can't abort the automatic merge")
       end
     end
   end

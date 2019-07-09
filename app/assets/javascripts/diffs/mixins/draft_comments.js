@@ -6,5 +6,7 @@ export default {
     imageDiscussions() {
       return this.diffFile.discussions;
     },
+    hasParallelDraftLeft: () => () => false,
+    hasParallelDraftRight: () => () => false,
   },
 };

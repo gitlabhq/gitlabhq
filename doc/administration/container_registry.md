@@ -1,7 +1,5 @@
 # GitLab Container Registry administration
 
-> **Notes:**
->
 > - [Introduced][ce-4040] in GitLab 8.8.
 > - Container Registry manifest `v1` support was added in GitLab 8.9 to support
 >   Docker versions earlier than 1.10.
@@ -125,21 +123,21 @@ otherwise you will run into conflicts.
 1. Your `/etc/gitlab/gitlab.rb` should contain the Registry URL as well as the
    path to the existing TLS certificate and key used by GitLab:
 
-    ```ruby
-    registry_external_url 'https://gitlab.example.com:4567'
-    ```
+   ```ruby
+   registry_external_url 'https://gitlab.example.com:4567'
+   ```
 
-    Note how the `registry_external_url` is listening on HTTPS under the
-    existing GitLab URL, but on a different port.
+   Note how the `registry_external_url` is listening on HTTPS under the
+   existing GitLab URL, but on a different port.
 
-    If your TLS certificate is not in `/etc/gitlab/ssl/gitlab.example.com.crt`
-    and key not in `/etc/gitlab/ssl/gitlab.example.com.key` uncomment the lines
-    below:
+   If your TLS certificate is not in `/etc/gitlab/ssl/gitlab.example.com.crt`
+   and key not in `/etc/gitlab/ssl/gitlab.example.com.key` uncomment the lines
+   below:
 
-    ```ruby
-    registry_nginx['ssl_certificate'] = "/path/to/certificate.pem"
-    registry_nginx['ssl_certificate_key'] = "/path/to/certificate.key"
-    ```
+   ```ruby
+   registry_nginx['ssl_certificate'] = "/path/to/certificate.pem"
+   registry_nginx['ssl_certificate_key'] = "/path/to/certificate.key"
+   ```
 
 1. Save the file and [reconfigure GitLab][] for the changes to take effect.
 
@@ -150,12 +148,12 @@ otherwise you will run into conflicts.
 1. Open `/home/git/gitlab/config/gitlab.yml`, find the `registry` entry and
    configure it with the following settings:
 
-    ```
-    registry:
-      enabled: true
-      host: gitlab.example.com
-      port: 4567
-    ```
+   ```
+   registry:
+     enabled: true
+     host: gitlab.example.com
+     port: 4567
+   ```
 
 1. Save the file and [restart GitLab][] for the changes to take effect.
 1. Make the relevant changes in NGINX as well (domain, port, TLS certificates path).
@@ -188,17 +186,17 @@ Let's assume that you want the container Registry to be accessible at
    `/etc/gitlab/ssl/registry.gitlab.example.com.key` and make sure they have
    correct permissions:
 
-    ```bash
-    chmod 600 /etc/gitlab/ssl/registry.gitlab.example.com.*
-    ```
+   ```bash
+   chmod 600 /etc/gitlab/ssl/registry.gitlab.example.com.*
+   ```
 
 1. Once the TLS certificate is in place, edit `/etc/gitlab/gitlab.rb` with:
 
-    ```ruby
-    registry_external_url 'https://registry.gitlab.example.com'
-    ```
+   ```ruby
+   registry_external_url 'https://registry.gitlab.example.com'
+   ```
 
-    Note how the `registry_external_url` is listening on HTTPS.
+   Note how the `registry_external_url` is listening on HTTPS.
 
 1. Save the file and [reconfigure GitLab][] for the changes to take effect.
 
@@ -219,11 +217,11 @@ look like:
 1. Open `/home/git/gitlab/config/gitlab.yml`, find the `registry` entry and
    configure it with the following settings:
 
-    ```
-    registry:
-      enabled: true
-      host: registry.gitlab.example.com
-    ```
+   ```yaml
+   registry:
+     enabled: true
+     host: registry.gitlab.example.com
+   ```
 
 1. Save the file and [restart GitLab][] for the changes to take effect.
 1. Make the relevant changes in NGINX as well (domain, port, TLS certificates path).
@@ -248,9 +246,9 @@ Registry application itself.
 
 1. Open `/etc/gitlab/gitlab.rb` and set `registry['enable']` to `false`:
 
-    ```ruby
-    registry['enable'] = false
-    ```
+   ```ruby
+   registry['enable'] = false
+   ```
 
 1. Save the file and [reconfigure GitLab][] for the changes to take effect.
 
@@ -261,10 +259,10 @@ Registry application itself.
 1. Open `/home/git/gitlab/config/gitlab.yml`, find the `registry` entry and
    set `enabled` to `false`:
 
-    ```
-    registry:
-      enabled: false
-    ```
+   ```yaml
+   registry:
+     enabled: false
+   ```
 
 1. Save the file and [restart GitLab][] for the changes to take effect.
 
@@ -280,9 +278,9 @@ the Container Registry by themselves, follow the steps below.
 
 1. Edit `/etc/gitlab/gitlab.rb` and add the following line:
 
-    ```ruby
-    gitlab_rails['gitlab_default_projects_features_container_registry'] = false
-    ```
+   ```ruby
+   gitlab_rails['gitlab_default_projects_features_container_registry'] = false
+   ```
 
 1. Save the file and [reconfigure GitLab][] for the changes to take effect.
 
@@ -293,16 +291,16 @@ the Container Registry by themselves, follow the steps below.
 1. Open `/home/git/gitlab/config/gitlab.yml`, find the `default_projects_features`
    entry and configure it so that `container_registry` is set to `false`:
 
-    ```
-    ## Default project features settings
-    default_projects_features:
-      issues: true
-      merge_requests: true
-      wiki: true
-      snippets: false
-      builds: true
-      container_registry: false
-    ```
+   ```yaml
+   ## Default project features settings
+   default_projects_features:
+     issues: true
+     merge_requests: true
+     wiki: true
+     snippets: false
+     builds: true
+     container_registry: false
+   ```
 
 1. Save the file and [restart GitLab][] for the changes to take effect.
 
@@ -332,9 +330,9 @@ The default location where images are stored in Omnibus, is
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
-    ```ruby
-    gitlab_rails['registry_path'] = "/path/to/registry/storage"
-    ```
+   ```ruby
+   gitlab_rails['registry_path'] = "/path/to/registry/storage"
+   ```
 
 1. Save the file and [reconfigure GitLab][] for the changes to take effect.
 
@@ -348,10 +346,10 @@ The default location where images are stored in source installations, is
 1. Open `/home/git/gitlab/config/gitlab.yml`, find the `registry` entry and
    change the `path` setting:
 
-    ```
-    registry:
-      path: shared/registry
-    ```
+   ```yaml
+   registry:
+     path: shared/registry
+   ```
 
 1. Save the file and [restart GitLab][] for the changes to take effect.
 
@@ -393,17 +391,17 @@ To configure the `s3` storage driver in Omnibus:
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
-    ```ruby
-    registry['storage'] = {
-      's3' => {
-        'accesskey' => 's3-access-key',
-        'secretkey' => 's3-secret-key-for-access-key',
-        'bucket' => 'your-s3-bucket',
-        'region' => 'your-s3-region',
-        'regionendpoint' => 'your-s3-regionendpoint'
-      }
-    }
-    ```
+   ```ruby
+   registry['storage'] = {
+     's3' => {
+       'accesskey' => 's3-access-key',
+       'secretkey' => 's3-secret-key-for-access-key',
+       'bucket' => 'your-s3-bucket',
+       'region' => 'your-s3-region',
+       'regionendpoint' => 'your-s3-regionendpoint'
+     }
+   }
+   ```
 
 1. Save the file and [reconfigure GitLab][] for the changes to take effect.
 
@@ -442,9 +440,9 @@ In the examples below we set the Registry's port to `5001`.
 
 1. Open `/etc/gitlab/gitlab.rb` and set `registry['registry_http_addr']`:
 
-    ```ruby
-    registry['registry_http_addr'] = "localhost:5001"
-    ```
+   ```ruby
+   registry['registry_http_addr'] = "localhost:5001"
+   ```
 
 1. Save the file and [reconfigure GitLab][] for the changes to take effect.
 
@@ -455,10 +453,10 @@ In the examples below we set the Registry's port to `5001`.
 1. Open the configuration file of your Registry server and edit the
    [`http:addr`][registry-http-config] value:
 
-    ```
-    http
-      addr: localhost:5001
-    ```
+   ```yaml
+   http
+     addr: localhost:5001
+   ```
 
 1. Save the file and restart the Registry server.
 
@@ -476,14 +474,14 @@ You can use GitLab as an auth endpoint and use a non-bundled Container Registry.
 
 1. Open `/etc/gitlab/gitlab.rb` and set necessary configurations:
 
-    ```ruby
-    gitlab_rails['registry_enabled'] = true
-    gitlab_rails['registry_host'] = "registry.gitlab.example.com"
-    gitlab_rails['registry_port'] = "5005"
-    gitlab_rails['registry_api_url'] = "http://localhost:5000"
-    gitlab_rails['registry_path'] = "/var/opt/gitlab/gitlab-rails/shared/registry"
-    gitlab_rails['registry_issuer'] = "omnibus-gitlab-issuer"
-    ```
+   ```ruby
+   gitlab_rails['registry_enabled'] = true
+   gitlab_rails['registry_host'] = "registry.gitlab.example.com"
+   gitlab_rails['registry_port'] = "5005"
+   gitlab_rails['registry_api_url'] = "http://localhost:5000"
+   gitlab_rails['registry_path'] = "/var/opt/gitlab/gitlab-rails/shared/registry"
+   gitlab_rails['registry_issuer'] = "omnibus-gitlab-issuer"
+   ```
 
 1. A certificate keypair is required for GitLab and the Container Registry to
    communicate securely.  By default omnibus-gitlab will generate one keypair,
@@ -492,19 +490,19 @@ You can use GitLab as an auth endpoint and use a non-bundled Container Registry.
    custom certificate key. To do that, add the following to
    `/etc/gitlab/gitlab.rb`
 
-    ```ruby
-    gitlab_rails['registry_key_path'] = "/custom/path/to/registry-key.key"
-    # registry['internal_key'] should contain the contents of the custom key
-    # file. Line breaks in the key file should be marked using `\n` character
-    # Example:
-    registry['internal_key'] = "---BEGIN RSA PRIVATE KEY---\nMIIEpQIBAA\n"
-    ```
+   ```ruby
+   gitlab_rails['registry_key_path'] = "/custom/path/to/registry-key.key"
+   # registry['internal_key'] should contain the contents of the custom key
+   # file. Line breaks in the key file should be marked using `\n` character
+   # Example:
+   registry['internal_key'] = "---BEGIN RSA PRIVATE KEY---\nMIIEpQIBAA\n"
+   ```
 
-    **Note:** The file specified at `registry_key_path` gets populated with the
-    content specified by `internal_key`, each time reconfigure is executed. If
-    no file is specified, omnibus-gitlab will default it to
-    `/var/opt/gitlab/gitlab-rails/etc/gitlab-registry.key` and will populate
-    it.
+   **Note:** The file specified at `registry_key_path` gets populated with the
+   content specified by `internal_key`, each time reconfigure is executed. If
+   no file is specified, omnibus-gitlab will default it to
+   `/var/opt/gitlab/gitlab-rails/etc/gitlab-registry.key` and will populate
+   it.
 
 1. Save the file and [reconfigure GitLab][] for the changes to take effect.
 
@@ -512,18 +510,18 @@ You can use GitLab as an auth endpoint and use a non-bundled Container Registry.
 
 1. Open `/home/git/gitlab/config/gitlab.yml`, and edit the configuration settings under `registry`:
 
-    ```
-    ## Container Registry
+   ```yaml
+   ## Container Registry
 
-    registry:
-      enabled: true
-      host: "registry.gitlab.example.com"
-      port: "5005"
-      api_url: "http://localhost:5000"
-      path: /var/opt/gitlab/gitlab-rails/shared/registry
-      key: /var/opt/gitlab/gitlab-rails/certificate.key
-      issuer: omnibus-gitlab-issuer
-    ```
+   registry:
+     enabled: true
+     host: "registry.gitlab.example.com"
+     port: "5005"
+     api_url: "http://localhost:5000"
+     path: /var/opt/gitlab/gitlab-rails/shared/registry
+     key: /var/opt/gitlab/gitlab-rails/certificate.key
+     issuer: omnibus-gitlab-issuer
+   ```
 
 1. Save the file and [restart GitLab][] for the changes to take effect.
 
@@ -550,20 +548,20 @@ To configure a notification endpoint in Omnibus:
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
-    ```ruby
-    registry['notifications'] = [
-      {
-        'name' => 'test_endpoint',
-        'url' => 'https://gitlab.example.com/notify',
-        'timeout' => '500ms',
-        'threshold' => 5,
-        'backoff' => '1s',
-        'headers' => {
-          "Authorization" => ["AUTHORIZATION_EXAMPLE_TOKEN"]
-        }
-      }
-    ]
-    ```
+   ```ruby
+   registry['notifications'] = [
+     {
+       'name' => 'test_endpoint',
+       'url' => 'https://gitlab.example.com/notify',
+       'timeout' => '500ms',
+       'threshold' => 5,
+       'backoff' => '1s',
+       'headers' => {
+         "Authorization" => ["AUTHORIZATION_EXAMPLE_TOKEN"]
+       }
+     }
+   ]
+   ```
 
 1. Save the file and [reconfigure GitLab][] for the changes to take effect.
 
@@ -629,16 +627,16 @@ Start with a value between `25000000` (25MB) and `50000000` (50MB).
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
-    ```ruby
-    registry['storage'] = {
-      's3' => {
-        'accesskey' => 'AKIAKIAKI',
-        'secretkey' => 'secret123',
-        'bucket'    => 'gitlab-registry-bucket-AKIAKIAKI',
-        'chunksize' => 25000000
-      }
-    }
-    ```
+   ```ruby
+   registry['storage'] = {
+     's3' => {
+       'accesskey' => 'AKIAKIAKI',
+       'secretkey' => 'secret123',
+       'bucket'    => 'gitlab-registry-bucket-AKIAKIAKI',
+       'chunksize' => 25000000
+     }
+   }
+   ```
 
 1. Save the file and [reconfigure GitLab][] for the changes to take effect.
 
@@ -648,14 +646,14 @@ Start with a value between `25000000` (25MB) and `50000000` (50MB).
 
 1. Edit `config/gitlab.yml`:
 
-    ```yaml
-    storage:
-      s3:
-        accesskey: 'AKIAKIAKI'
-        secretkey: 'secret123'
-        bucket:    'gitlab-registry-bucket-AKIAKIAKI'
-        chunksize: 25000000
-    ```
+   ```yaml
+   storage:
+     s3:
+       accesskey: 'AKIAKIAKI'
+       secretkey: 'secret123'
+       bucket:    'gitlab-registry-bucket-AKIAKIAKI'
+       chunksize: 25000000
+   ```
 
 1. Save the file and [restart GitLab][] for the changes to take effect.
 
@@ -669,9 +667,9 @@ You can add a configuration option for backwards compatibility.
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
-    ```ruby
-    registry['compatibility_schema1_enabled'] = true
-    ```
+   ```ruby
+   registry['compatibility_schema1_enabled'] = true
+   ```
 
 1. Save the file and [reconfigure GitLab][] for the changes to take effect.
 
@@ -681,11 +679,11 @@ You can add a configuration option for backwards compatibility.
 
 1. Edit the YML configuration file you created when you [deployed the registry][registry-deploy]. Add the following snippet:
 
-    ```yaml
-    compatibility:
-        schema1:
-            enabled: true
-    ```
+   ```yaml
+   compatibility:
+       schema1:
+           enabled: true
+   ```
 
 1. Restart the registry for the changes to take affect.
 
@@ -694,9 +692,9 @@ You can add a configuration option for backwards compatibility.
 A Docker connection error can occur when there are special characters in either the group,
 project or branch name. Special characters can include:
 
-* Leading underscore
-* Trailing hyphen/dash
-* Double hyphen/dash
+- Leading underscore
+- Trailing hyphen/dash
+- Double hyphen/dash
 
 To get around this, you can [change the group path](../user/group/index.md#changing-a-groups-path), 
 [change the project path](../user/project/settings/index.md#renaming-a-repository) or change the 

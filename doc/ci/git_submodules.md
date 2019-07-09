@@ -79,14 +79,14 @@ correctly with your CI jobs:
 1. If you are using an older version of `gitlab-runner`, then use
    `git submodule sync/update` in `before_script`:
 
-    ```yaml
-    before_script:
-      - git submodule sync --recursive
-      - git submodule update --init --recursive
-    ```
+   ```yaml
+   before_script:
+     - git submodule sync --recursive
+     - git submodule update --init --recursive
+   ```
 
-    `--recursive` should be used in either both or none (`sync/update`) depending on
-    whether you have recursive submodules.
+   `--recursive` should be used in either both or none (`sync/update`) depending on
+   whether you have recursive submodules.
 
 The rationale to set the `sync` and `update` in `before_script` is because of
 the way Git submodules work. On a fresh Runner workspace, Git will set the

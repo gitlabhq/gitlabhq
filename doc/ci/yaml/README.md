@@ -1057,7 +1057,7 @@ globally and all jobs will use that definition.
 #### `cache:paths`
 
 Use the `paths` directive to choose which files or directories will be cached.
-Wildcards can be used as well.
+Wildcards can be used that follow the [glob](https://en.wikipedia.org/wiki/Glob_(programming)) patterns and [filepath.Match](https://golang.org/pkg/path/filepath/#Match).
 
 Cache all files in `binaries` that end in `.apk` and the `.config` file:
 
@@ -1219,8 +1219,10 @@ be available for download in the GitLab UI.
 
 #### `artifacts:paths`
 
-You can only use paths that are within the project workspace. To pass artifacts
-between different jobs, see [dependencies](#dependencies).
+You can only use paths that are within the project workspace.
+Wildcards can be used that follow the [glob](https://en.wikipedia.org/wiki/Glob_(programming)) patterns and [filepath.Match](https://golang.org/pkg/path/filepath/#Match).
+
+To pass artifacts between different jobs, see [dependencies](#dependencies).
 
 Send all files in `binaries` and `.config`:
 
@@ -1475,7 +1477,7 @@ concatenated into a single file. Use a filename pattern (`junit: rspec-*.xml`),
 an array of filenames (`junit: [rspec-1.xml, rspec-2.xml, rspec-3.xml]`), or a
 combination thereof (`junit: [rspec.xml, test-results/TEST-*.xml]`).
 
-##### `artifacts:reports:codequality` **[STARTER]**
+##### `artifacts:reports:codequality` **(STARTER)**
 
 > Introduced in GitLab 11.5. Requires GitLab Runner 11.5 and above.
 
@@ -1485,7 +1487,7 @@ as artifacts.
 The collected Code Quality report will be uploaded to GitLab as an artifact and will
 be automatically shown in merge requests.
 
-##### `artifacts:reports:sast` **[ULTIMATE]**
+##### `artifacts:reports:sast` **(ULTIMATE)**
 
 > Introduced in GitLab 11.5. Requires GitLab Runner 11.5 and above.
 
@@ -1496,7 +1498,7 @@ The collected SAST report will be uploaded to GitLab as an artifact and will
 be automatically shown in merge requests, pipeline view and provide data for security
 dashboards.
 
-##### `artifacts:reports:dependency_scanning` **[ULTIMATE]**
+##### `artifacts:reports:dependency_scanning` **(ULTIMATE)**
 
 > Introduced in GitLab 11.5. Requires GitLab Runner 11.5 and above.
 
@@ -1507,7 +1509,7 @@ The collected Dependency Scanning report will be uploaded to GitLab as an artifa
 be automatically shown in merge requests, pipeline view and provide data for security
 dashboards.
 
-##### `artifacts:reports:container_scanning` **[ULTIMATE]**
+##### `artifacts:reports:container_scanning` **(ULTIMATE)**
 
 > Introduced in GitLab 11.5. Requires GitLab Runner 11.5 and above.
 
@@ -1518,7 +1520,7 @@ The collected Container Scanning report will be uploaded to GitLab as an artifac
 be automatically shown in merge requests, pipeline view and provide data for security
 dashboards.
 
-##### `artifacts:reports:dast` **[ULTIMATE]**
+##### `artifacts:reports:dast` **(ULTIMATE)**
 
 > Introduced in GitLab 11.5. Requires GitLab Runner 11.5 and above.
 
@@ -1529,7 +1531,7 @@ The collected DAST report will be uploaded to GitLab as an artifact and will
 be automatically shown in merge requests, pipeline view and provide data for security
 dashboards.
 
-##### `artifacts:reports:license_management` **[ULTIMATE]**
+##### `artifacts:reports:license_management` **(ULTIMATE)**
 
 > Introduced in GitLab 11.5. Requires GitLab Runner 11.5 and above.
 
@@ -1540,7 +1542,7 @@ The collected License Management report will be uploaded to GitLab as an artifac
 be automatically shown in merge requests, pipeline view and provide data for security
 dashboards.
 
-##### `artifacts:reports:performance` **[PREMIUM]**
+##### `artifacts:reports:performance` **(PREMIUM)**
 
 > Introduced in GitLab 11.5. Requires GitLab Runner 11.5 and above.
 
@@ -1550,7 +1552,7 @@ as artifacts.
 The collected Performance report will be uploaded to GitLab as an artifact and will
 be automatically shown in merge requests.
 
-##### `artifacts:reports:metrics` **[PREMIUM]**
+##### `artifacts:reports:metrics` **(PREMIUM)**
 
 > Introduced in GitLab 11.10.
 
@@ -1747,7 +1749,7 @@ test:
   parallel: 5
 ```
 
-### `trigger` **[PREMIUM]**
+### `trigger` **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/8997) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.8.
 

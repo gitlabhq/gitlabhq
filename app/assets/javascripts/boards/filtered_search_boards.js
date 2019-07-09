@@ -2,7 +2,6 @@ import IssuableFilteredSearchTokenKeys from 'ee_else_ce/filtered_search/issuable
 import FilteredSearchContainer from '../filtered_search/container';
 import FilteredSearchManager from '../filtered_search/filtered_search_manager';
 import boardsStore from './stores/boards_store';
-import { isEE } from '~/lib/utils/common_utils';
 
 export default class FilteredSearchBoards extends FilteredSearchManager {
   constructor(store, updateUrl = false, cantEdit = []) {
@@ -10,7 +9,7 @@ export default class FilteredSearchBoards extends FilteredSearchManager {
       page: 'boards',
       isGroupDecendent: true,
       stateFiltersSelector: '.issues-state-filters',
-      isGroup: isEE(),
+      isGroup: IS_EE,
       filteredSearchTokenKeys: IssuableFilteredSearchTokenKeys,
     });
 

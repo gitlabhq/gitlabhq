@@ -20,10 +20,10 @@ Here's an example of how the two tokens are used in Runner registration:
 1. You use that authentication token and add it to the
    [Runner's configuration file](https://docs.gitlab.com/runner/commands/#configuration-file):
 
-    ```toml
-    [[runners]]
-      token = "<authentication_token>"
-    ```
+   ```toml
+   [[runners]]
+     token = "<authentication_token>"
+   ```
 
 GitLab and Runner are then connected.
 
@@ -44,7 +44,7 @@ GET /runners?tag_list=tag1,tag2
 | `scope`     | string         | no       | Deprecated: Use `type` or `status` instead. The scope of specific runners to show, one of: `active`, `paused`, `online`, `offline`; showing all runners if none provided |
 | `type`      | string         | no       | The type of runners to show, one of: `instance_type`, `group_type`, `project_type` |
 | `status`    | string         | no       | The status of runners to show, one of: `active`, `paused`, `online`, `offline` |
-| `tag_list`  | Array[String]  | no       | List of of the runner's tags |
+| `tag_list`  | string array   | no       | List of of the runner's tags |
 
 ```
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners"
@@ -95,7 +95,7 @@ GET /runners/all?tag_list=tag1,tag2
 | `scope`     | string         | no       | Deprecated: Use `type` or `status` instead. The scope of runners to show, one of: `specific`, `shared`, `active`, `paused`, `online`, `offline`; showing all runners if none provided |
 | `type`      | string         | no       | The type of runners to show, one of: `instance_type`, `group_type`, `project_type` |
 | `status`    | string         | no       | The status of runners to show, one of: `active`, `paused`, `online`, `offline` |
-| `tag_list`  | Array[String]  | no       | List of of the runner's tags |
+| `tag_list`  | string array   | no       | List of of the runner's tags |
 
 ```
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners/all"
@@ -214,10 +214,10 @@ PUT /runners/:id
 | `description` | string  | no       | The description of a runner |
 | `active`      | boolean | no       | The state of a runner; can be set to `true` or `false` |
 | `tag_list`    | array   | no       | The list of tags for a runner; put array of tags, that should be finally assigned to a runner |
-| `run_untagged`    | boolean   | no       | Flag indicating the runner can execute untagged jobs |
-| `locked`    | boolean   | no       | Flag indicating the runner is locked |
-| `access_level`    | string   | no       | The access_level of the runner; `not_protected` or `ref_protected` |
-| `maximum_timeout` | integer | no | Maximum timeout set when this Runner will handle the job |
+| `run_untagged`| boolean | no       | Flag indicating the runner can execute untagged jobs |
+| `locked`      | boolean | no       | Flag indicating the runner is locked |
+| `access_level` | string | no       | The access_level of the runner; `not_protected` or `ref_protected` |
+| `maximum_timeout` | integer | no   | Maximum timeout set when this Runner will handle the job |
 
 ```
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners/6" --form "description=test-1-20150125-test" --form "tag_list=ruby,mysql,tag1,tag2"
@@ -291,6 +291,8 @@ GET /runners/:id/jobs
 |-----------|---------|----------|---------------------|
 | `id`      | integer | yes      | The ID of a runner  |
 | `status`  | string  | no       | Status of the job; one of: `running`, `success`, `failed`, `canceled` |
+| `order_by`| string  | no       | Order jobs by `id`. |
+| `sort`    | string  | no       | Sort jobs in `asc` or `desc` order (default: `desc`) |
 
 ```
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners/1/jobs?status=running"
@@ -385,7 +387,7 @@ GET /projects/:id/runners?tag_list=tag1,tag2
 | `scope`    | string         | no       | Deprecated: Use `type` or `status` instead. The scope of specific runners to show, one of: `active`, `paused`, `online`, `offline`; showing all runners if none provided |
 | `type`     | string         | no       | The type of runners to show, one of: `instance_type`, `group_type`, `project_type` |
 | `status`   | string         | no       | The status of runners to show, one of: `active`, `paused`, `online`, `offline` |
-| `tag_list` | Array[String]  | no       | List of of the runner's tags |
+| `tag_list` | string array   | no       | List of of the runner's tags |
 
 ```
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/9/runners"
@@ -477,17 +479,17 @@ Register a new Runner for the instance.
 POST /runners
 ```
 
-| Attribute   | Type    | Required | Description         |
-|-------------|---------|----------|---------------------|
-| `token`     | string  | yes      | [Registration token](#registration-and-authentication-tokens).  |
-| `description`| string | no       | Runner's description|
-| `info`       | hash   | no       | Runner's metadata   |
-| `active`     | boolean| no       | Whether the Runner is active   |
-| `locked`     | boolean| no       | Whether the Runner should be locked for current project |
-| `run_untagged` | boolean | no | Whether the Runner should handle untagged jobs |
-| `tag_list` | Array[String] | no | List of Runner's tags |
-| `access_level`    | string   | no       | The access_level of the runner; `not_protected` or `ref_protected` |
-| `maximum_timeout` | integer | no | Maximum timeout set when this Runner will handle the job |
+| Attribute    | Type    | Required | Description         |
+|--------------|---------|----------|---------------------|
+| `token`      | string  | yes      | [Registration token](#registration-and-authentication-tokens).  |
+| `description`| string  | no       | Runner's description|
+| `info`       | hash    | no       | Runner's metadata   |
+| `active`     | boolean | no       | Whether the Runner is active   |
+| `locked`     | boolean | no       | Whether the Runner should be locked for current project |
+| `run_untagged` | boolean | no     | Whether the Runner should handle untagged jobs |
+| `tag_list`   | string array | no  | List of Runner's tags |
+| `access_level`    | string | no   | The access_level of the runner; `not_protected` or `ref_protected` |
+| `maximum_timeout` | integer | no  | Maximum timeout set when this Runner will handle the job |
 
 ```
 curl --request POST "https://gitlab.example.com/api/v4/runners" --form "token=<registration_token>" --form "description=test-1-20150125-test" --form "tag_list=ruby,mysql,tag1,tag2"

@@ -35,7 +35,7 @@ test:
     - lein test
 ```
 
-In `before_script`, we install JRE and [Leiningen](http://leiningen.org/).
+In `before_script`, we install JRE and [Leiningen](https://leiningen.org/).
 
 The sample project uses the [migratus](https://github.com/yogthos/migratus) library to manage database migrations, and
 we have added a database migration as the last step of `before_script`.

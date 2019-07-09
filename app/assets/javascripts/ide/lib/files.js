@@ -77,6 +77,7 @@ export const decorateFiles = ({
     const fileFolder = parent && insertParent(parent);
 
     if (name) {
+      const previewMode = viewerInformationForPath(name);
       parentPath = fileFolder && fileFolder.path;
 
       file = decorateData({
@@ -92,9 +93,9 @@ export const decorateFiles = ({
         changed: tempFile,
         content,
         base64,
-        binary,
+        binary: (previewMode && previewMode.binary) || binary,
         rawPath,
-        previewMode: viewerInformationForPath(name),
+        previewMode,
         parentPath,
       });
 

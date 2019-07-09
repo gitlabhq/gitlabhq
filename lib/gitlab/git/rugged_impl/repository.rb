@@ -11,6 +11,7 @@ module Gitlab
     module RuggedImpl
       module Repository
         extend ::Gitlab::Utils::Override
+        include Gitlab::Git::RuggedImpl::UseRugged
 
         FEATURE_FLAGS = %i(rugged_find_commit rugged_tree_entries rugged_tree_entry rugged_commit_is_ancestor rugged_commit_tree_entry rugged_list_commits_by_oid).freeze
 
@@ -46,7 +47,7 @@ module Gitlab
 
         override :ancestor?
         def ancestor?(from, to)
-          if Feature.enabled?(:rugged_commit_is_ancestor)
+          if use_rugged?(self, :rugged_commit_is_ancestor)
             rugged_is_ancestor?(from, to)
           else
             super

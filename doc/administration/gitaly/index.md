@@ -91,7 +91,7 @@ your GitLab installation has two repository storages, `default` and
 
 First install Gitaly using either Omnibus or from source.
 
-Omnibus: [Download/install](https://about.gitlab.com/installation) the Omnibus GitLab
+Omnibus: [Download/install](https://about.gitlab.com/install/) the Omnibus GitLab
 package you want using **steps 1 and 2** from the GitLab downloads page but
 **_do not_** provide the `EXTERNAL_URL=` value.
 
@@ -220,7 +220,7 @@ network, firewall, or name resolution problem preventing your GitLab
 server from reaching the Gitaly server then all Gitaly requests will
 fail.
 
-Additionally, you need to 
+Additionally, you need to
 [disable Rugged if previously manually enabled](../high_availability/nfs.md#improving-nfs-performance-with-gitlab).
 
 We assume that your Gitaly server can be reached at
@@ -436,17 +436,17 @@ particular machine.
 
 ## Eliminating NFS altogether
 
-If you are planning to use Gitaly without NFS for your storage needs 
-and want to eliminate NFS from your environment altogether, there are 
+If you are planning to use Gitaly without NFS for your storage needs
+and want to eliminate NFS from your environment altogether, there are
 a few things that you need to do:
 
  1. Make sure the [`git` user home directory](https://docs.gitlab.com/omnibus/settings/configuration.html#moving-the-home-directory-for-a-user) is on local disk.
- 1. Configure [database lookup of SSH keys](https://docs.gitlab.com/ce/administration/operations/fast_ssh_key_lookup.html)
+ 1. Configure [database lookup of SSH keys](../operations/fast_ssh_key_lookup.md)
  to eliminate the need for a shared authorized_keys file.
- 1. Configure [object storage for job artifacts](https://docs.gitlab.com/ce/administration/job_artifacts.html#using-object-storage)
- including [live tracing](https://docs.gitlab.com/ce/administration/job_traces.html#new-live-trace-architecture).
- 1. Configure [object storage for LFS objects](https://docs.gitlab.com/ce/workflow/lfs/lfs_administration.html#storing-lfs-objects-in-remote-object-storage).
- 1. Configure [object storage for uploads](https://docs.gitlab.com/ce/administration/uploads.html#using-object-storage-core-only).
+ 1. Configure [object storage for job artifacts](../job_artifacts.md#using-object-storage)
+ including [live tracing](../job_traces.md#new-live-trace-architecture).
+ 1. Configure [object storage for LFS objects](../../workflow/lfs/lfs_administration.md#storing-lfs-objects-in-remote-object-storage).
+ 1. Configure [object storage for uploads](../uploads.md#using-object-storage-core-only).
 
 NOTE: **Note:** One current feature of GitLab still requires a shared directory (NFS): [GitLab Pages](../../user/project/pages/index.md).
 There is [work in progress](https://gitlab.com/gitlab-org/gitlab-pages/issues/196)

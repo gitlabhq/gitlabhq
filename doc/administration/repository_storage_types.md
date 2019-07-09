@@ -6,19 +6,19 @@ Two different storage layouts can be used
 to store the repositories on disk and their characteristics.
 
 GitLab can be configured to use one or multiple repository shard locations
-that can be: 
+that can be:
 
 - Mounted to the local disk
 - Exposed as an NFS shared volume
 - Acessed via [gitaly] on its own machine.
 
 In GitLab, this is configured in `/etc/gitlab/gitlab.rb` by the `git_data_dirs({})`
-configuration hash. The storage layouts discussed here will apply to any shard 
+configuration hash. The storage layouts discussed here will apply to any shard
 defined in it.
 
 The `default` repository shard that is available in any installations
 that haven't customized it, points to the local folder: `/var/opt/gitlab/git-data`.
-Anything discussed below is expected to be part of that folder. 
+Anything discussed below is expected to be part of that folder.
 
 ## Legacy Storage
 
@@ -108,7 +108,7 @@ question.
 ### How to migrate to Hashed Storage
 
 To start a migration, enable Hashed Storage for new projects:
- 
+
 1. Go to **Admin > Settings > Repository** and expand the **Repository Storage** section.
 2. Select the **Use hashed storage paths for newly created and renamed projects** checkbox.
 
@@ -129,7 +129,7 @@ an Omnibus Gitlab installation:
 sudo gitlab-rake gitlab:storage:migrate_to_hashed ID_FROM=50 ID_TO=100
 ```
 
-Check the [documentation][rake/migrate-to-hashed] for additional information and instructions for 
+Check the [documentation][rake/migrate-to-hashed] for additional information and instructions for
 source-based installation.
 
 #### Rollback
@@ -140,12 +140,12 @@ projects:
 1. Go to **Admin > Settings > Repository** and expand the **Repository Storage** section.
 2. Uncheck the **Use hashed storage paths for newly created and renamed projects** checkbox.
 
-To schedule a complete rollback, see the 
+To schedule a complete rollback, see the
 [rake task documentation for storage rollback](raketasks/storage.md#rollback-from-hashed-storage-to-legacy-storage) for instructions.
 
 The rollback task also supports specifying a range of Project IDs. Here is an example
 of limiting the rollout to Project IDs 50 to 100, in an Omnibus Gitlab installation:
- 
+
 ```bash
 sudo gitlab-rake gitlab:storage:rollback_to_legacy ID_FROM=50 ID_TO=100
 ```

@@ -36,7 +36,9 @@ export default endpoint => {
       }, 100);
 
       Object.entries(data).forEach(([branchName, val]) => {
-        const el = document.querySelector(`.js-branch-${branchName} .js-branch-divergence-graph`);
+        const el = document.querySelector(
+          `[data-name="${branchName}"] .js-branch-divergence-graph`,
+        );
 
         if (!el) return;
 

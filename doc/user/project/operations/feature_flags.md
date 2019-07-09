@@ -1,4 +1,4 @@
-# Feature Flags **[PREMIUM]**
+# Feature Flags **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/11845) in GitLab 11.4.
 

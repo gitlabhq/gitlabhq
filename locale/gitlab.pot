@@ -156,6 +156,9 @@ msgstr ""
 msgid "%{group_docs_link_start}Groups%{group_docs_link_end} allow you to manage and collaborate across multiple projects. Members of a group have access to all of its projects."
 msgstr ""
 
+msgid "%{icon}You are about to add %{usersTag} people to the discussion. Proceed with caution."
+msgstr ""
+
 msgid "%{issuableType} will be removed! Are you sure?"
 msgstr ""
 
@@ -1905,6 +1908,9 @@ msgstr ""
 msgid "Cancel this job"
 msgstr ""
 
+msgid "Cancelling Preview"
+msgstr ""
+
 msgid "Cannot be merged automatically"
 msgstr ""
 
@@ -3646,6 +3652,9 @@ msgstr ""
 msgid "Deployed"
 msgstr ""
 
+msgid "Deployed %{deployedSince}"
+msgstr ""
+
 msgid "Deployed to"
 msgstr ""
 
@@ -3794,6 +3803,9 @@ msgid "Download"
 msgstr ""
 
 msgid "Download artifacts"
+msgstr ""
+
+msgid "Download as"
 msgstr ""
 
 msgid "Download asset"
@@ -4051,6 +4063,9 @@ msgstr ""
 msgid "Enter the merge request title"
 msgstr ""
 
+msgid "Enter zen mode"
+msgstr ""
+
 msgid "Environment variables are applied to environments via the runner. They can be protected by only exposing them to protected branches or tags. Additionally, they can be masked so they are hidden in job logs, though they must match certain regexp requirements to do so. You can use environment variables for passwords, secret keys, or whatever you want."
 msgstr ""
 
@@ -4202,6 +4217,9 @@ msgid "Error fetching contributors data."
 msgstr ""
 
 msgid "Error fetching diverging counts for branches. Please try again."
+msgstr ""
+
+msgid "Error fetching forked projects. Please try again."
 msgstr ""
 
 msgid "Error fetching labels."
@@ -4417,6 +4435,9 @@ msgstr ""
 msgid "Expand all"
 msgstr ""
 
+msgid "Expand dropdown"
+msgstr ""
+
 msgid "Expand sidebar"
 msgstr ""
 
@@ -4612,6 +4633,9 @@ msgstr ""
 msgid "Failure"
 msgstr ""
 
+msgid "Fast-forward merge is not possible. Rebase the source branch onto the target branch or merge target branch into source branch to allow this merge request to be merged."
+msgstr ""
+
 msgid "Fast-forward merge without a merge commit"
 msgstr ""
 
@@ -4792,6 +4816,9 @@ msgid "Found errors in your .gitlab-ci.yml:"
 msgstr ""
 
 msgid "Friday"
+msgstr ""
+
+msgid "From"
 msgstr ""
 
 msgid "From %{providerTitle}"
@@ -5364,6 +5391,12 @@ msgid "ImageDiffViewer|Onion skin"
 msgstr ""
 
 msgid "ImageDiffViewer|Swipe"
+msgstr ""
+
+msgid "ImageViewerDimensions|H"
+msgstr ""
+
+msgid "ImageViewerDimensions|W"
 msgstr ""
 
 msgid "Impersonation has been disabled"
@@ -6273,6 +6306,9 @@ msgstr ""
 msgid "Markdown enabled"
 msgstr ""
 
+msgid "Markdown is supported"
+msgstr ""
+
 msgid "Marks this issue as a duplicate of %{duplicate_reference}."
 msgstr ""
 
@@ -6869,6 +6905,9 @@ msgstr ""
 msgid "No files found."
 msgstr ""
 
+msgid "No forks available to you."
+msgstr ""
+
 msgid "No job trace"
 msgstr ""
 
@@ -7352,6 +7391,12 @@ msgid "Pin code"
 msgstr ""
 
 msgid "Pipeline"
+msgstr ""
+
+msgid "Pipeline %{label}"
+msgstr ""
+
+msgid "Pipeline %{label} for \"%{dataTitle}\""
 msgstr ""
 
 msgid "Pipeline Schedule"
@@ -8578,6 +8623,12 @@ msgstr ""
 msgid "Real-time features"
 msgstr ""
 
+msgid "Rebase"
+msgstr ""
+
+msgid "Rebase in progress"
+msgstr ""
+
 msgid "Receive notifications about your own activity"
 msgstr ""
 
@@ -9242,6 +9293,12 @@ msgstr ""
 msgid "Select members to invite"
 msgstr ""
 
+msgid "Select merge moment"
+msgstr ""
+
+msgid "Select private project"
+msgstr ""
+
 msgid "Select project"
 msgstr ""
 
@@ -9686,6 +9743,9 @@ msgid "Something went wrong while reopening the %{issuable}. Please try again la
 msgstr ""
 
 msgid "Something went wrong while resolving this discussion. Please try again."
+msgstr ""
+
+msgid "Something went wrong while stopping this environment. Please try again."
 msgstr ""
 
 msgid "Something went wrong, unable to search projects"
@@ -10731,6 +10791,9 @@ msgstr ""
 msgid "This is a \"Ghost User\", created to hold all issues authored by users that have since been deleted. This user cannot be removed."
 msgstr ""
 
+msgid "This is a Work in Progress"
+msgstr ""
+
 msgid "This is a confidential issue."
 msgstr ""
 
@@ -10747,6 +10810,9 @@ msgid "This is the author's first Merge Request to this project."
 msgstr ""
 
 msgid "This is your current session"
+msgstr ""
+
+msgid "This issue is %{confidentialLinkStart}confidential%{linkEnd} and %{lockedLinkStart}locked%{linkEnd}."
 msgstr ""
 
 msgid "This issue is confidential"
@@ -10813,6 +10879,9 @@ msgid "This job requires a manual action"
 msgstr ""
 
 msgid "This job will automatically run after its timer finishes. Often they are used for incremental roll-out deploys to production environments. When unscheduled it converts into a manual action."
+msgstr ""
+
+msgid "This may expose confidential information as the selected fork is in another namespace that can have other members."
 msgstr ""
 
 msgid "This means you can not push code until you create an empty repository or import existing one."
@@ -11155,6 +11224,12 @@ msgstr ""
 msgid "To preserve performance only <strong>%{display_size} of %{real_size}</strong> files are displayed."
 msgstr ""
 
+msgid "To protect this issue's confidentiality, %{link_start}fork the project%{link_end} and set the forks visiblity to private."
+msgstr ""
+
+msgid "To protect this issue's confidentiality, a private fork of this project was selected."
+msgstr ""
+
 msgid "To see all the user's personal access tokens you must impersonate them first."
 msgstr ""
 
@@ -11359,6 +11434,9 @@ msgstr ""
 msgid "U2F only works with HTTPS-enabled websites. Contact your administrator for more details."
 msgstr ""
 
+msgid "Unable to apply suggestions to a deleted line."
+msgstr ""
+
 msgid "Unable to connect to Prometheus server"
 msgstr ""
 
@@ -11465,6 +11543,9 @@ msgid "Unsubscribe at project level"
 msgstr ""
 
 msgid "Unsubscribe from %{type}"
+msgstr ""
+
+msgid "Until"
 msgstr ""
 
 msgid "Unverified"
@@ -12543,6 +12624,9 @@ msgstr ""
 msgid "branch name"
 msgstr ""
 
+msgid "by"
+msgstr ""
+
 msgid "cannot be changed if a personal project has container registry tags."
 msgstr ""
 
@@ -12571,6 +12655,9 @@ msgid "connecting"
 msgstr ""
 
 msgid "could not read private key, is the passphrase correct?"
+msgstr ""
+
+msgid "created"
 msgstr ""
 
 msgid "customize"
@@ -12733,6 +12820,15 @@ msgstr ""
 msgid "mrWidgetCommitsAdded|1 merge commit"
 msgstr ""
 
+msgid "mrWidgetNothingToMerge|Currently there are no changes in this merge request's source branch. Please push new commits or use a different branch."
+msgstr ""
+
+msgid "mrWidgetNothingToMerge|Interested parties can even contribute by pushing commits if they want to."
+msgstr ""
+
+msgid "mrWidgetNothingToMerge|Merge requests are a place to propose changes you have made to a project and discuss those changes with others."
+msgstr ""
+
 msgid "mrWidget| Please restore it or use a different %{missingBranchName} branch"
 msgstr ""
 
@@ -12850,6 +12946,9 @@ msgstr ""
 msgid "mrWidget|Request to merge"
 msgstr ""
 
+msgid "mrWidget|Resolve WIP status"
+msgstr ""
+
 msgid "mrWidget|Resolve conflicts"
 msgstr ""
 
@@ -12911,6 +13010,9 @@ msgid "mrWidget|This merge request is in the process of being merged"
 msgstr ""
 
 msgid "mrWidget|This project is archived, write access has been disabled"
+msgstr ""
+
+msgid "mrWidget|When this merge request is ready, remove the WIP: prefix from the title to allow it to be merged"
 msgstr ""
 
 msgid "mrWidget|You are not allowed to edit this project directly. Please fork to make changes."
@@ -12998,6 +13100,9 @@ msgstr ""
 msgid "project"
 msgstr ""
 
+msgid "project avatar"
+msgstr ""
+
 msgid "quick actions"
 msgstr ""
 
@@ -13008,6 +13113,9 @@ msgid "released %{time}"
 msgstr ""
 
 msgid "remaining"
+msgstr ""
+
+msgid "remove"
 msgstr ""
 
 msgid "remove due date"
@@ -13080,10 +13188,19 @@ msgstr[1] ""
 msgid "to list"
 msgstr ""
 
+msgid "toggle collapse"
+msgstr ""
+
+msgid "toggle dropdown"
+msgstr ""
+
 msgid "triggered"
 msgstr ""
 
 msgid "updated"
+msgstr ""
+
+msgid "user avatar"
 msgstr ""
 
 msgid "username"

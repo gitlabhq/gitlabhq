@@ -11,7 +11,7 @@ def method
 
   issue.save
 
-  render json: issue 
+  render json: issue
 end
 ```
 
@@ -21,7 +21,7 @@ def method
   issue = Issue.new
   issue.save
 
-  render json: issue 
+  render json: issue
 end
 ```
 

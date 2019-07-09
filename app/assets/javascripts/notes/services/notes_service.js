@@ -1,5 +1,4 @@
 import Vue from 'vue';
-import Api from '~/api';
 import VueResource from 'vue-resource';
 import * as constants from '../constants';
 
@@ -44,8 +43,5 @@ export default {
   },
   toggleIssueState(endpoint, data) {
     return Vue.http.put(endpoint, data);
-  },
-  applySuggestion(id) {
-    return Api.applySuggestion(id);
   },
 };

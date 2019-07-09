@@ -3,7 +3,7 @@
 This section is to help give some copy-pasta you can use as a reference when you
 run into some head-banging database problems.
 
-An easy first step is to search for your error in Slack or google "GitLab <my error>".
+An easy first step is to search for your error in Slack or google "GitLab (my error)".
 
 ---
 
