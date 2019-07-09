@@ -37,6 +37,8 @@ Parameter | Type | Description
 `stop_id` | integer | Only uploads with equal or smaller ID will be processed
 `dry_run` | boolean | Do not remove EXIF data, only check if EXIF data are present or not, default: true
 `sleep_time` | float | Pause for number of seconds after processing each image, default: 0.3 seconds
+`uploader` | string | Run sanitization only for uploads of the given uploader (`FileUploader`, `PersonalFileUploader`, `NamespaceFileUploader`)
+`since` | date | Run sanitization only for uploads newer than given date (e.g. `2019-05-01`)
 
 If you have too many uploads, you can speed up sanitization by setting
 `sleep_time` to a lower value or by running multiple rake tasks in parallel,

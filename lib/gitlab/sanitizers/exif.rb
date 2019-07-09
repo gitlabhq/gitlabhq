@@ -53,15 +53,18 @@ module Gitlab
       end
 
       # rubocop: disable CodeReuse/ActiveRecord
-      def batch_clean(start_id: nil, stop_id: nil, dry_run: true, sleep_time: nil)
+      def batch_clean(start_id: nil, stop_id: nil, dry_run: true, sleep_time: nil, uploader: nil, since: nil)
         relation = Upload.where('lower(path) like ? or lower(path) like ? or lower(path) like ?',
                                 '%.jpg', '%.jpeg', '%.tiff')
+        relation = relation.where(uploader: uploader) if uploader
+        relation = relation.where('created_at > ?', since) if since
 
         logger.info "running in dry run mode, no images will be rewritten" if dry_run
 
         find_params = {
           start: start_id.present? ? start_id.to_i : nil,
-          finish: stop_id.present? ? stop_id.to_i : Upload.last&.id
+          finish: stop_id.present? ? stop_id.to_i : Upload.last&.id,
+          batch_size: 1000
         }
 
         relation.find_each(find_params) do |upload|
