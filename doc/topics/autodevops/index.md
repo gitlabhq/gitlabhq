@@ -316,7 +316,7 @@ If a project's repository contains a `Dockerfile`, Auto Build will use
 If you are also using Auto Review Apps and Auto Deploy and choose to provide
 your own `Dockerfile`, make sure you expose your application to port
 `5000` as this is the port assumed by the
-[default Helm chart](https://gitlab.com/gitlab-org/charts/auto-deploy-app). Alternatively you can override the default values by [customizing the Auto Deploy helm chart](https://docs.gitlab.com/ee/topics/autodevops/index.html#custom-helm-chart)
+[default Helm chart](https://gitlab.com/gitlab-org/charts/auto-deploy-app). Alternatively you can override the default values by [customizing the Auto Deploy helm chart](#custom-helm-chart)
 
 #### Auto Build using Heroku buildpacks
 
