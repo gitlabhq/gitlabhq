@@ -31,7 +31,7 @@ module SortingHelper
   end
 
   def projects_sort_options_hash
-    use_old_sorting = !Feature.enabled?(:project_list_filter_bar) || current_controller?('admin/projects') 
+    use_old_sorting = !Feature.enabled?(:project_list_filter_bar) || current_controller?('admin/projects')
 
     options = {
       sort_value_latest_activity  => sort_title_latest_activity,
@@ -200,48 +200,42 @@ module SortingHelper
     sort_options_hash[sort_value]
   end
 
-  def issuable_sort_icon_suffix(sort_value)
+  def sort_direction_icon(sort_value)
     case sort_value
     when sort_value_milestone, sort_value_due_date, /_asc\z/
-      'lowest'
+      'sort-lowest'
     else
-      'highest'
+      'sort-highest'
     end
   end
 
-  # TODO: dedupicate issuable and project sort direction
-  # https://gitlab.com/gitlab-org/gitlab-ce/issues/60798
+  def sort_direction_button(reverse_url, reverse_sort, sort_value)
+    link_class = 'btn btn-default has-tooltip reverse-sort-btn qa-reverse-sort'
+    icon = sort_direction_icon(sort_value)
+    url = reverse_url
+
+    unless reverse_sort
+      url = '#'
+      link_class += ' disabled'
+    end
+
+    link_to(url, type: 'button', class: link_class, title: s_('SortOptions|Sort direction')) do
+      sprite_icon(icon, size: 16)
+    end
+  end
+
   def issuable_sort_direction_button(sort_value)
-    link_class = 'btn btn-default has-tooltip reverse-sort-btn qa-reverse-sort'
     reverse_sort = issuable_reverse_sort_order_hash[sort_value]
+    url = page_filter_path(sort: reverse_sort)
 
-    if reverse_sort
-      reverse_url = page_filter_path(sort: reverse_sort)
-    else
-      reverse_url = '#'
-      link_class += ' disabled'
-    end
-
-    link_to(reverse_url, type: 'button', class: link_class, title: s_('SortOptions|Sort direction')) do
-      sprite_icon("sort-#{issuable_sort_icon_suffix(sort_value)}", size: 16)
-    end
+    sort_direction_button(url, reverse_sort, sort_value)
   end
 
-  # TODO: dedupicate issuable and project sort direction
   def project_sort_direction_button(sort_value)
-    link_class = 'btn btn-default has-tooltip reverse-sort-btn qa-reverse-sort'
     reverse_sort = projects_reverse_sort_options_hash[sort_value]
+    url = filter_projects_path(sort: reverse_sort)
 
-    if reverse_sort
-      reverse_url = filter_projects_path(sort: reverse_sort)
-    else
-      reverse_url = '#'
-      link_class += ' disabled'
-    end
-
-    link_to(reverse_url, type: 'button', class: link_class, title: s_('SortOptions|Sort direction')) do
-      sprite_icon("sort-#{issuable_sort_icon_suffix(sort_value)}", size: 16)
-    end
+    sort_direction_button(url, reverse_sort, sort_value)
   end
 
   # Titles.
