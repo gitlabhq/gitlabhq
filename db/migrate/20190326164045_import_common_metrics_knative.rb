@@ -6,7 +6,7 @@ class ImportCommonMetricsKnative < ActiveRecord::Migration[5.0]
   DOWNTIME = false
 
   def up
-    ::Gitlab::Importers::CommonMetrics::Importer.new.execute
+    ::Gitlab::DatabaseImporters::CommonMetrics::Importer.new.execute
   end
 
   def down

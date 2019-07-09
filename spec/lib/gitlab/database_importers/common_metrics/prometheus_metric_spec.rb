@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe Gitlab::Importers::CommonMetrics::PrometheusMetric do
+describe Gitlab::DatabaseImporters::CommonMetrics::PrometheusMetric do
   let(:existing_group_titles) do
     ::PrometheusMetricEnums.group_details.each_with_object({}) do |(key, value), memo|
       memo[key] = value[:group_title]
@@ -14,6 +14,6 @@ describe Gitlab::Importers::CommonMetrics::PrometheusMetric do
   end
 
   it '.group_titles equals ::PrometheusMetric' do
-    expect(Gitlab::Importers::CommonMetrics::PrometheusMetricEnums.group_titles).to eq(existing_group_titles)
+    expect(Gitlab::DatabaseImporters::CommonMetrics::PrometheusMetricEnums.group_titles).to eq(existing_group_titles)
   end
 end

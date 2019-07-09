@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe Gitlab::Importers::CommonMetrics::Importer do
+describe Gitlab::DatabaseImporters::CommonMetrics::Importer do
   subject { described_class.new }
 
   context "does import common_metrics.yml" do
@@ -87,7 +87,7 @@ describe Gitlab::Importers::CommonMetrics::Importer do
       let(:query_identifier) { }
 
       it 'raises exception' do
-        expect { subject.execute }.to raise_error(Gitlab::Importers::CommonMetrics::Importer::MissingQueryId)
+        expect { subject.execute }.to raise_error(Gitlab::DatabaseImporters::CommonMetrics::Importer::MissingQueryId)
       end
     end
 

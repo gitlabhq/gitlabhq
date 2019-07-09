@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Gitlab
-  module Importers
+  module DatabaseImporters
     module CommonMetrics
       class PrometheusMetric < ApplicationRecord
         enum group: PrometheusMetricEnums.groups
