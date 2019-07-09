@@ -319,7 +319,7 @@ reviewee.
 ### GitLab-specific concerns
 
 GitLab is used in a lot of places. Many users use
-our [Omnibus packages](https://about.gitlab.com/installation/), but some use
+our [Omnibus packages](https://about.gitlab.com/install/), but some use
 the [Docker images](https://docs.gitlab.com/omnibus/docker/), some are
 [installed from source](../install/installation.md),
 and there are other installation methods available. GitLab.com itself is a large

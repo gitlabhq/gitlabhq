@@ -41,6 +41,6 @@ Use the built-in continuous integration in GitLab.
 
 Install and update your GitLab installation.
 
-- [Install GitLab](https://about.gitlab.com/installation/)
+- [Install GitLab](https://about.gitlab.com/install/)
 - [Update GitLab](https://about.gitlab.com/update/)
 - [Explore Omnibus GitLab configuration options](https://docs.gitlab.com/omnibus/settings/configuration.html)
