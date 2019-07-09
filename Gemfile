@@ -420,7 +420,7 @@ gem 'vmstat', '~> 2.3.0'
 gem 'sys-filesystem', '~> 1.1.6'
 
 # SSH host key support
-gem 'net-ssh', '~> 5.0'
+gem 'net-ssh', '~> 5.2'
 gem 'sshkey', '~> 2.0'
 
 # Required for ED25519 SSH host key support
