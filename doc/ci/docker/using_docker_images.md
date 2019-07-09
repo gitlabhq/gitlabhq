@@ -530,11 +530,11 @@ There are two ways to determine the value of `DOCKER_AUTH_CONFIG`:
     ```
 
 - **Second way -** In some setups, it's possible that Docker client
-will use the available system keystore to store the result of `docker
-login`. In that case, it's impossible to read `~/.docker/config.json`,
-so you will need to prepare the required base64-encoded version of
-`${username}:${password}` manually. Open a terminal and execute the
-following command:
+  will use the available system keystore to store the result of `docker
+  login`. In that case, it's impossible to read `~/.docker/config.json`,
+  so you will need to prepare the required base64-encoded version of
+  `${username}:${password}` manually. Open a terminal and execute the
+  following command:
 
     ```bash
     echo -n "my_username:my_password" | base64

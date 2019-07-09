@@ -1,0 +1,7 @@
+# See https://github.com/markdownlint/markdownlint/blob/master/docs/RULES.md
+
+rule 'MD001'
+# False positives, see https://github.com/markdownlint/markdownlint/issues/261
+# rule 'MD004', style: :dash
+rule 'MD032'
+rule 'MD034'
