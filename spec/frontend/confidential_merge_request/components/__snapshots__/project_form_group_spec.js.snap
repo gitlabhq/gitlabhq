@@ -28,23 +28,6 @@ exports[`Confidential merge request project form group component renders empty s
         </a>
          and set the forks visiblity to private.
       </span>
-       
-      <gllink-stub
-        class="help-link"
-        href="/help"
-        target="_blank"
-      >
-        <span
-          class="sr-only"
-        >
-          Read more
-        </span>
-         
-        <i
-          aria-hidden="true"
-          class="fa fa-question-circle"
-        />
-      </gllink-stub>
     </p>
   </div>
 </div>
@@ -78,23 +61,6 @@ exports[`Confidential merge request project form group component renders fork dr
         </a>
          and set the forks visiblity to private.
       </span>
-       
-      <gllink-stub
-        class="help-link"
-        href="/help"
-        target="_blank"
-      >
-        <span
-          class="sr-only"
-        >
-          Read more
-        </span>
-         
-        <i
-          aria-hidden="true"
-          class="fa fa-question-circle"
-        />
-      </gllink-stub>
     </p>
   </div>
 </div>

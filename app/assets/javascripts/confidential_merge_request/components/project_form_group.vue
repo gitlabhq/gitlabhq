@@ -126,10 +126,6 @@ export default {
           {{ __('No forks available to you.') }}<br />
           <span v-html="noForkText"></span>
         </template>
-        <gl-link :href="helpPagePath" class="help-link" target="_blank">
-          <span class="sr-only">{{ __('Read more') }}</span>
-          <i class="fa fa-question-circle" aria-hidden="true"></i>
-        </gl-link>
       </p>
     </div>
   </div>
