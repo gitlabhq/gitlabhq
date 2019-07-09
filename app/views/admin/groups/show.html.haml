@@ -43,11 +43,7 @@
         = render_if_exists 'admin/namespace_plan_info', namespace: @group
 
         %li
-          %span.light= _('Storage:')
-          %strong= storage_counter(@group.storage_size)
-          (
-          = storage_counters_details(@group)
-          )
+          = render 'shared/storage_counter_statistics', storage_size: @group.storage_size, storage_details: @group
 
         %li
           %span.light= _('Group Git LFS status:')
