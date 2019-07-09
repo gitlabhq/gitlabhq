@@ -94,7 +94,9 @@ on the amount of data indexed).
 To keep naming of these indexes consistent please use the following naming
 pattern:
 
-    index_TABLE_on_COLUMN_trigram
+```
+index_TABLE_on_COLUMN_trigram
+```
 
 For example, a GIN/trigram index for `issues.title` would be called
 `index_issues_on_title_trigram`.

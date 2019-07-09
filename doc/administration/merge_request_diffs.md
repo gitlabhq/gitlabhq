@@ -21,18 +21,18 @@ To enable external storage of merge request diffs, follow the instructions below
 
 1. Edit `/etc/gitlab/gitlab.rb` and add the following line:
 
-    ```ruby
-    gitlab_rails['external_diffs_enabled'] = true
-    ```
+   ```ruby
+   gitlab_rails['external_diffs_enabled'] = true
+   ```
 
 1. _The external diffs will be stored in in
    `/var/opt/gitlab/gitlab-rails/shared/external-diffs`._ To change the path,
    for example, to `/mnt/storage/external-diffs`, edit `/etc/gitlab/gitlab.rb`
    and add the following line:
 
-    ```ruby
-    gitlab_rails['external_diffs_storage_path'] = "/mnt/storage/external-diffs"
-    ```
+   ```ruby
+   gitlab_rails['external_diffs_storage_path'] = "/mnt/storage/external-diffs"
+   ```
 
 1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
@@ -41,21 +41,21 @@ To enable external storage of merge request diffs, follow the instructions below
 1. Edit `/home/git/gitlab/config/gitlab.yml` and add or amend the following
    lines:
 
-    ```yaml
-    external_diffs:
-      enabled: true
-    ```
+   ```yaml
+   external_diffs:
+     enabled: true
+   ```
 
 1. _The external diffs will be stored in
    `/home/git/gitlab/shared/external-diffs`._ To change the path, for example,
    to `/mnt/storage/external-diffs`, edit `/home/git/gitlab/config/gitlab.yml`
    and add or amend the following lines:
 
-    ```yaml
-    external_diffs:
-      enabled: true
-      storage_path: /mnt/storage/external-diffs
-    ```
+   ```yaml
+   external_diffs:
+     enabled: true
+     storage_path: /mnt/storage/external-diffs
+   ```
 
 1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
 
@@ -101,28 +101,28 @@ The connection settings match those provided by [Fog](https://github.com/fog), a
 1. Edit `/etc/gitlab/gitlab.rb` and add the following lines by replacing with
    the values you want:
 
-    ```ruby
-    gitlab_rails['external_diffs_enabled'] = true
-    gitlab_rails['external_diffs_object_store_enabled'] = true
-    gitlab_rails['external_diffs_object_store_remote_directory'] = "external-diffs"
-    gitlab_rails['external_diffs_object_store_connection'] = {
-      'provider' => 'AWS',
-      'region' => 'eu-central-1',
-      'aws_access_key_id' => 'AWS_ACCESS_KEY_ID',
-      'aws_secret_access_key' => 'AWS_SECRET_ACCESS_KEY'
-    }
-    ```
+   ```ruby
+   gitlab_rails['external_diffs_enabled'] = true
+   gitlab_rails['external_diffs_object_store_enabled'] = true
+   gitlab_rails['external_diffs_object_store_remote_directory'] = "external-diffs"
+   gitlab_rails['external_diffs_object_store_connection'] = {
+     'provider' => 'AWS',
+     'region' => 'eu-central-1',
+     'aws_access_key_id' => 'AWS_ACCESS_KEY_ID',
+     'aws_secret_access_key' => 'AWS_SECRET_ACCESS_KEY'
+   }
+   ```
 
-    Note that, if you are using AWS IAM profiles, be sure to omit the
-    AWS access key and secret access key/value pairs. For example:
+   Note that, if you are using AWS IAM profiles, be sure to omit the
+   AWS access key and secret access key/value pairs. For example:
 
-    ```ruby
-    gitlab_rails['external_diffs_object_store_connection'] = {
-      'provider' => 'AWS',
-      'region' => 'eu-central-1',
-      'use_iam_profile' => true
-    }
-    ```
+   ```ruby
+   gitlab_rails['external_diffs_object_store_connection'] = {
+     'provider' => 'AWS',
+     'region' => 'eu-central-1',
+     'use_iam_profile' => true
+   }
+   ```
 
 1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
@@ -131,18 +131,18 @@ The connection settings match those provided by [Fog](https://github.com/fog), a
 1. Edit `/home/git/gitlab/config/gitlab.yml` and add or amend the following
    lines:
 
-    ```yaml
-    external_diffs:
-      enabled: true
-      object_store:
-        enabled: true
-        remote_directory: "external-diffs" # The bucket name
-        connection:
-          provider: AWS # Only AWS supported at the moment
-          aws_access_key_id: AWS_ACCESS_KEY_ID
-          aws_secret_access_key: AWS_SECRET_ACCESS_KEY
-          region: eu-central-1
-    ```
+   ```yaml
+   external_diffs:
+     enabled: true
+     object_store:
+       enabled: true
+       remote_directory: "external-diffs" # The bucket name
+       connection:
+         provider: AWS # Only AWS supported at the moment
+         aws_access_key_id: AWS_ACCESS_KEY_ID
+         aws_secret_access_key: AWS_SECRET_ACCESS_KEY
+         region: eu-central-1
+   ```
 
 1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
 
@@ -157,11 +157,11 @@ To enable this feature, perform the following steps:
 
 **In Omnibus installations:**
 
-1.  Edit `/etc/gitlab/gitlab.rb` and add the following line:
+1. Edit `/etc/gitlab/gitlab.rb` and add the following line:
 
-    ```ruby
-    gitlab_rails['external_diffs_when'] = 'outdated'
-    ```
+   ```ruby
+   gitlab_rails['external_diffs_when'] = 'outdated'
+   ```
 
 1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
@@ -170,11 +170,11 @@ To enable this feature, perform the following steps:
 1. Edit `/home/git/gitlab/config/gitlab.yml` and add or amend the following
    lines:
 
-    ```yaml
-    external_diffs:
-      enabled: true
-      when: outdated
-    ```
+   ```yaml
+   external_diffs:
+     enabled: true
+     when: outdated
+   ```
 
 1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
 
