@@ -6,6 +6,7 @@ import simplePoll from '~/lib/utils/simple_poll';
 import { __ } from '~/locale';
 import readyToMergeMixin from 'ee_else_ce/vue_merge_request_widget/mixins/ready_to_merge';
 import MergeRequest from '../../../merge_request';
+import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
 import Flash from '../../../flash';
 import statusIcon from '../mr_widget_status_icon.vue';
 import eventHub from '../../event_hub';
@@ -173,6 +174,8 @@ export default {
             MergeRequest.hideCloseButton();
             MergeRequest.decreaseCounter();
             stopPolling();
+
+            refreshUserMergeRequestCounts();
 
             // If user checked remove source branch and we didn't remove the branch yet
             // we should start another polling for source branch remove process

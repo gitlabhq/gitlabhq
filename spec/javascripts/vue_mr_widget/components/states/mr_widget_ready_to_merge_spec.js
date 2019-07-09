@@ -58,9 +58,11 @@ const createComponent = (customConfig = {}) => {
 
 describe('ReadyToMerge', () => {
   let vm;
+  let updateMrCountSpy;
 
   beforeEach(() => {
     vm = createComponent();
+    updateMrCountSpy = spyOnDependency(ReadyToMerge, 'refreshUserMergeRequestCounts');
   });
 
   afterEach(() => {
@@ -461,6 +463,7 @@ describe('ReadyToMerge', () => {
           expect(eventHub.$emit).toHaveBeenCalledWith('MRWidgetUpdateRequested');
           expect(eventHub.$emit).toHaveBeenCalledWith('FetchActionsContent');
           expect(vm.initiateRemoveSourceBranchPolling).toHaveBeenCalled();
+          expect(updateMrCountSpy).toHaveBeenCalled();
           expect(cpc).toBeFalsy();
           expect(spc).toBeTruthy();
 

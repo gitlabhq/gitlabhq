@@ -24,6 +24,7 @@ const Api = {
   issuableTemplatePath: '/:namespace_path/:project_path/templates/:type/:key',
   projectTemplatePath: '/api/:version/projects/:id/templates/:type/:key',
   projectTemplatesPath: '/api/:version/projects/:id/templates/:type',
+  userCountsPath: '/api/:version/user_counts',
   usersPath: '/api/:version/users.json',
   userPath: '/api/:version/users/:id',
   userStatusPath: '/api/:version/users/:id/status',
@@ -310,6 +311,11 @@ const Api = {
     return axios.get(url, {
       params: options,
     });
+  },
+
+  userCounts() {
+    const url = Api.buildUrl(this.userCountsPath);
+    return axios.get(url);
   },
 
   userStatus(id, options) {
