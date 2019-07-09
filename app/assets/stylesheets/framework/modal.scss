@@ -85,9 +85,9 @@ body.modal-open {
 .modal {
   background-color: $black-transparent;
 
-  @include media-breakpoint-up(md) {
+  @include media-breakpoint-up(sm) {
     .modal-dialog {
-      margin: 30px auto;
+      margin: 64px auto;
     }
   }
 }
