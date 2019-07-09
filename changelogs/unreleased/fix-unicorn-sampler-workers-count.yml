@@ -1,0 +1,5 @@
+---
+title: Make unicorn_workers to return meaningful results
+merge_request: 30506
+author:
+type: fixed
