@@ -86,4 +86,9 @@ class ContainerRepository < ApplicationRecord
   def self.build_root_repository(project)
     self.new(project: project, name: '')
   end
+
+  def self.find_by_path!(path)
+    self.find_by!(project: path.repository_project,
+                  name: path.repository_name)
+  end
 end
