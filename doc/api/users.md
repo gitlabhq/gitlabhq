@@ -164,6 +164,7 @@ the `group_saml` provider option:
     ...
   }
 ]
+```
 
 You can lookup users by external UID and provider:
 
