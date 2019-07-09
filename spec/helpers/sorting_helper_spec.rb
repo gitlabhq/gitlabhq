@@ -70,8 +70,6 @@ describe SortingHelper do
 
     describe '#projects_sort_options_hash' do
       it 'returns a hash of available sorting options' do
-        hash = projects_sort_options_hash
-
         admin_options = project_common_options.merge({
           sort_value_oldest_activity  => sort_title_oldest_activity,
           sort_value_oldest_created   => sort_title_oldest_created,
@@ -79,7 +77,8 @@ describe SortingHelper do
           sort_value_stars_desc       => sort_title_most_stars,
           sort_value_largest_repo     => sort_title_largest_repo
         })
-        expect(hash).to eq(admin_options)
+
+        expect(projects_sort_options_hash).to eq(admin_options)
       end
     end
   end
@@ -91,58 +90,60 @@ describe SortingHelper do
 
     describe '#projects_sort_options_hash' do
       it 'returns a hash of available sorting options' do
-        hash = projects_sort_options_hash
-        common_options = project_common_options
-
-        common_options.each do |key, opt|
-          expect(hash).to include(key)
-          expect(hash[key]).to eq(opt)
-        end
+        expect(projects_sort_options_hash).to include(project_common_options)
       end
     end
 
     describe '#projects_reverse_sort_options_hash' do
-      it 'returns a reversed hash of available sorting options' do
-        reverse_hash = projects_reverse_sort_options_hash
+      context 'returns a reversed hash of available sorting options' do
+        using RSpec::Parameterized::TableSyntax
 
-        options = {
-          sort_value_latest_activity  => sort_value_oldest_activity,
-          sort_value_recently_created => sort_value_oldest_created,
-          sort_value_name             => sort_value_name_desc,
-          sort_value_stars_desc       => sort_value_stars_asc,
-          sort_value_oldest_activity  => sort_value_latest_activity,
-          sort_value_oldest_created   => sort_value_recently_created,
-          sort_value_name_desc        => sort_value_name,
-          sort_value_stars_asc        => sort_value_stars_desc
-        }
+        where(:sort_key, :reverse_sort_title) do
+          sort_value_latest_activity  | sort_value_oldest_activity
+          sort_value_recently_created | sort_value_oldest_created
+          sort_value_name             | sort_value_name_desc
+          sort_value_stars_desc       | sort_value_stars_asc
+          sort_value_oldest_activity  | sort_value_latest_activity
+          sort_value_oldest_created   | sort_value_recently_created
+          sort_value_name_desc        | sort_value_name
+          sort_value_stars_asc        | sort_value_stars_desc
+        end
 
-        options.each do |key, opt|
-          expect(reverse_hash).to include(key)
-          expect(reverse_hash[key]).to eq(opt)
+        with_them do
+          it do
+            reverse_hash = projects_reverse_sort_options_hash
+
+            expect(reverse_hash).to include(sort_key)
+            expect(reverse_hash[sort_key]).to eq(reverse_sort_title)
+          end
         end
       end
     end
 
     describe '#project_sort_direction_button' do
-      it 'returns the correct icon for each sort option' do
+      context 'returns the correct icon for each sort option' do
+        using RSpec::Parameterized::TableSyntax
+
         sort_lowest_icon = 'sort-lowest'
         sort_highest_icon = 'sort-highest'
 
-        sort_options_icons = {
-          sort_value_latest_activity  => sort_highest_icon,
-          sort_value_recently_created => sort_highest_icon,
-          sort_value_name_desc        => sort_highest_icon,
-          sort_value_stars_desc       => sort_highest_icon,
-          sort_value_oldest_activity  => sort_lowest_icon,
-          sort_value_oldest_created   => sort_lowest_icon,
-          sort_value_name             => sort_lowest_icon,
-          sort_value_stars_asc        => sort_lowest_icon
-        }
+        where(:selected_sort, :icon) do
+          sort_value_latest_activity  | sort_highest_icon
+          sort_value_recently_created | sort_highest_icon
+          sort_value_name_desc        | sort_highest_icon
+          sort_value_stars_desc       | sort_highest_icon
+          sort_value_oldest_activity  | sort_lowest_icon
+          sort_value_oldest_created   | sort_lowest_icon
+          sort_value_name             | sort_lowest_icon
+          sort_value_stars_asc        | sort_lowest_icon
+        end
 
-        sort_options_icons.each do |selected_sort, icon|
-          set_sorting_url selected_sort
+        with_them do
+          it do
+            set_sorting_url selected_sort
 
-          expect(project_sort_direction_button(selected_sort)).to include(icon)
+            expect(project_sort_direction_button(selected_sort)).to include(icon)
+          end
         end
       end
 
@@ -159,25 +160,14 @@ describe SortingHelper do
 
     describe '#projects_sort_option_titles' do
       it 'returns a hash of titles for the sorting options' do
-        titles = projects_sort_option_titles
-
-        options = {
-          sort_value_latest_activity  => sort_title_latest_activity,
-          sort_value_recently_created => sort_title_created_date,
-          sort_value_name             => sort_title_name,
-          sort_value_stars_desc       => sort_title_stars,
+        options = project_common_options.merge({
           sort_value_oldest_activity  => sort_title_latest_activity,
           sort_value_oldest_created   => sort_title_created_date,
           sort_value_name_desc        => sort_title_name,
           sort_value_stars_asc        => sort_title_stars
-        }
+        })
 
-        expect(titles.length).to eq(options.length)
-
-        titles.each do |key, opt|
-          expect(options).to include(key)
-          expect(options[key]).to eq(opt)
-        end
+        expect(projects_sort_option_titles).to eq(options)
       end
     end
 
@@ -188,7 +178,6 @@ describe SortingHelper do
 
       describe '#projects_sort_options_hash' do
         it 'returns a hash of available sorting options' do
-          hash = projects_sort_options_hash
           options = project_common_options.merge({
             sort_value_oldest_activity  => sort_title_oldest_activity,
             sort_value_oldest_created   => sort_title_oldest_created,
@@ -196,10 +185,7 @@ describe SortingHelper do
             sort_value_stars_desc       => sort_title_most_stars
           })
 
-          options.each do |key, opt|
-            expect(hash).to include(key)
-            expect(hash[key]).to eq(opt)
-          end
+          expect(projects_sort_options_hash).to eq(options)
         end
       end
     end

@@ -31,7 +31,7 @@ module SortingHelper
   end
 
   def projects_sort_options_hash
-    use_old_sorting = !Feature.enabled?(:project_list_filter_bar) || current_controller?('admin/projects')
+    use_old_sorting = Feature.disabled?(:project_list_filter_bar) || current_controller?('admin/projects')
 
     options = {
       sort_value_latest_activity  => sort_title_latest_activity,
