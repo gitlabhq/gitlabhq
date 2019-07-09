@@ -12,7 +12,7 @@ ActiveSupport::Notifications.subscribe('rack.attack') do |name, start, finish, r
       fullpath: req.fullpath
     }
 
-    if req.env['rack.attack.matched'] != 'throttle_unauthenticated'
+    if %w(throttle_authenticated_api throttle_authenticated_web).include? req.env['rack.attack.matched']
       user_id = req.env['rack.attack.match_discriminator']
       user = User.find_by(id: user_id)
 
