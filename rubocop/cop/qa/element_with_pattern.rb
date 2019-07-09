@@ -30,7 +30,7 @@ module RuboCop
           return if args.first.nil?
 
           args.first.each_node(:str) do |arg|
-            add_offense(arg, message: MESSAGE % "data-qa-selector=\"#{element_name.value}\"")
+            add_offense(arg, message: MESSAGE % "data-qa-selector=#{element_name.value}")
           end
         end
 
