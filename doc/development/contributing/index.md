@@ -4,7 +4,7 @@ Thank you for your interest in contributing to GitLab. This guide details how
 to contribute to GitLab in a way that is easy for everyone.
 
 For a first-time step-by-step guide to the contribution process, please see
-["Contributing to GitLab"](https://about.gitlab.com/contributing/).
+["Contributing to GitLab"](https://about.gitlab.com/community/contribute/).
 
 Looking for something to work on? Look for issues with the label [`Accepting merge requests`](#i-want-to-contribute).
 

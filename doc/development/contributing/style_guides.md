@@ -1,11 +1,11 @@
 # Style guides
 
-1. [Ruby](https://github.com/bbatsov/ruby-style-guide).
+1. [Ruby](https://github.com/rubocop-hq/ruby-style-guide).
    Important sections include [Source Code Layout][rss-source] and
    [Naming][rss-naming]. Use:
    - multi-line method chaining style **Option A**: dot `.` on the second line
    - string literal quoting style **Option A**: single quoted by default
-1. [Rails](https://github.com/bbatsov/rails-style-guide)
+1. [Rails](https://github.com/rubocop-hq/rails-style-guide)
 1. [Newlines styleguide][newlines-styleguide]
 1. [Testing][testing]
 1. [JavaScript styleguide][js-styleguide]
@@ -13,7 +13,7 @@
 1. [Shell commands (Ruby)](../shell_commands.md) created by GitLab
    contributors to enhance security
 1. [Database Migrations](../migration_style_guide.md)
-1. [Markdown](http://www.cirosantilli.com/markdown-styleguide)
+1. [Markdown](https://cirosantilli.com/markdown-style-guide/)
 1. [Documentation styleguide](../documentation/styleguide.md)
 1. Interface text should be written subjectively instead of objectively. It
    should be the GitLab core team addressing a person. It should be written in
@@ -25,7 +25,7 @@
 1. [Python](../python_guide/index.md)
 
 This is also the style used by linting tools such as
-[RuboCop](https://github.com/bbatsov/rubocop) and [Hound CI](https://houndci.com).
+[RuboCop](https://github.com/rubocop-hq/rubocop) and [Hound CI](https://houndci.com).
 
 ---
 
