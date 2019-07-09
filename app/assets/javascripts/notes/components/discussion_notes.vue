@@ -8,12 +8,14 @@ import SystemNote from '~/vue_shared/components/notes/system_note.vue';
 import NoteableNote from './noteable_note.vue';
 import ToggleRepliesWidget from './toggle_replies_widget.vue';
 import NoteEditedText from './note_edited_text.vue';
+import DiscussionNotesRepliesWrapper from './discussion_notes_replies_wrapper.vue';
 
 export default {
   name: 'DiscussionNotes',
   components: {
     ToggleRepliesWidget,
     NoteEditedText,
+    DiscussionNotesRepliesWrapper,
   },
   props: {
     discussion: {
@@ -119,9 +121,7 @@ export default {
           />
           <slot slot="avatar-badge" name="avatar-badge"></slot>
         </component>
-        <div
-          :class="discussion.diff_discussion ? 'discussion-collapsible bordered-box clearfix' : ''"
-        >
+        <discussion-notes-replies-wrapper :is-diff-discussion="discussion.diff_discussion">
           <toggle-replies-widget
             v-if="hasReplies"
             :collapsed="!isExpanded"
@@ -141,7 +141,7 @@ export default {
             />
           </template>
           <slot :show-replies="isExpanded || !hasReplies" name="footer"></slot>
-        </div>
+        </discussion-notes-replies-wrapper>
       </template>
       <template v-else>
         <component
