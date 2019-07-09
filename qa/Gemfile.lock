@@ -35,6 +35,7 @@ GEM
     faker (1.9.3)
       i18n (>= 0.7)
     ffi (1.9.25)
+    gitlab-qa (4.0.0)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
     i18n (0.9.1)
@@ -53,6 +54,9 @@ GEM
     netrc (0.11.0)
     nokogiri (1.10.3)
       mini_portile2 (~> 2.4.0)
+    parallel (1.17.0)
+    parallel_tests (2.29.0)
+      parallel
     pry (0.11.3)
       coderay (~> 1.1.0)
       method_source (~> 0.9.0)
@@ -104,8 +108,10 @@ DEPENDENCIES
   capybara (~> 2.16.1)
   capybara-screenshot (~> 1.0.18)
   faker (~> 1.6, >= 1.6.6)
+  gitlab-qa
   knapsack (~> 1.17)
   nokogiri (~> 1.10.3)
+  parallel_tests (~> 2.29)
   pry-byebug (~> 3.5.1)
   rake (~> 12.3.0)
   rspec (~> 3.7)

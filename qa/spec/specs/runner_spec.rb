@@ -58,11 +58,11 @@ describe QA::Specs::Runner do
       end
     end
 
-    context 'when "-- qa/specs/features/foo" is set as options' do
-      subject { described_class.new.tap { |runner| runner.options = %w[-- qa/specs/features/foo] } }
+    context 'when "--tag smoke" and "qa/specs/features/foo" are set as options' do
+      subject { described_class.new.tap { |runner| runner.options = %w[--tag smoke qa/specs/features/foo] } }
 
-      it 'passes the given tests path and excludes the orchestrated tag' do
-        expect_rspec_runner_arguments(['--tag', '~orchestrated', '--', 'qa/specs/features/foo'])
+      it 'focuses on the given tag and includes the path without excluding the orchestrated tag' do
+        expect_rspec_runner_arguments(['--tag', 'smoke', 'qa/specs/features/foo'])
 
         subject.perform
       end

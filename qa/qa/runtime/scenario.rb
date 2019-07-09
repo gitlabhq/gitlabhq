@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'json'
+
 module QA
   module Runtime
     ##
@@ -22,6 +24,10 @@ module QA
             end
           end
         end
+      end
+
+      def from_env(var)
+        JSON.parse(Runtime::Env.runtime_scenario_attributes).each { |k, v| define(k, v) }
       end
 
       def method_missing(name, *)
