@@ -658,7 +658,6 @@ repo or by specifying a project variable:
 You can also make use of the `HELM_UPGRADE_EXTRA_ARGS` environment variable to override the default values in the `values.yaml` file in the [default Helm chart](https://gitlab.com/gitlab-org/charts/auto-deploy-app).
 To apply your own `values.yaml` file to all Helm upgrade commands in Auto Deploy set `HELM_UPGRADE_EXTRA_ARGS` to `--values my-values.yaml`.
 
-
 ### Custom Helm chart per environment **(PREMIUM)**
 
 You can specify the use of a custom Helm chart per environment by scoping the environment variable
