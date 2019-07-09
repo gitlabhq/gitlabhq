@@ -92,7 +92,7 @@ module IssuableActions
   end
 
   def bulk_update
-    result = Issuable::BulkUpdateService.new(project, current_user, bulk_update_params).execute(resource_name)
+    result = Issuable::BulkUpdateService.new(current_user, bulk_update_params).execute(resource_name)
     quantity = result[:count]
 
     render json: { notice: "#{quantity} #{resource_name.pluralize(quantity)} updated" }
@@ -181,7 +181,7 @@ module IssuableActions
   end
 
   def authorize_admin_issuable!
-    unless can?(current_user, :"admin_#{resource_name}", @project) # rubocop:disable Gitlab/ModuleWithInstanceVariables
+    unless can?(current_user, :"admin_#{resource_name}", parent)
       return access_denied!
     end
   end
