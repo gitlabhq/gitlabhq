@@ -1,4 +1,4 @@
-# Issue closing pattern
+# Issue closing pattern **(CORE ONLY)**
 
 >**Note:**
 This is the administration documentation.
@@ -27,9 +27,10 @@ Because Rubular doesn't understand `%{issue_ref}`, you can replace this by
 1. Change the value of `gitlab_rails['gitlab_issue_closing_pattern']` to a regular
    expression of your liking:
 
-    ```ruby
-    gitlab_rails['gitlab_issue_closing_pattern'] = "\b((?:[Cc]los(?:e[sd]|ing)|\b[Ff]ix(?:e[sd]|ing)?) +(?:(?:issues? +)?%{issue_ref}(?:(?:, *| +and +)?))+)"
-    ```
+   ```ruby
+   gitlab_rails['gitlab_issue_closing_pattern'] = "\b((?:[Cc]los(?:e[sd]|ing)|\b[Ff]ix(?:e[sd]|ing)?) +(?:(?:issues? +)?%{issue_ref}(?:(?:, *| +and +)?))+)"
+   ```
+
 1. [Reconfigure] GitLab for the changes to take effect.
 
 **For installations from source**
@@ -37,13 +38,13 @@ Because Rubular doesn't understand `%{issue_ref}`, you can replace this by
 1. Open `gitlab.yml` with your editor.
 1. Change the value of `issue_closing_pattern`:
 
-    ```yaml
-    issue_closing_pattern: "\b((?:[Cc]los(?:e[sd]|ing)|\b[Ff]ix(?:e[sd]|ing)?) +(?:(?:issues? +)?%{issue_ref}(?:(?:, *| +and +)?))+)"
-    ```
+   ```yaml
+   issue_closing_pattern: "\b((?:[Cc]los(?:e[sd]|ing)|\b[Ff]ix(?:e[sd]|ing)?) +(?:(?:issues? +)?%{issue_ref}(?:(?:, *| +and +)?))+)"
+   ```
 
 1. [Restart] GitLab for the changes to take effect.
 
 [gitlab.yml.example]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/config/gitlab.yml.example
 [reconfigure]: restart_gitlab.md#omnibus-gitlab-reconfigure
 [restart]: restart_gitlab.md#installations-from-source
-[user documentation]: ../user/project/issues/automatic_issue_closing.md
+[user documentation]: ../user/project/issues/managing_issues.md#closing-issues-automatically

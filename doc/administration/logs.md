@@ -4,7 +4,7 @@ GitLab has an advanced log system where everything is logged so that you
 can analyze your instance using various system log files. In addition to
 system log files, GitLab Enterprise Edition comes with Audit Events.
 Find more about them [in Audit Events
-documentation](https://docs.gitlab.com/ee/administration/audit_events.html)
+documentation](audit_events.md)
 
 System log files are typically plain text in a standard log file format.
 This guide talks about how to read and use these system log files.
@@ -287,6 +287,9 @@ Omnibus GitLab packages or in `/home/git/gitlab/log/auth.log` for
 installations from source.
 
 It logs information whenever [Rack Attack] registers an abusive request.
+
+NOTE: **Note:**
+From [%12.1](https://gitlab.com/gitlab-org/gitlab-ce/issues/62756), user id and username are available on this log.
 
 ## `graphql_json.log`
 

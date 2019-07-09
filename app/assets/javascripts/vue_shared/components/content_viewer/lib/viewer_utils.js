@@ -3,6 +3,7 @@ import { __ } from '~/locale';
 const viewers = {
   image: {
     id: 'image',
+    binary: true,
   },
   markdown: {
     id: 'markdown',

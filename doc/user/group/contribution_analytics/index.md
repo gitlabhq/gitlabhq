@@ -2,7 +2,7 @@
 type: reference
 ---
 
-# Contribution Analytics **[STARTER]**
+# Contribution Analytics **(STARTER)**
 
 > Introduced in [GitLab Starter](https://about.gitlab.com/pricing/) 8.3.
 

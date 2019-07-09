@@ -65,7 +65,7 @@ request is as follows:
    1. If you are contributing documentation, choose `Documentation` from the
       "Choose a template" menu and fill in the description according to the template.
    1. Mention the issue(s) your merge request solves, using the `Solves #XXX` or
-      `Closes #XXX` syntax to [auto-close](../../user/project/issues/automatic_issue_closing.md)
+      `Closes #XXX` syntax to [auto-close](../../user/project/issues/managing_issues.md#closing-issues-automatically)
       the issue(s) once the merge request is merged.
 1. If you're allowed to (Core team members, for example), set a relevant milestone
    and [labels](issue_workflow.md).
@@ -193,6 +193,7 @@ requirements.
 1. [Changelog entry added](../changelog.md), if necessary.
 1. Reviewed by relevant (UX/FE/BE/tech writing) reviewers and all concerns are addressed.
 1. Merged by a project maintainer.
+1. Confirmed to be working in the [Canary stage](https://about.gitlab.com/handbook/engineering/#canary-testing) or on GitLab.com once the contribution is deployed.
 1. Added to the [release post](https://about.gitlab.com/handbook/marketing/blog/release-posts/),
    if relevant.
 1. Added to [the website](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/features.yml), if relevant.

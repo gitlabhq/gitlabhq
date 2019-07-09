@@ -3,7 +3,8 @@
 module Gitlab
   module PerformanceBar
     ALLOWED_USER_IDS_KEY = 'performance_bar_allowed_user_ids:v2'.freeze
-    EXPIRY_TIME = 5.minutes
+    EXPIRY_TIME_L1_CACHE = 1.minute
+    EXPIRY_TIME_L2_CACHE = 5.minutes
 
     def self.enabled?(user = nil)
       return true if Rails.env.development?
@@ -19,20 +20,31 @@ module Gitlab
 
     # rubocop: disable CodeReuse/ActiveRecord
     def self.allowed_user_ids
-      Rails.cache.fetch(ALLOWED_USER_IDS_KEY, expires_in: EXPIRY_TIME) do
-        group = Group.find_by_id(allowed_group_id)
+      l1_cache_backend.fetch(ALLOWED_USER_IDS_KEY, expires_in: EXPIRY_TIME_L1_CACHE) do
+        l2_cache_backend.fetch(ALLOWED_USER_IDS_KEY, expires_in: EXPIRY_TIME_L2_CACHE) do
+          group = Group.find_by_id(allowed_group_id)
 
-        if group
-          GroupMembersFinder.new(group).execute.pluck(:user_id)
-        else
-          []
+          if group
+            GroupMembersFinder.new(group).execute.pluck(:user_id)
+          else
+            []
+          end
         end
       end
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
     def self.expire_allowed_user_ids_cache
-      Rails.cache.delete(ALLOWED_USER_IDS_KEY)
+      l1_cache_backend.delete(ALLOWED_USER_IDS_KEY)
+      l2_cache_backend.delete(ALLOWED_USER_IDS_KEY)
+    end
+
+    def self.l1_cache_backend
+      Gitlab::ThreadMemoryCache.cache_backend
+    end
+
+    def self.l2_cache_backend
+      Rails.cache
     end
   end
 end

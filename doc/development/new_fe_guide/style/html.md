@@ -16,7 +16,7 @@ Button tags requires a `type` attribute according to the [W3C HTML specification
 
 ### Button role
 
-If an HTML element has an `onClick` handler but is not a button, it should have `role="button"`. This is [more accessible](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques/Using_the_button_role).
+If an HTML element has an `onClick` handler but is not a button, it should have `role="button"`. This is [more accessible](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/button_role).
 
 ```html
 // bad

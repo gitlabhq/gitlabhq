@@ -74,17 +74,11 @@ describe Gitlab::Ci::Reports::TestReportsComparer do
     subject { comparer.resolved_count }
 
     context 'when there is a resolved test case in head suites' do
-      let(:create_test_case_java_resolved) do
-        create_test_case_java_failed.tap do |test_case|
-          test_case.instance_variable_set("@status", Gitlab::Ci::Reports::TestCase::STATUS_SUCCESS)
-        end
-      end
-
       before do
         base_reports.get_suite('rspec').add_test_case(create_test_case_rspec_success)
         base_reports.get_suite('junit').add_test_case(create_test_case_java_failed)
         head_reports.get_suite('rspec').add_test_case(create_test_case_rspec_success)
-        head_reports.get_suite('junit').add_test_case(create_test_case_java_resolved)
+        head_reports.get_suite('junit').add_test_case(create_test_case_java_success)
       end
 
       it 'returns the correct count' do

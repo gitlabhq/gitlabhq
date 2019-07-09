@@ -2,12 +2,11 @@
 
 The global time zone configuration parameter can be changed in `config/gitlab.yml`:
 
-```
+```text
 # time_zone: 'UTC'
 ```
 
 Uncomment and customize if you want to change the default time zone of the GitLab application.
-
 
 ## Viewing available timezones
 
@@ -26,14 +25,13 @@ To obtain a list of timezones, log in to your GitLab application server and run 
 
 To update, add the timezone that best applies to your location. For example:
 
-```
+```ruby
 gitlab_rails['time_zone'] = 'America/New_York'
 ```
 
 After adding the configuration parameter, reconfigure and restart your GitLab instance:
 
-```
+```sh
 gitlab-ctl reconfigure
 gitlab-ctl restart
 ```
-

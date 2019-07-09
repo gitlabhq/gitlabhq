@@ -1,4 +1,4 @@
-# Elasticsearch knowledge **[STARTER ONLY]**
+# Elasticsearch knowledge **(STARTER ONLY)**
 
 This area is to maintain a compendium of useful information when working with elasticsearch.
 
@@ -150,7 +150,7 @@ Uses an [Edge NGram token filter](https://www.elastic.co/guide/en/elasticsearch/
 
 ## Troubleshooting
 
-### Getting "flood stage disk watermark [95%] exceeded"
+### Getting `flood stage disk watermark [95%] exceeded`
 
 You might get an error such as
 

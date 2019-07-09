@@ -87,12 +87,17 @@ module LoginHelpers
     click_link "oauth-login-#{provider}"
   end
 
+  def fake_successful_u2f_authentication
+    allow(U2fRegistration).to receive(:authenticate).and_return(true)
+    FakeU2fDevice.new(page, nil).fake_u2f_authentication
+  end
+
   def mock_auth_hash_with_saml_xml(provider, uid, email, saml_response)
     response_object = { document: saml_xml(saml_response) }
     mock_auth_hash(provider, uid, email, response_object: response_object)
   end
 
-  def mock_auth_hash(provider, uid, email, response_object: nil)
+  def configure_mock_auth(provider, uid, email, response_object: nil)
     # The mock_auth configuration allows you to set per-provider (or default)
     # authentication hashes to return during integration testing.
     OmniAuth.config.mock_auth[provider.to_sym] = OmniAuth::AuthHash.new({
@@ -118,6 +123,11 @@ module LoginHelpers
         response_object: response_object
       }
     })
+  end
+
+  def mock_auth_hash(provider, uid, email, response_object: nil)
+    configure_mock_auth(provider, uid, email, response_object: response_object)
+
     original_env_config_omniauth_auth = Rails.application.env_config['omniauth.auth']
     Rails.application.env_config['omniauth.auth'] = OmniAuth.config.mock_auth[provider.to_sym]
 

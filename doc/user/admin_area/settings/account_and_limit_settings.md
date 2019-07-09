@@ -4,7 +4,7 @@ type: reference
 
 # Account and limit settings
 
-## Repository size limit **[STARTER]**
+## Repository size limit **(STARTER)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/740) in [GitLab Enterprise Edition 8.12](https://about.gitlab.com/2016/09/22/gitlab-8-12-released/#limit-project-size-ee).
 > Available in [GitLab Starter](https://about.gitlab.com/pricing/).
@@ -44,10 +44,12 @@ The first push of a new project, including LFS objects, will be checked for size
 and **will** be rejected if the sum of their sizes exceeds the maximum allowed 
 repository size.
 
+**Note:** The repository size limit includes repository files and LFS, and does not include artifacts.
+
 For details on manually purging files, see [reducing the repository size using Git](../../project/repository/reducing_the_repo_size_using_git.md).
 
 NOTE: **Note:**
-For GitLab.com, the repository size limit is 10 GB.
+GitLab.com repository size [is set by GitLab](../../gitlab_com/index.md#repository-size-limit).
 
 <!-- ## Troubleshooting
 

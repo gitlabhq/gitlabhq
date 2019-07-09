@@ -12,6 +12,7 @@ const createEntries = paths => {
 
     const { name, parent } = splitParent(path);
     const parentEntry = acc[parent];
+    const previewMode = viewerInformationForPath(name);
 
     acc[path] = {
       ...decorateData({
@@ -22,7 +23,8 @@ const createEntries = paths => {
         path,
         url: createUrl(`/${TEST_PROJECT_ID}/${type}/${TEST_BRANCH_ID}/-/${escapeFileUrl(path)}`),
         type,
-        previewMode: viewerInformationForPath(path),
+        previewMode,
+        binary: (previewMode && previewMode.binary) || false,
         parentPath: parent,
         parentTreeUrl: parentEntry
           ? parentEntry.url

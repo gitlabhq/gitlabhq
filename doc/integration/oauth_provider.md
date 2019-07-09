@@ -11,7 +11,7 @@ If you want to use:
 
 ## Introduction to OAuth
 
-[OAuth] provides to client applications a 'secure delegated access' to server
+[OAuth](https://oauth.net/2/) provides to client applications a 'secure delegated access' to server
 resources on behalf of a resource owner. In fact, OAuth allows an authorization
 server to issue access tokens to third-party clients with the approval of the
 resource owner, or the end-user.
@@ -85,5 +85,3 @@ application can perform such as `read_user` and `api`. There are many more scope
 available.
 
 At any time you can revoke any access by just clicking **Revoke**.
-
-[oauth]: http://oauth.net/2/ "OAuth website"

@@ -6,7 +6,7 @@ using [ssh certificates](ssh_certificates.md), they are even faster,
 but are not a drop-in replacement.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/1631) in
-> [GitLab Starter](https://about.gitlab.com/gitlab-ee) 9.3.
+> [GitLab Starter](https://about.gitlab.com/pricing/) 9.3.
 >
 > [Available in](https://gitlab.com/gitlab-org/gitlab-ee/issues/3953) GitLab
 > Community Edition 10.4.
@@ -30,7 +30,7 @@ instructions will break installations using older versions of OpenSSH, such as
 those included with CentOS 6 as of September 2017. If you want to use this
 feature for CentOS 6, follow [the instructions on how to build and install a custom OpenSSH package](#compiling-a-custom-version-of-openssh-for-centos-6) before continuing.
 
-## Fast lookup is required for Geo **[PREMIUM]**
+## Fast lookup is required for Geo **(PREMIUM)**
 
 By default, GitLab manages an `authorized_keys` file, which contains all the
 public SSH keys for users allowed to access GitLab. However, to maintain a

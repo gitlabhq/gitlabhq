@@ -6,8 +6,9 @@ Issues are the fundamental medium for collaborating on ideas and planning work i
 
 The GitLab issue tracker is an advanced tool for collaboratively developing ideas, solving problems, and planning work.
 
-Issues can allow you, your team, and your collaborators to share and discuss proposals before and during their implementation.
-However, they can be used for a variety of other purposes, customized to your needs and workflow.
+Issues can allow you, your team, and your collaborators to share and discuss proposals
+before, and during, their implementation. However, they can be used for a variety of
+other purposes, customized to your needs and workflow.
 
 Issues are always associated with a specific project, but if you have multiple projects in a group,
 you can also view all the issues collectively at the group level.
@@ -17,13 +18,15 @@ you can also view all the issues collectively at the group level.
 - Discussing the implementation of a new idea
 - Tracking tasks and work status
 - Accepting feature proposals, questions, support requests, or bug reports
-- Elaborating new code implementations
+- Elaborating on new code implementations
 
-See also the blog post "[Always start a discussion with an issue](https://about.gitlab.com/2016/03/03/start-with-an-issue/)".
+See also [Always start a discussion with an issue](https://about.gitlab.com/2016/03/03/start-with-an-issue/).
 
 ## Parts of an issue
 
-Issues contain a variety of content and metadata, enabling a large range of flexibility in how they are used. Each issue can contain the following attributes, though some items may remain unset.
+Issues contain a variety of content and metadata, enabling a large range of flexibility
+in how they are used. Each issue can contain the following attributes, though not all items
+must be set.
 
 <table class="borderless-table fixed-table">
 <tr>
@@ -70,23 +73,36 @@ Issues contain a variety of content and metadata, enabling a large range of flex
 
 ## Viewing and managing issues
 
-While you can view and manage the full detail of an issue at its URL, you can also work with multiple issues at a time using the Issues List, Issue Boards, Epics **[ULTIMATE]**, and issue references.
+While you can view and manage the full details of an issue on the [issue page](#issue-page),
+you can also work with multiple issues at a time using the [Issues List](#issues-list),
+[Issue Boards](#issue-boards), Issue references, and [Epics](#epics-ultimate)**(ULTIMATE)**.
+
+Key actions for Issues include:
+
+- [Creating issues](managing_issues.md#create-a-new-issue)
+- [Moving issues](managing_issues.md#moving-issues)
+- [Closing issues](managing_issues.md#closing-issues)
+- [Deleting issues](managing_issues.md#deleting-issues)
 
 ### Issue page
 
 ![Issue view](img/issues_main_view.png)
 
-On an issue’s page, you can view all aspects of the issue, and you can also modify them if you you have the necessary [permissions](../../permissions.md).
-
-For more information, see the [Issue Data and Actions](issue_data_and_actions.md) page.
+On an issue's page, you can view [all aspects of the issue](issue_data_and_actions.md),
+and modify them if you you have the necessary [permissions](../../permissions.md).
 
 ### Issues list
 
 ![Project issues list view](img/project_issues_list_view.png)
 
-On the Issues List, you can view all issues in the current project, or from multiple projects when opening the Issues List from the higher-level group context. Filter the issue list by [any search query](../../search/index.md#issues-and-merge-requests-per-project) and/or specific metadata, such as label(s), assignees(s), status, and more. From this view, you can also make certain changes [in bulk](../bulk_editing.md) to the displayed issues.
+On the Issues List, you can view all issues in the current project, or from multiple
+projects when opening the Issues List from the higher-level group context. Filter the
+issue list with a [search query](../../search/index.md#issues-and-merge-requests-per-project),
+including specific metadata, such as label(s), assignees(s), status, and more. From this
+view, you can also make certain changes [in bulk](../bulk_editing.md) to the displayed issues.
 
-For more information on interacting with Issues, see the [Issue Data and Actions](issue_data_and_actions.md) page.
+For more information, see the [Issue Data and Actions](issue_data_and_actions.md) page
+for a rundown of all the fields and information in an issue.
 
 For sorting by issue priority, see [Label Priority](../labels.md#label-priority).
 
@@ -94,44 +110,55 @@ For sorting by issue priority, see [Label Priority](../labels.md#label-priority)
 
 ![Issue board](img/issue_board.png)
 
-Issue boards are Kanban boards with columns that display issues based on their labels or their assignees**[PREMIUM]**. They offer the flexibility to manage issues using highly customizable workflows.
+[Issue boards](../issue_board.md) are Kanban boards with columns that display issues based on their labels
+or their assignees**(PREMIUM)**. They offer the flexibility to manage issues using
+highly customizable workflows.
 
-You can reorder issues within a column, or drag an issue card to another column; its associated label or assignee will change to match that of the new column. The entire board can also be filtered to only include issues from a certain milestone or an overarching label.
+You can reorder issues within a column. If you drag an issue card to another column, its
+associated label or assignee will change to match that of the new column. The entire
+board can also be filtered to only include issues from a certain milestone or an overarching
+label.
 
-For more information, see the [Issue Boards](../issue_board.md) page.
+### Epics **(ULTIMATE)**
 
-### Epics **[ULTIMATE]**
+[Epics](../../group/epics/index.md) let you manage your portfolio of projects more
+efficiently and with less effort by tracking groups of issues that share a theme, across
+projects and milestones.
 
-Epics let you manage your portfolio of projects more efficiently and with less effort by tracking groups of issues that share a theme, across projects and milestones.
+### Related issues **(STARTER)**
 
-For more information, see the [Epics](../../group/epics/index.md) page.
-
-### Related issues **[STARTER]**
-
-You can mark two issues as related, so that when viewing each one, the other is always listed in its Related Issues section. This can help display important context, such as past work, dependencies, or duplicates.
-
-For more information, see [Related Issues](related_issues.md).
+You can mark two issues as related, so that when viewing one, the other is always
+listed in its [Related Issues](related_issues.md) section. This can help display important
+context, such as past work, dependencies, or duplicates.
 
 ### Crosslinking issues
 
-When you reference an issue from another issue or merge request by including its URL or ID, the referenced issue displays a message in the Activity stream about the reference, with a link to the other issue or MR.
+You can [crosslink issues](crosslinking_issues.md) by referencing an issue from another
+issue or merge request by including its URL or ID. The referenced issue displays a
+message in the Activity stream about the reference, with a link to the other issue or MR.
 
-For more information, see [Crosslinking issues](crosslinking_issues.md).
+### Similar issues
 
-## Issue actions
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22866) in GitLab 11.6.
 
-- [Create an issue](create_new_issue.md)
+To prevent duplication of issues for the same topic, GitLab searches for similar issues
+when new issues are being created.
+
+When typing in the title in the **New Issue** page, GitLab searches titles and descriptions
+across all issues the user has access to in the current project. Up 5 similar issues,
+sorted by most recently updated, are displayed below the title box. Note that this feature
+requires [GraphQL](../../../api/graphql/index.md) to be enabled.
+
+![Similar issues](img/similar_issues.png)
+
+## Other Issue actions
+
 - [Create an issue from a template](../../project/description_templates.md#using-the-templates)
-- [Close an issue](closing_issues.md)
-- [Move an issue](moving_issues.md)
-- [Delete an issue](deleting_issues.md)
-- [Create a merge request from an issue](issue_data_and_actions.md#22-create-merge-request)
-
-## Advanced issue management
-
-- [Bulk edit issues](../bulk_editing.md) - From the Issues List, select multiple issues in order to change their status, assignee, milestone, or labels in bulk.
+- [Set a due date](due_dates.md)
+- [Bulk edit issues](../bulk_editing.md) - From the Issues List, select multiple issues
+  in order to change their status, assignee, milestone, or labels in bulk.
 - [Import issues](csv_import.md)
-- [Export issues](csv_export.md) **[STARTER]**
+- [Export issues](csv_export.md) **(STARTER)**
 - [Issues API](../../../api/issues.md)
-- Configure an [external issue tracker](../../../integration/external-issue-tracker.md) such as Jira, Redmine,
-  or Bugzilla.
+- Configure an [external issue tracker](../../../integration/external-issue-tracker.md)
+  such as Jira, Redmine, or Bugzilla.

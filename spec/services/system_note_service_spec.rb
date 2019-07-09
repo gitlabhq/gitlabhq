@@ -332,7 +332,7 @@ describe SystemNoteService do
       create(:merge_request, source_project: project, target_project: project)
     end
 
-    subject { described_class.merge_when_pipeline_succeeds(noteable, project, author, noteable.diff_head_commit) }
+    subject { described_class.merge_when_pipeline_succeeds(noteable, project, author, pipeline.sha) }
 
     it_behaves_like 'a system note' do
       let(:action) { 'merge' }
@@ -356,6 +356,22 @@ describe SystemNoteService do
 
     it "posts the 'merge when pipeline succeeds' system note" do
       expect(subject.note).to eq "canceled the automatic merge"
+    end
+  end
+
+  describe '.abort_merge_when_pipeline_succeeds' do
+    let(:noteable) do
+      create(:merge_request, source_project: project, target_project: project)
+    end
+
+    subject { described_class.abort_merge_when_pipeline_succeeds(noteable, project, author, 'merge request was closed') }
+
+    it_behaves_like 'a system note' do
+      let(:action) { 'merge' }
+    end
+
+    it "posts the 'merge when pipeline succeeds' system note" do
+      expect(subject.note).to eq "aborted the automatic merge because merge request was closed"
     end
   end
 
@@ -1175,16 +1191,30 @@ describe SystemNoteService do
       end
 
       it 'links to the diff in the system note' do
-        expect(subject.note).to include('version 1')
-
         diff_id = merge_request.merge_request_diff.id
         line_code = change_position.line_code(project.repository)
-        expect(subject.note).to include(diffs_project_merge_request_path(project, merge_request, diff_id: diff_id, anchor: line_code))
+        link = diffs_project_merge_request_path(project, merge_request, diff_id: diff_id, anchor: line_code)
+
+        expect(subject.note).to eq("changed this line in [version 1 of the diff](#{link})")
+      end
+
+      context 'discussion is on an image' do
+        let(:discussion) { create(:image_diff_note_on_merge_request, project: project).to_discussion }
+
+        it 'links to the diff in the system note' do
+          diff_id = merge_request.merge_request_diff.id
+          file_hash = change_position.file_hash
+          link = diffs_project_merge_request_path(project, merge_request, diff_id: diff_id, anchor: file_hash)
+
+          expect(subject.note).to eq("changed this file in [version 1 of the diff](#{link})")
+        end
       end
     end
 
-    context 'when the change_position is invalid for the discussion' do
-      let(:change_position) { project.commit(sample_commit.id) }
+    context 'when the change_position does not point to a valid version' do
+      before do
+        allow(merge_request).to receive(:version_params_for).and_return(nil)
+      end
 
       it 'creates a new note in the discussion' do
         # we need to completely rebuild the merge request object, or the `@discussions` on the merge request are not reloaded.

@@ -16,6 +16,10 @@ module QA
       attribute :labels
       attribute :title
 
+      def initialize
+        @labels = []
+      end
+
       def fabricate!
         project.visit!
 
@@ -38,7 +42,7 @@ module QA
 
       def api_post_body
         {
-          labels: [labels],
+          labels: labels,
           title: title
         }
       end

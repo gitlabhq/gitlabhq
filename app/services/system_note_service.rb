@@ -221,8 +221,8 @@ module SystemNoteService
   end
 
   # Called when 'merge when pipeline succeeds' is executed
-  def merge_when_pipeline_succeeds(noteable, project, author, last_commit)
-    body = "enabled an automatic merge when the pipeline for #{last_commit.to_reference(project)} succeeds"
+  def merge_when_pipeline_succeeds(noteable, project, author, sha)
+    body = "enabled an automatic merge when the pipeline for #{sha} succeeds"
 
     create_note(NoteSummary.new(noteable, project, author, body, action: 'merge'))
   end
@@ -231,6 +231,16 @@ module SystemNoteService
   def cancel_merge_when_pipeline_succeeds(noteable, project, author)
     body = 'canceled the automatic merge'
 
+    create_note(NoteSummary.new(noteable, project, author, body, action: 'merge'))
+  end
+
+  # Called when 'merge when pipeline succeeds' is aborted
+  def abort_merge_when_pipeline_succeeds(noteable, project, author, reason)
+    body = "aborted the automatic merge because #{reason}"
+
+    ##
+    # TODO: Abort message should be sent by the system, not a particular user.
+    # See https://gitlab.com/gitlab-org/gitlab-ce/issues/63187.
     create_note(NoteSummary.new(noteable, project, author, body, action: 'merge'))
   end
 
@@ -268,11 +278,13 @@ module SystemNoteService
     merge_request = discussion.noteable
     diff_refs = change_position.diff_refs
     version_index = merge_request.merge_request_diffs.viewable.count
+    position_on_text = change_position.on_text?
+    text_parts = ["changed this #{position_on_text ? 'line' : 'file'} in"]
 
-    text_parts = ["changed this line in"]
     if version_params = merge_request.version_params_for(diff_refs)
-      line_code = change_position.line_code(project.repository)
-      url = url_helpers.diffs_project_merge_request_path(project, merge_request, version_params.merge(anchor: line_code))
+      repository = project.repository
+      anchor = position_on_text ? change_position.line_code(repository) : change_position.file_hash
+      url = url_helpers.diffs_project_merge_request_path(project, merge_request, version_params.merge(anchor: anchor))
 
       text_parts << "[version #{version_index} of the diff](#{url})"
     else

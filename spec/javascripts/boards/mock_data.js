@@ -1,4 +1,5 @@
 import BoardService from '~/boards/services/board_service';
+import boardsStore from '~/boards/stores/boards_store';
 
 export const boardObj = {
   id: 1,
@@ -76,12 +77,14 @@ export const mockBoardService = (opts = {}) => {
   const bulkUpdatePath = opts.bulkUpdatePath || '';
   const boardId = opts.boardId || '1';
 
-  return new BoardService({
+  boardsStore.setEndpoints({
     boardsEndpoint,
     listsEndpoint,
     bulkUpdatePath,
     boardId,
   });
+
+  return new BoardService();
 };
 
 export const mockAssigneesList = [

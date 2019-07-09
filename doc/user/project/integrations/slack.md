@@ -6,7 +6,7 @@ The Slack Notifications Service allows your GitLab project to send events (e.g. 
 
 ## Slack Configuration
 
-1. Sign in to your Slack team and [start a new Incoming WebHooks configuration](https://my.slack.com/services/new/incoming-webhook/).
+1. Sign in to your Slack team and [start a new Incoming WebHooks configuration](https://my.slack.com/services/new/incoming-webhook).
 1. Select the Slack channel where notifications will be sent to by default. Click the **Add Incoming WebHooks integration** button to add the configuration.
 1. Copy the **Webhook URL**, which we'll use later in the GitLab configuration.
 

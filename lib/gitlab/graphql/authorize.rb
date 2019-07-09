@@ -8,7 +8,7 @@ module Gitlab
       extend ActiveSupport::Concern
 
       def self.use(schema_definition)
-        schema_definition.instrument(:field, Instrumentation.new, after_built_ins: true)
+        schema_definition.instrument(:field, Gitlab::Graphql::Authorize::Instrumentation.new, after_built_ins: true)
       end
     end
   end

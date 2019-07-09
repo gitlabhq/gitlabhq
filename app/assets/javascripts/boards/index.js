@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import Vue from 'vue';
 
+import mountMultipleBoardsSwitcher from 'ee_else_ce/boards/mount_multiple_boards_switcher';
 import Flash from '~/flash';
 import { __ } from '~/locale';
 import './models/label';
@@ -20,7 +21,7 @@ import modalMixin from './mixins/modal_mixins';
 import './filters/due_date_filters';
 import Board from './components/board';
 import BoardSidebar from './components/board_sidebar';
-import initNewListDropdown from './components/new_list_dropdown';
+import initNewListDropdown from 'ee_else_ce/boards/components/new_list_dropdown';
 import BoardAddIssuesModal from './components/modal/index.vue';
 import '~/vue_shared/vue_resource_interceptor';
 import {
@@ -78,13 +79,14 @@ export default () => {
       },
     },
     created() {
-      gl.boardService = new BoardService({
+      boardsStore.setEndpoints({
         boardsEndpoint: this.boardsEndpoint,
         recentBoardsEndpoint: this.recentBoardsEndpoint,
         listsEndpoint: this.listsEndpoint,
         bulkUpdatePath: this.bulkUpdatePath,
         boardId: this.boardId,
       });
+      gl.boardService = new BoardService();
       boardsStore.rootPath = this.boardsEndpoint;
 
       eventHub.$on('updateTokens', this.updateTokens);
@@ -278,4 +280,6 @@ export default () => {
       `,
     });
   }
+
+  mountMultipleBoardsSwitcher();
 };

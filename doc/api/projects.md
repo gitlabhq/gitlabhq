@@ -55,8 +55,8 @@ GET /projects
 | `with_issues_enabled`         | boolean | no | Limit by enabled issues feature |
 | `with_merge_requests_enabled` | boolean | no | Limit by enabled merge requests feature |
 | `with_programming_language`   | string  | no | Limit by projects which use the given programming language |
-| `wiki_checksum_failed`        | boolean | no | **[PREMIUM]** Limit projects where the wiki checksum calculation has failed *([Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/6137) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.2)* |
-| `repository_checksum_failed`  | boolean | no | **[PREMIUM]** Limit projects where the repository checksum calculation has failed *([Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/6137) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.2)* |
+| `wiki_checksum_failed`        | boolean | no | **(PREMIUM)** Limit projects where the wiki checksum calculation has failed ([Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/6137) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.2) |
+| `repository_checksum_failed`  | boolean | no | **(PREMIUM)** Limit projects where the repository checksum calculation has failed ([Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/6137) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.2) |
 | `min_access_level`            | integer | no | Limit by current user minimal [access level](members.md) |
 
 When `simple=true` or the user is unauthenticated this returns something like:
@@ -741,12 +741,12 @@ POST /projects
 | `auto_devops_enabled` | boolean | no | Enable Auto DevOps for this project |
 | `auto_devops_deploy_strategy` | string | no | Auto Deploy strategy (`continuous`, `manual` or `timed_incremental`) |
 | `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
-| `approvals_before_merge` | integer | no | **[STARTER]** How many approvers should approve merge requests by default |
-| `mirror` | boolean | no | **[STARTER]** Enables pull mirroring in a project |
-| `mirror_trigger_builds` | boolean | no | **[STARTER]** Pull mirroring triggers builds |
+| `approvals_before_merge` | integer | no | **(STARTER)** How many approvers should approve merge requests by default |
+| `mirror` | boolean | no | **(STARTER)** Enables pull mirroring in a project |
+| `mirror_trigger_builds` | boolean | no | **(STARTER)** Pull mirroring triggers builds |
 | `initialize_with_readme` | boolean | no | `false` by default |
 
->**Note**: If your HTTP repository is not publicly accessible,
+NOTE: **Note:** If your HTTP repository is not publicly accessible,
 add authentication information to the URL: `https://username:password@gitlab.company.com/group/project.git`
 where `password` is a public access key with the `api` scope enabled.
 
@@ -798,12 +798,12 @@ POST /projects/user/:user_id
 | `auto_devops_enabled` | boolean | no | Enable Auto DevOps for this project |
 | `auto_devops_deploy_strategy` | string | no | Auto Deploy strategy (`continuous`, `manual` or `timed_incremental`) |
 | `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
-| `approvals_before_merge` | integer | no | **[STARTER]** How many approvers should approve merge requests by default |
-| `external_authorization_classification_label` | string | no | **[CORE ONLY]** The classification label for the project |
-| `mirror` | boolean | no | **[STARTER]** Enables pull mirroring in a project |
-| `mirror_trigger_builds` | boolean | no | **[STARTER]** Pull mirroring triggers builds |
+| `approvals_before_merge` | integer | no | **(STARTER)** How many approvers should approve merge requests by default |
+| `external_authorization_classification_label` | string | no | **(CORE ONLY)** The classification label for the project |
+| `mirror` | boolean | no | **(STARTER)** Enables pull mirroring in a project |
+| `mirror_trigger_builds` | boolean | no | **(STARTER)** Pull mirroring triggers builds |
 
->**Note**: If your HTTP repository is not publicly accessible,
+NOTE: **Note:** If your HTTP repository is not publicly accessible,
 add authentication information to the URL: `https://username:password@gitlab.company.com/group/project.git`
 where `password` is a public access key with the `api` scope enabled.
 
@@ -855,16 +855,16 @@ PUT /projects/:id
 | `auto_devops_enabled` | boolean | no | Enable Auto DevOps for this project |
 | `auto_devops_deploy_strategy` | string | no | Auto Deploy strategy (`continuous`, `manual` or `timed_incremental`) |
 | `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
-| `approvals_before_merge` | integer | no | **[STARTER]** How many approvers should approve merge request by default |
-| `external_authorization_classification_label` | string | no | **[CORE ONLY]** The classification label for the project |
-| `mirror` | boolean | no | **[STARTER]** Enables pull mirroring in a project |
-| `mirror_user_id` | integer | no | **[STARTER]** User responsible for all the activity surrounding a pull mirror event |
-| `mirror_trigger_builds` | boolean | no | **[STARTER]** Pull mirroring triggers builds |
-| `only_mirror_protected_branches` | boolean | no | **[STARTER]** Only mirror protected branches |
-| `mirror_overwrites_diverged_branches` | boolean | no | **[STARTER]** Pull mirror overwrites diverged branches |
-| `packages_enabled` | boolean | no | **[PREMIUM ONLY]** Enable or disable packages repository feature |
+| `approvals_before_merge` | integer | no | **(STARTER)** How many approvers should approve merge request by default |
+| `external_authorization_classification_label` | string | no | **(CORE ONLY)** The classification label for the project |
+| `mirror` | boolean | no | **(STARTER)** Enables pull mirroring in a project |
+| `mirror_user_id` | integer | no | **(STARTER)** User responsible for all the activity surrounding a pull mirror event |
+| `mirror_trigger_builds` | boolean | no | **(STARTER)** Pull mirroring triggers builds |
+| `only_mirror_protected_branches` | boolean | no | **(STARTER)** Only mirror protected branches |
+| `mirror_overwrites_diverged_branches` | boolean | no | **(STARTER)** Pull mirror overwrites diverged branches |
+| `packages_enabled` | boolean | no | **(PREMIUM ONLY)** Enable or disable packages repository feature |
 
->**Note**: If your HTTP repository is not publicly accessible,
+NOTE: **Note:** If your HTTP repository is not publicly accessible,
 add authentication information to the URL: `https://username:password@gitlab.company.com/group/project.git`
 where `password` is a public access key with the `api` scope enabled.
 
@@ -1390,7 +1390,7 @@ Example response:
 
 ## Remove project
 
-Removes a project including all associated resources (issues, merge requests etc.)
+Removes a project including all associated resources (issues, merge requests etc).
 
 ```
 DELETE /projects/:id
@@ -1648,7 +1648,7 @@ POST /projects/:id/housekeeping
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
 
-## Push Rules **[STARTER]**
+## Push Rules **(STARTER)**
 
 ### Get project push rules
 
@@ -1667,6 +1667,7 @@ GET /projects/:id/push_rule
   "id": 1,
   "project_id": 3,
   "commit_message_regex": "Fixes \d+\..*",
+  "commit_message_negative_regex": "ssh\:\/\/",
   "branch_name_regex": "",
   "deny_delete_tag": false,
   "created_at": "2012-10-12T17:04:47Z",
@@ -1679,10 +1680,17 @@ GET /projects/:id/push_rule
 }
 ```
 
-The following attributes are restricted to certain plans, and will not appear if
-you do not have access to those features:
+Users on GitLab [Premium, Silver, or higher](https://about.gitlab.com/pricing/) will also see
+the `commit_committer_check` parameter:
 
-* `commit_committer_check` only available on **[PREMIUM]**
+```json
+{
+  "id": 1,
+  "project_id": 3,
+  "commit_committer_check": false
+  ...
+}
+```
 
 ### Add project push rule
 
@@ -1692,18 +1700,19 @@ Adds a push rule to a specified project.
 POST /projects/:id/push_rule
 ```
 
-| Attribute                              | Type           | Required | Description |
-| -------------------------------------- | -------------- | -------- | ----------- |
-| `id`                                   | integer/string | yes      | The ID of the project or NAMESPACE/PROJECT_NAME |
-| `deny_delete_tag` **[STARTER]**        | boolean        | no       | Deny deleting a tag |
-| `member_check` **[STARTER]**           | boolean        | no       | Restrict commits by author (email) to existing GitLab users |
-| `prevent_secrets` **[STARTER]**        | boolean        | no       | GitLab will reject any files that are likely to contain secrets |
-| `commit_message_regex` **[STARTER]**   | string         | no       | All commit messages must match this, e.g. `Fixed \d+\..*` |
-| `branch_name_regex` **[STARTER]**      | string         | no       | All branch names must match this, e.g. `(feature|hotfix)\/*` |
-| `author_email_regex` **[STARTER]**     | string         | no       | All commit author emails must match this, e.g. `@my-company.com$` |
-| `file_name_regex` **[STARTER]**        | string         | no       | All commited filenames must **not** match this, e.g. `(jar|exe)$` |
-| `max_file_size` **[STARTER]**          | integer        | no       | Maximum file size (MB) |
-| `commit_committer_check` **[PREMIUM]** | boolean        | no       | Users can only push commits to this repository that were committed with one of their own verified emails. |
+| Attribute                                     | Type           | Required | Description |
+| --------------------------------------------- | -------------- | -------- | ----------- |
+| `id`                                          | integer/string | yes      | The ID of the project or NAMESPACE/PROJECT_NAME |
+| `deny_delete_tag` **(STARTER)**               | boolean        | no       | Deny deleting a tag |
+| `member_check` **(STARTER)**                  | boolean        | no       | Restrict commits by author (email) to existing GitLab users |
+| `prevent_secrets` **(STARTER)**               | boolean        | no       | GitLab will reject any files that are likely to contain secrets |
+| `commit_message_regex` **(STARTER)**          | string         | no       | All commit messages must match this, e.g. `Fixed \d+\..*` |
+| `commit_message_negative_regex` **(STARTER)** | string         | no       | No commit message is allowed to match this, e.g. `ssh\:\/\/` |
+| `branch_name_regex` **(STARTER)**             | string         | no       | All branch names must match this, e.g. `(feature|hotfix)\/*` |
+| `author_email_regex` **(STARTER)**            | string         | no       | All commit author emails must match this, e.g. `@my-company.com$` |
+| `file_name_regex` **(STARTER)**               | string         | no       | All commited filenames must **not** match this, e.g. `(jar|exe)$` |
+| `max_file_size` **(STARTER)**                 | integer        | no       | Maximum file size (MB) |
+| `commit_committer_check` **(PREMIUM)**        | boolean        | no       | Users can only push commits to this repository that were committed with one of their own verified emails. |
 
 ### Edit project push rule
 
@@ -1713,18 +1722,19 @@ Edits a push rule for a specified project.
 PUT /projects/:id/push_rule
 ```
 
-| Attribute                              | Type           | Required | Description |
-| -------------------------------------- | -------------- | -------- | ----------- |
-| `id`                                   | integer/string | yes      | The ID of the project or NAMESPACE/PROJECT_NAME |
-| `deny_delete_tag` **[STARTER]**        | boolean        | no       | Deny deleting a tag |
-| `member_check` **[STARTER]**           | boolean        | no       | Restrict commits by author (email) to existing GitLab users |
-| `prevent_secrets` **[STARTER]**        | boolean        | no       | GitLab will reject any files that are likely to contain secrets |
-| `commit_message_regex` **[STARTER]**   | string         | no       | All commit messages must match this, e.g. `Fixed \d+\..*` |
-| `branch_name_regex` **[STARTER]**      | string         | no       | All branch names must match this, e.g. `(feature|hotfix)\/*` |
-| `author_email_regex` **[STARTER]**     | string         | no       | All commit author emails must match this, e.g. `@my-company.com$` |
-| `file_name_regex` **[STARTER]**        | string         | no       | All commited filenames must **not** match this, e.g. `(jar|exe)$` |
-| `max_file_size` **[STARTER]**          | integer        | no       | Maximum file size (MB) |
-| `commit_committer_check` **[PREMIUM]** | boolean        | no       | Users can only push commits to this repository that were committed with one of their own verified emails. |
+| Attribute                                     | Type           | Required | Description |
+| --------------------------------------------- | -------------- | -------- | ----------- |
+| `id`                                          | integer/string | yes      | The ID of the project or NAMESPACE/PROJECT_NAME |
+| `deny_delete_tag` **(STARTER)**               | boolean        | no       | Deny deleting a tag |
+| `member_check` **(STARTER)**                  | boolean        | no       | Restrict commits by author (email) to existing GitLab users |
+| `prevent_secrets` **(STARTER)**               | boolean        | no       | GitLab will reject any files that are likely to contain secrets |
+| `commit_message_regex` **(STARTER)**          | string         | no       | All commit messages must match this, e.g. `Fixed \d+\..*` |
+| `commit_message_negative_regex` **(STARTER)** | string         | no       | No commit message is allowed to match this, e.g. `ssh\:\/\/` |
+| `branch_name_regex` **(STARTER)**             | string         | no       | All branch names must match this, e.g. `(feature|hotfix)\/*` |
+| `author_email_regex` **(STARTER)**            | string         | no       | All commit author emails must match this, e.g. `@my-company.com$` |
+| `file_name_regex` **(STARTER)**               | string         | no       | All commited filenames must **not** match this, e.g. `(jar|exe)$` |
+| `max_file_size` **(STARTER)**                 | integer        | no       | Maximum file size (MB) |
+| `commit_committer_check` **(PREMIUM)**        | boolean        | no       | Users can only push commits to this repository that were committed with one of their own verified emails. |
 
 ### Delete project push rule
 
@@ -1765,7 +1775,7 @@ Read more in the [Project import/export](project_import_export.md) documentation
 
 Read more in the [Project members](members.md) documentation.
 
-## Start the pull mirroring process for a Project **[STARTER]**
+## Start the pull mirroring process for a Project **(STARTER)**
 
 > Introduced in [GitLab Starter](https://about.gitlab.com/pricing) 10.3.
 

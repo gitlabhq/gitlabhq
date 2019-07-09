@@ -6,10 +6,12 @@ describe MergeRequests::RebaseService do
   include ProjectForksHelper
 
   let(:user) { create(:user) }
+  let(:rebase_jid) { 'fake-rebase-jid' }
   let(:merge_request) do
-    create(:merge_request,
+    create :merge_request,
            source_branch: 'feature_conflict',
-           target_branch: 'master')
+           target_branch: 'master',
+           rebase_jid: rebase_jid
   end
   let(:project) { merge_request.project }
   let(:repository) { project.repository.raw }
@@ -23,11 +25,11 @@ describe MergeRequests::RebaseService do
   describe '#execute' do
     context 'when another rebase is already in progress' do
       before do
-        allow(merge_request).to receive(:rebase_in_progress?).and_return(true)
+        allow(merge_request).to receive(:gitaly_rebase_in_progress?).and_return(true)
       end
 
       it 'saves the error message' do
-        subject.execute(merge_request)
+        service.execute(merge_request)
 
         expect(merge_request.reload.merge_error).to eq 'Rebase task canceled: Another rebase is already in progress'
       end
@@ -36,6 +38,13 @@ describe MergeRequests::RebaseService do
         expect(service.execute(merge_request)).to match(status: :error,
                                                         message: described_class::REBASE_ERROR)
       end
+
+      it 'clears rebase_jid' do
+        expect { service.execute(merge_request) }
+          .to change { merge_request.rebase_jid }
+          .from(rebase_jid)
+          .to(nil)
+      end
     end
 
     shared_examples 'sequence of failure and success' do
@@ -43,14 +52,19 @@ describe MergeRequests::RebaseService do
         allow(repository).to receive(:gitaly_operation_client).and_raise('Something went wrong')
 
         service.execute(merge_request)
+        merge_request.reload
 
-        expect(merge_request.reload.merge_error).to eq described_class::REBASE_ERROR
+        expect(merge_request.reload.merge_error).to eq(described_class::REBASE_ERROR)
+        expect(merge_request.rebase_jid).to eq(nil)
 
         allow(repository).to receive(:gitaly_operation_client).and_call_original
+        merge_request.update!(rebase_jid: rebase_jid)
 
         service.execute(merge_request)
+        merge_request.reload
 
-        expect(merge_request.reload.merge_error).to eq nil
+        expect(merge_request.merge_error).to eq(nil)
+        expect(merge_request.rebase_jid).to eq(nil)
       end
     end
 
@@ -72,7 +86,7 @@ describe MergeRequests::RebaseService do
       it 'saves a generic error message' do
         subject.execute(merge_request)
 
-        expect(merge_request.reload.merge_error).to eq described_class::REBASE_ERROR
+        expect(merge_request.reload.merge_error).to eq(described_class::REBASE_ERROR)
       end
 
       it 'returns an error' do

@@ -2,7 +2,7 @@
 type: howto
 ---
 
-# Using GitLab CI/CD with a Bitbucket Cloud repository **[PREMIUM]**
+# Using GitLab CI/CD with a Bitbucket Cloud repository **(PREMIUM)**
 
 GitLab CI/CD can be used with Bitbucket Cloud by:
 

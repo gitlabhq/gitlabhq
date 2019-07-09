@@ -8,7 +8,6 @@ import '~/commons';
 import Vue from 'vue';
 import VueResource from 'vue-resource';
 import Translate from '~/vue_shared/translate';
-import CheckEE from '~/vue_shared/mixins/is_ee';
 import jasmineDiff from 'jasmine-diff';
 import { config as testUtilsConfig } from '@vue/test-utils';
 
@@ -48,7 +47,6 @@ Vue.config.errorHandler = function(err) {
 
 Vue.use(VueResource);
 Vue.use(Translate);
-Vue.use(CheckEE);
 
 // enable test fixtures
 jasmine.getFixtures().fixturesPath = FIXTURES_PATH;

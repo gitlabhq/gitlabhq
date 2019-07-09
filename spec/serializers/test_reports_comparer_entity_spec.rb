@@ -53,13 +53,7 @@ describe TestReportsComparerEntity do
           base_reports.get_suite('rspec').add_test_case(create_test_case_rspec_success)
           base_reports.get_suite('junit').add_test_case(create_test_case_java_failed)
           head_reports.get_suite('rspec').add_test_case(create_test_case_rspec_success)
-          head_reports.get_suite('junit').add_test_case(create_test_case_java_resolved)
-        end
-
-        let(:create_test_case_java_resolved) do
-          create_test_case_java_failed.tap do |test_case|
-            test_case.instance_variable_set("@status", Gitlab::Ci::Reports::TestCase::STATUS_SUCCESS)
-          end
+          head_reports.get_suite('junit').add_test_case(create_test_case_java_success)
         end
 
         it 'contains correct compared test reports details' do

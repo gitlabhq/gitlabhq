@@ -41,7 +41,7 @@ of possible security breaches in our code:
 
 Remember to run
 [SAST](../../user/application_security/sast/index.md)
-**[ULTIMATE]** on your project (or at least the [gosec
+**(ULTIMATE)** on your project (or at least the [gosec
 analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/gosec)),
 and to follow our [Security
 requirements](../code_review.md#security-requirements).
@@ -95,9 +95,9 @@ Dependencies should be kept to the minimum. The introduction of a new
 dependency should be argued in the merge request, as per our [Approval
 Guidelines](../code_review.md#approval-guidelines). Both [License
 Management](../../user/project/merge_requests/license_management.md)
-**[ULTIMATE]** and [Dependency
+**(ULTIMATE)** and [Dependency
 Scanning](../../user/application_security/dependency_scanning/index.md)
-**[ULTIMATE]** should be activated on all projects to ensure new dependencies
+**(ULTIMATE)** should be activated on all projects to ensure new dependencies
 security status and license compatibility.
 
 ### Modules

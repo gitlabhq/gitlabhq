@@ -6,6 +6,7 @@ import statusIcon from '../mr_widget_status_icon.vue';
 import MrWidgetAuthor from '../../components/mr_widget_author.vue';
 import eventHub from '../../event_hub';
 import { AUTO_MERGE_STRATEGIES } from '../../constants';
+import { __ } from '~/locale';
 
 export default {
   name: 'MRWidgetAutoMergeEnabled',
@@ -55,7 +56,7 @@ export default {
         })
         .catch(() => {
           this.isCancellingAutoMerge = false;
-          Flash('Something went wrong. Please try again.');
+          Flash(__('Something went wrong. Please try again.'));
         });
     },
     removeSourceBranch() {
@@ -76,7 +77,7 @@ export default {
         })
         .catch(() => {
           this.isRemovingSourceBranch = false;
-          Flash('Something went wrong. Please try again.');
+          Flash(__('Something went wrong. Please try again.'));
         });
     },
   },
@@ -107,15 +108,15 @@ export default {
       <section class="mr-info-list">
         <p>
           {{ s__('mrWidget|The changes will be merged into') }}
-          <a :href="mr.targetBranchPath" class="label-branch"> {{ mr.targetBranch }} </a>
+          <a :href="mr.targetBranchPath" class="label-branch">{{ mr.targetBranch }}</a>
         </p>
         <p v-if="mr.shouldRemoveSourceBranch">
           {{ s__('mrWidget|The source branch will be deleted') }}
         </p>
         <p v-else class="d-flex align-items-start">
-          <span class="append-right-10">
-            {{ s__('mrWidget|The source branch will not be deleted') }}
-          </span>
+          <span class="append-right-10">{{
+            s__('mrWidget|The source branch will not be deleted')
+          }}</span>
           <a
             v-if="canRemoveSourceBranch"
             :disabled="isRemovingSourceBranch"

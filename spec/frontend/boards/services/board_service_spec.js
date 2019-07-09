@@ -2,6 +2,7 @@ import BoardService from '~/boards/services/board_service';
 import { TEST_HOST } from 'helpers/test_constants';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
+import boardsStore from '~/boards/stores/boards_store';
 
 describe('BoardService', () => {
   const dummyResponse = "without type checking this doesn't matter";
@@ -18,10 +19,11 @@ describe('BoardService', () => {
 
   beforeEach(() => {
     axiosMock = new AxiosMockAdapter(axios);
-    service = new BoardService({
+    boardsStore.setEndpoints({
       ...endpoints,
       boardId,
     });
+    service = new BoardService();
   });
 
   describe('all', () => {

@@ -7,6 +7,8 @@ describe MergeRequest do
   include ProjectForksHelper
   include ReactiveCachingHelpers
 
+  using RSpec::Parameterized::TableSyntax
+
   subject { create(:merge_request) }
 
   describe 'associations' do
@@ -1996,6 +1998,47 @@ describe MergeRequest do
     end
   end
 
+  describe '#rebase_async' do
+    let(:merge_request) { create(:merge_request) }
+    let(:user_id) { double(:user_id) }
+    let(:rebase_jid) { 'rebase-jid' }
+
+    subject(:execute) { merge_request.rebase_async(user_id) }
+
+    it 'atomically enqueues a RebaseWorker job and updates rebase_jid' do
+      expect(RebaseWorker)
+        .to receive(:perform_async)
+        .with(merge_request.id, user_id)
+        .and_return(rebase_jid)
+
+      expect(merge_request).to receive(:lock!).and_call_original
+
+      execute
+
+      expect(merge_request.rebase_jid).to eq(rebase_jid)
+    end
+
+    it 'refuses to enqueue a job if a rebase is in progress' do
+      merge_request.update_column(:rebase_jid, rebase_jid)
+
+      expect(RebaseWorker).not_to receive(:perform_async)
+      expect(Gitlab::SidekiqStatus)
+        .to receive(:running?)
+        .with(rebase_jid)
+        .and_return(true)
+
+      expect { execute }.to raise_error(ActiveRecord::StaleObjectError)
+    end
+
+    it 'refuses to enqueue a job if the MR is not open' do
+      merge_request.update_column(:state, 'foo')
+
+      expect(RebaseWorker).not_to receive(:perform_async)
+
+      expect { execute }.to raise_error(ActiveRecord::StaleObjectError)
+    end
+  end
+
   describe '#mergeable?' do
     let(:project) { create(:project) }
 
@@ -2946,40 +2989,64 @@ describe MergeRequest do
   end
 
   describe '#rebase_in_progress?' do
-    shared_examples 'checking whether a rebase is in progress' do
-      let(:repo_path) do
-        Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-          subject.source_project.repository.path
-        end
+    where(:rebase_jid, :jid_valid, :result) do
+      'foo' | true  | true
+      'foo' | false | false
+      ''    | true  | false
+      nil   | true  | false
+    end
+
+    with_them do
+      let(:merge_request) { create(:merge_request) }
+
+      subject { merge_request.rebase_in_progress? }
+
+      it do
+        # Stub out the legacy gitaly implementation
+        allow(merge_request).to receive(:gitaly_rebase_in_progress?) { false }
+
+        allow(Gitlab::SidekiqStatus).to receive(:running?).with(rebase_jid) { jid_valid }
+
+        merge_request.rebase_jid = rebase_jid
+
+        is_expected.to eq(result)
       end
-      let(:rebase_path) { File.join(repo_path, "gitlab-worktree", "rebase-#{subject.id}") }
+    end
+  end
 
-      before do
-        system(*%W(#{Gitlab.config.git.bin_path} -C #{repo_path} worktree add --detach #{rebase_path} master))
+  describe '#gitaly_rebase_in_progress?' do
+    let(:repo_path) do
+      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        subject.source_project.repository.path
       end
+    end
+    let(:rebase_path) { File.join(repo_path, "gitlab-worktree", "rebase-#{subject.id}") }
 
-      it 'returns true when there is a current rebase directory' do
-        expect(subject.rebase_in_progress?).to be_truthy
-      end
+    before do
+      system(*%W(#{Gitlab.config.git.bin_path} -C #{repo_path} worktree add --detach #{rebase_path} master))
+    end
 
-      it 'returns false when there is no rebase directory' do
-        FileUtils.rm_rf(rebase_path)
+    it 'returns true when there is a current rebase directory' do
+      expect(subject.rebase_in_progress?).to be_truthy
+    end
 
-        expect(subject.rebase_in_progress?).to be_falsey
-      end
+    it 'returns false when there is no rebase directory' do
+      FileUtils.rm_rf(rebase_path)
 
-      it 'returns false when the rebase directory has expired' do
-        time = 20.minutes.ago.to_time
-        File.utime(time, time, rebase_path)
+      expect(subject.rebase_in_progress?).to be_falsey
+    end
 
-        expect(subject.rebase_in_progress?).to be_falsey
-      end
+    it 'returns false when the rebase directory has expired' do
+      time = 20.minutes.ago.to_time
+      File.utime(time, time, rebase_path)
 
-      it 'returns false when the source project has been removed' do
-        allow(subject).to receive(:source_project).and_return(nil)
+      expect(subject.rebase_in_progress?).to be_falsey
+    end
 
-        expect(subject.rebase_in_progress?).to be_falsey
-      end
+    it 'returns false when the source project has been removed' do
+      allow(subject).to receive(:source_project).and_return(nil)
+
+      expect(subject.rebase_in_progress?).to be_falsey
     end
   end
 
@@ -3151,6 +3218,36 @@ describe MergeRequest do
       let(:ref) { 'refs/merge-requests/1/merge' }
 
       it { is_expected.to be_truthy }
+    end
+  end
+
+  describe '#cleanup_refs' do
+    subject { merge_request.cleanup_refs(only: only) }
+
+    let(:merge_request) { build(:merge_request) }
+
+    context 'when removing all refs' do
+      let(:only) { :all }
+
+      it 'deletes all refs from the target project' do
+        expect(merge_request.target_project.repository)
+          .to receive(:delete_refs)
+          .with(merge_request.ref_path, merge_request.merge_ref_path, merge_request.train_ref_path)
+
+        subject
+      end
+    end
+
+    context 'when removing only train ref' do
+      let(:only) { :train }
+
+      it 'deletes train ref from the target project' do
+        expect(merge_request.target_project.repository)
+          .to receive(:delete_refs)
+          .with(merge_request.train_ref_path)
+
+        subject
+      end
     end
   end
 end

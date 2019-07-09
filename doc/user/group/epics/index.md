@@ -2,7 +2,7 @@
 type: reference, howto
 ---
 
-# Epics **[ULTIMATE]**
+# Epics **(ULTIMATE)**
 
 > Introduced in [GitLab Ultimate][ee] 10.2.
 

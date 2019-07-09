@@ -25,9 +25,8 @@ git commit -m "this is my commit message. Related to https://gitlab.com/<usernam
 
 Of course, you can replace `gitlab.com` with the URL of your own GitLab instance.
 
-**Note:** Linking your first commit to your issue is going to be relevant
-for tracking your process far ahead with
-[GitLab Cycle Analytics](https://about.gitlab.com/features/cycle-analytics/)).
+NOTE: **Note:** Linking your first commit to your issue is going to be relevant
+for tracking your process with [GitLab Cycle Analytics](https://about.gitlab.com/features/cycle-analytics/).
 It will measure the time taken for planning the implementation of that issue,
 which is the time between creating an issue and making the first commit.
 
@@ -35,14 +34,13 @@ which is the time between creating an issue and making the first commit.
 
 Mentioning related issues in merge requests and other issues is useful
 for your team members and collaborators to know that there are opened
-issues around that same idea.
+issues regarding the same topic.
 
-You do that as explained above, when
-[mentioning an issue from a commit message](#from-commit-messages).
+You do that as explained above, when [mentioning an issue from a commit message](#from-commit-messages).
 
-When mentioning the issue "A" in issue "B", the issue "A" will also
-display a notification in its tracker. The same is valid for mentioning
-issues in merge requests.
+When mentioning issue `#111` in issue `#222`, issue `#111` will also display a notification
+in its tracker. That is, you only need to mention the relationship once for it to
+display in both issues. The same is valid when mentioning issues in [merge requests](#from-merge-requests).
 
 ![issue mentioned in issue](img/mention_in_issue.png)
 
@@ -53,10 +51,7 @@ they do for [related issues](#from-related-issues).
 
 When you mention an issue in a merge request description, it will simply
 [link the issue and merge request together](#from-related-issues). Additionally,
-you can also [set an issue to close as soon as the merge request is merged](closing_issues.md#via-merge-request).
+you can also [set an issue to close automatically](managing_issues.md#closing-issues-automatically)
+as soon as the merge request is merged.
 
 ![issue mentioned in MR](img/mention_in_merge_request.png)
-
-### Close an issue by merging a merge request
-
-To [close an issue when a merge request is merged](closing_issues.md#via-merge-request), use the [automatic issue closing pattern](automatic_issue_closing.md).

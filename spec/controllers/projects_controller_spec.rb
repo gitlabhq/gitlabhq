@@ -318,6 +318,53 @@ describe ProjectsController do
     end
   end
 
+  describe '#housekeeping' do
+    let(:group) { create(:group) }
+    let(:project) { create(:project, group: group) }
+    let(:housekeeping) { Projects::HousekeepingService.new(project) }
+
+    context 'when authenticated as owner' do
+      before do
+        group.add_owner(user)
+        sign_in(user)
+
+        allow(Projects::HousekeepingService).to receive(:new).with(project, :gc).and_return(housekeeping)
+      end
+
+      it 'forces a full garbage collection' do
+        expect(housekeeping).to receive(:execute).once
+
+        post :housekeeping,
+             params: {
+               namespace_id: project.namespace.path,
+               id: project.path
+             }
+
+        expect(response).to have_gitlab_http_status(302)
+      end
+    end
+
+    context 'when authenticated as developer' do
+      let(:developer) { create(:user) }
+
+      before do
+        group.add_developer(developer)
+      end
+
+      it 'does not execute housekeeping' do
+        expect(housekeeping).not_to receive(:execute)
+
+        post :housekeeping,
+             params: {
+               namespace_id: project.namespace.path,
+               id: project.path
+             }
+
+        expect(response).to have_gitlab_http_status(302)
+      end
+    end
+  end
+
   describe "#update" do
     render_views
 

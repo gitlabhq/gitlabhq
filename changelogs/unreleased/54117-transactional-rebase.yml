@@ -1,0 +1,5 @@
+---
+title: Allow asynchronous rebase operations to be monitored
+merge_request: 29940
+author:
+type: fixed

@@ -57,7 +57,7 @@ the feature flag check will default to `true`.
 
 As an example, if you were to ship the backend half of a feature behind a flag,
 you'd want to explicitly disable that flag until the frontend half is also ready
-to be shipped. [You can do this via Chatops](https://docs.gitlab.com/ee/development/feature_flags/controls.html):
+to be shipped. [You can do this via Chatops](controls.md):
 
 ```
 /chatops run feature set some_feature 0

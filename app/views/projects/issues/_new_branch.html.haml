@@ -3,13 +3,14 @@
   - data_action = can_create_merge_request ? 'create-mr' : 'create-branch'
   - value = can_create_merge_request ? 'Create merge request' : 'Create branch'
   - value = can_create_confidential_merge_request? ? _('Create confidential merge request') : value
+  - create_mr_text = can_create_confidential_merge_request? ? _('Create confidential merge request') : _('Create merge request')
 
   - can_create_path = can_create_branch_project_issue_path(@project, @issue)
   - create_mr_path = create_merge_request_project_issue_path(@project, @issue, branch_name: @issue.to_branch_name, ref: @project.default_branch)
   - create_branch_path = project_branches_path(@project, branch_name: @issue.to_branch_name, ref: @project.default_branch, issue_iid: @issue.iid)
   - refs_path = refs_namespace_project_path(@project.namespace, @project, search: '')
 
-  .create-mr-dropdown-wrap.d-inline-block.full-width-mobile{ data: { can_create_path: can_create_path, create_mr_path: create_mr_path, create_branch_path: create_branch_path, refs_path: refs_path } }
+  .create-mr-dropdown-wrap.d-inline-block.full-width-mobile.js-create-mr{ data: { project_path: @project.full_path, project_id: @project.id, can_create_path: can_create_path, create_mr_path: create_mr_path, create_branch_path: create_branch_path, refs_path: refs_path, is_confidential: can_create_confidential_merge_request?.to_s } }
     .btn-group.btn-group-sm.unavailable
       %button.btn.btn-grouped{ type: 'button', disabled: 'disabled' }
         = icon('spinner', class: 'fa-spin')
@@ -26,7 +27,7 @@
       .droplab-dropdown
         %ul#create-merge-request-dropdown.create-merge-request-dropdown-menu.dropdown-menu.dropdown-menu-right.gl-show-field-errors{ class: ("create-confidential-merge-request-dropdown-menu" if can_create_confidential_merge_request?), data: { dropdown: true } }
           - if can_create_merge_request
-            %li.droplab-item-selected{ role: 'button', data: { value: 'create-mr', text: _('Create merge request') } }
+            %li.droplab-item-selected{ role: 'button', data: { value: 'create-mr', text: create_mr_text } }
               .menu-item
                 = icon('check', class: 'icon')
                 - if can_create_confidential_merge_request?
@@ -41,6 +42,8 @@
           %li.divider.droplab-item-ignore
 
           %li.droplab-item-ignore.prepend-left-8.append-right-8.prepend-top-16
+            - if can_create_confidential_merge_request?
+              #js-forked-project{ data: { namespace_path: @project.namespace.full_path, project_path: @project.full_path, new_fork_path: new_project_fork_path(@project), help_page_path: help_page_path('user/project/merge_requests') } }
             .form-group
               %label{ for: 'new-branch-name' }
                 = _('Branch name')
@@ -55,4 +58,8 @@
 
             .form-group
               %button.btn.btn-success.js-create-target{ type: 'button', data: { action: 'create-mr' } }
-                = _('Create merge request')
+                = create_mr_text
+
+            - if can_create_confidential_merge_request?
+              %p.text-warning.js-exposed-info-warning.hidden
+                = _('This may expose confidential information as the selected fork is in another namespace that can have other members.')

@@ -5,6 +5,8 @@ module QA
     module Project
       module SubMenus
         module Issues
+          include Page::Project::SubMenus::Common
+
           def self.included(base)
             base.class_eval do
               view 'app/views/layouts/nav/sidebar/_project.html.haml' do

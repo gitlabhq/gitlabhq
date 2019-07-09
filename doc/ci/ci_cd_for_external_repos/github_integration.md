@@ -2,7 +2,7 @@
 type: howto
 ---
 
-# Using GitLab CI/CD with a GitHub repository **[PREMIUM]**
+# Using GitLab CI/CD with a GitHub repository **(PREMIUM)**
 
 GitLab CI/CD can be used with **GitHub.com** and **GitHub Enterprise** by
 creating a [CI/CD project](index.md) to connect your GitHub repository to
@@ -109,7 +109,7 @@ your repository:
    new commits.
 
     The web hook URL should be set to the GitLab API to
-    [trigger pull mirroring](https://docs.gitlab.com/ee/api/projects.html#start-the-pull-mirroring-process-for-a-project-starter),
+    [trigger pull mirroring](../../api/projects.md#start-the-pull-mirroring-process-for-a-project-starter),
     using the GitLab personal access token we just created.
 
     ```

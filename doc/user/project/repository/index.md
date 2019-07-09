@@ -171,17 +171,14 @@ Via command line, you can commit multiple times before pushing.
 - **Sign a commit:**
   Use GPG to [sign your commits](gpg_signed_commits/index.md).
 
-## Repository size
+## Project and repository size
 
-A project's repository size is reported on the project's **Details** page. The reported size is
-updated every 15 minutes at most, so may not reflect recent activity.
+A project's size is reported on the project's **Details** page. The reported size is
+updated every 15 minutes at most, so may not reflect recent activity. The displayed files size includes repository files, artifacts, and LFS.
 
-The repository size for:
+The project size may differ slightly from one instance to another due to compression, housekeeping, and other factors.
 
-- GitLab.com [is set by GitLab](../../gitlab_com/index.md#repository-size-limit).
-- Self-managed instances is set by your GitLab administrators.
-
-You can [reduce a repository's size using Git](reducing_the_repo_size_using_git.md).
+[Repository size limit](../../admin_area/settings/account_and_limit_settings.md) may be set by admins. GitLab.com's repository size limit [is set by GitLab](../../gitlab_com/index.md#repository-size-limit).
 
 ## Contributors
 
@@ -224,7 +221,7 @@ Select branches to compare using the [branch filter search box](branches/index.m
 
 Find it under your project's **Repository > Compare**.
 
-## Locked files **[PREMIUM]**
+## Locked files **(PREMIUM)**
 
 Use [File Locking](../file_lock.md) to
 lock your files to prevent any conflicting changes.

@@ -1,6 +1,6 @@
 # Grafana Configuration
 
-[Grafana](http://grafana.org/) is a tool that allows you to visualize time
+[Grafana](https://grafana.org/) is a tool that allows you to visualize time
 series metrics through graphs and dashboards. It supports several backend
 data stores, including InfluxDB. GitLab writes performance data to InfluxDB
 and Grafana will allow you to query to display useful graphs.
@@ -13,7 +13,7 @@ services.
 
 [GitLab Omnibus can help you install Grafana (recommended)](https://docs.gitlab.com/omnibus/settings/grafana.html)
 or Grafana supplies package repositories (Yum/Apt) for easy installation.
-See [Grafana installation documentation](http://docs.grafana.org/installation/)
+See [Grafana installation documentation](https://grafana.com/docs/installation/)
 for detailed steps.
 
 NOTE: **Note:**
@@ -102,6 +102,21 @@ instance. See the README of the [Grafana dashboards][grafana-dashboards]
 repository for more information on this process.
 
 [grafana-dashboards]: https://gitlab.com/gitlab-org/grafana-dashboards
+
+## Integration with GitLab UI
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/61005) in GitLab 12.1.
+
+If you have set up Grafana, you can enable a link to access it easily from the sidebar:
+
+1. Go to the admin area under **Settings > Metrics and profiling**
+   and expand "Metrics - Grafana".
+1. Check the "Enable access to Grafana" checkbox.
+1. If Grafana is enabled through Omnibus GitLab and on the same server,
+   leave "Grafana URL" unchanged. In any other case, enter the full URL
+   path of the Grafana instance.
+1. Click **Save changes**.
+1. The new link will be available in the admin area under **Monitoring > Metrics Dashboard**.
 
 ---
 

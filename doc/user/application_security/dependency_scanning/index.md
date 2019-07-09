@@ -1,4 +1,4 @@
-# Dependency Scanning **[ULTIMATE]**
+# Dependency Scanning **(ULTIMATE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/5105)
 in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.7.

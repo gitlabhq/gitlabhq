@@ -131,6 +131,7 @@ function install_external_dns() {
   if ! deploy_exists "${KUBE_NAMESPACE}" "${release_name}" || previous_deploy_failed "${release_name}" ; then
     echoinfo "Installing external-dns Helm chart"
     helm repo update
+    # Default requested: CPU => 0, memory => 0
     helm install stable/external-dns \
       -n "${release_name}" \
       --namespace "${KUBE_NAMESPACE}" \
@@ -141,7 +142,11 @@ function install_external_dns() {
       --set domainFilters[0]="${domain}" \
       --set txtOwnerId="${KUBE_NAMESPACE}" \
       --set rbac.create="true" \
-      --set policy="sync"
+      --set policy="sync" \
+      --set resources.requests.cpu=50m \
+      --set resources.limits.cpu=100m \
+      --set resources.requests.memory=100M \
+      --set resources.limits.memory=200M
   else
     echoinfo "The external-dns Helm chart is already successfully deployed."
   fi
@@ -196,45 +201,122 @@ HELM_CMD=$(cat << EOF
   helm upgrade --install \
     --wait \
     --timeout 600 \
-    --set global.appConfig.enableUsagePing=false \
     --set releaseOverride="$CI_ENVIRONMENT_SLUG" \
+    --set global.appConfig.enableUsagePing=false \
     --set global.imagePullPolicy=Always \
     --set global.hosts.hostSuffix="$HOST_SUFFIX" \
     --set global.hosts.domain="$REVIEW_APPS_DOMAIN" \
-    --set certmanager.install=false \
-    --set prometheus.install=false \
     --set global.ingress.configureCertmanager=false \
     --set global.ingress.tls.secretName=tls-cert \
     --set global.ingress.annotations."external-dns\.alpha\.kubernetes\.io/ttl"="10" \
+    --set certmanager.install=false \
+    --set prometheus.install=false \
     --set nginx-ingress.controller.service.enableHttp=false \
-    --set nginx-ingress.defaultBackend.resources.requests.memory=7Mi \
-    --set nginx-ingress.controller.resources.requests.memory=440M \
     --set nginx-ingress.controller.replicaCount=2 \
-    --set gitlab.unicorn.resources.requests.cpu=200m \
-    --set gitlab.sidekiq.resources.requests.cpu=100m \
-    --set gitlab.sidekiq.resources.requests.memory=800M \
-    --set gitlab.gitlab-shell.resources.requests.cpu=100m \
-    --set redis.resources.requests.cpu=100m \
-    --set minio.resources.requests.cpu=100m \
+    --set nginx-ingress.controller.config.ssl-ciphers="ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES128-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4" \
     --set gitlab.migrations.image.repository="$gitlab_migrations_image_repository" \
     --set gitlab.migrations.image.tag="$CI_COMMIT_REF_SLUG" \
-    --set gitlab.sidekiq.image.repository="$gitlab_sidekiq_image_repository" \
-    --set gitlab.sidekiq.image.tag="$CI_COMMIT_REF_SLUG" \
-    --set gitlab.unicorn.image.repository="$gitlab_unicorn_image_repository" \
-    --set gitlab.unicorn.image.tag="$CI_COMMIT_REF_SLUG" \
-    --set gitlab.task-runner.image.repository="$gitlab_task_runner_image_repository" \
-    --set gitlab.task-runner.image.tag="$CI_COMMIT_REF_SLUG" \
     --set gitlab.gitaly.image.repository="$gitlab_gitaly_image_repository" \
     --set gitlab.gitaly.image.tag="v$GITALY_VERSION" \
     --set gitlab.gitlab-shell.image.repository="$gitlab_shell_image_repository" \
     --set gitlab.gitlab-shell.image.tag="v$GITLAB_SHELL_VERSION" \
+    --set gitlab.sidekiq.image.repository="$gitlab_sidekiq_image_repository" \
+    --set gitlab.sidekiq.image.tag="$CI_COMMIT_REF_SLUG" \
+    --set gitlab.unicorn.image.repository="$gitlab_unicorn_image_repository" \
+    --set gitlab.unicorn.image.tag="$CI_COMMIT_REF_SLUG" \
     --set gitlab.unicorn.workhorse.image="$gitlab_workhorse_image_repository" \
     --set gitlab.unicorn.workhorse.tag="$CI_COMMIT_REF_SLUG" \
-    --set nginx-ingress.controller.config.ssl-ciphers="ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES128-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4" \
-    --namespace="$KUBE_NAMESPACE" \
-    --version="$CI_PIPELINE_ID-$CI_JOB_ID" \
-    "$name" \
-    .
+    --set gitlab.task-runner.image.repository="$gitlab_task_runner_image_repository" \
+    --set gitlab.task-runner.image.tag="$CI_COMMIT_REF_SLUG"
+EOF
+)
+
+# Default requested: CPU => 100m, memory => 100Mi
+HELM_CMD=$(cat << EOF
+  $HELM_CMD \
+  --set nginx-ingress.controller.resources.limits.cpu=200m \
+  --set nginx-ingress.controller.resources.requests.memory=210M \
+  --set nginx-ingress.controller.resources.limits.memory=420M
+EOF
+)
+
+# Default requested: CPU => 5m, memory => 5Mi
+HELM_CMD=$(cat << EOF
+  $HELM_CMD \
+  --set nginx-ingress.defaultBackend.resources.limits.cpu=10m \
+  --set nginx-ingress.defaultBackend.resources.requests.memory=12M \
+  --set nginx-ingress.defaultBackend.resources.limits.memory=24M
+EOF
+)
+
+# Default requested: CPU => 100m, memory => 200Mi
+HELM_CMD=$(cat << EOF
+  $HELM_CMD \
+  --set gitlab.gitaly.resources.requests.cpu=150m \
+  --set gitlab.gitaly.resources.limits.cpu=300m \
+  --set gitlab.gitaly.resources.limits.memory=420M
+EOF
+)
+
+# Default requested: CPU => 0, memory => 6M
+HELM_CMD=$(cat << EOF
+  $HELM_CMD \
+  --set gitlab.gitlab-shell.resources.requests.cpu=70m \
+  --set gitlab.gitlab-shell.resources.limits.cpu=140m \
+  --set gitlab.gitlab-shell.resources.requests.memory=20M \
+  --set gitlab.gitlab-shell.resources.limits.memory=40M
+EOF
+)
+
+# Default requested: CPU => 50m, memory => 650M
+HELM_CMD=$(cat << EOF
+  $HELM_CMD \
+  --set gitlab.sidekiq.resources.requests.cpu=200m \
+  --set gitlab.sidekiq.resources.limits.cpu=300m \
+  --set gitlab.sidekiq.resources.requests.memory=800M \
+  --set gitlab.sidekiq.resources.limits.memory=1.2G
+EOF
+)
+
+# Default requested: CPU => 300m + 100m (workhorse), memory => 1.2G + 100M (workhorse)
+HELM_CMD=$(cat << EOF
+  $HELM_CMD \
+  --set gitlab.unicorn.resources.limits.cpu=800m \
+  --set gitlab.unicorn.resources.limits.memory=2.6G
+EOF
+)
+
+# Default requested: CPU => 100m, memory => 64Mi
+HELM_CMD=$(cat << EOF
+  $HELM_CMD \
+  --set redis.resources.limits.cpu=200m \
+  --set redis.resources.limits.memory=130M
+EOF
+)
+
+# Default requested: CPU => 100m, memory => 128Mi
+HELM_CMD=$(cat << EOF
+  $HELM_CMD \
+  --set minio.resources.limits.cpu=200m \
+  --set minio.resources.limits.memory=280M
+EOF
+)
+
+# Default requested: CPU => 0, memory => 0
+HELM_CMD=$(cat << EOF
+  $HELM_CMD \
+  --set gitlab-runner.resources.requests.cpu=300m \
+  --set gitlab-runner.resources.limits.cpu=600m \
+  --set gitlab-runner.resources.requests.memory=300M \
+  --set gitlab-runner.resources.limits.memory=600M
+EOF
+)
+
+HELM_CMD=$(cat << EOF
+  $HELM_CMD \
+  --namespace="$KUBE_NAMESPACE" \
+  --version="$CI_PIPELINE_ID-$CI_JOB_ID" \
+  "$name" .
 EOF
 )
 

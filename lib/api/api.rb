@@ -52,7 +52,10 @@ module API
       rack_response({ 'message' => '404 Not found' }.to_json, 404)
     end
 
-    rescue_from ::Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError do
+    rescue_from(
+      ::ActiveRecord::StaleObjectError,
+      ::Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError
+    ) do
       rack_response({ 'message' => '409 Conflict: Resource lock' }.to_json, 409)
     end
 
@@ -163,6 +166,7 @@ module API
     mount ::API::Templates
     mount ::API::Todos
     mount ::API::Triggers
+    mount ::API::UserCounts
     mount ::API::Users
     mount ::API::Variables
     mount ::API::Version

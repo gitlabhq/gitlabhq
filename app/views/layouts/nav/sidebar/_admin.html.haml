@@ -81,6 +81,11 @@
             = link_to admin_requests_profiles_path, title: _('Requests Profiles') do
               %span
                 = _('Requests Profiles')
+          - if Gitlab::CurrentSettings.current_application_settings.grafana_enabled?
+            = nav_link do
+              = link_to Gitlab::CurrentSettings.current_application_settings.grafana_url, target: '_blank', title: _('Metrics Dashboard') do
+                %span
+                  = _('Metrics Dashboard')
           = render_if_exists 'layouts/nav/ee/admin/new_monitoring_sidebar'
 
       = nav_link(controller: :broadcast_messages) do

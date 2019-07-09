@@ -41,34 +41,26 @@ describe Projects::DeploymentsController do
   describe 'GET #metrics' do
     let(:deployment) { create(:deployment, :success, project: project, environment: environment) }
 
-    before do
-      allow(controller).to receive(:deployment).and_return(deployment)
-    end
-
     context 'when metrics are disabled' do
-      before do
-        allow(deployment).to receive(:has_metrics?).and_return false
-      end
-
       it 'responds with not found' do
-        get :metrics, params: deployment_params(id: deployment.id)
+        get :metrics, params: deployment_params(id: deployment.to_param)
 
         expect(response).to be_not_found
       end
     end
 
     context 'when metrics are enabled' do
-      before do
-        allow(deployment).to receive(:has_metrics?).and_return true
-      end
-
       context 'when environment has no metrics' do
         before do
-          expect(deployment).to receive(:metrics).and_return(nil)
+          expect_next_instance_of(DeploymentMetrics) do |deployment_metrics|
+            allow(deployment_metrics).to receive(:has_metrics?).and_return(true)
+
+            expect(deployment_metrics).to receive(:metrics).and_return(nil)
+          end
         end
 
         it 'returns a empty response 204 resposne' do
-          get :metrics, params: deployment_params(id: deployment.id)
+          get :metrics, params: deployment_params(id: deployment.to_param)
           expect(response).to have_gitlab_http_status(204)
           expect(response.body).to eq('')
         end
@@ -84,28 +76,20 @@ describe Projects::DeploymentsController do
         end
 
         before do
-          expect(deployment).to receive(:metrics).and_return(empty_metrics)
+          expect_next_instance_of(DeploymentMetrics) do |deployment_metrics|
+            allow(deployment_metrics).to receive(:has_metrics?).and_return(true)
+
+            expect(deployment_metrics).to receive(:metrics).and_return(empty_metrics)
+          end
         end
 
         it 'returns a metrics JSON document' do
-          get :metrics, params: deployment_params(id: deployment.id)
+          get :metrics, params: deployment_params(id: deployment.to_param)
 
           expect(response).to be_ok
           expect(json_response['success']).to be(true)
           expect(json_response['metrics']).to eq({})
           expect(json_response['last_update']).to eq(42)
-        end
-      end
-
-      context 'when metrics service does not implement deployment metrics' do
-        before do
-          allow(deployment).to receive(:metrics).and_raise(NotImplementedError)
-        end
-
-        it 'responds with not found' do
-          get :metrics, params: deployment_params(id: deployment.id)
-
-          expect(response).to be_not_found
         end
       end
     end
@@ -114,36 +98,26 @@ describe Projects::DeploymentsController do
   describe 'GET #additional_metrics' do
     let(:deployment) { create(:deployment, :success, project: project, environment: environment) }
 
-    before do
-      allow(controller).to receive(:deployment).and_return(deployment)
-    end
-
     context 'when metrics are disabled' do
-      before do
-        allow(deployment).to receive(:has_metrics?).and_return false
-      end
-
       it 'responds with not found' do
-        get :metrics, params: deployment_params(id: deployment.id)
+        get :metrics, params: deployment_params(id: deployment.to_param)
 
         expect(response).to be_not_found
       end
     end
 
     context 'when metrics are enabled' do
-      let(:prometheus_adapter) { double('prometheus_adapter', can_query?: true) }
-
-      before do
-        allow(deployment).to receive(:prometheus_adapter).and_return(prometheus_adapter)
-      end
-
       context 'when environment has no metrics' do
         before do
-          expect(deployment).to receive(:additional_metrics).and_return({})
+          expect_next_instance_of(DeploymentMetrics) do |deployment_metrics|
+            allow(deployment_metrics).to receive(:has_metrics?).and_return(true)
+
+            expect(deployment_metrics).to receive(:additional_metrics).and_return({})
+          end
         end
 
         it 'returns a empty response 204 response' do
-          get :additional_metrics, params: deployment_params(id: deployment.id, format: :json)
+          get :additional_metrics, params: deployment_params(id: deployment.to_param, format: :json)
           expect(response).to have_gitlab_http_status(204)
           expect(response.body).to eq('')
         end
@@ -159,11 +133,15 @@ describe Projects::DeploymentsController do
         end
 
         before do
-          expect(deployment).to receive(:additional_metrics).and_return(empty_metrics)
+          expect_next_instance_of(DeploymentMetrics) do |deployment_metrics|
+            allow(deployment_metrics).to receive(:has_metrics?).and_return(true)
+
+            expect(deployment_metrics).to receive(:additional_metrics).and_return(empty_metrics)
+          end
         end
 
         it 'returns a metrics JSON document' do
-          get :additional_metrics, params: deployment_params(id: deployment.id, format: :json)
+          get :additional_metrics, params: deployment_params(id: deployment.to_param, format: :json)
 
           expect(response).to be_ok
           expect(json_response['success']).to be(true)

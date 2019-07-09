@@ -7,9 +7,25 @@ module Types
     DEFAULT_COMPLEXITY = 1
 
     def initialize(*args, **kwargs, &block)
+      @calls_gitaly = !!kwargs.delete(:calls_gitaly)
+      @constant_complexity = !!kwargs[:complexity]
       kwargs[:complexity] ||= field_complexity(kwargs[:resolver_class])
 
       super(*args, **kwargs, &block)
+    end
+
+    def base_complexity
+      complexity = DEFAULT_COMPLEXITY
+      complexity += 1 if calls_gitaly?
+      complexity
+    end
+
+    def calls_gitaly?
+      @calls_gitaly
+    end
+
+    def constant_complexity?
+      @constant_complexity
     end
 
     private
@@ -18,7 +34,7 @@ module Types
       if resolver_class
         field_resolver_complexity
       else
-        DEFAULT_COMPLEXITY
+        base_complexity
       end
     end
 
@@ -31,6 +47,7 @@ module Types
       proc do |ctx, args, child_complexity|
         # Resolvers may add extra complexity depending on used arguments
         complexity = child_complexity + self.resolver&.try(:resolver_complexity, args, child_complexity: child_complexity).to_i
+        complexity += 1 if calls_gitaly?
 
         field_defn = to_graphql
 

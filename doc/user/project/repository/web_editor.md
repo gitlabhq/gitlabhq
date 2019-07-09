@@ -114,7 +114,7 @@ If your [project is already configured with a deployment service][project-servic
 
 After the branch is created, you can edit files in the repository to fix
 the issue. When a merge request is created based on the newly created branch,
-the description field will automatically display the [issue closing pattern]
+the description field will automatically display the [issue closing pattern](../issues/managing_issues.md#closing-issues-automatically)
 `Closes #ID`, where `ID` the ID of the issue. This will close the issue once the
 merge request is merged.
 
@@ -181,4 +181,3 @@ through the web editor, you can choose to use another of your linked email
 addresses from the **User Settings > Edit Profile** page.
 
 [ce-2808]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/2808
-[issue closing pattern]: ../issues/automatic_issue_closing.md

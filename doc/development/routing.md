@@ -7,11 +7,15 @@ support subgroups, GitLab project and group routes use the wildcard
 character to match project and group routes. For example, we might have
 a path such as:
 
-    /gitlab-com/customer-success/north-america/west/customerA
+```
+/gitlab-com/customer-success/north-america/west/customerA
+```
 
 However, paths can be ambiguous. Consider the following example:
 
-    /gitlab-com/edit
+```
+/gitlab-com/edit
+```
 
 It's ambiguous whether there is a subgroup named `edit` or whether
 this is a special endpoint to edit the `gitlab-com` group.
@@ -25,8 +29,10 @@ number of [reserved names](../user/reserved_names.md).
 
 We have a number of global routes. For example:
 
-    /-/health
-    /-/metrics
+```
+/-/health
+/-/metrics
+```
 
 ## Group routes
 
@@ -34,10 +40,12 @@ Every group route must be under the `/-/` scope.
 
 Examples:
 
-    gitlab-org/-/edit
-    gitlab-org/-/activity
-    gitlab-org/-/security/dashboard
-    gitlab-org/serverless/-/activity
+```
+gitlab-org/-/edit
+gitlab-org/-/activity
+gitlab-org/-/security/dashboard
+gitlab-org/serverless/-/activity
+```
 
 To achieve that, use the `scope '-'` method.
 
@@ -48,10 +56,12 @@ client or other software requires something different.
 
 Examples:
 
-    gitlab-org/gitlab-ce/-/activity
-    gitlab-org/gitlab-ce/-/jobs/123
-    gitlab-org/gitlab-ce/-/settings/repository
-    gitlab-org/serverless/runtimes/-/settings/repository
+```
+gitlab-org/gitlab-ce/-/activity
+gitlab-org/gitlab-ce/-/jobs/123
+gitlab-org/gitlab-ce/-/settings/repository
+gitlab-org/serverless/runtimes/-/settings/repository
+```
 
 Currently, only some project routes are placed under the `/-/` scope. However,
 you can help us migrate more of them! To migrate project routes:

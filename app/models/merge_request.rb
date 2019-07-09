@@ -223,7 +223,13 @@ class MergeRequest < ApplicationRecord
   end
 
   def rebase_in_progress?
-    strong_memoize(:rebase_in_progress) do
+    (rebase_jid.present? && Gitlab::SidekiqStatus.running?(rebase_jid)) ||
+      gitaly_rebase_in_progress?
+  end
+
+  # TODO: remove the Gitaly lookup after v12.1, when rebase_jid will be reliable
+  def gitaly_rebase_in_progress?
+    strong_memoize(:gitaly_rebase_in_progress) do
       # The source project can be deleted
       next false unless source_project
 
@@ -387,6 +393,26 @@ class MergeRequest < ApplicationRecord
   def merge_async(user_id, params)
     jid = MergeWorker.perform_async(id, user_id, params.to_h)
     update_column(:merge_jid, jid)
+  end
+
+  # Set off a rebase asynchronously, atomically updating the `rebase_jid` of
+  # the MR so that the status of the operation can be tracked.
+  def rebase_async(user_id)
+    transaction do
+      lock!
+
+      raise ActiveRecord::StaleObjectError if !open? || rebase_in_progress?
+
+      # Although there is a race between setting rebase_jid here and clearing it
+      # in the RebaseWorker, it can't do any harm since we check both that the
+      # attribute is set *and* that the sidekiq job is still running. So a JID
+      # for a completed RebaseWorker is equivalent to a nil JID.
+      jid = Sidekiq::Worker.skipping_transaction_check do
+        RebaseWorker.perform_async(id, user_id)
+      end
+
+      update_column(:rebase_jid, jid)
+    end
   end
 
   def merge_participants
@@ -1099,6 +1125,19 @@ class MergeRequest < ApplicationRecord
 
   def merge_ref_path
     "refs/#{Repository::REF_MERGE_REQUEST}/#{iid}/merge"
+  end
+
+  def train_ref_path
+    "refs/#{Repository::REF_MERGE_REQUEST}/#{iid}/train"
+  end
+
+  def cleanup_refs(only: :all)
+    target_refs = []
+    target_refs << ref_path       if %i[all head].include?(only)
+    target_refs << merge_ref_path if %i[all merge].include?(only)
+    target_refs << train_ref_path if %i[all train].include?(only)
+
+    project.repository.delete_refs(*target_refs)
   end
 
   def self.merge_request_ref?(ref)

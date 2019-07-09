@@ -429,9 +429,10 @@ module API
 
         authorize_push_to_merge_request!(merge_request)
 
-        RebaseWorker.perform_async(merge_request.id, current_user.id)
+        merge_request.rebase_async(current_user.id)
 
         status :accepted
+        present rebase_in_progress: merge_request.rebase_in_progress?
       end
 
       desc 'List issues that will be closed on merge' do

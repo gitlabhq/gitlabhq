@@ -4,7 +4,6 @@ import _ from 'underscore';
 import { mapActions, mapState } from 'vuex';
 import { s__ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
-import '~/vue_shared/mixins/is_ee';
 import { getParameterValues } from '~/lib/utils/url_utility';
 import invalidUrl from '~/lib/utils/invalid_url';
 import MonitorAreaChart from './charts/area.vue';
@@ -124,6 +123,11 @@ export default {
       required: false,
       default: '',
     },
+    smallEmptyState: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -154,6 +158,12 @@ export default {
     },
     selectedDashboardText() {
       return this.currentDashboard || (this.allDashboards[0] && this.allDashboards[0].display_name);
+    },
+    addingMetricsAvailable() {
+      return IS_EE && this.canAddMetrics && !this.showEmptyState;
+    },
+    alertWidgetAvailable() {
+      return IS_EE && this.prometheusAlertsAvailable && this.alertsEndpoint;
     },
   },
   created() {
@@ -308,7 +318,7 @@ export default {
         </div>
       </div>
       <div class="d-flex">
-        <div v-if="isEE && canAddMetrics && !showEmptyState">
+        <div v-if="addingMetricsAvailable">
           <gl-button
             v-gl-modal-directive="$options.addMetric.modalId"
             class="js-add-metric-button text-success border-success"
@@ -367,7 +377,7 @@ export default {
           group-id="monitor-area-chart"
         >
           <alert-widget
-            v-if="isEE && prometheusAlertsAvailable && alertsEndpoint && graphData"
+            v-if="alertWidgetAvailable && graphData"
             :alerts-endpoint="alertsEndpoint"
             :relevant-queries="graphData.queries"
             :alerts-to-manage="getGraphAlerts(graphData.queries)"
@@ -386,6 +396,7 @@ export default {
       :empty-loading-svg-path="emptyLoadingSvgPath"
       :empty-no-data-svg-path="emptyNoDataSvgPath"
       :empty-unable-to-connect-svg-path="emptyUnableToConnectSvgPath"
+      :compact="smallEmptyState"
     />
   </div>
 </template>

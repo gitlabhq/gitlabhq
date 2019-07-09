@@ -10,7 +10,7 @@
     .block.issuable-sidebar-header
       - if signed_in
         %span.issuable-header-text.hide-collapsed.float-left
-          = _('Todo')
+          = _('To Do')
       %a.gutter-toggle.float-right.js-sidebar-toggle.has-tooltip{ role: "button", href: "#", "aria-label" => "Toggle sidebar", title: sidebar_gutter_tooltip_text, data: { container: 'body', placement: 'left', boundary: 'viewport' } }
         = sidebar_gutter_toggle_icon
       - if signed_in

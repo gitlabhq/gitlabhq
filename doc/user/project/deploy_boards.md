@@ -1,4 +1,4 @@
-# Deploy Boards **[PREMIUM]**
+# Deploy Boards **(PREMIUM)**
 
 > [Introduced][ee-1589] in [GitLab Premium][ee] 9.0.
 
@@ -125,6 +125,6 @@ version of your application.
 [kube-service]: integrations/kubernetes.md "Kubernetes project service"
 [review apps]: ../../ci/review_apps/index.md "Review Apps documentation"
 [variables]: ../../ci/variables/README.md "GitLab CI variables"
-[autodeploy]: ../../ci/autodeploy/index.md "GitLab Autodeploy"
+[autodeploy]: ../../topics/autodevops/index.md#auto-deploy "GitLab Autodeploy"
 [kube-image]: https://gitlab.com/gitlab-examples/kubernetes-deploy/container_registry "Kubernetes deploy Container Registry"
 [runners]: ../../ci/runners/README.md

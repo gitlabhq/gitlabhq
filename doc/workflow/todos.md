@@ -1,50 +1,57 @@
-# GitLab Todos
+# GitLab To-Do List
 
 > [Introduced][ce-2817] in GitLab 8.5.
 
 When you log into GitLab, you normally want to see where you should spend your
-time and take some action, or what you need to keep an eye on. All without the
-mess of a huge pile of e-mail notifications. GitLab is where you do your work,
-so being able to get started quickly is very important.
+time, take some action, or know what you need to keep an eye on without
+a huge pile of e-mail notifications. GitLab is where you do your work,
+so being able to get started quickly is important.
 
-Todos is a chronological list of to-dos that are waiting for your input, all
+Your To-Do List offers a chronological list of items that are waiting for your input, all
 in a simple dashboard.
 
-![Todos screenshot showing a list of items to check on](img/todos_index.png)
+![To Do screenshot showing a list of items to check on](img/todos_index.png)
 
 ---
 
-You can quickly access the Todos dashboard using the checkmark icon next to the
-search bar in the upper right corner. The number in blue is the number of Todos
-you still have open if the count is < 100, else it's 99+. The exact number
-will still be shown in the body of the _To do_ tab.
+You can quickly access your To-Do List by clicking the checkmark icon next to the
+search bar in the top navigation. If the count is:
 
-![Todos icon](img/todos_icon.png)
+- Less than 100, the number in blue is the number of To-Do items.
+- 100 or more, the number displays as 99+. The exact number displays
+  on the To-Do List.
+you still have open. Otherwise, the number displays as 99+. The exact number
+displays on the To-Do List.
 
-## What triggers a Todo
+![To Do icon](img/todos_icon.png)
 
-A Todo appears in your Todos dashboard when:
+## What triggers a To Do
 
-- an issue or merge request is assigned to you
-- you are `@mentioned` in the description or in a comment of an issue, merge request, or epic **[ULTIMATE]**
-- you are `@mentioned` in a comment on a commit,
-- a job in the CI pipeline running for your merge request failed, but this
-  job is not allowed to fail.
-- an open merge request becomes unmergeable due to conflict, and you are either:
-  - the author, or
-  - have set it to automatically merge once pipeline succeeds.
+A To Do displays on your To-Do List when:
 
-Todo triggers are not affected by [GitLab Notification Email settings](notifications.md).
+- An issue or merge request is assigned to you
+- You are `@mentioned` in the description or comment of an:
+    - Issue
+    - Merge Request
+    - Epic **(ULTIMATE)**
+- You are `@mentioned` in a comment on a commit
+- A job in the CI pipeline running for your merge request failed, but this
+  job is not allowed to fail
+- An open merge request becomes unmergeable due to conflict, and you are either: 
+    - The author 
+    - Have set it to automatically merge once the pipeline succeeds
+
+To-do triggers are not affected by [GitLab Notification Email settings](notifications.md).
 
 NOTE: **Note:**
-When an user no longer has access to a resource related to a Todo like an issue, merge request, project or group the related Todos, for security reasons, gets deleted within the next hour. The delete is delayed to prevent data loss in case user got their access revoked by mistake.
+When a user no longer has access to a resource related to a To Do (like an issue, merge request, project, or group) the related To-Do items are deleted within the next hour for security reasons. The delete is delayed to prevent data loss, in case the user's access was revoked by mistake.
 
-### Directly addressed Todos
+### Directly addressing a To Do
 
 > [Introduced][ce-7926] in GitLab 9.0.
 
-If you are mentioned at the start of a line, the todo you receive will be listed
-as 'directly addressed'. For instance, in this comment:
+If you are mentioned at the start of a line, the To Do you receive will be listed
+as 'directly addressed'. For example, in this comment:
 
 ```markdown
 @alice What do you think? cc: @bob
@@ -58,67 +65,80 @@ as 'directly addressed'. For instance, in this comment:
 @erin @frank thank you!
 ```
 
-The people receiving directly addressed todos are `@alice`, `@erin`, and
-`@frank`. Directly addressed todos only differ from mention todos in their type,
-for filtering; otherwise, they appear as normal.
+The people receiving directly addressed To-Do items are `@alice`, `@erin`, and
+`@frank`. Directly addressed To-Do items only differ from mentions in their type
+for filtering purposes; otherwise, they appear as normal.
 
-### Manually creating a Todo
+### Manually creating a To Do
 
-You can also add an issue, merge request or epic to your Todos dashboard by clicking
-the "Add todo" button in the sidebar of the issue, merge request, or epic **[ULTIMATE]**.
+You can also add the following to your To-Do List by clicking the **Add a To Do** button on an:
 
-![Adding a Todo from the issuable sidebar](img/todos_add_todo_sidebar.png)
+- Issue
+- Merge Request
+- Epic **(ULTIMATE)**
 
-## Marking a Todo as done
+![Adding a To Do from the issuable sidebar](img/todos_add_todo_sidebar.png)
 
-Any action to the corresponding issue, merge request or epic **[ULTIMATE]** will mark your Todo as
-**Done**. Actions that dismiss Todos include:
+## Marking a To Do as done
 
-- changing the assignee
-- changing the milestone
-- adding/removing a label
-- commenting on the issue
+Any action to the following will mark the corresponding To Do as done:
 
----
+- Issue
+- Merge Request
+- Epic **(ULTIMATE)**
 
-Todos are personal, and they're only marked as done if the action is coming from
-you. If you close the issue or merge request, your Todo will automatically
-be marked as done.
+Actions that dismiss To-Do items include:
 
-If someone else closes, merges, or takes action on the issue, epic or merge
-request, your Todo will remain pending. This prevents other users from closing issues without you being notified.
-
-There is just one Todo per issue, epic or merge request, so mentioning a user a
-hundred times in an issue will only trigger one Todo.
+- Changing the assignee
+- Changing the milestone
+- Adding/removing a label
+- Commenting on the issue
 
 ---
 
-If no action is needed, you can manually mark the Todo as done by clicking the
-corresponding **Done** button, and it will disappear from your Todo list.
+Your To-Do List is personal, and items are only marked as done if the action comes from
+you. If you close the issue or merge request, your To Do is automatically
+marked as done.
 
-![A Todo in the Todos dashboard](img/todo_list_item.png)
+To prevent other users from closing issues without you being notified, if someone else closes, merges, or takes action on the any of the following, your To Do will remain pending:
 
-A Todo can also be marked as done from the issue, merge request or epic sidebar using
-the "Mark todo as done" button.
+- Issue
+- Merge request
+- Epic **(ULTIMATE)**
 
-![Mark todo as done from the issuable sidebar](img/todos_mark_done_sidebar.png)
+There is just one To Do for each of these, so mentioning a user a hundred times in an issue will only trigger one To Do.
 
-You can mark all your Todos as done at once by clicking on the **Mark all as
+---
+
+If no action is needed, you can manually mark the To Do as done by clicking the
+corresponding **Done** button, and it will disappear from your To-Do List.
+
+![A To Do in the To-Do List](img/todo_list_item.png)
+
+You can also mark a To Do as done by clicking the **Mark as done** button in the sidebar of the following:
+
+- Issue
+- Merge Request
+- Epic **(ULTIMATE)**
+
+![Mark as done from the issuable sidebar](img/todos_mark_done_sidebar.png)
+
+You can mark all your To-Do items as done at once by clicking the **Mark all as
 done** button.
 
-## Filtering your Todos
+## Filtering your To-Do List
 
-There are four kinds of filters you can use on your Todos dashboard.
+There are four kinds of filters you can use on your To-Do List.
 
 | Filter  | Description |
 | ------- | ----------- |
 | Project | Filter by project |
 | Group   | Filter by group |
-| Author  | Filter by the author that triggered the Todo |
-| Type    | Filter by issue, merge request, or epic **[ULTIMATE]** |
-| Action  | Filter by the action that triggered the Todo |
+| Author  | Filter by the author that triggered the To Do |
+| Type    | Filter by issue, merge request, or epic **(ULTIMATE)** |
+| Action  | Filter by the action that triggered the To Do |
 
-You can also filter by more than one of these at the same time. The possible Actions are `Any Action`, `Assigned`, `Mentioned`, `Added`, `Pipelines`, and `Directly Addressed`, [as described above](#what-triggers-a-todo).
+You can also filter by more than one of these at the same time. The possible Actions are `Any Action`, `Assigned`, `Mentioned`, `Added`, `Pipelines`, and `Directly Addressed`, [as described above](#what-triggers-a-to-do).
 
 [ce-2817]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/2817
 [ce-7926]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7926

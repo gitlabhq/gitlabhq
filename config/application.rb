@@ -6,6 +6,7 @@ Bundler.require(:default, Rails.env)
 
 module Gitlab
   class Application < Rails::Application
+    require_dependency Rails.root.join('lib/gitlab')
     require_dependency Rails.root.join('lib/gitlab/redis/wrapper')
     require_dependency Rails.root.join('lib/gitlab/redis/cache')
     require_dependency Rails.root.join('lib/gitlab/redis/queues')

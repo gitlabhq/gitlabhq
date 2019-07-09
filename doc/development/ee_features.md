@@ -182,52 +182,52 @@ There are a few gotchas with it:
   pattern](https://en.wikipedia.org/wiki/Template_method_pattern).
   For example, given this base:
 
-    ```ruby
-      class Base
-        def execute
-          return unless enabled?
+  ```ruby
+    class Base
+      def execute
+        return unless enabled?
 
-          # ...
-          # ...
-        end
+        # ...
+        # ...
       end
-    ```
+    end
+  ```
 
-    Instead of just overriding `Base#execute`, we should update it and extract
-    the behaviour into another method:
+  Instead of just overriding `Base#execute`, we should update it and extract
+  the behaviour into another method:
 
-    ```ruby
-      class Base
-        def execute
-          return unless enabled?
+  ```ruby
+    class Base
+      def execute
+        return unless enabled?
 
-          do_something
-        end
-
-        private
-
-        def do_something
-          # ...
-          # ...
-        end
+        do_something
       end
-    ```
 
-    Then we're free to override that `do_something` without worrying about the
-    guards:
+      private
 
-    ```ruby
-      module EE::Base
-        extend ::Gitlab::Utils::Override
-
-        override :do_something
-        def do_something
-          # Follow the above pattern to call super and extend it
-        end
+      def do_something
+        # ...
+        # ...
       end
-    ```
+    end
+  ```
 
-    This would require updating CE first, or make sure this is back ported to CE.
+  Then we're free to override that `do_something` without worrying about the
+  guards:
+
+  ```ruby
+    module EE::Base
+      extend ::Gitlab::Utils::Override
+
+      override :do_something
+      def do_something
+        # Follow the above pattern to call super and extend it
+      end
+    end
+  ```
+
+  This would require updating CE first, or make sure this is back ported to CE.
 
 When prepending, place them in the `ee/` specific sub-directory, and
 wrap class or module in `module EE` to avoid naming conflicts.
@@ -445,7 +445,6 @@ The disadvantage of this:
 - Slightly more work while developing EE features, because now we need to
   port `render_if_exists` to CE.
 - If we have typos in the partial name, it would be silently ignored.
-
 
 ##### Caveats
 
@@ -973,7 +972,7 @@ For regular JS files, the approach is similar.
    1. An EE file should be created with the EE only code, and it should extend the CE counterpart.
    1. For code inside functions that can't be extended, the code should be moved into a new file and we should use `ee_else_ce` helper:
 
-##### Example:
+#### Example:
 
 ```javascript
   import eeCode from 'ee_else_ce/ee_code';
@@ -1000,7 +999,7 @@ styles are usually kept in stylesheet that is common for both CE and EE, and it 
 to isolate such ruleset from rest of CE rules (along with adding comment describing the same)
 to avoid conflicts during CE to EE merge.
 
-#### Bad
+### Bad
 
 ```scss
 .section-body {
@@ -1016,7 +1015,7 @@ to avoid conflicts during CE to EE merge.
 }
 ```
 
-#### Good
+### Good
 
 ```scss
 .section-body {
@@ -1034,13 +1033,13 @@ to avoid conflicts during CE to EE merge.
 // EE-specific end
 ```
 
-### Backporting changes from EE to CE
+## Backporting changes from EE to CE
 
 Until the work completed to merge the ce and ee codebases, which is tracked on [epic &802](https://gitlab.com/groups/gitlab-org/-/epics/802), there exists times in which some changes for EE require specific changes to the CE
 code base.  Examples of backports include the following:
 
-* Features intended or originally built for EE that are later decided to move to CE
-* Sometimes some code in CE may impact the EE feature
+- Features intended or originally built for EE that are later decided to move to CE
+- Sometimes some code in CE may impact the EE feature
 
 Here is a workflow to make sure those changes end up backported safely into CE too.
 

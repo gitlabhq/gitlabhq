@@ -1,0 +1,5 @@
+---
+title: Make Housekeeping button do a full garbage collection
+merge_request: 30289
+author:
+type: fixed

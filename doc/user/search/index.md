@@ -97,10 +97,10 @@ quickly access issues and merge requests created or assigned to you within that 
 
 ![search per project - shortcut](img/project_search.png)
 
-## Todos
+## To-Do List
 
-Your [todos](../../workflow/todos.md#gitlab-todos) can be searched by "to do" and "done".
-You can [filter](../../workflow/todos.md#filtering-your-todos) them per project,
+Your [To-Do List](../../workflow/todos.md#gitlab-to-do-list) can be searched by "to do" and "done".
+You can [filter](../../workflow/todos.md#filtering-your-to-do-list) them per project,
 author, type, and action. Also, you can sort them by
 [**Label priority**](../../user/project/labels.md#label-priority),
 **Last created** and **Oldest created**.
@@ -143,14 +143,14 @@ and **Labels**, select multiple issues to add to a list of your choice:
 
 ![search and select issues to add to board](img/search_issues_board.png)
 
-## Advanced Global Search **[STARTER]**
+## Advanced Global Search **(STARTER)**
 
 Leverage Elasticsearch for faster, more advanced code search across your entire
 GitLab instance.
 
 [Learn how to use the Advanced Global Search.](advanced_global_search.md)
 
-## Advanced Syntax Search **[STARTER]**
+## Advanced Syntax Search **(STARTER)**
 
 Use advanced queries for more targeted search results.
 

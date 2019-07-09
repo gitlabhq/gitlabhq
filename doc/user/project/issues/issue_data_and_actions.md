@@ -39,16 +39,19 @@ after it is closed.
 
 ![Report Abuse](img/report-abuse.png)
 
-#### 2. Todos
+#### 2. To Do
 
-You can click **add todo** to add the issue to your [GitLab Todo](../../../workflow/todos.md)
-list. If it is already on your todo list, the buttom will show **mark todo as done**,
-which you can click to mark that issue as done (which will be reflected in the Todo list).
+You can add issues to and remove issues from your [GitLab To-Do List](../../../workflow/todos.md).
+
+The button to do this has a different label depending on whether the issue is already on your To-Do List or not. If the issue is:
+
+- Already on your To-Do List: The button is labeled **Mark as done**. Click the button to remove the issue from your To-Do List.
+- Not on your To-Do List: The button is labelled **Add a To Do**. Click the button to add the issue to your To-Do List.
 
 #### 3. Assignee
 
 An issue can be assigned to yourself, another person, or [many people](#31-multiple-assignees-STARTER).
-The assignee(s) can be changed as much as needed. The idea is that the assignees are
+The assignee(s) can be changed as often as needed. The idea is that the assignees are
 responsible for that issue until it's reassigned to someone else to take it from there.
 When assigned to someone, it will appear in their assigned issues list.
 
@@ -56,7 +59,7 @@ TIP: **Tip:**
 If a user is not member of that project, it can only be
 assigned to them if they created the issue themselves.
 
-##### 3.1. Multiple Assignees **[STARTER]**
+##### 3.1. Multiple Assignees **(STARTER)**
 
 Often multiple people work on the same issue together, which can be especially difficult
 to track in large teams where there is shared ownership of an issue.
@@ -64,7 +67,7 @@ to track in large teams where there is shared ownership of an issue.
 In [GitLab Starter](https://about.gitlab.com/pricing/), you can
 [assign multiple people](multiple_assignees_for_issues.md) to an issue.
 
-#### 4. Epic **[ULTIMATE]**
+#### 4. Epic **(ULTIMATE)**
 
 You can assign issues to an [Epic](../../group/epics/index.md), which allows better
 management of groups of related issues.
@@ -99,7 +102,7 @@ TIP: **Tip:**
 If a label doesn't exist yet, you can click **Edit**, and it opens a dropdown menu
 from which you can select **Create new label**.
 
-#### 9. Weight **[STARTER]**
+#### 9. Weight **(STARTER)**
 
 [Assign a weight](../../../workflow/issue_weight.md) to an issue.
 Larger values are used to indicate more effort is required to complete the issue. Only
@@ -177,7 +180,7 @@ TIP: **Tip:**
 Avoid mentioning `@all` in issues and merge requests, as it sends an email notification
 to all the members of that project's group, which can be interpreted as spam.
 
-#### 18. Related Issues **[STARTER]**
+#### 18. Related Issues **(STARTER)**
 
 Issues that were mentioned as [related issues](related_issues.md) are listed here.
 You can also click the `+` to add more related issues.
@@ -205,6 +208,14 @@ to let them know your reaction without spamming them.
 You can filter what is displayed in the issue history by clicking on **Show all activity**
 and selecting either **Show comments only**, which only shows discussions and hides
 updates to the issue, or **Show history only**, which hides discussions and only shows updates.
+
+- You can mention a user or a group present in your GitLab instance with
+  `@username` or `@groupname` and they will be notified via To-Do items 
+  and email, unless they have [disabled all notifications](#13-notifications)
+  in their profile settings.
+- Mentions for yourself (the current logged in user), will be highlighted
+  in a different color, allowing you to easily see which comments involve you,
+  helping you focus on them quickly.
 
 ![Show all activity](img/show-all-activity.png)
 

@@ -5,6 +5,9 @@
 Connect your project to Google Kubernetes Engine (GKE) or an existing Kubernetes
 cluster in a few steps.
 
+NOTE: **Scalable app deployment with GitLab and Google Cloud Platform**
+[Watch the webcast](https://about.gitlab.com/webcast/scalable-app-deploy/) and learn how to spin up a Kubernetes cluster managed by Google Cloud Platform (GCP) in a few clicks.
+
 ## Overview
 
 With one or more Kubernetes clusters associated to your project, you can use
@@ -432,7 +435,7 @@ record](https://en.wikipedia.org/wiki/Wildcard_DNS_record) such as `*.example.co
 in order to be able to reach your apps. If your external endpoint is an IP address,
 use an A record. If your external endpoint is a hostname, use a CNAME record.
 
-## Multiple Kubernetes clusters **[PREMIUM]**
+## Multiple Kubernetes clusters **(PREMIUM)**
 
 > Introduced in [GitLab Premium][ee] 10.3.
 
@@ -444,7 +447,7 @@ Simply add another cluster, like you did the first time, and make sure to
 [set an environment scope](#setting-the-environment-scope-premium) that will
 differentiate the new cluster with the rest.
 
-## Setting the environment scope **[PREMIUM]**
+## Setting the environment scope **(PREMIUM)**
 
 When adding more than one Kubernetes cluster to your project, you need to differentiate
 them with an environment scope. The environment scope associates clusters with [environments](../../../ci/environments.md) similar to how the
@@ -547,7 +550,7 @@ in a way that causes this error. Ensure you deselect the
 [GitLab-managed cluster](#gitlab-managed-clusters) option if you want to manage
 namespaces and service accounts yourself.
 
-## Monitoring your Kubernetes cluster **[ULTIMATE]**
+## Monitoring your Kubernetes cluster **(ULTIMATE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/4701) in [GitLab Ultimate][ee] 10.6.
 
@@ -585,7 +588,7 @@ and add a Kubernetes cluster again.
 
 Here's what you can do with GitLab if you enable the Kubernetes integration.
 
-### Deploy Boards **[PREMIUM]**
+### Deploy Boards **(PREMIUM)**
 
 GitLab's Deploy Boards offer a consolidated view of the current health and
 status of each CI [environment](../../../ci/environments.md) running on Kubernetes,
@@ -595,7 +598,7 @@ workflow they already use without any need to access Kubernetes.
 
 [Read more about Deploy Boards](../deploy_boards.md)
 
-### Canary Deployments **[PREMIUM]**
+### Canary Deployments **(PREMIUM)**
 
 Leverage [Kubernetes' Canary deployments](https://kubernetes.io/docs/concepts/cluster-administration/manage-deployment/#canary-deployments)
 and visualize your canary deployments right inside the Deploy Board, without
@@ -603,7 +606,7 @@ the need to leave GitLab.
 
 [Read more about Canary Deployments](../canary_deployments.md)
 
-### Pod logs **[ULTIMATE]**
+### Pod logs **(ULTIMATE)**
 
 GitLab makes it easy to view the logs of running pods in connected Kubernetes clusters. By displaying the logs directly in GitLab, developers can avoid having to manage console tools or jump to a different interface.
 

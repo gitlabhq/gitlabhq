@@ -36,6 +36,11 @@ describe ProjectCacheWorker do
     end
 
     context 'with an existing project' do
+      before do
+        lease_key = "namespace:namespaces_root_statistics:#{project.namespace_id}"
+        stub_exclusive_lease_taken(lease_key, timeout: Namespace::AggregationSchedule::DEFAULT_LEASE_TIMEOUT)
+      end
+
       it 'refreshes the method caches' do
         expect_any_instance_of(Repository).to receive(:refresh_method_caches)
           .with(%i(readme))
@@ -81,6 +86,10 @@ describe ProjectCacheWorker do
 
         expect(UpdateProjectStatisticsWorker).not_to receive(:perform_in)
 
+        expect(Namespaces::ScheduleAggregationWorker)
+          .not_to receive(:perform_async)
+          .with(project.namespace_id)
+
         worker.update_statistics(project, statistics)
       end
     end
@@ -97,6 +106,11 @@ describe ProjectCacheWorker do
         expect(UpdateProjectStatisticsWorker).to receive(:perform_in)
           .with(lease_timeout, project.id, statistics)
           .and_call_original
+
+        expect(Namespaces::ScheduleAggregationWorker)
+          .to receive(:perform_async)
+          .with(project.namespace_id)
+          .twice
 
         worker.update_statistics(project, statistics)
       end

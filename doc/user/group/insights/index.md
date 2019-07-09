@@ -2,7 +2,7 @@
 type: reference, howto
 ---
 
-# Insights **[ULTIMATE]**
+# Insights **(ULTIMATE)**
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/725) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.0.
 

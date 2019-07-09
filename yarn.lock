@@ -700,15 +700,15 @@
   dependencies:
     requireindex "~1.1.0"
 
-"@gitlab/svgs@^1.66.0":
-  version "1.66.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.66.0.tgz#3c02da455421ea241f32e915671842435df027ff"
-  integrity sha512-nxOoQPnofMs3BjRr3SVzQcclM0G6QFrLM8L4nnUCN+8Gxq2u8ukfSU5FCrkivXz+FP9Qo/FYilWV7CY8kDkt6A==
+"@gitlab/svgs@^1.67.0":
+  version "1.67.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.67.0.tgz#c7b94eca13b99fd3aaa737fb6dcc0abc41d3c579"
+  integrity sha512-hJOmWEs6RkjzyKkb1vc9wwKGZIBIP0coHkxu/KgOoxhBVudpGk4CH7xJ6UuB2TKpb0SEh5CC1CzRZfBYaFhsaA==
 
-"@gitlab/ui@^5.1.0":
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-5.1.0.tgz#b8c8f266edc68f616e92c0ba3a18a692002393e4"
-  integrity sha512-IPgk5W7mSXcbni+zNuJeVU89Co72jSQAXTxU7AtmItt5XT6nI9US2ZAWNUl8XCiOOw81jzYv0PLp4bMiXdLkww==
+"@gitlab/ui@^5.5.0":
+  version "5.5.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-5.5.0.tgz#2000b2ed0c3825dd8c4430191023f4d03c923ecb"
+  integrity sha512-6e/AFFLDk/gm4wKnHM9rcpTRqCsWkPKW/Vjsnd6h4wyfif2/TusHeIn/jedQxUaORbO/XZKzg4V5COhXXbCx4w==
   dependencies:
     "@babel/standalone" "^7.0.0"
     "@gitlab/vue-toasted" "^1.2.1"
@@ -7476,9 +7476,9 @@ mississippi@^3.0.0:
     through2 "^2.0.0"
 
 mixin-deep@^1.2.0:
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/mixin-deep/-/mixin-deep-1.3.1.tgz#a49e7268dce1a0d9698e45326c5626df3543d0fe"
-  integrity sha512-8ZItLHeEgaqEvd5lYBXfm4EZSFCX29Jb9K+lAHhDKzReKBQKj3R+7NOF6tjqYi9t4oI8VUfaWITJQm86wnXGNQ==
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/mixin-deep/-/mixin-deep-1.3.2.tgz#1120b43dc359a785dce65b55b82e257ccf479566"
+  integrity sha512-WRoDn//mXBiJ1H40rqa3vH0toePwSsGb45iInWlTySa+Uu4k3tYUSxa2v1KqAiLtvlrSzaExqS1gtk96A9zvEA==
   dependencies:
     for-in "^1.0.2"
     is-extendable "^1.0.1"

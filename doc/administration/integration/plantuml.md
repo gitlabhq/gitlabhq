@@ -94,7 +94,7 @@ our AsciiDoc snippets, wikis and repos using delimited blocks:
        Alice -> Bob: Go Away
     ```
 
-    You can also use the `uml::` directive for compatibility with [sphinxcontrib-plantuml](https://pypi.python.org/pypi/sphinxcontrib-plantuml), but please note that we currently only support the `caption` option.
+    You can also use the `uml::` directive for compatibility with [sphinxcontrib-plantuml](https://pypi.org/project/sphinxcontrib-plantuml/), but please note that we currently only support the `caption` option.
 
 The above blocks will be converted to an HTML img tag with source pointing to the
 PlantUML instance. If the PlantUML server is correctly configured, this should

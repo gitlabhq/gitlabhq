@@ -16,16 +16,8 @@ describe 'OAuth Login', :js, :allow_forgery_protection do
   providers = [:github, :twitter, :bitbucket, :gitlab, :google_oauth2,
                :facebook, :cas3, :auth0, :authentiq, :salesforce]
 
-  before(:all) do
-    # The OmniAuth `full_host` parameter doesn't get set correctly (it gets set to something like `http://localhost`
-    # here), and causes integration tests to fail with 404s. We set the `full_host` by removing the request path (and
-    # anything after it) from the request URI.
-    @omniauth_config_full_host = OmniAuth.config.full_host
-    OmniAuth.config.full_host = ->(request) { request['REQUEST_URI'].sub(/#{request['REQUEST_PATH']}.*/, '') }
-  end
-
-  after(:all) do
-    OmniAuth.config.full_host = @omniauth_config_full_host
+  around(:all) do |example|
+    with_omniauth_full_host { example.run }
   end
 
   def login_with_provider(provider, enter_two_factor: false)

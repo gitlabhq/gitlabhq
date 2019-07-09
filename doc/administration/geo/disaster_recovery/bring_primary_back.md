@@ -1,4 +1,4 @@
-# Bring a demoted primary node back online **[PREMIUM ONLY]**
+# Bring a demoted primary node back online **(PREMIUM ONLY)**
 
 After a failover, it is possible to fail back to the demoted **primary** node to
 restore your original configuration. This process consists of two steps:

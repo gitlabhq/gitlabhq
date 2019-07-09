@@ -13,7 +13,7 @@ describe BackfillStoreProjectFullPathInRepo, :migration do
   subject(:migration) { described_class.new }
 
   around do |example|
-    Sidekiq::Testing.inline! do
+    perform_enqueued_jobs do
       example.run
     end
   end

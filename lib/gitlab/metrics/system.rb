@@ -31,14 +31,6 @@ module Gitlab
 
           match[1].to_i
         end
-
-        def self.process_start_time
-          fields = File.read('/proc/self/stat').split
-
-          # fields[21] is linux proc stat field "(22) starttime".
-          # The value is expressed in clock ticks, divide by clock ticks for seconds.
-          ( fields[21].to_i || 0 ) / clk_tck
-        end
       else
         def self.memory_usage
           0.0
@@ -49,10 +41,6 @@ module Gitlab
         end
 
         def self.max_open_file_descriptors
-          0
-        end
-
-        def self.process_start_time
           0
         end
       end

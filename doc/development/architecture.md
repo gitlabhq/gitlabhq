@@ -267,7 +267,7 @@ GitLab CI is the open-source continuous integration service included with GitLab
 #### Gitlab Workhorse
 
 - [Project page](https://gitlab.com/gitlab-org/gitlab-workhorse/blob/master/README.md)
-- Configuration: [Omnibus][gitlab-workhorse-omnibus], [Charts][gitlab-workhorse-charts], [Source][workhorse-source]
+- Configuration: [Omnibus][workhorse-omnibus], [Charts][workhorse-charts], [Source][workhorse-source]
 - Layer: Core Service (Processor)
 - Process: `gitlab-workhorse`
 
@@ -484,9 +484,11 @@ When making a request to an HTTP Endpoint (think `/users/sign_in`) the request w
 Below we describe the different pathing that HTTP vs. SSH Git requests will take. There is some overlap with the Web Request Cycle but also some differences.
 
 ### Web Request (80/443)
+
 TODO
 
 ### SSH Request (22)
+
 TODO
 
 ## System Layout
@@ -505,7 +507,9 @@ To summarize here's the [directory structure of the `git` user home directory](.
 
 ### Processes
 
-    ps aux | grep '^git'
+```sh
+ps aux | grep '^git'
+```
 
 GitLab has several components to operate. As a system user (i.e. any user that is not the `git` user) it requires a persistent database (MySQL/PostreSQL) and redis database. It also uses Apache httpd or Nginx to proxypass Unicorn. As the `git` user it starts Sidekiq and Unicorn (a simple ruby HTTP server running on port `8080` by default). Under the GitLab user there are normally 4 processes: `unicorn_rails master` (1 process), `unicorn_rails worker` (2 processes), `sidekiq` (1 process).
 
@@ -681,7 +685,7 @@ We've also detailed [our architecture of GitLab.com](https://about.gitlab.com/ha
 [pgbouncer-exporter-omnibus]: ../administration/monitoring/prometheus/pgbouncer_exporter.md
 [pgbouncer-exporter-charts]: https://docs.gitlab.com/charts/installation/deployment.html#postgresql
 [gitlab-monitor-omnibus]: ../administration/monitoring/prometheus/gitlab_monitor_exporter.md
-[gitab-monitor-charts]: https://docs.gitlab.com/charts/charts/gitlab/gitlab-monitor/index.html
+[gitlab-monitor-charts]: https://docs.gitlab.com/charts/charts/gitlab/gitlab-monitor/index.html
 [node-exporter-omnibus]: ../administration/monitoring/prometheus/node_exporter.md
 [node-exporter-charts]: https://gitlab.com/charts/gitlab/issues/1332
 [mattermost-omnibus]: https://docs.gitlab.com/omnibus/gitlab-mattermost/

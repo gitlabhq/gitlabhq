@@ -5,6 +5,7 @@ module QA
     module Project
       class Show < Page::Base
         include Page::Component::ClonePanel
+        include Page::Project::SubMenus::Settings
 
         view 'app/views/layouts/header/_new_dropdown.haml' do
           element :new_menu_toggle

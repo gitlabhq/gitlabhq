@@ -25,7 +25,7 @@ You can use GFM in the following areas:
 - Snippets (the snippet must be named with a `.md` extension)
 - Wiki pages
 - Markdown documents inside repositories
-- Epics **[ULTIMATE]**
+- Epics **(ULTIMATE)**
 
 You can also use other rich text files in GitLab. You might have to install a dependency
 to do so. Please see the [`gitlab-markup` gem project](https://gitlab.com/gitlab-org/gitlab-markup)
@@ -368,7 +368,7 @@ GFM will recognize the following:
 | issue                           | ``#123``                   | `namespace/project#123`                 | `project#123`                  |
 | merge request                   | `!123`                     | `namespace/project!123`                 | `project!123`                  |
 | snippet                         | `$123`                     | `namespace/project$123`                 | `project$123`                  |
-| epic **[ULTIMATE]**             | `&123`                     | `group1/subgroup&123`                   |                                |
+| epic **(ULTIMATE)**             | `&123`                     | `group1/subgroup&123`                   |                                |
 | label by ID                     | `~123`                     | `namespace/project~123`                 | `project~123`                  |
 | one-word label by name          | `~bug`                     | `namespace/project~bug`                 | `project~bug`                  |
 | multi-word label by name        | `~"feature request"`       | `namespace/project~"feature request"`   | `project~"feature request"`    |

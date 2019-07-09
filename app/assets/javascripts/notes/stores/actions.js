@@ -14,6 +14,7 @@ import sidebarTimeTrackingEventHub from '../../sidebar/event_hub';
 import { isInViewport, scrollToElement, isInMRPage } from '../../lib/utils/common_utils';
 import mrWidgetEventHub from '../../vue_merge_request_widget/event_hub';
 import { __ } from '~/locale';
+import Api from '~/api';
 
 let eTagPoll;
 
@@ -449,8 +450,7 @@ export const submitSuggestion = (
   { commit, dispatch },
   { discussionId, noteId, suggestionId, flashContainer },
 ) =>
-  service
-    .applySuggestion(suggestionId)
+  Api.applySuggestion(suggestionId)
     .then(() => commit(types.APPLY_SUGGESTION, { discussionId, noteId, suggestionId }))
     .then(() => dispatch('resolveDiscussion', { discussionId }).catch(() => {}))
     .catch(err => {

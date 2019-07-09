@@ -1,4 +1,4 @@
-# Disaster recovery for planned failover **[PREMIUM ONLY]**
+# Disaster recovery for planned failover **(PREMIUM ONLY)**
 
 The primary use-case of Disaster Recovery is to ensure business continuity in
 the event of unplanned outage, but it can be used in conjunction with a planned

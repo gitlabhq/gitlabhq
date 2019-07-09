@@ -2482,7 +2482,7 @@ describe API::Projects do
     let(:housekeeping) { Projects::HousekeepingService.new(project) }
 
     before do
-      allow(Projects::HousekeepingService).to receive(:new).with(project).and_return(housekeeping)
+      allow(Projects::HousekeepingService).to receive(:new).with(project, :gc).and_return(housekeeping)
     end
 
     context 'when authenticated as owner' do

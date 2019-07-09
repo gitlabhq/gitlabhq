@@ -62,10 +62,18 @@ class LabelNote < Note
   end
 
   def note_text(html: false)
-    added = labels_str('added', label_refs_by_action('add', html))
-    removed = labels_str('removed', label_refs_by_action('remove', html))
+    added = labels_str(label_refs_by_action('add', html), prefix: 'added', suffix: added_suffix)
+    removed = labels_str(label_refs_by_action('remove', html), prefix: removed_prefix)
 
     [added, removed].compact.join(' and ')
+  end
+
+  def removed_prefix
+    'removed'
+  end
+
+  def added_suffix
+    ''
   end
 
   # returns string containing added/removed labels including
@@ -74,7 +82,7 @@ class LabelNote < Note
   # added ~1 ~2 + 1 deleted label
   # added 3 deleted labels
   # added ~1 ~2 labels
-  def labels_str(prefix, label_refs)
+  def labels_str(label_refs, prefix: '', suffix: '')
     existing_refs = label_refs.select { |ref| ref.present? }.sort
     refs_str = existing_refs.empty? ? nil : existing_refs.join(' ')
 
@@ -84,9 +92,9 @@ class LabelNote < Note
     return unless refs_str || deleted_str
 
     label_list_str = [refs_str, deleted_str].compact.join(' + ')
-    suffix = 'label'.pluralize(deleted > 0 ? deleted : existing_refs.count)
+    suffix += ' label'.pluralize(deleted > 0 ? deleted : existing_refs.count)
 
-    "#{prefix} #{label_list_str} #{suffix}"
+    "#{prefix} #{label_list_str} #{suffix.squish}"
   end
 
   def label_refs_by_action(action, html)

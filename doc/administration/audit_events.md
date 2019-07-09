@@ -2,7 +2,7 @@
 last_updated: 2019-02-04
 ---
 
-# Audit Events **[STARTER]**
+# Audit Events **(STARTER)**
 
 GitLab offers a way to view the changes made within the GitLab server for owners and administrators on a [paid plan][ee].
 
@@ -32,7 +32,7 @@ There are two kinds of events logged:
 - Instance events scoped to the whole GitLab instance, used by your Compliance team to
   perform formal audits.
 
-### Group events **[STARTER]**
+### Group events **(STARTER)**
 
 NOTE: **Note:**
 You need Owner [permissions] to view the group Audit Events page.
@@ -59,7 +59,7 @@ From there, you can see the following actions:
 - 2FA enforcement/grace period changed
 - Roles allowed to create project changed
 
-### Project events **[STARTER]**
+### Project events **(STARTER)**
 
 NOTE: **Note:**
 You need Maintainer [permissions] or higher to view the project Audit Events page.
@@ -74,7 +74,7 @@ From there, you can see the following actions:
 - Permission changes of a user assigned to a project
 - User was removed from project
 
-### Instance events **[PREMIUM ONLY]**
+### Instance events **(PREMIUM ONLY)**
 
 > [Introduced][ee-2336] in [GitLab Premium][ee] 9.3.
 
@@ -99,7 +99,7 @@ It is possible to filter particular actions by choosing an audit data type from
 the filter drop-down. You can further filter by specific group, project or user
 (for authentication events).
 
-![audit log](audit_log.png)
+![audit log](img/audit_log.png)
 
 ### Missing events
 

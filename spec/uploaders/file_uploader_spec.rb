@@ -184,40 +184,37 @@ describe FileUploader do
     end
   end
 
-  describe '#cache!' do
-    subject do
+  context 'when remote file is used' do
+    let(:temp_file) { Tempfile.new("test") }
+
+    let!(:fog_connection) do
+      stub_uploads_object_storage(described_class)
+    end
+
+    let(:filename) { "my file.txt" }
+    let(:uploaded_file) do
+      UploadedFile.new(temp_file.path, filename: filename, remote_id: "test/123123")
+    end
+
+    let!(:fog_file) do
+      fog_connection.directories.new(key: 'uploads').files.create(
+        key: 'tmp/uploads/test/123123',
+        body: 'content'
+      )
+    end
+
+    before do
+      FileUtils.touch(temp_file)
+
       uploader.store!(uploaded_file)
     end
 
-    context 'when remote file is used' do
-      let(:temp_file) { Tempfile.new("test") }
+    after do
+      FileUtils.rm_f(temp_file)
+    end
 
-      let!(:fog_connection) do
-        stub_uploads_object_storage(described_class)
-      end
-
-      let(:uploaded_file) do
-        UploadedFile.new(temp_file.path, filename: "my file.txt", remote_id: "test/123123")
-      end
-
-      let!(:fog_file) do
-        fog_connection.directories.new(key: 'uploads').files.create(
-          key: 'tmp/uploads/test/123123',
-          body: 'content'
-        )
-      end
-
-      before do
-        FileUtils.touch(temp_file)
-      end
-
-      after do
-        FileUtils.rm_f(temp_file)
-      end
-
+    describe '#cache!' do
       it 'file is stored remotely in permament location with sanitized name' do
-        subject
-
         expect(uploader).to be_exists
         expect(uploader).not_to be_cached
         expect(uploader).not_to be_file_storage
@@ -226,6 +223,19 @@ describe FileUploader do
         expect(uploader.path).not_to include('tmp/cache')
         expect(uploader.url).to include('/my_file.txt')
         expect(uploader.object_store).to eq(described_class::Store::REMOTE)
+      end
+    end
+
+    describe '#to_h' do
+      subject { uploader.to_h }
+
+      let(:filename) { 'my+file.txt' }
+
+      it 'generates URL using original file name instead of filename returned by object storage' do
+        # GCS returns a URL with a `+` instead of `%2B`
+        allow(uploader.file).to receive(:url).and_return('https://storage.googleapis.com/gitlab-test-uploads/@hashed/6b/86/6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b/64c5065e62100b1a12841644256a98be/my+file.txt')
+
+        expect(subject[:url]).to end_with(filename)
       end
     end
   end

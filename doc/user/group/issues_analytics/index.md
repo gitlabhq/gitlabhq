@@ -2,7 +2,7 @@
 type: reference
 ---
 
-# Issues Analytics **[PREMIUM]**
+# Issues Analytics **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/7478) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.5.
 

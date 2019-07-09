@@ -87,13 +87,13 @@ describe Gitlab::Danger::Helper do
 
   describe '#changes_by_category' do
     it 'categorizes changed files' do
-      expect(fake_git).to receive(:added_files) { %w[foo foo.md foo.rb foo.js db/foo qa/foo ee/changelogs/foo.yml] }
+      expect(fake_git).to receive(:added_files) { %w[foo foo.md foo.rb foo.js db/foo lib/gitlab/database/foo.rb qa/foo ee/changelogs/foo.yml] }
       allow(fake_git).to receive(:modified_files) { [] }
       allow(fake_git).to receive(:renamed_files) { [] }
 
       expect(helper.changes_by_category).to eq(
         backend: %w[foo.rb],
-        database: %w[db/foo],
+        database: %w[db/foo lib/gitlab/database/foo.rb],
         frontend: %w[foo.js],
         none: %w[ee/changelogs/foo.yml foo.md],
         qa: %w[qa/foo],
@@ -159,9 +159,22 @@ describe Gitlab::Danger::Helper do
 
       'ee/FOO_VERSION' | :unknown
 
-      'db/foo' | :database
-      'qa/foo' | :qa
+      'db/foo'                                                    | :database
+      'ee/db/foo'                                                 | :database
+      'app/models/project_authorization.rb'                       | :database
+      'app/services/users/refresh_authorized_projects_service.rb' | :database
+      'lib/gitlab/background_migration.rb'                        | :database
+      'lib/gitlab/background_migration/foo'                       | :database
+      'ee/lib/gitlab/background_migration/foo'                    | :database
+      'lib/gitlab/database.rb'                                    | :database
+      'lib/gitlab/database/foo'                                   | :database
+      'ee/lib/gitlab/database/foo'                                | :database
+      'lib/gitlab/github_import.rb'                               | :database
+      'lib/gitlab/github_import/foo'                              | :database
+      'lib/gitlab/sql/foo'                                        | :database
+      'rubocop/cop/migration/foo'                                 | :database
 
+      'qa/foo' | :qa
       'ee/qa/foo' | :qa
 
       'changelogs/foo'    | :none

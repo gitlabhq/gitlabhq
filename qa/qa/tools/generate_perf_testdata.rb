@@ -59,8 +59,8 @@ module QA
         group_search_response = create_a_group_api_req(@group_name, @visibility)
         group = JSON.parse(group_search_response.body)
         @urls[:group_page] = group["web_url"]
-        group["id"]
         STDOUT.puts "Created a group: #{@urls[:group_page]}"
+        group["id"]
       end
 
       def create_project(group_id)
@@ -196,6 +196,7 @@ module QA
         project_path = "#{@group_name}%2F#{@project_name}"
         branch_name = "branch_with_many_commits-#{SecureRandom.hex(8)}"
         file_name = "file_for_many_commits.txt"
+
         create_a_branch_api_req(branch_name, project_path)
         create_a_new_file_api_req(file_name, branch_name, project_path, "Initial commit for new file", "Initial file content")
         create_mr_response = create_a_merge_request_api_req(project_path, branch_name, "master", "MR with many commits-#{SecureRandom.hex(8)}")
@@ -203,7 +204,7 @@ module QA
         100.times do |i|
           update_file_api_req(file_name, branch_name, project_path, Faker::Lorem.sentences(5).join(" "), Faker::Lorem.sentences(500).join("\n"))
         end
-        STDOUT.puts "Created an MR with many commits: #{@urls[:mr_with_many_commits]}"
+        STDOUT.puts "Using branch: #{branch_name}, created an MR with many commits: #{@urls[:mr_with_many_commits]}"
       end
 
       private
@@ -211,56 +212,88 @@ module QA
       # API Requests
 
       def create_a_discussion_on_issue_api_req(project_path_or_id, issue_id, body)
-        post Runtime::API::Request.new(@api_client, "/projects/#{project_path_or_id}/issues/#{issue_id}/discussions").url, "body=\"#{body}\""
+        call_api(expected_response_code: 201) do
+          post Runtime::API::Request.new(@api_client, "/projects/#{project_path_or_id}/issues/#{issue_id}/discussions").url, "body=\"#{body}\""
+        end
       end
 
       def update_a_discussion_on_issue_api_req(project_path_or_id, mr_iid, discussion_id, resolved_status)
-        put Runtime::API::Request.new(@api_client, "/projects/#{project_path_or_id}/merge_requests/#{mr_iid}/discussions/#{discussion_id}").url, "resolved=#{resolved_status}"
+        call_api(expected_response_code: 200) do
+          put Runtime::API::Request.new(@api_client, "/projects/#{project_path_or_id}/merge_requests/#{mr_iid}/discussions/#{discussion_id}").url, "resolved=#{resolved_status}"
+        end
       end
 
       def create_a_discussion_on_mr_api_req(project_path_or_id, mr_iid, body)
-        post Runtime::API::Request.new(@api_client, "/projects/#{project_path_or_id}/merge_requests/#{mr_iid}/discussions").url,
-             "body=\"#{body}\""
+        call_api(expected_response_code: 201) do
+          post Runtime::API::Request.new(@api_client, "/projects/#{project_path_or_id}/merge_requests/#{mr_iid}/discussions").url, "body=\"#{body}\""
+        end
       end
 
       def create_a_label_api_req(project_path_or_id, name, color)
-        post Runtime::API::Request.new(@api_client, "/projects/#{project_path_or_id}/labels").url, "name=#{name}&color=#{color}"
+        call_api(expected_response_code: 201) do
+          post Runtime::API::Request.new(@api_client, "/projects/#{project_path_or_id}/labels").url, "name=#{name}&color=#{color}"
+        end
       end
 
       def create_a_todo_api_req(project_path_or_id, issue_id)
-        post Runtime::API::Request.new(@api_client, "/projects/#{project_path_or_id}/issues/#{issue_id}/todo").url, nil
+        call_api(expected_response_code: 201) do
+          post Runtime::API::Request.new(@api_client, "/projects/#{project_path_or_id}/issues/#{issue_id}/todo").url, nil
+        end
       end
 
       def create_an_issue_api_req(project_path_or_id, title, description)
-        post Runtime::API::Request.new(@api_client, "/projects/#{project_path_or_id}/issues").url, "title=#{title}&description=#{description}"
+        call_api(expected_response_code: 201) do
+          post Runtime::API::Request.new(@api_client, "/projects/#{project_path_or_id}/issues").url, "title=#{title}&description=#{description}"
+        end
       end
 
       def update_an_issue_api_req(project_path_or_id, issue_id, description, labels_list)
-        put Runtime::API::Request.new(@api_client, "/projects/#{project_path_or_id}/issues/#{issue_id}").url, "description=#{description}&labels=#{labels_list}"
+        call_api(expected_response_code: 200) do
+          put Runtime::API::Request.new(@api_client, "/projects/#{project_path_or_id}/issues/#{issue_id}").url, "description=#{description}&labels=#{labels_list}"
+        end
       end
 
       def create_a_project_api_req(project_name, group_id, visibility)
-        post Runtime::API::Request.new(@api_client, "/projects").url, "name=#{project_name}&namespace_id=#{group_id}&visibility=#{visibility}"
+        call_api(expected_response_code: 201) do
+          post Runtime::API::Request.new(@api_client, "/projects").url, "name=#{project_name}&namespace_id=#{group_id}&visibility=#{visibility}"
+        end
       end
 
       def create_a_group_api_req(group_name, visibility)
-        post Runtime::API::Request.new(@api_client, "/groups").url, "name=#{group_name}&path=#{group_name}&visibility=#{visibility}"
+        call_api(expected_response_code: 201) do
+          post Runtime::API::Request.new(@api_client, "/groups").url, "name=#{group_name}&path=#{group_name}&visibility=#{visibility}"
+        end
       end
 
       def create_a_branch_api_req(branch_name, project_path_or_id)
-        post Runtime::API::Request.new(@api_client, "/projects/#{project_path_or_id}/repository/branches").url, "branch=#{branch_name}&ref=master"
+        call_api(expected_response_code: 201) do
+          post Runtime::API::Request.new(@api_client, "/projects/#{project_path_or_id}/repository/branches").url, "branch=#{branch_name}&ref=master"
+        end
       end
 
       def create_a_new_file_api_req(file_path, branch_name, project_path_or_id, commit_message, content)
-        post Runtime::API::Request.new(@api_client, "/projects/#{project_path_or_id}/repository/files/#{file_path}").url, "branch=#{branch_name}&commit_message=\"#{commit_message}\"&content=\"#{content}\""
+        call_api(expected_response_code: 201) do
+          post Runtime::API::Request.new(@api_client, "/projects/#{project_path_or_id}/repository/files/#{file_path}").url, "branch=#{branch_name}&commit_message=\"#{commit_message}\"&content=\"#{content}\""
+        end
       end
 
       def create_a_merge_request_api_req(project_path_or_id, source_branch, target_branch, mr_title)
-        post Runtime::API::Request.new(@api_client, "/projects/#{project_path_or_id}/merge_requests").url, "source_branch=#{source_branch}&target_branch=#{target_branch}&title=#{mr_title}"
+        call_api(expected_response_code: 201) do
+          post Runtime::API::Request.new(@api_client, "/projects/#{project_path_or_id}/merge_requests").url, "source_branch=#{source_branch}&target_branch=#{target_branch}&title=#{mr_title}"
+        end
       end
 
       def update_file_api_req(file_path, branch_name, project_path_or_id, commit_message, content)
-        put Runtime::API::Request.new(@api_client, "/projects/#{project_path_or_id}/repository/files/#{file_path}").url, "branch=#{branch_name}&commit_message=\"#{commit_message}\"&content=\"#{content}\""
+        call_api(expected_response_code: 200) do
+          put Runtime::API::Request.new(@api_client, "/projects/#{project_path_or_id}/repository/files/#{file_path}").url, "branch=#{branch_name}&commit_message=\"#{commit_message}\"&content=\"#{content}\""
+        end
+      end
+
+      def call_api(expected_response_code: 200)
+        response = yield
+        raise "API call failed with response code: #{response.code} and body: #{response.body}" unless response.code == expected_response_code
+
+        response
       end
     end
   end

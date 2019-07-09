@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190628185004) do
+ActiveRecord::Schema.define(version: 20190703130053) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -193,6 +193,7 @@ ActiveRecord::Schema.define(version: 20190628185004) do
     t.string "required_instance_ci_template"
     t.boolean "dns_rebinding_protection_enabled", default: true, null: false
     t.boolean "default_project_deletion_protection", default: false, null: false
+    t.boolean "grafana_enabled", default: false, null: false
     t.boolean "lock_memberships_to_ldap", default: false, null: false
     t.text "help_text"
     t.boolean "elasticsearch_indexing", default: false, null: false
@@ -226,6 +227,7 @@ ActiveRecord::Schema.define(version: 20190628185004) do
     t.boolean "elasticsearch_limit_indexing", default: false, null: false
     t.string "geo_node_allowed_ips", default: "0.0.0.0/0, ::/0"
     t.boolean "time_tracking_limit_to_hours", default: false, null: false
+    t.string "grafana_url", default: "/-/grafana", null: false
     t.index ["custom_project_templates_group_id"], name: "index_application_settings_on_custom_project_templates_group_id", using: :btree
     t.index ["file_template_project_id"], name: "index_application_settings_on_file_template_project_id", using: :btree
     t.index ["usage_stats_set_by_user_id"], name: "index_application_settings_on_usage_stats_set_by_user_id", using: :btree
@@ -1987,6 +1989,7 @@ ActiveRecord::Schema.define(version: 20190628185004) do
     t.boolean "allow_maintainer_to_push"
     t.integer "state_id", limit: 2
     t.integer "approvals_before_merge"
+    t.string "rebase_jid"
     t.index ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree
     t.index ["author_id"], name: "index_merge_requests_on_author_id", using: :btree
     t.index ["created_at"], name: "index_merge_requests_on_created_at", using: :btree
@@ -2113,6 +2116,7 @@ ActiveRecord::Schema.define(version: 20190628185004) do
     t.integer "extra_shared_runners_minutes_limit"
     t.string "ldap_sync_status", default: "ready", null: false
     t.boolean "membership_lock", default: false
+    t.integer "last_ci_minutes_usage_notification_level"
     t.index ["created_at"], name: "index_namespaces_on_created_at", using: :btree
     t.index ["custom_project_templates_group_id", "type"], name: "index_namespaces_on_custom_project_templates_group_id_and_type", where: "(custom_project_templates_group_id IS NOT NULL)", using: :btree
     t.index ["file_template_project_id"], name: "index_namespaces_on_file_template_project_id", using: :btree

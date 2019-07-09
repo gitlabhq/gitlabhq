@@ -1,0 +1,6 @@
+---
+title: Change ruby_process_start_time_seconds metric to unix timestamp instead of
+  seconds from boot.
+merge_request: 30195
+author: 
+type: fixed

@@ -288,7 +288,7 @@
     padding: 0 1px;
 
     a,
-    button,
+    button:not(.dropdown-toggle,.ci-action-icon-container),
     .menu-item {
       @include dropdown-link;
     }

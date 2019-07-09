@@ -2,7 +2,7 @@
 type: index, howto
 ---
 
-# GitLab CI/CD for external repositories **[PREMIUM]**
+# GitLab CI/CD for external repositories **(PREMIUM)**
 
 >[Introduced][ee-4642] in [GitLab Premium][eep] 10.6.
 

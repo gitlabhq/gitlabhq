@@ -1,0 +1,5 @@
+---
+title: Remove minimum character limits for fuzzy searches when using a CTE
+merge_request: 29810
+author:
+type: fixed

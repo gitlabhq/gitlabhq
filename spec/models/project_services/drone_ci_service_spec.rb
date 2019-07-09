@@ -101,6 +101,15 @@ describe DroneCiService, :use_clean_rails_memory_store_caching do
         is_expected.to eq(:error)
       end
 
+      Gitlab::HTTP::HTTP_ERRORS.each do |http_error|
+        it "sets commit status to :error with a #{http_error.name} error" do
+          WebMock.stub_request(:get, commit_status_path)
+            .to_raise(http_error)
+
+          is_expected.to eq(:error)
+        end
+      end
+
       {
         "killed"  => :canceled,
         "failure" => :failed,

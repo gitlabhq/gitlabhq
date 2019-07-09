@@ -583,7 +583,7 @@ Parameters:
 | `username`      | string | yes  | The username of the user created to be used with GitLab/Jira. |
 | `password`      | string | yes  | The password of the user created to be used with GitLab/Jira. |
 | `active`        | boolean | no  | Activates or deactivates the service. Defaults to false (deactivated). |
-| `jira_issue_transition_id` | string | no | The ID of a transition that moves issues to a closed state. You can find this number under the Jira workflow administration (**Administration > Issues > Workflows**) by selecting **View** under **Operations** of the desired workflow of your project. The ID of each state can be found inside the parenthesis of each transition name under the **Transitions (id)** column ([see screenshot][trans]). By default, this ID is set to `2`. |
+| `jira_issue_transition_id` | string | no | The ID of a transition that moves issues to a closed state. You can find this number under the Jira workflow administration (**Administration > Issues > Workflows**) by selecting **View** under **Operations** of the desired workflow of your project. The ID of each state can be found inside the parenthesis of each transition name under the **Transitions (id)** column. By default, this ID is set to `2`. |
 | `commit_events` | boolean | false | Enable notifications for commit events |
 | `merge_requests_events` | boolean | false | Enable notifications for merge request events |
 
@@ -1146,7 +1146,7 @@ Get JetBrains TeamCity CI service settings for a project.
 GET /projects/:id/services/teamcity
 ```
 
-## Jenkins CI **[STARTER]**
+## Jenkins CI **(STARTER)**
 
 A continuous integration and build server
 

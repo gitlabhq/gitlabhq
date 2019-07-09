@@ -11,7 +11,7 @@ importance.
 
 ## Overview
 
-GitLab is built on top of [Ruby on Rails][rails], and we're using [RSpec] for all
+GitLab is built on top of [Ruby on Rails](https://rubyonrails.org/), and we're using [RSpec] for all
 the backend tests, with [Capybara] for end-to-end integration testing.
 On the frontend side, we're using [Karma] and [Jasmine] for JavaScript unit and
 integration testing.
@@ -80,9 +80,6 @@ Everything you should know about how to run end-to-end tests using
 
 [Return to Development documentation](../README.md)
 
-[^1]: /ci/yaml/README.html#dependencies
-
-[rails]: http://rubyonrails.org/
 [RSpec]: https://github.com/rspec/rspec-rails#feature-specs
 [Capybara]: https://github.com/teamcapybara/capybara
 [Karma]: http://karma-runner.github.io/

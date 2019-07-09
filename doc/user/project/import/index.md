@@ -20,7 +20,7 @@ In addition to the specific migration documentation above, you can import any
 Git repository via HTTP from the New Project page. Be aware that if the
 repository is too large the import can timeout.
 
-There is also the option of [connecting your external repository to get CI/CD benefits](../../../ci/ci_cd_for_external_repos/index.md). **[PREMIUM]**
+There is also the option of [connecting your external repository to get CI/CD benefits](../../../ci/ci_cd_for_external_repos/index.md). **(PREMIUM)**
 
 ## Migrating from self-hosted GitLab to GitLab.com
 

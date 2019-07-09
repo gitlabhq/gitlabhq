@@ -8,7 +8,7 @@ module Ci
         status: :parsed,
         key: key(base_pipeline, head_pipeline),
         data: serializer_class
-          .new(project: project)
+          .new(**serializer_params)
           .represent(comparer).as_json
       }
     rescue Gitlab::Ci::Parsers::ParserError => e
@@ -38,6 +38,10 @@ module Ci
 
     def serializer_class
       raise NotImplementedError
+    end
+
+    def serializer_params
+      { project: project }
     end
 
     def get_report(pipeline)

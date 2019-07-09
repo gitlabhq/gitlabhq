@@ -187,6 +187,8 @@ module ApplicationSettingsHelper
       :gitaly_timeout_default,
       :gitaly_timeout_medium,
       :gitaly_timeout_fast,
+      :grafana_enabled,
+      :grafana_url,
       :gravatar_enabled,
       :hashed_storage_enabled,
       :help_page_hide_commercial_content,

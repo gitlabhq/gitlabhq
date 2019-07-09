@@ -135,6 +135,49 @@ describe ProjectStatistics do
         expect(statistics.wiki_size).to eq(0)
       end
     end
+
+    context 'when the column is namespace relatable' do
+      let(:namespace) { create(:group) }
+      let(:project) { create(:project, namespace: namespace) }
+
+      context 'when the feature flag is off' do
+        it 'does not schedule the aggregation worker' do
+          stub_feature_flags(update_statistics_namespace: false, namespace: namespace)
+
+          expect(Namespaces::ScheduleAggregationWorker)
+            .not_to receive(:perform_async)
+
+          statistics.refresh!(only: [:lfs_objects_size])
+        end
+      end
+
+      context 'when the feature flag is on' do
+        it 'schedules the aggregation worker' do
+          expect(Namespaces::ScheduleAggregationWorker)
+            .to receive(:perform_async)
+
+          statistics.refresh!(only: [:lfs_objects_size])
+        end
+      end
+
+      context 'when no argument is passed' do
+        it 'schedules the aggregation worker' do
+          expect(Namespaces::ScheduleAggregationWorker)
+            .to receive(:perform_async)
+
+          statistics.refresh!
+        end
+      end
+    end
+
+    context 'when the column is not namespace relatable' do
+      it 'does not schedules an aggregation worker' do
+        expect(Namespaces::ScheduleAggregationWorker)
+          .not_to receive(:perform_async)
+
+        statistics.refresh!(only: [:commit_count])
+      end
+    end
   end
 
   describe '#update_commit_count' do

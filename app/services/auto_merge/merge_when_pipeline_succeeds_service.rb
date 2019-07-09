@@ -5,7 +5,7 @@ module AutoMerge
     def execute(merge_request)
       super do
         if merge_request.saved_change_to_auto_merge_enabled?
-          SystemNoteService.merge_when_pipeline_succeeds(merge_request, project, current_user, merge_request.diff_head_commit)
+          SystemNoteService.merge_when_pipeline_succeeds(merge_request, project, current_user, merge_request.actual_head_pipeline.sha)
         end
       end
     end
@@ -19,7 +19,13 @@ module AutoMerge
 
     def cancel(merge_request)
       super do
-        SystemNoteService.cancel_merge_when_pipeline_succeeds(merge_request, @project, @current_user)
+        SystemNoteService.cancel_merge_when_pipeline_succeeds(merge_request, project, current_user)
+      end
+    end
+
+    def abort(merge_request, reason)
+      super do
+        SystemNoteService.abort_merge_when_pipeline_succeeds(merge_request, project, current_user, reason)
       end
     end
 

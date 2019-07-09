@@ -1,4 +1,4 @@
-# Project import/export administration **[CORE ONLY]**
+# Project import/export administration **(CORE ONLY)**
 
 >**Note:**
 >

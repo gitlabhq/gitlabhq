@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  # https://gitlab.com/gitlab-org/quality/staging/issues/55
-  context 'Create', :quarantine do
+  context 'Create' do
     describe 'Download merge request patch and diff' do
       before(:context) do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)

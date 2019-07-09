@@ -36,7 +36,7 @@ You can read more about it in: <https://github.com/pyenv/pyenv-installer#prerequ
 Pyenv installation will add required changes to Bash. If you use a different shell,
 check for any additional steps required for it.
 
-For Fish, you can install a plugin for [Fisherman](https://github.com/fisherman/fisherman):
+For Fish, you can install a plugin for [Fisher](https://github.com/jorgebucaran/fisher):
 
 ```bash
 fisher add fisherman/pyenv
@@ -76,4 +76,3 @@ pipenv shell
 
 After running that command, you can run GitLab on the same shell and it will be using the Python and dependencies
 installed from the `pipenv install` command.
-

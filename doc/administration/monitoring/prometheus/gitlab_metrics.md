@@ -49,7 +49,7 @@ The following metrics are available:
 | unicorn_queued_connections        | Gauge     | 11.0  | The number of queued Unicorn connections |
 | unicorn_workers                   | Gauge     | 12.0  | The number of Unicorn workers |
 
-## Sidekiq Metrics available for Geo **[PREMIUM]**
+## Sidekiq Metrics available for Geo **(PREMIUM)**
 
 Sidekiq jobs may also gather metrics, and these metrics can be accessed if the Sidekiq exporter is enabled (e.g. via
 the `monitoring.sidekiq_exporter` configuration option in `gitlab.yml`.
@@ -104,7 +104,7 @@ Some basic Ruby runtime metrics are available:
 | ruby_process_cpu_seconds_total         | Gauge     | 12.0  | Total amount of CPU time per process |
 | ruby_process_max_fds                   | Gauge     | 12.0  | Maximum number of open file descriptors per process |
 | ruby_process_resident_memory_bytes     | Gauge     | 12.0  | Memory usage by process, measured in bytes |
-| ruby_process_start_time_seconds        | Gauge     | 12.0  | The elapsed time between system boot and the process started, measured in seconds |
+| ruby_process_start_time_seconds        | Gauge     | 12.0  | UNIX timestamp of process start time |
 
 [GC.stat]: https://ruby-doc.org/core-2.3.0/GC.html#method-c-stat
 

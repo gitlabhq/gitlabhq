@@ -11,7 +11,7 @@ import CreateLabelDropdown from './create_label';
 import flash from './flash';
 import ModalStore from './boards/stores/modal_store';
 import boardsStore from './boards/stores/boards_store';
-import { isEE, isScopedLabel } from '~/lib/utils/common_utils';
+import { isScopedLabel } from '~/lib/utils/common_utils';
 
 export default class LabelsSelect {
   constructor(els, options = {}) {
@@ -140,7 +140,7 @@ export default class LabelsSelect {
               labelCount = data.labels.length;
 
               // EE Specific
-              if (isEE) {
+              if (IS_EE) {
                 /**
                  * For Scoped labels, the last label selected with the
                  * same key will be applied to the current issueable.

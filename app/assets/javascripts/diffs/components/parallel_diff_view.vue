@@ -58,6 +58,8 @@ export default {
           :diff-file-hash="diffFile.file_hash"
           :line-index="index"
           :help-page-path="helpPagePath"
+          :has-draft-left="hasParallelDraftLeft(diffFile.file_hash, line) || false"
+          :has-draft-right="hasParallelDraftRight(diffFile.file_hash, line) || false"
         />
         <parallel-draft-comment-row
           v-if="shouldRenderParallelDraftRow(diffFile.file_hash, line)"

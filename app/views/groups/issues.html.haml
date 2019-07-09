@@ -1,3 +1,5 @@
+- @can_bulk_update = can?(current_user, :admin_issue, @group)
+
 - page_title "Issues"
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, safe_params.merge(rss_url_options).to_h, title: "#{@group.name} issues")
@@ -9,8 +11,15 @@
     = render 'shared/issuable/nav', type: :issues
     .nav-controls
       = render 'shared/issuable/feed_buttons'
+
+      - if @can_bulk_update
+        = render_if_exists 'shared/issuable/bulk_update_button'
+
       = render 'shared/new_project_item_select', path: 'issues/new', label: "New issue", type: :issues, with_feature_enabled: 'issues', with_shared: false, include_projects_in_subgroups: true
 
   = render 'shared/issuable/search_bar', type: :issues
+
+  - if @can_bulk_update
+    = render_if_exists 'shared/issuable/group_bulk_update_sidebar', group: @group, type: :issues
 
   = render 'shared/issues'

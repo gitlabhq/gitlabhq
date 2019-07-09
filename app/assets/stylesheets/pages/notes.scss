@@ -139,7 +139,6 @@ $note-form-margin-left: 72px;
     border-radius: 4px 4px 0 0;
 
     &.collapsed {
-      border: 0;
       border-radius: 4px;
     }
   }
@@ -406,7 +405,7 @@ $note-form-margin-left: 72px;
     border-radius: 0;
 
     @media (min-width: map-get($grid-breakpoints, md)) {
-      top: 91px;
+      top: $mr-tabs-height + $header-height;
 
       .with-performance-bar & {
         top: 126px;
@@ -598,7 +597,8 @@ $note-form-margin-left: 72px;
 }
 
 .discussion-header {
-  min-height: 74px;
+  min-height: $line-height-base * 2em;
+  box-sizing: content-box;
 
   .note-header-info {
     padding-bottom: 0;
@@ -608,13 +608,10 @@ $note-form-margin-left: 72px;
     overflow-x: auto;
     overflow-y: hidden;
   }
-}
 
-.unresolved {
-  .discussion-header {
-    .note-header-info {
-      margin-top: $gl-padding-8;
-    }
+  &.note-wrapper {
+    display: flex;
+    align-items: center;
   }
 }
 

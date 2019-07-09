@@ -489,17 +489,17 @@ runtime.
 ### Using statically-defined credentials
 There are two approaches that you can take in order to access a
 private registry. Both require setting the environment variable
-`DOCKER_AUTH_LOGIN` with appropriate authentication info.
+`DOCKER_AUTH_CONFIG` with appropriate authentication info.
 
 1. Per-job: To configure one job to access a private registry, add
-   `DOCKER_AUTH_LOGIN` as a job variable.
+   `DOCKER_AUTH_CONFIG` as a job variable.
 1. Per-runner: To configure a Runner so all its jobs can access a
-   private registry, add `DOCKER_AUTH_LOGIN` to the environment in the
+   private registry, add `DOCKER_AUTH_CONFIG` to the environment in the
    Runner's configuration.
 
 See below for examples of each.
 
-#### Determining your `DOCKER_AUTH_LOGIN` data
+#### Determining your `DOCKER_AUTH_CONFIG` data
 
 As an example, let's assume that you want to use the `registry.example.com:5000/private/image:latest`
 image which is private and requires you to login into a private container registry.
@@ -530,11 +530,11 @@ There are two ways to determine the value of `DOCKER_AUTH_CONFIG`:
     ```
 
 - **Second way -** In some setups, it's possible that Docker client
-will use the available system keystore to store the result of `docker
-login`. In that case, it's impossible to read `~/.docker/config.json`,
-so you will need to prepare the required base64-encoded version of
-`${username}:${password}` manually. Open a terminal and execute the
-following command:
+  will use the available system keystore to store the result of `docker
+  login`. In that case, it's impossible to read `~/.docker/config.json`,
+  so you will need to prepare the required base64-encoded version of
+  `${username}:${password}` manually. Open a terminal and execute the
+  following command:
 
     ```bash
     echo -n "my_username:my_password" | base64

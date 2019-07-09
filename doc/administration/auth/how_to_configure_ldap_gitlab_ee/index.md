@@ -6,7 +6,7 @@ article_type: admin guide
 date: 2017-05-03
 ---
 
-# How to configure LDAP with GitLab EE **[STARTER ONLY]**
+# How to configure LDAP with GitLab EE **(STARTER ONLY)**
 
 ## Introduction
 

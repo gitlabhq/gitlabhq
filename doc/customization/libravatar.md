@@ -6,12 +6,12 @@ Libravatar is a service which delivers your avatar (profile picture) to other we
 
 This means that it is not complicated to switch to Libravatar avatar service or even self hosted Libravatar server.
 
-# Configuration
+## Configuration
 
 In [gitlab.yml gravatar section](https://gitlab.com/gitlab-org/gitlab-ce/blob/672bd3902d86b78d730cea809fce312ec49d39d7/config/gitlab.yml.example#L122) set
 the configuration options as follows:
 
-## For HTTP
+### For HTTP
 
 ```yml
   gravatar:
@@ -20,7 +20,7 @@ the configuration options as follows:
     plain_url: "http://cdn.libravatar.org/avatar/%{hash}?s=%{size}&d=identicon"
 ```
 
-## For HTTPS
+### For HTTPS
 
 ```yml
   gravatar:
@@ -29,7 +29,7 @@ the configuration options as follows:
     ssl_url: "https://seccdn.libravatar.org/avatar/%{hash}?s=%{size}&d=identicon"
 ```
 
-## Self-hosted
+### Self-hosted
 
 If you are [running your own libravatar service](https://wiki.libravatar.org/running_your_own/) the URL will be different in the configuration
 but the important part is to provide the same placeholders so GitLab can parse the URL correctly.
@@ -38,7 +38,7 @@ For example, you host a service on `http://libravatar.example.com` the `plain_ur
 
 `http://libravatar.example.com/avatar/%{hash}?s=%{size}&d=identicon`
 
-## Omnibus-gitlab example
+### Omnibus-gitlab example
 
 In `/etc/gitlab/gitlab.rb`:
 
@@ -67,7 +67,7 @@ For example, you can use `retro` set in which case the URL would look like: `pla
 
 ## Usage examples
 
-#### For Microsoft Office 365
+### For Microsoft Office 365
 
 If your users are Office 365-users, the "GetPersonaPhoto" service can be used. Note that this service requires login, so this use case is
 most useful in a corporate installation, where all users have access to Office 365.

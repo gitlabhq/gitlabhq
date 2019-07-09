@@ -3,7 +3,7 @@ type: reference
 last_update: 2019-07-03
 ---
 
-# Pipelines for Merged Results **[PREMIUM]**
+# Pipelines for Merged Results **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/7380) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.10.
 > This feature is disabled by default until we resolve issues with [contention handling](https://gitlab.com/gitlab-org/gitlab-ee/issues/11222), but [can be enabled manually](#enabling-pipelines-for-merged-results).
@@ -61,7 +61,7 @@ CAUTION: **Warning:**
 Make sure your `gitlab-ci.yml` file is [configured properly for pipelines for merge requests](../index.md#configuring-pipelines-for-merge-requests),
 otherwise pipelines for merged results won't run and your merge requests will be stuck in an unresolved state.
 
-## Merge Trains **[PREMIUM]**
+## Merge Trains **(PREMIUM)**
 
 Read the [documentation on Merge Trains](merge_trains/index.md).
 

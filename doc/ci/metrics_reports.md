@@ -2,9 +2,9 @@
 type: reference
 ---
 
-# Metrics Reports **[PREMIUM]**
+# Metrics Reports **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/9788) in [GitLab Premium](https://about.gitlab.com/pricing) 11.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/9788) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.10.
 Requires GitLab Runner 11.10 and above.
 
 ## Overview

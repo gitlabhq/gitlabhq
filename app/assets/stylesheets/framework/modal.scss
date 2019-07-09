@@ -35,7 +35,8 @@
   background-color: $modal-body-bg;
   line-height: $line-height-base;
   position: relative;
-  padding: #{3 * $grid-size} #{2 * $grid-size};
+  min-height: $modal-body-height;
+  padding: #{2 * $grid-size} #{6 * $grid-size} #{2 * $grid-size} #{2 * $grid-size};
   text-align: left;
   white-space: normal;
 
@@ -85,9 +86,9 @@ body.modal-open {
 .modal {
   background-color: $black-transparent;
 
-  @include media-breakpoint-up(md) {
+  @include media-breakpoint-up(sm) {
     .modal-dialog {
-      margin: 30px auto;
+      margin: 64px auto;
     }
   }
 }

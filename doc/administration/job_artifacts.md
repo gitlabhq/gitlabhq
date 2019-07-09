@@ -1,7 +1,5 @@
 # Jobs artifacts administration
 
-> **Notes:**
->
 > - Introduced in GitLab 8.2 and GitLab Runner 0.7.0.
 > - Starting with GitLab 8.4 and GitLab Runner 1.0, the artifacts archive format changed to `ZIP`.
 > - Starting with GitLab 8.17, builds are renamed to jobs.
@@ -21,9 +19,9 @@ To disable artifacts site-wide, follow the steps below.
 
 1. Edit `/etc/gitlab/gitlab.rb` and add the following line:
 
-    ```ruby
-    gitlab_rails['artifacts_enabled'] = false
-    ```
+   ```ruby
+   gitlab_rails['artifacts_enabled'] = false
+   ```
 
 1. Save the file and [reconfigure GitLab][] for the changes to take effect.
 
@@ -33,10 +31,10 @@ To disable artifacts site-wide, follow the steps below.
 
 1. Edit `/home/git/gitlab/config/gitlab.yml` and add or amend the following lines:
 
-    ```yaml
-    artifacts:
-      enabled: false
-    ```
+   ```yaml
+   artifacts:
+     enabled: false
+   ```
 
 1. Save the file and [restart GitLab][] for the changes to take effect.
 
@@ -61,9 +59,9 @@ _The artifacts are stored by default in
 1. To change the storage path for example to `/mnt/storage/artifacts`, edit
    `/etc/gitlab/gitlab.rb` and add the following line:
 
-    ```ruby
-    gitlab_rails['artifacts_path'] = "/mnt/storage/artifacts"
-    ```
+   ```ruby
+   gitlab_rails['artifacts_path'] = "/mnt/storage/artifacts"
+   ```
 
 1. Save the file and [reconfigure GitLab][] for the changes to take effect.
 
@@ -77,18 +75,16 @@ _The artifacts are stored by default in
 1. To change the storage path for example to `/mnt/storage/artifacts`, edit
    `/home/git/gitlab/config/gitlab.yml` and add or amend the following lines:
 
-    ```yaml
-    artifacts:
-      enabled: true
-      path: /mnt/storage/artifacts
-    ```
+   ```yaml
+   artifacts:
+     enabled: true
+     path: /mnt/storage/artifacts
+   ```
 
 1. Save the file and [restart GitLab][] for the changes to take effect.
 
 ### Using object storage
 
-> **Notes:**
->
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1762) in
 >   [GitLab Premium](https://about.gitlab.com/pricing/) 9.4.
 > - Since version 9.5, artifacts are [browsable](../user/project/pipelines/job_artifacts.md#browsing-artifacts),
@@ -141,35 +137,35 @@ _The artifacts are stored by default in
 1. Edit `/etc/gitlab/gitlab.rb` and add the following lines by replacing with
    the values you want:
 
-    ```ruby
-    gitlab_rails['artifacts_enabled'] = true
-    gitlab_rails['artifacts_object_store_enabled'] = true
-    gitlab_rails['artifacts_object_store_remote_directory'] = "artifacts"
-    gitlab_rails['artifacts_object_store_connection'] = {
-      'provider' => 'AWS',
-      'region' => 'eu-central-1',
-      'aws_access_key_id' => 'AWS_ACCESS_KEY_ID',
-      'aws_secret_access_key' => 'AWS_SECRET_ACCESS_KEY'
-    }
-    ```
+   ```ruby
+   gitlab_rails['artifacts_enabled'] = true
+   gitlab_rails['artifacts_object_store_enabled'] = true
+   gitlab_rails['artifacts_object_store_remote_directory'] = "artifacts"
+   gitlab_rails['artifacts_object_store_connection'] = {
+     'provider' => 'AWS',
+     'region' => 'eu-central-1',
+     'aws_access_key_id' => 'AWS_ACCESS_KEY_ID',
+     'aws_secret_access_key' => 'AWS_SECRET_ACCESS_KEY'
+   }
+   ```
 
-    NOTE: For GitLab 9.4+, if you are using AWS IAM profiles, be sure to omit the
-    AWS access key and secret access key/value pairs. For example:
+   NOTE: For GitLab 9.4+, if you are using AWS IAM profiles, be sure to omit the
+   AWS access key and secret access key/value pairs. For example:
 
-    ```ruby
-    gitlab_rails['artifacts_object_store_connection'] = {
-      'provider' => 'AWS',
-      'region' => 'eu-central-1',
-      'use_iam_profile' => true
-    }
-    ```
+   ```ruby
+   gitlab_rails['artifacts_object_store_connection'] = {
+     'provider' => 'AWS',
+     'region' => 'eu-central-1',
+     'use_iam_profile' => true
+   }
+   ```
 
 1. Save the file and [reconfigure GitLab][] for the changes to take effect.
 1. Migrate any existing local artifacts to the object storage:
 
-    ```bash
-    gitlab-rake gitlab:artifacts:migrate
-    ```
+   ```bash
+   gitlab-rake gitlab:artifacts:migrate
+   ```
 
 ---
 
@@ -181,25 +177,25 @@ _The artifacts are stored by default in
 1. Edit `/home/git/gitlab/config/gitlab.yml` and add or amend the following
    lines:
 
-    ```yaml
-    artifacts:
-      enabled: true
-      object_store:
-        enabled: true
-        remote_directory: "artifacts" # The bucket name
-        connection:
-          provider: AWS # Only AWS supported at the moment
-          aws_access_key_id: AWS_ACCESS_KEY_ID
-          aws_secret_access_key: AWS_SECRET_ACCESS_KEY
-          region: eu-central-1
-    ```
+   ```yaml
+   artifacts:
+     enabled: true
+     object_store:
+       enabled: true
+       remote_directory: "artifacts" # The bucket name
+       connection:
+         provider: AWS # Only AWS supported at the moment
+         aws_access_key_id: AWS_ACCESS_KEY_ID
+         aws_secret_access_key: AWS_SECRET_ACCESS_KEY
+         region: eu-central-1
+   ```
 
 1. Save the file and [restart GitLab][] for the changes to take effect.
 1. Migrate any existing local artifacts to the object storage:
 
-    ```bash
-    sudo -u git -H bundle exec rake gitlab:artifacts:migrate RAILS_ENV=production
-    ```
+   ```bash
+   sudo -u git -H bundle exec rake gitlab:artifacts:migrate RAILS_ENV=production
+   ```
 
 ## Expiring artifacts
 
@@ -217,9 +213,9 @@ steps below.
 
 1. Edit `/etc/gitlab/gitlab.rb` and comment out or add the following line
 
-    ```ruby
-    gitlab_rails['expire_build_artifacts_worker_cron'] = "50 * * * *"
-    ```
+   ```ruby
+   gitlab_rails['expire_build_artifacts_worker_cron'] = "50 * * * *"
+   ```
 
 1. Save the file and [reconfigure GitLab][] for the changes to take effect.
 
@@ -230,10 +226,10 @@ steps below.
 1. Edit `/home/git/gitlab/config/gitlab.yml` and add or amend the following
    lines:
 
-    ```yaml
-    expire_build_artifacts_worker:
-      cron: "50 * * * *"
-    ```
+   ```yaml
+   expire_build_artifacts_worker:
+     cron: "50 * * * *"
+   ```
 
 1. Save the file and [restart GitLab][] for the changes to take effect.
 
@@ -250,15 +246,15 @@ you can flip the feature flag from a Rails console.
 
 1. Enter the Rails console:
 
-    ```sh
-    sudo gitlab-rails console
-    ```
+   ```sh
+   sudo gitlab-rails console
+   ```
 
 1. Flip the switch and disable it:
 
-    ```ruby
-    Feature.enable('ci_disable_validates_dependencies')
-    ```
+   ```ruby
+   Feature.enable('ci_disable_validates_dependencies')
+   ```
 
 ---
 
@@ -266,16 +262,16 @@ you can flip the feature flag from a Rails console.
 
 1. Enter the Rails console:
 
-    ```sh
-    cd /home/git/gitlab
-    RAILS_ENV=production sudo -u git -H bundle exec rails console
-    ```
+   ```sh
+   cd /home/git/gitlab
+   RAILS_ENV=production sudo -u git -H bundle exec rails console
+   ```
 
 1. Flip the switch and disable it:
 
-    ```ruby
-    Feature.enable('ci_disable_validates_dependencies')
-    ```
+   ```ruby
+   Feature.enable('ci_disable_validates_dependencies')
+   ```
 
 ## Set the maximum file size of the artifacts
 

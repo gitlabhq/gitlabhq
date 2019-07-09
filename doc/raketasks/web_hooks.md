@@ -1,4 +1,4 @@
-# Webhooks administration **[CORE ONLY]**
+# Webhooks administration **(CORE ONLY)**
 
 ## Add a webhook for **ALL** projects:
 

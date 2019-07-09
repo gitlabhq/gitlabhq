@@ -2,7 +2,7 @@
 description: Learn how to customize GitLab's appearance for self-managed installations.
 ---
 
-# Customizing GitLab's appearance **[CORE ONLY]**
+# Customizing GitLab's appearance **(CORE ONLY)**
 
 For GitLab self-managed instances, it's possible to customize
 a few pages.

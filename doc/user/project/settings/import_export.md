@@ -74,6 +74,13 @@ The following items will NOT be exported:
 - CI variables
 - Webhooks
 - Any encrypted tokens
+- Merge Request Approvers
+- Push Rules
+- Awards
+
+NOTE: **Note:**
+For more details on the specific data persisted in a project export, see the 
+[`import_export.yml`](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/lib/gitlab/import_export/import_export.yml) file.
 
 ## Exporting a project and its data
 

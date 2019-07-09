@@ -1,0 +1,5 @@
+---
+title: Fix race in forbid_sidekiq_in_transactions.rb
+merge_request: 30359
+author:
+type: fixed
