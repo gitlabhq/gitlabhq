@@ -1,0 +1,5 @@
+---
+title: Fix subgroup url in search drop down
+merge_request: 30457
+author:
+type: fixed
