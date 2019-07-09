@@ -30,8 +30,8 @@ Completed 200 OK in 166ms (Views: 117.4ms | ActiveRecord: 27.2ms)
 These logs suffer from a number of problems:
 
 1. They often lack timestamps or other contextual information (e.g. project ID, user)
-2. They may span multiple lines, which make them hard to find via Elasticsearch.
-3. They lack a common structure, which make them hard to parse by log
+1. They may span multiple lines, which make them hard to find via Elasticsearch.
+1. They lack a common structure, which make them hard to parse by log
    forwarders, such as Logstash or Fluentd. This also makes them hard to
    search.
 
@@ -67,46 +67,46 @@ importer progresses. Here's what to do:
    make it easy for people to search pertinent logs in one place. For
    example, `geo.log` contains all logs pertaining to GitLab Geo.
    To create a new file:
-    1. Choose a filename (e.g. `importer_json.log`).
-    1. Create a new subclass of `Gitlab::JsonLogger`:
+   1. Choose a filename (e.g. `importer_json.log`).
+   1. Create a new subclass of `Gitlab::JsonLogger`:
 
-        ```ruby
-        module Gitlab
-          module Import
-            class Logger < ::Gitlab::JsonLogger
-              def self.file_name_noext
-                'importer'
-              end
+      ```ruby
+      module Gitlab
+        module Import
+          class Logger < ::Gitlab::JsonLogger
+            def self.file_name_noext
+              'importer'
             end
-           end
-        end
-        ```
+          end
+         end
+      end
+      ```
 
-    1. In your class where you want to log, you might initialize the logger as an instance variable:
+   1. In your class where you want to log, you might initialize the logger as an instance variable:
 
-        ```ruby
-        attr_accessor :logger
+      ```ruby
+      attr_accessor :logger
 
-        def initialize
-          @logger = Gitlab::Import::Logger.build
-        end
-        ```
+      def initialize
+        @logger = Gitlab::Import::Logger.build
+      end
+      ```
 
-        Note that it's useful to memoize this because creating a new logger
-        each time you log will open a file, adding unnecessary overhead.
+      Note that it's useful to memoize this because creating a new logger
+      each time you log will open a file, adding unnecessary overhead.
 
 1. Now insert log messages into your code. When adding logs,
    make sure to include all the context as key-value pairs:
 
-    ```ruby
-    # BAD
-    logger.info("Unable to create project #{project.id}")
-    ```
+   ```ruby
+   # BAD
+   logger.info("Unable to create project #{project.id}")
+   ```
 
-    ```ruby
-    # GOOD
-    logger.info(message: "Unable to create project", project_id: project.id)
-    ```
+   ```ruby
+   # GOOD
+   logger.info(message: "Unable to create project", project_id: project.id)
+   ```
 
 1. Be sure to create a common base structure of your log messages. For example,
    all messages might have `current_user_id` and `project_id` to make it easier
@@ -116,16 +116,16 @@ importer progresses. Here's what to do:
    logs properly if you [mix integer and string
    types](https://www.elastic.co/guide/en/elasticsearch/guide/current/mapping.html#_avoiding_type_gotchas):
 
-    ```ruby
-    # BAD
-    logger.info(message: "Import error", error: 1)
-    logger.info(message: "Import error", error: "I/O failure")
-    ```
+   ```ruby
+   # BAD
+   logger.info(message: "Import error", error: 1)
+   logger.info(message: "Import error", error: "I/O failure")
+   ```
 
-    ```ruby
-    # GOOD
-    logger.info(message: "Import error", error_code: 1, error: "I/O failure")
-    ```
+   ```ruby
+   # GOOD
+   logger.info(message: "Import error", error_code: 1, error: "I/O failure")
+   ```
 
 ## Additional steps with new log files
 

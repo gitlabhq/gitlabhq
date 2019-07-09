@@ -31,27 +31,27 @@ To configure the pseudonymizer, you need to:
 1. Edit `/etc/gitlab/gitlab.rb` and add the following lines by replacing with
    the values you want:
 
-    ```ruby
-    gitlab_rails['pseudonymizer_manifest'] = 'config/pseudonymizer.yml'
-    gitlab_rails['pseudonymizer_upload_remote_directory'] = 'gitlab-elt' # bucket name
-    gitlab_rails['pseudonymizer_upload_connection'] = {
-      'provider' => 'AWS',
-      'region' => 'eu-central-1',
-      'aws_access_key_id' => 'AWS_ACCESS_KEY_ID',
-      'aws_secret_access_key' => 'AWS_SECRET_ACCESS_KEY'
-    }
-    ```
+   ```ruby
+   gitlab_rails['pseudonymizer_manifest'] = 'config/pseudonymizer.yml'
+   gitlab_rails['pseudonymizer_upload_remote_directory'] = 'gitlab-elt' # bucket name
+   gitlab_rails['pseudonymizer_upload_connection'] = {
+     'provider' => 'AWS',
+     'region' => 'eu-central-1',
+     'aws_access_key_id' => 'AWS_ACCESS_KEY_ID',
+     'aws_secret_access_key' => 'AWS_SECRET_ACCESS_KEY'
+   }
+   ```
 
-    NOTE: **Note:**
-    If you are using AWS IAM profiles, be sure to omit the AWS access key and secret access key/value pairs.
+   NOTE: **Note:**
+   If you are using AWS IAM profiles, be sure to omit the AWS access key and secret access key/value pairs.
 
-    ```ruby
-    gitlab_rails['pseudonymizer_upload_connection'] = {
-      'provider' => 'AWS',
-      'region' => 'eu-central-1',
-      'use_iam_profile' => true
-    }
-    ```
+   ```ruby
+   gitlab_rails['pseudonymizer_upload_connection'] = {
+     'provider' => 'AWS',
+     'region' => 'eu-central-1',
+     'use_iam_profile' => true
+   }
+   ```
 
 1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure)
    for the changes to take effect.
@@ -63,17 +63,17 @@ To configure the pseudonymizer, you need to:
 1. Edit `/home/git/gitlab/config/gitlab.yml` and add or amend the following
    lines:
 
-    ```yaml
-    pseudonymizer:
-	  manifest: config/pseudonymizer.yml
-	  upload:
-        remote_directory: 'gitlab-elt' # bucket name
-        connection:
-          provider: AWS
-          aws_access_key_id: AWS_ACCESS_KEY_ID
-          aws_secret_access_key: AWS_SECRET_ACCESS_KEY
-          region: eu-central-1
-    ```
+   ```yaml
+   pseudonymizer:
+   manifest: config/pseudonymizer.yml
+   upload:
+       remote_directory: 'gitlab-elt' # bucket name
+       connection:
+         provider: AWS
+         aws_access_key_id: AWS_ACCESS_KEY_ID
+         aws_secret_access_key: AWS_SECRET_ACCESS_KEY
+         region: eu-central-1
+   ```
 
 1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source)
    for the changes to take effect.

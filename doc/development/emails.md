@@ -26,51 +26,51 @@ See the [Rails guides] for more info.
    feature and fill in the details for your specific IMAP server and email
    account:
 
-    Configuration for Gmail / Google Apps, assumes mailbox gitlab-incoming@gmail.com
+   Configuration for Gmail / Google Apps, assumes mailbox `gitlab-incoming@gmail.com`:
 
-    ```yaml
-    incoming_email:
-      enabled: true
+   ```yaml
+   incoming_email:
+     enabled: true
 
-      # The email address including the `%{key}` placeholder that will be replaced to reference the item being replied to.
-      # The placeholder can be omitted but if present, it must appear in the "user" part of the address (before the `@`).
-      address: "gitlab-incoming+%{key}@gmail.com"
+     # The email address including the `%{key}` placeholder that will be replaced to reference the item being replied to.
+     # The placeholder can be omitted but if present, it must appear in the "user" part of the address (before the `@`).
+     address: "gitlab-incoming+%{key}@gmail.com"
 
-      # Email account username
-      # With third party providers, this is usually the full email address.
-      # With self-hosted email servers, this is usually the user part of the email address.
-      user: "gitlab-incoming@gmail.com"
-      # Email account password
-      password: "[REDACTED]"
+     # Email account username
+     # With third party providers, this is usually the full email address.
+     # With self-hosted email servers, this is usually the user part of the email address.
+     user: "gitlab-incoming@gmail.com"
+     # Email account password
+     password: "[REDACTED]"
 
-      # IMAP server host
-      host: "imap.gmail.com"
-      # IMAP server port
-      port: 993
-      # Whether the IMAP server uses SSL
-      ssl: true
-      # Whether the IMAP server uses StartTLS
-      start_tls: false
+     # IMAP server host
+     host: "imap.gmail.com"
+     # IMAP server port
+     port: 993
+     # Whether the IMAP server uses SSL
+     ssl: true
+     # Whether the IMAP server uses StartTLS
+     start_tls: false
 
-      # The mailbox where incoming mail will end up. Usually "inbox".
-      mailbox: "inbox"
-      # The IDLE command timeout.
-      idle_timeout: 60
-    ```
+     # The mailbox where incoming mail will end up. Usually "inbox".
+     mailbox: "inbox"
+     # The IDLE command timeout.
+     idle_timeout: 60
+   ```
 
-    As mentioned, the part after `+` is ignored, and this will end up in the mailbox for `gitlab-incoming@gmail.com`.
+   As mentioned, the part after `+` is ignored, and this will end up in the mailbox for `gitlab-incoming@gmail.com`.
 
 1. Run this command in the GitLab root directory to launch `mail_room`:
 
-    ```sh
-    bundle exec mail_room -q -c config/mail_room.yml
-    ```
+   ```sh
+   bundle exec mail_room -q -c config/mail_room.yml
+   ```
 
 1. Verify that everything is configured correctly:
 
-    ```sh
-    bundle exec rake gitlab:incoming_email:check RAILS_ENV=development
-    ```
+   ```sh
+   bundle exec rake gitlab:incoming_email:check RAILS_ENV=development
+   ```
 
 1. Reply by email should now be working.
 
@@ -91,10 +91,10 @@ for the format of the email key:
 
 Examples of valid email keys:
 
- - `gitlab-org-gitlab-ce-20-Author_Token12345678-issue` (create a new issue)
- - `gitlab-org-gitlab-ce-20-Author_Token12345678-merge-request` (create a new merge request)
- - `1234567890abcdef1234567890abcdef-unsubscribe` (unsubscribe from a conversation)
- - `1234567890abcdef1234567890abcdef` (reply to a conversation)
+- `gitlab-org-gitlab-ce-20-Author_Token12345678-issue` (create a new issue)
+- `gitlab-org-gitlab-ce-20-Author_Token12345678-merge-request` (create a new merge request)
+- `1234567890abcdef1234567890abcdef-unsubscribe` (unsubscribe from a conversation)
+- `1234567890abcdef1234567890abcdef` (reply to a conversation)
 
 Please note that the action `-issue-` is used in GitLab Premium as the handler for the Service Desk feature.
 
@@ -103,10 +103,10 @@ Please note that the action `-issue-` is used in GitLab Premium as the handler f
 Although we continue to support the older legacy format, no new features should use a legacy format.
 These are the only valid legacy formats for an email handler:
 
- - `path/to/project+namespace`
- - `path/to/project+namespace+action`
- - `namespace`
- - `namespace+action`
+- `path/to/project+namespace`
+- `path/to/project+namespace+action`
+- `namespace`
+- `namespace+action`
 
 Please note that `path/to/project` is used in GitLab Premium as handler for the Service Desk feature.
 

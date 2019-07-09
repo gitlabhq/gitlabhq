@@ -23,10 +23,10 @@ _The uploads are stored by default in `/var/opt/gitlab/gitlab-rails/uploads`._
 1. To change the storage path for example to `/mnt/storage/uploads`, edit
    `/etc/gitlab/gitlab.rb` and add the following line:
 
-    ```ruby
-    gitlab_rails['uploads_storage_path'] = "/mnt/storage/"
-	gitlab_rails['uploads_base_dir'] = "uploads"
-    ```
+   ```ruby
+   gitlab_rails['uploads_storage_path'] = "/mnt/storage/"
+   gitlab_rails['uploads_base_dir'] = "uploads"
+   ```
 
 1. Save the file and [reconfigure GitLab][] for the changes to take effect.
 
@@ -40,11 +40,11 @@ _The uploads are stored by default in
 1. To change the storage path for example to `/mnt/storage/uploads`, edit
    `/home/git/gitlab/config/gitlab.yml` and add or amend the following lines:
 
-    ```yaml
-	uploads:
-	  storage_path: /mnt/storage
-	  base_dir: uploads
-    ```
+   ```yaml
+   uploads:
+   storage_path: /mnt/storage
+   base_dir: uploads
+   ```
 
 1. Save the file and [restart GitLab][] for the changes to take effect.
 
@@ -97,27 +97,27 @@ _The uploads are stored by default in
 1. Edit `/etc/gitlab/gitlab.rb` and add the following lines by replacing with
    the values you want:
 
-    ```ruby
-    gitlab_rails['uploads_object_store_enabled'] = true
-    gitlab_rails['uploads_object_store_remote_directory'] = "uploads"
-    gitlab_rails['uploads_object_store_connection'] = {
-      'provider' => 'AWS',
-      'region' => 'eu-central-1',
-      'aws_access_key_id' => 'AWS_ACCESS_KEY_ID',
-      'aws_secret_access_key' => 'AWS_SECRET_ACCESS_KEY'
-    }
-    ```
+   ```ruby
+   gitlab_rails['uploads_object_store_enabled'] = true
+   gitlab_rails['uploads_object_store_remote_directory'] = "uploads"
+   gitlab_rails['uploads_object_store_connection'] = {
+     'provider' => 'AWS',
+     'region' => 'eu-central-1',
+     'aws_access_key_id' => 'AWS_ACCESS_KEY_ID',
+     'aws_secret_access_key' => 'AWS_SECRET_ACCESS_KEY'
+   }
+   ```
 
-	>**Note:**
-	If you are using AWS IAM profiles, be sure to omit the AWS access key and secret access key/value pairs.
+   >**Note:**
+   >If you are using AWS IAM profiles, be sure to omit the AWS access key and secret access key/value pairs.
 
-    ```ruby
-    gitlab_rails['uploads_object_store_connection'] = {
-      'provider' => 'AWS',
-      'region' => 'eu-central-1',
-      'use_iam_profile' => true
-    }
-    ```
+   ```ruby
+   gitlab_rails['uploads_object_store_connection'] = {
+     'provider' => 'AWS',
+     'region' => 'eu-central-1',
+     'use_iam_profile' => true
+   }
+   ```
 
 1. Save the file and [reconfigure GitLab][] for the changes to take effect.
 1. Migrate any existing local uploads to the object storage using [`gitlab:uploads:migrate` rake task](raketasks/uploads/migrate.md).
@@ -132,17 +132,17 @@ _The uploads are stored by default in
 1. Edit `/home/git/gitlab/config/gitlab.yml` and add or amend the following
    lines:
 
-    ```yaml
-    uploads:
-      object_store:
-        enabled: true
-        remote_directory: "uploads" # The bucket name
-        connection:
-          provider: AWS # Only AWS supported at the moment
-          aws_access_key_id: AWS_ACESS_KEY_ID
-          aws_secret_access_key: AWS_SECRET_ACCESS_KEY
-          region: eu-central-1
-    ```
+   ```yaml
+   uploads:
+     object_store:
+       enabled: true
+       remote_directory: "uploads" # The bucket name
+       connection:
+         provider: AWS # Only AWS supported at the moment
+         aws_access_key_id: AWS_ACESS_KEY_ID
+         aws_secret_access_key: AWS_SECRET_ACCESS_KEY
+         region: eu-central-1
+   ```
 
 1. Save the file and [restart GitLab][] for the changes to take effect.
 1. Migrate any existing local uploads to the object storage using [`gitlab:uploads:migrate` rake task](raketasks/uploads/migrate.md).

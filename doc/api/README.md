@@ -311,9 +311,9 @@ By default, impersonation is enabled. To disable impersonation:
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
-    ```ruby
-    gitlab_rails['impersonation_enabled'] = false
-    ```
+   ```ruby
+   gitlab_rails['impersonation_enabled'] = false
+   ```
 
 1. Save the file and [reconfigure](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure)
    GitLab for the changes to take effect.
@@ -326,10 +326,10 @@ To re-enable impersonation, remove this configuration and reconfigure GitLab.
 
 1. Edit `config/gitlab.yml`:
 
-    ```yaml
-    gitlab:
-      impersonation_enabled: false
-    ```
+   ```yaml
+   gitlab:
+     impersonation_enabled: false
+   ```
 
 1. Save the file and [restart](../administration/restart_gitlab.md#installations-from-source)
    GitLab for the changes to take effect.
