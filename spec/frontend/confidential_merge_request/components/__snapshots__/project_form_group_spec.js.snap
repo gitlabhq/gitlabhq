@@ -19,7 +19,7 @@ exports[`Confidential merge request project form group component renders empty s
       <br />
        
       <span>
-        To protect this issues confidentiality, 
+        To protect this issue's confidentiality, 
         <a
           class="help-link"
           href="https://test.com"
@@ -69,7 +69,7 @@ exports[`Confidential merge request project form group component renders fork dr
       <br />
        
       <span>
-        To protect this issues confidentiality, 
+        To protect this issue's confidentiality, 
         <a
           class="help-link"
           href="https://test.com"

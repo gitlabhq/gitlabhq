@@ -11224,10 +11224,10 @@ msgstr ""
 msgid "To preserve performance only <strong>%{display_size} of %{real_size}</strong> files are displayed."
 msgstr ""
 
-msgid "To protect this issues confidentiality, %{link_start}fork the project%{link_end} and set the forks visiblity to private."
+msgid "To protect this issue's confidentiality, %{link_start}fork the project%{link_end} and set the forks visiblity to private."
 msgstr ""
 
-msgid "To protect this issues confidentiality, a private fork of this project was selected."
+msgid "To protect this issue's confidentiality, a private fork of this project was selected."
 msgstr ""
 
 msgid "To see all the user's personal access tokens you must impersonate them first."
