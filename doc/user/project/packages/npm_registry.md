@@ -11,11 +11,6 @@ project can have its own space to store NPM packages.
 NOTE: **Note:**
 Only [scoped](https://docs.npmjs.com/misc/scope) packages are supported.
 
-
-NOTE: **Note:**
-As `@group/subgroup/project` is not a valid NPM package name, publishing a package 
-within a subgroup is not supported yet. 
-
 ## Enabling the NPM Registry
 
 NOTE: **Note:**
@@ -36,12 +31,15 @@ get familiar with the package naming convention.
 
 ## Package naming convention
 
-**Only packages that have the same path as the project** are supported. For
- example:
+**Packages must be scoped in the root namespace of the project**. The package
+name may be anything but it is preferred that the project name be used unless
+it is not possible due to a naming collision. For example:
 
 | Project                | Package                 | Supported |
 | ---------------------- | ----------------------- | --------- |
 | `foo/bar`              | `@foo/bar`              | Yes       |
+| `foo/bar/baz`          | `@foo/baz`              | Yes       |
+| `foo/bar/buz`          | `@foo/anything`         | Yes       |
 | `gitlab-org/gitlab-ce` | `@gitlab-org/gitlab-ce` | Yes       |
 | `gitlab-org/gitlab-ce` | `@foo/bar`              | No        |
 
@@ -112,6 +110,9 @@ npm publish
 
 You can then navigate to your project's **Packages** page and see the uploaded
 packages or even delete them.
+
+If you attempt to publish a package with a name that already exists within
+a given scope, you will receive a `403 Forbidden!` error.
 
 ## Uploading a package with the same version twice
 
