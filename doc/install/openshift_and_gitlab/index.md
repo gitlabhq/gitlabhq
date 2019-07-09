@@ -13,8 +13,8 @@ for details.
 
 ## Introduction
 
-[OpenShift Origin][openshift] is an open source container application
-platform created by [RedHat], based on [kubernetes] and [Docker]. That means
+[OpenShift Origin](https://www.okd.io/) (**Note:** renamed to OKD in Aug 2018) is an open source container application
+platform created by [RedHat], based on [kubernetes](https://kubernetes.io/) and [Docker]. That means
 you can host your own PaaS for free and almost with no hassle.
 
 In this tutorial, we will see how to deploy GitLab in OpenShift using GitLab's
@@ -27,8 +27,11 @@ For a video demonstration on installing GitLab on OpenShift, check the article [
 
 ## Prerequisites
 
-OpenShift 3 is not yet deployed on RedHat's offered Online platform ([openshift.com]),
-so in order to test it, we will use an [all-in-one Virtualbox image][vm] that is
+CAUTION: **Caution:** This information is no longer up to date, as the current versions
+have changed and products have been renamed.
+
+OpenShift 3 is not yet deployed on RedHat's offered Online platform, [openshift.com](https://www.openshift.com/),
+so in order to test it, we will use an [all-in-one Virtualbox image](https://www.okd.io/minishift/) that is
 offered by the OpenShift developers and managed by Vagrant. If you haven't done
 already, go ahead and install the following components as they are essential to
 test OpenShift easily:
@@ -458,7 +461,7 @@ OpenShift's website about [autoscaling].
 
 ## Current limitations
 
-As stated in the [all-in-one VM][vm] page:
+As stated in the [all-in-one VM](https://www.okd.io/minishift/) page:
 
 > By default, OpenShift will not allow a container to run as root or even a
 non-random container assigned userid. Most Docker images in the Dockerhub do not
@@ -506,12 +509,8 @@ is capable of. As always, you can refer to the detailed
 PaaS and managing your applications with the ease of containers.
 
 [RedHat]: https://www.redhat.com/en "RedHat website"
-[openshift]: https://www.openshift.org "OpenShift Origin website"
-[vm]: https://www.openshift.org/vm/ "OpenShift All-in-one VM"
 [vm-new]: https://app.vagrantup.com/openshift/boxes/origin-all-in-one "Official OpenShift Vagrant box on Vagrant Cloud"
 [template]: https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/docker/openshift-template.json "OpenShift template for GitLab"
-[openshift.com]: https://openshift.com "OpenShift Online"
-[kubernetes]: http://kubernetes.io/ "Kubernetes website"
 [Docker]: https://www.docker.com "Docker website"
 [oc]: https://docs.openshift.org/latest/cli_reference/get_started_cli.html "Documentation - oc CLI documentation"
 [VirtualBox]: https://www.virtualbox.org/wiki/Downloads "VirtualBox downloads"

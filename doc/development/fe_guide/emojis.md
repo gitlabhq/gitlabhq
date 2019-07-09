@@ -3,10 +3,10 @@
 GitLab supports native unicode emojis and fallsback to image-based emojis selectively
 when your platform does not support it.
 
-# How to update Emojis
+## How to update Emojis
 
  1. Update the `gemojione` gem
- 1. Update `fixtures/emojis/index.json` from [Gemojione](https://github.com/jonathanwiesel/gemojione/blob/master/config/index.json).
+ 1. Update `fixtures/emojis/index.json` from [Gemojione](https://github.com/bonusly/gemojione/blob/master/config/index.json).
     In the future, we could grab the file directly from the gem.
     We should probably make a PR on the Gemojione project to get access to
     all emojis after being parsed or just a raw path to the `json` file itself.

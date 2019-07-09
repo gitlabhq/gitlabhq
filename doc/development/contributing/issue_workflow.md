@@ -1,7 +1,7 @@
 # Workflow labels
 
 To allow for asynchronous issue handling, we use [milestones][milestones-page]
-and [labels][labels-page]. Leads and product managers handle most of the
+and [labels](https://gitlab.com/gitlab-org/gitlab-ce/-/labels). Leads and product managers handle most of the
 scheduling into milestones. Labelling is a task for everyone.
 
 Most issues will have labels for at least one of the following:
@@ -18,7 +18,7 @@ Most issues will have labels for at least one of the following:
 - Severity: ~S1, ~S2, ~S3, ~S4
 
 All labels, their meaning and priority are defined on the
-[labels page][labels-page].
+[labels page](https://gitlab.com/gitlab-org/gitlab-ce/-/labels).
 
 If you come across an issue that has none of these, and you're allowed to set
 labels, you can _always_ add the team and type, and often also the subject.
@@ -38,7 +38,7 @@ makes them float to the top, depending on their importance.
 Type labels are always lowercase, and can have any color, besides blue (which is
 already reserved for subject labels).
 
-The descriptions on the [labels page][labels-page] explain what falls under each type label.
+The descriptions on the [labels page](https://gitlab.com/gitlab-org/gitlab-ce/-/labels) explain what falls under each type label.
 
 ## Subject labels
 
@@ -89,7 +89,7 @@ The following team labels are **true** teams per our [organization structure](ht
 - ~Delivery
 - ~Documentation
 
-The descriptions on the [labels page][labels-page] explain what falls under the
+The descriptions on the [labels page](https://gitlab.com/gitlab-org/gitlab-ce/-/labels) explain what falls under the
 responsibility of each team.
 
 Within those team labels, we also have the ~backend and ~frontend labels to
@@ -500,7 +500,6 @@ A recent example of this was the issue for
 
 [Return to Contributing documentation](index.md)
 
-[labels-page]: https://gitlab.com/gitlab-org/gitlab-ce/labels
 [ce-tracker]: https://gitlab.com/gitlab-org/gitlab-ce/issues
 [ee-tracker]: https://gitlab.com/gitlab-org/gitlab-ee/issues
 [inferred-labels]: https://gitlab.com/gitlab-org/quality/triage-ops/merge_requests/155
