@@ -17,8 +17,8 @@ module Issues
       super
     end
 
-    def before_update(issue)
-      spam_check(issue, current_user)
+    def before_update(issue, skip_spam_check: false)
+      spam_check(issue, current_user) unless skip_spam_check
     end
 
     def handle_changes(issue, options)
