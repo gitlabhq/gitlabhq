@@ -6,7 +6,7 @@ module Ci
   class RegisterJobService
     attr_reader :runner
 
-    JOB_QUEUE_DURATION_SECONDS_BUCKETS = [1, 3, 10, 30, 60, 300].freeze
+    JOB_QUEUE_DURATION_SECONDS_BUCKETS = [1, 3, 10, 30, 60, 300, 900].freeze
     JOBS_RUNNING_FOR_PROJECT_MAX_BUCKET = 5.freeze
 
     Result = Struct.new(:build, :valid?)
