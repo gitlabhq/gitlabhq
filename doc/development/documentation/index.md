@@ -18,7 +18,7 @@ In addition to this page, the following resources to help craft and contribute d
 
 ## Source files and rendered web locations
 
-Documentation for GitLab Community Edition (CE) and Enterprise Edition (EE), along with GitLab Runner and Omnibus, is published to [docs.gitlab.com](https://docs.gitlab.com). The documentation for CE and EE is also published within the application at `/help` on the domain of the GitLab instance.
+Documentation for GitLab Community Edition (CE) and Enterprise Edition (EE), along with GitLab Runner and Omnibus, is published to [docs.gitlab.com](https://docs.gitlab.com). The documentation for CE and EE is also published within the application at `/help` on the domain of the GitLab instance, though there are [plans](https://gitlab.com/groups/gitlab-org/-/epics/693) to end this practice and instead link out from the GitLab application to docs.gitlab.com URLs.
 
 At `/help`, only content for your current edition and version is included, whereas multiple versions' content is available at docs.gitlab.com.
 
@@ -274,8 +274,11 @@ Follow this [method for cherry-picking from CE to EE](../automatic_ce_ee_merge.m
 
 ## GitLab `/help`
 
-Every GitLab instance includes the documentation, which is available from `/help`
-(`http://my-instance.com/help`), e.g., <https://gitlab.com/help>.
+Every GitLab instance includes the documentation, which is available at `/help`
+(`https://gitlab.example.com/help`). For example, <https://gitlab.com/help>.
+
+There are [plans](https://gitlab.com/groups/gitlab-org/-/epics/693) to end this
+practice and instead link out from the GitLab application to docs.gitlab.com URLs.
 
 The documentation available online on docs.gitlab.com is continuously
 deployed every hour from the `master` branch of CE, EE, Omnibus, and Runner. Therefore,
