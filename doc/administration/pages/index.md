@@ -4,20 +4,23 @@ description: 'Learn how to administer GitLab Pages.'
 
 # GitLab Pages administration
 
-> **Notes:**
->
 > - [Introduced][ee-80] in GitLab EE 8.3.
 > - Custom CNAMEs with TLS support were [introduced][ee-173] in GitLab EE 8.5.
-> - GitLab Pages [were ported][ce-14605] to Community Edition in GitLab 8.17.
-> - This guide is for Omnibus GitLab installations. If you have installed
->   GitLab from source, follow the [Pages source installation document](source.md).
-> - To learn how to use GitLab Pages, read the [user documentation][pages-userguide].
-> - Support for subgroup project's websites was [introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/30548) in GitLab 11.8.
+> - GitLab Pages [was ported][ce-14605] to Community Edition in GitLab 8.17.
+> - Support for subgroup project's websites was
+>   [introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/30548) in GitLab 11.8.
 
-This document describes how to set up the _latest_ GitLab Pages feature. Make
-sure to read the [changelog](#changelog) if you are upgrading to a new GitLab
+GitLab Pages allows for hosting of static sites. It must be configured by an
+administrator. Separate [user documentation][pages-userguide] is available.
+
+Read the [changelog](#changelog) if you are upgrading to a new GitLab
 version as it may include new features and changes needed to be made in your
 configuration.
+
+NOTE: **Note:**
+This guide is for Omnibus GitLab installations. If you have installed
+GitLab from source, see
+[GitLab Pages administration for source installations](source.md).
 
 ## Overview
 
