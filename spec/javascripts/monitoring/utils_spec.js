@@ -1,5 +1,6 @@
-import { getTimeDiff } from '~/monitoring/utils';
+import { getTimeDiff, graphDataValidatorForValues } from '~/monitoring/utils';
 import { timeWindows } from '~/monitoring/constants';
+import { graphDataPrometheusQuery, graphDataPrometheusQueryRange } from './mock_data';
 
 describe('getTimeDiff', () => {
   it('defaults to an 8 hour (28800s) difference', () => {
@@ -25,5 +26,29 @@ describe('getTimeDiff', () => {
       expect(diff).not.toEqual(28800);
       expect(typeof diff).toEqual('number');
     });
+  });
+});
+
+describe('graphDataValidatorForValues', () => {
+  /*
+   * When dealing with a metric using the query format, e.g.
+   * query: 'max(go_memstats_alloc_bytes{job="prometheus"}) by (job) /1024/1024'
+   * the validator will look for the `value` key instead of `values`
+   */
+  it('validates data with the query format', () => {
+    const validGraphData = graphDataValidatorForValues(true, graphDataPrometheusQuery);
+
+    expect(validGraphData).toBe(true);
+  });
+
+  /*
+   * When dealing with a metric using the query?range format, e.g.
+   * query_range: 'avg(sum(container_memory_usage_bytes{container_name!="POD",pod_name=~"^%{ci_environment_slug}-(.*)",namespace="%{kube_namespace}"}) by (job)) without (job)  /1024/1024/1024',
+   * the validator will look for the `values` key instead of `value`
+   */
+  it('validates data with the query_range format', () => {
+    const validGraphData = graphDataValidatorForValues(false, graphDataPrometheusQueryRange);
+
+    expect(validGraphData).toBe(true);
   });
 });

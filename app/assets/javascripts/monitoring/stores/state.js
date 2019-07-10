@@ -9,6 +9,7 @@ export default () => ({
   dashboardEndpoint: invalidUrl,
   useDashboardEndpoint: false,
   multipleDashboardsEnabled: false,
+  additionalPanelTypesEnabled: false,
   emptyState: 'gettingStarted',
   showEmptyState: true,
   groups: [],
@@ -17,4 +18,5 @@ export default () => ({
   metricsWithData: [],
   allDashboards: [],
   currentDashboard: null,
+  projectPath: null,
 });

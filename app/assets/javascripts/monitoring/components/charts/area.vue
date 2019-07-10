@@ -8,6 +8,7 @@ import { getSvgIconPathContent } from '~/lib/utils/icon_utils';
 import Icon from '~/vue_shared/components/icon.vue';
 import { chartHeight, graphTypes, lineTypes } from '../../constants';
 import { makeDataSeries } from '~/helpers/monitor_helper';
+import { graphDataValidatorForValues } from '../../utils';
 
 let debouncedResize;
 
@@ -23,19 +24,7 @@ export default {
     graphData: {
       type: Object,
       required: true,
-      validator(data) {
-        return (
-          Array.isArray(data.queries) &&
-          data.queries.filter(query => {
-            if (Array.isArray(query.result)) {
-              return (
-                query.result.filter(res => Array.isArray(res.values)).length === query.result.length
-              );
-            }
-            return false;
-          }).length === data.queries.length
-        );
-      },
+      validator: graphDataValidatorForValues.bind(null, false),
     },
     containerWidth: {
       type: Number,
