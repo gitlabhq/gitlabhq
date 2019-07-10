@@ -40,6 +40,7 @@ dependency_scanning:
           DS_DOCKER_CLIENT_NEGOTIATION_TIMEOUT \
           DS_PULL_ANALYZER_IMAGE_TIMEOUT \
           DS_RUN_ANALYZER_TIMEOUT \
+          DS_PYTHON_VERSION \
         ) \
         --volume "$PWD:/code" \
         --volume /var/run/docker.sock:/var/run/docker.sock \
