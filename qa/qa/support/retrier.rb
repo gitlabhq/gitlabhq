@@ -23,6 +23,25 @@ module QA
           raise
         end
       end
+
+      def retry_until(max_attempts: 3, reload: false, sleep_interval: 0)
+        QA::Runtime::Logger.debug("with retry_until: max_attempts #{max_attempts}; sleep_interval #{sleep_interval}; reload:#{reload}")
+        attempts = 0
+
+        while attempts < max_attempts
+          QA::Runtime::Logger.debug("Attempt number #{attempts + 1}")
+          result = yield
+          return result if result
+
+          sleep sleep_interval
+
+          refresh if reload
+
+          attempts += 1
+        end
+
+        false
+      end
     end
   end
 end
