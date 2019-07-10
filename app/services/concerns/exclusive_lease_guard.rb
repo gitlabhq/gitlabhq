@@ -58,6 +58,6 @@ module ExclusiveLeaseGuard
   end
 
   def log_error(message, extra_args = {})
-    Rails.logger.error(message)
+    Rails.logger.error(message) # rubocop:disable Gitlab/RailsLogger
   end
 end

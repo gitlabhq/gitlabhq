@@ -12,6 +12,6 @@ class ChatTeam < ApplicationRecord
     # Either the group is not found, or the user doesn't have the proper
     # access on the mattermost instance. In the first case, we're done either way
     # in the latter case, we can't recover by retrying, so we just log what happened
-    Rails.logger.error("Mattermost team deletion failed: #{e}")
+    Rails.logger.error("Mattermost team deletion failed: #{e}") # rubocop:disable Gitlab/RailsLogger
   end
 end

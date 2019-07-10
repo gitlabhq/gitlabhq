@@ -40,7 +40,7 @@ module Gitlab
 
           pname = project.path_with_namespace
 
-          Rails.logger
+          Rails.logger # rubocop:disable Gitlab/RailsLogger
             .info("GitHub importer finished updating repository for #{pname}")
 
           repository_updates_counter.increment

@@ -18,7 +18,7 @@ module Gitlab
 
       def metrics
         result, elapsed = with_timing(&method(:check))
-        Rails.logger.error("#{human_name} check returned unexpected result #{result}") unless successful?(result)
+        Rails.logger.error("#{human_name} check returned unexpected result #{result}") unless successful?(result) # rubocop:disable Gitlab/RailsLogger
         [
           metric("#{metric_prefix}_timeout", result.is_a?(Timeout::Error) ? 1 : 0),
           metric("#{metric_prefix}_success", successful?(result) ? 1 : 0),

@@ -5,7 +5,7 @@ module Projects
     class MigrateAttachmentsService < BaseAttachmentService
       def initialize(project, old_disk_path, logger: nil)
         @project = project
-        @logger = logger || Rails.logger
+        @logger = logger || Rails.logger # rubocop:disable Gitlab/RailsLogger
         @old_disk_path = old_disk_path
         @skipped = false
       end

@@ -78,7 +78,7 @@ module Gitlab
 
       true
     rescue => err # Once the Rugged codes gets removes this can be improved
-      Rails.logger.error("Failed to add repository #{storage}/#{disk_path}: #{err}")
+      Rails.logger.error("Failed to add repository #{storage}/#{disk_path}: #{err}") # rubocop:disable Gitlab/RailsLogger
       false
     end
 
@@ -153,7 +153,7 @@ module Gitlab
 
       !!rm_directory(storage, "#{name}.git")
     rescue ArgumentError => e
-      Rails.logger.warn("Repository does not exist: #{e} at: #{name}.git")
+      Rails.logger.warn("Repository does not exist: #{e} at: #{name}.git") # rubocop:disable Gitlab/RailsLogger
       false
     end
 
@@ -238,7 +238,7 @@ module Gitlab
     def remove_keys_not_found_in_db
       return unless self.authorized_keys_enabled?
 
-      Rails.logger.info("Removing keys not found in DB")
+      Rails.logger.info("Removing keys not found in DB") # rubocop:disable Gitlab/RailsLogger
 
       batch_read_key_ids do |ids_in_file|
         ids_in_file.uniq!
@@ -248,7 +248,7 @@ module Gitlab
 
         ids_to_remove = ids_in_file - keys_in_db.pluck(:id)
         ids_to_remove.each do |id|
-          Rails.logger.info("Removing key-#{id} not found in DB")
+          Rails.logger.info("Removing key-#{id} not found in DB") # rubocop:disable Gitlab/RailsLogger
           remove_key("key-#{id}")
         end
       end
@@ -368,7 +368,7 @@ module Gitlab
 
       return true if status.zero?
 
-      Rails.logger.error("gitlab-shell failed with error #{status}: #{output}")
+      Rails.logger.error("gitlab-shell failed with error #{status}: #{output}") # rubocop:disable Gitlab/RailsLogger
       false
     end
 
@@ -465,7 +465,7 @@ module Gitlab
       end
 
       def logger
-        Rails.logger
+        Rails.logger # rubocop:disable Gitlab/RailsLogger
       end
     end
   end

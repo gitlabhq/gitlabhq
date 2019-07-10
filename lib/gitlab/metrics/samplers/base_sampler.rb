@@ -19,7 +19,7 @@ module Gitlab
         def safe_sample
           sample
         rescue => e
-          Rails.logger.warn("#{self.class}: #{e}, stopping")
+          Rails.logger.warn("#{self.class}: #{e}, stopping") # rubocop:disable Gitlab/RailsLogger
           stop
         end
 

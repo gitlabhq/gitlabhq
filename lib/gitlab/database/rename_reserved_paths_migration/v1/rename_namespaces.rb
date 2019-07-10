@@ -70,7 +70,7 @@ module Gitlab
 
               unless gitlab_shell.mv_namespace(repository_storage, old_full_path, new_full_path)
                 message = "Exception moving on shard #{repository_storage} from #{old_full_path} to #{new_full_path}"
-                Rails.logger.error message
+                Rails.logger.error message # rubocop:disable Gitlab/RailsLogger
               end
             end
           end

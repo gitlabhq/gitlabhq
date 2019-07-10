@@ -5,7 +5,7 @@ module Projects
     class RollbackAttachmentsService < BaseAttachmentService
       def initialize(project, logger: nil)
         @project = project
-        @logger = logger || Rails.logger
+        @logger = logger || Rails.logger # rubocop:disable Gitlab/RailsLogger
         @old_disk_path = project.disk_path
       end
 

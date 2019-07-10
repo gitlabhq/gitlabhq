@@ -59,7 +59,7 @@ module Gitlab
         begin
           CharlockHolmes::Converter.convert(message, detect[:encoding], 'UTF-8')
         rescue ArgumentError => e
-          Rails.logger.warn("Ignoring error converting #{detect[:encoding]} into UTF8: #{e.message}")
+          Rails.logger.warn("Ignoring error converting #{detect[:encoding]} into UTF8: #{e.message}") # rubocop:disable Gitlab/RailsLogger
 
           ''
         end

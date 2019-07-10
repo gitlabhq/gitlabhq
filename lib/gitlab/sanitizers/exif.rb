@@ -48,7 +48,7 @@ module Gitlab
 
       attr_reader :logger
 
-      def initialize(logger: Rails.logger)
+      def initialize(logger: Rails.logger) # rubocop:disable Gitlab/RailsLogger
         @logger = logger
       end
 
