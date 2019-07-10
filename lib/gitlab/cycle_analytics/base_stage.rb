@@ -5,6 +5,8 @@ module Gitlab
     class BaseStage
       include BaseQuery
 
+      attr_reader :project, :options
+
       def initialize(project: nil, options:)
         @project = project
         @options = options
@@ -23,11 +25,11 @@ module Gitlab
       end
 
       def median
-        return if @project.nil?
+        return if project.nil?
 
-        BatchLoader.for(@project.id).batch(key: name) do |project_ids, loader|
+        BatchLoader.for(project.id).batch(key: name) do |project_ids, loader|
           if project_ids.one?
-            loader.call(@project.id, median_query(project_ids))
+            loader.call(project.id, median_query(project_ids))
           else
             begin
               median_datetimes(cte_table, interval_query(project_ids), name, :project_id)&.each do |project_id, median|
@@ -65,17 +67,17 @@ module Gitlab
       private
 
       def event_fetcher
-        @event_fetcher ||= Gitlab::CycleAnalytics::EventFetcher[name].new(project: @project,
+        @event_fetcher ||= Gitlab::CycleAnalytics::EventFetcher[name].new(project: project,
                                                                           stage: name,
                                                                           options: event_options)
       end
 
       def event_options
-        @options.merge(start_time_attrs: start_time_attrs, end_time_attrs: end_time_attrs)
+        options.merge(start_time_attrs: start_time_attrs, end_time_attrs: end_time_attrs)
       end
 
       def projects
-        [@project]
+        [project]
       end
     end
   end

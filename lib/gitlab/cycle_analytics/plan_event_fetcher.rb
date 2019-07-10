@@ -18,7 +18,7 @@ module Gitlab
       private
 
       def serialize(event)
-        AnalyticsIssueSerializer.new(project: @project).represent(event)
+        AnalyticsIssueSerializer.new(project: project).represent(event)
       end
 
       def allowed_ids_finder_class

@@ -14,7 +14,7 @@ module Gitlab
       private
 
       def branch
-        @branch ||= @options[:branch] # rubocop:disable Gitlab/ModuleWithInstanceVariables
+        @branch ||= options[:branch]
       end
     end
   end

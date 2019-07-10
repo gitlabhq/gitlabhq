@@ -5,7 +5,7 @@ module Gitlab
     class BaseEventFetcher
       include BaseQuery
 
-      attr_reader :projections, :query, :stage, :order
+      attr_reader :projections, :query, :stage, :order, :project, :options
 
       MAX_EVENTS = 50
 
@@ -40,13 +40,13 @@ module Gitlab
       end
 
       def events_query
-        diff_fn = subtract_datetimes_diff(base_query, @options[:start_time_attrs], @options[:end_time_attrs])
+        diff_fn = subtract_datetimes_diff(base_query, options[:start_time_attrs], options[:end_time_attrs])
 
         base_query.project(extract_diff_epoch(diff_fn).as('total_time'), *projections).order(order.desc).take(MAX_EVENTS)
       end
 
       def default_order
-        [@options[:start_time_attrs]].flatten.first
+        [options[:start_time_attrs]].flatten.first
       end
 
       def serialize(_event)
@@ -59,7 +59,7 @@ module Gitlab
 
       def allowed_ids
         @allowed_ids ||= allowed_ids_finder_class
-          .new(@options[:current_user], allowed_ids_source)
+          .new(options[:current_user], allowed_ids_source)
           .execute.where(id: event_result_ids).pluck(:id)
       end
 
@@ -68,11 +68,11 @@ module Gitlab
       end
 
       def allowed_ids_source
-        { project_id: @project.id }
+        { project_id: project.id }
       end
 
       def projects
-        [@project]
+        [project]
       end
     end
   end
