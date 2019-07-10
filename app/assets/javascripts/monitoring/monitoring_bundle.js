@@ -12,6 +12,7 @@ export default (props = {}) => {
       store.dispatch('monitoringDashboard/setFeatureFlags', {
         prometheusEndpointEnabled: gon.features.environmentMetricsUsePrometheusEndpoint,
         multipleDashboardsEnabled: gon.features.environmentMetricsShowMultipleDashboards,
+        additionalPanelTypesEnabled: gon.features.environmentMetricsAdditionalPanelTypes,
       });
     }
 

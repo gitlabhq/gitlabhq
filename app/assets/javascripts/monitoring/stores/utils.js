@@ -69,13 +69,26 @@ export const sortMetrics = metrics =>
     .sortBy('weight')
     .value();
 
-export const normalizeQueryResult = timeSeries => ({
-  ...timeSeries,
-  values: timeSeries.values.map(([timestamp, value]) => [
-    new Date(timestamp * 1000).toISOString(),
-    Number(value),
-  ]),
-});
+export const normalizeQueryResult = timeSeries => {
+  let normalizedResult = {};
+
+  if (timeSeries.values) {
+    normalizedResult = {
+      ...timeSeries,
+      values: timeSeries.values.map(([timestamp, value]) => [
+        new Date(timestamp * 1000).toISOString(),
+        Number(value),
+      ]),
+    };
+  } else if (timeSeries.value) {
+    normalizedResult = {
+      ...timeSeries,
+      value: [new Date(timeSeries.value[0] * 1000).toISOString(), Number(timeSeries.value[1])],
+    };
+  }
+
+  return normalizedResult;
+};
 
 export const normalizeMetrics = metrics => {
   const groupedMetrics = groupQueriesByChartInfo(metrics);

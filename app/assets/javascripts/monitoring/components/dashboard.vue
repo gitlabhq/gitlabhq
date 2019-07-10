@@ -7,6 +7,8 @@ import Icon from '~/vue_shared/components/icon.vue';
 import { getParameterValues } from '~/lib/utils/url_utility';
 import invalidUrl from '~/lib/utils/invalid_url';
 import MonitorAreaChart from './charts/area.vue';
+import MonitorSingleStatChart from './charts/single_stat.vue';
+import PanelType from './panel_type.vue';
 import GraphGroup from './graph_group.vue';
 import EmptyState from './empty_state.vue';
 import { timeWindows, timeWindowsKeyNames } from '../constants';
@@ -18,6 +20,8 @@ let sidebarMutationObserver;
 export default {
   components: {
     MonitorAreaChart,
+    MonitorSingleStatChart,
+    PanelType,
     GraphGroup,
     EmptyState,
     Icon,
@@ -152,6 +156,7 @@ export default {
       'useDashboardEndpoint',
       'allDashboards',
       'multipleDashboardsEnabled',
+      'additionalPanelTypesEnabled',
     ]),
     groupsWithData() {
       return this.groups.filter(group => this.chartsWithData(group.metrics).length > 0);
@@ -173,6 +178,7 @@ export default {
       deploymentsEndpoint: this.deploymentsEndpoint,
       dashboardEndpoint: this.dashboardEndpoint,
       currentDashboard: this.currentDashboard,
+      projectPath: this.projectPath,
     });
 
     this.timeWindows = timeWindows;
@@ -220,6 +226,8 @@ export default {
         chart.metrics.some(metric => this.metricsWithData.includes(metric.metric_id)),
       );
     },
+    // TODO: BEGIN, Duplicated code with panel_type until feature flag is removed
+    // Issue number: https://gitlab.com/gitlab-org/gitlab-ce/issues/63845
     getGraphAlerts(queries) {
       if (!this.allAlerts) return {};
       const metricIdsForChart = queries.map(q => q.metricId);
@@ -228,6 +236,7 @@ export default {
     getGraphAlertValues(queries) {
       return Object.values(this.getGraphAlerts(queries));
     },
+    // TODO: END
     hideAddMetricModal() {
       this.$refs.addMetricModal.hide();
     },
@@ -366,24 +375,34 @@ export default {
         :name="groupData.group"
         :show-panels="showPanels"
       >
-        <monitor-area-chart
-          v-for="(graphData, graphIndex) in chartsWithData(groupData.metrics)"
-          :key="graphIndex"
-          :project-path="projectPath"
-          :graph-data="graphData"
-          :deployment-data="deploymentData"
-          :thresholds="getGraphAlertValues(graphData.queries)"
-          :container-width="elWidth"
-          group-id="monitor-area-chart"
-        >
-          <alert-widget
-            v-if="alertWidgetAvailable && graphData"
-            :alerts-endpoint="alertsEndpoint"
-            :relevant-queries="graphData.queries"
-            :alerts-to-manage="getGraphAlerts(graphData.queries)"
-            @setAlerts="setAlerts"
+        <template v-if="additionalPanelTypesEnabled">
+          <panel-type
+            v-for="(graphData, graphIndex) in chartsWithData(groupData.metrics)"
+            :key="`panel-type-${graphIndex}`"
+            :graph-data="graphData"
+            :dashboard-width="elWidth"
           />
-        </monitor-area-chart>
+        </template>
+        <template v-else>
+          <monitor-area-chart
+            v-for="(graphData, graphIndex) in chartsWithData(groupData.metrics)"
+            :key="graphIndex"
+            :graph-data="graphData"
+            :deployment-data="deploymentData"
+            :thresholds="getGraphAlertValues(graphData.queries)"
+            :container-width="elWidth"
+            :project-path="projectPath"
+            group-id="monitor-area-chart"
+          >
+            <alert-widget
+              v-if="alertWidgetAvailable && graphData"
+              :alerts-endpoint="alertsEndpoint"
+              :relevant-queries="graphData.queries"
+              :alerts-to-manage="getGraphAlerts(graphData.queries)"
+              @setAlerts="setAlerts"
+            />
+          </monitor-area-chart>
+        </template>
       </graph-group>
     </div>
     <empty-state
