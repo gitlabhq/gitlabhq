@@ -2,7 +2,6 @@
 
 module CycleAnalytics
   class ProjectLevel < Base
-
     attr_reader :project, :options
 
     def initialize(project, options:)
