@@ -4,16 +4,16 @@
 
 You need `exiftool` installed on your system. If you installed GitLab:
 
--   Using the Omnibus package, you're all set.
--   From source, make sure `exiftool` is installed:
+- Using the Omnibus package, you're all set.
+- From source, make sure `exiftool` is installed:
 
-    ```sh
-    # Debian/Ubuntu
-    sudo apt-get install libimage-exiftool-perl
+  ```sh
+  # Debian/Ubuntu
+  sudo apt-get install libimage-exiftool-perl
 
-    # RHEL/CentOS
-    sudo yum install perl-Image-ExifTool
-    ```
+  # RHEL/CentOS
+  sudo yum install perl-Image-ExifTool
+  ```
 
 ## Remove EXIF data from existing uploads
 

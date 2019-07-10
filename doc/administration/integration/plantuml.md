@@ -57,9 +57,9 @@ you can change these defaults by editing the `/etc/tomcat7/server.xml` file.
 You need to enable PlantUML integration from Settings under Admin Area. To do
 that, login with an Admin account and do following:
 
- - in GitLab go to **Admin Area**->**Settings**->**Integrations**->**PlantUML**
- - check **Enable PlantUML** checkbox
- - set the PlantUML instance as **PlantUML URL**
+- in GitLab go to **Admin Area**->**Settings**->**Integrations**->**PlantUML**
+- check **Enable PlantUML** checkbox
+- set the PlantUML instance as **PlantUML URL**
 
 ## Creating Diagrams
 
@@ -68,33 +68,34 @@ our AsciiDoc snippets, wikis and repos using delimited blocks:
 
 - **Markdown**
 
-    <pre>
-    ```plantuml
-    Bob -> Alice : hello
-    Alice -> Bob : Go Away
-    ```</pre>
+  <pre>
+  ```plantuml
+  Bob -> Alice : hello
+  Alice -> Bob : Go Away
+  ```</pre>
+
 
 - **AsciiDoc**
 
-    ```
-    [plantuml, format="png", id="myDiagram", width="200px"]
-    ----
-    Bob->Alice : hello
-    Alice -> Bob : Go Away
-    ----
-    ```
+   ```
+   [plantuml, format="png", id="myDiagram", width="200px"]
+   ----
+   Bob->Alice : hello
+   Alice -> Bob : Go Away
+   ----
+   ```
 
 - **reStructuredText**
 
-    ```
-    .. plantuml::
-       :caption: Caption with **bold** and *italic*
+   ```
+   .. plantuml::
+      :caption: Caption with **bold** and *italic*
 
-       Bob -> Alice: hello
-       Alice -> Bob: Go Away
-    ```
+      Bob -> Alice: hello
+      Alice -> Bob: Go Away
+   ```
 
-    You can also use the `uml::` directive for compatibility with [sphinxcontrib-plantuml](https://pypi.org/project/sphinxcontrib-plantuml/), but please note that we currently only support the `caption` option.
+   You can also use the `uml::` directive for compatibility with [sphinxcontrib-plantuml](https://pypi.org/project/sphinxcontrib-plantuml/), but please note that we currently only support the `caption` option.
 
 The above blocks will be converted to an HTML img tag with source pointing to the
 PlantUML instance. If the PlantUML server is correctly configured, this should
@@ -111,11 +112,11 @@ diagram delimiters `@startuml`/`@enduml` as these are replaced by the AsciiDoc `
 
 Some parameters can be added to the AsciiDoc block definition:
 
- - *format*: Can be either `png` or `svg`. Note that `svg` is not supported by
-   all browsers so use with care. The default is `png`.
- - *id*: A CSS id added to the diagram HTML tag.
- - *width*: Width attribute added to the img tag.
- - *height*: Height attribute added to the img tag.
+- *format*: Can be either `png` or `svg`. Note that `svg` is not supported by
+  all browsers so use with care. The default is `png`.
+- *id*: A CSS id added to the diagram HTML tag.
+- *width*: Width attribute added to the img tag.
+- *height*: Height attribute added to the img tag.
 
 Markdown does not support any parameters and will always use PNG format.
 
