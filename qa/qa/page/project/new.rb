@@ -18,7 +18,7 @@ module QA
           element :project_name, 'text_field :name' # rubocop:disable QA/ElementWithPattern
           element :project_path, 'text_field :path' # rubocop:disable QA/ElementWithPattern
           element :project_description, 'text_area :description' # rubocop:disable QA/ElementWithPattern
-          element :project_create_button, "submit 'Create project'" # rubocop:disable QA/ElementWithPattern
+          element :project_create_button, "submit _('Create project')" # rubocop:disable QA/ElementWithPattern
           element :visibility_radios, 'visibility_level:' # rubocop:disable QA/ElementWithPattern
         end
 

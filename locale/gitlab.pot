@@ -3263,6 +3263,9 @@ msgstr ""
 msgid "Create new..."
 msgstr ""
 
+msgid "Create project"
+msgstr ""
+
 msgid "Create project label"
 msgstr ""
 
@@ -6752,6 +6755,9 @@ msgstr ""
 msgid "New Pipeline Schedule"
 msgstr ""
 
+msgid "New Project"
+msgstr ""
+
 msgid "New Snippet"
 msgstr ""
 
@@ -8423,6 +8429,54 @@ msgid "ProjectsDropdown|Sorry, no projects matched your search"
 msgstr ""
 
 msgid "ProjectsDropdown|This feature requires browser localStorage support"
+msgstr ""
+
+msgid "ProjectsNew|Allows you to immediately clone this project’s repository. Skip this if you plan to push up an existing repository."
+msgstr ""
+
+msgid "ProjectsNew|Blank"
+msgstr ""
+
+msgid "ProjectsNew|Blank project"
+msgstr ""
+
+msgid "ProjectsNew|Contact an administrator to enable options for importing your project."
+msgstr ""
+
+msgid "ProjectsNew|Create from template"
+msgstr ""
+
+msgid "ProjectsNew|Creating project & repository."
+msgstr ""
+
+msgid "ProjectsNew|Description format"
+msgstr ""
+
+msgid "ProjectsNew|Import"
+msgstr ""
+
+msgid "ProjectsNew|Import project"
+msgstr ""
+
+msgid "ProjectsNew|Initialize repository with a README"
+msgstr ""
+
+msgid "ProjectsNew|No import options available"
+msgstr ""
+
+msgid "ProjectsNew|Please wait a moment, this page will automatically refresh when ready."
+msgstr ""
+
+msgid "ProjectsNew|Project description %{tag_start}(optional)%{tag_end}"
+msgstr ""
+
+msgid "ProjectsNew|Template"
+msgstr ""
+
+msgid "ProjectsNew|Visibility Level"
+msgstr ""
+
+msgid "ProjectsNew|Want to house several dependent projects under the same namespace? %{link_start}Create a group.%{link_end}"
 msgstr ""
 
 msgid "PrometheusService|%{exporters} with %{metrics} were found"
