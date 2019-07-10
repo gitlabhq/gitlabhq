@@ -62,7 +62,7 @@ export const updateDiscussion = ({ commit, state }, discussion) => {
 };
 
 export const deleteNote = ({ commit, dispatch, state }, note) =>
-  service.deleteNote(note.path).then(() => {
+  axios.delete(note.path).then(() => {
     const discussion = state.discussions.find(({ id }) => id === note.discussion_id);
 
     commit(types.DELETE_NOTE, note);
