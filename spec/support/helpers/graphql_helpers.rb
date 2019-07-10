@@ -57,7 +57,8 @@ module GraphqlHelpers
   end
 
   def variables_for_mutation(name, input)
-    graphql_input = input.map { |name, value| [GraphqlHelpers.fieldnamerize(name), value] }.to_h
+    graphql_input = prepare_input_for_mutation(input)
+
     result = { input_variable_name_for_mutation(name) => graphql_input }
 
     # Avoid trying to serialize multipart data into JSON
@@ -66,6 +67,18 @@ module GraphqlHelpers
     else
       result
     end
+  end
+
+  # Recursively convert a Hash with Ruby-style keys to GraphQL fieldname-style keys
+  #
+  # prepare_input_for_mutation({ 'my_key' => 1 })
+  #   => { 'myKey' => 1}
+  def prepare_input_for_mutation(input)
+    input.map do |name, value|
+      value = prepare_input_for_mutation(value) if value.is_a?(Hash)
+
+      [GraphqlHelpers.fieldnamerize(name), value]
+    end.to_h
   end
 
   def input_variable_name_for_mutation(mutation_name)

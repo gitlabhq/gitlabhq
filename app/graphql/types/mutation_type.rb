@@ -10,5 +10,10 @@ module Types
     mount_mutation Mutations::AwardEmojis::Remove
     mount_mutation Mutations::AwardEmojis::Toggle
     mount_mutation Mutations::MergeRequests::SetWip, calls_gitaly: true
+    mount_mutation Mutations::Notes::Create::Note, calls_gitaly: true
+    mount_mutation Mutations::Notes::Create::DiffNote, calls_gitaly: true
+    mount_mutation Mutations::Notes::Create::ImageDiffNote, calls_gitaly: true
+    mount_mutation Mutations::Notes::Update
+    mount_mutation Mutations::Notes::Destroy
   end
 end

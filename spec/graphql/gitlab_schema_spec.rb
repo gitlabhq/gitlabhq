@@ -143,6 +143,26 @@ describe GitlabSchema do
       end
     end
 
+    context 'for classes that are not ActiveRecord subclasses and have implemented .lazy_find' do
+      it 'returns the correct record' do
+        note = create(:discussion_note_on_merge_request)
+
+        result = described_class.object_from_id(note.to_global_id)
+
+        expect(result.__sync).to eq(note)
+      end
+
+      it 'batchloads the queries' do
+        note1 = create(:discussion_note_on_merge_request)
+        note2 = create(:discussion_note_on_merge_request)
+
+        expect do
+          [described_class.object_from_id(note1.to_global_id),
+           described_class.object_from_id(note2.to_global_id)].map(&:__sync)
+        end.not_to exceed_query_limit(1)
+      end
+    end
+
     context 'for other classes' do
       # We cannot use an anonymous class here as `GlobalID` expects `.name` not
       # to return `nil`

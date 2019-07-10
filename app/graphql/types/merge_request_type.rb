@@ -23,6 +23,7 @@ module Types
     field :updated_at, Types::TimeType, null: false
     field :source_project, Types::ProjectType, null: true
     field :target_project, Types::ProjectType, null: false
+    field :diff_refs, Types::DiffRefsType, null: true
     # Alias for target_project
     field :project, Types::ProjectType, null: false
     field :project_id, GraphQL::INT_TYPE, null: false, method: :target_project_id
