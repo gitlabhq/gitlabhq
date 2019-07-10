@@ -511,7 +511,7 @@ module API
       end
     end
 
-    class ProjectEntity < Grape::Entity
+    class IssuableEntity < Grape::Entity
       expose :id, :iid
       expose(:project_id) { |entity| entity&.project.try(:id) }
       expose :title, :description
@@ -564,7 +564,7 @@ module API
       end
     end
 
-    class IssueBasic < ProjectEntity
+    class IssueBasic < IssuableEntity
       expose :closed_at
       expose :closed_by, using: Entities::UserBasic
 
@@ -670,14 +670,14 @@ module API
       end
     end
 
-    class MergeRequestSimple < ProjectEntity
+    class MergeRequestSimple < IssuableEntity
       expose :title
       expose :web_url do |merge_request, options|
         Gitlab::UrlBuilder.build(merge_request)
       end
     end
 
-    class MergeRequestBasic < ProjectEntity
+    class MergeRequestBasic < IssuableEntity
       expose :merged_by, using: Entities::UserBasic do |merge_request, _options|
         merge_request.metrics&.merged_by
       end
