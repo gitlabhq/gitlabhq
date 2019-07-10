@@ -762,32 +762,6 @@ describe Environment, :use_clean_rails_memory_store_caching do
     end
   end
 
-  describe '#generate_slug' do
-    SUFFIX = "-[a-z0-9]{6}".freeze
-    {
-      "staging-12345678901234567" => "staging-123456789" + SUFFIX,
-      "9-staging-123456789012345" => "env-9-staging-123" + SUFFIX,
-      "staging-1234567890123456"  => "staging-1234567890123456",
-      "production"                => "production",
-      "PRODUCTION"                => "production" + SUFFIX,
-      "review/1-foo"              => "review-1-foo" + SUFFIX,
-      "1-foo"                     => "env-1-foo" + SUFFIX,
-      "1/foo"                     => "env-1-foo" + SUFFIX,
-      "foo-"                      => "foo" + SUFFIX,
-      "foo--bar"                  => "foo-bar" + SUFFIX,
-      "foo**bar"                  => "foo-bar" + SUFFIX,
-      "*-foo"                     => "env-foo" + SUFFIX,
-      "staging-12345678-"         => "staging-12345678" + SUFFIX,
-      "staging-12345678-01234567" => "staging-12345678" + SUFFIX
-    }.each do |name, matcher|
-      it "returns a slug matching #{matcher}, given #{name}" do
-        slug = described_class.new(name: name).generate_slug
-
-        expect(slug).to match(/\A#{matcher}\z/)
-      end
-    end
-  end
-
   describe '#ref_path' do
     subject(:environment) do
       create(:environment, name: 'staging / review-1')
