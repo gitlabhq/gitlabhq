@@ -9,9 +9,6 @@ export default {
     const config = filter !== undefined ? { params: { notes_filter: filter } } : null;
     return Vue.http.get(endpoint, config);
   },
-  deleteNote(endpoint) {
-    return Vue.http.delete(endpoint);
-  },
   replyToDiscussion(endpoint, data) {
     return Vue.http.post(endpoint, data, { emulateJSON: true });
   },

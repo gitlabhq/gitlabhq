@@ -18,6 +18,8 @@ import {
   noteableDataMock,
   individualNote,
 } from '../mock_data';
+import AxiosMockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 
 const TEST_ERROR_MESSAGE = 'Test error message';
 
@@ -335,28 +337,24 @@ describe('Actions Notes Store', () => {
   });
 
   describe('deleteNote', () => {
-    const interceptor = (request, next) => {
-      next(
-        request.respondWith(JSON.stringify({}), {
-          status: 200,
-        }),
-      );
-    };
+    const endpoint = `${TEST_HOST}/note`;
+    let axiosMock;
 
     beforeEach(() => {
-      Vue.http.interceptors.push(interceptor);
+      axiosMock = new AxiosMockAdapter(axios);
+      axiosMock.onDelete(endpoint).replyOnce(200, {});
 
       $('body').attr('data-page', '');
     });
 
     afterEach(() => {
-      Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
+      axiosMock.restore();
 
       $('body').attr('data-page', '');
     });
 
     it('commits DELETE_NOTE and dispatches updateMergeRequestWidget', done => {
-      const note = { path: `${gl.TEST_HOST}`, id: 1 };
+      const note = { path: endpoint, id: 1 };
 
       testAction(
         actions.deleteNote,
@@ -381,7 +379,7 @@ describe('Actions Notes Store', () => {
     });
 
     it('dispatches removeDiscussionsFromDiff on merge request page', done => {
-      const note = { path: `${gl.TEST_HOST}`, id: 1 };
+      const note = { path: endpoint, id: 1 };
 
       $('body').attr('data-page', 'projects:merge_requests:show');
 
