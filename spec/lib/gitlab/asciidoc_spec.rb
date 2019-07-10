@@ -110,6 +110,56 @@ module Gitlab
 
           expect(render(input, context)).to include(output.strip)
         end
+
+        it 'removes non footnote def ids' do
+          input = <<~ADOC
+            ++++
+            <div id="def">Footnote definition</div>
+            ++++
+          ADOC
+
+          output = <<~HTML
+            <div>Footnote definition</div>
+          HTML
+
+          expect(render(input, context)).to include(output.strip)
+        end
+
+        it 'removes non footnote ref ids' do
+          input = <<~ADOC
+            ++++
+            <a id="ref">Footnote reference</a>
+            ++++
+          ADOC
+
+          output = <<~HTML
+            <a>Footnote reference</a>
+          HTML
+
+          expect(render(input, context)).to include(output.strip)
+        end
+      end
+
+      context 'with footnotes' do
+        it 'preserves ids and links' do
+          input = <<~ADOC
+            This paragraph has a footnote.footnote:[This is the text of the footnote.]
+          ADOC
+
+          output = <<~HTML
+           <div>
+           <p>This paragraph has a footnote.<sup>[<a id="_footnoteref_1" href="#_footnotedef_1" title="View footnote.">1</a>]</sup></p>
+           </div>
+           <div>
+           <hr>
+           <div id="_footnotedef_1">
+           <a href="#_footnoteref_1">1</a>. This is the text of the footnote.
+           </div>
+           </div>
+          HTML
+
+          expect(render(input, context)).to include(output.strip)
+        end
       end
 
       context 'with section anchors' do
