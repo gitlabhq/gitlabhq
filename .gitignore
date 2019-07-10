@@ -75,6 +75,8 @@ eslint-report.html
 /.rspec
 /plugins/*
 /.gitlab_pages_secret
+/.gitlab_smime_key
+/.gitlab_smime_cert
 package-lock.json
 /junit_*.xml
 /coverage-frontend/

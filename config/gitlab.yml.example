@@ -95,6 +95,15 @@ production: &base
     email_display_name: GitLab
     email_reply_to: noreply@example.com
     email_subject_suffix: ''
+    email_smime:
+      # Uncomment and set to true if you need to enable email S/MIME signing (default: false)
+      # enabled: false
+      # S/MIME private key file in PEM format, unencrypted
+      # Default is '.gitlab_smime_key' relative to Rails.root (i.e. root of the GitLab app).
+      # key_file: /home/git/gitlab/.gitlab_smime_key
+      # S/MIME public certificate key in PEM format, will be attached to signed messages
+      # Default is '.gitlab_smime_cert' relative to Rails.root (i.e. root of the GitLab app).
+      # cert_file: /home/git/gitlab/.gitlab_smime_cert
 
     # Email server smtp settings are in config/initializers/smtp_settings.rb.sample
 

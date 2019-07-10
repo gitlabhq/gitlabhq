@@ -13,9 +13,6 @@ describe Gitlab::Email::Hook::DisableEmailInterceptor do
   end
 
   after do
-    # Removing interceptor from the list because unregister_interceptor is
-    # implemented in later version of mail gem
-    # See: https://github.com/mikel/mail/pull/705
     Mail.unregister_interceptor(described_class)
   end
 
