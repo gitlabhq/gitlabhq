@@ -36,17 +36,17 @@
     = f.text_field :path, placeholder: "my-awesome-project", class: "form-control", required: true
 - if current_user.can_create_group?
   .form-text.text-muted
-    Want to house several dependent projects under the same namespace?
-    = link_to "Create a group.", new_group_path
+    - link_start_group_path = '<a href="%{path}">' % { path: new_group_path }
+    - project_tip = s_('ProjectsNew|Want to house several dependent projects under the same namespace? %{link_start}Create a group.%{link_end}') % { link_start: link_start_group_path, link_end: '</a>' }
+    = project_tip.html_safe
 
 .form-group
   = f.label :description, class: 'label-bold' do
-    Project description
-    %span (optional)
-  = f.text_area :description, placeholder: 'Description format', class: "form-control", rows: 3, maxlength: 250, data: { track_label: "#{track_label}", track_event: "activate_form_input", track_property: "project_description", track_value: "" }
+    = s_('ProjectsNew|Project description %{tag_start}(optional)%{tag_end}').html_safe % { tag_start: '<span>'.html_safe, tag_end: '</span>'.html_safe }
+  = f.text_area :description, placeholder: s_('ProjectsNew|Description format'), class: "form-control", rows: 3, maxlength: 250, data: { track_label: "#{track_label}", track_event: "activate_form_input", track_property: "project_description", track_value: "" }
 
 = f.label :visibility_level, class: 'label-bold' do
-  Visibility Level
+  = s_('ProjectsNew|Visibility Level')
   = link_to icon('question-circle'), help_page_path("public_access/public_access"), aria: { label: 'Documentation for Visibility Level' }, target: '_blank', rel: 'noopener noreferrer'
 = render 'shared/visibility_level', f: f, visibility_level: visibility_level.to_i, can_change_visibility_level: true, form_model: @project, with_label: false
 
@@ -57,9 +57,9 @@
         = check_box_tag 'project[initialize_with_readme]', '1', false, class: 'form-check-input qa-initialize-with-readme-checkbox', data: { track_label: "#{track_label}", track_event: "activate_form_input", track_property: "init_with_readme" }
         = label_tag 'project[initialize_with_readme]', class: 'form-check-label' do
           .option-title
-            %strong Initialize repository with a README
+            %strong= s_('ProjectsNew|Initialize repository with a README')
           .option-description
-            Allows you to immediately clone this project’s repository. Skip this if you plan to push up an existing repository.
+            = s_('ProjectsNew|Allows you to immediately clone this project’s repository. Skip this if you plan to push up an existing repository.')
 
-= f.submit 'Create project', class: "btn btn-success project-submit", data: { track_label: "#{track_label}", track_event: "click_button", track_property: "create_project", track_value: "" }
-= link_to 'Cancel', dashboard_projects_path, class: 'btn btn-cancel', data: { track_label: "#{track_label}", track_event: "click_button", track_property: "cancel" }
+= f.submit _('Create project'), class: "btn btn-success project-submit", data: { track_label: "#{track_label}", track_event: "click_button", track_property: "create_project", track_value: "" }
+= link_to _('Cancel'), dashboard_projects_path, class: 'btn btn-cancel', data: { track_label: "#{track_label}", track_event: "click_button", track_property: "cancel" }
