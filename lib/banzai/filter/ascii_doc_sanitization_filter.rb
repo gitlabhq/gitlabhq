@@ -6,6 +6,9 @@ module Banzai
     #
     # Extends Banzai::Filter::BaseSanitizationFilter with specific rules.
     class AsciiDocSanitizationFilter < Banzai::Filter::BaseSanitizationFilter
+      # Section anchor link pattern
+      SECTION_LINK_REF_PATTERN = /\A#{Gitlab::Asciidoc::DEFAULT_ADOC_ATTRS['idprefix']}(:?[[:alnum:]]|-|_)+\z/.freeze
+
       # Classes used by Asciidoctor to style components
       ADMONITION_CLASSES = %w(fa icon-note icon-tip icon-warning icon-caution icon-important).freeze
       CALLOUT_CLASSES = ['conum'].freeze
@@ -19,14 +22,17 @@ module Banzai
         td: ['icon'].freeze,
         i: ADMONITION_CLASSES + CALLOUT_CLASSES + CHECKLIST_CLASSES,
         ul: LIST_CLASSES,
-        ol: LIST_CLASSES
+        ol: LIST_CLASSES,
+        a: ['anchor'].freeze
       }.freeze
+
+      ALLOWED_HEADERS = %w(h2 h3 h4 h5 h6).freeze
 
       def customize_whitelist(whitelist)
         # Allow marks
         whitelist[:elements].push('mark')
 
-        # Allow any classes in `span`, `i`, `div`, `td`, `ul` and `ol` elements
+        # Allow any classes in `span`, `i`, `div`, `td`, `ul`, `ol` and `a` elements
         # but then remove any unknown classes
         whitelist[:attributes]['span'] = %w(class)
         whitelist[:attributes]['div'].push('class')
@@ -34,12 +40,32 @@ module Banzai
         whitelist[:attributes]['i'] = %w(class)
         whitelist[:attributes]['ul'] = %w(class)
         whitelist[:attributes]['ol'] = %w(class)
+        whitelist[:attributes]['a'].push('class')
         whitelist[:transformers].push(self.class.remove_element_classes)
+
+        # Allow `id` in heading elements for section anchors
+        ALLOWED_HEADERS.each do |header|
+          whitelist[:attributes][header] = %w(id)
+        end
+        whitelist[:transformers].push(self.class.remove_non_heading_ids)
 
         whitelist
       end
 
       class << self
+        def remove_non_heading_ids
+          lambda do |env|
+            node = env[:node]
+
+            return unless ALLOWED_HEADERS.any?(node.name)
+            return unless node.has_attribute?('id')
+
+            return if node['id'] =~ SECTION_LINK_REF_PATTERN
+
+            node.remove_attribute('id')
+          end
+        end
+
         def remove_element_classes
           lambda do |env|
             node = env[:node]
