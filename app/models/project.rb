@@ -1914,9 +1914,8 @@ class Project < ApplicationRecord
     @route_maps_by_commit ||= Hash.new do |h, sha|
       h[sha] = begin
         data = repository.route_map_for(sha)
-        next unless data
 
-        Gitlab::RouteMap.new(data)
+        Gitlab::RouteMap.new(data) if data
       rescue Gitlab::RouteMap::FormatError
         nil
       end

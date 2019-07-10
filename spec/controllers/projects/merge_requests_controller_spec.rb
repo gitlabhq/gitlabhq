@@ -922,7 +922,7 @@ describe Projects::MergeRequestsController do
           expect(merge_request).to be_present
 
           expect { get_ci_environments_status }
-            .not_to change { Gitlab::GitalyClient.get_request_count }
+            .to change { Gitlab::GitalyClient.get_request_count }.by_at_most(1)
         end
       end
 
@@ -937,7 +937,7 @@ describe Projects::MergeRequestsController do
           expect(merge_request.merge_request_diff.merge_request_diff_files).to be_many
 
           expect { get_ci_environments_status }
-            .not_to change { Gitlab::GitalyClient.get_request_count }
+            .to change { Gitlab::GitalyClient.get_request_count }.by_at_most(1)
         end
       end
     end
