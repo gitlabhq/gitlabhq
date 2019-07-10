@@ -257,12 +257,22 @@ describe API::ProjectClusters do
         post api("/projects/#{project.id}/clusters/user", current_user), params: cluster_params
       end
 
-      it 'responds with 403' do
-        expect(response).to have_gitlab_http_status(403)
+      it 'responds with 400' do
+        expect(response).to have_gitlab_http_status(400)
+
+        expect(json_response['message']['base'].first).to eq('Instance does not support multiple Kubernetes clusters')
+      end
+    end
+
+    context 'non-authorized user' do
+      before do
+        post api("/projects/#{project.id}/clusters/user", developer_user), params: cluster_params
       end
 
-      it 'returns an appropriate message' do
-        expect(json_response['message']).to include('Instance does not support multiple Kubernetes clusters')
+      it 'responds with 403' do
+        expect(response).to have_gitlab_http_status(403)
+
+        expect(json_response['message']).to eq('403 Forbidden')
       end
     end
   end

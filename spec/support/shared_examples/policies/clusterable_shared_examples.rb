@@ -24,14 +24,6 @@ shared_examples 'clusterable policies' do
       context 'with no clusters' do
         it { expect_allowed(:add_cluster) }
       end
-
-      context 'with an existing cluster' do
-        before do
-          cluster
-        end
-
-        it { expect_disallowed(:add_cluster) }
-      end
     end
   end
 end
