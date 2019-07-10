@@ -29,5 +29,19 @@ describe 'Dashboard > Milestones' do
       expect(page).to have_content(milestone.title)
       expect(page).to have_content(group.name)
     end
+
+    describe 'new milestones dropdown', :js do
+      it 'takes user to a new milestone page', :js do
+        find('.new-project-item-select-button').click
+
+        page.within('.select2-results') do
+          first('.select2-result-label').click
+        end
+
+        find('.new-project-item-link').click
+
+        expect(current_path).to eq(new_group_milestone_path(group))
+      end
+    end
   end
 end
