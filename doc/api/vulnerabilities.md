@@ -30,6 +30,7 @@ GET /projects/:id/vulnerabilities?scope=all
 GET /projects/:id/vulnerabilities?scope=dismissed
 GET /projects/:id/vulnerabilities?severity=high
 GET /projects/:id/vulnerabilities?confidence=unknown,experimental
+GET /projects/:id/vulnerabilities?pipeline_id=42
 ```
 
 | Attribute     | Type           | Required | Description                                                                                                                                                                 |
@@ -39,6 +40,7 @@ GET /projects/:id/vulnerabilities?confidence=unknown,experimental
 | `scope`       | string         | no       | Returns vulnerabilities for the given scope: `all` or `dismissed`. Defaults to `dismissed`                                                                                  |
 | `severity`    | string array   | no       | Returns vulnerabilities belonging to specified severity level: `undefined`, `info`, `unknown`, `low`, `medium`, `high`, or `critical`. Defaults to all'                     |
 | `confidence`  | string array   | no       | Returns vulnerabilities belonging to specified confidence level: `undefined`, `ignore`, `unknown`, `experimental`, `low`, `medium`, `high`, or `confirmed`. Defaults to all |
+| `pipeline_id` | integer/string | no       | Returns vulnerabilities belonging to specified pipeline.                                                                                                                    |
 
 ```bash
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/4/vulnerabilities
