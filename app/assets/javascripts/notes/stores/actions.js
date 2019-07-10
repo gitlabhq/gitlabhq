@@ -384,12 +384,9 @@ export const toggleAward = ({ commit, getters }, { awardName, noteId }) => {
 export const toggleAwardRequest = ({ dispatch }, data) => {
   const { endpoint, awardName } = data;
 
-  return service
-    .toggleAward(endpoint, { name: awardName })
-    .then(res => res.json())
-    .then(() => {
-      dispatch('toggleAward', data);
-    });
+  return axios.post(endpoint, { name: awardName }).then(() => {
+    dispatch('toggleAward', data);
+  });
 };
 
 export const scrollToNoteIfNeeded = (context, el) => {
