@@ -417,7 +417,7 @@ class Group < Namespace
   end
 
   def subgroup_creation_level
-    super || ::Gitlab::Access::MAINTAINER_SUBGROUP_ACCESS
+    super || ::Gitlab::Access::OWNER_SUBGROUP_ACCESS
   end
 
   private
