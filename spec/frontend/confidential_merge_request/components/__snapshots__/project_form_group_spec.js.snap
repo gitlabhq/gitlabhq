@@ -2,7 +2,7 @@
 
 exports[`Confidential merge request project form group component renders empty state when response is empty 1`] = `
 <div
-  class="form-group"
+  class="confidential-merge-request-fork-group form-group"
 >
   <label>
     Project
@@ -28,6 +28,23 @@ exports[`Confidential merge request project form group component renders empty s
         </a>
          and set the forks visiblity to private.
       </span>
+       
+      <gllink-stub
+        class="w-auto p-0 d-inline-block text-primary bg-transparent"
+        href="/help"
+        target="_blank"
+      >
+        <span
+          class="sr-only"
+        >
+          Read more
+        </span>
+         
+        <i
+          aria-hidden="true"
+          class="fa fa-question-circle"
+        />
+      </gllink-stub>
     </p>
   </div>
 </div>
@@ -35,7 +52,7 @@ exports[`Confidential merge request project form group component renders empty s
 
 exports[`Confidential merge request project form group component renders fork dropdown 1`] = `
 <div
-  class="form-group"
+  class="confidential-merge-request-fork-group form-group"
 >
   <label>
     Project
@@ -61,6 +78,23 @@ exports[`Confidential merge request project form group component renders fork dr
         </a>
          and set the forks visiblity to private.
       </span>
+       
+      <gllink-stub
+        class="w-auto p-0 d-inline-block text-primary bg-transparent"
+        href="/help"
+        target="_blank"
+      >
+        <span
+          class="sr-only"
+        >
+          Read more
+        </span>
+         
+        <i
+          aria-hidden="true"
+          class="fa fa-question-circle"
+        />
+      </gllink-stub>
     </p>
   </div>
 </div>

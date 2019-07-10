@@ -63,7 +63,8 @@
   margin-top: 11px;
 }
 
-.dropdown-toggle {
+.dropdown-toggle,
+.confidential-merge-request-fork-group .dropdown-toggle {
   padding: 6px 8px 6px 10px;
   background-color: $white-light;
   color: $gl-text-color;
@@ -288,7 +289,7 @@
     padding: 0 1px;
 
     a,
-    button:not(.dropdown-toggle,.ci-action-icon-container),
+    button,
     .menu-item {
       @include dropdown-link;
     }
