@@ -114,7 +114,7 @@ describe QA::Page::Element do
   describe 'data-qa selectors' do
     subject { described_class.new(:my_element) }
     it 'properly translates to a data-qa-selector' do
-      expect(subject.selector_css).to include("[data-qa-selector='my_element']")
+      expect(subject.selector_css).to include(%q([data-qa-selector="my_element"]))
     end
   end
 end

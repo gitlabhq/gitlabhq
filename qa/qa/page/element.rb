@@ -28,7 +28,7 @@ module QA
       end
 
       def selector_css
-        "[data-qa-selector='#{@name}'],.#{selector}"
+        %Q([data-qa-selector="#{@name}"],.#{selector})
       end
 
       def expression
