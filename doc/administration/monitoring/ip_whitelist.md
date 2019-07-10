@@ -12,9 +12,9 @@ hosts or use IP ranges:
 
 1. Open `/etc/gitlab/gitlab.rb` and add or uncomment the following:
 
-    ```ruby
-    gitlab_rails['monitoring_whitelist'] = ['127.0.0.0/8', '192.168.0.1']
-    ```
+   ```ruby
+   gitlab_rails['monitoring_whitelist'] = ['127.0.0.0/8', '192.168.0.1']
+   ```
 
 1. Save the file and [reconfigure] GitLab for the changes to take effect.
 
@@ -24,13 +24,13 @@ hosts or use IP ranges:
 
 1. Edit `config/gitlab.yml`:
 
-    ```yaml
-    monitoring:
-      # by default only local IPs are allowed to access monitoring resources
-      ip_whitelist:
-        - 127.0.0.0/8
-        - 192.168.0.1
-    ```
+   ```yaml
+   monitoring:
+     # by default only local IPs are allowed to access monitoring resources
+     ip_whitelist:
+       - 127.0.0.0/8
+       - 192.168.0.1
+   ```
 
 1. Save the file and [restart] GitLab for the changes to take effect.
 

@@ -95,9 +95,9 @@ If job traces have already been archived into local storage, and you want to mig
 1. Ensure [Object storage integration for Job Artifacts](job_artifacts.md#object-storage-settings) is enabled
 1. Execute the following command
 
-    ```bash
-    gitlab-rake gitlab:traces:migrate
-    ```
+   ```bash
+   gitlab-rake gitlab:traces:migrate
+   ```
 
 ## How to remove job traces
 
