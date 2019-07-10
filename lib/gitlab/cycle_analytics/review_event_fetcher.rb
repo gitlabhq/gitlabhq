@@ -19,7 +19,7 @@ module Gitlab
       private
 
       def serialize(event)
-        AnalyticsMergeRequestSerializer.new(project: @project).represent(event)
+        AnalyticsMergeRequestSerializer.new(project: project).represent(event)
       end
 
       def allowed_ids_finder_class

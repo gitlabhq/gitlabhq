@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe CycleAnalytics do
+describe CycleAnalytics::ProjectLevel do
   let(:project) { create(:project, :repository) }
   let(:from_date) { 10.days.ago }
   let(:user) { create(:user, :admin) }
@@ -11,9 +11,9 @@ describe CycleAnalytics do
   let(:mr) { create_merge_request_closing_issue(user, project, issue, commit_message: "References #{issue.to_reference}") }
   let(:pipeline) { create(:ci_empty_pipeline, status: 'created', project: project, ref: mr.source_branch, sha: mr.source_branch_sha, head_pipeline_of: mr) }
 
-  subject { described_class.new(project, from: from_date) }
+  subject { described_class.new(project, options: { from: from_date }) }
 
-  describe '#all_medians_per_stage' do
+  describe '#all_medians_by_stage' do
     before do
       allow_any_instance_of(Gitlab::ReferenceExtractor).to receive(:issues).and_return([issue])
 
@@ -26,7 +26,7 @@ describe CycleAnalytics do
         hsh[stage_name] = subject[stage_name].median.presence
       end
 
-      expect(subject.all_medians_per_stage).to eq(values)
+      expect(subject.all_medians_by_stage).to eq(values)
     end
   end
 end
