@@ -1,0 +1,5 @@
+---
+title: Fixed incorrect line wrap for assignee label in issues
+merge_request: 30523
+author: Marc Schwede
+type: fixed
