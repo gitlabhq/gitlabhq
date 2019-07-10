@@ -40,11 +40,7 @@ module FromUnion
         .new(members, remove_duplicates: remove_duplicates)
         .to_sql
 
-      # This pattern is necessary as a bug in Rails 4 can cause the use of
-      # `from("string here").includes(:foo)` to break ActiveRecord. This is
-      # fixed in https://github.com/rails/rails/pull/25374, which is released as
-      # part of Rails 5.
-      from([Arel.sql("(#{union}) #{alias_as}")])
+      from(Arel.sql("(#{union}) #{alias_as}"))
     end
     # rubocop: enable Gitlab/Union
   end
