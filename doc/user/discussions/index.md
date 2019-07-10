@@ -444,7 +444,7 @@ Clicking on the **Reply to comment** button will bring the reply area into focus
 
 ![Reply to comment feature](img/reply_to_comment.gif)
 
-Relying to a non-discussion comment will convert the non-discussion comment to a
+Replying to a non-discussion comment will convert the non-discussion comment to a
 threaded discussion once the reply is submitted. This conversion is considered an edit
 to the original comment, so a note about when it was last edited will appear underneath it.
 
