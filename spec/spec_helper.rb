@@ -134,6 +134,8 @@ RSpec.configure do |config|
       allow(Feature).to receive(:enabled?).with(flag).and_return(enabled)
     end
 
+    allow(Gitlab::GitalyClient).to receive(:can_use_disk?).and_return(enabled)
+
     # The following can be removed when we remove the staged rollout strategy
     # and we can just enable it using instance wide settings
     # (ie. ApplicationSetting#auto_devops_enabled)
