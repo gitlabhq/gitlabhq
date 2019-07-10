@@ -154,9 +154,10 @@ the `/Users` endpoint. The base URL is: `/api/scim/v2/groups/:group_path/Users/`
 
 ## Road to GraphQL
 
-Going forward, we will start on moving to
-[GraphQL](graphql/index.md) and deprecate the use of
-controller-specific endpoints. GraphQL has a number of benefits:
+[GraphQL](graphql/index.md) is available in GitLab, which will
+allow deprecation of controller-specific endpoints.
+
+GraphQL has a number of benefits:
 
 1. We avoid having to maintain two different APIs.
 1. Callers of the API can request only what they need.
