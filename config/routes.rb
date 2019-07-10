@@ -110,6 +110,12 @@ Rails.application.routes.draw do
       draw :jira_connect
     end
 
+    Gitlab.ee do
+      constraints(::Constraints::FeatureConstrainer.new(:analytics)) do
+        draw :analytics
+      end
+    end
+
     if ENV['GITLAB_CHAOS_SECRET'] || Rails.env.development?
       resource :chaos, only: [] do
         get :leakmem
@@ -118,6 +124,13 @@ Rails.application.routes.draw do
         get :sleep
         get :kill
       end
+    end
+
+    if ENV['GITLAB_ENABLE_CHAOS_ENDPOINTS']
+      get '/chaos/leakmem' => 'chaos#leakmem'
+      get '/chaos/cpuspin' => 'chaos#cpuspin'
+      get '/chaos/sleep' => 'chaos#sleep'
+      get '/chaos/kill' => 'chaos#kill'
     end
   end
 
