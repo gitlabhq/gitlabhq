@@ -8,7 +8,7 @@ module Projects
       def initialize(project, old_disk_path, logger: nil)
         @project = project
         @old_disk_path = old_disk_path
-        @logger = logger || Rails.logger
+        @logger = logger || Rails.logger # rubocop:disable Gitlab/RailsLogger
       end
 
       def execute

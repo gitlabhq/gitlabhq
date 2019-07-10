@@ -16,7 +16,7 @@ class EmailReceiverWorker
   private
 
   def handle_failure(raw, error)
-    Rails.logger.warn("Email can not be processed: #{error}\n\n#{raw}")
+    Rails.logger.warn("Email can not be processed: #{error}\n\n#{raw}") # rubocop:disable Gitlab/RailsLogger
 
     return unless raw.present?
 

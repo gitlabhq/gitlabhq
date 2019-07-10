@@ -7,7 +7,7 @@ module Uploads
     attr_reader :logger
 
     def initialize(logger: nil)
-      @logger ||= Rails.logger
+      @logger ||= Rails.logger # rubocop:disable Gitlab/RailsLogger
     end
 
     def delete_keys_async(keys_to_delete)

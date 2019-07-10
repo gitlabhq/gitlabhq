@@ -18,7 +18,7 @@ class ExpireBuildArtifactsWorker
 
   # rubocop: disable CodeReuse/ActiveRecord
   def perform_legacy_artifacts_removal
-    Rails.logger.info 'Scheduling removal of build artifacts'
+    Rails.logger.info 'Scheduling removal of build artifacts' # rubocop:disable Gitlab/RailsLogger
 
     build_ids = Ci::Build.with_expired_artifacts.pluck(:id)
     build_ids = build_ids.map { |build_id| [build_id] }

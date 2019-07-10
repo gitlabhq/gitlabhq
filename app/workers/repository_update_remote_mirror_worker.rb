@@ -45,6 +45,6 @@ class RepositoryUpdateRemoteMirrorWorker
   def fail_remote_mirror(remote_mirror, message)
     remote_mirror.mark_as_failed(message)
 
-    Rails.logger.error(message)
+    Rails.logger.error(message) # rubocop:disable Gitlab/RailsLogger
   end
 end

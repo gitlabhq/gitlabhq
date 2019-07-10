@@ -310,7 +310,7 @@ module Gitlab
       gitlab_database_transaction_seconds.observe(labels, duration_seconds)
     rescue Prometheus::Client::LabelSetValidator::LabelSetError => err
       # Ensure that errors in recording these metrics don't affect the operation of the application
-      Rails.logger.error("Unable to observe database transaction duration: #{err}")
+      Rails.logger.error("Unable to observe database transaction duration: #{err}") # rubocop:disable Gitlab/RailsLogger
     end
 
     # MonkeyPatch for ActiveRecord::Base for adding observability

@@ -32,7 +32,7 @@ module Gitlab
             )
           end
         rescue => e
-          Rails.logger.error "Failed to update pages domain certificate valid time. id: #{domain.id}, message: #{e.message}"
+          Rails.logger.error "Failed to update pages domain certificate valid time. id: #{domain.id}, message: #{e.message}" # rubocop:disable Gitlab/RailsLogger
         end
       end
     end

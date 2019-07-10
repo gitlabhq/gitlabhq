@@ -784,6 +784,7 @@ class Project < ApplicationRecord
     job_id
   end
 
+  # rubocop:disable Gitlab/RailsLogger
   def log_import_activity(job_id, type: :import)
     job_type = type.to_s.capitalize
 
@@ -793,6 +794,7 @@ class Project < ApplicationRecord
       Rails.logger.error("#{job_type} job failed to create for #{full_path}.")
     end
   end
+  # rubocop:enable Gitlab/RailsLogger
 
   def reset_cache_and_import_attrs
     run_after_commit do
@@ -1665,6 +1667,7 @@ class Project < ApplicationRecord
   end
   # rubocop: enable CodeReuse/ServiceClass
 
+  # rubocop:disable Gitlab/RailsLogger
   def write_repository_config(gl_full_path: full_path)
     # We'd need to keep track of project full path otherwise directory tree
     # created with hashed storage enabled cannot be usefully imported using
@@ -1674,6 +1677,7 @@ class Project < ApplicationRecord
     Rails.logger.error("Error writing to .git/config for project #{full_path} (#{id}): #{e.message}.")
     nil
   end
+  # rubocop:enable Gitlab/RailsLogger
 
   def after_import
     repository.after_import
@@ -1715,6 +1719,7 @@ class Project < ApplicationRecord
     @pipeline_status ||= Gitlab::Cache::Ci::ProjectPipelineStatus.load_for_project(self)
   end
 
+  # rubocop:disable Gitlab/RailsLogger
   def add_export_job(current_user:, after_export_strategy: nil, params: {})
     job_id = ProjectExportWorker.perform_async(current_user.id, self.id, after_export_strategy, params)
 
@@ -1724,6 +1729,7 @@ class Project < ApplicationRecord
       Rails.logger.error "Export job failed to start for project ID #{self.id}"
     end
   end
+  # rubocop:enable Gitlab/RailsLogger
 
   def import_export_shared
     @import_export_shared ||= Gitlab::ImportExport::Shared.new(self)

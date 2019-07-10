@@ -7,7 +7,7 @@ module Gitlab
       BATCH_SIZE = 100
 
       def initialize(logger: nil)
-        @logger = logger || Rails.logger
+        @logger = logger || Rails.logger # rubocop:disable Gitlab/RailsLogger
       end
 
       def run!(dry_run: false)

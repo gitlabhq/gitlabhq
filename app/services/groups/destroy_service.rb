@@ -6,7 +6,7 @@ module Groups
 
     def async_execute
       job_id = GroupDestroyWorker.perform_async(group.id, current_user.id)
-      Rails.logger.info("User #{current_user.id} scheduled a deletion of group ID #{group.id} with job ID #{job_id}")
+      Rails.logger.info("User #{current_user.id} scheduled a deletion of group ID #{group.id} with job ID #{job_id}") # rubocop:disable Gitlab/RailsLogger
     end
 
     # rubocop: disable CodeReuse/ActiveRecord

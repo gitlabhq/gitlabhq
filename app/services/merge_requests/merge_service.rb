@@ -113,12 +113,12 @@ module MergeRequests
     end
 
     def handle_merge_error(log_message:, save_message_on_model: false)
-      Rails.logger.error("MergeService ERROR: #{merge_request_info} - #{log_message}")
+      Rails.logger.error("MergeService ERROR: #{merge_request_info} - #{log_message}") # rubocop:disable Gitlab/RailsLogger
       @merge_request.update(merge_error: log_message) if save_message_on_model
     end
 
     def log_info(message)
-      @logger ||= Rails.logger
+      @logger ||= Rails.logger # rubocop:disable Gitlab/RailsLogger
       @logger.info("#{merge_request_info} - #{message}")
     end
 

@@ -145,7 +145,7 @@ module Gitlab
     def expire_method_caches(methods)
       methods.each do |name|
         unless cached_methods.include?(name.to_sym)
-          Rails.logger.error "Requested to expire non-existent method '#{name}' for Repository"
+          Rails.logger.error "Requested to expire non-existent method '#{name}' for Repository" # rubocop:disable Gitlab/RailsLogger
           next
         end
 

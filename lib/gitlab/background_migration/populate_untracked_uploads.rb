@@ -42,7 +42,7 @@ module Gitlab
                 #{e.message}
                 #{e.backtrace.join("\n  ")}
             MSG
-          Rails.logger.error(msg)
+          Rails.logger.error(msg) # rubocop:disable Gitlab/RailsLogger
           false
         end
       end

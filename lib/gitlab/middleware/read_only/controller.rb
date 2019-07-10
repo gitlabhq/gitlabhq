@@ -25,7 +25,7 @@ module Gitlab
 
         def call
           if disallowed_request? && Gitlab::Database.read_only?
-            Rails.logger.debug('GitLab ReadOnly: preventing possible non read-only operation')
+            Rails.logger.debug('GitLab ReadOnly: preventing possible non read-only operation') # rubocop:disable Gitlab/RailsLogger
 
             if json_request?
               return [403, { 'Content-Type' => APPLICATION_JSON }, [{ 'message' => ERROR_MESSAGE }.to_json]]
