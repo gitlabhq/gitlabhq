@@ -138,7 +138,13 @@ msgstr[1] ""
 msgid "%{edit_in_new_fork_notice} Try to cherry-pick this commit again."
 msgstr ""
 
+msgid "%{edit_in_new_fork_notice} Try to create a new directory again."
+msgstr ""
+
 msgid "%{edit_in_new_fork_notice} Try to revert this commit again."
+msgstr ""
+
+msgid "%{edit_in_new_fork_notice} Try to upload a file again."
 msgstr ""
 
 msgid "%{filePath} deleted"
@@ -705,6 +711,9 @@ msgid "Add to project"
 msgstr ""
 
 msgid "Add to review"
+msgstr ""
+
+msgid "Add to tree"
 msgstr ""
 
 msgid "Add user(s) to the group:"
