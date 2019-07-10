@@ -40,7 +40,7 @@ class EnvironmentStatus
   end
 
   def changes
-    return [] if project.route_map_for(sha).nil?
+    return [] unless has_route_map?
 
     changed_files.map { |file| build_change(file) }.compact
   end
@@ -48,6 +48,10 @@ class EnvironmentStatus
   def changed_files
     merge_request.merge_request_diff
       .merge_request_diff_files.where(deleted_file: false)
+  end
+
+  def has_route_map?
+    project.route_map_for(sha).present?
   end
 
   private
