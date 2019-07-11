@@ -165,7 +165,7 @@ export default {
         v-gl-tooltip
         type="button"
         title="Edit comment"
-        class="note-action-button js-note-edit btn btn-transparent"
+        class="note-action-button js-note-edit btn btn-transparent qa-note-edit-button"
         @click="onEdit"
       >
         <icon name="pencil" css-classes="link-highlight" />
