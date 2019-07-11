@@ -7,12 +7,12 @@ module QA
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
         Page::Main::Login.perform(&:sign_in_using_credentials)
 
-        project = Resource::Project.fabricate! do |project|
+        project = Resource::Project.fabricate_via_api! do |project|
           project.name = 'project-with-ci-variables'
           project.description = 'project with CI variables'
         end
 
-        Resource::CiVariable.fabricate! do |resource|
+        Resource::CiVariable.fabricate_via_api! do |resource|
           resource.project = project
           resource.key = 'VARIABLE_KEY'
           resource.value = 'some_CI_variable'
