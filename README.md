@@ -15,7 +15,7 @@ To see how GitLab looks please see the [features page on our website](https://ab
 
 - Manage Git repositories with fine grained access controls that keep your code secure
 - Perform code reviews and enhance collaboration with merge requests
-- Complete continuous integration (CI) and CD pipelines to builds, test, and deploy your applications
+- Complete continuous integration (CI) and continuous deployment/delivery (CD) pipelines to build, test, and deploy your applications
 - Each project can also have an issue tracker, issue board, and a wiki
 - Used by more than 100,000 organizations, GitLab is the most popular solution to manage Git repositories on-premises
 - Completely free and open source (MIT Expat license)
