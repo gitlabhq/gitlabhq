@@ -1,0 +1,5 @@
+---
+title: Always return MR diff_refs if importing
+merge_request: 30630
+author:
+type: fixed
