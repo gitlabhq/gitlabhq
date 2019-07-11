@@ -8,7 +8,7 @@ describe Gitlab::UsageData do
     before do
       create(:jira_service, project: projects[0])
       create(:jira_service, project: projects[1])
-      create(:jira_cloud_service, project: projects[2])
+      create(:jira_service, :jira_cloud_service, project: projects[2])
       create(:prometheus_service, project: projects[1])
       create(:service, project: projects[0], type: 'SlackSlashCommandsService', active: true)
       create(:service, project: projects[1], type: 'SlackService', active: true)

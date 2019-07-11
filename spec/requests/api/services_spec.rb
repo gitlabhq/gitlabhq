@@ -85,9 +85,7 @@ describe API::Services do
       include_context service
 
       # inject some properties into the service
-      before do
-        initialize_service(service)
-      end
+      let!(:initialized_service) { initialize_service(service) }
 
       it 'returns authentication error when unauthenticated' do
         get api("/projects/#{project.id}/services/#{dashed_service}")
@@ -106,6 +104,15 @@ describe API::Services do
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['properties'].keys).to match_array(service_instance.api_field_names)
+      end
+
+      it "returns empty hash if properties are empty" do
+        # deprecated services are not valid for update
+        initialized_service.update_attribute(:properties, {})
+        get api("/projects/#{project.id}/services/#{dashed_service}", user)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response['properties'].keys).to be_empty
       end
 
       it "returns error when authenticated but not a project owner" do
