@@ -30,97 +30,97 @@ To enable the Bitbucket OmniAuth provider you must register your application
 with Bitbucket.org. Bitbucket will generate an application ID and secret key for
 you to use.
 
-1.  Sign in to [Bitbucket.org](https://bitbucket.org).
-1.  Navigate to your individual user settings (**Bitbucket settings**) or a team's
-    settings (**Manage team**), depending on how you want the application registered.
-    It does not matter if the application is registered as an individual or a
-    team, that is entirely up to you.
-1.  Select **OAuth** in the left menu under "Access Management".
-1.  Select **Add consumer**.
-1.  Provide the required details:
+1. Sign in to [Bitbucket.org](https://bitbucket.org).
+1. Navigate to your individual user settings (**Bitbucket settings**) or a team's
+   settings (**Manage team**), depending on how you want the application registered.
+   It does not matter if the application is registered as an individual or a
+   team, that is entirely up to you.
+1. Select **OAuth** in the left menu under "Access Management".
+1. Select **Add consumer**.
+1. Provide the required details:
 
-    | Item | Description |
-    | :--- | :---------- |
-    | **Name** | This can be anything. Consider something like `<Organization>'s GitLab` or `<Your Name>'s GitLab` or something else descriptive. |
-    | **Application description** | Fill this in if you wish. |
-    | **Callback URL** | The URL to your GitLab installation, e.g., `https://gitlab.example.com/users/auth`. |
-    | **URL** | The URL to your GitLab installation, e.g., `https://gitlab.example.com`. |
+   | Item | Description |
+   | :--- | :---------- |
+   | **Name** | This can be anything. Consider something like `<Organization>'s GitLab` or `<Your Name>'s GitLab` or something else descriptive. |
+   | **Application description** | Fill this in if you wish. |
+   | **Callback URL** | The URL to your GitLab installation, e.g., `https://gitlab.example.com/users/auth`. |
+   | **URL** | The URL to your GitLab installation, e.g., `https://gitlab.example.com`. |
 
-    NOTE: Be sure to append `/users/auth` to the end of the callback URL
-    to prevent a [OAuth2 convert
-    redirect](http://tetraph.com/covert_redirect/) vulnerability.
+   NOTE: Be sure to append `/users/auth` to the end of the callback URL
+   to prevent a [OAuth2 convert
+   redirect](http://tetraph.com/covert_redirect/) vulnerability.
 
-    NOTE: Starting in GitLab 8.15, you MUST specify a callback URL, or you will
-    see an "Invalid redirect_uri" message. For more details, see [the
-    Bitbucket documentation](https://confluence.atlassian.com/bitbucket/oauth-faq-338365710.html).
+   NOTE: Starting in GitLab 8.15, you MUST specify a callback URL, or you will
+   see an "Invalid redirect_uri" message. For more details, see [the
+   Bitbucket documentation](https://confluence.atlassian.com/bitbucket/oauth-faq-338365710.html).
 
-    And grant at least the following permissions:
+   And grant at least the following permissions:
 
-    ```
-    Account: Email, Read
-    Projects: Read
-    Repositories: Read
-    Pull Requests: Read
-    Issues: Read
-    Wiki: Read and Write
-    ```
+   ```
+   Account: Email, Read
+   Projects: Read
+   Repositories: Read
+   Pull Requests: Read
+   Issues: Read
+   Wiki: Read and Write
+   ```
 
-    ![Bitbucket OAuth settings page](img/bitbucket_oauth_settings_page.png)
+   ![Bitbucket OAuth settings page](img/bitbucket_oauth_settings_page.png)
 
-1.  Select **Save**.
-1.  Select your newly created OAuth consumer and you should now see a Key and
-    Secret in the list of OAuth consumers. Keep this page open as you continue
-    the configuration.
+1. Select **Save**.
+1. Select your newly created OAuth consumer and you should now see a Key and
+   Secret in the list of OAuth consumers. Keep this page open as you continue
+   the configuration.
 
-      ![Bitbucket OAuth key](img/bitbucket_oauth_keys.png)
+   ![Bitbucket OAuth key](img/bitbucket_oauth_keys.png)
 
-1.  On your GitLab server, open the configuration file:
+1. On your GitLab server, open the configuration file:
 
-    ```
-    # For Omnibus packages
-    sudo editor /etc/gitlab/gitlab.rb
+   ```
+   # For Omnibus packages
+   sudo editor /etc/gitlab/gitlab.rb
 
-    # For installations from source
-    sudo -u git -H editor /home/git/gitlab/config/gitlab.yml
-    ```
+   # For installations from source
+   sudo -u git -H editor /home/git/gitlab/config/gitlab.yml
+   ```
 
-1.  Add the Bitbucket provider configuration:
+1. Add the Bitbucket provider configuration:
 
-    For Omnibus packages:
+   For Omnibus packages:
 
-    ```ruby
-    gitlab_rails['omniauth_enabled'] = true
+   ```ruby
+   gitlab_rails['omniauth_enabled'] = true
 
-    gitlab_rails['omniauth_providers'] = [
-      {
-        "name" => "bitbucket",
-        "app_id" => "BITBUCKET_APP_KEY",
-        "app_secret" => "BITBUCKET_APP_SECRET",
-        "url" => "https://bitbucket.org/"
-      }
-    ]
-    ```
+   gitlab_rails['omniauth_providers'] = [
+     {
+       "name" => "bitbucket",
+       "app_id" => "BITBUCKET_APP_KEY",
+       "app_secret" => "BITBUCKET_APP_SECRET",
+       "url" => "https://bitbucket.org/"
+     }
+   ]
+   ```
 
-    For installations from source:
+   For installations from source:
 
-    ```yaml
-    omniauth:
-      enabled: true
-      providers:
-        - { name: 'bitbucket',
-            app_id: 'BITBUCKET_APP_KEY',
-            app_secret: 'BITBUCKET_APP_SECRET',
-            url: 'https://bitbucket.org/' }
-    ```
+   ```yaml
+   omniauth:
+     enabled: true
+     providers:
+       - { name: 'bitbucket',
+           app_id: 'BITBUCKET_APP_KEY',
+           app_secret: 'BITBUCKET_APP_SECRET',
+           url: 'https://bitbucket.org/' }
+   ```
 
-    ---
+   ---
 
-    Where `BITBUCKET_APP_KEY` is the Key and `BITBUCKET_APP_SECRET` the Secret
-    from the Bitbucket application page.
+   Where `BITBUCKET_APP_KEY` is the Key and `BITBUCKET_APP_SECRET` the Secret
+   from the Bitbucket application page.
 
-1.  Save the configuration file.
-1.  For the changes to take effect, [reconfigure GitLab][] if you installed via
-    Omnibus, or [restart][] if installed from source.
+1. Save the configuration file.
+1. For the changes to take effect, [reconfigure GitLab][] if you installed via
+   Omnibus, or [restart][] if installed from source.
 
 On the sign in page there should now be a Bitbucket icon below the regular sign
 in form. Click the icon to begin the authentication process. Bitbucket will ask

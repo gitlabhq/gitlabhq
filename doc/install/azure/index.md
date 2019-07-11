@@ -67,18 +67,19 @@ The first items we need to configure are the basic settings of the underlying vi
 1. Enter a `User name` - e.g. **"gitlab-admin"**
 1. Select an `Authentication type`, either **SSH public key** or **Password**:
 
-    > **Note:** if you're unsure which authentication type to use, select **Password**
+   > **Note:** if you're unsure which authentication type to use, select **Password**
 
-    1. If you chose **SSH public key** - enter your `SSH public key` into the field provided
-    _(read the [SSH documentation][GitLab-Docs-SSH] to learn more about how to set up SSH
-    public keys)_
-    1. If you chose **Password** - enter the password you wish to use _(this is the password that you
-    will use later in this tutorial to [SSH] into the VM, so make sure it's a strong password/passphrase)_
+   1. If you chose **SSH public key** - enter your `SSH public key` into the field provided
+   _(read the [SSH documentation][GitLab-Docs-SSH] to learn more about how to set up SSH
+   public keys)_
+   1. If you chose **Password** - enter the password you wish to use _(this is the password that you
+   will use later in this tutorial to [SSH] into the VM, so make sure it's a strong password/passphrase)_
+
 1. Choose the appropriate `Subscription` tier for your Azure account
 1. Choose an existing `Resource Group` or create a new one - e.g. **"GitLab-CE-Azure"**
 
-    > **Note:** a "Resource group" is a way to group related resources together for easier administration.
-    > We chose "GitLab-CE-Azure", but your resource group can have the same name as your VM.
+   > **Note:** a "Resource group" is a way to group related resources together for easier administration.
+   > We chose "GitLab-CE-Azure", but your resource group can have the same name as your VM.
 
 1. Choose a `Location` - if you're unsure, select the default location
 
@@ -248,6 +249,7 @@ rules in the list:
 ![Azure - Inbound security rules - List](img/azure-inbound-sec-rules-list.png)
 
 ## Connecting to GitLab
+
 Use the domain name you set up earlier (or the public IP address) to visit your new GitLab instance
 in your browser. If everything has gone according to plan you should be presented with the
 following page, asking you to set a _new_ password for the administrator account automatically
@@ -348,6 +350,7 @@ your VM, you can use the IP address in its place in the following command:
 ```bash
 ssh username@your-azure-domain-name.com
 ```
+
 Provide your password at the prompt to authenticate.
 
 #### SSH from Windows (PuTTY)
@@ -411,12 +414,12 @@ Check out our other [Technical Articles][GitLab-Technical-Articles] or browse th
 - [GitLab Community Edition][CE]
 - [GitLab Enterprise Edition][EE]
 - [Microsoft Azure][Azure]
-    - [Azure - Free Account FAQ][Azure-Free-Account-FAQ]
-    - [Azure - Marketplace][Azure-Marketplace]
-    - [Azure Portal][Azure-Portal]
-    - [Azure - Pricing Calculator][Azure-Pricing-Calculator]
-    - [Azure - Troubleshoot SSH Connections to an Azure Linux VM][Azure-Troubleshoot-SSH-Connection]
-    - [Azure - Properly Shutdown an Azure VM][Azure-Properly-Shutdown-VM]
+  - [Azure - Free Account FAQ][Azure-Free-Account-FAQ]
+  - [Azure - Marketplace][Azure-Marketplace]
+  - [Azure Portal][Azure-Portal]
+  - [Azure - Pricing Calculator][Azure-Pricing-Calculator]
+  - [Azure - Troubleshoot SSH Connections to an Azure Linux VM][Azure-Troubleshoot-SSH-Connection]
+  - [Azure - Properly Shutdown an Azure VM][Azure-Properly-Shutdown-VM]
 - [SSH], [PuTTY] and [Using SSH in PuTTY][Using-SSH-In-Putty]
 
 [Original-Blog-Post]: https://about.gitlab.com/2016/07/13/how-to-setup-a-gitlab-instance-on-microsoft-azure/ "How to Set up a GitLab Instance on Microsoft Azure"

@@ -12,6 +12,7 @@ special searches:
 - [Advanced Syntax Search](../user/search/advanced_search_syntax.md)
 
 ## Version Requirements
+
 <!-- Please remember to update ee/lib/system_check/app/elasticsearch_check.rb if this changes -->
 
 | GitLab version | Elasticsearch version |
@@ -424,91 +425,90 @@ Here are some common pitfalls and how to overcome them:
 
 - **How can I verify my GitLab instance is using Elasticsearch?**
 
-    The easiest method is via the rails console (`sudo gitlab-rails console`) by running the following:
+  The easiest method is via the rails console (`sudo gitlab-rails console`) by running the following:
 
-    ```ruby
-    u = User.find_by_username('your-username')
-    s = SearchService.new(u, {:search => 'search_term'})
-    pp s.search_objects.class.name
-    ```
+  ```ruby
+  u = User.find_by_username('your-username')
+  s = SearchService.new(u, {:search => 'search_term'})
+  pp s.search_objects.class.name
+  ```
 
-    If you see `Elasticsearch::Model::Response::Records`, you are using Elasticsearch.
+  If you see `Elasticsearch::Model::Response::Records`, you are using Elasticsearch.
 
 - **I updated GitLab and now I can't find anything**
 
-    We continuously make updates to our indexing strategies and aim to support
-    newer versions of Elasticsearch. When indexing changes are made, it may
-    be necessary for you to [reindex](#adding-gitlabs-data-to-the-elasticsearch-index) after updating GitLab.
+  We continuously make updates to our indexing strategies and aim to support
+  newer versions of Elasticsearch. When indexing changes are made, it may
+  be necessary for you to [reindex](#adding-gitlabs-data-to-the-elasticsearch-index) after updating GitLab.
 
 - **I indexed all the repositories but I can't find anything**
 
-    Make sure you indexed all the database data [as stated above](#adding-gitlabs-data-to-the-elasticsearch-index).
+  Make sure you indexed all the database data [as stated above](#adding-gitlabs-data-to-the-elasticsearch-index).
 
-    Beyond that, check via the [Elasticsearch Search API](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-search.html) to see if the data shows up on the Elasticsearch side.
+  Beyond that, check via the [Elasticsearch Search API](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-search.html) to see if the data shows up on the Elasticsearch side.
 
-    If it shows up via the [Elasticsearch Search API](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-search.html), check that it shows up via the rails console (`sudo gitlab-rails console`):
+  If it shows up via the [Elasticsearch Search API](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-search.html), check that it shows up via the rails console (`sudo gitlab-rails console`):
 
-    ```ruby
-    u = User.find_by_username('your-username')
-    s = SearchService.new(u, {:search => 'search_term', :scope => ‘blobs’})
-    pp s.search_objects.to_a
-    ```
+  ```ruby
+  u = User.find_by_username('your-username')
+  s = SearchService.new(u, {:search => 'search_term', :scope => ‘blobs’})
+  pp s.search_objects.to_a
+  ```
 
-    See [Elasticsearch Index Scopes](elasticsearch.md#elasticsearch-index-scopes) for more information on searching for specific types of data.
+  See [Elasticsearch Index Scopes](elasticsearch.md#elasticsearch-index-scopes) for more information on searching for specific types of data.
 
 - **I indexed all the repositories but then switched Elasticsearch servers and now I can't find anything**
 
-    You will need to re-run all the rake tasks to re-index the database, repositories, and wikis.
+  You will need to re-run all the rake tasks to re-index the database, repositories, and wikis.
 
 - **The indexing process is taking a very long time**
 
-    The more data present in your GitLab instance, the longer the indexing process takes.
+  The more data present in your GitLab instance, the longer the indexing process takes.
 
 - **No new data is added to the Elasticsearch index when I push code**
 
-    When performing the initial indexing of blobs, we lock all projects until the project finishes indexing. It could
-    happen that an error during the process causes one or multiple projects to remain locked. In order to unlock them,
-    run the `gitlab:elastic:clear_locked_projects` rake task.
+  When performing the initial indexing of blobs, we lock all projects until the project finishes indexing. It could
+  happen that an error during the process causes one or multiple projects to remain locked. In order to unlock them,
+  run the `gitlab:elastic:clear_locked_projects` rake task.
 
 - **"Can't specify parent if no parent field has been configured"**
 
-    If you enabled Elasticsearch before GitLab 8.12 and have not rebuilt indexes you will get
-    exception in lots of different cases:
+  If you enabled Elasticsearch before GitLab 8.12 and have not rebuilt indexes you will get
+  exception in lots of different cases:
 
-    ```text
-    Elasticsearch::Transport::Transport::Errors::BadRequest([400] {
-        "error": {
-            "root_cause": [{
-                "type": "illegal_argument_exception",
-                "reason": "Can't specify parent if no parent field has been configured"
-            }],
-            "type": "illegal_argument_exception",
-            "reason": "Can't specify parent if no parent field has been configured"
-        },
-        "status": 400
-    }):
-    ```
+  ```text
+  Elasticsearch::Transport::Transport::Errors::BadRequest([400] {
+      "error": {
+          "root_cause": [{
+              "type": "illegal_argument_exception",
+              "reason": "Can't specify parent if no parent field has been configured"
+          }],
+          "type": "illegal_argument_exception",
+          "reason": "Can't specify parent if no parent field has been configured"
+      },
+      "status": 400
+  }):
+  ```
 
-    This is because we changed the index mapping in GitLab 8.12 and the old indexes should be removed and built from scratch again,
-    see details in the [8-11-to-8-12 update guide](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/doc/update/8.11-to-8.12.md#11-elasticsearch-index-update-if-you-currently-use-elasticsearch).
+  This is because we changed the index mapping in GitLab 8.12 and the old indexes should be removed and built from scratch again,
+  see details in the [8-11-to-8-12 update guide](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/doc/update/8.11-to-8.12.md#11-elasticsearch-index-update-if-you-currently-use-elasticsearch).
 
 - Exception `Elasticsearch::Transport::Transport::Errors::BadRequest`
 
-    If you have this exception (just like in the case above but the actual message is different) please check if you have the correct Elasticsearch version and you met the other [requirements](#system-requirements).
-    There is also an easy way to check it automatically with `sudo gitlab-rake gitlab:check` command.
+  If you have this exception (just like in the case above but the actual message is different) please check if you have the correct Elasticsearch version and you met the other [requirements](#system-requirements).
+  There is also an easy way to check it automatically with `sudo gitlab-rake gitlab:check` command.
 
 - Exception `Elasticsearch::Transport::Transport::Errors::RequestEntityTooLarge`
 
-    ```text
-    [413] {"Message":"Request size exceeded 10485760 bytes"}
-    ```
+  ```text
+  [413] {"Message":"Request size exceeded 10485760 bytes"}
+  ```
 
-    This exception is seen when your Elasticsearch cluster is configured to reject
-    requests above a certain size (10MiB in this case). This corresponds to the
-    `http.max_content_length` setting in `elasticsearch.yml`. Increase it to a
-    larger size and restart your Elasticsearch cluster.
+  This exception is seen when your Elasticsearch cluster is configured to reject
+  requests above a certain size (10MiB in this case). This corresponds to the
+  `http.max_content_length` setting in `elasticsearch.yml`. Increase it to a
+  larger size and restart your Elasticsearch cluster.
 
-    AWS has [fixed limits](http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/aes-limits.html)
-    for this setting ("Maximum Size of HTTP Request Payloads"), based on the size of
-    the underlying instance.
-
+  AWS has [fixed limits](http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/aes-limits.html)
+  for this setting ("Maximum Size of HTTP Request Payloads"), based on the size of
+  the underlying instance.

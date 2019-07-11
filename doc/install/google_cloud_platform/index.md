@@ -30,16 +30,16 @@ To deploy GitLab on GCP you first need to create a virtual machine:
 1. Go to <https://console.cloud.google.com/compute/instances> and log in with your Google credentials.
 1. Click on **Create**
 
-    ![Search for GitLab](img/launch_vm.png)
+   ![Search for GitLab](img/launch_vm.png)
 
-1.  On the next page, you can select the type of VM as well as the
+1. On the next page, you can select the type of VM as well as the
    estimated costs. Provide the name of the instance, desired datacenter, and machine type. Note that GitLab recommends at least 2 vCPU's and 4GB of RAM.
 
-    ![Launch on Compute Engine](img/vm_details.png)
+   ![Launch on Compute Engine](img/vm_details.png)
 
 1. Click **Change** under Boot disk to select the size, type, and desired operating system. GitLab supports a [variety of linux operating systems][req], including Ubuntu and Debian. Click **Select** when finished.
 
-    ![Deploy in progress](img/boot_disk.png)
+   ![Deploy in progress](img/boot_disk.png)
 
 1. As a last step allow HTTP and HTTPS traffic, then click **Create**. The process will finish in a few seconds.
 
@@ -53,13 +53,13 @@ After a few seconds, the instance will be created and available to log in. The n
 1. Click on the SSH button to connect to the instance.
 1. A new window will appear, with you logged into the instance.
 
-    ![GitLab first sign in](img/ssh_terminal.png)
+   ![GitLab first sign in](img/ssh_terminal.png)
 
 1. Next, follow the instructions for installing GitLab for the operating system you choose, at <https://about.gitlab.com/install/>. You can use the IP address from the step above, as the hostname.
 
 1. Congratulations! GitLab is now installed and you can access it via your browser. To finish installation, open the URL in your browser and provide the initial administrator password. The username for this account is `root`.
 
-    ![GitLab first sign in](img/first_signin.png)
+   ![GitLab first sign in](img/first_signin.png)
 
 ## Next steps
 
@@ -83,31 +83,31 @@ here's how you configure GitLab to be aware of the change:
 1. SSH into the VM. You can easily use the **SSH** button in the Google console
    and a new window will pop up.
 
-    ![SSH button](img/vm_created.png)
+   ![SSH button](img/vm_created.png)
 
-     In the future you might want to set up [connecting with an SSH key][ssh]
-     instead.
+   In the future you might want to set up [connecting with an SSH key][ssh]
+   instead.
 
 1. Edit the config file of Omnibus GitLab using your favorite text editor:
 
-    ```
-    sudo vim /etc/gitlab/gitlab.rb
-    ```
+   ```
+   sudo vim /etc/gitlab/gitlab.rb
+   ```
 
 1. Set the `external_url` value to the domain name you wish GitLab to have
    **without** `https`:
 
-    ```
-    external_url 'http://gitlab.example.com'
-    ```
+   ```
+   external_url 'http://gitlab.example.com'
+   ```
 
-    We will set up HTTPS in the next step, no need to do this now.
+   We will set up HTTPS in the next step, no need to do this now.
 
 1. Reconfigure GitLab for the changes to take effect:
 
-    ```
-    sudo gitlab-ctl reconfigure
-    ```
+   ```
+   sudo gitlab-ctl reconfigure
+   ```
 
 1. You can now visit GitLab using the domain name.
 

@@ -58,59 +58,59 @@ assumptions are made:
 
 Make sure to follow all steps below:
 
-1.  (Optional) If you run short on resources, you can temporarily free up some
-    memory by shutting down the GitLab service with the following command:
+1. (Optional) If you run short on resources, you can temporarily free up some
+   memory by shutting down the GitLab service with the following command:
 
-    ```shell
-    sudo service gitlab stop
-    ```
+   ```shell
+   sudo service gitlab stop
+   ```
 
-1.  Create `/home/git/gitlab/config/initializers/relative_url.rb`
+1. Create `/home/git/gitlab/config/initializers/relative_url.rb`
 
-    ```shell
-    cp /home/git/gitlab/config/initializers/relative_url.rb.sample \
-       /home/git/gitlab/config/initializers/relative_url.rb
-    ```
+   ```shell
+   cp /home/git/gitlab/config/initializers/relative_url.rb.sample \
+      /home/git/gitlab/config/initializers/relative_url.rb
+   ```
 
-    and change the following line:
+   and change the following line:
 
-    ```ruby
-    config.relative_url_root = "/gitlab"
-    ```
+   ```ruby
+   config.relative_url_root = "/gitlab"
+   ```
 
-1.  Edit `/home/git/gitlab/config/gitlab.yml` and uncomment/change the
-    following line:
+1. Edit `/home/git/gitlab/config/gitlab.yml` and uncomment/change the
+   following line:
 
-    ```yaml
-    relative_url_root: /gitlab
-    ```
+   ```yaml
+   relative_url_root: /gitlab
+   ```
 
-1.  Edit `/home/git/gitlab/config/unicorn.rb` and uncomment/change the
-    following line:
+1. Edit `/home/git/gitlab/config/unicorn.rb` and uncomment/change the
+   following line:
 
-    ```ruby
-    ENV['RAILS_RELATIVE_URL_ROOT'] = "/gitlab"
-    ```
+   ```ruby
+   ENV['RAILS_RELATIVE_URL_ROOT'] = "/gitlab"
+   ```
 
-1.  Edit `/home/git/gitlab-shell/config.yml` and append the relative path to
-    the following line:
+1. Edit `/home/git/gitlab-shell/config.yml` and append the relative path to
+   the following line:
 
-    ```yaml
-    gitlab_url: http://127.0.0.1/gitlab
-    ```
+   ```yaml
+   gitlab_url: http://127.0.0.1/gitlab
+   ```
 
-1.  Make sure you have copied the supplied init script and the defaults file
-    as stated in the [installation guide](installation.md#install-init-script).
-    Then, edit `/etc/default/gitlab` and set in `gitlab_workhorse_options` the
-    `-authBackend` setting to read like:
+1. Make sure you have copied the supplied init script and the defaults file
+   as stated in the [installation guide](installation.md#install-init-script).
+   Then, edit `/etc/default/gitlab` and set in `gitlab_workhorse_options` the
+   `-authBackend` setting to read like:
 
-    ```shell
-    -authBackend http://127.0.0.1:8080/gitlab
-    ```
+   ```shell
+   -authBackend http://127.0.0.1:8080/gitlab
+   ```
 
-    **Note:**
-    If you are using a custom init script, make sure to edit the above
-    gitlab-workhorse setting as needed.
+   **Note:**
+   If you are using a custom init script, make sure to edit the above
+   gitlab-workhorse setting as needed.
 
 1. [Restart GitLab][] for the changes to take effect.
 
@@ -118,9 +118,9 @@ Make sure to follow all steps below:
 
 To disable the relative URL:
 
-1.  Remove `/home/git/gitlab/config/initializers/relative_url.rb`
+1. Remove `/home/git/gitlab/config/initializers/relative_url.rb`
 
-1.  Follow the same as above starting from 2. and set up the
+1. Follow the same as above starting from 2. and set up the
     GitLab URL to one that doesn't contain a relative path.
 
 [omnibus-rel]: https://docs.gitlab.com/omnibus/settings/configuration.html#configuring-a-relative-url-for-gitlab "How to set up relative URL in Omnibus GitLab"
