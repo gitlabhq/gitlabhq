@@ -19,14 +19,14 @@
     }
   }
 
-  // leave enough space for the close icon
   .modal-title {
+    line-height: $gl-line-height-24;
+
+    // leave enough space for the close icon
     &.mw-100,
     &.w-100 {
-      // after upgrading to Bootstrap 4.2 we can use $modal-header-padding-x here
-      // https://github.com/twbs/bootstrap/pull/26976
-      margin-right: -28px;
-      padding-right: 28px;
+      margin-right: -$modal-header-padding-x;
+      padding-right: $modal-header-padding-x;
     }
   }
 }
