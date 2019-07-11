@@ -19,8 +19,12 @@ module Gitlab
         ENV['ID_TO']
       end
 
+      def self.using_ranges?
+        !range_from.nil? && !range_to.nil?
+      end
+
       def self.range_single_item?
-        !range_from.nil? && range_from == range_to
+        using_ranges? && range_from == range_to
       end
 
       # rubocop: disable CodeReuse/ActiveRecord
