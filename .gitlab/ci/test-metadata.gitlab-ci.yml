@@ -39,6 +39,7 @@ update-tests-metadata:
     policy: push
   script:
     - retry gem install fog-aws mime-types activesupport rspec_profiling postgres-copy --no-document
+    - echo "{}" > ${KNAPSACK_RSPEC_SUITE_REPORT_PATH}'
     - scripts/merge-reports ${KNAPSACK_RSPEC_SUITE_REPORT_PATH} knapsack/${CI_PROJECT_NAME}/rspec_*_pg_node_*.json
     - '[[ -z ${TESTS_METADATA_S3_BUCKET} ]] || scripts/sync-reports put $TESTS_METADATA_S3_BUCKET $KNAPSACK_RSPEC_SUITE_REPORT_PATH'
     - rm -f knapsack/${CI_PROJECT_NAME}/*_node_*.json
