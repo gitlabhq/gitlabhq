@@ -10,7 +10,7 @@ module QA
         deploy_token_name = 'deploy token name'
         one_week_from_now = Date.today + 7
 
-        deploy_token = Resource::DeployToken.fabricate! do |resource|
+        deploy_token = Resource::DeployToken.fabricate_via_browser_ui! do |resource|
           resource.name = deploy_token_name
           resource.expires_at = one_week_from_now
         end
