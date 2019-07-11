@@ -340,7 +340,7 @@ For other punctuation rules, please refer to the
   links shift too, which eventually leads to dead links. If you think it is
   compelling to add numbers in headings, make sure to at least discuss it with
   someone in the Merge Request.
-- [Avoid using symbols and special chars](https://gitlab.com/gitlab-com/gitlab-docs/issues/84)
+- [Avoid using symbols and special chars](https://gitlab.com/gitlab-org/gitlab-docs/issues/84)
   in headers. Whenever possible, they should be plain and short text.
 - Avoid adding things that show ephemeral statuses. For example, if a feature is
   considered beta or experimental, put this info in a note, not in the heading.
@@ -488,7 +488,7 @@ You can link any up-to-date video that is useful to the GitLab user.
 
 ### Embed videos
 
-> [Introduced](https://gitlab.com/gitlab-com/gitlab-docs/merge_requests/472) in GitLab 12.1.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-docs/merge_requests/472) in GitLab 12.1.
 
 GitLab docs (docs.gitlab.com) support embedded videos.
 
@@ -801,7 +801,7 @@ GitLab.com Free, and all higher tiers.
 
 ### How it works
 
-Introduced by [!244](https://gitlab.com/gitlab-com/gitlab-docs/merge_requests/244),
+Introduced by [!244](https://gitlab.com/gitlab-org/gitlab-docs/merge_requests/244),
 the special markup `**(STARTER)**` will generate a `span` element to trigger the
 badges and tooltips (`<span class="badge-trigger starter">`). When the keyword
 "only" is added, the corresponding GitLab.com badge will not be displayed.

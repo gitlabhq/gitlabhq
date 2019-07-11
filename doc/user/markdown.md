@@ -40,7 +40,7 @@ repositories are also processed with CommonMark. As of 11.8, the [Redcarpet Ruby
 has been removed and all issues and comments, including those from pre-11.1, are now processed
 using the [CommonMark Ruby Library](https://github.com/gjtorikian/commonmarker).
 
-The documentation website had its [markdown engine migrated from Redcarpet to Kramdown](https://gitlab.com/gitlab-com/gitlab-docs/merge_requests/108)
+The documentation website had its [markdown engine migrated from Redcarpet to Kramdown](https://gitlab.com/gitlab-org/gitlab-docs/merge_requests/108)
 in October 2018.
 
 You may have older issues, merge requests, or Markdown documents in your
