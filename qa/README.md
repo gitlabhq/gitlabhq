@@ -75,14 +75,14 @@ You can also supply specific tests to run as another parameter. For example, to
 run the repository-related specs, you can execute:
 
 ```
-bundle exec bin/qa Test::Instance::All http://localhost -- qa/specs/features/browser_ui/3_create/repository
+bundle exec bin/qa Test::Instance::All http://localhost:3000 -- qa/specs/features/browser_ui/3_create/repository
 ```
 
 Since the arguments would be passed to `rspec`, you could use all `rspec`
 options there. For example, passing `--backtrace` and also line number:
 
 ```
-bundle exec bin/qa Test::Instance::All http://localhost -- qa/specs/features/browser_ui/3_create/merge_request/create_merge_request_spec.rb:6 --backtrace
+bundle exec bin/qa Test::Instance::All http://localhost:3000 -- qa/specs/features/browser_ui/3_create/merge_request/create_merge_request_spec.rb:6 --backtrace
 ```
 
 Note that the separator `--` is required; all subsequent options will be
@@ -140,7 +140,7 @@ tests that are expected to fail while a fix is in progress (similar to how
  can be used).
 
 ```
-bundle exec bin/qa Test::Instance::All http://localhost -- --tag quarantine
+bundle exec bin/qa Test::Instance::All http://localhost:3000 -- --tag quarantine
 ```
 
 If `quarantine` is used with other tags, tests will only be run if they have at
@@ -159,7 +159,7 @@ option `--enable-feature FEATURE_FLAG`. For example, to enable the feature flag
 that enforces Gitaly request limits, you would use the command:
 
 ```
-bundle exec bin/qa Test::Instance::All http://localhost --enable-feature gitaly_enforce_requests_limits
+bundle exec bin/qa Test::Instance::All http://localhost:3000 --enable-feature gitaly_enforce_requests_limits
 ```
 
 This will instruct the QA framework to enable the `gitaly_enforce_requests_limits`
