@@ -29,14 +29,15 @@ describe BlobHelper do
     let(:project) { create(:project, :repository, namespace: namespace) }
 
     before do
-      allow(self).to receive(:current_user).and_return(nil)
-      allow(self).to receive(:can_collaborate_with_project?).and_return(true)
+      allow(helper).to receive(:current_user).and_return(nil)
+      allow(helper).to receive(:can?).and_return(true)
+      allow(helper).to receive(:can_collaborate_with_project?).and_return(true)
     end
 
     it 'verifies blob is text' do
       expect(helper).not_to receive(:blob_text_viewable?)
 
-      button = edit_blob_button(project, 'refs/heads/master', 'README.md')
+      button = helper.edit_blob_button(project, 'refs/heads/master', 'README.md')
 
       expect(button).to start_with('<button')
     end
@@ -46,25 +47,25 @@ describe BlobHelper do
 
       expect(project.repository).not_to receive(:blob_at)
 
-      edit_blob_button(project, 'refs/heads/master', 'README.md', blob: blob)
+      helper.edit_blob_button(project, 'refs/heads/master', 'README.md', blob: blob)
     end
 
     it 'returns a link with the proper route' do
       stub_feature_flags(web_ide_default: false)
-      link = edit_blob_button(project, 'master', 'README.md')
+      link = helper.edit_blob_button(project, 'master', 'README.md')
 
       expect(Capybara.string(link).find_link('Edit')[:href]).to eq("/#{project.full_path}/edit/master/README.md")
     end
 
     it 'returns a link with a Web IDE route' do
-      link = edit_blob_button(project, 'master', 'README.md')
+      link = helper.edit_blob_button(project, 'master', 'README.md')
 
       expect(Capybara.string(link).find_link('Edit')[:href]).to eq("/-/ide/project/#{project.full_path}/edit/master/-/README.md")
     end
 
     it 'returns a link with the passed link_opts on the expected route' do
       stub_feature_flags(web_ide_default: false)
-      link = edit_blob_button(project, 'master', 'README.md', link_opts: { mr_id: 10 })
+      link = helper.edit_blob_button(project, 'master', 'README.md', link_opts: { mr_id: 10 })
 
       expect(Capybara.string(link).find_link('Edit')[:href]).to eq("/#{project.full_path}/edit/master/README.md?mr_id=10")
     end
@@ -203,6 +204,13 @@ describe BlobHelper do
 
   describe '#ide_edit_path' do
     let(:project) { create(:project) }
+    let(:current_user) { create(:user) }
+    let(:can_push_code) { true }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(current_user)
+      allow(helper).to receive(:can?).and_return(can_push_code)
+    end
 
     around do |example|
       old_script_name = Rails.application.routes.default_url_options[:script_name]
@@ -242,6 +250,22 @@ describe BlobHelper do
       Rails.application.routes.default_url_options[:script_name] = nil
 
       expect(helper.ide_edit_path(project, "testing/slashes", "readme.md/")).to eq("/-/ide/project/#{project.namespace.path}/#{project.path}/edit/testing/slashes/-/readme.md/")
+    end
+
+    context 'when user is not logged in' do
+      let(:current_user) { nil }
+
+      it 'returns IDE path inside the project' do
+        expect(helper.ide_edit_path(project, "master", "")).to eq("/-/ide/project/#{project.namespace.path}/#{project.path}/edit/master")
+      end
+    end
+
+    context 'when user cannot push to the project' do
+      let(:can_push_code) { false }
+
+      it "returns IDE path with the user's fork" do
+        expect(helper.ide_edit_path(project, "master", "")).to eq("/-/ide/project/#{current_user.namespace.full_path}/#{project.path}/edit/master")
+      end
     end
   end
 end
