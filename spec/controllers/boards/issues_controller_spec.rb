@@ -164,6 +164,201 @@ describe Boards::IssuesController do
       end
     end
 
+    describe 'PUT move_multiple' do
+      let(:todo) { create(:group_label, group: group, name: 'Todo') }
+      let(:development) { create(:group_label, group: group, name: 'Development') }
+      let(:user) { create(:group_member, :maintainer, user: create(:user), group: group ).user }
+      let(:guest) { create(:group_member, :guest, user: create(:user), group: group ).user }
+      let(:project) { create(:project, group: group) }
+      let(:group) { create(:group) }
+      let(:board) { create(:board, project: project) }
+      let(:list1) { create(:list, board: board, label: todo, position: 0) }
+      let(:list2) { create(:list, board: board, label: development, position: 1) }
+      let(:issue1) { create(:labeled_issue, project: project, labels: [todo], author: user, relative_position: 10) }
+      let(:issue2) { create(:labeled_issue, project: project, labels: [todo], author: user, relative_position: 20) }
+      let(:issue3) { create(:labeled_issue, project: project, labels: [todo], author: user, relative_position: 30) }
+      let(:issue4) { create(:labeled_issue, project: project, labels: [development], author: user, relative_position: 100) }
+
+      let(:move_params) do
+        {
+          board_id: board.id,
+          ids: [issue1.id, issue2.id, issue3.id],
+          from_list_id: list1.id,
+          to_list_id: list2.id,
+          move_before_id: issue4.id,
+          move_after_id: nil
+        }
+      end
+
+      before do
+        project.add_maintainer(user)
+        project.add_guest(guest)
+      end
+
+      shared_examples 'move issues endpoint provider' do
+        before do
+          sign_in(signed_in_user)
+        end
+
+        it 'moves issues as expected' do
+          put :bulk_move, params: move_issues_params
+          expect(response).to have_gitlab_http_status(expected_status)
+
+          list_issues user: requesting_user, board: board, list: list2
+          expect(response).to have_gitlab_http_status(200)
+
+          expect(response).to match_response_schema('entities/issue_boards')
+
+          responded_issues = json_response['issues']
+          expect(responded_issues.length).to eq expected_issue_count
+
+          ids_in_order = responded_issues.pluck('id')
+          expect(ids_in_order).to eq(expected_issue_ids_in_order)
+        end
+      end
+
+      context 'when items are moved to another list' do
+        it_behaves_like 'move issues endpoint provider' do
+          let(:signed_in_user) { user }
+          let(:move_issues_params) { move_params }
+          let(:requesting_user) { user }
+          let(:expected_status) { 200 }
+          let(:expected_issue_count) { 4 }
+          let(:expected_issue_ids_in_order) { [issue4.id, issue1.id, issue2.id, issue3.id] }
+        end
+      end
+
+      context 'when moving just one issue' do
+        it_behaves_like 'move issues endpoint provider' do
+          let(:signed_in_user) { user }
+          let(:move_issues_params) do
+            move_params.dup.tap do |hash|
+              hash[:ids] = [issue2.id]
+            end
+          end
+          let(:requesting_user) { user }
+          let(:expected_status) { 200 }
+          let(:expected_issue_count) { 2 }
+          let(:expected_issue_ids_in_order) { [issue4.id, issue2.id] }
+        end
+      end
+
+      context 'when user is not allowed to move issue' do
+        it_behaves_like 'move issues endpoint provider' do
+          let(:signed_in_user) { guest }
+          let(:move_issues_params) do
+            move_params.dup.tap do |hash|
+              hash[:ids] = [issue2.id]
+            end
+          end
+          let(:requesting_user) { user }
+          let(:expected_status) { 403 }
+          let(:expected_issue_count) { 1 }
+          let(:expected_issue_ids_in_order) { [issue4.id] }
+        end
+      end
+
+      context 'when issues should be moved visually above existing issue in list' do
+        it_behaves_like 'move issues endpoint provider' do
+          let(:signed_in_user) { user }
+          let(:move_issues_params) do
+            move_params.dup.tap do |hash|
+              hash[:move_after_id] = issue4.id
+              hash[:move_before_id] = nil
+            end
+          end
+          let(:requesting_user) { user }
+          let(:expected_status) { 200 }
+          let(:expected_issue_count) { 4 }
+          let(:expected_issue_ids_in_order) { [issue1.id, issue2.id, issue3.id, issue4.id] }
+        end
+      end
+
+      context 'when destination list is empty' do
+        before do
+          # Remove issue from list
+          issue4.labels -= [development]
+          issue4.save!
+        end
+
+        it_behaves_like 'move issues endpoint provider' do
+          let(:signed_in_user) { user }
+          let(:move_issues_params) do
+            move_params.dup.tap do |hash|
+              hash[:move_before_id] = nil
+            end
+          end
+          let(:requesting_user) { user }
+          let(:expected_status) { 200 }
+          let(:expected_issue_count) { 3 }
+          let(:expected_issue_ids_in_order) { [issue1.id, issue2.id, issue3.id] }
+        end
+      end
+
+      context 'when no position arguments are given' do
+        it_behaves_like 'move issues endpoint provider' do
+          let(:signed_in_user) { user }
+          let(:move_issues_params) do
+            move_params.dup.tap do |hash|
+              hash[:move_before_id] = nil
+            end
+          end
+          let(:requesting_user) { user }
+          let(:expected_status) { 200 }
+          let(:expected_issue_count) { 4 }
+          let(:expected_issue_ids_in_order) { [issue1.id, issue2.id, issue3.id, issue4.id] }
+        end
+      end
+
+      context 'when move_before_id and move_after_id are given' do
+        let(:issue5) { create(:labeled_issue, project: project, labels: [development], author: user, relative_position: 90) }
+
+        it_behaves_like 'move issues endpoint provider' do
+          let(:signed_in_user) { user }
+          let(:move_issues_params) do
+            move_params.dup.tap do |hash|
+              hash[:move_before_id] = issue5.id
+              hash[:move_after_id] = issue4.id
+            end
+          end
+          let(:requesting_user) { user }
+          let(:expected_status) { 200 }
+          let(:expected_issue_count) { 5 }
+          let(:expected_issue_ids_in_order) { [issue5.id, issue1.id, issue2.id, issue3.id, issue4.id] }
+        end
+      end
+
+      context 'when request contains too many issues' do
+        it_behaves_like 'move issues endpoint provider' do
+          let(:signed_in_user) { user }
+          let(:move_issues_params) do
+            move_params.dup.tap do |hash|
+              hash[:ids] = (0..51).to_a
+            end
+          end
+          let(:requesting_user) { user }
+          let(:expected_status) { 422 }
+          let(:expected_issue_count) { 1 }
+          let(:expected_issue_ids_in_order) { [issue4.id] }
+        end
+      end
+
+      context 'when request is malformed' do
+        it_behaves_like 'move issues endpoint provider' do
+          let(:signed_in_user) { user }
+          let(:move_issues_params) do
+            move_params.dup.tap do |hash|
+              hash[:ids] = 'foobar'
+            end
+          end
+          let(:requesting_user) { user }
+          let(:expected_status) { 400 }
+          let(:expected_issue_count) { 1 }
+          let(:expected_issue_ids_in_order) { [issue4.id] }
+        end
+      end
+    end
+
     def list_issues(user:, board:, list: nil)
       sign_in(user)
 
