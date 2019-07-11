@@ -9,6 +9,8 @@ module Clusters
       GITLAB_CLUSTER_ROLE_BINDING_NAME = 'gitlab-admin'
       GITLAB_CLUSTER_ROLE_NAME = 'cluster-admin'
       PROJECT_CLUSTER_ROLE_NAME = 'edit'
+      GITLAB_KNATIVE_SERVING_ROLE_NAME = 'gitlab-knative-serving-role'
+      GITLAB_KNATIVE_SERVING_ROLE_BINDING_NAME = 'gitlab-knative-serving-rolebinding'
     end
   end
 end
