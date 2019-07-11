@@ -69,11 +69,12 @@ our AsciiDoc snippets, wikis and repos using delimited blocks:
 - **Markdown**
 
   <pre>
+  ````markdown
   ```plantuml
   Bob -> Alice : hello
   Alice -> Bob : Go Away
-  ```</pre>
-
+  ```
+  ````
 
 - **AsciiDoc**
 
