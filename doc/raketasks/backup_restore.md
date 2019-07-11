@@ -741,9 +741,10 @@ sudo gitlab-rake gitlab:backup:restore BACKUP=1493107454_2018_04_25_10.6.4-ce
 
 Next, restore `/etc/gitlab/gitlab-secrets.json` if necessary as mentioned above.
 
-Restart and check GitLab:
+Reconfigure, restart and check GitLab:
 
 ```shell
+sudo gitlab-ctl reconfigure
 sudo gitlab-ctl restart
 sudo gitlab-rake gitlab:check SANITIZE=true
 ```
