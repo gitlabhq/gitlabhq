@@ -10,17 +10,17 @@ code_quality:
   tags: []
   before_script: []
   cache: {}
-  dependencies: []
 
 sast:
   extends: .dedicated-no-docs
-  before_script: []
   tags: []
+  before_script: []
+  cache: {}
   variables:
-    SAST_CONFIDENCE_LEVEL: 2
-    DOCKER_DRIVER: overlay2
+    SAST_BRAKEMAN_LEVEL: 2
 
 dependency_scanning:
-  before_script: []
-  tags: []
   extends: .dedicated-no-docs
+  tags: []
+  before_script: []
+  cache: {}
