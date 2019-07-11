@@ -48,6 +48,7 @@
   font-size: .8rem;
   font-weight: 400;
   color: #2e2e2e;
+  z-index: 9999; /* toolbar should always be on top */
 }
 
 .gitlab-wrapper-open {
