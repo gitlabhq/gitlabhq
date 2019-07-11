@@ -429,7 +429,7 @@
   padding: 0;
   background: transparent;
   border: 0;
-  line-height: 34px;
+  line-height: 2;
   margin: 0;
 
   > li + li::before {
@@ -792,7 +792,6 @@
 
     .btn {
       margin-top: $gl-padding;
-      padding: $gl-btn-vert-padding $gl-btn-padding;
       line-height: $gl-btn-line-height;
 
       .icon {
