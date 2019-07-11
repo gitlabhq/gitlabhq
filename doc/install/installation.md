@@ -299,57 +299,57 @@ use of extensions and concurrent index removal, you need at least PostgreSQL 9.2
 
 1. Install the database packages:
 
-    ```sh
-    sudo apt-get install -y postgresql postgresql-client libpq-dev postgresql-contrib
-    ```
+   ```sh
+   sudo apt-get install -y postgresql postgresql-client libpq-dev postgresql-contrib
+   ```
 
 1. Create a database user for GitLab:
 
-    ```sh
-    sudo -u postgres psql -d template1 -c "CREATE USER git CREATEDB;"
-    ```
+   ```sh
+   sudo -u postgres psql -d template1 -c "CREATE USER git CREATEDB;"
+   ```
 
 1. Create the `pg_trgm` extension (required for GitLab 8.6+):
 
-    ```sh
-    sudo -u postgres psql -d template1 -c "CREATE EXTENSION IF NOT EXISTS pg_trgm;"
-    ```
+   ```sh
+   sudo -u postgres psql -d template1 -c "CREATE EXTENSION IF NOT EXISTS pg_trgm;"
+   ```
 
 1. Create the GitLab production database and grant all privileges on database:
 
-    ```sh
-    sudo -u postgres psql -d template1 -c "CREATE DATABASE gitlabhq_production OWNER git;"
-    ```
+   ```sh
+   sudo -u postgres psql -d template1 -c "CREATE DATABASE gitlabhq_production OWNER git;"
+   ```
 
 1. Try connecting to the new database with the new user:
 
-    ```sh
-    sudo -u git -H psql -d gitlabhq_production
-    ```
+   ```sh
+   sudo -u git -H psql -d gitlabhq_production
+   ```
 
 1. Check if the `pg_trgm` extension is enabled:
 
-    ```sh
-    SELECT true AS enabled
-    FROM pg_available_extensions
-    WHERE name = 'pg_trgm'
-    AND installed_version IS NOT NULL;
-    ```
+   ```sh
+   SELECT true AS enabled
+   FROM pg_available_extensions
+   WHERE name = 'pg_trgm'
+   AND installed_version IS NOT NULL;
+   ```
 
-    If the extension is enabled this will produce the following output:
+   If the extension is enabled this will produce the following output:
 
-    ```
-    enabled
-    ---------
-     t
-    (1 row)
-    ```
+   ```
+   enabled
+   ---------
+    t
+   (1 row)
+   ```
 
 1. Quit the database session:
 
-    ```sh
-    gitlabhq_production> \q
-    ```
+   ```sh
+   gitlabhq_production> \q
+   ```
 
 ## 7. Redis
 
@@ -831,26 +831,27 @@ how to configure GitLab with a relative URL.
 To use GitLab with HTTPS:
 
 1. In `gitlab.yml`:
-    1. Set the `port` option in section 1 to `443`.
-    1. Set the `https` option in section 1 to `true`.
+   1. Set the `port` option in section 1 to `443`.
+   1. Set the `https` option in section 1 to `true`.
 1. In the `config.yml` of gitlab-shell:
-    1. Set `gitlab_url` option to the HTTPS endpoint of GitLab (e.g. `https://git.example.com`).
-    1. Set the certificates using either the `ca_file` or `ca_path` option.
+   1. Set `gitlab_url` option to the HTTPS endpoint of GitLab (e.g. `https://git.example.com`).
+   1. Set the certificates using either the `ca_file` or `ca_path` option.
 1. Use the `gitlab-ssl` Nginx example config instead of the `gitlab` config.
-    1. Update `YOUR_SERVER_FQDN`.
-    1. Update `ssl_certificate` and `ssl_certificate_key`.
-    1. Review the configuration file and consider applying other security and performance enhancing features.
+   1. Update `YOUR_SERVER_FQDN`.
+   1. Update `ssl_certificate` and `ssl_certificate_key`.
+   1. Review the configuration file and consider applying other security and performance enhancing features.
 
 Using a self-signed certificate is discouraged but if you must use it, follow the normal directions. Then:
 
 1. Generate a self-signed SSL certificate:
 
-    ```sh
-    mkdir -p /etc/nginx/ssl/
-    cd /etc/nginx/ssl/
-    sudo openssl req -newkey rsa:2048 -x509 -nodes -days 3560 -out gitlab.crt -keyout gitlab.key
-    sudo chmod o-r gitlab.key
-    ```
+   ```sh
+   mkdir -p /etc/nginx/ssl/
+   cd /etc/nginx/ssl/
+   sudo openssl req -newkey rsa:2048 -x509 -nodes -days 3560 -out gitlab.crt -keyout gitlab.key
+   sudo chmod o-r gitlab.key
+   ```
+
 1. In the `config.yml` of gitlab-shell set `self_signed_cert` to `true`.
 
 ### Enable Reply by email

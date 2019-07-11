@@ -36,30 +36,30 @@ The rest of the steps are identical for macOS and Linux.
 1. Login to Digital Ocean.
 1. Generate a new API token at <https://cloud.digitalocean.com/settings/api/tokens>.
 
-    This command will create a new DO droplet called `gitlab-test-env-do` that will act as a docker host.
+   This command will create a new DO droplet called `gitlab-test-env-do` that will act as a docker host.
 
-    NOTE: **Note:**
-    4GB is the minimum requirement for a Docker host that will run more than one GitLab instance.
+   NOTE: **Note:**
+   4GB is the minimum requirement for a Docker host that will run more than one GitLab instance.
 
-    - RAM: 4GB
-    - Name: `gitlab-test-env-do`
-    - Driver: `digitalocean`
+   - RAM: 4GB
+   - Name: `gitlab-test-env-do`
+   - Driver: `digitalocean`
 
 1. Set the DO token:
 
-    ```sh
-    export DOTOKEN=<your generated token>
-    ```
+   ```sh
+   export DOTOKEN=<your generated token>
+   ```
 
 1. Create the machine:
 
-    ```sh
-    docker-machine create \
-      --driver digitalocean \
-      --digitalocean-access-token=$DOTOKEN \
-      --digitalocean-size "4gb" \
-        gitlab-test-env-do
-    ```
+   ```sh
+   docker-machine create \
+     --driver digitalocean \
+     --digitalocean-access-token=$DOTOKEN \
+     --digitalocean-size "4gb" \
+       gitlab-test-env-do
+   ```
 
 Resource: <https://docs.docker.com/machine/drivers/digital-ocean/>.
 
