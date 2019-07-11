@@ -106,9 +106,9 @@ important metric is the `real` time.
 ```sh
 $ time for i in {0..1000}; do echo 'test' > "test${i}.txt"; done
 
-real	0m0.116s
-user	0m0.025s
-sys	0m0.091s
+real    0m0.116s
+user    0m0.025s
+sys     0m0.091s
 
 $ time for i in {0..1000}; do cat "test${i}.txt" > /dev/null; done
 

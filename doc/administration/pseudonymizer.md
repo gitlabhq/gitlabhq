@@ -65,8 +65,8 @@ To configure the pseudonymizer, you need to:
 
    ```yaml
    pseudonymizer:
-   manifest: config/pseudonymizer.yml
-   upload:
+     manifest: config/pseudonymizer.yml
+     upload:
        remote_directory: 'gitlab-elt' # bucket name
        connection:
          provider: AWS
