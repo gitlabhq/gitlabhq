@@ -82,7 +82,11 @@ Rails.application.routes.draw do
         resources :issues, only: [:index, :create, :update]
       end
 
-      resources :issues, module: :boards, only: [:index, :update]
+      resources :issues, module: :boards, only: [:index, :update] do
+        collection do
+          put :bulk_move, format: :json
+        end
+      end
 
       Gitlab.ee do
         resources :users, module: :boards, only: [:index]
