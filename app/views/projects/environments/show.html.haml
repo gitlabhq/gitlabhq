@@ -3,6 +3,9 @@
 - breadcrumb_title @environment.name
 - page_title _("Environments")
 
+- content_for :page_specific_javascripts do
+  = stylesheet_link_tag 'page_bundles/xterm'
+
 %div{ class: container_class }
   - if can?(current_user, :stop_environment, @environment)
     #stop-environment-modal.modal.fade{ tabindex: -1 }
