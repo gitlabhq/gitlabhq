@@ -177,6 +177,7 @@ describe Note do
             pipeline: :note,
             cache_key: [note1, "note"],
             project: note1.project,
+            rendered: note1.note_html,
             author: note1.author
           }
         }]).and_call_original
@@ -189,6 +190,7 @@ describe Note do
             pipeline: :note,
             cache_key: [note2, "note"],
             project: note2.project,
+            rendered: note2.note_html,
             author: note2.author
           }
         }]).and_call_original

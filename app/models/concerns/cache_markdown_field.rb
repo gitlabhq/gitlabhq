@@ -87,6 +87,16 @@ module CacheMarkdownField
     __send__(cached_markdown_fields.html_field(markdown_field)) # rubocop:disable GitlabSecurity/PublicSend
   end
 
+  # Updates the markdown cache if necessary, then returns the field
+  # Unlike `cached_html_for` it returns `nil` if the field does not exist
+  def updated_cached_html_for(markdown_field)
+    return unless cached_markdown_fields.markdown_fields.include?(markdown_field)
+
+    refresh_markdown_cache if attribute_invalidated?(cached_markdown_fields.html_field(markdown_field))
+
+    cached_html_for(markdown_field)
+  end
+
   def latest_cached_markdown_version
     @latest_cached_markdown_version ||= (Gitlab::MarkdownCache::CACHE_COMMONMARK_VERSION << 16) | local_version
   end
@@ -139,8 +149,9 @@ module CacheMarkdownField
       # The HTML becomes invalid if any dependent fields change. For now, assume
       # author and project invalidate the cache in all circumstances.
       define_method(invalidation_method) do
-        invalidations = changed_markdown_fields & [markdown_field.to_s, *INVALIDATED_BY]
-        invalidations.delete(markdown_field.to_s) if changed_markdown_fields.include?("#{markdown_field}_html")
+        changed_fields = changed_attributes.keys
+        invalidations  = changed_fields & [markdown_field.to_s, *INVALIDATED_BY]
+        invalidations.delete(markdown_field.to_s) if changed_fields.include?("#{markdown_field}_html")
         !invalidations.empty? || !cached_html_up_to_date?(markdown_field)
       end
     end

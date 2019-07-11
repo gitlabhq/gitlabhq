@@ -55,11 +55,16 @@ module Banzai
     # Perform multiple render from an Array of Markdown String into an
     # Array of HTML-safe String of HTML.
     #
-    # As the rendered Markdown String can be already cached read all the data
-    # from the cache using Rails.cache.read_multi operation. If the Markdown String
-    # is not in the cache or it's not cacheable (no cache_key entry is provided in
-    # the context) the Markdown String is rendered and stored in the cache so the
-    # next render call gets the rendered HTML-safe String from the cache.
+    # The redis cache is completely obviated if we receive a `:rendered` key in the
+    # context, as it is assumed the item has been pre-rendered somewhere else and there
+    # is no need to cache it.
+    #
+    # If no `:rendered` key is present in the context, as the rendered Markdown String
+    # can be already cached, read all the data from the cache using
+    # Rails.cache.read_multi operation. If the Markdown String is not in the cache
+    # or it's not cacheable (no cache_key entry is provided in the context) the
+    # Markdown String is rendered and stored in the cache so the next render call
+    # gets the rendered HTML-safe String from the cache.
     #
     # For further explanation see #render method comments.
     #
@@ -76,19 +81,34 @@ module Banzai
     #    => [{ text: '### Hello',
     #          context: { cache_key: [note, :note] } }]
     def self.cache_collection_render(texts_and_contexts)
-      items_collection = texts_and_contexts.each_with_index do |item, index|
+      items_collection = texts_and_contexts.each do |item|
         context = item[:context]
-        cache_key = full_cache_multi_key(context.delete(:cache_key), context[:pipeline])
 
-        item[:cache_key] = cache_key if cache_key
+        if context.key?(:rendered)
+          item[:rendered] = context.delete(:rendered)
+        else
+          # If the attribute didn't come in pre-rendered, let's prepare it for caching it in redis
+          cache_key = full_cache_multi_key(context.delete(:cache_key), context[:pipeline])
+          item[:cache_key] = cache_key if cache_key
+        end
       end
 
-      cacheable_items, non_cacheable_items = items_collection.partition { |item| item.key?(:cache_key) }
+      cacheable_items, non_cacheable_items = items_collection.group_by do |item|
+        if item.key?(:rendered)
+          # We're not really doing anything here as these don't need any processing, but leaving it just in case
+          # as they could have a cache_key and we don't want them to be re-rendered
+          :rendered
+        elsif item.key?(:cache_key)
+          :cacheable
+        else
+          :non_cacheable
+        end
+      end.values_at(:cacheable, :non_cacheable)
 
       items_in_cache = []
       items_not_in_cache = []
 
-      unless cacheable_items.empty?
+      if cacheable_items.present?
         items_in_cache = Rails.cache.read_multi(*cacheable_items.map { |item| item[:cache_key] })
         items_not_in_cache = cacheable_items.reject do |item|
           item[:rendered] = items_in_cache[item[:cache_key]]
@@ -96,7 +116,7 @@ module Banzai
         end
       end
 
-      (items_not_in_cache + non_cacheable_items).each do |item|
+      (items_not_in_cache + Array.wrap(non_cacheable_items)).each do |item|
         item[:rendered] = render(item[:text], item[:context])
         Rails.cache.write(item[:cache_key], item[:rendered]) if item[:cache_key]
       end

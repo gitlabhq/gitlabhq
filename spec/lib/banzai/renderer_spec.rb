@@ -19,6 +19,24 @@ describe Banzai::Renderer do
     object
   end
 
+  describe '#cache_collection_render' do
+    let(:merge_request) { fake_object(fresh: true) }
+    let(:context) { { cache_key: [merge_request, 'field'], rendered: merge_request.field_html } }
+
+    context 'when an item has a rendered field' do
+      before do
+        allow(merge_request).to receive(:field).and_return('This is the field')
+        allow(merge_request).to receive(:field_html).and_return('This is the field')
+      end
+
+      it 'does not touch redis if the field is in the cache' do
+        expect(Rails).not_to receive(:cache)
+
+        described_class.cache_collection_render([{ text: merge_request.field, context: context }])
+      end
+    end
+  end
+
   describe '#render_field' do
     let(:renderer) { described_class }
 

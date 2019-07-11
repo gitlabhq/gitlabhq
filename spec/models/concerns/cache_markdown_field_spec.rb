@@ -198,6 +198,36 @@ describe CacheMarkdownField, :clean_gitlab_redis_cache do
         end
       end
     end
+
+    describe '#updated_cached_html_for' do
+      let(:thing) { klass.new(description: markdown, description_html: html, cached_markdown_version: cache_version) }
+
+      context 'when the markdown cache is outdated' do
+        before do
+          thing.cached_markdown_version += 1
+        end
+
+        it 'calls #refresh_markdown_cache' do
+          expect(thing).to receive(:refresh_markdown_cache)
+
+          expect(thing.updated_cached_html_for(:description)).to eq(html)
+        end
+      end
+
+      context 'when the markdown field does not exist' do
+        it 'returns nil' do
+          expect(thing.updated_cached_html_for(:something)).to eq(nil)
+        end
+      end
+
+      context 'when the markdown cache is up to date' do
+        it 'does not call #refresh_markdown_cache' do
+          expect(thing).not_to receive(:refresh_markdown_cache)
+
+          expect(thing.updated_cached_html_for(:description)).to eq(html)
+        end
+      end
+    end
   end
 
   context 'for Active record classes' do
