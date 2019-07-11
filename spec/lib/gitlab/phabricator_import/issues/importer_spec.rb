@@ -2,7 +2,7 @@
 require 'spec_helper'
 
 describe Gitlab::PhabricatorImport::Issues::Importer do
-  set(:project) { create(:project) }
+  let(:project) { create(:project) }
 
   let(:response) do
     Gitlab::PhabricatorImport::Conduit::TasksResponse.new(
@@ -15,7 +15,6 @@ describe Gitlab::PhabricatorImport::Issues::Importer do
 
   before do
     client = instance_double(Gitlab::PhabricatorImport::Conduit::Maniphest)
-
     allow(client).to receive(:tasks).and_return(response)
     allow(importer).to receive(:client).and_return(client)
   end
@@ -34,20 +33,29 @@ describe Gitlab::PhabricatorImport::Issues::Importer do
       importer.execute
     end
 
-    it 'schedules the next batch if there is one' do
-      expect(Gitlab::PhabricatorImport::ImportTasksWorker)
-        .to receive(:schedule).with(project.id, response.pagination.next_page)
+    context 'stubbed task import' do
+      before do
+        # Stub out the actual importing so we don't perform aditional requests
+        expect_next_instance_of(Gitlab::PhabricatorImport::Issues::TaskImporter) do |task_importer|
+          allow(task_importer).to receive(:execute)
+        end.at_least(1)
+      end
 
-      importer.execute
-    end
+      it 'schedules the next batch if there is one' do
+        expect(Gitlab::PhabricatorImport::ImportTasksWorker)
+          .to receive(:schedule).with(project.id, response.pagination.next_page)
 
-    it 'does not reschedule when there is no next page' do
-      allow(response.pagination).to receive(:has_next_page?).and_return(false)
+        importer.execute
+      end
 
-      expect(Gitlab::PhabricatorImport::ImportTasksWorker)
-        .not_to receive(:schedule)
+      it 'does not reschedule when there is no next page' do
+        allow(response.pagination).to receive(:has_next_page?).and_return(false)
 
-      importer.execute
+        expect(Gitlab::PhabricatorImport::ImportTasksWorker)
+          .not_to receive(:schedule)
+
+        importer.execute
+      end
     end
   end
 end

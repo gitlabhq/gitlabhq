@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Gitlab::PhabricatorImport::Cache::Map, :clean_gitlab_redis_cache do
@@ -27,6 +29,21 @@ describe Gitlab::PhabricatorImport::Cache::Map, :clean_gitlab_redis_cache do
       ttl = redis.with { |redis| redis.ttl(cache_key('extend')) }
 
       expect(ttl).to be > 10.seconds
+    end
+
+    it 'sets the object in redis once if a block was given and nothing was cached' do
+      issue = create(:issue, project: project)
+
+      expect(map.get_gitlab_model('does not exist') { issue }).to eq(issue)
+
+      expect { |b| map.get_gitlab_model('does not exist', &b) }
+        .not_to yield_control
+    end
+
+    it 'does not cache `nil` objects' do
+      expect(map).not_to receive(:set_gitlab_model)
+
+      map.get_gitlab_model('does not exist') { nil }
     end
   end
 

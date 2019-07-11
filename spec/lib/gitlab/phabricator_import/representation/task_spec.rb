@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Gitlab::PhabricatorImport::Representation::Task do
@@ -7,6 +9,8 @@ describe Gitlab::PhabricatorImport::Representation::Task do
         'phid' => 'the-phid',
         'fields' => {
           'name' => 'Title'.ljust(257, '.'), # A string padded to 257 chars
+          'authorPHID' => 'a phid',
+          'ownerPHID' => 'another user phid',
           'description' => {
             'raw' => '# This is markdown\n it can contain more text.'
           },
@@ -28,6 +32,18 @@ describe Gitlab::PhabricatorImport::Representation::Task do
       }
 
       expect(task.issue_attributes).to eq(expected_attributes)
+    end
+  end
+
+  describe '#author_phid' do
+    it 'returns the correct field' do
+      expect(task.author_phid).to eq('a phid')
+    end
+  end
+
+  describe '#owner_phid' do
+    it 'returns the correct field' do
+      expect(task.owner_phid).to eq('another user phid')
     end
   end
 end
