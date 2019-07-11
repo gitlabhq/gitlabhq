@@ -89,9 +89,7 @@ export default (
     payload,
   );
 
-  return new Promise(resolve => {
-    setImmediate(resolve);
-  })
+  return new Promise(setImmediate)
     .then(() => result)
     .catch(error => {
       validateResults();

@@ -3,6 +3,7 @@
 */
 
 import $ from 'jquery';
+import 'core-js/features/set-immediate';
 import 'vendor/jasmine-jquery';
 import '~/commons';
 import Vue from 'vue';
