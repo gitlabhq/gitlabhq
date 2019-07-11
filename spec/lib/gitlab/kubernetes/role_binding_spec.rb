@@ -4,6 +4,7 @@ require 'spec_helper'
 
 describe Gitlab::Kubernetes::RoleBinding, '#generate' do
   let(:role_name) { 'edit' }
+  let(:role_kind) { 'ClusterRole' }
   let(:namespace) { 'my-namespace' }
   let(:service_account_name) { 'my-service-account' }
 
@@ -20,7 +21,7 @@ describe Gitlab::Kubernetes::RoleBinding, '#generate' do
   let(:role_ref) do
     {
       apiGroup: 'rbac.authorization.k8s.io',
-      kind: 'ClusterRole',
+      kind: role_kind,
       name: role_name
     }
   end
@@ -37,6 +38,7 @@ describe Gitlab::Kubernetes::RoleBinding, '#generate' do
     described_class.new(
       name: "gitlab-#{namespace}",
       role_name: role_name,
+      role_kind: role_kind,
       namespace: namespace,
       service_account_name: service_account_name
     ).generate

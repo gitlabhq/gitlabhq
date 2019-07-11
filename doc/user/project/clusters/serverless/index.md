@@ -102,12 +102,15 @@ You must do the following:
 1. Ensure GitLab can manage Knative:
     - For a non-GitLab managed cluster, ensure that the service account for the token
       provided can manage resources in the `serving.knative.dev` API group.
-    - For a GitLab managed cluster,
-      GitLab uses a service account with the `edit` cluster role. This account needs
-      the ability to manage resources in the `serving.knative.dev` API group.
-      We suggest you do this with an [aggregated ClusterRole](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#aggregated-clusterroles)
-      adding rules to the default `edit` cluster role:
-      First, save the following YAML as `knative-serving-only-role.yaml`:
+    - For a GitLab managed cluster, if you added the cluster in [GitLab 12.1 or later](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/30235),
+      then GitLab will already have the required access and you can proceed to the next step.
+
+      Otherwise, you need to manually grant GitLab's service account the ability to manage
+      resources in the `serving.knative.dev` API group. Since every GitLab service account
+      has the `edit` cluster role, the simplest way to do this is with an
+      [aggregated ClusterRole](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#aggregated-clusterroles)
+      adding rules to the default `edit` cluster role: First, save the following YAML as
+      `knative-serving-only-role.yaml`:
 
       ```yaml
       apiVersion: rbac.authorization.k8s.io/v1
@@ -142,6 +145,9 @@ You must do the following:
         ```bash
         kubectl apply -f knative-serving-only-role.yaml
         ```
+
+        If you would rather grant permissions on a per service account basis, you can do this
+        using a `Role` and `RoleBinding` specific to the service account and namespace.
 
 1. Follow the steps to deploy [functions](#deploying-functions)
    or [serverless applications](#deploying-serverless-applications) onto your
@@ -376,13 +382,13 @@ cluster.
 By default, a GitLab serverless deployment will be served over `http`. In order to serve over `https` you
 must manually obtain and install TLS certificates.
 
-The simplest way to accomplish this is to 
+The simplest way to accomplish this is to
 use [Certbot to manually obtain Let's Encrypt certificates](https://knative.dev/docs/serving/using-a-tls-cert/#using-certbot-to-manually-obtain-let-s-encrypt-certificates). Certbot is a free, open source software tool for automatically using Let’s Encrypt certificates on manually-administrated websites to enable HTTPS.
 
 NOTE: **Note:**
 The instructions below relate to installing and running Certbot on a Linux server and may not work on other operating systems.
 
-1. Install Certbot by running the 
+1. Install Certbot by running the
    [`certbot-auto` wrapper script](https://certbot.eff.org/docs/install.html#certbot-auto).
    On the command line of your server, run the following commands:
 
@@ -594,7 +600,7 @@ The instructions below relate to installing and running Certbot on a Linux serve
     Where `cert.pem` and `cert.pk` are your certificate and private key files. Note that the `istio-ingressgateway-certs` secret name is required.
 
 1. Configure Knative to use the new secret that you created for HTTPS
-   connections. Run the 
+   connections. Run the
   following command to open the Knative shared `gateway` in edit mode:
 
     ```sh

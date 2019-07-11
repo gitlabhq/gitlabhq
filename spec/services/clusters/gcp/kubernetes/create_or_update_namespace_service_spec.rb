@@ -34,6 +34,8 @@ describe Clusters::Gcp::Kubernetes::CreateOrUpdateNamespaceService, '#execute' d
     stub_kubeclient_create_service_account(api_url, namespace: namespace)
     stub_kubeclient_create_secret(api_url, namespace: namespace)
     stub_kubeclient_put_secret(api_url, "#{namespace}-token", namespace: namespace)
+    stub_kubeclient_put_role(api_url, Clusters::Gcp::Kubernetes::GITLAB_KNATIVE_SERVING_ROLE_NAME, namespace: namespace)
+    stub_kubeclient_put_role_binding(api_url, Clusters::Gcp::Kubernetes::GITLAB_KNATIVE_SERVING_ROLE_BINDING_NAME, namespace: namespace)
 
     stub_kubeclient_get_secret(
       api_url,

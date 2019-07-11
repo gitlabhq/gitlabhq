@@ -41,7 +41,15 @@ module Clusters
 
           kubeclient.create_or_update_service_account(service_account_resource)
           kubeclient.create_or_update_secret(service_account_token_resource)
-          create_role_or_cluster_role_binding if rbac
+
+          return unless rbac
+
+          create_role_or_cluster_role_binding
+
+          return unless namespace_creator
+
+          create_or_update_knative_serving_role
+          create_or_update_knative_serving_role_binding
         end
 
         private
@@ -61,6 +69,14 @@ module Clusters
           else
             kubeclient.create_or_update_cluster_role_binding(cluster_role_binding_resource)
           end
+        end
+
+        def create_or_update_knative_serving_role
+          kubeclient.update_role(knative_serving_role_resource)
+        end
+
+        def create_or_update_knative_serving_role_binding
+          kubeclient.update_role_binding(knative_serving_role_binding_resource)
         end
 
         def service_account_resource
@@ -92,6 +108,29 @@ module Clusters
           Gitlab::Kubernetes::RoleBinding.new(
             name: role_binding_name,
             role_name: Clusters::Gcp::Kubernetes::PROJECT_CLUSTER_ROLE_NAME,
+            role_kind: :ClusterRole,
+            namespace: service_account_namespace,
+            service_account_name: service_account_name
+          ).generate
+        end
+
+        def knative_serving_role_resource
+          Gitlab::Kubernetes::Role.new(
+            name: Clusters::Gcp::Kubernetes::GITLAB_KNATIVE_SERVING_ROLE_NAME,
+            namespace: service_account_namespace,
+            rules: [{
+              apiGroups: %w(serving.knative.dev),
+              resources: %w(configurations configurationgenerations routes revisions revisionuids autoscalers services),
+              verbs: %w(get list create update delete patch watch)
+            }]
+          ).generate
+        end
+
+        def knative_serving_role_binding_resource
+          Gitlab::Kubernetes::RoleBinding.new(
+            name: Clusters::Gcp::Kubernetes::GITLAB_KNATIVE_SERVING_ROLE_BINDING_NAME,
+            role_name: Clusters::Gcp::Kubernetes::GITLAB_KNATIVE_SERVING_ROLE_NAME,
+            role_kind: :Role,
             namespace: service_account_namespace,
             service_account_name: service_account_name
           ).generate
