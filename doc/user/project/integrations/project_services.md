@@ -20,10 +20,10 @@ Below, you will find a list of the currently supported ones accompanied with com
 
 Click on the service links to see further configuration instructions and details.
 
-| Service |	Description |
+| Service | Description |
 | ------- | ----------- |
-| Asana     |	Asana - Teamwork without email |
-| Assembla 	| Project Management Software (Source Commits Endpoint) |
+| Asana     | Asana - Teamwork without email |
+| Assembla | Project Management Software (Source Commits Endpoint) |
 | [Atlassian Bamboo CI](bamboo.md) | A continuous integration and build server |
 | Buildkite | Continuous integration and deployments |
 | [Bugzilla](bugzilla.md) | Bugzilla issue tracker |

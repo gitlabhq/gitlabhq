@@ -57,8 +57,8 @@ Example `CODEOWNERS` file:
 # Files with a `#` can still be accesssed by escaping the pound sign
 \#file_with_pound.rb @owner-file-with-pound
 
-# Multiple codeowners can be specified, separated by whitespace
-CODEOWNERS @multiple @owners	@tab-separated
+# Multiple codeowners can be specified, separated by spaces or tabs
+CODEOWNERS @multiple @code @owners 
 
 # Both usernames or email addresses can be used to match
 # users. Everything else will be ignored. For example this will

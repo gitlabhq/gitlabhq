@@ -235,17 +235,17 @@ Example response:
 
 ```json
 {
-	"id": "1a0b36b3cdad1d2ee32457c102a8c0b7056fa863",
-	"short_id": "1a0b36b3",
-	"title": "Initial commit",
-	"created_at": "2014-02-27T08:03:18.000Z",
-	"parent_ids": [],
-	"message": "Initial commit\n",
-	"author_name": "Dmitriy Zaporozhets",
-	"author_email": "dmitriy.zaporozhets@gmail.com",
-	"authored_date": "2014-02-27T08:03:18.000Z",
-	"committer_name": "Dmitriy Zaporozhets",
-	"committer_email": "dmitriy.zaporozhets@gmail.com",
-	"committed_date": "2014-02-27T08:03:18.000Z"
+  "id": "1a0b36b3cdad1d2ee32457c102a8c0b7056fa863",
+  "short_id": "1a0b36b3",
+  "title": "Initial commit",
+  "created_at": "2014-02-27T08:03:18.000Z",
+  "parent_ids": [],
+  "message": "Initial commit\n",
+  "author_name": "Dmitriy Zaporozhets",
+  "author_email": "dmitriy.zaporozhets@gmail.com",
+  "authored_date": "2014-02-27T08:03:18.000Z",
+  "committer_name": "Dmitriy Zaporozhets",
+  "committer_email": "dmitriy.zaporozhets@gmail.com",
+  "committed_date": "2014-02-27T08:03:18.000Z"
 }
 ```
