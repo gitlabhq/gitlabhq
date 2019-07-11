@@ -1,0 +1,25 @@
+-# haml-lint:disable UnnecessaryStringOutput
+
+= auto_generated_comment
+
+:plain
+  # GraphQL API Resources
+
+  This documentation is self-generated based on GitLab current GraphQL schema.
+
+  The API can be explored interactively using the [GraphiQL IDE](../index.md#graphiql).
+
+  ## Objects
+\
+- objects.each do |type|
+  - unless type[:fields].empty?
+    = "### #{type[:name]}"
+    \
+    ~ "| Name  | Type  | Description |"
+    ~ "| ---   |  ---- | ----------  |"
+    - type[:fields].each do |field|
+      = "| `#{field[:name]}` | #{render_field_type(field[:type][:info])} | #{field[:description]} |"
+    \
+
+
+

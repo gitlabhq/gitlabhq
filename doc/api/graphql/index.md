@@ -47,6 +47,12 @@ info about multiplexed queries is also available for
 [graphql-ruby](https://graphql-ruby.org/queries/multiplex.html) the
 library GitLab uses on the backend.
 
+## Reference
+
+GitLab's GraphQL reference [is available](reference/index.md).
+
+It is automatically generated from GitLab's GraphQL schema and embedded in a Markdown file.
+
 ## GraphiQL
 
 The API can be explored by using the GraphiQL IDE, it is available on your
