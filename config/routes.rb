@@ -110,11 +110,14 @@ Rails.application.routes.draw do
       draw :jira_connect
     end
 
-    if ENV['GITLAB_ENABLE_CHAOS_ENDPOINTS']
-      get '/chaos/leakmem' => 'chaos#leakmem'
-      get '/chaos/cpuspin' => 'chaos#cpuspin'
-      get '/chaos/sleep' => 'chaos#sleep'
-      get '/chaos/kill' => 'chaos#kill'
+    if ENV['GITLAB_CHAOS_SECRET'] || Rails.env.development?
+      resource :chaos, only: [] do
+        get :leakmem
+        get :cpu_spin
+        get :db_spin
+        get :sleep
+        get :kill
+      end
     end
   end
 
