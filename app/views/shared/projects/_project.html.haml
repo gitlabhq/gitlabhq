@@ -58,7 +58,7 @@
           .description.d-none.d-sm-block.append-right-default
             = markdown_field(project, :description)
 
-      .controls.d-flex.flex-sm-column.align-items-center.align-items-sm-end.flex-wrap.flex-shrink-0{ class: css_controls_class }
+      .controls.d-flex.flex-sm-column.align-items-center.align-items-sm-end.flex-wrap.flex-shrink-0.text-secondary{ class: css_controls_class }
         .icon-container.d-flex.align-items-center
           - if project.archived
             %span.d-flex.icon-wrapper.badge.badge-warning archived
