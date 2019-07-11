@@ -139,8 +139,8 @@ describe CommitRange do
   end
 
   describe '#has_been_reverted?' do
-    let(:issue) { create(:issue) }
-    let(:user) { issue.author }
+    let(:user) { create(:user) }
+    let(:issue) { create(:issue, author: user, project: project) }
 
     it 'returns true if the commit has been reverted' do
       create(:note_on_issue,
@@ -149,9 +149,11 @@ describe CommitRange do
              note: commit1.revert_description(user),
              project: issue.project)
 
-      expect_any_instance_of(Commit).to receive(:reverts_commit?)
-        .with(commit1, user)
-        .and_return(true)
+      expect_next_instance_of(Commit) do |commit|
+        expect(commit).to receive(:reverts_commit?)
+          .with(commit1, user)
+          .and_return(true)
+      end
 
       expect(commit1.has_been_reverted?(user, issue.notes_with_associations)).to eq(true)
     end

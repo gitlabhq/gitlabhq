@@ -36,8 +36,8 @@ module Gitlab
           false
         end
 
-        def changed_markdown_fields
-          []
+        def changed_attributes
+          {}
         end
 
         def cached_markdown
