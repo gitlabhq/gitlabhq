@@ -147,4 +147,11 @@ module TreeHelper
   def relative_url_root
     Gitlab.config.gitlab.relative_url_root.presence || '/'
   end
+
+  # project and path are used on the EE version
+  def tree_content_data(logs_path, project, path)
+    {
+      "logs-path" => logs_path
+    }
+  end
 end
