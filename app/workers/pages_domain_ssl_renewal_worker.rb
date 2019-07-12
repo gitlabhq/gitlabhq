@@ -6,7 +6,7 @@ class PagesDomainSslRenewalWorker
   def perform(domain_id)
     domain = PagesDomain.find_by_id(domain_id)
     return unless domain&.enabled?
-    return unless ::Gitlab::LetsEncrypt.enabled?(domain)
+    return unless ::Gitlab::LetsEncrypt.enabled?
 
     ::PagesDomains::ObtainLetsEncryptCertificateService.new(domain).execute
   end
