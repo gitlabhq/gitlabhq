@@ -1331,9 +1331,11 @@ If you don't have permissions to accept this merge request - you'll get a `401`
 If the merge request is already merged or closed - you get `405` and error message 'Method Not Allowed'
 
 In case the merge request is not set to be merged when the pipeline succeeds, you'll also get a `406` error.
+
 ```
 PUT /projects/:id/merge_requests/:merge_request_iid/cancel_merge_when_pipeline_succeeds
 ```
+
 Parameters:
 
 - `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user

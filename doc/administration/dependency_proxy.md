@@ -70,6 +70,7 @@ To change the local storage path:
      enabled: true
      storage_path: shared/dependency_proxy
    ```
+
 1. [Restart GitLab] for the changes to take effect.
 
 ### Using object storage

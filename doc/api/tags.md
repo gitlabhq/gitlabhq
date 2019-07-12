@@ -141,6 +141,7 @@ Parameters:
   "message": null
 }
 ```
+
 The message will be `null` when creating a lightweight tag otherwise
 it will contain the annotation.
 

@@ -129,6 +129,7 @@ merge_request:
 author:
 type:
 ```
+
 If you're working on the GitLab EE repository, the entry will be added to
 `ee/changelogs/unreleased/` instead.
 
