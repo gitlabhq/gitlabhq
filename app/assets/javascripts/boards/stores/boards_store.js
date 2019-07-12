@@ -340,6 +340,40 @@ const boardsStore = {
   toggleIssueSubscription(endpoint) {
     return axios.post(endpoint);
   },
+
+  allBoards() {
+    return axios.get(this.generateBoardsPath());
+  },
+
+  recentBoards() {
+    return axios.get(this.state.endpoints.recentBoardsEndpoint);
+  },
+
+  createBoard(board) {
+    const boardPayload = { ...board };
+    boardPayload.label_ids = (board.labels || []).map(b => b.id);
+
+    if (boardPayload.label_ids.length === 0) {
+      boardPayload.label_ids = [''];
+    }
+
+    if (boardPayload.assignee) {
+      boardPayload.assignee_id = boardPayload.assignee.id;
+    }
+
+    if (boardPayload.milestone) {
+      boardPayload.milestone_id = boardPayload.milestone.id;
+    }
+
+    if (boardPayload.id) {
+      return axios.put(this.generateBoardsPath(boardPayload.id), { board: boardPayload });
+    }
+    return axios.post(this.generateBoardsPath(), { board: boardPayload });
+  },
+
+  deleteBoard({ id }) {
+    return axios.delete(this.generateBoardsPath(id));
+  },
 };
 
 BoardsStoreEE.initEESpecific(boardsStore);
