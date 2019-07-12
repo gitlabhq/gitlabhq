@@ -39,9 +39,9 @@ To disable Prometheus and all of its exporters, as well as any added in the futu
 1. Edit `/etc/gitlab/gitlab.rb`
 1. Add or find and uncomment the following line, making sure it's set to `false`:
 
-    ```ruby
-    prometheus_monitoring['enable'] = false
-    ```
+   ```ruby
+   prometheus_monitoring['enable'] = false
+   ```
 
 1. Save the file and [reconfigure GitLab][reconfigure] for the changes to
    take effect.
@@ -61,19 +61,19 @@ To change the address/port that Prometheus listens on:
 1. Edit `/etc/gitlab/gitlab.rb`
 1. Add or find and uncomment the following line:
 
-    ```ruby
-    prometheus['listen_address'] = 'localhost:9090'
-    ```
+   ```ruby
+   prometheus['listen_address'] = 'localhost:9090'
+   ```
 
-    Replace `localhost:9090` with the address/port you want Prometheus to
-    listen on. If you would like to allow access to Prometheus to hosts other
-    than `localhost`, leave out the host, or use `0.0.0.0` to allow public access:
+   Replace `localhost:9090` with the address/port you want Prometheus to
+   listen on. If you would like to allow access to Prometheus to hosts other
+   than `localhost`, leave out the host, or use `0.0.0.0` to allow public access:
 
-    ```ruby
-    prometheus['listen_address'] = ':9090'
-    # or
-    prometheus['listen_address'] = '0.0.0.0:9090'
-    ```
+   ```ruby
+   prometheus['listen_address'] = ':9090'
+   # or
+   prometheus['listen_address'] = '0.0.0.0:9090'
+   ```
 
 1. Save the file and [reconfigure GitLab][reconfigure] for the changes to
    take effect
@@ -90,22 +90,22 @@ To use an external Prometheus server:
 1. Edit `/etc/gitlab/gitlab.rb`.
 1. Disable the bundled Prometheus:
 
-    ```ruby
-    prometheus['enable'] = false
-    ```
+   ```ruby
+   prometheus['enable'] = false
+   ```
 
 1. Set each bundled service's [exporter](#bundled-software-metrics) to listen on a network address, for example:
 
-    ```ruby
-     gitlab_monitor['listen_address'] = '0.0.0.0'
-     sidekiq['listen_address'] = '0.0.0.0'
-     gitlab_monitor['listen_port'] = '9168'
-     node_exporter['listen_address'] = '0.0.0.0:9100'
-     redis_exporter['listen_address'] = '0.0.0.0:9121'
-     postgres_exporter['listen_address'] = '0.0.0.0:9187'
-     gitaly['prometheus_listen_addr'] = "0.0.0.0:9236"
-     gitlab_workhorse['prometheus_listen_addr'] = "0.0.0.0:9229"
-     ```
+   ```ruby
+   gitlab_monitor['listen_address'] = '0.0.0.0'
+   sidekiq['listen_address'] = '0.0.0.0'
+   gitlab_monitor['listen_port'] = '9168'
+   node_exporter['listen_address'] = '0.0.0.0:9100'
+   redis_exporter['listen_address'] = '0.0.0.0:9121'
+   postgres_exporter['listen_address'] = '0.0.0.0:9187'
+   gitaly['prometheus_listen_addr'] = "0.0.0.0:9236"
+   gitlab_workhorse['prometheus_listen_addr'] = "0.0.0.0:9229"
+   ```
 
 1. Install and set up a dedicated Prometheus instance, if necessary, using the [official installation instructions](https://prometheus.io/docs/prometheus/latest/installation/).
 1. Add the Prometheus server IP address to the [monitoring IP whitelist](../ip_whitelist.html). For example:
@@ -117,14 +117,14 @@ To use an external Prometheus server:
 1. To scrape nginx metrics, you'll also need to configure nginx to allow the Prometheus server
    IP. For example:
 
-    ```ruby
-    nginx['status']['options'] = {
-          "server_tokens" => "off",
-          "access_log" => "off",
-          "allow" => "192.168.0.1",
-          "deny" => "all",
-    }
-    ```
+   ```ruby
+   nginx['status']['options'] = {
+         "server_tokens" => "off",
+         "access_log" => "off",
+         "allow" => "192.168.0.1",
+         "deny" => "all",
+   }
+   ```
 
 1. [Reconfigure GitLab][reconfigure] to apply the changes
 1. Edit the Prometheus server's configuration file.
@@ -132,17 +132,17 @@ To use an external Prometheus server:
    [scrape target configuration](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#%3Cscrape_config%3E).
    For example, a sample snippet using `static_configs`:
 
-    ```yaml
-    scrape_configs:
-    - job_name: 'gitlab_exporters'
-      static_configs:
-      - targets: ['1.1.1.1:9168', '1.1.1.1:9236', '1.1.1.1:9236', '1.1.1.1:9100', '1.1.1.1:9121', '1.1.1.1:9187']
+   ```yaml
+   scrape_configs:
+   - job_name: 'gitlab_exporters'
+     static_configs:
+     - targets: ['1.1.1.1:9168', '1.1.1.1:9236', '1.1.1.1:9236', '1.1.1.1:9100', '1.1.1.1:9121', '1.1.1.1:9187']
 
-    - job_name: 'gitlab_metrics'
-      metrics_path: /-/metrics
-      static_configs:
-      - targets: ['1.1.1.1:443']
-    ```
+   - job_name: 'gitlab_metrics'
+     metrics_path: /-/metrics
+     static_configs:
+     - targets: ['1.1.1.1:443']
+   ```
 
 1. Restart the Prometheus server.
 
@@ -241,9 +241,9 @@ To disable the monitoring of Kubernetes:
 1. Edit `/etc/gitlab/gitlab.rb`.
 1. Add or find and uncomment the following line and set it to `false`:
 
-    ```ruby
-    prometheus['monitor_kubernetes'] = false
-    ```
+   ```ruby
+   prometheus['monitor_kubernetes'] = false
+   ```
 
 1. Save the file and [reconfigure GitLab][reconfigure] for the changes to
    take effect.

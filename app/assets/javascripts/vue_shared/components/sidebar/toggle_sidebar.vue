@@ -48,7 +48,7 @@ export default {
         'fa-angle-double-right': !collapsed,
         'fa-angle-double-left': collapsed,
       }"
-      aria-label="toggle collapse"
+      :aria-label="__('toggle collapse')"
       class="fa"
     >
     </i>

@@ -1,0 +1,5 @@
+---
+title: Format `from` and `to` fields in JSON audit log
+merge_request: 30333
+author:
+type: changed

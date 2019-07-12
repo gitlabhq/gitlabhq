@@ -2,9 +2,9 @@
 type: reference
 ---
 
-# Roadmap **[ULTIMATE]**
+# Roadmap **(ULTIMATE)**
 
-> Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing) 10.5.
+> Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.5.
 
 An Epic within a group containing **Start date** and/or **Due date**
 can be visualized in a form of a timeline (e.g. a Gantt chart). The Epics Roadmap page
@@ -30,7 +30,7 @@ Roadmaps can also be [visualized inside an epic](../epics/index.md#roadmap-in-ep
 
 ## Timeline duration
 
-> Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing) 11.0.
+> Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.0.
 
 Roadmap supports the following date ranges:
 

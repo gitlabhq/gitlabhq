@@ -1,5 +1,4 @@
 import Vue from 'vue';
-import { isEE } from '~/lib/utils/common_utils';
 import initNoteStats from 'ee_else_ce/event_tracking/notes';
 import notesApp from './components/notes_app.vue';
 import initDiscussionFilters from './discussion_filters';
@@ -41,9 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
       };
     },
     mounted() {
-      if (isEE) {
-        initNoteStats();
-      }
+      initNoteStats();
     },
     render(createElement) {
       return createElement('notes-app', {

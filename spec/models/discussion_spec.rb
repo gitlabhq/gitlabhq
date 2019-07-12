@@ -10,6 +10,20 @@ describe Discussion do
   let(:second_note) { create(:diff_note_on_merge_request, in_reply_to: first_note) }
   let(:third_note) { create(:diff_note_on_merge_request) }
 
+  describe '.lazy_find' do
+    let!(:note1) { create(:discussion_note_on_merge_request).to_discussion }
+    let!(:note2) { create(:discussion_note_on_merge_request, in_reply_to: note1).to_discussion }
+
+    subject { [note1, note2].map { |note| described_class.lazy_find(note.discussion_id) } }
+
+    it 'batches requests' do
+      expect do
+        [described_class.lazy_find(note1.id),
+         described_class.lazy_find(note2.id)].map(&:__sync)
+      end.not_to exceed_query_limit(1)
+    end
+  end
+
   describe '.build' do
     it 'returns a discussion of the right type' do
       discussion = described_class.build([first_note, second_note], merge_request)

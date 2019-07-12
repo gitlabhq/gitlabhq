@@ -24,11 +24,11 @@ module Ci
 
     def archive_error(error, job)
       failed_archive_counter.increment
-      Rails.logger.error "Failed to archive trace. id: #{job.id} message: #{error.message}"
+      Rails.logger.error "Failed to archive trace. id: #{job.id} message: #{error.message}" # rubocop:disable Gitlab/RailsLogger
 
       Gitlab::Sentry
         .track_exception(error,
-                         issue_url: 'https://gitlab.com/gitlab-org/gitlab-ce/issues/51502',
+                          issue_url: 'https://gitlab.com/gitlab-org/gitlab-ce/issues/51502',
                          extra: { job_id: job.id })
     end
   end

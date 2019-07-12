@@ -37,10 +37,11 @@ export const setEndpoints = ({ commit }, endpoints) => {
 
 export const setFeatureFlags = (
   { commit },
-  { prometheusEndpointEnabled, multipleDashboardsEnabled },
+  { prometheusEndpointEnabled, multipleDashboardsEnabled, additionalPanelTypesEnabled },
 ) => {
   commit(types.SET_DASHBOARD_ENABLED, prometheusEndpointEnabled);
   commit(types.SET_MULTIPLE_DASHBOARDS_ENABLED, multipleDashboardsEnabled);
+  commit(types.SET_ADDITIONAL_PANEL_TYPES_ENABLED, additionalPanelTypesEnabled);
 };
 
 export const requestMetricsDashboard = ({ commit }) => {

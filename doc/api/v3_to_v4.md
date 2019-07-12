@@ -9,7 +9,7 @@ The V3 API documentation is still
 
 Below are the changes made between V3 and V4.
 
-### 8.17
+## 8.17
 
 - Removed `GET /projects/:search` (use: `GET /projects?search=x`) [!8877](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/8877)
 - `iid` filter has been removed from `GET /projects/:id/issues` [!8967](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/8967)
@@ -18,7 +18,7 @@ Below are the changes made between V3 and V4.
 - Project snippets do not return deprecated field `expires_at` [!8723](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/8723)
 - Endpoints under `GET /projects/:id/keys` have been removed (use `GET /projects/:id/deploy_keys`) [!8716](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/8716)
 
-### 9.0
+## 9.0
 
 - Status 409 returned for `POST /projects/:id/members` when a member already exists [!9093](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9093)
 - Moved `DELETE /projects/:id/star` to `POST /projects/:id/unstar` [!9328](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9328)

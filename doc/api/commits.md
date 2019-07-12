@@ -716,6 +716,7 @@ Example response if commit is signed:
 ```
 
 Example response if commit is unsigned:
+
 ```json
 {
   "message": "404 GPG Signature Not Found"

@@ -5,14 +5,14 @@ module QA
     module Main
       class Menu < Page::Base
         view 'app/views/layouts/header/_current_user_dropdown.html.haml' do
-          element :user_sign_out_link, 'link_to _("Sign out")' # rubocop:disable QA/ElementWithPattern
+          element :sign_out_link
           element :settings_link, 'link_to s_("CurrentUser|Settings")' # rubocop:disable QA/ElementWithPattern
         end
 
         view 'app/views/layouts/header/_default.html.haml' do
           element :navbar, required: true
           element :user_avatar, required: true
-          element :user_menu, '.dropdown-menu' # rubocop:disable QA/ElementWithPattern
+          element :user_menu, required: true
         end
 
         view 'app/views/layouts/nav/_dashboard.html.haml' do
@@ -53,7 +53,7 @@ module QA
 
         def sign_out
           within_user_menu do
-            click_link 'Sign out'
+            click_element :sign_out_link
           end
         end
 
@@ -82,7 +82,7 @@ module QA
         private
 
         def within_top_menu
-          page.within('.qa-navbar') do
+          within_element(:navbar) do
             yield
           end
         end
@@ -91,7 +91,7 @@ module QA
           within_top_menu do
             click_element :user_avatar
 
-            page.within('.dropdown-menu') do
+            within_element(:user_menu) do
               yield
             end
           end

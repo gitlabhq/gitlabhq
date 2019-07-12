@@ -52,5 +52,91 @@ describe Boards::Issues::MoveService do
 
       it_behaves_like 'issues move service', true
     end
+
+    describe '#execute_multiple' do
+      set(:group)  { create(:group) }
+      set(:user)   { create(:user) }
+      set(:project) { create(:project, namespace: group) }
+      set(:board1) { create(:board, group: group) }
+      set(:development) { create(:group_label, group: group, name: 'Development') }
+      set(:testing) { create(:group_label, group: group, name: 'Testing') }
+      set(:list1) { create(:list, board: board1, label: development, position: 0) }
+      set(:list2) { create(:list, board: board1, label: testing, position: 1) }
+      let(:params) { { board_id: board1.id, from_list_id: list1.id, to_list_id: list2.id } }
+
+      before do
+        project.add_developer(user)
+      end
+
+      it 'returns false if list of issues is empty' do
+        expect(described_class.new(group, user, params).execute_multiple([])).to eq(false)
+      end
+
+      context 'moving multiple issues' do
+        let(:issue1) { create(:labeled_issue, project: project, labels: [development]) }
+        let(:issue2) { create(:labeled_issue, project: project, labels: [development]) }
+
+        it 'moves multiple issues from one list to another' do
+          expect(described_class.new(group, user, params).execute_multiple([issue1, issue2])).to be_truthy
+
+          expect(issue1.labels).to eq([testing])
+          expect(issue2.labels).to eq([testing])
+        end
+      end
+
+      context 'moving a single issue' do
+        let(:issue1) { create(:labeled_issue, project: project, labels: [development]) }
+
+        it 'moves one issue' do
+          expect(described_class.new(group, user, params).execute_multiple([issue1])).to be_truthy
+
+          expect(issue1.labels).to eq([testing])
+        end
+      end
+
+      context 'moving issues visually after an existing issue' do
+        let(:existing_issue) { create(:labeled_issue, project: project, labels: [testing], relative_position: 10) }
+        let(:issue1) { create(:labeled_issue, project: project, labels: [development]) }
+        let(:issue2) { create(:labeled_issue, project: project, labels: [development]) }
+
+        let(:move_params) do
+          params.dup.tap do |hash|
+            hash[:move_before_id] = existing_issue.id
+          end
+        end
+
+        it 'moves one issue' do
+          expect(described_class.new(group, user, move_params).execute_multiple([issue1, issue2])).to be_truthy
+
+          expect(issue1.labels).to eq([testing])
+          expect(issue2.labels).to eq([testing])
+
+          expect(issue1.relative_position > existing_issue.relative_position).to eq(true)
+          expect(issue2.relative_position > issue1.relative_position).to eq(true)
+        end
+      end
+
+      context 'moving issues visually before an existing issue' do
+        let(:existing_issue) { create(:labeled_issue, project: project, labels: [testing], relative_position: 10) }
+        let(:issue1) { create(:labeled_issue, project: project, labels: [development]) }
+        let(:issue2) { create(:labeled_issue, project: project, labels: [development]) }
+
+        let(:move_params) do
+          params.dup.tap do |hash|
+            hash[:move_after_id] = existing_issue.id
+          end
+        end
+
+        it 'moves one issue' do
+          expect(described_class.new(group, user, move_params).execute_multiple([issue1, issue2])).to be_truthy
+
+          expect(issue1.labels).to eq([testing])
+          expect(issue2.labels).to eq([testing])
+
+          expect(issue2.relative_position < existing_issue.relative_position).to eq(true)
+          expect(issue1.relative_position < issue2.relative_position).to eq(true)
+        end
+      end
+    end
   end
 end

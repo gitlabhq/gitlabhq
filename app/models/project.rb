@@ -15,6 +15,7 @@ class Project < ApplicationRecord
   include CaseSensitivity
   include TokenAuthenticatable
   include ValidAttribute
+  include ProjectAPICompatibility
   include ProjectFeaturesCompatibility
   include SelectForProjectAuthorization
   include Presentable
@@ -356,7 +357,7 @@ class Project < ApplicationRecord
   scope :with_unmigrated_storage, -> { where('storage_version < :version OR storage_version IS NULL', version: LATEST_STORAGE_VERSION) }
 
   # last_activity_at is throttled every minute, but last_repository_updated_at is updated with every push
-  scope :sorted_by_activity, -> { reorder("GREATEST(COALESCE(last_activity_at, '1970-01-01'), COALESCE(last_repository_updated_at, '1970-01-01')) DESC") }
+  scope :sorted_by_activity, -> { reorder(Arel.sql("GREATEST(COALESCE(last_activity_at, '1970-01-01'), COALESCE(last_repository_updated_at, '1970-01-01')) DESC")) }
   scope :sorted_by_stars_desc, -> { reorder(star_count: :desc) }
   scope :sorted_by_stars_asc, -> { reorder(star_count: :asc) }
 
@@ -611,7 +612,7 @@ class Project < ApplicationRecord
     end
   end
 
-  def initialize(attributes = {})
+  def initialize(attributes = nil)
     # We can't use default_value_for because the database has a default
     # value of 0 for visibility_level. If someone attempts to create a
     # private project, default_value_for will assume that the
@@ -621,6 +622,8 @@ class Project < ApplicationRecord
     #
     # To fix the problem, we assign the actual default in the application if
     # no explicit visibility has been initialized.
+    attributes ||= {}
+
     unless visibility_attribute_present?(attributes)
       attributes[:visibility_level] = Gitlab::CurrentSettings.default_project_visibility
     end
@@ -685,10 +688,6 @@ class Project < ApplicationRecord
     return namespace.first_auto_devops_config if auto_devops&.enabled.nil?
 
     { scope: :project, status: auto_devops&.enabled || Feature.enabled?(:force_autodevops_on_by_default, self) }
-  end
-
-  def multiple_mr_assignees_enabled?
-    Feature.enabled?(:multiple_merge_request_assignees, self)
   end
 
   def daily_statistics_enabled?
@@ -783,6 +782,7 @@ class Project < ApplicationRecord
     job_id
   end
 
+  # rubocop:disable Gitlab/RailsLogger
   def log_import_activity(job_id, type: :import)
     job_type = type.to_s.capitalize
 
@@ -792,6 +792,7 @@ class Project < ApplicationRecord
       Rails.logger.error("#{job_type} job failed to create for #{full_path}.")
     end
   end
+  # rubocop:enable Gitlab/RailsLogger
 
   def reset_cache_and_import_attrs
     run_after_commit do
@@ -1554,7 +1555,7 @@ class Project < ApplicationRecord
   end
 
   def valid_runners_token?(token)
-    self.runners_token && ActiveSupport::SecurityUtils.variable_size_secure_compare(token, self.runners_token)
+    self.runners_token && ActiveSupport::SecurityUtils.secure_compare(token, self.runners_token)
   end
 
   # rubocop: disable CodeReuse/ServiceClass
@@ -1664,6 +1665,7 @@ class Project < ApplicationRecord
   end
   # rubocop: enable CodeReuse/ServiceClass
 
+  # rubocop:disable Gitlab/RailsLogger
   def write_repository_config(gl_full_path: full_path)
     # We'd need to keep track of project full path otherwise directory tree
     # created with hashed storage enabled cannot be usefully imported using
@@ -1673,6 +1675,7 @@ class Project < ApplicationRecord
     Rails.logger.error("Error writing to .git/config for project #{full_path} (#{id}): #{e.message}.")
     nil
   end
+  # rubocop:enable Gitlab/RailsLogger
 
   def after_import
     repository.after_import
@@ -1714,6 +1717,7 @@ class Project < ApplicationRecord
     @pipeline_status ||= Gitlab::Cache::Ci::ProjectPipelineStatus.load_for_project(self)
   end
 
+  # rubocop:disable Gitlab/RailsLogger
   def add_export_job(current_user:, after_export_strategy: nil, params: {})
     job_id = ProjectExportWorker.perform_async(current_user.id, self.id, after_export_strategy, params)
 
@@ -1723,6 +1727,7 @@ class Project < ApplicationRecord
       Rails.logger.error "Export job failed to start for project ID #{self.id}"
     end
   end
+  # rubocop:enable Gitlab/RailsLogger
 
   def import_export_shared
     @import_export_shared ||= Gitlab::ImportExport::Shared.new(self)
@@ -1913,9 +1918,8 @@ class Project < ApplicationRecord
     @route_maps_by_commit ||= Hash.new do |h, sha|
       h[sha] = begin
         data = repository.route_map_for(sha)
-        next unless data
 
-        Gitlab::RouteMap.new(data)
+        Gitlab::RouteMap.new(data) if data
       rescue Gitlab::RouteMap::FormatError
         nil
       end
@@ -2144,7 +2148,7 @@ class Project < ApplicationRecord
       public? &&
       repository_exists? &&
       Gitlab::CurrentSettings.hashed_storage_enabled &&
-      Feature.enabled?(:object_pools, self)
+      Feature.enabled?(:object_pools, self, default_enabled: true)
   end
 
   def leave_pool_repository

@@ -77,7 +77,7 @@ describe('collapsible registry container', () => {
       spyOn(vm, 'deleteItem').and.returnValue(Promise.resolve());
 
       Vue.nextTick(() => {
-        document.querySelector('#confirm-repo-deletion-modal .btn-danger').click();
+        document.querySelector(`#${vm.modalId} .btn-danger`).click();
 
         expect(vm.deleteItem).toHaveBeenCalledWith(vm.repo);
         done();

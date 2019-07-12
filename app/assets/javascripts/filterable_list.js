@@ -17,11 +17,13 @@ export default class FilterableList {
   }
 
   getFilterEndpoint() {
-    return `${this.filterForm.getAttribute('action')}?${$(this.filterForm).serialize()}`;
+    return this.getPagePath();
   }
 
   getPagePath() {
-    return this.getFilterEndpoint();
+    const action = this.filterForm.getAttribute('action');
+    const params = $(this.filterForm).serialize();
+    return `${action}${action.indexOf('?') > 0 ? '&' : '?'}${params}`;
   }
 
   initSearch() {

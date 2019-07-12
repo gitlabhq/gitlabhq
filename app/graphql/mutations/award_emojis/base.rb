@@ -3,8 +3,6 @@
 module Mutations
   module AwardEmojis
     class Base < BaseMutation
-      include Gitlab::Graphql::Authorize::AuthorizeResource
-
       authorize :award_emoji
 
       argument :awardable_id,

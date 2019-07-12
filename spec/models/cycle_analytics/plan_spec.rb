@@ -8,7 +8,8 @@ describe 'CycleAnalytics#plan' do
   let(:project) { create(:project, :repository) }
   let(:from_date) { 10.days.ago }
   let(:user) { create(:user, :admin) }
-  subject { CycleAnalytics.new(project, from: from_date) }
+
+  subject { CycleAnalytics::ProjectLevel.new(project, options: { from: from_date }) }
 
   generate_cycle_analytics_spec(
     phase: :plan,
@@ -24,7 +25,7 @@ describe 'CycleAnalytics#plan' do
                              end],
                             ["list label added to issue",
                              -> (context, data) do
-                               data[:issue].update(label_ids: [context.create(:label, lists: [context.create(:list)]).id])
+                               data[:issue].update(label_ids: [context.create(:list).label_id])
                              end]],
     end_time_conditions:   [["issue mentioned in a commit",
                              -> (context, data) do

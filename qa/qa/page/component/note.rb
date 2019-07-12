@@ -10,6 +10,10 @@ module QA
             element :discussion_option
           end
 
+          base.view 'app/assets/javascripts/notes/components/note_actions.vue' do
+            element :note_edit_button
+          end
+
           base.view 'app/assets/javascripts/notes/components/note_form.vue' do
             element :reply_input
             element :reply_comment_button
@@ -48,6 +52,12 @@ module QA
 
         def expand_replies
           click_element :expand_replies
+        end
+
+        def edit_comment(text)
+          click_element :note_edit_button
+          fill_element :reply_input, text
+          click_element :reply_comment_button
         end
       end
     end

@@ -2,25 +2,12 @@ import $ from 'jquery';
 import axios from './lib/utils/axios_utils';
 import flash from './flash';
 import { s__, __ } from './locale';
-import IssuableBulkUpdateSidebar from './issuable_bulk_update_sidebar';
-import IssuableBulkUpdateActions from './issuable_bulk_update_actions';
+import issuableInitBulkUpdateSidebar from './issuable_init_bulk_update_sidebar';
 
 export default class IssuableIndex {
   constructor(pagePrefix) {
-    this.initBulkUpdate(pagePrefix);
+    issuableInitBulkUpdateSidebar.init(pagePrefix);
     IssuableIndex.resetIncomingEmailToken();
-  }
-  initBulkUpdate(pagePrefix) {
-    const userCanBulkUpdate = $('.issues-bulk-update').length > 0;
-    const alreadyInitialized = Boolean(this.bulkUpdateSidebar);
-
-    if (userCanBulkUpdate && !alreadyInitialized) {
-      IssuableBulkUpdateActions.init({
-        prefixId: pagePrefix,
-      });
-
-      this.bulkUpdateSidebar = new IssuableBulkUpdateSidebar();
-    }
   }
 
   static resetIncomingEmailToken() {

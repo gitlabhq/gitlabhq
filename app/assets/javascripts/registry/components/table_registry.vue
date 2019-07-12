@@ -32,6 +32,7 @@ export default {
   data() {
     return {
       itemToBeDeleted: null,
+      modalId: `confirm-image-deletion-modal-${this.repo.id}`,
     };
   },
   computed: {
@@ -114,7 +115,7 @@ export default {
             <gl-button
               v-if="item.canDelete"
               v-gl-tooltip
-              v-gl-modal="'confirm-image-deletion-modal'"
+              v-gl-modal="modalId"
               :title="s__('ContainerRegistry|Remove image')"
               :aria-label="s__('ContainerRegistry|Remove image')"
               variant="danger"
@@ -134,11 +135,7 @@ export default {
       :page-info="repo.pagination"
     />
 
-    <gl-modal
-      modal-id="confirm-image-deletion-modal"
-      ok-variant="danger"
-      @ok="handleDeleteRegistry"
-    >
+    <gl-modal :modal-id="modalId" ok-variant="danger" @ok="handleDeleteRegistry">
       <template v-slot:modal-title>{{ s__('ContainerRegistry|Remove image') }}</template>
       <template v-slot:modal-ok>{{ s__('ContainerRegistry|Remove image and tags') }}</template>
       <p

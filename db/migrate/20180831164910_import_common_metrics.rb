@@ -3,12 +3,10 @@
 class ImportCommonMetrics < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
-  require Rails.root.join('db/importers/common_metrics_importer.rb')
-
   DOWNTIME = false
 
   def up
-    Importers::CommonMetricsImporter.new.execute
+    ::Gitlab::DatabaseImporters::CommonMetrics::Importer.new.execute
   end
 
   def down

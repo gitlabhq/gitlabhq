@@ -108,7 +108,7 @@ module Gitlab
 
           next unless matching_label
 
-          Rails.logger.info "#{resource.class.name.demodulize} #{resource.id}: replacing #{label.label_id} with #{matching_label.id}"
+          Rails.logger.info "#{resource.class.name.demodulize} #{resource.id}: replacing #{label.label_id} with #{matching_label.id}" # rubocop:disable Gitlab/RailsLogger
           LabelLink.update(label.label_link_id, label_id: matching_label.id)
         end
       end

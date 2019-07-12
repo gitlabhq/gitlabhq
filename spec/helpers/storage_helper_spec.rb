@@ -31,7 +31,7 @@ describe StorageHelper do
                                build_artifacts_size: 30.megabytes))
     end
 
-    let(:message) { '10 KB repositories, 10 Bytes wikis, 30 MB build artifacts, 20 GB LFS' }
+    let(:message) { 'Repository: 10 KB / Wikis: 10 Bytes / Build Artifacts: 30 MB / LFS: 20 GB' }
 
     it 'works on ProjectStatistics' do
       expect(helper.storage_counters_details(project.statistics)).to eq(message)

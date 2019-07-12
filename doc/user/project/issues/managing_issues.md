@@ -48,7 +48,7 @@ create issues for the same project.
 
 ![Create issue from group-level issue tracker](img/create_issue_from_group_level_issue_tracker.png)
 
-### New issue via Service Desk **[PREMIUM]**
+### New issue via Service Desk **(PREMIUM)**
 
 Enable [Service Desk](../service_desk.md) for your project and offer email support.
 By doing so, when your customer sends a new email, a new issue can be created in
@@ -115,7 +115,7 @@ The "Move issue" button is at the bottom of the right-sidebar when viewing the i
 
 If you have advanced technical skills you can also bulk move all the issues from one project to another in the rails console. The below script will move all the issues from one project to another that are not in status **closed**.
 
-To access rails console run `sudo gitlab-rails console` on the GitLab server and run the below script. Please be sure to change **project**, **admin_user** and **target_project** to your values. We do also recommend [creating a backup](https://docs.gitlab.com/ee/raketasks/backup_restore.html#creating-a-backup-of-the-gitlab-system) before attempting any changes in the console.
+To access rails console run `sudo gitlab-rails console` on the GitLab server and run the below script. Please be sure to change **project**, **admin_user** and **target_project** to your values. We do also recommend [creating a backup](../../../raketasks/backup_restore.md#creating-a-backup-of-the-gitlab-system) before attempting any changes in the console.
 
 ```ruby
 project = Project.find_by_full_path('full path of the project where issues are moved from')
@@ -209,7 +209,7 @@ as well as `#22` and `#23` in group/otherproject. `#17` won't be closed as it do
 not match the pattern. It works with multi-line commit messages as well as one-liners
 when used from the command line with `git commit -m`.
 
-#### Customizing the issue closing pattern **[CORE ONLY]**
+#### Customizing the issue closing pattern **(CORE ONLY)**
 
 In order to change the default issue closing pattern, GitLab administrators must edit the
 [`gitlab.rb` or `gitlab.yml` file](../../../administration/issue_closing_pattern.md)

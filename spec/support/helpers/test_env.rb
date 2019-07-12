@@ -2,6 +2,7 @@ require 'rspec/mocks'
 require 'toml-rb'
 
 module TestEnv
+  extend ActiveSupport::Concern
   extend self
 
   ComponentFailedToInstallError = Class.new(StandardError)
@@ -106,6 +107,12 @@ module TestEnv
 
     # Create repository for FactoryBot.create(:forked_project_with_submodules)
     setup_forked_repo
+  end
+
+  included do |config|
+    config.append_before do
+      set_current_example_group
+    end
   end
 
   def disable_mailer
@@ -297,7 +304,22 @@ module TestEnv
     FileUtils.rm_rf(path)
   end
 
+  def current_example_group
+    Thread.current[:current_example_group]
+  end
+
+  # looking for a top-level `describe`
+  def topmost_example_group
+    example_group = current_example_group
+    example_group = example_group[:parent_example_group] until example_group[:parent_example_group].nil?
+    example_group
+  end
+
   private
+
+  def set_current_example_group
+    Thread.current[:current_example_group] = ::RSpec.current_example.metadata[:example_group]
+  end
 
   # These are directories that should be preserved at cleanup time
   def test_dirs

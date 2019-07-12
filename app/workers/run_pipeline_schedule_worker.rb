@@ -30,6 +30,7 @@ class RunPipelineScheduleWorker
 
   private
 
+  # rubocop:disable Gitlab/RailsLogger
   def error(schedule, error)
     failed_creation_counter.increment
 
@@ -41,6 +42,7 @@ class RunPipelineScheduleWorker
                        issue_url: 'https://gitlab.com/gitlab-org/gitlab-ce/issues/41231',
                        extra: { schedule_id: schedule.id })
   end
+  # rubocop:enable Gitlab/RailsLogger
 
   def failed_creation_counter
     @failed_creation_counter ||=

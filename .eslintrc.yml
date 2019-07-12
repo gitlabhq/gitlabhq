@@ -5,6 +5,7 @@ globals:
   gl: false
   gon: false
   localStorage: false
+  IS_EE: false
 plugins:
   - import
   - html

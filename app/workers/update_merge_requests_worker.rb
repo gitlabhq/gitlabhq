@@ -27,7 +27,7 @@ class UpdateMergeRequestsWorker
       "ref=#{ref}"
     ].join(',')
 
-    Rails.logger.info("UpdateMergeRequestsWorker#perform #{args_log}") if time.real > LOG_TIME_THRESHOLD
+    Rails.logger.info("UpdateMergeRequestsWorker#perform #{args_log}") if time.real > LOG_TIME_THRESHOLD # rubocop:disable Gitlab/RailsLogger
   end
   # rubocop: enable CodeReuse/ActiveRecord
 end

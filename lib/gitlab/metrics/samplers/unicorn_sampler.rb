@@ -54,7 +54,16 @@ module Gitlab
         end
 
         def unicorn_workers_count
-          `pgrep -f '[u]nicorn_rails worker.+ #{Rails.root.to_s}'`.split.count
+          http_servers.sum(&:worker_processes) # rubocop: disable CodeReuse/ActiveRecord
+        end
+
+        # Traversal of ObjectSpace is expensive, on fully loaded application
+        # it takes around 80ms. The instances of HttpServers are not a subject
+        # to change so we can cache the list of servers.
+        def http_servers
+          return [] unless defined?(::Unicorn::HttpServer)
+
+          @http_servers ||= ObjectSpace.each_object(::Unicorn::HttpServer).to_a
         end
       end
     end

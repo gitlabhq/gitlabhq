@@ -1,4 +1,4 @@
-# Epics API **[ULTIMATE]**
+# Epics API **(ULTIMATE)**
 
 Every API call to epic must be authenticated.
 
@@ -302,7 +302,7 @@ POST /groups/:id/epics/:epic_iid/todo
 | Attribute   | Type    | Required | Description                          |
 |-------------|---------|----------|--------------------------------------|
 | `id`        | integer/string | yes   | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user  |
-| `epic_iid ` | integer | yes          | The internal ID of a group's epic |
+| `epic_iid` | integer | yes          | The internal ID of a group's epic |
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/1/epics/5/todo

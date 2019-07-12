@@ -15,9 +15,18 @@ if (process.env.CI) {
   ]);
 }
 
+let testMatch = ['<rootDir>/spec/frontend/**/*_spec.js', '<rootDir>/ee/spec/frontend/**/*_spec.js'];
+
+// workaround for eslint-import-resolver-jest only resolving in test files
+// see https://github.com/JoinColony/eslint-import-resolver-jest#note
+const isESLint = module.parent.filename.includes('/eslint-import-resolver-jest/');
+if (isESLint) {
+  testMatch = testMatch.map(path => path.replace('_spec.js', ''));
+}
+
 // eslint-disable-next-line import/no-commonjs
 module.exports = {
-  testMatch: ['<rootDir>/spec/frontend/**/*_spec.js', '<rootDir>/ee/spec/frontend/**/*_spec.js'],
+  testMatch,
   moduleFileExtensions: ['js', 'json', 'vue'],
   moduleNameMapper: {
     '^~(/.*)$': '<rootDir>/app/assets/javascripts$1',

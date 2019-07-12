@@ -27,8 +27,7 @@ module Groups
         @group.build_chat_team(name: response['name'], team_id: response['id'])
       end
 
-      @group.save
-      @group.add_owner(current_user)
+      @group.add_owner(current_user) if @group.save
       @group
     end
 

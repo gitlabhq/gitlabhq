@@ -1,4 +1,4 @@
-# Slack slash commands **[CORE ONLY]**
+# Slack slash commands **(CORE ONLY)**
 
 > Introduced in GitLab 8.15.
 

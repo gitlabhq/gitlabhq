@@ -127,7 +127,7 @@ Notes:
 
 ## Help and feedback section
 
-The "help and feedback" section (introduced by [!319](https://gitlab.com/gitlab-com/gitlab-docs/merge_requests/319)) displayed at the end of each document
+The "help and feedback" section (introduced by [!319](https://gitlab.com/gitlab-org/gitlab-docs/merge_requests/319)) displayed at the end of each document
 can be omitted from the doc by adding a key into the its frontmatter:
 
 ```yaml
@@ -142,7 +142,7 @@ you must check with a technical writer before doing so.
 ### Disqus
 
 We also have integrated the docs site with Disqus (introduced by
-[!151](https://gitlab.com/gitlab-com/gitlab-docs/merge_requests/151)),
+[!151](https://gitlab.com/gitlab-org/gitlab-docs/merge_requests/151)),
 allowing our users to post comments.
 
 To omit only the comments from the feedback section, use the following

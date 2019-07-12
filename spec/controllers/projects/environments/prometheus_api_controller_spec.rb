@@ -176,7 +176,7 @@ describe Projects::Environments::PrometheusApiController do
   def environment_params(params = {})
     {
       id: environment.id.to_s,
-      namespace_id: project.namespace.name,
+      namespace_id: project.namespace.full_path,
       project_id: project.name,
       proxy_path: 'query',
       query: '1'

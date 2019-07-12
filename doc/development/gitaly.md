@@ -237,24 +237,23 @@ Here are the steps to gate a new feature in Gitaly behind a feature flag.
 1. Create prometheus metrics:
 
    ```go
-   var	findAllTagsRequests = prometheus.NewCounterVec(
-   		prometheus.CounterOpts{
-   			Name: "gitaly_find_all_tags_requests_total",
-   			Help: "Counter of go vs ruby implementation of FindAllTags",
-   		},
-   		[]string{"implementation"},
-   	)
+   var findAllTagsRequests = prometheus.NewCounterVec(
+     prometheus.CounterOpts{
+       Name: "gitaly_find_all_tags_requests_total",
+       Help: "Counter of go vs ruby implementation of FindAllTags",
+     },
+     []string{"implementation"},
    )
 
    func init() {
-   	prometheus.Register(findAllTagsRequests)
+     prometheus.Register(findAllTagsRequests)
    }
 
    if featureflag.IsEnabled(ctx, findAllTagsFeatureFlag) {
-   	findAllTagsRequests.WithLabelValues("go").Inc()
+     findAllTagsRequests.WithLabelValues("go").Inc()
      // go implementation
    } else {
-   	findAllTagsRequests.WithLabelValues("ruby").Inc()
+     findAllTagsRequests.WithLabelValues("ruby").Inc()
      // ruby implementation
    }
    ```

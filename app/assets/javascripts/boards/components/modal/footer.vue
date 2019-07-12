@@ -41,7 +41,7 @@ export default {
       const req = this.buildUpdateRequest(list);
 
       // Post the data to the backend
-      gl.boardService.bulkUpdate(issueIds, req).catch(() => {
+      boardsStore.bulkUpdate(issueIds, req).catch(() => {
         Flash(__('Failed to update issues, please try again.'));
 
         selectedIssues.forEach(issue => {

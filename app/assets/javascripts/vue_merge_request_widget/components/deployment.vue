@@ -125,7 +125,9 @@ export default {
             this.isStopping = false;
           })
           .catch(() => {
-            createFlash('Something went wrong while stopping this environment. Please try again.');
+            createFlash(
+              __('Something went wrong while stopping this environment. Please try again.'),
+            );
             this.isStopping = false;
           });
       }

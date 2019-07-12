@@ -1,4 +1,4 @@
-# Google Secure LDAP **[CORE ONLY]**
+# Google Secure LDAP **(CORE ONLY)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/46391) in GitLab 11.9.
 
@@ -13,7 +13,7 @@ The steps below cover:
 
 ## Configuring Google LDAP client
 
-1. Navigate to <https://admin.google.com> and sign in as a GSuite domain administrator.
+1. Navigate to <https://admin.google.com/Dashboard> and sign in as a GSuite domain administrator.
 
 1. Go to **Apps > LDAP > Add Client**.
 
@@ -66,7 +66,7 @@ values obtained during the LDAP client configuration earlier:
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
-    ```ruby
+   ```ruby
    gitlab_rails['ldap_enabled'] = true
    gitlab_rails['ldap_servers'] = YAML.load <<-EOS # remember to close this block with 'EOS' below
      main: # 'main' is the GitLab 'provider ID' of this LDAP server
@@ -127,7 +127,7 @@ values obtained during the LDAP client configuration earlier:
            AcZSFJQjdg5BTyvdEDhaYUKGdRw=
            -----END PRIVATE KEY-----
    EOS
-    ```
+   ```
 
 1. Save the file and [reconfigure] GitLab for the changes to take effect.
 
@@ -137,7 +137,7 @@ values obtained during the LDAP client configuration earlier:
 
 1. Edit `config/gitlab.yml`:
 
-    ```yaml
+   ```yaml
    ldap:
      enabled: true
      servers:
@@ -201,7 +201,6 @@ values obtained during the LDAP client configuration earlier:
    ```
 
 1. Save the file and [restart] GitLab for the changes to take effect.
-
 
 [reconfigure]: ../restart_gitlab.md#omnibus-gitlab-reconfigure
 [restart]: ../restart_gitlab.md#installations-from-source

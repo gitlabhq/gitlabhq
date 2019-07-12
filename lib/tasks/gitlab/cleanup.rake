@@ -147,6 +147,7 @@ namespace :gitlab do
       ENV['NICENESS'].presence
     end
 
+    # rubocop:disable Gitlab/RailsLogger
     def logger
       return @logger if defined?(@logger)
 
@@ -159,5 +160,6 @@ namespace :gitlab do
                   Rails.logger
                 end
     end
+    # rubocop:enable Gitlab/RailsLogger
   end
 end

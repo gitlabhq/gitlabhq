@@ -18,8 +18,12 @@ module MigrationsHelpers
     ActiveRecord::Migrator.migrations_paths
   end
 
+  def migration_context
+    ActiveRecord::MigrationContext.new(migrations_paths)
+  end
+
   def migrations
-    ActiveRecord::Migrator.migrations(migrations_paths)
+    migration_context.migrations
   end
 
   def clear_schema_cache!
@@ -96,8 +100,7 @@ module MigrationsHelpers
 
   def schema_migrate_down!
     disable_migrations_output do
-      ActiveRecord::Migrator.migrate(migrations_paths,
-                                     migration_schema_version)
+      migration_context.down(migration_schema_version)
     end
 
     reset_column_in_all_models
@@ -107,7 +110,7 @@ module MigrationsHelpers
     reset_column_in_all_models
 
     disable_migrations_output do
-      ActiveRecord::Migrator.migrate(migrations_paths)
+      migration_context.up
     end
 
     reset_column_in_all_models
@@ -123,7 +126,7 @@ module MigrationsHelpers
   end
 
   def migrate!
-    ActiveRecord::Migrator.up(migrations_paths) do |migration|
+    migration_context.up do |migration|
       migration.name == described_class.name
     end
   end

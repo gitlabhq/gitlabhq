@@ -1,5 +1,5 @@
 # Select image from https://hub.docker.com/_/php/
-image: php:7.1.1
+image: php:latest
 
 # Select what we should cache between builds
 cache:

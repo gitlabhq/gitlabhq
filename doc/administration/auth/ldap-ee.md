@@ -1,4 +1,4 @@
-# LDAP Additions in GitLab EE **[STARTER ONLY]**
+# LDAP Additions in GitLab EE **(STARTER ONLY)**
 
 This is a continuation of the main [LDAP documentation](ldap.md), detailing LDAP
 features specific to GitLab Enterprise Edition Starter, Premium and Ultimate.
@@ -85,19 +85,19 @@ following.
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
-    ```ruby
-    gitlab_rails['ldap_servers'] = YAML.load <<-EOS
-    main:
-      ## snip...
-      ##
-      ## Base where we can search for groups
-      ##
-      ##   Ex. ou=groups,dc=gitlab,dc=example
-      ##
-      ##
-      group_base: ou=groups,dc=example,dc=com
-    EOS
-    ```
+   ```ruby
+   gitlab_rails['ldap_servers'] = YAML.load <<-EOS
+   main:
+     ## snip...
+     ##
+     ## Base where we can search for groups
+     ##
+     ##   Ex. ou=groups,dc=gitlab,dc=example
+     ##
+     ##
+     group_base: ou=groups,dc=example,dc=com
+   EOS
+   ```
 
 1. [Reconfigure GitLab][reconfigure] for the changes to take effect.
 
@@ -105,14 +105,14 @@ following.
 
 1. Edit `/home/git/gitlab/config/gitlab.yml`:
 
-    ```yaml
-    production:
-      ldap:
-        servers:
-          main:
-            # snip...
-            group_base: ou=groups,dc=example,dc=com
-    ```
+   ```yaml
+   production:
+     ldap:
+       servers:
+         main:
+           # snip...
+           group_base: ou=groups,dc=example,dc=com
+   ```
 
 1. [Restart GitLab][restart] for the changes to take effect.
 
@@ -140,30 +140,30 @@ group, as opposed to the full DN.
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
-    ```ruby
-    gitlab_rails['ldap_servers'] = YAML.load <<-EOS
-    main:
-      ## snip...
-      ##
-      ## Base where we can search for groups
-      ##
-      ##   Ex. ou=groups,dc=gitlab,dc=example
-      ##
-      ##
-      group_base: ou=groups,dc=example,dc=com
+   ```ruby
+   gitlab_rails['ldap_servers'] = YAML.load <<-EOS
+   main:
+     ## snip...
+     ##
+     ## Base where we can search for groups
+     ##
+     ##   Ex. ou=groups,dc=gitlab,dc=example
+     ##
+     ##
+     group_base: ou=groups,dc=example,dc=com
 
-      ##
-      ## The CN of a group containing GitLab administrators
-      ##
-      ##   Ex. administrators
-      ##
-      ##   Note: Not `cn=administrators` or the full DN
-      ##
-      ##
-      admin_group: my_admin_group
+     ##
+     ## The CN of a group containing GitLab administrators
+     ##
+     ##   Ex. administrators
+     ##
+     ##   Note: Not `cn=administrators` or the full DN
+     ##
+     ##
+     admin_group: my_admin_group
 
-    EOS
-    ```
+   EOS
+   ```
 
 1. [Reconfigure GitLab][reconfigure] for the changes to take effect.
 
@@ -171,15 +171,15 @@ group, as opposed to the full DN.
 
 1. Edit `/home/git/gitlab/config/gitlab.yml`:
 
-    ```yaml
-    production:
-      ldap:
-        servers:
-          main:
-            # snip...
-            group_base: ou=groups,dc=example,dc=com
-            admin_group: my_admin_group
-    ```
+   ```yaml
+   production:
+     ldap:
+       servers:
+         main:
+           # snip...
+           group_base: ou=groups,dc=example,dc=com
+           admin_group: my_admin_group
+   ```
 
 1. [Restart GitLab][restart] for the changes to take effect.
 
@@ -190,7 +190,6 @@ to lock down user abilities to invite new members to a group. When enabled follo
 
 1. Only administrator can manage memberships of any group including access levels.
 2. Users are not allowed to share project with other groups or invite members to a project created in a group.
-
 
 ## Adjusting LDAP user sync schedule
 
@@ -211,9 +210,9 @@ sync to run once every 12 hours at the top of the hour.
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
-    ```ruby
-    gitlab_rails['ldap_sync_worker_cron'] = "0 */12 * * *"
-    ```
+   ```ruby
+   gitlab_rails['ldap_sync_worker_cron'] = "0 */12 * * *"
+   ```
 
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
@@ -221,11 +220,11 @@ sync to run once every 12 hours at the top of the hour.
 
 1. Edit `config/gitlab.yaml`:
 
-    ```yaml
-    cron_jobs:
-      ldap_sync_worker_cron:
-        "0 */12 * * *"
-    ```
+   ```yaml
+   cron_jobs:
+     ldap_sync_worker_cron:
+       "0 */12 * * *"
+   ```
 
 1. [Restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
 
@@ -252,9 +251,9 @@ sync to run once every 2 hours at the top of the hour.
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
-    ```ruby
-    gitlab_rails['ldap_group_sync_worker_cron'] = "0 */2 * * * *"
-    ```
+   ```ruby
+   gitlab_rails['ldap_group_sync_worker_cron'] = "0 */2 * * * *"
+   ```
 
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
@@ -262,11 +261,11 @@ sync to run once every 2 hours at the top of the hour.
 
 1. Edit `config/gitlab.yaml`:
 
-    ```yaml
-    cron_jobs:
-      ldap_group_sync_worker_cron:
-          "*/30 * * * *"
-    ```
+   ```yaml
+   cron_jobs:
+     ldap_group_sync_worker_cron:
+         "*/30 * * * *"
+   ```
 
 1. [Restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
 
@@ -283,20 +282,20 @@ task.
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
-    ```ruby
-    gitlab_rails['ldap_servers'] = YAML.load <<-EOS
-    main:
-      ## snip...
-      ##
-      ## An array of CNs of groups containing users that should be considered external
-      ##
-      ##   Ex. ['interns', 'contractors']
-      ##
-      ##   Note: Not `cn=interns` or the full DN
-      ##
-      external_groups: ['interns', 'contractors']
-    EOS
-    ```
+   ```ruby
+   gitlab_rails['ldap_servers'] = YAML.load <<-EOS
+   main:
+     ## snip...
+     ##
+     ## An array of CNs of groups containing users that should be considered external
+     ##
+     ##   Ex. ['interns', 'contractors']
+     ##
+     ##   Note: Not `cn=interns` or the full DN
+     ##
+     external_groups: ['interns', 'contractors']
+   EOS
+   ```
 
 1. [Reconfigure GitLab][reconfigure] for the changes to take effect.
 
@@ -304,14 +303,14 @@ task.
 
 1. Edit `config/gitlab.yaml`:
 
-    ```yaml
-    production:
-      ldap:
-        servers:
-          main:
-            # snip...
-            external_groups: ['interns', 'contractors']
-    ```
+   ```yaml
+   production:
+     ldap:
+       servers:
+         main:
+           # snip...
+           external_groups: ['interns', 'contractors']
+   ```
 
 1. [Restart GitLab][restart] for the changes to take effect.
 
@@ -436,66 +435,71 @@ step of the sync.
 
 1. Start a Rails console
 
-    ```bash
-    # For Omnibus installations
-    sudo gitlab-rails console
+   ```bash
+   # For Omnibus installations
+   sudo gitlab-rails console
 
-    # For installations from source
-    sudo -u git -H bundle exec rails console production
-    ```
+   # For installations from source
+   sudo -u git -H bundle exec rails console production
+   ```
 1. Set the log level to debug (only for this session):
 
-    ```ruby
-    Rails.logger.level = Logger::DEBUG
-    ```
+   ```ruby
+   Rails.logger.level = Logger::DEBUG
+   ```
+
 1. Choose a GitLab group to test with. This group should have an LDAP group link
    already configured. If the output is `nil`, the group could not be found.
    If a bunch of group attributes are output, your group was found successfully.
 
-    ```ruby
-    group = Group.find_by(name: 'my_group')
+   ```ruby
+   group = Group.find_by(name: 'my_group')
 
-    # Output
-    => #<Group:0x007fe825196558 id: 1234, name: "my_group"...>
-    ```
+   # Output
+   => #<Group:0x007fe825196558 id: 1234, name: "my_group"...>
+   ```
+
 1. Run a group sync for this particular group.
 
-    ```ruby
-    EE::Gitlab::Auth::LDAP::Sync::Group.execute_all_providers(group)
-    ```
+   ```ruby
+   EE::Gitlab::Auth::LDAP::Sync::Group.execute_all_providers(group)
+   ```
+
 1. Look through the output of the sync. See [example log output](#example-log-output)
    below for more information about the output.
 1. If you still aren't able to see why the user isn't being added, query the
    LDAP group directly to see what members are listed. Still in the Rails console,
    run the following query:
 
-    ```ruby
-    adapter = Gitlab::Auth::LDAP::Adapter.new('ldapmain') # If `main` is the LDAP provider
-    ldap_group = EE::Gitlab::Auth::LDAP::Group.find_by_cn('group_cn_here', adapter)
+   ```ruby
+   adapter = Gitlab::Auth::LDAP::Adapter.new('ldapmain') # If `main` is the LDAP provider
+   ldap_group = EE::Gitlab::Auth::LDAP::Group.find_by_cn('group_cn_here', adapter)
 
-    # Output
-    => #<EE::Gitlab::Auth::LDAP::Group:0x007fcbdd0bb6d8
-    ```
+   # Output
+   => #<EE::Gitlab::Auth::LDAP::Group:0x007fcbdd0bb6d8
+   ```
+
 1. Query the LDAP group's member DNs and see if the user's DN is in the list.
    One of the DNs here should match the 'Identifier' from the LDAP identity
    checked earlier. If it doesn't, the user does not appear to be in the LDAP
    group.
 
-    ```ruby
-    ldap_group.member_dns
+   ```ruby
+   ldap_group.member_dns
 
-    # Output
-    => ["uid=john,ou=people,dc=example,dc=com", "uid=mary,ou=people,dc=example,dc=com"]
-    ```
+   # Output
+   => ["uid=john,ou=people,dc=example,dc=com", "uid=mary,ou=people,dc=example,dc=com"]
+   ```
+
 1. Some LDAP servers don't store members by DN. Rather, they use UIDs instead.
    If you didn't see results from the last query, try querying by UIDs instead.
 
-    ```ruby
-    ldap_group.member_uids
+   ```ruby
+   ldap_group.member_uids
 
-    # Output
-    => ['john','mary']
-    ```
+   # Output
+   => ['john','mary']
+   ```
 
 #### Example log output
 

@@ -8,7 +8,7 @@ type: reference
 
 Interactive web terminals give the user access to a terminal in GitLab for
 running one-off commands for their CI pipeline. Since this is giving the user
-shell access to the environment where [GitLab Runner](https://docs.gitlab.com/runner/) 
+shell access to the environment where [GitLab Runner](https://docs.gitlab.com/runner/)
 is deployed, some [security precautions](../../administration/integration/terminal.md#security) were
 taken to protect the users.
 
@@ -59,7 +59,6 @@ close the terminal window.
 
 ![finished job with terminal open](img/finished_job_with_terminal_open.png)
 
-## Interactive Web Terminals for the Web IDE **[ULTIMATE ONLY]**
+## Interactive Web Terminals for the Web IDE **(ULTIMATE ONLY)**
 
 Read the Web IDE docs to learn how to run [Interactive Terminals through the Web IDE](../../user/project/web_ide/index.md).
-

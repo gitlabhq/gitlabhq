@@ -2,7 +2,7 @@
 type: reference, howto
 ---
 
-# SAML SSO for GitLab.com Groups **[SILVER ONLY]**
+# SAML SSO for GitLab.com Groups **(SILVER ONLY)**
 
 > Introduced in [GitLab.com Silver](https://about.gitlab.com/pricing/) 11.0.
 

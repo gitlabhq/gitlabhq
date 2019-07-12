@@ -25,19 +25,10 @@ module QA
         end
       end
 
-      def retry_until(max_attempts: 3, reload: false)
-        attempts = 0
-
-        while attempts < max_attempts
-          result = yield
-          return result if result
-
-          refresh if reload
-
-          attempts += 1
+      def retry_until(max_attempts: 3, reload: false, sleep_interval: 0)
+        QA::Support::Retrier.retry_until(max_attempts: max_attempts, reload: reload, sleep_interval: sleep_interval) do
+          yield
         end
-
-        false
       end
 
       def retry_on_exception(max_attempts: 3, reload: false, sleep_interval: 0.5)

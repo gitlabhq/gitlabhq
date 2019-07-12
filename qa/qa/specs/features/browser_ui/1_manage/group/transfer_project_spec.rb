@@ -7,15 +7,15 @@ module QA
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
         Page::Main::Login.act { sign_in_using_credentials }
 
-        source_group = Resource::Group.fabricate! do |group|
+        source_group = Resource::Group.fabricate_via_api! do |group|
           group.path = 'source-group'
         end
 
-        target_group = Resource::Group.fabricate! do |group|
+        target_group = Resource::Group.fabricate_via_api! do |group|
           group.path = 'target-group'
         end
 
-        project = Resource::Project.fabricate! do |project|
+        project = Resource::Project.fabricate_via_api! do |project|
           project.group = source_group
           project.name =  'transfer-project'
           project.initialize_with_readme = true

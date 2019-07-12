@@ -35,7 +35,7 @@ class RepositoryForkWorker
   def start_fork(project)
     return true if start(project.import_state)
 
-    Rails.logger.info("Project #{project.full_path} was in inconsistent state (#{project.import_status}) while forking.")
+    Rails.logger.info("Project #{project.full_path} was in inconsistent state (#{project.import_status}) while forking.") # rubocop:disable Gitlab/RailsLogger
     false
   end
 end

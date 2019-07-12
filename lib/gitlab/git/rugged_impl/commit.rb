@@ -12,6 +12,7 @@ module Gitlab
       module Commit
         module ClassMethods
           extend ::Gitlab::Utils::Override
+          include Gitlab::Git::RuggedImpl::UseRugged
 
           def rugged_find(repo, commit_id)
             obj = repo.rev_parse_target(commit_id)
@@ -34,7 +35,7 @@ module Gitlab
 
           override :find_commit
           def find_commit(repo, commit_id)
-            if Feature.enabled?(:rugged_find_commit)
+            if use_rugged?(repo, :rugged_find_commit)
               rugged_find(repo, commit_id)
             else
               super
@@ -43,7 +44,7 @@ module Gitlab
 
           override :batch_by_oid
           def batch_by_oid(repo, oids)
-            if Feature.enabled?(:rugged_list_commits_by_oid)
+            if use_rugged?(repo, :rugged_list_commits_by_oid)
               rugged_batch_by_oid(repo, oids)
             else
               super
@@ -52,6 +53,7 @@ module Gitlab
         end
 
         extend ::Gitlab::Utils::Override
+        include Gitlab::Git::RuggedImpl::UseRugged
 
         override :init_commit
         def init_commit(raw_commit)
@@ -65,7 +67,7 @@ module Gitlab
 
         override :commit_tree_entry
         def commit_tree_entry(path)
-          if Feature.enabled?(:rugged_commit_tree_entry)
+          if use_rugged?(@repository, :rugged_commit_tree_entry)
             rugged_tree_entry(path)
           else
             super

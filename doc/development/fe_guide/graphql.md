@@ -55,7 +55,6 @@ It is possible to manage an application state with Apollo by passing
 in a resolvers object when creating the default client. The default state can be set by writing
 to the cache after setting up the default client.
 
-
 ```javascript
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
@@ -115,13 +114,12 @@ defaultClient.query(query)
   .then(result => console.log(result));
 ```
 
-Read more about the [Apollo] client in the [Apollo documentation][apollo-client-docs].
+Read more about the [Apollo] client in the [Apollo documentation](https://www.apollographql.com/docs/tutorial/client/).
 
 [Apollo]: https://www.apollographql.com/
 [vue-apollo]: https://github.com/Akryum/vue-apollo/
 [vue-apollo-docs]: https://akryum.github.io/vue-apollo/
 [feature-flags]: ../feature_flags.md
 [default-client]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/app/assets/javascripts/lib/graphql.js
-[apollo-client-docs]: https://www.apollographql.com/docs/tutorial/client.html
 [vue-test-utils]: https://vue-test-utils.vuejs.org/
 [apollo-link-state]: https://www.apollographql.com/docs/link/links/state.html

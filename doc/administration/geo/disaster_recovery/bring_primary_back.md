@@ -1,4 +1,4 @@
-# Bring a demoted primary node back online **[PREMIUM ONLY]**
+# Bring a demoted primary node back online **(PREMIUM ONLY)**
 
 After a failover, it is possible to fail back to the demoted **primary** node to
 restore your original configuration. This process consists of two steps:
@@ -30,7 +30,7 @@ To bring the former **primary** node up to date:
    `sudo systemctl enable gitlab-runsvdir`. For CentOS 6, you need to install
    the GitLab instance from scratch and set it up as a **secondary** node by
    following [Setup instructions][setup-geo]. In this case, you don't need to follow the next step.
-   
+
    NOTE: **Note:** If you [changed the DNS records](index.md#step-4-optional-updating-the-primary-domain-dns-record)
    for this node during disaster recovery procedure you may need to [block
    all the writes to this node](planned_failover.md#prevent-updates-to-the-primary-node)

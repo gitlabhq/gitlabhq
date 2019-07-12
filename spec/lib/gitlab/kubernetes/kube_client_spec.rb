@@ -176,6 +176,9 @@ describe Gitlab::Kubernetes::KubeClient do
     let(:rbac_client) { client.rbac_client }
 
     [
+      :create_role,
+      :get_role,
+      :update_role,
       :create_cluster_role_binding,
       :get_cluster_role_binding,
       :update_cluster_role_binding

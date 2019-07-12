@@ -25,6 +25,7 @@ If you do not provide any arguments, it will globally query and instantiate all 
   <!-- ... -->
 <ul>
 ```
+
 ```js
 const droplab = new DropLab();
 droplab.init();
@@ -45,6 +46,7 @@ You can add static list items.
   <li>Static value 2</li>
 <ul>
 ```
+
 ```js
 const droplab = new DropLab();
 droplab.init();
@@ -62,6 +64,7 @@ a non-global instance of DropLab using the `DropLab.prototype.init` method.
   <!-- ... -->
 <ul>
 ```
+
 ```js
 const trigger = document.getElementById('trigger');
 const list = document.getElementById('list');
@@ -79,6 +82,7 @@ You can also add hooks to an existing DropLab instance using `DropLab.prototype.
 <a href="#" id="trigger" data-dropdown-trigger="#list">Toggle</a>
 <ul id="list" data-dropdown><!-- ... --><ul>
 ```
+
 ```js
 const droplab = new DropLab();
 
@@ -109,6 +113,7 @@ for all `data-dynamic` dropdown lists tracked by that DropLab instance.
   <li><a href="#" data-id="{{id}}">{{text}}</a></li>
 </ul>
 ```
+
 ```js
 const droplab = new DropLab();
 
@@ -131,6 +136,7 @@ the data as the second argument and the `id` of the trigger element as the first
   <li><a href="#" data-id="{{id}}">{{text}}</a></li>
 </ul>
 ```
+
 ```js
 const droplab = new DropLab();
 
@@ -160,6 +166,7 @@ dropdown lists, one of which is dynamic.
   </ul>
 </div>
 ```
+
 ```js
 const droplab = new DropLab();
 
@@ -216,6 +223,7 @@ Some plugins require configuration values, the config object can be passed as th
 <a href="#" id="trigger" data-dropdown-trigger="#list">Toggle</a>
 <ul id="list" data-dropdown><!-- ... --><ul>
 ```
+
 ```js
 const droplab = new DropLab();
 

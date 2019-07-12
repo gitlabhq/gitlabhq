@@ -14,7 +14,88 @@ It is recommended to run pgbouncer alongside the `gitlab-rails` service, or on i
 
 ### Running Pgbouncer as part of an HA GitLab installation
 
-See our [HA documentation for PostgreSQL](database.md) for information on running pgbouncer as part of a HA setup
+1. Make sure you collect [`CONSUL_SERVER_NODES`](database.md#consul-information), [`CONSUL_PASSWORD_HASH`](database.md#consul-information), and [`PGBOUNCER_PASSWORD_HASH`](database.md#pgbouncer-information) before executing the next step.
+
+1. Edit `/etc/gitlab/gitlab.rb` replacing values noted in the `# START user configuration` section:
+
+    ```ruby
+    # Disable all components except Pgbouncer and Consul agent
+    roles ['pgbouncer_role']
+
+    # Configure Pgbouncer
+    pgbouncer['admin_users'] = %w(pgbouncer gitlab-consul)
+
+    # Configure Consul agent
+    consul['watchers'] = %w(postgresql)
+
+    # START user configuration
+    # Please set the real values as explained in Required Information section
+    # Replace CONSUL_PASSWORD_HASH with with a generated md5 value
+    # Replace PGBOUNCER_PASSWORD_HASH with with a generated md5 value
+    pgbouncer['users'] = {
+      'gitlab-consul': {
+        password: 'CONSUL_PASSWORD_HASH'
+      },
+      'pgbouncer': {
+        password: 'PGBOUNCER_PASSWORD_HASH'
+      }
+    }
+    # Replace placeholders:
+    #
+    # Y.Y.Y.Y consul1.gitlab.example.com Z.Z.Z.Z
+    # with the addresses gathered for CONSUL_SERVER_NODES
+    consul['configuration'] = {
+      retry_join: %w(Y.Y.Y.Y consul1.gitlab.example.com Z.Z.Z.Z)
+    }
+    #
+    # END user configuration
+    ```
+
+    > `pgbouncer_role` was introduced with GitLab 10.3
+
+1.  Run `gitlab-ctl reconfigure`
+
+1. Create a `.pgpass` file so Consul is able to
+   reload pgbouncer. Enter the `PGBOUNCER_PASSWORD` twice when asked:
+
+    ```sh
+    gitlab-ctl write-pgpass --host 127.0.0.1 --database pgbouncer --user pgbouncer --hostuser gitlab-consul
+    ```
+
+#### PGBouncer Checkpoint
+
+1. Ensure the node is talking to the current master:
+
+    ```sh
+    gitlab-ctl pgb-console # You will be prompted for PGBOUNCER_PASSWORD
+    ```
+
+    If there is an error `psql: ERROR:  Auth failed` after typing in the
+    password, ensure you previously generated the MD5 password hashes with the correct
+    format. The correct format is to concatenate the password and the username:
+    `PASSWORDUSERNAME`. For example, `Sup3rS3cr3tpgbouncer` would be the text
+    needed to generate an MD5 password hash for the `pgbouncer` user.
+
+1. Once the console prompt is available, run the following queries:
+
+    ```sh
+    show databases ; show clients ;
+    ```
+
+    The output should be similar to the following:
+
+    ```
+            name         |  host       | port |      database       | force_user | pool_size | reserve_pool | pool_mode | max_connections | current_connections
+    ---------------------+-------------+------+---------------------+------------+-----------+--------------+-----------+-----------------+---------------------
+     gitlabhq_production | MASTER_HOST | 5432 | gitlabhq_production |            |        20 |            0 |           |               0 |                   0
+     pgbouncer           |             | 6432 | pgbouncer           | pgbouncer  |         2 |            0 | statement |               0 |                   0
+    (2 rows)
+
+     type |   user    |      database       |  state  |   addr         | port  | local_addr | local_port |    connect_time     |    request_time     |    ptr    | link | remote_pid | tls
+    ------+-----------+---------------------+---------+----------------+-------+------------+------------+---------------------+---------------------+-----------+------+------------+-----
+     C    | pgbouncer | pgbouncer           | active  | 127.0.0.1      | 56846 | 127.0.0.1  |       6432 | 2017-08-21 18:09:59 | 2017-08-21 18:10:48 | 0x22b3880 |      |          0 |
+    (2 rows)
+    ```
 
 ### Running Pgbouncer as part of a non-HA GitLab installation
 
@@ -24,39 +105,39 @@ See our [HA documentation for PostgreSQL](database.md) for information on runnin
 
 1. On your database node, ensure the following is set in your `/etc/gitlab/gitlab.rb`
 
-    ```ruby
-    postgresql['pgbouncer_user_password'] = 'PGBOUNCER_USER_PASSWORD_HASH'
-    postgresql['sql_user_password'] = 'SQL_USER_PASSWORD_HASH'
-    postgresql['listen_address'] = 'XX.XX.XX.Y' # Where XX.XX.XX.Y is the ip address on the node postgresql should listen on
-    postgresql['md5_auth_cidr_addresses'] = %w(AA.AA.AA.B/32) # Where AA.AA.AA.B is the IP address of the pgbouncer node
-    ```
+   ```ruby
+   postgresql['pgbouncer_user_password'] = 'PGBOUNCER_USER_PASSWORD_HASH'
+   postgresql['sql_user_password'] = 'SQL_USER_PASSWORD_HASH'
+   postgresql['listen_address'] = 'XX.XX.XX.Y' # Where XX.XX.XX.Y is the ip address on the node postgresql should listen on
+   postgresql['md5_auth_cidr_addresses'] = %w(AA.AA.AA.B/32) # Where AA.AA.AA.B is the IP address of the pgbouncer node
+   ```
 
 1. Run `gitlab-ctl reconfigure`
 
-    **Note:** If the database was already running, it will need to be restarted after reconfigure by running `gitlab-ctl restart postgresql`.
+   **Note:** If the database was already running, it will need to be restarted after reconfigure by running `gitlab-ctl restart postgresql`.
 
 1. On the node you are running pgbouncer on, make sure the following is set in `/etc/gitlab/gitlab.rb`
 
-    ```ruby
-    pgbouncer['enable'] = true
-    pgbouncer['databases'] = {
-      gitlabhq_production: {
-        host: 'DATABASE_HOST',
-        user: 'pgbouncer',
-        password: 'PGBOUNCER_USER_PASSWORD_HASH'
-      }
-    }
-    ```
+   ```ruby
+   pgbouncer['enable'] = true
+   pgbouncer['databases'] = {
+     gitlabhq_production: {
+       host: 'DATABASE_HOST',
+       user: 'pgbouncer',
+       password: 'PGBOUNCER_USER_PASSWORD_HASH'
+     }
+   }
+   ```
 
 1. Run `gitlab-ctl reconfigure`
 
 1. On the node running unicorn, make sure the following is set in `/etc/gitlab/gitlab.rb`
 
-    ```ruby
-    gitlab_rails['db_host'] = 'PGBOUNCER_HOST'
-    gitlab_rails['db_port'] = '6432'
-    gitlab_rails['db_password'] = 'SQL_USER_PASSWORD'
-    ```
+   ```ruby
+   gitlab_rails['db_host'] = 'PGBOUNCER_HOST'
+   gitlab_rails['db_port'] = '6432'
+   gitlab_rails['db_password'] = 'SQL_USER_PASSWORD'
+   ```
 
 1. Run `gitlab-ctl reconfigure`
 
@@ -66,28 +147,28 @@ See our [HA documentation for PostgreSQL](database.md) for information on runnin
 
 > [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/issues/3786) in GitLab 12.0.
 
-  If you enable Monitoring, it must be enabled on **all** pgbouncer servers.
+If you enable Monitoring, it must be enabled on **all** pgbouncer servers.
 
-  1. Create/edit `/etc/gitlab/gitlab.rb` and add the following configuration:
+1. Create/edit `/etc/gitlab/gitlab.rb` and add the following configuration:
 
-     ```ruby
-     # Enable service discovery for Prometheus
-     consul['enable'] = true
-     consul['monitoring_service_discovery'] =  true
+   ```ruby
+   # Enable service discovery for Prometheus
+   consul['enable'] = true
+   consul['monitoring_service_discovery'] =  true
 
-     # Replace placeholders
-     # Y.Y.Y.Y consul1.gitlab.example.com Z.Z.Z.Z
-     # with the addresses of the Consul server nodes
-     consul['configuration'] = {
-        retry_join: %w(Y.Y.Y.Y consul1.gitlab.example.com Z.Z.Z.Z),
-     }
+   # Replace placeholders
+   # Y.Y.Y.Y consul1.gitlab.example.com Z.Z.Z.Z
+   # with the addresses of the Consul server nodes
+   consul['configuration'] = {
+      retry_join: %w(Y.Y.Y.Y consul1.gitlab.example.com Z.Z.Z.Z),
+   }
 
-     # Set the network addresses that the exporters will listen on
-     node_exporter['listen_address'] = '0.0.0.0:9100'
-     pgbouncer_exporter['listen_address'] = '0.0.0.0:9188'
-     ```
+   # Set the network addresses that the exporters will listen on
+   node_exporter['listen_address'] = '0.0.0.0:9100'
+   pgbouncer_exporter['listen_address'] = '0.0.0.0:9188'
+   ```
 
-  1. Run `sudo gitlab-ctl reconfigure` to compile the configuration.
+1. Run `sudo gitlab-ctl reconfigure` to compile the configuration.
 
 ### Interacting with pgbouncer
 
@@ -109,6 +190,7 @@ pgbouncer=#
 The password you will be prompted for is the PGBOUNCER_USER_PASSWORD
 
 To get some basic information about the instance, run
+
 ```shell
 pgbouncer=# show databases; show clients; show servers;
         name         |   host    | port |      database       | force_user | pool_size | reserve_pool | pool_mode | max_connections | current_connections

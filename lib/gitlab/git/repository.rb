@@ -936,7 +936,7 @@ module Gitlab
           gitaly_repository_client.cleanup if exists?
         end
       rescue Gitlab::Git::CommandError => e # Don't fail if we can't cleanup
-        Rails.logger.error("Unable to clean repository on storage #{storage} with relative path #{relative_path}: #{e.message}")
+        Rails.logger.error("Unable to clean repository on storage #{storage} with relative path #{relative_path}: #{e.message}") # rubocop:disable Gitlab/RailsLogger
         Gitlab::Metrics.counter(
           :failed_repository_cleanup_total,
           'Number of failed repository cleanup events'

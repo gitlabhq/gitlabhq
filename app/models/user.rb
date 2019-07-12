@@ -1117,9 +1117,10 @@ class User < ApplicationRecord
 
   def ensure_namespace_correct
     if namespace
-      namespace.path = namespace.name = username if username_changed?
+      namespace.path = username if username_changed?
+      namespace.name = name if name_changed?
     else
-      build_namespace(path: username, name: username)
+      build_namespace(path: username, name: name)
     end
   end
 

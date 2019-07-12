@@ -11,11 +11,10 @@ describe EnvironmentStatus do
   let(:merge_request) { create(:merge_request, :deployed_review_app, deployment: deployment) }
   let(:sha)           { deployment.sha }
 
-  subject(:environment_status) { described_class.new(environment, merge_request, sha) }
+  subject(:environment_status) { described_class.new(project, environment, merge_request, sha) }
 
   it { is_expected.to delegate_method(:id).to(:environment) }
   it { is_expected.to delegate_method(:name).to(:environment) }
-  it { is_expected.to delegate_method(:project).to(:environment) }
   it { is_expected.to delegate_method(:deployed_at).to(:deployment) }
   it { is_expected.to delegate_method(:status).to(:deployment) }
 

@@ -72,7 +72,7 @@ Sidekiq.configure_server do |config|
       cron_jobs[k]['class'] = cron_jobs[k].delete('job_class')
     else
       cron_jobs.delete(k)
-      Rails.logger.error("Invalid cron_jobs config key: '#{k}'. Check your gitlab config file.")
+      Rails.logger.error("Invalid cron_jobs config key: '#{k}'. Check your gitlab config file.") # rubocop:disable Gitlab/RailsLogger
     end
   end
   Sidekiq::Cron::Job.load_from_hash! cron_jobs
@@ -83,7 +83,20 @@ Sidekiq.configure_server do |config|
     Rails.application.config.database_configuration[Rails.env]
   db_config['pool'] = Sidekiq.options[:concurrency]
   ActiveRecord::Base.establish_connection(db_config)
-  Rails.logger.debug("Connection Pool size for Sidekiq Server is now: #{ActiveRecord::Base.connection.pool.instance_variable_get('@size')}")
+  Rails.logger.debug("Connection Pool size for Sidekiq Server is now: #{ActiveRecord::Base.connection.pool.instance_variable_get('@size')}") # rubocop:disable Gitlab/RailsLogger
+
+  Gitlab.ee do
+    Gitlab::Mirror.configure_cron_job!
+
+    Gitlab::Geo.configure_cron_jobs!
+
+    if Gitlab::Geo.geo_database_configured?
+      Rails.configuration.geo_database['pool'] = Sidekiq.options[:concurrency]
+      Geo::TrackingBase.establish_connection(Rails.configuration.geo_database)
+
+      Rails.logger.debug("Connection Pool size for Sidekiq Server is now: #{Geo::TrackingBase.connection_pool.size} (Geo tracking database)") # rubocop:disable Gitlab/RailsLogger
+    end
+  end
 
   # Avoid autoload issue such as 'Mail::Parsers::AddressStruct'
   # https://github.com/mikel/mail/issues/912#issuecomment-214850355

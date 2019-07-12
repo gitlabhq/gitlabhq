@@ -100,7 +100,7 @@ the git repository's config file. This section is formatted as follows:
 
 ```
 [gitlab]
-	fullpath = gitlab-org/gitlab-ce
+  fullpath = gitlab-org/gitlab-ce
 ```
 
 However, existing repositories were not migrated to include this path.

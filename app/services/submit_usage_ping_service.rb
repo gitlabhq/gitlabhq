@@ -28,7 +28,7 @@ class SubmitUsagePingService
 
     true
   rescue Gitlab::HTTP::Error => e
-    Rails.logger.info "Unable to contact GitLab, Inc.: #{e}"
+    Rails.logger.info "Unable to contact GitLab, Inc.: #{e}" # rubocop:disable Gitlab/RailsLogger
 
     false
   end

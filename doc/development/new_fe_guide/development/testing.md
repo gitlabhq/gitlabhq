@@ -261,7 +261,7 @@ scenario 'successfully', :js do
 end
 ```
 
-The steps of each test are written using capybara methods ([documentation](http://www.rubydoc.info/gems/capybara/2.15.1)).
+The steps of each test are written using capybara methods ([documentation](https://www.rubydoc.info/gems/capybara/2.15.1)).
 
 Bear in mind <abbr title="XMLHttpRequest">XHR</abbr> calls might require you to use `wait_for_requests` in between steps, like so:
 
@@ -277,7 +277,7 @@ expect(page).not_to have_selector('.card')
 
 ### Vuex Helper: `testAction`
 
-We have a helper available to make testing actions easier, as per [official documentation](https://vuex.vuejs.org/en/testing.html):
+We have a helper available to make testing actions easier, as per [official documentation](https://vuex.vuejs.org/guide/testing.html):
 
 ```
 testAction(

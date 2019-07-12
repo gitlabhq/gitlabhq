@@ -162,6 +162,7 @@ describe 'Projects > Files > User edits files', :js do
 
       expect_fork_status
 
+      expect(page).to have_css('.ide-sidebar-project-title', text: "#{project2.name} #{user.namespace.full_path}/#{project2.path}")
       expect(page).to have_css('.ide .multi-file-tab', text: '.gitignore')
     end
 

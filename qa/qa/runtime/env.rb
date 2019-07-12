@@ -1,11 +1,15 @@
 # frozen_string_literal: true
 
+require 'gitlab/qa'
+
 module QA
   module Runtime
     module Env
       extend self
 
       attr_writer :personal_access_token, :ldap_username, :ldap_password
+
+      ENV_VARIABLES = Gitlab::QA::Runtime::Env::ENV_VARIABLES
 
       # The environment variables used to indicate if the environment under test
       # supports the given feature
@@ -173,8 +177,8 @@ module QA
         ENV.fetch("GCLOUD_ACCOUNT_EMAIL")
       end
 
-      def gcloud_zone
-        ENV.fetch('GCLOUD_ZONE')
+      def gcloud_region
+        ENV.fetch('GCLOUD_REGION')
       end
 
       def has_gcloud_credentials?
@@ -199,6 +203,10 @@ module QA
         raise ArgumentError, %Q(Unknown feature "#{feature}") unless SUPPORTED_FEATURES.include? feature
 
         enabled?(ENV[SUPPORTED_FEATURES[feature]], default: true)
+      end
+
+      def runtime_scenario_attributes
+        ENV['QA_RUNTIME_SCENARIO_ATTRIBUTES']
       end
 
       private

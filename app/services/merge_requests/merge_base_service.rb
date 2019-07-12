@@ -28,6 +28,17 @@ module MergeRequests
 
     private
 
+    def check_source
+      unless source
+        raise_error('No source for merge')
+      end
+    end
+
+    # Overridden in EE.
+    def check_size_limit
+      # No-op
+    end
+
     # Overridden in EE.
     def error_check!
       # No-op

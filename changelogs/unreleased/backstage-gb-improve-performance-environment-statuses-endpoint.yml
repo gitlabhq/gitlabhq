@@ -1,0 +1,5 @@
+---
+title: Improve performance of fetching environments statuses
+merge_request: 30560
+author:
+type: performance

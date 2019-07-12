@@ -2,7 +2,7 @@
 
 ## Unicorn
 
-GitLab uses [Unicorn](http://unicorn.bogomips.org/), a pre-forking Ruby web
+GitLab uses [Unicorn](https://bogomips.org/unicorn/), a pre-forking Ruby web
 server, to handle web requests (web browsers and Git HTTP clients). Unicorn is
 a daemon written in Ruby and C that can load and run a Ruby on Rails
 application; in our case the Rails application is GitLab Community Edition or

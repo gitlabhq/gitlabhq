@@ -64,7 +64,7 @@ module Storage
 
         unless gitlab_shell.mv_namespace(repository_storage, full_path_before_last_save, full_path)
 
-          Rails.logger.error "Exception moving path #{repository_storage} from #{full_path_before_last_save} to #{full_path}"
+          Rails.logger.error "Exception moving path #{repository_storage} from #{full_path_before_last_save} to #{full_path}" # rubocop:disable Gitlab/RailsLogger
 
           # if we cannot move namespace directory we should rollback
           # db changes in order to prevent out of sync between db and fs

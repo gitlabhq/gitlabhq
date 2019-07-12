@@ -22,33 +22,34 @@ You can also set the `InputSetter` config to an array of objects, which will all
   <li><a href="#" data-id="{{id}}">{{text}}</a></li>
 <ul>
 ```
+
 ```js
-  const droplab = new DropLab();
+const droplab = new DropLab();
 
-  const trigger = document.getElementById('trigger');
-  const list = document.getElementById('list');
+const trigger = document.getElementById('trigger');
+const list = document.getElementById('list');
 
-  const input = document.getElementById('input');
-  const div = document.getElementById('div');
+const input = document.getElementById('input');
+const div = document.getElementById('div');
 
-  droplab.init(trigger, list, [InputSetter], {
-    InputSetter: [{
-      input: input,
-      valueAttribute: 'data-id',
-    } {
-      input: div,
-      valueAttribute: 'data-id',
-      inputAttribute: 'data-selected-id',
-    }],
-  });
+droplab.init(trigger, list, [InputSetter], {
+  InputSetter: [{
+    input: input,
+    valueAttribute: 'data-id',
+  } {
+    input: div,
+    valueAttribute: 'data-id',
+    inputAttribute: 'data-selected-id',
+  }],
+});
 
-  droplab.addData('trigger', [{
-    id: 0,
-    text: 'Jacob',
-  }, {
-    id: 1,
-    text: 'Jeff',
-  }]);
+droplab.addData('trigger', [{
+  id: 0,
+  text: 'Jacob',
+}, {
+  id: 1,
+  text: 'Jeff',
+}]);
 ```
 
 Above, if the second list item was clicked, it would update the `#input` element

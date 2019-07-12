@@ -6,16 +6,6 @@ describe 'GraphQL' do
 
   let(:query) { graphql_query_for('echo', 'text' => 'Hello world' ) }
 
-  context 'graphql is disabled by feature flag' do
-    before do
-      stub_feature_flags(graphql: false)
-    end
-
-    it 'does not generate a route for GraphQL' do
-      expect { post_graphql(query) }.to raise_error(ActionController::RoutingError)
-    end
-  end
-
   context 'logging' do
     shared_examples 'logging a graphql query' do
       let(:expected_params) do

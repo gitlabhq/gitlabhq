@@ -1,6 +1,6 @@
 - type = local_assigns.fetch(:type, :icon)
 
-%button.csv-import-button.btn{ title: _('Import CSV'), class: ('has-tooltip' if type == :icon),
+%button.csv-import-button.btn.btn-svg{ title: _('Import CSV'), class: ('has-tooltip' if type == :icon),
   data: { toggle: 'modal', target: '.issues-import-modal' } }
   - if type == :icon
     = sprite_icon('upload')

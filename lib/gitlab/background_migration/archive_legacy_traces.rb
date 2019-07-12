@@ -14,7 +14,7 @@ module Gitlab
 
             build.trace.archive!
           rescue => e
-            Rails.logger.error "Failed to archive live trace. id: #{build.id} message: #{e.message}"
+            Rails.logger.error "Failed to archive live trace. id: #{build.id} message: #{e.message}" # rubocop:disable Gitlab/RailsLogger
           end
       end
     end

@@ -17,7 +17,7 @@ module Gitlab
         @limit = limit
         @dry_run = dry_run
         @niceness = niceness || DEFAULT_NICENESS
-        @logger = logger || Rails.logger
+        @logger = logger || Rails.logger # rubocop:disable Gitlab/RailsLogger
         @total_found = @total_cleaned = 0
 
         new_batch!

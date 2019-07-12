@@ -5,7 +5,7 @@ GitLab Inc. provided environments such as staging and production, you need to
 have access to the chatops bot. Chatops bot is currently running on the ops instance,
 which is different from GitLab.com or dev.gitlab.org.
 
-Follow the Chatops document to [request access](https://docs.gitlab.com/ee/development/chatops_on_gitlabcom.html#requesting-access).
+Follow the Chatops document to [request access](../chatops_on_gitlabcom.md#requesting-access).
 
 Once you are added to the project test if your access propagated,
 run:
@@ -112,7 +112,7 @@ instances. Make sure to add the ~"feature flag" label to this merge request so
 release managers are aware the changes are hidden behind a feature flag. If the
 merge request has to be picked into a stable branch, make sure to also add the
 appropriate "Pick into X" label (e.g. "Pick into XX.X").
-See [the process document](https://docs.gitlab.com/ee/development/feature_flags/process.html#including-a-feature-behind-feature-flag-in-the-final-release) for further details.
+See [the process document](process.md#including-a-feature-behind-feature-flag-in-the-final-release) for further details.
 
 When a feature gate has been removed from the code base, the value still exists
 in the database.

@@ -29,7 +29,7 @@ directly in a filesystem level.
 
 1. Install Oracle JRE 1.8 or newer. On Debian-based Linux distributions you can
    follow [this article](http://www.webupd8.org/2012/09/install-oracle-java-8-in-ubuntu-via-ppa.html).
-1. Download SubGit from <https://subgit.com/download/>.
+1. Download SubGit from <https://subgit.com/download>.
 1. Unpack the downloaded SubGit zip archive to the `/opt` directory. The `subgit`
    command will be available at `/opt/subgit-VERSION/bin/subgit`.
 

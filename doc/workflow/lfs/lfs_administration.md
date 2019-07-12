@@ -54,7 +54,7 @@ to offload local hard disk R/W operations, and free up disk space significantly.
 GitLab is tightly integrated with `Fog`, so you can refer to its [documentation](http://fog.io/about/provider_documentation.html)
 to check which storage services can be integrated with GitLab.
 You can also use external object storage in a private local network. For example,
-[Minio](https://www.minio.io/) is a standalone object storage service, is easy to set up, and works well with GitLab instances.
+[Minio](https://min.io/) is a standalone object storage service, is easy to set up, and works well with GitLab instances.
 
 GitLab provides two different options for the uploading mechanism: "Direct upload" and "Background upload".
 
@@ -148,20 +148,20 @@ On Omnibus installations, the settings are prefixed by `lfs_object_store_`:
 1. Edit `/etc/gitlab/gitlab.rb` and add the following lines by replacing with
    the values you want:
 
-	```ruby
-	gitlab_rails['lfs_object_store_enabled'] = true
-	gitlab_rails['lfs_object_store_remote_directory'] = "lfs-objects"
-	gitlab_rails['lfs_object_store_connection'] = {
-	  'provider' => 'AWS',
-	  'region' => 'eu-central-1',
-	  'aws_access_key_id' => '1ABCD2EFGHI34JKLM567N',
-	  'aws_secret_access_key' => 'abcdefhijklmnopQRSTUVwxyz0123456789ABCDE',
-	  # The below options configure an S3 compatible host instead of AWS
-	  'host' => 'localhost',
-	  'endpoint' => 'http://127.0.0.1:9000',
-	  'path_style' => true
-	}
-	```
+   ```ruby
+   gitlab_rails['lfs_object_store_enabled'] = true
+   gitlab_rails['lfs_object_store_remote_directory'] = "lfs-objects"
+   gitlab_rails['lfs_object_store_connection'] = {
+     'provider' => 'AWS',
+     'region' => 'eu-central-1',
+     'aws_access_key_id' => '1ABCD2EFGHI34JKLM567N',
+     'aws_secret_access_key' => 'abcdefhijklmnopQRSTUVwxyz0123456789ABCDE',
+     # The below options configure an S3 compatible host instead of AWS
+     'host' => 'localhost',
+     'endpoint' => 'http://127.0.0.1:9000',
+     'path_style' => true
+   }
+   ```
 
 1. Save the file and [reconfigure GitLab]s for the changes to take effect.
 1. Migrate any existing local LFS objects to the object storage:
@@ -182,22 +182,22 @@ For source installations the settings are nested under `lfs:` and then
 1. Edit `/home/git/gitlab/config/gitlab.yml` and add or amend the following
    lines:
 
-	```yaml
-	lfs:
-	enabled: true
-	object_store:
-	  enabled: false
-	  remote_directory: lfs-objects # Bucket name
-	  connection:
-	    provider: AWS
-	    aws_access_key_id: 1ABCD2EFGHI34JKLM567N
-	    aws_secret_access_key: abcdefhijklmnopQRSTUVwxyz0123456789ABCDE
-	    region: eu-central-1
-	    # Use the following options to configure an AWS compatible host such as Minio
-	    host: 'localhost'
-	    endpoint: 'http://127.0.0.1:9000'
-	    path_style: true
-	```
+   ```yaml
+   lfs:
+   enabled: true
+   object_store:
+     enabled: false
+     remote_directory: lfs-objects # Bucket name
+     connection:
+       provider: AWS
+       aws_access_key_id: 1ABCD2EFGHI34JKLM567N
+       aws_secret_access_key: abcdefhijklmnopQRSTUVwxyz0123456789ABCDE
+       region: eu-central-1
+       # Use the following options to configure an AWS compatible host such as Minio
+       host: 'localhost'
+       endpoint: 'http://127.0.0.1:9000'
+       path_style: true
+   ```
 
 1. Save the file and [restart GitLab][] for the changes to take effect.
 1. Migrate any existing local LFS objects to the object storage:

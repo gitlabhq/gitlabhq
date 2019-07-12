@@ -15,22 +15,21 @@
       .form-text.text-muted
         = _("Domain verification is an essential security measure for public GitLab sites. Users are required to demonstrate they control a domain before it is enabled")
         = link_to icon('question-circle'), help_page_path('user/project/pages/getting_started_part_three.md', anchor: 'dns-txt-record')
-    - if Feature.enabled?(:pages_auto_ssl)
-      %h5
-        = _("Configure Let's Encrypt")
-      %p
-        - lets_encrypt_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: "https://letsencrypt.org/" }
-        = _("%{lets_encrypt_link_start}Let's Encrypt%{lets_encrypt_link_end} is a free, automated, and open certificate authority (CA), that give digital certificates in order to enable HTTPS (SSL/TLS) for websites.").html_safe % { lets_encrypt_link_start: lets_encrypt_link_start, lets_encrypt_link_end: '</a>'.html_safe }
-      .form-group
-        = f.label :lets_encrypt_notification_email, _("Email"), class: 'label-bold'
-        = f.text_field :lets_encrypt_notification_email, class: 'form-control'
-        .form-text.text-muted
-          = _("A Let's Encrypt account will be configured for this GitLab installation using your email address. You will receive emails to warn of expiring certificates.")
-      .form-group
-        .form-check
-          = f.check_box :lets_encrypt_terms_of_service_accepted, class: 'form-check-input'
-          = f.label :lets_encrypt_terms_of_service_accepted, class: 'form-check-label' do
-            - terms_of_service_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: lets_encrypt_terms_of_service_admin_application_settings_path }
-            = _("I have read and agree to the Let's Encrypt %{link_start}Terms of Service%{link_end}").html_safe % { link_start: terms_of_service_link_start, link_end: '</a>'.html_safe }
+    %h5
+      = _("Configure Let's Encrypt")
+    %p
+      - lets_encrypt_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: "https://letsencrypt.org/" }
+      = _("%{lets_encrypt_link_start}Let's Encrypt%{lets_encrypt_link_end} is a free, automated, and open certificate authority (CA), that give digital certificates in order to enable HTTPS (SSL/TLS) for websites.").html_safe % { lets_encrypt_link_start: lets_encrypt_link_start, lets_encrypt_link_end: '</a>'.html_safe }
+    .form-group
+      = f.label :lets_encrypt_notification_email, _("Email"), class: 'label-bold'
+      = f.text_field :lets_encrypt_notification_email, class: 'form-control'
+      .form-text.text-muted
+        = _("A Let's Encrypt account will be configured for this GitLab installation using your email address. You will receive emails to warn of expiring certificates.")
+    .form-group
+      .form-check
+        = f.check_box :lets_encrypt_terms_of_service_accepted, class: 'form-check-input'
+        = f.label :lets_encrypt_terms_of_service_accepted, class: 'form-check-label' do
+          - terms_of_service_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: lets_encrypt_terms_of_service_admin_application_settings_path }
+          = _("I have read and agree to the Let's Encrypt %{link_start}Terms of Service%{link_end}").html_safe % { link_start: terms_of_service_link_start, link_end: '</a>'.html_safe }
 
   = f.submit _('Save changes'), class: "btn btn-success"

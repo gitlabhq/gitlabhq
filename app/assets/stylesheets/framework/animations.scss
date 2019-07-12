@@ -104,7 +104,7 @@
 }
 
 .btn {
-  @include transition(background-color, border-color, color, box-shadow);
+  @include transition(border-color);
 }
 
 .dropdown-menu-toggle,

@@ -11,7 +11,7 @@ GitLab has several features based on receiving incoming emails:
   allow GitLab users to create a new merge request by sending an email to a
   user-specific email address.
 - [Service Desk](../user/project/service_desk.md): provide e-mail support to
-  your customers through GitLab. **[PREMIUM]**
+  your customers through GitLab. **(PREMIUM)**
 
 ## Requirements
 
@@ -102,16 +102,16 @@ for a real-world example of this exploit.
 
 1. Reconfigure GitLab for the changes to take effect:
 
-    ```sh
-    sudo gitlab-ctl reconfigure
-    sudo gitlab-ctl restart
-    ```
+   ```sh
+   sudo gitlab-ctl reconfigure
+   sudo gitlab-ctl restart
+   ```
 
 1. Verify that everything is configured correctly:
 
-    ```sh
-    sudo gitlab-rake gitlab:incoming_email:check
-    ```
+   ```sh
+   sudo gitlab-rake gitlab:incoming_email:check
+   ```
 
 Reply by email should now be working.
 
@@ -119,31 +119,31 @@ Reply by email should now be working.
 
 1. Go to the GitLab installation directory:
 
-    ```sh
-    cd /home/git/gitlab
-    ```
+   ```sh
+   cd /home/git/gitlab
+   ```
 
 1. Find the `incoming_email` section in `config/gitlab.yml`, enable the feature
   and fill in the details for your specific IMAP server and email account (see [examples](#config-examples) below).
 
 1. Enable `mail_room` in the init script at `/etc/default/gitlab`:
 
-    ```sh
-    sudo mkdir -p /etc/default
-    echo 'mail_room_enabled=true' | sudo tee -a /etc/default/gitlab
-    ```
+   ```sh
+   sudo mkdir -p /etc/default
+   echo 'mail_room_enabled=true' | sudo tee -a /etc/default/gitlab
+   ```
 
 1. Restart GitLab:
 
-    ```sh
-    sudo service gitlab restart
-    ```
+   ```sh
+   sudo service gitlab restart
+   ```
 
 1. Verify that everything is configured correctly:
 
-    ```sh
-    sudo -u git -H bundle exec rake gitlab:incoming_email:check RAILS_ENV=production
-    ```
+   ```sh
+   sudo -u git -H bundle exec rake gitlab:incoming_email:check RAILS_ENV=production
+   ```
 
 Reply by email should now be working.
 

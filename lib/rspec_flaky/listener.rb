@@ -32,6 +32,7 @@ module RspecFlaky
       flaky_examples[current_example.uid] = flaky_example
     end
 
+    # rubocop:disable Gitlab/RailsLogger
     def dump_summary(_)
       RspecFlaky::Report.new(flaky_examples).write(RspecFlaky::Config.flaky_examples_report_path)
       # write_report_file(flaky_examples, RspecFlaky::Config.flaky_examples_report_path)
@@ -45,6 +46,7 @@ module RspecFlaky
         # write_report_file(new_flaky_examples, RspecFlaky::Config.new_flaky_examples_report_path)
       end
     end
+    # rubocop:enable Gitlab/RailsLogger
 
     private
 

@@ -2,16 +2,24 @@
 
 module Boards
   class IssuesController < Boards::ApplicationController
+    # This is the maximum amount of issues which can be moved by one request to
+    # bulk_move for now. This is temporary and might be removed in future by
+    # introducing an alternative (async?) approach.
+    # (related: https://gitlab.com/groups/gitlab-org/-/epics/382)
+    MAX_MOVE_ISSUES_COUNT = 50
+
     include BoardsResponses
     include ControllerWithCrossProjectAccessCheck
 
     requires_cross_project_access if: -> { board&.group_board? }
 
-    before_action :whitelist_query_limiting, only: [:index, :update]
+    before_action :whitelist_query_limiting, only: [:index, :update, :bulk_move]
     before_action :authorize_read_issue, only: [:index]
     before_action :authorize_create_issue, only: [:create]
     before_action :authorize_update_issue, only: [:update]
     skip_before_action :authenticate_user!, only: [:index]
+    before_action :validate_id_list, only: [:bulk_move]
+    before_action :can_move_issues?, only: [:bulk_move]
 
     # rubocop: disable CodeReuse/ActiveRecord
     def index
@@ -46,6 +54,17 @@ module Boards
       end
     end
 
+    def bulk_move
+      service = Boards::Issues::MoveService.new(board_parent, current_user, move_params(true))
+
+      issues = Issue.find(params[:ids])
+      if service.execute_multiple(issues)
+        head :ok
+      else
+        head :unprocessable_entity
+      end
+    end
+
     def update
       service = Boards::Issues::MoveService.new(board_parent, current_user, move_params)
 
@@ -57,6 +76,10 @@ module Boards
     end
 
     private
+
+    def can_move_issues?
+      head(:forbidden) unless can?(current_user, :admin_issue, board)
+    end
 
     def render_issues(issues, metadata)
       data = { issues: serialize_as_json(issues) }
@@ -90,8 +113,9 @@ module Boards
                    end
     end
 
-    def move_params
-      params.permit(:board_id, :id, :from_list_id, :to_list_id, :move_before_id, :move_after_id)
+    def move_params(multiple = false)
+      id_param = multiple ? :ids : :id
+      params.permit(id_param, :board_id, :from_list_id, :to_list_id, :move_before_id, :move_after_id)
     end
 
     def issue_params
@@ -111,6 +135,11 @@ module Boards
     def whitelist_query_limiting
       # Also see https://gitlab.com/gitlab-org/gitlab-ce/issues/42439
       Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42428')
+    end
+
+    def validate_id_list
+      head(:bad_request) unless params[:ids].is_a?(Array)
+      head(:unprocessable_entity) if params[:ids].size > MAX_MOVE_ISSUES_COUNT
     end
   end
 end

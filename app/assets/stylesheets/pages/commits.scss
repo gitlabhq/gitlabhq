@@ -214,10 +214,10 @@
 
   .label,
   .btn {
-    padding: $gl-vert-padding $gl-btn-padding;
+    padding: $gl-bordered-btn-vert-padding $gl-bordered-btn-horz-padding;
     border: 1px $border-color solid;
     font-size: $gl-font-size;
-    line-height: $line-height-base;
+    line-height: $gl-btn-line-height;
     border-radius: 0;
     display: flex;
     align-items: center;

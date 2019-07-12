@@ -17,18 +17,19 @@ Add the `Ajax` object to the plugins array of a `DropLab.prototype.init` or `Dro
 <a href="#" id="trigger" data-dropdown-trigger="#list">Toggle</a>
 <ul id="list" data-dropdown><!-- ... --><ul>
 ```
+
 ```js
-  const droplab = new DropLab();
+const droplab = new DropLab();
 
-  const trigger = document.getElementById('trigger');
-  const list = document.getElementById('list');
+const trigger = document.getElementById('trigger');
+const list = document.getElementById('list');
 
-  droplab.addHook(trigger, list, [Ajax], {
-    Ajax: {
-      endpoint: '/some-endpoint',
-      method: 'setData',
-    },
-  });
+droplab.addHook(trigger, list, [Ajax], {
+  Ajax: {
+    endpoint: '/some-endpoint',
+    method: 'setData',
+  },
+});
 ```
 
 Optionally you can set `loadingTemplate` to a HTML string. This HTML string will

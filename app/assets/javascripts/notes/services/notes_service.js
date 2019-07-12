@@ -1,5 +1,4 @@
 import Vue from 'vue';
-import Api from '~/api';
 import VueResource from 'vue-resource';
 import * as constants from '../constants';
 
@@ -9,9 +8,6 @@ export default {
   fetchDiscussions(endpoint, filter) {
     const config = filter !== undefined ? { params: { notes_filter: filter } } : null;
     return Vue.http.get(endpoint, config);
-  },
-  deleteNote(endpoint) {
-    return Vue.http.delete(endpoint);
   },
   replyToDiscussion(endpoint, data) {
     return Vue.http.post(endpoint, data, { emulateJSON: true });
@@ -39,13 +35,7 @@ export default {
 
     return Vue.http.get(endpoint, options);
   },
-  toggleAward(endpoint, data) {
-    return Vue.http.post(endpoint, data, { emulateJSON: true });
-  },
   toggleIssueState(endpoint, data) {
     return Vue.http.put(endpoint, data);
-  },
-  applySuggestion(id) {
-    return Api.applySuggestion(id);
   },
 };

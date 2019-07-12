@@ -46,7 +46,7 @@ module Routable
       # See https://gitlab.com/gitlab-org/gitlab-ce/issues/18603. Also note that
       # our unique index is case-sensitive in Postgres.
       binary = Gitlab::Database.mysql? ? 'BINARY' : ''
-      order_sql = "(CASE WHEN #{binary} routes.path = #{connection.quote(path)} THEN 0 ELSE 1 END)"
+      order_sql = Arel.sql("(CASE WHEN #{binary} routes.path = #{connection.quote(path)} THEN 0 ELSE 1 END)")
       found = where_full_path_in([path]).reorder(order_sql).take
       return found if found
 

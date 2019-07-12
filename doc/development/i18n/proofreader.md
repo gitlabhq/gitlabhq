@@ -106,32 +106,31 @@ are very appreciative of the work done by translators and proofreaders!
 1. Contribute translations to GitLab. See instructions for
    [translating GitLab](translation.md).
 
-    Translating GitLab is a community effort that requires team work and
-    attention to detail. Proofreaders play an important role helping new
-    contributors, and ensuring the consistency and quality of translations.
-    Your conduct and contributions as a translator should reflect this before
-    requesting to be a proofreader.
+   Translating GitLab is a community effort that requires team work and
+   attention to detail. Proofreaders play an important role helping new
+   contributors, and ensuring the consistency and quality of translations.
+   Your conduct and contributions as a translator should reflect this before
+   requesting to be a proofreader.
 
 1. Request proofreader permissions by opening a merge request to add yourself
    to the list of proofreaders.
 
-    Open the [proofreader.md source file][proofreader-src] and click **Edit**.
+   Open the [proofreader.md source file][proofreader-src] and click **Edit**.
 
-    Add your language in alphabetical order, and add yourself to the list
-    including:
-    - name
-    - link to your GitLab profile
-    - link to your CrowdIn profile
+   Add your language in alphabetical order, and add yourself to the list
+   including:
+   - name
+   - link to your GitLab profile
+   - link to your CrowdIn profile
 
-    In the merge request description, please include links to any projects you
-    have previously translated.
+   In the merge request description, please include links to any projects you
+   have previously translated.
 
 1. Your request to become a proofreader will be considered on the merits of
    your previous translations by [GitLab team members](https://about.gitlab.com/team/)
    or [Core team members](https://about.gitlab.com/core-team/) who are fluent in
    the language or current proofreaders.
    - When a request is made for the first proofreader for a language and there are no [GitLab team members](https://about.gitlab.com/team/)
-   or [Core team members](https://about.gitlab.com/core-team/) who speak the language, we will request links to previous translation work in other communities or projects.  
-
+   or [Core team members](https://about.gitlab.com/core-team/) who speak the language, we will request links to previous translation work in other communities or projects.
 
 [proofreader-src]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/development/i18n/proofreader.md

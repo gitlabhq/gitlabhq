@@ -2426,16 +2426,15 @@ describe Repository do
       # Gets the commit oid, and warms the cache
       oid = project.commit.id
 
-      expect(Gitlab::Git::Commit).not_to receive(:find).once
+      expect(Gitlab::Git::Commit).to receive(:find).once
 
-      project.commit_by(oid: oid)
+      2.times { project.commit_by(oid: oid) }
     end
 
     it 'caches nil values' do
       expect(Gitlab::Git::Commit).to receive(:find).once
 
-      project.commit_by(oid: '1' * 40)
-      project.commit_by(oid: '1' * 40)
+      2.times { project.commit_by(oid: '1' * 40) }
     end
   end
 

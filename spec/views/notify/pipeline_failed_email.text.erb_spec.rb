@@ -30,7 +30,7 @@ describe 'notify/pipeline_failed_email.text.erb' do
 
     expect(rendered).to have_content('Your pipeline has failed')
     expect(rendered).to have_content(pipeline.project.name)
-    expect(rendered).to have_content(pipeline.git_commit_message.truncate(50).gsub!(/\s+/, ' '))
+    expect(rendered).to have_content(pipeline.git_commit_message.truncate(50).gsub(/\s+/, ' '))
     expect(rendered).to have_content(pipeline.commit.author_name)
     expect(rendered).to have_content("##{pipeline.id}")
     expect(rendered).to have_content(pipeline.user.name)

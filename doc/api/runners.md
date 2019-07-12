@@ -20,10 +20,10 @@ Here's an example of how the two tokens are used in Runner registration:
 1. You use that authentication token and add it to the
    [Runner's configuration file](https://docs.gitlab.com/runner/commands/#configuration-file):
 
-    ```toml
-    [[runners]]
-      token = "<authentication_token>"
-    ```
+   ```toml
+   [[runners]]
+     token = "<authentication_token>"
+   ```
 
 GitLab and Runner are then connected.
 

@@ -85,11 +85,6 @@ class Deployment < ApplicationRecord
     Commit.truncate_sha(sha)
   end
 
-  # Deprecated - will be replaced by a persisted cluster_id
-  def deployment_platform_cluster
-    environment.deployment_platform&.cluster
-  end
-
   def execute_hooks
     deployment_data = Gitlab::DataBuilder::Deployment.build(self)
     project.execute_services(deployment_data, :deployment_hooks)
@@ -176,44 +171,7 @@ class Deployment < ApplicationRecord
     deployed_at&.to_time&.in_time_zone&.to_s(:medium)
   end
 
-  def has_metrics?
-    success? && prometheus_adapter&.can_query?
-  end
-
-  def metrics
-    return {} unless has_metrics?
-
-    metrics = prometheus_adapter.query(:deployment, self)
-    metrics&.merge(deployment_time: finished_at.to_i) || {}
-  end
-
-  def additional_metrics
-    return {} unless has_metrics?
-
-    metrics = prometheus_adapter.query(:additional_metrics_deployment, self)
-    metrics&.merge(deployment_time: finished_at.to_i) || {}
-  end
-
   private
-
-  def prometheus_adapter
-    service = project.find_or_initialize_service('prometheus')
-
-    if service.can_query?
-      service
-    else
-      cluster_prometheus
-    end
-  end
-
-  # TODO remove fallback case to deployment_platform_cluster.
-  # Otherwise we will continue to pay the performance penalty described in
-  # https://gitlab.com/gitlab-org/gitlab-ce/issues/63475
-  def cluster_prometheus
-    cluster_with_fallback = cluster || deployment_platform_cluster
-
-    cluster_with_fallback.application_prometheus if cluster_with_fallback&.application_prometheus_available?
-  end
 
   def ref_path
     File.join(environment.ref_path, 'deployments', iid.to_s)

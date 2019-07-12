@@ -2,7 +2,7 @@
 type: reference, howto
 ---
 
-# Push Rules **[STARTER]**
+# Push Rules **(STARTER)**
 
 Gain additional control over what can and can't be pushed to your repository by using
 regular expressions to reject pushes based on commit contents, branch names or file details.

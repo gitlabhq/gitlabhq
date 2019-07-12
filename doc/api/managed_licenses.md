@@ -1,4 +1,4 @@
-# Managed Licenses API **[ULTIMATE]**
+# Managed Licenses API **(ULTIMATE)**
 
 ## List managed licenses
 
@@ -105,7 +105,7 @@ DELETE /projects/:id/managed_licenses/:managed_license_id
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/managed_licenses/4"
 ```
 
-When successful, it replies with an HTTP 204 response. 
+When successful, it replies with an HTTP 204 response.
 
 ## Edit an existing managed license
 

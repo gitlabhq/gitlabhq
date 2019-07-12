@@ -59,10 +59,11 @@ Here's a list of the AWS services we will use, with links to pricing information
 - **ElastiCache**: An in-memory cache environment will be used to provide a
   High Availability Redis configuration. See the
   [Amazon ElastiCache pricing](https://aws.amazon.com/elasticache/pricing/).
-  
+
 NOTE: **Note:** Please note that while we will be using EBS for storage, we do not recommend using EFS as it may negatively impact GitLab's performance. You can review the [relevant documentation](../../administration/high_availability/nfs.md#avoid-using-awss-elastic-file-system-efs) for more details.
 
 ## Creating an IAM EC2 instance role and profile
+
 To minimize the permissions of the user, we'll create a new [IAM](https://docs.aws.amazon.com/IAM/latest/UserGuide/introduction.html)
 role with limited access:
 
@@ -90,7 +91,7 @@ We'll now create a VPC, a virtual networking environment that you'll control:
    `10.0.0.0/16`. If you don't require dedicated hardware, you can leave
    "Tenancy" as default. Click **Yes, Create** when ready.
 
-    ![Create VPC](img/create_vpc.png)
+   ![Create VPC](img/create_vpc.png)
 
 ### Subnets
 
@@ -107,16 +108,16 @@ RDS instances as well:
    for example `gitlab-public-10.0.0.0`, select the VPC we created previously,
    and at the IPv4 CIDR block let's give it a 24 subnet `10.0.0.0/24`:
 
-    ![Create subnet](img/create_subnet.png)
+   ![Create subnet](img/create_subnet.png)
 
 1. Follow the same steps to create all subnets:
 
-    | Name tag | Type |Availability Zone | CIDR block |
-    | -------- | ---- | ---------------- | ---------- |
-    | gitlab-public-10.0.0.0  | public  | us-west-2a | 10.0.0.0 |
-    | gitlab-private-10.0.1.0 | private | us-west-2a | 10.0.1.0 |
-    | gitlab-public-10.0.2.0  | public  | us-west-2b | 10.0.2.0 |
-    | gitlab-private-10.0.3.0 | private | us-west-2b | 10.0.3.0 |
+   | Name tag | Type |Availability Zone | CIDR block |
+   | -------- | ---- | ---------------- | ---------- |
+   | gitlab-public-10.0.0.0  | public  | us-west-2a | 10.0.0.0 |
+   | gitlab-private-10.0.1.0 | private | us-west-2a | 10.0.1.0 |
+   | gitlab-public-10.0.2.0  | public  | us-west-2b | 10.0.2.0 |
+   | gitlab-private-10.0.3.0 | private | us-west-2b | 10.0.3.0 |
 
 ### Route Table
 
@@ -139,7 +140,7 @@ create a new one:
 1. Select it from the table, and then under the **Actions** dropdown choose
    "Attach to VPC".
 
-    ![Create gateway](img/create_gateway.png)
+   ![Create gateway](img/create_gateway.png)
 
 1. Choose `gitlab-vpc` from the list and hit **Attach**.
 
@@ -154,14 +155,14 @@ it receive traffic from any destination.
    as destination. In the target, select the `gitlab-gateway` we created previously.
    Hit **Save** once done.
 
-    ![Associate subnet with gateway](img/associate_subnet_gateway.png)
+   ![Associate subnet with gateway](img/associate_subnet_gateway.png)
 
 Next, we must associate the **public** subnets to the route table:
 
 1. Select the **Subnet Associations** tab and hit **Edit**.
 1. Check only the public subnet and hit **Save**.
 
-    ![Associate subnet with gateway](img/associate_subnet_gateway_2.png)
+   ![Associate subnet with gateway](img/associate_subnet_gateway_2.png)
 
 ---
 
@@ -178,12 +179,12 @@ The security group is basically the firewall:
    Inbound Rules tab. You will need to open the SSH, HTTP, and HTTPS ports. Set
    the source to `0.0.0.0/0`.
 
-     ![Create security group](img/create_security_group.png)
+   ![Create security group](img/create_security_group.png)
 
-     TIP: **Tip:**
-     Based on best practices, you should allow SSH traffic from only a known
-     host or CIDR block. In that case, change the SSH source to be custom and give
-     it the IP you want to SSH from.
+   TIP: **Tip:**
+   Based on best practices, you should allow SSH traffic from only a known
+   host or CIDR block. In that case, change the SSH source to be custom and give
+   it the IP you want to SSH from.
 
 1. When done, click **Save**.
 
@@ -204,7 +205,7 @@ create the actual RDS instance.
    we defined them in the [subnets section](#subnets)).
    Click **Create** when ready.
 
-    ![RDS Subnet Group](img/rds_subnet_group.png)
+   ![RDS Subnet Group](img/rds_subnet_group.png)
 
 ### Creating the database
 
@@ -214,27 +215,27 @@ Now, it's time to create the database:
 1. Select PostgreSQL and click **Next**.
 1. Since this is a production server, let's choose "Production". Click **Next**.
 1. Let's see the instance specifications:
-    1. Leave the license model as is (`postgresql-license`).
-    1. For the version, select the latest of the 9.6 series (check the
-       [database requirements](../../install/requirements.md#postgresql-requirements))
-       if there are any updates on this).
-    1. For the size, let's select a `t2.medium` instance.
-    1. Multi-AZ-deployment is recommended as redundancy, so choose "Create
-       replica in different zone". Read more at
-       [High Availability (Multi-AZ)](http://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html).
-    1. A Provisioned IOPS (SSD) storage type is best suited for HA (though you can
-       choose a General Purpose (SSD) to reduce the costs). Read more about it at
-       [Storage for Amazon RDS](http://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Storage.html).
+   1. Leave the license model as is (`postgresql-license`).
+   1. For the version, select the latest of the 9.6 series (check the
+      [database requirements](../../install/requirements.md#postgresql-requirements))
+      if there are any updates on this).
+   1. For the size, let's select a `t2.medium` instance.
+   1. Multi-AZ-deployment is recommended as redundancy, so choose "Create
+      replica in different zone". Read more at
+      [High Availability (Multi-AZ)](http://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html).
+   1. A Provisioned IOPS (SSD) storage type is best suited for HA (though you can
+      choose a General Purpose (SSD) to reduce the costs). Read more about it at
+      [Storage for Amazon RDS](http://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Storage.html).
 
-1. The rest of the settings on this page request a DB isntance identifier, username
+1. The rest of the settings on this page request a DB instance identifier, username
    and a master password. We've chosen to use `gitlab-db-ha`, `gitlab` and a
    very secure password respectively. Keep these in hand for later.
 1. Click **Next** to proceed to the advanced settings.
 1. Make sure to choose our gitlab VPC, our subnet group, set public accessibility to
    **No**, and to leave it to create a new security group. The only additional
-    change which will be helpful is the database name for which we can use
-    `gitlabhq_production`. At the very bottom, there's an option to enable
-    auto updates to minor versions. You may want to turn it off.
+   change which will be helpful is the database name for which we can use
+   `gitlabhq_production`. At the very bottom, there's an option to enable
+   auto updates to minor versions. You may want to turn it off.
 1. When done, click **Create database**.
 
 ### Installing the `pg_trgm` extension for PostgreSQL
@@ -276,7 +277,7 @@ To set up Redis:
    Make sure to select our VPC and its [private subnets](#subnets). Click
    **Create** when ready.
 
-    ![ElastiCache subnet](img/ec_subnet.png)
+   ![ElastiCache subnet](img/ec_subnet.png)
 
 1. Select **Redis** on the left menu and click **Create** to create a new
    Redis cluster. Depending on your load, you can choose whether to enable
@@ -284,16 +285,16 @@ To set up Redis:
    chance to deploy Redis in multi availability zones. In this guide, we chose
    not to enable it.
 1. In the settings section:
-    1. Give the cluster a name (`gitlab-redis`) and a description.
-    1. For the version, select the latest of `3.2` series (e.g., `3.2.10`).
-    1. Select the node type and the number of replicas.
+   1. Give the cluster a name (`gitlab-redis`) and a description.
+   1. For the version, select the latest of `3.2` series (e.g., `3.2.10`).
+   1. Select the node type and the number of replicas.
 1. In the advanced settings section:
    1. Select the multi-AZ auto-failover option.
    1. Select the subnet group we created previously.
    1. Manually select the preferred availability zones, and under "Replica 2"
       choose a different zone than the other two.
 
-        ![Redis availability zones](img/ec_az.png)
+      ![Redis availability zones](img/ec_az.png)
 
 1. In the security settings, edit the security groups and choose the
    `gitlab-security-group` we had previously created.
@@ -316,11 +317,11 @@ and add a custom TCP rule for port `6379` accessible within itself.
 On the EC2 dashboard, look for Load Balancer on the left column:
 
 1. Click the **Create Load Balancer** button.
-  1. Choose the Application Load Balancer.
-  1. Give it a name (`gitlab-loadbalancer`) and set the scheme to "internet-facing".
-  1. In the "Listeners" section, make sure it has HTTP and HTTPS.
-  1. In the "Availability Zones" section, select the `gitlab-vpc` we have created
-     and associate the **public subnets**.
+   1. Choose the Application Load Balancer.
+   1. Give it a name (`gitlab-loadbalancer`) and set the scheme to "internet-facing".
+   1. In the "Listeners" section, make sure it has HTTP and HTTPS.
+   1. In the "Availability Zones" section, select the `gitlab-vpc` we have created
+      and associate the **public subnets**.
 1. Click **Configure Security Settings** to go to the next section to
    select the TLS certificate. When done, go to the next step.
 1. In the "Security Groups" section, create a new one by giving it a name
@@ -355,7 +356,7 @@ Choose the AMI:
    where `<version>` the latest version as seen on the
    [releases page](https://about.gitlab.com/releases/).
 
-    ![Choose AMI](img/choose_ami.png)
+   ![Choose AMI](img/choose_ami.png)
 
 ### Choose an instance type
 
@@ -504,19 +505,19 @@ The EBS volume will host the Git repositories data:
 1. Tell GitLab to store its data in the new directory by editing
    `/etc/gitlab/gitlab.rb` with your editor:
 
-    ```ruby
-    git_data_dirs({
-      "default" => { "path" => "/mnt/gitlab-data" }
-    })
-    ```
+   ```ruby
+   git_data_dirs({
+     "default" => { "path" => "/mnt/gitlab-data" }
+   })
+   ```
 
-    where `/mnt/gitlab-data` the location where you will store the Git data.
+   where `/mnt/gitlab-data` the location where you will store the Git data.
 
 1. Save the file and reconfigure GitLab:
 
-    ```sh
-    sudo gitlab-ctl reconfigure
-    ```
+   ```sh
+   sudo gitlab-ctl reconfigure
+   ```
 
 TIP: **Tip:**
 If you wish to add more than one data volumes to store the Git repositories,
@@ -549,15 +550,15 @@ After you SSH into the instance, configure the domain name:
 1. Open `/etc/gitlab/gitlab.rb` with your preferred editor.
 1. Edit the `external_url` value:
 
-    ```ruby
-    external_url 'http://example.com'
-    ```
+   ```ruby
+   external_url 'http://example.com'
+   ```
 
 1. Reconfigure GitLab:
 
-    ```sh
-    sudo gitlab-ctl reconfigure
-    ```
+   ```sh
+   sudo gitlab-ctl reconfigure
+   ```
 
 You should now be able to reach GitLab at the URL you defined. To use HTTPS
 (recommended), see the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#enable-https).
@@ -608,9 +609,9 @@ To back up GitLab:
 1. SSH into your instance.
 1. Take a backup:
 
-    ```sh
-    sudo gitlab-rake gitlab:backup:create
-    ```
+   ```sh
+   sudo gitlab-rake gitlab:backup:create
+   ```
 
 ### Restoring GitLab from a backup
 
@@ -626,16 +627,16 @@ released, you can update your GitLab instance:
 1. SSH into your instance
 1. Take a backup:
 
-    ```sh
-    sudo gitlab-rake gitlab:backup:create
-    ```
+   ```sh
+   sudo gitlab-rake gitlab:backup:create
+   ```
 
 1. Update the repositories and install GitLab:
 
-    ```sh
-    sudo apt update
-    sudo apt install gitlab-ee
-    ```
+   ```sh
+   sudo apt update
+   sudo apt install gitlab-ee
+   ```
 
 After a few minutes, the new version should be up and running.
 

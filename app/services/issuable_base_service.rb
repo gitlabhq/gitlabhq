@@ -182,7 +182,7 @@ class IssuableBaseService < BaseService
     # To be overridden by subclasses
   end
 
-  def before_update(issuable)
+  def before_update(issuable, skip_spam_check: false)
     # To be overridden by subclasses
   end
 
@@ -257,7 +257,7 @@ class IssuableBaseService < BaseService
                                               last_edited_at: Time.now,
                                               last_edited_by: current_user))
 
-      before_update(issuable)
+      before_update(issuable, skip_spam_check: true)
 
       if issuable.with_transaction_returning_status { issuable.save }
         # We do not touch as it will affect a update on updated_at field

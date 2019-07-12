@@ -42,13 +42,13 @@ Set up your project's merge request settings:
 
 - Set up the merge request method (merge commit, [fast-forward merge](../merge_requests/fast_forward_merge.html)).
 - Merge request [description templates](../description_templates.md#description-templates).
-- Enable [merge request approvals](../merge_requests/merge_request_approvals.md). **[STARTER]**
+- Enable [merge request approvals](../merge_requests/merge_request_approvals.md). **(STARTER)**
 - Enable [merge only of pipeline succeeds](../merge_requests/merge_when_pipeline_succeeds.md).
 - Enable [merge only when all discussions are resolved](../../discussions/index.md#only-allow-merge-requests-to-be-merged-if-all-discussions-are-resolved).
 
 ![project's merge request settings](img/merge_requests_settings.png)
 
-### Service Desk **[PREMIUM]**
+### Service Desk **(PREMIUM)**
 
 Enable [Service Desk](../service_desk.md) for your project to offer customer support.
 
@@ -135,6 +135,6 @@ namespace if needed.
 
 Configure Error Tracking to discover and view [Sentry errors within GitLab](../operations/error_tracking.md).
 
-### Jaeger tracing **[ULTIMATE]**
+### Jaeger tracing **(ULTIMATE)**
 
 Add the URL of a Jaeger server to allow your users to [easily access the Jaeger UI from within GitLab](../operations/tracing.md).

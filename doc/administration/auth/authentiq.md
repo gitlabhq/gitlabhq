@@ -8,47 +8,48 @@ Authentiq will generate a Client ID and the accompanying Client Secret for you t
 
 1. On your GitLab server, open the configuration file:
 
-    For omnibus installation
-    ```sh
-    sudo editor /etc/gitlab/gitlab.rb
-    ```
+   For omnibus installation
 
-    For installations from source:
+   ```sh
+   sudo editor /etc/gitlab/gitlab.rb
+   ```
 
-    ```sh
-    sudo -u git -H editor /home/git/gitlab/config/gitlab.yml
-    ```
+   For installations from source:
+
+   ```sh
+   sudo -u git -H editor /home/git/gitlab/config/gitlab.yml
+   ```
 
 1. See [Initial OmniAuth Configuration](../../integration/omniauth.md#initial-omniauth-configuration) for initial settings to enable single sign-on and add Authentiq as an OAuth provider.
 
 1. Add the provider configuration for Authentiq:
 
-    For Omnibus packages:
+   For Omnibus packages:
 
-    ```ruby
-    gitlab_rails['omniauth_providers'] = [
-      {
-        "name" => "authentiq",
-        "app_id" => "YOUR_CLIENT_ID",
-        "app_secret" => "YOUR_CLIENT_SECRET",
-        "args" => {
-               "scope": 'aq:name email~rs address aq:push'
-         }
-      }
-    ]
-    ```
+   ```ruby
+   gitlab_rails['omniauth_providers'] = [
+     {
+       "name" => "authentiq",
+       "app_id" => "YOUR_CLIENT_ID",
+       "app_secret" => "YOUR_CLIENT_SECRET",
+       "args" => {
+              "scope": 'aq:name email~rs address aq:push'
+        }
+     }
+   ]
+   ```
 
-    For installations from source:
+   For installations from source:
 
-    ```yaml
-    - { name: 'authentiq',
-        app_id: 'YOUR_CLIENT_ID',
-        app_secret: 'YOUR_CLIENT_SECRET',
-        args: {
-               scope: 'aq:name email~rs address aq:push'
-              }
-      }
-    ```
+   ```yaml
+   - { name: 'authentiq',
+       app_id: 'YOUR_CLIENT_ID',
+       app_secret: 'YOUR_CLIENT_SECRET',
+       args: {
+              scope: 'aq:name email~rs address aq:push'
+             }
+     }
+   ```
 
 1. The `scope` is set to request the user's name, email (required and signed), and permission to send push notifications to sign in on subsequent visits.
    See [OmniAuth Authentiq strategy](https://github.com/AuthentiqID/omniauth-authentiq/wiki/Scopes,-callback-url-configuration-and-responses) for more information on scopes and modifiers.

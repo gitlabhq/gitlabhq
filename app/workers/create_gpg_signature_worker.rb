@@ -22,7 +22,7 @@ class CreateGpgSignatureWorker
     commits.each do |commit|
       Gitlab::Gpg::Commit.new(commit).signature
     rescue => e
-      Rails.logger.error("Failed to create signature for commit #{commit.id}. Error: #{e.message}")
+      Rails.logger.error("Failed to create signature for commit #{commit.id}. Error: #{e.message}") # rubocop:disable Gitlab/RailsLogger
     end
   end
   # rubocop: enable CodeReuse/ActiveRecord

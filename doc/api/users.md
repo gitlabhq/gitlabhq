@@ -164,6 +164,7 @@ the `group_saml` provider option:
     ...
   }
 ]
+```
 
 You can lookup users by external UID and provider:
 
@@ -359,8 +360,8 @@ Parameters:
 - `external` (optional)          - Flags the user as external - true or false(default)
 - `avatar` (optional)            - Image file for user's avatar
 - `private_profile` (optional)   - User's profile is private - true or false
-- `shared_runners_minutes_limit` (optional)       - Pipeline minutes quota for this user **[STARTER]**
-- `extra_shared_runners_minutes_limit` (optional) - Extra pipeline minutes quota for this user **[STARTER]**
+- `shared_runners_minutes_limit` (optional)       - Pipeline minutes quota for this user **(STARTER)**
+- `extra_shared_runners_minutes_limit` (optional) - Extra pipeline minutes quota for this user **(STARTER)**
 
 ## User modification
 
@@ -396,8 +397,8 @@ Parameters:
 - `extra_shared_runners_minutes_limit` (optional) - Extra pipeline minutes quota for this user
 - `avatar` (optional)              - Image file for user's avatar
 - `private_profile` (optional)     - User's profile is private - true or false
-- `shared_runners_minutes_limit` (optional)       - Pipeline minutes quota for this user **[STARTER]**
-- `extra_shared_runners_minutes_limit` (optional) - Extra pipeline minutes quota for this user **[STARTER]**
+- `shared_runners_minutes_limit` (optional)       - Pipeline minutes quota for this user **(STARTER)**
+- `extra_shared_runners_minutes_limit` (optional) - Extra pipeline minutes quota for this user **(STARTER)**
 
 On password update, user will be forced to change it upon next login.
 Note, at the moment this method does only return a `404` error,
@@ -589,6 +590,30 @@ Example responses
   "emoji":"coffee",
   "message":"I crave coffee",
   "message_html": "I crave coffee"
+}
+```
+
+## User counts
+
+Get the counts (same as in top right menu) of the currently signed in user.
+
+| Attribute | Type | Description |
+| --------- | ---- | ----------- |
+| `merge_requests`   | number | Merge requests that are active and assigned to current user. |
+
+```
+GET /user_counts
+```
+
+```bash
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/user_counts"
+```
+
+Example response:
+
+```json
+{
+  "merge_requests": 4
 }
 ```
 

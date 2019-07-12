@@ -35,8 +35,12 @@ class AuditEventService
     @file_logger ||= Gitlab::AuditJsonLogger.build
   end
 
+  def formatted_details
+    @details.merge(@details.slice(:from, :to).transform_values(&:to_s))
+  end
+
   def log_security_event_to_file
-    file_logger.info(base_payload.merge(@details))
+    file_logger.info(base_payload.merge(formatted_details))
   end
 
   def log_security_event_to_database

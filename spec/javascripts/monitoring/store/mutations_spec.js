@@ -115,12 +115,14 @@ describe('Monitoring mutations', () => {
         environmentsEndpoint: 'environments.json',
         deploymentsEndpoint: 'deployments.json',
         dashboardEndpoint: 'dashboard.json',
+        projectPath: '/gitlab-org/gitlab-ce',
       });
 
       expect(stateCopy.metricsEndpoint).toEqual('additional_metrics.json');
       expect(stateCopy.environmentsEndpoint).toEqual('environments.json');
       expect(stateCopy.deploymentsEndpoint).toEqual('deployments.json');
       expect(stateCopy.dashboardEndpoint).toEqual('dashboard.json');
+      expect(stateCopy.projectPath).toEqual('/gitlab-org/gitlab-ce');
     });
   });
 

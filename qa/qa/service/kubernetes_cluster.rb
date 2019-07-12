@@ -28,17 +28,17 @@ module QA
           create #{cluster_name}
           #{auth_options}
           --enable-basic-auth
-          --zone #{Runtime::Env.gcloud_zone}
+          --region #{Runtime::Env.gcloud_region}
           && gcloud container clusters
           get-credentials
-          --zone #{Runtime::Env.gcloud_zone}
+          --region #{Runtime::Env.gcloud_region}
           #{cluster_name}
         CMD
 
         @api_url = `kubectl config view --minify -o jsonpath='{.clusters[].cluster.server}'`
 
         @admin_user = "#{cluster_name}-admin"
-        master_auth = JSON.parse(`gcloud container clusters describe #{cluster_name} --zone #{Runtime::Env.gcloud_zone} --format 'json(masterAuth.username, masterAuth.password)'`)
+        master_auth = JSON.parse(`gcloud container clusters describe #{cluster_name} --region #{Runtime::Env.gcloud_region} --format 'json(masterAuth.username, masterAuth.password)'`)
         shell <<~CMD.tr("\n", ' ')
           kubectl config set-credentials #{@admin_user}
           --username #{master_auth['masterAuth']['username']}
@@ -66,10 +66,10 @@ module QA
       def remove!
         shell <<~CMD.tr("\n", ' ')
           gcloud container clusters delete
-          --zone #{Runtime::Env.gcloud_zone}
-	  #{cluster_name}
-	  --quiet --async
-	CMD
+          --region #{Runtime::Env.gcloud_region}
+          #{cluster_name}
+          --quiet --async
+        CMD
       end
 
       private

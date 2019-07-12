@@ -14,9 +14,11 @@ comments: false
   - If it's not installed, it will prompt you to install it.
 
 - **Linux**
+
   ```bash
   sudo yum install git-all
   ```
+
   ```bash
   sudo apt-get install git-all
   ```

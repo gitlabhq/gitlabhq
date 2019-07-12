@@ -144,7 +144,9 @@ export default {
       'triggerFilesChange',
     ]),
     initEditor() {
-      if (this.shouldHideEditor) return;
+      if (this.shouldHideEditor && (this.file.content || this.file.raw)) {
+        return;
+      }
 
       this.editor.clearEditor();
 

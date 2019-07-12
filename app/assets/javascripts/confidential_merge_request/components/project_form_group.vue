@@ -41,7 +41,7 @@ export default {
     noForkText() {
       return sprintf(
         __(
-          'To protect this issues confidentiality, %{link_start}fork the project%{link_end} and set the forks visiblity to private.',
+          "To protect this issue's confidentiality, %{link_start}fork the project%{link_end} and set the forks visiblity to private.",
         ),
         { link_start: `<a href="${this.newForkPath}" class="help-link">`, link_end: '</a>' },
         false,
@@ -105,7 +105,7 @@ export default {
 </script>
 
 <template>
-  <div class="form-group">
+  <div class="confidential-merge-request-fork-group form-group">
     <label>{{ __('Project') }}</label>
     <div>
       <dropdown
@@ -118,7 +118,7 @@ export default {
         <template v-if="projects.length">
           {{
             __(
-              'To protect this issues confidentiality, a private fork of this project was selected.',
+              "To protect this issue's confidentiality, a private fork of this project was selected.",
             )
           }}
         </template>
@@ -126,7 +126,11 @@ export default {
           {{ __('No forks available to you.') }}<br />
           <span v-html="noForkText"></span>
         </template>
-        <gl-link :href="helpPagePath" class="help-link" target="_blank">
+        <gl-link
+          :href="helpPagePath"
+          class="w-auto p-0 d-inline-block text-primary bg-transparent"
+          target="_blank"
+        >
           <span class="sr-only">{{ __('Read more') }}</span>
           <i class="fa fa-question-circle" aria-hidden="true"></i>
         </gl-link>

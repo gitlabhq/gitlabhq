@@ -221,7 +221,7 @@ Select branches to compare using the [branch filter search box](branches/index.m
 
 Find it under your project's **Repository > Compare**.
 
-## Locked files **[PREMIUM]**
+## Locked files **(PREMIUM)**
 
 Use [File Locking](../file_lock.md) to
 lock your files to prevent any conflicting changes.

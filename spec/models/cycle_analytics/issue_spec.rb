@@ -8,7 +8,8 @@ describe 'CycleAnalytics#issue' do
   let(:project) { create(:project, :repository) }
   let(:from_date) { 10.days.ago }
   let(:user) { create(:user, :admin) }
-  subject { CycleAnalytics.new(project, from: from_date) }
+
+  subject { CycleAnalytics::ProjectLevel.new(project, options: { from: from_date }) }
 
   generate_cycle_analytics_spec(
     phase: :issue,
@@ -23,7 +24,7 @@ describe 'CycleAnalytics#issue' do
                             ["list label added to issue",
                              -> (context, data) do
                                if data[:issue].persisted?
-                                 data[:issue].update(label_ids: [context.create(:label, lists: [context.create(:list)]).id])
+                                 data[:issue].update(label_ids: [context.create(:list).label_id])
                                end
                              end]],
     post_fn: -> (context, data) do

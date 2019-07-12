@@ -111,6 +111,7 @@ module API
     mount ::API::Features
     mount ::API::Files
     mount ::API::GroupBoards
+    mount ::API::GroupClusters
     mount ::API::GroupLabels
     mount ::API::GroupMilestones
     mount ::API::Groups
@@ -166,6 +167,7 @@ module API
     mount ::API::Templates
     mount ::API::Todos
     mount ::API::Triggers
+    mount ::API::UserCounts
     mount ::API::Users
     mount ::API::Variables
     mount ::API::Version

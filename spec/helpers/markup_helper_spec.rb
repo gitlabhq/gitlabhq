@@ -268,7 +268,7 @@ describe MarkupHelper do
     end
   end
 
-  describe 'markup' do
+  describe '#markup' do
     let(:content) { 'Noël' }
 
     it 'preserves encoding' do
@@ -299,6 +299,77 @@ describe MarkupHelper do
 
     it 'defaults to CommonMark' do
       expect(helper.markup('foo.md', 'x^2')).to include('x^2')
+    end
+  end
+
+  describe '#markup_unsafe' do
+    subject { helper.markup_unsafe(file_name, text, context) }
+
+    let(:file_name) { 'foo.bar' }
+    let(:text) { 'Noël' }
+    let(:project_base) { build(:project, :repository) }
+    let(:context) { { project: project_base } }
+
+    context 'when text is missing' do
+      let(:text) { nil }
+
+      it 'returns an empty string' do
+        is_expected.to eq('')
+      end
+    end
+
+    context 'when file is a markdown file' do
+      let(:file_name) { 'foo.md' }
+
+      it 'returns html (rendered by Banzai)' do
+        expected_html = '<p data-sourcepos="1:1-1:5" dir="auto">Noël</p>'
+
+        expect(Banzai).to receive(:render).with(text, context) { expected_html }
+
+        is_expected.to eq(expected_html)
+      end
+
+      context 'when renderer returns an error' do
+        before do
+          allow(Banzai).to receive(:render).and_raise("An error")
+        end
+
+        it 'returns html (rendered by ActionView:TextHelper)' do
+          is_expected.to eq('<p>Noël</p>')
+        end
+      end
+    end
+
+    context 'when file is asciidoc file' do
+      let(:file_name) { 'foo.adoc' }
+
+      it 'returns html (rendered by Gitlab::Asciidoc)' do
+        expected_html = "<div>\n<p>Noël</p>\n</div>"
+
+        expect(Gitlab::Asciidoc).to receive(:render).with(text, context) { expected_html }
+
+        is_expected.to eq(expected_html)
+      end
+    end
+
+    context 'when file is a regular text file' do
+      let(:file_name) { 'foo.txt' }
+
+      it 'returns html (rendered by ActionView::TagHelper)' do
+        is_expected.to eq('<pre class="plain-readme">Noël</pre>')
+      end
+    end
+
+    context 'when file has an unknown type' do
+      let(:file_name) { 'foo' }
+
+      it 'returns html (rendered by Gitlab::OtherMarkup)' do
+        expected_html = 'Noël'
+
+        expect(Gitlab::OtherMarkup).to receive(:render).with(file_name, text, context) { expected_html }
+
+        is_expected.to eq(expected_html)
+      end
     end
   end
 

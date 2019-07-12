@@ -13,6 +13,8 @@ module QA
 
       NotRespondingError = Class.new(RuntimeError)
 
+      CAPYBARA_MAX_WAIT_TIME = 10
+
       def initialize
         self.class.configure!
       end
@@ -42,6 +44,8 @@ module QA
             metadata[:type] = :feature
           end
         end
+
+        Capybara.server_port = 9887 + ENV['TEST_ENV_NUMBER'].to_i
 
         return if Capybara.drivers.include?(:chrome)
 
@@ -119,7 +123,7 @@ module QA
         Capybara.configure do |config|
           config.default_driver = QA::Runtime::Env.browser
           config.javascript_driver = QA::Runtime::Env.browser
-          config.default_max_wait_time = 10
+          config.default_max_wait_time = CAPYBARA_MAX_WAIT_TIME
           # https://github.com/mattheworiordan/capybara-screenshot/issues/164
           config.save_path = ::File.expand_path('../../tmp', __dir__)
         end

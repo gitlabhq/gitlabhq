@@ -24,12 +24,11 @@
   border-radius: $border-radius-default;
   font-size: $gl-font-size;
   font-weight: $gl-font-weight-normal;
-  padding: $gl-vert-padding $gl-btn-padding;
+  padding: $gl-bordered-btn-vert-padding $gl-bordered-btn-horz-padding;
 
   &:focus,
   &:active {
     background-color: $btn-active-gray;
-    box-shadow: $gl-btn-active-background;
   }
 }
 
@@ -50,77 +49,89 @@
     color: $text;
   }
 
-  &:hover,
-  &:focus {
-    background-color: $hover-background;
-    border-color: $hover-border;
-    color: $hover-text;
-
-    > .icon {
-      color: $hover-text;
-    }
-  }
-
-  &:focus {
-    box-shadow: 0 0 4px 1px $blue-300;
-  }
-
-  &:active {
-    background-color: $active-background;
-    border-color: $active-border;
-    box-shadow: inset 0 2px 4px 0 rgba($black, 0.2);
-    color: $active-text;
-
-    > .icon {
-      color: $active-text;
+  &:not(:disabled):not(.disabled) {
+    &:hover {
+      box-shadow: inset 0 0 0 1px $hover-border, 0 2px 2px 0 $gl-btn-hover-shadow-light;
     }
 
     &:focus {
-      box-shadow: inset 0 2px 4px 0 rgba($black, 0.2);
+      box-shadow: inset 0 0 0 1px $hover-border, 0 0 4px 1px $blue-300;
+    }
+
+    &:hover,
+    &:focus {
+      background-color: $hover-background;
+      border-color: $hover-border;
+      color: $hover-text;
+
+      > .icon {
+        color: $hover-text;
+      }
+    }
+
+    &:active,
+    &:active:focus {
+      background-color: $active-background;
+      border-color: $active-border;
+      box-shadow: inset 0 0 0 1px $hover-border, inset 0 2px 4px 0 rgba($black, 0.2);
+      color: $active-text;
+
+      > .icon {
+        color: $active-text;
+      }
     }
   }
 }
 
-@mixin btn-color($light, $border-light, $normal, $border-normal, $dark, $border-dark, $color) {
+@mixin btn-color($light, $border-light, $normal, $border-normal, $dark, $border-dark, $color, $hover-shadow-color: $gl-btn-hover-shadow-dark) {
   background-color: $light;
   border-color: $border-light;
   color: $color;
 
-  &:hover,
-  &:focus {
-    background-color: $normal;
-    border-color: $border-normal;
-    color: $color;
-  }
+  &:not(:disabled):not(.disabled) {
+    &:hover {
+      box-shadow: inset 0 0 0 1px $border-normal, 0 2px 2px 0 $hover-shadow-color;
+    }
 
-  &:active,
-  &.active {
-    box-shadow: $gl-btn-active-background;
+    &:focus {
+      box-shadow: inset 0 0 0 1px $border-normal, 0 0 4px 1px $blue-300;
+    }
 
-    background-color: $dark;
-    border-color: $border-dark;
-    color: $color;
+    &:hover,
+    &:focus {
+      background-color: $normal;
+      border-color: $border-normal;
+      color: $color;
+    }
+
+    &:active,
+    &.active {
+      box-shadow: inset 0 2px 4px 0 $gl-btn-hover-shadow-dark;
+      background-color: $dark;
+      border-color: $border-dark;
+      color: $color;
+    }
   }
 }
 
 @mixin btn-green {
-  @include btn-color($green-500, $green-600, $green-600, $green-700, $green-700, $green-800, $white-light);
+  @include btn-color($green-500, $green-600, $green-500, $green-700, $green-600, $green-800, $white-light);
 }
 
 @mixin btn-blue {
-  @include btn-color($blue-500, $blue-600, $blue-600, $blue-700, $blue-700, $blue-800, $white-light);
+  @include btn-color($blue-500, $blue-600, $blue-500, $blue-700, $blue-600, $blue-800, $white-light);
 }
 
 @mixin btn-orange {
-  @include btn-color($orange-500, $orange-600, $orange-600, $orange-700, $orange-700, $orange-800, $white-light);
+  @include btn-color($orange-500, $orange-600, $orange-500, $orange-700, $orange-600, $orange-800, $white-light);
 }
 
 @mixin btn-red {
-  @include btn-color($red-500, $red-600, $red-600, $red-700, $red-700, $red-800, $white-light);
+  @include btn-color($red-500, $red-600, $red-500, $red-700, $red-600, $red-800, $white-light);
 }
 
 @mixin btn-white {
-  @include btn-color($white-light, $border-color, $white-normal, $border-white-normal, $white-dark, $border-gray-dark, $gl-text-color);
+  @include btn-color($white-light, $gray-400, $gray-200, $gray-400, $gl-gray-200, $gray-500, $gl-text-color, $gl-btn-hover-shadow-light);
 }
 
 @mixin btn-with-margin {
@@ -149,21 +160,20 @@
 
   color: $gl-text-color;
   white-space: nowrap;
+  line-height: $gl-btn-line-height;
 
   &:focus:active {
     outline: 0;
   }
 
-  &.btn-sm {
-    padding: 4px 10px;
-    font-size: $gl-btn-small-font-size;
-    line-height: $gl-btn-small-line-height;
-  }
-
   &.btn-xs {
-    padding: 2px $gl-btn-padding;
     font-size: $gl-btn-xs-font-size;
     line-height: $gl-btn-xs-line-height;
+  }
+
+  &.btn-sm,
+  &.btn-xs {
+    padding: 3px $gl-bordered-btn-vert-padding;
   }
 
   &.btn-success,
@@ -239,7 +249,7 @@
 
   &.dropdown-toggle {
     .fa-caret-down {
-      margin-left: 3px;
+      margin: 0;
     }
   }
 
@@ -272,10 +282,7 @@
   }
 
   svg {
-    height: 15px;
-    width: 15px;
-    position: relative;
-    top: 2px;
+    @include btn-svg;
   }
 
   svg,
@@ -329,6 +336,12 @@
 .btn-group {
   &.btn-grouped {
     @include btn-with-margin;
+  }
+
+  .btn {
+    border-radius: $border-radius-default;
+    font-size: $gl-font-size;
+    line-height: $gl-btn-line-height;
   }
 }
 
@@ -487,18 +500,25 @@
   &:active,
   &:focus {
     color: $gl-text-color-secondary;
+    border: 1px solid $border-gray-normal-dashed;
     background-color: $white-normal;
   }
 }
 
-.btn-svg svg {
-  @include btn-svg;
+.btn-svg {
+  padding: $gl-bordered-btn-vert-padding;
+
+  svg {
+    @include btn-svg;
+    display: block;
+  }
 }
 
 // All disabled buttons, regardless of color, type, etc
 %disabled {
   background-color: $gray-light !important;
   border-color: $gray-200 !important;
+  box-shadow: none;
   color: $gl-text-color-disabled !important;
   opacity: 1 !important;
   cursor: default !important;

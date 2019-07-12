@@ -1,4 +1,4 @@
-# Geo (development) **[PREMIUM ONLY]**
+# Geo (development) **(PREMIUM ONLY)**
 
 Geo connects GitLab instances together. One GitLab instance is
 designated as a **primary** node and can be run with multiple

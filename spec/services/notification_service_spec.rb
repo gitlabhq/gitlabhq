@@ -215,13 +215,14 @@ describe NotificationService, :mailer do
       let(:project) { create(:project, :private) }
       let(:issue) { create(:issue, project: project, assignees: [assignee]) }
       let(:mentioned_issue) { create(:issue, assignees: issue.assignees) }
-      let(:note) { create(:note_on_issue, noteable: issue, project_id: issue.project_id, note: '@mention referenced, @unsubscribed_mentioned and @outsider also') }
+      let(:author) { create(:user) }
+      let(:note) { create(:note_on_issue, author: author, noteable: issue, project_id: issue.project_id, note: '@mention referenced, @unsubscribed_mentioned and @outsider also') }
 
       before do
-        build_team(note.project)
+        build_team(project)
         project.add_maintainer(issue.author)
         project.add_maintainer(assignee)
-        project.add_maintainer(note.author)
+        project.add_maintainer(author)
 
         @u_custom_off = create_user_with_notification(:custom, 'custom_off')
         project.add_guest(@u_custom_off)
@@ -240,7 +241,8 @@ describe NotificationService, :mailer do
 
       describe '#new_note' do
         it do
-          add_users_with_subscription(note.project, issue)
+          add_users(project)
+          add_user_subscriptions(issue)
           reset_delivered_emails!
 
           expect(SentNotification).to receive(:record).with(issue, any_args).exactly(10).times
@@ -268,7 +270,8 @@ describe NotificationService, :mailer do
         end
 
         it "emails the note author if they've opted into notifications about their activity" do
-          add_users_with_subscription(note.project, issue)
+          add_users(project)
+          add_user_subscriptions(issue)
           reset_delivered_emails!
 
           note.author.notified_of_own_activity = true
@@ -415,13 +418,15 @@ describe NotificationService, :mailer do
       let(:project) { create(:project, :public) }
       let(:issue) { create(:issue, project: project, assignees: [assignee]) }
       let(:mentioned_issue) { create(:issue, assignees: issue.assignees) }
-      let(:note) { create(:note_on_issue, noteable: issue, project_id: issue.project_id, note: '@all mentioned') }
+      let(:author) { create(:user) }
+      let(:note) { create(:note_on_issue, author: author, noteable: issue, project_id: issue.project_id, note: '@all mentioned') }
 
       before do
-        build_team(note.project)
-        build_group(note.project)
-        note.project.add_maintainer(note.author)
-        add_users_with_subscription(note.project, issue)
+        build_team(project)
+        build_group(project)
+        add_users(project)
+        add_user_subscriptions(issue)
+        project.add_maintainer(author)
         reset_delivered_emails!
       end
 
@@ -473,17 +478,18 @@ describe NotificationService, :mailer do
     context 'project snippet note' do
       let!(:project) { create(:project, :public) }
       let(:snippet) { create(:project_snippet, project: project, author: create(:user)) }
-      let(:note) { create(:note_on_project_snippet, noteable: snippet, project_id: project.id, note: '@all mentioned') }
+      let(:author) { create(:user) }
+      let(:note) { create(:note_on_project_snippet, author: author, noteable: snippet, project_id: project.id, note: '@all mentioned') }
 
       before do
         build_team(project)
         build_group(project)
+        project.add_maintainer(author)
 
         # make sure these users can read the project snippet!
         project.add_guest(@u_guest_watcher)
         project.add_guest(@u_guest_custom)
         add_member_for_parent_group(@pg_watcher, project)
-        note.project.add_maintainer(note.author)
         reset_delivered_emails!
       end
 
@@ -708,10 +714,11 @@ describe NotificationService, :mailer do
     let(:issue) { create :issue, project: project, assignees: [assignee], description: 'cc @participant @unsubscribed_mentioned' }
 
     before do
-      build_team(issue.project)
-      build_group(issue.project)
+      build_team(project)
+      build_group(project)
 
-      add_users_with_subscription(issue.project, issue)
+      add_users(project)
+      add_user_subscriptions(issue)
       reset_delivered_emails!
       update_custom_notification(:new_issue, @u_guest_custom, resource: project)
       update_custom_notification(:new_issue, @u_custom_global)
@@ -1281,13 +1288,16 @@ describe NotificationService, :mailer do
     let(:project) { create(:project, :public, :repository, namespace: group) }
     let(:another_project) { create(:project, :public, namespace: group) }
     let(:assignee) { create(:user) }
-    let(:merge_request) { create :merge_request, source_project: project, assignees: [assignee], description: 'cc @participant' }
+    let(:assignees) { Array.wrap(assignee) }
+    let(:author) { create(:user) }
+    let(:merge_request) { create :merge_request, author: author, source_project: project, assignees: assignees, description: 'cc @participant' }
 
     before do
-      project.add_maintainer(merge_request.author)
-      merge_request.assignees.each { |assignee| project.add_maintainer(assignee) }
-      build_team(merge_request.target_project)
-      add_users_with_subscription(merge_request.target_project, merge_request)
+      project.add_maintainer(author)
+      assignees.each { |assignee| project.add_maintainer(assignee) }
+      build_team(project)
+      add_users(project)
+      add_user_subscriptions(merge_request)
       update_custom_notification(:new_merge_request, @u_guest_custom, resource: project)
       update_custom_notification(:new_merge_request, @u_custom_global)
       reset_delivered_emails!
@@ -1834,7 +1844,7 @@ describe NotificationService, :mailer do
 
   describe 'ProjectMember' do
     let(:project) { create(:project) }
-    set(:added_user) { create(:user) }
+    let(:added_user) { create(:user) }
 
     describe '#new_access_request' do
       context 'for a project in a user namespace' do
@@ -2417,7 +2427,7 @@ describe NotificationService, :mailer do
     should_not_email(user, recipients: email_recipients)
   end
 
-  def add_users_with_subscription(project, issuable)
+  def add_users(project)
     @subscriber = create :user
     @unsubscriber = create :user
     @unsubscribed_mentioned = create :user, username: 'unsubscribed_mentioned'
@@ -2429,7 +2439,9 @@ describe NotificationService, :mailer do
     project.add_maintainer(@unsubscriber)
     project.add_maintainer(@watcher_and_subscriber)
     project.add_maintainer(@unsubscribed_mentioned)
+  end
 
+  def add_user_subscriptions(issuable)
     issuable.subscriptions.create(user: @unsubscribed_mentioned, project: project, subscribed: false)
     issuable.subscriptions.create(user: @subscriber, project: project, subscribed: true)
     issuable.subscriptions.create(user: @subscribed_participant, project: project, subscribed: true)

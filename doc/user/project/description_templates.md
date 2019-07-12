@@ -55,7 +55,7 @@ changes you made after picking the template and return it to its initial status.
 
 ![Description templates](img/description_templates.png)
 
-## Setting a default template for issues and merge requests  **[STARTER]**
+## Setting a default template for issues and merge requests  **(STARTER)**
 
 > **Notes:**
 >

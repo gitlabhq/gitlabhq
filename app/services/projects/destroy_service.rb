@@ -18,7 +18,7 @@ module Projects
       schedule_stale_repos_removal
 
       job_id = ProjectDestroyWorker.perform_async(project.id, current_user.id, params)
-      Rails.logger.info("User #{current_user.id} scheduled destruction of project #{project.full_path} with job ID #{job_id}")
+      Rails.logger.info("User #{current_user.id} scheduled destruction of project #{project.full_path} with job ID #{job_id}") # rubocop:disable Gitlab/RailsLogger
     end
 
     def execute

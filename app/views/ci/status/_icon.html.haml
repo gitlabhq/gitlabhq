@@ -1,9 +1,10 @@
-- status            = local_assigns.fetch(:status)
-- size              = local_assigns.fetch(:size, 16)
-- type              = local_assigns.fetch(:type, 'pipeline')
-- tooltip_placement = local_assigns.fetch(:tooltip_placement, "left")
-- path              = local_assigns.fetch(:path, status.has_details? ? status.details_path : nil)
-- css_classes       = "ci-status-link ci-status-icon ci-status-icon-#{status.group} has-tooltip"
+- status             = local_assigns.fetch(:status)
+- size               = local_assigns.fetch(:size, 16)
+- type               = local_assigns.fetch(:type, 'pipeline')
+- tooltip_placement  = local_assigns.fetch(:tooltip_placement, "left")
+- path               = local_assigns.fetch(:path, status.has_details? ? status.details_path : nil)
+- option_css_classes = local_assigns.fetch(:option_css_classes, '')
+- css_classes       = "ci-status-link ci-status-icon ci-status-icon-#{status.group} has-tooltip #{option_css_classes}"
 - title             = s_("PipelineStatusTooltip|Pipeline: %{ci_status}") % {ci_status: status.label}
 - if type == 'commit'
   - title = s_("PipelineStatusTooltip|Commit: %{ci_status}") % {ci_status: status.label}

@@ -3,50 +3,44 @@ namespace :gitlab do
     desc 'GitLab | Storage | Migrate existing projects to Hashed Storage'
     task migrate_to_hashed: :environment do
       if Gitlab::Database.read_only?
-        warn 'This task requires database write access. Exiting.'
-
-        next
+        abort 'This task requires database write access. Exiting.'
       end
 
       storage_migrator = Gitlab::HashedStorage::Migrator.new
       helper = Gitlab::HashedStorage::RakeHelper
 
       if storage_migrator.rollback_pending?
-        warn "There is already a rollback operation in progress, " \
+        abort "There is already a rollback operation in progress, " \
              "running a migration at the same time may have unexpected consequences."
-
-        next
       end
 
       if helper.range_single_item?
         project = Project.with_unmigrated_storage.find_by(id: helper.range_from)
 
         unless project
-          warn "There are no projects requiring storage migration with ID=#{helper.range_from}"
-
-          next
+          abort "There are no projects requiring storage migration with ID=#{helper.range_from}"
         end
 
         puts "Enqueueing storage migration of #{project.full_path} (ID=#{project.id})..."
         storage_migrator.migrate(project)
+      else
+        legacy_projects_count = if helper.using_ranges?
+                                  Project.with_unmigrated_storage.id_in(helper.range_from..helper.range_to).count
+                                else
+                                  Project.with_unmigrated_storage.count
+                                end
 
-        next
-      end
+        if legacy_projects_count == 0
+          abort 'There are no projects requiring storage migration. Nothing to do!'
+        end
 
-      legacy_projects_count = Project.with_unmigrated_storage.count
+        print "Enqueuing migration of #{legacy_projects_count} projects in batches of #{helper.batch_size}"
 
-      if legacy_projects_count == 0
-        warn 'There are no projects requiring storage migration. Nothing to do!'
+        helper.project_id_batches_migration do |start, finish|
+          storage_migrator.bulk_schedule_migration(start: start, finish: finish)
 
-        next
-      end
-
-      print "Enqueuing migration of #{legacy_projects_count} projects in batches of #{helper.batch_size}"
-
-      helper.project_id_batches_migration do |start, finish|
-        storage_migrator.bulk_schedule_migration(start: start, finish: finish)
-
-        print '.'
+          print '.'
+        end
       end
 
       puts ' Done!'
@@ -55,50 +49,44 @@ namespace :gitlab do
     desc 'GitLab | Storage | Rollback existing projects to Legacy Storage'
     task rollback_to_legacy: :environment do
       if Gitlab::Database.read_only?
-        warn 'This task requires database write access. Exiting.'
-
-        next
+        abort 'This task requires database write access. Exiting.'
       end
 
       storage_migrator = Gitlab::HashedStorage::Migrator.new
       helper = Gitlab::HashedStorage::RakeHelper
 
       if storage_migrator.migration_pending?
-        warn "There is already a migration operation in progress, " \
+        abort "There is already a migration operation in progress, " \
              "running a rollback at the same time may have unexpected consequences."
-
-        next
       end
 
       if helper.range_single_item?
         project = Project.with_storage_feature(:repository).find_by(id: helper.range_from)
 
         unless project
-          warn "There are no projects that can be rolledback with ID=#{helper.range_from}"
-
-          next
+          abort "There are no projects that can be rolledback with ID=#{helper.range_from}"
         end
 
         puts "Enqueueing storage rollback of #{project.full_path} (ID=#{project.id})..."
         storage_migrator.rollback(project)
+      else
+        hashed_projects_count = if helper.using_ranges?
+                                  Project.with_storage_feature(:repository).id_in(helper.range_from..helper.range_to).count
+                                else
+                                  Project.with_storage_feature(:repository).count
+                                end
 
-        next
-      end
+        if hashed_projects_count == 0
+          abort 'There are no projects that can have storage rolledback. Nothing to do!'
+        end
 
-      hashed_projects_count = Project.with_storage_feature(:repository).count
+        print "Enqueuing rollback of #{hashed_projects_count} projects in batches of #{helper.batch_size}"
 
-      if hashed_projects_count == 0
-        warn 'There are no projects that can have storage rolledback. Nothing to do!'
+        helper.project_id_batches_rollback do |start, finish|
+          storage_migrator.bulk_schedule_rollback(start: start, finish: finish)
 
-        next
-      end
-
-      print "Enqueuing rollback of #{hashed_projects_count} projects in batches of #{helper.batch_size}"
-
-      helper.project_id_batches_rollback do |start, finish|
-        storage_migrator.bulk_schedule_rollback(start: start, finish: finish)
-
-        print '.'
+          print '.'
+        end
       end
 
       puts ' Done!'

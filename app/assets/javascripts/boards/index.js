@@ -7,28 +7,30 @@ import { __ } from '~/locale';
 import './models/label';
 import './models/assignee';
 
-import FilteredSearchBoards from './filtered_search_boards';
-import eventHub from './eventhub';
+import FilteredSearchBoards from '~/boards/filtered_search_boards';
+import eventHub from '~/boards/eventhub';
 import sidebarEventHub from '~/sidebar/event_hub';
-import './models/issue';
-import './models/list';
-import './models/milestone';
-import './models/project';
-import boardsStore from './stores/boards_store';
-import ModalStore from './stores/modal_store';
-import BoardService from './services/board_service';
-import modalMixin from './mixins/modal_mixins';
-import './filters/due_date_filters';
-import Board from './components/board';
-import BoardSidebar from './components/board_sidebar';
+import 'ee_else_ce/boards/models/issue';
+import 'ee_else_ce/boards/models/list';
+import '~/boards/models/milestone';
+import '~/boards/models/project';
+import boardsStore from '~/boards/stores/boards_store';
+import ModalStore from '~/boards/stores/modal_store';
+import BoardService from 'ee_else_ce/boards/services/board_service';
+import modalMixin from '~/boards/mixins/modal_mixins';
+import '~/boards/filters/due_date_filters';
+import Board from 'ee_else_ce/boards/components/board';
+import BoardSidebar from 'ee_else_ce/boards/components/board_sidebar';
 import initNewListDropdown from 'ee_else_ce/boards/components/new_list_dropdown';
-import BoardAddIssuesModal from './components/modal/index.vue';
+import BoardAddIssuesModal from '~/boards/components/modal/index.vue';
 import '~/vue_shared/vue_resource_interceptor';
 import {
   NavigationType,
   convertObjectPropsToCamelCase,
   parseBoolean,
 } from '~/lib/utils/common_utils';
+import boardConfigToggle from 'ee_else_ce/boards/config_toggle';
+import toggleFocusMode from 'ee_else_ce/boards/toggle_focus';
 
 let issueBoardsApp;
 
@@ -207,6 +209,8 @@ export default () => {
     },
   });
 
+  boardConfigToggle(boardsStore);
+
   const issueBoardsModal = document.getElementById('js-add-issues-btn');
 
   if (issueBoardsModal) {
@@ -281,5 +285,6 @@ export default () => {
     });
   }
 
+  toggleFocusMode(ModalStore, boardsStore);
   mountMultipleBoardsSwitcher();
 };

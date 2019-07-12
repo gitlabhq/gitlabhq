@@ -17,6 +17,6 @@ module StorageHelper
       counter_lfs_objects: storage_counter(statistics.lfs_objects_size)
     }
 
-    _("%{counter_repositories} repositories, %{counter_wikis} wikis, %{counter_build_artifacts} build artifacts, %{counter_lfs_objects} LFS") % counters
+    _("Repository: %{counter_repositories} / Wikis: %{counter_wikis} / Build Artifacts: %{counter_build_artifacts} / LFS: %{counter_lfs_objects}") % counters
   end
 end

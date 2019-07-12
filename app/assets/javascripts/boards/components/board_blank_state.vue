@@ -61,7 +61,7 @@ export default {
   <div class="board-blank-state p-3">
     <p>
       {{
-        __('BoardBlankState|Add the following default lists to your Issue Board with one click:')
+        s__('BoardBlankState|Add the following default lists to your Issue Board with one click:')
       }}
     </p>
     <ul class="list-unstyled board-blank-state-list">
@@ -76,7 +76,7 @@ export default {
     </ul>
     <p>
       {{
-        __(
+        s__(
           'BoardBlankState|Starting out with the default set of lists will get you right on the way to making the most of your board.',
         )
       }}
@@ -86,10 +86,10 @@ export default {
       type="button"
       @click.stop="addDefaultLists"
     >
-      {{ __('BoardBlankState|Add default lists') }}
+      {{ s__('BoardBlankState|Add default lists') }}
     </button>
     <button class="btn btn-default btn-block" type="button" @click.stop="clearBlankState">
-      {{ __("BoardBlankState|Nevermind, I'll use my own") }}
+      {{ s__("BoardBlankState|Nevermind, I'll use my own") }}
     </button>
   </div>
 </template>

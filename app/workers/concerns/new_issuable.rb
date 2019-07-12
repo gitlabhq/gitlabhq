@@ -27,6 +27,6 @@ module NewIssuable
   # rubocop: enable CodeReuse/ActiveRecord
 
   def log_error(record_class, record_id)
-    Rails.logger.error("#{self.class}: couldn't find #{record_class} with ID=#{record_id}, skipping job")
+    Rails.logger.error("#{self.class}: couldn't find #{record_class} with ID=#{record_id}, skipping job") # rubocop:disable Gitlab/RailsLogger
   end
 end

@@ -55,7 +55,7 @@ module Gitlab
               response = ldap.get_operation_result
 
               unless response.code.zero?
-                Rails.logger.warn("LDAP search error: #{response.message}")
+                Rails.logger.warn("LDAP search error: #{response.message}") # rubocop:disable Gitlab/RailsLogger
               end
 
               []
@@ -67,7 +67,7 @@ module Gitlab
           retries += 1
           error_message = connection_error_message(error)
 
-          Rails.logger.warn(error_message)
+          Rails.logger.warn(error_message) # rubocop:disable Gitlab/RailsLogger
 
           if retries < MAX_SEARCH_RETRIES
             renew_connection_adapter

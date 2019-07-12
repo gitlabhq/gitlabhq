@@ -11,7 +11,7 @@ In GitLab, you can create project and group labels:
 - **Project labels** can be assigned to issues or merge requests in that project only.
 - **Group labels** can be assigned to any issue or merge request of any project in that group or any subgroups of the group.
 
-## Scoped labels **[PREMIUM]**
+## Scoped labels **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/9175) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.10.
 
@@ -38,7 +38,7 @@ For example, `nested::key1::value1` and `nested::key1::value2` cannot both exist
 
 `nested::key1::value1` and `nested::key2::value1` can both exist on the same issue, as these are considered to use two different label scopes, `nested::key1` and `nested::key2`.
 
-### Workflows with scoped labels **[PREMIUM]**
+### Workflows with scoped labels **(PREMIUM)**
 
 Suppose you wanted a custom field in issues to track the platform operating system
 that your features target, where each issue should only target one platform. You
@@ -144,9 +144,9 @@ From the group epic list page, you can [filter](../search/index.md#issues-and-me
 ### Filtering in issue boards
 
 - From [project boards](issue_board.md), you can filter by both group labels and project labels in the [search and filter bar](../search/index.md#issue-boards).
-- From [group issue boards](issue_board.md#group-issue-boards-premium), you can filter by only group labels in the [search and filter bar](../search/index.md#issue-boards). **[PREMIUM]**
-- From [project boards](issue_board.md), you can filter by both group labels and project labels in the [issue board configuration](issue_board.md#configurable-issue-boards-starter). **[STARTER]**
-- From [group issue boards](issue_board.md#group-issue-boards-premium), you can filter by only group labels in the [issue board configuration](issue_board.md#configurable-issue-boards-starter). **[STARTER]**
+- From [group issue boards](issue_board.md#group-issue-boards-premium), you can filter by only group labels in the [search and filter bar](../search/index.md#issue-boards). **(PREMIUM)**
+- From [project boards](issue_board.md), you can filter by both group labels and project labels in the [issue board configuration](issue_board.md#configurable-issue-boards-starter). **(STARTER)**
+- From [group issue boards](issue_board.md#group-issue-boards-premium), you can filter by only group labels in the [issue board configuration](issue_board.md#configurable-issue-boards-starter). **(STARTER)**
 
 ## Subscribing to labels
 

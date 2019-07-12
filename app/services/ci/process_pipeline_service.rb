@@ -44,7 +44,7 @@ module Ci
 
     # rubocop: disable CodeReuse/ActiveRecord
     def stage_indexes_of_created_processables
-      created_processables.order(:stage_idx).pluck('distinct stage_idx')
+      created_processables.order(:stage_idx).pluck(Arel.sql('DISTINCT stage_idx'))
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
@@ -68,7 +68,7 @@ module Ci
       latest_statuses = pipeline.statuses.latest
         .group(:name)
         .having('count(*) > 1')
-        .pluck('max(id)', 'name')
+        .pluck(Arel.sql('MAX(id)'), 'name')
 
       # mark builds that are retried
       pipeline.statuses.latest

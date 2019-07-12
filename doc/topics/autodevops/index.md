@@ -61,15 +61,15 @@ project in a simple and automatic way:
 
 1. [Auto Build](#auto-build)
 1. [Auto Test](#auto-test)
-1. [Auto Code Quality](#auto-code-quality-starter) **[STARTER]**
-1. [Auto SAST (Static Application Security Testing)](#auto-sast-ultimate) **[ULTIMATE]**
-1. [Auto Dependency Scanning](#auto-dependency-scanning-ultimate) **[ULTIMATE]**
-1. [Auto License Management](#auto-license-management-ultimate) **[ULTIMATE]**
-1. [Auto Container Scanning](#auto-container-scanning-ultimate) **[ULTIMATE]**
+1. [Auto Code Quality](#auto-code-quality-starter) **(STARTER)**
+1. [Auto SAST (Static Application Security Testing)](#auto-sast-ultimate) **(ULTIMATE)**
+1. [Auto Dependency Scanning](#auto-dependency-scanning-ultimate) **(ULTIMATE)**
+1. [Auto License Management](#auto-license-management-ultimate) **(ULTIMATE)**
+1. [Auto Container Scanning](#auto-container-scanning-ultimate) **(ULTIMATE)**
 1. [Auto Review Apps](#auto-review-apps)
-1. [Auto DAST (Dynamic Application Security Testing)](#auto-dast-ultimate) **[ULTIMATE]**
+1. [Auto DAST (Dynamic Application Security Testing)](#auto-dast-ultimate) **(ULTIMATE)**
 1. [Auto Deploy](#auto-deploy)
-1. [Auto Browser Performance Testing](#auto-browser-performance-testing-premium) **[PREMIUM]**
+1. [Auto Browser Performance Testing](#auto-browser-performance-testing-premium) **(PREMIUM)**
 1. [Auto Monitoring](#auto-monitoring)
 
 As Auto DevOps relies on many different components, it's good to have a basic
@@ -169,7 +169,7 @@ Support for `AUTO_DEVOPS_DOMAIN` was [removed in GitLab
 12.0](https://gitlab.com/gitlab-org/gitlab-ce/issues/56959).
 
 
-## Using multiple Kubernetes clusters **[PREMIUM]**
+## Using multiple Kubernetes clusters **(PREMIUM)**
 
 When using Auto DevOps, you may want to deploy different environments to
 different Kubernetes clusters. This is possible due to the 1:1 connection that
@@ -316,7 +316,7 @@ If a project's repository contains a `Dockerfile`, Auto Build will use
 If you are also using Auto Review Apps and Auto Deploy and choose to provide
 your own `Dockerfile`, make sure you expose your application to port
 `5000` as this is the port assumed by the
-[default Helm chart](https://gitlab.com/gitlab-org/charts/auto-deploy-app).
+[default Helm chart](https://gitlab.com/gitlab-org/charts/auto-deploy-app). Alternatively you can override the default values by [customizing the Auto Deploy helm chart](#custom-helm-chart)
 
 #### Auto Build using Heroku buildpacks
 
@@ -354,7 +354,7 @@ you may succeed with a [custom buildpack](#custom-buildpacks). Check the
 Auto Test uses tests you already have in your application. If there are no
 tests, it's up to you to add them.
 
-### Auto Code Quality **[STARTER]**
+### Auto Code Quality **(STARTER)**
 
 Auto Code Quality uses the
 [Code Quality image](https://gitlab.com/gitlab-org/security-products/codequality) to run
@@ -365,7 +365,7 @@ out.
 Any differences between the source and target branches are also
 [shown in the merge request widget](../../user/project/merge_requests/code_quality.md).
 
-### Auto SAST **[ULTIMATE]**
+### Auto SAST **(ULTIMATE)**
 
 > Introduced in [GitLab Ultimate][ee] 10.3.
 
@@ -380,7 +380,7 @@ check out.
 Any security warnings are also shown in the merge request widget. Read more how
 [SAST works](../../user/application_security/sast/index.md).
 
-### Auto Dependency Scanning **[ULTIMATE]**
+### Auto Dependency Scanning **(ULTIMATE)**
 
 > Introduced in [GitLab Ultimate][ee] 10.7.
 
@@ -397,7 +397,7 @@ check out.
 Any security warnings are also shown in the merge request widget. Read more about
 [Dependency Scanning](../../user/application_security/dependency_scanning/index.md).
 
-### Auto License Management **[ULTIMATE]**
+### Auto License Management **(ULTIMATE)**
 
 > Introduced in [GitLab Ultimate][ee] 11.0.
 
@@ -413,7 +413,7 @@ check out.
 Any licenses are also shown in the merge request widget. Read more how
 [License Management works](../../user/application_security/license_management/index.md).
 
-### Auto Container Scanning **[ULTIMATE]**
+### Auto Container Scanning **(ULTIMATE)**
 
 > Introduced in GitLab 10.4.
 
@@ -452,7 +452,7 @@ be deleted.
 
 Review apps are deployed using the
 [auto-deploy-app](https://gitlab.com/gitlab-org/charts/auto-deploy-app) chart with
-Helm. The app will be deployed into the [Kubernetes
+Helm, which can be [customized](#custom-helm-chart). The app will be deployed into the [Kubernetes
 namespace](../../user/project/clusters/index.md#deployment-variables)
 for the environment.
 
@@ -468,7 +468,7 @@ deploys with Auto DevOps can undo your changes. Also, if you change something
 and want to undo it by deploying again, Helm may not detect that anything changed
 in the first place, and thus not realize that it needs to re-apply the old config.
 
-### Auto DAST **[ULTIMATE]**
+### Auto DAST **(ULTIMATE)**
 
 > Introduced in [GitLab Ultimate][ee] 10.4.
 
@@ -483,7 +483,7 @@ later download and check out.
 Any security warnings are also shown in the merge request widget. Read how
 [DAST works](../../user/application_security/dast/index.md).
 
-### Auto Browser Performance Testing **[PREMIUM]**
+### Auto Browser Performance Testing **(PREMIUM)**
 
 > Introduced in [GitLab Premium][ee] 10.4.
 
@@ -514,7 +514,7 @@ Auto Deploy doesn't include deployments to staging or canary by default, but the
 enable them.
 
 You can make use of [environment variables](#environment-variables) to automatically
-scale your pod replicas.
+scale your pod replicas and to apply custom arguments to the Auto DevOps `helm upgrade` commands. This is an easy way to [customize the Auto Deploy helm chart](#custom-helm-chart).
 
 Apps are deployed using the
 [auto-deploy-app](https://gitlab.com/gitlab-org/charts/auto-deploy-app) chart with
@@ -655,7 +655,10 @@ repo or by specifying a project variable:
 - **Project variable** - Create a [project variable](../../ci/variables/README.md#gitlab-cicd-environment-variables)
   `AUTO_DEVOPS_CHART` with the URL of a custom chart to use or create two project variables `AUTO_DEVOPS_CHART_REPOSITORY` with the URL of a custom chart repository and `AUTO_DEVOPS_CHART` with the path to the chart.
 
-### Custom Helm chart per environment **[PREMIUM]**
+You can also make use of the `HELM_UPGRADE_EXTRA_ARGS` environment variable to override the default values in the `values.yaml` file in the [default Helm chart](https://gitlab.com/gitlab-org/charts/auto-deploy-app).
+To apply your own `values.yaml` file to all Helm upgrade commands in Auto Deploy set `HELM_UPGRADE_EXTRA_ARGS` to `--values my-values.yaml`.
+
+### Custom Helm chart per environment **(PREMIUM)**
 
 You can specify the use of a custom Helm chart per environment by scoping the environment variable
 to the desired environment. See [Limiting environment scopes of variables](../../ci/variables/README.md#limiting-environment-scopes-of-environment-variables-premium).
@@ -761,7 +764,7 @@ also be customized, and you can easily use a [custom buildpack](#custom-buildpac
 | `KUBE_INGRESS_BASE_DOMAIN`   | From GitLab 11.8, this variable can be used to set a domain per cluster. See [cluster domains](../../user/project/clusters/index.md#base-domain) for more information. |
 | `ROLLOUT_RESOURCE_TYPE`     | From GitLab 11.9, this variable allows specification of the resource type being deployed when using a custom helm chart. Default value is `deployment`. |
 | `ROLLOUT_STATUS_DISABLED`   | From GitLab 12.0, this variable allows to disable rollout status check because it doesn't support all resource types, for example, `cronjob`. |
-| `HELM_UPGRADE_EXTRA_ARGS`   | From GitLab 11.11, this variable allows extra arguments in `helm` commands when deploying the application. Note that using quotes will not prevent word splitting. |
+| `HELM_UPGRADE_EXTRA_ARGS`   | From GitLab 11.11, this variable allows extra arguments in `helm` commands when deploying the application. Note that using quotes will not prevent word splitting. **Tip:** you can use this variable to [customize the Auto Deploy helm chart](https://docs.gitlab.com/ee/topics/autodevops/index.html#custom-helm-chart) by applying custom override values with `--values my-values.yaml`. |
 
 TIP: **Tip:**
 Set up the replica variables using a
@@ -903,7 +906,7 @@ If `STAGING_ENABLED` is defined in your project (e.g., set `STAGING_ENABLED` to
 to a `staging` environment, and a  `production_manual` job will be created for
 you when you're ready to manually deploy to production.
 
-#### Deploy policy for canary environments **[PREMIUM]**
+#### Deploy policy for canary environments **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ci-yml/merge_requests/171)
 in GitLab 11.0.
@@ -918,7 +921,7 @@ If `CANARY_ENABLED` is defined in your project (e.g., set `CANARY_ENABLED` to
 - `production_manual` which is to be used by you when you're ready to manually
   deploy to production.
 
-#### Incremental rollout to production **[PREMIUM]**
+#### Incremental rollout to production **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/5415) in GitLab 10.8.
 
@@ -976,7 +979,7 @@ Before GitLab 11.4 this feature was enabled by the presence of the
 `INCREMENTAL_ROLLOUT_ENABLED` environment variable.
 This configuration is deprecated and will be removed in the future.
 
-#### Timed incremental rollout to production **[PREMIUM]**
+#### Timed incremental rollout to production **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/7545) in GitLab 11.4.
 

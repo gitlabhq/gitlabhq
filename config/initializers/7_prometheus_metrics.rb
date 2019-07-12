@@ -17,7 +17,7 @@ def prometheus_default_multiproc_dir
 end
 
 Prometheus::Client.configure do |config|
-  config.logger = Rails.logger
+  config.logger = Rails.logger # rubocop:disable Gitlab/RailsLogger
 
   config.initial_mmap_file_size = 4 * 1024
 
