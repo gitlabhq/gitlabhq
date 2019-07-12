@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 require 'spec_helper'
 
 describe MergeRequests::BuildService do
@@ -224,6 +223,11 @@ describe MergeRequests::BuildService do
             let(:milestone2) { create(:milestone, project: project) }
             let(:label_ids) { [label2.id] }
             let(:milestone_id) { milestone2.id }
+
+            before do
+              # Guests are not able to assign labels or milestones to an issue
+              project.add_developer(user)
+            end
 
             it 'assigns milestone_id and label_ids instead of issue labels and milestone' do
               expect(merge_request.milestone).to eq(milestone2)
@@ -476,6 +480,37 @@ describe MergeRequests::BuildService do
 
       it 'sets the attribute from the quick actions' do
         expect(merge_request.target_branch).to eq('with-codeowners')
+      end
+    end
+  end
+
+  context 'when assigning labels' do
+    let(:label_ids) { [create(:label, project: project).id] }
+
+    context 'for members with less than developer access' do
+      it 'is not allowed' do
+        expect(merge_request.label_ids).to be_empty
+      end
+    end
+
+    context 'for users allowed to assign labels' do
+      before do
+        project.add_developer(user)
+      end
+
+      context 'for labels in the project' do
+        it 'is allowed for developers' do
+          expect(merge_request.label_ids).to contain_exactly(*label_ids)
+        end
+      end
+
+      context 'for unrelated labels' do
+        let(:project_label) { create(:label, project: project) }
+        let(:label_ids) { [create(:label).id, project_label.id] }
+
+        it 'only assigns related labels' do
+          expect(merge_request.label_ids).to contain_exactly(project_label.id)
+        end
       end
     end
   end
