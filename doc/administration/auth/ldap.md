@@ -398,30 +398,30 @@ The `user_filter` DN can contain special characters. For example:
 
 - A comma:
 
-    ```
-    OU=GitLab, Inc,DC=gitlab,DC=com
-    ```
+  ```
+  OU=GitLab, Inc,DC=gitlab,DC=com
+  ```
 
 - Open and close brackets:
 
-    ```
-    OU=Gitlab (Inc),DC=gitlab,DC=com
-    ```
+  ```
+  OU=Gitlab (Inc),DC=gitlab,DC=com
+  ```
 
-    These characters must be escaped as documented in 
-    [RFC 4515](https://tools.ietf.org/search/rfc4515).
+  These characters must be escaped as documented in
+  [RFC 4515](https://tools.ietf.org/search/rfc4515).
 
 - Escape commas with `\2C`. For example:
 
-    ```
-    OU=GitLab\2C Inc,DC=gitlab,DC=com
-    ```
+  ```
+  OU=GitLab\2C Inc,DC=gitlab,DC=com
+  ```
 
 - Escape open and close brackets with `\28` and `\29`, respectively. For example:
 
-    ```
-    OU=Gitlab \28Inc\29,DC=gitlab,DC=com
-    ```
+  ```
+  OU=Gitlab \28Inc\29,DC=gitlab,DC=com
+  ```
 
 ## Enabling LDAP sign-in for existing GitLab users
 
@@ -445,13 +445,13 @@ the configuration option `lowercase_usernames`. By default, this configuration o
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
-    ```ruby
-    gitlab_rails['ldap_servers'] = YAML.load <<-EOS
-    main:
-      # snip...
-      lowercase_usernames: true
-    EOS
-    ```
+   ```ruby
+   gitlab_rails['ldap_servers'] = YAML.load <<-EOS
+   main:
+     # snip...
+     lowercase_usernames: true
+   EOS
+   ```
 
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
@@ -459,14 +459,14 @@ the configuration option `lowercase_usernames`. By default, this configuration o
 
 1. Edit `config/gitlab.yaml`:
 
-    ```yaml
-    production:
-      ldap:
-        servers:
-          main:
-            # snip...
-            lowercase_usernames: true
-    ```
+   ```yaml
+   production:
+     ldap:
+       servers:
+         main:
+           # snip...
+           lowercase_usernames: true
+   ```
 
 1. [Restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
 
@@ -519,13 +519,13 @@ ldapsearch -H ldaps://$host:$port -D "$bind_dn" -y bind_dn_password.txt  -b "$ba
 - Run the following check command to make sure that the LDAP settings are
   correct and GitLab can see your users:
 
-    ```bash
-    # For Omnibus installations
-    sudo gitlab-rake gitlab:ldap:check
+  ```bash
+  # For Omnibus installations
+  sudo gitlab-rake gitlab:ldap:check
 
-    # For installations from source
-    sudo -u git -H bundle exec rake gitlab:ldap:check RAILS_ENV=production
-    ```
+  # For installations from source
+  sudo -u git -H bundle exec rake gitlab:ldap:check RAILS_ENV=production
+  ```
 
 ### Connection Refused
 

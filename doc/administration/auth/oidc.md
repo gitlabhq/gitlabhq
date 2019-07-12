@@ -5,76 +5,76 @@ GitLab can use [OpenID Connect](https://openid.net/specs/openid-connect-core-1_0
 To enable the OpenID Connect OmniAuth provider, you must register your application with an OpenID Connect provider.
 The OpenID Connect will provide you with a client details and secret for you to use.
 
-1.  On your GitLab server, open the configuration file.
+1. On your GitLab server, open the configuration file.
 
-    For Omnibus GitLab:
+   For Omnibus GitLab:
 
-    ```sh
-    sudo editor /etc/gitlab/gitlab.rb
-    ```
+   ```sh
+   sudo editor /etc/gitlab/gitlab.rb
+   ```
 
-    For installations from source:
+   For installations from source:
 
-    ```sh
-    cd /home/git/gitlab
-    sudo -u git -H editor config/gitlab.yml
-    ```
+   ```sh
+   cd /home/git/gitlab
+   sudo -u git -H editor config/gitlab.yml
+   ```
 
-    See [Initial OmniAuth Configuration](../../integration/omniauth.md#initial-omniauth-configuration) for initial settings.
+   See [Initial OmniAuth Configuration](../../integration/omniauth.md#initial-omniauth-configuration) for initial settings.
 
-1.  Add the provider configuration.
+1. Add the provider configuration.
 
-    For Omnibus GitLab:
+   For Omnibus GitLab:
 
-    ```ruby
-    gitlab_rails['omniauth_providers'] = [
-      { 'name' => 'openid_connect',
-        'label' => '<your_oidc_label>',
-        'args' => {
-          "name' => 'openid_connect',
-          'scope' => ['openid','profile'],
-          'response_type' => 'code',
-          'issuer' => '<your_oidc_url>',
-          'discovery' => true,
-          'client_auth_method' => 'query',
-          'uid_field' => '<uid_field>',
-          'client_options' => {
-            'identifier' => '<your_oidc_client_id>',
-            'secret' => '<your_oidc_client_secret>',
-            'redirect_uri' => '<your_gitlab_url>/users/auth/openid_connect/callback'
-          }
-        }
-      }
-    ]
-    ```
+   ```ruby
+   gitlab_rails['omniauth_providers'] = [
+     { 'name' => 'openid_connect',
+       'label' => '<your_oidc_label>',
+       'args' => {
+         "name' => 'openid_connect',
+         'scope' => ['openid','profile'],
+         'response_type' => 'code',
+         'issuer' => '<your_oidc_url>',
+         'discovery' => true,
+         'client_auth_method' => 'query',
+         'uid_field' => '<uid_field>',
+         'client_options' => {
+           'identifier' => '<your_oidc_client_id>',
+           'secret' => '<your_oidc_client_secret>',
+           'redirect_uri' => '<your_gitlab_url>/users/auth/openid_connect/callback'
+         }
+       }
+     }
+   ]
+   ```
 
-    For installation from source:
+   For installation from source:
 
-    ```yaml
-      - { name: 'openid_connect',
-          label: '<your_oidc_label>',
-          args: {
-            name: 'openid_connect',
-            scope: ['openid','profile'],
-            response_type: 'code',
-            issuer: '<your_oidc_url>',
-            discovery: true,
-            client_auth_method: 'query',
-            uid_field: '<uid_field>',
-            client_options: {
-              identifier: '<your_oidc_client_id>',
-              secret: '<your_oidc_client_secret>',
-              redirect_uri: '<your_gitlab_url>/users/auth/openid_connect/callback'
-            }
-          }
-        }
-    ```
+   ```yaml
+     - { name: 'openid_connect',
+         label: '<your_oidc_label>',
+         args: {
+           name: 'openid_connect',
+           scope: ['openid','profile'],
+           response_type: 'code',
+           issuer: '<your_oidc_url>',
+           discovery: true,
+           client_auth_method: 'query',
+           uid_field: '<uid_field>',
+           client_options: {
+             identifier: '<your_oidc_client_id>',
+             secret: '<your_oidc_client_secret>',
+             redirect_uri: '<your_gitlab_url>/users/auth/openid_connect/callback'
+           }
+         }
+       }
+   ```
 
-    > **Note:**
-    >
-    > - For more information on each configuration option refer to
-        the [OmniAuth OpenID Connect usage documentation](https://github.com/m0n9oose/omniauth_openid_connect#usage) and
-        the [OpenID Connect Core 1.0 specification](https://openid.net/specs/openid-connect-core-1_0.html).
+   > **Note:**
+   >
+   > - For more information on each configuration option refer to
+       the [OmniAuth OpenID Connect usage documentation](https://github.com/m0n9oose/omniauth_openid_connect#usage) and
+       the [OpenID Connect Core 1.0 specification](https://openid.net/specs/openid-connect-core-1_0.html).
 
 1. For the configuration above, change the values for the provider to match your OpenID Connect client setup. Use the following as a guide:
     - `<your_oidc_label>` is the label that will be displayed on the login page.
