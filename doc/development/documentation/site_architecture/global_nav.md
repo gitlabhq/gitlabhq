@@ -4,9 +4,9 @@ description: "Learn how GitLab docs' global navigation works and how to add new 
 
 # Global navigation
 
-> - [Introduced](https://gitlab.com/gitlab-com/gitlab-docs/merge_requests/362)
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-docs/merge_requests/362)
 in GitLab 11.6.
-> - [Updated](https://gitlab.com/gitlab-com/gitlab-docs/merge_requests/482) in GitLab 12.1.
+> - [Updated](https://gitlab.com/gitlab-org/gitlab-docs/merge_requests/482) in GitLab 12.1.
 
 The global nav adds to the left sidebar the ability to
 navigate and explore the contents of GitLab's documentation.
@@ -25,7 +25,7 @@ To add a new doc to the nav, first and foremost, check with the technical writin
 Once you get their approval and their guidance in regards to the position on the nav,
 read trhough this page to understand how it works, and submit a merge request to the
 docs site, adding the doc you wish to include in the nav into the
-[global nav data file](https://gitlab.com/gitlab-com/gitlab-docs/blob/master/content/_data/global-nav.yaml).
+[global nav data file](https://gitlab.com/gitlab-org/gitlab-docs/blob/master/content/_data/global-nav.yaml).
 
 Don't forget to ask a technical writer to review your changes before merging.
 
@@ -70,7 +70,7 @@ the data among the nav in containers properly [styled](#css-classes).
 
 ### Data file
 
-The [data file](https://gitlab.com/gitlab-com/gitlab-docs/blob/master/content/_data/global-nav.yaml)
+The [data file](https://gitlab.com/gitlab-org/gitlab-docs/blob/master/content/_data/global-nav.yaml)
 is structured in three components: sections, categories, and docs.
 
 #### Sections
@@ -248,9 +248,9 @@ Examples:
 
 ### Layout file (logic)
 
-The [layout](https://gitlab.com/gitlab-com/gitlab-docs/blob/master/layouts/global_nav.html)
+The [layout](https://gitlab.com/gitlab-org/gitlab-docs/blob/master/layouts/global_nav.html)
 is fed by the [data file](#data-file), builds the global nav, and is rendered by the
-[default](https://gitlab.com/gitlab-com/gitlab-docs/blob/master/layouts/default.html) layout.
+[default](https://gitlab.com/gitlab-org/gitlab-docs/blob/master/layouts/default.html) layout.
 
 There are three main considerations on the logic built for the nav:
 
