@@ -501,17 +501,17 @@ The following are examples of tests that work for both Karma and Jest:
 it('makes a request', () => {
   const responseBody = getJSONFixture('some/fixture.json'); // loads spec/javascripts/fixtures/some/fixture.json
   axiosMock.onGet(endpoint).reply(200, responseBody);
-  
+
   myButton.click();
-  
+
   // ...
 });
 
 it('uses some HTML element', () => {
   loadFixtures('some/page.html'); // loads spec/javascripts/fixtures/some/page.html and adds it to the DOM
-  
+
   const element = document.getElementById('#my-id');
-  
+
   // ...
 });
 ```

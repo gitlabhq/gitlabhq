@@ -70,7 +70,7 @@ template1=# CREATE USER runner WITH PASSWORD '$password' CREATEDB;
 ```
 
 *__Note:__ Notice that we created the user with the privilege to be able to
-create databases (`CREATEDB`). In the following steps we will create a database 
+create databases (`CREATEDB`). In the following steps we will create a database
 explicitly for that user but having that privilege can be useful if in your
 testing framework you have tools that drop and create databases.*
 

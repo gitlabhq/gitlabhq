@@ -41,9 +41,9 @@ detail below.
 - Every session URL that is created has an authorization header that needs to be sent, to establish a `wss` connection.
 - The session URL is not exposed to the users in any way. GitLab holds all the state internally and proxies accordingly.
 
-##  Enabling and disabling terminal support
+## Enabling and disabling terminal support
 
-NOTE: **Note:** AWS Elastic Load Balancers (ELBs) do not support web sockets. 
+NOTE: **Note:** AWS Elastic Load Balancers (ELBs) do not support web sockets.
 AWS Application Load Balancers (ALBs) must be used if you want web terminals
 to work. See [AWS Elastic Load Balancing Product Comparison](https://aws.amazon.com/elasticloadbalancing/features/#compare)
 for more information.

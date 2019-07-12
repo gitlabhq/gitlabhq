@@ -2,7 +2,7 @@
 
 ## Git housekeeping
 
-There are few tasks you can run to schedule a git housekeeping to start at the 
+There are few tasks you can run to schedule a git housekeeping to start at the
 next repository sync in a **Secondary node**:
 
 ### Incremental Repack
@@ -23,7 +23,7 @@ sudo -u git -H bundle exec rake geo:git:housekeeping:incremental_repack RAILS_EN
 
 ### Full Repack
 
-This is equivalent of running `git repack -d -A --pack-kept-objects` on a 
+This is equivalent of running `git repack -d -A --pack-kept-objects` on a
 _bare_ repository which will optionally, write a reachability bitmap index
 when this is enabled in GitLab.
 
