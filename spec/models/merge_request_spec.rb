@@ -2454,13 +2454,13 @@ describe MergeRequest do
   describe "#diff_refs" do
     context "with diffs" do
       subject { create(:merge_request, :with_diffs) }
-      let(:expected_diff_refs) {
+      let(:expected_diff_refs) do
         Gitlab::Diff::DiffRefs.new(
           base_sha:  subject.merge_request_diff.base_commit_sha,
           start_sha: subject.merge_request_diff.start_commit_sha,
           head_sha:  subject.merge_request_diff.head_commit_sha
         )
-      }
+      end
 
       it "does not touch the repository" do
         subject # Instantiate the object

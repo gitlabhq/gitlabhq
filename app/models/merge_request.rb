@@ -588,9 +588,11 @@ class MergeRequest < ApplicationRecord
   end
 
   def diff_refs
-    return merge_request_diff.diff_refs if importing?
-
-    persisted? ? merge_request_diff.diff_refs : repository_diff_refs
+    if importing? || persisted?
+      merge_request_diff.diff_refs
+    else
+      repository_diff_refs
+    end
   end
 
   # Instead trying to fetch the
