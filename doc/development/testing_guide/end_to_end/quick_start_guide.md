@@ -222,7 +222,7 @@ As the pre-conditions for our test suite, the things that needs to happen before
 - A project being created with an issue and labels already set;
 - The issue page being opened with only one scoped label applied to it.
 
-> When running end-to-end tests as part of the GitLab's continuous integration process [a license is already set as an environment variable](https://gitlab.com/gitlab-org/gitlab-ee/blob/1a60d926740db10e3b5724713285780a4f470531/qa/qa/ee/strategy.rb#L20). For running tests locally you can set up such license by following the document [what tests can be run?](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/what_tests_can_be_run.md#supported-remote-grid-environment-variables), based on the [supported GitLab environment variables](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/what_tests_can_be_run.md#supported-gitlab-environment-variables).
+> When running end-to-end tests as part of the GitLab's continuous integration process [a license is already set as an environment variable](https://gitlab.com/gitlab-org/gitlab-ee/blob/1a60d926740db10e3b5724713285780a4f470531/qa/qa/ee/strategy.rb#L20). For running tests locally you can set up such license by following the document [what tests can be run?](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/what_tests_can_be_run.md), based on the [supported GitLab environment variables](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/what_tests_can_be_run.md#supported-gitlab-environment-variables).
 
 #### Implementation
 
