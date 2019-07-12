@@ -11,7 +11,7 @@ module QA
           expect(menu).to have_personal_area
         end
 
-        Support::Retrier.retry_until(reload: false, sleep_interval: 0.5) do
+        Support::Retrier.retry_until(sleep_interval: 0.5) do
           Page::Main::Menu.perform(&:sign_out)
 
           Page::Main::Login.perform(&:has_sign_in_tab?)
