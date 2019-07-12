@@ -24,8 +24,8 @@ module QA
         end
       end
 
-      def retry_until(max_attempts: 3, reload: false, sleep_interval: 0)
-        QA::Runtime::Logger.debug("with retry_until: max_attempts #{max_attempts}; sleep_interval #{sleep_interval}; reload:#{reload}")
+      def retry_until(max_attempts: 3, reload_page: nil, sleep_interval: 0)
+        QA::Runtime::Logger.debug("with retry_until: max_attempts #{max_attempts}; sleep_interval #{sleep_interval}; reload_page:#{reload_page}")
         attempts = 0
 
         while attempts < max_attempts
@@ -35,7 +35,7 @@ module QA
 
           sleep sleep_interval
 
-          refresh if reload
+          reload_page.refresh if reload_page
 
           attempts += 1
         end
