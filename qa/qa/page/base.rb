@@ -26,7 +26,7 @@ module QA
       end
 
       def retry_until(max_attempts: 3, reload: false, sleep_interval: 0)
-        QA::Support::Retrier.retry_until(max_attempts: max_attempts, reload: reload, sleep_interval: sleep_interval) do
+        QA::Support::Retrier.retry_until(max_attempts: max_attempts, reload_page: (reload && self), sleep_interval: sleep_interval) do
           yield
         end
       end
