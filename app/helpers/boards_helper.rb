@@ -99,7 +99,11 @@ module BoardsHelper
     recent_project_boards_path(@project) if current_board_parent.is_a?(Project)
   end
 
+  def serializer
+    CurrentBoardSerializer.new
+  end
+
   def current_board_json
-    board.to_json
+    serializer.represent(board).as_json
   end
 end
