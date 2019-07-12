@@ -11,15 +11,18 @@ module MergeRequests
       # https://gitlab.com/gitlab-org/gitlab-ce/issues/53658
       merge_quick_actions_into_params!(merge_request, only: [:target_branch])
       merge_request.merge_params['force_remove_source_branch'] = params.delete(:force_remove_source_branch) if params.has_key?(:force_remove_source_branch)
-      merge_request.assign_attributes(params)
 
+      # Assign the projects first so we can use policies for `filter_params`
       merge_request.author = current_user
+      merge_request.source_project = find_source_project
+      merge_request.target_project = find_target_project
+
+      filter_params(merge_request)
+      merge_request.assign_attributes(params.to_h.compact)
+
       merge_request.compare_commits = []
-      merge_request.source_project  = find_source_project
-      merge_request.target_project  = find_target_project
-      merge_request.target_branch   = find_target_branch
-      merge_request.can_be_created  = projects_and_branches_valid?
-      ensure_milestone_available(merge_request)
+      merge_request.target_branch = find_target_branch
+      merge_request.can_be_created = projects_and_branches_valid?
 
       # compare branches only if branches are valid, otherwise
       # compare_branches may raise an error
@@ -50,12 +53,14 @@ module MergeRequests
              to: :merge_request
 
     def find_source_project
+      source_project = project_from_params(:source_project)
       return source_project if source_project.present? && can?(current_user, :create_merge_request_from, source_project)
 
       project
     end
 
     def find_target_project
+      target_project = project_from_params(:target_project)
       return target_project if target_project.present? && can?(current_user, :create_merge_request_in, target_project)
 
       target_project = project.default_merge_request_target
@@ -63,6 +68,17 @@ module MergeRequests
       return target_project if target_project.present? && can?(current_user, :create_merge_request_in, target_project)
 
       project
+    end
+
+    def project_from_params(param_name)
+      project_from_params = params.delete(param_name)
+
+      id_param_name = :"#{param_name}_id"
+      if project_from_params.nil? && params[id_param_name]
+        project_from_params = Project.find_by_id(params.delete(id_param_name))
+      end
+
+      project_from_params
     end
 
     def find_target_branch
