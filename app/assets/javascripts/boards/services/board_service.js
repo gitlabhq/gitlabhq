@@ -62,6 +62,22 @@ export default class BoardService {
   static toggleIssueSubscription(endpoint) {
     return boardsStore.toggleIssueSubscription(endpoint);
   }
+
+  allBoards() {
+    return boardsStore.allBoards();
+  }
+
+  recentBoards() {
+    return boardsStore.recentBoards();
+  }
+
+  createBoard(board) {
+    return boardsStore.createBoard(board);
+  }
+
+  deleteBoard({ id }) {
+    return boardsStore.deleteBoard({ id });
+  }
 }
 
 window.BoardService = BoardService;
