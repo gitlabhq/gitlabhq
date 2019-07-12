@@ -1,0 +1,6 @@
+---
+title: change the use of boardService in favor of boardsStore on footer for the board
+  component
+merge_request: 30616
+author: eduarmreyes
+type: other
