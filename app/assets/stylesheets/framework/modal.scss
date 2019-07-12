@@ -29,6 +29,13 @@
       padding-right: $modal-header-padding-x;
     }
   }
+
+  .close {
+    font-weight: $gl-font-weight-normal;
+    line-height: $gl-line-height;
+    color: $gray-900;
+    opacity: 1;
+  }
 }
 
 .modal-body {
