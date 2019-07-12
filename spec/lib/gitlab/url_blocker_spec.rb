@@ -353,7 +353,7 @@ describe Gitlab::UrlBlocker do
     end
   end
 
-  describe '#validate_hostname!' do
+  describe '#validate_hostname' do
     let(:ip_addresses) do
       [
         '2001:db8:1f70::999:de8:7648:6e8',
@@ -378,7 +378,7 @@ describe Gitlab::UrlBlocker do
 
     it 'does not raise error for valid Ip addresses' do
       ip_addresses.each do |ip|
-        expect { described_class.send(:validate_hostname!, ip) }.not_to raise_error
+        expect { described_class.send(:validate_hostname, ip) }.not_to raise_error
       end
     end
   end
