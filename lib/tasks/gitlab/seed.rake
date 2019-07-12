@@ -1,7 +1,9 @@
 namespace :gitlab do
   namespace :seed do
     desc "GitLab | Seed | Seeds issues"
-    task :issues, [:project_full_path] => :environment do |t, args|
+    task :issues, [:project_full_path, :backfill_weeks, :average_issues_per_week] => :environment do |t, args|
+      args.with_defaults(backfill_weeks: 5, average_issues_per_week: 2)
+
       projects =
         if args.project_full_path
           project = Project.find_by_full_path(args.project_full_path)
@@ -26,7 +28,8 @@ namespace :gitlab do
       projects.each do |project|
         puts "\nSeeding issues for the '#{project.full_path}' project"
         seeder = Quality::Seeders::Issues.new(project: project)
-        issues_created = seeder.seed(backfill_weeks: 5, average_issues_per_week: 2)
+        issues_created = seeder.seed(backfill_weeks: args.backfill_weeks.to_i,
+                                     average_issues_per_week: args.average_issues_per_week.to_i)
         puts "\n#{issues_created} issues created!"
       end
     end
