@@ -127,6 +127,58 @@ namespace :gitlab do
       end
     end
 
+    namespace :sessions do
+      desc "GitLab | Cleanup | Sessions | Clean ActiveSession lookup keys"
+      task active_sessions_lookup_keys: :gitlab_environment do
+        session_key_pattern = "#{Gitlab::Redis::SharedState::USER_SESSIONS_LOOKUP_NAMESPACE}:*"
+        last_save_check = Time.at(0)
+        wait_time = 10.seconds
+        cursor = 0
+        total_users_scanned = 0
+
+        Gitlab::Redis::SharedState.with do |redis|
+          begin
+            cursor, keys = redis.scan(cursor, match: session_key_pattern)
+            total_users_scanned += keys.count
+
+            if last_save_check < Time.now - 1.second
+              while redis.info('persistence')['rdb_bgsave_in_progress'] == '1'
+                puts "BGSAVE in progress, waiting #{wait_time} seconds"
+                sleep(wait_time)
+              end
+              last_save_check = Time.now
+            end
+
+            keys.each do |key|
+              user_id = key.split(':').last
+
+              lookup_key_count = redis.scard(key)
+
+              session_ids = ActiveSession.session_ids_for_user(user_id)
+              entries = ActiveSession.raw_active_session_entries(session_ids, user_id)
+              session_ids_and_entries = session_ids.zip(entries)
+
+              inactive_session_ids = session_ids_and_entries.map do |session_id, session|
+                session_id if session.nil?
+              end.compact
+
+              redis.pipelined do |conn|
+                inactive_session_ids.each do |session_id|
+                  conn.srem(key, session_id)
+                end
+              end
+
+              if inactive_session_ids
+                puts "deleted #{inactive_session_ids.count} out of #{lookup_key_count} lookup keys for User ##{user_id}"
+              end
+            end
+          end while cursor.to_i != 0
+
+          puts "--- All done! Total number of scanned users: #{total_users_scanned}"
+        end
+      end
+    end
+
     def remove?
       ENV['REMOVE'] == 'true'
     end

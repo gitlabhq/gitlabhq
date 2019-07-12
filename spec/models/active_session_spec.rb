@@ -114,7 +114,7 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_shared_state do
         redis.sadd("session:lookup:user:gitlab:#{user.id}", session_ids)
       end
 
-      expect(ActiveSession.session_ids_for_user(user)).to eq(session_ids)
+      expect(ActiveSession.session_ids_for_user(user.id)).to eq(session_ids)
     end
   end
 

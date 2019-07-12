@@ -185,4 +185,34 @@ describe 'gitlab:cleanup rake tasks' do
       end
     end
   end
+
+  context 'sessions' do
+    describe 'gitlab:cleanup:sessions:active_sessions_lookup_keys', :clean_gitlab_redis_shared_state do
+      subject(:rake_task) { run_rake_task('gitlab:cleanup:sessions:active_sessions_lookup_keys') }
+
+      let!(:user) { create(:user) }
+      let(:existing_session_id) { '5' }
+
+      before do
+        Gitlab::Redis::SharedState.with do |redis|
+          redis.set("session:user:gitlab:#{user.id}:#{existing_session_id}",
+                    Marshal.dump(true))
+          redis.sadd("session:lookup:user:gitlab:#{user.id}", (1..10).to_a)
+        end
+      end
+
+      it 'runs the task without errors' do
+        expect { rake_task }.not_to raise_error
+      end
+
+      it 'removes expired active session lookup keys' do
+        Gitlab::Redis::SharedState.with do |redis|
+          lookup_key = "session:lookup:user:gitlab:#{user.id}"
+          expect { subject }.to change { redis.scard(lookup_key) }.from(10).to(1)
+          expect(redis.smembers("session:lookup:user:gitlab:#{user.id}")).to(
+            eql([existing_session_id]))
+        end
+      end
+    end
+  end
 end
