@@ -690,10 +690,6 @@ class Project < ApplicationRecord
     { scope: :project, status: auto_devops&.enabled || Feature.enabled?(:force_autodevops_on_by_default, self) }
   end
 
-  def multiple_mr_assignees_enabled?
-    Feature.enabled?(:multiple_merge_request_assignees, self)
-  end
-
   def daily_statistics_enabled?
     Feature.enabled?(:project_daily_statistics, self, default_enabled: true)
   end
