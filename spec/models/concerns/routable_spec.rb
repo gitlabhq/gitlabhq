@@ -15,23 +15,46 @@ describe Group, 'Routable' do
   end
 
   describe 'Callbacks' do
-    it 'creates route record on create' do
-      expect(group.route.path).to eq(group.path)
-      expect(group.route.name).to eq(group.name)
+    context 'for a group' do
+      it 'creates route record on create' do
+        expect(group.route.path).to eq(group.path)
+        expect(group.route.name).to eq(group.name)
+      end
+
+      it 'updates route record on path change' do
+        group.update(path: 'wow', name: 'much')
+
+        expect(group.route.path).to eq('wow')
+        expect(group.route.name).to eq('much')
+      end
+
+      it 'ensure route path uniqueness across different objects' do
+        create(:group, parent: group, path: 'xyz')
+        duplicate = build(:project, namespace: group, path: 'xyz')
+
+        expect { duplicate.save! }.to raise_error(ActiveRecord::RecordInvalid, 'Validation failed: Path has already been taken')
+      end
     end
 
-    it 'updates route record on path change' do
-      group.update(path: 'wow', name: 'much')
+    context 'for a user' do
+      let(:user) { create(:user, username: 'jane', name: "Jane Doe") }
 
-      expect(group.route.path).to eq('wow')
-      expect(group.route.name).to eq('much')
-    end
+      it 'creates the route for a record on create' do
+        expect(user.namespace.name).to eq('Jane Doe')
+        expect(user.namespace.path).to eq('jane')
+      end
 
-    it 'ensure route path uniqueness across different objects' do
-      create(:group, parent: group, path: 'xyz')
-      duplicate = build(:project, namespace: group, path: 'xyz')
+      it 'updates routes and nested routes on name change' do
+        project = create(:project, path: 'work-stuff', name: 'Work stuff', namespace: user.namespace)
 
-      expect { duplicate.save! }.to raise_error(ActiveRecord::RecordInvalid, 'Validation failed: Path has already been taken')
+        user.update!(username: 'jaen', name: 'Jaen Did')
+        project.reload
+
+        expect(user.namespace.name).to eq('Jaen Did')
+        expect(user.namespace.path).to eq('jaen')
+        expect(project.full_name).to eq('Jaen Did / Work stuff')
+        expect(project.full_path).to eq('jaen/work-stuff')
+      end
     end
   end
 

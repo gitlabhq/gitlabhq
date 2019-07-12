@@ -2931,7 +2931,7 @@ describe User do
       let(:user) { create(:user, username: username) }
 
       context 'when the user is updated' do
-        context 'when the username is changed' do
+        context 'when the username or name is changed' do
           let(:new_username) { 'bar' }
 
           it 'changes the namespace (just to compare to when username is not changed)' do
@@ -2942,16 +2942,24 @@ describe User do
             end.to change { user.namespace.updated_at }
           end
 
-          it 'updates the namespace name' do
-            user.update!(username: new_username)
-
-            expect(user.namespace.name).to eq(new_username)
-          end
-
-          it 'updates the namespace path' do
+          it 'updates the namespace path when the username was changed' do
             user.update!(username: new_username)
 
             expect(user.namespace.path).to eq(new_username)
+          end
+
+          it 'updates the namespace name if the name was changed' do
+            user.update!(name: 'New name')
+
+            expect(user.namespace.name).to eq('New name')
+          end
+
+          it 'updates nested routes for the namespace if the name was changed' do
+            project = create(:project, namespace: user.namespace)
+
+            user.update!(name: 'New name')
+
+            expect(project.route.reload.name).to include('New name')
           end
 
           context 'when there is a validation error (namespace name taken) while updating namespace' do

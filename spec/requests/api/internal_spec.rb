@@ -474,7 +474,7 @@ describe API::Internal do
           'ssh',
           {
             authentication_abilities: [:read_project, :download_code, :push_code],
-            namespace_path: project.namespace.name,
+            namespace_path: project.namespace.path,
             project_path: project.path,
             redirected_path: nil
           }
@@ -753,7 +753,7 @@ describe API::Internal do
   end
 
   describe 'GET /internal/merge_request_urls' do
-    let(:repo_name) { "#{project.namespace.name}/#{project.path}" }
+    let(:repo_name) { "#{project.full_path}" }
     let(:changes) { URI.escape("#{Gitlab::Git::BLANK_SHA} 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/new_branch") }
 
     before do
@@ -765,7 +765,7 @@ describe API::Internal do
 
       expect(json_response).to match [{
         "branch_name" => "new_branch",
-        "url" => "http://#{Gitlab.config.gitlab.host}/#{project.namespace.name}/#{project.path}/merge_requests/new?merge_request%5Bsource_branch%5D=new_branch",
+        "url" => "http://#{Gitlab.config.gitlab.host}/#{project.full_path}/merge_requests/new?merge_request%5Bsource_branch%5D=new_branch",
         "new_merge_request" => true
       }]
     end
@@ -786,7 +786,7 @@ describe API::Internal do
 
         expect(json_response).to match [{
           "branch_name" => "new_branch",
-          "url" => "http://#{Gitlab.config.gitlab.host}/#{project.namespace.name}/#{project.path}/merge_requests/new?merge_request%5Bsource_branch%5D=new_branch",
+          "url" => "http://#{Gitlab.config.gitlab.host}/#{project.full_path}/merge_requests/new?merge_request%5Bsource_branch%5D=new_branch",
           "new_merge_request" => true
         }]
       end
@@ -927,7 +927,7 @@ describe API::Internal do
 
       expect(json_response['merge_request_urls']).to match [{
         "branch_name" => branch_name,
-        "url" => "http://#{Gitlab.config.gitlab.host}/#{project.namespace.name}/#{project.path}/merge_requests/new?merge_request%5Bsource_branch%5D=#{branch_name}",
+        "url" => "http://#{Gitlab.config.gitlab.host}/#{project.full_path}/merge_requests/new?merge_request%5Bsource_branch%5D=#{branch_name}",
         "new_merge_request" => true
       }]
     end
@@ -970,7 +970,7 @@ describe API::Internal do
 
         expect(json_response['merge_request_urls']).to match [{
           'branch_name' => branch_name,
-          'url' => "http://#{Gitlab.config.gitlab.host}/#{project.namespace.name}/#{project.path}/merge_requests/1",
+          'url' => "http://#{Gitlab.config.gitlab.host}/#{project.full_path}/merge_requests/1",
           'new_merge_request' => false
         }]
       end

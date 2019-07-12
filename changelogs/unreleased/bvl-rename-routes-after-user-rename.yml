@@ -1,0 +1,5 @@
+---
+title: Update a user's routes after updating their name
+merge_request: 23272
+author:
+type: fixed

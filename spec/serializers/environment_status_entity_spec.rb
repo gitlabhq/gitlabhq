@@ -70,7 +70,7 @@ describe EnvironmentStatusEntity do
 
       it 'returns metrics url' do
         expect(subject[:metrics_url])
-          .to eq("/#{project.namespace.name}/#{project.name}/environments/#{environment.id}/deployments/#{deployment.iid}/metrics")
+          .to eq("/#{project.full_path}/environments/#{environment.id}/deployments/#{deployment.iid}/metrics")
       end
     end
 
