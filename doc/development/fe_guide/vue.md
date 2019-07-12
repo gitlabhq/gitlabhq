@@ -34,6 +34,7 @@ new_feature
 │  └── new_feature_store.js
 ├── index.js
 ```
+
 _For consistency purposes, we recommend you to follow the same structure._
 
 Let's look into each of them:

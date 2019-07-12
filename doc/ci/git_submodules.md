@@ -69,12 +69,14 @@ correctly with your CI jobs:
 1. Next, if you are using `gitlab-runner` v1.10+, you can set the
    `GIT_SUBMODULE_STRATEGY` variable to either `normal` or `recursive` to tell
    the runner to fetch your submodules before the job:
-    ```yaml
-    variables:
-      GIT_SUBMODULE_STRATEGY: recursive
-    ```
-    See the [`.gitlab-ci.yml` reference](yaml/README.md#git-submodule-strategy)
-    for more details about `GIT_SUBMODULE_STRATEGY`.
+
+   ```yaml
+   variables:
+     GIT_SUBMODULE_STRATEGY: recursive
+   ```
+
+   See the [`.gitlab-ci.yml` reference](yaml/README.md#git-submodule-strategy)
+   for more details about `GIT_SUBMODULE_STRATEGY`.
 
 1. If you are using an older version of `gitlab-runner`, then use
    `git submodule sync/update` in `before_script`:

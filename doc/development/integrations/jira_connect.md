@@ -30,9 +30,11 @@ The following are required to install and test the app:
    1. In the **From this URL** field, provide a link to the app descriptor. The host and port must point to your GitLab instance.
 
       For example:
+
       ```
       https://xxxx.serveo.net/-/jira_connect/app_descriptor.json
       ```
+
    1. Click **Upload**.
 
    If the install was successful, you should see the **GitLab for Jira** app under **Manage apps**.
