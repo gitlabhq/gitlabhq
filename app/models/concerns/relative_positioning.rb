@@ -179,7 +179,7 @@ module RelativePositioning
     relation = yield relation if block_given?
 
     relation
-      .pluck(self.class.parent_column, "#{calculation}(relative_position) AS position")
+      .pluck(self.class.parent_column, Arel.sql("#{calculation}(relative_position) AS position"))
       .first&.
       last
   end

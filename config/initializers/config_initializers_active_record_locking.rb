@@ -22,10 +22,11 @@ module ActiveRecord
           # Patched because when `lock_version` is read as `0`, it may actually be `NULL` in the DB.
           possible_previous_lock_value = previous_lock_value.to_i == 0 ? [nil, 0] : previous_lock_value
 
-          affected_rows = self.class.unscoped._update_record(
-            arel_attributes_with_values(attribute_names),
-            self.class.primary_key => id_in_database,
-            locking_column => possible_previous_lock_value
+          affected_rows = self.class.unscoped.where(
+            locking_column => possible_previous_lock_value,
+            self.class.primary_key => id_in_database
+          ).update_all(
+            attributes_with_values_for_update(attribute_names)
           )
 
           if affected_rows != 1

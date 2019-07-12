@@ -1,9 +1,22 @@
 module ActiveRecord
   module Associations
     class Preloader
+      class NullPreloader
+        def self.new(klass, owners, reflection, preload_scope)
+          self
+        end
+
+        def self.run(preloader)
+        end
+
+        def self.preloaded_records
+          []
+        end
+      end
+
       module NoCommitPreloader
-        def preloader_for(reflection, owners, rhs_klass)
-          return NullPreloader if rhs_klass == ::Commit
+        def preloader_for(reflection, owners)
+          return NullPreloader if owners.first.association(reflection.name).klass == ::Commit
 
           super
         end

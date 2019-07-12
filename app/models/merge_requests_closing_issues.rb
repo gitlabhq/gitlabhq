@@ -25,7 +25,7 @@ class MergeRequestsClosingIssues < ApplicationRecord
 
   class << self
     def count_for_collection(ids, current_user)
-      closing_merge_requests(ids, current_user).group(:issue_id).pluck('issue_id', 'COUNT(*) as count')
+      closing_merge_requests(ids, current_user).group(:issue_id).pluck('issue_id', Arel.sql('COUNT(*) as count'))
     end
 
     def count_for_issue(id, current_user)

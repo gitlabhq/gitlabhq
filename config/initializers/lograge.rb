@@ -18,7 +18,7 @@ unless Sidekiq.server?
         .map { |k, v| { key: k, value: v } }
 
       payload = {
-        time: event.time.utc.iso8601(3),
+        time: Time.now.utc.iso8601(3),
         params: params,
         remote_ip: event.payload[:remote_ip],
         user_id: event.payload[:user_id],

@@ -33,22 +33,24 @@ module HasStatus
       canceled = scope_relevant.canceled.select('count(*)').to_sql
       warnings = scope_warnings.select('count(*) > 0').to_sql.presence || 'false'
 
-      "(CASE
-        WHEN (#{builds})=(#{skipped}) AND (#{warnings}) THEN 'success'
-        WHEN (#{builds})=(#{skipped}) THEN 'skipped'
-        WHEN (#{builds})=(#{success}) THEN 'success'
-        WHEN (#{builds})=(#{created}) THEN 'created'
-        WHEN (#{builds})=(#{preparing}) THEN 'preparing'
-        WHEN (#{builds})=(#{success})+(#{skipped}) THEN 'success'
-        WHEN (#{builds})=(#{success})+(#{skipped})+(#{canceled}) THEN 'canceled'
-        WHEN (#{builds})=(#{created})+(#{skipped})+(#{pending}) THEN 'pending'
-        WHEN (#{running})+(#{pending})>0 THEN 'running'
-        WHEN (#{manual})>0 THEN 'manual'
-        WHEN (#{scheduled})>0 THEN 'scheduled'
-        WHEN (#{preparing})>0 THEN 'preparing'
-        WHEN (#{created})>0 THEN 'running'
-        ELSE 'failed'
-      END)"
+      Arel.sql(
+        "(CASE
+          WHEN (#{builds})=(#{skipped}) AND (#{warnings}) THEN 'success'
+          WHEN (#{builds})=(#{skipped}) THEN 'skipped'
+          WHEN (#{builds})=(#{success}) THEN 'success'
+          WHEN (#{builds})=(#{created}) THEN 'created'
+          WHEN (#{builds})=(#{preparing}) THEN 'preparing'
+          WHEN (#{builds})=(#{success})+(#{skipped}) THEN 'success'
+          WHEN (#{builds})=(#{success})+(#{skipped})+(#{canceled}) THEN 'canceled'
+          WHEN (#{builds})=(#{created})+(#{skipped})+(#{pending}) THEN 'pending'
+          WHEN (#{running})+(#{pending})>0 THEN 'running'
+          WHEN (#{manual})>0 THEN 'manual'
+          WHEN (#{scheduled})>0 THEN 'scheduled'
+          WHEN (#{preparing})>0 THEN 'preparing'
+          WHEN (#{created})>0 THEN 'running'
+          ELSE 'failed'
+        END)"
+      )
     end
 
     def status
@@ -88,22 +90,22 @@ module HasStatus
       state :scheduled, value: 'scheduled'
     end
 
-    scope :created, -> { where(status: 'created') }
-    scope :preparing, -> { where(status: 'preparing') }
-    scope :relevant, -> { where(status: AVAILABLE_STATUSES - ['created']) }
-    scope :running, -> { where(status: 'running') }
-    scope :pending, -> { where(status: 'pending') }
-    scope :success, -> { where(status: 'success') }
-    scope :failed, -> { where(status: 'failed') }
-    scope :canceled, -> { where(status: 'canceled') }
-    scope :skipped, -> { where(status: 'skipped') }
-    scope :manual, -> { where(status: 'manual') }
-    scope :scheduled, -> { where(status: 'scheduled') }
-    scope :alive, -> { where(status: [:created, :preparing, :pending, :running]) }
-    scope :created_or_pending, -> { where(status: [:created, :pending]) }
-    scope :running_or_pending, -> { where(status: [:running, :pending]) }
-    scope :finished, -> { where(status: [:success, :failed, :canceled]) }
-    scope :failed_or_canceled, -> { where(status: [:failed, :canceled]) }
+    scope :created, -> { with_status(:created) }
+    scope :preparing, -> { with_status(:preparing) }
+    scope :relevant, -> { without_status(:created) }
+    scope :running, -> { with_status(:running) }
+    scope :pending, -> { with_status(:pending) }
+    scope :success, -> { with_status(:success) }
+    scope :failed, -> { with_status(:failed) }
+    scope :canceled, -> { with_status(:canceled) }
+    scope :skipped, -> { with_status(:skipped) }
+    scope :manual, -> { with_status(:manual) }
+    scope :scheduled, -> { with_status(:scheduled) }
+    scope :alive, -> { with_status(:created, :preparing, :pending, :running) }
+    scope :created_or_pending, -> { with_status(:created, :pending) }
+    scope :running_or_pending, -> { with_status(:running, :pending) }
+    scope :finished, -> { with_status(:success, :failed, :canceled) }
+    scope :failed_or_canceled, -> { with_status(:failed, :canceled) }
 
     scope :cancelable, -> do
       where(status: [:running, :preparing, :pending, :created, :scheduled])

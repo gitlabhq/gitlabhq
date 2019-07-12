@@ -28,7 +28,7 @@ module RequiresWhitelistedMonitoringClient
   def valid_token?
     token = params[:token].presence || request.headers['TOKEN']
     token.present? &&
-      ActiveSupport::SecurityUtils.variable_size_secure_compare(
+      ActiveSupport::SecurityUtils.secure_compare(
         token,
         Gitlab::CurrentSettings.health_check_access_token
       )

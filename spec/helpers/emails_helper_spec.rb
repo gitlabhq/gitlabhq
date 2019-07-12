@@ -103,7 +103,7 @@ describe EmailsHelper do
         appearance = create :appearance, header_logo: fixture_file_upload('spec/fixtures/dk.png')
 
         expect(header_logo).to eq(
-          %{<img style="height: 50px" src="/uploads/-/system/appearance/header_logo/#{appearance.id}/dk.png" alt="Dk" />}
+          %{<img style="height: 50px" src="/uploads/-/system/appearance/header_logo/#{appearance.id}/dk.png" />}
         )
       end
     end

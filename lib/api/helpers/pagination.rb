@@ -205,7 +205,9 @@ module API
 
           limited_total_count = pagination_data.total_count_with_limit
           if limited_total_count > Kaminari::ActiveRecordRelationMethods::MAX_COUNT_LIMIT
-            pagination_data.without_count
+            # The call to `total_count_with_limit` memoizes `@arel` because of a call to `references_eager_loaded_tables?`
+            # We need to call `reset` because `without_count` relies on `@arel` being unmemoized
+            pagination_data.reset.without_count
           else
             pagination_data
           end
