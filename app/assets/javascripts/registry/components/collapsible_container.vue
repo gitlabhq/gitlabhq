@@ -84,7 +84,7 @@ export default {
           v-gl-modal="modalId"
           :title="s__('ContainerRegistry|Remove repository')"
           :aria-label="s__('ContainerRegistry|Remove repository')"
-          class="js-remove-repo"
+          class="js-remove-repo btn-inverted"
           variant="danger"
         >
           <icon name="remove" />

@@ -3132,10 +3132,16 @@ msgstr ""
 msgid "ContainerRegistry|Remove image"
 msgstr ""
 
-msgid "ContainerRegistry|Remove image and tags"
+msgid "ContainerRegistry|Remove image(s) and tags"
+msgstr ""
+
+msgid "ContainerRegistry|Remove images"
 msgstr ""
 
 msgid "ContainerRegistry|Remove repository"
+msgstr ""
+
+msgid "ContainerRegistry|Remove selected images"
 msgstr ""
 
 msgid "ContainerRegistry|Size"
@@ -3157,6 +3163,9 @@ msgid "ContainerRegistry|With the Container Registry, every project can have its
 msgstr ""
 
 msgid "ContainerRegistry|With the Docker Container Registry integrated into GitLab, every project can have its own space to store its Docker images. %{docLinkStart}More Information%{docLinkEnd}"
+msgstr ""
+
+msgid "ContainerRegistry|You are about to delete <b>%{count}</b> images. This will delete the images and all tags pointing to them."
 msgstr ""
 
 msgid "ContainerRegistry|You are about to delete the image <b>%{title}</b>. This will delete the image and all tags pointing to this image."

@@ -31,4 +31,27 @@
 
 .table.tags {
   margin-bottom: 0;
+
+  th {
+    height: 55px;
+  }
+
+  tr {
+    &:hover {
+      td {
+        &.action-buttons {
+          opacity: 1;
+        }
+      }
+    }
+
+    td.check {
+      padding-right: $gl-padding;
+      width: 5%;
+    }
+
+    td.action-buttons {
+      opacity: 0;
+    }
+  }
 }

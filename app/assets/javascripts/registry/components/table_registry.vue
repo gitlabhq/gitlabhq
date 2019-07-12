@@ -1,7 +1,13 @@
 <script>
 import { mapActions } from 'vuex';
-import { GlButton, GlTooltipDirective, GlModal, GlModalDirective } from '@gitlab/ui';
-import { n__ } from '../../locale';
+import {
+  GlButton,
+  GlFormCheckbox,
+  GlTooltipDirective,
+  GlModal,
+  GlModalDirective,
+} from '@gitlab/ui';
+import { n__, s__, sprintf } from '../../locale';
 import createFlash from '../../flash';
 import ClipboardButton from '../../vue_shared/components/clipboard_button.vue';
 import TablePagination from '../../vue_shared/components/pagination/table_pagination.vue';
@@ -14,6 +20,7 @@ export default {
   components: {
     ClipboardButton,
     TablePagination,
+    GlFormCheckbox,
     GlButton,
     Icon,
     GlModal,
@@ -31,13 +38,43 @@ export default {
   },
   data() {
     return {
-      itemToBeDeleted: null,
+      singleItemToBeDeleted: null,
+      itemsToBeDeleted: [],
       modalId: `confirm-image-deletion-modal-${this.repo.id}`,
+      selectAllChecked: false,
     };
   },
   computed: {
     shouldRenderPagination() {
       return this.repo.pagination.total > this.repo.pagination.perPage;
+    },
+    modalTitle() {
+      if (this.singleItemToBeDeleted !== null || this.itemsToBeDeleted.length === 1) {
+        return s__('ContainerRegistry|Remove image');
+      }
+      return s__('ContainerRegistry|Remove images');
+    },
+    modalDescription() {
+      const selectedCount = this.itemsToBeDeleted.length;
+
+      if (this.singleItemToBeDeleted !== null || selectedCount === 1) {
+        const { tag } =
+          this.singleItemToBeDeleted !== null
+            ? this.repo.list[this.singleItemToBeDeleted]
+            : this.repo.list[this.itemsToBeDeleted[0]];
+
+        return sprintf(
+          s__(`ContainerRegistry|You are about to delete the image <b>%{title}</b>. This will
+          delete the image and all tags pointing to this image.`),
+          { title: `${this.repo.name}:${tag}` },
+        );
+      }
+
+      return sprintf(
+        s__(`ContainerRegistry|You are about to delete <b>%{count}</b> images. This will
+          delete the images and all tags pointing to them.`),
+        { count: selectedCount },
+      );
     },
   },
   methods: {
@@ -48,13 +85,32 @@ export default {
     formatSize(size) {
       return numberToHumanSize(size);
     },
-    setItemToBeDeleted(item) {
-      this.itemToBeDeleted = item;
+    setSingleItemToBeDeleted(idx) {
+      this.singleItemToBeDeleted = idx;
+    },
+    resetSingleItemToBeDeleted() {
+      this.singleItemToBeDeleted = null;
     },
     handleDeleteRegistry() {
-      const { itemToBeDeleted } = this;
-      this.itemToBeDeleted = null;
-      this.deleteItem(itemToBeDeleted)
+      let { itemsToBeDeleted } = this;
+      this.itemsToBeDeleted = [];
+
+      if (this.singleItemToBeDeleted !== null) {
+        const { singleItemToBeDeleted } = this;
+        this.singleItemToBeDeleted = null;
+        itemsToBeDeleted = [singleItemToBeDeleted];
+      }
+
+      const deleteActions = itemsToBeDeleted.map(
+        x =>
+          new Promise((resolve, reject) => {
+            this.deleteItem(this.repo.list[x])
+              .then(resolve)
+              .catch(reject);
+          }),
+      );
+
+      Promise.all(deleteActions)
         .then(() => this.fetchList({ repo: this.repo }))
         .catch(() => this.showError(errorMessagesTypes.DELETE_REGISTRY));
     },
@@ -66,6 +122,29 @@ export default {
     showError(message) {
       createFlash(errorMessages[message]);
     },
+    selectAll() {
+      if (!this.selectAllChecked) {
+        this.itemsToBeDeleted = this.repo.list.map((x, idx) => idx);
+        this.selectAllChecked = true;
+      } else {
+        this.itemsToBeDeleted = [];
+        this.selectAllChecked = false;
+      }
+    },
+    updateItemsToBeDeleted(idx) {
+      const delIdx = this.itemsToBeDeleted.findIndex(x => x === idx);
+
+      if (delIdx > -1) {
+        this.itemsToBeDeleted.splice(delIdx, 1);
+        this.selectAllChecked = false;
+      } else {
+        this.itemsToBeDeleted.push(idx);
+
+        if (this.itemsToBeDeleted.length === this.repo.list.length) {
+          this.selectAllChecked = true;
+        }
+      }
+    },
   },
 };
 </script>
@@ -74,15 +153,43 @@ export default {
     <table class="table tags">
       <thead>
         <tr>
+          <th>
+            <gl-form-checkbox
+              v-if="repo.canDelete"
+              class="js-select-all-checkbox"
+              :checked="selectAllChecked"
+              @change="selectAll"
+            />
+          </th>
           <th>{{ s__('ContainerRegistry|Tag') }}</th>
           <th>{{ s__('ContainerRegistry|Tag ID') }}</th>
           <th>{{ s__('ContainerRegistry|Size') }}</th>
           <th>{{ s__('ContainerRegistry|Last Updated') }}</th>
-          <th></th>
+          <th>
+            <gl-button
+              v-if="repo.canDelete"
+              v-gl-tooltip
+              v-gl-modal="modalId"
+              :disabled="!itemsToBeDeleted || itemsToBeDeleted.length === 0"
+              class="js-delete-registry float-right"
+              variant="danger"
+              :title="s__('ContainerRegistry|Remove selected images')"
+              :aria-label="s__('ContainerRegistry|Remove selected images')"
+              ><icon name="remove"
+            /></gl-button>
+          </th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="item in repo.list" :key="item.tag">
+        <tr v-for="(item, idx) in repo.list" :key="item.tag">
+          <td class="check">
+            <gl-form-checkbox
+              v-if="item.canDelete"
+              class="js-select-checkbox"
+              :checked="itemsToBeDeleted && itemsToBeDeleted.includes(idx)"
+              @change="updateItemsToBeDeleted(idx)"
+            />
+          </td>
           <td class="monospace">
             {{ item.tag }}
             <clipboard-button
@@ -111,16 +218,15 @@ export default {
             </span>
           </td>
 
-          <td class="content">
+          <td class="content action-buttons">
             <gl-button
               v-if="item.canDelete"
-              v-gl-tooltip
               v-gl-modal="modalId"
               :title="s__('ContainerRegistry|Remove image')"
               :aria-label="s__('ContainerRegistry|Remove image')"
               variant="danger"
-              class="js-delete-registry d-none d-sm-block float-right"
-              @click="setItemToBeDeleted(item)"
+              class="js-delete-registry-row float-right btn-inverted btn-border-color btn-icon"
+              @click="setSingleItemToBeDeleted(idx)"
             >
               <icon name="remove" />
             </gl-button>
@@ -135,19 +241,15 @@ export default {
       :page-info="repo.pagination"
     />
 
-    <gl-modal :modal-id="modalId" ok-variant="danger" @ok="handleDeleteRegistry">
-      <template v-slot:modal-title>{{ s__('ContainerRegistry|Remove image') }}</template>
-      <template v-slot:modal-ok>{{ s__('ContainerRegistry|Remove image and tags') }}</template>
-      <p
-        v-html="
-          sprintf(
-            s__(
-              'ContainerRegistry|You are about to delete the image <b>%{title}</b>. This will delete the image and all tags pointing to this image.',
-            ),
-            { title: repo.name },
-          )
-        "
-      ></p>
+    <gl-modal
+      :modal-id="modalId"
+      ok-variant="danger"
+      @ok="handleDeleteRegistry"
+      @cancel="resetSingleItemToBeDeleted"
+    >
+      <template v-slot:modal-title>{{ modalTitle }}</template>
+      <template v-slot:modal-ok>{{ s__('ContainerRegistry|Remove image(s) and tags') }}</template>
+      <p v-html="modalDescription"></p>
     </gl-modal>
   </div>
 </template>
