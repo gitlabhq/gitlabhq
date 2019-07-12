@@ -1,10 +1,12 @@
 require 'spec_helper'
 
 describe BoardsHelper do
+  set(:project) { create(:project) }
+
   describe '#build_issue_link_base' do
     context 'project board' do
       it 'returns correct path for project board' do
-        @project = create(:project)
+        @project = project
         @board = create(:board, project: @project)
 
         expect(build_issue_link_base).to eq("/#{@project.namespace.path}/#{@project.path}/issues")
@@ -31,7 +33,6 @@ describe BoardsHelper do
 
   describe '#board_data' do
     let(:user) { create(:user) }
-    let(:project) { create(:project) }
     let(:board) { create(:board, project: project) }
 
     before do
@@ -44,6 +45,17 @@ describe BoardsHelper do
 
     it 'returns a board_lists_path as lists_endpoint' do
       expect(helper.board_data[:lists_endpoint]).to eq(board_lists_path(board))
+    end
+  end
+
+  describe '#current_board_json' do
+    let(:board_json) { helper.current_board_json }
+
+    it 'can serialise with a basic set of attributes' do
+      board = create(:board, project: project)
+      assign(:board, board)
+
+      expect(board_json).to match_schema('current-board')
     end
   end
 end
