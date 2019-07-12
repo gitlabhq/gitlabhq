@@ -974,7 +974,7 @@ review_app:
 stop_review_app:
   stage: deploy
   variables:
-    GIT_STRATEGY: none  
+    GIT_STRATEGY: none
   script: make delete-app
   when: manual
   environment:
@@ -2221,10 +2221,10 @@ spinach:
   script: rake spinach
 ```
 
-It's also possible to use multiple parents for `extends`.
-The algorithm used for merge is "closest scope wins", so keys
-from the last member will always shadow anything defined on other levels.
-For example:
+In GitLab 12.0 and later, it's also possible to use multiple parents for
+`extends`.  The algorithm used for merge is "closest scope wins", so
+keys from the last member will always shadow anything defined on other
+levels.  For example:
 
 ```yaml
 .only-important:
@@ -2644,7 +2644,7 @@ variables:
 
 The value of `GIT_CLONE_PATH` is expanded once into
 `$CI_BUILDS_DIR/go/src/namespace/project`, and results in failure
-because `$CI_BUILDS_DIR` is not expanded.   
+because `$CI_BUILDS_DIR` is not expanded.
 
 ## Special YAML features
 
