@@ -56,11 +56,11 @@ attribute. As a prerequisite, you must use an LDAP server that:
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
-    ```ruby
-    gitlab_rails['smartcard_enabled'] = true
-    gitlab_rails['smartcard_ca_file'] = "/etc/ssl/certs/CA.pem"
-    gitlab_rails['smartcard_client_certificate_required_port'] = 3444
-    ```
+   ```ruby
+   gitlab_rails['smartcard_enabled'] = true
+   gitlab_rails['smartcard_ca_file'] = "/etc/ssl/certs/CA.pem"
+   gitlab_rails['smartcard_client_certificate_required_port'] = 3444
+   ```
 
 1. Save the file and [reconfigure](../restart_gitlab.md#omnibus-gitlab-reconfigure)
    GitLab for the changes to take effect.
@@ -154,15 +154,15 @@ attribute. As a prerequisite, you must use an LDAP server that:
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
-    ```ruby
-    gitlab_rails['ldap_servers'] = YAML.load <<-EOS
-    main:
-      # snip...
-      # Enable smartcard authentication against the LDAP server. Valid values
-      # are "false", "optional", and "required".
-      smartcard_auth: optional
-    EOS
-    ```
+   ```ruby
+   gitlab_rails['ldap_servers'] = YAML.load <<-EOS
+   main:
+     # snip...
+     # Enable smartcard authentication against the LDAP server. Valid values
+     # are "false", "optional", and "required".
+     smartcard_auth: optional
+   EOS
+   ```
 
 1. Save the file and [reconfigure](../restart_gitlab.md#omnibus-gitlab-reconfigure)
    GitLab for the changes to take effect.
@@ -171,16 +171,16 @@ attribute. As a prerequisite, you must use an LDAP server that:
 
 1. Edit `config/gitlab.yml`:
 
-    ```yaml
-    production:
-      ldap:
-        servers:
-          main:
-            # snip...
-            # Enable smartcard authentication against the LDAP server. Valid values
-            # are "false", "optional", and "required".
-            smartcard_auth: optional
-    ```
+   ```yaml
+   production:
+     ldap:
+       servers:
+         main:
+           # snip...
+           # Enable smartcard authentication against the LDAP server. Valid values
+           # are "false", "optional", and "required".
+           smartcard_auth: optional
+   ```
 
 1. Save the file and [restart](../restart_gitlab.md#installations-from-source)
    GitLab for the changes to take effect.
@@ -191,9 +191,9 @@ attribute. As a prerequisite, you must use an LDAP server that:
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
-    ```ruby
-    gitlab_rails['smartcard_required_for_git_access'] = true
-    ```
+   ```ruby
+   gitlab_rails['smartcard_required_for_git_access'] = true
+   ```
 
 1. Save the file and [reconfigure](../restart_gitlab.md#omnibus-gitlab-reconfigure)
    GitLab for the changes to take effect.
@@ -202,13 +202,13 @@ attribute. As a prerequisite, you must use an LDAP server that:
 
 1. Edit `config/gitlab.yml`:
 
-    ```yaml
-    ## Smartcard authentication settings
-    smartcard:
-      # snip...
-      # Browser session with smartcard sign-in is required for Git access
-      required_for_git_access: true
-    ```
+   ```yaml
+   ## Smartcard authentication settings
+   smartcard:
+     # snip...
+     # Browser session with smartcard sign-in is required for Git access
+     required_for_git_access: true
+   ```
 
 1. Save the file and [restart](../restart_gitlab.md#installations-from-source)
    GitLab for the changes to take effect.

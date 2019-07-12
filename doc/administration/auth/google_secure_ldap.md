@@ -66,7 +66,7 @@ values obtained during the LDAP client configuration earlier:
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
-    ```ruby
+   ```ruby
    gitlab_rails['ldap_enabled'] = true
    gitlab_rails['ldap_servers'] = YAML.load <<-EOS # remember to close this block with 'EOS' below
      main: # 'main' is the GitLab 'provider ID' of this LDAP server
@@ -127,7 +127,7 @@ values obtained during the LDAP client configuration earlier:
            AcZSFJQjdg5BTyvdEDhaYUKGdRw=
            -----END PRIVATE KEY-----
    EOS
-    ```
+   ```
 
 1. Save the file and [reconfigure] GitLab for the changes to take effect.
 
@@ -137,7 +137,7 @@ values obtained during the LDAP client configuration earlier:
 
 1. Edit `config/gitlab.yml`:
 
-    ```yaml
+   ```yaml
    ldap:
      enabled: true
      servers:
