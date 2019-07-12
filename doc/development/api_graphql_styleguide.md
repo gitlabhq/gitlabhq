@@ -424,12 +424,8 @@ Will generate a field called `mergeRequestSetWip` that
 
 ### Authorizing resources
 
-To authorize resources inside a mutation, we can include the
-`Gitlab::Graphql::Authorize::AuthorizeResource` concern in the
-mutation.
-
-This allows us to provide the required abilities on the mutation like
-this:
+To authorize resources inside a mutation, we first provide the required
+ abilities on the mutation like this:
 
 ```ruby
 module Mutations

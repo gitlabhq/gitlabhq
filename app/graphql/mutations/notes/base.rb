@@ -3,8 +3,6 @@
 module Mutations
   module Notes
     class Base < BaseMutation
-      include Gitlab::Graphql::Authorize::AuthorizeResource
-
       field :note,
             Types::Notes::NoteType,
             null: true,
