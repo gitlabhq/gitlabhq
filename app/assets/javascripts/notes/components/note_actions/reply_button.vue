@@ -19,7 +19,7 @@ export default {
     <gl-button
       ref="button"
       v-gl-tooltip
-      class="note-action-button"
+      class="note-action-button js-note-action-reply"
       variant="transparent"
       :title="__('Reply to comment')"
       @click="$emit('startReplying')"
