@@ -18,6 +18,14 @@ module Gitlab
         execute("INSERT INTO merge_request_assignees (merge_request_id, user_id) #{select_sql}")
       end
 
+      def perform_all_sync(batch_size:)
+        MergeRequest.each_batch(of: batch_size) do |batch|
+          range = batch.pluck('MIN(id)', 'MAX(id)').first
+
+          perform(*range)
+        end
+      end
+
       private
 
       def merge_request_assignees_not_exists_clause
