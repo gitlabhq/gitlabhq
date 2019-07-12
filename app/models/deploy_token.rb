@@ -5,7 +5,7 @@ class DeployToken < ApplicationRecord
   include TokenAuthenticatable
   include PolicyActor
   include Gitlab::Utils::StrongMemoize
-  add_authentication_token_field :token
+  add_authentication_token_field :token, encrypted: :optional
 
   AVAILABLE_SCOPES = %i(read_repository read_registry).freeze
   GITLAB_DEPLOY_TOKEN_NAME = 'gitlab-deploy-token'.freeze
