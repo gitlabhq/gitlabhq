@@ -1,0 +1,21 @@
+#!/usr/bin/env ruby
+
+require 'csv'
+
+def join_csv_files(output_path, input_paths)
+  return if input_paths.empty?
+
+  input_csvs = input_paths.map do |input_path|
+    CSV.read(input_path, headers: true)
+  end
+
+  CSV.open(output_path, "w", headers: input_csvs.first.headers, write_headers: true) do |output_csv|
+    input_csvs.each do |input_csv|
+      input_csv.each do |line|
+        output_csv << line
+      end
+    end
+  end
+end
+
+join_csv_files('tmp/memory_test/report.csv', Dir['tmp/memory_test/*.csv'].sort)
