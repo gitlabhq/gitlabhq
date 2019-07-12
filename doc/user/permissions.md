@@ -209,14 +209,15 @@ group.
 | Create project in group                         |       |          | ✓         | ✓          | ✓     |
 | Create/edit/delete group milestones             |       |          | ✓         | ✓          | ✓     |
 | Enable/disable a dependency proxy **[PREMIUM]** |       |          | ✓         | ✓          | ✓     |
-| Create subgroup                                 |       |          |           | ✓ (1)        | ✓     |
+| Create subgroup                                 |       |          |           | ✓ (1)      | ✓     |
 | Edit group                                      |       |          |           |            | ✓     |
 | Manage group members                            |       |          |           |            | ✓     |
 | Remove group                                    |       |          |           |            | ✓     |
 | Delete group epic **(ULTIMATE)**                |       |          |           |            | ✓     |
 | View group Audit Events                         |       |          |           |            | ✓     |
 
-- (1): Groups can be set to allow either Owners or Owners and Maintainers to create subgroups
+- (1): Groups can be set to [allow either Owners or Owners and
+  Maintainers to create subgroups](group/subgroups/index.md#creating-a-subgroup)
 
 ### Subgroup permissions
 
