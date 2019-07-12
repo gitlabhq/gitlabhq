@@ -284,17 +284,28 @@ module Gitlab
     end
 
     # inside_transaction? will return true if the caller is running within a transaction. Handles special cases
-    # when running inside a test environment, in which the entire test is running with a DatabaseCleaner transaction
+    # when running inside a test environment, where tests may be wrapped in transactions
     def self.inside_transaction?
-      ActiveRecord::Base.connection.open_transactions > open_transactions_baseline
+      if Rails.env.test?
+        ActiveRecord::Base.connection.open_transactions > open_transactions_baseline
+      else
+        ActiveRecord::Base.connection.open_transactions > 0
+      end
+    end
+
+    # These methods that access @open_transactions_baseline are not thread-safe.
+    # These are fine though because we only call these in RSpec's main thread. If we decide to run
+    # specs multi-threaded, we would need to use something like ThreadGroup to keep track of this value
+    def self.set_open_transactions_baseline
+      @open_transactions_baseline = ActiveRecord::Base.connection.open_transactions
+    end
+
+    def self.reset_open_transactions_baseline
+      @open_transactions_baseline = 0
     end
 
     def self.open_transactions_baseline
-      if ::Rails.env.test?
-        return DatabaseCleaner.connections.count { |conn| conn.strategy.is_a?(DatabaseCleaner::ActiveRecord::Transaction) }
-      end
-
-      0
+      @open_transactions_baseline ||= 0
     end
     private_class_method :open_transactions_baseline
 

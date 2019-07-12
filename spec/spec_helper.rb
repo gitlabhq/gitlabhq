@@ -47,7 +47,7 @@ Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
 quality_level = Quality::TestLevel.new
 
 RSpec.configure do |config|
-  config.use_transactional_fixtures = false
+  config.use_transactional_fixtures = true
   config.use_instantiated_fixtures  = false
   config.fixture_path = Rails.root
 
@@ -289,6 +289,16 @@ RSpec.configure do |config|
 
   config.before(:each, :https_pages_disabled) do |_|
     allow(Gitlab.config.pages).to receive(:external_https).and_return(false)
+  end
+
+  # We can't use an `around` hook here because the wrapping transaction
+  # is not yet opened at the time that is triggered
+  config.prepend_before do
+    Gitlab::Database.set_open_transactions_baseline
+  end
+
+  config.append_after do
+    Gitlab::Database.reset_open_transactions_baseline
   end
 end
 
