@@ -11,7 +11,7 @@
 
 - if Gitlab.config.pages.external_https
 
-  - auto_ssl_available = ::Gitlab::LetsEncrypt.enabled?(@domain)
+  - auto_ssl_available = ::Gitlab::LetsEncrypt.enabled?
   - auto_ssl_enabled = @domain.auto_ssl_enabled?
   - auto_ssl_available_and_enabled = auto_ssl_available && auto_ssl_enabled
 
