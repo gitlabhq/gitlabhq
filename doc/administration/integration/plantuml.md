@@ -1,6 +1,7 @@
 # PlantUML & GitLab
 
-> [Introduced][ce-8537] in GitLab 8.16.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/8537) in
+> GitLab 8.16.
 
 When [PlantUML](http://plantuml.com) integration is enabled and configured in
 GitLab we are able to create simple diagrams in AsciiDoc and Markdown documents
@@ -15,7 +16,9 @@ server that will generate the diagrams.
 
 With Docker, you can just run a container like this:
 
-`docker run -d --name plantuml -p 8080:8080 plantuml/plantuml-server:tomcat`
+```sh
+docker run -d --name plantuml -p 8080:8080 plantuml/plantuml-server:tomcat
+```
 
 The **PlantUML URL** will be the hostname of the server running the container.
 
@@ -26,7 +29,7 @@ own PlantUML server is easy in Debian/Ubuntu distributions using Tomcat.
 
 First you need to create a `plantuml.war` file from the source code:
 
-```
+```sh
 sudo apt-get install graphviz openjdk-8-jdk git-core maven
 git clone https://github.com/plantuml/plantuml-server.git
 cd plantuml-server
@@ -36,7 +39,7 @@ mvn package
 The above sequence of commands will generate a WAR file that can be deployed
 using Tomcat:
 
-```
+```sh
 sudo apt-get install tomcat7
 sudo cp target/plantuml.war /var/lib/tomcat7/webapps/plantuml.war
 sudo chown tomcat7:tomcat7 /var/lib/tomcat7/webapps/plantuml.war
@@ -46,7 +49,7 @@ sudo service tomcat7 restart
 Once the Tomcat service restarts the PlantUML service will be ready and
 listening for requests on port 8080:
 
-```
+```text
 http://localhost:8080/plantuml
 ```
 
@@ -57,9 +60,10 @@ you can change these defaults by editing the `/etc/tomcat7/server.xml` file.
 You need to enable PlantUML integration from Settings under Admin Area. To do
 that, login with an Admin account and do following:
 
-- in GitLab go to **Admin Area**->**Settings**->**Integrations**->**PlantUML**
-- check **Enable PlantUML** checkbox
-- set the PlantUML instance as **PlantUML URL**
+- In GitLab, go to **Admin Area > Settings > Integrations**.
+- Expand the **PlantUML** section.
+- Check **Enable PlantUML** checkbox.
+- Set the PlantUML instance as **PlantUML URL**.
 
 ## Creating Diagrams
 
@@ -68,7 +72,6 @@ our AsciiDoc snippets, wikis and repos using delimited blocks:
 
 - **Markdown**
 
-  <pre>
   ````markdown
   ```plantuml
   Bob -> Alice : hello
@@ -78,23 +81,23 @@ our AsciiDoc snippets, wikis and repos using delimited blocks:
 
 - **AsciiDoc**
 
-   ```
-   [plantuml, format="png", id="myDiagram", width="200px"]
-   ----
-   Bob->Alice : hello
-   Alice -> Bob : Go Away
-   ----
-   ```
+  ```text
+  [plantuml, format="png", id="myDiagram", width="200px"]
+  ----
+  Bob->Alice : hello
+  Alice -> Bob : Go Away
+  ----
+  ```
 
 - **reStructuredText**
 
-   ```
-   .. plantuml::
-      :caption: Caption with **bold** and *italic*
+  ```text
+  .. plantuml::
+     :caption: Caption with **bold** and *italic*
 
-      Bob -> Alice: hello
-      Alice -> Bob: Go Away
-   ```
+     Bob -> Alice: hello
+     Alice -> Bob: Go Away
+  ```
 
    You can also use the `uml::` directive for compatibility with [sphinxcontrib-plantuml](https://pypi.org/project/sphinxcontrib-plantuml/), but please note that we currently only support the `caption` option.
 
@@ -120,5 +123,3 @@ Some parameters can be added to the AsciiDoc block definition:
 - *height*: Height attribute added to the img tag.
 
 Markdown does not support any parameters and will always use PNG format.
-
-[ce-8537]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/8537
