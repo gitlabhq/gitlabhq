@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 module API
-  class ProjectClusters < Grape::API
+  class GroupClusters < Grape::API
     include PaginationParams
 
     before { authenticate! }
 
-    # EE::API::ProjectClusters will
+    # EE::API::GroupClusters will
     # override these methods
     helpers do
       params :create_params_ee do
@@ -17,25 +17,23 @@ module API
     end
 
     params do
-      requires :id, type: String, desc: 'The ID of the project'
+      requires :id, type: String, desc: 'The ID of the group'
     end
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      desc 'Get all clusters from the project' do
-        detail 'This feature was introduced in GitLab 11.7.'
+    resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+      desc 'Get all clusters from the group' do
         success Entities::Cluster
       end
       params do
         use :pagination
       end
       get ':id/clusters' do
-        authorize! :read_cluster, user_project
+        authorize! :read_cluster, user_group
 
         present paginate(clusters_for_current_user), with: Entities::Cluster
       end
 
-      desc 'Get specific cluster for the project' do
-        detail 'This feature was introduced in GitLab 11.7.'
-        success Entities::ClusterProject
+      desc 'Get specific cluster for the group' do
+        success Entities::ClusterGroup
       end
       params do
         requires :cluster_id, type: Integer, desc: 'The cluster ID'
@@ -43,12 +41,11 @@ module API
       get ':id/clusters/:cluster_id' do
         authorize! :read_cluster, cluster
 
-        present cluster, with: Entities::ClusterProject
+        present cluster, with: Entities::ClusterGroup
       end
 
       desc 'Adds an existing cluster' do
-        detail 'This feature was introduced in GitLab 11.7.'
-        success Entities::ClusterProject
+        success Entities::ClusterGroup
       end
       params do
         requires :name, type: String, desc: 'Cluster name'
@@ -59,28 +56,27 @@ module API
           requires :api_url, type: String, allow_blank: false, desc: 'URL to access the Kubernetes API'
           requires :token, type: String, desc: 'Token to authenticate against Kubernetes'
           optional :ca_cert, type: String, desc: 'TLS certificate (needed if API is using a self-signed TLS certificate)'
-          optional :namespace, type: String, desc: 'Unique namespace related to Project'
+          optional :namespace, type: String, desc: 'Unique namespace related to Group'
           optional :authorization_type, type: String, values: Clusters::Platforms::Kubernetes.authorization_types.keys, default: 'rbac', desc: 'Cluster authorization type, defaults to RBAC'
         end
         use :create_params_ee
       end
       post ':id/clusters/user' do
-        authorize! :add_cluster, user_project
+        authorize! :add_cluster, user_group
 
         user_cluster = ::Clusters::CreateService
           .new(current_user, create_cluster_user_params)
           .execute
 
         if user_cluster.persisted?
-          present user_cluster, with: Entities::ClusterProject
+          present user_cluster, with: Entities::ClusterGroup
         else
           render_validation_error!(user_cluster)
         end
       end
 
       desc 'Update an existing cluster' do
-        detail 'This feature was introduced in GitLab 11.7.'
-        success Entities::ClusterProject
+        success Entities::ClusterGroup
       end
       params do
         requires :cluster_id, type: Integer, desc: 'The cluster ID'
@@ -90,7 +86,7 @@ module API
           optional :api_url, type: String, desc: 'URL to access the Kubernetes API'
           optional :token, type: String, desc: 'Token to authenticate against Kubernetes'
           optional :ca_cert, type: String, desc: 'TLS certificate (needed if API is using a self-signed TLS certificate)'
-          optional :namespace, type: String, desc: 'Unique namespace related to Project'
+          optional :namespace, type: String, desc: 'Unique namespace related to Group'
         end
         use :update_params_ee
       end
@@ -100,15 +96,14 @@ module API
         update_service = Clusters::UpdateService.new(current_user, update_cluster_params)
 
         if update_service.execute(cluster)
-          present cluster, with: Entities::ClusterProject
+          present cluster, with: Entities::ClusterGroup
         else
           render_validation_error!(cluster)
         end
       end
 
       desc 'Remove a cluster' do
-        detail 'This feature was introduced in GitLab 11.7.'
-        success Entities::ClusterProject
+        success Entities::ClusterGroup
       end
       params do
         requires :cluster_id, type: Integer, desc: 'The Cluster ID'
@@ -122,7 +117,7 @@ module API
 
     helpers do
       def clusters_for_current_user
-        @clusters_for_current_user ||= ClustersFinder.new(user_project, current_user, :all).execute
+        @clusters_for_current_user ||= ClustersFinder.new(user_group, current_user, :all).execute
       end
 
       def cluster
@@ -133,7 +128,7 @@ module API
         declared_params.merge({
           provider_type: :user,
           platform_type: :kubernetes,
-          clusterable: user_project
+          clusterable: user_group
         })
       end
 

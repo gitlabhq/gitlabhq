@@ -111,6 +111,7 @@ module API
     mount ::API::Features
     mount ::API::Files
     mount ::API::GroupBoards
+    mount ::API::GroupClusters
     mount ::API::GroupLabels
     mount ::API::GroupMilestones
     mount ::API::Groups
