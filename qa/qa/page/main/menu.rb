@@ -12,7 +12,7 @@ module QA
         view 'app/views/layouts/header/_default.html.haml' do
           element :navbar, required: true
           element :user_avatar, required: true
-          element :user_menu, '.dropdown-menu' # rubocop:disable QA/ElementWithPattern
+          element :user_menu, required: true
         end
 
         view 'app/views/layouts/nav/_dashboard.html.haml' do
@@ -82,7 +82,7 @@ module QA
         private
 
         def within_top_menu
-          page.within('.qa-navbar') do
+          within_element(:navbar) do
             yield
           end
         end
@@ -91,7 +91,7 @@ module QA
           within_top_menu do
             click_element :user_avatar
 
-            page.within('.dropdown-menu') do
+            within_element(:user_menu) do
               yield
             end
           end
