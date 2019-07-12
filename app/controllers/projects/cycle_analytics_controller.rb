@@ -9,7 +9,7 @@ class Projects::CycleAnalyticsController < Projects::ApplicationController
   before_action :authorize_read_cycle_analytics!
 
   def show
-    @cycle_analytics = ::CycleAnalytics.new(@project, options(cycle_analytics_params))
+    @cycle_analytics = ::CycleAnalytics::ProjectLevel.new(@project, options: options(cycle_analytics_params))
 
     @cycle_analytics_no_data = @cycle_analytics.no_stats?
 

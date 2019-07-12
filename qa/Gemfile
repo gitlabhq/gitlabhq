@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
 
+gem 'gitlab-qa'
 gem 'pry-byebug', '~> 3.5.1', platform: :mri
 gem 'capybara', '~> 2.16.1'
 gem 'capybara-screenshot', '~> 1.0.18'
@@ -11,3 +12,4 @@ gem 'nokogiri', '~> 1.10.3'
 gem 'rspec-retry', '~> 0.6.1'
 gem 'faker', '~> 1.6', '>= 1.6.6'
 gem 'knapsack', '~> 1.17'
+gem 'parallel_tests', '~> 2.29'

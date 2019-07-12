@@ -2,7 +2,7 @@
 type: howto, reference
 ---
 
-# Email from GitLab **[STARTER ONLY]**
+# Email from GitLab **(STARTER ONLY)**
 
 GitLab provides a simple tool to administrators for emailing all users, or users of
 a chosen group or project, right from the admin area. Users will receive the email

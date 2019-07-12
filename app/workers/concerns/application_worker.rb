@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'sidekiq/api'
+
 Sidekiq::Worker.extend ActiveSupport::Concern
 
 module ApplicationWorker
@@ -42,6 +44,10 @@ module ApplicationWorker
 
     def queue
       get_sidekiq_options['queue'].to_s
+    end
+
+    def queue_size
+      Sidekiq::Queue.new(queue).size
     end
 
     def bulk_perform_async(args_list)

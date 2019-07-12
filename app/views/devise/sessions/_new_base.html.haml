@@ -1,10 +1,10 @@
 = form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: 'new_user gl-show-field-errors', 'aria-live' => 'assertive'}) do |f|
   .form-group
     = f.label "Username or email", for: "user_login", class: 'label-bold'
-    = f.text_field :login, class: "form-control top qa-login-field", autofocus: "autofocus", autocapitalize: "off", autocorrect: "off", required: true, title: "This field is required."
+    = f.text_field :login, class: "form-control top", autofocus: "autofocus", autocapitalize: "off", autocorrect: "off", required: true, title: "This field is required.", data: { qa_selector: 'login_field' }
   .form-group
     = f.label :password, class: 'label-bold'
-    = f.password_field :password, class: "form-control bottom qa-password-field", required: true, title: "This field is required."
+    = f.password_field :password, class: "form-control bottom", required: true, title: "This field is required.", data: { qa_selector: 'password_field' }
   - if devise_mapping.rememberable?
     .remember-me
       %label{ for: "user_remember_me" }
@@ -17,4 +17,4 @@
       = recaptcha_tags
 
   .submit-container.move-submit-down
-    = f.submit "Sign in", class: "btn btn-success qa-sign-in-button"
+    = f.submit "Sign in", class: "btn btn-success", data: { qa_selector: 'sign_in_button' }

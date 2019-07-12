@@ -25,7 +25,7 @@ class AkismetService
       is_spam, is_blatant = akismet_client.check(options[:ip_address], options[:user_agent], params)
       is_spam || is_blatant
     rescue => e
-      Rails.logger.error("Unable to connect to Akismet: #{e}, skipping check")
+      Rails.logger.error("Unable to connect to Akismet: #{e}, skipping check") # rubocop:disable Gitlab/RailsLogger
       false
     end
   end
@@ -63,7 +63,7 @@ class AkismetService
       akismet_client.public_send(type, options[:ip_address], options[:user_agent], params) # rubocop:disable GitlabSecurity/PublicSend
       true
     rescue => e
-      Rails.logger.error("Unable to connect to Akismet: #{e}, skipping!")
+      Rails.logger.error("Unable to connect to Akismet: #{e}, skipping!") # rubocop:disable Gitlab/RailsLogger
       false
     end
   end

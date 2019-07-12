@@ -405,6 +405,8 @@ $tanuki-yellow: #fca326;
  */
 $green-500-focus: rgba($green-500, 0.4);
 $gl-btn-active-background: rgba(0, 0, 0, 0.16);
+$gl-btn-hover-shadow-dark: rgba($black, 0.2);
+$gl-btn-hover-shadow-light: rgba($black, 0.1);
 $gl-btn-active-gradient: inset 0 2px 3px $gl-btn-active-background;
 
 /*
@@ -481,6 +483,8 @@ $gl-btn-padding: 10px;
 $gl-btn-line-height: 16px;
 $gl-btn-vert-padding: 8px;
 $gl-btn-horz-padding: 12px;
+$gl-bordered-btn-vert-padding: $gl-btn-vert-padding - 1px;
+$gl-bordered-btn-horz-padding: $gl-btn-horz-padding - 1px;
 $gl-btn-small-font-size: 13px;
 $gl-btn-small-line-height: 18px;
 $gl-btn-xs-font-size: 13px;
@@ -507,7 +511,6 @@ $toast-height: 48px;
 $toast-max-width: 586px;
 $toast-padding-right: 42px;
 $toast-default-margin: 8px;
-$toast-action-margin-left: 16px;
 $toast-background-opacity: 0.95;
 
 /*
@@ -805,8 +808,9 @@ $border-color-settings: #e1e1e1;
 /*
 Modals
 */
-$modal-body-height: 134px;
+$modal-body-height: 80px;
 $modal-border-color: #e9ecef;
+$modal-border-radius: 0.25rem;
 
 $priority-label-empty-state-width: 114px;
 

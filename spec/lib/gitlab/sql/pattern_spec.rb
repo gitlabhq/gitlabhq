@@ -10,6 +10,12 @@ describe Gitlab::SQL::Pattern do
       it 'returns exact matching pattern' do
         expect(to_pattern).to eq('12')
       end
+
+      context 'and ignore_minimum_char_limit is true' do
+        it 'returns partial matching pattern' do
+          expect(User.to_pattern(query, use_minimum_char_limit:  false)).to eq('%12%')
+        end
+      end
     end
 
     context 'when a query with a escape character is shorter than 3 chars' do
@@ -17,6 +23,12 @@ describe Gitlab::SQL::Pattern do
 
       it 'returns sanitized exact matching pattern' do
         expect(to_pattern).to eq('\_2')
+      end
+
+      context 'and ignore_minimum_char_limit is true' do
+        it 'returns sanitized partial matching pattern' do
+          expect(User.to_pattern(query, use_minimum_char_limit:  false)).to eq('%\_2%')
+        end
       end
     end
 

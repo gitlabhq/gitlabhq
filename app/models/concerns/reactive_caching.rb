@@ -173,12 +173,16 @@ module ReactiveCaching
     end
 
     def within_reactive_cache_lifetime?(*args)
-      !!Rails.cache.read(alive_reactive_cache_key(*args))
+      if Feature.enabled?(:reactive_caching_check_key_exists, default_enabled: true)
+        Rails.cache.exist?(alive_reactive_cache_key(*args))
+      else
+        !!Rails.cache.read(alive_reactive_cache_key(*args))
+      end
     end
 
     def enqueuing_update(*args)
       yield
-    ensure
+
       ReactiveCachingWorker.perform_in(self.class.reactive_cache_refresh_interval, self.class, id, *args)
     end
   end

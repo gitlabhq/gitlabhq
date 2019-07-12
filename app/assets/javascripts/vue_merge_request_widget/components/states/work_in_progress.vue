@@ -46,14 +46,20 @@ export default {
     <status-icon :show-disabled-button="Boolean(mr.removeWIPPath)" status="warning" />
     <div class="media-body space-children">
       <span class="bold">
-        This is a Work in Progress
+        {{ __('This is a Work in Progress') }}
         <i
           v-tooltip
           class="fa fa-question-circle"
-          title="When this merge request is ready,
-          remove the WIP: prefix from the title to allow it to be merged"
-          aria-label="When this merge request is ready,
-          remove the WIP: prefix from the title to allow it to be merged"
+          :title="
+            s__(
+              'mrWidget|When this merge request is ready, remove the WIP: prefix from the title to allow it to be merged',
+            )
+          "
+          :aria-label="
+            s__(
+              'mrWidget|When this merge request is ready, remove the WIP: prefix from the title to allow it to be merged',
+            )
+          "
         >
         </i>
       </span>
@@ -64,8 +70,8 @@ export default {
         class="btn btn-default btn-sm js-remove-wip"
         @click="removeWIP"
       >
-        <i v-if="isMakingRequest" class="fa fa-spinner fa-spin" aria-hidden="true"> </i> Resolve WIP
-        status
+        <i v-if="isMakingRequest" class="fa fa-spinner fa-spin" aria-hidden="true"> </i>
+        {{ s__('mrWidget|Resolve WIP status') }}
       </button>
     </div>
   </div>

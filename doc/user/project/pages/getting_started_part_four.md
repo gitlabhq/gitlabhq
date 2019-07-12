@@ -380,7 +380,7 @@ What you can do with GitLab CI is pretty much up to your
 creativity. Once you get used to it, you start creating
 awesome scripts that automate most of tasks you'd do
 manually in the past. Read through the
-[documentation of GitLab CI](https://docs.gitlab.com/ce/ci/yaml/README.html)
+[documentation of GitLab CI](../../../ci/yaml/README.md)
 to understand how to go even further on your scripts.
 
 - On this blog post, understand the concept of

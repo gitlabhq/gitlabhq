@@ -1,4 +1,4 @@
-# Removing secondary Geo nodes **[PREMIUM ONLY]**
+# Removing secondary Geo nodes **(PREMIUM ONLY)**
 
 **Secondary** nodes can be removed from the Geo cluster using the Geo admin page of the **primary** node. To remove a **secondary** node:
 
@@ -19,10 +19,10 @@ Once removed from the Geo admin page, you must stop and uninstall the **secondar
    ```bash
    # Stop gitlab and remove its supervision process
    sudo gitlab-ctl uninstall
-    
+
    # Debian/Ubuntu
    sudo dpkg --remove gitlab-ee
-    
+
    # Redhat/Centos
    sudo rpm --erase gitlab-ee
    ```
@@ -32,9 +32,9 @@ Once GitLab has been uninstalled from the **secondary** node, the replication sl
 1. On the **primary** node, start a PostgreSQL console session:
 
    ```bash
-   sudo gitlab-psql 
+   sudo gitlab-psql
    ```
-    
+
    NOTE: **Note:**
    Using `gitlab-rails dbconsole` will not work, because managing replication slots requires superuser permissions.
 
@@ -43,9 +43,9 @@ Once GitLab has been uninstalled from the **secondary** node, the replication sl
    ```sql
    SELECT * FROM pg_replication_slots;
    ```
-    
+
 1. Remove the replication slot for the **secondary** node:
 
    ```sql
    SELECT pg_drop_replication_slot('<name_of_slot>');
-   ```  
+   ```

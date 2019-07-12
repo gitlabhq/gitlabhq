@@ -91,7 +91,9 @@ export default {
         |
       </template>
       <template v-if="hasDimensions">
-        <strong>W</strong>: {{ width }} | <strong>H</strong>: {{ height }}
+        <strong>{{ s__('ImageViewerDimensions|W') }}</strong
+        >: {{ width }} | <strong>{{ s__('ImageViewerDimensions|H') }}</strong
+        >: {{ height }}
       </template>
     </p>
   </div>

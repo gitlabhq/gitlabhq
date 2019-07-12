@@ -7,8 +7,7 @@ module API
       JOB_TOKEN_PARAM = :token
 
       def runner_registration_token_valid?
-        ActiveSupport::SecurityUtils.variable_size_secure_compare(params[:token],
-                                                                  Gitlab::CurrentSettings.runners_registration_token)
+        ActiveSupport::SecurityUtils.secure_compare(params[:token], Gitlab::CurrentSettings.runners_registration_token)
       end
 
       def authenticate_runner!

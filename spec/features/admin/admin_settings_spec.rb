@@ -400,35 +400,16 @@ describe 'Admin updates settings' do
         .to have_content "The form contains the following error: Polling interval multiplier must be greater than or equal to 0"
     end
 
-    context 'When pages_auto_ssl is enabled' do
-      before do
-        stub_feature_flags(pages_auto_ssl: true)
-        visit preferences_admin_application_settings_path
+    it "Change Pages Let's Encrypt settings" do
+      visit preferences_admin_application_settings_path
+      page.within('.as-pages') do
+        fill_in 'Email', with: 'my@test.example.com'
+        check "I have read and agree to the Let's Encrypt Terms of Service"
+        click_button 'Save changes'
       end
 
-      it "Change Pages Let's Encrypt settings" do
-        page.within('.as-pages') do
-          fill_in 'Email', with: 'my@test.example.com'
-          check "I have read and agree to the Let's Encrypt Terms of Service"
-          click_button 'Save changes'
-        end
-
-        expect(current_settings.lets_encrypt_notification_email).to eq 'my@test.example.com'
-        expect(current_settings.lets_encrypt_terms_of_service_accepted).to eq true
-      end
-    end
-
-    context 'When pages_auto_ssl is disabled' do
-      before do
-        stub_feature_flags(pages_auto_ssl: false)
-        visit preferences_admin_application_settings_path
-      end
-
-      it "Doesn't show Let's Encrypt options" do
-        page.within('.as-pages') do
-          expect(page).not_to have_content('Email')
-        end
-      end
+      expect(current_settings.lets_encrypt_notification_email).to eq 'my@test.example.com'
+      expect(current_settings.lets_encrypt_terms_of_service_accepted).to eq true
     end
   end
 

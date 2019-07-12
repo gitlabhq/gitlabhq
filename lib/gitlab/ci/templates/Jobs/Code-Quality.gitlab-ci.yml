@@ -22,6 +22,7 @@ code_quality:
     reports:
       codequality: gl-code-quality-report.json
     expire_in: 1 week
+  dependencies: []
   only:
     - branches
     - tags

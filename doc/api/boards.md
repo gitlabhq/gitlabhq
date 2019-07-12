@@ -141,7 +141,7 @@ Example response:
   }
 ```
 
-## Create a board **[STARTER]**
+## Create a board **(STARTER)**
 
 Creates a board.
 
@@ -209,7 +209,7 @@ Example response:
   }
 ```
 
-## Update a board **[STARTER]**
+## Update a board **(STARTER)**
 
 > [Introduced][ee-5954] in [GitLab Starter](https://about.gitlab.com/pricing/) 11.1.
 
@@ -228,7 +228,6 @@ PUT /projects/:id/boards/:board_id
 | `milestone_id`      | integer        | no       | The milestone the board should be scoped to |
 | `labels`            | string         | no       | Comma-separated list of label names which the board should be scoped to |
 | `weight`            | integer        | no       | The weight range from 0 to 9, to which the board should be scoped to |
-
 
 ```bash
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/boards/1?name=new_name&milestone_id=43&assignee_id=1&labels=Doing&weight=4
@@ -291,7 +290,7 @@ Example response:
   }
 ```
 
-## Delete a board **[STARTER]**
+## Delete a board **(STARTER)**
 
 Deletes a board.
 
@@ -405,8 +404,8 @@ POST /projects/:id/boards/:board_id/lists
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `board_id` | integer | yes | The ID of a board |
 | `label_id` | integer | no | The ID of a label |
-| `assignee_id` **[PREMIUM]** | integer | no | The ID of a user |
-| `milestone_id` **[PREMIUM]** | integer | no | The ID of a milestone |
+| `assignee_id` **(PREMIUM)** | integer | no | The ID of a user |
+| `milestone_id` **(PREMIUM)** | integer | no | The ID of a milestone |
 
 NOTE: **Note**:
 Label, assignee and milestone arguments are mutually exclusive,

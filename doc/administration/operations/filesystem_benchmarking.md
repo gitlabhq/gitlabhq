@@ -78,24 +78,27 @@ executed, and then read the same 1,000 files.
    [repository storage path](../repository_storage_paths.md).
 1. Create a temporary directory for the test so it's easy to remove the files later:
 
-    ```sh
-    mkdir test; cd test
-    ```
+   ```sh
+   mkdir test; cd test
+   ```
+
 1. Run the command:
 
-    ```sh
-    time for i in {0..1000}; do echo 'test' > "test${i}.txt"; done
-    ```
+   ```sh
+   time for i in {0..1000}; do echo 'test' > "test${i}.txt"; done
+   ```
+
 1. To benchmark read performance, run the command:
 
-    ```sh
-    time for i in {0..1000}; do cat "test${i}.txt" > /dev/null; done
-    ```
+   ```sh
+   time for i in {0..1000}; do cat "test${i}.txt" > /dev/null; done
+   ```
+
 1. Remove the test files:
 
-   ```sh
-   cd ../; rm -rf test
-   ```
+  ```sh
+  cd ../; rm -rf test
+  ```
 
 The output of the `time for ...` commands will look similar to the following. The
 important metric is the `real` time.
@@ -103,9 +106,9 @@ important metric is the `real` time.
 ```sh
 $ time for i in {0..1000}; do echo 'test' > "test${i}.txt"; done
 
-real	0m0.116s
-user	0m0.025s
-sys	0m0.091s
+real    0m0.116s
+user    0m0.025s
+sys     0m0.091s
 
 $ time for i in {0..1000}; do cat "test${i}.txt" > /dev/null; done
 

@@ -1,6 +1,7 @@
 <script>
 import _ from 'underscore';
 import { GlTooltipDirective, GlLink } from '@gitlab/ui';
+import { __, sprintf } from '~/locale';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
 import UserAvatarLink from './user_avatar/user_avatar_link.vue';
 import Icon from '../../vue_shared/components/icon.vue';
@@ -129,7 +130,9 @@ export default {
      * @returns {String}
      */
     userImageAltDescription() {
-      return this.author && this.author.username ? `${this.author.username}'s avatar` : null;
+      return this.author && this.author.username
+        ? sprintf(__("%{username}'s avatar"), { username: this.author.username })
+        : null;
     },
   },
 };
@@ -180,7 +183,7 @@ export default {
           {{ title }}
         </gl-link>
       </tooltip-on-truncate>
-      <span v-else> Can't find HEAD commit for this branch </span>
+      <span v-else>{{ __("Can't find HEAD commit for this branch") }}</span>
     </div>
   </div>
 </template>

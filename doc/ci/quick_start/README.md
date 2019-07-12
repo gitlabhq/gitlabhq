@@ -233,7 +233,7 @@ CI with various languages.
 [runner-install]: https://docs.gitlab.com/runner/install/
 [blog-ci]: https://about.gitlab.com/2015/05/06/why-were-replacing-gitlab-ci-jobs-with-gitlab-ci-dot-yml/
 [examples]: ../examples/README.md
-[ci]: https://about.gitlab.com/gitlab-ci/
+[ci]: https://about.gitlab.com/product/continuous-integration/
 [yaml]: ../yaml/README.md
 [runner]: ../runners/README.md
 [enabled]: ../enable_or_disable_ci.md

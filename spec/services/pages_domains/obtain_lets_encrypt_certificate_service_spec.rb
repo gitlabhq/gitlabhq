@@ -12,6 +12,12 @@ describe PagesDomains::ObtainLetsEncryptCertificateService do
     stub_lets_encrypt_settings
   end
 
+  around do |example|
+    Sidekiq::Testing.fake! do
+      example.run
+    end
+  end
+
   def expect_to_create_acme_challenge
     expect(::PagesDomains::CreateAcmeOrderService).to receive(:new).with(pages_domain)
       .and_wrap_original do |m, *args|

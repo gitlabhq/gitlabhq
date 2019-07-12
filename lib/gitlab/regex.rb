@@ -4,14 +4,6 @@ module Gitlab
   module Regex
     extend self
 
-    def namespace_name_regex
-      @namespace_name_regex ||= /\A[\p{Alnum}\p{Pd}_\. ]*\z/.freeze
-    end
-
-    def namespace_name_regex_message
-      "can contain only letters, digits, '_', '.', dash and space."
-    end
-
     def project_name_regex
       @project_name_regex ||= /\A[\p{Alnum}\u{00A9}-\u{1f9c0}_][\p{Alnum}\p{Pd}\u{00A9}-\u{1f9c0}_\. ]*\z/.freeze
     end

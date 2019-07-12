@@ -1,7 +1,7 @@
 # AsciiDoc
 
 GitLab uses the [Asciidoctor](https://asciidoctor.org) gem to convert AsciiDoc content to HTML5.
-Consult the [Asciidoctor User Manual](https://asciidoctor.org/docs/user-manual) for a complete Asciidoctor reference.
+Consult the [Asciidoctor User Manual](https://asciidoctor.org/docs/user-manual/) for a complete Asciidoctor reference.
 
 ## Syntax
 
@@ -170,6 +170,7 @@ Attach a block or paragraph to a list item using a list continuation (which you 
 * [x] checked
 * [ ] not checked
 ```
+
 #### Callout
 
 ```asciidoc
@@ -188,6 +189,7 @@ first term:: description of first term
 second term::
 description of second term
 ```
+
 ### Document Structure
 
 #### Header
@@ -197,6 +199,7 @@ description of second term
 Author Name <author@example.org>
 v1.0, 2019-01-01
 ```
+
 #### Sections
 
 ```asciidoc
@@ -217,6 +220,7 @@ include::basics.adoc[]
 // define -a allow-uri-read to allow content to be read from URI
 include::https://example.org/installation.adoc[]
 ```
+
 ### Blocks
 
 ```asciidoc
@@ -273,11 +277,11 @@ source - a listing that is embellished with (colorized) syntax highlighting
 ----
 ```
 
-```asciidoc
+````asciidoc
 \```language
 fenced code - a shorthand syntax for the source block
 \```
-```
+````
 
 ```asciidoc
 [,attribution,citetitle]
@@ -369,4 +373,3 @@ video::300817511[vimeo]
 // page break
 <<<
 ```
-

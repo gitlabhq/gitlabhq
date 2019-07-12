@@ -20,7 +20,7 @@ The [Prometheus service](../prometheus.md) must be enabled.
 
 To get started with Cloudwatch monitoring, you should install and configure the [Cloudwatch exporter](https://github.com/prometheus/cloudwatch_exporter) which retrieves and parses the specified Cloudwatch metrics and translates them into a Prometheus monitoring endpoint.
 
-Right now, the only AWS resource supported is the Elastic Load Balancer, whose Cloudwatch metrics can be found [here](http://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-cloudwatch-metrics.html).
+Right now, the only AWS resource supported is the Elastic Load Balancer, whose Cloudwatch metrics are [documented here](https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-cloudwatch-metrics.html).
 
 A sample Cloudwatch Exporter configuration file, configured for basic AWS ELB monitoring, is [available for download](../samples/cloudwatch.yml).
 

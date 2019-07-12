@@ -17,25 +17,26 @@ Add the `Filter` object to the plugins array of a `DropLab.prototype.init` or `D
   <li><a href="#" data-id="{{id}}">{{text}}</a></li>
 <ul>
 ```
+
 ```js
-  const droplab = new DropLab();
+const droplab = new DropLab();
 
-  const trigger = document.getElementById('trigger');
-  const list = document.getElementById('list');
+const trigger = document.getElementById('trigger');
+const list = document.getElementById('list');
 
-  droplab.init(trigger, list, [Filter], {
-    Filter: {
-      template: 'text',
-    },
-  });
+droplab.init(trigger, list, [Filter], {
+  Filter: {
+    template: 'text',
+  },
+});
 
-  droplab.addData('trigger', [{
-    id: 0,
-    text: 'Jacob',
-  }, {
-    id: 1,
-    text: 'Jeff',
-  }]);
+droplab.addData('trigger', [{
+  id: 0,
+  text: 'Jacob',
+}, {
+  id: 1,
+  text: 'Jeff',
+}]);
 ```
 
 Above, the input string will be compared against the `test` key of the passed data objects.

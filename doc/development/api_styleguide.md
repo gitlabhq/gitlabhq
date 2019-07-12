@@ -53,7 +53,7 @@ allowed.
 
 ### Exclude params from parent namespaces!
 
-> By default `declared(params) `includes parameters that were defined in all
+> By default `declared(params)`includes parameters that were defined in all
 parent namespaces.
 
 – <https://github.com/ruby-grape/grape#include-parent-namespaces>

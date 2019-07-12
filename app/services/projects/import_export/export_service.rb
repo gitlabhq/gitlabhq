@@ -62,7 +62,7 @@ module Projects
       end
 
       def cleanup_and_notify_error
-        Rails.logger.error("Import/Export - Project #{project.name} with ID: #{project.id} export error - #{@shared.errors.join(', ')}")
+        Rails.logger.error("Import/Export - Project #{project.name} with ID: #{project.id} export error - #{@shared.errors.join(', ')}") # rubocop:disable Gitlab/RailsLogger
 
         FileUtils.rm_rf(@shared.export_path)
 
@@ -76,7 +76,7 @@ module Projects
       end
 
       def notify_success
-        Rails.logger.info("Import/Export - Project #{project.name} with ID: #{project.id} successfully exported")
+        Rails.logger.info("Import/Export - Project #{project.name} with ID: #{project.id} successfully exported") # rubocop:disable Gitlab/RailsLogger
       end
 
       def notify_error

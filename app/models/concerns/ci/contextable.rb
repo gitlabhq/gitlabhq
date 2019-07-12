@@ -59,6 +59,7 @@ module Ci
         variables.append(key: 'CI', value: 'true')
         variables.append(key: 'GITLAB_CI', value: 'true')
         variables.append(key: 'GITLAB_FEATURES', value: project.licensed_features.join(','))
+        variables.append(key: 'CI_SERVER_HOST', value: Gitlab.config.gitlab.host)
         variables.append(key: 'CI_SERVER_NAME', value: 'GitLab')
         variables.append(key: 'CI_SERVER_VERSION', value: Gitlab::VERSION)
         variables.append(key: 'CI_SERVER_VERSION_MAJOR', value: Gitlab.version_info.major.to_s)

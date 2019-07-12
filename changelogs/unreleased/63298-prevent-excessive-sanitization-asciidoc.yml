@@ -1,0 +1,5 @@
+---
+title: "Prevent excessive sanitization of AsciiDoc ouptut"
+merge_request: 30290
+author: Guillaume Grossetie
+type: added

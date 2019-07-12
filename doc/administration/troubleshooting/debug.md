@@ -10,43 +10,43 @@ an SMTP server, but you're not seeing mail delivered. Here's how to check the se
 
 1. Run a Rails console:
 
-    ```sh
-    sudo gitlab-rails console production
-    ```
+   ```sh
+   sudo gitlab-rails console production
+   ```
 
-    or for source installs:
+   or for source installs:
 
-    ```sh
-    bundle exec rails console production
-    ```
+   ```sh
+   bundle exec rails console production
+   ```
 
 1. Look at the ActionMailer `delivery_method` to make sure it matches what you
    intended. If you configured SMTP, it should say `:smtp`. If you're using
    Sendmail, it should say `:sendmail`:
 
-    ```ruby
-    irb(main):001:0> ActionMailer::Base.delivery_method
-    => :smtp
-    ```
+   ```ruby
+   irb(main):001:0> ActionMailer::Base.delivery_method
+   => :smtp
+   ```
 
 1. If you're using SMTP, check the mail settings:
 
-    ```ruby
-    irb(main):002:0> ActionMailer::Base.smtp_settings
-    => {:address=>"localhost", :port=>25, :domain=>"localhost.localdomain", :user_name=>nil, :password=>nil, :authentication=>nil, :enable_starttls_auto=>true}```
-    ```
+   ```ruby
+   irb(main):002:0> ActionMailer::Base.smtp_settings
+   => {:address=>"localhost", :port=>25, :domain=>"localhost.localdomain", :user_name=>nil, :password=>nil, :authentication=>nil, :enable_starttls_auto=>true}```
+   ```
 
-    In the example above, the SMTP server is configured for the local machine. If this is intended, you may need to check your local mail
-    logs (e.g. `/var/log/mail.log`) for more details.
+   In the example above, the SMTP server is configured for the local machine. If this is intended, you may need to check your local mail
+   logs (e.g. `/var/log/mail.log`) for more details.
 
-1.  Send a test message via the console.
+1. Send a test message via the console.
 
-    ```ruby
-    irb(main):003:0> Notify.test_email('youremail@email.com', 'Hello World', 'This is a test message').deliver_now
-    ```
+   ```ruby
+   irb(main):003:0> Notify.test_email('youremail@email.com', 'Hello World', 'This is a test message').deliver_now
+   ```
 
-    If you do not receive an e-mail and/or see an error message, then check
-    your mail server settings.
+   If you do not receive an e-mail and/or see an error message, then check
+   your mail server settings.
 
 ## Advanced Issues
 
@@ -103,37 +103,37 @@ downtime. Otherwise skip to the next section.
 1. Run `sudo gdb -p <PID>` to attach to the unicorn process.
 1. In the gdb window, type:
 
-    ```
-    call (void) rb_backtrace()
-    ```
+   ```
+   call (void) rb_backtrace()
+   ```
 
 1. This forces the process to generate a Ruby backtrace. Check
    `/var/log/gitlab/unicorn/unicorn_stderr.log` for the backtace. For example, you may see:
 
-    ```ruby
-    from /opt/gitlab/embedded/service/gitlab-rails/lib/gitlab/metrics/sampler.rb:33:in `block in start'
-    from /opt/gitlab/embedded/service/gitlab-rails/lib/gitlab/metrics/sampler.rb:33:in `loop'
-    from /opt/gitlab/embedded/service/gitlab-rails/lib/gitlab/metrics/sampler.rb:36:in `block (2 levels) in start'
-    from /opt/gitlab/embedded/service/gitlab-rails/lib/gitlab/metrics/sampler.rb:44:in `sample'
-    from /opt/gitlab/embedded/service/gitlab-rails/lib/gitlab/metrics/sampler.rb:68:in `sample_objects'
-    from /opt/gitlab/embedded/service/gitlab-rails/lib/gitlab/metrics/sampler.rb:68:in `each_with_object'
-    from /opt/gitlab/embedded/service/gitlab-rails/lib/gitlab/metrics/sampler.rb:68:in `each'
-    from /opt/gitlab/embedded/service/gitlab-rails/lib/gitlab/metrics/sampler.rb:69:in `block in sample_objects'
-    from /opt/gitlab/embedded/service/gitlab-rails/lib/gitlab/metrics/sampler.rb:69:in `name'
-    ```
+   ```ruby
+   from /opt/gitlab/embedded/service/gitlab-rails/lib/gitlab/metrics/sampler.rb:33:in `block in start'
+   from /opt/gitlab/embedded/service/gitlab-rails/lib/gitlab/metrics/sampler.rb:33:in `loop'
+   from /opt/gitlab/embedded/service/gitlab-rails/lib/gitlab/metrics/sampler.rb:36:in `block (2 levels) in start'
+   from /opt/gitlab/embedded/service/gitlab-rails/lib/gitlab/metrics/sampler.rb:44:in `sample'
+   from /opt/gitlab/embedded/service/gitlab-rails/lib/gitlab/metrics/sampler.rb:68:in `sample_objects'
+   from /opt/gitlab/embedded/service/gitlab-rails/lib/gitlab/metrics/sampler.rb:68:in `each_with_object'
+   from /opt/gitlab/embedded/service/gitlab-rails/lib/gitlab/metrics/sampler.rb:68:in `each'
+   from /opt/gitlab/embedded/service/gitlab-rails/lib/gitlab/metrics/sampler.rb:69:in `block in sample_objects'
+   from /opt/gitlab/embedded/service/gitlab-rails/lib/gitlab/metrics/sampler.rb:69:in `name'
+   ```
 
 1. To see the current threads, run:
 
-    ```
-    thread apply all bt
-    ```
+   ```
+   thread apply all bt
+   ```
 
 1. Once you're done debugging with `gdb`, be sure to detach from the process and exit:
 
-    ```
-    detach
-    exit
-    ```
+   ```
+   detach
+   exit
+   ```
 
 Note that if the unicorn process terminates before you are able to run these
 commands, gdb will report an error. To buy more time, you can always raise the
@@ -162,21 +162,21 @@ separate Rails process to debug the issue:
 1. Create a Personal Access Token for your user (Profile Settings -> Access Tokens).
 1. Bring up the GitLab Rails console. For omnibus users, run:
 
-    ```
-    sudo gitlab-rails console
-    ```
+   ```
+   sudo gitlab-rails console
+   ```
 
 1. At the Rails console, run:
 
-    ```ruby
-    [1] pry(main)> app.get '<URL FROM STEP 2>/?private_token=<TOKEN FROM STEP 3>'
-    ```
+   ```ruby
+   [1] pry(main)> app.get '<URL FROM STEP 2>/?private_token=<TOKEN FROM STEP 3>'
+   ```
 
-    For example:
+   For example:
 
-    ```ruby
-    [1] pry(main)> app.get 'https://gitlab.com/gitlab-org/gitlab-ce/issues/1?private_token=123456'
-    ```
+   ```ruby
+   [1] pry(main)> app.get 'https://gitlab.com/gitlab-org/gitlab-ce/issues/1?private_token=123456'
+   ```
 
 1. In a new window, run `top`. It should show this ruby process using 100% CPU. Write down the PID.
 1. Follow step 2 from the previous section on using gdb.

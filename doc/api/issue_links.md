@@ -1,4 +1,4 @@
-# Issue links API **[STARTER]**
+# Issue links API **(STARTER)**
 
 ## List issue relations
 
@@ -66,7 +66,6 @@ POST /projects/:id/issues/:issue_iid/links
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
 | `target_project_id` | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) of a target project  |
 | `target_issue_iid` | integer/string | yes      | The internal ID of a target project's issue |
-
 
 ```json
 {
@@ -141,13 +140,11 @@ Deletes an issue link, thus removes the two-way relationship.
 DELETE /projects/:id/issues/:issue_iid/links/:issue_link_id
 ```
 
-
 | Attribute   | Type    | Required | Description                          |
 |-------------|---------|----------|--------------------------------------|
 | `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
 | `issue_link_id` | integer/string | yes      | The ID of an issue relationship |
-
 
 ```json
 {

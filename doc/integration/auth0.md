@@ -16,64 +16,64 @@ application.
 1. At the top of the Settings screen, you should see your Domain, Client ID and
    Client Secret. Take note of these as you'll need to put them in the
    configuration file. For example:
-    - Domain: `test1234.auth0.com`
-    - Client ID: `t6X8L2465bNePWLOvt9yi41i`
-    - Client Secret: `KbveM3nqfjwCbrhaUy_gDu2dss8TIlHIdzlyf33pB7dEK5u_NyQdp65O_o02hXs2`
+   - Domain: `test1234.auth0.com`
+   - Client ID: `t6X8L2465bNePWLOvt9yi41i`
+   - Client Secret: `KbveM3nqfjwCbrhaUy_gDu2dss8TIlHIdzlyf33pB7dEK5u_NyQdp65O_o02hXs2`
 
 1. Fill in the Allowed Callback URLs:
-    - `http://YOUR_GITLAB_URL/users/auth/auth0/callback` (or)
-    - `https://YOUR_GITLAB_URL/users/auth/auth0/callback`
+   - `http://YOUR_GITLAB_URL/users/auth/auth0/callback` (or)
+   - `https://YOUR_GITLAB_URL/users/auth/auth0/callback`
 
 1. Fill in the Allowed Origins (CORS):
-    - `http://YOUR_GITLAB_URL` (or)
-    - `https://YOUR_GITLAB_URL`
+   - `http://YOUR_GITLAB_URL` (or)
+   - `https://YOUR_GITLAB_URL`
 
 1. On your GitLab server, open the configuration file.
 
-    For omnibus package:
+   For omnibus package:
 
-    ```sh
-      sudo editor /etc/gitlab/gitlab.rb
-    ```
+   ```sh
+   sudo editor /etc/gitlab/gitlab.rb
+   ```
 
-    For installations from source:
+   For installations from source:
 
-    ```sh
-      cd /home/git/gitlab
-      sudo -u git -H editor config/gitlab.yml
-    ```
+   ```sh
+   cd /home/git/gitlab
+   sudo -u git -H editor config/gitlab.yml
+   ```
 
 1. See [Initial OmniAuth Configuration](omniauth.md#initial-omniauth-configuration)
    for initial settings.
 
 1. Add the provider configuration:
 
-    For omnibus package:
+   For omnibus package:
 
-    ```ruby
-      gitlab_rails['omniauth_providers'] = [
-        {
-          "name" => "auth0",
-          "args" => { client_id: 'YOUR_AUTH0_CLIENT_ID',
-                      client_secret: 'YOUR_AUTH0_CLIENT_SECRET',
-                      domain: 'YOUR_AUTH0_DOMAIN',
-                      scope: 'openid profile email'
-                    }
-        }
-      ]
-    ```
+   ```ruby
+   gitlab_rails['omniauth_providers'] = [
+     {
+       "name" => "auth0",
+       "args" => { client_id: 'YOUR_AUTH0_CLIENT_ID',
+                   client_secret: 'YOUR_AUTH0_CLIENT_SECRET',
+                   domain: 'YOUR_AUTH0_DOMAIN',
+                   scope: 'openid profile email'
+                 }
+     }
+   ]
+   ```
 
-    For installations from source:
+   For installations from source:
 
-    ```yaml
-      - { name: 'auth0',
-          args: {
-            client_id: 'YOUR_AUTH0_CLIENT_ID',
-            client_secret: 'YOUR_AUTH0_CLIENT_SECRET',
-            domain: 'YOUR_AUTH0_DOMAIN',
-            scope: 'openid profile email' }
-        }
-    ```
+   ```yaml
+   - { name: 'auth0',
+       args: {
+         client_id: 'YOUR_AUTH0_CLIENT_ID',
+         client_secret: 'YOUR_AUTH0_CLIENT_SECRET',
+         domain: 'YOUR_AUTH0_DOMAIN',
+         scope: 'openid profile email' }
+     }
+   ```
 
 1. Change `YOUR_AUTH0_CLIENT_ID` to the client ID from the Auth0 Console page
    from step 5.
@@ -81,8 +81,8 @@ application.
 1. Change `YOUR_AUTH0_CLIENT_SECRET` to the client secret from the Auth0 Console
    page from step 5.
 
-1.  [Reconfigure][] or [restart GitLab][] for the changes to take effect if you
-    installed GitLab via Omnibus or from source respectively.
+1. [Reconfigure][] or [restart GitLab][] for the changes to take effect if you
+   installed GitLab via Omnibus or from source respectively.
 
 On the sign in page there should now be an Auth0 icon below the regular sign in
 form. Click the icon to begin the authentication process. Auth0 will ask the

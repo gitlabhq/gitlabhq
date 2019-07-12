@@ -37,6 +37,7 @@ module ObjectStorage
         end
       end
 
+      # rubocop:disable Gitlab/RailsLogger
       def report!(results)
         success, failures = results.partition(&:success?)
 
@@ -45,6 +46,7 @@ module ObjectStorage
 
         raise MigrationFailures.new(failures.map(&:error)) if failures.any?
       end
+      # rubocop:enable Gitlab/RailsLogger
 
       def header(success, failures)
         _("Migrated %{success_count}/%{total_count} files.") % { success_count: success.count, total_count: success.count + failures.count }
@@ -98,7 +100,7 @@ module ObjectStorage
       report!(results)
     rescue SanityCheckError => e
       # do not retry: the job is insane
-      Rails.logger.warn "#{self.class}: Sanity check error (#{e.message})"
+      Rails.logger.warn "#{self.class}: Sanity check error (#{e.message})" # rubocop:disable Gitlab/RailsLogger
     end
     # rubocop: enable CodeReuse/ActiveRecord
 

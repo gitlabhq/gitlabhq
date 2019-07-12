@@ -9,9 +9,15 @@ module Gitlab
 
         def get_gitlab_model(phabricator_id)
           cached_info = get(phabricator_id)
-          return unless cached_info[:classname] && cached_info[:database_id]
 
-          cached_info[:classname].constantize.find_by_id(cached_info[:database_id])
+          if cached_info[:classname] && cached_info[:database_id]
+            object = cached_info[:classname].constantize.find_by_id(cached_info[:database_id])
+          else
+            object = yield if block_given?
+            set_gitlab_model(object, phabricator_id) if object
+          end
+
+          object
         end
 
         def set_gitlab_model(object, phabricator_id)

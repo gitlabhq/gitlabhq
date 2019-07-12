@@ -30,4 +30,28 @@ export const getTimeDiff = selectedTimeWindow => {
   return { start, end };
 };
 
+/**
+ * This method is used to validate if the graph data format for a chart component
+ * that needs a time series as a response from a prometheus query (query_range) is
+ * of a valid format or not.
+ * @param {Object} graphData  the graph data response from a prometheus request
+ * @returns {boolean} whether the graphData format is correct
+ */
+export const graphDataValidatorForValues = (isValues, graphData) => {
+  const responseValueKeyName = isValues ? 'value' : 'values';
+
+  return (
+    Array.isArray(graphData.queries) &&
+    graphData.queries.filter(query => {
+      if (Array.isArray(query.result)) {
+        return (
+          query.result.filter(res => Array.isArray(res[responseValueKeyName])).length ===
+          query.result.length
+        );
+      }
+      return false;
+    }).length === graphData.queries.length
+  );
+};
+
 export default {};

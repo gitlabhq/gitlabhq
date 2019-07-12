@@ -3,7 +3,6 @@
 module Mutations
   module MergeRequests
     class Base < BaseMutation
-      include Gitlab::Graphql::Authorize::AuthorizeResource
       include Mutations::ResolvesProject
 
       argument :project_path, GraphQL::ID_TYPE,

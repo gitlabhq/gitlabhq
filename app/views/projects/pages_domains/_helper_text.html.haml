@@ -2,8 +2,4 @@
 - docs_link_start = "<a href=\"%{docs_link_url}\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-nowrap\">".html_safe % { docs_link_url: docs_link_url }
 - docs_link_end = "</a>".html_safe
 
--# Hiding behind a feature flag to avoid any changes to this feature's implemention
--# when the :pages_auto_ssl feature flag is disabled.  This check should be removed
--# once the :pages_auto_ssl feature flag is removed.
-- if Feature.enabled?(:pages_auto_ssl)
-  %p= _("Learn more about adding certificates to your project by following the %{docs_link_start}documentation on GitLab Pages%{docs_link_end}.").html_safe % { docs_link_url: docs_link_url, docs_link_start: docs_link_start, docs_link_end: docs_link_end }
+%p= _("Learn more about adding certificates to your project by following the %{docs_link_start}documentation on GitLab Pages%{docs_link_end}.").html_safe % { docs_link_url: docs_link_url, docs_link_start: docs_link_start, docs_link_end: docs_link_end }

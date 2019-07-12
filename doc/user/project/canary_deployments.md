@@ -1,4 +1,4 @@
-# Canary Deployments **[PREMIUM]**
+# Canary Deployments **(PREMIUM)**
 
 > [Introduced][ee-1659] in [GitLab Premium][eep] 9.1.
 

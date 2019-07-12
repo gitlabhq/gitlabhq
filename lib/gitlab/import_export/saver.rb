@@ -18,7 +18,7 @@ module Gitlab
         if compress_and_save
           remove_export_path
 
-          Rails.logger.info("Saved project export #{archive_file}")
+          Rails.logger.info("Saved project export #{archive_file}") # rubocop:disable Gitlab/RailsLogger
 
           save_upload
         else

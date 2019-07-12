@@ -18,7 +18,7 @@ In addition to this page, the following resources to help craft and contribute d
 
 ## Source files and rendered web locations
 
-Documentation for GitLab Community Edition (CE) and Enterprise Edition (EE), along with GitLab Runner and Omnibus, is published to [docs.gitlab.com](https://docs.gitlab.com). The documentation for CE and EE is also published within the application at `/help` on the domain of the GitLab instance.
+Documentation for GitLab Community Edition (CE) and Enterprise Edition (EE), along with GitLab Runner and Omnibus, is published to [docs.gitlab.com](https://docs.gitlab.com). The documentation for CE and EE is also published within the application at `/help` on the domain of the GitLab instance, though there are [plans](https://gitlab.com/groups/gitlab-org/-/epics/693) to end this practice and instead link out from the GitLab application to docs.gitlab.com URLs.
 
 At `/help`, only content for your current edition and version is included, whereas multiple versions' content is available at docs.gitlab.com.
 
@@ -43,7 +43,7 @@ Meanwhile, anyone can contribute [documentation improvements](improvement-workfl
 
 ## Markdown and styles
 
-[GitLab docs](https://gitlab.com/gitlab-com/gitlab-docs) uses [GitLab Kramdown](https://gitlab.com/gitlab-org/gitlab_kramdown)
+[GitLab docs](https://gitlab.com/gitlab-org/gitlab-docs) uses [GitLab Kramdown](https://gitlab.com/gitlab-org/gitlab_kramdown)
 as its markdown rendering engine. See the [GitLab Markdown Guide](https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/) for a complete Kramdown reference.
 
 Adhere to the [Documentation Style Guide](styleguide.md). If a style standard is missing, you are welcome to suggest one via a merge request.
@@ -274,8 +274,11 @@ Follow this [method for cherry-picking from CE to EE](../automatic_ce_ee_merge.m
 
 ## GitLab `/help`
 
-Every GitLab instance includes the documentation, which is available from `/help`
-(`http://my-instance.com/help`), e.g., <https://gitlab.com/help>.
+Every GitLab instance includes the documentation, which is available at `/help`
+(`https://gitlab.example.com/help`). For example, <https://gitlab.com/help>.
+
+There are [plans](https://gitlab.com/groups/gitlab-org/-/epics/693) to end this
+practice and instead link out from the GitLab application to docs.gitlab.com URLs.
 
 The documentation available online on docs.gitlab.com is continuously
 deployed every hour from the `master` branch of CE, EE, Omnibus, and Runner. Therefore,
@@ -381,7 +384,7 @@ on how the left-side navigation menu is built and updated.
 
 NOTE: **Note:**
 To preview your changes to documentation locally, follow this
-[development guide](https://gitlab.com/gitlab-com/gitlab-docs/blob/master/README.md#development-when-contributing-to-gitlab-documentation) or [these instructions for GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/gitlab_docs.md).
+[development guide](https://gitlab.com/gitlab-org/gitlab-docs/blob/master/README.md#development-when-contributing-to-gitlab-documentation) or [these instructions for GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/gitlab_docs.md).
 
 The live preview is currently enabled for the following projects:
 
@@ -405,7 +408,7 @@ You will need to push a branch to those repositories, it doesn't work for forks.
 
 The `review-docs-deploy*` job will:
 
-1. Create a new branch in the [gitlab-docs](https://gitlab.com/gitlab-com/gitlab-docs)
+1. Create a new branch in the [gitlab-docs](https://gitlab.com/gitlab-org/gitlab-docs)
    project named after the scheme: `$DOCS_GITLAB_REPO_SUFFIX-$CI_ENVIRONMENT_SLUG`,
    where `DOCS_GITLAB_REPO_SUFFIX` is the suffix for each product, e.g, `ce` for
    CE, etc.
@@ -461,7 +464,7 @@ If you want to know the in-depth details, here's what's really happening:
    1. The preview URL is shown both at the job output and in the merge request
       widget. You also get the link to the remote pipeline.
 1. In the docs project, the pipeline is created and it
-   [skips the test jobs](https://gitlab.com/gitlab-com/gitlab-docs/blob/8d5d5c750c602a835614b02f9db42ead1c4b2f5e/.gitlab-ci.yml#L50-55)
+   [skips the test jobs](https://gitlab.com/gitlab-org/gitlab-docs/blob/8d5d5c750c602a835614b02f9db42ead1c4b2f5e/.gitlab-ci.yml#L50-55)
    to lower the build time.
 1. Once the docs site is built, the HTML files are uploaded as artifacts.
 1. A specific Runner tied only to the docs project, runs the Review App job
@@ -485,7 +488,7 @@ Currently, the following tests are in place:
    that all cURL examples in API docs use the full switches. It's recommended
    to [check locally](#previewing-the-changes-live) before pushing to GitLab by executing the command
    `bundle exec nanoc check internal_links` on your local
-   [`gitlab-docs`](https://gitlab.com/gitlab-com/gitlab-docs) directory.
+   [`gitlab-docs`](https://gitlab.com/gitlab-org/gitlab-docs) directory.
 1. [`ee_compat_check`](../automatic_ce_ee_merge.md#avoiding-ce-ee-merge-conflicts-beforehand) (runs on CE only):
     When you submit a merge request to GitLab Community Edition (CE),
     there is this additional job that runs against Enterprise Edition (EE)

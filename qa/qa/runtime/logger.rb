@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'logger'
+require 'forwardable'
 
 module QA
   module Runtime

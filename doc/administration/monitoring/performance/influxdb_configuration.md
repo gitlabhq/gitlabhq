@@ -187,7 +187,7 @@ Read more on:
 [influxdb documentation]: https://docs.influxdata.com/influxdb/v0.9/
 [influxdb cli]: https://docs.influxdata.com/influxdb/v0.9/tools/shell/
 [udp]: https://docs.influxdata.com/influxdb/v0.9/write_protocols/udp/
-[influxdb]: https://influxdata.com/time-series-platform/influxdb/
+[influxdb]: https://www.influxdata.com/products/influxdb-overview/
 [tsm tree]: https://influxdata.com/blog/new-storage-engine-time-structured-merge-tree/
 [tsm1-commit]: https://github.com/influxdata/influxdb/commit/15d723dc77651bac83e09e2b1c94be480966cb0d
 [influx-admin]: https://docs.influxdata.com/influxdb/v0.9/administration/authentication_and_authorization/#create-a-new-admin-user

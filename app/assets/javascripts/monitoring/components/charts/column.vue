@@ -4,6 +4,7 @@ import { debounceByAnimationFrame } from '~/lib/utils/common_utils';
 import { getSvgIconPathContent } from '~/lib/utils/icon_utils';
 import { chartHeight } from '../../constants';
 import { makeDataSeries } from '~/helpers/monitor_helper';
+import { graphDataValidatorForValues } from '../../utils';
 
 export default {
   components: {
@@ -14,23 +15,11 @@ export default {
     graphData: {
       type: Object,
       required: true,
-      validator(data) {
-        return (
-          Array.isArray(data.queries) &&
-          data.queries.filter(query => {
-            if (Array.isArray(query.result)) {
-              return (
-                query.result.filter(res => Array.isArray(res.values)).length === query.result.length
-              );
-            }
-            return false;
-          }).length === data.queries.length
-        );
-      },
-      containerWidth: {
-        type: Number,
-        required: true,
-      },
+      validator: graphDataValidatorForValues.bind(null, false),
+    },
+    containerWidth: {
+      type: Number,
+      required: true,
     },
   },
   data() {

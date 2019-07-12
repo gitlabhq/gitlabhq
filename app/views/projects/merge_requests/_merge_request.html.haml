@@ -38,7 +38,7 @@
             = link_to_label(label, type: :merge_request, css_class: 'label-link')
 
     .issuable-meta
-      %ul.controls
+      %ul.controls.d-flex.align-items-end
         - if merge_request.merged?
           %li.issuable-status.d-none.d-sm-inline-block
             MERGED
@@ -47,14 +47,14 @@
             = icon('ban')
             CLOSED
         - if can?(current_user, :read_pipeline, merge_request.head_pipeline)
-          %li.issuable-pipeline-status.d-none.d-sm-inline-block
-            = render 'ci/status/icon', status: merge_request.head_pipeline.detailed_status(current_user)
+          %li.issuable-pipeline-status.d-none.d-sm-flex
+            = render 'ci/status/icon', status: merge_request.head_pipeline.detailed_status(current_user), option_css_classes: 'd-flex'
         - if merge_request.open? && merge_request.broken?
-          %li.issuable-pipeline-broken.d-none.d-sm-inline-block
+          %li.issuable-pipeline-broken.d-none.d-sm-flex
             = link_to merge_request_path(merge_request), class: "has-tooltip", title: _('Cannot be merged automatically') do
               = icon('exclamation-triangle')
         - if merge_request.assignees.any?
-          %li
+          %li.d-flex
             = render 'shared/issuable/assignees', project: merge_request.project, issuable: merge_request
         = render_if_exists 'projects/merge_requests/approvals_count', merge_request: merge_request
 

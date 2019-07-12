@@ -16,7 +16,7 @@ Support will be added for [Issue and Merge Request templates](../user/project/de
 in a future release.
 
 Support for [Group-level file templates](../user/group/index.md#group-file-templates-premium)
-**[PREMIUM]** was [added](https://gitlab.com/gitlab-org/gitlab-ee/issues/5987)
+**(PREMIUM)** was [added](https://gitlab.com/gitlab-org/gitlab-ee/issues/5987)
 in GitLab 11.5
 
 ## Get all templates of a particular type
@@ -27,7 +27,7 @@ GET /projects/:id/templates/:type
 
 | Attribute  | Type   | Required | Description |
 | ---------- | ------ | -------- | ----------- |
-| `id `      | integer / string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `id`      | integer / string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `type`     | string | yes| The type `(dockerfiles|gitignores|gitlab_ci_ymls|licenses)` of the template |
 
 Example response (licenses):
@@ -93,7 +93,7 @@ GET /projects/:id/templates/:type/:key
 
 | Attribute  | Type   | Required | Description |
 | ---------- | ------ | -------- | ----------- |
-| `id `      | integer / string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `id`      | integer / string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `type`     | string | yes| The type `(dockerfiles|gitignores|gitlab_ci_ymls|licenses)` of the template |
 | `key`      | string | yes      | The key of the template, as obtained from the collection endpoint |
 | `project`  | string | no       | The project name to use when expanding placeholders in the template. Only affects licenses |

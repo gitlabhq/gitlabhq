@@ -1,0 +1,5 @@
+---
+title: Prevent multiple confirmation modals from opening when deleting a repository
+merge_request: 30532
+author:
+type: fixed

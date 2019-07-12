@@ -185,7 +185,7 @@ The [Job environment variable][jobenv] `CI_JOB_TOKEN` can be used to
 authenticate any clones of dependent repositories. For example:
 
 ```
-git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/myuser/mydependentrepo
+git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/<user>/<mydependentrepo>.git
 ```
 
 It can also be used for system-wide authentication

@@ -8,6 +8,6 @@ class UploadChecksumWorker
     upload.calculate_checksum!
     upload.save!
   rescue ActiveRecord::RecordNotFound
-    Rails.logger.error("UploadChecksumWorker: couldn't find upload #{upload_id}, skipping")
+    Rails.logger.error("UploadChecksumWorker: couldn't find upload #{upload_id}, skipping") # rubocop:disable Gitlab/RailsLogger
   end
 end

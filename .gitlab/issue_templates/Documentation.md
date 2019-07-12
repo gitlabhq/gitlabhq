@@ -4,7 +4,7 @@
   Note: Doc work as part of feature development is covered in the Feature Request template.
   
 * For issues related to features of the docs.gitlab.com site, see
-     https://gitlab.com/gitlab-com/gitlab-docs/issues/       
+     https://gitlab.com/gitlab-org/gitlab-docs/issues/       
 
 * For information about documentation content and process, see
      https://docs.gitlab.com/ee/development/documentation/ -->

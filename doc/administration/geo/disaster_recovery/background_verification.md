@@ -1,4 +1,4 @@
-# Automatic background verification **[PREMIUM ONLY]**
+# Automatic background verification **(PREMIUM ONLY)**
 
 NOTE: **Note:**
 Automatic background verification of repositories and wikis was added in

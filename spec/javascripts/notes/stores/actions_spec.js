@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import $ from 'jquery';
 import _ from 'underscore';
+import Api from '~/api';
 import { TEST_HOST } from 'spec/test_constants';
 import { headersInterceptor } from 'spec/helpers/vue_resource_helper';
 import actionsModule, * as actions from '~/notes/stores/actions';
@@ -8,7 +9,6 @@ import * as mutationTypes from '~/notes/stores/mutation_types';
 import * as notesConstants from '~/notes/constants';
 import createStore from '~/notes/stores';
 import mrWidgetEventHub from '~/vue_merge_request_widget/event_hub';
-import service from '~/notes/services/notes_service';
 import testAction from '../../helpers/vuex_action_helper';
 import { resetStore } from '../helpers';
 import {
@@ -18,6 +18,8 @@ import {
   noteableDataMock,
   individualNote,
 } from '../mock_data';
+import AxiosMockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 
 const TEST_ERROR_MESSAGE = 'Test error message';
 
@@ -335,28 +337,24 @@ describe('Actions Notes Store', () => {
   });
 
   describe('deleteNote', () => {
-    const interceptor = (request, next) => {
-      next(
-        request.respondWith(JSON.stringify({}), {
-          status: 200,
-        }),
-      );
-    };
+    const endpoint = `${TEST_HOST}/note`;
+    let axiosMock;
 
     beforeEach(() => {
-      Vue.http.interceptors.push(interceptor);
+      axiosMock = new AxiosMockAdapter(axios);
+      axiosMock.onDelete(endpoint).replyOnce(200, {});
 
       $('body').attr('data-page', '');
     });
 
     afterEach(() => {
-      Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
+      axiosMock.restore();
 
       $('body').attr('data-page', '');
     });
 
     it('commits DELETE_NOTE and dispatches updateMergeRequestWidget', done => {
-      const note = { path: `${gl.TEST_HOST}`, id: 1 };
+      const note = { path: endpoint, id: 1 };
 
       testAction(
         actions.deleteNote,
@@ -381,7 +379,7 @@ describe('Actions Notes Store', () => {
     });
 
     it('dispatches removeDiscussionsFromDiff on merge request page', done => {
-      const note = { path: `${gl.TEST_HOST}`, id: 1 };
+      const note = { path: endpoint, id: 1 };
 
       $('body').attr('data-page', 'projects:merge_requests:show');
 
@@ -846,9 +844,9 @@ describe('Actions Notes Store', () => {
     let flashContainer;
 
     beforeEach(() => {
-      spyOn(service, 'applySuggestion');
+      spyOn(Api, 'applySuggestion');
       dispatch.and.returnValue(Promise.resolve());
-      service.applySuggestion.and.returnValue(Promise.resolve());
+      Api.applySuggestion.and.returnValue(Promise.resolve());
       flashContainer = {};
     });
 
@@ -877,7 +875,7 @@ describe('Actions Notes Store', () => {
     it('when service fails, flashes error message', done => {
       const response = { response: { data: { message: TEST_ERROR_MESSAGE } } };
 
-      service.applySuggestion.and.returnValue(Promise.reject(response));
+      Api.applySuggestion.and.returnValue(Promise.reject(response));
 
       testSubmitSuggestion(done, () => {
         expect(commit).not.toHaveBeenCalled();

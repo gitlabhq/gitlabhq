@@ -48,13 +48,13 @@ module MergeRequests
     def error_check!
       super
 
+      check_source
+
       error =
         if @merge_request.should_be_rebased?
           'Only fast-forward merge is allowed for your project. Please update your source branch'
         elsif !@merge_request.mergeable?
           'Merge request is not mergeable'
-        elsif !source
-          'No source for merge'
         end
 
       raise_error(error) if error
@@ -113,12 +113,12 @@ module MergeRequests
     end
 
     def handle_merge_error(log_message:, save_message_on_model: false)
-      Rails.logger.error("MergeService ERROR: #{merge_request_info} - #{log_message}")
+      Rails.logger.error("MergeService ERROR: #{merge_request_info} - #{log_message}") # rubocop:disable Gitlab/RailsLogger
       @merge_request.update(merge_error: log_message) if save_message_on_model
     end
 
     def log_info(message)
-      @logger ||= Rails.logger
+      @logger ||= Rails.logger # rubocop:disable Gitlab/RailsLogger
       @logger.info("#{merge_request_info} - #{message}")
     end
 

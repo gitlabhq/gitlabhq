@@ -11,7 +11,7 @@ Architectural decisions should be accessible to everyone, so please document
 them in the relevant Merge Request discussion or by updating our documentation
 when appropriate.
 
-You can find the Frontend Architecture experts on the [team page](https://about.gitlab.com/team).
+You can find the Frontend Architecture experts on the [team page](https://about.gitlab.com/company/team).
 
 ## Examples
 

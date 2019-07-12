@@ -408,7 +408,7 @@ describe Gitlab::Git::Commit, :seed_helper do
 
       context 'when oids is empty' do
         it 'makes no Gitaly request' do
-          expect(Gitlab::GitalyClient).not_to receive(:call)
+          expect(Gitlab::GitalyClient).not_to receive(:call).with(repository.storage, :commit_service, :list_commits_by_oid)
 
           described_class.batch_by_oid(repository, [])
         end

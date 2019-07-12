@@ -110,7 +110,7 @@ module Gitlab
         end
       rescue Errno::EACCES => ex
         # TODO stop rescuing this exception in GitLab 11.0 https://gitlab.com/gitlab-org/gitlab-ce/issues/45672
-        Rails.logger.error("Could not write pages admin token file: #{ex}")
+        Rails.logger.error("Could not write pages admin token file: #{ex}") # rubocop:disable Gitlab/RailsLogger
       rescue Errno::EEXIST
         # Another process wrote the token file concurrently with us. Use their token, not ours.
       end

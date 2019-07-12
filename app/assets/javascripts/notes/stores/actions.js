@@ -14,6 +14,7 @@ import sidebarTimeTrackingEventHub from '../../sidebar/event_hub';
 import { isInViewport, scrollToElement, isInMRPage } from '../../lib/utils/common_utils';
 import mrWidgetEventHub from '../../vue_merge_request_widget/event_hub';
 import { __ } from '~/locale';
+import Api from '~/api';
 
 let eTagPoll;
 
@@ -61,7 +62,7 @@ export const updateDiscussion = ({ commit, state }, discussion) => {
 };
 
 export const deleteNote = ({ commit, dispatch, state }, note) =>
-  service.deleteNote(note.path).then(() => {
+  axios.delete(note.path).then(() => {
     const discussion = state.discussions.find(({ id }) => id === note.discussion_id);
 
     commit(types.DELETE_NOTE, note);
@@ -383,12 +384,9 @@ export const toggleAward = ({ commit, getters }, { awardName, noteId }) => {
 export const toggleAwardRequest = ({ dispatch }, data) => {
   const { endpoint, awardName } = data;
 
-  return service
-    .toggleAward(endpoint, { name: awardName })
-    .then(res => res.json())
-    .then(() => {
-      dispatch('toggleAward', data);
-    });
+  return axios.post(endpoint, { name: awardName }).then(() => {
+    dispatch('toggleAward', data);
+  });
 };
 
 export const scrollToNoteIfNeeded = (context, el) => {
@@ -449,8 +447,7 @@ export const submitSuggestion = (
   { commit, dispatch },
   { discussionId, noteId, suggestionId, flashContainer },
 ) =>
-  service
-    .applySuggestion(suggestionId)
+  Api.applySuggestion(suggestionId)
     .then(() => commit(types.APPLY_SUGGESTION, { discussionId, noteId, suggestionId }))
     .then(() => dispatch('resolveDiscussion', { discussionId }).catch(() => {}))
     .catch(err => {

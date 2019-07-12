@@ -55,7 +55,7 @@ if Settings.ldap['enabled'] || Rails.env.test?
     server['tls_options'] ||= {}
 
     if server['ssl_version'] || server['ca_file']
-      Rails.logger.warn 'DEPRECATED: LDAP options `ssl_version` and `ca_file` should be nested within `tls_options`'
+      Rails.logger.warn 'DEPRECATED: LDAP options `ssl_version` and `ca_file` should be nested within `tls_options`' # rubocop:disable Gitlab/RailsLogger
     end
 
     if server['ssl_version']
@@ -76,6 +76,7 @@ Gitlab.ee do
   Settings['smartcard'] ||= Settingslogic.new({})
   Settings.smartcard['enabled'] = false if Settings.smartcard['enabled'].nil?
   Settings.smartcard['client_certificate_required_port'] = 3444 if Settings.smartcard['client_certificate_required_port'].nil?
+  Settings.smartcard['required_for_git_access'] = false if Settings.smartcard['required_for_git_access'].nil?
 end
 
 Settings['omniauth'] ||= Settingslogic.new({})

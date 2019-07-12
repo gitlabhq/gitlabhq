@@ -61,7 +61,7 @@ It will check that each component was set up according to the installation guide
 
 You may also have a look at our Troubleshooting Guides:
 
-- [Troubleshooting Guide (GitLab)](http://docs.gitlab.com/ee/README.html#troubleshooting)
+- [Troubleshooting Guide (GitLab)](../index.md#troubleshooting)
 - [Troubleshooting Guide (Omnibus Gitlab)](https://docs.gitlab.com/omnibus/README.html#troubleshooting)
 
 **Omnibus Installation**

@@ -429,7 +429,7 @@ class IssuableFinder
       items = klass.with(cte.to_arel).from(klass.table_name)
     end
 
-    items.full_search(search, matched_columns: params[:in])
+    items.full_search(search, matched_columns: params[:in], use_minimum_char_limit: !use_cte_for_search?)
   end
   # rubocop: enable CodeReuse/ActiveRecord
 

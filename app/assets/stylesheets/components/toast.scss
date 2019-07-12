@@ -15,10 +15,14 @@
   .toasted.gl-toast {
     border-radius: $border-radius-default;
     font-size: $gl-font-size;
-    padding: $gl-padding-8 $gl-padding-24;
+    padding: $gl-padding-8 $gl-padding $gl-padding-8 $gl-padding-24;
     margin-top: $toast-default-margin;
     line-height: $gl-line-height;
     background-color: rgba($gray-900, $toast-background-opacity);
+
+    span {
+      padding-right: $gl-padding-8;
+    }
 
     @include media-breakpoint-down(xs) {
       .action:first-of-type {
@@ -29,19 +33,14 @@
 
     .action {
       color: $blue-300;
-      margin: 0 0 0 $toast-action-margin-left;
+      margin: 0 0 0 $toast-default-margin;
       text-transform: none;
       font-size: $gl-font-size;
-
-      &:first-of-type {
-        padding-right: 0;
-      }
     }
 
     .toast-close {
       font-size: $default-icon-size;
       margin-left: $toast-default-margin;
-      padding-left: $gl-padding;
     }
   }
 }

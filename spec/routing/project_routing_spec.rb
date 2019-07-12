@@ -713,4 +713,10 @@ describe 'project routing' do
       end
     end
   end
+
+  describe Projects::DeployTokensController, 'routing' do
+    it 'routes to deploy_tokens#revoke' do
+      expect(put("/gitlab/gitlabhq/-/deploy_tokens/1/revoke")).to route_to("projects/deploy_tokens#revoke", namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1')
+    end
+  end
 end

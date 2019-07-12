@@ -1,5 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import SingleStatChart from '~/monitoring/components/charts/single_stat.vue';
+import { graphDataPrometheusQuery } from '../mock_data';
 
 describe('Single Stat Chart component', () => {
   let singleStatChart;
@@ -7,9 +8,7 @@ describe('Single Stat Chart component', () => {
   beforeEach(() => {
     singleStatChart = shallowMount(SingleStatChart, {
       propsData: {
-        title: 'Time to render',
-        value: 1,
-        unit: 'sec',
+        graphData: graphDataPrometheusQuery,
       },
     });
   });
@@ -19,9 +18,9 @@ describe('Single Stat Chart component', () => {
   });
 
   describe('computed', () => {
-    describe('valueWithUnit', () => {
+    describe('engineeringNotation', () => {
       it('should interpolate the value and unit props', () => {
-        expect(singleStatChart.vm.valueWithUnit).toBe('1sec');
+        expect(singleStatChart.vm.engineeringNotation).toBe('91MB');
       });
     });
   });

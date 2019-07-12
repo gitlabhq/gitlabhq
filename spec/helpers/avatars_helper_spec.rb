@@ -16,7 +16,7 @@ describe AvatarsHelper do
     shared_examples 'resource with a custom avatar' do |source_type|
       it 'returns a custom avatar image' do
         expect(public_send("#{source_type}_icon", *helper_args))
-          .to eq "<img src=\"#{resource.avatar.url}\" alt=\"Banana sample\" />"
+          .to eq "<img src=\"#{resource.avatar.url}\" />"
       end
     end
 

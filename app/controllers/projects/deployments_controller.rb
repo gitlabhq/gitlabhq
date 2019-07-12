@@ -15,24 +15,22 @@ class Projects::DeploymentsController < Projects::ApplicationController
   # rubocop: enable CodeReuse/ActiveRecord
 
   def metrics
-    return render_404 unless deployment.has_metrics?
+    return render_404 unless deployment_metrics.has_metrics?
 
-    @metrics = deployment.metrics
+    @metrics = deployment_metrics.metrics
     if @metrics&.any?
       render json: @metrics, status: :ok
     else
       head :no_content
     end
-  rescue NotImplementedError
-    render_404
   end
 
   def additional_metrics
-    return render_404 unless deployment.has_metrics?
+    return render_404 unless deployment_metrics.has_metrics?
 
     respond_to do |format|
       format.json do
-        metrics = deployment.additional_metrics
+        metrics = deployment_metrics.additional_metrics
 
         if metrics.any?
           render json: metrics
@@ -44,6 +42,10 @@ class Projects::DeploymentsController < Projects::ApplicationController
   end
 
   private
+
+  def deployment_metrics
+    @deployment_metrics ||= DeploymentMetrics.new(deployment.project, deployment)
+  end
 
   # rubocop: disable CodeReuse/ActiveRecord
   def deployment

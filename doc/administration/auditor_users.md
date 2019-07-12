@@ -1,4 +1,4 @@
-# Auditor users **[PREMIUM ONLY]**
+# Auditor users **(PREMIUM ONLY)**
 
 >[Introduced][ee-998] in [GitLab Premium][eep] 8.17.
 
@@ -52,7 +52,7 @@ section.
    **Admin Area > Users**. You will find the option of the access level under
    the 'Access' section.
 
-    ![Admin Area Form](auditor_access_form.png)
+    ![Admin Area Form](img/auditor_access_form.png)
 
 1. Click **Save changes** or **Create user** for the changes to take effect.
 

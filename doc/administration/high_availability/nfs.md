@@ -42,8 +42,8 @@ maintaining ID mapping without LDAP, in most cases you should enable numeric UID
 and GIDs (which is off by default in some cases) for simplified permission
 management between systems:
 
-  - [NetApp instructions](https://library.netapp.com/ecmdocs/ECMP1401220/html/GUID-24367A9F-E17B-4725-ADC1-02D86F56F78E.html)
-  - For non-NetApp devices, disable NFSv4 `idmapping` by performing opposite of [enable NFSv4 idmapper](https://wiki.archlinux.org/index.php/NFS#Enabling_NFSv4_idmapping)
+- [NetApp instructions](https://library.netapp.com/ecmdocs/ECMP1401220/html/GUID-24367A9F-E17B-4725-ADC1-02D86F56F78E.html)
+- For non-NetApp devices, disable NFSv4 `idmapping` by performing opposite of [enable NFSv4 idmapper](https://wiki.archlinux.org/index.php/NFS#Enabling_NFSv4_idmapping)
 
 ### Improving NFS performance with GitLab
 
@@ -87,10 +87,10 @@ on an Linux NFS server, do the following:
 
 1. On the NFS server, run:
 
-    ```sh
-    echo 0 > /proc/sys/fs/leases-enable
-    sysctl -w fs.leases-enable=0
-    ```
+   ```sh
+   echo 0 > /proc/sys/fs/leases-enable
+   sysctl -w fs.leases-enable=0
+   ```
 
 1. Restart the NFS server process. For example, on CentOS run `service nfs restart`.
 

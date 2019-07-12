@@ -43,7 +43,7 @@ Example response:
     "ae1d9fb46aa2b07ee9836d49862ec4e2c46fbbba"
   ],
   "committed_date": "2018-09-20T09:26:24.000-07:00",
-  "authored_date": "2018-09-20T09:26:24.000-07:00",  
+  "authored_date": "2018-09-20T09:26:24.000-07:00",
   "status": null
 }
 ```

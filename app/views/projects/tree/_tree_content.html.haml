@@ -1,4 +1,4 @@
-.tree-content-holder.js-tree-content{ 'data-logs-path': @logs_path }
+.tree-content-holder.js-tree-content{ data: tree_content_data(@logs_path, @project, @path) }
   .table-holder.bordered-box
     %table.table#tree-slider{ class: "table_#{@hex_path} tree-table qa-file-tree" }
       %thead

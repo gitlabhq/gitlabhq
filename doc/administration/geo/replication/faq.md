@@ -1,4 +1,4 @@
-# Geo Frequently Asked Questions **[PREMIUM ONLY]**
+# Geo Frequently Asked Questions **(PREMIUM ONLY)**
 
 ## What are the minimum requirements to run Geo?
 

@@ -11,6 +11,18 @@ module Gitlab
           json['phid']
         end
 
+        def author_phid
+          json['fields']['authorPHID']
+        end
+
+        def owner_phid
+          json['fields']['ownerPHID']
+        end
+
+        def phids
+          @phids ||= [author_phid, owner_phid]
+        end
+
         def issue_attributes
           @issue_attributes ||= {
             title: issue_title,

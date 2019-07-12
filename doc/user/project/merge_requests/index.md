@@ -37,16 +37,16 @@ With GitLab merge requests, you can:
 
 With **[GitLab Enterprise Edition][ee]**, you can also:
 
-- Prepare a full review and submit it once it's ready with [Merge Request Reviews](../../discussions/index.md#merge-request-reviews-premium) **[PREMIUM]**
-- View the deployment process across projects with [Multi-Project Pipelines](../../../ci/multi_project_pipelines.md) **[PREMIUM]**
-- Request [approvals](merge_request_approvals.md) from your managers **[STARTER]**
-- Analyze the impact of your changes with [Code Quality reports](code_quality.md) **[STARTER]**
-- Manage the licenses of your dependencies with [License Management](../../application_security/license_management/index.md) **[ULTIMATE]**
-- Analyze your source code for vulnerabilities with [Static Application Security Testing](../../application_security/sast/index.md) **[ULTIMATE]**
-- Analyze your running web applications for vulnerabilities with [Dynamic Application Security Testing](../../application_security/dast/index.md) **[ULTIMATE]**
-- Analyze your dependencies for vulnerabilities with [Dependency Scanning](../../application_security/dependency_scanning/index.md) **[ULTIMATE]**
-- Analyze your Docker images for vulnerabilities with [Container Scanning](../../application_security/container_scanning/index.md) **[ULTIMATE]**
-- Determine the performance impact of changes with [Browser Performance Testing](#browser-performance-testing-premium) **[PREMIUM]**
+- Prepare a full review and submit it once it's ready with [Merge Request Reviews](../../discussions/index.md#merge-request-reviews-premium) **(PREMIUM)**
+- View the deployment process across projects with [Multi-Project Pipelines](../../../ci/multi_project_pipelines.md) **(PREMIUM)**
+- Request [approvals](merge_request_approvals.md) from your managers **(STARTER)**
+- Analyze the impact of your changes with [Code Quality reports](code_quality.md) **(STARTER)**
+- Manage the licenses of your dependencies with [License Management](../../application_security/license_management/index.md) **(ULTIMATE)**
+- Analyze your source code for vulnerabilities with [Static Application Security Testing](../../application_security/sast/index.md) **(ULTIMATE)**
+- Analyze your running web applications for vulnerabilities with [Dynamic Application Security Testing](../../application_security/dast/index.md) **(ULTIMATE)**
+- Analyze your dependencies for vulnerabilities with [Dependency Scanning](../../application_security/dependency_scanning/index.md) **(ULTIMATE)**
+- Analyze your Docker images for vulnerabilities with [Container Scanning](../../application_security/container_scanning/index.md) **(ULTIMATE)**
+- Determine the performance impact of changes with [Browser Performance Testing](#browser-performance-testing-premium) **(PREMIUM)**
 
 ## Use cases
 
@@ -54,9 +54,9 @@ A. Consider you are a software developer working in a team:
 
 1. You checkout a new branch, and submit your changes through a merge request
 1. You gather feedback from your team
-1. You work on the implementation optimizing code with [Code Quality reports](code_quality.md) **[STARTER]**
+1. You work on the implementation optimizing code with [Code Quality reports](code_quality.md) **(STARTER)**
 1. You verify your changes with [JUnit test reports](../../../ci/junit_test_reports.md) in GitLab CI/CD
-1. You avoid using dependencies whose license is not compatible with your project with [License Management reports](license_management.md) **[ULTIMATE]**
+1. You avoid using dependencies whose license is not compatible with your project with [License Management reports](license_management.md) **(ULTIMATE)**
 1. You request the [approval](#merge-request-approvals-starter) from your manager
 1. Your manager pushes a commit with their final review, [approves the merge request](merge_request_approvals.md), and set it to [merge when pipeline succeeds](#merge-when-pipeline-succeeds) (Merge Request Approvals are available in GitLab Starter)
 1. Your changes get deployed to production with [manual actions](../../../ci/yaml/README.md#whenmanual) for GitLab CI/CD
@@ -68,7 +68,7 @@ B. Consider you're a web developer writing a webpage for your company's website:
 1. You gather feedback from your reviewers
 1. Your changes are previewed with [Review Apps](../../../ci/review_apps/index.md)
 1. You request your web designers for their implementation
-1. You request the [approval](merge_request_approvals.md) from your manager **[STARTER]**
+1. You request the [approval](merge_request_approvals.md) from your manager **(STARTER)**
 1. Once approved, your merge request is [squashed and merged](squash_and_merge.md), and [deployed to staging with GitLab Pages](https://about.gitlab.com/2016/08/26/ci-deployment-and-environments/)
 1. Your production team [cherry picks](#cherry-pick-changes) the merge commit into production
 
@@ -172,7 +172,7 @@ in a Merge Request. To do so, click the **...** button in the gutter of the Merg
 
 ![Comment on any diff file line](img/comment-on-any-diff-line.png)
 
-## Perform a Review **[PREMIUM]**
+## Perform a Review **(PREMIUM)**
 
 Start a review in order to create multiple comments on a diff and publish them once you're ready.
 Starting a review allows you to get all your thoughts in order and ensure you haven't missed anything
@@ -197,7 +197,7 @@ can easily apply them to the codebase directly from the UI. Read
 through the documentation on [Suggest changes](../../discussions/index.md#suggest-changes)
 to learn more.
 
-## Multiple assignees **[STARTER]**
+## Multiple assignees **(STARTER)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/2004)
 in [GitLab Starter 11.11](https://about.gitlab.com/pricing).
@@ -274,7 +274,8 @@ branch already exists, the patches will be applied on top of it.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/26752) in GitLab 11.10.
 
 NOTE: **Note:**
-Git push options are only available with Git 2.10 or newer.
+Git push options are only available with Git 2.10 or newer. With Git older than 2.18
+`git push --push-option=...` should be used instead of `git push -o ...`.
 
 GitLab supports using
 [Git push options](https://git-scm.com/docs/git-push#Documentation/git-push.txt--oltoptiongt)
@@ -364,7 +365,7 @@ have been marked as a **Work In Progress**.
 
 [Learn more about setting a merge request as "Work In Progress".](work_in_progress_merge_requests.md)
 
-## Merge request approvals **[STARTER]**
+## Merge request approvals **(STARTER)**
 
 > Included in [GitLab Starter][products].
 
@@ -375,7 +376,7 @@ list of approvers that will need to approve every merge request in a project.
 
 [Read more about merge request approvals.](merge_request_approvals.md)
 
-## Code Quality **[STARTER]**
+## Code Quality **(STARTER)**
 
 > Introduced in [GitLab Starter][products] 9.3.
 
@@ -385,7 +386,7 @@ can show the Code Climate report right in the merge request widget area.
 
 [Read more about Code Quality reports.](code_quality.md)
 
-## Browser Performance Testing **[PREMIUM]**
+## Browser Performance Testing **(PREMIUM)**
 
 > Introduced in [GitLab Premium][products] 10.3.
 
@@ -395,7 +396,7 @@ GitLab runs the [Sitespeed.io container][sitespeed-container] and displays the d
 
 [Read more about Browser Performance Testing.](browser_performance_testing.md)
 
-## Security reports **[ULTIMATE]**
+## Security reports **(ULTIMATE)**
 
 GitLab can scan and report any vulnerabilities found in your project.
 

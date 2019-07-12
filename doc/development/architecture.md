@@ -484,9 +484,11 @@ When making a request to an HTTP Endpoint (think `/users/sign_in`) the request w
 Below we describe the different pathing that HTTP vs. SSH Git requests will take. There is some overlap with the Web Request Cycle but also some differences.
 
 ### Web Request (80/443)
+
 TODO
 
 ### SSH Request (22)
+
 TODO
 
 ## System Layout
@@ -505,7 +507,9 @@ To summarize here's the [directory structure of the `git` user home directory](.
 
 ### Processes
 
-    ps aux | grep '^git'
+```sh
+ps aux | grep '^git'
+```
 
 GitLab has several components to operate. As a system user (i.e. any user that is not the `git` user) it requires a persistent database (MySQL/PostreSQL) and redis database. It also uses Apache httpd or Nginx to proxypass Unicorn. As the `git` user it starts Sidekiq and Unicorn (a simple ruby HTTP server running on port `8080` by default). Under the GitLab user there are normally 4 processes: `unicorn_rails master` (1 process), `unicorn_rails worker` (2 processes), `sidekiq` (1 process).
 

@@ -12,7 +12,7 @@ GitLab allows administrators to:
 - Enable or disable repository mirroring.
 - Prevent non-administrators from deleting projects
   ([introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/5615) in GitLab 12.0).
-  **[PREMIUM ONLY]**
+  **(PREMIUM ONLY)**
 
 To access the visibility and access control options:
 

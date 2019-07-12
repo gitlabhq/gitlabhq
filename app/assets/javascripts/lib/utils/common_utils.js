@@ -727,14 +727,6 @@ export const NavigationType = {
 };
 
 /**
- * Returns the value of `gon.ee`
- * Used to check if it's the EE codebase or the CE one.
- *
- * @returns Boolean
- */
-export const isEE = () => window.gon && window.gon.ee;
-
-/**
  * Checks if the given Label has a special syntax `::` in
  * it's title.
  *

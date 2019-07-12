@@ -246,6 +246,7 @@ irb(main):002:0> results.last.attributes.keys
 irb(main):003:0> results.where(status: "passed").average(:time).to_s
 => "0.211340155844156"
 ```
+
 These results can also be placed into a PostgreSQL database by setting the
 `RSPEC_PROFILING_POSTGRES_URL` variable. This is used to profile the test suite
 when running in the CI environment.

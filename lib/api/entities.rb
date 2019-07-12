@@ -201,6 +201,7 @@ module API
         # MR describing the solution: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/20555
         projects_relation.preload(:project_feature, :route)
                          .preload(:import_state, :tags)
+                         .preload(:auto_devops)
                          .preload(namespace: [:route, :owner])
       end
       # rubocop: enable CodeReuse/ActiveRecord
@@ -247,11 +248,19 @@ module API
       expose :container_registry_enabled
 
       # Expose old field names with the new permissions methods to keep API compatible
+      # TODO: remove in API v5, replaced by *_access_level
       expose(:issues_enabled) { |project, options| project.feature_available?(:issues, options[:current_user]) }
       expose(:merge_requests_enabled) { |project, options| project.feature_available?(:merge_requests, options[:current_user]) }
       expose(:wiki_enabled) { |project, options| project.feature_available?(:wiki, options[:current_user]) }
       expose(:jobs_enabled) { |project, options| project.feature_available?(:builds, options[:current_user]) }
       expose(:snippets_enabled) { |project, options| project.feature_available?(:snippets, options[:current_user]) }
+
+      expose(:issues_access_level) { |project, options| project.project_feature.string_access_level(:issues) }
+      expose(:repository_access_level) { |project, options| project.project_feature.string_access_level(:repository) }
+      expose(:merge_requests_access_level) { |project, options| project.project_feature.string_access_level(:merge_requests) }
+      expose(:wiki_access_level) { |project, options| project.project_feature.string_access_level(:wiki) }
+      expose(:builds_access_level) { |project, options| project.project_feature.string_access_level(:builds) }
+      expose(:snippets_access_level) { |project, options| project.project_feature.string_access_level(:snippets) }
 
       expose :shared_runners_enabled
       expose :lfs_enabled?, as: :lfs_enabled
@@ -267,6 +276,12 @@ module API
       expose :runners_token, if: lambda { |_project, options| options[:user_can_admin_project] }
       expose :ci_default_git_depth
       expose :public_builds, as: :public_jobs
+      expose :build_git_strategy, if: lambda { |project, options| options[:user_can_admin_project] } do |project, options|
+        project.build_allow_git_fetch ? 'fetch' : 'clone'
+      end
+      expose :build_timeout
+      expose :auto_cancel_pending_pipelines
+      expose :build_coverage_regex
       expose :ci_config_path, if: -> (project, options) { Ability.allowed?(options[:current_user], :download_code, project) }
       expose :shared_with_groups do |project, options|
         SharedGroup.represent(project.project_group_links, options)
@@ -280,6 +295,10 @@ module API
         options[:statistics] && Ability.allowed?(options[:current_user], :read_statistics, project)
       }
       expose :external_authorization_classification_label
+      expose :auto_devops_enabled?, as: :auto_devops_enabled
+      expose :auto_devops_deploy_strategy do |project, options|
+        project.auto_devops.nil? ? 'continuous' : project.auto_devops.deploy_strategy
+      end
 
       # rubocop: disable CodeReuse/ActiveRecord
       def self.preload_relation(projects_relation, options = {})
@@ -289,6 +308,7 @@ module API
         # MR describing the solution: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/20555
         super(projects_relation).preload(:group)
                                 .preload(:ci_cd_settings)
+                                .preload(:auto_devops)
                                 .preload(project_group_links: { group: :route },
                                          fork_network: :root_project,
                                          fork_network_member: :forked_from_project,
@@ -491,7 +511,7 @@ module API
       end
     end
 
-    class ProjectEntity < Grape::Entity
+    class IssuableEntity < Grape::Entity
       expose :id, :iid
       expose(:project_id) { |entity| entity&.project.try(:id) }
       expose :title, :description
@@ -544,7 +564,7 @@ module API
       end
     end
 
-    class IssueBasic < ProjectEntity
+    class IssueBasic < IssuableEntity
       expose :closed_at
       expose :closed_by, using: Entities::UserBasic
 
@@ -650,14 +670,14 @@ module API
       end
     end
 
-    class MergeRequestSimple < ProjectEntity
+    class MergeRequestSimple < IssuableEntity
       expose :title
       expose :web_url do |merge_request, options|
         Gitlab::UrlBuilder.build(merge_request)
       end
     end
 
-    class MergeRequestBasic < ProjectEntity
+    class MergeRequestBasic < IssuableEntity
       expose :merged_by, using: Entities::UserBasic do |merge_request, _options|
         merge_request.metrics&.merged_by
       end
@@ -1665,6 +1685,10 @@ module API
 
     class ClusterProject < Cluster
       expose :project, using: Entities::BasicProjectDetails
+    end
+
+    class ClusterGroup < Cluster
+      expose :group, using: Entities::BasicGroupDetails
     end
   end
 end

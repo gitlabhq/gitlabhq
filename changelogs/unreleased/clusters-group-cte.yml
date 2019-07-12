@@ -1,0 +1,5 @@
+---
+title: Use CTE to fetch clusters hierarchy in single query
+merge_request: 30063
+author:
+type: performance

@@ -68,18 +68,18 @@ NOTE: **Note:** This example uses NFS and CephFS. We do not recommend using EFS 
 
 1. Edit `gitlab.yml` and add the storage paths:
 
-    ```yaml
-    repositories:
-      # Paths where repositories can be stored. Give the canonicalized absolute pathname.
-      # NOTE: REPOS PATHS MUST NOT CONTAIN ANY SYMLINK!!!
-      storages: # You must have at least a 'default' storage path.
-        default:
-          path: /home/git/repositories
-        nfs:
-          path: /mnt/nfs/repositories
-        cephfs:
-          path: /mnt/cephfs/repositories
-    ```
+   ```yaml
+   repositories:
+     # Paths where repositories can be stored. Give the canonicalized absolute pathname.
+     # NOTE: REPOS PATHS MUST NOT CONTAIN ANY SYMLINK!!!
+     storages: # You must have at least a 'default' storage path.
+       default:
+         path: /home/git/repositories
+       nfs:
+         path: /mnt/nfs/repositories
+       cephfs:
+         path: /mnt/cephfs/repositories
+   ```
 
 1. [Restart GitLab][restart-gitlab] for the changes to take effect.
 
@@ -97,16 +97,16 @@ working, you can remove the `repos_path` line.
 1. Edit `/etc/gitlab/gitlab.rb` by appending the rest of the paths to the
    default one:
 
-    ```ruby
-    git_data_dirs({
-      "default" => { "path" => "/var/opt/gitlab/git-data" },
-      "nfs" => { "path" => "/mnt/nfs/git-data" },
-      "cephfs" => { "path" => "/mnt/cephfs/git-data" }
-    })
-    ```
+   ```ruby
+   git_data_dirs({
+     "default" => { "path" => "/var/opt/gitlab/git-data" },
+     "nfs" => { "path" => "/mnt/nfs/git-data" },
+     "cephfs" => { "path" => "/mnt/cephfs/git-data" }
+   })
+   ```
 
-    Note that Omnibus stores the repositories in a `repositories` subdirectory
-    of the `git-data` directory.
+   Note that Omnibus stores the repositories in a `repositories` subdirectory
+   of the `git-data` directory.
 
 ## Choose where new project repositories will be stored
 

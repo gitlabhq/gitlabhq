@@ -1,4 +1,4 @@
-# Database Load Balancing **[PREMIUM ONLY]**
+# Database Load Balancing **(PREMIUM ONLY)**
 
 > [Introduced][ee-1283] in [GitLab Premium][eep] 9.0.
 
@@ -74,9 +74,9 @@ the following. This will balance the load between `host1.example.com` and
 
 1. Edit `/etc/gitlab/gitlab.rb` and add the following line:
 
-    ```ruby
-    gitlab_rails['db_load_balancing'] = { 'hosts' => ['host1.example.com', 'host2.example.com'] }
-    ```
+   ```ruby
+   gitlab_rails['db_load_balancing'] = { 'hosts' => ['host1.example.com', 'host2.example.com'] }
+   ```
 
 1. Save the file and [reconfigure GitLab][] for the changes to take effect.
 
@@ -86,16 +86,16 @@ the following. This will balance the load between `host1.example.com` and
 
 1. Edit `/home/git/gitlab/config/database.yml` and add or amend the following lines:
 
-    ```yaml
-    production:
-      username: gitlab
-      database: gitlab
-      encoding: unicode
-      load_balancing:
-        hosts:
-          - host1.example.com
-          - host2.example.com
-    ```
+   ```yaml
+   production:
+     username: gitlab
+     database: gitlab
+     encoding: unicode
+     load_balancing:
+       hosts:
+         - host1.example.com
+         - host2.example.com
+   ```
 
 1. Save the file and [restart GitLab][] for the changes to take effect.
 
@@ -265,7 +265,7 @@ production:
     replica_check_interval: 30
 ```
 
-[hot-standby]: https://www.postgresql.org/docs/9.6/static/hot-standby.html
+[hot-standby]: https://www.postgresql.org/docs/9.6/hot-standby.html
 [ee-1283]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1283
 [eep]: https://about.gitlab.com/pricing/
 [reconfigure gitlab]: restart_gitlab.md#omnibus-gitlab-reconfigure "How to reconfigure Omnibus GitLab"

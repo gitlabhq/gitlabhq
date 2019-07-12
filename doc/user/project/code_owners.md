@@ -1,4 +1,4 @@
-# Code Owners **[STARTER]**
+# Code Owners **(STARTER)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/6916)
 in [GitLab Starter](https://about.gitlab.com/pricing/) 11.3.
@@ -57,8 +57,8 @@ Example `CODEOWNERS` file:
 # Files with a `#` can still be accesssed by escaping the pound sign
 \#file_with_pound.rb @owner-file-with-pound
 
-# Multiple codeowners can be specified, separated by whitespace
-CODEOWNERS @multiple @owners	@tab-separated
+# Multiple codeowners can be specified, separated by spaces or tabs
+CODEOWNERS @multiple @code @owners 
 
 # Both usernames or email addresses can be used to match
 # users. Everything else will be ignored. For example this will

@@ -4,7 +4,7 @@ describe Gitlab::Metrics::Samplers::UnicornSampler do
   subject { described_class.new(1.second) }
 
   describe '#sample' do
-    let(:unicorn) { double('unicorn') }
+    let(:unicorn) { Module.new }
     let(:raindrops) { double('raindrops') }
     let(:stats) { double('stats') }
 
@@ -78,19 +78,32 @@ describe Gitlab::Metrics::Samplers::UnicornSampler do
       end
     end
 
-    context 'additional metrics' do
-      let(:unicorn_workers) { 2 }
-
+    context 'unicorn workers' do
       before do
-        allow(unicorn).to receive(:listener_names).and_return([""])
-        allow(::Gitlab::Metrics::System).to receive(:cpu_time).and_return(3.14)
-        allow(subject).to receive(:unicorn_workers_count).and_return(unicorn_workers)
+        allow(unicorn).to receive(:listener_names).and_return([])
       end
 
-      it "sets additional metrics" do
-        expect(subject.metrics[:unicorn_workers]).to receive(:set).with({}, unicorn_workers)
+      context 'without http server' do
+        it "does set unicorn_workers to 0" do
+          expect(subject.metrics[:unicorn_workers]).to receive(:set).with({}, 0)
 
-        subject.sample
+          subject.sample
+        end
+      end
+
+      context 'with http server' do
+        let(:http_server_class) { Struct.new(:worker_processes) }
+        let!(:http_server) { http_server_class.new(5) }
+
+        before do
+          stub_const('Unicorn::HttpServer', http_server_class)
+        end
+
+        it "sets additional metrics" do
+          expect(subject.metrics[:unicorn_workers]).to receive(:set).with({}, 5)
+
+          subject.sample
+        end
       end
     end
   end

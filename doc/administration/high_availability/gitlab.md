@@ -7,33 +7,33 @@
 1. If necessary, install the NFS client utility packages using the following
    commands:
 
-    ```
-    # Ubuntu/Debian
-    apt-get install nfs-common
+   ```
+   # Ubuntu/Debian
+   apt-get install nfs-common
 
-    # CentOS/Red Hat
-    yum install nfs-utils nfs-utils-lib
-    ```
+   # CentOS/Red Hat
+   yum install nfs-utils nfs-utils-lib
+   ```
 
 1. Specify the necessary NFS shares. Mounts are specified in
    `/etc/fstab`. The exact contents of `/etc/fstab` will depend on how you chose
    to configure your NFS server. See [NFS documentation](nfs.md) for the various
    options. Here is an example snippet to add to `/etc/fstab`:
 
-    ```
-    10.1.0.1:/var/opt/gitlab/.ssh /var/opt/gitlab/.ssh nfs4 defaults,soft,rsize=1048576,wsize=1048576,noatime,nofail,lookupcache=positive 0 2
-    10.1.0.1:/var/opt/gitlab/gitlab-rails/uploads /var/opt/gitlab/gitlab-rails/uploads nfs4 defaults,soft,rsize=1048576,wsize=1048576,noatime,nofail,lookupcache=positive 0 2
-    10.1.0.1:/var/opt/gitlab/gitlab-rails/shared /var/opt/gitlab/gitlab-rails/shared nfs4 defaults,soft,rsize=1048576,wsize=1048576,noatime,nofail,lookupcache=positive 0 2
-    10.1.0.1:/var/opt/gitlab/gitlab-ci/builds /var/opt/gitlab/gitlab-ci/builds nfs4 defaults,soft,rsize=1048576,wsize=1048576,noatime,nofail,lookupcache=positive 0 2
-    10.1.0.1:/var/opt/gitlab/git-data /var/opt/gitlab/git-data nfs4 defaults,soft,rsize=1048576,wsize=1048576,noatime,nofail,lookupcache=positive 0 2
-    ```
+   ```
+   10.1.0.1:/var/opt/gitlab/.ssh /var/opt/gitlab/.ssh nfs4 defaults,soft,rsize=1048576,wsize=1048576,noatime,nofail,lookupcache=positive 0 2
+   10.1.0.1:/var/opt/gitlab/gitlab-rails/uploads /var/opt/gitlab/gitlab-rails/uploads nfs4 defaults,soft,rsize=1048576,wsize=1048576,noatime,nofail,lookupcache=positive 0 2
+   10.1.0.1:/var/opt/gitlab/gitlab-rails/shared /var/opt/gitlab/gitlab-rails/shared nfs4 defaults,soft,rsize=1048576,wsize=1048576,noatime,nofail,lookupcache=positive 0 2
+   10.1.0.1:/var/opt/gitlab/gitlab-ci/builds /var/opt/gitlab/gitlab-ci/builds nfs4 defaults,soft,rsize=1048576,wsize=1048576,noatime,nofail,lookupcache=positive 0 2
+   10.1.0.1:/var/opt/gitlab/git-data /var/opt/gitlab/git-data nfs4 defaults,soft,rsize=1048576,wsize=1048576,noatime,nofail,lookupcache=positive 0 2
+   ```
 
 1. Create the shared directories. These may be different depending on your NFS
    mount locations.
 
-    ```
-    mkdir -p /var/opt/gitlab/.ssh /var/opt/gitlab/gitlab-rails/uploads /var/opt/gitlab/gitlab-rails/shared /var/opt/gitlab/gitlab-ci/builds /var/opt/gitlab/git-data
-    ```
+   ```
+   mkdir -p /var/opt/gitlab/.ssh /var/opt/gitlab/gitlab-rails/uploads /var/opt/gitlab/gitlab-rails/shared /var/opt/gitlab/gitlab-ci/builds /var/opt/gitlab/git-data
+   ```
 
 1. Download/install GitLab Omnibus using **steps 1 and 2** from
    [GitLab downloads](https://about.gitlab.com/downloads). Do not complete other
@@ -46,52 +46,52 @@
    added NFS mounts in the default data locations. Additionally the UID and GIDs
    given are just examples and you should configure with your preferred values.
 
-    ```ruby
-    external_url 'https://gitlab.example.com'
+   ```ruby
+   external_url 'https://gitlab.example.com'
 
-    # Prevent GitLab from starting if NFS data mounts are not available
-    high_availability['mountpoint'] = '/var/opt/gitlab/git-data'
+   # Prevent GitLab from starting if NFS data mounts are not available
+   high_availability['mountpoint'] = '/var/opt/gitlab/git-data'
 
-    # Disable components that will not be on the GitLab application server
-    roles ['application_role']
-    nginx['enable'] = true
+   # Disable components that will not be on the GitLab application server
+   roles ['application_role']
+   nginx['enable'] = true
 
-    # PostgreSQL connection details
-    gitlab_rails['db_adapter'] = 'postgresql'
-    gitlab_rails['db_encoding'] = 'unicode'
-    gitlab_rails['db_host'] = '10.1.0.5' # IP/hostname of database server
-    gitlab_rails['db_password'] = 'DB password'
+   # PostgreSQL connection details
+   gitlab_rails['db_adapter'] = 'postgresql'
+   gitlab_rails['db_encoding'] = 'unicode'
+   gitlab_rails['db_host'] = '10.1.0.5' # IP/hostname of database server
+   gitlab_rails['db_password'] = 'DB password'
 
-    # Redis connection details
-    gitlab_rails['redis_port'] = '6379'
-    gitlab_rails['redis_host'] = '10.1.0.6' # IP/hostname of Redis server
-    gitlab_rails['redis_password'] = 'Redis Password'
+   # Redis connection details
+   gitlab_rails['redis_port'] = '6379'
+   gitlab_rails['redis_host'] = '10.1.0.6' # IP/hostname of Redis server
+   gitlab_rails['redis_password'] = 'Redis Password'
 
-    # Ensure UIDs and GIDs match between servers for permissions via NFS
-    user['uid'] = 9000
-    user['gid'] = 9000
-    web_server['uid'] = 9001
-    web_server['gid'] = 9001
-    registry['uid'] = 9002
-    registry['gid'] = 9002
-    ```
+   # Ensure UIDs and GIDs match between servers for permissions via NFS
+   user['uid'] = 9000
+   user['gid'] = 9000
+   web_server['uid'] = 9001
+   web_server['gid'] = 9001
+   registry['uid'] = 9002
+   registry['gid'] = 9002
+   ```
 
 1. [Enable monitoring](#enable-monitoring)
 
-    > **Note:** To maintain uniformity of links across HA clusters, the `external_url`
-    on the first application server as well as the additional application
-    servers should point to the external url that users will use to access GitLab.
-    In a typical HA setup, this will be the url of the load balancer which will
-    route traffic to all GitLab application servers in the HA cluster.
-    >
-    > **Note:** When you specify `https` in the `external_url`, as in the example
-    above, GitLab assumes you have SSL certificates in `/etc/gitlab/ssl/`. If
-    certificates are not present, Nginx will fail to start. See
-    [Nginx documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#enable-https)
-    for more information.
-    >
-    > **Note:** It is best to set the `uid` and `gid`s prior to the initial reconfigure
-    of GitLab. Omnibus will not recursively `chown` directories if set after the initial reconfigure.
+   > **Note:** To maintain uniformity of links across HA clusters, the `external_url`
+   on the first application server as well as the additional application
+   servers should point to the external url that users will use to access GitLab.
+   In a typical HA setup, this will be the url of the load balancer which will
+   route traffic to all GitLab application servers in the HA cluster.
+   >
+   > **Note:** When you specify `https` in the `external_url`, as in the example
+   above, GitLab assumes you have SSL certificates in `/etc/gitlab/ssl/`. If
+   certificates are not present, Nginx will fail to start. See
+   [Nginx documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#enable-https)
+   for more information.
+   >
+   > **Note:** It is best to set the `uid` and `gid`s prior to the initial reconfigure
+   of GitLab. Omnibus will not recursively `chown` directories if set after the initial reconfigure.
 
 ## First GitLab application server
 
@@ -114,18 +114,18 @@ need some extra configuration.
    secondary servers **prior to** running the first `reconfigure` in the steps
    above.
 
-    ```ruby
-    gitlab_shell['secret_token'] = 'fbfb19c355066a9afb030992231c4a363357f77345edd0f2e772359e5be59b02538e1fa6cae8f93f7d23355341cea2b93600dab6d6c3edcdced558fc6d739860'
-    gitlab_rails['otp_key_base'] = 'b719fe119132c7810908bba18315259ed12888d4f5ee5430c42a776d840a396799b0a5ef0a801348c8a357f07aa72bbd58e25a84b8f247a25c72f539c7a6c5fa'
-    gitlab_rails['secret_key_base'] = '6e657410d57c71b4fc3ed0d694e7842b1895a8b401d812c17fe61caf95b48a6d703cb53c112bc01ebd197a85da81b18e29682040e99b4f26594772a4a2c98c6d'
-    gitlab_rails['db_key_base'] = 'bf2e47b68d6cafaef1d767e628b619365becf27571e10f196f98dc85e7771042b9203199d39aff91fcb6837c8ed83f2a912b278da50999bb11a2fbc0fba52964'
-    ```
+   ```ruby
+   gitlab_shell['secret_token'] = 'fbfb19c355066a9afb030992231c4a363357f77345edd0f2e772359e5be59b02538e1fa6cae8f93f7d23355341cea2b93600dab6d6c3edcdced558fc6d739860'
+   gitlab_rails['otp_key_base'] = 'b719fe119132c7810908bba18315259ed12888d4f5ee5430c42a776d840a396799b0a5ef0a801348c8a357f07aa72bbd58e25a84b8f247a25c72f539c7a6c5fa'
+   gitlab_rails['secret_key_base'] = '6e657410d57c71b4fc3ed0d694e7842b1895a8b401d812c17fe61caf95b48a6d703cb53c112bc01ebd197a85da81b18e29682040e99b4f26594772a4a2c98c6d'
+   gitlab_rails['db_key_base'] = 'bf2e47b68d6cafaef1d767e628b619365becf27571e10f196f98dc85e7771042b9203199d39aff91fcb6837c8ed83f2a912b278da50999bb11a2fbc0fba52964'
+   ```
 
 1. Run `touch /etc/gitlab/skip-auto-reconfigure` to prevent database migrations
    from running on upgrade. Only the primary GitLab application server should
    handle migrations.
 
-1. **Optional** Configure host keys. Copy all contents(primary and public keys) inside `/etc/ssh/` on
+1. **Recommended** Configure host keys. Copy the contents (primary and public keys) of `/etc/ssh/` on
    the primary application server to `/etc/ssh` on all secondary servers. This
    prevents false man-in-the-middle-attack alerts when accessing servers in your
    High Availability cluster behind a load balancer.

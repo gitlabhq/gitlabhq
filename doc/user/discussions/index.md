@@ -5,7 +5,7 @@ The ability to contribute conversationally is offered throughout GitLab.
 You can leave a comment in the following places:
 
 - issues
-- epics **[ULTIMATE]**
+- epics **(ULTIMATE)**
 - merge requests
 - snippets
 - commits
@@ -282,7 +282,7 @@ edit existing comments. Non-team members are restricted from adding or editing c
 
 Additionally, locked issues and merge requests can not be reopened.
 
-## Merge Request Reviews **[PREMIUM]**
+## Merge Request Reviews **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/4213) in GitLab 11.4.
 
@@ -444,7 +444,7 @@ Clicking on the **Reply to comment** button will bring the reply area into focus
 
 ![Reply to comment feature](img/reply_to_comment.gif)
 
-Relying to a non-discussion comment will convert the non-discussion comment to a
+Replying to a non-discussion comment will convert the non-discussion comment to a
 threaded discussion once the reply is submitted. This conversion is considered an edit
 to the original comment, so a note about when it was last edited will appear underneath it.
 

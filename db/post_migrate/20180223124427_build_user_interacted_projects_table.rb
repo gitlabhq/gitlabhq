@@ -82,7 +82,7 @@ class BuildUserInteractedProjectsTable < ActiveRecord::Migration[4.2]
       iteration = 0
       records = 0
       begin
-        Rails.logger.info "Building user_interacted_projects table, batch ##{iteration}"
+        Rails.logger.info "Building user_interacted_projects table, batch ##{iteration}" # rubocop:disable Gitlab/RailsLogger
         result = execute <<~SQL
             INSERT INTO user_interacted_projects (user_id, project_id)
             SELECT e.user_id, e.project_id
@@ -93,7 +93,7 @@ class BuildUserInteractedProjectsTable < ActiveRecord::Migration[4.2]
         SQL
         iteration += 1
         records += result.cmd_tuples
-        Rails.logger.info "Building user_interacted_projects table, batch ##{iteration} complete, created #{records} overall"
+        Rails.logger.info "Building user_interacted_projects table, batch ##{iteration} complete, created #{records} overall" # rubocop:disable Gitlab/RailsLogger
         Kernel.sleep(SLEEP_TIME) if result.cmd_tuples > 0
       end while result.cmd_tuples > 0
     end

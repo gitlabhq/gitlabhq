@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Create', :requires_admin do
+  # Failure issue: https://gitlab.com/gitlab-org/quality/nightly/issues/113
+  context 'Create', :requires_admin, :quarantine do
     describe 'push after setting the file size limit via admin/application_settings' do
       before(:context) do
         @project = Resource::Project.fabricate_via_api! do |p|

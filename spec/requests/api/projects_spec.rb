@@ -1102,6 +1102,12 @@ describe API::Projects do
         expect(json_response['wiki_enabled']).to be_present
         expect(json_response['jobs_enabled']).to be_present
         expect(json_response['snippets_enabled']).to be_present
+        expect(json_response['snippets_access_level']).to be_present
+        expect(json_response['repository_access_level']).to be_present
+        expect(json_response['issues_access_level']).to be_present
+        expect(json_response['merge_requests_access_level']).to be_present
+        expect(json_response['wiki_access_level']).to be_present
+        expect(json_response['builds_access_level']).to be_present
         expect(json_response['resolve_outdated_diff_discussions']).to eq(project.resolve_outdated_diff_discussions)
         expect(json_response['container_registry_enabled']).to be_present
         expect(json_response['created_at']).to be_present
@@ -1913,6 +1919,34 @@ describe API::Projects do
         end
       end
 
+      it 'updates builds_access_level' do
+        project_param = { builds_access_level: 'private' }
+
+        put api("/projects/#{project3.id}", user), params: project_param
+
+        expect(response).to have_gitlab_http_status(200)
+
+        expect(json_response['builds_access_level']).to eq('private')
+      end
+
+      it 'updates build_git_strategy' do
+        project_param = { build_git_strategy: 'clone' }
+
+        put api("/projects/#{project3.id}", user), params: project_param
+
+        expect(response).to have_gitlab_http_status(200)
+
+        expect(json_response['build_git_strategy']).to eq('clone')
+      end
+
+      it 'rejects to update build_git_strategy when build_git_strategy is invalid' do
+        project_param = { build_git_strategy: 'invalid' }
+
+        put api("/projects/#{project3.id}", user), params: project_param
+
+        expect(response).to have_gitlab_http_status(400)
+      end
+
       it 'updates merge_method' do
         project_param = { merge_method: 'ff' }
 
@@ -1945,6 +1979,26 @@ describe API::Projects do
         expect(json_response['avatar_url']).to eq('http://localhost/uploads/'\
                                                   '-/system/project/avatar/'\
                                                   "#{project3.id}/banana_sample.gif")
+      end
+
+      it 'updates auto_devops_deploy_strategy' do
+        project_param = { auto_devops_deploy_strategy: 'timed_incremental' }
+
+        put api("/projects/#{project3.id}", user), params: project_param
+
+        expect(response).to have_gitlab_http_status(200)
+
+        expect(json_response['auto_devops_deploy_strategy']).to eq('timed_incremental')
+      end
+
+      it 'updates auto_devops_enabled' do
+        project_param = { auto_devops_enabled: false }
+
+        put api("/projects/#{project3.id}", user), params: project_param
+
+        expect(response).to have_gitlab_http_status(200)
+
+        expect(json_response['auto_devops_enabled']).to eq(false)
       end
     end
 

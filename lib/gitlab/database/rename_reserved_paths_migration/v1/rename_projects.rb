@@ -56,7 +56,7 @@ module Gitlab
             unless gitlab_shell.mv_repository(project.repository_storage,
                                               old_path,
                                               new_path)
-              Rails.logger.error "Error moving #{old_path} to #{new_path}"
+              Rails.logger.error "Error moving #{old_path} to #{new_path}" # rubocop:disable Gitlab/RailsLogger
             end
           end
 

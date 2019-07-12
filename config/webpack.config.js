@@ -322,7 +322,10 @@ module.exports = {
       }),
 
     new webpack.DefinePlugin({
+      // This one is used to define window.gon.ee and other things properly in tests:
       'process.env.IS_GITLAB_EE': JSON.stringify(IS_EE),
+      // This one is used to check against "EE" properly in application code
+      IS_EE: IS_EE ? 'window.gon && window.gon.ee' : JSON.stringify(false),
     }),
   ].filter(Boolean),
 
@@ -341,6 +344,8 @@ module.exports = {
 
   devtool: NO_SOURCEMAPS ? false : devtool,
 
-  // sqljs requires fs
-  node: { fs: 'empty' },
+  node: {
+    fs: 'empty', // sqljs requires fs
+    setImmediate: false,
+  },
 };

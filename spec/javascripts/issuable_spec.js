@@ -2,14 +2,14 @@ import $ from 'jquery';
 import MockAdaptor from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import IssuableIndex from '~/issuable_index';
+import issuableInitBulkUpdateSidebar from '~/issuable_init_bulk_update_sidebar';
 
 describe('Issuable', () => {
-  let Issuable;
   describe('initBulkUpdate', () => {
     it('should not set bulkUpdateSidebar', () => {
-      Issuable = new IssuableIndex('issue_');
+      new IssuableIndex('issue_'); // eslint-disable-line no-new
 
-      expect(Issuable.bulkUpdateSidebar).not.toBeDefined();
+      expect(issuableInitBulkUpdateSidebar.bulkUpdateSidebar).toBeNull();
     });
 
     it('should set bulkUpdateSidebar', () => {
@@ -17,9 +17,9 @@ describe('Issuable', () => {
       element.classList.add('issues-bulk-update');
       document.body.appendChild(element);
 
-      Issuable = new IssuableIndex('issue_');
+      new IssuableIndex('issue_'); // eslint-disable-line no-new
 
-      expect(Issuable.bulkUpdateSidebar).toBeDefined();
+      expect(issuableInitBulkUpdateSidebar.bulkUpdateSidebar).toBeDefined();
     });
   });
 
@@ -36,7 +36,7 @@ describe('Issuable', () => {
       input.setAttribute('id', 'issuable_email');
       document.body.appendChild(input);
 
-      Issuable = new IssuableIndex('issue_');
+      new IssuableIndex('issue_'); // eslint-disable-line no-new
 
       mock = new MockAdaptor(axios);
 

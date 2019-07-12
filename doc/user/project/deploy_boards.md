@@ -1,4 +1,4 @@
-# Deploy Boards **[PREMIUM]**
+# Deploy Boards **(PREMIUM)**
 
 > [Introduced][ee-1589] in [GitLab Premium][ee] 9.0.
 

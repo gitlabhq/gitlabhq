@@ -37,6 +37,8 @@ end
 module Peek
   module Views
     module RedisDetailed
+      REDACTED_MARKER = "<redacted>"
+
       def results
         super.merge(details: details)
       end
@@ -57,10 +59,12 @@ module Peek
       end
 
       def format_command(cmd)
+        if cmd.length >= 2 && cmd.first =~ /^auth$/i
+          cmd[-1] = REDACTED_MARKER
         # Scrub out the value of the SET calls to avoid binary
         # data or large data from spilling into the view
-        if cmd.length >= 2 && cmd.first =~ /set/i
-          cmd[-1] = "<redacted>"
+        elsif cmd.length >= 3 && cmd.first =~ /set/i
+          cmd[2..-1] = REDACTED_MARKER
         end
 
         cmd.join(' ')

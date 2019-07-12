@@ -81,7 +81,7 @@ To downgrade an Omnibus installation, it is sufficient to install the Community
 Edition package on top of the currently installed one. You can do this manually,
 by directly [downloading the package](https://packages.gitlab.com/gitlab/gitlab-ce)
 you need, or by adding our CE package repository and following the
-[CE installation instructions](https://about.gitlab.com/installation/?version=ce).
+[CE installation instructions](https://about.gitlab.com/install/?version=ce).
 
 **Source Installation**
 

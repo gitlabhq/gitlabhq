@@ -23,6 +23,7 @@ Rails.application.configure do
   config.public_file_server.headers = { 'Cache-Control' => 'public, max-age=3600' }
 
   # Show full error reports and disable caching
+  config.active_record.verbose_query_logs  = true
   config.consider_all_requests_local       = true
   config.action_controller.perform_caching = false
 
@@ -40,7 +41,7 @@ Rails.application.configure do
   # Print deprecation notices to the stderr
   config.active_support.deprecation = :stderr
 
-  config.eager_load = false
+  config.eager_load = true
 
   config.cache_store = :null_store
 

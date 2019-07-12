@@ -1,4 +1,4 @@
-# Geo High Availability **[PREMIUM ONLY]**
+# Geo High Availability **(PREMIUM ONLY)**
 
 This document describes a minimal reference architecture for running Geo
 in a high availability configuration. If your HA setup differs from the one

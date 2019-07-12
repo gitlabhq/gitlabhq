@@ -9,12 +9,13 @@ describe Gitlab::MarkdownCache::ActiveRecord::Extension do
       cache_markdown_field :title, whitelisted: true
       cache_markdown_field :description, pipeline: :single_line
 
-      attr_accessor :author, :project
+      attribute :author
+      attribute :project
     end
   end
 
   let(:cache_version) { Gitlab::MarkdownCache::CACHE_COMMONMARK_VERSION << 16 }
-  let(:thing) { klass.new(title: markdown, title_html: html, cached_markdown_version: cache_version) }
+  let(:thing) { klass.create(title: markdown, title_html: html, cached_markdown_version: cache_version) }
 
   let(:markdown) { '`Foo`' }
   let(:html) { '<p data-sourcepos="1:1-1:5" dir="auto"><code>Foo</code></p>' }
@@ -37,7 +38,7 @@ describe Gitlab::MarkdownCache::ActiveRecord::Extension do
   end
 
   context 'a changed markdown field' do
-    let(:thing) { klass.new(title: markdown, title_html: html, cached_markdown_version: cache_version) }
+    let(:thing) { klass.create(title: markdown, title_html: html, cached_markdown_version: cache_version) }
 
     before do
       thing.title = updated_markdown

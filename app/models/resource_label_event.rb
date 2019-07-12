@@ -36,10 +36,9 @@ class ResourceLabelEvent < ApplicationRecord
     issue || merge_request
   end
 
-  # create same discussion id for all actions with the same user and time
   def discussion_id(resource = nil)
     strong_memoize(:discussion_id) do
-      Digest::SHA1.hexdigest([self.class.name, created_at, user_id].join("-"))
+      Digest::SHA1.hexdigest(discussion_id_key.join("-"))
     end
   end
 
@@ -120,5 +119,9 @@ class ResourceLabelEvent < ApplicationRecord
 
   def resource_parent
     issuable.project || issuable.group
+  end
+
+  def discussion_id_key
+    [self.class.name, created_at, user_id]
   end
 end

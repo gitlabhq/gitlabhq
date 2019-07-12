@@ -273,6 +273,7 @@ export CI_RUNNER_ID="10"
 export CI_RUNNER_DESCRIPTION="my runner"
 export CI_RUNNER_TAGS="docker, linux"
 export CI_SERVER="yes"
+export CI_SERVER_HOST="example.com"
 export CI_SERVER_NAME="GitLab"
 export CI_SERVER_REVISION="70606bf"
 export CI_SERVER_VERSION="8.9.0"
@@ -389,7 +390,7 @@ Protected variables can be added by going to your project's
 
 Once you set them, they will be available for all subsequent pipelines.
 
-### Limiting environment scopes of environment variables **[PREMIUM]**
+### Limiting environment scopes of environment variables **(PREMIUM)**
 
 You can limit the environment scope of a variable by
 [defining which environments][envs] it can be available for.
@@ -644,6 +645,8 @@ Running on runner-8a2f473d-project-1796893-concurrent-0 via runner-8a2f473d-mach
 ++ CI_PROJECT_DIR=/builds/gitlab-examples/ci-debug-trace
 ++ export CI_SERVER=yes
 ++ CI_SERVER=yes
+++ export 'CI_SERVER_HOST=example.com'
+++ CI_SERVER_HOST='example.com'
 ++ export 'CI_SERVER_NAME=GitLab CI'
 ++ CI_SERVER_NAME='GitLab CI'
 ++ export CI_SERVER_VERSION=
@@ -678,6 +681,8 @@ Running on runner-8a2f473d-project-1796893-concurrent-0 via runner-8a2f473d-mach
 ++ CI_JOB_NAME=debug_trace
 ++ export CI_JOB_STAGE=test
 ++ CI_JOB_STAGE=test
+++ export CI_SERVER_HOST=example.com
+++ CI_SERVER_HOST=example.com
 ++ export CI_SERVER_NAME=GitLab
 ++ CI_SERVER_NAME=GitLab
 ++ export CI_SERVER_VERSION=8.14.3-ee

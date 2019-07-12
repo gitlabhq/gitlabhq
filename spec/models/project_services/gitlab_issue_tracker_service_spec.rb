@@ -61,7 +61,9 @@ describe GitlabIssueTrackerService do
     # this  will be removed as part of https://gitlab.com/gitlab-org/gitlab-ce/issues/63084
     context 'when data are stored in properties' do
       let(:properties) { access_params.merge(title: title, description: description) }
-      let(:service) { create(:gitlab_issue_tracker_service, properties: properties) }
+      let(:service) do
+        create(:gitlab_issue_tracker_service, :without_properties_callback, properties: properties)
+      end
 
       include_examples 'issue tracker fields'
     end
@@ -77,7 +79,7 @@ describe GitlabIssueTrackerService do
     context 'when data are stored in both properties and separated fields' do
       let(:properties) { access_params.merge(title: 'wrong title', description: 'wrong description') }
       let(:service) do
-        create(:gitlab_issue_tracker_service, title: title, description: description, properties: properties)
+        create(:gitlab_issue_tracker_service, :without_properties_callback, title: title, description: description, properties: properties)
       end
 
       include_examples 'issue tracker fields'

@@ -25,11 +25,11 @@ To change the location where the job logs will be stored, follow the steps below
 
 **In Omnibus installations:**
 
-1.  Edit `/etc/gitlab/gitlab.rb` and add or amend the following line:
+1. Edit `/etc/gitlab/gitlab.rb` and add or amend the following line:
 
-    ```
-    gitlab_ci['builds_directory'] = '/mnt/to/gitlab-ci/builds'
-    ```
+   ```ruby
+   gitlab_ci['builds_directory'] = '/mnt/to/gitlab-ci/builds'
+   ```
 
 1. Save the file and [reconfigure GitLab][] for the changes to take effect.
 
@@ -39,12 +39,12 @@ To change the location where the job logs will be stored, follow the steps below
 
 1. Edit `/home/git/gitlab/config/gitlab.yml` and add or amend the following lines:
 
-    ```yaml
-    gitlab_ci:
-      # The location where build traces are stored (default: builds/).
-      # Relative paths are relative to Rails.root.
-      builds_path: path/to/builds/
-    ```
+   ```yaml
+   gitlab_ci:
+     # The location where build traces are stored (default: builds/).
+     # Relative paths are relative to Rails.root.
+     builds_path: path/to/builds/
+   ```
 
 1. Save the file and [restart GitLab][] for the changes to take effect.
 
@@ -67,24 +67,24 @@ To archive those legacy job traces, please follow the instruction below.
 
 1. Execute the following command
 
-    ```bash
-    gitlab-rake gitlab:traces:archive
-    ```
+   ```bash
+   gitlab-rake gitlab:traces:archive
+   ```
 
-    After you executed this task, GitLab instance queues up Sidekiq jobs (asynchronous processes)
-    for migrating job trace files from local storage to object storage. 
-    It could take time to complete the all migration jobs. You can check the progress by the following command
+   After you executed this task, GitLab instance queues up Sidekiq jobs (asynchronous processes)
+   for migrating job trace files from local storage to object storage.
+   It could take time to complete the all migration jobs. You can check the progress by the following command
 
-    ```bash
-    sudo gitlab-rails console
-    ```
+   ```bash
+   sudo gitlab-rails console
+   ```
 
-    ```bash
-    [1] pry(main)> Sidekiq::Stats.new.queues['pipeline_background:archive_trace']
-    => 100
-    ```
+   ```bash
+   [1] pry(main)> Sidekiq::Stats.new.queues['pipeline_background:archive_trace']
+   => 100
+   ```
 
-    If the count becomes zero, the archiving processes are done
+   If the count becomes zero, the archiving processes are done
 
 ## How to migrate archived job traces to object storage
 
@@ -95,9 +95,9 @@ If job traces have already been archived into local storage, and you want to mig
 1. Ensure [Object storage integration for Job Artifacts](job_artifacts.md#object-storage-settings) is enabled
 1. Execute the following command
 
-    ```bash
-    gitlab-rake gitlab:traces:migrate
-    ```
+   ```bash
+   gitlab-rake gitlab:traces:migrate
+   ```
 
 ## How to remove job traces
 

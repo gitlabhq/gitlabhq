@@ -22,7 +22,7 @@ if Gitlab::Database.postgresql?
     #
     # When schema dumping, `timestamptz` columns will be output as
     # `t.datetime_with_timezone`.
-    def initialize_type_map(mapping)
+    def initialize_type_map(mapping = type_map)
       super mapping
 
       mapping.register_type 'timestamptz' do |_, _, sql_type|
@@ -51,7 +51,7 @@ elsif Gitlab::Database.mysql?
     #
     # When schema dumping, `timestamp` columns will be output as
     # `t.datetime_with_timezone`.
-    def initialize_type_map(mapping)
+    def initialize_type_map(mapping = type_map)
       super mapping
 
       mapping.register_type(/timestamp/i) do |sql_type|

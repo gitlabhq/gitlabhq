@@ -30,13 +30,9 @@ module Gitlab
     SERVER_VERSION_FILE = 'GITALY_SERVER_VERSION'
     MAXIMUM_GITALY_CALLS = 30
     CLIENT_NAME = (Sidekiq.server? ? 'gitlab-sidekiq' : 'gitlab-web').freeze
+    GITALY_METADATA_FILENAME = '.gitaly-metadata'
 
     MUTEX = Mutex.new
-
-    define_histogram :gitaly_controller_action_duration_seconds do
-      docstring "Gitaly endpoint histogram by controller and action combination"
-      base_labels Gitlab::Metrics::Transaction::BASE_LABELS.merge(gitaly_service: nil, rpc: nil)
-    end
 
     def self.stub(name, storage)
       MUTEX.synchronize do
@@ -71,7 +67,7 @@ module Gitlab
         File.read(cert_file).scan(PEM_REGEX).map do |cert|
           OpenSSL::X509::Certificate.new(cert).to_pem
         rescue OpenSSL::OpenSSLError => e
-          Rails.logger.error "Could not load certificate #{cert_file} #{e}"
+          Rails.logger.error "Could not load certificate #{cert_file} #{e}" # rubocop:disable Gitlab/RailsLogger
           Gitlab::Sentry.track_exception(e, extra: { cert_file: cert_file })
           nil
         end.compact
@@ -161,10 +157,6 @@ module Gitlab
 
       # Keep track, separately, for the performance bar
       self.query_time += duration
-      gitaly_controller_action_duration_seconds.observe(
-        current_transaction_labels.merge(gitaly_service: service.to_s, rpc: rpc.to_s),
-        duration)
-
       if peek_enabled?
         add_call_details(feature: "#{service}##{rpc}", duration: duration, request: request_hash, rpc: rpc,
                          backtrace: Gitlab::Profiler.clean_backtrace(caller))
@@ -385,6 +377,46 @@ module Gitlab
 
     def self.no_timeout
       0
+    end
+
+    def self.storage_metadata_file_path(storage)
+      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        File.join(
+          Gitlab.config.repositories.storages[storage].legacy_disk_path, GITALY_METADATA_FILENAME
+        )
+      end
+    end
+
+    def self.can_use_disk?(storage)
+      false
+      # cached_value = MUTEX.synchronize do
+      #   @can_use_disk ||= {}
+      #   @can_use_disk[storage]
+      # end
+
+      # return cached_value unless cached_value.nil?
+
+      # gitaly_filesystem_id = filesystem_id(storage)
+      # direct_filesystem_id = filesystem_id_from_disk(storage)
+
+      # MUTEX.synchronize do
+      #   @can_use_disk[storage] = gitaly_filesystem_id.present? &&
+      #     gitaly_filesystem_id == direct_filesystem_id
+      # end
+    end
+
+    def self.filesystem_id(storage)
+      response = Gitlab::GitalyClient::ServerService.new(storage).info
+      storage_status = response.storage_statuses.find { |status| status.storage_name == storage }
+      storage_status.filesystem_id
+    end
+
+    def self.filesystem_id_from_disk(storage)
+      metadata_file = File.read(storage_metadata_file_path(storage))
+      metadata_hash = JSON.parse(metadata_file)
+      metadata_hash['gitaly_filesystem_id']
+    rescue Errno::ENOENT, JSON::ParserError
+      nil
     end
 
     def self.timeout(timeout_name)

@@ -360,6 +360,7 @@ module QA
   module Specs
     autoload :Config, 'qa/specs/config'
     autoload :Runner, 'qa/specs/runner'
+    autoload :ParallelRunner, 'qa/specs/parallel_runner'
 
     module Helpers
       autoload :Quarantine, 'qa/specs/helpers/quarantine'

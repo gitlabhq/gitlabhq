@@ -1,0 +1,5 @@
+---
+title: Prevent amplification of ReactiveCachingWorker jobs upon failures
+merge_request: 30432
+author:
+type: performance

@@ -1,4 +1,4 @@
-# Kubernetes Pod Logs **[ULTIMATE]**
+# Kubernetes Pod Logs **(ULTIMATE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/4752) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.0.
 

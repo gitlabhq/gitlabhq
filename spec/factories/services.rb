@@ -100,4 +100,16 @@ FactoryBot.define do
     type 'HipchatService'
     token 'test_token'
   end
+
+  trait :without_properties_callback do
+    after(:build) do |service|
+      allow(service).to receive(:handle_properties)
+    end
+
+    after(:create) do |service|
+      # we have to remove the stub because the behaviour of
+      # handle_properties method is tested after the creation
+      allow(service).to receive(:handle_properties).and_call_original
+    end
+  end
 end

@@ -13,8 +13,8 @@ for details.
 
 ## Introduction
 
-[OpenShift Origin][openshift] is an open source container application
-platform created by [RedHat], based on [kubernetes] and [Docker]. That means
+[OpenShift Origin](https://www.okd.io/) (**Note:** renamed to OKD in Aug 2018) is an open source container application
+platform created by [RedHat], based on [kubernetes](https://kubernetes.io/) and [Docker]. That means
 you can host your own PaaS for free and almost with no hassle.
 
 In this tutorial, we will see how to deploy GitLab in OpenShift using GitLab's
@@ -27,8 +27,11 @@ For a video demonstration on installing GitLab on OpenShift, check the article [
 
 ## Prerequisites
 
-OpenShift 3 is not yet deployed on RedHat's offered Online platform ([openshift.com]),
-so in order to test it, we will use an [all-in-one Virtualbox image][vm] that is
+CAUTION: **Caution:** This information is no longer up to date, as the current versions
+have changed and products have been renamed.
+
+OpenShift 3 is not yet deployed on RedHat's offered Online platform, [openshift.com](https://www.openshift.com/),
+so in order to test it, we will use an [all-in-one Virtualbox image](https://www.okd.io/minishift/) that is
 offered by the OpenShift developers and managed by Vagrant. If you haven't done
 already, go ahead and install the following components as they are essential to
 test OpenShift easily:
@@ -67,17 +70,17 @@ In short:
 
 1. Open a terminal and in a new directory run:
 
-    ```sh
-    vagrant init openshift/origin-all-in-one
-    ```
+   ```sh
+   vagrant init openshift/origin-all-in-one
+   ```
 
 1. This will generate a Vagrantfile based on the all-in-one VM image
 1. In the same directory where you generated the Vagrantfile
    enter:
 
-    ```sh
-    vagrant up
-    ```
+   ```sh
+   vagrant up
+   ```
 
 This will download the VirtualBox image and fire up the VM with some preconfigured
 values as you can see in the Vagrantfile. As you may have noticed, you need
@@ -192,22 +195,22 @@ In that case, the OpenShift service might not be running, so in order to fix it:
 1. SSH into the VM by going to the directory where the Vagrantfile is and then
    run:
 
-    ```sh
-    vagrant ssh
-    ```
+   ```sh
+   vagrant ssh
+   ```
 
 1. Run `systemctl` and verify by the output that the `openshift` service is not
    running (it will be in red color). If that's the case start the service with:
 
-    ```sh
-    sudo systemctl start openshift
-    ```
+   ```sh
+   sudo systemctl start openshift
+   ```
 
 1. Verify the service is up with:
 
-    ```sh
-    systemctl status openshift -l
-    ```
+   ```sh
+   systemctl status openshift -l
+   ```
 
 Now you will be able to login using `oc` (like we did before) and visit the web
 console.
@@ -390,55 +393,55 @@ Let's see how to do that using the following steps.
 
 1. Make sure you are in the `gitlab` project:
 
-    ```sh
-    oc project gitlab
-    ```
+   ```sh
+   oc project gitlab
+   ```
 
 1. See what services are used for this project:
 
-    ```sh
-    oc get svc
-    ```
+   ```sh
+   oc get svc
+   ```
 
-    The output will be similar to:
+   The output will be similar to:
 
-    ```
-    NAME                   CLUSTER-IP       EXTERNAL-IP   PORT(S)         AGE
-    gitlab-ce              172.30.243.177   <none>        22/TCP,80/TCP   5d
-    gitlab-ce-postgresql   172.30.116.75    <none>        5432/TCP        5d
-    gitlab-ce-redis        172.30.105.88    <none>        6379/TCP        5d
-    ```
+   ```
+   NAME                   CLUSTER-IP       EXTERNAL-IP   PORT(S)         AGE
+   gitlab-ce              172.30.243.177   <none>        22/TCP,80/TCP   5d
+   gitlab-ce-postgresql   172.30.116.75    <none>        5432/TCP        5d
+   gitlab-ce-redis        172.30.105.88    <none>        6379/TCP        5d
+   ```
 
 1. We need to see the replication controllers of the `gitlab-ce` service.
    Get a detailed view of the current ones:
 
-    ```sh
-    oc describe rc gitlab-ce
-    ```
+   ```sh
+   oc describe rc gitlab-ce
+   ```
 
-    This will return a large detailed list of the current replication controllers.
-    Search for the name of the GitLab controller, usually `gitlab-ce-1` or if
-    that failed at some point and you spawned another one, it will be named
-    `gitlab-ce-2`.
+   This will return a large detailed list of the current replication controllers.
+   Search for the name of the GitLab controller, usually `gitlab-ce-1` or if
+   that failed at some point and you spawned another one, it will be named
+   `gitlab-ce-2`.
 
 1. Scale GitLab using the previous information:
 
-    ```sh
-    oc scale --replicas=2 replicationcontrollers gitlab-ce-2
-    ```
+   ```sh
+   oc scale --replicas=2 replicationcontrollers gitlab-ce-2
+   ```
 
 1. Get the new replicas number to make sure scaling worked:
 
-    ```sh
-    oc get rc gitlab-ce-2
-    ```
+   ```sh
+   oc get rc gitlab-ce-2
+   ```
 
-    which will return something like:
+   which will return something like:
 
-    ```
-    NAME          DESIRED   CURRENT   AGE
-    gitlab-ce-2   2         2         5d
-    ```
+   ```
+   NAME          DESIRED   CURRENT   AGE
+   gitlab-ce-2   2         2         5d
+   ```
 
 And that's it! We successfully scaled the replicas to 2 using the CLI.
 
@@ -458,7 +461,7 @@ OpenShift's website about [autoscaling].
 
 ## Current limitations
 
-As stated in the [all-in-one VM][vm] page:
+As stated in the [all-in-one VM](https://www.okd.io/minishift/) page:
 
 > By default, OpenShift will not allow a container to run as root or even a
 non-random container assigned userid. Most Docker images in the Dockerhub do not
@@ -475,13 +478,13 @@ For OpenShift v3.0, you will need to do this manually:
 
 1. Edit the Security Context:
 
-    ```sh
-    oc edit scc anyuid
-    ```
+   ```sh
+   oc edit scc anyuid
+   ```
 
 1. Add `system:serviceaccount:<project>:gitlab-ce-user` to the `users` section.
    If you changed the Application Name from the default the user will
-     will be `<app-name>-user` instead of `gitlab-ce-user`
+   will be `<app-name>-user` instead of `gitlab-ce-user`
 
 1. Save and exit the editor
 
@@ -506,12 +509,8 @@ is capable of. As always, you can refer to the detailed
 PaaS and managing your applications with the ease of containers.
 
 [RedHat]: https://www.redhat.com/en "RedHat website"
-[openshift]: https://www.openshift.org "OpenShift Origin website"
-[vm]: https://www.openshift.org/vm/ "OpenShift All-in-one VM"
 [vm-new]: https://app.vagrantup.com/openshift/boxes/origin-all-in-one "Official OpenShift Vagrant box on Vagrant Cloud"
 [template]: https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/docker/openshift-template.json "OpenShift template for GitLab"
-[openshift.com]: https://openshift.com "OpenShift Online"
-[kubernetes]: http://kubernetes.io/ "Kubernetes website"
 [Docker]: https://www.docker.com "Docker website"
 [oc]: https://docs.openshift.org/latest/cli_reference/get_started_cli.html "Documentation - oc CLI documentation"
 [VirtualBox]: https://www.virtualbox.org/wiki/Downloads "VirtualBox downloads"

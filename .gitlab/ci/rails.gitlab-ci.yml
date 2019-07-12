@@ -66,6 +66,8 @@
     - scripts/gitaly-test-spawn
     - date
     - 'export KNAPSACK_TEST_FILE_PATTERN=$(ruby -r./lib/quality/test_level.rb -e "puts Quality::TestLevel.new.pattern(:${TEST_LEVEL})")'
+    - mkdir -p tmp/memory_test
+    - export MEMORY_TEST_PATH="tmp/memory_test/${TEST_TOOL}_${TEST_LEVEL}_${DATABASE}_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_memory.csv"
     - knapsack rspec "--color --format documentation --format RspecJunitFormatter --out junit_rspec.xml --tag level:${TEST_LEVEL} --tag ~geo"
     - date
   artifacts:
@@ -77,6 +79,7 @@
       - rspec_flaky/
       - rspec_profiling/
       - tmp/capybara/
+      - tmp/memory_test/
 #    reports:
 #      junit: junit_rspec.xml
 
@@ -139,7 +142,7 @@ setup-test-env:
 
 rspec unit pg:
   <<: *rspec-metadata-pg
-  parallel: 25
+  parallel: 20
 
 rspec integration pg:
   <<: *rspec-metadata-pg
@@ -152,7 +155,7 @@ rspec system pg:
 rspec unit pg-10:
   <<: *rspec-metadata-pg-10
   <<: *only-schedules-master
-  parallel: 25
+  parallel: 20
 
 rspec integration pg-10:
   <<: *rspec-metadata-pg-10
@@ -273,6 +276,7 @@ coverage:
   stage: post-test
   script:
     - bundle exec scripts/merge-simplecov
+    - bundle exec scripts/gather-test-memory-data
   coverage: '/LOC \((\d+\.\d+%)\) covered.$/'
   artifacts:
     name: coverage
@@ -280,3 +284,4 @@ coverage:
     paths:
       - coverage/index.html
       - coverage/assets/
+      - tmp/memory_test/

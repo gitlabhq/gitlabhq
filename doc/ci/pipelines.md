@@ -234,7 +234,7 @@ Pipeline status and test coverage report badges are available and configurable f
 
 For information on adding pipeline badges to projects, see [Pipeline badges](../user/project/pipelines/settings.md#pipeline-badges).
 
-## Multi-project pipelines **[PREMIUM]**
+## Multi-project pipelines **(PREMIUM)**
 
 Pipelines for different projects can be combined and visualized together.
 

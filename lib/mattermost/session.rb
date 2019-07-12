@@ -41,7 +41,7 @@ module Mattermost
         begin
           yield self
         rescue Errno::ECONNREFUSED => e
-          Rails.logger.error(e.message + "\n" + e.backtrace.join("\n"))
+          Rails.logger.error(e.message + "\n" + e.backtrace.join("\n")) # rubocop:disable Gitlab/RailsLogger
           raise Mattermost::NoSessionError
         ensure
           destroy

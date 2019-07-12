@@ -15,6 +15,12 @@ Currently, only the following basic fields are imported:
 - Created at
 - Closed at
 
+## Users
+
+The assignee and author of a user are deducted from a Task's owner and
+author: If a user with the same username has access to the namespace
+of the project being imported into, then the user will be linked.
+
 ## Enabling this feature
 
 While this feature is incomplete, a feature flag is required to enable it so that

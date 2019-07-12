@@ -10,6 +10,7 @@ describe('InlineDiffView', () => {
   let component;
   const getDiffFileMock = () => Object.assign({}, diffFileMockData);
   const getDiscussionsMockData = () => [Object.assign({}, discussionsMockData)];
+  const notesLength = getDiscussionsMockData()[0].notes.length;
 
   beforeEach(done => {
     const diffFile = getDiffFileMock();
@@ -40,7 +41,7 @@ describe('InlineDiffView', () => {
 
       Vue.nextTick(() => {
         expect(el.querySelectorAll('.notes_holder').length).toEqual(1);
-        expect(el.querySelectorAll('.notes_holder .note-discussion li').length).toEqual(6);
+        expect(el.querySelectorAll('.notes_holder .note').length).toEqual(notesLength + 1);
         expect(el.innerText.indexOf('comment 5')).toBeGreaterThan(-1);
         component.$store.dispatch('setInitialNotes', []);
 

@@ -9,7 +9,7 @@ patch and security releases. New releases are usually announced on the [GitLab b
 
 ## Versioning
 
-GitLab uses [Semantic Versioning](http://semver.org/) for its releases:
+GitLab uses [Semantic Versioning](https://semver.org/) for its releases:
 `(Major).(Minor).(Patch)` in a [pragmatic way](https://gist.github.com/jashkenas/cbd2b088e20279ae2c8e).
 
 For example, for GitLab version 10.5.7:

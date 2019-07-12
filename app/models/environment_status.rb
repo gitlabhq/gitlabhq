@@ -3,11 +3,10 @@
 class EnvironmentStatus
   include Gitlab::Utils::StrongMemoize
 
-  attr_reader :environment, :merge_request, :sha
+  attr_reader :project, :environment, :merge_request, :sha
 
   delegate :id, to: :environment
   delegate :name, to: :environment
-  delegate :project, to: :environment
   delegate :status, to: :deployment, allow_nil: true
   delegate :deployed_at, to: :deployment, allow_nil: true
 
@@ -21,7 +20,8 @@ class EnvironmentStatus
     build_environments_status(mr, user, mr.merge_pipeline)
   end
 
-  def initialize(environment, merge_request, sha)
+  def initialize(project, environment, merge_request, sha)
+    @project = project
     @environment = environment
     @merge_request = merge_request
     @sha = sha
@@ -33,8 +33,14 @@ class EnvironmentStatus
     end
   end
 
+  def has_metrics?
+    strong_memoize(:has_metrics) do
+      deployment_metrics.has_metrics?
+    end
+  end
+
   def changes
-    return [] if project.route_map_for(sha).nil?
+    return [] unless has_route_map?
 
     changed_files.map { |file| build_change(file) }.compact
   end
@@ -44,9 +50,17 @@ class EnvironmentStatus
       .merge_request_diff_files.where(deleted_file: false)
   end
 
+  def has_route_map?
+    project.route_map_for(sha).present?
+  end
+
   private
 
   PAGE_EXTENSIONS = /\A\.(s?html?|php|asp|cgi|pl)\z/i.freeze
+
+  def deployment_metrics
+    @deployment_metrics ||= DeploymentMetrics.new(project, deployment)
+  end
 
   def build_change(file)
     public_path = project.public_path_for_source_path(file.new_path, sha)
@@ -67,7 +81,7 @@ class EnvironmentStatus
     pipeline.environments.available.map do |environment|
       next unless Ability.allowed?(user, :read_environment, environment)
 
-      EnvironmentStatus.new(environment, mr, pipeline.sha)
+      EnvironmentStatus.new(pipeline.project, environment, mr, pipeline.sha)
     end.compact
   end
   private_class_method :build_environments_status

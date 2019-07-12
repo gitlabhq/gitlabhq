@@ -4,20 +4,23 @@ description: 'Learn how to administer GitLab Pages.'
 
 # GitLab Pages administration
 
-> **Notes:**
->
 > - [Introduced][ee-80] in GitLab EE 8.3.
 > - Custom CNAMEs with TLS support were [introduced][ee-173] in GitLab EE 8.5.
-> - GitLab Pages [were ported][ce-14605] to Community Edition in GitLab 8.17.
-> - This guide is for Omnibus GitLab installations. If you have installed
->   GitLab from source, follow the [Pages source installation document](source.md).
-> - To learn how to use GitLab Pages, read the [user documentation][pages-userguide].
-> - Support for subgroup project's websites was [introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/30548) in GitLab 11.8.
+> - GitLab Pages [was ported][ce-14605] to Community Edition in GitLab 8.17.
+> - Support for subgroup project's websites was
+>   [introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/30548) in GitLab 11.8.
 
-This document describes how to set up the _latest_ GitLab Pages feature. Make
-sure to read the [changelog](#changelog) if you are upgrading to a new GitLab
+GitLab Pages allows for hosting of static sites. It must be configured by an
+administrator. Separate [user documentation][pages-userguide] is available.
+
+Read the [changelog](#changelog) if you are upgrading to a new GitLab
 version as it may include new features and changes needed to be made in your
 configuration.
+
+NOTE: **Note:**
+This guide is for Omnibus GitLab installations. If you have installed
+GitLab from source, see
+[GitLab Pages administration for source installations](source.md).
 
 ## Overview
 
@@ -121,9 +124,9 @@ The Pages daemon doesn't listen to the outside world.
 
 1. Set the external URL for GitLab Pages in `/etc/gitlab/gitlab.rb`:
 
-    ```shell
-    pages_external_url 'http://example.io'
-    ```
+   ```shell
+   pages_external_url 'http://example.io'
+   ```
 
 1. [Reconfigure GitLab][reconfigure].
 
@@ -146,16 +149,16 @@ outside world.
 1. Place the certificate and key inside `/etc/gitlab/ssl`
 1. In `/etc/gitlab/gitlab.rb` specify the following configuration:
 
-    ```shell
-    pages_external_url 'https://example.io'
+   ```shell
+   pages_external_url 'https://example.io'
 
-    pages_nginx['redirect_http_to_https'] = true
-    pages_nginx['ssl_certificate'] = "/etc/gitlab/ssl/pages-nginx.crt"
-    pages_nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/pages-nginx.key"
-    ```
+   pages_nginx['redirect_http_to_https'] = true
+   pages_nginx['ssl_certificate'] = "/etc/gitlab/ssl/pages-nginx.crt"
+   pages_nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/pages-nginx.key"
+   ```
 
-    where `pages-nginx.crt` and `pages-nginx.key` are the SSL cert and key,
-    respectively.
+   where `pages-nginx.crt` and `pages-nginx.key` are the SSL cert and key,
+   respectively.
 
 1. [Reconfigure GitLab][reconfigure].
 
@@ -168,9 +171,9 @@ behavior:
 1. Edit `/etc/gitlab/gitlab.rb`.
 1. Set the `inplace_chroot` to `true` for GitLab Pages:
 
-    ```shell
-    gitlab_pages['inplace_chroot'] = true
-    ```
+   ```shell
+   gitlab_pages['inplace_chroot'] = true
+   ```
 
 1. [Reconfigure GitLab][reconfigure].
 
@@ -203,16 +206,16 @@ world. Custom domains are supported, but no TLS.
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
-    ```shell
-    pages_external_url "http://example.io"
-    nginx['listen_addresses'] = ['192.0.2.1']
-    pages_nginx['enable'] = false
-    gitlab_pages['external_http'] = ['192.0.2.2:80', '[2001::2]:80']
-    ```
+   ```shell
+   pages_external_url "http://example.io"
+   nginx['listen_addresses'] = ['192.0.2.1']
+   pages_nginx['enable'] = false
+   gitlab_pages['external_http'] = ['192.0.2.2:80', '[2001::2]:80']
+   ```
 
-    where `192.0.2.1` is the primary IP address that GitLab is listening to and
-    `192.0.2.2` and `2001::2` are the secondary IPs the GitLab Pages daemon
-    listens on. If you don't have IPv6, you can omit the IPv6 address.
+   where `192.0.2.1` is the primary IP address that GitLab is listening to and
+   `192.0.2.2` and `2001::2` are the secondary IPs the GitLab Pages daemon
+   listens on. If you don't have IPv6, you can omit the IPv6 address.
 
 1. [Reconfigure GitLab][reconfigure].
 
@@ -234,19 +237,19 @@ world. Custom domains and TLS are supported.
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
-    ```shell
-    pages_external_url "https://example.io"
-    nginx['listen_addresses'] = ['192.0.2.1']
-    pages_nginx['enable'] = false
-    gitlab_pages['cert'] = "/etc/gitlab/ssl/example.io.crt"
-    gitlab_pages['cert_key'] = "/etc/gitlab/ssl/example.io.key"
-    gitlab_pages['external_http'] = ['192.0.2.2:80', '[2001::2]:80']
-    gitlab_pages['external_https'] = ['192.0.2.2:443', '[2001::2]:443']
-    ```
+   ```shell
+   pages_external_url "https://example.io"
+   nginx['listen_addresses'] = ['192.0.2.1']
+   pages_nginx['enable'] = false
+   gitlab_pages['cert'] = "/etc/gitlab/ssl/example.io.crt"
+   gitlab_pages['cert_key'] = "/etc/gitlab/ssl/example.io.key"
+   gitlab_pages['external_http'] = ['192.0.2.2:80', '[2001::2]:80']
+   gitlab_pages['external_https'] = ['192.0.2.2:443', '[2001::2]:443']
+   ```
 
-    where `192.0.2.1` is the primary IP address that GitLab is listening to and
-    `192.0.2.2` and `2001::2` are the secondary IPs where the GitLab Pages daemon
-    listens on. If you don't have IPv6, you can omit the IPv6 address.
+   where `192.0.2.1` is the primary IP address that GitLab is listening to and
+   `192.0.2.2` and `2001::2` are the secondary IPs where the GitLab Pages daemon
+   listens on. If you don't have IPv6, you can omit the IPv6 address.
 
 1. [Reconfigure GitLab][reconfigure].
 
@@ -284,9 +287,9 @@ Pages access control is disabled by default. To enable it:
 
 1. Enable it in `/etc/gitlab/gitlab.rb`:
 
-    ```ruby
-    gitlab_pages['access_control'] = true
-    ```
+   ```ruby
+   gitlab_pages['access_control'] = true
+   ```
 
 1. [Reconfigure GitLab][reconfigure].
 1. Users can now configure it in their [projects' settings](../../user/project/pages/introduction.md#gitlab-pages-access-control-core-only).
@@ -299,9 +302,9 @@ pages:
 
 1. Configure in `/etc/gitlab/gitlab.rb`:
 
-    ```ruby
-    gitlab_pages['http_proxy'] = 'http://example:8080'
-    ```
+   ```ruby
+   gitlab_pages['http_proxy'] = 'http://example:8080'
+   ```
 
 1. [Reconfigure Gitlab][reconfigure] for the changes to take effect.
 
@@ -316,9 +319,9 @@ Follow the steps below to configure verbose logging of GitLab Pages daemon.
    If you wish to make it log events with level `DEBUG` you must configure this in
    `/etc/gitlab/gitlab.rb`:
 
-    ```shell
-    gitlab_pages['log_verbose'] = true
-    ```
+   ```shell
+   gitlab_pages['log_verbose'] = true
+   ```
 
 1. [Reconfigure GitLab][reconfigure].
 
@@ -331,9 +334,9 @@ are stored.
    If you wish to store them in another location you must set it up in
    `/etc/gitlab/gitlab.rb`:
 
-    ```shell
-    gitlab_rails['pages_path'] = "/mnt/storage/pages"
-    ```
+   ```shell
+   gitlab_rails['pages_path'] = "/mnt/storage/pages"
+   ```
 
 1. [Reconfigure GitLab][reconfigure].
 
@@ -344,19 +347,19 @@ Omnibus GitLab 11.1.
 
 1. By default the listener is configured to listen for requests on `localhost:8090`.
 
-    If you wish to disable it you must configure this in
-    `/etc/gitlab/gitlab.rb`:
+   If you wish to disable it you must configure this in
+   `/etc/gitlab/gitlab.rb`:
 
-    ```shell
-    gitlab_pages['listen_proxy'] = nil
-    ```
+   ```shell
+   gitlab_pages['listen_proxy'] = nil
+   ```
 
-    If you wish to make it listen on a different port you must configure this also in
-    `/etc/gitlab/gitlab.rb`:
+   If you wish to make it listen on a different port you must configure this also in
+   `/etc/gitlab/gitlab.rb`:
 
-    ```shell
-    gitlab_pages['listen_proxy'] = "localhost:10080"
-    ```
+   ```shell
+   gitlab_pages['listen_proxy'] = "localhost:10080"
+   ```
 
 1. [Reconfigure GitLab][reconfigure].
 
@@ -378,28 +381,29 @@ Follow the steps below to configure GitLab Pages in a separate server.
 
 1. On `app2` install GitLab omnibus and modify `/etc/gitlab/gitlab.rb` this way:
 
-    ```shell
-    external_url 'http://<ip-address-of-the-server>'
-    pages_external_url "http://<your-pages-domain>"
-    postgresql['enable'] = false
-    redis['enable'] = false
-    prometheus['enable'] = false
-    unicorn['enable'] = false
-    sidekiq['enable'] = false
-    gitlab_workhorse['enable'] = false
-    gitaly['enable'] = false
-    alertmanager['enable'] = false
-    node_exporter['enable'] = false
-    gitlab_rails['auto_migrate'] = false
-    ```
+   ```shell
+   external_url 'http://<ip-address-of-the-server>'
+   pages_external_url "http://<your-pages-domain>"
+   postgresql['enable'] = false
+   redis['enable'] = false
+   prometheus['enable'] = false
+   unicorn['enable'] = false
+   sidekiq['enable'] = false
+   gitlab_workhorse['enable'] = false
+   gitaly['enable'] = false
+   alertmanager['enable'] = false
+   node_exporter['enable'] = false
+   gitlab_rails['auto_migrate'] = false
+   ```
+
 1. Run `sudo gitlab-ctl reconfigure`.
 1. On `app1` apply the following changes to `/etc/gitlab/gitlab.rb`:
 
-    ```shell
-    gitlab_pages['enable'] = false
-    pages_external_url "http://<your-pages-domain>"
-    gitlab_rails['pages_path'] = "/mnt/pages"
-    ```
+   ```shell
+   gitlab_pages['enable'] = false
+   pages_external_url "http://<your-pages-domain>"
+   gitlab_rails['pages_path'] = "/mnt/pages"
+   ```
 
 1. Run `sudo gitlab-ctl reconfigure`.
 

@@ -1,0 +1,62 @@
+{
+  "result": {
+    "data": [
+      {
+        "id": 1,
+        "type": "USER",
+        "phid": "PHID-USER-hohoho",
+        "fields": {
+          "username": "jane",
+          "realName": "Jane Doe",
+          "roles": [
+            "admin",
+            "verified",
+            "approved",
+            "activated"
+          ],
+          "dateCreated": 1405970599,
+          "dateModified": 1406705963,
+          "policy": {
+            "view": "public",
+            "edit": "no-one"
+          }
+        },
+        "attachments": {}
+      },
+      {
+        "id": 2,
+        "type": "USER",
+        "phid": "PHID-USER-hihihi",
+        "fields": {
+          "username": "john",
+          "realName": "John Doe",
+          "roles": [
+            "admin",
+            "verified",
+            "approved",
+            "activated"
+          ],
+          "dateCreated": 1403609184,
+          "dateModified": 1559138722,
+          "policy": {
+            "view": "public",
+            "edit": "no-one"
+          }
+        },
+        "attachments": {}
+      }
+    ],
+    "maps": {},
+    "query": {
+      "queryKey": null
+    },
+    "cursor": {
+      "limit": "100",
+      "after": null,
+      "before": null,
+      "order": null
+    }
+  },
+  "error_code": null,
+  "error_info": null
+}

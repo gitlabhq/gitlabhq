@@ -22,30 +22,30 @@ Example responses:
 
 - Valid content:
 
-    ```json
-    {
-      "status": "valid",
-      "errors": []
-    }
-    ```
+  ```json
+  {
+    "status": "valid",
+    "errors": []
+  }
+  ```
 
 - Invalid content:
 
-    ```json
-    {
-      "status": "invalid",
-      "errors": [
-        "variables config should be a hash of key value pairs"
-      ]
-    }
-    ```
+  ```json
+  {
+    "status": "invalid",
+    "errors": [
+      "variables config should be a hash of key value pairs"
+    ]
+  }
+  ```
 
 - Without the content attribute:
 
-    ```json
-    {
-      "error": "content is missing"
-    }
-    ```
+  ```json
+  {
+    "error": "content is missing"
+  }
+  ```
 
 [ce-5953]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5953

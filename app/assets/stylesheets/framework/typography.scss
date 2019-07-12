@@ -1,5 +1,5 @@
 /**
- * Apply Markdown typography
+ * Apply Markup (Markdown/AsciiDoc) typography
  *
  */
 .md:not(.use-csslab) {
@@ -245,6 +245,21 @@
     }
   }
 
+  ul.checklist,
+  ul.none,
+  ol.none,
+  ul.no-bullet,
+  ol.no-bullet,
+  ol.unnumbered,
+  ul.unstyled,
+  ol.unstyled {
+    list-style-type: none;
+
+    li {
+      margin-left: 0;
+    }
+  }
+
   li {
     line-height: 1.6em;
     margin-left: 25px;
@@ -319,6 +334,54 @@
 
     &:hover > a.anchor::after {
       visibility: visible;
+    }
+  }
+
+  .big {
+    font-size: larger;
+  }
+
+  .small {
+    font-size: smaller;
+  }
+
+  .underline {
+    text-decoration: underline;
+  }
+
+  .overline {
+    text-decoration: overline;
+  }
+
+  .line-through {
+    text-decoration: line-through;
+  }
+
+  .admonitionblock td.icon {
+    width: 1%;
+
+    [class^='fa icon-'] {
+      @extend .fa-2x;
+    }
+
+    .icon-note {
+      @extend .fa-thumb-tack;
+    }
+
+    .icon-tip {
+      @extend .fa-lightbulb-o;
+    }
+
+    .icon-warning {
+      @extend .fa-exclamation-triangle;
+    }
+
+    .icon-caution {
+      @extend .fa-fire;
+    }
+
+    .icon-important {
+      @extend .fa-exclamation-circle;
     }
   }
 }

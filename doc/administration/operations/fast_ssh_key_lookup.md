@@ -6,7 +6,7 @@ using [ssh certificates](ssh_certificates.md), they are even faster,
 but are not a drop-in replacement.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/1631) in
-> [GitLab Starter](https://about.gitlab.com/gitlab-ee) 9.3.
+> [GitLab Starter](https://about.gitlab.com/pricing/) 9.3.
 >
 > [Available in](https://gitlab.com/gitlab-org/gitlab-ee/issues/3953) GitLab
 > Community Edition 10.4.
@@ -30,7 +30,7 @@ instructions will break installations using older versions of OpenSSH, such as
 those included with CentOS 6 as of September 2017. If you want to use this
 feature for CentOS 6, follow [the instructions on how to build and install a custom OpenSSH package](#compiling-a-custom-version-of-openssh-for-centos-6) before continuing.
 
-## Fast lookup is required for Geo **[PREMIUM]**
+## Fast lookup is required for Geo **(PREMIUM)**
 
 By default, GitLab manages an `authorized_keys` file, which contains all the
 public SSH keys for users allowed to access GitLab. However, to maintain a
@@ -117,81 +117,81 @@ the database. The following instructions can be used to build OpenSSH 7.5:
 
 1. First, download the package and install the required packages:
 
-    ```
-    sudo su -
-    cd /tmp
-    curl --remote-name https://mirrors.evowise.com/pub/OpenBSD/OpenSSH/portable/openssh-7.5p1.tar.gz
-    tar xzvf openssh-7.5p1.tar.gz
-    yum install rpm-build gcc make wget openssl-devel krb5-devel pam-devel libX11-devel xmkmf libXt-devel
-    ```
+   ```
+   sudo su -
+   cd /tmp
+   curl --remote-name https://mirrors.evowise.com/pub/OpenBSD/OpenSSH/portable/openssh-7.5p1.tar.gz
+   tar xzvf openssh-7.5p1.tar.gz
+   yum install rpm-build gcc make wget openssl-devel krb5-devel pam-devel libX11-devel xmkmf libXt-devel
+   ```
 
 1. Prepare the build by copying files to the right place:
 
-    ```
-    mkdir -p /root/rpmbuild/{SOURCES,SPECS}
-    cp ./openssh-7.5p1/contrib/redhat/openssh.spec /root/rpmbuild/SPECS/
-    cp openssh-7.5p1.tar.gz /root/rpmbuild/SOURCES/
-    cd /root/rpmbuild/SPECS
-    ```
+   ```
+   mkdir -p /root/rpmbuild/{SOURCES,SPECS}
+   cp ./openssh-7.5p1/contrib/redhat/openssh.spec /root/rpmbuild/SPECS/
+   cp openssh-7.5p1.tar.gz /root/rpmbuild/SOURCES/
+   cd /root/rpmbuild/SPECS
+   ```
 
 1. Next, set the spec settings properly:
 
-    ```
-    sed -i -e "s/%define no_gnome_askpass 0/%define no_gnome_askpass 1/g" openssh.spec
-    sed -i -e "s/%define no_x11_askpass 0/%define no_x11_askpass 1/g" openssh.spec
-    sed -i -e "s/BuildPreReq/BuildRequires/g" openssh.spec
-    ```
+   ```
+   sed -i -e "s/%define no_gnome_askpass 0/%define no_gnome_askpass 1/g" openssh.spec
+   sed -i -e "s/%define no_x11_askpass 0/%define no_x11_askpass 1/g" openssh.spec
+   sed -i -e "s/BuildPreReq/BuildRequires/g" openssh.spec
+   ```
 
 1. Build the RPMs:
 
-    ```
-    rpmbuild -bb openssh.spec
-    ```
+   ```
+   rpmbuild -bb openssh.spec
+   ```
 
 1. Ensure the RPMs were built:
 
-    ```
-    ls -al /root/rpmbuild/RPMS/x86_64/
-    ```
+   ```
+   ls -al /root/rpmbuild/RPMS/x86_64/
+   ```
 
-    You should see something as the following:
+   You should see something as the following:
 
-    ```
-    total 1324
-    drwxr-xr-x. 2 root root   4096 Jun 20 19:37 .
-    drwxr-xr-x. 3 root root     19 Jun 20 19:37 ..
-    -rw-r--r--. 1 root root 470828 Jun 20 19:37 openssh-7.5p1-1.x86_64.rpm
-    -rw-r--r--. 1 root root 490716 Jun 20 19:37 openssh-clients-7.5p1-1.x86_64.rpm
-    -rw-r--r--. 1 root root  17020 Jun 20 19:37 openssh-debuginfo-7.5p1-1.x86_64.rpm
-    -rw-r--r--. 1 root root 367516 Jun 20 19:37 openssh-server-7.5p1-1.x86_64.rpm
-    ```
+   ```
+   total 1324
+   drwxr-xr-x. 2 root root   4096 Jun 20 19:37 .
+   drwxr-xr-x. 3 root root     19 Jun 20 19:37 ..
+   -rw-r--r--. 1 root root 470828 Jun 20 19:37 openssh-7.5p1-1.x86_64.rpm
+   -rw-r--r--. 1 root root 490716 Jun 20 19:37 openssh-clients-7.5p1-1.x86_64.rpm
+   -rw-r--r--. 1 root root  17020 Jun 20 19:37 openssh-debuginfo-7.5p1-1.x86_64.rpm
+   -rw-r--r--. 1 root root 367516 Jun 20 19:37 openssh-server-7.5p1-1.x86_64.rpm
+   ```
 
 1. Install the packages. OpenSSH packages will replace `/etc/pam.d/sshd`
    with its own version, which may prevent users from logging in, so be sure
    that the file is backed up and restored after installation:
 
-    ```
-    timestamp=$(date +%s)
-    cp /etc/pam.d/sshd pam-ssh-conf-$timestamp
-    rpm -Uvh /root/rpmbuild/RPMS/x86_64/*.rpm
-    yes | cp pam-ssh-conf-$timestamp /etc/pam.d/sshd
-    ```
+   ```
+   timestamp=$(date +%s)
+   cp /etc/pam.d/sshd pam-ssh-conf-$timestamp
+   rpm -Uvh /root/rpmbuild/RPMS/x86_64/*.rpm
+   yes | cp pam-ssh-conf-$timestamp /etc/pam.d/sshd
+   ```
 
 1. Verify the installed version. In another window, attempt to login to the server:
 
-    ```
-    ssh -v <your-centos-machine>
-    ```
+   ```
+   ssh -v <your-centos-machine>
+   ```
 
-    You should see a line that reads: "debug1: Remote protocol version 2.0, remote software version OpenSSH_7.5"
+   You should see a line that reads: "debug1: Remote protocol version 2.0, remote software version OpenSSH_7.5"
 
-    If not, you may need to restart sshd (e.g. `systemctl restart sshd.service`).
+   If not, you may need to restart sshd (e.g. `systemctl restart sshd.service`).
 
-1.  *IMPORTANT!* Open a new SSH session to your server before exiting to make
-    sure everything is working! If you need to downgrade, simple install the
-    older package:
+1. *IMPORTANT!* Open a new SSH session to your server before exiting to make
+   sure everything is working! If you need to downgrade, simple install the
+   older package:
 
-    ```
-    # Only run this if you run into a problem logging in
-    yum downgrade openssh-server openssh openssh-clients
-    ```
+   ```
+   # Only run this if you run into a problem logging in
+   yum downgrade openssh-server openssh openssh-clients
+   ```

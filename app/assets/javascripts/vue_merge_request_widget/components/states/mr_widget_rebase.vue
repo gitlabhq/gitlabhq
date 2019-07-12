@@ -4,6 +4,7 @@ import simplePoll from '../../../lib/utils/simple_poll';
 import eventHub from '../../event_hub';
 import statusIcon from '../mr_widget_status_icon.vue';
 import Flash from '../../../flash';
+import { __, sprintf } from '~/locale';
 
 export default {
   name: 'MRWidgetRebase',
@@ -40,6 +41,17 @@ export default {
     showDisabledButton() {
       return ['failed', 'loading'].includes(this.status);
     },
+    fastForwardMergeText() {
+      return sprintf(
+        __(
+          `Fast-forward merge is not possible. Rebase the source branch onto %{startTag}${this.mr.targetBranch}%{endTag} to allow this merge request to be merged.`,
+        ),
+        {
+          startTag: '<span class="label-branch">',
+          endTag: '</span>',
+        },
+      );
+    },
   },
   methods: {
     rebase() {
@@ -54,7 +66,7 @@ export default {
         .catch(error => {
           this.rebasingError = error.merge_error;
           this.isMakingRequest = false;
-          Flash('Something went wrong. Please try again.');
+          Flash(__('Something went wrong. Please try again.'));
         });
     },
     checkRebaseStatus(continuePolling, stopPolling) {
@@ -69,7 +81,7 @@ export default {
 
             if (res.merge_error && res.merge_error.length) {
               this.rebasingError = res.merge_error;
-              Flash('Something went wrong. Please try again.');
+              Flash(__('Something went wrong. Please try again.'));
             }
 
             eventHub.$emit('MRWidgetRebaseSuccess');
@@ -78,7 +90,7 @@ export default {
         })
         .catch(() => {
           this.isMakingRequest = false;
-          Flash('Something went wrong. Please try again.');
+          Flash(__('Something went wrong. Please try again.'));
           stopPolling();
         });
     },
@@ -91,19 +103,14 @@ export default {
 
     <div class="rebase-state-find-class-convention media media-body space-children">
       <template v-if="mr.rebaseInProgress || isMakingRequest">
-        <span class="bold"> Rebase in progress </span>
+        <span class="bold">{{ __('Rebase in progress') }}</span>
       </template>
       <template v-if="!mr.rebaseInProgress && !mr.canPushToSourceBranch">
-        <span class="bold">
-          Fast-forward merge is not possible. Rebase the source branch onto
-          <span class="label-branch">{{ mr.targetBranch }}</span> to allow this merge request to be
-          merged.
-        </span>
+        <span class="bold" v-html="fastForwardMergeText"></span>
       </template>
       <template v-if="!mr.rebaseInProgress && mr.canPushToSourceBranch && !isMakingRequest">
         <div
-          class="accept-merge-holder clearfix
-js-toggle-container accept-action media space-children"
+          class="accept-merge-holder clearfix js-toggle-container accept-action media space-children"
         >
           <button
             :disabled="isMakingRequest"
@@ -111,14 +118,14 @@ js-toggle-container accept-action media space-children"
             class="btn btn-sm btn-reopen btn-success qa-mr-rebase-button"
             @click="rebase"
           >
-            <gl-loading-icon v-if="isMakingRequest" />
-            Rebase
+            <gl-loading-icon v-if="isMakingRequest" />{{ __('Rebase') }}
           </button>
-          <span v-if="!rebasingError" class="bold">
-            Fast-forward merge is not possible. Rebase the source branch onto the target branch or
-            merge target branch into source branch to allow this merge request to be merged.
-          </span>
-          <span v-else class="bold danger"> {{ rebasingError }} </span>
+          <span v-if="!rebasingError" class="bold">{{
+            __(
+              'Fast-forward merge is not possible. Rebase the source branch onto the target branch or merge target branch into source branch to allow this merge request to be merged.',
+            )
+          }}</span>
+          <span v-else class="bold danger">{{ rebasingError }}</span>
         </div>
       </template>
     </div>

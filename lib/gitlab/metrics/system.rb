@@ -63,10 +63,6 @@ module Gitlab
       def self.monotonic_time
         Process.clock_gettime(Process::CLOCK_MONOTONIC, :float_second)
       end
-
-      def self.clk_tck
-        @clk_tck ||= `getconf CLK_TCK`.to_i
-      end
     end
   end
 end

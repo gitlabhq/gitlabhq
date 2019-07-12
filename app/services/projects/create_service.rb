@@ -151,7 +151,7 @@ module Projects
       log_message = message.dup
 
       log_message << " Project ID: #{@project.id}" if @project&.id
-      Rails.logger.error(log_message)
+      Rails.logger.error(log_message) # rubocop:disable Gitlab/RailsLogger
 
       if @project && @project.persisted? && @project.import_state
         @project.import_state.mark_as_failed(message)

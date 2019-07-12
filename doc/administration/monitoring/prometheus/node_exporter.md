@@ -13,9 +13,9 @@ To enable the node exporter:
 1. Edit `/etc/gitlab/gitlab.rb`
 1. Add or find and uncomment the following line, making sure it's set to `true`:
 
-    ```ruby
-    node_exporter['enable'] = true
-    ```
+   ```ruby
+   node_exporter['enable'] = true
+   ```
 
 1. Save the file and [reconfigure GitLab][reconfigure] for the changes to
    take effect

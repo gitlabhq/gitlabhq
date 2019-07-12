@@ -4,14 +4,14 @@ description: "Learn how GitLab's documentation website is architectured."
 
 # Documentation site architecture
 
-Learn how we build and architecture [`gitlab-docs`](https://gitlab.com/gitlab-com/gitlab-docs)
+Learn how we build and architecture [`gitlab-docs`](https://gitlab.com/gitlab-org/gitlab-docs)
 and deploy it to <https://docs.gitlab.com>.
 
 ## Repository
 
 While the source of the documentation content is stored in GitLab's respective product
 repositories, the source that is used to build the documentation site _from that content_
-is located at <https://gitlab.com/gitlab-com/gitlab-docs>.
+is located at <https://gitlab.com/gitlab-org/gitlab-docs>.
 
 The following diagram illustrates the relationship between the repositories
 from where content is sourced, the `gitlab-docs` project, and the published output.
@@ -43,7 +43,7 @@ from where content is sourced, the `gitlab-docs` project, and the published outp
     G --> L
 ```
 
-See the [README there](https://gitlab.com/gitlab-com/gitlab-docs/blob/master/README.md)
+See the [README there](https://gitlab.com/gitlab-org/gitlab-docs/blob/master/README.md)
 for detailed information.
 
 ## Assets
@@ -76,7 +76,7 @@ read through the [global navigation](global_nav.md) doc.
 The docs site is deployed to production with GitLab Pages, and previewed in
 merge requests with Review Apps.
 
-The deployment aspects will be soon transferred from the [original document](https://gitlab.com/gitlab-com/gitlab-docs/blob/master/README.md)
+The deployment aspects will be soon transferred from the [original document](https://gitlab.com/gitlab-org/gitlab-docs/blob/master/README.md)
 to this page.
 
 <!--

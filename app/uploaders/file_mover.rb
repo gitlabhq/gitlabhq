@@ -98,7 +98,7 @@ class FileMover
   end
 
   def revert
-    Rails.logger.warn("Markdown not updated, file move reverted for #{to_model}")
+    Rails.logger.warn("Markdown not updated, file move reverted for #{to_model}") # rubocop:disable Gitlab/RailsLogger
 
     if temp_file_uploader.file_storage?
       FileUtils.move(file_path, temp_file_path)

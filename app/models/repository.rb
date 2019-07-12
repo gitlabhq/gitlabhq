@@ -273,7 +273,7 @@ class Repository
       # This will still fail if the file is corrupted (e.g. 0 bytes)
       raw_repository.write_ref(keep_around_ref_name(sha), sha)
     rescue Gitlab::Git::CommandError => ex
-      Rails.logger.error "Unable to create keep-around reference for repository #{disk_path}: #{ex}"
+      Rails.logger.error "Unable to create keep-around reference for repository #{disk_path}: #{ex}" # rubocop:disable Gitlab/RailsLogger
     end
   end
 
@@ -845,6 +845,10 @@ class Repository
     raw.merge_to_ref(user, source_sha, branch, target_ref, message, first_parent_ref)
   end
 
+  def delete_refs(*ref_names)
+    raw.delete_refs(*ref_names)
+  end
+
   def ff_merge(user, source, target_branch, merge_request: nil)
     their_commit_id = commit(source)&.id
     raise 'Invalid merge source' if their_commit_id.nil?
@@ -930,6 +934,7 @@ class Repository
     async_remove_remote(remote_name) if tmp_remote_name
   end
 
+  # rubocop:disable Gitlab/RailsLogger
   def async_remove_remote(remote_name)
     return unless remote_name
 
@@ -943,6 +948,7 @@ class Repository
 
     job_id
   end
+  # rubocop:enable Gitlab/RailsLogger
 
   def fetch_source_branch!(source_repository, source_branch, local_ref)
     raw_repository.fetch_source_branch!(source_repository.raw_repository, source_branch, local_ref)

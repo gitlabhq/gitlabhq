@@ -148,7 +148,7 @@ Once you decided where to put [test environment orchestration scenarios] and
 the [GitLab QA orchestrator README][gitlab-qa-readme], and [the already existing
 instance-level scenarios][instance-level scenarios].
 
-Continued reading:  
+Continued reading:
 
 - [Quick Start Guide](quick_start_guide.md)
 - [Style Guide](style_guide.md)

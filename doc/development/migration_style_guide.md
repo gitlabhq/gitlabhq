@@ -21,7 +21,7 @@ When downtime is necessary the migration has to be approved by:
 1. A Database Specialist
 
 An up-to-date list of people holding these titles can be found at
-<https://about.gitlab.com/team/>.
+<https://about.gitlab.com/company/team/>.
 
 When writing your migrations, also consider that databases might have stale data
 or inconsistencies and guard for that. Try to make as few assumptions as

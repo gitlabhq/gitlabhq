@@ -1,6 +1,6 @@
 # Configuring Redis for Scaling and High Availability
 
-## Provide your own Redis instance **[CORE ONLY]**
+## Provide your own Redis instance **(CORE ONLY)**
 
 The following are the requirements for providing your own Redis instance:
 
@@ -20,14 +20,14 @@ This section is relevant for [Scaled Architecture](README.md#scalable-architectu
 environments including [Basic Scaling](README.md#basic-scaling) and
 [Full Scaling](README.md#full-scaling).
 
-### Provide your own Redis instance **[CORE ONLY]**
+### Provide your own Redis instance **(CORE ONLY)**
 
 If you want to use your own deployed Redis instance(s),
 see [Provide your own Redis instance](#provide-your-own-redis-instance-core-only)
 for more details. However, you can use the GitLab Omnibus package to easily
 deploy the bundled Redis.
 
-### Standalone Redis using GitLab Omnibus **[CORE ONLY]**
+### Standalone Redis using GitLab Omnibus **(CORE ONLY)**
 
 The GitLab Omnibus package can be used to configure a standalone Redis server.
 In this configuration Redis is not highly available, and represents a single
@@ -41,34 +41,34 @@ The steps below are the minimum necessary to configure a Redis server with
 Omnibus:
 
 1. SSH into the Redis server.
-1. [Download/install](https://about.gitlab.com/installation) the Omnibus GitLab
+1. [Download/install](https://about.gitlab.com/install/) the Omnibus GitLab
    package you want using **steps 1 and 2** from the GitLab downloads page.
      - Do not complete any other steps on the download page.
 
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
 
-    ```ruby
-    ## Enable Redis
-    redis['enable'] = true
+   ```ruby
+   ## Enable Redis
+   redis['enable'] = true
 
-    ## Disable all other services
-    sidekiq['enable'] = false
-    gitlab_workhorse['enable'] = false
-    unicorn['enable'] = false
-    postgresql['enable'] = false
-    nginx['enable'] = false
-    prometheus['enable'] = false
-    alertmanager['enable'] = false
-    pgbouncer_exporter['enable'] = false
-    gitlab_monitor['enable'] = false
-    gitaly['enable'] = false
+   ## Disable all other services
+   sidekiq['enable'] = false
+   gitlab_workhorse['enable'] = false
+   unicorn['enable'] = false
+   postgresql['enable'] = false
+   nginx['enable'] = false
+   prometheus['enable'] = false
+   alertmanager['enable'] = false
+   pgbouncer_exporter['enable'] = false
+   gitlab_monitor['enable'] = false
+   gitaly['enable'] = false
 
-    redis['bind'] = '0.0.0.0'
-    redis['port'] = '6379'
-    redis['password'] = 'SECRET_PASSWORD_HERE'
+   redis['bind'] = '0.0.0.0'
+   redis['port'] = '6379'
+   redis['password'] = 'SECRET_PASSWORD_HERE'
 
-    gitlab_rails['auto_migrate'] = false
-    ```
+   gitlab_rails['auto_migrate'] = false
+   ```
 
 1. [Reconfigure Omnibus GitLab][reconfigure] for the changes to take effect.
 1. Note the Redis node's IP address or hostname, port, and
@@ -89,14 +89,14 @@ environments including [Horizontal](README.md#horizontal),
 [Hybrid](README.md#hybrid), and
 [Fully Distributed](README.md#fully-distributed).
 
-### Provide your own Redis instance **[CORE ONLY]**
+### Provide your own Redis instance **(CORE ONLY)**
 
 If you want to use your own deployed Redis instance(s),
 see [Provide your own Redis instance](#provide-your-own-redis-instance-core-only)
 for more details. However, you can use the GitLab Omnibus package to easily
 deploy the bundled Redis.
 
-### High Availability with GitLab Omnibus **[PREMIUM ONLY]**
+### High Availability with GitLab Omnibus **(PREMIUM ONLY)**
 
 > Experimental Redis Sentinel support was [introduced in GitLab 8.11][ce-1877].
 Starting with 8.14, Redis Sentinel is no longer experimental.
@@ -357,39 +357,39 @@ The prerequisites for a HA Redis setup are the following:
 ### Step 1. Configuring the master Redis instance
 
 1. SSH into the **master** Redis server.
-1. [Download/install](https://about.gitlab.com/installation) the Omnibus GitLab
+1. [Download/install](https://about.gitlab.com/install/) the Omnibus GitLab
    package you want using **steps 1 and 2** from the GitLab downloads page.
-     - Make sure you select the correct Omnibus package, with the same version
-       and type (Community, Enterprise editions) of your current install.
-     - Do not complete any other steps on the download page.
+   - Make sure you select the correct Omnibus package, with the same version
+     and type (Community, Enterprise editions) of your current install.
+   - Do not complete any other steps on the download page.
 
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
 
-    ```ruby
-    # Specify server role as 'redis_master_role'
-    roles ['redis_master_role']
+   ```ruby
+   # Specify server role as 'redis_master_role'
+   roles ['redis_master_role']
 
-    # IP address pointing to a local IP that the other machines can reach to.
-    # You can also set bind to '0.0.0.0' which listen in all interfaces.
-    # If you really need to bind to an external accessible IP, make
-    # sure you add extra firewall rules to prevent unauthorized access.
-    redis['bind'] = '10.0.0.1'
+   # IP address pointing to a local IP that the other machines can reach to.
+   # You can also set bind to '0.0.0.0' which listen in all interfaces.
+   # If you really need to bind to an external accessible IP, make
+   # sure you add extra firewall rules to prevent unauthorized access.
+   redis['bind'] = '10.0.0.1'
 
-    # Define a port so Redis can listen for TCP requests which will allow other
-    # machines to connect to it.
-    redis['port'] = 6379
+   # Define a port so Redis can listen for TCP requests which will allow other
+   # machines to connect to it.
+   redis['port'] = 6379
 
-    # Set up password authentication for Redis (use the same password in all nodes).
-    redis['password'] = 'redis-password-goes-here'
-    ```
+   # Set up password authentication for Redis (use the same password in all nodes).
+   redis['password'] = 'redis-password-goes-here'
+   ```
 
 1. Only the primary GitLab application server should handle migrations. To
    prevent database migrations from running on upgrade, add the following
    configuration to your `/etc/gitlab/gitlab.rb` file:
 
-    ```
-    gitlab_rails['auto_migrate'] = false
-    ```
+   ```
+   gitlab_rails['auto_migrate'] = false
+   ```
 
 1. [Reconfigure Omnibus GitLab][reconfigure] for the changes to take effect.
 
@@ -400,44 +400,44 @@ The prerequisites for a HA Redis setup are the following:
 ### Step 2. Configuring the slave Redis instances
 
 1. SSH into the **slave** Redis server.
-1. [Download/install](https://about.gitlab.com/installation) the Omnibus GitLab
+1. [Download/install](https://about.gitlab.com/install/) the Omnibus GitLab
    package you want using **steps 1 and 2** from the GitLab downloads page.
-     - Make sure you select the correct Omnibus package, with the same version
-       and type (Community, Enterprise editions) of your current install.
-     - Do not complete any other steps on the download page.
+   - Make sure you select the correct Omnibus package, with the same version
+     and type (Community, Enterprise editions) of your current install.
+   - Do not complete any other steps on the download page.
 
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
 
-    ```ruby
-    # Specify server role as 'redis_slave_role'
-    roles ['redis_slave_role']
+   ```ruby
+   # Specify server role as 'redis_slave_role'
+   roles ['redis_slave_role']
 
-    # IP address pointing to a local IP that the other machines can reach to.
-    # You can also set bind to '0.0.0.0' which listen in all interfaces.
-    # If you really need to bind to an external accessible IP, make
-    # sure you add extra firewall rules to prevent unauthorized access.
-    redis['bind'] = '10.0.0.2'
+   # IP address pointing to a local IP that the other machines can reach to.
+   # You can also set bind to '0.0.0.0' which listen in all interfaces.
+   # If you really need to bind to an external accessible IP, make
+   # sure you add extra firewall rules to prevent unauthorized access.
+   redis['bind'] = '10.0.0.2'
 
-    # Define a port so Redis can listen for TCP requests which will allow other
-    # machines to connect to it.
-    redis['port'] = 6379
+   # Define a port so Redis can listen for TCP requests which will allow other
+   # machines to connect to it.
+   redis['port'] = 6379
 
-    # The same password for Redis authentication you set up for the master node.
-    redis['password'] = 'redis-password-goes-here'
+   # The same password for Redis authentication you set up for the master node.
+   redis['password'] = 'redis-password-goes-here'
 
-    # The IP of the master Redis node.
-    redis['master_ip'] = '10.0.0.1'
+   # The IP of the master Redis node.
+   redis['master_ip'] = '10.0.0.1'
 
-    # Port of master Redis server, uncomment to change to non default. Defaults
-    # to `6379`.
-    #redis['master_port'] = 6379
-    ```
+   # Port of master Redis server, uncomment to change to non default. Defaults
+   # to `6379`.
+   #redis['master_port'] = 6379
+   ```
 
 1. To prevent reconfigure from running automatically on upgrade, run:
 
-    ```
-    sudo touch /etc/gitlab/skip-auto-reconfigure
-    ```
+   ```
+   sudo touch /etc/gitlab/skip-auto-reconfigure
+   ```
 
 1. [Reconfigure Omnibus GitLab][reconfigure] for the changes to take effect.
 1. Go through the steps again for all the other slave nodes.
@@ -487,89 +487,89 @@ multiple machines with the Sentinel daemon.
 1. **You can omit this step if the Sentinels will be hosted in the same node as
    the other Redis instances.**
 
-     [Download/install](https://about.gitlab.com/downloads-ee) the
-     Omnibus GitLab Enterprise Edition package using **steps 1 and 2** from the
-     GitLab downloads page.
-     - Make sure you select the correct Omnibus package, with the same version
-       the GitLab application is running.
-     - Do not complete any other steps on the download page.
+   [Download/install](https://about.gitlab.com/downloads-ee) the
+   Omnibus GitLab Enterprise Edition package using **steps 1 and 2** from the
+   GitLab downloads page.
+   - Make sure you select the correct Omnibus package, with the same version
+     the GitLab application is running.
+   - Do not complete any other steps on the download page.
 
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents (if you are installing the
    Sentinels in the same node as the other Redis instances, some values might
    be duplicate below):
 
-    ```ruby
-    roles ['redis_sentinel_role']
+   ```ruby
+   roles ['redis_sentinel_role']
 
-    # Must be the same in every sentinel node
-    redis['master_name'] = 'gitlab-redis'
+   # Must be the same in every sentinel node
+   redis['master_name'] = 'gitlab-redis'
 
-    # The same password for Redis authentication you set up for the master node.
-    redis['master_password'] = 'redis-password-goes-here'
+   # The same password for Redis authentication you set up for the master node.
+   redis['master_password'] = 'redis-password-goes-here'
 
-    # The IP of the master Redis node.
-    redis['master_ip'] = '10.0.0.1'
+   # The IP of the master Redis node.
+   redis['master_ip'] = '10.0.0.1'
 
-    # Define a port so Redis can listen for TCP requests which will allow other
-    # machines to connect to it.
-    redis['port'] = 6379
+   # Define a port so Redis can listen for TCP requests which will allow other
+   # machines to connect to it.
+   redis['port'] = 6379
 
-    # Port of master Redis server, uncomment to change to non default. Defaults
-    # to `6379`.
-    #redis['master_port'] = 6379
+   # Port of master Redis server, uncomment to change to non default. Defaults
+   # to `6379`.
+   #redis['master_port'] = 6379
 
-    ## Configure Sentinel
-    sentinel['bind'] = '10.0.0.1'
+   ## Configure Sentinel
+   sentinel['bind'] = '10.0.0.1'
 
-    # Port that Sentinel listens on, uncomment to change to non default. Defaults
-    # to `26379`.
-    # sentinel['port'] = 26379
+   # Port that Sentinel listens on, uncomment to change to non default. Defaults
+   # to `26379`.
+   # sentinel['port'] = 26379
 
-    ## Quorum must reflect the amount of voting sentinels it take to start a failover.
-    ## Value must NOT be greater then the amount of sentinels.
-    ##
-    ## The quorum can be used to tune Sentinel in two ways:
-    ## 1. If a the quorum is set to a value smaller than the majority of Sentinels
-    ##    we deploy, we are basically making Sentinel more sensible to master failures,
-    ##    triggering a failover as soon as even just a minority of Sentinels is no longer
-    ##    able to talk with the master.
-    ## 1. If a quorum is set to a value greater than the majority of Sentinels, we are
-    ##    making Sentinel able to failover only when there are a very large number (larger
-    ##    than majority) of well connected Sentinels which agree about the master being down.s
-    sentinel['quorum'] = 2
+   ## Quorum must reflect the amount of voting sentinels it take to start a failover.
+   ## Value must NOT be greater then the amount of sentinels.
+   ##
+   ## The quorum can be used to tune Sentinel in two ways:
+   ## 1. If a the quorum is set to a value smaller than the majority of Sentinels
+   ##    we deploy, we are basically making Sentinel more sensible to master failures,
+   ##    triggering a failover as soon as even just a minority of Sentinels is no longer
+   ##    able to talk with the master.
+   ## 1. If a quorum is set to a value greater than the majority of Sentinels, we are
+   ##    making Sentinel able to failover only when there are a very large number (larger
+   ##    than majority) of well connected Sentinels which agree about the master being down.s
+   sentinel['quorum'] = 2
 
-    ## Consider unresponsive server down after x amount of ms.
-    # sentinel['down_after_milliseconds'] = 10000
+   ## Consider unresponsive server down after x amount of ms.
+   # sentinel['down_after_milliseconds'] = 10000
 
-    ## Specifies the failover timeout in milliseconds. It is used in many ways:
-    ##
-    ## - The time needed to re-start a failover after a previous failover was
-    ##   already tried against the same master by a given Sentinel, is two
-    ##   times the failover timeout.
-    ##
-    ## - The time needed for a slave replicating to a wrong master according
-    ##   to a Sentinel current configuration, to be forced to replicate
-    ##   with the right master, is exactly the failover timeout (counting since
-    ##   the moment a Sentinel detected the misconfiguration).
-    ##
-    ## - The time needed to cancel a failover that is already in progress but
-    ##   did not produced any configuration change (SLAVEOF NO ONE yet not
-    ##   acknowledged by the promoted slave).
-    ##
-    ## - The maximum time a failover in progress waits for all the slaves to be
-    ##   reconfigured as slaves of the new master. However even after this time
-    ##   the slaves will be reconfigured by the Sentinels anyway, but not with
-    ##   the exact parallel-syncs progression as specified.
-    # sentinel['failover_timeout'] = 60000
-    ```
+   ## Specifies the failover timeout in milliseconds. It is used in many ways:
+   ##
+   ## - The time needed to re-start a failover after a previous failover was
+   ##   already tried against the same master by a given Sentinel, is two
+   ##   times the failover timeout.
+   ##
+   ## - The time needed for a slave replicating to a wrong master according
+   ##   to a Sentinel current configuration, to be forced to replicate
+   ##   with the right master, is exactly the failover timeout (counting since
+   ##   the moment a Sentinel detected the misconfiguration).
+   ##
+   ## - The time needed to cancel a failover that is already in progress but
+   ##   did not produced any configuration change (SLAVEOF NO ONE yet not
+   ##   acknowledged by the promoted slave).
+   ##
+   ## - The maximum time a failover in progress waits for all the slaves to be
+   ##   reconfigured as slaves of the new master. However even after this time
+   ##   the slaves will be reconfigured by the Sentinels anyway, but not with
+   ##   the exact parallel-syncs progression as specified.
+   # sentinel['failover_timeout'] = 60000
+   ```
 
 1. To prevent database migrations from running on upgrade, run:
 
-    ```
-    sudo touch /etc/gitlab/skip-auto-reconfigure
-    ```
+   ```
+   sudo touch /etc/gitlab/skip-auto-reconfigure
+   ```
 
-    Only the primary GitLab application server should handle migrations.
+   Only the primary GitLab application server should handle migrations.
 
 1. [Reconfigure Omnibus GitLab][reconfigure] for the changes to take effect.
 1. Go through the steps again for all the other Sentinel nodes.
@@ -593,20 +593,20 @@ which ideally should not have Redis or Sentinels on it for a HA setup.
 1. SSH into the server where the GitLab application is installed.
 1. Edit `/etc/gitlab/gitlab.rb` and add/change the following lines:
 
-    ```
-    ## Must be the same in every sentinel node
-    redis['master_name'] = 'gitlab-redis'
+   ```ruby
+   ## Must be the same in every sentinel node
+   redis['master_name'] = 'gitlab-redis'
 
-    ## The same password for Redis authentication you set up for the master node.
-    redis['master_password'] = 'redis-password-goes-here'
+   ## The same password for Redis authentication you set up for the master node.
+   redis['master_password'] = 'redis-password-goes-here'
 
-    ## A list of sentinels with `host` and `port`
-    gitlab_rails['redis_sentinels'] = [
-      {'host' => '10.0.0.1', 'port' => 26379},
-      {'host' => '10.0.0.2', 'port' => 26379},
-      {'host' => '10.0.0.3', 'port' => 26379}
-    ]
-    ```
+   ## A list of sentinels with `host` and `port`
+   gitlab_rails['redis_sentinels'] = [
+     {'host' => '10.0.0.1', 'port' => 26379},
+     {'host' => '10.0.0.2', 'port' => 26379},
+     {'host' => '10.0.0.3', 'port' => 26379}
+   ]
+   ```
 
 1. [Reconfigure Omnibus GitLab][reconfigure] for the changes to take effect.
 
@@ -791,31 +791,34 @@ cache, queues, and shared_state. To make this work with Sentinel:
 
 1. Set the appropriate variable in `/etc/gitlab/gitlab.rb` for each instance you are using:
 
-    ```ruby
-    gitlab_rails['redis_cache_instance'] = REDIS_CACHE_URL
-    gitlab_rails['redis_queues_instance'] = REDIS_QUEUES_URL
-    gitlab_rails['redis_shared_state_instance'] = REDIS_SHARED_STATE_URL
-    ```
+   ```ruby
+   gitlab_rails['redis_cache_instance'] = REDIS_CACHE_URL
+   gitlab_rails['redis_queues_instance'] = REDIS_QUEUES_URL
+   gitlab_rails['redis_shared_state_instance'] = REDIS_SHARED_STATE_URL
+   ```
+
     **Note**: Redis URLs should be in the format: `redis://:PASSWORD@SENTINEL_MASTER_NAME`
 
-    1. PASSWORD is the plaintext password for the Redis instance
-    1. SENTINEL_MASTER_NAME is the Sentinel master name (e.g. `gitlab-redis-cache`)
+   1. PASSWORD is the plaintext password for the Redis instance
+   1. SENTINEL_MASTER_NAME is the Sentinel master name (e.g. `gitlab-redis-cache`)
+
 1. Include an array of hashes with host/port combinations, such as the following:
 
-    ```ruby
-    gitlab_rails['redis_cache_sentinels'] = [
-      { host: REDIS_CACHE_SENTINEL_HOST, port: PORT1 },
-      { host: REDIS_CACHE_SENTINEL_HOST2, port: PORT2 }
-    ]
-    gitlab_rails['redis_queues_sentinels'] = [
-      { host: REDIS_QUEUES_SENTINEL_HOST, port: PORT1 },
-      { host: REDIS_QUEUES_SENTINEL_HOST2, port: PORT2 }
-    ]
-    gitlab_rails['redis_shared_state_sentinels'] = [
-      { host: SHARED_STATE_SENTINEL_HOST, port: PORT1 },
-      { host: SHARED_STATE_SENTINEL_HOST2, port: PORT2 }
-    ]
-    ```
+   ```ruby
+   gitlab_rails['redis_cache_sentinels'] = [
+     { host: REDIS_CACHE_SENTINEL_HOST, port: PORT1 },
+     { host: REDIS_CACHE_SENTINEL_HOST2, port: PORT2 }
+   ]
+   gitlab_rails['redis_queues_sentinels'] = [
+     { host: REDIS_QUEUES_SENTINEL_HOST, port: PORT1 },
+     { host: REDIS_QUEUES_SENTINEL_HOST2, port: PORT2 }
+   ]
+   gitlab_rails['redis_shared_state_sentinels'] = [
+     { host: SHARED_STATE_SENTINEL_HOST, port: PORT1 },
+     { host: SHARED_STATE_SENTINEL_HOST2, port: PORT2 }
+   ]
+   ```
+
 1. Note that for each persistence class, GitLab will default to using the
    configuration specified in `gitlab_rails['redis_sentinels']` unless
    overridden by the settings above.
@@ -879,12 +882,12 @@ in order for the HA setup to work as expected.
 Before proceeding with the troubleshooting below, check your firewall rules:
 
 - Redis machines
-   - Accept TCP connection in `6379`
-   - Connect to the other Redis machines via TCP in `6379`
+  - Accept TCP connection in `6379`
+  - Connect to the other Redis machines via TCP in `6379`
 - Sentinel machines
-   - Accept TCP connection in `26379`
-   - Connect to other Sentinel machines via TCP in `26379`
-   - Connect to the Redis machines via TCP in `6379`
+  - Accept TCP connection in `26379`
+  - Connect to other Sentinel machines via TCP in `26379`
+  - Connect to the Redis machines via TCP in `6379`
 
 ### Troubleshooting Redis replication
 
@@ -952,38 +955,38 @@ To make sure your configuration is correct:
 1. SSH into your GitLab application server
 1. Enter the Rails console:
 
-    ```
-    # For Omnibus installations
-    sudo gitlab-rails console
+   ```
+   # For Omnibus installations
+   sudo gitlab-rails console
 
-    # For source installations
-    sudo -u git rails console production
-    ```
+   # For source installations
+   sudo -u git rails console production
+   ```
 
 1. Run in the console:
 
-    ```ruby
-    redis = Redis.new(Gitlab::Redis::SharedState.params)
-    redis.info
-    ```
+   ```ruby
+   redis = Redis.new(Gitlab::Redis::SharedState.params)
+   redis.info
+   ```
 
-    Keep this screen open and try to simulate a failover below.
+   Keep this screen open and try to simulate a failover below.
 
 1. To simulate a failover on master Redis, SSH into the Redis server and run:
 
-    ```bash
-    # port must match your master redis port, and the sleep time must be a few seconds bigger than defined one
-     redis-cli -h localhost -p 6379 DEBUG sleep 20
-    ```
+   ```bash
+   # port must match your master redis port, and the sleep time must be a few seconds bigger than defined one
+    redis-cli -h localhost -p 6379 DEBUG sleep 20
+   ```
 
 1. Then back in the Rails console from the first step, run:
 
-    ```
-    redis.info
-    ```
+   ```
+   redis.info
+   ```
 
-    You should see a different port after a few seconds delay
-    (the failover/reconnect time).
+   You should see a different port after a few seconds delay
+   (the failover/reconnect time).
 
 ## Changelog
 

@@ -452,6 +452,7 @@ To start using Container Registry on our machine, we first need to login to the 
 ```bash
 docker login registry.gitlab.com
 ```
+
 Then we can build and push our image to GitLab:
 
 ```bash

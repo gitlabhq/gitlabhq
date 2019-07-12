@@ -1,7 +1,7 @@
 - @hide_breadcrumbs = true
 - @hide_top_links = true
-- page_title    'New Project'
-- header_title  "Projects", dashboard_projects_path
+- page_title    _('New Project')
+- header_title  _("Projects"), dashboard_projects_path
 - active_tab = local_assigns.fetch(:active_tab, 'blank')
 
 .project-edit-container.prepend-top-default
@@ -33,16 +33,16 @@
       %ul.nav.nav-tabs.nav-links.gitlab-tabs{ role: 'tablist' }
         %li.nav-item{ role: 'presentation' }
           %a.nav-link.active{ href: '#blank-project-pane', id: 'blank-project-tab', data: { toggle: 'tab', track_label: 'blank_project', track_event: "click_tab" }, role: 'tab' }
-            %span.d-none.d-sm-block Blank project
-            %span.d-block.d-sm-none Blank
+            %span.d-none.d-sm-block= s_('ProjectsNew|Blank project')
+            %span.d-block.d-sm-none= s_('ProjectsNew|Blank')
         %li.nav-item{ role: 'presentation' }
           %a.nav-link{ href: '#create-from-template-pane', id: 'create-from-template-tab', data: { toggle: 'tab', track_label: 'create_from_template', track_event: "click_tab" }, role: 'tab' }
-            %span.d-none.d-sm-block.qa-project-create-from-template-tab Create from template
-            %span.d-block.d-sm-none Template
+            %span.d-none.d-sm-block.qa-project-create-from-template-tab= s_('ProjectsNew|Create from template')
+            %span.d-block.d-sm-none= s_('ProjectsNew|Template')
         %li.nav-item{ role: 'presentation' }
           %a.nav-link{ href: '#import-project-pane', id: 'import-project-tab', data: { toggle: 'tab', track_label: 'import_project', track_event: "click_tab" }, role: 'tab' }
-            %span.d-none.d-sm-block Import project
-            %span.d-block.d-sm-none Import
+            %span.d-none.d-sm-block= s_('ProjectsNew|Import project')
+            %span.d-block.d-sm-none= s_('ProjectsNew|Import')
         = render_if_exists 'projects/new_ci_cd_only_project_tab', active_tab: active_tab
 
       .tab-content.gitlab-tab-content
@@ -67,8 +67,8 @@
             = render 'import_project_pane', active_tab: active_tab
           - else
             .nothing-here-block
-              %h4 No import options available
-              %p Contact an administrator to enable options for importing your project.
+              %h4= s_('ProjectsNew|No import options available')
+              %p= s_('ProjectsNew|Contact an administrator to enable options for importing your project.')
 
         = render_if_exists 'projects/new_ci_cd_only_project_pane', active_tab: active_tab
 
@@ -76,5 +76,6 @@
   .center
     %h2
       %i.fa.fa-spinner.fa-spin
-      Creating project &amp; repository.
-    %p Please wait a moment, this page will automatically refresh when ready.
+      = s_('ProjectsNew|Creating project & repository.')
+    %p
+      = s_('ProjectsNew|Please wait a moment, this page will automatically refresh when ready.')

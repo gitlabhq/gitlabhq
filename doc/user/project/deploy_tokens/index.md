@@ -41,7 +41,7 @@ the following table.
 
 ## Deploy token custom username
 
-> [Introduced][https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/29639] in GitLab 12.1.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/29639) in GitLab 12.1.
 
 The default username format is `gitlab+deploy-token-#{n}`. Some tools or platforms may not support this format,
 in such case you can specify custom username to be used when creating the deploy token.

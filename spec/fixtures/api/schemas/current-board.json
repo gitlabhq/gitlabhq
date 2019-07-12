@@ -1,0 +1,16 @@
+{
+  "type": "object",
+  "allOf": [
+    { "$ref": "board.json" },
+    {
+      "required" : [
+        "id",
+        "name"
+      ],
+      "properties": {
+        "id": { "type": "integer" },
+        "name": { "type": "string" }
+      }
+    }
+  ]
+}

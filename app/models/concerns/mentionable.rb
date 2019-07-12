@@ -63,6 +63,9 @@ module Mentionable
         skip_project_check: skip_project_check?
       ).merge(mentionable_params)
 
+      cached_html = self.try(:updated_cached_html_for, attr.to_sym)
+      options[:rendered] = cached_html if cached_html
+
       extractor.analyze(text, options)
     end
 

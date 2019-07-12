@@ -598,7 +598,7 @@ describe MergeRequests::UpdateService, :mailer do
             feature_visibility_attr = :"#{merge_request.model_name.plural}_access_level"
             project.project_feature.update_attribute(feature_visibility_attr, ProjectFeature::PRIVATE)
 
-            expect { update_merge_request(assignee_ids: [assignee]) }.not_to change { merge_request.reload.assignees }
+            expect { update_merge_request(assignee_ids: [assignee]) }.not_to change(merge_request.assignees, :count)
           end
         end
       end

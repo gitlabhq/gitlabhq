@@ -71,57 +71,57 @@ To change these settings:
 
 - **For omnibus package**
 
-    Open the configuration file:
+  Open the configuration file:
 
-    ```sh
-    sudo editor /etc/gitlab/gitlab.rb
-    ```
+  ```sh
+  sudo editor /etc/gitlab/gitlab.rb
+  ```
 
-    and change:
+  and change:
 
-    ```ruby
-    # Versions prior to 11.4 require this to be set to true
-    # gitlab_rails['omniauth_enabled'] = nil
+  ```ruby
+  # Versions prior to 11.4 require this to be set to true
+  # gitlab_rails['omniauth_enabled'] = nil
 
-    # CAUTION!
-    # This allows users to login without having a user account first. Define the allowed providers
-    # using an array, e.g. ["saml", "twitter"], or as true/false to allow all providers or none.
-    # User accounts will be created automatically when authentication was successful.
-    gitlab_rails['omniauth_allow_single_sign_on'] = ['saml', 'twitter']
-    gitlab_rails['omniauth_auto_link_ldap_user'] = true
-    gitlab_rails['omniauth_block_auto_created_users'] = true
-    ```
+  # CAUTION!
+  # This allows users to login without having a user account first. Define the allowed providers
+  # using an array, e.g. ["saml", "twitter"], or as true/false to allow all providers or none.
+  # User accounts will be created automatically when authentication was successful.
+  gitlab_rails['omniauth_allow_single_sign_on'] = ['saml', 'twitter']
+  gitlab_rails['omniauth_auto_link_ldap_user'] = true
+  gitlab_rails['omniauth_block_auto_created_users'] = true
+  ```
 
 - **For installations from source**
 
-    Open the configuration file:
+  Open the configuration file:
 
-    ```sh
-    cd /home/git/gitlab
+  ```sh
+  cd /home/git/gitlab
 
-    sudo -u git -H editor config/gitlab.yml
-    ```
+  sudo -u git -H editor config/gitlab.yml
+  ```
 
-    and change the following section:
+  and change the following section:
 
-    ```yaml
-     ## OmniAuth settings
-      omniauth:
-        # Allow login via Twitter, Google, etc. using OmniAuth providers
-        # Versions prior to 11.4 require this to be set to true
-        # enabled: true
+  ```yaml
+  ## OmniAuth settings
+   omniauth:
+     # Allow login via Twitter, Google, etc. using OmniAuth providers
+     # Versions prior to 11.4 require this to be set to true
+     # enabled: true
 
-        # CAUTION!
-        # This allows users to login without having a user account first. Define the allowed providers
-        # using an array, e.g. ["saml", "twitter"], or as true/false to allow all providers or none.
-        # User accounts will be created automatically when authentication was successful.
-        allow_single_sign_on: ["saml", "twitter"]
+     # CAUTION!
+     # This allows users to login without having a user account first. Define the allowed providers
+     # using an array, e.g. ["saml", "twitter"], or as true/false to allow all providers or none.
+     # User accounts will be created automatically when authentication was successful.
+     allow_single_sign_on: ["saml", "twitter"]
 
-        auto_link_ldap_user: true
+     auto_link_ldap_user: true
 
-        # Locks down those users until they have been cleared by the admin (default: true).
-        block_auto_created_users: true
-    ```
+     # Locks down those users until they have been cleared by the admin (default: true).
+     block_auto_created_users: true
+  ```
 
 Now we can choose one or more of the [Supported Providers](#supported-providers)
 listed above to continue the configuration process.
@@ -161,14 +161,14 @@ want their accounts to be upgraded to full internal accounts.
 **For Omnibus installations**
 
 ```ruby
-  gitlab_rails['omniauth_external_providers'] = ['twitter', 'google_oauth2']
+gitlab_rails['omniauth_external_providers'] = ['twitter', 'google_oauth2']
 ```
 
 **For installations from source**
 
 ```yaml
-  omniauth:
-    external_providers: ['twitter', 'google_oauth2']
+omniauth:
+  external_providers: ['twitter', 'google_oauth2']
 ```
 
 ## Using Custom Omniauth Providers
@@ -186,23 +186,31 @@ these cases you can use the Omniauth provider.
 These steps are fairly general and you will need to figure out the exact details
 from the Omniauth provider's documentation.
 
--   Stop GitLab:
+- Stop GitLab:
 
-        sudo service gitlab stop
+  ```sh
+  sudo service gitlab stop
+  ```
 
--   Add the gem to your [Gemfile](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/Gemfile):
+- Add the gem to your [Gemfile](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/Gemfile):
 
-        gem "omniauth-your-auth-provider"
+  ```sh
+  gem "omniauth-your-auth-provider"
+  ```
 
--   Install the new Omniauth provider gem by running the following command:
+- Install the new Omniauth provider gem by running the following command:
 
-        sudo -u git -H bundle install --without development test mysql --path vendor/bundle --no-deployment
+  ```sh
+  sudo -u git -H bundle install --without development test mysql --path vendor/bundle --no-deployment
+  ```
 
-    > These are the same commands you used during initial installation in the [Install Gems section](../install/installation.md#install-gems) with `--path vendor/bundle --no-deployment` instead of `--deployment`.
+  > These are the same commands you used during initial installation in the [Install Gems section](../install/installation.md#install-gems) with `--path vendor/bundle --no-deployment` instead of `--deployment`.
 
--   Start GitLab:
+- Start GitLab:
 
-        sudo service gitlab start
+  ```sh
+  sudo service gitlab start
+  ```
 
 ### Examples
 
@@ -247,8 +255,8 @@ gitlab_rails['omniauth_enabled'] = false
 **For installations from source**
 
 ```yaml
-  omniauth:
-    enabled: false
+omniauth:
+  enabled: false
 ```
 
 ## Keep OmniAuth user profiles up to date
@@ -258,14 +266,14 @@ You can enable profile syncing from selected OmniAuth providers and for all or f
 When authenticating using LDAP, the user's name and email are always synced.
 
 ```ruby
-  gitlab_rails['sync_profile_from_provider'] = ['twitter', 'google_oauth2']
-  gitlab_rails['sync_profile_attributes'] = ['name', 'email', 'location']
- ```
+gitlab_rails['sync_profile_from_provider'] = ['twitter', 'google_oauth2']
+gitlab_rails['sync_profile_attributes'] = ['name', 'email', 'location']
+```
 
 **For installations from source**
 
 ```yaml
-  omniauth:
-    sync_profile_from_provider: ['twitter', 'google_oauth2']
-    sync_profile_attributes: ['email', 'location']
+omniauth:
+  sync_profile_from_provider: ['twitter', 'google_oauth2']
+  sync_profile_attributes: ['email', 'location']
 ```

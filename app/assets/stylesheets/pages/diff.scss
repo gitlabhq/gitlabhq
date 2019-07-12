@@ -1095,6 +1095,10 @@ table.code {
 
 .discussion-collapsible {
   margin: 0 $gl-padding $gl-padding 71px;
+
+  .notes {
+    border-radius: $border-radius-default;
+  }
 }
 
 .parallel {

@@ -1,4 +1,4 @@
-# Advanced Global Search **[STARTER ONLY]**
+# Advanced Global Search **(STARTER ONLY)**
 
 > - [Introduced][ee-109] in GitLab [Starter][ee] 8.4.
 > - This is the user documentation. To install and configure Elasticsearch,

@@ -7,8 +7,6 @@ module API
     # should be in app/graphql/ or lib/gitlab/graphql/
     module GraphqlHelpers
       def conditionally_graphql!(fallback:, query:, context: {}, transform: nil)
-        return fallback.call unless Feature.enabled?(:graphql)
-
         result = GitlabSchema.execute(query, context: context)
 
         if transform

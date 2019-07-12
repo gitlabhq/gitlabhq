@@ -43,7 +43,7 @@ module Gitlab
         target_ref = Gitlab::Git::BRANCH_REF_PREFIX + @merge_request.source_branch
 
         unless @project.repository.fetch_source_branch!(@project.repository, @diff_head_sha, target_ref)
-          Rails.logger.warn("Import/Export warning: Failed to create #{target_ref} for MR: #{@merge_request.iid}")
+          Rails.logger.warn("Import/Export warning: Failed to create #{target_ref} for MR: #{@merge_request.iid}") # rubocop:disable Gitlab/RailsLogger
         end
       end
 

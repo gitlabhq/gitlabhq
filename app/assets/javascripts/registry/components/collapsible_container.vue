@@ -31,6 +31,7 @@ export default {
   data() {
     return {
       isOpen: false,
+      modalId: `confirm-repo-deletion-modal-${this.repo.id}`,
     };
   },
   computed: {
@@ -80,7 +81,7 @@ export default {
         <gl-button
           v-if="repo.canDelete"
           v-gl-tooltip
-          v-gl-modal="'confirm-repo-deletion-modal'"
+          v-gl-modal="modalId"
           :title="s__('ContainerRegistry|Remove repository')"
           :aria-label="s__('ContainerRegistry|Remove repository')"
           class="js-remove-repo"
@@ -100,12 +101,7 @@ export default {
         {{ s__('ContainerRegistry|No tags in Container Registry for this container image.') }}
       </div>
     </div>
-
-    <gl-modal
-      modal-id="confirm-repo-deletion-modal"
-      ok-variant="danger"
-      @ok="handleDeleteRepository"
-    >
+    <gl-modal :modal-id="modalId" ok-variant="danger" @ok="handleDeleteRepository">
       <template v-slot:modal-title>{{ s__('ContainerRegistry|Remove repository') }}</template>
       <p
         v-html="
