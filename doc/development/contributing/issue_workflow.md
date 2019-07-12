@@ -58,9 +58,9 @@ issue is labeled with a subject label corresponding to your expertise.
 
 Subject labels are always all-lowercase.
 
-## Team labels 
+## Team labels
 
-**Important**: Most of the team labels will be soon deprecated in favor of [Group labels](#group-labels). 
+**Important**: Most of the team labels will be soon deprecated in favor of [Group labels](#group-labels).
 
 Team labels specify what team is responsible for this issue.
 Assigning a team label makes sure issues get the attention of the appropriate
@@ -97,7 +97,6 @@ indicate if an issue needs backend work, frontend work, or both.
 
 Team labels are always capitalized so that they show up as the first label for
 any issue.
-
 
 ## Stage labels
 
@@ -141,43 +140,42 @@ Group labels specify which [groups][structure-groups] the issue belongs to.
 
 The current group labels are:
 
-* ~"group::access"
-* ~"group::measure"
-* ~"group::source code" 
-* ~"group::knowledge" 
-* ~"group::editor" 
-* ~"group::gitaly"  
-* ~"group::gitter"  
-* ~"group::team planning" 
-* ~"group::enterprise planning" 
-* ~"group::certify" 
-* ~"group::ci and runner" 
-* ~"group::testing" 
-* ~"group::package" 
-* ~"group::progressive delivery" 
-* ~"group::release management" 
-* ~"group::autodevops and kubernetes" 
-* ~"group::serverless and paas"
-* ~"group::apm" 
-* ~"group::health"
-* ~"group::static analysis"
-* ~"group::dynamic analysis"
-* ~"group::software composition analysis" 
-* ~"group::runtime application security" 
-* ~"group::threat management" 
-* ~"group::application infrastructure security" 
-* ~"group::activation" 
-* ~"group::adoption" 
-* ~"group::upsell" 
-* ~"group::retention" 
-* ~"group::fulfillment" 
-* ~"group::telemetry" 
-* ~"group::distribution" 
-* ~"group::geo" 
-* ~"group::memory" 
-* ~"group::ecosystem" 
+- ~"group::access"
+- ~"group::measure"
+- ~"group::source code"
+- ~"group::knowledge"
+- ~"group::editor"
+- ~"group::gitaly"  
+- ~"group::gitter"  
+- ~"group::team planning"
+- ~"group::enterprise planning"
+- ~"group::certify"
+- ~"group::ci and runner"
+- ~"group::testing"
+- ~"group::package"
+- ~"group::progressive delivery"
+- ~"group::release management"
+- ~"group::autodevops and kubernetes"
+- ~"group::serverless and paas"
+- ~"group::apm"
+- ~"group::health"
+- ~"group::static analysis"
+- ~"group::dynamic analysis"
+- ~"group::software composition analysis"
+- ~"group::runtime application security"
+- ~"group::threat management"
+- ~"group::application infrastructure security"
+- ~"group::activation"
+- ~"group::adoption"
+- ~"group::upsell"
+- ~"group::retention"
+- ~"group::fulfillment"
+- ~"group::telemetry"
+- ~"group::distribution"
+- ~"group::geo"
+- ~"group::memory"
+- ~"group::ecosystem"
   
-
 These labels are [scoped labels](../../user/project/labels.md#scoped-labels-premium)
 and thus are mutually exclusive.
 
@@ -192,15 +190,15 @@ can be applied to a single issue. You can find the groups listed in the
 
 The current department labels are:
 
-* ~UX
-* ~Quality
+- ~UX
+- ~Quality
 
 ## Specialization labels
 
 These labels narrow the [specialization](https://about.gitlab.com/company/team/structure/#specialist) on a unit of work.
 
-* ~frontend
-* ~backend
+- ~frontend
+- ~backend
 
 ## Release Scoping labels
 
@@ -248,9 +246,9 @@ There can be multiple facets of the impact. The below is a guideline.
 If a bug seems to fall between two severity labels, assign it to the higher-severity label.
 
 - Example(s) of ~S1
-  - Data corruption/loss. 
+  - Data corruption/loss.
   - Security breach.
-  - Unable to create an issue or merge request. 
+  - Unable to create an issue or merge request.
   - Unable to add a comment or discussion to the issue or merge request.
 - Example(s) of ~S2
   - Cannot submit changes through the web IDE but the commandline works.

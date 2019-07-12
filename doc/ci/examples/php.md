@@ -6,7 +6,7 @@ type: tutorial
 
 This guide covers basic building instructions for PHP projects.
 
-Two testing scenarios are covered: using the Docker executor and 
+Two testing scenarios are covered: using the Docker executor and
 using the Shell executor.
 
 ## Test PHP projects using the Docker executor

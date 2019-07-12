@@ -187,7 +187,7 @@ access to the **primary** node during the maintenance window.
    before it is completed will cause the work to be lost.
 1. On the **primary** node, navigate to **Admin Area > Geo** and wait for the
    following conditions to be true of the **secondary** node you are failing over to:
-   
+
    - All replication meters to each 100% replicated, 0% failures.
    - All verification meters reach 100% verified, 0% failures.
    - Database replication lag is 0ms.

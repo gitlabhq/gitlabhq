@@ -595,7 +595,7 @@ Example responses
 
 ## User counts
 
-Get the counts (same as in top right menu) of the currently signed in user. 
+Get the counts (same as in top right menu) of the currently signed in user.
 
 | Attribute | Type | Description |
 | --------- | ---- | ----------- |

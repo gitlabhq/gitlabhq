@@ -79,10 +79,10 @@ image: java:8
 stages:
   - build
   - deploy
-  
+
 before_script:
   - chmod +x mvnw
-  
+
 build:
   stage: build
   script: ./mvnw package
