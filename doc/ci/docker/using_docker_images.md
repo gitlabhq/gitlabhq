@@ -193,13 +193,14 @@ You can simply define an image that will be used for all jobs and a list of
 services that you want to use during build time:
 
 ```yaml
-image: ruby:2.2
+default:
+  image: ruby:2.2
 
-services:
-  - postgres:9.3
+  services:
+    - postgres:9.3
 
-before_script:
-  - bundle install
+  before_script:
+    - bundle install
 
 test:
   script:
@@ -209,8 +210,9 @@ test:
 It is also possible to define different images and services per job:
 
 ```yaml
-before_script:
-  - bundle install
+default:
+  before_script:
+    - bundle install
 
 test:2.1:
   image: ruby:2.1
@@ -231,18 +233,19 @@ Or you can pass some [extended configuration options](#extended-docker-configura
 for `image` and `services`:
 
 ```yaml
-image:
-  name: ruby:2.2
-  entrypoint: ["/bin/bash"]
+default:
+  image:
+    name: ruby:2.2
+    entrypoint: ["/bin/bash"]
 
-services:
-- name: my-postgres:9.4
-  alias: db-postgres
-  entrypoint: ["/usr/local/bin/db-postgres"]
-  command: ["start"]
+  services:
+  - name: my-postgres:9.4
+    alias: db-postgres
+    entrypoint: ["/usr/local/bin/db-postgres"]
+    command: ["start"]
 
-before_script:
-- bundle install
+  before_script:
+  - bundle install
 
 test:
   script:
