@@ -432,7 +432,7 @@ class Project < ApplicationRecord
                             numericality: { greater_than_or_equal_to: 10.minutes,
                                             less_than: 1.month,
                                             only_integer: true,
-                                            message: _('needs to be beetween 10 minutes and 1 month') }
+                                            message: _('needs to be between 10 minutes and 1 month') }
 
   # Used by Projects::CleanupService to hold a map of rewritten object IDs
   mount_uploader :bfg_object_map, AttachmentUploader
