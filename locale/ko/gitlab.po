@@ -16540,7 +16540,7 @@ msgstr ""
 msgid "n/a"
 msgstr "해당 없음"
 
-msgid "needs to be beetween 10 minutes and 1 month"
+msgid "needs to be between 10 minutes and 1 month"
 msgstr ""
 
 msgid "new merge request"

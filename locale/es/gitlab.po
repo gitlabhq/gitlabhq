@@ -16619,7 +16619,7 @@ msgstr "debe ser mayor que la fecha de inicio"
 msgid "n/a"
 msgstr "n/a"
 
-msgid "needs to be beetween 10 minutes and 1 month"
+msgid "needs to be between 10 minutes and 1 month"
 msgstr "el intervalo debe estar comprendido entre 10 minutos y 1 mes"
 
 msgid "new merge request"

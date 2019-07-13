@@ -213,7 +213,7 @@ describe Project do
         .only_integer
         .is_greater_than_or_equal_to(10.minutes)
         .is_less_than(1.month)
-        .with_message('needs to be beetween 10 minutes and 1 month')
+        .with_message('needs to be between 10 minutes and 1 month')
     end
 
     it 'does not allow new projects beyond user limits' do

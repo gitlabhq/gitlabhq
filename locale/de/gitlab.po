@@ -16619,7 +16619,7 @@ msgstr ""
 msgid "n/a"
 msgstr "nicht verfügbar"
 
-msgid "needs to be beetween 10 minutes and 1 month"
+msgid "needs to be between 10 minutes and 1 month"
 msgstr ""
 
 msgid "new merge request"

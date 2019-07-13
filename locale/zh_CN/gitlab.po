@@ -16540,7 +16540,7 @@ msgstr "必须大于开始日期"
 msgid "n/a"
 msgstr "不适用"
 
-msgid "needs to be beetween 10 minutes and 1 month"
+msgid "needs to be between 10 minutes and 1 month"
 msgstr "需要在10分钟到1个月之间"
 
 msgid "new merge request"
