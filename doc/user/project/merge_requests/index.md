@@ -285,6 +285,7 @@ as pushing changes:
 - Create a new merge request for the pushed branch.
 - Set the target of the merge request to a particular branch.
 - Set the merge request to merge when its pipeline succeeds.
+- Set the merge request to remove the source branch when it's merged.
 
 ### Create a new merge request using git push options
 
@@ -327,6 +328,19 @@ pipeline succeeds at the same time using a `-o` flag per push option:
 ```sh
 git push -o merge_request.create -o merge_request.merge_when_pipeline_succeeds
 ```
+
+### Set removing the source branch using git push options
+
+To set an existing merge request to remove the source branch when the
+merge request is merged, the
+`merge_request.remove_source_branch` push option can be used:
+
+```sh
+git push -o merge_request.remove_source_branch
+```
+
+You can also use this push option in addition to the
+`merge_request.create` push option.
 
 ## Find the merge request that introduced a change
 

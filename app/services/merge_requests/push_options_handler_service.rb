@@ -133,6 +133,10 @@ module MergeRequests
         )
       end
 
+      if push_options.key?(:remove_source_branch)
+        params[:force_remove_source_branch] = push_options[:remove_source_branch]
+      end
+
       params
     end
 
@@ -144,6 +148,10 @@ module MergeRequests
           merge_when_pipeline_succeeds: push_options[:merge_when_pipeline_succeeds],
           merge_user: current_user
         )
+      end
+
+      if push_options.key?(:remove_source_branch)
+        params[:force_remove_source_branch] = push_options[:remove_source_branch]
       end
 
       if push_options.key?(:target)
