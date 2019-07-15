@@ -52,6 +52,16 @@ module Gitlab
         args[:strategy_class] = args[:strategy_class].constantize
       end
 
+      # Providers that are known to depend on rack-oauth2, like those using
+      # Omniauth::Strategies::OpenIDConnect, need to be quirked so the
+      # client_auth_method argument value is passed as a symbol.
+      if (args[:strategy_class] == OmniAuth::Strategies::OpenIDConnect ||
+        args[:name] == 'openid_connect') &&
+        args[:client_auth_method].is_a?(String)
+
+        args[:client_auth_method] = args[:client_auth_method].to_sym
+      end
+
       args
     end
 

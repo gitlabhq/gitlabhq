@@ -83,5 +83,33 @@ describe Gitlab::OmniauthInitializer do
 
       subject.execute([cas3_config])
     end
+
+    it 'converts client_auth_method to a Symbol for openid_connect' do
+      openid_connect_config = {
+        'name' => 'openid_connect',
+        'args' => { name: 'openid_connect', client_auth_method: 'basic' }
+      }
+
+      expect(devise_config).to receive(:omniauth).with(
+        :openid_connect,
+        { name: 'openid_connect', client_auth_method: :basic }
+      )
+
+      subject.execute([openid_connect_config])
+    end
+
+    it 'converts client_auth_method to a Symbol for strategy_class OpenIDConnect' do
+      openid_connect_config = {
+        'name' => 'openid_connect',
+        'args' => { strategy_class: OmniAuth::Strategies::OpenIDConnect, client_auth_method: 'jwt_bearer' }
+      }
+
+      expect(devise_config).to receive(:omniauth).with(
+        :openid_connect,
+        { strategy_class: OmniAuth::Strategies::OpenIDConnect, client_auth_method: :jwt_bearer }
+      )
+
+      subject.execute([openid_connect_config])
+    end
   end
 end

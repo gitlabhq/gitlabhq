@@ -81,6 +81,13 @@ The OpenID Connect will provide you with a client details and secret for you to 
     - `<your_oidc_url>` (optional) is the URL that points to the OpenID Connect provider. For example, `https://example.com/auth/realms/your-realm`.
       If this value is not provided, the URL is constructed from the `client_options` in the following format: `<client_options.scheme>://<client_options.host>:<client_options.port>`.
     - If `discovery` is set to `true`, the OpenID Connect provider will try to auto discover the client options using `<your_oidc_url>/.well-known/openid-configuration`. Defaults to `false`.
+    - `client_auth_method` (optional) specifies the method used for authenticating the client with the OpenID Connect provider.
+      - Supported values are:
+        - `basic` - HTTP Basic Authentication
+        - `jwt_bearer` - JWT based authentication (private key and client secret signing)
+        - `mtls` - Mutual TLS or X.509 certificate validation
+        - Any other value will POST the client id and secret in the request body
+      - If not specified, defaults to `basic`.
     - `<uid_field>` (optional) is the field name from the `user_info` details that will be used as `uid` value. For example, `preferred_username`.
       If this value is not provided or the field with the configured value is missing from the `user_info` details, the `uid` will use the `sub` field.
     - `client_options` are the OpenID Connect client-specific options. Specifically:
@@ -155,9 +162,9 @@ If you're having trouble, here are some tips:
    `https://accounts.google.com/.well-known/openid-configuration`.
 
 1. The OpenID Connect client uses HTTP Basic Authentication to send the
-   OAuth2 access token. For example, if you are seeing 401 errors upon
-   retrieving the `userinfo` endpoint, you may want to check your OpenID
-   Web server configuration. For example, for
+   OAuth2 access token if `client_auth_method` is not defined or if set to `basic`.
+   If you are seeing 401 errors upon retrieving the `userinfo` endpoint, you may
+   want to check your OpenID Web server configuration. For example, for
    [oauth2-server-php](https://github.com/bshaffer/oauth2-server-php), you
    may need to [add a configuration parameter to
    Apache](https://github.com/bshaffer/oauth2-server-php/issues/926#issuecomment-387502778).
