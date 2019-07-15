@@ -71,7 +71,7 @@ module LabelsHelper
   end
 
   def label_tooltip_title(label)
-    label.description
+    Sanitize.clean(label.description)
   end
 
   def suggested_colors

@@ -197,7 +197,11 @@ class Label < ApplicationRecord
   end
 
   def title=(value)
-    write_attribute(:title, sanitize_title(value)) if value.present?
+    write_attribute(:title, sanitize_value(value)) if value.present?
+  end
+
+  def description=(value)
+    write_attribute(:description, sanitize_value(value)) if value.present?
   end
 
   ##
@@ -258,7 +262,7 @@ class Label < ApplicationRecord
     end
   end
 
-  def sanitize_title(value)
+  def sanitize_value(value)
     CGI.unescapeHTML(Sanitize.clean(value.to_s))
   end
 
