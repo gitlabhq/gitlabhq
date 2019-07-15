@@ -96,7 +96,7 @@ To rename a repository:
 1. Hit **Rename project**.
 
 Remember that this can have unintended side effects since everyone with the
-old URL will not be able to push or pull. Read more about what happens with the 
+old URL will not be able to push or pull. Read more about what happens with the
 [redirects when renaming repositories](../index.md#redirects-when-changing-repository-paths).
 
 #### Transferring an existing project into another namespace

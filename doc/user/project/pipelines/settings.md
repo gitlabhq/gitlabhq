@@ -25,10 +25,10 @@ in `.gitlab-ci.yml`.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/28919) in GitLab 12.0.
 
 NOTE: **Note**:
-As of GitLab 12.0, newly created projects will automatically have a default 
+As of GitLab 12.0, newly created projects will automatically have a default
 `git depth` value of `50`.
 
-It is possible to limit the number of changes that GitLab CI/CD will fetch when cloning 
+It is possible to limit the number of changes that GitLab CI/CD will fetch when cloning
 a repository. Setting a limit to `git depth` can speed up Pipelines execution. Maximum
 allowed value is `1000`.
 

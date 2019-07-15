@@ -48,11 +48,11 @@ need to be administrator or owner of the group.
 The following are important notes about 2FA:
 
 - Projects belonging to a 2FA-enabled group that
-  [is shared](../user/project/members/share_project_with_groups.md) 
+  [is shared](../user/project/members/share_project_with_groups.md)
   with a 2FA-disabled group will *not* require members of the 2FA-disabled group to use
-  2FA for the project. For example, if project *P* belongs to 2FA-enabled group *A* and 
+  2FA for the project. For example, if project *P* belongs to 2FA-enabled group *A* and
   is shared with 2FA-disabled group *B*, members of group *B* can access project *P*
-  without 2FA. To ensure this scenario doesn't occur, 
+  without 2FA. To ensure this scenario doesn't occur,
   [prevent sharing of projects](../user/group/index.md#share-with-group-lock)
   for the 2FA-enabled group.
 - If you add additional members to a project within a group or subgroup that has

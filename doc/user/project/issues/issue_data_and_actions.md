@@ -210,7 +210,7 @@ and selecting either **Show comments only**, which only shows discussions and hi
 updates to the issue, or **Show history only**, which hides discussions and only shows updates.
 
 - You can mention a user or a group present in your GitLab instance with
-  `@username` or `@groupname` and they will be notified via To-Do items 
+  `@username` or `@groupname` and they will be notified via To-Do items
   and email, unless they have [disabled all notifications](#13-notifications)
   in their profile settings.
 - Mentions for yourself (the current logged in user), will be highlighted
