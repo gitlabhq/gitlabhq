@@ -90,7 +90,7 @@ describe('Registry List', () => {
             .textContent.trim()
             .replace(/[\r\n]+/g, ' '),
         ).toEqual(
-          'With the Container Registry, every project can have its own space to store its Docker images. Learn more about the Container Registry.',
+          'With the Container Registry, every project can have its own space to store its Docker images. More Information',
         );
         done();
       }, 0);
