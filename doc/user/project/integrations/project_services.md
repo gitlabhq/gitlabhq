@@ -48,7 +48,7 @@ Click on the service links to see further configuration instructions and details
 | Pipelines emails | Email the pipeline status to a list of recipients |
 | [Slack Notifications](slack.md) | Send GitLab events (e.g. issue created) to Slack as notifications |
 | [Slack slash commands](slack_slash_commands.md) **(CORE ONLY)** | Use slash commands in Slack to control GitLab |
-| [GitLab Slack application](gitlab_slack_application.md) **[FREE ONLY]** | Use Slack's official application |
+| [GitLab Slack application](gitlab_slack_application.md) **(FREE ONLY)** | Use Slack's official application |
 | PivotalTracker | Project Management Software (Source Commits Endpoint) |
 | [Prometheus](prometheus.md) | Monitor the performance of your deployed apps |
 | Pushover | Pushover makes it easy to get real-time notifications on your Android device, iPhone, iPad, and Desktop |

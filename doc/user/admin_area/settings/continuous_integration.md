@@ -94,7 +94,7 @@ a group in the **Usage Quotas** page available to the group page settings list.
 
 ![Group pipelines quota](img/group_pipelines_quota.png)
 
-## Extra Shared Runners pipeline minutes quota **[FREE ONLY]**
+## Extra Shared Runners pipeline minutes quota **(FREE ONLY)**
 
 If you're using GitLab.com, you can purchase additional CI minutes so your
 pipelines will not be blocked after you have used all your CI minutes from your
