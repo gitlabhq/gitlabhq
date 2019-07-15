@@ -95,17 +95,6 @@ module Gitlab
 
           ['--version', version]
         end
-
-        def optional_tls_flags
-          return [] unless files.key?(:'ca.pem')
-
-          [
-            '--tls',
-            '--tls-ca-cert', "#{files_dir}/ca.pem",
-            '--tls-cert', "#{files_dir}/cert.pem",
-            '--tls-key', "#{files_dir}/key.pem"
-          ]
-        end
       end
     end
   end

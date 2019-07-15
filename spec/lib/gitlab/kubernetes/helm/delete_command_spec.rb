@@ -20,6 +20,15 @@ describe Gitlab::Kubernetes::Helm::DeleteCommand do
     end
   end
 
+  let(:tls_flags) do
+    <<~EOS.squish
+    --tls
+    --tls-ca-cert /data/helm/app-name/config/ca.pem
+    --tls-cert /data/helm/app-name/config/cert.pem
+    --tls-key /data/helm/app-name/config/key.pem
+    EOS
+  end
+
   context 'when there is a ca.pem file' do
     let(:files) { { 'ca.pem': 'some file content' } }
 
@@ -27,7 +36,7 @@ describe Gitlab::Kubernetes::Helm::DeleteCommand do
       let(:commands) do
         <<~EOS
         helm init --upgrade
-        for i in $(seq 1 30); do helm version && break; sleep 1s; echo "Retrying ($i)..."; done
+        for i in $(seq 1 30); do helm version #{tls_flags} && break; sleep 1s; echo "Retrying ($i)..."; done
         #{helm_delete_command}
         EOS
       end
@@ -35,10 +44,7 @@ describe Gitlab::Kubernetes::Helm::DeleteCommand do
       let(:helm_delete_command) do
         <<~EOS.squish
         helm delete --purge app-name
-        --tls
-        --tls-ca-cert /data/helm/app-name/config/ca.pem
-        --tls-cert /data/helm/app-name/config/cert.pem
-        --tls-key /data/helm/app-name/config/key.pem
+        #{tls_flags}
         EOS
       end
     end
