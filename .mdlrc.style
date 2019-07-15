@@ -1,7 +1,21 @@
-# See https://github.com/markdownlint/markdownlint/blob/master/docs/RULES.md
+# This is the style file for mdl, configured in .gitlab/ci/docs.gitlab-ci.yml,
+# and related to the options file ./mdlrc
 
-rule 'MD001'
+# See https://github.com/markdownlint/markdownlint/blob/master/docs/RULES.md
+# for more detailed information on the rules and styles.
+
+rule "MD001"
+rule "MD003", :style => :atx
+rule "MD011"
+rule "MD023"
+rule "MD032"
+rule "MD034"
+rule "MD037"
+
+# Should not be used currently:
+
+# rule "MD004", :style => :dash # unordered list style - dash
 # False positives, see https://github.com/markdownlint/markdownlint/issues/261
-# rule 'MD004', style: :dash
-rule 'MD032'
-rule 'MD034'
+ 
+# rule "MD039" # Spaces inside link text
+# Crashes when link text has certain punctuation
