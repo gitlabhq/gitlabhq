@@ -78,6 +78,9 @@ module Gitlab
       def create
         return if unknown_service?
 
+        # Do not import legacy triggers
+        return if !Feature.enabled?(:use_legacy_pipeline_triggers, @project) && legacy_trigger?
+
         setup_models
 
         generate_imported_object
@@ -276,6 +279,10 @@ module Gitlab
       def unknown_service?
         @relation_name == :services && parsed_relation_hash['type'] &&
           !Object.const_defined?(parsed_relation_hash['type'])
+      end
+
+      def legacy_trigger?
+        @relation_name == 'Ci::Trigger' && @relation_hash['owner_id'].nil?
       end
 
       def find_or_create_object!
