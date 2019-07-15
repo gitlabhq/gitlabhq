@@ -1,0 +1,5 @@
+---
+title: Fix commenting before discussions are loaded
+merge_request: 30724
+author:
+type: fixed
