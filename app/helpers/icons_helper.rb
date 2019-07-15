@@ -122,27 +122,30 @@ module IconsHelper
         icon_class = 'file-pdf-o'
       when '.jpg', '.jpeg', '.jif', '.jfif',
           '.jp2', '.jpx', '.j2k', '.j2c',
-          '.png', '.gif', '.tif', '.tiff',
-          '.svg', '.ico', '.bmp'
+          '.apng', '.png', '.gif', '.tif', '.tiff',
+          '.svg', '.ico', '.bmp', '.webp'
         icon_class = 'file-image-o'
-      when '.zip', '.zipx', '.tar', '.gz', '.bz', '.bzip',
-          '.xz', '.rar', '.7z'
+      when '.zip', '.zipx', '.tar', '.gz', '.gzip', '.tgz', '.bz', '.bzip',
+          '.bz2', '.bzip2', '.car', '.tbz', '.xz', 'txz', '.rar', '.7z',
+          '.lz', '.lzma', '.tlz'
         icon_class = 'file-archive-o'
-      when '.mp3', '.wma', '.ogg', '.oga', '.wav', '.flac', '.aac'
+      when '.mp3', '.wma', '.ogg', '.oga', '.wav', '.flac', '.aac', '.3ga',
+          '.ac3', '.midi', '.m4a', '.ape', '.mpa'
         icon_class = 'file-audio-o'
       when '.mp4', '.m4p', '.m4v',
           '.mpg', '.mp2', '.mpeg', '.mpe', '.mpv',
-          '.mpg', '.mpeg', '.m2v',
+          '.mpg', '.mpeg', '.m2v', '.m2ts',
           '.avi', '.mkv', '.flv', '.ogv', '.mov',
           '.3gp', '.3g2'
         icon_class = 'file-video-o'
-      when '.doc', '.dot', '.docx', '.docm', '.dotx', '.dotm', '.docb'
+      when '.doc', '.dot', '.docx', '.docm', '.dotx', '.dotm', '.docb',
+          '.odt', '.ott', '.uot', '.rtf'
         icon_class = 'file-word-o'
       when '.xls', '.xlt', '.xlm', '.xlsx', '.xlsm', '.xltx', '.xltm',
-          '.xlsb', '.xla', '.xlam', '.xll', '.xlw'
+          '.xlsb', '.xla', '.xlam', '.xll', '.xlw', '.ots', '.ods', '.uos'
         icon_class = 'file-excel-o'
       when '.ppt', '.pot', '.pps', '.pptx', '.pptm', '.potx', '.potm',
-          '.ppam', '.ppsx', '.ppsm', '.sldx', '.sldm'
+          '.ppam', '.ppsx', '.ppsm', '.sldx', '.sldm', '.odp', '.otp', '.uop'
         icon_class = 'file-powerpoint-o'
       else
         icon_class = 'file-text-o'
