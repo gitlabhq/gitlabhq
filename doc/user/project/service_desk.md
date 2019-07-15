@@ -53,36 +53,35 @@ Service Desk is enabled on GitLab.com. If you're a
 [Silver subscriber](https://about.gitlab.com/gitlab-com/),
 you can skip the step 1 below; you only need to enable it per project.
 
-1.   [Set up incoming email](../../administration/incoming_email.md#set-it-up) for the GitLab instance. This must
-     support [email sub-addressing](../../administration/incoming_email.md#email-sub-addressing).
-2.   Navigate to your project's **Settings** and scroll down to the **Service Desk**
-     section.
-3.   If you have the correct access and an Premium license,
-     you will see an option to set up Service Desk:
+1. [Set up incoming email](../../administration/incoming_email.md#set-it-up) for the GitLab instance. This must
+   support [email sub-addressing](../../administration/incoming_email.md#email-sub-addressing).
+1. Navigate to your project's **Settings** and scroll down to the **Service Desk**
+   section.
+1. If you have the correct access and an Premium license,
+   you will see an option to set up Service Desk:
 
-     ![Activate Service Desk option](img/service_desk_disabled.png)
+   ![Activate Service Desk option](img/service_desk_disabled.png)
 
-4.   Checking that box will enable Service Desk for the project, and show a
-     unique email address to email issues to the project. These issues will be
-     [confidential](issues/confidential_issues.md), so they will only be visible to project members.
+1. Checking that box will enable Service Desk for the project, and show a
+   unique email address to email issues to the project. These issues will be
+   [confidential](issues/confidential_issues.md), so they will only be visible to project members.
 
-     **Warning**: this email address can be used by anyone to create an issue on
-     this project, whether or not they have access to your GitLab instance.
-     We recommend **putting this behind an alias** so that it can be changed if
-     needed, and **[enabling Akismet](../../integration/akismet.md)** on your GitLab instance to add spam
-     checking to this service.  Unblocked email spam would result in many spam
-     issues being created, and may disrupt your GitLab service.
+   **Warning**: this email address can be used by anyone to create an issue on
+   this project, whether or not they have access to your GitLab instance.
+   We recommend **putting this behind an alias** so that it can be changed if
+   needed, and **[enabling Akismet](../../integration/akismet.md)** on your GitLab instance to add spam
+   checking to this service.  Unblocked email spam would result in many spam
+   issues being created, and may disrupt your GitLab service.
 
-     ![Service Desk enabled](img/service_desk_enabled.png)
+   ![Service Desk enabled](img/service_desk_enabled.png)
 
-     _In GitLab 11.7, we updated the format of the generated email address.
-     However the older format is still supported, allowing existing aliases
-     or contacts to continue working._
+   _In GitLab 11.7, we updated the format of the generated email address.
+   However the older format is still supported, allowing existing aliases
+   or contacts to continue working._
 
+1. Service Desk is now enabled for this project! You should be able to access it from your project's navigation **Issue submenu**:
 
-5.   Service Desk is now enabled for this project! You should be able to access it from your project's navigation **Issue submenu**:
-
-     ![Service Desk Navigation Item](img/service_desk_nav_item.png)
+   ![Service Desk Navigation Item](img/service_desk_nav_item.png)
 
 ## Using Service Desk
 

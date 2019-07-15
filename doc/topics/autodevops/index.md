@@ -109,10 +109,10 @@ To make full use of Auto DevOps, you will need:
    To enable deployments, you will need Kubernetes 1.5+. You need a [Kubernetes cluster][kubernetes-clusters]
    for the project, or a Kubernetes [default service template](../../user/project/integrations/services_templates.md)
    for the entire GitLab installation.
-    1. **A load balancer** - You can use NGINX ingress by deploying it to your
-       Kubernetes cluster using the
-       [`nginx-ingress`](https://github.com/kubernetes/charts/tree/master/stable/nginx-ingress)
-       Helm chart.
+   1. **A load balancer** - You can use NGINX ingress by deploying it to your
+      Kubernetes cluster using the
+      [`nginx-ingress`](https://github.com/kubernetes/charts/tree/master/stable/nginx-ingress)
+      Helm chart.
 1. **Prometheus** (needed for Auto Monitoring) - To enable Auto Monitoring, you
    will need Prometheus installed somewhere (inside or outside your cluster) and
    configured to scrape your Kubernetes cluster. To get response metrics
@@ -168,7 +168,6 @@ From GitLab 11.8, `KUBE_INGRESS_BASE_DOMAIN` replaces `AUTO_DEVOPS_DOMAIN`.
 Support for `AUTO_DEVOPS_DOMAIN` was [removed in GitLab
 12.0](https://gitlab.com/gitlab-org/gitlab-ce/issues/56959).
 
-
 ## Using multiple Kubernetes clusters **(PREMIUM)**
 
 When using Auto DevOps, you may want to deploy different environments to
@@ -202,7 +201,7 @@ To add a different cluster for each environment:
 1. Navigate to your project's **Operations > Kubernetes** and create the Kubernetes clusters
    with their respective environment scope as described from the table above.
 
-    ![Auto DevOps multiple clusters](img/autodevops_multiple_clusters.png)
+   ![Auto DevOps multiple clusters](img/autodevops_multiple_clusters.png)
 
 1. After the clusters are created, navigate to each one and install Helm Tiller
    and Ingress. Wait for the Ingress IP address to be assigned.

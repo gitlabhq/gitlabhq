@@ -12,8 +12,6 @@ in a simple dashboard.
 
 ![To Do screenshot showing a list of items to check on](img/todos_index.png)
 
----
-
 You can quickly access your To-Do List by clicking the checkmark icon next to the
 search bar in the top navigation. If the count is:
 
@@ -31,15 +29,15 @@ A To Do displays on your To-Do List when:
 
 - An issue or merge request is assigned to you
 - You are `@mentioned` in the description or comment of an:
-    - Issue
-    - Merge Request
-    - Epic **(ULTIMATE)**
+  - Issue
+  - Merge Request
+  - Epic **(ULTIMATE)**
 - You are `@mentioned` in a comment on a commit
 - A job in the CI pipeline running for your merge request failed, but this
   job is not allowed to fail
 - An open merge request becomes unmergeable due to conflict, and you are either: 
-    - The author 
-    - Have set it to automatically merge once the pipeline succeeds
+  - The author 
+  - Have set it to automatically merge once the pipeline succeeds
 
 To-do triggers are not affected by [GitLab Notification Email settings](notifications.md).
 
@@ -94,8 +92,6 @@ Actions that dismiss To-Do items include:
 - Adding/removing a label
 - Commenting on the issue
 
----
-
 Your To-Do List is personal, and items are only marked as done if the action comes from
 you. If you close the issue or merge request, your To Do is automatically
 marked as done.
@@ -107,8 +103,6 @@ To prevent other users from closing issues without you being notified, if someon
 - Epic **(ULTIMATE)**
 
 There is just one To Do for each of these, so mentioning a user a hundred times in an issue will only trigger one To Do.
-
----
 
 If no action is needed, you can manually mark the To Do as done by clicking the
 corresponding **Done** button, and it will disappear from your To-Do List.

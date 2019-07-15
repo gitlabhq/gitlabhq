@@ -8,11 +8,7 @@ The minimum required settings you need to set are the InfluxDB host and port.
 Make sure _Enable InfluxDB Metrics_ is checked and hit **Save** to save the
 changes.
 
----
-
 ![GitLab Performance Monitoring Admin Settings](img/metrics_gitlab_configuration_settings.png)
-
----
 
 Finally, a restart of all GitLab processes is required for the changes to take
 effect:
@@ -29,8 +25,6 @@ sudo service gitlab restart
 
 When any migrations are pending, the metrics are disabled until the migrations
 have been performed.
-
----
 
 Read more on:
 

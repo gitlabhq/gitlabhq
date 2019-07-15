@@ -321,8 +321,6 @@ By default, impersonation is enabled. To disable impersonation:
 
 To re-enable impersonation, remove this configuration and reconfigure GitLab.
 
----
-
 **For installations from source**
 
 1. Edit `config/gitlab.yml`:
@@ -380,8 +378,6 @@ returned with status code `404`:
   "message": "404 User with ID or username '123' Not Found"
 }
 ```
-
----
 
 Example of a valid API call and a request using cURL with sudo request,
 providing a username:

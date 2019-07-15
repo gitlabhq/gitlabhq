@@ -2,8 +2,6 @@
 
 > [Introduced][gh-9889] in GitLab 8.4.
 
----
-
 The file finder feature allows you to quickly shortcut your way when you are
 searching for a file in a repository using the GitLab UI.
 
@@ -11,8 +9,6 @@ You can find the **Find File** button when in the **Files** section of a
 project.
 
 ![Find file button](img/file_finder_find_button.png)
-
----
 
 For those who prefer to keep their fingers on the keyboard, there is a
 [shortcut button](shortcuts.md) as well, which you can invoke from _anywhere_

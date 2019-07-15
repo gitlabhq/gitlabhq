@@ -295,6 +295,5 @@ active terminal at a time.
   connect to the runner. Please try to stop and restart the terminal. If the
   problem persists, double check your runner configuration.
 
-
 [ce]: https://about.gitlab.com/pricing/
 [ee]: https://about.gitlab.com/pricing/
