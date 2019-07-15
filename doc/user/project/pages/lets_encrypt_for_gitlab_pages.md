@@ -18,9 +18,9 @@ To follow along with this tutorial, we assume you already have:
 
 - Created a [project](getting_started_part_two.md) in GitLab which
   contains your website's source code.
-- Acquired a domain (`example.com`) and added a [DNS entry](getting_started_part_three.md#dns-records)
+- Acquired a domain (`example.com`) and added a [DNS entry](custom_domains_ssl_tls_certification/index.md#set-up-pages-with-a-custom-domain)
   pointing it to your Pages website.
-- [Added your domain to your Pages project](getting_started_part_three.md#add-your-custom-domain-to-gitlab-pages-settings)
+- [Added your domain to your Pages project](custom_domains_ssl_tls_certification/index.md#steps)
   and verified your ownership.
 - Cloned your project into your computer.
 - Your website up and running, served under HTTP protocol at `http://example.com`.

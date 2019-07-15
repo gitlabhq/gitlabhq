@@ -256,7 +256,7 @@ world. Custom domains and TLS are supported.
 ### Custom domain verification
 
 To prevent malicious users from hijacking domains that don't belong to them,
-GitLab supports [custom domain verification](../../user/project/pages/getting_started_part_three.md#dns-txt-record).
+GitLab supports [custom domain verification](../../user/project/pages/custom_domains_ssl_tls_certification/index.md#steps).
 When adding a custom domain, users will be required to prove they own it by
 adding a GitLab-controlled verification code to the DNS records for that domain.
 
