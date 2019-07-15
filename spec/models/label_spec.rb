@@ -84,6 +84,13 @@ describe Label do
     end
   end
 
+  describe '#description' do
+    it 'sanitizes description' do
+      label = described_class.new(description: '<b>foo & bar?</b>')
+      expect(label.description).to eq('foo & bar?')
+    end
+  end
+
   describe 'priorization' do
     subject(:label) { create(:label) }
 
