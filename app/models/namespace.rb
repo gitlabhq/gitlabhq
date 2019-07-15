@@ -263,6 +263,11 @@ class Namespace < ApplicationRecord
     false
   end
 
+  # Overridden in EE::Namespace
+  def feature_available?(_feature)
+    false
+  end
+
   def full_path_before_last_save
     if parent_id_before_last_save.nil?
       path_before_last_save
