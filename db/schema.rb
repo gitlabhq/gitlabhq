@@ -1097,8 +1097,10 @@ ActiveRecord::Schema.define(version: 2019_07_15_142138) do
   create_table "design_management_designs_versions", id: false, force: :cascade do |t|
     t.bigint "design_id", null: false
     t.bigint "version_id", null: false
+    t.integer "event", limit: 2, default: 0, null: false
     t.index ["design_id", "version_id"], name: "design_management_designs_versions_uniqueness", unique: true
     t.index ["design_id"], name: "index_design_management_designs_versions_on_design_id"
+    t.index ["event"], name: "index_design_management_designs_versions_on_event"
     t.index ["version_id"], name: "index_design_management_designs_versions_on_version_id"
   end
 
