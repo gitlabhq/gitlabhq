@@ -745,6 +745,14 @@ describe API::Users do
       expect(user.reload.private_profile).to eq(true)
     end
 
+    it "updates private profile when nil is given to false" do
+      admin.update(private_profile: true)
+
+      put api("/users/#{user.id}", admin), params: { private_profile: nil }
+
+      expect(user.reload.private_profile).to eq(false)
+    end
+
     it "does not update admin status" do
       put api("/users/#{admin_user.id}", admin), params: { can_create_group: false }
 
