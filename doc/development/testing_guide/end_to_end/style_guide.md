@@ -94,6 +94,7 @@ view '...' do
   element :clone_options
 
   # how is this url being displayed? is it a textbox? a simple span?
+  # If it is content on the page, it should be `ssh_clone_url_content`
   element :ssh_clone_url
 end
 ```
