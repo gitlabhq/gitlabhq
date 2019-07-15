@@ -1,0 +1,5 @@
+---
+title: Multiple pipeline support for Commit status
+merge_request: 21671
+author: Gaetan Semet
+type: changed
