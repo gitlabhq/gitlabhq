@@ -1,12 +1,12 @@
 ---
 type: howto
 ---
+
 # How to unlock a locked user
 
 To unlock a locked user, first log into your server with root privileges.
 
 Start a Ruby on Rails console with this command:
-
 
 ```bash
 gitlab-rails console production

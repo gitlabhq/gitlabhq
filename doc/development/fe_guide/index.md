@@ -17,8 +17,6 @@ Working with our frontend assets requires Node (v8.10.0 or greater) and Yarn
 
 For our currently-supported browsers, see our [requirements][requirements].
 
----
-
 ## Initiatives
 
 Current high-level frontend goals are listed on [Frontend Epics](https://gitlab.com/groups/gitlab-org/-/epics?label_name%5B%5D=frontend).
@@ -77,8 +75,6 @@ How we use Snowplow to track custom events.
 
 Read the [frontend's FAQ](frontend_faq.md) for common small pieces of helpful information.
 
----
-
 ## Style Guides
 
 ### [JavaScript Style Guide](style_guide_js.md)
@@ -91,19 +87,13 @@ changes.
 
 Our SCSS conventions which are enforced through [scss-lint][scss-lint].
 
----
-
 ## [Performance](performance.md)
 
 Best practices for monitoring and maximizing frontend performance.
 
----
-
 ## [Security](security.md)
 
 Frontend security practices.
-
----
 
 ## [Accessibility](accessibility.md)
 

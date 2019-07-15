@@ -40,10 +40,6 @@ display it.
 
 You can toggle the Bar using the same shortcut.
 
----
-
 ![GitLab Performance Bar Admin Settings](img/performance_bar_configuration_settings.png)
-
----
 
 [Gitaly]: ../../gitaly/index.md

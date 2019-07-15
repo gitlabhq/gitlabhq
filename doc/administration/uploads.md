@@ -10,8 +10,6 @@ This is the default configuration
 To change the location where the uploads are stored locally, follow the steps
 below.
 
----
-
 **In Omnibus installations:**
 
 NOTE: **Note:**
@@ -28,8 +26,6 @@ _The uploads are stored by default in `/var/opt/gitlab/gitlab-rails/uploads`._
    ```
 
 1. Save the file and [reconfigure GitLab][] for the changes to take effect.
-
----
 
 **In installations from source:**
 
@@ -120,8 +116,6 @@ _The uploads are stored by default in
 
 1. Save the file and [reconfigure GitLab][] for the changes to take effect.
 1. Migrate any existing local uploads to the object storage using [`gitlab:uploads:migrate` rake task](raketasks/uploads/migrate.md).
-
----
 
 **In installations from source:**
 

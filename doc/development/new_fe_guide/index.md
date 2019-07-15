@@ -19,7 +19,6 @@ Learn about all the internal JavaScript modules that make up our frontend.
 
 Style guides to keep our code consistent.
 
-
 ## [Tips](tips.md)
 
 Tips from our frontend team to develop more efficiently and effectively.

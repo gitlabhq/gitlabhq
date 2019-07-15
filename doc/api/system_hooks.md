@@ -11,8 +11,6 @@ Read more about [system hooks](../system_hooks/system_hooks.md).
 
 Get a list of all system hooks.
 
----
-
 ```
 GET /hooks
 ```
@@ -43,8 +41,6 @@ Example response:
 ## Add new system hook
 
 Add a new system hook.
-
----
 
 ```
 POST /hooks
@@ -115,8 +111,6 @@ Example response:
 ## Delete system hook
 
 Deletes a system hook.
-
----
 
 ```
 DELETE /hooks/:id

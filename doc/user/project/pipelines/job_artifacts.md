@@ -67,8 +67,6 @@ artifacts in case you changed your mind and want to keep them.
 
 ![Job artifacts browser button](img/job_artifacts_browser_button.png)
 
----
-
 The archive browser shows the name and the actual file size of each file in the
 archive. If your artifacts contained directories, then you are also able to
 browse inside them.
@@ -80,8 +78,6 @@ one HTML file that you can view directly online when
 
 ![Job artifacts browser](img/job_artifacts_browser.png)
 
----
-
 ## Downloading artifacts
 
 If you need to download the whole archive, there are buttons in various places
@@ -90,22 +86,22 @@ inside GitLab that make that possible.
 1. While on the pipelines page, you can see the download icon for each job's
    artifacts archive in the right corner:
 
-    ![Job artifacts in Pipelines page](img/job_artifacts_pipelines_page.png)
+   ![Job artifacts in Pipelines page](img/job_artifacts_pipelines_page.png)
 
 1. While on the **Jobs** page, you can see the download icon for each job's
    artifacts archive in the right corner:
 
-    ![Job artifacts in Builds page](img/job_artifacts_builds_page.png)
+   ![Job artifacts in Builds page](img/job_artifacts_builds_page.png)
 
 1. While inside a specific job, you are presented with a download button
    along with the one that browses the archive:
 
-    ![Job artifacts browser button](img/job_artifacts_browser_button.png)
+   ![Job artifacts browser button](img/job_artifacts_browser_button.png)
 
 1. And finally, when browsing an archive you can see the download button at
    the top right corner:
 
-    ![Job artifacts browser](img/job_artifacts_browser.png)
+   ![Job artifacts browser](img/job_artifacts_browser.png)
 
 ## Downloading the latest artifacts
 
