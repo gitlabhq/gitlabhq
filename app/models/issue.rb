@@ -13,10 +13,7 @@ class Issue < ApplicationRecord
   include RelativePositioning
   include TimeTrackable
   include ThrottledTouch
-  include IgnorableColumn
   include LabelEventable
-
-  ignore_column :assignee_id, :branch_name, :deleted_at
 
   DueDateStruct                   = Struct.new(:title, :name).freeze
   NoDueDate                       = DueDateStruct.new('No Due Date', '0').freeze

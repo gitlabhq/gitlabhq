@@ -7,7 +7,6 @@ class MergeRequest < ApplicationRecord
   include Noteable
   include Referable
   include Presentable
-  include IgnorableColumn
   include TimeTrackable
   include ManualInverseAssociation
   include EachBatch
@@ -23,10 +22,6 @@ class MergeRequest < ApplicationRecord
   self.reactive_cache_lifetime = 10.minutes
 
   SORTING_PREFERENCE_FIELD = :merge_requests_sort
-
-  ignore_column :locked_at,
-                :ref_fetched,
-                :deleted_at
 
   belongs_to :target_project, class_name: "Project"
   belongs_to :source_project, class_name: "Project"
