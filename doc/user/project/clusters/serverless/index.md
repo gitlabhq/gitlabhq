@@ -157,9 +157,9 @@ You must do the following:
 
 > Introduced in GitLab 11.6.
 
-Using functions is useful for dealing with independent
-events without needing to maintain a complex unified infrastructure. This allows
-you to focus on a single task that can be executed/scaled automatically and independently.
+Using functions is useful for dealing with independent events without needing
+to maintain a complex unified infrastructure. This allows you to focus on a
+single task that can be executed/scaled automatically and independently.
 
 Currently the following [runtimes](https://gitlab.com/gitlab-org/serverless/runtimes) are offered:
 
@@ -167,11 +167,17 @@ Currently the following [runtimes](https://gitlab.com/gitlab-org/serverless/runt
 - node.js
 - Dockerfile
 
-You can find and import all the files referenced in this doc in the **[functions example project](https://gitlab.com/knative-examples/functions)**.
+`Dockerfile` presence is assumed when a runtime is not specified.
 
-Follow these steps to deploy a function using the Node.js runtime to your Knative instance (you can skip these steps if you've cloned the example project):
+You can find and import all the files referenced in this doc in the
+**[functions example project](https://gitlab.com/knative-examples/functions)**.
 
-1. Create a directory that will house the function. In this example we will create a directory called `echo` at the root of the project.
+Follow these steps to deploy a function using the Node.js runtime to your
+Knative instance (you can skip these steps if you've cloned the example
+project):
+
+1. Create a directory that will house the function. In this example we will
+   create a directory called `echo` at the root of the project.
 
 1. Create the file that will contain the function code. In this example, our file is called `echo.js` and is located inside the `echo` directory. If your project is:
    - Public, continue to the next step.
@@ -248,21 +254,22 @@ Explanation of the fields used above:
 
 ### `functions`
 
-In the `serverless.yml` example above, the function name is `echo` and the subsequent lines contain the function attributes.
+In the `serverless.yml` example above, the function name is `echo` and the
+subsequent lines contain the function attributes.
 
 | Parameter | Description |
 |-----------|-------------|
 | `handler` | The function's name. |
 | `source` | Directory with sources of a functions. |
-| `runtime` | The runtime to be used to execute the function. |
+| `runtime` (optional)| The runtime to be used to execute the function. When the runtime is not specified, we assume that `Dockerfile` is present in the function directory specified by `source`. |
 | `description` | A short description of the function. |
 | `environment` | Sets an environment variable for the specific function only. |
 
-After the `gitlab-ci.yml` template has been added and the `serverless.yml` file has been
-created, pushing a commit to your project will result in a
-CI pipeline being executed which will deploy each function as a Knative service.
-Once the deploy stage has finished, additional details for the function will
-appear under **Operations > Serverless**.
+After the `gitlab-ci.yml` template has been added and the `serverless.yml` file
+has been created, pushing a commit to your project will result in a CI pipeline
+being executed which will deploy each function as a Knative service.  Once the
+deploy stage has finished, additional details for the function will appear
+under **Operations > Serverless**.
 
 ![serverless page](img/serverless-page.png)
 
@@ -319,6 +326,8 @@ You can either import it with `include` parameter and use `extends` to
 customize your jobs, or you can inline the entire template by choosing it
 from **Apply a template** dropdown when editing the `.gitlab-ci.yml` file through
 the user interface.
+
+A `serverless.yml` file is not required when deploying serverless applications.
 
 ### Deploy the application with Knative
 
