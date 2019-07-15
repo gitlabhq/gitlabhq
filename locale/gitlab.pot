@@ -2978,6 +2978,12 @@ msgstr ""
 msgid "ContainerRegistry|Container Registry"
 msgstr ""
 
+msgid "ContainerRegistry|Copy build command to clipboard"
+msgstr ""
+
+msgid "ContainerRegistry|Copy push command to clipboard"
+msgstr ""
+
 msgid "ContainerRegistry|Docker connection error"
 msgstr ""
 
@@ -3011,13 +3017,13 @@ msgstr ""
 msgid "ContainerRegistry|There are no container images stored for this project"
 msgstr ""
 
-msgid "ContainerRegistry|We are having trouble connecting to Docker, which could be due to an issue with your project name or path. For more information, please review the %{docLinkStart}Container Registry documentation%{docLinkEnd}."
+msgid "ContainerRegistry|We are having trouble connecting to Docker, which could be due to an issue with your project name or path. %{docLinkStart}More Information%{docLinkEnd}"
 msgstr ""
 
-msgid "ContainerRegistry|With the Container Registry, every project can have its own space to store its Docker images. Learn more about the %{docLinkStart}Container Registry%{docLinkEnd}."
+msgid "ContainerRegistry|With the Container Registry, every project can have its own space to store its Docker images. %{docLinkStart}More Information%{docLinkEnd}"
 msgstr ""
 
-msgid "ContainerRegistry|With the Docker Container Registry integrated into GitLab, every project can have its own space to store its Docker images. Learn more about the %{docLinkStart}Container Registry%{docLinkEnd}."
+msgid "ContainerRegistry|With the Docker Container Registry integrated into GitLab, every project can have its own space to store its Docker images. %{docLinkStart}More Information%{docLinkEnd}"
 msgstr ""
 
 msgid "ContainerRegistry|You are about to delete the image <b>%{title}</b>. This will delete the image and all tags pointing to this image."

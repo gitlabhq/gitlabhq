@@ -15,10 +15,12 @@ export default {
 </script>
 
 <template>
-  <div :id="id" class="empty-state container-message mw-70p">
+  <div :id="id" class="empty-state container-message">
     <div class="svg-content">
       <img :src="svgPath" class="flex-align-self-center" />
     </div>
-    <slot></slot>
+    <div class="text-content">
+      <slot></slot>
+    </div>
   </div>
 </template>
