@@ -181,7 +181,7 @@ sudo -u gitlab_ci -H bundle exec rake backup:show_secrets RAILS_ENV=production
 ### 2. SQL data and build traces
 
 Create your final CI data export. If you are converting from MySQL to
-  PostgreSQL, add ` MYSQL_TO_POSTGRESQL=1` to the end of the rake command. When
+PostgreSQL, add `MYSQL_TO_POSTGRESQL=1` to the end of the rake command. When
 the command finishes it will print the path to your data export archive; you
 will need this file later.
 
@@ -323,11 +323,15 @@ You should also make sure that you can:
 
 ### 2. Check Nginx configuration
 
-    sudo nginx -t
+```sh
+sudo nginx -t
+```
 
 ### 3. Restart Nginx
 
-    sudo /etc/init.d/nginx restart
+```sh
+sudo /etc/init.d/nginx restart
+```
 
 ### Restore from backup
 
@@ -352,11 +356,13 @@ The fix for this is to update to Omnibus 7.14 first and then update it to 8.0.
 ### Permission denied when accessing /var/opt/gitlab/gitlab-ci/builds
 
 To fix that issue you have to change builds/ folder permission before doing final backup:
+
 ```
 sudo chown -R gitlab-ci:gitlab-ci /var/opt/gitlab/gitlab-ci/builds
 ```
 
 Then before executing `ci:migrate` you need to fix builds folder permission:
+
 ```
 sudo chown git:git /var/opt/gitlab/gitlab-ci/builds
 ```
@@ -365,7 +371,7 @@ sudo chown git:git /var/opt/gitlab/gitlab-ci/builds
 
 If you were migrating CI database from MySQL to PostgreSQL manually you can see errors during import about missing sequences:
 
-```sql 
+```sql
 ALTER SEQUENCE
 ERROR:  relation "ci_builds_id_seq" does not exist
 ERROR:  relation "ci_commits_id_seq" does not exist

@@ -64,13 +64,13 @@ Following [best practices](https://linux-audit.com/using-ed25519-openssh-keys-in
 you should always favor [ED25519](https://ed25519.cr.yp.to/) SSH keys, since they
 are more secure and have better performance over the other types.
 
-ED25519 SSH keys were introduced in OpenSSH 6.5, 
-so any modern OS should include the option to create them. 
-If for any reason your OS or the GitLab instance you interact with doesn't 
+ED25519 SSH keys were introduced in OpenSSH 6.5,
+so any modern OS should include the option to create them.
+If for any reason your OS or the GitLab instance you interact with doesn't
 support ED25519, you can fallback to RSA.
 
 NOTE: **Note:**
-Omnibus does not ship with OpenSSH, so it uses the version on your GitLab server. If using 
+Omnibus does not ship with OpenSSH, so it uses the version on your GitLab server. If using
 Omnibus, ensure the version of OpenSSH installed is version 6.5 or newer if you want to use ED25519 SSH keys.
 
 ### RSA SSH keys
@@ -107,18 +107,18 @@ To create a new SSH key pair:
 1. Open a terminal on Linux or macOS, or Git Bash / WSL on Windows.
 1. Generate a new ED25519 SSH key pair:
 
-    ```bash
-    ssh-keygen -t ed25519 -C "email@example.com"
-    ```
+   ```bash
+   ssh-keygen -t ed25519 -C "email@example.com"
+   ```
 
-    Or, if you want to use RSA:
+   Or, if you want to use RSA:
 
-    ```bash
-    ssh-keygen -o -t rsa -b 4096 -C "email@example.com"
-    ```
+   ```bash
+   ssh-keygen -o -t rsa -b 4096 -C "email@example.com"
+   ```
 
-    The `-C` flag adds a comment in the key in case you have multiple of them
-    and want to tell which is which. It is optional.
+   The `-C` flag adds a comment in the key in case you have multiple of them
+   and want to tell which is which. It is optional.
 
 1. Next, you will be prompted to input a file path to save your SSH key pair to.
    If you don't already have an SSH key pair and aren't generating a [deploy key](#deploy-keys),
@@ -126,21 +126,21 @@ To create a new SSH key pair:
    <kbd>Enter</kbd>. Using the suggested path will normally allow your SSH client
    to automatically use the SSH key pair with no additional configuration.
 
-    If you already have an SSH key pair with the suggested file path, you will need
-    to input a new file path and [declare what host](#working-with-non-default-ssh-key-pair-paths)
-    this SSH key pair will be used for in your `~/.ssh/config` file.
+   If you already have an SSH key pair with the suggested file path, you will need
+   to input a new file path and [declare what host](#working-with-non-default-ssh-key-pair-paths)
+   this SSH key pair will be used for in your `~/.ssh/config` file.
 
 1. Once the path is decided, you will be prompted to input a password to
    secure your new SSH key pair. It's a best practice to use a password,
    but it's not required and you can skip creating it by pressing
    <kbd>Enter</kbd> twice.
 
-    If, in any case, you want to add or change the password of your SSH key pair,
-    you can use the `-p` flag:
+   If, in any case, you want to add or change the password of your SSH key pair,
+   you can use the `-p` flag:
 
-    ```
-    ssh-keygen -p -o -f <keyname>
-    ```
+   ```
+   ssh-keygen -p -o -f <keyname>
+   ```
 
 Now, it's time to add the newly created public key to your GitLab account.
 
@@ -149,41 +149,40 @@ Now, it's time to add the newly created public key to your GitLab account.
 1. Copy your **public** SSH key to the clipboard by using one of the commands below
    depending on your Operating System:
 
-    **macOS:**
+   **macOS:**
 
-    ```bash
-    pbcopy < ~/.ssh/id_ed25519.pub
-    ```
+   ```bash
+   pbcopy < ~/.ssh/id_ed25519.pub
+   ```
 
-    **WSL / GNU/Linux (requires the xclip package):**
+   **WSL / GNU/Linux (requires the xclip package):**
 
-    ```bash
-    xclip -sel clip < ~/.ssh/id_ed25519.pub
-    ```
+   ```bash
+   xclip -sel clip < ~/.ssh/id_ed25519.pub
+   ```
 
-    **Git Bash on Windows:**
+   **Git Bash on Windows:**
 
-    ```bash
-    cat ~/.ssh/id_ed25519.pub | clip
-    ```
+   ```bash
+   cat ~/.ssh/id_ed25519.pub | clip
+   ```
 
-    You can also open the key in a graphical editor and copy it from there,
-    but be careful not to accidentally change anything.
+   You can also open the key in a graphical editor and copy it from there,
+   but be careful not to accidentally change anything.
 
-    NOTE: **Note:**
-    If you opted to create an RSA key, the name might differ.
+   NOTE: **Note:**
+   If you opted to create an RSA key, the name might differ.
 
 1. Add your **public** SSH key to your GitLab account by:
    1. Clicking your avatar in the upper right corner and selecting **Settings**.
    1. Navigating to **SSH Keys** and pasting your **public** key in the **Key** field. If you:
-
       - Created the key with a comment, this will appear in the **Title** field.
       - Created the key without a comment, give your key an identifiable title like _Work Laptop_ or _Home Workstation_.
    1. Click the **Add key** button.
 
-    NOTE: **Note:**
-    If you manually copied your public SSH key make sure you copied the entire
-    key starting with `ssh-ed25519` (or `ssh-rsa`) and ending with your email.
+   NOTE: **Note:**
+   If you manually copied your public SSH key make sure you copied the entire
+   key starting with `ssh-ed25519` (or `ssh-rsa`) and ending with your email.
 
 ## Testing that everything is set up correctly
 

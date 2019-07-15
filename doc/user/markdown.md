@@ -586,9 +586,11 @@ def function():
     print s
 ```
 
-    Using 4 spaces
-    is like using
-    3-backtick fences.
+```
+Using 4 spaces
+is like using
+3-backtick fences.
+```
 
 ~~~
 Tildes are OK too.
