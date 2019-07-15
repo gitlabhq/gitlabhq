@@ -14,6 +14,16 @@ all you need to do is update GitLab itself:
    the tracking database is enabled.
 1. [Test](#check-status-after-updating) **primary** and **secondary** nodes, and check version in each.
 
+## Upgrading to GitLab 12.1
+
+By default, GitLab 12.1 will attempt to automatically upgrade the embedded PostgreSQL server to 10.7 from 9.6. Please see [the omnibus documentation](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance) for the recommended procedure.
+
+This can be temporarily disabled by running the following before ugprading:
+
+```sh
+sudo touch /etc/gitlab/disable-postgresql-upgrade
+```
+
 ## Upgrading to GitLab 10.8
 
 Before 10.8, broadcast messages would not propagate without flushing the cache on the **secondary** nodes. This has been fixed in 10.8, but requires one last cache flush on each **secondary** node:
