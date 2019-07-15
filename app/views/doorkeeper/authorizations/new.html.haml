@@ -46,4 +46,4 @@
             = hidden_field_tag :response_type, @pre_auth.response_type
             = hidden_field_tag :scope, @pre_auth.scope
             = hidden_field_tag :nonce, @pre_auth.nonce
-            = submit_tag _("Authorize"), class: "btn btn-success prepend-left-10"
+            = submit_tag _("Authorize"), class: "btn btn-success prepend-left-10", data: { qa_selector: 'authorization_button' }
