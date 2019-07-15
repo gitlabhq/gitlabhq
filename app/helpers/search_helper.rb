@@ -145,17 +145,28 @@ module SearchHelper
     Sanitize.clean(str)
   end
 
-  def search_filter_path(options = {})
-    exist_opts = {
-      search: params[:search],
-      project_id: params[:project_id],
-      group_id: params[:group_id],
-      scope: params[:scope],
-      repository_ref: params[:repository_ref]
-    }
+  def search_filter_link(scope, label, data: {}, search: {})
+    search_params = params
+      .merge(search)
+      .merge({ scope: scope })
+      .permit(:search, :scope, :project_id, :group_id, :repository_ref, :snippets)
 
-    options = exist_opts.merge(options)
-    search_path(options)
+    if @scope == scope
+      li_class = 'active'
+      count = @search_results.formatted_count(scope)
+    else
+      count = 0
+      badge_class = 'js-search-count'
+      badge_data = { scope: scope, url: search_count_path(search_params) }
+    end
+
+    content_tag :li, class: li_class, data: data do
+      link_to search_path(search_params) do
+        concat label
+        concat ' '
+        concat content_tag(:span, count, class: 'badge badge-pill', data: { scope: scope })
+      end
+    end
   end
 
   def search_filter_input_options(type)
@@ -210,10 +221,6 @@ module SearchHelper
 
     # Truncato's filtered_tags and filtered_attributes are not quite the same
     sanitize(html, tags: %w(a p ol ul li pre code))
-  end
-
-  def limited_count(count, limit = 1000)
-    count > limit ? "#{limit}+" : count
   end
 
   def search_tabs?(tab)

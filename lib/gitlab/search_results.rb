@@ -43,6 +43,29 @@ module Gitlab
       without_count ? collection.without_count : collection
     end
 
+    def formatted_count(scope)
+      case scope
+      when 'projects'
+        formatted_limited_count(limited_projects_count)
+      when 'issues'
+        formatted_limited_count(limited_issues_count)
+      when 'merge_requests'
+        formatted_limited_count(limited_merge_requests_count)
+      when 'milestones'
+        formatted_limited_count(limited_milestones_count)
+      when 'users'
+        formatted_limited_count(limited_users_count)
+      end
+    end
+
+    def formatted_limited_count(count)
+      if count >= COUNT_LIMIT
+        "#{COUNT_LIMIT - 1}+"
+      else
+        count.to_s
+      end
+    end
+
     def limited_projects_count
       @limited_projects_count ||= limited_count(projects)
     end

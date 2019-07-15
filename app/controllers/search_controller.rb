@@ -36,6 +36,15 @@ class SearchController < ApplicationController
     check_single_commit_result
   end
 
+  def count
+    params.require([:search, :scope])
+
+    scope = search_service.scope
+    count = search_service.search_results.formatted_count(scope)
+
+    render json: { count: count }
+  end
+
   # rubocop: disable CodeReuse/ActiveRecord
   def autocomplete
     term = params[:term]

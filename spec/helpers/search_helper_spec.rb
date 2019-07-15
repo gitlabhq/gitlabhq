@@ -177,4 +177,48 @@ describe SearchHelper do
       end
     end
   end
+
+  describe 'search_filter_link' do
+    it 'renders a search filter link for the current scope' do
+      @scope = 'projects'
+      @search_results = double
+
+      expect(@search_results).to receive(:formatted_count).with('projects').and_return('23')
+
+      link = search_filter_link('projects', 'Projects')
+
+      expect(link).to have_css('li.active')
+      expect(link).to have_link('Projects', href: search_path(scope: 'projects'))
+      expect(link).to have_css('span.badge.badge-pill:not(.js-search-count):not(.hidden):not([data-url])', text: '23')
+    end
+
+    it 'renders a search filter link for another scope' do
+      link = search_filter_link('projects', 'Projects')
+      count_path = search_count_path(scope: 'projects')
+
+      expect(link).to have_css('li:not([class="active"])')
+      expect(link).to have_link('Projects', href: search_path(scope: 'projects'))
+      expect(link).to have_css("span.badge.badge-pill.js-search-count.hidden[data-url='#{count_path}']", text: '')
+    end
+
+    it 'merges in the current search params and given params' do
+      expect(self).to receive(:params).and_return(
+        ActionController::Parameters.new(
+          search: 'hello',
+          scope: 'ignored',
+          other_param: 'ignored'
+        )
+      )
+
+      link = search_filter_link('projects', 'Projects', search: { project_id: 23 })
+
+      expect(link).to have_link('Projects', href: search_path(scope: 'projects', search: 'hello', project_id: 23))
+    end
+
+    it 'assigns given data attributes on the list container' do
+      link = search_filter_link('projects', 'Projects', data: { foo: 'bar' })
+
+      expect(link).to have_css('li[data-foo="bar"]')
+    end
+  end
 end
