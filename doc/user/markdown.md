@@ -556,7 +556,7 @@ Inline `code` has `back-ticks around` it.
 
 Similarly, a whole block of code can be fenced with triple backticks ```` ``` ````,
 triple tildes (`~~~`), or indended 4 or more spaces to achieve a similar effect for
-a larger body of code. test.
+a larger body of code.
 
 ~~~
 ```
