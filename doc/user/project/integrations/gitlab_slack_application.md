@@ -1,4 +1,4 @@
-# GitLab Slack application **[FREE ONLY]**
+# GitLab Slack application **(FREE ONLY)**
 
 NOTE: **Note:**
 The GitLab Slack application is only configurable for GitLab.com. It will **not**

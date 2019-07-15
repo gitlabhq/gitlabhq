@@ -184,7 +184,7 @@ The above sample dashboard would display a single area chart. The following sect
 | `query` | string | required unless `query_range` is defined | Defines the Prometheus query to be used to populate the chart/panel. If defined, the `query` endpoint of the [Prometheus API](https://prometheus.io/docs/prometheus/latest/querying/api/) will be utilized. |
 | `query_range` | string | required unless `query` is defined | Defines the Prometheus query to be used to populate the chart/panel. If defined, the `query_range` endpoint of the [Prometheus API](https://prometheus.io/docs/prometheus/latest/querying/api/) will be utilized. |
 
-### Setting up alerts for Prometheus metrics **[ULTIMATE]**
+### Setting up alerts for Prometheus metrics **(ULTIMATE)**
 
 #### Managed Prometheus instances
 
