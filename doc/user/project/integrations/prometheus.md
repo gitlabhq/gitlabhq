@@ -232,7 +232,17 @@ Alerts can be used to trigger actions, like open an issue automatically (enabled
 1. Optionally, select whether to send an email notification to the developers of the project.
 1. Click **Save changes**.
 
-Once enabled, an issue will be opened automatically when an alert is triggered. The author of the issue will be the GitLab Alert Bot. To further customize the issue, you can add labels, mentions, or any other supported [quick action](../quick_actions.md) in the selected issue template.
+Once enabled, an issue will be opened automatically when an alert is triggered which contains values extracted from [alert's payload](https://prometheus.io/docs/alerting/configuration/#webhook_config
+):
+
+- Issue author: `GitLab Alert Bot`
+- Issue title: Extract from `annotations/title`, `annotations/summary` or `labels/alertname`
+- Alert `Summary`: A list of properties
+  - `starts_at`: Alert start time via `startsAt`
+  - `full_query`: Alert query extracted from `generatorURL`
+  - Optional list of attached annotations extracted from `annotations/*`
+
+To further customize the issue, you can add labels, mentions, or any other supported [quick action](../quick_actions.md) in the selected issue template.
 
 If the metric exceeds the threshold of the alert for over 5 minutes, an email will be sent to all [Maintainers and Owners](../../permissions.md#project-members-permissions) of the project.
 
