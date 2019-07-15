@@ -54,50 +54,50 @@ removed from the repository.
 
 1. Navigate to your repository:
 
-    ```
-    cd my_repository/
-    ```
+   ```
+   cd my_repository/
+   ```
 
 1. Change to the branch you want to remove the big file from:
 
-    ```
-    git checkout master
-    ```
+   ```
+   git checkout master
+   ```
 
 1. Create a commit removing the large file from the branch, if it still exists:
 
-    ```
-    git rm path/to/big_file.mpg
-    git commit -m 'Remove unneeded large file'
-    ```
+   ```
+   git rm path/to/big_file.mpg
+   git commit -m 'Remove unneeded large file'
+   ```
 
 1. Rewrite history:
 
-    ```
-    bfg --delete-files path/to/big_file.mpg
-    ```
+   ```
+   bfg --delete-files path/to/big_file.mpg
+   ```
 
-    An object map file will be written to `object-id-map.old-new.txt`. Keep it
-    around - you'll need it for the final step!
+   An object map file will be written to `object-id-map.old-new.txt`. Keep it
+   around - you'll need it for the final step!
 
 1. Force-push the changes to GitLab:
 
-    ```
-    git push --force-with-lease origin master
-    ```
+   ```
+   git push --force-with-lease origin master
+   ```
 
-    If this step fails, someone has changed the `master` branch while you were
-    rewriting history. You could restore the branch and re-run BFG to preserve
-    their changes, or use `git push --force` to overwrite their changes.
+   If this step fails, someone has changed the `master` branch while you were
+   rewriting history. You could restore the branch and re-run BFG to preserve
+   their changes, or use `git push --force` to overwrite their changes.
 
 1. Navigate to **Project > Settings > Repository > Repository Cleanup**:
 
-    ![Repository settings cleanup form](img/repository_cleanup.png)
+   ![Repository settings cleanup form](img/repository_cleanup.png)
 
-    Upload the `object-id-map.old-new.txt` file and press **Start cleanup**.
-    This will remove any internal git references to the old commits, and run
-    `git gc` against the repository. You will receive an email once it has
-    completed.
+   Upload the `object-id-map.old-new.txt` file and press **Start cleanup**.
+   This will remove any internal git references to the old commits, and run
+   `git gc` against the repository. You will receive an email once it has
+   completed.
 
 NOTE: **Note:**
 This process will remove some copies of the rewritten commits from GitLab's
@@ -110,32 +110,32 @@ purposes!
 
 1. Navigate to your repository:
 
-    ```
-    cd my_repository/
-    ```
+   ```
+   cd my_repository/
+   ```
 
 1. Change to the branch you want to remove the big file from:
 
-    ```
-    git checkout master
-    ```
+   ```
+   git checkout master
+   ```
 
 1. Use `filter-branch` to remove the big file:
 
-    ```
-    git filter-branch --force --tree-filter 'rm -f path/to/big_file.mpg' HEAD
-    ```
+   ```
+   git filter-branch --force --tree-filter 'rm -f path/to/big_file.mpg' HEAD
+   ```
 
 1. Instruct Git to purge the unwanted data:
 
-    ```
-    git reflog expire --expire=now --all && git gc --prune=now --aggressive
-    ```
+   ```
+   git reflog expire --expire=now --all && git gc --prune=now --aggressive
+   ```
 
 1. Lastly, force push to the repository:
 
-    ```
-    git push --force origin master
-    ```
+   ```
+   git push --force origin master
+   ```
 
 Your repository should now be below the size limit.

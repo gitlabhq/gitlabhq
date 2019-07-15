@@ -45,94 +45,95 @@ started:
 1. Generate the private/public key pair with the following command, which will
    spawn a series of questions:
 
-    ```sh
-    gpg --full-gen-key
-    ```
+   ```sh
+   gpg --full-gen-key
+   ```
 
-    NOTE: **Note:**
-    In some cases like Gpg4win on Windows and other macOS versions, the command
-    here may be `gpg --gen-key`.
+   NOTE: **Note:**
+   In some cases like Gpg4win on Windows and other macOS versions, the command
+   here may be `gpg --gen-key`.
 
 1. The first question is which algorithm can be used.  Select the kind you want
    or press <kbd>Enter</kbd> to choose the default (RSA and RSA):
 
-    ```
-    Please select what kind of key you want:
-       (1) RSA and RSA (default)
-       (2) DSA and Elgamal
-       (3) DSA (sign only)
-       (4) RSA (sign only)
-    Your selection? 1
-    ```
+   ```
+   Please select what kind of key you want:
+      (1) RSA and RSA (default)
+      (2) DSA and Elgamal
+      (3) DSA (sign only)
+      (4) RSA (sign only)
+   Your selection? 1
+   ```
 
 1. The next question is key length. We recommend to choose the highest value
    which is `4096`:
 
-    ```
-    RSA keys may be between 1024 and 4096 bits long.
-    What keysize do you want? (2048) 4096
-    Requested keysize is 4096 bits
-    ```
+   ```
+   RSA keys may be between 1024 and 4096 bits long.
+   What keysize do you want? (2048) 4096
+   Requested keysize is 4096 bits
+   ```
+
 1. Next, you need to specify the validity period of your key. This is something
    subjective, and you can use the default value which is to never expire:
 
-    ```
-    Please specify how long the key should be valid.
-             0 = key does not expire
-          <n>  = key expires in n days
-          <n>w = key expires in n weeks
-          <n>m = key expires in n months
-          <n>y = key expires in n years
-    Key is valid for? (0) 0
-    Key does not expire at all
-    ```
+   ```
+   Please specify how long the key should be valid.
+            0 = key does not expire
+         <n>  = key expires in n days
+         <n>w = key expires in n weeks
+         <n>m = key expires in n months
+         <n>y = key expires in n years
+   Key is valid for? (0) 0
+   Key does not expire at all
+   ```
 
 1. Confirm that the answers you gave were correct by typing `y`:
 
-    ```
-    Is this correct? (y/N) y
-    ```
+   ```
+   Is this correct? (y/N) y
+   ```
 
 1. Enter you real name, the email address to be associated with this key (should
    match a verified email address you use in GitLab) and an optional comment
    (press <kbd>Enter</kbd> to skip):
 
-    ```
-    GnuPG needs to construct a user ID to identify your key.
+   ```
+   GnuPG needs to construct a user ID to identify your key.
 
-    Real name: Mr. Robot
-    Email address: <your_email>
-    Comment:
-    You selected this USER-ID:
-        "Mr. Robot <your_email>"
+   Real name: Mr. Robot
+   Email address: <your_email>
+   Comment:
+   You selected this USER-ID:
+       "Mr. Robot <your_email>"
 
-    Change (N)ame, (C)omment, (E)mail or (O)kay/(Q)uit? O
-    ```
+   Change (N)ame, (C)omment, (E)mail or (O)kay/(Q)uit? O
+   ```
 
 1. Pick a strong password when asked and type it twice to confirm.
 1. Use the following command to list the private GPG key you just created:
 
-    ```
-    gpg --list-secret-keys --keyid-format LONG <your_email>
-    ```
+   ```
+   gpg --list-secret-keys --keyid-format LONG <your_email>
+   ```
 
-    Replace `<your_email>` with the email address you entered above.
+   Replace `<your_email>` with the email address you entered above.
 
 1. Copy the GPG key ID that starts with `sec`. In the following example, that's
    `30F2B65B9246B6CA`:
 
-    ```
-    sec   rsa4096/30F2B65B9246B6CA 2017-08-18 [SC]
-          D5E4F29F3275DC0CDA8FFC8730F2B65B9246B6CA
-    uid                   [ultimate] Mr. Robot <your_email>
-    ssb   rsa4096/B7ABC0813E4028C0 2017-08-18 [E]
-    ```
+   ```
+   sec   rsa4096/30F2B65B9246B6CA 2017-08-18 [SC]
+         D5E4F29F3275DC0CDA8FFC8730F2B65B9246B6CA
+   uid                   [ultimate] Mr. Robot <your_email>
+   ssb   rsa4096/B7ABC0813E4028C0 2017-08-18 [E]
+   ```
 
 1. Export the public key of that ID (replace your key ID from the previous step):
 
-    ```
-    gpg --armor --export 30F2B65B9246B6CA
-    ```
+   ```
+   gpg --armor --export 30F2B65B9246B6CA
+   ```
 
 1. Finally, copy the public key and [add it in your profile settings](#adding-a-gpg-key-to-your-account)
 
@@ -146,17 +147,17 @@ You can add a GPG key in your profile's settings:
 
 1. On the upper right corner, click on your avatar and go to your **Settings**.
 
-    ![Settings dropdown](../../../profile/img/profile_settings_dropdown.png)
+   ![Settings dropdown](../../../profile/img/profile_settings_dropdown.png)
 
 1. Navigate to the **GPG keys** tab and paste your _public_ key in the 'Key'
    box.
 
-    ![Paste GPG public key](img/profile_settings_gpg_keys_paste_pub.png)
+   ![Paste GPG public key](img/profile_settings_gpg_keys_paste_pub.png)
 
 1. Finally, click on **Add key** to add it to GitLab. You will be able to see
    its fingerprint, the corresponding email address and creation date.
 
-    ![GPG key single page](img/profile_settings_gpg_keys_single_key.png)
+   ![GPG key single page](img/profile_settings_gpg_keys_single_key.png)
 
 ## Associating your GPG key with Git
 
@@ -166,29 +167,29 @@ key to use.
 
 1. Use the following command to list the private GPG key you just created:
 
-    ```sh
-    gpg --list-secret-keys --keyid-format LONG <your_email>
-    ```
+   ```sh
+   gpg --list-secret-keys --keyid-format LONG <your_email>
+   ```
 
-    Replace `<your_email>` with the email address you entered above.
+   Replace `<your_email>` with the email address you entered above.
 
 1. Copy the GPG key ID that starts with `sec`. In the following example, that's
    `30F2B65B9246B6CA`:
 
-    ```
-    sec   rsa4096/30F2B65B9246B6CA 2017-08-18 [SC]
-          D5E4F29F3275DC0CDA8FFC8730F2B65B9246B6CA
-    uid                   [ultimate] Mr. Robot <your_email>
-    ssb   rsa4096/B7ABC0813E4028C0 2017-08-18 [E]
-    ```
+   ```
+   sec   rsa4096/30F2B65B9246B6CA 2017-08-18 [SC]
+         D5E4F29F3275DC0CDA8FFC8730F2B65B9246B6CA
+   uid                   [ultimate] Mr. Robot <your_email>
+   ssb   rsa4096/B7ABC0813E4028C0 2017-08-18 [E]
+   ```
 
 1. Tell Git to use that key to sign the commits:
 
-    ```sh
-    git config --global user.signingkey 30F2B65B9246B6CA
-    ```
+   ```sh
+   git config --global user.signingkey 30F2B65B9246B6CA
+   ```
 
-    Replace `30F2B65B9246B6CA` with your GPG key ID.
+   Replace `30F2B65B9246B6CA` with your GPG key ID.
 
 1. (Optional) If Git is using `gpg` and you get errors like `secret key not available`
    or `gpg: signing failed: secret key not available`, run the following command to
@@ -206,9 +207,9 @@ commits:
 
 1. Commit like you used to, the only difference is the addition of the `-S` flag:
 
-    ```
-    git commit -S -m "My commit msg"
-    ```
+   ```
+   git commit -S -m "My commit msg"
+   ```
 
 1. Enter the passphrase of your GPG key when asked.
 1. Push to GitLab and check that your commits [are verified](#verifying-commits).
@@ -227,13 +228,13 @@ git config --global commit.gpgsign true
    "Verified" or "Unverified", depending on the verification status of the GPG
    signature.
 
-    ![Signed and unsigned commits](img/project_signed_and_unsigned_commits.png)
+   ![Signed and unsigned commits](img/project_signed_and_unsigned_commits.png)
 
 1. By clicking on the GPG badge, details of the signature are displayed.
 
-    ![Signed commit with verified signature](img/project_signed_commit_verified_signature.png)
+   ![Signed commit with verified signature](img/project_signed_commit_verified_signature.png)
 
-    ![Signed commit with verified signature](img/project_signed_commit_unverified_signature.png)
+   ![Signed commit with verified signature](img/project_signed_commit_unverified_signature.png)
 
 ## Revoking a GPG key
 
