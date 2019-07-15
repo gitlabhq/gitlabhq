@@ -10,7 +10,7 @@ class Import::GithubController < Import::BaseController
   rescue_from Octokit::Unauthorized, with: :provider_unauthorized
 
   def new
-    if github_import_configured? && logged_in_with_provider?
+    if !ci_cd_only? && github_import_configured? && logged_in_with_provider?
       go_to_provider_for_permissions
     elsif session[access_token_key]
       redirect_to status_import_url
@@ -169,9 +169,13 @@ class Import::GithubController < Import::BaseController
   # rubocop: enable CodeReuse/ActiveRecord
 
   def provider_auth
-    if session[access_token_key].blank?
+    if !ci_cd_only? && session[access_token_key].blank?
       go_to_provider_for_permissions
     end
+  end
+
+  def ci_cd_only?
+    %w[1 true].include?(params[:ci_cd_only])
   end
 
   def client_options

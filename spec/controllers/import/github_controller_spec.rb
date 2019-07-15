@@ -33,6 +33,16 @@ describe Import::GithubController do
 
       expect(response).to have_http_status(200)
     end
+
+    context 'when importing a CI/CD project' do
+      it 'always prompts for an access token' do
+        allow(controller).to receive(:github_import_configured?).and_return(true)
+
+        get :new, params: { ci_cd_only: true }
+
+        expect(response).to render_template(:new)
+      end
+    end
   end
 
   describe "GET callback" do
