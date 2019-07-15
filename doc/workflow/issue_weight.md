@@ -9,7 +9,7 @@ value or complexity a given issue has or will cost.
 
 You can set the weight of an issue during its creation, by simply changing the
 value in the dropdown menu. You can set it to a non-negative integer
-value from 0, 1, 2, and so on. (The database stores a 4-byte value, so the 
+value from 0, 1, 2, and so on. (The database stores a 4-byte value, so the
 upper bound is essentially limitless).
 You can remove weight from an issue
 as well.
