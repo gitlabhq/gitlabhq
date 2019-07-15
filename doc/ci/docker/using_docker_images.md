@@ -249,6 +249,42 @@ test:
   - bundle exec rake spec
 ```
 
+## Passing environment variables to services
+
+You can also pass custom environment [variables](../variables/README.md)
+to fine tune your Docker `images` and `services` directly in the `.gitlab-ci.yml` file.
+For more information, see [custom environment variables](../variables/README.md#gitlab-ciyml-defined-variables)
+
+```yaml
+# The following variables will automatically be passed down to the Postgres container
+# as well as the Ruby container and available within each.
+variables:
+  HTTPS_PROXY: "https://10.1.1.1:8090"
+  HTTP_PROXY: "https://10.1.1.1:8090"
+  POSTGRES_DB: "my_custom_db"
+  POSTGRES_USER: "postgres"
+  POSTGRES_PASSWORD: "example"
+  PGDATA: "/var/lib/postgresql/data"
+  POSTGRES_INITDB_ARGS: "--encoding=UTF8 --data-checksums"
+
+services:
+- name: postgres:9.4
+  alias: db
+  entrypoint: ["docker-entrypoint.sh"]
+  command: ["postgres"]
+
+image:
+  name: ruby:2.2
+  entrypoint: ["/bin/bash"]
+
+before_script:
+- bundle install
+
+test:
+  script:
+  - bundle exec rake spec
+```
+
 ## Extended Docker configuration options
 
 > Introduced in GitLab and GitLab Runner 9.4.
