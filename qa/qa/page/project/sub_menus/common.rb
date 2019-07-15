@@ -12,7 +12,11 @@ module QA
           end
 
           def within_submenu
-            within('.fly-out-list') do
+            if has_css?('.fly-out-list')
+              within('.fly-out-list') do
+                yield
+              end
+            else
               yield
             end
           end
