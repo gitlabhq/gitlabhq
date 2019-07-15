@@ -405,10 +405,10 @@ ActiveRecord::Schema.define(version: 2019_07_03_130053) do
     t.integer "project_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "group_id"
-    t.integer "milestone_id"
-    t.integer "weight"
     t.string "name", default: "Development", null: false
+    t.integer "milestone_id"
+    t.integer "group_id"
+    t.integer "weight"
     t.index ["group_id"], name: "index_boards_on_group_id", using: :btree
     t.index ["milestone_id"], name: "index_boards_on_milestone_id", using: :btree
     t.index ["project_id"], name: "index_boards_on_project_id", using: :btree
