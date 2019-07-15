@@ -171,9 +171,6 @@ msgstr ""
 msgid "%{level_name} is not allowed since the fork source project has lower visibility."
 msgstr ""
 
-msgid "%{level_name} visibility has been restricted by the administrator."
-msgstr ""
-
 msgid "%{link_start}Read more%{link_end} about role permissions"
 msgstr ""
 
@@ -7228,6 +7225,9 @@ msgstr ""
 msgid "Other Labels"
 msgstr ""
 
+msgid "Other visibility settings have been disabled by the administrator."
+msgstr ""
+
 msgid "Outbound requests"
 msgstr ""
 
@@ -11972,6 +11972,9 @@ msgid "Visibility level"
 msgstr ""
 
 msgid "Visibility level:"
+msgstr ""
+
+msgid "Visibility settings have been disabled by the administrator."
 msgstr ""
 
 msgid "Visibility, project features, permissions"
