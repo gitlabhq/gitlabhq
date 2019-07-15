@@ -65,7 +65,7 @@ export default {
 
 <template>
   <div v-if="isFetchingMergeRequests || (!isFetchingMergeRequests && totalCount)">
-    <div id="merge-requests" class="card-slim mt-3">
+    <div id="merge-requests" class="card card-slim mt-3">
       <div class="card-header">
         <div class="card-title mt-0 mb-0 h5 merge-requests-title">
           <span class="mr-1">

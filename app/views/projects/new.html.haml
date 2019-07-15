@@ -51,7 +51,7 @@
             = render 'new_project_fields', f: f, project_name_id: "blank-project-name"
 
         #create-from-template-pane.tab-pane.js-toggle-container.px-0.pb-0{ class: active_when(active_tab == 'template'), role: 'tabpanel' }
-          .card-slim.m-4.p-4
+          .card.card-slim.m-4.p-4
             %div
               - contributing_templates_url = 'https://gitlab.com/gitlab-org/project-templates/contributing'
               - link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: contributing_templates_url }
