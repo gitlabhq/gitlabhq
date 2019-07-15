@@ -116,13 +116,13 @@ issue boards or the issue list.
 
 #### 11. Lock issue
 
-You can [lock the discussions](../../discussions/index.md#lock-discussions) in the issue,
+You can [lock the threads](../../discussions/index.md#lock-discussions) in the issue,
 to prevent further comments from being added.
 
 #### 12. Participants
 
-All the users involved in that issue. Either they participated in the [discussion](../../discussions/index.md),
-or were mentioned in the description or discussions.
+All the users involved in that issue. Either they participated in the [thread](../../discussions/index.md),
+or were mentioned in the description or threads.
 
 #### 13. Notifications
 
@@ -187,8 +187,8 @@ You can also click the `+` to add more related issues.
 
 #### 19. Related Merge Requests
 
-Merge requests that were mentioned in that issue's description or in the issue discussion
-thread are listed as [related merge requests](crosslinking_issues.md#from-merge-requests) here.
+Merge requests that were mentioned in that issue's description or in the issue thread 
+are listed as [related merge requests](crosslinking_issues.md#from-merge-requests) here.
 Also, if the current issue was mentioned as related in another merge request, that
 merge request will be listed here.
 
@@ -200,14 +200,14 @@ dropdown list of available [GitLab Flavored Markdown Emoji](../../markdown.md#em
 
 TIP: **Tip:**
 Posting "+1" as a comment in a thread spams all subscribed participants of that issue,
-clutters the discussion threads, and is not recommended. Awarding an emoji is a way
+clutters the threads, and is not recommended. Awarding an emoji is a way
 to let them know your reaction without spamming them.
 
 #### 21. Show all activity
 
 You can filter what is displayed in the issue history by clicking on **Show all activity**
-and selecting either **Show comments only**, which only shows discussions and hides
-updates to the issue, or **Show history only**, which hides discussions and only shows updates.
+and selecting either **Show comments only**, which only shows threads and hides
+updates to the issue, or **Show history only**, which hides threads and only shows updates.
 
 - You can mention a user or a group present in your GitLab instance with
   `@username` or `@groupname` and they will be notified via To-Do items
@@ -242,15 +242,15 @@ filtered, as shown above.
 Collaborate in the issue by posting comments in its thread. This text field also fully
 supports [GitLab Flavored Markdown](../../markdown.md#gitlab-flavored-markdown-gfm).
 
-#### 25. Submit Comment, start a discussion, or comment and close
+#### 25. Submit Comment, start a thread, or comment and close
 
 Once you write a comment, you can:
 
 - Click **Comment** and your comment will be published.
-- Choose **Start discussion** from the dropdown list and start a new [discussion thread](../../discussions/index.md#threaded-discussions)
+- Choose **Start thread** from the dropdown list and start a new [thread](../../discussions/index.md#threaded-discussions)
   within that issue's main thread to discuss specific points. This invites other participants
-  to reply directly to your discussion, keeping related comments grouped together.
+  to reply directly to your thread, keeping related comments grouped together.
 
-![Comment or discussion](img/comment-or-discussion.png)
+![Comment or thread](img/comment-or-discussion.png)
 
 You can also close the issue from here, so you don't need to scroll to the top of the issue page.

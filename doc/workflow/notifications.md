@@ -138,7 +138,7 @@ Notification emails include headers that provide extra content about the notific
 | X-GitLab-Project-Id         | The ID of the project                                                   |
 | X-GitLab-Project-Path       | The path of the project                                                 |
 | X-GitLab-(Resource)-ID      | The ID of the resource the notification is for, where resource is `Issue`, `MergeRequest`, `Commit`, etc|
-| X-GitLab-Discussion-ID      | Only in comment emails, the ID of the discussion the comment is from    |
+| X-GitLab-Discussion-ID      | Only in comment emails, the ID of the thread the comment is from    |
 | X-GitLab-Pipeline-Id        | Only in pipeline emails, the ID of the pipeline the notification is for |
 | X-GitLab-Reply-Key          | A unique token to support reply by email                                |
 | X-GitLab-NotificationReason | The reason for being notified. "mentioned", "assigned", etc             |

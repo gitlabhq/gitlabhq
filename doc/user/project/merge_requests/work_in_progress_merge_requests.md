@@ -5,7 +5,7 @@ type: reference, concepts
 # "Work In Progress" merge requests
 
 If a merge request is not yet ready to be merged, perhaps due to continued development
-or open discussions, you can prevent it from being accepted before it's ready by flagging
+or open threads, you can prevent it from being accepted before it's ready by flagging
 it as a **Work In Progress**. This will disable the "Merge" button, preventing it from
 being merged, and it will stay disabled until the "WIP" flag has been removed.
 
@@ -19,7 +19,7 @@ There are several ways to flag a merge request as a Work In Progress:
   **Start the title with WIP:**, under the title box, when editing the merge request's
   description will have the same effect.
 - Add the `/wip` [quick action](../quick_actions.md#quick-actions-for-issues-and-merge-requests)
-  in a discussion comment in the merge request. This is a toggle, and can be repeated
+  in a comment in the merge request. This is a toggle, and can be repeated
   to change the status back. Note that any other text in the comment will be discarded.
 - Add "wip" or "WIP" to the start of a commit message targeting the merge request's
   source branch. This is not a toggle, and doing it again in another commit will have
@@ -34,7 +34,7 @@ Similar to above, when a Merge Request is ready to be merged, you can remove the
   **Remove the WIP: prefix from the title**, under the title box, when editing the merge
   request's description, will have the same effect.
 - Add the `/wip` [quick action](../quick_actions.md#quick-actions-for-issues-and-merge-requests)
-  in a discussion comment in the merge request. This is a toggle, and can be repeated
+  in a comment in the merge request. This is a toggle, and can be repeated
   to change the status back. Note that any other text in the comment will be discarded.
 - Click on the **Resolve WIP status** button near the bottom of the merge request description,
   next to the "Merge" button (see [image above](#work-in-progress-merge-requests)).

@@ -248,8 +248,8 @@ If a bug seems to fall between two severity labels, assign it to the higher-seve
 - Example(s) of ~S1
   - Data corruption/loss.
   - Security breach.
-  - Unable to create an issue or merge request.
-  - Unable to add a comment or discussion to the issue or merge request.
+  - Unable to create an issue or merge request. 
+  - Unable to add a comment or thread to the issue or merge request.
 - Example(s) of ~S2
   - Cannot submit changes through the web IDE but the commandline works.
   - A status widget on the merge request page is not working but information can be seen in the test pipeline page.

@@ -74,10 +74,10 @@ request is as follows:
    can be found by running `grep css-class ./app -R`.
 1. Be prepared to answer questions and incorporate feedback into your MR with new
    commits. Once you have fully addressed a suggestion from a reviewer, click the
-   "Resolve discussion" button beneath it to mark it resolved.
-   1. The merge request author resolves only the discussions they have fully addressed.
-      If there's an open reply or discussion, a suggestion, a question, or anything else,
-      the discussion should be left to be resolved by the reviewer.
+   "Resolve thread" button beneath it to mark it resolved.
+   1. The merge request author resolves only the threads they have fully addressed.
+      If there's an open reply or thread, a suggestion, a question, or anything else,
+      the thread should be left to be resolved by the reviewer.
 1. If your MR touches code that executes shell commands, reads or opens files, or
    handles paths to files on disk, make sure it adheres to the
    [shell command guidelines](../shell_commands.md)
