@@ -1,0 +1,5 @@
+---
+title: Fix a bug that prevented projects containing merge request diff comments from being imported
+merge_request: 30630
+author:
+type: fixed

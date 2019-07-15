@@ -2454,6 +2454,13 @@ describe MergeRequest do
   describe "#diff_refs" do
     context "with diffs" do
       subject { create(:merge_request, :with_diffs) }
+      let(:expected_diff_refs) do
+        Gitlab::Diff::DiffRefs.new(
+          base_sha:  subject.merge_request_diff.base_commit_sha,
+          start_sha: subject.merge_request_diff.start_commit_sha,
+          head_sha:  subject.merge_request_diff.head_commit_sha
+        )
+      end
 
       it "does not touch the repository" do
         subject # Instantiate the object
@@ -2464,13 +2471,17 @@ describe MergeRequest do
       end
 
       it "returns expected diff_refs" do
-        expected_diff_refs = Gitlab::Diff::DiffRefs.new(
-          base_sha:  subject.merge_request_diff.base_commit_sha,
-          start_sha: subject.merge_request_diff.start_commit_sha,
-          head_sha:  subject.merge_request_diff.head_commit_sha
-        )
-
         expect(subject.diff_refs).to eq(expected_diff_refs)
+      end
+
+      context 'when importing' do
+        before do
+          subject.importing = true
+        end
+
+        it "returns MR diff_refs" do
+          expect(subject.diff_refs).to eq(expected_diff_refs)
+        end
       end
     end
   end
