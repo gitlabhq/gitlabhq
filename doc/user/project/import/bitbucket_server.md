@@ -24,9 +24,8 @@ Import your projects from Bitbucket Server to GitLab with minimal effort.
 1. Currently GitLab doesn't allow comments on arbitrary lines of code, so any
    Bitbucket comments out of bounds will be inserted as comments in the merge
    request.
-1. Bitbucket Server allows multiple levels of threading. GitLab
-   import will collapse this into one discussion and quote part of the original
-   comment.
+1. Bitbucket Server allows multiple levels of threading. GitLab import
+   will collapse this into one thread and quote part of the original comment.
 1. Declined pull requests have unreachable commits, which prevents the GitLab
    importer from generating a proper diff. These pull requests will show up as
    empty changes.

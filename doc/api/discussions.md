@@ -12,16 +12,15 @@ This includes system notes, which are notes about changes to the object (for exa
 
 ## Discussions pagination
 
-By default, `GET` requests return 20 results at a time because the API results
-are paginated.
+By default, `GET` requests return 20 results at a time because the API results are paginated.
 
 Read more on [pagination](README.md#pagination).
 
 ## Issues
 
-### List project issue discussions
+### List project issue discussion items
 
-Gets a list of all discussions for a single issue.
+Gets a list of all discussion items for a single issue.
 
 ```
 GET /projects/:id/issues/:issue_iid/discussions
@@ -115,9 +114,9 @@ GET /projects/:id/issues/:issue_iid/discussions
 curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/issues/11/discussions
 ```
 
-### Get single issue discussion
+### Get single issue discussion item
 
-Returns a single discussion for a specific project issue
+Returns a single discussion item for a specific project issue
 
 ```
 GET /projects/:id/issues/:issue_iid/discussions/:discussion_id
@@ -129,16 +128,15 @@ Parameters:
 | --------------- | -------------- | -------- | ----------- |
 | `id`            | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `issue_iid`     | integer        | yes      | The IID of an issue |
-| `discussion_id` | integer        | yes      | The ID of a discussion |
+| `discussion_id` | integer        | yes      | The ID of a discussion item |
 
 ```bash
 curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/issues/11/discussions/6a9c1750b37d513a43987b574953fceb50b03ce7
 ```
 
-### Create new issue discussion
+### Create new issue thread
 
-Creates a new discussion to a single project issue. This is similar to creating
-a note but other comments (replies) can be added to it later.
+Creates a new thread to a single project issue. This is similar to creating a note but other comments (replies) can be added to it later.
 
 ```
 POST /projects/:id/issues/:issue_iid/discussions
@@ -150,17 +148,19 @@ Parameters:
 | --------------- | -------------- | -------- | ----------- |
 | `id`            | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `issue_iid`     | integer        | yes      | The IID of an issue |
-| `body`          | string         | yes      | The content of a discussion |
+| `body`          | string         | yes      | The content of the thread |
 | `created_at`    | string         | no       | Date time string, ISO 8601 formatted, e.g. 2016-03-11T03:45:40Z (requires admin or project/group owner rights) |
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/issues/11/discussions?body=comment
 ```
 
-### Add note to existing issue discussion
+### Add note to existing issue thread
 
-Adds a new note to the discussion. This can also
-[create a discussion from a single comment](../user/discussions/#start-a-discussion-by-replying-to-a-standard-comment).
+Adds a new note to the thread. This can also [create a thread from a single comment](../user/discussions/#start-a-thread-by-replying-to-a-standard-comment).
+
+**WARNING**
+Notes can be added to other items than comments (system notes, etc.) making them threads. 
 
 ```
 POST /projects/:id/issues/:issue_iid/discussions/:discussion_id/notes
@@ -172,18 +172,18 @@ Parameters:
 | --------------- | -------------- | -------- | ----------- |
 | `id`            | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `issue_iid`     | integer        | yes      | The IID of an issue |
-| `discussion_id` | integer        | yes      | The ID of a discussion |
-| `note_id`       | integer        | yes      | The ID of a discussion note |
-| `body`          | string         | yes      | The content of a discussion |
+| `discussion_id` | integer        | yes      | The ID of a thread |
+| `note_id`       | integer        | yes      | The ID of a thread note |
+| `body`          | string         | yes      | The content of the note/reply |
 | `created_at`    | string         | no       | Date time string, ISO 8601 formatted, e.g. 2016-03-11T03:45:40Z (requires admin or project/group owner rights) |
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/issues/11/discussions/6a9c1750b37d513a43987b574953fceb50b03ce7/notes?body=comment
 ```
 
-### Modify existing issue discussion note
+### Modify existing issue thread note
 
-Modify existing discussion note of an issue.
+Modify existing thread note of an issue.
 
 ```
 PUT /projects/:id/issues/:issue_iid/discussions/:discussion_id/notes/:note_id
@@ -195,17 +195,17 @@ Parameters:
 | --------------- | -------------- | -------- | ----------- |
 | `id`            | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `issue_iid`     | integer        | yes      | The IID of an issue |
-| `discussion_id` | integer        | yes      | The ID of a discussion |
-| `note_id`       | integer        | yes      | The ID of a discussion note |
-| `body`          | string         | yes      | The content of a discussion |
+| `discussion_id` | integer        | yes      | The ID of a thread |
+| `note_id`       | integer        | yes      | The ID of a thread note |
+| `body`          | string         | yes      | The content of the note/reply |
 
 ```bash
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/issues/11/discussions/6a9c1750b37d513a43987b574953fceb50b03ce7/notes/1108?body=comment
 ```
 
-### Delete an issue discussion note
+### Delete an issue thread note
 
-Deletes an existing discussion note of an issue.
+Deletes an existing thread note of an issue.
 
 ```
 DELETE /projects/:id/issues/:issue_iid/discussions/:discussion_id/notes/:note_id
@@ -226,9 +226,9 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitl
 
 ## Snippets
 
-### List project snippet discussions
+### List project snippet discussion items
 
-Gets a list of all discussions for a single snippet.
+Gets a list of all discussion items for a single snippet.
 
 ```
 GET /projects/:id/snippets/:snippet_id/discussions
@@ -322,9 +322,9 @@ GET /projects/:id/snippets/:snippet_id/discussions
 curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/snippets/11/discussions
 ```
 
-### Get single snippet discussion
+### Get single snippet discussion item
 
-Returns a single discussion for a specific project snippet
+Returns a single discussion item for a specific project snippet
 
 ```
 GET /projects/:id/snippets/:snippet_id/discussions/:discussion_id
@@ -336,15 +336,15 @@ Parameters:
 | --------------- | -------------- | -------- | ----------- |
 | `id`            | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `snippet_id`    | integer        | yes      | The ID of an snippet |
-| `discussion_id` | integer        | yes      | The ID of a discussion |
+| `discussion_id` | integer        | yes      | The ID of a discussion item |
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/snippets/11/discussions/6a9c1750b37d513a43987b574953fceb50b03ce7
 ```
 
-### Create new snippet discussion
+### Create new snippet thread
 
-Creates a new discussion to a single project snippet. This is similar to creating
+Creates a new thread to a single project snippet. This is similar to creating
 a note but other comments (replies) can be added to it later.
 
 ```
@@ -364,9 +364,9 @@ Parameters:
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/snippets/11/discussions?body=comment
 ```
 
-### Add note to existing snippet discussion
+### Add note to existing snippet thread
 
-Adds a new note to the discussion.
+Adds a new note to the thread.
 
 ```
 POST /projects/:id/snippets/:snippet_id/discussions/:discussion_id/notes
@@ -378,18 +378,18 @@ Parameters:
 | --------------- | -------------- | -------- | ----------- |
 | `id`            | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `snippet_id`    | integer        | yes      | The ID of an snippet |
-| `discussion_id` | integer        | yes      | The ID of a discussion |
-| `note_id`       | integer        | yes      | The ID of a discussion note |
-| `body`          | string         | yes      | The content of a discussion |
+| `discussion_id` | integer        | yes      | The ID of a thread |
+| `note_id`       | integer        | yes      | The ID of a thread note |
+| `body`          | string         | yes      | The content of the note/reply |
 | `created_at`    | string         | no       | Date time string, ISO 8601 formatted, e.g. 2016-03-11T03:45:40Z (requires admin or project/group owner rights) |
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/snippets/11/discussions/6a9c1750b37d513a43987b574953fceb50b03ce7/notes?body=comment
 ```
 
-### Modify existing snippet discussion note
+### Modify existing snippet thread note
 
-Modify existing discussion note of an snippet.
+Modify existing thread note of a snippet.
 
 ```
 PUT /projects/:id/snippets/:snippet_id/discussions/:discussion_id/notes/:note_id
@@ -401,17 +401,17 @@ Parameters:
 | --------------- | -------------- | -------- | ----------- |
 | `id`            | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `snippet_id`    | integer        | yes      | The ID of an snippet |
-| `discussion_id` | integer        | yes      | The ID of a discussion |
-| `note_id`       | integer        | yes      | The ID of a discussion note |
-| `body`          | string         | yes      | The content of a discussion |
+| `discussion_id` | integer        | yes      | The ID of a thread |
+| `note_id`       | integer        | yes      | The ID of a thread note |
+| `body`          | string         | yes      | The content of the note/reply |
 
 ```bash
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/snippets/11/discussions/6a9c1750b37d513a43987b574953fceb50b03ce7/notes/1108?body=comment
 ```
 
-### Delete an snippet discussion note
+### Delete a snippet thread note
 
-Deletes an existing discussion note of an snippet.
+Deletes an existing thread note of a snippet.
 
 ```
 DELETE /projects/:id/snippets/:snippet_id/discussions/:discussion_id/notes/:note_id
@@ -432,9 +432,9 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitl
 
 ## Epics **(ULTIMATE)**
 
-### List group epic discussions
+### List group epic discussion items
 
-Gets a list of all discussions for a single epic.
+Gets a list of all discussion items for a single epic.
 
 ```
 GET /groups/:id/epics/:epic_id/discussions
@@ -529,9 +529,9 @@ GET /groups/:id/epics/:epic_id/discussions
 curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/5/epics/11/discussions
 ```
 
-### Get single epic discussion
+### Get single epic discussion item
 
-Returns a single discussion for a specific group epic
+Returns a single discussion item for a specific group epic
 
 ```
 GET /groups/:id/epics/:epic_id/discussions/:discussion_id
@@ -543,16 +543,16 @@ Parameters:
 | --------------- | -------------- | -------- | ----------- |
 | `id`            | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) |
 | `epic_id`       | integer        | yes      | The ID of an epic |
-| `discussion_id` | integer        | yes      | The ID of a discussion |
+| `discussion_id` | integer        | yes      | The ID of a discussion item |
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/5/epics/11/discussions/6a9c1750b37d513a43987b574953fceb50b03ce7
 ```
 
-### Create new epic discussion
+### Create new epic thread
 
-Creates a new discussion to a single group epic. This is similar to creating
-a note but but another comments (replies) can be added to it later.
+Creates a new thread to a single group epic. This is similar to creating
+a note but but other comments (replies) can be added to it later.
 
 ```
 POST /groups/:id/epics/:epic_id/discussions
@@ -564,17 +564,17 @@ Parameters:
 | --------------- | -------------- | -------- | ----------- |
 | `id`            | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) |
 | `epic_id`       | integer        | yes      | The ID of an epic |
-| `body`          | string         | yes      | The content of a discussion |
+| `body`          | string         | yes      | The content of the thread |
 | `created_at`    | string         | no       | Date time string, ISO 8601 formatted, e.g. 2016-03-11T03:45:40Z (requires admin or project/group owner rights) |
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/5/epics/11/discussions?body=comment
 ```
 
-### Add note to existing epic discussion
+### Add note to existing epic thread
 
-Adds a new note to the discussion. This can also
-[create a discussion from a single comment](../user/discussions/#start-a-discussion-by-replying-to-a-standard-comment).
+Adds a new note to the thread. This can also
+[create a thread from a single comment](../user/discussions/#start-a-thread-by-replying-to-a-standard-comment).
 
 ```
 POST /groups/:id/epics/:epic_id/discussions/:discussion_id/notes
@@ -585,19 +585,19 @@ Parameters:
 | Attribute       | Type           | Required | Description |
 | --------------- | -------------- | -------- | ----------- |
 | `id`            | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) |
-| `epic_id`     | integer        | yes      | The ID of an epic |
-| `discussion_id` | integer        | yes      | The ID of a discussion |
-| `note_id`       | integer        | yes      | The ID of a discussion note |
-| `body`          | string         | yes      | The content of a discussion |
+| `epic_id`       | integer        | yes      | The ID of an epic |
+| `discussion_id` | integer        | yes      | The ID of a thread |
+| `note_id`       | integer        | yes      | The ID of a thread note |
+| `body`          | string         | yes      | The content of the note/reply |
 | `created_at`    | string         | no       | Date time string, ISO 8601 formatted, e.g. 2016-03-11T03:45:40Z (requires admin or project/group owner rights) |
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/5/epics/11/discussions/6a9c1750b37d513a43987b574953fceb50b03ce7/notes?body=comment
 ```
 
-### Modify existing epic discussion note
+### Modify existing epic thread note
 
-Modify existing discussion note of an epic.
+Modify existing thread note of an epic.
 
 ```
 PUT /groups/:id/epics/:epic_id/discussions/:discussion_id/notes/:note_id
@@ -609,17 +609,17 @@ Parameters:
 | --------------- | -------------- | -------- | ----------- |
 | `id`            | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) |
 | `epic_id`       | integer        | yes      | The ID of an epic |
-| `discussion_id` | integer        | yes      | The ID of a discussion |
-| `note_id`       | integer        | yes      | The ID of a discussion note |
-| `body`          | string         | yes      | The content of a discussion |
+| `discussion_id` | integer        | yes      | The ID of a thread |
+| `note_id`       | integer        | yes      | The ID of a thread note |
+| `body`          | string         | yes      | The content of note/reply |
 
 ```bash
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/5/epics/11/discussions/6a9c1750b37d513a43987b574953fceb50b03ce7/notes/1108?body=comment
 ```
 
-### Delete an epic discussion note
+### Delete an epic thread note
 
-Deletes an existing discussion note of an epic.
+Deletes an existing thread note of an epic.
 
 ```
 DELETE /groups/:id/epics/:epic_id/discussions/:discussion_id/notes/:note_id
@@ -631,8 +631,8 @@ Parameters:
 | --------------- | -------------- | -------- | ----------- |
 | `id`            | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) |
 | `epic_id`       | integer        | yes      | The ID of an epic |
-| `discussion_id` | integer        | yes      | The ID of a discussion |
-| `note_id`       | integer        | yes      | The ID of a discussion note |
+| `discussion_id` | integer        | yes      | The ID of a thread |
+| `note_id`       | integer        | yes      | The ID of a thread note |
 
 ```bash
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/5/epics/11/discussions/636
@@ -640,9 +640,9 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitl
 
 ## Merge requests
 
-### List project merge request discussions
+### List project merge request discussion items
 
-Gets a list of all discussions for a single merge request.
+Gets a list of all discussion items for a single merge request.
 
 ```
 GET /projects/:id/merge_requests/:merge_request_iid/discussions
@@ -789,9 +789,9 @@ Diff comments contain also position:
 curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/merge_requests/11/discussions
 ```
 
-### Get single merge request discussion
+### Get single merge request discussion item
 
-Returns a single discussion for a specific project merge request
+Returns a single discussion item for a specific project merge request
 
 ```
 GET /projects/:id/merge_requests/:merge_request_iid/discussions/:discussion_id
@@ -803,15 +803,15 @@ Parameters:
 | ------------------- | -------------- | -------- | ----------- |
 | `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `merge_request_iid` | integer        | yes      | The IID of a merge request |
-| `discussion_id`     | integer        | yes      | The ID of a discussion |
+| `discussion_id`     | integer        | yes      | The ID of a discussion item |
 
 ```bash
 curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/merge_requests/11/discussions/6a9c1750b37d513a43987b574953fceb50b03ce7
 ```
 
-### Create new merge request discussion
+### Create new merge request thread
 
-Creates a new discussion to a single project merge request. This is similar to creating
+Creates a new thread to a single project merge request. This is similar to creating
 a note but other comments (replies) can be added to it later.
 
 ```
@@ -824,7 +824,7 @@ Parameters:
 | ------------------------- | -------------- | -------- | ----------- |
 | `id`                      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `merge_request_iid`       | integer        | yes      | The IID of a merge request |
-| `body`                    | string         | yes      | The content of a discussion |
+| `body`                    | string         | yes      | The content of the thread |
 | `created_at`              | string         | no       | Date time string, ISO 8601 formatted, e.g. 2016-03-11T03:45:40Z (requires admin or project/group owner rights) |
 | `position`                | hash           | no       | Position when creating a diff note |
 | `position[base_sha]`      | string         | yes      | Base commit SHA in the source branch |
@@ -844,9 +844,9 @@ Parameters:
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/merge_requests/11/discussions?body=comment
 ```
 
-### Resolve a merge request discussion
+### Resolve a merge request thread
 
-Resolve/unresolve whole discussion of a merge request.
+Resolve/unresolve whole thread of a merge request.
 
 ```
 PUT /projects/:id/merge_requests/:merge_request_iid/discussions/:discussion_id
@@ -858,17 +858,17 @@ Parameters:
 | ------------------- | -------------- | -------- | ----------- |
 | `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `merge_request_iid` | integer        | yes      | The IID of a merge request |
-| `discussion_id`     | integer        | yes      | The ID of a discussion |
+| `discussion_id`     | integer        | yes      | The ID of a thread |
 | `resolved`          | boolean        | yes      | Resolve/unresolve the discussion |
 
 ```bash
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/merge_requests/11/discussions/6a9c1750b37d513a43987b574953fceb50b03ce7?resolved=true
 ```
 
-### Add note to existing merge request discussion
+### Add note to existing merge request thread
 
-Adds a new note to the discussion. This can also
-[create a discussion from a single comment](../user/discussions/#start-a-discussion-by-replying-to-a-standard-comment).
+Adds a new note to the thread. This can also
+[create a thread from a single comment](../user/discussions/#start-a-thread-by-replying-to-a-standard-comment).
 
 ```
 POST /projects/:id/merge_requests/:merge_request_iid/discussions/:discussion_id/notes
@@ -880,18 +880,18 @@ Parameters:
 | ------------------- | -------------- | -------- | ----------- |
 | `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `merge_request_iid` | integer        | yes      | The IID of a merge request |
-| `discussion_id`     | integer        | yes      | The ID of a discussion |
-| `note_id`           | integer        | yes      | The ID of a discussion note |
-| `body`              | string         | yes      | The content of a discussion |
+| `discussion_id`     | integer        | yes      | The ID of a thread |
+| `note_id`           | integer        | yes      | The ID of a thread note |
+| `body`              | string         | yes      | The content of the note/reply |
 | `created_at`        | string         | no       | Date time string, ISO 8601 formatted, e.g. 2016-03-11T03:45:40Z (requires admin or project/group owner rights) |
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/merge_requests/11/discussions/6a9c1750b37d513a43987b574953fceb50b03ce7/notes?body=comment
 ```
 
-### Modify an existing merge request discussion note
+### Modify an existing merge request thread note
 
-Modify or resolve an existing discussion note of a merge request.
+Modify or resolve an existing thread note of a merge request.
 
 ```
 PUT /projects/:id/merge_requests/:merge_request_iid/discussions/:discussion_id/notes/:note_id
@@ -903,9 +903,9 @@ Parameters:
 | ------------------- | -------------- | -------- | ----------- |
 | `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `merge_request_iid` | integer        | yes      | The IID of a merge request |
-| `discussion_id`     | integer        | yes      | The ID of a discussion |
-| `note_id`           | integer        | yes      | The ID of a discussion note |
-| `body`              | string         | no       | The content of a discussion (exactly one of `body` or `resolved` must be set |
+| `discussion_id`     | integer        | yes      | The ID of a thread |
+| `note_id`           | integer        | yes      | The ID of a thread note |
+| `body`              | string         | no       | The content of the note/reply (exactly one of `body` or `resolved` must be set |
 | `resolved`          | boolean        | no       | Resolve/unresolve the note (exactly one of `body` or `resolved` must be set |
 
 ```bash
@@ -918,9 +918,9 @@ Resolving a note:
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/merge_requests/11/discussions/6a9c1750b37d513a43987b574953fceb50b03ce7/notes/1108?resolved=true
 ```
 
-### Delete a merge request discussion note
+### Delete a merge request thread note
 
-Deletes an existing discussion note of a merge request.
+Deletes an existing thread note of a merge request.
 
 ```
 DELETE /projects/:id/merge_requests/:merge_request_iid/discussions/:discussion_id/notes/:note_id
@@ -932,8 +932,8 @@ Parameters:
 | ------------------- | -------------- | -------- | ----------- |
 | `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `merge_request_iid` | integer        | yes      | The IID of a merge request |
-| `discussion_id`     | integer        | yes      | The ID of a discussion |
-| `note_id`           | integer        | yes      | The ID of a discussion note |
+| `discussion_id`     | integer        | yes      | The ID of a thread |
+| `note_id`           | integer        | yes      | The ID of a thread note |
 
 ```bash
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/merge_requests/11/discussions/636
@@ -941,9 +941,9 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitl
 
 ## Commits
 
-### List project commit discussions
+### List project commit discussion items
 
-Gets a list of all discussions for a single commit.
+Gets a list of all discussion items for a single commit.
 
 ```
 GET /projects/:id/commits/:commit_id/discussions
@@ -1082,9 +1082,9 @@ Diff comments contain also position:
 curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/commits/11/discussions
 ```
 
-### Get single commit discussion
+### Get single commit discussion item
 
-Returns a single discussion for a specific project commit
+Returns a single discussion item for a specific project commit
 
 ```
 GET /projects/:id/commits/:commit_id/discussions/:discussion_id
@@ -1096,15 +1096,15 @@ Parameters:
 | ------------------- | -------------- | -------- | ----------- |
 | `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `commit_id`         | integer        | yes      | The ID of a commit |
-| `discussion_id`     | integer        | yes      | The ID of a discussion |
+| `discussion_id`     | integer        | yes      | The ID of a discussion item |
 
 ```bash
 curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/commits/11/discussions/6a9c1750b37d513a43987b574953fceb50b03ce7
 ```
 
-### Create new commit discussion
+### Create new commit thread
 
-Creates a new discussion to a single project commit. This is similar to creating
+Creates a new thread to a single project commit. This is similar to creating
 a note but other comments (replies) can be added to it later.
 
 ```
@@ -1117,7 +1117,7 @@ Parameters:
 | ------------------------- | -------------- | -------- | ----------- |
 | `id`                      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `commit_id`               | integer        | yes      | The ID of a commit |
-| `body`                    | string         | yes      | The content of a discussion |
+| `body`                    | string         | yes      | The content of the thread |
 | `created_at`              | string         | no       | Date time string, ISO 8601 formatted, e.g. 2016-03-11T03:45:40Z (requires admin or project/group owner rights) |
 | `position`                | hash           | no       | Position when creating a diff note |
 | `position[base_sha]`      | string         | yes      | Base commit SHA in the source branch |
@@ -1137,9 +1137,9 @@ Parameters:
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/commits/11/discussions?body=comment
 ```
 
-### Add note to existing commit discussion
+### Add note to existing commit thread
 
-Adds a new note to the discussion.
+Adds a new note to the thread.
 
 ```
 POST /projects/:id/commits/:commit_id/discussions/:discussion_id/notes
@@ -1151,18 +1151,18 @@ Parameters:
 | ------------------- | -------------- | -------- | ----------- |
 | `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `commit_id`         | integer        | yes      | The ID of a commit |
-| `discussion_id`     | integer        | yes      | The ID of a discussion |
-| `note_id`           | integer        | yes      | The ID of a discussion note |
-| `body`              | string         | yes      | The content of a discussion |
+| `discussion_id`     | integer        | yes      | The ID of a thread |
+| `note_id`           | integer        | yes      | The ID of a thread note |
+| `body`              | string         | yes      | The content of the note/reply |
 | `created_at`        | string         | no       | Date time string, ISO 8601 formatted, e.g. 2016-03-11T03:45:40Z (requires admin or project/group owner rights) |
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/commits/11/discussions/6a9c1750b37d513a43987b574953fceb50b03ce7/notes?body=comment
 ```
 
-### Modify an existing commit discussion note
+### Modify an existing commit thread note
 
-Modify or resolve an existing discussion note of a commit.
+Modify or resolve an existing thread note of a commit.
 
 ```
 PUT /projects/:id/commits/:commit_id/discussions/:discussion_id/notes/:note_id
@@ -1174,8 +1174,8 @@ Parameters:
 | ------------------- | -------------- | -------- | ----------- |
 | `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `commit_id`         | integer        | yes      | The ID of a commit |
-| `discussion_id`     | integer        | yes      | The ID of a discussion |
-| `note_id`           | integer        | yes      | The ID of a discussion note |
+| `discussion_id`     | integer        | yes      | The ID of a thread |
+| `note_id`           | integer        | yes      | The ID of a thread note |
 | `body`              | string         | no       | The content of a note |
 
 ```bash
@@ -1188,9 +1188,9 @@ Resolving a note:
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/commits/11/discussions/6a9c1750b37d513a43987b574953fceb50b03ce7/notes/1108?resolved=true
 ```
 
-### Delete a commit discussion note
+### Delete a commit thread note
 
-Deletes an existing discussion note of a commit.
+Deletes an existing thread note of a commit.
 
 ```
 DELETE /projects/:id/commits/:commit_id/discussions/:discussion_id/notes/:note_id
@@ -1202,8 +1202,8 @@ Parameters:
 | ------------------- | -------------- | -------- | ----------- |
 | `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `commit_id`         | integer        | yes      | The ID of a commit |
-| `discussion_id`     | integer        | yes      | The ID of a discussion |
-| `note_id`           | integer        | yes      | The ID of a discussion note |
+| `discussion_id`     | integer        | yes      | The ID of a thread |
+| `note_id`           | integer        | yes      | The ID of a thread note |
 
 ```bash
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/commits/11/discussions/636

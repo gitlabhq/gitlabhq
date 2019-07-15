@@ -162,7 +162,7 @@ the merge request is unblocked and can be merged.
 Note, that meeting the required number of approvals is a necessary, but not
 sufficient condition for unblocking a merge request from being merged. There
 are other conditions that may block it, such as merge conflicts,
-[pending discussions](../../discussions/index.md#only-allow-merge-requests-to-be-merged-if-all-discussions-are-resolved)
+[pending discussions](../../discussions/index.md#only-allow-merge-requests-to-be-merged-if-all-threads-are-resolved)
 or a [failed CI/CD pipeline](merge_when_pipeline_succeeds.md).
 
 ## Code Owners approvals **(PREMIUM)**

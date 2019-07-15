@@ -221,7 +221,7 @@ There are numerous [APIs](../../api/README.md) to use with your projects:
 
 - [Badges](../../api/project_badges.md)
 - [Clusters](../../api/project_clusters.md)
-- [Discussions](../../api/discussions.md)
+- [Threads](../../api/discussions.md)
 - [General](../../api/projects.md)
 - [Import/export](../../api/project_import_export.md)
 - [Issue Board](../../api/boards.md)

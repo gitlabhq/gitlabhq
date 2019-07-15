@@ -207,9 +207,9 @@ first time.
 - Extract unrelated changes and refactorings into future merge requests/issues.
 - Seek to understand the reviewer's perspective.
 - Try to respond to every comment.
-- The merge request author resolves only the discussions they have fully
-  addressed. If there's an open reply, an open discussion, a suggestion,
-  a question, or anything else, the discussion should be left to be resolved
+- The merge request author resolves only the threads they have fully
+  addressed. If there's an open reply, an open thread, a suggestion,
+  a question, or anything else, the thread should be left to be resolved
   by the reviewer.
 - Push commits based on earlier rounds of feedback as isolated commits to the
   branch. Do not squash until the branch is ready to merge. Reviewers should be

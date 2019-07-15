@@ -7,7 +7,7 @@
 
 When you're collaborating online, you get fewer opportunities for high-fives
 and thumbs-ups. Emoji can be awarded to [issues](project/issues/index.md), [merge requests](project/merge_requests/index.md),
-[snippets](snippets.md), and anywhere you can have a discussion.
+[snippets](snippets.md), and anywhere you can have a thread.
 
 ![Award emoji](img/award_emoji_select.png)
 

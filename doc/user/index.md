@@ -124,12 +124,12 @@ merge requests, code snippets, and commits.
 
 When performing inline reviews to implementations
 to your codebase through merge requests you can
-gather feedback through [resolvable discussions](discussions/index.md#resolvable-comments-and-discussions).
+gather feedback through [resolvable threads](discussions/index.md#resolvable-comments-and-threads).
 
 ### GitLab Flavored Markdown (GFM)
 
 Read through the [GFM documentation](markdown.md) to learn how to apply
-the best of GitLab Flavored Markdown in your discussions, comments,
+the best of GitLab Flavored Markdown in your threads, comments,
 issues and merge requests descriptions, and everywhere else GMF is
 supported.
 
@@ -148,7 +148,7 @@ requests you're assigned to.
 
 [Snippets](snippets.md) are code blocks that you want to store in GitLab, from which
 you have quick access to. You can also gather feedback on them through
-[discussions](#discussions).
+[Discussions](#Discussions).
 
 ## Integrations
 

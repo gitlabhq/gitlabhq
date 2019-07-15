@@ -18,7 +18,7 @@ It is as simple as the name implies: a _request_ to _merge_ one branch into anot
 With GitLab merge requests, you can:
 
 - Compare the changes between two [branches](https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell#_git_branching)
-- [Review and discuss](../../discussions/index.md#discussions) the proposed modifications inline
+- [Review and discuss](../../discussions/index.md#threads) the proposed modifications inline
 - Live preview the changes when [Review Apps](../../../ci/review_apps/index.md) is configured for your project
 - Build, test, and deploy your code in a per-branch basis with built-in [GitLab CI/CD](../../../ci/README.md)
 - Prevent the merge request from being merged before it's ready with [WIP MRs](#work-in-progress-merge-requests)
@@ -155,13 +155,13 @@ and remember to merge the request manually.
 
 [Learn more about merging when pipeline succeeds.](merge_when_pipeline_succeeds.md)
 
-## Resolve discussion comments in merge requests reviews
+## Resolve threads in merge requests reviews
 
 Keep track of the progress during a code review with resolving comments.
 Resolving comments prevents you from forgetting to address feedback and lets
-you hide discussions that are no longer relevant.
+you hide threads that are no longer relevant.
 
-[Read more about resolving discussion comments in merge requests reviews.](../../discussions/index.md)
+[Read more about resolving threads in merge requests reviews.](../../discussions/index.md)
 
 ## Commenting on any file line in merge requests
 
@@ -192,7 +192,7 @@ commit when merging, to allow for a neater commit history.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/18008) in GitLab 11.6.
 
 As a reviewer, you can add suggestions to change the content in
-merge request discussions, and users with appropriate [permission](../../permissions.md)
+merge request threads, and users with appropriate [permission](../../permissions.md)
 can easily apply them to the codebase directly from the UI. Read
 through the documentation on [Suggest changes](../../discussions/index.md#suggest-changes)
 to learn more.
