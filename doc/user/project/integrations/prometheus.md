@@ -145,7 +145,6 @@ To configure a custom dashboard:
 
    ```yaml
    dashboard: 'Dashboard Title'
-   priority: 2
    panel_groups:
      - group: 'Group Title'
        panels:
@@ -178,7 +177,6 @@ The following tables outline the details of expected properties.
 | Property | Type | Required | Description |
 | ------ | ------ | ------ | ------ |
 | `dashboard` | string | yes | Heading for the dashboard. Only one dashboard should be defined per file. |
-| `priority` | number | no, default to definition order | Order to appear in dashboard dropdown. Lower number means higher priority, which will be higher in the dropdown. Numbers do not need to be consecutive. |
 | `panel_groups` | array | yes | The panel groups which should be on the dashboard. |
 
 **Panel group (`panel_groups`) properties:**
@@ -186,7 +184,7 @@ The following tables outline the details of expected properties.
 | Property | Type | Required | Description |
 | ------ | ------ | ------ | ------ |
 | `group` | string | required | Heading for the panel group. |
-| `priority` | number | optional, defaults to order in file | Order to appear on the dashboard. Lower number means higher priority, which will be higher on the page. Numbers do not need to be consecutive. |
+| `priority` | number | optional, defaults to order in file | Order to appear on the dashboard. Higher number means higher priority, which will be higher on the page. Numbers do not need to be consecutive. |
 | `panels` | array | required | The panels which should be in the panel group. |
 
 **Panel (`panels`) properties:**
