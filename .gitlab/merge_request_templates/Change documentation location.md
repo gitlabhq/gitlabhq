@@ -22,7 +22,7 @@ https://docs.gitlab.com/ce/development/documentation/index.html#changing-documen
 - [ ] Make sure internal links pointing to the document in question are not broken.
 - [ ] Search and replace any links referring to old docs in GitLab Rails app,
       specifically under the `app/views/` and `ee/app/views` (for GitLab EE)  directories.
-- [ ] Make sure to add [`redirect_from`](https://docs.gitlab.com/ce/development/writing_documentation.html#redirections-for-pages-with-disqus-comments)
+- [ ] Make sure to add [`redirect_from`](https://docs.gitlab.com/ce/development/documentation/index.html#redirections-for-pages-with-disqus-comments)
       to the new document if there are any Disqus comments on the old document thread.
 - [ ] Update the link in `features.yml` (if applicable)
 - [ ] If working on CE and the `ee-compat-check` jobs fails, submit an MR to EE
