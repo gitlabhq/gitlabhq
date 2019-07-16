@@ -952,6 +952,16 @@ production: &base
     #  address: localhost
     #  port: 3807
 
+  ## Prometheus settings
+  # Do not modify these settings here. They should be modified in /etc/gitlab/gitlab.rb
+  # if you installed GitLab via Omnibus.
+  # If you installed from source, you need to install and configure Prometheus
+  # yourself, and then update the values here.
+  # https://docs.gitlab.com/ee/administration/monitoring/prometheus/
+  prometheus:
+    # enable: true
+    # listen_address: 'localhost:9090'
+
   #
   # 5. Extra customization
   # ==========================
@@ -1158,6 +1168,9 @@ test:
         user_filter: ''
         group_base: 'ou=groups,dc=example,dc=com'
         admin_group: ''
+  prometheus:
+    enable: true
+    listen_address: 'localhost:9090'
 
 staging:
   <<: *base
