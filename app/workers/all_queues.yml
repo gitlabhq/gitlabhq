@@ -3,6 +3,12 @@
 
 - auto_merge:auto_merge_process
 
+- chaos:chaos_cpu_spin
+- chaos:chaos_db_spin
+- chaos:chaos_kill
+- chaos:chaos_leak_mem
+- chaos:chaos_sleep
+
 - cronjob:admin_email
 - cronjob:expire_build_artifacts
 - cronjob:gitlab_usage_ping

@@ -116,7 +116,7 @@ Rails.application.routes.draw do
       end
     end
 
-    if ENV['GITLAB_CHAOS_SECRET'] || Rails.env.development?
+    if ENV['GITLAB_CHAOS_SECRET'] || Rails.env.development? || Rails.env.test?
       resource :chaos, only: [] do
         get :leakmem
         get :cpu_spin

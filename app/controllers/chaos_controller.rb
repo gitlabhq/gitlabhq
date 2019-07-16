@@ -1,57 +1,38 @@
 # frozen_string_literal: true
 
 class ChaosController < ActionController::Base
-  before_action :validate_chaos_secret, unless: :development?
-  before_action :request_start_time
+  before_action :validate_chaos_secret, unless: :development_or_test?
 
   def leakmem
-    retainer = []
-    # Add `n` 1mb chunks of memory to the retainer array
-    memory_mb.times { retainer << "x" * 1.megabyte }
-
-    Kernel.sleep(duration_left)
-
-    render plain: "OK"
+    do_chaos :leak_mem, Chaos::LeakMemWorker, memory_mb, duration_s
   end
 
   def cpu_spin
-    rand while Time.now < expected_end_time
-
-    render plain: "OK"
+    do_chaos :cpu_spin, Chaos::CpuSpinWorker, duration_s
   end
 
   def db_spin
-    while Time.now < expected_end_time
-      ActiveRecord::Base.connection.execute("SELECT 1")
-
-      end_interval_time = Time.now + [duration_s, interval_s].min
-      rand while Time.now < end_interval_time
-    end
+    do_chaos :db_spin, Chaos::DbSpinWorker, duration_s, interval_s
   end
 
   def sleep
-    Kernel.sleep(duration_left)
-
-    render plain: "OK"
+    do_chaos :sleep, Chaos::SleepWorker, duration_s
   end
 
   def kill
-    Process.kill("KILL", Process.pid)
+    do_chaos :kill, Chaos::KillWorker
   end
 
   private
 
-  def request_start_time
-    @start_time ||= Time.now
-  end
+  def do_chaos(method, worker, *args)
+    if async
+      worker.perform_async(*args)
+    else
+      Gitlab::Chaos.public_send(method, *args) # rubocop: disable GitlabSecurity/PublicSend
+    end
 
-  def expected_end_time
-    request_start_time + duration_s
-  end
-
-  def duration_left
-    # returns 0 if over time
-    [expected_end_time - Time.now, 0].max
+    render plain: "OK"
   end
 
   def validate_chaos_secret
@@ -91,7 +72,12 @@ class ChaosController < ActionController::Base
     memory_mb.to_i
   end
 
-  def development?
-    Rails.env.development?
+  def async
+    async = params[:async] || false
+    Gitlab::Utils.to_boolean(async)
+  end
+
+  def development_or_test?
+    Rails.env.development? || Rails.env.test?
   end
 end

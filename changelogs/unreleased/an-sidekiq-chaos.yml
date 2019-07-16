@@ -1,0 +1,5 @@
+---
+title: Adds chaos endpoints to Sidekiq
+merge_request: 30814
+author:
+type: other
