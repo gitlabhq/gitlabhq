@@ -1,7 +1,7 @@
 - sort_value = @sort
 - sort_title = issuable_sort_option_title(sort_value)
 - viewing_issues = controller.controller_name == 'issues' || controller.action_name == 'issues'
-- manual_sorting = viewing_issues && controller.controller_name != 'dashboard' && Feature.enabled?(:manual_sorting)
+- manual_sorting = viewing_issues && controller.controller_name != 'dashboard' && Feature.enabled?(:manual_sorting, default_enabled: true)
 
 .dropdown.inline.prepend-left-10.issue-sort-dropdown
   .btn-group{ role: 'group' }
