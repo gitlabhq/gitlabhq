@@ -34,7 +34,7 @@ discussions, and descriptions:
 | `/remove_milestone`        | Remove milestone               | ✓     | ✓             |
 | `/label ~label1 ~label2`   | Add label(s). Label names can also start without ~ but mixed syntax is not supported.                   | ✓     | ✓             |
 | `/unlabel ~label1 ~label2` | Remove all or specific label(s)| ✓     | ✓             |
-| `/relabel ~label1 ~label2` | Replace label                  | ✓     | ✓             |
+| `/relabel ~label1 ~label2` | Replace existing label(s) with those specified | ✓     | ✓             |
 | <code>/copy_metadata &lt;#issue &#124; !merge_request&gt;</code> | Copy labels and milestone from other issue or merge request in the project | ✓     | ✓             |
 | <code>/estimate &lt;1w 3d 2h 14m&gt;</code> | Set time estimate | ✓     | ✓             |
 | `/remove_estimate`       | Remove time estimate             | ✓     | ✓             |
@@ -85,7 +85,7 @@ The following quick actions are applicable for epics threads and description:
 | `/award :emoji:`           | Toggle emoji award                      |
 | `/label ~label1 ~label2`   | Add label(s)                            |
 | `/unlabel ~label1 ~label2` | Remove all or specific label(s)         |
-| `/relabel ~label1 ~label2` | Replace label                           |
+| `/relabel ~label1 ~label2` | Replace existing label(s) with those specified |
 | <code>/child_epic &lt;&epic &#124;  group&epic &#124; Epic URL&gt;</code> | Adds child epic to epic ([introduced in GitLab 12.0](https://gitlab.com/gitlab-org/gitlab-ee/issues/7330)) |
 | <code>/remove_child_epic &lt;&epic &#124; group&epic &#124; Epic URL&gt;</code> | Removes child epic from epic ([introduced in GitLab 12.0](https://gitlab.com/gitlab-org/gitlab-ee/issues/7330)) |
 | <code>/parent_epic &lt;&epic &#124;  group&epic &#124; Epic URL&gt;</code> | Sets parent epic to epic ([introduced in GitLab 12.1](https://gitlab.com/gitlab-org/gitlab-ee/issues/10556)) |
