@@ -1,19 +1,34 @@
 ---
 comments: false
+type: index
 ---
 
-# Authentication and Authorization
+# GitLab authentication and authorization
 
 GitLab integrates with the following external authentication and authorization
-providers.
+providers:
 
-- [LDAP](ldap.md) Includes Active Directory, Apple Open Directory, Open LDAP,
-  and 389 Server
+- [Auth0](../../integration/auth0.md)
+- [Authentiq](authentiq.md)
+- [Azure](../../integration/azure.md)
+- [Bitbucket Cloud](../../integration/bitbucket.md)
+- [CAS](../../integration/cas.md)
+- [Crowd](../../integration/crowd.md)
+- [Facebook](../../integration/facebook.md)
+- [GitHub](../../integration/github.md)
+- [GitLab.com](../../integration/gitlab.md)
+- [Google](../../integration/google.md)
+- [JWT](jwt.md)
+- [Kerberos](../../integration/kerberos.md)
+- [LDAP](ldap.md): Includes Active Directory, Apple Open Directory, Open LDAP,
+  and 389 Server.
   - [LDAP for GitLab EE](ldap-ee.md): LDAP additions to GitLab Enterprise Editions **(STARTER ONLY)**
-- [OmniAuth](../../integration/omniauth.md) Sign in via Twitter, GitHub, GitLab.com, Google,
-  Bitbucket, Facebook, Shibboleth, Crowd, Azure, Authentiq ID, and JWT
-- [CAS](../../integration/cas.md) Configure GitLab to sign in using CAS
-- [SAML](../../integration/saml.md) Configure GitLab as a SAML 2.0 Service Provider
-- [Okta](okta.md) Configure GitLab to sign in using Okta
-- [Authentiq](authentiq.md): Enable the Authentiq OmniAuth provider for passwordless authentication
-- [Smartcard](smartcard.md) Smartcard authentication **(PREMIUM ONLY)**
+  - [Google Secure LDAP](google_secure_ldap.md)
+- [Okta](okta.md)
+- [Salesforce](../../integration/salesforce.md)
+- [SAML](../../integration/saml.md)
+- [SAML for GitLab.com groups](../../user/group/saml_sso/index.md) **(SILVER ONLY)**
+- [Shibboleth](../../integration/shibboleth.md)
+- [Smartcard](smartcard.md) **(PREMIUM ONLY)**
+- [Twitter](../../integration/twitter.md)
+- [UltraAuth](../../integration/ultra_auth.md)

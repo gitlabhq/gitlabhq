@@ -1,3 +1,7 @@
+---
+type: reference
+---
+
 # OpenID Connect OmniAuth provider
 
 GitLab can use [OpenID Connect](https://openid.net/specs/openid-connect-core-1_0.html) as an OmniAuth provider.
@@ -146,7 +150,7 @@ for more details:
  }
 ```
 
-### Troubleshooting
+## Troubleshooting
 
 If you're having trouble, here are some tips:
 

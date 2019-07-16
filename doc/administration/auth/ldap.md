@@ -1,3 +1,7 @@
+---
+type: reference
+---
+
 <!-- If the change is EE-specific, put it in `ldap-ee.md`, NOT here. -->
 
 # LDAP
@@ -494,6 +498,13 @@ be mandatory and clients cannot be authenticated with the TLS protocol.
 
 ## Troubleshooting
 
+If a user account is blocked or unblocked due to the LDAP configuration, a
+message will be logged to `application.log`.
+
+If there is an unexpected error during an LDAP lookup (configuration error,
+timeout), the login is rejected and a message will be logged to
+`production.log`.
+
 ### Debug LDAP user filter with ldapsearch
 
 This example uses ldapsearch and assumes you are using ActiveDirectory. The
@@ -527,18 +538,9 @@ ldapsearch -H ldaps://$host:$port -D "$bind_dn" -y bind_dn_password.txt  -b "$ba
   sudo -u git -H bundle exec rake gitlab:ldap:check RAILS_ENV=production
   ```
 
-### Connection Refused
+### Connection refused
 
 If you are getting 'Connection Refused' errors when trying to connect to the
 LDAP server please double-check the LDAP `port` and `encryption` settings used by
 GitLab. Common combinations are `encryption: 'plain'` and `port: 389`, OR
 `encryption: 'simple_tls'` and `port: 636`.
-
-### Troubleshooting
-
-If a user account is blocked or unblocked due to the LDAP configuration, a
-message will be logged to `application.log`.
-
-If there is an unexpected error during an LDAP lookup (configuration error,
-timeout), the login is rejected and a message will be logged to
-`production.log`.
