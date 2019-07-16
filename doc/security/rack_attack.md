@@ -1,6 +1,7 @@
 ---
 type: reference, howto
 ---
+
 # Rack Attack
 
 [Rack Attack](https://github.com/kickstarter/rack-attack), also known as Rack::Attack, is a Ruby gem

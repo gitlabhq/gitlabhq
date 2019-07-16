@@ -1,6 +1,7 @@
 ---
 type: howto
 ---
+
 # User email confirmation at sign-up
 
 GitLab can be configured to require confirmation of a user's email address when

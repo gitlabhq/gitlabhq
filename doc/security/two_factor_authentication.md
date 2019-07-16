@@ -1,6 +1,7 @@
 ---
 type: howto
 ---
+
 # Enforce Two-factor Authentication (2FA)
 
 Two-factor Authentication (2FA) provides an additional level of security to your
