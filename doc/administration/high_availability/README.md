@@ -1,3 +1,7 @@
+---
+type: reference, concepts
+---
+
 # Scaling and High Availability
 
 GitLab supports several different types of clustering and high-availability.

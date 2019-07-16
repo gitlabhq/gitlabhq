@@ -1,4 +1,8 @@
-# Configuring GitLab Scaling and High Availability
+---
+type: reference
+---
+
+# Configuring GitLab for Scaling and High Availability
 
 > **Note:** There is some additional configuration near the bottom for
   additional GitLab application servers. It's important to read and understand

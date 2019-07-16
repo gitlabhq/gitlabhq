@@ -1,4 +1,11 @@
+---
+type: reference
+---
+
 # Configuring PostgreSQL for Scaling and High Availability
+
+In this section, you'll be guided through configuring a PostgreSQL database
+to be used with GitLab in a highly available environment.
 
 ## Provide your own PostgreSQL instance **(CORE ONLY)**
 
