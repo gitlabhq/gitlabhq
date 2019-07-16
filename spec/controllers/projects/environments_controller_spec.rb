@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 describe Projects::EnvironmentsController do
+  include MetricsDashboardHelpers
+
   set(:user) { create(:user) }
   set(:project) { create(:project) }
 
@@ -445,130 +447,185 @@ describe Projects::EnvironmentsController do
     end
   end
 
-  describe 'metrics_dashboard' do
-    context 'when prometheus endpoint is disabled' do
-      before do
-        stub_feature_flags(environment_metrics_use_prometheus_endpoint: false)
-      end
-
-      it 'responds with status code 403' do
-        get :metrics_dashboard, params: environment_params(format: :json)
-
-        expect(response).to have_gitlab_http_status(:forbidden)
-      end
-    end
-
-    shared_examples_for '200 response' do |contains_all_dashboards: false|
-      let(:expected_keys) { %w(dashboard status) }
-
-      before do
-        expected_keys << 'all_dashboards' if contains_all_dashboards
-      end
-
-      it 'returns a json representation of the environment dashboard' do
+  describe 'GET #metrics_dashboard' do
+    shared_examples_for 'correctly formatted response' do |status_code|
+      it 'returns a json object with the correct keys' do
         get :metrics_dashboard, params: environment_params(dashboard_params)
 
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response.keys).to contain_exactly(*expected_keys)
-        expect(json_response['dashboard']).to be_an_instance_of(Hash)
-      end
-    end
-
-    shared_examples_for 'error response' do |status_code, contains_all_dashboards: false|
-      let(:expected_keys) { %w(message status) }
-
-      before do
-        expected_keys << 'all_dashboards' if contains_all_dashboards
-      end
-
-      it 'returns an error response' do
-        get :metrics_dashboard, params: environment_params(dashboard_params)
+        # Exlcude `all_dashboards` to handle separately.
+        found_keys = json_response.keys - ['all_dashboards']
 
         expect(response).to have_gitlab_http_status(status_code)
-        expect(json_response.keys).to contain_exactly(*expected_keys)
+        expect(found_keys).to contain_exactly(*expected_keys)
       end
     end
 
-    shared_examples_for 'has all dashboards' do
-      it 'includes an index of all available dashboards' do
+    shared_examples_for '200 response' do
+      let(:expected_keys) { %w(dashboard status) }
+
+      it_behaves_like 'correctly formatted response', :ok
+    end
+
+    shared_examples_for 'error response' do |status_code|
+      let(:expected_keys) { %w(message status) }
+
+      it_behaves_like 'correctly formatted response', status_code
+    end
+
+    shared_examples_for 'includes all dashboards' do
+      it 'includes info for all findable dashboard' do
         get :metrics_dashboard, params: environment_params(dashboard_params)
 
-        expect(json_response.keys).to include('all_dashboards')
+        expect(json_response).to have_key('all_dashboards')
         expect(json_response['all_dashboards']).to be_an_instance_of(Array)
-        expect(json_response['all_dashboards']).to all( include('path', 'default') )
+        expect(json_response['all_dashboards']).to all( include('path', 'default', 'display_name') )
       end
     end
 
-    context 'when multiple dashboards is disabled' do
-      before do
-        stub_feature_flags(environment_metrics_show_multiple_dashboards: false)
-      end
-
-      let(:dashboard_params) { { format: :json } }
+    shared_examples_for 'the default dashboard' do
+      all_dashboards = Feature.enabled?(:environment_metrics_show_multiple_dashboards)
 
       it_behaves_like '200 response'
+      it_behaves_like 'includes all dashboards' if all_dashboards
 
-      context 'when the dashboard could not be provided' do
+      it 'is the default dashboard' do
+        get :metrics_dashboard, params: environment_params(dashboard_params)
+
+        expect(json_response['dashboard']['dashboard']).to eq('Environment metrics')
+      end
+    end
+
+    shared_examples_for 'the specified dashboard' do |expected_dashboard|
+      it_behaves_like '200 response'
+      it_behaves_like 'includes all dashboards'
+
+      it 'has the correct name' do
+        get :metrics_dashboard, params: environment_params(dashboard_params)
+
+        dashboard_name = json_response['dashboard']['dashboard']
+
+        # 'Environment metrics' is the default dashboard.
+        expect(dashboard_name).not_to eq('Environment metrics')
+        expect(dashboard_name).to eq(expected_dashboard)
+      end
+
+      context 'when the dashboard cannot not be processed' do
         before do
           allow(YAML).to receive(:safe_load).and_return({})
         end
 
         it_behaves_like 'error response', :unprocessable_entity
       end
+    end
 
-      context 'when a dashboard param is specified' do
-        let(:dashboard_params) { { format: :json, dashboard: '.gitlab/dashboards/not_there_dashboard.yml' } }
+    shared_examples_for 'the default dynamic dashboard' do
+      it_behaves_like '200 response'
 
-        it_behaves_like '200 response'
+      it 'contains only the Memory and CPU charts' do
+        get :metrics_dashboard, params: environment_params(dashboard_params)
+
+        dashboard = json_response['dashboard']
+        panel_group = dashboard['panel_groups'].first
+        titles = panel_group['panels'].map { |panel| panel['title'] }
+
+        expect(dashboard['dashboard']).to be_nil
+        expect(dashboard['panel_groups'].length).to eq 1
+        expect(panel_group['group']).to be_nil
+        expect(titles).to eq ['Memory Usage (Total)', 'Core Usage (Total)']
       end
     end
 
-    context 'when multiple dashboards is enabled' do
-      let(:dashboard_params) { { format: :json } }
+    shared_examples_for 'dashboard can be specified' do
+      context 'when dashboard is specified' do
+        let(:dashboard_path) { '.gitlab/dashboards/test.yml' }
+        let(:dashboard_params) { { format: :json, dashboard: dashboard_path } }
 
-      it_behaves_like '200 response', contains_all_dashboards: true
-      it_behaves_like 'has all dashboards'
+        it_behaves_like 'error response', :not_found
 
-      context 'when a dashboard could not be provided' do
-        before do
-          allow(YAML).to receive(:safe_load).and_return({})
-        end
-
-        it_behaves_like 'error response', :unprocessable_entity, contains_all_dashboards: true
-        it_behaves_like 'has all dashboards'
-      end
-
-      context 'when a dashboard param is specified' do
-        let(:dashboard_params) { { format: :json, dashboard: '.gitlab/dashboards/test.yml' } }
-
-        context 'when the dashboard is available' do
+        context 'when the project dashboard is available' do
           let(:dashboard_yml) { fixture_file('lib/gitlab/metrics/dashboard/sample_dashboard.yml') }
-          let(:dashboard_file) { { '.gitlab/dashboards/test.yml' => dashboard_yml } }
-          let(:project) { create(:project, :custom_repo, files: dashboard_file) }
+          let(:project) { project_with_dashboard(dashboard_path, dashboard_yml) }
           let(:environment) { create(:environment, name: 'production', project: project) }
 
-          it_behaves_like '200 response', contains_all_dashboards: true
-          it_behaves_like 'has all dashboards'
+          it_behaves_like 'the specified dashboard', 'Test Dashboard'
         end
 
-        context 'when the dashboard does not exist' do
-          it_behaves_like 'error response', :not_found, contains_all_dashboards: true
-          it_behaves_like 'has all dashboards'
+        context 'when the specified dashboard is the default dashboard' do
+          let(:dashboard_path) { Gitlab::Metrics::Dashboard::SystemDashboardService::SYSTEM_DASHBOARD_PATH }
+
+          it_behaves_like 'the default dashboard'
         end
       end
+    end
 
-      context 'when the dashboard is intended for embedding' do
+    shared_examples_for 'dashboard can be embedded' do
+      context 'when the embedded flag is included' do
         let(:dashboard_params) { { format: :json, embedded: true } }
 
-        it_behaves_like '200 response'
+        it_behaves_like 'the default dynamic dashboard'
 
-        context 'when a dashboard path is provided' do
-          let(:dashboard_params) { { format: :json, dashboard: '.gitlab/dashboards/test.yml', embedded: true } }
+        context 'when the dashboard is specified' do
+          let(:dashboard_params) { { format: :json, embedded: true, dashboard: '.gitlab/dashboards/fake.yml' } }
 
-          # The dashboard path should simple be ignored.
-          it_behaves_like '200 response'
+          # The dashboard param should be ignored.
+          it_behaves_like 'the default dynamic dashboard'
         end
       end
+    end
+
+    shared_examples_for 'dashboard cannot be specified' do
+      context 'when dashboard is specified' do
+        let(:dashboard_params) { { format: :json, dashboard: '.gitlab/dashboards/test.yml' } }
+
+        it_behaves_like 'the default dashboard'
+      end
+    end
+
+    shared_examples_for 'dashboard cannot be embedded' do
+      context 'when the embedded flag is included' do
+        let(:dashboard_params) { { format: :json, embedded: true } }
+
+        it_behaves_like 'the default dashboard'
+      end
+    end
+
+    let(:dashboard_params) { { format: :json } }
+
+    it_behaves_like 'the default dashboard'
+    it_behaves_like 'dashboard can be specified'
+    it_behaves_like 'dashboard can be embedded'
+
+    context 'when multiple dashboards is enabled and embedding metrics is disabled' do
+      before do
+        stub_feature_flags(gfm_embedded_metrics: false)
+      end
+
+      it_behaves_like 'the default dashboard'
+      it_behaves_like 'dashboard can be specified'
+      it_behaves_like 'dashboard cannot be embedded'
+    end
+
+    context 'when multiple dashboards is disabled and embedding metrics is enabled' do
+      before do
+        stub_feature_flags(environment_metrics_show_multiple_dashboards: false)
+      end
+
+      it_behaves_like 'the default dashboard'
+      it_behaves_like 'dashboard cannot be specified'
+      it_behaves_like 'dashboard can be embedded'
+    end
+
+    context 'when multiple dashboards and embedding metrics are disabled' do
+      before do
+        stub_feature_flags(
+          environment_metrics_show_multiple_dashboards: false,
+          gfm_embedded_metrics: false
+        )
+      end
+
+      it_behaves_like 'the default dashboard'
+      it_behaves_like 'dashboard cannot be specified'
+      it_behaves_like 'dashboard cannot be embedded'
     end
   end
 
