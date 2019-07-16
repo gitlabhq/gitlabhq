@@ -41,7 +41,7 @@ describe Clusters::Applications::CheckUninstallProgressService do
     end
   end
 
-  context 'when application is installing' do
+  context 'when application is uninstalling' do
     RESCHEDULE_PHASES.each { |phase| it_behaves_like 'a not yet terminated installation', phase }
 
     context 'when installation POD succeeded' do
@@ -52,6 +52,12 @@ describe Clusters::Applications::CheckUninstallProgressService do
 
       it 'removes the installation POD' do
         expect(service).to receive(:remove_installation_pod).once
+
+        service.execute
+      end
+
+      it 'runs application post_uninstall' do
+        expect(application).to receive(:post_uninstall).and_call_original
 
         service.execute
       end
