@@ -3,7 +3,7 @@
 module Banzai
   # Class for removing Markdown references a certain user is not allowed to
   # view.
-  class Redactor
+  class ReferenceRedactor
     attr_reader :context
 
     # context - An instance of `Banzai::RenderContext`.

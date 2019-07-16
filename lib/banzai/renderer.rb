@@ -134,7 +134,7 @@ module Banzai
     #
     # This method is used to perform state-dependent changes to a String of
     # HTML, such as removing references that the current user doesn't have
-    # permission to make (`RedactorFilter`).
+    # permission to make (`ReferenceRedactorFilter`).
     #
     # html     - String to process
     # context  - Hash of options to customize output
