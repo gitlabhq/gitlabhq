@@ -35,8 +35,8 @@ sudo gitlab-runner register \
   --description "docker-ruby-2.1" \
   --executor "docker" \
   --docker-image ruby:2.1 \
-  --docker-postgres latest \
-  --docker-mysql latest
+  --docker-services postgres:latest \
+  --docker-services mysql:latest
 ```
 
 The registered runner will use the `ruby:2.1` Docker image and will run two
