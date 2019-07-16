@@ -148,7 +148,7 @@ module API
       end
 
       desc 'Create a user. Available only for admins.' do
-        success Entities::UserPublic
+        success Entities::UserWithAdmin
       end
       params do
         requires :email, type: String, desc: 'The email of the user'
@@ -168,7 +168,7 @@ module API
         user = ::Users::CreateService.new(current_user, params).execute(skip_authorization: true)
 
         if user.persisted?
-          present user, with: Entities::UserPublic, current_user: current_user
+          present user, with: Entities::UserWithAdmin, current_user: current_user
         else
           conflict!('Email has already been taken') if User
             .by_any_email(user.email.downcase)
@@ -183,7 +183,7 @@ module API
       end
 
       desc 'Update a user. Available only for admins.' do
-        success Entities::UserPublic
+        success Entities::UserWithAdmin
       end
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
@@ -215,7 +215,7 @@ module API
         result = ::Users::UpdateService.new(current_user, user_params.merge(user: user)).execute
 
         if result[:status] == :success
-          present user, with: Entities::UserPublic, current_user: current_user
+          present user, with: Entities::UserWithAdmin, current_user: current_user
         else
           render_validation_error!(user)
         end

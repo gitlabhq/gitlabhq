@@ -147,6 +147,21 @@ GET /users
 ]
 ```
 
+Users on GitLab [Starter, Bronze, or higher](https://about.gitlab.com/pricing/) will also see the `shared_runners_minutes_limit`, `extra_shared_runners_minutes_limit`, and `note` parameters.
+
+```json
+[
+  {
+    "id": 1,
+    ...
+    "shared_runners_minutes_limit": 133,
+    "extra_shared_runners_minutes_limit": 133,
+    "note": "DMCA Request: 2018-11-05 | DMCA Violation | Abuse | https://gitlab.zendesk.com/agent/tickets/123"
+    ...
+  }
+]
+```
+
 Users on GitLab [Silver or higher](https://about.gitlab.com/pricing/) will also see
 the `group_saml` provider option:
 
@@ -284,14 +299,15 @@ Example Responses:
 ```
 
 Users on GitLab [Starter, Bronze, or higher](https://about.gitlab.com/pricing/) will also see
-the `shared_runners_minutes_limit` and `extra_shared_runners_minutes_limit` parameters.
+the `shared_runners_minutes_limit`, `extra_shared_runners_minutes_limit`, and `note` parameters.
 
 ```json
 {
   "id": 1,
   "username": "john_smith",
   "shared_runners_minutes_limit": 133,
-  "extra_shared_runners_minutes_limit": 133
+  "extra_shared_runners_minutes_limit": 133,
+  "note": "DMCA Request: 2018-11-05 | DMCA Violation | Abuse | https://gitlab.zendesk.com/agent/tickets/123"
   ...
 }
 ```
@@ -304,7 +320,8 @@ see the `group_saml` option:
   "id": 1,
   "username": "john_smith",
   "shared_runners_minutes_limit": 133,
-  "extra_shared_runners_minutes_limit": 133
+  "extra_shared_runners_minutes_limit": 133,
+  "note": "DMCA Request: 2018-11-05 | DMCA Violation | Abuse | https://gitlab.zendesk.com/agent/tickets/123"
   "identities": [
     {"provider": "github", "extern_uid": "2435223452345"},
     {"provider": "bitbucket", "extern_uid": "john.smith"},
@@ -399,6 +416,7 @@ Parameters:
 - `private_profile` (optional)     - User's profile is private - true or false
 - `shared_runners_minutes_limit` (optional)       - Pipeline minutes quota for this user **(STARTER)**
 - `extra_shared_runners_minutes_limit` (optional) - Extra pipeline minutes quota for this user **(STARTER)**
+- `note` (optional) - Admin notes for this user **(STARTER)**
 
 On password update, user will be forced to change it upon next login.
 Note, at the moment this method does only return a `404` error,
