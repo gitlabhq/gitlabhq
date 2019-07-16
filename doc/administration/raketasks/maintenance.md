@@ -251,3 +251,22 @@ sudo gitlab-rake gitlab:exclusive_lease:clear[project_housekeeping:*]
 # to clear a lease for repository garbage collection in a specific project: (id=4)
 sudo gitlab-rake gitlab:exclusive_lease:clear[project_housekeeping:4]
 ```
+
+## Display status of database migrations
+
+To check the status of migrations, you can use the following rake task:
+
+```bash
+sudo gitlab-rake db:migrations:status
+```
+
+This will output a table with a `Status` of `up` or `down` for 
+each Migration ID.
+
+```bash
+database: gitlabhq_production
+
+ Status   Migration ID    Migration Name
+--------------------------------------------------
+   up     migration_id    migration_name
+```
