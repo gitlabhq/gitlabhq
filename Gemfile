@@ -431,7 +431,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 1.36.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 1.37.0', require: 'gitaly'
 
 gem 'grpc', '~> 1.19.0'
 

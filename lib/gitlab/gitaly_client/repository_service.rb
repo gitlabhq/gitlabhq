@@ -5,7 +5,7 @@ module Gitlab
     class RepositoryService
       include Gitlab::EncodingHelper
 
-      MAX_MSG_SIZE = 128.kilobytes.freeze
+      MAX_MSG_SIZE = 128.kilobytes
 
       def initialize(repository)
         @repository = repository
