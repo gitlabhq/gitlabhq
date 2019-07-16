@@ -233,7 +233,7 @@ describe Gitlab::Ci::Pipeline::Seed::Build do
       using RSpec::Parameterized
 
       let(:pipeline) do
-        create(:ci_empty_pipeline, ref: 'deploy', tag: false, source: source)
+        build(:ci_empty_pipeline, ref: 'deploy', tag: false, source: source)
       end
 
       context 'matches' do
