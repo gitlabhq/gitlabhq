@@ -196,7 +196,7 @@ describe Boards::IssuesController do
           sign_in(signed_in_user)
         end
 
-        it 'moves issues as expected' do
+        it 'responds as expected' do
           put :bulk_move, params: move_issues_params
           expect(response).to have_gitlab_http_status(expected_status)
 
@@ -208,13 +208,18 @@ describe Boards::IssuesController do
 
             expect(json_response['issues'].pluck('id')).to match_array(move_issues_params[:ids])
           end
+        end
+
+        it 'moves issues as expected' do
+          put :bulk_move, params: move_issues_params
+          expect(response).to have_gitlab_http_status(expected_status)
 
           list_issues user: requesting_user, board: board, list: list2
           expect(response).to have_gitlab_http_status(200)
 
           expect(response).to match_response_schema('entities/issue_boards')
 
-          responded_issues = JSON.parse(response.body)['issues']
+          responded_issues = json_response['issues']
           expect(responded_issues.length).to eq expected_issue_count
 
           ids_in_order = responded_issues.pluck('id')
