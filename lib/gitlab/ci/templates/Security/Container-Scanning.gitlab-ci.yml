@@ -22,7 +22,7 @@ container_scanning:
     DOCKER_SERVICE: docker
     DOCKER_HOST: tcp://${DOCKER_SERVICE}:2375/
     # https://hub.docker.com/r/arminc/clair-local-scan/tags
-    CLAIR_LOCAL_SCAN_VERSION: v2.0.8_fe9b059d930314b54c78f75afe265955faf4fdc1
+    CLAIR_LOCAL_SCAN_VERSION: v2.0.8_0ed98e9ead65a51ba53f7cc53fa5e80c92169207
     CLAIR_EXECUTABLE_VERSION: v12
     ## Disable the proxy for clair-local-scan, otherwise Container Scanning will
     ## fail when a proxy is used.
