@@ -6,6 +6,7 @@
 # that we can stub it for testing, as it is only called when metrics are
 # enabled.
 #
+# rubocop:disable Metrics/AbcSize
 def instrument_classes(instrumentation)
   instrumentation.instrument_instance_methods(Gitlab::Shell)
 
@@ -86,12 +87,42 @@ def instrument_classes(instrumentation)
   instrumentation.instrument_methods(Gitlab::Highlight)
   instrumentation.instrument_instance_methods(Gitlab::Highlight)
 
+  Gitlab.ee do
+    instrumentation.instrument_methods(Elasticsearch::Git::Repository)
+    instrumentation.instrument_instance_methods(Elasticsearch::Git::Repository)
+
+    instrumentation.instrument_instance_methods(Search::GlobalService)
+    instrumentation.instrument_instance_methods(Search::ProjectService)
+
+    instrumentation.instrument_instance_methods(Gitlab::Elastic::SearchResults)
+    instrumentation.instrument_instance_methods(Gitlab::Elastic::ProjectSearchResults)
+    instrumentation.instrument_instance_methods(Gitlab::Elastic::Indexer)
+    instrumentation.instrument_instance_methods(Gitlab::Elastic::SnippetSearchResults)
+    instrumentation.instrument_methods(Gitlab::Elastic::Helper)
+
+    instrumentation.instrument_instance_methods(Elastic::ApplicationSearch)
+    instrumentation.instrument_instance_methods(Elastic::IssuesSearch)
+    instrumentation.instrument_instance_methods(Elastic::MergeRequestsSearch)
+    instrumentation.instrument_instance_methods(Elastic::MilestonesSearch)
+    instrumentation.instrument_instance_methods(Elastic::NotesSearch)
+    instrumentation.instrument_instance_methods(Elastic::ProjectsSearch)
+    instrumentation.instrument_instance_methods(Elastic::RepositoriesSearch)
+    instrumentation.instrument_instance_methods(Elastic::SnippetsSearch)
+    instrumentation.instrument_instance_methods(Elastic::WikiRepositoriesSearch)
+
+    instrumentation.instrument_instance_methods(Gitlab::BitbucketImport::Importer)
+    instrumentation.instrument_instance_methods(Bitbucket::Connection)
+
+    instrumentation.instrument_instance_methods(Geo::RepositorySyncWorker)
+  end
+
   # This is a Rails scope so we have to instrument it manually.
   instrumentation.instrument_method(Project, :visible_to_user)
 
   # Needed for https://gitlab.com/gitlab-org/gitlab-ce/issues/30224#note_32306159
   instrumentation.instrument_instance_method(MergeRequestDiff, :load_commits)
 end
+# rubocop:enable Metrics/AbcSize
 
 # With prometheus enabled by default this breaks all specs
 # that stubs methods using `any_instance_of` for the models reloaded here.
