@@ -36,7 +36,8 @@ export default function renderMermaid($els) {
       });
 
       $els.each((i, el) => {
-        const source = el.textContent;
+        // Mermaid doesn't like `<br />` tags, so collapse all like tags into `<br>`, which is parsed correctly.
+        const source = el.textContent.replace(/<br\s*\/>/g, '<br>');
 
         /**
          * Restrict the rendering to a certain amount of character to
