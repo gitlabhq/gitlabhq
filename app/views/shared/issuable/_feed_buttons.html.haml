@@ -1,4 +1,4 @@
-= link_to safe_params.merge(rss_url_options), class: 'btn btn-svg has-tooltip js-rss-button', data: { container: 'body' }, title: _('Subscribe to RSS feed') do
-  = sprite_icon('rss')
-= link_to safe_params.merge(calendar_url_options), class: 'btn btn-svg has-tooltip', data: { container: 'body' }, title: _('Subscribe to calendar') do
-  = sprite_icon('calendar')
+= link_to safe_params.merge(rss_url_options), class: 'btn has-tooltip', data: { container: 'body' }, title: _('Subscribe to RSS feed') do
+  = icon('rss')
+= link_to safe_params.merge(calendar_url_options), class: 'btn has-tooltip', data: { container: 'body' }, title: _('Subscribe to calendar') do
+  = custom_icon('icon_calendar')
