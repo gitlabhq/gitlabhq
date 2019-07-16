@@ -14,6 +14,10 @@ module Gitlab
                 return error('Pipelines are disabled!')
               end
 
+              if @command.uses_unsupported_legacy_trigger?
+                return error('Trigger token is invalid because is not owned by any user')
+              end
+
               unless allowed_to_trigger_pipeline?
                 if can?(current_user, :create_pipeline, project)
                   return error("Insufficient permissions for protected ref '#{command.ref}'")

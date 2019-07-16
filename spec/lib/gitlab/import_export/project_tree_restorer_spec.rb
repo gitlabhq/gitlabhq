@@ -32,6 +32,10 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
     end
 
     context 'JSON' do
+      before do
+        stub_feature_flags(use_legacy_pipeline_triggers: false)
+      end
+
       it 'restores models based on JSON' do
         expect(@restored_project_json).to be_truthy
       end
@@ -198,8 +202,9 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
       end
 
       context 'tokens are regenerated' do
-        it 'has a new CI trigger token' do
-          expect(Ci::Trigger.where(token: 'cdbfasdf44a5958c83654733449e585')).to be_empty
+        it 'has new CI trigger tokens' do
+          expect(Ci::Trigger.where(token: %w[cdbfasdf44a5958c83654733449e585 33a66349b5ad01fc00174af87804e40]))
+            .to be_empty
         end
 
         it 'has a new CI build token' do
@@ -212,7 +217,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
           expect(@project.merge_requests.size).to eq(9)
         end
 
-        it 'has the correct number of triggers' do
+        it 'only restores valid triggers' do
           expect(@project.triggers.size).to eq(1)
         end
 

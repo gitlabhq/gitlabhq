@@ -1,0 +1,5 @@
+---
+title: Remove support for legacy pipeline triggers
+merge_request: 30133
+author:
+type: removed
