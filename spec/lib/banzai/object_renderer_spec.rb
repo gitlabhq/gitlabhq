@@ -22,8 +22,8 @@ describe Banzai::ObjectRenderer do
         expect(object.user_visible_reference_count).to eq 0
       end
 
-      it 'calls Banzai::Redactor to perform redaction' do
-        expect_any_instance_of(Banzai::Redactor).to receive(:redact).and_call_original
+      it 'calls Banzai::ReferenceRedactor to perform redaction' do
+        expect_any_instance_of(Banzai::ReferenceRedactor).to receive(:redact).and_call_original
 
         renderer.render([object], :note)
       end
@@ -82,8 +82,8 @@ describe Banzai::ObjectRenderer do
         expect(cacheless_thing.redacted_title_html).to eq("Merge branch 'branch-merged' into 'master'")
       end
 
-      it 'calls Banzai::Redactor to perform redaction' do
-        expect_any_instance_of(Banzai::Redactor).to receive(:redact).and_call_original
+      it 'calls Banzai::ReferenceRedactor to perform redaction' do
+        expect_any_instance_of(Banzai::ReferenceRedactor).to receive(:redact).and_call_original
 
         renderer.render([cacheless_thing], :title)
       end
