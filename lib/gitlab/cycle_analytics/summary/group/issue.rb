@@ -16,7 +16,7 @@ module Gitlab
           end
 
           def value
-            @value ||= IssuesFinder.new(@current_user, group_id: @group.id, include_subgroups: true).execute.created_after(@from).count
+            @value ||= IssuesFinder.new(@current_user, group_id: @group.id, include_subgroups: true, created_after: @from).execute.count
           end
         end
       end

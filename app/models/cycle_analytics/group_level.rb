@@ -3,19 +3,20 @@
 module CycleAnalytics
   class GroupLevel
     include LevelBase
-    attr_reader :options
+    attr_reader :options, :group
 
-    def initialize(options:)
-      @options = options
+    def initialize(group:, options:)
+      @group = group
+      @options = options.merge(group: group)
     end
 
     def summary
-      @summary ||= ::Gitlab::CycleAnalytics::GroupStageSummary.new(options[:group],
+      @summary ||= ::Gitlab::CycleAnalytics::GroupStageSummary.new(group,
                                                               from: options[:from],
                                                               current_user: options[:current_user]).data
     end
 
-    def permissions(user: nil)
+    def permissions(*)
       STAGES.each_with_object({}) do |stage, obj|
         obj[stage] = true
       end

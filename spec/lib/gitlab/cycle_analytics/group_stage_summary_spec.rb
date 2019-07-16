@@ -22,6 +22,16 @@ describe Gitlab::CycleAnalytics::GroupStageSummary do
       it "finds the number of issues created after it" do
         expect(subject.first[:value]).to eq(2)
       end
+
+      context 'with subgroups' do
+        before do
+          Timecop.freeze(5.days.from_now) { create(:issue, project: create(:project, namespace: create(:group, parent: group))) }
+        end
+
+        it "finds issues from them" do
+          expect(subject.first[:value]).to eq(3)
+        end
+      end
     end
 
     context 'with other projects' do
@@ -33,18 +43,6 @@ describe Gitlab::CycleAnalytics::GroupStageSummary do
 
       it "doesn't find issues from them" do
         expect(subject.first[:value]).to eq(2)
-      end
-    end
-
-    context 'with subgroups' do
-      before do
-        Timecop.freeze(5.days.from_now) { create(:issue, project: create(:project, namespace: create(:group, parent: group))) }
-        Timecop.freeze(5.days.from_now) { create(:issue, project: project) }
-        Timecop.freeze(5.days.from_now) { create(:issue, project: project_2) }
-      end
-
-      it "finds issues from them" do
-        expect(subject.first[:value]).to eq(3)
       end
     end
   end
@@ -61,6 +59,18 @@ describe Gitlab::CycleAnalytics::GroupStageSummary do
       it "finds the number of deploys made created after it" do
         expect(subject.second[:value]).to eq(2)
       end
+
+      context 'with subgroups' do
+        before do
+          Timecop.freeze(5.days.from_now) do
+            create(:deployment, :success, project: create(:project, :repository, namespace: create(:group, parent: group)))
+          end
+        end
+
+        it "finds deploys from them" do
+          expect(subject.second[:value]).to eq(3)
+        end
+      end
     end
 
     context 'with other projects' do
@@ -72,18 +82,6 @@ describe Gitlab::CycleAnalytics::GroupStageSummary do
 
       it "doesn't find deploys from them" do
         expect(subject.second[:value]).to eq(0)
-      end
-    end
-
-    context 'with subgroups' do
-      before do
-        Timecop.freeze(5.days.from_now) do
-          create(:deployment, :success, project: create(:project, :repository, namespace: create(:group, parent: group)))
-        end
-      end
-
-      it "finds deploys from them" do
-        expect(subject.second[:value]).to eq(1)
       end
     end
   end
