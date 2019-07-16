@@ -59,29 +59,33 @@ module Clusters
             transition [:scheduled] => :uninstalling
           end
 
-          before_transition any => [:scheduled] do |app_status, _|
-            app_status.status_reason = nil
+          before_transition any => [:scheduled] do |application, _|
+            application.status_reason = nil
           end
 
-          before_transition any => [:errored] do |app_status, transition|
+          before_transition any => [:errored] do |application, transition|
             status_reason = transition.args.first
-            app_status.status_reason = status_reason if status_reason
+            application.status_reason = status_reason if status_reason
           end
 
-          before_transition any => [:updating] do |app_status, _|
-            app_status.status_reason = nil
+          before_transition any => [:updating] do |application, _|
+            application.status_reason = nil
           end
 
-          before_transition any => [:update_errored, :uninstall_errored] do |app_status, transition|
+          before_transition any => [:update_errored, :uninstall_errored] do |application, transition|
             status_reason = transition.args.first
-            app_status.status_reason = status_reason if status_reason
+            application.status_reason = status_reason if status_reason
           end
 
-          before_transition any => [:installed, :updated] do |app_status, _|
+          before_transition any => [:installed, :updated] do |application, _|
             # When installing any application we are also performing an update
             # of tiller (see Gitlab::Kubernetes::Helm::ClientCommand) so
             # therefore we need to reflect that in the database.
-            app_status.cluster.application_helm.update!(version: Gitlab::Kubernetes::Helm::HELM_VERSION)
+            application.cluster.application_helm.update!(version: Gitlab::Kubernetes::Helm::HELM_VERSION)
+          end
+
+          after_transition any => [:uninstalling], :use_transactions => false do |application, _|
+            application.prepare_uninstall
           end
         end
       end

@@ -251,6 +251,7 @@ The applications below can be uninstalled.
 
 | Application | GitLab version | Notes |
 | ----------- | -------------- | ----- |
+| GitLab Runner  | 12.2+         | Any running pipelines will be canceled. |
 | Ingress  | 12.1+         | The associated load balancer and IP will be deleted and cannot be restored. Furthermore, it can only be uninstalled if JupyterHub is not installed. |
 | JupyterHub  | 12.1+         | All data not committed to GitLab will be deleted and cannot be restored. |
 | Prometheus  | 11.11+         | All data will be deleted and cannot be restored. |
@@ -278,7 +279,7 @@ Error: remote error: tls: bad certificate
 To avoid installation errors:
 
 - Before starting the installation of applications, make sure that time is synchronized
-  between your GitLab server and your Kubernetes cluster.
+between your GitLab server and your Kubernetes cluster.
 - Ensure certificates are not out of sync. When installing applications, GitLab expects a new cluster with no previous installation of Helm.
 
   You can confirm that the certificates match via `kubectl`:

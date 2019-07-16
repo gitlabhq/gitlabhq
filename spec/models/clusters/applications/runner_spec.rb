@@ -18,7 +18,7 @@ describe Clusters::Applications::Runner do
 
     subject { gitlab_runner.can_uninstall? }
 
-    it { is_expected.to be_falsey }
+    it { is_expected.to be_truthy }
   end
 
   describe '#install_command' do
@@ -154,6 +154,37 @@ describe Clusters::Applications::Runner do
       it 'overwrites values.yaml' do
         expect(values).to match(/privileged: '?#{application.privileged}/)
       end
+    end
+  end
+
+  describe '#prepare_uninstall' do
+    it 'pauses associated runner' do
+      active_runner = create(:ci_runner, contacted_at: 1.second.ago)
+
+      expect(active_runner.status).to eq(:online)
+
+      application_runner = create(:clusters_applications_runner, :scheduled, runner: active_runner)
+      application_runner.prepare_uninstall
+
+      expect(active_runner.status).to eq(:paused)
+    end
+  end
+
+  describe '#make_uninstalling!' do
+    subject { create(:clusters_applications_runner, :scheduled, runner: ci_runner) }
+
+    it 'calls prepare_uninstall' do
+      expect_any_instance_of(described_class).to receive(:prepare_uninstall).and_call_original
+
+      subject.make_uninstalling!
+    end
+  end
+
+  describe '#post_uninstall' do
+    it 'destroys its runner' do
+      application_runner = create(:clusters_applications_runner, :scheduled, runner: ci_runner)
+
+      expect { application_runner.post_uninstall }.to change { Ci::Runner.count }.by(-1)
     end
   end
 end
