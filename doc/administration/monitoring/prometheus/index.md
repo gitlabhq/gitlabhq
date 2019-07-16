@@ -134,17 +134,57 @@ To use an external Prometheus server:
 
    ```yaml
    scrape_configs:
-   - job_name: 'gitlab_exporters'
+   - job_name: nginx
      static_configs:
-     - targets: ['1.1.1.1:9168', '1.1.1.1:9236', '1.1.1.1:9236', '1.1.1.1:9100', '1.1.1.1:9121', '1.1.1.1:9187']
-
-   - job_name: 'gitlab_metrics'
-     metrics_path: /-/metrics
+     - targets:
+       - 1.1.1.1:8060
+   - job_name: redis
      static_configs:
-     - targets: ['1.1.1.1:443']
+     - targets:
+       - 1.1.1.1:9121
+   - job_name: postgres
+     static_configs:
+     - targets:
+       - 1.1.1.1:9187
+   - job_name: node
+     static_configs:
+     - targets:
+       - 1.1.1.1:9100
+   - job_name: gitlab-workhorse
+     static_configs:
+     - targets:
+       - 1.1.1.1:9229
+   - job_name: gitlab-rails
+     metrics_path: "/-/metrics"
+     static_configs:
+     - targets:
+       - 1.1.1.1:8080
+   - job_name: gitlab-sidekiq
+     static_configs:
+     - targets:
+       - 1.1.1.1:8082
+   - job_name: gitlab_monitor_database
+     metrics_path: "/database"
+     static_configs:
+     - targets:
+       - 1.1.1.1:9168
+   - job_name: gitlab_monitor_sidekiq
+     metrics_path: "/sidekiq"
+     static_configs:
+     - targets:
+       - 1.1.1.1:9168
+   - job_name: gitlab_monitor_process
+     metrics_path: "/process"
+     static_configs:
+     - targets:
+       - 1.1.1.1:9168
+   - job_name: gitaly
+     static_configs:
+     - targets:
+       - 1.1.1.1:9236
    ```
 
-1. Restart the Prometheus server.
+1. Reload the Prometheus server.
 
 ## Viewing performance metrics
 
