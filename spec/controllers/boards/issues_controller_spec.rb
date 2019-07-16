@@ -206,7 +206,7 @@ describe Boards::IssuesController do
               'success' => true
             )
 
-            expect(json_response['issues'].pluck('id')).to include(*move_issues_params[:ids])
+            expect(json_response['issues'].pluck('id')).to match_array(move_issues_params[:ids])
           end
 
           list_issues user: requesting_user, board: board, list: list2
