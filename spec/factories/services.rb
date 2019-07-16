@@ -79,14 +79,12 @@ FactoryBot.define do
   trait :issue_tracker do
     properties(
       project_url: 'http://issue-tracker.example.com',
-      issues_url: 'http://issue-tracker.example.com',
+      issues_url: 'http://issue-tracker.example.com/issues/:id',
       new_issue_url: 'http://issue-tracker.example.com'
     )
   end
 
-  factory :jira_cloud_service, class: JiraService do
-    project
-    active true
+  trait :jira_cloud_service do
     properties(
       url: 'https://mysite.atlassian.net',
       username: 'jira_user',
