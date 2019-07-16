@@ -222,7 +222,7 @@ full use of Auto DevOps are available. If this is your fist time, we recommend y
 [quick start guide](quick_start_guide.md).
 
 GitLab.com users can enable/disable Auto DevOps at the project-level only. Self-managed users
-can enable/disable Auto DevOps at either the project-level or instance-level.
+can enable/disable Auto DevOps at the project-level, group-level or instance-level.
 
 ### Enabling/disabling Auto DevOps at the instance-level (Administrators only)
 
