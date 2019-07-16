@@ -257,7 +257,7 @@ sudo gitlab-rake gitlab:exclusive_lease:clear[project_housekeeping:4]
 To check the status of migrations, you can use the following rake task:
 
 ```bash
-sudo gitlab-rake db:migrations:status
+sudo gitlab-rake db:migrate:status
 ```
 
 This will output a table with a `Status` of `up` or `down` for 
