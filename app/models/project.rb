@@ -1496,12 +1496,20 @@ class Project < ApplicationRecord
     !namespace.share_with_group_lock
   end
 
-  def pipeline_for(ref, sha = nil)
+  def pipeline_for(ref, sha = nil, id = nil)
+    if id.present?
+      pipelines_for(ref, sha).find_by(id: id)
+    else
+      pipelines_for(ref, sha).take
+    end
+  end
+
+  def pipelines_for(ref, sha = nil)
     sha ||= commit(ref).try(:sha)
 
     return unless sha
 
-    ci_pipelines.order(id: :desc).find_by(sha: sha, ref: ref)
+    ci_pipelines.order(id: :desc).where(sha: sha, ref: ref)
   end
 
   def latest_successful_pipeline_for_default_branch

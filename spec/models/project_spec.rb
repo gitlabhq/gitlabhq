@@ -1190,12 +1190,32 @@ describe Project do
       subject { project.pipeline_for('master', pipeline.sha) }
 
       it_behaves_like 'giving the correct pipeline'
+
+      context 'with supplied id' do
+        let!(:other_pipeline) { create_pipeline(project) }
+
+        subject { project.pipeline_for('master', pipeline.sha, other_pipeline.id) }
+
+        it { is_expected.to eq(other_pipeline) }
+      end
     end
 
     context 'with implicit sha' do
       subject { project.pipeline_for('master') }
 
       it_behaves_like 'giving the correct pipeline'
+    end
+  end
+
+  describe '#pipelines_for' do
+    let(:project) { create(:project, :repository) }
+    let!(:pipeline) { create_pipeline(project) }
+    let!(:other_pipeline) { create_pipeline(project) }
+
+    context 'with implicit sha' do
+      subject { project.pipelines_for('master') }
+
+      it { is_expected.to contain_exactly(pipeline, other_pipeline) }
     end
   end
 

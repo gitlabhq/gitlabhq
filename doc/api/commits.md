@@ -581,7 +581,7 @@ POST /projects/:id/statuses/:sha
 | `target_url` |  string  | no  | The target URL to associate with this status
 | `description` | string  | no  | The short description of the status
 | `coverage` | float  | no    | The total code coverage
-| `pipeline_id` |  integer  | no  | The id of the pipeline to set status. Use in case of several pipeline on same sha.
+| `pipeline_id` |  integer  | no  | The ID of the pipeline to set status. Use in case of several pipeline on same SHA.
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/17/statuses/18f3e63d05582537db6d183d9d557be09e1f90c8?state=success"
