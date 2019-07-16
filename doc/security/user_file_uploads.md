@@ -1,6 +1,7 @@
 ---
 type: reference
 ---
+
 # User File Uploads
 
 Images that are attached to issues, merge requests, or comments

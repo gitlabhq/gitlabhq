@@ -1,6 +1,7 @@
 ---
 type: howto
 ---
+
 # How to reset your root password
 
 To reset your root password, first log into your server with root privileges.

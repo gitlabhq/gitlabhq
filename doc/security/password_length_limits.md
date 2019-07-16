@@ -1,19 +1,31 @@
 ---
 type: reference, howto
 ---
+
 # Custom password length limits
 
-If you want to enforce longer user passwords you can create an extra Devise
-initializer with the steps below.
+The user password length is set to a minimum of 8 characters by default.
+To change that for installations from source:
 
-If you do not use the `devise_password_length.rb` initializer the password
-length is set to a minimum of 8 characters in `config/initializers/devise.rb`.
+1. Edit `devise_password_length.rb`:
 
-```bash
-cd /home/git/gitlab
-sudo -u git -H cp config/initializers/devise_password_length.rb.example config/initializers/devise_password_length.rb
-sudo -u git -H editor config/initializers/devise_password_length.rb   # inspect and edit the new password length limits
-```
+   ```sh
+   cd /home/git/gitlab
+   sudo -u git -H cp config/initializers/devise_password_length.rb.example config/initializers/devise_password_length.rb
+   sudo -u git -H editor config/initializers/devise_password_length.rb
+   ```
+
+1. Change the new password length limits:
+
+   ```ruby
+   config.password_length = 12..128
+   ```
+
+   In this example, the minimum length is 12 characters, and the maximum length
+   is 128 characters.
+
+1. [Restart GitLab](../administration/restart_gitlab.md#installations-from-source)
+   for the changes to take effect.
 
 <!-- ## Troubleshooting
 

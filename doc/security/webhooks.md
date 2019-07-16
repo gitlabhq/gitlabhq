@@ -1,6 +1,7 @@
 ---
 type: concepts, reference, howto
 ---
+
 # Webhooks and insecure internal web services
 
 If you have non-GitLab web services running on your GitLab server or within its
