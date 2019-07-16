@@ -164,3 +164,23 @@ questions that you know someone might ask.
 Each scenario can be a third-level heading, e.g. `### Getting error message X`.
 If you have none to add when creating a doc, leave this section in place
 but commented out to help encourage others to add to it in the future. -->
+
+## Required pipeline configuration **(PREMIUM ONLY)**
+
+GitLab administrators can force a pipeline configuration to run on every
+pipeline.
+
+The configuration applies to all pipelines for a GitLab instance and is 
+sourced from:
+
+- The [instance template repository](instance_template_repository.md).
+- GitLab-supplied configuration.
+
+To set required pipeline configuration:
+
+1. Go to **Admin area > Settings > CI/CD**.
+1. Expand the **Required pipeline configuration** section.
+1. Select the required configuration from the provided dropdown.
+1. Click **Save changes**.
+
+![Required pipeline](img/admin_required_pipeline.png)
