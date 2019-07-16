@@ -8,6 +8,12 @@
   }
 }
 
+@mixin chevron-active {
+  .fa-chevron-down {
+    color: $gray-darkest;
+  }
+}
+
 @mixin set-visible {
   transform: translateY(0);
   display: block;
@@ -43,6 +49,7 @@
 
   .dropdown-toggle,
   .dropdown-menu-toggle {
+    @include chevron-active;
     border-color: $gray-darkest;
   }
 
@@ -58,12 +65,12 @@
 
 .dropdown-toggle,
 .confidential-merge-request-fork-group .dropdown-toggle {
-  padding: $gl-bordered-btn-vert-padding $gl-bordered-btn-horz-padding;
+  padding: 6px 8px 6px 10px;
   background-color: $white-light;
   color: $gl-text-color;
   font-size: 14px;
-  line-height: $gl-btn-line-height;
   text-align: left;
+  border: 1px solid $border-color;
   border-radius: $border-radius-base;
   white-space: nowrap;
 
@@ -96,6 +103,10 @@
     padding-right: 25px;
   }
 
+  .fa {
+    color: $gray-darkest;
+  }
+
   .fa-chevron-down {
     font-size: $dropdown-chevron-size;
     position: relative;
@@ -104,10 +115,12 @@
   }
 
   &:hover {
+    @include chevron-active;
     border-color: $gray-darkest;
   }
 
   &:focus:active {
+    @include chevron-active;
     border-color: $dropdown-toggle-active-border-color;
     outline: 0;
   }
