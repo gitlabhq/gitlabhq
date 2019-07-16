@@ -13,39 +13,6 @@ module Gitlab
           end
 
           def tree
-            if Feature.enabled?(:ci_variables_complex_expressions, default_enabled: true)
-              rpn_parse_tree
-            else
-              reverse_descent_parse_tree
-            end
-          end
-
-          def self.seed(statement)
-            new(Expression::Lexer.new(statement).tokens)
-          end
-
-          private
-
-          # This produces a reverse descent parse tree.
-          # It does not support precedence of operators.
-          def reverse_descent_parse_tree
-            while token = @tokens.next
-              case token.type
-              when :operator
-                token.build(@nodes.pop, tree).tap do |node|
-                  @nodes.push(node)
-                end
-              when :value
-                token.build.tap do |leaf|
-                  @nodes.push(leaf)
-                end
-              end
-            end
-          rescue StopIteration
-            @nodes.last || Lexeme::Null.new
-          end
-
-          def rpn_parse_tree
             results = []
 
             tokens_rpn.each do |token|
@@ -69,6 +36,12 @@ module Gitlab
 
             results.pop
           end
+
+          def self.seed(statement)
+            new(Expression::Lexer.new(statement).tokens)
+          end
+
+          private
 
           # Parse the expression into Reverse Polish Notation
           # (See: Shunting-yard algorithm)

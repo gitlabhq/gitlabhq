@@ -17,17 +17,6 @@ module Gitlab
             Expression::Lexeme::Equals,
             Expression::Lexeme::Matches,
             Expression::Lexeme::NotEquals,
-            Expression::Lexeme::NotMatches
-          ].freeze
-
-          NEW_LEXEMES = [
-            Expression::Lexeme::Variable,
-            Expression::Lexeme::String,
-            Expression::Lexeme::Pattern,
-            Expression::Lexeme::Null,
-            Expression::Lexeme::Equals,
-            Expression::Lexeme::Matches,
-            Expression::Lexeme::NotEquals,
             Expression::Lexeme::NotMatches,
             Expression::Lexeme::And,
             Expression::Lexeme::Or
@@ -58,7 +47,7 @@ module Gitlab
 
               return tokens if @scanner.eos?
 
-              lexeme = available_lexemes.find do |type|
+              lexeme = LEXEMES.find do |type|
                 type.scan(@scanner).tap do |token|
                   tokens.push(token) if token.present?
                 end
@@ -70,10 +59,6 @@ module Gitlab
             end
 
             raise Lexer::SyntaxError, 'Too many tokens!'
-          end
-
-          def available_lexemes
-            Feature.enabled?(:ci_variables_complex_expressions, default_enabled: true) ? NEW_LEXEMES : LEXEMES
           end
         end
       end

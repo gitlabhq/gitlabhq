@@ -1,6 +1,4 @@
-# TODO switch this back after the "ci_variables_complex_expressions" feature flag is removed
-# require 'fast_spec_helper'
-require 'spec_helper'
+require 'fast_spec_helper'
 require 'rspec-parameterized'
 
 describe Gitlab::Ci::Pipeline::Expression::Statement do
@@ -116,54 +114,6 @@ describe Gitlab::Ci::Pipeline::Expression::Statement do
 
       it "evaluates to `#{params[:value].inspect}`" do
         expect(subject.evaluate).to eq(value)
-      end
-    end
-
-    context 'with the ci_variables_complex_expressions feature flag disabled' do
-      before do
-        stub_feature_flags(ci_variables_complex_expressions: false)
-      end
-
-      where(:expression, :value) do
-        '$PRESENT_VARIABLE == "my variable"'                          | true
-        '"my variable" == $PRESENT_VARIABLE'                          | true
-        '$PRESENT_VARIABLE == null'                                   | false
-        '$EMPTY_VARIABLE == null'                                     | false
-        '"" == $EMPTY_VARIABLE'                                       | true
-        '$EMPTY_VARIABLE'                                             | ''
-        '$UNDEFINED_VARIABLE == null'                                 | true
-        'null == $UNDEFINED_VARIABLE'                                 | true
-        '$PRESENT_VARIABLE'                                           | 'my variable'
-        '$UNDEFINED_VARIABLE'                                         | nil
-        "$PRESENT_VARIABLE =~ /var.*e$/"                              | true
-        "$PRESENT_VARIABLE =~ /^var.*/"                               | false
-        "$EMPTY_VARIABLE =~ /var.*/"                                  | false
-        "$UNDEFINED_VARIABLE =~ /var.*/"                              | false
-        "$PRESENT_VARIABLE =~ /VAR.*/i"                               | true
-        '$PATH_VARIABLE =~ /path/variable/'                           | true
-        '$PATH_VARIABLE =~ /path\/variable/'                          | true
-        '$FULL_PATH_VARIABLE =~ /^/a/full/path/variable/value$/'      | true
-        '$FULL_PATH_VARIABLE =~ /^\/a\/full\/path\/variable\/value$/' | true
-        '$PRESENT_VARIABLE != "my variable"'                          | false
-        '"my variable" != $PRESENT_VARIABLE'                          | false
-        '$PRESENT_VARIABLE != null'                                   | true
-        '$EMPTY_VARIABLE != null'                                     | true
-        '"" != $EMPTY_VARIABLE'                                       | false
-        '$UNDEFINED_VARIABLE != null'                                 | false
-        'null != $UNDEFINED_VARIABLE'                                 | false
-        "$PRESENT_VARIABLE !~ /var.*e$/"                              | false
-        "$PRESENT_VARIABLE !~ /^var.*/"                               | true
-        "$EMPTY_VARIABLE !~ /var.*/"                                  | true
-        "$UNDEFINED_VARIABLE !~ /var.*/"                              | true
-        "$PRESENT_VARIABLE !~ /VAR.*/i"                               | false
-      end
-
-      with_them do
-        let(:text) { expression }
-
-        it "evaluates to `#{params[:value].inspect}`" do
-          expect(subject.evaluate).to eq value
-        end
       end
     end
   end
