@@ -46,12 +46,11 @@ describe DeploymentPlatform do
       end
 
       context 'when child group has configured kubernetes cluster', :nested_groups do
-        let!(:child_group1_cluster) { create(:cluster, :provided_by_gcp, :group) }
-        let(:child_group1) { child_group1_cluster.group }
+        let(:child_group1) { create(:group, parent: group) }
+        let!(:child_group1_cluster) { create(:cluster_for_group, groups: [child_group1]) }
 
         before do
           project.update!(group: child_group1)
-          child_group1.update!(parent: group)
         end
 
         it 'returns the Kubernetes platform for the child group' do
@@ -59,11 +58,10 @@ describe DeploymentPlatform do
         end
 
         context 'deeply nested group' do
-          let!(:child_group2_cluster) { create(:cluster, :provided_by_gcp, :group) }
-          let(:child_group2) { child_group2_cluster.group }
+          let(:child_group2) { create(:group, parent: child_group1) }
+          let!(:child_group2_cluster) { create(:cluster_for_group, groups: [child_group2]) }
 
           before do
-            child_group2.update!(parent: child_group1)
             project.update!(group: child_group2)
           end
 
