@@ -121,68 +121,93 @@ GitLab supports a limited set of [CI variables](../../../ci/variables/README.htm
 
 To specify a variable in a query, enclose it in curly braces with a leading percent. For example: `%{ci_environment_slug}`.
 
-### Defining Dashboards for Prometheus Metrics per Project
+### Defining custom dashboards per project
 
-All projects include a GitLab-defined system dashboard, which includes a few key metrics. Optionally, additional dashboards can also be defined by including configuration files in the project repository under `.gitlab/dashboards`. Configuration files nested under subdirectories will not be available in the UI. Each file should define the layout of the dashboard and the prometheus queries used to populate data. Dashboards can be selected from the dropdown in the UI.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/59974) in GitLab 12.1.
 
-#### Relationship to Custom Metrics
+By default, all projects include a GitLab-defined Prometheus dashboard, which
+includes a few key metrics, but you can also define your own custom dashboards.
 
-[Custom Metrics](#adding-additional-metrics-premium) are defined through the UI and, at this point, are unique from metrics defined in dashboard configuration files. Custom Metrics will appear on the system dashboard, as well as support alerting, whereas metrics defined in configuration files do not yet support alerts.
+NOTE: **Note:**
+The custom metrics as defined below do not support alerts, unlike
+[additional metrics](#adding-additional-metrics-premium).
 
-#### Dashboard Configuration
+Dashboards have several components:
 
-Dashboards have several components. A dashboard has many panel groups, which are comprised of panels, which support one or more metrics. The dashboard should be saved with the `.yml` extension.
+- Panel groups, which comprise panels.
+- Panels, which support one or more metrics.
 
-Sample YML Configuration
-```
-dashboard: 'Dashboard Title'
-priority: 2
-panel_groups:
-  - group: 'Group Title'
-    panels:
-      - type: area-chart
-        title: "Chart Title"
-        y_label: "Y-Axis"
-        metrics:
-          - id: metric_of_ages
-            query_range: 'http_requests_total'
-            label: "Metric of Ages"
-            unit: "count"
-```
+To configure a custom dashboard:
 
-The above sample dashboard would display a single area chart. The following sections outline the details of expected properties.
+1. Create a YAML file with the `.yml` extension under your repository's root
+   directory inside `.gitlab/dashboards/`. For example, create
+   `.gitlab/dashboards/prom_alerts.yml` with the following contents:
 
-##### Dashboard Properties
-| Property | Type | Required? | Meaning |
+   ```yaml
+   dashboard: 'Dashboard Title'
+   priority: 2
+   panel_groups:
+     - group: 'Group Title'
+       panels:
+         - type: area-chart
+           title: "Chart Title"
+           y_label: "Y-Axis"
+           metrics:
+             - id: metric_of_ages
+               query_range: 'http_requests_total'
+               label: "Metric of Ages"
+               unit: "count"
+   ```
+
+   The above sample dashboard would display a single area chart. Each file should
+   define the layout of the dashboard and the Prometheus queries used to populate
+   data.
+
+1. Save the file, commit, and push to your repository.
+1. Navigate to your project's **Operations > Metrics** and choose the custom
+   dashboard from the dropdown.
+
+NOTE: **Note:**
+Configuration files nested under subdirectories of `.gitlab/dashboards` are not
+supported and will not be available in the UI.
+
+The following tables outline the details of expected properties.
+
+**Dashboard properties:**
+
+| Property | Type | Required | Description |
 | ------ | ------ | ------ | ------ |
-| `dashboard` | string | required | Heading for the dashboard. Only one dashboard should be defined per file. |
-| `priority` | number | optional, default to definition order | Order to appear in dashboard dropdown, higher priority should be higher in the dropdown. Numbers do not need to be consecutive. |
-| `panel_groups` | array | required | The panel groups which should be on the dashboard. |
+| `dashboard` | string | yes | Heading for the dashboard. Only one dashboard should be defined per file. |
+| `priority` | number | no, default to definition order | Order to appear in dashboard dropdown. Lower number means higher priority, which will be higher in the dropdown. Numbers do not need to be consecutive. |
+| `panel_groups` | array | yes | The panel groups which should be on the dashboard. |
 
-##### Panel Group Properties
-| Property | Type | Required? | Meaning |
+**Panel group (`panel_groups`) properties:**
+
+| Property | Type | Required | Description |
 | ------ | ------ | ------ | ------ |
 | `group` | string | required | Heading for the panel group. |
-| `priority` | number | optional, defaults to order in file | Order to appear on the dashboard, higher priority will be higher on the page. Numbers do not need to be consecutive. |
+| `priority` | number | optional, defaults to order in file | Order to appear on the dashboard. Lower number means higher priority, which will be higher on the page. Numbers do not need to be consecutive. |
 | `panels` | array | required | The panels which should be in the panel group. |
 
-##### Panel Properties
-| Property | Type | Required? | Meaning |
-| ------ | ------ | ------ | ------- |
-| `type` | enum | optional, defaults to `area-chart` | Specifies the chart type to use. Only `area-chart` is currently supported. |
-| `title` | string | required | Heading for the panel. |
-| `y_label` | string | optional, but highly encouraged | Y-Axis label for the panel. |
-| `weight` | number | optional, defaults to order in file | Order to appear within the grouping, higher priority will be higher on the page. Numbers do not need to be consecutive. |
-| `metrics` | array | required | The metrics which should be displayed in the panel. |
+**Panel (`panels`) properties:**
 
-##### Metric Properties
-| Property | Type | Required? | Meaning |
+| Property | Type | Required | Description |
+| ------ | ------ | ------ | ------- |
+| `type` | enum | no, defaults to `area-chart` | Specifies the chart type to use. Only `area-chart` is currently supported. |
+| `title` | string | yes | Heading for the panel. |
+| `y_label` | string | no, but highly encouraged | Y-Axis label for the panel. |
+| `weight` | number | no, defaults to order in file | Order to appear within the grouping. Lower number means higher priority, which will be higher on the page. Numbers do not need to be consecutive. |
+| `metrics` | array | yes | The metrics which should be displayed in the panel. |
+
+**Metrics (`metrics`) properties:**
+
+| Property | Type | Required | Description |
 | ------ | ------ | ------ | ------ |
-| `id` | string | optional | Used for associating dashboard metrics with database records. Must be unique across dashboard configuration files. Required for [alerting](#setting-up-alerts-for-prometheus-metrics-ultimate) (support not yet enabled, see [relevant issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/60319)). |
-| `unit` | string | required | Defines the unit of the query's return data. |
-| `label` | string | optional, but highly encouraged | Defines the legend-label for the query. Should be unique within the panel's metrics. |
-| `query` | string | required unless `query_range` is defined | Defines the Prometheus query to be used to populate the chart/panel. If defined, the `query` endpoint of the [Prometheus API](https://prometheus.io/docs/prometheus/latest/querying/api/) will be utilized. |
-| `query_range` | string | required unless `query` is defined | Defines the Prometheus query to be used to populate the chart/panel. If defined, the `query_range` endpoint of the [Prometheus API](https://prometheus.io/docs/prometheus/latest/querying/api/) will be utilized. |
+| `id` | string | no | Used for associating dashboard metrics with database records. Must be unique across dashboard configuration files. Required for [alerting](#setting-up-alerts-for-prometheus-metrics-ultimate) (support not yet enabled, see [relevant issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/60319)). |
+| `unit` | string | yes | Defines the unit of the query's return data. |
+| `label` | string | no, but highly encouraged | Defines the legend-label for the query. Should be unique within the panel's metrics. |
+| `query` | string | yes if `query_range` is not defined | Defines the Prometheus query to be used to populate the chart/panel. If defined, the `query` endpoint of the [Prometheus API](https://prometheus.io/docs/prometheus/latest/querying/api/) will be utilized. |
+| `query_range` | string | yes if `query` is not defined | Defines the Prometheus query to be used to populate the chart/panel. If defined, the `query_range` endpoint of the [Prometheus API](https://prometheus.io/docs/prometheus/latest/querying/api/) will be utilized. |
 
 ### Setting up alerts for Prometheus metrics **(ULTIMATE)**
 
