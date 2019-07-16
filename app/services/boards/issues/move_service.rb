@@ -11,26 +11,51 @@ module Boards
       end
 
       def execute_multiple(issues)
-        return false if issues.empty?
+        return execute_multiple_empty_result if issues.empty?
 
+        handled_issues = []
         last_inserted_issue_id = nil
-        issues.map do |issue|
+        count = issues.each.inject(0) do |moved_count, issue|
           issue_modification_params = issue_params(issue)
-          next if issue_modification_params.empty?
+          next moved_count if issue_modification_params.empty?
 
           if last_inserted_issue_id
-            issue_modification_params[:move_between_ids] = move_between_ids({ move_after_id: nil, move_before_id: last_inserted_issue_id })
+            issue_modification_params[:move_between_ids] = move_below(last_inserted_issue_id)
           end
 
           last_inserted_issue_id = issue.id
-          move_single_issue(issue, issue_modification_params)
-        end.all?
+          handled_issue = move_single_issue(issue, issue_modification_params)
+          handled_issues << present_issue_entity(handled_issue) if handled_issue
+          handled_issue && handled_issue.valid? ? moved_count + 1 : moved_count
+        end
+
+        {
+          count: count,
+          success: count == issues.size,
+          issues: handled_issues
+        }
       end
 
       private
 
+      def present_issue_entity(issue)
+        ::API::Entities::Issue.represent(issue)
+      end
+
+      def execute_multiple_empty_result
+        @execute_multiple_empty_result ||= {
+          count: 0,
+          success: false,
+          issues: []
+        }
+      end
+
+      def move_below(id)
+        move_between_ids({ move_after_id: nil, move_before_id: id })
+      end
+
       def move_single_issue(issue, issue_modification_params)
-        return false unless can?(current_user, :update_issue, issue)
+        return unless can?(current_user, :update_issue, issue)
 
         update(issue, issue_modification_params)
       end
