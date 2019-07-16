@@ -47,7 +47,7 @@ module QA
             page.install!(:runner) if @install_runner
 
             page.await_installed(:ingress) if @install_ingress
-            page.await_uninstallable(:prometheus) if @install_prometheus
+            page.await_installed(:prometheus) if @install_prometheus
             page.await_installed(:runner) if @install_runner
 
             if @install_ingress
