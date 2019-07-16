@@ -11,7 +11,7 @@
       - addtotree_toggle_attributes = { title: _("You can only add files when you are on a branch"), data: { container: 'body' }, class: 'disabled has-tooltip' }
 
   - if vue_file_list_enabled?
-    #js-repo-breadcrumb
+    #js-repo-breadcrumb{ data: breadcrumb_data_attributes }
   - else
     %ul.breadcrumb.repo-breadcrumb
       %li.breadcrumb-item

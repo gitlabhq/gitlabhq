@@ -1,12 +1,14 @@
 import { shallowMount, RouterLinkStub } from '@vue/test-utils';
+import { GlDropdown } from '@gitlab/ui';
 import Breadcrumbs from '~/repository/components/breadcrumbs.vue';
 
 let vm;
 
-function factory(currentPath) {
+function factory(currentPath, extraProps = {}) {
   vm = shallowMount(Breadcrumbs, {
     propsData: {
       currentPath,
+      ...extraProps,
     },
     stubs: {
       RouterLink: RouterLinkStub,
@@ -40,5 +42,21 @@ describe('Repository breadcrumbs component', () => {
         .at(2)
         .attributes('aria-current'),
     ).toEqual('page');
+  });
+
+  it('does not render add to tree dropdown when permissions are false', () => {
+    factory('/', { canCollaborate: false });
+
+    vm.setData({ userPermissions: { forkProject: false, createMergeRequestIn: false } });
+
+    expect(vm.find(GlDropdown).exists()).toBe(false);
+  });
+
+  it('renders add to tree dropdown when permissions are true', () => {
+    factory('/', { canCollaborate: true });
+
+    vm.setData({ userPermissions: { forkProject: true, createMergeRequestIn: true } });
+
+    expect(vm.find(GlDropdown).exists()).toBe(true);
   });
 });
