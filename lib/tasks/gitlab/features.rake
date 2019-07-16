@@ -10,14 +10,22 @@ namespace :gitlab do
       set_rugged_feature_flags(false)
       puts 'All Rugged feature flags were disabled.'
     end
+
+    task unset_rugged: :environment do
+      set_rugged_feature_flags(nil)
+      puts 'All Rugged feature flags were unset.'
+    end
   end
 
   def set_rugged_feature_flags(status)
     Gitlab::Git::RuggedImpl::Repository::FEATURE_FLAGS.each do |flag|
-      if status
-        Feature.enable(flag)
-      else
+      case status
+      when nil
         Feature.get(flag).remove
+      when true
+        Feature.enable(flag)
+      when false
+        Feature.disable(flag)
       end
     end
   end
