@@ -13,6 +13,7 @@ module Gitlab
     MAX_INCLUDE_DEPTH = 5
     DEFAULT_ADOC_ATTRS = {
         'showtitle' => true,
+        'sectanchors' => true,
         'idprefix' => 'user-content-',
         'idseparator' => '-',
         'env' => 'gitlab',

@@ -96,6 +96,75 @@ module Gitlab
         end
       end
 
+      context 'with passthrough' do
+        it 'removes non heading ids' do
+          input = <<~ADOC
+            ++++
+            <h2 id="foo">Title</h2>
+            ++++
+          ADOC
+
+          output = <<~HTML
+           <h2>Title</h2>
+          HTML
+
+          expect(render(input, context)).to include(output.strip)
+        end
+      end
+
+      context 'with section anchors' do
+        it 'preserves ids and links' do
+          input = <<~ADOC
+            = Title
+
+            == First section
+
+            This is the first section.
+
+            == Second section
+
+            This is the second section.
+
+            == Thunder ⚡ !
+
+            This is the third section.
+          ADOC
+
+          output = <<~HTML
+           <h1>Title</h1>
+           <div>
+           <h2 id="user-content-first-section">
+           <a class="anchor" href="#user-content-first-section"></a>First section</h2>
+           <div>
+           <div>
+           <p>This is the first section.</p>
+           </div>
+           </div>
+           </div>
+           <div>
+           <h2 id="user-content-second-section">
+           <a class="anchor" href="#user-content-second-section"></a>Second section</h2>
+           <div>
+           <div>
+           <p>This is the second section.</p>
+           </div>
+           </div>
+           </div>
+           <div>
+           <h2 id="user-content-thunder">
+           <a class="anchor" href="#user-content-thunder"></a>Thunder ⚡ !</h2>
+           <div>
+           <div>
+           <p>This is the third section.</p>
+           </div>
+           </div>
+           </div>
+          HTML
+
+          expect(render(input, context)).to include(output.strip)
+        end
+      end
+
       context 'with checklist' do
         it 'preserves classes' do
           input = <<~ADOC

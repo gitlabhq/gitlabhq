@@ -1,0 +1,5 @@
+---
+title: "Enable section anchors in Asciidoctor"
+merge_request: 30666
+author: Guillaume Grossetie
+type: added
