@@ -4,7 +4,7 @@
   - next if disallowed || restricted
 
   .form-check
-    = form.radio_button model_method, level, checked: (selected_level == level), class: 'form-check-input', data: { track_label: "blank_project", track_event: "activate_form_input", track_property: "#{model_method}", track_value: "#{level}" }
+    = form.radio_button model_method, level, checked: (selected_level == level), class: 'form-check-input', data: { track_label: "blank_project", track_event: "activate_form_input", track_property: "#{model_method}_#{level}", track_value: "" }
     = form.label "#{model_method}_#{level}", class: 'form-check-label' do
       = visibility_level_icon(level)
       .option-title
