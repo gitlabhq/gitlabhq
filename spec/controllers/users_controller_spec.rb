@@ -291,7 +291,7 @@ describe UsersController do
       it 'response with snippets json data' do
         get :snippets, params: { username: user.username }, format: :json
         expect(response).to have_gitlab_http_status(200)
-        expect(JSON.parse(response.body)).to have_key('html')
+        expect(json_response).to have_key('html')
       end
     end
 

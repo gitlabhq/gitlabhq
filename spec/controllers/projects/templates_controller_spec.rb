@@ -7,7 +7,6 @@ describe Projects::TemplatesController do
   let(:user) { create(:user) }
   let(:file_path_1) { '.gitlab/issue_templates/issue_template.md' }
   let(:file_path_2) { '.gitlab/merge_request_templates/merge_request_template.md' }
-  let(:body) { JSON.parse(response.body) }
   let!(:file_1) { project.repository.create_file(user, file_path_1, 'issue content', message: 'message', branch_name: 'master') }
   let!(:file_2) { project.repository.create_file(user, file_path_2, 'merge request content', message: 'message', branch_name: 'master') }
 
@@ -17,8 +16,8 @@ describe Projects::TemplatesController do
         get(:show, params: { namespace_id: project.namespace, template_type: 'issue', key: 'issue_template', project_id: project }, format: :json)
 
         expect(response.status).to eq(200)
-        expect(body['name']).to eq('issue_template')
-        expect(body['content']).to eq('issue content')
+        expect(json_response['name']).to eq('issue_template')
+        expect(json_response['content']).to eq('issue content')
       end
     end
 
@@ -27,8 +26,8 @@ describe Projects::TemplatesController do
         get(:show, params: { namespace_id: project.namespace, template_type: 'merge_request', key: 'merge_request_template', project_id: project }, format: :json)
 
         expect(response.status).to eq(200)
-        expect(body['name']).to eq('merge_request_template')
-        expect(body['content']).to eq('merge request content')
+        expect(json_response['name']).to eq('merge_request_template')
+        expect(json_response['content']).to eq('merge request content')
       end
     end
 

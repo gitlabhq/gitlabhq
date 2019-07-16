@@ -103,7 +103,7 @@ describe Projects::WikisController do
     it 'renders json in a correct format' do
       post :preview_markdown, params: { namespace_id: project.namespace, project_id: project, id: 'page/path', text: '*Markdown* text' }
 
-      expect(JSON.parse(response.body).keys).to match_array(%w(body references))
+      expect(json_response.keys).to match_array(%w(body references))
     end
   end
 

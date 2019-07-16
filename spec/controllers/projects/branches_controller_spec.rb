@@ -495,10 +495,8 @@ describe Projects::BranchesController do
               search: 'master'
             }
 
-        parsed_response = JSON.parse(response.body)
-
-        expect(parsed_response.length).to eq 1
-        expect(parsed_response.first).to eq 'master'
+        expect(json_response.length).to eq 1
+        expect(json_response.first).to eq 'master'
       end
     end
 
@@ -591,8 +589,7 @@ describe Projects::BranchesController do
     end
 
     it 'returns the commit counts behind and ahead of default branch' do
-      parsed_response = JSON.parse(response.body)
-      expect(parsed_response).to eq(
+      expect(json_response).to eq(
         "fix" => { "behind" => 29, "ahead" => 2 },
         "branch-merged" => { "behind" => 1, "ahead" => 0 },
         "add-pdf-file" => { "behind" => 0, "ahead" => 3 }

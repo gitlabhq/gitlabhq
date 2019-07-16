@@ -41,7 +41,7 @@ describe Admin::ApplicationSettingsController do
     it 'returns JSON data' do
       get :usage_data, format: :json
 
-      body = JSON.parse(response.body)
+      body = json_response
       expect(body["version"]).to eq(Gitlab::VERSION)
       expect(body).to include('counts')
       expect(response.status).to eq(200)

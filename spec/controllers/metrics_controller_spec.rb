@@ -5,7 +5,6 @@ require 'spec_helper'
 describe MetricsController do
   include StubENV
 
-  let(:json_response) { JSON.parse(response.body) }
   let(:metrics_multiproc_dir) { Dir.mktmpdir }
   let(:whitelisted_ip) { '127.0.0.1' }
   let(:whitelisted_ip_range) { '10.0.0.0/24' }

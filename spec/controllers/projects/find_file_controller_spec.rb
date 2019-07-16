@@ -53,10 +53,9 @@ describe Projects::FindFileController do
       it 'returns an array of file path list' do
         go
 
-        json = JSON.parse(response.body)
         is_expected.to respond_with(:success)
-        expect(json).not_to eq(nil)
-        expect(json.length).to be >= 0
+        expect(json_response).not_to eq(nil)
+        expect(json_response.length).to be >= 0
       end
     end
 

@@ -163,8 +163,4 @@ describe 'Git LFS File Locking API' do
   def do_get(url, params = nil, headers = nil)
     get(url, params: (params || {}), headers: (headers || {}).merge('Content-Type' => LfsRequest::CONTENT_TYPE))
   end
-
-  def json_response
-    @json_response ||= JSON.parse(response.body)
-  end
 end

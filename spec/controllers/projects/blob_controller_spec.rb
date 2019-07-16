@@ -160,7 +160,7 @@ describe Projects::BlobController do
         it 'renders diff context lines Gitlab::Diff::Line array' do
           do_get(since: 1, to: 2, offset: 0, from_merge_request: true)
 
-          lines = JSON.parse(response.body)
+          lines = json_response
 
           expect(lines.size).to eq(diff_lines.size)
           lines.each do |line|
@@ -173,7 +173,7 @@ describe Projects::BlobController do
         it 'handles full being true' do
           do_get(full: true, from_merge_request: true)
 
-          lines = JSON.parse(response.body)
+          lines = json_response
 
           expect(lines.size).to eq(diff_lines.size)
         end

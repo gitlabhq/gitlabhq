@@ -46,7 +46,7 @@ shared_examples 'issuable notes filter' do
     user.set_notes_filter(UserPreference::NOTES_FILTERS[:only_comments], issuable)
 
     get :discussions, params: params
-    discussions = JSON.parse(response.body)
+    discussions = json_response
 
     expect(discussions.count).to eq(1)
     expect(discussions.first["notes"].first["system"]).to be(false)
@@ -56,7 +56,7 @@ shared_examples 'issuable notes filter' do
     user.set_notes_filter(UserPreference::NOTES_FILTERS[:only_activity], issuable)
 
     get :discussions, params: params
-    discussions = JSON.parse(response.body)
+    discussions = json_response
 
     expect(discussions.count).to eq(1)
     expect(discussions.first["notes"].first["system"]).to be(true)

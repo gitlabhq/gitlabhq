@@ -89,7 +89,7 @@ describe API::Search do
           it 'returns empty array' do
             get api('/search', user), params: { scope: 'milestones', search: 'awesome' }
 
-            milestones = JSON.parse(response.body)
+            milestones = json_response
 
             expect(milestones).to be_empty
           end
@@ -356,7 +356,7 @@ describe API::Search do
           it 'returns empty array' do
             get api("/projects/#{project.id}/search", user), params: { scope: 'milestones', search: 'awesome' }
 
-            milestones = JSON.parse(response.body)
+            milestones = json_response
 
             expect(milestones).to be_empty
           end

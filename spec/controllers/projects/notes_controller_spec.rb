@@ -29,7 +29,7 @@ describe Projects::NotesController do
       }
     end
 
-    let(:parsed_response) { JSON.parse(response.body).with_indifferent_access }
+    let(:parsed_response) { json_response.with_indifferent_access }
     let(:note_json) { parsed_response[:notes].first }
 
     before do
@@ -614,7 +614,7 @@ describe Projects::NotesController do
           it "returns the name of the resolving user" do
             post :resolve, params: request_params.merge(html: true)
 
-            expect(JSON.parse(response.body)["resolved_by"]).to eq(user.name)
+            expect(json_response["resolved_by"]).to eq(user.name)
           end
 
           it "returns status 200" do
