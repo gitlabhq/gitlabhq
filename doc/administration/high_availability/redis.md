@@ -1,3 +1,7 @@
+---
+type: reference
+---
+
 # Configuring Redis for Scaling and High Availability
 
 ## Provide your own Redis instance **(CORE ONLY)**

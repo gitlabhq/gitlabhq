@@ -1,6 +1,8 @@
-# Working with the bundled Consul service **(PREMIUM ONLY)**
+---
+type: reference
+---
 
-## Overview
+# Working with the bundled Consul service **(PREMIUM ONLY)**
 
 As part of its High Availability stack, GitLab Premium includes a bundled version of [Consul](https://www.consul.io/) that can be managed through `/etc/gitlab/gitlab.rb`.
 

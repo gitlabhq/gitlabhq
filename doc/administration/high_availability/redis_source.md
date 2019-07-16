@@ -1,3 +1,7 @@
+---
+type: reference
+---
+
 # Configuring non-Omnibus Redis for GitLab HA
 
 This is the documentation for configuring a Highly Available Redis setup when
