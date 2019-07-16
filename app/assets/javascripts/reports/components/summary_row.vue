@@ -44,10 +44,16 @@ export default {
 };
 </script>
 <template>
-  <div class="report-block-list-issue report-block-list-issue-parent">
-    <div class="report-block-list-icon append-right-10 prepend-left-5">
-      <gl-loading-icon v-if="statusIcon === 'loading'" css-class="report-block-list-loading-icon" />
-      <ci-icon v-else :status="iconStatus" />
+  <div
+    class="report-block-list-issue report-block-list-issue-parent justify-content-center align-items-center"
+  >
+    <div class="report-block-list-icon append-right-default">
+      <gl-loading-icon
+        v-if="statusIcon === 'loading'"
+        css-class="report-block-list-loading-icon"
+        size="md"
+      />
+      <ci-icon v-else :status="iconStatus" :size="24" />
     </div>
 
     <div class="report-block-list-issue-description">
