@@ -279,7 +279,7 @@ Error: remote error: tls: bad certificate
 To avoid installation errors:
 
 - Before starting the installation of applications, make sure that time is synchronized
-between your GitLab server and your Kubernetes cluster.
+  between your GitLab server and your Kubernetes cluster.
 - Ensure certificates are not out of sync. When installing applications, GitLab expects a new cluster with no previous installation of Helm.
 
   You can confirm that the certificates match via `kubectl`:
