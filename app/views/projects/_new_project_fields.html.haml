@@ -54,7 +54,7 @@
   .form-group.row.initialize-with-readme-setting
     %div{ :class => "col-sm-12" }
       .form-check
-        = check_box_tag 'project[initialize_with_readme]', '1', false, class: 'form-check-input qa-initialize-with-readme-checkbox', data: { track_label: "#{track_label}", track_event: "activate_form_input", track_property: "init_with_readme" }
+        = check_box_tag 'project[initialize_with_readme]', '1', false, class: 'form-check-input qa-initialize-with-readme-checkbox', data: { track_label: "#{track_label}", track_event: "activate_form_input", track_property: "init_with_readme", track_value: "" }
         = label_tag 'project[initialize_with_readme]', class: 'form-check-label' do
           .option-title
             %strong= s_('ProjectsNew|Initialize repository with a README')
@@ -62,4 +62,4 @@
             = s_('ProjectsNew|Allows you to immediately clone this project’s repository. Skip this if you plan to push up an existing repository.')
 
 = f.submit _('Create project'), class: "btn btn-success project-submit", data: { track_label: "#{track_label}", track_event: "click_button", track_property: "create_project", track_value: "" }
-= link_to _('Cancel'), dashboard_projects_path, class: 'btn btn-cancel', data: { track_label: "#{track_label}", track_event: "click_button", track_property: "cancel" }
+= link_to _('Cancel'), dashboard_projects_path, class: 'btn btn-cancel', data: { track_label: "#{track_label}", track_event: "click_button", track_property: "cancel", track_value: "" }

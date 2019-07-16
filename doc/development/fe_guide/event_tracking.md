@@ -47,7 +47,7 @@ There's a more convenient solution to this problem. When working with HAML templ
 Below is an example of `data-track-*` attributes assigned to a button in HAML:
 
 ```ruby
-%button.btn{ data: { track_label: "create_from_template", track_property: "template_preview", track_event: "click_button", track_value: "my-template" } }
+%button.btn{ data: { track_label: "template_preview", track_property: "my-template", track_event: "click_button", track_value: "" } }
 ```
 
 By calling `bindTrackableContainer('.my-container')`, click handlers get bound to all elements located in `.my-container` provided that they have the necessary `data-track-*` attributes assigned to them.

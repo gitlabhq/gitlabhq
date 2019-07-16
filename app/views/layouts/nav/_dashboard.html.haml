@@ -2,7 +2,7 @@
 -# https://gitlab.com/gitlab-org/gitlab-ce/issues/49713 for more information.
 %ul.list-unstyled.navbar-sub-nav
   - if dashboard_nav_link?(:projects)
-    = nav_link(path: ['root#index', 'projects#trending', 'projects#starred', 'dashboard/projects#index'], html_options: { id: 'nav-projects-dropdown', class: "home dropdown header-projects qa-projects-dropdown", data: { track_label: "projects_dropdown", track_event: "click_dropdown" } }) do
+    = nav_link(path: ['root#index', 'projects#trending', 'projects#starred', 'dashboard/projects#index'], html_options: { id: 'nav-projects-dropdown', class: "home dropdown header-projects qa-projects-dropdown", data: { track_label: "projects_dropdown", track_event: "click_dropdown", track_value: "" } }) do
       %button.btn{ type: 'button', data: { toggle: "dropdown" } }
         = _('Projects')
         = sprite_icon('angle-down', css_class: 'caret-down')
@@ -10,7 +10,7 @@
         = render "layouts/nav/projects_dropdown/show"
 
   - if dashboard_nav_link?(:groups)
-    = nav_link(controller: ['dashboard/groups', 'explore/groups'], html_options: { id: 'nav-groups-dropdown', class: "home dropdown header-groups qa-groups-dropdown", data: { track_label: "groups_dropdown", track_event: "click_dropdown" } }) do
+    = nav_link(controller: ['dashboard/groups', 'explore/groups'], html_options: { id: 'nav-groups-dropdown', class: "home dropdown header-groups qa-groups-dropdown", data: { track_label: "groups_dropdown", track_event: "click_dropdown", track_value: "" } }) do
       %button.btn{ type: 'button', data: { toggle: "dropdown" } }
         = _('Groups')
         = sprite_icon('angle-down', css_class: 'caret-down')
