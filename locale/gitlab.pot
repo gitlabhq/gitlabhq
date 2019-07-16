@@ -9733,6 +9733,9 @@ msgstr ""
 msgid "Some email servers do not support overriding the email sender name. Enable this option to include the name of the author of the issue, merge request or comment in the email body instead."
 msgstr ""
 
+msgid "Someone edited the issue at the same time you did. Please check out %{linkStart}the issue%{linkEnd} and make sure your changes will not unintentionally remove theirs."
+msgstr ""
+
 msgid "Someone edited this %{issueType} at the same time you did. The description has been updated and you will need to make your changes again."
 msgstr ""
 
@@ -12514,6 +12517,9 @@ msgid "You won't be able to pull or push project code via SSH until you add an S
 msgstr ""
 
 msgid "You'll need to use different branch names to get a valid comparison."
+msgstr ""
+
+msgid "You're not allowed to %{tag_start}edit%{tag_end} files in this project directly. Please fork this project, make your changes there, and submit a merge request."
 msgstr ""
 
 msgid "You're not allowed to make changes to this project directly. A fork of this project has been created that you can make changes in, so you can submit a merge request."
