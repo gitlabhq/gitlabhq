@@ -15,8 +15,7 @@ class DashboardGroupMilestone < GlobalMilestone
     milestones = Milestone.of_groups(groups.select(:id))
              .reorder_by_due_date_asc
              .order_by_name_asc
-             .active
     milestones = milestones.search_title(params[:search_title]) if params[:search_title].present?
-    milestones.map { |m| new(m) }
+    Milestone.filter_by_state(milestones, params[:state]).map { |m| new(m) }
   end
 end
