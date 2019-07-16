@@ -1,0 +1,5 @@
+---
+title: Fix bug in dashboard display of closed milestones
+merge_request: 30820
+author: blunceford
+type: fixed
