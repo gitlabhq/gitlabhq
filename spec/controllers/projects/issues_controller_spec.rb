@@ -444,7 +444,7 @@ describe Projects::IssuesController do
         it 'renders json with recaptcha_html' do
           subject
 
-          expect(JSON.parse(response.body)).to have_key('recaptcha_html')
+          expect(json_response).to have_key('recaptcha_html')
         end
       end
     end
@@ -484,10 +484,8 @@ describe Projects::IssuesController do
       it 'returns last edited time' do
         go(id: issue.iid)
 
-        data = JSON.parse(response.body)
-
-        expect(data).to include('updated_at')
-        expect(data['updated_at']).to eq(issue.last_edited_at.to_time.iso8601)
+        expect(json_response).to include('updated_at')
+        expect(json_response['updated_at']).to eq(issue.last_edited_at.to_time.iso8601)
       end
     end
 
@@ -520,10 +518,8 @@ describe Projects::IssuesController do
       it 'returns the necessary data' do
         go(id: issue.iid)
 
-        data = JSON.parse(response.body)
-
-        expect(data).to include('title_text', 'description', 'description_text')
-        expect(data).to include('task_status', 'lock_version')
+        expect(json_response).to include('title_text', 'description', 'description_text')
+        expect(json_response).to include('task_status', 'lock_version')
       end
     end
   end
@@ -692,9 +688,7 @@ describe Projects::IssuesController do
 
           update_issue(issue_params: { assignee_ids: [assignee.id] })
 
-          body = JSON.parse(response.body)
-
-          expect(body['assignees'].first.keys)
+          expect(json_response['assignees'].first.keys)
             .to match_array(%w(id name username avatar_url state web_url))
         end
       end
@@ -1314,7 +1308,7 @@ describe Projects::IssuesController do
         it 'filters notes that the user should not see' do
           get :discussions, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }
 
-          expect(JSON.parse(response.body).count).to eq(1)
+          expect(json_response.count).to eq(1)
         end
 
         it 'does not result in N+1 queries' do

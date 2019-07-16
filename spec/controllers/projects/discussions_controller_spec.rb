@@ -112,7 +112,7 @@ describe Projects::DiscussionsController do
         it "returns the name of the resolving user" do
           post :resolve, params: request_params
 
-          expect(JSON.parse(response.body)['resolved_by']['name']).to eq(user.name)
+          expect(json_response['resolved_by']['name']).to eq(user.name)
         end
 
         it "returns status 200" do
@@ -135,7 +135,7 @@ describe Projects::DiscussionsController do
           it "returns truncated diff lines" do
             post :resolve, params: request_params
 
-            expect(JSON.parse(response.body)['truncated_diff_lines']).to be_present
+            expect(json_response['truncated_diff_lines']).to be_present
           end
         end
       end

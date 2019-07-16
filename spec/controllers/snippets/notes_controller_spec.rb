@@ -26,7 +26,7 @@ describe Snippets::NotesController do
       end
 
       it "returns not empty array of notes" do
-        expect(JSON.parse(response.body)["notes"].empty?).to be_falsey
+        expect(json_response["notes"].empty?).to be_falsey
       end
     end
 
@@ -97,7 +97,7 @@ describe Snippets::NotesController do
         it "returns 1 note" do
           get :index, params: { snippet_id: private_snippet }
 
-          expect(JSON.parse(response.body)['notes'].count).to eq(1)
+          expect(json_response['notes'].count).to eq(1)
         end
       end
     end
@@ -114,7 +114,7 @@ describe Snippets::NotesController do
       it "does not return any note" do
         get :index, params: { snippet_id: public_snippet }
 
-        expect(JSON.parse(response.body)['notes'].count).to eq(0)
+        expect(json_response['notes'].count).to eq(0)
       end
     end
   end

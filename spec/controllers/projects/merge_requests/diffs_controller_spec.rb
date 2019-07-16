@@ -112,7 +112,7 @@ describe Projects::MergeRequests::DiffsController do
           it 'only renders the diffs for the path given' do
             diff_for_path(old_path: existing_path, new_path: existing_path)
 
-            paths = JSON.parse(response.body)["diff_files"].map { |file| file['new_path'] }
+            paths = json_response["diff_files"].map { |file| file['new_path'] }
 
             expect(paths).to include(existing_path)
           end
