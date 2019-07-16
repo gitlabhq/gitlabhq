@@ -2,7 +2,7 @@
 
 module CycleAnalytics
   class GroupLevel
-    include BaseMethods
+    include LevelBase
     attr_reader :options
 
     def initialize(options:)

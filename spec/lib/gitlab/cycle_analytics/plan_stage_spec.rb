@@ -29,11 +29,11 @@ describe Gitlab::CycleAnalytics::PlanStage do
   end
 
   describe '#events' do
-    it 'exposes issues with metrics' do
-      result = stage.events
+    subject { stage.events }
 
-      expect(result.count).to eq(2)
-      expect(result.map { |event| event[:title] }).to contain_exactly(issue_1.title, issue_2.title)
+    it 'exposes issues with metrics' do
+      expect(subject.count).to eq(2)
+      expect(subject.map { |event| event[:title] }).to contain_exactly(issue_1.title, issue_2.title)
     end
   end
 
@@ -65,11 +65,11 @@ describe Gitlab::CycleAnalytics::PlanStage do
     end
 
     describe '#events' do
-      it 'exposes merge requests that close issues' do
-        result = stage.events
+      subject { stage.events }
 
-        expect(result.count).to eq(2)
-        expect(result.map { |event| event[:title] }).to contain_exactly(issue_2_1.title, issue_2_2.title)
+      it 'exposes merge requests that close issues' do
+        expect(subject.count).to eq(2)
+        expect(subject.map { |event| event[:title] }).to contain_exactly(issue_2_1.title, issue_2_2.title)
       end
     end
 
@@ -88,18 +88,16 @@ describe Gitlab::CycleAnalytics::PlanStage do
       end
 
       describe '#events' do
-        it 'exposes merge requests that close issues' do
-          result = stage.events
+        subject { stage.events }
 
-          expect(result.count).to eq(4)
-          expect(result.map { |event| event[:title] }).to contain_exactly(issue_2_1.title, issue_2_2.title, issue_3_1.title, issue_3_2.title)
+        it 'exposes merge requests that close issues' do
+          expect(subject.count).to eq(4)
+          expect(subject.map { |event| event[:title] }).to contain_exactly(issue_2_1.title, issue_2_2.title, issue_3_1.title, issue_3_2.title)
         end
 
         it 'exposes merge requests that close issues with full path for subgroup' do
-          result = stage.events
-
-          expect(result.count).to eq(4)
-          expect(result.find { |event| event[:title] == issue_3_1.title }[:url]).to include("#{subgroup.full_path}")
+          expect(subject.count).to eq(4)
+          expect(subject.find { |event| event[:title] == issue_3_1.title }[:url]).to include("#{subgroup.full_path}")
         end
       end
     end

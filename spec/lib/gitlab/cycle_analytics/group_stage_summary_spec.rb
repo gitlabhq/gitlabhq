@@ -7,6 +7,7 @@ describe Gitlab::CycleAnalytics::GroupStageSummary do
   let(:project_2) { create(:project, :repository, namespace: group) }
   let(:from) { 1.day.ago }
   let(:user) { create(:user, :admin) }
+
   subject { described_class.new(group, from: Time.now, current_user: user).data }
 
   describe "#new_issues" do

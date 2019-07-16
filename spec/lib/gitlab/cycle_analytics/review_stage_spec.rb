@@ -35,13 +35,14 @@ describe Gitlab::CycleAnalytics::ReviewStage do
   end
 
   describe '#events' do
-    it 'exposes merge requests that close issues' do
-      result = stage.events
+    subject { stage.events }
 
-      expect(result.count).to eq(2)
-      expect(result.map { |event| event[:title] }).to contain_exactly(mr_1.title, mr_2.title)
+    it 'exposes merge requests that close issues' do
+      expect(subject.count).to eq(2)
+      expect(subject.map { |event| event[:title] }).to contain_exactly(mr_1.title, mr_2.title)
     end
   end
+
   context 'when group is given' do
     let(:user) { create(:user) }
     let(:group) { create(:group) }
@@ -77,11 +78,11 @@ describe Gitlab::CycleAnalytics::ReviewStage do
     end
 
     describe '#events' do
-      it 'exposes merge requests that close issues' do
-        result = stage.events
+      subject { stage.events }
 
-        expect(result.count).to eq(2)
-        expect(result.map { |event| event[:title] }).to contain_exactly(mr_2_1.title, mr_2_2.title)
+      it 'exposes merge requests that close issues' do
+        expect(subject.count).to eq(2)
+        expect(subject.map { |event| event[:title] }).to contain_exactly(mr_2_1.title, mr_2_2.title)
       end
     end
   end

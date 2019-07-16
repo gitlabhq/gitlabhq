@@ -2,7 +2,7 @@
 
 module CycleAnalytics
   class ProjectLevel
-    include BaseMethods
+    include LevelBase
     attr_reader :project, :options
 
     def initialize(project, options:)

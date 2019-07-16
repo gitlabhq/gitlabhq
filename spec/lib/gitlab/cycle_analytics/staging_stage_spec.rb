@@ -39,11 +39,11 @@ describe Gitlab::CycleAnalytics::StagingStage do
   end
 
   describe '#events' do
-    it 'exposes builds connected to merge request' do
-      result = stage.events
+    subject { stage.events }
 
-      expect(result.count).to eq(2)
-      expect(result.map { |event| event[:name] }).to contain_exactly(build_1.name, build_2.name)
+    it 'exposes builds connected to merge request' do
+      expect(subject.count).to eq(2)
+      expect(subject.map { |event| event[:name] }).to contain_exactly(build_1.name, build_2.name)
     end
   end
 
@@ -84,11 +84,11 @@ describe Gitlab::CycleAnalytics::StagingStage do
     end
 
     describe '#events' do
-      it 'exposes merge requests that close issues' do
-        result = stage.events
+      subject { stage.events }
 
-        expect(result.count).to eq(2)
-        expect(result.map { |event| event[:name] }).to contain_exactly(build_1.name, build_2.name)
+      it 'exposes merge requests that close issues' do
+        expect(subject.count).to eq(2)
+        expect(subject.map { |event| event[:name] }).to contain_exactly(build_1.name, build_2.name)
       end
     end
   end
