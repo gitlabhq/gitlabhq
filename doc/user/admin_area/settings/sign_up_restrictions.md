@@ -4,8 +4,8 @@ type: reference
 
 # Sign-up restrictions
 
-You can block email addresses of specific domains, or whitelist only some
-specific domains via the **Application Settings** in the Admin area.
+By implementing sign-up restrictions, you can blacklist or whitelist email addresses
+belonging to specific domains.
 
 >**Note**: These restrictions are only applied during sign-up. An admin is
 able to add a user through the admin panel with a disallowed domain. Also
@@ -24,17 +24,21 @@ domains list.
 > [Introduced][ce-5259] in GitLab 8.10.
 
 With this feature enabled, you can block email addresses of a specific domain
-from creating an account on your GitLab server. This is particularly useful to
-prevent spam. Disposable email addresses are usually used by malicious users to
-create dummy accounts and spam issues.
+from creating an account on your GitLab server. This is particularly useful to prevent spam. Disposable email addresses are usually used by malicious users to create dummy accounts and spam issues.
 
 ## Settings
 
-This feature can be activated via the **Application Settings** in the Admin area,
-and you have the option of entering the list manually, or uploading a file with
-the list.
+To access this feature:
 
-Both whitelist and blacklist accept wildcards, so for example, you can use
+1. Navigate to the **Settings > General** in the Admin area.
+1. Expand the **Sign-up restrictions** section.
+
+For the:
+
+- Blacklist, you can enter the list manually, or upload a `.txt` file with it. 
+- Whitelist you must enter the list manually.
+
+Both the whitelist and blacklist accept wildcards. For example, you can use
 `*.company.com` to accept every `company.com` subdomain, or `*.io` to block all
 domains ending in `.io`. Domains should be separated by a whitespace,
 semicolon, comma, or a new line.
