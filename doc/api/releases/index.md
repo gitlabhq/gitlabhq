@@ -6,7 +6,7 @@
 
 ## List Releases
 
-Paginated list of Releases, sorted by `created_at`.
+Paginated list of Releases, sorted by `released_at`.
 
 ```
 GET /projects/:id/releases
@@ -32,6 +32,7 @@ Example response:
       "name":"Awesome app v0.2 beta",
       "description_html":"\u003ch2 dir=\"auto\"\u003e\n\u003ca id=\"user-content-changelog\" class=\"anchor\" href=\"#changelog\" aria-hidden=\"true\"\u003e\u003c/a\u003eCHANGELOG\u003c/h2\u003e\n\u003cul dir=\"auto\"\u003e\n\u003cli\u003eEscape label and milestone titles to prevent XSS in GFM autocomplete. !2740\u003c/li\u003e\n\u003cli\u003ePrevent private snippets from being embeddable.\u003c/li\u003e\n\u003cli\u003eAdd subresources removal to member destroy service.\u003c/li\u003e\n\u003c/ul\u003e",
       "created_at":"2019-01-03T01:56:19.539Z",
+      "released_at":"2019-01-03T01:56:19.539Z",
       "author":{
          "id":1,
          "name":"Administrator",
@@ -98,6 +99,7 @@ Example response:
       "name":"Awesome app v0.1 alpha",
       "description_html":"\u003ch2 dir=\"auto\"\u003e\n\u003ca id=\"user-content-changelog\" class=\"anchor\" href=\"#changelog\" aria-hidden=\"true\"\u003e\u003c/a\u003eCHANGELOG\u003c/h2\u003e\n\u003cul dir=\"auto\"\u003e\n\u003cli\u003eRemove limit of 100 when searching repository code. !8671\u003c/li\u003e\n\u003cli\u003eShow error message when attempting to reopen an MR and there is an open MR for the same branch. !16447 (Akos Gyimesi)\u003c/li\u003e\n\u003cli\u003eFix a bug where internal email pattern wasn't respected. !22516\u003c/li\u003e\n\u003c/ul\u003e",
       "created_at":"2019-01-03T01:55:18.203Z",
+      "released_at":"2019-01-03T01:55:18.203Z",
       "author":{
          "id":1,
          "name":"Administrator",
@@ -178,6 +180,7 @@ Example response:
    "name":"Awesome app v0.1 alpha",
    "description_html":"\u003ch2 dir=\"auto\"\u003e\n\u003ca id=\"user-content-changelog\" class=\"anchor\" href=\"#changelog\" aria-hidden=\"true\"\u003e\u003c/a\u003eCHANGELOG\u003c/h2\u003e\n\u003cul dir=\"auto\"\u003e\n\u003cli\u003eRemove limit of 100 when searching repository code. !8671\u003c/li\u003e\n\u003cli\u003eShow error message when attempting to reopen an MR and there is an open MR for the same branch. !16447 (Akos Gyimesi)\u003c/li\u003e\n\u003cli\u003eFix a bug where internal email pattern wasn't respected. !22516\u003c/li\u003e\n\u003c/ul\u003e",
    "created_at":"2019-01-03T01:55:18.203Z",
+   "released_at":"2019-01-03T01:55:18.203Z",
    "author":{
       "id":1,
       "name":"Administrator",
@@ -247,6 +250,7 @@ POST /projects/:id/releases
 | `assets:links`| array of hash  | no       | An array of assets links.               |
 | `assets:links:name`| string    | no (if `assets:links` specified, it's required)    | The name of the link. |
 | `assets:links:url`| string    | no (if `assets:links` specified, it's required)    | The url of the link. |
+| `released_at` | datetime       | no       | The date when the release will be/was ready. Defaults to the current time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 
 Example request:
 
@@ -265,6 +269,7 @@ Example response:
    "name":"New release",
    "description_html":"\u003cp dir=\"auto\"\u003eSuper nice release\u003c/p\u003e",
    "created_at":"2019-01-03T02:22:45.118Z",
+   "released_at":"2019-01-03T02:22:45.118Z",
    "author":{
       "id":1,
       "name":"Administrator",
@@ -335,6 +340,7 @@ PUT /projects/:id/releases/:tag_name
 | `tag_name`    | string         | yes      | The tag where the release will be created from. |
 | `name`        | string         | no       | The release name.                       |
 | `description` | string         | no       | The description of the release. You can use [markdown](../../user/markdown.md). |
+| `released_at` | datetime       | no       | The date when the release will be/was ready. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 
 Example request:
 
@@ -351,6 +357,7 @@ Example response:
    "name":"new name",
    "description_html":"\u003ch2 dir=\"auto\"\u003e\n\u003ca id=\"user-content-changelog\" class=\"anchor\" href=\"#changelog\" aria-hidden=\"true\"\u003e\u003c/a\u003eCHANGELOG\u003c/h2\u003e\n\u003cul dir=\"auto\"\u003e\n\u003cli\u003eRemove limit of 100 when searching repository code. !8671\u003c/li\u003e\n\u003cli\u003eShow error message when attempting to reopen an MR and there is an open MR for the same branch. !16447 (Akos Gyimesi)\u003c/li\u003e\n\u003cli\u003eFix a bug where internal email pattern wasn't respected. !22516\u003c/li\u003e\n\u003c/ul\u003e",
    "created_at":"2019-01-03T01:55:18.203Z",
+   "released_at":"2019-01-03T01:55:18.203Z",
    "author":{
       "id":1,
       "name":"Administrator",
@@ -430,6 +437,7 @@ Example response:
    "name":"new name",
    "description_html":"\u003ch2 dir=\"auto\"\u003e\n\u003ca id=\"user-content-changelog\" class=\"anchor\" href=\"#changelog\" aria-hidden=\"true\"\u003e\u003c/a\u003eCHANGELOG\u003c/h2\u003e\n\u003cul dir=\"auto\"\u003e\n\u003cli\u003eRemove limit of 100 when searching repository code. !8671\u003c/li\u003e\n\u003cli\u003eShow error message when attempting to reopen an MR and there is an open MR for the same branch. !16447 (Akos Gyimesi)\u003c/li\u003e\n\u003cli\u003eFix a bug where internal email pattern wasn't respected. !22516\u003c/li\u003e\n\u003c/ul\u003e",
    "created_at":"2019-01-03T01:55:18.203Z",
+   "released_at":"2019-01-03T01:55:18.203Z",
    "author":{
       "id":1,
       "name":"Administrator",
@@ -480,3 +488,11 @@ Example response:
    }
 }
 ```
+
+## Upcoming Releases
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/38105) in GitLab 12.1.
+
+A release with a `released_at` attribute set to a future date will be labeled an **Upcoming Release** in the UI:
+
+![Upcoming release](img/upcoming_release_v12_1.png)
