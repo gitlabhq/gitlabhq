@@ -51,29 +51,15 @@ management between systems:
 
 ### Improving NFS performance with GitLab
 
-NOTE: **Note:** This is only available starting in certain versions of GitLab: 11.5.11,
-11.6.11, 11.7.12, 11.8.8, 11.9.0 and up (e.g. 11.10, 11.11, etc.)
+NOTE: **Note:** From GitLab 12.1, it will automatically be detected if Rugged can and should be used per storage.
 
-If you are using NFS to share Git data, we recommend that you enable a
-number of feature flags that will allow GitLab application processes to
-access Git data directly instead of going through the [Gitaly
-service](../gitaly/index.md). Depending on your workload and disk
-performance, these flags may help improve performance. See [the
-issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/57317) for more
-details.
-
-To do this, run the Rake task:
+If you previously enabled Rugged using the feature flag, you will need to unset the feature flag by using:
 
 ```sh
-sudo gitlab-rake gitlab:features:enable_rugged
+sudo gitlab-rake gitlab:features:unset_rugged
 ```
 
-If you need to undo this setting for some reason such as switching to [Gitaly without NFS](gitaly.md)
-(recommended), run:
-
-```sh
-sudo gitlab-rake gitlab:features:disable_rugged
-```
+If the Rugged feature flag is explicitly set to either true or false, GitLab will use the value explicitly set.
 
 ### Known issues
 
