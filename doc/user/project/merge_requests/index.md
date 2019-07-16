@@ -343,6 +343,30 @@ git push -o merge_request.remove_source_branch
 You can also use this push option in addition to the
 `merge_request.create` push option.
 
+### Set merge request title using git push options
+
+To set the title of an existing merge request, use
+the `merge_request.title` push option:
+
+```sh
+git push -o merge_request.title="The title I want"
+```
+
+You can also use this push option in addition to the
+`merge_request.create` push option.
+
+### Set merge request description using git push options
+
+To set the description of an existing merge request, use
+the `merge_request.description` push option:
+
+```sh
+git push -o merge_request.description="The description I want"
+```
+
+You can also use this push option in addition to the
+`merge_request.create` push option.
+
 ## Find the merge request that introduced a change
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/2383) in GitLab 10.5.

@@ -6,9 +6,11 @@ module Gitlab
       merge_request: {
         keys: [
           :create,
+          :description,
           :merge_when_pipeline_succeeds,
           :remove_source_branch,
-          :target
+          :target,
+          :title
         ]
       },
       ci: {
