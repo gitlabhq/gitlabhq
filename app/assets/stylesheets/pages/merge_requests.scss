@@ -10,8 +10,8 @@
     float: left;
   }
 
-  > *:not(:last-child) {
-    margin-right: 10px;
+  > *:not(:first-child) {
+    margin-left: 10px;
   }
 }
 
@@ -69,7 +69,7 @@
     content: '';
     border-left: 1px solid $gray-200;
     position: absolute;
-    left: 32px;
+    left: 28px;
     top: -17px;
     height: 16px;
   }
@@ -114,7 +114,7 @@
       padding: $gl-padding;
 
       @include media-breakpoint-up(md) {
-        padding-left: $gl-padding-50;
+        padding-left: $gl-padding-8 * 7;
       }
     }
   }
@@ -264,6 +264,10 @@
 
   .widget-status-icon {
     align-self: flex-start;
+
+    button {
+      margin-left: $gl-padding;
+    }
   }
 
   .mr-widget-body {
@@ -271,8 +275,8 @@
 
     @include clearfix;
 
-    &.media > *:first-child {
-      margin-right: 10px;
+    button {
+      margin-left: $gl-padding;
     }
 
     .approve-btn {
@@ -312,6 +316,7 @@
     .bold {
       font-weight: $gl-font-weight-bold;
       color: $gl-gray-light;
+      margin-left: 10px;
     }
 
     .state-label {
@@ -377,9 +382,13 @@
 
     &.mr-widget-empty-state {
       line-height: 20px;
+      padding: $gl-padding;
 
       .artwork {
-        margin-bottom: $gl-padding;
+
+        @include media-breakpoint-down(md) {
+          margin-bottom: $gl-padding;
+        }
       }
 
       .text {
@@ -395,7 +404,7 @@
   }
 
   .mr-widget-help {
-    padding: 10px 16px 10px $gl-padding-50;
+    padding: 10px 16px 10px ($gl-padding-8 * 7);
     font-style: italic;
   }
 
@@ -913,7 +922,7 @@
   .media-body {
     min-width: 0;
     font-size: 12px;
-    margin-left: 48px;
+    margin-left: 40px;
   }
 
   &:not(:last-child) {

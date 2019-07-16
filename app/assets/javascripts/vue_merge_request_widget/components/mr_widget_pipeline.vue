@@ -96,16 +96,14 @@ export default {
 <template>
   <div class="ci-widget media js-ci-widget">
     <template v-if="!hasPipeline || hasCIError">
-      <div
-        class="add-border ci-status-icon ci-status-icon-failed ci-error js-ci-error append-right-default"
-      >
-        <icon :size="32" name="status_failed_borderless" />
+      <div class="add-border ci-status-icon ci-status-icon-failed ci-error js-ci-error">
+        <icon :size="24" name="status_failed_borderless" />
       </div>
-      <div class="media-body" v-html="errorText"></div>
+      <div class="media-body prepend-left-default" v-html="errorText"></div>
     </template>
     <template v-else-if="hasPipeline">
       <a :href="status.details_path" class="align-self-start append-right-default">
-        <ci-icon :status="status" :size="32" :borderless="true" class="add-border" />
+        <ci-icon :status="status" :size="24" :borderless="true" class="add-border" />
       </a>
       <div class="ci-widget-container d-flex">
         <div class="ci-widget-content">
