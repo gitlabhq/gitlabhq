@@ -65,7 +65,12 @@ class JiraService < IssueTrackerService
   end
 
   def client
-    @client ||= JIRA::Client.new(options)
+    @client ||= begin
+      JIRA::Client.new(options).tap do |client|
+        # Replaces JIRA default http client with our implementation
+        client.request_client = Gitlab::Jira::HttpClient.new(client.options)
+      end
+    end
   end
 
   def help
