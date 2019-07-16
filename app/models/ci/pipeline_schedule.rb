@@ -4,10 +4,7 @@ module Ci
   class PipelineSchedule < ApplicationRecord
     extend Gitlab::Ci::Model
     include Importable
-    include IgnorableColumn
     include StripAttribute
-
-    ignore_column :deleted_at
 
     belongs_to :project
     belongs_to :owner, class_name: 'User'
