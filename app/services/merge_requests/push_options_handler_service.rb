@@ -117,30 +117,7 @@ module MergeRequests
       collect_errors_from_merge_request(merge_request) unless merge_request.valid?
     end
 
-    def create_params(branch)
-      params = {
-        assignees: [current_user],
-        source_branch: branch,
-        source_project: project,
-        target_branch: push_options[:target] || target_project.default_branch,
-        target_project: target_project
-      }
-
-      if push_options.key?(:merge_when_pipeline_succeeds)
-        params.merge!(
-          merge_when_pipeline_succeeds: push_options[:merge_when_pipeline_succeeds],
-          merge_user: current_user
-        )
-      end
-
-      if push_options.key?(:remove_source_branch)
-        params[:force_remove_source_branch] = push_options[:remove_source_branch]
-      end
-
-      params
-    end
-
-    def update_params
+    def base_params
       params = {}
 
       if push_options.key?(:merge_when_pipeline_succeeds)
@@ -159,6 +136,25 @@ module MergeRequests
       end
 
       params
+    end
+
+    def create_params(branch)
+      params = base_params
+
+      params.merge!(
+        assignees: [current_user],
+        source_branch: branch,
+        source_project: project,
+        target_project: target_project
+      )
+
+      params[:target_branch] ||= target_project.default_branch
+
+      params
+    end
+
+    def update_params
+      base_params
     end
 
     def collect_errors_from_merge_request(merge_request)
