@@ -28,6 +28,6 @@ describe Admin::ApplicationSettingsController, '(JavaScript fixtures)', type: :c
 
     get :show
 
-    expect(response).to be_success
+    expect(response).to be_successful
   end
 end

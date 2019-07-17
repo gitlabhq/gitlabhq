@@ -38,6 +38,6 @@ describe Projects::DeployKeysController, '(JavaScript fixtures)', type: :control
       project_id: project
     }, format: :json
 
-    expect(response).to be_success
+    expect(response).to be_successful
   end
 end

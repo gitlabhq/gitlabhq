@@ -28,7 +28,7 @@ describe Projects::PipelineSchedulesController, '(JavaScript fixtures)', type: :
       id: pipeline_schedule.id
     }
 
-    expect(response).to be_success
+    expect(response).to be_successful
   end
 
   it 'pipeline_schedules/edit_with_variables.html' do
@@ -38,6 +38,6 @@ describe Projects::PipelineSchedulesController, '(JavaScript fixtures)', type: :
       id: pipeline_schedule_populated.id
     }
 
-    expect(response).to be_success
+    expect(response).to be_successful
   end
 end

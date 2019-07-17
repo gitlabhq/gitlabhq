@@ -28,6 +28,6 @@ describe Projects::CommitController, '(JavaScript fixtures)', type: :controller 
 
     get :show, params: params
 
-    expect(response).to be_success
+    expect(response).to be_successful
   end
 end

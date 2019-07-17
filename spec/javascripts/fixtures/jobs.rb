@@ -39,7 +39,7 @@ describe Projects::JobsController, '(JavaScript fixtures)', type: :controller do
       id: build_with_artifacts.to_param
     }
 
-    expect(response).to be_success
+    expect(response).to be_successful
   end
 
   it 'jobs/delayed.json' do
@@ -49,6 +49,6 @@ describe Projects::JobsController, '(JavaScript fixtures)', type: :controller do
       id: delayed_job.to_param
     }, format: :json
 
-    expect(response).to be_success
+    expect(response).to be_successful
   end
 end

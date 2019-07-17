@@ -29,7 +29,7 @@ describe 'Todos (JavaScript fixtures)' do
     it 'todos/todos.html' do
       get :index
 
-      expect(response).to be_success
+      expect(response).to be_successful
     end
   end
 
@@ -48,7 +48,7 @@ describe 'Todos (JavaScript fixtures)' do
         issuable_id: issue_2.id
       }, format: 'json'
 
-      expect(response).to be_success
+      expect(response).to be_successful
     end
   end
 end

@@ -29,6 +29,6 @@ describe Projects::BlobController, '(JavaScript fixtures)', type: :controller do
       id: 'add-ipython-files/files/ipython/basic.ipynb'
     })
 
-    expect(response).to be_success
+    expect(response).to be_successful
   end
 end

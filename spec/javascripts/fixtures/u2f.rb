@@ -23,7 +23,7 @@ context 'U2F' do
 
       post :create, params: { user: { login: user.username, password: user.password } }
 
-      expect(response).to be_success
+      expect(response).to be_successful
     end
   end
 
@@ -38,7 +38,7 @@ context 'U2F' do
     it 'u2f/register.html' do
       get :show
 
-      expect(response).to be_success
+      expect(response).to be_successful
     end
   end
 end

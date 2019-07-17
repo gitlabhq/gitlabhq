@@ -129,6 +129,6 @@ describe Projects::MergeRequestsController, '(JavaScript fixtures)', type: :cont
       id: merge_request.to_param
     }, format: :html
 
-    expect(response).to be_success
+    expect(response).to be_successful
   end
 end

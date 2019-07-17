@@ -29,6 +29,6 @@ describe Projects::ClustersController, '(JavaScript fixtures)', type: :controlle
       id: cluster
     }
 
-    expect(response).to be_success
+    expect(response).to be_successful
   end
 end

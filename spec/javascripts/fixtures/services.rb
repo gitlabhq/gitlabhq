@@ -29,6 +29,6 @@ describe Projects::ServicesController, '(JavaScript fixtures)', type: :controlle
       id: service.to_param
     }
 
-    expect(response).to be_success
+    expect(response).to be_successful
   end
 end

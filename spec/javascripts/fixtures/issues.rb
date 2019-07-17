@@ -48,7 +48,7 @@ describe Projects::IssuesController, '(JavaScript fixtures)', type: :controller 
       project_id: project
     }
 
-    expect(response).to be_success
+    expect(response).to be_successful
   end
 
   private
@@ -60,7 +60,7 @@ describe Projects::IssuesController, '(JavaScript fixtures)', type: :controller 
       id: issue.to_param
     }
 
-    expect(response).to be_success
+    expect(response).to be_successful
   end
 end
 
@@ -117,6 +117,6 @@ describe API::Issues, '(JavaScript fixtures)', type: :request do
 
     get_related_merge_requests(project.id, issue.iid, user)
 
-    expect(response).to be_success
+    expect(response).to be_successful
   end
 end
