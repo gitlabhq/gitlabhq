@@ -14,10 +14,6 @@ module RspecProfiling
         Result.establish_connection(results_url)
       end
 
-      def prepared?
-        connection.data_source_exists?(table)
-      end
-
       def results_url
         ENV['RSPEC_PROFILING_POSTGRES_URL']
       end

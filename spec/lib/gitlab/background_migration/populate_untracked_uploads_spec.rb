@@ -114,7 +114,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads, :sidekiq, :migra
     it 'does not drop the temporary tracking table after processing the batch, if there are still untracked rows' do
       subject.perform(1, untracked_files_for_uploads.last.id - 1)
 
-      expect(ActiveRecord::Base.connection.data_source_exists?(:untracked_files_for_uploads)).to be_truthy
+      expect(ActiveRecord::Base.connection.table_exists?(:untracked_files_for_uploads)).to be_truthy
     end
 
     it 'drops the temporary tracking table after processing the batch, if there are no untracked rows left' do
