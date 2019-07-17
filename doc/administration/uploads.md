@@ -78,6 +78,7 @@ The connection settings match those provided by [Fog](https://github.com/fog), a
 | `aws_access_key_id` | AWS credentials, or compatible | |
 | `aws_secret_access_key` | AWS credentials, or compatible | |
 | `aws_signature_version` | AWS signature version to use. 2 or 4 are valid options. Digital Ocean Spaces and other providers may need 2. | 4 |
+| `enable_signature_v4_streaming` | Set to true to enable HTTP chunked transfers with AWS v4 signatures (https://docs.aws.amazon.com/AmazonS3/latest/API/sigv4-streaming.html). Oracle Cloud S3 needs this to be false | true
 | `region` | AWS region | us-east-1 |
 | `host` | S3 compatible host for when not using AWS, e.g. `localhost` or `storage.example.com` | s3.amazonaws.com |
 | `endpoint` | Can be used when configuring an S3 compatible service such as [Minio](https://www.minio.io), by entering a URL such as `http://127.0.0.1:9000` | (optional) |
@@ -139,6 +140,22 @@ _The uploads are stored by default in
 
 1. Save the file and [restart GitLab][] for the changes to take effect.
 1. Migrate any existing local uploads to the object storage using [`gitlab:uploads:migrate` rake task](raketasks/uploads/migrate.md).
+
+### Oracle Cloud S3 connection settings
+
+Note that Oracle Cloud S3 must be sure to use the following settings:
+
+| Setting | Value |
+|---------|-------|
+| `enable_signature_v4_streaming` | false |
+| `path_style` | true |
+
+If `enable_signature_v4_streaming` is set to `true`, you may see the
+following error:
+
+```
+STREAMING-AWS4-HMAC-SHA256-PAYLOAD is not supported
+```
 
 ### OpenStack compatible connection settings
 
