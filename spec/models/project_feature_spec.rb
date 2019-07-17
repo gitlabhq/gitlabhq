@@ -150,4 +150,32 @@ describe ProjectFeature do
       end
     end
   end
+
+  describe 'default pages access level' do
+    subject { project.project_feature.pages_access_level }
+
+    before do
+      # project factory overrides all values in project_feature after creation
+      project.project_feature.destroy!
+      project.build_project_feature.save!
+    end
+
+    context 'when new project is private' do
+      let(:project) { create(:project, :private) }
+
+      it { is_expected.to eq(ProjectFeature::PRIVATE) }
+    end
+
+    context 'when new project is internal' do
+      let(:project) { create(:project, :internal) }
+
+      it { is_expected.to eq(ProjectFeature::PRIVATE) }
+    end
+
+    context 'when new project is public' do
+      let(:project) { create(:project, :public) }
+
+      it { is_expected.to eq(ProjectFeature::ENABLED) }
+    end
+  end
 end
