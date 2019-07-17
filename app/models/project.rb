@@ -719,9 +719,20 @@ class Project < ApplicationRecord
     repository.commits_by(oids: oids)
   end
 
-  # ref can't be HEAD, can only be branch/tag name or SHA
+  # ref can't be HEAD, can only be branch/tag name
   def latest_successful_build_for(job_name, ref = default_branch)
+    return unless ref
+
     latest_pipeline = ci_pipelines.latest_successful_for(ref)
+    return unless latest_pipeline
+
+    latest_pipeline.builds.latest.with_artifacts_archive.find_by(name: job_name)
+  end
+
+  def latest_successful_build_for_sha(job_name, sha = commit(default_branch).id)
+    return unless sha
+
+    latest_pipeline = ci_pipelines.latest_successful_for_sha(sha)
     return unless latest_pipeline
 
     latest_pipeline.builds.latest.with_artifacts_archive.find_by(name: job_name)
