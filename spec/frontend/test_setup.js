@@ -2,10 +2,10 @@ import Vue from 'vue';
 import * as jqueryMatchers from 'custom-jquery-matchers';
 import $ from 'jquery';
 import Translate from '~/vue_shared/translate';
-import axios from '~/lib/utils/axios_utils';
 import { config as testUtilsConfig } from '@vue/test-utils';
 import { initializeTestTimeout } from './helpers/timeout';
 import { loadHTMLFixture, setHTMLFixture } from './helpers/fixtures';
+import { setupManualMocks } from './mocks/mocks_helper';
 
 // Expose jQuery so specs using jQuery plugins can be imported nicely.
 // Here is an issue to explore better alternatives:
@@ -13,6 +13,8 @@ import { loadHTMLFixture, setHTMLFixture } from './helpers/fixtures';
 window.jQuery = $;
 
 process.on('unhandledRejection', global.promiseRejectionHandler);
+
+setupManualMocks();
 
 afterEach(() =>
   // give Promises a bit more time so they fail the right test
@@ -23,18 +25,6 @@ afterEach(() =>
 );
 
 initializeTestTimeout(process.env.CI ? 5000 : 500);
-
-// fail tests for unmocked requests
-beforeEach(done => {
-  axios.defaults.adapter = config => {
-    const error = new Error(`Unexpected unmocked request: ${JSON.stringify(config, null, 2)}`);
-    error.config = config;
-    done.fail(error);
-    return Promise.reject(error);
-  };
-
-  done();
-});
 
 Vue.config.devtools = false;
 Vue.config.productionTip = false;

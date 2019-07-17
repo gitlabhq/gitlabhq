@@ -7,7 +7,6 @@ import { refreshCurrentPage } from '~/lib/utils/url_utility';
 import createFlash from '~/flash';
 import { TEST_HOST } from 'helpers/test_constants';
 
-jest.mock('~/lib/utils/axios_utils');
 jest.mock('~/lib/utils/url_utility');
 jest.mock('~/flash');
 
@@ -31,6 +30,10 @@ describe('operation settings external dashboard component', () => {
     ];
     wrapper = shallow ? shallowMount(...config) : mount(...config);
   };
+
+  beforeEach(() => {
+    jest.spyOn(axios, 'patch').mockImplementation();
+  });
 
   afterEach(() => {
     if (wrapper.destroy) {
