@@ -73,6 +73,7 @@ module Issuable
 
     validates :author, presence: true
     validates :title, presence: true, length: { maximum: 255 }
+    validates :description, length: { maximum: Gitlab::Database::MAX_TEXT_SIZE_LIMIT }, allow_blank: true
     validate :milestone_is_valid
 
     scope :authored, ->(user) { where(author_id: user) }
