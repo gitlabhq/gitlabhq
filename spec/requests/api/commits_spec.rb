@@ -281,7 +281,7 @@ describe API::Commits do
       end
 
       it 'does not increment the usage counters using access token authentication' do
-        expect(::Gitlab::UsageDataCounters::WebIdeCommitsCounter).not_to receive(:increment)
+        expect(::Gitlab::UsageDataCounters::WebIdeCounter).not_to receive(:increment_commits_count)
 
         post api(url, user), params: valid_c_params
       end
