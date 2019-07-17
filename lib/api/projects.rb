@@ -145,6 +145,7 @@ module API
       post do
         attrs = declared_params(include_missing: false)
         attrs = translate_params_for_compatibility(attrs)
+        filter_attributes_using_license!(attrs)
         project = ::Projects::CreateService.new(current_user, attrs).execute
 
         if project.saved?
@@ -179,6 +180,7 @@ module API
 
         attrs = declared_params(include_missing: false)
         attrs = translate_params_for_compatibility(attrs)
+        filter_attributes_using_license!(attrs)
         project = ::Projects::CreateService.new(user, attrs).execute
 
         if project.saved?
@@ -292,7 +294,7 @@ module API
         authorize! :change_visibility_level, user_project if attrs[:visibility].present?
 
         attrs = translate_params_for_compatibility(attrs)
-
+        filter_attributes_using_license!(attrs)
         verify_update_project_attrs!(user_project, attrs)
 
         result = ::Projects::UpdateService.new(user_project, current_user, attrs).execute
