@@ -179,15 +179,26 @@ From that page, you can view, add, and remove them.
 
 ### Redirecting `www.domain.com` to `domain.com` with Cloudflare
 
-If you use Cloudflare, you can redirect `www` to `domain.com` without adding both
-`www.domain.com` and `domain.com` to GitLab. This happens due to a [Cloudflare feature that creates
-a 301 redirect as a "page rule"](https://gitlab.com/gitlab-org/gitlab-ce/issues/48848#note_87314849) for redirecting `www.domain.com` to `domain.com`. In this case,
-you can use the following setup:
+If you use Cloudflare, you can redirect `www` to `domain.com`
+without adding both `www.domain.com` and `domain.com` to GitLab.
+
+To do so, you can use Cloudflare's page rules associated to a
+CNAME record to redirect `www.domain.com` to `domain.com`. You
+can use the following setup:
 
 1. In Cloudflare, create a DNS `A` record pointing `domain.com` to `35.185.44.232`.
-1. In GitLab, add the domain to GitLab Pages.
+1. In GitLab, add the domain to GitLab Pages and get the verification code.
 1. In Cloudflare, create a DNS `TXT` record to verify your domain.
+1. In GitLab, verify your domain.
 1. In Cloudflare, create a DNS `CNAME` record pointing `www` to `domain.com`.
+1. In Cloudflare, add a Page Rule pointing `www.domain,com` to `domain.com`:
+    - Navigate to your domain's dashboard and click **Page Rules**
+      on the top nav.
+    - Click **Create Page Rule**.
+    - Enter the domain `www.domain.com` and click **+ Add a Setting**.
+    - From the dropdown menu, choose **Forwarding URL**, then select the
+      status code **301 - Permanent Redirect**.
+    - Enter the destination URL `https://domain.com`.
 
 ## Adding an SSL/TLS certificate to Pages
 
