@@ -15,7 +15,9 @@ module Types
         Gitlab::Graphql::Representation::TreeEntry.decorate(obj.trees, obj.repository)
       end
 
-      field :submodules, Types::Tree::SubmoduleType.connection_type, null: false, calls_gitaly: true
+      field :submodules, Types::Tree::SubmoduleType.connection_type, null: false, calls_gitaly: true, resolve: -> (obj, args, ctx) do
+        Gitlab::Graphql::Representation::SubmoduleTreeEntry.decorate(obj.submodules, obj)
+      end
 
       field :blobs, Types::Tree::BlobType.connection_type, null: false, calls_gitaly: true, resolve: -> (obj, args, ctx) do
         Gitlab::Graphql::Representation::TreeEntry.decorate(obj.blobs, obj.repository)

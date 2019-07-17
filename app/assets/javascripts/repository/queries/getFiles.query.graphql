@@ -35,6 +35,8 @@ query getFiles(
           edges {
             node {
               ...TreeEntry
+              webUrl
+              treeUrl
             }
           }
           pageInfo {

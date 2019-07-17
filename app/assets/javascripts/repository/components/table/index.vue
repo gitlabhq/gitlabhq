@@ -137,6 +137,7 @@ export default {
               :path="entry.flatPath"
               :type="entry.type"
               :url="entry.webUrl"
+              :submodule-tree-url="entry.treeUrl"
               :lfs-oid="entry.lfsOid"
             />
           </template>
