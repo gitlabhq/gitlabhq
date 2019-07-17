@@ -25,7 +25,9 @@ FactoryBot.define do
       issues_access_level ProjectFeature::ENABLED
       merge_requests_access_level ProjectFeature::ENABLED
       repository_access_level ProjectFeature::ENABLED
-      pages_access_level ProjectFeature::ENABLED
+      pages_access_level do
+        visibility_level == Gitlab::VisibilityLevel::PUBLIC ? ProjectFeature::ENABLED : ProjectFeature::PRIVATE
+      end
 
       # we can't assign the delegated `#ci_cd_settings` attributes directly, as the
       # `#ci_cd_settings` relation needs to be created first
