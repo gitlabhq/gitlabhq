@@ -51,7 +51,7 @@ module Gitlab
 
         ProjectMember.create!(user: @user, access_level: ProjectMember::MAINTAINER, source_id: @project.id, importing: true)
       rescue => e
-        raise e, ['Error adding importer user to project members', e.message].join('. ')
+        raise e, "Error adding importer user to project members. #{e.message}"
       end
 
       def add_team_member(member, existing_user = nil)
