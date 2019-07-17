@@ -130,7 +130,7 @@ module TestEnv
   # Keeps gitlab-shell and gitlab-test
   def clean_test_path
     Dir[TMP_TEST_PATH].each do |entry|
-      unless File.basename(entry) =~ /\A(gitaly|gitlab-(shell|test|test_bare|test-fork|test-fork_bare))\z/
+      unless File.basename(entry) =~ /\A(frontend|gitaly|gitlab-(shell|test|test_bare|test-fork|test-fork_bare))\z/
         FileUtils.rm_rf(entry)
       end
     end
