@@ -33,7 +33,7 @@
             = sprite_icon("status_success_borderless", size: 16, css_class: "toggle-icon-svg toggle-status-checked")
             = sprite_icon("status_failed_borderless", size: 16, css_class: "toggle-icon-svg toggle-status-unchecked")
         %p.text-secondary.mt-3
-          - docs_link_url = help_page_path("user/project/pages/lets_encrypt_for_gitlab_pages.md", anchor: "lets-encrypt-for-gitlab-pages")
+          - docs_link_url = help_page_path("user/project/pages/custom_domains_ssl_tls_certification/lets_encrypt_integration.md")
           - docs_link_start = "<a href=\"%{docs_link_url}\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-nowrap\">".html_safe % { docs_link_url: docs_link_url }
           - docs_link_end = "</a>".html_safe
           = _("Let's Encrypt is a free, automated, and open certificate authority (CA) that gives digital certificates in order to enable HTTPS (SSL/TLS) for websites. Learn more about Let's Encrypt configuration by following the %{docs_link_start}documentation on GitLab Pages%{docs_link_end}.").html_safe % { docs_link_url: docs_link_url, docs_link_start: docs_link_start, docs_link_end: docs_link_end }
