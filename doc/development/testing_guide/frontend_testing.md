@@ -79,6 +79,34 @@ describe('Component', () => {
 
 Remember that the performance of each test depends on the environment.
 
+### Manual module mocks
+Jest supports [manual module mocks](https://jestjs.io/docs/en/manual-mocks) by placing a mock in a `__mocks__/` directory next to the source module. **Don't do this.** We want to keep all of our test-related code in one place (the `spec/` folder), and the logic that Jest uses to apply mocks from `__mocks__/` is rather inconsistent.
+
+Instead, our test runner detects manual mocks from `spec/frontend/mocks/`. Any mock placed here is automatically picked up and injected whenever you import its source module.
+
+- Files in `spec/frontend/mocks/ce` will mock the corresponding CE module from `app/assets/javascripts`, mirroring the source module's path.
+    - Example: `spec/frontend/mocks/ce/lib/utils/axios_utils` will mock the module `~/lib/utils/axios_utils`.
+- Files in `spec/frontend/mocks/node` will mock NPM packages of the same name or path.
+- We don't support mocking EE modules yet.
+
+If a mock is found for which a source module doesn't exist, the test suite will fail. 'Virtual' mocks, or mocks that don't have a 1-to-1 association with a source module, are not supported yet.
+
+#### Writing a mock
+Create a JS module in the appropriate place in `spec/frontend/mocks/`. That's it. It will automatically mock its source package in all tests.
+
+Make sure that your mock's export has the same format as the mocked module. So, if you're mocking a CommonJS module, you'll need to use `module.exports` instead of the ES6 `export`.
+
+It might be useful for a mock to expose a property that indicates if the mock was loaded. This way, tests can assert the presence of a mock without calling any logic and causing side-effects. The `~/lib/utils/axios_utils` module mock has such a property, `isMock`, that is `true` in the mock and undefined in the original class. Jest's mock functions also have a `mock` property that you can test.
+
+#### Bypassing mocks
+If you ever need to import the original module in your tests, use [`jest.requireActual()`](https://jestjs.io/docs/en/jest-object#jestrequireactualmodulename) (or `jest.requireActual().default` for the default export). The `jest.mock()` and `jest.unmock()` won't have an effect on modules that have a manual mock, because mocks are imported and cached before any tests are run.
+
+#### Keep mocks light
+Global mocks introduce magic and can affect how modules are imported in your tests. Try to keep them as light as possible and dependency-free. A global mock should be useful for any unit test. For example, the `axios_utils` and `jquery` module mocks throw an error when an HTTP request is attempted, since this is useful behaviour in &gt;99% of tests.
+
+When in doubt, construct mocks in your test file using [`jest.mock()`](https://jestjs.io/docs/en/jest-object#jestmockmodulename-factory-options), [`jest.spyOn()`](https://jestjs.io/docs/en/jest-object#jestspyonobject-methodname), etc.
+
+
 ## Karma test suite
 
 GitLab uses the [Karma][karma] test runner with [Jasmine] as its test
