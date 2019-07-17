@@ -297,6 +297,70 @@ describe Gitlab::Auth do
       let(:project) { create(:project) }
       let(:auth_failure) { Gitlab::Auth::Result.new(nil, nil) }
 
+      context 'when deploy token and user have the same username' do
+        let(:username) { 'normal_user' }
+        let(:user) { create(:user, username: username, password: 'my-secret') }
+        let(:deploy_token) { create(:deploy_token, username: username, read_registry: false, projects: [project]) }
+
+        before do
+          expect(gl_auth).to receive(:rate_limit!).with('ip', success: true, login: username)
+        end
+
+        it 'succeeds for the token' do
+          auth_success = Gitlab::Auth::Result.new(deploy_token, project, :deploy_token, [:download_code])
+
+          expect(gl_auth.find_for_git_client(username, deploy_token.token, project: project, ip: 'ip'))
+            .to eq(auth_success)
+        end
+
+        it 'succeeds for the user' do
+          auth_success = Gitlab::Auth::Result.new(user, nil, :gitlab_or_ldap, full_authentication_abilities)
+
+          expect(gl_auth.find_for_git_client(username, 'my-secret', project: project, ip: 'ip'))
+            .to eq(auth_success)
+        end
+      end
+
+      context 'when deploy tokens have the same username' do
+        context 'and belong to the same project' do
+          let!(:read_registry) { create(:deploy_token, username: 'deployer', read_repository: false, projects: [project]) }
+          let!(:read_repository) { create(:deploy_token, username: read_registry.username, read_registry: false, projects: [project]) }
+
+          it 'succeeds for the right token' do
+            auth_success = Gitlab::Auth::Result.new(read_repository, project, :deploy_token, [:download_code])
+
+            expect(gl_auth).to receive(:rate_limit!).with('ip', success: true, login: 'deployer')
+            expect(gl_auth.find_for_git_client('deployer', read_repository.token, project: project, ip: 'ip'))
+              .to eq(auth_success)
+          end
+
+          it 'fails for the wrong token' do
+            expect(gl_auth).to receive(:rate_limit!).with('ip', success: false, login: 'deployer')
+            expect(gl_auth.find_for_git_client('deployer', read_registry.token, project: project, ip: 'ip'))
+              .to eq(auth_failure)
+          end
+        end
+
+        context 'and belong to different projects' do
+          let!(:read_registry) { create(:deploy_token, username: 'deployer', read_repository: false, projects: [create(:project)]) }
+          let!(:read_repository) { create(:deploy_token, username: read_registry.username, read_registry: false, projects: [project]) }
+
+          it 'succeeds for the right token' do
+            auth_success = Gitlab::Auth::Result.new(read_repository, project, :deploy_token, [:download_code])
+
+            expect(gl_auth).to receive(:rate_limit!).with('ip', success: true, login: 'deployer')
+            expect(gl_auth.find_for_git_client('deployer', read_repository.token, project: project, ip: 'ip'))
+              .to eq(auth_success)
+          end
+
+          it 'fails for the wrong token' do
+            expect(gl_auth).to receive(:rate_limit!).with('ip', success: false, login: 'deployer')
+            expect(gl_auth.find_for_git_client('deployer', read_registry.token, project: project, ip: 'ip'))
+              .to eq(auth_failure)
+          end
+        end
+      end
+
       context 'when the deploy token has read_repository as scope' do
         let(:deploy_token) { create(:deploy_token, read_registry: false, projects: [project]) }
         let(:login) { deploy_token.username }
