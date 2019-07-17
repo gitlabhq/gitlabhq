@@ -347,13 +347,13 @@ describe Projects::UpdateService do
 
     context 'when updating #pages_access_level' do
       subject(:call_service) do
-        update_project(project, admin, project_feature_attributes: { pages_access_level: ProjectFeature::PRIVATE })
+        update_project(project, admin, project_feature_attributes: { pages_access_level: ProjectFeature::ENABLED })
       end
 
       it 'updates the attribute' do
         expect { call_service }
           .to change { project.project_feature.pages_access_level }
-          .to(ProjectFeature::PRIVATE)
+          .to(ProjectFeature::ENABLED)
       end
 
       it 'calls Projects::UpdatePagesConfigurationService' do
