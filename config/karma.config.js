@@ -107,7 +107,8 @@ if (specFilters.length) {
 module.exports = function(config) {
   process.env.TZ = 'Etc/UTC';
 
-  const fixturesPath = `${IS_EE ? 'ee/' : ''}spec/javascripts/fixtures`;
+  const fixturesPath = `tmp/tests/frontend/fixtures${IS_EE ? '-ee' : ''}`;
+  const staticFixturesPath = 'spec/javascripts/fixtures/static';
 
   const karmaConfig = {
     basePath: ROOT_PATH,
@@ -131,8 +132,13 @@ module.exports = function(config) {
     frameworks: ['jasmine'],
     files: [
       { pattern: 'spec/javascripts/test_bundle.js', watched: false },
-      { pattern: `${fixturesPath}/**/*@(.json|.html|.png|.bmpr|.pdf)`, included: false },
+      { pattern: `${fixturesPath}/**/*`, included: false },
+      { pattern: `${staticFixturesPath}/**/*`, included: false },
     ],
+    proxies: {
+      '/fixtures/': `/base/${fixturesPath}/`,
+      '/fixtures/static/': `/base/${staticFixturesPath}/`,
+    },
     preprocessors: {
       'spec/javascripts/**/*.js': ['webpack', 'sourcemap'],
       'ee/spec/javascripts/**/*.js': ['webpack', 'sourcemap'],
