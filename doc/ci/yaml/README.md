@@ -1779,6 +1779,10 @@ test:
   parallel: 5
 ```
 
+TIP: **Tip:**
+Parallelize tests suites across parallel jobs.
+Different languages have different tools to facilitate this.
+
 ### `trigger` **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/8997) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.8.
