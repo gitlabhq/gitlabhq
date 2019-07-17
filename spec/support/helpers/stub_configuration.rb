@@ -65,6 +65,10 @@ module StubConfiguration
     allow(Gitlab.config.artifacts).to receive_messages(to_settings(messages))
   end
 
+  def stub_pages_setting(messages)
+    allow(Gitlab.config.pages).to receive_messages(to_settings(messages))
+  end
+
   def stub_storage_settings(messages)
     messages.deep_stringify_keys!
 
