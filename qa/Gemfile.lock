@@ -87,6 +87,8 @@ GEM
     rspec-retry (0.6.1)
       rspec-core (> 3.3)
     rspec-support (3.7.0)
+    rspec_junit_formatter (0.4.1)
+      rspec-core (>= 2, < 4, != 2.12.0)
     rubyzip (1.2.2)
     selenium-webdriver (3.141.0)
       childprocess (~> 0.5)
@@ -116,6 +118,7 @@ DEPENDENCIES
   rake (~> 12.3.0)
   rspec (~> 3.7)
   rspec-retry (~> 0.6.1)
+  rspec_junit_formatter (~> 0.4.1) 
   selenium-webdriver (~> 3.12)
 
 BUNDLED WITH
