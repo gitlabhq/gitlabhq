@@ -387,21 +387,20 @@ module Gitlab
     end
 
     def self.can_use_disk?(storage)
-      false
-      # cached_value = MUTEX.synchronize do
-      #   @can_use_disk ||= {}
-      #   @can_use_disk[storage]
-      # end
+      cached_value = MUTEX.synchronize do
+        @can_use_disk ||= {}
+        @can_use_disk[storage]
+      end
 
-      # return cached_value unless cached_value.nil?
+      return cached_value if cached_value.present?
 
-      # gitaly_filesystem_id = filesystem_id(storage)
-      # direct_filesystem_id = filesystem_id_from_disk(storage)
+      gitaly_filesystem_id = filesystem_id(storage)
+      direct_filesystem_id = filesystem_id_from_disk(storage)
 
-      # MUTEX.synchronize do
-      #   @can_use_disk[storage] = gitaly_filesystem_id.present? &&
-      #     gitaly_filesystem_id == direct_filesystem_id
-      # end
+      MUTEX.synchronize do
+        @can_use_disk[storage] = gitaly_filesystem_id.present? &&
+          gitaly_filesystem_id == direct_filesystem_id
+      end
     end
 
     def self.filesystem_id(storage)
@@ -414,7 +413,7 @@ module Gitlab
       metadata_file = File.read(storage_metadata_file_path(storage))
       metadata_hash = JSON.parse(metadata_file)
       metadata_hash['gitaly_filesystem_id']
-    rescue Errno::ENOENT, JSON::ParserError
+    rescue Errno::ENOENT, Errno::ACCESS, JSON::ParserError
       nil
     end
 
