@@ -55,6 +55,11 @@ export default {
       required: false,
       default: true,
     },
+    zoomMeetingUrl: {
+      type: String,
+      required: false,
+      default: null,
+    },
     issuableRef: {
       type: String,
       required: true,
@@ -342,7 +347,7 @@ export default {
         :title-text="state.titleText"
         :show-inline-edit-button="showInlineEditButton"
       />
-      <pinned-links :description-html="state.descriptionHtml" />
+      <pinned-links :zoom-meeting-url="zoomMeetingUrl" />
       <description-component
         v-if="state.descriptionHtml"
         :can-update="canUpdate"
