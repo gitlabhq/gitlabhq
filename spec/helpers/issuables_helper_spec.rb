@@ -202,5 +202,46 @@ describe IssuablesHelper do
       }
       expect(helper.issuable_initial_data(issue)).to match(hash_including(expected_data))
     end
+
+    describe '#zoomMeetingUrl in issue' do
+      let(:issue) { create(:issue, author: user, description: description) }
+
+      before do
+        assign(:project, issue.project)
+      end
+
+      context 'no zoom links in the issue description' do
+        let(:description) { 'issue text' }
+
+        it 'does not set zoomMeetingUrl' do
+          expect(helper.issuable_initial_data(issue))
+              .not_to include(:zoomMeetingUrl)
+        end
+      end
+
+      context 'no zoom links in the issue description if it has link but not a zoom link' do
+        let(:description) { 'issue text https://stackoverflow.com/questions/22' }
+
+        it 'does not set zoomMeetingUrl' do
+          expect(helper.issuable_initial_data(issue))
+              .not_to include(:zoomMeetingUrl)
+        end
+      end
+
+      context 'with two zoom links in description' do
+        let(:description) do
+          <<~TEXT
+            issue text and
+            zoom call on https://zoom.us/j/123456789 this url
+            and new zoom url https://zoom.us/s/lastone and some more text
+          TEXT
+        end
+
+        it 'sets zoomMeetingUrl value to the last url' do
+          expect(helper.issuable_initial_data(issue))
+            .to include(zoomMeetingUrl: 'https://zoom.us/s/lastone')
+        end
+      end
+    end
   end
 end
