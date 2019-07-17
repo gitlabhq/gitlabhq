@@ -85,6 +85,7 @@ class Note < ApplicationRecord
   delegate :title, to: :noteable, allow_nil: true
 
   validates :note, presence: true
+  validates :note, length: { maximum: Gitlab::Database::MAX_TEXT_SIZE_LIMIT }
   validates :project, presence: true, if: :for_project_noteable?
 
   # Attachments are deprecated and are handled by Markdown uploader
