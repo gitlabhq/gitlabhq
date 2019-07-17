@@ -29,7 +29,7 @@ end
 Peek.into PEEK_DB_VIEW
 Peek.into Peek::Views::Gitaly
 Peek.into Peek::Views::Rblineprof
-Peek.into Peek::Views::Redis
+Peek.into Peek::Views::RedisDetailed
 Peek.into Peek::Views::GC
 Peek.into Peek::Views::Tracing if Labkit::Tracing.tracing_url_enabled?
 
