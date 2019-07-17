@@ -182,7 +182,7 @@ jest:
   script:
     - scripts/gitaly-test-spawn
     - date
-    - bundle exec rake karma:fixtures
+    - bundle exec rake frontend:fixtures
     - date
     - yarn jest --ci --coverage
   artifacts:

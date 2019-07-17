@@ -9,7 +9,7 @@ export function getFixture(relativePath) {
     throw new ErrorWithStack(
       `Fixture file ${relativePath} does not exist.
 
-Did you run bin/rake karma:fixtures?`,
+Did you run bin/rake frontend:fixtures?`,
       getFixture,
     );
   }
