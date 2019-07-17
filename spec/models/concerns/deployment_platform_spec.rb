@@ -5,7 +5,7 @@ require 'rails_helper'
 describe DeploymentPlatform do
   let(:project) { create(:project) }
 
-  shared_examples '#deployment_platform' do
+  describe '#deployment_platform' do
     subject { project.deployment_platform }
 
     context 'with no Kubernetes configuration on CI/CD, no Kubernetes Service' do
@@ -83,21 +83,5 @@ describe DeploymentPlatform do
         end
       end
     end
-  end
-
-  context 'legacy implementation' do
-    before do
-      stub_feature_flags(clusters_cte: false)
-    end
-
-    include_examples '#deployment_platform'
-  end
-
-  context 'CTE implementation' do
-    before do
-      stub_feature_flags(clusters_cte: true)
-    end
-
-    include_examples '#deployment_platform'
   end
 end
