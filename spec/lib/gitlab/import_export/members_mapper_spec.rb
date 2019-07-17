@@ -154,5 +154,15 @@ describe Gitlab::ImportExport::MembersMapper do
         expect(members_mapper.map[exported_user_id]).to eq(user2.id)
       end
     end
+
+    context 'when importer mapping fails' do
+      let(:exception_message) { 'Something went wrong' }
+
+      it 'includes importer specific error message' do
+        expect(ProjectMember).to receive(:create!).and_raise(StandardError.new(exception_message))
+
+        expect { members_mapper.map }.to raise_error(StandardError, "Error adding importer user to project members. #{exception_message}")
+      end
+    end
   end
 end
