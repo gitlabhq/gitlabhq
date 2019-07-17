@@ -204,6 +204,14 @@ can use the following setup:
 
 Read this document for an [overview on SSL/TLS certification](ssl_tls_concepts.md).
 
+To secure your custom domain with GitLab Pages you can opt by:
+
+- Using the [Let's Encrypt integration with GitLab Pages](lets_encrypt_integration.md),
+  which automatically obtains and renews SSL certificates
+  for your Pages domains.
+- Manually adding SSL/TLS certificates to GitLab Pages websites
+  by following the steps below.
+
 ### Requirements
 
 - A GitLab Pages website up and running accessible via a custom domain.
@@ -254,6 +262,7 @@ To enable this setting:
 
 1. Navigate to your project's **Settings > Pages**.
 1. Tick the checkbox **Force HTTPS (requires valid certificates)**.
+
 
 <!-- ## Troubleshooting
 
