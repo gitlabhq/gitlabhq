@@ -1,11 +1,23 @@
 # rubocop:disable Style/SignalException
 
+THROUGHPUT_LABELS = [
+  'Community contribution',
+  'security',
+  'bug',
+  'feature',
+  'backstage'
+].freeze
+
 if gitlab.mr_body.size < 5
   fail "Please provide a proper merge request description."
 end
 
 if gitlab.mr_labels.empty?
   fail "Please add labels to this merge request."
+end
+
+if (THROUGHPUT_LABELS & gitlab.mr_labels).empty?
+  warn 'Please add a [throughput label](https://about.gitlab.com/handbook/engineering/management/throughput/#implementation) to this merge request.'
 end
 
 unless gitlab.mr_json["assignee"]
