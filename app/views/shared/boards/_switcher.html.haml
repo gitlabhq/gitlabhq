@@ -1,0 +1,16 @@
+- parent = board.parent
+- milestone_filter_opts = { format: :json }
+- milestone_filter_opts = milestone_filter_opts.merge(only_group_milestones: true) if board.group_board?
+- weights = Gitlab.ee? ? ([Issue::WEIGHT_ANY] + Issue.weight_options) : []
+
+#js-multiple-boards-switcher.inline.boards-switcher{ data: { current_board: current_board_json.to_json,
+    milestone_path: milestones_filter_path(milestone_filter_opts),
+    board_base_url: board_base_url,
+    has_missing_boards: (!multiple_boards_available? && current_board_parent.boards.size > 1).to_s,
+    can_admin_board: can?(current_user, :admin_board, parent).to_s,
+    multiple_issue_boards_available: parent.multiple_issue_boards_available?.to_s,
+    labels_path: labels_filter_path_with_defaults(only_group_labels: true, include_descendant_groups: true),
+    project_id: @project&.id,
+    group_id: @group&.id,
+    scoped_issue_board_feature_enabled: Gitlab.ee? && parent.feature_available?(:scoped_issue_board) ? 'true' : 'false',
+    weights: weights.to_json } }

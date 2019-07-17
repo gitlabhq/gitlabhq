@@ -5717,6 +5717,21 @@ msgstr ""
 msgid "IssueBoards|Boards"
 msgstr ""
 
+msgid "IssueBoards|Create new board"
+msgstr ""
+
+msgid "IssueBoards|Delete board"
+msgstr ""
+
+msgid "IssueBoards|No matching boards found"
+msgstr ""
+
+msgid "IssueBoards|Some of your boards are hidden, activate a license to see them again."
+msgstr ""
+
+msgid "IssueBoards|Switch board"
+msgstr ""
+
 msgid "IssueTracker|Bugzilla issue tracker"
 msgstr ""
 
@@ -8696,6 +8711,9 @@ msgid "Rebase in progress"
 msgstr ""
 
 msgid "Receive notifications about your own activity"
+msgstr ""
+
+msgid "Recent"
 msgstr ""
 
 msgid "Recent Project Activity"
