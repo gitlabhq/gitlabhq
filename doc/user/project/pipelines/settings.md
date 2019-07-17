@@ -89,6 +89,22 @@ in the jobs table.
 A few examples of known coverage tools for a variety of languages can be found
 in the pipelines settings page.
 
+### Removing color codes
+
+Some test coverage tools output with ANSI color codes that won't be
+parsed correctly by the regular expression and will cause coverage 
+parsing to fail. 
+
+If your coverage tool doesn't provide an option to disable color
+codes in the output, you can pipe the output of the coverage tool through a 
+small one line script that will strip the color codes off.
+
+For example:
+
+```bash
+lein cloverage | perl -pe 's/\e\[?.*?[\@-~]//g'
+```
+
 ## Visibility of pipelines
 
 Access to pipelines and job details (including output of logs and artifacts)
