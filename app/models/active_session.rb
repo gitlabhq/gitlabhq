@@ -3,6 +3,8 @@
 class ActiveSession
   include ActiveModel::Model
 
+  SESSION_BATCH_SIZE = 200
+
   attr_accessor :created_at, :updated_at,
     :session_id, :ip_address,
     :browser, :os, :device_name, :device_type,
@@ -106,10 +108,12 @@ class ActiveSession
     Gitlab::Redis::SharedState.with do |redis|
       session_keys = session_ids.map { |session_id| "#{Gitlab::Redis::SharedState::SESSION_NAMESPACE}:#{session_id}" }
 
-      redis.mget(session_keys).compact.map do |raw_session|
-        # rubocop:disable Security/MarshalLoad
-        Marshal.load(raw_session)
-        # rubocop:enable Security/MarshalLoad
+      session_keys.each_slice(SESSION_BATCH_SIZE).flat_map do |session_keys_batch|
+        redis.mget(session_keys_batch).compact.map do |raw_session|
+          # rubocop:disable Security/MarshalLoad
+          Marshal.load(raw_session)
+          # rubocop:enable Security/MarshalLoad
+        end
       end
     end
   end

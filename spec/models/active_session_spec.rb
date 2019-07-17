@@ -132,6 +132,19 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_shared_state do
 
       expect(ActiveSession.sessions_from_ids([])).to eq([])
     end
+
+    it 'uses redis lookup in batches' do
+      stub_const('ActiveSession::SESSION_BATCH_SIZE', 1)
+
+      redis = double(:redis)
+      expect(Gitlab::Redis::SharedState).to receive(:with).and_yield(redis)
+
+      sessions = ['session-a', 'session-b']
+      mget_responses = sessions.map { |session| [Marshal.dump(session)]}
+      expect(redis).to receive(:mget).twice.and_return(*mget_responses)
+
+      expect(ActiveSession.sessions_from_ids([1, 2])).to eql(sessions)
+    end
   end
 
   describe '.set' do
