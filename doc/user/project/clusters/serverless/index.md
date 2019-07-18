@@ -41,8 +41,7 @@ To run Knative on Gitlab, you will need:
    external IP address or hostname for that domain.
 1. **`.gitlab-ci.yml`:** GitLab uses [Kaniko](https://github.com/GoogleContainerTools/kaniko)
    to build the application. We also use [gitlabktl](https://gitlab.com/gitlab-org/gitlabktl)
-   and [TriggerMesh CLI](https://github.com/triggermesh/tm) CLIs to simplify the
-   deployment of services and functions to Knative.
+   CLI to simplify the deployment of services and functions to Knative.
 1. **`serverless.yml`** (for [functions only](#deploying-functions)): When using serverless to deploy functions, the `serverless.yml` file
    will contain the information for all the functions being hosted in the repository as well as a reference to the
    runtime being used.
@@ -249,7 +248,7 @@ Explanation of the fields used above:
 
 | Parameter | Description |
 |-----------|-------------|
-| `name` | Indicates which provider is used to execute the `serverless.yml` file. In this case, the TriggerMesh `tm` CLI. |
+| `name` | Indicates which provider is used to execute the `serverless.yml` file. In this case, the TriggerMesh middleware. |
 | `environment` | Includes the environment variables to be passed as part of function execution for **all** functions in the file, where `FOO` is the variable name and `BAR` are he variable contents. You may replace this with you own variables. |
 
 ### `functions`
@@ -343,27 +342,23 @@ Go to the **CI/CD > Pipelines** and click on the pipeline that deployed your app
 The output will look like this:
 
 ```bash
-Running with gitlab-runner 11.5.0~beta.844.g96d88322 (96d88322)
-  on docker-auto-scale 72989761
-Using Docker executor with image gcr.io/triggermesh/tm@sha256:e3ee74db94d215bd297738d93577481f3e4db38013326c90d57f873df7ab41d5 ...
-Pulling docker image gcr.io/triggermesh/tm@sha256:e3ee74db94d215bd297738d93577481f3e4db38013326c90d57f873df7ab41d5 ...
-Using docker image sha256:6b3f6590a9b30bd7aafb9573f047d930c70066e43955b4beb18a1eee175f6de1 for gcr.io/triggermesh/tm@sha256:e3ee74db94d215bd297738d93577481f3e4db38013326c90d57f873df7ab41d5 ...
-Running on runner-72989761-project-4342902-concurrent-0 via runner-72989761-stg-srm-1541795796-27929c96...
-Cloning repository...
-Cloning into '/builds/danielgruesso/knative'...
-Checking out 8671ad20 as master...
-Skipping Git submodules setup
-$ echo "$CI_REGISTRY_IMAGE"
-registry.staging.gitlab.com/danielgruesso/knative
-$ tm -n "$KUBE_NAMESPACE" --config "$KUBECONFIG" deploy service "$CI_PROJECT_NAME" --from-image "$CI_REGISTRY_IMAGE" --wait
-Deployment started. Run "tm -n knative-4342902 describe service knative" to see the details
-Waiting for ready state.......
-Service domain: knative.knative-4342902.example.com
+Running with gitlab-runner 12.1.0-rc1 (6da35412)
+  on prm-com-gitlab-org ae3bfce3
+Using Docker executor with image registry.gitlab.com/gitlab-org/gitlabktl:latest ...
+Running on runner-ae3bfc-concurrent-0 via runner-ae3bfc ...
+Fetching changes...
+Authenticating with credentials from job payload (GitLab Registry)
+$ /usr/bin/gitlabktl application deploy
+Welcome to gitlabktl tool
+time="2019-07-15T10:51:07Z" level=info msg="deploying registry credentials"
+Creating app-hello function
+Waiting for app-hello ready state
+Service app-hello URL: http://app-hello.serverless.example.com
 Job succeeded
 ```
 
-The second to last line, labeled **Service domain** contains the URL for the deployment. Copy and paste the domain into your
-browser to see the app live.
+The second to last line, labeled **Service domain** contains the URL for the
+deployment. Copy and paste the domain into your browser to see the app live.
 
 ![knative app](img/knative-app.png)
 
