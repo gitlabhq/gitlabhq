@@ -59,6 +59,12 @@ discussions, and descriptions:
 | `/create_merge_request <branch name>` | Create a new merge request starting from the current issue | ✓ | |
 | `/relate #issue1 #issue2`  | Mark issues as related **(STARTER)** | ✓     |               |
 
+## Autocomplete characters
+
+Many quick actions require a parameter, for example: username, milestone, and
+label. [Autocomplete characters](autocomplete_characters.md) can make it easier
+to enter a parameter, compared to selecting items from a list.
+
 ## Quick actions for commit messages
 
 The following quick actions are applicable for commit messages:
