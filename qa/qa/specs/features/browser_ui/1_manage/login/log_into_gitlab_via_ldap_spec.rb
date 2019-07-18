@@ -5,7 +5,7 @@ module QA
     describe 'LDAP login' do
       it 'user logs into GitLab using LDAP credentials' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.act { sign_in_using_credentials }
+        Page::Main::Login.perform(&:sign_in_using_credentials)
 
         Page::Main::Menu.perform do |menu|
           expect(menu).to have_personal_area

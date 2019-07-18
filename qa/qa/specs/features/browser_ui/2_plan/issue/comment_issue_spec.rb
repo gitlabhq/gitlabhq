@@ -5,7 +5,7 @@ module QA
     describe 'Issue comments' do
       it 'user comments on an issue and edits the comment' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.act { sign_in_using_credentials }
+        Page::Main::Login.perform(&:sign_in_using_credentials)
 
         issue = Resource::Issue.fabricate_via_api! do |issue|
           issue.title = 'issue title'

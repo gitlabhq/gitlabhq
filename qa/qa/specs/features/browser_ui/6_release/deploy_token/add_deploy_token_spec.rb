@@ -5,7 +5,7 @@ module QA
     describe 'Deploy token creation' do
       it 'user adds a deploy token' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.act { sign_in_using_credentials }
+        Page::Main::Login.perform(&:sign_in_using_credentials)
 
         deploy_token_name = 'deploy token name'
         one_week_from_now = Date.today + 7

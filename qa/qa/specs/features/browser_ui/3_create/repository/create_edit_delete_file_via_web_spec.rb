@@ -5,7 +5,7 @@ module QA
     describe 'Files management' do
       it 'user creates, edits and deletes a file via the Web' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.act { sign_in_using_credentials }
+        Page::Main::Login.perform(&:sign_in_using_credentials)
 
         # Create
         file_name = 'QA Test - File name'
@@ -27,7 +27,7 @@ module QA
         updated_file_content = 'QA Test - Updated file content'
         commit_message_for_update = 'QA Test - Update file'
 
-        Page::File::Show.act { click_edit }
+        Page::File::Show.perform(&:click_edit)
 
         Page::File::Form.act do
           remove_content

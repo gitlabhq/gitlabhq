@@ -5,8 +5,8 @@ module QA
     describe 'Mattermost support' do
       it 'user creates a group with a mattermost team' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.act { sign_in_using_credentials }
-        Page::Main::Menu.act { go_to_groups }
+        Page::Main::Login.perform(&:sign_in_using_credentials)
+        Page::Main::Menu.perform(&:go_to_groups)
 
         Page::Dashboard::Groups.perform do |page|
           page.click_new_group

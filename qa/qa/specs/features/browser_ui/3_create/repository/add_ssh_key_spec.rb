@@ -7,7 +7,7 @@ module QA
 
       it 'user adds and then removes an SSH key', :smoke do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.act { sign_in_using_credentials }
+        Page::Main::Login.perform(&:sign_in_using_credentials)
 
         key = Resource::SSHKey.fabricate! do |resource|
           resource.title = key_title
@@ -16,8 +16,8 @@ module QA
         expect(page).to have_content("Title: #{key_title}")
         expect(page).to have_content(key.fingerprint)
 
-        Page::Main::Menu.act { click_settings_link }
-        Page::Profile::Menu.act { click_ssh_keys }
+        Page::Main::Menu.perform(&:click_settings_link)
+        Page::Profile::Menu.perform(&:click_ssh_keys)
 
         Page::Profile::SSHKeys.perform do |ssh_keys|
           ssh_keys.remove_key(key_title)

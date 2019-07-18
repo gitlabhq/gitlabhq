@@ -24,16 +24,16 @@ module QA
 
       it 'user imports a GitHub repo' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.act { sign_in_using_credentials }
+        Page::Main::Login.perform(&:sign_in_using_credentials)
 
         imported_project # import the project
 
-        Page::Main::Menu.act { go_to_projects }
+        Page::Main::Menu.perform(&:go_to_projects)
         Page::Dashboard::Projects.perform do |dashboard|
           dashboard.go_to_project(imported_project.name)
         end
 
-        Page::Project::Show.act { wait_for_import }
+        Page::Project::Show.perform(&:wait_for_import)
 
         verify_repository_import
         verify_issues_import
@@ -50,7 +50,7 @@ module QA
 
       def verify_issues_import
         QA::Support::Retrier.retry_on_exception do
-          Page::Project::Menu.act { click_issues }
+          Page::Project::Menu.perform(&:click_issues)
           expect(page).to have_content('This is a sample issue')
 
           click_link 'This is a sample issue'
@@ -73,7 +73,7 @@ module QA
       end
 
       def verify_merge_requests_import
-        Page::Project::Menu.act { click_merge_requests }
+        Page::Project::Menu.perform(&:click_merge_requests)
         expect(page).to have_content('Improve README.md')
 
         click_link 'Improve README.md'
@@ -108,7 +108,7 @@ module QA
       end
 
       def verify_wiki_import
-        Page::Project::Menu.act { click_wiki }
+        Page::Project::Menu.perform(&:click_wiki)
 
         expect(page).to have_content('Welcome to the test-project wiki!')
       end

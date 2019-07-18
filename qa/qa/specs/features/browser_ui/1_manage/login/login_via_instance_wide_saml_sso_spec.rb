@@ -6,9 +6,9 @@ module QA
       it 'User logs in to gitlab with SAML SSO' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
 
-        Page::Main::Login.act { sign_in_with_saml }
+        Page::Main::Login.perform(&:sign_in_with_saml)
 
-        Vendor::SAMLIdp::Page::Login.act { login }
+        Vendor::SAMLIdp::Page::Login.perform(&:login)
 
         expect(page).to have_content('Welcome to GitLab')
       end

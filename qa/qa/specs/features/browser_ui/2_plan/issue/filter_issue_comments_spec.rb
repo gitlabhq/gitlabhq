@@ -7,7 +7,7 @@ module QA
 
       it 'user filters comments and activities in an issue' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.act { sign_in_using_credentials }
+        Page::Main::Login.perform(&:sign_in_using_credentials)
 
         issue = Resource::Issue.fabricate_via_api! do |issue|
           issue.title = issue_title
