@@ -27,7 +27,7 @@ When someone later changes `t.text_field :login` in the view associated with
 this page to `t.text_field :username` it will generate a different field
 identifier, what would effectively break all tests.
 
-Because we are using `Page::Main::Login.act { sign_in_using_credentials }`
+Because we are using `Page::Main::Login.perform(&:sign_in_using_credentials)`
 everywhere, when we want to sign into GitLab, the page object is the single
 source of truth, and we will need to update `fill_in :user_login`
 to `fill_in :user_username` only in a one place.
