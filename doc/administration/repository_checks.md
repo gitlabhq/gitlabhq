@@ -33,8 +33,8 @@ in `repocheck.log`:
 
 - in the [admin panel](logs.md#repochecklog)
 - or on disk, see:
-    - `/var/log/gitlab/gitlab-rails` for Omnibus installations
-    - `/home/git/gitlab/log` for installations from source
+  - `/var/log/gitlab/gitlab-rails` for Omnibus installations
+  - `/home/git/gitlab/log` for installations from source
 
 If for some reason the periodic repository check caused a lot of false
 alarms you can choose to clear *all* repository check states by

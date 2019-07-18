@@ -21,10 +21,10 @@ To use a sprite Icon in HAML or Rails we use a specific helper function :
 sprite_icon(icon_name, size: nil, css_class: '')
 ```
 
--   **icon_name** Use the icon_name that you can find in the SVG Sprite
-    ([Overview is available here][svg-preview]).
--   **size (optional)** Use one of the following sizes : 16, 24, 32, 48, 72 (this will be translated into a `s16` class)
--   **css_class (optional)** If you want to add additional css classes
+- **icon_name** Use the icon_name that you can find in the SVG Sprite
+  ([Overview is available here][svg-preview]).
+- **size (optional)** Use one of the following sizes : 16, 24, 32, 48, 72 (this will be translated into a `s16` class)
+- **css_class (optional)** If you want to add additional css classes
 
 **Example**
 
@@ -65,10 +65,10 @@ export default {
 </template>
 ```
 
--   **name** Name of the Icon in the SVG Sprite  ([Overview is available here][svg-preview]).
--   **size (optional)** Number value for the size which is then mapped to a specific CSS class
-    (Available Sizes: 8, 12, 16, 18, 24, 32, 48, 72 are mapped to `sXX` css classes)
--   **css-classes (optional)** Additional CSS Classes to add to the svg tag.
+- **name** Name of the Icon in the SVG Sprite  ([Overview is available here][svg-preview]).
+- **size (optional)** Number value for the size which is then mapped to a specific CSS class
+  (Available Sizes: 8, 12, 16, 18, 24, 32, 48, 72 are mapped to `sXX` css classes)
+- **css-classes (optional)** Additional CSS Classes to add to the svg tag.
 
 ### Usage in HTML/JS
 

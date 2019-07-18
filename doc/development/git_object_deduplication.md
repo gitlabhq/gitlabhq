@@ -79,11 +79,11 @@ at the Rails application level in SQL.
 In conclusion, we need three things for effective object deduplication
 across a collection of GitLab project repositories at the Git level:
 
-1.  A pool repository must exist.
-2.  The participating project repositories must be linked to the pool
-    repository via their respective `objects/info/alternates` files.
-3.  The pool repository must contain Git object data common to the
-    participating project repositories.
+1. A pool repository must exist.
+1. The participating project repositories must be linked to the pool
+   repository via their respective `objects/info/alternates` files.
+1. The pool repository must contain Git object data common to the
+   participating project repositories.
 
 ### Deduplication factor
 
@@ -105,71 +105,71 @@ With pool repositories we made a fresh start. These live in their own
 `pool_repositories` SQL table. The relations between these two tables
 are as follows:
 
--   a `Project` belongs to at most one `PoolRepository`
-    (`project.pool_repository`)
--   as an automatic consequence of the above, a `PoolRepository` has
-    many `Project`s
--   a `PoolRepository` has exactly one "source `Project`"
-    (`pool.source_project`)
+- a `Project` belongs to at most one `PoolRepository`
+  (`project.pool_repository`)
+- as an automatic consequence of the above, a `PoolRepository` has
+  many `Project`s
+- a `PoolRepository` has exactly one "source `Project`"
+  (`pool.source_project`)
 
 > TODO Fix invalid SQL data for pools created prior to GitLab 11.11
 > <https://gitlab.com/gitlab-org/gitaly/issues/1653>.
 
 ### Assumptions
 
--   All repositories in a pool must use [hashed
-    storage](../administration/repository_storage_types.md). This is so
-    that we don't have to ever worry about updating paths in
-    `object/info/alternates` files.
--   All repositories in a pool must be on the same Gitaly storage shard.
-    The Git alternates mechanism relies on direct disk access across
-    multiple repositories, and we can only assume direct disk access to
-    be possible within a Gitaly storage shard.
--   The only two ways to remove a member project from a pool are (1) to
-    delete the project or (2) to move the project to another Gitaly
-    storage shard.
+- All repositories in a pool must use [hashed
+  storage](../administration/repository_storage_types.md). This is so
+  that we don't have to ever worry about updating paths in
+  `object/info/alternates` files.
+- All repositories in a pool must be on the same Gitaly storage shard.
+  The Git alternates mechanism relies on direct disk access across
+  multiple repositories, and we can only assume direct disk access to
+  be possible within a Gitaly storage shard.
+- The only two ways to remove a member project from a pool are (1) to
+  delete the project or (2) to move the project to another Gitaly
+  storage shard.
 
 ### Creating pools and pool memberships
 
--   When a pool gets created, it must have a source project. The initial
-    contents of the pool repository are a Git clone of the source
-    project repository.
--   The occasion for creating a pool is when an existing eligible
-    (public, hashed storage, non-forked) GitLab project gets forked and
-    this project does not belong to a pool repository yet. The fork
-    parent project becomes the source project of the new pool, and both
-    the fork parent and the fork child project become members of the new
-    pool.
--   Once project A has become the source project of a pool, all future
-    eligible forks of A will become pool members.
--   If the fork source is itself a fork, the resulting repository will
-    neither join the repository nor will a new pool repository be
-    seeded.
+- When a pool gets created, it must have a source project. The initial
+  contents of the pool repository are a Git clone of the source
+  project repository.
+- The occasion for creating a pool is when an existing eligible
+  (public, hashed storage, non-forked) GitLab project gets forked and
+  this project does not belong to a pool repository yet. The fork
+  parent project becomes the source project of the new pool, and both
+  the fork parent and the fork child project become members of the new
+  pool.
+- Once project A has become the source project of a pool, all future
+  eligible forks of A will become pool members.
+- If the fork source is itself a fork, the resulting repository will
+  neither join the repository nor will a new pool repository be
+  seeded.
 
-    eg:
+  eg:
 
-    Suppose fork A is part of a pool repository, any forks created off
-    of fork A *will not* be a part of the pool repository that fork A is
-    a part of.
+  Suppose fork A is part of a pool repository, any forks created off
+  of fork A *will not* be a part of the pool repository that fork A is
+  a part of.
 
-    Suppose B is a fork of A, and A does not belong to an object pool.
-    Now C gets created as a fork of B. C will not be part of a pool
-    repository.
+  Suppose B is a fork of A, and A does not belong to an object pool.
+  Now C gets created as a fork of B. C will not be part of a pool
+  repository.
 
 > TODO should forks of forks be deduplicated?
 > <https://gitlab.com/gitlab-org/gitaly/issues/1532>
 
 ### Consequences
 
--   If a normal Project participating in a pool gets moved to another
-    Gitaly storage shard, its "belongs to PoolRepository" relation will
-    be broken. Because of the way moving repositories between shard is
-    implemented, we will automatically get a fresh self-contained copy
-    of the project's repository on the new storage shard.
--   If the source project of a pool gets moved to another Gitaly storage
-    shard or is deleted the "source project" relation is not broken.
-    However, as of GitLab 12.0 a pool will not fetch from a source
-    unless the source is on the same Gitaly shard.
+- If a normal Project participating in a pool gets moved to another
+  Gitaly storage shard, its "belongs to PoolRepository" relation will
+  be broken. Because of the way moving repositories between shard is
+  implemented, we will automatically get a fresh self-contained copy
+  of the project's repository on the new storage shard.
+- If the source project of a pool gets moved to another Gitaly storage
+  shard or is deleted the "source project" relation is not broken.
+  However, as of GitLab 12.0 a pool will not fetch from a source
+  unless the source is on the same Gitaly shard.
 
 ## Consistency between the SQL pool relation and Gitaly
 

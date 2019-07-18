@@ -8,14 +8,15 @@ comments: false
 
 - Create a new repository by instantiating it through:
 
-    ```bash
-    git init
-    ```
+  ```bash
+  git init
+  ```
+
 - Copy an existing project by cloning the repository through:
 
-    ```bash
-    git clone <url>
-    ```
+  ```bash
+  git clone <url>
+  ```
 
 ## Central Repos
 
@@ -23,9 +24,9 @@ comments: false
 - Bare repositories don't allow file editing or committing changes.
 - Create a bare repo with:
 
-    ```bash
-    git init --bare project-name.git
-    ```
+  ```bash
+  git init --bare project-name.git
+  ```
 
 ## Instantiate workflow with clone
 
