@@ -18,6 +18,8 @@ describe 'Projects (JavaScript fixtures)', type: :controller do
   end
 
   before do
+    stub_licensed_features(variable_environment_scope: true)
+
     project.add_maintainer(admin)
     sign_in(admin)
     allow(SecureRandom).to receive(:hex).and_return('securerandomhex:thereisnospoon')

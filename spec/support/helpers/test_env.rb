@@ -130,7 +130,7 @@ module TestEnv
   # Keeps gitlab-shell and gitlab-test
   def clean_test_path
     Dir[TMP_TEST_PATH].each do |entry|
-      unless File.basename(entry) =~ /\A(frontend|gitaly|gitlab-(shell|test|test_bare|test-fork|test-fork_bare))\z/
+      unless test_dirs.include?(File.basename(entry))
         FileUtils.rm_rf(entry)
       end
     end
@@ -316,6 +316,7 @@ module TestEnv
   # These are directories that should be preserved at cleanup time
   def test_dirs
     @test_dirs ||= %w[
+      frontend
       gitaly
       gitlab-shell
       gitlab-test
