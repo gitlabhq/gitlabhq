@@ -386,6 +386,10 @@ a given board inside your GitLab instance, any time those two issues are subsequ
 loaded in any board in the same instance (could be a different project board or a different group board, for example),
 that ordering will be maintained.
 
+This ordering also affects [issue lists](issues/sorting_issue_lists.md).
+Changing the order in an issue board changes the ordering in an issue list,
+and vice versa.
+
 ### Filtering issues
 
 You should be able to use the filters on top of your Issue Board to show only
