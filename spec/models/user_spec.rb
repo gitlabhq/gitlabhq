@@ -3504,4 +3504,37 @@ describe User do
       expect(described_class.reorder_by_name).to eq([user1, user2])
     end
   end
+
+  describe '#notification_email_for' do
+    let(:user) { create(:user) }
+    let(:group) { create(:group) }
+
+    subject { user.notification_email_for(group) }
+
+    context 'when group is nil' do
+      let(:group) { nil }
+
+      it 'returns global notification email' do
+        is_expected.to eq(user.notification_email)
+      end
+    end
+
+    context 'when group has no notification email set' do
+      it 'returns global notification email' do
+        create(:notification_setting, user: user, source: group, notification_email: '')
+
+        is_expected.to eq(user.notification_email)
+      end
+    end
+
+    context 'when group has notification email set' do
+      it 'returns group notification email' do
+        group_notification_email = 'user+group@example.com'
+
+        create(:notification_setting, user: user, source: group, notification_email: group_notification_email)
+
+        is_expected.to eq(group_notification_email)
+      end
+    end
+  end
 end

@@ -1259,6 +1259,11 @@ class User < ApplicationRecord
     end
   end
 
+  def notification_email_for(notification_group)
+    # Return group-specific email address if present, otherwise return global notification email address
+    notification_group&.notification_email_for(self) || notification_email
+  end
+
   def notification_settings_for(source)
     if notification_settings.loaded?
       notification_settings.find do |notification|
