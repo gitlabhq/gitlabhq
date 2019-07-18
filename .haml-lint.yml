@@ -118,7 +118,6 @@ linters:
       - Lint/ParenthesesAsGroupedExpression
       - Lint/RedundantWithIndex
       - Lint/SafeNavigationConsistency
-      - Lint/Syntax
       - Metrics/BlockNesting
       - Naming/VariableName
       - Performance/RedundantMatch
@@ -154,6 +153,9 @@ linters:
   SpaceInsideHashAttributes:
     enabled: true
     style: space
+
+  Syntax:
+    enabled: true
 
   Indentation:
     enabled: true
