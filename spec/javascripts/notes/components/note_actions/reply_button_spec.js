@@ -25,8 +25,7 @@ describe('ReplyButton', () => {
 
     button.trigger('click');
 
-    expect(wrapper.emitted()).toEqual({
-      startReplying: [[]],
-    });
+    expect(wrapper.emitted().startReplying).toBeTruthy();
+    expect(wrapper.emitted().startReplying.length).toBe(1);
   });
 });

@@ -23,8 +23,7 @@ describe('JumpToNextDiscussionButton', () => {
 
     button.trigger('click');
 
-    expect(wrapper.emitted()).toEqual({
-      onClick: [[]],
-    });
+    expect(wrapper.emitted().onClick).toBeTruthy();
+    expect(wrapper.emitted().onClick.length).toBe(1);
   });
 });
