@@ -6,7 +6,7 @@ module QA
       class Login < Page::Base
         view 'app/views/devise/passwords/edit.html.haml' do
           element :password_field
-          element :password_confirmation
+          element :password_confirmation_field
           element :change_password_button
         end
 
@@ -154,7 +154,7 @@ module QA
           return unless has_content?('Change your password')
 
           fill_element :password_field, Runtime::User.password
-          fill_element :password_confirmation, Runtime::User.password
+          fill_element :password_confirmation_field, Runtime::User.password
           click_element :change_password_button
         end
       end

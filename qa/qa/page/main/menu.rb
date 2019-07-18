@@ -6,7 +6,7 @@ module QA
       class Menu < Page::Base
         view 'app/views/layouts/header/_current_user_dropdown.html.haml' do
           element :sign_out_link
-          element :settings_link, 'link_to s_("CurrentUser|Settings")' # rubocop:disable QA/ElementWithPattern
+          element :settings_link
         end
 
         view 'app/views/layouts/header/_default.html.haml' do

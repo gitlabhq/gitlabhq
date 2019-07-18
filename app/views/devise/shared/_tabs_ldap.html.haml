@@ -5,13 +5,13 @@
   = render_if_exists "devise/shared/kerberos_tab"
   - @ldap_servers.each_with_index do |server, i|
     %li.nav-item
-      = link_to server['label'], "##{server['provider_name']}", class: "nav-link #{active_when(i.zero? && form_based_auth_provider_has_active_class?(:ldapmain))} qa-ldap-tab", 'data-toggle' => 'tab'
+      = link_to server['label'], "##{server['provider_name']}", class: "nav-link #{active_when(i.zero? && form_based_auth_provider_has_active_class?(:ldapmain))}", data: { toggle: 'tab', qa_selector: 'ldap_tab' }
 
   = render_if_exists 'devise/shared/tab_smartcard'
 
   - if password_authentication_enabled_for_web?
     %li.nav-item
-      = link_to 'Standard', '#login-pane', class: 'nav-link qa-standard-tab', 'data-toggle' => 'tab'
+      = link_to 'Standard', '#login-pane', class: 'nav-link', data: { toggle: 'tab', qa_selector: 'standard_tab' }
   - if allow_signup?
     %li.nav-item
-      = link_to 'Register', '#register-pane', class: 'nav-link qa-register-tab', 'data-toggle' => 'tab'
+      = link_to 'Register', '#register-pane', class: 'nav-link', data: { toggle: 'tab', qa_selector: 'register_tab' }

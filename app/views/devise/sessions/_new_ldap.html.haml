@@ -3,13 +3,13 @@
 = form_tag(omniauth_callback_path(:user, server['provider_name']), id: 'new_ldap_user', class: "gl-show-field-errors") do
   .form-group
     = label_tag :username, "#{server['label']} Username"
-    = text_field_tag :username, nil, { class: "form-control top qa-username-field", title: "This field is required.", autofocus: "autofocus", required: true }
+    = text_field_tag :username, nil, { class: "form-control top", title: "This field is required.", autofocus: "autofocus", data: { qa_selector:  'username_field' } required: true }
   .form-group
     = label_tag :password
-    = password_field_tag :password, nil, { class: "form-control bottom qa-password-field", title: "This field is required.", required: true }
+    = password_field_tag :password, nil, { class: "form-control bottom", title: "This field is required.", data: { qa_selector: 'password_field' }required: true }
   - if devise_mapping.rememberable?
     .remember-me
       %label{ for: "remember_me" }
         = check_box_tag :remember_me, '1', false, id: 'remember_me'
         %span Remember me
-  = submit_tag "Sign in", class: "btn-success btn qa-sign-in-button"
+  = submit_tag "Sign in", class: "btn-success btn", data: { qa_selector: 'sign_in_button' }
