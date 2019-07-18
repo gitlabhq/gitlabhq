@@ -52,7 +52,7 @@ export default {
       return this.repo.pagination.total > this.repo.pagination.perPage;
     },
     modalTitle() {
-      if (this.singleItemToBeDeleted !== null || this.itemsToBeDeleted.length === 1) {
+      if (this.singleItemSelected) {
         return s__('ContainerRegistry|Remove image');
       }
       return s__('ContainerRegistry|Remove images');
@@ -60,7 +60,7 @@ export default {
     modalDescription() {
       const selectedCount = this.itemsToBeDeleted.length;
 
-      if (this.singleItemToBeDeleted !== null || selectedCount === 1) {
+      if (this.singleItemSelected) {
         const { tag } =
           this.singleItemToBeDeleted !== null
             ? this.repo.list[this.singleItemToBeDeleted]
@@ -78,6 +78,9 @@ export default {
           delete the images and all tags pointing to them.`),
         { count: selectedCount },
       );
+    },
+    singleItemSelected() {
+      return this.singleItemToBeDeleted !== null || this.itemsToBeDeleted.length === 1;
     },
   },
   methods: {

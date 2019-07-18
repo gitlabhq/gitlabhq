@@ -1,13 +1,14 @@
 import Vue from 'vue';
 import tableRegistry from '~/registry/components/table_registry.vue';
 import store from '~/registry/stores';
+import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import { repoPropsData } from '../mock_data';
 
 const [firstImage, secondImage] = repoPropsData.list;
 
 describe('table registry', () => {
   let vm;
-  let Component;
+  const Component = Vue.extend(tableRegistry);
   const bulkDeletePath = 'path';
 
   const findDeleteBtn = () => vm.$el.querySelector('.js-delete-registry');
@@ -15,16 +16,18 @@ describe('table registry', () => {
   const findSelectAllCheckbox = () => vm.$el.querySelector('.js-select-all-checkbox > input');
   const findAllRowCheckboxes = () =>
     Array.from(vm.$el.querySelectorAll('.js-select-checkbox input'));
+  const confirmationModal = (child = '') => document.querySelector(`#${vm.modalId} ${child}`);
 
   const createComponent = () => {
-    Component = Vue.extend(tableRegistry);
-    vm = new Component({
+    vm = mountComponentWithStore(Component, {
       store,
-      propsData: {
+      props: {
         repo: repoPropsData,
       },
-    }).$mount();
+    });
   };
+
+  const toggleSelectAll = () => vm.selectAll();
 
   beforeEach(() => {
     createComponent();
@@ -34,31 +37,28 @@ describe('table registry', () => {
     vm.$destroy();
   });
 
-  it('should render a table with the registry list', () => {
-    expect(vm.$el.querySelectorAll('table tbody tr').length).toEqual(repoPropsData.list.length);
-  });
+  describe('rendering', () => {
+    it('should render a table with the registry list', () => {
+      expect(vm.$el.querySelectorAll('table tbody tr').length).toEqual(repoPropsData.list.length);
+    });
 
-  it('should render registry tag', () => {
-    const textRendered = vm.$el
-      .querySelector('.table tbody tr')
-      .textContent.trim()
-      .replace(/\s\s+/g, ' ');
+    it('should render registry tag', () => {
+      const textRendered = vm.$el
+        .querySelector('.table tbody tr')
+        .textContent.trim()
+        .replace(/\s\s+/g, ' ');
 
-    expect(textRendered).toContain(repoPropsData.list[0].tag);
-    expect(textRendered).toContain(repoPropsData.list[0].shortRevision);
-    expect(textRendered).toContain(repoPropsData.list[0].layers);
-    expect(textRendered).toContain(repoPropsData.list[0].size);
+      expect(textRendered).toContain(repoPropsData.list[0].tag);
+      expect(textRendered).toContain(repoPropsData.list[0].shortRevision);
+      expect(textRendered).toContain(repoPropsData.list[0].layers);
+      expect(textRendered).toContain(repoPropsData.list[0].size);
+    });
   });
 
   describe('multi select', () => {
-    beforeEach(() => {
-      vm.itemsToBeDeleted = [];
-    });
-
     it('should support multiselect and selecting a row should enable delete button', done => {
       findSelectAllCheckbox().click();
-
-      vm.selectAll();
+      toggleSelectAll();
 
       expect(findSelectAllCheckbox().checked).toBe(true);
 
@@ -70,7 +70,7 @@ describe('table registry', () => {
 
     it('selecting all checkbox should select all rows and enable delete button', done => {
       findSelectAllCheckbox().click();
-      vm.selectAll();
+      toggleSelectAll();
 
       Vue.nextTick(() => {
         const checkedValues = findAllRowCheckboxes().filter(x => x.checked);
@@ -82,8 +82,8 @@ describe('table registry', () => {
 
     it('deselecting select all checkbox should deselect all rows and disable delete button', done => {
       findSelectAllCheckbox().click();
-      vm.selectAll(); // Select them all on
-      vm.selectAll(); // Select them all off
+      toggleSelectAll(); // Select them all on
+      toggleSelectAll(); // Select them all off
 
       Vue.nextTick(() => {
         const checkedValues = findAllRowCheckboxes().filter(x => x.checked);
@@ -95,7 +95,7 @@ describe('table registry', () => {
 
     it('should delete multiple items when multiple items are selected', done => {
       findSelectAllCheckbox().click();
-      vm.selectAll();
+      toggleSelectAll();
 
       Vue.nextTick(() => {
         expect(vm.itemsToBeDeleted).toEqual([0, 1]);
@@ -105,8 +105,8 @@ describe('table registry', () => {
         spyOn(vm, 'deleteItems').and.returnValue(Promise.resolve());
 
         Vue.nextTick(() => {
-          const modal = document.querySelector(`#${vm.modalId}`);
-          document.querySelector(`#${vm.modalId} .btn-danger`).click();
+          const modal = confirmationModal();
+          confirmationModal('.btn-danger').click();
 
           expect(modal).toExist();
 
@@ -146,7 +146,7 @@ describe('table registry', () => {
         spyOn(vm, 'deleteItems').and.returnValue(Promise.resolve());
 
         Vue.nextTick(() => {
-          document.querySelector(`#${vm.modalId} .btn-danger`).click();
+          confirmationModal('.btn-danger').click();
 
           expect(vm.itemsToBeDeleted).toEqual([]);
           expect(vm.deleteItems).toHaveBeenCalledWith({
@@ -162,6 +162,29 @@ describe('table registry', () => {
   describe('pagination', () => {
     it('should be possible to change the page', () => {
       expect(vm.$el.querySelector('.gl-pagination')).toBeDefined();
+    });
+  });
+
+  describe('modal content', () => {
+    it('should show the singular title and image name when deleting a single image', done => {
+      findDeleteBtnRow().click();
+
+      Vue.nextTick(() => {
+        expect(vm.modalTitle).toBe('Remove image');
+        expect(vm.modalDescription).toContain(firstImage.tag);
+        done();
+      });
+    });
+
+    it('should show the plural title and image count when deleting more than one image', done => {
+      findSelectAllCheckbox().click();
+      toggleSelectAll();
+
+      Vue.nextTick(() => {
+        expect(vm.modalTitle).toBe('Remove images');
+        expect(vm.modalDescription).toContain('<b>2</b> images');
+        done();
+      });
     });
   });
 });
