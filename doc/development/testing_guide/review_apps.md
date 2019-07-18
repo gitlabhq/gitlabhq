@@ -137,8 +137,8 @@ secure note named **gitlab-{ce,ee} Review App's root password**.
 
 ### Run a Rails console
 
-1. [Filter Workloads by your Review App slug](https://console.cloud.google.com/kubernetes/workload?project=gitlab-review-apps)
-  , e.g. `review-qa-raise-e-12chm0`.
+1. [Filter Workloads by your Review App slug](https://console.cloud.google.com/kubernetes/workload?project=gitlab-review-apps),
+   e.g. `review-qa-raise-e-12chm0`.
 1. Find and open the `task-runner` Deployment, e.g. `review-qa-raise-e-12chm0-task-runner`.
 1. Click on the Pod in the "Managed pods" section, e.g. `review-qa-raise-e-12chm0-task-runner-d5455cc8-2lsvz`.
 1. Click on the `KUBECTL` dropdown, then `Exec` -> `task-runner`.
@@ -196,7 +196,7 @@ For the record, the debugging steps to find out this issue were:
 1. `kubectl describe pod <pod name>` & confirm exact error message
 1. Web search for exact error message, following rabbit hole to [a relevant kubernetes bug report](https://github.com/kubernetes/kubernetes/issues/57345)
 1. Access the node over SSH via the GCP console (**Computer Engine > VM
-  instances** then click the "SSH" button for the node where the `dns-gitlab-review-app-external-dns` pod runs)
+   instances** then click the "SSH" button for the node where the `dns-gitlab-review-app-external-dns` pod runs)
 1. In the node: `systemctl --version` => systemd 232
 1. Gather some more information:
    - `mount | grep kube | wc -l` => e.g. 290
@@ -211,7 +211,7 @@ For the record, the debugging steps to find out this issue were:
 To resolve the problem, we needed to (forcibly) drain some nodes:
 
 1. Try a normal drain on the node where the `dns-gitlab-review-app-external-dns`
-  pod runs so that Kubernetes automatically move it to another node: `kubectl drain NODE_NAME`
+   pod runs so that Kubernetes automatically move it to another node: `kubectl drain NODE_NAME`
 1. If that doesn't work, you can also perform a forcible "drain" the node by removing all pods: `kubectl delete pods --field-selector=spec.nodeName=NODE_NAME`
 1. In the node:
    - Perform `systemctl daemon-reload` to remove the dead/inactive units

@@ -121,27 +121,27 @@ All reviewers can help ensure accuracy, clarity, completeness, and adherence to 
 
 - **Prior to merging**, documentation changes committed by the developer must be reviewed by:
 
-   1. **The code reviewer** for the MR, to confirm accuracy, clarity, and completeness.
-   1. Optionally: Others involved in the work, such as other devs or the PM.
-   1. Optionally: The technical writer for the DevOps stage. If not prior to merging, the technical writer will review after the merge.
-      This helps us ensure that the developer has time to merge good content by the freeze, and that it can be further refined by the release, if needed.
-      - To decide whether to request this review before the merge, consider the amount of time left before the code freeze, the size of the change,
-        and your degree of confidence in having users of an RC use your docs as written.
-      - Pre-merge tech writer reviews should be most common when the code is complete well in advance of the freeze and/or for larger documentation changes.
-      - You can request a review and if there is not sufficient time to complete it prior to the freeze,
-        the maintainer can merge the current doc changes (if complete) and create a follow-up doc review issue.
-      - The technical writer can also help decide what docs to merge before the freeze and whether to work on further changes in a follow up MR.
-      - **To request a pre-merge technical writer review**, assign the writer listed for the applicable [DevOps stage](https://about.gitlab.com/handbook/product/categories/#devops-stages).
-      - **To request a post-merge technical writer review**, [create an issue for one using the Doc Review template](https://gitlab.com/gitlab-org/gitlab-ce/issues/new?issuable_template=Doc%20Review) and link it from the MR that makes the doc change.
-   1. **The maintainer** who is assigned to merge the MR, to verify clarity, completeness, and quality, to the best of their ability.
+  1. **The code reviewer** for the MR, to confirm accuracy, clarity, and completeness.
+  1. Optionally: Others involved in the work, such as other devs or the PM.
+  1. Optionally: The technical writer for the DevOps stage. If not prior to merging, the technical writer will review after the merge.
+     This helps us ensure that the developer has time to merge good content by the freeze, and that it can be further refined by the release, if needed.
+     - To decide whether to request this review before the merge, consider the amount of time left before the code freeze, the size of the change,
+       and your degree of confidence in having users of an RC use your docs as written.
+     - Pre-merge tech writer reviews should be most common when the code is complete well in advance of the freeze and/or for larger documentation changes.
+     - You can request a review and if there is not sufficient time to complete it prior to the freeze,
+       the maintainer can merge the current doc changes (if complete) and create a follow-up doc review issue.
+     - The technical writer can also help decide what docs to merge before the freeze and whether to work on further changes in a follow up MR.
+     - **To request a pre-merge technical writer review**, assign the writer listed for the applicable [DevOps stage](https://about.gitlab.com/handbook/product/categories/#devops-stages).
+     - **To request a post-merge technical writer review**, [create an issue for one using the Doc Review template](https://gitlab.com/gitlab-org/gitlab-ce/issues/new?issuable_template=Doc%20Review) and link it from the MR that makes the doc change.
+  1. **The maintainer** who is assigned to merge the MR, to verify clarity, completeness, and quality, to the best of their ability.
 
 - Upon merging, if a technical writer review has not been performed and there is not yet a linked issue for a follow-up review, the maintainer should [create an issue using the Doc Review template](https://gitlab.com/gitlab-org/gitlab-ce/issues/new?issuable_template=Doc%20Review), link it from the MR, and
   mention the original MR author in the new issue. Alternatively, the maintainer can ask the MR author to create and link this issue before the MR is merged.
 
 - After merging, documentation changes are reviewed by:
 
-   1. The technical writer--**if** their review was not performed prior to the merge.
-   2. Optionally: by the PM (for accuracy and to ensure it's consistent with the vision for how the product will be used).
+  1. The technical writer -- **if** their review was not performed prior to the merge.
+  1. Optionally: by the PM (for accuracy and to ensure it's consistent with the vision for how the product will be used).
       Any party can raise the item to the PM for review at any point: the dev, the technical writer, or the PM, who can request/plan a review at the outset.
 
 ### Technical Writer role

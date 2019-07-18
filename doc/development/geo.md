@@ -341,9 +341,9 @@ not used, so sessions etc. aren't shared between nodes.
 GitLab can optionally use Object Storage to store data it would
 otherwise store on disk. These things can be:
 
- - LFS Objects
- - CI Job Artifacts
- - Uploads
+- LFS Objects
+- CI Job Artifacts
+- Uploads
 
 Objects that are stored in object storage, are not handled by Geo. Geo
 ignores items in object storage. Either:
@@ -412,15 +412,15 @@ The Geo **primary** stores events in the `geo_event_log` table. Each
 entry in the log contains a specific type of event. These type of
 events include:
 
- - Repository Deleted event
- - Repository Renamed event
- - Repositories Changed event
- - Repository Created event
- - Hashed Storage Migrated event
- - Lfs Object Deleted event
- - Hashed Storage Attachments event
- - Job Artifact Deleted event
- - Upload Deleted event
+- Repository Deleted event
+- Repository Renamed event
+- Repositories Changed event
+- Repository Created event
+- Hashed Storage Migrated event
+- Lfs Object Deleted event
+- Hashed Storage Attachments event
+- Job Artifact Deleted event
+- Upload Deleted event
 
 ### Geo Log Cursor
 
@@ -526,4 +526,4 @@ old method:
 
 - Replication is synchronous and we preserve the order of events.
 - Replication of the events happen at the same time as the changes in the
-   database.
+  database.

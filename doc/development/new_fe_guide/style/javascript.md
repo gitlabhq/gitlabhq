@@ -71,7 +71,6 @@ class myClass {
 }
 const instance = new myClass();
 instance.makeRequest();
-
 ```
 
 ## Avoid classes to handle DOM events
@@ -189,8 +188,8 @@ disabled due to legacy compatibility reasons but they are in the process of bein
 Do not disable specific ESLint rules. Due to technical debt, you may disable the following
 rules only if you are invoking/instantiating existing code modules.
 
-  - [no-new](http://eslint.org/docs/rules/no-new)
-  - [class-method-use-this](http://eslint.org/docs/rules/class-methods-use-this)
+- [no-new](http://eslint.org/docs/rules/no-new)
+- [class-method-use-this](http://eslint.org/docs/rules/class-methods-use-this)
 
 > Note: Disable these rules on a per line basis. This makes it easier to refactor
   in the future. E.g. use `eslint-disable-next-line` or `eslint-disable-line`.
