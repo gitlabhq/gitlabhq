@@ -121,6 +121,10 @@ Example response:
   "domain_whitelist": [],
   "domain_blacklist_enabled" : false,
   "domain_blacklist" : [],
+  "external_authorization_service_enabled": true,
+  "external_authorization_service_url": "https://authorize.me",
+  "external_authorization_service_default_label": "default",
+  "external_authorization_service_timeout": 0.5,
   "user_oauth_applications": true,
   "after_sign_out_path": "",
   "container_registry_token_expire_delay": 5,
@@ -151,10 +155,6 @@ Example response:
 Users on GitLab [Premium or Ultimate](https://about.gitlab.com/pricing/) may also see
 these parameters:
 
-- `external_authorization_service_enabled`
-- `external_authorization_service_url`
-- `external_authorization_service_default_label`
-- `external_authorization_service_timeout`
 - `file_template_project_id`
 - `geo_node_allowed_ips`
 - `geo_status_timeout`
@@ -162,10 +162,6 @@ these parameters:
 Example responses: **(PREMIUM ONLY)**
 
 ```json
-  "external_authorization_service_enabled": true,
-  "external_authorization_service_url": "https://authorize.me",
-  "external_authorization_service_default_label": "default",
-  "external_authorization_service_timeout": 0.5,
   "file_template_project_id": 1,
   "geo_node_allowed_ips": "0.0.0.0/0, ::/0"
 ```
@@ -225,13 +221,13 @@ are listed in the descriptions of the relevant settings.
 | `email_author_in_body`                   | boolean          | no                                   | Some email servers do not support overriding the email sender name. Enable this option to include the name of the author of the issue, merge request or comment in the email body instead. |
 | `enabled_git_access_protocol`            | string           | no                                   | Enabled protocols for Git access. Allowed values are: `ssh`, `http`, and `nil` to allow both protocols. |
 | `enforce_terms`                          | boolean          | no                                   | (**If enabled, requires:** `terms`) Enforce application ToS to all users. |
-| `external_auth_client_cert`              | string           | no                                   | **(PREMIUM)** (**If enabled, requires:** `external_auth_client_key`) The certificate to use to authenticate with the external authorization service |
-| `external_auth_client_key_pass`          | string           | no                                   | **(PREMIUM)** Passphrase to use for the private key when authenticating with the external service this is encrypted when stored |
-| `external_auth_client_key`               | string           | required by: `external_auth_client_cert` | **(PREMIUM)** Private key for the certificate when authentication is required for the external authorization service, this is encrypted when stored |
-| `external_authorization_service_default_label` | string     | required by: `external_authorization_service_enabled` | **(PREMIUM)** The default classification label to use when requesting authorization and no classification label has been specified on the project |
-| `external_authorization_service_enabled` | boolean          | no                                   | **(PREMIUM)** (**If enabled, requires:** `external_authorization_service_default_label`, `external_authorization_service_timeout` and `external_authorization_service_url` )  Enable using an external authorization service for accessing projects |
-| `external_authorization_service_timeout` | float            | required by: `external_authorization_service_enabled` | **(PREMIUM)** The timeout after which an authorization request is aborted, in seconds. When a request times out, access is denied to the user. (min: 0.001, max: 10, step: 0.001) |
-| `external_authorization_service_url`     | string           | required by: `external_authorization_service_enabled` | **(PREMIUM)** URL to which authorization requests will be directed |
+| `external_auth_client_cert`              | string           | no                                   | (**If enabled, requires:** `external_auth_client_key`) The certificate to use to authenticate with the external authorization service |
+| `external_auth_client_key_pass`          | string           | no                                   | Passphrase to use for the private key when authenticating with the external service this is encrypted when stored |
+| `external_auth_client_key`               | string           | required by: `external_auth_client_cert` | Private key for the certificate when authentication is required for the external authorization service, this is encrypted when stored |
+| `external_authorization_service_default_label` | string     | required by: `external_authorization_service_enabled` | The default classification label to use when requesting authorization and no classification label has been specified on the project |
+| `external_authorization_service_enabled` | boolean          | no                                   | (**If enabled, requires:** `external_authorization_service_default_label`, `external_authorization_service_timeout` and `external_authorization_service_url` )  Enable using an external authorization service for accessing projects |
+| `external_authorization_service_timeout` | float            | required by: `external_authorization_service_enabled` | The timeout after which an authorization request is aborted, in seconds. When a request times out, access is denied to the user. (min: 0.001, max: 10, step: 0.001) |
+| `external_authorization_service_url`     | string           | required by: `external_authorization_service_enabled` | URL to which authorization requests will be directed |
 | `file_template_project_id`               | integer          | no                                   | **(PREMIUM)** The ID of a project to load custom file templates from |
 | `first_day_of_week`                      | integer          | no                                   | Start day of the week for calendar views and date pickers. Valid values are `0` (default) for Sunday, `1` for Monday, and `6` for Saturday. |
 | `geo_node_allowed_ips`                   | string           | yes                                  | **(PREMIUM)** Comma-separated list of IPs and CIDRs of allowed secondary nodes. For example, `1.1.1.1, 2.2.2.0/24`. |
