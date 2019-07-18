@@ -1,7 +1,10 @@
 /* eslint-disable import/no-commonjs */
 
+const path = require('path');
 const { ErrorWithStack } = require('jest-util');
 const JSDOMEnvironment = require('jest-environment-jsdom');
+
+const ROOT_PATH = path.resolve(__dirname, '../..');
 
 class CustomEnvironment extends JSDOMEnvironment {
   constructor(config, context) {
@@ -35,9 +38,7 @@ class CustomEnvironment extends JSDOMEnvironment {
       this.rejectedPromises.push(error);
     };
 
-    this.global.fixturesBasePath = `${process.cwd()}/${
-      IS_EE ? 'ee/' : ''
-    }spec/javascripts/fixtures`;
+    this.global.fixturesBasePath = `${ROOT_PATH}/${IS_EE ? 'ee/' : ''}spec/javascripts/fixtures`;
 
     // Not yet supported by JSDOM: https://github.com/jsdom/jsdom/issues/317
     this.global.document.createRange = () => ({
