@@ -47,6 +47,8 @@ describe Dashboard::MilestonesController do
   describe "#index" do
     let(:public_group) { create(:group, :public) }
     let!(:public_milestone) { create(:milestone, group: public_group) }
+    let!(:closed_group_milestone) { create(:milestone, group: group, state: 'closed') }
+    let!(:closed_project_milestone) { create(:milestone, project: project, state: 'closed') }
 
     render_views
 
@@ -56,6 +58,15 @@ describe Dashboard::MilestonesController do
       expect(response).to have_gitlab_http_status(200)
       expect(json_response.size).to eq(2)
       expect(json_response.map { |i| i["name"] }).to match_array([group_milestone.name, project_milestone.name])
+      expect(json_response.map { |i| i["group_name"] }.compact).to match_array(group.name)
+    end
+
+    it 'returns closed group and project milestones to which the user belongs' do
+      get :index, params: { state: 'closed' }, format: :json
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(json_response.size).to eq(2)
+      expect(json_response.map { |i| i["name"] }).to match_array([closed_group_milestone.name, closed_project_milestone.name])
       expect(json_response.map { |i| i["group_name"] }.compact).to match_array(group.name)
     end
 
@@ -77,11 +88,11 @@ describe Dashboard::MilestonesController do
       expect(response.body).not_to include(project_milestone.title)
     end
 
-    it 'shows counts of group and project milestones to which the user belongs to' do
+    it 'shows counts of open and closed group and project milestones to which the user belongs to' do
       get :index
 
       expect(response.body).to include("Open\n<span class=\"badge badge-pill\">2</span>")
-      expect(response.body).to include("Closed\n<span class=\"badge badge-pill\">0</span>")
+      expect(response.body).to include("Closed\n<span class=\"badge badge-pill\">2</span>")
     end
 
     context 'external authorization' do
