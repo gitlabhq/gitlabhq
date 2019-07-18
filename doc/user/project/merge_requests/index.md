@@ -365,6 +365,11 @@ have been marked as a **Work In Progress**.
 
 [Learn more about setting a merge request as "Work In Progress".](work_in_progress_merge_requests.md)
 
+## Merge Requests for Confidential Issues
+
+Create [merge requests to resolve confidential issues](../issues/confidential_issues.md#merge-requests-for-confidential-issues)
+for preventing leakage or early release of sentive data through regular merge requests.
+
 ## Merge request approvals **(STARTER)**
 
 > Included in [GitLab Starter][products].
