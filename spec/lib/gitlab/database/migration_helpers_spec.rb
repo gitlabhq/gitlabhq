@@ -9,9 +9,27 @@ describe Gitlab::Database::MigrationHelpers do
     allow(model).to receive(:puts)
   end
 
+  describe '#remove_timestamps' do
+    it 'can remove the default timestamps' do
+      Gitlab::Database::MigrationHelpers::DEFAULT_TIMESTAMP_COLUMNS.each do |column_name|
+        expect(model).to receive(:remove_column).with(:foo, column_name)
+      end
+
+      model.remove_timestamps(:foo)
+    end
+
+    it 'can remove custom timestamps' do
+      expect(model).to receive(:remove_column).with(:foo, :bar)
+
+      model.remove_timestamps(:foo, columns: [:bar])
+    end
+  end
+
   describe '#add_timestamps_with_timezone' do
+    let(:in_transaction) { false }
+
     before do
-      allow(model).to receive(:transaction_open?).and_return(false)
+      allow(model).to receive(:transaction_open?).and_return(in_transaction)
     end
 
     context 'using PostgreSQL' do
@@ -21,10 +39,63 @@ describe Gitlab::Database::MigrationHelpers do
       end
 
       it 'adds "created_at" and "updated_at" fields with the "datetime_with_timezone" data type' do
-        expect(model).to receive(:add_column).with(:foo, :created_at, :datetime_with_timezone, { null: false })
-        expect(model).to receive(:add_column).with(:foo, :updated_at, :datetime_with_timezone, { null: false })
+        Gitlab::Database::MigrationHelpers::DEFAULT_TIMESTAMP_COLUMNS.each do |column_name|
+          expect(model).to receive(:add_column).with(:foo, column_name, :datetime_with_timezone, { null: false })
+        end
 
         model.add_timestamps_with_timezone(:foo)
+      end
+
+      it 'can disable the NOT NULL constraint' do
+        Gitlab::Database::MigrationHelpers::DEFAULT_TIMESTAMP_COLUMNS.each do |column_name|
+          expect(model).to receive(:add_column).with(:foo, column_name, :datetime_with_timezone, { null: true })
+        end
+
+        model.add_timestamps_with_timezone(:foo, null: true)
+      end
+
+      it 'can add just one column' do
+        expect(model).to receive(:add_column).with(:foo, :created_at, :datetime_with_timezone, anything)
+        expect(model).not_to receive(:add_column).with(:foo, :updated_at, :datetime_with_timezone, anything)
+
+        model.add_timestamps_with_timezone(:foo, columns: [:created_at])
+      end
+
+      it 'can add choice of acceptable columns' do
+        expect(model).to receive(:add_column).with(:foo, :created_at, :datetime_with_timezone, anything)
+        expect(model).to receive(:add_column).with(:foo, :deleted_at, :datetime_with_timezone, anything)
+        expect(model).not_to receive(:add_column).with(:foo, :updated_at, :datetime_with_timezone, anything)
+
+        model.add_timestamps_with_timezone(:foo, columns: [:created_at, :deleted_at])
+      end
+
+      it 'cannot add unacceptable column names' do
+        expect do
+          model.add_timestamps_with_timezone(:foo, columns: [:bar])
+        end.to raise_error %r/Illegal timestamp column name/
+      end
+
+      context 'in a transaction' do
+        let(:in_transaction) { true }
+
+        before do
+          allow(model).to receive(:add_column).with(any_args).and_call_original
+          allow(model).to receive(:add_column)
+            .with(:foo, anything, :datetime_with_timezone, anything)
+            .and_return(nil)
+        end
+
+        it 'cannot add a default value' do
+          expect do
+            model.add_timestamps_with_timezone(:foo, default: :i_cause_an_error)
+          end.to raise_error %r/add_timestamps_with_timezone/
+        end
+
+        it 'can add columns without defaults' do
+          expect do
+            model.add_timestamps_with_timezone(:foo)
+          end.not_to raise_error
+        end
       end
     end
 
