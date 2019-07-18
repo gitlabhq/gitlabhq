@@ -6,36 +6,65 @@ module Gitlab
       BACKGROUND_MIGRATION_BATCH_SIZE = 1000 # Number of rows to process per job
       BACKGROUND_MIGRATION_JOB_BUFFER_SIZE = 1000 # Number of jobs to bulk queue at a time
 
+      PERMITTED_TIMESTAMP_COLUMNS = %i[created_at updated_at deleted_at].to_set.freeze
+      DEFAULT_TIMESTAMP_COLUMNS = %i[created_at updated_at].freeze
+
       # Adds `created_at` and `updated_at` columns with timezone information.
       #
       # This method is an improved version of Rails' built-in method `add_timestamps`.
       #
+      # By default, adds `created_at` and `updated_at` columns, but these can be specified as:
+      #
+      #   add_timestamps_with_timezone(:my_table, columns: [:created_at, :deleted_at])
+      #
+      # This allows you to create just the timestamps you need, saving space.
+      #
       # Available options are:
-      # default - The default value for the column.
-      # null - When set to `true` the column will allow NULL values.
+      #  :default - The default value for the column.
+      #  :null - When set to `true` the column will allow NULL values.
       #        The default is to not allow NULL values.
+      #  :columns - the column names to create. Must be one
+      #             of `Gitlab::Database::MigrationHelpers::PERMITTED_TIMESTAMP_COLUMNS`.
+      #             Default value: `DEFAULT_TIMESTAMP_COLUMNS`
+      #
+      # All options are optional.
       def add_timestamps_with_timezone(table_name, options = {})
         options[:null] = false if options[:null].nil?
+        columns = options.fetch(:columns, DEFAULT_TIMESTAMP_COLUMNS)
+        default_value = options[:default]
 
-        [:created_at, :updated_at].each do |column_name|
-          if options[:default] && transaction_open?
-            raise '`add_timestamps_with_timezone` with default value cannot be run inside a transaction. ' \
-              'You can disable transactions by calling `disable_ddl_transaction!` ' \
-              'in the body of your migration class'
-          end
+        validate_not_in_transaction!(:add_timestamps_with_timezone, 'with default value') if default_value
+
+        columns.each do |column_name|
+          validate_timestamp_column_name!(column_name)
 
           # If default value is presented, use `add_column_with_default` method instead.
-          if options[:default]
+          if default_value
             add_column_with_default(
               table_name,
               column_name,
               :datetime_with_timezone,
-              default: options[:default],
+              default: default_value,
               allow_null: options[:null]
             )
           else
             add_column(table_name, column_name, :datetime_with_timezone, options)
           end
+        end
+      end
+
+      # To be used in the `#down` method of migrations that
+      # use `#add_timestamps_with_timezone`.
+      #
+      # Available options are:
+      #  :columns - the column names to remove. Must be one
+      #             Default value: `DEFAULT_TIMESTAMP_COLUMNS`
+      #
+      # All options are optional.
+      def remove_timestamps(table_name, options = {})
+        columns = options.fetch(:columns, DEFAULT_TIMESTAMP_COLUMNS)
+        columns.each do |column_name|
+          remove_column(table_name, column_name)
         end
       end
 
@@ -1097,6 +1126,28 @@ into similar problems in the future (e.g. when new tables are created).
 
       def mysql_compatible_index_length
         Gitlab::Database.mysql? ? 20 : nil
+      end
+
+      private
+
+      def validate_timestamp_column_name!(column_name)
+        return if PERMITTED_TIMESTAMP_COLUMNS.member?(column_name)
+
+        raise <<~MESSAGE
+          Illegal timestamp column name! Got #{column_name}.
+          Must be one of: #{PERMITTED_TIMESTAMP_COLUMNS.to_a}
+        MESSAGE
+      end
+
+      def validate_not_in_transaction!(method_name, modifier = nil)
+        return unless transaction_open?
+
+        raise <<~ERROR
+          #{["`#{method_name}`", modifier].compact.join(' ')} cannot be run inside a transaction.
+
+          You can disable transactions by calling `disable_ddl_transaction!` in the body of
+          your migration class
+        ERROR
       end
     end
   end
