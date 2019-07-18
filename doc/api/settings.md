@@ -157,6 +157,7 @@ these parameters:
 - `external_authorization_service_timeout`
 - `file_template_project_id`
 - `geo_node_allowed_ips`
+- `geo_status_timeout`
 
 Example responses: **(PREMIUM ONLY)**
 
@@ -186,20 +187,25 @@ are listed in the descriptions of the relevant settings.
 | `allow_local_requests_from_hooks_and_services` | boolean    | no                                   | (Deprecated: Use `allow_local_requests_from_web_hooks_and_services` instead) Allow requests to the local network from hooks and services. |
 | `allow_local_requests_from_system_hooks` | boolean    | no                                   | Allow requests to the local network from system hooks. |
 | `allow_local_requests_from_web_hooks_and_services` | boolean    | no                                   | Allow requests to the local network from web hooks and services. |
+| `archive_builds_in_human_readable`       | string           | no                                   | Set the duration for which the jobs will be considered as old and expired. Once that time passes, the jobs will be archived and no longer able to be retried. Make it empty to never expire jobs. It has to be no less than 1 day, for example: <code>15 days</code>, <code>1 month</code>, <code>2 years</code>. |
 | `authorized_keys_enabled`                | boolean          | no                                   | By default, we write to the `authorized_keys` file to support Git over SSH without additional configuration. GitLab can be optimized to authenticate SSH keys via the database file. Only disable this if you have configured your OpenSSH server to use the AuthorizedKeysCommand. |
 | `auto_devops_domain`                     | string           | no                                   | Specify a domain to use by default for every project's Auto Review Apps and Auto Deploy stages. |
 | `auto_devops_enabled`                    | boolean          | no                                   | Enable Auto DevOps for projects by default. It will automatically build, test, and deploy applications based on a predefined CI/CD configuration. |
 | `check_namespace_plan`                   | boolean          | no                                   | **(PREMIUM)** Enabling this will make only licensed EE features available to projects if the project namespace's plan includes the feature or if the project is public. |
 | `clientside_sentry_dsn`                  | string           | required by: `clientside_sentry_enabled` | Clientside Sentry Data Source Name. |
 | `clientside_sentry_enabled`              | boolean          | no                                   | (**If enabled, requires:** `clientside_sentry_dsn`) Enable Sentry error reporting for the client side. |
+| `commit_email_hostname`                  | string           | no                                   | Custom hostname (for private commit emails). |
 | `container_registry_token_expire_delay`  | integer          | no                                   | Container Registry token duration in minutes. |
 | `default_artifacts_expire_in`            | string           | no                                   | Set the default expiration time for each job's artifacts. |
 | `default_branch_protection`              | integer          | no                                   | Determine if developers can push to master. Can take: `0` _(not protected, both developers and maintainers can push new commits, force push, or delete the branch)_, `1` _(partially protected, developers and maintainers can push new commits, but cannot force push or delete the branch)_ or `2` _(fully protected, developers cannot push new commits, but maintainers can; no-one can force push or delete the branch)_ as a parameter. Default is `2`. |
 | `default_group_visibility`               | string           | no                                   | What visibility level new groups receive. Can take `private`, `internal` and `public` as a parameter. Default is `private`. |
+| `default_project_creation`               | integer          | no                                   | Default project creation protection. Can take: `0` _(No one)_, `1` _(Maintainers)_ or `2` _(Developers + Maintainers)_|
 | `default_projects_limit`                 | integer          | no                                   | Project limit per user. Default is `100000`. |
 | `default_project_visibility`             | string           | no                                   | What visibility level new projects receive. Can take `private`, `internal` and `public` as a parameter. Default is `private`. |
 | `default_snippet_visibility`             | string           | no                                   | What visibility level new snippets receive. Can take `private`, `internal` and `public` as a parameter. Default is `private`. |
+| `diff_max_patch_bytes`                   | integer          | no                                   | Maximum diff patch size (Bytes). |
 | `disabled_oauth_sign_in_sources`         | array of strings | no                                   | Disabled OAuth sign-in sources. |
+| `dns_rebinding_protection_enabled`       | boolean          | no                                   | Enforce DNS rebinding attack protection. |
 | `domain_blacklist`                       | array of strings | required by: `domain_blacklist_enabled` | Users with e-mail addresses that match these domain(s) will NOT be able to sign-up. Wildcards allowed. Use separate lines for multiple entries. Ex: `domain.com`, `*.domain.com`. |
 | `domain_blacklist_enabled`               | boolean          | no                                   | (**If enabled, requires:** `domain_blacklist`) Allows blocking sign-ups from emails from specific domains. |
 | `domain_whitelist`                       | array of strings | no                                   | Force people to use only corporate emails for sign-up. Default is `null`, meaning there is no restriction. |
@@ -235,6 +241,8 @@ are listed in the descriptions of the relevant settings.
 | `gitaly_timeout_default`                 | integer          | no                                   | Default Gitaly timeout, in seconds. This timeout is not enforced for Git fetch/push operations or Sidekiq jobs. Set to `0` to disable timeouts. |
 | `gitaly_timeout_fast`                    | integer          | no                                   | Gitaly fast operation timeout, in seconds. Some Gitaly operations are expected to be fast. If they exceed this threshold, there may be a problem with a storage shard and 'failing fast' can help maintain the stability of the GitLab instance. Set to `0` to disable timeouts. |
 | `gitaly_timeout_medium`                  | integer          | no                                   | Medium Gitaly timeout, in seconds. This should be a value between the Fast and the Default timeout. Set to `0` to disable timeouts. |
+| `grafana_enabled`                        | boolean          | no                                   | Enable Grafana. |
+| `grafana_url`                            | string           | no                                   | Grafana URL. |
 | `gravatar_enabled`                       | boolean          | no                                   | Enable Gravatar. |
 | `hashed_storage_enabled`                 | boolean          | no                                   | Create new projects using hashed storage paths: Enable immutable, hash-based paths and repository names to store repositories on disk. This prevents repositories from having to be moved or renamed when the Project URL changes and may improve disk I/O performance. (EXPERIMENTAL) |
 | `help_page_hide_commercial_content`      | boolean          | no                                   | Hide marketing-related entries from help. |
@@ -280,10 +288,12 @@ are listed in the descriptions of the relevant settings.
 | `polling_interval_multiplier`            | decimal          | no                                   | Interval multiplier used by endpoints that perform polling. Set to `0` to disable polling. |
 | `project_export_enabled`                 | boolean          | no                                   | Enable project export. |
 | `prometheus_metrics_enabled`             | boolean          | no                                   | Enable prometheus metrics. |
+| `protected_ci_variables`                 | boolean          | no                                   | Environment variables are protected by default. |
 | `pseudonymizer_enabled`                  | boolean          | no                                   | **(PREMIUM)** When enabled, GitLab will run a background job that will produce pseudonymized CSVs of the GitLab database that will be uploaded to your configured object storage directory.
 | `recaptcha_enabled`                      | boolean          | no                                   | (**If enabled, requires:** `recaptcha_private_key` and `recaptcha_site_key`) Enable recaptcha. |
 | `recaptcha_private_key`                  | string           | required by: `recaptcha_enabled`     | Private key for recaptcha. |
 | `recaptcha_site_key`                     | string           | required by: `recaptcha_enabled`     | Site key for recaptcha. |
+| `receive_max_input_size`                 | integer          | no                                   | Maximum push size (MB) |
 | `repository_checks_enabled`              | boolean          | no                                   | GitLab will periodically run `git fsck` in all project and wiki repositories to look for silent disk corruption issues. |
 | `repository_size_limit`                  | integer          | no                                   | **(PREMIUM)** Size limit per repository (MB) |
 | `repository_storages`                    | array of strings | no                                   | A list of names of enabled storage paths, taken from `gitlab.yml`. New projects will be created in one of these stores, chosen at random. |
@@ -324,7 +334,8 @@ are listed in the descriptions of the relevant settings.
 | `unique_ips_limit_time_window`           | integer          | required by: `unique_ips_limit_enabled` | How many seconds an IP will be counted towards the limit. |
 | `usage_ping_enabled`                     | boolean          | no                                   | Every week GitLab will report license usage back to GitLab, Inc. |
 | `user_default_external`                  | boolean          | no                                   | Newly registered users will be external by default. |
+| `user_default_internal_regex`            | string           | no                                   | Specify an e-mail address regex pattern to identify default internal users. |
 | `user_oauth_applications`                | boolean          | no                                   | Allow users to register any application to use GitLab as an OAuth provider. |
 | `user_show_add_ssh_key_message`          | boolean          | no                                   | When set to `false` disable the "You won't be able to pull or push project code via SSH" warning shown to users with no uploaded SSH key. |
 | `version_check_enabled`                  | boolean          | no                                   | Let GitLab inform you when an update is available. |
-
+| `web_ide_clientside_preview_enabled`     | boolean          | no                                   | Client side evaluation (allow live previews of JavaScript projects in the Web IDE using CodeSandbox client side evaluation). |
