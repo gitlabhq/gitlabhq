@@ -1,4 +1,5 @@
 require 'settingslogic'
+require 'digest/md5'
 
 # We can not use `Rails.root` here, as this file might be loaded without the
 # full Rails environment being loaded. We can not use `require_relative` either,
@@ -170,14 +171,17 @@ class Settings < Settingslogic
       URI.parse(url_without_path).host
     end
 
-    # Runs every minute in a random ten-minute period on Sundays, to balance the
-    # load on the server receiving these pings. The usage ping is safe to run
-    # multiple times because of a 24 hour exclusive lock.
+    # Runs at a random time of day on a consistent day of the week based on
+    # the instance UUID. This is to balance the load on the service receiving
+    # these pings. The sidekiq job handles temporary http failures.
     def cron_for_usage_ping
       hour = rand(24)
-      minute = rand(6)
+      minute = rand(60)
+      # Set a default UUID for the case when the UUID hasn't been initialized.
+      uuid = Gitlab::CurrentSettings.uuid || 'uuid-not-set'
+      day_of_week = Digest::MD5.hexdigest(uuid).to_i(16) % 7
 
-      "#{minute}0-#{minute}9 #{hour} * * 0"
+      "#{minute} #{hour} * * #{day_of_week}"
     end
   end
 end
