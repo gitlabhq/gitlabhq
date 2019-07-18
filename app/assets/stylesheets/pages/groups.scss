@@ -412,10 +412,6 @@ table.pipeline-project-metrics tr td {
       font-size: $gl-font-size-large;
     }
 
-    .item-visibility {
-      color: $gl-text-color-secondary;
-    }
-
     @include media-breakpoint-down(md) {
       .title {
         font-size: $gl-font-size;
