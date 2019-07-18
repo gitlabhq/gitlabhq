@@ -45,6 +45,9 @@ export default {
     };
   },
   computed: {
+    bulkDeletePath() {
+      return this.repo.tagsPath ? this.repo.tagsPath.replace('?format=json', '/bulk_destroy') : '';
+    },
     shouldRenderPagination() {
       return this.repo.pagination.total > this.repo.pagination.perPage;
     },
@@ -78,7 +81,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['fetchList', 'deleteItem']),
+    ...mapActions(['fetchList', 'deleteItems']),
     layers(item) {
       return item.layers ? n__('%d layer', '%d layers', item.layers) : '';
     },
@@ -101,18 +104,16 @@ export default {
         itemsToBeDeleted = [singleItemToBeDeleted];
       }
 
-      const deleteActions = itemsToBeDeleted.map(
-        x =>
-          new Promise((resolve, reject) => {
-            this.deleteItem(this.repo.list[x])
-              .then(resolve)
-              .catch(reject);
-          }),
-      );
-
-      Promise.all(deleteActions)
-        .then(() => this.fetchList({ repo: this.repo }))
-        .catch(() => this.showError(errorMessagesTypes.DELETE_REGISTRY));
+      if (this.bulkDeletePath) {
+        this.deleteItems({
+          path: this.bulkDeletePath,
+          items: itemsToBeDeleted.map(x => this.repo.list[x].tag),
+        })
+          .then(() => this.fetchList({ repo: this.repo }))
+          .catch(() => this.showError(errorMessagesTypes.DELETE_REGISTRY));
+      } else {
+        this.showError(errorMessagesTypes.DELETE_REGISTRY);
+      }
     },
     onPageChange(pageNumber) {
       this.fetchList({ repo: this.repo, page: pageNumber }).catch(() =>
