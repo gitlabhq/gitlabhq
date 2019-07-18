@@ -320,67 +320,132 @@ describe API::Commits do
         end
       end
 
-      context 'when the API user is a guest' do
+      context 'when committing to a new branch' do
         def last_commit_id(project, branch_name)
           project.repository.find_branch(branch_name)&.dereferenced_target&.id
         end
 
-        let(:public_project) { create(:project, :public, :repository) }
-        let!(:url) { "/projects/#{public_project.id}/repository/commits" }
-        let(:guest) { create(:user).tap { |u| public_project.add_guest(u) } }
-
-        it 'returns a 403' do
-          post api(url, guest), params: valid_c_params
-
-          expect(response).to have_gitlab_http_status(403)
+        before do
+          valid_c_params[:start_branch] = 'master'
+          valid_c_params[:branch] = 'patch'
         end
 
-        context 'when start_project is provided' do
-          context 'when posting to a forked project the user owns' do
-            let!(:forked_project) { fork_project(public_project, guest, namespace: guest.namespace, repository: true) }
-            let!(:url) { "/projects/#{forked_project.id}/repository/commits" }
+        context 'when the API user is a guest' do
+          let(:public_project) { create(:project, :public, :repository) }
+          let(:url) { "/projects/#{public_project.id}/repository/commits" }
+          let(:guest) { create(:user).tap { |u| public_project.add_guest(u) } }
 
-            before do
-              valid_c_params[:start_branch]  = "master"
-              valid_c_params[:branch]        = "patch"
+          it 'returns a 403' do
+            post api(url, guest), params: valid_c_params
+
+            expect(response).to have_gitlab_http_status(403)
+          end
+
+          context 'when start_project is provided' do
+            context 'when posting to a forked project the user owns' do
+              let(:forked_project) { fork_project(public_project, guest, namespace: guest.namespace, repository: true) }
+              let(:url) { "/projects/#{forked_project.id}/repository/commits" }
+
+              context 'identified by Integer (id)' do
+                before do
+                  valid_c_params[:start_project] = public_project.id
+                end
+
+                it 'adds a new commit to forked_project and returns a 201' do
+                  expect_request_with_status(201) { post api(url, guest), params: valid_c_params }
+                    .to change { last_commit_id(forked_project, valid_c_params[:branch]) }
+                    .and not_change { last_commit_id(public_project, valid_c_params[:start_branch]) }
+                end
+              end
+
+              context 'identified by String (full_path)' do
+                before do
+                  valid_c_params[:start_project] = public_project.full_path
+                end
+
+                it 'adds a new commit to forked_project and returns a 201' do
+                  expect_request_with_status(201) { post api(url, guest), params: valid_c_params }
+                    .to change { last_commit_id(forked_project, valid_c_params[:branch]) }
+                    .and not_change { last_commit_id(public_project, valid_c_params[:start_branch]) }
+                end
+              end
+
+              context 'when branch already exists' do
+                before do
+                  valid_c_params.delete(:start_branch)
+                  valid_c_params[:branch] = 'master'
+                  valid_c_params[:start_project] = public_project.id
+                end
+
+                it 'returns a 400' do
+                  post api(url, guest), params: valid_c_params
+
+                  expect(response).to have_gitlab_http_status(400)
+                  expect(json_response['message']).to eq("A branch called 'master' already exists. Switch to that branch in order to make changes")
+                end
+
+                context 'when force is set to true' do
+                  before do
+                    valid_c_params[:force] = true
+                  end
+
+                  it 'adds a new commit to forked_project and returns a 201' do
+                    expect_request_with_status(201) { post api(url, guest), params: valid_c_params }
+                      .to change { last_commit_id(forked_project, valid_c_params[:branch]) }
+                      .and not_change { last_commit_id(public_project, valid_c_params[:branch]) }
+                  end
+                end
+              end
+
+              context 'when start_sha is also provided' do
+                let(:forked_project) { fork_project(public_project, guest, namespace: guest.namespace, repository: false) }
+                let(:start_sha) { public_project.repository.commit.parent.sha }
+
+                before do
+                  # initialize an empty repository to force fetching from the original project
+                  forked_project.repository.create_if_not_exists
+
+                  valid_c_params[:start_project] = public_project.id
+                  valid_c_params[:start_sha] = start_sha
+                  valid_c_params.delete(:start_branch)
+                end
+
+                it 'fetches the start_sha from the original project to use as parent commit and returns a 201' do
+                  expect_request_with_status(201) { post api(url, guest), params: valid_c_params }
+                    .to change { last_commit_id(forked_project, valid_c_params[:branch]) }
+                    .and not_change { last_commit_id(forked_project, 'master') }
+
+                  last_commit = forked_project.repository.find_branch(valid_c_params[:branch]).dereferenced_target
+                  expect(last_commit.parent_id).to eq(start_sha)
+                end
+              end
             end
 
-            context 'identified by Integer (id)' do
+            context 'when the target project is not part of the fork network of start_project' do
+              let(:unrelated_project) { create(:project, :public, :repository, creator: guest) }
+              let(:url) { "/projects/#{unrelated_project.id}/repository/commits" }
+
               before do
+                valid_c_params[:start_branch] = 'master'
+                valid_c_params[:branch] = 'patch'
                 valid_c_params[:start_project] = public_project.id
               end
 
-              it 'adds a new commit to forked_project and returns a 201' do
-                expect { post api(url, guest), params: valid_c_params }
-                  .to change { last_commit_id(forked_project, valid_c_params[:branch]) }
-                  .and not_change { last_commit_id(public_project, valid_c_params[:start_branch]) }
+              it 'returns a 403' do
+                post api(url, guest), params: valid_c_params
 
-                expect(response).to have_gitlab_http_status(201)
-              end
-            end
-
-            context 'identified by String (full_path)' do
-              before do
-                valid_c_params[:start_project] = public_project.full_path
-              end
-
-              it 'adds a new commit to forked_project and returns a 201' do
-                expect { post api(url, guest), params: valid_c_params }
-                  .to change { last_commit_id(forked_project, valid_c_params[:branch]) }
-                  .and not_change { last_commit_id(public_project, valid_c_params[:start_branch]) }
-
-                expect(response).to have_gitlab_http_status(201)
+                expect(response).to have_gitlab_http_status(403)
               end
             end
           end
 
-          context 'when the target project is not part of the fork network of start_project' do
-            let(:unrelated_project) { create(:project, :public, :repository, creator: guest) }
-            let!(:url) { "/projects/#{unrelated_project.id}/repository/commits" }
+          context 'when posting to a forked project the user does not have write access' do
+            let(:forked_project) { fork_project(public_project, user, namespace: user.namespace, repository: true) }
+            let(:url) { "/projects/#{forked_project.id}/repository/commits" }
 
             before do
-              valid_c_params[:start_branch]  = "master"
-              valid_c_params[:branch]        = "patch"
+              valid_c_params[:start_branch] = 'master'
+              valid_c_params[:branch] = 'patch'
               valid_c_params[:start_project] = public_project.id
             end
 
@@ -392,20 +457,68 @@ describe API::Commits do
           end
         end
 
-        context 'when posting to a forked project the user does not have write access' do
-          let!(:forked_project) { fork_project(public_project, user, namespace: user.namespace, repository: true) }
-          let!(:url) { "/projects/#{forked_project.id}/repository/commits" }
+        context 'when start_sha is provided' do
+          let(:start_sha) { project.repository.commit.parent.sha }
 
           before do
-            valid_c_params[:start_branch]  = "master"
-            valid_c_params[:branch]        = "patch"
-            valid_c_params[:start_project] = public_project.id
+            valid_c_params[:start_sha] = start_sha
+            valid_c_params.delete(:start_branch)
           end
 
-          it 'returns a 403' do
-            post api(url, guest), params: valid_c_params
+          it 'returns a 400 if start_branch is also provided' do
+            valid_c_params[:start_branch] = 'master'
+            post api(url, user), params: valid_c_params
 
-            expect(response).to have_gitlab_http_status(403)
+            expect(response).to have_gitlab_http_status(400)
+            expect(json_response['error']).to eq('start_branch, start_sha are mutually exclusive')
+          end
+
+          it 'returns a 400 if branch already exists' do
+            valid_c_params[:branch] = 'master'
+            post api(url, user), params: valid_c_params
+
+            expect(response).to have_gitlab_http_status(400)
+            expect(json_response['message']).to eq("A branch called 'master' already exists. Switch to that branch in order to make changes")
+          end
+
+          it 'returns a 400 if start_sha does not exist' do
+            valid_c_params[:start_sha] = '1' * 40
+            post api(url, user), params: valid_c_params
+
+            expect(response).to have_gitlab_http_status(400)
+            expect(json_response['message']).to eq("Cannot find start_sha '#{valid_c_params[:start_sha]}'")
+          end
+
+          it 'returns a 400 if start_sha is not a full SHA' do
+            valid_c_params[:start_sha] = start_sha.slice(0, 7)
+            post api(url, user), params: valid_c_params
+
+            expect(response).to have_gitlab_http_status(400)
+            expect(json_response['message']).to eq("Invalid start_sha '#{valid_c_params[:start_sha]}'")
+          end
+
+          it 'uses the start_sha as parent commit and returns a 201' do
+            expect_request_with_status(201) { post api(url, user), params: valid_c_params }
+              .to change { last_commit_id(project, valid_c_params[:branch]) }
+              .and not_change { last_commit_id(project, 'master') }
+
+            last_commit = project.repository.find_branch(valid_c_params[:branch]).dereferenced_target
+            expect(last_commit.parent_id).to eq(start_sha)
+          end
+
+          context 'when force is set to true and branch already exists' do
+            before do
+              valid_c_params[:force] = true
+              valid_c_params[:branch] = 'master'
+            end
+
+            it 'uses the start_sha as parent commit and returns a 201' do
+              expect_request_with_status(201) { post api(url, user), params: valid_c_params }
+                .to change { last_commit_id(project, valid_c_params[:branch]) }
+
+              last_commit = project.repository.find_branch(valid_c_params[:branch]).dereferenced_target
+              expect(last_commit.parent_id).to eq(start_sha)
+            end
           end
         end
       end

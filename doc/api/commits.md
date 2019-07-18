@@ -72,15 +72,16 @@ POST /projects/:id/repository/commits
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
-| `branch` | string | yes | Name of the branch to commit into. To create a new branch, also provide `start_branch`. |
+| `branch` | string | yes | Name of the branch to commit into. To create a new branch, also provide either `start_branch` or `start_sha`, and optionally `start_project`. |
 | `commit_message` | string | yes | Commit message |
-| `start_branch` | string | no | Name of the branch to start the new commit from |
-| `start_project` | integer/string | no | The project ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) to start the commit from. Defaults to the value of `id`. |
+| `start_branch` | string | no | Name of the branch to start the new branch from |
+| `start_sha` | string | no | SHA of the commit to start the new branch from |
+| `start_project` | integer/string | no | The project ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) to start the new branch from. Defaults to the value of `id`. |
 | `actions[]` | array | yes | An array of action hashes to commit as a batch. See the next table for what attributes it can take. |
 | `author_email` | string | no | Specify the commit author's email address |
 | `author_name` | string | no | Specify the commit author's name |
 | `stats` | boolean | no | Include commit stats. Default is true |
-| `force` | boolean | no | When `true` overwrites the target branch with a new commit based on the `start_branch` |
+| `force` | boolean | no | When `true` overwrites the target branch with a new commit based on the `start_branch` or `start_sha` |
 
 | `actions[]` Attribute | Type | Required | Description |
 | --------------------- | ---- | -------- | ----------- |

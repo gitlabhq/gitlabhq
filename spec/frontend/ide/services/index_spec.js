@@ -16,40 +16,16 @@ describe('IDE services', () => {
         branch: TEST_BRANCH,
         commit_message: 'Hello world',
         actions: [],
-        start_sha: undefined,
+        start_sha: TEST_COMMIT_SHA,
       };
 
-      Api.createBranch.mockReturnValue(Promise.resolve());
       Api.commitMultiple.mockReturnValue(Promise.resolve());
     });
 
-    describe.each`
-      startSha           | shouldCreateBranch
-      ${undefined}       | ${false}
-      ${TEST_COMMIT_SHA} | ${true}
-    `('when start_sha is $startSha', ({ startSha, shouldCreateBranch }) => {
-      beforeEach(() => {
-        payload.start_sha = startSha;
+    it('should commit', () => {
+      services.commit(TEST_PROJECT_ID, payload);
 
-        return services.commit(TEST_PROJECT_ID, payload);
-      });
-
-      if (shouldCreateBranch) {
-        it('should create branch', () => {
-          expect(Api.createBranch).toHaveBeenCalledWith(TEST_PROJECT_ID, {
-            ref: TEST_COMMIT_SHA,
-            branch: TEST_BRANCH,
-          });
-        });
-      } else {
-        it('should not create branch', () => {
-          expect(Api.createBranch).not.toHaveBeenCalled();
-        });
-      }
-
-      it('should commit', () => {
-        expect(Api.commitMultiple).toHaveBeenCalledWith(TEST_PROJECT_ID, payload);
-      });
+      expect(Api.commitMultiple).toHaveBeenCalledWith(TEST_PROJECT_ID, payload);
     });
   });
 });

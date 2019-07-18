@@ -76,7 +76,7 @@ module API
         detail 'This feature was introduced in GitLab 8.13'
       end
       params do
-        requires :branch, type: String, desc: 'Name of the branch to commit into. To create a new branch, also provide `start_branch`.', allow_blank: false
+        requires :branch, type: String, desc: 'Name of the branch to commit into. To create a new branch, also provide either `start_branch` or `start_sha`, and optionally `start_project`.', allow_blank: false
         requires :commit_message, type: String, desc: 'Commit message'
         requires :actions, type: Array, desc: 'Actions to perform in commit' do
           requires :action, type: String, desc: 'The action to perform, `create`, `delete`, `move`, `update`, `chmod`', values: %w[create update move delete chmod].freeze
@@ -98,12 +98,16 @@ module API
             requires :execute_filemode, type: Boolean, desc: 'When `true/false` enables/disables the execute flag on the file.'
           end
         end
-        optional :start_branch, type: String, desc: 'Name of the branch to start the new commit from'
-        optional :start_project, types: [Integer, String], desc: 'The ID or path of the project to start the commit from'
+
+        optional :start_branch, type: String, desc: 'Name of the branch to start the new branch from'
+        optional :start_sha, type: String, desc: 'SHA of the commit to start the new branch from'
+        mutually_exclusive :start_branch, :start_sha
+
+        optional :start_project, types: [Integer, String], desc: 'The ID or path of the project to start the new branch from'
         optional :author_email, type: String, desc: 'Author email for commit'
         optional :author_name, type: String, desc: 'Author name for commit'
         optional :stats, type: Boolean, default: true, desc: 'Include commit stats'
-        optional :force, type: Boolean, default: false, desc: 'When `true` overwrites the target branch with a new commit based on the `start_branch`'
+        optional :force, type: Boolean, default: false, desc: 'When `true` overwrites the target branch with a new commit based on the `start_branch` or `start_sha`'
       end
       post ':id/repository/commits' do
         if params[:start_project]
@@ -118,7 +122,7 @@ module API
 
         attrs = declared_params
         attrs[:branch_name] = attrs.delete(:branch)
-        attrs[:start_branch] ||= attrs[:branch_name]
+        attrs[:start_branch] ||= attrs[:branch_name] unless attrs[:start_sha]
         attrs[:start_project] = start_project if start_project
 
         result = ::Files::MultiService.new(user_project, current_user, attrs).execute

@@ -245,7 +245,7 @@ describe('IDE commit module actions', () => {
           master: {
             workingReference: '1',
             commit: {
-              short_id: TEST_COMMIT_SHA,
+              id: TEST_COMMIT_SHA,
             },
           },
         },

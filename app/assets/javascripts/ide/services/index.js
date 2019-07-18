@@ -56,13 +56,7 @@ export default {
     return Api.branchSingle(projectId, currentBranchId);
   },
   commit(projectId, payload) {
-    // Currently the `commit` endpoint does not support `start_sha` so we
-    // have to make the request in the FE. This is not ideal and will be
-    // resolved soon. https://gitlab.com/gitlab-org/gitlab-ce/issues/59023
-    const { branch, start_sha: ref } = payload;
-    const branchPromise = ref ? Api.createBranch(projectId, { ref, branch }) : Promise.resolve();
-
-    return branchPromise.then(() => Api.commitMultiple(projectId, payload));
+    return Api.commitMultiple(projectId, payload);
   },
   getFiles(projectUrl, branchId) {
     const url = `${projectUrl}/files/${branchId}`;

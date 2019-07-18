@@ -47,6 +47,7 @@ module Files
         author_name: @author_name,
         start_project: @start_project,
         start_branch_name: @start_branch,
+        start_sha: @start_sha,
         force: force?
       )
     rescue ArgumentError => e

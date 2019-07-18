@@ -10,6 +10,7 @@ module Commits
 
       @start_project = params[:start_project] || @project
       @start_branch = params[:start_branch]
+      @start_sha = params[:start_sha]
       @branch_name = params[:branch_name]
       @force = params[:force] || false
     end
@@ -40,7 +41,7 @@ module Commits
     end
 
     def different_branch?
-      @start_branch != @branch_name || @start_project != @project
+      @start_project != @project || @start_branch != @branch_name || @start_sha.present?
     end
 
     def force?
@@ -49,6 +50,7 @@ module Commits
 
     def validate!
       validate_permissions!
+      validate_start_sha!
       validate_on_branch!
       validate_branch_existence!
 
@@ -63,7 +65,21 @@ module Commits
       end
     end
 
+    def validate_start_sha!
+      return unless @start_sha
+
+      if @start_branch
+        raise_error("You can't pass both start_branch and start_sha")
+      elsif !Gitlab::Git.commit_id?(@start_sha)
+        raise_error("Invalid start_sha '#{@start_sha}'")
+      elsif !@start_project.repository.commit(@start_sha)
+        raise_error("Cannot find start_sha '#{@start_sha}'")
+      end
+    end
+
     def validate_on_branch!
+      return unless @start_branch
+
       if !@start_project.empty_repo? && !@start_project.repository.branch_exists?(@start_branch)
         raise_error('You can only create or edit files when you are on a branch')
       end
