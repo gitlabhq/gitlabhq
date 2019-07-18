@@ -95,6 +95,7 @@
   - [update_project_statistics, 1]
   - [phabricator_import_import_tasks, 1]
   - [update_namespace_statistics, 1]
+  - [chaos, 2]
 
   # EE-specific queues
   - [ldap_group_sync, 2]
