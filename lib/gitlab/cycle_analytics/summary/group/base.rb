@@ -5,6 +5,8 @@ module Gitlab
     module Summary
       module Group
         class Base
+          attr_reader :group, :from, :options
+
           def initialize(group:, from:, options:)
             @group = group
             @from = from

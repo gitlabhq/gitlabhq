@@ -4,7 +4,7 @@ module Gitlab
   module CycleAnalytics
     class BaseEventFetcher
       include BaseQuery
-      include BaseDataExtraction
+      include GroupProjectsProvider
 
       attr_reader :projections, :query, :stage, :order, :options
 

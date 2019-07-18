@@ -85,11 +85,11 @@ describe Gitlab::CycleAnalytics::IssueStage do
       end
 
       describe '#events' do
-        it 'exposes merge requests that close issues' do
-          result = stage.events
+        subject { stage.events }
 
-          expect(result.count).to eq(1)
-          expect(result.map { |event| event[:title] }).to contain_exactly(issue_2_1.title)
+        it 'exposes merge requests that close issues' do
+          expect(subject.count).to eq(1)
+          expect(subject.map { |event| event[:title] }).to contain_exactly(issue_2_1.title)
         end
       end
     end

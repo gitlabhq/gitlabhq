@@ -8,7 +8,7 @@ describe Gitlab::CycleAnalytics::GroupStageSummary do
   let(:from) { 1.day.ago }
   let(:user) { create(:user, :admin) }
 
-  subject { described_class.new(group, from: Time.now, current_user: user, options: {}).data }
+  subject { described_class.new(group, options: { from: Time.now, current_user: user }).data }
 
   describe "#new_issues" do
     context 'with from date' do
@@ -38,7 +38,7 @@ describe Gitlab::CycleAnalytics::GroupStageSummary do
           Timecop.freeze(5.days.from_now) { create(:issue, project: create(:project, namespace: group)) }
         end
 
-        subject { described_class.new(group, from: Time.now, current_user: user, options: { projects: [project.id, project_2.id] }).data }
+        subject { described_class.new(group, options: { from: Time.now, current_user: user, projects: [project.id, project_2.id] }).data }
 
         it 'finds issues from those projects' do
           expect(subject.first[:value]).to eq(2)
@@ -91,7 +91,7 @@ describe Gitlab::CycleAnalytics::GroupStageSummary do
           end
         end
 
-        subject { described_class.new(group, from: Time.now, current_user: user, options: { projects: [project.id, project_2.id] }).data }
+        subject { described_class.new(group, options: { from: Time.now, current_user: user, projects: [project.id, project_2.id] }).data }
 
         it 'shows deploys from those projects' do
           expect(subject.second[:value]).to eq(2)
@@ -110,6 +110,5 @@ describe Gitlab::CycleAnalytics::GroupStageSummary do
         expect(subject.second[:value]).to eq(0)
       end
     end
-
   end
 end

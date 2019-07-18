@@ -5,6 +5,8 @@ module Gitlab
     module Summary
       module Group
         class Issue < Group::Base
+          attr_reader :group, :from, :current_user, :options
+
           def initialize(group:, from:, current_user:, options:)
             @group = group
             @from = from
@@ -23,8 +25,8 @@ module Gitlab
           private
 
           def find_issues
-            issues = IssuesFinder.new(@current_user, group_id: @group.id, include_subgroups: true, created_after: @from).execute
-            issues = issues.where(projects: { id: @options[:projects] }) if @options[:projects]
+            issues = IssuesFinder.new(current_user, group_id: group.id, include_subgroups: true, created_after: from).execute
+            issues = issues.where(projects: { id: options[:projects] }) if options[:projects]
             issues.count
           end
         end

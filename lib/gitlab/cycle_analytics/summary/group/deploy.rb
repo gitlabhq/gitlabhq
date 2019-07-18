@@ -5,6 +5,8 @@ module Gitlab
     module Summary
       module Group
         class Deploy < Group::Base
+          include GroupProjectsProvider
+
           def title
             n_('Deploy', 'Deploys', value)
           end
@@ -17,14 +19,9 @@ module Gitlab
 
           def find_deployments
             deployments = Deployment.joins(:project)
-              .where(projects: { id: projects })
-              .where("deployments.created_at > ?", @from)
-            deployments = deployments.where(projects: { id: @options[:projects] }) if @options[:projects]
+              .where(projects: { id: projects.ids })
+              .where("deployments.created_at > ?", from)
             deployments.success.count
-          end
-
-          def projects
-            Project.inside_path(@group.full_path).ids
           end
         end
       end

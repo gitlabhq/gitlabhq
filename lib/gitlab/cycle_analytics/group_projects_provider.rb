@@ -2,11 +2,9 @@
 
 module Gitlab
   module CycleAnalytics
-    module BaseDataExtraction
-      private
-
+    module GroupProjectsProvider
       def projects
-        group ? extract_projects(options) : [project]
+        group ? projects_for_group : [project]
       end
 
       def group
@@ -17,7 +15,9 @@ module Gitlab
         @project ||= options.fetch(:project, nil)
       end
 
-      def extract_projects(options)
+      private
+
+      def projects_for_group
         projects = Project.inside_path(group.full_path)
         projects = projects.where(id: options[:projects]) if options[:projects]
         projects

@@ -4,7 +4,7 @@ module Gitlab
   module CycleAnalytics
     class BaseStage
       include BaseQuery
-      include BaseDataExtraction
+      include GroupProjectsProvider
 
       attr_reader :options
 
