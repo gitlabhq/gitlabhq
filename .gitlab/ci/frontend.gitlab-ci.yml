@@ -168,6 +168,7 @@ karma:
     paths:
       - chrome_debug.log
       - coverage-javascript/
+# see https://gitlab.com/gitlab-org/gitlab-ce/issues/64756
 #    reports:
 #      junit: junit_karma.xml
 
@@ -191,6 +192,7 @@ jest:
     paths:
       - coverage-frontend/
       - junit_jest.xml
+# see https://gitlab.com/gitlab-org/gitlab-ce/issues/64756
 #    reports:
 #      junit: junit_jest.xml
   cache:

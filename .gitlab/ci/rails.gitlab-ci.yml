@@ -80,6 +80,7 @@
       - rspec_profiling/
       - tmp/capybara/
       - tmp/memory_test/
+# see https://gitlab.com/gitlab-org/gitlab-ce/issues/64756
 #    reports:
 #      junit: junit_rspec.xml
 
