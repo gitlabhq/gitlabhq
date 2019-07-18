@@ -23,7 +23,7 @@ describe CycleAnalytics::ProjectLevel do
 
     it 'returns every median for each stage for a specific project' do
       values = described_class::STAGES.each_with_object({}) do |stage_name, hsh|
-        hsh[stage_name] = subject[stage_name].median.presence
+        hsh[stage_name] = subject[stage_name].project_median.presence
       end
 
       expect(subject.all_medians_by_stage).to eq(values)

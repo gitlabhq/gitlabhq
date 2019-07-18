@@ -9,12 +9,12 @@ describe Gitlab::CycleAnalytics::BaseEventFetcher do
   let(:options) do
     { start_time_attrs: start_time_attrs,
       end_time_attrs: end_time_attrs,
-      from: 30.days.ago }
+      from: 30.days.ago,
+      project: project }
   end
 
   subject do
-    described_class.new(project: project,
-                        stage: :issue,
+    described_class.new(stage: :issue,
                         options: options).fetch
   end
 

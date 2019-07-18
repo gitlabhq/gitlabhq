@@ -45,7 +45,7 @@ describe 'CycleAnalytics#staging' do
       MergeRequests::MergeService.new(project, user).execute(merge_request)
       deploy_master(user, project)
 
-      expect(subject[:staging].median).to be_nil
+      expect(subject[:staging].project_median).to be_nil
     end
   end
 
@@ -56,7 +56,7 @@ describe 'CycleAnalytics#staging' do
       MergeRequests::MergeService.new(project, user).execute(merge_request)
       deploy_master(user, project, environment: 'staging')
 
-      expect(subject[:staging].median).to be_nil
+      expect(subject[:staging].project_median).to be_nil
     end
   end
 end

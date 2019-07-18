@@ -43,7 +43,7 @@ describe 'CycleAnalytics#issue' do
       create_merge_request_closing_issue(user, project, issue)
       merge_merge_requests_closing_issue(user, project, issue)
 
-      expect(subject[:issue].median).to be_nil
+      expect(subject[:issue].project_median).to be_nil
     end
   end
 end

@@ -36,7 +36,7 @@ describe 'CycleAnalytics#test' do
 
       merge_merge_requests_closing_issue(user, project, issue)
 
-      expect(subject[:test].median).to be_nil
+      expect(subject[:test].project_median).to be_nil
     end
   end
 
@@ -47,7 +47,7 @@ describe 'CycleAnalytics#test' do
       pipeline.run!
       pipeline.succeed!
 
-      expect(subject[:test].median).to be_nil
+      expect(subject[:test].project_median).to be_nil
     end
   end
 
@@ -62,7 +62,7 @@ describe 'CycleAnalytics#test' do
 
       merge_merge_requests_closing_issue(user, project, issue)
 
-      expect(subject[:test].median).to be_nil
+      expect(subject[:test].project_median).to be_nil
     end
   end
 
@@ -77,7 +77,7 @@ describe 'CycleAnalytics#test' do
 
       merge_merge_requests_closing_issue(user, project, issue)
 
-      expect(subject[:test].median).to be_nil
+      expect(subject[:test].project_median).to be_nil
     end
   end
 end
