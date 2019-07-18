@@ -129,7 +129,7 @@ export default {
             <item-stats-value
               :icon-name="visibilityIcon"
               :title="visibilityTooltip"
-              css-class="item-visibility d-inline-flex align-items-center prepend-top-8 append-right-4"
+              css-class="item-visibility d-inline-flex align-items-center prepend-top-8 append-right-4 text-secondary"
             />
             <span v-if="group.permission" class="user-access-role prepend-top-8">
               {{ group.permission }}

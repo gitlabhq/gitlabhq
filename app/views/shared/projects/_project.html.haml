@@ -37,7 +37,7 @@
                 %span.project-name<
                   = project.name
 
-          %span.metadata-info.visibility-icon.append-right-10.prepend-top-8.has-tooltip{ data: { container: 'body', placement: 'top' }, title: visibility_icon_description(project) }
+          %span.metadata-info.visibility-icon.append-right-10.prepend-top-8.text-secondary.has-tooltip{ data: { container: 'body', placement: 'top' }, title: visibility_icon_description(project) }
             = visibility_level_icon(project.visibility_level, fw: true)
 
           - if explore_projects_tab? && project.repository.license
