@@ -77,3 +77,49 @@ project's search results respectively.
 | Maintainer access | Guest access |
 | :-----------: | :----------: |
 | ![Confidential issues search master](img/confidential_issues_search_master.png) | ![Confidential issues search guest](img/confidential_issues_search_guest.png) |
+
+## Merge Requests for Confidential Issues
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/58583) in GitLab 12.1.
+
+To help prevent confidential information being leaked from a public project
+in the process of resolving a confidential issue, confidential issues can be
+resolved by creating a merge request from a private fork.
+
+The merge request created will target the default branch of the private fork,
+not the default branch of the public upstream project. This prevents the merge
+request, branch, and commits entering the public repository, and revealing
+confidential information prematurely. When the confidential commits are ready
+to be made public, this can be done by opening a merge request from the private
+fork to the public upstream project.
+
+TIP: **Best practice:**
+If you create a long-lived private fork in the same group or in a sub-group of
+the original upstream, all the users with Developer membership to the public
+project will also have the same permissions in the private project. This way,
+all the Developers, who have access to view confidential issues, will have a
+streamlined workflow for fixing them.
+
+### How it works
+
+On a confidential issue, a **Create confidential merge request** button is
+available. Clicking on it will open a dropdown where you can choose to
+**Create confidential merge request and branch** or **Create branch**:
+
+| Create confidential merge request | Create branch |
+| :-------------------------------: | :-----------: |
+| ![Create Confidential Merge Request Dropdown](img/confidential_mr_dropdown_v12_1.png) | ![Create Confidential Branch Dropdown](img/confidential_mr_branch_dropdown_v12_1.png) |
+
+The **Project** dropdown includes the list of private forks the user is a member
+of as at least a Developer and merge requests are enabled.
+
+Whenever the **Branch name** and **Source (branch or tag)** fields change, the
+availability of the target or source branch will be checked. Both branches should
+be available in the private fork selected.
+
+By clicking the **Create confidential merge request** button, GitLab will create
+the branch and merge request in the private fork. When you choose
+**Create branch**, GitLab will only create the branch.
+
+Once the branch is created in the private fork, developers can now push code to
+that branch to fix the confidential issue.
