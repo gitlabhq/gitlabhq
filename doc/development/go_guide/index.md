@@ -129,16 +129,49 @@ deploy a new pod, migrating the data automatically.
 
 ## Testing
 
+### Testing frameworks
+
 We should not use any specific library or framework for testing, as the
 [standard library](https://golang.org/pkg/) provides already everything to get
-started. For example, some external dependencies might be worth considering in
-case we decide to use a specific library or framework:
+started. If there is a need for more sophisticated testing tools, the following
+external dependencies might be worth considering in case we decide to use a specific
+library or framework:
 
 - [Testify](https://github.com/stretchr/testify)
 - [httpexpect](https://github.com/gavv/httpexpect)
 
+### Subtests
+
 Use [subtests](https://blog.golang.org/subtests) whenever possible to improve
 code readability and test output.
+
+### Better output in tests
+
+When comparing expected and actual values in tests, use
+[testify/require.Equal](https://godoc.org/github.com/stretchr/testify/require#Equal),
+[testify/require.EqualError](https://godoc.org/github.com/stretchr/testify/require#EqualError),
+[testify/require.EqualValues](https://godoc.org/github.com/stretchr/testify/require#EqualValues),
+and others to improve readability when comparing structs, errors,
+large portions of text, or JSON documents:
+
+```go
+type TestData struct {
+    // ...
+}
+
+func FuncUnderTest() TestData {
+    // ...
+}
+
+func Test(t *testing.T) {
+    t.Run("FuncUnderTest", func(t *testing.T) {
+        want := TestData{}
+        got := FuncUnderTest()
+
+        require.Equal(t, want, got) // note that expected value comes first, then comes the actual one ("diff" semantics)
+    })
+}
+```
 
 ### Benchmarks
 
