@@ -2,14 +2,8 @@
 
 require 'spec_helper'
 
-describe Peek::Views::RedisDetailed do
-  let(:redis_detailed_class) do
-    Class.new do
-      include Peek::Views::RedisDetailed
-    end
-  end
-
-  subject { redis_detailed_class.new }
+describe Peek::Views::RedisDetailed, :request_store do
+  subject { described_class.new }
 
   using RSpec::Parameterized::TableSyntax
 
@@ -22,15 +16,24 @@ describe Peek::Views::RedisDetailed do
   end
 
   with_them do
-    it 'scrubs Redis commands', :request_store do
+    it 'scrubs Redis commands' do
       subject.detail_store << { cmd: cmd, duration: 1.second }
 
-      expect(subject.details.count).to eq(1)
-      expect(subject.details.first)
+      expect(subject.results[:details].count).to eq(1)
+      expect(subject.results[:details].first)
         .to eq({
                  cmd: expected,
                  duration: 1000
                })
     end
+  end
+
+  it 'returns aggregated results' do
+    subject.detail_store << { cmd: [:get, 'test'], duration: 0.001 }
+    subject.detail_store << { cmd: [:get, 'test'], duration: 1.second }
+
+    expect(subject.results[:calls]).to eq(2)
+    expect(subject.results[:duration]).to eq('1001.00ms')
+    expect(subject.results[:details].count).to eq(2)
   end
 end

@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'redis'
-require 'peek-redis'
 
 module Gitlab
   module Peek
@@ -36,21 +35,48 @@ end
 
 module Peek
   module Views
-    module RedisDetailed
+    class RedisDetailed < View
       REDACTED_MARKER = "<redacted>"
 
+      def key
+        'redis'
+      end
+
       def results
-        super.merge(details: details)
+        {
+          calls: calls,
+          duration: formatted_duration,
+          details: details
+        }
+      end
+
+      def detail_store
+        ::Gitlab::SafeRequestStore['redis_call_details'] ||= []
+      end
+
+      private
+
+      def formatted_duration
+        ms = duration * 1000
+        if ms >= 1000
+          "%.2fms" % ms
+        else
+          "%.0fms" % ms
+        end
+      end
+
+      def duration
+        detail_store.map { |entry| entry[:duration] }.sum # rubocop:disable CodeReuse/ActiveRecord
+      end
+
+      def calls
+        detail_store.count
       end
 
       def details
         detail_store
           .sort { |a, b| b[:duration] <=> a[:duration] }
           .map(&method(:format_call_details))
-      end
-
-      def detail_store
-        ::Gitlab::SafeRequestStore['redis_call_details'] ||= []
       end
 
       def format_call_details(call)
@@ -75,12 +101,4 @@ end
 
 class Redis::Client
   prepend Gitlab::Peek::RedisInstrumented
-end
-
-module Peek
-  module Views
-    class Redis < View
-      prepend Peek::Views::RedisDetailed
-    end
-  end
 end
