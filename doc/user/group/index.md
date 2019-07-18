@@ -78,6 +78,10 @@ Issues and merge requests are part of projects. For a given group, you can view 
 [issues](../project/issues/index.md#issues-list) and [merge requests](../project/merge_requests/index.md#merge-requests-per-group) across all projects in that group,
 together in a single list view.
 
+### Bulk editing issues
+
+For details, see [bulk editing issues](../group/bulk_editing/index.md).
+
 ## Create a new group
 
 > For a list of words that are not allowed to be used as group names see the
