@@ -11,7 +11,7 @@ describe ArchiveTraceWorker do
 
       it 'executes service' do
         expect_any_instance_of(Ci::ArchiveTraceService)
-          .to receive(:execute).with(job)
+          .to receive(:execute).with(job, anything)
 
         subject
       end

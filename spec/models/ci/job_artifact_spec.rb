@@ -70,6 +70,31 @@ describe Ci::JobArtifact do
     end
   end
 
+  describe '.archived_trace_exists_for?' do
+    subject { described_class.archived_trace_exists_for?(job_id) }
+
+    let!(:artifact) { create(:ci_job_artifact, :trace, job: job) }
+    let(:job) { create(:ci_build) }
+
+    context 'when the specified job_id exists' do
+      let(:job_id) { job.id }
+
+      it { is_expected.to be_truthy }
+
+      context 'when the job does have archived trace' do
+        let!(:artifact) { }
+
+        it { is_expected.to be_falsy }
+      end
+    end
+
+    context 'when the specified job_id does not exist' do
+      let(:job_id) { 10000 }
+
+      it { is_expected.to be_falsy }
+    end
+  end
+
   describe 'callbacks' do
     subject { create(:ci_job_artifact, :archive) }
 
