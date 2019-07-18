@@ -17,6 +17,8 @@ module Issuable
       private
 
       def cloneable_milestone
+        return unless new_entity.supports_milestone?
+
         title = original_entity.milestone&.title
         return unless title
 

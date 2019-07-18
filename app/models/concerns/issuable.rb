@@ -427,4 +427,11 @@ module Issuable
   def wipless_title_changed(old_title)
     old_title != title
   end
+
+  ##
+  # Overridden on EE module
+  #
+  def supports_milestone?
+    respond_to?(:milestone_id)
+  end
 end
