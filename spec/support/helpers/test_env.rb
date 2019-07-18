@@ -141,14 +141,6 @@ module TestEnv
     FileUtils.mkdir_p(artifacts_path)
   end
 
-  def clean_gitlab_test_path
-    Dir[TMP_TEST_PATH].each do |entry|
-      unless test_dirs.include?(File.basename(entry))
-        FileUtils.rm_rf(entry)
-      end
-    end
-  end
-
   def setup_gitlab_shell
     component_timed_setup('GitLab Shell',
       install_dir: Gitlab.config.gitlab_shell.path,
@@ -368,10 +360,7 @@ module TestEnv
     # Try to reset without fetching to avoid using the network.
     unless reset.call
       raise 'Could not fetch test seed repository.' unless system(*%W(#{Gitlab.config.git.bin_path} -C #{repo_path} fetch origin))
-
-      # Before we used Git clone's --mirror option, bare repos could end up
-      # with missing refs, clearing them and retrying should fix the issue.
-      clean_gitlab_test_path && init unless reset.call
+      raise "Could not update test seed repository, please delete #{repo_path} and try again" unless reset.call
     end
   end
 
