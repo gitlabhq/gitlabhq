@@ -73,7 +73,10 @@ describe('Suggestion Diff component', () => {
     });
 
     it('emits apply', () => {
-      expect(wrapper.emittedByOrder()).toEqual([{ name: 'apply', args: [expect.any(Function)] }]);
+      expect(wrapper.emittedByOrder()).toContainEqual({
+        name: 'apply',
+        args: [expect.any(Function)],
+      });
     });
 
     it('hides apply button', () => {
