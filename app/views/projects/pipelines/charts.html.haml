@@ -2,12 +2,9 @@
 - page_title _('CI / CD Charts')
 
 %div{ class: container_class }
+
   #charts.ci-charts
-    .row
-      .col-md-6
-        = render 'projects/pipelines/charts/overall'
-      .col-md-6
-        = render 'projects/pipelines/charts/pipeline_times'
+    = render 'projects/pipelines/charts/overall'
 
     %hr
     = render 'projects/pipelines/charts/pipelines'

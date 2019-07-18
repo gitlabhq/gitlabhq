@@ -1,15 +1,6 @@
-%h4= s_("PipelineCharts|Overall statistics")
-%ul
-  %li
-    = s_("PipelineCharts|Total:")
-    %strong= n_("1 pipeline", "%d pipelines", @counts[:total]) % @counts[:total]
-  %li
-    = s_("PipelineCharts|Successful:")
-    %strong= n_("1 pipeline", "%d pipelines", @counts[:success]) % @counts[:success]
-  %li
-    = s_("PipelineCharts|Failed:")
-    %strong= n_("1 pipeline", "%d pipelines", @counts[:failed]) % @counts[:failed]
-  %li
-    = s_("PipelineCharts|Success ratio:")
-    %strong
-      #{success_ratio(@counts)}%
+%h4.mt-4.mb-4= s_("PipelineCharts|Overall statistics")
+.row
+  .col-md-6
+    = render 'projects/pipelines/charts/pipeline_statistics'
+  .col-md-6
+    = render 'projects/pipelines/charts/pipeline_times'
