@@ -100,16 +100,8 @@ describe SessionsController do
         end
       end
 
-      context 'when reCAPTCHA is enabled' do
-        let(:user) { create(:user) }
-        let(:user_params) { { login: user.username, password: user.password } }
-
-        before do
-          stub_application_setting(recaptcha_enabled: true)
-          request.headers[described_class::CAPTCHA_HEADER] = 1
-        end
-
-        it 'displays an error when the reCAPTCHA is not solved' do
+      context 'with reCAPTCHA' do
+        def unsuccesful_login(user_params, sesion_params: {})
           # Without this, `verify_recaptcha` arbitrarily returns true in test env
           Recaptcha.configuration.skip_verify_env.delete('test')
           counter = double(:counter)
@@ -119,14 +111,10 @@ describe SessionsController do
                                       .with(:failed_login_captcha_total, anything)
                                       .and_return(counter)
 
-          post(:create, params: { user: user_params })
-
-          expect(response).to render_template(:new)
-          expect(flash[:alert]).to include 'There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.'
-          expect(subject.current_user).to be_nil
+          post(:create, params: { user: user_params }, session: sesion_params)
         end
 
-        it 'successfully logs in a user when reCAPTCHA is solved' do
+        def succesful_login(user_params, sesion_params: {})
           # Avoid test ordering issue and ensure `verify_recaptcha` returns true
           Recaptcha.configuration.skip_verify_env << 'test'
           counter = double(:counter)
@@ -137,9 +125,80 @@ describe SessionsController do
                                       .and_return(counter)
           expect(Gitlab::Metrics).to receive(:counter).and_call_original
 
-          post(:create, params: { user: user_params })
+          post(:create, params: { user: user_params }, session: sesion_params)
+        end
 
-          expect(subject.current_user).to eq user
+        context 'when reCAPTCHA is enabled' do
+          let(:user) { create(:user) }
+          let(:user_params) { { login: user.username, password: user.password } }
+
+          before do
+            stub_application_setting(recaptcha_enabled: true)
+            request.headers[described_class::CAPTCHA_HEADER] = 1
+          end
+
+          it 'displays an error when the reCAPTCHA is not solved' do
+            # Without this, `verify_recaptcha` arbitrarily returns true in test env
+
+            unsuccesful_login(user_params)
+
+            expect(response).to render_template(:new)
+            expect(flash[:alert]).to include 'There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.'
+            expect(subject.current_user).to be_nil
+          end
+
+          it 'successfully logs in a user when reCAPTCHA is solved' do
+            succesful_login(user_params)
+
+            expect(subject.current_user).to eq user
+          end
+        end
+
+        context 'when reCAPTCHA login protection is enabled' do
+          let(:user) { create(:user) }
+          let(:user_params) { { login: user.username, password: user.password } }
+
+          before do
+            stub_application_setting(login_recaptcha_protection_enabled: true)
+          end
+
+          context 'when user tried to login 5 times' do
+            it 'displays an error when the reCAPTCHA is not solved' do
+              unsuccesful_login(user_params, sesion_params: { failed_login_attempts: 6 })
+
+              expect(response).to render_template(:new)
+              expect(flash[:alert]).to include 'There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.'
+              expect(subject.current_user).to be_nil
+            end
+
+            it 'successfully logs in a user when reCAPTCHA is solved' do
+              succesful_login(user_params, sesion_params: { failed_login_attempts: 6 })
+
+              expect(subject.current_user).to eq user
+            end
+          end
+
+          context 'when there are more than 5 anonymous session with the same IP' do
+            before do
+              allow(Gitlab::AnonymousSession).to receive_message_chain(:new, :stored_sessions).and_return(6)
+            end
+
+            it 'displays an error when the reCAPTCHA is not solved' do
+              unsuccesful_login(user_params)
+
+              expect(response).to render_template(:new)
+              expect(flash[:alert]).to include 'There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.'
+              expect(subject.current_user).to be_nil
+            end
+
+            it 'successfully logs in a user when reCAPTCHA is solved' do
+              expect(Gitlab::AnonymousSession).to receive_message_chain(:new, :cleanup_session_per_ip_entries)
+
+              succesful_login(user_params)
+
+              expect(subject.current_user).to eq user
+            end
+          end
         end
       end
     end
@@ -346,6 +405,19 @@ describe SessionsController do
       get(:new, params: { redirect_to_referer: :yes })
 
       expect(controller.stored_location_for(:redirect)).to eq(search_path)
+    end
+  end
+
+  context 'when login fails' do
+    before do
+      set_devise_mapping(context: @request)
+      @request.env["warden.options"] = { action:  'unauthenticated' }
+    end
+
+    it 'does increment failed login counts for session' do
+      get(:new, params: { user: { login: 'failed' } })
+
+      expect(session[:failed_login_attempts]).to eq(1)
     end
   end
 end

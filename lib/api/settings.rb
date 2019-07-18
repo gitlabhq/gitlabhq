@@ -108,6 +108,11 @@ module API
         requires :recaptcha_site_key, type: String, desc: 'Generate site key at http://www.google.com/recaptcha'
         requires :recaptcha_private_key, type: String, desc: 'Generate private key at http://www.google.com/recaptcha'
       end
+      optional :login_recaptcha_protection_enabled, type: Boolean, desc: 'Helps prevent brute-force attacks'
+      given login_recaptcha_protection_enabled: ->(val) { val } do
+        requires :recaptcha_site_key, type: String, desc: 'Generate site key at http://www.google.com/recaptcha'
+        requires :recaptcha_private_key, type: String, desc: 'Generate private key at http://www.google.com/recaptcha'
+      end
       optional :repository_checks_enabled, type: Boolean, desc: "GitLab will periodically run 'git fsck' in all project and wiki repositories to look for silent disk corruption issues."
       optional :repository_storages, type: Array[String], desc: 'Storage paths for new projects'
       optional :require_two_factor_authentication, type: Boolean, desc: 'Require all users to set up Two-factor authentication'

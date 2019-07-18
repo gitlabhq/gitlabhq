@@ -21,13 +21,18 @@ class SessionsController < Devise::SessionsController
   prepend_before_action :ensure_password_authentication_enabled!, if: :password_based_login?, only: [:create]
 
   before_action :auto_sign_in_with_provider, only: [:new]
+  before_action :store_unauthenticated_sessions, only: [:new]
+  before_action :save_failed_login, if: :action_new_and_failed_login?
   before_action :load_recaptcha
 
-  after_action :log_failed_login, only: [:new], if: :failed_login?
+  after_action :log_failed_login, if: :action_new_and_failed_login?
+
+  helper_method :captcha_enabled?, :captcha_on_login_required?
 
   helper_method :captcha_enabled?
 
   CAPTCHA_HEADER = 'X-GitLab-Show-Login-Captcha'.freeze
+  MAX_FAILED_LOGIN_ATTEMPTS = 5
 
   def new
     set_minimum_password_length
@@ -71,10 +76,14 @@ class SessionsController < Devise::SessionsController
     request.headers[CAPTCHA_HEADER] && Gitlab::Recaptcha.enabled?
   end
 
+  def captcha_on_login_required?
+    Gitlab::Recaptcha.enabled_on_login? && unverified_anonymous_user?
+  end
+
   # From https://github.com/plataformatec/devise/wiki/How-To:-Use-Recaptcha-with-Devise#devisepasswordscontroller
   def check_captcha
     return unless user_params[:password].present?
-    return unless captcha_enabled?
+    return unless captcha_enabled? || captcha_on_login_required?
     return unless Gitlab::Recaptcha.load_configurations!
 
     if verify_recaptcha
@@ -116,8 +125,26 @@ class SessionsController < Devise::SessionsController
     Gitlab::AppLogger.info("Failed Login: username=#{user_params[:login]} ip=#{request.remote_ip}")
   end
 
+  def action_new_and_failed_login?
+    action_name == 'new' && failed_login?
+  end
+
+  def save_failed_login
+    session[:failed_login_attempts] ||= 0
+    session[:failed_login_attempts] += 1
+  end
+
   def failed_login?
     (options = request.env["warden.options"]) && options[:action] == "unauthenticated"
+  end
+
+  # storing sessions per IP lets us check if there are associated multiple
+  # anonymous sessions with one IP and prevent situations when there are
+  # multiple attempts of logging in
+  def store_unauthenticated_sessions
+    return if current_user
+
+    Gitlab::AnonymousSession.new(request.remote_ip, session_id: request.session.id).store_session_id_per_ip
   end
 
   # Handle an "initial setup" state, where there's only one user, it's an admin,
@@ -228,6 +255,18 @@ class SessionsController < Devise::SessionsController
 
   def ldap_servers
     @ldap_servers ||= Gitlab::Auth::LDAP::Config.available_servers
+  end
+
+  def unverified_anonymous_user?
+    exceeded_failed_login_attempts? || exceeded_anonymous_sessions?
+  end
+
+  def exceeded_failed_login_attempts?
+    session.fetch(:failed_login_attempts, 0) > MAX_FAILED_LOGIN_ATTEMPTS
+  end
+
+  def exceeded_anonymous_sessions?
+    Gitlab::AnonymousSession.new(request.remote_ip).stored_sessions >= MAX_FAILED_LOGIN_ATTEMPTS
   end
 
   def authentication_method

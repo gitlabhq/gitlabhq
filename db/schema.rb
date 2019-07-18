@@ -233,6 +233,7 @@ ActiveRecord::Schema.define(version: 2019_08_16_151221) do
     t.text "asset_proxy_whitelist"
     t.text "encrypted_asset_proxy_secret_key"
     t.string "encrypted_asset_proxy_secret_key_iv"
+    t.boolean "login_recaptcha_protection_enabled", default: false, null: false
     t.index ["custom_project_templates_group_id"], name: "index_application_settings_on_custom_project_templates_group_id", using: :btree
     t.index ["file_template_project_id"], name: "index_application_settings_on_file_template_project_id", using: :btree
     t.index ["usage_stats_set_by_user_id"], name: "index_application_settings_on_usage_stats_set_by_user_id", using: :btree
