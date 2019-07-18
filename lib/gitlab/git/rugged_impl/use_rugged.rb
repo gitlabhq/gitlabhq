@@ -13,7 +13,18 @@ module Gitlab
 
         def wrap_rugged_call(&block)
           Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-            yield
+            start = Gitlab::Metrics::System.monotonic_time
+
+            result = yield
+
+            duration = Gitlab::Metrics::System.monotonic_time - start
+
+            if Gitlab::RuggedInstrumentation.active?
+              Gitlab::RuggedInstrumentation.increment_query_count
+              Gitlab::RuggedInstrumentation.query_time += duration
+            end
+
+            result
           end
         end
       end

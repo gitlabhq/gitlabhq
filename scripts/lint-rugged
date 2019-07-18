@@ -10,7 +10,12 @@ ALLOWED = [
   # Reverted Rugged calls due to Gitaly atop NFS performance
   # See https://docs.gitlab.com/ee/development/gitaly.html#legacy-rugged-code.
   'lib/gitlab/git/rugged_impl/',
-  'lib/gitlab/gitaly_client/storage_settings.rb'
+  'lib/gitlab/gitaly_client/storage_settings.rb',
+
+  # Needed for logging
+  'config/initializers/lograge.rb',
+  'lib/gitlab/grape_logging/loggers/perf_logger.rb',
+  'lib/gitlab/rugged_instrumentation.rb'
 ].freeze
 
 rugged_lines = IO.popen(%w[git grep -i -n rugged -- app config lib], &:read).lines
