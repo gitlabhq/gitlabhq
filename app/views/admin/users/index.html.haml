@@ -52,7 +52,7 @@
           = icon("search", class: "search-icon")
           = button_tag s_('AdminUsers|Search users') if Rails.env.test?
         .dropdown.user-sort-dropdown
-          - toggle_text = if @sort.present? then users_sort_options_hash[@sort] else sort_title_name end
+          - toggle_text = @sort.present? ? users_sort_options_hash[@sort] : sort_title_name
           = dropdown_toggle(toggle_text, { toggle: 'dropdown' })
           %ul.dropdown-menu.dropdown-menu-right
             %li.dropdown-header
