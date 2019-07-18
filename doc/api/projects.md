@@ -799,7 +799,7 @@ POST /projects/user/:user_id
 | `auto_devops_deploy_strategy` | string | no | Auto Deploy strategy (`continuous`, `manual` or `timed_incremental`) |
 | `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
 | `approvals_before_merge` | integer | no | **(STARTER)** How many approvers should approve merge requests by default |
-| `external_authorization_classification_label` | string | no | **(CORE ONLY)** The classification label for the project |
+| `external_authorization_classification_label` | string | no | **(PREMIUM)** The classification label for the project |
 | `mirror` | boolean | no | **(STARTER)** Enables pull mirroring in a project |
 | `mirror_trigger_builds` | boolean | no | **(STARTER)** Pull mirroring triggers builds |
 
@@ -856,7 +856,7 @@ PUT /projects/:id
 | `auto_devops_deploy_strategy` | string | no | Auto Deploy strategy (`continuous`, `manual` or `timed_incremental`) |
 | `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
 | `approvals_before_merge` | integer | no | **(STARTER)** How many approvers should approve merge request by default |
-| `external_authorization_classification_label` | string | no | **(CORE ONLY)** The classification label for the project |
+| `external_authorization_classification_label` | string | no | **(PREMIUM)** The classification label for the project |
 | `mirror` | boolean | no | **(STARTER)** Enables pull mirroring in a project |
 | `mirror_user_id` | integer | no | **(STARTER)** User responsible for all the activity surrounding a pull mirror event |
 | `mirror_trigger_builds` | boolean | no | **(STARTER)** Pull mirroring triggers builds |
