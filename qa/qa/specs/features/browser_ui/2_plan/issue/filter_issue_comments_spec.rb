@@ -5,7 +5,7 @@ module QA
     describe 'filter issue comments activities' do
       let(:issue_title) { 'issue title' }
 
-      it 'user filters comments and activities in an issue' do
+      before do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
         Page::Main::Login.perform(&:sign_in_using_credentials)
 
@@ -14,9 +14,9 @@ module QA
         end
 
         issue.visit!
+      end
 
-        expect(page).to have_content(issue_title)
-
+      it 'user filters comments and activities in an issue' do
         Page::Project::Issue::Show.perform do |show_page|
           my_own_comment = "My own comment"
           made_the_issue_confidential = "made the issue confidential"
