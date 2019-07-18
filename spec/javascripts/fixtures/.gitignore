@@ -1,5 +1,2 @@
-*.html.raw
-*.html
-*.json
-*.pdf
-*.bmpr
+*
+!.gitignore

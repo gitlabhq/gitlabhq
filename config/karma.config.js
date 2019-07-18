@@ -108,7 +108,7 @@ module.exports = function(config) {
   process.env.TZ = 'Etc/UTC';
 
   const fixturesPath = `tmp/tests/frontend/fixtures${IS_EE ? '-ee' : ''}`;
-  const staticFixturesPath = 'spec/javascripts/fixtures/static';
+  const staticFixturesPath = 'spec/frontend/fixtures/static';
 
   const karmaConfig = {
     basePath: ROOT_PATH,

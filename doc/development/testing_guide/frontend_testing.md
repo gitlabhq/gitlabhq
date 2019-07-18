@@ -518,8 +518,8 @@ Information on setting up and running RSpec integration tests with
 Code that is added to HAML templates (in `app/views/`) or makes Ajax requests to the backend has tests that require HTML or JSON from the backend.
 Fixtures for these tests are located at:
 
-- `spec/javascripts/fixtures/`, for running tests in CE.
-- `ee/spec/javascripts/fixtures/`, for running tests in EE.
+- `spec/frontend/fixtures/`, for running tests in CE.
+- `ee/spec/frontend/fixtures/`, for running tests in EE.
 
 Fixture files in:
 
@@ -530,7 +530,7 @@ The following are examples of tests that work for both Karma and Jest:
 
 ```javascript
 it('makes a request', () => {
-  const responseBody = getJSONFixture('some/fixture.json'); // loads spec/javascripts/fixtures/some/fixture.json
+  const responseBody = getJSONFixture('some/fixture.json'); // loads spec/frontend/fixtures/some/fixture.json
   axiosMock.onGet(endpoint).reply(200, responseBody);
 
   myButton.click();
@@ -539,7 +539,7 @@ it('makes a request', () => {
 });
 
 it('uses some HTML element', () => {
-  loadFixtures('some/page.html'); // loads spec/javascripts/fixtures/some/page.html and adds it to the DOM
+  loadFixtures('some/page.html'); // loads spec/frontend/fixtures/some/page.html and adds it to the DOM
 
   const element = document.getElementById('#my-id');
 
@@ -547,12 +547,12 @@ it('uses some HTML element', () => {
 });
 ```
 
-HTML and JSON fixtures are generated from backend views and controllers using RSpec (see `spec/javascripts/fixtures/*.rb`).
+HTML and JSON fixtures are generated from backend views and controllers using RSpec (see `spec/frontend/fixtures/*.rb`).
 
 For each fixture, the content of the `response` variable is stored in the output file.
 This variable gets automagically set if the test is marked as `type: :request` or `type: :controller`.
 Fixtures are regenerated using the `bin/rake frontend:fixtures` command but you can also generate them individually,
-for example `bin/rspec spec/javascripts/fixtures/merge_requests.rb`.
+for example `bin/rspec spec/frontend/fixtures/merge_requests.rb`.
 When creating a new fixture, it often makes sense to take a look at the corresponding tests for the endpoint in `(ee/)spec/controllers/` or `(ee/)spec/requests/`.
 
 ## Gotchas
