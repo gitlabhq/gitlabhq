@@ -16,5 +16,9 @@ FactoryBot.define do
       invite_token 'xxx'
       invite_email 'email@email.com'
     end
+
+    trait(:ldap) do
+      ldap true
+    end
   end
 end
