@@ -28,6 +28,21 @@ module Projects
         end
       end
 
+      def bulk_destroy
+        @tags = (params[:ids] || []).map { |tag_name| image.tag(tag_name) }
+
+        success_count = 0
+        @tags.each do |tag|
+          if tag.delete
+            success_count += 1
+          end
+        end
+
+        respond_to do |format|
+          format.json { head(success_count == @tags.size ? :no_content : :bad_request) }
+        end
+      end
+
       private
 
       def tags

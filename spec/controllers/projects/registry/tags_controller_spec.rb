@@ -113,4 +113,37 @@ describe Projects::Registry::TagsController do
                      format: :json
     end
   end
+
+  describe 'POST bulk_destroy' do
+    context 'when user has access to registry' do
+      before do
+        project.add_developer(user)
+      end
+
+      context 'when there is matching tag present' do
+        before do
+          stub_container_registry_tags(repository: repository.path, tags: %w[rc1 test.])
+        end
+
+        it 'makes it possible to delete tags in bulk' do
+          allow_any_instance_of(ContainerRegistry::Tag).to receive(:delete) { |*args| ContainerRegistry::Tag.delete(*args) }
+          expect(ContainerRegistry::Tag).to receive(:delete).exactly(2).times
+
+          bulk_destroy_tags(['rc1', 'test.'])
+        end
+      end
+    end
+
+    private
+
+    def bulk_destroy_tags(names)
+      post :bulk_destroy, params: {
+                       namespace_id: project.namespace,
+                       project_id: project,
+                       repository_id: repository,
+                       ids: names
+                     },
+                     format: :json
+    end
+  end
 end
