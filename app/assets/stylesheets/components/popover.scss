@@ -102,6 +102,7 @@
 
 .onboarding-popover {
   box-shadow: 0 2px 4px $dropdown-shadow-color;
+  max-width: 280px;
 
   .popover-body {
     font-size: $gl-font-size;

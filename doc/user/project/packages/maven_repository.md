@@ -198,7 +198,7 @@ domain name.
 NOTE: **Note:**
 For retrieving artifacts, you can use either the
 [URL encoded](../../../api/README.md#namespaced-path-encoding) path of the group
-(e.g., `group%2Fsubgroup`) or the group's ID (e.g., `12`). 
+(e.g., `group%2Fsubgroup`) or the group's ID (e.g., `12`).
 
 ### Instance level Maven endpoint
 
@@ -279,59 +279,59 @@ shows how to create a new package each time the `master` branch is updated:
    Add the server section with the same id you defined in your `pom.xml` file.
    For example, in our case it's `gitlab-maven`:
 
-    ```xml
-    <settings xmlns="http://maven.apache.org/SETTINGS/1.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.1.0 http://maven.apache.org/xsd/settings-1.1.0.xsd">
-      <servers>
-        <server>
-          <id>gitlab-maven</id>
-          <configuration>
-            <httpHeaders>
-              <property>
-                <name>Job-Token</name>
-                <value>${env.CI_JOB_TOKEN}</value>
-              </property>
-            </httpHeaders>
-          </configuration>
-        </server>
-      </servers>
-    </settings>
-    ```
+   ```xml
+   <settings xmlns="http://maven.apache.org/SETTINGS/1.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.1.0 http://maven.apache.org/xsd/settings-1.1.0.xsd">
+     <servers>
+       <server>
+         <id>gitlab-maven</id>
+         <configuration>
+           <httpHeaders>
+             <property>
+               <name>Job-Token</name>
+               <value>${env.CI_JOB_TOKEN}</value>
+             </property>
+           </httpHeaders>
+         </configuration>
+       </server>
+     </servers>
+   </settings>
+   ```
 
 1. Make sure your `pom.xml` file includes the following:
 
-    ```xml
-    <repositories>
-      <repository>
-        <id>gitlab-maven</id>
-        <url>https://gitlab.com/api/v4/projects/${env.CI_PROJECT_ID}/packages/maven</url>
-      </repository>
-    </repositories>
-    <distributionManagement>
-      <repository>
-        <id>gitlab-maven</id>
-        <url>https://gitlab.com/api/v4/projects/${env.CI_PROJECT_ID}/packages/maven</url>
-      </repository>
-      <snapshotRepository>
-        <id>gitlab-maven</id>
-        <url>https://gitlab.com/api/v4/projects/${env.CI_PROJECT_ID}/packages/maven</url>
-      </snapshotRepository>
-    </distributionManagement>
-    ```
+   ```xml
+   <repositories>
+     <repository>
+       <id>gitlab-maven</id>
+       <url>https://gitlab.com/api/v4/projects/${env.CI_PROJECT_ID}/packages/maven</url>
+     </repository>
+   </repositories>
+   <distributionManagement>
+     <repository>
+       <id>gitlab-maven</id>
+       <url>https://gitlab.com/api/v4/projects/${env.CI_PROJECT_ID}/packages/maven</url>
+     </repository>
+     <snapshotRepository>
+       <id>gitlab-maven</id>
+       <url>https://gitlab.com/api/v4/projects/${env.CI_PROJECT_ID}/packages/maven</url>
+     </snapshotRepository>
+   </distributionManagement>
+   ```
 
-    TIP: **Tip:**
-    You can either let Maven utilize the CI environment variables or hardcode your project's ID.
+   TIP: **Tip:**
+   You can either let Maven utilize the CI environment variables or hardcode your project's ID.
 
 1. Add a `deploy` job to your `.gitlab-ci.yml` file:
 
-    ```yaml
-    deploy:
-      image: maven:3.3.9-jdk-8
-      script:
-        - 'mvn deploy -s ci_settings.xml'
-      only:
-        - master
-    ```
+   ```yaml
+   deploy:
+     image: maven:3.3.9-jdk-8
+     script:
+       - 'mvn deploy -s ci_settings.xml'
+     only:
+       - master
+   ```
 
 1. Push those files to your repository.
 

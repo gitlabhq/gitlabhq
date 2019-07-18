@@ -303,7 +303,7 @@
 
     .count-badge-count,
     .count-badge-button {
-      border: 1px solid $gray-400;
+      border: 1px solid $border-color;
       line-height: 1;
     }
 
@@ -429,7 +429,7 @@
   padding: 0;
   background: transparent;
   border: 0;
-  line-height: 2;
+  line-height: 34px;
   margin: 0;
 
   > li + li::before {
@@ -792,6 +792,7 @@
 
     .btn {
       margin-top: $gl-padding;
+      padding: $gl-btn-vert-padding $gl-btn-padding;
       line-height: $gl-btn-line-height;
 
       .icon {

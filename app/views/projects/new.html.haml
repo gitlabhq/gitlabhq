@@ -32,15 +32,15 @@
     .col-lg-9.js-toggle-container
       %ul.nav.nav-tabs.nav-links.gitlab-tabs{ role: 'tablist' }
         %li.nav-item{ role: 'presentation' }
-          %a.nav-link.active{ href: '#blank-project-pane', id: 'blank-project-tab', data: { toggle: 'tab', track_label: 'blank_project', track_event: "click_tab" }, role: 'tab' }
+          %a.nav-link.active{ href: '#blank-project-pane', id: 'blank-project-tab', data: { toggle: 'tab', track_label: 'blank_project', track_event: "click_tab", track_value: "" }, role: 'tab' }
             %span.d-none.d-sm-block= s_('ProjectsNew|Blank project')
             %span.d-block.d-sm-none= s_('ProjectsNew|Blank')
         %li.nav-item{ role: 'presentation' }
-          %a.nav-link{ href: '#create-from-template-pane', id: 'create-from-template-tab', data: { toggle: 'tab', track_label: 'create_from_template', track_event: "click_tab" }, role: 'tab' }
+          %a.nav-link{ href: '#create-from-template-pane', id: 'create-from-template-tab', data: { toggle: 'tab', track_label: 'create_from_template', track_event: "click_tab", track_value: "" }, role: 'tab' }
             %span.d-none.d-sm-block.qa-project-create-from-template-tab= s_('ProjectsNew|Create from template')
             %span.d-block.d-sm-none= s_('ProjectsNew|Template')
         %li.nav-item{ role: 'presentation' }
-          %a.nav-link{ href: '#import-project-pane', id: 'import-project-tab', data: { toggle: 'tab', track_label: 'import_project', track_event: "click_tab" }, role: 'tab' }
+          %a.nav-link{ href: '#import-project-pane', id: 'import-project-tab', data: { toggle: 'tab', track_label: 'import_project', track_event: "click_tab", track_value: "" }, role: 'tab' }
             %span.d-none.d-sm-block= s_('ProjectsNew|Import project')
             %span.d-block.d-sm-none= s_('ProjectsNew|Import')
         = render_if_exists 'projects/new_ci_cd_only_project_tab', active_tab: active_tab
@@ -51,7 +51,7 @@
             = render 'new_project_fields', f: f, project_name_id: "blank-project-name"
 
         #create-from-template-pane.tab-pane.js-toggle-container.px-0.pb-0{ class: active_when(active_tab == 'template'), role: 'tabpanel' }
-          .card-slim.m-4.p-4
+          .card.card-slim.m-4.p-4
             %div
               - contributing_templates_url = 'https://gitlab.com/gitlab-org/project-templates/contributing'
               - link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: contributing_templates_url }

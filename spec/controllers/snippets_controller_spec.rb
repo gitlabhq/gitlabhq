@@ -622,7 +622,7 @@ describe SnippetsController do
 
       post :preview_markdown, params: { id: snippet, text: '*Markdown* text' }
 
-      expect(JSON.parse(response.body).keys).to match_array(%w(body references))
+      expect(json_response.keys).to match_array(%w(body references))
     end
   end
 end

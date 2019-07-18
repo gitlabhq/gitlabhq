@@ -182,7 +182,7 @@ export default class CreateMergeRequestDropdown {
   }
 
   enable() {
-    if (!canCreateConfidentialMergeRequest()) return;
+    if (isConfidentialIssue() && !canCreateConfidentialMergeRequest()) return;
 
     this.createMergeRequestButton.classList.remove('disabled');
     this.createMergeRequestButton.removeAttribute('disabled');

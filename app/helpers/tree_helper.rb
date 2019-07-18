@@ -154,4 +154,36 @@ module TreeHelper
       "logs-path" => logs_path
     }
   end
+
+  def breadcrumb_data_attributes
+    attrs = {
+      can_collaborate: can_collaborate_with_project?(@project).to_s,
+      new_blob_path: project_new_blob_path(@project, @id),
+      new_branch_path: new_project_branch_path(@project),
+      new_tag_path: new_project_tag_path(@project),
+      can_edit_tree: can_edit_tree?.to_s
+    }
+
+    if can?(current_user, :fork_project, @project) && can?(current_user, :create_merge_request_in, @project)
+      continue_param = {
+        to: project_new_blob_path(@project, @id),
+        notice: edit_in_new_fork_notice,
+        notice_now: edit_in_new_fork_notice_now
+      }
+
+      attrs.merge!(
+        fork_new_blob_path: project_forks_path(@project, namespace_key: current_user.namespace.id, continue: continue_param),
+        fork_new_directory_path: project_forks_path(@project, namespace_key: current_user.namespace.id, continue: continue_param.merge({
+          to: request.fullpath,
+          notice: _("%{edit_in_new_fork_notice} Try to create a new directory again.") % { edit_in_new_fork_notice: edit_in_new_fork_notice }
+        })),
+        fork_upload_blob_path: project_forks_path(@project, namespace_key: current_user.namespace.id, continue: continue_param.merge({
+          to: request.fullpath,
+          notice: _("%{edit_in_new_fork_notice} Try to upload a file again.") % { edit_in_new_fork_notice: edit_in_new_fork_notice }
+        }))
+      )
+    end
+
+    attrs
+  end
 end

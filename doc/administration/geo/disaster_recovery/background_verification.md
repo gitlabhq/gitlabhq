@@ -171,14 +171,21 @@ If the **primary** and **secondary** nodes have a checksum verification mismatch
 
 ## Current limitations
 
-Until [issue #5064][ee-5064] is completed, background verification doesn't cover
-CI job artifacts and traces, LFS objects, or user uploads in file storage.
-Verify their integrity manually by following [these instructions][foreground-verification]
-on both nodes, and comparing the output between them.
+Automatic background verification doesn't cover attachments, LFS objects,
+job artifacts, and user uploads in file storage. You can keep track of the
+progress to include them in [ee-1430]. For now, you can verify their integrity
+manually by following [these instructions][foreground-verification] on both
+nodes, and comparing the output between them.
+
+In GitLab EE 12.1, Geo calculates checksums for attachments, LFS objects and
+archived traces on secondary nodes after the transfer, compares it with the
+stored checksums, and rejects transfers if mismatched. Please note that Geo
+currently does not support an automatic way to verify these data if they have
+been synced before GitLab EE 12.1.
 
 Data in object storage is **not verified**, as the object store is responsible
 for ensuring the integrity of the data.
 
 [reset-verification]: background_verification.md#reset-verification-for-projects-where-verification-has-failed
 [foreground-verification]: ../../raketasks/check.md
-[ee-5064]: https://gitlab.com/gitlab-org/gitlab-ee/issues/5064
+[ee-1430]: https://gitlab.com/groups/gitlab-org/-/epics/1430

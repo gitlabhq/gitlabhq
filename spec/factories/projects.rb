@@ -25,7 +25,9 @@ FactoryBot.define do
       issues_access_level ProjectFeature::ENABLED
       merge_requests_access_level ProjectFeature::ENABLED
       repository_access_level ProjectFeature::ENABLED
-      pages_access_level ProjectFeature::ENABLED
+      pages_access_level do
+        visibility_level == Gitlab::VisibilityLevel::PUBLIC ? ProjectFeature::ENABLED : ProjectFeature::PRIVATE
+      end
 
       # we can't assign the delegated `#ci_cd_settings` attributes directly, as the
       # `#ci_cd_settings` relation needs to be created first
@@ -306,34 +308,18 @@ FactoryBot.define do
   factory :redmine_project, parent: :project do
     has_external_issue_tracker true
 
-    after :create do |project|
-      project.create_redmine_service(
-        active: true,
-        properties: {
-          'project_url' => 'http://redmine/projects/project_name_in_redmine',
-          'issues_url' => 'http://redmine/projects/project_name_in_redmine/issues/:id',
-          'new_issue_url' => 'http://redmine/projects/project_name_in_redmine/issues/new'
-        }
-      )
-    end
+    redmine_service
   end
 
   factory :youtrack_project, parent: :project do
     has_external_issue_tracker true
 
-    after :create do |project|
-      project.create_youtrack_service(
-        active: true,
-        properties: {
-          'project_url' => 'http://youtrack/projects/project_guid_in_youtrack',
-          'issues_url' => 'http://youtrack/issues/:id'
-        }
-      )
-    end
+    youtrack_service
   end
 
   factory :jira_project, parent: :project do
     has_external_issue_tracker true
+
     jira_service
   end
 

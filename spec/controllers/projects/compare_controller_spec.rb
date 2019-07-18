@@ -302,8 +302,7 @@ describe Projects::CompareController do
           signatures_request
 
           expect(response).to have_gitlab_http_status(200)
-          parsed_body = JSON.parse(response.body)
-          signatures = parsed_body['signatures']
+          signatures = json_response['signatures']
 
           expect(signatures.size).to eq(1)
           expect(signatures.first['commit_sha']).to eq(signature_commit.sha)
@@ -332,8 +331,7 @@ describe Projects::CompareController do
         signatures_request
 
         expect(response).to have_gitlab_http_status(200)
-        parsed_body = JSON.parse(response.body)
-        expect(parsed_body['signatures']).to be_empty
+        expect(json_response['signatures']).to be_empty
       end
     end
 
@@ -345,8 +343,7 @@ describe Projects::CompareController do
         signatures_request
 
         expect(response).to have_gitlab_http_status(200)
-        parsed_body = JSON.parse(response.body)
-        expect(parsed_body['signatures']).to be_empty
+        expect(json_response['signatures']).to be_empty
       end
     end
   end

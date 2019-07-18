@@ -256,7 +256,7 @@ world. Custom domains and TLS are supported.
 ### Custom domain verification
 
 To prevent malicious users from hijacking domains that don't belong to them,
-GitLab supports [custom domain verification](../../user/project/pages/getting_started_part_three.md#dns-txt-record).
+GitLab supports [custom domain verification](../../user/project/pages/custom_domains_ssl_tls_certification/index.md#steps).
 When adding a custom domain, users will be required to prove they own it by
 adding a GitLab-controlled verification code to the DNS records for that domain.
 
@@ -264,6 +264,23 @@ If your userbase is private or otherwise trusted, you can disable the
 verification requirement. Navigate to `Admin area ➔ Settings` and uncheck
 **Require users to prove ownership of custom domains** in the Pages section.
 This setting is enabled by default.
+
+### Let's Encrypt integration
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/28996) in GitLab 12.1.
+
+[GitLab Pages' Let's Encrypt integration](../../user/project/pages/custom_domains_ssl_tls_certification/lets_encrypt_integration.md)
+allows users to add Let's Encrypt SSL certificates for GitLab Pages
+sites served under a custom domain.
+
+To enable it, you'll need to:
+
+1. Choose an email on which you will recieve notifications about expiring domains.
+1. Navigate to your instance's **Admin Area > Settings > Preferences** and expand **Pages** settings.
+1. Enter the email for receiving notifications and accept Let's Encrypt's Terms of Service as shown below.
+1. Click **Save changes**.
+
+![Let's Encrypt settings](img/lets_encrypt_integration_v12_1.png)
 
 ### Access control
 

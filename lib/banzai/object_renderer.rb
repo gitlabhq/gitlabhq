@@ -72,7 +72,7 @@ module Banzai
     #
     # Returns an Array containing the redacted documents.
     def redact_documents(documents)
-      redactor = Redactor.new(context)
+      redactor = ReferenceRedactor.new(context)
 
       redactor.redact(documents)
     end

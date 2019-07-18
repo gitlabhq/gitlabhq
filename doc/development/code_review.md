@@ -45,9 +45,9 @@ page, with these behaviours:
 
 1. It will not pick people whose [GitLab status](../user/profile/index.md#current-status)
    contains the string 'OOO'.
-2. [Trainee maintainers](https://about.gitlab.com/handbook/engineering/workflow/code-review/#trainee-maintainer)
+1. [Trainee maintainers](https://about.gitlab.com/handbook/engineering/workflow/code-review/#trainee-maintainer)
    are three times as likely to be picked as other reviewers.
-3. It always picks the same reviewers and maintainers for the same
+1. It always picks the same reviewers and maintainers for the same
    branch name (unless their OOO status changes, as in point 1). It
    removes leading `ce-` and `ee-`, and trailing `-ce` and `-ee`, so
    that it can be stable for backport branches.
@@ -58,20 +58,20 @@ As described in the section on the responsibility of the maintainer below, you
 are recommended to get your merge request approved and merged by maintainer(s)
 from teams other than your own.
 
-   1. If your merge request includes backend changes [^1], it must be
-      **approved by a [backend maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab-ce_maintainers_backend)**.
-   1. If your merge request includes database migrations or changes to expensive queries [^2], it must be
-      **approved by a [database maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab-ce_maintainers_database)**.
-   1. If your merge request includes frontend changes [^1], it must be
-      **approved by a [frontend maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab-ce_maintainers_frontend)**.
-   1. If your merge request includes UX changes [^1], it must be
-      **approved by a [UX team member][team]**.
-   1. If your merge request includes adding a new JavaScript library [^1], it must be
-      **approved by a [frontend lead][team]**.
-   1. If your merge request includes adding a new UI/UX paradigm [^1], it must be
-      **approved by a [UX lead][team]**.
-   1. If your merge request includes a new dependency or a filesystem change, it must be
-      **approved by a [Distribution team member][team]**. See how to work with the [Distribution team](https://about.gitlab.com/handbook/engineering/dev-backend/distribution/) for more details.
+1. If your merge request includes backend changes [^1], it must be
+   **approved by a [backend maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab-ce_maintainers_backend)**.
+1. If your merge request includes database migrations or changes to expensive queries [^2], it must be
+   **approved by a [database maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab-ce_maintainers_database)**.
+1. If your merge request includes frontend changes [^1], it must be
+   **approved by a [frontend maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab-ce_maintainers_frontend)**.
+1. If your merge request includes UX changes [^1], it must be
+   **approved by a [UX team member][team]**.
+1. If your merge request includes adding a new JavaScript library [^1], it must be
+   **approved by a [frontend lead][team]**.
+1. If your merge request includes adding a new UI/UX paradigm [^1], it must be
+   **approved by a [UX lead][team]**.
+1. If your merge request includes a new dependency or a filesystem change, it must be
+   **approved by a [Distribution team member][team]**. See how to work with the [Distribution team](https://about.gitlab.com/handbook/engineering/dev-backend/distribution/) for more details.
 
 #### Security requirements
 
@@ -207,9 +207,9 @@ first time.
 - Extract unrelated changes and refactorings into future merge requests/issues.
 - Seek to understand the reviewer's perspective.
 - Try to respond to every comment.
-- The merge request author resolves only the discussions they have fully
-  addressed. If there's an open reply, an open discussion, a suggestion,
-  a question, or anything else, the discussion should be left to be resolved
+- The merge request author resolves only the threads they have fully
+  addressed. If there's an open reply, an open thread, a suggestion,
+  a question, or anything else, the thread should be left to be resolved
   by the reviewer.
 - Push commits based on earlier rounds of feedback as isolated commits to the
   branch. Do not squash until the branch is ready to merge. Reviewers should be

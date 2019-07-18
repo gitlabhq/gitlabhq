@@ -1,6 +1,7 @@
 ---
 type: reference, howto
 ---
+
 # Restrict allowed SSH key technologies and minimum length
 
 `ssh-keygen` allows users to create RSA keys with as few as 768 bits, which

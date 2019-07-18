@@ -119,6 +119,35 @@ The following table lists available parameters for jobs:
 NOTE: **Note:**
 Parameters `types` and `type` are [deprecated](#deprecated-parameters).
 
+## Setting default parameters
+
+Some parameters can be set globally as the default for all jobs using the
+`default:` keyword. Default parameters can then be overridden by job-specific
+configuration.
+
+The following job parameters can be defined inside a `default:` block:
+
+- [`image`](#image)
+- [`services`](#services)
+- [`before_script`](#before_script-and-after_script)
+- [`after_script`](#before_script-and-after_script)
+- [`cache`](#cache)
+
+In the following example, the `ruby:2.5` image is set as the default for all
+jobs except the `rspec 2.6` job, which uses the `ruby:2.6` image:
+
+```yaml
+default:
+  image: ruby:2.5
+
+rspec:
+  script: bundle exec rspec
+
+rspec 2.6:
+  image: ruby:2.6
+  script: bundle exec rspec
+```
+
 ## Parameter details
 
 The following are detailed explanations for parameters used to configure CI/CD pipelines.
@@ -239,8 +268,9 @@ It's possible to overwrite the globally defined `before_script` and `after_scrip
 if you set it per-job:
 
 ```yaml
-before_script:
-  - global before script
+default:
+  before_script:
+    - global before script
 
 job:
   before_script:
@@ -974,7 +1004,7 @@ review_app:
 stop_review_app:
   stage: deploy
   variables:
-    GIT_STRATEGY: none  
+    GIT_STRATEGY: none
   script: make delete-app
   when: manual
   environment:
@@ -1749,6 +1779,10 @@ test:
   parallel: 5
 ```
 
+TIP: **Tip:**
+Parallelize tests suites across parallel jobs.
+Different languages have different tools to facilitate this.
+
 ### `trigger` **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/8997) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.8.
@@ -2221,10 +2255,10 @@ spinach:
   script: rake spinach
 ```
 
-It's also possible to use multiple parents for `extends`.
-The algorithm used for merge is "closest scope wins", so keys
-from the last member will always shadow anything defined on other levels.
-For example:
+In GitLab 12.0 and later, it's also possible to use multiple parents for
+`extends`.  The algorithm used for merge is "closest scope wins", so
+keys from the last member will always shadow anything defined on other
+levels.  For example:
 
 ```yaml
 .only-important:
@@ -2550,17 +2584,38 @@ You can set it globally or per-job in the [`variables`](#variables) section.
 
 The following parameters are deprecated.
 
-### `types`
+### Globally-defined `types`
 
 CAUTION: **Deprecated:**
 `types` is deprecated, and could be removed in a future release.
 Use [`stages`](#stages) instead.
 
-### `type`
+### Job-defined `type`
 
 CAUTION: **Deprecated:**
 `type` is deprecated, and could be removed in one of the future releases.
 Use [`stage`](#stage) instead.
+
+### Globally-defined `image`, `services`, `cache`, `before_script`, `after_script`
+
+Defining `image`, `services`, `cache`, `before_script`, and
+`after_script` globally is deprecated. Support could be removed
+from a future release.
+
+Use [`default:`](#setting-default-parameters) instead. For example:
+
+```yaml
+default:
+  image: ruby:2.5
+  services:
+    - docker:dind
+  cache:
+    paths: [vendor/]
+  before_script:
+    - bundle install --path vendor/
+  after_script:
+    - rm -rf tmp/
+```
 
 ## Custom build directories
 
@@ -2644,7 +2699,7 @@ variables:
 
 The value of `GIT_CLONE_PATH` is expanded once into
 `$CI_BUILDS_DIR/go/src/namespace/project`, and results in failure
-because `$CI_BUILDS_DIR` is not expanded.   
+because `$CI_BUILDS_DIR` is not expanded.
 
 ## Special YAML features
 

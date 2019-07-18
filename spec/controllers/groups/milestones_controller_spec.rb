@@ -73,7 +73,7 @@ describe Groups::MilestonesController do
       it 'lists legacy group milestones and group milestones' do
         get :index, params: { group_id: group.to_param }, format: :json
 
-        milestones = JSON.parse(response.body)
+        milestones = json_response
 
         expect(milestones.count).to eq(2)
         expect(milestones.first["title"]).to eq("group milestone")

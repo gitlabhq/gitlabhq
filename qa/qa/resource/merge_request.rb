@@ -9,6 +9,7 @@ module QA
                     :description,
                     :source_branch,
                     :target_branch,
+                    :target_new_branch,
                     :assignee,
                     :milestone,
                     :labels,
@@ -27,6 +28,7 @@ module QA
         Repository::ProjectPush.fabricate! do |resource|
           resource.project = project
           resource.branch_name = 'master'
+          resource.new_branch = @target_new_branch
           resource.remote_branch = target_branch
         end
       end
@@ -52,6 +54,7 @@ module QA
         @labels = []
         @file_name = "added_file.txt"
         @file_content = "File Added"
+        @target_new_branch = true
       end
 
       def fabricate!

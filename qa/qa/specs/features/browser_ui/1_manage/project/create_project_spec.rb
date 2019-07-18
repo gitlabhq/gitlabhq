@@ -5,7 +5,7 @@ module QA
     describe 'Project creation' do
       it 'user creates a new project' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.act { sign_in_using_credentials }
+        Page::Main::Login.perform(&:sign_in_using_credentials)
 
         created_project = Resource::Project.fabricate_via_browser_ui! do |project|
           project.name = 'awesome-project'

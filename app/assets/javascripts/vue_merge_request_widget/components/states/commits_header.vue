@@ -83,7 +83,7 @@ export default {
       <gl-button
         :aria-label="ariaLabel"
         variant="blank"
-        class="commit-edit-toggle square s24 mr-2"
+        class="commit-edit-toggle square s24 append-right-default"
         @click.stop="toggle()"
       >
         <icon :name="collapseIcon" :size="16" />

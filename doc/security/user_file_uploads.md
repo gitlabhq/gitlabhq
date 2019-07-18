@@ -1,6 +1,7 @@
 ---
 type: reference
 ---
+
 # User File Uploads
 
 Images that are attached to issues, merge requests, or comments
@@ -12,7 +13,7 @@ image contains sensitive information.
 Authentication is not enabled because images must be visible in the body of
 notification emails, which are often read from email clients that are not
 authenticated with GitLab, such as Outlook, Apple Mail, or the Mail app on your
-mobile device. 
+mobile device.
 
 >**Note:**
 Non-image attachments do require authentication to be viewed.

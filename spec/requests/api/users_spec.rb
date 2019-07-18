@@ -448,6 +448,7 @@ describe API::Users do
 
     it "returns 201 Created on success" do
       post api("/users", admin), params: attributes_for(:user, projects_limit: 3)
+      expect(response).to match_response_schema('public_api/v4/user/admin')
       expect(response).to have_gitlab_http_status(201)
     end
 
@@ -643,6 +644,13 @@ describe API::Users do
   describe "PUT /users/:id" do
     let!(:admin_user) { create(:admin) }
 
+    it "returns 200 OK on success" do
+      put api("/users/#{user.id}", admin), params: { bio: 'new test bio' }
+
+      expect(response).to match_response_schema('public_api/v4/user/admin')
+      expect(response).to have_gitlab_http_status(200)
+    end
+
     it "updates user with new bio" do
       put api("/users/#{user.id}", admin), params: { bio: 'new test bio' }
 
@@ -743,6 +751,14 @@ describe API::Users do
 
       expect(response).to have_gitlab_http_status(200)
       expect(user.reload.private_profile).to eq(true)
+    end
+
+    it "updates private profile when nil is given to false" do
+      admin.update(private_profile: true)
+
+      put api("/users/#{user.id}", admin), params: { private_profile: nil }
+
+      expect(user.reload.private_profile).to eq(false)
     end
 
     it "does not update admin status" do

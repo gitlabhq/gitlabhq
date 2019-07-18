@@ -78,7 +78,7 @@ module API
         requires :tag_name,    type: String, desc: 'The name of the tag', as: :tag
         optional :name,        type: String, desc: 'The name of the release'
         optional :description, type: String, desc: 'Release notes with markdown support'
-        optional :released_at, type: DateTime, desc: 'The date when the release will be/was ready. Defaults to the current time.'
+        optional :released_at, type: DateTime, desc: 'The date when the release will be/was ready.'
       end
       put ':id/releases/:tag_name', requirements: RELEASE_ENDPOINT_REQUIREMETS do
         authorize_update_release!

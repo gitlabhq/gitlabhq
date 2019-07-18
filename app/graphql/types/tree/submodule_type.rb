@@ -7,6 +7,9 @@ module Types
       implements Types::Tree::EntryType
 
       graphql_name 'Submodule'
+
+      field :web_url, type: GraphQL::STRING_TYPE, null: true
+      field :tree_url, type: GraphQL::STRING_TYPE, null: true
     end
     # rubocop: enable Graphql/AuthorizeTypes
   end

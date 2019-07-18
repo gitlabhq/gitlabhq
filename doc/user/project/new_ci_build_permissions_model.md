@@ -6,8 +6,6 @@ GitLab 8.12 has a completely redesigned [job permissions] system. You can find
 all discussion and all our concerns when choosing the current approach in issue
 [#18994](https://gitlab.com/gitlab-org/gitlab-ce/issues/18994).
 
----
-
 Jobs permissions should be tightly integrated with the permissions of a user
 who is triggering a job.
 
@@ -107,8 +105,6 @@ It could be used for registering new specific Runners assigned to the project
 and to checkout project sources.
 It could also be used with the GitLab Container Registry for that project,
 allowing pulling and pushing Docker images from within the CI job.
-
----
 
 GitLab would create a special checkout URL like:
 

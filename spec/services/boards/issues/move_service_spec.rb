@@ -68,8 +68,8 @@ describe Boards::Issues::MoveService do
         project.add_developer(user)
       end
 
-      it 'returns false if list of issues is empty' do
-        expect(described_class.new(group, user, params).execute_multiple([])).to eq(false)
+      it 'returns the expected result if list of issues is empty' do
+        expect(described_class.new(group, user, params).execute_multiple([])).to eq({ count: 0, success: false, issues: [] })
       end
 
       context 'moving multiple issues' do

@@ -45,7 +45,7 @@ then
   then
     echo
     echo '  ✖ ERROR: New README.md file(s) detected, prefer index.md over README.md.' >&2
-    echo '  https://docs.gitlab.com/ee/development/writing_documentation.html#location-and-naming-documents'
+    echo '  https://docs.gitlab.com/ee/development/documentation/styleguide.html#working-with-directories-and-files'
     echo
     exit 1
   fi
@@ -55,7 +55,7 @@ then
   then
     echo
     echo '  ✖ ERROR: New README.md file(s) detected, prefer index.md over README.md.' >&2
-    echo '  https://docs.gitlab.com/ee/development/writing_documentation.html#location-and-naming-documents'
+    echo '  https://docs.gitlab.com/ee/development/documentation/styleguide.html#working-with-directories-and-files'
     echo
     exit 1
   fi

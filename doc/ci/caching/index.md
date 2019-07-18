@@ -8,7 +8,7 @@ GitLab CI/CD provides a caching mechanism that can be used to save time
 when your jobs are running.
 
 Caching is about speeding the time a job is executed by reusing the same
-content of a previous job. It can be particularly useful when your are
+content of a previous job. It can be particularly useful when you are
 developing software that depends on other libraries which are fetched via the
 internet during build time.
 

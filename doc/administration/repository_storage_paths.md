@@ -55,8 +55,6 @@ storage2:
 > don't specify the full repository path but the parent path), but not for source
 > installations.
 
----
-
 Now that you've read that big fat warning above, let's edit the configuration
 files and add the full paths of the alternative repository storage paths. In
 the example below, we add two more mountpoints that are named `nfs` and `cephfs`
@@ -89,8 +87,6 @@ deprecated and replaced by `repositories: storages` in the future, so if you
 are upgrading from a version prior to 8.10, make sure to add the configuration
 as described in the step above. After you make the changes and confirm they are
 working, you can remove the `repos_path` line.
-
----
 
 **For Omnibus installations**
 

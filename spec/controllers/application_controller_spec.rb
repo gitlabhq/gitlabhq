@@ -63,8 +63,6 @@ describe ApplicationController do
       sign_in user
     end
 
-    let(:json_response) { JSON.parse(response.body) }
-
     controller(described_class) do
       def index
         render json: Gon.all_variables

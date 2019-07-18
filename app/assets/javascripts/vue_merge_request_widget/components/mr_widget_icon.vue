@@ -14,6 +14,6 @@ export default {
 
 <template>
   <div class="circle-icon-container append-right-default align-self-start align-self-lg-center">
-    <icon :name="name" />
+    <icon :name="name" :size="24" />
   </div>
 </template>

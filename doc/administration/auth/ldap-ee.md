@@ -1,3 +1,7 @@
+---
+type: reference
+---
+
 # LDAP Additions in GitLab EE **(STARTER ONLY)**
 
 This is a continuation of the main [LDAP documentation](ldap.md), detailing LDAP

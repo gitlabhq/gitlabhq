@@ -1,6 +1,8 @@
-# Working with the bundle Pgbouncer service
+---
+type: reference
+---
 
-## Overview
+# Working with the bundle Pgbouncer service
 
 As part of its High Availability stack, GitLab Premium includes a bundled version of [Pgbouncer](https://pgbouncer.github.io/) that can be managed through `/etc/gitlab/gitlab.rb`.
 

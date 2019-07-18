@@ -464,6 +464,18 @@ module Gitlab
         end
       end
 
+      # Returns path to url mappings for submodules
+      #
+      # Ex.
+      #   @repository.submodule_urls_for('master')
+      #   # => { 'rack' => 'git@localhost:rack.git' }
+      #
+      def submodule_urls_for(ref)
+        wrapped_gitaly_errors do
+          gitaly_submodule_urls_for(ref)
+        end
+      end
+
       # Return total commits count accessible from passed ref
       def commit_count(ref)
         wrapped_gitaly_errors do
@@ -1059,12 +1071,16 @@ module Gitlab
 
         return unless commit_object && commit_object.type == :COMMIT
 
+        urls = gitaly_submodule_urls_for(ref)
+        urls && urls[path]
+      end
+
+      def gitaly_submodule_urls_for(ref)
         gitmodules = gitaly_commit_client.tree_entry(ref, '.gitmodules', Gitlab::Git::Blob::MAX_DATA_DISPLAY_SIZE)
         return unless gitmodules
 
-        found_module = GitmodulesParser.new(gitmodules.data).parse[path]
-
-        found_module && found_module['url']
+        submodules = GitmodulesParser.new(gitmodules.data).parse
+        submodules.transform_values { |submodule| submodule['url'] }
       end
 
       # Returns true if the given ref name exists

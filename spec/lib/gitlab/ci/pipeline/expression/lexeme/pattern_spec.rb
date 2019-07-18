@@ -107,42 +107,6 @@ describe Gitlab::Ci::Pipeline::Expression::Lexeme::Pattern do
       expect(token.build.evaluate)
         .to eq Gitlab::UntrustedRegexp.new('some numeric \$ pattern')
     end
-
-    context 'with the ci_variables_complex_expressions feature flag disabled' do
-      before do
-        stub_feature_flags(ci_variables_complex_expressions: false)
-      end
-
-      it 'is a greedy scanner for regexp boundaries' do
-        scanner = StringScanner.new('/some .* / pattern/')
-
-        token = described_class.scan(scanner)
-
-        expect(token).not_to be_nil
-        expect(token.build.evaluate)
-          .to eq Gitlab::UntrustedRegexp.new('some .* / pattern')
-      end
-
-      it 'does not recognize the \ escape character for /' do
-        scanner = StringScanner.new('/some .* \/ pattern/')
-
-        token = described_class.scan(scanner)
-
-        expect(token).not_to be_nil
-        expect(token.build.evaluate)
-          .to eq Gitlab::UntrustedRegexp.new('some .* \/ pattern')
-      end
-
-      it 'does not recognize the \ escape character for $' do
-        scanner = StringScanner.new('/some numeric \$ pattern/')
-
-        token = described_class.scan(scanner)
-
-        expect(token).not_to be_nil
-        expect(token.build.evaluate)
-          .to eq Gitlab::UntrustedRegexp.new('some numeric \$ pattern')
-      end
-    end
   end
 
   describe '#evaluate' do

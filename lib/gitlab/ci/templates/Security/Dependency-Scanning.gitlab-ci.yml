@@ -41,6 +41,8 @@ dependency_scanning:
           DS_PULL_ANALYZER_IMAGE_TIMEOUT \
           DS_RUN_ANALYZER_TIMEOUT \
           DS_PYTHON_VERSION \
+          PIP_INDEX_URL \
+          PIP_EXTRA_INDEX_URL \
         ) \
         --volume "$PWD:/code" \
         --volume /var/run/docker.sock:/var/run/docker.sock \

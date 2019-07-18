@@ -11,7 +11,7 @@ module QA
 
       it 'user registers a new specific runner' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.act { sign_in_using_credentials }
+        Page::Main::Login.perform(&:sign_in_using_credentials)
 
         Resource::Runner.fabricate! do |runner|
           runner.name = executor

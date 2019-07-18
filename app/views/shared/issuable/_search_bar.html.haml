@@ -4,16 +4,16 @@
 - user_can_admin_list = board && can?(current_user, :admin_list, board.parent)
 
 .issues-filters{ class: ("w-100" if type == :boards_modal) }
-  .issues-details-filters.filtered-search-block.d-flex{ class: block_css_class, "v-pre" => type == :boards_modal }
+  .issues-details-filters.filtered-search-block.d-flex.flex-column.flex-md-row{ class: block_css_class, "v-pre" => type == :boards_modal }
     - if type == :boards
-      = render_if_exists "shared/boards/switcher", board: board
+      = render "shared/boards/switcher", board: board
     = form_tag page_filter_path, method: :get, class: 'filter-form js-filter-form w-100' do
       - if params[:search].present?
         = hidden_field_tag :search, params[:search]
       - if @can_bulk_update
         .check-all-holder.d-none.d-sm-block.hidden
           = check_box_tag "check-all-issues", nil, false, class: "check-all-issues left"
-      .issues-other-filters.filtered-search-wrapper
+      .issues-other-filters.filtered-search-wrapper.d-flex.flex-column.flex-md-row
         .filtered-search-box
           - if type != :boards_modal && type != :boards
             = dropdown_tag(custom_icon('icon_history'),
@@ -147,7 +147,7 @@
 
           %button.clear-search.hidden{ type: 'button' }
             = icon('times')
-        .filter-dropdown-container
+        .filter-dropdown-container.d-flex.flex-column.flex-md-row
           - if type == :boards
             .js-board-config{ data: { can_admin_list: user_can_admin_list, has_scope: board.scoped? } }
             - if user_can_admin_list

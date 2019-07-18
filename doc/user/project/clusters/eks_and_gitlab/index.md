@@ -40,97 +40,97 @@ then click **Add an existing Kubernetes cluster**.
 
 A few details from the EKS cluster will be required to connect it to GitLab:
 
-1.  **Retrieve the certificate**: A valid Kubernetes certificate is needed to
-    authenticate to the EKS cluster. We will use the certificate created by default.
-    Open a shell and use `kubectl` to retrieve it:
+1. **Retrieve the certificate**: A valid Kubernetes certificate is needed to
+   authenticate to the EKS cluster. We will use the certificate created by default.
+   Open a shell and use `kubectl` to retrieve it:
 
-    -  List the secrets with `kubectl get secrets`, and one should named similar to
-       `default-token-xxxxx`. Copy that token name for use below.
-    -  Get the certificate with:
+   - List the secrets with `kubectl get secrets`, and one should named similar to
+     `default-token-xxxxx`. Copy that token name for use below.
+   - Get the certificate with:
 
-       ```sh
-       kubectl get secret <secret name> -o jsonpath="{['data']['ca\.crt']}" | base64 --decode
-       ```
-
-1.  **Create admin token**: A `cluster-admin` token is required to install and
-    manage Helm Tiller. GitLab establishes mutual SSL auth with Helm Tiller
-    and creates limited service accounts for each application. To create the
-    token we will create an admin service account as follows:
-
-    2.1. Create a file called `eks-admin-service-account.yaml` with contents:
-
-    ```yaml
-    apiVersion: v1
-    kind: ServiceAccount
-    metadata:
-      name: eks-admin
-      namespace: kube-system
-    ```
-
-    2.2. Apply the service account to your cluster:
-
-     ```bash
-    kubectl apply -f eks-admin-service-account.yaml
+     ```sh
+     kubectl get secret <secret name> -o jsonpath="{['data']['ca\.crt']}" | base64 --decode
      ```
 
-    Output:
+1. **Create admin token**: A `cluster-admin` token is required to install and
+   manage Helm Tiller. GitLab establishes mutual SSL auth with Helm Tiller
+   and creates limited service accounts for each application. To create the
+   token we will create an admin service account as follows:
 
-    ```bash
-    serviceaccount "eks-admin" created
-    ```
+   2.1. Create a file called `eks-admin-service-account.yaml` with contents:
 
-    2.3. Create a file called `eks-admin-cluster-role-binding.yaml` with contents:
+   ```yaml
+   apiVersion: v1
+   kind: ServiceAccount
+   metadata:
+     name: eks-admin
+     namespace: kube-system
+   ```
 
-    ```yaml
-    apiVersion: rbac.authorization.k8s.io/v1beta1
-    kind: ClusterRoleBinding
-    metadata:
-      name: eks-admin
-    roleRef:
-      apiGroup: rbac.authorization.k8s.io
-      kind: ClusterRole
-      name: cluster-admin
-    subjects:
-    - kind: ServiceAccount
-      name: eks-admin
-      namespace: kube-system
-    ```
+   2.2. Apply the service account to your cluster:
 
-    2.4. Apply the cluster role binding to your cluster:
+   ```bash
+   kubectl apply -f eks-admin-service-account.yaml
+   ```
 
-    ```bash
-    kubectl apply -f eks-admin-cluster-role-binding.yaml
-    ```
+   Output:
 
-    Output:
+   ```bash
+   serviceaccount "eks-admin" created
+   ```
 
-    ```bash
-    clusterrolebinding "eks-admin" created
-    ```
+   2.3. Create a file called `eks-admin-cluster-role-binding.yaml` with contents:
 
-    2.5. Retrieve the token for the `eks-admin` service account:
+   ```yaml
+   apiVersion: rbac.authorization.k8s.io/v1beta1
+   kind: ClusterRoleBinding
+   metadata:
+     name: eks-admin
+   roleRef:
+     apiGroup: rbac.authorization.k8s.io
+     kind: ClusterRole
+     name: cluster-admin
+   subjects:
+   - kind: ServiceAccount
+     name: eks-admin
+     namespace: kube-system
+   ```
 
-    ```bash
-    kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep eks-admin | awk '{print $1}')
-    ```
+   2.4. Apply the cluster role binding to your cluster:
 
-    Copy the `<authentication_token>` value from the output:
+   ```bash
+   kubectl apply -f eks-admin-cluster-role-binding.yaml
+   ```
 
-    ```yaml
-    Name:         eks-admin-token-b5zv4
-    Namespace:    kube-system
-    Labels:       <none>
-    Annotations:  kubernetes.io/service-account.name=eks-admin
-                  kubernetes.io/service-account.uid=bcfe66ac-39be-11e8-97e8-026dce96b6e8
+   Output:
 
-    Type:  kubernetes.io/service-account-token
+   ```bash
+   clusterrolebinding "eks-admin" created
+   ```
 
-    Data
-    ====
-    ca.crt:     1025 bytes
-    namespace:  11 bytes
-    token:      <authentication_token>
-    ```
+   2.5. Retrieve the token for the `eks-admin` service account:
+
+   ```bash
+   kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep eks-admin | awk '{print $1}')
+   ```
+
+   Copy the `<authentication_token>` value from the output:
+
+   ```yaml
+   Name:         eks-admin-token-b5zv4
+   Namespace:    kube-system
+   Labels:       <none>
+   Annotations:  kubernetes.io/service-account.name=eks-admin
+                 kubernetes.io/service-account.uid=bcfe66ac-39be-11e8-97e8-026dce96b6e8
+
+   Type:  kubernetes.io/service-account-token
+
+   Data
+   ====
+   ca.crt:     1025 bytes
+   namespace:  11 bytes
+   token:      <authentication_token>
+   ```
 
 1. The API server endpoint is also required, so GitLab can connect to the cluster.
    This is displayed on the AWS EKS console, when viewing the EKS cluster details.

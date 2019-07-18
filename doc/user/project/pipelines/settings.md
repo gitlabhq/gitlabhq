@@ -25,10 +25,10 @@ in `.gitlab-ci.yml`.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/28919) in GitLab 12.0.
 
 NOTE: **Note**:
-As of GitLab 12.0, newly created projects will automatically have a default 
+As of GitLab 12.0, newly created projects will automatically have a default
 `git depth` value of `50`.
 
-It is possible to limit the number of changes that GitLab CI/CD will fetch when cloning 
+It is possible to limit the number of changes that GitLab CI/CD will fetch when cloning
 a repository. Setting a limit to `git depth` can speed up Pipelines execution. Maximum
 allowed value is `1000`.
 
@@ -88,6 +88,22 @@ in the jobs table.
 
 A few examples of known coverage tools for a variety of languages can be found
 in the pipelines settings page.
+
+### Removing color codes
+
+Some test coverage tools output with ANSI color codes that won't be
+parsed correctly by the regular expression and will cause coverage 
+parsing to fail. 
+
+If your coverage tool doesn't provide an option to disable color
+codes in the output, you can pipe the output of the coverage tool through a 
+small one line script that will strip the color codes off.
+
+For example:
+
+```bash
+lein cloverage | perl -pe 's/\e\[?.*?[\@-~]//g'
+```
 
 ## Visibility of pipelines
 

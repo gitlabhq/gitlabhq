@@ -57,7 +57,7 @@
 
 .report-block-container {
   border-top: 1px solid $border-color;
-  padding: $gl-padding-top;
+  padding: $gl-padding - 2;
   background-color: $gray-light;
 
   // Clean MR widget CSS
@@ -96,17 +96,14 @@
 
   .ci-status-icon {
     svg {
-      width: 16px;
-      height: 16px;
-      left: -2px;
+      width: 24px;
+      height: 24px;
     }
   }
 }
 
 .report-block-list-issue {
   display: flex;
-  align-items: flex-start;
-  align-content: flex-start;
 }
 
 .is-dismissed .report-block-list-issue-description,

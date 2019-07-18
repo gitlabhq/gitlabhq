@@ -46,6 +46,16 @@ module Clusters
             command.version = version
           end
         end
+
+        def prepare_uninstall
+          # Override if your application needs any action before
+          # being uninstalled by Helm
+        end
+
+        def post_uninstall
+          # Override if your application needs any action after
+          # being uninstalled by Helm
+        end
       end
     end
   end

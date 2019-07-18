@@ -125,13 +125,6 @@ Rails.application.routes.draw do
         get :kill
       end
     end
-
-    if ENV['GITLAB_ENABLE_CHAOS_ENDPOINTS']
-      get '/chaos/leakmem' => 'chaos#leakmem'
-      get '/chaos/cpuspin' => 'chaos#cpuspin'
-      get '/chaos/sleep' => 'chaos#sleep'
-      get '/chaos/kill' => 'chaos#kill'
-    end
   end
 
   concern :clusterable do

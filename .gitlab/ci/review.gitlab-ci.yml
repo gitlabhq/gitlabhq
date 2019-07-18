@@ -174,7 +174,38 @@ review-qa-all:
   script:
     - export KNAPSACK_REPORT_PATH=knapsack/${CI_PROJECT_NAME}/review-qa-all_master_report.json
     - export KNAPSACK_TEST_FILE_PATTERN=qa/specs/features/**/*_spec.rb
-    - gitlab-qa Test::Instance::Any "${QA_IMAGE}" "${CI_ENVIRONMENT_URL}"
+    - gitlab-qa Test::Instance::Any "${QA_IMAGE}" "${CI_ENVIRONMENT_URL}" -- --format RspecJunitFormatter --out tmp/rspec-${CI_JOB_ID}.xml --format html --out tmp/rspec.htm --color --format documentation
+
+parallel-spec-reports:
+  extends: .dedicated-runner
+  dependencies:
+    - review-qa-all
+  image: ruby:2.6-alpine
+  services: []
+  before_script: []
+  variables:
+    SETUP_DB: "false"
+    NEW_PARALLEL_SPECS_REPORT: qa/report-new.html
+    BASE_ARTIFACT_URL: "${CI_PROJECT_URL}/-/jobs/${CI_JOB_ID}/artifacts/file/qa/"
+  stage: post-test
+  allow_failure: true
+  when: manual
+  retry: 0
+  artifacts:
+    when: always
+    paths:
+      - qa/report-new.html
+      - qa/gitlab-qa-run-*
+    reports:
+      junit: qa/gitlab-qa-run-*/**/rspec-*.xml
+  script:
+    - apk add --update build-base libxml2-dev libxslt-dev && rm -rf /var/cache/apk/*
+    - gem install nokogiri
+    - cd qa/gitlab-qa-run-*/gitlab-*
+    - ARTIFACT_DIRS=$(pwd |rev| awk -F / '{print $1,$2}' | rev | sed s_\ _/_)
+    - cd ../../..
+    - '[[ -f $NEW_PARALLEL_SPECS_REPORT ]] || echo "{}" > ${NEW_PARALLEL_SPECS_REPORT}'
+    - scripts/merge-html-reports ${NEW_PARALLEL_SPECS_REPORT} ${BASE_ARTIFACT_URL}${ARTIFACT_DIRS} qa/gitlab-qa-run-*/**/rspec.htm
 
 .review-performance-base: &review-performance-base
   <<: *review-qa-base

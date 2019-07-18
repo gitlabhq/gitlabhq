@@ -1,38 +1,45 @@
 ---
 type: howto
 ---
-# How to unlock a locked user
 
-To unlock a locked user, first log into your server with root privileges.
+# How to unlock a locked user from the command line
 
-Start a Ruby on Rails console with this command:
+After six failed login attempts a user gets in a locked state.
 
+To unlock a locked user:
 
-```bash
-gitlab-rails console production
-```
+1. SSH into your GitLab server.
+1. Start a Ruby on Rails console:
 
-Wait until the console has loaded.
+   ```sh
+   ## For Omnibus GitLab
+   sudo gitlab-rails console production
 
-There are multiple ways to find your user. You can search for email or username.
+   ## For installations from source
+   sudo -u git -H bundle exec rails console RAILS_ENV=production
+   ```
 
-```bash
-user = User.where(id: 1).first
-```
+1. Find the user to unlock. You can search by email or ID.
 
-or
+   ```ruby
+   user = User.find_by(email: 'admin@local.host')
+   ```
 
-```bash
-user = User.find_by(email: 'admin@local.host')
-```
+   or
 
-Unlock the user:
+   ```ruby
+   user = User.where(id: 1).first
+   ```
 
-```bash
-user.unlock_access!
-```
+1. Unlock the user:
 
-Exit the console, the user should now be able to log in again.
+   ```ruby
+   user.unlock_access!
+   ```
+
+1. Exit the console with <kbd>Ctrl</kbd>+<kbd>d</kbd>
+
+The user should now be able to log in.
 
 <!-- ## Troubleshooting
 

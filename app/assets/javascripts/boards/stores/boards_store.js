@@ -374,6 +374,10 @@ const boardsStore = {
   deleteBoard({ id }) {
     return axios.delete(this.generateBoardsPath(id));
   },
+
+  setCurrentBoard(board) {
+    this.state.currentBoard = board;
+  },
 };
 
 BoardsStoreEE.initEESpecific(boardsStore);

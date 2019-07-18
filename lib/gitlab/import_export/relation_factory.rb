@@ -28,7 +28,7 @@ module Gitlab
                     links: 'Releases::Link',
                     metrics_setting: 'ProjectMetricsSetting' }.freeze
 
-      USER_REFERENCES = %w[author_id assignee_id updated_by_id merged_by_id latest_closed_by_id user_id created_by_id last_edited_by_id merge_user_id resolved_by_id closed_by_id].freeze
+      USER_REFERENCES = %w[author_id assignee_id updated_by_id merged_by_id latest_closed_by_id user_id created_by_id last_edited_by_id merge_user_id resolved_by_id closed_by_id owner_id].freeze
 
       PROJECT_REFERENCES = %w[project_id source_project_id target_project_id].freeze
 
@@ -77,6 +77,9 @@ module Gitlab
       # the "members_mapper" object, also updating notes if required.
       def create
         return if unknown_service?
+
+        # Do not import legacy triggers
+        return if !Feature.enabled?(:use_legacy_pipeline_triggers, @project) && legacy_trigger?
 
         setup_models
 
@@ -276,6 +279,10 @@ module Gitlab
       def unknown_service?
         @relation_name == :services && parsed_relation_hash['type'] &&
           !Object.const_defined?(parsed_relation_hash['type'])
+      end
+
+      def legacy_trigger?
+        @relation_name == 'Ci::Trigger' && @relation_hash['owner_id'].nil?
       end
 
       def find_or_create_object!

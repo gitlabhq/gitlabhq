@@ -44,7 +44,7 @@ Set up your project's merge request settings:
 - Merge request [description templates](../description_templates.md#description-templates).
 - Enable [merge request approvals](../merge_requests/merge_request_approvals.md). **(STARTER)**
 - Enable [merge only of pipeline succeeds](../merge_requests/merge_when_pipeline_succeeds.md).
-- Enable [merge only when all discussions are resolved](../../discussions/index.md#only-allow-merge-requests-to-be-merged-if-all-discussions-are-resolved).
+- Enable [merge only when all discussions are resolved](../../discussions/index.md#only-allow-merge-requests-to-be-merged-if-all-threads-are-resolved).
 
 ![project's merge request settings](img/merge_requests_settings.png)
 
@@ -96,7 +96,7 @@ To rename a repository:
 1. Hit **Rename project**.
 
 Remember that this can have unintended side effects since everyone with the
-old URL will not be able to push or pull. Read more about what happens with the 
+old URL will not be able to push or pull. Read more about what happens with the
 [redirects when renaming repositories](../index.md#redirects-when-changing-repository-paths).
 
 #### Transferring an existing project into another namespace

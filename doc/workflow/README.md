@@ -38,7 +38,7 @@ comments: false
   - [Authorization for merge requests](../user/project/merge_requests/authorization_for_merge_requests.md)
   - [Cherry-pick changes](../user/project/merge_requests/cherry_pick_changes.md)
   - [Merge when pipeline succeeds](../user/project/merge_requests/merge_when_pipeline_succeeds.md)
-  - [Resolve discussion comments in merge requests reviews](../user/discussions/index.md)
+  - [Resolve threads in merge requests reviews](../user/discussions/index.md)
   - [Resolve merge conflicts in the UI](../user/project/merge_requests/resolve_conflicts.md)
   - [Revert changes in the UI](../user/project/merge_requests/revert_changes.md)
   - [Merge requests versions](../user/project/merge_requests/versions.md)

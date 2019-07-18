@@ -183,29 +183,29 @@ a new set of recovery codes with SSH:
 1. You will then be prompted to confirm that you want to generate new codes.
    Continuing this process invalidates previously saved codes:
 
-    ```sh
-    Are you sure you want to generate new two-factor recovery codes?
-    Any existing recovery codes you saved will be invalidated. (yes/no)
+   ```sh
+   Are you sure you want to generate new two-factor recovery codes?
+   Any existing recovery codes you saved will be invalidated. (yes/no)
 
-    yes
+   yes
 
-    Your two-factor authentication recovery codes are:
+   Your two-factor authentication recovery codes are:
 
-    119135e5a3ebce8e
-    11f6v2a498810dcd
-    3924c7ab2089c902
-    e79a3398bfe4f224
-    34bd7b74adbc8861
-    f061691d5107df1a
-    169bf32a18e63e7f
-    b510e7422e81c947
-    20dbed24c5e74663
-    df9d3b9403b9c9f0
+   119135e5a3ebce8e
+   11f6v2a498810dcd
+   3924c7ab2089c902
+   e79a3398bfe4f224
+   34bd7b74adbc8861
+   f061691d5107df1a
+   169bf32a18e63e7f
+   b510e7422e81c947
+   20dbed24c5e74663
+   df9d3b9403b9c9f0
 
-    During sign in, use one of the codes above when prompted for your
-    two-factor code. Then, visit your Profile Settings and add a new device
-    so you do not lose access to your account again.
-    ```
+   During sign in, use one of the codes above when prompted for your
+   two-factor code. Then, visit your Profile Settings and add a new device
+   so you do not lose access to your account again.
+   ```
 
 1. Go to the GitLab sign-in page and enter your username/email and password.
    When prompted for a two-factor code, enter one of the recovery codes obtained

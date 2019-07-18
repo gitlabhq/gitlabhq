@@ -3,7 +3,6 @@
 class DiffFileBaseEntity < Grape::Entity
   include RequestAwareEntity
   include BlobHelper
-  include SubmoduleHelper
   include DiffHelper
   include TreeHelper
   include ChecksCollaboration
@@ -12,12 +11,12 @@ class DiffFileBaseEntity < Grape::Entity
   expose :content_sha
   expose :submodule?, as: :submodule
 
-  expose :submodule_link do |diff_file|
-    memoized_submodule_links(diff_file).first
+  expose :submodule_link do |diff_file, options|
+    memoized_submodule_links(diff_file, options).first
   end
 
   expose :submodule_tree_url do |diff_file|
-    memoized_submodule_links(diff_file).last
+    memoized_submodule_links(diff_file, options).last
   end
 
   expose :edit_path, if: -> (_, options) { options[:merge_request] } do |diff_file|
@@ -92,10 +91,10 @@ class DiffFileBaseEntity < Grape::Entity
 
   private
 
-  def memoized_submodule_links(diff_file)
+  def memoized_submodule_links(diff_file, options)
     strong_memoize(:submodule_links) do
       if diff_file.submodule?
-        submodule_links(diff_file.blob, diff_file.content_sha, diff_file.repository)
+        options[:submodule_links].for(diff_file.blob, diff_file.content_sha)
       else
         []
       end

@@ -92,19 +92,24 @@ end
 The `view` DSL method will correspond to the rails View, partial, or vue component that renders the elements.
 
 The `element` DSL method in turn declares an element for which a corresponding
-`qa-element-name-dasherized` CSS class will need to be added to the view file.
+`data-qa-selector=element_name_snaked` data attribute will need to be added to the view file.
 
 You can also define a value (String or Regexp) to match to the actual view
 code but **this is deprecated** in favor of the above method for two reasons:
 
 - Consistency: there is only one way to define an element
-- Separation of concerns: QA uses dedicated CSS classes instead of reusing code
+- Separation of concerns: QA uses dedicated `data-qa-*` attributes instead of reusing code
   or classes used by other components (e.g. `js-*` classes etc.)
 
 ```ruby
 view 'app/views/my/view.html.haml' do
-  # Implicitly require `.qa-logout-button` CSS class to be present in the view
+
+  ### Good ###
+ 
+  # Implicitly require the CSS selector `[data-qa-selector="logout_button"]` to be present in the view
   element :logout_button
+
+  ### Bad ###
 
   ## This is deprecated and forbidden by the `QA/ElementWithPattern` RuboCop cop.
   # Require `f.submit "Sign in"` to be present in `my/view.html.haml
@@ -129,24 +134,39 @@ view 'app/views/my/view.html.haml' do
 end
 ```
 
-To add these elements to the view, you must change the rails View, partial, or vue component by adding a `qa-element-descriptor` class
+To add these elements to the view, you must change the rails View, partial, or vue component by adding a `data-qa-selector` attribute
 for each element defined.
 
-In our case, `qa-login-field`, `qa-password-field` and `qa-sign-in-button`
+In our case, `data-qa-selector="login_field"`, `data-qa-selector="password_field"` and `data-qa-selector="sign_in_button"`
 
 **app/views/my/view.html.haml**
 
 ```haml
-= f.text_field :login, class: "form-control top qa-login-field", autofocus: "autofocus", autocapitalize: "off", autocorrect: "off", required: true, title: "This field is required."
-= f.password_field :password, class: "form-control bottom qa-password-field", required: true, title: "This field is required."
-= f.submit "Sign in", class: "btn btn-success qa-sign-in-button"
+= f.text_field :login, class: "form-control top", autofocus: "autofocus", autocapitalize: "off", autocorrect: "off", required: true, title: "This field is required.", data: { qa_selector: 'login_field' }
+= f.password_field :password, class: "form-control bottom", required: true, title: "This field is required.", data: { qa_selector: 'password_field' }
+= f.submit "Sign in", class: "btn btn-success", data: { qa_selector: 'sign_in_button' }
 ```
 
 Things to note:
 
-- The CSS class must be `kebab-cased` (separated with hyphens "`-`")
+- The name of the element and the qa_selector must match and be snake_cased
 - If the element appears on the page unconditionally, add `required: true` to the element. See
   [Dynamic element validation](dynamic_element_validation.md)
+- You may see `.qa-selector` classes in existing Page Objects.  We should prefer the [`data-qa-selector`](#data-qa-selector-vs-qa-selector) 
+  method of definition over the `.qa-selector` CSS class
+
+
+### `data-qa-selector` vs `.qa-selector`
+
+> Introduced in GitLab 12.1
+
+There are two supported methods of defining elements within a view.
+
+1. `data-qa-selector` attribute
+1. `.qa-selector` class
+
+Any existing `.qa-selector` class should be considered deprecated
+and we should prefer the `data-qa-selector` method of definition.
 
 ## Running the test locally
 

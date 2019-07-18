@@ -23,6 +23,7 @@ module Clusters
       private
 
       def on_success
+        app.post_uninstall
         app.destroy!
       rescue StandardError => e
         app.make_errored!(_('Application uninstalled but failed to destroy: %{error_message}') % { error_message: e.message })

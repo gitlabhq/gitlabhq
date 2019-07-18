@@ -25,7 +25,6 @@ developed and tested. We aim to be compatible with most external
 
    This command will use your defined `external_url` in `/etc/gitlab/gitlab.rb`.
 
-
 ### Configure the external database to be replicated
 
 To set up an external database, you can either:

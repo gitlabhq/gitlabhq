@@ -32,7 +32,7 @@ describe Banzai::Pipeline::GfmPipeline do
         result = described_class.call(markdown, project: project)[:output]
         link = result.css('a').first
 
-        expect(link['href']).to eq 'http://redmine/projects/project_name_in_redmine/issues/12'
+        expect(link['href']).to eq 'http://issue-tracker.example.com/issues/12'
       end
 
       it 'parses cross-project references to regular issues' do
@@ -61,7 +61,7 @@ describe Banzai::Pipeline::GfmPipeline do
         result = described_class.call(markdown, project: project)[:output]
         link = result.css('a').first
 
-        expect(link['href']).to eq 'http://redmine/projects/project_name_in_redmine/issues/12'
+        expect(link['href']).to eq 'http://issue-tracker.example.com/issues/12'
       end
 
       it 'allows to use long external reference syntax for Redmine' do
@@ -70,7 +70,7 @@ describe Banzai::Pipeline::GfmPipeline do
         result = described_class.call(markdown, project: project)[:output]
         link = result.css('a').first
 
-        expect(link['href']).to eq 'http://redmine/projects/project_name_in_redmine/issues/12'
+        expect(link['href']).to eq 'http://issue-tracker.example.com/issues/12'
       end
 
       it 'parses cross-project references to regular issues' do

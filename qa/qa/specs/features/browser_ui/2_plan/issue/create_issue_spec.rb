@@ -8,13 +8,12 @@ module QA
       it 'user creates an issue' do
         create_issue
 
-        Page::Project::Menu.act { click_issues }
+        Page::Project::Menu.perform(&:click_issues)
 
         expect(page).to have_content(issue_title)
       end
 
-      # Failure issue: https://gitlab.com/gitlab-org/quality/nightly/issues/101
-      context 'when using attachments in comments', :object_storage, :quarantine do
+      context 'when using attachments in comments', :object_storage do
         let(:file_to_attach) do
           File.absolute_path(File.join('spec', 'fixtures', 'banana_sample.gif'))
         end
@@ -40,7 +39,7 @@ module QA
 
       def create_issue
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.act { sign_in_using_credentials }
+        Page::Main::Login.perform(&:sign_in_using_credentials)
 
         Resource::Issue.fabricate_via_browser_ui! do |issue|
           issue.title = issue_title

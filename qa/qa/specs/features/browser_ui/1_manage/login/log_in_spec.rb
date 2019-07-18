@@ -5,7 +5,7 @@ module QA
     describe 'basic user login' do
       it 'user logs in using basic credentials and logs out' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.act { sign_in_using_credentials }
+        Page::Main::Login.perform(&:sign_in_using_credentials)
 
         Page::Main::Menu.perform do |menu|
           expect(menu).to have_personal_area

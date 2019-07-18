@@ -138,7 +138,13 @@ msgstr[1] ""
 msgid "%{edit_in_new_fork_notice} Try to cherry-pick this commit again."
 msgstr ""
 
+msgid "%{edit_in_new_fork_notice} Try to create a new directory again."
+msgstr ""
+
 msgid "%{edit_in_new_fork_notice} Try to revert this commit again."
+msgstr ""
+
+msgid "%{edit_in_new_fork_notice} Try to upload a file again."
 msgstr ""
 
 msgid "%{filePath} deleted"
@@ -169,9 +175,6 @@ msgid "%{level_name} is not allowed in a %{group_level_name} group."
 msgstr ""
 
 msgid "%{level_name} is not allowed since the fork source project has lower visibility."
-msgstr ""
-
-msgid "%{level_name} visibility has been restricted by the administrator."
 msgstr ""
 
 msgid "%{link_start}Read more%{link_end} about role permissions"
@@ -705,6 +708,9 @@ msgid "Add to project"
 msgstr ""
 
 msgid "Add to review"
+msgstr ""
+
+msgid "Add to tree"
 msgstr ""
 
 msgid "Add user(s) to the group:"
@@ -2981,6 +2987,12 @@ msgstr ""
 msgid "ContainerRegistry|Container Registry"
 msgstr ""
 
+msgid "ContainerRegistry|Copy build command to clipboard"
+msgstr ""
+
+msgid "ContainerRegistry|Copy push command to clipboard"
+msgstr ""
+
 msgid "ContainerRegistry|Docker connection error"
 msgstr ""
 
@@ -3014,13 +3026,13 @@ msgstr ""
 msgid "ContainerRegistry|There are no container images stored for this project"
 msgstr ""
 
-msgid "ContainerRegistry|We are having trouble connecting to Docker, which could be due to an issue with your project name or path. For more information, please review the %{docLinkStart}Container Registry documentation%{docLinkEnd}."
+msgid "ContainerRegistry|We are having trouble connecting to Docker, which could be due to an issue with your project name or path. %{docLinkStart}More Information%{docLinkEnd}"
 msgstr ""
 
-msgid "ContainerRegistry|With the Container Registry, every project can have its own space to store its Docker images. Learn more about the %{docLinkStart}Container Registry%{docLinkEnd}."
+msgid "ContainerRegistry|With the Container Registry, every project can have its own space to store its Docker images. %{docLinkStart}More Information%{docLinkEnd}"
 msgstr ""
 
-msgid "ContainerRegistry|With the Docker Container Registry integrated into GitLab, every project can have its own space to store its Docker images. Learn more about the %{docLinkStart}Container Registry%{docLinkEnd}."
+msgid "ContainerRegistry|With the Docker Container Registry integrated into GitLab, every project can have its own space to store its Docker images. %{docLinkStart}More Information%{docLinkEnd}"
 msgstr ""
 
 msgid "ContainerRegistry|You are about to delete the image <b>%{title}</b>. This will delete the image and all tags pointing to this image."
@@ -5705,6 +5717,21 @@ msgstr ""
 msgid "IssueBoards|Boards"
 msgstr ""
 
+msgid "IssueBoards|Create new board"
+msgstr ""
+
+msgid "IssueBoards|Delete board"
+msgstr ""
+
+msgid "IssueBoards|No matching boards found"
+msgstr ""
+
+msgid "IssueBoards|Some of your boards are hidden, activate a license to see them again."
+msgstr ""
+
+msgid "IssueBoards|Switch board"
+msgstr ""
+
 msgid "IssueTracker|Bugzilla issue tracker"
 msgstr ""
 
@@ -7228,6 +7255,9 @@ msgstr ""
 msgid "Other Labels"
 msgstr ""
 
+msgid "Other visibility settings have been disabled by the administrator."
+msgstr ""
+
 msgid "Outbound requests"
 msgstr ""
 
@@ -8683,6 +8713,9 @@ msgstr ""
 msgid "Receive notifications about your own activity"
 msgstr ""
 
+msgid "Recent"
+msgstr ""
+
 msgid "Recent Project Activity"
 msgstr ""
 
@@ -9725,6 +9758,9 @@ msgid "SnippetsEmptyState|They can be either public or private."
 msgstr ""
 
 msgid "Some email servers do not support overriding the email sender name. Enable this option to include the name of the author of the issue, merge request or comment in the email body instead."
+msgstr ""
+
+msgid "Someone edited the issue at the same time you did. Please check out %{linkStart}the issue%{linkEnd} and make sure your changes will not unintentionally remove theirs."
 msgstr ""
 
 msgid "Someone edited this %{issueType} at the same time you did. The description has been updated and you will need to make your changes again."
@@ -11974,6 +12010,9 @@ msgstr ""
 msgid "Visibility level:"
 msgstr ""
 
+msgid "Visibility settings have been disabled by the administrator."
+msgstr ""
+
 msgid "Visibility, project features, permissions"
 msgstr ""
 
@@ -12505,6 +12544,9 @@ msgid "You won't be able to pull or push project code via SSH until you add an S
 msgstr ""
 
 msgid "You'll need to use different branch names to get a valid comparison."
+msgstr ""
+
+msgid "You're not allowed to %{tag_start}edit%{tag_end} files in this project directly. Please fork this project, make your changes there, and submit a merge request."
 msgstr ""
 
 msgid "You're not allowed to make changes to this project directly. A fork of this project has been created that you can make changes in, so you can submit a merge request."

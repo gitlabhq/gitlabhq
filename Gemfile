@@ -100,7 +100,7 @@ gem 'carrierwave', '~> 1.3'
 gem 'mini_magick'
 
 # for backups
-gem 'fog-aws', '~> 3.3'
+gem 'fog-aws', '~> 3.5'
 # Locked until fog-google resolves https://github.com/fog/fog-google/issues/421.
 # Also see config/initializers/fog_core_patch.rb.
 gem 'fog-core', '= 2.1.0'
@@ -431,7 +431,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 1.36.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 1.37.0', require: 'gitaly'
 
 gem 'grpc', '~> 1.19.0'
 

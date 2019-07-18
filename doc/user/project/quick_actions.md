@@ -34,19 +34,19 @@ discussions, and descriptions:
 | `/remove_milestone`        | Remove milestone               | ✓     | ✓             |
 | `/label ~label1 ~label2`   | Add label(s). Label names can also start without ~ but mixed syntax is not supported.                   | ✓     | ✓             |
 | `/unlabel ~label1 ~label2` | Remove all or specific label(s)| ✓     | ✓             |
-| `/relabel ~label1 ~label2` | Replace label                  | ✓     | ✓             |
-| <code>/copy_metadata &lt;#issue &#124; !merge_request&gt;</code> | Copy labels and milestone from other issue or merge request in the project | ✓     | ✓             |
-| <code>/estimate &lt;1w 3d 2h 14m&gt;</code> | Set time estimate | ✓     | ✓             |
+| `/relabel ~label1 ~label2` | Replace existing label(s) with those specified | ✓     | ✓             |
+| `/copy_metadata <#issue | !merge_request>` | Copy labels and milestone from other issue or merge request in the project | ✓     | ✓             |
+| `/estimate <1w 3d 2h 14m>` | Set time estimate | ✓     | ✓             |
 | `/remove_estimate`       | Remove time estimate             | ✓     | ✓             |
-| <code>/spend &lt;time(1h 30m &#124; -1h 5m)&gt; &lt;date(YYYY-MM-DD)&gt;</code> | Add or subtract spent time; optionally, specify the date that time was spent on | ✓     | ✓             |
+| `/spend <time(1h 30m | -1h 5m)> <date(YYYY-MM-DD)>` | Add or subtract spent time; optionally, specify the date that time was spent on | ✓     | ✓             |
 | `/remove_time_spent`       | Remove time spent              | ✓     | ✓             |
-| `/lock`                    | Lock the discussion            | ✓     | ✓             |
-| `/unlock`                  | Unlock the discussion          | ✓     | ✓             |
-| <code>/due &lt;in 2 days &#124; this Friday &#124; December 31st&gt;</code>| Set due date | ✓ | |
+| `/lock`                    | Lock the thread                | ✓     | ✓             |
+| `/unlock`                  | Unlock the thread              | ✓     | ✓             |
+| `/due <in 2 days | this Friday | December 31st>`| Set due date | ✓ | |
 | `/remove_due_date`         | Remove due date                | ✓     |               |
-| <code>/weight &lt;0 &#124; 1 &#124; 2 &#124; ...&gt;</code> | Set weight **(STARTER)**       | ✓     |               |
+| `/weight <0 | 1 | 2 | ...>` | Set weight **(STARTER)**       | ✓     |               |
 | `/clear_weight`            | Clears weight **(STARTER)**    | ✓     |               |
-| <code>/epic &lt;&epic &#124; group&epic &#124; Epic URL&gt;</code> | Add to epic **(ULTIMATE)** | ✓ |             |
+| `/epic <&epic | group&epic | Epic URL>` | Add to epic **(ULTIMATE)** | ✓ |             |
 | `/remove_epic`             | Removes from epic **(ULTIMATE)** | ✓   |               |
 | `/promote`                 | Promote issue to epic **(ULTIMATE)** | ✓   |               |
 | `/confidential`            | Make confidential              | ✓     |               |
@@ -85,8 +85,8 @@ The following quick actions are applicable for epics threads and description:
 | `/award :emoji:`           | Toggle emoji award                      |
 | `/label ~label1 ~label2`   | Add label(s)                            |
 | `/unlabel ~label1 ~label2` | Remove all or specific label(s)         |
-| `/relabel ~label1 ~label2` | Replace label                           |
-| <code>/child_epic &lt;&epic &#124;  group&epic &#124; Epic URL&gt;</code> | Adds child epic to epic ([introduced in GitLab 12.0](https://gitlab.com/gitlab-org/gitlab-ee/issues/7330)) |
-| <code>/remove_child_epic &lt;&epic &#124; group&epic &#124; Epic URL&gt;</code> | Removes child epic from epic ([introduced in GitLab 12.0](https://gitlab.com/gitlab-org/gitlab-ee/issues/7330)) |
-| <code>/parent_epic &lt;&epic &#124;  group&epic &#124; Epic URL&gt;</code> | Sets parent epic to epic ([introduced in GitLab 12.1](https://gitlab.com/gitlab-org/gitlab-ee/issues/10556)) |
-| <code>/remove_parent_epic | Removes parent epic from epic ([introduced in GitLab 12.1](https://gitlab.com/gitlab-org/gitlab-ee/issues/10556)) |
+| `/relabel ~label1 ~label2` | Replace existing label(s) with those specified |
+| `/child_epic <&epic |  group&epic | Epic URL>` | Adds child epic to epic ([introduced in GitLab 12.0](https://gitlab.com/gitlab-org/gitlab-ee/issues/7330)) |
+| `/remove_child_epic <&epic | group&epic | Epic URL>` | Removes child epic from epic ([introduced in GitLab 12.0](https://gitlab.com/gitlab-org/gitlab-ee/issues/7330)) |
+| `/parent_epic <&epic |  group&epic | Epic URL>` | Sets parent epic to epic ([introduced in GitLab 12.1](https://gitlab.com/gitlab-org/gitlab-ee/issues/10556)) |
+| `/remove_parent_epic` | Removes parent epic from epic ([introduced in GitLab 12.1](https://gitlab.com/gitlab-org/gitlab-ee/issues/10556)) |

@@ -10,8 +10,6 @@ This is the default configuration
 To change the location where the uploads are stored locally, follow the steps
 below.
 
----
-
 **In Omnibus installations:**
 
 NOTE: **Note:**
@@ -28,8 +26,6 @@ _The uploads are stored by default in `/var/opt/gitlab/gitlab-rails/uploads`._
    ```
 
 1. Save the file and [reconfigure GitLab][] for the changes to take effect.
-
----
 
 **In installations from source:**
 
@@ -121,8 +117,6 @@ _The uploads are stored by default in
 1. Save the file and [reconfigure GitLab][] for the changes to take effect.
 1. Migrate any existing local uploads to the object storage using [`gitlab:uploads:migrate` rake task](raketasks/uploads/migrate.md).
 
----
-
 **In installations from source:**
 
 _The uploads are stored by default in
@@ -144,6 +138,75 @@ _The uploads are stored by default in
    ```
 
 1. Save the file and [restart GitLab][] for the changes to take effect.
+1. Migrate any existing local uploads to the object storage using [`gitlab:uploads:migrate` rake task](raketasks/uploads/migrate.md).
+
+### OpenStack compatible connection settings
+
+The connection settings match those provided by [Fog](https://github.com/fog), and are as follows:
+
+| Setting | Description | Default |
+|---------|-------------|---------|
+| `provider` | Always `OpenStack` for compatible hosts | OpenStack |
+| `openstack_username` | OpenStack username | |
+| `openstack_api_key` | OpenStack api key  | |
+| `openstack_temp_url_key` | OpenStack key for generating temporary urls | |
+| `openstack_auth_url` | OpenStack authentication endpont | |
+| `openstack_region` | OpenStack region | |
+| `openstack_tenant` | OpenStack tenant ID |
+
+**In Omnibus installations:**
+
+_The uploads are stored by default in
+`/var/opt/gitlab/gitlab-rails/public/uploads/-/system`._
+
+1. Edit `/etc/gitlab/gitlab.rb` and add the following lines by replacing with
+   the values you want:
+
+   ```ruby
+   gitlab_rails['uploads_object_store_remote_directory'] = "OPENSTACK_OBJECT_CONTAINER_NAME"
+   gitlab_rails['uploads_object_store_connection'] = {
+    'provider' => 'OpenStack',
+    'openstack_username' => 'OPENSTACK_USERNAME',
+    'openstack_api_key' => 'OPENSTACK_PASSWORD',
+    'openstack_temp_url_key' => 'OPENSTACK_TEMP_URL_KEY',
+    'openstack_auth_url' => 'https://auth.cloud.ovh.net/v2.0/',
+    'openstack_region' => 'DE1',
+    'openstack_tenant' => 'TENANT_ID',
+   }
+   ```
+
+1. Save the file and [reconfigure GitLab][] for the changes to take effect.
+1. Migrate any existing local uploads to the object storage using [`gitlab:uploads:migrate` rake task](raketasks/uploads/migrate.md).
+
+---
+
+**In installations from source:**
+
+_The uploads are stored by default in
+`/home/git/gitlab/public/uploads/-/system`._
+
+1. Edit `/home/git/gitlab/config/gitlab.yml` and add or amend the following
+   lines:
+
+   ```yaml
+   uploads:
+     object_store:
+       enabled: true
+       direct_upload: false
+       background_upload: true
+       proxy_download: false
+       remote_directory: OPENSTACK_OBJECT_CONTAINER_NAME
+       connection:
+         provider: OpenStack
+         openstack_username: OPENSTACK_USERNAME
+         openstack_api_key: OPENSTACK_PASSWORD
+         openstack_temp_url_key: OPENSTACK_TEMP_URL_KEY
+         openstack_auth_url: 'https://auth.cloud.ovh.net/v2.0/'
+         openstack_region: DE1
+         openstack_tenant: 'TENANT_ID' 
+   ```
+
+1. Save the file and [reconfigure GitLab][] for the changes to take effect.
 1. Migrate any existing local uploads to the object storage using [`gitlab:uploads:migrate` rake task](raketasks/uploads/migrate.md).
 
 [reconfigure gitlab]: restart_gitlab.md#omnibus-gitlab-reconfigure "How to reconfigure Omnibus GitLab"

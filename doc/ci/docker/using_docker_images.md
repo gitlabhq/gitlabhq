@@ -35,8 +35,8 @@ sudo gitlab-runner register \
   --description "docker-ruby-2.1" \
   --executor "docker" \
   --docker-image ruby:2.1 \
-  --docker-postgres latest \
-  --docker-mysql latest
+  --docker-services postgres:latest \
+  --docker-services mysql:latest
 ```
 
 The registered runner will use the `ruby:2.1` Docker image and will run two
@@ -193,13 +193,14 @@ You can simply define an image that will be used for all jobs and a list of
 services that you want to use during build time:
 
 ```yaml
-image: ruby:2.2
+default:
+  image: ruby:2.2
 
-services:
-  - postgres:9.3
+  services:
+    - postgres:9.3
 
-before_script:
-  - bundle install
+  before_script:
+    - bundle install
 
 test:
   script:
@@ -209,8 +210,9 @@ test:
 It is also possible to define different images and services per job:
 
 ```yaml
-before_script:
-  - bundle install
+default:
+  before_script:
+    - bundle install
 
 test:2.1:
   image: ruby:2.1
@@ -231,15 +233,52 @@ Or you can pass some [extended configuration options](#extended-docker-configura
 for `image` and `services`:
 
 ```yaml
+default:
+  image:
+    name: ruby:2.2
+    entrypoint: ["/bin/bash"]
+
+  services:
+  - name: my-postgres:9.4
+    alias: db-postgres
+    entrypoint: ["/usr/local/bin/db-postgres"]
+    command: ["start"]
+
+  before_script:
+  - bundle install
+
+test:
+  script:
+  - bundle exec rake spec
+```
+
+## Passing environment variables to services
+
+You can also pass custom environment [variables](../variables/README.md)
+to fine tune your Docker `images` and `services` directly in the `.gitlab-ci.yml` file.
+For more information, see [custom environment variables](../variables/README.md#gitlab-ciyml-defined-variables)
+
+```yaml
+# The following variables will automatically be passed down to the Postgres container
+# as well as the Ruby container and available within each.
+variables:
+  HTTPS_PROXY: "https://10.1.1.1:8090"
+  HTTP_PROXY: "https://10.1.1.1:8090"
+  POSTGRES_DB: "my_custom_db"
+  POSTGRES_USER: "postgres"
+  POSTGRES_PASSWORD: "example"
+  PGDATA: "/var/lib/postgresql/data"
+  POSTGRES_INITDB_ARGS: "--encoding=UTF8 --data-checksums"
+
+services:
+- name: postgres:9.4
+  alias: db
+  entrypoint: ["docker-entrypoint.sh"]
+  command: ["postgres"]
+
 image:
   name: ruby:2.2
   entrypoint: ["/bin/bash"]
-
-services:
-- name: my-postgres:9.4
-  alias: db-postgres
-  entrypoint: ["/usr/local/bin/db-postgres"]
-  command: ["start"]
 
 before_script:
 - bundle install

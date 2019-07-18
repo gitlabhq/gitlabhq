@@ -282,6 +282,10 @@ module IssuablesHelper
 
     data[:hasClosingMergeRequest] = issuable.merge_requests_count(current_user) != 0 if issuable.is_a?(Issue)
 
+    zoom_links = Gitlab::ZoomLinkExtractor.new(issuable.description).links
+
+    data[:zoomMeetingUrl] = zoom_links.last if zoom_links.any?
+
     if parent.is_a?(Group)
       data[:groupPath] = parent.path
     else

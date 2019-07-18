@@ -191,6 +191,7 @@
     "pixelmatch": "^4.0.2",
     "postcss": "^7.0.14",
     "prettier": "1.18.2",
+    "readdir-enhanced": "^2.2.4",
     "stylelint": "^9.10.1",
     "stylelint-config-recommended": "^2.1.0",
     "stylelint-scss": "^3.5.4",

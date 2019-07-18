@@ -29,6 +29,7 @@ The following API resources are available in the project context:
 | [Commits](commits.md)                                               | `/projects/:id/repository/commits`, `/projects/:id/statuses`                                                                                                                                          |
 | [Container Registry](container_registry.md)                         | `/projects/:id/registry/repositories`                                                                                                                                                                 |
 | [Custom attributes](custom_attributes.md)                           | `/projects/:id/custom_attributes` (also available for groups and users)                                                                                                                               |
+| [Dependencies](dependencies.md) **[ULTIMATE]**                      | `/projects/:id/dependencies`
 | [Deploy keys](deploy_keys.md)                                       | `/projects/:id/deploy_keys` (also available standalone)                                                                                                                                               |
 | [Deployments](deployments.md)                                       | `/projects/:id/deployments`                                                                                                                                                                           |
 | [Discussions](discussions.md) (threaded comments)                   | `/projects/:id/issues/.../discussions`, `/projects/:id/snippets/.../discussions`, `/projects/:id/merge_requests/.../discussions`, `/projects/:id/commits/.../discussions` (also available for groups) |
@@ -321,8 +322,6 @@ By default, impersonation is enabled. To disable impersonation:
 
 To re-enable impersonation, remove this configuration and reconfigure GitLab.
 
----
-
 **For installations from source**
 
 1. Edit `config/gitlab.yml`:
@@ -380,8 +379,6 @@ returned with status code `404`:
   "message": "404 User with ID or username '123' Not Found"
 }
 ```
-
----
 
 Example of a valid API call and a request using cURL with sudo request,
 providing a username:

@@ -88,6 +88,19 @@ def lint_commit(commit) # rubocop:disable Metrics/AbcSize
   # We ignore revert commits as they are well structured by Git already
   return false if commit.message.start_with?('Revert "')
 
+  # Fail if a suggestion commit is used and squash is not enabled
+  if commit.message.start_with?('Apply suggestion to')
+    if gitlab.mr_json['squash']
+      return false
+    else
+      fail_commit(
+        commit,
+        'If you are applying suggestions, enable squash in the merge request and re-run the failed job'
+      )
+      return true
+    end
+  end
+
   failures = false
   subject, separator, details = commit.message.split("\n", 3)
 
@@ -112,16 +125,6 @@ def lint_commit(commit) # rubocop:disable Metrics/AbcSize
       commit,
       "This commit's subject line is acceptable, but please try to [reduce it to 50 characters](#{URL_LIMIT_SUBJECT})."
     )
-  end
-
-  # Fail if a suggestion commit is used and squash is not enabled
-  if commit.message.start_with?('Apply suggestion to') && !gitlab.mr_json['squash']
-    fail_commit(
-      commit,
-      'If you are applying suggestions, squash needs to be enabled in the merge request'
-    )
-
-    failures = true
   end
 
   unless subject_starts_with_capital?(subject)

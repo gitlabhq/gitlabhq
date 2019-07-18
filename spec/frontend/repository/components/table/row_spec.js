@@ -1,5 +1,5 @@
 import { shallowMount, RouterLinkStub } from '@vue/test-utils';
-import { GlBadge } from '@gitlab/ui';
+import { GlBadge, GlLink } from '@gitlab/ui';
 import { visitUrl } from '~/lib/utils/url_utility';
 import TableRow from '~/repository/components/table/row.vue';
 
@@ -141,5 +141,19 @@ describe('Repository table row component', () => {
     });
 
     expect(vm.find(GlBadge).exists()).toBe(true);
+  });
+
+  it('renders commit and web links with href for submodule', () => {
+    factory({
+      id: '1',
+      path: 'test',
+      type: 'commit',
+      url: 'https://test.com',
+      submoduleTreeUrl: 'https://test.com/commit',
+      currentPath: '/',
+    });
+
+    expect(vm.find('a').attributes('href')).toEqual('https://test.com');
+    expect(vm.find(GlLink).attributes('href')).toEqual('https://test.com/commit');
   });
 });

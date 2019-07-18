@@ -27,23 +27,23 @@ The following identity providers are supported:
 - [Group SSO](index.md) needs to be configured.
 - The `scim_group` feature flag must be enabled:
 
-    Run the following commands in a Rails console:
+  Run the following commands in a Rails console:
 
-    ```sh
-    # Omnibus GitLab
-    gitlab-rails console
+  ```sh
+  # Omnibus GitLab
+  gitlab-rails console
 
-    # Installation from source
-    cd /home/git/gitlab
-    sudo -u git -H bin/rails console RAILS_ENV=production
-    ```
+  # Installation from source
+  cd /home/git/gitlab
+  sudo -u git -H bin/rails console RAILS_ENV=production
+  ```
 
-    To enable SCIM for a group named `group_name`:
+  To enable SCIM for a group named `group_name`:
 
-    ```ruby
-    group = Group.find_by_full_path('group_name')
-    Feature.enable(:group_scim, group)
-    ```
+  ```ruby
+  group = Group.find_by_full_path('group_name')
+  Feature.enable(:group_scim, group)
+  ```
 
 ### GitLab configuration
 
@@ -85,26 +85,26 @@ You can then test the connection clicking on `Test Connection`.
 1. Map the `userPricipalName` to `emails[type eq "work"].value` and `mailNickname` to
    `userName`.
 
-    Example configuration:
+   Example configuration:
 
-    ![Azure's attribute mapping configuration](img/scim_attribute_mapping.png)
+   ![Azure's attribute mapping configuration](img/scim_attribute_mapping.png)
 
 1. Click on **Show advanced options > Edit attribute list for AppName**.
 1. Leave the `id` as the primary and only required field.
 
-    NOTE: **Note:**
-    `username` should neither be primary nor required as we don't support
-    that field on GitLab SCIM yet.
+   NOTE: **Note:**
+   `username` should neither be primary nor required as we don't support
+   that field on GitLab SCIM yet.
 
-    ![Azure's attribute advanced configuration](img/scim_advanced.png)
+   ![Azure's attribute advanced configuration](img/scim_advanced.png)
 
 1. Save all the screens and, in the **Provisioning** step, set
    the `Provisioning Status` to `ON`.
 
-    NOTE: **Note:**
-    You can control what is actually synced by selecting the `Scope`. For example,
-    `Sync only assigned users and groups` will only sync the users assigned to
-    the application (`Users and groups`), otherwise it will sync the whole Active Directory.
+   NOTE: **Note:**
+   You can control what is actually synced by selecting the `Scope`. For example,
+   `Sync only assigned users and groups` will only sync the users assigned to
+   the application (`Users and groups`), otherwise it will sync the whole Active Directory.
 
 Once enabled, the synchronization details and any errors will appear on the
 bottom of the **Provisioning** screen, together with a link to the audit logs.

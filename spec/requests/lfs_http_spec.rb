@@ -1439,8 +1439,4 @@ describe 'Git LFS API and storage' do
 
     post(url, params: params, headers: headers)
   end
-
-  def json_response
-    @json_response ||= JSON.parse(response.body)
-  end
 end

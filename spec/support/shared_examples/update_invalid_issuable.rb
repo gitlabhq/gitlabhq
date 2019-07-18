@@ -38,7 +38,7 @@ shared_examples 'update invalid issuable' do |klass|
       put :update, params: params
 
       expect(response.status).to eq(409)
-      expect(JSON.parse(response.body)).to have_key('errors')
+      expect(json_response).to have_key('errors')
     end
   end
 

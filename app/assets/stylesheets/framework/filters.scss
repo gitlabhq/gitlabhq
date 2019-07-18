@@ -9,14 +9,14 @@
     float: right;
     margin-right: 0;
 
-    @include media-breakpoint-down(xs) {
+    @include media-breakpoint-down(sm) {
       float: none;
     }
   }
 }
 
 .filters-section {
-  @include media-breakpoint-down(xs) {
+  @include media-breakpoint-down(sm) {
     display: inline-block;
   }
 }
@@ -37,7 +37,7 @@
   }
 }
 
-@include media-breakpoint-down(xs) {
+@include media-breakpoint-down(sm) {
   .filter-item {
     display: block;
     margin: 0 0 10px;
@@ -50,12 +50,6 @@
 }
 
 .filtered-search-wrapper {
-  display: flex;
-
-  @include media-breakpoint-down(xs) {
-    flex-direction: column;
-  }
-
   .tokens-container {
     display: flex;
     flex: 1;
@@ -186,7 +180,7 @@
   border: 1px solid $border-color;
   background-color: $white-light;
 
-  @include media-breakpoint-down(xs) {
+  @include media-breakpoint-down(sm) {
     flex: 1 1 auto;
     margin-bottom: 10px;
   }
@@ -259,7 +253,7 @@
   max-width: 280px;
   overflow: auto;
 
-  @include media-breakpoint-down(xs) {
+  @include media-breakpoint-down(sm) {
     width: auto;
     left: 0;
     right: 0;
@@ -311,7 +305,7 @@
 .filtered-search-history-dropdown {
   width: 40%;
 
-  @include media-breakpoint-down(xs) {
+  @include media-breakpoint-down(sm) {
     left: 0;
     right: 0;
     max-width: none;
@@ -341,33 +335,44 @@
 }
 
 .filter-dropdown-container {
-  display: flex;
-
   .dropdown-toggle {
     line-height: 22px;
   }
 }
 
-@include media-breakpoint-down(xs) {
+@include media-breakpoint-down(sm) {
   .issues-details-filters {
-    padding: 0 0 10px;
+    padding-top: 0;
+    padding-bottom: 0;
     background-color: $white-light;
     border-top: 0;
   }
 
-  .filter-dropdown-container {
+  .boards-switcher {
+    margin: 0 0 10px;
+
+    .boards-selector-wrapper,
     .dropdown {
-      margin-left: 0;
+      display: block;
     }
   }
-}
 
-@include media-breakpoint-down(sm) {
-  .filter-dropdown-container {
-    .dropdown-toggle,
-    .dropdown,
-    .dropdown-menu {
+  .filter-dropdown-container > div {
+    margin: 0;
+
+    > .btn {
+      margin: 0 0 10px;
       width: 100%;
+    }
+  }
+
+  .boards-add-list > .btn {
+    text-align: left;
+
+    > svg {
+      position: absolute;
+      top: 11px;
+      right: 6px;
     }
   }
 }

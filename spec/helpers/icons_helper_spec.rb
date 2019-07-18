@@ -125,6 +125,14 @@ describe IconsHelper do
       expect(file_type_icon_class('file', 0, 'filename.png')).to eq 'file-image-o'
     end
 
+    it 'returns file-image-o class with .apng' do
+      expect(file_type_icon_class('file', 0, 'filename.apng')).to eq 'file-image-o'
+    end
+
+    it 'returns file-image-o class with .webp' do
+      expect(file_type_icon_class('file', 0, 'filename.webp')).to eq 'file-image-o'
+    end
+
     it 'returns file-archive-o class with .tar' do
       expect(file_type_icon_class('file', 0, 'filename.tar')).to eq 'file-archive-o'
     end
@@ -145,6 +153,10 @@ describe IconsHelper do
       expect(file_type_icon_class('file', 0, 'filename.MP3')).to eq 'file-audio-o'
     end
 
+    it 'returns file-audio-o class with .m4a' do
+      expect(file_type_icon_class('file', 0, 'filename.m4a')).to eq 'file-audio-o'
+    end
+
     it 'returns file-audio-o class with .wav' do
       expect(file_type_icon_class('file', 0, 'filename.wav')).to eq 'file-audio-o'
     end
@@ -159,6 +171,10 @@ describe IconsHelper do
 
     it 'returns file-video-o class with .mp4' do
       expect(file_type_icon_class('file', 0, 'filename.mp4')).to eq 'file-video-o'
+    end
+
+    it 'returns file-word-o class with .odt' do
+      expect(file_type_icon_class('file', 0, 'filename.odt')).to eq 'file-word-o'
     end
 
     it 'returns file-word-o class with .doc' do
@@ -183,6 +199,10 @@ describe IconsHelper do
 
     it 'returns file-excel-o class with .xlsx' do
       expect(file_type_icon_class('file', 0, 'filename.xlsx')).to eq 'file-excel-o'
+    end
+
+    it 'returns file-excel-o class with .odp' do
+      expect(file_type_icon_class('file', 0, 'filename.odp')).to eq 'file-powerpoint-o'
     end
 
     it 'returns file-excel-o class with .ppt' do

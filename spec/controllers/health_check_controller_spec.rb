@@ -5,7 +5,6 @@ require 'spec_helper'
 describe HealthCheckController do
   include StubENV
 
-  let(:json_response) { JSON.parse(response.body) }
   let(:xml_response) { Hash.from_xml(response.body)['hash'] }
   let(:token) { Gitlab::CurrentSettings.health_check_access_token }
   let(:whitelisted_ip) { '127.0.0.1' }

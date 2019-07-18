@@ -241,10 +241,10 @@ The following installation instructions assume you are running Ubuntu:
    Enter <kbd>CTRL</kbd>-<kbd>C</kbd> to quit.
 1. Install the certificate from `~/.mitmproxy` to your system:
 
-    ```sh
-    sudo cp ~/.mitmproxy/mitmproxy-ca-cert.pem /usr/local/share/ca-certificates/mitmproxy-ca-cert.crt
-    sudo update-ca-certificates
-    ```
+   ```sh
+   sudo cp ~/.mitmproxy/mitmproxy-ca-cert.pem /usr/local/share/ca-certificates/mitmproxy-ca-cert.crt
+   sudo update-ca-certificates
+   ```
 
 If successful, the output should indicate that a certificate was added:
 

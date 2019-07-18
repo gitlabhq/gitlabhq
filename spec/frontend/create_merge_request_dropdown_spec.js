@@ -1,6 +1,7 @@
 import axios from '~/lib/utils/axios_utils';
 import MockAdapter from 'axios-mock-adapter';
 import CreateMergeRequestDropdown from '~/create_merge_request_dropdown';
+import confidentialState from '~/confidential_merge_request/state';
 import { TEST_HOST } from './helpers/test_constants';
 
 describe('CreateMergeRequestDropdown', () => {
@@ -64,6 +65,39 @@ describe('CreateMergeRequestDropdown', () => {
       expect(dropdown.createMrPath).toBe(
         `${TEST_HOST}/create_merge_request?branch_name=contains%23hash&ref=master`,
       );
+    });
+  });
+
+  describe('enable', () => {
+    beforeEach(() => {
+      dropdown.createMergeRequestButton.classList.add('disabled');
+    });
+
+    afterEach(() => {
+      confidentialState.selectedProject = {};
+    });
+
+    it('enables button when not confidential issue', () => {
+      dropdown.enable();
+
+      expect(dropdown.createMergeRequestButton.classList).not.toContain('disabled');
+    });
+
+    it('enables when can create confidential issue', () => {
+      document.querySelector('.js-create-mr').setAttribute('data-is-confidential', 'true');
+      confidentialState.selectedProject = { name: 'test' };
+
+      dropdown.enable();
+
+      expect(dropdown.createMergeRequestButton.classList).not.toContain('disabled');
+    });
+
+    it('does not enable when can not create confidential issue', () => {
+      document.querySelector('.js-create-mr').setAttribute('data-is-confidential', 'true');
+
+      dropdown.enable();
+
+      expect(dropdown.createMergeRequestButton.classList).toContain('disabled');
     });
   });
 });

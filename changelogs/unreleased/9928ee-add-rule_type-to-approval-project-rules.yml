@@ -1,0 +1,5 @@
+---
+title: Add migration for adding rule_type to approval_project_rules
+merge_request: 30575
+author:
+type: added

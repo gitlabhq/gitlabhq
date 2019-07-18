@@ -6,11 +6,20 @@ module Banzai
     #
     # Extends Banzai::Filter::BaseSanitizationFilter with specific rules.
     class AsciiDocSanitizationFilter < Banzai::Filter::BaseSanitizationFilter
+      # Section anchor link pattern
+      SECTION_LINK_REF_PATTERN = /\A#{Gitlab::Asciidoc::DEFAULT_ADOC_ATTRS['idprefix']}(:?[[:alnum:]]|-|_)+\z/.freeze
+      SECTION_HEADINGS = %w(h2 h3 h4 h5 h6).freeze
+
+      # Footnote link patterns
+      FOOTNOTE_LINK_ID_PATTERNS = {
+        a: /\A_footnoteref_\d+\z/,
+        div: /\A_footnotedef_\d+\z/
+      }.freeze
+
       # Classes used by Asciidoctor to style components
       ADMONITION_CLASSES = %w(fa icon-note icon-tip icon-warning icon-caution icon-important).freeze
       CALLOUT_CLASSES = ['conum'].freeze
       CHECKLIST_CLASSES = %w(fa fa-check-square-o fa-square-o).freeze
-
       LIST_CLASSES = %w(checklist none no-bullet unnumbered unstyled).freeze
 
       ELEMENT_CLASSES_WHITELIST = {
@@ -19,14 +28,15 @@ module Banzai
         td: ['icon'].freeze,
         i: ADMONITION_CLASSES + CALLOUT_CLASSES + CHECKLIST_CLASSES,
         ul: LIST_CLASSES,
-        ol: LIST_CLASSES
+        ol: LIST_CLASSES,
+        a: ['anchor'].freeze
       }.freeze
 
       def customize_whitelist(whitelist)
         # Allow marks
         whitelist[:elements].push('mark')
 
-        # Allow any classes in `span`, `i`, `div`, `td`, `ul` and `ol` elements
+        # Allow any classes in `span`, `i`, `div`, `td`, `ul`, `ol` and `a` elements
         # but then remove any unknown classes
         whitelist[:attributes]['span'] = %w(class)
         whitelist[:attributes]['div'].push('class')
@@ -34,12 +44,51 @@ module Banzai
         whitelist[:attributes]['i'] = %w(class)
         whitelist[:attributes]['ul'] = %w(class)
         whitelist[:attributes]['ol'] = %w(class)
+        whitelist[:attributes]['a'].push('class')
         whitelist[:transformers].push(self.class.remove_element_classes)
+
+        # Allow `id` in heading elements for section anchors
+        SECTION_HEADINGS.each do |header|
+          whitelist[:attributes][header] = %w(id)
+        end
+        whitelist[:transformers].push(self.class.remove_non_heading_ids)
+
+        # Allow `id` in footnote elements
+        FOOTNOTE_LINK_ID_PATTERNS.keys.each do |element|
+          whitelist[:attributes][element.to_s].push('id')
+        end
+        whitelist[:transformers].push(self.class.remove_non_footnote_ids)
 
         whitelist
       end
 
       class << self
+        def remove_non_footnote_ids
+          lambda do |env|
+            node = env[:node]
+
+            return unless (pattern = FOOTNOTE_LINK_ID_PATTERNS[node.name.to_sym])
+            return unless node.has_attribute?('id')
+
+            return if node['id'] =~ pattern
+
+            node.remove_attribute('id')
+          end
+        end
+
+        def remove_non_heading_ids
+          lambda do |env|
+            node = env[:node]
+
+            return unless SECTION_HEADINGS.any?(node.name)
+            return unless node.has_attribute?('id')
+
+            return if node['id'] =~ SECTION_LINK_REF_PATTERN
+
+            node.remove_attribute('id')
+          end
+        end
+
         def remove_element_classes
           lambda do |env|
             node = env[:node]

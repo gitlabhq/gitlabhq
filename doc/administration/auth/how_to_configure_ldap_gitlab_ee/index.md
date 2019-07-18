@@ -1,16 +1,10 @@
 ---
-author: Chris Wilson
-author_gitlab: MrChrisW
-level: intermediary
-article_type: admin guide
-date: 2017-05-03
+type: howto
 ---
 
 # How to configure LDAP with GitLab EE **(STARTER ONLY)**
 
-## Introduction
-
-The present article follows [How to Configure LDAP with GitLab CE](../how_to_configure_ldap_gitlab_ce/index.md). Make sure to read through it before moving forward.
+This article expands on [How to Configure LDAP with GitLab CE](../how_to_configure_ldap_gitlab_ce/index.md). Make sure to read through it before moving forward.
 
 ## GitLab Enterprise Edition - LDAP features
 
@@ -117,3 +111,15 @@ Integration of GitLab with Active Directory (LDAP) reduces the complexity of use
 It has the advantage of improving user permission controls, whilst easing the deployment of GitLab into an existing [IT environment](https://www.techopedia.com/definition/29199/it-infrastructure). GitLab EE offers advanced group management and multiple LDAP servers.
 
 With the assistance of the [GitLab Support](https://about.gitlab.com/support) team, setting up GitLab with an existing AD/LDAP solution will be a smooth and painless process.
+
+<!-- ## Troubleshooting
+
+Include any troubleshooting steps that you can foresee. If you know beforehand what issues
+one might have when setting this up, or when something is changed, or on upgrading, it's
+important to describe those, too. Think of things that may go wrong and include them here.
+This is important to minimize requests for support, and to avoid doc comments with
+questions that you know someone might ask.
+
+Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+If you have none to add when creating a doc, leave this section in place
+but commented out to help encourage others to add to it in the future. -->

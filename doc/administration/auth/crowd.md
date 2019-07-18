@@ -1,4 +1,10 @@
+---
+type: reference
+---
+
 # Atlassian Crowd OmniAuth Provider
+
+Authenticate to GitLab using the Atlassian Crowd OmniAuth provider.
 
 ## Configure a new Crowd application
 

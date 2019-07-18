@@ -65,20 +65,6 @@ module VisibilityLevelHelper
     end
   end
 
-  def restricted_visibility_level_description(level)
-    level_name = Gitlab::VisibilityLevel.level_name(level)
-    _("%{level_name} visibility has been restricted by the administrator.") % { level_name: level_name.capitalize }
-  end
-
-  def disallowed_visibility_level_description(level, form_model)
-    case form_model
-    when Project
-      disallowed_project_visibility_level_description(level, form_model)
-    when Group
-      disallowed_group_visibility_level_description(level, form_model)
-    end
-  end
-
   # Note: these messages closely mirror the form validation strings found in the project
   # model and any changes or additons to these may also need to be made there.
   def disallowed_project_visibility_level_description(level, project)
@@ -179,6 +165,14 @@ module VisibilityLevelHelper
       end
 
     [requested_level, max_allowed_visibility_level(form_model)].min
+  end
+
+  def multiple_visibility_levels_restricted?
+    restricted_visibility_levels.many? # rubocop: disable CodeReuse/ActiveRecord
+  end
+
+  def all_visibility_levels_restricted?
+    Gitlab::VisibilityLevel.values == restricted_visibility_levels
   end
 
   private

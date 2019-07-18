@@ -22,7 +22,9 @@ describe Gitlab::ImportExport::AttributeCleaner do
       'some_html' => '<p>dodgy html</p>',
       'legit_html' => '<p>legit html</p>',
       '_html' => '<p>perfectly ordinary html</p>',
-      'cached_markdown_version' => 12345
+      'cached_markdown_version' => 12345,
+      'group_id' => 99,
+      'commit_id' => 99
     }
   end
 
@@ -31,7 +33,9 @@ describe Gitlab::ImportExport::AttributeCleaner do
       'project_id' => 99,
       'user_id' => 99,
       'random_id_in_the_middle' => 99,
-      'notid' => 99
+      'notid' => 99,
+      'group_id' => 99,
+      'commit_id' => 99
     }
   end
 
@@ -59,6 +63,6 @@ describe Gitlab::ImportExport::AttributeCleaner do
   it 'does not remove excluded key if not listed' do
     parsed_hash = described_class.clean(relation_hash: unsafe_hash, relation_class: relation_class)
 
-    expect(parsed_hash.keys).to eq post_safe_hash.keys + excluded_keys
+    expect(parsed_hash.keys).to match_array post_safe_hash.keys + excluded_keys
   end
 end

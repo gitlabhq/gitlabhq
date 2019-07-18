@@ -52,6 +52,9 @@ When you create a project in GitLab, you'll have access to a large number of
   templates for issue and merge request description fields for your project
 - [Slash commands (quick actions)](quick_actions.md): Textual shortcuts for
   common actions on issues or merge requests
+- [Autocomplete characters](autocomplete_characters.md): Autocomplete
+  references to users, groups, issues, merge requests, and other GitLab
+  elements.
 - [Web IDE](web_ide/index.md)
 
 **GitLab CI/CD:**
@@ -221,7 +224,7 @@ There are numerous [APIs](../../api/README.md) to use with your projects:
 
 - [Badges](../../api/project_badges.md)
 - [Clusters](../../api/project_clusters.md)
-- [Discussions](../../api/discussions.md)
+- [Threads](../../api/discussions.md)
 - [General](../../api/projects.md)
 - [Import/export](../../api/project_import_export.md)
 - [Issue Board](../../api/boards.md)

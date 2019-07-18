@@ -365,4 +365,17 @@ describe('Store', () => {
       expect(boardsStore.timeTracking.limitToHours).toEqual(true);
     });
   });
+
+  describe('setCurrentBoard', () => {
+    const dummyBoard = 'hoverboard';
+
+    it('sets the current board', () => {
+      const { state } = boardsStore;
+      state.currentBoard = null;
+
+      boardsStore.setCurrentBoard(dummyBoard);
+
+      expect(state.currentBoard).toEqual(dummyBoard);
+    });
+  });
 });

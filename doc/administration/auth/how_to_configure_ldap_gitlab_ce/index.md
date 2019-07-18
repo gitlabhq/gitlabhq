@@ -1,14 +1,8 @@
 ---
-author: Chris Wilson
-author_gitlab: MrChrisW
-level: intermediary
-article_type: admin guide
-date: 2017-05-03
+type: howto
 ---
 
 # How to configure LDAP with GitLab CE
-
-## Introduction
 
 Managing a large number of users in GitLab can become a burden for system administrators. As an organization grows so do user accounts. Keeping these user accounts in sync across multiple enterprise applications often becomes a time consuming task.
 
@@ -268,3 +262,15 @@ have extended functionalities with LDAP, such as:
 - Multiple LDAP servers
 
 Read through the article on [LDAP for GitLab EE](../how_to_configure_ldap_gitlab_ee/index.md) **(STARTER ONLY)** for an overview.
+
+<!-- ## Troubleshooting
+
+Include any troubleshooting steps that you can foresee. If you know beforehand what issues
+one might have when setting this up, or when something is changed, or on upgrading, it's
+important to describe those, too. Think of things that may go wrong and include them here.
+This is important to minimize requests for support, and to avoid doc comments with
+questions that you know someone might ask.
+
+Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+If you have none to add when creating a doc, leave this section in place
+but commented out to help encourage others to add to it in the future. -->

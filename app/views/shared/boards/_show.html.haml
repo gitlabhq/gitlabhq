@@ -14,8 +14,7 @@
   %script#js-board-promotion{ type: "text/x-template" }= render_if_exists "shared/promotions/promote_issue_board"
 
 #board-app.boards-app.position-relative{ "v-cloak" => "true", data: board_data, ":class" => "{ 'is-compact': detailIssueVisible }" }
-  .d-none.d-sm-none.d-md-block
-    = render 'shared/issuable/search_bar', type: :boards, board: board
+  = render 'shared/issuable/search_bar', type: :boards, board: board
 
   .boards-list.w-100.py-3.px-2.text-nowrap
     .boards-app-loading.w-100.text-center{ "v-if" => "loading" }

@@ -62,6 +62,11 @@ export default {
       required: false,
       default: null,
     },
+    submoduleTreeUrl: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
@@ -112,7 +117,7 @@ export default {
       </component>
       <gl-badge v-if="lfsOid" variant="default" class="label-lfs ml-1">LFS</gl-badge>
       <template v-if="isSubmodule">
-        @ <gl-link href="#" class="commit-sha">{{ shortSha }}</gl-link>
+        @ <gl-link :href="submoduleTreeUrl" class="commit-sha">{{ shortSha }}</gl-link>
       </template>
     </td>
     <td class="d-none d-sm-table-cell tree-commit">

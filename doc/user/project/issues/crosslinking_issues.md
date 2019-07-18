@@ -47,7 +47,7 @@ display in both issues. The same is valid when mentioning issues in [merge reque
 ## From Merge Requests
 
 Mentioning issues in merge request comments works exactly the same way as
-they do for [related issues](#from-related-issues). 
+they do for [related issues](#from-related-issues).
 
 When you mention an issue in a merge request description, it will simply
 [link the issue and merge request together](#from-related-issues). Additionally,

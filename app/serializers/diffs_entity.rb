@@ -64,7 +64,10 @@ class DiffsEntity < Grape::Entity
     merge_request_path(merge_request, format: :diff)
   end
 
-  expose :diff_files, using: DiffFileEntity
+  expose :diff_files do |diffs, options|
+    submodule_links = Gitlab::SubmoduleLinks.new(merge_request.project.repository)
+    DiffFileEntity.represent(diffs.diff_files, options.merge(submodule_links: submodule_links))
+  end
 
   expose :merge_request_diffs, using: MergeRequestDiffEntity, if: -> (_, options) { options[:merge_request_diffs]&.any? } do |diffs|
     options[:merge_request_diffs]

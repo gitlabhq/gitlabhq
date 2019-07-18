@@ -1,4 +1,4 @@
-%li.header-new.dropdown{ data: { track_label: "new_dropdown", track_event: "click_dropdown" } }
+%li.header-new.dropdown{ data: { track_label: "new_dropdown", track_event: "click_dropdown", track_value: "" } }
   = link_to new_project_path, class: "header-new-dropdown-toggle has-tooltip qa-new-menu-toggle", id: "js-onboarding-new-project-link", title: _("New..."), ref: 'tooltip', aria: { label: _("New...") }, data: { toggle: 'dropdown', placement: 'bottom', container: 'body', display: 'static' } do
     = sprite_icon('plus-square', size: 16)
     = sprite_icon('angle-down', css_class: 'caret-down')

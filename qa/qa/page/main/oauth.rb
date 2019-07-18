@@ -5,7 +5,7 @@ module QA
     module Main
       class OAuth < Page::Base
         view 'app/views/doorkeeper/authorizations/new.html.haml' do
-          element :authorization_button, 'submit_tag _("Authorize")' # rubocop:disable QA/ElementWithPattern
+          element :authorization_button
         end
 
         def needs_authorization?
@@ -13,7 +13,7 @@ module QA
         end
 
         def authorize!
-          click_button 'Authorize'
+          click_element :authorization_button
         end
       end
     end

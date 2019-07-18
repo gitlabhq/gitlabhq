@@ -22,7 +22,7 @@ Optional Features:
    1. **Optional**: an SSL/TLS certificate so your custom
    domain is accessible under HTTPS.
 
-The optional settings, custom domain, DNS records, and SSL/TLS certificates, are described in [Part 3](getting_started_part_three.md)).
+The optional settings, custom domain, DNS records, and SSL/TLS certificates, are described in [GitLab Pages custom domains and SSL/TLS Certificates](custom_domains_ssl_tls_certification/index.md)).
 
 ## Project
 
@@ -169,4 +169,4 @@ baseurl: ""
 ## Custom Domains
 
 GitLab Pages supports custom domains and subdomains, served under HTTP or HTTPS.
-See [GitLab Pages custom domains and SSL/TLS Certificates](getting_started_part_three.md) for more information.
+See [GitLab Pages custom domains and SSL/TLS Certificates](custom_domains_ssl_tls_certification/index.md) for more information.

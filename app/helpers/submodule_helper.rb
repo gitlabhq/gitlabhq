@@ -9,6 +9,10 @@ module SubmoduleHelper
   def submodule_links(submodule_item, ref = nil, repository = @repository)
     url = repository.submodule_url_for(ref, submodule_item.path)
 
+    submodule_links_for_url(submodule_item.id, url, repository)
+  end
+
+  def submodule_links_for_url(submodule_item_id, url, repository)
     if url == '.' || url == './'
       url = File.join(Gitlab.config.gitlab.url, repository.project.full_path)
     end
@@ -31,13 +35,13 @@ module SubmoduleHelper
 
       if self_url?(url, namespace, project)
         [namespace_project_path(namespace, project),
-         namespace_project_tree_path(namespace, project, submodule_item.id)]
+         namespace_project_tree_path(namespace, project, submodule_item_id)]
       elsif relative_self_url?(url)
-        relative_self_links(url, submodule_item.id, repository.project)
+        relative_self_links(url, submodule_item_id, repository.project)
       elsif github_dot_com_url?(url)
-        standard_links('github.com', namespace, project, submodule_item.id)
+        standard_links('github.com', namespace, project, submodule_item_id)
       elsif gitlab_dot_com_url?(url)
-        standard_links('gitlab.com', namespace, project, submodule_item.id)
+        standard_links('gitlab.com', namespace, project, submodule_item_id)
       else
         [sanitize_submodule_url(url), nil]
       end

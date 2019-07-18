@@ -2,7 +2,6 @@
 
 > [Introduced][ce-2371] in GitLab 8.4.
 
----
 ## Automatic housekeeping
 
 GitLab automatically runs `git gc` and `git repack` on repositories
@@ -31,8 +30,6 @@ the `pushes_since_gc` value is 200 a `git gc` will be run.
 - `git repack` ([man page][man-repack]) re-organize existing packs into a single, more efficient pack.
 
 You can find this option under your project's **Settings > General > Advanced**.
-
----
 
 ![Housekeeping settings](img/housekeeping_settings.png)
 

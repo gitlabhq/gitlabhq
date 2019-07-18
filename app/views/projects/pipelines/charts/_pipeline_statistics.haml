@@ -1,0 +1,14 @@
+%ul
+  %li
+    = s_("PipelineCharts|Total:")
+    %strong= n_("1 pipeline", "%d pipelines", @counts[:total]) % @counts[:total]
+  %li
+    = s_("PipelineCharts|Successful:")
+    %strong= n_("1 pipeline", "%d pipelines", @counts[:success]) % @counts[:success]
+  %li
+    = s_("PipelineCharts|Failed:")
+    %strong= n_("1 pipeline", "%d pipelines", @counts[:failed]) % @counts[:failed]
+  %li
+    = s_("PipelineCharts|Success ratio:")
+    %strong
+      #{success_ratio(@counts)}%

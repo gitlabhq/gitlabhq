@@ -1,0 +1,5 @@
+---
+title: Fix linebreak rendering in Mermaid flowcharts
+merge_request: 30730
+author:
+type: fixed
