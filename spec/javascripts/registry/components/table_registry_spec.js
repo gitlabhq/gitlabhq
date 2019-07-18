@@ -8,6 +8,7 @@ const [firstImage, secondImage] = repoPropsData.list;
 describe('table registry', () => {
   let vm;
   let Component;
+  const bulkDeletePath = 'path';
 
   const findDeleteBtn = () => vm.$el.querySelector('.js-delete-registry');
   const findDeleteBtnRow = () => vm.$el.querySelector('.js-delete-registry-row');
@@ -101,7 +102,7 @@ describe('table registry', () => {
         expect(findDeleteBtn().disabled).toBe(false);
 
         findDeleteBtn().click();
-        spyOn(vm, 'deleteItem').and.returnValue(Promise.resolve());
+        spyOn(vm, 'deleteItems').and.returnValue(Promise.resolve());
 
         Vue.nextTick(() => {
           const modal = document.querySelector(`#${vm.modalId}`);
@@ -111,8 +112,10 @@ describe('table registry', () => {
 
           Vue.nextTick(() => {
             expect(vm.itemsToBeDeleted).toEqual([]);
-            expect(vm.deleteItem).toHaveBeenCalledWith(firstImage);
-            expect(vm.deleteItem).toHaveBeenCalledWith(secondImage);
+            expect(vm.deleteItems).toHaveBeenCalledWith({
+              path: bulkDeletePath,
+              items: [firstImage.tag, secondImage.tag],
+            });
             done();
           });
         });
@@ -135,18 +138,21 @@ describe('table registry', () => {
       });
     });
 
-    it('should call deleteItem and reset itemsToBeDeleted when confirming deletion', done => {
+    it('should call deleteItems and reset itemsToBeDeleted when confirming deletion', done => {
       Vue.nextTick(() => {
         expect(vm.itemsToBeDeleted).toEqual([0]);
         expect(findDeleteBtn().disabled).toBe(false);
         findDeleteBtn().click();
-        spyOn(vm, 'deleteItem').and.returnValue(Promise.resolve());
+        spyOn(vm, 'deleteItems').and.returnValue(Promise.resolve());
 
         Vue.nextTick(() => {
           document.querySelector(`#${vm.modalId} .btn-danger`).click();
 
           expect(vm.itemsToBeDeleted).toEqual([]);
-          expect(vm.deleteItem).toHaveBeenCalledWith(firstImage);
+          expect(vm.deleteItems).toHaveBeenCalledWith({
+            path: bulkDeletePath,
+            items: [firstImage.tag],
+          });
           done();
         });
       });
