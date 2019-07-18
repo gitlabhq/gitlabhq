@@ -1,6 +1,6 @@
 %ul.nav-links.new-session-tabs.nav-tabs.nav{ role: 'tablist' }
   %li.nav-item{ role: 'presentation' }
-    %a.nav-link.qa-sign-in-tab.active{ href: '#login-pane', data: { toggle: 'tab' }, role: 'tab' } Sign in
+    %a.nav-link.active{ href: '#login-pane', data: { toggle: 'tab', qa_selector: 'sign_in_tab' }, role: 'tab' } Sign in
   - if allow_signup?
     %li.nav-item{ role: 'presentation' }
-      %a.nav-link.qa-register-tab{ href: '#register-pane', data: { track_label: 'sign_in_register', track_property: '', track_event: 'click_button', track_value: '', toggle: 'tab' }, role: 'tab' } Register
+      %a.nav-link{ href: '#register-pane', data: { track_label: 'sign_in_register', track_property: '', track_event: 'click_button', track_value: '', toggle: 'tab', qa_selector: 'register_tab' }, role: 'tab' } Register

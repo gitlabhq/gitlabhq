@@ -7,12 +7,12 @@
       = f.hidden_field :reset_password_token
       .form-group
         = f.label 'New password', for: "user_password"
-        = f.password_field :password, class: "form-control top qa-password-field", required: true, title: 'This field is required'
+        = f.password_field :password, class: "form-control top", required: true, title: 'This field is required', data: { qa_selector: 'password_field'}
       .form-group
         = f.label 'Confirm new password', for: "user_password_confirmation"
-        = f.password_field :password_confirmation, class: "form-control bottom qa-password-confirmation", title: 'This field is required', required: true
+        = f.password_field :password_confirmation, class: "form-control bottom", title: 'This field is required', data: { qa_selector: 'password_confirmation_field' }, required: true
       .clearfix
-        = f.submit "Change your password", class: "btn btn-primary qa-change-password-button"
+        = f.submit "Change your password", class: "btn btn-primary", data: { qa_selector: 'change_password_button' }
 
 .clearfix.prepend-top-20
   %p
