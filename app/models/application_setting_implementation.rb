@@ -63,6 +63,7 @@ module ApplicationSettingImplementation
         polling_interval_multiplier: 1,
         project_export_enabled: true,
         recaptcha_enabled: false,
+        login_recaptcha_protection_enabled: false,
         repository_checks_enabled: true,
         repository_storages: ['default'],
         require_two_factor_authentication: false,

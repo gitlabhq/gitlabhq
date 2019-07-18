@@ -4175,7 +4175,7 @@ msgstr ""
 msgid "Enable or disable version check and usage ping."
 msgstr ""
 
-msgid "Enable reCAPTCHA or Akismet and set IP limits."
+msgid "Enable reCAPTCHA or Akismet and set IP limits. For reCAPTCHA, we currently only support %{recaptcha_v2_link_start}v2%{recaptcha_v2_link_end}"
 msgstr ""
 
 msgid "Enable shared Runners"
@@ -5416,7 +5416,10 @@ msgstr ""
 msgid "Help page text and support page url."
 msgstr ""
 
-msgid "Helps prevent bots from creating accounts. We currently only support %{recaptcha_v2_link_start}reCAPTCHA v2%{recaptcha_v2_link_end}"
+msgid "Helps prevent bots from brute-force attacks."
+msgstr ""
+
+msgid "Helps prevent bots from creating accounts."
 msgstr ""
 
 msgid "Hide archived projects"

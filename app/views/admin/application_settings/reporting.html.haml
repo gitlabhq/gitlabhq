@@ -9,7 +9,9 @@
     %button.btn.btn-default.js-settings-toggle{ type: 'button' }
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
-      = _('Enable reCAPTCHA or Akismet and set IP limits.')
+      - recaptcha_v2_link_url = 'https://developers.google.com/recaptcha/docs/versions'
+      - recaptcha_v2_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: recaptcha_v2_link_url }
+      = _('Enable reCAPTCHA or Akismet and set IP limits. For reCAPTCHA, we currently only support %{recaptcha_v2_link_start}v2%{recaptcha_v2_link_end}').html_safe % { recaptcha_v2_link_start: recaptcha_v2_link_start, recaptcha_v2_link_end: '</a>'.html_safe }
   .settings-content
     = render 'spam'
 

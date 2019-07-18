@@ -228,6 +228,7 @@ ActiveRecord::Schema.define(version: 2019_07_29_090456) do
     t.boolean "lock_memberships_to_ldap", default: false, null: false
     t.boolean "time_tracking_limit_to_hours", default: false, null: false
     t.string "grafana_url", default: "/-/grafana", null: false
+    t.boolean "login_recaptcha_protection_enabled", default: false, null: false
     t.string "outbound_local_requests_whitelist", limit: 255, default: [], null: false, array: true
     t.integer "raw_blob_request_limit", default: 300, null: false
     t.index ["custom_project_templates_group_id"], name: "index_application_settings_on_custom_project_templates_group_id"
