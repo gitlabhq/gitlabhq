@@ -192,8 +192,6 @@ are listed in the descriptions of the relevant settings.
 | `auto_devops_domain`                     | string           | no                                   | Specify a domain to use by default for every project's Auto Review Apps and Auto Deploy stages. |
 | `auto_devops_enabled`                    | boolean          | no                                   | Enable Auto DevOps for projects by default. It will automatically build, test, and deploy applications based on a predefined CI/CD configuration. |
 | `check_namespace_plan`                   | boolean          | no                                   | **(PREMIUM)** Enabling this will make only licensed EE features available to projects if the project namespace's plan includes the feature or if the project is public. |
-| `clientside_sentry_dsn`                  | string           | required by: `clientside_sentry_enabled` | Clientside Sentry Data Source Name. |
-| `clientside_sentry_enabled`              | boolean          | no                                   | (**If enabled, requires:** `clientside_sentry_dsn`) Enable Sentry error reporting for the client side. |
 | `commit_email_hostname`                  | string           | no                                   | Custom hostname (for private commit emails). |
 | `container_registry_token_expire_delay`  | integer          | no                                   | Container Registry token duration in minutes. |
 | `default_artifacts_expire_in`            | string           | no                                   | Set the default expiration time for each job's artifacts. |
