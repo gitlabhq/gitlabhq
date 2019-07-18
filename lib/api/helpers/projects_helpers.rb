@@ -71,6 +71,7 @@ module API
           :build_timeout,
           :builds_access_level,
           :ci_config_path,
+          :ci_default_git_depth,
           :container_registry_enabled,
           :default_branch,
           :description,
