@@ -3,9 +3,7 @@
 module QA
   context 'Plan' do
     describe 'check xss occurence in @mentions in issues' do
-      let(:issue_title) { 'issue title' }
-
-      it 'user mentions a user in comment' do
+      before do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
         Page::Main::Login.perform(&:sign_in_using_credentials)
 
@@ -25,11 +23,13 @@ module QA
         end
 
         issue = Resource::Issue.fabricate_via_api! do |issue|
-          issue.title = issue_title
+          issue.title = 'issue title'
           issue.project = project
         end
         issue.visit!
+      end
 
+      it 'user mentions a user in comment' do
         Page::Project::Issue::Show.perform do |show_page|
           show_page.select_all_activities_filter
           show_page.comment('cc-ing you here @eve')
