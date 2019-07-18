@@ -838,6 +838,11 @@
     },
     "identifiers": [
       {
+        "type": "flawfinder_func_name",
+        "name": "Flawfinder - char",
+        "value": "char"
+      },
+      {
         "type": "cwe",
         "name": "CWE-119",
         "value": "119",
@@ -870,6 +875,11 @@
     },
     "identifiers": [
       {
+        "type": "flawfinder_func_name",
+        "name": "Flawfinder - fopen",
+        "value": "fopen"
+      },
+      {
         "type": "cwe",
         "name": "CWE-362",
         "value": "362",
@@ -896,6 +906,11 @@
       "start_line": 6
     },
     "identifiers": [
+      {
+        "type": "flawfinder_func_name",
+        "name": "Flawfinder - char",
+        "value": "char"
+      },
       {
         "type": "cwe",
         "name": "CWE-119",
@@ -929,6 +944,11 @@
       "start_line": 7
     },
     "identifiers": [
+      {
+        "type": "flawfinder_func_name",
+        "name": "Flawfinder - strcpy",
+        "value": "strcpy"
+      },
       {
         "type": "cwe",
         "name": "CWE-120",
