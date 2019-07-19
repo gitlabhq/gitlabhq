@@ -23,7 +23,7 @@ user = User.where(id: 1).first
 or
 
 ```bash
-user = User.find_by(email: 'admin@local.host')
+user = User.find_by(email: 'admin@example.com')
 ```
 
 Now you can change your password:
