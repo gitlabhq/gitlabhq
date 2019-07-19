@@ -116,3 +116,8 @@ For more details on the specific data persisted in a project export, see the
 
 1. Click on **Import project** to begin importing. Your newly imported project
    page will appear soon.
+
+NOTE: **Note:**
+If use of the `Internal` visibility level
+[is restricted](../../../public_access/public_access.md#restricting-the-use-of-public-or-internal-projects),
+all imported projects are given the visibility of `Private`.

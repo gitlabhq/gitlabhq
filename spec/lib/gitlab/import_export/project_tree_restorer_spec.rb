@@ -496,6 +496,18 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
       end
     end
 
+    context 'with restricted internal visibility' do
+      describe 'internal project' do
+        let(:visibility) { Gitlab::VisibilityLevel::INTERNAL }
+
+        it 'uses private visibility' do
+          stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::INTERNAL])
+
+          expect(restorer.restored_project.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
+        end
+      end
+    end
+
     context 'with group visibility' do
       before do
         group = create(:group, visibility_level: group_visibility)
@@ -527,6 +539,14 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
 
         it 'uses the group visibility' do
           expect(restorer.restored_project.visibility_level).to eq(group_visibility)
+        end
+
+        context 'with restricted internal visibility' do
+          it 'sets private visibility' do
+            stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::INTERNAL])
+
+            expect(restorer.restored_project.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
+          end
         end
       end
     end
