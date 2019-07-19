@@ -202,8 +202,7 @@ module Gitlab
       def deploy_token_check(login, password)
         return unless password.present?
 
-        token =
-          DeployToken.active.find_by(token: password)
+        token = DeployToken.active.find_by_token(password)
 
         return unless token && login
         return if login != token.username
