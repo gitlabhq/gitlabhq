@@ -43,10 +43,14 @@ export default {
 
     [stateEntry, stagedFile, openFile, changedFile].forEach(f => {
       if (f) {
-        Object.assign(f, convertObjectPropsToCamelCase(data, { dropKeys: ['raw', 'baseRaw'] }), {
-          raw: (stateEntry && stateEntry.raw) || null,
-          baseRaw: null,
-        });
+        Object.assign(
+          f,
+          convertObjectPropsToCamelCase(data, { dropKeys: ['path', 'name', 'raw', 'baseRaw'] }),
+          {
+            raw: (stateEntry && stateEntry.raw) || null,
+            baseRaw: null,
+          },
+        );
       }
     });
   },
