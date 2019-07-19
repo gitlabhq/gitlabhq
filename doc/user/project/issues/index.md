@@ -89,7 +89,7 @@ Key actions for Issues include:
 ![Issue view](img/issues_main_view.png)
 
 On an issue's page, you can view [all aspects of the issue](issue_data_and_actions.md),
-and modify them if you you have the necessary [permissions](../../permissions.md).
+and modify them if you have the necessary [permissions](../../permissions.md).
 
 ### Issues list
 
