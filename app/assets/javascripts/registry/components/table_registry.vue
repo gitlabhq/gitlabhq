@@ -126,14 +126,20 @@ export default {
     showError(message) {
       createFlash(errorMessages[message]);
     },
-    selectAll() {
-      if (!this.selectAllChecked) {
-        this.itemsToBeDeleted = this.repo.list.map((x, idx) => idx);
-        this.selectAllChecked = true;
+    onSelectAllChange() {
+      if (this.selectAllChecked) {
+        this.deselectAll();
       } else {
-        this.itemsToBeDeleted = [];
-        this.selectAllChecked = false;
+        this.selectAll();
       }
+    },
+    selectAll() {
+      this.itemsToBeDeleted = this.repo.list.map((x, idx) => idx);
+      this.selectAllChecked = true;
+    },
+    deselectAll() {
+      this.itemsToBeDeleted = [];
+      this.selectAllChecked = false;
     },
     updateItemsToBeDeleted(idx) {
       const delIdx = this.itemsToBeDeleted.findIndex(x => x === idx);
@@ -162,7 +168,7 @@ export default {
               v-if="repo.canDelete"
               class="js-select-all-checkbox"
               :checked="selectAllChecked"
-              @change="selectAll"
+              @change="onSelectAllChange"
             />
           </th>
           <th>{{ s__('ContainerRegistry|Tag') }}</th>

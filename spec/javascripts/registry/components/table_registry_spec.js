@@ -27,7 +27,8 @@ describe('table registry', () => {
     });
   };
 
-  const toggleSelectAll = () => vm.selectAll();
+  const selectAllCheckboxes = () => vm.selectAll();
+  const deselectAllCheckboxes = () => vm.deselectAll();
 
   beforeEach(() => {
     createComponent();
@@ -58,7 +59,7 @@ describe('table registry', () => {
   describe('multi select', () => {
     it('should support multiselect and selecting a row should enable delete button', done => {
       findSelectAllCheckbox().click();
-      toggleSelectAll();
+      selectAllCheckboxes();
 
       expect(findSelectAllCheckbox().checked).toBe(true);
 
@@ -69,8 +70,7 @@ describe('table registry', () => {
     });
 
     it('selecting all checkbox should select all rows and enable delete button', done => {
-      findSelectAllCheckbox().click();
-      toggleSelectAll();
+      selectAllCheckboxes();
 
       Vue.nextTick(() => {
         const checkedValues = findAllRowCheckboxes().filter(x => x.checked);
@@ -81,9 +81,8 @@ describe('table registry', () => {
     });
 
     it('deselecting select all checkbox should deselect all rows and disable delete button', done => {
-      findSelectAllCheckbox().click();
-      toggleSelectAll(); // Select them all on
-      toggleSelectAll(); // Select them all off
+      selectAllCheckboxes();
+      deselectAllCheckboxes();
 
       Vue.nextTick(() => {
         const checkedValues = findAllRowCheckboxes().filter(x => x.checked);
@@ -94,8 +93,7 @@ describe('table registry', () => {
     });
 
     it('should delete multiple items when multiple items are selected', done => {
-      findSelectAllCheckbox().click();
-      toggleSelectAll();
+      selectAllCheckboxes();
 
       Vue.nextTick(() => {
         expect(vm.itemsToBeDeleted).toEqual([0, 1]);
@@ -177,8 +175,7 @@ describe('table registry', () => {
     });
 
     it('should show the plural title and image count when deleting more than one image', done => {
-      findSelectAllCheckbox().click();
-      toggleSelectAll();
+      selectAllCheckboxes();
 
       Vue.nextTick(() => {
         expect(vm.modalTitle).toBe('Remove images');
