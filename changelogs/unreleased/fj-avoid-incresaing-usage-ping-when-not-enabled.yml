@@ -1,0 +1,5 @@
+---
+title: Avoid increasing redis counters when usage_ping is disabled
+merge_request: 30949
+author:
+type: changed
