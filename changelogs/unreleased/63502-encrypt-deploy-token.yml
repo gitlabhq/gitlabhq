@@ -1,5 +1,5 @@
 ---
-title: Encrypt existing deploy tokens and new ones when storing them
+title: Encrypt existing and new deploy tokens
 merge_request: 30679
 author:
-type: security
+type: other
