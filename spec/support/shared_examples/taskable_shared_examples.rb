@@ -105,4 +105,25 @@ shared_examples 'a Taskable' do
       expect(subject.task_status_short).to match('1 task')
     end
   end
+
+  describe 'with tasks in blockquotes' do
+    before do
+      subject.description = <<-EOT.strip_heredoc
+        > - [ ] Task a
+        > > - [x] Task a.1
+
+        >>>
+        1. [ ] Task 1
+        1. [x] Task 2
+        >>>
+      EOT
+    end
+
+    it 'returns the correct task status' do
+      expect(subject.task_status).to match('2 of')
+      expect(subject.task_status).to match('4 tasks completed')
+      expect(subject.task_status_short).to match('2/')
+      expect(subject.task_status_short).to match('4 tasks')
+    end
+  end
 end
