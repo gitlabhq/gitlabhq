@@ -392,7 +392,7 @@ module Gitlab
         @can_use_disk[storage]
       end
 
-      return cached_value if cached_value.present?
+      return cached_value unless cached_value.nil?
 
       gitaly_filesystem_id = filesystem_id(storage)
       direct_filesystem_id = filesystem_id_from_disk(storage)
