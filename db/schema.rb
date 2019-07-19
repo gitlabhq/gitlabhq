@@ -1126,6 +1126,7 @@ ActiveRecord::Schema.define(version: 2019_08_20_163320) do
     t.string "token_encrypted"
     t.index ["token", "expires_at", "id"], name: "index_deploy_tokens_on_token_and_expires_at_and_id", where: "(revoked IS FALSE)"
     t.index ["token"], name: "index_deploy_tokens_on_token", unique: true
+    t.index ["token_encrypted"], name: "index_deploy_tokens_on_token_encrypted", unique: true
   end
 
   create_table "deployments", id: :serial, force: :cascade do |t|
