@@ -208,7 +208,7 @@ group.
 | Manage group labels                             |       | ✓        | ✓         | ✓          | ✓     |
 | Create project in group                         |       |          | ✓         | ✓          | ✓     |
 | Create/edit/delete group milestones             |       |          | ✓         | ✓          | ✓     |
-| Enable/disable a dependency proxy **[PREMIUM]** |       |          | ✓         | ✓          | ✓     |
+| Enable/disable a dependency proxy **(PREMIUM)** |       |          | ✓         | ✓          | ✓     |
 | Create subgroup                                 |       |          |           | ✓ (1)      | ✓     |
 | Edit group                                      |       |          |           |            | ✓     |
 | Manage group members                            |       |          |           |            | ✓     |
