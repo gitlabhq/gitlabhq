@@ -277,7 +277,7 @@ class Project < ApplicationRecord
   has_many :project_deploy_tokens
   has_many :deploy_tokens, through: :project_deploy_tokens
 
-  has_one :auto_devops, class_name: 'ProjectAutoDevops'
+  has_one :auto_devops, class_name: 'ProjectAutoDevops', inverse_of: :project, autosave: true
   has_many :custom_attributes, class_name: 'ProjectCustomAttribute'
 
   has_many :project_badges, class_name: 'ProjectBadge'
