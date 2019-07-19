@@ -1,6 +1,6 @@
 <script>
 import { __ } from '~/locale';
-/* global ListLabel */
+import ListLabel from '~/boards/models/label';
 import Cookies from 'js-cookie';
 import boardsStore from '../stores/boards_store';
 
@@ -30,12 +30,16 @@ export default {
       });
 
       // Save the labels
-      gl.boardService
+      boardsStore
         .generateDefaultLists()
         .then(res => res.data)
         .then(data => {
           data.forEach(listObj => {
             const list = boardsStore.findList('title', listObj.title);
+
+            if (!list) {
+              return;
+            }
 
             list.id = listObj.id;
             list.label.id = listObj.label.id;
@@ -69,8 +73,7 @@ export default {
         <span
           :style="{ backgroundColor: label.color }"
           class="label-color position-relative d-inline-block rounded"
-        >
-        </span>
+        ></span>
         {{ label.title }}
       </li>
     </ul>
