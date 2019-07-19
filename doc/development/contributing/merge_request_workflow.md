@@ -103,7 +103,8 @@ If you would like quick feedback on your merge request feel free to mention some
 from the [core team](https://about.gitlab.com/community/core-team/) or one of the
 [merge request coaches](https://about.gitlab.com/team/). When having your code reviewed
 and when reviewing merge requests, please keep the [code review guidelines](../code_review.md)
-in mind.
+in mind. And if your code also makes changes to the database, or does expensive queries,
+check the [database review guidelines](../database_review.md).
 
 ### Keep it simple
 

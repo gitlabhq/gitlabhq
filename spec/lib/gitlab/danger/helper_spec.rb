@@ -85,6 +85,20 @@ describe Gitlab::Danger::Helper do
     end
   end
 
+  describe '#markdown_list' do
+    it 'creates a markdown list of items' do
+      items = %w[a b]
+
+      expect(helper.markdown_list(items)).to eq("* `a`\n* `b`")
+    end
+
+    it 'wraps items in <details> when there are more than 10 items' do
+      items = ('a'..'k').to_a
+
+      expect(helper.markdown_list(items)).to match(%r{<details>[^<]+</details>})
+    end
+  end
+
   describe '#changes_by_category' do
     it 'categorizes changed files' do
       expect(fake_git).to receive(:added_files) { %w[foo foo.md foo.rb foo.js db/foo lib/gitlab/database/foo.rb qa/foo ee/changelogs/foo.yml] }
@@ -222,6 +236,22 @@ describe Gitlab::Danger::Helper do
       teammates = helper.new_teammates(usernames)
 
       expect(teammates.map(&:username)).to eq(usernames)
+    end
+  end
+
+  describe '#missing_database_labels' do
+    subject { helper.missing_database_labels(current_mr_labels) }
+
+    context 'when current merge request has ~database::review pending' do
+      let(:current_mr_labels) { ['database::review pending', 'feature'] }
+
+      it { is_expected.to match_array(['database']) }
+    end
+
+    context 'when current merge request does not have ~database::review pending' do
+      let(:current_mr_labels) { ['feature'] }
+
+      it { is_expected.to match_array(['database', 'database::review pending']) }
     end
   end
 end
