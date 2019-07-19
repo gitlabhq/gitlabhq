@@ -695,6 +695,10 @@
         top: -1px;
       }
 
+      .spinner {
+        top: 2px;
+      }
+
       &.play {
         svg {
           left: 2px;
@@ -861,6 +865,7 @@ button.mini-pipeline-graph-dropdown-toggle {
         }
       }
 
+      .spinner,
       svg {
         width: $ci-action-dropdown-svg-size;
         height: $ci-action-dropdown-svg-size;
