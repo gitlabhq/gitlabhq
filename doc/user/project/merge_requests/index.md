@@ -391,6 +391,17 @@ can show the Code Climate report right in the merge request widget area.
 
 [Read more about Code Quality reports.](code_quality.md)
 
+## Metrics Reports **(PREMIUM)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/9788) in [GitLab Premium][products] 11.10.
+Requires GitLab Runner 11.10 and above.
+
+If you are using [GitLab CI][ci], you can configure your job to output custom
+metrics and GitLab will display the Metrics Report on the merge request so
+that it's fast and easy to identify changes to important metrics.
+
+[Read more about Metrics Report](../../../ci/metrics_reports.md).
+
 ## Browser Performance Testing **(PREMIUM)**
 
 > Introduced in [GitLab Premium][products] 10.3.
