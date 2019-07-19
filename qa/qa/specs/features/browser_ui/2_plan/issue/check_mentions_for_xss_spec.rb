@@ -30,12 +30,12 @@ module QA
       end
 
       it 'user mentions a user in comment' do
-        Page::Project::Issue::Show.perform do |show_page|
-          show_page.select_all_activities_filter
-          show_page.comment('cc-ing you here @eve')
+        Page::Project::Issue::Show.perform do |show|
+          show.select_all_activities_filter
+          show.comment('cc-ing you here @eve')
 
           expect do
-            expect(show_page).to have_content("cc-ing you here")
+            expect(show).to have_content("cc-ing you here")
           end.not_to raise_error # Selenium::WebDriver::Error::UnhandledAlertError
         end
       end

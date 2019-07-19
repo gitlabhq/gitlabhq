@@ -14,18 +14,18 @@ module QA
       end
 
       it 'user comments on an issue and edits the comment' do
-        Page::Project::Issue::Show.perform do |issue_show_page|
+        Page::Project::Issue::Show.perform do |show|
           first_version_of_comment = 'First version of the comment'
           second_version_of_comment = 'Second version of the comment'
 
-          issue_show_page.comment(first_version_of_comment)
+          show.comment(first_version_of_comment)
 
-          expect(issue_show_page).to have_content(first_version_of_comment)
+          expect(show).to have_content(first_version_of_comment)
 
-          issue_show_page.edit_comment(second_version_of_comment)
+          show.edit_comment(second_version_of_comment)
 
-          expect(issue_show_page).to have_content(second_version_of_comment)
-          expect(issue_show_page).not_to have_content(first_version_of_comment)
+          expect(show).to have_content(second_version_of_comment)
+          expect(show).not_to have_content(first_version_of_comment)
         end
       end
     end
