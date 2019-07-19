@@ -201,7 +201,15 @@ describe Gitlab::Metrics::Subscribers::RailsCache do
       it 'observes cache metric' do
         expect(subscriber.send(:metric_cache_operation_duration_seconds))
           .to receive(:observe)
-                .with(transaction.labels.merge(operation: :delete), event.duration / 1000.0)
+          .with({ operation: :delete }, event.duration / 1000.0)
+
+        subscriber.observe(:delete, event.duration)
+      end
+
+      it 'increments the operations total' do
+        expect(subscriber.send(:metric_cache_operations_total))
+          .to receive(:increment)
+          .with(transaction.labels.merge(operation: :delete))
 
         subscriber.observe(:delete, event.duration)
       end

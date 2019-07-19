@@ -34,6 +34,9 @@ The following metrics are available:
 | filesystem_writable               | Gauge     | 9.4   | Whether or not the filesystem is writable |
 | filesystem_read_latency_seconds   | Gauge     | 9.4   | Read latency of a specific filesystem |
 | filesystem_readable               | Gauge     | 9.4   | Whether or not the filesystem is readable |
+| gitlab_cache_misses_total         | Counter   | 10.2  | Cache read miss |
+| gitlab_cache_operation_duration_seconds | Histogram   | 10.2  | Cache access time |
+| gitlab_cache_operations_total     | Counter   | 12.2  | Cache operations by controller/action |
 | http_requests_total               | Counter   | 9.4   | Rack request count |
 | http_request_duration_seconds     | Histogram | 9.4   | HTTP response time from rack middleware |
 | pipelines_created_total           | Counter   | 9.4   | Counter of pipelines created |

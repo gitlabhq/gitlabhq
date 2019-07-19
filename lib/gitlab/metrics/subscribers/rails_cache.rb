@@ -50,7 +50,8 @@ module Gitlab
         def observe(key, duration)
           return unless current_transaction
 
-          metric_cache_operation_duration_seconds.observe(current_transaction.labels.merge({ operation: key }), duration / 1000.0)
+          metric_cache_operations_total.increment(current_transaction.labels.merge({ operation: key }))
+          metric_cache_operation_duration_seconds.observe({ operation: key }, duration / 1000.0)
           current_transaction.increment(:cache_duration, duration, false)
           current_transaction.increment(:cache_count, 1, false)
           current_transaction.increment("cache_#{key}_duration".to_sym, duration, false)
@@ -63,12 +64,20 @@ module Gitlab
           Transaction.current
         end
 
+        def metric_cache_operations_total
+          @metric_cache_operations_total ||= ::Gitlab::Metrics.counter(
+            :gitlab_cache_operations_total,
+            'Cache operations',
+            Transaction::BASE_LABELS
+          )
+        end
+
         def metric_cache_operation_duration_seconds
           @metric_cache_operation_duration_seconds ||= ::Gitlab::Metrics.histogram(
             :gitlab_cache_operation_duration_seconds,
             'Cache access time',
-            Transaction::BASE_LABELS.merge({ action: nil }),
-            [0.001, 0.01, 0.1, 1, 10]
+            {},
+            [0.00001, 0.0001, 0.001, 0.01, 0.1, 1.0]
           )
         end
 
