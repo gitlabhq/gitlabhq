@@ -116,9 +116,9 @@ end
 Below are the steps that the test covers:
 
 1. The test finds the 'Edit' link for the labels and clicks on it.
-2. Then it fills in the 'Assign labels' input field with the value 'animal::dolphin' and press enters.
-3. Then it clicks in the content body to apply the label and refreshes the page.
-4. Finally, the expectations check that the previous scoped label was removed and that the new one was added.
+1. Then it fills in the 'Assign labels' input field with the value 'animal::dolphin' and press enters.
+1. Then it clicks in the content body to apply the label and refreshes the page.
+1. Finally, the expectations check that the previous scoped label was removed and that the new one was added.
 
 Let's now see how the second test case would look.
 
@@ -144,9 +144,9 @@ end
 Below are the steps that the test covers:
 
 1. The test finds the 'Edit' link for the labels and clicks on it.
-2. Then it fills in the 'Assign labels' input field with the value 'plant::orchid' and press enters.
-3. Then it clicks in the content body to apply the label and refreshes the page.
-4. Finally, the expectations check that both scoped labels are present.
+1. Then it fills in the 'Assign labels' input field with the value 'plant::orchid' and press enters.
+1. Then it clicks in the content body to apply the label and refreshes the page.
+1. Finally, the expectations check that both scoped labels are present.
 
 > Similar to the previous test, this one is also very straightforward, but there is some code duplication. Let's address it.
 
@@ -290,7 +290,7 @@ As already mentioned in the [best practices](best_practices.md) document, end-to
 Some improvements that we could make in our test suite to optimize its time to run are:
 
 1. Having a single test case (an `it` block) that exercises both scenarios to avoid "wasting" time in the tests' pre-conditions, instead of having two different test cases.
-2. Making the selection of labels more performant by allowing for the selection of more than one label in the same reusable method.
+1. Making the selection of labels more performant by allowing for the selection of more than one label in the same reusable method.
 
 Let's look at a suggestion that addresses the above points, one by one:
 
@@ -332,8 +332,8 @@ To address point 1, we changed the test implementation from two `it` blocks into
 > Notice that the implementation of the new and unique `it` block had to change a little bit. Below we describe in details what it does.
 
 1. It selects two scoped labels simultaneously, one from the same scope of the one already applied in the issue during the setup phase (in the `before` block), and another one from a different scope.
-2. It asserts that the correct labels are visible in the `labels_block`, and that the labels were correctly added and removed;
-3. Finally, the `select_label_and_refresh` method is changed to `select_labels_and_refresh`, which accepts an array of labels instead of a single label, and it iterates on them for faster label selection (this is what is used in step 1 explained above.)
+1. It asserts that the correct labels are visible in the `labels_block`, and that the labels were correctly added and removed;
+1. Finally, the `select_label_and_refresh` method is changed to `select_labels_and_refresh`, which accepts an array of labels instead of a single label, and it iterates on them for faster label selection (this is what is used in step 1 explained above.)
 
 ### 7. Resources
 
@@ -542,9 +542,9 @@ end
 Notice that we have not only moved the `select_labels_and_refresh` method, but we have also changed its implementation to:
 
 1. Click the `:edit_link_labels` element previously defined, instead of using `find('.block.labels .edit-link').click`
-2. Use `within_element(:dropdown_menu_labels, text: label)`, and inside of it, we call `send_keys_to_element(:dropdown_input_field, [label, :enter])`, which is a method that we will implement in the `QA::Page::Base` class to replace `find('.dropdown-menu-labels .dropdown-input-field').send_keys [label, :enter]`
-3. Use `click_body` after iterating on each label, instead of using `find('#content-body').click`
-4. Iterate on every label again, and then we use `has_element?(:labels_block, text: label)` after clicking the page body (which applies the labels), and before refreshing the page, to avoid test flakiness due to refreshing too fast.
+1. Use `within_element(:dropdown_menu_labels, text: label)`, and inside of it, we call `send_keys_to_element(:dropdown_input_field, [label, :enter])`, which is a method that we will implement in the `QA::Page::Base` class to replace `find('.dropdown-menu-labels .dropdown-input-field').send_keys [label, :enter]`
+1. Use `click_body` after iterating on each label, instead of using `find('#content-body').click`
+1. Iterate on every label again, and then we use `has_element?(:labels_block, text: label)` after clicking the page body (which applies the labels), and before refreshing the page, to avoid test flakiness due to refreshing too fast.
 
 ##### Details of `text_of_labels_block`
 

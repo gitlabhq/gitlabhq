@@ -193,7 +193,7 @@ group, as opposed to the full DN.
 to lock down user abilities to invite new members to a group. When enabled following happens:
 
 1. Only administrator can manage memberships of any group including access levels.
-2. Users are not allowed to share project with other groups or invite members to a project created in a group.
+1. Users are not allowed to share project with other groups or invite members to a project created in a group.
 
 ## Adjusting LDAP user sync schedule
 

@@ -267,7 +267,7 @@ piece of code is worth optimizing. The only two things you can do are:
 1. Think about what the code does, how it's used, how many times it's called and
    how much time is spent in it relative to the total execution time (e.g., the
    total time spent in a web request).
-2. Ask others (preferably in the form of an issue).
+1. Ask others (preferably in the form of an issue).
 
 Some examples of changes that aren't really important/worth the effort:
 
@@ -285,10 +285,10 @@ directly in a web request as much as possible. This has numerous benefits such
 as:
 
 1. An error won't prevent the request from completing.
-2. The process being slow won't affect the loading time of a page.
-3. In case of a failure it's easy to re-try the process (Sidekiq takes care of
+1. The process being slow won't affect the loading time of a page.
+1. In case of a failure it's easy to re-try the process (Sidekiq takes care of
    this automatically).
-4. By isolating the code from a web request it will hopefully be easier to test
+1. By isolating the code from a web request it will hopefully be easier to test
    and maintain.
 
 It's especially important to use Sidekiq as much as possible when dealing with

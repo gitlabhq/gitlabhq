@@ -5,12 +5,12 @@
 1. **You talk about Frontend FAQ.**
    Please share links to it whenever applicable, so more eyes catch when content
    gets outdated.
-2. **Keep it short and simple.**
+1. **Keep it short and simple.**
    Whenever an answer needs more than two sentences it does not belong here.
-3. **Provide background when possible.**
+1. **Provide background when possible.**
    Linking to relevant source code, issue / epic, or other documentation helps
    to understand the answer.
-4. **If you see something, do something.**
+1. **If you see something, do something.**
    Please remove or update any content that is outdated as soon as you see it.
 
 ## FAQ

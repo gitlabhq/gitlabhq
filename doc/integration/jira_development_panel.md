@@ -59,7 +59,7 @@ There are no special requirements if you are using GitLab.com.
     ![GitLab Application setup](img/jira_dev_panel_gl_setup_1.png)
     - Check `api` in the Scopes section.
 
-2. Click `Save application`. You will see the generated 'Application Id' and 'Secret' values.
+1. Click `Save application`. You will see the generated 'Application Id' and 'Secret' values.
     Copy these values that you will use on the Jira configuration side.
 
 ## Jira Configuration
@@ -70,7 +70,7 @@ There are no special requirements if you are using GitLab.com.
 
     ![Jira DVCS from Dashboard](img/jira_dev_panel_jira_setup_1.png)
 
-2. Complete the form
+1. Complete the form
 
     Select GitHub Enterprise for the `Host` field.
 
@@ -92,7 +92,7 @@ There are no special requirements if you are using GitLab.com.
 
     Ensure that the rest of the checkboxes are checked.
 
-3. Click `Add` to complete and create the integration.
+1. Click `Add` to complete and create the integration.
 
     Jira takes up to a few minutes to know about (import behind the scenes) all the commits and branches
     for all the projects in the GitLab group you specified in the previous step. These are refreshed

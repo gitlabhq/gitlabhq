@@ -143,7 +143,7 @@ Which brings us to the exciting part: how do we run this in GitLab CI/CD? There 
 need to do for this:
 
 1. Set up [CI/CD jobs](../../yaml/README.md#introduction) that actually have a browser available.
-2. Update our WebdriverIO configuration to use those browsers to visit the review apps.
+1. Update our WebdriverIO configuration to use those browsers to visit the review apps.
 
 For the scope of this article, we've defined an additional [CI/CD stage](../../yaml/README.md#stages)
 `confidence-check` that is executed _after_ the stage that deploys the review app. It uses the `node:latest` [Docker

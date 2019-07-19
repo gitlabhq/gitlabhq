@@ -14,7 +14,7 @@ it should be restricted on namespace scope.
 1. Add the feature symbol on `EES_FEATURES`, `EEP_FEATURES` or `EEU_FEATURES` constants in
   `ee/app/models/license.rb`. Note on `ee/app/models/ee/namespace.rb` that _Bronze_ GitLab.com
   features maps to on-premise _EES_, _Silver_ to _EEP_ and _Gold_ to _EEU_.
-2. Check using:
+1. Check using:
 
 ```ruby
 project.feature_available?(:feature_symbol)
@@ -29,8 +29,8 @@ the instance license.
 
 1. Add the feature symbol on `EES_FEATURES`, `EEP_FEATURES` or `EEU_FEATURES` constants in
   `ee/app/models/license.rb`.
-2. Add the same feature symbol to `GLOBAL_FEATURES`
-3. Check using:
+1. Add the same feature symbol to `GLOBAL_FEATURES`
+1. Check using:
 
 ```ruby
 License.feature_available?(:feature_symbol)

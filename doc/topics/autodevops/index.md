@@ -789,11 +789,11 @@ To configure your application variables:
 1. Go to your project's **Settings > CI/CD**, then expand the section
    called **Variables**.
 
-2. Create a CI Variable, ensuring the key is prefixed with
+1. Create a CI Variable, ensuring the key is prefixed with
    `K8S_SECRET_`. For example, you can create a variable with key
 `K8S_SECRET_RAILS_MASTER_KEY`.
 
-3. Run an Auto Devops pipeline either by manually creating a new
+1. Run an Auto Devops pipeline either by manually creating a new
    pipeline or by pushing a code change to GitLab.
 
 Auto DevOps pipelines will take your application secret variables to

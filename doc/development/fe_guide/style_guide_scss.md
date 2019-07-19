@@ -35,7 +35,7 @@ New utility classes should be added to [`utilities.scss`](https://gitlab.com/git
 We recommend a "utility-first" approach.
 
 1. Start with utility classes.
-2. If composing utility classes into a component class removes code duplication and encapsulates a clear responsibility, do it.
+1. If composing utility classes into a component class removes code duplication and encapsulates a clear responsibility, do it.
 
 This encourages an organic growth of component classes and prevents the creation of one-off unreusable classes. Also, the kind of classes that emerge from "utility-first" tend to be design-centered (e.g. `.button`, `.alert`, `.card`) rather than domain-centered (e.g. `.security-report-widget`, `.commit-header-icon`).
 

@@ -229,8 +229,8 @@ meaning that we want to bump the version up in the next version (or patch releas
 For example:
 
 1. Add rename to `RelationRenameService` in X.Y
-2. Remove it from `RelationRenameService` in X.Y + 1
-3. Bump Import/Export version in X.Y + 1
+1. Remove it from `RelationRenameService` in X.Y + 1
+1. Bump Import/Export version in X.Y + 1
 
 ```ruby
 module Gitlab
