@@ -44,9 +44,7 @@ export default {
 };
 </script>
 <template>
-  <div
-    class="report-block-list-issue report-block-list-issue-parent justify-content-center align-items-center"
-  >
+  <div class="report-block-list-issue report-block-list-issue-parent align-items-center">
     <div class="report-block-list-icon append-right-default">
       <gl-loading-icon
         v-if="statusIcon === 'loading'"

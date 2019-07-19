@@ -45,7 +45,7 @@ export default {
 <template>
   <li
     :class="{ 'is-dismissed': issue.isDismissed }"
-    class="report-block-list-issue justify-content-center align-items-center"
+    class="report-block-list-issue align-items-center"
   >
     <issue-status-icon
       v-if="showReportSectionStatusIcon"
