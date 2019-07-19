@@ -4,6 +4,8 @@ module Gitlab
   module UsageDataCounters
     module RedisCounter
       def increment(redis_counter_key)
+        return unless Gitlab::CurrentSettings.usage_ping_enabled
+
         Gitlab::Redis::SharedState.with { |redis| redis.incr(redis_counter_key) }
       end
 
