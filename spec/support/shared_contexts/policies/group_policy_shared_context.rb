@@ -20,8 +20,8 @@ RSpec.shared_context 'GroupPolicy context' do
   let(:developer_permissions) { [:admin_milestone] }
   let(:maintainer_permissions) do
     %i[
-      create_projects read_cluster create_cluster update_cluster
-      admin_cluster add_cluster
+      create_projects
+      read_cluster create_cluster update_cluster admin_cluster add_cluster
     ]
   end
   let(:owner_permissions) do
