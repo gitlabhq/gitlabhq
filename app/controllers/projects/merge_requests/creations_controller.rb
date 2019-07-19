@@ -23,6 +23,8 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
     @merge_request = ::MergeRequests::CreateService.new(project, current_user, merge_request_params).execute
 
     if @merge_request.valid?
+      incr_count_webide_merge_request
+
       redirect_to(merge_request_path(@merge_request))
     else
       @source_project = @merge_request.source_project
@@ -134,5 +136,11 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
 
   def whitelist_query_limiting
     Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42384')
+  end
+
+  def incr_count_webide_merge_request
+    return if params[:nav_source] != 'webide'
+
+    Gitlab::UsageDataCounters::WebIdeCounter.increment_merge_requests_count
   end
 end

@@ -57,10 +57,20 @@ describe Gitlab::UsageData do
         gitaly
         database
         avg_cycle_analytics
+        web_ide_views
         web_ide_commits
+        web_ide_merge_requests
         influxdb_metrics_enabled
         prometheus_metrics_enabled
       ))
+    end
+
+    it 'calls expected usage data methods' do
+      expect(Gitlab::UsageDataCounters::WebIdeCounter).to receive(:total_commits_count)
+      expect(Gitlab::UsageDataCounters::WebIdeCounter).to receive(:total_merge_requests_count)
+      expect(Gitlab::UsageDataCounters::WebIdeCounter).to receive(:total_views_count)
+
+      subject
     end
 
     it "gathers usage counts" do

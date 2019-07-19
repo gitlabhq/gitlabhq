@@ -212,4 +212,46 @@ describe Projects::MergeRequests::CreationsController do
       expect(response).to have_gitlab_http_status(200)
     end
   end
+
+  describe 'POST create' do
+    let(:params) do
+      {
+        namespace_id: fork_project.namespace.to_param,
+        project_id: fork_project,
+        merge_request: {
+          title: 'Test merge request',
+          source_branch: 'remove-submodule',
+          target_branch: 'master'
+        }
+      }
+    end
+
+    it 'creates merge request' do
+      expect do
+        post_request(params)
+      end.to change { MergeRequest.count }.by(1)
+    end
+
+    context 'when the merge request is not created from the web ide' do
+      it 'counter is not increased' do
+        expect(Gitlab::UsageDataCounters::WebIdeCounter).not_to receive(:increment_merge_requests_count)
+
+        post_request(params)
+      end
+    end
+
+    context 'when the merge request is created from the web ide' do
+      let(:nav_source) { { nav_source: 'webide' } }
+
+      it 'counter is increased' do
+        expect(Gitlab::UsageDataCounters::WebIdeCounter).to receive(:increment_merge_requests_count)
+
+        post_request(params.merge(nav_source))
+      end
+    end
+
+    def post_request(merge_request_params)
+      post :create, params: merge_request_params
+    end
+  end
 end
