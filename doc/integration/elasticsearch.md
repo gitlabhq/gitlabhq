@@ -354,6 +354,8 @@ There are several rake tasks available to you via the command line:
   - Does the same thing as `sudo gitlab-rake gitlab:elastic:create_empty_index`
 - [sudo gitlab-rake gitlab:elastic:index_snippets](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/ee/lib/tasks/gitlab/elastic.rake)
   - Performs an Elasticsearch import that indexes the snippets data.
+- [sudo gitlab-rake gitlab:elastic:projects_not_indexed](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/ee/lib/tasks/gitlab/elastic.rake)
+  - Displays which projects are not indexed.
 
 ### Environment Variables
 
@@ -468,6 +470,10 @@ Here are some common pitfalls and how to overcome them:
 - **The indexing process is taking a very long time**
 
   The more data present in your GitLab instance, the longer the indexing process takes.
+
+- **There are some projects that weren't indexed, but we don't know which ones**
+
+  You can run `sudo gitlab-rake gitlab:elastic:projects_not_indexed` to display projects that aren't indexed.
 
 - **No new data is added to the Elasticsearch index when I push code**
 
