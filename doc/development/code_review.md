@@ -62,6 +62,7 @@ from teams other than your own.
    **approved by a [backend maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab-ce_maintainers_backend)**.
 1. If your merge request includes database migrations or changes to expensive queries [^2], it must be
    **approved by a [database maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab-ce_maintainers_database)**.
+   Read the [database review guidelines](database_review.md) for more details.
 1. If your merge request includes frontend changes [^1], it must be
    **approved by a [frontend maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab-ce_maintainers_frontend)**.
 1. If your merge request includes UX changes [^1], it must be

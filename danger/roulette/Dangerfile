@@ -55,21 +55,14 @@ def spin_for_category(team, project, category, branch_name)
   "| #{helper.label_for_category(category)} | #{reviewer&.markdown_name || NO_REVIEWER} | #{maintainer&.markdown_name || NO_MAINTAINER} |"
 end
 
-def build_list(items)
-  list = items.map { |filename| "* `#{filename}`" }.join("\n")
-
-  if items.size > 10
-    "\n<details>\n\n#{list}\n\n</details>"
-  else
-    list
-  end
-end
-
 changes = helper.changes_by_category
 
 # Ignore any files that are known but uncategorized. Prompt for any unknown files
 changes.delete(:none)
 categories = changes.keys - [:unknown]
+
+# Ensure to spin for database reviewer/maintainer when ~database is applied (e.g. to review SQL queries)
+categories << :database if gitlab.mr_labels.include?('database') && !categories.include?(:database)
 
 # Single codebase MRs are reviewed using a slightly different process, so we
 # disable the review roulette for such MRs.
@@ -95,5 +88,5 @@ if changes.any? && !gitlab.mr_labels.include?('single codebase') && !gitlab.mr_l
 
   markdown(MESSAGE)
   markdown(CATEGORY_TABLE_HEADER + rows.join("\n")) unless rows.empty?
-  markdown(UNKNOWN_FILES_MESSAGE + build_list(unknown)) unless unknown.empty?
+  markdown(UNKNOWN_FILES_MESSAGE + helper.markdown_list(unknown)) unless unknown.empty?
 end

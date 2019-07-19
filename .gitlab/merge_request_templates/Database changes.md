@@ -39,20 +39,11 @@ When adding tables:
 
 - [ ] Ordered columns based on the [Ordering Table Columns](https://docs.gitlab.com/ee/development/ordering_table_columns.html#ordering-table-columns) guidelines
 - [ ] Added foreign keys to any columns pointing to data in other tables
-- [ ] Added indexes for fields that are used in statements such as WHERE, ORDER BY, GROUP BY, and JOINs
+- [ ] Added indexes for fields that are used in statements such as `WHERE`, `ORDER BY`, `GROUP BY`, and `JOIN`s
 
 When removing columns, tables, indexes or other structures:
 
 - [ ] Removed these in a post-deployment migration
 - [ ] Made sure the application no longer uses (or ignores) these structures
 
-## General checklist
-
-- [ ] [Changelog entry](https://docs.gitlab.com/ee/development/changelog.html) added, if necessary
-- [ ] [Documentation created/updated](https://docs.gitlab.com/ee/development/documentation/)
-- [ ] [Tests added for this feature/bug](https://docs.gitlab.com/ee/development/testing_guide/index.html)
-- [ ] Conforms to the [code review guidelines](https://docs.gitlab.com/ee/development/code_review.html)
-- [ ] Conforms to the [merge request performance guidelines](https://docs.gitlab.com/ee/development/merge_request_performance_guidelines.html)
-- [ ] Conforms to the [style guides](https://docs.gitlab.com/ee/development/contributing/style_guides.html)
-
-/label ~database
+/label ~database ~"database::review pending"
