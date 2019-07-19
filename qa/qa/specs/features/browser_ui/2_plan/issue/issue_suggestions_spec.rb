@@ -5,7 +5,7 @@ module QA
     describe 'issue suggestions' do
       let(:issue_title) { 'Issue Lists are awesome' }
 
-      it 'user sees issue suggestions when creating a new issue' do
+      before do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
         Page::Main::Login.perform(&:sign_in_using_credentials)
 
@@ -20,7 +20,9 @@ module QA
         end
 
         project.visit!
+      end
 
+      it 'user sees issue suggestions when creating a new issue' do
         Page::Project::Show.perform(&:go_to_new_issue)
         Page::Project::Issue::New.perform do |new_issue_page|
           new_issue_page.add_title("issue")
