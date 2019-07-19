@@ -349,6 +349,9 @@ Note that `force_random_password` and `reset_password` take priority
 over `password`. In addition, `reset_password` and
 `force_random_password` can be used together.
 
+NOTE: **Note:**
+From [GitLab 12.1](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/29888/), `private_profile` will default to `false`.
+
 ```
 POST /users
 ```
