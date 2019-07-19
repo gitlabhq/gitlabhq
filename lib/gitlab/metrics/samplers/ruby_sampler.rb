@@ -7,7 +7,7 @@ module Gitlab
     module Samplers
       class RubySampler < BaseSampler
         def initialize(interval)
-          metrics[:process_start_time_seconds].set(labels.merge(worker_label), Time.now.to_i)
+          metrics[:process_start_time_seconds].set(labels, Time.now.to_i)
 
           super
         end
@@ -50,9 +50,9 @@ module Gitlab
         def sample
           start_time = System.monotonic_time
 
-          metrics[:file_descriptors].set(labels.merge(worker_label), System.file_descriptor_count)
-          metrics[:process_cpu_seconds_total].set(labels.merge(worker_label), ::Gitlab::Metrics::System.cpu_time)
-          metrics[:process_max_fds].set(labels.merge(worker_label), ::Gitlab::Metrics::System.max_open_file_descriptors)
+          metrics[:file_descriptors].set(labels, System.file_descriptor_count)
+          metrics[:process_cpu_seconds_total].set(labels, ::Gitlab::Metrics::System.cpu_time)
+          metrics[:process_max_fds].set(labels, ::Gitlab::Metrics::System.max_open_file_descriptors)
           set_memory_usage_metrics
           sample_gc
 
@@ -75,22 +75,9 @@ module Gitlab
 
         def set_memory_usage_metrics
           memory_usage = System.memory_usage
-          memory_labels = labels.merge(worker_label)
 
-          metrics[:memory_bytes].set(memory_labels, memory_usage)
-          metrics[:process_resident_memory_bytes].set(memory_labels, memory_usage)
-        end
-
-        def worker_label
-          return { worker: 'sidekiq' } if Sidekiq.server?
-          return {} unless defined?(Unicorn::Worker)
-
-          worker_no = ::Prometheus::Client::Support::Unicorn.worker_id
-          if worker_no
-            { worker: worker_no }
-          else
-            { worker: 'master' }
-          end
+          metrics[:memory_bytes].set(labels, memory_usage)
+          metrics[:process_resident_memory_bytes].set(labels, memory_usage)
         end
       end
     end
