@@ -1,0 +1,6 @@
+---
+title: Change BoardService in favor of boardsStore on board blank state of the component
+  board
+merge_request: 30546
+author: eduarmreyes
+type: other

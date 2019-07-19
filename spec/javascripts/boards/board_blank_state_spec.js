@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import boardsStore from '~/boards/stores/boards_store';
 import BoardBlankState from '~/boards/components/board_blank_state.vue';
-import { mockBoardService } from './mock_data';
 
 describe('Boards blank state', () => {
   let vm;
@@ -11,9 +10,10 @@ describe('Boards blank state', () => {
     const Comp = Vue.extend(BoardBlankState);
 
     boardsStore.create();
-    gl.boardService = mockBoardService();
 
-    spyOn(gl.boardService, 'generateDefaultLists').and.callFake(
+    spyOn(boardsStore, 'addList').and.stub();
+    spyOn(boardsStore, 'removeList').and.stub();
+    spyOn(boardsStore, 'generateDefaultLists').and.callFake(
       () =>
         new Promise((resolve, reject) => {
           if (fail) {
@@ -71,9 +71,14 @@ describe('Boards blank state', () => {
     vm.$el.querySelector('.btn-success').click();
 
     setTimeout(() => {
-      expect(boardsStore.state.lists.length).toBe(2);
-      expect(boardsStore.state.lists[0].title).toEqual('To Do');
-      expect(boardsStore.state.lists[1].title).toEqual('Doing');
+      expect(boardsStore.addList).toHaveBeenCalledTimes(2);
+      expect(boardsStore.addList).toHaveBeenCalledWith(
+        jasmine.objectContaining({ title: 'To Do' }),
+      );
+
+      expect(boardsStore.addList).toHaveBeenCalledWith(
+        jasmine.objectContaining({ title: 'Doing' }),
+      );
 
       done();
     });
@@ -86,7 +91,7 @@ describe('Boards blank state', () => {
 
     setTimeout(() => {
       expect(boardsStore.welcomeIsHidden()).toBeFalsy();
-      expect(boardsStore.state.lists.length).toBe(1);
+      expect(boardsStore.removeList).toHaveBeenCalledWith(undefined, 'label');
 
       done();
     });
