@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 describe Gitlab::Kubernetes::KubeClient do
+  include StubRequests
   include KubernetesHelpers
 
   let(:api_url) { 'https://kubernetes.example.com/prefix' }
@@ -12,6 +13,17 @@ describe Gitlab::Kubernetes::KubeClient do
 
   before do
     stub_kubeclient_discover(api_url)
+  end
+
+  def method_call(client, method_name)
+    case method_name
+    when /\A(get_|delete_)/
+      client.public_send(method_name)
+    when /\A(create_|update_)/
+      client.public_send(method_name, {})
+    else
+      raise "Unknown method name #{method_name}"
+    end
   end
 
   shared_examples 'a Kubeclient' do
@@ -25,28 +37,30 @@ describe Gitlab::Kubernetes::KubeClient do
   end
 
   shared_examples 'redirection not allowed' do |method_name|
-    before do
-      redirect_url = 'https://not-under-our-control.example.com/api/v1/pods'
+    context 'api_url is redirected' do
+      before do
+        redirect_url = 'https://not-under-our-control.example.com/api/v1/pods'
 
-      stub_request(:get, %r{\A#{api_url}/})
-        .to_return(status: 302, headers: { location: redirect_url })
+        stub_request(:get, %r{\A#{api_url}/})
+          .to_return(status: 302, headers: { location: redirect_url })
 
-      stub_request(:get, redirect_url)
-        .to_return(status: 200, body: '{}')
-    end
-
-    it 'does not follow redirects' do
-      method_call = -> do
-        case method_name
-        when /\A(get_|delete_)/
-          client.public_send(method_name)
-        when /\A(create_|update_)/
-          client.public_send(method_name, {})
-        else
-          raise "Unknown method name #{method_name}"
-        end
+        stub_request(:get, redirect_url)
+          .to_return(status: 200, body: '{}')
       end
-      expect { method_call.call }.to raise_error(Kubeclient::HttpError)
+
+      it 'does not follow redirects' do
+        expect { method_call(client, method_name) }.to raise_error(Kubeclient::HttpError)
+      end
+    end
+  end
+
+  shared_examples 'dns rebinding not allowed' do |method_name|
+    it 'does not allow DNS rebinding' do
+      stub_dns(api_url, ip_address: '8.8.8.8')
+      client
+
+      stub_dns(api_url, ip_address: '192.168.2.120')
+      expect { method_call(client, method_name) }.to raise_error(ArgumentError, /is blocked/)
     end
   end
 
@@ -160,6 +174,7 @@ describe Gitlab::Kubernetes::KubeClient do
     ].each do |method|
       describe "##{method}" do
         include_examples 'redirection not allowed', method
+        include_examples 'dns rebinding not allowed', method
 
         it 'delegates to the core client' do
           expect(client).to delegate_method(method).to(:core_client)
@@ -185,6 +200,7 @@ describe Gitlab::Kubernetes::KubeClient do
     ].each do |method|
       describe "##{method}" do
         include_examples 'redirection not allowed', method
+        include_examples 'dns rebinding not allowed', method
 
         it 'delegates to the rbac client' do
           expect(client).to delegate_method(method).to(:rbac_client)
@@ -203,6 +219,7 @@ describe Gitlab::Kubernetes::KubeClient do
 
     describe '#get_deployments' do
       include_examples 'redirection not allowed', 'get_deployments'
+      include_examples 'dns rebinding not allowed', 'get_deployments'
 
       it 'delegates to the extensions client' do
         expect(client).to delegate_method(:get_deployments).to(:extensions_client)
