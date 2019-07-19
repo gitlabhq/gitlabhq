@@ -113,37 +113,6 @@ compile-assets pull-cache:
       - master@gitlab-org/gitlab-ee
       - /(^docs[\/-].*|.*-docs$)/
 
-gitlab:ui:visual:
-  extends: .dedicated-runner
-  before_script: []
-  allow_failure: true
-  dependencies:
-    - compile-assets
-    - compile-assets pull-cache
-  script:
-    # Remove node modules from GitLab that may conflict with gitlab-ui
-    - rm -r node_modules
-    - git clone https://gitlab.com/gitlab-org/gitlab-ui.git
-    - cp public/assets/application-*.css gitlab-ui/styles/application.css
-    - cd gitlab-ui
-    - yarn install
-    - CSS_URL=./application.css yarn test
-  only:
-    changes:
-      - app/assets/stylesheets/*.scss
-      - app/assets/stylesheets/**/*.scss
-      - app/assets/stylesheets/**/**/*.scss
-  except:
-    refs:
-      - /(^docs[\/-].*|.*-docs$)/
-      - master
-    variables:
-      - $CI_COMMIT_MESSAGE =~ /\[skip visual\]/i
-  artifacts:
-    paths:
-      - gitlab-ui/tests/__image_snapshots__/
-    when: always
-
 karma:
   extends: .dedicated-no-docs-pull-cache-job
   <<: *use-pg
