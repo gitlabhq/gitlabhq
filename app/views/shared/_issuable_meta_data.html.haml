@@ -1,7 +1,7 @@
 - note_count         = @issuable_meta_data[issuable.id].user_notes_count
 - issue_votes        = @issuable_meta_data[issuable.id]
 - upvotes, downvotes = issue_votes.upvotes, issue_votes.downvotes
-- issuable_url       = @collection_type == "Issue" ? issue_path(issuable, anchor: 'notes') : merge_request_path(issuable, anchor: 'notes')
+- issuable_path      = issuable_path(issuable, anchor: 'notes')
 - issuable_mr        = @issuable_meta_data[issuable.id].merge_requests_count(current_user)
 
 - if issuable_mr > 0
@@ -20,6 +20,6 @@
     = downvotes
 
 %li.issuable-comments.d-none.d-sm-block
-  = link_to issuable_url, class: ['has-tooltip', ('no-comments' if note_count.zero?)], title: _('Comments') do
+  = link_to issuable_path, class: ['has-tooltip', ('no-comments' if note_count.zero?)], title: _('Comments') do
     = icon('comments')
     = note_count
