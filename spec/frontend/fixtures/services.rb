@@ -6,12 +6,12 @@ describe Projects::ServicesController, '(JavaScript fixtures)', type: :controlle
   let(:admin)     { create(:admin) }
   let(:namespace) { create(:namespace, name: 'frontend-fixtures' )}
   let(:project)   { create(:project_empty_repo, namespace: namespace, path: 'services-project') }
-  let!(:service)  { create(:prometheus_service, project: project) }
+  let!(:service)  { create(:custom_issue_tracker_service, project: project, title: 'Custom Issue Tracker') }
 
   render_views
 
   before(:all) do
-    clean_frontend_fixtures('services/prometheus')
+    clean_frontend_fixtures('services/')
   end
 
   before do
@@ -22,13 +22,13 @@ describe Projects::ServicesController, '(JavaScript fixtures)', type: :controlle
     remove_repository(project)
   end
 
-  it 'services/prometheus/prometheus_service.html' do
+  it 'services/edit_service.html' do
     get :edit, params: {
       namespace_id: namespace,
       project_id: project,
       id: service.to_param
     }
 
-    expect(response).to be_success
+    expect(response).to be_successful
   end
 end

@@ -21,6 +21,6 @@ describe Admin::AbuseReportsController, '(JavaScript fixtures)', type: :controll
   it 'abuse_reports/abuse_reports_list.html' do
     get :index
 
-    expect(response).to be_success
+    expect(response).to be_successful
   end
 end

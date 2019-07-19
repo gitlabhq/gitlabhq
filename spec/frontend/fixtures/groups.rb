@@ -21,7 +21,7 @@ describe 'Groups (JavaScript fixtures)', type: :controller do
     it 'groups/edit.html' do
       get :edit, params: { id: group }
 
-      expect(response).to be_success
+      expect(response).to be_successful
     end
   end
 
@@ -29,7 +29,7 @@ describe 'Groups (JavaScript fixtures)', type: :controller do
     it 'groups/ci_cd_settings.html' do
       get :show, params: { group_id: group }
 
-      expect(response).to be_success
+      expect(response).to be_successful
     end
   end
 end

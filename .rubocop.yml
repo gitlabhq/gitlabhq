@@ -60,8 +60,8 @@ Style/FrozenStringLiteralComment:
 RSpec/FilePath:
   Exclude:
     - 'qa/**/*'
-    - 'spec/javascripts/fixtures/*'
-    - 'ee/spec/javascripts/fixtures/*'
+    - 'spec/frontend/fixtures/*'
+    - 'ee/spec/frontend/fixtures/*'
     - 'spec/requests/api/v3/*'
 
 Naming/FileName:

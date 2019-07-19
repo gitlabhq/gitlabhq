@@ -137,6 +137,7 @@ karma:
     paths:
       - chrome_debug.log
       - coverage-javascript/
+      - tmp/tests/frontend/
 # see https://gitlab.com/gitlab-org/gitlab-ce/issues/64756
 #    reports:
 #      junit: junit_karma.xml
@@ -151,7 +152,7 @@ jest:
   script:
     - scripts/gitaly-test-spawn
     - date
-    - bundle exec rake karma:fixtures
+    - bundle exec rake frontend:fixtures
     - date
     - yarn jest --ci --coverage
   artifacts:
@@ -161,6 +162,7 @@ jest:
     paths:
       - coverage-frontend/
       - junit_jest.xml
+      - tmp/tests/frontend/
 # see https://gitlab.com/gitlab-org/gitlab-ce/issues/64756
 #    reports:
 #      junit: junit_jest.xml

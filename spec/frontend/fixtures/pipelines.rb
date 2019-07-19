@@ -29,6 +29,6 @@ describe Projects::PipelinesController, '(JavaScript fixtures)', type: :controll
       project_id: project
     }, format: :json
 
-    expect(response).to be_success
+    expect(response).to be_successful
   end
 end

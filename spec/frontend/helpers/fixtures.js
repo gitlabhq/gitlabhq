@@ -4,12 +4,15 @@ import path from 'path';
 import { ErrorWithStack } from 'jest-util';
 
 export function getFixture(relativePath) {
-  const absolutePath = path.join(global.fixturesBasePath, relativePath);
+  const basePath = relativePath.startsWith('static/')
+    ? global.staticFixturesBasePath
+    : global.fixturesBasePath;
+  const absolutePath = path.join(basePath, relativePath);
   if (!fs.existsSync(absolutePath)) {
     throw new ErrorWithStack(
       `Fixture file ${relativePath} does not exist.
 
-Did you run bin/rake karma:fixtures?`,
+Did you run bin/rake frontend:fixtures?`,
       getFixture,
     );
   }

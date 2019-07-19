@@ -34,6 +34,6 @@ describe Projects::AutocompleteSourcesController, '(JavaScript fixtures)', type:
             type_id: issue.id
         }
 
-    expect(response).to be_success
+    expect(response).to be_successful
   end
 end

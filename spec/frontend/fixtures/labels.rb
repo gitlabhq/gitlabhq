@@ -35,7 +35,7 @@ describe 'Labels (JavaScript fixtures)' do
         group_id: group
       }, format: 'json'
 
-      expect(response).to be_success
+      expect(response).to be_successful
     end
   end
 
@@ -52,7 +52,7 @@ describe 'Labels (JavaScript fixtures)' do
         project_id: project
       }, format: 'json'
 
-      expect(response).to be_success
+      expect(response).to be_successful
     end
   end
 end

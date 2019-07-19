@@ -27,6 +27,6 @@ describe Projects::BranchesController, '(JavaScript fixtures)', type: :controlle
       project_id: project
     }
 
-    expect(response).to be_success
+    expect(response).to be_successful
   end
 end

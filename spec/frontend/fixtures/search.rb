@@ -12,6 +12,6 @@ describe SearchController, '(JavaScript fixtures)', type: :controller do
   it 'search/show.html' do
     get :show
 
-    expect(response).to be_success
+    expect(response).to be_successful
   end
 end

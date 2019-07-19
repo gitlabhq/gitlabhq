@@ -18,6 +18,8 @@ describe 'Projects (JavaScript fixtures)', type: :controller do
   end
 
   before do
+    stub_licensed_features(variable_environment_scope: true)
+
     project.add_maintainer(admin)
     sign_in(admin)
     allow(SecureRandom).to receive(:hex).and_return('securerandomhex:thereisnospoon')
@@ -34,7 +36,7 @@ describe 'Projects (JavaScript fixtures)', type: :controller do
         id: project
       }
 
-      expect(response).to be_success
+      expect(response).to be_successful
     end
 
     it 'projects/overview.html' do
@@ -43,7 +45,7 @@ describe 'Projects (JavaScript fixtures)', type: :controller do
         id: project_with_repo
       }
 
-      expect(response).to be_success
+      expect(response).to be_successful
     end
 
     it 'projects/edit.html' do
@@ -52,7 +54,7 @@ describe 'Projects (JavaScript fixtures)', type: :controller do
         id: project
       }
 
-      expect(response).to be_success
+      expect(response).to be_successful
     end
   end
 
@@ -63,7 +65,7 @@ describe 'Projects (JavaScript fixtures)', type: :controller do
         project_id: project
       }
 
-      expect(response).to be_success
+      expect(response).to be_successful
     end
 
     it 'projects/ci_cd_settings_with_variables.html' do
@@ -75,7 +77,7 @@ describe 'Projects (JavaScript fixtures)', type: :controller do
         project_id: project_variable_populated
       }
 
-      expect(response).to be_success
+      expect(response).to be_successful
     end
   end
 end

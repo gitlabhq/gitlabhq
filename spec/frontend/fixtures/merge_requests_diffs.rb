@@ -1,4 +1,3 @@
-
 require 'spec_helper'
 
 describe Projects::MergeRequests::DiffsController, '(JavaScript fixtures)', type: :controller do
@@ -65,6 +64,6 @@ describe Projects::MergeRequests::DiffsController, '(JavaScript fixtures)', type
       **extra_params
     }, format: :json
 
-    expect(response).to be_success
+    expect(response).to be_successful
   end
 end
