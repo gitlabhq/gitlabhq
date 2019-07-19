@@ -6,7 +6,6 @@ last_update: 2019-07-03
 # Pipelines for Merged Results **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/7380) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.10.
-> This feature is disabled by default until we resolve issues with [contention handling](https://gitlab.com/gitlab-org/gitlab-ee/issues/11222), but [can be enabled manually](#enabling-pipelines-for-merged-results).
 
 It's possible for your source and target branches to diverge, which can result
 in the scenario that source branch's pipeline was green, the target's pipeline was green,
@@ -25,8 +24,10 @@ new ref and a pipeline for this ref validates the result prior to merging.
 
 There are some cases where creating a combined ref is not possible or not wanted.
 For example, a source branch that has conflicts with the target branch
-or a merge request that is still in WIP status. In this case, the merge request pipeline falls back to a "detached" state
-and runs on the source branch ref as if it was a regular pipeline.
+or a merge request that is still in WIP status. In this case,
+GitLab doesn't create a merge commit and the pipeline runs on source branch, instead,
+which is a default behavior of [Pipelines for merge requests](../index.md)
+ i.e. `detached` label is shown to the pipelines.
 
 The detached state serves to warn you that you are working in a situation
 subjected to merge problems, and helps to highlight that you should
@@ -42,7 +43,7 @@ Pipelines for merged results require:
 In addition, pipelines for merged results have the following limitations:
 
 - Forking/cross-repo workflows are not currently supported. To follow progress,
-  see [#9713](https://gitlab.com/gitlab-org/gitlab-ee/issues/9713).
+  see [#11934](https://gitlab.com/gitlab-org/gitlab-ee/issues/11934).
 - This feature is not available for
   [fast forward merges](../../../user/project/merge_requests/fast_forward_merge.md) yet.
   To follow progress, see [#58226](https://gitlab.com/gitlab-org/gitlab-ce/issues/58226).
