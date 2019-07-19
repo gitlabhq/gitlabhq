@@ -548,7 +548,7 @@ Please check this [rules][eslint-plugin-vue-rules] for more documentation.
       <component @click="eventHandler"/>
     ```
 
-2. Shorthand `:` is preferable over `v-bind`
+1. Shorthand `:` is preferable over `v-bind`
 
     ```javascript
       // bad
@@ -558,7 +558,7 @@ Please check this [rules][eslint-plugin-vue-rules] for more documentation.
       <component :class="btn"/>
     ```
 
-3. Shorthand `#` is preferable over `v-slot`
+1. Shorthand `#` is preferable over `v-slot`
 
     ```javascript
       // bad

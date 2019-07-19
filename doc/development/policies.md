@@ -89,8 +89,8 @@ Each line represents a rule that was evaluated. There are a few things to note:
 
 1. The `-` or `+` symbol indicates whether the rule block was evaluated to be
    `false` or `true`, respectively.
-2. The number inside the brackets indicates the score.
-3. The last part of the line (e.g. `@john : Issue/1`) shows the username
+1. The number inside the brackets indicates the score.
+1. The last part of the line (e.g. `@john : Issue/1`) shows the username
    and subject for that rule.
 
 Here you can see that the first four rules were evaluated `false` for

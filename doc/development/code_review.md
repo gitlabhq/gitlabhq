@@ -341,8 +341,7 @@ Enterprise Edition instance. This has some implications:
       - [Background migrations](background_migrations.md) run in Sidekiq, and
         should only be done for migrations that would take an extreme amount of
         time at GitLab.com scale.
-1. **Sidekiq workers**
-   [cannot change in a backwards-incompatible way](sidekiq_style_guide.md#removing-or-renaming-queues):
+1. **Sidekiq workers** [cannot change in a backwards-incompatible way](sidekiq_style_guide.md#removing-or-renaming-queues):
    1. Sidekiq queues are not drained before a deploy happens, so there will be
       workers in the queue from the previous version of GitLab.
    1. If you need to change a method signature, try to do so across two releases,

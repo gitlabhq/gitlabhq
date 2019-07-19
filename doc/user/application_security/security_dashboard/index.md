@@ -26,8 +26,8 @@ To use the project or group security dashboard:
 
 1. At least one project inside a group must be configured with at least one of
    the [supported reports](#supported-reports).
-2. The configured jobs must use the [new `reports` syntax](../../../ci/yaml/README.md#artifactsreports).
-3. [GitLab Runner](https://docs.gitlab.com/runner/) 11.5 or newer must be used.
+1. The configured jobs must use the [new `reports` syntax](../../../ci/yaml/README.md#artifactsreports).
+1. [GitLab Runner](https://docs.gitlab.com/runner/) 11.5 or newer must be used.
    If you're using the shared Runners on GitLab.com, this is already the case.
 
 ## Project Security Dashboard

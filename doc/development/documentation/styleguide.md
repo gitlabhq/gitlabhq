@@ -44,9 +44,9 @@ Include any media types/sources if the content is relevant to readers. You can f
 In the software industry, it is a best practice to organize documentatioin in different types. For example, [Divio recommends](https://www.divio.com/blog/documentation/):
 
 1. Tutorials
-2. How-to guides
-3. Explanation
-4. Reference (for example, a glossary)
+1. How-to guides
+1. Explanation
+1. Reference (for example, a glossary)
 
 At GitLab, we have so many product changes in our monthly releases that we can't afford to continually update multiple types of information.
 If we have multiple types, the information will become outdated. Therefore, we have a [single template](structure.md) for documentation.
@@ -142,9 +142,9 @@ The table below shows what kind of documentation goes where.
 ### Working with directories and files
 
 1. When you create a new directory, always start with an `index.md` file.
-  Do not use another file name and **do not** create `README.md` files.
+   Do not use another file name and **do not** create `README.md` files.
 1. **Do not** use special characters and spaces, or capital letters in file names,
-  directory names, branch names, and anything that generates a path.
+   directory names, branch names, and anything that generates a path.
 1. When creating a new document and it has more than one word in its name,
    make sure to use underscores instead of spaces or dashes (`-`). For example,
    a proper naming would be `import_projects_from_github.md`. The same rule
