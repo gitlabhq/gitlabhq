@@ -664,10 +664,6 @@ to the desired environment. See [Limiting environment scopes of variables](../..
 
 ### Customizing `.gitlab-ci.yml`
 
-Everything about Auto DevOps is customizable since the [Auto DevOps template]
-is just an example of a [`.gitlab-ci.yml`](../../ci/yaml/README.md) and uses
-only features that are available to any `.gitlab-ci.yml`.
-
 Auto DevOps is completely customizable because the [Auto DevOps template]:
 
 - Is just an implementation of a [`.gitlab-ci.yml`](../../ci/yaml/README.md) file.
