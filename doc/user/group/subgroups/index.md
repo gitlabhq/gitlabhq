@@ -74,10 +74,15 @@ structure.
 
 ## Creating a subgroup
 
-To create a subgroup you must either be an Owner or a Maintainer of the group,
-depending on the group's setting. By default groups allow both Owners and
-Maintainers to create subgroups, but this can be changed by an Owner or
-Administrator to only allow Owners to create subgroups.
+To create a subgroup you must either be an Owner or a Maintainer of the
+group, depending on the group's setting.
+
+By default, groups created in:
+
+- GitLab 12.2 or later allow both Owners and Maintainers to create subgroups.
+- GitLab 12.1 or earlier only allow Owners to create subgroups.
+
+This setting can be for any group by an Owner or Administrator.
 
 For more information check the
 [permissions table](../../permissions.md#group-members-permissions). For a list
