@@ -9,12 +9,10 @@ module ProjectAPICompatibility
   end
 
   def auto_devops_enabled=(value)
-    self.build_auto_devops if self.auto_devops&.enabled.nil?
-    self.auto_devops.update! enabled: value
+    (auto_devops || build_auto_devops).enabled = value
   end
 
   def auto_devops_deploy_strategy=(value)
-    self.build_auto_devops if self.auto_devops&.enabled.nil?
-    self.auto_devops.update! deploy_strategy: value
+    (auto_devops || build_auto_devops).deploy_strategy = value
   end
 end

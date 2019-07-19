@@ -16,23 +16,44 @@ describe ProjectAPICompatibility do
     expect(project.build_allow_git_fetch).to eq(false)
   end
 
-  # auto_devops_enabled
-  it "converts auto_devops_enabled=false to auto_devops_enabled?=false" do
-    expect(project.auto_devops_enabled?).to eq(true)
-    project.update!(auto_devops_enabled: false)
-    expect(project.auto_devops_enabled?).to eq(false)
+  describe '#auto_devops_enabled' do
+    where(
+      initial: [:missing, nil, false, true],
+      final: [nil, false, true]
+    )
+
+    with_them do
+      before do
+        project.build_auto_devops(enabled: initial) unless initial == :missing
+      end
+
+      # Implicit auto devops when enabled is nil
+      let(:expected) { final.nil? ? true : final }
+
+      it 'sets the correct value' do
+        project.update!(auto_devops_enabled: final)
+
+        expect(project.auto_devops_enabled?).to eq(expected)
+      end
+    end
   end
 
-  it "converts auto_devops_enabled=true to auto_devops_enabled?=true" do
-    expect(project.auto_devops_enabled?).to eq(true)
-    project.update!(auto_devops_enabled: true)
-    expect(project.auto_devops_enabled?).to eq(true)
-  end
+  describe '#auto_devops_deploy_strategy' do
+    where(
+      initial: [:missing, *ProjectAutoDevops.deploy_strategies.keys],
+      final: ProjectAutoDevops.deploy_strategies.keys
+    )
 
-  # auto_devops_deploy_strategy
-  it "converts auto_devops_deploy_strategy=timed_incremental to auto_devops.deploy_strategy=timed_incremental" do
-    expect(project.auto_devops).to be_nil
-    project.update!(auto_devops_deploy_strategy: 'timed_incremental')
-    expect(project.auto_devops.deploy_strategy).to eq('timed_incremental')
+    with_them do
+      before do
+        project.build_auto_devops(deploy_strategy: initial) unless initial == :missing
+      end
+
+      it 'sets the correct value' do
+        project.update!(auto_devops_deploy_strategy: final)
+
+        expect(project.auto_devops.deploy_strategy).to eq(final)
+      end
+    end
   end
 end
