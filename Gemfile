@@ -200,12 +200,12 @@ gem 'js_regex', '~> 3.1'
 # User agent parsing
 gem 'device_detector'
 
-# Cache
-gem 'redis-rails', '~> 5.0.2'
-
 # Redis
-gem 'redis', '~> 3.2'
+gem 'redis', '~> 4.0'
 gem 'connection_pool', '~> 2.0'
+
+# Redis session store
+gem 'redis-rails', '~> 5.0.2'
 
 # Discord integration
 gem 'discordrb-webhooks-blackst0ne', '~> 3.3', require: false

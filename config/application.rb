@@ -233,7 +233,10 @@ module Gitlab
     end
 
     # Use caching across all environments
+    # Full list of options:
+    # https://api.rubyonrails.org/classes/ActiveSupport/Cache/RedisCacheStore.html#method-c-new
     caching_config_hash = Gitlab::Redis::Cache.params
+    caching_config_hash[:compress] = false
     caching_config_hash[:namespace] = Gitlab::Redis::Cache::CACHE_NAMESPACE
     caching_config_hash[:expires_in] = 2.weeks # Cache should not grow forever
     if Sidekiq.server? # threaded context
@@ -241,7 +244,7 @@ module Gitlab
       caching_config_hash[:pool_timeout] = 1
     end
 
-    config.cache_store = :redis_store, caching_config_hash
+    config.cache_store = :redis_cache_store, caching_config_hash
 
     config.active_job.queue_adapter = :sidekiq
 
