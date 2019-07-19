@@ -162,6 +162,28 @@ As the DAST job belongs to a separate `dast` stage that runs after all
 [default stages](../../../ci/yaml/README.md#stages),
 don't forget to add `stage: dast` when you override the template job definition.
 
+## Available variables
+
+DAST can be [configured](#customizing-the-dast-settings) using environment variables.
+Since it's a wrapper around the ZAP scanning scripts
+([baseline](https://github.com/zaproxy/zaproxy/wiki/ZAP-Baseline-Scan)
+or [full](https://github.com/zaproxy/zaproxy/wiki/ZAP-Full-Scan) scan), it
+accepts all arguments those scripts recognize (the arguments are the same).
+The choice of the scan type depends on the `DAST_FULL_SCAN_ENABLED` environment
+variable value.
+
+| Environment variable        | Required   | Description                                                                    |
+|-----------------------------| ----------|--------------------------------------------------------------------------------|
+| `DAST_WEBSITE`  | yes | The URL of the website to scan. |
+| `DAST_AUTH_URL` | no | The authentication URL of the website to scan. |
+| `DAST_USERNAME` | no | The username to authenticate to in the website. |
+| `DAST_PASSWORD` | no | The password to authenticate to in the website. |
+| `DAST_USERNAME_FIELD` | no | The name of username field at the sign-in HTML form. |
+| `DAST_PASSWORD_FIELD` | no | The name of password field at the sign-in HTML form. |
+| `DAST_AUTH_EXCLUDE_URLS` | no | The URLs to skip during the authenticated scan; comma-separated, no spaces in between. |
+| `DAST_TARGET_AVAILABILITY_TIMEOUT` | no | Time limit in seconds to wait for target availability. Scan is attempted nevertheless if it runs out. Integer. Defaults to `60`. |
+| `DAST_FULL_SCAN_ENABLED` | no | Switches the tool to execute [ZAP Full Scan](https://github.com/zaproxy/zaproxy/wiki/ZAP-Full-Scan) instead of [ZAP Baseline Scan](https://github.com/zaproxy/zaproxy/wiki/ZAP-Baseline-Scan). Boolean. `true`, `True`, or `1` are considered as true value, otherwise false. Defaults to `false`. |
+
 ## Security Dashboard
 
 The Security Dashboard is a good place to get an overview of all the security
