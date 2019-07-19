@@ -9,6 +9,12 @@ RSpec.shared_examples 'a class that supports relative positioning' do
     create(factory, params.merge(default_params))
   end
 
+  def create_items_with_positions(positions)
+    positions.map do |position|
+      create_item(relative_position: position)
+    end
+  end
+
   describe '.move_nulls_to_end' do
     it 'moves items with null relative_position to the end' do
       skip("#{item1} has a default relative position") if item1.relative_position
@@ -256,6 +262,76 @@ RSpec.shared_examples 'a class that supports relative positioning' do
       new_item.save!
 
       expect(new_item.relative_position).to be(100)
+    end
+
+    it 'avoids N+1 queries when rebalancing other items' do
+      items = create_items_with_positions([100, 101, 102])
+
+      count = ActiveRecord::QueryRecorder.new do
+        new_item.move_between(items[-2], items[-1])
+      end
+
+      items = create_items_with_positions([150, 151, 152, 153, 154])
+
+      expect { new_item.move_between(items[-2], items[-1]) }.not_to exceed_query_limit(count)
+    end
+  end
+
+  describe '#move_sequence_before' do
+    it 'moves the whole sequence of items to the middle of the nearest gap' do
+      items = create_items_with_positions([90, 100, 101, 102])
+
+      items.last.move_sequence_before
+      items.last.save!
+
+      positions = items.map { |item| item.reload.relative_position }
+      expect(positions).to eq([90, 95, 96, 102])
+    end
+
+    it 'finds a gap if there are unused positions' do
+      items = create_items_with_positions([100, 101, 102])
+
+      items.last.move_sequence_before
+      items.last.save!
+
+      positions = items.map { |item| item.reload.relative_position }
+      expect(positions).to eq([50, 51, 102])
+    end
+
+    it 'if raises an exception if gap is not found' do
+      stub_const('RelativePositioning::MAX_SEQUENCE_LIMIT', 2)
+      items = create_items_with_positions([100, 101, 102])
+
+      expect { items.last.move_sequence_before }.to raise_error(RelativePositioning::GapNotFound)
+    end
+  end
+
+  describe '#move_sequence_after' do
+    it 'moves the whole sequence of items to the middle of the nearest gap' do
+      items = create_items_with_positions([100, 101, 102, 110])
+
+      items.first.move_sequence_after
+      items.first.save!
+
+      positions = items.map { |item| item.reload.relative_position }
+      expect(positions).to eq([100, 105, 106, 110])
+    end
+
+    it 'finds a gap if there are unused positions' do
+      items = create_items_with_positions([100, 101, 102])
+
+      items.first.move_sequence_after
+      items.first.save!
+
+      positions = items.map { |item| item.reload.relative_position }
+      expect(positions).to eq([100, 601, 602])
+    end
+
+    it 'if raises an exception if gap is not found' do
+      stub_const('RelativePositioning::MAX_SEQUENCE_LIMIT', 2)
+      items = create_items_with_positions([100, 101, 102])
+
+      expect { items.first.move_sequence_after }.to raise_error(RelativePositioning::GapNotFound)
     end
   end
 end
