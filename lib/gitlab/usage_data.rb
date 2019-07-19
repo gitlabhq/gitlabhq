@@ -130,7 +130,9 @@ module Gitlab
 
       def usage_counters
         {
-          web_ide_commits: Gitlab::UsageDataCounters::WebIdeCounter.total_commits_count
+          web_ide_commits: Gitlab::UsageDataCounters::WebIdeCounter.total_commits_count,
+          web_ide_merge_requests: Gitlab::UsageDataCounters::WebIdeCounter.total_merge_requests_count,
+          web_ide_views: Gitlab::UsageDataCounters::WebIdeCounter.total_views_count
         }
       end
 

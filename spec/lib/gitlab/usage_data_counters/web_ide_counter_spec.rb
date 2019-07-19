@@ -3,19 +3,34 @@
 require 'spec_helper'
 
 describe Gitlab::UsageDataCounters::WebIdeCounter, :clean_gitlab_redis_shared_state do
-  describe '.increment_commits_count' do
-    it 'increments the web ide commits counter by 1' do
-      expect do
-        described_class.increment_commits_count
-      end.to change { described_class.total_commits_count }.by(1)
+  shared_examples 'counter examples' do
+    it 'increments counter and return the total count' do
+      expect(described_class.public_send(total_counter_method)).to eq(0)
+
+      2.times { described_class.public_send(increment_counter_method) }
+
+      expect(described_class.public_send(total_counter_method)).to eq(2)
     end
   end
 
-  describe '.total_commits_count' do
-    it 'returns the total amount of web ide commits' do
-      2.times { described_class.increment_commits_count }
+  describe 'commits counter' do
+    let(:increment_counter_method) { :increment_commits_count }
+    let(:total_counter_method) { :total_commits_count }
 
-      expect(described_class.total_commits_count).to eq(2)
-    end
+    it_behaves_like 'counter examples'
+  end
+
+  describe 'merge requests counter' do
+    let(:increment_counter_method) { :increment_merge_requests_count }
+    let(:total_counter_method) { :total_merge_requests_count }
+
+    it_behaves_like 'counter examples'
+  end
+
+  describe 'views counter' do
+    let(:increment_counter_method) { :increment_views_count }
+    let(:total_counter_method) { :total_views_count }
+
+    it_behaves_like 'counter examples'
   end
 end

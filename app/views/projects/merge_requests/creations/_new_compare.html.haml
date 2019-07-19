@@ -2,6 +2,8 @@
   New Merge Request
 
 = form_for [@project.namespace.becomes(Namespace), @project, @merge_request], url: project_new_merge_request_path(@project), method: :get, html: { class: "merge-request-form js-requires-input" } do |f|
+  - if params[:nav_source].present?
+    = hidden_field_tag(:nav_source, params[:nav_source])
   .hide.alert.alert-danger.mr-compare-errors
   .js-merge-request-new-compare.row{ 'data-source-branch-url': project_new_merge_request_branch_from_path(@source_project), 'data-target-branch-url': project_new_merge_request_branch_to_path(@source_project) }
     .col-lg-6

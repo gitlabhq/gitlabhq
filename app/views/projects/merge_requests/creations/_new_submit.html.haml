@@ -17,6 +17,9 @@
   = f.hidden_field :target_project_id
   = f.hidden_field :target_branch, id: ''
 
+  - if params[:nav_source].present?
+    = hidden_field_tag(:nav_source, params[:nav_source])
+
 .mr-compare.merge-request.js-merge-request-new-submit{ 'data-mr-submit-action': "#{j params[:tab].presence || 'new'}" }
   - if @commits.empty?
     .commits-empty
