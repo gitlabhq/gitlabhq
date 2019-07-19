@@ -30,6 +30,13 @@ import {
 } from '~/lib/utils/common_utils';
 import boardConfigToggle from 'ee_else_ce/boards/config_toggle';
 import toggleFocusMode from 'ee_else_ce/boards/toggle_focus';
+import {
+  setPromotionState,
+  setWeigthFetchingState,
+  setEpicFetchingState,
+  getMilestoneTitle,
+  getBoardsModalData,
+} from 'ee_else_ce/boards/ee_functions';
 import mountMultipleBoardsSwitcher from './mount_multiple_boards_switcher';
 
 let issueBoardsApp;
@@ -129,6 +136,7 @@ export default () => {
           });
 
           boardsStore.addBlankState();
+          setPromotionState(boardsStore);
           this.loading = false;
         })
         .catch(() => {
@@ -143,6 +151,8 @@ export default () => {
         const { sidebarInfoEndpoint } = newIssue;
         if (sidebarInfoEndpoint && newIssue.subscribed === undefined) {
           newIssue.setFetchingState('subscriptions', true);
+          setWeigthFetchingState(newIssue, true);
+          setEpicFetchingState(newIssue, true);
           BoardService.getIssueInfo(sidebarInfoEndpoint)
             .then(res => res.data)
             .then(data => {
@@ -157,6 +167,8 @@ export default () => {
               } = convertObjectPropsToCamelCase(data);
 
               newIssue.setFetchingState('subscriptions', false);
+              setWeigthFetchingState(newIssue, false);
+              setEpicFetchingState(newIssue, false);
               newIssue.updateData({
                 humanTimeSpent: humanTotalTimeSpent,
                 timeSpent: totalTimeSpent,
@@ -169,6 +181,7 @@ export default () => {
             })
             .catch(() => {
               newIssue.setFetchingState('subscriptions', false);
+              setWeigthFetchingState(newIssue, false);
               Flash(__('An error occurred while fetching sidebar data'));
             });
         }
@@ -203,6 +216,7 @@ export default () => {
     el: document.getElementById('js-add-list'),
     data: {
       filters: boardsStore.state.filters,
+      ...getMilestoneTitle($boardApp),
     },
     mounted() {
       initNewListDropdown();
@@ -222,6 +236,7 @@ export default () => {
         return {
           modal: ModalStore.store,
           store: boardsStore.state,
+          ...getBoardsModalData($boardApp),
           canAdminList: this.$options.el.hasAttribute('data-can-admin-list'),
         };
       },
@@ -285,6 +300,6 @@ export default () => {
     });
   }
 
-  toggleFocusMode(ModalStore, boardsStore);
+  toggleFocusMode(ModalStore, boardsStore, $boardApp);
   mountMultipleBoardsSwitcher();
 };
