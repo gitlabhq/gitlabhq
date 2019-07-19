@@ -1,0 +1,5 @@
+---
+title: Make Bootsnap available via ENABLE_BOOTSNAP=1
+merge_request: 30963
+author:
+type: performance

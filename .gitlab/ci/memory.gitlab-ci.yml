@@ -33,7 +33,7 @@ memory-on-boot:
     NODE_OPTIONS: --max_old_space_size=3584
   script:
     # Both bootsnap and derailed monkey-patch Kernel#require, which leads to circular dependency
-    - DISABLE_BOOTSNAP=true PATH_TO_HIT="/users/sign_in" CUT_OFF=0.3 bundle exec derailed exec perf:mem >> 'tmp/memory_on_boot.txt'
+    - ENABLE_BOOTSNAP=false PATH_TO_HIT="/users/sign_in" CUT_OFF=0.3 bundle exec derailed exec perf:mem >> 'tmp/memory_on_boot.txt'
     - scripts/generate-memory-metrics-on-boot tmp/memory_on_boot.txt >> 'tmp/memory_on_boot_metrics.txt'
   artifacts:
     paths:
