@@ -20,5 +20,15 @@ describe Gitlab::ZoomLinkExtractor do
 
       it { is_expected.to eq(links) }
     end
+
+    describe '#match?' do
+      it 'is true when a zoom link found' do
+        expect(described_class.new('issue text https://zoom.us/j/123')).to be_match
+      end
+
+      it 'is false when no zoom link found' do
+        expect(described_class.new('issue text')).not_to be_match
+      end
+    end
   end
 end

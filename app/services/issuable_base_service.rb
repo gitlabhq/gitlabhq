@@ -358,6 +358,7 @@ class IssuableBaseService < BaseService
         assignees: issuable.assignees.to_a
       }
     associations[:total_time_spent] = issuable.total_time_spent if issuable.respond_to?(:total_time_spent)
+    associations[:description] = issuable.description
 
     associations
   end

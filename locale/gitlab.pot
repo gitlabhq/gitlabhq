@@ -12687,6 +12687,12 @@ msgstr ""
 msgid "Your request for access has been queued for review."
 msgstr ""
 
+msgid "a Zoom call was added to this issue"
+msgstr ""
+
+msgid "a Zoom call was removed from this issue"
+msgstr ""
+
 msgid "a deleted user"
 msgstr ""
 

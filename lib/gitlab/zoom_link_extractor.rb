@@ -17,5 +17,9 @@ module Gitlab
     def links
       @text.scan(ZOOM_REGEXP)
     end
+
+    def match?
+      ZOOM_REGEXP.match?(@text)
+    end
   end
 end

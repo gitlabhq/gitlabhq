@@ -16,7 +16,7 @@ class SystemNoteMetadata < ApplicationRecord
     commit description merge confidential visible label assignee cross_reference
     title time_tracking branch milestone discussion task moved
     opened closed merged duplicate locked unlocked
-    outdated tag due_date
+    outdated tag due_date pinned_embed
   ].freeze
 
   validates :note, presence: true
