@@ -1,7 +1,6 @@
 .tooltip-inner {
-  font-size: $tooltip-font-size;
+  font-size: $gl-font-size-small;
   border-radius: $border-radius-default;
-  line-height: 16px;
+  line-height: $gl-line-height;
   font-weight: $gl-font-weight-normal;
-  padding: 8px;
 }
