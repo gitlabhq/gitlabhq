@@ -57,20 +57,18 @@ describe Gitlab::UsageData do
         gitaly
         database
         avg_cycle_analytics
-        web_ide_views
-        web_ide_commits
-        web_ide_merge_requests
         influxdb_metrics_enabled
         prometheus_metrics_enabled
       ))
-    end
 
-    it 'calls expected usage data methods' do
-      expect(Gitlab::UsageDataCounters::WebIdeCounter).to receive(:total_commits_count)
-      expect(Gitlab::UsageDataCounters::WebIdeCounter).to receive(:total_merge_requests_count)
-      expect(Gitlab::UsageDataCounters::WebIdeCounter).to receive(:total_views_count)
-
-      subject
+      expect(subject).to include(
+        wiki_pages_create: a_kind_of(Integer),
+        wiki_pages_update: a_kind_of(Integer),
+        wiki_pages_delete: a_kind_of(Integer),
+        web_ide_views: a_kind_of(Integer),
+        web_ide_commits: a_kind_of(Integer),
+        web_ide_merge_requests: a_kind_of(Integer)
+      )
     end
 
     it "gathers usage counts" do
@@ -189,6 +187,28 @@ describe Gitlab::UsageData do
         .to receive(:count).and_raise(ActiveRecord::StatementInvalid.new(''))
 
       expect { subject }.not_to raise_error
+    end
+  end
+
+  describe '#usage_data_counters' do
+    subject { described_class.usage_data_counters }
+
+    it { is_expected.to all(respond_to :totals) }
+
+    describe 'the results of calling #totals on all objects in the array' do
+      subject { described_class.usage_data_counters.map(&:totals) }
+
+      it do
+        is_expected
+          .to all(be_a Hash)
+          .and all(have_attributes(keys: all(be_a Symbol), values: all(be_a Integer)))
+      end
+    end
+
+    it 'does not have any conflicts' do
+      all_keys = subject.flat_map { |counter| counter.totals.keys }
+
+      expect(all_keys.size).to eq all_keys.to_set.size
     end
   end
 

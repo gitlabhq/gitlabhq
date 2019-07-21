@@ -6,7 +6,9 @@ module Gitlab
 
     class << self
       def data(force_refresh: false)
-        Rails.cache.fetch('usage_data', force: force_refresh, expires_in: 2.weeks) { uncached_data }
+        Rails.cache.fetch('usage_data', force: force_refresh, expires_in: 2.weeks) do
+          uncached_data
+        end
       end
 
       def uncached_data
@@ -128,12 +130,15 @@ module Gitlab
         }
       end
 
+      # @return [Hash<Symbol, Integer>]
       def usage_counters
-        {
-          web_ide_commits: Gitlab::UsageDataCounters::WebIdeCounter.total_commits_count,
-          web_ide_merge_requests: Gitlab::UsageDataCounters::WebIdeCounter.total_merge_requests_count,
-          web_ide_views: Gitlab::UsageDataCounters::WebIdeCounter.total_views_count
-        }
+        usage_data_counters.map(&:totals).reduce({}) { |a, b| a.merge(b) }
+      end
+
+      # @return [Array<#totals>] An array of objects that respond to `#totals`
+      def usage_data_counters
+        [Gitlab::UsageDataCounters::WikiPageCounter,
+         Gitlab::UsageDataCounters::WebIdeCounter]
       end
 
       def components_usage_data
