@@ -33,6 +33,14 @@ module Gitlab
         def total_views_count
           total_count(VIEWS_COUNT_KEY)
         end
+
+        def totals
+          {
+            web_ide_commits: total_commits_count,
+            web_ide_views: total_views_count,
+            web_ide_merge_requests: total_merge_requests_count
+          }
+        end
       end
     end
   end
