@@ -16,13 +16,36 @@ describe Gitlab::Git::RuggedImpl::UseRugged, :seed_helper do
   end
 
   subject(:wrapper) do
-    klazz = Class.new { include Gitlab::Git::RuggedImpl::UseRugged }
+    klazz = Class.new do
+      include Gitlab::Git::RuggedImpl::UseRugged
+
+      def rugged_test(ref, test_number)
+      end
+    end
+
     klazz.new
   end
 
   before do
     allow(Gitlab::GitalyClient).to receive(:can_use_disk?).and_call_original
     Gitlab::GitalyClient.instance_variable_set(:@can_use_disk, {})
+  end
+
+  context '#execute_rugged_call', :request_store do
+    let(:args) { ['refs/heads/master', 1] }
+
+    before do
+      allow(Gitlab::RuggedInstrumentation).to receive(:peek_enabled?).and_return(true)
+    end
+
+    it 'instruments Rugged call' do
+      expect(subject).to receive(:rugged_test).with(args)
+
+      subject.execute_rugged_call(:rugged_test, args)
+
+      expect(Gitlab::RuggedInstrumentation.query_count).to eq(1)
+      expect(Gitlab::RuggedInstrumentation.list_call_details.count).to eq(1)
+    end
   end
 
   context 'when feature flag is not persisted' do

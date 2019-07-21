@@ -55,6 +55,10 @@ module Gitlab
         @name = @relative_path.split("/").last
       end
 
+      def to_s
+        "<#{self.class.name}: #{self.gl_project_path}>"
+      end
+
       def ==(other)
         other.is_a?(self.class) && [storage, relative_path] == [other.storage, other.relative_path]
       end

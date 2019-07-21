@@ -36,7 +36,7 @@ module Gitlab
           override :find_commit
           def find_commit(repo, commit_id)
             if use_rugged?(repo, :rugged_find_commit)
-              wrap_rugged_call { rugged_find(repo, commit_id) }
+              execute_rugged_call(:rugged_find, repo, commit_id)
             else
               super
             end
@@ -45,7 +45,7 @@ module Gitlab
           override :batch_by_oid
           def batch_by_oid(repo, oids)
             if use_rugged?(repo, :rugged_list_commits_by_oid)
-              wrap_rugged_call { rugged_batch_by_oid(repo, oids) }
+              execute_rugged_call(:rugged_batch_by_oid, repo, oids)
             else
               super
             end
@@ -68,7 +68,7 @@ module Gitlab
         override :commit_tree_entry
         def commit_tree_entry(path)
           if use_rugged?(@repository, :rugged_commit_tree_entry)
-            wrap_rugged_call { rugged_tree_entry(path) }
+            execute_rugged_call(:rugged_tree_entry, path)
           else
             super
           end
