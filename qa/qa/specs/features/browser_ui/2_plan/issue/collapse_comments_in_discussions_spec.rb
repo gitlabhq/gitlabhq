@@ -15,28 +15,28 @@ module QA
 
         issue.visit!
 
-        Page::Project::Issue::Show.perform do |show_page|
+        Page::Project::Issue::Show.perform do |show|
           my_first_discussion = 'My first discussion'
 
-          show_page.select_all_activities_filter
-          show_page.start_discussion(my_first_discussion)
+          show.select_all_activities_filter
+          show.start_discussion(my_first_discussion)
           page.assert_text(my_first_discussion)
-          show_page.reply_to_discussion(my_first_reply)
+          show.reply_to_discussion(my_first_reply)
           page.assert_text(my_first_reply)
         end
       end
 
       it 'user collapses and expands reply for comments in an issue' do
-        Page::Project::Issue::Show.perform do |show_page|
+        Page::Project::Issue::Show.perform do |show|
           one_reply = "1 reply"
 
-          show_page.collapse_replies
-          expect(show_page).to have_content(one_reply)
-          expect(show_page).not_to have_content(my_first_reply)
+          show.collapse_replies
+          expect(show).to have_content(one_reply)
+          expect(show).not_to have_content(my_first_reply)
 
-          show_page.expand_replies
-          expect(show_page).to have_content(my_first_reply)
-          expect(show_page).not_to have_content(one_reply)
+          show.expand_replies
+          expect(show).to have_content(my_first_reply)
+          expect(show).not_to have_content(one_reply)
         end
       end
     end

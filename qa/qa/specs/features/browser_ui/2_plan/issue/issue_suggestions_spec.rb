@@ -24,12 +24,12 @@ module QA
 
       it 'user sees issue suggestions when creating a new issue' do
         Page::Project::Show.perform(&:go_to_new_issue)
-        Page::Project::Issue::New.perform do |new_issue_page|
-          new_issue_page.add_title("issue")
-          expect(new_issue_page).to have_content(issue_title)
+        Page::Project::Issue::New.perform do |new|
+          new.add_title("issue")
+          expect(new).to have_content(issue_title)
 
-          new_issue_page.add_title("Issue Board")
-          expect(new_issue_page).not_to have_content(issue_title)
+          new.add_title("Issue Board")
+          expect(new).not_to have_content(issue_title)
         end
       end
     end
