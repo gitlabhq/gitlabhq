@@ -81,7 +81,7 @@ class Gitlab::Seeder::Pipelines
     @project.repository.commits('master', limit: 4).map do |commit|
       create_pipeline!(@project, 'master', commit).tap do |pipeline|
         random_pipeline.tap do |triggered_by_pipeline|
-          triggered_by_pipeline.sourced_pipelines.create(
+          triggered_by_pipeline.try(:sourced_pipelines)&.create(
             source_job: triggered_by_pipeline.builds.all.sample,
             source_project: triggered_by_pipeline.project,
             project: pipeline.project,
@@ -89,7 +89,7 @@ class Gitlab::Seeder::Pipelines
         end
       end
     end
-  rescue
+  rescue ActiveRecord::ActiveRecordError
     []
   end
 
@@ -106,7 +106,7 @@ class Gitlab::Seeder::Pipelines
     end
 
     pipelines.flatten
-  rescue
+  rescue ActiveRecord::ActiveRecordError
     []
   end
 
