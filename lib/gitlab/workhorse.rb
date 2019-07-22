@@ -221,7 +221,7 @@ module Gitlab
       end
 
       def set_key_and_notify(key, value, expire: nil, overwrite: true)
-        Gitlab::Redis::Queues.with do |redis|
+        Gitlab::Redis::SharedState.with do |redis|
           result = redis.set(key, value, ex: expire, nx: !overwrite)
           if result
             redis.publish(NOTIFICATION_CHANNEL, "#{key}=#{value}")
