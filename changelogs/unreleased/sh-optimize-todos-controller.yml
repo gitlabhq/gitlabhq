@@ -1,5 +1,0 @@
----
-title: Eliminate N+1 queries in Dashboard::TodosController
-merge_request: 29954
-author:
-type: performance

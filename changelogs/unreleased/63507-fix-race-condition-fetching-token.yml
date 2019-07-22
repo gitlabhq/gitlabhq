@@ -1,5 +1,0 @@
----
-title: Retry fetching Kubernetes Secret#token (#63507)
-merge_request: 29922
-author:
-type: fixed

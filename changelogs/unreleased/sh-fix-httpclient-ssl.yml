@@ -1,5 +1,0 @@
----
-title: Make httpclient respect system SSL configuration
-merge_request: 30749
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Fix median counting for cycle analytics
-merge_request: 30229
-author:
-type: fixed

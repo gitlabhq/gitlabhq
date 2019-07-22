@@ -1,5 +1,0 @@
----
-title: 'API: Allow changing only ci_default_git_depth'
-merge_request: 30888
-author: Mathieu Parent
-type: fixed

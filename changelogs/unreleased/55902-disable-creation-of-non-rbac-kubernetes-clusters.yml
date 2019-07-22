@@ -1,5 +1,0 @@
----
-title: Remove support for creating non-RBAC kubernetes clusters
-merge_request: 29614
-author:
-type: removed

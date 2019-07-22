@@ -1,6 +1,0 @@
----
-title: Extract clair version as CLAIR_EXECUTABLE_VERSION variable and update clair
-  executable from v8 to v11
-merge_request: 30396
-author:
-type: changed

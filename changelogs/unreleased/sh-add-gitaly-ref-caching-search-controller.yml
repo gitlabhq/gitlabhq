@@ -1,5 +1,0 @@
----
-title: Enable Gitaly ref caching for SearchController
-merge_request: 30105
-author:
-type: performance

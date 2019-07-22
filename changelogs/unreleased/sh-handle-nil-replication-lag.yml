@@ -1,5 +1,0 @@
----
-title: Fix background migrations failing with unused replication slot
-merge_request: 30042
-author:
-type: fixed

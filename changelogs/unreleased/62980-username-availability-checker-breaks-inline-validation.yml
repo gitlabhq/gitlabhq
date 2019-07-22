@@ -1,5 +1,0 @@
----
-title: Fix the signup form's username validation messages not displaying
-merge_request: 29678
-author: Jiaan Louw
-type: fixed

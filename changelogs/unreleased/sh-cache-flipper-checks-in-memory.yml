@@ -1,5 +1,0 @@
----
-title: Cache Flipper feature flags in L1 and L2 caches
-merge_request: 30276
-author:
-type: performance

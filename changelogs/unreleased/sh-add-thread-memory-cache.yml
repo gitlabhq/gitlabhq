@@ -1,5 +1,0 @@
----
-title: Add a memory cache local to the thread to reduce Redis load
-merge_request: 30233
-author:
-type: performance

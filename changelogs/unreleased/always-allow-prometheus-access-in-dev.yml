@@ -1,5 +1,0 @@
----
-title: Always allow access to health endpoints from localhost in dev
-merge_request: 29930
-author:
-type: other

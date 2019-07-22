@@ -1,5 +1,0 @@
----
-title: Add token_encrypted column to operations_feature_flags_clients table
-merge_request:
-author:
-type: other

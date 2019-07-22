@@ -1,5 +1,0 @@
----
-title: Adds link to Grafana in Admin > Monitoring settings when grafana is enabled in config
-merge_request: 28937
-author: Romain Maneschi
-type: added

@@ -1,5 +1,0 @@
----
-title: Support jsonb default in add_column_with_default migration helper
-merge_request: 29871
-author:
-type: other

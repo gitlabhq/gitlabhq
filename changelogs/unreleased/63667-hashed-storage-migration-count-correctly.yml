@@ -1,5 +1,0 @@
----
-title: Display the correct amount of projects being migrated/rolled-back to Hashed Storage when specifying ranges
-merge_request: 29996
-author:
-type: fixed

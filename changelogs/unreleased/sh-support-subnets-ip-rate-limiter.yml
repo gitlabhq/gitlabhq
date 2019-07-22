@@ -1,5 +1,0 @@
----
-title: Support CIDR notation in IP rate limiter
-merge_request: 30146
-author:
-type: changed

@@ -1,5 +1,0 @@
----
-title: Disable Rails SQL query cache when applying service templates
-merge_request: 30060
-author:
-type: fixed

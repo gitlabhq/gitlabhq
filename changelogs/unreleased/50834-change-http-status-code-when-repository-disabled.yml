@@ -1,5 +1,0 @@
----
-title: "Changed HTTP Status Code for disabled repository on /branches and /commits to 404"
-merge_request: 29585
-author: Sam Battalio
-type: changed

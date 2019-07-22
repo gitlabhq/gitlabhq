@@ -1,5 +1,0 @@
----
-title: Avoid storing backtraces from Bitbucket Cloud imports in the database
-merge_request: 29862
-author:
-type: performance

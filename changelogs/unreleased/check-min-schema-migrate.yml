@@ -1,5 +1,0 @@
----
-title: Added a min schema version check to db:migrate
-merge_request: 29882
-author:
-type: added
