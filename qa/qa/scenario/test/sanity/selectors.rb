@@ -14,7 +14,7 @@ module QA
               Page::Validator.new(pages)
             end
 
-            validators.map(&:errors).flatten.tap do |errors|
+            validators.flat_map(&:errors).tap do |errors|
               break if errors.none?
 
               warn <<~EOS

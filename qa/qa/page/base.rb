@@ -181,11 +181,11 @@ module QA
           return ["Page class does not have views / elements defined!"]
         end
 
-        views.map(&:errors).flatten
+        views.flat_map(&:errors)
       end
 
       def self.elements
-        views.map(&:elements).flatten
+        views.flat_map(&:elements)
       end
 
       def send_keys_to_element(name, keys)

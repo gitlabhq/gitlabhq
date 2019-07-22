@@ -125,9 +125,9 @@ describe QA::Specs::Runner do
     end
 
     def excluded_feature_tags_except(tag)
-      QA::Runtime::Env.supported_features.except(tag).map do |tag, _|
+      QA::Runtime::Env.supported_features.except(tag).flat_map do |tag, _|
         ['--tag', "~requires_#{tag}"]
-      end.flatten
+      end
     end
 
     def expect_rspec_runner_arguments(arguments)
