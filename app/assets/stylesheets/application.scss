@@ -34,4 +34,8 @@
 // Styles for JS behaviors.
 @import "behaviors";
 
+// EE-only stylesheets
+@import "application_ee";
+
+// CSS util classes
 @import "utilities";

@@ -183,6 +183,12 @@ module Gitlab
       config.assets.precompile << "pages/jira_connect.css"
     end
 
+    # Import path for EE specific SCSS entry point
+    # In CE it will import a noop file, in EE a functioning file
+    # Order is important, so that the ee file takes precedence:
+    config.assets.paths << "#{config.root}/ee/app/assets/stylesheets/_ee"
+    config.assets.paths << "#{config.root}/app/assets/stylesheets/_ee"
+
     config.assets.paths << "#{config.root}/vendor/assets/javascripts/"
     config.assets.precompile << "snowplow/sp.js"
 
