@@ -357,6 +357,7 @@ class Project < ApplicationRecord
   scope :sorted_by_activity, -> { reorder(Arel.sql("GREATEST(COALESCE(last_activity_at, '1970-01-01'), COALESCE(last_repository_updated_at, '1970-01-01')) DESC")) }
   scope :sorted_by_stars_desc, -> { reorder(star_count: :desc) }
   scope :sorted_by_stars_asc, -> { reorder(star_count: :asc) }
+  scope :sorted_by_name_asc_limited, ->(limit) { reorder(name: :asc).limit(limit) }
 
   scope :in_namespace, ->(namespace_ids) { where(namespace_id: namespace_ids) }
   scope :personal, ->(user) { where(namespace_id: user.namespace_id) }
@@ -439,22 +440,6 @@ class Project < ApplicationRecord
   # id - The ID of the project to retrieve.
   def self.find_without_deleted(id)
     without_deleted.find_by_id(id)
-  end
-
-  # Paginates a collection using a `WHERE id < ?` condition.
-  #
-  # before - A project ID to use for filtering out projects with an equal or
-  #      greater ID. If no ID is given, all projects are included.
-  #
-  # limit - The maximum number of rows to include.
-  def self.paginate_in_descending_order_using_id(
-    before: nil,
-    limit: Kaminari.config.default_per_page
-  )
-    relation = order_id_desc.limit(limit)
-    relation = relation.where('projects.id < ?', before) if before
-
-    relation
   end
 
   def self.eager_load_namespace_and_owner

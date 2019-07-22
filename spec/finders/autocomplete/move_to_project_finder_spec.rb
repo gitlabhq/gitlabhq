@@ -6,9 +6,9 @@ describe Autocomplete::MoveToProjectFinder do
 
   let(:no_access_project) { create(:project) }
   let(:guest_project) { create(:project) }
-  let(:reporter_project) { create(:project) }
-  let(:developer_project) { create(:project) }
-  let(:maintainer_project) { create(:project) }
+  let(:reporter_project) { create(:project, name: 'name') }
+  let(:developer_project) { create(:project, name: 'name2') }
+  let(:maintainer_project) { create(:project, name: 'name3') }
 
   describe '#execute' do
     context 'filter' do
@@ -20,14 +20,14 @@ describe Autocomplete::MoveToProjectFinder do
         expect(finder.execute).to be_empty
       end
 
-      it 'returns projects equal or above Gitlab::Access::REPORTER ordered by id in descending order' do
+      it 'returns projects equal or above Gitlab::Access::REPORTER ordered by name' do
         reporter_project.add_reporter(user)
         developer_project.add_developer(user)
         maintainer_project.add_maintainer(user)
 
         finder = described_class.new(user, project_id: project.id)
 
-        expect(finder.execute.to_a).to eq([maintainer_project, developer_project, reporter_project])
+        expect(finder.execute.to_a).to eq([reporter_project, developer_project, maintainer_project])
       end
 
       it 'does not include the source project' do
@@ -60,46 +60,32 @@ describe Autocomplete::MoveToProjectFinder do
         expect(finder.execute.to_a).to eq([other_reporter_project])
       end
 
-      it 'returns a page of projects ordered by id in descending order' do
-        allow(Kaminari.config).to receive(:default_per_page).and_return(2)
+      it 'returns a page of projects ordered by name' do
+        stub_const('Autocomplete::MoveToProjectFinder::LIMIT', 2)
 
-        projects = create_list(:project, 2) do |project|
+        projects = create_list(:project, 3) do |project|
           project.add_developer(user)
         end
 
         finder = described_class.new(user, project_id: project.id)
         page = finder.execute.to_a
 
-        expect(page.length).to eq(Kaminari.config.default_per_page)
-        expect(page[0]).to eq(projects.last)
-      end
-
-      it 'returns projects after the given offset id' do
-        reporter_project.add_reporter(user)
-        developer_project.add_developer(user)
-        maintainer_project.add_maintainer(user)
-
-        expect(described_class.new(user, project_id: project.id, offset_id: maintainer_project.id).execute.to_a)
-          .to eq([developer_project, reporter_project])
-
-        expect(described_class.new(user, project_id: project.id, offset_id: developer_project.id).execute.to_a)
-          .to eq([reporter_project])
-
-        expect(described_class.new(user, project_id: project.id, offset_id: reporter_project.id).execute.to_a)
-          .to be_empty
+        expected_projects = projects.sort_by(&:name).first(2)
+        expect(page.length).to eq(2)
+        expect(page).to eq(expected_projects)
       end
     end
 
     context 'search' do
       it 'returns projects matching a search query' do
-        foo_project = create(:project)
+        foo_project = create(:project, name: 'foo')
         foo_project.add_maintainer(user)
 
         wadus_project = create(:project, name: 'wadus')
         wadus_project.add_maintainer(user)
 
         expect(described_class.new(user, project_id: project.id).execute.to_a)
-          .to eq([wadus_project, foo_project])
+          .to eq([foo_project, wadus_project])
 
         expect(described_class.new(user, project_id: project.id, search: 'wadus').execute.to_a)
           .to eq([wadus_project])
