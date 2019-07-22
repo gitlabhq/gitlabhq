@@ -39,7 +39,9 @@ describe 'Multi-file editor new file', :js do
 
     fill_in('commit-message', with: 'commit message ide')
 
-    click_button('Commit')
+    page.within '.multi-file-commit-form' do
+      click_button('Commit')
+    end
 
     expect(page).to have_content('file name')
   end

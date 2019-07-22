@@ -33,6 +33,8 @@
 
 = render_if_exists 'shared/issuable/approvals', issuable: issuable, presenter: presenter, form: form
 
+= render_if_exists "shared/issuable/form/merge_request_blocks", issuable: issuable, form: form
+
 = render 'shared/issuable/form/branch_chooser', issuable: issuable, form: form
 
 = render 'shared/issuable/form/merge_params', issuable: issuable
