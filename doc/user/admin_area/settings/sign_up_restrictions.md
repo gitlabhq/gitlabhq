@@ -4,19 +4,26 @@ type: reference
 
 # Sign-up restrictions
 
-By implementing sign-up restrictions, you can blacklist or whitelist email addresses
-belonging to specific domains.
+You can use sign-up restrictions to require user email confirmation, as well as
+to blacklist or whitelist email addresses belonging to specific domains.
 
 >**Note**: These restrictions are only applied during sign-up. An admin is
 able to add a user through the admin panel with a disallowed domain. Also
 note that the users can change their email addresses after signup to
 disallowed domains.
 
+## Require email confirmation
+
+You can send confirmation emails during sign-up and require that users confirm
+their email address before they are allowed to sign in.
+
+![Email confirmation](img/email_confirmation.png)
+
 ## Whitelist email domains
 
 > [Introduced][ce-598] in GitLab 7.11.0
 
-You can restrict users to only signup using email addresses matching the given
+You can restrict users to only sign up using email addresses matching the given
 domains list.
 
 ## Blacklist email domains
@@ -24,7 +31,9 @@ domains list.
 > [Introduced][ce-5259] in GitLab 8.10.
 
 With this feature enabled, you can block email addresses of a specific domain
-from creating an account on your GitLab server. This is particularly useful to prevent spam. Disposable email addresses are usually used by malicious users to create dummy accounts and spam issues.
+from creating an account on your GitLab server. This is particularly useful
+to prevent malicious users from creating spam accounts with disposable email
+addresses.
 
 ## Settings
 
@@ -33,10 +42,10 @@ To access this feature:
 1. Navigate to the **Settings > General** in the Admin area.
 1. Expand the **Sign-up restrictions** section.
 
-For the:
+For the blacklist, you can enter the list manually or upload a `.txt` file that
+contains list entries.
 
-- Blacklist, you can enter the list manually, or upload a `.txt` file with it. 
-- Whitelist you must enter the list manually.
+For the whitelist, you must enter the list manually.
 
 Both the whitelist and blacklist accept wildcards. For example, you can use
 `*.company.com` to accept every `company.com` subdomain, or `*.io` to block all
