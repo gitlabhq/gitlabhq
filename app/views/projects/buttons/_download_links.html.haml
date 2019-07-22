@@ -2,4 +2,5 @@
 
 .btn-group.ml-0.w-100
   - formats.each do |(fmt, extra_class)|
-    = link_to fmt, project_archive_path(project, id: tree_join(ref, archive_prefix), path: path, format: fmt), rel: 'nofollow', download: '', class: "btn btn-xs #{extra_class}"
+    - archive_path = project_archive_path(project, id: tree_join(ref, archive_prefix), path: path, format: fmt)
+    = link_to fmt, external_storage_url_or_path(archive_path), rel: 'nofollow', download: '', class: "btn btn-xs #{extra_class}"

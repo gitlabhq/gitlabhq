@@ -31,6 +31,7 @@ class User < ApplicationRecord
 
   add_authentication_token_field :incoming_email_token, token_generator: -> { SecureRandom.hex.to_i(16).to_s(36) }
   add_authentication_token_field :feed_token
+  add_authentication_token_field :static_object_token
 
   default_value_for :admin, false
   default_value_for(:external) { Gitlab::CurrentSettings.user_default_external }
@@ -1435,6 +1436,13 @@ class User < ApplicationRecord
   # solution.
   def feed_token
     ensure_feed_token!
+  end
+
+  # Each existing user needs to have a `static_object_token`.
+  # We do this on read since migrating all existing users is not a feasible
+  # solution.
+  def static_object_token
+    ensure_static_object_token!
   end
 
   def sync_attribute?(attribute)

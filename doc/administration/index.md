@@ -142,6 +142,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [Repository storage types](repository_storage_types.md): Information about the different repository storage types.
 - [Repository storage rake tasks](raketasks/storage.md): A collection of rake tasks to list and migrate existing projects and attachments associated with it from Legacy storage to Hashed storage.
 - [Limit repository size](../user/admin_area/settings/account_and_limit_settings.md): Set a hard limit for your repositories' size. **(STARTER ONLY)**
+- [Static objects external storage](static_objects_external_storage.md): Set external storage for static objects in a repository.
 
 ## Continuous Integration settings
 

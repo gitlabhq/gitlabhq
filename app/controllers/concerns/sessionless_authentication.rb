@@ -2,10 +2,10 @@
 
 # == SessionlessAuthentication
 #
-# Controller concern to handle PAT and RSS token authentication methods
+# Controller concern to handle PAT, RSS, and static objects token authentication methods
 #
 module SessionlessAuthentication
-  # This filter handles personal access tokens, and atom requests with rss tokens
+  # This filter handles personal access tokens, atom requests with rss tokens, and static object tokens
   def authenticate_sessionless_user!(request_format)
     user = Gitlab::Auth::RequestAuthenticator.new(request).find_sessionless_user(request_format)
 

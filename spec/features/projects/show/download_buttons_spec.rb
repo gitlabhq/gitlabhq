@@ -29,6 +29,8 @@ describe 'Projects > Show > Download buttons' do
   end
 
   describe 'when checking project main page' do
+    it_behaves_like 'archive download buttons'
+
     context 'with artifacts' do
       before do
         visit project_path(project)

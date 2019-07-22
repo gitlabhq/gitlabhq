@@ -517,6 +517,9 @@ msgstr ""
 msgid "A regular expression that will be used to find the test coverage output in the job trace. Leave blank to disable"
 msgstr ""
 
+msgid "A secure token that identifies an external storage request."
+msgstr ""
+
 msgid "A user with write access to the source branch selected this option"
 msgstr ""
 
@@ -568,6 +571,9 @@ msgstr ""
 msgid "AccessTokens|Access Tokens"
 msgstr ""
 
+msgid "AccessTokens|Are you sure?"
+msgstr ""
+
 msgid "AccessTokens|Are you sure? Any RSS or calendar URLs currently in use will stop working."
 msgstr ""
 
@@ -586,6 +592,9 @@ msgstr ""
 msgid "AccessTokens|It cannot be used to access any other data."
 msgstr ""
 
+msgid "AccessTokens|Keep this token secret. Anyone who gets ahold of it can access repository static objects as if they were you. You should %{reset_link_start}reset it%{reset_link_end} if that ever happens."
+msgstr ""
+
 msgid "AccessTokens|Keep this token secret. Anyone who gets ahold of it can create issues as if they were you. You should %{link_reset_it} if that ever happens."
 msgstr ""
 
@@ -593,6 +602,9 @@ msgid "AccessTokens|Keep this token secret. Anyone who gets ahold of it can read
 msgstr ""
 
 msgid "AccessTokens|Personal Access Tokens"
+msgstr ""
+
+msgid "AccessTokens|Static object token"
 msgstr ""
 
 msgid "AccessTokens|They are the only accepted password when you have Two-Factor Authentication (2FA) enabled."
@@ -608,6 +620,9 @@ msgid "AccessTokens|Your feed token is used to authenticate you when your RSS re
 msgstr ""
 
 msgid "AccessTokens|Your incoming email token is used to authenticate you when you create a new issue by email, and is included in your personal project-specific email addresses."
+msgstr ""
+
+msgid "AccessTokens|Your static object token is used to authenticate you when repository static objects (e.g. archives, blobs, ...) are being served from an external storage."
 msgstr ""
 
 msgid "AccessTokens|reset it"
@@ -4852,6 +4867,12 @@ msgstr ""
 msgid "External authorization request timeout"
 msgstr ""
 
+msgid "External storage URL"
+msgstr ""
+
+msgid "External storage authentication token"
+msgstr ""
+
 msgid "ExternalAuthorizationService|Classification label"
 msgstr ""
 
@@ -8668,6 +8689,9 @@ msgstr ""
 msgid "Profiles|Some options are unavailable for LDAP accounts"
 msgstr ""
 
+msgid "Profiles|Static object token was successfully reset"
+msgstr ""
+
 msgid "Profiles|Tell us about yourself in fewer than 250 characters"
 msgstr ""
 
@@ -9693,6 +9717,9 @@ msgstr ""
 msgid "Repository mirror"
 msgstr ""
 
+msgid "Repository static objects"
+msgstr ""
+
 msgid "Repository storage"
 msgstr ""
 
@@ -10242,6 +10269,9 @@ msgid "Separate topics with commas."
 msgstr ""
 
 msgid "September"
+msgstr ""
+
+msgid "Serve repository static objects (e.g. archives, blobs, ...) from an external storage (e.g. a CDN)."
 msgstr ""
 
 msgid "Server supports batch API only, please update your Git LFS client to version 1.0.1 and up."
@@ -12419,6 +12449,9 @@ msgid "U2F Devices (%{length})"
 msgstr ""
 
 msgid "U2F only works with HTTPS-enabled websites. Contact your administrator for more details."
+msgstr ""
+
+msgid "URL of the external storage that will serve the repository static objects (e.g. archives, blobs, ...)."
 msgstr ""
 
 msgid "Unable to apply suggestions to a deleted line."

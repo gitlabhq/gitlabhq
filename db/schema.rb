@@ -284,6 +284,8 @@ ActiveRecord::Schema.define(version: 2019_09_05_223900) do
     t.text "asset_proxy_whitelist"
     t.text "encrypted_asset_proxy_secret_key"
     t.string "encrypted_asset_proxy_secret_key_iv"
+    t.string "static_objects_external_storage_url", limit: 255
+    t.string "static_objects_external_storage_auth_token", limit: 255
     t.index ["custom_project_templates_group_id"], name: "index_application_settings_on_custom_project_templates_group_id"
     t.index ["file_template_project_id"], name: "index_application_settings_on_file_template_project_id"
     t.index ["instance_administration_project_id"], name: "index_applicationsettings_on_instance_administration_project_id"
@@ -3548,6 +3550,7 @@ ActiveRecord::Schema.define(version: 2019_09_05_223900) do
     t.integer "bot_type", limit: 2
     t.string "first_name", limit: 255
     t.string "last_name", limit: 255
+    t.string "static_object_token", limit: 255
     t.index ["accepted_term_id"], name: "index_users_on_accepted_term_id"
     t.index ["admin"], name: "index_users_on_admin"
     t.index ["bot_type"], name: "index_users_on_bot_type"
@@ -3567,6 +3570,7 @@ ActiveRecord::Schema.define(version: 2019_09_05_223900) do
     t.index ["state"], name: "index_users_on_state"
     t.index ["state"], name: "index_users_on_state_and_internal", where: "(ghost IS NOT TRUE)"
     t.index ["state"], name: "index_users_on_state_and_internal_ee", where: "((ghost IS NOT TRUE) AND (bot_type IS NULL))"
+    t.index ["static_object_token"], name: "index_users_on_static_object_token", unique: true
     t.index ["unconfirmed_email"], name: "index_users_on_unconfirmed_email", where: "(unconfirmed_email IS NOT NULL)"
     t.index ["username"], name: "index_users_on_username"
     t.index ["username"], name: "index_users_on_username_trigram", opclass: :gin_trgm_ops, using: :gin

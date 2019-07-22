@@ -8,6 +8,7 @@ resource :profile, only: [:show, :update] do
 
     put :reset_incoming_email_token
     put :reset_feed_token
+    put :reset_static_object_token
     put :update_username
   end
 

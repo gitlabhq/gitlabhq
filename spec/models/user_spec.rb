@@ -945,6 +945,16 @@ describe User do
     end
   end
 
+  describe 'static object token' do
+    it 'ensures a static object token on read' do
+      user = create(:user, static_object_token: nil)
+      static_object_token = user.static_object_token
+
+      expect(static_object_token).not_to be_blank
+      expect(user.reload.static_object_token).to eq static_object_token
+    end
+  end
+
   describe '#recently_sent_password_reset?' do
     it 'is false when reset_password_sent_at is nil' do
       user = build_stubbed(:user, reset_password_sent_at: nil)

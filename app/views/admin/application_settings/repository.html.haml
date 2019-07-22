@@ -34,3 +34,14 @@
       = _('Configure automatic git checks and housekeeping on repositories.')
   .settings-content
     = render 'repository_check'
+
+%section.settings.as-repository-static-objects.no-animate#js-repository-static-objects-settings{ class: ('expanded' if expanded_by_default?) }
+  .settings-header
+    %h4
+      = _('Repository static objects')
+    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded_by_default? ? _('Collapse') : _('Expand')
+    %p
+      = _('Serve repository static objects (e.g. archives, blobs, ...) from an external storage (e.g. a CDN).')
+  .settings-content
+    = render 'repository_static_objects'

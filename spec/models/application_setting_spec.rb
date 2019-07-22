@@ -48,6 +48,10 @@ describe ApplicationSetting do
     it { is_expected.not_to allow_value(nil).for(:outbound_local_requests_whitelist) }
     it { is_expected.to allow_value([]).for(:outbound_local_requests_whitelist) }
 
+    it { is_expected.to allow_value(nil).for(:static_objects_external_storage_url) }
+    it { is_expected.to allow_value(http).for(:static_objects_external_storage_url) }
+    it { is_expected.to allow_value(https).for(:static_objects_external_storage_url) }
+
     context "when user accepted let's encrypt terms of service" do
       before do
         setting.update(lets_encrypt_terms_of_service_accepted: true)
@@ -418,6 +422,16 @@ describe ApplicationSetting do
             expect(setting.asset_proxy_whitelist).to eq(['example.com', '*.example.com', 'localhost'])
           end
         end
+      end
+    end
+
+    context 'static objects external storage' do
+      context 'when URL is set' do
+        before do
+          subject.static_objects_external_storage_url = http
+        end
+
+        it { is_expected.not_to allow_value(nil).for(:static_objects_external_storage_auth_token) }
       end
     end
   end

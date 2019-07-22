@@ -2,6 +2,9 @@
 
 class Projects::RepositoriesController < Projects::ApplicationController
   include ExtractsPath
+  include StaticObjectExternalStorage
+
+  prepend_before_action(only: [:archive]) { authenticate_sessionless_user!(:archive) }
 
   # Authorize
   before_action :require_non_empty_project, except: :create
@@ -9,6 +12,7 @@ class Projects::RepositoriesController < Projects::ApplicationController
   before_action :assign_append_sha, only: :archive
   before_action :authorize_download_code!
   before_action :authorize_admin_project!, only: :create
+  before_action :redirect_to_external_storage, only: :archive, if: :static_objects_external_storage_enabled?
 
   def create
     @project.create_repository

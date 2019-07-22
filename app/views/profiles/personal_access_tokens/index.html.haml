@@ -54,3 +54,23 @@
         - reset_link = link_to s_('AccessTokens|reset it'), [:reset, :incoming_email_token, :profile], method: :put, data: { confirm: s_('AccessTokens|Are you sure? Any issue email addresses currently in use will stop working.') }
         - reset_message = s_('AccessTokens|Keep this token secret. Anyone who gets ahold of it can create issues as if they were you. You should %{link_reset_it} if that ever happens.') % { link_reset_it: reset_link }
         = reset_message.html_safe
+
+- if static_objects_external_storage_enabled?
+  %hr
+  .row.prepend-top-default
+    .col-lg-4
+      %h4.prepend-top-0
+        = s_('AccessTokens|Static object token')
+      %p
+        = s_('AccessTokens|Your static object token is used to authenticate you when repository static objects (e.g. archives, blobs, ...) are being served from an external storage.')
+      %p
+        = s_('AccessTokens|It cannot be used to access any other data.')
+    .col-lg-8
+      = label_tag :static_object_token, s_('AccessTokens|Static object token'), class: "label-bold"
+      = text_field_tag :static_object_token, current_user.static_object_token, class: 'form-control', readonly: true, onclick: 'this.select()'
+      %p.form-text.text-muted
+        - reset_link = url_for [:reset, :static_object_token, :profile]
+        - reset_link_start = '<a data-confirm="%{confirm}" rel="nofollow" data-method="put" href="%{url}">'.html_safe % { confirm: s_('AccessTokens|Are you sure?'), url: reset_link }
+        - reset_link_end = '</a>'.html_safe
+        - reset_message = s_('AccessTokens|Keep this token secret. Anyone who gets ahold of it can access repository static objects as if they were you. You should %{reset_link_start}reset it%{reset_link_end} if that ever happens.') % { reset_link_start: reset_link_start, reset_link_end: reset_link_end }
+        = reset_message.html_safe

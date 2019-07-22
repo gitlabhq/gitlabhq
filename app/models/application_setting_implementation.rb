@@ -306,6 +306,10 @@ module ApplicationSettingImplementation
     archive_builds_in_seconds.seconds.ago if archive_builds_in_seconds
   end
 
+  def static_objects_external_storage_enabled?
+    static_objects_external_storage_url.present?
+  end
+
   private
 
   def array_to_string(arr)
