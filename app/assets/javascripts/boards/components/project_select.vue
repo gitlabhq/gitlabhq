@@ -68,13 +68,15 @@ export default {
             <li>
               <a href='#' class='dropdown-menu-link' data-project-id="${
                 project.id
-              }" data-project-name="${project.name}">
-                ${_.escape(project.name)}
+              }" data-project-name="${project.name}" data-project-name-with-namespace="${
+          project.name_with_namespace
+        }">
+                ${_.escape(project.name_with_namespace)}
               </a>
             </li>
           `;
       },
-      text: project => project.name,
+      text: project => project.name_with_namespace,
     });
   },
 };
