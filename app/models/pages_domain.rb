@@ -22,7 +22,7 @@ class PagesDomain < ApplicationRecord
 
   validate :validate_pages_domain
   validate :validate_matching_key, if: ->(domain) { domain.certificate.present? || domain.key.present? }
-  validate :validate_intermediates, if: ->(domain) { domain.certificate.present? }
+  validate :validate_intermediates, if: ->(domain) { domain.certificate.present? && domain.certificate_changed? }
 
   attr_encrypted :key,
     mode: :per_attribute_iv_and_salt,

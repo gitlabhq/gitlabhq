@@ -127,6 +127,30 @@ describe PagesDomain do
 
       it { is_expected.not_to be_valid }
     end
+
+    context 'when certificate is expired' do
+      let(:domain) do
+        build(:pages_domain, :with_trusted_expired_chain)
+      end
+
+      context 'when certificate is being changed' do
+        it "adds error to certificate" do
+          domain.valid?
+
+          expect(domain.errors.keys).to contain_exactly(:key, :certificate)
+        end
+      end
+
+      context 'when certificate is already saved' do
+        it "doesn't add error to certificate" do
+          domain.save(validate: false)
+
+          domain.valid?
+
+          expect(domain.errors.keys).to contain_exactly(:key)
+        end
+      end
+    end
   end
 
   describe 'validations' do
