@@ -5,6 +5,8 @@ FactoryBot.define do
     cluster_type :project_type
     managed true
 
+    factory :cluster_for_group, traits: [:provided_by_gcp, :group]
+
     trait :instance do
       cluster_type { Clusters::Cluster.cluster_types[:instance_type] }
     end
