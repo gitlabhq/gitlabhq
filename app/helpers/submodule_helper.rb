@@ -34,8 +34,8 @@ module SubmoduleHelper
       project.sub!(/\.git\z/, '')
 
       if self_url?(url, namespace, project)
-        [namespace_project_path(namespace, project),
-         namespace_project_tree_path(namespace, project, submodule_item_id)]
+        [url_helpers.namespace_project_path(namespace, project),
+         url_helpers.namespace_project_tree_path(namespace, project, submodule_item_id)]
       elsif relative_self_url?(url)
         relative_self_links(url, submodule_item_id, repository.project)
       elsif github_dot_com_url?(url)
@@ -99,8 +99,8 @@ module SubmoduleHelper
 
     begin
       [
-        namespace_project_path(target_namespace_path, submodule_base),
-        namespace_project_tree_path(target_namespace_path, submodule_base, commit)
+        url_helpers.namespace_project_path(target_namespace_path, submodule_base),
+        url_helpers.namespace_project_tree_path(target_namespace_path, submodule_base, commit)
       ]
     rescue ActionController::UrlGenerationError
       [nil, nil]
@@ -117,5 +117,9 @@ module SubmoduleHelper
     end
   rescue URI::InvalidURIError
     nil
+  end
+
+  def url_helpers
+    Gitlab::Routing.url_helpers
   end
 end
