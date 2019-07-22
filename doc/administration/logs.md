@@ -157,16 +157,22 @@ This file lives in `/var/log/gitlab/gitlab-rails/githost.log` for
 Omnibus GitLab packages or in `/home/git/gitlab/log/githost.log` for
 installations from source.
 
+NOTE: **Note:**
+After 12.2, this file will be stored in JSON format.
+
 GitLab has to interact with Git repositories but in some rare cases
 something can go wrong and in this case you will know what exactly
 happened. This log file contains all failed requests from GitLab to Git
 repositories. In the majority of cases this file will be useful for developers
 only. For example:
 
-```
-December 03, 2014 13:20 -> ERROR -> Command failed [1]: /usr/bin/git --git-dir=/Users/vsizov/gitlab-development-kit/gitlab/tmp/tests/gitlab-satellites/group184/gitlabhq/.git --work-tree=/Users/vsizov/gitlab-development-kit/gitlab/tmp/tests/gitlab-satellites/group184/gitlabhq merge --no-ff -mMerge branch 'feature_conflict' into 'feature' source/feature_conflict
-
-error: failed to push some refs to '/Users/vsizov/gitlab-development-kit/repositories/gitlabhq/gitlab_git.git'
+```json
+{
+   "severity":"ERROR",
+   "time":"2019-07-19T22:16:12.528Z",
+   "correlation_id":"FeGxww5Hj64",
+   "message":"Command failed [1]: /usr/bin/git --git-dir=/Users/vsizov/gitlab-development-kit/gitlab/tmp/tests/gitlab-satellites/group184/gitlabhq/.git --work-tree=/Users/vsizov/gitlab-development-kit/gitlab/tmp/tests/gitlab-satellites/group184/gitlabhq merge --no-ff -mMerge branch 'feature_conflict' into 'feature' source/feature_conflict\n\nerror: failed to push some refs to '/Users/vsizov/gitlab-development-kit/repositories/gitlabhq/gitlab_git.git'"
+}
 ```
 
 ## `audit_json.log`
