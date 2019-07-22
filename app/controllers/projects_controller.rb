@@ -18,9 +18,11 @@ class ProjectsController < Projects::ApplicationController
   before_action :redirect_git_extension, only: [:show]
   before_action :project, except: [:index, :new, :create, :resolve]
   before_action :repository, except: [:index, :new, :create, :resolve]
-  before_action :assign_ref_vars, only: [:show], if: :repo_exists?
-  before_action :tree, only: [:show], if: [:repo_exists?, :project_view_files?]
-  before_action :lfs_blob_ids, only: [:show], if: [:repo_exists?, :project_view_files?]
+  before_action :assign_ref_vars, if: -> { action_name == 'show' && repo_exists? }
+  before_action :tree,
+    if: -> { action_name == 'show' && repo_exists? && project_view_files? }
+  before_action :lfs_blob_ids,
+    if: -> { action_name == 'show' && repo_exists? && project_view_files? }
   before_action :project_export_enabled, only: [:export, :download_export, :remove_export, :generate_new_export]
   before_action :present_project, only: [:edit]
   before_action :authorize_download_code!, only: [:refs]

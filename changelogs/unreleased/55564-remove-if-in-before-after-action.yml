@@ -1,0 +1,5 @@
+---
+title: Rewrite `if:` argument in before_action and alike when `only:` is also used
+merge_request: 24412
+author: George Thomas @thegeorgeous
+type: other

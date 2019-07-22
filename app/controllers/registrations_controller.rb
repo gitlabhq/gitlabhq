@@ -8,8 +8,7 @@ class RegistrationsController < Devise::RegistrationsController
   prepend_before_action :check_captcha, only: :create
   before_action :whitelist_query_limiting, only: [:destroy]
   before_action :ensure_terms_accepted,
-                if: -> { Gitlab::CurrentSettings.current_application_settings.enforce_terms? },
-                only: [:create]
+    if: -> { action_name == 'create' && Gitlab::CurrentSettings.current_application_settings.enforce_terms? }
 
   def new
     redirect_to(new_user_session_path)
