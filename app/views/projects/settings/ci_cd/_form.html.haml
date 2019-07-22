@@ -99,7 +99,7 @@
                 %code \(\d+.\d+\%\) covered
               %li
                 pytest-cov (Python) -
-                %code ^TOTAL\s+\d+\s+\d+\s+(\d+\%)$
+                %code ^TOTAL.+?(\d+\%)$
               %li
                 phpunit --coverage-text --colors=never (PHP) -
                 %code ^\s*Lines:\s*\d+.\d+\%
