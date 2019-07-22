@@ -60,6 +60,7 @@ describe "Admin::Projects" do
       expect(page).to have_content(project.name)
       expect(page).to have_content(project.full_name)
       expect(page).to have_content(project.creator.name)
+      expect(page).to have_content(project.id)
     end
   end
 
